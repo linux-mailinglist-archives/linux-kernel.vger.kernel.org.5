@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-84436-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84437-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38DF586A6C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 03:44:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 796C586A6CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 03:46:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BAF151F29A6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:44:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 88B8EB2483E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:45:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 187B82C6AD;
-	Wed, 28 Feb 2024 02:42:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61E9E1D53C;
+	Wed, 28 Feb 2024 02:42:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="JZQPbhn/"
-Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="edga/too"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCF502C197
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 02:42:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED68C2C1B6
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 02:42:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709088132; cv=none; b=itnnpIABDboHX9l1v7BsUSOttmLff8E99jj8Y1ZET6QvfGERVsTk+1u/7hfon6wYGk8pLGwdNoQLReh6W02tfyC95VmjZY9cwUFddDQeDxUXbJ3XKXwuNf+mS4xflLqhsV5ATpw258VdwjXGtVLXsRrMLMrl+fhZ76adAclWvMY=
+	t=1709088133; cv=none; b=fBQNrF+omhWZwYV97uPKm9VOLDaU9wiiXJ8CCEHq1nwO12AjayMTGqjP+veWBZN8fICgJxIrnWPN9TZzyzFRX09vCYM1vDDxRH2uzl9lfFiQSMf1KrGO13dsHqqSjFpXRXhBX7ylbGRJrMpuVEo3Mb7yR8p1I3Z9vttzhTNSnQ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709088132; c=relaxed/simple;
-	bh=9PNdeAstWFyBPPWEs7KhyiizgXxO3+J35k1TqWTitDo=;
+	s=arc-20240116; t=1709088133; c=relaxed/simple;
+	bh=UGrkpK716aAHiw66iG1/DSWpe947kr0y+y0Afd7BmIg=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=djjFrBMCvukE8Rib52wxZwLtdHAW6NWPR4ljRe4WSDTWYIcg/PQeoSLTDgM5YKXxzq2xMAcIQWyYFkkzhPzVWBbSJQbgvkXatgyNyVhlb/AUZhdrUIsEBIf5hFcQGwZB+0ebVh2pbjn7JR1SKbTVPz4sb6pbT9N9xGuuXSONuYw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=JZQPbhn/; arc=none smtp.client-ip=209.85.210.202
+	 To:Cc:Content-Type; b=R75X57zlT/wsPEnVSMh1PRUJppzIhq7B9Tke5tDOdLnUKhPz1zOmeKzkK9cM/wGp0wblnN+XEMd7QtgRB5azleBt7vvPihj0kmWsv0Vhx/ZA6yYmkUmCGzxAR4BuSpZxXKgzKI3QQIJDZPi4IAj+lgzIR6+UPF/MBbAzhUH5Q+k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=edga/too; arc=none smtp.client-ip=209.85.128.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-6e557bde036so877620b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 18:42:09 -0800 (PST)
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60810219282so61210967b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 18:42:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709088129; x=1709692929; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1709088131; x=1709692931; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=L6OrO+CyUKUmFb+nQO2BWBH5lLYiXnAmYHqUzxi5l7c=;
-        b=JZQPbhn//+Ga12435LtjkrbT5ugjSrcSMCPTXKjZGsoV4QYeR37wszvWluIbpI2aIZ
-         XZrJJRUhCZ/FkwzECVje7AnlwZs1EsUqGrUEj6jpRwZQ8At6WFRqTcmLgL3RBNTIjDYM
-         F+Nv7LuSfc/dkW77SjR7MelG3ygjAuGHU7ipUYOGGWPpcNlLAMXJK36c15Oqzwg/0UH8
-         zR+uGGRr00a2iyq3RN9JZYXGnLRyG9mVFuzhSk7Eq1/nanepIT/Ouqqs6k0WTNFde3yC
-         dIou95nF9WtE6J7m2JgQsKRFqTisE542GxbDn3Z8RXJyH+DoACu7M2APE7xGKCF10bYy
-         Mu7Q==
+        bh=f2pVTuxLJ1bF5JkBExEt38LFzKRRlG2j//10dt1o0l8=;
+        b=edga/tooo62Ub6On2m2O1NUOjTM2zXNHq6BsT4vn89Q2jP+XHb+ii9oxXDO7TKkLjc
+         13mriBUiCJxtVKEbtq/+zZwEjfoQ4FIyY3atcTIZNTtS8ZQ9+X2d4IQcTeAT2IUln9OW
+         X78TUvtzeZRJasqIg8qZwN8OMCMjCb7najP9MHk2NyWJ6eABftNwdvGr3F89Rm0pdZBF
+         p174c5aDsey9R2lbEcAcQWsii4f5iQk4bK/d3gBF8P18P6YhW4Yh3yxbpxm3hRklAzfD
+         fvy9LitG5Ncnhldf7ThRBbCetaCHq54huVnsRuWzEjACNXFtbMI+zLBR8IQd4UEtEIwC
+         +/Ow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709088129; x=1709692929;
+        d=1e100.net; s=20230601; t=1709088131; x=1709692931;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=L6OrO+CyUKUmFb+nQO2BWBH5lLYiXnAmYHqUzxi5l7c=;
-        b=Je/birh5TwYxW3YGFqmxNj4496qoVYq7dScTWPx9v83wi6iMsswkCzuUTIXpm/aizW
-         5r++xDjx4hReuSrHua+11NfXy6wK4J4N2Pm6II9ZaJuREdWu+3262EXc+kM/ebGup9y/
-         qfD4GkcudoegNjlV0Mhece0t3FnokSgQoqzw0eeERIVnpz/LUbWjUp82PUon5fRuWw16
-         yFNryxum2hw4gA44s3iE0QFFcD7mxbM/CMXQztx1lqRMyCpMzqwEGbj0I6ai7t5FDUVl
-         PcI5YfIxTtm4TPClqydSKn6XAj4kPh/W/G00De16gIshp1ucDFrUEkBRnSnXNg7Lerev
-         kD5A==
-X-Forwarded-Encrypted: i=1; AJvYcCU3vb2PaMRjNlsjHIPB3xlPs23+sQn/TKvGA2ha7FL5L8+FDK6oPZXI4xLmi7eLF0Q0eRCPK6n1yG9Zu3TsIAC1jnCIJamGRN9+ivVG
-X-Gm-Message-State: AOJu0Yx22//XD6BeGbYraimsCgBZOaqaOU20NEvuav/IkqD7ddStYjEQ
-	QrLdwY1R8IbfdQVFvg4lh27ssRmX5Mry4+uEO9g99NYS67r/yoMsOzhohKCVmnXlvYYdE3frrO1
-	BKA==
-X-Google-Smtp-Source: AGHT+IEHUj/do6mCm4DLRIfshMpNYR8umtAxls3inWMMZJ4H/OwZPKN3I4Jwqe17wSm4B2+jtdaIEYQIJPk=
+        bh=f2pVTuxLJ1bF5JkBExEt38LFzKRRlG2j//10dt1o0l8=;
+        b=vKWIwwPv4kMd+1E6Y7qbcyKO27O0+pZZbEBc8a1rK3vtwaNuZkZSiFy14LZ+BafkCB
+         oB7xq2PuTDyk0kp59HK0CSd2392ngqgs+qqG+REPChxSDaVL3c7lZWgTjlxmuwXF/63e
+         rYQdCpJOt30/R+mzOKpXo1I9QHuYXNa5gTSd88PsOWaj4ndGfVJb/hrXE4BOQY5W/7vu
+         yiuKqsmRZqKNExJjIOwHokDTUr9bpjcHkFRi3Zi/PwisUrxWQJ0pQofJMUlSwE8IbMf/
+         98bQIBn33FS0oZBuIP14pBXQNmHyzzfXMXERygyYxbwq+gsIR8jiMfz6wdDBKfFT1m7y
+         lx/g==
+X-Forwarded-Encrypted: i=1; AJvYcCW9zAV3zPBV7nDhX9zzpbjPOLaBnMl0aEMRbS2L3twma7soBTfGEl6MFOG1GWm5mYMvskDX/AWX2WLhCkkZQOwzD56H7n4Z1+nop8zS
+X-Gm-Message-State: AOJu0Yz1Wyb79bcld2pGFIx5FhxhEI+LMHJ2ODx4+IGnS37pTMoXTlyd
+	Tu5tMGFkTtkng6AndlyEJLtxoXYcPLaPKYDwol+MH3JWzw2BkXk+2D4mjzJrsBTTpDNve1Y7RDO
+	uww==
+X-Google-Smtp-Source: AGHT+IGV2/KMUT+5DS/RD3rbrnNhsUrJO/9cIjXu+5lli9rKXWp0tnf2EC/ZhZvoUmnwAPQ8D4qdy5ETdeA=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:8917:b0:6e4:f310:1fd with SMTP id
- hw23-20020a056a00891700b006e4f31001fdmr362188pfb.4.1709088129052; Tue, 27 Feb
- 2024 18:42:09 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a81:5714:0:b0:609:3bd3:31fd with SMTP id
+ l20-20020a815714000000b006093bd331fdmr118940ywb.2.1709088131111; Tue, 27 Feb
+ 2024 18:42:11 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Tue, 27 Feb 2024 18:41:41 -0800
+Date: Tue, 27 Feb 2024 18:41:42 -0800
 In-Reply-To: <20240228024147.41573-1-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -75,9 +75,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240228024147.41573-1-seanjc@google.com>
 X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Message-ID: <20240228024147.41573-11-seanjc@google.com>
-Subject: [PATCH 10/16] KVM: x86/mmu: Don't force emulation of L2 accesses to
- non-APIC internal slots
+Message-ID: <20240228024147.41573-12-seanjc@google.com>
+Subject: [PATCH 11/16] KVM: x86/mmu: Explicitly disallow private accesses to
+ emulated MMIO
 From: Sean Christopherson <seanjc@google.com>
 To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>
 Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
@@ -87,87 +87,31 @@ Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
 	David Matlack <dmatlack@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Allow mapping KVM's internal memslots used for EPT without unrestricted
-guest into L2, i.e. allow mapping the hidden TSS and the identity mapped
-page tables into L2.  Unlike the APIC access page, there is no correctness
-issue with letting L2 access the "hidden" memory.  Allowing these memslots
-to be mapped into L2 fixes a largely theoretical bug where KVM could
-incorrectly emulate subsequent _L1_ accesses as MMIO, and also ensures
-consistent KVM behavior for L2.
+Explicitly detect and disallow private accesses to emulated MMIO in
+kvm_handle_noslot_fault() instead of relying on kvm_faultin_pfn_private()
+to perform the check.  This will allow the page fault path to go straight
+to kvm_handle_noslot_fault() without bouncing through __kvm_faultin_pfn().
 
-If KVM is using TDP, but L1 is using shadow paging for L2, then routing
-through kvm_handle_noslot_fault() will incorrectly cache the gfn as MMIO,
-and create an MMIO SPTE.  Creating an MMIO SPTE is ok, but only because
-kvm_mmu_page_role.guest_mode ensure KVM uses different roots for L1 vs.
-L2.  But vcpu->arch.mmio_gfn will remain valid, and could cause KVM to
-incorrectly treat an L1 access to the hidden TSS or identity mapped page
-tables as MMIO.
-
-Furthermore, forcing L2 accesses to be treated as "no slot" faults doesn't
-actually prevent exposing KVM's internal memslots to L2, it simply forces
-KVM to emulate the access.  In most cases, that will trigger MMIO,
-amusingly due to filling vcpu->arch.mmio_gfn, but also because
-vcpu_is_mmio_gpa() unconditionally treats APIC accesses as MMIO, i.e. APIC
-accesses are ok.  But the hidden TSS and identity mapped page tables could
-go either way (MMIO or access the private memslot's backing memory).
-
-Alternatively, the inconsistent emulator behavior could be addressed by
-forcing MMIO emulation for L2 access to all internal memslots, not just to
-the APIC.  But that's arguably less correct than letting L2 access the
-hidden TSS and identity mapped page tables, not to mention that it's
-*extremely* unlikely anyone cares what KVM does in this case.  From L1's
-perspective there is R/W memory at those memslots, the memory just happens
-to be initialized with non-zero data.  Making the memory disappear when it
-is accessed by L2 is far more magical and arbitrary than the memory
-existing in the first place.
-
-The APIC access page is special because KVM _must_ emulate the access to
-do the right thing (emulate an APIC access instead of reading/writing the
-APIC access page).  And despite what commit 3a2936dedd20 ("kvm: mmu: Don't
-expose private memslots to L2") said, it's not just necessary when L1 is
-accelerating L2's virtual APIC, it's just as important (likely *more*
-imporant for correctness when L1 is passing through its own APIC to L2.
-
-Fixes: 3a2936dedd20 ("kvm: mmu: Don't expose private memslots to L2")
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/mmu/mmu.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+ arch/x86/kvm/mmu/mmu.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 58c5ae8be66c..5c8caab64ba2 100644
+index 5c8caab64ba2..ebdb3fcce3dc 100644
 --- a/arch/x86/kvm/mmu/mmu.c
 +++ b/arch/x86/kvm/mmu/mmu.c
-@@ -4346,8 +4346,18 @@ static int __kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault
- 	if (slot && (slot->flags & KVM_MEMSLOT_INVALID))
- 		return RET_PF_RETRY;
+@@ -3314,6 +3314,11 @@ static int kvm_handle_noslot_fault(struct kvm_vcpu *vcpu,
+ {
+ 	gva_t gva = fault->is_tdp ? 0 : fault->addr;
  
--	if (!kvm_is_visible_memslot(slot)) {
--		/* Don't expose private memslots to L2. */
-+	if (slot && slot->id == APIC_ACCESS_PAGE_PRIVATE_MEMSLOT) {
-+		/*
-+		 * Don't map L1's APIC access page into L2, KVM doesn't support
-+		 * using APICv/AVIC to accelerate L2 accesses to L1's APIC,
-+		 * i.e. the access needs to be emulated.  Emulating access to
-+		 * L1's APIC is also correct if L1 is accelerating L2's own
-+		 * virtual APIC, but for some reason L1 also maps _L1's_ APIC
-+		 * into L2.  Note, vcpu_is_mmio_gpa() always treats access to
-+		 * the APIC as MMIO.  Allow an MMIO SPTE to be created, as KVM
-+		 * uses different roots for L1 vs. L2, i.e. there is no danger
-+		 * of breaking APICv/AVIC for L1.
-+		 */
- 		if (is_guest_mode(vcpu)) {
- 			fault->slot = NULL;
- 			fault->pfn = KVM_PFN_NOSLOT;
-@@ -4360,8 +4370,7 @@ static int __kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault
- 		 * MMIO SPTE.  That way the cache doesn't need to be purged
- 		 * when the AVIC is re-enabled.
- 		 */
--		if (slot && slot->id == APIC_ACCESS_PAGE_PRIVATE_MEMSLOT &&
--		    !kvm_apicv_activated(vcpu->kvm))
-+		if (!kvm_apicv_activated(vcpu->kvm))
- 			return RET_PF_EMULATE;
- 	}
++	if (fault->is_private) {
++		kvm_mmu_prepare_memory_fault_exit(vcpu, fault);
++		return -EFAULT;
++	}
++
+ 	vcpu_cache_mmio_info(vcpu, gva, fault->gfn,
+ 			     access & shadow_mmio_access_mask);
  
 -- 
 2.44.0.278.ge034bb2e1d-goog
