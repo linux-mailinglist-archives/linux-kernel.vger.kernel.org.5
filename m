@@ -1,122 +1,105 @@
-Return-Path: <linux-kernel+bounces-85095-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85096-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B6F086B060
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:31:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A4B386B063
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:32:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3BD511F28255
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:31:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 941251C2299B
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:32:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4D7814D420;
-	Wed, 28 Feb 2024 13:31:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 949D714C5B6;
+	Wed, 28 Feb 2024 13:32:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZC/kXNJ5"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LVFKWhz5"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5D7B1E493
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 13:31:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A39B73508;
+	Wed, 28 Feb 2024 13:32:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709127067; cv=none; b=DeEQ8AfsZ/7GEI/BJtezRamm0+pZcW0gy1w2QN9K8FNkpqTo5LddCW/9/3Edx2JmDmu/1UUqQJ3ervz6b1s1ICNOY98WqI+yspFDsws8qNd5QHm0PBSLCr8RSZz4J1B1txqukfbsjyddosCpsJ4b6Prydx9rZ1hLxOaHN9Evdok=
+	t=1709127171; cv=none; b=Pk86fr8XCnZ4tmgsQXXv090DH7KAaeAdpGXOTTwu0LCkEzsQwxNLbqmHFuqcamhAtTqwUJlRRMJNMCagK33hzlDXQgxsFxKHef9dCfy8DQSsR1tHzT5ktenwDRtnz14rI3jRilGSWeP1yswU7UnJcR6s4ovApDoFuceroBn+MJA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709127067; c=relaxed/simple;
-	bh=3VQZtPFFjJ6KMik5qwmu9RFH9g6RLd3eRx0NWCx6Qko=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=Fnr4P9ejRxI/VruD1cqPVE4BfkJXMluqHt9j4+4cGYQd9dQIAfJztG2TyLeOVN4/UpJQ5p0vZHb3/md/86EAVa5x8ckN4j4rPj+XIVHkC0Q8xgz6Rg1oxNk8gvXUpq0hZ4k7Lds7adrM4DA3uRiwdCRIiTpRe3Km9M1Qc6Ji6kQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZC/kXNJ5; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709127063;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=mYhUY0xj59xhvUYFGeVBejeoiizOAuL7jH7HPYGmaLI=;
-	b=ZC/kXNJ5NUV/Ec4C2J2EV0+HAV1fdM5L/N11qkgCz1Dfsa97q0MCxqHSdxWoBaCfTyN2PZ
-	FY3Rv31J4gtv0w6JWY04NcTEy5N4aPKcopvINjCUkVXwI7C+/oDiXa0zemdo3933+nbOXl
-	6yEtUEmR9e5H4h/JktfgEvZRKjMoS2Q=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-290-aBSN9Oe7P5W_Su_A28IPow-1; Wed, 28 Feb 2024 08:31:01 -0500
-X-MC-Unique: aBSN9Oe7P5W_Su_A28IPow-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CD1CF8B39A5;
-	Wed, 28 Feb 2024 13:31:00 +0000 (UTC)
-Received: from tpad.localdomain (unknown [10.96.133.4])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 937901121312;
-	Wed, 28 Feb 2024 13:31:00 +0000 (UTC)
-Received: by tpad.localdomain (Postfix, from userid 1000)
-	id EC662401E122B; Wed, 28 Feb 2024 10:30:42 -0300 (-03)
-Date: Wed, 28 Feb 2024 10:30:42 -0300
-From: Marcelo Tosatti <mtosatti@redhat.com>
-To: netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Eric Dumazet <edumazet@google.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Paolo Abeni <pabeni@redhat.com>
-Subject: [PATCH -v2 net-next] net/core/dev.c: enable timestamp static key if
- CPU isolation is configured
-Message-ID: <Zd81gp2utD9+ripX@tpad>
+	s=arc-20240116; t=1709127171; c=relaxed/simple;
+	bh=Lby5HVffdFeSTS3gB0WIyrCXbyHZBM8gbK0CvSpYeWA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=myBxf4aI/35elz+s/shdw0cDP4aymybRFYfLn4cjvOgLFpZStHnG8B8GL9oK6k5059pCsAr1DchICeEoKxnybkiwr/FK15hb1F8E9kxgZo1KCubLkv/bYdVcVrdQxAeHdns5zSpLdBbz/PjcYB8OIx5x4atduk3f9bnHsYJYaGg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LVFKWhz5; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a3e706f50beso692900666b.0;
+        Wed, 28 Feb 2024 05:32:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709127168; x=1709731968; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=SGffkzKw9aWjyaI9NbO+R8+MY5GFHI3Uh82PpzNp7MM=;
+        b=LVFKWhz5RuGHRXZbmhnKmS/oJ3YlHR6a4RjqZBpBiNZ1V1xhlZm8WUcEipdKsvli91
+         B0KQ0Yw4GjUS2bvvHAhnfj+ODCe46jR8+IboHFXrDsA93A9PH80OugO0mTerbL2CzEEU
+         2TyuCzPKjoWc9cZLwyUGpTMTIpUMT6k4SFVx3WKUo1scBu1PQoqavgbd7zBWmLuhwGsO
+         KqYPncYCX5y6GNQnTQscNCF+yn3TXaaNkZKyzbMDeBch3lv5NjLRuETWTWkIym6FIJmu
+         pXuLrt3FLfOaqUWjyUF+/FT0lPBDORnN9MOuL7fQ6luFTXmIF7uqYzMU8wlSRZu+XYrb
+         kJLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709127168; x=1709731968;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SGffkzKw9aWjyaI9NbO+R8+MY5GFHI3Uh82PpzNp7MM=;
+        b=RMyjAtV3TVm35Onok7fSbr3pd44aX8URYlUVH1zAljitMrqlPt6H1RcPvw8rJAP7Ez
+         PHHxCLtkMNKKqagGn3Q9yTdYl0WdrLMoa0dRcs02ApK/sikF0zEfz8X3Ra3yeUJkg843
+         6Q1kmCE+ZadZWTgL5GIwC+SQ9bvv4r3l9DLHTYHaXLfzKdnrvcLYFYOFnPPpgCOdxWRK
+         J8DFKa7TJbRgVEh8FgflOuYLg9WJJ+pU2jB5ne44r9SUa9g3PR9e8lx4EkzATniT+d8b
+         /I0G8i6ysjFvjiefv5UR0CuRJtoeCLg7jY1kFDEOilr/lM7s6XtsZmky6rtrg8Wq0jZf
+         k9vA==
+X-Forwarded-Encrypted: i=1; AJvYcCX/PW9n0Y9UPgXv41a/HqlfXFtnGYfZFt95AsoQuVB+81hK5baHeY7uWmRAXBfGNPX9YfKPUo7BeF6mLsRcXdMPalJb3WVO/IDfDG0XJK/koq69a30D1YwMuIAQIA/dwRYpHD/iJy+q
+X-Gm-Message-State: AOJu0YyMDwtqrdMFO7jN9ptqP3suGaPoz/3wyPk4aON6v2rnM5aG6K0+
+	2eBoLj7Wpw0QbNs7/dgmHaq7PHM0UKt+/N44m4Ead/FqTmk057Zg
+X-Google-Smtp-Source: AGHT+IGPOSENBkXJ6r3twcDCRGjLZbrarMIbvH/bzYAeDf7C/m2WcywcK/hzqgY+P81KEUTFBhToqQ==
+X-Received: by 2002:a17:906:191a:b0:a43:fac5:8e87 with SMTP id a26-20020a170906191a00b00a43fac58e87mr1250562eje.65.1709127168409;
+        Wed, 28 Feb 2024 05:32:48 -0800 (PST)
+Received: from debian.fritz.box ([93.184.186.109])
+        by smtp.gmail.com with ESMTPSA id vx5-20020a170907a78500b00a3f20a8d2f6sm1856952ejc.112.2024.02.28.05.32.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Feb 2024 05:32:47 -0800 (PST)
+From: Dimitri Fedrau <dima.fedrau@gmail.com>
+To: 
+Cc: Dimitri Fedrau <dima.fedrau@gmail.com>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	linux-kernel@vger.kernel.org,
+	linux-pwm@vger.kernel.org
+Subject: [PATCH 0/3] pwm: add support for NXPs high-side switch MC33XS2410
+Date: Wed, 28 Feb 2024 14:32:32 +0100
+Message-Id: <20240228133236.748225-1-dima.fedrau@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+Content-Transfer-Encoding: 8bit
 
+The MC33XS2410 is a four channel high-side switch. Featuring advanced
+monitoring and control function, the device is operational from 3.0 V to
+60 V. The device is controlled by SPI port for configuration.
 
-For systems that use CPU isolation (via nohz_full), creating or destroying
-a socket with timestamping (SOCK_TIMESTAMPING_RX_SOFTWARE and 
-SOF_TIMESTAMPING_OPT_TX_SWHW) might cause a
-static key to be enabled/disabled. This in turn causes undesired
-IPIs to isolated CPUs.
+Dimitri Fedrau (3):
+  dt-bindings: pwm: add support for MC33XS2410
+  pwm: add support for NXPs high-side switch MC33XS2410
+  pwm: mc33xs2410: add support for direct inputs
 
-So enable the static key unconditionally, if CPU isolation is enabled,
-thus avoiding the IPIs.
+ .../bindings/pwm/nxp,mc33xs2410.yaml          | 105 +++++
+ drivers/pwm/Kconfig                           |  12 +
+ drivers/pwm/Makefile                          |   1 +
+ drivers/pwm/pwm-mc33xs2410.c                  | 418 ++++++++++++++++++
+ 4 files changed, 536 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pwm/nxp,mc33xs2410.yaml
+ create mode 100644 drivers/pwm/pwm-mc33xs2410.c
 
-Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
-
----
-v2: mention SOF_TIMESTAMPING_OPT_TX_SWHW in the commit log (Willem de Bruijn / Paolo Abeni)
-
-diff --git a/net/core/dev.c b/net/core/dev.c
-index c588808be77f..15a32f5900e6 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -155,6 +155,7 @@
- #include <net/netdev_rx_queue.h>
- #include <net/page_pool/types.h>
- #include <net/page_pool/helpers.h>
-+#include <linux/sched/isolation.h>
- 
- #include "dev.h"
- #include "net-sysfs.h"
-@@ -11851,3 +11852,14 @@ static int __init net_dev_init(void)
- }
- 
- subsys_initcall(net_dev_init);
-+
-+static int __init net_dev_late_init(void)
-+{
-+	/* avoid static key IPIs to isolated CPUs */
-+	if (housekeeping_enabled(HK_TYPE_MISC))
-+		net_enable_timestamp();
-+
-+	return 0;
-+}
-+
-+late_initcall(net_dev_late_init);
+-- 
+2.39.2
 
 
