@@ -1,95 +1,129 @@
-Return-Path: <linux-kernel+bounces-84553-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84554-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD4D186A837
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 07:07:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AA9D86A839
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 07:07:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3CEE928A0FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 06:07:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB25728AF53
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 06:07:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DC8621A02;
-	Wed, 28 Feb 2024 06:07:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67DB821A1C;
+	Wed, 28 Feb 2024 06:07:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="HzqEYi+b"
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="cEThuSc4"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 867674A1A;
-	Wed, 28 Feb 2024 06:07:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.111
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A48DD224D4;
+	Wed, 28 Feb 2024 06:07:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709100446; cv=none; b=d9leuw/lQ2ID7TQWB97GDH6WIQSbwUI6ZAZynBFYDk0hL8SW9PAHEpaTVMomQgjb6ExOzQrc1MOKldaWWZQn5qgCSpSMtW6in04oRkleiSZwUZ+aEVhMdGRk7tuzl+ABl3+Wxzy1KjggzuSCKOo1WcQI+B9erdpamQ1dEvg6Mq4=
+	t=1709100461; cv=none; b=WTROVQ1hBLNaY9UrS/jUVEm6bCbXgpoHoyHLW3YEcRcXctYuZ4ugEDw/QPRg30P9mbEgocWgG1uaK7vRdKz+hFICcXloJTQvdqZK19R0PD4TrPrRtIqXAverkiY35fWG3YNy1lms73BEbEl8BhsoWmRDheGZu9tST+QyfYDy4bE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709100446; c=relaxed/simple;
-	bh=YViSoMR2lQJQi3H4+zFsBmb+MxoYYAqwfyQrWv5y1vs=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=KSnPkYSAmVnRaCd/ybIrgwh8L79XgMNF3+nPjVUsOfkKQgJE8iCrAk+R6xP50UbWHr3zLsm4luqDKrcjcS6W84Qn3JsFtLh4FUerqLH1vet99MkpyeY4FNdanI4yXh9VpPzbppHIJMDm7qGUjiLDfsPCXqla7EtAFdJPHiVHb+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=HzqEYi+b; arc=none smtp.client-ip=115.124.30.111
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1709100440; h=Message-ID:Date:MIME-Version:From:Subject:To:Content-Type;
-	bh=VTjKIhOK3qM69jCegJqoVI39eQmDbxUQOTEPlMd6XqI=;
-	b=HzqEYi+b3N0uSJLVbYlO6sgrPn75zCPFIKORn8BC+/A3dSpgLupv2xYlIvtF0punLHrhwjauWbEMu6InbOUNruIyDlQfY8/jmvJpVJCeurxb0Lylm4K6DHQkB0CuBe9RYLHCBjh4eTCLb6y2al3ZUEXnCxSrQ8AxQ2VPRO4HV+8=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R641e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=yaoma@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0W1OnNtY_1709100436;
-Received: from 30.178.67.139(mailfrom:yaoma@linux.alibaba.com fp:SMTPD_---0W1OnNtY_1709100436)
-          by smtp.aliyun-inc.com;
-          Wed, 28 Feb 2024 14:07:18 +0800
-Message-ID: <1606230b-83af-4f5f-b1ef-6ae8f73841f5@linux.alibaba.com>
-Date: Wed, 28 Feb 2024 14:07:15 +0800
+	s=arc-20240116; t=1709100461; c=relaxed/simple;
+	bh=pxc2ZZ/jk0gXN4weRBL2NBBmdZRdQq6VWS7o4nzzuj4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=s3bs31Qb2wmNf/hV/EWRYbDGCcKaxuYfBcMqpurtgWii0W476UbMRYivvtK+Q+uqq5XN9mGoQ5tfu4l6TfXLNMHjhW6gg+UF88MI78h50//dl8lGMKrm4mw8xbphz5DqGKxP8zGJ4cnonBEo/u8f2i81NT8hRTJwwZh3pw/p5iA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=cEThuSc4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA456C433F1;
+	Wed, 28 Feb 2024 06:07:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1709100461;
+	bh=pxc2ZZ/jk0gXN4weRBL2NBBmdZRdQq6VWS7o4nzzuj4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cEThuSc4bNSWeaQNmhTxul4sBIUSAjOLhwLIVZQ8rDxznqlEh7qxDnkWdPuHKXjX3
+	 IzSDFNUcOLoqHSTBWL+gKNhteNEdU+KP/9Kz96z730FiC25sRVPDxac7huK+zXSFAb
+	 cZfZ9xC+hPN94H+ZZGzItK60eCzrPL+m17Kv7Bgg=
+Date: Wed, 28 Feb 2024 07:07:38 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Qingliang Li <qingliang.li@mediatek.com>
+Cc: "Rafael J . Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+	Len Brown <len.brown@intel.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	Tony Lindgren <tony@atomide.com>, linux-pm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH] PM: wakeirq: fix wake irq warning in system suspend stage
+Message-ID: <2024022829-ripple-quintet-a097@gregkh>
+References: <20240228020040.25815-1-qingliang.li@mediatek.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Bitao Hu <yaoma@linux.alibaba.com>
-Subject: Re: [PATCHv10 3/4] genirq: Avoid summation loops for /proc/interrupts
-To: Thomas Gleixner <tglx@linutronix.de>, dianders@chromium.org,
- liusong@linux.alibaba.com, akpm@linux-foundation.org, pmladek@suse.com,
- kernelfans@gmail.com, deller@gmx.de, npiggin@gmail.com,
- tsbogend@alpha.franken.de, James.Bottomley@HansenPartnership.com,
- jan.kiszka@siemens.com
-Cc: linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- yaoma@linux.alibaba.com
-References: <20240226020939.45264-1-yaoma@linux.alibaba.com>
- <20240226020939.45264-4-yaoma@linux.alibaba.com> <87le769s0w.ffs@tglx>
- <e78357ae-7b00-446c-b010-3bd770892c9e@linux.alibaba.com>
- <87a5nlapc2.ffs@tglx>
-Content-Language: en-US
-In-Reply-To: <87a5nlapc2.ffs@tglx>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240228020040.25815-1-qingliang.li@mediatek.com>
 
-On 2024/2/27 23:39, Thomas Gleixner wrote:
-> On Tue, Feb 27 2024 at 19:20, Bitao Hu wrote:
->> On 2024/2/27 17:26, Thomas Gleixner wrote:
->>>
->>> and then let kstat_irqs() and show_interrupts() use it. See?
->>
->> I have a concern. kstat_irqs() uses for_each_possible_cpu() for
->> summation. However, show_interrupts() uses for_each_online_cpu(),
->> which means it only outputs interrupt statistics for online cpus.
->> If we use for_each_possible_cpu() in show_interrupts() to calculate
->> 'any_count', there could be a problem with the following scenario:
->> If an interrupt has a count of zero on online cpus but a non-zero
->> count on possible cpus, then 'any_count' would not be zero, and the
->> statistics for that interrupt would be output, which is not the
->> desired behavior for show_interrupts(). Therefore, I think it's not
->> good to have kstat_irqs() and show_interrupts() both use the same
->> logic. What do you think?
+On Wed, Feb 28, 2024 at 10:00:40AM +0800, Qingliang Li wrote:
+> When driver registers the wake irq with reverse enable ordering,
+> the wake irq will be re-enabled when entering system suspend, triggering
+> an 'Unbalanced enable for IRQ xxx' warning. The wake irq will be
+> enabled in both dev_pm_enable_wake_irq_complete() and dev_pm_arm_wake_irq()
 > 
-> Good point. But you simply can have
+> To fix this issue, complete the setting of WAKE_IRQ_DEDICATED_ENABLED flag
+> in dev_pm_enable_wake_irq_complete() to avoid redundant irq enablement.
 > 
-> unsigned int kstat_irq_desc(struct irq_desc *desc, const struct cpumask *mask)
+> Fixes: 8527beb12087 ("PM: sleep: wakeirq: fix wake irq arming")
+> Signed-off-by: Qingliang Li <qingliang.li@mediatek.com>
+> ---
+>  drivers/base/power/wakeirq.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> and hand in the appropriate cpumask, which still shares the code, no?
+> diff --git a/drivers/base/power/wakeirq.c b/drivers/base/power/wakeirq.c
+> index 42171f766dcb..5a5a9e978e85 100644
+> --- a/drivers/base/power/wakeirq.c
+> +++ b/drivers/base/power/wakeirq.c
+> @@ -313,8 +313,10 @@ void dev_pm_enable_wake_irq_complete(struct device *dev)
+>  		return;
+>  
+>  	if (wirq->status & WAKE_IRQ_DEDICATED_MANAGED &&
+> -	    wirq->status & WAKE_IRQ_DEDICATED_REVERSE)
+> +	    wirq->status & WAKE_IRQ_DEDICATED_REVERSE) {
+>  		enable_irq(wirq->irq);
+> +		wirq->status |= WAKE_IRQ_DEDICATED_ENABLED;
+> +	}
+>  }
+>  
+>  /**
+> -- 
+> 2.25.1
 > 
-Alright, that is a good approach.
+
+Hi,
+
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
+
+You are receiving this message because of the following common error(s)
+as indicated below:
+
+
+- You have marked a patch with a "Fixes:" tag for a commit that is in an
+  older released kernel, yet you do not have a cc: stable line in the
+  signed-off-by area at all, which means that the patch will not be
+  applied to any older kernel releases.  To properly fix this, please
+  follow the documented rules in the
+  Documentation/process/stable-kernel-rules.rst file for how to resolve
+  this.
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
 
