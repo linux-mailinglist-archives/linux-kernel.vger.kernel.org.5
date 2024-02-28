@@ -1,116 +1,151 @@
-Return-Path: <linux-kernel+bounces-84784-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84785-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E610E86AB80
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:40:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 808C586AB82
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:41:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 931231F233D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:40:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B22AF1C21A3E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:41:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3DE036129;
-	Wed, 28 Feb 2024 09:40:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BE37339BD;
+	Wed, 28 Feb 2024 09:41:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M89tswzd"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="u0FaIgGj"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECF9436103
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 09:40:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3C8A219FD
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 09:41:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709113242; cv=none; b=rC1XlYisAMkEZngBWT66A5JVi9z9VVh30LaPF34l7YDYTwdPCt5Zj0hmzF8I+TlfcuiLOiOpTl2QzflVE8y3/O3oCpERgWjZbg29yKvE/SnHzGT4jPqIyB8d4L1ftIWQRvjvn9zBb7P63qgwmqnlMv2h75CrTT8Ti3W/kfj+6XE=
+	t=1709113281; cv=none; b=BVzByDGFLhFK0nHcHCobua9Vm6C4w4p5tJ1Sc1udIlsWxGCP/EvFl2AwPdrMPojCpsRdSIDB7MG2jaWYwv1EJVCE0XzRQF981yZ18Eh0oyGFoBu6BBoBCRyRgy3uHkGMGAsPCl0X43lc8bv9OUOIExX/tT5GvOFBxcxDSqEhV84=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709113242; c=relaxed/simple;
-	bh=lvoTs/0UXElm44f/AN9pIyL/qzddZIntAlgjTtgGHwc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=uSGYPvRG261l1KOS/RZEn52Io0AD7qi5WsUhhlpkm0ycHtP/vieF7dWLIYDPffFAAQnwW5aDYg0su1wkFUn74D6Ew18PVTfYVWdaum58pMYUUdaKE3++fXLJ4FLASWURBf/3FPb4RN8xM7yDNL6YyJX79qiqWpoLBDeCDD/ldiY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M89tswzd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63376C433F1;
-	Wed, 28 Feb 2024 09:40:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709113241;
-	bh=lvoTs/0UXElm44f/AN9pIyL/qzddZIntAlgjTtgGHwc=;
-	h=From:To:Cc:Subject:Date:From;
-	b=M89tswzdasInlvO4kCicJK0gvJxK5iNT5k2Pzi5h1eJa6leEUEkKjhGDDg8wuX0hq
-	 4yuhv7ypmp6YVKnk1yarUuspZBWhdxtLRs5TcpxgznyTKCwdNJiwp/7C0sgcvAlIKn
-	 3zUY87S59TPo8j1pfIycdz140Hf99KJJj68f79Ko9lSo1lwhI/kxNdKZ++FMVwmtV4
-	 FNynQe2hL4T1n7qOzhoEqB51U9JY5gmftA7YdC4sM8GOgsRVCjnb5inVq9HjT85MMo
-	 kw+grGrhicACNWXBYv9emNyTn9vt5C5T4zLepkUcHHYCjjTemcp4Zbx1pkMoKm5WhV
-	 FlqPCpg1RqfXQ==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Minchan Kim <minchan@kernel.org>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Chengming Zhou <zhouchengming@bytedance.com>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Nhat Pham <nphamcs@gmail.com>,
-	Domenico Cerasuolo <cerasuolodomenico@gmail.com>,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] mm/zsmalloc: move get_zspage_lockless into #ifdef
-Date: Wed, 28 Feb 2024 10:40:31 +0100
-Message-Id: <20240228094036.2267912-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1709113281; c=relaxed/simple;
+	bh=ea/qP8lceQObB4VFfj13TaUrQWQXFF34TOPECYoDbjc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QxPZAr307AaOQ1u/f8fCVxBBorsdgHlPburb3Gktwibt9wRI6UeWVN2Hz155vCzmO2/bL2yKDNqqlcFu+9ddjFKIxcX1MDFcAHSXVxWrTlJBRqBTiaVDqNI37fT1dz9dHi6+wJ/teeOGoDElsxK3goQkcdo/9k8RitWXToocP8M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=u0FaIgGj; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709113276;
+	bh=ea/qP8lceQObB4VFfj13TaUrQWQXFF34TOPECYoDbjc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=u0FaIgGjtWn77xSxsMdY7Ah7fN6y8vAVkMqFAT2IWrS1T+235RFKhCM0cijnDPWxt
+	 E6vcuSp4/A0vd2CcChADwEtGX3V8x36vDQJ2mtPAIJn/wQCxr7pM1OKs6+z9pSYiPk
+	 yNAn97gtlMyGfATz13onnIYLSsy5u+QMKoE8H8iAXouQbXDzkFeYi2DQ9NtFZxA/IH
+	 8hroDEY842dmV2ViuFxDfAliGElxrzrS636j5odIIkNipeO3tG0GT7LPxqv246h7UE
+	 iBFIctQhaDwiJ6ubBDEcxYwDJ/2RX6Gxu2cJP08Hv5Zlim3j8pFycKuxxUAkeEp0C9
+	 moGZv+eLV0HSg==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 724F53780029;
+	Wed, 28 Feb 2024 09:41:16 +0000 (UTC)
+Message-ID: <6389f1e3-57b2-453a-af6f-6bc7f725ad31@collabora.com>
+Date: Wed, 28 Feb 2024 10:41:15 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] soc: mediatek: cmdq: Don't log an error when
+ gce-client-reg is not found
+To: =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>
+Cc: kernel@collabora.com, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+References: <20240226-gce-client-reg-log-dbg-v1-1-f0fff97c30c7@collabora.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Content-Language: en-US
+In-Reply-To: <20240226-gce-client-reg-log-dbg-v1-1-f0fff97c30c7@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-From: Arnd Bergmann <arnd@arndb.de>
+Il 26/02/24 22:31, Nícolas F. R. A. Prado ha scritto:
+> Most of the callers to this function do not require CMDQ support, it is
+> optional, so the missing property shouldn't cause an error message.
+> Furthermore, the callers that do require CMDQ support already log at the
+> error level when an error is returned.
+> 
+> Change the log message in this helper to be printed at the debug level
+> instead.
 
-It's only used from inside of an #ifdef section, causing a warning otherwise:
+CMDQ is optional, yes. At least, for some devices it is.
 
-mm/zsmalloc.c:735:23: error: unused function 'get_zspage_lockless' [-Werror,-Wunused-function]
-  735 | static struct zspage *get_zspage_lockless(struct page *page)
-      |                       ^~~~~~~~~~~~~~~~~~~
+Full story, though, wants that if you use the CPU for register manipulation
+instead of programming the GCE (even with threading, fantastic!) you will
+trigger various performance issues.
 
-Move it down into that block to avoid adding another #ifdef.
+In the end, you *don't want* to use the CPU if GCE is available!
 
-Fixes: 2258bdebb55e ("mm/zsmalloc: don't hold locks of all pages when free_zspage()")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- mm/zsmalloc.c | 15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+The reasons why the CMDQ/GCE is optional are:
+  - You can check register-by-register r/w for debugging scenarios by using
+    the CPU to manipulate them instead of having something magically doing
+    that for you at a certain (pre-set, yes, but still!) point;
+  - Not all SoCs have the same amount of GCE threads and channels, some may
+    support writing to IP block X through the GCE, some may not, but both
+    may support writing for IP block Y through this mailbox;
+  - MediaTek chose to support both ways, enabling means to debug stuff upstream,
+    the other choice would've been to never support CPU register R/W on some IPs
 
-diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
-index 1a044690b389..11422305d819 100644
---- a/mm/zsmalloc.c
-+++ b/mm/zsmalloc.c
-@@ -731,14 +731,6 @@ static struct zspage *get_zspage(struct page *page)
- 	return zspage;
- }
- 
--/* Only used in zs_page_migrate() to get zspage locklessly. */
--static struct zspage *get_zspage_lockless(struct page *page)
--{
--	struct zspage __rcu **private = (struct zspage __rcu **)&page->private;
--
--	return rcu_dereference(*private);
--}
--
- static struct page *get_next_page(struct page *page)
- {
- 	struct zspage *zspage = get_zspage(page);
-@@ -1651,6 +1643,13 @@ static void migrate_write_unlock(struct zspage *zspage)
- }
- 
- #ifdef CONFIG_COMPACTION
-+/* Only used in zs_page_migrate() to get zspage locklessly. */
-+static struct zspage *get_zspage_lockless(struct page *page)
-+{
-+	struct zspage __rcu **private = (struct zspage __rcu **)&page->private;
-+
-+	return rcu_dereference(*private);
-+}
- 
- static const struct movable_operations zsmalloc_mops;
- 
--- 
-2.39.2
+    ... and btw - about the last part: Kudos, MediaTek.
+
+Now, I also get why you're raising this, but we have to find an agreement here
+on a different way to proceed that satisfies all of us.
+
+First of all..
+
+Which device on which SoC is missing the GCE client register DT property?
+Do said SoC really not have a GCE client register for that device?
+
+Is any upstream supported SoC really lacking a GCE register for the upstream
+supported IPs?
+
+I'm not sure.... :-)
+
+P.S.: I guess that the alternative (that I somewhat dislike, and you can probably
+       understand why after reading the reasons above) would be to turn that into a
+       dev_info() instead...
+
+P.P.S.: Having no GCE usually means that there's a performance issue! In that case,
+         it's ... a mistake, so, an error, kind-of.... :-)
+
+Cheers,
+Angelo
+
+> 
+> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+> ---
+>   drivers/soc/mediatek/mtk-cmdq-helper.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/soc/mediatek/mtk-cmdq-helper.c b/drivers/soc/mediatek/mtk-cmdq-helper.c
+> index b0cd071c4719..2130ff3aac9e 100644
+> --- a/drivers/soc/mediatek/mtk-cmdq-helper.c
+> +++ b/drivers/soc/mediatek/mtk-cmdq-helper.c
+> @@ -55,7 +55,7 @@ int cmdq_dev_get_client_reg(struct device *dev,
+>   					       "mediatek,gce-client-reg",
+>   					       3, idx, &spec);
+>   	if (err < 0) {
+> -		dev_err(dev,
+> +		dev_dbg(dev,
+>   			"error %d can't parse gce-client-reg property (%d)",
+>   			err, idx);
+>   
+> 
+> ---
+> base-commit: 41913bcddc83b131649ee8ff0d9ff29e01731398
+> change-id: 20240226-gce-client-reg-log-dbg-5ae9637a08ed
+> 
+> Best regards,
+
 
 
