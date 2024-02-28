@@ -1,121 +1,82 @@
-Return-Path: <linux-kernel+bounces-84271-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84270-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B65F586A467
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 01:25:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 918AA86A466
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 01:25:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A63E1F2C2B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 00:25:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2D932896C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 00:25:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5273E4A1A;
-	Wed, 28 Feb 2024 00:25:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7E4A3C30;
+	Wed, 28 Feb 2024 00:25:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="U6ft25rg"
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76AC01865
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 00:25:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="TAEJ8tYb"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E1011370;
+	Wed, 28 Feb 2024 00:25:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709079935; cv=none; b=KpG2uZvotnDMXsD/tQ73q8gnzeaxzETSKE4/xeBqaMjsuczyzzotyfGDk24BIgvRFzUqWMgKCkHygctGx6oN0WHd02/Lvrrfyzych9PJvgs5fTzCDtUmBmuIsRbdipyKoMQ6vZXM8dZpu6DHyLyOf3I0jZ/Ip1Vqjk/1w4/3s9w=
+	t=1709079935; cv=none; b=Z4Dyebqn5LJqgSrc4aeU11Cp9Wjmf+pB9F2y+bUDu3iw1vMOQzwPzd8pe+i48uvZBXL357j5TG9suHiN6l5FRo5j+S/w5LKqLn63QrtCQABDxcJs2vYJIvl7qqFXPyw9svQ5rUHlwnWDn1pQzKGBGTJVYosMLWxtk/wsgRTESa0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1709079935; c=relaxed/simple;
-	bh=XP6dv8iCnebWOSoWMLEi6vykQWmtPg9ncav7VG34hnk=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=btO/tWcj3MLUZdjWzCo9kX/ZORpOyRnONLkCCW02jhDH0rvrHd9jquNryCcnd6jgDOUdJ7+mCUg+JhDJB43l62P89PZ8J3dlOe1VEH9n4736xvlPqWtl4o3dvmXWdwxxts9z1/FaIN3k1OWS7HP8CfvGr2Vg2B5WB4e7V5sDIPc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=U6ft25rg; arc=none smtp.client-ip=202.36.163.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id C6A552C02AB;
-	Wed, 28 Feb 2024 13:25:30 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-	s=mail181024; t=1709079930;
-	bh=XP6dv8iCnebWOSoWMLEi6vykQWmtPg9ncav7VG34hnk=;
-	h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-	b=U6ft25rgT7e3qRBoHG5yMaCfzpTiX3wfDLceMyjSg0rddwnN7r7s8c73VA+iwNw86
-	 sHi+aS7J7FuTcmUP79+G7leQzFsnyMa1BMX/r8Ac8566gfx1S4mdj+flld1ptMiYFg
-	 QWcWXXVn1qZbJUIRjeY9F6xm4G8s0wbZbsnnUMjUj/MHYxFuBASSADNQuDEv7p2cs+
-	 ASN+q77J6TIc/RT9XmRLXww042YU75wEKTpgh1Bz6MmI6ph9nXeijn8W9rgnDzR7h7
-	 y6hPKo0gd2xUH5MtFsSYCbGWC8gvfwOErIzqKCyKbID/RDZsTDJxcfCCR5PyJOqxrt
-	 wvS5QYRFKffVg==
-Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-	id <B65de7d7a0001>; Wed, 28 Feb 2024 13:25:30 +1300
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
- svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8:f753:6de:11c0:a008) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.1118.40; Wed, 28 Feb 2024 13:25:30 +1300
-Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) by
- svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
- (TLS) id 15.0.1497.48; Wed, 28 Feb 2024 13:25:30 +1300
-Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
- svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
- 15.02.1118.040; Wed, 28 Feb 2024 13:25:30 +1300
-From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-CC: "andy@kernel.org" <andy@kernel.org>, "geert@linux-m68k.org"
-	<geert@linux-m68k.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"conor+dt@kernel.org" <conor+dt@kernel.org>, "andrew@lunn.ch"
-	<andrew@lunn.ch>, "gregory.clement@bootlin.com"
-	<gregory.clement@bootlin.com>, "sebastian.hesselbarth@gmail.com"
-	<sebastian.hesselbarth@gmail.com>, "ojeda@kernel.org" <ojeda@kernel.org>,
-	"tzimmermann@suse.de" <tzimmermann@suse.de>, "javierm@redhat.com"
-	<javierm@redhat.com>, "robin@protonic.nl" <robin@protonic.nl>,
-	"lee@kernel.org" <lee@kernel.org>, "pavel@ucw.cz" <pavel@ucw.cz>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v2 0/4] auxdisplay: 7 segment LED display
-Thread-Topic: [PATCH v2 0/4] auxdisplay: 7 segment LED display
-Thread-Index: AQHaacMcK15M5ExM7Eu6ISEctSZ1pbEeBi2AgAAFooA=
-Date: Wed, 28 Feb 2024 00:25:30 +0000
-Message-ID: <2ad735ed-963c-4e75-b83e-687ea2c0aef5@alliedtelesis.co.nz>
-References: <20240227212244.262710-1-chris.packham@alliedtelesis.co.nz>
- <CAHp75Vc7yFX6TLhc0ADx+76_+2Li=WgQiSqpcwkFSpP3pPdC5Q@mail.gmail.com>
-In-Reply-To: <CAHp75Vc7yFX6TLhc0ADx+76_+2Li=WgQiSqpcwkFSpP3pPdC5Q@mail.gmail.com>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <C9A95B9DD2D338448DC9573927C807FE@atlnz.lc>
-Content-Transfer-Encoding: base64
+	bh=9PkFuAQnvHLgybqYTSuG4miDXpSkxYeaVLIU3V8OPXc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VXDQiyA8rvJD4oRVZcRxA61fi9yXQmdM7KluiZn5km3AB0jaJHOK9yH2Agr6j06S4p7cc3TDfOC8B43ftU0e9xJi8t21mDmsKG5uxt76on8AeYaKtp3Kk+WQQ/onITtdftoIvkkm9FvkRaHjO6ZS2RVchmXVsg5QBFHtyupqmxk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=TAEJ8tYb; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1131)
+	id C07CF20B74C0; Tue, 27 Feb 2024 16:25:32 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C07CF20B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1709079932;
+	bh=/XtuIasPbJ+pa8jkpkpOnHa9UC5OeliChPUOffyAgm4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=TAEJ8tYb2k+C87Sr6K8P1CHW6PPqCqH0+HOsis+93dQB0CtTb3oFzSp4nrQsFbnkM
+	 4qByworn2L2nOAWrWxJ6shC8ZxbdGvSry3ftKycBquHWNoiQaciNDMH7qjaizngDGC
+	 fQaQjUo2dqIBJjNipGE/J4a+VwdK6fCSSxBc1MhI=
+Date: Tue, 27 Feb 2024 16:25:32 -0800
+From: Kelsey Steele <kelseysteele@linux.microsoft.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev,
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+	jonathanh@nvidia.com, f.fainelli@gmail.com,
+	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+	conor@kernel.org, allen.lkml@gmail.com
+Subject: Re: [PATCH 6.1 000/195] 6.1.80-rc1 review
+Message-ID: <20240228002532.GA24086@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <20240227131610.391465389@linuxfoundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.4 cv=BKkQr0QG c=1 sm=1 tr=0 ts=65de7d7a a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=75chYTbOgJ0A:10 a=IkcTkHD0fZMA:10 a=k7vzHIieQBIA:10 a=hz1frt1X8FHgNVay5PQA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-X-SEG-SpamProfiler-Score: 0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240227131610.391465389@linuxfoundation.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-DQpPbiAyOC8wMi8yNCAxMzowNSwgQW5keSBTaGV2Y2hlbmtvIHdyb3RlOg0KPiBPbiBUdWUsIEZl
-YiAyNywgMjAyNCBhdCAxMToyMuKAr1BNIENocmlzIFBhY2toYW0NCj4gPGNocmlzLnBhY2toYW1A
-YWxsaWVkdGVsZXNpcy5jby5uej4gd3JvdGU6DQo+PiBUaGlzIHNlcmllcyBhZGRzIGEgZHJpdmVy
-IGZvciBhIDcgc2VnbWVudCBMRUQgZGlzcGxheS4NCj4+DQo+PiBBdCB0aGlzIHBvaW50IEkndmUg
-ZGVjaWRlZCBub3QgdG8gcHVyc3VlIHN1cHBvcnRpbmcgPjEgY2hhcmFjdGVyLiBJIGhhZA0KPj4g
-YSBsb29rIGF0IHdoYXQgd291bGQgYmUgcmVxdWlyZWQgdG8gYWRkIGEgZGV2bV9md25vZGVfZ3Bp
-b2RfZ2V0X2FycmF5KCkNCj4+IGFuZCBnb3QgYm9nZ2VkIGRvd24gaW4gT0YgYW5kIEFDUEkgY29k
-ZSBmb3IgY291bnRpbmcgR1BJT3MuDQo+IE91dCBvZiBjdXJpb3NpdHksIHdoeSBkaWQgaXQgaGFw
-cGVuPyBncGlvZF9jb3VudCgpIHdvcmtzIGluIGFuIGFnbm9zdGljIHdheS4NCj4NCkF0IGZpcnN0
-IEkgdGhvdWdoIEkgY291bGQgY3JlYXRlIGEgZndub2RlX2dwaW9kX2NvdW50KCkgb3V0IG9mIHRo
-ZSBib2R5IA0Kb2YgZ3Bpb2RfY291bnQoKS4gQnV0IGJvdGggb2ZfZ3Bpb19nZXRfY291bnQoKSBh
-bmQgYWNwaV9ncGlvX2NvdW50KCkgDQp0YWtlIHRoZSBkZXYgbm90IHRoZSBmd25vZGUuIEl0IGxv
-b2tzIGxpa2UgZ3Bpb2RfY291bnQoKSAoYW5kIA0Kb2ZfZ3Bpb19zcGlfY3NfZ2V0X2NvdW50KCkp
-IGNvdWxkIHByb2JhYmx5IGJlIHJlLXdyaXR0ZW4gKG9yIGFic3RyYWN0ZWQpIA0KdG8gdGFrZSB0
-aGUgZGV2aWNlX25vZGUgaW5zdGVhZCBvZiB0aGUgZGV2aWNlLiBJIHN0YXJ0ZWQgbG9va2luZyBh
-dCANCmFjcGlfZ3Bpb19jb3VudCgpIGJ1dCBJIGNvdWxkbid0IHF1aXRlIHNlZSBob3cgSSBjb3Vs
-ZCBhZGFwdCB0aGlzLg0KDQpJJ20gZGVmaW5pdGVseSBub3Qgc2F5aW5nIGl0IGNhbid0IGJlIGRv
-bmUuIEp1c3QgdGhhdCB5b3UgcHJvYmFibHkgZG9uJ3QgDQp3YW50IGFuIG9jY2FzaW9uYWwgY29u
-dHJpYnV0b3IgbGlrZSBtZSBtZXNzaW5nIHdpdGggc29tZSBvZiB0aGVzZSBjb3JlIA0KZGV2aWNl
-IGFic3RyYWN0aW9ucy4NCg==
+On Tue, Feb 27, 2024 at 02:24:21PM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.80 release.
+> There are 195 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 29 Feb 2024 13:15:36 +0000.
+> Anything received after that time might be too late.
+
+No regressions found on WSL (x86 and arm64).
+
+Built, booted, and reviewed dmesg.
+
+Thank you. :)
+
+Tested-by: Kelsey Steele <kelseysteele@linux.microsoft.com>
+ 
 
