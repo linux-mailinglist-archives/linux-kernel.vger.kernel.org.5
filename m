@@ -1,61 +1,61 @@
-Return-Path: <linux-kernel+bounces-85316-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85317-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 766FA86B41B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:04:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1E7886B41D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:04:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30F4C28321B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:04:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EEDE31C2287C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:04:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3130A15DBCE;
-	Wed, 28 Feb 2024 16:04:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E45915E5C1;
+	Wed, 28 Feb 2024 16:04:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YEnWwjqM"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fxX+Zwyf"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A918815D5CE;
-	Wed, 28 Feb 2024 16:04:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B121615DBC3;
+	Wed, 28 Feb 2024 16:04:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709136255; cv=none; b=hFXTS0RPOd2mZrI40OblKjyyNwNoXSNuGKlLOzMtroKO9tMI1Imtf8djPRBLjUTiBL8JOLLZuvi+0isloByCCMaZMSTgPVLhgCgTgru01ovQPpDnGZl756pLiX7mtTstOHx9rhc+WrVMvY4OOI0RJf+LJEICeKuzYSAa79kLn8M=
+	t=1709136257; cv=none; b=orJqVnYGu8oGDNOpry6zM0SRrqAAQ338XfqUOy4Yx2csSxGjGVlMk/zSNIFaQ712RCScIOJwmwP7TJHZxUc47CwKQZvQOQ9qhxRU8d36AZQVvAcWiVstRCRAo57Y1/WhYvcv3jfhHP/tqoyrljmVX5np+Zlju2Awf+nqVjcQ6jA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709136255; c=relaxed/simple;
-	bh=OUeJ0q/Q4TSugz58SFBLkzeTCYbClmf+g/buseTVPBw=;
+	s=arc-20240116; t=1709136257; c=relaxed/simple;
+	bh=R61ecFgc4lXqLojo0yvyMnIKMCsRpjfsVyCvjTYWt2U=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SzC0cZmO6LuZ9YApUlzV6cz154qwjHx31RPh4f+zlLm5uhCWLkdVZbFzxYfJL4s8nlIOXNMaCM1FNvvmB4hjp7eHKq43FydnXTV0sewhxPUyAPucvr77YDZXNGgQ2J4pFFtWFjIPBlE4rHlSj7DmR3ZE53t28JaQ79VvdZhF59k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YEnWwjqM; arc=none smtp.client-ip=198.175.65.17
+	 MIME-Version; b=SI1ilRpRKXeIxzibZGmMY9K8PGvCC0fuptl8TMfdlbulUp8acaRDHFlEUgBZzYZ8BkAYPjhDZOvPEJ0VFIq2+ySbGyzzRPpAjGqt3RYZkq9yOgmawdOZ30qPtw9gV1qzr73Ae0M7BRIoS9NXye3YwAj4Lm1GTiH2elNBTZ/Gr2c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fxX+Zwyf; arc=none smtp.client-ip=198.175.65.17
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709136254; x=1740672254;
+  t=1709136256; x=1740672256;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=OUeJ0q/Q4TSugz58SFBLkzeTCYbClmf+g/buseTVPBw=;
-  b=YEnWwjqMLxPo702o4EjLFENJMkCU1T2MkfjU0XXtM4bJU2yIKAF4Bzr9
-   OUxwAQTBH6Z3bDbx7MC5661Zdf/hK363VLFhIMN3oxrRFXnboKMyfuMY4
-   caE7MIEz4WOqp9bDBTf/o704VybhYlPHvV3tvEcZmDnGYPNWKJrIbaOve
-   vjcJmd4MmjZ9maqd0602Gv3Ycxqfhr9Bfomfgyl2+UF/m+tQ5XwC6ZX6B
-   zkDobeLm272P82f9EMKh6kqLgriZFJAt6SNF7WVO+kR/z8qZq8TltqHwh
-   L+5eDdyBWKFrctcPOQDm+eC6Q6S/mlkxpIcXBzRCmw+pr3koY+cizO5ta
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="3706577"
+  bh=R61ecFgc4lXqLojo0yvyMnIKMCsRpjfsVyCvjTYWt2U=;
+  b=fxX+Zwyfc7JBscIKN4+Uy5jivXITpWq/e9bdT2lzxgNPEHfOsR3JPEf5
+   Qzibv3zVfz61XygTqr7wVCjOB1EeuhbJ/NAX/P1qJEiSKNg1tkFhVXFUm
+   SCJCB4cDLhD76AfhayMlcnf93Nwauz5+gUoxUEECcLwGhuI5fyxw7RHyj
+   XZrsnVIECA/6zOiJCIf4T/QAY7l2DDHiK4SkMofdJIHB1GpKo6bI8H6je
+   txIqVNeGS00TX0KbTCLGKQdR3XV5MCHYwusTNbTl1O3zH/PUPYf8l4gie
+   ueMSx9ao2SgiKPeSY7LdAmq1ZBCgL6bjAMHT+Shgf53vXtFroTj2zySjG
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="3706596"
 X-IronPort-AV: E=Sophos;i="6.06,190,1705392000"; 
-   d="scan'208";a="3706577"
+   d="scan'208";a="3706596"
 Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 08:04:13 -0800
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 08:04:15 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.06,190,1705392000"; 
-   d="scan'208";a="7527702"
+   d="scan'208";a="7527713"
 Received: from irvmail002.ir.intel.com ([10.43.11.120])
-  by orviesa009.jf.intel.com with ESMTP; 28 Feb 2024 08:04:10 -0800
+  by orviesa009.jf.intel.com with ESMTP; 28 Feb 2024 08:04:11 -0800
 Received: from lincoln.igk.intel.com (lincoln.igk.intel.com [10.102.21.235])
-	by irvmail002.ir.intel.com (Postfix) with ESMTP id DA1AD36825;
-	Wed, 28 Feb 2024 16:04:04 +0000 (GMT)
+	by irvmail002.ir.intel.com (Postfix) with ESMTP id E397D36826;
+	Wed, 28 Feb 2024 16:04:08 +0000 (GMT)
 From: Larysa Zaremba <larysa.zaremba@intel.com>
 To: intel-wired-lan@lists.osuosl.org
 Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
@@ -75,9 +75,9 @@ Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
 	Paolo Abeni <pabeni@redhat.com>,
 	Pawel Chmielewski <pawel.chmielewski@intel.com>,
 	Jesse Brandeburg <jesse.brandeburg@intel.com>
-Subject: [PATCH iwl-net 1/5] ice: Add function to get VF from device struct
-Date: Wed, 28 Feb 2024 16:59:45 +0100
-Message-ID: <20240228155957.408036-2-larysa.zaremba@intel.com>
+Subject: [PATCH iwl-net 2/5] ice: Fix check for existing switch rule
+Date: Wed, 28 Feb 2024 16:59:46 +0100
+Message-ID: <20240228155957.408036-3-larysa.zaremba@intel.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240228155957.408036-1-larysa.zaremba@intel.com>
 References: <20240228155957.408036-1-larysa.zaremba@intel.com>
@@ -89,84 +89,47 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Mateusz Polchlopek <mateusz.polchlopek@intel.com>
+From: Mateusz Pacuszka <mateuszx.pacuszka@intel.com>
 
-Introduce a helper ice_get_vf_by_dev() to look up VF for a given struct
-device.
+In case the rule already exists and another VSI wants to subscribe to it
+new VSI list is being created and both VSIs are moved to it.
+Currently, the check for already existing VSI with the same rule is done
+based on fdw_id.hw_vsi_id, which applies only to LOOKUP_RX flag.
+Change it to vsi_handle. This is software VSI ID, but it can be applied
+here, because vsi_map itself is also based on it.
 
-Signed-off-by: Mateusz Polchlopek <mateusz.polchlopek@intel.com>
+Additionally change return status in case the VSI already exists in the
+VSI map to "Already exists". Such case should be handled by the caller.
+
+Signed-off-by: Mateusz Pacuszka <mateuszx.pacuszka@intel.com>
 Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
 Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
 ---
- drivers/net/ethernet/intel/ice/ice_vf_lib.c | 30 +++++++++++++++++++++
- drivers/net/ethernet/intel/ice/ice_vf_lib.h |  6 +++++
- 2 files changed, 36 insertions(+)
+ drivers/net/ethernet/intel/ice/ice_switch.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_vf_lib.c b/drivers/net/ethernet/intel/ice/ice_vf_lib.c
-index 2ffdae9a82df..21d22e3ad0ba 100644
---- a/drivers/net/ethernet/intel/ice/ice_vf_lib.c
-+++ b/drivers/net/ethernet/intel/ice/ice_vf_lib.c
-@@ -45,6 +45,36 @@ struct ice_vf *ice_get_vf_by_id(struct ice_pf *pf, u16 vf_id)
- 	return NULL;
- }
+diff --git a/drivers/net/ethernet/intel/ice/ice_switch.c b/drivers/net/ethernet/intel/ice/ice_switch.c
+index f84bab80ca42..bf2ab2b6ef68 100644
+--- a/drivers/net/ethernet/intel/ice/ice_switch.c
++++ b/drivers/net/ethernet/intel/ice/ice_switch.c
+@@ -3004,7 +3004,7 @@ ice_add_update_vsi_list(struct ice_hw *hw,
+ 		u16 vsi_handle_arr[2];
  
-+/**
-+ * ice_get_vf_by_dev - Get pointer to VF by device
-+ * @dev: the device structure
-+ *
-+ * Locate and return a pointer to the VF structure associated with a given
-+ * device.
-+ * Return: valid VF structure associated with the device, NULL if none exists
-+ */
-+struct ice_vf *ice_get_vf_by_dev(struct device *dev)
-+{
-+	struct pci_dev *vfdev;
-+	struct pci_dev *pdev;
-+	struct ice_pf *pf;
-+	struct ice_vf *vf;
-+	unsigned int bkt;
-+
-+	vfdev = container_of(dev, struct pci_dev, dev);
-+	pdev = vfdev->physfn;
-+	pf = pci_get_drvdata(pdev);
-+
-+	rcu_read_lock();
-+	ice_for_each_vf_rcu(pf, bkt, vf) {
-+		if (vf->vfdev == vfdev)
-+			break;
-+	}
-+	rcu_read_unlock();
-+
-+	return vf;
-+}
-+
- /**
-  * ice_release_vf - Release VF associated with a refcount
-  * @ref: the kref decremented to zero
-diff --git a/drivers/net/ethernet/intel/ice/ice_vf_lib.h b/drivers/net/ethernet/intel/ice/ice_vf_lib.h
-index 0cc9034065c5..48f4cdbd6d27 100644
---- a/drivers/net/ethernet/intel/ice/ice_vf_lib.h
-+++ b/drivers/net/ethernet/intel/ice/ice_vf_lib.h
-@@ -213,6 +213,7 @@ static inline u16 ice_vf_get_port_vlan_tpid(struct ice_vf *vf)
+ 		/* A rule already exists with the new VSI being added */
+-		if (cur_fltr->fwd_id.hw_vsi_id == new_fltr->fwd_id.hw_vsi_id)
++		if (cur_fltr->vsi_handle == new_fltr->vsi_handle)
+ 			return -EEXIST;
  
- #ifdef CONFIG_PCI_IOV
- struct ice_vf *ice_get_vf_by_id(struct ice_pf *pf, u16 vf_id);
-+struct ice_vf *ice_get_vf_by_dev(struct device *dev);
- void ice_put_vf(struct ice_vf *vf);
- bool ice_has_vfs(struct ice_pf *pf);
- u16 ice_get_num_vfs(struct ice_pf *pf);
-@@ -237,6 +238,11 @@ static inline struct ice_vf *ice_get_vf_by_id(struct ice_pf *pf, u16 vf_id)
- 	return NULL;
- }
+ 		vsi_handle_arr[0] = cur_fltr->vsi_handle;
+@@ -3052,7 +3052,7 @@ ice_add_update_vsi_list(struct ice_hw *hw,
  
-+static inline struct ice_vf *ice_get_vf_by_dev(struct device *dev)
-+{
-+	return NULL;
-+}
-+
- static inline void ice_put_vf(struct ice_vf *vf)
- {
- }
+ 		/* A rule already exists with the new VSI being added */
+ 		if (test_bit(vsi_handle, m_entry->vsi_list_info->vsi_map))
+-			return 0;
++			return -EEXIST;
+ 
+ 		/* Update the previously created VSI list set with
+ 		 * the new VSI ID passed in
 -- 
 2.43.0
 
