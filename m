@@ -1,39 +1,73 @@
-Return-Path: <linux-kernel+bounces-84661-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84653-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B309086A9B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:19:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E112A86A99A
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:11:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 521A428D5B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:19:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C791A1C25C08
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:11:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C75C92C84F;
-	Wed, 28 Feb 2024 08:19:40 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1E622C6A7;
-	Wed, 28 Feb 2024 08:19:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFFAA28DA4;
+	Wed, 28 Feb 2024 08:11:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="B0ldcjGp"
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C89625639
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 08:11:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709108379; cv=none; b=X+HSjE+BZTqD9uDTy+37bYX4t9dnzvS3q0/LDxgIZLc0Kgg/IvhEprkBHseyUNZE2K/bHFBBrHpshmLahvDQgf94e9EvY2iu3ocYjGseqIDsnUvLZxuHL5sQFNrU11pN1VSf7bKr5V+kTcbEwp9kRnlXNuwO7u31rFJLCGgVvQE=
+	t=1709107904; cv=none; b=Jdu2NVWFfM8XrC1eIUVSztWQpnga/nBRcg3E13PXvKIxozAtnLWPNgyqchrt7VUzmzasIOjA/6ER46yvA6KFEsKR5tk/9ZCIELKPiYdvLb/rEE9ESslZyPyqIXubE8vJnotqU8A3pSEg0tVMxmWhMVGcK5M+6RPY1epB/YN/lN8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709108379; c=relaxed/simple;
-	bh=OXRL5N4ET94G+Iz6raPcJPlyE3vr0obWUf3qkzf3V00=;
+	s=arc-20240116; t=1709107904; c=relaxed/simple;
+	bh=QS7YNNkQDOu5grDQWxuUzToe2z8+BYawhV09qx8T7zA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ey6UPoqirCmIbHMrH75yPkDRw4fkTxR8CXEMacCflL/k21xl2HpjxBwASUhLOeTmmz7XjpcFfsSop24B8XGPZcElCJvAI+CFTXpG4nLzXc4Iazrd1s3mq8v1OqkTfaZNfyeb0JhAosZRybC7SKXYnjNU78Vq9Q1LfPER8Kj5nEg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3F343C15;
-	Wed, 28 Feb 2024 00:11:52 -0800 (PST)
-Received: from [10.162.42.6] (a077893.blr.arm.com [10.162.42.6])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 81F083F6C4;
-	Wed, 28 Feb 2024 00:11:08 -0800 (PST)
-Message-ID: <781dd6a8-cf18-48ab-93f3-5256d161b359@arm.com>
-Date: Wed, 28 Feb 2024 13:41:05 +0530
+	 In-Reply-To:Content-Type; b=CphtXdMhHJgcplbL8ERZdWMA+Gmq/5kIhl/ajgwDZGAaOFWfSahzP7SyRjXQQ1SGInB58JjH81SYJysb5ymTvlpRurAnYt1ZwMgl8aK8ynCfWmRwUoFussnrgjttRWRFQZt44CLTd0bqxoXHczWU+KRTQKZ8oDndCkpQMeFEeSM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=B0ldcjGp; arc=none smtp.client-ip=209.85.208.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-5649c25369aso6513010a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 00:11:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709107900; x=1709712700; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GCpKFtWoNXjMkZqzAEtTMwYKmQm/ge/JJBiVBwRYrQM=;
+        b=B0ldcjGp0pkSnyen7BP3g3C6yvV2ictDmYvVQurarefG8DTsSETCBnDc+zPJ84MqST
+         v9S/FgLU3z0pgoHjSx997JXDw3nVHQkbYzLtZcT5kJVaQY40dLBBWWXaPKZWlOL+NMP8
+         Rite1SK91aO5kd2XcoODS4r9Ea132nDZ6CQM4WpFWulVAjxWgkym96l/I4IwgWlglqN+
+         B8Oe8GyJFM4ahwRgvh98+5zGS8VGdzcaamgaoBzfaUoVGz5GbGPpoHfHo2ZgpcR+seK0
+         f2b3uOrMPgNwQDjZfvnzgmkECo7RbeL8+l4XUdJG6gFT7x08oaiOdyu30VhHtFlOW1PP
+         BSdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709107900; x=1709712700;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GCpKFtWoNXjMkZqzAEtTMwYKmQm/ge/JJBiVBwRYrQM=;
+        b=d3rHSTHk1N49kTunRjfhwiGHYRFCUUahigF7enGqOs9ITYsVqwJG1xEL8ZoH8lf9LB
+         ceBF6xA6isaCN1/9v9pNbl2BEavkV9l8sm1reVyRRfrN51GPtxLBih9u2L4Y6MhAg59W
+         Uv9Ok3qJEykRWSb+ySqbCoRSsopBZpIG6qVWIMDCoRds5lCOUVGVdZ87oPJP24mVEyNh
+         lKzMQiu5YonVbWpe+GU1VN59vF0kjeMtLog2qkb7k07AH/IsP6GXxWZMGaAwzStsvLDc
+         DlVrATHOi5DCRu0317Gb8zlo6Cb32uwRiPhetAScQJ537SYtNaxdcPY88IZjxggoe0ll
+         s4Rg==
+X-Forwarded-Encrypted: i=1; AJvYcCXChs6Qky2enpi72C0ccA0M/dvXcjVUm4hsoR84Oaqmkp9rGiwQMxApX9fokMNOutK6ECQvxYHy1SGBsnKpd7s0gInxtSTMc1uTWVpL
+X-Gm-Message-State: AOJu0YwTJB+ZP7T7LVP5giwpGAQFdgDd9s42XyqrBM0uKhludcJIVTnS
+	ARqCE/Go69Umg+4lCUYrEWeZ2gpXNVYVz99iypmKyz+HprUSlOW2xoUIF1NwFSc=
+X-Google-Smtp-Source: AGHT+IGn+FQkLl7iPcZ45FV+Js3bubPQ2UkZD8ox1ZrKtQTlry8KNrDBdF5SWkLt9L34g/qlBOm0UA==
+X-Received: by 2002:a17:906:5594:b0:a43:f949:8e8d with SMTP id y20-20020a170906559400b00a43f9498e8dmr671209ejp.67.1709107899603;
+        Wed, 28 Feb 2024 00:11:39 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id un7-20020a170907cb8700b00a3f45b80559sm1575965ejc.139.2024.02.28.00.11.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Feb 2024 00:11:39 -0800 (PST)
+Message-ID: <c7dd4333-bece-4d26-a7a4-6751b6ba4431@linaro.org>
+Date: Wed, 28 Feb 2024 09:11:37 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,551 +75,778 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V16 4/8] drivers: perf: arm_pmuv3: Enable branch stack
- sampling via FEAT_BRBE
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- will@kernel.org, catalin.marinas@arm.com, Mark Brown <broonie@kernel.org>,
- James Clark <james.clark@arm.com>, Rob Herring <robh@kernel.org>,
- Marc Zyngier <maz@kernel.org>, Suzuki Poulose <suzuki.poulose@arm.com>,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>, linux-perf-users@vger.kernel.org
-References: <20240125094119.2542332-1-anshuman.khandual@arm.com>
- <20240125094119.2542332-5-anshuman.khandual@arm.com>
- <ZdY_oEYPGSj7nwvP@FVFF77S0Q05N>
+Subject: Re: [PATCH 2/2] dma: Add Ingenic PDMA driver support
 Content-Language: en-US
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <ZdY_oEYPGSj7nwvP@FVFF77S0Q05N>
+To: "bin.yao" <bin.yao@ingenic.com>, vkoul@kernel.org
+Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, broonie@kernel.org, quic_bjorande@quicinc.com,
+ rick <rick.tyliu@ingenic.com>
+References: <20240228012420.4223-1-bin.yao@ingenic.com>
+ <20240228012420.4223-2-bin.yao@ingenic.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240228012420.4223-2-bin.yao@ingenic.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 2/21/24 23:53, Mark Rutland wrote:
-> On Thu, Jan 25, 2024 at 03:11:15PM +0530, Anshuman Khandual wrote:
->> This extends recently added branch stack sampling framework in ARMV8 PMU to
->> enable such events via new architecture feature called Branch Record Buffer
->> Extension aka BRBE. This implements all the armv8pmu_branch_xxx() callbacks
->> as expected at ARMV8 PMU level required to drive perf branch stack sampling
->> events. This adds a new config option CONFIG_ARM64_BRBE to encapsulate this
->> BRBE based implementation, available only on ARM64 platforms.
->>
->> BRBE hardware captures a branch record via three distinct system registers
->> representing branch source address, branch target address, and other branch
->> information. A BRBE buffer implementation is organized as multiple banks of
->> 32 branch records each, which is a collection of BRBSRC_EL1, BRBTGT_EL1 and
->> BRBINF_EL1 registers. Though total BRBE record entries i.e BRBE_MAX_ENTRIES
->> cannot exceed MAX_BRANCH_RECORDS as defined for ARM PMU.
->>
->> BRBE hardware attributes get captured in a new reg_brbidr element in struct
->> arm_pmu during armv8pmu_branch_probe() which is called from broader probing
->> function __armv8pmu_probe_pmu(). Attributes such as number of branch record
->> entries implemented in the hardware can be derived from armpmu->reg_brbidr.
->>
->> BRBE gets enabled via armv8pmu_branch_enable() where it also derives branch
->> filter, and additional requirements from event's 'attr.branch_sample_type'
->> and configures them via BRBFCR_EL1 and BRBCR_EL1 registers.
->>
->> PMU event overflow triggers IRQ, where current branch records get captured,
->> stitched along with older records available in 'task_ctx', before getting
->> processed for core perf ring buffer. Task context switch outs incrementally
->> save current branch records in event's 'pmu_ctx->task_ctx_data' to optimize
->> workload's branch record samples.
->>
->> In case multiple events with different branch sample type requests converge
->> on the same PMU, BRBE gets enabled for branch filters for the last event's
->> branch sample type. No branch records will be captured and processed for an
->> event if BRBE hardware config does not match its branch sample type, while
->> handling the PMU IRQ.
->>
->> Cc: Catalin Marinas <catalin.marinas@arm.com>
->> Cc: Will Deacon <will@kernel.org>
->> Cc: Mark Rutland <mark.rutland@arm.com>
->> Cc: linux-arm-kernel@lists.infradead.org
->> Cc: linux-kernel@vger.kernel.org
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> ---
->> Changes in V16:
->>
->> - Added new PERF_SAMPLE_BRANCH_COUNTERS into BRBE_EXCLUDE_BRANCH_FILTERS
->> - Fixed typo (s/informations/information) in Documentation/arch/arm64/brbe.rst
->> - Added SPDX-License-Identifier in Documentation/arch/arm64/brbe.rst
->>
->>  Documentation/arch/arm64/booting.rst |   6 +
->>  Documentation/arch/arm64/brbe.rst    | 158 +++++
->>  arch/arm64/include/asm/el2_setup.h   | 113 ++-
->>  drivers/perf/Kconfig                 |  11 +
->>  drivers/perf/Makefile                |   1 +
->>  drivers/perf/arm_brbe.c              | 986 +++++++++++++++++++++++++++
->>  drivers/perf/arm_pmuv3_branch.h      |  13 +
->>  include/linux/perf/arm_pmu.h         |   5 +
->>  8 files changed, 1290 insertions(+), 3 deletions(-)
->>  create mode 100644 Documentation/arch/arm64/brbe.rst
->>  create mode 100644 drivers/perf/arm_brbe.c
->>
->> diff --git a/Documentation/arch/arm64/booting.rst b/Documentation/arch/arm64/booting.rst
->> index b57776a68f15..2276df285e83 100644
->> --- a/Documentation/arch/arm64/booting.rst
->> +++ b/Documentation/arch/arm64/booting.rst
->> @@ -349,6 +349,12 @@ Before jumping into the kernel, the following conditions must be met:
->>  
->>      - HWFGWTR_EL2.nSMPRI_EL1 (bit 54) must be initialised to 0b01.
->>  
->> +  For CPUs with feature Branch Record Buffer Extension (FEAT_BRBE):
->> +
->> +  - If the kernel is entered at EL1 and EL2 is present:
->> +
->> +    - BRBCR_EL2.CC (bit 3) must be initialised to 0b1.
->> +
+On 28/02/2024 02:24, bin.yao wrote:
+> From: byao <bin.yao@ingenic.com>
 > 
-> We don't care about any of the other bits? e.g. MPRED?
-
-After checking with the HW folks, seems like we would need to do this for
-BRBCR_EL2.MPRED field as well. Hence, will update the code as required.
-
+> Add Ingenic PDMA controller support.
+> This module can be found on ingenic victory soc.
 > 
-> There are no EL3 controls or fine-grain traps we care about?
+> Signed-off-by: byao <bin.yao@ingenic.com>
+> Signed-off-by: rick <rick.tyliu@ingenic.com>
 
-Sure, will update booting.rst as follows incorporating both MDCR_EL3
-and fine grained trap in EL2 requirements.
+Full names
 
-  For CPUs with feature Branch Record Buffer Extension (FEAT_BRBE):
 
-  - If the kernel is entered at EL1 and EL2 is present:
+Please use subject prefixes matching the subsystem. You can get them for
+example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
+your patch is touching.
 
-    - BRBCR_EL2.CC (bit 3) must be initialised to 0b1.
-    - BRBCR_EL2.MPRED (bit 4) must be initialised to 0b1.
-
-  - If EL1 is present and the kernel is entered at EL2:
-
-    - HDFGRTR_EL2.nBRBDATA (bit 61) must be initialised to 0b1.
-    - HDFGWTR_EL2.nBRBDATA (bit 61) must be initialised to 0b1.
-
-    - HDFGRTR_EL2.nBRBCTL (bit 60) must be initialised to 0b1.
-    - HDFGWTR_EL2.nBRBCTL (bit 60) must be initialised to 0b1.
-
-    - HDFGRTR_EL2.nBRBIDR (bit 59) must be initialised to 0b1.
-
-    - HFGITR_EL2.nBRBIALL (bit 56) must be initialised to 0b1.
-    - HFGITR_EL2.nBRBINJ (bit 55) must be initialised to 0b1.
-
-  - If EL3 is present:
-
-    - MDCR_EL3.SBRBE (bits [33:32]) must be initialised to 0b11.
-
+> ---
+>  drivers/dma/Kconfig               |   14 +
+>  drivers/dma/Makefile              |    1 +
+>  drivers/dma/ingenic/Makefile      |    1 +
+>  drivers/dma/ingenic/ingenic_dma.c | 1053 +++++++++++++++++++++++++++++
+>  drivers/dma/ingenic/ingenic_dma.h |  250 +++++++
+>  5 files changed, 1319 insertions(+)
+>  create mode 100644 drivers/dma/ingenic/Makefile
+>  create mode 100644 drivers/dma/ingenic/ingenic_dma.c
+>  create mode 100644 drivers/dma/ingenic/ingenic_dma.h
 > 
->>    For CPUs with the Scalable Matrix Extension FA64 feature (FEAT_SME_FA64):
->>  
->>    - If EL3 is present:
->> diff --git a/Documentation/arch/arm64/brbe.rst b/Documentation/arch/arm64/brbe.rst
->> new file mode 100644
->> index 000000000000..c6380db3b03a
->> --- /dev/null
->> +++ b/Documentation/arch/arm64/brbe.rst
->> @@ -0,0 +1,158 @@
->> +.. SPDX-License-Identifier: GPL-2.0
->> +
->> +============================================
->> +Branch Record Buffer Extension aka FEAT_BRBE
->> +============================================
->> +
->> +Author: Anshuman Khandual <anshuman.khandual@arm.com>
->> +
->> +FEAT_BRBE is an optional architecture feature, which creates branch records
->> +containing information about change in control flow. The branch information
->> +contains source address, target address, and some relevant metadata related
->> +to that change in control flow. BRBE can be configured to filter out branch
->> +records based on their type and privilege level.
-> 
-> Do we actually need this documentation?
+> diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
+> index e928f2ca0f1e..3214c72aef31 100644
+> --- a/drivers/dma/Kconfig
+> +++ b/drivers/dma/Kconfig
+> @@ -179,6 +179,20 @@ config DMA_SUN6I
+>  	help
+>  	  Support for the DMA engine first found in Allwinner A31 SoCs.
+>  
+> +config DMA_JZ4780
+> +	tristate "Ingenic JZ SoC DMA support"
+> +	select DMA_ENGINE
+> +	select DMA_VIRTUAL_CHANNELS
+> +	help
+> +	  Support the DMA engine found on Ingenic Jz SoCs.
+> +
+> +config DMA_INGENIC_SOC
+> +	tristate "Ingenic SoC DMA support"
+> +	select DMA_ENGINE
+> +	select DMA_VIRTUAL_CHANNELS
+> +	help
+> +	  Support the DMA engine found on Ingenic T41 SoCs.
+> +
+>  config DW_AXI_DMAC
+>  	tristate "Synopsys DesignWare AXI DMA support"
+>  	depends on OF
+> diff --git a/drivers/dma/Makefile b/drivers/dma/Makefile
+> index dfd40d14e408..8a56175bbfbb 100644
+> --- a/drivers/dma/Makefile
+> +++ b/drivers/dma/Makefile
+> @@ -83,6 +83,7 @@ obj-$(CONFIG_XGENE_DMA) += xgene-dma.o
+>  obj-$(CONFIG_ST_FDMA) += st_fdma.o
+>  obj-$(CONFIG_FSL_DPAA2_QDMA) += fsl-dpaa2-qdma/
+>  obj-$(CONFIG_INTEL_LDMA) += lgm/
+> +obj-$(CONFIG_DMA_INGENIC_SOC) += ingenic/
+>  
+>  obj-y += mediatek/
+>  obj-y += qcom/
+> diff --git a/drivers/dma/ingenic/Makefile b/drivers/dma/ingenic/Makefile
+> new file mode 100644
+> index 000000000000..2028a6f0b0c8
+> --- /dev/null
+> +++ b/drivers/dma/ingenic/Makefile
+> @@ -0,0 +1 @@
+> +obj-y += ingenic_dma.o
+> diff --git a/drivers/dma/ingenic/ingenic_dma.c b/drivers/dma/ingenic/ingenic_dma.c
+> new file mode 100644
+> index 000000000000..066325e35a92
+> --- /dev/null
+> +++ b/drivers/dma/ingenic/ingenic_dma.c
+> @@ -0,0 +1,1053 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (C) 2016 Ingenic Semiconductor Co., Ltd.
+> + * Author: cli <chen.li@ingenic.com>
+> + *
+> + * Programmable DMA Controller Driver For Ingenic's SOC,
+> + * such as X1000, and so on. (kernel.4.4)
+> + *
+> + *  Author:	cli <chen.li@ingenic.com>
+> + *
+> + * This program is free software; you can redistribute it and/or modify it
+> + * under the terms of the GNU General Public License as published by the
+> + * Free Software Foundation;  either version 2 of the  License, or (at your
+> + * option) any later version.
+> + */
+> +
+> +#include <linux/init.h>
+> +#include <linux/slab.h>
+> +#include <linux/module.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/dmaengine.h>
+> +#include <linux/dma-mapping.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/clk.h>
+> +#include <linux/irq.h>
+> +#include <linux/device.h>
+> +#include <linux/of.h>
+> +#include <linux/of_dma.h>
+> +#include <linux/dmapool.h>
+> +#include "ingenic_dma.h"
+> +
+> +static void dump_dma(struct ingenic_dma_chan *master)
+> +{
+> +	pr_debug("CH_DSA = 0x%08x\n", readl(master->iomem + CH_DSA));
+> +	pr_debug("CH_DTA = 0x%08x\n", readl(master->iomem + CH_DTA));
+> +	pr_debug("CH_DTC = 0x%08x\n", readl(master->iomem + CH_DTC));
+> +	pr_debug("CH_DRT = 0x%08x\n", readl(master->iomem + CH_DRT));
+> +	pr_debug("CH_DCS = 0x%08x\n", readl(master->iomem + CH_DCS));
+> +	pr_debug("CH_DCM = 0x%08x\n", readl(master->iomem + CH_DCM));
+> +	pr_debug("CH_DDA = 0x%08x\n", readl(master->iomem + CH_DDA));
+> +	pr_debug("CH_DSD = 0x%08x\n", readl(master->iomem + CH_DSD));
+> +}
+> +
+> +static int dump_dma_hdesc(struct hdma_desc *desc, const char *d)
+> +{
+> +	int i;
+> +	unsigned long *p = (unsigned long *)desc;
+> +
+> +	pr_debug("%s(): %s\n", __func__, d);
+> +	for (i = 0; i < 8; i++)
+> +		pr_debug("\t%08lx\n", (unsigned long)*p++);
+> +
+> +	return 0;
+> +}
+> +
+> +void jzdma_dump(struct dma_chan *chan)
+> +{
+> +	struct ingenic_dma_chan *dmac = to_ingenic_dma_chan(chan);
+> +
+> +	dump_dma(dmac);
+> +}
+> +EXPORT_SYMBOL_GPL(jzdma_dump);
 
-IMHO we do need some documentation.
+Drop, not used.
 
-> 
-> The set of peopl writing kernel code can read the ARM ARM or the kernel code,
-> and there's not much here useful to users.
+> +
+> +/*tsz for 1,2,4,8,16,32,64 128bytes */
+> +static const char dcm_tsz[8] = { 1, 2, 0, 0, 3, 4, 5, 6};
 
-But not all documentation write ups in the kernel are only for the users, there
-are examples in many subsystems where documentations help explain implementation
-details including data structures and function flows, for upcoming developers to
-understand the code better and make further improvements.
+You have total mess here. Definitions of such data go before functions.
+Don't mix them.
 
-> 
-> I think it may make sense to document what userspace and/or VMs can and cannot
-> do (which is why we describe the ID registers), and any 'gotchas' (e.g.
-> restrictions we have that other architectures don't, or vice-versa). I do not
+> +static inline unsigned int get_current_tsz(unsigned long dcmp)
 
-Agreed - such documentations must be included for better technology adoption, but
-those are not the only type of documentation available in the kernel - even right
-now.
+Drop all these inlines.
 
-> think that we should try to describe the hardware beyond what is necessary to
-> describe that, and I do not think that we should describe the structure of the
-> perf code beyond what is necessary to desribe that.
-> 
-> Otherwise, this is just a maintenance burden
+> +{
+> +	int i;
+> +	int val = (dcmp & DCM_TSZ_MSK) >> DCM_TSZ_SFT;
+> +
+> +	if (val == DCM_TSZ_AUTO)
+> +		return 0;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(dcm_tsz); i++) {
+> +		if (val == dcm_tsz[i])
+> +			break;
+> +	}
+> +
+> +	return i;
+> +}
+> +
+> +static inline unsigned char get_max_tsz(unsigned long val, unsigned int *shift)
 
-I think we should have some documentation for BRBE implementation, and if there
-are suggestions to improve the proposed one, will be happy to change. But for
-now, will try and rewrite the documentation with your above suggestions in mind.
+Drop inline.
 
-> 
-> [...]
-> 
->> +BRBE Hardware
->> +=============
->> +
->> +FEAT_BRBE support on a given implementation, can be determined from system
->> +register field ID_AA64DFR0_EL1.BRBE, containing 'ID_AA64DFR0_EL1_BRBE_IMP'
->> +or 'ID_AA64DFR0_EL1_BRBE_BRBE_V1P1'. All BRBE system registers, including
->> +branch record banks are available for each CPU.
-> 
-> I do not think that we need to explain the system-register level interface
-> here. That's documented in the ARM ARM, and userspace doesn't care.
+> +{
+> +	int ord = ffs(val) - 1;
+> +
+> +	/*
+> +	 * 8 byte transfer sizes unsupported so fall back on 4. If it's larger
+> +	 * than the maximum, just limit it. It is perfectly safe to fall back
+> +	 * in this way since we won't exceed the maximum burst size supported
+> +	 * by the device, the only effect is reduced efficiency. This is better
+> +	 * than refusing to perform the request at all.
+> +	 */
+> +	if (ord == 3)
+> +		ord = 2;
+> +	else if (ord > 7)
+> +		ord = 7;
+> +
+> +	if (shift)
+> +		*shift = ord;
+> +
+> +	return dcm_tsz[ord];
+> +}
+> +
+> +static const struct of_device_id ingenic_dma_dt_match[];
+> +
+> +static struct ingenic_dma_engine *ingenic_dma_parse_dt(struct platform_device *pdev)
 
-Understood, will do some changes as suggested.
+This should be just before probe function.
 
-> 
-> [...]
-> 
-> 
->> +Perf Implementation
->> +===================
->> +
->> +Perf branch stack sampling framework has been enabled on arm64 platform via
->> +this new FEAT_BRBE feature. The following description explains how this has
->> +been implemented in various levels of abstraction - from perf core all the
->> +way to ARMv8 PMUv3 implementation.
-> 
-> This should be described in comments in the code. This will rapdily become
-> stale and it's just a maintenance burden.
+> +{
+> +	const struct of_device_id *match;
+> +	struct ingenic_dma_engine *ingenic_dma;
+> +	u32 nr_chs;
+> +
+> +	if (!pdev->dev.of_node)
+> +		return ERR_PTR(-ENODEV);
+> +
+> +	match = of_match_node(ingenic_dma_dt_match, pdev->dev.of_node);
+> +	if (!match)
+> +		return ERR_PTR(-ENODEV);
+> +
+> +	if (of_property_read_u32(pdev->dev.of_node, "#dma-channels", &nr_chs))
+> +		nr_chs = 32;
+> +
+> +	ingenic_dma = devm_kzalloc(&pdev->dev, sizeof(*ingenic_dma) +
+> +			sizeof(struct ingenic_dma_chan *) * nr_chs, GFP_KERNEL);
 
-But that is expected and also true for many existing documentation files e.g
-Documentation/mm/physical_memory.rst will change as and when physical memory
-representation changes in kernel. But does that mean, we should not have any
-documentation for physical memory at all ?
+You should use struct_size
 
-I believe the proposed code is already well documented but will revisit and
-try to fill gaps if any but the point being in code documentation might not
-be a substitute for a Documentation/arch/arm64/ based file.
+> +	if (!ingenic_dma)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	ingenic_dma->dev = &pdev->dev;
+> +	ingenic_dma->nr_chs = nr_chs;
+> +	ingenic_dma->hwattr = (unsigned long)match->data;
+> +
+> +	/* Property is optional, if it doesn't exist the value will remain 0. */
+> +	of_property_read_u32(pdev->dev.of_node, "ingenic,reserved-chs",
 
-> 
-> [...]
-> 
->> diff --git a/arch/arm64/include/asm/el2_setup.h b/arch/arm64/include/asm/el2_setup.h
->> index b7afaa026842..649b926bf69d 100644
->> --- a/arch/arm64/include/asm/el2_setup.h
->> +++ b/arch/arm64/include/asm/el2_setup.h
->> @@ -154,6 +154,51 @@
->>  .Lskip_set_cptr_\@:
->>  .endm
->>  
->> +#ifdef CONFIG_ARM64_BRBE
->> +/*
->> + * Enable BRBE cycle count
->> + *
->> + * BRBE requires both BRBCR_EL1.CC and BRBCR_EL2.CC fields, be set
->> + * for the cycle counts to be available in BRBINF<N>_EL1.CC during
->> + * branch record processing after a PMU interrupt. This enables CC
->> + * field on both these registers while still executing inside EL2.
->> + *
->> + * BRBE driver would still be able to toggle branch records cycle
->> + * count support via BRBCR_EL1.CC field regardless of whether the
->> + * kernel ends up executing in EL1 or EL2.
->> + */
->> +.macro __init_el2_brbe
->> +	mrs	x1, id_aa64dfr0_el1
->> +	ubfx	x1, x1, #ID_AA64DFR0_EL1_BRBE_SHIFT, #4
->> +	cbz	x1, .Lskip_brbe_cc_\@
->> +
->> +	mrs_s	x0, SYS_BRBCR_EL2
->> +	orr	x0, x0, BRBCR_ELx_CC
->> +	msr_s	SYS_BRBCR_EL2, x0
-> 
-> Please initialise this to a specific value rather than using a
-> read-modify-write.
+NAK, there is no such property.
 
-I will change this as follows - which will be written into both BRBCR_EL2
-and BRBCR_EL12 registers as applicable.
+> +			&ingenic_dma->chan_reserved);
+> +
+> +	if (!of_property_read_u32(pdev->dev.of_node, "ingenic,programed-chs",
 
-        mov     x0, xzr
-        orr     x0, x0, #(BRBCR_ELx_CC |BRBCR_ELx_MPRED)
+NAK, there is no such property.
 
-> 
->> +
->> +	/*
->> +	 * Accessing BRBCR_EL1 register here does not require
->> +	 * BRBCR_EL12 addressing mode as HCR_EL2.E2H is still
->> +	 * clear. Regardless, check for HCR_E2H and be on the
->> +	 * safer side.
->> +	 */
-> 
-> Presumably this won't be the case for FEAT_E2H0, so the comment is going to be
-> misleading. So probably best to just delete the comment...
-
-Sure, will drop the comment.
-
-> 
->> +	mrs	x1, hcr_el2
->> +	and	x1, x1, #HCR_E2H
->> +	cbz	x1, .Lset_brbe_el1_direct_\@
->> +
->> +	mrs_s	x0, SYS_BRBCR_EL12
->> +	orr	x0, x0, BRBCR_ELx_CC
->> +	msr_s	SYS_BRBCR_EL12, x0
->> +	b	.Lskip_brbe_cc_\@
->> +
->> +.Lset_brbe_el1_direct_\@:
-> 
-> Why 'direct'? This is just VHE vs nVHE.
-
-Ahh ! 'direct' was just a label name I had picked up but you are right,
-it is just a VHE/nVHE switch.
-
-> 
-> Please look at the way finalise_el2_state() handles (h)VHE and nVHE, and do the
-> same thing here...
-
-Right, that makes sense, will change the code block as follows.
-
-macro __init_el2_brbe
-        mrs     x1, id_aa64dfr0_el1
-        ubfx    x1, x1, #ID_AA64DFR0_EL1_BRBE_SHIFT, #4
-        cbz     x1, .Lskip_brbe_\@
-
-        mov     x0, xzr
-        orr     x0, x0, #(BRBCR_ELx_CC |BRBCR_ELx_MPRED)
-        msr_s   SYS_BRBCR_EL2, x0
-
-        __check_hvhe .Lset_brbe_nvhe_\@, x1
-
-        msr_s   SYS_BRBCR_EL12, x0      // VHE
-        b       .Lskip_brbe_\@
-
-Lset_brbe_nvhe_\@:
-        msr_s   SYS_BRBCR_EL1, x0       // NVHE
-Lskip_brbe_\@:
-endm
+Cleanup your driver before sending it upstream.
 
 
-> 
->> +	mrs_s	x0, SYS_BRBCR_EL1
->> +	orr	x0, x0, BRBCR_ELx_CC
->> +	msr_s	SYS_BRBCR_EL1, x0
->> +.Lskip_brbe_cc_\@:
->> +.endm
->> +#endif
->> +
->>  /* Disable any fine grained traps */
->>  .macro __init_el2_fgt
->>  	mrs	x1, id_aa64mmfr0_el1
->> @@ -161,16 +206,62 @@
->>  	cbz	x1, .Lskip_fgt_\@
->>  
->>  	mov	x0, xzr
->> +	mov	x2, xzr
->>  	mrs	x1, id_aa64dfr0_el1
->>  	ubfx	x1, x1, #ID_AA64DFR0_EL1_PMSVer_SHIFT, #4
->>  	cmp	x1, #3
->>  	b.lt	.Lset_debug_fgt_\@
->> +
->>  	/* Disable PMSNEVFR_EL1 read and write traps */
->> -	orr	x0, x0, #(1 << 62)
->> +	orr	x0, x0, #HDFGRTR_EL2_nPMSNEVFR_EL1_MASK
->> +	orr	x2, x2, #HDFGWTR_EL2_nPMSNEVFR_EL1_MASK
->>  
->>  .Lset_debug_fgt_\@:
->> +	mrs	x1, id_aa64dfr0_el1
->> +	ubfx	x1, x1, #ID_AA64DFR0_EL1_BRBE_SHIFT, #4
->> +	cbz	x1, .Lskip_brbe_reg_fgt_\@
->> +
->> +	/*
->> +	 * Disable read traps for the following BRBE related
->> +	 * registers.
->> +	 *
->> +	 * BRBSRC_EL1
->> +	 * BRBTGT_EL1
->> +	 * BRBINF_EL1
->> +	 * BRBSRCINJ_EL1
->> +	 * BRBTGTINJ_EL1
->> +	 * BRBINFINJ_EL1
->> +	 * BRBTS_EL1
->> +	 */
->> +	orr	x0, x0, #HDFGRTR_EL2_nBRBDATA_MASK
->> +
->> +	/*
->> +	 * Disable write traps for the following BRBE related
->> +	 * registers.
->> +	 *
->> +	 * BRBSRCINJ_EL1
->> +	 * BRBTGTINJ_EL1
->> +	 * BRBINFINJ_EL1
->> +	 * BRBTS_EL1
->> +	 */
->> +	orr	x2, x2, #HDFGWTR_EL2_nBRBDATA_MASK
->> +
->> +	/*
->> +	 * Disable both read and write traps for the following
->> +	 * BRBE related registers.
->> +	 *
->> +	 * BRBCR_EL1
->> +	 * BRBFCR_EL1
->> +	 */
->> +	orr	x0, x0, #HDFGRTR_EL2_nBRBCTL_MASK
->> +	orr	x2, x2, #HDFGWTR_EL2_nBRBCTL_MASK
->> +
->> +	/* Disable BRBIDR_EL1 read traps */
->> +	orr	x0, x0, #HDFGRTR_EL2_nBRBIDR_MASK
->> +
->> +.Lskip_brbe_reg_fgt_\@:
->>  	msr_s	SYS_HDFGRTR_EL2, x0
->> -	msr_s	SYS_HDFGWTR_EL2, x0
->> +	msr_s	SYS_HDFGWTR_EL2, x2
->>  
->>  	mov	x0, xzr
->>  	mrs	x1, id_aa64pfr1_el1
->> @@ -193,7 +284,20 @@
->>  .Lset_fgt_\@:
->>  	msr_s	SYS_HFGRTR_EL2, x0
->>  	msr_s	SYS_HFGWTR_EL2, x0
->> -	msr_s	SYS_HFGITR_EL2, xzr
->> +
->> +	mov	x0, xzr
->> +	mrs	x1, id_aa64dfr0_el1
->> +	ubfx	x1, x1, #ID_AA64DFR0_EL1_BRBE_SHIFT, #4
->> +	cbz	x1, .Lskip_brbe_insn_fgt_\@
->> +
->> +	/* Disable traps for BRBIALL instruction */
->> +	orr	x0, x0, #HFGITR_EL2_nBRBIALL_MASK
->> +
->> +	/* Disable traps for BRBINJ instruction */
->> +	orr	x0, x0, #HFGITR_EL2_nBRBINJ_MASK
->> +
->> +.Lskip_brbe_insn_fgt_\@:
->> +	msr_s	SYS_HFGITR_EL2, x0
->>  
->>  	mrs	x1, id_aa64pfr0_el1		// AMU traps UNDEF without AMU
->>  	ubfx	x1, x1, #ID_AA64PFR0_EL1_AMU_SHIFT, #4
-> 
-> None of the fine-grain trap requirements were described in booting.rst, and
-> presumably should be, as we describe that for other features.
 
-I hope the earlier mentioned update to booting.rst should take care of both
-EL3 and fine grained trap control in EL2 requirements.
+> +				&ingenic_dma->chan_programed))
+> +		ingenic_dma->chan_reserved |= ingenic_dma->chan_programed;
+> +
+> +	if (HWATTR_SPECIAL_CH01_SUP(ingenic_dma->hwattr) &&
+> +			of_property_read_bool(pdev->dev.of_node,
+> +				"ingenic,special-chs")) {
+> +		ingenic_dma->chan_reserved  |= DMA_SPECAIL_CHS;
+> +		ingenic_dma->chan_programed |= DMA_SPECAIL_CHS;
+> +		ingenic_dma->special_ch = true;
+> +	}
+> +
+> +	ingenic_dma->intc_ch = -1;
+> +	if (HWATTR_INTC_IRQ_SUP(ingenic_dma->hwattr) &&
+> +			!of_property_read_u32(pdev->dev.of_node,
+> +				"ingenic,intc-ch", (u32 *)&ingenic_dma->intc_ch)) {
 
-> 
-> Can you split up the booting.rst and el2 setup code into a preparatory patch
-> jsut before the actual BRBE changes? It'll make it easier for people (e.g. KVM
-> folk) to review that in isolation, and we can settle that even if the actual
-> BRBE driver needs work.
+NAK, cleanup your driver from such vendor stuff before sending upstream.
 
-Makes sense, will do that.
 
-> 
-> [...]
-> 
->> +enum brbe_bank_idx {
->> +	BRBE_BANK_IDX_INVALID = -1,
->> +	BRBE_BANK_IDX_0,
->> +	BRBE_BANK_IDX_1,
->> +	BRBE_BANK_IDX_MAX
->> +};
-> 
-> AFAICT, this enum type isn't used anywhere in this series, nor so
-> BRBE_BANK_IDX_INVALID or BRBE_BANK_IDX_MAX. Please get rid of it, and just use
-> plain 0 and 1 for bank indices.v
+> +static unsigned int build_one_slave_desc(struct ingenic_dma_chan *dmac, dma_addr_t addr,
+> +		unsigned int length,
+> +		enum dma_transfer_direction direction,
+> +		struct hdma_desc *desc)
+> +{
+> +	enum dma_transfer_direction dir;
+> +	unsigned int rdil;
+> +//	unsigned int tsz, transfer_shift;
 
-Sure, will drop the enum brbe_bank_idx.
+???
 
-> 
-> [...]
-> 
->> +/*
->> + * A branch record with BRBINFx_EL1.LASTFAILED set, implies that all
->> + * preceding consecutive branch records, that were in a transaction
->> + * (i.e their BRBINFx_EL1.TX set) have been aborted.
->> + *
->> + * Similarly BRBFCR_EL1.LASTFAILED set, indicate that all preceding
->> + * consecutive branch records up to the last record, which were in a
->> + * transaction (i.e their BRBINFx_EL1.TX set) have been aborted.
->> + *
->> + * --------------------------------- -------------------
->> + * | 00 | BRBSRC | BRBTGT | BRBINF | | TX = 1 | LF = 0 | [TX success]
->> + * --------------------------------- -------------------
->> + * | 01 | BRBSRC | BRBTGT | BRBINF | | TX = 1 | LF = 0 | [TX success]
->> + * --------------------------------- -------------------
->> + * | 02 | BRBSRC | BRBTGT | BRBINF | | TX = 0 | LF = 0 |
->> + * --------------------------------- -------------------
->> + * | 03 | BRBSRC | BRBTGT | BRBINF | | TX = 1 | LF = 0 | [TX failed]
->> + * --------------------------------- -------------------
->> + * | 04 | BRBSRC | BRBTGT | BRBINF | | TX = 1 | LF = 0 | [TX failed]
->> + * --------------------------------- -------------------
->> + * | 05 | BRBSRC | BRBTGT | BRBINF | | TX = 0 | LF = 1 |
->> + * --------------------------------- -------------------
->> + * | .. | BRBSRC | BRBTGT | BRBINF | | TX = 0 | LF = 0 |
->> + * --------------------------------- -------------------
->> + * | 61 | BRBSRC | BRBTGT | BRBINF | | TX = 1 | LF = 0 | [TX failed]
->> + * --------------------------------- -------------------
->> + * | 62 | BRBSRC | BRBTGT | BRBINF | | TX = 1 | LF = 0 | [TX failed]
->> + * --------------------------------- -------------------
->> + * | 63 | BRBSRC | BRBTGT | BRBINF | | TX = 1 | LF = 0 | [TX failed]
->> + * --------------------------------- -------------------
->> + *
->> + * BRBFCR_EL1.LASTFAILED == 1
->> + *
->> + * BRBFCR_EL1.LASTFAILED fails all those consecutive, in transaction
->> + * branches records near the end of the BRBE buffer.
->> + *
->> + * Architecture does not guarantee a non transaction (TX = 0) branch
->> + * record between two different transactions. So it is possible that
->> + * a subsequent lastfailed record (TX = 0, LF = 1) might erroneously
->> + * mark more than required transactions as aborted.
->> + */
->> +static void process_branch_aborts(struct pmu_hw_events *cpuc)
->> +{
->> +	u64 brbfcr = read_sysreg_s(SYS_BRBFCR_EL1);
->> +	bool lastfailed = !!(brbfcr & BRBFCR_EL1_LASTFAILED);
->> +	int idx = brbe_get_numrec(cpuc->percpu_pmu->reg_brbidr) - 1;
->> +	struct perf_branch_entry *entry;
->> +
->> +	do {
->> +		entry = &cpuc->branches->branch_entries[idx];
->> +		if (entry->in_tx) {
->> +			entry->abort = lastfailed;
->> +		} else {
->> +			lastfailed = entry->abort;
->> +			entry->abort = false;
->> +		}
->> +	} while (idx--, idx >= 0);
->> +}
-> 
-> Please consider:
-> 
-> 1) There are no extant CPU implementations with TME.
-> 2) There are no plans for anyone to build TME.
-> 3) The kernel doesn't support TME.
-> 
-> ... so why are we tryting to handle this architectural edge-case (complete with
-> what is arguably an architectural bug!) that can only happen on a CPU with TME,
-> under a kernel that's using TME?
-> 
-> This cannot possibly have been tested, trivially by point 3.
-> 
-> This is purely a maintenance and review burden.
-> 
-> Please delete this and replace it with a comment somewhere that *if* we ever
-> add support for TME this will need to be handled somehow.
+Clean your driver before submitting it to upstream.
 
-Alright, will drop TME handling completely.
 
-- Dropped process_branch_aborts() completely
+...
 
-- Added an warning if transaction states get detected some how unexpectedly
 
-                /*
-                 * Currently TME feature is neither implemented in any hardware
-                 * nor it is being supported in the kernel. Just warn here once
-                 * if TME related information shows up rather unexpectedly.
-                 */
-                if (entry->abort || entry->in_tx)
-                        pr_warn_once("Unknown transaction states %d %d\n",
-                                      entry->abort, entry->in_tx);
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	/* must be delete it */
+
+Or really?
+
+> +	//if (config->slave_id & INGENIC_DMA_TYPE_REQ_MSK)
+> +	//	dmac->slave_id = config->slave_id & INGENIC_DMA_TYPE_REQ_MSK;
+
+Then please delete it.
+
+> +
+> +	return 0;
+> +}
+> +
+> +static void pdma_handle_chan_irq(struct ingenic_dma_engine *ingenic_dma, int ch_id)
+> +{
+> +	struct ingenic_dma_chan *dmac = ingenic_dma->chan[ch_id];
+> +	struct ingenic_dma_sdesc *sdesc;
+> +	unsigned int dcs;
+> +
+> +	spin_lock(&dmac->vc.lock);
+> +
+> +	dcs = readl(dmac->iomem + CH_DCS);
+> +	writel(0, dmac->iomem + CH_DCS);
+> +
+> +	if (dcs & DCS_AR)
+> +		dev_warn(&dmac->vc.chan.dev->device,
+> +				"address error (DCS=0x%x)\n", dcs);
+> +
+> +	if (dcs & DCS_HLT)
+> +		dev_warn(&dmac->vc.chan.dev->device,
+> +				"channel halt (DCS=0x%x)\n", dcs);
+> +	sdesc = dmac->sdesc;
+> +	if (sdesc) {
+> +		if (sdesc->status == STAT_STOPPED) {
+> +			dma_cookie_complete(&sdesc->vd.tx);
+> +			ingenic_dma_free_swdesc(&sdesc->vd);
+> +			complete(&dmac->completion);
+> +		} else if (dmac->fake_cyclic && sdesc->cyclic) {
+> +			vchan_cyclic_callback(&sdesc->vd);
+> +		} else {
+> +			vchan_cookie_complete(&sdesc->vd);
+> +		}
+> +		dmac->sdesc = NULL;
+> +		ingenic_dma_start_trans(dmac);
+> +	} else {
+> +		dev_warn(&dmac->vc.chan.dev->device,
+> +			"channel irq with no active transfer, channel stop\n");
+> +	}
+> +
+> +	spin_unlock(&dmac->vc.lock);
+> +}
+> +
+> +static irqreturn_t pdma_int_handler(int irq, void *dev)
+> +{
+> +	struct ingenic_dma_engine *ingenic_dma = (struct ingenic_dma_engine *)dev;
+> +	unsigned long pending, dmac;
+> +	int i;
+> +
+> +	pending = readl(ingenic_dma->iomem + DIRQP);
+> +	writel(~pending, ingenic_dma->iomem + DIRQP);
+> +
+> +	for (i = 0; i < ingenic_dma->nr_chs ; i++) {
+> +		if (!(pending & (1 << i)))
+> +			continue;
+> +		pdma_handle_chan_irq(ingenic_dma, i);
+> +	}
+> +
+> +	dmac = readl(ingenic_dma->iomem + DMAC);
+> +	dmac &= ~(DMAC_HLT | DMAC_AR);
+> +	writel(dmac, ingenic_dma->iomem + DMAC);
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
+> +static irqreturn_t pdmam_int_handler(int irq, void *dev)
+> +{
+> +	/*TODO*/
+> +	return IRQ_HANDLED;
+
+???
+
+
+> +}
+> +
+> +static irqreturn_t pdmad_int_handler(int irq, void *dev)
+> +{
+> +	struct ingenic_dma_engine *ingenic_dma = (struct ingenic_dma_engine *)dev;
+> +	unsigned long pending;
+> +	int i;
+> +
+> +	pending = readl(ingenic_dma->iomem + DIP);
+> +	writel(readl(ingenic_dma->iomem + DIP) & (~pending), ingenic_dma->iomem + DIC);
+> +
+> +	for (i = 0; i < ingenic_dma->nr_chs; i++) {
+> +		struct ingenic_dma_chan *dmac = ingenic_dma->chan[i];
+> +		struct ingenic_dma_sdesc *sdesc;
+> +
+> +		if (!(pending & (1 << i)))
+> +			continue;
+> +		sdesc = dmac->sdesc;
+> +		if (sdesc && sdesc->cyclic) {
+> +			spin_lock(&dmac->vc.lock);
+> +			vchan_cyclic_callback(&sdesc->vd);
+> +			spin_unlock(&dmac->vc.lock);
+> +		}
+> +	}
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
+> +static int ingenic_dma_alloc_chan_resources(struct dma_chan *chan)
+> +{
+> +	struct ingenic_dma_chan *dmac = to_ingenic_dma_chan(chan);
+> +
+> +	dmac->hdesc_pool = dma_pool_create(dev_name(&chan->dev->device),
+> +			chan->device->dev, sizeof(struct hdma_desc), 0, PAGE_SIZE);
+> +	if (!dmac->hdesc_pool) {
+> +		dev_err(&chan->dev->device,
+> +				"failed to allocate descriptor pool\n");
+> +		return -ENOMEM;
+> +	}
+> +
+> +	dmac->hdesc_max = PAGE_SIZE / sizeof(struct hdma_desc);
+> +	dmac->hdesc_num = 0;
+> +
+> +	return 0;
+> +}
+> +
+> +static void ingenic_dma_synchronize(struct dma_chan *chan)
+> +{
+> +	struct ingenic_dma_chan *dmac = to_ingenic_dma_chan(chan);
+> +
+> +	vchan_synchronize(&dmac->vc);
+> +}
+> +
+> +static void ingenic_dma_free_chan_resources(struct dma_chan *chan)
+> +{
+> +	struct ingenic_dma_chan *dmac = to_ingenic_dma_chan(chan);
+> +	unsigned long flags;
+> +
+> +	ingenic_dma_terminate_all(chan);
+> +
+> +	ingenic_dma_wait_terminate_complete(chan);
+> +
+> +	dma_pool_destroy(dmac->hdesc_pool);
+> +	spin_lock_irqsave(&dmac->hdesc_lock, flags);
+> +	dmac->hdesc_pool = NULL;
+> +	dmac->hdesc_max = 0;
+> +	dmac->hdesc_num = 0;
+> +	spin_unlock_irqrestore(&dmac->hdesc_lock, flags);
+> +}
+> +
+> +static bool ingenic_dma_filter_fn(struct dma_chan *chan, void *param)
+> +{
+> +	struct ingenic_dma_chan *dmac = to_ingenic_dma_chan(chan);
+> +	unsigned int private          = *(unsigned int *)param;
+> +	unsigned long type             = (unsigned long)chan->private;
+
+Fix your indentation.
+
+
+
+..
+
+> +
+> +static int __init ingenic_dma_probe(struct platform_device *pdev)
+
+Since when probe is an __init?
+
+> +{
+> +	struct ingenic_dma_engine *dma = NULL;
+> +	struct resource *iores;
+> +	u32 reg_dmac = DMAC_DMAE;
+> +	int i, ret = 0;
+> +
+> +	/* check of first. if of failed, use platform */
+> +
+> +	dma = ingenic_dma_parse_dt(pdev);
+> +	if (IS_ERR(dma))
+> +		return PTR_ERR(dma);
+> +
+> +	iores = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	dma->iomem = devm_ioremap_resource(&pdev->dev, iores);
+
+Use helper combining these two.
+
+> +	if (IS_ERR(dma->iomem))
+> +		return PTR_ERR(dma->iomem);
+> +
+> +	/* PDMA interrupt*/
+> +	dma->irq_pdma = platform_get_irq_byname(pdev, "pdma");
+> +	if (dma->irq_pdma < 0)
+> +		return dma->irq_pdma;
+> +
+> +	ret = devm_request_irq(&pdev->dev, dma->irq_pdma, pdma_int_handler,
+> +			0, "pdma", dma);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* PDMA mcu interrupt*/
+> +	dma->irq_pdmam = platform_get_irq_byname(pdev, "pdmam");
+> +	if (dma->irq_pdmam >= 0) {
+> +		ret = devm_request_irq(&pdev->dev, dma->irq_pdmam, pdmam_int_handler,
+> +				0, "pdmam", dma);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	/* PDMA descriptor interrupt */
+> +	if (HWATTR_DESC_INTER_SUP(dma->hwattr)) {
+> +		dma->irq_pdmad = platform_get_irq_byname(pdev, "pdmad");
+
+Not really, you said you have only one interrupt.
+
+> +		if (dma->irq_pdmad < 0) {
+> +			dev_err(&pdev->dev, "unable to get pdmad irq\n");
+> +			return dma->irq_pdmad;
+> +		}
+> +		ret = devm_request_irq(&pdev->dev, dma->irq_pdmad, pdmad_int_handler,
+> +				0, "pdmad", dma);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	/* Initialize dma engine */
+> +	INIT_LIST_HEAD(&dma->dma_device.channels);
+> +	for (i = 0; i < dma->nr_chs; i++) {
+> +		/*reserved one channel for intc interrupt*/
+> +		if (dma->intc_ch == i)
+> +			continue;
+> +		ingenic_dma_chan_init(dma, i);
+> +	}
+> +
+> +	dma_cap_set(DMA_MEMCPY, dma->dma_device.cap_mask);
+> +	dma_cap_set(DMA_SLAVE, dma->dma_device.cap_mask);
+> +	dma_cap_set(DMA_CYCLIC, dma->dma_device.cap_mask);
+> +
+> +	dma->dma_device.dev                         = &pdev->dev;
+> +	dma->dma_device.device_alloc_chan_resources = ingenic_dma_alloc_chan_resources;
+> +	dma->dma_device.device_free_chan_resources  = ingenic_dma_free_chan_resources;
+> +	dma->dma_device.device_tx_status            = ingenic_dma_tx_status;
+> +	dma->dma_device.device_prep_slave_sg        = ingenic_dma_prep_slave_sg;
+> +	dma->dma_device.device_prep_dma_cyclic      = ingenic_dma_prep_dma_cyclic;
+> +	dma->dma_device.device_prep_dma_memcpy      = ingenic_dma_prep_dma_memcpy;
+> +	dma->dma_device.device_config               = ingenic_dma_config;
+> +	dma->dma_device.device_terminate_all        = ingenic_dma_terminate_all;
+> +	dma->dma_device.device_issue_pending        = ingenic_dma_issue_pending;
+> +	dma->dma_device.device_synchronize          = ingenic_dma_synchronize;
+> +	dma->dma_device.copy_align                  = DMAENGINE_ALIGN_4_BYTES;
+> +	dma->dma_device.src_addr_widths             = BIT(DMA_SLAVE_BUSWIDTH_1_BYTE) |
+> +							BIT(DMA_SLAVE_BUSWIDTH_2_BYTES) |
+> +								BIT(DMA_SLAVE_BUSWIDTH_4_BYTES);
+> +	dma->dma_device.dst_addr_widths             = dma->dma_device.src_addr_widths;
+> +	dma->dma_device.directions                  = BIT(DMA_DEV_TO_MEM) |
+> +							BIT(DMA_MEM_TO_DEV) |
+> +								BIT(DMA_MEM_TO_MEM);
+> +	dma->dma_device.residue_granularity         = DMA_RESIDUE_GRANULARITY_BURST;
+> +	dma->dma_device.dev->dma_parms              = &dma->dma_parms;
+> +
+> +	dma_set_max_seg_size(dma->dma_device.dev, DTC_TC_MSK);	/*At least*/
+> +
+> +	dma->gate_clk = devm_clk_get(&pdev->dev, "gate_pdma");
+> +	if (IS_ERR(dma->gate_clk))
+> +		return PTR_ERR(dma->gate_clk);
+> +
+> +	ret = dma_async_device_register(&dma->dma_device);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "unable to register\n");
+> +		clk_disable(dma->gate_clk);
+> +		return ret;
+> +	}
+> +
+> +	of_ingenic_dma_info.dma_cap = dma->dma_device.cap_mask;
+> +	ret = of_dma_controller_register(pdev->dev.of_node,
+> +			of_dma_simple_xlate, &of_ingenic_dma_info);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "unable to register dma to device tree\n");
+> +		dma_async_device_unregister(&dma->dma_device);
+> +		clk_disable(dma->gate_clk);
+> +		return ret;
+> +	}
+> +
+> +
+> +	platform_set_drvdata(pdev, dma);
+> +
+> +	/*enable pdma controller*/
+> +	clk_prepare_enable(dma->gate_clk);
+> +
+> +	if (dma->chan_programed)
+> +		writel(dma->chan_programed, dma->iomem + DMACP);
+> +	if (dma->intc_ch >= 0)
+> +		reg_dmac |= DMAC_INTCE | ((dma->intc_ch << DMAC_INTCC_SFT) & DMAC_INTCC_MSK);
+> +	if (dma->special_ch)
+> +		reg_dmac |= DMAC_CH01;
+> +	writel(reg_dmac, dma->iomem + DMAC);
+> +
+> +	dev_info(dma->dev, "INGENIC SoC DMA initialized\n");
+
+Drop simple success prints, useless.
+
+> +
+> +	return 0;
+> +}
+> +
+> +static int ingenic_dma_suspend(struct platform_device *pdev, pm_message_t state)
+> +{
+> +	struct ingenic_dma_engine *ingenic_dma = platform_get_drvdata(pdev);
+> +	struct dma_chan *chan;
+> +
+> +	list_for_each_entry(chan, &ingenic_dma->dma_device.channels, device_node) {
+> +		struct ingenic_dma_chan *dmac = to_ingenic_dma_chan(chan);
+> +
+> +		if (dmac->sdesc)
+> +			return -EBUSY;
+> +	}
+> +	clk_disable_unprepare(ingenic_dma->gate_clk);
+> +
+> +	return 0;
+> +}
+> +
+> +static int ingenic_dma_resume(struct platform_device *pdev)
+> +{
+> +	struct ingenic_dma_engine *ingenic_dma = platform_get_drvdata(pdev);
+> +
+> +	clk_prepare_enable(ingenic_dma->gate_clk);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id ingenic_dma_dt_match[] = {
+> +	{ .compatible = "ingenic,m200-pdma",  .data = (void *)(HWATTR_SPECIAL_CH01 |
+> +							HWATTR_INTC_IRQ)},
+> +	{ .compatible = "ingenic,x1000-pdma", .data = (void *)HWATTR_DESC_INTER },
+> +	{ .compatible = "ingenic,t40-pdma",   .data = (void *)HWATTR_INTC_IRQ },
+> +	/*{ .compatible = "ingenic,t41-pdma",   .data = (void *)HWATTR_INTC_IRQ },*/
+
+This is a mess...
+
+> +	{ .compatible = "ingenic,t33-pdma",   .data = (void *)NULL },
+> +	{},
+> +};
+> +MODULE_DEVICE_TABLE(of, ingenic_dma_dt_match);
+> +
+> +static struct platform_driver ingenic_dma_driver = {
+> +	.driver = {
+> +		.name           = "ingenic-dma",
+> +		.owner          = THIS_MODULE,
+
+Come on... that's like 7 year or 10 year old code. Please don't dump on
+us such old stuff, but clean it up before posting.
+
+Run coccinelle/coccicheck and fix all the issues. Then run smatch. Then
+run sparse.
+
+> +		.of_match_table = of_match_ptr(ingenic_dma_dt_match),
+
+Drop of_match_ptr
+
+> +	},
+> +	.suspend = ingenic_dma_suspend,
+> +	.resume  = ingenic_dma_resume,
+> +};
+> +
+> +static int __init ingenic_dma_module_init(void)
+> +{
+> +	return platform_driver_probe(&ingenic_dma_driver, ingenic_dma_probe);
+> +}
+> +
+> +subsys_initcall(ingenic_dma_module_init);
+> +MODULE_AUTHOR("Chen.li <chen.li@ingenic.cn>");
+> +MODULE_DESCRIPTION("Ingenic dma driver");
+
+
+..
+
+> +
+> +static inline struct ingenic_dma_chan *to_ingenic_dma_chan(struct dma_chan *chan)
+> +{
+> +	return container_of(chan, struct ingenic_dma_chan, vc.chan);
+> +}
+> +
+> +static inline struct ingenic_dma_sdesc *to_ingenic_dma_sdesc(struct virt_dma_desc *vd)
+> +{
+> +	return container_of(vd, struct ingenic_dma_sdesc, vd);
+> +}
+> +
+> +#define INGENIC_DMA_REQ_AUTO 0xff
+> +#define INGENIC_DMA_CHAN_CNT 32
+> +unsigned long pdma_maps[INGENIC_DMA_CHAN_CNT] = {
+
+This cannot be in the header.
+
+> +	INGENIC_DMA_REQ_AUTO,
+> +	INGENIC_DMA_REQ_AUTO,
+> +	INGENIC_DMA_REQ_AIC_LOOP_RX,
+> +	INGENIC_DMA_REQ_AIC_TX,
+> +	INGENIC_DMA_REQ_AIC_F_RX,
+> +	INGENIC_DMA_REQ_AUTO_TX,
+> +	INGENIC_DMA_REQ_SADC_RX,
+> +	INGENIC_DMA_REQ_UART5_TX,
+> +	INGENIC_DMA_REQ_UART5_RX,
+> +	INGENIC_DMA_REQ_UART4_TX,
+> +	INGENIC_DMA_REQ_UART4_RX,
+> +	INGENIC_DMA_REQ_UART3_TX,
+> +	INGENIC_DMA_REQ_UART3_RX,
+> +	INGENIC_DMA_REQ_UART2_TX,
+> +	INGENIC_DMA_REQ_UART2_RX,
+> +	INGENIC_DMA_REQ_UART1_TX,
+> +	INGENIC_DMA_REQ_UART1_RX,
+> +	INGENIC_DMA_REQ_UART0_TX,
+> +	INGENIC_DMA_REQ_UART0_RX,
+> +	INGENIC_DMA_REQ_SSI0_TX,
+> +	INGENIC_DMA_REQ_SSI0_RX,
+> +	INGENIC_DMA_REQ_SSI1_TX,
+> +	INGENIC_DMA_REQ_SSI1_RX,
+> +	INGENIC_DMA_REQ_SLV_TX,
+> +	INGENIC_DMA_REQ_SLV_RX,
+> +	INGENIC_DMA_REQ_I2C0_TX,
+> +	INGENIC_DMA_REQ_I2C0_RX,
+> +	INGENIC_DMA_REQ_I2C1_TX,
+> +	INGENIC_DMA_REQ_I2C1_RX,
+> +	INGENIC_DMA_REQ_DES_TX,
+> +	INGENIC_DMA_REQ_DES_RX,
+> +};
+> +
+> +void jzdma_dump(struct dma_chan *chan);
+
+Drop
+
+> +#endif /*__INGENIC_DMA_H__*/
+
+Best regards,
+Krzysztof
+
 
