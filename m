@@ -1,84 +1,60 @@
-Return-Path: <linux-kernel+bounces-85302-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85303-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DFB386B3B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:50:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B5F886B3BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:51:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6FDE41C255CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:50:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 38C7B1C25DEE
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:51:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 545ED15CD60;
-	Wed, 28 Feb 2024 15:50:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72BF415D5AB;
+	Wed, 28 Feb 2024 15:51:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="KhE2jlyE"
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JyAE0/Wu"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6011F15CD65
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 15:50:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D6FD1552F8;
+	Wed, 28 Feb 2024 15:51:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709135451; cv=none; b=sMTkyXpoXyO1Mo6Ar3wAAD+4+yX9klH3+/Zu5FCBlVLv3QPoklgA98m4Fkwgc83ISNF8UNubiwDryCmw9Y7rTfLi5kMcJgW7hyzxJeOQLaIHC+BsWyCbpS1XTWYADgp1zqMWmKt+FT6X/lAG9B7wkk6XI7rXlvljcwb4Sq4JTUU=
+	t=1709135475; cv=none; b=ndByAyrv1VhwLbyiszy4VLQRQUvYlP6Rn1+P9ol76zpRAv0qIGxa5prB+OWlEPg7WTIDt7JohXv3fJJE27L7DRzi6v0xbsnxTW9jqpVFO0l/Rg0qWignqs3g2EAwBrRqjlj+chLGX5XYoKAviHma4PC1+thReBrSBByxdKMK1vI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709135451; c=relaxed/simple;
-	bh=qw/lsb8EBSivANarcDEFfqbKUxGjNYj5K/tvppvuWZs=;
+	s=arc-20240116; t=1709135475; c=relaxed/simple;
+	bh=bBANsiX1oqnfELIhJ2Ldb94oj+2VzQup9IpDxs0eqNw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PMxgSWG+5ZGvaEfgdA6JW51wDqqFz+z8cTzBPHDBaAUm3quSncTB7mDseOZE+FJExlU0ubYVHKDJE8olyyLbrLm8iYxt4EzKSbeRFdgl42HwGTsN4HFgUmDs5Ikx9V4xJCzDWDHE1mqOvZSgHTZyVmESnwP2hsO9QG3AOk4jdPk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=KhE2jlyE; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-412b7bb0bd3so2060565e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 07:50:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1709135446; x=1709740246; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=stUSePaurhatS3Ury/aUkVTpamNEr91HAAR49t8RyYY=;
-        b=KhE2jlyEQ8bnsMCHGrLhkDjUYoFfFKvxOdTUIpfYihckDn5QyjwOoW6LBoM8z7E0Zp
-         /coRuhNLniDOcXa8M/a8RXZkZDx2FuTzKYS1kA+4Wp3phY45mAF9NVbH52ZXgEyANu7D
-         rCt3ZMPOUBKnUPaWCmZ0eG14JC6AMP5yOpHvpVAZWLMUYBoISZtQxa34F7FUJf8bCiHN
-         qW30VTfIj7oP9RqKCe7FvpQXtCQwLQG/WM0j6U8sNpaZT0q1R153WxI6h1UkyJYtM6t5
-         Wv0fIfXdP3fTW83RvZva91s3+V6QbAyr+RAxun1SAmulOFI+T6/r647AcAw6aBk953rW
-         Gq/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709135446; x=1709740246;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=stUSePaurhatS3Ury/aUkVTpamNEr91HAAR49t8RyYY=;
-        b=hzbQuA/dl0nk9Y0hTtxlKmhYEqRxCdkgquG2xTfZ1z9u0NkXAwFLpjGd1GpVuuwHg9
-         LVzzO9XSvQixaAWZXNACWRGhmFAgup4YdyZM4W8VrslMGYR0pjCGnXXxkwZF7Ajbu/oq
-         B101WLzbklPAYpghF350vJt8YUp8h7kmAJsYtxoehc3oJTD4Hp19ZZo7L6KPP9d5QBq7
-         6ukST3OgpJAROnlzLhHWO8YYrh9GPMeaffVs1Wmus/JZY/V1zIA5Yu0B02U1lYcx4gGJ
-         2SuRaICDALKxPB2oMPV6uwejZr/U0A/B0tizexPzPbvsSLhQlnyJeGhtqrIW6ru+VlAM
-         yaeA==
-X-Forwarded-Encrypted: i=1; AJvYcCXtfFbpSH3jcJLVGFNEN3QCuMN5zukg1jaHZZI/WjZPrjutls3qOgyYtzWodU/baRbKI6zTyEB1Y36RLtlK3POb6/wsQuLWZ5Ifcm5b
-X-Gm-Message-State: AOJu0Ywfcg1ljCRR/C6EFM1pur+JbtOhRLH7KW61kAmy1T/YZklxR3st
-	hFsddNzubqo30HqGdiqmOQ43N5q0tfqZW0cm7x/kNJDtfrg76f6Bqa9XFTf/rjs=
-X-Google-Smtp-Source: AGHT+IG0lOzeZ+/WxvUdFaRJkHfwlU5mdhNXZKdUzkPe8Pc39VME6SVEd3+lj1GdI3bR8LEZsQoyvQ==
-X-Received: by 2002:a05:600c:4f4e:b0:410:78fb:bed2 with SMTP id m14-20020a05600c4f4e00b0041078fbbed2mr2843006wmq.19.1709135446576;
-        Wed, 28 Feb 2024 07:50:46 -0800 (PST)
-Received: from localhost ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id 9-20020a05600c230900b004129018510esm2401794wmo.22.2024.02.28.07.50.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 07:50:46 -0800 (PST)
-Date: Wed, 28 Feb 2024 16:50:43 +0100
-From: Jiri Pirko <jiri@resnulli.us>
-To: Lena Wang =?utf-8?B?KOeOi+WonCk=?= <Lena.Wang@mediatek.com>
-Cc: "davem@davemloft.net" <davem@davemloft.net>,
-	"kuba@kernel.org" <kuba@kernel.org>,
-	"edumazet@google.com" <edumazet@google.com>,
-	"pabeni@redhat.com" <pabeni@redhat.com>,
-	"dsahern@kernel.org" <dsahern@kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	Shiming Cheng =?utf-8?B?KOaIkOivl+aYjik=?= <Shiming.Cheng@mediatek.com>
-Subject: Re: [PATCH net v3] ipv6:flush ipv6 route cache when rule is changed
-Message-ID: <Zd9WU1bpoOlR9de7@nanopsycho>
-References: <c9fe5b133393efd179c54f3d7bed78d16b14e4ab.camel@mediatek.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=HYBP2pCt7YDu1QXovGj5wov9YnabGCl6r1DkSmyKQdWt4vGxoIYZPWqbWzUJxIZVejLqpebEVZ+2VCiXBQN8uAQW0sXD4+uJ1Z5Qmzb+bJ7Kq/MQ1I+gHtwTjUL9otkxCKkWTX8QxPdNJEU+XUKV9Fj++iK5RBs2G+KGgotK4ZM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JyAE0/Wu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04038C433C7;
+	Wed, 28 Feb 2024 15:51:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709135475;
+	bh=bBANsiX1oqnfELIhJ2Ldb94oj+2VzQup9IpDxs0eqNw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JyAE0/WuLiyanl4AqhvdmoyyCs6ZyNSZ7MlqNMRQ5+1IIOffTm+eRgtri2sd4+agA
+	 S0jcKZcceEDROliTshY9ZBYADM2jMCpCf7wMwt6Vx5tNXUmhtlB77aMHxihfG7HyWo
+	 c1zJ/pwFSjLzL1hAT+lSzVv04nlummiIM5VUBzmQf/AMtYEpY+coMS7LAHH9bSRelg
+	 XKsCvVm/XYCPEKtm9Zry30vkB2cA+s2MWEOvwzBMPsq6Da8wMXnI82sy14QsDzG147
+	 Ep2zWHqwrFN5Rf38qfZqFtSLM3vODS7ClRt8v9wFejRW8w8KfAVDUjPwO2JXV7FFRQ
+	 uNJAHrnwhI7AQ==
+Date: Wed, 28 Feb 2024 09:51:12 -0600
+From: Rob Herring <robh@kernel.org>
+To: Jia Jie Ho <jiajie.ho@starfivetech.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S . Miller" <davem@davemloft.net>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
+	Vinod Koul <vkoul@kernel.org>, linux-crypto@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	dmaengine@vger.kernel.org
+Subject: Re: [PATCH v3 1/6] dt-bindings: crypto: starfive: Add jh8100 support
+Message-ID: <20240228155112.GA4059153-robh@kernel.org>
+References: <20240227163758.198133-1-jiajie.ho@starfivetech.com>
+ <20240227163758.198133-2-jiajie.ho@starfivetech.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -87,31 +63,76 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c9fe5b133393efd179c54f3d7bed78d16b14e4ab.camel@mediatek.com>
+In-Reply-To: <20240227163758.198133-2-jiajie.ho@starfivetech.com>
 
-Wed, Feb 28, 2024 at 04:38:56PM CET, Lena.Wang@mediatek.com wrote:
->From: Shiming Cheng <shiming.cheng@mediatek.com>
->
->When rule policy is changed, ipv6 socket cache is not refreshed.
->The sock's skb still uses a outdated route cache and was sent to
->a wrong interface.
->
->To avoid this error we should update fib node's version when
->rule is changed. Then skb's route will be reroute checked as
->route cache version is already different with fib node version.
->The route cache is refreshed to match the latest rule.
->
->Signed-off-by: Shiming Cheng <shiming.cheng@mediatek.com>
->Signed-off-by: Lena Wang <lena.wang@mediatek.com>
+On Wed, Feb 28, 2024 at 12:37:53AM +0800, Jia Jie Ho wrote:
+> Add compatible string and additional interrupt for StarFive JH8100
+> crypto engine.
+> 
+> Signed-off-by: Jia Jie Ho <jiajie.ho@starfivetech.com>
+> ---
+>  .../crypto/starfive,jh7110-crypto.yaml        | 30 +++++++++++++++++--
+>  1 file changed, 28 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/crypto/starfive,jh7110-crypto.yaml b/Documentation/devicetree/bindings/crypto/starfive,jh7110-crypto.yaml
+> index 71a2876bd6e4..d44d77908966 100644
+> --- a/Documentation/devicetree/bindings/crypto/starfive,jh7110-crypto.yaml
+> +++ b/Documentation/devicetree/bindings/crypto/starfive,jh7110-crypto.yaml
+> @@ -12,7 +12,9 @@ maintainers:
+>  
+>  properties:
+>    compatible:
+> -    const: starfive,jh7110-crypto
+> +    enum:
+> +      - starfive,jh8100-crypto
+> +      - starfive,jh7110-crypto
+>  
+>    reg:
+>      maxItems: 1
+> @@ -28,7 +30,10 @@ properties:
+>        - const: ahb
+>  
+>    interrupts:
+> -    maxItems: 1
+> +    minItems: 1
+> +    items:
+> +      - description: SHA2 module irq
+> +      - description: SM3 module irq
+>  
+>    resets:
+>      maxItems: 1
+> @@ -54,6 +59,27 @@ required:
+>  
+>  additionalProperties: false
+>  
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          const: starfive,jh7110-crypto
+> +
+> +    then:
+> +      properties:
+> +        interrupts:
+> +          maxItems: 1
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          const: starfive,jh8100-crypto
+> +
+> +    then:
+> +      properties:
+> +        interrupts:
+> +          maxItems: 2
 
-1) You are still missing Fixes tags, I don't know what to say.
-2) Re patch subject:
-   "ipv6:flush ipv6 route cache when rule is changed"
-   Could it be:
-   "ipv6: fib6_rules: flush route cache when rule is changed"
-   ? please.
-3) Could you please honor the 24h hours resubmission rule:
-https://www.kernel.org/doc/html/v6.6/process/maintainer-netdev.html#tl-dr
+This is already the max. Don't you want 'minItems: 2'?
 
-pw-bot: cr
+> +
+>  examples:
+>    - |
+>      crypto: crypto@16000000 {
+> -- 
+> 2.34.1
+> 
 
