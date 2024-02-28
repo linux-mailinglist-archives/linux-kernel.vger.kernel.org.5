@@ -1,336 +1,342 @@
-Return-Path: <linux-kernel+bounces-84275-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84276-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 333E286A47A
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 01:31:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA51C86A47C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 01:31:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 91293B241EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 00:31:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 207011F218D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 00:31:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BF171370;
-	Wed, 28 Feb 2024 00:30:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b="g+cu04nS"
-Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 747841FB3;
+	Wed, 28 Feb 2024 00:31:27 +0000 (UTC)
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BE79A23;
-	Wed, 28 Feb 2024 00:30:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.29.241.158
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E15BEBB;
+	Wed, 28 Feb 2024 00:31:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709080258; cv=none; b=ioH0GOQn1z1fbQk/6jS5f31lJ1RXaInlgz+QrN7RNwh++lGXc22V3nRhwaNu1DHOnC0PnecWIS+gDmJTwLW5UR6Z067YVXzyVahbRwV/kvFYOGQsewqnlwFOBvgdC1cXKtymGKZlpzGN4EijFIKDfXBFBLK6uE+s9SBT6ksvUAw=
+	t=1709080286; cv=none; b=sDvFV1xzccs0w4Ypuehn3U1HyKNlJ7Mtnchz+AhSix4pmuCgxtjxRVavej1Q3OWd5PS9EtR0CE/qGcap+hf9VOFuDBjksah8ktXhfAgCjzNyOSMq0xwgoyIo+KGDmK1SyzQX2/NXPnxYe1vFepCf65t1pWa6fa/Qxs9HAzVxUPs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709080258; c=relaxed/simple;
-	bh=0IFCv/0aK6fypSuncnsHMiXiUxtvQ0GHZOxUPi4VJJ0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=E+TCs05/VTauPhy9NDEqpzrRn1SyndXm6RLbHJZ8osuOlgaZiQuE2B62+z0+EqcecmWzgOloxT5eHuOa0ugDmclpGx/IepSoIaI+PmDFZXDGpxXJJBRFdMarkxJy+CFvz85AVz1BPUNo5jStBzpeHfqPGx44oJCecSdeiDMnabw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au; spf=pass smtp.mailfrom=codeconstruct.com.au; dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b=g+cu04nS; arc=none smtp.client-ip=203.29.241.158
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeconstruct.com.au
-Received: from localhost.localdomain (ppp14-2-70-176.adl-apt-pir-bras31.tpg.internode.on.net [14.2.70.176])
-	by mail.codeconstruct.com.au (Postfix) with ESMTPSA id A4706200B6;
-	Wed, 28 Feb 2024 08:30:49 +0800 (AWST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=codeconstruct.com.au; s=2022a; t=1709080252;
-	bh=L4gBKjwP0JrUsbJ9rNJ5WClpLLZ7sriH9iUkPu4ER04=;
-	h=From:To:Cc:Subject:Date;
-	b=g+cu04nSihry64l1um7FpaPu3lbfmWecOynlwgfh/gThSEAJ83v6Q4be/C9GvTvKc
-	 fBgyvauN+XqKnWs+hpgF2mx5Lax0p/FljK5OycTCG6JYifbT/V263tZ//L0ZbJetA3
-	 l5/Lku9gNfULFkBc4v+Q/7LN8KB1pe8ZPPgXwFF+lNOhPuPfeUl+kkegfwBqlDrqeQ
-	 p3YdeNWHNc6FgmynHYEWsKgufRw7vO9ooAYh94b56+oP4uNU4FRJnprSWjsCC95xSw
-	 FvfT38D4tM/codsZjGIgiA5Idyc9AiThfAaV5NBiRWhKT1ZDqlLFOrhCjqXwgLoTsi
-	 kaWbZ+1ABEFCw==
-From: Andrew Jeffery <andrew@codeconstruct.com.au>
-To: linus.walleij@linaro.org,
-	brgl@bgdev.pl,
-	krzysztof.kozlowski+dt@linaro.org
-Cc: Andrew Jeffery <andrew@codeconstruct.com.au>,
-	robh+dt@kernel.org,
-	conor+dt@kernel.org,
-	joel@jms.id.au,
-	linux-gpio@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-aspeed@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v6] dt-bindings: gpio: aspeed,ast2400-gpio: Convert to DT schema
-Date: Wed, 28 Feb 2024 11:00:43 +1030
-Message-Id: <20240228003043.1167394-1-andrew@codeconstruct.com.au>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1709080286; c=relaxed/simple;
+	bh=WS/e33DHM9pGbY5lNxcMHE4h+nEFnKQEsHiRWJhRC00=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gRxQJ9xet4qp45yPe2Bo60TFphDUVbBmrYLtXtbIk8h5vR904lQPaUezqqdnXnOjvm2em9wWDQhj6OoB1d+EvYVlpUvnSBv++TZuVyxsnoI/nNGEGownLt6M20NRoXL0jHvJPCcfJVvmgGUWB3w67AhTSQKZUideaM+ITpROtSI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5dbd519bde6so4053466a12.1;
+        Tue, 27 Feb 2024 16:31:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709080284; x=1709685084;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3ZMybtEaT6ZOPfB0Se7MAyVVWMV3CjajNjGCLdQyRPc=;
+        b=IYdWLEEO4QavVA3TxBrJnKK3N9TZgune+tXIh0NCSH3W9Egn3/hyVdQRan4op1gFGU
+         M6NIebVtT5bKa4umPAM4hc3zYzPWudaEJju2lCgGeGu5QmfVD4lJ3RSAVfIPV73nJv7R
+         9Vm8q/UpB1O6/wZ7fzKWaHeOFBPJ5Qj0TXLMZc5KykDfesWmbq0CQbTJEH3cZxT0RALH
+         lpshdWeMVgnEcucnUBUbW06HySXBfotigwsCqAGOs1ABK4qYeI11Ye1F/6YFbq4rpsgU
+         3XmwDLw3mdU8IVPAGmayHPRrCnVJuNRk2Y5egag8iw8ob6Iu4R5hWz7OQfTmoZ3xexYI
+         CjTg==
+X-Forwarded-Encrypted: i=1; AJvYcCWxj9olyVhJ7jB7dPVl4X3eB3/4yHG2pa5SyedJBM2Qnc4TKHkB1w61XRlP/sCNBKhJ5PEvZ25TEz1rUmaE2ECoIRr8TcTQGLdSIwVpzA2ie9BgOAFA7Cctdm1PwmZiAOV0n+cIni/dK/P6GUNkg3eQpxhFFtURvbDqPGa/Y/5bJ31Z2w==
+X-Gm-Message-State: AOJu0YyOeiraQJhVSqF4YS+IJTIbdVawto699B2XGyOB2p/2bFoC32H7
+	2KVGrSevp7xAbAJHlkbv61Zn1fMxKXlUnTWh3SOxXn7BEFBBWZwG7O9R08Hsb6yogQlzaVBVyqr
+	9Lhqd4biDaKPXN4ddKI9MyM4k3vg=
+X-Google-Smtp-Source: AGHT+IEaxBDXdQbsClwnNj0ul3g/DzwebdW3tomgzQqdR7pOhBsVMliNkk9VTvvwgXpNYp3vOfp7KJXdArc9RpreuP8=
+X-Received: by 2002:a05:6a21:920a:b0:1a0:56c9:60ab with SMTP id
+ tl10-20020a056a21920a00b001a056c960abmr4418895pzb.44.1709080284286; Tue, 27
+ Feb 2024 16:31:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240209230657.1546739-1-namhyung@kernel.org> <CAP-5=fWS-5vbX+dF+bjPLf4OkkQg2kV515oLGTwL6C8kU7Gu3g@mail.gmail.com>
+In-Reply-To: <CAP-5=fWS-5vbX+dF+bjPLf4OkkQg2kV515oLGTwL6C8kU7Gu3g@mail.gmail.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Tue, 27 Feb 2024 16:31:12 -0800
+Message-ID: <CAM9d7chRWk2mpph3zVTQXJeaWaFTreUZAWvHafoYqx5vsfpTpw@mail.gmail.com>
+Subject: Re: [PATCH RESEND] perf lock contention: Account contending locks too
+To: Ian Rogers <irogers@google.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Squash warnings such as:
+On Tue, Feb 27, 2024 at 3:49=E2=80=AFPM Ian Rogers <irogers@google.com> wro=
+te:
+>
+> On Fri, Feb 9, 2024 at 3:07=E2=80=AFPM Namhyung Kim <namhyung@kernel.org>=
+ wrote:
+> >
+> > Currently it accounts the contention using delta between timestamps in
+> > lock:contention_begin and lock:contention_end tracepoints.  But it mean=
+s
+> > the lock should see the both events during the monitoring period.
+> >
+> > Actually there are 4 cases that happen with the monitoring:
+> >
+> >                 monitoring period
+> >             /                       \
+> >             |                       |
+> >  1:  B------+-----------------------+--------E
+> >  2:    B----+-------------E         |
+> >  3:         |           B-----------+----E
+> >  4:         |     B-------------E   |
+> >             |                       |
+> >             t0                      t1
+> >
+> > where B and E mean contention BEGIN and END, respectively.  So it only
+> > accounts the case 4 for now.  It seems there's no way to handle the cas=
+e
+> > 1.  The case 2 might be handled if it saved the timestamp (t0), but it
+> > lacks the information from the B notably the flags which shows the lock
+> > types.  Also it could be a nested lock which it currently ignores.  So
+> > I think we should ignore the case 2.
+> >
+> > However we can handle the case 3 if we save the timestamp (t1) at the
+> > end of the period.  And then it can iterate the map entries in the
+> > userspace and update the lock stat accordinly.
+> >
+> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > ---
+> >  tools/perf/util/bpf_lock_contention.c         | 116 ++++++++++++++++++
+> >  .../perf/util/bpf_skel/lock_contention.bpf.c  |  16 +--
+> >  tools/perf/util/bpf_skel/lock_data.h          |   7 ++
+> >  3 files changed, 132 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/tools/perf/util/bpf_lock_contention.c b/tools/perf/util/bp=
+f_lock_contention.c
+> > index 31ff19afc20c..d6bafd9a3955 100644
+> > --- a/tools/perf/util/bpf_lock_contention.c
+> > +++ b/tools/perf/util/bpf_lock_contention.c
+> > @@ -179,6 +179,119 @@ int lock_contention_prepare(struct lock_contentio=
+n *con)
+> >         return 0;
+> >  }
+> >
+> > +static void mark_end_timestamp(void)
+> > +{
+> > +       DECLARE_LIBBPF_OPTS(bpf_test_run_opts, opts,
+> > +               .flags =3D BPF_F_TEST_RUN_ON_CPU,
+>
+> It seems strange that this and the raw tracepoint are both test. I see
+> similar non-test uses in libbpf-tools. It would be worth documenting
+> that this isn't test code. Everything else LGTM.
 
-```
-arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-galaxy100.dtb: /ahb/apb@1e600000/gpio@1e780000: failed to match any schema with compatible: ['aspeed,ast2400-gpio']
-```
+It's a BPF syscall API that allows to run a certain kind of BPF program
+directly and not to necessarily be in a test.
 
-Signed-off-by: Andrew Jeffery <andrew@codeconstruct.com.au>
----
-v6: Address more constraint feedback from Krzysztof:
-    https://lore.kernel.org/all/f69ef2ad-8ace-40c8-b923-4dde20eda2ec@linaro.org/
+Thanks,
+Namhyung
 
-v5: https://lore.kernel.org/all/20240227052353.1060306-1-andrew@codeconstruct.com.au/
-
-    Resolve macro definition clashes from aspeed clock headers in examples
-    identified by Rob's bot:
-
-    https://lore.kernel.org/all/170900020204.2360855.790404478830111761.robh@kernel.org/
-
-    Clearly I missed running `make dt_binding_check` on the final iteration of
-    the v4 patch I sent. Hopefully I'm running out of rakes to step on here!
-
-v4: https://lore.kernel.org/all/20240227004414.841391-1-andrew@codeconstruct.com.au/
-
-    Add constraints for gpio-line-names, ngpios as requested by Krzysztof:
-    https://lore.kernel.org/all/458becdb-fb1e-4808-87b6-3037ec945647@linaro.org/
-
-    Add more examples to exercise constraints.
-
-v3: https://lore.kernel.org/all/20240226051645.414935-1-andrew@codeconstruct.com.au/
-
-    Base on v6.8-rc6, fix yamllint warning
-
-    Rob's bot picked the missing `#interrupt-cells` in the example on v2[1]. The
-    patch was based on v6.8-rc1, and going back over my shell history I missed
-    the following output from `make dt_binding_check`:
-
-    ```
-    ...
-      LINT    Documentation/devicetree/bindings
-      usage: yamllint [-h] [-] [-c CONFIG_FILE | -d CONFIG_DATA] [--list-files] [-f {parsable,standard,colored,github,auto}] [-s] [--no-warnings] [-v] [FILE_OR_DIR ...]
-      yamllint: error: one of the arguments FILE_OR_DIR - is required   
-    ...
-    ```
-
-    I've rebased on v6.8-rc6 and no-longer see the issue with the invocation
-    of `yamllint`.
-
-[1]: https://lore.kernel.org/all/170892197611.2260479.15343562563553959436.robh@kernel.org/
-
-v2: https://lore.kernel.org/all/20240226031951.284847-1-andrew@codeconstruct.com.au/
-
-    Address feedback from Krzysztof:
-    https://lore.kernel.org/all/0d1dd262-b6dd-4d71-9239-8b0aec8cceff@linaro.org/
-
-v1: https://lore.kernel.org/all/20240220052918.742793-1-andrew@codeconstruct.com.au/
-
- .../bindings/gpio/aspeed,ast2400-gpio.yaml    | 148 ++++++++++++++++++
- .../devicetree/bindings/gpio/gpio-aspeed.txt  |  39 -----
- 2 files changed, 148 insertions(+), 39 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/gpio/aspeed,ast2400-gpio.yaml
- delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-aspeed.txt
-
-diff --git a/Documentation/devicetree/bindings/gpio/aspeed,ast2400-gpio.yaml b/Documentation/devicetree/bindings/gpio/aspeed,ast2400-gpio.yaml
-new file mode 100644
-index 000000000000..cf11aa7ec8c7
---- /dev/null
-+++ b/Documentation/devicetree/bindings/gpio/aspeed,ast2400-gpio.yaml
-@@ -0,0 +1,148 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/gpio/aspeed,ast2400-gpio.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Aspeed GPIO controller
-+
-+maintainers:
-+  - Andrew Jeffery <andrew@codeconstruct.com.au>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - aspeed,ast2400-gpio
-+      - aspeed,ast2500-gpio
-+      - aspeed,ast2600-gpio
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+    description: The clock to use for debounce timings
-+
-+  gpio-controller: true
-+  gpio-line-names:
-+    minItems: 36
-+    maxItems: 232
-+
-+  gpio-ranges: true
-+
-+  "#gpio-cells":
-+    const: 2
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  interrupt-controller: true
-+
-+  "#interrupt-cells":
-+    const: 2
-+
-+  ngpios:
-+    minimum: 36
-+    maximum: 232
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - interrupt-controller
-+  - "#interrupt-cells"
-+  - gpio-controller
-+  - "#gpio-cells"
-+
-+allOf:
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: aspeed,ast2400-gpio
-+    then:
-+      properties:
-+        gpio-line-names:
-+          minItems: 220
-+          maxItems: 220
-+        ngpios:
-+          const: 220
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: aspeed,ast2500-gpio
-+    then:
-+      properties:
-+        gpio-line-names:
-+          minItems: 232
-+          maxItems: 232
-+        ngpios:
-+          const: 232
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: aspeed,ast2600-gpio
-+    then:
-+      properties:
-+        gpio-line-names:
-+          minItems: 36
-+          maxItems: 208
-+        ngpios:
-+          enum: [ 36, 208 ]
-+      required:
-+        - ngpios
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    gpio@1e780000 {
-+        compatible = "aspeed,ast2400-gpio";
-+        reg = <0x1e780000 0x1000>;
-+        interrupts = <20>;
-+        interrupt-controller;
-+        #interrupt-cells = <2>;
-+        gpio-controller;
-+        #gpio-cells = <2>;
-+    };
-+  - |
-+    gpio: gpio@1e780000 {
-+        compatible = "aspeed,ast2500-gpio";
-+        reg = <0x1e780000 0x200>;
-+        interrupts = <20>;
-+        interrupt-controller;
-+        #interrupt-cells = <2>;
-+        gpio-controller;
-+        #gpio-cells = <2>;
-+        gpio-ranges = <&pinctrl 0 0 232>;
-+    };
-+  - |
-+    #include <dt-bindings/clock/ast2600-clock.h>
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    gpio0: gpio@1e780000 {
-+        compatible = "aspeed,ast2600-gpio";
-+        reg = <0x1e780000 0x400>;
-+        clocks = <&syscon ASPEED_CLK_APB2>;
-+        interrupts = <GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>;
-+        interrupt-controller;
-+        #interrupt-cells = <2>;
-+        #gpio-cells = <2>;
-+        gpio-controller;
-+        gpio-ranges = <&pinctrl 0 0 208>;
-+        ngpios = <208>;
-+    };
-+    gpio1: gpio@1e780800 {
-+        compatible = "aspeed,ast2600-gpio";
-+        reg = <0x1e780800 0x800>;
-+        clocks = <&syscon ASPEED_CLK_APB1>;
-+        interrupts = <GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>;
-+        interrupt-controller;
-+        #interrupt-cells = <2>;
-+        gpio-controller;
-+        #gpio-cells = <2>;
-+        gpio-ranges = <&pinctrl 0 208 36>;
-+        ngpios = <36>;
-+    };
-diff --git a/Documentation/devicetree/bindings/gpio/gpio-aspeed.txt b/Documentation/devicetree/bindings/gpio/gpio-aspeed.txt
-deleted file mode 100644
-index b2033fc3a71a..000000000000
---- a/Documentation/devicetree/bindings/gpio/gpio-aspeed.txt
-+++ /dev/null
-@@ -1,39 +0,0 @@
--Aspeed GPIO controller Device Tree Bindings
---------------------------------------------
--
--Required properties:
--- compatible		: Either "aspeed,ast2400-gpio", "aspeed,ast2500-gpio",
--					or "aspeed,ast2600-gpio".
--
--- #gpio-cells 		: Should be two
--			  - First cell is the GPIO line number
--			  - Second cell is used to specify optional
--			    parameters (unused)
--
--- reg			: Address and length of the register set for the device
--- gpio-controller	: Marks the device node as a GPIO controller.
--- interrupts		: Interrupt specifier (see interrupt bindings for
--			  details)
--- interrupt-controller	: Mark the GPIO controller as an interrupt-controller
--
--Optional properties:
--
--- clocks		: A phandle to the clock to use for debounce timings
--- ngpios		: Number of GPIOs controlled by this controller. Should	be set
--				  when there are multiple GPIO controllers on a SoC (ast2600).
--
--The gpio and interrupt properties are further described in their respective
--bindings documentation:
--
--- Documentation/devicetree/bindings/gpio/gpio.txt
--- Documentation/devicetree/bindings/interrupt-controller/interrupts.txt
--
--  Example:
--	gpio@1e780000 {
--		#gpio-cells = <2>;
--		compatible = "aspeed,ast2400-gpio";
--		gpio-controller;
--		interrupts = <20>;
--		reg = <0x1e780000 0x1000>;
--		interrupt-controller;
--	};
-
-base-commit: d206a76d7d2726f3b096037f2079ce0bd3ba329b
--- 
-2.39.2
-
+>
+> > +       );
+> > +       int prog_fd =3D bpf_program__fd(skel->progs.end_timestamp);
+> > +
+> > +       bpf_prog_test_run_opts(prog_fd, &opts);
+> > +}
+> > +
+> > +static void update_lock_stat(int map_fd, int pid, u64 end_ts,
+> > +                            enum lock_aggr_mode aggr_mode,
+> > +                            struct tstamp_data *ts_data)
+> > +{
+> > +       u64 delta;
+> > +       struct contention_key stat_key =3D {};
+> > +       struct contention_data stat_data;
+> > +
+> > +       if (ts_data->timestamp >=3D end_ts)
+> > +               return;
+> > +
+> > +       delta =3D end_ts - ts_data->timestamp;
+> > +
+> > +       switch (aggr_mode) {
+> > +       case LOCK_AGGR_CALLER:
+> > +               stat_key.stack_id =3D ts_data->stack_id;
+> > +               break;
+> > +       case LOCK_AGGR_TASK:
+> > +               stat_key.pid =3D pid;
+> > +               break;
+> > +       case LOCK_AGGR_ADDR:
+> > +               stat_key.lock_addr_or_cgroup =3D ts_data->lock;
+> > +               break;
+> > +       case LOCK_AGGR_CGROUP:
+> > +               /* TODO */
+> > +               return;
+> > +       default:
+> > +               return;
+> > +       }
+> > +
+> > +       if (bpf_map_lookup_elem(map_fd, &stat_key, &stat_data) < 0)
+> > +               return;
+> > +
+> > +       stat_data.total_time +=3D delta;
+> > +       stat_data.count++;
+> > +
+> > +       if (delta > stat_data.max_time)
+> > +               stat_data.max_time =3D delta;
+> > +       if (delta < stat_data.min_time)
+> > +               stat_data.min_time =3D delta;
+> > +
+> > +       bpf_map_update_elem(map_fd, &stat_key, &stat_data, BPF_EXIST);
+> > +}
+> > +
+> > +/*
+> > + * Account entries in the tstamp map (which didn't see the correspondi=
+ng
+> > + * lock:contention_end tracepoint) using end_ts.
+> > + */
+> > +static void account_end_timestamp(struct lock_contention *con)
+> > +{
+> > +       int ts_fd, stat_fd;
+> > +       int *prev_key, key;
+> > +       u64 end_ts =3D skel->bss->end_ts;
+> > +       int total_cpus;
+> > +       enum lock_aggr_mode aggr_mode =3D con->aggr_mode;
+> > +       struct tstamp_data ts_data, *cpu_data;
+> > +
+> > +       /* Iterate per-task tstamp map (key =3D TID) */
+> > +       ts_fd =3D bpf_map__fd(skel->maps.tstamp);
+> > +       stat_fd =3D bpf_map__fd(skel->maps.lock_stat);
+> > +
+> > +       prev_key =3D NULL;
+> > +       while (!bpf_map_get_next_key(ts_fd, prev_key, &key)) {
+> > +               if (bpf_map_lookup_elem(ts_fd, &key, &ts_data) =3D=3D 0=
+) {
+> > +                       int pid =3D key;
+> > +
+> > +                       if (aggr_mode =3D=3D LOCK_AGGR_TASK && con->own=
+er)
+> > +                               pid =3D ts_data.flags;
+> > +
+> > +                       update_lock_stat(stat_fd, pid, end_ts, aggr_mod=
+e,
+> > +                                        &ts_data);
+> > +               }
+> > +
+> > +               prev_key =3D &key;
+> > +       }
+> > +
+> > +       /* Now it'll check per-cpu tstamp map which doesn't have TID. *=
+/
+> > +       if (aggr_mode =3D=3D LOCK_AGGR_TASK || aggr_mode =3D=3D LOCK_AG=
+GR_CGROUP)
+> > +               return;
+> > +
+> > +       total_cpus =3D cpu__max_cpu().cpu;
+> > +       ts_fd =3D bpf_map__fd(skel->maps.tstamp_cpu);
+> > +
+> > +       cpu_data =3D calloc(total_cpus, sizeof(*cpu_data));
+> > +       if (cpu_data =3D=3D NULL)
+> > +               return;
+> > +
+> > +       prev_key =3D NULL;
+> > +       while (!bpf_map_get_next_key(ts_fd, prev_key, &key)) {
+> > +               if (bpf_map_lookup_elem(ts_fd, &key, cpu_data) < 0)
+> > +                       goto next;
+> > +
+> > +               for (int i =3D 0; i < total_cpus; i++) {
+> > +                       update_lock_stat(stat_fd, -1, end_ts, aggr_mode=
+,
+> > +                                        &cpu_data[i]);
+> > +               }
+> > +
+> > +next:
+> > +               prev_key =3D &key;
+> > +       }
+> > +       free(cpu_data);
+> > +}
+> > +
+> >  int lock_contention_start(void)
+> >  {
+> >         skel->bss->enabled =3D 1;
+> > @@ -188,6 +301,7 @@ int lock_contention_start(void)
+> >  int lock_contention_stop(void)
+> >  {
+> >         skel->bss->enabled =3D 0;
+> > +       mark_end_timestamp();
+> >         return 0;
+> >  }
+> >
+> > @@ -301,6 +415,8 @@ int lock_contention_read(struct lock_contention *co=
+n)
+> >         if (stack_trace =3D=3D NULL)
+> >                 return -1;
+> >
+> > +       account_end_timestamp(con);
+> > +
+> >         if (con->aggr_mode =3D=3D LOCK_AGGR_TASK) {
+> >                 struct thread *idle =3D __machine__findnew_thread(machi=
+ne,
+> >                                                                 /*pid=
+=3D*/0,
+> > diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/per=
+f/util/bpf_skel/lock_contention.bpf.c
+> > index 95cd8414f6ef..fb54bd38e7d0 100644
+> > --- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
+> > +++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+> > @@ -19,13 +19,6 @@
+> >  #define LCB_F_PERCPU   (1U << 4)
+> >  #define LCB_F_MUTEX    (1U << 5)
+> >
+> > -struct tstamp_data {
+> > -       __u64 timestamp;
+> > -       __u64 lock;
+> > -       __u32 flags;
+> > -       __s32 stack_id;
+> > -};
+> > -
+> >  /* callstack storage  */
+> >  struct {
+> >         __uint(type, BPF_MAP_TYPE_STACK_TRACE);
+> > @@ -140,6 +133,8 @@ int perf_subsys_id =3D -1;
+> >  /* determine the key of lock stat */
+> >  int aggr_mode;
+> >
+> > +__u64 end_ts;
+> > +
+> >  /* error stat */
+> >  int task_fail;
+> >  int stack_fail;
+> > @@ -559,4 +554,11 @@ int BPF_PROG(collect_lock_syms)
+> >         return 0;
+> >  }
+> >
+> > +SEC("raw_tp/bpf_test_finish")
+> > +int BPF_PROG(end_timestamp)
+> > +{
+> > +       end_ts =3D bpf_ktime_get_ns();
+> > +       return 0;
+> > +}
+> > +
+> >  char LICENSE[] SEC("license") =3D "Dual BSD/GPL";
+> > diff --git a/tools/perf/util/bpf_skel/lock_data.h b/tools/perf/util/bpf=
+_skel/lock_data.h
+> > index 08482daf61be..36af11faad03 100644
+> > --- a/tools/perf/util/bpf_skel/lock_data.h
+> > +++ b/tools/perf/util/bpf_skel/lock_data.h
+> > @@ -3,6 +3,13 @@
+> >  #ifndef UTIL_BPF_SKEL_LOCK_DATA_H
+> >  #define UTIL_BPF_SKEL_LOCK_DATA_H
+> >
+> > +struct tstamp_data {
+> > +       u64 timestamp;
+> > +       u64 lock;
+> > +       u32 flags;
+> > +       u32 stack_id;
+> > +};
+> > +
+> >  struct contention_key {
+> >         u32 stack_id;
+> >         u32 pid;
+> > --
+> > 2.43.0.687.g38aa6559b0-goog
+> >
 
