@@ -1,41 +1,41 @@
-Return-Path: <linux-kernel+bounces-84972-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84961-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67FF986AE53
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:56:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D07F886AE3A
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:54:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BBE028D1DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:56:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E02A1C23787
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:54:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D566815B0F5;
-	Wed, 28 Feb 2024 11:49:45 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0294F70CD7;
+	Wed, 28 Feb 2024 11:49:41 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB46E12F368;
-	Wed, 28 Feb 2024 11:49:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F19F06CDCD;
+	Wed, 28 Feb 2024 11:49:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709120985; cv=none; b=qBLW94Wv7leavLI/1s8LzPGBYuZ3f7MiFt6aZCm1u6l9NZ8zgR607ACZLQ92ll8DB9i92OxKp9q5jN5fa/plLYcLtDRQi2d9qnnosJ5PT4TcCKfuPKJXNEVGgduv2iST5+lo6y+/vDIqzB/ArgUff8RIhIYoO7dFNJLeVU9Al9k=
+	t=1709120980; cv=none; b=fwmmIFrJYOomEx80d40T7nF8L7vySuYdYzWRWCZdfHyZZKghFC8Ggp4re2UNLQwbEO0rz8aGBwM00/KJckmj4+AB6CObmwh/cKpIDsk7AcUC2qptlPXCiQT409FM+Do2Ry157WKY3LoYhm0soZBCoOTGETVRzccLQMEwqMydgH4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709120985; c=relaxed/simple;
-	bh=0oZhOJul7RnQBEM4ip4PYFtTex6jjc1LvQzcBj5x1Fo=;
+	s=arc-20240116; t=1709120980; c=relaxed/simple;
+	bh=QYOlqih7BF6kX5BYdwF9n3/QSS94mDOA3t9MJUII4Qw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Ht3YXhDkaO8zFUMEmPecSmfxhO3H0675isCnJXADE3WXTcBG8CgrbkcniSD9E0wqMbi+35DoPsp3QlKJeZBXMRqiR7Vq1pjHN2yzyGftR8iVvxDZYl6sXpItyw1+De69bQ5xleOBMDoi+fqyq7BqP5lRYsR1QMPfuj2lOErlUds=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+	 MIME-Version; b=QCL988FAR4eKU09DpTpg2Cd7wWUaVVRO45y0W2z5pm3OjC04CumJp9ofbelDCzHh6OGXZtlh2H4uTiKLnensIt4VMorroUF8lXqozT06/ShYceaukaGp0X/cbngWdd3oeJfQV9f8nmMalmhJIsKz8LnRyUiMJB+dcQYgriC8r/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TlCLw2gB9z4f3jXf;
-	Wed, 28 Feb 2024 19:49:28 +0800 (CST)
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TlCLt59BMz4f3lgF;
+	Wed, 28 Feb 2024 19:49:26 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 96CB71A0232;
-	Wed, 28 Feb 2024 19:49:33 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 10EB11A0232;
+	Wed, 28 Feb 2024 19:49:34 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgAn9g7IHd9l+eamFQ--.6969S8;
+	by APP1 (Coremail) with SMTP id cCh0CgAn9g7IHd9l+eamFQ--.6969S9;
 	Wed, 28 Feb 2024 19:49:33 +0800 (CST)
 From: Yu Kuai <yukuai1@huaweicloud.com>
 To: xni@redhat.com,
@@ -49,9 +49,9 @@ Cc: linux-raid@vger.kernel.org,
 	yukuai1@huaweicloud.com,
 	yi.zhang@huawei.com,
 	yangerkun@huawei.com
-Subject: [PATCH md-6.9 v3 04/11] md/raid1: fix choose next idle in read_balance()
-Date: Wed, 28 Feb 2024 19:43:26 +0800
-Message-Id: <20240228114333.527222-5-yukuai1@huaweicloud.com>
+Subject: [PATCH md-6.9 v3 05/11] md/raid1-10: add a helper raid1_check_read_range()
+Date: Wed, 28 Feb 2024 19:43:27 +0800
+Message-Id: <20240228114333.527222-6-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240228114333.527222-1-yukuai1@huaweicloud.com>
 References: <20240228114333.527222-1-yukuai1@huaweicloud.com>
@@ -62,161 +62,97 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgAn9g7IHd9l+eamFQ--.6969S8
-X-Coremail-Antispam: 1UD129KBjvJXoWxXryrKr1kKr4fAFyUJry3twb_yoWrXw1xpw
-	4jvwsaqrWUXF43u3sxJw4UurySg345JayrGrZ7C34Fgry3XrWqqa47K342vry8CFs3J342
-	qw18GrZru3WkKa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPF14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+X-CM-TRANSID:cCh0CgAn9g7IHd9l+eamFQ--.6969S9
+X-Coremail-Antispam: 1UD129KBjvJXoW7AFy8Zw15tF1rurW5CF4kWFg_yoW8KFy5pr
+	4Yya43tr1UK3y3W3W3uF1xC34FyayfWFW8GrWfX3WDWry5Ga9akF97JryjgFyDWry3Xw12
+	qa1j9rWxua47CaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUP214x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
 	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
 	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-	z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr
-	1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0D
-	M2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjx
-	v20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1l
-	F7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2
-	IY04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAF
-	wI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc4
-	0Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AK
-	xVWxJVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r
-	4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjfUOBTY
-	UUUUU
+	z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
+	4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
+	3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
+	IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
+	M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2
+	kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
+	14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIx
+	kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAF
+	wI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJV
+	W8JwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7VUbmZ
+	X7UUUUU==
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-Commit 12cee5a8a29e ("md/raid1: prevent merging too large request") add
-the case choose next idle in read_balance():
+The checking and handler of bad blocks appear many timers during
+read_balance() in raid1 and raid10. This helper will be used in later
+patches to simplify read_balance() a lot.
 
-read_balance:
- for_each_rdev
-  if(next_seq_sect == this_sector || dist == 0)
-  -> sequential reads
-   best_disk = disk;
-   if (...)
-    choose_next_idle = 1
-    continue;
-
- for_each_rdev
- -> iterate next rdev
-  if (pending == 0)
-   best_disk = disk;
-   -> choose the next idle disk
-   break;
-
-  if (choose_next_idle)
-   -> keep using this rdev if there are no other idle disk
-   contine
-
-However, commit 2e52d449bcec ("md/raid1: add failfast handling for reads.")
-remove the code:
-
--               /* If device is idle, use it */
--               if (pending == 0) {
--                       best_disk = disk;
--                       break;
--               }
-
-Hence choose next idle will never work now, fix this problem by
-following:
-
-1) don't set best_disk in this case, read_balance() will choose the best
-   disk after iterating all the disks;
-2) add 'pending' so that other idle disk will be chosen;
-3) add a new local variable 'sequential_disk' to record the disk, and if
-   there is no other idle disk, 'sequential_disk' will be chosen;
-
-Fixes: 2e52d449bcec ("md/raid1: add failfast handling for reads.")
 Co-developed-by: Paul Luse <paul.e.luse@linux.intel.com>
 Signed-off-by: Paul Luse <paul.e.luse@linux.intel.com>
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 Reviewed-by: Xiao Ni <xni@redhat.com>
 ---
- drivers/md/raid1.c | 32 ++++++++++++++++++++++----------
- 1 file changed, 22 insertions(+), 10 deletions(-)
+ drivers/md/raid1-10.c | 49 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
 
-diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
-index 032a6a6c3730..97db9add27df 100644
---- a/drivers/md/raid1.c
-+++ b/drivers/md/raid1.c
-@@ -598,13 +598,12 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
- 	const sector_t this_sector = r1_bio->sector;
- 	int sectors;
- 	int best_good_sectors;
--	int best_disk, best_dist_disk, best_pending_disk;
-+	int best_disk, best_dist_disk, best_pending_disk, sequential_disk;
- 	int disk;
- 	sector_t best_dist;
- 	unsigned int min_pending;
- 	struct md_rdev *rdev;
- 	int choose_first;
--	int choose_next_idle;
+diff --git a/drivers/md/raid1-10.c b/drivers/md/raid1-10.c
+index 512746551f36..9bc0f0022a6c 100644
+--- a/drivers/md/raid1-10.c
++++ b/drivers/md/raid1-10.c
+@@ -227,3 +227,52 @@ static inline bool exceed_read_errors(struct mddev *mddev, struct md_rdev *rdev)
  
- 	/*
- 	 * Check if we can balance. We can balance on the whole
-@@ -615,11 +614,11 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
- 	sectors = r1_bio->sectors;
- 	best_disk = -1;
- 	best_dist_disk = -1;
-+	sequential_disk = -1;
- 	best_dist = MaxSector;
- 	best_pending_disk = -1;
- 	min_pending = UINT_MAX;
- 	best_good_sectors = 0;
--	choose_next_idle = 0;
- 	clear_bit(R1BIO_FailFast, &r1_bio->state);
- 
- 	if ((conf->mddev->recovery_cp < this_sector + sectors) ||
-@@ -712,7 +711,6 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
- 			int opt_iosize = bdev_io_opt(rdev->bdev) >> 9;
- 			struct raid1_info *mirror = &conf->mirrors[disk];
- 
--			best_disk = disk;
- 			/*
- 			 * If buffered sequential IO size exceeds optimal
- 			 * iosize, check if there is idle disk. If yes, choose
-@@ -731,15 +729,22 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
- 			    mirror->next_seq_sect > opt_iosize &&
- 			    mirror->next_seq_sect - opt_iosize >=
- 			    mirror->seq_start) {
--				choose_next_idle = 1;
--				continue;
-+				/*
-+				 * Add 'pending' to avoid choosing this disk if
-+				 * there is other idle disk.
-+				 */
-+				pending++;
-+				/*
-+				 * If there is no other idle disk, this disk
-+				 * will be chosen.
-+				 */
-+				sequential_disk = disk;
-+			} else {
-+				best_disk = disk;
-+				break;
- 			}
--			break;
- 		}
- 
--		if (choose_next_idle)
--			continue;
--
- 		if (min_pending > pending) {
- 			min_pending = pending;
- 			best_pending_disk = disk;
-@@ -751,6 +756,13 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
- 		}
- 	}
- 
-+	/*
-+	 * sequential IO size exceeds optimal iosize, however, there is no other
-+	 * idle disk, so choose the sequential disk.
-+	 */
-+	if (best_disk == -1 && min_pending != 0)
-+		best_disk = sequential_disk;
+ 	return false;
+ }
 +
- 	/*
- 	 * If all disks are rotational, choose the closest disk. If any disk is
- 	 * non-rotational, choose the disk with less pending request even the
++/**
++ * raid1_check_read_range() - check a given read range for bad blocks,
++ * available read length is returned;
++ * @rdev: the rdev to read;
++ * @this_sector: read position;
++ * @len: read length;
++ *
++ * helper function for read_balance()
++ *
++ * 1) If there are no bad blocks in the range, @len is returned;
++ * 2) If the range are all bad blocks, 0 is returned;
++ * 3) If there are partial bad blocks:
++ *  - If the bad block range starts after @this_sector, the length of first
++ *  good region is returned;
++ *  - If the bad block range starts before @this_sector, 0 is returned and
++ *  the @len is updated to the offset into the region before we get to the
++ *  good blocks;
++ */
++static inline int raid1_check_read_range(struct md_rdev *rdev,
++					 sector_t this_sector, int *len)
++{
++	sector_t first_bad;
++	int bad_sectors;
++
++	/* no bad block overlap */
++	if (!is_badblock(rdev, this_sector, *len, &first_bad, &bad_sectors))
++		return *len;
++
++	/*
++	 * bad block range starts offset into our range so we can return the
++	 * number of sectors before the bad blocks start.
++	 */
++	if (first_bad > this_sector)
++		return first_bad - this_sector;
++
++	/* read range is fully consumed by bad blocks. */
++	if (this_sector + *len <= first_bad + bad_sectors)
++		return 0;
++
++	/*
++	 * final case, bad block range starts before or at the start of our
++	 * range but does not cover our entire range so we still return 0 but
++	 * update the length with the number of sectors before we get to the
++	 * good ones.
++	 */
++	*len = first_bad + bad_sectors - this_sector;
++	return 0;
++}
 -- 
 2.39.2
 
