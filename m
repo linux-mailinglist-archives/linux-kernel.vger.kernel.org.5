@@ -1,179 +1,246 @@
-Return-Path: <linux-kernel+bounces-85488-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85490-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD49286B692
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:59:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D233486B696
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:00:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D04011C23D96
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:59:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 742BC1F24DAC
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:00:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2522D79B9C;
-	Wed, 28 Feb 2024 17:58:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HKZhhflH"
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 427DD4087A;
+	Wed, 28 Feb 2024 17:59:11 +0000 (UTC)
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61CA579B8B
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 17:58:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A6A340848;
+	Wed, 28 Feb 2024 17:59:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709143095; cv=none; b=BIyoKN//x7bjoFxunXjwBi5BDa69klr4EbL3PkOogBByPXp5nQ9CqAZ/vlV740+SheHlMMZsipWqkJ5u0qtsY0/vZFJCJuikIgW+kEg+cXUPGPKR2uOeu2lg957e1Zw0J8+wS9XyPaF1jINc5Yxx9EDOItdfeL1RXOZltZpdoEc=
+	t=1709143150; cv=none; b=XMMy1fNGmho45hODFqMP6I4iO6cCqChvEBLoUDlnl2FNxgRUitKx7GsBG8YhjhJ68gNRjv1rl7pGsSJi40uD+Ofy2IvF9CVjHtCP6O+hB+BO0xgRZ0lMBz2NfVEJij4t11a35XV1clIM0uezwGKzM+iMvmsFD5oACgFWwfFb4c4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709143095; c=relaxed/simple;
-	bh=cwZiV52W0Y4J4E8o/fpSdIpBIClZMIEQbiWW06NOSag=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=U/BbBH87cz0zB84VnxFr+BQvF0Y9dXkUcI6PD+4x9b1IqDKcL98iyoEQ/vBjmxy3tBaC0BLHHMTJD2/YEc6zpnr3zHxUR/gMyE60cYMsFvz09MWfosdQ6y+46sJESeZED5IHNgvgb90D7VTCj3+GrsDx1tqSAffQ7ciqPaUC2tw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HKZhhflH; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5131a9b3d5bso1211948e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 09:58:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709143091; x=1709747891; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2jJWhDy/4v7p6ijvXOsuvAzvYiBXZd1/Rbd71b95v5s=;
-        b=HKZhhflH8oebgM1wEmzKZCTJ10RlHHrhICV4QIzMsB4cxSowyjldig2JJG9bvwicQw
-         PhzEAHNxM6jTSgMiNKqEbRKV0N0DdS/nzWgPmH+h4ZW5CEIsNMvgJuLVOn3KlxLeXBtV
-         4x1o0ztGHAQWLX9bFzEgRSN9jBSWUoid5Q430C0SN3I2MFJ60TjDbE2h81QbCOUrDJjZ
-         lCq54VZFvJCF9Z9j1U/eaVjK1cs0NNuSFSJTFfIRmQ9Qxf9WLGPuChNe+BfyvaRjot3h
-         lt1dYi3T7YVhLTsY1XPBvHnwLWVEBs223CJsPKAfMSegPeV5gkQUThNVWmAd9cmSRSBG
-         R4lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709143091; x=1709747891;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2jJWhDy/4v7p6ijvXOsuvAzvYiBXZd1/Rbd71b95v5s=;
-        b=V5Asj2qvO/4MHVpyka7Ywq9/r92CXngJiNNxPcQ/gU3rtkft4CrtnqokcpWBfwahTQ
-         7WaCR8C/ghtcsgmOD5UrHe9xRxu6oBqUEiz38ZQytxTfwLmUyL8dKFPiDMt9ldfdP51z
-         C1AxECExdixmkVusuMYeyFarizc3SIlaO4ueuF+AsMss+dF1cj0iot7o69dk9RCwcdPZ
-         BXgKFxbIXW6LAjxRXNM4kjDZjfZoAarOGjbrMQPXOs7kwYrDgW3P9NAk7aNQocuhVGke
-         DcotZr7RxWCM9iXrpYdydW0KeDW4xnirdSGpwYJUEXwKIjYn1FAwNAUh+AwRXA4KcALr
-         tnuw==
-X-Forwarded-Encrypted: i=1; AJvYcCUeOeQHbUq6mPWDs59YKHJQeVcSRJ1LAyh7RJZ115O6iAWNkmVCQEb0TthJQJJfgoIYnLoRMR8nEYFmOeqBhfO6Fy+4MmNZYCpzqI9M
-X-Gm-Message-State: AOJu0YzvXS5kUQ9aXjkd6R/cQcanr2QByGa+F4lpUIyaJghkpvtGcbXg
-	hzpYXvQMGUfvpR4u0OPeFqmiefnoLHKe6s88apiXkVMqZWZGPRS4HIboRKPmXY8=
-X-Google-Smtp-Source: AGHT+IGeMb8GvdN1GKFJ44gE1Wrb49Q1GOwh8I5mdv3/2IvchNoaxUJcJdry4KzXQeujNBKsOdl3zw==
-X-Received: by 2002:a19:ae05:0:b0:512:c9bc:f491 with SMTP id f5-20020a19ae05000000b00512c9bcf491mr269277lfc.47.1709143091336;
-        Wed, 28 Feb 2024 09:58:11 -0800 (PST)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id eo8-20020a056000428800b0033dcac2a8dasm12637657wrb.68.2024.02.28.09.58.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 09:58:10 -0800 (PST)
-Date: Wed, 28 Feb 2024 20:58:07 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Lukasz Majewski <lukma@denx.de>
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>, Andrew Lunn <andrew@lunn.ch>,
-	Eric Dumazet <edumazet@google.com>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-	Tristram.Ha@microchip.com,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Ravi Gunasekaran <r-gunasekaran@ti.com>,
-	Simon Horman <horms@kernel.org>,
-	Wojciech Drewek <wojciech.drewek@intel.com>,
-	Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
-	Murali Karicheri <m-karicheri2@ti.com>,
-	Ziyang Xuan <william.xuanziyang@huawei.com>,
-	Kristian Overskeid <koverskeid@gmail.com>,
-	Matthieu Baerts <matttbe@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [RFC] net: hsr: Provide RedBox support
-Message-ID: <9ea38811-4297-424d-b82c-855ee75579f0@moroto.mountain>
-References: <20240228150735.3647892-1-lukma@denx.de>
+	s=arc-20240116; t=1709143150; c=relaxed/simple;
+	bh=27q+sAVMCpGXyOO7+Xz/rmsZjZDRkPVkgGNbIybUR0c=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=KlN7AbxzKEtGJkF+WP42vRGdsAcXYPRa38EW5kaGCZ/Hmd0kAT/Lk8Dtbt/zj/TKtRAB3HYt0N470B7c/JH/h8cLcsWjQgfvNUBb1/ziiXF9/qD21FTxrrHouo4eOXawSWHlzpSAYdzjNJpbMpZinnhomjVgycOAKo77OHCcb70=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.29])
+	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4TlMCR6PYXz9y4yV;
+	Thu, 29 Feb 2024 01:43:31 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.47])
+	by mail.maildlp.com (Postfix) with ESMTP id 522CC1407C8;
+	Thu, 29 Feb 2024 01:58:55 +0800 (CST)
+Received: from [127.0.0.1] (unknown [10.204.63.22])
+	by APP1 (Coremail) with SMTP id LxC2BwBnXxhJdN9li+FkAw--.41826S2;
+	Wed, 28 Feb 2024 18:58:54 +0100 (CET)
+Message-ID: <d1b88a1d2affbfb89ccd9131357d84580f107360.camel@huaweicloud.com>
+Subject: Re: [RFC 6/8] KEYS: PGP data parser
+From: Roberto Sassu <roberto.sassu@huaweicloud.com>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Petr Tesarik <petrtesarik@huaweicloud.com>, Dave Hansen
+ <dave.hansen@intel.com>, Petr =?UTF-8?Q?Tesa=C5=99=C3=ADk?=
+ <petr@tesarici.cz>,  Jonathan Corbet <corbet@lwn.net>, Thomas Gleixner
+ <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov
+ <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "maintainer:X86
+ ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>, "H. Peter Anvin"
+ <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,  Oleg Nesterov
+ <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Xin Li
+ <xin3.li@intel.com>, Arnd Bergmann <arnd@arndb.de>, Andrew Morton
+ <akpm@linux-foundation.org>, Rick Edgecombe <rick.p.edgecombe@intel.com>,
+ Kees Cook <keescook@chromium.org>, "Masami Hiramatsu (Google)"
+ <mhiramat@kernel.org>, Pengfei Xu <pengfei.xu@intel.com>, Josh Poimboeuf
+ <jpoimboe@kernel.org>, Ze Gao <zegao2021@gmail.com>, "Kirill A. Shutemov"
+ <kirill.shutemov@linux.intel.com>, Kai Huang <kai.huang@intel.com>, David
+ Woodhouse <dwmw@amazon.co.uk>, Brian Gerst <brgerst@gmail.com>, Jason
+ Gunthorpe <jgg@ziepe.ca>,  Joerg Roedel <jroedel@suse.de>, "Mike Rapoport
+ (IBM)" <rppt@kernel.org>, Tina Zhang <tina.zhang@intel.com>,  Jacob Pan
+ <jacob.jun.pan@linux.intel.com>, "open list:DOCUMENTATION"
+ <linux-doc@vger.kernel.org>,  open list <linux-kernel@vger.kernel.org>,
+ David Howells <dhowells@redhat.com>, Petr Tesarik
+ <petr.tesarik1@huawei-partners.com>
+Date: Wed, 28 Feb 2024 18:58:30 +0100
+In-Reply-To: <5b0ce7ef-3f4e-4c1b-a0b7-bf48e8169c4e@huaweicloud.com>
+References: <fb4a40c7-af9a-406a-95ab-406595f3ffe5@intel.com>
+	 <20240216152435.1575-1-petrtesarik@huaweicloud.com>
+	 <20240216152435.1575-7-petrtesarik@huaweicloud.com>
+	 <Zc-Q5pVHjngq9lpX@casper.infradead.org>
+	 <5916fa3ac3d0ce2ade71e7ed1c9eb6923e374c1f.camel@huaweicloud.com>
+	 <Zc-s-42WoZhW_2c8@casper.infradead.org>
+	 <5b0ce7ef-3f4e-4c1b-a0b7-bf48e8169c4e@huaweicloud.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240228150735.3647892-1-lukma@denx.de>
+X-CM-TRANSID:LxC2BwBnXxhJdN9li+FkAw--.41826S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxXFyfuFyrGFWDKF48Zw15CFg_yoW7Jr4DpF
+	WSka4YkF4qqr1Sk3Wqyw4xuFyFvrs3tF15W3s5JryfA3Z0gF12yryIka1jgF9rCr4kK3W2
+	yr4jyF9xCa4kA3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Ib4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8C
+	rVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4
+	IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIE
+	c7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2
+	IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v2
+	6rWY6r4UJwCIccxYrVCFb41lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_
+	WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJb
+	IYCTnIWIevJa73UjIFyTuYvjxUUtCzDUUUU
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAHBF1jj5bMogABsJ
 
-On Wed, Feb 28, 2024 at 04:07:35PM +0100, Lukasz Majewski wrote:
->  void hsr_debugfs_rename(struct net_device *dev)
->  {
-> @@ -95,6 +114,19 @@ void hsr_debugfs_init(struct hsr_priv *priv, struct net_device *hsr_dev)
->  		priv->node_tbl_root = NULL;
->  		return;
->  	}
-> +
-> +	if (!priv->redbox)
-> +		return;
-> +
-> +	de = debugfs_create_file("proxy_node_table", S_IFREG | 0444,
-> +				 priv->node_tbl_root, priv,
-> +				 &hsr_proxy_node_table_fops);
-> +	if (IS_ERR(de)) {
-> +		pr_err("Cannot create hsr proxy node_table file\n");
+On Fri, 2024-02-16 at 20:54 +0100, Roberto Sassu wrote:
+> On 2/16/2024 7:44 PM, Matthew Wilcox wrote:
+> > On Fri, Feb 16, 2024 at 05:53:01PM +0100, Roberto Sassu wrote:
+> > > On Fri, 2024-02-16 at 16:44 +0000, Matthew Wilcox wrote:
+> > > > On Fri, Feb 16, 2024 at 04:24:33PM +0100, Petr Tesarik wrote:
+> > > > > From: David Howells <dhowells@redhat.com>
+> > > > >=20
+> > > > > Implement a PGP data parser for the crypto key type to use when
+> > > > > instantiating a key.
+> > > > >=20
+> > > > > This parser attempts to parse the instantiation data as a PGP pac=
+ket
+> > > > > sequence (RFC 4880) and if it parses okay, attempts to extract a =
+public-key
+> > > > > algorithm key or subkey from it.
+> > > >=20
+> > > > I don't understand why we want to do this in-kernel instead of in
+> > > > userspace and then pass in the actual key.
+> > >=20
+> > > Sigh, this is a long discussion.
+> >=20
+> > Well, yes.  When you don't lay out why this is of value, it turns into =
+a
+> > long discussion.  This isn't fun for me either.
+> >=20
+> > > PGP keys would be used as a system-wide trust anchor to verify RPM
+> > > package headers, which already contain file digests that can be used =
+as
+> > > reference values for kernel-enforced integrity appraisal.
+> >=20
+> > The one example we have of usage comes in patch 7 of this series and is=
+:
+> >=20
+> > gpg --dearmor < <PGP key> | keyctl padd asymmetric "" @u
+> >=20
+> > And you're already using two userspace programs there.  Why not a third=
+?
+>=20
+> I think this is very easy to answer. Why not extracting the public key=
+=20
+> from an x509 certificate in user space, sending it to the kernel, and=20
+> using it for kernel module verification?
+>=20
+> > gpg --dearmor < <PGP key> | ./scripts/parse-pgp-packets | keyctl padd a=
+symmetric "" @u
+> >=20
+> > > With the assumptions that:
+> > >=20
+> > > - In a locked-down system the kernel has more privileges than root
+> > > - The kernel cannot offload this task to an user space process due to
+> > >    insufficient isolation
+> > >=20
+> > > the only available option is to do it in the kernel (that is what I g=
+ot
+> > > as suggestion).
+> >=20
+> > This sounds like there's some other way of getting the key into the
+> > kernel which doesn't rely on userspace.  Or are you assuming that nobod=
+y
+> > bothered to trojan 'cat'?
+>=20
+> Apologies for not providing the full information at once. I'm worried=20
+> that would be too long, and pieces can be lost in the way. If it is not=
+=20
+> a problem, I'm going to clarify on request.
+>=20
+> Ok, so, I'm not going to use cat to upload the PGP keys. These will be=
+=20
+> embedded in the kernel image, when the Linux distribution vendors build=
+=20
+> their kernel.
+>=20
+> This works for both secure boot and trusted boot, since the kernel image=
+=20
+> can be measured/verified by the boot loader.
+>=20
+> Another source for keys is the MOK database, since users might want the=
+=20
+> ability to verify their own software, which does not come from the Linux=
+=20
+> distribution.
+>=20
+> I briefly anticipated the full picture, but I will tell it more explicitl=
+y.
+>=20
+> The kernel, with the embedded PGP keys, will be able to verify the=20
+> signature of the RPM package headers.
+>=20
+> A component that I recently developed, the digest_cache LSM, has the=20
+> ability to extract file digests from RPM headers and provide a simple=20
+> interface for IMA, IPE, BPF LSM and any other component to query the=20
+> calculated digest of files being accessed, and allow/deny access to them=
+=20
+> depending on whether the query is successful or not.
 
-Debugfs functions are not supposed to be checked.  This will print a
-warning when CONFIG_DEBUGFS is disabled.  Just leave all the clean up
-out.  If debugfs can't allocate enough memory then probably this one
-debugfs_remove() is not going to save us.
+Not the proper thread, but since we talked about it...
 
-> +		debugfs_remove(priv->node_tbl_root);
-> +		priv->node_tbl_root = NULL;
-> +		return;
-> +	}
->  }
->  
->  /* hsr_debugfs_term - Tear down debugfs intrastructure
+I finally put together the PGP key and signature parser, the
+digest_cache LSM and the IMA integration patch sets, and built three
+openSUSE Tumbleweed packages (kernel, digest-cache-tools, dracut),
+which basically enable the integrity features that the kernel (IMA)
+supports:
 
-[ snip ]
+- IMA measurement list with RPM headers and (eventually) unknown files=20
+  that are not from Tumbleweed;
 
-> @@ -545,8 +558,8 @@ static const unsigned char def_multicast_addr[ETH_ALEN] __aligned(2) = {
->  };
->  
->  int hsr_dev_finalize(struct net_device *hsr_dev, struct net_device *slave[2],
-> -		     unsigned char multicast_spec, u8 protocol_version,
-> -		     struct netlink_ext_ack *extack)
-> +		     struct net_device *interlink, unsigned char multicast_spec,
-> +		     u8 protocol_version, struct netlink_ext_ack *extack)
->  {
->  	bool unregister = false;
->  	struct hsr_priv *hsr;
-> @@ -555,6 +568,7 @@ int hsr_dev_finalize(struct net_device *hsr_dev, struct net_device *slave[2],
->  	hsr = netdev_priv(hsr_dev);
->  	INIT_LIST_HEAD(&hsr->ports);
->  	INIT_LIST_HEAD(&hsr->node_db);
-> +	INIT_LIST_HEAD(&hsr->proxy_node_db);
->  	spin_lock_init(&hsr->list_lock);
->  
->  	eth_hw_addr_set(hsr_dev, slave[0]->dev_addr);
-> @@ -615,6 +629,18 @@ int hsr_dev_finalize(struct net_device *hsr_dev, struct net_device *slave[2],
->  	if (res)
->  		goto err_unregister;
->  
-> +	if (interlink) {
-> +		res = hsr_add_port(hsr, interlink, HSR_PT_INTERLINK, extack);
-> +		if (res)
-> +			goto err_unregister;
+- Ability to obtain a deterministic TPM PCR value, suitable for sealing
+  of TPM keys
 
-You need to add the iterlink port to hsr_del_ports() to avoid a leak in
-the remove() function.
+- Out of the box integrity enforcement on executable code, based on the
+  provenance from openSUSE Tumbleweed; nothing else is required other
+  than those three packages
 
-regards,
-dan carpenter
+An introduction and a guide with configuration steps can be found at:
 
-> +
-> +		hsr->redbox = true;
-> +		ether_addr_copy(hsr->macaddress_redbox, interlink->dev_addr);
-> +		timer_setup(&hsr->prune_proxy_timer, hsr_prune_proxy_nodes, 0);
-> +		mod_timer(&hsr->prune_proxy_timer,
-> +			  jiffies + msecs_to_jiffies(PRUNE_PROXY_PERIOD));
-> +	}
-> +
->  	hsr_debugfs_init(hsr, hsr_dev);
->  	mod_timer(&hsr->prune_timer, jiffies + msecs_to_jiffies(PRUNE_PERIOD));
->  
+https://github.com/linux-integrity/digest-cache-tools
+
+I would also appreciate your comments.
+
+Thanks
+
+Roberto
+
+> I already anticipate the question, if you have the problem parsing PGP=
+=20
+> keys, why don't you have the problem parsing RPM package headers?
+>=20
+> I started finding a solution before this became available, and the only=
+=20
+> alternative I found was to formally verify my code. So, I took Frama-C,=
+=20
+> wrote the assertions, and verified that not only the code is=20
+> functionally correct for correct sequences of bytes, but that there is=
+=20
+> no illegal memory access for any arbitrary sequence (unfortunately, I=20
+> can prove for a small buffer size).
+>=20
+> So, I'm probably going to do the same for the PGP parser, if this does=
+=20
+> not fly. But, we were very optimistic that this could be a valid=20
+> alternative!
+>=20
+> Roberto
 
 
