@@ -1,171 +1,113 @@
-Return-Path: <linux-kernel+bounces-85835-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85836-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83E1486BC02
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:14:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0E1486BC04
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:14:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F5E92851DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:14:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5076B1F27AB3
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:14:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4250513D303;
-	Wed, 28 Feb 2024 23:14:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F08DA13D30D;
+	Wed, 28 Feb 2024 23:14:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Th4ZCR6T"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NJIb+q5x"
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B6A913D2F2;
-	Wed, 28 Feb 2024 23:14:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB02B72903;
+	Wed, 28 Feb 2024 23:14:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709162049; cv=none; b=lBj7KDD0Wt02n1Kzg+A0n/uRtHxZB2QEcqWrrhMyS07OydD6GqcNHTBOUiI3ViwFT3tEvceKxABrtcQTTI/VUy+8imz8qEJAFWXUGVLkT+0aRc3SXSzCURrmG5iRXr8p6SLsBetsLW/0IT6KKyA6VhCb5LeN9Psvrr/ppxAp0jo=
+	t=1709162071; cv=none; b=uhhmqHD44RhFwAmk1swwntA8NAClgFtTLBySTgYwNR6HBVKZsORmQBjcZeUUWLK89OoyyXc63Kw3iGNy6rvBtDrKaLbKsLNhGcLvaTKFYxtu20egS17JDD/cKEDYCKDPuBdjgahPVbG3hjvFYLQksBVoAUwr8LlY4HYKNoTygBc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709162049; c=relaxed/simple;
-	bh=9zjdHyxAIafTdj9D6iu5/FFeCEFFi2NSkV3RY2SOaCA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=C4pEwLHpy5S9HOoX/b4FpKi++Y+EX1sue77gMVJLc1EJk42ae1lvX82Yo3NwPC5LeUPZy3T7Iv2MFEjAj8LGKW17Bn8tnFYJ5ufaBOua3LkB6K9kZuu6yYO2mLDcY5VTw/FN45uCXDClYzDCeznkSAnapWvzhEcPuH3GpW1znsw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Th4ZCR6T; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709162048; x=1740698048;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=9zjdHyxAIafTdj9D6iu5/FFeCEFFi2NSkV3RY2SOaCA=;
-  b=Th4ZCR6T4FiM2pDtSWE8CyfaAIYktZlDCyMruYz4v2u1Q0cAZZiGq/zD
-   KY1F4wQ0p6yftG+mdIF5xLu6fnEuHOMXSmSGdjmidv03cUhAgCHHZlhUx
-   x6g8+/4UIwfS7seNOv2Q4p0DgCyHTnt84oH16+vLD0mH7PAvHVxpWLauU
-   OQmKofHKzTMyJF/cahPF1GfEUaXn7VD1irC/zFX/Uf6GjDgftIliw1ciY
-   vZancQeG9VgtW2EGNMsmlB5suEQBCOgOK4rJ0BY9hhwPTOh92DiNjOgzN
-   Y3fnJw7H1ZGIMqSXU5p4ADqUuNAjE6MB52tmD/yVs1gAU768jX//Y1zKB
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="26066302"
-X-IronPort-AV: E=Sophos;i="6.06,191,1705392000"; 
-   d="scan'208";a="26066302"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 15:14:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,191,1705392000"; 
-   d="scan'208";a="30773949"
-Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.105])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 15:14:05 -0800
-Date: Wed, 28 Feb 2024 15:14:04 -0800
-From: Tony Luck <tony.luck@intel.com>
-To: Borislav Petkov <bp@alien8.de>
-Cc: "Naik, Avadhut" <avadnaik@amd.com>,
-	"Mehta, Sohil" <sohil.mehta@intel.com>,
-	"x86@kernel.org" <x86@kernel.org>,
-	"linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"yazen.ghannam@amd.com" <yazen.ghannam@amd.com>,
-	Avadhut Naik <avadhut.naik@amd.com>
-Subject: [PATCH] x86/mce: Dynamically size space for machine check records
-Message-ID: <Zd--PJp-NbXGrb39@agluck-desk3>
-References: <20240212093246.GBZcnlvkPKDC8C7rv5@fat_crate.local>
- <SJ1PR11MB6083B3511D18787BE823AB2CFC482@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <20240212175408.GIZcpbQHVjEtwRKLS-@fat_crate.local>
- <SJ1PR11MB60830AF35FA89C7869B8C11EFC482@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <20240212191401.GLZcpt-XHFqPg3cDw-@fat_crate.local>
- <SJ1PR11MB6083C60D7584B02E9CAF19D5FC482@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <ZcqPhVO_DtD2x5N7@agluck-desk3>
- <20240212220833.GQZcqW4WxKH34i-oBR@fat_crate.local>
- <20240212221913.GRZcqZYRd6EPTTnN97@fat_crate.local>
- <20240212224220.GSZcqezMhPojxvIcvO@fat_crate.local>
+	s=arc-20240116; t=1709162071; c=relaxed/simple;
+	bh=8fdh3uYGMPOXqvAOHOoKQAaXXudO0fmxMPdCZHjqsRw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lEQzWeurHXBMvV0P9vt/z3Kk/96B/u5JpxLhH6Z8hn6iOVr9+EWpia3ZGoZUxh0Utu5lFzQT2adg0TcJp5Oog7nnngZk0e1yZ5sn/3v28HDqls3e4ft5z7hqVk6IQ0J1ERMS9RGVajDosxZ8JF75Q+o02h4fDCe6qHjsTVJ8NS8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NJIb+q5x; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1dbd81000b6so162415ad.0;
+        Wed, 28 Feb 2024 15:14:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709162069; x=1709766869; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ot4CmQ/hhG4zUoY7ofq6ZiMV1G5BUrp00rn44kQoMs0=;
+        b=NJIb+q5xoF2uxAjdOR6wY23tcLSWhDLzroxqtpNts/LgfeSirmGu6lVov+gZvDz20X
+         SfPy6xiNRCU5MolZ39zsMR7KGlsZyKYaO3dOiixpNrm0VYaMIcW+qnJvzETU63cgzGx0
+         /AYLrpQVpo0vo0eELGTD422Apkv97Tbyr58zAEy7ikQy5cwJA66QbHNQEteUnuMGZZY4
+         iHaB9s7PybVCs/GszZaAq97DG2E0qHeXDBGEyXihXrrHJ0p41LSfDlxSut4au56yp9NE
+         ERfXTGBGRHUTTvRZXNh9gYgV7Hoy5HS+T3iOLkqyVm33YE8mlg62PEsPIoLsdu913G+p
+         4sGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709162069; x=1709766869;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ot4CmQ/hhG4zUoY7ofq6ZiMV1G5BUrp00rn44kQoMs0=;
+        b=KeNoHQ4oFwUEgdtx2sM8uYFaVI1lSEryXHFKhM7m3gSLSkpOkt4VByCaTJN7hlMST/
+         IhWvUT6GfM9tk0rwVIEDaE7qlEI8vb9VvX5M5jiOT2U2As1XiOn/AJIooQj4XTzkPTDv
+         Ku9yEWVbGsHoGLYTMgLonTY39HOR59xBpXf3npD3ZefijRqS3T72uU1JvpP9NQnXBJ3L
+         F0hyPCSeLWjB+De/dlVJ7PbfvII3HbkGtG4WVtPPSeP4Fmo8q//SpxDi4ZSk5ZVVKrxe
+         Ge62/3esdG9zADV5mxHmq77FAwHV/dm92CWD4JZ4lznJn65RthBDLJValQ3VI/QYhPgu
+         pIJA==
+X-Forwarded-Encrypted: i=1; AJvYcCUkl1o5cn5HtoauDwjyUpcjdm+IsVShd2gBIGNQIZSHxQcRv7In4Bbt/ABe7rvp+YbJYvj190H7WHoTNmBHZTmLv5iKIdd05P+NN7C39tRw/mi/gPnADJbyE+2mbgSmIJ4a83dtVpKGmvMlYhz/r9ZhFSoJ5NZskfofaoAS
+X-Gm-Message-State: AOJu0Ywa2DhgO411xyaYf2T73o56/MNPHVrSlGQS4n66TSpQgEz0GpbX
+	iYznWb1WhFbfPK3zEUsLdiORMnRvxmP4qoteBiUEGRVtqxOtMsK9ccPHPhMY+um/AIQ+rU4lm7q
+	f8Wq93nhxGFarE9KjcwJXtAy8HZs=
+X-Google-Smtp-Source: AGHT+IGdgZmlOD3uGWnVHJMjyJeA37xtSoParRksvcba8xX7FIeNpPx7PfxE6W9DLFTPkUvcu1cBQtxqPixljO3Quq4=
+X-Received: by 2002:a17:90a:3d45:b0:298:b736:ecf7 with SMTP id
+ o5-20020a17090a3d4500b00298b736ecf7mr667831pjf.0.1709162069188; Wed, 28 Feb
+ 2024 15:14:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240212224220.GSZcqezMhPojxvIcvO@fat_crate.local>
+References: <20240227-pci2_upstream-v1-0-b952f8333606@nxp.com> <20240227-pci2_upstream-v1-1-b952f8333606@nxp.com>
+In-Reply-To: <20240227-pci2_upstream-v1-1-b952f8333606@nxp.com>
+From: Fabio Estevam <festevam@gmail.com>
+Date: Wed, 28 Feb 2024 20:14:16 -0300
+Message-ID: <CAOMZO5C-01=jYbJTgQucfD8+pT-chy4xvQMckUee1O+gtE-0pQ@mail.gmail.com>
+Subject: Re: [PATCH 1/6] PCI: imx6: Rename imx6_* with imx_*
+To: Frank Li <Frank.Li@nxp.com>
+Cc: Richard Zhu <hongxing.zhu@nxp.com>, Lucas Stach <l.stach@pengutronix.de>, 
+	Lorenzo Pieralisi <lpieralisi@kernel.org>, =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, Shawn Guo <shawnguo@kernel.org>, 
+	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
+	NXP Linux Team <linux-imx@nxp.com>, Philipp Zabel <p.zabel@pengutronix.de>, 
+	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-pci@vger.kernel.org, 
+	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Systems with a large number of CPUs may generate a large
-number of machine check records when things go seriously
-wrong. But Linux has a fixed buffer that can only capture
-a few dozen errors.
+On Tue, Feb 27, 2024 at 6:47=E2=80=AFPM Frank Li <Frank.Li@nxp.com> wrote:
+>
+> imx6_* actually mean for all imx chips (imx6x, imx7x, imx8x and imx9x).
 
-Allocate space based on the number of CPUs (with a minimum
-value based on the historical fixed buffer that could store
-80 records).
+That's OK. In the kernel, we have lots of examples where the names of
+files and functions follow the first chip model.
 
-Signed-off-by: Tony Luck <tony.luck@intel.com>
----
+If this same IP gets used by another SoC in the future that is not
+named i.MX, will this driver get renamed again?
 
-Discussion earlier concluded with the realization that it is
-safe to dynamically allocate the mce_evt_pool at boot time.
-So here's a patch to do that. Scaling algorithm here is a
-simple linear "4 records per possible CPU" with a minimum
-of 80 to match the legacy behavior. I'm open to other
-suggestions.
+> Rename imx6_* with imx_* to avoid confuse.
 
-Note that I threw in a "+1" to the return from ilog2() when
-calling gen_pool_create(). From reading code, and running
-some tests, it appears that the min_alloc_order argument
-needs to be large enough to allocate one of the mce_evt_llist
-structures.
+I don't find it confusing.
 
-Some other gen_pool users in Linux may also need this "+1".
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+>  drivers/pci/controller/dwc/pci-imx6.c | 754 +++++++++++++++++-----------=
+------
+>  1 file changed, 377 insertions(+), 377 deletions(-)
 
- arch/x86/kernel/cpu/mce/genpool.c | 22 ++++++++++++++++------
- 1 file changed, 16 insertions(+), 6 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/mce/genpool.c b/arch/x86/kernel/cpu/mce/genpool.c
-index fbe8b61c3413..a1f0a8f29cf5 100644
---- a/arch/x86/kernel/cpu/mce/genpool.c
-+++ b/arch/x86/kernel/cpu/mce/genpool.c
-@@ -16,14 +16,13 @@
-  * used to save error information organized in a lock-less list.
-  *
-  * This memory pool is only to be used to save MCE records in MCE context.
-- * MCE events are rare, so a fixed size memory pool should be enough. Use
-- * 2 pages to save MCE events for now (~80 MCE records at most).
-+ * MCE events are rare, so a fixed size memory pool should be enough.
-+ * Allocate on a sliding scale based on number of CPUs.
-  */
--#define MCE_POOLSZ	(2 * PAGE_SIZE)
-+#define MCE_MIN_ENTRIES	80
- 
- static struct gen_pool *mce_evt_pool;
- static LLIST_HEAD(mce_event_llist);
--static char gen_pool_buf[MCE_POOLSZ];
- 
- /*
-  * Compare the record "t" with each of the records on list "l" to see if
-@@ -118,14 +117,25 @@ int mce_gen_pool_add(struct mce *mce)
- 
- static int mce_gen_pool_create(void)
- {
-+	int mce_numrecords, mce_poolsz;
- 	struct gen_pool *tmpp;
- 	int ret = -ENOMEM;
-+	void *mce_pool;
-+	int order;
- 
--	tmpp = gen_pool_create(ilog2(sizeof(struct mce_evt_llist)), -1);
-+	order = ilog2(sizeof(struct mce_evt_llist)) + 1;
-+	tmpp = gen_pool_create(order, -1);
- 	if (!tmpp)
- 		goto out;
- 
--	ret = gen_pool_add(tmpp, (unsigned long)gen_pool_buf, MCE_POOLSZ, -1);
-+	mce_numrecords = max(80, num_possible_cpus() * 4);
-+	mce_poolsz = mce_numrecords * (1 << order);
-+	mce_pool = kmalloc(mce_poolsz, GFP_KERNEL);
-+	if (!mce_pool) {
-+		gen_pool_destroy(tmpp);
-+		goto out;
-+	}
-+	ret = gen_pool_add(tmpp, (unsigned long)mce_pool, mce_poolsz, -1);
- 	if (ret) {
- 		gen_pool_destroy(tmpp);
- 		goto out;
--- 
-2.43.0
-
+I think this pure churn and we should not do the rename as it brings
+no benefits.
 
