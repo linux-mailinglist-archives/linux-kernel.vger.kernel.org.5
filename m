@@ -1,261 +1,144 @@
-Return-Path: <linux-kernel+bounces-85472-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85470-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E04D86B67D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:54:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CACA86B679
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:54:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C20671C255BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:54:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56D3F288605
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:54:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC39615E5D3;
-	Wed, 28 Feb 2024 17:54:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E23115F30E;
+	Wed, 28 Feb 2024 17:53:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="D2IrTjkj"
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47716161B6E
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 17:53:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="bsR6BXXr"
+Received: from smtp.smtpout.orange.fr (smtp-13.smtpout.orange.fr [80.12.242.13])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B79115E5B7
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 17:53:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709142840; cv=none; b=kEB6rlDOgieX8AkilM2G3TbLyg7kAurJo/tyFmymmfw+bobfyPiJxaz2WexhJONaDWXAd3HZ+Ff0VptzEzqJmPWHzj3UFVrqZjU3kdLnQic9MsgswOrW3yX+g/2Q3LnqORe5ZINH2Ra9jLGv4WROWHoR5/eNKhUWQ9R42pt/TAc=
+	t=1709142826; cv=none; b=YBHP03E/Ersv+Pzqy60+TbYsXwNATfRy95yISIBbQdeWxYrawXMN7XtbmpVN7b+2XyA+oDZl+eg8duP4hikKSoGqtswrdS4zZcWs9hacI525aGCB3L/g6OPeeVFrEiYb3Mr6Z4cqsrKjcGvg+gqX2BX1nDpXa/cNZanHdzgwOxg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709142840; c=relaxed/simple;
-	bh=1Bd28xktdVPNsM8n0LsBzvjun5YufbV6tfnuehsJA7U=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cNhBBpCJpcnL2OzLeugHJ7//Sho0XoOzSaageLmgkBA+bwan6eGTk5jYuGUjjQRRSTnQXvuHFW7UhofBP1ezxUD6GHZmTRR7DWEudbWYXe6Ofz6olC/QDzjm0F54/6J8CFvQ9DDQdWaO7ei9IObGTBCIBSNWbKasp8p4sfJHK14=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=D2IrTjkj; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-412b81ff401so234325e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 09:53:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1709142836; x=1709747636; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Y2KLsPuh1XpNjZ2CAToQLQwQXyB2VEROM3hvTLFmqyk=;
-        b=D2IrTjkjDsw+RKk6jHaPEfsFKyrJOMcpjZfnctDFKLMJHzu/vzHLgb6BAX+Y9piSA+
-         vg2xGX/EnGpKh7FWvkTbCz4IL1Y1znrUR+u0372XlXpKYczQslLlEYhJ1qEbgZF2lGxp
-         85zMkCYpoIFsPiunabG4TkWEpw4wKBlTfuJ0mH08iioPGUulUWcfBv+ghqnSpbtl2Ze6
-         U+fGIpIsnA9hlVHiLXNTVd7L4ihI399UhRIn7JsZ6ILHztxWQ64HveUAadAGrEVD9RNC
-         25pXfKiuFpCdqq3el5BnwIO7LFrCugy0zB69AL07Ir2aGGrKvNthocvfQGFlIFxxTwht
-         qi9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709142836; x=1709747636;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Y2KLsPuh1XpNjZ2CAToQLQwQXyB2VEROM3hvTLFmqyk=;
-        b=WZVhjGiizSXp16Ff8yhznASrqvNqDPolkeTf+fhGq7PCQO5E1jzP6iumwk8pcdiSpT
-         tU1HeLekAn5qnWAl6llJmbEmUekq81xw0DoNyem8ykWCaOtUDokdCEQQmIKtllCWqhrj
-         ekIsHKdFIwetalYnqXcSo3xKiZThjGdnaEz1LknfofpK2NTnKWDTqh3W5MgK6ixqfbi4
-         imOM7l770Be1st9OyAYDzCD4+55ImRn1wM3D+bKH+swsBFaKthQ6QyI7E4rL646FXRqo
-         sqqauOuyAoFyTtgPcug4YM+QBYobTX1msvnLI2B5nkaRWm24ya9HI5ykCWsAKGwCO86q
-         zgzw==
-X-Forwarded-Encrypted: i=1; AJvYcCVRpaAHn3e6zH4KsOd2DdMZd6KimFTCzgngk9KYjDJB29+3ipiMSi7Bnq+V9KypdVZknxHMhE5mGc3qaAGarP/vKfRjyIETi8cMQ0tX
-X-Gm-Message-State: AOJu0Yx0Fcw4FQ7KWVYT4ULIsfWwFqMPyu2eAp8mQ/1G5/xTryo0yplL
-	nbkjTP4HzQ+OQdop+i8BgIpZQMdTPnaLAjoqDFVIZ6zrSKh2uBMDdV6PPNaIfvg=
-X-Google-Smtp-Source: AGHT+IFzsKFwkm6/PUuNhQXzmzQ00xQ91ajZbuZqPe2v3cVZIJEAYjZNYyL+734jbdq5mZCUaY5k7A==
-X-Received: by 2002:a05:600c:190a:b0:412:b15c:9769 with SMTP id j10-20020a05600c190a00b00412b15c9769mr174697wmq.25.1709142836667;
-        Wed, 28 Feb 2024 09:53:56 -0800 (PST)
-Received: from alex-rivos.ba.rivosinc.com (amontpellier-656-1-456-62.w92-145.abo.wanadoo.fr. [92.145.124.62])
-        by smtp.gmail.com with ESMTPSA id n12-20020a05600c500c00b00412abfb0ed0sm2880142wmr.0.2024.02.28.09.53.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 09:53:56 -0800 (PST)
-From: Alexandre Ghiti <alexghiti@rivosinc.com>
-To: Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Andrea Parri <andrea@rivosinc.com>,
-	Anup Patel <anup@brainfault.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org
-Cc: Alexandre Ghiti <alexghiti@rivosinc.com>,
-	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>
-Subject: [PATCH 2/2] riscv: Fix text patching when IPI are used
-Date: Wed, 28 Feb 2024 18:51:49 +0100
-Message-Id: <20240228175149.162646-3-alexghiti@rivosinc.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240228175149.162646-1-alexghiti@rivosinc.com>
-References: <20240228175149.162646-1-alexghiti@rivosinc.com>
+	s=arc-20240116; t=1709142826; c=relaxed/simple;
+	bh=LbhXy96A+w6vpiruQUVvkg+e4nnJKaBfp0FqCDBfu6U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=k1VUBpY/Ga3XPjozwxCxOSCqngID+KFeokj9MPL3OlWro42I851LFZqE4NWAFL5YFMSr5+q6r6gC3e/EMK68wUgKjvr2VgPb9zRuG8m4OU/gRSUa+48e+eOPxPwcE/EEIlLtihi+FuwSw7VjfLx5Leq0JEUUN0+W2ieTC+MH1vU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=bsR6BXXr; arc=none smtp.client-ip=80.12.242.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from [192.168.1.18] ([92.140.202.140])
+	by smtp.orange.fr with ESMTPA
+	id fO6Zrco9bdHY5fO6ZrJUJj; Wed, 28 Feb 2024 18:52:33 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1709142753;
+	bh=pf79XzCNz511kLy7uzOABu4V2YVxERhDVTMvZ5TxWoQ=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=bsR6BXXr/ORjNGiqYcwp31xeIlNipEkvHWPlujcKWjPYY91Qw5hrv4BJYkLHvicOH
+	 uS1pX8OFvf+AHnEVv9EkL6ThaznaOkXgzYGbMV/KTKvYf+ej3OXpo6qiHApJ7hDvjg
+	 dJIl9HMWE7HadwG9zEjRtWaq1oBzHTaVeYbeu3FsiXIJjpGAp+nRZAUna9/iH0rxuo
+	 m0jdomeV5P9FicFE7x1jvnHZpbH6Skfj3FFHY3LsQEek/TTmDnFDfSygrEFs+aAWM5
+	 SP+OUHqD6O9sfyKMAGlVjWuPJO4Wo48Gv1d7YkfGsSH5Pr5nerF7dSq87DB/RPkOJd
+	 DHVwEsaNkyOGQ==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Wed, 28 Feb 2024 18:52:33 +0100
+X-ME-IP: 92.140.202.140
+Message-ID: <22bb246c-6e94-43c2-b742-38993ced9a61@wanadoo.fr>
+Date: Wed, 28 Feb 2024 18:52:30 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net 1/2] net: tehuti: Fix a missing pci_disable_msi() in
+ the error handling path of bdx_probe()
+To: Jiri Pirko <jiri@resnulli.us>
+Cc: andy@greyhouse.net, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <cover.1709066709.git.christophe.jaillet@wanadoo.fr>
+ <011588ecfd6689e27237f96213acdb7a3543f981.1709066709.git.christophe.jaillet@wanadoo.fr>
+ <Zd8CEAng7emsvaxg@nanopsycho>
+Content-Language: en-MW
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <Zd8CEAng7emsvaxg@nanopsycho>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-For now, we use stop_machine() to patch the text and when we use IPIs for
-remote icache flushes (which is emitted in patch_text_nosync()), the system
-hangs.
+Le 28/02/2024 à 10:51, Jiri Pirko a écrit :
+> Tue, Feb 27, 2024 at 09:50:55PM CET, christophe.jaillet@wanadoo.fr wrote:
+>> If an error occurs after a successful call to pci_enable_msi(),
+>> pci_disable_msi() should be called as already done in the remove function.
+>>
+>> Add a new label and the missing pci_disable_msi() call.
+>>
+>> Fixes: 1a348ccc1047 ("[NET]: Add Tehuti network driver.")
+>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>> ---
+>> Compile tested only.
+>> ---
+>> drivers/net/ethernet/tehuti/tehuti.c | 9 +++++++--
+>> 1 file changed, 7 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/net/ethernet/tehuti/tehuti.c b/drivers/net/ethernet/tehuti/tehuti.c
+>> index ca409515ead5..938a5caf5a3b 100644
+>> --- a/drivers/net/ethernet/tehuti/tehuti.c
+>> +++ b/drivers/net/ethernet/tehuti/tehuti.c
+>> @@ -1965,7 +1965,7 @@ bdx_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+>> 		ndev = alloc_etherdev(sizeof(struct bdx_priv));
+>> 		if (!ndev) {
+>> 			err = -ENOMEM;
+>> -			goto err_out_iomap;
+>> +			goto err_out_disable_msi;
+>> 		}
+>>
+>> 		ndev->netdev_ops = &bdx_netdev_ops;
+>> @@ -2031,7 +2031,7 @@ bdx_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+>> 		if (bdx_read_mac(priv)) {
+>> 			pr_err("load MAC address failed\n");
+>> 			err = -EFAULT;
+>> -			goto err_out_iomap;
+>> +			goto err_out_disable_msi;
+>> 		}
+>> 		SET_NETDEV_DEV(ndev, &pdev->dev);
+>> 		err = register_netdev(ndev);
+>> @@ -2048,6 +2048,11 @@ bdx_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+>>
+>> err_out_free:
+>> 	free_netdev(ndev);
+>> +err_out_disable_msi:
+>> +#ifdef BDX_MSI
+> 
+> ifdef does not seem to be necessary here. The irq_type check should be
+> enough.
 
-So instead, make sure every cpu executes the stop_machine() patching
-function and emit a local icache flush there.
+I thought about removing it, but I left it because it how it is done in 
+the remove function.
 
-Co-developed-by: Björn Töpel <bjorn@rivosinc.com>
-Signed-off-by: Björn Töpel <bjorn@rivosinc.com>
-Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
----
- arch/riscv/include/asm/patch.h |  1 +
- arch/riscv/kernel/ftrace.c     | 42 ++++++++++++++++++++++++++++++----
- arch/riscv/kernel/patch.c      | 18 +++++++++------
- 3 files changed, 50 insertions(+), 11 deletions(-)
+I'll send a v2 without the ifdef and will also add another patch to 
+remove it as well from the remove function.
 
-diff --git a/arch/riscv/include/asm/patch.h b/arch/riscv/include/asm/patch.h
-index e88b52d39eac..9f5d6e14c405 100644
---- a/arch/riscv/include/asm/patch.h
-+++ b/arch/riscv/include/asm/patch.h
-@@ -6,6 +6,7 @@
- #ifndef _ASM_RISCV_PATCH_H
- #define _ASM_RISCV_PATCH_H
- 
-+int patch_insn_write(void *addr, const void *insn, size_t len);
- int patch_text_nosync(void *addr, const void *insns, size_t len);
- int patch_text_set_nosync(void *addr, u8 c, size_t len);
- int patch_text(void *addr, u32 *insns, int ninsns);
-diff --git a/arch/riscv/kernel/ftrace.c b/arch/riscv/kernel/ftrace.c
-index f5aa24d9e1c1..5654966c4e7d 100644
---- a/arch/riscv/kernel/ftrace.c
-+++ b/arch/riscv/kernel/ftrace.c
-@@ -8,6 +8,7 @@
- #include <linux/ftrace.h>
- #include <linux/uaccess.h>
- #include <linux/memory.h>
-+#include <linux/stop_machine.h>
- #include <asm/cacheflush.h>
- #include <asm/patch.h>
- 
-@@ -75,8 +76,7 @@ static int __ftrace_modify_call(unsigned long hook_pos, unsigned long target,
- 		make_call_t0(hook_pos, target, call);
- 
- 	/* Replace the auipc-jalr pair at once. Return -EPERM on write error. */
--	if (patch_text_nosync
--	    ((void *)hook_pos, enable ? call : nops, MCOUNT_INSN_SIZE))
-+	if (patch_insn_write((void *)hook_pos, enable ? call : nops, MCOUNT_INSN_SIZE))
- 		return -EPERM;
- 
- 	return 0;
-@@ -88,7 +88,7 @@ int ftrace_make_call(struct dyn_ftrace *rec, unsigned long addr)
- 
- 	make_call_t0(rec->ip, addr, call);
- 
--	if (patch_text_nosync((void *)rec->ip, call, MCOUNT_INSN_SIZE))
-+	if (patch_insn_write((void *)rec->ip, call, MCOUNT_INSN_SIZE))
- 		return -EPERM;
- 
- 	return 0;
-@@ -99,7 +99,7 @@ int ftrace_make_nop(struct module *mod, struct dyn_ftrace *rec,
- {
- 	unsigned int nops[2] = {NOP4, NOP4};
- 
--	if (patch_text_nosync((void *)rec->ip, nops, MCOUNT_INSN_SIZE))
-+	if (patch_insn_write((void *)rec->ip, nops, MCOUNT_INSN_SIZE))
- 		return -EPERM;
- 
- 	return 0;
-@@ -134,6 +134,40 @@ int ftrace_update_ftrace_func(ftrace_func_t func)
- 
- 	return ret;
- }
-+
-+struct ftrace_modify_param {
-+	int command;
-+	atomic_t cpu_count;
-+};
-+
-+static int __ftrace_modify_code(void *data)
-+{
-+	struct ftrace_modify_param *param = data;
-+
-+	if (atomic_inc_return(&param->cpu_count) == num_online_cpus()) {
-+		ftrace_modify_all_code(param->command);
-+		/*
-+		 * Make sure the patching store is effective *before* we
-+		 * increment the counter which releases all waiting cpus
-+		 * by using the release version of atomic increment.
-+		 */
-+		atomic_inc_return_release(&param->cpu_count);
-+	} else {
-+		while (atomic_read(&param->cpu_count) <= num_online_cpus())
-+			cpu_relax();
-+	}
-+
-+	local_flush_icache_all();
-+
-+	return 0;
-+}
-+
-+void arch_ftrace_update_code(int command)
-+{
-+	struct ftrace_modify_param param = { command, ATOMIC_INIT(0) };
-+
-+	stop_machine(__ftrace_modify_code, &param, cpu_online_mask);
-+}
- #endif
- 
- #ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
-diff --git a/arch/riscv/kernel/patch.c b/arch/riscv/kernel/patch.c
-index 0b5c16dfe3f4..82d8508c765b 100644
---- a/arch/riscv/kernel/patch.c
-+++ b/arch/riscv/kernel/patch.c
-@@ -188,7 +188,7 @@ int patch_text_set_nosync(void *addr, u8 c, size_t len)
- }
- NOKPROBE_SYMBOL(patch_text_set_nosync);
- 
--static int patch_insn_write(void *addr, const void *insn, size_t len)
-+int patch_insn_write(void *addr, const void *insn, size_t len)
- {
- 	size_t patched = 0;
- 	size_t size;
-@@ -211,11 +211,9 @@ NOKPROBE_SYMBOL(patch_insn_write);
- 
- int patch_text_nosync(void *addr, const void *insns, size_t len)
- {
--	u32 *tp = addr;
- 	int ret;
- 
--	ret = patch_insn_write(tp, insns, len);
--
-+	ret = patch_insn_write(addr, insns, len);
- 	if (!ret)
- 		flush_icache_range((uintptr_t) tp, (uintptr_t) tp + len);
- 
-@@ -232,15 +230,21 @@ static int patch_text_cb(void *data)
- 	if (atomic_inc_return(&patch->cpu_count) == num_online_cpus()) {
- 		for (i = 0; ret == 0 && i < patch->ninsns; i++) {
- 			len = GET_INSN_LENGTH(patch->insns[i]);
--			ret = patch_text_nosync(patch->addr + i * len,
--						&patch->insns[i], len);
-+			ret = patch_insn_write(patch->addr + i * len, &patch->insns[i], len);
- 		}
--		atomic_inc(&patch->cpu_count);
-+		/*
-+		 * Make sure the patching store is effective *before* we
-+		 * increment the counter which releases all waiting cpus
-+		 * by using the release version of atomic increment.
-+		 */
-+		atomic_inc_return_release(&patch->cpu_count);
- 	} else {
- 		while (atomic_read(&patch->cpu_count) <= num_online_cpus())
- 			cpu_relax();
- 	}
- 
-+	local_flush_icache_all();
-+
- 	return ret;
- }
- NOKPROBE_SYMBOL(patch_text_cb);
--- 
-2.39.2
+CJ
+
+> 
+> pw-bot: cr
+> 
+> 
+>> +	if (nic->irq_type == IRQ_MSI)
+>> +		pci_disable_msi(pdev);
+>> +#endif
+>> err_out_iomap:
+>> 	iounmap(nic->regs);
+>> err_out_res:
+>> -- 
+>> 2.43.2
+>>
+>>
+> 
+> 
 
 
