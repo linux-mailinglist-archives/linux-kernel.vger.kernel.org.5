@@ -1,223 +1,330 @@
-Return-Path: <linux-kernel+bounces-85297-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85296-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7492886B3A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:49:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1CBD86B3A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:49:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29B26289C85
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:49:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 212D71C25ABF
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:49:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0A4515D5C9;
-	Wed, 28 Feb 2024 15:49:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 425AD15D5A7;
+	Wed, 28 Feb 2024 15:48:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ifc99CVO"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="AV9GFThM"
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1E4915D5AB
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 15:48:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3211E15CD61
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 15:48:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709135341; cv=none; b=doba32NDx9XC2qmjMaTQ3/z2ZITP3CRX6cVAP0lgUxunAoiKGUg7H3Hmfp7WhIZgfTTdWct5AVeeGjh+sgpX/nbe71erEWsq75Zz/ZzgXYiWkY/fqPdDNoMHUwrFAjzSHeAvcpe5CWI1F2jSKQyvtOI3/SyaldWJVrcPVfyU0I8=
+	t=1709135338; cv=none; b=Mx5r1RV41pCxldT+xg65IXJyke67udZ465KKeFQCihRMXfgiK0H9NkWw+qxmOjH5CS9LXDK0X+tMBOyu0VFw2qJYukFI7qx0hzcqd5kHRX5LM2WD448z7flsvb2ON/ZRqRS73F5Y1SjLizu+kDJYzYVAh96KjDqptfTo2Fg4o3M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709135341; c=relaxed/simple;
-	bh=8hMJO7MF9qiQtx2ZVy+p4iRGbcW+mf/pXZ8jZo+js4I=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=NcIvMfDDpgkrdoB/V8eER6HrlXiVDbt4fqJTnX88++4gPCuaSOI8OPqh7BQOh75eLukKIfOj5ZMrIPtqEwp61gdG+5Rg+h0kVh7lC0gIqDsiRm2m4LO+nlkTK6SSLd7boSo7RTsU6KnVkSTSNbmzd4R39kccjxnk9FAsJWpgkrc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ifc99CVO; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709135340; x=1740671340;
-  h=date:from:to:cc:subject:message-id;
-  bh=8hMJO7MF9qiQtx2ZVy+p4iRGbcW+mf/pXZ8jZo+js4I=;
-  b=ifc99CVOKpgqehkXi1uzUtZiNhGXcGW1z1G3VDG/2hYN4qII+ybePcOO
-   12qKGZKTYbG5atJ9VNQYoEz+iJzfFotgAtmmAP34xMfEwfLRTfKSETcZr
-   9OYhhCVRvcLmYbSUSIlX/NmkXCONoR6w5sTBTj9oxA2hQFoyj+w0J9dRd
-   cWlwcOhiQgOmQOb+mu96BKFONPBlR+KaK4Vw+yfI77JHdo3CJm6JIK1Rh
-   +0OISroad0fSHzKW3Q6s/1WTEBl08y2jOwJ07vPnY9cpLKO/ItuHYVang
-   2hdeeM+J4N8UdvfkCD6NiW78OHbwWer9WqApSrbeESiZ/SXWgMrUYyFYg
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="3703933"
-X-IronPort-AV: E=Sophos;i="6.06,190,1705392000"; 
-   d="scan'208";a="3703933"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 07:48:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,190,1705392000"; 
-   d="scan'208";a="7520108"
-Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by orviesa009.jf.intel.com with ESMTP; 28 Feb 2024 07:48:58 -0800
-Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rfMAx-000CBU-2r;
-	Wed, 28 Feb 2024 15:48:55 +0000
-Date: Wed, 28 Feb 2024 23:48:21 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:x86/cleanups] BUILD SUCCESS
- 47403a4b49767f1d533e4dc5f5cf5cc957f22a5e
-Message-ID: <202402282318.hVsqkeaw-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1709135338; c=relaxed/simple;
+	bh=2l1p0FkVJJIA9aD06YUCULtHRpOuCYtkSMCuCgp9obs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=G5ZOt5TJVh/KvjrYTOXXJu8JHN5h2xIedSum1Gbn3LdGc+jup6Xmi8Uq0M6HImhmCCeCyLpGGx83qlxcdn2nPa7A4HYLt56+rK8R+4LtKDfjiuysZ9iMzn+YayFE/UIQ1J2WvxAXIO9ZWnhLAH9AxUYs6Zx8cmj7OfgPAknkUXA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=AV9GFThM; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-563d56ee65cso7780888a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 07:48:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google09082023; t=1709135333; x=1709740133; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0acqoRsfoE0kZ4l/ZEfScsnB2Z0F6y/I1cj4Xx9Gu/I=;
+        b=AV9GFThMIaiOJVpI5PfUgjZd9U0Sazv4ZnFOEMGUqTaWZPBEcEv72TI4lHAVH1yGiR
+         09LPzq+icnWE7mb/ogqQ+rwON/ATozBgPArgfgjqUdi031NSF5v9kwto6f//uv0zbFnj
+         8DWUHnh3QptET+R2c3zdvRvOL8bNVUkJ6T6Z2jOSYg9omUf2miQQYPcZAsXpRrS9Xt/P
+         wp56rrrzvtHcRUbJypj1IaBa31b5Qif0BlF5ocffT8WSVwXWGjzL33q6L6UA4U82FaAI
+         fBsXdVaXiKBtWtwBm4jyjHxXXpgwjqxYqnxNZ5GS4kCmIuShYMyp/P8t9e/ZAs0xQiIH
+         +okg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709135333; x=1709740133;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0acqoRsfoE0kZ4l/ZEfScsnB2Z0F6y/I1cj4Xx9Gu/I=;
+        b=JVd3Yx3MiS/L3EX+GbUFRGVobWLinBX5GBmllrLSFeIJ7KKfYi68eWhQfE55tgTja6
+         jyVDkwoReUqMHznEnMbWZvOit3XFzHFj/hqC7qcjzs8vqGCV8lUmGW4W0QO8n3bwaNjP
+         prZ1CSx7/1BuFPl+Yfo9p2aMJx4Opegf3+zF9mlWaL37Yf9dTHbTh2wfdKZX2zAVfBDK
+         HodNOqSibLmTlyd6WeQLEyH+22CePLDyXsFSy9fz7Esh+hcKVru3uj93xa11W4TYP5L6
+         aEYhTM0NEBhuo85SqrAxkdxVt/xWiK/T9Ga5OSF8g/CM7VDV28CArY809l+IBW2cX2IW
+         dUrA==
+X-Forwarded-Encrypted: i=1; AJvYcCVJYCZYc32qej01uXvz3Y92ZYO1ltx3wHmXLnMTr9TmCzc4m4G+7/NWdYFW5qkrlJmFTXI5hwmV1uXo1G5ZBhi68vmwwmXF/vc3hdW9
+X-Gm-Message-State: AOJu0YzCQcflBnyxGzeCvF8scde+fyVNvC0roRWweNOUjiGxV2DTZCFQ
+	Vpl8sj1umbCEIuWr/wreVSqWRy7bVuact3vm5pYJfd5rzE+8FPq1lOlDemfVg7H1VdzLs/zNKNa
+	TT/ESZH+8fpEYrD++oJdF8M8keWzEdUu1d8bPEw==
+X-Google-Smtp-Source: AGHT+IH6aNVk09cB3BKpFmicAgoTrrf89CPJseyBBFpZq1osNLfkiSUTaktPPiTWbLXN0g4Fh9V9YOaHGTLIEoKLs4M=
+X-Received: by 2002:a05:6402:1810:b0:566:4a85:ceb7 with SMTP id
+ g16-20020a056402181000b005664a85ceb7mr3104478edy.28.1709135333422; Wed, 28
+ Feb 2024 07:48:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <Zd4DXTyCf17lcTfq@debian.debian> <CANn89iJQX14C1Qb_qbTVG4yoG26Cq7Ct+2qK_8T-Ok2JDdTGEA@mail.gmail.com>
+ <d633c5b9-53a5-4cd6-9dbb-6623bb74c00b@paulmck-laptop> <87edcwerj6.fsf@toke.dk>
+ <6b6ce007-4527-494f-8d03-079f7bf139f9@paulmck-laptop>
+In-Reply-To: <6b6ce007-4527-494f-8d03-079f7bf139f9@paulmck-laptop>
+From: Yan Zhai <yan@cloudflare.com>
+Date: Wed, 28 Feb 2024 09:48:42 -0600
+Message-ID: <CAO3-PbpPN0ASFbkgb1J=uBnY=hd6s4CPACRuQtWng_3Apsy_NQ@mail.gmail.com>
+Subject: Re: [PATCH] net: raise RCU qs after each threaded NAPI poll
+To: paulmck@kernel.org
+Cc: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
+	Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org, 
+	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Lorenzo Bianconi <lorenzo@kernel.org>, 
+	Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>, 
+	Alexander Duyck <alexanderduyck@fb.com>, Hannes Frederic Sowa <hannes@stressinduktion.org>, 
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org, bpf@vger.kernel.org, 
+	kernel-team@cloudflare.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cleanups
-branch HEAD: 47403a4b49767f1d533e4dc5f5cf5cc957f22a5e  x86/nmi: Remove an unnecessary IS_ENABLED(CONFIG_SMP)
+On Wed, Feb 28, 2024 at 9:10=E2=80=AFAM Paul E. McKenney <paulmck@kernel.or=
+g> wrote:
+>
+> On Wed, Feb 28, 2024 at 12:50:53PM +0100, Toke H=C3=B8iland-J=C3=B8rgense=
+n wrote:
+> > "Paul E. McKenney" <paulmck@kernel.org> writes:
+> >
+> > > On Tue, Feb 27, 2024 at 05:44:17PM +0100, Eric Dumazet wrote:
+> > >> On Tue, Feb 27, 2024 at 4:44=E2=80=AFPM Yan Zhai <yan@cloudflare.com=
+> wrote:
+> > >> >
+> > >> > We noticed task RCUs being blocked when threaded NAPIs are very bu=
+sy in
+> > >> > production: detaching any BPF tracing programs, i.e. removing a ft=
+race
+> > >> > trampoline, will simply block for very long in rcu_tasks_wait_gp. =
+This
+> > >> > ranges from hundreds of seconds to even an hour, severely harming =
+any
+> > >> > observability tools that rely on BPF tracing programs. It can be
+> > >> > easily reproduced locally with following setup:
+> > >> >
+> > >> > ip netns add test1
+> > >> > ip netns add test2
+> > >> >
+> > >> > ip -n test1 link add veth1 type veth peer name veth2 netns test2
+> > >> >
+> > >> > ip -n test1 link set veth1 up
+> > >> > ip -n test1 link set lo up
+> > >> > ip -n test2 link set veth2 up
+> > >> > ip -n test2 link set lo up
+> > >> >
+> > >> > ip -n test1 addr add 192.168.1.2/31 dev veth1
+> > >> > ip -n test1 addr add 1.1.1.1/32 dev lo
+> > >> > ip -n test2 addr add 192.168.1.3/31 dev veth2
+> > >> > ip -n test2 addr add 2.2.2.2/31 dev lo
+> > >> >
+> > >> > ip -n test1 route add default via 192.168.1.3
+> > >> > ip -n test2 route add default via 192.168.1.2
+> > >> >
+> > >> > for i in `seq 10 210`; do
+> > >> >  for j in `seq 10 210`; do
+> > >> >     ip netns exec test2 iptables -I INPUT -s 3.3.$i.$j -p udp --dp=
+ort 5201
+> > >> >  done
+> > >> > done
+> > >> >
+> > >> > ip netns exec test2 ethtool -K veth2 gro on
+> > >> > ip netns exec test2 bash -c 'echo 1 > /sys/class/net/veth2/threade=
+d'
+> > >> > ip netns exec test1 ethtool -K veth1 tso off
+> > >> >
+> > >> > Then run an iperf3 client/server and a bpftrace script can trigger=
+ it:
+> > >> >
+> > >> > ip netns exec test2 iperf3 -s -B 2.2.2.2 >/dev/null&
+> > >> > ip netns exec test1 iperf3 -c 2.2.2.2 -B 1.1.1.1 -u -l 1500 -b 3g =
+-t 100 >/dev/null&
+> > >> > bpftrace -e 'kfunc:__napi_poll{@=3Dcount();} interval:s:1{exit();}=
+'
+> > >> >
+> > >> > Above reproduce for net-next kernel with following RCU and preempt
+> > >> > configuraitons:
+> > >> >
+> > >> > # RCU Subsystem
+> > >> > CONFIG_TREE_RCU=3Dy
+> > >> > CONFIG_PREEMPT_RCU=3Dy
+> > >> > # CONFIG_RCU_EXPERT is not set
+> > >> > CONFIG_SRCU=3Dy
+> > >> > CONFIG_TREE_SRCU=3Dy
+> > >> > CONFIG_TASKS_RCU_GENERIC=3Dy
+> > >> > CONFIG_TASKS_RCU=3Dy
+> > >> > CONFIG_TASKS_RUDE_RCU=3Dy
+> > >> > CONFIG_TASKS_TRACE_RCU=3Dy
+> > >> > CONFIG_RCU_STALL_COMMON=3Dy
+> > >> > CONFIG_RCU_NEED_SEGCBLIST=3Dy
+> > >> > # end of RCU Subsystem
+> > >> > # RCU Debugging
+> > >> > # CONFIG_RCU_SCALE_TEST is not set
+> > >> > # CONFIG_RCU_TORTURE_TEST is not set
+> > >> > # CONFIG_RCU_REF_SCALE_TEST is not set
+> > >> > CONFIG_RCU_CPU_STALL_TIMEOUT=3D21
+> > >> > CONFIG_RCU_EXP_CPU_STALL_TIMEOUT=3D0
+> > >> > # CONFIG_RCU_TRACE is not set
+> > >> > # CONFIG_RCU_EQS_DEBUG is not set
+> > >> > # end of RCU Debugging
+> > >> >
+> > >> > CONFIG_PREEMPT_BUILD=3Dy
+> > >> > # CONFIG_PREEMPT_NONE is not set
+> > >> > CONFIG_PREEMPT_VOLUNTARY=3Dy
+> > >> > # CONFIG_PREEMPT is not set
+> > >> > CONFIG_PREEMPT_COUNT=3Dy
+> > >> > CONFIG_PREEMPTION=3Dy
+> > >> > CONFIG_PREEMPT_DYNAMIC=3Dy
+> > >> > CONFIG_PREEMPT_RCU=3Dy
+> > >> > CONFIG_HAVE_PREEMPT_DYNAMIC=3Dy
+> > >> > CONFIG_HAVE_PREEMPT_DYNAMIC_CALL=3Dy
+> > >> > CONFIG_PREEMPT_NOTIFIERS=3Dy
+> > >> > # CONFIG_DEBUG_PREEMPT is not set
+> > >> > # CONFIG_PREEMPT_TRACER is not set
+> > >> > # CONFIG_PREEMPTIRQ_DELAY_TEST is not set
+> > >> >
+> > >> > An interesting observation is that, while tasks RCUs are blocked,
+> > >> > related NAPI thread is still being scheduled (even across cores)
+> > >> > regularly. Looking at the gp conditions, I am inclining to cond_re=
+sched
+> > >> > after each __napi_poll being the problem: cond_resched enters the
+> > >> > scheduler with PREEMPT bit, which does not account as a gp for tas=
+ks
+> > >> > RCUs. Meanwhile, since the thread has been frequently resched, the
+> > >> > normal scheduling point (no PREEMPT bit, accounted as a task RCU g=
+p)
+> > >> > seems to have very little chance to kick in. Given the nature of "=
+busy
+> > >> > polling" program, such NAPI thread won't have task->nvcsw or task-=
+>on_rq
+> > >> > updated (other gp conditions), the result is that such NAPI thread=
+ is
+> > >> > put on RCU holdouts list for indefinitely long time.
+> > >> >
+> > >> > This is simply fixed by mirroring the ksoftirqd behavior: after
+> > >> > NAPI/softirq work, raise a RCU QS to help expedite the RCU period.=
+ No
+> > >> > more blocking afterwards for the same setup.
+> > >> >
+> > >> > Fixes: 29863d41bb6e ("net: implement threaded-able napi poll loop =
+support")
+> > >> > Signed-off-by: Yan Zhai <yan@cloudflare.com>
+> > >> > ---
+> > >> >  net/core/dev.c | 4 ++++
+> > >> >  1 file changed, 4 insertions(+)
+> > >> >
+> > >> > diff --git a/net/core/dev.c b/net/core/dev.c
+> > >> > index 275fd5259a4a..6e41263ff5d3 100644
+> > >> > --- a/net/core/dev.c
+> > >> > +++ b/net/core/dev.c
+> > >> > @@ -6773,6 +6773,10 @@ static int napi_threaded_poll(void *data)
+> > >> >                                 net_rps_action_and_irq_enable(sd);
+> > >> >                         }
+> > >> >                         skb_defer_free_flush(sd);
+> > >
+> > > Please put a comment here stating that RCU readers cannot cross
+> > > this point.
+> > >
+> > > I need to add lockdep to rcu_softirq_qs() to catch placing this in an
+> > > RCU read-side critical section.  And a header comment noting that fro=
+m
+> > > an RCU perspective, it acts as a momentary enabling of preemption.
+> >
+> > OK, so one question here: for XDP, we're basically treating
+> > local_bh_disable/enable() as the RCU critical section, cf the discussio=
+n
+> > we had a few years ago that led to this being documented[0]. So why is
+> > it OK to have the rcu_softirq_qs() inside the bh disable/enable pair,
+> > but not inside an rcu_read_lock() section?
+>
+> In general, it is not OK.  And it is not OK in this case if this happens
+> to be one of the local_bh_disable() regions that XDP is waiting on.
+> Except that that region ends right after the rcu_softirq_qs(), so that
+> should not be a problem.
+>
+> But you are quite right, that is an accident waiting to happen, so it
+> would be better if the patch did something like this:
+>
+>         local_bh_enable();
+>         if (!IS_ENABLED(CONFIG_PREEMPT_RT)) {
+>                 preempt_disable();
+>                 rcu_softirq_qs();
+>                 preempt_enable();
+>         }
+>
+Yeah we need preempt for this call. When I first attempt it after
+local_bh_enable, I got the bug call:
+[ 1166.384279] BUG: using __this_cpu_read() in preemptible [00000000]
+code: napi/veth2-66/8439
+[ 1166.385337] caller is rcu_softirq_qs+0x16/0x130
+[ 1166.385900] CPU: 3 PID: 8439 Comm: napi/veth2-66 Not tainted
+6.7.0-rc8-g3fbf61207c66-dirty #75
+[ 1166.386950] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+[ 1166.388110] Call Trace:
+[ 1166.388417]  <TASK>
+[ 1166.388684]  dump_stack_lvl+0x36/0x50
+[ 1166.389147]  check_preemption_disabled+0xd1/0xe0
+[ 1166.389725]  rcu_softirq_qs+0x16/0x130
+[ 1166.390190]  napi_threaded_poll+0x21e/0x260
+[ 1166.390702]  ? __pfx_napi_threaded_poll+0x10/0x10
+[ 1166.391277]  kthread+0xf7/0x130
+[ 1166.391643]  ? __pfx_kthread+0x10/0x10
+[ 1166.392130]  ret_from_fork+0x34/0x50
+[ 1166.392574]  ? __pfx_kthread+0x10/0x10
+[ 1166.393048]  ret_from_fork_asm+0x1b/0x30
+[ 1166.393530]  </TASK>
 
-elapsed time: 1105m
+Since this patch is trying to mirror what __do_softirq has, should the
+similar notes/changes apply to that side as well?
 
-configs tested: 135
-configs skipped: 132
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                         haps_hs_defconfig   gcc  
-arc                   randconfig-001-20240228   gcc  
-arc                   randconfig-002-20240228   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                          ixp4xx_defconfig   gcc  
-arm                        mvebu_v5_defconfig   gcc  
-arm                   randconfig-004-20240228   gcc  
-arm                    vt8500_v6_v7_defconfig   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-002-20240228   gcc  
-arm64                 randconfig-003-20240228   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240228   gcc  
-csky                  randconfig-002-20240228   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240228   clang
-i386         buildonly-randconfig-002-20240228   clang
-i386         buildonly-randconfig-003-20240228   clang
-i386         buildonly-randconfig-004-20240228   clang
-i386         buildonly-randconfig-006-20240228   clang
-i386                                defconfig   clang
-i386                  randconfig-001-20240228   clang
-i386                  randconfig-002-20240228   clang
-i386                  randconfig-004-20240228   clang
-i386                  randconfig-005-20240228   clang
-i386                  randconfig-011-20240228   clang
-i386                  randconfig-012-20240228   clang
-i386                  randconfig-016-20240228   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch                 loongson3_defconfig   gcc  
-loongarch             randconfig-001-20240228   gcc  
-loongarch             randconfig-002-20240228   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                     cu1000-neo_defconfig   gcc  
-mips                  decstation_64_defconfig   gcc  
-mips                      maltasmvp_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240228   gcc  
-nios2                 randconfig-002-20240228   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                            defconfig   gcc  
-openrisc                  or1klitex_defconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                generic-64bit_defconfig   gcc  
-parisc                randconfig-001-20240228   gcc  
-parisc                randconfig-002-20240228   gcc  
-parisc64                         alldefconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                     ep8248e_defconfig   gcc  
-powerpc                  iss476-smp_defconfig   gcc  
-powerpc               randconfig-003-20240228   gcc  
-powerpc                    socrates_defconfig   gcc  
-powerpc64             randconfig-003-20240228   gcc  
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-s390                             allyesconfig   gcc  
-s390                  randconfig-002-20240228   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                         ecovec24_defconfig   gcc  
-sh                               j2_defconfig   gcc  
-sh                    randconfig-001-20240228   gcc  
-sh                    randconfig-002-20240228   gcc  
-sh                        sh7763rdp_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                       sparc32_defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240228   gcc  
-sparc64               randconfig-002-20240228   gcc  
-um                               allyesconfig   gcc  
-um                             i386_defconfig   gcc  
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-002-20240228   clang
-x86_64       buildonly-randconfig-003-20240228   clang
-x86_64       buildonly-randconfig-006-20240228   clang
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20240228   clang
-x86_64                randconfig-006-20240228   clang
-x86_64                randconfig-011-20240228   clang
-x86_64                randconfig-012-20240228   clang
-x86_64                randconfig-013-20240228   clang
-x86_64                randconfig-072-20240228   clang
-x86_64                randconfig-075-20240228   clang
-x86_64                randconfig-076-20240228   clang
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                           alldefconfig   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
-xtensa                randconfig-001-20240228   gcc  
-xtensa                randconfig-002-20240228   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> Though maybe something like this would be better:
+>
+>         local_bh_enable();
+>         if (!IS_ENABLED(CONFIG_PREEMPT_RT))
+>                 rcu_softirq_qs_enable(local_bh_enable());
+>         else
+>                 local_bh_enable();
+>
+> A bit ugly, but it does allow exact checking of the rules and also
+> avoids extra overhead.
+>
+> I could imagine pulling the CONFIG_PREEMPT_RT check into the body of
+> rcu_softirq_qs_enable().
+>
+> But is there a better way?
+>
+> > Also, looking at the patch in question:
+> >
+> > >> > +                       if (!IS_ENABLED(CONFIG_PREEMPT_RT))
+> > >> > +                               rcu_softirq_qs();
+> > >> > +
+> > >> >                         local_bh_enable();
+> >
+> > Why does that local_bh_enable() not accomplish the same thing as the qs=
+?
+>
+> In this case, because it does not create the appearance of a voluntary
+> context switch needed by RCU Tasks.  So the wait for trampoline evacuatio=
+n
+> could still take a very long time.
+>
+>                                                         Thanx, Paul
+>
+> > -Toke
+> >
+> > [0] https://lore.kernel.org/bpf/20210624160609.292325-6-toke@redhat.com=
+/
+> >
 
