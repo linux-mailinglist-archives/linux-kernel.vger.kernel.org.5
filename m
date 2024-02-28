@@ -1,187 +1,116 @@
-Return-Path: <linux-kernel+bounces-85573-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85574-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A2D686B7E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 20:05:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8F0C86B7E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 20:05:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ACCAE1C23A18
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:05:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 79CB81F284D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:05:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69CB174430;
-	Wed, 28 Feb 2024 19:04:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EEFD74409;
+	Wed, 28 Feb 2024 19:05:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s/AGlZl5"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Ck4oQstW"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8144771ECC;
-	Wed, 28 Feb 2024 19:04:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78F987441B
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 19:05:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709147069; cv=none; b=LY0HCsGrYzecBEbKlFONcbhP5c5pNf4gtCDcutjwZW0UEV9h5Vj/t+rATKX+9vtTSIs8xrezIRPw6c2+hjvcK2IO0ZzpLd3/atghBxjbx/C/ibYtg/hWTtR3I/Guw6OV2Ry6om29U3OyM9TyEqcR5M2CX7uEW8CYIh5Hdyq5x34=
+	t=1709147133; cv=none; b=hH59Q1ysqMhGvKOgkrpmnSWF0HyPpvGi6hfiA9BIC+9dRxrPsSw+m+wx0bF60Gdf1fkPizg99YBmgLILHH2YMmva7BuZ0N3oc0pQ9QWL2xSsJpZXkQjLRs5WYTQLEvb1QTChADorMHUMep2D94KL/d7CzLbj31jNF0lzM165CrQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709147069; c=relaxed/simple;
-	bh=Tt4tghtFS6vjGrQ4TxKi2XT7FT/6Ku6rhZMm4HtUGwg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UQbeFNrImQx/t6POzBcNRs06BrUoT737VVIeJvjLY9ZcvlUtRJi9rXGO6N8WsUPsX3UKPJ1JOSHSP+3MR57ZzzbktMkxN4QL73WeDFqFbqgF6IDNbktxHUEZJoxXxBeRgdFEAosuJ2RIKgDs82GZdnA19n3JXdkiFND6ec6SbmY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s/AGlZl5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E04C4C433C7;
-	Wed, 28 Feb 2024 19:04:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709147069;
-	bh=Tt4tghtFS6vjGrQ4TxKi2XT7FT/6Ku6rhZMm4HtUGwg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=s/AGlZl5JhRukE9TyV6i5vLNsWB75qwo68klK/5o55vhevIIcpAhbd6gvYQACI3SQ
-	 Ms9PM6llnT1qwnGf4FMmKoIdDBPOzogJhxsDKslt+eQrLEVFHpJGtcHmRQMkPWWzU/
-	 K6ZYZFsYYlNGTLDBSS/ClUP4Ow8t86SVQv24RtPJIzg79AfxUecWkrdDe04ZDgS7GY
-	 cYK6po5VNXpu0aki5NuY7KELFTjwPBe+jswAE3XbVHEQ096cD55Aiv3HlRvvYoBise
-	 SSQujK87gX+GuipuTpph135hRS2BvorSS260fan4w3+VSxptxxHBFE6HXG8s3kZA8V
-	 MiZTyyL+bTXeQ==
-Date: Wed, 28 Feb 2024 19:04:23 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Thomas Huth <thuth@redhat.com>
-Cc: kvm@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Andrew Jones <ajones@ventanamicro.com>,
-	Marc Zyngier <maz@kernel.org>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	Aishwarya TCV <aishwarya.tcv@arm.com>
-Subject: Re: [PATCH v3 3/8] KVM: selftests: Move setting a vCPU's entry point
- to a dedicated API
-Message-ID: <501ac94d-11ab-4765-a25d-75013c021be6@sirena.org.uk>
-References: <20240208204844.119326-1-thuth@redhat.com>
- <20240208204844.119326-4-thuth@redhat.com>
+	s=arc-20240116; t=1709147133; c=relaxed/simple;
+	bh=KaB0o15QcxAJuDwbyWWEXp4xm4+9e6vAMCuWsrGK0EQ=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=Xehq9fkuSusAQOpdIDKHMI2/DRGHl/h20hEycv4TyGLsYWn3dbI8SDUm5LLrzqYnhC8mpa3i7rDN9/3SS4ZroIwO2iuW3LeCkFMd8onLWVUB1aKFzOcjHAFZg0H2Fc3iN5sD99vAKvFYDK5jCdNLOdqTiKyV5fwK3xrIRHKnSs0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--vamshigajjela.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Ck4oQstW; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--vamshigajjela.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-6047fed0132so1653837b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 11:05:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709147130; x=1709751930; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=VVIW5BWDLxsObFFWPOJ5xbNTd0o4JPD6uXro2iUXPvE=;
+        b=Ck4oQstWBSKIGIxOi0albw5eHUoktwTJUkIsmut8HfL7duLmFUQt5ZCbYxnxafRjiY
+         wpLxHrvoyH7ajS4B5cRSIKaKVPYcRUlfG5jVgrWtOvu9GiZzNTPPspJfJqSg8Xt/ApUr
+         1Bb2irPctZBxUqQ7VZQ5t3bVb0JapXXQBZoS1DFQpbOzOZvpHSsfGDQFUYyxxT6J2wej
+         xsP66bu5qTQ1Gxzm/E19QqiQB772hWxXK3wfQNR7gDA3p2xLrayQoXMT52OEWzI8Lkyj
+         KeugkcbpjMQTuRDVjHfzCTjAMBJ2odKVj2dMphOHKlI40rQZFA3My54fCyEAKnNg3a4J
+         e+SA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709147130; x=1709751930;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VVIW5BWDLxsObFFWPOJ5xbNTd0o4JPD6uXro2iUXPvE=;
+        b=cZNtf/ylKvF+h5CHZdYRba0+PIyAwgAiMCIOdVV0KdT1Evf7KQv11UDKmyxN2eLPJN
+         RkYdLBQRPTuCzRUmLHmNebklFWkd47qCLSkBN+blEb/O8gjt6OMVq/ZR31VRDwA3KpaT
+         VGjDKi4ZP10XgOoiJvi8pJuJPnxf6AY7/1/D76+uxCwwNw6792184gdlKFrS0++mOhxY
+         zxHXLs+A0eBW/6Hq/uRxYk547Xc1g0AksMaVvVM84XgmsbAKYy8jWxKB/OlJlWs/C792
+         4k0BstSEDqQDNXe4jZLSoJHI1/pxg6Z7REP5otS4YE5oVFDmU9NRUSmMJFs0psUEaEzj
+         ZNow==
+X-Forwarded-Encrypted: i=1; AJvYcCXo90tfmorG3jXsEW6Emc5jyzbpN8ewJAedzXsEclUHnQ9XUFG1bg9jJx38J0kkbCAiNQOFytNXHHPaMgi5xY7TfSjDdOhX573+zPad
+X-Gm-Message-State: AOJu0YzU3FgAGbpnkdGq/r/2pBANzHBL9ZyA2yWMpBxvqur6zO/JSf6x
+	ZPWi93eK/vDZoS6iibljWYNJS4z2nPNLvaAS7X+Ppnwkivmr6gkA6VOeGUghY2Aeqd9okP+0t2D
+	AJbt2nB1sZ3krAWTApGWseaFcbXz+fA==
+X-Google-Smtp-Source: AGHT+IH1AhAesxvlkBalEeQQZ+SI7ym9xb7nQdJfiP8EDMhCX7nsBoAIT2pad/v5zgT7MG3Caqe+s+cFYpIpe+1HfJ1Y
+X-Received: from vamshig51.c.googlers.com ([fda3:e722:ac3:cc00:3:22c1:c0a8:70c])
+ (user=vamshigajjela job=sendgmr) by 2002:a05:690c:9d:b0:609:254f:85ae with
+ SMTP id be29-20020a05690c009d00b00609254f85aemr1080823ywb.1.1709147130454;
+ Wed, 28 Feb 2024 11:05:30 -0800 (PST)
+Date: Thu, 29 Feb 2024 00:35:23 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="+gdo+b6it/tdjUCH"
-Content-Disposition: inline
-In-Reply-To: <20240208204844.119326-4-thuth@redhat.com>
-X-Cookie: I'm having an emotional outburst!!
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.rc1.240.g4c46232300-goog
+Message-ID: <20240228190523.8377-1-vamshigajjela@google.com>
+Subject: [PATCH v2] spmi: hisi-spmi-controller: Fix kernel panic on rmmod
+From: Vamshi Gajjela <vamshigajjela@google.com>
+To: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>, Stephen Boyd <sboyd@kernel.org>, 
+	Johan Hovold <johan+linaro@kernel.org>
+Cc: Caleb Connolly <caleb.connolly@linaro.org>, linux-kernel@vger.kernel.org, 
+	stable@vger.kernel.org, Vamshi Gajjela <vamshigajjela@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
+Ensure consistency in spmi_controller pointers between
+spmi_controller_remove/put and driver spmi_del_controller functions.
+The former requires a pointer to struct spmi_controller, while the
+latter passes a pointer of struct spmi_controller_dev, leading to a
+"Null pointer exception".
 
---+gdo+b6it/tdjUCH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Vamshi Gajjela <vamshigajjela@google.com>
+Fixes: 70f59c90c819 ("staging: spmi: add Hikey 970 SPMI controller driver")
+Cc: stable@vger.kernel.org
+---
+v2:
+- Split into two separate patches
+- add Fixes and Cc stable
 
-On Thu, Feb 08, 2024 at 09:48:39PM +0100, Thomas Huth wrote:
-> From: Sean Christopherson <seanjc@google.com>
->=20
-> Extract the code to set a vCPU's entry point out of vm_arch_vcpu_add() and
-> into a new API, vcpu_arch_set_entry_point().  Providing a separate API
-> will allow creating a KVM selftests hardness that can handle tests that
-> use different entry points for sub-tests, whereas *requiring* the entry
-> point to be specified at vCPU creation makes it difficult to create a
-> generic harness, e.g. the boilerplate setup/teardown can't easily create
-> and destroy the VM and vCPUs.
+ drivers/spmi/hisi-spmi-controller.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-With today's -next I'm seeing most of the KVM selftests failing on an
-arm64 defconfig with:
+diff --git a/drivers/spmi/hisi-spmi-controller.c b/drivers/spmi/hisi-spmi-controller.c
+index 9cbd473487cb..4b6189d8cc4d 100644
+--- a/drivers/spmi/hisi-spmi-controller.c
++++ b/drivers/spmi/hisi-spmi-controller.c
+@@ -326,7 +326,8 @@ static int spmi_controller_probe(struct platform_device *pdev)
+ 
+ static void spmi_del_controller(struct platform_device *pdev)
+ {
+-	struct spmi_controller *ctrl = platform_get_drvdata(pdev);
++	struct spmi_controller_dev *spmi_controller = platform_get_drvdata(pdev);
++	struct spmi_controller *ctrl = spmi_controller->controller;
+ 
+ 	spmi_controller_remove(ctrl);
+ 	spmi_controller_put(ctrl);
+-- 
+2.44.0.rc1.240.g4c46232300-goog
 
-# =3D=3D=3D=3D Test Assertion Failure =3D=3D=3D=3D
-#   include/kvm_util_base.h:677: !ret
-#   pid=3D735 tid=3D735 errno=3D9 - Bad file descriptor
-#      1	0x0000000000410937: vcpu_set_reg at kvm_util_base.h:677 (discrimin=
-ator 4)
-#      2	 (inlined by) vcpu_arch_set_entry_point at processor.c:370 (discri=
-minator 4)
-#      3	0x0000000000407bab: vm_vcpu_add at kvm_util_base.h:981
-#      4	 (inlined by) __vm_create_with_vcpus at kvm_util.c:419
-#      5	 (inlined by) __vm_create_shape_with_one_vcpu at kvm_util.c:432
-#      6	0x000000000040187b: __vm_create_with_one_vcpu at kvm_util_base.h:8=
-92
-#      7	 (inlined by) vm_create_with_one_vcpu at kvm_util_base.h:899
-#      8	 (inlined by) main at aarch32_id_regs.c:158
-#      9	0x0000007fbcbe6dc3: ?? ??:0
-#     10	0x0000007fbcbe6e97: ?? ??:0
-#     11	0x0000000000401f2f: _start at ??:?
-#   KVM_SET_ONE_REG failed, rc: -1 errno: 9 (Bad file descriptor)
-
-and a bisect pointed to this commit which does look plausibly relevant.
-
-Note that while this was bisected with plain arm64 defconfig and the KVM
-selftests fragment was not enabled, but enabling the KVM fragment gave
-the same result as would be expected based on the options enabled by the
-fragment.  We're also seeing an alternative failure pattern where the
-tests segfault when run in a different environment, I'm also tracking
-that down but I suspect these are the same issue.
-
-A full log from a sample failing run can be seen here.
-
-   https://lava.sirena.org.uk/scheduler/job/645026#L1581
-
-Bisect log:
-
-git bisect start
-# good: [75d8cf735082728a5dfb7e46926ee184851cc519] Merge branch 'for-linux-=
-next-fixes' of git://anongit.freedesktop.org/drm/drm-misc
-git bisect good 75d8cf735082728a5dfb7e46926ee184851cc519
-# bad: [20af1ca418d2c0b11bc2a1fe8c0c88f67bcc2a7e] Add linux-next specific f=
-iles for 20240228
-git bisect bad 20af1ca418d2c0b11bc2a1fe8c0c88f67bcc2a7e
-# good: [1322f1801e59dddce10591d602d246c1bf49990c] Merge branch 'main' of g=
-it://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git
-git bisect good 1322f1801e59dddce10591d602d246c1bf49990c
-# good: [f996a1cab1c3547a0bd2edf0daa7a71eddec9b58] Merge branch 'next' of g=
-it://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/lsm.git
-git bisect good f996a1cab1c3547a0bd2edf0daa7a71eddec9b58
-# bad: [22e19d7b30a88dc9e7b315935f44fb2a6c6bf7bf] Merge branch 'next' of gi=
-t://git.kernel.org/pub/scm/linux/kernel/git/westeri/thunderbolt.git
-git bisect bad 22e19d7b30a88dc9e7b315935f44fb2a6c6bf7bf
-# good: [f9ad77051d5d45000848e87650a382995adf7e50] Merge branch 'master' of=
- git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git
-git bisect good f9ad77051d5d45000848e87650a382995adf7e50
-# bad: [6e9a1d8a249374b0c8ff9472f30f160c98881519] Merge branch 'next' of ht=
-tps://github.com/kvm-x86/linux.git
-git bisect bad 6e9a1d8a249374b0c8ff9472f30f160c98881519
-# bad: [f3ac6b5aec49c3f8ced623802ee9efa6484263eb] Merge branch 'xen'
-git bisect bad f3ac6b5aec49c3f8ced623802ee9efa6484263eb
-# good: [938ccbf4327f38cec365986136e349486ddbb005] Merge branch 'pmu'
-git bisect good 938ccbf4327f38cec365986136e349486ddbb005
-# bad: [f3750b0c7f6e48b0adfb9bd2419de4a3c604ca68] KVM: selftests: Add a bas=
-ic SEV-ES smoke test
-git bisect bad f3750b0c7f6e48b0adfb9bd2419de4a3c604ca68
-# bad: [992178c7219caa0bcdaa5c0ce59615b12da21662] KVM: selftests: Add a mac=
-ro to define a test with one vcpu
-git bisect bad 992178c7219caa0bcdaa5c0ce59615b12da21662
-# good: [71cd774ad2f98d4c78bc868e7e55397810be3540] KVM: s390: move s390-spe=
-cific structs to uapi/asm/kvm.h
-git bisect good 71cd774ad2f98d4c78bc868e7e55397810be3540
-# good: [db7d6fbc10447090bab8691a907a7c383ec66f58] KVM: remove unnecessary =
-#ifdef
-git bisect good db7d6fbc10447090bab8691a907a7c383ec66f58
-# good: [221d65449453846bbf6801d0ecf7dfdf4f413ad9] KVM: selftests: x86: syn=
-c_regs_test: Get regs structure before modifying it
-git bisect good 221d65449453846bbf6801d0ecf7dfdf4f413ad9
-# bad: [8ef192609f14272b7bd6fc3a553ebe02d1133cd0] KVM: selftests: Move sett=
-ing a vCPU's entry point to a dedicated API
-git bisect bad 8ef192609f14272b7bd6fc3a553ebe02d1133cd0
-# first bad commit: [8ef192609f14272b7bd6fc3a553ebe02d1133cd0] KVM: selftes=
-ts: Move setting a vCPU's entry point to a dedicated API
-
---+gdo+b6it/tdjUCH
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXfg7cACgkQJNaLcl1U
-h9A+swf/W0Ger/NXYEpo1VxIufRs9krwNwW08zQqutjTuJ1kcl3YN3uekj9HIjFc
-2PwYj/41lgr2nwwS95WyouUadiQBPm3KltH3YBaXmpMhOSVFSBa77tHqduKfWOYS
-P+wKJB6nYfOq8+XZG7ouYvhWVCPXCJZVqd/NcDDMbN0jEd/XXr/6gsqrkbG6GIa8
-AeDLgNNiPiiNsoOqhcQ9D3kuP/yjhGE+unRje8PMohiwCscbjME5UjrH21C62N6R
-LLvKUviQHaEOWTDEyDrpD50n+KHf/gbLHXcwV4BQFvzgshNetzQYv8r7Ika+yuvt
-9EvQ4s3r2gUdzJhYl11dHTRKpcrC7g==
-=eXpm
------END PGP SIGNATURE-----
-
---+gdo+b6it/tdjUCH--
 
