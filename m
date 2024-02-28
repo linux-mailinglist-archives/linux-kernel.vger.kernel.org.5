@@ -1,125 +1,133 @@
-Return-Path: <linux-kernel+bounces-85078-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85079-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2BFE86B014
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:14:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B61386B015
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:15:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6EBB528A55E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:14:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10519284ED2
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:15:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BAE214AD3B;
-	Wed, 28 Feb 2024 13:13:58 +0000 (UTC)
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 054D814AD2D;
+	Wed, 28 Feb 2024 13:15:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="afJQMzgR"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06AAE149E0B;
-	Wed, 28 Feb 2024 13:13:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7F7314A4FB;
+	Wed, 28 Feb 2024 13:15:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709126037; cv=none; b=ZdP5ak93nlT60V92o77ZoU8oIkDghEBijn7mqLlqkHn4gp2r7d1r5iiFVwll1XlxBX0Lgb0L1o24gWYacaGc6z6VAXdFFbZPrXiejqxb0VdeTPN/IMGtwcoplA6rZ/EEE+YN94AHge2QnpZzzUqXfYYS6CTOwd9KR7zZymM1LRE=
+	t=1709126117; cv=none; b=ArZKQNJ4izRYOUNy8d4TAkpru6dZEvBJj8awxZh7MxQYlB+gP4ecmkFb2gNEmuu0DFayx1/IZ/aZn5bycWy64EwB8dWglEDTk28zIqwS+8ZnnSVj40g63LeC1rnHz2HYU0pT3SA+7i4tYmZUpI9mWGMcMHX/JC351jFTdU1IXSQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709126037; c=relaxed/simple;
-	bh=HgwVfW0K+Hhu2RJ2w8yehDlFn8KAHL04pm/mocETtp0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=ScBJPmK63lQa0ygbcYtugbbP+p4ex4A5fps5HNG/WC1bzdj3Wv9WvEw4UHtU49+YA4dH38wtlf7cOU780oHn3dEZ2n2JzMeKTmQhESlhsITeiT79Z2qdXfxkhz4JGEONxOFX2CxMl6TLm6JTzkBClN84KDnxn4XGUGqGcM18Uwc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4TlFCZ73XBzqhs3;
-	Wed, 28 Feb 2024 21:13:14 +0800 (CST)
-Received: from dggpemd100001.china.huawei.com (unknown [7.185.36.94])
-	by mail.maildlp.com (Postfix) with ESMTPS id 3CE591A016B;
-	Wed, 28 Feb 2024 21:13:52 +0800 (CST)
-Received: from [10.67.120.108] (10.67.120.108) by
- dggpemd100001.china.huawei.com (7.185.36.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Wed, 28 Feb 2024 21:13:51 +0800
-Message-ID: <693dec74-1750-191e-cbc3-37f993d165ac@huawei.com>
-Date: Wed, 28 Feb 2024 21:13:51 +0800
+	s=arc-20240116; t=1709126117; c=relaxed/simple;
+	bh=x5DAa4w3ucuQL2gRP9LGTsa9jfwHP3rQYy7xsCi5Wmw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SsZEDf+lNKtsorFJ7YJG7VEEDK6Dcbg90/tvLUmu4QIaLHhYYwN0GR08GEM2ZhGJS6zvzbm80avRr+iFpWDYfkOkEXSQn74fZQ2LRYAMd+rKfE7bxEJ0MKBqKgKwKsbxq2bkt5aChxxS7CZnr3wJxYRyQkxDJs51wBwpjiHkxUk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=afJQMzgR; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=r8vbNEwwu+aBkNpFD6Z1wwPalWetOGt3ThcRRchjvf4=; b=afJQMzgRmi9QJv2I9KZKPZSj9A
+	yzmjVmPqSi8q04wv+igzpCR+aTfETNiVH1gWB0OdF4SmudJlSaV8va3TNQ4DX02Ep2tz3RHvsh8RU
+	i3RgAksSmM9+IO946LtjgSLrL64ycVg21jl441XIjobz39NXESJ0mqYeIHfy8eqJLfgWM5u1MOSOp
+	9txR1owwuyFXWvFt6agqUx1DTB3jD10ZKyTJ6tj0qlDWxB8Ya1qP/CvKWKFliHx5Vd5I8lDrFmHg2
+	6PoIKzjiv57RmbIB6jfI4aJlXt/Gt2ELCjO6d8Vt5Tf/Nx4J+u3/brpRH3PDThUACvSWRBjfhehIm
+	y+MNaNdA==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rfJmB-00000005GZt-24JJ;
+	Wed, 28 Feb 2024 13:15:11 +0000
+Date: Wed, 28 Feb 2024 13:15:11 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Sean Christopherson <seanjc@google.com>,
+	Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+	kvm@vger.kernel.org, michael.roth@amd.com, isaku.yamahata@intel.com,
+	thomas.lendacky@amd.com
+Subject: Re: [PATCH 17/21] filemap: add FGP_CREAT_ONLY
+Message-ID: <Zd8x3w2mwyAufKvm@casper.infradead.org>
+References: <20240227232100.478238-1-pbonzini@redhat.com>
+ <20240227232100.478238-18-pbonzini@redhat.com>
+ <Zd6W-aLnovAI1FL3@google.com>
+ <CAJD7tkapC6es9qjaOf=SmE9XYUdbh_fAperjSe9hy=_iqdB0wQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.1
-Subject: Re: [PATCH] scsi: libsas: Fix disk not being scanned in after being
- removed
-Content-Language: en-CA
-To: John Garry <john.g.garry@oracle.com>, <yanaijie@huawei.com>,
-	<jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-	<damien.lemoal@opensource.wdc.com>
-CC: <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linuxarm@huawei.com>, <prime.zeng@hisilicon.com>,
-	<chenxiang66@hisilicon.com>, <kangfenglong@huawei.com>
-References: <20240221073159.29408-1-yangxingui@huawei.com>
- <d765d2c5-3451-4519-a5e1-9e8f28dcd6b3@oracle.com>
-From: yangxingui <yangxingui@huawei.com>
-In-Reply-To: <d765d2c5-3451-4519-a5e1-9e8f28dcd6b3@oracle.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggpemm100023.china.huawei.com (7.185.36.248) To
- dggpemd100001.china.huawei.com (7.185.36.94)
+In-Reply-To: <CAJD7tkapC6es9qjaOf=SmE9XYUdbh_fAperjSe9hy=_iqdB0wQ@mail.gmail.com>
 
-Hi John,
-
-On 2024/2/22 20:41, John Garry wrote:
-> On 21/02/2024 07:31, Xingui Yang wrote:
->> As of commit d8649fc1c5e4 ("scsi: libsas: Do discovery on empty PHY to
->> update PHY info"), do discovery will send a new SMP_DISCOVER and update
->> phy->phy_change_count. We found that if the disk is reconnected and phy
->> change_count changes at this time, the disk scanning process will not be
->> triggered.
->>
->> So update the PHY info with the last query results.
->>
->> Fixes: d8649fc1c5e4 ("scsi: libsas: Do discovery on empty PHY to 
->> update PHY info")
->> Signed-off-by: Xingui Yang <yangxingui@huawei.com>
->> ---
->>   drivers/scsi/libsas/sas_expander.c | 9 ++++-----
->>   1 file changed, 4 insertions(+), 5 deletions(-)
->>
->> diff --git a/drivers/scsi/libsas/sas_expander.c 
->> b/drivers/scsi/libsas/sas_expander.c
->> index a2204674b680..9563f5589948 100644
->> --- a/drivers/scsi/libsas/sas_expander.c
->> +++ b/drivers/scsi/libsas/sas_expander.c
->> @@ -1681,6 +1681,10 @@ int sas_get_phy_attached_dev(struct 
->> domain_device *dev, int phy_id,
->>           if (*type == 0)
->>               memset(sas_addr, 0, SAS_ADDR_SIZE);
->>       }
->> +
->> +    if ((SAS_ADDR(sas_addr) == 0) || (res == -ECOMM))
->> +        sas_set_ex_phy(dev, phy_id, disc_resp);
->> +
->>       kfree(disc_resp);
->>       return res;
->>   }
->> @@ -1972,11 +1976,6 @@ static int sas_rediscover_dev(struct 
->> domain_device *dev, int phy_id,
->>       if ((SAS_ADDR(sas_addr) == 0) || (res == -ECOMM)) {
->>           phy->phy_state = PHY_EMPTY;
->>           sas_unregister_devs_sas_addr(dev, phy_id, last);
->> -        /*
->> -         * Even though the PHY is empty, for convenience we discover
->> -         * the PHY to update the PHY info, like negotiated linkrate.
->> -         */
->> -        sas_ex_phy_discover(dev, phy_id);
+On Tue, Feb 27, 2024 at 06:17:34PM -0800, Yosry Ahmed wrote:
+> On Tue, Feb 27, 2024 at 6:15 PM Sean Christopherson <seanjc@google.com> wrote:
+> >
+> > On Tue, Feb 27, 2024, Paolo Bonzini wrote:
+> >
+> > This needs a changelog, and also needs to be Cc'd to someone(s) that can give it
+> > a thumbs up.
 > 
-> It would be nice to be able to call sas_set_ex_phy() here (instead of 
-> sas_get_phy_attached_dev()), but I assume that you can't do that as the 
-> disc_resp memory is not available.
-> 
-By the way, I have updated a version and call sas_set_ex_phy() here, 
-please check it again.
+> +Matthew Wilcox
 
-Thanks,
-Xingui
+If only there were an entry in MAINTAINERS for filemap.c ...
+
+This looks bogus to me, and if it's not bogus, it's incomplete.
+But it's hard to judge without a commit message that describes what it's
+supposed to mean.
+
+> >
+> > > Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> > > ---
+> > >  include/linux/pagemap.h | 2 ++
+> > >  mm/filemap.c            | 4 ++++
+> > >  2 files changed, 6 insertions(+)
+> > >
+> > > diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+> > > index 2df35e65557d..e8ac0b32f84d 100644
+> > > --- a/include/linux/pagemap.h
+> > > +++ b/include/linux/pagemap.h
+> > > @@ -586,6 +586,7 @@ pgoff_t page_cache_prev_miss(struct address_space *mapping,
+> > >   * * %FGP_CREAT - If no folio is present then a new folio is allocated,
+> > >   *   added to the page cache and the VM's LRU list.  The folio is
+> > >   *   returned locked.
+> > > + * * %FGP_CREAT_ONLY - Fail if a folio is not present
+> > >   * * %FGP_FOR_MMAP - The caller wants to do its own locking dance if the
+> > >   *   folio is already in cache.  If the folio was allocated, unlock it
+> > >   *   before returning so the caller can do the same dance.
+> > > @@ -606,6 +607,7 @@ typedef unsigned int __bitwise fgf_t;
+> > >  #define FGP_NOWAIT           ((__force fgf_t)0x00000020)
+> > >  #define FGP_FOR_MMAP         ((__force fgf_t)0x00000040)
+> > >  #define FGP_STABLE           ((__force fgf_t)0x00000080)
+> > > +#define FGP_CREAT_ONLY               ((__force fgf_t)0x00000100)
+> > >  #define FGF_GET_ORDER(fgf)   (((__force unsigned)fgf) >> 26) /* top 6 bits */
+> > >
+> > >  #define FGP_WRITEBEGIN               (FGP_LOCK | FGP_WRITE | FGP_CREAT | FGP_STABLE)
+> > > diff --git a/mm/filemap.c b/mm/filemap.c
+> > > index 750e779c23db..d5107bd0cd09 100644
+> > > --- a/mm/filemap.c
+> > > +++ b/mm/filemap.c
+> > > @@ -1854,6 +1854,10 @@ struct folio *__filemap_get_folio(struct address_space *mapping, pgoff_t index,
+> > >               folio = NULL;
+> > >       if (!folio)
+> > >               goto no_page;
+> > > +     if (fgp_flags & FGP_CREAT_ONLY) {
+> > > +             folio_put(folio);
+> > > +             return ERR_PTR(-EEXIST);
+> > > +     }
+> > >
+> > >       if (fgp_flags & FGP_LOCK) {
+> > >               if (fgp_flags & FGP_NOWAIT) {
+> > > --
+> > > 2.39.0
+> > >
+> > >
+> >
 
