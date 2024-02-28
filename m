@@ -1,115 +1,133 @@
-Return-Path: <linux-kernel+bounces-85699-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85700-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A19786B97A
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 21:56:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E27BE86B97F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 21:58:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8F022838B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 20:56:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E5E728C3EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 20:58:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9C0C8624F;
-	Wed, 28 Feb 2024 20:56:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77BB88625E;
+	Wed, 28 Feb 2024 20:57:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="HpOWWwuk"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="YDLSFNYe"
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A61286249
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 20:56:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE2D586244
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 20:57:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709153770; cv=none; b=UlckeJdmFBjiKNDgbkNCgI35Eouq7m3Pc8/Mx1uQlTksVwVQZ4pZyhGDD4WGJsiivsf8H00GNWcBF104x/OXJQuAW1MnQu6geOa6f5GmvdCOmdYFAOun/IOQ7KUXus1OCMjQDchsnCWdCjrS78dQdi8HqF/gJ4GsEvqQaJoI7lc=
+	t=1709153872; cv=none; b=djkafBiRFvoxrZUUdnyrEb7REiUyj5yH3SiH1F7jgkl613ZWdN3tc+7fzh01j+wn6MOTvc8Sc65rm2/WjOwToasgyR4vPRzYxNe3Ze1whFMWZaIsoq++a0DEzWncfuGbvRa5wO3K93yDkqUkQEWYbleMl9sJOaNuL9X9OoIV9lk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709153770; c=relaxed/simple;
-	bh=U354uceyDGIoRShSXmYwpeaIYP/NzDagW/jDTIPvKTQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bsJZktB+2DOc2xqYx6fanKC39BNn8KXSSP8iZM4f9sDo4T0lkL1Kha24IMDg7530o7mZ7nN4mWbPOMgUxzP26H7EZFkyrMhjRUY04JXtbHe6zKCC4eg6qAHvpWJIGDSSdf0+lTge+z5KWiv441OSTby3idmNf7idZWrfboqoEjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=HpOWWwuk; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id A4D9F40E019B;
-	Wed, 28 Feb 2024 20:56:01 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id yjFN27kc-qHx; Wed, 28 Feb 2024 20:55:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1709153758; bh=QHuZ4VosF2FmtJLDXnBvie+0GIreAYKapP+EcU48Axc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HpOWWwuk3g4JvXMQkdeMBZJB398F1wXcHzLKfRsA8Ef2GGrjsNNNcAUqujeSDJ73M
-	 7wvPiSm1T1JMo24IPZWFeQGNBjEABdyOlbUSJ/f4ZGpnjcW9AXXAQbLWjGxXqRMmkO
-	 JdRiyaVZtd60QnO28ujI0FKxJxIMaBiQPp38zzWqLZEKr846+DwkQvmf7HUV2yL2Zy
-	 GalYRZ8nMlN/4tIL8L1/jI4pRqP2LBuHbAerJNG+XI9gkDQvWs+B/ix8Z8zphqpDzJ
-	 +NH1LmaJuOL76Jdf7U8O0dC94vgVO9vL52F/9thscozBdfedGcuzLH4+Qnh4B8J1BX
-	 vq87Y8klDwjo7C95rYyxnUPPJGFWhFR7cTaLKBZ6c+zlJtdiiiGEYnBMHOvuAqtesj
-	 XUaWFh4SvV+2Dr7oICjd1BUZpQb2xVE/OS+LxbuG+W+O58Jtw8h8g2kJ8Wz5zK+H4Y
-	 HT1KiqOEtQW0BnyAThqQyDzx0Fc8BUzpKUfFHi3bgb2HZpn4euppm22CPp9OzbEKBT
-	 19BZrMPm3VG04I3d4uZwlbkW2kNvELj2aCo1aAZ83XyuPdjhuatkGHvlbpTFiXH8qt
-	 HnFTZcU5v+peqw/nZrQ49YIaW5f2YuFpHkKmcrizL1EGzEbOYzj2agxGlWRoNYNR6y
-	 EyBu+MPJbH8rf/K+rV+XYOjs=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CECAC40E0196;
-	Wed, 28 Feb 2024 20:55:46 +0000 (UTC)
-Date: Wed, 28 Feb 2024 21:55:40 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Ard Biesheuvel <ardb+git@google.com>
-Cc: linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-	Kevin Loughlin <kevinloughlin@google.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	Dionna Glaze <dionnaglaze@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Andy Lutomirski <luto@kernel.org>, Brian Gerst <brgerst@gmail.com>
-Subject: Re: [PATCH v7 2/9] x86/startup_64: Defer assignment of 5-level
- paging global variables
-Message-ID: <20240228205540.GIZd-dzFYIBbtfIAo3@fat_crate.local>
-References: <20240227151907.387873-11-ardb+git@google.com>
- <20240227151907.387873-13-ardb+git@google.com>
+	s=arc-20240116; t=1709153872; c=relaxed/simple;
+	bh=BWK+pvcfV2O3YEKV4oJw3LGLSCHFNN4QIpIDXt2sN9o=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=EJ89/M5ro5SrHg1p5GdvBcLzsRFHNMuIB/sSXpjRtUnVgd1+RYQ86LCKxVHECg2qSeL/zpk6jEk6hmHhon00XljClcCIQG2RsRy+S0JPrOhKDRdRKsVDov87kKxPl7gzqmnEdviAU6fou6NzSRWx7g9PASOKon1x47DE+pW7mcU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=YDLSFNYe; arc=none smtp.client-ip=209.85.208.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d21cdbc85bso2007571fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 12:57:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1709153868; x=1709758668; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6e4AfvVPSrhK1drWl8zME51ZTsz4Zd61RouuRi/BwYE=;
+        b=YDLSFNYeZ2o8Li6YIKeBGjjEV1kXv9SKeZuDq5S5eAVipbpetuMbCWEnCtG+QHk7mN
+         rjY+6cFF2NjPLzUuFxwszsvVtrAcdzCT2/gUE/xhEzsQT7Bo0zaMFSjaZas3fmJg3cdP
+         3nlzYqqg8fMvvTrkkCdiRdZKwuIYnveoqAiEr+FVRccHeNYbVZNot0ZxL34JlLIM/+LC
+         pcNy1g4BmM4j874sUSAVYSaXaiKNAQ9WVu1u6RhJ37XdusAslPOq+fxYEbnLQs23J7wt
+         tI4a8VRHDWgmuA2SIEdEkEuyUtcclgoCMkE0WBAdzDvphKUGu2TGbjerOvXbBUFpmDtU
+         uBVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709153868; x=1709758668;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6e4AfvVPSrhK1drWl8zME51ZTsz4Zd61RouuRi/BwYE=;
+        b=r9LABYUJfJsyCsxYxTqfwYG6vZiAgi9r8xSkDc5gdYs5o0GyL+djWdwAs5R8ZvhAFm
+         Pw3T3DABA0Xg75A+5EwMFBFk3aKPK/zcbU6mJL2j5wWsEL/cEueBb3pv0/WWF5RmATKR
+         vhv7f89p8yr4VVW88vJIWEz2XCvTG7zTMwTTbYuzviE5YcAzIAFem7q0wGZAcNSlgNZl
+         D3JQaJ921DWrSGB7ghRgQjg97FubLSAUpf/6DyLK+yrczaMiVfi2Pt1fy0sbHCjMeNr8
+         la/lcMIQm3OAmAfnuipVHVEpwUC7cXhouNAtaBgAJnDC/2ErcKwGSjPVfNUcJMrnzOk6
+         dpsg==
+X-Forwarded-Encrypted: i=1; AJvYcCXMGkNra1Ft6wBdG7VV21+pt6or+R11SOpKim0hS6u+squkOLNITgvrzgxeF4eaJtryuCtfZsjDd5N08fOF8WvovmlvNEb9q/57/EvM
+X-Gm-Message-State: AOJu0Yyf2fOYJxxbh/FQfolxrBVGcUYw1DLtRShB0F8SQcqmziTYXlad
+	2sKxrr1F/NnvlovsOTpXf/Oty83q3sVgLNZt49Lro9pY8fBX43KTF4FiJJVLouSrDC28yM33DDO
+	5pp/9xKeSWJZiyMb0EqP6FWjWc5TcIdwlg97sUw==
+X-Google-Smtp-Source: AGHT+IEOnOOyvWjN2Iqi7AnFbpftsb9Ykrl/ECUJUwlscNtR6jsb4MdUfMY/fGs0PnTtZQ7ONz+3NPiATH7jgCyTqPQ=
+X-Received: by 2002:a05:651c:14a:b0:2d2:b452:3adf with SMTP id
+ c10-20020a05651c014a00b002d2b4523adfmr24174ljd.27.1709153868001; Wed, 28 Feb
+ 2024 12:57:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240227151907.387873-13-ardb+git@google.com>
+References: <20240228204919.3680786-1-andriy.shevchenko@linux.intel.com> <20240228204919.3680786-5-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20240228204919.3680786-5-andriy.shevchenko@linux.intel.com>
+From: David Lechner <dlechner@baylibre.com>
+Date: Wed, 28 Feb 2024 14:57:36 -0600
+Message-ID: <CAMknhBGj_+hw0F-g3R6iY0HEooGH1a8gfj1hYx_Laj93OQbQwQ@mail.gmail.com>
+Subject: Re: [PATCH v4 4/8] iio: core: Calculate alloc_size only once in iio_device_alloc()
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Vinod Koul <vkoul@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, 
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>, Mark Brown <broonie@kernel.org>, 
+	Kees Cook <keescook@chromium.org>, linux-arm-kernel@lists.infradead.org, 
+	dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-iio@vger.kernel.org, linux-spi@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-hardening@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>, 
+	Lars-Peter Clausen <lars@metafoo.de>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 27, 2024 at 04:19:10PM +0100, Ard Biesheuvel wrote:
-> From: Ard Biesheuvel <ardb@kernel.org>
-> 
-> Assigning the 5-level paging related global variables from the earliest
-> C code using explicit references that use the 1:1 translation of memory
-> is unnecessary, as the startup code itself does not rely on them to
-> create the initial page tables, and this is all it should be doing. So
-> defer these assignments to the primary C entry code that executes via
-> the ordinary kernel virtual mapping.
-> 
-> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+On Wed, Feb 28, 2024 at 2:49=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> No need to rewrite the value, instead use 'else' branch.
+> This will also help further refactoring the code later on.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > ---
->  arch/x86/include/asm/pgtable_64_types.h |  2 +-
->  arch/x86/kernel/head64.c                | 44 +++++++-------------
->  2 files changed, 15 insertions(+), 31 deletions(-)
+>  drivers/iio/industrialio-core.c | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-c=
+ore.c
+> index bd305fa87093..1986b3386307 100644
+> --- a/drivers/iio/industrialio-core.c
+> +++ b/drivers/iio/industrialio-core.c
+> @@ -1643,11 +1643,10 @@ struct iio_dev *iio_device_alloc(struct device *p=
+arent, int sizeof_priv)
+>         struct iio_dev *indio_dev;
+>         size_t alloc_size;
+>
+> -       alloc_size =3D sizeof(struct iio_dev_opaque);
+> -       if (sizeof_priv) {
+> -               alloc_size =3D ALIGN(alloc_size, IIO_DMA_MINALIGN);
+> -               alloc_size +=3D sizeof_priv;
+> -       }
+> +       if (sizeof_priv)
+> +               alloc_size =3D ALIGN(alloc_size, IIO_DMA_MINALIGN) + size=
+of_priv;
 
-Reviewed-by: Borislav Petkov (AMD) <bp@alien8.de>
+Isn't this using alloc_size before it is assigned? Perhaps you meant this:
 
-Those should probably be tested on a 5level machine, just in case.
+    alloc_size =3D ALIGN(sizeof(struct iio_dev_opaque),
+IIO_DMA_MINALIGN) + sizeof_priv;
 
-Thx.
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> +       else
+> +               alloc_size =3D sizeof(struct iio_dev_opaque);
+>
+>         iio_dev_opaque =3D kzalloc(alloc_size, GFP_KERNEL);
+>         if (!iio_dev_opaque)
 
