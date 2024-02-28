@@ -1,107 +1,117 @@
-Return-Path: <linux-kernel+bounces-84924-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84925-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8324D86ADC2
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:42:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 642F686ADC5
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:42:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0BB0DB23A51
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:42:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 953AF1C21A38
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:42:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB12C155314;
-	Wed, 28 Feb 2024 11:32:10 +0000 (UTC)
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EE3F157E94;
+	Wed, 28 Feb 2024 11:33:18 +0000 (UTC)
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0FBE14F998;
-	Wed, 28 Feb 2024 11:32:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB9BF12EBF0;
+	Wed, 28 Feb 2024 11:33:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709119930; cv=none; b=L/bzBZM+CDZv12X1oAIigzWKNPDqV3HYEjlJxW/qAhthQD1haxLmq/9izVO6SXbtI7nEnyudbAirS17olu1D/1N5ejp1YM9DcfYCLTpdqF5/YGTrhK9afgg4j+noxtzG+f9jUNsqt8X98H6rbZCaCvM+0vir0gR/05RZjSPAyGc=
+	t=1709119998; cv=none; b=ucp9sWzlAIC2VL8Ir7+xMxj4pnjHKE7Gxx4CEHfifswzn5USBgOb3FEG8BzKjWLY6QTQbvFkY4vo4lY/yOlnSvttGOP7cTkkiye4oHO2K6XEciZCFsmK8CDV7Ud9lAkD/P5d9fEVf56UicT5KJYYuJN2vWYY3mmjkL6XMIid56M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709119930; c=relaxed/simple;
-	bh=osYfHf0zdit3Caig568VNoIMqJacx7kM2FhaGegFpUs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=L/gElqENF/qwcRCveQ4V6JvUhAqrmscgfauvKXlwD1rvvzNUtQ6i3x2ps4GgAJoOR4v72z9R94BnLOpWtUzXh4BkctFo1toatKrbki56qXhhjN4Ls1Ibysg8ysMW1+XgjEFIh9nq0jO3qnZhkVk8b/INc88oaWfpRtyWJeCIhs4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+	s=arc-20240116; t=1709119998; c=relaxed/simple;
+	bh=6fD+GFn4fgyeY4yNFfboO/qEwSq92pkkTH2DLJ1P8xo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Ah+9jcNxqPUnRbf6bD4O3mbPrgZP01704lpCnpGwH3FTS+0/yd9eu3S66OZjQ/48JtcIuQXNjl+Cm31D0cZTgTD9wgp6GIWCPRNkkRxkd/XEcBL9V298NUSFbABnQRkMp6i11IUSkmesRHtv4LsbJct+WUzu2X2pQQkZEi9oiXE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a3ed9cae56fso139920866b.1;
-        Wed, 28 Feb 2024 03:32:08 -0800 (PST)
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dc238cb1b17so5743069276.0;
+        Wed, 28 Feb 2024 03:33:15 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709119927; x=1709724727;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1709119994; x=1709724794;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CZMdscvMnTBrNFqpRdeZHYyP0ag1D/LQclkgNCHYzYs=;
-        b=awjvSt45rk0Lc+3xbUMR9awugwR4Ju0tMaUmTHfjcxmdiXlIVsr+SWdwJlI1RLJddd
-         dGChTx9zHgl3gfQ8x0jBTj4Rr+C6L2v9hEZVg6HjnB9ARg17FYkzUsh1ipcUPNjeyX5U
-         XKt3PpzAlB9Eu2v9NxkIH2x5ER3RaemYgu4o2t2OXEE5noMK1BcyZ4G9c0LAktQ+oh03
-         zLBNamRblWfytigPsP4CuO1uvTcbkQUytI7xnpn5Hs9rKedw5xJmEjVGMJScTU8I1e8J
-         ouTjWILWV88ixGZGep+KW96W09N6g3xUSr0PtkWHWwOxOHVe8aNfskCjZs3DM/6BcS/F
-         l+6g==
-X-Forwarded-Encrypted: i=1; AJvYcCW2HHlMYEAePQhUvvCqylTVR5elFJOqdyqWQCgbesJw51vuZYHFHwRPFzovqfuQV9fEB0zXLAn+5luf3+G7d43l0DjzVhywTRImvmmJ
-X-Gm-Message-State: AOJu0YyW7KI8YuSU3SU6bAfdGREe2cFT8HF9JtXgTpt4V/VdD78QQiw1
-	yTPmQFT7jaAiDdp5PvyFDIVv4vnplH1wlfFmAl1ClGVMEWraWSS0
-X-Google-Smtp-Source: AGHT+IFLp9ie3+/1hqnj68QzfyOsdEqFZgLoyTa22wNJESInVZCR90DilUp+wSkt/U38LJ/Sp0aVsg==
-X-Received: by 2002:a17:907:7651:b0:a3c:5e17:1635 with SMTP id kj17-20020a170907765100b00a3c5e171635mr1797915ejc.30.1709119927035;
-        Wed, 28 Feb 2024 03:32:07 -0800 (PST)
-Received: from localhost (fwdproxy-lla-001.fbsv.net. [2a03:2880:30ff:1::face:b00c])
-        by smtp.gmail.com with ESMTPSA id hw18-20020a170907a0d200b00a3d5efc65e0sm1761437ejc.91.2024.02.28.03.32.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 03:32:06 -0800 (PST)
-From: Breno Leitao <leitao@debian.org>
-To: kuba@kernel.org,
-	davem@davemloft.net,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	David Ahern <dsahern@kernel.org>
-Cc: netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	horms@kernel.org
-Subject: [PATCH net-next 2/2] net: sit: Do not set .ndo_get_stats64
-Date: Wed, 28 Feb 2024 03:31:22 -0800
-Message-ID: <20240228113125.3473685-3-leitao@debian.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240228113125.3473685-1-leitao@debian.org>
-References: <20240228113125.3473685-1-leitao@debian.org>
+        bh=3ynby1EA+eiJlMLirUugmY5xEE0QYQASieBRETxqFNk=;
+        b=lgDrsjeippzEO5M8eLVGb/X+YAPJa3AUzUtPRSqmuoUI/87k3qot9YsfxPxAFZJh3G
+         btov/U9N5vD5ssIx7A0JaB8s7gn4YotwskX0aee0CasCpM5kGFt3HyFuuexNiFT5tOw+
+         Bdhroj02wkW3tgyx6E777Ox2Hm8Bu5wYzAUXU5x2oDyw7MmQPg0NKXRdyoqvQrB+NPqc
+         f1jA2na2gDv2pqRr0pylEMg/QT29TW1z4ybH0mRmQVjeOgFHKO9TIBvUvX4RT8e1PKHn
+         YXT0K7OKVX7JBsMZO8mTml1vx17ZbQ6KirH4+O2JoehmBk7W4AROYSskQf52jyavMU3F
+         QtZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWMJIjIqs9FOlwokrr6h3kcc1JeeAph3dFUHYkBCnOAzFe+7ZOea+u7mKXwTvP+DRyAu9Q8G+CdXVtL1SnHRV4t5Z39D+fbybpU+a7X9j1U1CB1SInfYUTi1ISZHm95Qy3fF7PiqHJPC9+ybyPMlDqRm7LD4mhNcKtEIca1SXfuEGCcaJWDjps9GYlE
+X-Gm-Message-State: AOJu0YzrmKxkFbInRVzYkfJdxYzmVAYZLkFljmZxODuEPr3RtpjNfALx
+	whFIqHlGmifrmbPohAq2xIGa8Zr6nDjG3EUfxEziRjLW1IKtzxl9QCdJ+iAm6PeEgA==
+X-Google-Smtp-Source: AGHT+IF/PzgXMTXrsWWLleoXKWP7w9iUN/C3qo4p0B1YRXpJcXPw0jE7juJqx/P3dk7imhuIkIwdXA==
+X-Received: by 2002:a25:d30d:0:b0:dcf:ba3f:a6e9 with SMTP id e13-20020a25d30d000000b00dcfba3fa6e9mr1992909ybf.42.1709119993863;
+        Wed, 28 Feb 2024 03:33:13 -0800 (PST)
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
+        by smtp.gmail.com with ESMTPSA id v35-20020a25fc23000000b00dc6d51c8555sm1970152ybd.17.2024.02.28.03.33.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Feb 2024 03:33:13 -0800 (PST)
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dc6dcd9124bso5626013276.1;
+        Wed, 28 Feb 2024 03:33:13 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCX5wy66UPOOo27/ndR0f/SLgBoZeEhOwHnWSz3HiURjKQ9/iodnegPPS+xTAEoVpmGehTLSVWwQ41EcZVL+e5rTlIBBVphBSI3jmDaigClGhofj3AhieMHOBYFuJ4MUWtnLPAjZTMMgzx0CMukq+/MEbNkP1dZvjajvAvM7cBR8kTcL7BAE0ARkyb1I
+X-Received: by 2002:a25:9c02:0:b0:dcc:2f94:591a with SMTP id
+ c2-20020a259c02000000b00dcc2f94591amr1770095ybo.12.1709119993126; Wed, 28 Feb
+ 2024 03:33:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240227232531.218159-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20240227232531.218159-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20240227232531.218159-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Wed, 28 Feb 2024 12:33:00 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdX2X55v+BMWbLSam4G14-J_Ngr7jVJwh1kF=q+T7H0q4A@mail.gmail.com>
+Message-ID: <CAMuHMdX2X55v+BMWbLSam4G14-J_Ngr7jVJwh1kF=q+T7H0q4A@mail.gmail.com>
+Subject: Re: [PATCH v2 1/4] dt-bindings: soc: renesas: Document Renesas
+ RZ/V2H(P) SoC variants
+To: Prabhakar <prabhakar.csengg@gmail.com>
+Cc: Magnus Damm <magnus.damm@gmail.com>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, 
+	linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Fabrizio Castro <fabrizio.castro.jz@renesas.com>, 
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-If the driver is using the network core allocation mechanism, by setting
-NETDEV_PCPU_STAT_TSTATS, as this driver is, then, it doesn't need to set
-the dev_get_tstats64() generic .ndo_get_stats64 function pointer. Since
-the network core calls it automatically, and .ndo_get_stats64 should
-only be set if the driver needs special treatment.
+On Wed, Feb 28, 2024 at 12:26=E2=80=AFAM Prabhakar <prabhakar.csengg@gmail.=
+com> wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>
+> Document Renesas RZ/V2H(P) (R9A09G057) SoC variants.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+> v1 -> v2
+> - Replaced RZ/V2H{P} -> RZ/V2H(P)
+> - Included Ack and RB tags
 
-This simplifies the driver, since all the generic statistics is now
-handled by core.
+Thanks for the update, will queue in renesas-devel for v6.10.
 
-Signed-off-by: Breno Leitao <leitao@debian.org>
----
- net/ipv6/sit.c | 1 -
- 1 file changed, 1 deletion(-)
+Gr{oetje,eeting}s,
 
-diff --git a/net/ipv6/sit.c b/net/ipv6/sit.c
-index 5ad01480854d..655c9b1a19b8 100644
---- a/net/ipv6/sit.c
-+++ b/net/ipv6/sit.c
-@@ -1398,7 +1398,6 @@ static const struct net_device_ops ipip6_netdev_ops = {
- 	.ndo_uninit	= ipip6_tunnel_uninit,
- 	.ndo_start_xmit	= sit_tunnel_xmit,
- 	.ndo_siocdevprivate = ipip6_tunnel_siocdevprivate,
--	.ndo_get_stats64 = dev_get_tstats64,
- 	.ndo_get_iflink = ip_tunnel_get_iflink,
- 	.ndo_tunnel_ctl = ipip6_tunnel_ctl,
- };
--- 
-2.43.0
+                        Geert
 
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
