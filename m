@@ -1,179 +1,126 @@
-Return-Path: <linux-kernel+bounces-84827-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84828-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D4AA86AC19
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:23:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64C5D86AC1A
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:24:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C62D4284638
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:23:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D349E1F2491C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:24:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19F3453E3D;
-	Wed, 28 Feb 2024 10:23:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B51555798;
+	Wed, 28 Feb 2024 10:24:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Jz8PGT6s"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RwxtWt0j"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81E9A53E23
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 10:23:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3455F54FAE
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 10:24:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709115819; cv=none; b=ZpaxZviPZZZ4GqA14O848nTSKm5AnMqC4MNbIJCM8sfe2nGhuLuQCo45Q/jAVXYojjnFQ5EeRl17rFOxsjhAzetMsQNBNEF0hDVteZBohFTJXrh9MWRDx/qgqWihnR2+NYwWqHxflcjaPdo3pd7cIwsKSNDSBtAhpYK1LiWcoWY=
+	t=1709115855; cv=none; b=erFP8hBtDD3nDjoC8lQu7/VoJ8efXkVC640FWgvOA4CwfAoGOXLoX+ORkQaUw92jlRpFsNphr/LhZRv5oMJC27jr7nKoD8W6zuyfG/UR6T8+u+m6kPyQpgGqFCXbb11AI1Ey+nsJRRGku9j7mDNrABdjJeCiVDy+ok5Andc1i4s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709115819; c=relaxed/simple;
-	bh=Mc4b/AR/nSRZ39KDeo6kgXY+Bvu8x/GEIKHZZ6+iYNA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TX4F6R0RzDsCQMerD9pvTUZNXrpLsRJuLLCIpRnGjXJ7XxnKtvn+r3tXKfChvb0+pkhWx3syRUW0kH8Fkbu8xQiCIZD3Mv2+EsoBPig8vrS70TU5NusTsl6g+v5RM3Cit1cp80mfSaSS+96NSkM3Kw1etSBcRj6M8L5l6DKeoek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Jz8PGT6s; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-5131c21314fso530998e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 02:23:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709115815; x=1709720615; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=dVcUvvXZrBFdTpa2aLeHCeaL3QuL+vTylsLEbLtu/l4=;
-        b=Jz8PGT6sR+vx6ulkfhOF1AXKnuSCOnWYPPVtbgoM41SGH5vURZCTM0j0JlCJJGw/56
-         xUv++9hZgwStbgJqssISMlg3lqqwfuxJLDTjMm4ayDZMyt3u3TQKtekqalEN94iuCyMG
-         uLjFgkNhcCrZGeB9sybdxFsOQMHDbox/PMtTtA3U2c7/bLHqKiFXumZrJLTJZjQYJxE+
-         w2i8dCeupc1KfjjPFCPBxmy2MMD3ItxcxS1mrKEE8G8J8VyG1jfSK2i6qI27xO83xo1a
-         EIqKX7m3T+kZvF2mzbzebIaUhhWk53hqMiuxN7TeeP8qA82FjF1xNSlV5a9uztcc3nyD
-         zO+w==
+	s=arc-20240116; t=1709115855; c=relaxed/simple;
+	bh=s2OXAAbhfYk3/UflXlhhkCgoKotoYbzQpfVl2XbZtxM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Lpsaxo/psmwoC0e0bA13BA0CY8DdgkhnJWohosxHMQVEj6jIfNdEJH+k2FdwJv93IjIk1rC/Hzk8d8crNw9JwT3MoXTcmqCkZPjn0JoG+InS9TKo5Esi9SF3ojkqTfF/kDHmbJjBO3G3CkQKvxS57DvdebnqXulS+JBAwsmEgTg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RwxtWt0j; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709115853;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cuM8DzjfIvXog8Ktsli0EuxIlZtcxvx2KqthlbNhP2w=;
+	b=RwxtWt0jIgChKa/KAsKEPikoI1HOnNo5ApDH03yyx7WINPjol00+9xWVOEWU69HcA7lYKW
+	IS3mTixeN0Zsx2AFebcBFHa9y4pdRwaCCiHNsHj8rmePxQvZLJ/A/8qOKCxKs4NxfXN4jk
+	e55k1Xn0iSfHPJnUYhr/XPqWc9TueT8=
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
+ [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-638-qi4tEVCkPdGA1J1mtsHrKQ-1; Wed, 28 Feb 2024 05:24:11 -0500
+X-MC-Unique: qi4tEVCkPdGA1J1mtsHrKQ-1
+Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-29a16254a66so1807942a91.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 02:24:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709115815; x=1709720615;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dVcUvvXZrBFdTpa2aLeHCeaL3QuL+vTylsLEbLtu/l4=;
-        b=PP8o8KkswPqDOv3vudbuSpSUTIPS8iCXP4xCXVEWkaGDEulCty3amMKfQk0E/Hh3tl
-         EgCheG69dSn2A9AvobupvBEdFYvMkDyZX9z49sHqABZdahdzSseB0U5j8SaAhs6q7dAq
-         ZRS7kzzBY/wEoSIKz3CPh2+6qYwm0YZQzDsUQkeME5A8SEoUa/Alo2iQ6K5MYGt8Bd/Z
-         olhXbY7sBBU556LtJWZKEch4eTgQCtpSa0GbhcAl8vOMGxtzTxojW/n2+A6kUKSjbt2p
-         N6o76eYF3dzlOV0zxW7fBSOXvzgtRhpgxTEGA4ySknJ88/sFGDXsH+vuSHesffbrIFNy
-         4OoQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVDbFRwfp/23ivV3f/v39RMg5mSaU+sih4HX7z512YlbNSKbl58ETaKb7H+IuY3m1seksyJfe3ejawFJnXQqVCTPWNqoD3kJBB7t8Zi
-X-Gm-Message-State: AOJu0YzelPkzAbKixQZ/Gjyt65ujWVmWTIlZeDRK3V2rBYCIWZkXF0VP
-	oF11q9cFjPQWVV/8fTZtrGN2NKnTQPoZrpQ2JZ0B8MqkpxcdXp02rmYjOcOhDqw=
-X-Google-Smtp-Source: AGHT+IGOXaWyrpVv0kqPh0Xchx+fy0yzA6ElOGQFI4V+3AZo4ZnDBxZhSKXbVZ+kjBoBo1fB2luwBg==
-X-Received: by 2002:a19:ee16:0:b0:512:bea2:f002 with SMTP id g22-20020a19ee16000000b00512bea2f002mr7525070lfb.6.1709115815619;
-        Wed, 28 Feb 2024 02:23:35 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id qo8-20020a170907874800b00a441c8c56d0sm9662ejc.218.2024.02.28.02.23.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Feb 2024 02:23:35 -0800 (PST)
-Message-ID: <34388175-7d5b-4f6b-b264-e85b84e98677@linaro.org>
-Date: Wed, 28 Feb 2024 11:23:33 +0100
+        d=1e100.net; s=20230601; t=1709115851; x=1709720651;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cuM8DzjfIvXog8Ktsli0EuxIlZtcxvx2KqthlbNhP2w=;
+        b=Gdqfzh65/iXzyn4wJy913Uozazh0f9ZYIVmRwaQowqJXsIOIWuxM7ScwbdyqbU6r7w
+         pte9jRJjylkfeN1vRqy7hOtILgE5OBhCHsyaUzJy9KMepi0fUgkFXA+vqGqXLIVEDedW
+         rly21jP333J3EX5KQQRrnCJqvEYDSLmrYZU7CQbL7qrvGmKryVHMYzdGUo01RojE84oh
+         ERI9wN3HDRS+Z51v4vEFNknF5aEzqlxcf21DY1pxswvXrDw4efBUKOCxXKbUD5i5T9NC
+         H7gJOrHVLM4BfGSJvKYZnXm64RTfPRGgIzpZmePfT8UqTPgrNnR0q5zGbFFAei3fI9MB
+         AHqA==
+X-Gm-Message-State: AOJu0YwCoUKo4GpS0T/0u4tVAvtlMZ2CjeUisaVwff+2M065DDtoHwFJ
+	AxdQRXIUA1TbXUeYNvBvmjgiByio7G6gSjdxun0cnrwnyoaQVUszK4RJbMMTvSexm+dgmMD2jEb
+	5lTSFMm3xGMenYE/OjA+AGIwOZf3xv4J9LLOG7WUE/8IKG9JLvPDotusvUOc1wg==
+X-Received: by 2002:a17:903:41cb:b0:1db:a770:81a4 with SMTP id u11-20020a17090341cb00b001dba77081a4mr13185102ple.1.1709115850724;
+        Wed, 28 Feb 2024 02:24:10 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHQqydckRfZJZIaG/rRqPcgYNfTlA7NhghdSgVkZCgv1MurPpBWUZSA3ZuFWklgTD7WqfdhSQ==
+X-Received: by 2002:a17:903:41cb:b0:1db:a770:81a4 with SMTP id u11-20020a17090341cb00b001dba77081a4mr13185086ple.1.1709115850287;
+        Wed, 28 Feb 2024 02:24:10 -0800 (PST)
+Received: from x1n ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id d2-20020a170902854200b001dcc160a4ddsm2087740plo.169.2024.02.28.02.24.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Feb 2024 02:24:10 -0800 (PST)
+Date: Wed, 28 Feb 2024 18:23:59 +0800
+From: Peter Xu <peterx@redhat.com>
+To: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	Yang Shi <shy828301@gmail.com>, Muchun Song <muchun.song@linux.dev>,
+	Jason Gunthorpe <jgg@nvidia.com>, "x86@kernel.org" <x86@kernel.org>,
+	"Kirill A . Shutemov" <kirill@shutemov.name>,
+	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+	Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 0/5] mm/treewide: Replace pXd_large() with pXd_leaf()
+Message-ID: <Zd8Jv8hQdXejTnbU@x1n>
+References: <20240228085350.520953-1-peterx@redhat.com>
+ <93954095-4515-46ff-bdad-ad08439b4471@csgroup.eu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: display: atmel,lcdc: convert to dtschema
-To: Dharma.B@microchip.com, maarten.lankhorst@linux.intel.com,
- mripard@kernel.org, tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- Nicolas.Ferre@microchip.com, alexandre.belloni@bootlin.com,
- claudiu.beznea@tuxon.dev
-Cc: dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240223-lcdc-fb-v1-1-4c64cb6277df@microchip.com>
- <796652d5-af57-4aca-87c2-10a7b0b55959@linaro.org>
- <11c545e2-45df-4587-a5c7-12b05c2f01e0@microchip.com>
- <9bf7e492-891c-4d8f-b388-3b2ebae611c1@linaro.org>
- <e5cb705f-56cc-47cc-beb5-700c9a35c8cf@microchip.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <e5cb705f-56cc-47cc-beb5-700c9a35c8cf@microchip.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <93954095-4515-46ff-bdad-ad08439b4471@csgroup.eu>
 
-On 28/02/2024 11:18, Dharma.B@microchip.com wrote:
-> On 28/02/24 12:43 pm, Krzysztof Kozlowski wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>
->> On 28/02/2024 07:59, Dharma.B@microchip.com wrote:
->>>
->>>>
->>>> I don't know what's this exactly, but if embedded display then maybe
->>>> could be part of this device node. If some other display, then maybe you
->>>> need another schema, with compatible? But first I would check how others
->>>> are doing this.
->>>
->>> Okay, then I think the driver also needs to be modified, currently the
->>> driver parses the phandle and looks for these properties. Also the
->>> corresponding dts files.
->>
->> Driver does not have to be modified in my proposal. You would still have
->> phandle.
+On Wed, Feb 28, 2024 at 09:50:52AM +0000, Christophe Leroy wrote:
+> Le 28/02/2024 à 09:53, peterx@redhat.com a écrit :
+> > From: Peter Xu <peterx@redhat.com>
+> > 
+> > [based on latest akpm/mm-unstable, commit 1274e7646240]
+> > 
+> > These two APIs are mostly always the same.  It's confusing to have both of
+> > them.  Merge them into one.  Here I used pXd_leaf() only because pXd_leaf()
+> > is a global API which is always defined, while pXd_large() is not.
+> > 
+> > We have yet one more API that is similar which is pXd_huge(), but that's
+> > even trickier, so let's do it step by step.
+> > 
+> > Some cautions are needed on either x86 or ppc: x86 is currently the only
+> > user of p4d_large(), while ppc used to define pXd_large() only with THP,
+> > while it is not the case for pXd_leaf().  For the rest archs, afaict
+> > they're 100% identical.
 > 
-> If I understand correctly, I could define the dt bindings as below
-> 
->    display:
->      $ref: /schemas/types.yaml#/definitions/phandle
->      description: A phandle pointing to the display node.
-> 
->    panel:
->      $ref: panel/panel-common.yaml#
->      properties:
-> 
+> Maybe would also be a good opportunity to replace pmd_is_leaf() by 
+> pmd_leaf() and the same for pud_is_leaf()
 
-So these are standard panel bindings? Then the node should live outside
-of lcdc. If current driver needs to poke inside panel and panel could be
-anything, then probably you need peripheral-props-like approach. :/
+Sure, while I'll wait for some more comments, I can add one on top when
+repost.  Thanks,
 
-Best regards,
-Krzysztof
+-- 
+Peter Xu
 
 
