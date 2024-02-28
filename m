@@ -1,274 +1,163 @@
-Return-Path: <linux-kernel+bounces-84602-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84603-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FFD986A8E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:23:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8117B86A8E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:24:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 843811C23850
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 07:23:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 228381F26630
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 07:24:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4D6628DBF;
-	Wed, 28 Feb 2024 07:22:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56FF424B2C;
+	Wed, 28 Feb 2024 07:24:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="PyPZQGbl"
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="DZYrrHdo"
+Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B00C25567;
-	Wed, 28 Feb 2024 07:22:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.97
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F226F249E3
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 07:24:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709104962; cv=none; b=TfZrxTvijw7uAXuULGXAwuKr8R8ey7vNdfNDXhn0rW0wFfUUgUsSS9SbzKa2glQ/NyByH6fJUF51ltHsaFCIohUEycnWSQhwQ0pkTDFlg4OsUqrWco7VHr22FlOzhbkU1W/XSQM8sflZ3NHLmmYqC6lBECzkRpl8j5nudZ53Zm0=
+	t=1709105062; cv=none; b=tlvsUOS/Sg0Xg7dvTONavsFdcBrsVxQiO2NJDYSQcJwza44YvIDOKL86UiMHaFRE+fBTfL3B4wLUVkI/Lq5Vz9Wr7LSKd/evWQcBeJBMyDrCBW9nJnRk6qnWmWk+NOiFKSaACt9xbRhwTHvnXEDPrqQxZYjQSFAjhRPGx/28DOw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709104962; c=relaxed/simple;
-	bh=X/nc0B0c3vBuZXst8rWRcayKTrS2M6UMidLUfnAwMDM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=AE0WT8cM2j+UVkszHfuyaDboQvX6QxSUSyNaJ87obKBDNvc767aWL6LHLHVippNSqEZtyRXRieG6xllvkjPZyEU9/RzNXfHriINzN6HG78mJ+cu9LlRyVrMsJUkHK7Fx7dKJVrGdtF7o/rF9WVx88b9MKpv2aG1ySP5V8pPF0qE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=PyPZQGbl; arc=none smtp.client-ip=115.124.30.97
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1709104957; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=ypkMeHj6K2OB7ZjAbcREaWVLcPs4ICT4fmLAXzD0HaM=;
-	b=PyPZQGblyDRSYlbdpy5HmZGYn5noUTzb2oSm8YeOOBe+/ihXw3PFQ49PY87nqSDOlGbPnNO7B/n1CyrrlN8Of8edwYGlGCAHcdfY5xrm7DedfmxFcHMrg26rrt9ivZ9PfpX1rTJ8SXY0bnooBTD1FF9ex6iXwqQBYqMuNSvEXis=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=yaoma@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0W1P3Z6U_1709104952;
-Received: from localhost.localdomain(mailfrom:yaoma@linux.alibaba.com fp:SMTPD_---0W1P3Z6U_1709104952)
-          by smtp.aliyun-inc.com;
-          Wed, 28 Feb 2024 15:22:35 +0800
-From: Bitao Hu <yaoma@linux.alibaba.com>
-To: dianders@chromium.org,
-	tglx@linutronix.de,
-	liusong@linux.alibaba.com,
-	akpm@linux-foundation.org,
-	pmladek@suse.com,
-	kernelfans@gmail.com,
-	deller@gmx.de,
-	npiggin@gmail.com,
-	tsbogend@alpha.franken.de,
-	James.Bottomley@HansenPartnership.com,
-	jan.kiszka@siemens.com
-Cc: linux-kernel@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	linux-parisc@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	yaoma@linux.alibaba.com
-Subject: [PATCHv11 4/4] watchdog/softlockup: report the most frequent interrupts
-Date: Wed, 28 Feb 2024 15:22:16 +0800
-Message-Id: <20240228072216.95130-5-yaoma@linux.alibaba.com>
-X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
-In-Reply-To: <20240228072216.95130-1-yaoma@linux.alibaba.com>
-References: <20240228072216.95130-1-yaoma@linux.alibaba.com>
+	s=arc-20240116; t=1709105062; c=relaxed/simple;
+	bh=J3BiMHmFAZRHHxjaye1fO3ickIhjsdiGhoo6deKUkG8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pOj24Oqh5jtGI/Nht8/+o3BeTBf4dkqSrov/YImFAvbxSIO2Gt9/dptEg+GmUIPoQFcCrT8cu+pOQL2PO8jjI5H+RL5DdGYSsMx8r3G22Si4Hk3oNxHTxybLngY9eGfdFJan8xWAAqYg22QwyauNvkTQZWBF20PZzfG4LrxRa/c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=DZYrrHdo; arc=none smtp.client-ip=209.85.166.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-3653e1240e3so98235ab.0
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 23:24:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709105060; x=1709709860; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WHnvaXANsC8wB5A9Pi5iZo7i69i6rzWp1vJRqsOF55o=;
+        b=DZYrrHdozaK4bx3oRMsJGBZaj4ZVy8K72pUsBh8GV2oT+GN7XR/L+wKoGDAungc5iX
+         Jkse0b3bsooq+6pdDkuLNQxe26+fHoVSATFlOBsp0EkC2ufY8iysQo8Vj+GBzeXgsjbR
+         gdISeCY86roTbIa7WM/4MJzlaIJ01VynjlxZGARL+omgQCuwm9alWa5dr7K5BsKMq8n1
+         kq0R++e/uemSuaKyc8GGDCtnag2IVf9fORaL9NDdUpzTuYOT81K93fO0Xg/E7SRDc65y
+         sEz+Zkq9Y7dYPfsgB6odwjTAdwffvpjoUFFZdeiKdGxiP1yORo8zbKc3Au83Fx6LAC8o
+         tOig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709105060; x=1709709860;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WHnvaXANsC8wB5A9Pi5iZo7i69i6rzWp1vJRqsOF55o=;
+        b=jOETwSRvG7NAR7U1UeNvczlccCMYsEHHv/+TGZWj6XJyWhGUqHgeHwSx9urmYbsGWJ
+         XntHoJzGEfClx9Bxo5hSUCltxEF59B67wM+s3MtuxF4kn+FL3kqTBxdhA/PjDa35UO4Y
+         wCRISIDW5n3DES7muJmBiQ1FKhLbQrqadw+0g0uuaJKPHK1Nqj8FXfo0t1/UlSFFiYi3
+         Z+s2xboHmgcJXxDBOx+E6fj6+tTFR0oU/DTiKCxl7/bKHhvbmVbvXo0T2ervGgpblYQ0
+         YQiJXe4uyKtodDf9mhrR2DSTzpddzTdcLWMCJhuA/RJtqkmUSibSV7GgPVNzSuxS9iSh
+         LPbw==
+X-Forwarded-Encrypted: i=1; AJvYcCVLlm8npGiyhyCZaWM+GUoCAjs0wuaSso1shNkFuJKjTn1HxlJEVZSeTe+hyxwTnFex7gY2LAHWijWfqp6yrux/e0KX5gjpvrr3BfdG
+X-Gm-Message-State: AOJu0YxAkBE+QBmQopVk7EwD72GFIeOq4cr4z/W+M0YVWGZ0jd2jj8E6
+	NlerRXRKv9R8ALhxpB3cybObWYpxXLsmY0KAsA8aclRYReEPMRGivuFbfx6OY/LFNlS6B6ErQx0
+	npeYluk+0HdlZw3YgzXCuIssu1gj9oh/cqXh9
+X-Google-Smtp-Source: AGHT+IHkLDbLWAgusw2nK94xGjYsaUw7+RGfP0DkNFb5aCzX98qVfoDFTra6SUiapVaXaZsf9lCDoJmc1+/jVZTtfXM=
+X-Received: by 2002:a92:2902:0:b0:363:c7c0:49bc with SMTP id
+ l2-20020a922902000000b00363c7c049bcmr14863ilg.27.1709105059805; Tue, 27 Feb
+ 2024 23:24:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240214063708.972376-1-irogers@google.com> <20240214063708.972376-5-irogers@google.com>
+ <CAM9d7cjuv2VAVfGM6qQEMYO--WvgPvAvmnF73QrS_PzGzCF32w@mail.gmail.com>
+ <CAP-5=fUUSpHUUAc3jvJkPAUuuJAiSAO4mjCxa9qUppnqk76wWg@mail.gmail.com>
+ <CAM9d7chXtmfaC73ykiwn+RqJmy5jZFWFaV_QNs10c_Td+zmLBQ@mail.gmail.com>
+ <Zd41Nltnoen0cPYX@x1> <CAP-5=fWv25WgY82ZY3V1erUvCb+jdhLd_d91p4akjqFgynvAgg@mail.gmail.com>
+ <CAM9d7cjJTf_yed9nwXZkBPr6u6NH5n+V+u0m6Zgsc1JBy_LdyA@mail.gmail.com>
+In-Reply-To: <CAM9d7cjJTf_yed9nwXZkBPr6u6NH5n+V+u0m6Zgsc1JBy_LdyA@mail.gmail.com>
+From: Ian Rogers <irogers@google.com>
+Date: Tue, 27 Feb 2024 23:24:05 -0800
+Message-ID: <CAP-5=fWKdp7rf+v7t_T_0tU0OxQO9R2g+ZH7Ag7HgyBbGT3-nQ@mail.gmail.com>
+Subject: Re: [PATCH v1 4/6] perf threads: Move threads to its own files
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Oliver Upton <oliver.upton@linux.dev>, 
+	Yang Jihong <yangjihong1@huawei.com>, linux-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-When the watchdog determines that the current soft lockup is due
-to an interrupt storm based on CPU utilization, reporting the
-most frequent interrupts could be good enough for further
-troubleshooting.
+On Tue, Feb 27, 2024 at 10:40=E2=80=AFPM Namhyung Kim <namhyung@kernel.org>=
+ wrote:
+>
+> On Tue, Feb 27, 2024 at 1:42=E2=80=AFPM Ian Rogers <irogers@google.com> w=
+rote:
+> >
+> > On Tue, Feb 27, 2024 at 11:17=E2=80=AFAM Arnaldo Carvalho de Melo
+> > <acme@kernel.org> wrote:
+> > >
+> > > On Tue, Feb 27, 2024 at 09:31:33AM -0800, Namhyung Kim wrote:
+> > > > I can see some other differences like machine__findnew_thread()
+> > > > which I think is due to the locking change.  Maybe we can fix the
+> > > > problem before moving the code and let the code move simple.
+> > >
+> > > I was going to suggest that, agreed.
+> > >
+> > > We may start doing a refactoring, then find a bug, at that point we
+> > > first fix the problem them go back to refactoring.
+> >
+> > Sure I do this all the time. Your typical complaint on the v+1 patch
+> > set is to move the bug fixes to the front of the changes. On the v+2
+> > patch set the bug fixes get applied but not the rest of the patch
+> > series, etc.
+> >
+> > Here we are refactoring code for an rb-tree implementation of threads
+> > and worrying about its correctness. There's no indication it's not
+> > correct, it is largely copy and paste, there is also good evidence in
+> > the locking disciple it is more correct. The next patch deletes that
+> > implementation, replacing it with a hash table. Were I not trying to
+> > break things apart I could squash those 2 patches together, but I've
+> > tried to do the right thing. Now we're trying to micro correct, break
+> > apart, etc. a state that gets deleted. A reviewer could equally
+> > criticise this being 2 changes rather than 1, and the cognitive load
+> > of having to look at code that gets deleted. At some point it is a
+> > judgement call, and I think this patch is actually the right size. I
+> > think what is missing here is some motivation in the commit message to
+> > the findnew refactoring and so I'll add that.
+>
+> I'm not against your approach and actually appreciate your effort
+> to split rb-tree refactoring and hash table introduction.  What I'm
+> asking is just to separate out the code moving.  I think you can do
+> whatever you want in the current file.  Once you have the final code
+> you can move it to its own file exactly the same.  When I look at this
+> commit, say a few years later, I won't expect a commit that says
+> moving something to a new file has other changes.
 
-Below is an example of interrupt storm. The call tree does not
-provide useful information, but we can analyze which interrupt
-caused the soft lockup by comparing the counts of interrupts.
+The problem is that the code in machine treats the threads lock as if
+it is a lock in machine. So there is __machine__findnew_thread which
+implies the thread lock is held. This change is making threads its own
+separate concept/collection and the lock belongs with that collection.
+Most of the implementation of threads__findnew matches
+__machine__findnew_thread, so we may be able to engineer a smaller
+line diff by moving "__machine__findnew_thread" code into threads.c,
+then renaming it to build the collection, etc. We could also build the
+threads collection inside of machine and then in a separate change
+move it to threads.[ch].  In the commit history this seems muddier
+than just splitting out threads as a collection. Also, some of the API
+design choices are motivated more by the hash table implementation of
+the next patch than trying to have a good rbtree abstracted collection
+of threads. Essentially it'd be engineering a collection of threads
+but only with a view to delete it in the next patch. I don't think it
+would be for the best and the commit history for deleted code is
+unlikely to be looked upon.
 
-[  638.870231] watchdog: BUG: soft lockup - CPU#9 stuck for 26s! [swapper/9:0]
-[  638.870825] CPU#9 Utilization every 4s during lockup:
-[  638.871194]  #1:   0% system,          0% softirq,   100% hardirq,     0% idle
-[  638.871652]  #2:   0% system,          0% softirq,   100% hardirq,     0% idle
-[  638.872107]  #3:   0% system,          0% softirq,   100% hardirq,     0% idle
-[  638.872563]  #4:   0% system,          0% softirq,   100% hardirq,     0% idle
-[  638.873018]  #5:   0% system,          0% softirq,   100% hardirq,     0% idle
-[  638.873494] CPU#9 Detect HardIRQ Time exceeds 50%. Most frequent HardIRQs:
-[  638.873994]  #1: 330945      irq#7
-[  638.874236]  #2: 31          irq#82
-[  638.874493]  #3: 10          irq#10
-[  638.874744]  #4: 2           irq#89
-[  638.874992]  #5: 1           irq#102
-..
-[  638.875313] Call trace:
-[  638.875315]  __do_softirq+0xa8/0x364
+Thanks,
+Ian
 
-Signed-off-by: Bitao Hu <yaoma@linux.alibaba.com>
-Reviewed-by: Liu Song <liusong@linux.alibaba.com>
----
- kernel/watchdog.c | 115 ++++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 111 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-index 69e72d7e461d..c9d49ae8d045 100644
---- a/kernel/watchdog.c
-+++ b/kernel/watchdog.c
-@@ -12,22 +12,25 @@
- 
- #define pr_fmt(fmt) "watchdog: " fmt
- 
--#include <linux/mm.h>
- #include <linux/cpu.h>
--#include <linux/nmi.h>
- #include <linux/init.h>
-+#include <linux/irq.h>
-+#include <linux/irqdesc.h>
- #include <linux/kernel_stat.h>
-+#include <linux/kvm_para.h>
- #include <linux/math64.h>
-+#include <linux/mm.h>
- #include <linux/module.h>
-+#include <linux/nmi.h>
-+#include <linux/stop_machine.h>
- #include <linux/sysctl.h>
- #include <linux/tick.h>
-+
- #include <linux/sched/clock.h>
- #include <linux/sched/debug.h>
- #include <linux/sched/isolation.h>
--#include <linux/stop_machine.h>
- 
- #include <asm/irq_regs.h>
--#include <linux/kvm_para.h>
- 
- static DEFINE_MUTEX(watchdog_mutex);
- 
-@@ -417,13 +420,104 @@ static void print_cpustat(void)
- 	}
- }
- 
-+#define HARDIRQ_PERCENT_THRESH          50
-+#define NUM_HARDIRQ_REPORT              5
-+struct irq_counts {
-+	int irq;
-+	u32 counts;
-+};
-+
-+static DEFINE_PER_CPU(bool, snapshot_taken);
-+
-+/* Tabulate the most frequent interrupts. */
-+static void tabulate_irq_count(struct irq_counts *irq_counts, int irq, u32 counts, int rank)
-+{
-+	int i;
-+	struct irq_counts new_count = {irq, counts};
-+
-+	for (i = 0; i < rank; i++) {
-+		if (counts > irq_counts[i].counts)
-+			swap(new_count, irq_counts[i]);
-+	}
-+}
-+
-+/*
-+ * If the hardirq time exceeds HARDIRQ_PERCENT_THRESH% of the sample_period,
-+ * then the cause of softlockup might be interrupt storm. In this case, it
-+ * would be useful to start interrupt counting.
-+ */
-+static bool need_counting_irqs(void)
-+{
-+	u8 util;
-+	int tail = __this_cpu_read(cpustat_tail);
-+
-+	tail = (tail + NUM_HARDIRQ_REPORT - 1) % NUM_HARDIRQ_REPORT;
-+	util = __this_cpu_read(cpustat_util[tail][STATS_HARDIRQ]);
-+	return util > HARDIRQ_PERCENT_THRESH;
-+}
-+
-+static void start_counting_irqs(void)
-+{
-+	if (!__this_cpu_read(snapshot_taken)) {
-+		kstat_snapshot_irqs();
-+		__this_cpu_write(snapshot_taken, true);
-+	}
-+}
-+
-+static void stop_counting_irqs(void)
-+{
-+	__this_cpu_write(snapshot_taken, false);
-+}
-+
-+static void print_irq_counts(void)
-+{
-+	unsigned int i, count;
-+	struct irq_counts irq_counts_sorted[NUM_HARDIRQ_REPORT] = {
-+		{-1, 0}, {-1, 0}, {-1, 0}, {-1, 0}, {-1, 0}
-+	};
-+
-+	if (__this_cpu_read(snapshot_taken)) {
-+		for_each_active_irq(i) {
-+			count = kstat_get_irq_since_snapshot(i);
-+			tabulate_irq_count(irq_counts_sorted, i, count, NUM_HARDIRQ_REPORT);
-+		}
-+
-+		/*
-+		 * We do not want the "watchdog: " prefix on every line,
-+		 * hence we use "printk" instead of "pr_crit".
-+		 */
-+		printk(KERN_CRIT "CPU#%d Detect HardIRQ Time exceeds %d%%. Most frequent HardIRQs:\n",
-+		       smp_processor_id(), HARDIRQ_PERCENT_THRESH);
-+
-+		for (i = 0; i < NUM_HARDIRQ_REPORT; i++) {
-+			if (irq_counts_sorted[i].irq == -1)
-+				break;
-+
-+			printk(KERN_CRIT "\t#%u: %-10u\tirq#%d\n",
-+			       i + 1, irq_counts_sorted[i].counts,
-+			       irq_counts_sorted[i].irq);
-+		}
-+
-+		/*
-+		 * If the hardirq time is less than HARDIRQ_PERCENT_THRESH% in the last
-+		 * sample_period, then we suspect the interrupt storm might be subsiding.
-+		 */
-+		if (!need_counting_irqs())
-+			stop_counting_irqs();
-+	}
-+}
-+
- static void report_cpu_status(void)
- {
- 	print_cpustat();
-+	print_irq_counts();
- }
- #else
- static inline void update_cpustat(void) { }
- static inline void report_cpu_status(void) { }
-+static inline bool need_counting_irqs(void) { return false; }
-+static inline void start_counting_irqs(void) { }
-+static inline void stop_counting_irqs(void) { }
- #endif
- 
- /*
-@@ -527,6 +621,18 @@ static int is_softlockup(unsigned long touch_ts,
- 			 unsigned long now)
- {
- 	if ((watchdog_enabled & WATCHDOG_SOFTOCKUP_ENABLED) && watchdog_thresh) {
-+		/*
-+		 * If period_ts has not been updated during a sample_period, then
-+		 * in the subsequent few sample_periods, period_ts might also not
-+		 * be updated, which could indicate a potential softlockup. In
-+		 * this case, if we suspect the cause of the potential softlockup
-+		 * might be interrupt storm, then we need to count the interrupts
-+		 * to find which interrupt is storming.
-+		 */
-+		if (time_after_eq(now, period_ts + get_softlockup_thresh() / NUM_SAMPLE_PERIODS) &&
-+		    need_counting_irqs())
-+			start_counting_irqs();
-+
- 		/* Warn about unreasonable delays. */
- 		if (time_after(now, period_ts + get_softlockup_thresh()))
- 			return now - touch_ts;
-@@ -549,6 +655,7 @@ static DEFINE_PER_CPU(struct cpu_stop_work, softlockup_stop_work);
- static int softlockup_fn(void *data)
- {
- 	update_touch_ts();
-+	stop_counting_irqs();
- 	complete(this_cpu_ptr(&softlockup_completion));
- 
- 	return 0;
--- 
-2.37.1 (Apple Git-137.1)
-
+> Thanks,
+> Namhyung
 
