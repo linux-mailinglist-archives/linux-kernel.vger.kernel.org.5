@@ -1,143 +1,136 @@
-Return-Path: <linux-kernel+bounces-85556-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85557-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F76F86B7AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:51:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 830A986B7AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:51:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE99D286A5C
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:51:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 89E1D1F21E6E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:51:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B19015CD59;
-	Wed, 28 Feb 2024 18:50:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8025E71ED5;
+	Wed, 28 Feb 2024 18:50:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Dwe/EJSs"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Jz8yh18x"
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC58E71EB3;
-	Wed, 28 Feb 2024 18:50:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F9D971EB3
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 18:50:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709146232; cv=none; b=BV8Q+tOq1aqZPXZYK7WnppS7Xw/KLXZyxzN7VV7QANAp7yaKI6GTlFTYXZB9Xt9Xv9BnIsGnEBjN2dLgGQbq0fv3Bnn0WVMqUG9eezN8yJxpsJrtBhyqlPqyDIzkZeDdcKLBGibirEWcyzHtVkGnl8nSxrNf7YDEtBOh6eiOSP0=
+	t=1709146245; cv=none; b=Gli1a/y4dd3rTh0epKKWVbrU7sQ62gDJGbQb9zPJay08NFCxtP6XPI5QHsr69s0E5VJj/JS+R9Sl+MMe9qxEEBvvuNM40YGsESK+dSN8qztM1xeX7SzxKbcbLYet1svrprfwVmnJIRI7pfxCaUyiEkItCrOzEwZwPzSYCpW1H6A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709146232; c=relaxed/simple;
-	bh=cCJNI83N6rsCRckXXH/moUQ8dBac6pWGN8ufZKJRRGw=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:References:
-	 In-Reply-To:To:CC; b=nVQ3+FNmyhY3gOG5O6wx2VwxrPXKnUAlMbaXj1eMlrGi93DcUpHu7VTBlWaX8zO0PTDaWGxHsq+fAEJR7WRGQTzSSFQwZooDqrWrDRZsDzB3XxB5vNbDtJeFuZFJLsZlavfWVcmIPZ8mgLxFmJj+/ZvMA/j/aQbBy34mOk5Sg94=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Dwe/EJSs; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41SEGGPM004022;
-	Wed, 28 Feb 2024 18:50:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:date:subject:mime-version:content-type
-	:content-transfer-encoding:message-id:references:in-reply-to:to
-	:cc; s=qcppdkim1; bh=K7mkrfq1S60nScHf6Bg536eGqqIlIrdzYLJ933gbQoI
-	=; b=Dwe/EJSsht/j49cLMs3k+I7onNNEiCy8sIBQro/76UUAfoNmZ7HUtU1OVSe
-	9vPkDQcI3lPn1lCSEtpzLBKRdXQG8gnsBOwKjekb3UFvid2y5jyM6jVXQJj7tcsM
-	1hO18p9rR4vHv6uJR11KZz0DmtVXgIp37Hnl+gSnhbUiE6eKDGuS0wbkLNVRw9r2
-	aqd6KDImf2jJ0K197Gu3a1RgwRbcvqZLUduO4/todG0bLX7GOSJjRbPFZBVyCOBE
-	9mNB/XeWguOtAayo+ygrAOY8JlvIM6G8U+xAm+T5be3GEymOpNfhPLNKNeov+HVm
-	jWZTrMMeFZOXo3QeNX5s3lOR6SA==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wj6en8sa0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 28 Feb 2024 18:50:18 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41SIoHGd001964
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 28 Feb 2024 18:50:17 GMT
-Received: from [169.254.0.1] (10.49.16.6) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 28 Feb
- 2024 10:50:13 -0800
-From: Unnathi Chalicheemala <quic_uchalich@quicinc.com>
-Date: Wed, 28 Feb 2024 10:50:01 -0800
-Subject: [PATCH 3/3] firmware: qcom-scm: Remove
- QCOM_SMC_WAITQ_FLAG_WAKE_ALL
+	s=arc-20240116; t=1709146245; c=relaxed/simple;
+	bh=uCNk9xZssjz88SO3HgKmg/6pNPAs4j9cZ22qRa/0FUk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=d2pvOsw2ysYKOG7M9GrlmBlXXMCSqFojO7RESjOFcNtMv0bf700Z1ciC69AK63SPqTfp8etwyuktJshSUy5zj3TNi7tEdvqcg6cDiruw2j26ZgL/SnK5AuxfsytAG0Q4XpPXtY5hHC2C2iWDr7jftOD7FtUvODZ6TqJgIry8C8M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Jz8yh18x; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-412a3ebad2aso523695e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 10:50:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709146243; x=1709751043; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Zzx4HJfLML4JQaG7fROeK+a0qZNaeaLXumU4hcnOH5U=;
+        b=Jz8yh18xpafJEnQQlffADR/JWLGW90uMfpbJK/V8qPEbJflGfIZ8msGjAds/C4hFOZ
+         hu6ikyWwAojPdrBeIjOhh4i2zzH3AQz8QXm36XuNgKBQ+P432WmD2Rf2DV9NyoxSidun
+         vaNUfc9ElXoq92QN5dQzELXifRLmvt6zoDSFLNbSAmOVJKHHZ4S6sRGAFutDRiDDHoXV
+         DW2Zq24Q+IfvGra77G9IDtsqHL84elno7uuxeoVc80LeynNO/Fzzo9SKCQUrETulwEN7
+         vwpxgWGTrq5yoNBIq5sxL/RXKAIRVbZb9YUEFBJOBCYPuoIz43jnL7FxY5zmjcC44LdF
+         5wNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709146243; x=1709751043;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Zzx4HJfLML4JQaG7fROeK+a0qZNaeaLXumU4hcnOH5U=;
+        b=TWooc5+kadGfG2YgOxfb99W0fJWyIB+4wiZZOpf+Zlkqa/BFtHTRMwwn5hjRilYKa6
+         GazFphy5HTfuwGqUL6755DTtnacIVze7vSjU9kb4LUfX9z0RMi2roqmBSBGazsJ7okWv
+         Egdd7XkyXFx8qMvMMfxHgiON3A3rRJHOlqRZy7hGOHZhTPWq+8GiUWtn79kjBRt9PcEh
+         bcK4Oxa+RjP0kcN5Rrq4yX9N3lGLb1U/+qpPCNdZqXpmOIKYkt+LixeA2rXWA07qXyOw
+         0JZ86Hjim+CfRWKslG4RQHvA3oBNbTtHw/7cRqQ88SGMHiJXVj4rM9P+cpXzTXsIdyU6
+         RyRQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWz7Zi5k49TVhSWdYiSmk3ykl1gZVtplQ0dyy1LkElEHTASu9VZ6CvagtrlA/TOj5nyGDDFYay0Q9gOmdp0lNV5fXoQU9CCYMnaqR98
+X-Gm-Message-State: AOJu0YxMSwK4A2DmnXEidLsDagqQWja7LGkQNavossG22OnTSLYlplBu
+	a1Pbt/oBfr3V5tpead7haxTu1+ulg8rnp2vQttezBUrf36gtCb08oG6HRK0wNw==
+X-Google-Smtp-Source: AGHT+IG2H+YrKQ5fSobiXEyDPQnan1RYKk8JYEWcjEAIGT6HGiPQq/QjDtUbrthdPJ6TZz1M9/GBOQ==
+X-Received: by 2002:a05:600c:468c:b0:410:85ab:67f3 with SMTP id p12-20020a05600c468c00b0041085ab67f3mr81884wmo.21.1709146242594;
+        Wed, 28 Feb 2024 10:50:42 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:9c:201:e9d0:d027:ced7:cf52])
+        by smtp.gmail.com with ESMTPSA id l36-20020a05600c1d2400b00412aff7874esm2890521wms.48.2024.02.28.10.50.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Feb 2024 10:50:41 -0800 (PST)
+Date: Wed, 28 Feb 2024 19:50:36 +0100
+From: Marco Elver <elver@google.com>
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
+	Thomas Gleixner <tglx@linutronix.de>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	"H . Peter Anvin" <hpa@zytor.com>, Paul Turner <pjt@google.com>,
+	linux-api@vger.kernel.org, Christian Brauner <brauner@kernel.org>,
+	Florian Weimer <fw@deneb.enyo.de>, David.Laight@aculab.com,
+	carlos@redhat.com, Peter Oskolkov <posk@posk.io>,
+	Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+	Chris Kennelly <ckennelly@google.com>, dvyukov@google.com
+Subject: Re: [PATCH 00/30] RSEQ node id and mm concurrency id extensions
+Message-ID: <Zd-AfDcQ-r04CMXk@elver.google.com>
+References: <20221122203932.231377-1-mathieu.desnoyers@efficios.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20240228-multi_waitq-v1-3-ccb096419af0@quicinc.com>
-References: <20240228-multi_waitq-v1-0-ccb096419af0@quicinc.com>
-In-Reply-To: <20240228-multi_waitq-v1-0-ccb096419af0@quicinc.com>
-To: Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Sibi Sankar <quic_sibis@quicinc.com>
-CC: <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@quicinc.com>, Prasad Sodagudi <quic_psdoagud@quicinc.com>,
-        "Murali
- Nalajala" <quic_mnalajal@quicinc.com>,
-        Satya Durga Srinivasu Prabhala
-	<quic_satyap@quicinc.com>,
-        Unnathi Chalicheemala <quic_uchalich@quicinc.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1709146213; l=1197;
- i=quic_uchalich@quicinc.com; s=20240202; h=from:subject:message-id;
- bh=cCJNI83N6rsCRckXXH/moUQ8dBac6pWGN8ufZKJRRGw=;
- b=fujmx0xJs81Cd0KwcwbVJRKhGkmWMxmzdxkShvQ6Qlq92Ig1PwPVtvreDECwhV4SVtXucN11y
- noRAmOFVA6pARIybJDIhPL0rZdRbJxURJUR/ulj24j/10WIR3L6Vdn7
-X-Developer-Key: i=quic_uchalich@quicinc.com; a=ed25519;
- pk=8n+IFmsCDcEIg91sUP/julv9kf7kmyIKT2sR+1yFd4A=
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 5kt6Ma8DwnAbiSFEPgjLQaly0GqUfnTh
-X-Proofpoint-ORIG-GUID: 5kt6Ma8DwnAbiSFEPgjLQaly0GqUfnTh
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-28_08,2024-02-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- priorityscore=1501 spamscore=0 adultscore=0 lowpriorityscore=0 mlxscore=0
- suspectscore=0 impostorscore=0 bulkscore=0 mlxlogscore=993 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2402280148
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221122203932.231377-1-mathieu.desnoyers@efficios.com>
+User-Agent: Mutt/2.2.12 (2023-09-09)
 
-This will not be supported by current firmware due to firmware
-limitations, so remove it.
+Hi Mathieu, all,
 
-Signed-off-by: Unnathi Chalicheemala <quic_uchalich@quicinc.com>
----
- drivers/firmware/qcom/qcom_scm.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+On Tue, Nov 22, 2022 at 03:39PM -0500, Mathieu Desnoyers wrote:
+> Extend the rseq ABI to expose NUMA node ID, mm_cid, and mm_numa_cid
+> fields.
+> 
+> The NUMA node ID field allows implementing a faster getcpu(2) in libc.
+> 
+> The per-memory-map concurrency id (mm_cid) [1] allows ideal scaling
+> (down or up) of user-space per-cpu data structures. The concurrency ids
+> allocated within a memory map are tracked by the scheduler, which takes
+> into account the number of concurrently running threads, thus implicitly
+> considering the number of threads, the cpu affinity, the cpusets
+> applying to those threads, and the number of logical cores on the
+> system.
+> 
+> The NUMA-aware concurrency id (mm_numa_cid) is similar to the mm_cid,
+> except that it keeps track of the NUMA node ids with which each cid has
+> been associated. On NUMA systems, when a NUMA-aware concurrency ID is
+> observed by user-space to be associated with a NUMA node, it is
+> guaranteed to never change NUMA node unless a kernel-level NUMA
+> configuration change happens. This is useful for NUMA-aware per-cpu data
+> structures running in environments where a process or a set of processes
+> belonging to cpuset are pinned to a set of cores which belong to a
+> subset of the system's NUMA nodes.
+[...]
 
-diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
-index 4606c49ef155..2657372f210f 100644
---- a/drivers/firmware/qcom/qcom_scm.c
-+++ b/drivers/firmware/qcom/qcom_scm.c
-@@ -113,7 +113,6 @@ static const u8 qcom_scm_cpu_warm_bits[QCOM_SCM_BOOT_MAX_CPUS] = {
- };
- 
- #define QCOM_SMC_WAITQ_FLAG_WAKE_ONE	BIT(0)
--#define QCOM_SMC_WAITQ_FLAG_WAKE_ALL	BIT(1)
- 
- static const char * const qcom_scm_convention_names[] = {
- 	[SMC_CONVENTION_UNKNOWN] = "unknown",
-@@ -1828,9 +1827,8 @@ static irqreturn_t qcom_scm_irq_handler(int irq, void *data)
- 			goto out;
- 		}
- 
--		if (flags != QCOM_SMC_WAITQ_FLAG_WAKE_ONE &&
--		    flags != QCOM_SMC_WAITQ_FLAG_WAKE_ALL) {
--			dev_err(scm->dev, "Invalid flags found for wq_ctx: %u\n", flags);
-+		if (flags != QCOM_SMC_WAITQ_FLAG_WAKE_ONE) {
-+			dev_err(scm->dev, "Invalid flags received for wq_ctx: %u\n", flags);
- 			goto out;
- 		}
- 
+Just out of curiosity: is anyone aware of any libraries that have
+started using CIDs? It looks like the cost of CID assignment is always
+paid (even though it should be small), I'm trying to understand if after
+1.5 years there are common libraries that have started using it and what
+their exact usecase is.
 
--- 
-2.25.1
+I'm aware that TCMalloc was the inspiration for vCPUs [1], then renamed to
+CIDs, but am wondering if other users are out there.
 
+Thanks,
+-- Marco
+
+[1] https://lore.kernel.org/lkml/20220218210633.23345-10-mathieu.desnoyers@efficios.com/
 
