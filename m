@@ -1,379 +1,282 @@
-Return-Path: <linux-kernel+bounces-84421-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84422-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFC2586A6A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 03:38:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67FD286A6A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 03:38:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F5AC1F26E85
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:38:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B9761C252FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:38:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BAA51CD2A;
-	Wed, 28 Feb 2024 02:37:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DCC21CD15;
+	Wed, 28 Feb 2024 02:38:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ojd6SrzF"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="a9rfGTWA"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19E146AC2
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 02:37:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 539D96AC2;
+	Wed, 28 Feb 2024 02:38:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709087870; cv=none; b=u2qRw5G+sNjCeJEkaAcZFizZbPh+EkQu0NQfnIjx4Q0Cp5wwu8oZgnIaCDCWnzOAPz2IXE0u5NnmRlPiqCxNKz0ZmTW6l6POs/H8YVBf8Spq0ileQ0ITlyTE70N9m3IIQ0bjB7UQ91fJ25Ve5n9gYsaPZz4XIEas0cGnNZ2RnPM=
+	t=1709087920; cv=none; b=jAUiMxy0N8gxgl3W6Ewvuu0oj96Af6BjKY4EsGAG8QQPAYCbEe7X7JD8Ive+rcaDLwDjwhLMtR1MiERxXRFidRbGReRU/peQ5THiMCQ748stNyBcyUx6ndJ4xZEBIUTdAVcrdm3DhQbCe8EFGCz3wczCKiwqZTvP4m3fs0nWgVI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709087870; c=relaxed/simple;
-	bh=Y1cLeoYbLo94otbAAy3qAetkVXP5bGetC7iLVJlMEDQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RuG1oIiWhAXIRnJkm4phApX8h8MRd55LoRI/lQYv8PjMRvXaI6mqoCp+hTB8ng2j1ZavoBFEYJBdZiiOpuzVJxFcUpP3ZcFH8DJEEFzuZHRXRJtysodx4Cq3y0ooMnyULzu9Kxd9UI7C6wMmN3eEHe0b5Q4ZAIrLHnKQaoLbuPc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ojd6SrzF; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709087866;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rvwSQqLsi7hD+vo2V86vEhWSz0zS3Mel/Hkb0f91Fvw=;
-	b=Ojd6SrzF0S4KY6mjpOY00im28tNrq5PovA2DkOmNKr6iGXdx44+H66OzUKdSlLYCku8+f2
-	vREyMvqgZHxLa1O/llbvhSG7tB8cft6ReaaR778BQrbDUZWE0lNbfAudyHAXHiOdl/fzte
-	ffR+p7CN6Rjn13Ca5ToCJCESuajOoGA=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-554-2Ezv5D69Nvak-cdfJCqqxQ-1; Tue, 27 Feb 2024 21:37:45 -0500
-X-MC-Unique: 2Ezv5D69Nvak-cdfJCqqxQ-1
-Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-29ad35a8650so382611a91.0
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 18:37:45 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709087864; x=1709692664;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rvwSQqLsi7hD+vo2V86vEhWSz0zS3Mel/Hkb0f91Fvw=;
-        b=rBdBJNVriN2hfiIWC2zE8JYOT17veggzZj4J3FpyOBKQiWkf+cCyYzqLqtTOn/c/Sk
-         LXTAKeF5fG8aU5mhRUVAFWSZ+v6mWFphAHjIcgoliSiu3srI/qozSSDFG0zzaeWHIwv7
-         bGjmaZQTi68BFdpsJdSqQsvb7QNoImq7+IQyRr+auwqphPUT1/2a9ennrdDB3FqcS3gL
-         63RwvXrygrLAXNcD59591crn/OFBel8is8eRB6CIhwsD6Nq1JLm4CKuJe5AZiX7SI3/O
-         IliN9SFSDN/McwQEoDHnovEAmIhYagSbDGqf8YNrfZ6ZIEvN97oxaoPDwKWP4qS09Ah/
-         Cc8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVbRsWfbPoVe/zu8TMZ1bn4meZFRvArqo2RZRwKKoKMy5IVmiElXleFAZBs9spnE3sJygnXDOhusJE+nH6uua9q1XqEguvEFVBJUNPR
-X-Gm-Message-State: AOJu0YzqNX6Lo2z39eONHd0wKa6mwWsOmEF6AEzRJ7GXcclkVkUFc7ZX
-	sW6ph8tmYUOazE2V08isY0qfQvcBMpDO0iY9kWojUcdhh6ClcmqiPgK71K5/v4mvcfdgmdwVXUU
-	TuPeDQJN5TsWUwQntG+07cAiYZL2AdAtPrFi576zZxqjNkGN/YPqjqqtKETLpxjsbBGUKHE8C7m
-	n/0PZbIeOEIB6aBRKLWs6hLL8I2thWj3ditCjh
-X-Received: by 2002:a17:90a:94c7:b0:29a:f6d3:6860 with SMTP id j7-20020a17090a94c700b0029af6d36860mr160990pjw.23.1709087864272;
-        Tue, 27 Feb 2024 18:37:44 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHoDUWQuk6MDx5L/6q3APhobRB0qb6V28+9oVurSRwSTPC/9ojJlGD5LszEsSq6wqaeijjQ1a6lPqJsVBih2PU=
-X-Received: by 2002:a17:90a:94c7:b0:29a:f6d3:6860 with SMTP id
- j7-20020a17090a94c700b0029af6d36860mr160968pjw.23.1709087863905; Tue, 27 Feb
- 2024 18:37:43 -0800 (PST)
+	s=arc-20240116; t=1709087920; c=relaxed/simple;
+	bh=U8CSEd+TWH7dbfDiJ06PXYpZl5tcTmg25bXNDIew5KA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=rjA9g8HB3r5NHZi8xYGCLBrrXh62UOgiSEHfVV2/iGL1bEZkHu6+JtaIPwf6D6SoE6zKimfb7Upn8TXRseuSi5StrvilvEoud5AXjLFKNvpV4TooQNCHtN1oZVmjKpqUvy04n0hAs3ec8tW3wfQp2Ao5sMpO7uV5aT3zsExUuIw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=a9rfGTWA; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709087919; x=1740623919;
+  h=message-id:date:mime-version:subject:to:references:from:
+   in-reply-to:content-transfer-encoding;
+  bh=U8CSEd+TWH7dbfDiJ06PXYpZl5tcTmg25bXNDIew5KA=;
+  b=a9rfGTWALqL5RwoH57UV9aJmA18rB5GhPhpkSw3bucyZitKZzVp/G6e9
+   YXfGd0fmCC8vOEzHzUxTfwvp80lYMFPf9K+7d3jV6L26RrwoMbBKwegUn
+   sNDb61rOQzVDyVI9uhgtFoJOpCxA7UV6kcLZgkHngDoiWro3v8GPrZk1Q
+   quMt3ddz9aBTn/eVI3hANrAMddtQNORQxDjcoblzjl3ct88l2vXMgp3Yt
+   NTWktFlUUorr4AnjJOka51KYyY7m7cQO3Fho/7dKjr88E0fqO1rXzVgvv
+   yEs7UBXbkjneJRc8l7w0A09w2FPVn9+b7QFfvgX3W62xDCHAnm4zEYTVR
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3337488"
+X-IronPort-AV: E=Sophos;i="6.06,189,1705392000"; 
+   d="scan'208";a="3337488"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 18:38:38 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,189,1705392000"; 
+   d="scan'208";a="7831175"
+Received: from dschro4x-mobl.amr.corp.intel.com (HELO [10.212.137.190]) ([10.212.137.190])
+  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 18:38:38 -0800
+Message-ID: <dd9ab7d1-5c03-404a-90c7-7ccbc0fb5c4c@linux.intel.com>
+Date: Tue, 27 Feb 2024 18:38:37 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240227120327.1432511-1-yukuai1@huaweicloud.com> <20240227120327.1432511-11-yukuai1@huaweicloud.com>
-In-Reply-To: <20240227120327.1432511-11-yukuai1@huaweicloud.com>
-From: Xiao Ni <xni@redhat.com>
-Date: Wed, 28 Feb 2024 10:37:32 +0800
-Message-ID: <CALTww2-e2T-_aad2p4vQ5v4XcDZwncUkMenqrkbeYN72+iCt-A@mail.gmail.com>
-Subject: Re: [PATCH md-6.9 v2 10/10] md/raid1: factor out helpers to choose
- the best rdev from read_balance()
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: paul.e.luse@linux.intel.com, song@kernel.org, shli@fb.com, neilb@suse.com, 
-	linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org, yukuai3@huawei.com, 
-	yi.zhang@huawei.com, yangerkun@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2 2/9] platform/x86/intel/sdsi: Combine read and write
+ mailbox flows
+Content-Language: en-US
+To: "David E. Box" <david.e.box@linux.intel.com>,
+ rajvi.jingar@linux.intel.com, platform-driver-x86@vger.kernel.org,
+ linux-kernel@vger.kernel.org, hdegoede@redhat.com,
+ ilpo.jarvinen@linux.intel.com
+References: <20240228000016.1685518-1-david.e.box@linux.intel.com>
+ <20240228000016.1685518-3-david.e.box@linux.intel.com>
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20240228000016.1685518-3-david.e.box@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Feb 27, 2024 at 8:10=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> w=
-rote:
+
+On 2/27/24 4:00 PM, David E. Box wrote:
+> The current mailbox commands are either read-only or write-only and the
+> flow is different for each. New commands will need to send and receive
+> data. In preparation for these commands, create a common polling function
+> to handle sending data and receiving in the same transaction.
 >
-> From: Yu Kuai <yukuai3@huawei.com>
->
-> The way that best rdev is chosen:
->
-> 1) If the read is sequential from one rdev:
->  - if rdev is rotational, use this rdev;
->  - if rdev is non-rotational, use this rdev until total read length
->    exceed disk opt io size;
->
-> 2) If the read is not sequential:
->  - if there is idle disk, use it, otherwise:
->  - if the array has non-rotational disk, choose the rdev with minimal
->    inflight IO;
->  - if all the underlaying disks are rotational disk, choose the rdev
->    with closest IO;
->
-> There are no functional changes, just to make code cleaner and prepare
-> for following refactor.
->
-> Co-developed-by: Paul Luse <paul.e.luse@linux.intel.com>
-> Signed-off-by: Paul Luse <paul.e.luse@linux.intel.com>
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
 > ---
->  drivers/md/raid1.c | 175 +++++++++++++++++++++++++--------------------
->  1 file changed, 98 insertions(+), 77 deletions(-)
 >
-> diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
-> index d3e9a0157437..1bdd59d9e6ba 100644
-> --- a/drivers/md/raid1.c
-> +++ b/drivers/md/raid1.c
-> @@ -730,74 +730,71 @@ static bool should_choose_next(struct r1conf *conf,=
- int disk)
->                mirror->next_seq_sect - opt_iosize >=3D mirror->seq_start;
+> V2 - In sdsi_cmd_read() remove unnecessary check for non-zero packet_size
+>      in do loop since the loop is exited earlier when packet_size is
+>      zero.
+>
+>  drivers/platform/x86/intel/sdsi.c | 79 +++++++++++++++++--------------
+>  1 file changed, 44 insertions(+), 35 deletions(-)
+>
+> diff --git a/drivers/platform/x86/intel/sdsi.c b/drivers/platform/x86/intel/sdsi.c
+> index a70c071de6e2..d80c2dc0ce71 100644
+> --- a/drivers/platform/x86/intel/sdsi.c
+> +++ b/drivers/platform/x86/intel/sdsi.c
+> @@ -15,6 +15,7 @@
+>  #include <linux/iopoll.h>
+>  #include <linux/kernel.h>
+>  #include <linux/module.h>
+> +#include <linux/overflow.h>
+>  #include <linux/pci.h>
+>  #include <linux/slab.h>
+>  #include <linux/sysfs.h>
+> @@ -156,8 +157,8 @@ static int sdsi_status_to_errno(u32 status)
+>  	}
 >  }
->
-> -/*
-> - * This routine returns the disk from which the requested read should
-> - * be done. There is a per-array 'next expected sequential IO' sector
-> - * number - if this matches on the next IO then we use the last disk.
-> - * There is also a per-disk 'last know head position' sector that is
-> - * maintained from IRQ contexts, both the normal and the resync IO
-> - * completion handlers update this position correctly. If there is no
-> - * perfect sequential match then we pick the disk whose head is closest.
-> - *
-> - * If there are 2 mirrors in the same 2 devices, performance degrades
-> - * because position is mirror, not device based.
-> - *
-> - * The rdev for the device selected will have nr_pending incremented.
-> - */
-> -static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *=
-max_sectors)
-> +static bool rdev_readable(struct md_rdev *rdev, struct r1bio *r1_bio)
+>  
+> -static int sdsi_mbox_cmd_read(struct sdsi_priv *priv, struct sdsi_mbox_info *info,
+> -			      size_t *data_size)
+> +static int sdsi_mbox_poll(struct sdsi_priv *priv, struct sdsi_mbox_info *info,
+> +			  size_t *data_size)
 >  {
-> -       const sector_t this_sector =3D r1_bio->sector;
-> -       int sectors;
-> -       int best_good_sectors;
-> -       int best_disk, best_dist_disk, best_pending_disk, sequential_disk=
-;
-> -       int disk;
-> -       sector_t best_dist;
-> -       unsigned int min_pending;
-> -       struct md_rdev *rdev;
-> +       if (!rdev || test_bit(Faulty, &rdev->flags))
-> +               return false;
->
-> - retry:
-> -       sectors =3D r1_bio->sectors;
-> -       best_disk =3D -1;
-> -       best_dist_disk =3D -1;
-> -       sequential_disk =3D -1;
-> -       best_dist =3D MaxSector;
-> -       best_pending_disk =3D -1;
-> -       min_pending =3D UINT_MAX;
-> -       best_good_sectors =3D 0;
-> -       clear_bit(R1BIO_FailFast, &r1_bio->state);
-> +       /* still in recovery */
-> +       if (!test_bit(In_sync, &rdev->flags) &&
-> +           rdev->recovery_offset < r1_bio->sector + r1_bio->sectors)
-> +               return false;
->
-> -       if (raid1_should_read_first(conf->mddev, this_sector, sectors))
-> -               return choose_first_rdev(conf, r1_bio, max_sectors);
-> +       /* don't read from slow disk unless have to */
-> +       if (test_bit(WriteMostly, &rdev->flags))
-> +               return false;
+>  	struct device *dev = priv->dev;
+>  	u32 total, loop, eom, status, message_size;
+> @@ -166,18 +167,10 @@ static int sdsi_mbox_cmd_read(struct sdsi_priv *priv, struct sdsi_mbox_info *inf
+>  
+>  	lockdep_assert_held(&priv->mb_lock);
+>  
+> -	/* Format and send the read command */
+> -	control = FIELD_PREP(CTRL_EOM, 1) |
+> -		  FIELD_PREP(CTRL_SOM, 1) |
+> -		  FIELD_PREP(CTRL_RUN_BUSY, 1) |
+> -		  FIELD_PREP(CTRL_PACKET_SIZE, info->size);
+> -	writeq(control, priv->control_addr);
+> -
+>  	/* For reads, data sizes that are larger than the mailbox size are read in packets. */
+>  	total = 0;
+>  	loop = 0;
+>  	do {
+> -		void *buf = info->buffer + (SDSI_SIZE_MAILBOX * loop);
+>  		u32 packet_size;
+>  
+>  		/* Poll on ready bit */
+> @@ -195,6 +188,11 @@ static int sdsi_mbox_cmd_read(struct sdsi_priv *priv, struct sdsi_mbox_info *inf
+>  		if (ret)
+>  			break;
+>  
+> +		if (!packet_size) {
+> +			sdsi_complete_transaction(priv);
+> +			break;
+> +		}
 > +
-> +       /* don't split IO for bad blocks unless have to */
-> +       if (rdev_has_badblock(rdev, r1_bio->sector, r1_bio->sectors))
-> +               return false;
+>  		/* Only the last packet can be less than the mailbox size. */
+>  		if (!eom && packet_size != SDSI_SIZE_MAILBOX) {
+>  			dev_err(dev, "Invalid packet size\n");
+> @@ -208,9 +206,13 @@ static int sdsi_mbox_cmd_read(struct sdsi_priv *priv, struct sdsi_mbox_info *inf
+>  			break;
+>  		}
+>  
+> -		sdsi_memcpy64_fromio(buf, priv->mbox_addr, round_up(packet_size, SDSI_SIZE_CMD));
+> +		if (info->buffer) {
+> +			void *buf = info->buffer + array_size(SDSI_SIZE_MAILBOX, loop);
+>  
+> -		total += packet_size;
+> +			sdsi_memcpy64_fromio(buf, priv->mbox_addr,
+> +					     round_up(packet_size, SDSI_SIZE_CMD));
+> +			total += packet_size;
+> +		}
+>  
+>  		sdsi_complete_transaction(priv);
+>  	} while (!eom && ++loop < MBOX_MAX_PACKETS);
+> @@ -230,16 +232,33 @@ static int sdsi_mbox_cmd_read(struct sdsi_priv *priv, struct sdsi_mbox_info *inf
+>  		dev_warn(dev, "Read count %u differs from expected count %u\n",
+>  			 total, message_size);
+>  
+> -	*data_size = total;
+> +	if (data_size)
+> +		*data_size = total;
+>  
+
+Is there a chance for it to be NULL with current callers?
+
+>  	return 0;
+>  }
+>  
+> -static int sdsi_mbox_cmd_write(struct sdsi_priv *priv, struct sdsi_mbox_info *info)
+> +static int sdsi_mbox_cmd_read(struct sdsi_priv *priv, struct sdsi_mbox_info *info,
+> +			      size_t *data_size)
+> +{
+> +	u64 control;
 > +
-> +       return true;
+> +	lockdep_assert_held(&priv->mb_lock);
+> +
+> +	/* Format and send the read command */
+> +	control = FIELD_PREP(CTRL_EOM, 1) |
+> +		  FIELD_PREP(CTRL_SOM, 1) |
+> +		  FIELD_PREP(CTRL_RUN_BUSY, 1) |
+> +		  FIELD_PREP(CTRL_PACKET_SIZE, info->size);
+> +	writeq(control, priv->control_addr);
+> +
+> +	return sdsi_mbox_poll(priv, info, data_size);
 > +}
 > +
-> +struct read_balance_ctl {
-> +       sector_t closest_dist;
-> +       int closest_dist_disk;
-> +       int min_pending;
-> +       int min_pending_disk;
-> +       int sequential_disk;
-> +       int readable_disks;
-> +};
+> +static int sdsi_mbox_cmd_write(struct sdsi_priv *priv, struct sdsi_mbox_info *info,
+> +			       size_t *data_size)
+>  {
+>  	u64 control;
+> -	u32 status;
+> -	int ret;
+>  
+>  	lockdep_assert_held(&priv->mb_lock);
+>  
+> @@ -256,20 +275,7 @@ static int sdsi_mbox_cmd_write(struct sdsi_priv *priv, struct sdsi_mbox_info *in
+>  		  FIELD_PREP(CTRL_PACKET_SIZE, info->size);
+>  	writeq(control, priv->control_addr);
+>  
+> -	/* Poll on ready bit */
+> -	ret = readq_poll_timeout(priv->control_addr, control, control & CTRL_READY,
+> -				 MBOX_POLLING_PERIOD_US, MBOX_TIMEOUT_US);
+> -
+> -	if (ret)
+> -		goto release_mbox;
+> -
+> -	status = FIELD_GET(CTRL_STATUS, control);
+> -	ret = sdsi_status_to_errno(status);
+> -
+> -release_mbox:
+> -	sdsi_complete_transaction(priv);
+> -
+> -	return ret;
+> +	return sdsi_mbox_poll(priv, info, data_size);
+>  }
+>  
+>  static int sdsi_mbox_acquire(struct sdsi_priv *priv, struct sdsi_mbox_info *info)
+> @@ -313,7 +319,8 @@ static int sdsi_mbox_acquire(struct sdsi_priv *priv, struct sdsi_mbox_info *info
+>  	return ret;
+>  }
+>  
+> -static int sdsi_mbox_write(struct sdsi_priv *priv, struct sdsi_mbox_info *info)
+> +static int sdsi_mbox_write(struct sdsi_priv *priv, struct sdsi_mbox_info *info,
+> +			   size_t *data_size)
+>  {
+>  	int ret;
+>  
+> @@ -323,7 +330,7 @@ static int sdsi_mbox_write(struct sdsi_priv *priv, struct sdsi_mbox_info *info)
+>  	if (ret)
+>  		return ret;
+>  
+> -	return sdsi_mbox_cmd_write(priv, info);
+> +	return sdsi_mbox_cmd_write(priv, info, data_size);
+>  }
+>  
+>  static int sdsi_mbox_read(struct sdsi_priv *priv, struct sdsi_mbox_info *info, size_t *data_size)
+> @@ -342,7 +349,7 @@ static int sdsi_mbox_read(struct sdsi_priv *priv, struct sdsi_mbox_info *info, s
+>  static ssize_t sdsi_provision(struct sdsi_priv *priv, char *buf, size_t count,
+>  			      enum sdsi_command command)
+>  {
+> -	struct sdsi_mbox_info info;
+> +	struct sdsi_mbox_info info = {};
+>  	int ret;
+>  
+>  	if (count > (SDSI_SIZE_WRITE_MSG - SDSI_SIZE_CMD))
+> @@ -364,7 +371,9 @@ static ssize_t sdsi_provision(struct sdsi_priv *priv, char *buf, size_t count,
+>  	ret = mutex_lock_interruptible(&priv->mb_lock);
+>  	if (ret)
+>  		goto free_payload;
+> -	ret = sdsi_mbox_write(priv, &info);
 > +
-> +static int choose_best_rdev(struct r1conf *conf, struct r1bio *r1_bio)
-> +{
-> +       int disk;
-> +       struct read_balance_ctl ctl =3D {
-> +               .closest_dist_disk      =3D -1,
-> +               .closest_dist           =3D MaxSector,
-> +               .min_pending_disk       =3D -1,
-> +               .min_pending            =3D UINT_MAX,
-> +               .sequential_disk        =3D -1,
-> +       };
->
->         for (disk =3D 0 ; disk < conf->raid_disks * 2 ; disk++) {
-> +               struct md_rdev *rdev;
->                 sector_t dist;
->                 unsigned int pending;
->
-> -               rdev =3D conf->mirrors[disk].rdev;
-> -               if (r1_bio->bios[disk] =3D=3D IO_BLOCKED
-> -                   || rdev =3D=3D NULL
-> -                   || test_bit(Faulty, &rdev->flags))
-> -                       continue;
-> -               if (!test_bit(In_sync, &rdev->flags) &&
-> -                   rdev->recovery_offset < this_sector + sectors)
-> -                       continue;
-> -               if (test_bit(WriteMostly, &rdev->flags))
-> +               if (r1_bio->bios[disk] =3D=3D IO_BLOCKED)
->                         continue;
-> -               if (rdev_has_badblock(rdev, this_sector, sectors))
+> +	ret = sdsi_mbox_write(priv, &info, NULL);
 > +
-> +               rdev =3D conf->mirrors[disk].rdev;
-> +               if (!rdev_readable(rdev, r1_bio))
->                         continue;
->
-> -               if (best_disk >=3D 0)
-> -                       /* At least two disks to choose from so failfast =
-is OK */
-> +               /* At least two disks to choose from so failfast is OK */
-> +               if (ctl.readable_disks++ =3D=3D 1)
->                         set_bit(R1BIO_FailFast, &r1_bio->state);
->
->                 pending =3D atomic_read(&rdev->nr_pending);
-> -               dist =3D abs(this_sector - conf->mirrors[disk].head_posit=
-ion);
-> +               dist =3D abs(r1_bio->sector - conf->mirrors[disk].head_po=
-sition);
-> +
->                 /* Don't change to another disk for sequential reads */
->                 if (is_sequential(conf, disk, r1_bio)) {
-> -                       if (!should_choose_next(conf, disk)) {
-> -                               best_disk =3D disk;
-> -                               break;
-> -                       }
-> +                       if (!should_choose_next(conf, disk))
-> +                               return disk;
-> +
->                         /*
->                          * Add 'pending' to avoid choosing this disk if
->                          * there is other idle disk.
-> @@ -807,17 +804,17 @@ static int read_balance(struct r1conf *conf, struct=
- r1bio *r1_bio, int *max_sect
->                          * If there is no other idle disk, this disk
->                          * will be chosen.
->                          */
-> -                       sequential_disk =3D disk;
-> +                       ctl.sequential_disk =3D disk;
->                 }
->
-> -               if (min_pending > pending) {
-> -                       min_pending =3D pending;
-> -                       best_pending_disk =3D disk;
-> +               if (ctl.min_pending > pending) {
-> +                       ctl.min_pending =3D pending;
-> +                       ctl.min_pending_disk =3D disk;
->                 }
->
-> -               if (dist < best_dist) {
-> -                       best_dist =3D dist;
-> -                       best_dist_disk =3D disk;
-> +               if (ctl.closest_dist > dist) {
-> +                       ctl.closest_dist =3D dist;
-> +                       ctl.closest_dist_disk =3D disk;
->                 }
->         }
->
-> @@ -825,8 +822,8 @@ static int read_balance(struct r1conf *conf, struct r=
-1bio *r1_bio, int *max_sect
->          * sequential IO size exceeds optimal iosize, however, there is n=
-o other
->          * idle disk, so choose the sequential disk.
->          */
-> -       if (best_disk =3D=3D -1 && min_pending !=3D 0)
-> -               best_disk =3D sequential_disk;
-> +       if (ctl.sequential_disk !=3D -1 && ctl.min_pending !=3D 0)
-> +               return ctl.sequential_disk;
->
->         /*
->          * If all disks are rotational, choose the closest disk. If any d=
-isk is
-> @@ -834,25 +831,49 @@ static int read_balance(struct r1conf *conf, struct=
- r1bio *r1_bio, int *max_sect
->          * disk is rotational, which might/might not be optimal for raids=
- with
->          * mixed ratation/non-rotational disks depending on workload.
->          */
-> -       if (best_disk =3D=3D -1) {
-> -               if (READ_ONCE(conf->nonrot_disks) || min_pending =3D=3D 0=
-)
-> -                       best_disk =3D best_pending_disk;
-> -               else
-> -                       best_disk =3D best_dist_disk;
-> -       }
-> +       if (ctl.min_pending_disk !=3D -1 &&
-> +           (READ_ONCE(conf->nonrot_disks) || ctl.min_pending =3D=3D 0))
-> +               return ctl.min_pending_disk;
-> +       else
-> +               return ctl.closest_dist_disk;
-> +}
->
-> -       if (best_disk >=3D 0) {
-> -               rdev =3D conf->mirrors[best_disk].rdev;
-> -               if (!rdev)
-> -                       goto retry;
-> +/*
-> + * This routine returns the disk from which the requested read should be=
- done.
-> + *
-> + * 1) If resync is in progress, find the first usable disk and use it ev=
-en if it
-> + * has some bad blocks.
-> + *
-> + * 2) Now that there is no resync, loop through all disks and skipping s=
-low
-> + * disks and disks with bad blocks for now. Only pay attention to key di=
-sk
-> + * choice.
-> + *
-> + * 3) If we've made it this far, now look for disks with bad blocks and =
-choose
-> + * the one with most number of sectors.
-> + *
-> + * 4) If we are all the way at the end, we have no choice but to use a d=
-isk even
-> + * if it is write mostly.
-> + *
-> + * The rdev for the device selected will have nr_pending incremented.
-> + */
-> +static int read_balance(struct r1conf *conf, struct r1bio *r1_bio,
-> +                       int *max_sectors)
-> +{
-> +       int disk;
->
-> -               sectors =3D best_good_sectors;
-> -               update_read_sectors(conf, disk, this_sector, sectors);
-> -       }
-> -       *max_sectors =3D sectors;
-> +       clear_bit(R1BIO_FailFast, &r1_bio->state);
-> +
-> +       if (raid1_should_read_first(conf->mddev, r1_bio->sector,
-> +                                   r1_bio->sectors))
-> +               return choose_first_rdev(conf, r1_bio, max_sectors);
->
-> -       if (best_disk >=3D 0)
-> -               return best_disk;
-> +       disk =3D choose_best_rdev(conf, r1_bio);
-> +       if (disk >=3D 0) {
-> +               *max_sectors =3D r1_bio->sectors;
-> +               update_read_sectors(conf, disk, r1_bio->sector,
-> +                                   r1_bio->sectors);
-> +               return disk;
-> +       }
->
->         /*
->          * If we are here it means we didn't find a perfectly good disk s=
-o
-> --
-> 2.39.2
->
-Hi all
-This patch looks good to me. Thanks.
-Reviewed-by: Xiao Ni <xni@redhat.com>
+>  	mutex_unlock(&priv->mb_lock);
+>  
+>  free_payload:
+> @@ -408,7 +417,7 @@ static ssize_t
+>  certificate_read(u64 command, struct sdsi_priv *priv, char *buf, loff_t off,
+>  		 size_t count)
+>  {
+> -	struct sdsi_mbox_info info;
+> +	struct sdsi_mbox_info info = {};
+>  	size_t size;
+>  	int ret;
+>  
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
 
 
