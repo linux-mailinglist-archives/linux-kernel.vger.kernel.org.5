@@ -1,146 +1,277 @@
-Return-Path: <linux-kernel+bounces-85808-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85809-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0CED86BB15
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:55:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA0F986BB19
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:55:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 818901C20E85
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 22:55:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 814D628ADC7
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 22:55:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 505377292B;
-	Wed, 28 Feb 2024 22:54:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4A437290F;
+	Wed, 28 Feb 2024 22:55:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=hoehnp@gmx.de header.b="bo+aiqVx"
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="A87kTiHE"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE3837290F;
-	Wed, 28 Feb 2024 22:54:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C2FD7004E;
+	Wed, 28 Feb 2024 22:55:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709160883; cv=none; b=YbvaPjkLObth/jnwHBQi8bz04JeB25g9/yOL4A3P/kOM2A0ooJaIdU2syOExd3D5z3PW3MwCzrJyQ+ECuQXjPX0qvy7I1Cp9Y/LDWOSJX4Oo0hO4dd9rOJUEIzHCUjRypgKLYtZOu10zKZKT0ulSm4FSfuVbeN2sGstKdMf0t6c=
+	t=1709160941; cv=none; b=QIKdH5ez7Po7ol8rtWKdTmTFQH5Hqxg+fwADHvYEpxXUw20zvlJsovEItt4qrNXzwJmFgMt1r2Db8Q/pEBAFls7biLwdgh8Km5MoTEQmQmisvgijSWuqoeWfnr2AHoUYj9+CTc2Dtcb7H8uUf8nk15T6pmVNW8MdxiuxXv3LFfg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709160883; c=relaxed/simple;
-	bh=JROr7bPFZhC9ly9W26owc3fwvH63LaDpRWCrZKDJInU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=etHHpdzIVtytvnAkg0HHZ/xnKsLMluA6Gds3FWV6PEZsZWGPuj6iYt0l1MshyVC7PEAsz+ogiZAIV560KcvbdGpoFVoh7V69XPJLyogPt57RGrvtPfls0bsTKVdaSvzZg+HBr9hZAUii5DKg1M9ZI68/Vf0JBRzOjSv8bFTg1ik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=hoehnp@gmx.de header.b=bo+aiqVx; arc=none smtp.client-ip=212.227.15.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1709160867; x=1709765667; i=hoehnp@gmx.de;
-	bh=JROr7bPFZhC9ly9W26owc3fwvH63LaDpRWCrZKDJInU=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=bo+aiqVxpFpY2tcxnyGR0dd+6wJYwejvMQ5mC6DwmD/vud+9T8Y9EUZnEvWUNHyw
-	 +swQRc7eWG96N/H5w4LIvFkN5mQ1WbHP7wq/LsxVSa06x34U8r9Ple08lV+9b79j5
-	 4RPs8NklYyQWgwHsum8KxfyjIeQN+GmDd7ZltQoCtWfM7mrT3sUh0BB6UtkUaIj6A
-	 71HOdWemtB5A9vEgoIo8a1U6PUlKSzIlEiO3R41WL9EF+JaCkYK2TtapHd10btbvZ
-	 GAIudki5CCqrga0Xt2eAVSloTGRSKlCrU3awciJgDSJNAkDqBCPyvPdCSAPXuq9o1
-	 7SSCDX/expjutqVlXg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [10.0.0.2] ([31.18.168.131]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MPGRz-1rFw9n42Qf-00PeuR; Wed, 28
- Feb 2024 23:54:27 +0100
-Message-ID: <25bdda18-4e05-42a6-a0e1-3e35a81ca90f@gmx.de>
-Date: Wed, 28 Feb 2024 23:54:10 +0100
+	s=arc-20240116; t=1709160941; c=relaxed/simple;
+	bh=6VtgkIxV7BP05QpH+CSqlVMLA5ngVi7oylPuoBSEGcU=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=mx1RUrmHi1rxB2MInkHQnjH4sPA19mak9D/xwVm6S+RwoeUf5R+xlW+KGIUyfjn+NS7kzhx5sECqts2ks6cMCIchEp5smJFJWv9KEUzMQHWETtmbIr3lIl84WX9Pq3FZH/U2A/u51FLOQ/8eJcw8icBeK/SrGW+6ykcrWNwTnf8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=A87kTiHE; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709160938;
+	bh=6VtgkIxV7BP05QpH+CSqlVMLA5ngVi7oylPuoBSEGcU=;
+	h=From:To:Subject:Date:From;
+	b=A87kTiHEClW+SUso7bjkel8UYsTiCXSBcH8Kj4bY4dGebjnrGHM46oTUceu7kYsMJ
+	 dUKnjoqQzR4S6wUIhAypXIkDwynXGnR/khIjTFPzyNu8cWr+UG1/8Fj0LqBkW16gB1
+	 92f9csTs5SBxNH2Dh3XKEmVlkYJaz6aSnNmb+YqHfvoKZM9r9AyKKsaZtvrYtfjCEq
+	 PCXF4hneWm6yfjFSHE+gilccufYz6HYkCyIWnpF5dK3dvqL+37/YkHDPrAHZxH3+CK
+	 e7kN3st5G5Nfuio6dxRodRU/VBZeu58ERPkEogNoptEMDEay3nYrgUcTC57iFdbfuX
+	 rYhYCzfDWw77w==
+Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: koike)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 93F7437820CB;
+	Wed, 28 Feb 2024 22:55:31 +0000 (UTC)
+From: Helen Koike <helen.koike@collabora.com>
+To: linuxtv-ci@linuxtv.org,
+	dave.pigott@collabora.com,
+	mripard@kernel.org,
+	linux-kernel@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	linux-kselftest@vger.kernel.org,
+	gustavo.padovan@collabora.com,
+	pawiecz@collabora.com,
+	spbnick@gmail.com,
+	tales.aparecida@gmail.com,
+	workflows@vger.kernel.org,
+	kernelci@lists.linux.dev,
+	skhan@linuxfoundation.org,
+	kunit-dev@googlegroups.com,
+	nfraprado@collabora.com,
+	davidgow@google.com,
+	cocci@inria.fr,
+	Julia.Lawall@inria.fr,
+	laura.nao@collabora.com,
+	ricardo.canuelo@collabora.com,
+	kernel@collabora.com,
+	torvalds@linuxfoundation.org,
+	gregkh@linuxfoundation.org
+Subject: [PATCH 0/3] kci-gitlab: Introducing GitLab-CI Pipeline for Kernel Testing
+Date: Wed, 28 Feb 2024 19:55:24 -0300
+Message-Id: <20240228225527.1052240-1-helen.koike@collabora.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] i2c: i801: Add lis3lv02d for Dell Precision M6800 v2
- Bios: A26
-Content-Language: sv-SE
-To: Andi Shyti <andi.shyti@kernel.org>
-Cc: Jean Delvare <jdelvare@suse.com>, =?UTF-8?Q?Pali_Roh=C3=A1r?=
- <pali@kernel.org>, Paul Menzel <pmenzel@molgen.mpg.de>,
- linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240222215010.31456-1-hoehnp@gmx.de>
- <3s546clapu73llqqyhj7fhab5cwhchygrtq53juqcqoyttk2dx@47ylvwpqso5d>
-From: =?UTF-8?Q?Patrick_H=C3=B6hn?= <hoehnp@gmx.de>
-In-Reply-To: <3s546clapu73llqqyhj7fhab5cwhchygrtq53juqcqoyttk2dx@47ylvwpqso5d>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:k0qYc3urTRUhG9YT5npY5VQnC+fxQFaW6B3T+J1OgWG7CWlrVqz
- kXSWkz1aveFLyb2pO/wle02gSh/JO7QV2cGwNIDJ8/SIS9MhvQdvv6Vnjse2p43+B+/upDa
- dBqOPPEx1gX/GRt/+M/4fZqZAuz0zWkMh6RuhD3mYOtDO+ObS4KnzFcqz6ztKpj2Cg4MrQX
- sYykAA/vL6PlJMpHCvwPQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:Kz83J+2lz6w=;jv6JANSlyKWaVCC9FVPAg8D1CQR
- 059VGe9ltUT3Cum+n9mG2frt4F3vPzE09KlNP6iMF5odfTD0X+I8Z/GyZr+g+t6qvETXjNktL
- Cr9tXOvTJkekF/+WRUMFTMOGJMD8OyW+deR8oSNHtrt3xKuxgYF2BFvRFotPWyGcI7e5Th1Fy
- pkl3q6niqzKGxNYr7sQC7ewixa2aVd/qvimmlWF/vdKB37S0lTMDL4x32WgOG9vNvHqI3jocV
- CR9J2/lkhxyhRJTTPsOlaAZvNqKjklkI0egcEFqHsVtoQawN5uxYxFLwQerHxeJFhfCsm4FLI
- k8xBbIOzXr12m5Up0K4WSSXP6KmShj8NBuaOHHKupkw0yJtEmLYBjniBwgVIYANpl5SweiROh
- 95ajlGsWHdyN8TlfaXEilTdk7jaITqRvP3GHLc8Udiqx1t+k/HWT8+whRlUDTQ7Ff1quYhvAE
- CBFlJCuTtn635AF4XJYHS+fwpRiUT23fh5gMPOnKlawsVROnuWsuOGqJRQy9XYMbZ4SKmfv15
- WcjqzcBZGn0SaWsOuqcIKdeSP84zFTg4xGHuoM19H+aAmo/0Jp0Pp+q0zWkXNROFMbLMRbYiM
- a9J0GHCxMm7IvPsd/PCbf3FcWJuBbkZVR5fbBzT5CbOoV+oMEgFuj7ZSO2EKXLLeEzGTKS3Yk
- fksOohVdUXO++XyzuZ0blZVFnNbjyXp3CMlSVJQfk9/yVU8KWH1a5iNGKyD3B17pbmsFd7731
- k4T+ZKQsxxwOK8e6xeFL0kD91cgs7o3icLeVLtfEKMMYZFw7nFyuqxYsr+gAQ37vHFBcjVIPD
- OA/KNB6uBC+6NASL7JnybIHJUSHW3rV+LP4yx4m2t/MWQ=
+Content-Transfer-Encoding: 8bit
 
-Hi Andi,
+Dear Kernel Community,
 
-sorry for the late response. Since it is the first time I am
-contributing, please excuse me, if my description still needs
-improvement. I can simply describe what I did:
+This patch introduces a `.gitlab-ci` file along with a `ci/` folder, defining a
+basic test pipeline triggered by code pushes to a GitLab-CI instance. This
+initial version includes static checks (checkpatch and smatch for now) and build
+tests across various architectures and configurations. It leverages an
+integrated cache for efficient build times and introduces a flexible 'scenarios'
+mechanism for subsystem-specific extensions.
 
-similiarly to what Paul did before, I identified that the M6800 has the
-accelerometer installed and verified its address using my running Gentoo
-System. Then I was applying the patch to latest kernel and confirmed
-that it was booting successfully and the message about a successful
-detection was present.
+tl;dr: check this video to see a quick demo: https://youtu.be/TWiTjhjOuzg,
+but don't forget to check the "Motivation for this work" below. Your feedback,
+whether a simple thumbs up or down, is crucial to determine if it is worthwhile
+to pursue this initiative.
 
-Is this along the lines you expect?
+GitLab is an Open Source platform that includes integrated CI/CD. The pipeline
+provided in this patch is designed to work out-of-the-box with any GitLab
+instance, including the gitlab.com Free Tier. If you reach the limits of the
+Free Tier, consider using community instances like https://gitlab.freedesktop.org/.
+Alternatively, you can set up a local runner for more flexibility. The
+bootstrap-gitlab-runner.sh script included with this patch simplifies this
+process, enabling you to run tests on your preferred infrastructure, including
+your own machine.
 
-Best Regards,
-Patrick
-Den 2024-02-22 kl. 23:24, skrev Andi Shyti:
-> Hi Patrick,
->
-> On Thu, Feb 22, 2024 at 10:50:08PM +0100, Patrick H=C3=B6hn wrote:
->> Signed-off-by: Patrick H=C3=B6hn <hoehnp@gmx.de>
->
-> I see that you've fixed almost everything that Paul has
-> suggested, but please elaborate a bit more in the git commit.
->
-> Spend some time adding a description. If you want, you can reply
-> to this email with the commit log you have in mind, and I can add
-> it for you, or you can send a v3.
->
-> Thank you, Paul, for your excellent review.
->
-> Andi
->
-> PS: A small nitpick: there's no need to add 'v2' in the title.
->      '[PATCH v2]' is sufficient.
->
->> ---
->>   drivers/i2c/busses/i2c-i801.c | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/i2c/busses/i2c-i801.c b/drivers/i2c/busses/i2c-i80=
-1.c
->> index 2c36b36d7d51..c1fee2c61da1 100644
->> --- a/drivers/i2c/busses/i2c-i801.c
->> +++ b/drivers/i2c/busses/i2c-i801.c
->> @@ -1231,6 +1231,7 @@ static const struct {
->>   	 */
->>   	{ "Latitude 5480",      0x29 },
->>   	{ "Precision 3540",     0x29 },
->> +	{ "Precision M6800",    0x29 },
->>   	{ "Vostro V131",        0x1d },
->>   	{ "Vostro 5568",        0x29 },
->>   	{ "XPS 15 7590",        0x29 },
->> --
->> 2.43.0
->>
+For detailed information, please refer to the documentation included in the
+patch, or check the rendered version here: https://koike.pages.collabora.com/-/linux/-/jobs/298498/artifacts/artifacts/Documentation-output/ci/gitlab-ci/gitlab-ci.html .
+
+
+Motivation for this Work
+========================
+
+We all know tests are a major topic in the community, so let's mention the
+specificities of this approach:
+
+1. **Built-in User Interface:** GitLab CI/CD is growing in popularity and has an
+user-friendly interface. Our experience with the upstream DRM-CI in the kernel
+tree (see this blog post [https://www.collabora.com/news-and-blog/blog/2024/02/08/drm-ci-a-gitlab-ci-pipeline-for-linux-kernel-testing/] )
+has provided insights into how such a system can benefit the wider community.
+
+2. **Distributed Infrastructure:**
+The proposed GitLab-CI pipeline is designed with a distributed infrastructure
+model, being possible to run in any gitlab instance. 
+
+3. **Reduce regressions:** Fostering a culture where people habitually run
+validated tests and post their results can prevent many issues in post-merge
+tests.
+
+4. **Collaborative Testing Environment:** The kernel community is already
+engaged in numerous testing efforts, including various GitLab-CI pipelines such
+as DRM-CI, which I maintain, along with other solutions like KernelCI and
+BPF-CI. This proposal is designed to further stimulate contributions to the
+evolving testing landscape. Our goal is to establish a comprehensive suite of
+common tools and files.
+
+5. **Ownership of QA:** 
+Discrepancies between kernel code and outdated tests often lead to misattributed
+failures, complicating regression tracking. This issue, often arising from
+neglected or deprioritized test updates, creates uncertainty about the source of
+failures. Adopting an "always green pipeline" approach, as detailed in this
+patch's documentation, encourages timely maintenance and validation of tests.
+This ensures that testing accurately reflects the current state of the kernel,
+thereby improving the effectiveness of our QA processes.
+
+Additionally, if we discover that this method isn't working for us, we can
+easily remove it from the codebase, as it is primarily contained within the ci/
+folder.
+
+
+Future Work
+===========
+
+**Expanding Static Checks:**
+We have the opportunity to integrate a variety of static analysis tools,
+including:
+- dtbs_checks
+- sparse
+- yamllint
+- dt-doc-validate
+- coccicheck
+
+**Adding Userspace Tests on VMs:**
+To further our testing, we can implement userspace tests that run on virtual
+machines (VMs), such as:
+- kselftests
+- kunit tests
+- Subsystem-specific tests, customizable in the scenarios.
+
+**Leveraging External Test Labs:**
+We can extend our testing to external labs, similar to what DRM-CI currently
+does. This includes:
+- Lava labs
+- Bare metal labs
+- Using KernelCI-provided labs
+
+**Other integrations**
+- Submit results to KCIDB
+
+**Lightweight Implementation for All Developers:**
+We aim to design these tests to be lightweight, ensuring developers with limited
+computing resources can still run essential tests. Resource-intensive tests can
+be set to trigger manually, rather than automatically, to accommodate diverse
+development environments.
+
+
+Chat Discussions
+================
+
+For those interested in further discussions:
+
+**Join Our Slack Channel:**
+We have a Slack channel, #gitlab-ci, on the KernelCI Slack instance https://kernelci.slack.com/ .
+Feel free to join and contribute to the conversation. The KernelCI team has
+weekly calls where we also discuss the GitLab-CI pipeline.
+
+**Acknowledgments:**
+A special thanks to Nikolai Kondrashov, Tales da Aparecida - both from Red Hat -
+and KernelCI community for their valuable feedback and support in this proposal.
+
+
+I eagerly await your thoughts and suggestions on this initiative.
+
+Also, if you want to see this initiave move faster, we are happy to discuss
+funding options.
+
+Best regards,
+Helen Koike
+
+Helen Koike (3):
+  kci-gitlab: Introducing GitLab-CI Pipeline for Kernel Testing
+  kci-gitlab: Add documentation
+  kci-gitlab: docs: Add images
+
+ .gitlab-ci.yml                                |   2 +
+ Documentation/ci/gitlab-ci/gitlab-ci.rst      | 404 ++++++++++++++++++
+ .../ci/gitlab-ci/images/job-matrix.png        | Bin 0 -> 159752 bytes
+ .../gitlab-ci/images/new-project-runner.png   | Bin 0 -> 607737 bytes
+ .../ci/gitlab-ci/images/pipelines-on-push.png | Bin 0 -> 532143 bytes
+ .../ci/gitlab-ci/images/the-pipeline.png      | Bin 0 -> 91675 bytes
+ .../ci/gitlab-ci/images/variables.png         | Bin 0 -> 277518 bytes
+ Documentation/index.rst                       |   7 +
+ MAINTAINERS                                   |   9 +
+ ci/gitlab-ci/bootstrap-gitlab-runner.sh       |  55 +++
+ ci/gitlab-ci/ci-scripts/build-docs.sh         |  35 ++
+ ci/gitlab-ci/ci-scripts/build-kernel.sh       |  35 ++
+ ci/gitlab-ci/ci-scripts/ici-functions.sh      | 104 +++++
+ ci/gitlab-ci/ci-scripts/install-smatch.sh     |  13 +
+ .../ci-scripts/parse_commit_message.sh        |  27 ++
+ ci/gitlab-ci/ci-scripts/run-checkpatch.sh     |  19 +
+ ci/gitlab-ci/ci-scripts/run-smatch.sh         |  45 ++
+ ci/gitlab-ci/docker-compose.yaml              |  18 +
+ ci/gitlab-ci/linux.code-workspace             |  11 +
+ ci/gitlab-ci/yml/build.yml                    |  43 ++
+ ci/gitlab-ci/yml/cache.yml                    |  26 ++
+ ci/gitlab-ci/yml/container.yml                |  36 ++
+ ci/gitlab-ci/yml/gitlab-ci.yml                |  71 +++
+ ci/gitlab-ci/yml/kernel-combinations.yml      |  18 +
+ ci/gitlab-ci/yml/scenarios.yml                |  12 +
+ ci/gitlab-ci/yml/scenarios/file-systems.yml   |  21 +
+ ci/gitlab-ci/yml/scenarios/media.yml          |  21 +
+ ci/gitlab-ci/yml/scenarios/network.yml        |  21 +
+ ci/gitlab-ci/yml/static-checks.yml            |  21 +
+ 29 files changed, 1074 insertions(+)
+ create mode 100644 .gitlab-ci.yml
+ create mode 100644 Documentation/ci/gitlab-ci/gitlab-ci.rst
+ create mode 100644 Documentation/ci/gitlab-ci/images/job-matrix.png
+ create mode 100644 Documentation/ci/gitlab-ci/images/new-project-runner.png
+ create mode 100644 Documentation/ci/gitlab-ci/images/pipelines-on-push.png
+ create mode 100644 Documentation/ci/gitlab-ci/images/the-pipeline.png
+ create mode 100644 Documentation/ci/gitlab-ci/images/variables.png
+ create mode 100755 ci/gitlab-ci/bootstrap-gitlab-runner.sh
+ create mode 100755 ci/gitlab-ci/ci-scripts/build-docs.sh
+ create mode 100755 ci/gitlab-ci/ci-scripts/build-kernel.sh
+ create mode 100644 ci/gitlab-ci/ci-scripts/ici-functions.sh
+ create mode 100755 ci/gitlab-ci/ci-scripts/install-smatch.sh
+ create mode 100755 ci/gitlab-ci/ci-scripts/parse_commit_message.sh
+ create mode 100755 ci/gitlab-ci/ci-scripts/run-checkpatch.sh
+ create mode 100755 ci/gitlab-ci/ci-scripts/run-smatch.sh
+ create mode 100644 ci/gitlab-ci/docker-compose.yaml
+ create mode 100644 ci/gitlab-ci/linux.code-workspace
+ create mode 100644 ci/gitlab-ci/yml/build.yml
+ create mode 100644 ci/gitlab-ci/yml/cache.yml
+ create mode 100644 ci/gitlab-ci/yml/container.yml
+ create mode 100644 ci/gitlab-ci/yml/gitlab-ci.yml
+ create mode 100644 ci/gitlab-ci/yml/kernel-combinations.yml
+ create mode 100644 ci/gitlab-ci/yml/scenarios.yml
+ create mode 100644 ci/gitlab-ci/yml/scenarios/file-systems.yml
+ create mode 100644 ci/gitlab-ci/yml/scenarios/media.yml
+ create mode 100644 ci/gitlab-ci/yml/scenarios/network.yml
+ create mode 100644 ci/gitlab-ci/yml/static-checks.yml
+
+-- 
+2.40.1
 
 
