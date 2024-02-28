@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-84892-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84894-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB5F986AD39
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:31:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F79B86AD42
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:32:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD2931C21452
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:31:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 561971F21F67
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:32:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE100155307;
-	Wed, 28 Feb 2024 11:28:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D363B158D71;
+	Wed, 28 Feb 2024 11:28:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="PP1gpCD0"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="c/BsSpnm"
 Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36D8F145B3F;
-	Wed, 28 Feb 2024 11:28:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A218148FE5;
+	Wed, 28 Feb 2024 11:28:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709119706; cv=none; b=iXsoYT+26EkUrgE6xXF1KmbyCdVRee2xSksrKirHglswSyTtewFjSj48bO7SKygC8eU3t8PUrzSrjjPkfkQo/aM7sVcVGfKxWbJ2dFoNpmijhjCnrD36zOTzdlaBLn517RXXJejhYKsEp9HZsS7XbIwZO8oOmClY/pabIUSXvHs=
+	t=1709119707; cv=none; b=Diwos9nXIPavWuoKBgjAQA5r0feDGJLyJPRqSsijzPkxaPFL0WB3wrGoKJ5PbFOruZx5JzVjDM2DFpMLcebrm76q8AAtl29C+xm5KOON/NLMBbOmAQJgBWa8gq7h2RWGYIDexbgbBbZ58ztHdCug2uwMjoUM6FIaDJycfeSPiJ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709119706; c=relaxed/simple;
-	bh=gU9cgFP1eW1ErSI0tVUIno18z4mihP0BGkwcTO3apZs=;
+	s=arc-20240116; t=1709119707; c=relaxed/simple;
+	bh=OgwMaM+b8GH6uKY4FpjQxJ75kX/7bDkjfIEFjJ3pA/s=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Bt0/e5GLM7NdsDEQqlMXVTTuxdyF037Va1xPr2CBXpm6qgDDN/tU43jIqjDPpxEvSaKFpYBrCe+puFU5RonS9/xBTDC6RHh+S5rySREROru7EgVOIBV8kT/IqsWsf9vIw7MIkE6Mx/Qx6a1T+5F51rL4bT0xYZB4mzhNBIsgl/o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=PP1gpCD0; arc=none smtp.client-ip=217.70.183.201
+	 In-Reply-To:To:Cc; b=oFnS9sFk2LBHsoyigv34IqtXUlYmk+0uRDKE4Ymlh5FDjpiuNXv2ZP52n7gGJcXAMD4tIRaltP4pvi1++0844P35o3m+9iLx4gsVGMUWKgLirOqmxTFYitNJ9iGZW99qbSbv57X/o5Lr3GZ//dXSTTrxZPWK4P+Khf5PBiSOZH4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=c/BsSpnm; arc=none smtp.client-ip=217.70.183.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 07A861BF216;
-	Wed, 28 Feb 2024 11:28:21 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id A6A491BF21A;
+	Wed, 28 Feb 2024 11:28:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709119702;
+	t=1709119703;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=R3+PrmUdd2JxDTzSX+hLtESErBB0gvWqKNs59dVKhlg=;
-	b=PP1gpCD0nIoqW9wwkVhZc7WMU1fSYlTP1LZ7XicD/2IMB9mknsnzgf8+wwHjUeQZttCarg
-	sHoXgb+Zr8a38CcTpqRNAlYSWuUYrLl5BswX3jR2YJzRvpnXztjZEKXQPW7lmQXOObwQ/P
-	NaTpg9M5vet0Lyuk7xgAPOZDX2xkcNSUW7wWyA+vluJMXWzq3lrSvmEgqt/oaMF5jQgtDJ
-	7oM6s7hlFeZn/DdfFJIbMPdKMJTutQP+Sb+Hzu1O6cOWukDb1YBI6hD/8Z5+79MV9EkRym
-	OJmb2TtYiMHo7E5aJ9z8l49yPgZft6mfCmJoOUeWAJl/+oyc8xeMyPqzKnM5Lg==
+	bh=E0ZmgzMXKbmkgBa8vxJZo+tPY2HqLbOAvRCSZwlQWL0=;
+	b=c/BsSpnm7nh6f7Cx1rg0yF82sBXXPq5tkaVYmHW+h+5QsLX71uzOesLUMMfyw/fwwsIeWR
+	mK1ZdFaPAhnpDreF8D0jt7PIyOJVdqrDos2vBW82GMFv0+xQzMujFO48A2H+TEctczqWov
+	PyUBoyne04uIcilLPWGSaJf/lo5rJkd2QnelZeFuQ2/EEoybqeUjHjRKTdRpQ7TURxuJFj
+	V6KUJSy2tCqGkb+cEnoujv10JQKFwzIZqt3d9h8YuDtgAg57GK4Uf9KgVV5Oa4sMqFjfHY
+	YW22LBUCyt/UnOtRh/wuMaZD+R5Ki2RMz8nB6sAqvqtJokzED7bCe0A5hHgrrQ==
 From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Date: Wed, 28 Feb 2024 12:28:14 +0100
-Subject: [PATCH v2 16/30] gpio: nomadik: replace of_property_read_*() by
- device_property_read_*()
+Date: Wed, 28 Feb 2024 12:28:15 +0100
+Subject: [PATCH v2 17/30] gpio: nomadik: use
+ devm_platform_ioremap_resource() helper
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,7 +56,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240228-mbly-gpio-v2-16-3ba757474006@bootlin.com>
+Message-Id: <20240228-mbly-gpio-v2-17-3ba757474006@bootlin.com>
 References: <20240228-mbly-gpio-v2-0-3ba757474006@bootlin.com>
 In-Reply-To: <20240228-mbly-gpio-v2-0-3ba757474006@bootlin.com>
 To: Linus Walleij <linus.walleij@linaro.org>, 
@@ -74,36 +74,36 @@ Cc: linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
 X-Mailer: b4 0.13.0
 X-GND-Sasl: theo.lebrun@bootlin.com
 
-Avoid OF APIs in the GPIO subsystem. Here, replace
-of_property_read_{u32,bool}() call by device_property_read_{u32,bool}().
+Replace calls to platform_get_resource() then devm_ioremap_resource() by
+a single call to devm_platform_ioremap_resource().
 
 Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
 ---
- drivers/gpio/gpio-nomadik.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpio/gpio-nomadik.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/drivers/gpio/gpio-nomadik.c b/drivers/gpio/gpio-nomadik.c
-index f3ef3b4d08eb..bba183c0b597 100644
+index bba183c0b597..93015fa3d010 100644
 --- a/drivers/gpio/gpio-nomadik.c
 +++ b/drivers/gpio/gpio-nomadik.c
-@@ -497,7 +497,7 @@ struct nmk_gpio_chip *nmk_gpio_populate_chip(struct device_node *np,
- 	}
- 	gpio_pdev = to_platform_device(gpio_dev);
+@@ -485,7 +485,6 @@ struct nmk_gpio_chip *nmk_gpio_populate_chip(struct device_node *np,
+ 	struct platform_device *gpio_pdev;
+ 	struct device *gpio_dev;
+ 	struct gpio_chip *chip;
+-	struct resource *res;
+ 	struct clk *clk;
+ 	void __iomem *base;
+ 	u32 id;
+@@ -525,8 +524,7 @@ struct nmk_gpio_chip *nmk_gpio_populate_chip(struct device_node *np,
+ 	chip->label = dev_name(gpio_dev);
+ 	chip->parent = gpio_dev;
  
--	if (of_property_read_u32(np, "gpio-bank", &id)) {
-+	if (device_property_read_u32(gpio_dev, "gpio-bank", &id)) {
- 		dev_err(&pdev->dev, "populate: gpio-bank property not found\n");
+-	res = platform_get_resource(gpio_pdev, IORESOURCE_MEM, 0);
+-	base = devm_ioremap_resource(&pdev->dev, res);
++	base = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(base)) {
  		platform_device_put(gpio_pdev);
- 		return ERR_PTR(-EINVAL);
-@@ -587,7 +587,7 @@ static int nmk_gpio_probe(struct platform_device *dev)
- 	}
- 
- 	supports_sleepmode =
--		of_property_read_bool(np, "st,supports-sleepmode");
-+		device_property_read_bool(dev, "st,supports-sleepmode");
- 
- 	/* Correct platform device ID */
- 	dev->id = nmk_chip->bank;
+ 		return ERR_CAST(base);
 
 -- 
 2.44.0
