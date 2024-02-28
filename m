@@ -1,174 +1,258 @@
-Return-Path: <linux-kernel+bounces-85363-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85361-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A302086B4D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:27:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 073BA86B4CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:25:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 578241F28221
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:27:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3FF0D1F25020
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:25:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C9D03FBA4;
-	Wed, 28 Feb 2024 16:26:50 +0000 (UTC)
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D20856EF11;
+	Wed, 28 Feb 2024 16:25:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RqG0KGBr"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 466F120DD5;
-	Wed, 28 Feb 2024 16:26:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3BFC6EEE1;
+	Wed, 28 Feb 2024 16:25:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709137610; cv=none; b=WG1R80tsZPUrym1b77/VK0NhGVDKJMWQfYVEMAfreJ/q1/RqGMMUnYLNIKbQVnf+QE8baWyXG562gunDmKZ5lk6iWocIBX5ce1fuSiYS438bqt2eeg7PrCqsVuLVzx9USZGD1jJ1S3haoKjtzc81G0Prq/CpVHRKe1/7d3dC190=
+	t=1709137549; cv=none; b=F+pRGjhrr+3zSgTZmxvylpdRRW2ASzUOSNqqvlGxgxaQJ1G3pw1gOth/ByFqf0Lh0aC0StcP2GW+e9agDdsyD3uhTM5VvH1Z7rdZO4xvyFxxGBBUKLYWjH98cNBpNi3etHewbnIvV2c7P2ttTaVsmfYL19ZXiahP1lOh9H869/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709137610; c=relaxed/simple;
-	bh=i0uJzDDNx/9MRtcLNxLIpGvbtgkEiz4pwvdJzLFqJh8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=l51WB6c4hbQ0C5YQUL7fJFjx0wJ0n+cBM6XzQnJHloo/AGeWOtfGvcdzTEHvt/2Ph3maHuVg5e0oyiQkd99tG84ahxgYxMEGcdVl6l+QPkIBkjGSYObtQOz1G7/0aBHWvc7klqs2bd97Q88N2LGaD3RTiAyzwm5Z9H/ukMBCqZE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
-Received: from [192.168.0.53] (ip5f5aedb1.dynamic.kabel-deutschland.de [95.90.237.177])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pmenzel)
-	by mx.molgen.mpg.de (Postfix) with ESMTPSA id F2C2D61E5FE04;
-	Wed, 28 Feb 2024 17:25:44 +0100 (CET)
-Message-ID: <35dcecdd-ee19-40d6-80ab-5eed9718e639@molgen.mpg.de>
-Date: Wed, 28 Feb 2024 17:25:44 +0100
+	s=arc-20240116; t=1709137549; c=relaxed/simple;
+	bh=I3Ry+AyxVFp2fepKf56qSbxbBz0NZWBFMR4xiWNttqI=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=nSyg5lgWqTTUplOt3IkfHr2VxmZXK57Havn2V3SF/Ad3LLv0JOLXcOUj+R1McVLkerTNVj0HwZ3qw51x7nRnuM5yR3WlD0smcdlmpql9Kv1h9xxmbmTC3dqdGzsS3BBMUqLzgRJVYFIai4OVXkAyrRbRlh3rUOAGejpFylRVtL4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RqG0KGBr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DF09C43394;
+	Wed, 28 Feb 2024 16:25:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709137548;
+	bh=I3Ry+AyxVFp2fepKf56qSbxbBz0NZWBFMR4xiWNttqI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=RqG0KGBrnXVRymi9pbuDFcM0wj6P0BHkgpfBlPoNCDp399b4p7KA5grrqwGQvjy+C
+	 CHcUrpacGUcBxGE+TsXaYYOQav5iZIHQeJVHbAByydpLI0jCH4vFo6fhN/09B3+e4I
+	 mj4ol4hWIr9DA1DGIqPGpPvvcaTKv3Y2WONHFC5WZSoN6YA3lG3QY2IFl+BIYDEPHd
+	 B7OW70RVzL/+BUPcne96Tf71ttuXhDKPLvhcQxmC7+Be5DG0mX4esdLvYl6SNs5QBv
+	 Rx3/vePUySNOb3Q9RMPxYIggiO4U46gG9GdefU2nDvT5N/WdlwkPbO+WuOHdKKOx8e
+	 JFDXh0JHRFAtg==
+Date: Wed, 28 Feb 2024 10:25:46 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+	Lukas Wunner <lukas@wunner.de>,
+	Yazen Ghannam <yazen.ghannam@amd.com>,
+	Ilpo Jarvinen <ilpo.jarvinen@linux.intel.com>
+Subject: Re: [PATCH v9] PCI/DPC: Ignore Surprise Down error on hot removal
+Message-ID: <20240228162546.GA275965@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Commit messages (was: [PATCH v4 3/3] hwmon: Driver for Nuvoton
- NCT7363Y)
-Content-Language: en-US
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Ban Feng <baneric926@gmail.com>, jdelvare@suse.com, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, corbet@lwn.net,
- linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
- kcfeng0@nuvoton.com, kwliu@nuvoton.com, openbmc@lists.ozlabs.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- DELPHINE_CHIU@wiwynn.com, naresh.solanki@9elements.com,
- billy_tsai@aspeedtech.com
-References: <20240227005606.1107203-1-kcfeng0@nuvoton.com>
- <20240227005606.1107203-4-kcfeng0@nuvoton.com>
- <62f38808-7d5f-4466-a65e-b6a64b2e7c01@molgen.mpg.de>
- <4b06d535-6739-47b5-ad1e-0ff94322620e@roeck-us.net>
- <e2b0b8e3-9b39-4621-9e43-d7de02286a27@molgen.mpg.de>
- <24ee4bf3-aa91-483d-a9be-5c47e5c37ed7@roeck-us.net>
-From: Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <24ee4bf3-aa91-483d-a9be-5c47e5c37ed7@roeck-us.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240207181854.121335-1-Smita.KoralahalliChannabasappa@amd.com>
 
-Dear Guenter,
-
-
-Thank you for your reply.
-
-Am 28.02.24 um 17:03 schrieb Guenter Roeck:
-> On 2/28/24 03:03, Paul Menzel wrote:
-
->> Am 28.02.24 um 10:03 schrieb Guenter Roeck:
->>> On 2/27/24 23:57, Paul Menzel wrote:
->>
->>>> Am 27.02.24 um 01:56 schrieb baneric926@gmail.com:
->>>>> From: Ban Feng <kcfeng0@nuvoton.com>
->>>>>
->>>>> NCT7363Y is an I2C based hardware monitoring chip from Nuvoton.
->>>>
->>>> Please reference the datasheet.
->>>
->>> Note that something like
->>>
->>> Datasheet: Available from Nuvoton upon request
->>>
->>> is quite common for hardware monitoring chips and acceptable.
->>
->> Yes, it would be nice to document it though. (And finally for vendors 
->> to just make them available for download.)
+On Wed, Feb 07, 2024 at 06:18:54PM +0000, Smita Koralahalli wrote:
+> According to PCIe r6.0 sec 6.7.6 [1], async removal with DPC may result in
+> surprise down error. This error is expected and is just a side-effect of
+> async remove.
 > 
-> Nuvoton is nice enough and commonly makes datasheets available on request.
-> The only exception I have seen so far is where they were forced into an NDA
-> by a large chip and board vendor, which prevented them from publishing a
-> specific datasheet.
-
-Nice, that they are better in this regard than others.
-
-> Others are much worse. Many PMIC vendors don't publish their datasheets at
-> all, and sometimes chips don't even officially exist (notorious for chips
-> intended for the automotive market). Just look at the whole discussion
-> around MAX31335.
+> Ignore surprise down error generated as a side-effect of async remove.
+> Typically, this error is benign as the pciehp handler invoked by PDC
+> or/and DLLSC alongside DPC, de-enumerates and brings down the device
+> appropriately. But the error messages might confuse users. Get rid of
+> these irritating log messages with a 1s delay while pciehp waits for
+> dpc recovery.
 > 
-> Anyway, there are lots of examples in Documentation/hwmon/. I don't see
-> the need to add further documentation, and I specifically don't want to
-> make it official that "Datasheet not public" is acceptable as well.
-> We really don't have a choice unless we want to exclude a whole class
-> of chips from the kernel, but that doesn't make it better.
-
-I know folks figure it out eventually, but I found it helpful to have 
-the datesheet name in the commit message to know what to search for, ask 
-for, or in case of difference between datasheet revision what to compare 
-against.
-
->>>> Could you please give a high level description of the driver design?
->>>
->>> Can you be more specific ? I didn't have time yet to look into details,
->>> but at first glance this looks like a standard hardware monitoring 
->>> driver.
->>> One could argue that the high level design of such drivers is described
->>> in Documentation/hwmon/hwmon-kernel-api.rst.
->>>
->>> I don't usually ask for a additional design information for hwmon drivers
->>> unless some chip interaction is unusual and needs to be explained,
->>> and then I prefer to have it explained in the code. Given that, I am
->>> quite curious and would like to understand what you are looking for.
->> For a 10+ lines commit, in my opinion the commit message should say 
->> something about the implementation. Even it is just, as you wrote, a 
->> note, that it follows the standard design.
+> The implementation is as follows: On an async remove a DPC is triggered
+> along with a Presence Detect State change and/or DLL State Change.
+> Determine it's an async remove by checking for DPC Trigger Status in DPC
+> Status Register and Surprise Down Error Status in AER Uncorrected Error
+> Status to be non-zero. If true, treat the DPC event as a side-effect of
+> async remove, clear the error status registers and continue with hot-plug
+> tear down routines. If not, follow the existing routine to handle AER and
+> DPC errors.
 > 
-> Again, I have not looked into the submission, but usually we ask for that
-> to be documented in Documentation/hwmon/. I find that much better than
-> a soon-to-be-forgotten commit message. I don't mind something like
-> "The NCT7363Y is a fan controller with up to 16 independent fan input
->   monitors and up to 16 independent PWM outputs. It also supports up
->   to 16 GPIO pins"
-> or in other words a description of the chip, not the implementation.
-> That a driver hwmon driver uses the hardware monitoring API seems to be
-> obvious to me, so I don't see the value of adding it to the commit
-> description. I would not mind having something there, but I don't
-> see it as mandatory.
+> Please note that, masking Surprise Down Errors was explored as an
+> alternative approach, but left due to the odd behavior that masking only
+> avoids the interrupt, but still records an error per PCIe r6.0.1 Section
+> 6.2.3.2.2. That stale error is going to be reported the next time some
+> error other than Surprise Down is handled.
+
+I tweaked this citation to r6.0 since you cited r6.0 above, and I
+don't think r6.0.1 changed anything in this section.
+
+> Dmesg before:
 > 
-> On the  other side, granted, that is just _my_ personal opinion.
-> Do we have a common guideline for what exactly should be in commit
-> descriptions for driver submissions ? I guess I should look that up.
+>   pcieport 0000:00:01.4: DPC: containment event, status:0x1f01 source:0x0000
+>   pcieport 0000:00:01.4: DPC: unmasked uncorrectable error detected
+>   pcieport 0000:00:01.4: PCIe Bus Error: severity=Uncorrected (Fatal), type=Transaction Layer, (Receiver ID)
+>   pcieport 0000:00:01.4:   device [1022:14ab] error status/mask=00000020/04004000
+>   pcieport 0000:00:01.4:    [ 5] SDES (First)
+>   nvme nvme2: frozen state error detected, reset controller
+>   pcieport 0000:00:01.4: DPC: Data Link Layer Link Active not set in 1000 msec
+>   pcieport 0000:00:01.4: AER: subordinate device reset failed
+>   pcieport 0000:00:01.4: AER: device recovery failed
+>   pcieport 0000:00:01.4: pciehp: Slot(16): Link Down
+>   nvme2n1: detected capacity change from 1953525168 to 0
+>   pci 0000:04:00.0: Removing from iommu group 49
+> 
+> Dmesg after:
+> 
+>  pcieport 0000:00:01.4: pciehp: Slot(16): Link Down
+>  nvme1n1: detected capacity change from 1953525168 to 0
+>  pci 0000:04:00.0: Removing from iommu group 37
+> 
+> [1] PCI Express Base Specification Revision 6.0, Dec 16 2021.
+>     https://members.pcisig.com/wg/PCI-SIG/document/16609
+> 
+> Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+> Reviewed-by: Lukas Wunner <lukas@wunner.de>
+> Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 
-`Documentation/hwmon/submitting-patches.rst` refers to 
-`Documentation/process/submitting-patches.rst`, and there *Describe your 
-changes* seems to have been written for documenting bug fixes or 
-enhancements and not new additions. It for example contains:
+Applied to pci/dpc for v6.9, thanks!
 
-> Once the problem is established, describe what you are actually doing
-> about it in technical detail.  It's important to describe the change
-> in plain English for the reviewer to verify that the code is behaving
-> as you intend it to.
-
-I agree with your description, but I am also convinced if you write 500 
-lines of code, that you can write ten lines of commit messages giving a 
-broad overview. In this case, saying that it follows the standard driver 
-model would be good enough for me.
-
-Also, at least for me, often having to bisect stuff and using `git 
-blame` to look at old commits, commit messages are very valuable to me, 
-and not “forgotten”. ;-)
-
-
-Kind regards,
-
-Paul
+> ---
+> v2:
+> 	Indentation is taken care. (Bjorn)
+> 	Unrelevant dmesg logs are removed. (Bjorn)
+> 	Rephrased commit message, to be clear on native vs FW-First
+> 	handling. (Bjorn and Sathyanarayanan)
+> 	Prefix changed from pciehp_ to dpc_. (Lukas)
+> 	Clearing ARI and AtomicOp Requester are performed as a part of
+> 	(de-)enumeration in pciehp_unconfigure_device(). (Lukas)
+> 	Changed to clearing all optional capabilities in DEVCTL2.
+> 	OS-First -> native. (Sathyanarayanan)
+> 
+> v3:
+> 	Added error message when root port become inactive.
+> 	Modified commit description to add more details.
+> 	Rearranged code comments and function calls with no functional
+> 	change.
+> 	Additional check for is_hotplug_bridge.
+> 	dpc_completed_waitqueue to wakeup pciehp handler.
+> 	Cleared only Fatal error detected in DEVSTA.
+> 
+> v4:
+> 	Made read+write conditional on "if (pdev->dpc_rp_extensions)"
+> 	for DPC_RP_PIO_STATUS.
+> 	Wrapped to 80 chars.
+> 	Code comment for clearing PCI_STATUS and PCI_EXP_DEVSTA.
+> 	Added pcie_wait_for_link() check.
+> 	Removed error message for root port inactive as the message
+> 	already existed.
+> 	Check for is_hotplug_bridge before registers read.
+> 	Section 6.7.6 of the PCIe Base Spec 6.0 -> PCIe r6.0 sec 6.7.6.
+> 	Made code comment more meaningful.
+> 
+> v5:
+> 	$SUBJECT correction.
+> 	Added "Reviewed-by" tag.
+> 	No code changes. Re-spin on latest base to get Bjorn's
+> 	attention.
+> 
+> v6:
+> 	Change to write 1's to clear error. (Sathyanarayanan)
+> 
+> v7:
+> 	No changes. Rebasing on pci main branch as per Bjorn comments.
+> 
+> v8:
+> 	Just return "status & PCI_ERR_UNC_SURPDN" instead of true and
+> 	false and allow C to handle the conversion to bool. (Ilpo)
+> 
+> v9:
+> 	Handle errors from pci_write_config_word().
+> 	Write 1 to clear PIO_STATUS.
+> ---
+>  drivers/pci/pcie/dpc.c | 60 ++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 60 insertions(+)
+> 
+> diff --git a/drivers/pci/pcie/dpc.c b/drivers/pci/pcie/dpc.c
+> index 94111e438241..17f166504b54 100644
+> --- a/drivers/pci/pcie/dpc.c
+> +++ b/drivers/pci/pcie/dpc.c
+> @@ -303,10 +303,70 @@ void dpc_process_error(struct pci_dev *pdev)
+>  	}
+>  }
+>  
+> +static void pci_clear_surpdn_errors(struct pci_dev *pdev)
+> +{
+> +	if (pdev->dpc_rp_extensions)
+> +		pci_write_config_dword(pdev, pdev->dpc_cap +
+> +				       PCI_EXP_DPC_RP_PIO_STATUS, ~0);
+> +
+> +	/*
+> +	 * In practice, Surprise Down errors have been observed to also set
+> +	 * error bits in the Status Register as well as the Fatal Error
+> +	 * Detected bit in the Device Status Register.
+> +	 */
+> +	pci_write_config_word(pdev, PCI_STATUS, 0xffff);
+> +
+> +	pcie_capability_write_word(pdev, PCI_EXP_DEVSTA, PCI_EXP_DEVSTA_FED);
+> +}
+> +
+> +static void dpc_handle_surprise_removal(struct pci_dev *pdev)
+> +{
+> +	if (!pcie_wait_for_link(pdev, false)) {
+> +		pci_info(pdev, "Data Link Layer Link Active not cleared in 1000 msec\n");
+> +		goto out;
+> +	}
+> +
+> +	if (pdev->dpc_rp_extensions && dpc_wait_rp_inactive(pdev))
+> +		goto out;
+> +
+> +	pci_aer_raw_clear_status(pdev);
+> +	pci_clear_surpdn_errors(pdev);
+> +
+> +	pci_write_config_word(pdev, pdev->dpc_cap + PCI_EXP_DPC_STATUS,
+> +			      PCI_EXP_DPC_STATUS_TRIGGER);
+> +
+> +out:
+> +	clear_bit(PCI_DPC_RECOVERED, &pdev->priv_flags);
+> +	wake_up_all(&dpc_completed_waitqueue);
+> +}
+> +
+> +static bool dpc_is_surprise_removal(struct pci_dev *pdev)
+> +{
+> +	u16 status;
+> +
+> +	if (!pdev->is_hotplug_bridge)
+> +		return false;
+> +
+> +	if (pci_read_config_word(pdev, pdev->aer_cap + PCI_ERR_UNCOR_STATUS,
+> +				 &status))
+> +		return false;
+> +
+> +	return status & PCI_ERR_UNC_SURPDN;
+> +}
+> +
+>  static irqreturn_t dpc_handler(int irq, void *context)
+>  {
+>  	struct pci_dev *pdev = context;
+>  
+> +	/*
+> +	 * According to PCIe r6.0 sec 6.7.6, errors are an expected side effect
+> +	 * of async removal and should be ignored by software.
+> +	 */
+> +	if (dpc_is_surprise_removal(pdev)) {
+> +		dpc_handle_surprise_removal(pdev);
+> +		return IRQ_HANDLED;
+> +	}
+> +
+>  	dpc_process_error(pdev);
+>  
+>  	/* We configure DPC so it only triggers on ERR_FATAL */
+> -- 
+> 2.17.1
+> 
 
