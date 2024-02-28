@@ -1,172 +1,168 @@
-Return-Path: <linux-kernel+bounces-84453-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84454-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64FA186A6EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 03:54:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B033E86A6F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 03:57:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E6B011F2A658
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:54:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 608071F2B23F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:57:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5D2A1D6AA;
-	Wed, 28 Feb 2024 02:54:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBF9A1CF99;
+	Wed, 28 Feb 2024 02:57:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Pirmd25V"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aBqsgk7I"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50AE71CD13
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 02:54:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3A8D1CD0F;
+	Wed, 28 Feb 2024 02:57:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709088862; cv=none; b=u2llqJbMzbn6ktv8n0zF3TX7uGhRKIGmxVE5gggx9WvyFNz1rpzbnlgIvCaaXOXt+uMumSzQzJSKg88636pZaBL6KBUeP6JaX2jXVml2JEtc/eW4c8UflRN1fWaI7QHBW5ZVtYlAJti57eFlX6H6s9egtw+G/dzMfjBbYif/AfM=
+	t=1709089043; cv=none; b=RQg17SAxH+Lyu7mqJeqBeFp6g0RPBCfx9BNxVp3K0+eUEVjWUVMUGsRBLBjBpmp4vxExgzYOAidgNeBTJ74ap+oOkRZtkdsXlRw6JtugBXeZlNK2nf6N/TpXlJVmGjJDWd5a+UzcYwdw36Ut9oJlizRVQfaOhwn4jiF8Kj34xaE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709088862; c=relaxed/simple;
-	bh=nnF6Shl1G+eq8ay8WzAy8V439bQkW16xKmvGKio1KvE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mlsj3MTnT9V6Wr1e5I/uMWKG/RJj9JHMQB0bH4Bt1oWkHxYA6dRD2xO8pYdLYzvozvTxE0NEx9s+aPJjS7VReTQ1WYZTJJIg92S5CPkympEFtxs9jr8zwxtfy9mTc+vqdJDGDlH+PlLQDhFeBh7TAoTe7kDfXXz1MbkeYYmdL5g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Pirmd25V; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709088859;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KFDcoUQa/a5vEgujpfE76YKoGoEcnkH0gIk3WiSZGAc=;
-	b=Pirmd25VLBGz/LdJ4s6iKzaLSwK1XQY4gxR2jYTxaZ+EQq2SqarSejjy67LEwfUhtRAr6m
-	LDTBMH8f9a8iQqDHJAx5wZMe9NPCnTZ9QlSjrsom49B738haycnw3pemyxPM7OIpcqBUOj
-	X1EUt1fBhqe8nClBGj4jFucYEjyjkzQ=
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com
- [209.85.166.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-637-MzqWbdxDPSmtYscOGUNAZg-1; Tue, 27 Feb 2024 21:54:17 -0500
-X-MC-Unique: MzqWbdxDPSmtYscOGUNAZg-1
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7c769ed7d46so124770739f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 18:54:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709088857; x=1709693657;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KFDcoUQa/a5vEgujpfE76YKoGoEcnkH0gIk3WiSZGAc=;
-        b=tUOuHANJXyM+k3sGA+Cx3SZWy1JW6wfamTl7pu8rkDyEHlwWuWOC8o4XVV45h7W1VR
-         optgrCaT+leq/rjnjI3le3L3rQINtR6lAdkNA9kdot3hykXlr315YNzO2FHYZrMmKZRB
-         YJEPJ3EMA3J5422gsCmEk2R/9I204B2IY/WGYUZJzFSR0MP1VgO2PkcIKaWHShmcLzps
-         Wb6CHTuIqq1hep+N/HwPSYUO76kFp0UwEdJF2kQxHmoNnalQL5MvuV48glFiO/qNgMZd
-         BXgDvDRcFllSp+RWw4Zgj2vb2O60H1GBTcVMUo7H3TDO5ba9D8k/A5n3zGOkSN226FZx
-         ddBw==
-X-Forwarded-Encrypted: i=1; AJvYcCUQTCocP3flVevCBYBe2kXLVqJOum6L2TVU/hoHJARNIVIC2g3L7Am+GEPEVvVZHZkRi9oTjt9sRrAgU9LwoJJ8MHsoFBZsJjRIe5Wp
-X-Gm-Message-State: AOJu0YxWkXVOTPBmwa0A+hMz99NrfVUU6dUYGTq13PC6qMFSwNZJReXs
-	sWey9dydsfFk4RB5RsguPkN0qvGtWixJPm0cFawbdx87sSnK8tPBxanBEtMkMDmMZGEhqDugT1/
-	GfROEMx/gGYgfT0VqyjRbiuV3vqXepW1w2DwmH80FK4zLKmA4KtmsC2BBRBdV9PNeMjo+7Tntlo
-	B6OK76WPwobVAjFV82GTypma1ukTSIwKN3U5EO
-X-Received: by 2002:a05:6e02:1ca8:b0:365:4e45:63ee with SMTP id x8-20020a056e021ca800b003654e4563eemr11082380ill.1.1709088856803;
-        Tue, 27 Feb 2024 18:54:16 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IECTa+AffGk+pRAvw1YV6u3iDusp0tGAfD4njQLie6u65cr5cs2h8iux6vaJ/Y/Yo+TKIV3hV1Sea7a03euzag=
-X-Received: by 2002:a05:6e02:1ca8:b0:365:4e45:63ee with SMTP id
- x8-20020a056e021ca800b003654e4563eemr11082362ill.1.1709088856537; Tue, 27 Feb
- 2024 18:54:16 -0800 (PST)
+	s=arc-20240116; t=1709089043; c=relaxed/simple;
+	bh=DrPnGSdQxL+NuAAOgZAbBL33b9iEFzBIqVQV9hhR2RA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=V7/2bK+rXwnU8ogwzJSMNffol5sSxIdQ44weIE86aKAFOe1h92DEXEThjJAUaWKjRfbgKLg0ZJ/hEaVbcyxPUmMDaYdvUlj587rHTMIAG22QvfRZ64GBL+tlWRrZf4LHJzkjr9nqrk4lvAMPHghM0hMP3E82gJaa1xIuJ04a0xo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aBqsgk7I; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709089041; x=1740625041;
+  h=message-id:date:mime-version:subject:to:references:from:
+   in-reply-to:content-transfer-encoding;
+  bh=DrPnGSdQxL+NuAAOgZAbBL33b9iEFzBIqVQV9hhR2RA=;
+  b=aBqsgk7IfG9V3IYlYYQTZ5rrEt7LU5MuBig+3LWwUFlgdRC7l0CJrmrW
+   vLkk0uEpHyvRrKPgEy4Z1xmNulV3PBkiGriTe39rYQdp+5fy4mUyyL9iw
+   A86690eeqEjfUN3k18gnAaiFE+nADEhsgNzN7SuFAf/bG6eSwMXTCkklf
+   Jl+VPm9hgmLQHsUkQpTqJk82/hW2gLF3ipeCSiTM0n2y/+DrvxcmlJvzd
+   tIcuajWr9OcrPZxLw+e4E3etGE9YmpDOVrh8iwWgtPHsuwxLSH7bis32C
+   MMHB/hu7qRvg7Ue5dLHGpfJjZGFYMYPujXGg/axTjcDO/ZdJTmcmDLmgG
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3328970"
+X-IronPort-AV: E=Sophos;i="6.06,189,1705392000"; 
+   d="scan'208";a="3328970"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 18:57:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,189,1705392000"; 
+   d="scan'208";a="11836841"
+Received: from dschro4x-mobl.amr.corp.intel.com (HELO [10.212.137.190]) ([10.212.137.190])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 18:57:20 -0800
+Message-ID: <9661c185-0132-44da-beef-05da55c5a98f@linux.intel.com>
+Date: Tue, 27 Feb 2024 18:57:19 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1706698706.git.kai.huang@intel.com> <cd88e97e53c502f0a457d6a82a31d9e8e0f9fca7.1706698706.git.kai.huang@intel.com>
- <20240219161611.GBZdN-y6DO-cspaZrf@fat_crate.local> <9164b0e3-f520-4aab-8b80-520131f0e4db@amd.com>
- <20240219203222.GIZdO61ucfq4bFxRT0@fat_crate.local> <283877fd-78c7-4322-bbce-ba6420d56765@amd.com>
- <20240220142812.GBZdS2_HJEA50F8RZD@fat_crate.local> <28a494ca-3173-4072-921c-6c5f5b257e79@amd.com>
- <ec58908ac8bc7d953d4c00825217615918436721.camel@intel.com>
- <24844584-8031-4b58-ba5c-f85ef2f4c718@amd.com> <20240221092856.GAZdXCWGJL7c9KLewv@fat_crate.local>
- <CALu+AoR-VFHCK_7LHiJ3z_Vk1B=sFS90iAyCs9qmSmf2+XORLw@mail.gmail.com>
-In-Reply-To: <CALu+AoR-VFHCK_7LHiJ3z_Vk1B=sFS90iAyCs9qmSmf2+XORLw@mail.gmail.com>
-From: Dave Young <dyoung@redhat.com>
-Date: Wed, 28 Feb 2024 10:54:22 +0800
-Message-ID: <CALu+AoSZkq1kz-xjvHkkuJ3C71d0SM5ibEJurdgmkZqZvNp2dQ@mail.gmail.com>
-Subject: Re: [PATCH 1/4] x86/coco: Add a new CC attribute to unify cache flush
- during kexec
-To: Borislav Petkov <bp@alien8.de>
-Cc: Tom Lendacky <thomas.lendacky@amd.com>, "Huang, Kai" <kai.huang@intel.com>, 
-	"Gao, Chao" <chao.gao@intel.com>, "Hansen, Dave" <dave.hansen@intel.com>, 
-	"luto@kernel.org" <luto@kernel.org>, "x86@kernel.org" <x86@kernel.org>, 
-	"peterz@infradead.org" <peterz@infradead.org>, "hpa@zytor.com" <hpa@zytor.com>, 
-	"mingo@redhat.com" <mingo@redhat.com>, 
-	"kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>, "tglx@linutronix.de" <tglx@linutronix.de>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "pbonzini@redhat.com" <pbonzini@redhat.com>, 
-	"nik.borisov@suse.com" <nik.borisov@suse.com>, "bhe@redhat.com" <bhe@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2 6/9] tools/arch/x86/intel_sdsi: Add missing version
+ field
+Content-Language: en-US
+To: "David E. Box" <david.e.box@linux.intel.com>,
+ rajvi.jingar@linux.intel.com, platform-driver-x86@vger.kernel.org,
+ linux-kernel@vger.kernel.org, hdegoede@redhat.com,
+ ilpo.jarvinen@linux.intel.com
+References: <20240228000016.1685518-1-david.e.box@linux.intel.com>
+ <20240228000016.1685518-7-david.e.box@linux.intel.com>
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20240228000016.1685518-7-david.e.box@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, 23 Feb 2024 at 18:41, Dave Young <dyoung@redhat.com> wrote:
->
-> On Wed, 21 Feb 2024 at 17:33, Borislav Petkov <bp@alien8.de> wrote:
-> >
-> > On Tue, Feb 20, 2024 at 04:30:13PM -0600, Tom Lendacky wrote:
-> > > I believe the issues were that different Intel systems would hang or reset
-> > > and it was bisected to that commit that added the WBINVD. It was a while
-> > > ago, but I remember that they were similar to what the 1f5e7eb7868e commit
-> > > ended up fixing, which was debugged because sometimes the WBINVD was still
-> > > occasionally issued resulting in the following patch
-> > >
-> > >   9b040453d444 ("x86/smp: Dont access non-existing CPUID leaf")
-> > >
-> > > It just means that if we go to an unconditional WBINVD, then we need to be
-> > > careful.
-> >
-> > Let's try it.
-> >
-> > Dave, do you remember what issues
-> >
-> >   f23d74f6c66c ("x86/mm: Rework wbinvd, hlt operation in stop_this_cpu()")
-> >
-> > fixed?
->
-> It should be a kexec reboot failure describe in below thread:
-> https://lore.kernel.org/lkml/20180117072123.GA1866@dhcp-128-65.nay.redhat.com/
->
-> >
-> > If so, can you try the below diff ontop of latest tip/master to see if
-> > those issues would reappear?
->
-> It was reproduced on an old laptop (Thinkpad t440s or t480s, I can not
-> remember), but I have replaced them with a new different one.  I tried
-> the latest tip-master with the if condition commented out, kexec
-> reboot works fine.
->
-> Let me try to find an old laptop to see if I can do more tests, will
-> get back later next week.
 
-Update: tested on an old laptop as well,  I did not find any problems
-with unconditional native_wbinvd(), kexec and kdump works fine.
-
+On 2/27/24 4:00 PM, David E. Box wrote:
+> Add missing 'version' field to struct meter_certificate. Also fix output
+> string alignment.
 >
-> >
-> > Thx.
-> >
-> > ---
-> >
-> > diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-> > index ab49ade31b0d..ec4dcc9f70ca 100644
-> > --- a/arch/x86/kernel/process.c
-> > +++ b/arch/x86/kernel/process.c
-> > @@ -824,8 +824,7 @@ void __noreturn stop_this_cpu(void *dummy)
-> >          * Test the CPUID bit directly because the machine might've cleared
-> >          * X86_FEATURE_SME due to cmdline options.
-> >          */
-> > -       if (c->extended_cpuid_level >= 0x8000001f && (cpuid_eax(0x8000001f) & BIT(0)))
-> > -               native_wbinvd();
-> > +       native_wbinvd();
-> >
-> >         /*
-> >          * This brings a cache line back and dirties it, but
-> >
-> > --
-> > Regards/Gruss,
-> >     Boris.
-> >
-> > https://people.kernel.org/tglx/notes-about-netiquette
-> >
+> Fixes: aad129780bae ("platform/x86/intel/sdsi: Add support for reading the current meter state")
+> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> ---
+>
+> V2 - Split of V1 patch 7
+>
+>  tools/arch/x86/intel_sdsi/intel_sdsi.c | 29 +++++++++++++++++---------
+>  1 file changed, 19 insertions(+), 10 deletions(-)
+>
+> diff --git a/tools/arch/x86/intel_sdsi/intel_sdsi.c b/tools/arch/x86/intel_sdsi/intel_sdsi.c
+> index a02850a710ee..def1b9a01738 100644
+> --- a/tools/arch/x86/intel_sdsi/intel_sdsi.c
+> +++ b/tools/arch/x86/intel_sdsi/intel_sdsi.c
+> @@ -153,11 +153,12 @@ struct bundle_encoding {
+>  };
+>  
+>  struct meter_certificate {
+> -	uint32_t block_signature;
+> +	uint32_t signature;
+> +	uint32_t version;
+> +	uint64_t ppin;
+>  	uint32_t counter_unit;
+> -	uint64_t ppin;
+>  	uint32_t bundle_length;
+> -	uint32_t reserved;
+> +	uint64_t reserved;
+>  	uint32_t mmrc_encoding;
+>  	uint32_t mmrc_counter;
+>  };
+> @@ -336,6 +337,7 @@ static int sdsi_meter_cert_show(struct sdsi_dev *s)
+>  	uint32_t count = 0;
+>  	FILE *cert_ptr;
+>  	int ret, size;
+> +	char name[4];
+
+Nit: IMO, instead of hardcoding, you can introduce a macro like FEATURE_LEN.
+It is up to you.
+
+>  
+>  	ret = sdsi_update_registers(s);
+>  	if (ret)
+> @@ -377,12 +379,19 @@ static int sdsi_meter_cert_show(struct sdsi_dev *s)
+>  	printf("\n");
+>  	printf("Meter certificate for device %s\n", s->dev_name);
+>  	printf("\n");
+> -	printf("Block Signature:       0x%x\n", mc->block_signature);
+> -	printf("Count Unit:            %dms\n", mc->counter_unit);
+> -	printf("PPIN:                  0x%lx\n", mc->ppin);
+> -	printf("Feature Bundle Length: %d\n", mc->bundle_length);
+> -	printf("MMRC encoding:         %d\n", mc->mmrc_encoding);
+> -	printf("MMRC counter:          %d\n", mc->mmrc_counter);
+> +
+> +	get_feature(mc->signature, name);
+> +	printf("Signature:                    %.4s\n", name);
+> +
+> +	printf("Version:                      %d\n", mc->version);
+> +	printf("Count Unit:                   %dms\n", mc->counter_unit);
+> +	printf("PPIN:                         0x%lx\n", mc->ppin);
+> +	printf("Feature Bundle Length:        %d\n", mc->bundle_length);
+> +
+> +	get_feature(mc->mmrc_encoding, name);
+> +	printf("MMRC encoding:                %.4s\n", name);
+> +
+> +	printf("MMRC counter:                 %d\n", mc->mmrc_counter);
+>  	if (mc->bundle_length % 8) {
+>  		fprintf(stderr, "Invalid bundle length\n");
+>  		return -1;
+> @@ -396,7 +405,7 @@ static int sdsi_meter_cert_show(struct sdsi_dev *s)
+>  
+>  	bec = (void *)(mc) + sizeof(mc);
+>  
+> -	printf("Number of Feature Counters:          %d\n", mc->bundle_length / 8);
+> +	printf("Number of Feature Counters:   %d\n", mc->bundle_length / 8);
+
+Try to use sizeof instead of hardcoded value.
+
+>  	while (count++ < mc->bundle_length / 8) {
+>  		char feature[5];
+>  
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
 
 
