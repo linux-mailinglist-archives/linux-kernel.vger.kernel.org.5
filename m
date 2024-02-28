@@ -1,215 +1,248 @@
-Return-Path: <linux-kernel+bounces-85313-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85314-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8364786B411
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:03:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D87FD86B414
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:04:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B58801C20C68
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:03:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63AF01F29F5F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:04:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE83115D5CA;
-	Wed, 28 Feb 2024 16:03:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 842B415D5D1;
+	Wed, 28 Feb 2024 16:03:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fqw9FToK"
-Received: from mail-io1-f42.google.com (mail-io1-f42.google.com [209.85.166.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jA8bFHb2"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 590511487DC;
-	Wed, 28 Feb 2024 16:03:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DB121487DC;
+	Wed, 28 Feb 2024 16:03:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709136217; cv=none; b=k6fXl4zhsHuxtK9Z4nZi7tMsf4RYfFEFXiaIWYsUhrJ7LqAAovr2hWSJKfjnsBX+x7vO9kXV+cHNEP4QgQZY4/eT1/uNiNVQupewHWO/bk452isyE5T7CpT3x/OBPVSrl1gV1pJT7NmlwF2aMLvTMbcugrTiLgwvSazarT3vJXE=
+	t=1709136229; cv=none; b=XRs6aO2CZBQ5KaSTZlF8YQoKOp/RLcnM7DdTpHgy0oRKMC3CA0aK5sJMutKsK2eMvsRY0sMEVmWAstb7FUQ+CGSlde0klnKkRrebVYTIwkBJH8MlzrayLAIA6v6wzKOxlmLTmhbbONqJxZb8EW2PYGfItjMkIYYgTpJE7TMS7/Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709136217; c=relaxed/simple;
-	bh=+/FSbWpBBEvlTozOMYosJQ9Dayw05iY6UrnDQQFIMS4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rF8A9/43z3/CyAxeOm58lxhaBN5oyE0ozU3hT+AN114+b69YOQFTjF7365udENdvde6PT27EYRdi4rz1ncuHkv8CdFyq7fgQaQpUbhfiDfZm0s1Xqkch0u/nVxaZAK5x3WFGLAFuMeFYYI6JgFiHrSoHe01gtsBRDtRK7kvqP2M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fqw9FToK; arc=none smtp.client-ip=209.85.166.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f42.google.com with SMTP id ca18e2360f4ac-7c7b8fb8ba6so210538339f.2;
-        Wed, 28 Feb 2024 08:03:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709136211; x=1709741011; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=kueQijI6nTX+4Jik/nQRXp4+7VlPPb3TOAa5X1N6XTY=;
-        b=Fqw9FToKYUK/P5eMgmLHvUzmMcfkz1KTBX6H+uP6eAwWF+Z/sHk0RWr4R0foPLAx4C
-         t9m3RiWDnaqdZDjH+1NsxdIql+M0QZtnHgs3SS3eZPpwnSg5bNQSSvRjCKwpEvjmgvyZ
-         2AxVNhhZd4FTuOTKehcTHY7PdBBas796/oXfsAoYsxlwP7dHDWficYJY7wDxGuJmEsqj
-         jrMiIyWqS4xcmRnrui02V47iyNLWYwt4nC6Yza0RX2wyS+SzF5Bfpt48LxhATjRf02dN
-         txwYNgL2MkmfmnaLw5UKqenjIEaBp7BBAb/BnrpxpzEGru0pFLdKEx3VG214559nDD1g
-         U7Ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709136211; x=1709741011;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kueQijI6nTX+4Jik/nQRXp4+7VlPPb3TOAa5X1N6XTY=;
-        b=X1XQCS93LrtYpG9ghXVfpMsBrVWy6P2BHNIvhl1EUs5pn8gCyYYR0CDQTkCake6Mtg
-         Bt9MpsGVsjdFlnFgXl56sU/+gN9LW9joLDXxuY+iORwycXd1T3ThiXYm5g7/5zHgjcoq
-         bcLpGqDA3mgieDsmeCidnc1D1y7/IuLteIYEPZLPrbHB85CP6p7wk4ub6zrunUJQEmud
-         rEhCdP953uVtUQ8ZzvWs0cgJje5+3Xybl/XimEFs1QDq5nMNjt+L+opSp7JvZFfgFiYb
-         BiIObnpm/pStw5lbQighNGtWi0L1mAS1vSKHNaeqUPRTREcn1NqT2DxPPvcDKs9iW2A7
-         VuGg==
-X-Forwarded-Encrypted: i=1; AJvYcCX36zwmz7lLb+B5KUPef3v5tYiSHstZZAtIdvQdhFRMh1gROZtIaAHehEa7bn17Scj8J/SpjYgWFZbQn/iKgn+lqfln0rUErXDPFYWaLVVOBYt/Gx1u90IDXY+bv+HKfG5SIfHx2D9YYYY7RMLS7U5kp9uZUTE+d3aGo/tt0S+MZaMNqp+T0pQUsnq/X1KZeNWRQNkQaybKH3J7w+ILecPU
-X-Gm-Message-State: AOJu0YyCOayNtLfqbc7uEA3hBBRuaHdMxelvGtIA2jO5iK4U2kQIVRQd
-	J4rTkd8CrufgkzvXBdW4lbnVe1WJRqrVo7PDmUXotpDCLSpqooIT
-X-Google-Smtp-Source: AGHT+IFKfUK2TIIR4A3poQO85xXFYulel2HSBDdsLvg51kUkDy90ty9hL113+D9iWAzbf4wkmfdVzQ==
-X-Received: by 2002:a5e:a811:0:b0:7c7:98e2:497 with SMTP id c17-20020a5ea811000000b007c798e20497mr16020211ioa.17.1709136211343;
-        Wed, 28 Feb 2024 08:03:31 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id g11-20020a0566380bcb00b004743ceb332csm2313661jad.17.2024.02.28.08.03.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Feb 2024 08:03:26 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <24ee4bf3-aa91-483d-a9be-5c47e5c37ed7@roeck-us.net>
-Date: Wed, 28 Feb 2024 08:03:22 -0800
+	s=arc-20240116; t=1709136229; c=relaxed/simple;
+	bh=jVbwmQ5ZFgtabGqg7urBabSzgD0huGSHM7cVVYaegUk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DVl3P+szMzWhDdWlzBDfXtg0rM+8uCtOiy/nV5aLcDBWBMnqALhj0Z30YqPgLAStog0WnvDoZu2zHR0nhq0fZ7HMzmOymTar2vZiMEyfwfc/6Ou0M30+GyEX5OKOFf7DV8IYWRHypexX7qxRP9zucpQbLxPU+AFvH4c+27mmx2E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jA8bFHb2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE3FBC433C7;
+	Wed, 28 Feb 2024 16:03:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709136229;
+	bh=jVbwmQ5ZFgtabGqg7urBabSzgD0huGSHM7cVVYaegUk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=jA8bFHb2ecDcc7pzqHtmz152M7s3OWHtMU4CPKKfThrDSqp47vbtgw1psPCC5Ph73
+	 A7geVh30RIqh+9ONW9dsYuBB3xLqwDeoxgA73Wi6NyxRLTCAgqlsgOWsJJuAPMCHCw
+	 TQqmYMUf6qm5Zv/p3Y3J1veQe01wngqXYNKmhPBBCXhEhKb1UwsQavnhoLnE5JvCIo
+	 teXfj0/i2YU3cg8wn9MHDGFVECD8BSI61c06Zy6UT0JgerNpB5Iq6Ot2AsvjeHRth3
+	 8YmX9fJSjTh8EZ4psEuVS88PLdFF49OShp1n73di4VSnkhRdbwrkcVWLJgv8pJopmq
+	 Nt+dObfumCFiQ==
+Date: Wed, 28 Feb 2024 10:03:46 -0600
+From: Rob Herring <robh@kernel.org>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Serge Semin <fancer.lancer@gmail.com>, Frank Li <Frank.li@nxp.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, imx@lists.linux.dev,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 5/6] dt-bindings: PCI: dwc: Add 'msg' register region
+Message-ID: <20240228160346.GA4069607-robh@kernel.org>
+References: <20240202-pme_msg-v3-0-ff2af57a02ad@nxp.com>
+ <20240202-pme_msg-v3-5-ff2af57a02ad@nxp.com>
+ <eg7wrjp5ebz43g37fvebr44nwkoh4rptbtyu76nalbmgbbnqke@4zugpgwesyqd>
+ <20240205183048.GA3818249-robh@kernel.org>
+ <ZcEzYdZKotBJlR5i@lizhi-Precision-Tower-5810>
+ <ZcK2/tmLG9O7CBEH@lizhi-Precision-Tower-5810>
+ <luk5hswq4wnk5p7axml73qih35hio3y3pfnklctbn6rwres62s@mumnvygjh5ch>
+ <ZcOpehO3rzCfAwXf@lizhi-Precision-Tower-5810>
+ <gl7zmzkezr6k4txrrgqyikspfah3vmgwwz2e3j5kwb2iarpkxv@3ofwrhtxl2sz>
+ <20240214061412.GB4618@thinkpad>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 3/3] hwmon: Driver for Nuvoton NCT7363Y
-Content-Language: en-US
-To: Paul Menzel <pmenzel@molgen.mpg.de>
-Cc: Ban Feng <baneric926@gmail.com>, jdelvare@suse.com, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, corbet@lwn.net,
- linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
- kcfeng0@nuvoton.com, kwliu@nuvoton.com, openbmc@lists.ozlabs.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- DELPHINE_CHIU@wiwynn.com, naresh.solanki@9elements.com,
- billy_tsai@aspeedtech.com
-References: <20240227005606.1107203-1-kcfeng0@nuvoton.com>
- <20240227005606.1107203-4-kcfeng0@nuvoton.com>
- <62f38808-7d5f-4466-a65e-b6a64b2e7c01@molgen.mpg.de>
- <4b06d535-6739-47b5-ad1e-0ff94322620e@roeck-us.net>
- <e2b0b8e3-9b39-4621-9e43-d7de02286a27@molgen.mpg.de>
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <e2b0b8e3-9b39-4621-9e43-d7de02286a27@molgen.mpg.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240214061412.GB4618@thinkpad>
 
-On 2/28/24 03:03, Paul Menzel wrote:
-> Dear Guenter,
+On Wed, Feb 14, 2024 at 11:44:12AM +0530, Manivannan Sadhasivam wrote:
+> On Fri, Feb 09, 2024 at 12:52:52PM +0300, Serge Semin wrote:
+> > On Wed, Feb 07, 2024 at 11:02:02AM -0500, Frank Li wrote:
+> > > On Wed, Feb 07, 2024 at 03:37:30PM +0300, Serge Semin wrote:
+> > > > On Tue, Feb 06, 2024 at 05:47:26PM -0500, Frank Li wrote:
+> > > > > On Mon, Feb 05, 2024 at 02:13:37PM -0500, Frank Li wrote:
+> > > > > > On Mon, Feb 05, 2024 at 06:30:48PM +0000, Rob Herring wrote:
+> > > > > > > On Sat, Feb 03, 2024 at 01:44:31AM +0300, Serge Semin wrote:
+> > > > > > > > On Fri, Feb 02, 2024 at 10:11:27AM -0500, Frank Li wrote:
+> > > > > > > > > Add an outbound iATU-capable memory-region which will be used to send PCIe
+> > > > > > > > > message (such as PME_Turn_Off) to peripheral. So all platforms can use
+> > > > > > > > > common method to send out PME_Turn_Off message by using one outbound iATU.
+> > > > > > > > > 
+> > > > > > > > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > > > > > > > > ---
+> > > > > > > > >  Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml | 4 ++++
+> > > > > > > > >  1 file changed, 4 insertions(+)
+> > > > > > > > > 
+> > > > > > > > > diff --git a/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml b/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml
+> > > > > > > > > index 022055edbf9e6..25a5420a9ce1e 100644
+> > > > > > > > > --- a/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml
+> > > > > > > > > +++ b/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml
+> > > > > > > > > @@ -101,6 +101,10 @@ properties:
+> > > > > > > > 
+> > > > > > > > >              Outbound iATU-capable memory-region which will be used to access
+> > > > > > > > >              the peripheral PCIe devices configuration space.
+> > > > > > > > >            const: config
+> > > > > > > > > +        - description:
+> > > > > > > > > +            Outbound iATU-capable memory-region which will be used to send
+> > > > > > > > > +            PCIe message (such as PME_Turn_Off) to peripheral.
+> > > > > > > > > +          const: msg
+> > > > > > > > 
+> > > > > > > > Note there is a good chance Rob won't like this change. AFAIR he
+> > > > > > > > already expressed a concern regarding having the "config" reg-name
+> > > > > > > > describing a memory space within the outbound iATU memory which is
+> > > > > > > > normally defined by the "ranges" property. Adding a new reg-entry with
+> > > > > > > > similar semantics I guess won't receive warm welcome.
+> > > > > > > 
+> > > > > > > I do think it is a bit questionable. Ideally, the driver could 
+> > > > > > > just configure this on its own. However, since we don't describe all of 
+> > > > > > > the CPU address space (that's input to the iATU) already, that's not 
+> > > > > > > going to be possible. I suppose we could fix that, but then config space 
+> > > > > > > would have to be handled differently too.
+> > > > > > 
+> > > > > > Sorry, I have not understand what your means. Do you means, you want
+> > > > > > a "cpu-space", for example, 0x8000000 - 0x9000000 for all ATU. 
+> > > > > > 
+> > > > > > Then allocated some space to 'config', 'io', 'memory' and this 'msg'.
+> > > > > 
+> > > > > @rob:
+> > > > > 
+> > > > >     So far, I think "msg" is feasilbe solution. Or give me some little
+> > > > > detail direction?
+> > > > 
+> > > > Found the Rob' note about the iATU-space chunks utilized in the reg
+> > > > property:
+> > > > https://lore.kernel.org/linux-pci/CAL_JsqLp7QVgxrAZkW=z38iB7SV5VeWH1O6s+DVCm9p338Czdw@mail.gmail.com/
+> > > > 
+> > > > So basically Rob meant back then that
+> > > > either originally we should have defined a new reg-name like "atu-out"
+> > > > with the entire outbound iATU CPU-space specified and unpin the
+> > > > regions like "config"/"ecam"/"msg"/etc from there in the driver
+> > > > or, well, stick to the chunking further. The later path was chosen
+> > > > after the patch with the "ecam" reg-name was accepted (see the link
+> > > > above).
+> > > > 
+> > > > Really ECAM/config space access, custom TLP messages, legacy interrupt
+> > > > TLPs, etc are all application-specific features. Each of them is
+> > > > implemented based on a bit specific but basically the same outbound
+> > > > iATU engine setup. Thus from the "DT is a hardware description" point
+> > > > of view it would have been enough to describe the entire outbound iATU
+> > > > CPU address space and then let the software do the space
+> > > > reconfiguration in runtime based on it' application needs.
+> > > 
+> > > There are "addr_space" in EP mode, which useful map out outbound iatu
+> > > region. We can reuse this name.
+> > > 
+> > > To keep compatiblity, cut hole from 'config' and 'ranges'. If there are
+> > > not 'config', we can alloc a 1M(default) from top for 'config', then, 4K
+> > > (default) for msg, 64K( for IO if not IO region in 'ranges'), left is
+> > > mem region. We can config each region size by module parameter or drvdata.
+> > > 
+> > > So we can deprecate 'config', even 'ranges'
+> > 
+> > Not sure I fully understand what you mean. In anyway the "config" reg
+> > name is highly utilized by the DW PCIe IP-core instances. We can't
+> > deprecate it that easily. At least the backwards compatibility must be
+> > preserved. Moreover "addr_space" is also just a single value reg which
+> > won't solve a problem with the disjoint DW PCIe outbound iATU memory
+> > regions.
+> > 
+> > The "ranges" property is a part of the DT specification.  The
+> > PCI-specific way of the property-based mapping is de-facto a standard
+> > too. So this can't be deprecated.
+> > 
+> > > 
+> > > > 
+> > > > * Rob, correct me if am wrong.
+> > > > 
+> > > > On the other hand it's possible to have more than one disjoint CPU
+> > > > address region handled by the outbound iATU (especially if there is no
+> > > > AXI-bridge enabled, see XALI - application transmit client interfaces
+> > > > in HW manual). Thus having a single reg-property might get to be
+> > > > inapplicable in some cases. Thinking about that got me to an idea.
+> > > > What about just extending the PCIe "ranges" property flags
+> > > > (IORESOURCE_TYPE_BITS) with the new ones in this case indicating the
+> > > > TLP Msg mapping? Thus we can avoid creating app-specific reg-names and
+> > > > use the flag to define a custom memory range for the TLP messages
+> > > > generation. At some point it can be also utilized for the config-space
+> > > > mapping. What do you think?
+> > > 
+> > 
+> > > IORESOURCE_TYPE_BITS is 1f, Only 5bit. If extend IORESOURCE_TYPE_BITS, 
+> > > all IORESOURCE_* bit need move. And it is actual MEMORY regain. 
+> > 
+> > No. The lowest four bits aren't flags but the actual value. They are
+> > retrieved from the PCI-specific memory ranges mapping:
+> > https://elinux.org/Device_Tree_Usage#PCI_Address_Translation
+> > https://elixir.bootlin.com/linux/latest/source/arch/sparc/kernel/of_device_64.c#L141
+> > https://elixir.bootlin.com/linux/latest/source/arch/sparc/kernel/of_device_32.c#L78
+> > Currently only first four out of _sixteen_ values have been defined so
+> > far. So we can freely use some of the free values for custom TLPs,
+> > etc. Note the config-space is already defined by the ranges property
+> > having the 0x0 space code (see the first link above), but it isn't
+> > currently supported by the PCI subsystem. So at least that option can
+> > be considered as a ready-to-implement replacement for the "config"
+> > reg-name.
+> > 
 > 
+> Agree. But still, the driver has to support both options: "config" reg name and
+> "ranges", since ammending the binding would be an ABI break.
 > 
-> Am 28.02.24 um 10:03 schrieb Guenter Roeck:
->> On 2/27/24 23:57, Paul Menzel wrote:
+> > > 
+> > > Or we can use IORESOURCE_BITS (0xff)
+> > > 
+> > > /* PCI ROM control bits (IORESOURCE_BITS) */
+> > > #define IORESOURCE_ROM_ENABLE		(1<<0)	/* ROM is enabled, same as PCI_ROM_ADDRESS_ENABLE */
+> > > #define IORESOURCE_ROM_SHADOW		(1<<1)	/* Use RAM image, not ROM BAR */
+> > > 
+> > > /* PCI control bits.  Shares IORESOURCE_BITS with above PCI ROM.  */
+> > > #define IORESOURCE_PCI_FIXED		(1<<4)	/* Do not move resource */
+> > > #define IORESOURCE_PCI_EA_BEI		(1<<5)	/* BAR Equivalent Indicator */
+> > > 
+> > > we can add
+> > > 
+> > > IORESOURCE_PRIV_WINDOWS			(1<<6)
+> > > 
+> > > I think previous method was more extendable. How do you think?
+> > 
+> > IMO extending the PCIe "ranges" property semantics looks more
+> > promising, more flexible and more portable across various PCIe
+> > controllers. But the most importantly is what Rob and Bjorn think
+> > about that, not me.
+> > 
 > 
->>> Am 27.02.24 um 01:56 schrieb baneric926@gmail.com:
->>>> From: Ban Feng <kcfeng0@nuvoton.com>
->>>>
->>>> NCT7363Y is an I2C based hardware monitoring chip from Nuvoton.
->>>
->>> Please reference the datasheet.
->>
->> Note that something like
->>
->> Datasheet: Available from Nuvoton upon request
->>
->> is quite common for hardware monitoring chips and acceptable.
+> IMO, using the "ranges" property to allocate arbitrary memory region should be
+> the way forward, since it has almost all the info needed by the drivers to
+> allocate the memory regions.
 > 
-> Yes, it would be nice to document it though. (And finally for vendors to just make them available for download.)
-> 
+> But for the sake of DT backwards compatiblity, we have to keep supporting the
+> existing reg entries (addr_space, et al.), because "ranges" is not a required
+> property for EP controllers.
 
-Nuvoton is nice enough and commonly makes datasheets available on request.
-The only exception I have seen so far is where they were forced into an NDA
-by a large chip and board vendor, which prevented them from publishing a
-specific datasheet.
+I don't know that its worth the effort to carry both. Maybe if it is 
+useful on more than just DW host.
 
-Others are much worse. Many PMIC vendors don't publish their datasheets at
-all, and sometimes chips don't even officially exist (notorious for chips
-intended for the automotive market). Just look at the whole discussion
-around MAX31335.
+I believe we had config space in ranges at some point on some 
+binding and moved away from that. I forget the reasoning.
 
-Anyway, there are lots of examples in Documentation/hwmon/. I don't see
-the need to add further documentation, and I specifically don't want to
-make it official that "Datasheet not public" is acceptable as well.
-We really don't have a choice unless we want to exclude a whole class
-of chips from the kernel, but that doesn't make it better.
-
->>> Could you please give a high level description of the driver design?
->>
->> Can you be more specific ? I didn't have time yet to look into details,
->> but at first glance this looks like a standard hardware monitoring driver.
->> One could argue that the high level design of such drivers is described
->> in Documentation/hwmon/hwmon-kernel-api.rst.
->>
->> I don't usually ask for a additional design information for hwmon drivers
->> unless some chip interaction is unusual and needs to be explained,
->> and then I prefer to have it explained in the code. Given that, I am
->> quite curious and would like to understand what you are looking for.
-> For a 10+ lines commit, in my opinion the commit message should say something about the implementation. Even it is just, as you wrote, a note, that it follows the standard design.
-> 
-
-Again, I have not looked into the submission, but usually we ask for that
-to be documented in Documentation/hwmon/. I find that much better than
-a soon-to-be-forgotten commit message. I don't mind something like
-"The NCT7363Y is a fan controller with up to 16 independent fan input
-  monitors and up to 16 independent PWM outputs. It also supports up
-  to 16 GPIO pins"
-or in other words a description of the chip, not the implementation.
-That a driver hwmon driver uses the hardware monitoring API seems to be
-obvious to me, so I don't see the value of adding it to the commit
-description. I would not mind having something there, but I don't
-see it as mandatory.
-
-On the  other side, granted, that is just _my_ personal opinion.
-Do we have a common guideline for what exactly should be in commit
-descriptions for driver submissions ? I guess I should look that up.
-
-Thanks,
-Guenter
-
+Rob
 
