@@ -1,159 +1,242 @@
-Return-Path: <linux-kernel+bounces-84629-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84628-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39ECD86A931
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:46:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A20A86A92D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:45:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E3D331F2709E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 07:46:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D3191C2149F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 07:45:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D68A625605;
-	Wed, 28 Feb 2024 07:46:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69AF325551;
+	Wed, 28 Feb 2024 07:45:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KcSaCMv/"
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zaoZ6rHK"
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2D3D250EC;
-	Wed, 28 Feb 2024 07:46:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A328250F6
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 07:45:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709106369; cv=none; b=edV8lR901V5s7S9RK6C1wvmvCIev+OFvzNm7DFUOBF8xQFAJA8Nk/YZD8qYmYHMyXpgNmGagoVqHbL22iAMmmMTRoXJPN4B1DwOzCdZMxDf6E0TzXG2MGX7mhEv0N2yQDVLy5fsc69YH2iTwP1kFAcav/IjC2mdgwJagahR2PQU=
+	t=1709106337; cv=none; b=Fc8e6scJlHh3O2dJDKuLVpcQ9i/M0DemmgX/Rhjr20MLOoTi4qgvuIpOyHiPi8VsLzNB54PZwF3wcouDz2jit5KXYt8tOwswgHrSRwrG/vMunYB7LJ1yJldrHs/y0GkI98EnXRG6sm9kqeKD03PlolDdM0RX/qmk+U1EVLlXktU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709106369; c=relaxed/simple;
-	bh=5Z/6CMtSbIx3yZOx74skMF+HWYenssxnSGRfDluEpz4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mc+hRLl+bdhfHT2+4uxu4rw4VGXO/Q1dGhD0ey3YKUtSurmJG3W+fqWF6MfQxN29jFGe17VSePw8xnrPohzWG/ENXo8L7RKyMuj/bKVEw097jmUgIHK63oawH7VMUweEYD52DLYN0VfCxSFliFNRc4CA7HQk11agAktRn4jEd74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KcSaCMv/; arc=none smtp.client-ip=209.85.210.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6e54b22229cso1199706b3a.3;
-        Tue, 27 Feb 2024 23:46:07 -0800 (PST)
+	s=arc-20240116; t=1709106337; c=relaxed/simple;
+	bh=cECfJjoEdwpwq330DxYzEtaZUApUNvoyqZPwHZ9EhtM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=aAr9uCTvoe6D3EHPPddnWLssO+DXgDXIGaJn/QlOkldfgw00cA9MU+/g16bi9SOme/y8waqKtTq+B8V9TwonyL2UCCiPb28X0tlOVSHcs9OhRm7TRlBI13DoIUh/F5BWyBnTkVWiwI+HSONfOwM4k9vvM3EFsK2uShSqOyr1DBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zaoZ6rHK; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-564a53b8133so4345550a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 23:45:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709106367; x=1709711167; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=cvJd7UIv9U3gWMDc5jMBed540xPjJg8OzKp2FL2VB40=;
-        b=KcSaCMv/FLHMf3ENvztGmSHQQOpENrDWWsWh0nAzorXqIfIrFJK9FRiszOGz4Dt4YB
-         g+gbzPVt7xL95rdVkJRdlg7/BuWx1lYyY9dAvEk3f+tiM1AnjbhFZ1C96pC2InhHywKz
-         Xo8y656vMub1YAWoWQcf8yiiVLfMP16c4yH6oaR1o8GpLJk3rYovLF3KfbhQCI4Cscds
-         awXwc2g9Ai9qKdsm5BODnZozYiYWfeKvS2kQSriyhpLztekYZ8OYiEVEscX+LGH7f66l
-         iofgI9KWdEKgTJO3AozpaTmCLcH+nCqWqUDkbEn510qpQ0Ls+nmisFLrdkrssq2e4ts3
-         f3sQ==
+        d=linaro.org; s=google; t=1709106334; x=1709711134; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ffcxVd3ce+OAb3e3ey+HLMYSV03mtmenUi5/yudgUWg=;
+        b=zaoZ6rHKcc/DiXFkOtV3n/NZHPSpQbL/uiVKyOIJVOX1dMUfRksflUMdvLKZujI3Sl
+         zvZ9A11KBFDNQ3ywECTgr0UvWbpBy/wbSEgc7ajyIdy2cLQjXDcQbO3Efy8+WblOHpmu
+         t2V/PaFjHFV+sWoyQrG1Zp4ytFdcEt7hud6tAPdtwxXcZxz5h+CvcEt+AYgNfUTnxOPP
+         Mlyh0opxnHfEC2F2B8SX++yvzu4Aic6pzYCPxZgobIccHt8Yv090lgN1tH4KJNWultSy
+         Vl0pOaJk6shGUp8VHT+fDzYXLRJjlTSB2MJ99TehwoKGcrjHfFUjRJW+/8IXBNVz8WUz
+         /Amw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709106367; x=1709711167;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cvJd7UIv9U3gWMDc5jMBed540xPjJg8OzKp2FL2VB40=;
-        b=JhJsyWJuYsKYKVbxU0tCrLggmhnnvb7FRY13HOHqEPdXFEtdiYJr6UoJTr0uFpFxW5
-         rZ4qugbxcPVhS4y3GtsuCg78j+RRQRjTTzEV1esMGRdiMUBfZdfJblhzQYOoVpq58dpU
-         OKl57YdPcHeWTRW0J9NFkGxNzPtpUvbaLaQw2JAkHnWY4GfF0fMyW7DbMgQk9FK/Op7f
-         8wNpIH8Vih+UPxuNMar5n8+8xC+4RnN5fPa83CksELT9FapUQMwcdv3foMTu38E7cPb2
-         /ngrJ3rE6sLwunxAT85Oca03s3Wi2V126UJg9N2q4H9iV/lyMAyhTA1kwoEUaN81pSem
-         VtCw==
-X-Forwarded-Encrypted: i=1; AJvYcCX079VWFHMgddQOypNNJk07J5cHUeDVNCeFZMPJbnKwJD6ly7TyQ/EF2e9A5EHpt4cAe/KRZEK08NJIxWD1a48HlfM3pGn/
-X-Gm-Message-State: AOJu0YxszUXyIkEIHXymVYqKZw3bj9V0bIpW0MALUGDHIDk4CTxbf6dX
-	3s/XM05AMJHL4VxIqEZqNi3Gcsj88tHa5MD/K0xnuHUPs689oaV5AVBCtI7DSqXxjg==
-X-Google-Smtp-Source: AGHT+IFPXWp9f0vAoe8ti5FiiDra7a5x+YmuQXDVr7DTvtcjuW98NxgE9t3zciafcyEQmQDWUZFgSg==
-X-Received: by 2002:a05:6a00:8c7:b0:6e4:dfec:1b0e with SMTP id s7-20020a056a0008c700b006e4dfec1b0emr12339990pfu.19.1709106366945;
-        Tue, 27 Feb 2024 23:46:06 -0800 (PST)
-Received: from localhost.localdomain ([203.205.141.15])
-        by smtp.googlemail.com with ESMTPSA id d12-20020aa7868c000000b006e0901b71e4sm7100769pfo.48.2024.02.27.23.46.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 23:46:06 -0800 (PST)
-From: Ze Gao <zegao2021@gmail.com>
-X-Google-Original-From: Ze Gao <zegao@tencent.com>
-To: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	Ze Gao <zegao@tencent.com>,
-	Honglin Li <honglinli@tencent.com>
-Subject: [RFC PATCH] net, sock.h: Make sure accesses to a fullsock when it is indeed one
-Date: Wed, 28 Feb 2024 02:43:09 -0500
-Message-ID: <20240228074308.3623984-2-zegao@tencent.com>
-X-Mailer: git-send-email 2.41.0
+        d=1e100.net; s=20230601; t=1709106334; x=1709711134;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ffcxVd3ce+OAb3e3ey+HLMYSV03mtmenUi5/yudgUWg=;
+        b=L6GUtsEHbfQojKaQy8mkyA+/P5BbXlsHkb8eSV2F+Y2rhKGP4nV/An7IMn8+1WtZ6p
+         JbpUOdRJHHbZ8pic2Vh6OOrTQRZa0RVtwgAqlGi3YCoPgcXkCG69McoYezo6AHjeElFr
+         TaGC+n9ylyGhaV6c70qE22YdinS4YGo3DOBDe+v0IpwrIpUJpB7BT+xtMA7qWZnJD6gb
+         /apooAdGV6SK3hX+6fZzzsZoYzO6lyZ6lI6agy/iniKB0xJGEKR0Irk7POZ+fEaLzzWw
+         KWD9gihJFBuQWYO8mTdIlZXJsN5BmA4vCjDAm692Kdw0sXghWU70e/ezrw8ZwiPsqSKt
+         kB+Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVjMR5OgqcZHikGeSI3gu/6/i2Uw9E8Eh4Yz13jXiRDEoF4kDCx1qvGozLx7uMSD+q8PdnrigtyoTKV/QoqEnHqxghaduZT9XAZcGtd
+X-Gm-Message-State: AOJu0Yx0woU8SZqKH7ZXyRS3PFE9+Gll3gItWUsbg2QJWIrLlk0mcM/g
+	f82ClRE12TrM17J0r9sD65IoeNbVtwBTG+eUJR6QVxpwTIheyf3dAcmtsyf7vFk=
+X-Google-Smtp-Source: AGHT+IHvMx+P3pIYgRJmELocj9vvnYyY5AlBT5P7k84UQf7mQZaebEI45FwJWM61dXxSeKU7AMK1og==
+X-Received: by 2002:a05:6402:1b07:b0:565:7b61:4c86 with SMTP id by7-20020a0564021b0700b005657b614c86mr8336144edb.6.1709106334017;
+        Tue, 27 Feb 2024 23:45:34 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id p2-20020a50c942000000b005657eefa8e9sm1518858edh.4.2024.02.27.23.45.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Feb 2024 23:45:33 -0800 (PST)
+Message-ID: <1ad77c33-71de-4bc8-a53e-1e74a5096079@linaro.org>
+Date: Wed, 28 Feb 2024 08:45:31 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] dt-bindindgs: clock: support NXP i.MX95 BLK CTL
+ module
+Content-Language: en-US
+To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, Abel Vesa <abelvesa@kernel.org>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>
+Cc: linux-clk@vger.kernel.org, imx@lists.linux.dev,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
+References: <20240228-imx95-blk-ctl-v2-0-ffb7eefb6dcd@nxp.com>
+ <20240228-imx95-blk-ctl-v2-1-ffb7eefb6dcd@nxp.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240228-imx95-blk-ctl-v2-1-ffb7eefb6dcd@nxp.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-We know a pointer that has type struct sock* can actually points to
-one of some different sock types which have different memory layouts,
-take req_to_sk() for example, and whether a sock is full or not
-depends upon ->sk_state which is a shared field among them so that we
-see some repeated code pattern similar to this:
+On 28/02/2024 06:43, Peng Fan (OSS) wrote:
+> From: Peng Fan <peng.fan@nxp.com>
+> 
+> i.MX95 includes BLK CTL module in several MIXes, such as VPU_CSR in
+> VPUMIX, BLK_CTRL_NETCMIX in NETCMIX, CAMERA_CSR in CAMERAMIX and etc.
+> 
+> The BLK CTL module is used for various settings of a specific MIX, such
+> as clock, QoS and etc.
+> 
+> This patch is to add some BLK CTL modules that has clock features.
 
-	if (sk && sk fullsock(sk) && sk->field_not_shared)
+Please use subject prefixes matching the subsystem. You can get them for
+example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
+your patch is touching.
 
-which seems to have no problem at the first glance, but it is actually
-unsound in a way that ->field_not_shared is likely uninitialized (or
-unmapped) when it's not a full sock, and a compiler is free to reorder
-accesses to fields of a struct sock when it can, that is, it could
-reorder accesses to ->field_not_shared across ->sk_state or load them
-all before the branch test, which leads to unexpected behavior, although
-most of them won't do this.
+There are some typos, so you miss my filters...
 
-So leave a barrier() in between and force the compiler to keep the
-obvious program order.
+> 
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  .../devicetree/bindings/clock/imx95-blk-ctl.yaml   | 61 ++++++++++++++++++++++
+>  include/dt-bindings/clock/nxp,imx95-clock.h        | 32 ++++++++++++
+>  2 files changed, 93 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/clock/imx95-blk-ctl.yaml b/Documentation/devicetree/bindings/clock/imx95-blk-ctl.yaml
+> new file mode 100644
+> index 000000000000..6d33601034ae
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/clock/imx95-blk-ctl.yaml
+> @@ -0,0 +1,61 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/clock/imx95-blk-ctl.yaml#
 
-Cc: Honglin Li <honglinli@tencent.com>
-Signed-off-by: Ze Gao <zegao@tencent.com>
----
+Filename like compatible. We talked about this.
 
-IIUC, casting a pointer to refer to a bigger object in size is
-technically UB, which may lead to unsound code. From the POV of
-a compiler, when it is allowed to assume that one struct member
-is valid, they all are through a pointer, and thus it's likely
-for the compiler to do such optimizations and reorder what we
-want to keep in order.
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: NXP i.MX95 Block Control
+> +
+> +maintainers:
+> +  - Peng Fan <peng.fan@nxp.com>
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - nxp,imx95-cameramix-csr
+> +          - nxp,imx95-display-master-csr
+> +          - nxp,imx95-dispmix-lvds-csr
+> +          - nxp,imx95-dispmix-csr
+> +          - nxp,imx95-netcmix-blk-ctrl
+> +          - nxp,imx95-vpumix-csr
+> +      - const: syscon
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  '#clock-cells':
+> +    const: 1
+> +    description:
+> +      The clock consumer should specify the desired clock by having the clock
+> +      ID in its "clocks" phandle cell. See
+> +      include/dt-bindings/clock/nxp,imx95-clock.h
+> +
+> +  mux-controller:
+> +    type: object
+> +    $ref: /schemas/mux/reg-mux.yaml
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - '#clock-cells'
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  # Clock Control Module node:
+> +  - |
+> +    #include <dt-bindings/clock/nxp,imx95-clock.h>
+> +
+> +    syscon@4c410000 {
+> +      compatible = "fsl,imx95-vpumix-csr", "syscon";
+> +      reg = <0x4c410000 0x10000>;
+> +      #clock-cells = <1>;
 
-Note this is not a typical way to use barrier(), which only
-acts an ok fix to what's already unsound, at least IMO.
+Incomplete example. Add here mux controller and power domains.
 
-Comments are welcome, since I'm not an expert in C and I know
-most of compilers won't do this reorder, but I'm being pessimistic
-here.
 
-Happy to learn from your sage insights and better solutions (or
-no solutions at all if this is indeed not a problem in the first
-place)
-
-Regards,
-        -- Ze
-
- include/net/sock.h | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/include/net/sock.h b/include/net/sock.h
-index 92f7ea62a915..f7e3960cb5fc 100644
---- a/include/net/sock.h
-+++ b/include/net/sock.h
-@@ -2815,7 +2815,14 @@ skb_sk_is_prefetched(struct sk_buff *skb)
-  */
- static inline bool sk_fullsock(const struct sock *sk)
- {
--	return (1 << sk->sk_state) & ~(TCPF_TIME_WAIT | TCPF_NEW_SYN_RECV);
-+	bool ret = (1 << sk->sk_state) & ~(TCPF_TIME_WAIT | TCPF_NEW_SYN_RECV);
-+
-+	/*
-+	 * Make sure all accesses to a full sock happens right
-+	 * after ->sk_state.
-+	 */
-+	barrier();
-+	return ret;
- }
- 
- static inline bool
--- 
-2.41.0
+Best regards,
+Krzysztof
 
 
