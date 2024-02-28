@@ -1,157 +1,168 @@
-Return-Path: <linux-kernel+bounces-84795-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84796-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB09586ABAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:52:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89CFC86ABB2
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:55:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59574289A6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:52:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B2481F271E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:55:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A26A36123;
-	Wed, 28 Feb 2024 09:52:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05EAC36124;
+	Wed, 28 Feb 2024 09:55:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="s1R5wnrS"
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="TCcMxJss"
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF90D33998
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 09:52:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 994CB2E859
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 09:55:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709113926; cv=none; b=t4P8bO8E6yFTchyPnyLZJHycFtTHnD2AYfovXhKFEl6IQitJ96/B0ja6JJDbC7sTuHh20wSS3FEOZ+fVwDaRMv+2zQ9TQmyVl5uw8qVxlVhK70smzh5fUz6sUSc6PlSKDxvwOM0BolxOUKLlAKYEIAXFSRuQh7XkoUL2w6fStF4=
+	t=1709114148; cv=none; b=FBEF3ZQb3j/I1J/VsVNZ4JJtxIY9MT+R4U5XfCcliYcr0bz829z/L4BuXaFaadnoB/5rRaySUSqIxOJ0oBzXFgkxoemWchHQZhaW5LhMaMSSD6+EIs1d2DqUqbexDJjTPH6kR2S3rLUs+tOQd/TppVWyINQUkLU1f3haE07Ojgs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709113926; c=relaxed/simple;
-	bh=oCzaGK1+0J1qudbZZr79LyrkGbc7znv+r5ghZv1CEqQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nJxU3hzWrRF/D/mIlCkJCNE1Baj8QUgG+CuXMi+AET3ibWwFkmYkq9YuN/mRkBdvDsZbiXfft/mu9L11mL36j231grX5gAyyJcPsh+xdCKi0wOdziMB+uN8hFrYDY5QiF/1DqQJ9IxMDa9cFQR4Is4hBNHSU6xMe/FshCF00VBI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=s1R5wnrS; arc=none smtp.client-ip=91.218.175.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <0aa3ce20-438f-49fb-8f04-4fc1dbf49728@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1709113920;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GPOCbdIrdO1UY9mjYpsvt7O6Jg6uWqYy//PM9B5ScNY=;
-	b=s1R5wnrSmub+m/GNUcmW5SoCAvWOPfUnpZJ3sNCiLvnAuJI90E2wPvTlzquACpDevJKO2o
-	Re+UOalb7q3w7JKklWSSb+F9lC8jCBFYfKTor2tEnxYwYjqmsDRFk+FiwqZKmyq1O4k0ui
-	+oFB6QRijQg9Ehlv+To4TlynrwhG1k4=
-Date: Wed, 28 Feb 2024 17:51:49 +0800
+	s=arc-20240116; t=1709114148; c=relaxed/simple;
+	bh=9q6oppYW6Sx1xCipRYioovq/te3WS0mFoUe1jHuAcxA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sMcx4HrWhjU6lYriIOyKze0OqVn8M9KdcwfxoaGv6pTOZoVeYO/z5iIriCAGHsocZc1JqUciYvmvPg3VFGLyTiPSXhy0RMcDe2nRq+DfcffDJCx8WzuW+wTBaGG1akrgwdEZxkoOSKJUMfCJBvBmOyPlGRlDV3EKdjGs/GleuEU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=TCcMxJss; arc=none smtp.client-ip=209.85.208.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-563bb51c36eso5983325a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 01:55:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1709114144; x=1709718944; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=uBNtmpWHwk23veRV9DRLTSwz8gtd1U5j/H2m71ZLWRY=;
+        b=TCcMxJss2TB7BX2uaGDGxUxsHQUJaNeCFlShnR54jCLmhmx66HyNhEFxRcrOkK+8CI
+         sWwxJnWVSUlFiR7QKTnWcijmHClo4JsVD0CxIieUyKIve6GDVeQVCVRlboWa3X5wBKMO
+         Rp6pH5zQDqLjFgwxe58buSsHD59evL0fXcx1c08RNB5BW/rU33PBv9E7odw2jELGorr1
+         L3dB3F2aSI3N3Zoi/WJdl0KbIcN4LTS1bDdjs5NSVb1QncdIuYJP6SDEN/c8saebnrmk
+         +72yOn6h8VzV4XLrMe1JZgl2cV/wJWMEa0xqVjixW0hqTuS93WHkEUaQb8A2RXlUP7MF
+         ifOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709114144; x=1709718944;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uBNtmpWHwk23veRV9DRLTSwz8gtd1U5j/H2m71ZLWRY=;
+        b=kNAorgRjpuDpMHYoXB1y9lNXHgb5B8Wan7N6jPnxBwbs+uVU0AyLGisKZpC5YyRUrv
+         ifKM/XpcdKYkw1Hl1sojsIY/CKzIIx97cDLmydvIMynaOeY05VomY3fWxlxy3GiBIAxI
+         2GqHe5i+AUWNMpNG4D3TzkUhqS/Dc3/O4c6dgdRdUoFDp2R9a9PXSGcvkoEAGRw0cQp3
+         3Bt4K3e1yNxSnunMPEZ4Ji9Y6g1vO1u0gANGdYewq4VZ1srLLbkzPt9Q7UvlXUh22S1u
+         qzoPda+IULL0rok/+Onv2m+zuEU3TkyDnAu0kkRZ7jce20ipdF3YIXPG8MjEY9pdupkg
+         ooMg==
+X-Forwarded-Encrypted: i=1; AJvYcCXKo1dNCjsMx3GbEINlslnV7iMsHu1Z5AK7BKVFayKcs++d2c2ItLhjPgpNcIBf+QqEV0XoGJt7KaE34vD+33Pq5xqqjVU5//WWstKw
+X-Gm-Message-State: AOJu0Yzpj6ZqTNJy9bEKviu76Ajmoe7avs/MeSIPaPvnx56MuIIfBqoa
+	9HLQtKdJUIq0uSVADotRKzOamX48EhF8GX/H2nCwf0UXEiuzv490Sg4d1vZ2Vt0=
+X-Google-Smtp-Source: AGHT+IHn52EhzPq1RG3ODn9Z6RrwbKI8Y+PrluZvwDL2enxJ7j/yXzctI2kVvuCepYHbsCHDJKUqqw==
+X-Received: by 2002:a17:906:35cf:b0:a44:46a:27bf with SMTP id p15-20020a17090635cf00b00a44046a27bfmr572076ejb.16.1709114144028;
+        Wed, 28 Feb 2024 01:55:44 -0800 (PST)
+Received: from alley ([176.114.240.50])
+        by smtp.gmail.com with ESMTPSA id c12-20020a17090603cc00b00a433f470cf1sm1668440eja.138.2024.02.28.01.55.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Feb 2024 01:55:43 -0800 (PST)
+Date: Wed, 28 Feb 2024 10:55:42 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>,
+	Jani Nikula <jani.nikula@linux.intel.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	intel-gfx@lists.freedesktop.org,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/12] drm/i915: Indicate which pipe failed the fastset
+ check overall
+Message-ID: <Zd8CtrOmb8nfGBdl@alley>
+References: <20240215164055.30585-1-ville.syrjala@linux.intel.com>
+ <20240215164055.30585-2-ville.syrjala@linux.intel.com>
+ <ZdfApN1h97GTfL1t@intel.com>
+ <Zdj2ONs8BZ6959Xb@intel.com>
+ <87bk83mfwp.fsf@intel.com>
+ <1013ff2d-76b2-41f9-a5d4-39a567a3b0cc@rasmusvillemoes.dk>
+ <Zd4qrLVWcacza747@intel.com>
+ <fa42285b-099e-4d2d-9368-58cea7f67010@rasmusvillemoes.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] slub: avoid scanning all partial slabs in get_slabinfo()
-Content-Language: en-US
-To: "Christoph Lameter (Ampere)" <cl@linux.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>, David Rientjes <rientjes@google.com>,
- Jianfeng Wang <jianfeng.w.wang@oracle.com>, penberg@kernel.org,
- iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, roman.gushchin@linux.dev,
- 42.hyeyoo@gmail.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- Chengming Zhou <zhouchengming@bytedance.com>
-References: <20240215211457.32172-1-jianfeng.w.wang@oracle.com>
- <6b58d81f-8e8f-3732-a5d4-40eece75013b@google.com>
- <fee76a21-fbc5-4ad8-b4bf-ba8a8e7cee8f@suse.cz>
- <55ccc92a-79fa-42d2-97d8-b514cf00823b@linux.dev>
- <6daf88a2-84c2-5ba4-853c-c38cca4a03cb@linux.com>
- <e924c39b-7636-4c34-bfe9-603cf07c21d3@linux.dev>
- <b8f393fb-2b1d-213c-9301-35d4ffca1f50@linux.com>
- <347b870e-a7d5-45df-84ba-4eee37b74ff6@linux.dev>
- <1a952209-fa22-4439-af27-bf102c7d742b@suse.cz>
- <cce26aef-ab3e-447b-8b33-5ecd78bf747d@linux.dev>
- <2744dd57-e76e-4d80-851a-02898f87f9be@suse.cz>
- <036f2bb4-b086-2988-e46d-86d399405687@linux.com>
- <eec445a6-7024-40b6-9d4e-7fc2bc71cce7@linux.dev>
- <1eeb84d4-42b1-d204-ece1-b76bfbc548bf@linux.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Chengming Zhou <chengming.zhou@linux.dev>
-In-Reply-To: <1eeb84d4-42b1-d204-ece1-b76bfbc548bf@linux.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <fa42285b-099e-4d2d-9368-58cea7f67010@rasmusvillemoes.dk>
 
-On 2024/2/28 06:55, Christoph Lameter (Ampere) wrote:
-> On Tue, 27 Feb 2024, Chengming Zhou wrote:
-> 
->>> We could mark the state change (list ownership) in the slab metadata and then abort the scan if the state mismatches the list.
->>
->> It seems feasible, maybe something like below?
->>
->> But this way needs all kmem_caches have SLAB_TYPESAFE_BY_RCU, right?
-> 
-> No.
-> 
-> If a slab is freed to the page allocator and the fields are reused in a different way then we would have to wait till the end of the RCU period. This could be done with a deferred free. Otherwise we have the type checking to ensure that nothing untoward happens in the RCU period.
-> 
-> The usually shuffle of the pages between freelists/cpulists/cpuslab and fully used slabs would not require that.
+On Wed 2024-02-28 09:32:37, Rasmus Villemoes wrote:
+> On 27/02/2024 19.32, Ville Syrj�l� wrote:
+> > On Tue, Feb 27, 2024 at 10:38:10AM +0100, Rasmus Villemoes wrote:
+> >> On 26/02/2024 15.57, Jani Nikula wrote:
+> So if we really want to go down this road, I think it should be
+> something like %pX{drm:whatever}, with core printf just looking up the
+> token "drm" in a run-time list of registered callbacks (because I don't
+> want vsprintf.c filled with random subsystems' formatting code), and
+> that single callback would then be handed a pointer to the rest of the
+> format string (i.e. the "whatever}..."), the pointer argument from the
+> varargs, and the buf,end pair. But then we're back to trusting that
+> callback (which might of course multiplex based on the "whatever" part)
+> to behave correctly. And then we might as well avoid the string parsing
+> and just do the "callback + pointer" in one struct (passed as pointer to
+> compound literal), which also avoids the tricky "what to do about module
+> unload versus unregistering of callbacks" etc.
 
-IIUC, your method doesn't need the slab struct (page) to be delay freed by RCU.
+Mathew Wilcox had the idea to introduce a structure:
 
-So that page struct maybe reused to anything by buddy, even maybe freed, right?
+	struct printf_state {
+	       char *buf;
+	       char *end;
+	       void *ptr;
+	};
 
-Not sure the RCU read lock protection is enough here, do we need to hold other
-lock, like memory hotplug lock?
+Where *ptr would point to some data which should be printed,
+same as wee pass to the %pbla now.
 
-> 
->> Not sure if this is acceptable? Which may cause random delay of memory free.
->>
->> ```
->> retry:
->>     rcu_read_lock();
->>
->>     h = rcu_dereference(list_next_rcu(&n->partial));
->>
->>     while (h != &n->partial) {
-> 
-> Hmm... a linked list that forms a circle? Linked lists usually terminate in a NULL pointer.
+Then allow to implement:
 
-I think the node partial list should be a double-linked list? Since we need to
-add slab to its head or tail.
+	char *my_func(struct printf_state *ps, void *ptr);
 
-> 
-> So this would be
-> 
-> 
-> redo:
-> 
->     <zap counters>
->     rcu_read_lock();
->     h = <first>;
-> 
->     while (h && h->type == <our type>) {
->           <count h somethings>
-> 
->           /* Maybe check h->type again */
->           if (h->type != <our_type>)
->             break;
+and use it as:
 
-Another problem of this lockless recheck is that we may get a very false value:
-say a slab removed from the node list, then be added to our list in another position,
-so passed our recheck conditions here. Which may cause our counting is very mistaken?
+	printk("%pX(%p)\n", my_func, ptr);
 
-Thanks!
 
-> 
->           h = <next>;
->     }
-> 
->     rcu_read_unlock();
-> 
-> 
->     if (!h) /* Type of list changed under us */
->         goto redo;
-> 
-> 
-> The check for type == <our_type> is racy. Maybe we can ignore that or we could do something additional.
-> 
-> Using RCU does not make sense if you add locking in the inner loop. Then it gets too complicated and causes delay. This must be a simple fast lockless loop in order to do what we need.
-> 
-> Presumably the type and list pointers are in the same cacheline and thus could made to be updated in a coherent way if properly sequenced with fences etc.
+One problem here is type checking of the data passed via *ptr
+but we already have the same problem now.
+
+Another problem is how to make sure that the function is safe.
+A solution might be to implement an API for appending characters,
+strings, numbers, ... Similar to seq_buf() API.
+
+AFAIK, the result was to actually use the existing seq_buf API
+to format the string. AFAIK, it motivated:
+
+   + commit 96928d9032a7c34f1 ("seq_buf: Add seq_buf_do_printk() helper")
+
+and probably also
+
+   + commit d0ed46b60396cfa7 ("tracing: Move readpos from seq_buf to trace_seq")
+
+and also this one is pretty useful:
+
+   + commit dcc4e5728eeaeda8 ("seq_buf: Introduce DECLARE_SEQ_BUF and
+     seq_buf_str()")
+
+And it motivated:
+
+   + commit dcc4e5728eeaeda84878ca0 ("seq_buf: Introduce
+     DECLARE_SEQ_BUF and seq_buf_str()")
+
+
+Best Regards,
+Petr
 
