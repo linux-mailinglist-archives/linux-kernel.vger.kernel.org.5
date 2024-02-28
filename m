@@ -1,164 +1,118 @@
-Return-Path: <linux-kernel+bounces-85720-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1662886B9DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 22:28:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5711586B9DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 22:28:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 81375B28761
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 21:28:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1283628C236
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 21:28:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0E0A7004E;
-	Wed, 28 Feb 2024 21:28:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E1747002B;
+	Wed, 28 Feb 2024 21:28:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="tmT5AqPt"
-Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="K48JC7CR"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 526EC5E090
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 21:28:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5B725E090
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 21:28:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709155682; cv=none; b=CwilK4UPdYOcwFB1/clvDTzvgHQFKPKbw6nLW2/fZVMehmPer4NRgp66bCEY5UYaHaousjXCP0Aj/3heijJdV6Xtc6d2LUAKE9WcULI3xJZ7C/vfJfxQTN3nq4ASsSapGD0J7xhnHUaAGRMcJAkUM6YPD0x4woHeRB6UdMyiak0=
+	t=1709155698; cv=none; b=s+m4unNvLkgu431QVWqFoG5UGyTklcjYBhVUKiVU6rehWt/dBkmKRYwHPBKjjcuOvqhLWesGQXuvcU0HC0WND2udIZKIuPHMIkGg7SQ2lv6VipvBycI9YUFxOiRmVHk3EJyDhSkilyI1qNIlctOsMVtBl1NmRmix8oIOwJNf/cE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709155682; c=relaxed/simple;
-	bh=qc3IJmVO/3R3A0SFJHCdwm34OBK/Jh388HY6ha8d4zc=;
-	h=Content-Type:From:Mime-Version:Subject:Date:Message-Id:References:
-	 Cc:In-Reply-To:To; b=deVoW+T3klsSCIbslbPkjSk/4gZOTqXWloyiR3hZaLEr8sQEjcneZ/GKyoIduRfSOjyCPny2zrG6y6QMBc2yXW9AjOcARnWUHVUAgnOdOr+Tl3PBoKT3b0IlnHeuz9DqPEJ/980Xbh1/9s5hA+708cIHx34IUhuzgciRXvjy860=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=tmT5AqPt; arc=none smtp.client-ip=209.85.160.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
-Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-42e86f37a0eso1709471cf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 13:27:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1709155679; x=1709760479; darn=vger.kernel.org;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1Blc6MtZrUfw0pfNXYBqBV8687KOne6DSCmGwF7E1Oc=;
-        b=tmT5AqPtLKQA3SMCNqahR+zqrH8scEXZ/cx72tTHM2/ZslivTFN2t4ZB7eGjRg/y+u
-         3JsXQnqUAyj/1O0NygE3isVFTcA8dbHOPAjBrRp0M2JjWUg3GDb0vY1mW2iH2oaf/Gkv
-         ItY6FkCHH9EPYl1AeuzvBwjYihZzk+NvwOzv4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709155679; x=1709760479;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1Blc6MtZrUfw0pfNXYBqBV8687KOne6DSCmGwF7E1Oc=;
-        b=XRX5ZW9r50/ZRsv+POHTD2fd/u/wrm68Bzo1qjutdGVaEKtCQn0PA+RDt/JetIG2P8
-         ewDX3uEa2s7dj9+PX2CJFAxQluAxD8Hum1RB8kk+mZfjIShRaKZJ1IsxUeXYX/x0pWBd
-         Fd/2WvssP9DD2dnUdNNaMMSL5l5eFOyMsVDspN8FI9wNUqUDlSrnx4JYGilRQsOUp9uc
-         k4JMdJFTJflP0+N3rHVdEexlCqEqp/kE7YlKERypChpXz9Z+i4mn+bXya8rtxwkJoLLe
-         lRkX6tM5JywpRzMBSzPlrt7rKscoBfi6LW72miDKBgvM2+UdCQGoM7JrA7WGNCgzWdw8
-         f/xw==
-X-Forwarded-Encrypted: i=1; AJvYcCWRNl/zfKRsPZRrFsgxrBP6J8kWP59qnL2cBwCouQZbunqL2iqnZkWwskYOHQETP7VS0gmd8GYSwl1NVziT+ImxhYW9G8WSvCid876y
-X-Gm-Message-State: AOJu0Yz6JxAHygab4pzXXBmbkJlSHpyGJDv5dGGCE4UQdK1VVYPPJD9v
-	9OycoNugKzoiCar+2iZaXk6NE2VrcfY7Mpae2ZjjXo+q9BvD5hY+aTe25j7mXZ0=
-X-Google-Smtp-Source: AGHT+IGDQNk6NZQ43wHJ3Dd0O4jJRkuOkedQSDFeACS4W4u7SGJlKnJJwLEhOZq/P68pAYf3qzd8Kw==
-X-Received: by 2002:ac8:5ad5:0:b0:42e:7ebf:1d51 with SMTP id d21-20020ac85ad5000000b0042e7ebf1d51mr134002qtd.68.1709155679115;
-        Wed, 28 Feb 2024 13:27:59 -0800 (PST)
-Received: from smtpclient.apple ([45.88.220.126])
-        by smtp.gmail.com with ESMTPSA id p12-20020a05622a048c00b0042e7856fbe3sm12820qtx.59.2024.02.28.13.27.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Feb 2024 13:27:58 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From: Joel Fernandes <joel@joelfernandes.org>
+	s=arc-20240116; t=1709155698; c=relaxed/simple;
+	bh=3dIDQaoreVsP35DeuugHsbaowwopUIcEnpCBbtzEuHc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nkjOT6l3qrAr8nMxLgHVWBs6kLkBlLBH5d1WnwRZmYV7XeNmDTjqh6oK3x9fkayf6K1Q7tlakbXj1dAwpJvYny8rGuF2mXGPiUzRkn5FovHTu9SudJLfTpD+aH//aPkqzLJ3cCRvevyEg0e316BqIW1eOqpf8R33O4etPnuBYbU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=K48JC7CR; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 1E0B640E0196;
+	Wed, 28 Feb 2024 21:28:13 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id bbTlr61piUQS; Wed, 28 Feb 2024 21:28:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1709155689; bh=mrtpMMMU+QRtgwBx9egaOKNLCVfOo1AaACfEyVQY6VQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=K48JC7CR/usfoAa3axmhZ3mOp/zplA3Dgjc10boxoaAlrDD83Y4PPEt/88TmIh4k8
+	 BAPotG/lS0ZQUy2dANdKKLq0ZpHISOc3gRqIjkZaDvKz5+lEEtoEPP8ztYM/2cES8q
+	 0oitf+xVw3w2kI2lL1GULX/DZlg8XOkeen9tawwmxB/9cfC2CVZVyoj/JYOUMzXlSE
+	 trOFY/bVR8XVK6WNyL3m4m4jvaVraokt7fMLpo2ACJPpuF2WYcwyVLqd+x3XRgUoQo
+	 GwfouMWiG17+r4QcOg3IaHjbeARZ/Z0gxsd+kRdAr8MVik9xct6fcxD3NbQp2syaxY
+	 TlTHnmUEuEXmC7f6C5XtbqGZgLJ6NpjMrVPdarkJ0GkLkxgd9wi2I76ZPwDIONbjuA
+	 Q6tp3gaRqPrhwG2Bt+hbv6xjG2UmdFHOmY6UvwlGSyShzOHdUjLGXIpjPI8pku7PSg
+	 o4qJ5h7OGTE17xyEn3JpAjmP8nfJq7C8yHZbux+8Qx+Z9lV1EsYurtZQin6chfCCdc
+	 lcCg+GWoE5WPc8HJ38chE9+w+CFiAMPR0M/5DOIxBEDB9K4oSHTqgi8FxinzvMNOAb
+	 mWZ+n6Gn0BTbrf21r3M3WXj+dTz6VEih+5JXfduuO2OuzMpD93TbJA1w4MQkdIAaKR
+	 e92WW8waCQUlQ9lRoHsoigZk=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3140240E019B;
+	Wed, 28 Feb 2024 21:27:58 +0000 (UTC)
+Date: Wed, 28 Feb 2024 22:27:51 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Ard Biesheuvel <ardb+git@google.com>
+Cc: linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+	Kevin Loughlin <kevinloughlin@google.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Dionna Glaze <dionnaglaze@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Andy Lutomirski <luto@kernel.org>, Brian Gerst <brgerst@gmail.com>
+Subject: Re: [PATCH v7 3/9] x86/startup_64: Simplify calculation of initial
+ page table address
+Message-ID: <20240228212751.GJZd-lVzA6B9yIe0Zk@fat_crate.local>
+References: <20240227151907.387873-11-ardb+git@google.com>
+ <20240227151907.387873-14-ardb+git@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH] net: raise RCU qs after each threaded NAPI poll
-Date: Wed, 28 Feb 2024 16:27:47 -0500
-Message-Id: <4965F5CD-B33C-4B75-818A-021372020881@joelfernandes.org>
-References: <5b74968d-fe14-48b4-bb16-6cf098a04ca5@paulmck-laptop>
-Cc: Yan Zhai <yan@cloudflare.com>, Eric Dumazet <edumazet@google.com>,
- netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Lorenzo Bianconi <lorenzo@kernel.org>, Coco Li <lixiaoyan@google.com>,
- Wei Wang <weiwan@google.com>, Alexander Duyck <alexanderduyck@fb.com>,
- Hannes Frederic Sowa <hannes@stressinduktion.org>,
- linux-kernel@vger.kernel.org, rcu@vger.kernel.org, bpf@vger.kernel.org,
- kernel-team@cloudflare.com, rostedt@goodmis.org, mark.rutland@arm.com
-In-Reply-To: <5b74968d-fe14-48b4-bb16-6cf098a04ca5@paulmck-laptop>
-To: paulmck@kernel.org
-X-Mailer: iPhone Mail (21D61)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240227151907.387873-14-ardb+git@google.com>
 
+On Tue, Feb 27, 2024 at 04:19:11PM +0100, Ard Biesheuvel wrote:
+> From: Ard Biesheuvel <ardb@kernel.org>
+> 
+> Determining the address of the initial page table to program into CR3
+> involves:
+> - taking the physical address
+> - adding the SME encryption mask
+> 
+> On the primary entry path, the code is mapped using a 1:1 virtual to
+> physical translation, so the physical address can be taken directly
+> using a RIP-relative LEA instruction.
+> 
+> On the secondary entry path, the address can be obtained by taking the
+> offset from the virtual kernel base (__START_kernel_map) and adding the
+> physical kernel base.
+> 
+> This is implemented in a slightly confusing way, so clean this up.
+> 
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> ---
+>  arch/x86/kernel/head_64.S | 25 ++++++--------------
+>  1 file changed, 7 insertions(+), 18 deletions(-)
 
+Reviewed-by: Borislav Petkov (AMD) <bp@alien8.de>
 
-> On Feb 28, 2024, at 4:13=E2=80=AFPM, Paul E. McKenney <paulmck@kernel.org>=
- wrote:
->=20
-> =EF=BB=BFOn Wed, Feb 28, 2024 at 03:14:34PM -0500, Joel Fernandes wrote:
->>> On Wed, Feb 28, 2024 at 12:18=E2=80=AFPM Paul E. McKenney <paulmck@kerne=
-l.org> wrote:
->>>=20
->>> On Wed, Feb 28, 2024 at 10:37:51AM -0600, Yan Zhai wrote:
->>>> On Wed, Feb 28, 2024 at 9:37=E2=80=AFAM Joel Fernandes <joel@joelfernan=
-des.org> wrote:
->>>>> Also optionally, I wonder if calling rcu_tasks_qs() directly is better=
+-- 
+Regards/Gruss,
+    Boris.
 
->>>>> (for documentation if anything) since the issue is Tasks RCU specific.=
- Also
->>>>> code comment above the rcu_softirq_qs() call about cond_resched() not t=
-aking
->>>>> care of Tasks RCU would be great!
->>>>>=20
->>>> Yes it's quite surprising to me that cond_resched does not help here,
->>>=20
->>> In theory, it would be possible to make cond_resched() take care of
->>> Tasks RCU.  In practice, the lazy-preemption work is looking to get rid
->>> of cond_resched().  But if for some reason cond_resched() needs to stay
->>> around, doing that work might make sense.
->>=20
->> In my opinion, cond_resched() doing Tasks-RCU QS does not make sense
->> (to me), because cond_resched() is to inform the scheduler to run
->> something else possibly of higher priority while the current task is
->> still runnable. On the other hand, what's not permitted in a Tasks RCU
->> reader is a voluntary sleep. So IMO even though cond_resched() is a
->> voluntary call, it is still not a sleep but rather a preemption point.
->=20
-> =46rom the viewpoint of Task RCU's users, the point is to figure out
-> when it is OK to free an already-removed tracing trampoline.  The
-> current Task RCU implementation relies on the fact that tracing
-> trampolines do not do voluntary context switches.
-
-Yes.
-
->=20
->> So a Tasks RCU reader should perfectly be able to be scheduled out in
->> the middle of a read-side critical section (in current code) by
->> calling cond_resched(). It is just like involuntary preemption in the
->> middle of a RCU reader, in disguise, Right?
->=20
-> You lost me on this one.  This for example is not permitted:
->=20
->    rcu_read_lock();
->    cond_resched();
->    rcu_read_unlock();
->=20
-> But in a CONFIG_PREEMPT=3Dy kernel, that RCU reader could be preempted.
->=20
-> So cond_resched() looks like a voluntary context switch to me.  Recall
-> that vanilla non-preemptible RCU will treat them as quiescent states if
-> the grace period extends long enough.
->=20
-> What am I missing here?
-
-That we are discussing Tasks-RCU read side section? Sorry I should have been=
- more clear. I thought sleeping was not permitted in Tasks RCU reader, but n=
-on-sleep context switches (example involuntarily getting preempted were).
-
- - Joel
-
-
-
->=20
->                            Thanx, Paul
+https://people.kernel.org/tglx/notes-about-netiquette
 
