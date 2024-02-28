@@ -1,109 +1,130 @@
-Return-Path: <linux-kernel+bounces-84932-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84933-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67FD486ADDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:44:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A72986ADE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:45:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 217D9293BD0
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:44:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 013931F26159
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:45:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42FE2137C38;
-	Wed, 28 Feb 2024 11:37:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6728713B7A0;
+	Wed, 28 Feb 2024 11:37:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="toBiZAO1"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E9U09kjr"
+Received: from mail-io1-f42.google.com (mail-io1-f42.google.com [209.85.166.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7087D135A65;
-	Wed, 28 Feb 2024 11:37:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 449FE12CD87;
+	Wed, 28 Feb 2024 11:37:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709120254; cv=none; b=i2HpnDyzPuJJQiuHvIb6sn1KqsEeGmJVwB2n+F1owR0yDCTanD8nFnyvJJE173KiSAYbp/gq/5xo9BixHbsaEeXSTR9ypK7IRuzzHdn1NmdxtBq8yaZX6BQ6SRffwCk0+MA8jPNP+JQjLEhmxZhKah/pP5Z3ZexKyjEpRlknrXM=
+	t=1709120268; cv=none; b=n+w3HoWSfR/m1U+HuK6KLs26/nwe+8a5l49wvh/E5DgZj9J37h68tjCcQxsJhwzrxBQGSBf+V/tpvbNGI7LQ6NupWJS236ON8FTSTIstA7RfIuNRQwH1d6h5xap/tPYQwEmJ1anKGtnmslS3LI6P6WZEQfSRxEk9XXYc545gxm8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709120254; c=relaxed/simple;
-	bh=Tvp+p5Xk3fozdO2g75WRBimh75zt30LHNGCj/0SSdbs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=su8JHHfAWQ/tLfMzGOgVI6+TnaAnbM80NvEtrY3W3nPZWcLbs58TjlVhqQ9A11OFzPpMJudaXF1N8c1q+qSxOvaCKm0g8r/MdrtRWDiu4mUaI4cdU/1gjM3PgN9PQlAXwwqGKLu8o56lLl2AodpGJfM4W9x2FQhNO68l3uPCwKs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=toBiZAO1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C09EBC433F1;
-	Wed, 28 Feb 2024 11:37:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709120253;
-	bh=Tvp+p5Xk3fozdO2g75WRBimh75zt30LHNGCj/0SSdbs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=toBiZAO1mdqQnmskk4C+PYBSfjXMIfnVrtT2NTtUjHhEeSQvE+Av5vHpg8HXTO36o
-	 dJiawL2eo+Gm/tiOMru6MS7M0a2UnN2v3i1s5Zg6pAbfBjaPzMHXlIh1CYlr/4Z/4M
-	 bi7VrXlnTSyMHU7EegxNhoxcZX6CkovTsPrNGjyJJGh0MG5zq7a68pgGRZvYJ6ZNuS
-	 FeKhIQdiGtIqHjVYM3uPmjSvGVyzY+Nss1yer9rOTyfiyedkd+1uyNHIzAZao6WSB4
-	 WLXajK0dwvBFDYR2XNY6MgiSSVd+O91TzVnlMeh3SlkYN2bNOrMFwXFp0k2PoYAGsT
-	 RUSED7kUYVlmA==
-Date: Wed, 28 Feb 2024 11:37:27 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Bastien Curutchet <bastien.curutchet@bootlin.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh+dt@kernel.org>,
+	s=arc-20240116; t=1709120268; c=relaxed/simple;
+	bh=WscMPhRz3gtDrK0zadY+NG7FINr3PhPGV9Yb7XNaQno=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=YXKqDTKDUDM6fabHxKLo6b8ccHLFYNOb3YLIxHXdqoiTdtgyNnmgLnqIe02U2TNkU7SjKfCHMOg1BN+GkRquskLoGqGD1L1MXc8lucSoUNPl73dfNO7lWmGsGV3+qVi2jXdWo+xDqfBb9Zj1sb/LHLpNpnwlHBfXapAfqy/hLJQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E9U09kjr; arc=none smtp.client-ip=209.85.166.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-io1-f42.google.com with SMTP id ca18e2360f4ac-7c403dbf3adso285128639f.1;
+        Wed, 28 Feb 2024 03:37:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709120266; x=1709725066; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hFtrXUgWnMJ9NQ2PU+2dtB8bMmOfzlQTR6EQYNPIXm0=;
+        b=E9U09kjrxCnTAMKfM/3tQZcZAODujfQk0CiKqFQxS89kYTlhBX7j+nbbRxjKv6KKKx
+         01q2GrBCE2xE7bn+NOmR6pKqX6kJQNwKTNNLz0MbSNta6CxdRgWB5Z0NJkkMlC7M/BKc
+         TLf5pRCwu9Lp9z14o7BEigk82g88cMSHiSPwboZ3EtJ+MoqQWMA6oMYbwP5RaXau1vAL
+         hR3/OmpHHWXXncIlD/uxQkjCH9J+snDhbxpSPz2NFtRq09WqYjLNhmoUmeZZ88h3OKAt
+         qH582CCx5WGMg5IaXL3poNF/Rr6Ovp6XQ4oFb8TeMdm9Epkszs1s7VlZJUNtAnr7nP/w
+         Htxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709120266; x=1709725066;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hFtrXUgWnMJ9NQ2PU+2dtB8bMmOfzlQTR6EQYNPIXm0=;
+        b=NTtmiHqt28MPalLYpvduDbCdCtR6aqXwG9YaOx6eOFtpWj2Efte0/jSgSPGv680X1h
+         3xCOYn0p1naYvtjpFWCD0LC9Xe50+X/uL9VpIE4oFrOe4loBKhqUDJl7jUinVOSmbRge
+         7gtckZdrCF+Qi+OlNvGk7D8QkcqVonfE+qI33NSCeC1SjDaSZmN3PyKYykuNWbr3nIUd
+         09wXHlMc310Nk4wj+dF5laVwINR4UaxLRTmZulXuMwj1MqpG4LtCllm1SqBkjbYuM468
+         aBdPJPoHrDzuAAjY04gX+CTNXHXfoPXJquU7jkpdcgV4AHZ3n7dZnU30UG7JAoOTBP1w
+         ejfg==
+X-Forwarded-Encrypted: i=1; AJvYcCUOVYczXvbTfxcz8Fp7gdJOEX+au7gMbSJJ0Q4ECrH+20uKklR4425RdMH/AiNSX9vSbGyAwsZJlAa3jrepbP81bCKLyAIv2Eikqm8mXqKtU5gWpraNrcTBEHEskV3Lw6a8ErWAwlkb0Q==
+X-Gm-Message-State: AOJu0Yxpb7Pef+BunyjDUWM3lB/PMx6JFycd3GjIrOOOPLCjoaqhU0zO
+	FcnXokDKYPpO3c1Vr1TMQQg5OsuWfggsd2BU/LZM9a98PI0l+OeI
+X-Google-Smtp-Source: AGHT+IEwYOiAlwhhDwfp6MFMf8Kh9Xrgrs548zAUc51dykwi25IhwwwaKGbQtiBKAvrlGS0wowxSjQ==
+X-Received: by 2002:a5e:8f01:0:b0:7c7:fc3e:6f1b with SMTP id c1-20020a5e8f01000000b007c7fc3e6f1bmr967586iok.7.1709120266374;
+        Wed, 28 Feb 2024 03:37:46 -0800 (PST)
+Received: from aford-System-Version.lan ([2601:447:d002:5be:abe6:89f4:1061:8343])
+        by smtp.gmail.com with ESMTPSA id k6-20020a02c646000000b004747d876aefsm1833147jan.6.2024.02.28.03.37.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Feb 2024 03:37:45 -0800 (PST)
+From: Adam Ford <aford173@gmail.com>
+To: dri-devel@lists.freedesktop.org,
+	linux-arm-kernel@lists.infradead.org
+Cc: aford@beaconembedded.com,
+	Adam Ford <aford173@gmail.com>,
+	Rob Herring <robh@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-	Lee Jones <lee@kernel.org>,
-	Richard Cochran <richardcochran@gmail.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-leds@vger.kernel.org,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	herve.codina@bootlin.com, maxime.chevallier@bootlin.com,
-	christophercordahi@nanometrics.ca
-Subject: Re: [PATCH v2 1/6] dt-bindings: net: Add bindings for PHY DP83640
-Message-ID: <20240228-maroon-wrinkle-1f0d2aa7c186@spud>
-References: <20240227093945.21525-1-bastien.curutchet@bootlin.com>
- <20240227093945.21525-2-bastien.curutchet@bootlin.com>
+	Conor Dooley <conor+dt@kernel.org>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	Andrzej Hajda <andrzej.hajda@intel.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Robert Foss <rfoss@kernel.org>,
+	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+	Jonas Karlman <jonas@kwiboo.se>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	devicetree@vger.kernel.org,
+	imx@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] drm/bridge: adv7511:  Allow IRQ to share GPIO pins
+Date: Wed, 28 Feb 2024 05:37:35 -0600
+Message-ID: <20240228113737.43434-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="XgYe8bqBfCjZqdEt"
-Content-Disposition: inline
-In-Reply-To: <20240227093945.21525-2-bastien.curutchet@bootlin.com>
+Content-Transfer-Encoding: 8bit
 
+The IRQ registration currently assumes that the GPIO is
+dedicated to it, but that may not necessarily be the case.
+If the board has another device sharing the IRQ, it won't be
+registered and the hot-plug detect fails.  This is easily
+fixed by add the IRQF_SHARED flag.
 
---XgYe8bqBfCjZqdEt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Adam Ford <aford173@gmail.com>
 
-On Tue, Feb 27, 2024 at 10:39:40AM +0100, Bastien Curutchet wrote:
-> The DP83640 is a PTP PHY. Some of his features can be enabled by
-> hardware straps. There is not binding yet.
->=20
-> Add a device tree binding to be able to override the hardware strap
-> configuration when needed.
->=20
-> Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
+diff --git a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
+index b5518ff97165..21f08b2ae265 100644
+--- a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
++++ b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
+@@ -1318,7 +1318,8 @@ static int adv7511_probe(struct i2c_client *i2c)
+ 
+ 		ret = devm_request_threaded_irq(dev, i2c->irq, NULL,
+ 						adv7511_irq_handler,
+-						IRQF_ONESHOT, dev_name(dev),
++						IRQF_ONESHOT | IRQF_SHARED,
++						dev_name(dev),
+ 						adv7511);
+ 		if (ret)
+ 			goto err_unregister_audio;
+-- 
+2.43.0
 
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-
-Cheers,
-Conor.
-
---XgYe8bqBfCjZqdEt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZd8a9wAKCRB4tDGHoIJi
-0hbmAQCKk+K3MdOEb8IqasR55iD/+VrgCTPjSqIMqvkGdC8X7wEA4Yf9lr7hn2u/
-lhgbMZwQ4tJDtbpTSFyODKxmlorwAwk=
-=zfhz
------END PGP SIGNATURE-----
-
---XgYe8bqBfCjZqdEt--
 
