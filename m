@@ -1,275 +1,139 @@
-Return-Path: <linux-kernel+bounces-84978-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84979-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF15886AE6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:58:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 131CA86AE70
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:59:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F1D11F24703
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:58:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4296F1C245C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:59:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E9521474D6;
-	Wed, 28 Feb 2024 11:52:17 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21CBA7353F;
-	Wed, 28 Feb 2024 11:52:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C87B61493BB;
+	Wed, 28 Feb 2024 11:52:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rMzOs0Ng"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68CF27351C
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 11:52:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709121136; cv=none; b=FJN5DkQm/lkBTD8kzcGqDMjNwtIONWXHzknzLsPUV+5sX4DRPlq0JVolD6aXKI9gS60nb02Canb+be9WuzvhfVjUNt01JqjTNpFcP0mlEoS/ie87PqYJHk/ksnLeGRhX7hGWjcvsnNtc0gLfHYY9qVBjPPAKfu7f6b9dDLLPv5M=
+	t=1709121143; cv=none; b=WWGuWvhYkxwc194xrxRG6h3MDEVQsMCAGbgYjL5fpvJDlYUPNItg0mT2c9Rxr8Hep+3SuDOPFruP59JLEdMHwAwE+s4nr+N+lBmr6oVg5rQADlMh087HmdbwQZLD0slQa4nioKJIkL6RL9oUXIrY1UI5xPPDfibnRvhOyLeS7Ek=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709121136; c=relaxed/simple;
-	bh=2WlL3MKim5BA9DPtobT0T+QuzovrPwZOzIxQn5vg7gU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RSokLNvOUvoqf4v0zEYN5gv0UDVkh/RnZuqGj5Q6W8ZgQ+M6c6zUuWAbz20gDVlr8ZHQ0E62BJfV/qFJnXGLjqKZHvxLPQbjxafvgxBoRqnNOJKCK7jQjmPdpgHiyiRv0OQmXdLvgn2dDTSG7pqF9I/sC5ehgnj/VSckeh8mWZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1F611C15;
-	Wed, 28 Feb 2024 03:52:51 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.68.152])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 26AD03F6C4;
-	Wed, 28 Feb 2024 03:52:10 -0800 (PST)
-Date: Wed, 28 Feb 2024 11:52:00 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: Anshuman Khandual <anshuman.khandual@arm.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	will@kernel.org, catalin.marinas@arm.com,
-	Mark Brown <broonie@kernel.org>, James Clark <james.clark@arm.com>,
-	Rob Herring <robh@kernel.org>, Marc Zyngier <maz@kernel.org>,
-	Suzuki Poulose <suzuki.poulose@arm.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH V16 4/8] drivers: perf: arm_pmuv3: Enable branch stack
- sampling via FEAT_BRBE
-Message-ID: <Zd8eYHbLebKLV648@FVFF77S0Q05N>
-References: <20240125094119.2542332-1-anshuman.khandual@arm.com>
- <20240125094119.2542332-5-anshuman.khandual@arm.com>
- <ZdY_oEYPGSj7nwvP@FVFF77S0Q05N>
- <781dd6a8-cf18-48ab-93f3-5256d161b359@arm.com>
+	s=arc-20240116; t=1709121143; c=relaxed/simple;
+	bh=3n/Qsn9eEC88y1T6J/WAzonTmx6UamA/Qs6tg6Zzozs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kndBBwsRFiy3PxLoZSiV2tIXPxNzNeEu+3OG+ykl4SuPl7wCLOiUDj2/Ekpk8bO1/4rUw/COkokLDvvXC1T+dC5pFwiMzZOHKsrwlFSIxQlXWN6oQt7cSeajOwEMIz5ifonsgYhMYoIBfss00ZS7ScQLvVAPXSdWl6RMOcAyEUc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rMzOs0Ng; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-412b20dc555so6935345e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 03:52:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709121140; x=1709725940; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0bkVtbcoc/EdAlN+I6+oL1+CCziM/Me6KnKW3KLACdQ=;
+        b=rMzOs0NgbYU6OzQizbGpZvbE3jkLlc/cjxxWKs3WEMahM1r92b8V5IBoB4cb/UQweb
+         UD+lnDPmzbP1yE9CyhCx21RJqcqGFsvnieDZgkmuhldTQAZxSJQO2pWFl2o/pWflLDS/
+         2Jtq3JOiq1c6vROIz8HnhhbP02cY2k6fXbVlfjiivuAxWZAGi0F2aUzzCWqcCzKXFuH0
+         7Y/f/wnPSWu9kdWx5uDAkETQGoTV+e6Eg8MnHaFeDIwJ7sRPCaRe8nXhv3xT6vTzXL/0
+         tkX/fcUNVd/hR2etrOlrS1MQC5Js12RbBizjQc0lgur//3qybMgB8K60+o3X77LQQqma
+         UNOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709121140; x=1709725940;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0bkVtbcoc/EdAlN+I6+oL1+CCziM/Me6KnKW3KLACdQ=;
+        b=Lik7ugox0FhtvUON9Ent0zY4B+CxhDfBWlHQsEsu+pUAj27lj6psX2IV3bJv9BGqzg
+         LoFR8ZK013JGTOgoIborz5rg1HfXnyMhOR1ryZ1qP12Qmji3UHhnz1no/44VjJ4wnKos
+         irRM2CsVow/4S26OhKOEUbSKoovmdyOjey/gzp5H1p7QiKmuJRGtmgyxOAS44Q5Ssfgb
+         YjWfF7ytFufVC6V6Yh/pzpUpdXRUWrYK/zbt7V552iSF5v3q2+LFfrl6l7J2GEMZRCc2
+         Bjn2GnIuQpY1G5grePIAQ0KBzaV8n48/CKk1BB8YjED2ClLiEDzOlg2b0GIXRIE26hwq
+         Z2QQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU7J7Jt1/h8i6Ng8XbzT7LJxOR/aLl69TwQ7VWs/N5PcsVFfimq/ULX91Fx4y7j7WNZJEcAh1OUWtwUzL+JX3TGh4cgiZ7MvJJ4xekM
+X-Gm-Message-State: AOJu0YyuCwGTaj/zoFIa3jGBK3bX2Ln0gyFGbDA6yvX999ho9dlJV3Vr
+	EOgB5UjTINBdj0HIoXYj/hvOXLevHbbS9lh9CBZdhVp0bpxqtwLN2s9qJyOYuMY=
+X-Google-Smtp-Source: AGHT+IHh3XwNm56x8VVnZGWgAiXBjtGnlYCa910zzqHzwF2XAr5dKhzjRTtYlEXsuysr2PU3mQ3FJA==
+X-Received: by 2002:a05:600c:34d2:b0:412:afa6:cf28 with SMTP id d18-20020a05600c34d200b00412afa6cf28mr2732380wmq.30.1709121139750;
+        Wed, 28 Feb 2024 03:52:19 -0800 (PST)
+Received: from [192.168.169.175] (58.171.88.92.rev.sfr.net. [92.88.171.58])
+        by smtp.gmail.com with ESMTPSA id jn5-20020a05600c6b0500b0041228b2e179sm1853771wmb.39.2024.02.28.03.52.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Feb 2024 03:52:19 -0800 (PST)
+Message-ID: <d44026e7-5ffa-4906-9b59-10fa207ecd51@linaro.org>
+Date: Wed, 28 Feb 2024 12:52:11 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <781dd6a8-cf18-48ab-93f3-5256d161b359@arm.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: sibyte: pointless if tests
+Content-Language: en-US
+To: Joe Perches <joe@perches.com>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+References: <2cf0b77f51b907969ae83993854773961b4e159c.camel@perches.com>
+From: =?UTF-8?Q?Philippe_Mathieu-Daud=C3=A9?= <philmd@linaro.org>
+In-Reply-To: <2cf0b77f51b907969ae83993854773961b4e159c.camel@perches.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 28, 2024 at 01:41:05PM +0530, Anshuman Khandual wrote:
-> On 2/21/24 23:53, Mark Rutland wrote:
-> > On Thu, Jan 25, 2024 at 03:11:15PM +0530, Anshuman Khandual wrote:
-
-> >> +============================================
-> >> +Branch Record Buffer Extension aka FEAT_BRBE
-> >> +============================================
-> >> +
-> >> +Author: Anshuman Khandual <anshuman.khandual@arm.com>
-> >> +
-> >> +FEAT_BRBE is an optional architecture feature, which creates branch records
-> >> +containing information about change in control flow. The branch information
-> >> +contains source address, target address, and some relevant metadata related
-> >> +to that change in control flow. BRBE can be configured to filter out branch
-> >> +records based on their type and privilege level.
-> > 
-> > Do we actually need this documentation?
+On 24/2/24 23:28, Joe Perches wrote:
+> A checkpatch modification was suggested privately about
+> braces around an if test like
 > 
-> IMHO we do need some documentation.
+> 	if (foo)
+> 		;
 > 
-> > The set of peopl writing kernel code can read the ARM ARM or the kernel code,
-> > and there's not much here useful to users.
+> so I thought I'd see how many of these possibly pointless
+> if tests exist.  There aren't many.
 > 
-> But not all documentation write ups in the kernel are only for the users, there
-> are examples in many subsystems where documentations help explain implementation
-> details including data structures and function flows, for upcoming developers to
-> understand the code better and make further improvements.
-
-Sure, but that's for things where there are *many* kernel developers that will
-consume this. The set of people who will modify the BRBE code in a meaningful
-way can be counted on a hand or two, and so I don't think there's a need or
-justification for having this detail under Documentation/.
-
-> > I think it may make sense to document what userspace and/or VMs can and cannot
-> > do (which is why we describe the ID registers), and any 'gotchas' (e.g.
-> > restrictions we have that other architectures don't, or vice-versa). I do not
+> Here are a couple in sibyte:
 > 
-> Agreed - such documentations must be included for better technology adoption, but
-> those are not the only type of documentation available in the kernel - even right
-> now.
+> Maybe this should be documented as:
 > 
-> > think that we should try to describe the hardware beyond what is necessary to
-> > describe that, and I do not think that we should describe the structure of the
-> > perf code beyond what is necessary to desribe that.
-> > 
-> > Otherwise, this is just a maintenance burden
-> 
-> I think we should have some documentation for BRBE implementation, and if there
-> are suggestions to improve the proposed one, will be happy to change. But for
-> now, will try and rewrite the documentation with your above suggestions in mind.
+> 	"well, don't know what to do here"
 
-I think that any documentation on the implementation details should be within
-the driver itself; please limit anything under Documentation/ to be on details
-relevant to userspace.
-
-[...]
-
-> I believe the proposed code is already well documented but will revisit and
-> try to fill gaps if any but the point being in code documentation might not
-> be a substitute for a Documentation/arch/arm64/ based file.
-
-For the moment I'm not asking that you add new comments to the BRBE code, so
-please don't feel like you need to add anything there. I'm only asking that you
-limit the Documentation/ coverage to details which are directly relevant to
-userspace.
+Or pr_devel() / pr_warn() if you want someone to notice it :)
 
 > 
-> > 
-> > [...]
-> > 
-> >> diff --git a/arch/arm64/include/asm/el2_setup.h b/arch/arm64/include/asm/el2_setup.h
-> >> index b7afaa026842..649b926bf69d 100644
-> >> --- a/arch/arm64/include/asm/el2_setup.h
-> >> +++ b/arch/arm64/include/asm/el2_setup.h
-> >> @@ -154,6 +154,51 @@
-> >>  .Lskip_set_cptr_\@:
-> >>  .endm
-> >>  
-> >> +#ifdef CONFIG_ARM64_BRBE
-> >> +/*
-> >> + * Enable BRBE cycle count
-> >> + *
-> >> + * BRBE requires both BRBCR_EL1.CC and BRBCR_EL2.CC fields, be set
-> >> + * for the cycle counts to be available in BRBINF<N>_EL1.CC during
-> >> + * branch record processing after a PMU interrupt. This enables CC
-> >> + * field on both these registers while still executing inside EL2.
-> >> + *
-> >> + * BRBE driver would still be able to toggle branch records cycle
-> >> + * count support via BRBCR_EL1.CC field regardless of whether the
-> >> + * kernel ends up executing in EL1 or EL2.
-> >> + */
-> >> +.macro __init_el2_brbe
-> >> +	mrs	x1, id_aa64dfr0_el1
-> >> +	ubfx	x1, x1, #ID_AA64DFR0_EL1_BRBE_SHIFT, #4
-> >> +	cbz	x1, .Lskip_brbe_cc_\@
-> >> +
-> >> +	mrs_s	x0, SYS_BRBCR_EL2
-> >> +	orr	x0, x0, BRBCR_ELx_CC
-> >> +	msr_s	SYS_BRBCR_EL2, x0
-> > 
-> > Please initialise this to a specific value rather than using a
-> > read-modify-write.
+> $ cat if_semi.cocci
+> @@
+> expression e;
+> @@
 > 
-> I will change this as follows - which will be written into both BRBCR_EL2
-> and BRBCR_EL12 registers as applicable.
+> *	if (e) ;
 > 
->         mov     x0, xzr
->         orr     x0, x0, #(BRBCR_ELx_CC |BRBCR_ELx_MPRED)
-
-Please generate the value directly, and only use ORR for bits that need to be
-conditionally set, e.g. the above can be:
-
-	mov_q	x0, #(BRBCR_ELx_CC | BRBCR_ELx_MPRED)
-	msr_s	SYS_BRBCR_EL2, x0
-
-[...]
-
-> >> +/*
-> >> + * A branch record with BRBINFx_EL1.LASTFAILED set, implies that all
-> >> + * preceding consecutive branch records, that were in a transaction
-> >> + * (i.e their BRBINFx_EL1.TX set) have been aborted.
-> >> + *
-> >> + * Similarly BRBFCR_EL1.LASTFAILED set, indicate that all preceding
-> >> + * consecutive branch records up to the last record, which were in a
-> >> + * transaction (i.e their BRBINFx_EL1.TX set) have been aborted.
-> >> + *
-> >> + * --------------------------------- -------------------
-> >> + * | 00 | BRBSRC | BRBTGT | BRBINF | | TX = 1 | LF = 0 | [TX success]
-> >> + * --------------------------------- -------------------
-> >> + * | 01 | BRBSRC | BRBTGT | BRBINF | | TX = 1 | LF = 0 | [TX success]
-> >> + * --------------------------------- -------------------
-> >> + * | 02 | BRBSRC | BRBTGT | BRBINF | | TX = 0 | LF = 0 |
-> >> + * --------------------------------- -------------------
-> >> + * | 03 | BRBSRC | BRBTGT | BRBINF | | TX = 1 | LF = 0 | [TX failed]
-> >> + * --------------------------------- -------------------
-> >> + * | 04 | BRBSRC | BRBTGT | BRBINF | | TX = 1 | LF = 0 | [TX failed]
-> >> + * --------------------------------- -------------------
-> >> + * | 05 | BRBSRC | BRBTGT | BRBINF | | TX = 0 | LF = 1 |
-> >> + * --------------------------------- -------------------
-> >> + * | .. | BRBSRC | BRBTGT | BRBINF | | TX = 0 | LF = 0 |
-> >> + * --------------------------------- -------------------
-> >> + * | 61 | BRBSRC | BRBTGT | BRBINF | | TX = 1 | LF = 0 | [TX failed]
-> >> + * --------------------------------- -------------------
-> >> + * | 62 | BRBSRC | BRBTGT | BRBINF | | TX = 1 | LF = 0 | [TX failed]
-> >> + * --------------------------------- -------------------
-> >> + * | 63 | BRBSRC | BRBTGT | BRBINF | | TX = 1 | LF = 0 | [TX failed]
-> >> + * --------------------------------- -------------------
-> >> + *
-> >> + * BRBFCR_EL1.LASTFAILED == 1
-> >> + *
-> >> + * BRBFCR_EL1.LASTFAILED fails all those consecutive, in transaction
-> >> + * branches records near the end of the BRBE buffer.
-> >> + *
-> >> + * Architecture does not guarantee a non transaction (TX = 0) branch
-> >> + * record between two different transactions. So it is possible that
-> >> + * a subsequent lastfailed record (TX = 0, LF = 1) might erroneously
-> >> + * mark more than required transactions as aborted.
-> >> + */
-> >> +static void process_branch_aborts(struct pmu_hw_events *cpuc)
-> >> +{
-> >> +	u64 brbfcr = read_sysreg_s(SYS_BRBFCR_EL1);
-> >> +	bool lastfailed = !!(brbfcr & BRBFCR_EL1_LASTFAILED);
-> >> +	int idx = brbe_get_numrec(cpuc->percpu_pmu->reg_brbidr) - 1;
-> >> +	struct perf_branch_entry *entry;
-> >> +
-> >> +	do {
-> >> +		entry = &cpuc->branches->branch_entries[idx];
-> >> +		if (entry->in_tx) {
-> >> +			entry->abort = lastfailed;
-> >> +		} else {
-> >> +			lastfailed = entry->abort;
-> >> +			entry->abort = false;
-> >> +		}
-> >> +	} while (idx--, idx >= 0);
-> >> +}
-> > 
-> > Please consider:
-> > 
-> > 1) There are no extant CPU implementations with TME.
-> > 2) There are no plans for anyone to build TME.
-> > 3) The kernel doesn't support TME.
-> > 
-> > ... so why are we tryting to handle this architectural edge-case (complete with
-> > what is arguably an architectural bug!) that can only happen on a CPU with TME,
-> > under a kernel that's using TME?
-> > 
-> > This cannot possibly have been tested, trivially by point 3.
-> > 
-> > This is purely a maintenance and review burden.
-> > 
-> > Please delete this and replace it with a comment somewhere that *if* we ever
-> > add support for TME this will need to be handled somehow.
+> $ spatch --very-quiet -sp-file if_semi.cocci .
+> diff -u -p ./arch/mips/sibyte/common/cfe_console.c /tmp/nothing/arch/mips/sibyte/common/cfe_console.c
+> --- ./arch/mips/sibyte/common/cfe_console.c
+> +++ /tmp/nothing/arch/mips/sibyte/common/cfe_console.c
+> @@ -22,8 +22,6 @@ static void cfe_console_write(struct con
+>   		if (str[i] == '\n') {
+>   			do {
+>   				written = cfe_write(cfe_cons_handle, &str[last], i-last);
+> -				if (written < 0)
+> -					;
+>   				last += written;
+>   			} while (last < i);
+>   			while (cfe_write(cfe_cons_handle, "\r", 1) <= 0)
+> @@ -33,8 +31,6 @@ static void cfe_console_write(struct con
+>   	if (last != count) {
+>   		do {
+>   			written = cfe_write(cfe_cons_handle, &str[last], count-last);
+> -			if (written < 0)
+> -				;
+>   			last += written;
+>   		} while (last < count);
+>   	}
 > 
-> Alright, will drop TME handling completely.
-> 
-> - Dropped process_branch_aborts() completely
-> 
-> - Added an warning if transaction states get detected some how unexpectedly
-> 
->                 /*
->                  * Currently TME feature is neither implemented in any hardware
->                  * nor it is being supported in the kernel. Just warn here once
->                  * if TME related information shows up rather unexpectedly.
->                  */
->                 if (entry->abort || entry->in_tx)
->                         pr_warn_once("Unknown transaction states %d %d\n",
->                                       entry->abort, entry->in_tx);
 
-Something of that shape sounds good; thanks!
-
-Mark.
 
