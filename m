@@ -1,194 +1,263 @@
-Return-Path: <linux-kernel+bounces-85383-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85377-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 199EC86B53A
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:44:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2596386B527
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:39:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AB20AB2534E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:44:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A93A61F26BF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:39:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E90D200D2;
-	Wed, 28 Feb 2024 16:43:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8C0C1CAAB;
+	Wed, 28 Feb 2024 16:38:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="YmRLWnyh"
-Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H1YNkssN"
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98A376EEFD;
-	Wed, 28 Feb 2024 16:43:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.149.199.84
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0273A1E514;
+	Wed, 28 Feb 2024 16:38:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709138635; cv=none; b=hunHZ4Wd/biEcZ+SI1bv8V40P2fGYoF2soZmHk27wiM5z6wAc1r5jUvHcrmNkm0+nIuhEIlabfZ46RpCZCAnHzc+sJCOyjxeOkZ4CgWyNzOXI6bHv9KF2F3sS7EEYWbxWXoemXDmixz4nf6PdTtK+au4u9YsV6rBNjgEXqnPFVQ=
+	t=1709138335; cv=none; b=qB5sIVYyIdzFG69/tOC8FkKLrb4ajrEJxa8KRr146MKWsDgFdLpk0IXDh6UXQ1zycJameiZv9ex4stKI2oApguXkYHZr7++F0Pc0g+IUEb6ULkNq61XinJUb1zwzBqJ6kjT1r5KT3hiUDJ4LS2/I3um+9VdRzkhHMPrLzW1Osbo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709138635; c=relaxed/simple;
-	bh=FYKCx/CB7lBAZml9S7q6VnA/X2Dc69iuw7PNmS0oyIY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=e7I0DLjDMG3iaHDU4kN1iY0XMKltMydv6hoIDfxb4LCmHoRKjyMnq6N30n7y5YEH8HFQMFffbCeC45EomwoU5N3liNvogLlPdvGGkp+qNcChyaxNQ6eBo/YAubb3byObPiLTGpDSVwqSRoI3XJ8ZcelsSbCXQpTUJAGx5/UT9nk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru; spf=pass smtp.mailfrom=ispras.ru; dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b=YmRLWnyh; arc=none smtp.client-ip=83.149.199.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
-Received: from localhost.ispras.ru (unknown [10.10.165.5])
-	by mail.ispras.ru (Postfix) with ESMTPSA id ABD2140B2789;
-	Wed, 28 Feb 2024 16:43:41 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru ABD2140B2789
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
-	s=default; t=1709138622;
-	bh=8Kapx+kuKpDoK4A4QmaYAHOJUYLKDxYZDCpVP7uvsw8=;
-	h=From:To:Cc:Subject:Date:From;
-	b=YmRLWnyh6WTPq/1NtKnORSTnFTdNK0XBXz/JSesuPeJ/UQOd50aBB4vhpf1sWpoPS
-	 Tr78j7iRNgy1AhFUrp4q6Rejc7APf7S8uVsxZ/fCxADORifj6TkwcgVsP3uoBXvoL/
-	 7tTwO71wdrhvoTvkiYudjlDnsw5k/KEryMG38+8U=
-From: Fedor Pchelkin <pchelkin@ispras.ru>
-To: Alexander Aring <alex.aring@gmail.com>,
-	Stefan Schmidt <stefan@datenfreihafen.org>
-Cc: Fedor Pchelkin <pchelkin@ispras.ru>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	"David S. Miller" <davem@davemloft.net>,
+	s=arc-20240116; t=1709138335; c=relaxed/simple;
+	bh=y5V4yf+OL0T4yXvoaoiubpwk4H7Ml9DAq0xONX7D8YE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ReBws46EZuvwnmEvBQxwg00R2gXp3Iw2pXcQHPrF3s1+0eE2Oi3nLpLOur9lsIYcIbZSK6IvciJEBXAEMXT2e6qOUSSSH3C62aUnvK5OyaJ+IUcnmNchOfdC1qNlIyHALWZ7Kz5goQ9cHl7cl2Tac90IyB4TTEG9F1c0639wNKk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H1YNkssN; arc=none smtp.client-ip=209.85.128.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-608ccac1899so53891107b3.1;
+        Wed, 28 Feb 2024 08:38:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709138331; x=1709743131; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=jTwj7YTldw7xXwxIUCBnkzOCQU6UVFcauswdy14IwOs=;
+        b=H1YNkssNOo1yu/1vcIcK80aG7rNgNWzr+9mPF7ktCXckf7hJrgJPLXfRuGGpNT0qzG
+         WwMZT9FI8llnsH+fXMLR0fnw6v+B9tJS9IUcBTHnS+qjGLkai49u54kfEfEfiUVBrLec
+         qEJiWdvljcoMCM8CvFyJ5wNzoVEQXXB2f4ASvQ23X5lp64LtNq9OKcAZTGVpDGKqwUCf
+         bdk0MqREcIz6tsakAEVJ6nL8JgZA6ZHBJRNVavDFsm7KvEvraF4Uu6Ar7nPYmUwOWi9A
+         43IVmQlolZ1WpGSzySwk4bK5rox9co6DbIpnWTwmPF9OC82LZ8ril1weKzYf2jEYrg5g
+         rhtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709138331; x=1709743131;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jTwj7YTldw7xXwxIUCBnkzOCQU6UVFcauswdy14IwOs=;
+        b=NB4G+qG/N9QoHgnCtyim2m9MEwBjL549hlshANnRzOOkbMObByvZ0Swsd/zVIyyoIf
+         4uAr/kRLoKqlGFujep+WCpWZWHb0q1O4hTpHQK0zjprKw8KVFC/T3O3oanaxzFZo9S+g
+         oE5c1wNs3SmiFUQmXeP2znkFdtlsF/WNlZyMfo+zzAYBLtesgv7MXDJV2eArDswwXghH
+         2+gXwMjTn3qCkmOXuvSKq2oH9xidvS27Afvps87W9Yg4KeCPIvAbHr2nCU70asC5EUlr
+         Q+NWq4Qs4CiguSoBlaN9151pISg5EaNYRnBQijuuQlZ4xp7DTsL3mqHhIQbYXkN54WIs
+         Dg7A==
+X-Forwarded-Encrypted: i=1; AJvYcCUTnXBeGT87cF6zYM30XnLrOjlQnAHd/2OhYrNrePfHWo5xyEm18QRqGl/CP3Tv4Fasi1/yHWQa1/pTxhJnwn1e8u7Bt8GS0GdNKFvEbox3loQpeszw26fisl6ryd2+h+juigZhQJl+CXp6hw5/qfgxIdEqnd+UTIdOXQnqbbj9Q/mmuDQze2w5m6yc/rWY+YZzsr8saXOEFmOzPMmM
+X-Gm-Message-State: AOJu0Yys2wk+DYsLAlUA/2ZgAisd3qKrXUIbm45u/81zAbJKsNsL83jf
+	Q3LUPwU/g2R75nu0g7HI3/rZ4neDMHyyCd6xJxfDRqItmZ1Gr0Bo
+X-Google-Smtp-Source: AGHT+IEmMyjbt5zC8HyXDYsAM1yJB6Hewc/4Omte77HBnj8s9sJO3KwuLiGqZsA5Zf/LE6Xx1smxaA==
+X-Received: by 2002:a81:e349:0:b0:608:d188:6fd9 with SMTP id w9-20020a81e349000000b00608d1886fd9mr5562117ywl.33.1709138330762;
+        Wed, 28 Feb 2024 08:38:50 -0800 (PST)
+Received: from localhost ([2601:344:8301:57f0:2256:57ae:919c:373f])
+        by smtp.gmail.com with ESMTPSA id y130-20020a0dd688000000b00608a174f00fsm2468913ywd.55.2024.02.28.08.38.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Feb 2024 08:38:49 -0800 (PST)
+Date: Wed, 28 Feb 2024 08:38:49 -0800
+From: Yury Norov <yury.norov@gmail.com>
+To: Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Phoebe Buckheister <phoebe.buckheister@itwm.fraunhofer.de>,
-	linux-wpan@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Alexey Khoroshilov <khoroshilov@ispras.ru>,
-	lvc-project@linuxtesting.org,
-	stable@vger.kernel.org
-Subject: [PATCH wpan] mac802154: fix llsec key resources release in mac802154_llsec_key_del
-Date: Wed, 28 Feb 2024 19:38:39 +0300
-Message-ID: <20240228163840.6667-1-pchelkin@ispras.ru>
-X-Mailer: git-send-email 2.43.2
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
+	Marcin Szycik <marcin.szycik@linux.intel.com>,
+	Wojciech Drewek <wojciech.drewek@intel.com>,
+	Andy Shevchenko <andy@kernel.org>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Alexander Potapenko <glider@google.com>,
+	Jiri Pirko <jiri@resnulli.us>, Ido Schimmel <idosch@nvidia.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Simon Horman <horms@kernel.org>, linux-btrfs@vger.kernel.org,
+	dm-devel@redhat.com, ntfs3@lists.linux.dev,
+	linux-s390@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v5 17/21] lib/bitmap: add tests for IP tunnel
+ flags conversion helpers
+Message-ID: <Zd9hmZaMIcip4ndA@yury-ThinkPad>
+References: <20240201122216.2634007-1-aleksander.lobakin@intel.com>
+ <20240201122216.2634007-18-aleksander.lobakin@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240201122216.2634007-18-aleksander.lobakin@intel.com>
 
-mac802154_llsec_key_del() can free resources of a key directly without
-following the RCU rules for waiting before the end of a grace period. This
-may lead to use-after-free in case llsec_lookup_key() is traversing the
-list of keys in parallel with a key deletion:
+On Thu, Feb 01, 2024 at 01:22:12PM +0100, Alexander Lobakin wrote:
+> Now that there are helpers for converting IP tunnel flags between the
+> old __be16 format and the bitmap format, make sure they work as expected
+> by adding a couple of tests to the bitmap testing suite. The helpers are
+> all inline, so no dependencies on the related CONFIG_* (or a standalone
+> module) are needed.
+> 
+> Cover three possible cases:
+> 
+> 1. No bits past BIT(15) are set, VTI/SIT bits are not set. This
+>    conversion is almost a direct assignment.
+> 2. No bits past BIT(15) are set, but VTI/SIT bit is set. During the
+>    conversion, it must be transformed into BIT(16) in the bitmap,
+>    but still compatible with the __be16 format.
+> 3. The bitmap has bits past BIT(15) set (not the VTI/SIT one). The
+>    result will be truncated.
+>    Note that currently __IP_TUNNEL_FLAG_NUM is 17 (incl. special),
+>    which means that the result of this case is currently
+>    semi-false-positive. When BIT(17) is finally here, it will be
+>    adjusted accordingly.
+> 
+> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 
-refcount_t: addition on 0; use-after-free.
-WARNING: CPU: 4 PID: 16000 at lib/refcount.c:25 refcount_warn_saturate+0x162/0x2a0
-Modules linked in:
-CPU: 4 PID: 16000 Comm: wpan-ping Not tainted 6.7.0 #19
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-RIP: 0010:refcount_warn_saturate+0x162/0x2a0
-Call Trace:
- <TASK>
- llsec_lookup_key.isra.0+0x890/0x9e0
- mac802154_llsec_encrypt+0x30c/0x9c0
- ieee802154_subif_start_xmit+0x24/0x1e0
- dev_hard_start_xmit+0x13e/0x690
- sch_direct_xmit+0x2ae/0xbc0
- __dev_queue_xmit+0x11dd/0x3c20
- dgram_sendmsg+0x90b/0xd60
- __sys_sendto+0x466/0x4c0
- __x64_sys_sendto+0xe0/0x1c0
- do_syscall_64+0x45/0xf0
- entry_SYSCALL_64_after_hwframe+0x6e/0x76
+So why testing IP tunnels stuff in lib/test_bitmap? I think it should
+go with the rest of networking code.
 
-Also, ieee802154_llsec_key_entry structures are not freed by
-mac802154_llsec_key_del():
-
-unreferenced object 0xffff8880613b6980 (size 64):
-  comm "iwpan", pid 2176, jiffies 4294761134 (age 60.475s)
-  hex dump (first 32 bytes):
-    78 0d 8f 18 80 88 ff ff 22 01 00 00 00 00 ad de  x.......".......
-    00 00 00 00 00 00 00 00 03 00 cd ab 00 00 00 00  ................
-  backtrace:
-    [<ffffffff81dcfa62>] __kmem_cache_alloc_node+0x1e2/0x2d0
-    [<ffffffff81c43865>] kmalloc_trace+0x25/0xc0
-    [<ffffffff88968b09>] mac802154_llsec_key_add+0xac9/0xcf0
-    [<ffffffff8896e41a>] ieee802154_add_llsec_key+0x5a/0x80
-    [<ffffffff8892adc6>] nl802154_add_llsec_key+0x426/0x5b0
-    [<ffffffff86ff293e>] genl_family_rcv_msg_doit+0x1fe/0x2f0
-    [<ffffffff86ff46d1>] genl_rcv_msg+0x531/0x7d0
-    [<ffffffff86fee7a9>] netlink_rcv_skb+0x169/0x440
-    [<ffffffff86ff1d88>] genl_rcv+0x28/0x40
-    [<ffffffff86fec15c>] netlink_unicast+0x53c/0x820
-    [<ffffffff86fecd8b>] netlink_sendmsg+0x93b/0xe60
-    [<ffffffff86b91b35>] ____sys_sendmsg+0xac5/0xca0
-    [<ffffffff86b9c3dd>] ___sys_sendmsg+0x11d/0x1c0
-    [<ffffffff86b9c65a>] __sys_sendmsg+0xfa/0x1d0
-    [<ffffffff88eadbf5>] do_syscall_64+0x45/0xf0
-    [<ffffffff890000ea>] entry_SYSCALL_64_after_hwframe+0x6e/0x76
-
-Handle the proper resource release in the RCU callback function
-mac802154_llsec_key_del_rcu().
-
-Note that if llsec_lookup_key() finds a key, it gets a refcount via
-llsec_key_get() and locally copies key id from key_entry (which is a
-list element). So it's safe to call llsec_key_put() and free the list
-entry after the RCU grace period elapses.
-
-Found by Linux Verification Center (linuxtesting.org).
-
-Fixes: 5d637d5aabd8 ("mac802154: add llsec structures and mutators")
-Cc: stable@vger.kernel.org
-Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
----
-Should the patch be targeted to "net" tree directly?
-
- include/net/cfg802154.h |  1 +
- net/mac802154/llsec.c   | 18 +++++++++++++-----
- 2 files changed, 14 insertions(+), 5 deletions(-)
-
-diff --git a/include/net/cfg802154.h b/include/net/cfg802154.h
-index cd95711b12b8..76d2cd2e2b30 100644
---- a/include/net/cfg802154.h
-+++ b/include/net/cfg802154.h
-@@ -401,6 +401,7 @@ struct ieee802154_llsec_key {
- 
- struct ieee802154_llsec_key_entry {
- 	struct list_head list;
-+	struct rcu_head rcu;
- 
- 	struct ieee802154_llsec_key_id id;
- 	struct ieee802154_llsec_key *key;
-diff --git a/net/mac802154/llsec.c b/net/mac802154/llsec.c
-index 8d2eabc71bbe..f13b07ebfb98 100644
---- a/net/mac802154/llsec.c
-+++ b/net/mac802154/llsec.c
-@@ -265,19 +265,27 @@ int mac802154_llsec_key_add(struct mac802154_llsec *sec,
- 	return -ENOMEM;
- }
- 
-+static void mac802154_llsec_key_del_rcu(struct rcu_head *rcu)
-+{
-+	struct ieee802154_llsec_key_entry *pos;
-+	struct mac802154_llsec_key *mkey;
-+
-+	pos = container_of(rcu, struct ieee802154_llsec_key_entry, rcu);
-+	mkey = container_of(pos->key, struct mac802154_llsec_key, key);
-+
-+	llsec_key_put(mkey);
-+	kfree_sensitive(pos);
-+}
-+
- int mac802154_llsec_key_del(struct mac802154_llsec *sec,
- 			    const struct ieee802154_llsec_key_id *key)
- {
- 	struct ieee802154_llsec_key_entry *pos;
- 
- 	list_for_each_entry(pos, &sec->table.keys, list) {
--		struct mac802154_llsec_key *mkey;
--
--		mkey = container_of(pos->key, struct mac802154_llsec_key, key);
--
- 		if (llsec_key_id_equal(&pos->id, key)) {
- 			list_del_rcu(&pos->list);
--			llsec_key_put(mkey);
-+			call_rcu(&pos->rcu, mac802154_llsec_key_del_rcu);
- 			return 0;
- 		}
- 	}
--- 
-2.43.2
-
+> ---
+>  lib/test_bitmap.c | 105 ++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 105 insertions(+)
+> 
+> diff --git a/lib/test_bitmap.c b/lib/test_bitmap.c
+> index 4ee1f8ceb51d..270afc0cba5c 100644
+> --- a/lib/test_bitmap.c
+> +++ b/lib/test_bitmap.c
+> @@ -14,6 +14,8 @@
+>  #include <linux/string.h>
+>  #include <linux/uaccess.h>
+>  
+> +#include <net/ip_tunnels.h>
+> +
+>  #include "../tools/testing/selftests/kselftest_module.h"
+>  
+>  #define EXP1_IN_BITS	(sizeof(exp1) * 8)
+> @@ -1409,6 +1411,108 @@ static void __init test_bitmap_write_perf(void)
+>  
+>  #undef TEST_BIT_LEN
+>  
+> +struct ip_tunnel_flags_test {
+> +	const u16	*src_bits;
+> +	const u16	*exp_bits;
+> +	u8		src_num;
+> +	u8		exp_num;
+> +	__be16		exp_val;
+> +	bool		exp_comp:1;
+> +};
+> +
+> +#define IP_TUNNEL_FLAGS_TEST(src, comp, eval, exp) {	\
+> +	.src_bits	= (src),			\
+> +	.src_num	= ARRAY_SIZE(src),		\
+> +	.exp_comp	= (comp),			\
+> +	.exp_val	= (eval),			\
+> +	.exp_bits	= (exp),			\
+> +	.exp_num	= ARRAY_SIZE(exp),		\
+> +}
+> +
+> +/* These are __be16-compatible and can be compared as is */
+> +static const u16 ip_tunnel_flags_1[] __initconst = {
+> +	IP_TUNNEL_KEY_BIT,
+> +	IP_TUNNEL_STRICT_BIT,
+> +	IP_TUNNEL_ERSPAN_OPT_BIT,
+> +};
+> +
+> +/*
+> + * Due to the previous flags design limitation, setting either
+> + * ``IP_TUNNEL_CSUM_BIT`` (on Big Endian) or ``IP_TUNNEL_DONT_FRAGMENT_BIT``
+> + * (on Little) also sets VTI/ISATAP bit. In the bitmap implementation, they
+> + * correspond to ``BIT(16)``, which is bigger than ``U16_MAX``, but still is
+> + * backward-compatible.
+> + */
+> +#ifdef __BIG_ENDIAN
+> +#define IP_TUNNEL_CONFLICT_BIT	IP_TUNNEL_CSUM_BIT
+> +#else
+> +#define IP_TUNNEL_CONFLICT_BIT	IP_TUNNEL_DONT_FRAGMENT_BIT
+> +#endif
+> +
+> +static const u16 ip_tunnel_flags_2_src[] __initconst = {
+> +	IP_TUNNEL_CONFLICT_BIT,
+> +};
+> +
+> +static const u16 ip_tunnel_flags_2_exp[] __initconst = {
+> +	IP_TUNNEL_CONFLICT_BIT,
+> +	IP_TUNNEL_SIT_ISATAP_BIT,
+> +};
+> +
+> +/* Bits 17 and higher are not compatible with __be16 flags */
+> +static const u16 ip_tunnel_flags_3_src[] __initconst = {
+> +	IP_TUNNEL_VXLAN_OPT_BIT,
+> +	17,
+> +	18,
+> +	20,
+> +};
+> +
+> +static const u16 ip_tunnel_flags_3_exp[] __initconst = {
+> +	IP_TUNNEL_VXLAN_OPT_BIT,
+> +};
+> +
+> +static const struct ip_tunnel_flags_test ip_tunnel_flags_test[] __initconst = {
+> +	IP_TUNNEL_FLAGS_TEST(ip_tunnel_flags_1, true,
+> +			     cpu_to_be16(BIT(IP_TUNNEL_KEY_BIT) |
+> +					 BIT(IP_TUNNEL_STRICT_BIT) |
+> +					 BIT(IP_TUNNEL_ERSPAN_OPT_BIT)),
+> +			     ip_tunnel_flags_1),
+> +	IP_TUNNEL_FLAGS_TEST(ip_tunnel_flags_2_src, true, VTI_ISVTI,
+> +			     ip_tunnel_flags_2_exp),
+> +	IP_TUNNEL_FLAGS_TEST(ip_tunnel_flags_3_src,
+> +			     /*
+> +			      * This must be set to ``false`` once
+> +			      * ``__IP_TUNNEL_FLAG_NUM`` goes above 17.
+> +			      */
+> +			     true,
+> +			     cpu_to_be16(BIT(IP_TUNNEL_VXLAN_OPT_BIT)),
+> +			     ip_tunnel_flags_3_exp),
+> +};
+> +
+> +static void __init test_ip_tunnel_flags(void)
+> +{
+> +	for (u32 i = 0; i < ARRAY_SIZE(ip_tunnel_flags_test); i++) {
+> +		typeof(*ip_tunnel_flags_test) *test = &ip_tunnel_flags_test[i];
+> +		IP_TUNNEL_DECLARE_FLAGS(src) = { };
+> +		IP_TUNNEL_DECLARE_FLAGS(exp) = { };
+> +		IP_TUNNEL_DECLARE_FLAGS(out);
+> +
+> +		for (u32 j = 0; j < test->src_num; j++)
+> +			__set_bit(test->src_bits[j], src);
+> +
+> +		for (u32 j = 0; j < test->exp_num; j++)
+> +			__set_bit(test->exp_bits[j], exp);
+> +
+> +		ip_tunnel_flags_from_be16(out, test->exp_val);
+> +
+> +		expect_eq_uint(test->exp_comp,
+> +			       ip_tunnel_flags_is_be16_compat(src));
+> +		expect_eq_uint((__force u16)test->exp_val,
+> +			       (__force u16)ip_tunnel_flags_to_be16(src));
+> +
+> +		__ipt_flag_op(expect_eq_bitmap, exp, out);
+> +	}
+> +}
+> +
+>  static void __init selftest(void)
+>  {
+>  	test_zero_clear();
+> @@ -1428,6 +1532,7 @@ static void __init selftest(void)
+>  	test_bitmap_read_write();
+>  	test_bitmap_read_perf();
+>  	test_bitmap_write_perf();
+> +	test_ip_tunnel_flags();
+>  
+>  	test_find_nth_bit();
+>  	test_for_each_set_bit();
+> -- 
+> 2.43.0
 
