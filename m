@@ -1,114 +1,154 @@
-Return-Path: <linux-kernel+bounces-85362-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85364-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61FF586B4D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:27:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FD7B86B4DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:27:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B920828CC8D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:26:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F7A71F28EE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:27:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 519126EF1F;
-	Wed, 28 Feb 2024 16:26:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 804E715B0FF;
+	Wed, 28 Feb 2024 16:26:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MqQpyYuF"
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oVqn6QUE"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C12A6EF02;
-	Wed, 28 Feb 2024 16:26:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B28943FBA9;
+	Wed, 28 Feb 2024 16:26:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709137608; cv=none; b=sR8u1EnUI7y9rqqrJeRvLJ5sPpxBfc+fyawLwj07xOnjmA7GvxIQTMIcGIflpAlYa3uQ1+k0mxMx0vfrGJVzUBiIlbrIFocdSz2ptddcYFLFAXz4JaaIjZmlMVmBOMpva++9TEtzLX1KvazKfm70+j0uvvMp9FhXmOtqNsWd1Ik=
+	t=1709137610; cv=none; b=ccJq6f9D+yLH0pwMh/AIGPYaRu/QJW06klzC5mij8DWEH4u+CmLhgiRTeMA2seQfTDDXse8E5ZctzM8BGepGafhGEEKEXJiVtQjNjRAJsfe8StNT9k87ev6i83LGIuLiiYBNOyitOVO4Nfpc/BjmxyR7loE2SvbX5DZY8Ek+rsQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709137608; c=relaxed/simple;
-	bh=cX0mbhq0/BEYvXkOM7RWyssC+Bf7DhBCperd504OjNA=;
+	s=arc-20240116; t=1709137610; c=relaxed/simple;
+	bh=1mSJiKFveQIcxWUIOdkvzQ2W+3D7jbH1bL69Ehdc/yY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OyFePebAodLKkfITlpLPC7/P/0FopQ9SX7HbqvsX2v+tR7dPE0bWLCIB1BSPhV83aJmYVJfEm9NhIP/kILNMxr9LQ51wzZk8hDmIDhVRc5SCJT4Shrufeuruk50ob5nQvFEwuPRHQAd+ntSSdr/4mn8JzDk21LGKGtbgP1ul3Q0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MqQpyYuF; arc=none smtp.client-ip=209.85.219.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dc6d24737d7so5184274276.0;
-        Wed, 28 Feb 2024 08:26:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709137606; x=1709742406; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jKTyKBoJ+zqx71icHaiIJXRtovwN+h+pKT79UfPo2co=;
-        b=MqQpyYuFnbCOlGmRNbh/QSk7cYJl6W5gYFYTb16H2t6X9Yil5lWRX+J/UvpESS0bBX
-         aZC9udLC+9bznVKxZJ/8okYEonOdXddLtihmeiJHMrWT8AjJM680P9eIfN+iE1tdBuUF
-         KlCXDI6fqK/g6r/q4oEfJvDGL8uGeO2f/CgczTW1ew1+0+huTjubOlTrEOoYW5Lrk34N
-         cCGnWSk/FUH2gI3QFyNs552u2oylH+8b/Q4VIM6j01lQoprzBNEluwgkQqLCGSHOWi4F
-         6w40MXgMS5C8hqMrZCr8IWqR61kVA4qr5KR9fHkVkHfIZA4dJ8bdhBfmvPwq5IE/fwtl
-         E1VQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709137606; x=1709742406;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jKTyKBoJ+zqx71icHaiIJXRtovwN+h+pKT79UfPo2co=;
-        b=kSPfSEMAeYHwB1prHIgsntA5X7Wke03t7hA2sRhvHdOvspoWyWtoVqS2mSE2mtb+3M
-         4VyBFJn8CQzKLPP8SUUbGd86I02kEL/6b8rv37dWiTOhP53tBjmwWOo+9Ixof77l3cCT
-         u6Kvqk5IFoHfefLZ3gMC/GAxRlC/KXen2pP7zWfBHhRWeRQ06Qg0fRgvci27t03XhCQr
-         RS8K69k9zULC4+aI/fFYBzTd885KVvgmIlcYBT2cntXKk1GG8xjZRAMgyx1zO0JyzLMp
-         AMBSdDw9N3xKR+wKAlDx0fjFiar6ACnaBiWu66yVPgoK4TZl387jh12V3+RH1SoffLbH
-         4wKg==
-X-Forwarded-Encrypted: i=1; AJvYcCVMPWE7oREciuCBlgPta/tKZ/uXiHVhjuqn9fcR/DeMgW2qzI8HYNzR5kx3npZv5v36AXYzAheHpSFZxZrxMTv3IOQfnHk9J3OpVJ5EYZG6FfjG0PFdoGm42Gz517fizogRtPI7wT6OfpsRMT7Ync/3U5/0LwIRqoW9Djw/LIgk/tRQovFTcO7f1rqKHAW2MbsixM7zuOzC3OAlPxD0
-X-Gm-Message-State: AOJu0YxCb6micPftnuNlr36+8qxHjsfhMcx6UyLE/qpJi/gWoPofXDVa
-	GqsDp0At4o4PJKgSrXsaYCVD4PSS/NFbJnInS11hqwBGMBqTZCDq
-X-Google-Smtp-Source: AGHT+IEzDdshAZPifjikVHSc+ExEKZEbNWC8tYDB1UrSX7QHB04ABcGjvuz4tLQbulb0mZqEO3cKSg==
-X-Received: by 2002:a25:c5ca:0:b0:dc2:2f4f:757 with SMTP id v193-20020a25c5ca000000b00dc22f4f0757mr2619998ybe.7.1709137606029;
-        Wed, 28 Feb 2024 08:26:46 -0800 (PST)
-Received: from localhost ([2601:344:8301:57f0:2256:57ae:919c:373f])
-        by smtp.gmail.com with ESMTPSA id x11-20020a25accb000000b00dc6d6dc9771sm2072223ybd.8.2024.02.28.08.26.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 08:26:45 -0800 (PST)
-Date: Wed, 28 Feb 2024 08:26:44 -0800
-From: Yury Norov <yury.norov@gmail.com>
-To: Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
-	Marcin Szycik <marcin.szycik@linux.intel.com>,
-	Wojciech Drewek <wojciech.drewek@intel.com>,
-	Andy Shevchenko <andy@kernel.org>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	Alexander Potapenko <glider@google.com>,
-	Jiri Pirko <jiri@resnulli.us>, Ido Schimmel <idosch@nvidia.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Simon Horman <horms@kernel.org>, linux-btrfs@vger.kernel.org,
-	dm-devel@redhat.com, ntfs3@lists.linux.dev,
-	linux-s390@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v5 09/21] fs/ntfs3: add prefix to bitmap_size()
- and use BITS_TO_U64()
-Message-ID: <Zd9exCzbAnOxAY50@yury-ThinkPad>
-References: <20240201122216.2634007-1-aleksander.lobakin@intel.com>
- <20240201122216.2634007-10-aleksander.lobakin@intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=pcdeET4XmV8RAeEUhztc34VBXp25TMImMmbW85NCZXXo1qV8e3QJhy9RB2wL22pek38LT5USdapTRg7cnZpro3F9BycSBqXTzwGzRGVZ45XR3zPZgjNWBGBGbIuoxasDj1WqYPfEwe5rh3w/aI14AMiA+2vRVqBZzy8e/RUBWcA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oVqn6QUE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 155E1C433C7;
+	Wed, 28 Feb 2024 16:26:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709137610;
+	bh=1mSJiKFveQIcxWUIOdkvzQ2W+3D7jbH1bL69Ehdc/yY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=oVqn6QUEeQbM2a4tYvbqKYOaLr8t7uOwvVSd3bqV+lsvDt9tkYSR8xnsdKr+lOCiU
+	 CZOf9vQt2KEnN4bveiKcvGMJTXjxm2PhqkAsnz5WypOWq7OwnrpyTX58fEfNwX7J8l
+	 eG9bQXiTQ1jwb0FPIjcsrBj+coy8kR3/3ZL5mtHjIuspJ8SlbH949BMqZudWeekl23
+	 1jKX3aYwVPEcGT4aXxac6TXOf2h+HJSnkv4I388UUZPlt+TAiDSx4mPJorTFR+6tKd
+	 3B8oABI8qB8/gfrybDKR/LttigggdNps8lLOUx5kQwegY6B5PBenGShBGh26yMAG/4
+	 dax5em0LZHBrA==
+Date: Wed, 28 Feb 2024 10:26:47 -0600
+From: Rob Herring <robh@kernel.org>
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: Will Deacon <will@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+	linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+	linux-um@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+	kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+	devicetree@vger.kernel.org, Frank Rowand <frowand.list@gmail.com>,
+	Catalin Marinas <catalin.marinas@arm.com>
+Subject: Re: [PATCH v4 5/7] arm64: Unconditionally call
+ unflatten_device_tree()
+Message-ID: <20240228162647.GA4086865-robh@kernel.org>
+References: <20240217010557.2381548-1-sboyd@kernel.org>
+ <20240217010557.2381548-6-sboyd@kernel.org>
+ <20240223000317.GA3835346-robh@kernel.org>
+ <20240223102345.GA10274@willie-the-truck>
+ <CAL_JsqJSeSHeWV3YJE9n2NuY+s_iE6f7N5C_oguEJn7jTZ20xA@mail.gmail.com>
+ <Zd4dQpHO7em1ji67@FVFF77S0Q05N.cambridge.arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240201122216.2634007-10-aleksander.lobakin@intel.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Zd4dQpHO7em1ji67@FVFF77S0Q05N.cambridge.arm.com>
 
-On Thu, Feb 01, 2024 at 01:22:04PM +0100, Alexander Lobakin wrote:
-> bitmap_size() is a pretty generic name and one may want to use it for
-> a generic bitmap API function. At the same time, its logic is
-> NTFS-specific, as it aligns to the sizeof(u64), not the sizeof(long)
-> (although it uses ideologically right ALIGN() instead of division).
-> Add the prefix 'ntfs3_' used for that FS (not just 'ntfs_' to not mix
-> it with the legacy module) and use generic BITS_TO_U64() while at it.
+On Tue, Feb 27, 2024 at 05:34:58PM +0000, Mark Rutland wrote:
+> On Fri, Feb 23, 2024 at 11:17:02AM -0700, Rob Herring wrote:
+> > On Fri, Feb 23, 2024 at 3:23 AM Will Deacon <will@kernel.org> wrote:
+> > >
+> > > On Thu, Feb 22, 2024 at 05:03:17PM -0700, Rob Herring wrote:
+> > > > On Fri, Feb 16, 2024 at 05:05:54PM -0800, Stephen Boyd wrote:
+> > > > > Call this function unconditionally so that we can populate an empty DTB
+> > > > > on platforms that don't boot with a firmware provided or builtin DTB.
+> > > > > When ACPI is in use, unflatten_device_tree() ignores the
+> > > > > 'initial_boot_params' pointer so the live DT on those systems won't be
+> > > > > whatever that's pointing to. Similarly, when kexec copies the DT data
+> > > > > the previous kernel to the new one on ACPI systems,
+> > > > > of_kexec_alloc_and_setup_fdt() will ignore the live DT (the empty root
+> > > > > one) and copy the 'initial_boot_params' data.
+> > > > >
+> > > > > Cc: Rob Herring <robh+dt@kernel.org>
+> > > > > Cc: Frank Rowand <frowand.list@gmail.com>
+> > > > > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > > > > Cc: Will Deacon <will@kernel.org>
+> > > > > Cc: Mark Rutland <mark.rutland@arm.com>
+> > > > > Cc: <linux-arm-kernel@lists.infradead.org>
+> > > > > Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+> > > > > ---
+> > > > >  arch/arm64/kernel/setup.c | 3 +--
+> > > > >  1 file changed, 1 insertion(+), 2 deletions(-)
+> > > >
+> > > > Catalin, Will, Can I get an ack on this so I can take the series via the
+> > > > DT tree.
+> > >
+> > > Mark had strong pretty strong objections to this in version one:
+> > 
+> > Yes, I had concerns with it as well.
+> > 
+> > > https://lore.kernel.org/all/ZaZtbU9hre3YhZam@FVFF77S0Q05N/
+> > >
+> > > and this patch looks the same now as it did then. Did something else
+> > > change?
+> > 
+> > Yes, that version unflattened the bootloader passed DT. Now within
+> > unflatten_devicetree(), the bootloader DT is ignored if ACPI is
+> > enabled and we unflatten an empty tree. That will prevent the kernel
+> > getting 2 h/w descriptions if/when a platform does such a thing. Also,
+> > kexec still uses the bootloader provided DT as before.
 > 
-> Suggested-by: Yury Norov <yury.norov@gmail.com> # BITS_TO_U64()
-> Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
-> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+> That avoids the main instance of my concern, and means that this'll boot
+> without issue, but IIUC this opens the door to dynamically instantiating DT
+> devices atop an ACPI base system, which I think in general is something that's
+> liable to cause more problems than it solves.
+> 
+> I understand that's desireable for the selftests, though I still don't believe
+> it's strictly necessary -- there are plenty of other things that only work if
+> the kernel is booted in a specific configuration.
 
-Reviewed-by: Yury Norov <yury.norov@gmail.com>
+Why add to the test matrix if we don't have to?
+
+> Putting the selftests aside, why do we need to do this? Is there any other
+> reason to enable this?
+
+See my Plumbers talk...
+
+Or in short, there's 3 main usecases:
+
+- PCI FPGA card with devices instantiated in it 
+- SoCs which expose their peripherals via a PCI endpoint.
+- Injecting test devices with QEMU (testing, but not what this series 
+  does. Jonathan Cameron's usecase)
+
+In all cases, drivers already exist for the devices, and they often only 
+support DT. DT overlays is the natural solution for this, and there's 
+now kernel support for it (dynamically generating PCI DT nodes when they 
+don't exist). The intent is to do the same thing on ACPI systems.
+
+I don't see another solution other than 'go away, you're crazy'. There's 
+ACPI overlays, but that's only a debug feature. Also, that would 
+encourage more of the DT bindings in ACPI which I find worse than this 
+mixture. There's swnodes, but that's just board files and platform_data 
+2.0.
+
+I share the concerns with mixing, but I don't see a better solution. The 
+scope of what's possible is contained enough to avoid issues.
+
+Rob
 
