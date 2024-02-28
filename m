@@ -1,112 +1,91 @@
-Return-Path: <linux-kernel+bounces-85801-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85804-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6ABE86BAF5
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:49:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B00D86BAFA
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:50:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D8B911C216B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 22:49:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04185285041
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 22:50:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 578727290E;
-	Wed, 28 Feb 2024 22:49:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B73DE7290F;
+	Wed, 28 Feb 2024 22:50:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DDAiNwqx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CtgZ12Lc"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 902EA71EA1;
-	Wed, 28 Feb 2024 22:49:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06A931361D0
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 22:50:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709160556; cv=none; b=hMeB8ebCc6IhOom1dQ+2ee8amDRlyaXU07DIxJ9suRINd3mPRBcGomdH5EHzsuMTZfychG/rB9BFiXTjo/TZqrs6PrglImoGb9FpmVV0OvqF1nmrzJNX+TFx2JWoQIMIzogMk7YCmeVieLJYzxYNeKhLte3r2PZsTsSrVuZHU4U=
+	t=1709160632; cv=none; b=UxFUmxJd8FFUMZju0wLUmZBmyzf1iAdvBWjK/bWb9t8dbn+iAJOMj69k6vaM4UiGv068zxnWJBECFWF3C2DeADiDNgar/nuuokdoylcoHPY0XNC587Vu5dq8SE2d9cdM+7CIP0E/7eRn9+N+VFtSXdbMrQ5rEHwRLAGP01GssMw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709160556; c=relaxed/simple;
-	bh=Pz9CnoezD/dgggmHZ3jrf8PSRKN8xh1HR0itqdgzHns=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZVAsTHNNAYMaopIHEtktVusp21OPPnHxD8xQFwpmAOT1GoefmvuZVkSeFf1OPncucDCL+kY7hhEiCkX5XSLPsgB32JeVtTPyqEpyJiYDhGJ6OQ7ZkKkxwwfVon9WjaVC8CCA9ebo+jWHxSdmPx6eJq6r01tYZF/lMlafVl+Lo94=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DDAiNwqx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1718AC433C7;
-	Wed, 28 Feb 2024 22:49:16 +0000 (UTC)
+	s=arc-20240116; t=1709160632; c=relaxed/simple;
+	bh=3Fd60MS/Vmnzo7x8IrSs/bDLfdZm3IDdQANbO/8Z0Lk=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=WvrTfYpm+7/FjtY7k93hjUerv0aZeisJKURUKNrSwRVTVJkvKNtLmFNfy1F9cKRUrPTaQ7Fndv5ZRS1ctp06NjU31dFuNhJijT6xFwAB7vg/8Cg76LhCnCMAHTQA+8jzo6hVt8lCdiUrSAtbPr0F1QZbwg6gdUoj+5G3MzmcE8g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CtgZ12Lc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A7DEFC433F1;
+	Wed, 28 Feb 2024 22:50:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709160556;
-	bh=Pz9CnoezD/dgggmHZ3jrf8PSRKN8xh1HR0itqdgzHns=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=DDAiNwqx+QFzs0aDq1cZJl97xgt+E/dg1Af4G2GKL33IXpDj8V3cWpBUTpQaAEbA8
-	 8BdPe8jeJKVBgwhxZM8YwycQ0CBjFu5d+dQZgPntkoQraatbu+xNqN5kQE/W7yDZO9
-	 EnKx/GLbjSM5KEff5lED6jUWU7OGdi67V4i96UO/QM//7NEBrh68n7nBTg+R/BpEub
-	 ILiifH/zub8EF+lKJ/MoYHWDVv1B7d4qpUrwi3McsbgFZk/+/qelCZ1AzjVTkY9PnT
-	 Av7XpO6wqlQceFttGkfsj419JZadiMHwaj9oVmz9xVARRlpDwVwgKNNaqN7/P7lap6
-	 HR2r3PUBnRvqQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id A9DFFCE0F91; Wed, 28 Feb 2024 14:49:15 -0800 (PST)
-Date: Wed, 28 Feb 2024 14:49:15 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Joel Fernandes <joel@joelfernandes.org>, Yan Zhai <yan@cloudflare.com>,
-	Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Lorenzo Bianconi <lorenzo@kernel.org>,
-	Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>,
-	Alexander Duyck <alexanderduyck@fb.com>,
-	Hannes Frederic Sowa <hannes@stressinduktion.org>,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-	bpf@vger.kernel.org, kernel-team@cloudflare.com,
-	mark.rutland@arm.com,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Subject: Re: [PATCH] net: raise RCU qs after each threaded NAPI poll
-Message-ID: <1880cb02-d259-46d8-b4f7-0b3e2e0f0745@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <02913b40-7b74-48b3-b15d-53133afd3ba6@paulmck-laptop>
- <3D27EFEF-0452-4555-8277-9159486B41BF@joelfernandes.org>
- <ba95955d-b63d-4670-b947-e77b740b1a49@paulmck-laptop>
- <20240228173307.529d11ee@gandalf.local.home>
+	s=k20201202; t=1709160631;
+	bh=3Fd60MS/Vmnzo7x8IrSs/bDLfdZm3IDdQANbO/8Z0Lk=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=CtgZ12LccI/s+ShYcVRT3viuEpG/gy0XmcIlCDJG3TpnTHXXObh/Snre3FhGlhxiL
+	 SRFHCIE4vSRcGzyyw2agfXIurbMxVXXb9Hsfe6BaS1fZe/EWa44l7goiOFmjZsqO4j
+	 h0uVK0xQQheqr4x0DIqBuSAkucUwbb2RTKNgBogwjIrRAUcgzAenv4eqY0rdYnb5R3
+	 DsSM+vEh/0/6GPvzGCJFjy/umVgF3qHq5xkQP6cNh8rgqFC+9Xe8IhWpX1Y8yTKI6x
+	 LhVu8dOQnSTryLiF2IjR5cbUAACMjxcKZJZDf8HMkHO+Zm14YcNMdRIO08bkqcZSCf
+	 iaHRCcTyFf02w==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 81E8ED990A7;
+	Wed, 28 Feb 2024 22:50:31 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240228173307.529d11ee@gandalf.local.home>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [f2fs-dev] [PATCH] f2fs: compress: fix to check compress flag w/
+ .i_sem lock
+From: patchwork-bot+f2fs@kernel.org
+Message-Id: 
+ <170916063152.28690.2631252489299295101.git-patchwork-notify@kernel.org>
+Date: Wed, 28 Feb 2024 22:50:31 +0000
+References: <20240219022844.3461390-1-chao@kernel.org>
+In-Reply-To: <20240219022844.3461390-1-chao@kernel.org>
+To: Chao Yu <chao@kernel.org>
+Cc: jaegeuk@kernel.org, linux-kernel@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net
 
-On Wed, Feb 28, 2024 at 05:33:07PM -0500, Steven Rostedt wrote:
-> On Wed, 28 Feb 2024 14:19:11 -0800
-> "Paul E. McKenney" <paulmck@kernel.org> wrote:
+Hello:
+
+This patch was applied to jaegeuk/f2fs.git (dev)
+by Jaegeuk Kim <jaegeuk@kernel.org>:
+
+On Mon, 19 Feb 2024 10:28:44 +0800 you wrote:
+> It needs to check compress flag w/ .i_sem lock, otherwise, compressed
+> inode may be disabled after the check condition, it's not needed to
+> set compress option on non-compress inode.
 > 
-> > > > 
-> > > > Well, to your initial point, cond_resched() does eventually invoke
-> > > > preempt_schedule_common(), so you are quite correct that as far as
-> > > > Tasks RCU is concerned, cond_resched() is not a quiescent state.  
-> > > 
-> > >  Thanks for confirming. :-)  
-> > 
-> > However, given that the current Tasks RCU use cases wait for trampolines
-> > to be evacuated, Tasks RCU could make the choice that cond_resched()
-> > be a quiescent state, for example, by adjusting rcu_all_qs() and
-> > .rcu_urgent_qs accordingly.
-> > 
-> > But this seems less pressing given the chance that cond_resched() might
-> > go away in favor of lazy preemption.
+> Fixes: e1e8debec656 ("f2fs: add F2FS_IOC_SET_COMPRESS_OPTION ioctl")
+> Signed-off-by: Chao Yu <chao@kernel.org>
 > 
-> Although cond_resched() is technically a "preemption point" and not truly a
-> voluntary schedule, I would be happy to state that it's not allowed to be
-> called from trampolines, or their callbacks. Now the question is, does BPF
-> programs ever call cond_resched()? I don't think they do.
+> [...]
 
-Nor do I, but I too must defer to Alexei.  ;-)
+Here is the summary with links:
+  - [f2fs-dev] f2fs: compress: fix to check compress flag w/ .i_sem lock
+    https://git.kernel.org/jaegeuk/f2fs/c/7493c07e31d6
 
-> [ Added Alexei ]
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-The other issue with making cond_resched() be a Tasks RCU quiescent
-state is that the CONFIG_PREEMPTION=y version of cond_resched() would
-need to stop being a complete no-op.  Which actually might be OK.
 
-							Thanx, Paul
 
