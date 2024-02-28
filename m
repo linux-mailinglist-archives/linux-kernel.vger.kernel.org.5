@@ -1,118 +1,127 @@
-Return-Path: <linux-kernel+bounces-85367-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85368-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D15C086B4FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:32:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D4BA86B4F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:31:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 29368B2CA03
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:30:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F4AB1C230B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:31:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E52223FB94;
-	Wed, 28 Feb 2024 16:29:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C051A1DFE8;
+	Wed, 28 Feb 2024 16:31:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WjcpS2mh"
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+	dkim=pass (2048-bit key) header.d=networkplumber-org.20230601.gappssmtp.com header.i=@networkplumber-org.20230601.gappssmtp.com header.b="Xa90Gu1D"
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C431E6EEEC;
-	Wed, 28 Feb 2024 16:29:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1D716EEE4
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 16:31:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709137791; cv=none; b=byPwDRZ6nsJoIZRVvSYZMPnbkBbGNf/476f32P7zVtPZMlq9lslLVygJ1g/mKGNqDZZSw7q08RpbhIhE8gXNbyHYDifaonwGWMqrcEIemWwdpXCPOBzVf1y2IISB+NNGu/HqarlEhx1+ol3e56nRgz1I/TR7u7xmOeRf3bzThfA=
+	t=1709137881; cv=none; b=eSfjOyEz320p6dVh43CJlhKno6pFLA2JnQAiyHSpW7zyDW5j5b7Hppu79qxC217/uVLXmQ1MuSKvpBhm432YFWmnPpJXcuJ2Ofv45aNp3QJuvif6zA6O8T9w19N7KpU9MjYuez6FH16b6cOCDKat3K2YiYKJdZA8+Zf0FayquvY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709137791; c=relaxed/simple;
-	bh=wS3cg47EfvD5VkYCZNfgMA58P2hp2/4YIQrmVXFhguQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Q7jjs88ODLoCB4d4FE3muc2aJZ9gK5egjHlIxd9hhnSDHUQ43wPa5s/QE5gQ4/Htx5YZjtfBRZJFj1/CAQSNonjrYiOycBUsfQ4oQfX0cGqnEhmRi3vT7gCtT7JUqIISZAH19ADlAEV1xWeRb7iqutjX7XQ0Cl1DXdxvoXlkmWc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WjcpS2mh; arc=none smtp.client-ip=209.85.128.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-607e54b6cf5so8351407b3.0;
-        Wed, 28 Feb 2024 08:29:49 -0800 (PST)
+	s=arc-20240116; t=1709137881; c=relaxed/simple;
+	bh=Zb0qiPi6+IKmYsXfmJ8ZpDv2w0U0cEduf5NFNRpaqpY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=CBeO0iMVckJCOpqVHDlSZysmphy0NRbCw3IXyDK6PZNBKH7mMe32TVzlqeCVnjQQ8f5eM6rsBoqy2Y9YmCPBNc2jVeJ3UOZde9FEjoE3Nu97z2qPPZO4m8S9SBYyF2LeYqueYaLykhxQLW1lDRpHh2bVsYHujXRkjqwNKP+CUSk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=networkplumber.org; spf=pass smtp.mailfrom=networkplumber.org; dkim=pass (2048-bit key) header.d=networkplumber-org.20230601.gappssmtp.com header.i=@networkplumber-org.20230601.gappssmtp.com header.b=Xa90Gu1D; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=networkplumber.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=networkplumber.org
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1dcce5e84bcso5312985ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 08:31:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709137789; x=1709742589; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kj3zQ1lBxACrFRnKWFxYbPf2tKrEF/iMipPYB2aWh/I=;
-        b=WjcpS2mhLdIqYZhn5R6jyj2N3fEvr4qWjAx6/h+M/Ol62xHehBunCP+Jn+Mwe3xemO
-         RbPQvXmBBH8s74lEweTfAxZbaXj1G7wYf2Pjxz7Es/G8FgG3fILUGUrN8xziniTBflVs
-         lAfEv9CnSWSHVU/+/Vks8gl+/Bv9cvvqvp7n7KQS8mOlZveMW+aP4RbDDI8KPvg9pXz5
-         S7VORQeCBfXF7IL7Jv7cqUshMavLfLDP/0LDhIo/UbrFjshZ+mknkbQKQmviNlhPxBOw
-         odkh9l7y2cV8Kz39UYpLc/4J6CRRlSOTar+BlMJcTCcDUWMQhp5YOPIWD21z0dI2Uib8
-         z3vg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709137789; x=1709742589;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=networkplumber-org.20230601.gappssmtp.com; s=20230601; t=1709137879; x=1709742679; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kj3zQ1lBxACrFRnKWFxYbPf2tKrEF/iMipPYB2aWh/I=;
-        b=L6O4sMa0Ac9RKr/PGsFYHIyTN5xpwl9vrHOxBjhLcXPUaNKkDpRyfE9YbkQr19rBlG
-         KUVOuDgJn0K8YFvX4WbiTjwA5BmTUvoDl2dr7KQeLSc2lQ58td3nV1ORIcuKyyQDO7kK
-         aaeks+XS6i1T39vVALArjZtBPhFHgfMDyL3xITOnGxrUab6NCt6b6POHvmyZnITDwQtt
-         BxIr7jW+wj5TB0T+kS5qqZvZXPT/S1mnZEqD3q81iF3MsK8QczUhBTUyHT84a+FG6EBw
-         Y/R5kj+TR9qWLJodSxwvyUn1EDOaSAVBqdp/XUYYXyQfW2fRZdbVjE/BGUCu4R5acf2O
-         8w4Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWALmRI18VbLUELXIGcB7Eqj2jpyUb2QY+wHXy8SEzfoduvXcqHme/U5bWTEEheZYjZAAmHwWUEQ6xK9o2bcIUpeXU7rnPQLO3j5bHTyMJXa+IPZUtCxsqhMV1p65Eu9pY/he2DtKse5P2ciN/KolI/QeAsMjizhroAFbc9dRrsudgSAKs+jEv8SRv8/GP893zuuXvh47DpBKNVezHx
-X-Gm-Message-State: AOJu0YyIs8TnadnLtJqBST/GTcVNpD73i8TTBP7OJLdeT2QoTy71+NhC
-	97G4vp6yecSTgqkTv3pgHF3wiWznKtMwcMmv9yT+XcLsjJhy5qGd
-X-Google-Smtp-Source: AGHT+IGa1uVu1QGKwzBN/ugqWSb5R7kpDXIVH6fnycyAQSPeZdMmpMkJiKarLdELLKFo76CJJMn2/A==
-X-Received: by 2002:a81:b284:0:b0:608:cc10:f4f4 with SMTP id q126-20020a81b284000000b00608cc10f4f4mr1884717ywh.16.1709137788712;
-        Wed, 28 Feb 2024 08:29:48 -0800 (PST)
-Received: from localhost ([2601:344:8301:57f0:2256:57ae:919c:373f])
-        by smtp.gmail.com with ESMTPSA id i126-20020a0df884000000b00608a88ba3c7sm2471750ywf.79.2024.02.28.08.29.48
+        bh=79kwpVMuJO5cQvJrrGHz3RQeCi3FyZACKTPne3xyWe4=;
+        b=Xa90Gu1DWvtPpWEvInRdjGkjVzROmgpsjKy0ofqeAdgW0UbSqgVrR2Hs4tBEQ+SK9z
+         C/ObKP/MT4d4cQNxef42S4jUMSvFqgPEYZ29OkYWy39abxjbYVmCEDijmfiI45cgHM2f
+         zj374uLCdXN4Dfz+fkSsi8MlAo4ZgbBkhHjiMh3eGEHcOUyfK0E1vHr1y56BxHFfon95
+         L1vcj30/lKEN7uNbbWXQB73P28S3yNSkf4wGXCppWXdhAoHj7ggLrceLAfM4rvw6WOml
+         GlTLiBmxk5NAvcEbdNhoJx/0PIuws/31BzZ0qbZXmDnXW/PMru5hTCjzHpWOEzwFGo3z
+         WNuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709137879; x=1709742679;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=79kwpVMuJO5cQvJrrGHz3RQeCi3FyZACKTPne3xyWe4=;
+        b=h/cozEZCplwAaM/hjoek0ExVHCEMBO41a4WvnAUEWJTYRGLJW6IgRAwtX3ADCbEgD4
+         6qO0Q+/VSmtPbnU4/6QzY+e3wAKmfNPjvUAXnjS9WHV88Vd3Y5XrGTX3wxrONcVVZQ8u
+         uWJb8q5GI3bRF+3oq9ok59shfEz4eiY2o6NT8VtdJ9rTZ59DFJmm72QoPJZu9o1WIKoH
+         tdiFgpAHFeU2L/o+2HK78rCwxPjSz3pTmPNGtNDoWbxGnrEz1A55fiNZ8F1vDiPtLcur
+         NfBnEKIG9cJ4oeUQ0bIYnqsUfmlXgjD/nLFFjOHKrvNUwqGR3nXpnRjvQGmfXxlm7iPE
+         jOyg==
+X-Forwarded-Encrypted: i=1; AJvYcCW9mYrXUOSEkdb3oc2HAHiLw5NbFyR3T7ZVNPYB2FlMTU8kBmOFm+uBttttW70T+JoKCOZPLzs1yXfQatiMDhEWUID9lC7csHGf1Pbn
+X-Gm-Message-State: AOJu0YyxHkAyiQCOvXt+fsN95xUHo6lRDc9HVUcQRAJzy6YzJZKjMHfi
+	OZBF9F2lGDEMhRauehJsYdSYD4QtSCZBNgUe9wfSgMNP9Os303EVvULaO6iZJd0=
+X-Google-Smtp-Source: AGHT+IGGljHFACFDWCi4xMQJsuZ6Y+TBmUOWDgBjyWclrwPbyKFyQ3ScKPiEBStukIKaVQ6E8urP/g==
+X-Received: by 2002:a17:902:9a4c:b0:1db:d184:c458 with SMTP id x12-20020a1709029a4c00b001dbd184c458mr11603722plv.44.1709137879025;
+        Wed, 28 Feb 2024 08:31:19 -0800 (PST)
+Received: from hermes.local (204-195-123-141.wavecable.com. [204.195.123.141])
+        by smtp.gmail.com with ESMTPSA id kw4-20020a170902f90400b001db67377e8dsm3486829plb.248.2024.02.28.08.31.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 08:29:48 -0800 (PST)
-Date: Wed, 28 Feb 2024 08:29:47 -0800
-From: Yury Norov <yury.norov@gmail.com>
-To: Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
-	Marcin Szycik <marcin.szycik@linux.intel.com>,
-	Wojciech Drewek <wojciech.drewek@intel.com>,
-	Andy Shevchenko <andy@kernel.org>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	Alexander Potapenko <glider@google.com>,
-	Jiri Pirko <jiri@resnulli.us>, Ido Schimmel <idosch@nvidia.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Simon Horman <horms@kernel.org>, linux-btrfs@vger.kernel.org,
-	dm-devel@redhat.com, ntfs3@lists.linux.dev,
-	linux-s390@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v5 11/21] tools: move alignment-related macros
- to new <linux/align.h>
-Message-ID: <Zd9fe8o9zkwoW8Cf@yury-ThinkPad>
-References: <20240201122216.2634007-1-aleksander.lobakin@intel.com>
- <20240201122216.2634007-12-aleksander.lobakin@intel.com>
- <Zd9fLYP0uzqqwOdO@yury-ThinkPad>
+        Wed, 28 Feb 2024 08:31:18 -0800 (PST)
+Date: Wed, 28 Feb 2024 08:31:15 -0800
+From: Stephen Hemminger <stephen@networkplumber.org>
+To: Lukasz Majewski <lukma@denx.de>
+Cc: Oleksij Rempel <o.rempel@pengutronix.de>, Andrew Lunn <andrew@lunn.ch>,
+ Eric Dumazet <edumazet@google.com>, Florian Fainelli
+ <f.fainelli@gmail.com>, Vladimir Oltean <olteanv@gmail.com>, "David S.
+ Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ netdev@vger.kernel.org, Tristram.Ha@microchip.com, Sebastian Andrzej
+ Siewior <bigeasy@linutronix.de>, Paolo Abeni <pabeni@redhat.com>, Ravi
+ Gunasekaran <r-gunasekaran@ti.com>, Simon Horman <horms@kernel.org>,
+ Wojciech Drewek <wojciech.drewek@intel.com>, Nikita Zhandarovich
+ <n.zhandarovich@fintech.ru>, Murali Karicheri <m-karicheri2@ti.com>, Dan
+ Carpenter <dan.carpenter@linaro.org>, Ziyang Xuan
+ <william.xuanziyang@huawei.com>, Kristian Overskeid <koverskeid@gmail.com>,
+ Matthieu Baerts <matttbe@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [RFC] net: hsr: Provide RedBox support
+Message-ID: <20240228083115.01d4c93e@hermes.local>
+In-Reply-To: <20240228150735.3647892-1-lukma@denx.de>
+References: <20240228150735.3647892-1-lukma@denx.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zd9fLYP0uzqqwOdO@yury-ThinkPad>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 28, 2024 at 08:28:31AM -0800, Yury Norov wrote:
-> On Thu, Feb 01, 2024 at 01:22:06PM +0100, Alexander Lobakin wrote:
-> > Currently, tools have *ALIGN*() macros scattered across the unrelated
-> > headers, as there are only 3 of them and they were added separately
-> > each time on an as-needed basis.
-> > Anyway, let's make it more consistent with the kernel headers and allow
-> > using those macros outside of the mentioned headers. Create
-> > <linux/align.h> inside the tools/ folder and include it where needed.
-> > 
-> > Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
-> 
-> Reviewed-by: Yury Norov <yury.norov@gmail.com>
+On Wed, 28 Feb 2024 16:07:35 +0100
+Lukasz Majewski <lukma@denx.de> wrote:
 
-Sorry, please read this as: 
+>  
+> +/* hsr_proxy_node_table_show - Formats and prints proxy node_table entries */
+> +static int
+> +hsr_proxy_node_table_show(struct seq_file *sfp, void *data)
+> +{
+> +	struct hsr_priv *priv = (struct hsr_priv *)sfp->private;
+> +	struct hsr_node *node;
+> +
+> +	seq_printf(sfp, "Proxy Node Table entries for HSR device\n");
+> +	seq_puts(sfp, "MAC-Address-SAN,        time_in\n");
+> +	rcu_read_lock();
+> +	list_for_each_entry_rcu(node, &priv->proxy_node_db, mac_list) {
+> +		seq_printf(sfp, "%pM ", &node->macaddress_A[0]);
+> +		seq_printf(sfp, "%10lx\n", node->time_in[HSR_PT_INTERLINK]);
+> +	}
+> +	rcu_read_unlock();
+> +	return 0;
+> +}
+> +
+>  DEFINE_SHOW_ATTRIBUTE(hsr_node_table);
+> +DEFINE_SHOW_ATTRIBUTE(hsr_proxy_node_table);
 
-Signed-off-by: Yury Norov <yury.norov@gmail.com>
+NAK
+Do not abuse sysfs to be a debug proc style output.
+
+Sysfs is supposed to be one value per file (or not used at all).
+Formatting belongs in the user space program.
 
