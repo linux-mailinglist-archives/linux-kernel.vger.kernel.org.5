@@ -1,149 +1,123 @@
-Return-Path: <linux-kernel+bounces-84771-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84772-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E08C86AB5B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:34:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48F3386AB62
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:35:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61B061C24DB1
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:34:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 029F228AA48
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:35:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6251C36AEE;
-	Wed, 28 Feb 2024 09:32:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4E03376FE;
+	Wed, 28 Feb 2024 09:33:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="TFno7vEA"
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="naRbPE7d"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB3B936B00
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 09:32:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A97937163
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 09:33:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709112772; cv=none; b=ROzHWSpmVcxdVMLrlx+jhBh+kJy5XQ5VuOV1/rf7s7YRT9Bw+k9UchCuCohKZSfJcEOt9ntaG4Sk5gdoWjP+K3IBIM/r7UpwLC92qnW7hn5IPlkSG6yNg4gUKkPIfaMgCslcw58Vi7KgwNEHUhvKhJ01lgv6pebpGqarlprE/6c=
+	t=1709112786; cv=none; b=j14RJ/AC6WSzKiOSJTTQjC7MNSJLAMRbb22f+LGzG54BGFDoU+FXfB2cDEzlBxAej8EBNpEyJvB2MsLD3U96TBL6VxLimoHRuDj53fvEnHIUHIGiimBexrfW/AyG7KC/NOEavufHLtZdcUgfIaokDQ5+Tf4DUMonhWVXx2SU7F4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709112772; c=relaxed/simple;
-	bh=uFslmsiSq1HBTE5LNPd44uZu/F0twT8BTQkMgaIxbMQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mzSgX58fTsv3VjqQpHCutOaYTPlNJO9aUxBfwwJU2ohL4Yzi8b8a6Fr02c6vwai593UhUi7fIHDoUsv8Uq3O8Cpp7y2MpbLVUwMhsQXGZHfnm/U4z9GznkZLYmtsMyasC3CSzsui8vG/LTLxZMVtA5YmzgGO8+0XNT9mK2SLuIA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=TFno7vEA; arc=none smtp.client-ip=209.85.221.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-33d6f26ff33so3621849f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 01:32:49 -0800 (PST)
+	s=arc-20240116; t=1709112786; c=relaxed/simple;
+	bh=+vEw4yu6BEkpuISizXp9gDSi/jYKQJzYyDhQ1Lqpquo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JB1zQ0t8Qw4UNFjdRXdZ8UU2JSkouMT6BYyCLmiJjfoACAhCTJvWq3QjgTKJ8NRrg9Y1/p02F3PAQY2+/fCZeLsl+161/B7MgJwIj6UM/Jz+VX09smHC+vs1sS4/gQjbVnEk7fw9s2YR9dRJSAtovdBI5ruI9VilIm2Ggcnw4YY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=naRbPE7d; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-565223fd7d9so7491a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 01:33:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1709112768; x=1709717568; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=mQNKJ78MfZyuiu4j+k295fZB+jgGmMFXgbaeQC8Zu04=;
-        b=TFno7vEAtJvk8A1beRQwOvIZw3g/vzS8dk6zRjuy336HMS4eFvMMasQGb3bHpFZ+d9
-         xzmRK/vLGm1lF86v1HAm0L7DioQbgSJKN7JEbS2AMj+eZGvo6NNOzEDpyah4lSzl9xzJ
-         AYLV+Bmnj8I+Yn76qIgwQdsCL/iHrBrpP13cGK/GGMscP8JgtalnRHulvoW6R0K4/Bfz
-         E5k195u0KWrxOrwJLNOzjqCio/SaEumX5jSlPG5+Ur74FogDy/178a6ei5dy/Ck4555f
-         zLByFZF3soq+ophlRxY5yvvEEHCqyq/de/3rpbIUOWiUHw3kcZ5xbkaQ0EpdfwheQj8P
-         UtCg==
+        d=google.com; s=20230601; t=1709112783; x=1709717583; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ymxFlaSd/RjrNJLnLxB6/F9mhAatakD+Om7yj8a55aY=;
+        b=naRbPE7dzObWXC8d4DtcztCTQGvfAFfdIoD2/kP3p1KRd7D25GBfFgZ02ghlsq3h2E
+         bETBw4KzrLWgm3sKDopwyjsOIbM3BDOfZkT090CQrrYn/tfHbwCy/8ldnkn2bzubvjav
+         wvdTQz7fU0wdvzF0dPkC1lRU9nc5030YTRZAFIvFlE+kpblfoPuDcs9kRL/H7QnqryE1
+         uad2QT63g53z8EvszWzNT2Vb3gaWLVopAQHzJzy6+K2N9flWI/voIMpKJMpGZqBm8lAD
+         Rif+MouBzx0fV28WWIwB8xKjQKbpTKrvUKzCdl4NgRvBV3N9YCJKewkskIXNTch8Z+3n
+         lICA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709112768; x=1709717568;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mQNKJ78MfZyuiu4j+k295fZB+jgGmMFXgbaeQC8Zu04=;
-        b=Wz1wx7gENHNypbrfnLV477Sa0MSyRzKpVdLb5HgMBZAYz73rAZ8nToD92fVEfrlcBd
-         0jHtvaxzkczragJubsMzYAUagFFfQuMzu1t74WZNIovwh7orqZknU1Uj3DIHdaKZ+wD/
-         UMgWugEAOAvrHnrmkiNOzXHLknaKKmn3oIqB7LF3EQq+nuFRWmB5YYjVnbzrI5e1MIB9
-         pI5GPSqhvllCNEOWIxOqgjulmEAB770FImAXaheKaMkdHc1aKMaEkvTHBv2XSznkkLA5
-         n3J3mrFydh2iVjNsC5tQ3EHCTfYptYX96bHU9bMtmHoJQFT9NzeOckclu0GylCdwgHpw
-         +BOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXiztOlwM6hlR8g8oiGp7OisVZiMeU5FW5Fs2xNt9psERosYqRe+ijd7WiwuaTrRjEIp+v/TwCW+CkKw5C2/kguzRJXyJyzglEBQtuX
-X-Gm-Message-State: AOJu0Yxz2v6+6ZwNbYJo3V8SLEOZ6g+fGbKBGmLheECDm7LhwNpEIDI/
-	oi2hio5paY2HN56/hnhcMeCfPdxr/ry7t/FvgbO9a+ck7nLxoGtLRDN11DywHvw=
-X-Google-Smtp-Source: AGHT+IEWEqNQ9d2tqbJP6sC861PImJRIY/oH0R9V9AxQfO/Gs6YqWMFo4jl9jdQrcYf5WDRE4XxY0A==
-X-Received: by 2002:a5d:4046:0:b0:33d:8cc0:4827 with SMTP id w6-20020a5d4046000000b0033d8cc04827mr8411713wrp.45.1709112767852;
-        Wed, 28 Feb 2024 01:32:47 -0800 (PST)
-Received: from localhost ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id az14-20020adfe18e000000b0033d2541b3e1sm14587268wrb.72.2024.02.28.01.32.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 01:32:47 -0800 (PST)
-Date: Wed, 28 Feb 2024 10:32:44 +0100
-From: Jiri Pirko <jiri@resnulli.us>
-To: prabhav kumar <pvkumar5749404@gmail.com>
-Cc: shuah@kernel.org, netdev@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-	petrm@nvidia.com, idosch@nvidia.com
-Subject: Re: [PATCH net-next] selftests: net: Correct couple of spelling
- mistakes
-Message-ID: <Zd79vEsSp7wlJWQy@nanopsycho>
-References: <20240227175513.8703-1-pvkumar5749404@gmail.com>
- <Zd7lqr8Cz4XrNoI8@nanopsycho>
- <CAH8oh8U1KLxY95DQW9duU30VC5hdQd1YKs+8USuuz0k4JWtBSQ@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1709112783; x=1709717583;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ymxFlaSd/RjrNJLnLxB6/F9mhAatakD+Om7yj8a55aY=;
+        b=pirkq93h4WewRIS4SLlsOL3AZvJk05TSLs49En4P1LFmgl6BGc+62ZOztc5Seqj4gz
+         BOtk8NyB8DqSqeyys382ZHomfKEHd5n61lmgrr8COc2vJKpwaCLeo5p0xvQ05BNm2S+k
+         RjeDBLpwglY78IY62sRbf50bQkdyJCQoE0L+N+7fcXS57WBQPC6hZPXggLpo9/rvzYiJ
+         40pFv7P3J/zqjs4YAq8H4RfnopRWumOTgpTKGW5gvcOVSu4WyGUgIWnzu1zRvrlDMbgg
+         HJwK7dLpxFUtwwCe1EPp2t/CR1vZIAzlYFFw7F0WcexVDB6dNgT+4D3yXIvxo8YkCNh+
+         ibNA==
+X-Forwarded-Encrypted: i=1; AJvYcCVxMkt9i9987sB2bAEaTASXmBvyhjbcDEYyDanYm6Xi87mux+iSXMUZKOKBJ9wC/kLQTJOoo1iLlV4lWV47IlLEAUAuik2SzSK/WOvE
+X-Gm-Message-State: AOJu0YzaQVk2/W7i3rC2ICRVGp9ttPvlwb7NJz2zk5FkBH/+F7Xgn2mB
+	Lb88enpHbItyeKlkE13FtGR5bAsJLJiYqyT7AXqTqhqSksRnH3rsxW06TUkruHiZ0tQjLfhRFRt
+	MSRCRe048kt5xx/s95PNCiAI1OkEoYZ9E+cmv
+X-Google-Smtp-Source: AGHT+IE1vhzjptOnLco79eT13kIH9gOiLX5epU1Ic/wFr3bjjDPwaQ7D/xo/TLfIQwXl4BIoxNKwwY6jIhEIlmf1qjA=
+X-Received: by 2002:a50:c052:0:b0:565:4b98:758c with SMTP id
+ u18-20020a50c052000000b005654b98758cmr41097edd.4.1709112782171; Wed, 28 Feb
+ 2024 01:33:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAH8oh8U1KLxY95DQW9duU30VC5hdQd1YKs+8USuuz0k4JWtBSQ@mail.gmail.com>
+References: <20240226022452.20558-1-adamli@os.amperecomputing.com>
+ <CANn89iLbA4_YdQrF+9Rmv2uVSb1HLhu0qXqCm923FCut1E78FA@mail.gmail.com> <bc168824-25dd-7541-1a34-38b1a3c00489@os.amperecomputing.com>
+In-Reply-To: <bc168824-25dd-7541-1a34-38b1a3c00489@os.amperecomputing.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Wed, 28 Feb 2024 10:32:47 +0100
+Message-ID: <CANn89iKFPjSQhXRcyb+EDQiH0xJG1WdWVGXXLK6iOcMpM2zKyQ@mail.gmail.com>
+Subject: Re: [PATCH] net: make SK_MEMORY_PCPU_RESERV tunable
+To: "Lameter, Christopher" <cl@os.amperecomputing.com>
+Cc: Adam Li <adamli@os.amperecomputing.com>, corbet@lwn.net, davem@davemloft.net, 
+	kuba@kernel.org, pabeni@redhat.com, willemb@google.com, 
+	yangtiezhu@loongson.cn, atenart@kernel.org, kuniyu@amazon.com, 
+	wuyun.abel@bytedance.com, leitao@debian.org, alexander@mihalicyn.com, 
+	dhowells@redhat.com, paulmck@kernel.org, joel.granados@gmail.com, 
+	urezki@gmail.com, joel@joelfernandes.org, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
+	patches@amperecomputing.com, shijie@os.amperecomputing.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Prabhav, I'm not sure what you are trying to do, but you have to
-re-submit the patch, preferably using git-send-email or another email
-client you use.
+On Wed, Feb 28, 2024 at 12:08=E2=80=AFAM Lameter, Christopher
+<cl@os.amperecomputing.com> wrote:
+>
+> On Tue, 27 Feb 2024, Eric Dumazet wrote:
+>
+> >> sk_prot->memory_allocated points to global atomic variable:
+> >> atomic_long_t tcp_memory_allocated ____cacheline_aligned_in_smp;
+> >>
+> >> If increasing the per-cpu cache size from 1MB to e.g. 16MB,
+> >> changes to sk->sk_prot->memory_allocated can be further reduced.
+> >> Performance may be improved on system with many cores.
+> >
+> > This looks good, do you have any performance numbers to share ?
+> >
+> > On a host with 384 threads, 384*16 ->  6 GB of memory.
+>
+> Those things also come with corresponding memories of a couple of TB...
+>
+> > With this kind of use, we might need a shrinker...
+>
+> Yes. No point of keeping the buffers around if the core stops doing
+> networking. But to be done at times when there is no contention please.
 
+I yet have to see the 'contention'  ?
 
-Wed, Feb 28, 2024 at 09:42:01AM CET, pvkumar5749404@gmail.com wrote:
->On Wed, Feb 28, 2024 at 1:20 PM Jiri Pirko <jiri@resnulli.us> wrote:
->>
->> Please fix the patch subject to include appropriate prefixes and
->> rephrase a bit like this:
->>
->> Subject: [PATCH net-next] selftests: net: Correct couple of spelling mistakes
->>
->> pw-bot: cr
->>
->>
->> Tue, Feb 27, 2024 at 06:55:13PM CET, pvkumar5749404@gmail.com wrote:
->> >Changes :
->> >       - "excercise" is corrected to "exercise" in drivers/net/mlxsw/spectrum-2/tc_flower.sh
->> >       - "mutliple" is corrected to "multiple" in drivers/net/netdevsim/ethtool-fec.sh
->> >
->> >Signed-off-by: Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
->> >---
->> > .../testing/selftests/drivers/net/mlxsw/spectrum-2/tc_flower.sh | 2 +-
->> > tools/testing/selftests/drivers/net/netdevsim/ethtool-fec.sh    | 2 +-
->> > 2 files changed, 2 insertions(+), 2 deletions(-)
->> >
->> >diff --git a/tools/testing/selftests/drivers/net/mlxsw/spectrum-2/tc_flower.sh b/tools/testing/selftests/drivers/net/mlxsw/spectrum-2/tc_flower.sh
->> >index 616d3581419c..31252bc8775e 100755
->> >--- a/tools/testing/selftests/drivers/net/mlxsw/spectrum-2/tc_flower.sh
->> >+++ b/tools/testing/selftests/drivers/net/mlxsw/spectrum-2/tc_flower.sh
->> >@@ -869,7 +869,7 @@ bloom_simple_test()
->> > bloom_complex_test()
->> > {
->> >       # Bloom filter index computation is affected from region ID, eRP
->> >-      # ID and from the region key size. In order to excercise those parts
->> >+      # ID and from the region key size. In order to exercise those parts
->> >       # of the Bloom filter code, use a series of regions, each with a
->> >       # different key size and send packet that should hit all of them.
->> >       local index
->> >diff --git a/tools/testing/selftests/drivers/net/netdevsim/ethtool-fec.sh b/tools/testing/selftests/drivers/net/netdevsim/ethtool-fec.sh
->> >index 7d7829f57550..6c52ce1b0450 100755
->> >--- a/tools/testing/selftests/drivers/net/netdevsim/ethtool-fec.sh
->> >+++ b/tools/testing/selftests/drivers/net/netdevsim/ethtool-fec.sh
->> >@@ -49,7 +49,7 @@ for o in llrs rs; do
->> > Active FEC encoding: ${o^^}"
->> > done
->> >
->> >-# Test mutliple bits
->> >+# Test multiple bits
->> > $ETHTOOL --set-fec $NSIM_NETDEV encoding rs llrs
->> > check $?
->> > s=$($ETHTOOL --show-fec $NSIM_NETDEV | tail -2)
->> >--
->> >2.34.1
->> >
->> >
+I usually see one on the zone spinlock or memcg ones when
+allocating/freeing pages, not on the tcp_memory_allocated atomic
+
+We can add caches for sure, we had a giant one before my patch, and
+this was a disaster really,
+for workloads with millions of TCP sockets.
 
