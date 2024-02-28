@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-85110-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85111-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AABF86B08C
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:40:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15A3B86B08D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:40:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8AC34B23B02
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:40:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D4252848FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:40:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C42F0153512;
-	Wed, 28 Feb 2024 13:39:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC8D3155A45;
+	Wed, 28 Feb 2024 13:39:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jxi0zrK2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J76irrat"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E00B151CF9;
-	Wed, 28 Feb 2024 13:39:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D8511552FD;
+	Wed, 28 Feb 2024 13:39:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709127582; cv=none; b=WZrOiRASfEPXVXkQFGRFiTI1DDBVxqkfozwhoLRTblsORLudfRTonqTISiU2jhDoxD4TI2bIYL1v3fsMImogkbOBdKYH4Kl5Q3x3j6S+3YnG4J1wklQ8Hm4cIpsVajGZA+CtqBMSPEWUQOyteoURxjUxcj/X5tFbPfD6EXvRJME=
+	t=1709127585; cv=none; b=fHzmmAtty6rHpm9ctxom1Au3pzkd4SMnNl1Ep1H9vv7awZwGdBtz53gapUCWkfNI/kipRE/2/3e3e4W1AC0TbzY+V5h93ykZ5VFolHPcHUpPLLkDN/xhkcjEApq3m+LBrpnnVh4zVoMYhm47GvFLrDZj3zXgt1JaYiaRy1hsLEQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709127582; c=relaxed/simple;
-	bh=JqSwzF4JV3f0dyOOThKfJ10MqkgAb5PBoxHTEu2M6eg=;
+	s=arc-20240116; t=1709127585; c=relaxed/simple;
+	bh=b49x/ykHm5o5bbMJSwQ3cpWnXqcs2XbmjOgH/NQ/iTs=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=X5W7imoC8C5ThSPNr+Ko2rHuge0iqKfyBbUy8lLQJJYTONgTOanAZQ5UsryC7lLZgNT9mzlVM0fobTL2AY2fGwt+zmMNG2B0+6WPeQTY30MMGNAWx3Eti8phyaDZuW5HclJUiymTUuEcM+bBstPpNujSwrbb7CU/NWxda7L0T20=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jxi0zrK2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7B80C43394;
-	Wed, 28 Feb 2024 13:39:39 +0000 (UTC)
+	 MIME-Version; b=okOc/Aw272V09JZSPPg03wlrF1r7uHwmrx/N2RmclNCpG1hxlQ/fKknad1uZLir9n5Xbi+VW7KFq4pLD8UnejZQQ+6EHgSL0j/EWY5bu93KLJHKLt5Jr5Ljf7EhUVDXjKPLwrTTibV2h9kPmr04mpBgyCCMCA6dZgMKLdNWV/H8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J76irrat; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 663EEC433A6;
+	Wed, 28 Feb 2024 13:39:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709127581;
-	bh=JqSwzF4JV3f0dyOOThKfJ10MqkgAb5PBoxHTEu2M6eg=;
+	s=k20201202; t=1709127584;
+	bh=b49x/ykHm5o5bbMJSwQ3cpWnXqcs2XbmjOgH/NQ/iTs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Jxi0zrK22NyJ2K60C8LRKYeTxeUHMJEq7GqPktlk5+DIsCkQIAr+TGTo9D4W6SdNp
-	 DG6L/DLwEdTtaeomm5mlZU/EQ29z0bvJpMhgo87TEeI99ayBh2zS6049zeu6mU8JL+
-	 lCWFgcY/rgwS2x0fXiNevJ8b17JGZUS2kD2iwsSzBjA6b/n0Xc4YMIztZcFANd+MFo
-	 G4PQ71ToheQ78cyICvgvOX7KDBjYxh21tll2HifVEQKmJmgRmXxXMTGAL9u4LkubtN
-	 vVgNU54CFM7rSubQVGftxnILgKwLu5Utx/zVHoj5y4dUbsNoEs6Kpur7vDG6a6WmDe
-	 eOOPet1TtYmLQ==
+	b=J76irratocajmW2SDy9/e8xnA86MTWtA4xigYvKgjwwqiU7OWZwV0TtDgMu/4RZgv
+	 BahN412H0Btlb79CeteXuM7H93PJSljNMNet9W+MtP3SPJjIHIzf5btlJGjP7/WVkn
+	 kCuJWuHCsxgdFuNVQyhgTaf8QaWHG0itHhL6A3ybkgGYS87LNMkPsl83+DZ/aAgQO3
+	 ZjqBrSwlEI81LLJso7aCifnSya/zOyFwyptMWg6/x5fpPNR+/+U7T4dKoE9+TjHbsg
+	 kD1v8wOLf/s8gVLxIEfJ121wRZA7/PsNtMntJs3kgE6lGEDGyunYDpBb6zIlgD6Nfr
+	 yHnCtsGlW9WFQ==
 From: Will Deacon <will@kernel.org>
 To: linux-kernel@vger.kernel.org
 Cc: kernel-team@android.com,
@@ -52,9 +52,9 @@ Cc: kernel-team@android.com,
 	Dexuan Cui <decui@microsoft.com>,
 	Nicolin Chen <nicolinc@nvidia.com>,
 	Michael Kelley <mhklinux@outlook.com>
-Subject: [PATCH v5 2/6] swiotlb: Enforce page alignment in swiotlb_alloc()
-Date: Wed, 28 Feb 2024 13:39:26 +0000
-Message-Id: <20240228133930.15400-3-will@kernel.org>
+Subject: [PATCH v5 3/6] swiotlb: Honour dma_alloc_coherent() alignment in swiotlb_alloc()
+Date: Wed, 28 Feb 2024 13:39:27 +0000
+Message-Id: <20240228133930.15400-4-will@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20240228133930.15400-1-will@kernel.org>
 References: <20240228133930.15400-1-will@kernel.org>
@@ -66,44 +66,53 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When allocating pages from a restricted DMA pool in swiotlb_alloc(),
-the buffer address is blindly converted to a 'struct page *' that is
-returned to the caller. In the unlikely event of an allocation bug,
-page-unaligned addresses are not detected and slots can silently be
-double-allocated.
+core-api/dma-api-howto.rst states the following properties of
+dma_alloc_coherent():
 
-Add a simple check of the buffer alignment in swiotlb_alloc() to make
-debugging a little easier if something has gone wonky.
+  | The CPU virtual address and the DMA address are both guaranteed to
+  | be aligned to the smallest PAGE_SIZE order which is greater than or
+  | equal to the requested size.
+
+However, swiotlb_alloc() passes zero for the 'alloc_align_mask'
+parameter of swiotlb_find_slots() and so this property is not upheld.
+Instead, allocations larger than a page are aligned to PAGE_SIZE,
+
+Calculate the mask corresponding to the page order suitable for holding
+the allocation and pass that to swiotlb_find_slots().
 
 Cc: Christoph Hellwig <hch@lst.de>
 Cc: Marek Szyprowski <m.szyprowski@samsung.com>
 Cc: Robin Murphy <robin.murphy@arm.com>
 Cc: Dexuan Cui <decui@microsoft.com>
+Fixes: e81e99bacc9f ("swiotlb: Support aligned swiotlb buffers")
 Reviewed-by: Petr Tesarik <petr.tesarik1@huawei-partners.com>
 Tested-by: Nicolin Chen <nicolinc@nvidia.com>
 Reviewed-by: Michael Kelley <mhklinux@outlook.com>
 Signed-off-by: Will Deacon <will@kernel.org>
 ---
- kernel/dma/swiotlb.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ kernel/dma/swiotlb.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-index 2ec2cc81f1a2..ab7fbb40bc55 100644
+index ab7fbb40bc55..c20324fba814 100644
 --- a/kernel/dma/swiotlb.c
 +++ b/kernel/dma/swiotlb.c
-@@ -1643,6 +1643,12 @@ struct page *swiotlb_alloc(struct device *dev, size_t size)
+@@ -1633,12 +1633,14 @@ struct page *swiotlb_alloc(struct device *dev, size_t size)
+ 	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
+ 	struct io_tlb_pool *pool;
+ 	phys_addr_t tlb_addr;
++	unsigned int align;
+ 	int index;
+ 
+ 	if (!mem)
  		return NULL;
  
- 	tlb_addr = slot_addr(pool->start, index);
-+	if (unlikely(!PAGE_ALIGNED(tlb_addr))) {
-+		dev_WARN_ONCE(dev, 1, "Cannot allocate pages from non page-aligned swiotlb addr 0x%pa.\n",
-+			      &tlb_addr);
-+		swiotlb_release_slots(dev, tlb_addr);
-+		return NULL;
-+	}
+-	index = swiotlb_find_slots(dev, 0, size, 0, &pool);
++	align = (1 << (get_order(size) + PAGE_SHIFT)) - 1;
++	index = swiotlb_find_slots(dev, 0, size, align, &pool);
+ 	if (index == -1)
+ 		return NULL;
  
- 	return pfn_to_page(PFN_DOWN(tlb_addr));
- }
 -- 
 2.44.0.rc1.240.g4c46232300-goog
 
