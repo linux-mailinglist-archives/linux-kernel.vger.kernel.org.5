@@ -1,108 +1,126 @@
-Return-Path: <linux-kernel+bounces-84412-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84413-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E7A786A673
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 03:19:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3E7886A676
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 03:20:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B21E11F246DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:19:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1ECC6281293
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:20:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29E901D53C;
-	Wed, 28 Feb 2024 02:19:00 +0000 (UTC)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC6EA1947E;
+	Wed, 28 Feb 2024 02:20:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HP8xkFrH"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A93E1CF8C
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 02:18:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3903200AC;
+	Wed, 28 Feb 2024 02:20:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709086739; cv=none; b=a1wSIxGhPkIYTSyf0LOq435W3pjiZL2KXswvrnCtjpojTEFs7ZKbqUShOhA5Pic+lvJixXG79+5G4zDbqqQ1YTvcNSlZAeYViku5v1ec7vufmZ8iqser/BwLt/Mp549PfuaTrFU7fe6mx3Kmsm86rTRFNP5Ba2oGQNEwRId4TwA=
+	t=1709086806; cv=none; b=MH0j2OuNDjNIO4XDGd/+C6yVQBYxQ8Or5iZe/sOH0gcaBasiY/SEiEtL9mbRG7BmxVcdzgfdNRTwL+54n3UmKVuSlGT73YPuZG4GcYaoPVIJigK3KkyHzfNxrhoaVoifcu7H2Rzxj4EJ2d74vGclAHm5jK5JTMa2JwqwaY9xc2I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709086739; c=relaxed/simple;
-	bh=R8J8v9gASL1zih1cis7pGYntvqoft304Fk3/CNwsKwo=;
-	h=Message-ID:Date:MIME-Version:CC:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=rz8Nzi8G0u7QcSLWpcVf+tk4yQZ/dnE43LD2cfBwLRWm6Plu1ADZJBION829WT7vwBmrrpfONWVl+SEOP1VymqpMx8CxLHmeLIjzkyEthVlCarlrx+SuFGF0YBTS5R3etaf3mL2rtPsx4qAD3QzY2GxRJ3sVPROHCxYhI0I5VYM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Tkygj239XzLqSg;
-	Wed, 28 Feb 2024 10:18:09 +0800 (CST)
-Received: from dggpemd200001.china.huawei.com (unknown [7.185.36.224])
-	by mail.maildlp.com (Postfix) with ESMTPS id 5DA6A140499;
-	Wed, 28 Feb 2024 10:18:48 +0800 (CST)
-Received: from [10.174.178.120] (10.174.178.120) by
- dggpemd200001.china.huawei.com (7.185.36.224) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Wed, 28 Feb 2024 10:18:47 +0800
-Message-ID: <aa07e3ad-8c31-4c8b-9c4b-48c857ffc875@huawei.com>
-Date: Wed, 28 Feb 2024 10:18:47 +0800
+	s=arc-20240116; t=1709086806; c=relaxed/simple;
+	bh=lJG3aTHGtCVWptDrBThnLbI1+ODgtKQWqoZmvVMLOSg=;
+	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
+	 Message-Id:Subject; b=dlDoiT8bO7Gjo31JKZh/u78EQTFOJPOhwpkJ/N43e0UQacd6iZwnRxG9XeuKFpsLBsRWmm2BuqKkMEfNAILqt3q6pI1gYNvz9K9/hQKD/IXjXV2B0E6anRHJ0kikOVhtEkjZBmAMIg8NpVSmT/2OoRDuTBe9vHMppBQaBqEfrbs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HP8xkFrH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28014C433C7;
+	Wed, 28 Feb 2024 02:20:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709086805;
+	bh=lJG3aTHGtCVWptDrBThnLbI1+ODgtKQWqoZmvVMLOSg=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=HP8xkFrHXhoj/I0aymmEanUuG+6MLtTII1VdaJGfEjM+t4qA2NafQETdZ0dswwzUp
+	 kWW1qYuGyREuxWPXFOx5yBFacTitNjfVJig7FHvnXML15yQ1poK997igLyZqxewp6j
+	 a7PQ3IQIuR2tUOo3tMTOUR+dM5bI0Muj3bkWRDBb9KJn7/dtVkpLsfgyAW1fFK0MX1
+	 wg7byitAfNGDPvL1DBP2P8W6R30jiqkJCFBL2+PL5hDb3XvsdPW3dbKySSFVKxZxzz
+	 r9pN2jvX1ajhZc+HCO33tKmvN2TZRA5cj5hpPljsreg0GXv3g78kerHCaIQUDVfQhy
+	 KxbiDynpQjSBg==
+Date: Tue, 27 Feb 2024 20:20:04 -0600
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-CC: <mawupeng1@huawei.com>, <david@redhat.com>, <akpm@linux-foundation.org>,
-	<khlebnikov@openvz.org>, <jaredeh@gmail.com>, <linmiaohe@huawei.com>,
-	<hpa@zytor.com>, <dave.hansen@linux.intel.com>, <luto@kernel.org>,
-	<tglx@linutronix.de>, <peterz@infradead.org>, <linux-kernel@vger.kernel.org>,
-	<x86@kernel.org>, <mingo@redhat.com>, <rdunlap@infradead.org>,
-	<bhelgaas@google.com>, <linux-mm@kvack.org>
-Subject: Re: [Question] CoW on VM_PFNMAP vma during write fault
-Content-Language: en-US
-To: <willy@infradead.org>
-References: <20240227122814.3781907-1-mawupeng1@huawei.com>
- <a74c8b96-3fc5-44ff-949c-6e5c5e05e122@redhat.com>
- <de0cc6e0-dd15-40b6-89c2-c8e83fd6f587@redhat.com>
- <fa8f9f3b-e01e-4662-a2d5-77caeeb7b9f5@huawei.com>
- <Zd6WJe9xrRwkphfm@casper.infradead.org>
-From: mawupeng <mawupeng1@huawei.com>
-In-Reply-To: <Zd6WJe9xrRwkphfm@casper.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemd200001.china.huawei.com (7.185.36.224)
+From: Rob Herring <robh@kernel.org>
+To: "bin.yao" <bin.yao@ingenic.com>
+Cc: linux-kernel@vger.kernel.org, broonie@kernel.org, 
+ quic_bjorande@quicinc.com, dmaengine@vger.kernel.org, 
+ devicetree@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org, 
+ vkoul@kernel.org, conor+dt@kernel.org, rick <rick.tyliu@ingenic.com>, 
+ robh+dt@kernel.org
+In-Reply-To: <20240228012420.4223-1-bin.yao@ingenic.com>
+References: <20240228012420.4223-1-bin.yao@ingenic.com>
+Message-Id: <170908680304.1284859.7968137931176555362.robh@kernel.org>
+Subject: Re: [PATCH 1/2] dt-bindings: dma: Ingenic: DT bindings for Ingenic
+ PDMA
 
 
-
-On 2024/2/28 10:10, Matthew Wilcox wrote:
-> On Wed, Feb 28, 2024 at 09:55:24AM +0800, mawupeng wrote:
->> On 2024/2/27 21:15, David Hildenbrand wrote:
->>> On 27.02.24 14:00, David Hildenbrand wrote:
->>>> On 27.02.24 13:28, Wupeng Ma wrote:
->>>>> We find that a warn will be produced during our test, the detail log is
->>>>> shown in the end.
->>>>>
->>>>> The core problem of this warn is that the first pfn of this pfnmap vma is
->>>>> cleared during memory-failure. Digging into the source we find that this
->>>>> problem can be triggered as following:
->>>>>
->>>>> // mmap with MAP_PRIVATE and specific fd which hook mmap
->>>>> mmap(MAP_PRIVATE, fd)
->>>>>     __mmap_region
->>>>>       remap_pfn_range
->>>>>       // set vma with pfnmap and the prot of pte is read only
->>>>>     
->>>>
->>>> Okay, so we get a MAP_PRIVATE VM_PFNMAP I assume.
->>>>
->>>> What fd is that exactly? Often, we disallow private mappings in the
->>>> mmap() callback (for a good reason).
->>
->> just a device fd with device-specify mmap which use remap_pfn_range to assign memory.
+On Wed, 28 Feb 2024 06:24:19 +0500, bin.yao wrote:
+> From: byao <bin.yao@ingenic.com>
 > 
-> But what meaning do you want MAP_PRIVATE of this fd to have?  Does it
-> make sense to permit this, or should you rather just return -EINVAL if
-> somebody tries to mmap() with MAP_PRIVATE set?
-
-I think return -EINVAL if somebody tries to mmap() with MAP_PRIVATE and MAP_MAYWRITE is reasonable to me.
-
-Read to this pfnmap vma will not trigger fault.
-
+> Convert the textual documentation for the Ingenic SoCs PDMA
+> Controller devicetree binding to YAML.
 > 
+> Add a dt-bindings header, and convert the device trees to it.
+> 
+> Signed-off-by: byao <bin.yao@ingenic.com>
+> Signed-off-by: rick <rick.tyliu@ingenic.com>
+> ---
+>  .../devicetree/bindings/dma/ingenic,pdma.yaml | 77 +++++++++++++++++++
+>  include/dt-bindings/dma/ingenic-pdma.h        | 51 ++++++++++++
+>  2 files changed, 128 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/dma/ingenic,pdma.yaml
+>  create mode 100644 include/dt-bindings/dma/ingenic-pdma.h
+> 
+
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
+
+yamllint warnings/errors:
+/Documentation/devicetree/bindings/dma/ingenic,pdma.yaml:13:11: [error] string value is redundantly quoted with any quotes (quoted-strings)
+
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/dma/ingenic,pdma.yaml: title: 'Ingenic SoCs DMA Controller DT bindings' should not be valid under {'pattern': '([Bb]inding| [Ss]chema)'}
+	hint: Everything is a binding/schema, no need to say it. Describe what hardware the binding is for.
+	from schema $id: http://devicetree.org/meta-schemas/base.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/dma/ingenic,pdma.yaml: $id: Cannot determine base path from $id, relative path/filename doesn't match actual path or filename
+ 	 $id: http://devicetree.org/schemas/dma/ingenic,dma.yaml
+ 	file: /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/dma/ingenic,pdma.yaml
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/dma/ingenic,dma.yaml: warning: ignoring duplicate '$id' value 'http://devicetree.org/schemas/dma/ingenic,dma.yaml#'
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/dma/ingenic,pdma.yaml: interrupts-parent: missing type definition
+Documentation/devicetree/bindings/dma/ingenic,dma.example.dtb: /example-0/dma-controller@13420000: failed to match any schema with compatible: ['ingenic,jz4780-dma']
+Documentation/devicetree/bindings/dma/ingenic,pdma.example.dts:24:18: fatal error: dt-bindings/clock/ingenic,t33-cgu.h: No such file or directory
+   24 |         #include <dt-bindings/clock/ingenic,t33-cgu.h>
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+make[2]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/dma/ingenic,pdma.example.dtb] Error 1
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1428: dt_binding_check] Error 2
+make: *** [Makefile:240: __sub-make] Error 2
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240228012420.4223-1-bin.yao@ingenic.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
 
