@@ -1,120 +1,101 @@
-Return-Path: <linux-kernel+bounces-85173-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85174-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 505B686B194
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:21:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92EBD86B1A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:21:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01F171F25AB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:21:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C4F8F1C231C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:21:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6632D158D98;
-	Wed, 28 Feb 2024 14:21:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A771B157E9C;
+	Wed, 28 Feb 2024 14:21:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gly3jKWC"
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="p1LOzAHL"
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 257B9151CD3;
-	Wed, 28 Feb 2024 14:20:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE3E0152E14
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 14:21:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709130059; cv=none; b=pAZVLNmhToNM8hPTGU9kLE0L+qlybEG44HmSEO8ZGCZuShaobtv80daVYcp56rWiFIeSvOm4v57ALJWeJl8ESwzOy8PFBFf3MRw3HQK5hgoZ9kXKW6pKH8ZmkXwAns45RNjczpoiRFblBO28XSWUk6K4mWCpiosw8hjpfI0n8tA=
+	t=1709130106; cv=none; b=s+Srdu+kV8wuEpuLNnovbfE9leC8tkifMF5HjLOlnXqS9+8n/8ekAXx75op988XSAqKQpfUzKK8VUx0u+B6Ao9etKR0DVAs6mrjAsjyLZorM9WDLBWKHiUeVi0bULo41Mho3GotkVO9uxqzlxvazmqfSHjYUDRxHAOoUfjvdXyY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709130059; c=relaxed/simple;
-	bh=w93xgiTSz8WMLoXVP73QtrANXz+6jeMOsJP3UROC3NU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rcIMJR1KK4UClPHzO+RpSg88vHPw1090kZEyxoZum9PhOt2wvVHWjwTUmlYvwl3A7enMnO5HRPS/UyKKj540e5x/vFiUuCCqhCihzgs9AN2DJqa07zMu3uUlrZExxEOfdkREkQgIwqD/Qym5cA8wP0T05hppsklJANp1KAQFn9I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gly3jKWC; arc=none smtp.client-ip=209.85.208.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d180d6bd32so77239411fa.1;
-        Wed, 28 Feb 2024 06:20:57 -0800 (PST)
+	s=arc-20240116; t=1709130106; c=relaxed/simple;
+	bh=/IB3SBMJ8eU/LRv5ylO26FlaNO00FblZ/RbV/4pvBmM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RQtyoXuM8dWO5TBpgqtAhqcDVxwNiQi7B7+XXFtOIOJH46P89//z0fFn5kkvgsq9PPgyBVZJYQs+zYqM7b33BWbHVyU5VbEjQ9LKDZbFHk5TGVzLP0oAEhnfHDBY99sRjZqDf45VGtzOAt1vsD0RA//jIZfSPR+za3PPxg+rEbY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=p1LOzAHL; arc=none smtp.client-ip=209.85.210.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6e45c698090so1115503b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 06:21:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709130056; x=1709734856; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HG4LXQMb011a2hWJZFC66jLZG8yR8DZQAQGZx8gHs/Q=;
-        b=gly3jKWCLEhz1aEcGdWczckDabMXIADj2HZzo8xSo1XsnD61NmLgoP1UgrXsjy5yS0
-         R1zX17XZLENAr5UnuQA1jNtq6OEiGydsoNTzzb5jUibznoFrePsi/QfOJ0Xo63bAWMOO
-         ek95jU6bdD8VGLOPZ9rX9mw067H+KU1zcP6Ou+X6vkv41vIEEjF+t0iEpiGzb/uzpaBv
-         qSZIQSm0CIj8DBP/Z5XN+Mj69zQxGxat3QQrQFIQSstC4ddZsGYAtLF7r0731Z2ghb6S
-         djRW6TS7mhn7RH6bAmbhl0B8laXX9f9i1MNTIngLM/PD3BAvwwAdKLyjdsx2WGQ4DE8A
-         TosA==
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1709130104; x=1709734904; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7LhYyEdJEEIz0w3oxk1CxMivJRZFIcNl5Zw/pnXVcaA=;
+        b=p1LOzAHLagNxFlXnlIhWA9H49uAbZLzqinpgkKbBZef92TV16QiHo+EH//BzB2BkJ7
+         jM4smlFgy8jEFMItl0pVjWPBlxB+iJAl5wLH1HhSTzAhB5ZNbMdpUlEugk0YINn9GY/t
+         eDwlUTOEedWSWl53YiYHjtQ7IfhYnCRTc5VW69+8tIgLRb/N3musJF91W9S1fcQaLpY0
+         8vAn8eOqcUlt/h8Dwx09zmXR1RsApnTFQ/IaT8KS1gk/yAMagdCj0qNc/LY2KqsYWhQs
+         IfcPBtJin76nrYHJSL5p/mmJqhXfhLfQ3gLgem0pxsNf6nAuP2iV7lOi50wZuu5cOOV7
+         6haQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709130056; x=1709734856;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HG4LXQMb011a2hWJZFC66jLZG8yR8DZQAQGZx8gHs/Q=;
-        b=pQxo1DGfH9RD+8Q0mx7FrIOdQ7ua1wdXGv/dSfgDTmuAZTLWVLlVWJcEMo+lLlR29G
-         5ly8pnK5OiyM9q77myKfxYTqLbCxAjRa4ae0M9QkygUnAZNfGYvflDJR7nh+2keosNhi
-         DgGnGk/SNqdA+sHUmXPlwdi/lXR/6gAl4drUzq8Fcl1KXTDPFCRhLdKzgY1K/hdb3oRu
-         sGWZyMLTJEVUUFT5B+twx5P7KjlRzYw8vYMPdVIaV5LrWTK+p/7zeaMq4qT+d7UFLN9/
-         uL0zEh3gDtG3j+kaDikbxKIMjeZePP/+++xZ3A5oqOJHynG4qzIjrxHYASXFGNRTfFN3
-         412w==
-X-Forwarded-Encrypted: i=1; AJvYcCWNe3o8yEGkr0bRc5K4D8+z3iQcwtV/LYydJ81oI2bQ8BU+lS3IL2hVXuXRZvqZa0LwMTqTvbbhEyMuKTnLOXrLRL1BCx5TuWLsPH2yCe31IEZoMeYrEz6o68YkQlajMFD1
-X-Gm-Message-State: AOJu0Yzqys4Fl82D+iFJgQPdC1ARdRVWMxNReL6d5k0pk2QJL8a0fs64
-	V4diYgjaB+OfKHdasXDj72k814ZJvypYtp5rY1nCPYicHfAS4+SZ18natamZJDwAs7ejv1rFRML
-	85JKLjYHwv1qymVPm3QlsHDrqUUY=
-X-Google-Smtp-Source: AGHT+IGoB9fzjmAUpE5Wy01ochJJl6h85zawn128bKAr7m48GTTParSdIvqv4lNO3Zh7uSmvPuqSL71C3j9qZzdcvbA=
-X-Received: by 2002:a2e:b7c7:0:b0:2d2:6693:d49f with SMTP id
- p7-20020a2eb7c7000000b002d26693d49fmr8137243ljo.31.1709130055555; Wed, 28 Feb
- 2024 06:20:55 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709130104; x=1709734904;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7LhYyEdJEEIz0w3oxk1CxMivJRZFIcNl5Zw/pnXVcaA=;
+        b=V3XzZY1rBChO0TtkCxSMD2p1xd9gtqbsPVKp/Bj/yiG5wlhg1BcVXNsLFQdBWWylA3
+         Xe0eAOCo0KU/pFGLtHsrKdbyDAcI4JBSZ2Q9n0nhc/GlpDMkkLvsghARBJTKmIfqmyWd
+         U+AZRHNX8vNFLmSlPP7RtqZ0WGeiy2Hlwh94TvyLXlIi8oZEM9hPZUYgQcb8BBlvUf+g
+         /U8pWzNlyoMHg9W/2bCdNnDWWlae8EhL59bqhvQgyoWwJyhhOP8JS45MMSnkNOo19glW
+         zzPpajLXwVyhTZl3EyT5RfqudJe6DXWLjPpks7W+YaCTFv6WV/UjHRrQVRiCJwYuSWAv
+         S1HA==
+X-Forwarded-Encrypted: i=1; AJvYcCVxQBAIDneKowu3Yc4LPIe7loDtv2JgPeQ0tu+LbZ/Gie8AFiEWSh5pmK//Qkus8SgLlAdvwJKrVc1S63+a0pDOkfGSD33rcO0vr9tH
+X-Gm-Message-State: AOJu0Yzzztawc2C+VOt6LiOdJW5LfaJ+PQLJRMpxdyjxdaDChXbVKVhc
+	fkq10IPMykGbYN+5uBe+HLGrn03tcLLf8rDV5hMsQTfOXLc2IKWTUCt42Jnilf36wBuzS7T/+3x
+	I
+X-Google-Smtp-Source: AGHT+IFI98HIwcv6EsdlK2DkBZisBTU972LamnrpRAsbHhUVTwEbCk46VrmE8byrnVwF2/Er5w2zPQ==
+X-Received: by 2002:a05:6a00:2da4:b0:6e5:109d:8373 with SMTP id fb36-20020a056a002da400b006e5109d8373mr10517138pfb.0.1709130104239;
+        Wed, 28 Feb 2024 06:21:44 -0800 (PST)
+Received: from [192.168.1.150] ([198.8.77.194])
+        by smtp.gmail.com with ESMTPSA id d18-20020a637352000000b005dc5289c4edsm7654764pgn.64.2024.02.28.06.21.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Feb 2024 06:21:43 -0800 (PST)
+Message-ID: <2dea08f3-03c8-46aa-af57-45cbd9556df4@kernel.dk>
+Date: Wed, 28 Feb 2024 07:21:42 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221145106.105995-1-puranjay12@gmail.com> <Zd8o__ow2F6-ENVh@arm.com>
- <7b4588ff-c769-c185-3b4c-aab4a472d872@iogearbox.net>
-In-Reply-To: <7b4588ff-c769-c185-3b4c-aab4a472d872@iogearbox.net>
-From: Puranjay Mohan <puranjay12@gmail.com>
-Date: Wed, 28 Feb 2024 15:20:44 +0100
-Message-ID: <CANk7y0jakcUOvSsTbsZ-VK8VWP2wJsoiFtf1Ymeh6hQnsQAxqA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v8 0/2] bpf, arm64: use BPF prog pack allocator
- in BPF JIT
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, ast@kernel.org, andrii@kernel.org, 
-	martin.lau@linux.dev, song@kernel.org, mark.rutland@arm.com, 
-	bpf@vger.kernel.org, kpsingh@kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, xukuohai@huaweicloud.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] bdev: make blockdev_mnt static
+Content-Language: en-US
+To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Abaci Robot <abaci@linux.alibaba.com>
+References: <20240227081958.89092-1-jiapeng.chong@linux.alibaba.com>
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20240227081958.89092-1-jiapeng.chong@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 28, 2024 at 2:34=E2=80=AFPM Daniel Borkmann <daniel@iogearbox.n=
-et> wrote:
->
-> On 2/28/24 1:37 PM, Catalin Marinas wrote:
-> > On Wed, Feb 21, 2024 at 02:51:04PM +0000, Puranjay Mohan wrote:
-> >> Puranjay Mohan (2):
-> >>    arm64: patching: implement text_poke API
-> >>    bpf, arm64: use bpf_prog_pack for memory management
-> >>
-> >>   arch/arm64/include/asm/patching.h |   2 +
-> >>   arch/arm64/kernel/patching.c      |  75 ++++++++++++++++
-> >>   arch/arm64/net/bpf_jit_comp.c     | 139 ++++++++++++++++++++++++----=
---
-> >>   3 files changed, 192 insertions(+), 24 deletions(-)
-> >
-> > Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-> >
-> > Feel free to take it through the bpf tree.
->
-> Thanks for the review, Catalin!
->
-> Puranjay, this needs a rebase before it can be merged into bpf-next,
-> please take a look and resubmit.
+On 2/27/24 1:19 AM, Jiapeng Chong wrote:
+> The blockdev_mnt are not used outside the file bdev.c, so the modification
+> is defined as static.
+> 
+> block/bdev.c:377:17: warning: symbol 'blockdev_mnt' was not declared. Should it be static?
 
-Thanks for the review.
+What is this against?
 
-Rebased and sent V9:
-https://lore.kernel.org/bpf/20240228141824.119877-1-puranjay12@gmail.com/
+-- 
+Jens Axboe
 
-Thanks,
-Puranjay
 
