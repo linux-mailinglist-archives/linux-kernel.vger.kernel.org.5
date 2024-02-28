@@ -1,101 +1,143 @@
-Return-Path: <linux-kernel+bounces-85101-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85105-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB37E86B06E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:35:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C4F686B07F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:38:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61A8228443D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:35:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0D926B273CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:38:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA71614D44A;
-	Wed, 28 Feb 2024 13:35:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72A3014E2D9;
+	Wed, 28 Feb 2024 13:37:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="A8ecUt47"
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="APWU8rZM"
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 542FB145B18;
-	Wed, 28 Feb 2024 13:35:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2536F14AD07;
+	Wed, 28 Feb 2024 13:37:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709127316; cv=none; b=Z5lBqNoQJ4EvcjayavMspVez1y7wJDb0aqHb4Hwb6LV733x6xEuM4LnSupNPZfTUaQ9tO5waS3lqB5mc/OYlSgjmBUGS6ff2MAW/+77CoWq4YE8Oy9eU3eby1TztQpG/hCK5CyITT76Vl5xT0/5cLpLp66ZGHQiTInnIUaQYm38=
+	t=1709127477; cv=none; b=WGuor1psIn3zRHmH+kiBC4a/xvSjFqOdjWoFrISnf0Mga6Ae2DHEGRZgaUB+TpoGTYbC6vAlkR45as5Mk3v59o+A72lrcDr6vYr2Bk6ilZ7CrMTE2eZNQfS/dTs1huMatVCO8fQPpZclHgv/Jozl5cNgC9MHBkczZOtdiB8zrBs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709127316; c=relaxed/simple;
-	bh=9OjOYTocLBb1ogOiemenpkw8Y91g8aR9Ss4e4aSOKp0=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=mdDJqJ0OQBBUMmRm9NlcFdj1T+Dvt8RtAoRXtEH7Ceyxsjo8PCffSMHbGzvLNYjNsLIeqMQv1g9eeCMpBm5882YiWqnhQUgnxQVXx5f+Qs9VW1aOAXWhv2YDQh6nFAWyX6ZA42rD6rIzoXH7MwpYWqAgMK2/CKSafUN3j1FhTuE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=A8ecUt47; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=7hKktLa8vwAg7gBkeFVxG3uw7KCw4YZfOnQGsRcW8lU=; b=A8ecUt47rW2jToa43Ehsgl/Jm2
-	cAt5Feruk+msUqIPfd60Sa5tbIiVcGjBjwuuiug6oB25SqnTSYnYWSShAOcAthYSxt+bVGOy9RrHa
-	8jbiRQr19SCFA2n2XhVPIWLtuyEgh+qpHZIMTxbYOx3IPMTl2Oumnlo6Tx0iguo3THi++BBJpvumz
-	fc3Z5ltE35q84kzMFXXBE1hBJbwLmj7PsxpUn5ZlAOwYsBl9JgdyHthDFU1fYRaPfdSwaXyIT2CZM
-	alHxo2M6XJQU5WzVsOKblv95kGFkm/amTXHkK7an/rbHEzvh+GrRSGGzMp1x66SzSgohaTE0aJIU7
-	fu6Db/sQ==;
-Received: from sslproxy04.your-server.de ([78.46.152.42])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1rfK5I-0006R0-5m; Wed, 28 Feb 2024 14:34:56 +0100
-Received: from [178.197.248.40] (helo=linux.home)
-	by sslproxy04.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1rfK5H-0003lv-E4; Wed, 28 Feb 2024 14:34:55 +0100
-Subject: Re: [PATCH bpf-next v8 0/2] bpf, arm64: use BPF prog pack allocator
- in BPF JIT
-To: Catalin Marinas <catalin.marinas@arm.com>,
- Puranjay Mohan <puranjay12@gmail.com>
-Cc: ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
- mark.rutland@arm.com, bpf@vger.kernel.org, kpsingh@kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- xukuohai@huaweicloud.com
-References: <20240221145106.105995-1-puranjay12@gmail.com>
- <Zd8o__ow2F6-ENVh@arm.com>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <7b4588ff-c769-c185-3b4c-aab4a472d872@iogearbox.net>
-Date: Wed, 28 Feb 2024 14:34:54 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	s=arc-20240116; t=1709127477; c=relaxed/simple;
+	bh=ZrIig3MM4Z+bo/sqJIChCKj/Pje7QWTe1w+LQ7AYd7o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=t3C5wje0ZBAMHkEDJvs/QqxLp7xj68H4AxADUJ30bVqnq/zL3/dwYb+lQ4TbFyRpFNJfLWwzOw7KwwSdLSUoX1A7HWEHru0gsSY9JOpKCY0hXAYR4ZMw0wqPWlPswHAHJOgW+0TMSo4ap3UvhrqzFGetE3VXcmMG5EFQROzjmw0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=APWU8rZM; arc=none smtp.client-ip=209.85.208.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d21cdbc85bso84619211fa.2;
+        Wed, 28 Feb 2024 05:37:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709127474; x=1709732274; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SxWgL4sElI1B0/tx2GgHOxLa5Q0889pBGSF5c/6AjSo=;
+        b=APWU8rZMSd44oQK4cQwmDyD10Bati7iN4EYq2cFJf/V1ausdaVI0S7ZjOw/vMsnBRs
+         vuaSteWGsJjghSjwCoFIInKuskyETVmni6mymCmQ+EkMnHpVJmHFB3VmbTGDQUH5uVdy
+         LMyjr2UQddYb9ilHugc46oTLuxy+zyr3VgEnMH0XRl5vzQCEMB2WY1O4+dYVTtBn3oEQ
+         21qUR6CUxggCQaOU1EVUv6oR65e2On0zkmsdyv9nOe8CI1Mnq/xMd8rrK8hz/an8Iv57
+         ESdhQF/ktOUnINjlQTMdCG655Q/E4E35Y9WzLS393DhvubtnnRYYqJ3nEK/X9FGEQM50
+         S88w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709127474; x=1709732274;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SxWgL4sElI1B0/tx2GgHOxLa5Q0889pBGSF5c/6AjSo=;
+        b=VY91DAgGmj4xy6cWHWafm6sXi3ULU/y5c2HQbT2VSny1jOzBRcEJ1mq1gy8QInJMh0
+         uJv8iRrqZ0E8a9tv66LVFhKrQDvUAiz0mKkBIdffJr6UUr+xuNwrOcyRS3Tugb94Xm6P
+         /aYUZe4ccKuLG+Km4Bc1LVcq0zcRVQ32+DzHa2nDeJQ2bYCzOW9YWjqGHEGmn4DxoLrE
+         PQIXvzrbDvEm8jteDyJSjmbiKDMRDUJ93w1/S9OHOOkrKTi7gVvqZg7hQIzGrP8YH91L
+         m/3Op4tM0O4awnEXvOyQ/j1Xzd50YTh4AIfC6SETtDcrG/fsP9UOUYnrcG1qLqP6tf9P
+         AOig==
+X-Forwarded-Encrypted: i=1; AJvYcCXAK/oy7uXDCa+avjP2kvJT4XQg4eEoz3fJ4OaHQtjI0EeDpgyw1XjhWm8u+7aWAsJ5XGTWmZumgC6nni2bApivkZAjkhuMsZtkdlshf7Me3xLtOXeX9+rCGy+7lZvPqWM5b7zoNe1I2iYT
+X-Gm-Message-State: AOJu0YyRLeHfdObX//0GiDh/Ik5rlTBNGFCD5q4YEW6M6hbAD+wZ0z/z
+	VV6Oi74J+q8r6+33tS+y3y04BK8GwIZMSLs3rx2CBNicuOF9PcAf
+X-Google-Smtp-Source: AGHT+IEGAbjhr46EhXX778kptGTzCsJXZVuCDdfQgon6/ZXpJpBpqXYL2Ir2C0Xs3h1Pus1GVC1Ojw==
+X-Received: by 2002:a05:6512:21b1:b0:512:f733:9eb with SMTP id c17-20020a05651221b100b00512f73309ebmr5671413lft.11.1709127473910;
+        Wed, 28 Feb 2024 05:37:53 -0800 (PST)
+Received: from localhost ([94.19.228.143])
+        by smtp.gmail.com with ESMTPSA id o11-20020ac2494b000000b005131434454bsm433619lfi.228.2024.02.28.05.37.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Feb 2024 05:37:53 -0800 (PST)
+Date: Wed, 28 Feb 2024 16:35:39 +0300
+From: Andrey Skvortsov <andrej.skvortzov@gmail.com>
+To: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Corentin Labbe <clabbe.montjoie@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Ovidiu Panait <ovidiu.panait@windriver.com>,
+	linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Arnaud Ferraris <arnaud.ferraris@collabora.com>
+Subject: Re: [PATCH] crypto: rk3288 - Fix use after free in unprepare
+Message-ID: <Zd82q8lw_qH7KLCs@skv.local>
+Mail-Followup-To: Andrey Skvortsov <andrej.skvortzov@gmail.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Corentin Labbe <clabbe.montjoie@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Ovidiu Panait <ovidiu.panait@windriver.com>,
+	linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Arnaud Ferraris <arnaud.ferraris@collabora.com>
+References: <20240226215358.555234-1-andrej.skvortzov@gmail.com>
+ <Zd75LLhzlJx4nJiP@gondor.apana.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <Zd8o__ow2F6-ENVh@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27199/Wed Feb 28 10:31:56 2024)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <Zd75LLhzlJx4nJiP@gondor.apana.org.au>
 
-On 2/28/24 1:37 PM, Catalin Marinas wrote:
-> On Wed, Feb 21, 2024 at 02:51:04PM +0000, Puranjay Mohan wrote:
->> Puranjay Mohan (2):
->>    arm64: patching: implement text_poke API
->>    bpf, arm64: use bpf_prog_pack for memory management
->>
->>   arch/arm64/include/asm/patching.h |   2 +
->>   arch/arm64/kernel/patching.c      |  75 ++++++++++++++++
->>   arch/arm64/net/bpf_jit_comp.c     | 139 ++++++++++++++++++++++++------
->>   3 files changed, 192 insertions(+), 24 deletions(-)
+On 24-02-28 17:13, Herbert Xu wrote:
+> The unprepare call must be carried out before the finalize call
+> as the latter can free the request.
 > 
-> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+> Fixes: c66c17a0f69b ("crypto: rk3288 - Remove prepare/unprepare request")
+> Reported-by: Andrey Skvortsov <andrej.skvortzov@gmail.com>
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 > 
-> Feel free to take it through the bpf tree.
+> diff --git a/drivers/crypto/rockchip/rk3288_crypto_ahash.c b/drivers/crypto/rockchip/rk3288_crypto_ahash.c
+> index 1b13b4aa16ec..a235e6c300f1 100644
+> --- a/drivers/crypto/rockchip/rk3288_crypto_ahash.c
+> +++ b/drivers/crypto/rockchip/rk3288_crypto_ahash.c
+> @@ -332,12 +332,12 @@ static int rk_hash_run(struct crypto_engine *engine, void *breq)
+>  theend:
+>  	pm_runtime_put_autosuspend(rkc->dev);
+>  
+> +	rk_hash_unprepare(engine, breq);
+> +
+>  	local_bh_disable();
+>  	crypto_finalize_hash_request(engine, breq, err);
+>  	local_bh_enable();
+>  
+> -	rk_hash_unprepare(engine, breq);
+> -
+>  	return 0;
+>  }
+>  
+Thanks, that was quick. I had locally the same change.
 
-Thanks for the review, Catalin!
+Reviewed-by: Andrey Skvortsov <andrej.skvortzov@gmail.com>
 
-Puranjay, this needs a rebase before it can be merged into bpf-next,
-please take a look and resubmit.
+-- 
+Best regards,
+Andrey Skvortsov
 
