@@ -1,213 +1,143 @@
-Return-Path: <linux-kernel+bounces-84704-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84705-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62F1686AA7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:53:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E9D086AA7D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:54:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D63E71F24AFF
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:53:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7FFCA1C21EF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:54:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14EB72DF92;
-	Wed, 28 Feb 2024 08:53:42 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85B732D60A;
+	Wed, 28 Feb 2024 08:54:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hDf+ZZCj"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A97C2D604;
-	Wed, 28 Feb 2024 08:53:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DC282D05F
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 08:54:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709110421; cv=none; b=KWG7I93jmhcbzz52vPSmRZ/pASas2GLaKaC6XbsVgZqa4TVIx0YCZfVt2OM4+QnPY0PYAPv/ZvfBw42Q1nj5jTfUzYsusBNUmN3+B9OnUTjpVOzfd2OKfZd7t36ihsKl5UweKAOYF8Huk02Mfh3atPM+6uaV76OR4Tu0/9WlJaM=
+	t=1709110446; cv=none; b=G2LWaum5Qq62LTyvoq6pY9RHU7Zs81tahjhNTg9lsynsHKZnu/U7w1QR2dDvgN/VkNFaJ0K4NYClX63FXLRkZQGJHuzqcZMjCZQj/VwPNo58P9+GZSI7YNPiX/lEpaCBa2ZOrpuSTdUfmuWSJvT0XzogWTgmYCzBNOJi7VwgPiM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709110421; c=relaxed/simple;
-	bh=LmMn4l1GClZilnMTAowDg6HVHEvvOnMdx2YPGsYQJJE=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=dPUJ4hSltk7sFEhkgCSuV6FJQi9ZQkNurciFwsbIDDG0wgQE4pzkKvSsjOIDCyasxzdnitlT/5BSk9R2BH9AabdlGKY9+F2MjazCNA5pYfwLMhVDW/wibwnQDBw5P9+UzS/QbRzWLdc0pmH8N1d5fkwn3N3evS92YkjtFwg+dvc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Tl7Rv0pkKz4f3kKQ;
-	Wed, 28 Feb 2024 16:53:31 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 722071A0172;
-	Wed, 28 Feb 2024 16:53:34 +0800 (CST)
-Received: from [10.174.176.34] (unknown [10.174.176.34])
-	by APP1 (Coremail) with SMTP id cCh0CgAn+RGM9N5lUE2aFQ--.30440S3;
-	Wed, 28 Feb 2024 16:53:34 +0800 (CST)
-Subject: Re: [RFC PATCH v3 07/26] iomap: don't increase i_size if it's not a
- write operation
-To: Christoph Hellwig <hch@infradead.org>, djwong@kernel.org,
- Dave Chinner <david@fromorbit.com>
-Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
- tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
- ritesh.list@gmail.com, willy@infradead.org, zokeefe@google.com,
- yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com,
- wangkefeng.wang@huawei.com
-References: <20240127015825.1608160-1-yi.zhang@huaweicloud.com>
- <20240127015825.1608160-8-yi.zhang@huaweicloud.com>
- <ZcsCP4h-ExNOcdD6@infradead.org>
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-Message-ID: <9b0040ef-3d9d-6246-4bdd-82b9a8f55fa2@huaweicloud.com>
-Date: Wed, 28 Feb 2024 16:53:32 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+	s=arc-20240116; t=1709110446; c=relaxed/simple;
+	bh=oviEaG00ZryIXr9B+HIb7cA9uT665UZTqRreFwQnGfA=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=P4lREbmM1Mdg/bQeW6lVVJTzLnK41KKy+RHc0/+DZBOjR6rcWXiBmV86pZuV6CEUIf1yrmUBVHSiSFJDtIrIdbqmIJ9UlaFPJOJW0/O3j93K2op+PyygvC/A8dRpi1gvHOPVtY3i2qevNCgHanrt3Vj9+sPBTcV3bZFhg04LPDs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hDf+ZZCj; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709110443;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=4bhVktrS6dMSA/g0STyv8QBeTwQNCemSRg5EzlavLyM=;
+	b=hDf+ZZCjbyOq5nkjl0hkuP5gutlojRivkDe06yNoNsLW/BV1yZoT3/hEeu7Hb7RDRhazML
+	3sAnmwBx8Ny81uRmY6ai5kb+uq9DjccuwFuHdI3y4kEdkta0zwC93hUawQo4luwyP8nxZj
+	KlGGb72tb7rS6T2an1e/0sKMPQtHKBE=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-474-_q4xEYi-M2ObYOFyZZeH3A-1; Wed,
+ 28 Feb 2024 03:53:59 -0500
+X-MC-Unique: _q4xEYi-M2ObYOFyZZeH3A-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7A3691C0CCB4;
+	Wed, 28 Feb 2024 08:53:58 +0000 (UTC)
+Received: from x1n.redhat.com (unknown [10.72.116.12])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 409942022AAA;
+	Wed, 28 Feb 2024 08:53:52 +0000 (UTC)
+From: peterx@redhat.com
+To: linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org
+Cc: Yang Shi <shy828301@gmail.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Jason Gunthorpe <jgg@nvidia.com>,
+	x86@kernel.org,
+	"Kirill A . Shutemov" <kirill@shutemov.name>,
+	linuxppc-dev@lists.ozlabs.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	peterx@redhat.com
+Subject: [PATCH 0/5] mm/treewide: Replace pXd_large() with pXd_leaf()
+Date: Wed, 28 Feb 2024 16:53:45 +0800
+Message-ID: <20240228085350.520953-1-peterx@redhat.com>
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <ZcsCP4h-ExNOcdD6@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgAn+RGM9N5lUE2aFQ--.30440S3
-X-Coremail-Antispam: 1UD129KBjvJXoW3AF4fXry7uF47AFy5Zw13urg_yoW7GF4rpF
-	909F4jkan7t3yfWr1kZFs5Xry0vwsaqF4UCry7KrW3Z3Z8JFyIgF17uFWYkFWUXr9xAr1a
-	qF4vva4fuF1UCFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
-	6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-	9x07UZ18PUUUUU=
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-On 2024/2/13 13:46, Christoph Hellwig wrote:
-> Wouldn't it make more sense to just move the size manipulation to the
-> write-only code?  An untested version of that is below.  With this
-> the naming of the status variable becomes even more confusing than
-> it already is, maybe we need to do a cleanup of the *_write_end
-> calling conventions as it always returns the passed in copied value
-> or 0.
-> 
-> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> index 3dab060aed6d7b..8401a9ca702fc0 100644
-> --- a/fs/iomap/buffered-io.c
-> +++ b/fs/iomap/buffered-io.c
-> @@ -876,34 +876,13 @@ static size_t iomap_write_end(struct iomap_iter *iter, loff_t pos, size_t len,
->  		size_t copied, struct folio *folio)
->  {
->  	const struct iomap *srcmap = iomap_iter_srcmap(iter);
-> -	loff_t old_size = iter->inode->i_size;
-> -	size_t ret;
-> -
-> -	if (srcmap->type == IOMAP_INLINE) {
-> -		ret = iomap_write_end_inline(iter, folio, pos, copied);
-> -	} else if (srcmap->flags & IOMAP_F_BUFFER_HEAD) {
-> -		ret = block_write_end(NULL, iter->inode->i_mapping, pos, len,
-> -				copied, &folio->page, NULL);
-> -	} else {
-> -		ret = __iomap_write_end(iter->inode, pos, len, copied, folio);
-> -	}
-> -
-> -	/*
-> -	 * Update the in-memory inode size after copying the data into the page
-> -	 * cache.  It's up to the file system to write the updated size to disk,
-> -	 * preferably after I/O completion so that no stale data is exposed.
-> -	 */
-> -	if (pos + ret > old_size) {
-> -		i_size_write(iter->inode, pos + ret);
-> -		iter->iomap.flags |= IOMAP_F_SIZE_CHANGED;
-> -	}
+From: Peter Xu <peterx@redhat.com>
 
-I've recently discovered that if we don't increase i_size in
-iomap_zero_iter(), it would break fstests generic/476 on xfs. xfs
-depends on iomap_zero_iter() to increase i_size in some cases.
+[based on latest akpm/mm-unstable, commit 1274e7646240]
 
- generic/476 75s ... _check_xfs_filesystem: filesystem on /dev/pmem2 is inconsistent (r)
- (see /home/zhangyi/xfstests-dev/results//xfs/generic/476.full for details)
+These two APIs are mostly always the same.  It's confusing to have both of
+them.  Merge them into one.  Here I used pXd_leaf() only because pXd_leaf()
+is a global API which is always defined, while pXd_large() is not.
 
- _check_xfs_filesystem: filesystem on /dev/pmem2 is inconsistent (r)
- *** xfs_repair -n output ***
- Phase 1 - find and verify superblock...
- Phase 2 - using internal log
-         - zero log...
-         - scan filesystem freespace and inode maps...
- sb_fdblocks 10916, counted 10923
-         - found root inode chunk
- ...
+We have yet one more API that is similar which is pXd_huge(), but that's
+even trickier, so let's do it step by step.
 
-After debugging and analysis, I found the root cause of the problem is
-related to the pre-allocations of xfs. xfs pre-allocates some blocks to
-reduce fragmentation during buffer append writing, then if we write new
-data or do file copy(reflink) after the end of the pre-allocating range,
-xfs would zero-out and write back the pre-allocate space(e.g.
-xfs_file_write_checks() -> xfs_zero_range()), so we have to update
-i_size before writing back in iomap_zero_iter(), otherwise, it will
-result in stale delayed extent.
+Some cautions are needed on either x86 or ppc: x86 is currently the only
+user of p4d_large(), while ppc used to define pXd_large() only with THP,
+while it is not the case for pXd_leaf().  For the rest archs, afaict
+they're 100% identical.
 
-For more details, let's think about this case,
-1. Buffered write from range [A, B) of an empty file foo, and
-   xfs_buffered_write_iomap_begin() prealloc blocks for it, then create
-   a delayed extent from [A, D).
-2. Write back process map blocks but only convert above delayed extent
-   from [A, C) since the lack of a contiguous physical blocks, now we
-   have a left over delayed extent from [C, D), and the file size is B.
-3. Copy range from another file to range [E, F), then
-   xfs_reflink_zero_posteof() would zero-out post eof range [B, E), it
-   writes zero, dirty and write back [C, E).
-4. Since we don't update i_size in iomap_zero_iter()，the writeback
-   doesn't write anything back, also doesn't convert the delayed extent.
-   After copy range, the file size will update to F.
-5. Finally, the delayed extent becomes stale, and the free blocks count
-   becomes incorrect.
+Only lightly tested on x86.
 
-So, we have to handle above case for xfs. I suppose we could keep
-increasing i_size if the zeroed folio is entirely outside of i_size,
-make sure we could write back and allocate blocks for the
-zeroed & delayed extent, something like below, any suggestions ?
+Please have a look, thanks.
 
+Peter Xu (5):
+  mm/ppc: Define pXd_large() with pXd_leaf()
+  mm/x86: Replace p4d_large() with p4d_leaf()
+  mm/treewide: Replace pmd_large() with pmd_leaf()
+  mm/treewide: Replace pud_large() with pud_leaf()
+  mm/treewide: Drop pXd_large()
 
-@@ -1390,6 +1390,7 @@ static loff_t iomap_zero_iter(struct iomap_iter *iter, bool *did_zero)
+ arch/arm/include/asm/pgtable-2level.h        |  1 -
+ arch/arm/include/asm/pgtable-3level.h        |  1 -
+ arch/arm/mm/dump.c                           |  4 ++--
+ arch/powerpc/include/asm/book3s/64/pgtable.h | 14 --------------
+ arch/powerpc/include/asm/pgtable.h           |  4 ----
+ arch/powerpc/mm/book3s64/pgtable.c           |  4 ++--
+ arch/powerpc/mm/book3s64/radix_pgtable.c     |  2 +-
+ arch/powerpc/mm/pgtable_64.c                 |  2 +-
+ arch/s390/boot/vmem.c                        |  4 ++--
+ arch/s390/include/asm/pgtable.h              | 20 ++++++++++----------
+ arch/s390/mm/gmap.c                          | 14 +++++++-------
+ arch/s390/mm/hugetlbpage.c                   |  6 +++---
+ arch/s390/mm/pageattr.c                      |  4 ++--
+ arch/s390/mm/pgtable.c                       |  8 ++++----
+ arch/s390/mm/vmem.c                          | 12 ++++++------
+ arch/sparc/include/asm/pgtable_64.h          |  8 ++++----
+ arch/sparc/mm/init_64.c                      |  6 +++---
+ arch/x86/boot/compressed/ident_map_64.c      |  2 +-
+ arch/x86/include/asm/pgtable.h               | 15 +++++++--------
+ arch/x86/kvm/mmu/mmu.c                       |  4 ++--
+ arch/x86/mm/fault.c                          | 16 ++++++++--------
+ arch/x86/mm/ident_map.c                      |  2 +-
+ arch/x86/mm/init_32.c                        |  2 +-
+ arch/x86/mm/init_64.c                        | 14 +++++++-------
+ arch/x86/mm/kasan_init_64.c                  |  4 ++--
+ arch/x86/mm/mem_encrypt_identity.c           |  6 +++---
+ arch/x86/mm/pat/set_memory.c                 | 14 +++++++-------
+ arch/x86/mm/pgtable.c                        |  4 ++--
+ arch/x86/mm/pti.c                            |  8 ++++----
+ arch/x86/power/hibernate.c                   |  6 +++---
+ arch/x86/xen/mmu_pv.c                        | 10 +++++-----
+ drivers/misc/sgi-gru/grufault.c              |  2 +-
+ 32 files changed, 101 insertions(+), 122 deletions(-)
 
- 	do {
- 		struct folio *folio;
-+		loff_t old_size;
- 		int status;
- 		size_t offset;
- 		size_t bytes = min_t(u64, SIZE_MAX, length);
-@@ -1408,6 +1409,28 @@ static loff_t iomap_zero_iter(struct iomap_iter *iter, bool *did_zero)
- 		folio_mark_accessed(folio);
-
- 		bytes = iomap_write_end(iter, pos, bytes, bytes, folio);
-+
-+		/*
-+		 * If folio is entirely outside of i_size, update the
-+		 * in-memory inode size after zeroing the data in the page
-+		 * cache to prevent the write-back process from not writing
-+		 * back zeroed pages.
-+		 */
-+		old_size = iter->inode->i_size;
-+		if (pos + bytes > old_size) {
-+			size_t offset = offset_in_folio(folio, old_size);
-+			pgoff_t end_index = old_size >> PAGE_SHIFT;
-+
-+			if (folio->index > end_index ||
-+			    (folio->index == end_index && offset == 0)) {
-+				i_size_write(iter->inode, pos + bytes);
-+				iter->iomap.flags |= IOMAP_F_SIZE_CHANGED;
-+			}
-+		}
-+		__iomap_put_folio(iter, pos, bytes, folio);
-+		if (old_size < pos)
-+			pagecache_isize_extended(iter->inode, old_size, pos);
-+
- 		if (WARN_ON_ONCE(bytes == 0))
- 			return -EIO;
-
-Thansk,
-Yi.
+-- 
+2.43.0
 
 
