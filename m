@@ -1,181 +1,143 @@
-Return-Path: <linux-kernel+bounces-84611-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84613-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5483486A900
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:31:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 535CF86A907
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:33:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 783691C24E67
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 07:31:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B4ADBB261D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 07:33:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B79B250EC;
-	Wed, 28 Feb 2024 07:31:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFB6324B4A;
+	Wed, 28 Feb 2024 07:32:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=atmark-techno.com header.i=@atmark-techno.com header.b="Leqv9Ii2";
-	dkim=pass (2048-bit key) header.d=atmark-techno.com header.i=@atmark-techno.com header.b="OtpPEVFw"
-Received: from gw2.atmark-techno.com (gw2.atmark-techno.com [35.74.137.57])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="hJrndjlc"
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F39E328DA5
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 07:31:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.74.137.57
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E898C24B2A
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 07:32:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.244.123.138
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709105498; cv=none; b=e1gsdGtpNGRJ+1gNl9LAWZQGQde8pAn4mhN4vBvkKH8sVaMn0YWzhVUDlD4c7rsJTKbCVUxAc4Jyq2WAh2VIKra4ax6Kd5lMs/3RLtQuGwycQJjM5frhKI37ln7OBQqcSEdrf1ssDmaOS7vFUnWPtf6ZcnTIpEmwt3oDmHel7QA=
+	t=1709105577; cv=none; b=ltcvWFYRzUw4U4hVVhCeWkIdCcrNk/ElHyAYdq1uGS4dcJF4nUPpOb7jTl2esDChP7l72ZFbap7HrgXTs8CoUk4LojeJQ9blNAP76BWL6Eec9vPLNpUyzOkEToaMmUmgFCRYOEfjV6ECLcuQP3th67a8r30gjfw0C9OMCTydT7s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709105498; c=relaxed/simple;
-	bh=xCuy4MVwp0NypZyLpDhoJjj6fCLV/bg+BECCVso3xOk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cdia4d240yPRzbjbh685CEwSFeCfapuFx3WbD7YXkgGGixp+lWggIsBP+7QD183TyvRQr+jvd7/yeJwohCHnuYyEQ3HJpSrYh0uhOaZBq6AOz/aLTQBBjD12fKx3i1p8M8kvHFX14u7e2fSJ/7R+yaY1wa9hidXOxu6ThDohObk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=atmark-techno.com; spf=pass smtp.mailfrom=atmark-techno.com; dkim=pass (2048-bit key) header.d=atmark-techno.com header.i=@atmark-techno.com header.b=Leqv9Ii2; dkim=pass (2048-bit key) header.d=atmark-techno.com header.i=@atmark-techno.com header.b=OtpPEVFw; arc=none smtp.client-ip=35.74.137.57
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=atmark-techno.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=atmark-techno.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=atmark-techno.com;
-	s=gw2_bookworm; t=1709105495;
-	bh=xCuy4MVwp0NypZyLpDhoJjj6fCLV/bg+BECCVso3xOk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Leqv9Ii2cuI/9j4Pj6CCYhRoP4Z3fyHRmmLWTbxRgj5KLJD9bAYqFKBtQmqlDXYry
-	 KYdYI/gbvH/yB5aTqb+GXe2Intqi3bdDxIgwnUPoCeIYLt4nzGtEOK596k/FsPaSpn
-	 Sdx+hADNLjAGAt6vlUIU0VK+UVS/e+EalK51P8nmBcNyxoM8t96DYH8Q/3KzjpWCTO
-	 bl/bFtw8o+9ZoYMLV/dP5MT+57O5Iem8JMYsYTHd7S0hnUWzI7Pof0ZQ8GpcTebS+t
-	 FUnJGbw2sWzw1+I+KHh+AzmHlraT1YPOemOvDKx6HvseCnvEz/coHL7gsxbghvnZ+O
-	 r5xIpfcMEfTdg==
-Received: from gw2.atmark-techno.com (localhost [127.0.0.1])
-	by gw2.atmark-techno.com (Postfix) with ESMTP id 1EB55A5E
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 16:31:35 +0900 (JST)
-Authentication-Results: gw2.atmark-techno.com;
-	dkim=pass (2048-bit key; unprotected) header.d=atmark-techno.com header.i=@atmark-techno.com header.a=rsa-sha256 header.s=google header.b=OtpPEVFw;
-	dkim-atps=neutral
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com [209.85.167.200])
-	by gw2.atmark-techno.com (Postfix) with ESMTPS id C8A244C7
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 16:31:33 +0900 (JST)
-Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3c1a1cc1014so4714746b6e.2
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 23:31:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atmark-techno.com; s=google; t=1709105492; x=1709710292; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=y1r5BtcdAAMK6pyjdadbxQXK81G6GJtZJh++YFz4aZc=;
-        b=OtpPEVFwYh5rvvIZRYX0Vfal18hEOYIWRv1ndrwWCL5plSpW0wh7PSZm095w5NNKWu
-         E+A71RLPD9b7AsUEvxeFNSvCapqTa5vj0emjX5pMNUmMPBpF7paQ8WLIdCdFN9Gohh5k
-         Dyef2lWgczhrR6JXMUrNjuus2htfVq62HQ6iuZPv+Otu9tdpvxDOiX6TFEQAwQXPPHQ/
-         WdRs1xcDqFISxwLTFPtPD/SraLdlFmPlnDALVNe5loVNX8yTGHZoaTUzjefcHI4fc9HM
-         9V6ChmL4p6hzhrWlsG/bI6P8aoCxswg5S8sW+i7nQklsdRZf/SoSh3d8R0tO5/m/WURt
-         1X1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709105492; x=1709710292;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=y1r5BtcdAAMK6pyjdadbxQXK81G6GJtZJh++YFz4aZc=;
-        b=B6lu8J4tcWrcGg7o2akqYKp5f8oL27UPePLjAiQcKCNXBpLm3t/quc/5VJsvY4kkXy
-         085O13xxgqEgkhSYxMBA5moAFukHeQxsSdV1L0XCd35lJ7Ja3+VhYNAarNl+bLwb24zA
-         yl9DoXpkiGW1GffPLVYq/hrxMYDC+oCCWvtHWkOub/ZZTl99NbndF7IWGSmhzeujsK6P
-         UGUWiAwk4Xz0wXWJHUIe8QGci9Zc/8ydr21d/Pt/Z9PwnbecJS0FDTWuj4GHZSuEPBM/
-         aKSAl0YZiN+x/+jg2yYTXhne+KH1Cyy2x01xNWoR1pol4ggRuEH96eld9yI8sBDjUEme
-         UnEQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXtJ+E7/qL/nz/25e6MgYLmMy7doWdUQgUm0c8/e/jcJeB8b0gi23VekgyUvepqIC6haukzft3uXvcRBAgdg28lMKB9hpEtNxQ/mgG4
-X-Gm-Message-State: AOJu0Yz6/vwZphsiZKXfo6Q0W3ydQ5szg8I/WrlXfprueKXdgYknqXSy
-	o3Gm0ci36QeeAydIWDR42ktaI85VJf3AAjHyJmz5UsakNOX6PMBX3fbij8jrwLewadjnc/857Qj
-	zl8L7WaksEhjWJ8pBLdfg8HOxZQSfDSXpmHChy0RbW7GYK2/YSgdxrPybh0A8aWo=
-X-Received: by 2002:a05:6808:20a7:b0:3c1:9a76:99ea with SMTP id s39-20020a05680820a700b003c19a7699eamr5102149oiw.44.1709105492517;
-        Tue, 27 Feb 2024 23:31:32 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEG5oF6FrhRl5wkv5l81utRatIGtk//bIRrP8Se7SeC21eJl2NX5IYXpppfYh8KxZ4fhGrDLQ==
-X-Received: by 2002:a05:6808:20a7:b0:3c1:9a76:99ea with SMTP id s39-20020a05680820a700b003c19a7699eamr5102140oiw.44.1709105492240;
-        Tue, 27 Feb 2024 23:31:32 -0800 (PST)
-Received: from pc-0182.atmarktech (76.125.194.35.bc.googleusercontent.com. [35.194.125.76])
-        by smtp.gmail.com with ESMTPSA id y37-20020a056a00182500b006e558a67374sm1125452pfa.0.2024.02.27.23.31.31
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 27 Feb 2024 23:31:31 -0800 (PST)
-Received: from martinet by pc-0182.atmarktech with local (Exim 4.96)
-	(envelope-from <martinet@pc-zest>)
-	id 1rfEPa-00Gr73-22;
-	Wed, 28 Feb 2024 16:31:30 +0900
-Date: Wed, 28 Feb 2024 16:31:20 +0900
-From: Dominique Martinet <dominique.martinet@atmark-techno.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Jonathan Cameron <jic23@kernel.org>,
-	Syunya Ohshio <syunya.ohshio@atmark-techno.com>,
-	Guido =?utf-8?Q?G=C3=BCnther?= <agx@sigxcpu.org>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iio: industrialio-core: look for aliases to request
- device index
-Message-ID: <Zd7hSOw3_zosyrn3@atmark-techno.com>
-References: <20240228051254.3988329-1-dominique.martinet@atmark-techno.com>
- <7f03bb12-0976-4cb7-9ca9-4e4e28170bdd@linaro.org>
+	s=arc-20240116; t=1709105577; c=relaxed/simple;
+	bh=vl+E2NgRWiD419R8+gukB+VjWzYzUiNLeVzeFg6gGhE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=pu/MMwFCOKtrjF+Fky/wRhYe9BWEOxNuSABAeS2kgr4BUnn9ajO7AYv48mkhOWLnkq5o/VOdz7OOV1LkMFyjvmf/AIAfLbh2CJOLMfSGJMNBRq2oJaRb+ILn93aPikGvamsHiqUjFCDllJUc6GcvwQvSzQFMBx0N8gTTboDNwmY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=hJrndjlc; arc=none smtp.client-ip=60.244.123.138
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: 9339f2c8d60b11eeb8927bc1f75efef4-20240228
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=6ieR/zEKf2T/mkPnmZNu342qzL0+86b6tQM2bieJG+w=;
+	b=hJrndjlcxOwhSNbn51R2sHlrwXVEWaoDbycUx1xyYTZ7xarHMqjYY+WCG8H2wYLy6lFaLxmw+Pjl7i7p3sT/Xk9rLhb7EWLxn+BKErd8rkdwoyXDBzvjarmQHQywu7qYPp/ydA9Gqj7X/OFk9t9zsS52rJi+HPkrKz6TbMPZxTw=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:d64a8808-8baa-4943-9d81-4f66098ce44f,IP:0,U
+	RL:0,TC:0,Content:-25,EDM:-30,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACT
+	ION:release,TS:-55
+X-CID-META: VersionHash:6f543d0,CLOUDID:2ba2e680-4f93-4875-95e7-8c66ea833d57,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:2,IP:nil,UR
+	L:11|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:
+	1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
+X-UUID: 9339f2c8d60b11eeb8927bc1f75efef4-20240228
+Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw01.mediatek.com
+	(envelope-from <haibo.li@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 1119168673; Wed, 28 Feb 2024 15:32:49 +0800
+Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
+ mtkmbs11n1.mediatek.inc (172.21.101.185) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Wed, 28 Feb 2024 15:32:49 +0800
+Received: from mszsdtlt102.gcn.mediatek.inc (10.16.4.142) by
+ mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Wed, 28 Feb 2024 15:32:49 +0800
+From: Haibo Li <haibo.li@mediatek.com>
+To: Russell King <linux@armlinux.org.uk>, Alexandre Mergnat
+	<amergnat@baylibre.com>, Linus Walleij <linus.walleij@linaro.org>
+CC: Matthias Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
+	<angelogioacchino.delregno@collabora.com>, Haibo Li <haibo.li@mediatek.com>,
+	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<linux-mediatek@lists.infradead.org>, <xiaoming.yu@mediatek.com>
+Subject: [PATCH] ARM: unwind: fix unwind started from IRQ stack in THUMB2 kernel
+Date: Wed, 28 Feb 2024 15:32:47 +0800
+Message-ID: <20240228073247.13102-1-haibo.li@mediatek.com>
+X-Mailer: git-send-email 2.34.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <7f03bb12-0976-4cb7-9ca9-4e4e28170bdd@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-MTK: N
 
-Krzysztof Kozlowski wrote on Wed, Feb 28, 2024 at 08:16:03AM +0100:
-> On 28/02/2024 06:12, Dominique Martinet wrote:
-> > From: Syunya Ohshio <syunya.ohshio@atmark-techno.com>
-> > 
-> > When using dtb overlays it can be difficult to predict which iio device
-> > will get assigned what index, and there is no easy way to create
-> > symlinks for /sys nodes through udev so to simplify userspace code make
-> > it possible to request fixed indices for iio devices in device tree.
-> 
-> Please use subject prefixes matching the subsystem. You can get them for
-> example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
-> your patch is touching.
+When unwinds started from IRQ stack,call_with_stack is the only
+place to do stack switch.
+It need to identify call_with_stack when unwinding.
 
-Sorry, I assumed that was already the case and didn't think of checking
-that from what I was given, I'll fix the prefix to "iio: core: .." in v2
+In thumb2 kernel,it fails to identify call_with_stack.
+In practice,(u32)&call_with_stack has bit 0 set.
 
-> Please run scripts/checkpatch.pl and fix reported warnings. Some
-> warnings can be ignored, but the code here looks like it needs a fix.
-> Feel free to get in touch if the warning is not clear.
+	prel31_to_addr(&idx->addr_offset) is 0x806ed518,
+	while (u32)&call_with_stack is 0x806ed519.
+So it is impossible to do stack switch.
 
-Hm, I did check that and do not get any warning about the code itself:
+dump_stack from IRQ stack gets below result:
+..
+ call_timer_fn from __run_timers+0x163/0x25c
+ __run_timers from run_timer_softirq+0x15/0x24
+ run_timer_softirq from __do_softirq+0xe3/0x232
+ __do_softirq from __irq_exit_rcu+0x3f/0xac
+ __irq_exit_rcu from irq_exit+0x7/0xe
+ irq_exit from call_with_stack+0xd/0x10
+..
+The stacktrace ends with call_with_stack.
 
-$ git show --format=email | ./scripts/checkpatch.pl -q
-WARNING: DT binding docs and includes should be a separate patch. See: Documentation/devicetree/bindings/submitting-patches.rst
+Since bit 0 of pc in thumb2 is always 0,skip bit 0 when do compraing.
+Then we get expected stacktrace:
+..
+ call_timer_fn from __run_timers+0x163/0x25c
+ __run_timers from run_timer_softirq+0x15/0x24
+ run_timer_softirq from __do_softirq+0xe3/0x232
+ __do_softirq from __irq_exit_rcu+0x3f/0xac
+ __irq_exit_rcu from irq_exit+0x7/0xe
+ irq_exit from call_with_stack+0xd/0x10
+ call_with_stack from __irq_svc+0x93/0xb6
+Exception stack(0xf0875f60 to 0xf0875fa8)
+5f60: ****
+5f80: ****
+5fa0: ****
+ __irq_svc from arch_local_irq_enable+0x2/0x4
+ arch_local_irq_enable from do_idle+0xad/0x1f6
+..
 
-total: 0 errors, 1 warnings, 61 lines checked
+Signed-off-by: Haibo Li <haibo.li@mediatek.com>
+---
+ arch/arm/kernel/unwind.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-What are you thinking of?
-
-Regarding the dt binding, I'm not actually changing a binding so I
-didn't think of rechecking after adding the note, but I guess it still
-ought to be separate; I'll split it in v2.
-
-> > For platforms without device trees of_alias_get_id will just fail and
-> > ida_alloc_range will behave as ida_alloc currently does.
-> > 
-> > For platforms with device trees, they can not set an alias, for example
-> > this would try to get 10 from the ida for the device corresponding to
-> > adc2:
-> > aliases {
-> >   iio10 = &adc2
-> > };
-> 
-> Sorry, that's why you have labels and compatibles.
-
-I'm not sure I understand this comment -- would you rather this doesn't
-use aliases but instead add a new label (e.g. `iio,index = <10>` or
-whatever) to the iio node itself?
-
-Setting up a fixed alias seems to be precisely what aliases are about
-(e.g. setting rtc0 will make a specific node become /dev/rtc0, same with
-ethernet0, gpio, i2c, mmc, serial...), I'm not sure I agree a new label
-would be more appropriate here, but perhaps I'm missing some context?
-
-
-Thanks,
+diff --git a/arch/arm/kernel/unwind.c b/arch/arm/kernel/unwind.c
+index 9d2192156087..89e1f440082c 100644
+--- a/arch/arm/kernel/unwind.c
++++ b/arch/arm/kernel/unwind.c
+@@ -482,7 +482,8 @@ int unwind_frame(struct stackframe *frame)
+ 
+ 	ctrl.check_each_pop = 0;
+ 
+-	if (prel31_to_addr(&idx->addr_offset) == (u32)&call_with_stack) {
++	if (prel31_to_addr(&idx->addr_offset) ==
++		((u32)&call_with_stack & (~0x01))) {
+ 		/*
+ 		 * call_with_stack() is the only place where we permit SP to
+ 		 * jump from one stack to another, and since we know it is
 -- 
-Dominique
-
+2.18.0
 
 
