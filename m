@@ -1,234 +1,208 @@
-Return-Path: <linux-kernel+bounces-85019-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85020-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDFFD86AF34
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:31:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8529A86AF37
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:32:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BCD691C21542
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:30:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EAD601F26398
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:32:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 420DC145FEC;
-	Wed, 28 Feb 2024 12:30:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D75A145351;
+	Wed, 28 Feb 2024 12:32:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="buvie6fj"
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="mDEH1K7f";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="uzepz/MJ"
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F75E14534F
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 12:30:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709123450; cv=none; b=eEJg/hRRhuwAac7WN41UlDeZ/JIMm2b3qR68xBy9DKM873YWvcYN9/y9ybNZkm4yBYZin7bpzRpdCNK9WekTGYwmjez7A7vRFsqHTvzVIMMx9JPm+nUV7FUACaZHstPuLeFP1ZcubV+XQ+cACN1zShevSLR4i4/JHlF02AFC9uE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709123450; c=relaxed/simple;
-	bh=rbrZB1MbCrdJEdglecBkUsgBKbk/Lf5UqKWRiSqTaHg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jNTAH1M4JnYjt5uB6R7SOCIZmfZbICIoMWRCUZamZSjpltamg7ksXVZKMhGKQPgvR89x3iAsGuhLYH613qHGQc9Tkd5TIRZagNWHuxY+LeNcmMOd36PA6MdcT4GvGRoIXEBznR4tVXqMo8EM5N9ikfnucO4SyBwVWifD5//GNU0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=buvie6fj; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-412b7baa9c5so394915e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 04:30:48 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A110208C5
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 12:32:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709123536; cv=fail; b=RDzUz8RlPbXW2HTfMRfjJXwGB22MSLMk1LamVh6sAvhjcpyrRG2CXiJtohIA6oLD+8VyFkZo2pK7xXIyOmwH0GmNBzrLtfv7R3hAO6rQjCjmDEiLC4Dze2iQPIr6wwc7RDSOWFaa8nc+T55iPXP0KBr0wVrUXrJxLa/oj14eBjE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709123536; c=relaxed/simple;
+	bh=Bp2+z+/Stx7USeSn+tHSjHVi3WX/GfPGXK4Xn/HUUcE=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=rFbvEJmZjT0uZRViknhT3oyuRJHlC/g7/Y8QHFvkKBGhwUgzw/j9S3ufIHle08YSz+T0GwTiDMvxsBHd19w2gp4kQFl0M4Wsg7RPB5lH27Aq4He1y/uLXbjJi9SMYmBPVQjcL4ya2cXIwF5QmZOgeVbaMCYmp/610OUFqFYeORY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=mDEH1K7f; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=uzepz/MJ; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41S6irct010236;
+	Wed, 28 Feb 2024 12:32:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=3CYsvNaItra9FsCVFd6G3Zk0MwNfUhLGw+yDguT+AI8=;
+ b=mDEH1K7fB0iV1g9Xl2CX5wLxXc+saKlZD6+U5Jc+Ke/bodY0KS+pjfFvv0lYzKnEkZtO
+ aipUQIbB4GWNUilcnylDNg4xg+yw66oxWEvxqMEavFPt+AsG6l2lSNDeqedvJ8TmZsh7
+ 2DthzA42rsyAsX937AUpHgexSeW/h4LxtS7+iuga6Xxf+/1V/tnFId6oDfR3fRxMx04L
+ q1171wdnVZgrYs/ARD+3gozU0tmzNSbrrcI4Kl849OKSm4W3Kj/d0mYmtGvJ4Q8dj+Sz
+ jLNiXpaJyqMaDLsY8YC6kRYwyiN0TcVf7HBfqKfec/5P4QfG0EQYtrhr054zwiaFklIl uQ== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wf8bba0bh-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 28 Feb 2024 12:32:08 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41SAutLD019051;
+	Wed, 28 Feb 2024 12:32:06 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2100.outbound.protection.outlook.com [104.47.70.100])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3wgbdmnrmk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 28 Feb 2024 12:32:06 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=e8WtzGTcMW7tORuh8ul63Fpmz5ws0/6+wjymKgoLeQ/PmurtpawvqyT8SsNqIk/6XciztONxmklYIc14Yys49C7MdvLEYiUGwP4/xDSgmw40r4ci1ORdPpb1sFvBeWwqVW8eZ4A3R2dTZejvQEvV5fowIwZcqlIsCAW/Y3zr86vrgcYAnddg+h4YXuUzi4Rhcm0pMI/lvK4w7zczibhaphOqsgMRT2XdLa/n8GgujvncHqieihR/6wc1l74xV6ULLVl2TeXiC6mFD7nS9wgA6DMLDxg/azHf6iwX95JKfGKzBprtntKWfyI4r0OFEQLadzIORWpGbNCmNNFG3GkuTg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3CYsvNaItra9FsCVFd6G3Zk0MwNfUhLGw+yDguT+AI8=;
+ b=lCFcn4CN9hchPnG4I1PekjN3uqdIIe9cm4c5m+81siwKgXQ9TdvcYvmq8fc9nW84ONPru5PZvERUGfDkFJGDh7p0VQM9yXPQ3hm7qQzBf8J+on41fInKbEbDHyxd/rFWqsl62gGTvtJU9qJYHBtnX1hE++TJBkxLVh5jLVpbNgqJZs5ru1hejA+ME+4ppCW4XEgXReSc7RD0P+JG6k4IxM1pgQyrKc3oSE1pd7fvynTyJ25UEjCGED+JYuT8oq/Vki8bc/pBfKoLzodJQh8nJFnbI/L9he1WyG0nT+IWa/gpcMaN7L2JtBzV6zPSEFvbB7kH/F1p2mqeozFXPEyQuQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1709123447; x=1709728247; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y4koArAzLvRhp1wNjjda/nlU8knqR88gHiEfAPiHyOY=;
-        b=buvie6fj0m4OgeX0tHX8IQ7/mMEc3DqoFJiqRlctRHbQrZgGtOvZGy1/5viKUmiZO3
-         KZkfYI8sJcdE4lhnmuEHFlDrkK7Umgts+gpAImv2gkSMRWWIPoPDpAunFyo966dgv0H7
-         Cxas7BFtfsKlxj8kTMT5m8P9Hm1o80xmsi+4Z9fs2L8zMUYOtYOKstQ+Y2kj9QTx//tp
-         2V2PyhDYOuR9OU05ZJxtXLqO8LgVmkAHvqoA09DApzEsG5lHbSrd8Kb8V7o2pSThNPJA
-         A3/3rQCS+sn6vjojHy+MGuSeIKBDBJDbKb/pevNGNERrq2cocFyRBWWdl2kJC9RjQSi8
-         Z0ZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709123447; x=1709728247;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Y4koArAzLvRhp1wNjjda/nlU8knqR88gHiEfAPiHyOY=;
-        b=vpANxjdElwWrCanE+KQMYjCTPmRM3aLyFcSW+l6nftTD+L8qXTasulm29kNA7fShEf
-         UhDwvIj68sIEgVqRMKZUSsUw1nsU6A75GPray3wRsEpb1OfZ/+aE9WiUBF47gAhDRJKK
-         cBB9En1IganH+2WVgUoOcgTtwHN++UGhc7I69UyA358WCZsp/Ho7CUHvA+nBXqguS4hO
-         WxN4bWz9ZPkQwhWD9ie4U8IpLt3dpDgnUqozefL/9Rle4/dhwY7DqRQ5lZJFc6O9yhEF
-         kuyMCRvCmntWf85G9NYmpWq2hM5QZ/+LVhOh4DMgqKyh/NgBopdlxdpHaN5KJKOtAGjB
-         dIVQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX6XjdgTr62sUq+XQWPltkN9yZJNZ/fGbfEK0YgOYyrFBPA2EKjV/YUCzAJzZPzDbTq91zTOojk3mpT4sJK8YRNl5WgQBKOSpiQDIiL
-X-Gm-Message-State: AOJu0YxdJq1fI/argBL94UKYJIvmsrq0y7XeRKIPPkO2uysKKEtPd5OR
-	eNbT5MJNFTPaT6Mm+0MHasU9DbmB0ZI5rba4NTzA990NLiHb+Eb/nFOXro8cmKk=
-X-Google-Smtp-Source: AGHT+IGnLrE4m+ahq/TbdLTjtrEFYyvRyshiJ8ta0m0zukA/VYU5g+QqAuwBq+l7IwoNfsm8rqKH4w==
-X-Received: by 2002:a05:600c:4e86:b0:412:a21b:5bf8 with SMTP id f6-20020a05600c4e8600b00412a21b5bf8mr6635147wmq.3.1709123446668;
-        Wed, 28 Feb 2024 04:30:46 -0800 (PST)
-Received: from localhost ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id z21-20020a05600c0a1500b0040fd1629443sm2041092wmp.18.2024.02.28.04.30.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 04:30:45 -0800 (PST)
-Date: Wed, 28 Feb 2024 13:30:42 +0100
-From: Jiri Pirko <jiri@resnulli.us>
-To: Lena Wang =?utf-8?B?KOeOi+WonCk=?= <Lena.Wang@mediatek.com>
-Cc: "davem@davemloft.net" <davem@davemloft.net>,
-	"kuba@kernel.org" <kuba@kernel.org>,
-	"pabeni@redhat.com" <pabeni@redhat.com>,
-	"dsahern@kernel.org" <dsahern@kernel.org>,
-	"edumazet@google.com" <edumazet@google.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	Shiming Cheng =?utf-8?B?KOaIkOivl+aYjik=?= <Shiming.Cheng@mediatek.com>
-Subject: Re: [PATCH net v2] Net:cache didn't flush when ipv6 rule changed
-Message-ID: <Zd8nctDzf1sgO3lX@nanopsycho>
-References: <3efcbaf0872481d1a842eb9e18fa368b4b94d940.camel@mediatek.com>
- <696e39599c7a5e793a9d96aceef0e34817ab0bb2.camel@mediatek.com>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3CYsvNaItra9FsCVFd6G3Zk0MwNfUhLGw+yDguT+AI8=;
+ b=uzepz/MJwcb+uItfjOL7Fnl894zVZzstbAm17U3FcbnXiCdLKpX7tjVYgxq6gZCkB8T5EC/a+GH8bIBb9WO4faViMLvSdmS90uncEycUG+M03G8k2nd1t7xkg5Vm+d7VBTOJkCpkUMcLIMJI4jQZ5NUHClEDZu4mIWarlMJsAlQ=
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
+ by SA2PR10MB4443.namprd10.prod.outlook.com (2603:10b6:806:11b::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.37; Wed, 28 Feb
+ 2024 12:31:46 +0000
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::97a0:a2a2:315e:7aff]) by DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::97a0:a2a2:315e:7aff%3]) with mapi id 15.20.7316.035; Wed, 28 Feb 2024
+ 12:31:46 +0000
+Message-ID: <a07db8f8-39f8-44ad-b466-10ac02f3da13@oracle.com>
+Date: Wed, 28 Feb 2024 12:31:42 +0000
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] firmware_loader: Use init_utsname()->release
+To: Luis Chamberlain <mcgrof@kernel.org>
+Cc: russ.weight@linux.dev, gregkh@linuxfoundation.org, rafael@kernel.org,
+        linux-kernel@vger.kernel.org, masahiroy@kernel.org
+References: <20240222145819.96646-1-john.g.garry@oracle.com>
+ <Zddt-U-6SdxkxqmD@bombadil.infradead.org>
+ <51483aaf-d64a-4eee-b256-ab126483ad6c@oracle.com>
+ <Zdy9gKO5Q6K4IE8J@bombadil.infradead.org>
+ <ZdzGF9bxLn3Slbgi@bombadil.infradead.org>
+ <cb0c185c-54f8-4b43-856f-685cc5ed3fc4@oracle.com>
+ <Zd3cz7yYezir-P7e@bombadil.infradead.org>
+ <e88b76c5-1b13-4ad7-a97d-c34722cfde19@oracle.com>
+ <Zd3oke0pAL2G05Rj@bombadil.infradead.org>
+Content-Language: en-US
+From: John Garry <john.g.garry@oracle.com>
+Organization: Oracle Corporation
+In-Reply-To: <Zd3oke0pAL2G05Rj@bombadil.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AS4P189CA0051.EURP189.PROD.OUTLOOK.COM
+ (2603:10a6:20b:659::16) To DM6PR10MB4313.namprd10.prod.outlook.com
+ (2603:10b6:5:212::20)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <696e39599c7a5e793a9d96aceef0e34817ab0bb2.camel@mediatek.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|SA2PR10MB4443:EE_
+X-MS-Office365-Filtering-Correlation-Id: 874cad47-7ac6-4768-0841-08dc38593a24
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	MyymOzCNoz1fJFI1KsCX2I3KBp4f8WmZCdVcGFD0ZA6UKMQiBuJvrUHvvQ9oj1QR1AQr17/4YQjV5eH7dEC2Xt4M+bTZD+sFeYtMMGf7RIlfKJ8tYNg716SSrvvsmac+i0Ow4Eq8m99yBJAhuYSRGHhRlloE7JNHM/QvGC+m2+nCatgEKAYjMDlPIcVp5LJGES5tXRgs7QIlUuybKcKJLj0Tj+68V+3dEhrdmRpyReiYBLzXObwOLnOAfWh/U+u0bY5GRAo08c145r/JacgnxIXr6p7j/FDRRbtPWO4Pi4nMnMysMzQ3xscIzkFryUwhhl8402QMJmBq+Bu7XEDc5h1cBaBqSfFLD4vLSLn1hGSALNMpjb02wsBYy9mxAzzhgP3KDhdaE81k580fJaeFs4VW0UCuEtRqZLfop19v72GSLaF6zTnrAg7SCeO0m6bFbJVn6YhA5TcPztgZmNxCaN0maPGiApy7QfjqklvX3m3v+4o9RMKHyzGJCFEdUvi4pM9VsKPM2DNDFjxD9EH8FoQsxQIlU9432xSePut3gPI7MnbdJQpzKEUODX6hpaepucD1TwN4YEBafRr7Q9hZMhabRnJdnD3cWWf2/YKQJm1egyWhvth8Mv5GPrysi58DMPmIwG+Zw2MuMTFNgxe3xg==
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?OU9wVHNGVGoxSnd3T0pzSEhIb3plNVBldUhycWRYN3NrNGpoanBIVDFuSklG?=
+ =?utf-8?B?SGwwY0ZJYU1XLzRQSDZIdjd2bjJYTzlXZndyYW9SdzRjb0NBYXNsUHBXRzZr?=
+ =?utf-8?B?UnRPcW84d3ZhTW5CT3BCWllha1dQUkFzVXMvbGQxUWtKcEowTi83MFk5Nnd5?=
+ =?utf-8?B?cVVPVlVwVVNOS3BiRG90bGs1dllhVGZDakZLN0ZQZjdpOHhoYy91c3VCV3ls?=
+ =?utf-8?B?dURKZjVGbjgrZUk4OHdvSVpBWEdoVForNWFCblB1VjhpUHlYY0FlVDBZRjBw?=
+ =?utf-8?B?NUxNVFJIVnVaRnNvSzZQVDdYOW9YU2ptRm5FS0Mwb0NXbmtoaFRpNDFqRjhh?=
+ =?utf-8?B?Yyt0NTBwa0VKUFBEMUdaVEE4bXFNUzdBb0N0emM4QTNKczlRMCt5RW9HY0JU?=
+ =?utf-8?B?ZkJZSEJ0YUtXWVFuZG9kd3hqbVdDMDV1VHg0UFdZaVlON1BBWlBQNUxTbUEr?=
+ =?utf-8?B?QjYrWmFXdTBzR0k1dVBGWEpoREJSNWoxQkFyZHQ2RjhaT2MwK0REZnBlQWpR?=
+ =?utf-8?B?UTQ0SlYvS2lqSFRvM2trcjhwcjZ2VVYzd0RpbFFPTzE1eU1GK2QyZ3lTbkR0?=
+ =?utf-8?B?TE1Fb3hWTnJHa3dxZk5sQ2tuN1NxNk1ScXNxTWtaOFpzeHRoRnl3QmV2dm1R?=
+ =?utf-8?B?QzA0T3RhelYrdzBPeVNiT3JiaHBIemFwZkNUT1N3T0ExOFA4UDUxZ3VLQmFq?=
+ =?utf-8?B?NnkxRnozY1Uxa3pGdnpiVVdad0VFL1hEZWdtdlNMdTR0aTdCQW5GQTZVRFZ1?=
+ =?utf-8?B?bU9sbm0weHIyWUpLck9GNERaSGNrYlo3aFI2d3RydTRUYjJxaThZSXZmRTZa?=
+ =?utf-8?B?c0g3RldGR2VsREJDZUU4NEJ5eVgvaDhJa1hSNlpwRXdDM1FqZ2pYNzdwdzZ6?=
+ =?utf-8?B?OHJVRDZyN3dnVVQyN1ZZNHZCWmo1cU5KZTZZRHVia1JubUd0V1RpY1RhcUlU?=
+ =?utf-8?B?MENpNStxUXpWS2ZkZzIzOVV6T3BGaFZLNXM3S2xJNUY5ME85MFluNzBseTZl?=
+ =?utf-8?B?amRzL2RFTkhLUDNaTXVYMGJuV0krWG83S0tZYVNnY211bkpSOVkva3Y5a2t4?=
+ =?utf-8?B?dHlLdUtZMVJTQzBpN0dVSktON0tBMm5FdU1tNmZaYmhSYVNzMEo2bWNWemR4?=
+ =?utf-8?B?bm16N0ZNSFZPNk5MSUlUdEluL0FLYUMwZXhSRzRNREM0U1RhTlhVWWNmUjBy?=
+ =?utf-8?B?VStIUThuQm5wWDhJaUphdnErTDF3L0Y5elMzZVp0YnY4SGRieGN0eUcwWjFJ?=
+ =?utf-8?B?UC9RYWFKbkZ5S2NuUDZHMVhtQWpFdUpScWhTSmg0SlBNNSsrMUwySU80VElx?=
+ =?utf-8?B?RitXcWNnU0ZyTXBjbG9FaFprSmd6bVBiRk9jb2NqR1l5TGZDOG41QVVXNGlZ?=
+ =?utf-8?B?Z2lVdzZmZUswODh4WmFvVDZkUGN4dDZnZjgzRW1WcTErZjdBKzZZaCtkRnpn?=
+ =?utf-8?B?Uk1PaEdZN3NoOG5STE9jeFJNQlJKQkVUVnVoY2REQXVURGdqOTVKS2hXMkZH?=
+ =?utf-8?B?RXNZY0ZOVHQ4V3pKTXZWZXMreXRMazllY2JPUkV5cDg5NzloekVCQW9Tcmll?=
+ =?utf-8?B?a0g2NlQzZkdidXhLUlRPc1pKK1c3QXd3K05ZbXhwNm5kK2FsSWF1SmZOQ1d0?=
+ =?utf-8?B?dVZHckZBQTdKbkRxc2s4SWo2WEUrY20xU1ppejlqd0lyRnAzYlNQY25nU0tV?=
+ =?utf-8?B?c3N2cUdQTmlvSmpTd0ZobzJEeHNBVU5pTExHeXhwdWh0bnNoRmhCdTBNK1pR?=
+ =?utf-8?B?VmZpTE1lNW4xek1CVmJPRjVsam1DQUE2OVFlRDJFNGVwSHpqZHlZOW5GUG8z?=
+ =?utf-8?B?WTkxTFh0ZjZvWEVZQ0J3dS95dGdZQ3BkZEhmdjdLbFdMOEQrK2JGYVVmTHlq?=
+ =?utf-8?B?WE9IeXZ1Z2dtYkdlYzRkbC9ZZzFCQ0E3RmJsM3ptZTJoNDRTbGJvSDJPWDRq?=
+ =?utf-8?B?TXJLbUxhU3YrcFcwUkJYU25CdFNqYjJ4K1lxYlhjZjAxRm1halNzN2U3OFpD?=
+ =?utf-8?B?T1hXOEQwbzFCcDZIdE1SaXYrYzNJUHhkK1U5YW1CMmdqbXVaQy9HV1Vqb2FB?=
+ =?utf-8?B?dGlLVTNqdnMvL3JaVitRTkNaRjY3ZXVZUXRXOEQ3ZUsydXZmTElGWCtaNldl?=
+ =?utf-8?Q?o5SwGSWrE2sBJ9GeKdA+s/Nqu?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	EZvg3cSq4yhdMtE3793b4sEv3ncklKnfq5tp6Jh6iz9CumdUIZ38AaXJmDAv2/L9Z6U1wLsZgIxi45Fls/zhR+3QiCGLw9WvSfil/dIw1N7KpYD/ZqIz9zvHN6z4aAUoEQyP+sUaf3etlONzoeyc4x9HTvgt7OwtV/YmY5NDeKAGOhaAKbz+LATuwPhM8Oma0M31k/JNxmOeQyaHIHhpb9cQ+lbwSO/ykWFstf+DnpU33gJTFRVeZz8ETAE6FNQVw/4FCFoFwMfTjjWoIltmZUJ/vM5vx/fi5FWC8szjHvUTQrd4WuLbx89GT/F7/AtOlshfJDdEdCxLqjf4gO6eXsGKrhAprLUaN7YhdhJxL5aPUe9bqml0hXV0hOEQA9V9AIqlyEGkI/ZlZ95P43x/8Q0+mpqcL1EB78Wse84FoiUe/qemq++TOVBTQublY/3kLd3q5wBB/6VlwUBAltWmucN7uAeOfpZt07pl6KlYmYP717+URIvAhSrqrWOz/IasqeNNc4I52liE2wAcHqMsq/1CBe4NR2PocjS9yxvvUF7dKXUchW6fP9kUK2nqQBZcJzmq76+y+hWgGNOr1WV3SSvlkrJZ7yk0Prkx1+O3aAs=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 874cad47-7ac6-4768-0841-08dc38593a24
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Feb 2024 12:31:46.0503
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: qGFUDP4xGFmFqeYNABEbbiUgpAPKrrioGOOhOMk/674L0hJpy5TQ6Fa43yXFJTnyuLMNCiF5zZHGLM5Vwd81eA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR10MB4443
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-28_05,2024-02-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0
+ mlxlogscore=999 malwarescore=0 phishscore=0 mlxscore=0 suspectscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402280099
+X-Proofpoint-GUID: KrA18q3OYdgl0d1nb32DzZs2MTMZlCz8
+X-Proofpoint-ORIG-GUID: KrA18q3OYdgl0d1nb32DzZs2MTMZlCz8
 
-[PATCH net v2] Net:cache didn't flush when ipv6 rule changed
-
-Please make sure your patch subject is aligned with the rest:
-$ git log --no-merges --pretty=format:"%s" net/ipv6/fib6_rules.c | head -n30
-fib: remove unnecessary input parameters in fib_default_rule_add
-ipv6: change fib6_rules_net_exit() to batch mode
-ipv6: Define dscp_t and stop taking ECN bits into account in fib6-rules
-fib: rules: remove duplicated nla policies
-ipv6: fix memory leak in fib6_rule_suppress
-ipv6: fib6: remove redundant initialization of variable err
-fib: use indirect call wrappers in the most common fib_rules_ops
-ipv6: fib6: avoid indirect calls from fib6_rule_lookup
-net: fib_notifier: propagate extack down to the notifier block callback
-ipv6: do not free rt if FIB_LOOKUP_NOREF is set on suppress rule
-ipv6: honor RT6_LOOKUP_F_DST_NOREF in rule lookup logic
-treewide: Replace GPLv2 boilerplate/reference with SPDX - rule 372
-ipv6: Use result arg in fib_lookup_arg consistently
-ipv6: fib6_rule_action_alt needs to return -EAGAIN
-ipv6: Pass fib6_result to fib lookups
-net/ipv6: Add fib6_lookup
-net/ipv6: Refactor fib6_rule_action
-net: fib_rules: add extack support
-net: Drop pernet_operations::async
-net/ipv6: Pass skb to route lookup
-ipv6: route: dissect flow in input path if fib rules need it
-ipv6: fib6_rules: support for match on sport, dport and ip proto
-net: Convert fib6_rules_net_ops
-net: ipv6: avoid overhead when no custom FIB rules are installed
-ipv6: fib_rules: Dump rules during registration to FIB chain
-ipv6: fib_rules: Check if rule is a default rule
-ipv6: Do not leak throw route references
-net: flow: Add l3mdev flow update
-net: Add l3mdev rule
-ipv6: fix the incorrect return value of throw route
-
-Use imperative mood as other subjects do, tell the codebase what do do.
-
-
-
-Wed, Feb 28, 2024 at 09:24:55AM CET, Lena.Wang@mediatek.com wrote:
->From bf53859b379a653eec8a14fbb3f29286f9f888fb Mon Sep 17 00:00:00 2001
->From: shiming cheng <shiming.cheng@mediatek.com>
-
-Names start with capital letters.
-
-
->Date: Mon, 26 Feb 2024 20:17:58 +0800
->Subject: [PATCH net v2] Net:cache didn't flush when ipv6 rule changed
-
-I don't understand why you put these "headers" here. Only one "from" is
-enough in this case (you are submitting the patch in stead of another
-person).
-
-If you are not, I suggest to use git-send-email for submissions.
-
-
->
->When changed from old rule&route configure to new one as below,
-
-"as below" where?
-
->ipv6 cache dst_entry did not change to new route table as no
->cache flush callback function, then forward to wrong out interface.
-
-I don't understand this sentence :/
-
-
->When fib6_check dst_entry, the fib6_node version[fn_sernm] is
->always the same with socket dst_cookie, old cache dst_entry is
->always used and no chance to update.
-
-Sorry, this is too cryptic for me to understand :/
-
-
->
->So we need to update fib6_node version when rule changed and
->flush cache to avoid dispatching a wrong interface.
-
-Be imperative in the patch description too, tell the codebase what do do.
-
-https://www.kernel.org/doc/html/v6.6/process/submitting-patches.html#describe-your-changes
-
-
-
->
->Signed-off-by: shiming cheng <shiming.cheng@mediatek.com>
-
-Names start with capital letters.
-
-Also, when you submit the patch, your signed-off-by tag should be here
-as well.
-
-
->---
->v2: 
->    1. Add the fix tag.
-
-And there, there is none...
-
-
-pw-bot: cr
-
-
->    2. Changes according to David Ahern's suggestions, modify flush
->functions same way as ipv4 flush cache and use tabs to aligh with
->existing code.
->---
->---
-> net/ipv6/fib6_rules.c | 6 ++++++
-> 1 file changed, 6 insertions(+)
->
->diff --git a/net/ipv6/fib6_rules.c b/net/ipv6/fib6_rules.c
->index 7523c4baef35..52c04f0ac498 100644
->--- a/net/ipv6/fib6_rules.c
->+++ b/net/ipv6/fib6_rules.c
->@@ -449,6 +449,11 @@ static size_t fib6_rule_nlmsg_payload(struct
->fib_rule *rule)
-> 	       + nla_total_size(16); /* src */
-> }
+On 27/02/2024 13:50, Luis Chamberlain wrote:
+> On Tue, Feb 27, 2024 at 01:02:26PM +0000, John Garry wrote:
+>> On 27/02/2024 12:59, Luis Chamberlain wrote:
+>>> What kernel are you seeing this issue on?
+>> I was testing v6.8-rc5 last week
+> I cannot reproduce a hung task there either on that kernel.
 > 
->+static void fib6_rule_flush_cache(struct fib_rules_ops *ops)
->+{
->+	rt_genid_bump_ipv6(ops->fro_net);
->+}
->+
-> static const struct fib_rules_ops __net_initconst
->fib6_rules_ops_template = {
-> 	.family			= AF_INET6,
-> 	.rule_size		= sizeof(struct fib6_rule),
->@@ -461,6 +466,7 @@ static const struct fib_rules_ops __net_initconst
->fib6_rules_ops_template = {
-> 	.compare		= fib6_rule_compare,
-> 	.fill			= fib6_rule_fill,
-> 	.nlmsg_payload		= fib6_rule_nlmsg_payload,
->+	.flush_cache		= fib6_rule_flush_cache,
-> 	.nlgroup		= RTNLGRP_IPV6_RULE,
-> 	.owner			= THIS_MODULE,
-> 	.fro_net		= &init_net,
->-- 
->2.18.0
->
+> I see this:
+> 
+> sysfs: cannot create duplicate filename '/devices/virtual/misc/test_firmware/nope-test-firmware.bin'
+> 
+> But these are expected as the selftests tries silly things to ensure
+> they are not allowed.
+> 
+> If you can reproduce it there, it would be appreciated if you look underneath
+> the hood a bit, or share anything glaring and obvious which may help
+> reproduce this.
+
+Update: commenting-out /lib/udev/rules.d/50-firmware.rules seems to make 
+the test reliably pass for v6.8-rc5, but not with my patch on top - I 
+still get a hang there. I'll investigate that hang with my patch.
+
+Thanks,
+John
 
