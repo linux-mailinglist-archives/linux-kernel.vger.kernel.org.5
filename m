@@ -1,114 +1,213 @@
-Return-Path: <linux-kernel+bounces-84597-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84598-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62E4986A8CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:21:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29BC586A8D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:22:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 035F21F25C49
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 07:21:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D44E61F238D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 07:22:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 160B125567;
-	Wed, 28 Feb 2024 07:20:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2073724A07;
+	Wed, 28 Feb 2024 07:22:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ertHSvP1"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="f6bx8kvG"
+Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CE5925108;
-	Wed, 28 Feb 2024 07:20:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57077241E6;
+	Wed, 28 Feb 2024 07:22:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.112
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709104851; cv=none; b=u1sH80umHpv15FWiN6/q2VNZo+5b9fdWZLyPvkEm6uJMH5Z0rPrc2U1d+iyFHjhVyK6V6phwRMVuNKAJ+D+lNXS7J7Ol4SoEZPEPJHF5IMdLDccjejutD9zyr7nE6r3dgXFUMICThXBEpINXTG7pDMG7ilY6iziqSwFv1XktKT8=
+	t=1709104950; cv=none; b=GWC5W+EMPtarngrBS8ApzbEzI40nb76Rhc0OHsWVP/izWn1Fp+jX8yX+AgsTic6TKkZBNGdxm78kqC664xDV3ATxj6vhXZkGcabNp/SGNngLLUaAVWcY3frJfhCZl1V+lMCBM/DxrZMjNSAIDklpTlD97sqRUNjVfeO1rv7rJzY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709104851; c=relaxed/simple;
-	bh=GJEAgcGajQHOekPPW3hskfy84Wf8MxRKNiEJITZZ/SE=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=QX5osNZoz+EP05uV4jZAutXY4yLmDZfPfQF7bTaKbbPV1pTG5MAGpjcCjMYuNf8A6nmVOnpSVgigsP4aj4vqHr9paL40ZtLUhAPUu2fx5o5iUtWpXveBQ/r9K0V1tdRftAOcpKRIOeTayBTMZqkhRxhbD6QSs/MgeIcPBFO7YLs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ertHSvP1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 723CEC433C7;
-	Wed, 28 Feb 2024 07:20:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709104850;
-	bh=GJEAgcGajQHOekPPW3hskfy84Wf8MxRKNiEJITZZ/SE=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=ertHSvP1EvWCBUKaP9J13CcvXiXh6JelVegD9JFQpU9Juh3qNLgZYynRcDfRhJaJ9
-	 JT1ZUUFVPj7tbV+tYVtCoritu9PBTGkQy7Z/aB5dWn/hIEwHBBTX99eUaPj3OEYrv9
-	 xjCgpbY8GyECA1Z+iPeoWDwv7nVwuGCQYmMuQoTW6g2VfIt1sYU6/0t5FLTvE7muSn
-	 Qf91BIFVEL8b3w05D7S/23MKylnALBpzudkOihu9AdhbIV1C/Zb6NSXn8/kewvU7HQ
-	 W+XU2pMkOpvdYkTbNA+x1n1yeF4VPa37nOpQbewk54CFUbM7US30DrcofUtu7hH7KY
-	 YIaRFhXf70s3Q==
-Date: Wed, 28 Feb 2024 01:20:49 -0600
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=arc-20240116; t=1709104950; c=relaxed/simple;
+	bh=GSvyp8Qsgu5mSDE4c4E4ea5/h2OzKgjAON8hlIaJK7M=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=jI+Z12p8aILKGLEUR5nKm/yVdeZ/cGWJjqUAXWqcivzx+afX2zXlpVK7zBgTkqmCWno74qV5kaGehxlLaFi8D/vGuGWuyb63fcfOHnKYPWxwkPnPYmVWgfBur4eksYEPFRo0mvV3RScUPv/6qD//tUOCz8FviQgj61vmRvPKNlQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=f6bx8kvG; arc=none smtp.client-ip=115.124.30.112
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1709104944; h=From:To:Subject:Date:Message-Id:MIME-Version:Content-Type;
+	bh=1sgjtFP0Ccab8aXlrVzKfTgdlzFMp8b0DngTSJsuedc=;
+	b=f6bx8kvGNojDLd8v29AvJaOkayZ8SKz0PJ21J/xmF51eT38X2MnCH+JKJ2MztayOjwzn5T6o/Lt9r9h9pDTFz1yDjjMmh7aSomBFUdo+Ci54wwEPTGzHr2ejN/WyAX0n8KtRF16Cfa5ZMhZHSfZOAAU4kcUuk8In1KwoxR81WB0=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R221e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=yaoma@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0W1P3Z0l_1709104940;
+Received: from localhost.localdomain(mailfrom:yaoma@linux.alibaba.com fp:SMTPD_---0W1P3Z0l_1709104940)
+          by smtp.aliyun-inc.com;
+          Wed, 28 Feb 2024 15:22:22 +0800
+From: Bitao Hu <yaoma@linux.alibaba.com>
+To: dianders@chromium.org,
+	tglx@linutronix.de,
+	liusong@linux.alibaba.com,
+	akpm@linux-foundation.org,
+	pmladek@suse.com,
+	kernelfans@gmail.com,
+	deller@gmx.de,
+	npiggin@gmail.com,
+	tsbogend@alpha.franken.de,
+	James.Bottomley@HansenPartnership.com,
+	jan.kiszka@siemens.com
+Cc: linux-kernel@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	yaoma@linux.alibaba.com
+Subject: [PATCHv11 0/4] *** Detect interrupt storm in softlockup ***
+Date: Wed, 28 Feb 2024 15:22:12 +0800
+Message-Id: <20240228072216.95130-1-yaoma@linux.alibaba.com>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc: Fabio Estevam <festevam@gmail.com>, imx@lists.linux.dev, 
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- Stephen Boyd <sboyd@kernel.org>, 
- Michael Turquette <mturquette@baylibre.com>, Peng Fan <peng.fan@nxp.com>, 
- Sascha Hauer <s.hauer@pengutronix.de>, Abel Vesa <abelvesa@kernel.org>, 
- Pengutronix Kernel Team <kernel@pengutronix.de>, devicetree@vger.kernel.org, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- linux-clk@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>, 
- Shawn Guo <shawnguo@kernel.org>
-In-Reply-To: <20240228-imx95-blk-ctl-v2-1-ffb7eefb6dcd@nxp.com>
-References: <20240228-imx95-blk-ctl-v2-0-ffb7eefb6dcd@nxp.com>
- <20240228-imx95-blk-ctl-v2-1-ffb7eefb6dcd@nxp.com>
-Message-Id: <170910484819.1798591.16113826147285530887.robh@kernel.org>
-Subject: Re: [PATCH v2 1/2] dt-bindindgs: clock: support NXP i.MX95 BLK CTL
- module
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
+Hi, guys.
+I have implemented a low-overhead method for detecting interrupt
+storm in softlockup. Please review it, all comments are welcome.
 
-On Wed, 28 Feb 2024 13:43:05 +0800, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> i.MX95 includes BLK CTL module in several MIXes, such as VPU_CSR in
-> VPUMIX, BLK_CTRL_NETCMIX in NETCMIX, CAMERA_CSR in CAMERAMIX and etc.
-> 
-> The BLK CTL module is used for various settings of a specific MIX, such
-> as clock, QoS and etc.
-> 
-> This patch is to add some BLK CTL modules that has clock features.
-> 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  .../devicetree/bindings/clock/imx95-blk-ctl.yaml   | 61 ++++++++++++++++++++++
->  include/dt-bindings/clock/nxp,imx95-clock.h        | 32 ++++++++++++
->  2 files changed, 93 insertions(+)
-> 
+Changes from v10 to v11:
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+- Only patch #2 and patch #3 have been changed.
 
-yamllint warnings/errors:
+- Add comments to explain each field of 'struct irqstat' in patch #2.
 
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/clock/imx95-blk-ctl.example.dtb: /example-0/syscon@4c410000: failed to match any schema with compatible: ['fsl,imx95-vpumix-csr', 'syscon']
+- Split the inner summation logic out of kstat_irqs() and encapsulate
+it into kstat_irqs_desc() in patch #3.
 
-doc reference errors (make refcheckdocs):
+- Adopt Thomas's change log for patch #3.
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240228-imx95-blk-ctl-v2-1-ffb7eefb6dcd@nxp.com
+- Add the 'Reviewed-by' tag of Liu Song.
 
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
+Changes from v9 to v10:
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+- The two patches related to 'watchdog/softlockup' remain unchanged.
 
-pip3 install dtschema --upgrade
+- The majority of the work related to 'genirq' is contributed by
+Thomas, indicated by adding 'Originally-by' tag. And I'd like to
+express my gratitude for Thomas's contributions and guidance here.
 
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+- Adopt Thomas's change log for the snapshot mechanism for interrupt
+statistics.
+
+- Split unrelated change in patch #2 into a separate patch #3.
+
+Changes from v8 to v9:
+
+- Patch #1 remains unchanged.
+
+- From Thomas Gleixner, split patch #2 into two patches. Interrupt
+infrastructure first and then the actual usage site in the
+watchdog code.
+
+Changes from v7 to v8:
+
+- From Thomas Gleixner, implement statistics within the interrupt
+core code and provide sensible interfaces for the watchdog code.
+
+- Patch #1 remains unchanged. Patch #2 has significant changes
+based on Thomas's suggestions, which is why I have removed
+Liu Song and Douglas's Reviewed-by from patch #2. Please review
+it again, and all comments are welcome.
+
+Changes from v6 to v7:
+
+- Remove "READ_ONCE" in "start_counting_irqs"
+
+- Replace the hard-coded 5 with "NUM_SAMPLE_PERIODS" macro in
+"set_sample_period".
+
+- Add empty lines to help with reading the code.
+
+- Remove the branch that processes IRQs where "counts_diff = 0".
+
+- Add the Reviewed-by of Liu Song and Douglas.
+
+Changes from v5 to v6:
+
+- Use "./scripts/checkpatch.pl --strict" to get a few extra
+style nits and fix them.
+
+- Squash patch #3 into patch #1, and wrapp the help text to
+80 columns.
+
+- Sort existing headers alphabetically in watchdog.c
+
+- Drop "softlockup_hardirq_cpus", just read "hardirq_counts"
+and see if it's non-NULL.
+
+- Store "nr_irqs" in a local variable.
+
+- Simplify the calculation of "cpu_diff".
+
+Changes from v4 to v5:
+
+- Rearranging variable placement to make code look neater.
+
+Changes from v3 to v4:
+
+- Renaming some variable and function names to make the code logic
+more readable.
+
+- Change the code location to avoid predeclaring.
+
+- Just swap rather than a double loop in tabulate_irq_count.
+
+- Since nr_irqs has the potential to grow at runtime, bounds-check
+logic has been implemented.
+
+- Add SOFTLOCKUP_DETECTOR_INTR_STORM Kconfig knob.
+
+Changes from v2 to v3:
+
+- From Liu Song, using enum instead of macro for cpu_stats, shortening
+the name 'idx_to_stat' to 'stats', adding 'get_16bit_precesion' instead
+of using right shift operations, and using 'struct irq_counts'.
+
+- From kernel robot test, using '__this_cpu_read' and '__this_cpu_write'
+instead of accessing to an per-cpu array directly, in order to avoid
+this warning.
+'sparse: incorrect type in initializer (different modifiers)'
+
+Changes from v1 to v2:
+
+- From Douglas, optimize the memory of cpustats. With the maximum number
+of CPUs, that's now this.
+2 * 8192 * 4 + 1 * 8192 * 5 * 4 + 1 * 8192 = 237,568 bytes.
+
+- From Liu Song, refactor the code format and add necessary comments.
+
+- From Douglas, use interrupt counts instead of interrupt time to
+determine the cause of softlockup.
+
+- Remove the cmdline parameter added in PATCHv1.
+
+Bitao Hu (4):
+  watchdog/softlockup: low-overhead detection of interrupt storm
+  genirq: Provide a snapshot mechanism for interrupt statistics
+  genirq: Avoid summation loops for /proc/interrupts
+  watchdog/softlockup: report the most frequent interrupts
+
+ arch/mips/dec/setup.c                |   2 +-
+ arch/parisc/kernel/smp.c             |   2 +-
+ arch/powerpc/kvm/book3s_hv_rm_xics.c |   2 +-
+ include/linux/irqdesc.h              |  14 +-
+ include/linux/kernel_stat.h          |   3 +
+ kernel/irq/internals.h               |   4 +-
+ kernel/irq/irqdesc.c                 |  50 +++++--
+ kernel/irq/proc.c                    |   9 +-
+ kernel/watchdog.c                    | 213 ++++++++++++++++++++++++++-
+ lib/Kconfig.debug                    |  13 ++
+ scripts/gdb/linux/interrupts.py      |   6 +-
+ 11 files changed, 286 insertions(+), 32 deletions(-)
+
+-- 
+2.37.1 (Apple Git-137.1)
 
 
