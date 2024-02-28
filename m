@@ -1,73 +1,60 @@
-Return-Path: <linux-kernel+bounces-84451-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84452-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E912886A6E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 03:51:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66BC186A6ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 03:54:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A68A6287540
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:51:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 067E61F29A3F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:54:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D24A31CF81;
-	Wed, 28 Feb 2024 02:51:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E6E61CF9A;
+	Wed, 28 Feb 2024 02:54:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="W7k6hiFy"
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TuUZR64z"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE6211CD0F
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 02:51:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27C091CD0F;
+	Wed, 28 Feb 2024 02:54:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709088666; cv=none; b=WeZ7n4i9Vn5gOWZXTFC4UPgjyWbuYce9/kPzC/z/keh0rVsZfBOJ6JQPUjIuZYWkdKV7LxkUhfh+BcRrEHb0iN7cp4t0m7d+vPVsM84GouXsa8/G0Mqz26Dys8MaPxwZMrEBX17zJ3niS2i8umyiLuZodjGiuguimIJhLwRx59I=
+	t=1709088861; cv=none; b=h6jdOmB6ZYeaQp2VQpW92a9zMm8C0fj5bFpyEX/aXQsRvrexAmMY1f5tvjOhPLTDk3AaoOOlQDDtq+F53DV1Z5OI/3qnOIE/C9W46cNpzGcAGbfDZenReU0lSZ3WDFB3on7DS59a5hq5nC4SUi7H95bH+trPoGhHlRywiC8Ouas=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709088666; c=relaxed/simple;
-	bh=kx5LCqUuIYQ9KdpDTmjjLIzHshpz1YkwrkM7+Lzgshw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mQQXuYdJcgqKjCnW7b1fa+H4fhTsmvmbDQ8uvOF+OzZHq6aVsDJq9Vg7mZDljkHJW68uGJjjq+JjdMDtNrqoOhwvPMm4ThI5P7B/BhtjJyNjUVtiJM44VPRLdDz98L4opUqUC8CthtRXIidqyNWMsU2rcKBUYn0xCXucS/sgbDc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=W7k6hiFy; arc=none smtp.client-ip=209.85.210.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6da4a923b1bso4005143b3a.2
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 18:51:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1709088664; x=1709693464; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=b4FqA67RdXu7Wc6aPbe8nrEQlAnfIV6tiLcrDtl1Sb0=;
-        b=W7k6hiFyP9m5jeUSqCmCA0MhzX5pqdl3NIQOItCUUnFZILnc/ue4aD7Fb4GgHY9heD
-         aBMrMoAOVzRKzZFfmoH0TgGwUJESo+F6Id3n5juOSWmIXe0FixJT5QFexF3P3/SCnFR9
-         pYbYJlQasYzA35c0/5cx/70jjokx97XbfinrUwGyw5co6tgZo33pzoLhZoNt/6i0wXGf
-         lEhaQNVVn8KcrPKvq1tYRaqm2N6RimrMciikBSI6QEiTXlAzUXsn9j70sO8vLF2xd36Q
-         JLqb1WxC2oadUAA7Dz+OZWCwNMETCQNJLPcJ670pgY0FL/LBXMwvl5KfF9rWBqqcDQPT
-         P67g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709088664; x=1709693464;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=b4FqA67RdXu7Wc6aPbe8nrEQlAnfIV6tiLcrDtl1Sb0=;
-        b=Zuf2Ej5EJ9IFItW6JJyQiwvAFCcVMWYCExNnaZrZzEt6LTAV3+MH/cZxd8h0kXFP8/
-         8L++OyqOpU0HDQixPLBAKK5oIfIz3rNDMbIwcJu0JpWS45Q6+LaB0sKYFDjKDWIGAKPz
-         mSTap198T1FcbW5WUOdIlpSotPIBNhGdeeyaaS9bUtk2/OBWI4Qdoq4aU5nYDiJkeZ42
-         tpXhReY85EHrqMK6UThgey1eQHQb6qv8E7L8xV+3EfOvFmjDbZXYs9GY9oPn9UhB/wLW
-         qZHIUOPu3KZf70tULDAqJ6X4cH4PvshQAB8WCASVJgir8R9Nf62+8LTK22Yd2wByNUpH
-         TVrQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWtcbM05wVZBI8x3FJVzpPw7ehhLApCFW3x4DQHlNjsHaXPTOISsF5zfFVRBCiQ6TUrL4DRvy/yTs6cdP/HK9S1ECItxwUwVhTfZxkD
-X-Gm-Message-State: AOJu0YyvbjKwUqodTcJ6eni1ZJzBbYE5rpAIZ04rSeGCeSOZTJ95Wx2b
-	Dah9SzZCi3jGZtR22imOA/LgjUuct7WPICQdibKwDoa2Mrpql96YfQTumZRM0Ww=
-X-Google-Smtp-Source: AGHT+IGeReZ3Y5NxIZlAaM8Enqxn/OFrYcimk/GW8M9PDaThxvj9F6RTHN7tdifb5hp9OSU+TOS9Wg==
-X-Received: by 2002:a05:6a20:f29:b0:19f:f059:c190 with SMTP id fl41-20020a056a200f2900b0019ff059c190mr3572652pzb.24.1709088664240;
-        Tue, 27 Feb 2024 18:51:04 -0800 (PST)
-Received: from ?IPV6:fdbd:ff1:ce00:1d7c:876:e31b:5d3a:49d6? ([240e:6b1:c0:120::1:d])
-        by smtp.gmail.com with ESMTPSA id j18-20020a63e752000000b005e17cad83absm6521340pgk.74.2024.02.27.18.50.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Feb 2024 18:51:03 -0800 (PST)
-Message-ID: <72b3f614-aeef-473f-9496-6a5ed81916a4@bytedance.com>
-Date: Wed, 28 Feb 2024 10:50:55 +0800
+	s=arc-20240116; t=1709088861; c=relaxed/simple;
+	bh=DcplYvg9YXEcB4+RqfeA3kQTbwDp+wkHlaKrY7RctWg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=qzSg7xTpxI14fok0BtTJxgjZw7PJHQyPRIbvEMSYi+xY1Wx6HCyCiXRwWHFRrVbEVYU2sPowWTu/N83kPuoN3UqXYg3JnPm6kaBPT4lHGEMMa82t4+4fyWf9vSAZ/AY275tSr836X0MH9LM7WLzyEPYTcGA7+05gGGn12BQAweU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TuUZR64z; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709088859; x=1740624859;
+  h=message-id:date:mime-version:subject:to:references:from:
+   in-reply-to:content-transfer-encoding;
+  bh=DcplYvg9YXEcB4+RqfeA3kQTbwDp+wkHlaKrY7RctWg=;
+  b=TuUZR64z+oozVqXme4TMA2i/zanHKazWaY1+AXke3mDm0YnP15h7oiTA
+   Fp9jujkPoXckY1MnYFvX9mSsvjYv8nPkbYx7mqNEMjnoEYZtgfyIRX+b7
+   EEC9AI4lmsrjBV97+H1WD91d5Hbf6bjQxL89Svc1x7ALWr3tbDKsj6bqr
+   ruuGNaofd6KzGSM2YdFte7yzWeeSbduWi4LjCABKOX2/+SRkiXayLfU6q
+   /W/M/omubGewkvMsdgd3OXAeNGHAkLEQwumModoBdlhR6v9FQHBzI9FCN
+   9YIsbyc1bAgObZDoopIPvKR7Ze+rwX9MkTctt0ob/CHIEN+A1eRgBLgq7
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3632870"
+X-IronPort-AV: E=Sophos;i="6.06,189,1705392000"; 
+   d="scan'208";a="3632870"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 18:54:18 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,189,1705392000"; 
+   d="scan'208";a="44785267"
+Received: from dschro4x-mobl.amr.corp.intel.com (HELO [10.212.137.190]) ([10.212.137.190])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 18:54:17 -0800
+Message-ID: <75594a83-0d7c-4106-8f06-d940dcff02df@linux.intel.com>
+Date: Tue, 27 Feb 2024 18:54:17 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,31 +62,73 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [External] Re: [PATCH 0/3] Support intra-function call validation
-To: Josh Poimboeuf <jpoimboe@kernel.org>
-Cc: bp@alien8.de, mingo@redhat.com, tglx@linutronix.de, hpa@zytor.com,
- jpoimboe@redhat.com, peterz@infradead.org, mbenes@suse.cz,
- gregkh@linuxfoundation.org, stable@vger.kernel.org,
- alexandre.chartre@oracle.com, x86@kernel.org, linux-kernel@vger.kernel.org
-References: <20240226094925.95835-1-qirui.001@bytedance.com>
- <f516eb83-c393-af67-803f-4cf664865cf8@bytedance.com>
- <20240226172843.52zidtcasjw4wbmh@treble>
-From: Rui Qi <qirui.001@bytedance.com>
-In-Reply-To: <20240226172843.52zidtcasjw4wbmh@treble>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH V2 5/9] tools/arch/x86/intel_sdsi: Fix maximum meter
+ bundle length
+Content-Language: en-US
+To: "David E. Box" <david.e.box@linux.intel.com>,
+ rajvi.jingar@linux.intel.com, platform-driver-x86@vger.kernel.org,
+ linux-kernel@vger.kernel.org, hdegoede@redhat.com,
+ ilpo.jarvinen@linux.intel.com
+References: <20240228000016.1685518-1-david.e.box@linux.intel.com>
+ <20240228000016.1685518-6-david.e.box@linux.intel.com>
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20240228000016.1685518-6-david.e.box@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-I tested the mainline kernel v6.8-rc5 without this problem, as I said before, this problem only occurs in 5.4 LTS, to be precise, it can occur from v5.4.217, with CONFIG_RETPOLINE and CONFIG_LIVEPATCH enabled
 
-BTW: The patch for V2 version has been sent out. We can discuss based on that. Thank you!
-https://lore.kernel.org/stable/20240228024535.79980-1-qirui.001@bytedance.com/T/#t
+On 2/27/24 4:00 PM, David E. Box wrote:
+> The maximum number of bundles in the meter certificate was set to 8 which
+> is much less than the maximum. Instead, since the bundles appear at the end
+> of the file, set it based on the remaining file size from the bundle start
+> position.
+>
+> Fixes: aad129780bae ("platform/x86/intel/sdsi: Add support for reading the current meter state")
+> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> ---
+>
+> V2 - Split of V1 patch 7
+>
+>  tools/arch/x86/intel_sdsi/intel_sdsi.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/arch/x86/intel_sdsi/intel_sdsi.c b/tools/arch/x86/intel_sdsi/intel_sdsi.c
+> index 2cd92761f171..a02850a710ee 100644
+> --- a/tools/arch/x86/intel_sdsi/intel_sdsi.c
+> +++ b/tools/arch/x86/intel_sdsi/intel_sdsi.c
+> @@ -43,7 +43,6 @@
+>  #define METER_CERT_MAX_SIZE	4096
+>  #define STATE_MAX_NUM_LICENSES	16
+>  #define STATE_MAX_NUM_IN_BUNDLE	(uint32_t)8
+> -#define METER_MAX_NUM_BUNDLES	8
+>  
+>  #define __round_mask(x, y) ((__typeof__(x))((y) - 1))
+>  #define round_up(x, y) ((((x) - 1) | __round_mask(x, y)) + 1)
+> @@ -167,6 +166,9 @@ struct bundle_encoding_counter {
+>  	uint32_t encoding;
+>  	uint32_t counter;
+>  };
+> +#define METER_MAX_NUM_BUNDLES							\
+> +		((METER_CERT_MAX_SIZE - sizeof(struct meter_certificate)) /	\
+> +		 sizeof(struct bundle_encoding_counter))
+>  
+>  struct sdsi_dev {
+>  	struct sdsi_regs regs;
+> @@ -387,7 +389,7 @@ static int sdsi_meter_cert_show(struct sdsi_dev *s)
+>  	}
+>  
+>  	if (mc->bundle_length > METER_MAX_NUM_BUNDLES * 8)  {
+> -		fprintf(stderr, "More than %d bundles: %d\n",
+> +		fprintf(stderr, "More than %ld bundles: actual %d\n",
+>  			METER_MAX_NUM_BUNDLES, mc->bundle_length / 8);
 
-On 2/27/24 1:28 AM, Josh Poimboeuf wrote:
-> On Mon, Feb 26, 2024 at 07:33:53PM +0800, qirui wrote:
->> This issue only occurs in 5.4 LTS versions after LTS 5.4.250
->> (inclusive), and this patchset is based on commit
->> 6e1f54a4985b63bc1b55a09e5e75a974c5d6719b (Linux 5.4.269)
-> 
-> Does the bug also exist in mainline?  If not, why?
-> 
+I think you can avoid hardcoding here as well. sizeof(struct bundle_encoding_counter)
+
+>  		return -1;
+>  	}
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
+
 
