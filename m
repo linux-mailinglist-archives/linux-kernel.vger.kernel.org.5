@@ -1,157 +1,146 @@
-Return-Path: <linux-kernel+bounces-85838-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85839-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9155086BC0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:17:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 614E686BC0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:18:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4390F1F24B5B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:17:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 62FB01C22FEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:18:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C58CD13D306;
-	Wed, 28 Feb 2024 23:17:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F359C13D304;
+	Wed, 28 Feb 2024 23:18:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="nezoDe1j"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OZEdSrAA"
+Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com [209.85.221.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 784FF13D2F2;
-	Wed, 28 Feb 2024 23:17:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDB6D13D2F2
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 23:18:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709162251; cv=none; b=Y0qS3Q6Vc0rr52R+rZYYIwfBzRB0+q6votoaSbZmHnzS7RUFZsLotKxdtkCLY+CDP134Llm1K48lREXQnQ2WYx/uisx0ycGRkkutZh9ccHwxOrmg1Gn687vVyEXlj4J9HJR1Q5NjG1YYp5xAdH8lsexbtjwiRfTScV+Y2T48bn8=
+	t=1709162310; cv=none; b=EzeS83S6NYOr+TvIRZrgtbFzkmWP7KHgygchIuDX/4VRWtAWubQsgmyhxAoChIk6N8/pWDUuEV8v+GXMJDqZ+yQUPRzCXFWlCy9W0THvE4JrrXIlPB+qfNUOf0jfSM1+ly/tmN+pWVunjJBsfFbpnH1AvBy6hEYszpgeZtAEAk8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709162251; c=relaxed/simple;
-	bh=r60eb2e8alPRaEUcbAn6sqeiAkSCW7JPQkjwOYrrwdo=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=SKP6BJReWO7ibQne2hpv6nDvD2AtE1e36wQdZXuxLlmJOBhQ9SOeWj3dL3a0YIOOyhGdnpnWGDyVsAjcDqvnN6+UiepupCZee7LFCuInfqg8r06Zkd9iK+B6Rj6o/ZS+0XphjdiK9ASGsl8cdnUCPQfcimcluLbS+yoYqvtHYJI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=nezoDe1j; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1709162243;
-	bh=ZL/XInIJt5Cjmb6tbB31oFlzL2jGhkTDoNVbNzl3oks=;
-	h=Date:From:To:Cc:Subject:From;
-	b=nezoDe1jULxhYuf/bJjayZMTPtC1mFWM7SV034TzbFm3Ff62W3foLUTH7eoaNXQnk
-	 P/cqOCSpeqs643DM1yST2mEJRfzSg/i+NPaBL9ZnpDAcy8idn700KkVYnytS+lsrpl
-	 x/yFS/OzbnwCvUW3sDiUi3xPgZQh3HPw/1AygzxOkBtnufVGsXZxuEW6hWN9B4PeO7
-	 U1YXGAWwrBAqIXj5t0ulMsoJ/bUCzg/PyGt2PeT6tA7DsphcIfIA2TrVKNJGGFWhbD
-	 Se4r4ju1LbngVhi3oS8lP1RycJr9GSRlPpwxejmRSeXPEvl8UWNxNIbVMMW1VlWgeC
-	 pF7OLkwQXZP6w==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TlVcf6Gvyz4wb2;
-	Thu, 29 Feb 2024 10:17:22 +1100 (AEDT)
-Date: Thu, 29 Feb 2024 10:17:21 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Michael Ellerman <mpe@ellerman.id.au>, PowerPC
- <linuxppc-dev@lists.ozlabs.org>, Andrew Morton <akpm@linux-foundation.org>
-Cc: Christophe Leroy <christophe.leroy@csgroup.eu>, Linux Kernel Mailing
- List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the powerpc tree with the mm-stable
- tree
-Message-ID: <20240229101721.58569685@canb.auug.org.au>
+	s=arc-20240116; t=1709162310; c=relaxed/simple;
+	bh=1PRdfMtS+AJe7vKkktEZrVdDpgYrCNHily3OOONKHOs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cyLlvxFKMuSOtesTFXIHIPu8v21uNt2xQnkYU0d6cL3DFsDmprOeRKoYzLROeNDlpYKkw2UgPao/aZOye7s6/lrrarOe29tuUvU7DXqnj7XFMvpcTXc0omchApGuK2FS6iYQ2CK5VfCkAy1uakBQBhB3Mc8WXzjZA3WGD96Fm6A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OZEdSrAA; arc=none smtp.client-ip=209.85.221.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f181.google.com with SMTP id 71dfb90a1353d-4d147f87bb6so86598e0c.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 15:18:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709162308; x=1709767108; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QgfsSS2pCIePMWBGptAQ7Z9dl3gs0fMNB2rNkVErCLs=;
+        b=OZEdSrAAfvrYL7bXpA9ZDCgAO/HH2AujDuqd2wX11O3RLqA6zubKBzwek15Esx+4d2
+         D5piX+Oxs1P1tAJ1RSiyQW1NPxcfVZ+LymCk/TG9kX3GGyPYiyfcHJO+QJ3Opk88zKS/
+         2T16PDJNWb6bzdhIec/aNJFIUl2EFyR5ok32KBrldMPEvhsQMVJPVFo4mCziP5uSSWet
+         nvZkmEqffnQygisIByk9CwQJY3Hd1lsNaBln70u/p/SNhDInWN9Drqk3bTiPakXQXXa3
+         Vr4/s8kG6Cp7UvczS2oN3SepKghiONfWHYCheGxatzamGfG9kdklYnTj+xn21p0BJD7V
+         Yu8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709162308; x=1709767108;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QgfsSS2pCIePMWBGptAQ7Z9dl3gs0fMNB2rNkVErCLs=;
+        b=M6rxdCfNHOXlI6LeYdnzvzulkQD1et5aLc2L8Ltr+4gtv2Ax6cpSBJQIIEKQ9bbS0y
+         tzfwYdTXYVLDDep4mqrPT6yRrTndHVe9hjVPSqhySRV8K62fuUQe2wuZjYsHVOnWv8Lq
+         9g5Hei7vUEGDSRbWEbDRJ4Ew1THDNaZe4UD/WyyC6nLHFds3qzb2xMhec6k8/qSKI2MT
+         YhdrMRrp/WMjveZcmiUUVOQA5hOFYvYMB4F1GnU0qaGRRXo8oOBB+e1iJxBgUbWH4mkN
+         oTS+Ixw1pWEB5nrF1xNF5ay7/7q87Lts5bc92OmXaF3u5wiWalgshFOpmSiEJdppZs/1
+         roEA==
+X-Forwarded-Encrypted: i=1; AJvYcCWXiec54pDkqKpWHKOdbsgN314JzEoZjR8h7iDwRBheefLkqdDk416y8S2ZQnl8ldKE4QrpKuyckbuPXgzwU837AGU0v+xy2GU+zPEG
+X-Gm-Message-State: AOJu0YyydQLLCqM2e2dfz/tR1QP8xwioIeLT5jYgG13VCtCyWj7d61Dt
+	fym/EalxYKkDBMR91tK0ZUbtOBU+a/VnhLBaENb1a4HHkEixFoLZcNs+NXtAbUvQlUJfci66ygg
+	xii6+m2kxqnzCM4mawnGyJFj+Lio=
+X-Google-Smtp-Source: AGHT+IECs8iMY1YnYPJpryVfFh8VT25O/SfR3YnlQmuu+oyBiX4Kuyt6DsSjCaMbB4d1WSsWdF//N3m6ojejD1lNTxA=
+X-Received: by 2002:a1f:e4c4:0:b0:4cb:56c5:580e with SMTP id
+ b187-20020a1fe4c4000000b004cb56c5580emr345301vkh.11.1709162307693; Wed, 28
+ Feb 2024 15:18:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/4n4pHsN37n9IgpmeL1C=ccq";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-
---Sig_/4n4pHsN37n9IgpmeL1C=ccq
-Content-Type: text/plain; charset=US-ASCII
+References: <20231025144546.577640-5-ryan.roberts@arm.com> <20240222070544.133673-1-21cnbao@gmail.com>
+ <1a9fcdcd-c0dd-46dd-9c03-265a6988eeb2@redhat.com> <CAGsJ_4zWU91J_71zVjKua-RTO4hDUJMkL7z_RP1GnYf3W1dNEA@mail.gmail.com>
+ <a4a9054f-2040-4f70-8d10-a5af4972e5aa@arm.com> <CAGsJ_4zEKDVM==0KaFOb_UgO3GZ7ag2DW3sBLA-t9Tf0gAAnww@mail.gmail.com>
+ <1d9b85ce-63d1-43b4-a4ad-b9c1d89f952b@redhat.com>
+In-Reply-To: <1d9b85ce-63d1-43b4-a4ad-b9c1d89f952b@redhat.com>
+From: Barry Song <21cnbao@gmail.com>
+Date: Thu, 29 Feb 2024 12:18:16 +1300
+Message-ID: <CAGsJ_4xZDiqHwqeyX03rZDuSXGJ+Nye7stGj=3JYZ8Gu2ys5Tg@mail.gmail.com>
+Subject: Re: [PATCH v3 4/4] mm: swap: Swap-out small-sized THP without splitting
+To: David Hildenbrand <david@redhat.com>
+Cc: Ryan Roberts <ryan.roberts@arm.com>, akpm@linux-foundation.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@suse.com, 
+	shy828301@gmail.com, wangkefeng.wang@huawei.com, willy@infradead.org, 
+	xiang@kernel.org, ying.huang@intel.com, yuzhao@google.com, chrisl@kernel.org, 
+	surenb@google.com, hanchuanhua@oppo.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On Wed, Feb 28, 2024 at 10:34=E2=80=AFPM David Hildenbrand <david@redhat.co=
+m> wrote:
+>
+> >>>>>
+> >>>>> To me, it seems safer to split or do some other similar optimizatio=
+n if we find a
+> >>>>> large folio has partial map and unmap.
+> >>>>
+> >>>> I'm hoping that we can avoid any new direct users of _nr_pages_mappe=
+d if
+> >>>> possible.
+> >>>>
+> >>>
+> >>> Is _nr_pages_mapped < nr_pages a reasonable case to split as we
+> >>> have known the folio has at least some subpages zapped?
+> >>
+> >> I'm not sure we need this - the folio's presence on the split list wil=
+l tell us
+> >> everything we need to know I think?
+> >
+> > I agree, this is just one question to David, not my proposal.  if
+> > deferred_list is sufficient,
+> > I prefer we use deferred_list.
+> >
+> > I actually don't quite understand why David dislikes _nr_pages_mapped b=
+eing used
+> > though I do think _nr_pages_mapped cannot precisely reflect how a
+> > folio is mapped
+> > by multi-processes. but _nr_pages_mapped < nr_pages seems be safe to
+> > tell the folio
+> > is partially unmapped :-)
+>
+> I'm hoping we can get rid of _nr_pages_mapped in some kernel configs in
+> the future (that's what I am working on). So the less we depend on it
+> the better.
+>
+> With the total mapcount patch I'll revive shortly, _nr_pages_mapped will
+> only be used inside rmap code. I'm hoping we won't have to introduce
+> other users that will be harder to get rid of.
+>
+> So please, if avoidable, no usage of _nr_pages_mapped outside of core
+> rmap code.
 
-Today's linux-next merge of the powerpc tree got a conflict in:
+Thanks for clarification on the plan. good to use deferred_list in this
+swap-out case.
 
-  arch/powerpc/mm/pgtable_32.c
+>
+> --
+> Cheers,
+>
+> David / dhildenb
+>
 
-between commit:
-
-  a5e8131a0329 ("arm64, powerpc, riscv, s390, x86: ptdump: refactor CONFIG_=
-DEBUG_WX")
-
-from the mm-stable tree and commit:
-
-  8f17bd2f4196 ("powerpc: Handle error in mark_rodata_ro() and mark_initmem=
-_nx()")
-
-from the powerpc tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/powerpc/mm/pgtable_32.c
-index 12498017da8e,4be97b4a44f9..000000000000
---- a/arch/powerpc/mm/pgtable_32.c
-+++ b/arch/powerpc/mm/pgtable_32.c
-@@@ -164,21 -174,17 +174,14 @@@ static int __mark_rodata_ro(void
-  	numpages =3D PFN_UP((unsigned long)__end_rodata) -
-  		   PFN_DOWN((unsigned long)_stext);
- =20
-- 	set_memory_ro((unsigned long)_stext, numpages);
-+ 	return set_memory_ro((unsigned long)_stext, numpages);
-+ }
-+=20
-+ void mark_rodata_ro(void)
-+ {
-+ 	int err =3D __mark_rodata_ro();
-+=20
-+ 	if (err)
-+ 		panic("%s() failed, err =3D %d\n", __func__, err);
- -
- -	// mark_initmem_nx() should have already run by now
- -	ptdump_check_wx();
-  }
-  #endif
--=20
-- #if defined(CONFIG_ARCH_SUPPORTS_DEBUG_PAGEALLOC) && defined(CONFIG_DEBUG=
-_PAGEALLOC)
-- void __kernel_map_pages(struct page *page, int numpages, int enable)
-- {
-- 	unsigned long addr =3D (unsigned long)page_address(page);
--=20
-- 	if (PageHighMem(page))
-- 		return;
--=20
-- 	if (enable)
-- 		set_memory_p(addr, numpages);
-- 	else
-- 		set_memory_np(addr, numpages);
-- }
-- #endif /* CONFIG_DEBUG_PAGEALLOC */
-
---Sig_/4n4pHsN37n9IgpmeL1C=ccq
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXfvwEACgkQAVBC80lX
-0GzdyQf/ZXxsTunyeE9hpoU8sNgMv+YWuJxIkdQX4wdxWcuybexme3bw4kj0rZXd
-RUBTfzmZTW5+KV18MvN9pBzsnIYrfEhGDGItzZQzlElVGmsPevvkAOvKTyvKP1oK
-KYDLqqtNYEWX+s0T8svodh+Tfxwp1zanWycAGStmzdZbnffSzV4cMeWRAKRuW9lR
-+ujWWGXO4WKdIkS0X97BvGadKnu/BCvIQIPjOsS7HLWdl5XHPpVOTP0KkZIzewTW
-7igbDgq0075biqdcvuLWDdFfNUTr3Qbx1DydOvtVVv7Zk2IJRzTQ2K6feYgPSjs1
-c5Tt4xpnk8QJOrm6dAlfjN9fmks7Sg==
-=k40I
------END PGP SIGNATURE-----
-
---Sig_/4n4pHsN37n9IgpmeL1C=ccq--
+Thanks
+Barry
 
