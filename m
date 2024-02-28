@@ -1,39 +1,73 @@
-Return-Path: <linux-kernel+bounces-84777-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84779-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E11386AB72
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:37:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A31FB86AB78
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:38:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CEF212840E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:37:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 19ECCB2405E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:38:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED1A12E635;
-	Wed, 28 Feb 2024 09:37:14 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 829E32D054
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 09:37:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92C1236103;
+	Wed, 28 Feb 2024 09:38:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gVi3yfe+"
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE71C31A83
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 09:38:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709113034; cv=none; b=jk/TCWglphAAe5f2PQxU59kxrfka6aIdyU50BJFvpncK4uWRUrnM/7o2JoohHCa6mwHQTuwB5hVw9TI+WyQIe1QDQ0NKbJhzmcXoXvoJKLbDIZ1qmlYUBRq1rs1JV4j8HI1PklWSbRuJZ9NNbRteEhDFjlJLciPRGcAl30O6a08=
+	t=1709113104; cv=none; b=OY717gpldjFcIdbi9EuBClzGsP9zCWuQN2CxNKpAozHPqcWz+L7pFwKq+YInhaGtkmTJqV7VQIwPeO8i4XC7vFMVXJfA6/eu7sSSOKZdTS5ELbhgZ6moqgv5ORu7Ok03XpfUaPZOcXkgJOz8qVEK02k6Vy2atX26qZlSlFV79EU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709113034; c=relaxed/simple;
-	bh=bLlJUeiMggHhQeyotaPXhZna+Tl8qrG+wqhxIdOlvrM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qdkfUyk8ipouqoBhNrwYfBhbpxtd77l31vlvpMVtpnuvxiOCFLE8pJRvLU0Vcc+vnAFfQAnZeQGb2Tb5DAFP3qXmvo7TLVN+YWwafiYCbhvRmvGsTTmk0RJ1uCATQHmQbV+K00KsAMGVl3rcMJTWfwYALS11ux04qsvCTN98rTU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C4BDBC15;
-	Wed, 28 Feb 2024 01:37:48 -0800 (PST)
-Received: from [10.57.67.95] (unknown [10.57.67.95])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1CA1C3F6C4;
-	Wed, 28 Feb 2024 01:37:07 -0800 (PST)
-Message-ID: <049818ca-e656-44e4-b336-934992c16028@arm.com>
-Date: Wed, 28 Feb 2024 09:37:06 +0000
+	s=arc-20240116; t=1709113104; c=relaxed/simple;
+	bh=PsR1pfhQj1+YctW/5hj7cA5FYtAGn3Ht2yBzNPBY4EE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=AHBvYPEsj1wYbaN2Q2ZsV1YXuy6efCDP4HOwDCOEGRygXu0HVTMVvTJB+51IKymYdwpsnTCKddaTNhokgtxFlEEylepgMZQj0CEGA7HKCyi8IB1+srYXxrwjM1uIs4GeUvc48fdnhdV5fPMNnnw7xbPBT/wqONAVlfWyxVIh31s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gVi3yfe+; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-412b3f88132so3090005e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 01:38:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709113100; x=1709717900; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=n4+AKRmkmBFEoLIViqECwVqYHAu9t9L66Ay6/6CX5qk=;
+        b=gVi3yfe+1CPYCHnSX5oOnMw9+afsQSsePxQoXFmUVM8+A9WuU73DJES0ZMQbo2Gyvp
+         r6zv7Z2tnKpfu6cFCi0sofVQWVywqqOEPkzwsrKs10GSGz2NveIux/Q9ifDDpnsglPhS
+         gew3zqnGI1EfjhLDi9WrJT2MdEN5HXPCcuV2Kpqh2r+jkg1Bqui5fPNqmC6LmVSf5z7L
+         /6kfGH3Wmxxaowb+zQYntrgHRK1MZpYG5LsAzl8tSTGJuH4sDr9HWmGPokSHDnb/2D3U
+         lnwDiHYc1vR7/hSsekFnK7uO+L1ylq+srkn+B+hEt7sy5kIwzBCvy1fmW0ecDy4qfbTc
+         +28g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709113100; x=1709717900;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=n4+AKRmkmBFEoLIViqECwVqYHAu9t9L66Ay6/6CX5qk=;
+        b=Q0Zr8CQ00DV+jMPJTRkbL2MbEsgShh1iHNTndWXtsuDcOzuOCJmb+hyA/ukOoEFhvo
+         0XKST95HlI5FJrJHZMpwD5uBbTNoi+1/J16GWMSK3wRV5tW8wk47WkvHY53hTVy1qPGb
+         2QPgczbj03Ub3j0q5zwl2AL6aWVW5qnrcUD+DdVtdyZOkLFBpQVCnLLxeWGZ26e2CP/E
+         QOwtCcRQutKdMI8AJjxis0oDkqdVNG3gDbpO2R+aeM7KbTGgrmPGSgcRSOq0EaborXbO
+         uxnTfrtCRvWisL1kuWktv6KhUyk2yH5LEXVx3QFJnEq97h42J43t2fqjeH7z6w9VKg6R
+         ITsQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXdjqSRaNBtYOspzmQuybR1FNW3g7y2S6VDMMrHOEbi14oul9RGsIU+20YoakAHU8hCr3UVg7Y4iUgnNqMpe2aBPAdazX87PMbh0Ih+
+X-Gm-Message-State: AOJu0YxH9+fvlzITE8ZBi98BXDywFy9zsAbJssTzxo+NbtnOw6Lu4rap
+	zJPRalWaxrtlNszlfPaoKnxrHc+BocYYtYxPSoNduHMDWLYdflQ89BGyKUfGgBk=
+X-Google-Smtp-Source: AGHT+IHOp1pxzWYsSZdgMk9fzN4/wRCtOOeXX9R3/XcarEOcYQuEj1WE1Pi4WYyJuSqwQHpUbVzypA==
+X-Received: by 2002:a05:600c:a4c:b0:412:77cb:ae28 with SMTP id c12-20020a05600c0a4c00b0041277cbae28mr10799118wmq.11.1709113100097;
+        Wed, 28 Feb 2024 01:38:20 -0800 (PST)
+Received: from [172.20.10.10] ([213.233.108.239])
+        by smtp.gmail.com with ESMTPSA id o8-20020a056000010800b0033d202abf01sm13843461wrx.28.2024.02.28.01.38.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Feb 2024 01:38:19 -0800 (PST)
+Message-ID: <557f369c-e6f9-4794-8d80-bda5c149db5e@linaro.org>
+Date: Wed, 28 Feb 2024 09:38:16 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,226 +75,94 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/4] mm: swap: Remove CLUSTER_FLAG_HUGE from
- swap_cluster_info:flags
-Content-Language: en-GB
-To: David Hildenbrand <david@redhat.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Matthew Wilcox <willy@infradead.org>, Huang Ying <ying.huang@intel.com>,
- Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
- Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
- Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20231025144546.577640-1-ryan.roberts@arm.com>
- <20231025144546.577640-2-ryan.roberts@arm.com>
- <d108bd79-086b-4564-838b-d41afa055137@redhat.com>
- <6541e29b-f25a-48b8-a553-fd8febe85e5a@redhat.com>
- <ee760679-7e3c-4a35-ad53-ca98b598ead5@arm.com>
- <ba9101ae-a618-4afc-9515-a61f25376390@arm.com>
- <2934125a-f2e2-417c-a9f9-3cb1e074a44f@redhat.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <2934125a-f2e2-417c-a9f9-3cb1e074a44f@redhat.com>
+Subject: Re: [PATCH v4 16/39] spi: dt-bindings: atmel,at91rm9200-spi: remove
+ 9x60 compatible from list
+To: Varshini.Rajendran@microchip.com, broonie@kernel.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ Nicolas.Ferre@microchip.com, alexandre.belloni@bootlin.com,
+ claudiu.beznea@tuxon.dev, linux-spi@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20240223171342.669133-1-varshini.rajendran@microchip.com>
+ <20240223172638.672366-1-varshini.rajendran@microchip.com>
+ <19da0e57-379b-4db3-ba8e-db7efe336e15@linaro.org>
+ <98fedd3f-b55d-4ad1-b2ca-1efef0a19505@microchip.com>
+Content-Language: en-US
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <98fedd3f-b55d-4ad1-b2ca-1efef0a19505@microchip.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-
-Hi David, Huang,
+Content-Transfer-Encoding: 7bit
 
 
-On 27/02/2024 19:17, David Hildenbrand wrote:
-> On 27.02.24 18:10, Ryan Roberts wrote:
->> Hi David,
+
+On 2/28/24 09:28, Varshini.Rajendran@microchip.com wrote:
+> Hi Tudor,
+> 
+> On 26/02/24 2:39 pm, Tudor Ambarus wrote:
+>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
 >>
->> On 26/02/2024 17:41, Ryan Roberts wrote:
->>> On 22/02/2024 10:20, David Hildenbrand wrote:
->>>> On 22.02.24 11:19, David Hildenbrand wrote:
->>>>> On 25.10.23 16:45, Ryan Roberts wrote:
->>>>>> As preparation for supporting small-sized THP in the swap-out path,
->>>>>> without first needing to split to order-0, Remove the CLUSTER_FLAG_HUGE,
->>>>>> which, when present, always implies PMD-sized THP, which is the same as
->>>>>> the cluster size.
->>>>>>
->>>>>> The only use of the flag was to determine whether a swap entry refers to
->>>>>> a single page or a PMD-sized THP in swap_page_trans_huge_swapped().
->>>>>> Instead of relying on the flag, we now pass in nr_pages, which
->>>>>> originates from the folio's number of pages. This allows the logic to
->>>>>> work for folios of any order.
->>>>>>
->>>>>> The one snag is that one of the swap_page_trans_huge_swapped() call
->>>>>> sites does not have the folio. But it was only being called there to
->>>>>> avoid bothering to call __try_to_reclaim_swap() in some cases.
->>>>>> __try_to_reclaim_swap() gets the folio and (via some other functions)
->>>>>> calls swap_page_trans_huge_swapped(). So I've removed the problematic
->>>>>> call site and believe the new logic should be equivalent.
->>>>>
->>>>> That is the  __try_to_reclaim_swap() -> folio_free_swap() ->
->>>>> folio_swapped() -> swap_page_trans_huge_swapped() call chain I assume.
->>>>>
->>>>> The "difference" is that you will now (1) get another temporary
->>>>> reference on the folio and (2) (try)lock the folio every time you
->>>>> discard a single PTE of a (possibly) large THP.
->>>>>
->>>>
->>>> Thinking about it, your change will not only affect THP, but any call to
->>>> free_swap_and_cache().
->>>>
->>>> Likely that's not what we want. :/
->>>>
+>> On 23.02.2024 19:26, Varshini Rajendran wrote:
+>>> Remove microchip,sam9x60-spi compatible from the list as the driver used
+>>> has the compatible atmel,at91rm9200-spi and sam9x60 devices also use the
+>>> same compatible as fallback. So removing the microchip,sam9x60-spi
+>>> compatible from the list since it is not needed.
 >>>
->>> Is folio_trylock() really that expensive given the code path is already locking
->>> multiple spinlocks, and I don't think we would expect the folio lock to be very
->>> contended?
+>>
+>> I find this wrong. I though we shall add compatibles for each SoC. Are
+>> the registers and fields the same for the SPI IPs in these 2 SoCs? Even
+>> if they are the same, are you sure the IPs are integrated in the same way?
+> 
+> Which two SoCs are you referring to ?
+> I am not removing the device specific compatible. I am only removing the 
+> additional fallback compatible.
+> 
+
+ah, I read it wrong, sorry
+> As in,
+> 
+> compatible = "microchip,sam9x7-spi", "atmel,at91rm9200-spi";
+> 
+> instead of,
+> 
+> compatible = "microchip,sam9x7-spi", "microchip,sam9x60-spi", 
+> "atmel,at91rm9200-spi";
+> 
+> for the sam9x7 devices.
+> 
+> Hope this is clear. If I have it wrong please let me know.
+
+it's clear now, thanks.
+
+I see in the driver that microchip,sam9x60-spi compatible is not yet
+used, thus removing the fallback to "microchip,sam9x60-spi" brings no
+functional change. Would have made a difference if sam9x60-spi
+implemented additional support that sam9x7-spi could have used as a
+fallback. If you think that sam9x7-spi will not fallback to sam9x60-spi
+in the future then:
+
+Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+
+> 
+>>
+>>> Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
+>>> ---
+>>> Changes in v4:
+>>> - Elaborated the explanation in the commit message to justify the patch
+>>> ---
+>>>   Documentation/devicetree/bindings/spi/atmel,at91rm9200-spi.yaml | 1 -
+>>>   1 file changed, 1 deletion(-)
 >>>
->>> I guess filemap_get_folio() could be a bit more expensive, but again, is this
->>> really a deal-breaker?
+>>> diff --git a/Documentation/devicetree/bindings/spi/atmel,at91rm9200-spi.yaml b/Documentation/devicetree/bindings/spi/atmel,at91rm9200-spi.yaml
+>>> index 58367587bfbc..32e7c14033c2 100644
+>>> --- a/Documentation/devicetree/bindings/spi/atmel,at91rm9200-spi.yaml
+>>> +++ b/Documentation/devicetree/bindings/spi/atmel,at91rm9200-spi.yaml
+>>> @@ -22,7 +22,6 @@ properties:
+>>>             - const: atmel,at91rm9200-spi
+>>>         - items:
+>>>             - const: microchip,sam9x7-spi
+>>> -          - const: microchip,sam9x60-spi
+>>>             - const: atmel,at91rm9200-spi
 >>>
->>>
->>> I'm just trying to refamiliarize myself with this series, but I think I ended up
->>> allocating a cluster per cpu per order. So one potential solution would be to
->>> turn the flag into a size and store it in the cluster info. (In fact I think I
->>> was doing that in an early version of this series - will have to look at why I
->>> got rid of that). Then we could avoid needing to figure out nr_pages from the
->>> folio.
->>
->> I ran some microbenchmarks to see if these extra operations cause a performance
->> issue - it all looks OK to me.
+>>>     reg:
 > 
-> Sorry, I'm drowning in reviews right now. I was hoping to get some of my own
-> stuff figured out today ... maybe tomorrow.
-
-No need to apologise - as always I appreciate whatever time you can spare.
-
-> 
->>
->> I modified your "pte-mapped-folio-benchmarks" to add a "munmap-swapped-forked"
->> mode, which prepares the 1G memory mapping by first paging it out with
->> MADV_PAGEOUT, then it forks a child (and keeps that child alive) so that the
->> swap slots have 2 references, then it measures the duration of munmap() in the
->> parent on the entire range. The idea is that free_swap_and_cache() is called for
->> each PTE during munmap(). Prior to my change, swap_page_trans_huge_swapped()
->> will return true, due to the child's references, and __try_to_reclaim_swap() is
->> not called. After my change, we no longer have this short cut.
->>
->> In both cases the results are within 1% (confirmed across multiple runs of 20
->> seconds each):
->>
->> mm-stable: Average: 0.004997
->>   + change: Average: 0.005037
->>
->> (these numbers are for Ampere Altra. I also tested on M2 VM - no regression
->> their either).
->>
->> Do you still have a concern about this change?
-> 
-> The main concern I had was not about overhead due to atomic operations in the
-> non-concurrent case that you are measuring.
-> 
-> We might now unnecessarily be incrementing the folio refcount and taking
-> the folio lock. That will affects large folios in the swapcache now IIUC.
-> Small folios should be unaffected.
-
-Yes I think you are right, because `count == SWAP_HAS_CACHE` is already checking
-the small page is not swapped. So my perf tests weren't actually doing what I
-thought they were.
-
-> 
-> The side effects of that can be:
-> * Code checking for additional folio reference could now detect some and
->   back out. (the "mapcount + swapcache*folio_nr_pages != folio_refcount"
->   stuff)
-> * Code that might really benefit from trylocking the folio might fail to
->   do so.
-> 
-> For example, splitting a large folio might now fail more often simply
-> because some process zaps a swap entry and the additional reference+page
-> lock were optimized out previously.
-
-Understood. Of course this is the type of fuzzy reasoning that is very dificult
-to test objectively :). But it makes sense and I suppose I'll have to come up
-with an alternative approach (see below).
-
-> 
-> How relevant is it? Relevant enough that someone decided to put that
-> optimization in? I don't know :)
-
-I'll have one last go at convincing you: Huang Ying (original author) commented
-"I believe this should be OK.  Better to compare the performance too." at [1].
-That implies to me that perhaps the optimization wasn't in response to a
-specific problem after all. Do you have any thoughts, Huang?
-
-[1]
-https://lore.kernel.org/linux-mm/87v8bdfvtj.fsf@yhuang6-desk2.ccr.corp.intel.com/
-
-> 
-> Arguably, zapping a present PTE also leaves the refcount elevated for a while
-> until the mapcount was freed. But here, it could be avoided.
-> 
-> Digging a bit, it was introduced in:
-> 
-> commit e07098294adfd03d582af7626752255e3d170393
-> Author: Huang Ying <ying.huang@intel.com>
-> Date:   Wed Sep 6 16:22:16 2017 -0700
-> 
->     mm, THP, swap: support to reclaim swap space for THP swapped out
->         The normal swap slot reclaiming can be done when the swap count reaches
->     SWAP_HAS_CACHE.  But for the swap slot which is backing a THP, all swap
->     slots backing one THP must be reclaimed together, because the swap slot
->     may be used again when the THP is swapped out again later.  So the swap
->     slots backing one THP can be reclaimed together when the swap count for
->     all swap slots for the THP reached SWAP_HAS_CACHE.  In the patch, the
->     functions to check whether the swap count for all swap slots backing one
->     THP reached SWAP_HAS_CACHE are implemented and used when checking
->     whether a swap slot can be reclaimed.
->         To make it easier to determine whether a swap slot is backing a THP, a
->     new swap cluster flag named CLUSTER_FLAG_HUGE is added to mark a swap
->     cluster which is backing a THP (Transparent Huge Page).  Because THP
->     swap in as a whole isn't supported now.  After deleting the THP from the
->     swap cache (for example, swapping out finished), the CLUSTER_FLAG_HUGE
->     flag will be cleared.  So that, the normal pages inside THP can be
->     swapped in individually.
-
-Thanks. I did this same archaeology, but found nothing pointing to the rationale
-for this optimization, so decided that if its undocumented, then it probably
-wasn't critical.
-
-> 
-> 
-> With your change, if we have a swapped out THP with 512 entries and exit(), we
-> would now 512 times in a row grab a folio reference and trylock the folio. In the
-> past, we would have done that at most once.
-> 
-> That doesn't feel quite right TBH ... so I'm wondering if there are any low-hanging
-> fruits to avoid that.
-> 
-
-OK so if we really do need to keep this optimization, here are some ideas:
-
-Fundamentally, we would like to be able to figure out the size of the swap slot
-from the swap entry. Today swap supports 2 sizes; PAGE_SIZE and PMD_SIZE. For
-PMD_SIZE, it always uses a full cluster, so can easily add a flag to the cluster
-to mark it as PMD_SIZE.
-
-Going forwards, we want to support all sizes (power-of-2). Most of the time, a
-cluster will contain only one size of THPs, but this is not the case when a THP
-in the swapcache gets split or when an order-0 slot gets stolen. We expect these
-cases to be rare.
-
-1) Keep the size of the smallest swap entry in the cluster header. Most of the
-time it will be the full size of the swap entry, but sometimes it will cover
-only a portion. In the latter case you may see a false negative for
-swap_page_trans_huge_swapped() meaning we take the slow path, but that is rare.
-There is one wrinkle: currently the HUGE flag is cleared in put_swap_folio(). We
-wouldn't want to do the equivalent in the new scheme (i.e. set the whole cluster
-to order-0). I think that is safe, but haven't completely convinced myself yet.
-
-2) allocate 4 bits per (small) swap slot to hold the order. This will give
-precise information and is conceptually simpler to understand, but will cost
-more memory (half as much as the initial swap_map[] again).
-
-I still prefer to avoid this at all if we can (and would like to hear Huang's
-thoughts). But if its a choice between 1 and 2, I prefer 1 - I'll do some
-prototyping.
-
-Thanks,
-Ryan
-
 
