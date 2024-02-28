@@ -1,106 +1,153 @@
-Return-Path: <linux-kernel+bounces-85825-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85826-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BCEC86BBD6
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:03:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D33186BBD8
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:03:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4BECB25BF8
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:03:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A04BC1F227EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:03:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86F737D06F;
-	Wed, 28 Feb 2024 23:00:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 868467D082;
+	Wed, 28 Feb 2024 23:00:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="EzXS6S0E"
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rQ5RFpWq"
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B27E76F1D
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 22:59:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A3F07292D
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 23:00:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709161200; cv=none; b=tMxgNiZI4/M5oTu7wfD0CMQW3K9KPn/kHGKfw7FdXsqR6Haardr2uopOyqQYVGax5n6Q12yQpXuBSnulrXswa0CHNFFRBE2/a/+bfUrymUxTAMp9+F4xqW7MwnS13uPDBCvgMaC2kOoAq4mAyx9HIN4BSDCyQ6yqfh3Qqe6/cSw=
+	t=1709161220; cv=none; b=KPVN4fe5/gDTH6BMXAqE0juJeeyHYKjAJxxyK5QRINWItmdMW7r0odqDEqoJw9rk16x1XH8q1TTAz+dHDQzQhfiZh3whBLGLpEVrFmFjLbKJkK7G4a6SNGzUDugg9F3mf6M0UGEy5PlblB03KLPwHOcw1KcPiYCIaHJVlz1oWiU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709161200; c=relaxed/simple;
-	bh=KLhVl79WXN9Ubg4coyQwz8bkIRdnew0Yg2ZrB2f1ZII=;
+	s=arc-20240116; t=1709161220; c=relaxed/simple;
+	bh=w9b+viWMNeKfgV+J2kHVNJBYQcvE+Z5QsH2BWI8zYbo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nSI7HTWG/nu2JjVHlTQ1ZA1xGNIJhgj3j14aATcA8SxQbHni7PpnikkyYEB3GT9D24KmGprRBC+e4ugpLkfPlXMBl5FTjGtUaUxnkbP+VeQN2kAdSlIH150PitlKqccepz5qKFiRDL9M6STp51m/zIS6BdTfYkc+tGyc6kevvA0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=EzXS6S0E; arc=none smtp.client-ip=209.85.208.51
+	 To:Cc:Content-Type; b=Vxj5Vpn0Q6ZONvE01R6H3plzglYR0695jbzuv4J7diU3QCuYKFsiw4K2uy+2skUlguMabK8LK1S3w+Ha08+HW/uBIbwKteQNI98FKTAijO60MC158xFgRM3vZGGFRx7iSaTPWIJZSWaKu/vnkUyvKPpCk14uJaDRJveyMihi4cY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rQ5RFpWq; arc=none smtp.client-ip=209.85.160.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5654ef0c61fso4980a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 14:59:58 -0800 (PST)
+Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-428405a0205so61811cf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 15:00:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709161197; x=1709765997; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1709161218; x=1709766018; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fcAcp9JyXZdmgBhUYq0E0dm3aQzmCgek1VqMgRhoKKo=;
-        b=EzXS6S0EUoEGGHhnHGckWrAK1X0BLkXrXBlcpmmS8D2gGxYqFRX2BC5O52xMPEoiFw
-         5/B8n0Wjjsc+nN7Q/DidplqCm36KqbF1sI9XOJ2xiPf+OmqiJopwUaAcU5nEubcHooPR
-         RnhXG/JJFSzzzlsXaMw1oV6Kbg9olUErGz3kNIUOGVe+easPX62td4rQlnSA8m7vzF+u
-         vglxZzUIHwwfjPaegOsS8/IxkofB0lyTpQ/WNDfgjOJJ+QXFElW1xVFoi0GBD8hoSt8Z
-         dRvgjhHXtc7YdGDJ+jk3Fha++pk2t4a2KQpQZemg8ozeRHhialdjMjQ3cqyV/0+97dO2
-         aJkQ==
+        bh=HopOMhsdcEXeddljk1n/xV5v9vRitHQfeTlE00H1als=;
+        b=rQ5RFpWqtFrYnTjUnWf/wec8CW7gfi4ss2dES6Dif/YjWa73nYL3NMBtoqtDvHHaYe
+         ad25Xd8PiFbwN8aLkdUVX+pWEinmCLNLItCWkDCUTZQeOrvn7qHVzNJLrFxMSe1FNhuW
+         mWR1VKR7S0cj/QK9CObk92JkQt/+P4Mpf662aBqaEgWESIuW+HlmdyYb//hIhPOhRfsq
+         QJnq69LccTZK/kCRo/NiD6cYxXDhwFlRzVTCGo8Iv3UyLWlAVmmt21kp72T2lfblql9S
+         UeiifBk9U6kW6fL9iU9DaPCPRSKiFtKZMDl+vn/Qa2mL+9dO+nfnAEsjjeTBpkDZS1U1
+         skhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709161197; x=1709765997;
+        d=1e100.net; s=20230601; t=1709161218; x=1709766018;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fcAcp9JyXZdmgBhUYq0E0dm3aQzmCgek1VqMgRhoKKo=;
-        b=KZALiw4ucm1MIDW4GV0TwXS1s0IIJGZjG4btd/6NFSjcXek56qR+tM09rFqx+2CRyD
-         ViW34BxMD8YySEGaWR5IoOc11uqYLe+wZnIvnHlL2u+P4TX3tfw2180LS3SRM03IVz1a
-         CVJ3GeNx2b6I89zDK6epaCyspWSNoWaCXG6bb7b1cE0ZfQZn4gzHgsK3EWvu44ZxCJ5+
-         dUFsfTI7DpG3Sn3tmu4dAQgFaRByTSArYSVZy1nNKlkHB8cNL4rPW+7gFTsDBr4kt2e0
-         6MsZ6VwtR/dz2cleQqyj5x3IHBgm5J3RiYhgYZqB0iPrRAtR24IAavSP4wBmvt6loi7e
-         LMFQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWuLY0vIj1xxhKbcDX9T429wPn80ZZf50/PoEW8WZ6rhF6kf3EeDxz7W+bgt1JZ+e16ZXvfuPkhOOtO2f3sLPGNjWkMR/2V4u1DIrzc
-X-Gm-Message-State: AOJu0YyopZEmVUq4kvFjok3WJeFIFrzGcMhBvLiWbidVgB8XA9BwcnHd
-	mmWcpIlyUFtVSmPNGpZO5YOCIdtoj23wGIysLi7SXyQsU0+b78YnTS7WQfRTElZM2PRXIMwxmZ1
-	/jEtmZFHUp7kM5H/muW5GZpxQCSf1lY20dch5Y+nSILGfwVRsXw==
-X-Google-Smtp-Source: AGHT+IHpWZIU1zgRNJtryo1mYw56VDLKbEU1Iy+VtWWnb6Sjvu4R0v+EL3GOAZSsTEhy8UEVROA9gSxr+SGcYbNvZRo=
-X-Received: by 2002:a05:6402:5206:b0:565:4f70:6ed with SMTP id
- s6-20020a056402520600b005654f7006edmr27867edd.6.1709161197359; Wed, 28 Feb
- 2024 14:59:57 -0800 (PST)
+        bh=HopOMhsdcEXeddljk1n/xV5v9vRitHQfeTlE00H1als=;
+        b=jJZqG1FheWY2BdcIQFrewtcusOZamMuumP23ZP/6qPDbj+x0pgOWaHXTam+8ZYLyVP
+         b5Gg4/5c+hEQVevGOL2uPFNCUIDSoS1oWJiD9kQdqzKphhNdJGd9W4iz54qETP5q5VT1
+         ObUXihUer94jrbxXhxjnWguttVdVf56lhCUTvEq8an6cc29Cj1rLGPoc3PHcQrFMjMJR
+         3tPyw7bX7BvriI6gchokU/ZPl8G+4JzMNfCW7CbLkKlozZk51mevIonv0XMoEXCYw2pM
+         GzZZLseGqniX5ubDqkgZnZ95h/S/D45xskyafVRz1aG6zpRkYj1jbmnswzaEV8rWZcVo
+         mt5Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUYWyNN6kSPX6xdwKpz2G+tS+Baw15ewDq28UHDB4HNVXDCg5Pm8jMNmFDFy90/W1Xh++t/b+6SfL3WFqhyhIl7uYWmlJkFPu+VtndR
+X-Gm-Message-State: AOJu0Yzo5eTfZWuNJ8y6s8XSeM7ojMWYtjW7ZeNUEvQMT7kwy/0ENaSR
+	SAsTPyrGByVvNXSVlJOH2tGi2fLtpHhrYAoS40LgS8cBzABySe5m5yWAZYPUM6u2jeMPjptcq+I
+	8rmfv3n9RUStAdZuAdhcDIEUYX5vOqhS59wZd
+X-Google-Smtp-Source: AGHT+IHEIl48iHJ1KzuHiKAjTB0tNQfgDXVFK6cKBoNpo/4g9vj3G+jFbYTISECOdJryun78YLwqHmKV20w8Yw4SezM=
+X-Received: by 2002:a05:622a:250:b0:42e:b8da:1457 with SMTP id
+ c16-20020a05622a025000b0042eb8da1457mr19090qtx.23.1709161217908; Wed, 28 Feb
+ 2024 15:00:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240226234228.1768725-2-rdbabiera@google.com> <2024022731-dusk-posture-b83f@gregkh>
-In-Reply-To: <2024022731-dusk-posture-b83f@gregkh>
-From: RD Babiera <rdbabiera@google.com>
-Date: Wed, 28 Feb 2024 14:59:45 -0800
-Message-ID: <CALzBnUHyUz2NoBxrj1m+W-Wuc23fLP7NBbJq=qpHx1oQcX8KRw@mail.gmail.com>
-Subject: Re: [PATCH v2] usb: typec: altmodes/displayport: create sysfs nodes
- after assigning driver data
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: heikki.krogerus@linux.intel.com, badhri@google.com, 
-	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	stable@vger.kernel.org
+References: <20240208204844.119326-1-thuth@redhat.com> <20240208204844.119326-4-thuth@redhat.com>
+ <501ac94d-11ab-4765-a25d-75013c021be6@sirena.org.uk> <Zd-JjBNCpFG5iDul@google.com>
+ <Zd-jdAtI_C_d_fp4@google.com> <Zd-lzwQb0APsBFjM@linux.dev>
+In-Reply-To: <Zd-lzwQb0APsBFjM@linux.dev>
+From: Raghavendra Rao Ananta <rananta@google.com>
+Date: Wed, 28 Feb 2024 15:00:03 -0800
+Message-ID: <CAJHc60xqbrH5cgSm5URhxF1j-+X7PVD1WkqEBRKENo-GeQnsnQ@mail.gmail.com>
+Subject: Re: [PATCH v3 3/8] KVM: selftests: Move setting a vCPU's entry point
+ to a dedicated API
+To: Oliver Upton <oliver.upton@linux.dev>
+Cc: Sean Christopherson <seanjc@google.com>, Mark Brown <broonie@kernel.org>, 
+	Thomas Huth <thuth@redhat.com>, kvm@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>, 
+	Andrew Jones <ajones@ventanamicro.com>, Marc Zyngier <maz@kernel.org>, 
+	Aishwarya TCV <aishwarya.tcv@arm.com>, Shaoqin Huang <shahuang@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 26, 2024 at 9:20=E2=80=AFPM Greg KH <gregkh@linuxfoundation.org=
-> wrote:
-> Now I am going to push back again and ask why you are even attempting to
-> create sysfs files "by hand" here at all?
+Hey Oliver,
+
++cc Shaoqin
+
+On Wed, Feb 28, 2024 at 1:30=E2=80=AFPM Oliver Upton <oliver.upton@linux.de=
+v> wrote:
 >
-> Why is this just not set to be a default group?  That way the group is
-> managed properly by the driver core and the driver doesn't have to worry
-> about ANY of this at all.  Bonus is that you remove the "you raced with
-> userspace and lost" problem that this code still has even with the
-> change you made here.
+> +cc Raghavendra
+>
+> Hey,
+>
+> On Wed, Feb 28, 2024 at 01:19:48PM -0800, Sean Christopherson wrote:
+> > but due to a different issue that is fixed in the kvm-arm tree[*], but =
+not in mine,
+> > I built without -Werror and didn't see the new warn in the sea of GUEST=
+_PRINTF
+> > warnings.
+> >
+> > Ugh, and I still can't enable -Werror, because there are unused functio=
+ns in
+> > aarch64/vpmu_counter_access.c
+> >
+> >   aarch64/vpmu_counter_access.c:96:20: error: unused function 'enable_c=
+ounter' [-Werror,-Wunused-function]
+> >   static inline void enable_counter(int idx)
+> >                    ^
+> >   aarch64/vpmu_counter_access.c:104:20: error: unused function 'disable=
+_counter' [-Werror,-Wunused-function]
+> >   static inline void disable_counter(int idx)
+> >                    ^
+> >   2 errors generated.
+> >   make: *** [Makefile:278: /usr/local/google/home/seanjc/go/src/kernel.=
+org/nox/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.o] Error 1
+> >   make: *** Waiting for unfinished jobs....
+> >
+> >   Commit 49f31cff9c533d264659356b90445023b04e10fb failed to build with =
+'make-clang make-arm make -j128'.
+> >
+> > Oliver/Marc, any thoughts on how you want to fix the unused function wa=
+rnings?
+> > As evidenced by this goof, being able to compile with -Werror is super =
+helpful.
+>
+> Are these the only remaining warnings we have in the arm64 selftests
+> build?
+>
+> Faster than me paging this test back in: Raghu, are we missing any test
+> cases upstream that these helpers were intended for? If no, mind sending
+> a patch to get rid of them?
+>
+I sent out a patch in the past to get rid of them [1], but Shaoqin is
+currently making an effort to (fix and) use them in their tests [2].
+While we are still reviewing the series, we can apply [1] to unblock
+enabling -Werror and Shaqoqin can re-introduce the functions as
+needed. But, it's your call.
 
-To answer both questions, the driver had always created its sysfs
-nodes manually so I did not suspect this was not the preferred way
-to handle driver sysfs creation until I found your article on default attri=
-butes
-after your email. Will fix the patch up.
+Thank you.
+Raghavendra
 
-thanks again,
-rd
+[1]: https://lore.kernel.org/lkml/d5cc3cf1-7b39-9ca3-adf2-224007c751fe@redh=
+at.com/T/
+[2]: https://lore.kernel.org/all/20240202025659.5065-3-shahuang@redhat.com/
 
