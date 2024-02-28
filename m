@@ -1,47 +1,60 @@
-Return-Path: <linux-kernel+bounces-84320-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84335-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E3D786A4E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:22:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 894C186A507
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:28:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 473041C20E0E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 01:22:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4301C2850BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 01:28:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 376101C10;
-	Wed, 28 Feb 2024 01:22:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DE3F4A32;
+	Wed, 28 Feb 2024 01:28:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XzWEw+Fg"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jV8Tl60O"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 267F315AF
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 01:22:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F98D4400
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 01:28:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709083349; cv=none; b=OKge1jGRRVP7XxAKiNnLkZXnoi9gZ7MKatrguUak/gFLHO/RGsFdWzvfB8kbXpeCRD/EL7Ra5QzD+WlfxP2dY7ESZDU4AxmXkAH0XCL3L0LeVRdONWA3bVHPW7D03Cl+BYj1DZ8GgeOsA1sC+CuPNub44vwqJY5otMtGONihBnE=
+	t=1709083722; cv=none; b=eDY8eu1gghSIejtqrcEYlYMEgVtZGgoi5VTl0hO4eZEcJ3EuTa/mifSJvLYCsVhXf2SExts97zfMR4eSGlQASffL2ErjtuKSs2ajphYE0jy+KLfD9Q7FHoyBq/JmROrbrSr2mXMWc58+4bnZjVFcoOIPmIizciZXEo+w4/jEqLQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709083349; c=relaxed/simple;
-	bh=9/GA4VMiDY2WSNMYbprjEOxAi3HOihpqkEnkeAvurJc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=U1bedp4qk/U9EtHjzY/BSwsSODu4zje84hQvSGECBm5k7PSiAFG2bYN3fXzVV7eyiW1eaVv/pPpgRtZCeXYOLI0BVwkTi6vy5x04t0TrmpMcthtMQIRaqXhy9aSeaLQYTHS0CiNcxregKauC5vXq2JfRsw0XpDqfMWSqhskhqDI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XzWEw+Fg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1365BC433C7;
-	Wed, 28 Feb 2024 01:22:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709083349;
-	bh=9/GA4VMiDY2WSNMYbprjEOxAi3HOihpqkEnkeAvurJc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=XzWEw+FgdpjMy/Ej/OX1YSKyG0tHnqvZWn33OzkOcm632bO8OylUI/tYmA7WgA2PC
-	 1wTtSDAQgrV9G0Cm5+qqHaUFY4FhR9pu2LKoUGstAgUinWSdMRZQCzw9+wkWbbN3Kv
-	 HAue7/iRE5XqmHGF5HrWIO1+O/IzzjUS7g5EBzyj7P1GZuiylETpIu5fmZmyi6BYN1
-	 cbPNzqtDC3BJhRRmxMCMty4nBW4IF5NufH5ShC6pqQuugMKJFjCul9HsjdoKbx2lK1
-	 6VWVH8VsfshxrHMb5+YqmxT7Egmi6psBVZ7SJueHDJdkdoLpBQS7DAyxpI6Zd3hD4E
-	 GrTk2VP/DkJjg==
-Message-ID: <b4b1406a-c9cf-4d98-85ae-b44de99c8160@kernel.org>
-Date: Wed, 28 Feb 2024 09:22:27 +0800
+	s=arc-20240116; t=1709083722; c=relaxed/simple;
+	bh=sJR9z4eckKcNzeUdP4oLegXejIZJep7SfGn1kxt7Ufk=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=EpmDbPVNE7VNFzJfUB+BHpMmA9ZF6YIKkY5z4Lirbp/rPb4aBaQ/mNh16S+TOF/vGjH2X/guVmTg8CsmLC4BxpeiQ5LbZ/LFLVrHODxIJoG4ipSORVCJxuCAtqT79/hrX5vItKgrdxJcA/VIekHFaJEg1hzhCPuaSW8EH70s0mo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jV8Tl60O; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709083722; x=1740619722;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=sJR9z4eckKcNzeUdP4oLegXejIZJep7SfGn1kxt7Ufk=;
+  b=jV8Tl60Ou8TAmusD67Cgo6Cet+iHcEyCAcQjoGYBC8Bm2cWEK16fJ8Uh
+   XE5sPonOSpiovjQdyoq3McmNrSsR/oj2JpcWsMLOoe6O3WcLhQfQJaaWy
+   IDh68esVtA2ewrNms94tBbGg+TNk+hsKCahmLV+I88iyG4mSt3NG5l4UQ
+   9V5/AjLsXgYbLGY6GvZpWrq6WvcH9G3kqsPD4CQlK76A/n17qa3ZgBCYy
+   EcbdMA886V6qDQzGI1zp4WUZlgOXQiXedEjmkD3EI7hp1hZsuwTwrWMtl
+   XWFw18LkDiDRvP83iJfAkTvemq9Cmezf6JylJUs5y7VEGQ4p8SGz1vFSY
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3624787"
+X-IronPort-AV: E=Sophos;i="6.06,189,1705392000"; 
+   d="scan'208";a="3624787"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 17:28:41 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,189,1705392000"; 
+   d="scan'208";a="11877504"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
+  by fmviesa004.fm.intel.com with ESMTP; 27 Feb 2024 17:28:38 -0800
+Message-ID: <64a1f1ff-793d-4bf7-91fc-00984336594c@linux.intel.com>
+Date: Wed, 28 Feb 2024 09:22:42 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,313 +62,63 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] f2fs: introduce SEGS_TO_BLKS/BLKS_TO_SEGS for cleanup
+Cc: baolu.lu@linux.intel.com, "iommu@lists.linux.dev"
+ <iommu@lists.linux.dev>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] iommu/vt-d: Fix NULL domain on device release
 Content-Language: en-US
-To: Jaegeuk Kim <jaegeuk@kernel.org>
-Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
-References: <20240221092040.403629-1-chao@kernel.org>
- <Zd4gNUyZkxemSMIS@google.com>
-From: Chao Yu <chao@kernel.org>
-In-Reply-To: <Zd4gNUyZkxemSMIS@google.com>
+To: "Tian, Kevin" <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+ Jason Gunthorpe <jgg@ziepe.ca>, "Badger, Eric" <ebadger@purestorage.com>
+References: <20240223051302.177596-1-baolu.lu@linux.intel.com>
+ <20240223051302.177596-3-baolu.lu@linux.intel.com>
+ <BN9PR11MB52763D19A01C804FB514419F8C592@BN9PR11MB5276.namprd11.prod.outlook.com>
+From: Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <BN9PR11MB52763D19A01C804FB514419F8C592@BN9PR11MB5276.namprd11.prod.outlook.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 2024/2/28 1:47, Jaegeuk Kim wrote:
-> On 02/21, Chao Yu wrote:
->> Just cleanup, no functional change.
+On 2/27/24 3:40 PM, Tian, Kevin wrote:
+>> From: Lu Baolu<baolu.lu@linux.intel.com>
+>> Sent: Friday, February 23, 2024 1:13 PM
 >>
->> Signed-off-by: Chao Yu <chao@kernel.org>
->> ---
->>   fs/f2fs/debug.c   |  7 +++----
->>   fs/f2fs/f2fs.h    | 14 ++++++++------
->>   fs/f2fs/gc.c      | 10 +++++-----
->>   fs/f2fs/gc.h      |  4 ++--
->>   fs/f2fs/segment.c | 12 ++++++------
->>   fs/f2fs/segment.h |  8 ++++----
->>   fs/f2fs/super.c   | 16 ++++++++--------
->>   fs/f2fs/sysfs.c   |  4 ++--
->>   8 files changed, 38 insertions(+), 37 deletions(-)
->>
->> diff --git a/fs/f2fs/debug.c b/fs/f2fs/debug.c
->> index 6617195bd27e..12893477f2e4 100644
->> --- a/fs/f2fs/debug.c
->> +++ b/fs/f2fs/debug.c
->> @@ -134,7 +134,7 @@ static void update_general_status(struct f2fs_sb_info *sbi)
->>   	si->cur_ckpt_time = sbi->cprc_info.cur_time;
->>   	si->peak_ckpt_time = sbi->cprc_info.peak_time;
->>   	spin_unlock(&sbi->cprc_info.stat_lock);
->> -	si->total_count = (int)sbi->user_block_count / BLKS_PER_SEG(sbi);
->> +	si->total_count = BLKS_TO_SEGS(sbi, (int)sbi->user_block_count);
->>   	si->rsvd_segs = reserved_segments(sbi);
->>   	si->overp_segs = overprovision_segments(sbi);
->>   	si->valid_count = valid_user_blocks(sbi);
->> @@ -175,11 +175,10 @@ static void update_general_status(struct f2fs_sb_info *sbi)
->>   	si->alloc_nids = NM_I(sbi)->nid_cnt[PREALLOC_NID];
->>   	si->io_skip_bggc = sbi->io_skip_bggc;
->>   	si->other_skip_bggc = sbi->other_skip_bggc;
->> -	si->util_free = (int)(free_user_blocks(sbi) >> sbi->log_blocks_per_seg)
->> +	si->util_free = (int)(BLKS_TO_SEGS(sbi, free_user_blocks(sbi)))
->>   		* 100 / (int)(sbi->user_block_count >> sbi->log_blocks_per_seg)
->>   		/ 2;
->> -	si->util_valid = (int)(written_block_count(sbi) >>
->> -						sbi->log_blocks_per_seg)
->> +	si->util_valid = (int)(BLKS_TO_SEGS(sbi, written_block_count(sbi)))
->>   		* 100 / (int)(sbi->user_block_count >> sbi->log_blocks_per_seg)
->>   		/ 2;
->>   	si->util_invalid = 50 - si->util_free - si->util_valid;
->> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
->> index dad2774ca72f..8a6fd4352a0e 100644
->> --- a/fs/f2fs/f2fs.h
->> +++ b/fs/f2fs/f2fs.h
->> @@ -1813,12 +1813,14 @@ struct f2fs_sb_info {
->>   };
->>   
->>   /* Definitions to access f2fs_sb_info */
->> -#define BLKS_PER_SEG(sbi)					\
->> -	((sbi)->blocks_per_seg)
->> -#define BLKS_PER_SEC(sbi)					\
->> -	((sbi)->segs_per_sec << (sbi)->log_blocks_per_seg)
->> -#define SEGS_PER_SEC(sbi)					\
->> -	((sbi)->segs_per_sec)
->> +#define SEGS_TO_BLKS(sbi, segs)					\
->> +		((segs) << (sbi)->log_blocks_per_seg)
+>> -static void dmar_remove_one_dev_info(struct device *dev)
+>> -{
+>> -	struct device_domain_info *info = dev_iommu_priv_get(dev);
+>> -	struct dmar_domain *domain = info->domain;
+>> -	struct intel_iommu *iommu = info->iommu;
+>> -	unsigned long flags;
+>> -
+>> -	if (!dev_is_real_dma_subdevice(info->dev)) {
+>> -		if (dev_is_pci(info->dev) && sm_supported(iommu))
+>> -			intel_pasid_tear_down_entry(iommu, info->dev,
+>> -					IOMMU_NO_PASID, false);
+>> -
+>> -		iommu_disable_pci_caps(info);
+>> -		domain_context_clear(info);
+>> -	}
+>> -
+>> -	spin_lock_irqsave(&domain->lock, flags);
+>> -	list_del(&info->link);
+>> -	spin_unlock_irqrestore(&domain->lock, flags);
+>> -
+>> -	domain_detach_iommu(domain, iommu);
+>> -	info->domain = NULL;
+>> -}
+>> -
+> what's required here is slightly different from device_block_translation()
+> which leaves context entry uncleared in scalable mode (implying the
+> pasid table must be valid). but in the release path the pasid table will
+> be freed right after then leading to a use-after-free case.
 > 
-> 
-> I also applied this.
-> 
->   /* Definitions to access f2fs_sb_info */
->   #define SEGS_TO_BLKS(sbi, segs)                                        \
-> -               ((segs) << (sbi)->log_blocks_per_seg)
-> +               (((long long)segs) << (sbi)->log_blocks_per_seg)
->   #define BLKS_TO_SEGS(sbi, blks)                                        \
->                  ((blks) >> (sbi)->log_blocks_per_seg)
+> let's add an explicit domain_context_clear() in intel_iommu_release_device().
 
-Thank you, looks fine.
+Nice catch!
 
-Thanks,
+How about moving the scalable mode context entry management to probe and
+release path? Currently, it's part of domain switch, that's really
+irrelevant.
 
-> 
->> +#define BLKS_TO_SEGS(sbi, blks)					\
->> +		((blks) >> (sbi)->log_blocks_per_seg)
->> +
->> +#define BLKS_PER_SEG(sbi)	((sbi)->blocks_per_seg)
->> +#define BLKS_PER_SEC(sbi)	(SEGS_TO_BLKS(sbi, (sbi)->segs_per_sec))
->> +#define SEGS_PER_SEC(sbi)	((sbi)->segs_per_sec)
->>   
->>   __printf(3, 4)
->>   void f2fs_printk(struct f2fs_sb_info *sbi, bool limit_rate, const char *fmt, ...);
->> diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
->> index 3ff126316d42..6d160d50e14e 100644
->> --- a/fs/f2fs/gc.c
->> +++ b/fs/f2fs/gc.c
->> @@ -301,7 +301,7 @@ static unsigned int get_max_cost(struct f2fs_sb_info *sbi,
->>   
->>   	/* LFS */
->>   	if (p->gc_mode == GC_GREEDY)
->> -		return 2 * BLKS_PER_SEG(sbi) * p->ofs_unit;
->> +		return SEGS_TO_BLKS(sbi, 2 * p->ofs_unit);
->>   	else if (p->gc_mode == GC_CB)
->>   		return UINT_MAX;
->>   	else if (p->gc_mode == GC_AT)
->> @@ -347,7 +347,7 @@ static unsigned int get_cb_cost(struct f2fs_sb_info *sbi, unsigned int segno)
->>   	mtime = div_u64(mtime, SEGS_PER_SEC(sbi));
->>   	vblocks = div_u64(vblocks, SEGS_PER_SEC(sbi));
->>   
->> -	u = (vblocks * 100) >> sbi->log_blocks_per_seg;
->> +	u = BLKS_TO_SEGS(sbi, vblocks * 100);
->>   
->>   	/* Handle if the system time has changed by the user */
->>   	if (mtime < sit_i->min_mtime)
->> @@ -2060,7 +2060,7 @@ static void update_sb_metadata(struct f2fs_sb_info *sbi, int secs)
->>   	raw_sb->segment_count = cpu_to_le32(segment_count + segs);
->>   	raw_sb->segment_count_main = cpu_to_le32(segment_count_main + segs);
->>   	raw_sb->block_count = cpu_to_le64(block_count +
->> -			(long long)(segs << sbi->log_blocks_per_seg));
->> +			(long long)SEGS_TO_BLKS(sbi, segs));
->>   	if (f2fs_is_multi_device(sbi)) {
->>   		int last_dev = sbi->s_ndevs - 1;
->>   		int dev_segs =
->> @@ -2076,7 +2076,7 @@ static void update_sb_metadata(struct f2fs_sb_info *sbi, int secs)
->>   static void update_fs_metadata(struct f2fs_sb_info *sbi, int secs)
->>   {
->>   	int segs = secs * SEGS_PER_SEC(sbi);
->> -	long long blks = (long long)(segs << sbi->log_blocks_per_seg);
->> +	long long blks = (long long)SEGS_TO_BLKS(sbi, segs);
->>   	long long user_block_count =
->>   				le64_to_cpu(F2FS_CKPT(sbi)->user_block_count);
->>   
->> @@ -2118,7 +2118,7 @@ int f2fs_resize_fs(struct file *filp, __u64 block_count)
->>   		int last_dev = sbi->s_ndevs - 1;
->>   		__u64 last_segs = FDEV(last_dev).total_segments;
->>   
->> -		if (block_count + (last_segs << sbi->log_blocks_per_seg) <=
->> +		if (block_count + SEGS_TO_BLKS(sbi, last_segs) <=
->>   								old_block_count)
->>   			return -EINVAL;
->>   	}
->> diff --git a/fs/f2fs/gc.h b/fs/f2fs/gc.h
->> index e4a75aa4160f..6a2419ddc7c6 100644
->> --- a/fs/f2fs/gc.h
->> +++ b/fs/f2fs/gc.h
->> @@ -70,7 +70,7 @@ struct victim_entry {
->>   
->>   static inline block_t free_segs_blk_count(struct f2fs_sb_info *sbi)
->>   {
->> -	return free_segments(sbi) << sbi->log_blocks_per_seg;
->> +	return SEGS_TO_BLKS(sbi, free_segments(sbi));
->>   }
->>   
->>   static inline block_t free_user_blocks(struct f2fs_sb_info *sbi)
->> @@ -78,7 +78,7 @@ static inline block_t free_user_blocks(struct f2fs_sb_info *sbi)
->>   	block_t free_blks, ovp_blks;
->>   
->>   	free_blks = free_segs_blk_count(sbi);
->> -	ovp_blks = overprovision_segments(sbi) << sbi->log_blocks_per_seg;
->> +	ovp_blks = SEGS_TO_BLKS(sbi, overprovision_segments(sbi));
->>   
->>   	if (free_blks < ovp_blks)
->>   		return 0;
->> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
->> index 56927b097e30..d0209ea77dd2 100644
->> --- a/fs/f2fs/segment.c
->> +++ b/fs/f2fs/segment.c
->> @@ -448,8 +448,8 @@ static inline bool excess_dirty_threshold(struct f2fs_sb_info *sbi)
->>   	unsigned int nodes = get_pages(sbi, F2FS_DIRTY_NODES);
->>   	unsigned int meta = get_pages(sbi, F2FS_DIRTY_META);
->>   	unsigned int imeta = get_pages(sbi, F2FS_DIRTY_IMETA);
->> -	unsigned int threshold = (factor * DEFAULT_DIRTY_THRESHOLD) <<
->> -				sbi->log_blocks_per_seg;
->> +	unsigned int threshold =
->> +		SEGS_TO_BLKS(sbi, (factor * DEFAULT_DIRTY_THRESHOLD));
->>   	unsigned int global_threshold = threshold * 3 / 2;
->>   
->>   	if (dents >= threshold || qdata >= threshold ||
->> @@ -870,7 +870,7 @@ block_t f2fs_get_unusable_blocks(struct f2fs_sb_info *sbi)
->>   {
->>   	int ovp_hole_segs =
->>   		(overprovision_segments(sbi) - reserved_segments(sbi));
->> -	block_t ovp_holes = ovp_hole_segs << sbi->log_blocks_per_seg;
->> +	block_t ovp_holes = SEGS_TO_BLKS(sbi, ovp_hole_segs);
->>   	struct dirty_seglist_info *dirty_i = DIRTY_I(sbi);
->>   	block_t holes[2] = {0, 0};	/* DATA and NODE */
->>   	block_t unusable;
->> @@ -2178,7 +2178,7 @@ void f2fs_clear_prefree_segments(struct f2fs_sb_info *sbi,
->>   		if (!f2fs_sb_has_blkzoned(sbi) &&
->>   		    (!f2fs_lfs_mode(sbi) || !__is_large_section(sbi))) {
->>   			f2fs_issue_discard(sbi, START_BLOCK(sbi, start),
->> -				(end - start) << sbi->log_blocks_per_seg);
->> +				SEGS_TO_BLKS(sbi, end - start));
->>   			continue;
->>   		}
->>   next:
->> @@ -2289,7 +2289,7 @@ static int create_discard_cmd_control(struct f2fs_sb_info *sbi)
->>   	atomic_set(&dcc->queued_discard, 0);
->>   	atomic_set(&dcc->discard_cmd_cnt, 0);
->>   	dcc->nr_discards = 0;
->> -	dcc->max_discards = MAIN_SEGS(sbi) << sbi->log_blocks_per_seg;
->> +	dcc->max_discards = SEGS_TO_BLKS(sbi, MAIN_SEGS(sbi));
->>   	dcc->max_discard_request = DEF_MAX_DISCARD_REQUEST;
->>   	dcc->min_discard_issue_time = DEF_MIN_DISCARD_ISSUE_TIME;
->>   	dcc->mid_discard_issue_time = DEF_MID_DISCARD_ISSUE_TIME;
->> @@ -4469,7 +4469,7 @@ static int build_sit_info(struct f2fs_sb_info *sbi)
->>   #endif
->>   
->>   	sit_i->sit_base_addr = le32_to_cpu(raw_super->sit_blkaddr);
->> -	sit_i->sit_blocks = sit_segs << sbi->log_blocks_per_seg;
->> +	sit_i->sit_blocks = SEGS_TO_BLKS(sbi, sit_segs);
->>   	sit_i->written_valid_blocks = 0;
->>   	sit_i->bitmap_size = sit_bitmap_size;
->>   	sit_i->dirty_sentries = 0;
->> diff --git a/fs/f2fs/segment.h b/fs/f2fs/segment.h
->> index 9fe5ec619456..e72b02b67087 100644
->> --- a/fs/f2fs/segment.h
->> +++ b/fs/f2fs/segment.h
->> @@ -77,21 +77,21 @@ static inline void sanity_check_seg_type(struct f2fs_sb_info *sbi,
->>   #define TOTAL_SEGS(sbi)							\
->>   	(SM_I(sbi) ? SM_I(sbi)->segment_count : 				\
->>   		le32_to_cpu(F2FS_RAW_SUPER(sbi)->segment_count))
->> -#define TOTAL_BLKS(sbi)	(TOTAL_SEGS(sbi) << (sbi)->log_blocks_per_seg)
->> +#define TOTAL_BLKS(sbi)	(SEGS_TO_BLKS(sbi, TOTAL_SEGS(sbi)))
->>   
->>   #define MAX_BLKADDR(sbi)	(SEG0_BLKADDR(sbi) + TOTAL_BLKS(sbi))
->>   #define SEGMENT_SIZE(sbi)	(1ULL << ((sbi)->log_blocksize +	\
->>   					(sbi)->log_blocks_per_seg))
->>   
->>   #define START_BLOCK(sbi, segno)	(SEG0_BLKADDR(sbi) +			\
->> -	 (GET_R2L_SEGNO(FREE_I(sbi), segno) << (sbi)->log_blocks_per_seg))
->> +	 (SEGS_TO_BLKS(sbi, GET_R2L_SEGNO(FREE_I(sbi), segno))))
->>   
->>   #define NEXT_FREE_BLKADDR(sbi, curseg)					\
->>   	(START_BLOCK(sbi, (curseg)->segno) + (curseg)->next_blkoff)
->>   
->>   #define GET_SEGOFF_FROM_SEG0(sbi, blk_addr)	((blk_addr) - SEG0_BLKADDR(sbi))
->>   #define GET_SEGNO_FROM_SEG0(sbi, blk_addr)				\
->> -	(GET_SEGOFF_FROM_SEG0(sbi, blk_addr) >> (sbi)->log_blocks_per_seg)
->> +	(BLKS_TO_SEGS(sbi, GET_SEGOFF_FROM_SEG0(sbi, blk_addr)))
->>   #define GET_BLKOFF_FROM_SEG0(sbi, blk_addr)				\
->>   	(GET_SEGOFF_FROM_SEG0(sbi, blk_addr) & (BLKS_PER_SEG(sbi) - 1))
->>   
->> @@ -891,7 +891,7 @@ static inline int nr_pages_to_skip(struct f2fs_sb_info *sbi, int type)
->>   	if (type == DATA)
->>   		return BLKS_PER_SEG(sbi);
->>   	else if (type == NODE)
->> -		return 8 * BLKS_PER_SEG(sbi);
->> +		return SEGS_TO_BLKS(sbi, 8);
->>   	else if (type == META)
->>   		return 8 * BIO_MAX_VECS;
->>   	else
->> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
->> index 9976f2b0393c..bb056700b459 100644
->> --- a/fs/f2fs/super.c
->> +++ b/fs/f2fs/super.c
->> @@ -3763,9 +3763,9 @@ static void init_sb_info(struct f2fs_sb_info *sbi)
->>   	sbi->segs_per_sec = le32_to_cpu(raw_super->segs_per_sec);
->>   	sbi->secs_per_zone = le32_to_cpu(raw_super->secs_per_zone);
->>   	sbi->total_sections = le32_to_cpu(raw_super->section_count);
->> -	sbi->total_node_count =
->> -		((le32_to_cpu(raw_super->segment_count_nat) / 2) *
->> -		NAT_ENTRY_PER_BLOCK) << sbi->log_blocks_per_seg;
->> +	sbi->total_node_count = SEGS_TO_BLKS(sbi,
->> +			((le32_to_cpu(raw_super->segment_count_nat) / 2) *
->> +			NAT_ENTRY_PER_BLOCK));
->>   	F2FS_ROOT_INO(sbi) = le32_to_cpu(raw_super->root_ino);
->>   	F2FS_NODE_INO(sbi) = le32_to_cpu(raw_super->node_ino);
->>   	F2FS_META_INO(sbi) = le32_to_cpu(raw_super->meta_ino);
->> @@ -4199,14 +4199,14 @@ static int f2fs_scan_devices(struct f2fs_sb_info *sbi)
->>   			if (i == 0) {
->>   				FDEV(i).start_blk = 0;
->>   				FDEV(i).end_blk = FDEV(i).start_blk +
->> -				    (FDEV(i).total_segments <<
->> -				    sbi->log_blocks_per_seg) - 1 +
->> -				    le32_to_cpu(raw_super->segment0_blkaddr);
->> +					SEGS_TO_BLKS(sbi,
->> +					FDEV(i).total_segments) - 1 +
->> +					le32_to_cpu(raw_super->segment0_blkaddr);
->>   			} else {
->>   				FDEV(i).start_blk = FDEV(i - 1).end_blk + 1;
->>   				FDEV(i).end_blk = FDEV(i).start_blk +
->> -					(FDEV(i).total_segments <<
->> -					sbi->log_blocks_per_seg) - 1;
->> +						SEGS_TO_BLKS(sbi,
->> +						FDEV(i).total_segments) - 1;
->>   				FDEV(i).bdev_handle = bdev_open_by_path(
->>   					FDEV(i).path, mode, sbi->sb, NULL);
->>   			}
->> diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
->> index 2689cc9c3bf8..ceac3bfc5e2c 100644
->> --- a/fs/f2fs/sysfs.c
->> +++ b/fs/f2fs/sysfs.c
->> @@ -493,8 +493,8 @@ static ssize_t __sbi_store(struct f2fs_attr *a,
->>   		spin_lock(&sbi->stat_lock);
->>   		if (t > (unsigned long)(sbi->user_block_count -
->>   				F2FS_OPTION(sbi).root_reserved_blocks -
->> -				(SM_I(sbi)->additional_reserved_segments <<
->> -					sbi->log_blocks_per_seg))) {
->> +				SEGS_TO_BLKS(sbi,
->> +				SM_I(sbi)->additional_reserved_segments))) {
->>   			spin_unlock(&sbi->stat_lock);
->>   			return -EINVAL;
->>   		}
->> -- 
->> 2.40.1
+Best regards,
+baolu
 
