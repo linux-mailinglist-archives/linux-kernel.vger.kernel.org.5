@@ -1,147 +1,95 @@
-Return-Path: <linux-kernel+bounces-85061-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85062-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCFA186AFE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:06:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7298586AFE4
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:07:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EED441C21BD3
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:06:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2DB7628205F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:06:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F9EE14A4FB;
-	Wed, 28 Feb 2024 13:06:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95CA214A081;
+	Wed, 28 Feb 2024 13:06:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="UXiHg9a/"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g65liBL2"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C331314691C;
-	Wed, 28 Feb 2024 13:06:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF6B1149E03
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 13:06:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709125586; cv=none; b=CPyZMi60eH+eMMvvPFPSuiFr0awxUS8sFlvEOCoa0lWXpgkS7cQ304/fesxAzvHZ7hzK/HlSJV9+tGdKW4Z0tPSBIaYq5sJ2WaFL5azpPvA5KTMORm0Jd9IKBo6+Am0iM4XOdLWIYdrXLK7ten1D2J0AsfQB75o65Anvv7L7/Gc=
+	t=1709125615; cv=none; b=YehHBIH4UCF2PUvrYg4W3kOhfsdAd3RAIFM5b+Re8XZv2Cqnv8GND2PQ2SkDvt7QHT76LGs/RtDU8XBTY/L7cDubcWyTrjERL+F3mipFJDWJR0iR/XaIJFxSfpnopZBIQ91/3UFO1Ps/4VTMeGPPnm8/a5OJkSW7uckJqAnwqhc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709125586; c=relaxed/simple;
-	bh=b2Ig2bSrvAWCjWDAGJzCNXj0xb7pA3/vdDPzXmg9efw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=dlxNpJW7hXy8azcWaaTKJ9E1y0rDtbkgqQmOHTlA+eaAsxXQmMPiLndVpatHEFJXWrTY4b0IlLfBIoc9dpNSSU0vlmJFCq1r6G1VyiF7V4vj6ZN3mr4zeT8r7ddhKaQJNFXWWbRHPf8sp59bWS678O/bUnpv9jMuLrjJDKeF8pY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=UXiHg9a/; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41S59x2g021611;
-	Wed, 28 Feb 2024 13:06:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=5OVExsAPMnmn+la7f25Pu1bxp8NeHQu4Jdb0u6jp0oE=; b=UX
-	iHg9a/2wYQEXWWWNye5X8EtbzAByLyhHgem+jAmLGzcHK/PUfwem4JrxgyTDgl7d
-	VSJpV8fTfcUdQnlda9ef3OTVmKx7NOYC8Eph175zCLJAGDI4GOoHSYq9rQ7LTXqF
-	HPKa6aTofv1ax1pWxfqUcy0kP5BvxAGf2wKwoU3YVmw1qxQ9PnN8NQ7ArsPNAKMA
-	KF2AB5Ln9leCGOvFo/omBEfcght/B4/yl3FQOhRxd1q/9VHaGSF+YglB7A92uzUG
-	HiM/jCtkSn9IWPGVAlTpJXKzWVRqya9dZe9tyGGyuGbd78aeO77VKDOe5yj9Y7G9
-	AH7Y4dTL92PthYTmgXAA==
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3whu8k19xe-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 28 Feb 2024 13:06:12 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41SD6BeA018566
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 28 Feb 2024 13:06:11 GMT
-Received: from [10.218.10.86] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 28 Feb
- 2024 05:06:04 -0800
-Message-ID: <8dc0f8e4-e7e6-98b6-037b-31b86c6087af@quicinc.com>
-Date: Wed, 28 Feb 2024 18:36:01 +0530
+	s=arc-20240116; t=1709125615; c=relaxed/simple;
+	bh=iTRDbDJ3CCdiHtHUuQXjxzstc5V4pe8YfL+dZgzZ5dw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=G6V5RBF+9LR1BCUQT5xEEP0cLRSVphhlBuCDqA/b0AC0qUmJ/uGrVw5qDQgu9djmakuFmzKC6En/05NGPjZ30DMae/V0neLPDreg3LtBLtWgnj+geBrq5YRzRjO3K0A/VkUlhh3f2dViBzVqkAScO1r0CD8oMwD6TuhqIqki4tQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g65liBL2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07C92C43390;
+	Wed, 28 Feb 2024 13:06:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709125614;
+	bh=iTRDbDJ3CCdiHtHUuQXjxzstc5V4pe8YfL+dZgzZ5dw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=g65liBL2JQynFPCFv7ZVDcGOu81QhV+xBzyeSifKala4/T+Jo21LFcscY3zTvAzAD
+	 M97aFOXdYN+TuZxPFnvrf76vUlaqT90yQHeQU+bsAalhbO0C1JZHX1mT2lrOJ9dvK/
+	 dZm7hxaixJptLX3/T6jbsXnroOd6H1E1bfXg6GKha+by47t8CAGbfbJMd1aLMTt6Yy
+	 pfziKb6u8jNPZMwjBzUahgaLFwEcsqatYFt4CebJSEGfnwIZ0lzXkcvIrJ2XQdPWxt
+	 q3ZRgXCJ5VT7fKgFp2MXkuk1UW6Pe7NHsGqYn0i/1h7WYTQHkm/4l8/Yhy9JrUDV6G
+	 dkPFc13/kSKXg==
+Date: Wed, 28 Feb 2024 13:06:50 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: linux-arm-kernel@lists.infradead.org,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64/hw_breakpoint: Define an ISS code for watchpoint
+ exception
+Message-ID: <2450a11c-9b90-4b7c-9093-c3f976f7f42a@sirena.org.uk>
+References: <20240223094615.3977323-1-anshuman.khandual@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v5 2/3] PCI: qcom-ep: Enable cache coherency for SA8775P
- EP
-Content-Language: en-US
-To: Konrad Dybcio <konrad.dybcio@linaro.org>, <andersson@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <manivannan.sadhasivam@linaro.org>, <robh@kernel.org>
-CC: <quic_shazhuss@quicinc.com>, <quic_nitegupt@quicinc.com>,
-        <quic_ramkri@quicinc.com>, <quic_nayiluri@quicinc.com>,
-        <dmitry.baryshkov@linaro.org>, <quic_krichai@quicinc.com>,
-        <quic_vbadigan@quicinc.com>, <quic_schintav@quicinc.com>,
-        Lorenzo Pieralisi
-	<lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?=
-	<kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pci@vger.kernel.org>
-References: <1708697021-16877-1-git-send-email-quic_msarkar@quicinc.com>
- <1708697021-16877-3-git-send-email-quic_msarkar@quicinc.com>
- <640775cb-3508-4228-aa94-2e4b7b6b2b6d@linaro.org>
-From: Mrinmay Sarkar <quic_msarkar@quicinc.com>
-In-Reply-To: <640775cb-3508-4228-aa94-2e4b7b6b2b6d@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: SxOULRZ_ja7o0_1XuoiMOY3p95yOxIWy
-X-Proofpoint-GUID: SxOULRZ_ja7o0_1XuoiMOY3p95yOxIWy
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-28_06,2024-02-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 impostorscore=0 suspectscore=0 clxscore=1015 phishscore=0
- adultscore=0 mlxscore=0 mlxlogscore=999 spamscore=0 bulkscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2402280103
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="NOMNlSTLQ6dJ6wWm"
+Content-Disposition: inline
+In-Reply-To: <20240223094615.3977323-1-anshuman.khandual@arm.com>
+X-Cookie: Function reject.
 
 
-On 2/24/2024 5:37 AM, Konrad Dybcio wrote:
-> On 23.02.2024 15:03, Mrinmay Sarkar wrote:
->> Due to some hardware changes, SA8775P has set the NO_SNOOP attribute
->> in its TLP for all the PCIe controllers. NO_SNOOP attribute when set,
->> the requester is indicating that there no cache coherency issues exit
->> for the addressed memory on the host i.e., memory is not cached. But
->> in reality, requester cannot assume this unless there is a complete
->> control/visibility over the addressed memory on the host.
->>
->> And worst case, if the memory is cached on the host, it may lead to
->> memory corruption issues. It should be noted that the caching of memory
->> on the host is not solely dependent on the NO_SNOOP attribute in TLP.
->>
->> So to avoid the corruption, this patch overrides the NO_SNOOP attribute
->> by setting the PCIE_PARF_NO_SNOOP_OVERIDE register. This patch is not
->> needed for other upstream supported platforms since they do not set
->> NO_SNOOP attribute by default.
->>
->> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
->> ---
->>   drivers/pci/controller/dwc/pcie-qcom-ep.c | 20 +++++++++++++++++---
->>   1 file changed, 17 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/pci/controller/dwc/pcie-qcom-ep.c b/drivers/pci/controller/dwc/pcie-qcom-ep.c
->> index 89d06a3e6e06..369954649254 100644
->> --- a/drivers/pci/controller/dwc/pcie-qcom-ep.c
->> +++ b/drivers/pci/controller/dwc/pcie-qcom-ep.c
->> @@ -45,6 +45,7 @@
->>   #define PARF_SLV_ADDR_MSB_CTRL			0x2c0
->>   #define PARF_DBI_BASE_ADDR			0x350
->>   #define PARF_DBI_BASE_ADDR_HI			0x354
->> +#define PARF_NO_SNOOP_OVERIDE			0x3d4
-> Any reason for this to be unsorted?
->
-> Konrad
-Yes, this should be sorted. Will fix this in next series.
+--NOMNlSTLQ6dJ6wWm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks
-Mrinmay
+On Fri, Feb 23, 2024 at 03:16:15PM +0530, Anshuman Khandual wrote:
+> This defines a new ISS code macro i.e ESR_ELx_WnR for watchpoint exception.
+> This represents an instruction's either writing to or reading from a memory
+> location during an watchpoint exception, and also moves this macro into the
+> ESR header as required. This drops non-standard AARCH64_ESR_ACCESS_MASK.
+
+Reviewed-by: Mark Brown <broonie@kernel.org>
+
+--NOMNlSTLQ6dJ6wWm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXfL+kACgkQJNaLcl1U
+h9BlZgf+KjxsPf6de4G/8K2XjTNSeLQ9vpz/zEQyxonAis77kEg8CmwA9tHYGXJ3
++jzDJI6i4kE5HbNMoi3aJ7glFrcUyFBdL68nHCWAWcJ+kIaId6SmN4GoXcDZ5/3o
+7AFMh4YjjnjYBy5dIP+N2ukOFjTFXpMpq1pPv8fy/Um3VQ537R7fX+AnmHzvRdaf
+UcxAv78AQyGm9ZVQmLqy1x1jc6Bx8QXQLkMQ2++v2ZfyWYyX5FzAcjDJCA7TAM7u
+gIas0h+epZHnmrK9PVR6Ea6cZdG30DqX6n7dJ7mi0jlegfOweGYC+kg1M75ALrka
+bW2W2dtWZwKTj+8bDkfAvhoSx9G/fA==
+=wL1L
+-----END PGP SIGNATURE-----
+
+--NOMNlSTLQ6dJ6wWm--
 
