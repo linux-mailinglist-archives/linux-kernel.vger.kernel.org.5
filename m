@@ -1,163 +1,113 @@
-Return-Path: <linux-kernel+bounces-84603-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84605-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8117B86A8E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:24:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 431D486A8EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:26:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 228381F26630
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 07:24:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 66DAD1C23C4E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 07:26:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56FF424B2C;
-	Wed, 28 Feb 2024 07:24:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CB6324A19;
+	Wed, 28 Feb 2024 07:26:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="DZYrrHdo"
-Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PGQ6sFfj"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F226F249E3
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 07:24:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F147924A06
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 07:26:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709105062; cv=none; b=tlvsUOS/Sg0Xg7dvTONavsFdcBrsVxQiO2NJDYSQcJwza44YvIDOKL86UiMHaFRE+fBTfL3B4wLUVkI/Lq5Vz9Wr7LSKd/evWQcBeJBMyDrCBW9nJnRk6qnWmWk+NOiFKSaACt9xbRhwTHvnXEDPrqQxZYjQSFAjhRPGx/28DOw=
+	t=1709105178; cv=none; b=cfccY+FB1zdJ49vYJg/D4MuzksUbaJMX5e3MyNaJf+qArXFx5vkvrCdlB9BZy5WjCJUvvT+pqO+YK+RdUouVorzze25b81bFapk2a2LF1jFsRr77HPZrFbl3VpF/ZrogCvv0HGXeKRZvxP//1Ilj9OElHyjIDtFwjRcFX2P69rQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709105062; c=relaxed/simple;
-	bh=J3BiMHmFAZRHHxjaye1fO3ickIhjsdiGhoo6deKUkG8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pOj24Oqh5jtGI/Nht8/+o3BeTBf4dkqSrov/YImFAvbxSIO2Gt9/dptEg+GmUIPoQFcCrT8cu+pOQL2PO8jjI5H+RL5DdGYSsMx8r3G22Si4Hk3oNxHTxybLngY9eGfdFJan8xWAAqYg22QwyauNvkTQZWBF20PZzfG4LrxRa/c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=DZYrrHdo; arc=none smtp.client-ip=209.85.166.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-3653e1240e3so98235ab.0
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 23:24:20 -0800 (PST)
+	s=arc-20240116; t=1709105178; c=relaxed/simple;
+	bh=asjFfwYuPjymOdYYLQoZSQr0W4mVkOPufOpRClHRK74=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=BZp6l5ZhVXVJRdbUayR+yZU21c73OWELgjbRz9/mYc9Tia0G0iGmNd0JeqkJBPNS5iRXGIp40mV+3Yo6gDAjSx+xZjVV46BKGq4D+O+0RbhsCXqrsKc8j4N7ojn+I7cX4fX2laoywRbe1i+NTyFex04LiKxOaVz3KnRA+kOCAfc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PGQ6sFfj; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-412b4a12bbaso1637505e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 23:26:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709105060; x=1709709860; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WHnvaXANsC8wB5A9Pi5iZo7i69i6rzWp1vJRqsOF55o=;
-        b=DZYrrHdozaK4bx3oRMsJGBZaj4ZVy8K72pUsBh8GV2oT+GN7XR/L+wKoGDAungc5iX
-         Jkse0b3bsooq+6pdDkuLNQxe26+fHoVSATFlOBsp0EkC2ufY8iysQo8Vj+GBzeXgsjbR
-         gdISeCY86roTbIa7WM/4MJzlaIJ01VynjlxZGARL+omgQCuwm9alWa5dr7K5BsKMq8n1
-         kq0R++e/uemSuaKyc8GGDCtnag2IVf9fORaL9NDdUpzTuYOT81K93fO0Xg/E7SRDc65y
-         sEz+Zkq9Y7dYPfsgB6odwjTAdwffvpjoUFFZdeiKdGxiP1yORo8zbKc3Au83Fx6LAC8o
-         tOig==
+        d=gmail.com; s=20230601; t=1709105175; x=1709709975; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=O4qmpRXQDJZ+dKyhU210IX58ZV5gg5CCPG3QCEGwT80=;
+        b=PGQ6sFfjp0kmrDeupv4LRFPomPOkh3WlVhgDkWpKRYOlrkols0Bf9B6URMCrQmM8fm
+         Ha8D/AzTVPIc93bxMUjNsmjtpRAmcYwdplAyxjxvv1+60fbWYgkEvstiTw3WoX/fkHtr
+         +gZBVhacVcnaYprevLBVTCmV/ZVChdOnLX/2uk8lU3/yqHPH9NFKyXHX8sZKGvzUzEGh
+         eLZfBt6u3US1fjxbzUoc2dcZAcRFx+hVS0YUPNUZO7ElphTW91YY8jCYnHikA4pHMKUH
+         0vCeiTBGb60CkfZwRsIFMHWbRb9vQaTdbPmBePG2nIKR2e0q+FLB6Ot/iiGKXzbpWt9p
+         Krvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709105060; x=1709709860;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WHnvaXANsC8wB5A9Pi5iZo7i69i6rzWp1vJRqsOF55o=;
-        b=jOETwSRvG7NAR7U1UeNvczlccCMYsEHHv/+TGZWj6XJyWhGUqHgeHwSx9urmYbsGWJ
-         XntHoJzGEfClx9Bxo5hSUCltxEF59B67wM+s3MtuxF4kn+FL3kqTBxdhA/PjDa35UO4Y
-         wCRISIDW5n3DES7muJmBiQ1FKhLbQrqadw+0g0uuaJKPHK1Nqj8FXfo0t1/UlSFFiYi3
-         Z+s2xboHmgcJXxDBOx+E6fj6+tTFR0oU/DTiKCxl7/bKHhvbmVbvXo0T2ervGgpblYQ0
-         YQiJXe4uyKtodDf9mhrR2DSTzpddzTdcLWMCJhuA/RJtqkmUSibSV7GgPVNzSuxS9iSh
-         LPbw==
-X-Forwarded-Encrypted: i=1; AJvYcCVLlm8npGiyhyCZaWM+GUoCAjs0wuaSso1shNkFuJKjTn1HxlJEVZSeTe+hyxwTnFex7gY2LAHWijWfqp6yrux/e0KX5gjpvrr3BfdG
-X-Gm-Message-State: AOJu0YxAkBE+QBmQopVk7EwD72GFIeOq4cr4z/W+M0YVWGZ0jd2jj8E6
-	NlerRXRKv9R8ALhxpB3cybObWYpxXLsmY0KAsA8aclRYReEPMRGivuFbfx6OY/LFNlS6B6ErQx0
-	npeYluk+0HdlZw3YgzXCuIssu1gj9oh/cqXh9
-X-Google-Smtp-Source: AGHT+IHkLDbLWAgusw2nK94xGjYsaUw7+RGfP0DkNFb5aCzX98qVfoDFTra6SUiapVaXaZsf9lCDoJmc1+/jVZTtfXM=
-X-Received: by 2002:a92:2902:0:b0:363:c7c0:49bc with SMTP id
- l2-20020a922902000000b00363c7c049bcmr14863ilg.27.1709105059805; Tue, 27 Feb
- 2024 23:24:19 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709105175; x=1709709975;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=O4qmpRXQDJZ+dKyhU210IX58ZV5gg5CCPG3QCEGwT80=;
+        b=sTGZnwQ4bWkROxSsG2SK3/cKNSKs+mTlD6O0/afFx0T9Bh6JVN3soM0tFF3KvJywdv
+         uTAiFwQ56CBqIMJtIGLNqR/WmAss4Bxlf2jIRpQpQVXmJi0TBL9APGlAATFG9dF27l9U
+         1m8mDh73PJ3UTbt7/Lv7op8nPzZqpuLildF5m4322AYUDiE2ArFSQKPaB188Mnx1nvqH
+         Hw1a5uxEvPz3eZLCve/nLyLCYnFGSDZjV8+dsjsm37XIZ2/I9fZKJxV/vG+gaAdCv/Z9
+         6hv5kVUFftmxak+uFi14JpLirC4j9fW8ytBCcJRshkhyRoi4H4bx950GxOaJstteFXXm
+         fRfA==
+X-Forwarded-Encrypted: i=1; AJvYcCVBV4s1XDcI4V92QJFwlKEXNLw1eDAnGj6O/cdtRNYrgDUOXogPJ0jaEavhgnzSMDNmJRMMHYGmUtKxiWHXO1TPttSW6lQW1mUgsYoN
+X-Gm-Message-State: AOJu0YwjZQr7MukGsPCwBsPNlEAvj+6J9Husbq24wNqjNEd04R+fiaWm
+	UgZREcKgnb1cIbZZNnMnNmvh5hyil67QiAcXb23teC5YtDb/KZKM
+X-Google-Smtp-Source: AGHT+IGqgAcMdec3GgCn6K3wUoxK78jFOqYzkRWw+67awvXsZwIBcMadsUraraDWAGDT9sIxLJKbrQ==
+X-Received: by 2002:a05:600c:a0b:b0:412:892c:7eea with SMTP id z11-20020a05600c0a0b00b00412892c7eeamr8674264wmp.37.1709105175155;
+        Tue, 27 Feb 2024 23:26:15 -0800 (PST)
+Received: from ubuntu2004.cynet.local (vpn1382.cynet.com. [84.110.53.106])
+        by smtp.gmail.com with ESMTPSA id n2-20020a05600c4f8200b00412b56aa46bsm663566wmq.13.2024.02.27.23.26.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Feb 2024 23:26:14 -0800 (PST)
+From: Ariel Silver <arielsilver77@gmail.com>
+To: gregkh@linuxfoundation.org,
+	philipp.g.hortmann@gmail.com,
+	yogi.kernel@gmail.com,
+	dan.carpenter@linaro.org,
+	straube.linux@gmail.com,
+	garyrookard@fastmail.org
+Cc: linux-staging@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	Ariel Silver <arielsilver77@gmail.com>
+Subject: [PATCH] Staging: rtl8192e: Sparse warning regarding variable declaration
+Date: Wed, 28 Feb 2024 09:25:53 +0200
+Message-Id: <20240228072553.11740-1-arielsilver77@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240214063708.972376-1-irogers@google.com> <20240214063708.972376-5-irogers@google.com>
- <CAM9d7cjuv2VAVfGM6qQEMYO--WvgPvAvmnF73QrS_PzGzCF32w@mail.gmail.com>
- <CAP-5=fUUSpHUUAc3jvJkPAUuuJAiSAO4mjCxa9qUppnqk76wWg@mail.gmail.com>
- <CAM9d7chXtmfaC73ykiwn+RqJmy5jZFWFaV_QNs10c_Td+zmLBQ@mail.gmail.com>
- <Zd41Nltnoen0cPYX@x1> <CAP-5=fWv25WgY82ZY3V1erUvCb+jdhLd_d91p4akjqFgynvAgg@mail.gmail.com>
- <CAM9d7cjJTf_yed9nwXZkBPr6u6NH5n+V+u0m6Zgsc1JBy_LdyA@mail.gmail.com>
-In-Reply-To: <CAM9d7cjJTf_yed9nwXZkBPr6u6NH5n+V+u0m6Zgsc1JBy_LdyA@mail.gmail.com>
-From: Ian Rogers <irogers@google.com>
-Date: Tue, 27 Feb 2024 23:24:05 -0800
-Message-ID: <CAP-5=fWKdp7rf+v7t_T_0tU0OxQO9R2g+ZH7Ag7HgyBbGT3-nQ@mail.gmail.com>
-Subject: Re: [PATCH v1 4/6] perf threads: Move threads to its own files
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Oliver Upton <oliver.upton@linux.dev>, 
-	Yang Jihong <yangjihong1@huawei.com>, linux-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 27, 2024 at 10:40=E2=80=AFPM Namhyung Kim <namhyung@kernel.org>=
- wrote:
->
-> On Tue, Feb 27, 2024 at 1:42=E2=80=AFPM Ian Rogers <irogers@google.com> w=
-rote:
-> >
-> > On Tue, Feb 27, 2024 at 11:17=E2=80=AFAM Arnaldo Carvalho de Melo
-> > <acme@kernel.org> wrote:
-> > >
-> > > On Tue, Feb 27, 2024 at 09:31:33AM -0800, Namhyung Kim wrote:
-> > > > I can see some other differences like machine__findnew_thread()
-> > > > which I think is due to the locking change.  Maybe we can fix the
-> > > > problem before moving the code and let the code move simple.
-> > >
-> > > I was going to suggest that, agreed.
-> > >
-> > > We may start doing a refactoring, then find a bug, at that point we
-> > > first fix the problem them go back to refactoring.
-> >
-> > Sure I do this all the time. Your typical complaint on the v+1 patch
-> > set is to move the bug fixes to the front of the changes. On the v+2
-> > patch set the bug fixes get applied but not the rest of the patch
-> > series, etc.
-> >
-> > Here we are refactoring code for an rb-tree implementation of threads
-> > and worrying about its correctness. There's no indication it's not
-> > correct, it is largely copy and paste, there is also good evidence in
-> > the locking disciple it is more correct. The next patch deletes that
-> > implementation, replacing it with a hash table. Were I not trying to
-> > break things apart I could squash those 2 patches together, but I've
-> > tried to do the right thing. Now we're trying to micro correct, break
-> > apart, etc. a state that gets deleted. A reviewer could equally
-> > criticise this being 2 changes rather than 1, and the cognitive load
-> > of having to look at code that gets deleted. At some point it is a
-> > judgement call, and I think this patch is actually the right size. I
-> > think what is missing here is some motivation in the commit message to
-> > the findnew refactoring and so I'll add that.
->
-> I'm not against your approach and actually appreciate your effort
-> to split rb-tree refactoring and hash table introduction.  What I'm
-> asking is just to separate out the code moving.  I think you can do
-> whatever you want in the current file.  Once you have the final code
-> you can move it to its own file exactly the same.  When I look at this
-> commit, say a few years later, I won't expect a commit that says
-> moving something to a new file has other changes.
+Fixed sparse warning: "'dm_rx_path_sel_table' was not declared. Should it be static?"
+As dm_rx_path_sel_table is used only in rtl_dm.c it should be static.
 
-The problem is that the code in machine treats the threads lock as if
-it is a lock in machine. So there is __machine__findnew_thread which
-implies the thread lock is held. This change is making threads its own
-separate concept/collection and the lock belongs with that collection.
-Most of the implementation of threads__findnew matches
-__machine__findnew_thread, so we may be able to engineer a smaller
-line diff by moving "__machine__findnew_thread" code into threads.c,
-then renaming it to build the collection, etc. We could also build the
-threads collection inside of machine and then in a separate change
-move it to threads.[ch].  In the commit history this seems muddier
-than just splitting out threads as a collection. Also, some of the API
-design choices are motivated more by the hash table implementation of
-the next patch than trying to have a good rbtree abstracted collection
-of threads. Essentially it'd be engineering a collection of threads
-but only with a view to delete it in the next patch. I don't think it
-would be for the best and the commit history for deleted code is
-unlikely to be looked upon.
+Signed-off-by: Ariel Silver <arielsilver77@gmail.com>
+---
+ drivers/staging/rtl8192e/rtl8192e/rtl_dm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Ian
+diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c b/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
+index 92143c50c149..850ee6ae1f02 100644
+--- a/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
++++ b/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
+@@ -144,7 +144,7 @@ const u8 dm_cck_tx_bb_gain_ch14[CCK_TX_BB_GAIN_TABLE_LEN][8] = {
+ /*------------------------Define global variable-----------------------------*/
+ struct dig_t dm_digtable;
+ 
+-struct drx_path_sel dm_rx_path_sel_table;
++static struct drx_path_sel dm_rx_path_sel_table;
+ /*------------------------Define global variable-----------------------------*/
+ 
+ 
+-- 
+2.25.1
 
-> Thanks,
-> Namhyung
 
