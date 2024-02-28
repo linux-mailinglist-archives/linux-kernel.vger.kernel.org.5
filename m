@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-84902-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84903-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D727D86AD67
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:35:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1110086AD6E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:35:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D59F1F292A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:35:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB7FB1F2990D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:35:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BD3A15CD51;
-	Wed, 28 Feb 2024 11:28:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D70615D5B9;
+	Wed, 28 Feb 2024 11:28:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="k/iehBZp"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="FPs4A+FS"
 Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5BF915A4BA;
-	Wed, 28 Feb 2024 11:28:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46A3215B100;
+	Wed, 28 Feb 2024 11:28:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709119713; cv=none; b=FtRJn01CCJXh+yZgfE1x1Mxa9SSB+biWGWDNQlyjyYC86pa5lW+tsJuMhL8uw0Q70/XU5WbCIKbmNmXBR93HQQCEg6Z5UZoFQLRyyWZ+Mak2aAGSSs45nbx1Eg9sLCierNoIeWhrxBvCqBcbz9MTbBD6wQfH4hI5raPY3ohsJ1c=
+	t=1709119714; cv=none; b=QjY2t4z/+VFfCHPzFNZcucB7BPGtDA46gH2aMOT8B2tJ0Nc4I4D1M3BWR1pAaS4J9uRuYDY3rIALtQLtGiBu/LcnJ7hSm1kkhw4QmwQ888gv7gv71NXR1VYHFtck9qFDaVWcWUM4Lyo0lAG9IuNi4HGKc7IU9UQJGk4Avqta1FM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709119713; c=relaxed/simple;
-	bh=P+PS9P5cePM2VctJfuVuc5xinmTQv+oenygZVIJyQ+I=;
+	s=arc-20240116; t=1709119714; c=relaxed/simple;
+	bh=CuQIZkGPYKfwIxHjL83ks3D5WIvU+cFZKGpyf39cIfk=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=nBrvEoKKYhs6prY552QIvG9YYMyt06e4ac4aPavRUIK2NdDan41PFchQX/fru7cGNpOZpCEkikeOVxvGsM7HH8W7q4Ogc2jK/NG1zX3i0WRh4w+bTnPGZO6/YYIMgc+zrgh3HddNlTxgaDfOOFv8JxNb9gPwDPKHXXsSAyV/0BU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=k/iehBZp; arc=none smtp.client-ip=217.70.183.201
+	 In-Reply-To:To:Cc; b=ETMMRDvFqotPBiK1YgXGcIp7qjlhHFQf0VG0T4H/ij15rn1rf1ycNydbl+Bg9k5ZJQ48AjCSfdyaKsLHyCehQQEJwi9aAe9w+AkjQ7eJ/fCafcQYxszaU7uczXZ6cKLUZDskrD2qgNq3MtR92KfTWwk2h9Xv/tGT8iLOX0L94ds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=FPs4A+FS; arc=none smtp.client-ip=217.70.183.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id BA1DE1BF203;
-	Wed, 28 Feb 2024 11:28:28 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 7DEAD1BF216;
+	Wed, 28 Feb 2024 11:28:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709119709;
+	t=1709119710;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=7c9tumQQXuG4HieeWpZE+FRQlT5QELiXjdV48vp4z3o=;
-	b=k/iehBZporOFOkjyRzIBzHutL0jHTIkX2HF3wMsXMUDCXGPWYoOJpPgmPxTVhcidxY/Ak6
-	Ju2GfeYXaBaNfnjii+TahW7TfEjhmKAvzBhJPHVJQMbQNtVs8WdhgIZF/wPYMaYINCNtPo
-	HZXvCqXq2xEVWTMCSuzoVTLCiROviRrjPg/K7BimabQnIgzfawdqndMac5gUeuXxcpMYZr
-	hpG0MfmwAozmxgPzbx07LrSSDrpHBeYg2b/vG7k13Jt1WWyZ+msOIfjRUh94rfXxAHbAGv
-	b+BRVh/pM9K0L61U5Ax+UaxSqnRuga+M/jrpRcd4pTxJBSQsfTLcvhEfuInLgA==
+	bh=FNoO6vmJ9el3v5aN6NX8aYKdgPlN5duDCePRMfT5iF0=;
+	b=FPs4A+FSUsI1jbmC5iRp/YjJ5AetOfXSFRU/BbEMB8tPtEzk8ghIPZvPVYoEE9QrzAALr7
+	PYLOp+tdssftRzOGsKPmKwsiDsp8lJbtqsjXyQRE1xx48ZBJfuNngfeqKmp0cxN7LeFbJ6
+	9SPUDb2BYKToI3Mic91+gTQOtqA8ZbBa4SC/wC1pyK51coWhuwH5sohz/QtA2m2R133V03
+	/NUUU8qlZtHa4bC76oGxJ5cK/0FezljCo7PWfIJPBG2EgrdfMk/ND049CjHnTa0u8Xi/t0
+	TgiE4MWdX0mBJ98RYVzABKHdHhzWKQhaSFiWAsXLSGMoMtzmq9uvFHGazvYWKA==
 From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Date: Wed, 28 Feb 2024 12:28:23 +0100
-Subject: [PATCH v2 25/30] gpio: nomadik: grab optional reset control and
- deassert it at probe
+Date: Wed, 28 Feb 2024 12:28:24 +0100
+Subject: [PATCH v2 26/30] Documentation: gpio: mention
+ generic_handle_irq_safe()
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,7 +56,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240228-mbly-gpio-v2-25-3ba757474006@bootlin.com>
+Message-Id: <20240228-mbly-gpio-v2-26-3ba757474006@bootlin.com>
 References: <20240228-mbly-gpio-v2-0-3ba757474006@bootlin.com>
 In-Reply-To: <20240228-mbly-gpio-v2-0-3ba757474006@bootlin.com>
 To: Linus Walleij <linus.walleij@linaro.org>, 
@@ -70,84 +70,49 @@ Cc: linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
  Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
  Tawfik Bayouk <tawfik.bayouk@mobileye.com>, 
- =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+ =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>, 
+ Stephen Warren <swarren@wwwdotorg.org>, Jonathan Corbet <corbet@lwn.net>, 
+ linux-doc@vger.kernel.org
 X-Mailer: b4 0.13.0
 X-GND-Sasl: theo.lebrun@bootlin.com
 
-Fetch a reference to the optional shared reset control and deassert it
-if it exists.
+generic_handle_irq() must be called from a no-IRQ context. Documentation
+advices on using a fake raw lock to call generic_handle_irq() from any
+context.
 
-Optional because not all platforms that use this driver have a reset
-attached to the reset block. Shared because some platforms that use the
-reset (at least Mobileye EyeQ5) share the reset across banks.
+Since 509853f9e1e7 ("genirq: Provide generic_handle_irq_safe()"), a
+better alternative is available.
 
-Do not keep a reference to the reset control as it is not needed
-afterwards; the driver does not handle suspend, does not use runtime
-PM, does not register a remove callback and does not support unbinding
-from sysfs (made explicit with suppress_bind_attrs).
-
-The operation is done in nmk_gpio_populate_chip(). This function is
-called by either gpio-nomadik or pinctrl-nomadik, whoever comes first.
-This is here for historic reasons and could probably be removed now; it
-seems gpio-ranges enforces the ordering to be pinctrl-first. It is not
-the topic of the present patch however.
-
+To: Stephen Warren <swarren@wwwdotorg.org>
+To: Jonathan Corbet <corbet@lwn.net>
+Cc: linux-doc@vger.kernel.org
 Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
 ---
- drivers/gpio/gpio-nomadik.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+ Documentation/driver-api/gpio/driver.rst | 11 ++---------
+ 1 file changed, 2 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/gpio/gpio-nomadik.c b/drivers/gpio/gpio-nomadik.c
-index 6adb3c4417d3..c9fd6631e0aa 100644
---- a/drivers/gpio/gpio-nomadik.c
-+++ b/drivers/gpio/gpio-nomadik.c
-@@ -509,11 +509,13 @@ struct nmk_gpio_chip *nmk_gpio_populate_chip(struct device_node *np,
- {
- 	struct nmk_gpio_chip *nmk_chip;
- 	struct platform_device *gpio_pdev;
-+	struct reset_control *reset;
- 	struct device *gpio_dev;
- 	struct gpio_chip *chip;
- 	struct clk *clk;
- 	void __iomem *base;
- 	u32 id, ngpio;
-+	int ret;
+diff --git a/Documentation/driver-api/gpio/driver.rst b/Documentation/driver-api/gpio/driver.rst
+index bf6319cc531b..550d167a82ed 100644
+--- a/Documentation/driver-api/gpio/driver.rst
++++ b/Documentation/driver-api/gpio/driver.rst
+@@ -339,15 +339,8 @@ Cascaded GPIO irqchips usually fall in one of three categories:
  
- 	gpio_dev = bus_find_device_by_of_node(&platform_bus_type, np);
- 	if (!gpio_dev) {
-@@ -572,6 +574,24 @@ struct nmk_gpio_chip *nmk_gpio_populate_chip(struct device_node *np,
- 	clk_prepare(clk);
- 	nmk_chip->clk = clk;
+   The generic_handle_irq() is expected to be called with IRQ disabled,
+   so the IRQ core will complain if it is called from an IRQ handler which is
+-  forced to a thread. The "fake?" raw lock can be used to work around this
+-  problem::
+-
+-    raw_spinlock_t wa_lock;
+-    static irqreturn_t omap_gpio_irq_handler(int irq, void *gpiobank)
+-        unsigned long wa_lock_flags;
+-        raw_spin_lock_irqsave(&bank->wa_lock, wa_lock_flags);
+-        generic_handle_irq(irq_find_mapping(bank->chip.irq.domain, bit));
+-        raw_spin_unlock_irqrestore(&bank->wa_lock, wa_lock_flags);
++  forced to a thread. generic_handle_irq_safe() can be used to work around
++  this problem; it can safely be called from any context.
  
-+	reset = devm_reset_control_get_optional_shared(gpio_dev, NULL);
-+	if (IS_ERR(reset)) {
-+		dev_err(&pdev->dev, "failed getting reset control: %ld\n",
-+			PTR_ERR(reset));
-+		return ERR_CAST(reset);
-+	}
-+
-+	/*
-+	 * Reset might be shared and asserts/deasserts calls are unbalanced. We
-+	 * only support sharing this reset with other gpio-nomadik devices that
-+	 * use this reset to ensure deassertion at probe.
-+	 */
-+	ret = reset_control_deassert(reset);
-+	if (ret) {
-+		dev_err(&pdev->dev, "failed reset deassert: %d\n", ret);
-+		return ERR_PTR(ret);
-+	}
-+
- #ifdef CONFIG_PINCTRL_NOMADIK
- 	BUG_ON(nmk_chip->bank >= ARRAY_SIZE(nmk_gpio_chips));
- 	nmk_gpio_chips[id] = nmk_chip;
-@@ -690,6 +710,7 @@ static struct platform_driver nmk_gpio_driver = {
- 	.driver = {
- 		.name = "nomadik-gpio",
- 		.of_match_table = nmk_gpio_match,
-+		.suppress_bind_attrs = true,
- 	},
- 	.probe = nmk_gpio_probe,
- };
+ - GENERIC CHAINED GPIO IRQCHIPS: these are the same as "CHAINED GPIO irqchips",
+   but chained IRQ handlers are not used. Instead GPIO IRQs dispatching is
 
 -- 
 2.44.0
