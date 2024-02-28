@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-84467-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84466-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 011DC86A722
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 04:20:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A920686A723
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 04:20:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AFF89283EB7
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 03:20:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 49DA91F2C197
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 03:20:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC4C72031E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D88CE20327;
 	Wed, 28 Feb 2024 03:20:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nl64v+Q2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NhYAR4Th"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A7611DDF5;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 108E21DDD5;
 	Wed, 28 Feb 2024 03:20:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709090432; cv=none; b=Gf6QYoJ49v83VEkaruyklFpKuJg4o7Pf7l8WLeliE6Y+Mwh1ak8wpQqZzM8GVDNE0kSXnZyovKAOnKMDCZ4o9wVXileyDC3DDpDw5/FyRIMtxepJv/kiIe+ZJh+2eq/X+pDmQdiE+q09NUfShAuv8FujUf3k7jO1pCOoYt3o9mA=
+	t=1709090432; cv=none; b=Qo7fMjrC9CMYH9FFIcwSbg3aEF+aPUyRlVZmIgwdh+NR1V9j8OY/Y7DbKapJKMBp6uJ4kflkdCPjVWQYDPh94jd0FuqqX++yez/YsCtPtKXzswOMX2riGKuFLJ6lEvNk/4TtW/RNWt5ZMgiczhib/MsAAJkLtph+8orQhjfaZSM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1709090432; c=relaxed/simple;
-	bh=Tie5XtoEakgyp91HZ1L/FLDkGzkh11gjzWIlmIe20PI=;
+	bh=u0axjAWtAcxEr7ZjPkE5IqKAR+IemnMqd88N4WKuBBM=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=dzAmc5qFrc+qIhMU5xvBwZzxZr7CvLu8FWIff36Rblnip8668LJhNGbcAvKoFFiHru7rMIM+gwCfMei03wveWPH7S5C0I9CA0cHxVJbt6gh/HXCBIc+LINdcWcdtuP98EHXdcn6kmj7HJpVWT/G7ym1k1YQTDypHUmjUdKPkENQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nl64v+Q2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id BCEB6C43399;
+	 In-Reply-To:To:Cc; b=QXmUlXHVioqRozNDgOjJO6TaMtRjbg672kN3MLP1EH78TrAuJTP+mjeaQP76BsitPzk2lmHZwQ1YhVk+Ml6PGfMnubKQVyjYjmj3AKsef8Dak4ZPNN5TqIN/QUXUVy9wEo2sW5Vs7/n35Wq8ci3NGBQofzqWzwj0Rew3B0kdvBQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NhYAR4Th; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A10ADC43390;
 	Wed, 28 Feb 2024 03:20:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1709090431;
-	bh=Tie5XtoEakgyp91HZ1L/FLDkGzkh11gjzWIlmIe20PI=;
+	bh=u0axjAWtAcxEr7ZjPkE5IqKAR+IemnMqd88N4WKuBBM=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=nl64v+Q2q5qbUVpolMTA6ZoYHSQONZSb4ufpQnJBmEQqak2Tw8KJ9/3FvtQiG3cph
-	 C6rwwqblhrtcZdDvJEeFSx1Ysjlcy6yV3qd35i/JzO7RDv6K0KL/8eM0+b0E6KvYdB
-	 wEESqUMVdlCc/sCFnlYznOjP73U6D4zySp4e1L+XjEBDWALXfBveysYBxVYvOk8uK7
-	 ATw8dIzbGwrFftcuLkAON44CEveK/tPeGfas5/VC7nZDBGEQOYLof01UZSKK8GFT9t
-	 dWveiGGKYHXJBKcVlcEGPnOoCJa7iEBpenPttbYBEJAHxxJl96nGJoJz7z1ZtFRhFw
-	 5YzEYb4OO7WJA==
+	b=NhYAR4ThtSche8nUOdqUa04SsV+s72UyCuiyQo02gy5DxLiaOuj1wNrONe0Z7phE4
+	 +8iGJvqcleo0pKN7mmt75OFNkZeq2XdbDaiNtSQe08OCU9RdLNqbnb8zgA8fVRGP6W
+	 GUHDy2Y+jNDWPpM9+iE44TronIoxJlkI9uH6vV6czwondDIkOmdek3xIWnUCoB4Jpn
+	 hGz803xQ8v2+W7Jb5o84Qv10PxVFWv8P6r3F2dqz8B5mEkAJFgM6BqqWZBH+w2CF9i
+	 NLi/CNDFHgGa82DWB9bHyIv1yeHLWihIuwDyr0Nnm6AJ5NNsmkbt07z+XlF90EJ6Bw
+	 Mtr0iq1zVDe8g==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9C14AD990AA;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 87DA6D88FB6;
 	Wed, 28 Feb 2024 03:20:31 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -51,34 +51,40 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] uapi: in6: replace temporary label with rfc9486
+Subject: Re: [PATCH] net: usb: dm9601: fix wrong return value in
+ dm9601_mdio_read
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <170909043163.27277.7611137336558798707.git-patchwork-notify@kernel.org>
+ <170909043155.27277.1060670387014071329.git-patchwork-notify@kernel.org>
 Date: Wed, 28 Feb 2024 03:20:31 +0000
-References: <20240226124921.9097-1-justin.iurman@uliege.be>
-In-Reply-To: <20240226124921.9097-1-justin.iurman@uliege.be>
-To: Justin Iurman <justin.iurman@uliege.be>
-Cc: netdev@vger.kernel.org, davem@davemloft.net, linux-kernel@vger.kernel.org
+References: <20240225-dm9601_ret_err-v1-1-02c1d959ea59@gmail.com>
+In-Reply-To: <20240225-dm9601_ret_err-v1-1-02c1d959ea59@gmail.com>
+To: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Cc: peter@korsgaard.com, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
+ linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
 
 Hello:
 
 This patch was applied to netdev/net.git (main)
 by Jakub Kicinski <kuba@kernel.org>:
 
-On Mon, 26 Feb 2024 13:49:21 +0100 you wrote:
-> Not really a fix per se, but IPV6_TLV_IOAM is still tagged as "TEMPORARY
-> IANA allocation for IOAM", while RFC 9486 is available for some time
-> now. Just update the reference.
+On Sun, 25 Feb 2024 00:20:06 +0100 you wrote:
+> The MII code does not check the return value of mdio_read (among
+> others), and therefore no error code should be sent. A previous fix to
+> the use of an uninitialized variable propagates negative error codes,
+> that might lead to wrong operations by the MII library.
 > 
-> Fixes: 9ee11f0fff20 ("ipv6: ioam: Data plane support for Pre-allocated Trace")
-> Signed-off-by: Justin Iurman <justin.iurman@uliege.be>
+> An example of such issues is the use of mii_nway_restart by the dm9601
+> driver. The mii_nway_restart function does not check the value returned
+> by mdio_read, which in this case might be a negative number which could
+> contain the exact bit the function checks (BMCR_ANENABLE = 0x1000).
 > 
 > [...]
 
 Here is the summary with links:
-  - [net] uapi: in6: replace temporary label with rfc9486
-    https://git.kernel.org/netdev/net/c/6a2008641920
+  - net: usb: dm9601: fix wrong return value in dm9601_mdio_read
+    https://git.kernel.org/netdev/net/c/c68b2c9eba38
 
 You are awesome, thank you!
 -- 
