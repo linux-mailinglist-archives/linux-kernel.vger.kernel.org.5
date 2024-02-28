@@ -1,345 +1,163 @@
-Return-Path: <linux-kernel+bounces-84969-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84939-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FAAE86AE4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:56:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B624486ADF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:46:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2C029B26278
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:56:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E4F481C23071
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:46:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8613715A4BF;
-	Wed, 28 Feb 2024 11:49:44 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A1EC73530;
-	Wed, 28 Feb 2024 11:49:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F8C57353C;
+	Wed, 28 Feb 2024 11:44:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="ihaywTNP"
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.4])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03C2873507
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 11:44:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709120982; cv=none; b=FmaSe6s/bO+2SSGc1lXOBxlz14VDkHukBY2W3OLzMN+BEgC+aTzKWGmDM7ohazywZBk/5N7+cI8F/f8YwQ5kND62O60js+nLDHQrGeGoJJSaSwHef7v00wD20Vr/gre+02wqMnANhZdqtOa/PqfsyTAc+rlZfzhMGZFxDtrurrs=
+	t=1709120692; cv=none; b=KlInTTusLgqzTchFE9ViRqZVx7LBfzXBBZhvqcq65Wrv7qMuzIqGb8PJ+T8gpaIkNvvwl68rdSCubsxoknmMKzWPx9heB7NenPbcLzmQfxbEmylc9N+GPxtkXDLADCKp/UFZqOtcNVPm8jT/0EEUYuV0pXc8T3JolM2uO2YnTo4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709120982; c=relaxed/simple;
-	bh=WcnAPi+LGdvS0TdAGH0xsFUzCm5KImEKZ7D6nZzkh0g=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=IyrWcLgCABi/0p7jh8/J07xEMYNcOe1FOsG+4n5uSINXj1Md9g4VM/Ykkm2Cw6fbufWjp0ev3V79dxoAobY7n1GKpkBlF9NF1YrYWZwXcs55lDRhn754aTCkAWFYpQvq/BcFGDvb+kY3rv0cK//M7MrzmrVYiL4KnO/YOU9OzeQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TlCLx3JtRz4f3lgR;
-	Wed, 28 Feb 2024 19:49:29 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id C59021A0232;
-	Wed, 28 Feb 2024 19:49:36 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgAn9g7IHd9l+eamFQ--.6969S15;
-	Wed, 28 Feb 2024 19:49:36 +0800 (CST)
-From: Yu Kuai <yukuai1@huaweicloud.com>
-To: xni@redhat.com,
-	paul.e.luse@linux.intel.com,
-	song@kernel.org,
-	shli@fb.com,
-	neilb@suse.com
-Cc: linux-raid@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	yukuai3@huawei.com,
-	yukuai1@huaweicloud.com,
-	yi.zhang@huawei.com,
-	yangerkun@huawei.com
-Subject: [PATCH md-6.9 v3 11/11] md/raid1: factor out helpers to choose the best rdev from read_balance()
-Date: Wed, 28 Feb 2024 19:43:33 +0800
-Message-Id: <20240228114333.527222-12-yukuai1@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240228114333.527222-1-yukuai1@huaweicloud.com>
-References: <20240228114333.527222-1-yukuai1@huaweicloud.com>
+	s=arc-20240116; t=1709120692; c=relaxed/simple;
+	bh=3AozR5vgcT0JuDCW27IfqykajrZ2bfd3pQdSiw0Cft0=;
+	h=Content-Type:From:Mime-Version:Subject:Date:Message-Id:References:
+	 Cc:In-Reply-To:To; b=HqGGNociqi0ULjEPVTGWss9KAkd27Xn/tRJv7ZqO40UUmnl25w99xTcHuNz/vKX0mjK5ZptHWe6mvfkhLIB6mKSnkNgZ68sPAgvUD11iNEB5SbfdcyoNVnPEZ1HN/uyt9Z1xEJCl9LapkGmzM4OKHKpAbfFww+Tv/BJ5R5gXedI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=ihaywTNP; arc=none smtp.client-ip=220.197.31.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=Content-Type:From:Mime-Version:Subject:Date:
+	Message-Id; bh=VjKq+Ukh+01sMWuWGiG/7cL5r/H18SiycHisweLwLc0=; b=i
+	haywTNP69rn3XOAbgkkn4MpG3so8jeJ84NicGK7s6SkIOZ5avx0VU7w3ZPxBOoYK
+	N1ucBRewjCVM8JpPVIpbuFIW67X73g4pmi8mJII9HUwjPAETy7XtszC76IwFii1l
+	QVycJoxyyquPaUWh9votg5n83CX/c+MW0xVp6gBBV4=
+Received: from smtpclient.apple (unknown [223.148.13.239])
+	by gzga-smtp-mta-g2-0 (Coremail) with SMTP id _____wBH4FmAHN9lO6xBBA--.7297S2;
+	Wed, 28 Feb 2024 19:44:01 +0800 (CST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From: Hao Ge <gehao618@163.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgAn9g7IHd9l+eamFQ--.6969S15
-X-Coremail-Antispam: 1UD129KBjvJXoW3JrWrWw15Wr1UAFyfAryxXwb_yoW3Zw1Upw
-	45GFn2yrWUZryruwn5tr4UWrWS934fJa18GrWkG34S93sagrZ0qFnrKryY9FyDGFs3Cw12
-	qw15Gr47C3Z7GFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPI14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-	z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-	4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
-	3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-	IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
-	M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2
-	kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
-	14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIx
-	kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxVAF
-	wI0_Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr
-	0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUQ
-	SdkUUUUU=
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH] mm/vmstat: Add order's information for extfrag_index and unusable_index
+Date: Wed, 28 Feb 2024 19:43:49 +0800
+Message-Id: <8805D07B-9F33-42DE-985B-83E0E5C056AC@163.com>
+References: <20240228113332.358801-1-gehao@kylinos.cn>
+Cc: akpm@linux-foundation.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240228113332.358801-1-gehao@kylinos.cn>
+To: Hao Ge <gehao@kylinos.cn>
+X-Mailer: iPhone Mail (21D61)
+X-CM-TRANSID:_____wBH4FmAHN9lO6xBBA--.7297S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxAF18WFyDCr1UXw17ZryUtrb_yoW5ur13p3
+	yYyF48tws5JFy7C3yxJF48Zw1aq3Z3JFykXF98XayrCw15Ar40yr17K34jvF4DK3ykG3y3
+	tF4Ivr1DK3Wvq3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zRbzVbUUUUU=
+X-CM-SenderInfo: 5jhkt0qwryqiywtou0bp/xtbBdQOSFmVOA2v+EAABse
 
-From: Yu Kuai <yukuai3@huawei.com>
+Please ignore this patch because I forgot to use checkpatch.pl to check for f=
+ormatting issues. I will fix it and resend a new one,Sorry to bother you.
 
-The way that best rdev is chosen:
-
-1) If the read is sequential from one rdev:
- - if rdev is rotational, use this rdev;
- - if rdev is non-rotational, use this rdev until total read length
-   exceed disk opt io size;
-
-2) If the read is not sequential:
- - if there is idle disk, use it, otherwise:
- - if the array has non-rotational disk, choose the rdev with minimal
-   inflight IO;
- - if all the underlaying disks are rotational disk, choose the rdev
-   with closest IO;
-
-There are no functional changes, just to make code cleaner and prepare
-for following refactor.
-
-Co-developed-by: Paul Luse <paul.e.luse@linux.intel.com>
-Signed-off-by: Paul Luse <paul.e.luse@linux.intel.com>
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-Reviewed-by: Xiao Ni <xni@redhat.com>
----
- drivers/md/raid1.c | 175 +++++++++++++++++++++++++--------------------
- 1 file changed, 98 insertions(+), 77 deletions(-)
-
-diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
-index 526f0d977040..c00f2aefbc56 100644
---- a/drivers/md/raid1.c
-+++ b/drivers/md/raid1.c
-@@ -730,74 +730,71 @@ static bool should_choose_next(struct r1conf *conf, int disk)
- 	       mirror->next_seq_sect - opt_iosize >= mirror->seq_start;
- }
- 
--/*
-- * This routine returns the disk from which the requested read should
-- * be done. There is a per-array 'next expected sequential IO' sector
-- * number - if this matches on the next IO then we use the last disk.
-- * There is also a per-disk 'last know head position' sector that is
-- * maintained from IRQ contexts, both the normal and the resync IO
-- * completion handlers update this position correctly. If there is no
-- * perfect sequential match then we pick the disk whose head is closest.
-- *
-- * If there are 2 mirrors in the same 2 devices, performance degrades
-- * because position is mirror, not device based.
-- *
-- * The rdev for the device selected will have nr_pending incremented.
-- */
--static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sectors)
-+static bool rdev_readable(struct md_rdev *rdev, struct r1bio *r1_bio)
- {
--	const sector_t this_sector = r1_bio->sector;
--	int sectors;
--	int best_good_sectors;
--	int best_disk, best_dist_disk, best_pending_disk, sequential_disk;
--	int disk;
--	sector_t best_dist;
--	unsigned int min_pending;
--	struct md_rdev *rdev;
-+	if (!rdev || test_bit(Faulty, &rdev->flags))
-+		return false;
- 
-- retry:
--	sectors = r1_bio->sectors;
--	best_disk = -1;
--	best_dist_disk = -1;
--	sequential_disk = -1;
--	best_dist = MaxSector;
--	best_pending_disk = -1;
--	min_pending = UINT_MAX;
--	best_good_sectors = 0;
--	clear_bit(R1BIO_FailFast, &r1_bio->state);
-+	/* still in recovery */
-+	if (!test_bit(In_sync, &rdev->flags) &&
-+	    rdev->recovery_offset < r1_bio->sector + r1_bio->sectors)
-+		return false;
- 
--	if (raid1_should_read_first(conf->mddev, this_sector, sectors))
--		return choose_first_rdev(conf, r1_bio, max_sectors);
-+	/* don't read from slow disk unless have to */
-+	if (test_bit(WriteMostly, &rdev->flags))
-+		return false;
-+
-+	/* don't split IO for bad blocks unless have to */
-+	if (rdev_has_badblock(rdev, r1_bio->sector, r1_bio->sectors))
-+		return false;
-+
-+	return true;
-+}
-+
-+struct read_balance_ctl {
-+	sector_t closest_dist;
-+	int closest_dist_disk;
-+	int min_pending;
-+	int min_pending_disk;
-+	int sequential_disk;
-+	int readable_disks;
-+};
-+
-+static int choose_best_rdev(struct r1conf *conf, struct r1bio *r1_bio)
-+{
-+	int disk;
-+	struct read_balance_ctl ctl = {
-+		.closest_dist_disk      = -1,
-+		.closest_dist           = MaxSector,
-+		.min_pending_disk       = -1,
-+		.min_pending            = UINT_MAX,
-+		.sequential_disk	= -1,
-+	};
- 
- 	for (disk = 0 ; disk < conf->raid_disks * 2 ; disk++) {
-+		struct md_rdev *rdev;
- 		sector_t dist;
- 		unsigned int pending;
- 
--		rdev = conf->mirrors[disk].rdev;
--		if (r1_bio->bios[disk] == IO_BLOCKED
--		    || rdev == NULL
--		    || test_bit(Faulty, &rdev->flags))
--			continue;
--		if (!test_bit(In_sync, &rdev->flags) &&
--		    rdev->recovery_offset < this_sector + sectors)
--			continue;
--		if (test_bit(WriteMostly, &rdev->flags))
-+		if (r1_bio->bios[disk] == IO_BLOCKED)
- 			continue;
--		if (rdev_has_badblock(rdev, this_sector, sectors))
-+
-+		rdev = conf->mirrors[disk].rdev;
-+		if (!rdev_readable(rdev, r1_bio))
- 			continue;
- 
--		if (best_disk >= 0)
--			/* At least two disks to choose from so failfast is OK */
-+		/* At least two disks to choose from so failfast is OK */
-+		if (ctl.readable_disks++ == 1)
- 			set_bit(R1BIO_FailFast, &r1_bio->state);
- 
- 		pending = atomic_read(&rdev->nr_pending);
--		dist = abs(this_sector - conf->mirrors[disk].head_position);
-+		dist = abs(r1_bio->sector - conf->mirrors[disk].head_position);
-+
- 		/* Don't change to another disk for sequential reads */
- 		if (is_sequential(conf, disk, r1_bio)) {
--			if (!should_choose_next(conf, disk)) {
--				best_disk = disk;
--				break;
--			}
-+			if (!should_choose_next(conf, disk))
-+				return disk;
-+
- 			/*
- 			 * Add 'pending' to avoid choosing this disk if
- 			 * there is other idle disk.
-@@ -807,17 +804,17 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
- 			 * If there is no other idle disk, this disk
- 			 * will be chosen.
- 			 */
--			sequential_disk = disk;
-+			ctl.sequential_disk = disk;
- 		}
- 
--		if (min_pending > pending) {
--			min_pending = pending;
--			best_pending_disk = disk;
-+		if (ctl.min_pending > pending) {
-+			ctl.min_pending = pending;
-+			ctl.min_pending_disk = disk;
- 		}
- 
--		if (dist < best_dist) {
--			best_dist = dist;
--			best_dist_disk = disk;
-+		if (ctl.closest_dist > dist) {
-+			ctl.closest_dist = dist;
-+			ctl.closest_dist_disk = disk;
- 		}
- 	}
- 
-@@ -825,8 +822,8 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
- 	 * sequential IO size exceeds optimal iosize, however, there is no other
- 	 * idle disk, so choose the sequential disk.
- 	 */
--	if (best_disk == -1 && min_pending != 0)
--		best_disk = sequential_disk;
-+	if (ctl.sequential_disk != -1 && ctl.min_pending != 0)
-+		return ctl.sequential_disk;
- 
- 	/*
- 	 * If all disks are rotational, choose the closest disk. If any disk is
-@@ -834,25 +831,49 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
- 	 * disk is rotational, which might/might not be optimal for raids with
- 	 * mixed ratation/non-rotational disks depending on workload.
- 	 */
--	if (best_disk == -1) {
--		if (READ_ONCE(conf->nonrot_disks) || min_pending == 0)
--			best_disk = best_pending_disk;
--		else
--			best_disk = best_dist_disk;
--	}
-+	if (ctl.min_pending_disk != -1 &&
-+	    (READ_ONCE(conf->nonrot_disks) || ctl.min_pending == 0))
-+		return ctl.min_pending_disk;
-+	else
-+		return ctl.closest_dist_disk;
-+}
- 
--	if (best_disk >= 0) {
--		rdev = conf->mirrors[best_disk].rdev;
--		if (!rdev)
--			goto retry;
-+/*
-+ * This routine returns the disk from which the requested read should be done.
-+ *
-+ * 1) If resync is in progress, find the first usable disk and use it even if it
-+ * has some bad blocks.
-+ *
-+ * 2) Now that there is no resync, loop through all disks and skipping slow
-+ * disks and disks with bad blocks for now. Only pay attention to key disk
-+ * choice.
-+ *
-+ * 3) If we've made it this far, now look for disks with bad blocks and choose
-+ * the one with most number of sectors.
-+ *
-+ * 4) If we are all the way at the end, we have no choice but to use a disk even
-+ * if it is write mostly.
-+ *
-+ * The rdev for the device selected will have nr_pending incremented.
-+ */
-+static int read_balance(struct r1conf *conf, struct r1bio *r1_bio,
-+			int *max_sectors)
-+{
-+	int disk;
- 
--		sectors = best_good_sectors;
--		update_read_sectors(conf, disk, this_sector, sectors);
--	}
--	*max_sectors = sectors;
-+	clear_bit(R1BIO_FailFast, &r1_bio->state);
-+
-+	if (raid1_should_read_first(conf->mddev, r1_bio->sector,
-+				    r1_bio->sectors))
-+		return choose_first_rdev(conf, r1_bio, max_sectors);
- 
--	if (best_disk >= 0)
--		return best_disk;
-+	disk = choose_best_rdev(conf, r1_bio);
-+	if (disk >= 0) {
-+		*max_sectors = r1_bio->sectors;
-+		update_read_sectors(conf, disk, r1_bio->sector,
-+				    r1_bio->sectors);
-+		return disk;
-+	}
- 
- 	/*
- 	 * If we are here it means we didn't find a perfectly good disk so
--- 
-2.39.2
+> On Feb 28, 2024, at 19:33, Hao Ge <gehao@kylinos.cn> wrote:
+>=20
+> =EF=BB=BFCurrent cat /sys/kernel/debug/extfrag/extfrag_index and
+> /sys/kernel/debug/extfrag/unusable_index is not friendly to userspace.
+>=20
+> We should add order's information so that users can clearly understand
+> the situation of each order at a glance like pagetypeinfo.
+>=20
+> befor:
+> cat /sys/kernel/debug/extfrag/extfrag_index:
+> Node 0, zone    DMA32 -1.000 -1.000 -1.000 -1.000 -1.000 -1.000 ...
+> Node 0, zone   Normal -1.000 -1.000 -1.000 -1.000 -1.000 -1.000 ...
+>=20
+> cat /sys/kernel/debug/extfrag/unusable_index:
+> Node 0, zone    DMA32 0.000 0.000 0.000 0.000 0.001 0.003 0.007 ...
+> Node 0, zone   Normal 0.000 0.053 0.106 0.159 0.205 0.244 0.265 ...
+>=20
+> after:
+> cat /sys/kernel/debug/extfrag/extfrag_index:
+> Extfrag index at order:      0      1      2      3      4      5 ...
+> Node 0, zone        DMA -1.000 -1.000 -1.000 -1.000 -1.000 -1.000 ...
+> Node 0, zone     Normal -1.000 -1.000 -1.000 -1.000 -1.000 -1.000 ...
+>=20
+> cat /sys/kernel/debug/extfrag/unusable_index:
+> Unusable index at order:     0     1     2     3     4     5 ...
+> Node 0, zone         DMA 0.000 0.030 0.059 0.085 0.096 0.102 ...
+> Node 0, zone      Normal 0.000 0.225 0.427 0.569 0.776 0.827 ...
+>=20
+> Signed-off-by: Hao Ge <gehao@kylinos.cn>
+> ---
+> mm/vmstat.c | 18 ++++++++++++++++--
+> 1 file changed, 16 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/mm/vmstat.c b/mm/vmstat.c
+> index db79935e4a54..f604d91e904c 100644
+> --- a/mm/vmstat.c
+> +++ b/mm/vmstat.c
+> @@ -2178,7 +2178,7 @@ static void unusable_show_print(struct seq_file *m,
+>    int index;
+>    struct contig_page_info info;
+>=20
+> -    seq_printf(m, "Node %d, zone %8s ",
+> +    seq_printf(m, "Node %d, zone %11s ",
+>                pgdat->node_id,
+>                zone->name);
+>    for (order =3D 0; order < NR_PAGE_ORDERS; ++order) {
+> @@ -2201,12 +2201,19 @@ static void unusable_show_print(struct seq_file *m=
+,
+>  */
+> static int unusable_show(struct seq_file *m, void *arg)
+> {
+> +    int order;
+>    pg_data_t *pgdat =3D (pg_data_t *)arg;
+>=20
+>    /* check memoryless node */
+>    if (!node_state(pgdat->node_id, N_MEMORY))
+>        return 0;
+>=20
+> +    /* Print header */
+> +        seq_printf(m, "%s ", "Unusable index at order:");
+> +        for (order =3D 0; order < NR_PAGE_ORDERS; ++order)
+> +                seq_printf(m, "%5d ", order);
+> +        seq_putc(m, '\n');
+> +
+>    walk_zones_in_node(m, pgdat, true, false, unusable_show_print);
+>=20
+>    return 0;
+> @@ -2230,7 +2237,7 @@ static void extfrag_show_print(struct seq_file *m,
+>    /* Alloc on stack as interrupts are disabled for zone walk */
+>    struct contig_page_info info;
+>=20
+> -    seq_printf(m, "Node %d, zone %8s ",
+> +    seq_printf(m, "Node %d, zone %10s ",
+>                pgdat->node_id,
+>                zone->name);
+>    for (order =3D 0; order < NR_PAGE_ORDERS; ++order) {
+> @@ -2247,8 +2254,15 @@ static void extfrag_show_print(struct seq_file *m,
+>  */
+> static int extfrag_show(struct seq_file *m, void *arg)
+> {
+> +    int order;
+>    pg_data_t *pgdat =3D (pg_data_t *)arg;
+>=20
+> +    /* Print header */
+> +    seq_printf(m, "%s ", "Extfrag index at order:");
+> +    for (order =3D 0; order < NR_PAGE_ORDERS; ++order)
+> +        seq_printf(m, "%6d ", order);
+> +    seq_putc(m, '\n');
+> +
+>    walk_zones_in_node(m, pgdat, true, false, extfrag_show_print);
+>=20
+>    return 0;
+> --=20
+> 2.25.1
 
 
