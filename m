@@ -1,347 +1,333 @@
-Return-Path: <linux-kernel+bounces-85357-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85358-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3D7E86B4B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:23:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C88B86B4B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:24:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA8F328A004
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:23:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E5161C222F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:24:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7919C6EF0B;
-	Wed, 28 Feb 2024 16:23:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C6D76EEEC;
+	Wed, 28 Feb 2024 16:23:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BI8l3DOs"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="orDniIoc"
+Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02on2082.outbound.protection.outlook.com [40.107.247.82])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB8456EF00;
-	Wed, 28 Feb 2024 16:23:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709137422; cv=none; b=DOEpK28npcpLzVOcBO9kUqBf6sYcHxuZsMggFI3PLa1/jLEHDkTpL3ZhyO1B7BE6ogejmtbKzsgl4mH6TWfcGMum77wfXwiLJ28RTiMEZ8DSyqkEJqgLQa8D9mA8a2n/URo4Ogfdc26q5v+vtiLebzcGw6FbDzd5lzzo+tE4ijo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709137422; c=relaxed/simple;
-	bh=I+SyE4CU6A7PIpz7/UkE5GuyQ0cPlhCjBT+6s7mK1bY=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rK/RC4q2/7i6g54x+rAewBR3WGlYcj2aNcMpdLO+6A7u+xYQfC1aLO9BDQac322Ti/Yzu7IuwcLIE0Oilglqz4FHz+Gw5sC4tYiY8Fc9pIPP42ZHLOKhT4h1rQz7ENXtRXzDS8JH1JuPkcgBq0fGEQYO5k3XmcL95j/OTkZgzDA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BI8l3DOs; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55a8fd60af0so7941058a12.1;
-        Wed, 28 Feb 2024 08:23:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709137418; x=1709742218; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=4WI2cHpZvkH+gwexC3pLa1GObaZXrIV7psuo7LfYA9k=;
-        b=BI8l3DOsTRYtY22BcT/SXP6R4d9LBOf8vRWbiDZMK3Qwj7fjPqFWWxWfg6/MY4O8m6
-         Lw9Gxum5HGaH4+qcvQHAbTirAKwV4P5mDceRU7MZPAyDJEiZ18JdTMoX9AkTWrZKm6tE
-         weXT77J3jGbVfOMCaK/XlsVB6NRHowO2+5PVdWitFE3HoAwoqyPoW6n9Wp74umoNkDhi
-         jcCPZkQvPkGoyARsINcwR2ULvic7Z1Dbb1DAvEgtPky4t0A+NERchpplVbcZqcjIsN5R
-         78P1Ue0JLxOqYayOzqfRCGTvgWbcizX4vr1R889sPTyTM9d3TIBIKrrT6V4AXp0gSfQv
-         6+tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709137418; x=1709742218;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4WI2cHpZvkH+gwexC3pLa1GObaZXrIV7psuo7LfYA9k=;
-        b=GVl5asS0fsCfTOT0dGS/6adKAbdPwS0h7v6oXn7thGpcXq3rdRBy3sqHipMy82onWm
-         UwnTy9RzhAqe+R/wHpOlR52q1wzRb3GekdyiJOMagi5/c/TiBixAzRbgXBV2Vy0IJaiU
-         TzgheggmmHlrTYi4io6nEk6NeE6ZD9lR3dZUm7+FysQ8HOSMhBGVrKeyIFPadnbKGvYn
-         HtOiTBIv367sAGL8VeT366GqZLciTEQ2gjTtDc58KyJsd2KkvkI4kcDgXJnixfBlLfdT
-         jQpGJgylMvc+Kq8n1qopce8R5EK8roYgyR4YOZZBGuLp/ub1gJAZMN3cHy95x4y4gQgX
-         WCww==
-X-Forwarded-Encrypted: i=1; AJvYcCWVBqbPs8wVlZo+L2tYVM766ERuGI42YhUswp51LkcHIAOMiXPsdsmE4nS3ehs8aAD+bwBhljHidMQib302lMWdaD4EfXR0/6+dbTpIxBKdBb1q5G+xyFc929GqAe9dwwwBA2udUr90pXd8A/SCtNnxW0OlzDjnDniH25k6Ts40vSKkLsi3wbr/p4AS91a6VRENni3Q5cX4u474w8rQdPv4wX9OyZ6z7NRM2xNX
-X-Gm-Message-State: AOJu0Yz2+i/YQl8SBSBmwBVijVFwELYJ0Z8KIQPUE0P0gCA63SL8PiYs
-	WaomJ6hSqpG3UZ6qrB5yQJICsh+NOBVVpRqyNev95xn+mQGYjTJb37dDdolf
-X-Google-Smtp-Source: AGHT+IGoxvDSGHxp4le7rPS6WHhdpKno1hOWM02YP/6S4v0Xs2xhWMEUy+OEfagbuc6PsujyWMll1Q==
-X-Received: by 2002:a05:6402:3456:b0:565:7116:d533 with SMTP id l22-20020a056402345600b005657116d533mr9512238edc.6.1709137417592;
-        Wed, 28 Feb 2024 08:23:37 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id p2-20020a50c942000000b005657eefa8e9sm1918592edh.4.2024.02.28.08.23.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 08:23:37 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 28 Feb 2024 17:23:34 +0100
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2 0/7] tracing/probes: Support function parameter access
- from return probe
-Message-ID: <Zd9eBn2FTQzYyg7L@krava>
-References: <170891987362.609861.6767830614537418260.stgit@devnote2>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C1436EF05;
+	Wed, 28 Feb 2024 16:23:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.247.82
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709137437; cv=fail; b=XDgeznTRcgbNKrwLeQYEIrO4C+DJGdSC9NQpf0ZltBNG036MguocfC7r3uOp2JJCl0Gml1vYBQyHOe4r0B33+INbQR+9ci0A+FnDjSTVlF8gac7QdEarM3wyNN7TSVGfwsOI7S7KYW8oIXRsPwY5yJg24VLkxncZYTRtecYciiY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709137437; c=relaxed/simple;
+	bh=0GqMBITTH4zuqUOMxYCrZUHWh7zjAnA4tli4MBfa7XY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=Na4zjkdGEDZabfRwpjDuW/X4sZdRv9aWic7GB2EYn65foV7TzZy3f4Hj/xHOA6NVjQQNZ0I9A3Rtf5fwm60tcpVmADzdnLfBnGGl9Jbu0UT0Nb1Pna2jLjTvEdVHewgzn5xe3ikx9IQcaMMJquMhu8KdVrT7wzjjhuo8MdhtdDY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=orDniIoc; arc=fail smtp.client-ip=40.107.247.82
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cnDJSY0UQ7a3HzzHTtxV+sNtoj9WLqQG7+e5RhB7XRxrFXtyU1Zt4h5rvr29DukWNnkdbjZDYVf7VnxFGbVazqYZ8kBl4r3rAJe+JZfuYMvI57sTi/oG6rPJcUNOBf4q4lOF8i6tPh8LxvZGhqyBFrMCSkSs4gQAy60AdLcD4tZYIGTBnrozlsfgf6PQPdOuFsfoObPKn4wQPDiQgLs4GXNLindqqYCK9gn92tpQ8fI9zo/E3lBuVBAtuFobXs8C9ypQ0YYIig23hq/FlfcHCGzaMZVg9NVQ0itUrWoE3ZKnH+D2/GCr7CskXEZ7xBQKYO///GVXY4rCKhK5x/dMMQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/+qInIB242KlBBE2mJLLkCiZuMQ3chf+GExhzT//T/g=;
+ b=XB2vwfPNpST36Pe/7HwfKq6/JzxUA+vl/STkS6X9t0E/gZcA2bE1zTnVbhX6brQ/FqiulRfJlvR9UoXuSmfXSsovSZyiSwPq9NuYur3M9IGxmeVHA9083GxRlhflrrgP3TsRSJTu2Jmu6bVycL6aEfZpWnRkyfgjgmER4OGGCX6sUHmdduY150T0xp0JKx3tlYpoVNOVwNt8PxTfIz5SaosZKwVv2JSVhoOQGB0bnti4hQzM6pqzBcdD98pPVY5/wXQSZ8JLnh1VKAmbxxOsTFB9njmKO8CIKRNzEX5y8LOWSnZwclxAzCOs3KmdTBLgThY7IQHWEM4XCYPsPc4+Uw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/+qInIB242KlBBE2mJLLkCiZuMQ3chf+GExhzT//T/g=;
+ b=orDniIocdrI9P3JM4o6uKP/dOig0yFjfNs+DzgDP5oNofvYGknaU0d3ggJ2nKCTaaBYV8Z7wwHwo6lyI4dYHmc9hzeP996smRGpq61B2Q6Id9lbQQzKfgdP+u1F1i38KGH7tK8hH1Ob+XfkHXzvZ32SCmKyVw6aK7PR43gxzFqQ=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by AM7PR04MB7174.eurprd04.prod.outlook.com (2603:10a6:20b:11a::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.41; Wed, 28 Feb
+ 2024 16:23:52 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::9af4:87e:d74:94aa]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::9af4:87e:d74:94aa%7]) with mapi id 15.20.7316.035; Wed, 28 Feb 2024
+ 16:23:52 +0000
+Date: Wed, 28 Feb 2024 11:23:42 -0500
+From: Frank Li <Frank.li@nxp.com>
+To: Rob Herring <robh@kernel.org>
+Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Serge Semin <fancer.lancer@gmail.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, imx@lists.linux.dev,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 5/6] dt-bindings: PCI: dwc: Add 'msg' register region
+Message-ID: <Zd9eDgxx5BiFWYD8@lizhi-Precision-Tower-5810>
+References: <20240202-pme_msg-v3-5-ff2af57a02ad@nxp.com>
+ <eg7wrjp5ebz43g37fvebr44nwkoh4rptbtyu76nalbmgbbnqke@4zugpgwesyqd>
+ <20240205183048.GA3818249-robh@kernel.org>
+ <ZcEzYdZKotBJlR5i@lizhi-Precision-Tower-5810>
+ <ZcK2/tmLG9O7CBEH@lizhi-Precision-Tower-5810>
+ <luk5hswq4wnk5p7axml73qih35hio3y3pfnklctbn6rwres62s@mumnvygjh5ch>
+ <ZcOpehO3rzCfAwXf@lizhi-Precision-Tower-5810>
+ <gl7zmzkezr6k4txrrgqyikspfah3vmgwwz2e3j5kwb2iarpkxv@3ofwrhtxl2sz>
+ <20240214061412.GB4618@thinkpad>
+ <20240228160346.GA4069607-robh@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240228160346.GA4069607-robh@kernel.org>
+X-ClientProxiedBy: SJ0PR03CA0177.namprd03.prod.outlook.com
+ (2603:10b6:a03:338::32) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <170891987362.609861.6767830614537418260.stgit@devnote2>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|AM7PR04MB7174:EE_
+X-MS-Office365-Filtering-Correlation-Id: a179b4c5-ec15-45d8-26b3-08dc3879a6bc
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	XbUouxvU6qZS+2lZ5TXmgv2MFMFEw59zUWG8dw+dGDB70MQucn44pr2MofM1nJbEnG0+N40qqlddAHAUnddPDcRy+m2LJjwbz5lEMiRtoMFQAP4mB2WMYVX+Nxbt5eVo3Hn8nnktDvad4Ile7l6dsGxoNloOPPwnBdrLOxdSw0eGHIHob77sgIbBumITyzPRVg6pWisGN+/R100m40nkW39t0s+Snhyw5hPo2zayblKEm7HZnWnLzCrMT5U9YTNcNCnLTNjU4vJ1A2llStqtNRvNGsK+VvlcYqdGeRftHQ0+g1D9IOemt+x6F93OQDzyGqvKFhheIoIo+u314K/YMTZqu9COJn1tWG/ntxBTpxz7W7pBCB0mGjkp2OuMcamnQqYbzTDebPKHMZIDzqg67/9Lok9aI6OhqxDFAKs7j9sxcr9Rt0NiWVKWb0fDLYL5csqAOB+mCrNXWBo7sSDYhIz+yKIgncBMYh4g+H8WkEo/UA26M2vM129+tM/d8GFj2I33ubKyQn1UWfiYhJ4NoUFU7VTFRVV2YL8A1oAffUA/LysicYOJkjNv0due7eNqhaJNwQhIGWZuoe/zmTy8TuXbkjM7ZFJOcK396DdfB0lI2byJHwgsQHjeccA+Q2xU/Z9pbYsKY4qcETH+Eoz/7EFESp8Z6mI9E8546GHRAQsxpXaACL6vPv6H0i/iZX+ZHI91MTFAlVA0FXXWzgdYUA==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?xnJ14ZMZPreJfXVRfInqGwtUuOKgLrC0wXgctfXbI7QwH9rR8MF+iWfekDH3?=
+ =?us-ascii?Q?c97hT+fO7PxgKX08H4UkQ29qThGCo4VarJk6eF6zvDc0nBtmmSF8cE8g3ULu?=
+ =?us-ascii?Q?5umf+9JkdEESTi50YLEQtKk73CeAtKBo/OygkWxlz8h0nIHSPeUwulAgOBWC?=
+ =?us-ascii?Q?GIkz2GXt7UONvuT2j5dNFNRP9FoXZ3fauaX4ENdmIDoj74yslU8RB/Lscnab?=
+ =?us-ascii?Q?Qn722vmlhLRPZj8INv9f+MjFZqRdAqEFWXNu/LFQEkZ07D5T7KfUXKHp4ege?=
+ =?us-ascii?Q?5qLpAwQ0VsQSJeKsvCWKGfutGTgyJ33My1ZBuMMtebbVdU8B0PJUXCiBr/CN?=
+ =?us-ascii?Q?ir+Lfds2/rgIFBqOqXLefkBs62z0dVKyvZr+RE5G0G5sQIGirsrOzMrY4PN8?=
+ =?us-ascii?Q?9O77jzpT5+z+yK6HX1goJQ4ZQefalGTOrN8AQN/jniKSKomIOBc//VK1XauX?=
+ =?us-ascii?Q?W2hHYlbP+g5vDuVg8Jpl1Q5asQTpIepDbjHG/sxFSnz+FibYEAaz/T6hOQtr?=
+ =?us-ascii?Q?MbG4y65sqxCKQYhMULLZfb24MGqi+nJ+sfGgJrMLKQEWahb9Mlo6QUoBqbeS?=
+ =?us-ascii?Q?VXJq++7cs28titZ9C/6jskZ8dAARz5YKrgeGLnkP2eUedcJolRChm7jJ1iAs?=
+ =?us-ascii?Q?7Ev2FppjG7D4HN4Xuy3Xgd6FlQaD8qFt/GT6AvN7sfTq4sfifZrIoF6rys8P?=
+ =?us-ascii?Q?GnmVDwXV4bHJA60UsTtl+6CRf2j94+GPoXeCf5KCBMbwAdBsmq6U74g6fvlD?=
+ =?us-ascii?Q?qnAP9DahNxi7EdopiFvgl4f3hZXpD2Al7SDjeHFIqB5+HDeTV/RZpy9smfYt?=
+ =?us-ascii?Q?TSzAe5sw3ZcXTB7IrDFiYiqGyTVXMJWd0XaHbbJkEdWgI+64ZitVuUfE2+PQ?=
+ =?us-ascii?Q?G/9frn5ah96/Gg3oNBOB3IF7opTBWrmG8ofQ0mA6htAZFgBhw247td7u5Xg/?=
+ =?us-ascii?Q?JoXShe4HnM8oDzAudvmbkgg8E/ls3PFrQ7/04pP2Z8ZhYEcZBdqXXmPt4Av0?=
+ =?us-ascii?Q?/ORXdXFpPaAHepGuGlo8r938bN/WmBZlLZflOGygN9FLrwEN43XezDroCptn?=
+ =?us-ascii?Q?YMpjLGSp0craSq/9/kXsp/Fib4S1x1a9rtrwg5StGheI1S2/FVJQ4aQZEflY?=
+ =?us-ascii?Q?PGl6aSAeq73+6SAv2sJOxgGkr0ymwU4wxk/Kev7/bwkUZeP6E9xhPIe+5o1l?=
+ =?us-ascii?Q?MIlDzHKaas5dMCT4VzI8jiZx7D3lSv2B2ZmTVm4+39tMWwR/2lqBf44/8sUM?=
+ =?us-ascii?Q?GBWCiAxP/Kyewlt8Y9xS+TRk9cO160SvUnJLFfVtoTNUiD0MVfxJoglUljw5?=
+ =?us-ascii?Q?ux2WGXntVQIvo/sDsaOi8Eco+hg0r8nl2IcZDVYGXfqcZawLdl8ZPTqMgwim?=
+ =?us-ascii?Q?TojPhVBNL4KJYIVzrc59A1glwKCxWxGO5ROebF0XRD3qzodpt4eZRJsprG2e?=
+ =?us-ascii?Q?g8PfqazMPI4sA4csYyNgcEOUjdE3PHKFgBiSiLyik0/sK6PA1Li5a0O/myIJ?=
+ =?us-ascii?Q?oz/PNNIiV112WeXjxCjPTHRBs8AuVC4VtRcaXtyNOns45zK8rc3G8nhmPa7r?=
+ =?us-ascii?Q?h7G5NYATYlOsVkg6RAc=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a179b4c5-ec15-45d8-26b3-08dc3879a6bc
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Feb 2024 16:23:52.1893
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: D22CQaLpO0xEbkWYeAcBxVzGL6Le3n5+evRgI2Ds9FvwrwkD/oWfWcXESnCnNyVYRycX7mubUha5voDZZY7NQg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR04MB7174
 
-On Mon, Feb 26, 2024 at 12:57:53PM +0900, Masami Hiramatsu (Google) wrote:
-> Hi,
+On Wed, Feb 28, 2024 at 10:03:46AM -0600, Rob Herring wrote:
+> On Wed, Feb 14, 2024 at 11:44:12AM +0530, Manivannan Sadhasivam wrote:
+> > On Fri, Feb 09, 2024 at 12:52:52PM +0300, Serge Semin wrote:
+> > > On Wed, Feb 07, 2024 at 11:02:02AM -0500, Frank Li wrote:
+> > > > On Wed, Feb 07, 2024 at 03:37:30PM +0300, Serge Semin wrote:
+> > > > > On Tue, Feb 06, 2024 at 05:47:26PM -0500, Frank Li wrote:
+> > > > > > On Mon, Feb 05, 2024 at 02:13:37PM -0500, Frank Li wrote:
+> > > > > > > On Mon, Feb 05, 2024 at 06:30:48PM +0000, Rob Herring wrote:
+> > > > > > > > On Sat, Feb 03, 2024 at 01:44:31AM +0300, Serge Semin wrote:
+> > > > > > > > > On Fri, Feb 02, 2024 at 10:11:27AM -0500, Frank Li wrote:
+> > > > > > > > > > Add an outbound iATU-capable memory-region which will be used to send PCIe
+> > > > > > > > > > message (such as PME_Turn_Off) to peripheral. So all platforms can use
+> > > > > > > > > > common method to send out PME_Turn_Off message by using one outbound iATU.
+> > > > > > > > > > 
+> > > > > > > > > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > > > > > > > > > ---
+> > > > > > > > > >  Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml | 4 ++++
+> > > > > > > > > >  1 file changed, 4 insertions(+)
+> > > > > > > > > > 
+> > > > > > > > > > diff --git a/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml b/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml
+> > > > > > > > > > index 022055edbf9e6..25a5420a9ce1e 100644
+> > > > > > > > > > --- a/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml
+> > > > > > > > > > +++ b/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml
+> > > > > > > > > > @@ -101,6 +101,10 @@ properties:
+> > > > > > > > > 
+> > > > > > > > > >              Outbound iATU-capable memory-region which will be used to access
+> > > > > > > > > >              the peripheral PCIe devices configuration space.
+> > > > > > > > > >            const: config
+> > > > > > > > > > +        - description:
+> > > > > > > > > > +            Outbound iATU-capable memory-region which will be used to send
+> > > > > > > > > > +            PCIe message (such as PME_Turn_Off) to peripheral.
+> > > > > > > > > > +          const: msg
+> > > > > > > > > 
+> > > > > > > > > Note there is a good chance Rob won't like this change. AFAIR he
+> > > > > > > > > already expressed a concern regarding having the "config" reg-name
+> > > > > > > > > describing a memory space within the outbound iATU memory which is
+> > > > > > > > > normally defined by the "ranges" property. Adding a new reg-entry with
+> > > > > > > > > similar semantics I guess won't receive warm welcome.
+> > > > > > > > 
+> > > > > > > > I do think it is a bit questionable. Ideally, the driver could 
+> > > > > > > > just configure this on its own. However, since we don't describe all of 
+> > > > > > > > the CPU address space (that's input to the iATU) already, that's not 
+> > > > > > > > going to be possible. I suppose we could fix that, but then config space 
+> > > > > > > > would have to be handled differently too.
+> > > > > > > 
+> > > > > > > Sorry, I have not understand what your means. Do you means, you want
+> > > > > > > a "cpu-space", for example, 0x8000000 - 0x9000000 for all ATU. 
+> > > > > > > 
+> > > > > > > Then allocated some space to 'config', 'io', 'memory' and this 'msg'.
+> > > > > > 
+> > > > > > @rob:
+> > > > > > 
+> > > > > >     So far, I think "msg" is feasilbe solution. Or give me some little
+> > > > > > detail direction?
+> > > > > 
+> > > > > Found the Rob' note about the iATU-space chunks utilized in the reg
+> > > > > property:
+> > > > > https://lore.kernel.org/linux-pci/CAL_JsqLp7QVgxrAZkW=z38iB7SV5VeWH1O6s+DVCm9p338Czdw@mail.gmail.com/
+> > > > > 
+> > > > > So basically Rob meant back then that
+> > > > > either originally we should have defined a new reg-name like "atu-out"
+> > > > > with the entire outbound iATU CPU-space specified and unpin the
+> > > > > regions like "config"/"ecam"/"msg"/etc from there in the driver
+> > > > > or, well, stick to the chunking further. The later path was chosen
+> > > > > after the patch with the "ecam" reg-name was accepted (see the link
+> > > > > above).
+> > > > > 
+> > > > > Really ECAM/config space access, custom TLP messages, legacy interrupt
+> > > > > TLPs, etc are all application-specific features. Each of them is
+> > > > > implemented based on a bit specific but basically the same outbound
+> > > > > iATU engine setup. Thus from the "DT is a hardware description" point
+> > > > > of view it would have been enough to describe the entire outbound iATU
+> > > > > CPU address space and then let the software do the space
+> > > > > reconfiguration in runtime based on it' application needs.
+> > > > 
+> > > > There are "addr_space" in EP mode, which useful map out outbound iatu
+> > > > region. We can reuse this name.
+> > > > 
+> > > > To keep compatiblity, cut hole from 'config' and 'ranges'. If there are
+> > > > not 'config', we can alloc a 1M(default) from top for 'config', then, 4K
+> > > > (default) for msg, 64K( for IO if not IO region in 'ranges'), left is
+> > > > mem region. We can config each region size by module parameter or drvdata.
+> > > > 
+> > > > So we can deprecate 'config', even 'ranges'
+> > > 
+> > > Not sure I fully understand what you mean. In anyway the "config" reg
+> > > name is highly utilized by the DW PCIe IP-core instances. We can't
+> > > deprecate it that easily. At least the backwards compatibility must be
+> > > preserved. Moreover "addr_space" is also just a single value reg which
+> > > won't solve a problem with the disjoint DW PCIe outbound iATU memory
+> > > regions.
+> > > 
+> > > The "ranges" property is a part of the DT specification.  The
+> > > PCI-specific way of the property-based mapping is de-facto a standard
+> > > too. So this can't be deprecated.
+> > > 
+> > > > 
+> > > > > 
+> > > > > * Rob, correct me if am wrong.
+> > > > > 
+> > > > > On the other hand it's possible to have more than one disjoint CPU
+> > > > > address region handled by the outbound iATU (especially if there is no
+> > > > > AXI-bridge enabled, see XALI - application transmit client interfaces
+> > > > > in HW manual). Thus having a single reg-property might get to be
+> > > > > inapplicable in some cases. Thinking about that got me to an idea.
+> > > > > What about just extending the PCIe "ranges" property flags
+> > > > > (IORESOURCE_TYPE_BITS) with the new ones in this case indicating the
+> > > > > TLP Msg mapping? Thus we can avoid creating app-specific reg-names and
+> > > > > use the flag to define a custom memory range for the TLP messages
+> > > > > generation. At some point it can be also utilized for the config-space
+> > > > > mapping. What do you think?
+> > > > 
+> > > 
+> > > > IORESOURCE_TYPE_BITS is 1f, Only 5bit. If extend IORESOURCE_TYPE_BITS, 
+> > > > all IORESOURCE_* bit need move. And it is actual MEMORY regain. 
+> > > 
+> > > No. The lowest four bits aren't flags but the actual value. They are
+> > > retrieved from the PCI-specific memory ranges mapping:
+> > > https://elinux.org/Device_Tree_Usage#PCI_Address_Translation
+> > > https://elixir.bootlin.com/linux/latest/source/arch/sparc/kernel/of_device_64.c#L141
+> > > https://elixir.bootlin.com/linux/latest/source/arch/sparc/kernel/of_device_32.c#L78
+> > > Currently only first four out of _sixteen_ values have been defined so
+> > > far. So we can freely use some of the free values for custom TLPs,
+> > > etc. Note the config-space is already defined by the ranges property
+> > > having the 0x0 space code (see the first link above), but it isn't
+> > > currently supported by the PCI subsystem. So at least that option can
+> > > be considered as a ready-to-implement replacement for the "config"
+> > > reg-name.
+> > > 
+> > 
+> > Agree. But still, the driver has to support both options: "config" reg name and
+> > "ranges", since ammending the binding would be an ABI break.
+> > 
+> > > > 
+> > > > Or we can use IORESOURCE_BITS (0xff)
+> > > > 
+> > > > /* PCI ROM control bits (IORESOURCE_BITS) */
+> > > > #define IORESOURCE_ROM_ENABLE		(1<<0)	/* ROM is enabled, same as PCI_ROM_ADDRESS_ENABLE */
+> > > > #define IORESOURCE_ROM_SHADOW		(1<<1)	/* Use RAM image, not ROM BAR */
+> > > > 
+> > > > /* PCI control bits.  Shares IORESOURCE_BITS with above PCI ROM.  */
+> > > > #define IORESOURCE_PCI_FIXED		(1<<4)	/* Do not move resource */
+> > > > #define IORESOURCE_PCI_EA_BEI		(1<<5)	/* BAR Equivalent Indicator */
+> > > > 
+> > > > we can add
+> > > > 
+> > > > IORESOURCE_PRIV_WINDOWS			(1<<6)
+> > > > 
+> > > > I think previous method was more extendable. How do you think?
+> > > 
+> > > IMO extending the PCIe "ranges" property semantics looks more
+> > > promising, more flexible and more portable across various PCIe
+> > > controllers. But the most importantly is what Rob and Bjorn think
+> > > about that, not me.
+> > > 
+> > 
+> > IMO, using the "ranges" property to allocate arbitrary memory region should be
+> > the way forward, since it has almost all the info needed by the drivers to
+> > allocate the memory regions.
+> > 
+> > But for the sake of DT backwards compatiblity, we have to keep supporting the
+> > existing reg entries (addr_space, et al.), because "ranges" is not a required
+> > property for EP controllers.
 > 
-> Here is version 2 series of patches to support accessing function entry data
-> from function *return* probes (including kretprobe and fprobe-exit event).
+> I don't know that its worth the effort to carry both. Maybe if it is 
+> useful on more than just DW host.
 > 
-> In this version, I added another cleanup [4/7], updated README[5/7], added
-> testcases[6/7] and updated document[7/7].
+> I believe we had config space in ranges at some point on some 
+> binding and moved away from that. I forget the reasoning.
+
+I can alloc a 64k windows from IORESOURCE_MEM windows to do 'msg' windows
+in dwc host driver in v4.
+
+But I think it is wonthful to discuss if we can extend of_map bits, add
+more type beside CONFIG/IO/MEM/MEM64.
+
+https://elinux.org/Device_Tree_Usage#PCI_Address_Translation
+
+phys.hi cell: npt000ss bbbbbbbb dddddfff rrrrrrrr
+
+There are '000' before 'ss'.  If we use it as dwc private resource.
+
+Frank
+
 > 
-> This allows us to access the results of some functions, which returns the
-> error code and its results are passed via function parameter, such as an
-> structure-initialization function.
-> 
-> For example, vfs_open() will link the file structure to the inode and update
-> mode. Thus we can trace that changes.
-> 
->  # echo 'f vfs_open mode=file->f_mode:x32 inode=file->f_inode:x64' >> dynamic_events
->  # echo 'f vfs_open%return mode=file->f_mode:x32 inode=file->f_inode:x64' >> dynamic_events 
->  # echo 1 > events/fprobes/enable 
->  # cat trace
->               sh-131     [006] ...1.  1945.714346: vfs_open__entry: (vfs_open+0x4/0x40) mode=0x2 inode=0x0
->               sh-131     [006] ...1.  1945.714358: vfs_open__exit: (do_open+0x274/0x3d0 <- vfs_open) mode=0x4d801e inode=0xffff888008470168
->              cat-143     [007] ...1.  1945.717949: vfs_open__entry: (vfs_open+0x4/0x40) mode=0x1 inode=0x0
->              cat-143     [007] ...1.  1945.717956: vfs_open__exit: (do_open+0x274/0x3d0 <- vfs_open) mode=0x4a801d inode=0xffff888005f78d28
->              cat-143     [007] ...1.  1945.720616: vfs_open__entry: (vfs_open+0x4/0x40) mode=0x1 inode=0x0
->              cat-143     [007] ...1.  1945.728263: vfs_open__exit: (do_open+0x274/0x3d0 <- vfs_open) mode=0xa800d inode=0xffff888004ada8d8
-
-hi,
-I hit a crash while playing with this, by runnning:
-
-  # echo 'f vfs_read%return $arg*' >> dynamic_events
-  # echo 1 > events/fprobes/enable 
-
-jirka
-
-
----
-[   86.805519][  T712] general protection fault, probably for non-canonical address 0xef01a20a8bd21200: 0000 [#1] PREEMPT SMP DEBUG_PAGEALLOC NOPTI
-[   86.807259][  T712] CPU: 0 PID: 712 Comm: cat Not tainted 6.8.0-rc5+ #432 b8184d32457f2dd20b7178757a1fce97b3f847e2
-[   86.808417][  T712] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-1.fc38 04/01/2014
-[   86.809294][  T712] RIP: 0010:rethook_trampoline_handler+0x8e/0x200
-[   86.809930][  T712] Code: 5e 20 00 48 8b a8 c8 2a 00 00 48 85 ed 75 2f e9 8b 00 00 00 4d 85 ed 74 17 48 8b 45 08 48 8d 7d f0 4c 89 f9 4c 89 e2 48 8b 30 <41> ff d5 0f 1f 00 48 39 dd 74 6a 48 8b 6d 00 48 85 ed 74 61 4c 39
-[   86.811727][  T712] RSP: 0018:ffffc90001e0bdf8 EFLAGS: 00010286
-[   86.812316][  T712] RAX: ffffc90001e0bef0 RBX: ffff8881775999a0 RCX: ffffc90001e0be40
-[   86.813106][  T712] RDX: ffffffff81545129 RSI: 0000000000000000 RDI: ffff888177599990
-[   86.813881][  T712] RBP: ffff8881775999a0 R08: 0000000000000000 R09: ffff88810246af00
-[   86.814626][  T712] R10: 0000000000000001 R11: 0000000000000000 R12: ffffffff81545129
-[   86.815357][  T712] R13: ef01a20a8bd21200 R14: ffffc90001e0bee8 R15: ffffc90001e0be40
-[   86.816114][  T712] FS:  00007f22d7c1f740(0000) GS:ffff88846ce00000(0000) knlGS:0000000000000000
-[   86.816885][  T712] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   86.817455][  T712] CR2: 00007f22d7b9c000 CR3: 0000000176918001 CR4: 0000000000770ef0
-[   86.818221][  T712] PKRU: 55555554
-[   86.818579][  T712] Call Trace:
-[   86.818900][  T712]  <TASK>
-[   86.819194][  T712]  ? die_addr+0x32/0x80
-[   86.819583][  T712]  ? exc_general_protection+0x276/0x4d0
-[   86.820079][  T712]  ? asm_exc_general_protection+0x22/0x30
-[   86.820600][  T712]  ? ksys_read+0x69/0xf0
-[   86.821022][  T712]  ? ksys_read+0x69/0xf0
-[   86.821422][  T712]  ? rethook_trampoline_handler+0x8e/0x200
-[   86.821984][  T712]  ? rethook_trampoline_handler+0x91/0x200
-[   86.822539][  T712]  arch_rethook_trampoline_callback+0x36/0x50
-[   86.823097][  T712]  arch_rethook_trampoline+0x2c/0x60
-[   86.823584][  T712]  ? ksys_read+0x69/0xf0
-[   86.823962][  T712]  osnoise_arch_unregister+0x210/0x210
-[   86.824463][  T712]  do_syscall_64+0x87/0x1b0
-[   86.824910][  T712]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
-[   86.825418][  T712] RIP: 0033:0x7f22d7d230b1
-[   86.825859][  T712] Code: d5 fe ff ff 55 48 8d 3d 25 47 0a 00 48 89 e5 e8 b5 18 02 00 0f 1f 44 00 00 f3 0f 1e fa 80 3d 2d b5 0d 00 00 74 13 31 c0 0f 05 <48> 3d 00 f0 ff ff 77 4f c3 66 0f 1f 44 00 00 55 48 89 e5 48 83 ec
-[   86.827635][  T712] RSP: 002b:00007fffdaaef668 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-[   86.828355][  T712] RAX: ffffffffffffffda RBX: 0000000000020000 RCX: 00007f22d7d230b1
-[   86.829017][  T712] RDX: 0000000000020000 RSI: 00007f22d7b9c000 RDI: 0000000000000003
-[   86.829710][  T712] RBP: 00007fffdaaef690 R08: 00000000ffffffff R09: 0000000000000000
-[   86.831165][  T712] R10: 0000000000000022 R11: 0000000000000246 R12: 0000000000020000
-[   86.831910][  T712] R13: 00007f22d7b9c000 R14: 0000000000000003 R15: 0000000000000000
-[   86.832691][  T712]  </TASK>
-[   86.833016][  T712] Modules linked in: intel_rapl_msr intel_rapl_common crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel kvm_intel rapl iTCO_wdt iTCO_vendor_support i2c_i801 i2c_smbus lpc_ich drm loop drm_panel_orientation_quirks zram
-[   86.835078][  T634] general protection fault, probably for non-canonical address 0x440038d965baf00: 0000 [#2] PREEMPT SMP DEBUG_PAGEALLOC NOPTI
-[   86.835196][  T712] ---[ end trace 0000000000000000 ]---
-[   86.835943][  T634] CPU: 3 PID: 634 Comm: sshd Tainted: G      D            6.8.0-rc5+ #432 b8184d32457f2dd20b7178757a1fce97b3f847e2
-[   86.835946][  T634] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-1.fc38 04/01/2014
-[   86.835947][  T634] RIP: 0010:rethook_trampoline_handler+0x8e/0x200
-[   86.835952][  T634] Code: 5e 20 00 48 8b a8 c8 2a 00 00 48 85 ed 75 2f e9 8b 00 00 00 4d 85 ed 74 17 48 8b 45 08 48 8d 7d f0 4c 89 f9 4c 89 e2 48 8b 30 <41> ff d5 0f 1f 00 48 39 dd 74 6a 48 8b 6d 00 48 85 ed 74 61 4c 39
-[   86.836363][  T712] RIP: 0010:rethook_trampoline_handler+0x8e/0x200
-[   86.837090][  T634] RSP: 0018:ffffc90001d3bdf8 EFLAGS: 00010206
-[   86.837776][  T712] Code: 5e 20 00 48 8b a8 c8 2a 00 00 48 85 ed 75 2f e9 8b 00 00 00 4d 85 ed 74 17 48 8b 45 08 48 8d 7d f0 4c 89 f9 4c 89 e2 48 8b 30 <41> ff d5 0f 1f 00 48 39 dd 74 6a 48 8b 6d 00 48 85 ed 74 61 4c 39
-[   86.838205][  T634] 
-[   86.839488][  T712] RSP: 0018:ffffc90001e0bdf8 EFLAGS: 00010286
-[   86.839890][  T634] RAX: ffffc90001d3bef0 RBX: ffff888176cbbaa0 RCX: ffffc90001d3be40
-[   86.840239][  T712] 
-[   86.840240][  T712] RAX: ffffc90001e0bef0 RBX: ffff8881775999a0 RCX: ffffc90001e0be40
-[   86.841309][  T634] RDX: ffffffff81545129 RSI: 0000000000000000 RDI: ffff888176cbba90
-[   86.841311][  T634] RBP: ffff888176cbbaa0 R08: 0000000000000001 R09: 0000000000000000
-[   86.841312][  T634] R10: 0000000000000001 R11: 0000000000000001 R12: ffffffff81545129
-[   86.841313][  T634] R13: 0440038d965baf00 R14: ffffc90001d3bee8 R15: ffffc90001d3be40
-[   86.841314][  T634] FS:  00007f1ddf838940(0000) GS:ffff88846da00000(0000) knlGS:0000000000000000
-[   86.841316][  T634] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   86.841477][  T712] RDX: ffffffff81545129 RSI: 0000000000000000 RDI: ffff888177599990
-[   86.841800][  T634] CR2: 0000559fb5f9f000 CR3: 0000000176e2e004 CR4: 0000000000770ef0
-[   86.842308][  T712] RBP: ffff8881775999a0 R08: 0000000000000000 R09: ffff88810246af00
-[   86.842456][  T634] PKRU: 55555554
-[   86.842458][  T634] Call Trace:
-[   86.842459][  T634]  <TASK>
-[   86.842462][  T634]  ? die_addr+0x32/0x80
-[   86.842978][  T712] R10: 0000000000000001 R11: 0000000000000000 R12: ffffffff81545129
-[   86.843508][  T634]  ? exc_general_protection+0x276/0x4d0
-[   86.843516][  T634]  ? asm_exc_general_protection+0x22/0x30
-[   86.844002][  T712] R13: ef01a20a8bd21200 R14: ffffc90001e0bee8 R15: ffffc90001e0be40
-[   86.844004][  T712] FS:  00007f22d7c1f740(0000) GS:ffff88846ce00000(0000) knlGS:0000000000000000
-[   86.844503][  T634]  ? ksys_read+0x69/0xf0
-[   86.844507][  T634]  ? ksys_read+0x69/0xf0
-[   86.844510][  T634]  ? rethook_trampoline_handler+0x8e/0x200
-[   86.845033][  T712] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   86.845677][  T634]  ? rethook_trampoline_handler+0x91/0x200
-[   86.845680][  T634]  arch_rethook_trampoline_callback+0x36/0x50
-[   86.845684][  T634]  arch_rethook_trampoline+0x2c/0x60
-[   86.846111][  T712] CR2: 00007f22d7b9c000 CR3: 0000000176918001 CR4: 0000000000770ef0
-[   86.846674][  T634]  ? ksys_read+0x69/0xf0
-[   86.846679][  T634]  osnoise_arch_unregister+0x210/0x210
-[   86.847213][  T712] PKRU: 55555554
-[   86.847648][  T634]  do_syscall_64+0x87/0x1b0
-[   86.847653][  T634]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
-[   86.847868][  T712] note: cat[712] exited with preempt_count 1
-[   86.848096][  T634] RIP: 0033:0x7f1ddfc4a0b1
-[   86.869351][  T634] Code: d5 fe ff ff 55 48 8d 3d 25 47 0a 00 48 89 e5 e8 b5 18 02 00 0f 1f 44 00 00 f3 0f 1e fa 80 3d 2d b5 0d 00 00 74 13 31 c0 0f 05 <48> 3d 00 f0 ff ff 77 4f c3 66 0f 1f 44 00 00 55 48 89 e5 48 83 ec
-[   86.871186][  T634] RSP: 002b:00007fffdd061ae8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-[   86.871995][  T634] RAX: ffffffffffffffda RBX: 0000000000008000 RCX: 00007f1ddfc4a0b1
-[   86.872785][  T634] RDX: 0000000000008000 RSI: 000055bbb41e37b0 RDI: 000000000000000c
-[   86.873553][  T634] RBP: 00007fffdd061b50 R08: 0000000000000000 R09: 0000000000000000
-[   86.874320][  T634] R10: 0000000000000001 R11: 0000000000000246 R12: 0000000000000000
-[   86.874960][  T634] R13: 0000000000000000 R14: 000055bbb4172840 R15: 000000000000000c
-[   86.875670][  T634]  </TASK>
-[   86.875964][  T634] Modules linked in: intel_rapl_msr intel_rapl_common crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel kvm_intel rapl iTCO_wdt iTCO_vendor_support i2c_i801 i2c_smbus lpc_ich drm loop drm_panel_orientation_quirks zram
-[   86.877814][  T634] ---[ end trace 0000000000000000 ]---
-[   86.877991][  T450] kernel tried to execute NX-protected page - exploit attempt? (uid: 0)
-[   86.878210][  T634] RIP: 0010:rethook_trampoline_handler+0x8e/0x200
-[   86.878217][  T634] Code: 5e 20 00 48 8b a8 c8 2a 00 00 48 85 ed 75 2f e9 8b 00 00 00 4d 85 ed 74 17 48 8b 45 08 48 8d 7d f0 4c 89 f9 4c 89 e2 48 8b 30 <41> ff d5 0f 1f 00 48 39 dd 74 6a 48 8b 6d 00 48 85 ed 74 61 4c 39
-[   86.878219][  T634] RSP: 0018:ffffc90001e0bdf8 EFLAGS: 00010286
-[   86.878221][  T634] RAX: ffffc90001e0bef0 RBX: ffff8881775999a0 RCX: ffffc90001e0be40
-[   86.878222][  T634] RDX: ffffffff81545129 RSI: 0000000000000000 RDI: ffff888177599990
-[   86.878224][  T634] RBP: ffff8881775999a0 R08: 0000000000000000 R09: ffff88810246af00
-[   86.878225][  T634] R10: 0000000000000001 R11: 0000000000000000 R12: ffffffff81545129
-[   86.878226][  T634] R13: ef01a20a8bd21200 R14: ffffc90001e0bee8 R15: ffffc90001e0be40
-[   86.878227][  T634] FS:  00007f1ddf838940(0000) GS:ffff88846da00000(0000) knlGS:0000000000000000
-[   86.878228][  T634] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   86.878230][  T634] CR2: 0000559fb5f9f000 CR3: 0000000176e2e004 CR4: 0000000000770ef0
-[   86.878233][  T634] PKRU: 55555554
-[   86.878235][  T634] note: sshd[634] exited with preempt_count 1
-[   86.888492][  T450] BUG: unable to handle page fault for address: ffffc90001cdff58
-[   86.889266][  T450] #PF: supervisor instruction fetch in kernel mode
-[   86.889914][  T450] #PF: error_code(0x0011) - permissions violation
-[   86.891248][  T450] PGD 100000067 P4D 100000067 PUD 102a49067 PMD 10b3ee067 PTE 8000000109295163
-[   86.892032][  T450] Oops: 0011 [#3] PREEMPT SMP DEBUG_PAGEALLOC NOPTI
-[   86.892560][  T450] CPU: 1 PID: 450 Comm: systemd-journal Tainted: G      D            6.8.0-rc5+ #432 b8184d32457f2dd20b7178757a1fce97b3f847e2
-[   86.893758][  T450] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-1.fc38 04/01/2014
-[   86.894542][  T450] RIP: 0010:0xffffc90001cdff58
-[   86.894964][  T450] Code: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 e6 00 60 82 ff ff ff ff <00> 00 00 00 00 00 00 00 03 00 00 00 00 00 00 00 00 00 00 00 00 00
-[   86.896519][  T450] RSP: 0018:ffffc90000b13df0 EFLAGS: 00010282
-[   86.897004][  T450] RAX: ffffc90001cdfef0 RBX: ffff88817759a8a0 RCX: ffffc90000b13e40
-[   86.897672][  T450] RDX: ffffffff81545129 RSI: ffffffffffffffff RDI: ffff88817759a890
-[   86.898341][  T450] RBP: ffff88817759a8a0 R08: 0000000000000001 R09: ffff888102b2c470
-[   86.899143][  T450] R10: ffffc90000b13e58 R11: ffffffff83976548 R12: ffffffff81545129
-[   86.899871][  T450] R13: ffffc90001cdff58 R14: ffffc90000b13ee8 R15: ffffc90000b13e40
-[   86.900547][  T450] FS:  00007f20a7635940(0000) GS:ffff88846d200000(0000) knlGS:0000000000000000
-[   86.901259][  T450] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   86.901773][  T450] CR2: ffffc90001cdff58 CR3: 0000000176a7a003 CR4: 0000000000770ef0
-[   86.902411][  T450] PKRU: 55555554
-[   86.902722][  T450] Call Trace:
-[   86.903009][  T450]  <TASK>
-[   86.903271][  T450]  ? __die+0x1f/0x70
-[   86.903613][  T450]  ? page_fault_oops+0x176/0x4d0
-[   86.904126][  T450]  ? exc_page_fault+0x16c/0x250
-[   86.904614][  T450]  ? asm_exc_page_fault+0x22/0x30
-[   86.905140][  T450]  ? ksys_read+0x69/0xf0
-[   86.905615][  T450]  ? ksys_read+0x69/0xf0
-[   86.906053][  T450]  ? rethook_trampoline_handler+0x91/0x200
-[   86.906643][  T450]  ? arch_rethook_trampoline_callback+0x36/0x50
-[   86.907271][  T450]  ? arch_rethook_trampoline+0x2c/0x60
-[   86.907845][  T450]  ? ksys_read+0x69/0xf0
-[   86.908300][  T450]  ? osnoise_arch_unregister+0x210/0x210
-[   86.908781][  T450]  ? do_syscall_64+0x87/0x1b0
-[   86.909186][  T450]  ? entry_SYSCALL_64_after_hwframe+0x6e/0x76
-[   86.909681][  T450]  </TASK>
-[   86.909959][  T450] Modules linked in: intel_rapl_msr intel_rapl_common crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel kvm_intel rapl iTCO_wdt iTCO_vendor_support i2c_i801 i2c_smbus lpc_ich drm loop drm_panel_orientation_quirks zram
-[   86.911681][  T450] CR2: ffffc90001cdff58
-[   86.912108][  T450] ---[ end trace 0000000000000000 ]---
-[   86.912674][  T450] RIP: 0010:rethook_trampoline_handler+0x8e/0x200
-[   86.913232][  T450] Code: 5e 20 00 48 8b a8 c8 2a 00 00 48 85 ed 75 2f e9 8b 00 00 00 4d 85 ed 74 17 48 8b 45 08 48 8d 7d f0 4c 89 f9 4c 89 e2 48 8b 30 <41> ff d5 0f 1f 00 48 39 dd 74 6a 48 8b 6d 00 48 85 ed 74 61 4c 39
-[   86.914702][  T450] RSP: 0018:ffffc90001e0bdf8 EFLAGS: 00010286
-[   86.915196][  T450] RAX: ffffc90001e0bef0 RBX: ffff8881775999a0 RCX: ffffc90001e0be40
-[   86.915853][  T450] RDX: ffffffff81545129 RSI: 0000000000000000 RDI: ffff888177599990
-[   86.916644][  T450] RBP: ffff8881775999a0 R08: 0000000000000000 R09: ffff88810246af00
-[   86.917449][  T450] R10: 0000000000000001 R11: 0000000000000000 R12: ffffffff81545129
-[   86.918238][  T450] R13: ef01a20a8bd21200 R14: ffffc90001e0bee8 R15: ffffc90001e0be40
-[   86.919043][  T450] FS:  00007f20a7635940(0000) GS:ffff88846d200000(0000) knlGS:0000000000000000
-[   86.919906][  T450] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   86.921265][  T450] CR2: ffffc90001cdff58 CR3: 0000000176a7a003 CR4: 0000000000770ef0
-[   86.921972][  T450] PKRU: 55555554
-[   86.922365][  T450] note: systemd-journal[450] exited with irqs disabled
-[   86.923076][  T450] note: systemd-journal[450] exited with preempt_count 1
-[   86.927597][   T47] audit: type=1106 audit(1709132147.391:266): pid=619 uid=0 auid=1000 ses=1 subj=system_u:system_r:sshd_t:s0-s0:c0.c1023 msg='op=PAM:session_close grantors=pam_selinux,pam_loginuid,pam_selinux,pam_namespace,pam_keyinit,pam_keyinit,pam_limits,pam_systemd,pam_unix,pam_umask,pam_lastlog acct="jolsa" exe="/usr/sbin/sshd" hostname=192.168.122.1 addr=192.168.122.1 terminal=ssh res=success'
-[   86.928777][  T450] systemd-journal (450) used greatest stack depth: 11424 bytes left
-[   86.929578][    T1] general protection fault, probably for non-canonical address 0xd4f06e07d9d64800: 0000 [#4] PREEMPT SMP DEBUG_PAGEALLOC NOPTI
-[   86.929582][    T1] CPU: 2 PID: 1 Comm: systemd Tainted: G      D            6.8.0-rc5+ #432 b8184d32457f2dd20b7178757a1fce97b3f847e2
-[   86.929584][    T1] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-1.fc38 04/01/2014
-[   86.929586][    T1] RIP: 0010:rethook_trampoline_handler+0x8e/0x200
-[   86.929591][    T1] Code: 5e 20 00 48 8b a8 c8 2a 00 00 48 85 ed 75 2f e9 8b 00 00 00 4d 85 ed 74 17 48 8b 45 08 48 8d 7d f0 4c 89 f9 4c 89 e2 48 8b 30 <41> ff d5 0f 1f 00 48 39 dd 74 6a 48 8b 6d 00 48 85 ed 74 61 4c 39
-[   86.929592][    T1] RSP: 0018:ffffc90000013df8 EFLAGS: 00010286
-[   86.929594][    T1] RAX: ffffc90000013ef0 RBX: ffff888177598aa0 RCX: ffffc90000013e40
-[   86.929595][    T1] RDX: ffffffff81545129 RSI: 0000000000000010 RDI: ffff888177598a90
-[   86.929596][    T1] RBP: ffff888177598aa0 R08: 0000000000000010 R09: ffff888175005750
-[   86.929597][    T1] R10: 0000000000000000 R11: ffffc90000013dd8 R12: ffffffff81545129
-[   86.929598][    T1] R13: d4f06e07d9d64800 R14: ffffc90000013ee8 R15: ffffc90000013e40
-[   86.929599][    T1] FS:  00007f0ec5012940(0000) GS:ffff88846d600000(0000) knlGS:0000000000000000
-[   86.929600][    T1] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   86.929601][    T1] CR2: 00005595e83bf5b0 CR3: 000000010805e001 CR4: 0000000000770ef0
-[   86.929604][    T1] PKRU: 55555554
-[   86.929605][    T1] Call Trace:
-[   86.929606][    T1]  <TASK>
-[   86.929606][    T1]  ? die_addr+0x32/0x80
-[   86.929610][    T1]  ? exc_general_protection+0x276/0x4d0
-[   86.929616][    T1]  ? asm_exc_general_protection+0x22/0x30
-[   86.929621][    T1]  ? ksys_read+0x69/0xf0
-[   86.929624][    T1]  ? ksys_read+0x69/0xf0
-[   86.929627][    T1]  ? rethook_trampoline_handler+0x8e/0x200
-[   86.929629][    T1]  ? rethook_trampoline_handler+0x91/0x200
-[   86.929631][    T1]  arch_rethook_trampoline_callback+0x36/0x50
-[   86.929635][    T1]  arch_rethook_trampoline+0x2c/0x60
-[   86.929639][    T1]  ? ksys_read+0x69/0xf0
-[   86.929640][    T1]  osnoise_arch_unregister+0x210/0x210
-[   86.929643][    T1]  do_syscall_64+0x87/0x1b0
-[   86.929645][    T1]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
-[   86.929647][    T1] RIP: 0033:0x7f0ec49230ea
-[   86.929653][    T1] Code: 55 48 89 e5 48 83 ec 20 48 89 55 e8 48 89 75 f0 89 7d f8 e8 e8 79 f8 ff 48 8b 55 e8 48 8b 75 f0 41 89 c0 8b 7d f8 31 c0 0f 05 <48> 3d 00 f0 ff ff 77 2e 44 89 c7 48 89 45 f8 e8 42 7a f8 ff 48 8b
-[   86.929655][    T1] RSP: 002b:00007ffead1dc7a0 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-[   86.929656][    T1] RAX: ffffffffffffffda RBX: 00005625bff4efe0 RCX: 00007f0ec49230ea
-[   86.929657][    T1] RDX: 0000000000000400 RSI: 00005625bfeda010 RDI: 0000000000000019
-[   86.929658][    T1] RBP: 00007ffead1dc7c0 R08: 0000000000000000 R09: 0000000000000001
-[   86.929659][    T1] R10: 0000000000001000 R11: 0000000000000246 R12: 00007f0ec49f3660
-[   86.929659][    T1] R13: 00007f0ec50127d0 R14: 0000000000000a68 R15: 00007f0ec49f2d60
-[   86.929663][    T1]  </TASK>
-[   86.929663][    T1] Modules linked in: intel_rapl_msr intel_rapl_common crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel kvm_intel rapl iTCO_wdt iTCO_vendor_support i2c_i801 i2c_smbus lpc_ich drm loop drm_panel_orientation_quirks zram
-[   86.929676][    T1] ---[ end trace 0000000000000000 ]---
-[   86.929677][    T1] RIP: 0010:rethook_trampoline_handler+0x8e/0x200
-[   86.929679][    T1] Code: 5e 20 00 48 8b a8 c8 2a 00 00 48 85 ed 75 2f e9 8b 00 00 00 4d 85 ed 74 17 48 8b 45 08 48 8d 7d f0 4c 89 f9 4c 89 e2 48 8b 30 <41> ff d5 0f 1f 00 48 39 dd 74 6a 48 8b 6d 00 48 85 ed 74 61 4c 39
-[   86.929680][    T1] RSP: 0018:ffffc90001e0bdf8 EFLAGS: 00010286
-[   86.929681][    T1] RAX: ffffc90001e0bef0 RBX: ffff8881775999a0 RCX: ffffc90001e0be40
-[   86.929682][    T1] RDX: ffffffff81545129 RSI: 0000000000000000 RDI: ffff888177599990
-[   86.929683][    T1] RBP: ffff8881775999a0 R08: 0000000000000000 R09: ffff88810246af00
-[   86.929684][    T1] R10: 0000000000000001 R11: 0000000000000000 R12: ffffffff81545129
-[   86.929685][    T1] R13: ef01a20a8bd21200 R14: ffffc90001e0bee8 R15: ffffc90001e0be40
-[   86.929686][    T1] FS:  00007f0ec5012940(0000) GS:ffff88846d600000(0000) knlGS:0000000000000000
-[   86.929687][    T1] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   86.929688][    T1] CR2: 00005595e83bf5b0 CR3: 000000010805e001 CR4: 0000000000770ef0
-[   86.929688][    T1] PKRU: 55555554
-[   86.929689][    T1] note: systemd[1] exited with preempt_count 1
-[   86.929692][    T1] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-[   86.929992][    T1] Kernel Offset: disabled
+> Rob
 
