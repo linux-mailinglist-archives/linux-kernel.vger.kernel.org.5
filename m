@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-85602-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85603-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BF1586B831
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 20:33:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEF8586B832
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 20:33:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EDF361F24AC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:33:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B00E28A4FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:33:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04E2015E5CE;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD39F15F301;
 	Wed, 28 Feb 2024 19:33:14 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B3E67D406
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 19:33:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AED9B15DBB9
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 19:33:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709148793; cv=none; b=D8EZ3tyXQhQEOn/LOYdjvlmONhwjZ9uiQjqYh9qCS63XN7eyVw5Px7e20L/ilEksLAqCYXZk23ME/aZmV9Qbi5okmcM8lKjm2YA7j2+jda8WxChEcqOolWe9yeT19ZOui9ZSup246vIlaflnRtHKfk7kuJXMuTTr2zUnUGq08RM=
+	t=1709148794; cv=none; b=ZbdAaQSkxMxhNS3mVHQ3fP0LsbpbqmKZkZH48l/UyhYLrTqQusEX/kF3z7y7tfyDs6I5htxsTdXdelEMbgnNd8GSHg+BO3bdlwBWwROmh1gT6WIkf/qCWxL0WXUgAyX6gTuFe9Gedke6Jpt9DTh0L7GQCncVdxC6RXGdh9Q5XL4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709148793; c=relaxed/simple;
-	bh=AoB8v9iRXv+R1wRD6aDoHrJAOehVSVKk6EBz1WgbNTM=;
+	s=arc-20240116; t=1709148794; c=relaxed/simple;
+	bh=R1HN6cNrtXWrVeHwA6L4bNTI2kbh4VCicV68kbU/F7c=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oKHezASKmKfZhfXMeYTkj0jYsBnjZuNMaw0dSaaS9XCVf8bfjYJZN1vhZ/esJ13vWg6Emj452j10ly5uQXfAv56oEac96YDUzSbAMYHQ9Ot1kM0E5Egmujxz07G60TXCsWyMI5cHCUOM0+P6FH9X41ZPpV5piR0ddsUHwSSL4Iw=
+	 MIME-Version; b=SHubu61c2Zy9Y3dg00KlR5EvY/8oZQcCOVsIKJgsiHy7wpNL00ZKdVRaFzJakeUW54hOtK0kfj/Sj/n/M/eHDw17J7zxJNNxDBLrTL9M7VPyp9j5zb0yrpABjK3LUSsjB+yWT1csBJ5mh/AeKRiBzXNuZ1XycCds6Xqj/r5HDgQ=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1F4801007;
-	Wed, 28 Feb 2024 11:33:48 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E454CC15;
+	Wed, 28 Feb 2024 11:33:49 -0800 (PST)
 Received: from pluto.fritz.box (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7F8933F73F;
-	Wed, 28 Feb 2024 11:33:07 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 510493F73F;
+	Wed, 28 Feb 2024 11:33:09 -0800 (PST)
 From: Cristian Marussi <cristian.marussi@arm.com>
 To: linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org
@@ -44,9 +44,9 @@ Cc: sudeep.holla@arm.com,
 	quic_sibis@quicinc.com,
 	quic_nkela@quicinc.com,
 	Cristian Marussi <cristian.marussi@arm.com>
-Subject: [PATCH 2/4] firmware: arm_scmi: Add message dump traces for bad and unexpected replies
-Date: Wed, 28 Feb 2024 19:32:36 +0000
-Message-ID: <20240228193238.2102157-3-cristian.marussi@arm.com>
+Subject: [PATCH 3/4] firmware: arm_scmi: Simplify scmi_devm_notifier_unregister
+Date: Wed, 28 Feb 2024 19:32:37 +0000
+Message-ID: <20240228193238.2102157-4-cristian.marussi@arm.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240228193238.2102157-1-cristian.marussi@arm.com>
 References: <20240228193238.2102157-1-cristian.marussi@arm.com>
@@ -58,99 +58,98 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Use trace_scmi_msg_dump also to account for late-timed-out, out-of-order
-and unexpected replies.
+Unregistering SCMI notifications using the managed devres interface can be
+done providing as a reference simply the previously successfully registered
+notification block since it could have been registered only on one kernel
+notification_chain: drop any reference to SCMI protocol, events and
+sources.
+
+Devres internal helpers can search for the provided notification block
+reference and, once found, the associated devres object will already
+provide the above SCMI references for the event.
 
 Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
 ---
- drivers/firmware/arm_scmi/driver.c | 36 +++++++++++++++++++++++++++++-
- 1 file changed, 35 insertions(+), 1 deletion(-)
+ drivers/firmware/arm_scmi/notify.c | 30 ++++--------------------------
+ include/linux/scmi_protocol.h      |  2 --
+ 2 files changed, 4 insertions(+), 28 deletions(-)
 
-diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-index 34d77802c990..a3182199f123 100644
---- a/drivers/firmware/arm_scmi/driver.c
-+++ b/drivers/firmware/arm_scmi/driver.c
-@@ -822,6 +822,13 @@ scmi_xfer_command_acquire(struct scmi_chan_info *cinfo, u32 msg_hdr)
- 			"Message for %d type %d is not expected!\n",
- 			xfer_id, msg_type);
- 		spin_unlock_irqrestore(&minfo->xfer_lock, flags);
-+
-+		trace_scmi_msg_dump(info->id, cinfo->id,
-+				    MSG_XTRACT_PROT_ID(msg_hdr),
-+				    MSG_XTRACT_ID(msg_hdr),
-+				    !msg_type ? "_!RESP" : "_!DLYD",
-+				    xfer_id, 0, NULL, 0);
-+
- 		return xfer;
- 	}
- 	refcount_inc(&xfer->users);
-@@ -846,6 +853,13 @@ scmi_xfer_command_acquire(struct scmi_chan_info *cinfo, u32 msg_hdr)
- 		dev_err(cinfo->dev,
- 			"Invalid message type:%d for %d - HDR:0x%X  state:%d\n",
- 			msg_type, xfer_id, msg_hdr, xfer->state);
-+
-+		trace_scmi_msg_dump(info->id, cinfo->id,
-+				    MSG_XTRACT_PROT_ID(msg_hdr),
-+				    MSG_XTRACT_ID(msg_hdr),
-+				    !msg_type ? "_!RESP" : "_!DLYD",
-+				    xfer_id, 0, NULL, 0);
-+
- 		/* On error the refcount incremented above has to be dropped */
- 		__scmi_xfer_put(minfo, xfer);
- 		xfer = ERR_PTR(-EINVAL);
-@@ -882,6 +896,12 @@ static void scmi_handle_notification(struct scmi_chan_info *cinfo,
- 	if (IS_ERR(xfer)) {
- 		dev_err(dev, "failed to get free message slot (%ld)\n",
- 			PTR_ERR(xfer));
-+
-+		trace_scmi_msg_dump(info->id, cinfo->id,
-+				    MSG_XTRACT_PROT_ID(msg_hdr),
-+				    MSG_XTRACT_ID(msg_hdr), "_!NOTI",
-+				    MSG_XTRACT_TOKEN(msg_hdr), 0, NULL, 0);
-+
- 		scmi_clear_channel(info, cinfo);
- 		return;
- 	}
-@@ -923,10 +943,18 @@ static void scmi_handle_response(struct scmi_chan_info *cinfo,
- 
- 	xfer = scmi_xfer_command_acquire(cinfo, msg_hdr);
- 	if (IS_ERR(xfer)) {
-+		u8 msg_type = MSG_XTRACT_TYPE(msg_hdr);
-+
-+		trace_scmi_msg_dump(info->id, cinfo->id,
-+				    MSG_XTRACT_PROT_ID(msg_hdr),
-+				    MSG_XTRACT_ID(msg_hdr),
-+				    !msg_type ? "_!RESP" : "_!DLYD",
-+				    MSG_XTRACT_TOKEN(msg_hdr), 0, NULL, 0);
-+
- 		if (IS_ENABLED(CONFIG_ARM_SCMI_RAW_MODE_SUPPORT))
- 			scmi_raw_error_report(info->raw, cinfo, msg_hdr, priv);
- 
--		if (MSG_XTRACT_TYPE(msg_hdr) == MSG_TYPE_DELAYED_RESP)
-+		if (msg_type == MSG_TYPE_DELAYED_RESP)
- 			scmi_clear_channel(info, cinfo);
- 		return;
- 	}
-@@ -990,6 +1018,7 @@ static void scmi_handle_response(struct scmi_chan_info *cinfo,
- void scmi_rx_callback(struct scmi_chan_info *cinfo, u32 msg_hdr, void *priv)
+diff --git a/drivers/firmware/arm_scmi/notify.c b/drivers/firmware/arm_scmi/notify.c
+index 27c52531194d..e160ecb22948 100644
+--- a/drivers/firmware/arm_scmi/notify.c
++++ b/drivers/firmware/arm_scmi/notify.c
+@@ -1513,17 +1513,12 @@ static int scmi_devm_notifier_register(struct scmi_device *sdev,
+ static int scmi_devm_notifier_match(struct device *dev, void *res, void *data)
  {
- 	u8 msg_type = MSG_XTRACT_TYPE(msg_hdr);
-+	struct scmi_info *info = handle_to_scmi_info(cinfo->handle);
+ 	struct scmi_notifier_devres *dres = res;
+-	struct scmi_notifier_devres *xres = data;
++	struct notifier_block *nb = data;
  
- 	switch (msg_type) {
- 	case MSG_TYPE_NOTIFICATION:
-@@ -1001,6 +1030,11 @@ void scmi_rx_callback(struct scmi_chan_info *cinfo, u32 msg_hdr, void *priv)
- 		break;
- 	default:
- 		WARN_ONCE(1, "received unknown msg_type:%d\n", msg_type);
-+		trace_scmi_msg_dump(info->id, cinfo->id,
-+				    MSG_XTRACT_PROT_ID(msg_hdr),
-+				    MSG_XTRACT_ID(msg_hdr), "_!UNKN",
-+				    MSG_XTRACT_TOKEN(msg_hdr), 0, NULL, 0);
-+
- 		break;
- 	}
+-	if (WARN_ON(!dres || !xres))
++	if (WARN_ON(!dres || !nb))
+ 		return 0;
+ 
+-	return dres->proto_id == xres->proto_id &&
+-		dres->evt_id == xres->evt_id &&
+-		dres->nb == xres->nb &&
+-		((!dres->src_id && !xres->src_id) ||
+-		  (dres->src_id && xres->src_id &&
+-		   dres->__src_id == xres->__src_id));
++	return dres->nb == nb;
  }
+ 
+ /**
+@@ -1531,10 +1526,6 @@ static int scmi_devm_notifier_match(struct device *dev, void *res, void *data)
+  * notifier_block for an event
+  * @sdev: A reference to an scmi_device whose embedded struct device is to
+  *	  be used for devres accounting.
+- * @proto_id: Protocol ID
+- * @evt_id: Event ID
+- * @src_id: Source ID, when NULL register for events coming form ALL possible
+- *	    sources
+  * @nb: A standard notifier block to register for the specified event
+  *
+  * Generic devres managed helper to explicitly un-register a notifier_block
+@@ -1544,25 +1535,12 @@ static int scmi_devm_notifier_match(struct device *dev, void *res, void *data)
+  * Return: 0 on Success
+  */
+ static int scmi_devm_notifier_unregister(struct scmi_device *sdev,
+-					 u8 proto_id, u8 evt_id,
+-					 const u32 *src_id,
+ 					 struct notifier_block *nb)
+ {
+ 	int ret;
+-	struct scmi_notifier_devres dres;
+-
+-	dres.handle = sdev->handle;
+-	dres.proto_id = proto_id;
+-	dres.evt_id = evt_id;
+-	if (src_id) {
+-		dres.__src_id = *src_id;
+-		dres.src_id = &dres.__src_id;
+-	} else {
+-		dres.src_id = NULL;
+-	}
+ 
+ 	ret = devres_release(&sdev->dev, scmi_devm_release_notifier,
+-			     scmi_devm_notifier_match, &dres);
++			     scmi_devm_notifier_match, nb);
+ 
+ 	WARN_ON(ret);
+ 
+diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
+index 2ee94ff0320c..305d89c02a94 100644
+--- a/include/linux/scmi_protocol.h
++++ b/include/linux/scmi_protocol.h
+@@ -775,8 +775,6 @@ struct scmi_notify_ops {
+ 					    const u32 *src_id,
+ 					    struct notifier_block *nb);
+ 	int (*devm_event_notifier_unregister)(struct scmi_device *sdev,
+-					      u8 proto_id, u8 evt_id,
+-					      const u32 *src_id,
+ 					      struct notifier_block *nb);
+ 	int (*event_notifier_register)(const struct scmi_handle *handle,
+ 				       u8 proto_id, u8 evt_id,
 -- 
 2.43.0
 
