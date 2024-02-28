@@ -1,164 +1,149 @@
-Return-Path: <linux-kernel+bounces-85298-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85300-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21CB786B3AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:49:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E34E286B3AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:50:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 541641C258BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:49:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 210931C25CC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:50:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1D9B152E14;
-	Wed, 28 Feb 2024 15:49:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E53215D5A9;
+	Wed, 28 Feb 2024 15:50:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=trvn.ru header.i=@trvn.ru header.b="VhUxaeXu"
-Received: from box.trvn.ru (box.trvn.ru [194.87.146.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Z6a2dbqw"
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA7C915B990;
-	Wed, 28 Feb 2024 15:49:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.87.146.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 237DC15B98C
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 15:50:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709135374; cv=none; b=UIJWFoa0bEJzRhaaLjlY4sQKykAutPQ6DEKUIvWBdjJD+n3y46lBsFgAVXweH+bLE4BdksY8beRq8lHjHZZz1Jc7IBQ6L0QpeRAycrF8dE6nr1X1/ZJ/yp9xpRT9BIwffbKPTGRb9I8klO+7oqD14esci7s6b8TUhUI/tR8vHjs=
+	t=1709135409; cv=none; b=ZcoTEEaihkunkV7elw+XWCq6hX2gHfsqGSLbQdTMCo/06zVjEud1VZ8LQUUH6RtR7Zq42xbWLW7F97PoDhvYDLrxrx1fEMrxWbaA6JVAqZMUdHDJ2TVLiX7uSewuHN/5YJbypwtZ+9QQgc0iKxbv6H/+SCNJRKSQnvqSb1/UPQM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709135374; c=relaxed/simple;
-	bh=TXDkaVmG4OI79+ODTlB7W6xh7e9pcZZeRG8zXY6AXzw=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=ie+cRsjsouoBCaTcsL9NE4tWHjPWAqNTB/kz1dATcQqxXQt4IBUhNXsl4UdDVuM45MVdyixKpPSgdrFAsBc1uo3QZz7S9nhBiaFeIfxDR3Im5MEyOc7Uwiz3SlnQ76rUFA2bwvplPM52zJpvEPEYwgI/34tyf9JwB3wUimfFFX4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=trvn.ru; spf=pass smtp.mailfrom=trvn.ru; dkim=pass (2048-bit key) header.d=trvn.ru header.i=@trvn.ru header.b=VhUxaeXu; arc=none smtp.client-ip=194.87.146.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=trvn.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=trvn.ru
-Received: from authenticated-user (box.trvn.ru [194.87.146.52])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-	(No client certificate requested)
-	by box.trvn.ru (Postfix) with ESMTPSA id 17F9C401B2;
-	Wed, 28 Feb 2024 20:49:20 +0500 (+05)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
-	t=1709135361; bh=TXDkaVmG4OI79+ODTlB7W6xh7e9pcZZeRG8zXY6AXzw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=VhUxaeXulzylqIHcBOnJNwY4jOYMTJXvIftsBCqCYyH6bJYpqGMkNdixEF8ywO1gd
-	 YBXJs4cXAbTUzHbceGHR7lQaNudEBrUJT0i4ObkYrLbtcDxHWusSt3gzfB5Ao2m2w6
-	 SS32hXdQrrBzOIrfcMZV9JvV+7FTIlQIf7RwMg7TAko/xdQzOtcPG0qKy7vJSYSIhB
-	 a7eWrk3WbM+XGAZgA4diXytBhRufxWHFsLFioElwvPQlNH8FOYEXObh3vXfjFNQNJk
-	 b4Qb3rzba0t924LGfS6qCqPm7tceRPbeCial2GrvwJEfqh27O5Qdxw9kzRgzOnUUh3
-	 ipJ4nfXO16Y7w==
+	s=arc-20240116; t=1709135409; c=relaxed/simple;
+	bh=A0aGELFfeQuryHSNoJxyQ82EHvZ+zG0MT55ob0nOeus=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=YgAxFZUDdCeu/E2VQhw53xWBrcK8hbgMyExt6c2jDx99JHygyGMa1x5aQqAf1Zjejb0QyQHnQk3xnQBmUmhPfr0ppg+Ymk+NphXsXx6MewLTRDnSNdnqRD6aeWi0MIV7TWXnhRLaHPI3/AzQa/vKzrNiyOYUkl1/4R/IjcLwnxw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Z6a2dbqw; arc=none smtp.client-ip=95.215.58.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1709135405;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kTVSWQckrG1uhUwf4yE6louRKCzZfuwwkT2CYEv4alg=;
+	b=Z6a2dbqwPm+KvT5A7tdVD+WC4yALKy9n7LbrvTyh9XpbDmn84qGxgCAiTe7mTvXHiMOdBg
+	oIvs/mWxCVlXRJRwsAT3BJtv2L6nQDdTEoGPbz01rkkgKyPiMGbBUTEakx3wG+RbyUV51o
+	xzEIlWuWUWspGgy0Z9yIIAxlL/F6G90=
+From: Chengming Zhou <chengming.zhou@linux.dev>
+To: akpm@linux-foundation.org
+Cc: hannes@cmpxchg.org,
+	yosryahmed@google.com,
+	nphamcs@gmail.com,
+	willy@infradead.org,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	Chengming Zhou <chengming.zhou@linux.dev>
+Subject: [PATCH mm-unstable v2] mm/zswap: fix zswap_pools_lock usages after changing to percpu_ref
+Date: Wed, 28 Feb 2024 15:49:54 +0000
+Message-Id: <20240228154954.3028626-1-chengming.zhou@linux.dev>
+In-Reply-To: <20240210-zswap-global-lru-v3-2-200495333595@bytedance.com>
+References: <20240210-zswap-global-lru-v3-2-200495333595@bytedance.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Wed, 28 Feb 2024 20:49:18 +0500
-From: Nikita Travkin <nikita@trvn.ru>
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: Sebastian Reichel <sebastian.reichel@collabora.com>, =?UTF-8?Q?Ilpo_J?=
- =?UTF-8?Q?=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, Rob Herring
- <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- cros-qcom-dts-watchers@chromium.org, Andy Gross <agross@kernel.org>, Bjorn
- Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>,
- Rob Herring <robh@kernel.org>, linux-pm@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH v3 2/3] power: supply: Add Acer Aspire 1 embedded
- controller driver
-In-Reply-To: <edec3bee-8604-49a9-8e2f-6c21e852ef6c@redhat.com>
-References: <20240220-aspire1-ec-v3-0-02cb139a4931@trvn.ru>
- <20240220-aspire1-ec-v3-2-02cb139a4931@trvn.ru>
- <qoidm5wujjbeoc2hlraky26wuwmuaxi2atyl6ehovhvffdbfeh@g5gunqdei45m>
- <7c429d2110dbac68d0c82c8fb8bfb742@trvn.ru>
- <edec3bee-8604-49a9-8e2f-6c21e852ef6c@redhat.com>
-Message-ID: <c6d3d9841fe5a754e78adaf95522b434@trvn.ru>
-X-Sender: nikita@trvn.ru
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Hans de Goede писал(а) 26.02.2024 15:59:
-> Hi,
-> 
-> +Ilpo (fellow pdx86 maintainer)
-> 
-> On 2/23/24 15:32, Nikita Travkin wrote:
->> Sebastian Reichel писал(а) 22.02.2024 04:41:
->>> Hi,
->>>
->>> On Tue, Feb 20, 2024 at 04:57:13PM +0500, Nikita Travkin wrote:
->>>> Acer Aspire 1 is a Snapdragon 7c based laptop. It uses an embedded
->>>> controller to control the charging and battery management, as well as to
->>>> perform a set of misc functions.
->>>>
->>>> Unfortunately, while all this functionality is implemented in ACPI, it's
->>>> currently not possible to use ACPI to boot Linux on such Qualcomm
->>>> devices. To allow Linux to still support the features provided by EC,
->>>> this driver reimplments the relevant ACPI parts. This allows us to boot
->>>> the laptop with Device Tree and retain all the features.
->>>>
->>>> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
->>>> ---
->>>>  drivers/power/supply/Kconfig           |  14 +
->>>>  drivers/power/supply/Makefile          |   1 +
->>>>  drivers/power/supply/acer-aspire1-ec.c | 453 +++++++++++++++++++++++++++++++++
->>>
->>> I think this belongs into drivers/platform, as it handles all bits of
->>> the EC.
->>>
->>
->> Hm, I initially submitted it to power/supply following the c630 driver,
->> but I think you're right... Though I'm not sure where in platform/ I'd
->> put this driver... (+CC Hans)
->>
->> Seems like most of the things live in platform/x86 but there is no i.e.
->> platform/arm64...
->>
->> Hans, (as a maintainer for most things in platform/) what do you think
->> would be the best place to put this (and at least two more I'd expect)
->> driver in inside platform/? And can we handle it through the
->> platform-driver-x86 list?
-> 
-> I guess that adding a drivers/platform/aarch64 map for this makes
-> sense, with some comments in the Makefile and in the Kconfig
-> help explaining that this is for PC/laptop style EC drivers,
-> which combine multiple logical functions in one, only!
-> 
-> Assuming that we are only going to use this for such EC drivers,
-> using the platform-driver-x86 mailinglist for this makes sense
-> since that is where are the people are with knowledge of e.g.
-> userspace APIs for various typical EC functionalities.
-> 
-> It might even make sense to also use:
-> 
-> git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git
-> 
-> As git tree for this and send pull-reqs to Linus for this
-> together with the other pdx86 for the same reasons.
-> 
-> I would be open to that as long as this is strictly limited to
-> EC (like) drivers.
+Now the release of zswap pool is controlled by percpu_ref, its release
+callback (__zswap_pool_empty()) will be called when percpu_ref hit 0.
+But this release callback may potentially be called from RCU callback
+context by percpu_ref_kill(), which maybe from the softirq context.
 
-Yes, I believe the EC are the only "boad-specific" drivers we need for
-the Windows-on-Arm devices as of today. I expect at least two more EC
-drivers to be added later.
+So we need to use spin_lock/unlock_bh() to avoid potential deadlock.
 
-Then I will re-target this series to platform-driver-x86:
+This problem is introduced by the commit f3da427e82c4 ("mm/zswap: change
+zswap_pool kref to percpu_ref"), which is in mm-unstable branch now.
+It can be reproduced by testing kernel build in tmpfs with zswap and
+CONFIG_LOCKDEP enabled, meanwhile changing the zswap compressor setting
+dynamically.
 
-- Will add a new drivers/platform/aarch64/ dir with a Makefile and Kconfig
-  that would explicitly note it's only for EC-like drivers. Will update
-  the "X86 PLATFORM DRIVERS" entry in MAINTAINERS. (Or should I add a new
-  entry?)
-- Will add this driver there, also updating per the last Sebastian's
-  comments.
-- Will also move the dt binding to a new bindings/platform/ dir.
+Signed-off-by: Chengming Zhou <chengming.zhou@linux.dev>
+---
+v2:
+ - Change to use spin_lock/unlock_bh(), per Matthew.
+---
+ mm/zswap.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-Thanks!
-Nikita
+diff --git a/mm/zswap.c b/mm/zswap.c
+index 011e068eb355..da90933c6d20 100644
+--- a/mm/zswap.c
++++ b/mm/zswap.c
+@@ -459,7 +459,7 @@ static void __zswap_pool_empty(struct percpu_ref *ref)
+ 
+ 	pool = container_of(ref, typeof(*pool), ref);
+ 
+-	spin_lock(&zswap_pools_lock);
++	spin_lock_bh(&zswap_pools_lock);
+ 
+ 	WARN_ON(pool == zswap_pool_current());
+ 
+@@ -468,7 +468,7 @@ static void __zswap_pool_empty(struct percpu_ref *ref)
+ 	INIT_WORK(&pool->release_work, __zswap_pool_release);
+ 	schedule_work(&pool->release_work);
+ 
+-	spin_unlock(&zswap_pools_lock);
++	spin_unlock_bh(&zswap_pools_lock);
+ }
+ 
+ static int __must_check zswap_pool_get(struct zswap_pool *pool)
+@@ -598,7 +598,7 @@ static int __zswap_param_set(const char *val, const struct kernel_param *kp,
+ 		return -EINVAL;
+ 	}
+ 
+-	spin_lock(&zswap_pools_lock);
++	spin_lock_bh(&zswap_pools_lock);
+ 
+ 	pool = zswap_pool_find_get(type, compressor);
+ 	if (pool) {
+@@ -607,7 +607,7 @@ static int __zswap_param_set(const char *val, const struct kernel_param *kp,
+ 		list_del_rcu(&pool->list);
+ 	}
+ 
+-	spin_unlock(&zswap_pools_lock);
++	spin_unlock_bh(&zswap_pools_lock);
+ 
+ 	if (!pool)
+ 		pool = zswap_pool_create(type, compressor);
+@@ -628,7 +628,7 @@ static int __zswap_param_set(const char *val, const struct kernel_param *kp,
+ 	else
+ 		ret = -EINVAL;
+ 
+-	spin_lock(&zswap_pools_lock);
++	spin_lock_bh(&zswap_pools_lock);
+ 
+ 	if (!ret) {
+ 		put_pool = zswap_pool_current();
+@@ -643,7 +643,7 @@ static int __zswap_param_set(const char *val, const struct kernel_param *kp,
+ 		put_pool = pool;
+ 	}
+ 
+-	spin_unlock(&zswap_pools_lock);
++	spin_unlock_bh(&zswap_pools_lock);
+ 
+ 	if (!zswap_has_pool && !pool) {
+ 		/* if initial pool creation failed, and this pool creation also
+-- 
+2.40.1
 
-> 
-> Ilpo, what do you think about this ?
-> 
-> Regards,
-> 
-> Hans
-> 
 
