@@ -1,160 +1,182 @@
-Return-Path: <linux-kernel+bounces-85847-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85848-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32BF986BC2D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:27:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE84986BC2E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:27:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E47FE284EF8
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:27:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7DC3D2849C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:27:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6385770055;
-	Wed, 28 Feb 2024 23:27:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95FDF72935;
+	Wed, 28 Feb 2024 23:27:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C8Ft2bAJ"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="lu+cD1rS"
+Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 075E813D319;
-	Wed, 28 Feb 2024 23:27:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 667A413D315
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 23:27:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709162846; cv=none; b=DbZVBXm3BU188n5Gmd4gRM80COWV8LXgA7i4jnuC6g0IruMtvvKKawunUf8UNUVq3F5MTiHnD2dnWXr8Nn4cdYtGOQ8YCpacPYXi8fCyeE7IiOhfUWUl/vPjroshLaWSgAIyI/XapgvSRySLwYEmPHhwqTmvj8OvwSysWk+tSkI=
+	t=1709162854; cv=none; b=HB5EaFwDCSx8qs+TmAjgOEwHkw4a17Y87N0Ia2eu7YQShLcHHQNDnnOyNsOjoF8/cdIBItx/MkB/3cYlAk5vDTMzVIW5O4Ig4zBLXi1LT4OyXyApKna9WOR+R9UCIndvsFQxBMqS49oIxDdPxSlMbJ+kL2uAufz27GeOXb8xEaY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709162846; c=relaxed/simple;
-	bh=yR99aj/Y3qUCL/U7ci0Qst/HDVZ03Ni5Gp668ZTg95w=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=T+mdSpIYlH+IKCtCwNOlmbKZpS76o/mQ9SlodHkRr7nNFAnr5PoY5UrE7RPYvuiwqMHWN1jy41LjxNSPey+pQKIrfpmhWarFT0zPdd4ILvvjJ6bc7RyVB33ieikuyEIzatJglVaLsCBJ3g5LdbcfdcDtBRvZKS3imlRV9litW4E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C8Ft2bAJ; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-513230201b2so155805e87.1;
-        Wed, 28 Feb 2024 15:27:24 -0800 (PST)
+	s=arc-20240116; t=1709162854; c=relaxed/simple;
+	bh=8/y9rMVJc6FKo802Bf8iqSWhmEGQ3RsdEPGMoRIzFZI=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=KFRYHjwxzGJ8Ioi4wji4C58/BFQ16wdBHVDoMA4JkXEYYZY+0GizwhZTQcSoOMPAW4NFlWFZ5zg8HPea2ldlgh7n+vzXcw+RyyZYPXSQy+aGp1/nBsLILFT49juDudwv4fuOFtcJomunNYEsMS3jRn3ZKOBVYdRqCAo4aATF29s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lu+cD1rS; arc=none smtp.client-ip=209.85.210.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6e55def4f0eso187346b3a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 15:27:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709162843; x=1709767643; darn=vger.kernel.org;
-        h=mime-version:message-id:date:subject:to:from:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=qUsI28IGlUJBAILlE5CNXqMn2Wot3QZGGWsRmezOGs8=;
-        b=C8Ft2bAJuHRJs50ha//S0HEUf+4TAkzx6P9B/EkWJVo6PI4f8MOYI4+z1rR7icFPVN
-         exHx9yc3aDLE8iClOLhTm1Dl9JzU+AqxO2mPfg1dqYrerfFC3FOpuM8aAmrDFAeMtbbr
-         0EjzxsG0YbaMZorOksSC8Bc3lOGoL0WBm3/muTA1GaMaoEQHD9GNsVTNn4FKwlAmkvel
-         3l+0Lp4GdGCytkpMsohMtect6MijdyfYQc0lCIOLDx7lJnK8nXjZWe40HFFwpPIbpsFa
-         5lU0ZsmLQZr/SVEC1O+JSNQZ9epYhM9sYgToHdjWgFtmFC6uynaaYtlaGxOg/gaTvl6j
-         ryZQ==
+        d=google.com; s=20230601; t=1709162853; x=1709767653; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=01TmfEs4eoDCMPOPtyVbWEsG5WuK7DAMeVgGLDDBeKQ=;
+        b=lu+cD1rSyqW/JW8arfG/icZvYr8R1Vc+5oX1UgKS2TordLHQxtJV9K4A19eicK69jj
+         DWIRDW0QWBaERFiVKnom/+Gro+L+uh2Rhqaq8FYVGXdYtA74+43Qm1LwhprB1o/gxKDo
+         DsxplVR20LDkgMUMOpRn/ywwdtlInB8jPmYRdo6Myr46jCz48RV4w2ZCWk/GVpvzUdmz
+         X8of1ZFsexgYKyS6zOOfH8F/4GrhI1OBo5ty08KaTCbGu4+llAjg/3RJXIjCx6EGZUgP
+         BW6i/dt4Y2tBT94tvpyPFHU6+xjtE93JAee1AVg4zViDsEhfIZ1org9G68oIGkcqhwRN
+         OMXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709162843; x=1709767643;
-        h=mime-version:message-id:date:subject:to:from:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qUsI28IGlUJBAILlE5CNXqMn2Wot3QZGGWsRmezOGs8=;
-        b=SafCwNlNQxuf/hMnOcdRyyUfF07A4dtLmPO3kWYHP8VDy3HOd2gN1dfWpHHMhq6Ipg
-         5b8gK9/8y4ZjlCwWThCb/JxyENigSiBR/dLyp3qE+Rgw0Z5N2cBGBb626hfOQcns1mR4
-         4m0D6I7AD8AX9bgXQI14MVdS3jlpzinqnvRcH4mVDChZiMFWEfn0fNO23FJusa1aP/UQ
-         UF519bXo02M+m2POO0RXM5i9Fc1ZXn4BsSjpLXnFc2woZB0o5BPWEK0Sz7cnPPAznCud
-         ZkhGo/njk8axUKnODTqvaTRcpAD2vts/XfypRA6cW9dRKYiPjQjPs8OMOTtjWhnCl2bS
-         detw==
-X-Forwarded-Encrypted: i=1; AJvYcCX7Qtkqk0+dQf/n/xDBB/mDexGZ4bwXcFqVFS8lertDOEnqiSmjsIJzZXD1gKcBkNkDMxRsb5keZuYl/5NQL1XMKPxp8CjXzur5sZz2ECZj2sNDZ6MXnwucj5ZRP4oBmM6Q
-X-Gm-Message-State: AOJu0YyouFEqmb8zHJcRICUcNn38Erkm7Y86FpNAW36IYzOe0rB9+Z96
-	DBCSAuuIm5rSHth3GzDp9pgPqP9MiD7TmSxHCSujCzYYhp44y0pA
-X-Google-Smtp-Source: AGHT+IEUDNBkFdHTxEGr88/rougzxjN7wW1dNLNTE4EokEqvE3FvIDWV4qKKcWv4RZPmxcXgd163Ng==
-X-Received: by 2002:a05:6512:605:b0:513:1a02:7304 with SMTP id b5-20020a056512060500b005131a027304mr202101lfe.54.1709162842814;
-        Wed, 28 Feb 2024 15:27:22 -0800 (PST)
-Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
-        by smtp.gmail.com with ESMTPSA id m19-20020a056000181300b0033d3b8820f8sm51909wrh.109.2024.02.28.15.27.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 28 Feb 2024 15:27:22 -0800 (PST)
-From: puranjay12@gmail.com
-To: catalin.marinas@arm.com, ast@kernel.org, daniel@iogearbox.net,
- mark.rutland@arm.com, broonie@kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org 
-Subject: arm64: Supporting DYNAMIC_FTRACE_WITH_CALL_OPS with CLANG_CFI 
-Date: Wed, 28 Feb 2024 23:27:03 +0000
-Message-ID: <mb61ph6hsxj94.fsf@gmail.com>
+        d=1e100.net; s=20230601; t=1709162853; x=1709767653;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=01TmfEs4eoDCMPOPtyVbWEsG5WuK7DAMeVgGLDDBeKQ=;
+        b=pWoLo3mjmcN3YF0OkZBI5fWERPHtYAy7csRXv26dL02KBLW63t5gcse8cSJ6banWlI
+         yc0mLuJhLnOTqEwxI0f4HgKmEC2UMDWP3OtdE8LJgYD6wyBPDhEfMvjfgCu5WrT26Kgy
+         yfecd2i3GE1sGWwlWic9rjEKAuArLO9hCdywCIdEJRNdxvforQ2BNIXqBohCdkroxtKi
+         gwocsLA1XhXLZouvUg9hkGgHEpvi0YFUa7en7T47vwQM9vzZjPJwQsjLR5jUTldvM4Ix
+         6RcybytbU9zgjLgilIh+e2vBLgcP9qOrDx7muFbn9zWwiimJuBhgiyR1rQZDSiuzvOfI
+         zl6A==
+X-Forwarded-Encrypted: i=1; AJvYcCVUFaUuLxL6eZd+SRC7HVynyq28m3VkE9blYY+c9eBb+3RkKwqt8cNwdunnbIzTNDqBwGpH5WiXJ7JaTol97Yt8VuGzTrcOCOni85zJ
+X-Gm-Message-State: AOJu0YysXVyjYwthnTeb1uI/kBxX4a8us92srZoLmcE9Tt9QSHpHalKb
+	WpXcX1lwsZegUMD3Vhu5USUD7BK4PBByDaimxyEu7G+L3pSwbjpkEsiiP/0LKkKHfdcIVvoWS4F
+	NZg==
+X-Google-Smtp-Source: AGHT+IHYyT6j7K3OgI3pVaGDE+oLuuCp65PkcNkK1WEZTU5RIK39yT4H5wc2LVJjthM3kMWR8/Le7z8W6aY=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:2d0d:b0:6e5:3cc2:61d0 with SMTP id
+ fa13-20020a056a002d0d00b006e53cc261d0mr51723pfb.2.1709162852671; Wed, 28 Feb
+ 2024 15:27:32 -0800 (PST)
+Date: Wed, 28 Feb 2024 15:27:31 -0800
+In-Reply-To: <20240228101837.93642-3-vkuznets@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain
+Mime-Version: 1.0
+References: <20240228101837.93642-1-vkuznets@redhat.com> <20240228101837.93642-3-vkuznets@redhat.com>
+Message-ID: <Zd_BY8Us6TYNBueI@google.com>
+Subject: Re: [PATCH 2/3] KVM: x86: Use actual kvm_cpuid.base for clearing KVM_FEATURE_PV_UNHALT
+From: Sean Christopherson <seanjc@google.com>
+To: Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc: kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>, 
+	Li RongQing <lirongqing@baidu.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
+On Wed, Feb 28, 2024, Vitaly Kuznetsov wrote:
+> @@ -273,6 +273,7 @@ static void __kvm_update_cpuid_runtime(struct kvm_vcpu *vcpu, struct kvm_cpuid_e
+>  				       int nent)
+>  {
+>  	struct kvm_cpuid_entry2 *best;
+> +	struct kvm_hypervisor_cpuid kvm_cpuid;
+>  
+>  	best = cpuid_entry2_find(entries, nent, 1, KVM_CPUID_INDEX_NOT_SIGNIFICANT);
+>  	if (best) {
+> @@ -299,10 +300,12 @@ static void __kvm_update_cpuid_runtime(struct kvm_vcpu *vcpu, struct kvm_cpuid_e
+>  		     cpuid_entry_has(best, X86_FEATURE_XSAVEC)))
+>  		best->ebx = xstate_required_size(vcpu->arch.xcr0, true);
+>  
+> -	best = __kvm_find_kvm_cpuid_features(vcpu, entries, nent);
+> -	if (kvm_hlt_in_guest(vcpu->kvm) && best &&
+> -		(best->eax & (1 << KVM_FEATURE_PV_UNHALT)))
+> -		best->eax &= ~(1 << KVM_FEATURE_PV_UNHALT);
+> +	kvm_cpuid = __kvm_get_hypervisor_cpuid(entries, nent, KVM_SIGNATURE);
+> +	if (kvm_cpuid.base) {
+> +		best = __kvm_find_kvm_cpuid_features(entries, nent, kvm_cpuid.base);
+> +		if (kvm_hlt_in_guest(vcpu->kvm) && best)
+> +			best->eax &= ~(1 << KVM_FEATURE_PV_UNHALT);
+> +	}
+>  
+>  	if (!kvm_check_has_quirk(vcpu->kvm, KVM_X86_QUIRK_MISC_ENABLE_NO_MWAIT)) {
+>  		best = cpuid_entry2_find(entries, nent, 0x1, KVM_CPUID_INDEX_NOT_SIGNIFICANT);
 
-I recently worked on allowing BPF programs to work properly on CLANG_CFI
-enabled kernels [1]. While doing this I found that fentry programs are
-failing to attach because DYNAMIC_FTRACE_WITH_CALL_OPS doesn't work with
-CLANG_CFI.
+Not now, as we need a minimal fix, but we need to fix the root problem, this is
+way to brittle.  Multiple helpers take @vcpu, including __kvm_update_cpuid_runtime(),
+before the incoming CPUID is set.  That's just asking for new bugs to crop up.
 
-Mark told me that the problem is that clang CFI places the type hash
-immediately before any pre-function NOPs, and so where some functions
-have pre-function NOPs and others do not, the type hashes are not at a
-consistent offset (and effectively the functions have different ABIs and
-cannot call one another)
+Am I missing something, or can we just swap() the new and old, update the new
+in the context of the vCPU, and then undo the swap() if there's an issue?
+vcpu->mutex is held, and accessing this state from a different task is wildly
+unsafe, so I don't see any problem with temporarily having an in-flux state.
 
-I tried enabling both Clang CFI and -fpatchable-function-entry=4,2 to
-see the behaviour and where this could fail. Here is an example:
+If we want to be paranoid, we can probably get away with killing the VM if the
+vCPU has run and the incoming CPUID is "bad", e.g. to guard against something
+in kvm_set_cpuid() consuming soon-to-be-stale state.  And that's actually a
+feature of sorts, because _if_ something in kvm_set_cpuid() consumes the vCPU's
+CPUID, then we have a bug _now_ that affects the happy path.
 
-This is the disassembly of jump_label_cmp() that has two pre-function nops and the CFI
-hash before them. So, the hash is at (addr - 12).
+Completely untested (I haven't updated the myriad helpers), but this would allow
+us to revert/remove all of the changes that allow peeking at a CPUID array that
+lives outside of the vCPU.
 
-ffff80008033e9b0:       16c516ce        [kCFI hash for 'static int jump_label_cmp(const void *a, const void *b)']
-ffff80008033e9b4:       d503201f        nop
-ffff80008033e9b8:       d503201f        nop
-ffff80008033e9bc <jump_label_cmp>:
-ffff80008033e9bc:       d503245f        bti     c
-ffff80008033e9c0:       d503201f        nop
-ffff80008033e9c4:       d503201f        nop
-[.....]
+static int kvm_set_cpuid(struct kvm_vcpu *vcpu, struct kvm_cpuid_entry2 *e2,
+                        int nent)
+{
+	int r, i;
 
-The following is the disassembly of the sort_r() function that makes an indirect call to
-jump_label_cmp() but loads the CFI hash from (addr - 4) rather than
-(addr - 12). So, it is loading the nop instruction and not the hash.
+	swap(vcpu->arch.cpuid_entries, e2);
+	swap(vcpu->arch.cpuid_nent, nent);
 
-ffff80008084e19c <sort_r>:
-[.....]
-0xffff80008084e454 <+696>:   ldur    w16, [x8, #-4] (#-4 here should be #-12)
-0xffff80008084e458 <+700>:   movk    w17, #0x16ce
-0xffff80008084e45c <+704>:   movk    w17, #0x16c5, lsl #16
-0xffff80008084e460 <+708>:   cmp     w16, w17
-0xffff80008084e464 <+712>:   b.eq    0xffff80008084e46c <sort_r+720>  // b.none
-0xffff80008084e468 <+716>:   brk     #0x8228
-0xffff80008084e46c <+720>:   blr     x8
+#ifdef CONFIG_KVM_HYPERV
+	if (kvm_cpuid_has_hyperv(vcpu)) {
+		r = kvm_hv_vcpu_init(vcpu);
+		if (r)
+			goto err;
+	}
+#endif
 
-This would cause a cfi exception.
+	r = kvm_check_cpuid(vcpu);
+	if (r)
+		goto err;
 
-As I haven't spent more time trying to understand this, I am not aware
-how the compiler emits 2 nops before some functions and none for others.
+	kvm_update_cpuid_runtime(vcpu);
 
-I would propose the following changes to the compiler that could fix this
-issue:
+	/*
+	 * KVM does not correctly handle changing guest CPUID after KVM_RUN, as
+	 * MAXPHYADDR, GBPAGES support, AMD reserved bit behavior, etc.. aren't
+	 * tracked in kvm_mmu_page_role.  As a result, KVM may miss guest page
+	 * faults due to reusing SPs/SPTEs. In practice no sane VMM mucks with
+	 * the core vCPU model on the fly. It would've been better to forbid any
+	 * KVM_SET_CPUID{,2} calls after KVM_RUN altogether but unfortunately
+	 * some VMMs (e.g. QEMU) reuse vCPU fds for CPU hotplug/unplug and do
+	 * KVM_SET_CPUID{,2} again. To support this legacy behavior, check
+	 * whether the supplied CPUID data is equal to what's already set.
+	 */
+	if (kvm_vcpu_has_run(vcpu)) {
+		r = kvm_cpuid_check_equal(vcpu, e2, nent);
+		if (r)
+			goto err;
+	}
 
-1. The kCFI hash should always be generated at func_addr - 4, this would
-make the calling code consistent.
+	vcpu->arch.kvm_cpuid = kvm_get_hypervisor_cpuid(vcpu, KVM_SIGNATURE);
+#ifdef CONFIG_KVM_XEN
+	vcpu->arch.xen.cpuid = kvm_get_hypervisor_cpuid(vcpu, XEN_SIGNATURE);
+#endif
+	kvm_vcpu_after_set_cpuid(vcpu);
 
-2. The two(n) nops should be generated before the kCFI hash. We would
-modify the ftrace code to look for these nops at (fun_addr - 12) and
-(func_addr - 8) when CFI is enabled, and (func_addr - 8), (func_addr -
-4) when CFI is disabled.
+	kvfree(e2);
+	return 0;
 
-The generated code could then look like:
-
-ffff80008033e9b0:       d503201f        nop
-ffff80008033e9b4:       d503201f        nop
-ffff80008033e9b8:       16c516ce        kCFI hash
-ffff80008033e9bc <jump_label_cmp>:
-ffff80008033e9bc:       d503245f        bti     c
-ffff80008033e9c0:       d503201f        nop
-ffff80008033e9c4:       d503201f        nop
-[.....]
-
-Note: I am overlooking the alignment requirements here, we might need to
-add another nop above the hash to make sure the top two nops are aligned at 8 bytes.
-
-I am not sure how useful this solution is, looking forward to hear from
-others who know more about this topic.
-
-Thanks,
-Puranjay
-
-[1] https://lore.kernel.org/bpf/20240227151115.4623-1-puranjay12@gmail.com/ 
+err:
+	swap(vcpu->arch.cpuid_entries, e2);
+	swap(vcpu->arch.cpuid_nent, nent);
+	return r;
+}
 
