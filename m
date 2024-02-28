@@ -1,113 +1,106 @@
-Return-Path: <linux-kernel+bounces-85633-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85634-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D838086B877
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 20:44:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F21786B87C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 20:45:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6D7C9B22016
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:44:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 018761C2189A
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:45:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31C345E06A;
-	Wed, 28 Feb 2024 19:44:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 936AA5E074;
+	Wed, 28 Feb 2024 19:45:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lErPlaJc"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="If6AmXJK"
+Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD2AD5E062
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 19:44:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B2EE5E063;
+	Wed, 28 Feb 2024 19:45:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709149451; cv=none; b=b+UXvyaCTFTEA7yRvkraV9Oj5X9F1pfb8Blmi5dBJKM8hJwLGH30Rbk2zpTxMMQVOiCAj7cNF25HE4VPny3YOz/q24U5bcD4BWfHMlFkozDtSbnAuLwmgA2rfl4VeioVRpiVqzJs/ybS+Aw+jCu17D4MMMUdEcgowMdocoC9RoI=
+	t=1709149504; cv=none; b=FKSCbPEriwEQRe0Q7BEgv0/jA0Yh3Mx1s4+tL6ABmHCbKH/RDmWJNfXxY/uxMlr2K842cztShW7f2gpIq+Fjer9xoC0FIQv4ZjfxLzFjBgMBQ3i3YIsnA49E/SlNdItiepZbZYImJTVGRnSkRPWYTNXQhakbL49qqf9Eaqf5igQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709149451; c=relaxed/simple;
-	bh=V0ilXmhRKxli9jjfPc07HZw+QOYaraP3+0PgQZD1VWc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Ct24DUq1Ko2Wtb9ELmIFvQPR6ReE0Nrj8O7uvZ6lsgHxokCgvTcD4hOi+Lq0Pr4gpXqPrd4l5rpuIsYClT0HTdIEgmLJTqXaucunY6kQx/nqOpgiKKcY3YDggmY2HrPuzmBqVgN9+1GneqnK9KBXwEyU/2Mfc1wN23xYpVs/mck=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lErPlaJc; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709149450; x=1740685450;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=V0ilXmhRKxli9jjfPc07HZw+QOYaraP3+0PgQZD1VWc=;
-  b=lErPlaJcaPgnuhAgCzPdqHdKiF0xncXldjv8qwR1unrCDL72PYpa17Dr
-   zZ7OsZucQYZECKyLXTUA2XheKQvjnIfs+Y2SOWqOMYSm9vqQ+tbmMuZlF
-   pv2er91q7WcatHcFyxHLsDf9SGrEc9WywCwagq/myHM94FNEso/dWkD4+
-   KPZL1A3fek5izm+UjIikfHOxbvBgt88de8EaULSnarybIa1uI/MR2Wfw2
-   sbCsTZsTTgF2bSDj+/38Bb2d0AIQUxxBwsIVvLihgSPiDN2ayVSqxGeQy
-   al00KE9aZmDLSujnzMM1p82QcKW/he89/mWF8C3BcSh2ZcbUZC0RLDzh4
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="14216819"
-X-IronPort-AV: E=Sophos;i="6.06,191,1705392000"; 
-   d="scan'208";a="14216819"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 11:44:09 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,191,1705392000"; 
-   d="scan'208";a="7502494"
-Received: from lucas-s2600cw.jf.intel.com ([10.165.21.196])
-  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 11:44:07 -0800
-From: Lucas De Marchi <lucas.demarchi@intel.com>
-To: Oded Gabbay <ogabbay@kernel.org>,
-	=?UTF-8?q?Thomas=20Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
-	Arnd Bergmann <arnd@kernel.org>
-Cc: Lucas De Marchi <lucas.demarchi@intel.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	Matthew Brost <matthew.brost@intel.com>,
-	Jani Nikula <jani.nikula@intel.com>,
-	Matt Roper <matthew.d.roper@intel.com>,
-	intel-xe@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] [v2] drm/xe/kunit: fix link failure with built-in xe
-Date: Wed, 28 Feb 2024 11:44:35 -0800
-Message-ID: <170914939984.3691978.2185510121426316962.b4-ty@intel.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240226124736.1272949-1-arnd@kernel.org>
-References: <20240226124736.1272949-1-arnd@kernel.org>
+	s=arc-20240116; t=1709149504; c=relaxed/simple;
+	bh=RmY6FThNkxGmlbB0Exm3Wo1qtpWs1/pqZKVhO300w8E=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=RdEDlxT5tVF/mcLkJZu/UXrmiLAn1qdkDlpsTYYvemwbDr8Aa7x+I+0rzDRYkNIMYhRotKJcf7MylyITyD717T5kEZEcYRJPfCxibUpvIJWf4NsJ8t25S782ybjiNfEopGcLS3NXk9A3mHegnJtNBAilT9G0rQJZbNPnhBip4pA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=If6AmXJK; arc=none smtp.client-ip=209.85.166.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-365124888a5so816925ab.1;
+        Wed, 28 Feb 2024 11:45:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709149502; x=1709754302; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=9xZ8xmcjSfjLYlMC6SCBTArV0VkBy+6b9iBOrLgBynQ=;
+        b=If6AmXJKl60NvbICp8HpdBHSOBRkIvVLGKABmchVRK3gnv+03G/trS6srzuY3A5tQP
+         z9c3m3xdbfTxSW9u+3zIB3z3MRSg5ozi5og5HRfvxuSTnEOIOkJwfBcfsKTG01pAEjlm
+         5k9KWYuVTfdDkNq/R1wJYWP2Sjnxn3SNpLxQfcRINTq+MDg3vHIb+XEA2mGcSdK4pWoD
+         0dHR2QplE2eFMCavV3QOCc6m80d1tKf8BhE1qteUVYXBPDRZCeQd+BO2EkZF66WSttzh
+         b//Di4fhugKPLM021YqP7Ox/RTgJQU3+LTLP0rWsLP3ztd0XuxH15dimhxloAaPKSY++
+         J5Cw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709149502; x=1709754302;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9xZ8xmcjSfjLYlMC6SCBTArV0VkBy+6b9iBOrLgBynQ=;
+        b=RWUex5diRVilpvXt2ZuW/xKJkak9wOw7FklfZJT+4YgnKpmVU/eidlorD2CK1kh5Me
+         bBWiAW1hZoLvVRzdq4LpkjEWr2XvYt60DHMGa8p4A5kpMcjW5xKPTNTJJ4aFnHG7L3e7
+         PkIWown587cpvR5Ak/HE1GFV8yhLaFuxk9+E1QjItAMiUg/xLsWG1jW+CO/3LNMczjy3
+         QxBo9xihcTmw68TmXt5lR+zhFRqWqBz7hlr3FLucUJOQPBnU/pYVqBjSe6emXJ6u/NDT
+         mtAWAOdUqn9ZVCLhlYjajVMrfq+vqRq9S7+bqNIKKz0voQqmjRGWiR3tb19OMWeefZPF
+         K8jw==
+X-Forwarded-Encrypted: i=1; AJvYcCUKptZEp++rV9x4jCIAdhL2cRoWS8m4n0j+sTJX8lHRgBupIeV0jL2qA3MpZoRlrWTwO/1KLn6Kf3ay5vUNNVWAez4SKYZ5rNhN6q2j1xqWI1O1rxASPMeUeXyq/bEuSzUUt1b7kOmqTTG+A3LL
+X-Gm-Message-State: AOJu0YxZpzQ1qSUvnBYBKkgkx/krNcXd/E3D+f6hIcuuMLg+pB4tpsz5
+	OFEMMGwdCGlSmvWqPC5sK8wkeqG4py+vgudw+Dup7fvdcUVCzrpj6K/jeHO+
+X-Google-Smtp-Source: AGHT+IFnSI1+gnNkWI/zc0c8dXyqPZhw+XDdNUnqDGuxILt7h4aCQ7+b2dfGiRBanV+bDvtqtxmvdg==
+X-Received: by 2002:a92:d986:0:b0:365:245c:6c99 with SMTP id r6-20020a92d986000000b00365245c6c99mr268427iln.29.1709149502498;
+        Wed, 28 Feb 2024 11:45:02 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id c5-20020a056e020cc500b00365843633bcsm21471ilj.83.2024.02.28.11.45.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Feb 2024 11:45:02 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Wed, 28 Feb 2024 11:45:00 -0800
+From: Guenter Roeck <linux@roeck-us.net>
+To: Jakub Kicinski <kuba@kernel.org>, Eric Dumazet <edumazet@google.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Brendan Higgins <brendanhiggins@google.com>,
+	David Gow <davidgow@google.com>, linux-kselftest@vger.kernel.org,
+	kunit-dev@googlegroups.com
+Subject: lock warnings in dev_addr_lists test
+Message-ID: <48c4d3db-66d5-4a9a-ab9e-9036db7222dc@roeck-us.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+Hi,
 
-On Mon, 26 Feb 2024 13:46:36 +0100, Arnd Bergmann wrote:
-> When the driver is built-in but the tests are in loadable modules,
-> the helpers don't actually get put into the driver:
-> 
-> ERROR: modpost: "xe_kunit_helper_alloc_xe_device" [drivers/gpu/drm/xe/tests/xe_test.ko] undefined!
-> 
-> Change the Makefile to ensure they are always part of the driver
-> even when the rest of the kunit tests are in loadable modules.
-> 
-> [...]
+when running the dev_addr_lists unit test with lock debugging enabled,
+I always get the following lockdep warning.
 
-All 3 patches applied to drm-xe-next. Thanks!
+[    7.031327] ====================================
+[    7.031393] WARNING: kunit_try_catch/1886 still has locks held!
+[    7.031478] 6.8.0-rc6-00053-g0fec7343edb5-dirty #1 Tainted: G        W        N
+[    7.031728] ------------------------------------
+[    7.031816] 1 lock held by kunit_try_catch/1886:
+[    7.031896]  #0: ffffffff8ed35008 (rtnl_mutex){+.+.}-{3:3}, at: dev_addr_test_init+0x6a/0x100
 
-[1/3] drm/xe/kunit: fix link failure with built-in xe
-      commit: 0e6fec6da25167a568fbaeb8401d8172069124ad
-[2/3] drm/xe/mmio: fix build warning for BAR resize on 32-bit
-      commit: f5d3983366c0b88ec388b3407b29c1c0862ee2b8
-[3/3] drm/xe/xe2: fix 64-bit division in pte_update_size
-      commit: 1408784b599927d2f361bac6dc5170d2ee275f17
+Instrumentation shows that dev_addr_test_exit() is called, but only
+after the warning fires.
 
-Best regards,
--- 
-Lucas De Marchi <lucas.demarchi@intel.com>
+Is this a problem with kunit tests or a problem with this specific test ?
+
+Thanks,
+Guenter
 
