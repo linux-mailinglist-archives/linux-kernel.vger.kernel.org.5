@@ -1,140 +1,155 @@
-Return-Path: <linux-kernel+bounces-84638-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84637-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4BC386A959
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:55:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2147286A956
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:55:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 01FDF1C25C65
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 07:55:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8CC0BB23E43
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 07:55:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F14A28DCA;
-	Wed, 28 Feb 2024 07:55:00 +0000 (UTC)
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EBD825630;
+	Wed, 28 Feb 2024 07:54:58 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B074E25579;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D91422560F;
 	Wed, 28 Feb 2024 07:54:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709106900; cv=none; b=Tcn6rP1lU/dNZU3aQdW6c5TiL2BwF1IOX3uzoKRnMzOjVBZI1Q4LtKoCE8/4No3ses8RYO0Z3W4zhJK5RAcpQ6IMq4G/NpvIMC50YkLLMEd06/Jk1GHkl6iapGKALzSk62QiulE068mrGzABc/a1r5QCRsMTrDBcAZgJPQJuqns=
+	t=1709106897; cv=none; b=SGxC/VJyyysl4gqwJZW92dfOgW0eKfe8Zmg1fDDU3Ht3AWp92a0uMvnoLLKye8b6K30PocEUFHltFExgyg4TM2HnauNb1XTPqpZPMemCaX3+e0FTlxqQjMz96ygMDRJI+pvEEPE5j1irl2rBesrL8SOFJpWu6NpkG0V8GMuk9U0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709106900; c=relaxed/simple;
-	bh=k3PFtWy/PHzxl2DxuJbIoHpjDS4J4NRERx2D4xtaZ/Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pC745Kg8dDI1YhguwR52ZoBu0vZoDKrp1syhAS7LcnU4XHWTVd3jhWIxG9T/Wb/CZnu5wrUgAeoInc5PP9TllVEwkFBd+PUVIOnZ3It0X7oFdbRpvALooiqCtH+wLaTTIiSyzsyLKXh2uIn+HSemyvB/vIfHX9ANZcNTbfIMMD4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-607e54b6cf5so4293317b3.0;
-        Tue, 27 Feb 2024 23:54:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709106896; x=1709711696;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dan9EEJFFN2NY2BJhmO3YKkWCzZTBjLI4vE6yLCQhC4=;
-        b=KPYL2D5EiMgIkUpWKvIJ8j74Njr7DRacsJPdApLbkuuTs5cNseiPPKVEhoyB27Rh/j
-         UFrItF18YlOoDDib+vPFE1f/KsbW6kDc0kH2XUYDJpIvYQv+OLACYzQv7XBXquDflQ/E
-         Jim+sL1aQmlfcE7E0wqLOHD2nYu1+e6iwXw1BPzwmw215z5vagkbQEsvYRyf0IgTue+h
-         WJk6fNNfZRT0RSS5RXM0pW9jAh2pRz89J/mkQ4uBEMI2XsjINWbFnhm/ZY/eIUataPYZ
-         HCHJzFxSylKfmsrGq8Sir8YnTLpbiuM3bqXzXADHOvlg76mB4VMZrxXxh/CnIgzlJ/4o
-         QSIg==
-X-Forwarded-Encrypted: i=1; AJvYcCW1jlKepU9cVVydE19lo0kO3TwPzTwKTOJkJT4LGxAz2bAPaOxNEoGoowT6ozrX4pLObF/mrWybH85iwgnLgcsKtpN7MNMbEp19PwPyg0167jgM4OaBSTx3mPvUbdTzLnmIQ/YQAvIOMoKHWcjmchJIcf+GBOoU1j5l4LTXZsjKH1J+UxT5UTxVeeWx
-X-Gm-Message-State: AOJu0Yx/NZ8CbhvDGZu+xkqW09c25xA0bs8UwsX+JHa4gp3oLik1/Dwz
-	+KAV3/rE8/LhWshCf5A0qbbKfkqSbU1iYMprmg1XqP9Qe/0Set10k75iB6ANLUAVZQ==
-X-Google-Smtp-Source: AGHT+IFx4E2CORoj73bbBkbQrqOuCoZW+r0MklMUab8Hbb1wSaM//wQBQqV/kktfbc72VqK10jqlhg==
-X-Received: by 2002:a81:aa53:0:b0:609:38c2:3137 with SMTP id z19-20020a81aa53000000b0060938c23137mr1225419ywk.12.1709106896088;
-        Tue, 27 Feb 2024 23:54:56 -0800 (PST)
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com. [209.85.219.176])
-        by smtp.gmail.com with ESMTPSA id x19-20020a81a013000000b006077cd5fc5csm2283241ywg.11.2024.02.27.23.54.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Feb 2024 23:54:55 -0800 (PST)
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dc25e12cc63so606638276.0;
-        Tue, 27 Feb 2024 23:54:55 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUEgbGins2hPnBqD31Gn++eQVFmYqXTicY3MNk+b+vGeoRW5nby9019sJoVR/IzCSyYfKRUiro+KxzbOqCqfUtpOPAKW4mU2XhkPvHfRu8nJ6WCczW8WxARaboLMeoYZhy+raO69X8TLChz1T4I3KC0LaEDnqCfw6o2UFlUqvPwmrO0+QWQQgykaBGF
-X-Received: by 2002:a25:bdd4:0:b0:dcb:b072:82d8 with SMTP id
- g20-20020a25bdd4000000b00dcbb07282d8mr1190572ybk.15.1709106895346; Tue, 27
- Feb 2024 23:54:55 -0800 (PST)
+	s=arc-20240116; t=1709106897; c=relaxed/simple;
+	bh=PLJ1oCKc7KvGjVx9RjB4Z+3NrgeF4CXKh5GJbfneNd0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MwzfZLl+scb8LdmWHdq3+JeXbKKm/8/jfDigFJf59P2nyTQSi0PRmnuE+X/nkU/XJDUWPBSoOZjsR45zP2HyPSI2ApKexDqyCtluNPlzp4NkWkSMFAI0/jzqA//64GSXAv9VuyopmpVV6zYmY+CUB2r/nld2eGos993c+B0LSB4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44095C433F1;
+	Wed, 28 Feb 2024 07:54:53 +0000 (UTC)
+Message-ID: <de48fffa-4b1c-465a-aa63-b2b6372ac5e6@xs4all.nl>
+Date: Wed, 28 Feb 2024 08:54:51 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240227220930.213703-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20240227220930.213703-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 28 Feb 2024 08:54:42 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVKAfOznxXKb9QTZFpPpkcVk6O2aWxhkEL=ADPZcxx5uw@mail.gmail.com>
-Message-ID: <CAMuHMdVKAfOznxXKb9QTZFpPpkcVk6O2aWxhkEL=ADPZcxx5uw@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: soc: renesas: renesas-soc: Add pattern for gray-hawk
-To: Prabhakar <prabhakar.csengg@gmail.com>
-Cc: Magnus Damm <magnus.damm@gmail.com>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	=?UTF-8?Q?Niklas_S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>, 
-	devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/3] media: pci: sta2x11: Fix
+ Wcast-function-type-strict warnings
+To: Ricardo Ribalda <ribalda@chromium.org>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Nathan Chancellor <nathan@kernel.org>,
+ Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling
+ <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
+ Mike Isely <isely@pobox.com>, Tiffany Lin <tiffany.lin@mediatek.com>,
+ Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+ Yunfei Dong <yunfei.dong@mediatek.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+ llvm@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, linux-remoteproc@vger.kernel.org
+References: <20240226-fix-clang-warnings-v2-0-fa1bc931d17e@chromium.org>
+ <20240226-fix-clang-warnings-v2-1-fa1bc931d17e@chromium.org>
+Content-Language: en-US, nl
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Autocrypt: addr=hverkuil@xs4all.nl; keydata=
+ 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
+In-Reply-To: <20240226-fix-clang-warnings-v2-1-fa1bc931d17e@chromium.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Prabhakar,
+On 26/02/2024 18:32, Ricardo Ribalda wrote:
+> Building with LLVM=1 throws the following warning:
+> drivers/media/pci/sta2x11/sta2x11_vip.c:1057:6: warning: cast from 'irqreturn_t (*)(int, struct sta2x11_vip *)' (aka 'enum irqreturn (*)(int, struct sta2x11_vip *)') to 'irq_handler_t' (aka 'enum irqreturn (*)(int, void *)') converts to incompatible function type [-Wcast-function-type-strict]
+> 
+> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 
-On Tue, Feb 27, 2024 at 11:10=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail.=
-com> wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->
-> Add pattern for Renesas Gray Hawk Single board (based on R-Car V4M SoC)
-> to fix the below dtbs_check issue:
->
-> arch/arm64/boot/dts/renesas/r8a779h0-gray-hawk-single.dtb: /: compatible:=
-0: 'anyOf' conditional failed, one must be fixed:
-> 4695 'renesas,gray-hawk-single' does not match '^renesas,(emev2|r(7s|8a|9=
-a)[a-z0-9]+|rcar|rmobile|rz[a-z0-9]*|sh(7[a-z0-9]+)?|mobile)-[a-z0-9-]+$'
-> 4696 'renesas,gray-hawk-single' does not match '^renesas,(condor|falcon|g=
-r-peach|salvator|sk-rz|smar(c(2)?)?|spider|white-hawk)(.*)?$'
-> 4697 'renesas,gray-hawk-single' does not match '^renesas,(can|cpg|dmac|du=
-|(g)?ether(avb)?|gpio|hscif|(r)?i[i2]c|imr|intc|ipmmu|irqc|jpu|mmcif|msiof|=
-mtu2|pci(e)?|pfc|pwm|[rq]spi|rcar_sound|sata|scif[ab]*|sdhi|thermal|tmu|tpu=
-|usb(2|hs)?|vin|xhci)-[a-z0-9-]+$'
-> 4698 'renesas,gray-hawk-single' does not match '^renesas,(d|s)?bsc(3)?-(r=
-8a73a4|r8a7740|sh73a0)$'
-> 4699 'renesas,gray-hawk-single' does not match '^renesas,em-(gio|sti|uart=
-)$'
-> 4700 'renesas,gray-hawk-single' does not match '^renesas,fsi2-(r8a7740|sh=
-73a0)$'
-> 4701 'renesas,gray-hawk-single' does not match '^renesas,hspi-r8a777[89]$=
-'
-> 4702 'renesas,gray-hawk-single' does not match '^renesas,sysc-(r8a73a4|r8=
-a7740|rmobile|sh73a0)$'
-> 4703 'renesas,gray-hawk-single' is not one of ['renesas,imr-lx4', 'renesa=
-s,mtu2-r7s72100']
-> 4704 'renesas,gray-hawk-single' is not one of ['renesas,smp-sram']
-> 4705 'renesas,gray-hawk-single' does not match '^(?!renesas,.+-.+).+$'
-> 4706 from schema $id: http://devicetree.org/schemas/soc/renesas/renesas-s=
-oc.yaml#
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Arnd's patch for this has already been merged:
 
-I wonder how I managed to miss that?
+https://lore.kernel.org/linux-media/20240213095451.454142-1-arnd@kernel.org/
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-devel for v6.9.
+So I'm marking your patch as 'Obsolete' in patchwork.
 
-Gr{oetje,eeting}s,
+Regards,
 
-                        Geert
+	Hans
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
+> ---
+>  drivers/media/pci/sta2x11/sta2x11_vip.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/media/pci/sta2x11/sta2x11_vip.c b/drivers/media/pci/sta2x11/sta2x11_vip.c
+> index e4cf9d63e926d..a6456673be3f6 100644
+> --- a/drivers/media/pci/sta2x11/sta2x11_vip.c
+> +++ b/drivers/media/pci/sta2x11/sta2x11_vip.c
+> @@ -757,7 +757,7 @@ static const struct video_device video_dev_template = {
+>  /**
+>   * vip_irq - interrupt routine
+>   * @irq: Number of interrupt ( not used, correct number is assumed )
+> - * @vip: local data structure containing all information
+> + * @data: local data structure containing all information
+>   *
+>   * check for both frame interrupts set ( top and bottom ).
+>   * check FIFO overflow, but limit number of log messages after open.
+> @@ -767,8 +767,9 @@ static const struct video_device video_dev_template = {
+>   *
+>   * IRQ_HANDLED, interrupt done.
+>   */
+> -static irqreturn_t vip_irq(int irq, struct sta2x11_vip *vip)
+> +static irqreturn_t vip_irq(int irq, void *data)
+>  {
+> +	struct sta2x11_vip *vip = data;
+>  	unsigned int status;
+>  
+>  	status = reg_read(vip, DVP_ITS);
+> 
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
 
