@@ -1,141 +1,117 @@
-Return-Path: <linux-kernel+bounces-85385-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85386-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B970C86B541
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:46:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B9FE86B544
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:47:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69E832878E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:46:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0DE8F2864F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:47:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F116E208D2;
-	Wed, 28 Feb 2024 16:46:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B3E6200CD;
+	Wed, 28 Feb 2024 16:47:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DRSXZdSn"
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="CODotAl2"
+Received: from mail-io1-f54.google.com (mail-io1-f54.google.com [209.85.166.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF5AC6EEE4;
-	Wed, 28 Feb 2024 16:46:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FCE71EA80
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 16:47:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709138794; cv=none; b=jBxdT7/IYKvA9/6OwUtnizzbuCqEffo4NLSmJ5MpOLvbCJgNh7IoPOQOt0y11lXIg7owtp2Tx6Wqia9/mK/KHUGHWn24+41gmsjcKtFc4k/mi6+Rlr+I6yOKWNpqN1brCXbeIJRm2C3C4AZXqBkbDVSUtGzgdN8230ZHJdtfhdw=
+	t=1709138831; cv=none; b=kHUYdgNa6yWpu8Mv5Ie17+0/ne9byr8p12xEGYnjAusxsU1yvAupZ872toBi9EU3KtNOFBvLquLtCPr9+n+KxEMVY16oGQBRBA1zRFjunmbHoe8E1xSl2/oCbldP+04XCAQ+yubuA5EIiWQ0Vq9VHg3Bts3G76UY8tVfaBMR8K4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709138794; c=relaxed/simple;
-	bh=V+Wes0yro1vaPybdAdIYTu58twkZIP8KrE4+vLrxbsI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fJDCU6bzZgDObSzdAj/wfkw7SxuiR0CN/4aPBKVy+SRxA5kQDWvo2q11yW7WxiWy0gIyZ0oZHFxf1hQLuTv44pzWGUrrZQIgtXuTzJc5fHlZIr2D3jTztaPcshl6fS5Hsii86X8K5yxNEEFz+qQoQSmdm65EtOGQA4nUSVPfEaI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DRSXZdSn; arc=none smtp.client-ip=209.85.219.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dc25e12cc63so1118638276.0;
-        Wed, 28 Feb 2024 08:46:32 -0800 (PST)
+	s=arc-20240116; t=1709138831; c=relaxed/simple;
+	bh=KPcr3OYgCWifWKWVCw+LkHgjmcQMX1AVYds8fD7Ng2M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HzknKZQqPGwO90YIYFTGoRcuK1G3Plow/SNOLIvjsO6PBoowjK4WiufvLEPOlc6/DJbPzkCQqqjIybHBDh8Ubi0RjtzEH+Ik9MHwwg8XH3OiRK0E8vAph5wy7hazcEqeZHaHykU6js1F7S86llNNUqbYglFvSDBTqd68awR2mh4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=CODotAl2; arc=none smtp.client-ip=209.85.166.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-io1-f54.google.com with SMTP id ca18e2360f4ac-7bff8f21b74so56990639f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 08:47:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709138791; x=1709743591; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=DxwTMwCJVFMBDDvjxN0uaNIVMWBc/m50PoGk4vNalyY=;
-        b=DRSXZdSn37qd1kKt+dhafidPKpXvIpn+/ObqdhivrtC3F6e7ddTn5l0YtNgaRKGK+M
-         d9MQ9UTXf4FbnpAV1R5XwfiT79PBjpgF+VSWxQoms07ghIBsJt9l9X0V0bZUWn5pvFi9
-         SMRb4BM5i8GqKWF6xtBRccDsVisltO0HNlOm2pUdMvbiYCxNJnKjCpNQ7xvMzCWEOl9U
-         FPiP2lA92mTaALlKGf9KEjmm6zlmTO6nhzCvlOKzyEXaKH/36SB3tArGkhSeFElCnv9E
-         S2h1Tby5FPY1XGorSyWLSt17PR++PDYbmqjrQr7PqUIPzyZZTbLLxX2W3NJJsOj9X676
-         qKAw==
+        d=linuxfoundation.org; s=google; t=1709138828; x=1709743628; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gg6+Y4Ou57ZP9qky7zAH6w6hyVIm255CnHs2R3W5bvA=;
+        b=CODotAl2/o/Xh8Iieb2QG1mklO5f1lcGx8plvkft7TjV8XDMH5nRl50NZiOjaZhiFc
+         FX4njPGIf98r6PmQaLGP8Nnm4wwfvkkY60uDZvrPkuxXqnkHl8NmE+0Jd/GKw7vGntfv
+         +1W1Mdc1dpspB9bmJTe9TBaqj0dk3rcSQP9fI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709138791; x=1709743591;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DxwTMwCJVFMBDDvjxN0uaNIVMWBc/m50PoGk4vNalyY=;
-        b=a50gL7jA1ORb2QEq2pYlynwcNl0O52+fwa0MV9XzhcKv5+ciUASQQ71Y1QySSYYfUA
-         WeqI5LW+5lVJm8C8vBb5guu1JvWre0maYL2yprNwwKq8DZEzrBuW+leOvIW887Cg18aW
-         NwNd2I+CnV0iRENfqbsjXzEJSYk30KwJGIeIChfW9PMvH9KGcoQN5IMJ12fNhQngNtDd
-         1Lmkj89KsB8ubmHanAtu26cY86bpOaRY7iiVdg1nbH0IhyzEED6FvWwos3uvcjYtAOOs
-         JWpN7fpeDD29z1N22+b/dPyxmaN5iWTwcUThf0wt3FCBgKYLjly4wonrevKIxOiy0j/+
-         s2Bg==
-X-Forwarded-Encrypted: i=1; AJvYcCUywO9m1zecZ3ofWeU4sUrDKcNKkLn2VCQMyXB7ROcp4X+Vdxi7mpbbg9PD2sUb2LbwwINZN3xFiWr6kFRX4tgGmmVSM6GfkCljFuy/sJaFWqnQ0NeFRikRTp3HCYNf/Qm4zGzoDePoM9aQJhKIjHqDXS/VWGD28XkWhcbI+7fWOcDAbakQ0Fp5lfLOM3D6ZFSY2f6M78ZvrgAKsl7z
-X-Gm-Message-State: AOJu0Yw4HKJSOkFC79K8pPJKgiFkUlYMrSkS/iDvlwmRKYtukMLTgMW3
-	h5/PHqjWSIk45Hua/eVOSfgCPIcC9qeqQRjebQy2VFf2af8GswLkAzvPJxgjThw=
-X-Google-Smtp-Source: AGHT+IG+T6i0Kg6hK0OXQQpUI7eVIpugJ4UsU/eSwtZUJTDnNAIjX3r6X/tjo8tk0qDTO98RF+EAJQ==
-X-Received: by 2002:a25:72c1:0:b0:dc7:3362:4b2f with SMTP id n184-20020a2572c1000000b00dc733624b2fmr2053330ybc.13.1709138791147;
-        Wed, 28 Feb 2024 08:46:31 -0800 (PST)
-Received: from localhost ([2601:344:8301:57f0:2256:57ae:919c:373f])
-        by smtp.gmail.com with ESMTPSA id t13-20020a25aa8d000000b00dcc620f4139sm2082379ybi.14.2024.02.28.08.46.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 08:46:30 -0800 (PST)
-Date: Wed, 28 Feb 2024 08:46:29 -0800
-From: Yury Norov <yury.norov@gmail.com>
-To: Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc: Jakub Kicinski <kuba@kernel.org>, Andy Shevchenko <andy@kernel.org>,
-	linux-s390@vger.kernel.org, ntfs3@lists.linux.dev,
-	Wojciech Drewek <wojciech.drewek@intel.com>,
-	Ido Schimmel <idosch@nvidia.com>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>, dm-devel@redhat.com,
-	linux-kernel@vger.kernel.org, Jiri Pirko <jiri@resnulli.us>,
-	Eric Dumazet <edumazet@google.com>,
-	Marcin Szycik <marcin.szycik@linux.intel.com>,
-	Alexander Potapenko <glider@google.com>,
-	Simon Horman <horms@kernel.org>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
-	netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	linux-btrfs@vger.kernel.org, intel-wired-lan@lists.osuosl.org
-Subject: Re: [Intel-wired-lan] [PATCH net-next v5 00/21] ice: add PFCP filter
- support
-Message-ID: <Zd9jZZafcVyDGOTw@yury-ThinkPad>
-References: <20240201122216.2634007-1-aleksander.lobakin@intel.com>
- <c90e7c78-47e9-46d0-a4e5-cb4aca737d11@intel.com>
- <20240207070535.37223e13@kernel.org>
- <4f4f3d68-7978-44c4-a7d3-6446b88a1c8e@intel.com>
+        d=1e100.net; s=20230601; t=1709138828; x=1709743628;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gg6+Y4Ou57ZP9qky7zAH6w6hyVIm255CnHs2R3W5bvA=;
+        b=JvTC3ipH6GZ4tbb1EA/Tgt2jp15iuErRzahWnhbsKiA2MfWPU8BLhlcayW7S3xCGg0
+         9MGRC4ruQwZq/AmK7W5lvxNWAYD9PT9agtS0ezWtsyRDp8XDXuHD6n7AqIB+lR12V1ur
+         o8WI2tfmsRRoiDEZxgkJ9Jy5Tcc76fpeusB/+zyNktUtsK7ktH+ue86yKbJJmTW2PGZG
+         rY7JP8clufz+iNJtSwCIVnAgIWKyZgfOBBibI7ktkdo3YYHmoQLx85xx5SVOTOMTBpsO
+         UClo9MqmBVFhh2ndQ1clTDIZ7VBjmsA63ZmVvKAoLsF/l48va/z8UfpdvHjdDrn7BKMY
+         V3FA==
+X-Forwarded-Encrypted: i=1; AJvYcCWsYLW/8wKtp+HDI6xQaFdj3/Lh9BiZd3A8RPX1IcdtyzFC2clE+Cebq5m3IMFThUVUX/wP33RGt6rDfeSciNWAl2tiL0BYJykTfP8b
+X-Gm-Message-State: AOJu0Yy3RkAP66uXAvW8cNhBi0ALVYiv5N7kMGfYB8HQoaQLx0ThziRb
+	2fXTbhQBrhoUhT8KjZJqFmdTK40mFmWW7pCelgYWSspnmTOBRStOJt1XfIm2EKg=
+X-Google-Smtp-Source: AGHT+IFyRi8ePLaDpHmfI4NdCrm2iguFd4j4XQ4lNdB8vjhzI30N6HVQfNXNEev9wmy/CVVP0uQLaQ==
+X-Received: by 2002:a05:6602:2195:b0:7c7:ce93:f532 with SMTP id b21-20020a056602219500b007c7ce93f532mr7742919iob.1.1709138828341;
+        Wed, 28 Feb 2024 08:47:08 -0800 (PST)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id gj21-20020a0566386a1500b004748cbf37a0sm1376484jab.132.2024.02.28.08.47.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Feb 2024 08:47:07 -0800 (PST)
+Message-ID: <17bdbb9e-5c3b-40cd-a13b-e4cfcb7ea0a1@linuxfoundation.org>
+Date: Wed, 28 Feb 2024 09:47:06 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4f4f3d68-7978-44c4-a7d3-6446b88a1c8e@intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5.15 000/245] 5.15.150-rc1 review
+Content-Language: en-US
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
+ rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com,
+ Shuah Khan <skhan@linuxfoundation.org>
+References: <20240227131615.098467438@linuxfoundation.org>
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20240227131615.098467438@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Feb 12, 2024 at 12:35:38PM +0100, Alexander Lobakin wrote:
-> From: Jakub Kicinski <kuba@kernel.org>
-> Date: Wed, 7 Feb 2024 07:05:35 -0800
+On 2/27/24 06:23, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.15.150 release.
+> There are 245 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> > On Tue, 6 Feb 2024 13:46:44 +0100 Alexander Lobakin wrote:
-> >>> Add support for creating PFCP filters in switchdev mode. Add pfcp module
-> >>> that allows to create a PFCP-type netdev. The netdev then can be passed to
-> >>> tc when creating a filter to indicate that PFCP filter should be created.  
-> >>
-> >> I believe folks agreed that bitmap_{read,write}() should stay inline,
-> >> ping then?
-> > 
-> > Well, Dave dropped this from PW, again. Can you ping people to give you
+> Responses should be made by Thu, 29 Feb 2024 13:15:36 +0000.
+> Anything received after that time might be too late.
 > 
-> Why was it dropped? :D
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.150-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
 > 
-> > the acks and repost? What's your plan?
+> thanks,
 > 
-> Ufff, I thought people read their emails...
+> greg k-h
 > 
-> Yury, Konstantin, s390 folks? Could you please give some missing acks? I
-> don't want to ping everyone privately :z
 
-Hi Alexander, Jakub,
+Compiled and booted on my test system. No dmesg regressions.
 
-I reviewed the series again and added my SOBs for bitmap-related
-patches, and Acks or RBs for the rest, where appropriate.
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-Regarding the patch #17, I don't think that network-related tests
-should be hosted in lib/test-bitmap. This is not a critical issue,
-but Alexander, can you find a better place for the code?
-
-The rest of the series is OK for me. I think Jakub wants to pull this
-as a whole in his -net branch? If so please go ahead, if not - I can
-pull bitmap-related part in bitmap-for-next.
-
-Thanks,
-Yury
+thanks,
+-- Shuah
 
