@@ -1,96 +1,77 @@
-Return-Path: <linux-kernel+bounces-85243-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85240-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BDE486B2CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:11:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C137986B2CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:10:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 213111F287BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:11:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C454287B60
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:10:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25E7C15B995;
-	Wed, 28 Feb 2024 15:10:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D67CF15CD52;
+	Wed, 28 Feb 2024 15:10:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h4goeIk4"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="6RNvx1X0"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68E8715B992
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 15:10:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8027F2D022;
+	Wed, 28 Feb 2024 15:10:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709133031; cv=none; b=lOtD8PaVx6wIrUp3W6PE15WVPbN8wQ3iaJiZdZ4JTwPQHT6VTegMxsYGp7bnZhAZj92Y3A6K811L+ee40LhFuxlAO9U4JJXzNskDWu9lcR6nXits7aPPK1w0trmw+Dl+Cag2sVeprAoLhVqVabI9KLT/9eIoSUIbCfmtaMHS6CQ=
+	t=1709133022; cv=none; b=fMal7qlApT9h3lT3504Bkk8Hz85cdWJU7cMMKwzLvBo3i22l4BJ80aEzQIn/zE9/cU1jKS5x+rxBzgCRSuTgo2v0Ax2l2Zr/dYKj3lMWVh/qD/s/tuIYqruNLCaWdaHuLhGQUzE3id0AyzN+idGuYzhT5zAQmdlg08O5StXnebg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709133031; c=relaxed/simple;
-	bh=6FVRBR8jkQw+3lkUXhMUDt/EFHO2AhiOr7rXMH2y+q0=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=Yww5Jdkz5LhZ0Ydn3Dwoa2aQAq8OZVIyMrbs8tcCJwnJpxGu0E7OfFj2D5M2ESEEMMBbpqc+1RkWmwFXusHgAHLaomvRiCfaMABo9LgrJbx/lBXbUDZgItoEli7syyR4kA+JNfjYAHYPKx9VHw2Wil2s4H8qQEC37G/H8wOqjB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h4goeIk4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id D9EBFC43390;
-	Wed, 28 Feb 2024 15:10:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709133029;
-	bh=6FVRBR8jkQw+3lkUXhMUDt/EFHO2AhiOr7rXMH2y+q0=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=h4goeIk4xtRGMH9+CnkQf3kPkBQ6mVhd9S+c+XK5JUvJFXiZMfsao3tRz9b46/1kx
-	 5QM98/OMMTR1+RZyk+RN3usJqM89sJdQu4iBLgvFp0gzHBoq1ikkYwNbPIDCWxE8aF
-	 y/suAQzsWnq64U/75VPvPOhNAM/wYBnEE9IfSeoJ8yULkudB9Iu1OpE6GFEdJXnxTr
-	 8K1ZeSSqs+TKMX5Hfrki4PPSqa/A6KhrZak8xDeLNlDQSFbTxOrBOVKrvjBjPiZHBM
-	 QVKikH5b3jFDVfzxnrrYHD33fzBi+znAy53P+gm6v8dO66FLQzBvNN8nvRmtsytklJ
-	 X9sk/Nyjs4u6w==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id BA96CD88FB1;
-	Wed, 28 Feb 2024 15:10:29 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1709133022; c=relaxed/simple;
+	bh=hbU6soSNIhde/HbBZmF1+OQ6a8o7ZDnBxNw6usm4cqE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TwU2Iz1m59//6p+nd0UePDcZnJmc/GhzBOdCYW3haZufLNVggYAidRXpI0rL3COuGbEopk3ax4eRx9q892VpKBS/5cz9H8fpY0chZv7N88nQsBjny3WIIL85O+U9eUOQzhHmYKPwaRehMYUnuVmiUv0JJUmjW4PWbooC6jMboXI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=6RNvx1X0; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=88pAabs67d/TaG18mZs0ENtHJpAhlznp1aL+eyjFIZY=; b=6RNvx1X0aVSuyP/gI8PFf+trpL
+	HwXlVYgad+kq4p21jk4hI/FBs7Nqpwh4BylkoAlZ9v233Ht9VswGXAm1jIFerp+am4LHEp8w7Ddzw
+	litSe5pNwbCeQF4z1zait7ziaFW5Wn6D3SHr3EF5vO9J5wxLHzt4DVBUgzH+np74PSI4=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rfLZn-008xVg-Ue; Wed, 28 Feb 2024 16:10:31 +0100
+Date: Wed, 28 Feb 2024 16:10:31 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Javier Carrasco <javier.carrasco.cruz@gmail.com>,
+	Peter Korsgaard <peter@korsgaard.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: usb: dm9601: fix wrong return value in
+ dm9601_mdio_read
+Message-ID: <1ed82980-6fa8-4ad6-b031-2bdd07207fe0@lunn.ch>
+References: <20240225-dm9601_ret_err-v1-1-02c1d959ea59@gmail.com>
+ <20240227181709.7159d60f@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2,RESEND 0/2] drivers: perf: fix crash with the legacy riscv
- driver
-From: patchwork-bot+linux-riscv@kernel.org
-Message-Id: 
- <170913302975.9913.9405105778490456621.git-patchwork-notify@kernel.org>
-Date: Wed, 28 Feb 2024 15:10:29 +0000
-References: <20240227170002.188671-1-vadim.shakirov@syntacore.com>
-In-Reply-To: <20240227170002.188671-1-vadim.shakirov@syntacore.com>
-To: Vadim Shakirov <vadim.shakirov@syntacore.com>
-Cc: linux-riscv@lists.infradead.org, atishp@atishpatra.org,
- anup@brainfault.org, will@kernel.org, mark.rutland@arm.com,
- paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240227181709.7159d60f@kernel.org>
 
-Hello:
+> Andrew, 
+> mii.h files seem to fall under PHYLIB in MAINTAINERS, but mii.c does
+> not. Is this intentional?
 
-This series was applied to riscv/linux.git (fixes)
-by Palmer Dabbelt <palmer@rivosinc.com>:
+Probably. There are big parts of linux/mii.h which phylib
+uses. However drivers/net/mii.c is not part of phylib and is
+unmaintained.
 
-On Tue, 27 Feb 2024 20:00:00 +0300 you wrote:
-> This series fix crash with the legacy riscv driver when configs:
-> CONFIG_RISCV_PMU_LEGACY=y and CONFIG_RISCV_PMU_SBI=n and you try
-> to perf record
-> 
-> Vadim Shakirov (2):
->   drivers: perf: added capabilities for legacy PMU
->   drivers: perf: ctr_get_width function for legacy is not defined
-> 
-> [...]
-
-Here is the summary with links:
-  - [v2,RESEND,1/2] drivers: perf: added capabilities for legacy PMU
-    https://git.kernel.org/riscv/c/65730fe8f4fb
-  - [v2,RESEND,2/2] drivers: perf: ctr_get_width function for legacy is not defined
-    https://git.kernel.org/riscv/c/682dc133f83e
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+      Andrew
 
