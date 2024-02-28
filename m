@@ -1,181 +1,139 @@
-Return-Path: <linux-kernel+bounces-85428-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85429-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7CF986B5CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:21:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A358C86B5D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:22:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 312B0B247FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:21:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 44DE51F27561
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:22:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A6DD12DD9B;
-	Wed, 28 Feb 2024 17:21:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Dv0OfJNd"
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E41DE12DD9B;
+	Wed, 28 Feb 2024 17:22:37 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC1EB22EED
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 17:21:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F347A6EF01;
+	Wed, 28 Feb 2024 17:22:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709140896; cv=none; b=IfGB4qZknR1a6K5v7Kwho666EQEjx3U5XrQnuCEAFGmBpMz45T9M3v8YkaoBSjhkAsubPnEpuaLkqrWMikdA3CEVIwLKBgMHWqCxSosa+vZbYjPLnv3nsxEj3lc9tNbW47nmRlT3Beo4JhoZHv4sqX8Tu5diS2P5yMS52l7rEsE=
+	t=1709140957; cv=none; b=myVhRlZIsc6NkRltcfNg86aoIydomgWd5Vplg+4bKlpUGZ6r/Lj2yXqw2Y6c2hM+S+WHoOvh63hE7QmRtP6i0BshkHkDtsmzvQIP06LZvPp9FRU7axmH1RVeEKuz8A4et6pVrBmor6Jx/DwsofvskK5PBkLbhf11ugaXi9cafNk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709140896; c=relaxed/simple;
-	bh=XM399Q8VLvXuDw5uzrGwivCMbFeJ4FieetH05IdWTBs=;
+	s=arc-20240116; t=1709140957; c=relaxed/simple;
+	bh=SFvOWcPRYo2Lp/S4Uk1XoDCn8ACB3qkyl4DrAo0XEaE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Cso2JgkpGqeKx4FqpllS0jbN4kNU9rJyF8tr8TSHqMZ7LK6Df8DPKF3/Pg/oaMRa92lKcf9bRt9Zbd0JbAHGT3o7PbkSHpC2ofFTISt/KLsaTtvOtKEc+jLp/qPkJH5wF9E/u2fx5cPLv9zLe56pUw5M7A73OFNbu0mOGHbMn+4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Dv0OfJNd; arc=none smtp.client-ip=209.85.210.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6e4e7e25945so3363935b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 09:21:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709140894; x=1709745694; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=W1bHapS5+5iN8in9GHCNPDr+SpYos985v6N2aaB8ggk=;
-        b=Dv0OfJNd0vjGvtw41wUvZJPEkqakxszi4xsSYKDq8yiapJgAOCmPm4J8os/LY5Z1ga
-         29m8v4MdT/04TpsqzLc2k/pFWm1SreFcjydJcdYat3/P2N/j5WnV3oW3YBnA0shtdbnU
-         Acz84GK3WQceLojwLQUrIDSze1WWHLLhNRtPw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709140894; x=1709745694;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=W1bHapS5+5iN8in9GHCNPDr+SpYos985v6N2aaB8ggk=;
-        b=SRpQDLOdtCo04BM1Qu0slWHF7GsAx+SweEcd+goXrecwH+2AAmOWxP/YWYRTz/wcPk
-         LPWPa40hD6Ev4LpsSPnhBMC14VH6MokhNJzOAKSnwkxxbcQTudc2SRZRYq680Ei3yBr/
-         lEcuG76ugP7grpxpoXCwQNl4tvQQ9Y/T5Psp+0azqWDjXJEDjMJoADsUWiif6kcKzm2W
-         mPS6o/HHP/s6Yt/8UATzAPZQXdhQExonIxttF8BudFvzXhvc3O7+izgAxaM0rDvgrhjQ
-         JPcWftYsBmqw3LleztKwbJ4bQEAlyTSjaCE7QOjGbWs/7zZUQ24fN/TMToPlWfe8zlDP
-         YV5Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVYn6PMxV8s15ZD74P3Nyl32bqlgdjce5XfWgKgQy/EGVcsf97zkxrb69zE+esCErwmRYppqreURN4ZnCsw4UYGGtxyYG3C7EqkBAZf
-X-Gm-Message-State: AOJu0YyYsyvP8HP0iF4TmLzHMZKpiGVQyie/qq27OmEhoePw93NUFUW4
-	bfzcbpOULXfIjDF+MgnCXbPoZPDFzJL/siVL/eMfrmJncIj4Axx85HbD/DxhEQ==
-X-Google-Smtp-Source: AGHT+IFxqvM5hQDYAzOob05oGJvol0U6qboX77jQeHs6sC34fTUoZvoLbeslLh+rshINZpV8envxoA==
-X-Received: by 2002:aa7:8650:0:b0:6e5:84f6:2a9e with SMTP id a16-20020aa78650000000b006e584f62a9emr91910pfo.31.1709140894116;
-        Wed, 28 Feb 2024 09:21:34 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id it1-20020a056a00458100b006e583a649b4sm90257pfb.210.2024.02.28.09.21.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 09:21:33 -0800 (PST)
-Date: Wed, 28 Feb 2024 09:21:33 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-	"linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-	"linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
-	"luto@kernel.org" <luto@kernel.org>,
-	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-	"debug@rivosinc.com" <debug@rivosinc.com>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-	"Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>,
-	"mingo@redhat.com" <mingo@redhat.com>,
-	"linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=SD1uOH7yxNcngFkdYagbhQGRiJcfoPXXsrcXIESUkmmYan1T72CCTccF+E4G2HBnopoEVXaeC6qEZmSfgrEPawismiX/E7W4rWBjRyiHEsKAe5q6ctxVQlSyFZ2QPb+ITjngI5FcVaf7l8yDO3McJjAQjHvkOe1errN6ViZSxaI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
+X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="3719070"
+X-IronPort-AV: E=Sophos;i="6.06,190,1705392000"; 
+   d="scan'208";a="3719070"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 09:22:36 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="913956076"
+X-IronPort-AV: E=Sophos;i="6.06,190,1705392000"; 
+   d="scan'208";a="913956076"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 09:22:30 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andy.shevchenko@gmail.com>)
+	id 1rfNdS-00000008HWT-3mFq;
+	Wed, 28 Feb 2024 19:22:26 +0200
+Date: Wed, 28 Feb 2024 19:22:26 +0200
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Cc: "geert@linux-m68k.org" <geert@linux-m68k.org>,
+	"robh+dt@kernel.org" <robh+dt@kernel.org>,
+	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+	"conor+dt@kernel.org" <conor+dt@kernel.org>,
+	"andrew@lunn.ch" <andrew@lunn.ch>,
+	"gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
+	"sebastian.hesselbarth@gmail.com" <sebastian.hesselbarth@gmail.com>,
+	"ojeda@kernel.org" <ojeda@kernel.org>,
+	"tzimmermann@suse.de" <tzimmermann@suse.de>,
+	"javierm@redhat.com" <javierm@redhat.com>,
+	"robin@protonic.nl" <robin@protonic.nl>,
+	"lee@kernel.org" <lee@kernel.org>, "pavel@ucw.cz" <pavel@ucw.cz>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
 	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"tglx@linutronix.de" <tglx@linutronix.de>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-	"linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>,
-	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-	"loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
-	"hpa@zytor.com" <hpa@zytor.com>,
-	"peterz@infradead.org" <peterz@infradead.org>,
-	"sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-	"bp@alien8.de" <bp@alien8.de>,
-	"linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
-	"linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"broonie@kernel.org" <broonie@kernel.org>,
-	"x86@kernel.org" <x86@kernel.org>
-Subject: Re: [PATCH v2 5/9] mm: Initialize struct vm_unmapped_area_info
-Message-ID: <202402280912.33AEE7A9CF@keescook>
-References: <20240226190951.3240433-1-rick.p.edgecombe@intel.com>
- <20240226190951.3240433-6-rick.p.edgecombe@intel.com>
- <94a2b919-e03b-4ade-b13e-7774849dc02b@csgroup.eu>
- <202402271004.7145FDB53F@keescook>
- <8265f804-4540-4858-adc3-a09c11a677eb@csgroup.eu>
- <91384b505cb78b9d9b71ad58e037c1ed8dfb10d1.camel@intel.com>
- <def71a27-2d5f-40da-867e-979648afc4cf@csgroup.eu>
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v2 2/4] dt-bindings: auxdisplay: Add bindings for generic
+ 7 segment LED
+Message-ID: <Zd9r0lcnSuKFEsZF@smile.fi.intel.com>
+References: <20240227212244.262710-1-chris.packham@alliedtelesis.co.nz>
+ <20240227212244.262710-3-chris.packham@alliedtelesis.co.nz>
+ <CAHp75Vdi2c=s_z9wwxWzVcL+4tx5ZnXymbiN4O1FS+D3kz5vqw@mail.gmail.com>
+ <34b89a56-ab43-4d44-86f3-604e5be29db3@alliedtelesis.co.nz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <def71a27-2d5f-40da-867e-979648afc4cf@csgroup.eu>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <34b89a56-ab43-4d44-86f3-604e5be29db3@alliedtelesis.co.nz>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Wed, Feb 28, 2024 at 01:22:09PM +0000, Christophe Leroy wrote:
-> [...]
-> My worry with initialisation at declaration is it often hides missing 
-> assignments. Let's take following simple exemple:
+On Wed, Feb 28, 2024 at 01:53:08AM +0000, Chris Packham wrote:
+> On 28/02/24 13:03, Andy Shevchenko wrote:
+> > On Tue, Feb 27, 2024 at 11:22 PM Chris Packham
+> > <chris.packham@alliedtelesis.co.nz> wrote:
+
+..
+
+> >> +  segment-gpios:
+> >> +    description:
+> >> +      An array of GPIOs one per segment.
+> > This is a vague description. Please explain the order (e.g., LSB =
+> > 'a', MSB = 'g'), use of DP (optional?), etc.
+> >
+> >> +    minItems: 7
+> > maxItems?
+
+> I plan on saying maxItems: 7 (more discussion below)
+
+..
+
+> >> +    led-7seg {
+> > Probably it should be more human readable. DT people might suggest
+> > something better.
+> >
+> >> +        compatible = "generic-gpio-7seg";
+> >> +        segment-gpios = <&gpio 0 GPIO_ACTIVE_LOW
+> >> +                         &gpio 1 GPIO_ACTIVE_LOW
+> >> +                         &gpio 2 GPIO_ACTIVE_LOW
+> >> +                         &gpio 3 GPIO_ACTIVE_LOW
+> >> +                         &gpio 4 GPIO_ACTIVE_LOW
+> >> +                         &gpio 5 GPIO_ACTIVE_LOW
+> >> +                         &gpio 6 GPIO_ACTIVE_LOW>;
+> > Dunno how to handle DP. Either we always expect it to be here (as
+> > placeholder) or with additional property.
 > 
-> char *colour(int num)
-> {
-> 	char *name;
-> 
-> 	if (num == 0) {
-> 		name = "black";
-> 	} else if (num == 1) {
-> 		name = "white";
-> 	} else if (num == 2) {
-> 	} else {
-> 		name = "no colour";
-> 	}
-> 
-> 	return name;
-> }
-> 
-> Here, GCC warns about a missing initialisation of variable 'name'.
+> My current plan was to ignore it. As you see it my later patch I'm 
+> (ab)using DP as a discrete gpio-led with a different function.
 
-Sometimes. :( We build with -Wno-maybe-uninitialized because GCC gets
-this wrong too often. Also, like with large structs like this, all
-uninit warnings get suppressed if anything takes it by reference. So, if
-before your "return name" statement above, you had something like:
+FWIW, I have _no_ indicator _without_ DP. So, my statistics is towards enabling
+DP as a part of 7-segment displays.
 
-	do_something(&name);
+> We could either a separate dp-gpios property or set maxItems to 8. Right 
+> now the driver won't do anything with either option.To actually do 
+> something in the linedisp driver we'd need to have a new character map 
+> that includes the extra LED.
 
-it won't warn with any option enabled.
+Yeah, we can leave it open for now.
 
-> But if I declare it as
-> 
-> 	char *name = "no colour";
-> 
-> Then GCC won't warn anymore that we are missing a value for when num is 2.
-> 
-> During my life I have so many times spent huge amount of time 
-> investigating issues and bugs due to missing assignments that were going 
-> undetected due to default initialisation at declaration.
-
-I totally understand. If the "uninitialized" warnings were actually
-reliable, I would agree. I look at it this way:
-
-- initializations can be missed either in static initializers or via
-  run time initializers. (So the risk of mistake here is matched --
-  though I'd argue it's easier to *find* static initializers when adding
-  new struct members.)
-- uninitialized warnings are inconsistent (this becomes an unknown risk)
-- when a run time initializer is missed, the contents are whatever was
-  on the stack (high risk)
-- what a static initializer is missed, the content is 0 (low risk)
-
-I think unambiguous state (always 0) is significantly more important for
-the safety of the system as a whole. Yes, individual cases maybe bad
-("what uid should this be? root?!") but from a general memory safety
-perspective the value doesn't become potentially influenced by order of
-operations, leftover stack memory, etc.
-
-I'd agree, lifting everything into a static initializer does seem
-cleanest of all the choices.
-
--Kees
+> >> +    };
 
 -- 
-Kees Cook
+With Best Regards,
+Andy Shevchenko
+
+
 
