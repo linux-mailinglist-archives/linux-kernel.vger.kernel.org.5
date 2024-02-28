@@ -1,648 +1,274 @@
-Return-Path: <linux-kernel+bounces-84543-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84545-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3741C86A810
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 06:35:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF8FD86A817
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 06:44:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5BB0F1C23C00
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 05:35:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4ADF9B23C66
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 05:44:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44D5A22324;
-	Wed, 28 Feb 2024 05:35:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="YEKuBjin"
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2055.outbound.protection.outlook.com [40.107.8.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C638219F6;
+	Wed, 28 Feb 2024 05:43:48 +0000 (UTC)
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50675225AE;
-	Wed, 28 Feb 2024 05:35:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.8.55
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709098507; cv=fail; b=V1yT22cexfOhn+Mpmlz2keMHE/lNTc03PFz1Ltx7HV+Csk+RCbuHyPGP/kyq3GJZnTHq6s9kesMwFk8psUh1AIm8Teg1g8SO0LD1k+YFqsS+sKCHnm9S4HbVsQsHbOUx9JPaUbksHM2WPGoT1Qg6UCjSgDw40v8GZFFLrPFcrEw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709098507; c=relaxed/simple;
-	bh=fDE9BWjTxN0JFNMOAlkEvZ2Xp4/m3vom/AAIEN+mkLY=;
-	h=From:Date:Subject:Content-Type:Message-Id:References:In-Reply-To:
-	 To:Cc:MIME-Version; b=cLFHKM7YpRMweRDBS1ZVp5y7x9BzrEPFvzEzL7t/YcWdZt188sODDf9473F5+/SoOvuakxK9Fc2oLeW3f0wQsyDwcTgvJBPiyps4HsOn5c0oZgeATYMzgZ/NYhojtL46Tc6newI789PC1Ycu0fRWx93Sx7PkT0ZE7ABUWey67Ow=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=YEKuBjin; arc=fail smtp.client-ip=40.107.8.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fvbB9EmQQK8U3LjafLfcTVsj/OeZ1pVT61LJiX4+v69cNbMUd/BLOzNICj9DOUeCwcwbFlCdlGdJMUZ6Uc6du25AKZ3fQdjtjd0+NQ4TpBMuS6lpWoHwe229RvGQ433Ja/Wpmtgn8Qi87SrStbmj1AMPh/qd8SSw9hDSy7uDE2zhJtxJK+MrS8DECVZowUOlNHSNRxKCy988HTmHgeuQSbs1kD396JOTIWiLWUjsUZJ2Gfot3EsQkM8evybuDO01gqQ2LhomHA5E4Fit4dr4lTLH4nwGjUEwYqe5tEOQ+nNKyiDEuzZD5mZ//BxXOQsKuK6GGhcvoxJiSOhfmFbI1Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VWFZDVTupKRHqGzPzOcozEj38Hip9TgR0m5LQhPIOCE=;
- b=boAo3WD2rBmAkH9l/4rkrbycJP0qHfeXW38Y6KiQDPDm5urYTdU0QeDqjJhTNwDfPKwwtyjk1mFmTTYVd19l7mxbhejpkeJIL/aDTWvvEhVAFytQSAYiCLqbfQru0RgkJ/UuvnHOhjrPRIwKvlkv39zyQtg07kFDdwbEztXOzHIGucXUoq6/NF8/xcp/mehXzky1hhxF+txGqmRBlKB07JlVAKSl9F8uyNSmWgnngbOFTmuleUX7WR9ArTvvqll40nAU+IGrO6ngxksmldRiUf0mFeHcIyeW1lok6czkuJKN9GyEaSYW8tsB+2njTTII/sGbDq/p7SiP7pkawK0ZvA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VWFZDVTupKRHqGzPzOcozEj38Hip9TgR0m5LQhPIOCE=;
- b=YEKuBjinq5IfiKDTh7KwQ3Lqqb4XPegV6ubbGTbuIS82n6aEcQwuwdR74TrLihk16CkKSfd8sZ2m6z8O/Ts851OokLNlAI/5EbtZIs6Vp0m24qygmLQMGNrYr7IWyTfzU3pwGsmKd41UkmTD8vsKvv4MJPWIHy7o55xWXex03OA=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=oss.nxp.com;
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
- by AS8PR04MB7525.eurprd04.prod.outlook.com (2603:10a6:20b:29b::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.36; Wed, 28 Feb
- 2024 05:35:02 +0000
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::1232:ed97:118f:72fd]) by DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::1232:ed97:118f:72fd%4]) with mapi id 15.20.7316.034; Wed, 28 Feb 2024
- 05:35:01 +0000
-From: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Date: Wed, 28 Feb 2024 13:43:06 +0800
-Subject: [PATCH v2 2/2] clk: imx: add i.MX95 BLK CTL clk driver
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240228-imx95-blk-ctl-v2-2-ffb7eefb6dcd@nxp.com>
-References: <20240228-imx95-blk-ctl-v2-0-ffb7eefb6dcd@nxp.com>
-In-Reply-To: <20240228-imx95-blk-ctl-v2-0-ffb7eefb6dcd@nxp.com>
-To: Abel Vesa <abelvesa@kernel.org>, 
- Michael Turquette <mturquette@baylibre.com>, 
- Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
- Sascha Hauer <s.hauer@pengutronix.de>, 
- Pengutronix Kernel Team <kernel@pengutronix.de>, 
- Fabio Estevam <festevam@gmail.com>
-Cc: linux-clk@vger.kernel.org, imx@lists.linux.dev, 
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1709098992; l=13492;
- i=peng.fan@nxp.com; s=20230812; h=from:subject:message-id;
- bh=xdgyrgvjxybTyzDq8X/GTHuUjGIxReFNUQBlt7Wg4qY=;
- b=f9YFYxZSOWqKPqciCGeucA2E7VHpuRFnz0L7kbuHPCzs5l45CeaGfETmDDMXMButZmoao1z/S
- eVWZIs2/uVbAcCRHdhqBbitj4q3zqrgja0wymAosk4YQMPY5XFBHj0a
-X-Developer-Key: i=peng.fan@nxp.com; a=ed25519;
- pk=I4sJg7atIT1g63H7bb5lDRGR2gJW14RKDD0wFL8TT1g=
-X-ClientProxiedBy: SI1PR02CA0034.apcprd02.prod.outlook.com
- (2603:1096:4:1f6::10) To DU0PR04MB9417.eurprd04.prod.outlook.com
- (2603:10a6:10:358::11)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 508671D6AA;
+	Wed, 28 Feb 2024 05:43:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709099027; cv=none; b=utX0Ml0ivqZD+f8SWYIH4X2ZosTeCAAg917Dl2OL4lAb0WKZiaxR263QzW5rwyriOVSkp7bn1DJet+hy3VacYicK15ETuGvQ++QMeSWlZXmCSHsPbvia6Vfa6cNjKm/ZalJwAZj+k0FOmpL4YFXUpiDMlROT1MSjnchqh7pEPjw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709099027; c=relaxed/simple;
+	bh=ghmdVO2l8+qnylPp5BiMESK8wnMUSpdlyDToGt+DawA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lwR7EvDNtiNtJf02yd89PkgBv4DarRZcn/I7MoR+apLCM1qbU29hYD8hx5Et70uw2PxrGeGpik/zx/X6GY3K1XjN5/IvCZzs0KwhKpNXZ8Cg3BSF28B5pb3CywEU+kqzI8ZgfTZGttrSa4iGvb0WKdF+MVlaGjzSFoqSI7p2/eU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-29aa8c4710bso409199a91.1;
+        Tue, 27 Feb 2024 21:43:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709099026; x=1709703826;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sbp3GUJDXTUR8rBNnC4XYTGjfFdtu7RF4U45tc4UUeU=;
+        b=V2KoPvABsDTbXxlbxAZmLUHrptE1HxY4l+T3OM5vD6uvk6WdJvvGtknC2LT84ZM8ou
+         Xkn+27UPby0W9dfpwvnUovmhkbEsccOxlVeeyMKs4RHE+0IE5t726Qbuk+mJ7/52i/F0
+         ZVl0qkXnLNkNh1pjL1TfOKLTELkRwhWN7w3bCtHvHeXfwDWBbJ7MrZzSeouoL7ntkfTL
+         lGWbmDllqBhU7/sp+tZcAw8+XcaNYhIM2+dageBC8oPduZgkgwg8PYK7Y1h7G5+37CNT
+         nhRpPLYCR51KDns/fyFky/tLncNZCfEQzOfqR37ZgUgFcgV3ekRjUfLMzvfNeaFVD8Dk
+         aKuQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVL8+gUlSktce+CwgqLz+gEdHw3WMyt97LrcDDF+X5Lx+hjeNbjGVvRuAzcOyKSCZtb488bX5r0FREjqOl2SEjusLP8vRj/CoB9seqm5c9eGIewjE6FmpQyfWaozlnEbZqP4kqxP2lYF/vmX1PjQA==
+X-Gm-Message-State: AOJu0YxyKBgU75Ve8gaUOE+uZxP2FwrfEAbmatAa5XyGjj+TzN8/alcA
+	8ZCfYNB8X8WteLECpAgnND3UUA5PXxz+YsZyGMYlSYH/Ya0OqjZ+vKEqPU5WCtmyHyaYN6fRvvD
+	qArtBUHxft4F2GeeCF8G+wtjG3nx7Qjso
+X-Google-Smtp-Source: AGHT+IFUAfQJYY7FcuN/1QiinwRz7q/kmUBrshJBSv1AuSKsJBAUgHgIPhc/z03nrXsgVYvlqPMEzjIZJL9cao4kOIk=
+X-Received: by 2002:a17:90a:6306:b0:299:d975:89ea with SMTP id
+ e6-20020a17090a630600b00299d97589eamr1929308pjj.21.1709099025575; Tue, 27 Feb
+ 2024 21:43:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU0PR04MB9417:EE_|AS8PR04MB7525:EE_
-X-MS-Office365-Filtering-Correlation-Id: d67fad88-177a-4c9b-e49d-08dc381f0292
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	FVT1nnSrpMr+52UcuWgLCaBgrthTqCIoN+qJkcvTeNWB9FBub6aP5Hiv3AFEMMDLGRYbNCFI/hgu5LDOzgY5bGALPhW5JR5v1jntHpMBoIRdREv7fDllakJoeGf7zi96RjuBctrV7RfKjddoSA/VBFJRi+Vj9MBdUGO2DsuPwMbCnZz4cug/5AxgmyBFEP3ry2nLxlrwapT/6KofSrIMB019Klmdp7ADUkpaV/n7uuhJs6kMO1BA9QVT270noj3HEU0KyuXeAA4FuUHFLT4qE38xGs7idWlVFq7P6FNExfom6omyRFP0/IiNyQ+naxhf2Jc8IQTyT6Mkxcft4bAyMB5ZN/cF9Fy6UAjTrwmQ2GQyKOb+hXIlJWdZgsl1IrumQxkpjKD8Skq0JA+ZDoTgmH6KOdoVcTtSD8lUn/PCrv6msnj95L+sCGLZysR5CBOwlGLnohnWF5CSK4kQNTKVvjIfc5KqJerRWQOK8uTPkFrWCUQdvKeSgqFOQSwsDU/c7tZACNwwaN/geVoSmn7o1cKNPrIcz6sw3LFo9uGYp1U9IVFsaLT5+ez+vY0SqYbtiqvG9bsuCi/eSs+ycEYEgOp6L+JecbRakwe1nyWnT7BUxMngwglErb7TheCLzygjPbPQpekbu++Uv7cXvxq7Di2YcLv/GJob7WTSpCNlu2UmEFc50iORaJ3txUShLegTrvIrs9J1QIIcl4Oo1uQG16WC1REiuKqkiRsxFa5txRs=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(921011)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?bjI1MHZuR2FoSzBqcm5GRXhJeWpyL0tzTkYyaUVOcUVTaVR0cDFyclZGQmt0?=
- =?utf-8?B?QzQySUc0REdUODVhVHJPTUErZHBNUmFUeHBkZXZZU2RpemZOeUFvSGkzYTlF?=
- =?utf-8?B?V200R2M4NDROVm5CQ1M3aGQwRWtHeUMvTDdhSmh4MEp1OS9Qd3ViQ2NaUTJ1?=
- =?utf-8?B?cGZYak9qQVIwN0xNNUtiUVJaUlkrYmVLSUVwNENzME5HSnNicFVjSCs5aVZl?=
- =?utf-8?B?RENEQytRYXlZS0QxK2plckYwVURtSDlZa3cxajFtNjc2WjkxY3A3ZWkvQ2Iy?=
- =?utf-8?B?ZHhGU1hqSXp0WVY3bmtma05SM2NzQWFmaGRvZVpiQU5yZzhzM2huamNpWGpj?=
- =?utf-8?B?SmxiSVVMWUNCT3BBQUp5ei9GbmdOTFFGc1R2RUVURFp0djlkM1Y4R0hnN09C?=
- =?utf-8?B?M1dGdUh1KzVETnRDYTBhSjVvV1JDa0ZNUHU0MU51TXdaMWtVa0JpY1doVVhy?=
- =?utf-8?B?VVFuMFU1bVdmZDZVYmhwYzF5bm9qNXZhTW9IanhZSGNaaC9UYVNta2g1NjBI?=
- =?utf-8?B?S1o4aWVrT0lqS253QUQwRDZobWswWkFZcmlUdG9hOHQydHJiWXMwT2FVMDVV?=
- =?utf-8?B?SEVXTFRDL0tCazhNK3hLNi80djVEb28rQ25lQ2NKWXdFNVA2bkxXUDFKcUJU?=
- =?utf-8?B?c08zaTE1cERxNVgxV0ZIK2JDdDdOSU5jY2RhMGlhWWgvQ2ZzaHJUYlcraTh3?=
- =?utf-8?B?Smd2K2huNWlOUmp5U2tEQlFISFRoZmFRbzNtOFNRWlpwT2c3Qmo0a3k1OFg1?=
- =?utf-8?B?NUJySVVmckdPSmJZT0FNOW5xbDVqOXpwenJuNVRtdG1aYVNVN1dvcmtlbVhu?=
- =?utf-8?B?b1lXeE5vMjQyRDhXZGRhMlliL2hCYlNXZU9EWmsrOE1FYWFENExlRy9sYU43?=
- =?utf-8?B?bXFKU3Uvd2hLTHEvOE5kSGw5SlBFZmJaTzZhWVJlUVl1U2piQ0NESW9jZFN6?=
- =?utf-8?B?MzgySFAvNitEUldBSGw0SXE1bkZsRFpmajN1QktTUHB0OGFEa1pTbzRsR014?=
- =?utf-8?B?WGpoNm9sMXRzQ0FjaVdNWWFIa2grSlJ2a0wvZlZqSTJyNkI4S2NTcWhTL2l3?=
- =?utf-8?B?ckwweU55TzM3bXRJWXg2ZTRjQ2dwNUFlbWw5cVN1Q3VlTG9Fb3I0Vjl5anVK?=
- =?utf-8?B?d0poVE5YUThPOWNPRloxczR5TlRYbGJObDNNSVhBVlpub3NPanpEWU9wMWhw?=
- =?utf-8?B?R29ueEpkM1pRcVFmRmdPN0YwRkNlZVAzTzJTeWE4aFFGYVJQTGp6bDZtaDF2?=
- =?utf-8?B?TCs1andQU3ZoSUc3QTkxT2Q0V1V4dTBZNy9YeU1YRythNG1MUzd1dmIzM3N2?=
- =?utf-8?B?dFdTdFpLeU1JZTkwbDM0T3ZvUnhyc0F5aSt2aTdpQWVlVFZqRy9LNW1kWHp1?=
- =?utf-8?B?bi84NGV4ZGZYNjNBVnFUbzZzMSszWEEyN2YxN1VxNmxOZkFPZlVRSWFIcVEy?=
- =?utf-8?B?WWNDZkRkZnRhSm9QSUpTOGZHTHRuYU9wVXpNMi85cVlYTFo0bUtlRkJaT0xE?=
- =?utf-8?B?ZW1zS3JiQzk1RXQ2ZXRmaWJNeEF1aTA0RGdzSHUzZlFVMmxTbDkwK2MvT3lh?=
- =?utf-8?B?N1RyekhrZ2t3by80NnhXcTlxeldrc1J3cm14aEdUSjQvM2lmM25QMUdpVkV4?=
- =?utf-8?B?OWlabUNKMkhDRityb0NNR0lhU0tBYVR3MUNmMjhUS0g5OEJ0QXAwL05Jb2pi?=
- =?utf-8?B?U1dOa2Y1TGN0dzNBa1NUckNOWC9OZUlOZU93MEsxZGNIOVBDa1huYWtKY3NB?=
- =?utf-8?B?STM3TnNHWDd1UDR3Qk1Nc3JudGZSM25XZnRkcUU3Y0dMdmVMRXpSZC9nVC9W?=
- =?utf-8?B?WE5TMm8yOXE1eTRKQnVCVjR5S1NlbWRWY3ZuU254ZGRjdzJEejZTanpMNk5s?=
- =?utf-8?B?R0duTHFXd3plSXljand4eGI4U1RkV3htSlg0STVhUjd3VEVENllISVJudk5x?=
- =?utf-8?B?ZjhEWG52RlRYNE5xb0VzUDM5T0J2c0xJeXFua3E2OFVuTlNrUzNVMzdVODly?=
- =?utf-8?B?cUpRUE1nckZxUDhYSXhwbzZ2Z3RoYjZySFA5OFQ3TVlIYTVVYWZCS2xKelA0?=
- =?utf-8?B?TWRkeEk0TXE4ZEw0OUs1eXdlNFdpYk9Cb05YamxyTU9uL1FRT3NqeTBwU0pw?=
- =?utf-8?Q?J5+Pv830dyfRvaQwGZ0QwP4wV?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d67fad88-177a-4c9b-e49d-08dc381f0292
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Feb 2024 05:35:01.8996
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lrlyRdJS0R5cU0NX/Hj6vzJCCSAe/vRKUyI8200sOEouirH5KV1bmRtx5Kl5uz5/RNviQMjEZs0hv8X9kbZvaQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7525
+References: <20240228005230.287113-1-namhyung@kernel.org> <20240228005230.287113-3-namhyung@kernel.org>
+In-Reply-To: <20240228005230.287113-3-namhyung@kernel.org>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Tue, 27 Feb 2024 21:43:33 -0800
+Message-ID: <CAM9d7cgY+S+JzE1N0eWx=LxTy+0cewugdGaNr6RkNCOQAE2D7g@mail.gmail.com>
+Subject: Re: [PATCH 2/4] perf annotate: Calculate instruction overhead using hashmap
+To: Ian Rogers <irogers@google.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-perf-users@vger.kernel.org, Andi Kleen <ak@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Peng Fan <peng.fan@nxp.com>
+On Tue, Feb 27, 2024 at 5:27=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
+wrote:
+>
+> Use annotated_source.samples hashmap instead of addr array in the
+> struct sym_hist.
+>
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  tools/perf/ui/gtk/annotate.c | 14 +++++++++---
+>  tools/perf/util/annotate.c   | 44 ++++++++++++++++++++++++------------
+>  tools/perf/util/annotate.h   | 11 +++++++++
+>  3 files changed, 52 insertions(+), 17 deletions(-)
+>
+> diff --git a/tools/perf/ui/gtk/annotate.c b/tools/perf/ui/gtk/annotate.c
+> index 394861245fd3..93ce3d47e47e 100644
+> --- a/tools/perf/ui/gtk/annotate.c
+> +++ b/tools/perf/ui/gtk/annotate.c
+> @@ -28,21 +28,29 @@ static const char *const col_names[] =3D {
+>  static int perf_gtk__get_percent(char *buf, size_t size, struct symbol *=
+sym,
+>                                  struct disasm_line *dl, int evidx)
+>  {
+> +       struct annotation *notes;
+>         struct sym_hist *symhist;
+> +       struct sym_hist_entry *entry;
+>         double percent =3D 0.0;
+>         const char *markup;
+>         int ret =3D 0;
+> +       u64 nr_samples =3D 0;
+>
+>         strcpy(buf, "");
+>
+>         if (dl->al.offset =3D=3D (s64) -1)
+>                 return 0;
+>
+> -       symhist =3D annotation__histogram(symbol__annotation(sym), evidx)=
+;
+> -       if (!symbol_conf.event_group && !symhist->addr[dl->al.offset].nr_=
+samples)
+> +       notes =3D symbol__annotation(sym);
+> +       symhist =3D annotation__histogram(notes, evidx);
+> +       entry =3D annotated_source__hist_entry(notes->src, evidx, dl->al.=
+offset);
+> +       if (entry)
+> +               nr_samples =3D entry->nr_samples;
+> +
+> +       if (!symbol_conf.event_group && nr_samples =3D=3D 0)
+>                 return 0;
+>
+> -       percent =3D 100.0 * symhist->addr[dl->al.offset].nr_samples / sym=
+hist->nr_samples;
+> +       percent =3D 100.0 * nr_samples / symhist->nr_samples;
+>
+>         markup =3D perf_gtk__get_percent_color(percent);
+>         if (markup)
+> diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
+> index 7a70e4d35c9b..e7859f756252 100644
+> --- a/tools/perf/util/annotate.c
+> +++ b/tools/perf/util/annotate.c
+> @@ -2368,17 +2368,25 @@ static int symbol__disassemble(struct symbol *sym=
+, struct annotate_args *args)
+>         return err;
+>  }
+>
+> -static void calc_percent(struct sym_hist *sym_hist,
+> -                        struct hists *hists,
+> +static void calc_percent(struct annotation *notes,
+> +                        struct evsel *evsel,
+>                          struct annotation_data *data,
+>                          s64 offset, s64 end)
+>  {
+> +       struct hists *hists =3D evsel__hists(evsel);
+> +       int evidx =3D evsel->core.idx;
+> +       struct sym_hist *sym_hist =3D annotation__histogram(notes, evidx)=
+;
+>         unsigned int hits =3D 0;
+>         u64 period =3D 0;
+>
+>         while (offset < end) {
+> -               hits   +=3D sym_hist->addr[offset].nr_samples;
+> -               period +=3D sym_hist->addr[offset].period;
+> +               struct sym_hist_entry *entry;
+> +
+> +               entry =3D annotated_source__hist_entry(notes->src, evidx,=
+ offset);
+> +               if (entry) {
+> +                       hits   +=3D entry->nr_samples;
+> +                       period +=3D entry->period;
+> +               }
+>                 ++offset;
+>         }
+>
+> @@ -2415,16 +2423,13 @@ static void annotation__calc_percent(struct annot=
+ation *notes,
+>                 end  =3D next ? next->offset : len;
+>
+>                 for_each_group_evsel(evsel, leader) {
+> -                       struct hists *hists =3D evsel__hists(evsel);
+>                         struct annotation_data *data;
+> -                       struct sym_hist *sym_hist;
+>
+>                         BUG_ON(i >=3D al->data_nr);
+>
+> -                       sym_hist =3D annotation__histogram(notes, evsel->=
+core.idx);
+>                         data =3D &al->data[i++];
+>
+> -                       calc_percent(sym_hist, hists, data, al->offset, e=
+nd);
+> +                       calc_percent(notes, evsel, data, al->offset, end)=
+;
+>                 }
+>         }
+>  }
+> @@ -2619,14 +2624,19 @@ static void print_summary(struct rb_root *root, c=
+onst char *filename)
+>
+>  static void symbol__annotate_hits(struct symbol *sym, struct evsel *evse=
+l)
+>  {
+> +       int evidx =3D evsel->core.idx;
+>         struct annotation *notes =3D symbol__annotation(sym);
+> -       struct sym_hist *h =3D annotation__histogram(notes, evsel->core.i=
+dx);
+> +       struct sym_hist *h =3D annotation__histogram(notes, evidx);
+>         u64 len =3D symbol__size(sym), offset;
+>
+> -       for (offset =3D 0; offset < len; ++offset)
+> -               if (h->addr[offset].nr_samples !=3D 0)
+> +       for (offset =3D 0; offset < len; ++offset) {
+> +               struct sym_hist_entry *entry;
+> +
+> +               entry =3D annotated_source__hist_entry(notes->src, evidx,=
+ offset);
+> +               if (entry && entry->nr_samples !=3D 0)
+>                         printf("%*" PRIx64 ": %" PRIu64 "\n", BITS_PER_LO=
+NG / 2,
+> -                              sym->start + offset, h->addr[offset].nr_sa=
+mples);
+> +                              sym->start + offset, entry->nr_samples);
+> +       }
+>         printf("%*s: %" PRIu64 "\n", BITS_PER_LONG / 2, "h->nr_samples", =
+h->nr_samples);
+>  }
+>
+> @@ -2855,8 +2865,14 @@ void symbol__annotate_decay_histogram(struct symbo=
+l *sym, int evidx)
+>
+>         h->nr_samples =3D 0;
+>         for (offset =3D 0; offset < len; ++offset) {
+> -               h->addr[offset].nr_samples =3D h->addr[offset].nr_samples=
+ * 7 / 8;
+> -               h->nr_samples +=3D h->addr[offset].nr_samples;
+> +               struct sym_hist_entry *entry;
+> +
+> +               entry =3D annotated_source__hist_entry(notes->src, evidx,=
+ offset);
+> +               if (entry =3D=3D NULL)
+> +                       continue;
+> +
+> +               entry->nr_samples =3D entry->nr_samples * 7 / 8;
+> +               h->nr_samples +=3D entry->nr_samples;
+>         }
+>  }
+>
+> diff --git a/tools/perf/util/annotate.h b/tools/perf/util/annotate.h
+> index a2b0c8210740..3362980a5d3d 100644
+> --- a/tools/perf/util/annotate.h
+> +++ b/tools/perf/util/annotate.h
+> @@ -356,6 +356,17 @@ static inline struct sym_hist *annotation__histogram=
+(struct annotation *notes, i
+>         return annotated_source__histogram(notes->src, idx);
+>  }
+>
+> +static inline struct sym_hist_entry *
+> +annotated_source__hist_entry(struct annotated_source *src, int idx, u64 =
+offset)
+> +{
+> +       struct sym_hist_entry *entry;
+> +       long key =3D offset << 16 | idx;
+> +
+> +       if (!hashmap__find(src->samples, key, &entry))
 
-i.MX95 has BLK CTL modules in various MIXes, the BLK CTL modules
-support clock features such as mux/gate/div. This patch
-is to add the clock feature of BLK CTL modules
+Hmm.. then I've realized that it requires the header file anyway.
+This code is needed by multiple places for stdio, tui, gtk output.
 
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
----
- drivers/clk/imx/Kconfig             |   7 +
- drivers/clk/imx/Makefile            |   1 +
- drivers/clk/imx/clk-imx95-blk-ctl.c | 438 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 446 insertions(+)
+Thanks,
+Namhyung
 
-diff --git a/drivers/clk/imx/Kconfig b/drivers/clk/imx/Kconfig
-index db3bca5f4ec9..6da0fba68225 100644
---- a/drivers/clk/imx/Kconfig
-+++ b/drivers/clk/imx/Kconfig
-@@ -114,6 +114,13 @@ config CLK_IMX93
- 	help
- 	    Build the driver for i.MX93 CCM Clock Driver
- 
-+config CLK_IMX95_BLK_CTL
-+	tristate "IMX95 Clock Driver for BLK CTL"
-+	depends on ARCH_MXC || COMPILE_TEST
-+	select MXC_CLK
-+	help
-+	    Build the clock driver for i.MX95 BLK CTL
-+
- config CLK_IMXRT1050
- 	tristate "IMXRT1050 CCM Clock Driver"
- 	depends on SOC_IMXRT || COMPILE_TEST
-diff --git a/drivers/clk/imx/Makefile b/drivers/clk/imx/Makefile
-index d4b8e10b1970..03f2b2a1ab63 100644
---- a/drivers/clk/imx/Makefile
-+++ b/drivers/clk/imx/Makefile
-@@ -31,6 +31,7 @@ obj-$(CONFIG_CLK_IMX8MP) += clk-imx8mp.o clk-imx8mp-audiomix.o
- obj-$(CONFIG_CLK_IMX8MQ) += clk-imx8mq.o
- 
- obj-$(CONFIG_CLK_IMX93) += clk-imx93.o
-+obj-$(CONFIG_CLK_IMX95_BLK_CTL) += clk-imx95-blk-ctl.o
- 
- obj-$(CONFIG_MXC_CLK_SCU) += clk-imx-scu.o clk-imx-lpcg-scu.o clk-imx-acm.o
- clk-imx-scu-$(CONFIG_CLK_IMX8QXP) += clk-scu.o clk-imx8qxp.o \
-diff --git a/drivers/clk/imx/clk-imx95-blk-ctl.c b/drivers/clk/imx/clk-imx95-blk-ctl.c
-new file mode 100644
-index 000000000000..4448b7a3a2a3
---- /dev/null
-+++ b/drivers/clk/imx/clk-imx95-blk-ctl.c
-@@ -0,0 +1,438 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright 2024 NXP
-+ */
-+
-+#include <dt-bindings/clock/nxp,imx95-clock.h>
-+#include <linux/clk.h>
-+#include <linux/clk-provider.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/debugfs.h>
-+#include <linux/device.h>
-+#include <linux/err.h>
-+#include <linux/io.h>
-+#include <linux/module.h>
-+#include <linux/of_address.h>
-+#include <linux/of_device.h>
-+#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
-+#include <linux/regmap.h>
-+#include <linux/slab.h>
-+#include <linux/spinlock.h>
-+#include <linux/types.h>
-+
-+enum {
-+	CLK_GATE,
-+	CLK_DIVIDER,
-+	CLK_MUX,
-+};
-+
-+struct imx95_blk_ctl {
-+	struct device *dev;
-+	spinlock_t lock;
-+	struct clk *clk_apb;
-+
-+	void __iomem *base;
-+	/* clock gate register */
-+	u32 clk_reg_restore;
-+};
-+
-+struct imx95_blk_ctl_clk_dev_data {
-+	const char *name;
-+	const char * const *parent_names;
-+	u32 num_parents;
-+	u32 reg;
-+	u32 bit_idx;
-+	u32 bit_width;
-+	u32 clk_type;
-+	u32 flags;
-+	u32 flags2;
-+	u32 type;
-+};
-+
-+struct imx95_blk_ctl_dev_data {
-+	const struct imx95_blk_ctl_clk_dev_data *clk_dev_data;
-+	u32 num_clks;
-+	bool rpm_enabled;
-+	u32 clk_reg_offset;
-+};
-+
-+static const struct imx95_blk_ctl_clk_dev_data vpublk_clk_dev_data[] = {
-+	[IMX95_CLK_VPUBLK_WAVE] = {
-+		.name = "vpublk_wave_vpu",
-+		.parent_names = (const char *[]){ "vpu", },
-+		.num_parents = 1,
-+		.reg = 8,
-+		.bit_idx = 0,
-+		.type = CLK_GATE,
-+		.flags = CLK_SET_RATE_PARENT,
-+		.flags2 = CLK_GATE_SET_TO_DISABLE,
-+	},
-+	[IMX95_CLK_VPUBLK_JPEG_ENC] = {
-+		.name = "vpublk_jpeg_enc",
-+		.parent_names = (const char *[]){ "vpujpeg", },
-+		.num_parents = 1,
-+		.reg = 8,
-+		.bit_idx = 1,
-+		.type = CLK_GATE,
-+		.flags = CLK_SET_RATE_PARENT,
-+		.flags2 = CLK_GATE_SET_TO_DISABLE,
-+	},
-+	[IMX95_CLK_VPUBLK_JPEG_DEC] = {
-+		.name = "vpublk_jpeg_dec",
-+		.parent_names = (const char *[]){ "vpujpeg", },
-+		.num_parents = 1,
-+		.reg = 8,
-+		.bit_idx = 2,
-+		.type = CLK_GATE,
-+		.flags = CLK_SET_RATE_PARENT,
-+		.flags2 = CLK_GATE_SET_TO_DISABLE,
-+	}
-+};
-+
-+static const struct imx95_blk_ctl_dev_data vpublk_dev_data = {
-+	.num_clks = IMX95_CLK_VPUBLK_END,
-+	.clk_dev_data = vpublk_clk_dev_data,
-+	.rpm_enabled = true,
-+	.clk_reg_offset = 8,
-+};
-+
-+static const struct imx95_blk_ctl_clk_dev_data camblk_clk_dev_data[] = {
-+	[IMX95_CLK_CAMBLK_CSI2_FOR0] = {
-+		.name = "camblk_csi2_for0",
-+		.parent_names = (const char *[]){ "camisi", },
-+		.num_parents = 1,
-+		.reg = 0,
-+		.bit_idx = 0,
-+		.type = CLK_GATE,
-+		.flags = CLK_SET_RATE_PARENT,
-+		.flags2 = CLK_GATE_SET_TO_DISABLE,
-+	},
-+	[IMX95_CLK_CAMBLK_CSI2_FOR1] = {
-+		.name = "camblk_csi2_for1",
-+		.parent_names = (const char *[]){ "camisi", },
-+		.num_parents = 1,
-+		.reg = 0,
-+		.bit_idx = 1,
-+		.type = CLK_GATE,
-+		.flags = CLK_SET_RATE_PARENT,
-+		.flags2 = CLK_GATE_SET_TO_DISABLE,
-+	},
-+	[IMX95_CLK_CAMBLK_ISP_AXI] = {
-+		.name = "camblk_isp_axi",
-+		.parent_names = (const char *[]){ "camaxi", },
-+		.num_parents = 1,
-+		.reg = 0,
-+		.bit_idx = 4,
-+		.type = CLK_GATE,
-+		.flags = CLK_SET_RATE_PARENT,
-+		.flags2 = CLK_GATE_SET_TO_DISABLE,
-+	},
-+	[IMX95_CLK_CAMBLK_ISP_PIXEL] = {
-+		.name = "camblk_isp_pixel",
-+		.parent_names = (const char *[]){ "camisi", },
-+		.num_parents = 1,
-+		.reg = 0,
-+		.bit_idx = 5,
-+		.type = CLK_GATE,
-+		.flags = CLK_SET_RATE_PARENT,
-+		.flags2 = CLK_GATE_SET_TO_DISABLE,
-+	},
-+	[IMX95_CLK_CAMBLK_ISP] = {
-+		.name = "camblk_isp",
-+		.parent_names = (const char *[]){ "camisi", },
-+		.num_parents = 1,
-+		.reg = 0,
-+		.bit_idx = 6,
-+		.type = CLK_GATE,
-+		.flags = CLK_SET_RATE_PARENT,
-+		.flags2 = CLK_GATE_SET_TO_DISABLE,
-+	}
-+};
-+
-+static const struct imx95_blk_ctl_dev_data camblk_dev_data = {
-+	.num_clks = IMX95_CLK_CAMBLK_END,
-+	.clk_dev_data = camblk_clk_dev_data,
-+	.clk_reg_offset = 0,
-+};
-+
-+static const struct imx95_blk_ctl_clk_dev_data lvds_clk_dev_data[] = {
-+	[IMX95_CLK_DISPMIX_LVDS_PHY_DIV] = {
-+		.name = "ldb_phy_div",
-+		.parent_names = (const char *[]){ "ldbpll", },
-+		.num_parents = 1,
-+		.reg = 0,
-+		.bit_idx = 0,
-+		.bit_width = 1,
-+		.type = CLK_DIVIDER,
-+		.flags2 = CLK_DIVIDER_POWER_OF_TWO,
-+	},
-+	[IMX95_CLK_DISPMIX_LVDS_CH0_GATE] = {
-+		.name = "lvds_ch0_gate",
-+		.parent_names = (const char *[]){ "ldb_phy_div", },
-+		.num_parents = 1,
-+		.reg = 0,
-+		.bit_idx = 1,
-+		.bit_width = 1,
-+		.type = CLK_GATE,
-+		.flags = CLK_SET_RATE_PARENT,
-+		.flags2 = CLK_GATE_SET_TO_DISABLE,
-+	},
-+	[IMX95_CLK_DISPMIX_LVDS_CH1_GATE] = {
-+		.name = "lvds_ch1_gate",
-+		.parent_names = (const char *[]){ "ldb_phy_div", },
-+		.num_parents = 1,
-+		.reg = 0,
-+		.bit_idx = 2,
-+		.bit_width = 1,
-+		.type = CLK_GATE,
-+		.flags = CLK_SET_RATE_PARENT,
-+		.flags2 = CLK_GATE_SET_TO_DISABLE,
-+	},
-+	[IMX95_CLK_DISPMIX_PIX_DI0_GATE] = {
-+		.name = "lvds_di0_gate",
-+		.parent_names = (const char *[]){ "ldb_pll_div7", },
-+		.num_parents = 1,
-+		.reg = 0,
-+		.bit_idx = 3,
-+		.bit_width = 1,
-+		.type = CLK_GATE,
-+		.flags = CLK_SET_RATE_PARENT,
-+		.flags2 = CLK_GATE_SET_TO_DISABLE,
-+	},
-+	[IMX95_CLK_DISPMIX_PIX_DI1_GATE] = {
-+		.name = "lvds_di1_gate",
-+		.parent_names = (const char *[]){ "ldb_pll_div7", },
-+		.num_parents = 1,
-+		.reg = 0,
-+		.bit_idx = 4,
-+		.bit_width = 1,
-+		.type = CLK_GATE,
-+		.flags = CLK_SET_RATE_PARENT,
-+		.flags2 = CLK_GATE_SET_TO_DISABLE,
-+	},
-+};
-+
-+static const struct imx95_blk_ctl_dev_data lvds_csr_dev_data = {
-+	.num_clks = IMX95_CLK_DISPMIX_LVDS_CSR_END,
-+	.clk_dev_data = lvds_clk_dev_data,
-+	.clk_reg_offset = 0,
-+};
-+
-+static const struct imx95_blk_ctl_clk_dev_data dispmix_csr_clk_dev_data[] = {
-+	[IMX95_CLK_DISPMIX_ENG0_SEL] = {
-+		.name = "disp_engine0_sel",
-+		.parent_names = (const char *[]){"videopll1", "dsi_pll", "ldb_pll_div7", },
-+		.num_parents = 4,
-+		.reg = 0,
-+		.bit_idx = 0,
-+		.bit_width = 2,
-+		.type = CLK_MUX,
-+		.flags = CLK_SET_RATE_NO_REPARENT | CLK_SET_RATE_PARENT,
-+	},
-+	[IMX95_CLK_DISPMIX_ENG1_SEL] = {
-+		.name = "disp_engine1_sel",
-+		.parent_names = (const char *[]){"videopll1", "dsi_pll", "ldb_pll_div7", },
-+		.num_parents = 4,
-+		.reg = 0,
-+		.bit_idx = 2,
-+		.bit_width = 2,
-+		.type = CLK_MUX,
-+		.flags = CLK_SET_RATE_NO_REPARENT | CLK_SET_RATE_PARENT,
-+	}
-+};
-+
-+static const struct imx95_blk_ctl_dev_data dispmix_csr_dev_data = {
-+	.num_clks = IMX95_CLK_DISPMIX_END,
-+	.clk_dev_data = dispmix_csr_clk_dev_data,
-+	.clk_reg_offset = 0,
-+};
-+
-+static int imx95_bc_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	const struct imx95_blk_ctl_dev_data *bc_data;
-+	struct imx95_blk_ctl *bc;
-+	struct clk_hw_onecell_data *clk_hw_data;
-+	struct clk_hw **hws;
-+	void __iomem *base;
-+	int i, ret;
-+
-+	bc = devm_kzalloc(dev, sizeof(*bc), GFP_KERNEL);
-+	if (!bc)
-+		return -ENOMEM;
-+	bc->dev = dev;
-+	dev_set_drvdata(&pdev->dev, bc);
-+
-+	spin_lock_init(&bc->lock);
-+
-+	base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(base))
-+		return PTR_ERR(base);
-+
-+	bc->base = base;
-+	bc->clk_apb = devm_clk_get(dev, NULL);
-+	if (IS_ERR(bc->clk_apb))
-+		return dev_err_probe(dev, PTR_ERR(bc->clk_apb), "failed to get APB clock\n");
-+
-+	ret = clk_prepare_enable(bc->clk_apb);
-+	if (ret) {
-+		dev_err(dev, "failed to enable apb clock: %d\n", ret);
-+		return ret;
-+	}
-+
-+	bc_data = of_device_get_match_data(dev);
-+	if (!bc_data)
-+		return devm_of_platform_populate(dev);
-+
-+	clk_hw_data = devm_kzalloc(dev, struct_size(clk_hw_data, hws, bc_data->num_clks),
-+				   GFP_KERNEL);
-+	if (!clk_hw_data)
-+		return -ENOMEM;
-+
-+	if (bc_data->rpm_enabled)
-+		pm_runtime_enable(&pdev->dev);
-+
-+	clk_hw_data->num = bc_data->num_clks;
-+	hws = clk_hw_data->hws;
-+
-+	for (i = 0; i < bc_data->num_clks; i++) {
-+		const struct imx95_blk_ctl_clk_dev_data *data = &bc_data->clk_dev_data[i];
-+		void __iomem *reg = base + data->reg;
-+
-+		if (data->type == CLK_MUX) {
-+			hws[i] = clk_hw_register_mux(dev, data->name, data->parent_names,
-+						     data->num_parents, data->flags, reg,
-+						     data->bit_idx, data->bit_width,
-+						     data->flags2, &bc->lock);
-+		} else if (data->type == CLK_DIVIDER) {
-+			hws[i] = clk_hw_register_divider(dev, data->name, data->parent_names[0],
-+							 data->flags, reg, data->bit_idx,
-+							 data->bit_width, data->flags2, &bc->lock);
-+		} else {
-+			hws[i] = clk_hw_register_gate(dev, data->name, data->parent_names[0],
-+						      data->flags, reg, data->bit_idx,
-+						      data->flags2, &bc->lock);
-+		}
-+		if (IS_ERR(hws[i])) {
-+			ret = PTR_ERR(hws[i]);
-+			dev_err(dev, "failed to register: %s:%d\n", data->name, ret);
-+			goto cleanup;
-+		}
-+	}
-+
-+	ret = of_clk_add_hw_provider(dev->of_node, of_clk_hw_onecell_get, clk_hw_data);
-+	if (ret)
-+		goto cleanup;
-+
-+	ret = devm_of_platform_populate(dev);
-+	if (ret) {
-+		of_clk_del_provider(dev->of_node);
-+		goto cleanup;
-+	}
-+
-+	if (pm_runtime_enabled(bc->dev))
-+		clk_disable_unprepare(bc->clk_apb);
-+
-+	return 0;
-+
-+cleanup:
-+	for (i = 0; i < bc_data->num_clks; i++) {
-+		if (IS_ERR_OR_NULL(hws[i]))
-+			continue;
-+		clk_hw_unregister(hws[i]);
-+	}
-+
-+	if (bc_data->rpm_enabled)
-+		pm_runtime_disable(&pdev->dev);
-+
-+	return ret;
-+}
-+
-+#ifdef CONFIG_PM
-+static int imx95_bc_runtime_suspend(struct device *dev)
-+{
-+	struct imx95_blk_ctl *bc = dev_get_drvdata(dev);
-+
-+	clk_disable_unprepare(bc->clk_apb);
-+	return 0;
-+}
-+
-+static int imx95_bc_runtime_resume(struct device *dev)
-+{
-+	struct imx95_blk_ctl *bc = dev_get_drvdata(dev);
-+
-+	return clk_prepare_enable(bc->clk_apb);
-+}
-+#endif
-+
-+#ifdef CONFIG_PM_SLEEP
-+static int imx95_bc_suspend(struct device *dev)
-+{
-+	struct imx95_blk_ctl *bc = dev_get_drvdata(dev);
-+	const struct imx95_blk_ctl_dev_data *bc_data;
-+	int ret;
-+
-+	bc_data = of_device_get_match_data(dev);
-+	if (!bc_data)
-+		return 0;
-+
-+	if (bc_data->rpm_enabled) {
-+		ret = pm_runtime_get_sync(bc->dev);
-+		if (ret < 0) {
-+			pm_runtime_put_noidle(bc->dev);
-+			return ret;
-+		}
-+	}
-+
-+	bc->clk_reg_restore = readl(bc->base + bc_data->clk_reg_offset);
-+
-+	return 0;
-+}
-+
-+static int imx95_bc_resume(struct device *dev)
-+{
-+	struct imx95_blk_ctl *bc = dev_get_drvdata(dev);
-+	const struct imx95_blk_ctl_dev_data *bc_data;
-+
-+	bc_data = of_device_get_match_data(dev);
-+	if (!bc_data)
-+		return 0;
-+
-+	writel(bc->clk_reg_restore, bc->base + bc_data->clk_reg_offset);
-+
-+	if (bc_data->rpm_enabled)
-+		pm_runtime_put(bc->dev);
-+
-+	return 0;
-+}
-+#endif
-+
-+static const struct dev_pm_ops imx95_bc_pm_ops = {
-+	SET_RUNTIME_PM_OPS(imx95_bc_runtime_suspend, imx95_bc_runtime_resume, NULL)
-+	SET_SYSTEM_SLEEP_PM_OPS(imx95_bc_suspend, imx95_bc_resume)
-+};
-+
-+static const struct of_device_id imx95_bc_of_match[] = {
-+	{ .compatible = "nxp,imx95-cameramix-csr", .data = &camblk_dev_data },
-+	{ .compatible = "nxp,imx95-display-master-csr", },
-+	{ .compatible = "nxp,imx95-dispmix-lvds-csr", .data = &lvds_csr_dev_data },
-+	{ .compatible = "nxp,imx95-dispmix-csr", .data = &dispmix_csr_dev_data },
-+	{ .compatible = "nxp,imx95-netcmix-blk-ctrl", },
-+	{ .compatible = "nxp,imx95-vpumix-csr", .data = &vpublk_dev_data },
-+	{ /* Sentinel */ },
-+};
-+MODULE_DEVICE_TABLE(of, imx95_blk_ctl_match);
-+
-+static struct platform_driver imx95_bc_driver = {
-+	.probe = imx95_bc_probe,
-+	.driver = {
-+		.name = "imx95-blk-ctl",
-+		.of_match_table = of_match_ptr(imx95_bc_of_match),
-+		.pm = &imx95_bc_pm_ops,
-+	},
-+};
-+module_platform_driver(imx95_bc_driver);
-+
-+MODULE_DESCRIPTION("NXP i.MX95 blk ctl driver");
-+MODULE_LICENSE("GPL");
 
--- 
-2.37.1
-
+> +               return NULL;
+> +       return entry;
+> +}
+> +
+>  static inline struct annotation *symbol__annotation(struct symbol *sym)
+>  {
+>         return (void *)sym - symbol_conf.priv_size;
+> --
+> 2.44.0.rc1.240.g4c46232300-goog
+>
+>
 
