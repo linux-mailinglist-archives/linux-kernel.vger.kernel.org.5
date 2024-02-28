@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-84913-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84914-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0206B86ADA3
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:39:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4A6386ADA4
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:39:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B142528F589
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:38:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D37EE1C22F50
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:39:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F358161B66;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 539B01649A7;
 	Wed, 28 Feb 2024 11:30:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dbi0VaVe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CKYsrabL"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 550C3149DFC;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A55A149E0E;
 	Wed, 28 Feb 2024 11:30:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709119832; cv=none; b=ESJB0xp4ZiGwK2AfDFwNry6eigfIKo7/1rv5ICMo02VIk6BgLuplJGad0xWVPFcSwbkIZaHRdzMG3n/ckk7efiHctS5lwGecOjJBsQQ14tnhoVTylOS9uff/gPMB9T3wiJNstJ8pNdsZSJF1w3Z8Faremz5aY8mhEICYioB/amc=
+	t=1709119832; cv=none; b=NnIUMd8knNQDjCmJ3q6CXaOzQ2p3KBrymmEP9j55O6JLl8Jt+lLcyKhpoVs6i3nsuRpvmv5LZnyZ8L8wP+Zvdu1Vfxnqv/hgfHjF7nnQ/GOTEOY2mbqGKZXMmKzVWtZoP1XnXsuns6Jl+EOLoyVHIzeUBq91elYjYb82IruTUao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1709119832; c=relaxed/simple;
-	bh=3dKq8DTrnn7LXnP+Vb/J3/P5tHZH+q5AeKLtMCW7rMU=;
+	bh=lFcJGAGA5lcdDj56mNYSZV+dF9xdORWlqOqFhmkTMpY=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=rgI3wm2CAENl0ppRMB8jkKl8xcd7XbIqUWtWxbFr+T5A5exmG5gOCzHduplrud9HmhkUtLNVQE1YAvLwTXoPaT7qGCLg3O3vgNXIe/LsyLZDN2PtOOt/oKJSxwW+sLFvWJI+K5SmiQr0i7JRnqhXObcoargCZ90c/q8kwvoa6Qs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dbi0VaVe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id F154CC433C7;
-	Wed, 28 Feb 2024 11:30:31 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=FddFSenXGwnVwcXW4hksmH+l7h5+iwBxGCIWNUW9Qb7EFuLCh5EKxdBOsPO8kzGb6zbRMha2x6h4R3pg8lbC6hVnk8yESZTBkWkcuenV6OS10l1noVdua4s8KyKWP5CH3lXFOFb4x5KSTCKoGotjzJNiu/Rr/A0QLxvvL25RRRw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CKYsrabL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 4E8F8C43141;
+	Wed, 28 Feb 2024 11:30:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1709119832;
-	bh=3dKq8DTrnn7LXnP+Vb/J3/P5tHZH+q5AeKLtMCW7rMU=;
+	bh=lFcJGAGA5lcdDj56mNYSZV+dF9xdORWlqOqFhmkTMpY=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=dbi0VaVeoMJ3CXTek8Z16JlqEG3DkGPxMhPrxdttTa2uuJbJaiT7LYJPuNbIVRyHv
-	 nbS23ao6FRb8W6tVgDT7xMto1+ShbS0atTMUBPh4fL261meYhqjw4ROYT7kmIEVMa/
-	 xdDe8buQPNgVcAK/3a6aqgsz1VLkDMES5o5G/iiGgXFBBIkNg348mP5xJIZ/OjAehB
-	 EeZQ4mpMqZMP5HSV6Mr9M8F5mtR7xh8qG6+NitjramPLqBlxVVeOHfRCSurA7c/8cJ
-	 2TJT8PwCytJhdvoksoU4bFYQuWl/jcClEZWmxz+xZ1CVvvzIxNatXVImUAyW+kQWrx
-	 BVpd837eQJrbw==
+	b=CKYsrabLBrEuo0epyrgwkcdozKSzdA3nAWk/hRMw/4XGMv6R3FxqaFS1S2pCp/ylG
+	 ZzCbjUrMiDzAOvpDffiU09oYBVuSGRSpWWuJL6dnFs/9JM9/jvqjHz0ipEgn7mPy5j
+	 qkLNn3DkXKQhjRolmY3X3mdPI+JTfEAowua/gnWRiDDRcV0KSBhyqbIRu7uF9MFSTO
+	 YwcKOmBLxN05f34Ap46Z2m6zNQo42x4AJU8YuhGL1GQ8IFh2Rr1lAD8mNAjN3zDtLk
+	 TMTt/vdwcqWCl352R+w7Pnx04fcPueo3Ya5x+yA2f3dqppt7YNMYfDFOZ/4AjLwz4Y
+	 UjvwBowqe4RYQ==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D67C7C595D2;
-	Wed, 28 Feb 2024 11:30:31 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 34ECFC595D2;
+	Wed, 28 Feb 2024 11:30:32 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -51,39 +51,44 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v3] Documentations: correct net_cachelines title for
- struct inet_sock
+Subject: Re: [PATCH net-next v2] net: stmmac: dwmac-qcom-ethqos: Update link clock
+ rate only for RGMII
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <170911983187.5841.9077912041625374191.git-patchwork-notify@kernel.org>
-Date: Wed, 28 Feb 2024 11:30:31 +0000
-References: <20240226171254.4066289-1-haiyue.wang@intel.com>
-In-Reply-To: <20240226171254.4066289-1-haiyue.wang@intel.com>
-To: Haiyue Wang <haiyue.wang@intel.com>
-Cc: netdev@vger.kernel.org, lixiaoyan@google.com, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, corbet@lwn.net,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+ <170911983221.5841.1928393024313525974.git-patchwork-notify@kernel.org>
+Date: Wed, 28 Feb 2024 11:30:32 +0000
+References: <20240226094226.14276-1-quic_sarohasa@quicinc.com>
+In-Reply-To: <20240226094226.14276-1-quic_sarohasa@quicinc.com>
+To: Sarosh Hasan <quic_sarohasa@quicinc.com>
+Cc: vkoul@kernel.org, agross@kernel.org, andersson@kernel.org,
+ konrad.dybcio@linaro.org, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, alexandre.torgue@foss.st.com, joabreu@synopsys.com,
+ mcoquelin.stm32@gmail.com, netdev@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+ psodagud@quicinc.com, ahalaney@redhat.com, robh@kernel.org,
+ kernel@quicinc.com, quic_snehshah@quicinc.com, quic_jsuraj@quicinc.com
 
 Hello:
 
-This patch was applied to netdev/net.git (main)
+This patch was applied to netdev/net-next.git (main)
 by David S. Miller <davem@davemloft.net>:
 
-On Tue, 27 Feb 2024 01:09:16 +0800 you wrote:
-> The fast path usage breakdown describes the detail for 'inet_sock', fix
-> the markup title.
+On Mon, 26 Feb 2024 15:12:26 +0530 you wrote:
+> Updating link clock rate for different speeds is only needed when
+> using RGMII, as that mode requires changing clock speed when the link
+> speed changes. Let's restrict updating the link clock speed in
+> ethqos_update_link_clk() to just RGMII. Other modes such as SGMII
+> only need to enable the link clock (which is already done in probe).
 > 
-> Signed-off-by: Haiyue Wang <haiyue.wang@intel.com>
-> ---
-> v3:
->   - Update the git commit message.
->   - Stop using the git '--in-reply-to' to reply.
+> Signed-off-by: Sarosh Hasan <quic_sarohasa@quicinc.com>
 > 
 > [...]
 
 Here is the summary with links:
-  - [net,v3] Documentations: correct net_cachelines title for struct inet_sock
-    https://git.kernel.org/netdev/net/c/4adfc94d4aec
+  - [net-next,v2] net: stmmac: dwmac-qcom-ethqos: Update link clock rate only for RGMII
+    https://git.kernel.org/netdev/net-next/c/26311cd112d0
 
 You are awesome, thank you!
 -- 
