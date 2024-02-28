@@ -1,107 +1,98 @@
-Return-Path: <linux-kernel+bounces-85155-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85156-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F42186B13A
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:04:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D814D86B13D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:05:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9191F1C22044
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:04:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DA821F22E2F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:05:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59AB1154C02;
-	Wed, 28 Feb 2024 14:04:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WF89elJb"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C7D8154BE3;
+	Wed, 28 Feb 2024 14:05:14 +0000 (UTC)
+Received: from andre.telenet-ops.be (andre.telenet-ops.be [195.130.132.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9304D145341;
-	Wed, 28 Feb 2024 14:04:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03534145341
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 14:05:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.132.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709129088; cv=none; b=OVGZJwI+xTolmXKZ6SfZsZkqVcVg/N716rmceqSqiNZzsiwFHQF1YZcUp9q704P1AhG6z2rdC7zWV91157dmOBuho7LdDS9+/ExkigTHXAiEWlzTPJkdb2p7dEMroSDMRHLH2hGgH2F6w3olhB8J3nSsEuy9DyuFKa7YY/Z7FlE=
+	t=1709129113; cv=none; b=IXiCBRUz+gERNynz5Gfd3URB//7bcLnVVACa1XmRxjQCRb129nlMwUlPPBhdV0tIG5mKrB8pHs55lVFXPZFDO5IgQEt9yA26O9LjqdXkIh/+xyKQzlCEPGlbwIe/pT9N9Cw17bbHj9SmnwIgW4464UU0Gzd9nQ+7Fg/rLVcLQ5k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709129088; c=relaxed/simple;
-	bh=mkN9EphVfkwSKkkJ22QmMJJrH82VGPuV04x7Zbl5Fd4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ktx08lH4wSLCVcAxSYyeWZ7piari9szdxipGy6N9R9idD8M30D9g7/krYQKhJVRwiNczXo/8URw4fu8qr7ErKFIvoxtMe1cx5zBDMnAmbnvIIdQW6UWRj7nw+TtR8egiKI/lteQ1p8yFNdpAqIL0+yKXJGS4diXwjFNSAsgtPiM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WF89elJb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B333BC433F1;
-	Wed, 28 Feb 2024 14:04:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709129088;
-	bh=mkN9EphVfkwSKkkJ22QmMJJrH82VGPuV04x7Zbl5Fd4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WF89elJbgCiQLnC0iZKBEY5bLTGZ1f+WSm4/bJphB7FEsCETSRuKoKhq9ag47RJim
-	 4HMwkPZL6kO+dUg9ztn1zeD4QJowGKwmunHPXjB3Utw5hGHiPLowCF73cwxfQSoyCJ
-	 9FKjvkThFGa3WZ83d6l8vIe+3wl7aEPv4pD5pq/k1WWdu3iEtEQSGNbVmACrqAy3vN
-	 HTMCaRzHQqe7EEWKwaSMWBokdr8e1h1k0NvEEx7mjzesR+Rol4P42EOV+b5FpNuPRv
-	 GmHZKMq3s2T/KUxlRsya6jMRoNQNe431+Q2BQpXwJdt9JqkTS839KxOabku4NejTSP
-	 fqdCD8TsM9e6g==
-Date: Wed, 28 Feb 2024 14:04:40 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Javier Carrasco <javier.carrasco@wolfvision.net>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Matthias Kaehlcke <mka@chromium.org>,
+	s=arc-20240116; t=1709129113; c=relaxed/simple;
+	bh=L3K4rtzy6gxBJUGpTTcskVWOegBL2LVnvlohsA27NJs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=PfbOzvfpdWWxVqKLNRGuoLnwtUejpb/mQ8Ij37avd850+Dn3YaQEOpHKdO5m6gbX4GcJ+TsmBUZUzG1yi4mBD25BDiY8ubTLL231wnXQQObGLdNAI7Zpt6jWJHdsmDQ10fExjv5bsejsuFb3DCjZcS+zT7cCwpTL8wVliAbyzFo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.132.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:48c4:26a9:d9ec:22cb])
+	by andre.telenet-ops.be with bizsmtp
+	id se542B0064gWvPH01e54PF; Wed, 28 Feb 2024 15:05:10 +0100
+Received: from rox.of.borg ([192.168.97.57])
+	by ramsan.of.borg with esmtp (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1rfKYI-001tZa-F6;
+	Wed, 28 Feb 2024 15:05:04 +0100
+Received: from geert by rox.of.borg with local (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1rfKYR-006hqA-UZ;
+	Wed, 28 Feb 2024 15:05:03 +0100
+From: Geert Uytterhoeven <geert+renesas@glider.be>
+To: Chris Down <chris@chrisdown.name>,
+	Petr Mladek <pmladek@suse.com>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Helen Koike <helen.koike@collabora.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Russell King <linux@armlinux.org.uk>,
-	linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	linux-arm-kernel@lists.infradead.org,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH v5 7/8] ASoC: dt-bindings: xmos,xvf3500: add XMOS XVF3500
- voice processor
-Message-ID: <8ca79afd-64e4-456c-936d-01faf68c2ad9@sirena.org.uk>
-References: <20240228-onboard_xvf3500-v5-0-76b805fd3fe6@wolfvision.net>
- <20240228-onboard_xvf3500-v5-7-76b805fd3fe6@wolfvision.net>
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Jessica Yu <jeyu@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	John Ogness <john.ogness@linutronix.de>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Jason Baron <jbaron@akamai.com>,
+	Jim Cromie <jim.cromie@gmail.com>,
+	Ilya Dryomov <idryomov@gmail.com>,
+	Xiubo Li <xiubli@redhat.com>,
+	Jeff Layton <jlayton@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	ceph-devel@vger.kernel.org,
+	Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH net-next] Simplify net_dbg_ratelimited() dummy
+Date: Wed, 28 Feb 2024 15:05:02 +0100
+Message-Id: <5d75ce122b5cbfe62b018a7719960e34cfcbb1f2.1709128975.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="GZv8oq1Dyph+Z9ez"
-Content-Disposition: inline
-In-Reply-To: <20240228-onboard_xvf3500-v5-7-76b805fd3fe6@wolfvision.net>
-X-Cookie: Function reject.
+Content-Transfer-Encoding: 8bit
 
+There is no need to wrap calls to the no_printk() helper inside an
+always-false check, as no_printk() already does that internally.
 
---GZv8oq1Dyph+Z9ez
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+ include/linux/net.h | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-On Wed, Feb 28, 2024 at 02:51:34PM +0100, Javier Carrasco wrote:
-> The XMOS XVF3500 VocalFusion Voice Processor[1] is a low-latency, 32-bit
-> multicore controller for voice processing.
+diff --git a/include/linux/net.h b/include/linux/net.h
+index c9b4a63791a45948..15df6d5f27a7badc 100644
+--- a/include/linux/net.h
++++ b/include/linux/net.h
+@@ -299,10 +299,7 @@ do {									\
+ 	net_ratelimited_function(pr_debug, fmt, ##__VA_ARGS__)
+ #else
+ #define net_dbg_ratelimited(fmt, ...)				\
+-	do {							\
+-		if (0)						\
+-			no_printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__); \
+-	} while (0)
++	no_printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
+ #endif
+ 
+ #define net_get_random_once(buf, nbytes)			\
+-- 
+2.34.1
 
-Acked-by: Mark Brown <broonie@kernel.org>
-
---GZv8oq1Dyph+Z9ez
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXfPXcACgkQJNaLcl1U
-h9ClBgf/WEqjCGdSA3iAFJbr122JZWQxEgNaNaZsKWB2+geVKJDo10ZkXVNxg5mN
-XNszF9BGXc9nLrLmNu0IBuL038hA8DpAl7r/XIEoF/FhjWMVL3D/O9K2rRRAH8s5
-cstxj5XHgf7Vh41TqJrTJG10nlfZwK9S1ZdcfxhKTw/w2nwg0egNvnMxiFo9ny5B
-qEUA27fg6yczyVf3Pwj8Nmo9hmJm8QGIztYP4k85X4i6oNS/vH7rjCjk02U+9s31
-ZugTtoOeeY/uHB7xZBY+Em8Vgj113/TTxofp2MQunjj3x7uWBiVmgpCk4UnTjO4p
-gkJE8XHSeUyrwbbxJqZNjMj74sAowA==
-=0dME
------END PGP SIGNATURE-----
-
---GZv8oq1Dyph+Z9ez--
 
