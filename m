@@ -1,152 +1,238 @@
-Return-Path: <linux-kernel+bounces-85264-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85265-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B0E986B32D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:33:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0463486B330
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:33:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC06028BAE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:33:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 289261C237AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:33:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AD7A15CD57;
-	Wed, 28 Feb 2024 15:33:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2318715CD4D;
+	Wed, 28 Feb 2024 15:33:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zi2m/Hfe"
-Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="e0BQcjV6"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73CA42CCDF;
-	Wed, 28 Feb 2024 15:32:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.49
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709134379; cv=none; b=JfYFHcLy82oxqj9MVGSdnw2UpoFVVEK647jQMkQ7yzBLoeB1KbC9OgnGWYA5oGQTzWKnFYsVTLkvfL0M7s52de95+mTnIc6A/DhqL52vkyqEAfGTBNdBPbunQm+vPcNJxXx+c8cFCw0z+8uydbdRHTMElBHMgPOvFttGs0S1fGk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709134379; c=relaxed/simple;
-	bh=eMOXCVDBo6+1DuKmb5bWVTwZLMGsk/p0Tc8klb/hjMs=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=R2ES3xsgjHXPMMQYiEG6eniBtXWW9ZSkMT411MyycVsPl0kXu528x3NkiVbkOJrElBfHMT8wDWN2YDjYH2cfVVs9OE4+gnNj66rfAjXnFdTGJ2oUCruCkV+cO3GqsqU3PlaZ7KxPAaj4D0IKYWspLTmsg4IiUXMnCoI2xAP48RY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Zi2m/Hfe; arc=none smtp.client-ip=209.85.219.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-6900f479e3cso26096636d6.0;
-        Wed, 28 Feb 2024 07:32:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709134377; x=1709739177; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KPdHn4gLfwbF9NBUo162FC73q3tXtmG68jirZU3UGyE=;
-        b=Zi2m/HfefMFUFaUZ1Ok/mc64Mi6OxLr+xP5k5gyko36hpcr4nc4Rt5I5a/TYpkyChf
-         ZRoHD8CAXtIQWkcrHA3Aziz1i5JEwKSjmCCIABuUa9b2SfNzgw0MCb7HnnN8n0+SXwGg
-         iRUOEfACdivYp16Fl75nw9WRoiu+QBKFJkhkBH9F1DUy/Dua3vdyaKGRykt6prnBiIKO
-         vQO69RT8oc/pwoFIxY6VfgKdtWqGmYr8V7BmpSVMLyBZJSKh+03HfmLaysT/O9va/kwh
-         Y5cSguR0QatQm66Y5ItuXEafZFvJYxmBJ+G+kgnoKpip7/WsfCTuq8cCvE5pGn1zYghw
-         PpHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709134377; x=1709739177;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=KPdHn4gLfwbF9NBUo162FC73q3tXtmG68jirZU3UGyE=;
-        b=bcd5CnUASz2oWkmBAaDsWEqT/TWSW16u8V1hZpm+NBEkdnOBH/8aoUS1sd7rKCanb6
-         G8zM2WvcBD9NGBkl5IpkcZmW2C7uy+voH+HTiQRIV5fPhHgeoICN+mnJCXF3s+8l026O
-         QAMjTYxnKkjYQv/Rzem5NclVydHyKNqsEocX+Axhn2ewTMuyfY4evczPTuO0wcRHMmE2
-         hMhfzwJrgR/kNA/IBSCtfQklVk5dnTpX9zlN7kW/4BshlO7CjvdVfoYfcDrQAm5Yz995
-         XRqpm9Ky212BZcsw9iO3ruEUj/pJIw280tqzwZF6GlR7Fs1pIJ27xffpJRkBB+XmAKOl
-         d4kA==
-X-Forwarded-Encrypted: i=1; AJvYcCU4anYRuvILkEAvn8T+jtpMU8/mKCltTLfW5WoA79/k0z6jaOW4IuHfHzk3IRP21CRQgryDhVAULaGwvfjP627BymWtdEpmvusVyl0rkW2UTc5CSofIvbyaRGrgNj6RmMzzpN1G
-X-Gm-Message-State: AOJu0YxVK3qMaVZMyKbL7JfzwH6HeLSuTqMAlsM+YS2HjgPdDeAqlOug
-	HB1tD25ppsrYBDeR7mD96iArHlprxlOXsxHsRexvYrxSh8yys3bj
-X-Google-Smtp-Source: AGHT+IESSnYnz43KE+tzOcvx5UZxfRl8t0fhKq+nDSRFt9IOaDcmUDz45Ga8zxM+kNS6h+siIdqUmA==
-X-Received: by 2002:a0c:f144:0:b0:68f:3919:ebc2 with SMTP id y4-20020a0cf144000000b0068f3919ebc2mr6014087qvl.39.1709134377262;
-        Wed, 28 Feb 2024 07:32:57 -0800 (PST)
-Received: from localhost (56.148.86.34.bc.googleusercontent.com. [34.86.148.56])
-        by smtp.gmail.com with ESMTPSA id ks30-20020a056214311e00b0068fa4534070sm5319436qvb.83.2024.02.28.07.32.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 07:32:56 -0800 (PST)
-Date: Wed, 28 Feb 2024 10:32:56 -0500
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Marcelo Tosatti <mtosatti@redhat.com>, 
- netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
- Jakub Kicinski <kuba@kernel.org>, 
- Eric Dumazet <edumazet@google.com>, 
- Frederic Weisbecker <frederic@kernel.org>, 
- Valentin Schneider <vschneid@redhat.com>, 
- Paolo Abeni <pabeni@redhat.com>
-Message-ID: <65df52286736b_7162829478@willemb.c.googlers.com.notmuch>
-In-Reply-To: <Zd81gp2utD9+ripX@tpad>
-References: <Zd81gp2utD9+ripX@tpad>
-Subject: Re: [PATCH -v2 net-next] net/core/dev.c: enable timestamp static key
- if CPU isolation is configured
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6500415B990
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 15:33:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.10
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709134402; cv=fail; b=WNWBoz541dR0vSiGxb6ocw1o2JFd0DVDzVnwHPOeX9vT4/1cHxr5eVoHUHPxm620ZQ3OcV1pl6tLh8fOJ5ndjMMaScZTQE1RJDaFHJtFX1TRgTPL4+8/v0BORfdxyepRhTzAodvlZwDBNuAe3SQeAimCmo3+UuPeo51JFM8IOaU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709134402; c=relaxed/simple;
+	bh=pl3eBVgjj4BkV56v9nqCFbyT3cYJzMnm4TdUVBFrDnU=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=mrSl6bFSpZ0sDBid+8VMULTS6Z8PUWW7pN5IEgCPZjMVq8ip3ueTxm1DfRDTHqlFfsN/Ra4owZFsIKJUwqqrPLPfkAUJ8x1SWQW1oB9SJVIGERHWt+QHEXSe4atngGTnv/t5TE4uuZ8WE9kH8FZLRELHjcdJwPV5BN/QSjzAI/Q=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=e0BQcjV6; arc=fail smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709134400; x=1740670400;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=pl3eBVgjj4BkV56v9nqCFbyT3cYJzMnm4TdUVBFrDnU=;
+  b=e0BQcjV6oI2u/t1yIg+vlAq6DetWWo2BzPmLCrji/+PRiiYu4gvGRoqb
+   lf6ZUi7thzP7lTQbb4u9APA95oQPBva+3p++xGKTVD8mtVNqsoghtu3Lj
+   XQ+V7eyRGI1twfaWkQOdh4A/YSXZTrDF3oYJ0sIoSEy+DmtpUXJINvfCT
+   K8bbBY5NdkHE5dNIj69cPYskbZ9+92q9wvwXDeWYDFqu3jr2pRCIBVT1J
+   w6mHPKiemL3q8o2sJxVNNEZRQc6m7/sLLIdCZDW+AnL7RCceVh/2FpPq2
+   tysfDlxGcjQemlHJpRJnfHdzs63V1J1EfHM0YQRHa12yMBqBUH/PU+5Pt
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="20993138"
+X-IronPort-AV: E=Sophos;i="6.06,190,1705392000"; 
+   d="scan'208";a="20993138"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 07:33:16 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,190,1705392000"; 
+   d="scan'208";a="12186789"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orviesa005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 28 Feb 2024 07:33:16 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 28 Feb 2024 07:33:15 -0800
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 28 Feb 2024 07:33:15 -0800
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 28 Feb 2024 07:33:15 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=muNb1sEHWIJHvrHbyMMWTGf9aZ4OCGFVB7+b8YWvfJkBW77H5lRCXIz5l9hpd0i8Pu1l/VmmqzHSoJJ2rCR6dmOcOB0PmBeg+hFAydycHPAEEvfwDaIWb1tF6KPTM0j1xkUDD9VrMmlvvXoxl3ITnrhTUhbSPerhBVAX+3+m2WqMhkEXAcSxsY6XGc32IUvaquwArXIHIi7Z1JeM50cxijrjhZXa9SUA0t0nkYZ6n2bwcWE4tKdSaAtTqWq3zbLSv8OGUVB8Iyon22fAAxLfwf29r2cuUgnqg0hhVnhOP5HP/I32el35pbnupJUVLT+q5b/046g49p5+y6B9tQI/JQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=p6OEk8ODhyMjYhY+xxPu6W2z8SEw+pcljv27pqW6ajg=;
+ b=B3Xid9AIRVN2yNLMj7RqRUrux1zv57eSpCi1bduPQn5f57c7KX/m1NyBOohphPFofb74wg1FI9RTNy4sas+ECxu0w4RWBfG3fbemsCraekgsDAEb0fYEK486KATIiSbJeYmtnZyr6GmdblrokjuwFDe4zm/w7piJ1wY6ZHVGrKiVT73eJ3Oj+mLvLpKatgPE9WZK4LW/Oc1+bLJXoYZHDOXgcqmg75nd/tJtFEYOjxa4TOkyKoTD/mmpn6ASDpcxVmhJrXAdzOXrAGaMl+yuKpNLGsqvZLTIdPg2+EJt7U6+AgtaVgmxCNfdUXCXlFvBhm/6jy6k13wT46wl1t5krw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CY5PR11MB6139.namprd11.prod.outlook.com (2603:10b6:930:29::17)
+ by PH0PR11MB5951.namprd11.prod.outlook.com (2603:10b6:510:145::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.24; Wed, 28 Feb
+ 2024 15:33:13 +0000
+Received: from CY5PR11MB6139.namprd11.prod.outlook.com
+ ([fe80::7352:aa4b:e13e:cb01]) by CY5PR11MB6139.namprd11.prod.outlook.com
+ ([fe80::7352:aa4b:e13e:cb01%7]) with mapi id 15.20.7339.024; Wed, 28 Feb 2024
+ 15:33:13 +0000
+Date: Wed, 28 Feb 2024 09:33:01 -0600
+From: Lucas De Marchi <lucas.demarchi@intel.com>
+To: Arnd Bergmann <arnd@kernel.org>
+CC: Oded Gabbay <ogabbay@kernel.org>, Thomas =?utf-8?Q?Hellstr=C3=B6m?=
+	<thomas.hellstrom@linux.intel.com>, Arnd Bergmann <arnd@arndb.de>, "Maarten
+ Lankhorst" <maarten.lankhorst@linux.intel.com>, Maxime Ripard
+	<mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie
+	<airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Rodrigo Vivi
+	<rodrigo.vivi@intel.com>, Matthew Brost <matthew.brost@intel.com>, "Jani
+ Nikula" <jani.nikula@intel.com>, Matt Roper <matthew.d.roper@intel.com>,
+	<intel-xe@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] [v2] drm/xe/kunit: fix link failure with built-in xe
+Message-ID: <evkoih7ms43gg73jmtjwpyntsm77vs4tm27iblm5fcet27kekf@e675w5ccnpo2>
+References: <20240226124736.1272949-1-arnd@kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20240226124736.1272949-1-arnd@kernel.org>
+X-ClientProxiedBy: BYAPR08CA0043.namprd08.prod.outlook.com
+ (2603:10b6:a03:117::20) To CY5PR11MB6139.namprd11.prod.outlook.com
+ (2603:10b6:930:29::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY5PR11MB6139:EE_|PH0PR11MB5951:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9407e3b5-9cec-4d84-6cc4-08dc3872937c
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 61nrZdOegrUHWhPkBtyCk6eX7HnZmKwtTYOYGn5gh2xnRTv9wXMmRqDBPHlXnU5wr2P0y88vTA7JxkSKMTd12+PRXAoaNDEs+JkCnzQv54IQmNxC69xdWKYthz9B1pblB+iNbSkKXJEeSsoh+AArphtVHys/JakbdcJKt52PZNedy1XTU2K1PW+tyCz6DmS206z5XwRoH1TdqP5ijDsyrBfzUQOLkwfK9M1N0H8GOpE74FS/nkD///lzTyiWIfjjJOq+dxWGmYBO0WSuh0AJyWsktrQB4PuUEcp6Uji7ftQTsCnl4SbqLPfxU4AsP68jsQpkPGQYrq32GDO9r03BZjYf8op7Lp0gYCY0yWjyU5/layi1lMPU4DnlmfdN0z8AkLbtD/XJyo+ai83S51aNLVML/xU2BA7bdQoleHKEcL/1O+rxBxso4mx7SWQJTIXJry6dRoP1+u9Dc+cI1uoxR5eLYtK0J3mFUzgFWBkO0n3BGtvCDGkYapYQEFjBrAubsR/jBDfQBUbabOFqTqzgdIZ4UC09/+W4RiDVKuJvHrOtoIlfqb9APR+3I/BZCpygq8uPJU7dbPymI8ZH60PqGPPixh9nlZcRUXaRpOkqoJWlv+LTJIiJPaiR8kF1EOiG
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6139.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?7sQabO7rEqhvt2Tb4/HKF5t9nKLH7Q0Bs7/PTUftKicYuP0IhcagQNVLEFJl?=
+ =?us-ascii?Q?SnWD/EuhbaR0qb1sB6W5lgJQBCIUQruA9YbTPfKZSqPpWJxD3t18OjXbDUFl?=
+ =?us-ascii?Q?DCis+6A3as40AbsmZFbL0yqzV49RD5m/aVYUVqiTsK8Qeu29T6wtjYZ/WZOk?=
+ =?us-ascii?Q?5USj3CApkdZInTceI2OJcQuer0OsQ3GZ+FRiDL4BXYZh+BBDruhM4RE/jCHx?=
+ =?us-ascii?Q?AUDsrrAmehznAseJNpB3ujlfmo3hHcpAJ+ivHny8qAelPzA977KalMi8qay3?=
+ =?us-ascii?Q?kYnyYP0+5kxv6koaQXSK5IyjCPxpt8Ux2gGVnmaRGryb1VIYNFlaFCXgVxpg?=
+ =?us-ascii?Q?k+9xZqtbjnayr/LvPuR8YVPshAVQ5UneH9U4FSlmKEQGb5gL/zXh6EyemEHL?=
+ =?us-ascii?Q?clraP3766ojCUO9i/44itjbESbgSX0F/X7QlOHg60wGitNjDU7eTHwQvMM81?=
+ =?us-ascii?Q?LXPkSEf8rUbllS+Q4WkPbEQw3HGW9OG9YWL9driuz3ej8jlbyYqAZ9zVodyh?=
+ =?us-ascii?Q?a/PHXg1hB8ztXZOnZts+txecmha6aqbhiJMpKZEriqN1YCCvwOW8oneLVb//?=
+ =?us-ascii?Q?y2tEJohC3a0MhhX0zOKa0G74IVk1fv9Vwk/8X3IVvBFpSPVKIxdmvraThcI1?=
+ =?us-ascii?Q?SNsaypnH1bDKXmI/wWSl45J1VmgAhtNnHiKv+881S+oD6MfKq//I3Kd8pkp9?=
+ =?us-ascii?Q?k/JgXsLCb+d6PB85pR1Udb3ZTGNyRmDilhmjl9XyqnsliG9kfB2dLyZeMwvF?=
+ =?us-ascii?Q?7Xn5++2cKrAsdX7jhYuBFXz1/8W6Aq4hTnHxNju/ZuVVzxkiCvxFwSUB77HL?=
+ =?us-ascii?Q?1aJBXPHNx6skjSFFbOmNS4rXDoVGiPcNYgJubDJcouuoFRD70EUhNnhuleDq?=
+ =?us-ascii?Q?Yv0CRHGVkLFpcN1lzqGY6cCLm/P7Ola3Vy575RjifnCgGE+PMiNlck382mWc?=
+ =?us-ascii?Q?lKhVstiDPWZbFIT2yv4HtgLPkaWPvVMUX+5rbHPb10HqjbGm9xTY38kD6M/j?=
+ =?us-ascii?Q?9tyaE6juHUyZBnAciaPAZQq23pH1m7uoJNUKOqcbnw8Y+XeuBvq0M5cYMmcM?=
+ =?us-ascii?Q?ipz8Tvt+MEu/8c2Fh28A8gVtsVVV7JVrVGkrLXOdzfLWfu4Sd1wv0/Prf4l5?=
+ =?us-ascii?Q?6KA0zx1FTCo9q0PZkqyYoYUz6c59iJ9KFYOU4tYP+P8GNogKn8JFtihXuONq?=
+ =?us-ascii?Q?YFlcKLhROHJ42IszSsufLvi3NB1NWJssPe7LCtbmFzSY2PkSeiAUz+L4Rsl8?=
+ =?us-ascii?Q?7GiFqr/KK/cCZt4Zz62YkSnEvPpb9F8cOaLxCFWGHU5tqRLIgTGjkI06vfgq?=
+ =?us-ascii?Q?p5pUahUZjSToqZqg/55IoGA3t5KSnlWM0pK2attoinbvzJoMXgpP2rzknZ5n?=
+ =?us-ascii?Q?fCo/lrLuNfoinGfYOhp15bfQkb1yJn/z6piX1fwQ0p5cnK/qKlCQppHZiluL?=
+ =?us-ascii?Q?UpYXbXSjixnLwROHf7eTZ0T0xpwrqy6MeN+aEf0kVOWw1Q1Az7kVhGISYIOP?=
+ =?us-ascii?Q?JNSFzSjTr4KBk4BMId8XG2x+MatiIBit364diQIfjkHDgKMBRoYR9sjg7K2m?=
+ =?us-ascii?Q?glrt6L8TcOurHHxvSqqNIcENizkFeV2cClqVXaOXT4imv5o5rfrHr+KATpLV?=
+ =?us-ascii?Q?IQ=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9407e3b5-9cec-4d84-6cc4-08dc3872937c
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6139.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Feb 2024 15:33:13.3015
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rJRoMM3vygbHs85FJ9qfPxlOYJWj/xgZlwTr6ngwyqbsLGEiU/x1q4e8TykSRvsz9onQ5c2opCw7VPk+Ja9bQGgfDJ7MRn1SuHgAI3O8A2I=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5951
+X-OriginatorOrg: intel.com
 
-Marcelo Tosatti wrote:
-> 
-> For systems that use CPU isolation (via nohz_full), creating or destroying
-> a socket with timestamping (SOCK_TIMESTAMPING_RX_SOFTWARE and 
-> SOF_TIMESTAMPING_OPT_TX_SWHW) might cause a
-
-Again, SOF_TIMESTAMPING_OPT_TX_SWHW is irrelevant here.
-
-See Documentation/networking/timestamping.rst for a definition of the
-various flags.
-
-> static key to be enabled/disabled. This in turn causes undesired
-> IPIs to isolated CPUs.
-> 
-> So enable the static key unconditionally, if CPU isolation is enabled,
-> thus avoiding the IPIs.
-> 
-> Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
-> 
-> ---
-> v2: mention SOF_TIMESTAMPING_OPT_TX_SWHW in the commit log (Willem de Bruijn / Paolo Abeni)
-
-I did not suggest that
-
-The subject line is slightly corrupted: net-next -v2
-
-> 
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index c588808be77f..15a32f5900e6 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -155,6 +155,7 @@
->  #include <net/netdev_rx_queue.h>
->  #include <net/page_pool/types.h>
->  #include <net/page_pool/helpers.h>
-> +#include <linux/sched/isolation.h>
->  
->  #include "dev.h"
->  #include "net-sysfs.h"
-> @@ -11851,3 +11852,14 @@ static int __init net_dev_init(void)
->  }
->  
->  subsys_initcall(net_dev_init);
-> +
-> +static int __init net_dev_late_init(void)
-> +{
-> +	/* avoid static key IPIs to isolated CPUs */
-> +	if (housekeeping_enabled(HK_TYPE_MISC))
-> +		net_enable_timestamp();
-> +
-> +	return 0;
-> +}
-> +
-> +late_initcall(net_dev_late_init);
-> 
+On Mon, Feb 26, 2024 at 01:46:36PM +0100, Arnd Bergmann wrote:
+>From: Arnd Bergmann <arnd@arndb.de>
+>
+>When the driver is built-in but the tests are in loadable modules,
+>the helpers don't actually get put into the driver:
+>
+>ERROR: modpost: "xe_kunit_helper_alloc_xe_device" [drivers/gpu/drm/xe/tests/xe_test.ko] undefined!
+>
+>Change the Makefile to ensure they are always part of the driver
+>even when the rest of the kunit tests are in loadable modules.
+>
+>Fixes: 5095d13d758b ("drm/xe/kunit: Define helper functions to allocate fake xe device")
+>Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
 
+Reviewed-by: Lucas De Marchi <lucas.demarchi@intel.com>
+
+thanks
+Lucas De Marchi
+
+>---
+>v2: don't remove KUNIT dependency
+>---
+> drivers/gpu/drm/xe/Kconfig       | 1 +
+> drivers/gpu/drm/xe/Kconfig.debug | 1 -
+> drivers/gpu/drm/xe/Makefile      | 6 ++++--
+> 3 files changed, 5 insertions(+), 3 deletions(-)
+>
+>diff --git a/drivers/gpu/drm/xe/Kconfig b/drivers/gpu/drm/xe/Kconfig
+>index 6d4428b19a4c..c3a3b204ae5b 100644
+>--- a/drivers/gpu/drm/xe/Kconfig
+>+++ b/drivers/gpu/drm/xe/Kconfig
+>@@ -11,6 +11,7 @@ config DRM_XE
+> 	select DRM_BUDDY
+> 	select DRM_EXEC
+> 	select DRM_KMS_HELPER
+>+	select DRM_KUNIT_TEST_HELPERS if DRM_XE_KUNIT_TEST != n
+> 	select DRM_PANEL
+> 	select DRM_SUBALLOC_HELPER
+> 	select DRM_DISPLAY_DP_HELPER
+>diff --git a/drivers/gpu/drm/xe/Kconfig.debug b/drivers/gpu/drm/xe/Kconfig.debug
+>index 549065f57a78..df02e5d17d26 100644
+>--- a/drivers/gpu/drm/xe/Kconfig.debug
+>+++ b/drivers/gpu/drm/xe/Kconfig.debug
+>@@ -76,7 +76,6 @@ config DRM_XE_KUNIT_TEST
+> 	depends on DRM_XE && KUNIT && DEBUG_FS
+> 	default KUNIT_ALL_TESTS
+> 	select DRM_EXPORT_FOR_TESTS if m
+>-	select DRM_KUNIT_TEST_HELPERS
+> 	help
+> 	  Choose this option to allow the driver to perform selftests under
+> 	  the kunit framework
+>diff --git a/drivers/gpu/drm/xe/Makefile b/drivers/gpu/drm/xe/Makefile
+>index 4c6ffe4b2172..b596e4482a9b 100644
+>--- a/drivers/gpu/drm/xe/Makefile
+>+++ b/drivers/gpu/drm/xe/Makefile
+>@@ -158,8 +158,10 @@ xe-$(CONFIG_PCI_IOV) += \
+> 	xe_lmtt_2l.o \
+> 	xe_lmtt_ml.o
+>
+>-xe-$(CONFIG_DRM_XE_KUNIT_TEST) += \
+>-	tests/xe_kunit_helpers.o
+>+# include helpers for tests even when XE is built-in
+>+ifdef CONFIG_DRM_XE_KUNIT_TEST
+>+xe-y += tests/xe_kunit_helpers.o
+>+endif
+>
+> # i915 Display compat #defines and #includes
+> subdir-ccflags-$(CONFIG_DRM_XE_DISPLAY) += \
+>-- 
+>2.39.2
+>
 
