@@ -1,131 +1,141 @@
-Return-Path: <linux-kernel+bounces-84254-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84255-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D706C86A437
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 01:04:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0097786A439
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 01:05:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 783C21F24985
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 00:04:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E6DCC1C2527D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 00:05:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F69C2103;
-	Wed, 28 Feb 2024 00:04:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C873364;
+	Wed, 28 Feb 2024 00:05:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MTf+tThp"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ECLElM3H"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA8D3184F;
-	Wed, 28 Feb 2024 00:04:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7CA6185E
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 00:05:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709078679; cv=none; b=PHM9AIsdRoxqgrpfGognPHelrmWXKJqGEpxyd4zHi1564EUcQIdJ0zNSr0nrDjfnHF3F64fqeJUrbxBvZeZnEUDIseDWVgQQS+HyS8iqXeZIUk0Z9mkL7F5JxsrMDVmWPE9dfKRcsv9r8ZFi+40iLiWDR6vykgfSHfqV76hXS3k=
+	t=1709078717; cv=none; b=ntiG1DZzYTEQUeAKzCu4GVy0gHx8s6dWse0EGykn1BbuSw9IbTSB+mBbNFyUZ5ZGO4te9A8k0/gl8dzRnjulusrtfYQ44DmhgWc07U00NjIqZrp86FOOc7uwYiW0EvXrT57atd0ji5+J37rdc1s5Ht9RMO2WtBSXOc1+io6QjZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709078679; c=relaxed/simple;
-	bh=JGUgWS4grQla5O7HdEiyj3k63HrCOx5ncAUPSxH5+bY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Kk2CGH86guxc8LTgxJ43wrgoGDQdzztL23Xy1B4SIUr8IbfwBvHp+V2ftFZ41xqWRC/smE5FceW5sil+l/c/QoSUR/uiza43a9DtayTRV/5o7zmGenGlXNS5Yy0tqg7TjBT0sh71x/HDTNFAWBUYOqgq0/xNr7MnuJa0a6u4E8w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MTf+tThp; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a437a2a46b1so275921566b.2;
-        Tue, 27 Feb 2024 16:04:37 -0800 (PST)
+	s=arc-20240116; t=1709078717; c=relaxed/simple;
+	bh=MNl2a9+9wniw0DL7pfu1Gvnvl1U5VZVdbJpueNcd744=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=BZo2UzuUhOI+iTfBfBi4noEFkb3oC6BfTqwhGp9phRu4jRlDhApOt/1fY4/aGOyLUSZ2zbGxwZOvxZY62NujM5BjmSO1bxr4Ttm8aKDQWhdJmJeWKu/PHKw+vzPNO25B6++EHqrvnBvKGBbOBJdovU1KXqPqaVXxBSjLQFCe8Z4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--badhri.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ECLElM3H; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--badhri.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-609239ad1bcso25000707b3.3
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 16:05:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709078676; x=1709683476; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CGAsf5cgvi4hUcPvX6gI5YnLh72rWWc63kIQDyDiu9Q=;
-        b=MTf+tThpVGrJdwGtpMVfoBVNq9uH+eiSbu4c0aoxaO6nqvxKVaUZqazzwgbUI5S4vB
-         kdNmwBecgiUWQctuIUnrIPV1aG1WP7uJLk4UAnOUdtxLXqKLu0i/BmUyKKWR5spunF6k
-         lJk0bDYedqnuiOvpO0a4gPl1wqIyI1KB9X4+KmN8DIaXZnWBNHg3gdfFbvvmQE/Z2E3q
-         WIbLNmE6bOord8Cz6sEYlcsRbscYhzj2VQf7QdkjY6bc4SnT8RWrXzqepyhsNSuxOBd9
-         2faGP24LtEd42fvZ5w/Ydj2MFDcylvKp7MIveS0GziMSuOv+4n/J3VSefMt1zcvosrGy
-         QaoA==
+        d=google.com; s=20230601; t=1709078715; x=1709683515; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=3QynGLk1qlXS/b5BsO1d0j20dFGFaWGNAGl6bHTYfKo=;
+        b=ECLElM3HQkvcm62xB5Xva3Vuz5+IoziuYtMtZzylSjPHH//vXeyiZ+Ks2wdGHWvlwX
+         VK4hGLThu212pF9+EESz9NeZnh/uPAIRtu5jEzoJOazrkdwXkOJgqnhZaE0twESWbmNr
+         BlmKfRMa/Wa3j6RXePNl4OGwueRZ6yM9prV7P+HxaqfODUNyx5I2a8DSq22Mi45531IO
+         xpgFnOkKwuImqPUy5LO2mK/HB1/pGMAssdxYXsHdDYmk1HYb3MPbIFF93ofCeTf1BIqT
+         OvGJdX4ENLK/e/2UYFcVXwEpIGthKWmuJ3BldxrB/AvcYUBZ5N8iL7nEE6wkmzf/Sa3J
+         ISAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709078676; x=1709683476;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CGAsf5cgvi4hUcPvX6gI5YnLh72rWWc63kIQDyDiu9Q=;
-        b=fFm8k6G5H+Px9p+bkhcEPQW+RHS7IEJ53KZWI4iLBXLHbOlhVe0REWKRv4+bR1gsUL
-         284lT+gC92uNoPPE569HsqB1nfLl5HBDLAkoN/fXVoL3+8SRugl3n4npdF+UYwAvdvrg
-         ji7+05vwShEQ1WSfJz83Qzpde58LE7afp8+m+anUZLhV+JXnLonjKCBRcHlqz8LezCYC
-         erdKnIp4UQhCOYAA+YMbVr7wPmblujaRhL5LvDfF/G8WGO1L+m1CvbcZ75iXjw16oMce
-         TlEM1clxY7ymJTyo1N2sLg0ziL51FsL0dc23orAG/AKiqTs5kep99wsxf9feB+xBey2T
-         iIlQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXu7WV4w7ucdq06LIODGa0wkiijC2IPZ1S2BSoaf3rB0hB7QOJcyMufyeaA9w5s7hfqMx2a76SdSfJiMRpH7NnZIW4YlvgyE+I/UBxOT85iPKJ6XfJMOO7Dn1hgqMU2ooiKVsSq1WEVMKKKRpLpA6eWPWqaDBjXSoR29ES2rpkISRiDutY=
-X-Gm-Message-State: AOJu0YyQosQsVGy/SxmGgrxIjxhnwChZJkKrY8x/jM3R29LggjS5nZUr
-	8POr/rLHxCuY7J75bNOFU957gEDqK46iOmBD/QjiTDJKSzei9RNGR02zJi6OmddGkHaxEsJT2L1
-	FgoFALB6AD8exoOTQkYl/RWPc9iY=
-X-Google-Smtp-Source: AGHT+IGXLgvtICyW0r81gWFgD3HrWKOjnkobiDubKg4V9DdmTC/M0dtG3PZq8BTs+ZginsAuk4xm9JsdwYJtrkb5tpo=
-X-Received: by 2002:a17:906:1cd4:b0:a3e:5993:96e9 with SMTP id
- i20-20020a1709061cd400b00a3e599396e9mr6993567ejh.42.1709078676009; Tue, 27
- Feb 2024 16:04:36 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709078715; x=1709683515;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3QynGLk1qlXS/b5BsO1d0j20dFGFaWGNAGl6bHTYfKo=;
+        b=IH6IckcLwJB58HVD1EzofgHbEcf6Uwy55806amazj9HXL0Ud+DjlQa1HY3r30JLfR8
+         diY39cJywgs3ZNGULF6KUO0BaZfAdeuFjuzdsJLB2a7Lykfk5Vb28dhSUoG8zFAf0R0Y
+         BmRYaGxqIlWPCF1kR2fMNH0mdoTa0A2IdrV07LePLzmtf/KWBGbg4g2AOXOCVnLbRksR
+         I6jcOgfx0JIb391HXSGpTTRL6AIMZL6C9yyMmUElqddZ+D3mNQRH8M3g6Ctfnie2W34B
+         bQs4sFrOqK0ILxUjP6BN8wWKU6p1QUDEuJ2OuuydLVbo4KeJrZxzYzBilBSUwi5gtoEl
+         up0w==
+X-Forwarded-Encrypted: i=1; AJvYcCWRuM0MPFdBjBPyQc16SxN6lzS5oKb8GfOY2box+69RTd2Tb0pfOwuthP7yqiARYjInmBwvG0xGHql1Ii7QGdpb42qPRHWOHrTypp0L
+X-Gm-Message-State: AOJu0YzjZMvDqYwEFa0DWi5zY/TTwaH/HY3qAFOQwPAQMCu0XlwwzzhW
+	bE0uUEstdiKZ21DObpivjdr7RFmo7YrVkOKXW3n055KgZSa/DlY5BOYsi7j/Mz0BjpkoYVQOmp9
+	6jg==
+X-Google-Smtp-Source: AGHT+IEcTqr5Mo3qPu3T4l2gV/YiU1cSUvm6btQ2z1PV6ifgWkRvqJZxe/4/UzBvKLHXBCdu2ZjX8X+6Vck=
+X-Received: from badhri.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:6442])
+ (user=badhri job=sendgmr) by 2002:a0d:cb86:0:b0:609:2693:bb33 with SMTP id
+ n128-20020a0dcb86000000b006092693bb33mr704963ywd.8.1709078714754; Tue, 27 Feb
+ 2024 16:05:14 -0800 (PST)
+Date: Wed, 28 Feb 2024 00:05:12 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240227212244.262710-1-chris.packham@alliedtelesis.co.nz> <20240227212244.262710-3-chris.packham@alliedtelesis.co.nz>
-In-Reply-To: <20240227212244.262710-3-chris.packham@alliedtelesis.co.nz>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Wed, 28 Feb 2024 02:03:59 +0200
-Message-ID: <CAHp75Vdi2c=s_z9wwxWzVcL+4tx5ZnXymbiN4O1FS+D3kz5vqw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] dt-bindings: auxdisplay: Add bindings for generic
- 7 segment LED
-To: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc: andy@kernel.org, geert@linux-m68k.org, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, andrew@lunn.ch, 
-	gregory.clement@bootlin.com, sebastian.hesselbarth@gmail.com, 
-	ojeda@kernel.org, tzimmermann@suse.de, javierm@redhat.com, robin@protonic.nl, 
-	lee@kernel.org, pavel@ucw.cz, devicetree@vger.kernel.org, 
-	linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.rc1.240.g4c46232300-goog
+Message-ID: <20240228000512.746252-1-badhri@google.com>
+Subject: [PATCH v2] usb: typec: tpcm: Fix PORT_RESET behavior for self powered devices
+From: Badhri Jagan Sridharan <badhri@google.com>
+To: gregkh@linuxfoundation.org, linux@roeck-us.net, 
+	heikki.krogerus@linux.intel.com
+Cc: kyletso@google.com, linux-usb@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, rdbabiera@google.com, amitsd@google.com, 
+	stable@vger.kernel.org, frank.wang@rock-chips.com, broonie@kernel.org, 
+	Badhri Jagan Sridharan <badhri@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 27, 2024 at 11:22=E2=80=AFPM Chris Packham
-<chris.packham@alliedtelesis.co.nz> wrote:
+While commit 69f89168b310 ("usb: typec: tpcm: Fix issues with power being
+removed during reset") fixes the boot issues for bus powered devices such
+as LibreTech Renegade Elite/Firefly, it trades off the CC pins NOT being
+Hi-Zed during errory recovery (i.e PORT_RESET) for devices which are NOT
+bus powered(a.k.a self powered). This change Hi-Zs the CC pins only for
+self powered devices, thus preventing brown out for bus powered devices
 
-..
+Adhering to spec is gaining more importance due to the Common charger
+initiative enforced by the European Union.
 
-> +  segment-gpios:
-> +    description:
-> +      An array of GPIOs one per segment.
+Quoting from the spec:
+    4.5.2.2.2.1 ErrorRecovery State Requirements
+    The port shall not drive VBUS or VCONN, and shall present a
+    high-impedance to ground (above zOPEN) on its CC1 and CC2 pins.
 
-This is a vague description. Please explain the order (e.g., LSB =3D
-'a', MSB =3D 'g'), use of DP (optional?), etc.
+Hi-Zing the CC pins is the inteded behavior for PORT_RESET.
+CC pins are set to default state after tErrorRecovery in
+PORT_RESET_WAIT_OFF.
 
-> +    minItems: 7
+    4.5.2.2.2.2 Exiting From ErrorRecovery State
+    A Sink shall transition to Unattached.SNK after tErrorRecovery.
+    A Source shall transition to Unattached.SRC after tErrorRecovery.
 
-maxItems?
+Fixes: 69f89168b310 ("usb: typec: tpcm: Fix issues with power being removed during reset")
+Cc: stable@vger.kernel.org
+Cc: Mark Brown <broonie@kernel.org>
+Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+---
+Changes since V1:
+* Fix CC for linux stable
+---
+ drivers/usb/typec/tcpm/tcpm.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-..
+diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+index c9a78f55ca48..bbe1381232eb 100644
+--- a/drivers/usb/typec/tcpm/tcpm.c
++++ b/drivers/usb/typec/tcpm/tcpm.c
+@@ -5593,8 +5593,11 @@ static void run_state_machine(struct tcpm_port *port)
+ 		break;
+ 	case PORT_RESET:
+ 		tcpm_reset_port(port);
+-		tcpm_set_cc(port, tcpm_default_state(port) == SNK_UNATTACHED ?
+-			    TYPEC_CC_RD : tcpm_rp_cc(port));
++		if (port->self_powered)
++			tcpm_set_cc(port, TYPEC_CC_OPEN);
++		else
++			tcpm_set_cc(port, tcpm_default_state(port) == SNK_UNATTACHED ?
++				    TYPEC_CC_RD : tcpm_rp_cc(port));
+ 		tcpm_set_state(port, PORT_RESET_WAIT_OFF,
+ 			       PD_T_ERROR_RECOVERY);
+ 		break;
 
-> +    led-7seg {
+base-commit: a560a5672826fc1e057068bda93b3d4c98d037a2
+-- 
+2.44.0.rc1.240.g4c46232300-goog
 
-Probably it should be more human readable. DT people might suggest
-something better.
-
-> +        compatible =3D "generic-gpio-7seg";
-> +        segment-gpios =3D <&gpio 0 GPIO_ACTIVE_LOW
-> +                         &gpio 1 GPIO_ACTIVE_LOW
-> +                         &gpio 2 GPIO_ACTIVE_LOW
-> +                         &gpio 3 GPIO_ACTIVE_LOW
-> +                         &gpio 4 GPIO_ACTIVE_LOW
-> +                         &gpio 5 GPIO_ACTIVE_LOW
-> +                         &gpio 6 GPIO_ACTIVE_LOW>;
-
-Dunno how to handle DP. Either we always expect it to be here (as
-placeholder) or with additional property.
-
-> +    };
-
---=20
-With Best Regards,
-Andy Shevchenko
 
