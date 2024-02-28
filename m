@@ -1,139 +1,120 @@
-Return-Path: <linux-kernel+bounces-85429-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85430-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A358C86B5D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:22:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D89D86B5D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:23:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 44DE51F27561
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:22:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F6E51C224E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:23:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E41DE12DD9B;
-	Wed, 28 Feb 2024 17:22:37 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 453431586DC;
+	Wed, 28 Feb 2024 17:22:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pFP76c/2"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F347A6EF01;
-	Wed, 28 Feb 2024 17:22:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81FB73FBB8;
+	Wed, 28 Feb 2024 17:22:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709140957; cv=none; b=myVhRlZIsc6NkRltcfNg86aoIydomgWd5Vplg+4bKlpUGZ6r/Lj2yXqw2Y6c2hM+S+WHoOvh63hE7QmRtP6i0BshkHkDtsmzvQIP06LZvPp9FRU7axmH1RVeEKuz8A4et6pVrBmor6Jx/DwsofvskK5PBkLbhf11ugaXi9cafNk=
+	t=1709140977; cv=none; b=iV6U0bK2FocPXOtt35FChStlCLWyDHY8gqVp1fM2SZrz2AR1UDnN+w14EXW/U3uqlKjgMyko0FShkPP/TEtVKCJKXQl9M+8cb+CaPw/IGKChtgNRpZCYjG3bqXw6zSmEL9ifqkB94LkyJfCLiYTpyE0PqatK/0RCwNU1pnZuMIc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709140957; c=relaxed/simple;
-	bh=SFvOWcPRYo2Lp/S4Uk1XoDCn8ACB3qkyl4DrAo0XEaE=;
+	s=arc-20240116; t=1709140977; c=relaxed/simple;
+	bh=nRStdjfCcY7LSJLuSnjP760bh7C+8aHgl8Sn6p9a54c=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SD1uOH7yxNcngFkdYagbhQGRiJcfoPXXsrcXIESUkmmYan1T72CCTccF+E4G2HBnopoEVXaeC6qEZmSfgrEPawismiX/E7W4rWBjRyiHEsKAe5q6ctxVQlSyFZ2QPb+ITjngI5FcVaf7l8yDO3McJjAQjHvkOe1errN6ViZSxaI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
-X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="3719070"
-X-IronPort-AV: E=Sophos;i="6.06,190,1705392000"; 
-   d="scan'208";a="3719070"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 09:22:36 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="913956076"
-X-IronPort-AV: E=Sophos;i="6.06,190,1705392000"; 
-   d="scan'208";a="913956076"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 09:22:30 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andy.shevchenko@gmail.com>)
-	id 1rfNdS-00000008HWT-3mFq;
-	Wed, 28 Feb 2024 19:22:26 +0200
-Date: Wed, 28 Feb 2024 19:22:26 +0200
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-Cc: "geert@linux-m68k.org" <geert@linux-m68k.org>,
-	"robh+dt@kernel.org" <robh+dt@kernel.org>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"conor+dt@kernel.org" <conor+dt@kernel.org>,
-	"andrew@lunn.ch" <andrew@lunn.ch>,
-	"gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
-	"sebastian.hesselbarth@gmail.com" <sebastian.hesselbarth@gmail.com>,
-	"ojeda@kernel.org" <ojeda@kernel.org>,
-	"tzimmermann@suse.de" <tzimmermann@suse.de>,
-	"javierm@redhat.com" <javierm@redhat.com>,
-	"robin@protonic.nl" <robin@protonic.nl>,
-	"lee@kernel.org" <lee@kernel.org>, "pavel@ucw.cz" <pavel@ucw.cz>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v2 2/4] dt-bindings: auxdisplay: Add bindings for generic
- 7 segment LED
-Message-ID: <Zd9r0lcnSuKFEsZF@smile.fi.intel.com>
-References: <20240227212244.262710-1-chris.packham@alliedtelesis.co.nz>
- <20240227212244.262710-3-chris.packham@alliedtelesis.co.nz>
- <CAHp75Vdi2c=s_z9wwxWzVcL+4tx5ZnXymbiN4O1FS+D3kz5vqw@mail.gmail.com>
- <34b89a56-ab43-4d44-86f3-604e5be29db3@alliedtelesis.co.nz>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Bt175Hxlf3/ue32JNCVpgsYTxKDZAdr6w7M+BKuskVzLZzhpCAjZyQP1K3/GWfOMHlgpVb9lOj1mVQh8Rw7pkyy2Jr6dZoCVPvrjWn9hC6BkvA9pBF1dnWLFjpk40pcJHMuqFBon0R3InqteLnZQdZkROWuT3gjqVipDMFPxEuc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pFP76c/2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB032C433C7;
+	Wed, 28 Feb 2024 17:22:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709140977;
+	bh=nRStdjfCcY7LSJLuSnjP760bh7C+8aHgl8Sn6p9a54c=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=pFP76c/27QGJc+0KjT3gXE1b0bg/veuDKpkmd+8bBXr3xT/NuaN68Dc4uD+96knYe
+	 DjELLTJTAHI3e8Z3gTqXcZk+NSZG9+2tU/gzor6pqlzoUyscNZnzJd16m6OQYsVO8t
+	 DqSWBaQlWk+hxPP7aZOKTRLHas946LtCbxs+UFFJmvBeNjPRo0Qplu5v4YY+10GEM1
+	 dhrwHTJHscRO3RO0JV9f1mY9y2CF7e2I14zW3Sfv39HrL0fsJ2fqPIcDgLx3ZOeIYH
+	 WmWTSzrT8GYhLZnEohrvXsM+RI6BAZmOTDTO9IiErZUmWqfz35sVmLvmahVjHh7HAa
+	 Zz7WuqiVCvL2A==
+Date: Thu, 29 Feb 2024 02:22:55 +0900
+From: Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kwilczynski@kernel.org>
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: Saurabh Singh Sengar <ssengar@linux.microsoft.com>, bhelgaas@google.com,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	alexander.stein@ew.tq-group.com, decui@microsoft.com
+Subject: Re: [PATCH] PCI/sysfs: Fix race in pci sysfs creation
+Message-ID: <20240228172255.GA3579062@rocinante>
+References: <20240227171458.GA16664@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <20240228152222.GA272403@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <34b89a56-ab43-4d44-86f3-604e5be29db3@alliedtelesis.co.nz>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20240228152222.GA272403@bhelgaas>
 
-On Wed, Feb 28, 2024 at 01:53:08AM +0000, Chris Packham wrote:
-> On 28/02/24 13:03, Andy Shevchenko wrote:
-> > On Tue, Feb 27, 2024 at 11:22 PM Chris Packham
-> > <chris.packham@alliedtelesis.co.nz> wrote:
+Hello,
 
-..
+Sorry for late reply.
 
-> >> +  segment-gpios:
-> >> +    description:
-> >> +      An array of GPIOs one per segment.
-> > This is a vague description. Please explain the order (e.g., LSB =
-> > 'a', MSB = 'g'), use of DP (optional?), etc.
-> >
-> >> +    minItems: 7
-> > maxItems?
+[...]
+> > > > Krzysztof has done a ton of work to convert these files to static
+> > > > attributes, where the device model prevents most of these races:
+> > > > 
+> > > >   506140f9c06b ("PCI/sysfs: Convert "index", "acpi_index", "label" to static attributes")
+> > > >   d93f8399053d ("PCI/sysfs: Convert "vpd" to static attribute")
+> > > >   f42c35ea3b13 ("PCI/sysfs: Convert "reset" to static attribute")
+> > > >   527139d738d7 ("PCI/sysfs: Convert "rom" to static attribute")
+> > > >   e1d3f3268b0e ("PCI/sysfs: Convert "config" to static attribute")
+> > > > 
+> > > > and he even posted a series to do the same for the resource files:
+> > > > 
+> > > >   https://lore.kernel.org/linux-pci/20210910202623.2293708-1-kw@linux.com/
+> > > > 
+> > > > I can't remember why we didn't apply that at the time, and it no
+> > > > longer applies cleanly, but I think that's the direction we should go.
+> > > 
+> > > Thanks for you review.
+> > > 
+> > > Please inform me if there's existing feedback explaining why this
+> > > series hasn't been merged yet. I am willing to further improve it
+> > > if necessary.
+> > 
+> > Let us know your opinion so that we can move ahead in fixing this
+> > long pending bug.
 
-> I plan on saying maxItems: 7 (more discussion below)
+I really thought you were asking me about your patch.  So, I didn't reply
+since Bjorn added his review.
 
-..
+> There's no feedback on the mailing list (I checked the link above), so
+> the way forward is to update the series so it applies cleanly again
+> and post it as a v3.
 
-> >> +    led-7seg {
-> > Probably it should be more human readable. DT people might suggest
-> > something better.
-> >
-> >> +        compatible = "generic-gpio-7seg";
-> >> +        segment-gpios = <&gpio 0 GPIO_ACTIVE_LOW
-> >> +                         &gpio 1 GPIO_ACTIVE_LOW
-> >> +                         &gpio 2 GPIO_ACTIVE_LOW
-> >> +                         &gpio 3 GPIO_ACTIVE_LOW
-> >> +                         &gpio 4 GPIO_ACTIVE_LOW
-> >> +                         &gpio 5 GPIO_ACTIVE_LOW
-> >> +                         &gpio 6 GPIO_ACTIVE_LOW>;
-> > Dunno how to handle DP. Either we always expect it to be here (as
-> > placeholder) or with additional property.
-> 
-> My current plan was to ignore it. As you see it my later patch I'm 
-> (ab)using DP as a discrete gpio-led with a different function.
+Start with a review, if you have some time.  Perhaps we can make it better
+before sending another revision.
 
-FWIW, I have _no_ indicator _without_ DP. So, my statistics is towards enabling
-DP as a part of 7-segment displays.
+There are two areas which this series decided not to tackle initially:
 
-> We could either a separate dp-gpios property or set maxItems to 8. Right 
-> now the driver won't do anything with either option.To actually do 
-> something in the linedisp driver we'd need to have a new character map 
-> that includes the extra LED.
+  - Support for the Alpha platform
+  - Support for legacy PCI platforms
 
-Yeah, we can leave it open for now.
+Feel free to have a look at the above.  Perhaps you will have some ideas on how
+to best convert both of these to use static attributes, so that we could convert
+everything at the same time.
 
-> >> +    };
+> There's no need to wait for Krzysztof to refresh it, and if you have
+> time to do it, it would be very welcomed!  The best base would be
+> v6.8-rc1.
 
--- 
-With Best Regards,
-Andy Shevchenko
+That I can do, perhaps this coming weekend.  Or even sooner when I find some
+time this week.
 
-
+	Krzysztof
 
