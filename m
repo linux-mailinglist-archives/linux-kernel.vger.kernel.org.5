@@ -1,42 +1,42 @@
-Return-Path: <linux-kernel+bounces-84961-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84965-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D07F886AE3A
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:54:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8841086AE45
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:54:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E02A1C23787
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:54:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC2FA1C23970
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:54:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0294F70CD7;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E53EC157E8E;
 	Wed, 28 Feb 2024 11:49:41 +0000 (UTC)
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F19F06CDCD;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1A216CDD0;
 	Wed, 28 Feb 2024 11:49:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709120980; cv=none; b=fwmmIFrJYOomEx80d40T7nF8L7vySuYdYzWRWCZdfHyZZKghFC8Ggp4re2UNLQwbEO0rz8aGBwM00/KJckmj4+AB6CObmwh/cKpIDsk7AcUC2qptlPXCiQT409FM+Do2Ry157WKY3LoYhm0soZBCoOTGETVRzccLQMEwqMydgH4=
+	t=1709120981; cv=none; b=aR9OEjx3lhiaRxOOrNnH906C5Z+g53LRts3dWJxy5JR9fMEAHb6K2ltCM1IUD12z+MqPadbp/cYd++Vcdf81urgpaO4FP4page/iXJEt9MoLk1NXHCfqUJOl7RFh1Onua1E6Ij1wcedylkeSVR71NHJtLMKPgbiHYIbjBszKnnw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709120980; c=relaxed/simple;
-	bh=QYOlqih7BF6kX5BYdwF9n3/QSS94mDOA3t9MJUII4Qw=;
+	s=arc-20240116; t=1709120981; c=relaxed/simple;
+	bh=kfl4DSCdwzHvDQU2lLSIAUyUCCZRL9xKBKE9s71DjHo=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=QCL988FAR4eKU09DpTpg2Cd7wWUaVVRO45y0W2z5pm3OjC04CumJp9ofbelDCzHh6OGXZtlh2H4uTiKLnensIt4VMorroUF8lXqozT06/ShYceaukaGp0X/cbngWdd3oeJfQV9f8nmMalmhJIsKz8LnRyUiMJB+dcQYgriC8r/4=
+	 MIME-Version; b=AIfr1CxGZmMqAzCGFAsRuLPThRetfEn7/KUgKvmvKOEmBDwMJE4xzi0hTO3zC9wg9oJUxXcTrDh4wYMN2+y5690pZN/SxoUtXE8YeGfHWNhO/K5Nm612dltnaI5O0wr15UcZpN61vbSgumV4J0eDXN4yzGLnGL4/ZzVR3FMd8Cg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TlCLt59BMz4f3lgF;
-	Wed, 28 Feb 2024 19:49:26 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TlCLz16bMz4f3kKM;
+	Wed, 28 Feb 2024 19:49:31 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 10EB11A0232;
+	by mail.maildlp.com (Postfix) with ESMTP id 80AD41A0175;
 	Wed, 28 Feb 2024 19:49:34 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgAn9g7IHd9l+eamFQ--.6969S9;
-	Wed, 28 Feb 2024 19:49:33 +0800 (CST)
+	by APP1 (Coremail) with SMTP id cCh0CgAn9g7IHd9l+eamFQ--.6969S10;
+	Wed, 28 Feb 2024 19:49:34 +0800 (CST)
 From: Yu Kuai <yukuai1@huaweicloud.com>
 To: xni@redhat.com,
 	paul.e.luse@linux.intel.com,
@@ -49,9 +49,9 @@ Cc: linux-raid@vger.kernel.org,
 	yukuai1@huaweicloud.com,
 	yi.zhang@huawei.com,
 	yangerkun@huawei.com
-Subject: [PATCH md-6.9 v3 05/11] md/raid1-10: add a helper raid1_check_read_range()
-Date: Wed, 28 Feb 2024 19:43:27 +0800
-Message-Id: <20240228114333.527222-6-yukuai1@huaweicloud.com>
+Subject: [PATCH md-6.9 v3 06/11] md/raid1-10: factor out a new helper raid1_should_read_first()
+Date: Wed, 28 Feb 2024 19:43:28 +0800
+Message-Id: <20240228114333.527222-7-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240228114333.527222-1-yukuai1@huaweicloud.com>
 References: <20240228114333.527222-1-yukuai1@huaweicloud.com>
@@ -62,10 +62,10 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgAn9g7IHd9l+eamFQ--.6969S9
-X-Coremail-Antispam: 1UD129KBjvJXoW7AFy8Zw15tF1rurW5CF4kWFg_yoW8KFy5pr
-	4Yya43tr1UK3y3W3W3uF1xC34FyayfWFW8GrWfX3WDWry5Ga9akF97JryjgFyDWry3Xw12
-	qa1j9rWxua47CaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:cCh0CgAn9g7IHd9l+eamFQ--.6969S10
+X-Coremail-Antispam: 1UD129KBjvJXoWxXr17Jw4DJrWruF4DWr4xCrg_yoWrWF43pw
+	4avF93AryUKay3Aws8A3yDua4Sy34rWFWUKFWxWw4kuFySqFW5Way5GryY9r1DuF95Jw17
+	Xa45GrW5C3ZrJFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUP214x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
 	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
 	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -77,82 +77,122 @@ X-Coremail-Antispam: 1UD129KBjvJXoW7AFy8Zw15tF1rurW5CF4kWFg_yoW8KFy5pr
 	kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
 	14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIx
 	kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAF
-	wI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJV
-	W8JwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7VUbmZ
+	wI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JV
+	WxJwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7VUbmZ
 	X7UUUUU==
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-The checking and handler of bad blocks appear many timers during
-read_balance() in raid1 and raid10. This helper will be used in later
-patches to simplify read_balance() a lot.
+If resync is in progress, read_balance() should find the first usable
+disk, otherwise, data could be inconsistent after resync is done. raid1
+and raid10 implement the same checking, hence factor out the checking
+to make code cleaner.
+
+Noted that raid1 is using 'mddev->recovery_cp', which is updated after
+all resync IO is done, while raid10 is using 'conf->next_resync', which
+is inaccurate because raid10 update it before submitting resync IO.
+Fortunately, raid10 read IO can't concurrent with resync IO, hence there
+is no problem. And this patch also switch raid10 to use
+'mddev->recovery_cp'.
 
 Co-developed-by: Paul Luse <paul.e.luse@linux.intel.com>
 Signed-off-by: Paul Luse <paul.e.luse@linux.intel.com>
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 Reviewed-by: Xiao Ni <xni@redhat.com>
 ---
- drivers/md/raid1-10.c | 49 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 49 insertions(+)
+ drivers/md/raid1-10.c | 20 ++++++++++++++++++++
+ drivers/md/raid1.c    | 15 ++-------------
+ drivers/md/raid10.c   | 13 ++-----------
+ 3 files changed, 24 insertions(+), 24 deletions(-)
 
 diff --git a/drivers/md/raid1-10.c b/drivers/md/raid1-10.c
-index 512746551f36..9bc0f0022a6c 100644
+index 9bc0f0022a6c..2ea1710a3b70 100644
 --- a/drivers/md/raid1-10.c
 +++ b/drivers/md/raid1-10.c
-@@ -227,3 +227,52 @@ static inline bool exceed_read_errors(struct mddev *mddev, struct md_rdev *rdev)
- 
- 	return false;
+@@ -276,3 +276,23 @@ static inline int raid1_check_read_range(struct md_rdev *rdev,
+ 	*len = first_bad + bad_sectors - this_sector;
+ 	return 0;
  }
 +
-+/**
-+ * raid1_check_read_range() - check a given read range for bad blocks,
-+ * available read length is returned;
-+ * @rdev: the rdev to read;
-+ * @this_sector: read position;
-+ * @len: read length;
++/*
++ * Check if read should choose the first rdev.
 + *
-+ * helper function for read_balance()
-+ *
-+ * 1) If there are no bad blocks in the range, @len is returned;
-+ * 2) If the range are all bad blocks, 0 is returned;
-+ * 3) If there are partial bad blocks:
-+ *  - If the bad block range starts after @this_sector, the length of first
-+ *  good region is returned;
-+ *  - If the bad block range starts before @this_sector, 0 is returned and
-+ *  the @len is updated to the offset into the region before we get to the
-+ *  good blocks;
++ * Balance on the whole device if no resync is going on (recovery is ok) or
++ * below the resync window. Otherwise, take the first readable disk.
 + */
-+static inline int raid1_check_read_range(struct md_rdev *rdev,
-+					 sector_t this_sector, int *len)
++static inline bool raid1_should_read_first(struct mddev *mddev,
++					   sector_t this_sector, int len)
 +{
-+	sector_t first_bad;
-+	int bad_sectors;
++	if ((mddev->recovery_cp < this_sector + len))
++		return true;
 +
-+	/* no bad block overlap */
-+	if (!is_badblock(rdev, this_sector, *len, &first_bad, &bad_sectors))
-+		return *len;
++	if (mddev_is_clustered(mddev) &&
++	    md_cluster_ops->area_resyncing(mddev, READ, this_sector,
++					   this_sector + len))
++		return true;
 +
-+	/*
-+	 * bad block range starts offset into our range so we can return the
-+	 * number of sectors before the bad blocks start.
-+	 */
-+	if (first_bad > this_sector)
-+		return first_bad - this_sector;
-+
-+	/* read range is fully consumed by bad blocks. */
-+	if (this_sector + *len <= first_bad + bad_sectors)
-+		return 0;
-+
-+	/*
-+	 * final case, bad block range starts before or at the start of our
-+	 * range but does not cover our entire range so we still return 0 but
-+	 * update the length with the number of sectors before we get to the
-+	 * good ones.
-+	 */
-+	*len = first_bad + bad_sectors - this_sector;
-+	return 0;
++	return false;
 +}
+diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
+index 97db9add27df..6e3c0d3e0b75 100644
+--- a/drivers/md/raid1.c
++++ b/drivers/md/raid1.c
+@@ -605,11 +605,6 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
+ 	struct md_rdev *rdev;
+ 	int choose_first;
+ 
+-	/*
+-	 * Check if we can balance. We can balance on the whole
+-	 * device if no resync is going on, or below the resync window.
+-	 * We take the first readable disk when above the resync window.
+-	 */
+  retry:
+ 	sectors = r1_bio->sectors;
+ 	best_disk = -1;
+@@ -619,16 +614,10 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
+ 	best_pending_disk = -1;
+ 	min_pending = UINT_MAX;
+ 	best_good_sectors = 0;
++	choose_first = raid1_should_read_first(conf->mddev, this_sector,
++					       sectors);
+ 	clear_bit(R1BIO_FailFast, &r1_bio->state);
+ 
+-	if ((conf->mddev->recovery_cp < this_sector + sectors) ||
+-	    (mddev_is_clustered(conf->mddev) &&
+-	    md_cluster_ops->area_resyncing(conf->mddev, READ, this_sector,
+-		    this_sector + sectors)))
+-		choose_first = 1;
+-	else
+-		choose_first = 0;
+-
+ 	for (disk = 0 ; disk < conf->raid_disks * 2 ; disk++) {
+ 		sector_t dist;
+ 		sector_t first_bad;
+diff --git a/drivers/md/raid10.c b/drivers/md/raid10.c
+index d5a7a621f0f0..8aecdb1ccc16 100644
+--- a/drivers/md/raid10.c
++++ b/drivers/md/raid10.c
+@@ -748,17 +748,8 @@ static struct md_rdev *read_balance(struct r10conf *conf,
+ 	best_good_sectors = 0;
+ 	do_balance = 1;
+ 	clear_bit(R10BIO_FailFast, &r10_bio->state);
+-	/*
+-	 * Check if we can balance. We can balance on the whole
+-	 * device if no resync is going on (recovery is ok), or below
+-	 * the resync window. We take the first readable disk when
+-	 * above the resync window.
+-	 */
+-	if ((conf->mddev->recovery_cp < MaxSector
+-	     && (this_sector + sectors >= conf->next_resync)) ||
+-	    (mddev_is_clustered(conf->mddev) &&
+-	     md_cluster_ops->area_resyncing(conf->mddev, READ, this_sector,
+-					    this_sector + sectors)))
++
++	if (raid1_should_read_first(conf->mddev, this_sector, sectors))
+ 		do_balance = 0;
+ 
+ 	for (slot = 0; slot < conf->copies ; slot++) {
 -- 
 2.39.2
 
