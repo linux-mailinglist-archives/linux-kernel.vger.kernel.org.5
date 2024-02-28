@@ -1,80 +1,85 @@
-Return-Path: <linux-kernel+bounces-84632-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84633-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCB6486A93F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:50:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC00386A943
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:52:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0AC121C2388B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 07:50:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95100289619
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 07:52:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7937F2561B;
-	Wed, 28 Feb 2024 07:50:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1E3125614;
+	Wed, 28 Feb 2024 07:51:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="rbJW3gxY"
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="G0dwp5Y7"
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 855D825542
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 07:50:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76FC025542
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 07:51:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709106610; cv=none; b=MIHaiHGDFi6Dtimhnaw75rZmaN4o39MbN69iLduJ4hjFlY7MuUeQviOZkWMKJ9oU4GuE6ma0Rp+JnmaAMNsyM/mskKW37VxSWWczTvtNJm9iOOqKUCYv2NMuVRMe4ci0HCFJzda4cIrqZi6vFd2kMgnJz3kjR5hrG3LbNAD4A2c=
+	t=1709106716; cv=none; b=Sn/jC1GLN58QgsDsg+r4m9eOBQSUyWSxaJm2qg6USxPCrkeo0Mu0F6GglqAZp3dv/Cjtqi3LAwpxeia1QW4WwQC+EP/ygIfCv+tmTJAVu1JpatEXK1oKnYHjq+pRG48I15BzUQfEqBe16x7EYaK8GPe03paygzvOxFrmxTSdQzY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709106610; c=relaxed/simple;
-	bh=1+zrWjbXEpGix8B8TOUMdQuIRU6vG0iCbRXUuvEPx3U=;
+	s=arc-20240116; t=1709106716; c=relaxed/simple;
+	bh=EFyY82Ys/yVpN4kZpBD/0yBYrBRn8veUJKTesIAzz48=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Rtyb9D5elV7bUzfSD1V/6dIS3/FrMMXVA6Kl0bxayXqMNTf/2BiPDhGI6EZ/6MgdSdWLQJrqeN7DV2RhY4wignuLwmYS/NHQsSzLWOh5E3vMDJ+tNbyGpRNw0456PY2C2y/Wco7IAAkesxjMYNC0KkRtvGwEN+IZNv7nEdvswqE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=rbJW3gxY; arc=none smtp.client-ip=209.85.221.53
+	 Content-Type:Content-Disposition:In-Reply-To; b=XBFFiuPnkws24vSqbwAtVLVNkPeLiBYO50ZciZR9F2XSHMAK8JXOHcFPopkG5ajHNFsKMjVDdjY2Fasie6k5R+Uzmrc7eWPcKV/FKsPenAaOvsmYeRta0MfzmOivQHfY6XEtmOraTBAFHS8V5JFd7dxjMoF9v90iY0n1whBstC8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=G0dwp5Y7; arc=none smtp.client-ip=209.85.218.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-33d6f1f17e5so3511869f8f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 23:50:08 -0800 (PST)
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a3f829cde6dso615900666b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 23:51:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1709106607; x=1709711407; darn=vger.kernel.org;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1709106713; x=1709711513; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=69329isM2KLBgHiujos32u3Mmd/l4PUw7PD3OY7XK/Q=;
-        b=rbJW3gxYnjsDu7fDz2GtkqAw9ZscTapPZBPkTQR8qdh1mQaiS7hamMGXWAVcAKVdka
-         brBX5EC0bq4Kt0oyukEoqGFTso+4o4xGbRX0PKgd8cUpjwiY6F4p9RQyKQVAR7t/UIJq
-         dcOZ7B8zHbpHnwxZETejn+U5NraEMFGY3Hm44TB6TTDILIDVa0JJbziuNase9aeWy+sJ
-         cA8krRRssQ3OWzLiPXwaOoDEEDeaSiRCDwuiIQZdLCs8Snq4To7EHrZgHB/zccCSni9R
-         ivMBBiAIk4/r1k6E7OtqFsuuIJlqrim1ZNGjfmO+Z7cM4EhbxF/iKjNkuq4c3k5rsvUR
-         U90w==
+        bh=AAtlA/kS/1yjrODzNnvXMEbo1KoT3kbP7fHuE5JKJgo=;
+        b=G0dwp5Y7c+u9/TN92qiM2+1+8Q1TePfcGV9zp8DCqzBr9BYyyoEZRlVRClIkdZMlCa
+         qSxxw64rzKEyFiNbvimPNoAycenmFtgmia+bUt2OA+gIAUiO562EooSllpECATqJaSi4
+         zOKlovygxMBpSutMlotxIzvBQBCzLbB41kpIt6hcz9S6JSiVoJg4xP0gXPcBtA2XyTqp
+         gMOuaFeSpWVaY8cPTe5tA0ovww5QfzLIgNCCYbyZjPf1o+UijxUAi6Z+lLfAEHabjtNt
+         INGKTt5z95fKLVCd/nN9+gRhXk3ob7JQyfFPk5d90sSkpHadazCEdV1wLypSW6pgCFx1
+         ZKew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709106607; x=1709711407;
+        d=1e100.net; s=20230601; t=1709106713; x=1709711513;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=69329isM2KLBgHiujos32u3Mmd/l4PUw7PD3OY7XK/Q=;
-        b=aQU/vHv6gojWwZY5zWevzH/57iUY/Eijc2DjfF9IEihIr0aCZKz6PQrlojPSTKP+YA
-         4JGn5ALuq1nRkuQJU6hzeh5pCHwwtvaivn5mrO13m8/+gIU5Aim2OEI/UdscXgzTrUvl
-         IVE1fNuVbTGeQxQPfvcOZhUN8q4FM47WfdhJjxOMfuOVh3lCByYnnmVbChmAhdtnBG8k
-         4xM6we+vJqnkZgkGpg4egVaOBdaH/27AbmU8CK5CIo7rTiYkmRcRDgCbddWsgWsqqVei
-         BSFqBkq7CVNjgUJ7x9G5V+6gVqpI9IfqDM1yP6ZfYvu0Ab4bgR2TIC0qy+SxZEFKg/y7
-         U26A==
-X-Forwarded-Encrypted: i=1; AJvYcCVNYwNhtWbM52QGUsdxCOOKV9na72TR7IWCtmJwQLZt1EWcUkSNz9qTeRUTzIoNknuItuqP405u5jXUwPaOl5ayZP0m2yiDfrck4ra1
-X-Gm-Message-State: AOJu0YxyqlXOY/SZ/7LwLENwq98o6v3MwqBnIbozJS8b2Z41jtcXFkEC
-	syOllT0YgNIgnxrmNNVWMRQmgvHflT/tztW8APqQekO+RHpqehnk8q/AHwjprks=
-X-Google-Smtp-Source: AGHT+IHs2sLDJ2y36wdXVJ27jJkA2L/ykHYqCvfszDBeXhMNDGsixj5PcMBqZhA9Bko23I9xlaRSHg==
-X-Received: by 2002:a05:6000:4012:b0:33d:d82c:d5f7 with SMTP id cp18-20020a056000401200b0033dd82cd5f7mr6483420wrb.59.1709106606910;
-        Tue, 27 Feb 2024 23:50:06 -0800 (PST)
+        bh=AAtlA/kS/1yjrODzNnvXMEbo1KoT3kbP7fHuE5JKJgo=;
+        b=Q8kSf1WinJMnpl2QEomp6GlO43Y2I3reY70aVK4SuBLLyYVnT9lSnfyFTVEoIs50xe
+         Tb3Phu9R86lIfdcsVnp3xC/9j9Yi3z/mGT1dYXLsvZDBnsNUMC6N7gDwtg1e2XYlTL+K
+         TENIza4NihAdjVEr4WELRmIiNEeXLF1gr+4bOcKUc5rFgEwxGuPLwwrQa03AqxM81VKR
+         QmJKjvhsVDkw7uz31py6J8A1MOt+QrjVduUvCHdCywJQwtT6JPQ5/0CrrM9VDEH8ghPR
+         BO0Qi59TmnXQpuQqk8rQbWiWZLe2A0Dz+XLp7ecoFG9amDpJ1AyS2W/gxRjtBUr7gpj5
+         oh9Q==
+X-Forwarded-Encrypted: i=1; AJvYcCW5QARBg4QUQUdBynrs48JU9gNDcZJ33T67JDK7FNe4s0e4rnYK8JNSnT9amIUPZLhixtr4d1wMZ0TeoqTsFZYKqtmvh4V7FPn4NNwc
+X-Gm-Message-State: AOJu0YwnOfVYQybWGecgFFQB5Oo311u5ZSKFI/Q55fL1ADflpHU5YTVE
+	PaHUv7rLTXmvpCWvtC3HBhhonevu6mUrniKqA5mgHGyPY5R//K0yOrbY6rKnGoo=
+X-Google-Smtp-Source: AGHT+IFPr9ON0KIGYx74JKHiaaPAdKvkyKEZ4Fvnv37Yq5h537XaLhV/FJbYDW6gI/BWNQjThNmyaA==
+X-Received: by 2002:a17:906:1949:b0:a43:3b2:bcf6 with SMTP id b9-20020a170906194900b00a4303b2bcf6mr7467544eje.14.1709106712780;
+        Tue, 27 Feb 2024 23:51:52 -0800 (PST)
 Received: from localhost ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id b3-20020a5d4b83000000b0033df1f1dabcsm3875348wrt.90.2024.02.27.23.50.05
+        by smtp.gmail.com with ESMTPSA id i1-20020a1709061cc100b00a3efce660c2sm1561860ejh.198.2024.02.27.23.51.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 23:50:06 -0800 (PST)
-Date: Wed, 28 Feb 2024 08:50:02 +0100
+        Tue, 27 Feb 2024 23:51:52 -0800 (PST)
+Date: Wed, 28 Feb 2024 08:51:49 +0100
 From: Jiri Pirko <jiri@resnulli.us>
-To: Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
-Cc: shuah@kernel.org, netdev@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-	petrm@nvidia.com, idosch@nvidia.com
-Subject: Re: [PATCH] Correcting the spelling mistake in selftests drivers/net
- testing
-Message-ID: <Zd7lqr8Cz4XrNoI8@nanopsycho>
-References: <20240227175513.8703-1-pvkumar5749404@gmail.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Markus Elfring <Markus.Elfring@web.de>, netdev@vger.kernel.org,
+	kernel-janitors@vger.kernel.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Madalin Bucur <madalin.bucur@nxp.com>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Sean Anderson <sean.anderson@seco.com>,
+	LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] net: fman: Use common error handling code in dtsec_init()
+Message-ID: <Zd7mFe3-kbqjGpxh@nanopsycho>
+References: <9b879c8d-4c28-4748-acf6-18dc69d8ebdf@web.de>
+ <20240227184657.76ec4e82@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,55 +88,25 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240227175513.8703-1-pvkumar5749404@gmail.com>
+In-Reply-To: <20240227184657.76ec4e82@kernel.org>
 
-Please fix the patch subject to include appropriate prefixes and
-rephrase a bit like this:
-
-Subject: [PATCH net-next] selftests: net: Correct couple of spelling mistakes
-
-pw-bot: cr
-
-
-Tue, Feb 27, 2024 at 06:55:13PM CET, pvkumar5749404@gmail.com wrote:
->Changes :
->	- "excercise" is corrected to "exercise" in drivers/net/mlxsw/spectrum-2/tc_flower.sh
->	- "mutliple" is corrected to "multiple" in drivers/net/netdevsim/ethtool-fec.sh
+Wed, Feb 28, 2024 at 03:46:57AM CET, kuba@kernel.org wrote:
+>On Tue, 27 Feb 2024 14:14:52 +0100 Markus Elfring wrote:
+>> Adjust jump targets so that a bit of exception handling can be better
+>> reused at the end of this function implementation.
 >
->Signed-off-by: Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
->---
-> .../testing/selftests/drivers/net/mlxsw/spectrum-2/tc_flower.sh | 2 +-
-> tools/testing/selftests/drivers/net/netdevsim/ethtool-fec.sh    | 2 +-
-> 2 files changed, 2 insertions(+), 2 deletions(-)
+>Okay, but..
 >
->diff --git a/tools/testing/selftests/drivers/net/mlxsw/spectrum-2/tc_flower.sh b/tools/testing/selftests/drivers/net/mlxsw/spectrum-2/tc_flower.sh
->index 616d3581419c..31252bc8775e 100755
->--- a/tools/testing/selftests/drivers/net/mlxsw/spectrum-2/tc_flower.sh
->+++ b/tools/testing/selftests/drivers/net/mlxsw/spectrum-2/tc_flower.sh
->@@ -869,7 +869,7 @@ bloom_simple_test()
-> bloom_complex_test()
-> {
-> 	# Bloom filter index computation is affected from region ID, eRP
->-	# ID and from the region key size. In order to excercise those parts
->+	# ID and from the region key size. In order to exercise those parts
-> 	# of the Bloom filter code, use a series of regions, each with a
-> 	# different key size and send packet that should hit all of them.
-> 	local index
->diff --git a/tools/testing/selftests/drivers/net/netdevsim/ethtool-fec.sh b/tools/testing/selftests/drivers/net/netdevsim/ethtool-fec.sh
->index 7d7829f57550..6c52ce1b0450 100755
->--- a/tools/testing/selftests/drivers/net/netdevsim/ethtool-fec.sh
->+++ b/tools/testing/selftests/drivers/net/netdevsim/ethtool-fec.sh
->@@ -49,7 +49,7 @@ for o in llrs rs; do
-> Active FEC encoding: ${o^^}"
-> done
-> 
->-# Test mutliple bits
->+# Test multiple bits
-> $ETHTOOL --set-fec $NSIM_NETDEV encoding rs llrs
-> check $?
-> s=$($ETHTOOL --show-fec $NSIM_NETDEV | tail -2)
+>>  .../net/ethernet/freescale/fman/fman_dtsec.c  | 19 +++++++++++--------
+>>  1 file changed, 11 insertions(+), 8 deletions(-)
+>
+>..you've added more lines than you've removed so what's the point.
+
+To have cleaner error path? Not always lines of code is the correct
+indicator of patch quality :)
+
+
 >-- 
->2.34.1
->
+>pw-bot: reject
 >
 
