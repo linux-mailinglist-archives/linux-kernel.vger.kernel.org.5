@@ -1,72 +1,68 @@
-Return-Path: <linux-kernel+bounces-84960-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84982-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35E8B86AE36
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:53:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A759C86AE81
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:00:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C750B1F21723
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:53:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 12E47B22B56
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:59:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E707970CA7;
-	Wed, 28 Feb 2024 11:49:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42E786CDBA;
+	Wed, 28 Feb 2024 11:55:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Gl4HU8aJ"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="lx9cvsd0"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3028B6CDD9
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 11:49:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 687373BBFE;
+	Wed, 28 Feb 2024 11:54:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709120978; cv=none; b=cSqtxlkBiZnOw47jgubH/Tvxr0DUfeLKZPxBG8maghNloYonQsiOMx7TOW3d9t1/wlL/17QNFgDK7eWMGfWb1+5JYpAD/XMVCpbWarAE88Ty+T1VJlXDASIjhr9qCrlkshUQwGuSJ7vW9qIZ5PCVX8pPAFwChyn4R7AQKBcmrUg=
+	t=1709121301; cv=none; b=Ecp+gXTdtA9SysRDFG3qxCSGSyGJrqXDQTOaYSLBm791YmQ0x0rNNjhxrLjf/EXW24d5vIlduKwlz2f92/XBTXe4rPztZ8KWZrTz3uNWcYL47zFuWiC/q+31ChkE8oEEB202pBlpr7PP5j9RREzTF8BTnZCCUrR+vvkZ56TZRio=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709120978; c=relaxed/simple;
-	bh=Qcal8Ty64aIwuJm9sMzxN+fh8PzyQM8kaqQ/aZv5CWY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=R07pMxpv+olhpOAtSflu2JlRMHMagdipPQ4JSVmmN1WCSaeQT1JOHNmevNqNIn7/DvwwAc8tZqJYmoIS/6UwtNg9N3zeDdApGS2Z81ddahDkGk6zLIf4X5MJO6/qmDZvScnSC5TnxpZQJIbJQUwp39HEy72XJXlvGnVbOuNoQ1Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Gl4HU8aJ; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709120976; x=1740656976;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Qcal8Ty64aIwuJm9sMzxN+fh8PzyQM8kaqQ/aZv5CWY=;
-  b=Gl4HU8aJ3hyusOlSYuJ/PI+Rkt2iY/at+VmtnaVwKC+1TUcvv7YYsFX6
-   aC/vmy+Rkci9yZSiIs5ujZsbGyO7huEni/EJjQUM0sneIlzA/CliQZMzD
-   ixRJPEYPIuEdyd7AlIuWPp/qX5J6NttSpyjPrUmOFcm/HVe5R2RjBDEOB
-   H23Kn4BGjJ0iJeO+zMODRnjyZJJtW0ioHMCUx/rI6VQuvOswZyPlPlu6h
-   +qV72tGABx8W5MgRA47yUj596p77xBeXe4REAy3t0jQo6y8Y7O+qVjUS+
-   7noxAprhBmXvzgntznx9GcRfDZN24xZx71T9pNhQsjdWAJLwbicquXB5R
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3633242"
-X-IronPort-AV: E=Sophos;i="6.06,190,1705392000"; 
-   d="scan'208";a="3633242"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 03:49:35 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,190,1705392000"; 
-   d="scan'208";a="7619107"
-Received: from wufei-optiplex-7090.sh.intel.com ([10.239.158.51])
-  by fmviesa006.fm.intel.com with ESMTP; 28 Feb 2024 03:49:32 -0800
-From: Fei Wu <fei2.wu@intel.com>
-To: atishp@atishpatra.org,
-	anup@brainfault.org,
-	paul.walmsley@sifive.com,
-	palmer@dabbelt.com,
-	aou@eecs.berkeley.edu,
-	linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Alexandre Ghiti <alex@ghiti.fr>
-Cc: Fei Wu <fei2.wu@intel.com>,
-	Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Atish Patra <atishp@rivosinc.com>
-Subject: [PATCH v4] perf: RISCV: Fix panic on pmu overflow handler
-Date: Wed, 28 Feb 2024 19:54:25 +0800
-Message-Id: <20240228115425.2613856-1-fei2.wu@intel.com>
+	s=arc-20240116; t=1709121301; c=relaxed/simple;
+	bh=xMUdnGoq6QicZhMufyqPYAP3/Ngm6o1tDFpEwqzwkVQ=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=sSOTEhErlriNhRSfh7k/wf0cuit55E6l1KElPi720ZRbU7ZiE7uToHza20ifLtWpQqruxnIf2jnK0KNbEp1kglA/hYyqC7/fS6TBXwg/Fob3LAvNtdXFFLMTN2N1+zGIrrhzlgCcrHaXZQ3/Ja+ccbZy2RrF37k98Xj5X/OqvnY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=lx9cvsd0; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41S9EScE015466;
+	Wed, 28 Feb 2024 11:54:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version:content-type
+	:content-transfer-encoding; s=qcppdkim1; bh=lPKI7ijCRTDGsDbPL2sw
+	mcpW7vZDAd8x9irmrXuFoQc=; b=lx9cvsd0WselbOFtpFVVdKSUmGLrN73AHpLH
+	xs/JJK2XgAWSP4Qzl5Mxl4cDW4XpGJKGb17bQqLfuQJHeRVuf2fFyGpgLk9+/9dP
+	0BgEbtSIgaUOF5XVHMlZ2EVOws9wpMEseZTWT5VYfi5UyiKxZKB9eRri5MHAaPKi
+	/DadNnbziqx3cmPSFYZDhsFxj04ub9KNvuci4t/5OYNUTstq5isoswVZ5K+Zkh4X
+	plYa9pdEcDlp1FGmPnwAKjXVpazGZjfg2PNWrOnDCDVNZFPLxXI5+8qtlzrCJzKe
+	tIWkt0rwzlv9tDLJyewmR6dZzislXM8/5NBdhORCE0CzU2NYEg==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wj2148bcf-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 28 Feb 2024 11:54:56 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41SBst9o019977
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 28 Feb 2024 11:54:55 GMT
+Received: from hu-kriskura-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 28 Feb 2024 03:54:51 -0800
+From: Krishna Kurapati <quic_kriskura@quicinc.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>
+CC: <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_ppratap@quicinc.com>, <quic_wcheng@quicinc.com>,
+        <quic_jackp@quicinc.com>, Krishna Kurapati <quic_kriskura@quicinc.com>,
+        <stable@vger.kernel.org>
+Subject: [PATCH v2] usb: gadget: ncm: Fix handling of zero block length packets
+Date: Wed, 28 Feb 2024 17:24:41 +0530
+Message-ID: <20240228115441.2105585-1-quic_kriskura@quicinc.com>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -74,87 +70,79 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: f2AS7FZha-3XF9GRzWVZ9FWsyCu41o0B
+X-Proofpoint-GUID: f2AS7FZha-3XF9GRzWVZ9FWsyCu41o0B
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-28_04,2024-02-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 malwarescore=0
+ lowpriorityscore=0 suspectscore=0 bulkscore=0 spamscore=0 adultscore=0
+ priorityscore=1501 mlxscore=0 mlxlogscore=496 clxscore=1015
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2402280094
 
-(1 << idx) of int is not desired when setting bits in unsigned long
-overflowed_ctrs, use BIT() instead. This panic happens when running
-'perf record -e branches' on sophgo sg2042.
+While connecting to a Linux host with CDC_NCM_NTB_DEF_SIZE_TX
+set to 65536, it has been observed that we receive short packets,
+which come at interval of 5-10 seconds sometimes and have block
+length zero but still contain 1-2 valid datagrams present.
 
-[  273.311852] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000098
-[  273.320851] Oops [#1]
-[  273.323179] Modules linked in:
-[  273.326303] CPU: 0 PID: 1475 Comm: perf Not tainted 6.6.0-rc3+ #9
-[  273.332521] Hardware name: Sophgo Mango (DT)
-[  273.336878] epc : riscv_pmu_ctr_get_width_mask+0x8/0x62
-[  273.342291]  ra : pmu_sbi_ovf_handler+0x2e0/0x34e
-[  273.347091] epc : ffffffff80aecd98 ra : ffffffff80aee056 sp : fffffff6e36928b0
-[  273.354454]  gp : ffffffff821f82d0 tp : ffffffd90c353200 t0 : 0000002ade4f9978
-[  273.361815]  t1 : 0000000000504d55 t2 : ffffffff8016cd8c s0 : fffffff6e3692a70
-[  273.369180]  s1 : 0000000000000020 a0 : 0000000000000000 a1 : 00001a8e81800000
-[  273.376540]  a2 : 0000003c00070198 a3 : 0000003c00db75a4 a4 : 0000000000000015
-[  273.383901]  a5 : ffffffd7ff8804b0 a6 : 0000000000000015 a7 : 000000000000002a
-[  273.391327]  s2 : 000000000000ffff s3 : 0000000000000000 s4 : ffffffd7ff8803b0
-[  273.398773]  s5 : 0000000000504d55 s6 : ffffffd905069800 s7 : ffffffff821fe210
-[  273.406139]  s8 : 000000007fffffff s9 : ffffffd7ff8803b0 s10: ffffffd903f29098
-[  273.413660]  s11: 0000000080000000 t3 : 0000000000000003 t4 : ffffffff8017a0ca
-[  273.421022]  t5 : ffffffff8023cfc2 t6 : ffffffd9040780e8
-[  273.426437] status: 0000000200000100 badaddr: 0000000000000098 cause: 000000000000000d
-[  273.434512] [<ffffffff80aecd98>] riscv_pmu_ctr_get_width_mask+0x8/0x62
-[  273.441169] [<ffffffff80076bd8>] handle_percpu_devid_irq+0x98/0x1ee
-[  273.447562] [<ffffffff80071158>] generic_handle_domain_irq+0x28/0x36
-[  273.454151] [<ffffffff8047a99a>] riscv_intc_irq+0x36/0x4e
-[  273.459659] [<ffffffff80c944de>] handle_riscv_irq+0x4a/0x74
-[  273.465442] [<ffffffff80c94c48>] do_irq+0x62/0x92
-[  273.470360] Code: 0420 60a2 6402 5529 0141 8082 0013 0000 0013 0000 (6d5c) b783
-[  273.477921] ---[ end trace 0000000000000000 ]---
-[  273.482630] Kernel panic - not syncing: Fatal exception in interrupt
+According to the NCM spec:
 
-Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-Reviewed-by: Atish Patra <atishp@rivosinc.com>
-Signed-off-by: Fei Wu <fei2.wu@intel.com>
+"If wBlockLength = 0x0000, the block is terminated by a
+short packet. In this case, the USB transfer must still
+be shorter than dwNtbInMaxSize or dwNtbOutMaxSize. If
+exactly dwNtbInMaxSize or dwNtbOutMaxSize bytes are sent,
+and the size is a multiple of wMaxPacketSize for the
+given pipe, then no ZLP shall be sent.
+
+wBlockLength= 0x0000 must be used with extreme care, because
+of the possibility that the host and device may get out of
+sync, and because of test issues.
+
+wBlockLength = 0x0000 allows the sender to reduce latency by
+starting to send a very large NTB, and then shortening it when
+the sender discovers that there’s not sufficient data to justify
+sending a large NTB"
+
+However, there is a potential issue with the current implementation,
+as it checks for the occurrence of multiple NTBs in a single
+giveback by verifying if the leftover bytes to be processed is zero
+or not. If the block length reads zero, we would process the same
+NTB infintely because the leftover bytes is never zero and it leads
+to a crash. Fix this by bailing out if block length reads zero.
+
+Cc: <stable@vger.kernel.org>
+Fixes: 427694cfaafa ("usb: gadget: ncm: Handle decoding of multiple NTB's in unwrap call")
+Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
 ---
- drivers/perf/riscv_pmu_sbi.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Changes in v2:
+Removed goto label
 
-diff --git a/drivers/perf/riscv_pmu_sbi.c b/drivers/perf/riscv_pmu_sbi.c
-index 16acd4dcdb96..452aab49db1e 100644
---- a/drivers/perf/riscv_pmu_sbi.c
-+++ b/drivers/perf/riscv_pmu_sbi.c
-@@ -512,7 +512,7 @@ static void pmu_sbi_set_scounteren(void *arg)
- 
- 	if (event->hw.idx != -1)
- 		csr_write(CSR_SCOUNTEREN,
--			  csr_read(CSR_SCOUNTEREN) | (1 << pmu_sbi_csr_index(event)));
-+			  csr_read(CSR_SCOUNTEREN) | BIT(pmu_sbi_csr_index(event)));
- }
- 
- static void pmu_sbi_reset_scounteren(void *arg)
-@@ -521,7 +521,7 @@ static void pmu_sbi_reset_scounteren(void *arg)
- 
- 	if (event->hw.idx != -1)
- 		csr_write(CSR_SCOUNTEREN,
--			  csr_read(CSR_SCOUNTEREN) & ~(1 << pmu_sbi_csr_index(event)));
-+			  csr_read(CSR_SCOUNTEREN) & ~BIT(pmu_sbi_csr_index(event)));
- }
- 
- static void pmu_sbi_ctr_start(struct perf_event *event, u64 ival)
-@@ -731,14 +731,14 @@ static irqreturn_t pmu_sbi_ovf_handler(int irq, void *dev)
- 		/* compute hardware counter index */
- 		hidx = info->csr - CSR_CYCLE;
- 		/* check if the corresponding bit is set in sscountovf */
--		if (!(overflow & (1 << hidx)))
-+		if (!(overflow & BIT(hidx)))
- 			continue;
- 
- 		/*
- 		 * Keep a track of overflowed counters so that they can be started
- 		 * with updated initial value.
- 		 */
--		overflowed_ctrs |= 1 << lidx;
-+		overflowed_ctrs |= BIT(lidx);
- 		hw_evt = &event->hw;
- 		riscv_pmu_event_update(event);
- 		perf_sample_data_init(&data, 0, hw_evt->last_period);
+Link to v1:
+https://lore.kernel.org/all/20240226112815.2616719-1-quic_kriskura@quicinc.com/
+
+ drivers/usb/gadget/function/f_ncm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/usb/gadget/function/f_ncm.c b/drivers/usb/gadget/function/f_ncm.c
+index e2a059cfda2c..28f4e6552e84 100644
+--- a/drivers/usb/gadget/function/f_ncm.c
++++ b/drivers/usb/gadget/function/f_ncm.c
+@@ -1346,7 +1346,7 @@ static int ncm_unwrap_ntb(struct gether *port,
+ 	if (to_process == 1 &&
+ 	    (*(unsigned char *)(ntb_ptr + block_len) == 0x00)) {
+ 		to_process--;
+-	} else if (to_process > 0) {
++	} else if ((to_process > 0) && (block_len != 0)) {
+ 		ntb_ptr = (unsigned char *)(ntb_ptr + block_len);
+ 		goto parse_ntb;
+ 	}
 -- 
 2.34.1
 
