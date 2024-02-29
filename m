@@ -1,137 +1,183 @@
-Return-Path: <linux-kernel+bounces-86843-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86840-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92C2C86CB92
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:28:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0DAB86CB83
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:27:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C3141F27923
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:28:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D31121C21582
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:27:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A390F1350EC;
-	Thu, 29 Feb 2024 14:28:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30CEB1361C2;
+	Thu, 29 Feb 2024 14:27:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b="OODUZKCM"
-Received: from mx0a-0064b401.pphosted.com (mx0a-0064b401.pphosted.com [205.220.166.238])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="o+A9e/Np"
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94E891361A3;
-	Thu, 29 Feb 2024 14:28:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.166.238
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5572A1361B5;
+	Thu, 29 Feb 2024 14:27:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709216909; cv=none; b=Deew84Qx+Y5ibVtsFtcEwtCJAMBuAcEDsidOfw+sriu/s1dmEwCN/lfkpBJbST9TJUufP0Bs5W7pLhBqT+LSTe+ac8TyIHQDxOmmdNg71sIlV1taXNq8E17Hakq1oN0kBwfq2OILxL9iKtfdurBLMcUpLNSWRKxQSJebP4uzYP0=
+	t=1709216827; cv=none; b=NckAFNnAIqxx2Kw9TwXxg4MzTpFAKsFumkE0SRY0kU00Q12Tq0euQcIQdUs7Ww6BOm42jgHYbA1eeDHIyqfhB0o+3k8n5qcWJqzZDQKhiDQD2byK+zVhStJ61ytoCHPpLd84fnXdTyPLn3K/Ql4LoZ0ecYQpsMV9+wOSC0l6OmU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709216909; c=relaxed/simple;
-	bh=9YWutWMJCk2yCa98EXaPk9YGmVxLRbg5YMdOMMyVZfE=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JLLrT4f5Bbd1HLidoly2cotkLBYUgmkCvwOZmFaBuaULS6h+sikM3mqeYlSS8zq+8ABjJ7XSNwd6+cJv+cQkHrazmdlkwx8akX3e3yUePB0owtZR0EMbBblX3Ey5yAqwzVT/ZlFoeC8uyb2ngGAftwIL9EWeO9XYikDAWKRQleQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b=OODUZKCM; arc=none smtp.client-ip=205.220.166.238
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
-Received: from pps.filterd (m0250809.ppops.net [127.0.0.1])
-	by mx0a-0064b401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41TCgk48007305;
-	Thu, 29 Feb 2024 06:27:01 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
-	 h=from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	PPS06212021; bh=ZccVJUwzuY4xwuefFguz80ZL05Yed79XfC8Oc40ToN0=; b=
-	OODUZKCM8TkfcOP1tQAzoJY4FKkc5au4A18zoNkAN1v/s8CMewtwZ6/924wPIriP
-	xliLAexkyhtoAve/tg/u89jbWMNG0ob7y6utbo2XMh7YPb2kCwDu2Jf2jcoihLNt
-	2Syl7R9MIjPQCA5zoI1AYxMe1daRHOp5beVw2XJs80BUi+KfcF4eDaG3G/cQFCOZ
-	smAG+WoTjclGO6Ja+45lTu19eg5xSkQhB4+IZHuaURI12qF5cTPkrgf1RvoOoBxd
-	9GB0lI7HAb0PrgUNTZ8fqfn+t1MIqZSKGxYCMX39jr2zEt6swrMwRhVO4/5PeX3P
-	UBWsx7P78wGv7Gx/wdhzvw==
-Received: from ala-exchng01.corp.ad.wrs.com (ala-exchng01.wrs.com [147.11.82.252])
-	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3wfgumn63g-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Thu, 29 Feb 2024 06:27:00 -0800 (PST)
-Received: from ala-exchng01.corp.ad.wrs.com (147.11.82.252) by
- ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 29 Feb 2024 06:27:00 -0800
-Received: from pek-lpd-ccm6.wrs.com (147.11.1.11) by
- ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 29 Feb 2024 06:26:56 -0800
-From: Xiongwei Song <xiongwei.song@windriver.com>
-To: <longman@redhat.com>, <lizefan.x@bytedance.com>, <tj@kernel.org>,
-        <hannes@cmpxchg.org>, <corbet@lwn.net>
-CC: <vbabka@suse.cz>, <yosryahmed@google.com>, <rostedt@goodmis.org>,
-        <cl@linux.com>, <chengming.zhou@linux.dev>, <zhengyejian1@huawei.com>,
-        <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH RESEND 2/2] cgroup/cpuset: Mark memory_spread_slab as obsolete
-Date: Thu, 29 Feb 2024 22:26:45 +0800
-Message-ID: <20240229142645.1327831-2-xiongwei.song@windriver.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240229142645.1327831-1-xiongwei.song@windriver.com>
-References: <20240229142645.1327831-1-xiongwei.song@windriver.com>
+	s=arc-20240116; t=1709216827; c=relaxed/simple;
+	bh=sNvC0eOCgXlJieYs9eVk854YNI9DoGHKHOnTmERF/cQ=;
+	h=Mime-Version:Content-Type:Date:Message-Id:From:Subject:Cc:To:
+	 References:In-Reply-To; b=Dh7YRh/+YoAT6yZenrurkPYd4Fz0D2IrXhv6W+SWN/xI4RrxAGUpiecpsADUxQLJtq7fcnYl2f281IxhP86FHWVnknPjtKITqwT8OEZ/HibvBrRyspwLmer686MlxL69wieyfZQdokde8X1jVQbmUOwBPymFGfJu8N2mkj2B6Ms=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=o+A9e/Np; arc=none smtp.client-ip=217.70.183.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id BEC2040003;
+	Thu, 29 Feb 2024 14:27:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709216822;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2XC8WVbFw8gyrsduV0a8Mx8kJRDW3cgBWOx4bpt+o3I=;
+	b=o+A9e/NpQa8U2GS1i1QZ1RNp86ogtneZMMENFbJQE34yHohdcbMzRX5MdkLejch7msmONu
+	ckWC8Ux8AQ+M/VmP6+BP8pzZ4bEjfnhpicWmpJ4Zo1yhDU6eWaBvYlJP3yECa/oBTP4a+w
+	3ci/BYCbBJgO6319C90XQzpx48LNJYibDbYa6aK0nZchfj+0oBFU6eq9Ug1bih7n15ADUU
+	zZxKVM76dnEie16weoCcE9saF/RMgjSBmq0maKhBXzVHPYEPka4aJOyLTB6+Qr1EsZpBp+
+	CK6/hLtQcx2YNyp0rst6pavL9VU3YIFSwk134HTS42+2pieZzft1adjF28+e1Q==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: musNlEUIeLC4UiknxofRDHvGthDzMcmt
-X-Proofpoint-GUID: musNlEUIeLC4UiknxofRDHvGthDzMcmt
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-29_02,2024-02-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 phishscore=0
- priorityscore=1501 suspectscore=0 impostorscore=0 mlxscore=0 spamscore=0
- adultscore=0 malwarescore=0 bulkscore=0 mlxlogscore=985 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2402120000
- definitions=main-2402290111
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Thu, 29 Feb 2024 15:27:01 +0100
+Message-Id: <CZHMSNWMH4KJ.2J6ZMWKMSZYH2@bootlin.com>
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Subject: Re: [PATCH v8 03/10] clk: eyeq5: add platform driver, and init
+ routine at of_clk_init()
+Cc: "Gregory CLEMENT" <gregory.clement@bootlin.com>, "Michael Turquette"
+ <mturquette@baylibre.com>, "Stephen Boyd" <sboyd@kernel.org>, "Rob Herring"
+ <robh+dt@kernel.org>, "Krzysztof Kozlowski"
+ <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
+ "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>, "Linus Walleij"
+ <linus.walleij@linaro.org>, =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?=
+ <rafal@milecki.pl>, "Philipp Zabel" <p.zabel@pengutronix.de>, "Vladimir
+ Kondratiev" <vladimir.kondratiev@mobileye.com>,
+ <linux-mips@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "Thomas
+ Petazzoni" <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
+ <tawfik.bayouk@mobileye.com>, <linux-gpio@vger.kernel.org>
+To: "Andy Shevchenko" <andriy.shevchenko@intel.com>
+X-Mailer: aerc 0.15.2
+References: <20240227-mbly-clk-v8-0-c57fbda7664a@bootlin.com>
+ <20240227-mbly-clk-v8-3-c57fbda7664a@bootlin.com>
+ <Zd4X3NnBoEl0wu2H@smile.fi.intel.com>
+ <CZGSB2O8P572.28HK6WFT43N6S@bootlin.com>
+ <ZeBnX2upNRN0xXH4@smile.fi.intel.com>
+In-Reply-To: <ZeBnX2upNRN0xXH4@smile.fi.intel.com>
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-We've removed the SLAG allocator, cpuset_do_slab_mem_spread() and
-SLAB_MEM_SPREAD, memory_spread_slab is a no-op now. We can mark
-memory_spread_slab as obsolete in case someone still wants to use it
-after cpuset_do_slab_mem_spread() removed. For more details, please
-check [1].
+Hello,
 
-[1] https://lore.kernel.org/lkml/32bc1403-49da-445a-8c00-9686a3b0d6a3@redhat.com/T/#m8e292e21b00f95a4bb8086371fa7387fa4ea8f60
+On Wed, Feb 28, 2024 at 03:33:29PM +0100, Th=C3=A9o Lebrun wrote:
+> On Tue Feb 27, 2024 at 6:11 PM CET, Andy Shevchenko wrote:
+> > On Tue, Feb 27, 2024 at 03:55:24PM +0100, Th=C3=A9o Lebrun wrote:
 
-Signed-off-by: Xiongwei Song <xiongwei.song@windriver.com>
----
-Sorry, I made a mistake with linux-mm list. Correct linux-mmc to
-linux-mm.
----
- Documentation/admin-guide/cgroup-v1/cpusets.rst | 2 +-
- kernel/cgroup/cpuset.c                          | 3 +++
- 2 files changed, 4 insertions(+), 1 deletion(-)
+[...]
 
-diff --git a/Documentation/admin-guide/cgroup-v1/cpusets.rst b/Documentation/admin-guide/cgroup-v1/cpusets.rst
-index ae646d621a8a..88d0e7fa2ee0 100644
---- a/Documentation/admin-guide/cgroup-v1/cpusets.rst
-+++ b/Documentation/admin-guide/cgroup-v1/cpusets.rst
-@@ -179,7 +179,7 @@ files describing that cpuset:
-  - cpuset.mem_hardwall flag:  is memory allocation hardwalled
-  - cpuset.memory_pressure: measure of how much paging pressure in cpuset
-  - cpuset.memory_spread_page flag: if set, spread page cache evenly on allowed nodes
-- - cpuset.memory_spread_slab flag: if set, spread slab cache evenly on allowed nodes
-+ - cpuset.memory_spread_slab flag: IT'S OBSOLETE. Please don't use it anymore
-  - cpuset.sched_load_balance flag: if set, load balance within CPUs on that cpuset
-  - cpuset.sched_relax_domain_level: the searching range when migrating tasks
- 
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index ba36c073304a..728d06fe9382 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -3897,6 +3897,9 @@ static struct cftype legacy_files[] = {
- 	},
- 
- 	{
-+		/* It's obsolete. Please don't use it anymore. We will remove it
-+		 * in the future.
-+		 */
- 		.name = "memory_spread_slab",
- 		.read_u64 = cpuset_read_u64,
- 		.write_u64 = cpuset_write_u64,
--- 
-2.43.0
+> > > > +	u32		reg;	/* next 8 bytes are r0 and r1 */
+> > >
+> > > Not sure this comments gives any clarification to a mere reader of th=
+e code.
+> > > Perhaps you want to name this as reg64 (at least it will show that yo=
+u have
+> > > 8 bytes, but I have no clue what is the semantic relationship between=
+ r0 and
+> > > r1, it's quite cryptic to me). Or maybe it should be reg_0_1?
+> >=20
+> > Clocks are defined by two 32-bit registers. We only store the first
+> > register offset because they always follow each other.
+>
+> > I like the reg64 name and will remove the comment. This straight forwar=
+d
+> > code is found in the rest of the code, I don't think it is anything
+> > hard to understand (ie does not need a comment):
+> >=20
+> > 	u32 r0 =3D readl(base_plls + pll->reg);
+> > 	u32 r1 =3D readl(base_plls + pll->reg + sizeof(r0));
+>
+> Btw, why readq()/writeq() (with probably the inclusion of io-64-nonatomic=
+-lo-hi.h)
+> can be used in this case? It will be much better overall and be aligned w=
+ith
+> reg64 name.
+
+The doc talks in terms of 32-bit registers. I do not see a reason to
+work in 64-bit. If we get a 64-bit value that we need to split we need
+to think about the endianness of our platform, which makes things more
+complex than just reading both values independently.
+
+> [...]
+>
+> > > I didn't get. If eq5c_init() was finished successfully, why do you ne=
+ed to
+> > > seems repeat what it already done? What did I miss?
+> >=20
+> > The key here is that eq5c_init() iterates on eq5c_early_plls[] while
+> > eq5c_probe() iterates on eq5c_plls[]. I've tried to hint at this in the
+> > commit message:
+> >=20
+> > > Two PLLs are required early on and are therefore registered at
+> > > of_clk_init(). Those are pll-cpu for the GIC timer and pll-per for th=
+e
+> > > UARTs.
+> >=20
+> > Doing everything in eq5c_init() is not clean because we expect all new
+> > clock provider drivers to be standard platform drivers. Doing
+> > everything from a platform driver probe doesn't work because some
+> > clocks are required earlier than platform bus init. We therefore do a
+> > mix.
+>
+> Am I missing something or these two pieces are using the same IO resource=
+s?
+> This looks like a lot of code duplication without clear benefit. Perhaps
+> you can have a helper?
+
+There are two subtle differences that make creating a helper difficult:
+
+ - Logging, pr_*() vs dev_*(). Second option is preferred but only
+   available once a device is created.
+
+ - Behavior on error: we stop the world for early clocks but keep going
+   for normal clocks.
+
+[...]
+
+> > > > +		eq5c_clk_data->hws[pll->index] =3D hw;
+> > > > +		if (IS_ERR(hw))
+> > >
+> > > > +			dev_err_probe(dev, PTR_ERR(hw), "failed registering %s\n",
+> > > > +				      pll->name);
+> > >
+> > > Missed return statement?
+> >=20
+> > No, we still try to register all clocks even if one failed. I guess we
+> > can call this being optimistic.
+>
+> But how critical these clocks are? I believe we should panic it we have n=
+o
+> critical calls be available. Otherwise, why '_err_'? Shouldn't be dev_war=
+n()?
+
+Indeed printing should be dev_warn(), I missed that.
+
+Thanks Andy,
+
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
 
