@@ -1,104 +1,192 @@
-Return-Path: <linux-kernel+bounces-87389-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87390-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8510286D3C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:54:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D31286D3C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:54:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2657D1F22D55
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:54:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ACCBD1F23C38
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:54:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3FF213D2ED;
-	Thu, 29 Feb 2024 19:53:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 810DE142904;
+	Thu, 29 Feb 2024 19:53:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="kZk0KDwg"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (2048-bit key) header.d=pjd.dev header.i=@pjd.dev header.b="MRCduglQ";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="OCqkEO0D"
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6306D13442F;
-	Thu, 29 Feb 2024 19:53:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62C7F1428ED;
+	Thu, 29 Feb 2024 19:53:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.28
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709236419; cv=none; b=V6S+Wx0de1LEKgrGTpWMteX/HP70LWPNJQHT7hvPS0JZR3JCwzbYDOT38TwgyBraKkA02KA4YSrhqIsTBB80A6V2Wil28An3FeWyHe6FleUaxXETQ+jr1U/3JOns5OV1QUDt+eJNifQUZNTTqUXS4Q9TV43PUsCRzs9cLdLtgDI=
+	t=1709236435; cv=none; b=CKtmVzfIyyjT7lPc/8VVQ8yaV25IwqLgBBNoPgBm5HqGPfTlFcxkDPv3ZCiIe2XVukK1PTMfTo/B4X/PGedW2NHqER5bo4dHxPNshn5oCptfWJMmnySG23WVx+jnLBHeoDbhipxjYv8EvflmjQdAYyYmZlmyX+KrS9ddHnKuzZw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709236419; c=relaxed/simple;
-	bh=R1BZ2B3YZgTUGmT4mMT7KfnkAaZyyAG23JCeCS4OagM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HgFcxL5qZsP7WcCYtswefl4Y3HRrSHjB9yrssorWoPJ8gwB4a1gJKctVBxGPPRTq0IM2BqNc+uuAoESo+SkaeKgO5MrZGcYunlLAdFN6XDTsbtdXJHxWeRuu+HCO2UzeHHQIkWf2f+QgwokGaczs3n9B+G/K2sw/4i6R3/zZjAM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=kZk0KDwg; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=Bb0wm2nkTd/whNJaK5PnfQ4qYt8CNWiFcGX/Paukpmw=; b=kZk0KDwgDkN4bmFPAagPUbZC2G
-	sBTzbBpYG7E0r2P/i9p0uGtviBLPYrIcMiftyKU78jeLhFaPGFyMv8zxJrE+Z6YzMT4kj04Un7Zgj
-	h7ITshosnFYQ1n/W8eV2VYO0pVID6ghAUizomEF2pT2sxACIvx+oTbzoIwnaOZgslvwgIIJ4x6pCP
-	IJRnYitWHvGJEx/rWTVdtMWgiKwfrIwksn87VbFzuq/fCjeuGcjImN5eyrceaBjmObYg/u20wuSAL
-	LfbYtxmtm58zHi3o/k6B3DRdOurGOSgw4FimgiB/Z0kum0N5jbn0aFyYxXFZ9VMK+Kwzl42ZusQYy
-	g9Ks4m5A==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rfmTC-00000008t28-06bC;
-	Thu, 29 Feb 2024 19:53:30 +0000
-Date: Thu, 29 Feb 2024 19:53:29 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Tony Battersby <tonyb@cybernetics.com>
-Cc: Jens Axboe <axboe@kernel.dk>, Andrew Morton <akpm@linux-foundation.org>,
-	"Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-	Hugh Dickins <hughd@google.com>, Hannes Reinecke <hare@suse.de>,
-	Keith Busch <kbusch@kernel.org>, linux-mm <linux-mm@kvack.org>,
-	linux-block@vger.kernel.org,
-	linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] block: Fix page refcounts for unaligned buffers in
- __bio_release_pages()
-Message-ID: <ZeDguZujxets0KtD@casper.infradead.org>
-References: <86e592a9-98d4-4cff-a646-0c0084328356@cybernetics.com>
+	s=arc-20240116; t=1709236435; c=relaxed/simple;
+	bh=jthKmHH9qkCJL1rwJwt8b2jErTogMsGgAUEXSYO24Yw=;
+	h=From:Content-Type:Mime-Version:Subject:Date:In-Reply-To:Cc:
+	 References:Message-Id; b=HjNlqxFZlM4NQLEoAzRcu/oGFyjl1jE51X9s/goOSSXAnxaLWoDN85NnNyl5Qa/DQnOi7brhyl1kf1yji+1rdLShWBjzNT751orlFseZYQ2Fu5rE+/rxNU4yvD9b9eK4QxeB63fslkrb/vmLYSnBiVQGjXh3rsST4/lKF4HiATg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=pjd.dev; spf=pass smtp.mailfrom=pjd.dev; dkim=pass (2048-bit key) header.d=pjd.dev header.i=@pjd.dev header.b=MRCduglQ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=OCqkEO0D; arc=none smtp.client-ip=66.111.4.28
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=pjd.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pjd.dev
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+	by mailout.nyi.internal (Postfix) with ESMTP id 51E785C005D;
+	Thu, 29 Feb 2024 14:53:52 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute7.internal (MEProxy); Thu, 29 Feb 2024 14:53:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pjd.dev; h=cc:cc
+	:content-transfer-encoding:content-type:content-type:date:date
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to; s=fm2; t=1709236432; x=
+	1709322832; bh=M6rbw+n+N/w7eLH273TiruvrBg5kCYrlH64w/wGT6BE=; b=M
+	RCduglQ26s2yEjvTWgEx6I1ewsYbU+20i4Z1Fx8vBy3oeMwZGTJsJ1+U994l+jkz
+	++L+pcn8/y4qSpBlFBNzj6Gfrnir/WEIz/GDN18PEjRzKJHO2r77JA9fNcNOQiZy
+	//BvVlFPwGxQuiUfd4FEQQk2hyz62f38PT+El97C1JsD0s2XuEf3rtmBjEKvg4Gj
+	guem2TQ3+p2/2S96IJljZvvDoU3WZgRgjpLP7phbSCgmA/XeP+NusQCyvLVbcZ3J
+	OOy2ihFl1GLtDUj5ERXtQWYyojAVRRPugvE/Gq23ZRAR3Z0GB57lFZLWvveVFmeY
+	s+ZD0RhrOoHvYeWE6CDlQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1709236432; x=
+	1709322832; bh=M6rbw+n+N/w7eLH273TiruvrBg5kCYrlH64w/wGT6BE=; b=O
+	CqkEO0DvDTpEFyxxN1l26pty9a/06rQgGuKiB+F7L2R2aUPZjJ9BafSWil98zPij
+	pNTb09Lw0CTca1fSMX5Ldee60EIDdCo4X3+wHnTs8j4/8YYYBW+EahliDj8hQ1e3
+	f3dVVUvWfd6eH/TSY2hfzO/wvDhr7hOirE5SHwXzBdkOC4TR4DgDkLQNjmyasglS
+	mVpSIFXIuJFu00Le4C2fuRuDitAZISVOtr6+ojCE3AwyYnMcaBeh09HGgDWa7pGX
+	zRQySiyeP5tdDMvTIRA2aBmrL8eHJFD3KpgUC6vogO+0/Sjcswzjqw5QxnHoA0Ls
+	5t1qIlkKdP9Xxy4DdOobA==
+X-ME-Sender: <xms:0ODgZYhQJiJZ8e8CxidGqvAUQvWY2uP42x_FpRpmC8qfe7spo4qt4Q>
+    <xme:0ODgZRCWAGwMurvef3OvjOAwD4JywlxqmiVR-cECLzxdiyPc0eRwv8A9h3wcizRfC
+    AM7E7XsGaKoU7RU500>
+X-ME-Received: <xmr:0ODgZQGdMrH1sbmw07PB1Mv506CikCgtFNo7DHQzgStY_wa-dTPTNeY5qvzlJ4k0uMlHkz0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrgeelgdduvdelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenuchmihhsshhinhhgucfvqfcufhhivghlugculdeftd
+    dmnecujfgurhephfgtgfggufffjgevfhfkofesthhqmhdthhdtjeenucfhrhhomheprfgv
+    thgvrhcuffgvlhgvvhhorhihrghsuceophgvthgvrhesphhjugdruggvvheqnecuggftrf
+    grthhtvghrnhepledvleeijedtteffudfhkeduheeludefgfeuveekheekvefhfffhffeh
+    ieeifeeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epphgvthgvrhesphhjugdruggvvh
+X-ME-Proxy: <xmx:0ODgZZQra8s9NrKYILgCsPHGziVk5PK6CQUEYLNT3jOGF55DZA5xcQ>
+    <xmx:0ODgZVxKfKaJXuS9nQ9pNluWXLInu-7dM2Bar0Syb-suaMEs_P6b_Q>
+    <xmx:0ODgZX7tcGNY2ZTDdXgg4EwnoQNqCkZS0_9nh897giTD31Op3Wu-Qw>
+    <xmx:0ODgZcnnaCFXPoYGS5hc8uT3M-zpslxBKte70xWrye0IsH1TXnmWng>
+Feedback-ID: i9e814621:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 29 Feb 2024 14:53:51 -0500 (EST)
+From: Peter Delevoryas <peter@pjd.dev>
+Content-Type: text/plain;
+	charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <86e592a9-98d4-4cff-a646-0c0084328356@cybernetics.com>
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.400.31\))
+Subject: Re: [q&a] Status of IOMMU virtualization for nested virtualization
+ (userspace PCI drivers in VMs)
+Date: Thu, 29 Feb 2024 11:53:39 -0800
+In-Reply-To: <20240228123810.70663da2.alex.williamson@redhat.com>
+Cc: qemu-devel <qemu-devel@nongnu.org>,
+ suravee.suthikulpanit@amd.com,
+ iommu@lists.linux.dev,
+ kvm@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ alex.williamson@redhat.com,
+ Peter Delevoryas <peter@pjd.dev>
+References: <3D96D76D-85D2-47B5-B4C1-D6F95061D7D6@pjd.dev>
+ <20240228123810.70663da2.alex.williamson@redhat.com>
+Message-Id: <D4DDA526-5E5D-40DB-86EF-B4B6D7692663@pjd.dev>
+X-Mailer: Apple Mail (2.3774.400.31)
 
-On Thu, Feb 29, 2024 at 01:08:09PM -0500, Tony Battersby wrote:
-> Fix an incorrect number of pages being released for buffers that do not
-> start at the beginning of a page.
 
-Oh, I see what I did.  Wouldn't a simpler fix be to just set "done" to
-offset_in_page(fi.offset)?
 
-> @@ -1152,7 +1152,7 @@ void __bio_release_pages(struct bio *bio, bool mark_dirty)
->  
->  	bio_for_each_folio_all(fi, bio) {
->  		struct page *page;
-> -		size_t done = 0;
-> +		size_t nr_pages;
->  
->  		if (mark_dirty) {
->  			folio_lock(fi.folio);
-> @@ -1160,10 +1160,11 @@ void __bio_release_pages(struct bio *bio, bool mark_dirty)
->  			folio_unlock(fi.folio);
->  		}
->  		page = folio_page(fi.folio, fi.offset / PAGE_SIZE);
-> +		nr_pages = (fi.offset + fi.length - 1) / PAGE_SIZE -
-> +			   fi.offset / PAGE_SIZE + 1;
->  		do {
->  			bio_release_page(bio, page++);
-> -			done += PAGE_SIZE;
-> -		} while (done < fi.length);
-> +		} while (--nr_pages != 0);
->  	}
->  }
->  EXPORT_SYMBOL_GPL(__bio_release_pages);
+> On Feb 28, 2024, at 11:38=E2=80=AFAM, Alex Williamson =
+<alex.williamson@redhat.com> wrote:
+>=20
+> On Wed, 28 Feb 2024 10:29:32 -0800
+> Peter Delevoryas <peter@pjd.dev> wrote:
+>=20
+>> Hey guys,
+>>=20
+>> I=E2=80=99m having a little trouble reading between the lines on =
+various
+>> docs, mailing list threads, KVM presentations, github forks, etc, so
+>> I figured I=E2=80=99d just ask:
+>>=20
+>> What is the status of IOMMU virtualization, like in the case where I
+>> want a VM guest to have a virtual IOMMU?
+>=20
+> It works fine for simply nested assignment scenarios, ie. guest
+> userspace drivers or nested VMs.
+>=20
+>> I found this great presentation from KVM Forum 2021: [1]
+>>=20
+>> 1. I=E2=80=99m using -device intel-iommu right now. This has =
+performance
+>> implications and large DMA transfers hit the vfio_iommu_type1
+>> dma_entry_limit on the host because of how the mappings are made.
+>=20
+> Hugepages for the guest and mappings within the guest should help both
+> the mapping performance and DMA entry limit.  In general the type1 =
+vfio
+> IOMMU backend is not optimized for dynamic mapping, so =
+performance-wise
+> your best bet is still to design the userspace driver for static DMA
+> buffers.
 
-The long-term path here, I think, is to replace this bio_release_page()
-with a bio_release_folio(folio, offset, length) which calls into
-a new unpin_user_folio(folio, nr) which calls gup_put_folio().
+Yep, huge pages definitely help, will probably switch to allocating them =
+at boot for better guarantees.
+
+>=20
+>> 2. -device virtio-iommu is an improvement, but it doesn=E2=80=99t =
+seem
+>> compatible with -device vfio-pci? I was only able to test this with
+>> cloud-hypervisor, and it has a better vfio mapping pattern (avoids
+>> hitting dma_entry_limit).
+>=20
+> AFAIK it's just growing pains, it should work but it's working through
+> bugs.
+
+Oh really?? Ok: I might even be configuring things incorrectly, or
+Maybe I need to upgrade from QEMU 7.1 to 8. I was relying on whatever
+libvirt does by default, which seems to just be:
+
+    -device virtio-iommu -device vfio-pci,host=3D<bdf>
+
+But maybe I need some other options?
+
+>=20
+>> 3. -object iommufd [2] I haven=E2=80=99t tried this quite yet, =
+planning to:
+>> if it=E2=80=99s using iommufd, and I have all the right kernel =
+features in
+>> the guest and host, I assume it=E2=80=99s implementing the =
+passthrough mode
+>> that AMD has described in their talk? Because I imagine that would be
+>> the best solution for me, I=E2=80=99m just having trouble =
+understanding if
+>> it=E2=80=99s actually related or orthogonal.
+>=20
+> For now iommufd provides a similar DMA mapping interface to type1, but
+> it does remove the DMA entry limit and improves locked page =
+accounting.
+>=20
+> To really see a performance improvement relative to dynamic mappings,
+> you'll need nesting support in the IOMMU, which is under active
+> development.  =46rom this aspect you will want iommufd since similar
+> features will not be provided by type1.  Thanks,
+
+I see, thanks! That=E2=80=99s great to hear.
+
+>=20
+> Alex
+>=20
+
 
