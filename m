@@ -1,134 +1,138 @@
-Return-Path: <linux-kernel+bounces-86026-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86028-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99F7086BEB2
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 03:04:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7282E86BEB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 03:07:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CB8071C238AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 02:04:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EA542B243CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 02:07:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66DF3364C7;
-	Thu, 29 Feb 2024 02:04:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2546B364D2;
+	Thu, 29 Feb 2024 02:06:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ktYDXtfH"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Irf3Cpqk"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB90936B1C;
-	Thu, 29 Feb 2024 02:04:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D37AF1EB42
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 02:06:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709172244; cv=none; b=hzT/34zzzwLkU+3XcB2hQzyvuhbF+vLpuvL4Cjr9A/AYro135Q+DT3bTLzqAHQU7wFgTXObCIcqJyvq34Z8Oy8uEtr7lyA90eIW1Rgb6Tz4lBeiT5cUKARJR0uke7qN7d0YSpMofeMb4iemz/Vc58KIKFYln/GHBxYQBKwxdvv4=
+	t=1709172416; cv=none; b=t4Uyk5+DSVVv9Jk5m9PJn4hqW1UAk86du65yR9q9xLHgI+Hd5XSeUpbFzZ5QANrP2wHjGzvLVzMAj/KafAdSAdI+7Vd4BPKO/ix2KRDhg+YYUTLGlnCKt7uJJbBa9WiGRZ42UsIH+Z77TB+pWweV2lBIgvs05tlduuLJGQyuIpg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709172244; c=relaxed/simple;
-	bh=Hqt27iztKg8bH7+WN1AsbcYSqLKusd3MveKfLQx9J/o=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=vEUnpl7QdnfJsdtLhJb0YMrThvjN28KjxIOTiT85IX58Lw7o3PwLXak15YLWqqga1KdMgrFTrARbtNJcEgjbIUQiu0II71xCiqbHIfqAkRi/JNaq6vgy1++ISBY4+ioumjCoqchTsbdz2bIlhXwuoAzS+CWX6t9hjhOHt9ZQCQQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ktYDXtfH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4AD53C43390;
-	Thu, 29 Feb 2024 02:04:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709172244;
-	bh=Hqt27iztKg8bH7+WN1AsbcYSqLKusd3MveKfLQx9J/o=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=ktYDXtfHUoCSzF5aFXxG3n9/eUi7LgtqEtaC6IPV+4ExMWbrpyZtGDnsyq/QuuIpH
-	 oyaKDGTh694C+xGUSMj5yek8hNt3bkVrbOWMc6y1tK4AQUlQ9c6jsuo28/5nJLFLvv
-	 vgpf6XXot7ngz5g0Jy9OqZ9XNyiZ+rLF+H1ntrq0yPXbixyD01+zQszfLW3KQY00Zm
-	 D/oI3GcdVas6lZS0Z9e6gN3o1UBch18kjW1vrcXQfUJjNNtdJjJITT/o6HlSaaAGwp
-	 /nCUa+WFWtQIceg/ZHa/UC6uzRS91kc1R7RIcG2tAbMdGTJy0aRGKVAZ41M1MIF9Wr
-	 UakyA4j8TFNIA==
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-51326436876so61854e87.1;
-        Wed, 28 Feb 2024 18:04:04 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVDxkzX/dlg3CNR/M3Uu3F6p4yLxnJ1lG9OQa/uJBLd70PT70Xl49QO1bs7DQu/ca7G4xsXmoJ6PiVVhkwerBSYerhdO66n5oPXD5jt
-X-Gm-Message-State: AOJu0YwOpxwp2BGLknRdhYHW13kqV+/+RN2VdB5+iLEe+20itqaRpGRY
-	TfmbtAXSw+CDH7RHbXZdQhFuqbd/dnee5ADRQKbidGF74ucYGsT3RZlTyrgKsuQAPKDrSGsdDdt
-	3/JOlNIQN/WVlUzuDkm8iXrUn9B8=
-X-Google-Smtp-Source: AGHT+IG9Y3Y320pwAwzwBrb6NW0R4FDMaXeUFqOdM2RAsjoBp/xnwruJM6OZRDZnzwJ6N4yei2OT/iXLsrVHbXS0Oj4=
-X-Received: by 2002:ac2:4a8a:0:b0:512:bb33:2eab with SMTP id
- l10-20020ac24a8a000000b00512bb332eabmr382640lfp.58.1709172242808; Wed, 28 Feb
- 2024 18:04:02 -0800 (PST)
+	s=arc-20240116; t=1709172416; c=relaxed/simple;
+	bh=BuSkLRb4QPldzejb8HpzIiarRIskIn0qMKWYCYBJYHw=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=Br/T94qENMZqLaMbnJnBVT05YhkZj7JzVWAdqh+KI+WgFKW60HlNikpGT0BV5DFLzI1mOiyP5y3QilSt4+p0nJCoDKsUy6CqmUqeNqDoIFEK5X3UDTrPzbTueIWZbwvApQxAjKIhFMcCkaoco8ZmFCgAN5IdkOI/yjJE815HnwM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Irf3Cpqk; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709172415; x=1740708415;
+  h=date:from:to:cc:subject:message-id;
+  bh=BuSkLRb4QPldzejb8HpzIiarRIskIn0qMKWYCYBJYHw=;
+  b=Irf3CpqkI/mJHIvc9ZJ+wAZdi2z9cW3wi1w/6cX0NnYPAEJEWPo51Ig/
+   8oKudNmcabhzsfHdldzEqgaIyve/TjT3vtCtgWFJlnyNxBgxH3d4kzW5/
+   HmEfGz274+mmZHCTHx5AfiZeKzx8wDK79CTVlmTLMRyG999vD7ZAVOEkn
+   EWx0pvzIS8ZwDUF8twcMx3TZKSNotjQSfEscGo4hsF7UUP/+HYmWcmSjT
+   P/mcNIcwXPISvpq2xY2BSvE1A9zY8o5uFByWVs2GypsYQ6dXYA+I2wtEQ
+   3jc5ATogNier6jf9mZOiUvTskbOYOxPrs1k9e1MNrpfXiNdEYy/YWeTsf
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="3783746"
+X-IronPort-AV: E=Sophos;i="6.06,192,1705392000"; 
+   d="scan'208";a="3783746"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 18:06:54 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,192,1705392000"; 
+   d="scan'208";a="7691647"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by orviesa009.jf.intel.com with ESMTP; 28 Feb 2024 18:06:52 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rfVow-000CZb-0r;
+	Thu, 29 Feb 2024 02:06:50 +0000
+Date: Thu, 29 Feb 2024 10:03:33 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:x86/boot] BUILD SUCCESS
+ 891f8890a4a3663da7056542757022870b499bc1
+Message-ID: <202402291030.m7XuvDeH-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240222031801.GG11472@google.com> <20240222032559.496127-1-senozhatsky@chromium.org>
- <CAK7LNARo4L6qxoqRU-0dgABarukJKAaZpCRtfA3MyUHhSuDQxQ@mail.gmail.com>
- <20240222051621.GH11472@google.com> <20240228045652.GH11972@google.com>
-In-Reply-To: <20240228045652.GH11972@google.com>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Thu, 29 Feb 2024 11:03:26 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQ8OyNMeGzVoTRg-sHDZ4YK0EKY_eEWNepekaibO_ZKwg@mail.gmail.com>
-Message-ID: <CAK7LNAQ8OyNMeGzVoTRg-sHDZ4YK0EKY_eEWNepekaibO_ZKwg@mail.gmail.com>
-Subject: Re: [PATCHv2] kconfig: add some Kconfig env variables to make help
-To: Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 28, 2024 at 1:56=E2=80=AFPM Sergey Senozhatsky
-<senozhatsky@chromium.org> wrote:
->
-> On (24/02/22 14:16), Sergey Senozhatsky wrote:
-> > On (24/02/22 13:57), Masahiro Yamada wrote:
-> > > On Thu, Feb 22, 2024 at 12:26=E2=80=AFPM Sergey Senozhatsky
-> > > <senozhatsky@chromium.org> wrote:
-> > > >
-> > > > Add a new section "Configuration environment variables" to
-> > > > `make help` output in order to make it easier for people to
-> > > > discover KCONFIG_WERROR, etc.
-> > > >
-> > > > Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-> > > > ---
-> > > >  scripts/kconfig/Makefile | 4 ++++
-> > > >  1 file changed, 4 insertions(+)
-> > > >
-> > > > diff --git a/scripts/kconfig/Makefile b/scripts/kconfig/Makefile
-> > > > index ea1bf3b3dbde..0044d49e149c 100644
-> > > > --- a/scripts/kconfig/Makefile
-> > > > +++ b/scripts/kconfig/Makefile
-> > > > @@ -158,6 +158,10 @@ help:
-> > > >                 if help=3D$$(grep -m1 '^# Help: ' $(f)); then \
-> > > >                         printf '  %-25s - %s\n' '$(notdir $(f))' "$=
-${help#*: }"; \
-> > > >                 fi;)
-> > > > +       @echo  ''
-> > > > +       @echo  'Configuration environment variables:'
-> > > > +       @echo  '  KCONFIG_WERROR                 - Turn some Kconfi=
-g warnings into error conditions'
-> > > > +       @echo  '  KCONFIG_WARN_UNKNOWN_SYMBOLS   - Make Kconfig war=
-n about all unrecognized config symbols'
-> > > >
-> > > >  # =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
-> > > >  # object files used by all kconfig flavours
-> > > > --
-> > > > 2.44.0.rc0.258.g7320e95886-goog
-> > > >
-> > > >
-> > >
-> > > Why only two, while Kconfig supports more env variables?
-> >
-> > Right.  I wanted to add only those that we use (and familiar with) for
-> > starters.  I'm not familiar with things like KCONFIG_PROBABILITY, for
-> > instance, and not sure how to document it (its Documentation/kbuild/kco=
-nfig.rst
-> > description is pretty lengthy).
->
-> Masahiro, any opinion?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/boot
+branch HEAD: 891f8890a4a3663da7056542757022870b499bc1  efi/x86: Set the PE/COFF header's NX compat flag unconditionally
 
+elapsed time: 726m
 
-I do not need this patch.
+configs tested: 50
+configs skipped: 133
 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+tested configs:
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240228   clang
+i386         buildonly-randconfig-002-20240228   clang
+i386         buildonly-randconfig-003-20240228   clang
+i386         buildonly-randconfig-004-20240228   clang
+i386         buildonly-randconfig-005-20240228   gcc  
+i386         buildonly-randconfig-006-20240228   clang
+i386                                defconfig   clang
+i386                  randconfig-001-20240228   clang
+i386                  randconfig-002-20240228   clang
+i386                  randconfig-003-20240228   gcc  
+i386                  randconfig-004-20240228   clang
+i386                  randconfig-005-20240228   clang
+i386                  randconfig-006-20240228   gcc  
+i386                  randconfig-011-20240228   clang
+i386                  randconfig-012-20240228   clang
+i386                  randconfig-013-20240228   gcc  
+i386                  randconfig-014-20240228   gcc  
+i386                  randconfig-015-20240228   gcc  
+i386                  randconfig-016-20240228   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240229   gcc  
+x86_64       buildonly-randconfig-002-20240229   clang
+x86_64       buildonly-randconfig-003-20240229   gcc  
+x86_64       buildonly-randconfig-004-20240229   gcc  
+x86_64       buildonly-randconfig-005-20240229   gcc  
+x86_64       buildonly-randconfig-006-20240229   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20240229   clang
+x86_64                randconfig-002-20240229   clang
+x86_64                randconfig-003-20240229   clang
+x86_64                randconfig-004-20240229   clang
+x86_64                randconfig-005-20240229   clang
+x86_64                randconfig-006-20240229   clang
+x86_64                randconfig-011-20240229   gcc  
+x86_64                randconfig-012-20240229   gcc  
+x86_64                randconfig-013-20240229   gcc  
+x86_64                randconfig-014-20240229   gcc  
+x86_64                randconfig-015-20240229   gcc  
+x86_64                randconfig-016-20240229   gcc  
+x86_64                randconfig-071-20240229   clang
+x86_64                randconfig-072-20240229   clang
+x86_64                randconfig-073-20240229   clang
+x86_64                randconfig-074-20240229   clang
+x86_64                randconfig-075-20240229   gcc  
+x86_64                randconfig-076-20240229   clang
+x86_64                          rhel-8.3-rust   clang
 
---=20
-Best Regards
-Masahiro Yamada
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
