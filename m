@@ -1,178 +1,213 @@
-Return-Path: <linux-kernel+bounces-85936-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85937-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B454686BCF8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:45:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C99FC86BCFB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:49:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68894287A86
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:45:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 520C91F2586E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:49:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0FA4171AA;
-	Thu, 29 Feb 2024 00:45:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 857CA20335;
+	Thu, 29 Feb 2024 00:49:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mKbBTXkT"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="Rl5bViV4"
+Received: from omta038.useast.a.cloudfilter.net (omta038.useast.a.cloudfilter.net [44.202.169.37])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD342125CA;
-	Thu, 29 Feb 2024 00:45:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6EB8168B7
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 00:49:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.37
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709167547; cv=none; b=g4EcDwMd9BdJU1vr63+3gr+3gE6z/s7+HszoXkz7e2Tc8pFmfZyH84r4Mugf+0/NSawV+SLP+Np4lkQf85LrYBEa+mF2cqR3ykMmpegKca61HRSvZibu7DeRyvrAoKHL9b9iYh7tviJ8GbiKf4NhKv+PexBmVGDqawrITZ/bZrQ=
+	t=1709167778; cv=none; b=BwaM/KF6ylH0G4lujWzXIIzIKLASOdYj5dtrCwyKwTvR+tPmf8vsgxIbec7PoumeBjT2pYQmCSpZL5b+axDq2fNOSGQ6yGK+5nXS23NHSV7TDemr2Je/kgGNt5Qw3MKpzX6HQrh0DGdTqw3+OP8yc4ZSZCcDwNNCjeDVAaTtJ/Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709167547; c=relaxed/simple;
-	bh=mL0+LWudGeaaHDI+xSeK69jieRGtjTjyv0Mt3l1ud8M=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=mKQpeVskQ90AUnZzgRukcxKObOOwzAudBrU+kUu85XxSdv2kLiapN/qS0YxHtQiMWJwBc26UMm6hAovWEPWs0wZjRWyexe2GSY0UvN9+pSa/phek95YQt9N62eAUelbp5lusuyrAkbs6ee21T4H+bKL4c7+K8BujNBYi3Y1AMvY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mKbBTXkT; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1dc96f64c10so3935445ad.1;
-        Wed, 28 Feb 2024 16:45:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709167545; x=1709772345; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:reply-to:message-id:date
-         :subject:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zKxWzZR1Bl8LnE+v4HnmwqndSh4isnczSEaDQ8WzU6k=;
-        b=mKbBTXkTd9SfeiBpfiX+6vi+rHegybw7khb7fM21FljAvX22YtYTf41SHnkM1PNtjx
-         j2EkpA4VdmTXbHSK/gqdNf3WpaikPiPXkZoTGP8S0aDy/45YpxHLFo+RE9h/tmTkKL64
-         33W1oIteOW5sTlcRKLhafDJkoBWHoKnNT3pcCncShHqsBUaFduasFAWmuqKMdMBi6L7O
-         qruuVXxV2HSKMSN1mQBTEfeLGBFTp/+pknDwo7m2Dh81LeqwA9U/IIbseynoX6eolBnt
-         FfUwMsvQA2ZfW8dGOTgYY7i+Y6962pQmILilKJl4sGmHH2JriY9jzW3RrhRlBQm0ECKT
-         zjCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709167545; x=1709772345;
-        h=content-transfer-encoding:mime-version:reply-to:message-id:date
-         :subject:to:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zKxWzZR1Bl8LnE+v4HnmwqndSh4isnczSEaDQ8WzU6k=;
-        b=KFyqZoa2gi40cr2TWjIBmm469R1K+YQWbx/Lt7RKiX1+K6AntTPUvIx43lAyi/bRmg
-         faFVgn/D2N3oYj1MCNwyPnL89K6cc37grFsks6f7BvvrgdSOFTDe0+dlbPnLKnEFCKtP
-         FkSrlj6hDPJTbF58I/moKWeqkGoGZDvaXr1la1ggfExm3UepK/4lQl25ZsJ22xS62P9t
-         VBCbBGPxsY/Weq5mV2ABKcN/7gxsSppbvn1vfZ1HkYpq9BvM0MT19jY4gc6HI0L0Gi+d
-         /WfZLfVk0LHM2bRQGPoeOm3d2MlpEUweYmltWCEgOoZkUYazvdIFmnYn32LsEjaSK4n4
-         2pTA==
-X-Forwarded-Encrypted: i=1; AJvYcCVitp5Lem294Dta3URgCrB3lBwQyGqQjR7+V7z/MEZ0xAoKAvs7IvU+KwzbYA/hmzDlIrk+zus3sU0wksfQEN/czzJrAi1p297pmNrp/TkZJHYecqjaICooY5g7jTNcQm1ZtpDyX0F6z4Ly
-X-Gm-Message-State: AOJu0Yy40XXhwp96CdPUcwbc8Fldqc03aAGdigo7YJcfbP0MfwS9Jx2e
-	+Kt1RKlgTgLe7PvkZeIPfW7SwOc68r+SHrBXC24maU4D69V8KhHE
-X-Google-Smtp-Source: AGHT+IEsURmdbvyFDBIimxZQbtTtSxcwklzH2T2C/rOEbg+lYw12Mgs53IuqqfM2xLSpvjjomNmgpQ==
-X-Received: by 2002:a17:902:a70c:b0:1dc:a844:a38b with SMTP id w12-20020a170902a70c00b001dca844a38bmr580579plq.67.1709167544830;
-        Wed, 28 Feb 2024 16:45:44 -0800 (PST)
-Received: from localhost.localdomain (c-73-254-87-52.hsd1.wa.comcast.net. [73.254.87.52])
-        by smtp.gmail.com with ESMTPSA id t3-20020a170902b20300b001db5e807cd2sm70418plr.82.2024.02.28.16.45.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 16:45:44 -0800 (PST)
-From: mhkelley58@gmail.com
-X-Google-Original-From: mhklinux@outlook.com
-To: haiyangz@microsoft.com,
-	wei.liu@kernel.org,
-	decui@microsoft.com,
-	boqun.feng@gmail.com,
-	linux-kernel@vger.kernel.org,
-	linux-hyperv@vger.kernel.org
-Subject: [PATCH v2 1/1] Drivers: hv: vmbus: Calculate ring buffer size for more efficient use of memory
-Date: Wed, 28 Feb 2024 16:45:33 -0800
-Message-Id: <20240229004533.313662-1-mhklinux@outlook.com>
-X-Mailer: git-send-email 2.25.1
-Reply-To: mhklinux@outlook.com
+	s=arc-20240116; t=1709167778; c=relaxed/simple;
+	bh=eJy7526b/+zGVIKSV9uSj1O67nrOJUqsliwJDm6XgBE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hoiUFOIxffdx00KoRkEM89bjaH4cDH8yoC/QUdgZm6DFogi/J3p9R/hXRSNHe+tOGaGYvni3Ws6CAnAJsPvWbbF8rquKhRD5E+dWCPSL/Z7k0yV6tH5NtrnMtejMV3s+w/BD5GNtyPTN37Zza0VDvPl2AEkaAW6gnrJI+m6y9rY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=Rl5bViV4; arc=none smtp.client-ip=44.202.169.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
+Received: from eig-obgw-5003a.ext.cloudfilter.net ([10.0.29.159])
+	by cmsmtp with ESMTPS
+	id fTFCrckViQr4SfUc6rE8rW; Thu, 29 Feb 2024 00:49:30 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+	by cmsmtp with ESMTPS
+	id fUc4rFGgxe1rDfUc5rtQL2; Thu, 29 Feb 2024 00:49:29 +0000
+X-Authority-Analysis: v=2.4 cv=TvrghiXh c=1 sm=1 tr=0 ts=65dfd499
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=VhncohosazJxI00KdYJ/5A==:17
+ a=IkcTkHD0fZMA:10 a=k7vzHIieQBIA:10 a=wYkD_t78qR0A:10
+ a=fHn5IWyn-i4c8q1BtbYA:9 a=QEXdDO2ut3YA:10
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=Zjlg/tH38rkBMLvt/9bxLn+QRmwhVCWKNt+AkXN6Nec=; b=Rl5bViV4SrEtyy1Y3IFyKLvsG9
+	NoXIGdPO99YzGOuke1rEDMsjndNpL3tNMskf8gDdDzZDq99nndWo7lajWsZPuNaH0Mf12xnJvFpiP
+	CPIrNtDA0iIPqLxqfBqs2bBl6s8JWqDhqMsfTwu193K08NAwcfyqBPf45tmEmrrrzSYtoLfxvVXip
+	kUpIXchdNxJxiFOmFzeeF1wmZTmXI8MNa66yskG1TQVtFIz9Gu6cdUOJy1WEzbIC7P30QQsrTD+Ws
+	/jO3qhhf+nJrs6IxdAkWj/ZCBfRv5sp9A9ZGNWe3A3JMZkqlA2S7KnXjf4w+bKLtPcaKUGrh5YaKB
+	8Iq1SE7A==;
+Received: from [201.172.172.225] (port=57006 helo=[192.168.15.10])
+	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <gustavo@embeddedor.com>)
+	id 1rfUc3-00272c-2T;
+	Wed, 28 Feb 2024 18:49:27 -0600
+Message-ID: <653bbfe8-1b35-4f5e-b89d-9e374c64e46b@embeddedor.com>
+Date: Wed, 28 Feb 2024 18:49:25 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 7/8] net-device: Use new helpers from overflow.h in
+ netdevice APIs
+Content-Language: en-US
+To: Kees Cook <keescook@chromium.org>, Jakub Kicinski <kuba@kernel.org>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Vinod Koul <vkoul@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org,
+ dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-iio@vger.kernel.org, linux-spi@vger.kernel.org,
+ netdev@vger.kernel.org, linux-hardening@vger.kernel.org,
+ Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Paolo Abeni <pabeni@redhat.com>, "Gustavo A. R. Silva"
+ <gustavoars@kernel.org>
+References: <20240228204919.3680786-1-andriy.shevchenko@linux.intel.com>
+ <20240228204919.3680786-8-andriy.shevchenko@linux.intel.com>
+ <202402281341.AC67EB6E35@keescook> <20240228144148.5c227487@kernel.org>
+ <202402281554.C1CEEF744@keescook>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <202402281554.C1CEEF744@keescook>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 201.172.172.225
+X-Source-L: No
+X-Exim-ID: 1rfUc3-00272c-2T
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.15.10]) [201.172.172.225]:57006
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 11
+X-Org: HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfBolf4+BXRkiiCBgwb+KmASosVKxAFsXETBtc6NiFp/xWI7VVYOkt9jHFyfz31XcjoJLFUgTX6Jk5M67QvlC5fynPSHvMsGnx+vLNqMHauDciRUacEiZ
+ GwYqmN0UZ+XCO+omPgA2560Nwh2MMtYqDntLM9WVXWsX78xI4DqcNmX/6U69fIddEwpnC2vAascXiDnOrr1JQf6rz2/wmy3s6s6gnu35OdDoFL/FgwLaquMN
 
-From: Michael Kelley <mhklinux@outlook.com>
 
-The VMBUS_RING_SIZE macro adds space for a ring buffer header to the
-requested ring buffer size.  The header size is always 1 page, and so
-its size varies based on the PAGE_SIZE for which the kernel is built.
-If the requested ring buffer size is a large power-of-2 size and the header
-size is small, the resulting size is inefficient in its use of memory.
-For example, a 512 Kbyte ring buffer with a 4 Kbyte page size results in
-a 516 Kbyte allocation, which is rounded to up 1 Mbyte by the memory
-allocator, and wastes 508 Kbytes of memory.
 
-In such situations, the exact size of the ring buffer isn't that important,
-and it's OK to allocate the 4 Kbyte header at the beginning of the 512
-Kbytes, leaving the ring buffer itself with just 508 Kbytes. The memory
-allocation can be 512 Kbytes instead of 1 Mbyte and nothing is wasted.
+On 2/28/24 18:01, Kees Cook wrote:
+> On Wed, Feb 28, 2024 at 02:41:48PM -0800, Jakub Kicinski wrote:
+>> On Wed, 28 Feb 2024 13:46:10 -0800 Kees Cook wrote:
+>>> I really don't like hiding these trailing allocations from the compiler.
+>>> Why can't something like this be done (totally untested):
+>>>
+>>>
+>>> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+>>> index 118c40258d07..dae6df4fb177 100644
+>>> --- a/include/linux/netdevice.h
+>>> +++ b/include/linux/netdevice.h
+>>> @@ -2475,6 +2475,8 @@ struct net_device {
+>>>   	/** @page_pools: page pools created for this netdevice */
+>>>   	struct hlist_head	page_pools;
+>>>   #endif
+>>> +	u32			priv_size;
+>>> +	u8			priv_data[] __counted_by(priv_size) __aligned(NETDEV_ALIGN);
+>>
+>> I like, FWIW, please submit! :)
+> 
+> So, I found several cases where struct net_device is included in the
+> middle of another structure, which makes my proposal more awkward. But I
+> also don't understand why it's in the _middle_. Shouldn't it always be
+> at the beginning (with priv stuff following it?)
+> Quick search and examined manually: git grep 'struct net_device [a-z0-9_]*;'
+> 
+> struct rtw89_dev
+> struct ath10k
+> etc.
+> 
+> Some even have two included (?)
+> 
+> But I still like the idea -- Gustavo has been solving these cases with
+> having two structs, e.g.:
+> 
+> struct net_device {
+> 	...unchanged...
+> };
+> 
+> struct net_device_alloc {
+> 	struct net_device	dev;
+> 	u32			priv_size;
+> 	u8			priv_data[] __counted_by(priv_size) __aligned(NETDEV_ALIGN);
+> };
+> 
+> And internals can use struct net_device_alloc...
 
-Update VMBUS_RING_SIZE to implement this approach for "large" ring buffer
-sizes.  "Large" is somewhat arbitrarily defined as 8 times the size of
-the ring buffer header (which is of size PAGE_SIZE).  For example, for
-4 Kbyte PAGE_SIZE, ring buffers of 32 Kbytes and larger use the first
-4 Kbytes as the ring buffer header.  For 64 Kbyte PAGE_SIZE, ring buffers
-of 512 Kbytes and larger use the first 64 Kbytes as the ring buffer
-header.  In both cases, smaller sizes add space for the header so
-the ring size isn't reduced too much by using part of the space for
-the header.  For example, with a 64 Kbyte page size, we don't want
-a 128 Kbyte ring buffer to be reduced to 64 Kbytes by allocating half
-of the space for the header.  In such a case, the memory allocation
-is less efficient, but it's the best that can be done.
+Yep, we should really consider going with the above, otherwise we would
+have to do something like the following, to avoid having the flexible-array
+member nested in the middle of other structs:
 
-While the new algorithm slightly changes the amount of space allocated
-for ring buffers by drivers that use VMBUS_RING_SIZE, the devices aren't
-known to be sensitive to small changes in ring buffer size, so there
-shouldn't be any effect.
+struct net_device {
+	struct_group_tagged(net_device_hdr, hdr,
+		...
+		u32			priv_size;
+	);
+	u8			priv_data[] __counted_by(priv_size) __aligned(NETDEV_ALIGN);
+}
 
-Fixes: c1135c7fd0e9 ("Drivers: hv: vmbus: Introduce types of GPADL")
-Fixes: 6941f67ad37d ("hv_netvsc: Calculate correct ring size when PAGE_SIZE is not 4 Kbytes")
-Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218502
-Cc: stable@vger.kernel.org
-Signed-off-by: Michael Kelley <mhklinux@outlook.com>
-Reviewed-by: Saurabh Sengar <ssengar@linux.microsoft.com>
-Reviewed-by: Dexuan Cui <decui@microsoft.com>
-Tested-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
----
-Changes in v2:
-* Updated the commit text [Saurabh Sengar]
-* Added the second Fixes: tag and Closes: tag [Dexuan Cui]
-* Added Cc: stable@vger.kernel.org tag
-* Added Reviewed-by: and Tested-by: tags
-* No changes to the code
+We are grouping together the members in `struct net_device`, except the
+flexible-array member, into a tagged `struct net_device_hdr`. This allows
+us to exclude the flex array from its inclusion in any other struct
+that contains `struct net_device` as a member without having to create
+a completely separate struct definition.
 
- include/linux/hyperv.h | 22 +++++++++++++++++++++-
- 1 file changed, 21 insertions(+), 1 deletion(-)
+And let's take as example `struct hfi1_netdev_rx`, where `struct net_device` is
+included in the beginning:
 
-diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
-index 2b00faf98017..6ef0557b4bff 100644
---- a/include/linux/hyperv.h
-+++ b/include/linux/hyperv.h
-@@ -164,8 +164,28 @@ struct hv_ring_buffer {
- 	u8 buffer[];
- } __packed;
- 
-+
-+/*
-+ * If the requested ring buffer size is at least 8 times the size of the
-+ * header, steal space from the ring buffer for the header. Otherwise, add
-+ * space for the header so that is doesn't take too much of the ring buffer
-+ * space.
-+ *
-+ * The factor of 8 is somewhat arbitrary. The goal is to prevent adding a
-+ * relatively small header (4 Kbytes on x86) to a large-ish power-of-2 ring
-+ * buffer size (such as 128 Kbytes) and so end up making a nearly twice as
-+ * large allocation that will be almost half wasted. As a contrasting example,
-+ * on ARM64 with 64 Kbyte page size, we don't want to take 64 Kbytes for the
-+ * header from a 128 Kbyte allocation, leaving only 64 Kbytes for the ring.
-+ * In this latter case, we must add 64 Kbytes for the header and not worry
-+ * about what's wasted.
-+ */
-+#define VMBUS_HEADER_ADJ(payload_sz) \
-+	((payload_sz) >=  8 * sizeof(struct hv_ring_buffer) ? \
-+	0 : sizeof(struct hv_ring_buffer))
-+
- /* Calculate the proper size of a ringbuffer, it must be page-aligned */
--#define VMBUS_RING_SIZE(payload_sz) PAGE_ALIGN(sizeof(struct hv_ring_buffer) + \
-+#define VMBUS_RING_SIZE(payload_sz) PAGE_ALIGN(VMBUS_HEADER_ADJ(payload_sz) + \
- 					       (payload_sz))
- 
- struct hv_ring_buffer_info {
--- 
-2.25.1
+drivers/infiniband/hw/hfi1/netdev.h:
+struct hfi1_netdev_rx {
 
+-	struct net_device rx_napi;
++       struct net_device_hdr rx_napi;
+
+
+         struct hfi1_devdata *dd;
+         struct hfi1_netdev_rxq *rxq;
+         int num_rx_q;
+         int rmt_start;
+         struct xarray dev_tbl;
+         /* count of enabled napi polls */
+         atomic_t enabled;
+         /* count of netdevs on top */
+         atomic_t netdevs;
+};
+
+Of course we would also have to update the code that access `struct net_device`
+members through `rx_napi` in `struct hfi1_netdev_rx`.
+
+I'm currently working on the above solution for all the cases where having two
+separate structs is not currently feasible. And with that we are looking to enable
+`-Wflex-array-member-not-at-end`
+
+So, if we can prevent this from the beginning it'd be really great. :)
+
+--
+Gustavo
 
