@@ -1,119 +1,101 @@
-Return-Path: <linux-kernel+bounces-87296-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87297-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D92E086D255
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:30:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EC9186D262
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:32:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17ACEB228D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:30:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A3A7DB247B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:32:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B9DC40847;
-	Thu, 29 Feb 2024 18:30:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39AC040847;
+	Thu, 29 Feb 2024 18:32:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="iM5mHmPo"
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="AWAYiH/P"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BAF1134401
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 18:30:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F370A5F
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 18:32:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709231425; cv=none; b=fw3X6YD/tW/1awRl4NdFPEGI6AgJjMbNC0IIvsIVrYkd1y6SwLDD2tcOa4E5G2Z4aWigAApZtek2X6Nh4MC74+W/N+sWAafc4rgSLEr4Z2MXEB2lHYivOXBfBNbtQGQ7pWZf2OE7gP9FOVC4XLSURGwxoHQY8tRctFwTTzBAWms=
+	t=1709231546; cv=none; b=PITQ/K7YvbmBVc5T/FOTQsWBgUVHBWQO/NFQDg6RmrkRxbhP7nyUG7XbGd4CsLGqA+fRd5+ONidV5AlPqSGBMphgQnvzvzt2QWiP2z6Ni1Y/0EOkOeRJzeDYDvy+m6oTOh6h6sPoERW+kHUM1FPMY85Rsh2s4sXMkGD2dB16ML4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709231425; c=relaxed/simple;
-	bh=8yy/4GV1yFJzF9sv2B95/iwZJPmwic5KkIWGzHyFdDA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gXajQnDeRQN8/UN5G1MotFMlIP2STEsELcpCxBP6QoGtp/MTV9RQRrQJILiv+ip6BuCM5imUGYXfsxNYNig/QffqRZklCl30gg3t2ejYc7tsmQPj1jwGSvaJyyyHSjcev1e0KoFjkf5wvxcfRu+LuopizdTHqaBvgXCuvsydfcY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=iM5mHmPo; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1dcd6a3da83so9115175ad.3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 10:30:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709231422; x=1709836222; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aYbYLgN//LB6IKshdj2UFvVMq+97XOWcZTiyLMqD288=;
-        b=iM5mHmPoziyBmXNKdfjG1EYs9RZkxqajHY0iJTm8qPwQw7XSYOaQmmExCBBqcpxL4k
-         S1mlEu61ub7ABvinLlFMWO0Aet7chIuR4vUqHYZM4CGZESNe1dTYwittwTDQi0ewrRY1
-         HPmeUJKQL/2H6rQa4zKQVPc1Z1ERlwwVXNLV8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709231422; x=1709836222;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aYbYLgN//LB6IKshdj2UFvVMq+97XOWcZTiyLMqD288=;
-        b=CfLJzcrxx/EvlPNupdOKw5lAWr54JceoMr2TmeCzHO6vNaB72imkewesXfN7bls/ZC
-         uz2BpQbyTKTWOm7Z090gMfwqtsGClSrpo9ufRStw+WtMKzWD1u9WzZK81MXIQexrhj8a
-         EpYJZ6jwHZrhGcWCb3cD/4VDccpbVhzQ/omRd/S5fmmKUAPKhi4RCl9PP7848+W4KjXa
-         S4nXuZ4l6FamdCQpTkUqBPw1svy3XFL4As8p7RIGhwHVW3xFx4xtJ3QbobvoqBq0NwNi
-         f2m725F3ST4Kk9WB/AlibvyN5aWgPZ0jfjSF3UJ7u5WkmfhE3U69KSVlt60yxH2hVZ/y
-         bbug==
-X-Forwarded-Encrypted: i=1; AJvYcCVprSuB6yKE5KyHdNgh96XiJ8mrltzvTbBBt84jzYwZ3Rfq9rpfawniAwjF8FSTv/1xHQRQhfKtejGbXJwisY3da1mpbh/+Ugo3Wscj
-X-Gm-Message-State: AOJu0Yyc5jwpubNVaRifqci1gUHvm4qYFjciLlzxek2tXLsALdU2l8X0
-	q7nolY24Jlc5QTEUjLXU9Vg/2AvJxrZRt/M9T1js8NLi7zuRScOMOhUVyz9NHQ==
-X-Google-Smtp-Source: AGHT+IFZ8jcrjcQAt+MQj+2B0Sj5fw+uvOzg9P3n+GwTvGaDLn2o9jX7lXUHTKfIFeYePsmaS46Yrw==
-X-Received: by 2002:a17:902:d4c4:b0:1db:ea23:9ee6 with SMTP id o4-20020a170902d4c400b001dbea239ee6mr3615434plg.12.1709231421915;
-        Thu, 29 Feb 2024 10:30:21 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id 21-20020a170902c15500b001d93a85ae13sm1803519plj.309.2024.02.29.10.30.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 10:30:21 -0800 (PST)
-From: Kees Cook <keescook@chromium.org>
-To: Vinod Koul <vkoul@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Mark Brown <broonie@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
-	dmaengine@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-iio@vger.kernel.org,
-	linux-spi@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-hardening@vger.kernel.org,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Kees Cook <keescook@chromium.org>,
-	Jonathan Cameron <jic23@kernel.org>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: Re: (subset) [PATCH v4 1/8] overflow: Use POD in check_shl_overflow()
-Date: Thu, 29 Feb 2024 10:30:14 -0800
-Message-Id: <170923141241.775345.14051727895770192324.b4-ty@chromium.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240228204919.3680786-2-andriy.shevchenko@linux.intel.com>
-References: <20240228204919.3680786-1-andriy.shevchenko@linux.intel.com> <20240228204919.3680786-2-andriy.shevchenko@linux.intel.com>
+	s=arc-20240116; t=1709231546; c=relaxed/simple;
+	bh=I7vjq8D0UgYUMe8/HQRvVmc5kyQ5OOYyCXZ9U4I/8D8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LhhwZHEtKWg0mnsiC1OYL8M0xRtQTVcKgwYp6DB/NuOqr0H8mp2/wEPfkhdvywgrApBM7sARibpNj9GcyB/4m045vAXnGp1Jfxc7GjFg64y0cu1pKIxI+vcmI47weWVjv/H981dCrtBpv2ZBqDOTMkxYIMUMqD/O/ALt34dy9+w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=AWAYiH/P; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A12F4C433C7;
+	Thu, 29 Feb 2024 18:32:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1709231546;
+	bh=I7vjq8D0UgYUMe8/HQRvVmc5kyQ5OOYyCXZ9U4I/8D8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=AWAYiH/PQut2skLZ8XCRAr0I8uT5bjx3jRmddyxIHLc/PFwHBB6X6wau+NBzxcBFq
+	 8HJuxggmFKxG/bKP/oIvY5EA0IMAjtgjdpcodJvqxHtD8LkBxcpV5GrzdK7UA6OVvD
+	 bdG8EZIEZCieJIF+7bJt9PXFPeuHAgFwhdZ8owZE=
+Date: Thu, 29 Feb 2024 19:32:21 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Jiri Kosina <jikos@kernel.org>
+Cc: Sasha Levin <sashal@kernel.org>, Michal Hocko <mhocko@suse.com>,
+	Kees Cook <keescook@chromium.org>, cve@kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: CVE-2023-52451: powerpc/pseries/memhp: Fix access beyond end of
+ drmem array
+Message-ID: <2024022905-pester-emphatic-9ff0@gregkh>
+References: <Zd8hPpP_6q_o8uQW@tiehlicka>
+ <202402280906.D6D5590DB@keescook>
+ <ZeA-281OudkWBhd_@tiehlicka>
+ <2024022915-dissuade-grandson-ebd4@gregkh>
+ <ZeBRZqJd5HAKaOfC@tiehlicka>
+ <2024022913-borrower-resource-ecc9@gregkh>
+ <nycvar.YFH.7.76.2402291605370.4159@cbobk.fhfr.pm>
+ <ZeCsKGwU96sKi_S_@sashalap>
+ <nycvar.YFH.7.76.2402291754020.13421@cbobk.fhfr.pm>
+ <nycvar.YFH.7.76.2402291824020.13421@cbobk.fhfr.pm>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <nycvar.YFH.7.76.2402291824020.13421@cbobk.fhfr.pm>
 
-On Wed, 28 Feb 2024 22:41:31 +0200, Andy Shevchenko wrote:
-> The check_shl_overflow() uses u64 type that is defined in types.h.
-> Instead of including that header, just switch to use POD type
-> directly.
+On Thu, Feb 29, 2024 at 06:36:08PM +0100, Jiri Kosina wrote:
+> On Thu, 29 Feb 2024, Jiri Kosina wrote:
 > 
+> > - you pointed to a fix for UAF in BPF, which definitely is a good fix to 
+> >   have, I don't even dispute that CVE is justified in this particular 
+> >   case. What I haven't yet seen though how this connects to in my view 
+> >   rather serious 'trivial to get root' statement
 > 
+> To elaborate on this a little bit more -- I completely agree that this fix 
+> is completely in-line with what Kees is, in my view, quite nicely 
+> describing at [1]. You pointed to a weakness (for which a fix *is* in our 
+> queue), sure.
+> 
+> But I see a HUGE leap from "fixes a weakness" to bold, aggressive and in 
+> my view exaggerating statements a-la "I am able to trivially pwn any 
+> kernel which is not -stable".
 
-Applied to for-next/hardening, thanks!
+{sigh}
 
-[1/8] overflow: Use POD in check_shl_overflow()
-      https://git.kernel.org/kees/c/4e55a75495b7
+I do not mean _any_ enterprise kernel, I said "most", some I did not
+find any problems with at all that I could tell.  This was true the last
+time I did this exercise about 9 or so months ago for a presentation,
+and hey, it might have changed since then, I sure hope so for everyone's
+sake.
 
-Take care,
+Sorry, I will NOT say what distros I did, or did not, find vunerable.
+That's not my place to say here in public for obvious reasons, but I'm
+more than willing to discuss it over drinks in-person anytime.
 
--- 
-Kees Cook
+thanks,
 
+greg k-h
 
