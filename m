@@ -1,115 +1,56 @@
-Return-Path: <linux-kernel+bounces-87560-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87558-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CB1D86D5E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:13:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EA8686D5E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:12:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70DA21C23C4B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:13:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF82528A233
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:12:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30FDD13E7CE;
-	Thu, 29 Feb 2024 21:08:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BADC6D51C;
+	Thu, 29 Feb 2024 21:07:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m9DYyfyA"
-Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KmlYJ0BY"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB5506D53A;
-	Thu, 29 Feb 2024 21:08:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86AE574BE6;
+	Thu, 29 Feb 2024 21:07:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709240892; cv=none; b=bfIZ8ze8FCu70kwLBubStrjXmNQ9FwsV4C5SNn5XiHLSkQBLZJOiP2T/EATZ6h7aj7euENrqkWfUU+YuvmisU8VzN3z+uMJDopZG19vRpYNjlKqQt55ua1aLZ6Kc1lmtNZoKljnddHIdu3RrultrRT4rfZU+a80gSgUtbGRq6v4=
+	t=1709240848; cv=none; b=t7g6hDFzK4vCCaRHXJAaEOpudmctwE2wT/MdZdIdrPQ7lC7rTsdsPAxbNkBHgc29Lxquyqv05U0olNscxaj0xHikpqev0WoLQoWB2G11UHt4Mr+FsUz4ulj2JadvzCn2mtKxIGx0aMKqWNP/J2+gt1bWWtx6Ngww1FV+R4AFWRA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709240892; c=relaxed/simple;
-	bh=BVoEXyJnWOjPf9N3vsI8NOsWHEJGIkMDpIW0yRsXLAo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=K4zw0hIYm4ZCknrgX34ucleFh8l3DIQYFN/QHLCSLrKwiB6y1u7ynXGdL1+bZt4O9B9k3IJxXTvaWI8AFAARpQZ5Ad2zWkp/+WeWluenS4n/+N2/7nDsN2JnOa7WyVToLAEoBr13lJRSPJ+oBw74mCbnJ3ugmYb+RHKahLoBTGY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m9DYyfyA; arc=none smtp.client-ip=209.85.222.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-787a843003eso92843885a.0;
-        Thu, 29 Feb 2024 13:08:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709240890; x=1709845690; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EzIxZF8ZIEwD2OTEM2JEqlEHNkUn9G6VGUCr6uISdK4=;
-        b=m9DYyfyAutfYeflUm2oEeEAk/qVk3HdZ6SJIjbmXZ2+dVgS9krCc4bJQD0zll5tVlW
-         n1G4tqbUqr+N6p03rtTVLHC57d1scoQ7Q9UMZ2QQpnYPdJHUv16K0I+rKN7knOdCqsom
-         EfrRloZ103V46HQwJJUlX01PpuOrUWcC+fGqlUrlJGsImxCTz0CQ6KL99aFUCjRyepU+
-         xkmafBoql7FsUVI7ObbleQkqj6PKtZbmdNq4PiyNFdik7L/kj6exOUhh3IARFTepO0AF
-         OwcUbCB76EX2C7iEINSg033nRYcqnpuyInPyA5ec7FKlY6YcqnjRhA/aLC3yiOsbhWy+
-         3Daw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709240890; x=1709845690;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EzIxZF8ZIEwD2OTEM2JEqlEHNkUn9G6VGUCr6uISdK4=;
-        b=mHk4vsq2D/8ys/o9SASw7/jFIHmjy/Y8FrvyBMPLHlZ2Gz1z3ZvRURhvYG794yi2I5
-         9QnGJHAprT2tpE0hca+IzXRbrRNQ18aMctBdHGCSqNdyyzjUw/Azyx4cZ7vFN53lIcoA
-         mnAOPISUskhH6BX3v8Tk1xI7RSJFbwHy6sXPlNWa+5OMm0jAx7yaZDpWZcBju8BbMFsb
-         6I0Ofa51qcvY86wOMilKS3lcm5hnLf2uX2aVq1v+RL0/tWrphckTvJZrdExTkljJAlRn
-         zyZzDPhJnEBJ647myL8YgfBOGW8L9ylC59VBaVIr3dRvAsQF88QTYyYP1oENN8lH2Jzc
-         FinQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW8KMHA3mF+GUCIo6q+E53GWco5TB2Iay7Ld+rcy+zNSySAPUCry4n11E3B9+hj8Dnd6d/76XvrtPjEW9NTgs7ffr14Uz1+lgmg+yti9jYORTMq9soPOQZMAh/b7XXQohMsjWTj
-X-Gm-Message-State: AOJu0YxdKC8Pev6t0Bf+DTEOrL6/TVq8BlDudcu3geGO8nNI2EJqBubf
-	AM8bT+pMBBCzq0tKVeun+0PqhhdzgLh6ly1g1eLBdIdM/ZOQrD71
-X-Google-Smtp-Source: AGHT+IEduBApnN3IdnWR7zWPFrPtizlWPB/ExuBF30NfQzCCsxQ9RICtJGOeKdJqwuFXiCiNJthvmw==
-X-Received: by 2002:a05:620a:4ada:b0:787:cecb:626f with SMTP id sq26-20020a05620a4ada00b00787cecb626fmr3415801qkn.70.1709240889831;
-        Thu, 29 Feb 2024 13:08:09 -0800 (PST)
-Received: from fauth1-smtp.messagingengine.com (fauth1-smtp.messagingengine.com. [103.168.172.200])
-        by smtp.gmail.com with ESMTPSA id i7-20020a05620a404700b00787fb9e2d2esm979317qko.125.2024.02.29.13.08.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 13:08:08 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfauth.nyi.internal (Postfix) with ESMTP id 4CB5B1200043;
-	Thu, 29 Feb 2024 16:08:08 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Thu, 29 Feb 2024 16:08:08 -0500
-X-ME-Sender: <xms:N_LgZeo4osw_ckdcp9azOsRRPMl-DmPGpS9P_4s1X_q2r7SXOFo-mw>
-    <xme:N_LgZcqT4ov5ST7NouC2jjEDbEfoKaMZQiztazWX8Xar2GIHcK_toegmUywxArvHO
-    RlMXZtaxGYRLWbEPQ>
-X-ME-Received: <xmr:N_LgZTPB2IEdkh4dDRs8GpYnu4ZxnKp7CCELoAsvqG_JvI2ttt3El4xGCtGstg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrgeelgddugeefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvvefukfhfgggtuggjsehttd
-    ertddttddvnecuhfhrohhmpeeuohhquhhnucfhvghnghcuoegsohhquhhnrdhfvghnghes
-    ghhmrghilhdrtghomheqnecuggftrfgrthhtvghrnhephfetvdfgtdeukedvkeeiteeite
-    ejieehvdetheduudejvdektdekfeegvddvhedtnecuffhomhgrihhnpehkvghrnhgvlhdr
-    ohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
-    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
-    igmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:N_LgZd6AxaAItX02csyB8UI-CdMo93Xm4eppdIRbPURu7MmQHVgcwQ>
-    <xmx:N_LgZd4Wy3LVC-ihFX8wnGNgQwOBg44vm8Bv8vSxPdldqpNJ_6daZw>
-    <xmx:N_LgZdjMknBv7WKB-ERUofxk2vJpxT2CoN5gLa9PuSRvWGmI0NUwtw>
-    <xmx:OPLgZRq7_96QZPvB2rXCp9MCRiKDaSctbXmmWKqN7-pudqkF5QIjuQ9qP2c>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 29 Feb 2024 16:08:07 -0500 (EST)
-Date: Thu, 29 Feb 2024 13:07:21 -0800
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: torvalds@linux-foundation.org, mpatocka@redhat.com,
-	linux-kernel@vger.kernel.org, dm-devel@lists.linux.dev,
-	msnitzer@redhat.com, ignat@cloudflare.com, damien.lemoal@wdc.com,
-	bob.liu@oracle.com, houtao1@huawei.com, peterz@infradead.org,
-	mingo@kernel.org, netdev@vger.kernel.org, allen.lkml@gmail.com,
-	kernel-team@meta.com, Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH for-6.9] workqueue: Drain BH work items on hot-unplugged
- CPUs
-Message-ID: <ZeDyCSxtshb6MFLA@boqun-archlinux>
-References: <20240130091300.2968534-1-tj@kernel.org>
- <20240130091300.2968534-4-tj@kernel.org>
- <ZcABypwUML6Osiec@slm.duckdns.org>
- <Zdvw0HdSXcU3JZ4g@boqun-archlinux>
- <Zd09L9DgerYjezGT@slm.duckdns.org>
- <ZeDrCMLlzVZpvbrG@slm.duckdns.org>
+	s=arc-20240116; t=1709240848; c=relaxed/simple;
+	bh=J6nl5xudWoaHe5zt2ZmvKLymkNzx1v+WzoPkxo7Ue94=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=suovqQg6Akop3TTz6AXuwdrhWVfWQM36myAEZBgx+Az7raOIoPYn55lOMbk6+z/E3dxTCL2NIYqqgCMB3Lha6SB3LtyFCvzDq/+ujGpT3CSnrmkL2+EtxgK6HEFVyYdRKR6llGoRW09WcAhlixF5REiVmqQZU40dhwyYVDzrJN0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KmlYJ0BY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC3BEC433F1;
+	Thu, 29 Feb 2024 21:07:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709240848;
+	bh=J6nl5xudWoaHe5zt2ZmvKLymkNzx1v+WzoPkxo7Ue94=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=KmlYJ0BYjLjSdDhJPfMWjeAbasyaPJyxC5J5JG5g9OpaBI/OR5KF5myyHrzftRLKT
+	 2d7M7lO5gv/wY3vsu9dOs+HU9cVpFI+2Lsea5uCZSwfPxH05KOrOAhVBUnqnaHZGx7
+	 AaACX2V6QPzfh9/UcwVxDoseikUQz2j/mvH/n7Tfc1II+lw45KCiBnVECXD9KFFiky
+	 403mfSB593j48zUgQkxtW24ECMmUNq440NoGr6WNlocpiZkhqmN+rjcMxQ1NRCJsHj
+	 ppa89wrCYjojAiPm8lKM+1dRhEF0s3tGyaSGiLIRKFC1qcIFpx6LxxEUbUmC3v3C6h
+	 oUmHBZwVqW3PQ==
+Date: Thu, 29 Feb 2024 15:07:26 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Ethan Zhao <haifeng.zhao@linux.intel.com>
+Cc: baolu.lu@linux.intel.com, bhelgaas@google.com, robin.murphy@arm.com,
+	jgg@ziepe.ca, kevin.tian@intel.com, dwmw2@infradead.org,
+	will@kernel.org, lukas@wunner.de, yi.l.liu@intel.com,
+	dan.carpenter@linaro.org, iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iommu/vt-d: improve ITE fault handling if device was
+ released
+Message-ID: <20240229210726.GA363458@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -118,47 +59,75 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZeDrCMLlzVZpvbrG@slm.duckdns.org>
+In-Reply-To: <20240229040724.3393042-1-haifeng.zhao@linux.intel.com>
 
-On Thu, Feb 29, 2024 at 10:37:28AM -1000, Tejun Heo wrote:
-> On Mon, Feb 26, 2024 at 03:38:55PM -1000, Tejun Heo wrote:
-> > Boqun pointed out that workqueues aren't handling BH work items on offlined
-> > CPUs. Unlike tasklet which transfers out the pending tasks from
-> > CPUHP_SOFTIRQ_DEAD, BH workqueue would just leave them pending which is
-> > problematic. Note that this behavior is specific to BH workqueues as the
-> > non-BH per-CPU workers just become unbound when the CPU goes offline.
-> > 
-> > This patch fixes the issue by draining the pending BH work items from an
-> > offlined CPU from CPUHP_SOFTIRQ_DEAD. Because work items carry more context,
-> > it's not as easy to transfer the pending work items from one pool to
-> > another. Instead, run BH work items which execute the offlined pools on an
-> > online CPU.
-> > 
-> > Note that this assumes that no further BH work items will be queued on the
-> > offlined CPUs. This assumption is shared with tasklet and should be fine for
-> > conversions. However, this issue also exists for per-CPU workqueues which
-> > will just keep executing work items queued after CPU offline on unbound
-> > workers and workqueue should reject per-CPU and BH work items queued on
-> > offline CPUs. This will be addressed separately later.
-> > 
-> > Signed-off-by: Tejun Heo <tj@kernel.org>
-> > Reported-by: Boqun Feng <boqun.feng@gmail.com>
-> > Link: http://lkml.kernel.org/r/Zdvw0HdSXcU3JZ4g@boqun-archlinux
+On Wed, Feb 28, 2024 at 11:07:24PM -0500, Ethan Zhao wrote:
+> Break the loop to blindly retry the timeout ATS invalidation request
+> after ITE fault hit if device was released or isn't present anymore.
 > 
-> Applying this to wq/for-6.9.
+> This is part of the followup of prior proposed patchset
 > 
+> https://do-db2.lkml.org/lkml/2024/2/22/350
 
-FWIW,
+Use lore URL, please.
 
-Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
-
-(I took a look yesterday, but hasn't gotten the time to reply..)
-
-Regards,
-Boqun
-
-> Thanks.
+> Fixes: 6ba6c3a4cacf ("VT-d: add device IOTLB invalidation support")
+> Signed-off-by: Ethan Zhao <haifeng.zhao@linux.intel.com>
+> ---
+>  drivers/iommu/intel/dmar.c | 25 +++++++++++++++++++++++++
+>  1 file changed, 25 insertions(+)
 > 
+> diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
+> index d14797aabb7a..d01d68205557 100644
+> --- a/drivers/iommu/intel/dmar.c
+> +++ b/drivers/iommu/intel/dmar.c
+> @@ -1273,6 +1273,9 @@ static int qi_check_fault(struct intel_iommu *iommu, int index, int wait_index)
+>  {
+>  	u32 fault;
+>  	int head, tail;
+> +	u64 iqe_err, ite_sid;
+> +	struct device *dev = NULL;
+> +	struct pci_dev *pdev = NULL;
+>  	struct q_inval *qi = iommu->qi;
+>  	int shift = qi_shift(iommu);
+>  
+> @@ -1317,6 +1320,13 @@ static int qi_check_fault(struct intel_iommu *iommu, int index, int wait_index)
+>  		tail = readl(iommu->reg + DMAR_IQT_REG);
+>  		tail = ((tail >> shift) - 1 + QI_LENGTH) % QI_LENGTH;
+>  
+> +		/*
+> +		 * SID field is valid only when the ITE field is Set in FSTS_REG
+> +		 * see Intel VT-d spec r4.1, section 11.4.9.9
+> +		 */
+> +		iqe_err = dmar_readq(iommu->reg + DMAR_IQER_REG);
+> +		ite_sid = DMAR_IQER_REG_ITESID(iqe_err);
+> +
+>  		writel(DMA_FSTS_ITE, iommu->reg + DMAR_FSTS_REG);
+>  		pr_info("Invalidation Time-out Error (ITE) cleared\n");
+>  
+> @@ -1326,6 +1336,21 @@ static int qi_check_fault(struct intel_iommu *iommu, int index, int wait_index)
+>  			head = (head - 2 + QI_LENGTH) % QI_LENGTH;
+>  		} while (head != tail);
+>  
+> +		/*
+> +		 * If got ITE, we need to check if the sid of ITE is one of the
+> +		 * current valid ATS invalidation target devices, if no, or the
+> +		 * target device isn't presnet, don't try this request anymore.
+> +		 * 0 value of ite_sid means old VT-d device, no ite_sid value.
+> +		 */
+> +		if (ite_sid) {
+> +			dev = device_rbtree_find(iommu, ite_sid);
+> +			if (!dev || !dev_is_pci(dev))
+> +				return -ETIMEDOUT;
+> +			pdev = to_pci_dev(dev);
+> +			if (!pci_device_is_present(pdev) &&
+> +				ite_sid == pci_dev_id(pci_physfn(pdev)))
+> +				return -ETIMEDOUT;
+> +		}
+>  		if (qi->desc_status[wait_index] == QI_ABORT)
+>  			return -EAGAIN;
+>  	}
 > -- 
-> tejun
+> 2.31.1
+> 
 
