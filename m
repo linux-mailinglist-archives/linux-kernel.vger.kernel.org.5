@@ -1,138 +1,117 @@
-Return-Path: <linux-kernel+bounces-86198-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86199-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FC7086C16F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 07:54:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8533886C171
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 07:55:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A57128819B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 06:54:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C54E1F24444
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 06:55:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49BED482FA;
-	Thu, 29 Feb 2024 06:53:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D88B63E46B;
+	Thu, 29 Feb 2024 06:55:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ViyQo3fm"
-Received: from mail-il1-f182.google.com (mail-il1-f182.google.com [209.85.166.182])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="NfSPhWw0"
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42E61482CD;
-	Thu, 29 Feb 2024 06:53:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FF3F446A4
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 06:55:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709189638; cv=none; b=r5BG5T45awgHUZ9YJQ+HjM9Gzqj37ZI0vcnQf1Ipy5ieyN+gncMyOeNjYpe1cIWadEq2GBgYpsGbWn4MGw5X9eT14P0JFvbP4zRnnWC+Z6zAfIrYFmmiOPAUFnFDuj+P9L2ZCiPE4nk0RdJKUUwriAx06W+PoCZ05DSVW6NY0rs=
+	t=1709189737; cv=none; b=YEUyLb35qR5kL9V8lEnOfmHg9E+I0Gu/+ppS55s367gSl5ZAyt7ul/xqtdInHx5/Qy4WYxJWD5cvx/9pPBsymcreeDwpFC/KU3D5MMZ86611EZsdw0tWryAETgAGNqBtmeX4S2uBUQ5WxQxHgWm9uQcGhYuW8hNIYdj20wBMmvI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709189638; c=relaxed/simple;
-	bh=RW46AqXVXgdtflxt/tkQwZU7j0j/bAs5uWwQ7lFOUZk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=eGLsoKn+ef8ghltKcOjwVKBHR39qU5Mfehvthz9nlQchYWbpyyi1+EHwHkfmqxc3dc+E8aaFllFTPE/7GV5ww+KZ910gUDPalrAlmzBMpk6qscCZRsqxqjQAb1h6nhTEp0NQGhKcbS+MfdgUI6USPPqxV5Bc9HIBOB5Yu4F31wc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ViyQo3fm; arc=none smtp.client-ip=209.85.166.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f182.google.com with SMTP id e9e14a558f8ab-36524116e30so2469855ab.0;
-        Wed, 28 Feb 2024 22:53:57 -0800 (PST)
+	s=arc-20240116; t=1709189737; c=relaxed/simple;
+	bh=nQRcuRmOckX+8AS08+AMvOdUHslM9abo/jE0Y4hUEuA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qdBl5NJk9TT3SlLOcESIw8wxbVBzNCNV9roBbdOaoCiBr+uhlyQ2C7wqUZpVojZOfj59I1pVgfpGYrV770FQCI1BkdTDHhyjK4wIqjDxEti600BpR3R/SX9pt5eITiVPTrH998ROSwY6r+/2szCNeLuQ59gvVA6iZ/X2FWujSOg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=NfSPhWw0; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-4129a748420so51105e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 22:55:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709189636; x=1709794436; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1709189734; x=1709794534; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8UmsTcmfc8pcbPs6rRpAkpag+IwA6bQ9uQr+vxsTK1Q=;
-        b=ViyQo3fmtfinBYxKe8QqrHVPbssoQvAH6+NHcb0Gnbaz3FgbGHG+FsHP2aVvtcoh+g
-         7DIuE1I6+xHho1ivg931zApG9p1quYY/YLIQjsMY+sz9pkw4i3K4aIreXhs6L25/eoyF
-         h13lty4yjBQseXpHeL4t1I03eCl6S0B7snv0mKwxVjHNvrANA5774At9CGD7Dsfdu587
-         C8owlMe/ADJTnzctVjVHe4MC+fdYQQkSjORnY7J9Sx5it2xHNceuDlBag1NOcUqKJ3fc
-         M7TX9XOIQ4YTc8ZzUY79LA+HXOSK4NVtX4DvC+xVAhNPSNtnXivNncf6kjOl9aF97u4x
-         DEfA==
+        bh=nQRcuRmOckX+8AS08+AMvOdUHslM9abo/jE0Y4hUEuA=;
+        b=NfSPhWw0G1oEunV1gHNjncxG98NDj1D+ks99cuhqRCWTQQBEh20DYELjoh61ikM5jq
+         /krgzIcEDASUq8kzyQoqlihAKuTHtinKG6ooRUvqiyeOIqpKNeFlCdioxsZ++bghSsZm
+         fuf99IA4fMzLHFt7QCa7vVuKO5GuwGF3TEfw/y9sFGPFs3yG5/pvwyhtXE7avZabXPVO
+         ylyx61PvXuCHrchAtjFhisjYl8l0kYlSe/cKHHMUtsx8I9DPd9eNWKHbabKNOA3wrtYH
+         5M+1f4fXFH1VWkRwWaDQzNrfKb6BVknr8QQAdJMH15Wee9Hh/57s7xGybXGnZe5tkxxp
+         MFXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709189636; x=1709794436;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1709189734; x=1709794534;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8UmsTcmfc8pcbPs6rRpAkpag+IwA6bQ9uQr+vxsTK1Q=;
-        b=vglaw5dOXYICj0BCt+wbtrw66UZjqawNMbOaN8Os2+Zukh0nUNXnHTy7OUQ0V/uWRx
-         iaanWd5dlipuJ+87bKtLwHzyOUUi3u83hYkPioiAUted8Gk8c8C4JlKLJ6Ji7zA3srFB
-         lFS8osH/w2VnxSzOV2f4W4slIV38/WjG2J0LrXtRzrVUi+OW5PuOdjcX9vZsxqpTQ47o
-         8ppFid4SXy25MsiXAK3kNLrjQNJePAq1sm0LLDV3AwmlfV1hVkOvs5sQbkCnmjwE6Po2
-         wvilvpC3hB/QyoIt4ogAENzkk05d3RWNk7kLSz75VYoGu1jBziQfCYTGBD918ewKMRXv
-         lsGQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVI7zBYcBK8Us8UWvBJBzvgDHFEZDn5KN+WhRnoQ51INHh7Ny46Fn8NMU7IVykLvQ+8x1DLMdIxBsVmHPCUib4MruEXbT9QsYymtIvd2qHdAZZG8azUk8KE/btMbUCYGp+/
-X-Gm-Message-State: AOJu0YyKabS56GLJ4y9eecrfc3hNWqIFnwDBudejJ6CyF6vcy4xIVqZv
-	wMJp216FNy7cQivzFsz6gOsuUlyUObEHSSqWwgEvWfKPGB67ELwi
-X-Google-Smtp-Source: AGHT+IHlIp65PB6Q5D7qxrYJAwPprIVvCnjTGU5iWAN6KoV2G76wnsFViT2u280sNfIex3ohjklECA==
-X-Received: by 2002:a92:d5c7:0:b0:365:13a8:4090 with SMTP id d7-20020a92d5c7000000b0036513a84090mr1399857ilq.27.1709189636394;
-        Wed, 28 Feb 2024 22:53:56 -0800 (PST)
-Received: from localhost.localdomain ([43.132.141.8])
-        by smtp.gmail.com with ESMTPSA id c10-20020a170903234a00b001dc0d1fb3b1sm610509plh.58.2024.02.28.22.53.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 22:53:56 -0800 (PST)
-From: Yi Wang <up2wing@gmail.com>
-X-Google-Original-From: Yi Wang <foxywang@tencent.com>
-To: seanjc@google.com,
-	pbonzini@redhat.com,
-	tglx@linutronix.de,
-	mingo@redhat.com,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com,
-	x86@kernel.org,
-	hpa@zytor.com,
-	kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	wanpengli@tencent.com,
-	foxywang@tencent.com,
-	oliver.upton@linux.dev,
-	maz@kernel.org,
-	anup@brainfault.org,
-	atishp@atishpatra.org,
-	borntraeger@linux.ibm.com,
-	frankja@linux.ibm.com,
-	imbrenda@linux.ibm.com
-Cc: up2wing@gmail.com
-Subject: [RESEND v3 3/3] KVM: s390: don't setup dummy routing when KVM_CREATE_IRQCHIP
-Date: Thu, 29 Feb 2024 14:53:13 +0800
-Message-Id: <20240229065313.1871095-4-foxywang@tencent.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20240229065313.1871095-1-foxywang@tencent.com>
-References: <20240229065313.1871095-1-foxywang@tencent.com>
+        bh=nQRcuRmOckX+8AS08+AMvOdUHslM9abo/jE0Y4hUEuA=;
+        b=D9uHCB/e/FwYzq9J53rgm0ak3pURAxUsnGfZb1pY+Cw2lwNIsuVLl66f2kYckbyOd6
+         bILC/dyMH9xZlgtOrFlv75KiFLfU8qSBgd3WMQswsdxGUZoSPC0u71oVhLlwNKZMLdjt
+         QmJrKxkB71x1UZ1VJMQLXysod0YpTBDqJGVdd460Qd46n294Jquh1v5FOBihXs570A7S
+         BFE+TPsTeuP1yFRhPVWbT5CxDV5REuzWmcIocYkTwN9r1jpxYY8frqVlxLozUID5lol5
+         Yh9NVkt0MSFvzFEmPxr/4trpfthgPxwKFxNG8Lrlq94rJ5kjqqNhK/mMqvV8Rz4gT4/X
+         i7oA==
+X-Gm-Message-State: AOJu0Yy/a74rL5CPt13iDLrryqtADDOaUisalfsjqAnpAtK2xJug58Yo
+	WHBiLxfionxTLZZ7kRq8z5CeStGEFcypXMD5xOpz/6j3dMuyAJcuzUmyR3P90Hcmd5U8froH98c
+	J8tbkv+6FZkpieVeOXo/QacDzlq8CiNAVwz4=
+X-Google-Smtp-Source: AGHT+IHZCmqKwLkxRY2MOI8m1c2RJifqPkzwTPnf6O+G59InSmSHGR+kJnraGSuiRpaBbqZ2S1tn4yMESDhbF+cv3sE=
+X-Received: by 2002:a05:600c:a386:b0:412:aa80:bdd9 with SMTP id
+ hn6-20020a05600ca38600b00412aa80bdd9mr80238wmb.2.1709189734006; Wed, 28 Feb
+ 2024 22:55:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240224001153.2584030-1-jstultz@google.com> <3937e057-6b47-77fe-9440-ade079ee2cfe@amd.com>
+ <CANDhNCqUrd4RNfKKMPRZj9ft1tTMNZq-XgYsU1dHpN4ixcZuJw@mail.gmail.com>
+ <0c606d04-6765-d55d-61ec-c3625daea423@amd.com> <CANDhNCpb2Ve5saKtnBgTeAQXFbaWf84G_ky-509ddsfhOhdiLQ@mail.gmail.com>
+ <c26251d2-e1bf-e5c7-0636-12ad886e1ea8@amd.com> <CANDhNCrkXF0R1Otu_EKY6OHxnAOYUQ+UjaQsJ_mW4Ys4ELPcYA@mail.gmail.com>
+ <7daee7bc-bf4c-ab24-dbf2-467371ee72e1@amd.com>
+In-Reply-To: <7daee7bc-bf4c-ab24-dbf2-467371ee72e1@amd.com>
+From: John Stultz <jstultz@google.com>
+Date: Wed, 28 Feb 2024 22:55:21 -0800
+Message-ID: <CANDhNCpJJaQn2MJmsyVQjVfWu8-jaUWKJ6ujG=4DjN1ALhbicA@mail.gmail.com>
+Subject: Re: [RESEND][PATCH v8 0/7] Preparatory changes for Proxy Execution v8
+To: K Prateek Nayak <kprateek.nayak@amd.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, Joel Fernandes <joelaf@google.com>, 
+	Qais Yousef <qyousef@google.com>, Ingo Molnar <mingo@redhat.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
+	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+	Valentin Schneider <vschneid@redhat.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Ben Segall <bsegall@google.com>, Zimuzo Ezeozue <zezeozue@google.com>, 
+	Youssef Esmat <youssefesmat@google.com>, Mel Gorman <mgorman@suse.de>, 
+	Daniel Bristot de Oliveira <bristot@redhat.com>, Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>, 
+	Boqun Feng <boqun.feng@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Metin Kaya <Metin.Kaya@arm.com>, Xuewen Yan <xuewen.yan94@gmail.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Yi Wang <foxywang@tencent.com>
+On Wed, Feb 28, 2024 at 10:44=E2=80=AFPM 'K Prateek Nayak' via kernel-team
+<kernel-team@android.com> wrote:
+> On 2/29/2024 11:49 AM, John Stultz wrote:
+> > Do you mind sharing exactly how you're running the benchmarks? (I'd
+> > like to try to reproduce these locally (though my machine is much
+> > smaller).
+> >
+> > I'm guessing the hackbench one is the same command you shared earlier w=
+ith v6?
+>
+> Yup it is same as earlier. I'll list all the commands down below:
 
-As we have setup empty irq routing in kvm_create_vm(), there's
-no need to setup dummy routing when KVM_CREATE_IRQCHIP.
+Great! I'll try to take a swing at reproducing these locally before I
+send out v9.
 
-Signed-off-by: Yi Wang <foxywang@tencent.com>
----
- arch/s390/kvm/kvm-s390.c | 9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
+[snip]
+> If you have any other question, please do let me know :)
 
-diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-index acc81ca6492e..dec3c026a6c1 100644
---- a/arch/s390/kvm/kvm-s390.c
-+++ b/arch/s390/kvm/kvm-s390.c
-@@ -2999,14 +2999,7 @@ int kvm_arch_vm_ioctl(struct file *filp, unsigned int ioctl, unsigned long arg)
- 		break;
- 	}
- 	case KVM_CREATE_IRQCHIP: {
--		struct kvm_irq_routing_entry routing;
--
--		r = -EINVAL;
--		if (kvm->arch.use_irqchip) {
--			/* Set up dummy routing. */
--			memset(&routing, 0, sizeof(routing));
--			r = kvm_set_irq_routing(kvm, &routing, 0, 0);
--		}
-+		r = 0;
- 		break;
- 	}
- 	case KVM_SET_DEVICE_ATTR: {
--- 
-2.39.3
-
+Thank you so much for the details! Your efforts here are very appreciated!
+-john
 
