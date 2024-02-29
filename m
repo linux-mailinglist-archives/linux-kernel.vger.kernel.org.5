@@ -1,108 +1,195 @@
-Return-Path: <linux-kernel+bounces-85921-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85922-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 522E586BCD4
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:27:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5395F86BCD8
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:32:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 805FD1C20F9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:27:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2EF6C1C22094
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:32:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B8F24C67;
-	Thu, 29 Feb 2024 00:27:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B7A51102;
+	Thu, 29 Feb 2024 00:31:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CjWpyBL/"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xw4YBchw"
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60DF115B1;
-	Thu, 29 Feb 2024 00:27:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5D53BE55
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 00:31:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709166433; cv=none; b=a3tH/2kyoLlFGg9isR/mU2CBSLuEXPqiFcADsH2OceSOqc5TmxsXBxBovybERYu+N1/qa1ookU1cxRmWIXjAsTXB+8w0/+EFuyhYW5H1y6ExS89O+CQUJ2OoqejdceZDmzfFtgPUmvDiWS3963plFVMLr9cPIJ1mc+w9d2M5VK8=
+	t=1709166711; cv=none; b=Wp8Gp5yJBmxSjF1FRzJv2nO/Qi/dO1DC8WpE196ZL3Zpy0j+FR0gw7603aHaiuryrmw3OJSXxZnKRXjLdoLyreueoVYNeUsuz+dFNtGJyhDiRByj3sn99FelhOgEzoJV79zLR5R3p+aGTrIGtLJS7b5jIl4UDYVZ3FVRuWBvGkE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709166433; c=relaxed/simple;
-	bh=6dE0XlBWX4tvzDq8lQshCJ55gvJcczOTwWaRKM0Khy0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=R+VSnrfpkAgRncBz3iczpfV+Pq3nu1QC4ehx84JJXa9b3ZS3yxS48gfxCzbQtpe4OoONjj4PujlpdMD9099kjIaziUi6q4ruW4sj/5Pzh5k0ft0Y5/vTe4RlmhTYXr14PQzXHtmJUUWPBbJ4oQPSaIqmrJj3wJSzux6D6UZkRGs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CjWpyBL/; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709166432; x=1740702432;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=6dE0XlBWX4tvzDq8lQshCJ55gvJcczOTwWaRKM0Khy0=;
-  b=CjWpyBL/ISc4XLxm1QH7MhR93wbW8/kyDNMzd4JehabyLwGXZyVy+Uhd
-   jJRy/rUIH+YM8m6eYnhWxOyQE7c5Ztt9nUCx4a4u6PMB6gW/Tqta1ISuY
-   IRAN6IxAmFfN8aHJKYXvUYj2W8ZBVayvYoR0B74ix8KsM0OilpdSnxUQ3
-   Hs35EXFmDLbmTpszGuYT8iXgu9Tih7ky0Bn8mAIK7E79g64M1asVKVPBi
-   s7NfR7YLVudUC9ir7qds5L5xIREng4s6TMq7tym8Ad/MWntiASwfg/1Ha
-   LcTE4wJAA6UYb7WC5GdOmP/osU3mvRWpZI1jSkKtPOQDsFMCQjz47UXT2
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="4188786"
-X-IronPort-AV: E=Sophos;i="6.06,191,1705392000"; 
-   d="scan'208";a="4188786"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 16:27:11 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,191,1705392000"; 
-   d="scan'208";a="7666801"
-Received: from spandruv-desk.jf.intel.com ([10.54.75.14])
-  by orviesa009.jf.intel.com with ESMTP; 28 Feb 2024 16:27:11 -0800
-From: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To: hdegoede@redhat.com,
-	markgross@kernel.org,
-	ilpo.jarvinen@linux.intel.com,
-	andriy.shevchenko@linux.intel.com
-Cc: platform-driver-x86@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: [PATCH] platform/x86: ISST: Allow reading core-power state on HWP disabled systems
-Date: Wed, 28 Feb 2024 16:26:59 -0800
-Message-Id: <20240229002659.1416623-1-srinivas.pandruvada@linux.intel.com>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1709166711; c=relaxed/simple;
+	bh=Qs9gzZdD6kIR4+pjbjQ1x7dn/jESOCEv1sBJEvFeoeQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Lq+wv8UlMsNHx6c87iW69gPkF7VewAA+VeOlpYi3iLGztKd9wI/OUrp4LSbCPNLBdvJb5YrT/lp8pEQ2DUX5K7g4RpLGNV42xb6NsTTBG37Et4cImLO3FI19ahohXvxaVKGN2XotqfVDWDp7PnypQ6tMoab20arLAC6yZaWP7Ww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xw4YBchw; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1dc744f54d0so92165ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 16:31:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709166709; x=1709771509; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oWAW1LP6E25hygXHWcS7ZVejXqpVXuIN70MzR/qe/Fo=;
+        b=xw4YBchwxKuv/z61dGLLVq2Nmh6zumRE2ZtGEHE/64fA4Yqh84pu5alvzgQQHqAIpc
+         nc3dN64rh498HMyadMkiiWpItPmFPKJFhDXQ0nyl6cSN9TrXNJOVk9HRWRxptybgjo7S
+         NRyys5PxCYBkPff1v3ZU3scSWzzonsMyX7tHRvmMniL4fGyebTIusY3sAJpAr1tbU+zY
+         3U+fNU4PyxTL2HMjkRR0ygSF9V4HE0Rk9iBJqKOkcOWDMFAGi2K16D0brsK/dklMM2G+
+         gJeTgrMDgEpNLO0rm2TaAex8BfdtWmN3NKLlYiuadRJk4rW32ojziZzl5tU1LQbGKqna
+         h+vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709166709; x=1709771509;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oWAW1LP6E25hygXHWcS7ZVejXqpVXuIN70MzR/qe/Fo=;
+        b=ni6A9Usl5hOO8ngyDYPTjBnA2D8hOpv/oWP7GCwMsm5e6wNmNVz90XhsSSsVFwsQo0
+         M/zLySNzecDlFPcy93LXIpbbOTacp3fxO5YPgIcAfroMVsYkUhUn+++NsUikl3YpNycG
+         wtrbEGgvIlnG1T0f2wEp2sRcH7MnM2kxkltiXTUD7n7hcpscLNWNR3qRpp4qMf08vbIp
+         IgJAluwEsMHnjDeKTDP8JYj2NQH9nzpyNkmYAcjV7ITRaEMid7Wt80IdxS/E/QOZxC3R
+         2+l4cNxzHiKIAw41+mqSPisX6Cg07T/POlDkkbyxfyk2HEeJStoOok3pBckqI1fKf1iT
+         ECAw==
+X-Forwarded-Encrypted: i=1; AJvYcCUQtX7lxAGx6DgRQXv8DC8BtlwCbLw4Yov67w23z7U7bPbs2ll0iE2wNK7w0KvNzRnhYVtqDJKHEJQyi/BinKOPRMDSEEuahGK+N6UU
+X-Gm-Message-State: AOJu0Yzt0ItcjGDObuqJQdP8UQtbHiiBvhuufJ/UDa3GNhk+I419kL6P
+	w9cMgdGENaCEQcX5w1vI6pey5Mfddw6NANJDIsaBwbe/PqAmojofGdPOar1aScVUD3Nn3WDqPUQ
+	0CDMWh4r5kw5Nqt0W6+cmNnJKn8ngfM4F2apT
+X-Google-Smtp-Source: AGHT+IFsm09XMMy3/eHazsWO9AJ89KR2h/Hcnu5odXTcjlP0n5Av8J51HesIMPUDaMAfe2UCw9ccRqZtFsv1GxPz3wE=
+X-Received: by 2002:a17:903:244b:b0:1db:e78f:4ce9 with SMTP id
+ l11-20020a170903244b00b001dbe78f4ce9mr50558pls.24.1709166708693; Wed, 28 Feb
+ 2024 16:31:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240214063708.972376-1-irogers@google.com> <20240214063708.972376-5-irogers@google.com>
+ <CAM9d7cjuv2VAVfGM6qQEMYO--WvgPvAvmnF73QrS_PzGzCF32w@mail.gmail.com>
+ <CAP-5=fUUSpHUUAc3jvJkPAUuuJAiSAO4mjCxa9qUppnqk76wWg@mail.gmail.com>
+ <CAM9d7chXtmfaC73ykiwn+RqJmy5jZFWFaV_QNs10c_Td+zmLBQ@mail.gmail.com>
+ <Zd41Nltnoen0cPYX@x1> <CAP-5=fWv25WgY82ZY3V1erUvCb+jdhLd_d91p4akjqFgynvAgg@mail.gmail.com>
+ <CAM9d7cjJTf_yed9nwXZkBPr6u6NH5n+V+u0m6Zgsc1JBy_LdyA@mail.gmail.com>
+ <CAP-5=fWKdp7rf+v7t_T_0tU0OxQO9R2g+ZH7Ag7HgyBbGT3-nQ@mail.gmail.com> <CAM9d7cj-kxaQc18QG_cd6EzsDbk7vmhYqg-XzCV+g5oi9Giwww@mail.gmail.com>
+In-Reply-To: <CAM9d7cj-kxaQc18QG_cd6EzsDbk7vmhYqg-XzCV+g5oi9Giwww@mail.gmail.com>
+From: Ian Rogers <irogers@google.com>
+Date: Wed, 28 Feb 2024 16:31:34 -0800
+Message-ID: <CAP-5=fUHbjC60L0GwFWaM15LZLDsC-pWwyWZNjE3B67zvpKGmQ@mail.gmail.com>
+Subject: Re: [PATCH v1 4/6] perf threads: Move threads to its own files
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Oliver Upton <oliver.upton@linux.dev>, 
+	Yang Jihong <yangjihong1@huawei.com>, linux-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-When HWP (Hardware P-states) is disabled, dynamic SST features are
-disabled. But user should still be able to read the current core-power
-state, with legacy P-states. This will allow users to read current
-configuration with static SST enabled from BIOS.
+On Wed, Feb 28, 2024 at 3:44=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
+wrote:
+>
+> On Tue, Feb 27, 2024 at 11:24=E2=80=AFPM Ian Rogers <irogers@google.com> =
+wrote:
+> >
+> > On Tue, Feb 27, 2024 at 10:40=E2=80=AFPM Namhyung Kim <namhyung@kernel.=
+org> wrote:
+> > >
+> > > On Tue, Feb 27, 2024 at 1:42=E2=80=AFPM Ian Rogers <irogers@google.co=
+m> wrote:
+> > > >
+> > > > On Tue, Feb 27, 2024 at 11:17=E2=80=AFAM Arnaldo Carvalho de Melo
+> > > > <acme@kernel.org> wrote:
+> > > > >
+> > > > > On Tue, Feb 27, 2024 at 09:31:33AM -0800, Namhyung Kim wrote:
+> > > > > > I can see some other differences like machine__findnew_thread()
+> > > > > > which I think is due to the locking change.  Maybe we can fix t=
+he
+> > > > > > problem before moving the code and let the code move simple.
+> > > > >
+> > > > > I was going to suggest that, agreed.
+> > > > >
+> > > > > We may start doing a refactoring, then find a bug, at that point =
+we
+> > > > > first fix the problem them go back to refactoring.
+> > > >
+> > > > Sure I do this all the time. Your typical complaint on the v+1 patc=
+h
+> > > > set is to move the bug fixes to the front of the changes. On the v+=
+2
+> > > > patch set the bug fixes get applied but not the rest of the patch
+> > > > series, etc.
+> > > >
+> > > > Here we are refactoring code for an rb-tree implementation of threa=
+ds
+> > > > and worrying about its correctness. There's no indication it's not
+> > > > correct, it is largely copy and paste, there is also good evidence =
+in
+> > > > the locking disciple it is more correct. The next patch deletes tha=
+t
+> > > > implementation, replacing it with a hash table. Were I not trying t=
+o
+> > > > break things apart I could squash those 2 patches together, but I'v=
+e
+> > > > tried to do the right thing. Now we're trying to micro correct, bre=
+ak
+> > > > apart, etc. a state that gets deleted. A reviewer could equally
+> > > > criticise this being 2 changes rather than 1, and the cognitive loa=
+d
+> > > > of having to look at code that gets deleted. At some point it is a
+> > > > judgement call, and I think this patch is actually the right size. =
+I
+> > > > think what is missing here is some motivation in the commit message=
+ to
+> > > > the findnew refactoring and so I'll add that.
+> > >
+> > > I'm not against your approach and actually appreciate your effort
+> > > to split rb-tree refactoring and hash table introduction.  What I'm
+> > > asking is just to separate out the code moving.  I think you can do
+> > > whatever you want in the current file.  Once you have the final code
+> > > you can move it to its own file exactly the same.  When I look at thi=
+s
+> > > commit, say a few years later, I won't expect a commit that says
+> > > moving something to a new file has other changes.
+> >
+> > The problem is that the code in machine treats the threads lock as if
+> > it is a lock in machine. So there is __machine__findnew_thread which
+> > implies the thread lock is held. This change is making threads its own
+> > separate concept/collection and the lock belongs with that collection.
+> > Most of the implementation of threads__findnew matches
+> > __machine__findnew_thread, so we may be able to engineer a smaller
+> > line diff by moving "__machine__findnew_thread" code into threads.c,
+> > then renaming it to build the collection, etc. We could also build the
+> > threads collection inside of machine and then in a separate change
+> > move it to threads.[ch].  In the commit history this seems muddier
+> > than just splitting out threads as a collection. Also, some of the API
+> > design choices are motivated more by the hash table implementation of
+> > the next patch than trying to have a good rbtree abstracted collection
+> > of threads. Essentially it'd be engineering a collection of threads
+> > but only with a view to delete it in the next patch. I don't think it
+> > would be for the best and the commit history for deleted code is
+> > unlikely to be looked upon.
+>
+> I think the conversation is repeating. :)  Why not do this?
+>
+> 1. refactor threads code in machine.c and fix the locking
+> 2. move threads code to its own file
+> 3. use hash table in threads
 
-To address this, do not call disable_dynamic_sst_features() when the
-request is for reading the state.
+Step 3 is patch 5 in this series. I can split this patch into steps 1
+and 2 as you say in v3. I'm not sure why step 2 is going to be of any
+use as the code will match that of step 1, code that the next patch
+then deletes. Anyway, it's a plan for v3.
 
-Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
----
- drivers/platform/x86/intel/speed_select_if/isst_tpmi_core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Thanks,
+Ian
 
-diff --git a/drivers/platform/x86/intel/speed_select_if/isst_tpmi_core.c b/drivers/platform/x86/intel/speed_select_if/isst_tpmi_core.c
-index 2662fbbddf0c..1d918000d72b 100644
---- a/drivers/platform/x86/intel/speed_select_if/isst_tpmi_core.c
-+++ b/drivers/platform/x86/intel/speed_select_if/isst_tpmi_core.c
-@@ -462,10 +462,10 @@ static long isst_if_core_power_state(void __user *argp)
- 	struct tpmi_per_power_domain_info *power_domain_info;
- 	struct isst_core_power core_power;
- 
--	if (disable_dynamic_sst_features())
-+	if (copy_from_user(&core_power, argp, sizeof(core_power)))
- 		return -EFAULT;
- 
--	if (copy_from_user(&core_power, argp, sizeof(core_power)))
-+	if (core_power.get_set && disable_dynamic_sst_features())
- 		return -EFAULT;
- 
- 	power_domain_info = get_instance(core_power.socket_id, core_power.power_domain_id);
--- 
-2.40.1
-
+> Thanks,
+> Namhyung
 
