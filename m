@@ -1,133 +1,164 @@
-Return-Path: <linux-kernel+bounces-87102-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87103-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D681786CFAF
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:50:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 507BD86CFB2
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:51:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D65CC1C21CE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:50:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 684001F22DB0
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:51:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31B9D381DD;
-	Thu, 29 Feb 2024 16:50:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECFCD3BBF3;
+	Thu, 29 Feb 2024 16:51:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="CjLc25ko";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ebeWzAvW"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="bJuiE59u"
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF41915E9C;
-	Thu, 29 Feb 2024 16:50:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8930E2E3E1
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 16:51:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709225411; cv=none; b=A3nG5gWFGoCh7JkDgE3xyJ1lYplQzdQxnFV2dMjU+EWqDWZEhcUJtzwkVywbjLQHONxQUyY2D5noVAmGPGSEDWgUsviJAvbOflicrWjlsc7LU9RxPMBG0Hclz+bQR82cF/ybQ18W3xOyVDBDoUY4lDsq/CwCWCmhJj85dmgu5ac=
+	t=1709225491; cv=none; b=Fla36iBuIGJMahGAhtSK64uUce2LzWGbfkKQ/lIGYR/GkulRNT3tDAfsNqVSVajHtEYQa7gUeGBPg0Fwtb3vWIN7WLo/ZMSKEDafK9nkl3j+Fqf9yELIKzQmd0mL0sPu74GizkQBzbuHJZmgBtTIW5DAt6KhtpqJd3Aqy2nhy7I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709225411; c=relaxed/simple;
-	bh=rWUaseR81wvy9pQj6pxF0e93kmdFfGncVpd5MSPjsQM=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=TT57rWcJQwC4nENMsUBOG3Mja7mwVMOOZVoYlJvj/BXgRfviQwcwP7cvQzwe6mL492MkbmuVAm2ssj7SrH7Pq7PMRNtQT4xCD+ivwf1HmNFmiMJVJH/7j/HnVQcfuRL6Iw8yfbe4gNx9Btj5wzFDyLCviXSW8rEA6XGgqrEdmu8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=CjLc25ko; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ebeWzAvW; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Thu, 29 Feb 2024 16:50:05 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1709225406;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ntgi7xLCnL2L+zsjgEdnQnuYJbDjiVZzciWv6UBfwzk=;
-	b=CjLc25koOq2k218ZXKLPcDhBapESci+wOfZxCVMTIC0Tf/tK4RDD/FJzF9OzixNc+wOGuD
-	QBjUPbuyK+7YBhQhhZAuS61Amfp52XvQD/qg0s3g939pJWJdFv2zwXwNEoIsKnmwyzg3c4
-	ZMUHX+Jq8h+6xgiGU6Wzqu1FoazQ419eo15R+DdRDZ5Ul2SG/dSdHjh92IITWoi0DU3ePv
-	02NtsjwXjEMIzQkizRcI467qaN64v0YQMGuv4CIDqKOJ1gHvbubLtU+rkU9VRkn3sX4ElY
-	9Dbhyim7xGRzonOPbNQ0WtGyIrpc9Xbm8A1cCjEBJ/Zhg1YHMqUWKv/8suxAmQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1709225406;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ntgi7xLCnL2L+zsjgEdnQnuYJbDjiVZzciWv6UBfwzk=;
-	b=ebeWzAvWL+RUWop5sPZWFqMnNj3S/ZcLxxHMYiPe6yYUKCgErq7hIKDkXLA7RrTBZmkaCV
-	AL+dh/OyWxM3mhAg==
-From: "tip-bot2 for Arnd Bergmann" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject:
- [tip: timers/core] tick/sched: Fix build failure for CONFIG_NO_HZ_COMMON=n
-Cc: Arnd Bergmann <arnd@arndb.de>, Thomas Gleixner <tglx@linutronix.de>,
- x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240228123850.3499024-1-arnd@kernel.org>
-References: <20240228123850.3499024-1-arnd@kernel.org>
+	s=arc-20240116; t=1709225491; c=relaxed/simple;
+	bh=jeB0jLSy8q+eh9qYQtqC3QlywNP/Xfpi3Eu7iYzC4es=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gq8+F5NAvc4WqDg/z7IncKxOiOVX7MMh4w+rcmH07A5ql1VlUJ5kzHcqu6vMkv4zm58NdU1X4gPZ+ASZOTMtu9Tpvpj3zqWkD4wWJnpU8vAttu+ziZq7x1RyxQTe7ZraWLGWoNwuXpJ17/Dlul0HwyVotpX9aqwiPyaZfeCTdH8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=bJuiE59u; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a34c5ca2537so194037466b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 08:51:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1709225485; x=1709830285; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KAGKZhcS7Vcqv+9qUnLEagGLoWPuyfJ/EEdRmEE/75w=;
+        b=bJuiE59uBnxLDLwmJHZCpz8l2z13AQsOVqU3GKcWKlowbC3YkfjaV31Bwff90H+ssM
+         h02luHq2+ECyGOBoj1jgmBokKY/fOF5oZ5TPzjjgmTR835WE+ioNeJ/ZDY+mvg1q1asw
+         GAEb+dOStFXUu6F4zPQ5sAs02jB7KLSCHcuNg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709225485; x=1709830285;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KAGKZhcS7Vcqv+9qUnLEagGLoWPuyfJ/EEdRmEE/75w=;
+        b=XWidCutqtdRWNrVD+nXPrlEnLyMXyYTDzG3yrJ2mmrNPTrpTUtXMLHg1e2g5ihDOXe
+         qa/msx6LlFSipjePN5+9GSON7ZIuWp0zM61NTdHa+usxU3XDhp+AYhk59uZHsiVL72/K
+         1WOB/cpVxRwNsqxXr71blf6Si1WQ+9izpRyOC365Renlf1CZUJziCJZn4gCqti8yQQMI
+         mH1BmUZScOS7i+k7hOSs8ZFnogGcYNS8Hz58CpS3UmTtZ7JoTSgrUCREgVU0UiUPyHOO
+         PZR8sjbir5NobrFJFW/wYQpKzY4mIWCnRFYGI/MQTZ4XoEb6mJXxAkHlVBk3FPRT6oGJ
+         ykbw==
+X-Gm-Message-State: AOJu0YxKmPR4j9oAgy00Vv04MYDnqI2MwFstlpV6ax8QgJxJ+H22auT5
+	M7e6QBC+QgXx+geNWVl+ehncimNz4eTpkbYcjj/AG44IXFVwKEOUGCsU15z7aMEvjeQ1Fh3XNya
+	OfSNy
+X-Google-Smtp-Source: AGHT+IFcLGnW0iXbacRx+s0/BGNPXALwz0PW+Glf8irZnYo/+JSx5BH3xSiRWDWant7mhx5xgE+5wA==
+X-Received: by 2002:a17:906:24db:b0:a44:4ed8:6a3e with SMTP id f27-20020a17090624db00b00a444ed86a3emr1360413ejb.13.1709225485547;
+        Thu, 29 Feb 2024 08:51:25 -0800 (PST)
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com. [209.85.208.47])
+        by smtp.gmail.com with ESMTPSA id gu24-20020a170906f29800b00a3e4f554900sm845922ejb.135.2024.02.29.08.51.24
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Feb 2024 08:51:25 -0800 (PST)
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-566b160f6eeso6888a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 08:51:24 -0800 (PST)
+X-Received: by 2002:a05:6402:34cc:b0:565:d0e4:d8a0 with SMTP id
+ w12-20020a05640234cc00b00565d0e4d8a0mr153095edc.3.1709225484579; Thu, 29 Feb
+ 2024 08:51:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170922540581.398.14798351635404206279.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20240229154946.2850012-1-sashal@kernel.org> <20240229154946.2850012-21-sashal@kernel.org>
+In-Reply-To: <20240229154946.2850012-21-sashal@kernel.org>
+From: Doug Anderson <dianders@chromium.org>
+Date: Thu, 29 Feb 2024 08:51:09 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=Wb4meRvghR00LTzXRAobgioGo5g2oYqMLuO8nYWDa7Rg@mail.gmail.com>
+Message-ID: <CAD=FV=Wb4meRvghR00LTzXRAobgioGo5g2oYqMLuO8nYWDa7Rg@mail.gmail.com>
+Subject: Re: [PATCH AUTOSEL 6.6 21/21] arm64/sve: Lower the maximum allocation
+ for the SVE ptrace regset
+To: Sasha Levin <sashal@kernel.org>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
+	Mark Brown <broonie@kernel.org>, Will Deacon <will@kernel.org>, catalin.marinas@arm.com, 
+	oleg@redhat.com, mark.rutland@arm.com, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The following commit has been merged into the timers/core branch of tip:
+Hi,
 
-Commit-ID:     a184d9835a0a689261ea6a4a8dbc18173a031b77
-Gitweb:        https://git.kernel.org/tip/a184d9835a0a689261ea6a4a8dbc18173a031b77
-Author:        Arnd Bergmann <arnd@arndb.de>
-AuthorDate:    Wed, 28 Feb 2024 13:38:41 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Thu, 29 Feb 2024 17:41:29 +01:00
 
-tick/sched: Fix build failure for CONFIG_NO_HZ_COMMON=n
+On Thu, Feb 29, 2024 at 7:50=E2=80=AFAM Sasha Levin <sashal@kernel.org> wro=
+te:
+>
+> From: Mark Brown <broonie@kernel.org>
+>
+> [ Upstream commit 2813926261e436d33bc74486b51cce60b76edf78 ]
+>
+> Doug Anderson observed that ChromeOS crashes are being reported which
+> include failing allocations of order 7 during core dumps due to ptrace
+> allocating storage for regsets:
+>
+>   chrome: page allocation failure: order:7,
+>           mode:0x40dc0(GFP_KERNEL|__GFP_COMP|__GFP_ZERO),
+>           nodemask=3D(null),cpuset=3Durgent,mems_allowed=3D0
+>    ...
+>   regset_get_alloc+0x1c/0x28
+>   elf_core_dump+0x3d8/0xd8c
+>   do_coredump+0xeb8/0x1378
+>
+> with further investigation showing that this is:
+>
+>    [   66.957385] DOUG: Allocating 279584 bytes
+>
+> which is the maximum size of the SVE regset. As Doug observes it is not
+> entirely surprising that such a large allocation of contiguous memory mig=
+ht
+> fail on a long running system.
+>
+> The SVE regset is currently sized to hold SVE registers with a VQ of
+> SVE_VQ_MAX which is 512, substantially more than the architectural maximu=
+m
+> of 16 which we might see even in a system emulating the limits of the
+> architecture. Since we don't expose the size we tell the regset core
+> externally let's define ARCH_SVE_VQ_MAX with the actual architectural
+> maximum and use that for the regset, we'll still overallocate most of the
+> time but much less so which will be helpful even if the core is fixed to
+> not require contiguous allocations.
+>
+> Specify ARCH_SVE_VQ_MAX in terms of the maximum value that can be written
+> into ZCR_ELx.LEN (where this is set in the hardware). For consistency
+> update the maximum SME vector length to be specified in the same style
+> while we are at it.
+>
+> We could also teach the ptrace core about runtime discoverable regset siz=
+es
+> but that would be a more invasive change and this is being observed in
+> practical systems.
+>
+> Reported-by: Doug Anderson <dianders@chromium.org>
+> Signed-off-by: Mark Brown <broonie@kernel.org>
+> Tested-by: Douglas Anderson <dianders@chromium.org>
+> Link: https://lore.kernel.org/r/20240213-arm64-sve-ptrace-regset-size-v2-=
+1-c7600ca74b9b@kernel.org
+> Signed-off-by: Will Deacon <will@kernel.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  arch/arm64/include/asm/fpsimd.h | 12 ++++++------
+>  arch/arm64/kernel/ptrace.c      |  3 ++-
+>  2 files changed, 8 insertions(+), 7 deletions(-)
 
-In configurations with CONFIG_TICK_ONESHOT but no CONFIG_NO_HZ or
-CONFIG_HIGH_RES_TIMERS, tick_sched_timer_dying() is stubbed out,
-but still defined as a global function as well:
+As I mentioned [1], there's a hidden dependency here and without it
+the patch doesn't actually do anything useful in kernel 6.6 nor kernel
+6.1. Maybe the right answer is to backport this with the hardcoded
+value of "16" for those older kernels? Maybe Mark has a better
+suggestion?
 
-kernel/time/tick-sched.c:1599:6: error: redefinition of 'tick_sched_timer_dying'
- 1599 | void tick_sched_timer_dying(int cpu)
-      |      ^
-kernel/time/tick-sched.h:111:20: note: previous definition is here
-  111 | static inline void tick_sched_timer_dying(int cpu) { }
-      |                    ^
-
-This configuration only appears with ARM CONFIG_ARCH_BCM_MOBILE,
-which should not actually select CONFIG_TICK_ONESHOT.
-
-Adjust the #ifdef for the stub to match the condition for building the
-tick-sched.c file for consistency with the definition and to avoid
-the build regression.
-
-Fixes: 3aedb7fcd88a ("tick/sched: Remove useless oneshot ifdeffery")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20240228123850.3499024-1-arnd@kernel.org
-
----
- kernel/time/tick-sched.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/time/tick-sched.h b/kernel/time/tick-sched.h
-index 58d8d1c..e11c4dc 100644
---- a/kernel/time/tick-sched.h
-+++ b/kernel/time/tick-sched.h
-@@ -105,7 +105,7 @@ struct tick_sched {
- extern struct tick_sched *tick_get_tick_sched(int cpu);
- 
- extern void tick_setup_sched_timer(bool hrtimer);
--#if defined CONFIG_NO_HZ_COMMON || defined CONFIG_HIGH_RES_TIMERS
-+#if defined CONFIG_TICK_ONESHOT
- extern void tick_sched_timer_dying(int cpu);
- #else
- static inline void tick_sched_timer_dying(int cpu) { }
+[1] https://lore.kernel.org/r/CAD=3DFV=3DWSi=3D9V-Oe5eq0J-Uew45cX9JfgB8me-N=
+w-iFRfXm59Xg@mail.gmail.com
 
