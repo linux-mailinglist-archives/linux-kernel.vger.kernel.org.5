@@ -1,157 +1,130 @@
-Return-Path: <linux-kernel+bounces-86716-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86717-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2971286C98A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:56:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A64F586C990
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:56:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CAD1E2885D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:56:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 480DA1F23C3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:56:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 829837E0F0;
-	Thu, 29 Feb 2024 12:56:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 864F57E107;
+	Thu, 29 Feb 2024 12:56:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="MQ4HaOTu"
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C+K5ELdx"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE2A73FB9D;
-	Thu, 29 Feb 2024 12:56:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A149D62808;
+	Thu, 29 Feb 2024 12:56:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709211372; cv=none; b=j4F04NZ0B6FiSjeBiDTDfEDeDVPyLf3BR+DdisPSwtXFTAAIybcnL5pcgy/bT6Rnyq8G1mAT4vkXh6YRaoTJzXTtPXLEVv7YB5IJrUkY6aK+Uxb0CbpIiWdJ8BZex5yYxpPudwUnwHxiN4f1JDj2oNnBVvZjNaFK8E6otpJWnhU=
+	t=1709211394; cv=none; b=aPys5y0JIwsr6uyN2EJtcXjDnIYAy4PDBw1Vst1q16WTzlUrhiaABHux6EIIHnPP8//dpK8EQ/KxIomjLjYfgiEQau+5+yEtac5LF2L39z1LA00oQjntVjrACgQY8Dxte0xDLQJBUMWdgVG31ZAw1ThY0vq+62TDHduyVeR0Pz8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709211372; c=relaxed/simple;
-	bh=YP3VJ263/HyGboS/hEwMb/bOCJ54UXVL1CXQc5ItzaU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=iS+e4TO63NE66MC/w/PDp2PHmi4MERrpautxk88RqB3fz0tZGY4ngm5yGVmleC8jW5IJ/ss+w2MVwhO1hvXB3FFBVa6SCBaoq4tsThRbm6doJvz8xOoewmHMlZdjMJAn6YoGV9rqEcrqKhkI/reyGDE7H8uKc8nCyMhGD/etats=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=MQ4HaOTu; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 457DAFF805;
-	Thu, 29 Feb 2024 12:56:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709211367;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yFgfKts7peO9Nva4G0PStusKwNhitcOIDLM2QDrk96U=;
-	b=MQ4HaOTui8vfXdZ+ZvRDbuyYi6vSV+lfKsOePfRY+o0aPlihIKi5U54Y+tk5OQq4CdsWPl
-	Zr50cTLFos3Pj/NB0cofKt4iAnyXsMDWOXFFV5l6O3tM7KoBKCAtNYL7767VA8sum5j6FP
-	Iw92ZGNr6SU/hob4i2ZZoEQ9pEcMg6b+fVlG0Meb3sgaSD6unR7zIXWRnyfnh9iqLvx6TH
-	fdD+hslgUX5LmwnGuHgDzJ6ZYDpj0xqhgMg7Y8cnQ7dMdOWFamAi49V4RubRxk1bsmMpyu
-	MXdVshF+upQ10l4Vh3PDJLrkinmdSPK5AsUnxTjyrCkzIYMc/toTFNuDTuYZoQ==
-Date: Thu, 29 Feb 2024 13:56:05 +0100
-From: Herve Codina <herve.codina@bootlin.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
- <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Yury Norov
- <yury.norov@gmail.com>, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, Andrew Lunn <andrew@lunn.ch>, Mark Brown
- <broonie@kernel.org>, Christophe Leroy <christophe.leroy@csgroup.eu>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v4 5/5] net: wan: fsl_qmc_hdlc: Add framer support
-Message-ID: <20240229135605.6454052f@bootlin.com>
-In-Reply-To: <ZddtFG4bvCX-lsn3@smile.fi.intel.com>
-References: <20240222142219.441767-1-herve.codina@bootlin.com>
-	<20240222142219.441767-6-herve.codina@bootlin.com>
-	<ZddtFG4bvCX-lsn3@smile.fi.intel.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1709211394; c=relaxed/simple;
+	bh=FH+JdudMBgehU68hfBDKn6/fbrAreS/wl1YC0HPz/Tg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lHG9k/8XBiemfEHwn7EUgFgZxLw9pc1+9bX8jKDCObuWlu0vpEPAAA3ZjMqBMkSigOZM8VKT222kizpjh/88V23wZtUHPLs1KwfhojR/HHnj19Xup87EdmcUHFaGycz6VF/SgnFpV9yeUKnkamQIuDgoON2p7Cq3wz8UZrqAxEw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C+K5ELdx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4621EC433F1;
+	Thu, 29 Feb 2024 12:56:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709211393;
+	bh=FH+JdudMBgehU68hfBDKn6/fbrAreS/wl1YC0HPz/Tg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=C+K5ELdxqti6l+X3XyprWkioDJDWESK1Q8aUt7ODmuCvs+B1SkleCGS2eEqKuvXhc
+	 QexaZ6oN8rwRdtzMCWk5hwhKaAp7YhoymoN8DvRIanJgaj90GMn1Ca3MbwYy2CygBW
+	 odHLaxPs6AoXzDLZTk8XNgsv5e9HzgUV6/jt7F0kU0NSKDa7TcHHUS2XzwcsPssFbY
+	 yyTfzN2vjbzjAV/RY4utg2ANfWB2XcDg7jBIBgwr3ZVoXrfOvihwUylOGhb0xI4tIh
+	 joL7P9t4siWvMU3aFWlo9KSxQEMDCpcIs+vCy7QH9HFbq0VPuv2Gx4sqzIN8C8ym1q
+	 +gtgrcmRWnWFw==
+Date: Thu, 29 Feb 2024 13:56:23 +0100
+From: Niklas Cassel <cassel@kernel.org>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Marek Vasut <marek.vasut+renesas@gmail.com>,
+	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Kishon Vijay Abraham I <kishon@ti.com>,
+	Vidya Sagar <vidyas@nvidia.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Richard Zhu <hongxing.zhu@nxp.com>,
+	Lucas Stach <l.stach@pengutronix.de>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Minghuan Lian <minghuan.Lian@nxp.com>,
+	Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
+	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v8 10/10] PCI: dwc: ep: Add Kernel-doc comments for APIs
+Message-ID: <ZeB-93jiX31cLJyP@fedora>
+References: <20240224-pci-dbi-rework-v8-0-64c7fd0cfe64@linaro.org>
+ <20240224-pci-dbi-rework-v8-10-64c7fd0cfe64@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240224-pci-dbi-rework-v8-10-64c7fd0cfe64@linaro.org>
 
-Hi Andy,
+Hello Mani,
 
-On Thu, 22 Feb 2024 17:49:40 +0200
-Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
-
-> On Thu, Feb 22, 2024 at 03:22:18PM +0100, Herve Codina wrote:
-> > Add framer support in the fsl_qmc_hdlc driver in order to be able to
-> > signal carrier changes to the network stack based on the framer status
-> > Also use this framer to provide information related to the E1/T1 line
-> > interface on IF_GET_IFACE and configure the line interface according to
-> > IF_IFACE_{E1,T1} information.  
+On Sat, Feb 24, 2024 at 12:24:16PM +0530, Manivannan Sadhasivam wrote:
+> All of the APIs are missing the Kernel-doc comments. Hence, add them.
 > 
-> ...
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+>  drivers/pci/controller/dwc/pcie-designware-ep.c | 92 +++++++++++++++++++++++++
+>  1 file changed, 92 insertions(+)
 > 
-> > +static int qmc_hdlc_framer_set_carrier(struct qmc_hdlc *qmc_hdlc)
-> > +{
-> > +	struct framer_status framer_status;
-> > +	unsigned long flags;
-> > +	int ret;
-> > +
-> > +	if (!qmc_hdlc->framer)
-> > +		return 0;  
-> 
-> > +	spin_lock_irqsave(&qmc_hdlc->carrier_lock, flags);  
-> 
-> cleanup.h ?
-> 
-> > +	ret = framer_get_status(qmc_hdlc->framer, &framer_status);
-> > +	if (ret) {
-> > +		dev_err(qmc_hdlc->dev, "get framer status failed (%d)\n", ret);
-> > +		goto end;
-> > +	}
-> > +	if (framer_status.link_is_on)
-> > +		netif_carrier_on(qmc_hdlc->netdev);
-> > +	else
-> > +		netif_carrier_off(qmc_hdlc->netdev);
-> > +
-> > +end:
-> > +	spin_unlock_irqrestore(&qmc_hdlc->carrier_lock, flags);
-> > +	return ret;
-> > +}  
-> 
+> diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
+> index fed4c2936c78..cdcb33a279db 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware-ep.c
+> +++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
 
-I've got an issue with guard(spinlock_irqsave).
+(snip)
 
-I changed this code to:
---- 8< ---
-static int qmc_hdlc_framer_set_carrier(struct qmc_hdlc *qmc_hdlc)
-{
-	struct framer_status framer_status;
-	int ret;
+> @@ -556,6 +606,12 @@ int dw_pcie_ep_raise_msix_irq(struct dw_pcie_ep *ep, u8 func_no,
+>  	return 0;
+>  }
+>  
+> +/**
+> + * dw_pcie_ep_cleanup - Cleanup DWC EP resources
+> + * @ep: DWC EP device
+> + *
+> + * Cleans up the DWC EP specific resources like eDMA etc...
 
-	if (!qmc_hdlc->framer)
-		return 0;
+I think that you should mention that this is only for glue drivers that
+use PERST# handling, so that other glue drivers do no start using it :)
 
-	guard(spinlock_irqsave)(&qmc_hdlc->carrier_lock);
 
-	ret = framer_get_status(qmc_hdlc->framer, &framer_status);
-	if (ret) {
-		dev_err(qmc_hdlc->dev, "get framer status failed (%d)\n", ret);
-		return ret;
-	}
-	if (framer_status.link_is_on)
-		netif_carrier_on(qmc_hdlc->netdev);
-	else
-		netif_carrier_off(qmc_hdlc->netdev);
+> + */
+>  void dw_pcie_ep_cleanup(struct dw_pcie_ep *ep)
+>  {
+>  	struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
+> @@ -564,6 +620,13 @@ void dw_pcie_ep_cleanup(struct dw_pcie_ep *ep)
+>  }
+>  EXPORT_SYMBOL_GPL(dw_pcie_ep_cleanup);
 
-	return 0;
-}
---- 8< ---
 
-I have the following warning (make C=1):
-drivers/net/wan/fsl_qmc_hdlc.c:49:12: warning: context imbalance in 'qmc_hdlc_framer_set_carrier' - wrong count at exit
-
-I also tried to call guard(spinlock_irqsave) before 'if (!qmc_hdlc->framer)'
-but it does not change anything.
-
-Did I miss something in the guard(spinlock_irqsave) usage ?
-
-Best regards,
-Hervé
+Kind regards,
+Niklas
 
