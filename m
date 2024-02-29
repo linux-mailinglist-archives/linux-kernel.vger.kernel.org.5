@@ -1,167 +1,161 @@
-Return-Path: <linux-kernel+bounces-86907-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86909-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 267DF86CCA3
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:15:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3106786CCAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:16:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB9FD285D09
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:15:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF4351F239F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:16:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E256114A4E2;
-	Thu, 29 Feb 2024 15:14:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EFF213F015;
+	Thu, 29 Feb 2024 15:15:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YD6oVK1e"
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gxpbQsSk"
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6266E1419B5
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 15:14:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 224907CF14;
+	Thu, 29 Feb 2024 15:15:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709219679; cv=none; b=UGRRMxYCQFLDNW21ZAW70jcjV5tBggZipT/Yk7FCG+n9EbbbU6Ydasq47XVGG0E68WYUF2LEGFkoa8yR9sRVu10aN66LMXL2r7yOprapy23Tvr/F/3cfpHkwHFHqfJf+/y6HQleLo+Pl1mgjb0iWZ3NFb0xzBEGuq1R9+93O6PQ=
+	t=1709219757; cv=none; b=LGlA54hjXM7bty4sxUEhtQuENPqwTTFVhx2nHi8yqeA9VjDpzU0jRkth/nUlZPzSZx421ddXzWyxlikvOQWgLO9ZZXP4OrlsBRaniVmQL25+obQHRPL9zGATq9FuT09FJsCttJ5TbAKSe0Ssm/q5FFZ8nirL27DXROYtzg8b3Sc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709219679; c=relaxed/simple;
-	bh=U3qnUc8IBsWLSEXwIfnE6BHqdnjdGBMwUdUaI3x6YoI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=t/dbTGkn/Tb5WEgGMN8tRgAaMz7dU2Dua/4+G0mHIdYwIj20YPVPJ7qbkFeRoFfKPzoylxxCgwErr9fbEc2fDvAiNsLN0Nuz/j0z+5aJ84E6rawFNZxZoYsE//vQbBcdNC/g4Iw5vxLW2jsYZaLccW41FAD10Z1ks7/QGl29sKc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YD6oVK1e; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a3e552eff09so149406766b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 07:14:37 -0800 (PST)
+	s=arc-20240116; t=1709219757; c=relaxed/simple;
+	bh=CMg56geOOc7u+9Ot72DBWXSDwNyJX1YOqqE0Ry+xNaw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=EnQEdMDtwX+VEPpI0bg7OpYEGgUeMO/Y48h77M24VzTXoTXv9PxXplJEtFBgpSmV2LlTDn4l/Bvpy4/lStZ8Ag6yyKPepbeXzM8WyuaeSJquTZ4Oyx1rt7cJyhtWM/NnAsDEvHCaRWKDAryRPuWrxSYLFYmMy292LMgwBO+5eEo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gxpbQsSk; arc=none smtp.client-ip=209.85.221.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-33d7b8f563eso730081f8f.0;
+        Thu, 29 Feb 2024 07:15:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709219676; x=1709824476; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MVE9DU7rmEk/CNvhWzICuNaXsKr8VC3TR8YsW/9MZqE=;
-        b=YD6oVK1e+aLwNTWq6Iv3C2Oh7CXl75nL4dK4k5Y3FKaKl6C/19LziYShXo/N9PSe86
-         qrXxvYXc1HEaB6bSO2KHVBepPq9gS8Wxfe5ltRmnk68NwDEbATDDr7N/oOfCNL+QjMMe
-         tBt8lmm3VMXQsJqUnCQ3gyh2jZTpGGIhx/7FAP7EhwHnCgbjV/nSBvV8WEULRfJwPOBz
-         wOvTUXvC0RSaiPSGeYTX+/Aqx8NLHuCZTnoDxCTEFqv5xo9jyd2lFs/fDPcwyaApBCFZ
-         1Qz2NRcJZflkezA5Ej/65FUpTLvmzgSLaQUu+6gvNNJFcF0QGmVG4M9zgjBqPUujytuf
-         Oxfg==
+        d=gmail.com; s=20230601; t=1709219754; x=1709824554; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9wui/V5y8FOLo8YiI+83F7lgNFV8HwNcsEwhvDRA3dk=;
+        b=gxpbQsSkRYJnUbt4SPTbDLFw5ZfyvsBxyRth3M930ToKT90Eg2PVIfzYYYuqSClTdZ
+         wpXWegEJUNHmoCaXVUCWUFxYChZR1pOPCJ9+gyX8jfBlu9cdzCQJQEsQhWHuqzKrtXjH
+         2RvHspDLFpnyYaRh9Z5N5EzuccZviWIJVPO/6b4rsOmOnxOFwYXzrmDg3FQFtkfK+fl2
+         BXwemPBdEQi1yWaELdu3TcCNfur/BpC2MADKYXbpyc3Y2cxs6uF0LidByUtbvLvZSF87
+         5HVulwysbpUm47RAytBicMWYd9qMwNRXotG1Yjd1ZIOkEjGu66hX+2JUUMVe5xVEqYxf
+         kujA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709219676; x=1709824476;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MVE9DU7rmEk/CNvhWzICuNaXsKr8VC3TR8YsW/9MZqE=;
-        b=uPjIRTsntEXGS99EcZq67X7tDJXVqGSQMJnpEqxJmt7hkPkQg6KwgMrcu39ClYzAMQ
-         sWWkC5WvcdCNwYFn3xEc59KqK8tSJf1kpLNn1m0TNGaKdh1gI2S/pX/vg+oi29qmEiCV
-         ORV4PI4p7X41wfjJwkavBsY1fvsMTBy583EPvg1LfNUn7U2Sma5m4tyh+iiaeQOHcLX2
-         XMC7/eTMLOd8UtbAAH5vh+W4zN2rxJHvLodcG1SpwdPpk/xI2N8KW51wHvtcy46Pj/6l
-         dCxMKBJzTsTKZ7fVpnYGt5i02tABD43bCvRKUDNwYX8jmDzsxie5jM9ylk8EDQcCwPFs
-         PxzA==
-X-Forwarded-Encrypted: i=1; AJvYcCWv0btBZmeGCSLGy0Y2UbNIoR/x2ySNM9/Znw83QhMQ1kFW+S0nZJrQyexFutvt8+w+MQPTbPR4hqUk04sbMwuOE8Qu+5/Ol80xOa3L
-X-Gm-Message-State: AOJu0Yy8fO30VUWttOin1CiekBpzpUFK3QCzEkSzAOOmJ8YtLl24kO6l
-	1CNhGU9aoDIGt4pZs308sDMcbecfIto5qHQNJdlM39GVFXAQsf/rvC58jURAbs8=
-X-Google-Smtp-Source: AGHT+IG3HiK9vi/FSQstkQBVfznBqi5USv0Sf0kvqj2li9fRkVoBKlFoTkDiuzCHGx2Cx5F7Yu7ujg==
-X-Received: by 2002:a17:906:f28d:b0:a42:e2ef:2414 with SMTP id gu13-20020a170906f28d00b00a42e2ef2414mr1637962ejb.35.1709219675874;
-        Thu, 29 Feb 2024 07:14:35 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id wb4-20020a170907d50400b00a3ee5c19ee5sm769010ejc.109.2024.02.29.07.14.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Feb 2024 07:14:35 -0800 (PST)
-Message-ID: <1287b244-51e8-4103-b098-255f0cc30d10@linaro.org>
-Date: Thu, 29 Feb 2024 16:14:34 +0100
+        d=1e100.net; s=20230601; t=1709219754; x=1709824554;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9wui/V5y8FOLo8YiI+83F7lgNFV8HwNcsEwhvDRA3dk=;
+        b=XjuMLrXiGU0fLWiD/F8CJePqXw3XW2FyJ7O2Y5xbbC0gnkusaQf8u2xb0ips6BMrBw
+         sySxTPflHKodS8ZN8plF7kBCyy3uR2bQ5rLARvlAUgnC2eyo5BytsTRTOa2RPh7ggq7F
+         mS3mDbMKs7Yuvx633sNpTMtSCBs62ETCdhUs9jXIgIhXoCBKbwRFcmOFKSkP3RS0CbAk
+         fRHUDkZT44lp0mq0Ry/Abi/9VSyTdgOrXVPm569oXPuGkD2+pdfmR8t3hgJr62zjUsRm
+         QZaAu1f1jVj6E+hxAdIF9lUZ+svwTeWkvMGrj7XS6bHTcqppJFWvZFX4I3OVGb6LHLg3
+         oTKg==
+X-Forwarded-Encrypted: i=1; AJvYcCXZs2JFy6qfE6KvITCPuRWkiq0VN31AHN0Rv6Al0BfIU2gpAt72MX+WvLsiJcsPWJQpVeuyqqkZjxFNhbIf6yMTcSIOFUmxYevitmPYhHR+m+/7EWPzDJMbix80bjH9CRaoYsEw4k+1h2qrQg2w
+X-Gm-Message-State: AOJu0Yy0+C1NLnTtXQsBl/qat31Tab6cORRwQz8KY7bGnxbop9NqEZcb
+	8y/N9cp77PC2O8ezDOXKQyOZPS4PJSAfn7Lah+YC+g9bEOk5YIdWAiOqp5U2Iyx7Fv+YJwNHD+y
+	Fu/tTL3sG64wn7CpvftcVu4x+kOM=
+X-Google-Smtp-Source: AGHT+IHBfx8h6PdIH43PxYY+wWK3aRQjRg+CgGijUqZHtNSgcpoCMEjUhxFG+Ur8m68bSm1/0QI0M0MWqrtcFGzwaAY=
+X-Received: by 2002:adf:ed89:0:b0:33d:afbc:6c76 with SMTP id
+ c9-20020adfed89000000b0033dafbc6c76mr1609517wro.1.1709219754260; Thu, 29 Feb
+ 2024 07:15:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 06/11] dt-bindings: usb: ci-hdrc-usb2-imx: add
- compatible and clock-names restriction for imx93
-Content-Language: en-US
-To: Xu Yang <xu.yang_2@nxp.com>, gregkh@linuxfoundation.org,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, shawnguo@kernel.org,
- conor+dt@kernel.org
-Cc: s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
- linux-imx@nxp.com, peter.chen@kernel.org, jun.li@nxp.com,
- linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240228113004.918205-1-xu.yang_2@nxp.com>
- <20240228113004.918205-6-xu.yang_2@nxp.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240228113004.918205-6-xu.yang_2@nxp.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240229120541.219429-1-colin.i.king@gmail.com> <f7b36055-a710-4d57-b952-33431876e221@ieee.org>
+In-Reply-To: <f7b36055-a710-4d57-b952-33431876e221@ieee.org>
+From: Vaibhav Agarwal <vaibhav.sr@gmail.com>
+Date: Thu, 29 Feb 2024 20:45:17 +0530
+Message-ID: <CAAs3649g_nr5-6PLnGL31ouo5GMhn7o0zuDOjSO+HmG6vUnkXQ@mail.gmail.com>
+Subject: Re: [PATCH][next] staging: greybus: Remove redundant variable 'mask'
+To: Alex Elder <elder@ieee.org>
+Cc: Colin Ian King <colin.i.king@gmail.com>, Mark Greer <mgreer@animalcreek.com>, 
+	Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, greybus-dev@lists.linaro.org, 
+	linux-staging@lists.linux.dev, kernel-janitors@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 28/02/2024 12:29, Xu Yang wrote:
-> +        # imx93 Soc needs two clocks
-> +        if:
-> +          properties:
-> +            compatible:
-> +              contains:
-> +                enum:
-> +                  - fsl,imx93-usb
-> +        then:
-> +          properties:
-> +            clocks:
-> +              minItems: 2
-> +              maxItems: 2
-> +            clock-names:
-> +              items:
-> +                - const: usb_ctrl_root
-> +                - const: usb_wakeup
-> +        else:
-> +          # other imx Socs only need one clock
-> +          properties:
-> +            clocks:
-> +              minItems: 1
+On Thu, Feb 29, 2024 at 6:51=E2=80=AFPM Alex Elder <elder@ieee.org> wrote:
+>
+> On 2/29/24 6:05 AM, Colin Ian King wrote:
+> > The variable mask is being assigned and bit-set but it is never
+> > being used apart from this. The variable is redundant and can
+> > be removed.
+> >
+> > Cleans up clang scan build warning:
+> > drivers/staging/greybus/audio_topology.c:764:15: warning: variable 'mas=
+k'
+> > set but not used [-Wunused-but-set-variable]
+> >
+> > Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 
-Drop minItems:1 if it equals to max. Everywhere.
+Thanks Colin for sharing this patch.
 
-Best regards,
-Krzysztof
+>
+>
+> This is a reasonable change, but I don't know this code that
+> well and would like to hear from Vaibhav (if possible) or
+> someone else whether they think the mask value *should* have
+> been used in this spot.  It doesn't look like it to me, but
+> I'd like you to get a second opinion...
 
+The original intent was use the mask field while maintaining regmap entries=
+.
+However, I could not push changes on "maintain regmap" during ARA days :(
+Anyways, for now it makes sense to drop the unused mask variable.
+
+>
+>                                         -Alex
+>
+> > ---
+> >   drivers/staging/greybus/audio_topology.c | 3 ---
+> >   1 file changed, 3 deletions(-)
+> >
+> > diff --git a/drivers/staging/greybus/audio_topology.c b/drivers/staging=
+/greybus/audio_topology.c
+> > index 08e6a807c132..5dc4721105d4 100644
+> > --- a/drivers/staging/greybus/audio_topology.c
+> > +++ b/drivers/staging/greybus/audio_topology.c
+> > @@ -761,7 +761,6 @@ static int gbcodec_enum_dapm_ctl_put(struct snd_kco=
+ntrol *kcontrol,
+> >   {
+> >       int ret, wi, ctl_id;
+> >       unsigned int val, mux, change;
+> > -     unsigned int mask;
+> >       struct snd_soc_dapm_widget_list *wlist =3D snd_kcontrol_chip(kcon=
+trol);
+> >       struct snd_soc_dapm_widget *widget =3D wlist->widgets[0];
+> >       struct gb_audio_ctl_elem_value gbvalue;
+> > @@ -802,7 +801,6 @@ static int gbcodec_enum_dapm_ctl_put(struct snd_kco=
+ntrol *kcontrol,
+> >
+> >       mux =3D ucontrol->value.enumerated.item[0];
+> >       val =3D mux << e->shift_l;
+> > -     mask =3D e->mask << e->shift_l;
+> >
+> >       if (le32_to_cpu(gbvalue.value.enumerated_item[0]) !=3D
+> >           ucontrol->value.enumerated.item[0]) {
+> > @@ -815,7 +813,6 @@ static int gbcodec_enum_dapm_ctl_put(struct snd_kco=
+ntrol *kcontrol,
+> >               if (ucontrol->value.enumerated.item[1] > e->items - 1)
+> >                       return -EINVAL;
+> >               val |=3D ucontrol->value.enumerated.item[1] << e->shift_r=
+;
+> > -             mask |=3D e->mask << e->shift_r;
+> >               if (le32_to_cpu(gbvalue.value.enumerated_item[1]) !=3D
+> >                   ucontrol->value.enumerated.item[1]) {
+> >                       change =3D 1;
+>
+
+Acked-by: Vaibhav Agarwal <vaibhav.sr@gmail.com>
 
