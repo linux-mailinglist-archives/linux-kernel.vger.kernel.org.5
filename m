@@ -1,74 +1,75 @@
-Return-Path: <linux-kernel+bounces-87232-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87233-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8CF086D171
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:08:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C99C286D174
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:08:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46B7E1F25E20
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:08:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 084011C228A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:08:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36F077827C;
-	Thu, 29 Feb 2024 18:08:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ABEB7829F;
+	Thu, 29 Feb 2024 18:08:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IXevVB3Q"
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hVBq1Kss"
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFC36757F1;
-	Thu, 29 Feb 2024 18:08:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2C8578261;
+	Thu, 29 Feb 2024 18:08:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709230104; cv=none; b=FwtO8WVTBKJX/J0tXqusiU/ZF7eF0/kPU+jZN1IfruYFvYXDDxS3sGUv14xJk1En52/kMvJGqYU3sMSvBiJmk2mMyKKmZCtOMZliLggE0I/ibDvxqA9IzegEqDCZxd4xriLfJ530fDP/0Zgeu5JrCBvAwQ5qsqywPf78p8Nm5as=
+	t=1709230105; cv=none; b=sUdyLp0x/x8gQ2bGnir5We29xw+YHNKv7F1/AmtF4Othl3f3no5IhDI2/suhkrJGzqdMnz+ZemjZyCMvHBGnNFllAG947nW4RYPelxDrmCEnno8h3D5ASeZQNAAFtGdrwE0INOHHdwuQr3rSmVTvogyMmnA+r9ELR8YEU4skc4M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709230104; c=relaxed/simple;
-	bh=LKMqn9SElFgPu+r38CPN3LBzssOiaUnIZhvwNjwFq6o=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=atpK5Pbr3eTGZgS1yP5ThpnQTTyY+OBw7gjZ8JXiSApNYicvapAEqCMtCvEfY2he8YHKMAVgw58koa//rBll9parvkZVc06RXqbO+ufl3fnMQuWWt7KwuW3st07cQ3G3dT+T5p7z2td9/2s3Ijhkl7DiDIg75opwFfCztQVzCYY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IXevVB3Q; arc=none smtp.client-ip=209.85.208.172
+	s=arc-20240116; t=1709230105; c=relaxed/simple;
+	bh=GaTSHoEdQQZfdVPgGu4OC9tyNlKXbXyeqwoMC3yFiEk=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=rWir/VVH1Tnqb8ecGzwpouvJnH0gHaV0glrIstMlE/+w1Ol2aple2TJDybBC9Am1h/Ep5+F+ru6I5cbeJGbx3MInw88fV3yS5z//IqWwTMxvRGd4zwuiZcqaCxkD2rLzmQYx72vXyxXEBO1tshidwMsoNRr6Y/EOkAwzB3xbd2k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hVBq1Kss; arc=none smtp.client-ip=209.85.128.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d22b8801b9so15279471fa.0;
-        Thu, 29 Feb 2024 10:08:22 -0800 (PST)
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-412bb23e5c5so6894015e9.1;
+        Thu, 29 Feb 2024 10:08:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709230101; x=1709834901; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=q37MG069R1VCZUDWL9GxLkHnkMWluo9SRdj8E+y677M=;
-        b=IXevVB3QlTDY+6vI64sXJUk9e+GUZWq6f2A5GwxSWrHPkdT1mNb+nbnWqIQYEzIOxF
-         5Twf4Mb0TomtHLvvJtHGBruCJvhP+pUX7Yy5XAXdkG6zkoA5RycxzMkZFcTWx5vATCtx
-         1suJYfQXElE4v3Sx08VqlBkiOq/Vt+yoKmlG2YmeSBAjHgdTFJ4wyJV5wKLMbhqrOEj4
-         +QYBRp/DtqPf5mJAh4dwYSgwa6Mu4ddSM3A2acWS6IZomgEFkW+CPSgF1xtMFFs31WTb
-         zCWQ4BnDBuclo9JPro8n3sfHRbv6BchZJjSKh8TNWOUx8WpMrDmTnDWYWQv6kflwlm8x
-         /t1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709230101; x=1709834901;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=gmail.com; s=20230601; t=1709230102; x=1709834902; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=q37MG069R1VCZUDWL9GxLkHnkMWluo9SRdj8E+y677M=;
-        b=pTKXqYr8NfOaJ5Iupx6FjeOTkYVG813GMcJyqpzZBO+sAgPOIDp9rmRWv6GhmIoGAz
-         0Gr0W5P5ZmUl0AhqRHqxC/L6AE6bd2tCBE1I+LQLHo6WgKtYSEwjkI4DgnLI2U9o5iGf
-         4rxTBdaI7r0oUbToMSNvGnhBiQN5hB1ShL6ieRR80e586cvmLQAq8vo590JSwubEvcb1
-         FK6gBNUHlqL+cphYOM3JIci1g4Gl1xG8W11hNcCIvRzw3od0qzOaaEO/1tNgIMAKVFqR
-         VXeHvL5Jad0ihQHnO2s12p/Xc4Nfl/UrjKVPkSdS9YkLnbh/3tPzVBN0HKE2Yrb0blFk
-         AOVw==
-X-Forwarded-Encrypted: i=1; AJvYcCV+u5EYSlMdrVPlZjsCgeGnjmmYg0wMPK88KwoEC6gUvV3NcMMXa9n868nVyJ9i2nP0dO/FbNZyabsh0Ot97mZkpCcIOk6KYNQIDtxaus4JF5RgFD3JOUcatl1nNLRWnDFAFnyGi7v2
-X-Gm-Message-State: AOJu0Yz8rdp8wzevd8GJxljJuI1TF6pXpKSNuiup6Z9HxEUsdZmAEJ2B
-	Jf7xwjOlJrJ6b2ZKWuM9im2+m5p0NYUYRlmu0fm7ifntlP2QTexq
-X-Google-Smtp-Source: AGHT+IG2pXvD68HwNp2RNlzcZ37vQ3NGNduX+dCd/iIMYrTf9O5lWhcoIgUPQTpd1MG4TSK/8PVVDQ==
-X-Received: by 2002:a2e:b5ce:0:b0:2d2:b146:d42b with SMTP id g14-20020a2eb5ce000000b002d2b146d42bmr1743349ljn.52.1709230100780;
-        Thu, 29 Feb 2024 10:08:20 -0800 (PST)
+        bh=kH08pUQU08Y2ZLx4/JDTMu/sqhpXrAaQNeadE+HITMA=;
+        b=hVBq1Kss7t8GRpNIqwb7NBnqPiHg4nhnl4dciO7YD5mSiLcLF/Ug3OJuDlvUbP4x2r
+         BsJSwiB4nw9P1s/HR8N8YLgDRwCVImxIVM9qxxJpmiTHnUmPC8vKrnCPUJo+aGGFI/xX
+         IiYnRh9RpbZotbmgRLkYMwNiIiZcxeJVIL1IeoX1XOeQo5VflRiN9oMVywvEGZUtBNsv
+         Lwc0yP2FG/dJuTx5ZJGxclm1gbBo1Yj9xRzqAahq+PoNEPwwv4tPMtDIlB8sqHo91yQB
+         jgAOET/62oIuOPDk65xk6+FOr7V3m68ByunKeckZayfG6JSDhnkhe1tTcS21YPuentBL
+         JM3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709230102; x=1709834902;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kH08pUQU08Y2ZLx4/JDTMu/sqhpXrAaQNeadE+HITMA=;
+        b=LxEXy8sCpBnZqfBpRQv85L7XT/HnskizFNbM2n9FL+PBK5GQI8fkhiiGVVM/NuSKQ/
+         XDzXyastoAlgtSXaGy7mO5XWvS82RHV3xZT4+cNPMwJkPKoA0Vw/35AKPtMMJVRQ1Mwy
+         +c/tCsDnsZRNY3A60vvTEXrHq9IQRSsUxHpmIQnSmaLlYYSTa1hKpoxtW3ztDxrANunk
+         WftKPp1vmvJfhb+O+PJ2yZvapXhUs6OeX/6N4YW0sCZGviLd2LG+T5galV8Tarqr80WN
+         w6M3aPKamtCTxNBW0BVQIUwjKr+kMX/WQqMDjq16lyX/IfqwrQsZdP5pgw8bGpxboovd
+         c/1A==
+X-Forwarded-Encrypted: i=1; AJvYcCXOuQswpqjQcmpPsX0C4sQKB87dM4PdH4hm+mfzDyhMidwfT9oE1BQ4RuYDfX9jQJaq1UiNJsjcsReTliWZkJc4uYAXEclZD85yzQgaXWIjVWcShPMIaic2naMi6XcCuYCXeaXxxQ2C
+X-Gm-Message-State: AOJu0YzJphcalU4Lmb0vQL2gVnf4ideZ/q9rcIioPnH3URm+4Gly+knf
+	3wKaZjwIJQ6Nzl00TyFmC/sUpcl8zcZtfYwnmRQ6yyP0GjxkqCxM
+X-Google-Smtp-Source: AGHT+IH22zo9cFZjUhrRWIvR6gJU6E/1MNLkCACiuLXwjAhwhV4YuRt8iR9nZr+p2bfsIq91eS9xaA==
+X-Received: by 2002:adf:cb82:0:b0:33d:b312:2130 with SMTP id q2-20020adfcb82000000b0033db3122130mr3449072wrh.11.1709230102255;
+        Thu, 29 Feb 2024 10:08:22 -0800 (PST)
 Received: from [192.168.20.102] (57657817.catv.pool.telekom.hu. [87.101.120.23])
-        by smtp.googlemail.com with ESMTPSA id z11-20020a1c4c0b000000b00412ba5cda16sm3100620wmf.33.2024.02.29.10.08.19
+        by smtp.googlemail.com with ESMTPSA id z11-20020a1c4c0b000000b00412ba5cda16sm3100620wmf.33.2024.02.29.10.08.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 10:08:20 -0800 (PST)
+        Thu, 29 Feb 2024 10:08:21 -0800 (PST)
 From: Gabor Juhos <j4g8y7@gmail.com>
-Subject: [PATCH 0/7] clk: qcom: fix frequency table termination in several
- drivers
-Date: Thu, 29 Feb 2024 19:07:45 +0100
-Message-Id: <20240229-freq-table-terminator-v1-0-074334f0905c@gmail.com>
+Date: Thu, 29 Feb 2024 19:07:46 +0100
+Subject: [PATCH 1/7] clk: qcom: gcc-ipq5018: fix terminating of frequency
+ table arrays
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,9 +78,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAPHH4GUC/x3MQQqDMBBG4avIrDsQozXSq0gXsf6pAxrrJBRBv
- HtDl9/ivZMSVJDoUZ2k+EqSLRbUt4pes49vsEzFZI1tjbUNB8XO2Y8LOENXiT5vysH1rjNw4x2
- GSvtRBDn+3+F5XT8eq7FeZwAAAA==
+Message-Id: <20240229-freq-table-terminator-v1-1-074334f0905c@gmail.com>
+References: <20240229-freq-table-terminator-v1-0-074334f0905c@gmail.com>
+In-Reply-To: <20240229-freq-table-terminator-v1-0-074334f0905c@gmail.com>
 To: Bjorn Andersson <andersson@kernel.org>, 
  Konrad Dybcio <konrad.dybcio@linaro.org>, 
  Michael Turquette <mturquette@baylibre.com>, 
@@ -95,37 +96,48 @@ Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
  linux-kernel@vger.kernel.org, Gabor Juhos <j4g8y7@gmail.com>
 X-Mailer: b4 0.12.3
 
-Add missing terminating entry to frequency table arrays in
-several drivers. There are separate independent patches for
-each affected driver.
+The frequency table arrays are supposed to be terminated with an
+empty element. Add such entry to the end of the arrays where it
+is missing in order to avoid possible out-of-bound access when
+the table is traversed by functions like qcom_find_freq() or
+qcom_find_freq_floor().
 
-The series is based on v6.8-rc6.
-
+Fixes: e3fdbef1bab8 ("clk: qcom: Add Global Clock controller (GCC) driver for IPQ5018")
 Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
 ---
-Gabor Juhos (7):
-      clk: qcom: gcc-ipq5018: fix terminating of frequency table arrays
-      clk: qcom: gcc-ipq6018: fix terminating of frequency table arrays
-      clk: qcom: gcc-ipq8074: fix terminating of frequency table arrays
-      clk: qcom: gcc-ipq9574: fix terminating of frequency table arrays
-      clk: qcom: camcc-sc8280xp: fix terminating of frequency table arrays
-      clk: qcom: mmcc-apq8084: fix terminating of frequency table arrays
-      clk: qcom: mmcc-msm8974: fix terminating of frequency table arrays
+ drivers/clk/qcom/gcc-ipq5018.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
- drivers/clk/qcom/camcc-sc8280xp.c | 21 +++++++++++++++++++++
- drivers/clk/qcom/gcc-ipq5018.c    |  3 +++
- drivers/clk/qcom/gcc-ipq6018.c    |  2 ++
- drivers/clk/qcom/gcc-ipq8074.c    |  2 ++
- drivers/clk/qcom/gcc-ipq9574.c    |  1 +
- drivers/clk/qcom/mmcc-apq8084.c   |  2 ++
- drivers/clk/qcom/mmcc-msm8974.c   |  2 ++
- 7 files changed, 33 insertions(+)
----
-base-commit: d206a76d7d2726f3b096037f2079ce0bd3ba329b
-change-id: 20240223-freq-table-terminator-f78760e7b5e0
+diff --git a/drivers/clk/qcom/gcc-ipq5018.c b/drivers/clk/qcom/gcc-ipq5018.c
+index 4aba47e8700d2..856a2b30e2a8e 100644
+--- a/drivers/clk/qcom/gcc-ipq5018.c
++++ b/drivers/clk/qcom/gcc-ipq5018.c
+@@ -857,6 +857,7 @@ static struct clk_rcg2 lpass_sway_clk_src = {
+ 
+ static const struct freq_tbl ftbl_pcie0_aux_clk_src[] = {
+ 	F(2000000, P_XO, 12, 0, 0),
++	{ }
+ };
+ 
+ static struct clk_rcg2 pcie0_aux_clk_src = {
+@@ -1099,6 +1100,7 @@ static const struct freq_tbl ftbl_qpic_io_macro_clk_src[] = {
+ 	F(100000000, P_GPLL0, 8, 0, 0),
+ 	F(200000000, P_GPLL0, 4, 0, 0),
+ 	F(320000000, P_GPLL0, 2.5, 0, 0),
++	{ }
+ };
+ 
+ static struct clk_rcg2 qpic_io_macro_clk_src = {
+@@ -1194,6 +1196,7 @@ static struct clk_rcg2 ubi0_axi_clk_src = {
+ static const struct freq_tbl ftbl_ubi0_core_clk_src[] = {
+ 	F(850000000, P_UBI32_PLL, 1, 0, 0),
+ 	F(1000000000, P_UBI32_PLL, 1, 0, 0),
++	{ }
+ };
+ 
+ static struct clk_rcg2 ubi0_core_clk_src = {
 
-Best regards,
 -- 
-Gabor Juhos <j4g8y7@gmail.com>
+2.44.0
 
 
