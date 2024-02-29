@@ -1,161 +1,184 @@
-Return-Path: <linux-kernel+bounces-86348-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86349-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F39EB86C439
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:52:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09FE086C440
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:54:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A589C28A1D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:52:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E6201F23391
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:54:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A06B25577C;
-	Thu, 29 Feb 2024 08:52:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0ED654FB3;
+	Thu, 29 Feb 2024 08:54:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CpEBHYwp"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="PmLKteDr"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50BB854BFC
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 08:52:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71D0A53E30;
+	Thu, 29 Feb 2024 08:53:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709196760; cv=none; b=eUzxv+fe5RlfPB0ASRr4n5FHUumG6XWP3LpjmIJQWpM4EQBHk2PegWfTIYWtKMH2gdxoaVQXYz4wwNsxzudPnJwQeMpspZ3wh9jZEMY1rxasANpmAIQo3rkRMhIMLnZU0NJgzX1W105fWrUQfhMOFqICtvH41WNlJGWM0vxe1NQ=
+	t=1709196841; cv=none; b=PaKMVhjuqN8Hdi6SPe/A6bs1T6T+ri0EH3QqAWE4MyFtsf61WD/R0F/UTg3/1DgJzP4pCUjhfr16o5sweO74F063wFp+Giw08SNjxy1rZlYSjNE+UXUrmQf3ysey+EMp60np0s316BHnPLrNFQF6GgaLmRO0VCBPGhLrQid1TLE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709196760; c=relaxed/simple;
-	bh=9nYXiuyRyM5DbtFyVILh4g2b2FdEhMst0eyZ1e04d0M=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=bIaZ4Wosux39rIvhrTp3LPPA8I2WoHxSy51PVA0cba9umbRCYsynKWmermC87aP2b96ZKzq6DhZsNidmgvSMlrF+MXfdyg5iov+mJgA2tkH/PTD8kRyWO1xQpnEEuGHHHOS+xylUcHHdJNC6XOPxlv1iLnBTZszJ0wjyMsDHOuk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CpEBHYwp; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709196758;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9nYXiuyRyM5DbtFyVILh4g2b2FdEhMst0eyZ1e04d0M=;
-	b=CpEBHYwpP5vMb4Xlh8H7GVYmlVgGIvC9Kh4byU4ynehcM3GThUf8HxxxYeQeYSfgTZxJ/W
-	mcy+XueQYllxH0qP8QW/t4weD4J0WUyyfy3bbCAVjCkBUJcHdRPxcNKusvFZcAWwLzHvQn
-	1WCPmBUAGNzzdTAqApD6NwKqdMwq1tI=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-224-gquJRxlDMniWYtjKIsVXew-1; Thu, 29 Feb 2024 03:52:36 -0500
-X-MC-Unique: gquJRxlDMniWYtjKIsVXew-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a436a38bf5bso5173266b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 00:52:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709196755; x=1709801555;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9nYXiuyRyM5DbtFyVILh4g2b2FdEhMst0eyZ1e04d0M=;
-        b=rv2tY+c2QZiJVapZyyzVv6xh+ylsOwgjo78OH001rcFeCafhPeMWmxqdl2Kcn3YACi
-         Xw9mYUkbIH4OcSkhyfqAlA935aASdlzV5ujremLAGmVCYwpwRBvX6hX99ogxpcLCQSbV
-         3D5rsJTtAA1GHlTilyy/hekrP25dd4RPOlH2HHCbbPp8TiXar2CSWAfab+k6JGnAfoEj
-         LK+cJXTv9c77aPsrSoDmbDIAQvoq8T6+Q7eBT8TudUs2IZPOp3uxj3xpkB0vP1E+1t3Z
-         t9rCa+WlnSj4JLy686RWIqPsv2LWcNhpsZA0LJnkfS4S4INT7B3kN2VK9lJP/eiyJE8R
-         QlTg==
-X-Forwarded-Encrypted: i=1; AJvYcCW2lYmTKT/K+pOdtON2XYxYapdImmBTiQl5yax02smsqJ6QGSgOc1kLasH/BMeBbeIngu/lqDl5LcC95IiJZdDxafbs1uLB7XTh0/mY
-X-Gm-Message-State: AOJu0YyDjGfUpTIKfvukfnf6/GVs/vjqNokLLfuQq/3S6WmhJkqeB+C6
-	W0OTnZedwmaUBZ9dxqmyD0M+yhfkZ8S+DQiuG00kDCDm302teg4XpESyRhzUwUBLxghFbh3KRpq
-	ws2iW9rWba06/+uFxgj6D2myvxpTnFAaUuPbyBKkbc1fxiLDQ4We+6+Cu9nMwdw==
-X-Received: by 2002:a17:906:3183:b0:a3f:161b:cc13 with SMTP id 3-20020a170906318300b00a3f161bcc13mr846577ejy.7.1709196755596;
-        Thu, 29 Feb 2024 00:52:35 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGGGv0ofUlENqBf350+fnsDSlxXIzU6QNZdE9WhrCe7AfFFb8sWeMwYmApPfW6fAwc0VsM4UA==
-X-Received: by 2002:a17:906:3183:b0:a3f:161b:cc13 with SMTP id 3-20020a170906318300b00a3f161bcc13mr846569ejy.7.1709196755180;
-        Thu, 29 Feb 2024 00:52:35 -0800 (PST)
-Received: from pstanner-thinkpadt14sgen1.remote.csb ([2001:9e8:32e0:8800:227b:d2ff:fe26:2a7a])
-        by smtp.gmail.com with ESMTPSA id s15-20020a170906bc4f00b00a433634ba03sm461623ejv.43.2024.02.29.00.52.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 00:52:34 -0800 (PST)
-Message-ID: <e2f49a1f1877550c4ca733bbca26949836d4fef1.camel@redhat.com>
-Subject: Re: [PATCH v1 1/2] devres: Switch to use dev_err_probe() for
- unification
-From: Philipp Stanner <pstanner@redhat.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
-	linux-kernel@vger.kernel.org
-Cc: Andrew Morton <akpm@linux-foundation.org>, Rasmus Villemoes
-	 <linux@rasmusvillemoes.dk>, pstanner@redhat.com
-Date: Thu, 29 Feb 2024 09:52:34 +0100
-In-Reply-To: <20240227175910.3031342-2-andriy.shevchenko@linux.intel.com>
-References: <20240227175910.3031342-1-andriy.shevchenko@linux.intel.com>
-	 <20240227175910.3031342-2-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+	s=arc-20240116; t=1709196841; c=relaxed/simple;
+	bh=JFVXTAAuvueZGJ1qbFCAT1FQwjUtEjK+lf3R2RaGBnI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=C9d7BxCZwa8Nd95wCVsMDp8nvDRnZzIMDDWPRFTaGw9DOmLCgi6v8dL6zZfPUNQwHsy2XzRfNaHwsYpgPuNsus1uU6M0vqUePCeyQQq4dOeyYP6Zw9QYdQuAlsQTpn3bld7HH4qdb8H3Uoye6Zjxj24fCRRe342VPPD7XLTyeoA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=PmLKteDr; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41T6iDHP004522;
+	Thu, 29 Feb 2024 08:53:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=MBa7Nsq5ot2JW4JB8W984X8OIbqaIdGF/tU6QV5+1so=; b=Pm
+	LKteDrBhWD5tVSrdZnW3aTCRA45QXMIY+s5xCvEDMJlsPYOWzPRDkR0NZ2ubBVV0
+	yS7wtCl7NhyzgaM2gPHo8zuFQj1TCpk7ZQvkPW6A8bVY5Tm83p/vpoWDteFqsw1w
+	U4cqpQHHMxv6OqJX6p530zPD8t1Hx7RjQmI/GnBAZu/gh1SqFWKdVmYUltCj7qKq
+	cxGMcXdgQimAZa0F5P3hE6Wxu5VI1s175Un9BrvJQfTwN9WEH+WKGuOf+q9q25Wd
+	YOMVCY+7f1mqqz7rKayTvq5rZpKlNAN4DEgN4wnwgrYyvJVxuE2hE2KZCIUB3yoi
+	FGlj+g5PW74QkwaE/WPw==
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wjmwn8b7m-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 29 Feb 2024 08:53:54 +0000 (GMT)
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41T8rrxB014238
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 29 Feb 2024 08:53:54 GMT
+Received: from [10.216.40.135] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 29 Feb
+ 2024 00:53:50 -0800
+Message-ID: <8b7b34b8-8b92-4475-fe6a-8a7340590fb2@quicinc.com>
+Date: Thu, 29 Feb 2024 14:23:43 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-
-T24gVHVlLCAyMDI0LTAyLTI3IGF0IDE5OjU4ICswMjAwLCBBbmR5IFNoZXZjaGVua28gd3JvdGU6
-Cj4gVGhlIGRldm1fKigpIEFQSXMgYXJlIHN1cHBvc2VkIHRvIGJlIGNhbGxlZCBkdXJpbmcgdGhl
-IC0+cHJvYmUoKQo+IHN0YWdlLgo+IE1hbnkgZHJpdmVycyAoZXNwZWNpYWxseSBuZXcgb25lcykg
-aGFzIHN3aXRjaGVkIHRvIHVzZQoKaGFzIC0+IGhhdmUKCj4gZGV2X2Vycl9wcm9iZSgpCj4gZm9y
-IGVycm9yIG1lc3NhZ2luZyBmb3IgdGhlIHNha2Ugb2YgdW5pZmljYXRpb24uIExldCdzIGRvIHRo
-ZSBzYW1lIGluCj4gdGhlIGRldnJlcyBBUElzLgoKTm8gb2JqZWN0aW9ucyBvbiBwcmluY2lwbGUu
-IEp1c3Qgb25lIHRoaW5nIGFib3V0IHRoZSBpbXBsZW1lbnRhdGlvbjoKCj4gCj4gU2lnbmVkLW9m
-Zi1ieTogQW5keSBTaGV2Y2hlbmtvIDxhbmRyaXkuc2hldmNoZW5rb0BsaW51eC5pbnRlbC5jb20+
-Cj4gLS0tCj4gwqBsaWIvZGV2cmVzLmMgfCAxNyArKysrKysrKystLS0tLS0tLQo+IMKgMSBmaWxl
-IGNoYW5nZWQsIDkgaW5zZXJ0aW9ucygrKSwgOCBkZWxldGlvbnMoLSkKPiAKPiBkaWZmIC0tZ2l0
-IGEvbGliL2RldnJlcy5jIGIvbGliL2RldnJlcy5jCj4gaW5kZXggZmUwYzYzY2FlYjY4Li4yN2Yy
-ODBhMzlkY2EgMTAwNjQ0Cj4gLS0tIGEvbGliL2RldnJlcy5jCj4gKysrIGIvbGliL2RldnJlcy5j
-Cj4gQEAgLTEyNSwxMiArMTI1LDEzIEBAIF9fZGV2bV9pb3JlbWFwX3Jlc291cmNlKHN0cnVjdCBk
-ZXZpY2UgKmRldiwKPiBjb25zdCBzdHJ1Y3QgcmVzb3VyY2UgKnJlcywKPiDCoMKgwqDCoMKgwqDC
-oMKgcmVzb3VyY2Vfc2l6ZV90IHNpemU7Cj4gwqDCoMKgwqDCoMKgwqDCoHZvaWQgX19pb21lbSAq
-ZGVzdF9wdHI7Cj4gwqDCoMKgwqDCoMKgwqDCoGNoYXIgKnByZXR0eV9uYW1lOwo+ICvCoMKgwqDC
-oMKgwqDCoGludCByZXQ7Cj4gwqAKPiDCoMKgwqDCoMKgwqDCoMKgQlVHX09OKCFkZXYpOwo+IMKg
-Cj4gwqDCoMKgwqDCoMKgwqDCoGlmICghcmVzIHx8IHJlc291cmNlX3R5cGUocmVzKSAhPSBJT1JF
-U09VUkNFX01FTSkgewo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBkZXZfZXJyKGRl
-diwgImludmFsaWQgcmVzb3VyY2UgJXBSXG4iLCByZXMpOwo+IC3CoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqByZXR1cm4gSU9NRU1fRVJSX1BUUigtRUlOVkFMKTsKPiArwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgcmV0ID0gZGV2X2Vycl9wcm9iZShkZXYsIC1FSU5WQUwsICJpbnZh
-bGlkIHJlc291cmNlCj4gJXBSXG4iLCByZXMpOwo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqByZXR1cm4gSU9NRU1fRVJSX1BUUihyZXQpOwoKU28gYXMgSSBzZWUgaXQgLUVJTlZBTCBp
-cyBqdXN0IHBpcGVkIHRocm91Z2ggZGV2X2Vycl9wcm9iZSgpIGFuZCBpcwpuZXZlciBjaGFuZ2Vk
-LgpEb24ndCB5b3UgdGhpbmsgaXQgd291bGQgYmUgYmV0dGVyIHRvIGRyb3AgdmFyaWFibGUgJ3Jl
-dCcgYW5kIGp1c3QgZG8KcmV0dXJuIElPTUVNX0VSUl9QVFIoLUVJTlZBTCk7CmFzIGJlZm9yZT8K
-ClRoYXQgd2F5IGl0IHdvdWxkIGJlIG9idmlvdXMgdGhhdCB0aGUgZXJyb3IgY29kZSBpcyBuZXZl
-ciBjaGFuZ2VkIGFuZAppdCB3aWxsIGFsd2F5cyByZXR1cm4gLUVJTlZBTC4gT3RoZXJ3aXNlIHlv
-dSBoYXZlIHRvIGxvb2sgdXAgdGhlCmZ1bmN0aW9uIGRlZmluaXRpb24gb2YgZGV2X2Vycl9wcm9i
-ZSgpLgoKVGhlIHNhbWUgd291bGQgYXBwbHkgYmVsb3cuCgpSZWdhcmRzLApQLgoKPiDCoMKgwqDC
-oMKgwqDCoMKgfQo+IMKgCj4gwqDCoMKgwqDCoMKgwqDCoGlmICh0eXBlID09IERFVk1fSU9SRU1B
-UCAmJiByZXMtPmZsYWdzICYKPiBJT1JFU09VUkNFX01FTV9OT05QT1NURUQpCj4gQEAgLTE0NCwy
-MCArMTQ1LDIwIEBAIF9fZGV2bV9pb3JlbWFwX3Jlc291cmNlKHN0cnVjdCBkZXZpY2UgKmRldiwK
-PiBjb25zdCBzdHJ1Y3QgcmVzb3VyY2UgKnJlcywKPiDCoMKgwqDCoMKgwqDCoMKgZWxzZQo+IMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcHJldHR5X25hbWUgPSBkZXZtX2tzdHJkdXAo
-ZGV2LCBkZXZfbmFtZShkZXYpLAo+IEdGUF9LRVJORUwpOwo+IMKgwqDCoMKgwqDCoMKgwqBpZiAo
-IXByZXR0eV9uYW1lKSB7Cj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGRldl9lcnIo
-ZGV2LCAiY2FuJ3QgZ2VuZXJhdGUgcHJldHR5IG5hbWUgZm9yIHJlc291cmNlCj4gJXBSXG4iLCBy
-ZXMpOwo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqByZXR1cm4gSU9NRU1fRVJSX1BU
-UigtRU5PTUVNKTsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcmV0ID0gZGV2X2Vy
-cl9wcm9iZShkZXYsIC1FTk9NRU0sICJjYW4ndCBnZW5lcmF0ZQo+IHByZXR0eSBuYW1lIGZvciBy
-ZXNvdXJjZSAlcFJcbiIsIHJlcyk7Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJl
-dHVybiBJT01FTV9FUlJfUFRSKHJldCk7Cj4gwqDCoMKgwqDCoMKgwqDCoH0KPiDCoAo+IMKgwqDC
-oMKgwqDCoMKgwqBpZiAoIWRldm1fcmVxdWVzdF9tZW1fcmVnaW9uKGRldiwgcmVzLT5zdGFydCwg
-c2l6ZSwKPiBwcmV0dHlfbmFtZSkpIHsKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-ZGV2X2VycihkZXYsICJjYW4ndCByZXF1ZXN0IHJlZ2lvbiBmb3IgcmVzb3VyY2UKPiAlcFJcbiIs
-IHJlcyk7Cj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJldHVybiBJT01FTV9FUlJf
-UFRSKC1FQlVTWSk7Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJldCA9IGRldl9l
-cnJfcHJvYmUoZGV2LCAtRUJVU1ksICJjYW4ndCByZXF1ZXN0Cj4gcmVnaW9uIGZvciByZXNvdXJj
-ZSAlcFJcbiIsIHJlcyk7Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJldHVybiBJ
-T01FTV9FUlJfUFRSKHJldCk7Cj4gwqDCoMKgwqDCoMKgwqDCoH0KPiDCoAo+IMKgwqDCoMKgwqDC
-oMKgwqBkZXN0X3B0ciA9IF9fZGV2bV9pb3JlbWFwKGRldiwgcmVzLT5zdGFydCwgc2l6ZSwgdHlw
-ZSk7Cj4gwqDCoMKgwqDCoMKgwqDCoGlmICghZGVzdF9wdHIpIHsKPiAtwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgZGV2X2VycihkZXYsICJpb3JlbWFwIGZhaWxlZCBmb3IgcmVzb3VyY2Ug
-JXBSXG4iLAo+IHJlcyk7Cj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBkZXZtX3Jl
-bGVhc2VfbWVtX3JlZ2lvbihkZXYsIHJlcy0+c3RhcnQsIHNpemUpOwo+IC3CoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqBkZXN0X3B0ciA9IElPTUVNX0VSUl9QVFIoLUVOT01FTSk7Cj4gK8Kg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJldCA9IGRldl9lcnJfcHJvYmUoZGV2LCAtRU5P
-TUVNLCAiaW9yZW1hcCBmYWlsZWQgZm9yCj4gcmVzb3VyY2UgJXBSXG4iLCByZXMpOwo+ICvCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqByZXR1cm4gSU9NRU1fRVJSX1BUUihyZXQpOwo+IMKg
-wqDCoMKgwqDCoMKgwqB9Cj4gwqAKPiDCoMKgwqDCoMKgwqDCoMKgcmV0dXJuIGRlc3RfcHRyOwoK
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] cpufreq: Don't unregister cpufreq cooling on CPU hotplug
+Content-Language: en-US
+To: Viresh Kumar <viresh.kumar@linaro.org>,
+        "Rafael J. Wysocki"
+	<rafael@kernel.org>
+CC: <linux-pm@vger.kernel.org>, Vincent Guittot <vincent.guittot@linaro.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Manaf Meethalavalappu Pallikunhi
+	<quic_manafm@quicinc.com>,
+        Roman Stratiienko <r.stratiienko@gmail.com>,
+        <linux-kernel@vger.kernel.org>
+References: <1333a397b93e0e15cb7cb358e21a289bc7d71a63.1709193295.git.viresh.kumar@linaro.org>
+From: Mukesh Ojha <quic_mojha@quicinc.com>
+In-Reply-To: <1333a397b93e0e15cb7cb358e21a289bc7d71a63.1709193295.git.viresh.kumar@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: H-3rVEc9b13FTWj-hwiPT42z-elOBFAP
+X-Proofpoint-ORIG-GUID: H-3rVEc9b13FTWj-hwiPT42z-elOBFAP
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-29_01,2024-02-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
+ mlxlogscore=872 phishscore=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 clxscore=1011 bulkscore=0 adultscore=0 lowpriorityscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2402290068
 
 
+
+On 2/29/2024 1:42 PM, Viresh Kumar wrote:
+> Offlining a CPU and bringing it back online is a common operation and it
+> happens frequently during system suspend/resume, where the non-boot CPUs
+> are hotplugged out during suspend and brought back at resume.
+> 
+> The cpufreq core already tries to make this path as fast as possible as
+> the changes are only temporary in nature and full cleanup of resources
+> isn't required in this case. For example the drivers can implement
+> online()/offline() callbacks to avoid a lot of tear down of resources.
+> 
+> On similar lines, there is no need to unregister the cpufreq cooling
+> device during suspend / resume, but only while the policy is getting
+> removed.
+> 
+> Moreover, unregistering the cpufreq cooling device is resulting in an
+> unwanted outcome, where the system suspend is eventually aborted in the
+> process.  Currently, during system suspend the cpufreq core unregisters
+> the cooling device, which in turn removes a kobject using device_del()
+> and that generates a notification to the userspace via uevent broadcast.
+> This causes system suspend to abort in some setups.
+> 
+> This was also earlier reported (indirectly) by Roman [1]. Maybe there is
+> another way around to fixing that problem properly, but this change
+> makes sense anyways.
+> 
+> Move the registering and unregistering of the cooling device to policy
+> creation and removal times onlyy.
+> 
+> Reported-by: Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>
+> Reported-by: Roman Stratiienko <r.stratiienko@gmail.com>
+> Link: https://patchwork.kernel.org/project/linux-pm/patch/20220710164026.541466-1-r.stratiienko@gmail.com/ [1]
+> Tested-by: Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>   drivers/cpufreq/cpufreq.c | 17 +++++++++++------
+>   1 file changed, 11 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+> index 44db4f59c4cc..4133c606dacb 100644
+> --- a/drivers/cpufreq/cpufreq.c
+> +++ b/drivers/cpufreq/cpufreq.c
+> @@ -1571,7 +1571,8 @@ static int cpufreq_online(unsigned int cpu)
+>   	if (cpufreq_driver->ready)
+>   		cpufreq_driver->ready(policy);
+>   
+> -	if (cpufreq_thermal_control_enabled(cpufreq_driver))
+> +	/* Register cpufreq cooling only for a new policy */
+> +	if (new_policy && cpufreq_thermal_control_enabled(cpufreq_driver))
+>   		policy->cdev = of_cpufreq_cooling_register(policy);
+>   
+>   	pr_debug("initialization complete\n");
+> @@ -1655,11 +1656,6 @@ static void __cpufreq_offline(unsigned int cpu, struct cpufreq_policy *policy)
+>   	else
+>   		policy->last_policy = policy->policy;
+>   
+> -	if (cpufreq_thermal_control_enabled(cpufreq_driver)) {
+> -		cpufreq_cooling_unregister(policy->cdev);
+> -		policy->cdev = NULL;
+> -	}
+> -
+>   	if (has_target())
+>   		cpufreq_exit_governor(policy);
+>   
+> @@ -1720,6 +1716,15 @@ static void cpufreq_remove_dev(struct device *dev, struct subsys_interface *sif)
+>   		return;
+>   	}
+>   
+> +	/*
+> +	 * Unregister cpufreq cooling once all the CPUs of the policy are
+> +	 * removed.
+> +	 */
+> +	if (cpufreq_thermal_control_enabled(cpufreq_driver)) {
+> +		cpufreq_cooling_unregister(policy->cdev);
+> +		policy->cdev = NULL;
+> +	}
+> +
+
+Looks fine than other solution..
+
+-Mukesh
+>   	/* We did light-weight exit earlier, do full tear down now */
+>   	if (cpufreq_driver->offline)
+>   		cpufreq_driver->exit(policy);
 
