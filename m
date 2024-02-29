@@ -1,159 +1,303 @@
-Return-Path: <linux-kernel+bounces-87184-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87187-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6685E86D0CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:37:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0752B86D0D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:37:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72DF6B2345A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:37:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C4351C21B3C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:37:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48E2470AEE;
-	Thu, 29 Feb 2024 17:36:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36BB6757FF;
+	Thu, 29 Feb 2024 17:36:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="gRsoWfqL";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="gRsoWfqL"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="zLLSbHuO"
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B175570AE6
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 17:36:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6124D6CC16
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 17:36:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709228186; cv=none; b=Caz99SxyJ6FTHmFhBhCS01kt3EWzl+YV9luNgqGGNV4HdHnOmSeD1RcoyABJSKeobAFkri8aTgsMHAA/p+sLfbu5r0YMCo7OajPhrOA2Idgifx63JXNhD0yGpJ+6UbrQo4Bx0+jx2sUe0VEdRwmQp8DkiqKL4dNT/+r4vhbfCpg=
+	t=1709228214; cv=none; b=Mgd4dXv14+KuEN2LpBwbgO74cQ+FxtwhU3CWWHZZrIEhUpqeYi9Y4x35A/Dd3kku+Wcxs77pRzranpxGYrsvVPhfy3D6jhJdAvP2WEFHhudtJ+EsPPOu5UtTe74M0yzCPC2bNWPbjRCh2rlhwgmC5MIlaa/5JWVFHEeoTyuPc5I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709228186; c=relaxed/simple;
-	bh=iR3owAjar1QBrZxphTgj8xGOl+9mw9uymkrVoayhBog=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=orBv7fqBAVdWR0LhemCiUEKH8QczYCnOVg6By7A1e4hQ4UTD0QUuJh6razWYlLf4FDFWvsIj04/v2dZvlMdRpQ2IO3gOOCuOTLzwbE+abb0bhfF4jOswUWsDAIlB19e1fz5ClaeedyxhhXEhyJr5dm1uqCv8UlDmor7jdXPwGa8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=gRsoWfqL; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=gRsoWfqL; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id A57431FBEF;
-	Thu, 29 Feb 2024 17:36:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1709228182; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vpBFV488mGbzEhc4yj49r8uR7a9BeE38z4pBORJHIdw=;
-	b=gRsoWfqL83bYLtZZX2oTiMMF/nqN/gVAL98f+vQWPSR91OeGKOx6EbHpF//e7/n+3TRBR5
-	y4LBHgIU7LzJRunqAhL7pzgEebwj4gcPJbW32kdp8Tp+dnF6nlIA0OClrVwu7ih9rc2Fj1
-	biET31QXeqPYr5BKuhnEd1lh2Bm7HH4=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1709228182; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vpBFV488mGbzEhc4yj49r8uR7a9BeE38z4pBORJHIdw=;
-	b=gRsoWfqL83bYLtZZX2oTiMMF/nqN/gVAL98f+vQWPSR91OeGKOx6EbHpF//e7/n+3TRBR5
-	y4LBHgIU7LzJRunqAhL7pzgEebwj4gcPJbW32kdp8Tp+dnF6nlIA0OClrVwu7ih9rc2Fj1
-	biET31QXeqPYr5BKuhnEd1lh2Bm7HH4=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8B8AE13503;
-	Thu, 29 Feb 2024 17:36:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 4LcaH5bA4GU3TwAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Thu, 29 Feb 2024 17:36:22 +0000
-Date: Thu, 29 Feb 2024 18:36:21 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Kees Cook <kees@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Kees Cook <keescook@chromium.org>, cve@kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: CVE-2023-52451: powerpc/pseries/memhp: Fix access beyond end of
- drmem array
-Message-ID: <ZeDAlRyp9L4L7f37@tiehlicka>
-References: <2024022639-wronged-grafted-6777@gregkh>
- <ZdytVTOgfvKBBvtn@tiehlicka>
- <202402271029.FD67395@keescook>
- <Zd8hPpP_6q_o8uQW@tiehlicka>
- <202402280906.D6D5590DB@keescook>
- <ZeA-281OudkWBhd_@tiehlicka>
- <2024022915-dissuade-grandson-ebd4@gregkh>
- <ZeBRZqJd5HAKaOfC@tiehlicka>
- <2024022913-borrower-resource-ecc9@gregkh>
- <D06F40E5-0DBC-4FF2-BAF5-2373BDF3815C@kernel.org>
+	s=arc-20240116; t=1709228214; c=relaxed/simple;
+	bh=nrghaYzqra4sEySrSb2JY+wpeZ8+V9o/igjOah2T9/w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jHQHOXLJmlOP1uBVuGbAhwt9HwyyeX+M6wRIavOhZsZs+QGz0J3M/bPj0I0YV2TDQzyt9rWdlUEDhlA62h0pMCA3q+Gae5WcmoT5YIGCQQuV9e9giWf8KAGvx5zYQ89kHw0iioJFGSV3TR/BktEXreWzPNbjHwPOKtgO0WnyeoU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=zLLSbHuO; arc=none smtp.client-ip=209.85.219.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dcc73148611so1313821276.3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 09:36:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709228211; x=1709833011; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0fe++mkvpeM1K+1Mu9ayeuTx0SYkTX6Iu/atEPcCgyA=;
+        b=zLLSbHuOKLJKt4UhDFZrmy9Q7o0HvXd7lVZ9CnUP1X4sf1llUUWzJoybWkOOq+/S5K
+         yNnTjFfqfrEdp2v/BN+VyXbJqhupJxeqqnRmlxIHP5tSir5SobCEAVnhfXEvehKe0L58
+         ozq76z1qV9WjNDMCf5GrKl/UdF5qkCbWshUMrFjhd0Z3xqJ7Ff1qFkvdCi5GqAPCYfIP
+         jvILiAUxHGU+rZtSU+kZhRzIIfR2clNtXIO+HV/EusHxjG4+B4NbH4qdUbXvLDI4tuAo
+         p1oOpaLZcVMhDiNtmEYTdAfYIXCWLaB6tDhb9YnVBClwltOH0X6QyqUjeIXZtlmFnXHM
+         bpGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709228211; x=1709833011;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0fe++mkvpeM1K+1Mu9ayeuTx0SYkTX6Iu/atEPcCgyA=;
+        b=prf6sD7BfjrplYCQzXWpX7QD+v+xp+DiY1qtLMJnex1V4QpT7rYcfBF/QOg8SCzdAC
+         KjHgH/LhujY1HXQIxFo2xGoNSngGD90AO7nRN2u8zlBXcOCggxtaH2t8h6640B3s+0j4
+         OQBA2CeulDhRd83EmeEeiwvm/oiX050DEqQGFIPikUNdbs4eEVcJipkUPBw2qbuDjjf0
+         47fy+WXI0U7f4xF/Trs5HhhwmS++9vDjLRfJikNK5fT1Ocl8H3K0ycHdQpSG1WmyosxD
+         IG7iWpLC5BMib2JYvtxWdj1s9vFGBoHh43wfNZThzqwoZz7V/ppldeZkOCAFZtkcoX+Q
+         txvA==
+X-Forwarded-Encrypted: i=1; AJvYcCVA1TZiInBdH8e51XrCU2EBFnnPHmEBABOjCLSwAmD8YgO0GqSyKHCSdZmaTsQLIH7Djh21rR6BI1F+25w0+4vGVlh+WSBiGbIsQU9Q
+X-Gm-Message-State: AOJu0YxkCV1Gg6euHyDtyMSHQHY0Wzo9NDIjushhnjHMRFC0KntNy6JN
+	f4ybUL64zorCARsw3hV8pzUXyZ0iwkyd55Eo9/k/tGiEcxhss1X9UTRaT/qJ0HVyVRSTTC+DiMv
+	rnL5B+o/7eEE5YcPtK44NRoX+FsJkWIuha5V5
+X-Google-Smtp-Source: AGHT+IHbF5HgonTS4R+NrJL8UyHTWAAojzXGNHLFsuq6mVp4nXOXOyTFNssqzrAZ8XdVm/5kPdtAJhp9aQYp5E6q5xk=
+X-Received: by 2002:a25:ae59:0:b0:dcc:323e:e1a4 with SMTP id
+ g25-20020a25ae59000000b00dcc323ee1a4mr3324276ybe.6.1709228211138; Thu, 29 Feb
+ 2024 09:36:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <D06F40E5-0DBC-4FF2-BAF5-2373BDF3815C@kernel.org>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -0.81
-X-Spamd-Result: default: False [-0.81 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCPT_COUNT_FIVE(0.00)[5];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[linuxfoundation.org:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.01)[46.37%]
-X-Spam-Flag: NO
+References: <20240227121920.1905095-1-usama.anjum@collabora.com>
+ <CABdmKX3_+G20TB5HJLLLMQQ1-i9g=RV1QU_A00Knd08pyiJWgw@mail.gmail.com>
+ <a90a91bd-6182-412f-bfd9-fa3e3f9cc93e@collabora.com> <CABdmKX0d_Q2ishxS_bS7siEOmwDOobnTOyXK-QbdKsn_0Jv1VQ@mail.gmail.com>
+ <202d7b66-edc4-4416-a32f-4d702742f44b@collabora.com>
+In-Reply-To: <202d7b66-edc4-4416-a32f-4d702742f44b@collabora.com>
+From: "T.J. Mercier" <tjmercier@google.com>
+Date: Thu, 29 Feb 2024 09:36:39 -0800
+Message-ID: <CABdmKX1jruzSn0E883xfo_pYOimpTTC2HHw=3JG6NYHAhXZrsw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] selftests/dmabuf-heap: conform test to TAP format output
+To: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc: Shuah Khan <shuah@kernel.org>, kernel@collabora.com, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu 29-02-24 07:08:06, Kees Cook wrote:
-> 
-> 
-> On February 29, 2024 6:18:36 AM PST, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> >As part of the requirement to be a CNA, we have to announce everything
-> >that we think is a potential vulnerability, severity not be judged at
-> > [...]
-> >Again, none of this has anything to do with "severity", it only is an
-> >identifier that says "this fixes a vulnerability".
-> 
-> The language here can perhaps be improved for better understanding by
-> folks since "CVE" and "vulnerability" can mean different things to
-> different people. I would say "this fixes a weakness".
-> 
-> CVEs are for anything deemed a "weakness"[1]. It doesn't need to rise
-> to the level of what many people would consider a "vulnerability".
-> (Modern attacks traditionally chain many weaknesses together to form
-> an exploit, some of which look harmless when examined in isolation.)
-> 
-> I find it helps to keep in mind the "CIA" acronym of what makes up a
-> security weakness: "negative impact to Confidentiality, Integrity, or
-> Availability". (Not to be confused with the US Gov intelligence org
-> with the name acronym, ironically.)
+On Thu, Feb 29, 2024 at 1:14=E2=80=AFAM Muhammad Usama Anjum
+<usama.anjum@collabora.com> wrote:
+>
+> On 2/28/24 11:47 PM, T.J. Mercier wrote:
+> > On Wed, Feb 28, 2024 at 3:46=E2=80=AFAM Muhammad Usama Anjum
+> > <usama.anjum@collabora.com> wrote:
+> >>
+> >> On 2/27/24 10:18 PM, T.J. Mercier wrote:
+> >>> On Tue, Feb 27, 2024 at 4:21=E2=80=AFAM Muhammad Usama Anjum
+> >>> <usama.anjum@collabora.com> wrote:
+..
+> >>>> -static int test_alloc_zeroed(char *heap_name, size_t size)
+> >>>> +static void test_alloc_zeroed(char *heap_name, size_t size)
+> >>>>  {
+> >>>>         int heap_fd =3D -1, dmabuf_fd[32];
+> >>>>         int i, j, ret;
+> >>>>         void *p =3D NULL;
+> >>>>         char *c;
+> >>>>
+> >>>> -       printf("  Testing alloced %ldk buffers are zeroed:  ", size =
+/ 1024);
+> >>>> +       ksft_print_msg("Testing alloced %ldk buffers are zeroed:\n",=
+ size / 1024);
+> >>>>         heap_fd =3D dmabuf_heap_open(heap_name);
+> >>>> -       if (heap_fd < 0)
+> >>>> -               return -1;
+> >>>>
+> >>>>         /* Allocate and fill a bunch of buffers */
+> >>>>         for (i =3D 0; i < 32; i++) {
+> >>>>                 ret =3D dmabuf_heap_alloc(heap_fd, size, 0, &dmabuf_=
+fd[i]);
+> >>>> -               if (ret < 0) {
+> >>>> -                       printf("FAIL (Allocation (%i) failed)\n", i)=
+;
+> >>>> -                       goto out;
+> >>>> -               }
+> >>>> +               if (ret)
+> >>>> +                       ksft_exit_fail_msg("FAIL (Allocation (%i) fa=
+iled)\n", i);
+> >>>> +
+> >>>>                 /* mmap and fill with simple pattern */
+> >>>>                 p =3D mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_S=
+HARED, dmabuf_fd[i], 0);
+> >>>> -               if (p =3D=3D MAP_FAILED) {
+> >>>> -                       printf("FAIL (mmap() failed!)\n");
+> >>>> -                       ret =3D -1;
+> >>>> -                       goto out;
+> >>>> -               }
+> >>>> +               if (p =3D=3D MAP_FAILED)
+> >>>> +                       ksft_exit_fail_msg("FAIL (mmap() failed!)\n"=
+);
+> >>>
+> >>> So based on the previous ksft_exit_fail_msg calls I thought your
+> >>> intention was to exit the program and never run subsequent tests when
+> >>> errors occurred. That's what led to my initial comment about switchin=
+g
+> >>> to ksft_exit_fail_msg from ksft_print_msg here, and I expected to see
+> >>> only ksft_exit_fail_msg for error cases afterwards. But you're still
+> >>> mixing ksft_exit_fail_msg and (ksft_print_msg +
+> >>> ksft_test_result{_pass,_fail,_skip}) so we've got a mix of behaviors
+> >>> where some errors lead to complete program exits and different errors
+> >>> lead to skipped/failed tests followed by further progress.
+> >>>
+> >>> It seems most useful and predictable to me to have all tests run even
+> >>> after encountering an error for a single test, which we don't get whe=
+n
+> >>> ksft_exit_fail_msg is called from the individual tests. I was fine
+> >>> with switching all error handling to ksft_exit_fail_msg to eliminate
+> >>> cleanup code and reduce maintenance, but I think we should be
+> >>> consistent with the behavior for dealing with errors which this
+> >>> doesn't currently have. So let's either always call ksft_exit_fail_ms=
+g
+> >>> for errors, or never call it (my preference).
+> >> The following rules are being used:
+> >> - If a fetal error occurs where initial conditions to perform a test a=
+ren't
+> >> fulfilled, we exit the entire test by ksft_exit_fail_msg().
+> >
+> > But this doesn't exit just the test, it exits the entire program.
+> >
+> >> - If some test fails after fulfilling of initial conditions,
+> >> ksft_print_msg() + ksft_test_result{_pass,_fail} are used to avoid put=
+ting
+> >> multiple ksft_test_result_fail() and later ksft_test_result_pass.
+> >>
+> >> ksft_exit_fail_msg() like behaviour was being followed before this pat=
+ch.
+> >> On non-zero return value, all of following test weren't being run.
+> >> ksft_exit_fail_msg() cannot be used on every failure as it wouldn't ru=
+n
+> >> following test cases.
+> >
+> > Yeah this is what I'm saying. I'd prefer to always run remaining test
+> > cases for the current heap, and all test cases for subsequent heaps
+> > following an error so you can see all the passes/fails at once. (like
+> > continue in the while loop in main instead of break w/the current
+> > implementation) ksft_exit_fail_msg ends the whole program and that's
+> > what was happening before, but that means the number of test results
+> > that gets reported is inconsistent (unless everything always passes
+> > for all heaps). Failures from one heap mask passes/fails in failures
+> > from other heaps, and that's inconvenient for CI which expects to see
+> > the same set of reported test results across runs, but will have
+> > nothing to report for tests skipped due to premature program exit from
+> > ksft_exit_fail_msg that could have been a single test failure. Like
+> > you mentioned this would be a behavior change, but IDK if it's worth
+> > the churn to exactly duplicate the existing behavior and then go back
+> > to retouch many of the same spots in a later patch to get (what I
+> > consider) better behavior from the program.
+> >
+> > The docs mention about calling ksft_exit_* only once after all tests
+> > are finished:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
+/tools/testing/selftests/kselftest.h?h=3Dv6.8-rc6#n29
+> >
+> > But actual usage seems to be split between ksft_exit_fail_msg for all
+> > the things (e.g. fchmodat2_test.c), and ksft_exit_skip/fail for
+> > prerequisites + ksft_test_result_skip/pass/fail for individual tests
+> > followed by ksft_exit_fail_msg once at the end (e.g.
+> > ksm_functional_tests.c).
+> >
+> > So what you have is fine based on the fact that nobody has fixed it
+> > yet, but I think we could do better for not a lot of work here.
+> I'll send a v3 by fixing only the other thing you caught.
 
-Yes, this makes a lot of sense to me and I believe we are on the same
-page here. We have gone in several tangents here but let me just remind
-that I was objecting/wondering how much sense does it make to assign CVE
-to configurations which are inherently insecure. From a user POV, does
-it make me safer to have that addressed when the fundamental
-configuration hole (to allow untrusted user to access said resources)
-still in place. See my point or do I still fail to explain myself? It is
-not about assuming usecases and whatnot.
- 
-> -Kees
-> 
-> [1] https://nvd.nist.gov/vuln
+Ok, but this is all that's needed:
 
--- 
-Michal Hocko
-SUSE Labs
+@@ -152,8 +152,10 @@ static void test_alloc_and_import(char *heap_name)
+
+        ksft_print_msg("Testing allocation and importing:\n");
+        ret =3D dmabuf_heap_alloc(heap_fd, ONE_MEG, 0, &dmabuf_fd);
+-       if (ret)
+-               ksft_exit_fail_msg("FAIL (Allocation Failed!)\n");
++       if (ret) {
++               ksft_test_result_fail("FAIL (Allocation Failed!)\n");
++               return;
++       }
+
+        /* mmap and write a simple pattern */
+        p =3D mmap(NULL,
+@@ -162,8 +164,10 @@ static void test_alloc_and_import(char *heap_name)
+                 MAP_SHARED,
+                 dmabuf_fd,
+                 0);
+-       if (p =3D=3D MAP_FAILED)
+-               ksft_exit_fail_msg("FAIL (mmap() failed)\n");
++       if (p =3D=3D MAP_FAILED) {
++               ksft_test_result_fail("FAIL (mmap() failed)\n");
++               return;
++       }
+
+        dmabuf_sync(dmabuf_fd, DMA_BUF_SYNC_START);
+        memset(p, 1, ONE_MEG / 2);
+@@ -217,13 +221,17 @@ static void test_alloc_zeroed(char *heap_name,
+size_t size)
+        /* Allocate and fill a bunch of buffers */
+        for (i =3D 0; i < 32; i++) {
+                ret =3D dmabuf_heap_alloc(heap_fd, size, 0, &dmabuf_fd[i]);
+-               if (ret)
+-                       ksft_exit_fail_msg("FAIL (Allocation (%i)
+failed)\n", i);
++               if (ret) {
++                       ksft_test_result_fail("FAIL (Allocation (%i)
+failed)\n", i);
++                       return;
++               }
+
+                /* mmap and fill with simple pattern */
+                p =3D mmap(NULL, size, PROT_READ | PROT_WRITE,
+MAP_SHARED, dmabuf_fd[i], 0);
+-               if (p =3D=3D MAP_FAILED)
+-                       ksft_exit_fail_msg("FAIL (mmap() failed!)\n");
++               if (p =3D=3D MAP_FAILED) {
++                       ksft_test_result_fail("FAIL (mmap() failed!)\n");
++                       return;
++               }
+
+                dmabuf_sync(dmabuf_fd[i], DMA_BUF_SYNC_START);
+                memset(p, 0xff, size);
+@@ -238,13 +246,17 @@ static void test_alloc_zeroed(char *heap_name,
+size_t size)
+        /* Allocate and validate all buffers are zeroed */
+        for (i =3D 0; i < 32; i++) {
+                ret =3D dmabuf_heap_alloc(heap_fd, size, 0, &dmabuf_fd[i]);
+-               if (ret < 0)
+-                       ksft_exit_fail_msg("FAIL (Allocation (%i)
+failed)\n", i);
++               if (ret < 0) {
++                       ksft_test_result_fail("FAIL (Allocation (%i)
+failed)\n", i);
++                       return;
++               }
+
+                /* mmap and validate everything is zero */
+                p =3D mmap(NULL, size, PROT_READ | PROT_WRITE,
+MAP_SHARED, dmabuf_fd[i], 0);
+-               if (p =3D=3D MAP_FAILED)
+-                       ksft_exit_fail_msg("FAIL (mmap() failed!)\n");
++               if (p =3D=3D MAP_FAILED) {
++                       ksft_test_result_fail("FAIL (mmap() failed!)\n");
++                       return;
++               }
+
+Otherwise, on a Pixel 6 I get just:
+
+TAP version 13
+1..176
+# Testing heap: aaudio_capture_heap
+# =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+# Testing allocation and importing:
+Bail out! FAIL (Allocation Failed!)
+# Planned tests !=3D run tests (176 !=3D 0)
+# Totals: pass:0 fail:0 xfail:0 xpass:0 skip:0 error:0
+
+and none of the other 15 heaps are ever tested.
 
