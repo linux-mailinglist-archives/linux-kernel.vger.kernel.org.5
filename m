@@ -1,169 +1,170 @@
-Return-Path: <linux-kernel+bounces-86275-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86276-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FBD786C333
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:12:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5F2486C336
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:12:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4640CB232AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:12:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B852284E89
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:12:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F72C4878F;
-	Thu, 29 Feb 2024 08:12:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB7704CB4B;
+	Thu, 29 Feb 2024 08:12:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dOw6KgVw"
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="SehPk17p"
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01olkn2030.outbound.protection.outlook.com [40.92.53.30])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AF59446AB
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 08:12:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709194341; cv=none; b=Az5Z1LgojCMIWKrTesbwMzU8ttqaPjn9zmIIutybplgP6MSRyz1cUyDnpFtJSSoM9F4h+hqo982CTLq3xtkp7Rdzloowt92ZkF9RB4ER5EbXTaw58V7OAWHXEinTAM4VqB8/tcyuzjfkBaapUe14y4mrVhTiVwWFbPSynvWcPXw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709194341; c=relaxed/simple;
-	bh=hkNoVgg/s16Yvv+JgdnS3mrdqjwPqt8dZTRUoWVH0HA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HdnHOu1l88vuKrMnbT7mQ6auHHM3BmHup883gybx0KHlDsV+QJx0JhUp8v+isNUl+iaNJn9E9HcygmPRLkbcMsyUyFtisT3GQz8yWZrcMPZjf5mJtAF/PuCdEL6pEEp1QG/3IvrI29uTSYe8flFlMaObO+IQ2RK0ZaXMpJgoHY0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=dOw6KgVw; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1dc3b4b9b62so5394345ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 00:12:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709194339; x=1709799139; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=fL2ppWiNvWh5i4XwlQmZabTMeBWWyC5WjuRP+1u4wQE=;
-        b=dOw6KgVwELpncbuyIwR3KA0mx1xGCFVgQFRUEdtVjJ70s27tO3jkfS2mZO65+eh3/G
-         NwbR/VxjYOrNtvqoeoAwwpyFw40qslJCffMeaQvGXz9ffIDxc9bKPVzPbrHSEuwkd8bT
-         pOLfc/LZvgGzbLn+5NqTDjaDfa11XpOqk7oSXoKEHfuSHbTJCpeIfAa9kVrb8/sWq8DI
-         H7CYTFTt4bbd56T8T238mk0qFewed7aOCk2B5o/CpqfP0juIzVfeuetbXpvSgHZ1+Dz9
-         kvAg+OxLuMOQkFqri5qPk5FYDg2ohebbQ4FlmeKVDNT0hPzp6P6nZFFT+BD0c9iOAuaW
-         posg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709194339; x=1709799139;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fL2ppWiNvWh5i4XwlQmZabTMeBWWyC5WjuRP+1u4wQE=;
-        b=QldlegXrJUkdEkMTpPb7sAJa1+2cLL9UUsmHb0MQI6P+HtjB/oTLhS8JFg/hDme2Rh
-         +xgBJcsLWVcfMoTvLJTy6dwyaIf8bq+eMPUFYxhrDYzBxJy91t1lc9CgEltOynnf6BX+
-         1eyUElnPDeyp5/dD8Wrh6m2Fq++Pgbauo++wylyFeAoBinJNi92CDE/cUMEDQ4tFGmr0
-         IdLobhAySje8tcF46OlyMlq+qrrtSCO4vdFPjUcnoAQ1SeTaLiqVnvb2uNKunJ1RrnC0
-         UY/PpztIeXno+XIMFDSLiulTOEJ8D+UlrELafyLGST08UaMPXON+DrZGZrnjzOA2DO8Q
-         IVnQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXfJ6eRlY7r+Z/e+2maphGqSJFs6IX4a1fU1CK/FB7acy00tz9AtSGsBghkCR4S83MqA6wDkMph/w+R0gQBIKCAtEfWur8z9cKClVWn
-X-Gm-Message-State: AOJu0YxuxAu6Ec5T/KjPn/AtPxxe52ThRXTublo8OaDMeE/U9UVdLHOs
-	IoZi1ZBnKGQFR4KG/0bthV28xQZvZGC0q5kLYBVY7EEOUUz5rKyPsdAoKGK8unw=
-X-Google-Smtp-Source: AGHT+IHnUsF+3dAIEpXcDmeHdire3xJOHx1UF2DJ1pIGXDkG1kh/CZYK/U94b3pDJNDqCv2cx4wyhQ==
-X-Received: by 2002:a17:903:1c3:b0:1dc:b887:35bd with SMTP id e3-20020a17090301c300b001dcb88735bdmr1953757plh.5.1709194338594;
-        Thu, 29 Feb 2024 00:12:18 -0800 (PST)
-Received: from localhost ([122.172.83.95])
-        by smtp.gmail.com with ESMTPSA id n9-20020a170902d2c900b001d8f111804asm803441plc.113.2024.02.29.00.12.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 00:12:17 -0800 (PST)
-From: Viresh Kumar <viresh.kumar@linaro.org>
-To: "Rafael J. Wysocki" <rafael@kernel.org>,
-	Viresh Kumar <viresh.kumar@linaro.org>
-Cc: linux-pm@vger.kernel.org,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>,
-	Roman Stratiienko <r.stratiienko@gmail.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] cpufreq: Don't unregister cpufreq cooling on CPU hotplug
-Date: Thu, 29 Feb 2024 13:42:07 +0530
-Message-Id: <1333a397b93e0e15cb7cb358e21a289bc7d71a63.1709193295.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14358482C2;
+	Thu, 29 Feb 2024 08:12:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.53.30
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709194358; cv=fail; b=mcl8q9h/vbYwe0h88JzKQefNCNi9rabqYYGJGRA+zpcoeKe4lxK/8kQR2oimZuV9jycOzCNPGWjhO7mnxOP+o8Btzx51NRwL32NCFfgj1FvDnd+M6kI/OMe2XzJ4i8fW7STQAepT1cw2nCNUvzGaH0VWX6j27j0qyefwPSRhQq4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709194358; c=relaxed/simple;
+	bh=9mHGsGbGmiPClSfJBZA08pBwo4eVnNdwJpfO4MXhicQ=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=UkVTFrATRYbmhZKNPZX512x83s8DLz2JfJzocl+XCeck27zwWEcx56ptwV1W3sxjk1IZrIgY8QBn5MUuFA+xoyqdojdFOBglIuQo/snOzb/mkcGpraV7kN64cKwwWywHBijYStStu06Jjxhoqeu4csTYYGDkP+XKn3B2ipyVFQg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=SehPk17p; arc=fail smtp.client-ip=40.92.53.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LWgVuubjiLFvN11iWvDbXQoYtiHmNMUJqGlXwrGFLrO+8cY05Ed7MmO3OMlj/Bu9iH5ecHQn+d6Ynv+s6yYh1B9HYCPF2gYFKoTFNnu+3TRPYnOR6NbwLEc5T0bS6K8foIpBgxZjcEfP5cCHrhr0miUG0fbuJGxbxpwTvBfbjGjJ8V0nwQieijBs3FRkQhewg4n70zaHk0U/CXQuFVt7irR/LYCJaazYqbJ/2d+t8fwxgwwdnam+doBbhANnTAT+gUDaD5jCQYuaM6QKJxe5hJ0WnssadbO6HGPiG7A6f8p/JygOjRTx/CveMCHOf7sO6t/FJN4jExcDxYWyUKOJzA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MjQQr+/l1iL/CrJpUrFN9h3SrM6wfwPXzW9wE3Lg7ZI=;
+ b=oNWtRxmy9ufZs8pLJP/bU7Av9K3vykZR/xprNQ/06sVhY9ndESMcuP3mLhLC4/Venuq4CQZKRUUA+ZUS+MmCg1f8bRYqxytD9qCVX/J4jC4aR0lY1h7xpHmvB9DYoQfTeEZ4e+gISfPsZr1tE72Ci1NYhkh4l1hoZwTZFUq0KkmGOtNce46cCsx+jZ3jeCRIFcdKhMR3LCfP8PIBWKCRT+jS+AhhWG+np7hB399GHkN06SWk2KpmeNha+FQra2RwYWj7O9NAQEPkyXyATny1aBZP0FS2ieIqFiXFEJP2FiKqTJ1oWhHgG2uTgm8800jjNPfEB0XIRrADJVUTIYXh8g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MjQQr+/l1iL/CrJpUrFN9h3SrM6wfwPXzW9wE3Lg7ZI=;
+ b=SehPk17pgd0druHWHQ2XrOlwrCEYW7EBRPsSvzSSRSSdIs0Enyekv+vbz2Ny3dbvCNARRe0e58ZCk4mBrXEC01hcj08xlHGcApIwUukfdJEk8tj2ld3bTc9W/BBTgjfQynH+ez2PsIJ0BLbEzU5neWHINk9wvihX+K2E0HGw7dg9kl1Ojo5dXprN/ogR2ZFny5RWg2imlwWOx6qrPnj6IJMJO3hzfwg0mDShgFI2QpEioyjZsCsMNugycoPq2Z7DO4KmDWD8wmduApKa/5r6IT9ziXRYT2zVEhPjcmtf/wAE5Lpq28wEUUFmSEeaRGSZ16q3vw4PiPOLXgP+SUdJsw==
+Received: from KL1PR06MB6964.apcprd06.prod.outlook.com (2603:1096:820:121::11)
+ by JH0PR06MB7351.apcprd06.prod.outlook.com (2603:1096:990:a8::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.41; Thu, 29 Feb
+ 2024 08:12:31 +0000
+Received: from KL1PR06MB6964.apcprd06.prod.outlook.com
+ ([fe80::bdb1:3c40:b3e8:1f15]) by KL1PR06MB6964.apcprd06.prod.outlook.com
+ ([fe80::bdb1:3c40:b3e8:1f15%7]) with mapi id 15.20.7316.034; Thu, 29 Feb 2024
+ 08:12:30 +0000
+Message-ID:
+ <KL1PR06MB6964FD1B688F1E0460E5ACF8965F2@KL1PR06MB6964.apcprd06.prod.outlook.com>
+Date: Thu, 29 Feb 2024 16:12:24 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v6 07/11] dt-bindings: net: hisi-femac: replace
+ deprecated phy-mode with recommended phy-connection-type
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Yisen Zhuang <yisen.zhuang@huawei.com>, Salil Mehta
+ <salil.mehta@huawei.com>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+ Heiner Kallweit <hkallweit1@gmail.com>, Russell King <linux@armlinux.org.uk>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org
+References: <20240228-net-v6-0-6d78d3d598c1@outlook.com>
+ <20240228-net-v6-7-6d78d3d598c1@outlook.com>
+ <54d3b190-c069-4165-9191-4557845cd87c@linaro.org>
+From: Yang Xiwen <forbidden405@outlook.com>
+In-Reply-To: <54d3b190-c069-4165-9191-4557845cd87c@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TMN: [4Hg71diEYehOmJ7aMZfxRJDupKCJAZYSkI8epDx5BNOFLZq1eD6fA3L6QPfwyTsL]
+X-ClientProxiedBy: SI2PR02CA0045.apcprd02.prod.outlook.com
+ (2603:1096:4:196::21) To KL1PR06MB6964.apcprd06.prod.outlook.com
+ (2603:1096:820:121::11)
+X-Microsoft-Original-Message-ID:
+ <301de09f-d0d0-4179-981a-cc91ed13f3bf@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: KL1PR06MB6964:EE_|JH0PR06MB7351:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6f0086c8-8fd7-48d2-f089-08dc38fe2cd0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	UYw3XKcHIltcMf2onfsImWhTyxO1NU+khw2/QLoCpD1kS5a5EqUaNy+S7Z9IIi+Xl2seSrcHoELgMdBp2XBDWeC/qtnmUzN9sS4ZsYmdcZBe1gCBFRAdfz72seGQoiCE6cc6+kehkFVivGaHnnKvl7iMgIWFhw96v04nJa0qRXArwZDXBZifY0IyIe/Rm9S9rNDA0VrzeAysFJVCMJwc6oqqrCnPEePa2c5zTcfWkSiA9P60sQagQKWuItkTrFWyeL7YFacsoDwDbnRJpEGFRASsjEp9jAMsgf2uRPgWZJglF744bCKrvuEo3rgTt0LkiFHXidGDA+GOftC3W41YermcRACxiugIp7BAJVVZMJogmpMCRw2Vl2ktiqx/KHMfUX5gQfnDwEeyF8d8PTQfhPK+bF2ECl4eJ27Q2JJB6ctun+f16CXm3owhrspitP3raC1CYcQ5WgytyN47KjFkQ+/FbuTnQ58ro4n4wSm47Ljwz3aDP2Yl6APgoSfOsARZ04gPS+1KMcBtpj7fCV4uxSzEcFkwFqSe/SAC/4ZWMq/AQ4B+elQqOScLR3sE3xl7
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?NGx4Z0srYTU0SGRFUUV1LzVlQko2YmF0WERrTjJldEhLaG5lbUliZ1llUUJp?=
+ =?utf-8?B?RnlqSFVzaTU5aDQ2T29nWWFGNHBHUzRQSGNxRGtQVkl0ajNQMC9HbDVhYisr?=
+ =?utf-8?B?d3dvK3ZkUGZEVXY3M09JNTMwMkxvL1BmSDF1RWlKdC9vdmlmbEdRbTFDWHVL?=
+ =?utf-8?B?OFJhNDhLVkNOem9LVWZvdXlGQVY5a0dnZHNXdE5EYWFqSVZ0dFhMRHFva3pa?=
+ =?utf-8?B?TzN0WGVCNFh3eGs3NjBTVEdCK3JnV1N6VHpqRUVWUDBOcHNFTDhrSTAwUExq?=
+ =?utf-8?B?SkNkYVpuOW4yQWc4em5Sd3hvcjNtU01ETU03ZVRaWk9Oem5KSk1HY0llWjhm?=
+ =?utf-8?B?eG13ek9tMlZhZmN0dEFzdWZHM1NleWtXT0lydWtxc2s0MVZaOWxkT201cjRn?=
+ =?utf-8?B?aFdBSUZRY0NkM1hLL0o2M1d1TjByMENhdUtXdUxueStLTU9OOCtMZTJkbTNl?=
+ =?utf-8?B?K1dHTnFVS1RPRXhIOHZ0R2ptdGFBd2ZsdUxjeHZZYXUrOTJpT1l3cllLNGc0?=
+ =?utf-8?B?ZHRwRFBCVHlzdDBsdTV6UG80OFJWc3l1dFdDT29uZmlTYXBYbVFaTXFRdCt2?=
+ =?utf-8?B?d3cwYUE0L1Rna1YwdG8xcnFNYnhGUGcveGZKUlhPa3BCTmhmMm9BZlpjQWVP?=
+ =?utf-8?B?bnQzS0ZBN05SUzNRSCt0RXM5bjJUMWpUY3dxSDRrVSt0a1JMYkhHakxyTDhw?=
+ =?utf-8?B?SXdOcndneFhwelZnQWxPd2lVRFQ0SmIxVUZ5cHp5ajFWZ1pEUWk2VThGRUp0?=
+ =?utf-8?B?dFZoMW1uM3o1RytVd1lLSERnYXpsRmpWVHB6cmY5aE9rb2JVYkVLQVBFWTVL?=
+ =?utf-8?B?Q2dCS0hrb3VaQ0luVk5maFR4eEI2RFVST2g4QlhXaU1Bb2hmQk01OWV0Qno4?=
+ =?utf-8?B?bUgxM0lBb21LZ3NMVlJ2SEFIWlg5d1Y4cWYvUFprUkMybW4yN2hSU0xPY1Zo?=
+ =?utf-8?B?MTY4WG14Qmx6UjZJSlhZNzJzUFlTUTIyMERMcDBGZW4rcXFxemFaNVQvVzIx?=
+ =?utf-8?B?MDNBanZGaDNxWVVqN0Q5MkVFRjBmVUljQXFQU2d2MU92emtjV2s1MHpOdkRG?=
+ =?utf-8?B?OVJRbVUvT2VVczVGTDJSb2RBTXlJRit6cUR6SG9CYmhSMmoyL0FXZUU2WTNq?=
+ =?utf-8?B?TjhNalMrUW5tRDJUZmZkYlJRNldGNWFyZWthYVVCTmdFY0pnUEU3YXV6SmI3?=
+ =?utf-8?B?aUE2THBuOHozTjVIM0ZycVNnc1RudFo5UkJKejBaa254SllaMnVMSjJvNFp2?=
+ =?utf-8?B?MW1lK2YwenJZYzM1ZUk2ZHFYdjZhT3VtQ0FmV1VTT3BOTVJseUswcVg1UFM2?=
+ =?utf-8?B?VG9NUVVadnVTRFJkcitOTkJ4SjVtMm9NTm1OekFkMVV2VWZoTWZ6MUo0MkYz?=
+ =?utf-8?B?YllDQ0FlQzdYbk5YQjAwNnZxU2ZMSVZhVDd6aU5pVTJNRmNTa01XbDBmQ1V6?=
+ =?utf-8?B?dGMydy95azVvaUVtNUVsTnlpVkVsclRDLzlYZU1SRGd2MzZzMnZNd2JRZW9h?=
+ =?utf-8?B?SEtKVmNVd0RCdElsQkpwdmo2SEM4UXpJZXMwQ05yRnc3NGFGSTBNbk1PZDZy?=
+ =?utf-8?B?NVFnU1d4eU9YMk9KL2dqU09LSHA5UmFnWmlPZHNwaEMyK2paNWJXOHRVZklR?=
+ =?utf-8?B?OE9aZW1lakxzZjdSM2Y1Zk90cm85cVUvOEhzMWhoY3Njb1Q3blhCSUUzUjFS?=
+ =?utf-8?B?NjUzd0l6RnlWK092RE5YQXZLL3JLZzhYTXBNa2gwMDNSdFBpQkN5WnpvZFMr?=
+ =?utf-8?Q?4+FLO/p/7KkDtO4CJVhzC7YP4ENfotvrWE0nq9S?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6f0086c8-8fd7-48d2-f089-08dc38fe2cd0
+X-MS-Exchange-CrossTenant-AuthSource: KL1PR06MB6964.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Feb 2024 08:12:30.6488
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: JH0PR06MB7351
 
-Offlining a CPU and bringing it back online is a common operation and it
-happens frequently during system suspend/resume, where the non-boot CPUs
-are hotplugged out during suspend and brought back at resume.
+On 2/29/2024 4:08 PM, Krzysztof Kozlowski wrote:
+> On 28/02/2024 10:02, Yang Xiwen via B4 Relay wrote:
+>> From: Yang Xiwen <forbidden405@outlook.com>
+>>
+>> The old property "phy-mode" should be replaced with the latest
+>> "phy-connection-type".
+> 
+> Why? The old property is not deprecated.
 
-The cpufreq core already tries to make this path as fast as possible as
-the changes are only temporary in nature and full cleanup of resources
-isn't required in this case. For example the drivers can implement
-online()/offline() callbacks to avoid a lot of tear down of resources.
+The old property is just a $ref to the new property. While at it, i
+would like to update it as well.
 
-On similar lines, there is no need to unregister the cpufreq cooling
-device during suspend / resume, but only while the policy is getting
-removed.
+Since there is no real user in mainline yet, this update does not need
+to keep dts sync. I would expect it(the old property) to be deprecated
+in the future.
 
-Moreover, unregistering the cpufreq cooling device is resulting in an
-unwanted outcome, where the system suspend is eventually aborted in the
-process.  Currently, during system suspend the cpufreq core unregisters
-the cooling device, which in turn removes a kobject using device_del()
-and that generates a notification to the userspace via uevent broadcast.
-This causes system suspend to abort in some setups.
+> 
+> 
+> 
+> Best regards,
+> Krzysztof
+> 
 
-This was also earlier reported (indirectly) by Roman [1]. Maybe there is
-another way around to fixing that problem properly, but this change
-makes sense anyways.
-
-Move the registering and unregistering of the cooling device to policy
-creation and removal times onlyy.
-
-Reported-by: Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>
-Reported-by: Roman Stratiienko <r.stratiienko@gmail.com>
-Link: https://patchwork.kernel.org/project/linux-pm/patch/20220710164026.541466-1-r.stratiienko@gmail.com/ [1]
-Tested-by: Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- drivers/cpufreq/cpufreq.c | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-index 44db4f59c4cc..4133c606dacb 100644
---- a/drivers/cpufreq/cpufreq.c
-+++ b/drivers/cpufreq/cpufreq.c
-@@ -1571,7 +1571,8 @@ static int cpufreq_online(unsigned int cpu)
- 	if (cpufreq_driver->ready)
- 		cpufreq_driver->ready(policy);
- 
--	if (cpufreq_thermal_control_enabled(cpufreq_driver))
-+	/* Register cpufreq cooling only for a new policy */
-+	if (new_policy && cpufreq_thermal_control_enabled(cpufreq_driver))
- 		policy->cdev = of_cpufreq_cooling_register(policy);
- 
- 	pr_debug("initialization complete\n");
-@@ -1655,11 +1656,6 @@ static void __cpufreq_offline(unsigned int cpu, struct cpufreq_policy *policy)
- 	else
- 		policy->last_policy = policy->policy;
- 
--	if (cpufreq_thermal_control_enabled(cpufreq_driver)) {
--		cpufreq_cooling_unregister(policy->cdev);
--		policy->cdev = NULL;
--	}
--
- 	if (has_target())
- 		cpufreq_exit_governor(policy);
- 
-@@ -1720,6 +1716,15 @@ static void cpufreq_remove_dev(struct device *dev, struct subsys_interface *sif)
- 		return;
- 	}
- 
-+	/*
-+	 * Unregister cpufreq cooling once all the CPUs of the policy are
-+	 * removed.
-+	 */
-+	if (cpufreq_thermal_control_enabled(cpufreq_driver)) {
-+		cpufreq_cooling_unregister(policy->cdev);
-+		policy->cdev = NULL;
-+	}
-+
- 	/* We did light-weight exit earlier, do full tear down now */
- 	if (cpufreq_driver->offline)
- 		cpufreq_driver->exit(policy);
 -- 
-2.31.1.272.g89b43f80a514
+Best regards,
+Yang Xiwen
 
 
