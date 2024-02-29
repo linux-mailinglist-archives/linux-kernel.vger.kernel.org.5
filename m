@@ -1,352 +1,156 @@
-Return-Path: <linux-kernel+bounces-86645-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86647-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B08A686C84F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:44:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B39986C854
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:45:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A6F91F23DA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:44:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2FDF6288974
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:45:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DB077C6CD;
-	Thu, 29 Feb 2024 11:44:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F9A77CF13;
+	Thu, 29 Feb 2024 11:45:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UTZawJFm"
-Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="k4mxdAHA"
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2081.outbound.protection.outlook.com [40.107.92.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEEDC7C6C4
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 11:44:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709207091; cv=none; b=WucgoA206nI91bGhjaf5VKyQjVNlGcGHyZwPogaQKAJgN32gvHboWkC218OFLuPWj+9Z4bss5QQvRqdQ8GL9bI6Lx2CKIG8awQ29EW2GtlrqZ5CHXVqPKGp3HHTDmMfS8GTaVRptvTSY0o1zRbveOkobusjK3d+DExP0wR94L9k=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709207091; c=relaxed/simple;
-	bh=gqSm8MYLIVR/YBvqKOzvJl7HducvnUY68m5cyYziU1g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nEybArv0s3C/JDidiVAJEHTKFKhzj319r2+XEPWmNBd0bP901aF6grykdaGFKPPT386LdiQplQINZReq5RxoSro9OLi1N34oj5zuYKEMgLxZDrP+SVLaR/ETbeAbuUHlIYl6MuS15C8LCEHWs7VQyC6GQ55eE5eKh89uxlfasAY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UTZawJFm; arc=none smtp.client-ip=91.218.175.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <361e1243-7975-43e1-807e-e9d4473ecc0f@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1709207085;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KHLGt0Ofqy3PQoH+RqDHzhuytpxwAw+VoEfFRwzP40g=;
-	b=UTZawJFmsLjwlPgLeg8iB8Ct94iJYfbC1jrSbhEaRgfiFMHzNTYKYLSwiZDQ53Rv+rlotr
-	b7NslKmrMNT4WrLxTvXbfIuOteDzfYrVdWwEaQ6YVQRSMfycnjCrtmJ89yt2aVYrVAiUBi
-	oeBPzATAZSt5zcJYJ46nVJz1O2XZIGQ=
-Date: Thu, 29 Feb 2024 11:44:38 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D26B659B6A;
+	Thu, 29 Feb 2024 11:45:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.81
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709207111; cv=fail; b=e6Y89vQTNhKcPK33ZHYjIAmlI3lnnZJAqGk87yPzXEih2294F+OPGcLR7Cgae+AEmjdhWlVGi/4Yi91EN1/Yojlv9ZuJlK8yqcluQul8zbTxp+y35TQVUIO4+tmPJORhoFqZP3JNCOanls7FiLxDZpHiwHaeKhxvGWTawxTtSRo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709207111; c=relaxed/simple;
+	bh=2AvODDP7c14q+zYQcAXV9HzRG0nVwf8u9lSlwKyZxHc=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=baGBKZq9bVu0Sko9ooGVjj/Q2IVF2ubaD7L+nmo8ClOAR/imD2xhpaQ2HKVXqrkmziYjinQhw7RV6F5t7FxG/aohZjyalYunUHN6mIPQEcTHQ5e0PEi2JMbTTBdYMCtTwN1Dt8qKhpo4Fq9nxhHgN6rwzkmFknhqhBjMewYnXQw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=k4mxdAHA; arc=fail smtp.client-ip=40.107.92.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JIt6RlqFhUW8taASyqiPyIlZIQiKb/Ud3vn2xNdBSM0D2rj/xxxNxs1285CUbV1qkXuzhFMkgNyvIxqlgrGf+60zVdk8B+737CJmIm++HYfabSPOBy583P8cs2ojhBrcUJSuam9WA52bYb5wCzhQDe2i2Z9k3wo0HX+Re2uFclU9mKNV+Zvle/D3UgJIL+3GTGpypkvU3VxNqQ3UGsWpm1L3yTyHISSheVnudh82RiiSLvSBFpwQ8AgqMhK1pDiUCcddVEv2qXxDo7yN3iXh+GPhq13uxwRLf3bw3Amqjja5UJm+cdxuuiaYgoq6pRBw8vuW6bj0OaGbTPiQMett8g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=TeZlVl8zDiAyryXi7c4BZnR4xI7fGP+mqPXR0kQrMho=;
+ b=aSgaeWZntCZN+hisTvtmHghAFudmxGFre7Ip+L1E0ju5s8qNoK7bwgkc/6nZteRrOtoKScCAub138ZRVo2//E0xA/+R0cUn128DazCkfLODEWAS+Rs/+JHEhqUlbeZ10a/bcUvUkyX9FrGY+PGiXguA3ZXS5/AQ/lXrKtf8dC9Nb7CQX2noIABHxS2ybL4p5rQ6KGlO3G3DTNtgQd7/9WwKP7lxK4rY223gYBrbW4t9sTH1/OxKjsaDByNw94u4nSQPYUCFhVlWutyPKoPnEEbo6diUxhuBNqq3JBFDf0hf0vkC2TB4O4J33x088DpH2Uur7X7HYESdjlyDIUzs1Vg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TeZlVl8zDiAyryXi7c4BZnR4xI7fGP+mqPXR0kQrMho=;
+ b=k4mxdAHA/KJPXuoJUZ3XSR7VUccmINTrjVRXBkJKuDRt6Om9pwWhnjoXKnAC/5qvvEXrESurR7bCaDvIHXlZ9C9qWMstLVBOovo2nj7g0PQokuOgdss2wqZK5PfroI0i1HOdBeoynh1wBaC9hMZ6+oo1YJcKvzrtY1cM6fEdOXTZBBvClT4qOUaAOiCGw+4CJDZa0bBAwipL2SsUZlQR7vV1XlhxLHRRGHvpOxQ1RW72AoNuO9oQ+CY9wEEaN+DNjAOHEXI3MyBwsaBfAvCsA8OP44izOeftcTrfmw3N8IGI3pSW67paZt1ESv6CPqTfsc4NeyLghr6di90nk3o37Q==
+Received: from BYAPR06CA0063.namprd06.prod.outlook.com (2603:10b6:a03:14b::40)
+ by PH0PR12MB7471.namprd12.prod.outlook.com (2603:10b6:510:1e9::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.41; Thu, 29 Feb
+ 2024 11:45:06 +0000
+Received: from SJ5PEPF000001CD.namprd05.prod.outlook.com
+ (2603:10b6:a03:14b:cafe::cf) by BYAPR06CA0063.outlook.office365.com
+ (2603:10b6:a03:14b::40) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.32 via Frontend
+ Transport; Thu, 29 Feb 2024 11:45:06 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ SJ5PEPF000001CD.mail.protection.outlook.com (10.167.242.42) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7292.25 via Frontend Transport; Thu, 29 Feb 2024 11:45:06 +0000
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Thu, 29 Feb
+ 2024 03:44:51 -0800
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail205.nvidia.com
+ (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.12; Thu, 29 Feb
+ 2024 03:44:50 -0800
+Received: from BUILDSERVER-IO-L4T.nvidia.com (10.127.8.14) by mail.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server id 15.2.1258.12 via Frontend
+ Transport; Thu, 29 Feb 2024 03:44:48 -0800
+From: Akhil R <akhilrajeev@nvidia.com>
+To: <ldewangan@nvidia.com>, <jonathanh@nvidia.com>, <vkoul@kernel.org>,
+	<thierry.reding@gmail.com>, <digetx@gmail.com>, <dmaengine@vger.kernel.org>,
+	<linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC: Akhil R <akhilrajeev@nvidia.com>
+Subject: [PATCH v2] dmaengine: tegra186: Fix residual calculation
+Date: Thu, 29 Feb 2024 17:14:39 +0530
+Message-ID: <20240229114439.21246-1-akhilrajeev@nvidia.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [revert 0d60d8df6f49] [net/net-next] [6.8-rc5] Build Failure
-Content-Language: en-US
-To: Eric Dumazet <edumazet@google.com>,
- Tasmiya Nalatwad <tasmiya@linux.vnet.ibm.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- arkadiusz.kubalewski@intel.com, jiri@nvidia.com, kuba@kernel.org,
- "abdhalee@linux.vnet.ibm.com" <abdhalee@linux.vnet.ibm.com>,
- "mputtash@linux.vnet.com" <mputtash@linux.vnet.com>,
- "sachinp@linux.vnet.com" <sachinp@linux.vnet.com>,
- venkat88@linux.vnet.ibm.com,
- "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-References: <3fcf3a2c-1c1b-42c1-bacb-78fdcd700389@linux.vnet.ibm.com>
- <85b78dad-affa-47c3-9cd0-79a4321460b8@linux.dev>
- <CANn89iJEzTjwxF7wXSnUR+NyDu-S-zEOYVXA+fEaYs_1o1g5HQ@mail.gmail.com>
- <a1fdd2c2-4443-458e-86db-280e7cbd4a36@linux.vnet.ibm.com>
- <CANn89iKdaMFCKnGRL4ffnbyrr2PUaKn1hoiu4VZ=sRyX=Vy0Wg@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
-In-Reply-To: <CANn89iKdaMFCKnGRL4ffnbyrr2PUaKn1hoiu4VZ=sRyX=Vy0Wg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+X-NVConfidentiality: public
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ5PEPF000001CD:EE_|PH0PR12MB7471:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5634d516-7a61-4bfc-418e-08dc391be024
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	zkjLTpxIIcXt9dnTZLCee+v5a6G5D2reQ4TwVd1/iRaTmmGtCcVFM5sn9sc5CvQu5O1uVtUjBB71tdR4OaQscUMDoK18uSyyVerSAKTc3+mUWf3F5rFKqbjHLu5z4d8xMU1W30SwB+afJB3iLA+feT5v1rOTgGSd8jBlHIZt+zM/5RycxKUOMoBawSynoBEpacN0NK+gqBLP3q+gOajrpFah3Btq77JJ3zA5qFGMqM5q9ljw5RFGbNiYQXHZLQztR9oWGnjYaAJLfTfQhXq9NW0Zsd+gv+WI95RVScEzTzmzlhlI8yhDozA6b2IxBwOCkyj7jQue6clMpTtuIdtFRb+YVUJdTq6YagqrnorqWqG34mzCWkDprDAAZ5oQ4YR4k1SWpTJuRcWnrEzkVCTlqTZzB5V6fvKtocfqZQrfm9e86EgxYV6WaM/oBLToM6+ODaHDIek6qnZDY0GVIuomg7qmQuZXfwcX2eZ9fTaz7p0Dwl3eL0SqtkYHcuXBqg/TreTLBu3Fw7VW8zzvoKTsPFfmb/zpgR5z2uJKd+mx1L7vFkY6/xB2+sTbyqp+e4erknsEvECBJiI7Yziu4ub9akhR8lzWa1lvKBDM2JVuzxnUq6b0cqglbnf6Mb9j0NHYEiu6mGLc0PN5uGnZaaeljh6tlHQftz9O9TtlvyRS90ARu7YrceMeDZ5xjfiy1afr7Pa98uQjZs4hYyuZ3NdaWOdUlNuIsn7QkAsQPKtkgf/cPMTpmliltnI8kpcn7i7v
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(82310400014)(36860700004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Feb 2024 11:45:06.6984
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5634d516-7a61-4bfc-418e-08dc391be024
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SJ5PEPF000001CD.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB7471
 
-On 29/02/2024 08:55, Eric Dumazet wrote:
-> On Thu, Feb 29, 2024 at 9:04 AM Tasmiya Nalatwad
-> <tasmiya@linux.vnet.ibm.com> wrote:
->>
->> Greetings,
->>
->> I have tried the patch provided below. Moving struct to file
->> "net/core/rtnetlink.c" is not resolving the problem. Please find the
->> below traces.
->>
->> --- Traces ---
->>
->> In file included from ./include/linux/rbtree.h:24,
->>                    from ./include/linux/mm_types.h:11,
->>                    from ./include/linux/mmzone.h:22,
->>                    from ./include/linux/gfp.h:7,
->>                    from ./include/linux/umh.h:4,
->>                    from ./include/linux/kmod.h:9,
->>                    from ./include/linux/module.h:17,
->>                    from net/core/rtnetlink.c:17:
->> net/core/rtnetlink.c: In function ‘netdev_dpll_pin’:
->> ./include/linux/rcupdate.h:439:9: error: dereferencing pointer to
->> incomplete type ‘struct dpll_pin’
->>     typeof(*p) *local = (typeof(*p) *__force)READ_ONCE(p); \
->>            ^
->> ./include/linux/rcupdate.h:587:2: note: in expansion of macro
->> ‘__rcu_dereference_check’
->>     __rcu_dereference_check((p), __UNIQUE_ID(rcu), \
->>     ^~~~~~~~~~~~~~~~~~~~~~~
->> ./include/linux/rtnetlink.h:70:2: note: in expansion of macro
->> ‘rcu_dereference_check’
->>     rcu_dereference_check(p, lockdep_rtnl_is_held())
->>     ^~~~~~~~~~~~~~~~~~~~~
->> net/core/rtnetlink.c:1059:15: note: in expansion of macro
->> ‘rcu_dereference_rtnl’
->>           return rcu_dereference_rtnl(dev->dpll_pin);
->>                  ^~~~~~~~~~~~~~~~~~~~
->>     CC      crypto/algboss.o
->> net/core/rtnetlink.c:1063:1: error: control reaches end of non-void
->> function [-Werror=return-type]
->>    }
->>    ^
->>     CC      crypto/authenc.o
->>     CC      crypto/authencesn.o
->>     CC      crypto/af_alg.o
->>     CC      crypto/algif_hash.o
->>     CC      crypto/algif_skcipher.o
->>     CC      crypto/algif_rng.o
->>     CC      crypto/algif_aead.o
->>     AR      arch/powerpc/kernel/built-in.a
->> cc1: some warnings being treated as errors
->> make[4]: *** [scripts/Makefile.build:243: net/core/rtnetlink.o] Error 1
->> make[4]: *** Waiting for unfinished jobs....
->>     CC      lib/kobject_uevent.o
->>     AR      drivers/net/mdio/built-in.a
->>     AR      net/802/built-in.a
->>     AR      drivers/connector/built-in.a
->>     CC      lib/vsprintf.o
->>     AR      ipc/built-in.a
->>     AR      net/nsh/built-in.a
->>     CC      lib/dynamic_debug.o
->> In file included from ./arch/powerpc/include/generated/asm/rwonce.h:1,
->>                    from ./include/linux/compiler.h:251,
->>                    from ./include/linux/instrumented.h:10,
->>                    from ./include/linux/uaccess.h:6,
->>                    from net/core/dev.c:71:
->> net/core/dev.c: In function ‘netdev_dpll_pin_assign’:
->> ./include/linux/rcupdate.h:462:36: error: dereferencing pointer to
->> incomplete type ‘struct dpll_pin’
->>    #define RCU_INITIALIZER(v) (typeof(*(v)) __force __rcu *)(v)
->>                                       ^~~~
->> ./include/asm-generic/rwonce.h:55:33: note: in definition of macro
->> ‘__WRITE_ONCE’
->>     *(volatile typeof(x) *)&(x) = (val);    \
->>                                    ^~~
->> ./arch/powerpc/include/asm/barrier.h:76:2: note: in expansion of macro
->> ‘WRITE_ONCE’
->>     WRITE_ONCE(*p, v);      \
->>     ^~~~~~~~~~
->> ./include/asm-generic/barrier.h:172:55: note: in expansion of macro
->> ‘__smp_store_release’
->>    #define smp_store_release(p, v) do { kcsan_release();
->> __smp_store_release(p, v); } while (0)
->> ^~~~~~~~~~~~~~~~~~~
->> ./include/linux/rcupdate.h:503:3: note: in expansion of macro
->> ‘smp_store_release’
->>      smp_store_release(&p, RCU_INITIALIZER((typeof(p))_r_a_p__v)); \
->>      ^~~~~~~~~~~~~~~~~
->> ./include/linux/rcupdate.h:503:25: note: in expansion of macro
->> ‘RCU_INITIALIZER’
->>      smp_store_release(&p, RCU_INITIALIZER((typeof(p))_r_a_p__v)); \
->>                            ^~~~~~~~~~~~~~~
->> net/core/dev.c:9081:2: note: in expansion of macro ‘rcu_assign_pointer’
->>     rcu_assign_pointer(dev->dpll_pin, dpll_pin);
->>     ^~~~~~~~~~~~~~~~~~
->>
->> On 2/28/24 20:13, Eric Dumazet wrote:
->>> On Wed, Feb 28, 2024 at 3:07 PM Vadim Fedorenko
->>> <vadim.fedorenko@linux.dev> wrote:
->>>> On 28/02/2024 11:09, Tasmiya Nalatwad wrote:
->>>>> Greetings,
->>>>>
->>>>> [revert 0d60d8df6f49] [net/net-next] [6.8-rc5] Build Failure
->>>>>
->>>>> Reverting below commit fixes the issue
->>>>>
->>>>> commit 0d60d8df6f493bb46bf5db40d39dd60a1bafdd4e
->>>>>        dpll: rely on rcu for netdev_dpll_pin()
->>>>>
->>>>> --- Traces ---
->>>>>
->>>>> ./include/linux/dpll.h: In function ‘netdev_dpll_pin’:
->>>>> ./include/linux/rcupdate.h:439:9: error: dereferencing pointer to
->>>>> incomplete type ‘struct dpll_pin’
->>>>>      typeof(*p) *local = (typeof(*p) *__force)READ_ONCE(p); \
->>>>>             ^
->>>>> ./include/linux/rcupdate.h:587:2: note: in expansion of macro
->>>>> ‘__rcu_dereference_check’
->>>>>      __rcu_dereference_check((p), __UNIQUE_ID(rcu), \
->>>>>      ^~~~~~~~~~~~~~~~~~~~~~~
->>>>> ./include/linux/rtnetlink.h:70:2: note: in expansion of macro
->>>>> ‘rcu_dereference_check’
->>>>>      rcu_dereference_check(p, lockdep_rtnl_is_held())
->>>>>      ^~~~~~~~~~~~~~~~~~~~~
->>>>> ./include/linux/dpll.h:175:9: note: in expansion of macro
->>>>> ‘rcu_dereference_rtnl’
->>>>>      return rcu_dereference_rtnl(dev->dpll_pin);
->>>>>             ^~~~~~~~~~~~~~~~~~~~
->>>>> make[4]: *** [scripts/Makefile.build:243: drivers/dpll/dpll_core.o] Error 1
->>>>> make[4]: *** Waiting for unfinished jobs....
->>>>>      AR      net/mpls/built-in.a
->>>>>      AR      net/l3mdev/built-in.a
->>>>> In file included from ./include/linux/rbtree.h:24,
->>>>>                     from ./include/linux/mm_types.h:11,
->>>>>                     from ./include/linux/mmzone.h:22,
->>>>>                     from ./include/linux/gfp.h:7,
->>>>>                     from ./include/linux/umh.h:4,
->>>>>                     from ./include/linux/kmod.h:9,
->>>>>                     from ./include/linux/module.h:17,
->>>>>                     from drivers/dpll/dpll_netlink.c:9:
->>>>> ./include/linux/dpll.h: In function ‘netdev_dpll_pin’:
->>>>> ./include/linux/rcupdate.h:439:9: error: dereferencing pointer to
->>>>> incomplete type ‘struct dpll_pin’
->>>>>      typeof(*p) *local = (typeof(*p) *__force)READ_ONCE(p); \
->>>>>             ^
->>>>> ./include/linux/rcupdate.h:587:2: note: in expansion of macro
->>>>> ‘__rcu_dereference_check’
->>>>>      __rcu_dereference_check((p), __UNIQUE_ID(rcu), \
->>>>>      ^~~~~~~~~~~~~~~~~~~~~~~
->>>>> ./include/linux/rtnetlink.h:70:2: note: in expansion of macro
->>>>> ‘rcu_dereference_check’
->>>>>      rcu_dereference_check(p, lockdep_rtnl_is_held())
->>>>>      ^~~~~~~~~~~~~~~~~~~~~
->>>>> ./include/linux/dpll.h:175:9: note: in expansion of macro
->>>>> ‘rcu_dereference_rtnl’
->>>>>      return rcu_dereference_rtnl(dev->dpll_pin);
->>>>>             ^~~~~~~~~~~~~~~~~~~~
->>>>> make[4]: *** [scripts/Makefile.build:243: drivers/dpll/dpll_netlink.o]
->>>>> Error 1
->>>>> make[3]: *** [scripts/Makefile.build:481: drivers/dpll] Error 2
->>>>> make[3]: *** Waiting for unfinished jobs....
->>>>> In file included from ./arch/powerpc/include/generated/asm/rwonce.h:1,
->>>>>                     from ./include/linux/compiler.h:251,
->>>>>                     from ./include/linux/instrumented.h:10,
->>>>>                     from ./include/linux/uaccess.h:6,
->>>>>                     from net/core/dev.c:71:
->>>>> net/core/dev.c: In function ‘netdev_dpll_pin_assign’:
->>>>> ./include/linux/rcupdate.h:462:36: error: dereferencing pointer to
->>>>> incomplete type ‘struct dpll_pin’
->>>>>     #define RCU_INITIALIZER(v) (typeof(*(v)) __force __rcu *)(v)
->>>>>                                        ^~~~
->>>>> ./include/asm-generic/rwonce.h:55:33: note: in definition of macro
->>>>> ‘__WRITE_ONCE’
->>>>>      *(volatile typeof(x) *)&(x) = (val);    \
->>>>>                                     ^~~
->>>>> ./arch/powerpc/include/asm/barrier.h:76:2: note: in expansion of macro
->>>>> ‘WRITE_ONCE’
->>>>>      WRITE_ONCE(*p, v);      \
->>>>>      ^~~~~~~~~~
->>>>> ./include/asm-generic/barrier.h:172:55: note: in expansion of macro
->>>>> ‘__smp_store_release’
->>>>>     #define smp_store_release(p, v) do { kcsan_release();
->>>>> __smp_store_release(p, v); } while (0)
->>>>> ^~~~~~~~~~~~~~~~~~~
->>>>> ./include/linux/rcupdate.h:503:3: note: in expansion of macro
->>>>> ‘smp_store_release’
->>>>>       smp_store_release(&p, RCU_INITIALIZER((typeof(p))_r_a_p__v)); \
->>>>>       ^~~~~~~~~~~~~~~~~
->>>>> ./include/linux/rcupdate.h:503:25: note: in expansion of macro
->>>>> ‘RCU_INITIALIZER’
->>>>>       smp_store_release(&p, RCU_INITIALIZER((typeof(p))_r_a_p__v)); \
->>>>>                             ^~~~~~~~~~~~~~~
->>>>> net/core/dev.c:9081:2: note: in expansion of macro ‘rcu_assign_pointer’
->>>>>      rcu_assign_pointer(dev->dpll_pin, dpll_pin);
->>>>>      ^~~~~~~~~~~~~~~~~~
->>>>> make[4]: *** [scripts/Makefile.build:243: net/core/dev.o] Error 1
->>>>> make[4]: *** Waiting for unfinished jobs....
->>>>>      AR      drivers/net/ethernet/built-in.a
->>>>>      AR      drivers/net/built-in.a
->>>>>      AR      net/dcb/built-in.a
->>>>>      AR      net/netlabel/built-in.a
->>>>>      AR      net/strparser/built-in.a
->>>>>      AR      net/handshake/built-in.a
->>>>>      GEN     lib/test_fortify.log
->>>>>      AR      net/8021q/built-in.a
->>>>>      AR      net/nsh/built-in.a
->>>>>      AR      net/unix/built-in.a
->>>>>      CC      lib/string.o
->>>>>      AR      net/packet/built-in.a
->>>>>      AR      net/switchdev/built-in.a
->>>>>      AR      lib/lib.a
->>>>>      AR      net/mptcp/built-in.a
->>>>>      AR      net/devlink/built-in.a
->>>>> In file included from ./include/linux/rbtree.h:24,
->>>>>                     from ./include/linux/mm_types.h:11,
->>>>>                     from ./include/linux/mmzone.h:22,
->>>>>                     from ./include/linux/gfp.h:7,
->>>>>                     from ./include/linux/umh.h:4,
->>>>>                     from ./include/linux/kmod.h:9,
->>>>>                     from ./include/linux/module.h:17,
->>>>>                     from net/core/rtnetlink.c:17:
->>>>> ./include/linux/dpll.h: In function ‘netdev_dpll_pin’:
->>>>> ./include/linux/rcupdate.h:439:9: error: dereferencing pointer to
->>>>> incomplete type ‘struct dpll_pin’
->>>>>      typeof(*p) *local = (typeof(*p) *__force)READ_ONCE(p); \
->>>>>             ^
->>>>> ./include/linux/rcupdate.h:587:2: note: in expansion of macro
->>>>> ‘__rcu_dereference_check’
->>>>>      __rcu_dereference_check((p), __UNIQUE_ID(rcu), \
->>>>>      ^~~~~~~~~~~~~~~~~~~~~~~
->>>>> ./include/linux/rtnetlink.h:70:2: note: in expansion of macro
->>>>> ‘rcu_dereference_check’
->>>>>      rcu_dereference_check(p, lockdep_rtnl_is_held())
->>>>>      ^~~~~~~~~~~~~~~~~~~~~
->>>>> ./include/linux/dpll.h:175:9: note: in expansion of macro
->>>>> ‘rcu_dereference_rtnl’
->>>>>      return rcu_dereference_rtnl(dev->dpll_pin);
->>>>>             ^~~~~~~~~~~~~~~~~~~~
->>>>> In file included from net/core/rtnetlink.c:60:
->>>>> ./include/linux/dpll.h:179:1: error: control reaches end of non-void
->>>>> function [-Werror=return-type]
->>>>>     }
->>>>>
->>>> Hi, Eric!
->>>>
->>>> Looks like we have to move struct dpll_pin definition to
->>>> include/linux/dpll.h to have this fixed, right?
->>>>
->>> No idea what is wrong. Is it powerpc specific ? Some compiler version ?
->>>
->>> netdev_dpll_pin() could be moved to net/core/rtnetlink.c, this is the only user.
-> 
-> OK, it seems netdev_dpll_pin() has to be moved in a place the
-> structure is known,
-> because rcu_dereference() needs to know its size.
-> 
-> I do not see other solution than this, otherwise we have to add more
-> pollution to include/linux/netdevice.h
-> 
-> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> index a9c973b92294bb110cf3cd336485972127b01b58..40797ea80bc6273cae6b7773d0a3e47459a72150
-> 100644
-> --- a/include/linux/netdevice.h
-> +++ b/include/linux/netdevice.h
-> @@ -2469,7 +2469,7 @@ struct net_device {
->          struct devlink_port     *devlink_port;
-> 
->   #if IS_ENABLED(CONFIG_DPLL)
-> -       struct dpll_pin __rcu   *dpll_pin;
-> +       void __rcu *dpll_pin;
->   #endif
->   #if IS_ENABLED(CONFIG_PAGE_POOL)
->          /** @page_pools: page pools created for this netdevice */
+The existing residual calculation returns an incorrect value when
+bytes_xfer == bytes_req. This scenario occurs particularly with drivers
+like UART where DMA is scheduled for maximum number of bytes and is
+terminated when the bytes inflow stops. At higher baud rates, it could
+request the tx_status while there is no bytes left to transfer. This will
+lead to incorrect residual being set. Hence return residual as '0' when
+bytes transferred equals to the bytes requested.
 
-I agree, this is the easiest solution.
+Fixes: ee17028009d4 ("dmaengine: tegra: Add tegra gpcdma driver")
+Signed-off-by: Akhil R <akhilrajeev@nvidia.com>
+Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+---
+v1->v2:
+* corrected typo - s/exisiting/existing/
 
-Reviewed-by: Vadim Fedorenko <vadim.fedoreno@linux.dev>
+ drivers/dma/tegra186-gpc-dma.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/dma/tegra186-gpc-dma.c b/drivers/dma/tegra186-gpc-dma.c
+index 88547a23825b..3642508e88bb 100644
+--- a/drivers/dma/tegra186-gpc-dma.c
++++ b/drivers/dma/tegra186-gpc-dma.c
+@@ -746,6 +746,9 @@ static int tegra_dma_get_residual(struct tegra_dma_channel *tdc)
+ 	bytes_xfer = dma_desc->bytes_xfer +
+ 		     sg_req[dma_desc->sg_idx].len - (wcount * 4);
+ 
++	if (dma_desc->bytes_req == bytes_xfer)
++		return 0;
++
+ 	residual = dma_desc->bytes_req - (bytes_xfer % dma_desc->bytes_req);
+ 
+ 	return residual;
+-- 
+2.43.2
 
 
