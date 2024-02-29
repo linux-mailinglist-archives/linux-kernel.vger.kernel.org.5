@@ -1,59 +1,63 @@
-Return-Path: <linux-kernel+bounces-86983-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86984-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CD8F86CDDF
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:58:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 247D986CDE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:59:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A243CB259BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:58:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDF9F2879C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:59:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6809B13442B;
-	Thu, 29 Feb 2024 15:50:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EE5C13C9E9;
+	Thu, 29 Feb 2024 15:50:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VqJamQpd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FWQ+0V0w"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 995A713440D;
-	Thu, 29 Feb 2024 15:50:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D37313C9CB;
+	Thu, 29 Feb 2024 15:50:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709221802; cv=none; b=IRj9a/g+CnXV8a15KhNeyf7dUE2/XsRwTLyImJOC3LWP+Cr3smLS5QLBg46d9YSse4pO097qYaMssCn4STCZ2IHfzvrVFejCYlGUABil6F/qKjs1+pOSDv2hCXKk7RyKa/eUIXLw9dTlEicgAgZOfb0x4d4Cil95MisR/0/l0pc=
+	t=1709221805; cv=none; b=hFLl+DEMrAu3O6kKAqFJTH+h9iefO9+xPr39vP90OxgDvyG84tiaxFnI5PRjNnYJjvHU3XjTOiE9U9qZPnc2t+WG1KmM8JiUTxieNyl/uvtDtTTmXwKqesowuxwca/RrIcViMGqhu1maxL5MGZA57+fYf2zOt8k1iW4ofXmVaHQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709221802; c=relaxed/simple;
-	bh=RbFIn/rD8T4m8UwPhFAvxAa8fNz3weSaVcCt6bnPhkE=;
+	s=arc-20240116; t=1709221805; c=relaxed/simple;
+	bh=fAometgkYT+8afRTn5I8qtc/WQf0RndWwBfG1rn1ejA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=HqHjltH9aSpWKmdx3REHVYckkH9mJ91u1l9vOrgmgtsYfPVw5LOM0UxrpGMtKtNROoWExQk1Q1pnXDlZ4/acFy+ev0mD5Zyojl+2HgdI/cCcV/MdBZKgqegz8e/xNoN2PmH5JSM6oDQHKaI5SXiMFb43EvA0NdNtitfxWqysySQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VqJamQpd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29B74C433A6;
-	Thu, 29 Feb 2024 15:50:01 +0000 (UTC)
+	 MIME-Version; b=XMtZ3gyAwsT3Sq6rlZQ4HEQNT2R04hjwQIINKrAveRROJyA3JCNHCX8oUKQkXiHSkHDJzvYaVZPS9J/pCapbQmoDCASKQevCfSH0vmWT7YThlYsUvJMRSW0Dm+812eOtXTowwW93lblQJM20oo96jKHZpbc9wfbzes9tcn4Ar+4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FWQ+0V0w; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAC38C43390;
+	Thu, 29 Feb 2024 15:50:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709221802;
-	bh=RbFIn/rD8T4m8UwPhFAvxAa8fNz3weSaVcCt6bnPhkE=;
+	s=k20201202; t=1709221804;
+	bh=fAometgkYT+8afRTn5I8qtc/WQf0RndWwBfG1rn1ejA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=VqJamQpd/dk360guw2YVssgWKtzvnMpSabHOa93iVzCqONh7M8qblyuKiydHoeuhg
-	 rtS1sIu+BLy4Hrw8FWMwZsMNpD6cqrLGxaSXCc5fpo5VN5nAXW3LMcDRR6JIFAVE7c
-	 b7mbOcz4qWirjb8FNzW3peewD0XWnGo6wuHlIC+J0uG1XCt7kGos3cQHFnaFp3dKH7
-	 wtomaKuRqyk92SDfkQOtWzGgx7N4ckbmaDrO8cxOcgbibMTkMX6E7x3lxgpgLGcxAq
-	 flHo7b9Oy1ae+BCrGvrcD0RhQFPl/WSiIlZ4yA5TzKiZO8fcm8HA8Z2JBTsnqvkYq3
-	 FMUmBnUvHaWQw==
+	b=FWQ+0V0wD+vMs7qysCKkpz9tJSVtcp4jI2ptVY8Nd10g8BXm8W+rHOkLJN1SpoeK4
+	 Jod/oM1yGlye8Mu0dcweZjdBJV34c6fSVrHfLNowFQu4eWLJN0yH8NfmHWYADPML20
+	 bcK8A3LkQIJ7Bn3IbdD7WaKl0CeQx68hOYl1CmpQfuAorFleYCTW3R7AzV74e5v2qy
+	 qfjapjRh2zTXAszIDwYkLQBOA78YBeNSvI8NxI81kCu4eRVXfsKNQs+I2z98hJNZei
+	 lgTXfjN/sj6wOT8wzTb7LW0wLnp/PO4HYsLzfDi9R+fcJjYQVt7gGUql/E8fY042be
+	 IJvqP0BqPdxEw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Filipe Manana <fdmanana@suse.com>,
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-	Josef Bacik <josef@toxicpanda.com>,
-	Boris Burkov <boris@bur.io>,
-	David Sterba <dsterba@suse.com>,
+Cc: Aaron Conole <aconole@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	Jakub Kicinski <kuba@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	clm@fb.com,
-	linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 08/21] btrfs: add and use helper to check if block group is used
-Date: Thu, 29 Feb 2024 10:49:28 -0500
-Message-ID: <20240229154946.2850012-8-sashal@kernel.org>
+	pshelar@ovn.org,
+	davem@davemloft.net,
+	edumazet@google.com,
+	pabeni@redhat.com,
+	shuah@kernel.org,
+	netdev@vger.kernel.org,
+	dev@openvswitch.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 09/21] selftests: openvswitch: Add validation for the recursion test
+Date: Thu, 29 Feb 2024 10:49:29 -0500
+Message-ID: <20240229154946.2850012-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240229154946.2850012-1-sashal@kernel.org>
 References: <20240229154946.2850012-1-sashal@kernel.org>
@@ -68,58 +72,199 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.18
 Content-Transfer-Encoding: 8bit
 
-From: Filipe Manana <fdmanana@suse.com>
+From: Aaron Conole <aconole@redhat.com>
 
-[ Upstream commit 1693d5442c458ae8d5b0d58463b873cd879569ed ]
+[ Upstream commit bd128f62c365504e1268dc09fcccdfb1f091e93a ]
 
-Add a helper function to determine if a block group is being used and make
-use of it at btrfs_delete_unused_bgs(). This helper will also be used in
-future code changes.
+Add a test case into the netlink checks that will show the number of
+nested action recursions won't exceed 16.  Going to 17 on a small
+clone call isn't enough to exhaust the stack on (most) systems, so
+it should be safe to run even on systems that don't have the fix
+applied.
 
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: Boris Burkov <boris@bur.io>
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Aaron Conole <aconole@redhat.com>
+Reviewed-by: Simon Horman <horms@kernel.org>
+Link: https://lore.kernel.org/r/20240207132416.1488485-3-aconole@redhat.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/block-group.c | 3 +--
- fs/btrfs/block-group.h | 7 +++++++
- 2 files changed, 8 insertions(+), 2 deletions(-)
+ .../selftests/net/openvswitch/openvswitch.sh  | 13 ++++
+ .../selftests/net/openvswitch/ovs-dpctl.py    | 71 +++++++++++++++----
+ 2 files changed, 69 insertions(+), 15 deletions(-)
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 5a97db9888107..b152c1b1913fb 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -1524,8 +1524,7 @@ void btrfs_delete_unused_bgs(struct btrfs_fs_info *fs_info)
- 		}
+diff --git a/tools/testing/selftests/net/openvswitch/openvswitch.sh b/tools/testing/selftests/net/openvswitch/openvswitch.sh
+index f8499d4c87f3f..36e40256ab92a 100755
+--- a/tools/testing/selftests/net/openvswitch/openvswitch.sh
++++ b/tools/testing/selftests/net/openvswitch/openvswitch.sh
+@@ -502,7 +502,20 @@ test_netlink_checks () {
+ 	    wc -l) == 2 ] || \
+ 	      return 1
  
- 		spin_lock(&block_group->lock);
--		if (block_group->reserved || block_group->pinned ||
--		    block_group->used || block_group->ro ||
-+		if (btrfs_is_block_group_used(block_group) || block_group->ro ||
- 		    list_is_singular(&block_group->list)) {
- 			/*
- 			 * We want to bail if we made new allocations or have
-diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
-index 2bdbcb834f954..089979981e4aa 100644
---- a/fs/btrfs/block-group.h
-+++ b/fs/btrfs/block-group.h
-@@ -255,6 +255,13 @@ static inline u64 btrfs_block_group_end(struct btrfs_block_group *block_group)
- 	return (block_group->start + block_group->length);
- }
++	info "Checking clone depth"
+ 	ERR_MSG="Flow actions may not be safe on all matching packets"
++	PRE_TEST=$(dmesg | grep -c "${ERR_MSG}")
++	ovs_add_flow "test_netlink_checks" nv0 \
++		'in_port(1),eth(),eth_type(0x800),ipv4()' \
++		'clone(clone(clone(clone(clone(clone(clone(clone(clone(clone(clone(clone(clone(clone(clone(clone(clone(drop)))))))))))))))))' \
++		>/dev/null 2>&1 && return 1
++	POST_TEST=$(dmesg | grep -c "${ERR_MSG}")
++
++	if [ "$PRE_TEST" == "$POST_TEST" ]; then
++		info "failed - clone depth too large"
++		return 1
++	fi
++
+ 	PRE_TEST=$(dmesg | grep -c "${ERR_MSG}")
+ 	ovs_add_flow "test_netlink_checks" nv0 \
+ 		'in_port(1),eth(),eth_type(0x0806),arp()' 'drop(0),2' \
+diff --git a/tools/testing/selftests/net/openvswitch/ovs-dpctl.py b/tools/testing/selftests/net/openvswitch/ovs-dpctl.py
+index b97e621face95..5e0e539a323d5 100644
+--- a/tools/testing/selftests/net/openvswitch/ovs-dpctl.py
++++ b/tools/testing/selftests/net/openvswitch/ovs-dpctl.py
+@@ -299,7 +299,7 @@ class ovsactions(nla):
+         ("OVS_ACTION_ATTR_PUSH_NSH", "none"),
+         ("OVS_ACTION_ATTR_POP_NSH", "flag"),
+         ("OVS_ACTION_ATTR_METER", "none"),
+-        ("OVS_ACTION_ATTR_CLONE", "none"),
++        ("OVS_ACTION_ATTR_CLONE", "recursive"),
+         ("OVS_ACTION_ATTR_CHECK_PKT_LEN", "none"),
+         ("OVS_ACTION_ATTR_ADD_MPLS", "none"),
+         ("OVS_ACTION_ATTR_DEC_TTL", "none"),
+@@ -465,29 +465,42 @@ class ovsactions(nla):
+                     print_str += "pop_mpls"
+             else:
+                 datum = self.get_attr(field[0])
+-                print_str += datum.dpstr(more)
++                if field[0] == "OVS_ACTION_ATTR_CLONE":
++                    print_str += "clone("
++                    print_str += datum.dpstr(more)
++                    print_str += ")"
++                else:
++                    print_str += datum.dpstr(more)
  
-+static inline bool btrfs_is_block_group_used(const struct btrfs_block_group *bg)
-+{
-+	lockdep_assert_held(&bg->lock);
+         return print_str
+ 
+     def parse(self, actstr):
++        totallen = len(actstr)
+         while len(actstr) != 0:
+             parsed = False
++            parencount = 0
+             if actstr.startswith("drop"):
+                 # If no reason is provided, the implicit drop is used (i.e no
+                 # action). If some reason is given, an explicit action is used.
+-                actstr, reason = parse_extract_field(
+-                    actstr,
+-                    "drop(",
+-                    "([0-9]+)",
+-                    lambda x: int(x, 0),
+-                    False,
+-                    None,
+-                )
++                reason = None
++                if actstr.startswith("drop("):
++                    parencount += 1
 +
-+	return (bg->used > 0 || bg->reserved > 0 || bg->pinned > 0);
-+}
++                    actstr, reason = parse_extract_field(
++                        actstr,
++                        "drop(",
++                        "([0-9]+)",
++                        lambda x: int(x, 0),
++                        False,
++                        None,
++                    )
 +
- static inline bool btrfs_is_block_group_data_only(
- 					struct btrfs_block_group *block_group)
- {
+                 if reason is not None:
+                     self["attrs"].append(["OVS_ACTION_ATTR_DROP", reason])
+                     parsed = True
+                 else:
+-                    return
++                    actstr = actstr[len("drop"): ]
++                    return (totallen - len(actstr))
+ 
+             elif parse_starts_block(actstr, "^(\d+)", False, True):
+                 actstr, output = parse_extract_field(
+@@ -504,6 +517,7 @@ class ovsactions(nla):
+                     False,
+                     0,
+                 )
++                parencount += 1
+                 self["attrs"].append(["OVS_ACTION_ATTR_RECIRC", recircid])
+                 parsed = True
+ 
+@@ -516,12 +530,22 @@ class ovsactions(nla):
+ 
+             for flat_act in parse_flat_map:
+                 if parse_starts_block(actstr, flat_act[0], False):
+-                    actstr += len(flat_act[0])
++                    actstr = actstr[len(flat_act[0]):]
+                     self["attrs"].append([flat_act[1]])
+                     actstr = actstr[strspn(actstr, ", ") :]
+                     parsed = True
+ 
+-            if parse_starts_block(actstr, "ct(", False):
++            if parse_starts_block(actstr, "clone(", False):
++                parencount += 1
++                subacts = ovsactions()
++                actstr = actstr[len("clone("):]
++                parsedLen = subacts.parse(actstr)
++                lst = []
++                self["attrs"].append(("OVS_ACTION_ATTR_CLONE", subacts))
++                actstr = actstr[parsedLen:]
++                parsed = True
++            elif parse_starts_block(actstr, "ct(", False):
++                parencount += 1
+                 actstr = actstr[len("ct(") :]
+                 ctact = ovsactions.ctact()
+ 
+@@ -553,6 +577,7 @@ class ovsactions(nla):
+                         natact = ovsactions.ctact.natattr()
+ 
+                         if actstr.startswith("("):
++                            parencount += 1
+                             t = None
+                             actstr = actstr[1:]
+                             if actstr.startswith("src"):
+@@ -607,15 +632,29 @@ class ovsactions(nla):
+                                     actstr = actstr[strspn(actstr, ", ") :]
+ 
+                         ctact["attrs"].append(["OVS_CT_ATTR_NAT", natact])
+-                        actstr = actstr[strspn(actstr, ",) ") :]
++                        actstr = actstr[strspn(actstr, ", ") :]
+ 
+                 self["attrs"].append(["OVS_ACTION_ATTR_CT", ctact])
+                 parsed = True
+ 
+-            actstr = actstr[strspn(actstr, "), ") :]
++            actstr = actstr[strspn(actstr, ", ") :]
++            while parencount > 0:
++                parencount -= 1
++                actstr = actstr[strspn(actstr, " "):]
++                if len(actstr) and actstr[0] != ")":
++                    raise ValueError("Action str: '%s' unbalanced" % actstr)
++                actstr = actstr[1:]
++
++            if len(actstr) and actstr[0] == ")":
++                return (totallen - len(actstr))
++
++            actstr = actstr[strspn(actstr, ", ") :]
++
+             if not parsed:
+                 raise ValueError("Action str: '%s' not supported" % actstr)
+ 
++        return (totallen - len(actstr))
++
+ 
+ class ovskey(nla):
+     nla_flags = NLA_F_NESTED
+@@ -2111,6 +2150,8 @@ def main(argv):
+     ovsflow = OvsFlow()
+     ndb = NDB()
+ 
++    sys.setrecursionlimit(100000)
++
+     if hasattr(args, "showdp"):
+         found = False
+         for iface in ndb.interfaces:
 -- 
 2.43.0
 
