@@ -1,151 +1,106 @@
-Return-Path: <linux-kernel+bounces-87562-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87563-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B715086D5ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:13:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EAA4486D5F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:13:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 470ABB2586B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:13:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 96F02B268CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:13:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE417144036;
-	Thu, 29 Feb 2024 21:09:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 606CD14564F;
+	Thu, 29 Feb 2024 21:09:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="f8vbRf1r"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67328143724;
-	Thu, 29 Feb 2024 21:09:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709240953; cv=none; b=rrgHH70a8tTGEvasTO/7sH7tY9S+pE8WYXAhu6/vKkAaf3kFgfm2cg0V5Qgsx/pR9GKjW0ckPdAIthEb/gn6MAdAwjyZSFkIIFQasLMGEjwzl0CZT367S+SdEJAmmMhYAuXy+CIDw/yOszFqF8ET5d1gU/bwRofSmf1N00mVnlA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709240953; c=relaxed/simple;
-	bh=vI3JErcIXK8PkI3jc2jIkSRfvAVQ/YbU0r8nU36vXdA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=ZU67VgxNNKHB/U9+pNuide+2jqEe9K/e9c8FqgPJo025qR9eIyIDQi2CoLKPcIwqedV1ZY14g6KZc144DGGLP1Ij7EyMpgXMVtFxdaIJ4VFGA0+Qha5WoSF3Cb8F0Hl+5HnCFAqc/ph6AMwMtfRHCgtwgW6hk08JAG72RgC8qNQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=f8vbRf1r; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709240951; x=1740776951;
-  h=message-id:date:mime-version:subject:to:references:from:
-   in-reply-to:content-transfer-encoding;
-  bh=vI3JErcIXK8PkI3jc2jIkSRfvAVQ/YbU0r8nU36vXdA=;
-  b=f8vbRf1rszH2B0+Zi46r4K54MsoZOMtq3fOl7jnw8EP9gUs3FXM0YXUQ
-   9WvlOHfpV3cfQfehraXGAhpmGcnIEdiqd9pjYPLSSGkJDrsB1iT6OsdK3
-   Y+spqIHcm5fwjJgnVc5WdyKeVGfVTv4oH9tkxsBQvPWmg6ERPbX8zwLj+
-   sKlq0Yoiy+lybeu4Fm2VM9MAMjkNJVekaIN6Zi185IU7VuVskTbB+owds
-   ICZbioBhGZSmlR3qWk8O2xh+dvTlTPfMNpbdZXunizffAcql7/f6KzWSC
-   Vjyrh3Sjk4i5o10PILa7QLDThaA9V/NCHSvac7K+9eGj2qNM+ZaWt1Ioz
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="3865398"
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="3865398"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 13:09:08 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="8341044"
-Received: from linux.intel.com ([10.54.29.200])
-  by orviesa007.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 13:09:04 -0800
-Received: from [10.212.85.217] (kliang2-mobl1.ccr.corp.intel.com [10.212.85.217])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IlBYQ724"
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by linux.intel.com (Postfix) with ESMTPS id A8308580D37;
-	Thu, 29 Feb 2024 13:09:01 -0800 (PST)
-Message-ID: <f2e34072-542a-4055-b8fd-20171e6783a1@linux.intel.com>
-Date: Thu, 29 Feb 2024 16:09:00 -0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BC02143724
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 21:09:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709240991; cv=none; b=dmjdjcA1jqhc9NJGl415/j/UyyPDm+ZK3CtbsnLNcBvfs37A7bQlJe7cA8iu6+KlvxcrIxGxDxAyjxIOwXPaRvXyqNLWOCvyXLTUdhyEdThCoitdByRAq90XminvVho4A6y7KbZU3u1x3aVcqvlAlcIWuY+uNem+qKSuTwCFjsE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709240991; c=relaxed/simple;
+	bh=+OMSuNcz0f+S1pNBRQGA7ZZNiFav/x2zJeSkOoc++p8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=a/kHaqw/TUi7XbCDq0PnkPZQ4WQ8bCFXiAXUN1CpQIJ3ngYUxFDqvWvnzaF4UW2LgSPP/SuXh0/E7Ip021dOoKsggmAkQaauZ1lrf2MrFAENJFzG5Bsl3X6+Aq6gmX6QnX/+di8XxzB+jFwRSk+llpAAedoaHQ06lemUFp49QDk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=IlBYQ724; arc=none smtp.client-ip=209.85.219.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dc74435c428so1568418276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 13:09:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709240989; x=1709845789; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+OMSuNcz0f+S1pNBRQGA7ZZNiFav/x2zJeSkOoc++p8=;
+        b=IlBYQ724fgirchkN11P2a+0JNsB2fbfLPnOC5TlpOLT64fOxGS3b8SShCpc0tZZIFY
+         yoA1n1Jk2uhFgMk5+2GQqlM2KBIz9YJLJCFSqo38Q9t30dFvFfz9GSG7/YRcddliHCsE
+         AmXQ5SaOVcvbXytI/mbSZynlk6yhieTOtg+3Nf1I1NkAxrP4QPrI6bg1Tc5A2+AG7H7k
+         R7jNKNfWukO2ZWSWiQZrKTrkJJL1Nm39vzmd4g3TAqJc95Rl/Tm1K02dlo201C4npxwG
+         LTiCWV5J8vGckInQ9mTGo8qvXOagqV1ipuF6SR/rKXWdUhe11xUzDk1yIajvTOA79/nf
+         kNug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709240989; x=1709845789;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+OMSuNcz0f+S1pNBRQGA7ZZNiFav/x2zJeSkOoc++p8=;
+        b=Ut1dyTCM8OomHtjyKxOrnES7NqeVMGd+BunmlNsz1Xs7PQxYqFAzOZzwhnXgGFJi87
+         Qs+XEzenlxVhpZ+s19JQqBDSG5gi7IajgVXuNljLfWy80JqZLsseMI3QjV5cNLQrwBX1
+         mzg2t/mNAcQSRv47iUlaOpTsryHRUhs+EOBsLsK5m0D3bZrHNe2VsPyNn6Jo2cFcLiUG
+         baKr7pwi5hX3Bys7xVE+pDSm2eoLSVqoJ8ZnnYbiCOX2acgaY9IzdI10S6iBcEE8Jfp5
+         cr73yn9k6Olz3iO5lH6BxDYbphztYoUs01rXGCb3cLrSQDd5hjXOuzkT0dy2fSlkWsXu
+         7/vw==
+X-Forwarded-Encrypted: i=1; AJvYcCUh9+CJvzOIWV+vUwMhemMCLrdeT0aV7+l1A+XTqGpR7ghcG8gy75HzIUoyJELZeWlYEC108KAhijyPh0d7HSJbZsYzKa+T2OO48rdE
+X-Gm-Message-State: AOJu0Yz0UQtix9AAKr0tJz5vskeVWSeXs4tBj4bdmN8UX4pavBuDQ/KD
+	KSvQ+c8X+z+B5m79VgcxTKxx7iZ+7IhXfKimJc8Rn81xWPaMZ5lqLy1ydH5jN9n3Relb0FOzAQp
+	YSLCRTmfHwdDVfs0lL5spPNl44IlA4L3l21hjR88/4J4hBScE
+X-Google-Smtp-Source: AGHT+IHbva8VtENYJ0hw2FAcTEKgi5UH/B8oRvg5bufEYQcp/sju2WedSjn4h1t/PREb+YdBoA48AKTJb4go8f2x9Zw=
+X-Received: by 2002:a25:8e85:0:b0:dc6:ff12:1a21 with SMTP id
+ q5-20020a258e85000000b00dc6ff121a21mr2558461ybl.31.1709240989292; Thu, 29 Feb
+ 2024 13:09:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 03/20] perf jevents: Add smi metric group for Intel
- models
-Content-Language: en-US
-To: Ian Rogers <irogers@google.com>, Perry Taylor <perry.taylor@intel.com>,
- Samantha Alt <samantha.alt@intel.com>,
- Caleb Biggers <caleb.biggers@intel.com>, Weilin Wang
- <weilin.wang@intel.com>, Edward Baker <edward.baker@intel.com>,
- Andi Kleen <ak@linux.intel.com>, Peter Zijlstra <peterz@infradead.org>,
- Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>,
- John Garry <john.g.garry@oracle.com>, Jing Zhang
- <renyu.zj@linux.alibaba.com>, Thomas Richter <tmricht@linux.ibm.com>,
- James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org,
- linux-perf-users@vger.kernel.org, Stephane Eranian <eranian@google.com>
-References: <20240229001806.4158429-1-irogers@google.com>
- <20240229001806.4158429-4-irogers@google.com>
-From: "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <20240229001806.4158429-4-irogers@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240229-mbly-i2c-v2-0-b32ed18c098c@bootlin.com> <20240229-mbly-i2c-v2-10-b32ed18c098c@bootlin.com>
+In-Reply-To: <20240229-mbly-i2c-v2-10-b32ed18c098c@bootlin.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Thu, 29 Feb 2024 22:09:38 +0100
+Message-ID: <CACRpkdbzLGViXJ-qFNYhZJ5x2d5zrRe_2sCpwnkjcTNp3C1XmQ@mail.gmail.com>
+Subject: Re: [PATCH v2 10/11] MIPS: mobileye: eyeq5: add 5 I2C controller nodes
+To: =?UTF-8?B?VGjDqW8gTGVicnVu?= <theo.lebrun@bootlin.com>
+Cc: Andi Shyti <andi.shyti@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, linux-arm-kernel@lists.infradead.org, 
+	linux-i2c@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, 
+	Gregory Clement <gregory.clement@bootlin.com>, 
+	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, Feb 29, 2024 at 7:11=E2=80=AFPM Th=C3=A9o Lebrun <theo.lebrun@bootl=
+in.com> wrote:
 
+> Add the SoC I2C controller nodes to the platform devicetree. Use a
+> default bus frequency of 400kHz. They are AMBA devices that are matched
+> on PeriphID.
+>
+> Set transfer timeout to 10ms instead of Linux's default of 200ms.
+>
+> Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
 
-On 2024-02-28 7:17 p.m., Ian Rogers wrote:
-> Allow duplicated metric to be dropped from json files.
-> 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/pmu-events/intel_metrics.py | 18 +++++++++++++++++-
->  1 file changed, 17 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/pmu-events/intel_metrics.py b/tools/perf/pmu-events/intel_metrics.py
-> index 46866a25b166..20c25d142f24 100755
-> --- a/tools/perf/pmu-events/intel_metrics.py
-> +++ b/tools/perf/pmu-events/intel_metrics.py
-> @@ -2,7 +2,7 @@
->  # SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
->  from metric import (d_ratio, has_event, max, Event, JsonEncodeMetric,
->                      JsonEncodeMetricGroupDescriptions, LoadEvents, Metric,
-> -                    MetricGroup, Select)
-> +                    MetricGroup, MetricRef, Select)
->  import argparse
->  import json
->  import math
-> @@ -62,9 +62,25 @@ def Rapl() -> MetricGroup:
->                       description="Processor socket power consumption estimates")
->  
->  
-> +def Smi() -> MetricGroup:
-> +    aperf = Event('msr/aperf/')
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
-There are CPUID enumeration for the aperf and mperf. I believe they
-should be always available for a newer bare metal. But they may not be
-enumerated in an virtualization env. Should we add a has_event() check
-before using it?
-
-Thanks,
-Kan
-
-> +    cycles = Event('cycles')
-> +    smi_num = Event('msr/smi/')
-> +    smi_cycles = Select((aperf - cycles) / aperf, smi_num > 0, 0)
-> +    return MetricGroup('smi', [
-> +        Metric('smi_num', 'Number of SMI interrupts.',
-> +               smi_num, 'SMI#'),
-> +        # Note, the smi_cycles "Event" is really a reference to the metric.
-> +        Metric('smi_cycles',
-> +               'Percentage of cycles spent in System Management Interrupts.',
-> +               smi_cycles, '100%', threshold=(MetricRef('smi_cycles') > 0.10))
-> +    ])
-> +
-> +
->  all_metrics = MetricGroup("", [
->      Idle(),
->      Rapl(),
-> +    Smi(),
->  ])
->  
->  if args.metricgroups:
+Yours,
+Linus Walleij
 
