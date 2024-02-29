@@ -1,203 +1,166 @@
-Return-Path: <linux-kernel+bounces-86719-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86720-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C50C86C996
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:57:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD7C186C99B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:59:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE2C51F2438A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:57:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72DF428A2B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:59:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 196F57E0F3;
-	Thu, 29 Feb 2024 12:57:22 +0000 (UTC)
-Received: from mail-oo1-f49.google.com (mail-oo1-f49.google.com [209.85.161.49])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FE737E0F8;
+	Thu, 29 Feb 2024 12:58:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Kg4hl8an"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EE3C7D410;
-	Thu, 29 Feb 2024 12:57:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B3EE76F1B;
+	Thu, 29 Feb 2024 12:58:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709211441; cv=none; b=fCpqb+BS/rJrMlGfaFohDHfBneZ8wn+0QEv3GCJciC6OPussRn+4oRDurhcRfwcMLp3AWnikVyB5pFpXXPwaRejMWp1MX5SPrLFcmj5gwwi1LQTDTswU6n/nonEOQBQF3eoUEwulC0xbFgxp2vwiitxXPLgCO8b98fJp77b5MCc=
+	t=1709211537; cv=none; b=XEUUZmL/qnKlSmc0OOjhJfpOcM58vYVVVu8kr4KGvPvv46Tj5K6bi5npt6DVQzhXE1BqTD350KX0GJbG9eYt3t2wtJfRyMgfBJqQrybXU3hwRdHsEcL9odB1FZcnFOYbo3LNaGicSvSjHjeDQWg1u/fnaxGgziJJ/B3F8JhEhPs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709211441; c=relaxed/simple;
-	bh=NV3Lexd1I215GFCfOKf6e+kUNlEsB4HcsnZBbnMzknI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dYBUq0HtSDmhfFvO2lhKyZv9y3+4r2BdP6wIftypO07chqRDbzjfke0YCoDAkDcJVeojvqb6dslFcbi0nVrTM/nxolLh8UohFUxD1VpQwpDMMgL2oGJDxGwB4l0dI6D0SA2XWA1MxNcwLAZ4FA25E9sQ72ms/0swqJXQ6GjTvrE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	s=arc-20240116; t=1709211537; c=relaxed/simple;
+	bh=KOh+phYAIWqtdZQzCphp0ougyGQMtiMNT0muex48X4E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HrzLfFdN6Gr43B/fjCbBS1xl03F2lbB/3Z0BmegniadyFKXDoyJ3kwweeI93qOD53e1cYEklQ92BhiXzGzwyLH4VGctenhSDyCuopL6pAFgMAGC6TYcP+DTfYUQ6fRCsqvKjjltcjxYJlkdj4KH6HZbllS2avgABvfHtgmP1lcs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Kg4hl8an; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f49.google.com with SMTP id 006d021491bc7-5a04665952eso7716eaf.1;
-        Thu, 29 Feb 2024 04:57:19 -0800 (PST)
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-5131d0c3517so806963e87.1;
+        Thu, 29 Feb 2024 04:58:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709211534; x=1709816334; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IgYtYGuZfV84qaENov2D/kXc9sJYLcl1APfQ6CZvyjs=;
+        b=Kg4hl8anpl1ZUcAM7jTypq3XFbtYc0EVCr/r6NTDJLOC+C8HHAaDj17LH90vtSBL9c
+         NtUHpJXbRVogZ4A6NwStK28PmUaogrJW1f09n+nVgYwPN0SPVhLaHNUhTpqjs9srg878
+         nYBVL8tFJejpkEYfoSrOC2lD8rNn/ZreUn+8OMF4ebLJ/soCrLUKlWEFxfnqeAs0xH7X
+         5g+mraOKtCMk/3KmpJxoZHEefK9QQ58RRCCz8rhd6znBub2nJbPU4P56ort3sF75kD8x
+         v6wCLVAASaw8KET+Q9Nl+5X9GapxZTD1WGZrW9DBArkVCPqOjqlK7EB7qJDnW04MxgwN
+         JKDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709211439; x=1709816239;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lmxLHqXEDN1UeIR2OAQOlz0mDPHOUy1z0W0gmKcx3LM=;
-        b=gg6zkeax6QsIDYSiZxvLUXT1C+zznxF2i/12F3T09DQX9OJ/r+heeDCC5CS8W1Us4s
-         4MRtN4ZnPU5EtZ5oR/tyaCFWHDoTMhOK8c9roQ0VdSO3EocvY65pF7V0agT2/wAesL1S
-         79pKHYsOFPdVjTUp6S2BYLBwwL2HQKI19WmNAyX1AJkW8EYEiXb9EQwKqIjhpLbJoNCh
-         FFhpGd163jxUUD1k7JgAb5F8+7NaltAohxdgmSyZkBURXtf3nKscV5fucHZt5ITlKCDV
-         dcDwg+Wpa25u5Z8vJf8cbZ5z5ifPMDoWV2rp6Lrci7CBV7hz4sJukrdtgQ9tuImTMDHn
-         sJng==
-X-Forwarded-Encrypted: i=1; AJvYcCUst4duC1/5xA/viiQZ69EQsG+L7MkbJMYeUHyiC6Uz7q+vGzHqVj0WgBovyJVIWolTqw4illWOeVLNeqc8TXAFsaaQfgriMzZp/eHyb4SaeEC5IvIjIhMXjK6KUuGXIvInQAL2D2R/XPq59VEtOIGlxfsg9g7/4a8HE5HQlCB64Q==
-X-Gm-Message-State: AOJu0Yy4PCIwphbu1YENBEoNB1CDJu4/xmjZAnWgI7hPi7TmcP9s7AbD
-	pkuSfwrDcUqQ36EITwc+qu+K1wtFnrCVn1DkwDjXZoKmHOGulux26Ga69xAKlodQxiF09OMjAm8
-	QjcJfg77YBL0mPiiPmhLGLUYs1SHN519N
-X-Google-Smtp-Source: AGHT+IGED+M5hFzTkwZYRVdQHZ8ABuM4bQYwA4kCbUfVaiZ5BhWxbJYorfpzyQC0QmeWmWRaMozuorYlfBG1jlNYNWo=
-X-Received: by 2002:a4a:625e:0:b0:5a0:4d78:975d with SMTP id
- y30-20020a4a625e000000b005a04d78975dmr1990060oog.1.1709211439116; Thu, 29 Feb
- 2024 04:57:19 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709211534; x=1709816334;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IgYtYGuZfV84qaENov2D/kXc9sJYLcl1APfQ6CZvyjs=;
+        b=Bz3iwhTLJHYOxaYMkefynX9SwFrx1PPRtpx+ysLMkAEbYE0PO8HuuwNH1HonxyQgUO
+         1z3fIyKCesPkRwYxzNSwZGuRU89MDbswMtbIJ5GDWwBL0saV7W2RviGtGwllL/fPXjxV
+         uIjY3Y6o4pZOvDtKH0bjuBOIxAse4/RSlmmzhhfRsdblSNcX7XugtZeIp4wMfhTASj+B
+         dgcYjfCBsKQeOI+sXJHdvu2Nxw/QAM0+U2n1rA9xO2k9pHoohJ8sJgkUE9GDg/+VfZpU
+         o360sdWnOiL+E0f6SEQDsFguWxYWJQMJdJoFUJQbsaTK6tbUa/72GfR1vlxBi+8SajBf
+         uHSw==
+X-Forwarded-Encrypted: i=1; AJvYcCUDY98ghT3aESLWwbBxrryKPbbWeHyh6ytfoaRAyICVmhPku9vQla8nbB6gpTo/J65lfkPxed1qZRbwynDmY/DBlofz8KiJAt2nSP8m55DfNha5IJ0PyBAymxJnXjcjxm4ryyy9KXWiTVx2ebfXcEKqOHYhHyQyTylzGEi9kmCVV8sPQw==
+X-Gm-Message-State: AOJu0Yz0a60jldBkLvxB4VlkpRfjddlSAIQM0J2sz8vdIgbfJ8CDC552
+	o2j6O/rsA6nuLWNoyh8D8irH1KxFbLI99KAH1omcXg1WLrZtKp2G
+X-Google-Smtp-Source: AGHT+IEyW1m/9YnwrYDfRxrRjunohQlk0TK2UjwpkcF/N0Ps8ohrRdOYDH3ntrIr48zQjavH9UAbig==
+X-Received: by 2002:ac2:5923:0:b0:513:1a45:b1bf with SMTP id v3-20020ac25923000000b005131a45b1bfmr771259lfi.16.1709211533857;
+        Thu, 29 Feb 2024 04:58:53 -0800 (PST)
+Received: from ?IPV6:2001:14ba:7426:df00::2? (drtxq0yyyyyyyyyyyyyby-3.rev.dnainternet.fi. [2001:14ba:7426:df00::2])
+        by smtp.gmail.com with ESMTPSA id s22-20020a197716000000b00513201eeab5sm243830lfc.123.2024.02.29.04.58.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Feb 2024 04:58:53 -0800 (PST)
+Message-ID: <21ecfb62-30b7-4073-bad6-46a9e08e08b0@gmail.com>
+Date: Thu, 29 Feb 2024 14:58:52 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240229105204.720717-1-herve.codina@bootlin.com>
- <20240229105204.720717-2-herve.codina@bootlin.com> <9cc3d11bc3e1bb89a1c725f865d0c8d1494111c5.camel@gmail.com>
-In-Reply-To: <9cc3d11bc3e1bb89a1c725f865d0c8d1494111c5.camel@gmail.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Thu, 29 Feb 2024 13:57:07 +0100
-Message-ID: <CAJZ5v0iNiRKo=sem_OmwTxnkSz-raWOk0vKVuHQc31Q9r+D1UA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] driver core: Introduce device_link_wait_removal()
-To: =?UTF-8?B?TnVubyBTw6E=?= <noname.nuno@gmail.com>
-Cc: Herve Codina <herve.codina@bootlin.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, 
-	Lizhi Hou <lizhi.hou@amd.com>, Max Zhen <max.zhen@amd.com>, 
-	Sonal Santan <sonal.santan@amd.com>, Stefano Stabellini <stefano.stabellini@xilinx.com>, 
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>, linux-kernel@vger.kernel.org, 
-	devicetree@vger.kernel.org, Allan Nielsen <allan.nielsen@microchip.com>, 
-	Horatiu Vultur <horatiu.vultur@microchip.com>, 
-	Steen Hegelund <steen.hegelund@microchip.com>, Luca Ceresoli <luca.ceresoli@bootlin.com>, 
-	Nuno Sa <nuno.sa@analog.com>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
-	stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 5/5] iio: light: Add support for APDS9306 Light Sensor
+Content-Language: en-US, en-GB
+To: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen
+ <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Marek Vasut <marex@denx.de>,
+ Anshul Dalal <anshulusr@gmail.com>,
+ Javier Carrasco <javier.carrasco.cruz@gmail.com>,
+ Matt Ranostay <matt@ranostay.sg>,
+ Stefan Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>,
+ linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240228122408.18619-1-subhajit.ghosh@tweaklogic.com>
+ <20240228122408.18619-6-subhajit.ghosh@tweaklogic.com>
+ <a828e77c-b3d4-49bb-b0bb-b9fd6cb7d114@gmail.com>
+ <Zd9tApJClX7Frq20@smile.fi.intel.com>
+ <45386f39-a034-4d70-a6d4-8804c27aadce@tweaklogic.com>
+From: Matti Vaittinen <mazziesaccount@gmail.com>
+In-Reply-To: <45386f39-a034-4d70-a6d4-8804c27aadce@tweaklogic.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 29, 2024 at 12:13=E2=80=AFPM Nuno S=C3=A1 <noname.nuno@gmail.co=
-m> wrote:
->
-> Hi,
->
-> Just copy pasting my previous comments :)
->
-> On Thu, 2024-02-29 at 11:52 +0100, Herve Codina wrote:
-> > The commit 80dd33cf72d1 ("drivers: base: Fix device link removal")
-> > introduces a workqueue to release the consumer and supplier devices use=
-d
-> > in the devlink.
-> > In the job queued, devices are release and in turn, when all the
-> > references to these devices are dropped, the release function of the
-> > device itself is called.
-> >
-> > Nothing is present to provide some synchronisation with this workqueue
-> > in order to ensure that all ongoing releasing operations are done and
-> > so, some other operations can be started safely.
-> >
-> > For instance, in the following sequence:
-> >   1) of_platform_depopulate()
-> >   2) of_overlay_remove()
-> >
-> > During the step 1, devices are released and related devlinks are remove=
-d
-> > (jobs pushed in the workqueue).
-> > During the step 2, OF nodes are destroyed but, without any
-> > synchronisation with devlink removal jobs, of_overlay_remove() can rais=
-e
-> > warnings related to missing of_node_put():
-> >   ERROR: memory leak, expected refcount 1 instead of 2
-> >
-> > Indeed, the missing of_node_put() call is going to be done, too late,
-> > from the workqueue job execution.
-> >
-> > Introduce device_link_wait_removal() to offer a way to synchronize
-> > operations waiting for the end of devlink removals (i.e. end of
-> > workqueue jobs).
-> > Also, as a flushing operation is done on the workqueue, the workqueue
-> > used is moved from a system-wide workqueue to a local one.
-> >
-> > Fixes: 80dd33cf72d1 ("drivers: base: Fix device link removal")
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-> > ---
-> >  drivers/base/core.c    | 26 +++++++++++++++++++++++---
-> >  include/linux/device.h |  1 +
-> >  2 files changed, 24 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/base/core.c b/drivers/base/core.c
-> > index d5f4e4aac09b..80d9430856a8 100644
-> > --- a/drivers/base/core.c
-> > +++ b/drivers/base/core.c
-> > @@ -44,6 +44,7 @@ static bool fw_devlink_is_permissive(void);
-> >  static void __fw_devlink_link_to_consumers(struct device *dev);
-> >  static bool fw_devlink_drv_reg_done;
-> >  static bool fw_devlink_best_effort;
-> > +static struct workqueue_struct *device_link_wq;
-> >
-> >  /**
-> >   * __fwnode_link_add - Create a link between two fwnode_handles.
-> > @@ -532,12 +533,26 @@ static void devlink_dev_release(struct device *de=
-v)
-> >       /*
-> >        * It may take a while to complete this work because of the SRCU
-> >        * synchronization in device_link_release_fn() and if the consume=
-r or
-> > -      * supplier devices get deleted when it runs, so put it into the
-> > "long"
-> > -      * workqueue.
-> > +      * supplier devices get deleted when it runs, so put it into the
-> > +      * dedicated workqueue.
-> >        */
-> > -     queue_work(system_long_wq, &link->rm_work);
-> > +     queue_work(device_link_wq, &link->rm_work);
-> >  }
-> >
-> > +/**
-> > + * device_link_wait_removal - Wait for ongoing devlink removal jobs to
-> > terminate
-> > + */
-> > +void device_link_wait_removal(void)
-> > +{
-> > +     /*
-> > +      * devlink removal jobs are queued in the dedicated work queue.
-> > +      * To be sure that all removal jobs are terminated, ensure that a=
-ny
-> > +      * scheduled work has run to completion.
-> > +      */
-> > +     drain_workqueue(device_link_wq);
-> > +}
->
-> I'm still not convinced we can have a recursive call into devlinks remova=
-l so I
-> do think flush_workqueue() is enough. I will defer to Saravana though...
->
-> > +EXPORT_SYMBOL_GPL(device_link_wait_removal);
-> > +
-> >  static struct class devlink_class =3D {
-> >       .name =3D "devlink",
-> >       .dev_groups =3D devlink_groups,
-> > @@ -4099,9 +4114,14 @@ int __init devices_init(void)
-> >       sysfs_dev_char_kobj =3D kobject_create_and_add("char", dev_kobj);
-> >       if (!sysfs_dev_char_kobj)
-> >               goto char_kobj_err;
-> > +     device_link_wq =3D alloc_workqueue("device_link_wq", 0, 0);
-> > +     if (!device_link_wq)
-> > +             goto wq_err;
-> >
->
-> I still think this makes more sense in devlink_class_init() as this reall=
-y
-> device link specific. Moreover, as I said to Saravana, we need to "convin=
-ce"
-> Rafael about this as he (in my series) did not agreed with erroring out i=
-n case
-> we fail to allocate the queue.
->
-> Rafael?
+On 2/29/24 14:34, Subhajit Ghosh wrote:
+> On 29/2/24 03:57, Andy Shevchenko wrote:
+>> On Wed, Feb 28, 2024 at 03:08:56PM +0200, Matti Vaittinen wrote:
+>>> On 2/28/24 14:24, Subhajit Ghosh wrote:
+>>
+>> ...
+>>
+>>>> +    ret = iio_gts_find_new_gain_by_old_gain_time(&data->gts, gain_old,
+>>>> +                             intg_old, val2, &gain_new);
+>>>
+>>> You don't use the 'ret' here, so maybe for the clarity, not assign it.
+>>> Or, maybe you wan't to try to squeeze out few cycles for succesful 
+>>> case and
+>>> check the ret for '0' - in which case you should be able to omit the 
+>>> check
+>>> right below as well as the call to iio_find_closest_gain_low(). OTOH, 
+>>> this
+>>> is likely not a "hot path" so I don't care too much about the extra 
+>>> call if
+>>> you think code is clearer this way.
+>>>
+>>>> +    if (gain_new < 0) {
+>>>> +        dev_err_ratelimited(dev, "Unsupported gain with time\n");
+>>>> +        return gain_new;
+>>>> +    }
+>>
+>> What is the difference between negative response from the function 
+>> itself and
+>> similar in gain_new?
+>>
+> -ve response form the function is an error condition.
+> -ve value in gain_new means - no valid gains could be computed.
+> In case of error conditions from the function, the gain_new is also set 
+> to -1.
+> My use case is valid hardware gain so I went for checking only gain_new.
+> Matti will be the best person to answer on this.
 
-I don't really think it matters in practice, so this is fine with me too.
+I now rely on the kerneldoc for the
+iio_gts_find_new_gain_by_old_gain_time() as it seems reasonable to me:
+
+* Return: 0 if an exactly matching supported new gain was found. When a
+* non-zero value is returned, the @new_gain will be set to a negative or
+* positive value. The negative value means that no gain could be computed.
+* Positive value will be the "best possible new gain there could be". There
+* can be two reasons why finding the "best possible" new gain is not deemed
+* successful. 1) This new value cannot be supported by the hardware. 2) 
+The new
+* gain required to maintain the scale would not be an integer. In this case,
+* the "best possible" new gain will be a floored optimal gain, which may or
+* may not be supported by the hardware.
+
+Eg, if ret is zero, there is no need to check validity of the gain_new 
+but it is guaranteed to be one of the supported gains.
+
+Yours,
+	-- Matti
+
+-- 
+Matti Vaittinen
+Linux kernel developer at ROHM Semiconductors
+Oulu Finland
+
+~~ When things go utterly wrong vim users can always type :help! ~~
+
 
