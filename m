@@ -1,151 +1,552 @@
-Return-Path: <linux-kernel+bounces-86537-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86536-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65DEE86C6B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:21:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A485D86C6B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:21:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 08AC01F245DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:21:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 369041F22489
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:21:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6218C64A92;
-	Thu, 29 Feb 2024 10:21:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46CAC63CB5;
+	Thu, 29 Feb 2024 10:21:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="kk0kPtnX"
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="ehxjgMdl"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E020B653
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 10:21:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BADAB653
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 10:21:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709202103; cv=none; b=QbvbGjmnaS5aN/zm3iEaKI7VmZrRKfs/YuN4iZpDtkJvrAin3hGh8A5bj4NPzbNqaDFq1EmphrTlMPx1tcwKm4bdUqSdEy4HJ/k6qX5Zi6Z5MEZq/nx3qJJs6ZQqhWMnBPPOjzRrl4YphenjBdCg3FOQNvmPi87ODI79gIOwUf8=
+	t=1709202093; cv=none; b=pknhQPZeEozFpIpOQgAGHJBmawkXeHyi8zMXgWTpnP4ofU6+41moVMQaVSQsy8xLVd339ENcJal/3VgzXEGqZnyQ+Cp8jziq2JvEle3rLjWNgCterH1hAq64AClNfXF1GL6Hy8WwfUl3ZmQ2L6WKRV6060rOP4Yxk5C0FBvT9cU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709202103; c=relaxed/simple;
-	bh=eQCrYWaKljuZQbvM/mdOLfYFJUriqvbfTJ9P5IBFfb0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jY43e9ACf9hNY9A5SiATPyQDjg2ksnHm9dUJa4d5eFxx66uBP9sfuyUyomyhgw8q22bbb/cWunMMiF1I60pv5wyPy6rRgq418xMi6mdaiz8CdkV6rE/QNkG9EFwtFg8d+RjZmtj0OfiGCEKbKAbpeMCH6HW7NWxDE+TZMYvTSt4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=kk0kPtnX; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-563c595f968so1232475a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 02:21:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709202100; x=1709806900; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XXbQvG9L5lSiYkGCpKL/q8Tsn6boqvbJEFELuXYi6xk=;
-        b=kk0kPtnXSsVReZUl+lt3jt3lEtBkxUs/3OrEViBEfrr7uItDqToPJpJ77xl+lsD2Hg
-         RIHmewqDWVDiBeX7jchLZCaya10TahCKlG59Lb9Fchh9kO/cSJ3m5xME+sH/0orXrGMP
-         fzGaYqv7yY2JXnrzG5LMLPj4z4meAHJbnjNHMdubSUOjuJe0RNY583HxZRli0ZZa6XZj
-         f2G4z5czLgD5WH9EthS76Yf/vWLxcwOwkLE2ufHmdon53p3JOuiRQT8WM8ldcNcO0hdD
-         c2rnqFcG9YpHNDjNd8farp05ss52Hp2Xup6ZxudnjfV+mnxdaH0vGXZp6f6/Imitwjrk
-         cjIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709202100; x=1709806900;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XXbQvG9L5lSiYkGCpKL/q8Tsn6boqvbJEFELuXYi6xk=;
-        b=l13hv1fgEJb+qVSJa/x+4GYuSjoJawdhVWshWBWG2fYZp8++YYt4cmNLAWSrhP307D
-         zWB+rizMfhfEgqvW+iiT0EuaBH5x4XpWIXCTqNDGDU8GSEMeTvLlzX/FizPSpBLKFPzv
-         0nAzN6recbtmdDTWs5HYiXK7SSmfXdiGljiG6zqbJYLHx6d30hLqwmYaNT4NrbFYvVr1
-         z0KltdQjkdEOHTHK1neC6QjcqlRZbOjIcKw3RjpqS85+ZtmCHGxcKdbB5IVW2nGoG2ah
-         c06AuT0AReMIqj1UJ8tBxm3I5MIQ53OlCQ0TqXQ/1O78gDyPc6Ozi+ij6wbeDpP+bKta
-         NZMw==
-X-Forwarded-Encrypted: i=1; AJvYcCV5N4vXpTK1jmOVlmD1sbJ9M9Z3d4D3tVtNdN3CaSZ0KZ4KUmaAyr0c5W3A8o2s7UUK2EtHYZlrmWidrs2Qsgu51IAmctO4pZBscxmG
-X-Gm-Message-State: AOJu0YyC2gEduGg5nPU9Zq+/BxhLy4l3R8Ry/GEJ/JscZRuSh7cyGUur
-	q0gfbwNJtu4CUmF3tNz/7UarLHsz2nkd+mlPDh28MA79WwWV6ilC/9XgPKhqjDU=
-X-Google-Smtp-Source: AGHT+IForFAIczl4mw6InKRp5v3MIeHjNxebhAOHk/AF0HIX5rX/LV0cy/SdmkILbm/MOcSBMglR2g==
-X-Received: by 2002:a05:6402:c97:b0:564:81c8:cf8a with SMTP id cm23-20020a0564020c9700b0056481c8cf8amr1131481edb.20.1709202100221;
-        Thu, 29 Feb 2024 02:21:40 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id v29-20020a50a45d000000b005649f17558bsm499321edb.42.2024.02.29.02.21.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Feb 2024 02:21:39 -0800 (PST)
-Message-ID: <7f60e293-8076-4a06-9b6b-35f9c19578c4@linaro.org>
-Date: Thu, 29 Feb 2024 11:21:25 +0100
+	s=arc-20240116; t=1709202093; c=relaxed/simple;
+	bh=snvD5kWXFLB6AcGQ8H5+y7jL/rrDUq79ugF9+pgwUCY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=au3rVQnRNmJnq2DJmjIgpcl8VAhuPOo+3GJO2WQaeMB8giLhJ6EuKLrNJmBPcuwujOz9k5QC54KFdZoGM3KuXim1WrRi2ngH+4mMJ8v3k/3Ic+0jxOLqE/h7n1i7t8R9oEJS6KSkZbTR76WmSplMcACiFbQ4n3OJgVHSmObGM+k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=ehxjgMdl; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709202088;
+	bh=snvD5kWXFLB6AcGQ8H5+y7jL/rrDUq79ugF9+pgwUCY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=ehxjgMdlLzDJu4DgpVFueM0u8n+qfHqzszoekyZuJ9ANMOdM8f9AxSKIUlsRnN2HR
+	 UHG/NLiAAC1WVAoAe/dFLA1RYQzZ74LpXClzP5mp+/6ujW1kUHDkeM3DMuuRDZuYXC
+	 Yk8/QUR+HisuzwUXqOe1B+lYveRJ1m8iz6lUwAguXS+hJZmpGfXDCoDfMjxDF3LuvO
+	 GKInLTb04i+SqeiqgT57bGh9HmKdUlquqVr4HjfRUhHjeo+q6yr0wrth4O06Hk7Rcs
+	 kHFBOGRcweu/voXc4WJwZ0wRitR3EIpFcLFY4okuwvNufafbSXicAech2SArQxKz7u
+	 shJFrB+IpwdpA==
+Received: from eldfell (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pq)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id AC6493780029;
+	Thu, 29 Feb 2024 10:21:27 +0000 (UTC)
+Date: Thu, 29 Feb 2024 12:21:26 +0200
+From: Pekka Paalanen <pekka.paalanen@collabora.com>
+To: Louis Chauvet <louis.chauvet@bootlin.com>
+Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>, Melissa Wen
+ <melissa.srw@gmail.com>, =?UTF-8?B?TWHDrXJh?= Canal
+ <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel
+ Vetter <daniel@ffwll.ch>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ arthurgrillo@riseup.net, Jonathan Corbet <corbet@lwn.net>,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
+ thomas.petazzoni@bootlin.com
+Subject: Re: [PATCH v2 5/9] drm/vkms: Re-introduce line-per-line composition
+ algorithm
+Message-ID: <20240229122126.6bdb1d2f.pekka.paalanen@collabora.com>
+In-Reply-To: <Zd35cY6uxP7akjw8@localhost.localdomain>
+References: <20240223-yuv-v2-0-aa6be2827bb7@bootlin.com>
+	<20240223-yuv-v2-5-aa6be2827bb7@bootlin.com>
+	<20240226133706.281deb59.pekka.paalanen@collabora.com>
+	<Zd35cY6uxP7akjw8@localhost.localdomain>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/2] dt-bindings: arm: aspeed: add ASUS X4TF board
-Content-Language: en-US
-To: Kelly Hung <ppighouse@gmail.com>, robh+dt@kernel.org
-Cc: krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, joel@jms.id.au,
- andrew@codeconstruct.com.au, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org,
- linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org, kelly_hung@asus.com,
- Allenyy_Hsu@asus.com
-References: <20240229090913.1892215-1-Kelly_Hung@asus.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240229090913.1892215-1-Kelly_Hung@asus.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/NgwUThjmbjg9x4BlzesBpBe";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On 29/02/2024 10:09, Kelly Hung wrote:
-> Document the new compatibles used on ASUS X4TF.
-> 
-> Signed-off-by: Kelly Hung <Kelly_Hung@asus.com>
-> 
-> ---
-> Changes in v4:
-> - The new compatible is a BMC for a ASUS X4TF server which use a ast2600-a3 chip,
-> so correct string to asus,x4tf-bmc.
+--Sig_/NgwUThjmbjg9x4BlzesBpBe
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-And what happened with the rest of my message? Did you read it?
+On Tue, 27 Feb 2024 16:02:09 +0100
+Louis Chauvet <louis.chauvet@bootlin.com> wrote:
 
-Best regards,
-Krzysztof
+> [...]
+>=20
+> > > -static void pre_mul_alpha_blend(struct vkms_frame_info *frame_info,
+> > > -				struct line_buffer *stage_buffer,
+> > > -				struct line_buffer *output_buffer)
+> > > +static void pre_mul_alpha_blend(
+> > > +	struct line_buffer *stage_buffer,
+> > > +	struct line_buffer *output_buffer,
+> > > +	int x_start,
+> > > +	int pixel_count)
+> > >  {
+> > > -	int x_dst =3D frame_info->dst.x1;
+> > > -	struct pixel_argb_u16 *out =3D output_buffer->pixels + x_dst;
+> > > -	struct pixel_argb_u16 *in =3D stage_buffer->pixels;
+> > > -	int x_limit =3D min_t(size_t, drm_rect_width(&frame_info->dst),
+> > > -			    stage_buffer->n_pixels);
+> > > -
+> > > -	for (int x =3D 0; x < x_limit; x++) {
+> > > -		out[x].a =3D (u16)0xffff;
+> > > -		out[x].r =3D pre_mul_blend_channel(in[x].r, out[x].r, in[x].a);
+> > > -		out[x].g =3D pre_mul_blend_channel(in[x].g, out[x].g, in[x].a);
+> > > -		out[x].b =3D pre_mul_blend_channel(in[x].b, out[x].b, in[x].a);
+> > > +	struct pixel_argb_u16 *out =3D &output_buffer->pixels[x_start];
+> > > +	struct pixel_argb_u16 *in =3D &stage_buffer->pixels[x_start]; =20
+> >=20
+> > Input buffers and pointers should be const. =20
+>=20
+> They will be const in v4.
+> =20
+> > > +
+> > > +	for (int i =3D 0; i < pixel_count; i++) {
+> > > +		out[i].a =3D (u16)0xffff;
+> > > +		out[i].r =3D pre_mul_blend_channel(in[i].r, out[i].r, in[i].a);
+> > > +		out[i].g =3D pre_mul_blend_channel(in[i].g, out[i].g, in[i].a);
+> > > +		out[i].b =3D pre_mul_blend_channel(in[i].b, out[i].b, in[i].a);
+> > >  	}
+> > >  } =20
+> >=20
+> > Somehow the hunk above does not feel like it is part of "re-introduce
+> > line-per-line composition algorithm". This function was already running
+> > line-by-line. Would it be easy enough to collect this and directly
+> > related changes into a separate patch? =20
+>=20
+> It is not directly related to the reintroduction of line-by-line=20
+> algorithm, but in the simplification and maintenability effort, I=20
+> changed a bit the function to avoid having multiple place computing the=20
+> x_start/pixel_count values. I don't see an interrest to extract it, it=20
+> will be just a translation of the few lines into the calling place.
 
+It does make review more difficult, because it makes the patch bigger
+and is not explained in the commit message. It is a surprise to a
+reviewer, who then needs to think what this means and does it belong
+here.
+
+If you explain it in the commit message and note it in the commit
+summary line, I think it would become fairly obvious that this patch is
+doing two things rather than one.
+
+Therefore, *if* it is easy to extract as a separate patch, then it
+would be nice to do so. However, if doing so would require you to write
+a bunch of temporary code that the next patch would just rewrite again,
+then doing so would be counter-productive.
+
+Patch split is about finding a good trade-off to make things easy for
+reviewers:
+
+- Smaller patches are better as long as they are self-standing and
+  understandable in isolation, and of course do not regress anything.
+
+- Rewriting the same thing multiple times in the same series is extra
+  work for a reviewer and therefore best avoided.
+
+- The simpler the semantic change, the bigger a patch can be and still
+  be easy to review.
+
+And all the patch writing rules specific to the kernel project that I
+don't know about.
+
+> [...]
+>=20
+> > > +/**
+> > > + * direction_for_rotation() - Helper to get the correct reading dire=
+ction for a specific rotation
+> > > + *
+> > > + * @rotation: rotation to analyze =20
+> >=20
+> > This is KMS plane rotation property, right?
+> >=20
+> > So the KMS plane has been rotated by this, and what we want to find is
+> > the read direction on the attached FB so that reading returns pixels in
+> > the CRTC line/scanout order, right?
+> >=20
+> > Maybe extend the doc to explain that. =20
+>=20
+> Is it better?
+>=20
+>  * direction_for_rotation() - Get the correct reading direction for a giv=
+en rotation
+>  *
+>  * This function will use the @rotation parameter to compute the correct =
+reading direction to read
+>  * a line from the source buffer.
+>  * For example, if the buffer is reflected on X axis, the pixel must be r=
+ead from right to left.
+>  * @rotation: Rotation to analyze. It correspond the the field @frame_inf=
+o.rotation.
+
+I think it is important to define what determines the correct result.
+In this case, we want the reading to produce pixels in the CRTC scanout
+line order, I believe. If you don't say "CRTC", the reader does not
+know what "the correct reading direction" should match to.
+
+> > > + */
+> > > +enum pixel_read_direction direction_for_rotation(unsigned int rotati=
+on)
+> > > +{
+> > > +	if (rotation & DRM_MODE_ROTATE_0) {
+> > > +		if (rotation & DRM_MODE_REFLECT_X)
+> > > +			return READ_LEFT;
+> > > +		else
+> > > +			return READ_RIGHT;
+> > > +	} else if (rotation & DRM_MODE_ROTATE_90) {
+> > > +		if (rotation & DRM_MODE_REFLECT_Y)
+> > > +			return READ_UP;
+> > > +		else
+> > > +			return READ_DOWN;
+> > > +	} else if (rotation & DRM_MODE_ROTATE_180) {
+> > > +		if (rotation & DRM_MODE_REFLECT_X)
+> > > +			return READ_RIGHT;
+> > > +		else
+> > > +			return READ_LEFT;
+> > > +	} else if (rotation & DRM_MODE_ROTATE_270) {
+> > > +		if (rotation & DRM_MODE_REFLECT_Y)
+> > > +			return READ_DOWN;
+> > > +		else
+> > > +			return READ_UP;
+> > > +	}
+> > > +	return READ_RIGHT;
+> > > +}
+> > > +
+> > >  /**
+> > >   * blend - blend the pixels from all planes and compute crc
+> > >   * @wb: The writeback frame buffer metadata
+> > > @@ -183,11 +187,11 @@ static void blend(struct vkms_writeback_job *wb,
+> > >  {
+> > >  	struct vkms_plane_state **plane =3D crtc_state->active_planes;
+> > >  	u32 n_active_planes =3D crtc_state->num_active_planes;
+> > > -	int y_pos;
+> > > =20
+> > >  	const struct pixel_argb_u16 background_color =3D { .a =3D 0xffff };
+> > > =20
+> > >  	size_t crtc_y_limit =3D crtc_state->base.crtc->mode.vdisplay;
+> > > +	size_t crtc_x_limit =3D crtc_state->base.crtc->mode.hdisplay; =20
+> >=20
+> > Wonder why these were size_t, causing needs to cast below... =20
+>=20
+> For crtc_x_limit I just copied the crtc_y_limit. I will change both to u1=
+6=20
+> (the type of h/vdisplay).
+
+Don't go unsigned, that can cause unexpected results when mixed in
+computations with signed variables.
+
+Oh, the cast was probably not about size but signedness. Indeed, size_t
+is unsigned.
+
+I don't see a reason to use a 16-bit size either, it just exposes the
+computations to under/overflows that would then be needed to check for.
+s32 should be as fast as any, and perhaps enough bits to never
+under/overflow in these computations, but please verify that.
+
+> > > =20
+> > >  	/*
+> > >  	 * The planes are composed line-by-line. It is a necessary complexi=
+ty to avoid poor
+> > > @@ -198,22 +202,133 @@ static void blend(struct vkms_writeback_job *w=
+b,
+> > > =20
+> > >  		/* The active planes are composed associatively in z-order. */
+> > >  		for (size_t i =3D 0; i < n_active_planes; i++) {
+> > > -			y_pos =3D get_y_pos(plane[i]->frame_info, y);
+> > > +			struct vkms_plane_state *current_plane =3D plane[i];
+> > > =20
+> > > -			if (!check_limit(plane[i]->frame_info, y_pos))
+> > > +			/* Avoid rendering useless lines */
+> > > +			if (y < current_plane->frame_info->dst.y1 ||
+> > > +			    y >=3D current_plane->frame_info->dst.y2) {
+> > >  				continue;
+> > > -
+> > > -			vkms_compose_row(stage_buffer, plane[i], y_pos);
+> > > -			pre_mul_alpha_blend(plane[i]->frame_info, stage_buffer,
+> > > -					    output_buffer);
+> > > +			}
+> > > +
+> > > +			/*
+> > > +			 * src_px is the line to copy. The initial coordinates are inside=
+ the
+> > > +			 * destination framebuffer, and then drm_rect_* helpers are used =
+to
+> > > +			 * compute the correct position into the source framebuffer.
+> > > +			 */
+> > > +			struct drm_rect src_px =3D DRM_RECT_INIT(
+> > > +				current_plane->frame_info->dst.x1, y,
+> > > +				drm_rect_width(&current_plane->frame_info->dst), 1);
+> > > +			struct drm_rect tmp_src;
+> > > +
+> > > +			drm_rect_fp_to_int(&tmp_src, &current_plane->frame_info->src);
+> > > +
+> > > +			/*
+> > > +			 * [1]: Clamping src_px to the crtc_x_limit to avoid writing outs=
+ide of the
+> > > +			 * destination buffer
+> > > +			 */
+> > > +			src_px.x2 =3D min_t(int, src_px.x2, (int)crtc_x_limit); =20
+> >=20
+> > Up to and including this point, it would be better if src_px was called
+> > dst_px, because only the below computation converts it into actual
+> > src_px. =20
+>=20
+> I agree, it will be changed for the v4. I will also change the name to=20
+> `dst_line` and `src_line`.
+
+Alright.
+
+..
+
+
+> > >  }
+> > > =20
+> > > -static void *get_packed_src_addr(const struct vkms_frame_info *frame=
+_info, int y)
+> > > +/**
+> > > + * get_step_1x1() - Common helper to compute the correct step value =
+between each pixel to read in a
+> > > + * certain direction.
+> > > + * This must be used only with format where blockh =3D=3D blockw =3D=
+=3D 1.
+> > > + * In the case when direction is not a valid pixel_read_direction, t=
+he returned step is 0, so you
+> > > + * must not rely on this result to create a loop variant.
+> > > + *
+> > > + * @fb Framebuffer to iter on
+> > > + * @direction Direction of the reading
+> > > + */
+> > > +static int get_step_1x1(struct drm_framebuffer *fb, enum pixel_read_=
+direction direction,
+> > > +			int plane_index)
+> > >  {
+> > > -	int x_src =3D frame_info->src.x1 >> 16;
+> > > -	int y_src =3D y - frame_info->rotated.y1 + (frame_info->src.y1 >> 1=
+6);
+> > > -
+> > > -	return packed_pixels_addr(frame_info, x_src, y_src);
+> > > +	switch (direction) {
+> > > +	default:
+> > > +		DRM_ERROR("Invalid direction for pixel reading: %d\n", direction);
+> > > +		return 0; =20
+> >=20
+> > What I'd do here is move the default: section outside of the switch
+> > completely. Then the compiler can warn if any enum value is not handled
+> > here. Since every case in the switch is a return statement, falling out
+> > of the switch block is the default case. =20
+>=20
+> Hoo, I did not know that gcc can warn when using enums, I will definitly=
+=20
+> do it for the v4.
+> =20
+> > Maybe the enum variable containing an illegal value could be handled
+> > more harshly so that callers could rely on this function always
+> > returning a good value?
+> >=20
+> > Just like passing in fb=3DNULL is handled by the kernel as an OOPS. =20
+>=20
+> I don't think it's a good idea to OOPS inside a driver.
+
+Everyone already do that. Most functions that do not expect to be called
+with NULL never check the arguments for NULL. They just OOPS on
+dereference if someone passes in NULL. And for a good reason: adding
+all those checks is both code churn and it casts doubt: "maybe it is
+legal and expected to call this function with NULL sometimes, what good
+does that do?".
+
+> An error here is=20
+> maybe dangerous, but is not fatal to the kernel. Maybe you know how to do=
+=20
+> a "local" OOPS to break only this driver and not the whole kernel?
+
+I don't know what the best practices are in the kernel.
+
+> For the v4 I will keep a DRM_ERROR and return 0.
+
+Does that require the caller to check for 0? Could the 0 cause
+something else to end up in an endless loop? If it does return 0, how
+should a caller handle this case that "cannot" ever happen? Why have
+code for something that cannot happen?
+
+Of course it's a trade-off between correctness and limping along
+injured, and the kernel tends to strongly lean toward the latter for the
+obvious reasons.
+
+> > > +	case READ_RIGHT:
+> > > +		return fb->format->char_per_block[plane_index];
+> > > +	case READ_LEFT:
+> > > +		return -fb->format->char_per_block[plane_index];
+> > > +	case READ_DOWN:
+> > > +		return (int)fb->pitches[plane_index];
+> > > +	case READ_UP:
+> > > +		return -(int)fb->pitches[plane_index];
+> > > +	}
+> > >  }
+> > > =20
+> > > -static int get_x_position(const struct vkms_frame_info *frame_info, =
+int limit, int x)
+> > > -{
+> > > -	if (frame_info->rotation & (DRM_MODE_REFLECT_X | DRM_MODE_ROTATE_27=
+0))
+> > > -		return limit - x - 1;
+> > > -	return x;
+> > > -}
+> > > =20
+> > >  /*
+> > > - * The following  functions take pixel data from the buffer and conv=
+ert them to the format
+> > > + * The following  functions take pixel data (a, r, g, b, pixel, ...)=
+, convert them to the format
+> > >   * ARGB16161616 in out_pixel.
+> > >   *
+> > > - * They are used in the `vkms_compose_row` function to handle multip=
+le formats.
+> > > + * They are used in the `read_line`s functions to avoid duplicate wo=
+rk for some pixel formats.
+> > >   */
+> > > =20
+> > > -static void ARGB8888_to_argb_u16(u8 *src_pixels, struct pixel_argb_u=
+16 *out_pixel)
+> > > +static void ARGB8888_to_argb_u16(struct pixel_argb_u16 *out_pixel, i=
+nt a, int r, int g, int b) =20
+> >=20
+> > The function name ARGB8888_to_argb_u16() is confusing. It's not taking
+> > in ARGB8888 pixels but separate a,r,g,b ints. The only assumption it
+> > needs from the pixel format is the 8888 part. =20
+>=20
+> I don't realy know how to name it. What I like with ARGB8888 is that it's=
+=20
+> clear that the values are 8 bits and in argb format.
+
+I could even propose=20
+
+static struct pixel_argb_u16
+argb_u16_from_u8888(int a, int r, int g, int b)
+
+perhaps. Yes, returning a struct by value. I think it would fit, and
+these are supposed to get fully inlined anyway, too.
+
+c.f argb_u16_from_u2101010().
+
+Not a big deal though, I think I'm getting a little bit too involved to
+see what would be the most intuitively understandable naming scheme for
+someone not familiar with the code.
+
+> Do you think that `argb_u8_to_argb_u16`, with a new structure=20
+> pixel_argb_u8 will be better? (like PATCH 6/9 with pixel_yuv_u8).
+>=20
+> If so, I will introduce the argb_u8 structure in an other commit.
+
+How would you handle 10-bpc formats? Is there a need for
+proliferation of bit-depth-specific struct types?
+
+> [...]
+>=20
+> > > + * The following functions are read_line function for each pixel for=
+mat supported by VKMS.
+> > >   *
+> > > - * This function composes a single row of a plane. It gets the sourc=
+e pixels
+> > > - * through the y coordinate (see get_packed_src_addr()) and goes lin=
+early
+> > > - * through the source pixel, reading the pixels and converting it to
+> > > - * ARGB16161616 (see the pixel_read() callback). For rotate-90 and r=
+otate-270,
+> > > - * the source pixels are not traversed linearly. The source pixels a=
+re queried
+> > > - * on each iteration in order to traverse the pixels vertically.
+> > > + * They read a line starting at the point @x_start,@y_start followin=
+g the @direction. The result
+> > > + * is stored in @out_pixel and in the format ARGB16161616.
+> > > + *
+> > > + * Those function are very similar, but it is required for performan=
+ce reason. In the past, some
+> > > + * experiment were done, and with a generic loop the performance are=
+ very reduced [1].
+> > > + *
+> > > + * [1]: https://lore.kernel.org/dri-devel/d258c8dc-78e9-4509-9037-a9=
+8f7f33b3a3@riseup.net/
+> > >   */
+> > > -void vkms_compose_row(struct line_buffer *stage_buffer, struct vkms_=
+plane_state *plane, int y)
+> > > +
+> > > +static void ARGB8888_read_line(struct vkms_frame_info *frame_info, i=
+nt x_start, int y_start,
+> > > +			       enum pixel_read_direction direction, int count,
+> > > +			       struct pixel_argb_u16 out_pixel[])
+> > > +{
+> > > +	u8 *src_pixels =3D packed_pixels_addr(frame_info, x_start, y_start,=
+ 0);
+> > > +
+> > > +	int step =3D get_step_1x1(frame_info->fb, direction, 0);
+> > > +
+> > > +	while (count) {
+> > > +		u8 *px =3D (u8 *)src_pixels;
+> > > +
+> > > +		ARGB8888_to_argb_u16(out_pixel, px[3], px[2], px[1], px[0]);
+> > > +		out_pixel +=3D 1;
+> > > +		src_pixels +=3D step;
+> > > +		count--; =20
+> >=20
+> > btw. you could eliminate decrementing 'count' if you computed end
+> > address and used while (out_pixel < end). =20
+>=20
+> Yes, you are right, but after thinking about it, neither out_pixel < end=
+=20
+> and while (count) are conveying "this loop will copy `count` pixels. I=20
+> think a for-loop here is more understandable. There is no ambiguity in th=
+e=20
+> number of pixels written and less error-prone. I will replace
+> 	while (count)=20
+> by
+> 	for(int i =3D 0; i < count; i++)
+
+I agree that a for-loop is the most obvious way of saying it, but I
+also think while (out_pixel < end) is very close too, and so is while (coun=
+t).
+None of those would make me think twice.
+
+However, I'm thinking of performance here. After all, this is the
+hottest code path there is in VKMS. Is the compiler smart enough to
+eliminate count-- or i to reduce the number of CPU cycles?
+
+
+Thanks,
+pq
+
+--Sig_/NgwUThjmbjg9x4BlzesBpBe
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmXgWqYACgkQI1/ltBGq
+qqdY3hAAkxCjQGC1S80ldn4Wla92DLQjngYKVjkZh8+PFSdQmCPuyrwQJKuNUn6q
+wpNVZLPpVtUVXoIaTJTdViv8P6RYOHxbekhkM3OhYn1DJfsUwKjGD4Zqn8rtuVsu
+N3+5fv2hGxXFZOodCmCaMoGW5FqHsQJh3UAqqQihFvzOcYKGtxW1N3pwg16QFpoS
+B+0pqfOFFD+05snF2Iry+TsRAuMDR/UzhNh8TRwVHhIqTRsEBhuvpDxijfiC7IF2
+cVs6xYGF1OZtI+7d+LK9z44R4TZwguCOEyxO+UGXB2V3EPJHTa4O8RLWfADbQBFH
+9iNtG7Q4Op6+w+1iZWqfRCTO3lbMD231ArhPYwMhfPRp9sAfAvMPxrXW4mIk7roR
+KCbYhS38qqKfquA82UV+pLXqmi2sTtD0RzwaIpYonzlfk39acPqu9w3FrWqj/Hw0
+ltCKhzypCEwej4WtFyCJGs8FFDhH3DXypQWUSmZ46CkxhKrsIz3nVhQtqzd3OOKI
+3qsRuR4agGoYZT0+iRkCm/08J6VrRSPO2M4fyo8V3obmdefZAJ1KY3asSq7NONnF
+ZJSBimYwdRyXZyNut0iarCkty2bAU0QfADixcGVJ7HXy+GXbqlrfLXlKOKlo4Yl4
+b+XhWTUW3U7fKo+WqQQGv1qjYacUsOOPDRwPHm4tHS6O28nXIx8=
+=Hl30
+-----END PGP SIGNATURE-----
+
+--Sig_/NgwUThjmbjg9x4BlzesBpBe--
 
