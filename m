@@ -1,195 +1,269 @@
-Return-Path: <linux-kernel+bounces-86522-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86520-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF05086C684
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:12:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7619286C67C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:12:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE7711C20DD9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:12:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E1179B2986E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:12:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 212B563513;
-	Thu, 29 Feb 2024 10:12:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="GHcwZ3yM";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="iQbA1x47"
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50B986350F;
+	Thu, 29 Feb 2024 10:11:57 +0000 (UTC)
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58CE863501;
-	Thu, 29 Feb 2024 10:12:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709201551; cv=fail; b=Sz5lXO85YCQ5bYtMVPMp2YNLrkmsFFskMpzVi0rA2Qpr8zQoPE1yBdbdYfWfQ4d6HfM9RaRC7d+dPu9SBnaF2drlaHtPCYIouaYH47SqWbZ9cmy8OL72nqZXcUaVc72Z6lOenCEJa9jdMhGr7t3E/zbRwYYPUPhnWjDwzQAR+fI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709201551; c=relaxed/simple;
-	bh=bEfkuE/kZEUoBkGTrGatYYNjiBEg/WVbP9zdS94aJBY=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=gG/1A2vjLOyd8OtThTcS4Woab+19S61BFIzB7geJLmaIEVn4knHNWv88emPw9aOSgDRhD/sBDu9BsEyfupm0Bp4Ps+LSJmsq5AjggQhD7cWqSYTwvNpWPUVeSl/pkQhMCrkl+1Tdz5U16EFpwTMZpLBDrj4235L5LGx9R+3lMio=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=GHcwZ3yM; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=iQbA1x47; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41T9FYqe020466;
-	Thu, 29 Feb 2024 10:12:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-transfer-encoding : content-type :
- mime-version; s=corp-2023-11-20;
- bh=cSj7rddjhuXKPU0unTMP0ct6rFgIQr8/bNBgCeLQcYs=;
- b=GHcwZ3yMBqc5UXI9Tk3Z6mhZtUzrnAYoOmelrJULd+dOG2l0TNx8ANms9kjBytmsZrGj
- yabzcfC6ITPiLOWJKMTCx7gjNb24GlKW6TOF+sceyV9l8nW8ddY6WtiE0w6vpanEWrjE
- yNumTJiWkNvESxHH8nN30eOzr0CTeBZIXq2q6z8qmBi9gr5DqCY0mrw2UMXTMbinHlaU
- jkbxqoCbrrffr/AFCVC6bb+XKSHLoMnQmvPanwqon1O7zmeCZQ41umYVjvxRQdmLLgGJ
- lMcaqGpGS2qciIwvEZ4U0KDZw7Tg4wlfBItodwA7z64bsmGMbJY5El8zTmkglPvWzE7L Hg== 
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wf722n2sg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 29 Feb 2024 10:12:05 +0000
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41T8Rivn015274;
-	Thu, 29 Feb 2024 10:12:04 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2101.outbound.protection.outlook.com [104.47.55.101])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3wf6wafbak-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 29 Feb 2024 10:12:04 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=l9Wcslcfkryc47JChSBU7HmrH6ARNgNSStmwJLeRdIENjcZkqWkQEaeHN6yIIFK29LCCrXz2i2kUNkJLMei7xJ3qRogkhxGLVhgEaX7DUnLD9zJuKYenTc2RXsZprH2iVgIbQK0U+a7Gc0WePztbpbaj/6+0lMP2Cw2mPl3rEGdqT0FjMF35jFKJyRfyia6WhuTSMZ3TVdYPLWnJ6Yb1n36xUbQg3sMg8+u1NzTrIf/L3ED1lDkrLgW4+C91REazYXUWyWlNpdJ7kAXJ0ypIK2b5l9GeEOInREjTUNV/Oc0bdWfm3dLCYXb11VrDC0SMcvCVmhXSEfRZNLj/hJSx5w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cSj7rddjhuXKPU0unTMP0ct6rFgIQr8/bNBgCeLQcYs=;
- b=mEWYmzw2lnvWVwWoG46rYTtiD8lEfHxaaqkVKTXVEJl4XlrEsZzH0pbjy/Y7n34DjS/NXh0Cb2d+HrpjFmgOfM32DOMoR0QP4IPyvQFKWz+mVIk4v/22lj/lp2EEdGA6062E2rtK24BB3O2nB2bt1XGbOk3jYIPuYL6C6YRlFIwFq0yOkUdI7SDPjhBm0z5UltAfjQdWb4CYISg4HWk47KxZryj6WkVpK0Pn3kzSPADzh7RyJCCZ2IqkOHZuEYmm+qYzIHltlikLUGyAc9mNGWrhsoqwwT+PlaD6OwEglGdIXHJcE/wfm37dtVcPWm+ZkY4bfnSgeNuzCUMbqwzUsA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cSj7rddjhuXKPU0unTMP0ct6rFgIQr8/bNBgCeLQcYs=;
- b=iQbA1x47AbqxaGQe2EmmQN/lfXUUq04o/KyWPIfkGJQtmLWhwEVbBAg2g7V6QWk7+KJyYzOegL3NSz2n8B3ml4mWcnxdGcUFHayv3tlcMBR7YJcdl26woyLRLkC7cR0Hk3yAoPk0QiFVJkNSLLeRhxh1k60LGdJTeYHdvAg+C5Q=
-Received: from PH0PR10MB7080.namprd10.prod.outlook.com (2603:10b6:510:28c::6)
- by SJ0PR10MB4591.namprd10.prod.outlook.com (2603:10b6:a03:2af::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.39; Thu, 29 Feb
- 2024 10:12:02 +0000
-Received: from PH0PR10MB7080.namprd10.prod.outlook.com
- ([fe80::5bd9:10a1:f938:2ee5]) by PH0PR10MB7080.namprd10.prod.outlook.com
- ([fe80::5bd9:10a1:f938:2ee5%5]) with mapi id 15.20.7316.034; Thu, 29 Feb 2024
- 10:12:02 +0000
-From: Kamalesh Babulal <kamalesh.babulal@oracle.com>
-To: Waiman Long <longman@redhat.com>
-Cc: Zefan Li <lizefan.x@bytedance.com>, Tejun Heo <tj@kernel.org>,
-        Tom Hromatka <tom.hromatka@oracle.com>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] cgroup/cpuset: Fix retval in update_cpumask()
-Date: Thu, 29 Feb 2024 15:41:14 +0530
-Message-ID: <20240229101116.60043-1-kamalesh.babulal@oracle.com>
-X-Mailer: git-send-email 2.44.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: TYWP286CA0002.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:178::17) To PH0PR10MB7080.namprd10.prod.outlook.com
- (2603:10b6:510:28c::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69ADE6280C;
+	Thu, 29 Feb 2024 10:11:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709201516; cv=none; b=PS0qtYbHaHYk9U9+7aW18QEhxki+HXbACRg8gaRvOE56eiGOe+PAbLGfxtmUDYFtE6bv79Eo6bmKb4uhbsGNX1nJwfQJbJlfHeDfl8ouWaGpAwXeKurlaGA5mNL5sUAYC0af5b5IkdinCPVSrfMZnoxO823H9yRDSoBPKIJVomU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709201516; c=relaxed/simple;
+	bh=GyGUdXIg/byhkhi4PY7TzcTxrUGkdHFdA4AEWVhCBTI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=M7RvnJwNXm2KO9aL9fLJCGw5gJl2QMMEMC0eudJ5I6T7VM7TXYLYfiAXYmeE36ivJiCE1YawIhObtIgj4qH/QRuoyjYY4THirJI4XL9zJCMMGeHOT96805pM9EqNF3detYRsvVNKNOdTn86D7NxiPp2tS9ls1iX3EBEc8wOEV+4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-6093247d1acso7298827b3.0;
+        Thu, 29 Feb 2024 02:11:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709201513; x=1709806313;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vlayGp3B7LHt3ezElVfSVkqAS1u/HUJTCJbUomcuaEU=;
+        b=A0Z0uJysc+8qfqDI9G8hx2OpibdAs6tjTXSIRYLPksWJ3AUXJ/DHuI8lwnjowDkOcM
+         ap13mGi7vk6prGbjWOHUSBJQoAWLkaiv/Wi7GAWlTiPo+be6w8biQWl94NdVFpyVtUJO
+         AZF6SMopCUwldlixyeScfWsw03NtArV5nqUfTb5Ip0klQr1kxBRWqyArsrQvq8YInDw0
+         nruTzOXnYjGba6D9tR/Ym7yRM9KfwqJQw2t1a1D8ydcayGiQIBBiDb03xiMjqgT6TXq9
+         oz0yuQy+hcuP6gQkIhNGnOgRj4DktbL5k49CEmwD2Hc+jhRIYU8SCoAvI1subS8QYTSb
+         0ciw==
+X-Forwarded-Encrypted: i=1; AJvYcCVi2e06KQsiOksWSRplcAGb0YDURKRc6xVRuX7hfPFakHhD0Rer9UxnGT7LBhlH/iy2Ocl9d5jg77emqfO7A0EwJhml9oEmo+isJebV5L79nf6Ooer/1HcmqAR4223Phj1BlFhKYSNn+A==
+X-Gm-Message-State: AOJu0YwMLHoQfIcu2XTM/Jth09eJ1lgvYrb+jQ1sVmWY/H7tNTDfWXhz
+	RX3kbbPu1VmKA85qOBw+YgGp8a3RHiNyzKUITrDcRq8zx4Y5oIT+Ln5r+cKhfd8=
+X-Google-Smtp-Source: AGHT+IHK8Y43Alkij7eS6ZrAWKOBWGQsyNI+1A9kN2pnBs9xLS9XAgK4r8SAOtfojcf1hABaCpXdPw==
+X-Received: by 2002:a81:df0f:0:b0:604:a75:4274 with SMTP id c15-20020a81df0f000000b006040a754274mr1866293ywn.51.1709201512718;
+        Thu, 29 Feb 2024 02:11:52 -0800 (PST)
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com. [209.85.219.182])
+        by smtp.gmail.com with ESMTPSA id u125-20020a816083000000b006078f8caa68sm285238ywb.71.2024.02.29.02.11.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Feb 2024 02:11:52 -0800 (PST)
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dcc7cdb3a98so749191276.2;
+        Thu, 29 Feb 2024 02:11:52 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXjhsHqla4tJ3TDQa0H6s69GliUxIMNtvIu8USNyYAQxAnXzg/NCEn2Lj3WYN/0TdzU8Q6sYDIFXxxrosDVAM3izDo30RaZGxcflrtEtYnhTZvU/eHyAD5/YXmc+KHmc825Ie9cyanP1A==
+X-Received: by 2002:a05:6902:50b:b0:dcf:c6ce:b4ca with SMTP id
+ x11-20020a056902050b00b00dcfc6ceb4camr1745346ybs.56.1709201511893; Thu, 29
+ Feb 2024 02:11:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB7080:EE_|SJ0PR10MB4591:EE_
-X-MS-Office365-Filtering-Correlation-Id: 607de5c7-6777-448c-b4d2-08dc390edfc1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	P1ycU8cG7JwRAGozywjxiiT200ClhwJTAdFoP1hqnN/RiE/nbVAc8k+99J2xiPzJ7Qemq96S+UZYpGAZufqwDBYzG238J4S4nXMW9XOk9WwkEPCV0/P9ld0DMbGRzP2BN9/c0/VsgXX8IvDBoMCQb4e2ho2f0Ylo019a4muMnAgWIsHoD3kIQevetRPdcQueO6NpjFJVdUJgjzVE87Od9Mo+ewApLtBy2Y7qtZHvFOO5y6m2QUJEFR0yI2qNwYERKnHfbn1UAYOT+7DzADe0IAVbwjhx1C0HOelVrTPDbsrD2KYB632Nz7h9a1u7jlMzatmOvCmr3HQxBi97a1R7YItxeLbtQMMxqYdmAZORwdvOFIraIEfn4OyMMzYjvw0lK8sP7MBF1JP1IS9HFolxE9TMjUxX/Ri+m9wqGhV9or9yooJPg0gtj+UwceN0llLLnq0Ac9zfLGDVwAxRUO0goUo+8G0OmTcvYFP7Kpk1qgORQ/b1ldTMHPV8cmuYGtzH1Tj67WmZODpywWZkVyYiLOhVOSDLIR4atXysFpmSTdG3+EVu5BlJl6NBWD/Sco+ljjN+6s7x3cNoOvz/e8p85x8feLXHs3VzSch+La7HTs6Xc9oNtIx9OJLIqziLNZhABPH3ZEl1y8xW4e4fe1Oidw==
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB7080.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?ghXwvXWZJu3Ji3idirpruk433/0ksErGqFvsuE8HrqNkIoqQ/ifqzqLyr9zU?=
- =?us-ascii?Q?r3Fy8tn7R/eqBy2VSEARVAajI42z/AHdhdOR8+cdIOjJArYqL/Mze7NunON2?=
- =?us-ascii?Q?P4PN3v1NhzCENHQEgZpNEi3wOQ6XJiJlizTyNNJumWIK75OajTv6sl48xhnH?=
- =?us-ascii?Q?MijpjbX2tGwiuKQfMhMOaq5BgUf6XE6vGnEgTHVv4VihbYxIOOV2xmler0fe?=
- =?us-ascii?Q?4coSHe7o1cXKSFk0OYczFtwRWpUEDKbKN/oWY8kvvN0qhs9M21hJazytZOUR?=
- =?us-ascii?Q?mPrtf1fv3aa9Kz+uvhJm4QdRYB8spfl22M9O0M1XlbOoN6FltcrQes2S55A/?=
- =?us-ascii?Q?v6AwLiLtWS105r180VRyCZUWXc60XThr6qXDbWY4jDcnEPlm5jyrKwlwZsLO?=
- =?us-ascii?Q?93Lu9wuZ4o0Q+bK7EWhnFClLAJ0SM2rd3UKYC8e/hCODd7lwTrcl9J/tQ6Jm?=
- =?us-ascii?Q?01SRJ/w/GBsLQB+aCadFQaZYzMK1vgQf5S5O6ZmRG6ME0cj/CYsc+3Q9trzR?=
- =?us-ascii?Q?4hCQRRjJb4Wcst636wuE4zmu2jx6mtXbYc4dwHtaZ0uJSoyoozILWBXPtqSr?=
- =?us-ascii?Q?EuUcDwdGWXZktrG6gufjHVL791wAXZTKweI0KDxcSDYeOnLcXJqSKmdsbxPy?=
- =?us-ascii?Q?bq6RfrxW5IMRiWKrKsgs5IX7RF1pCvtp+T6dr3VxScxcsTQWZyHrroHDIN7T?=
- =?us-ascii?Q?bgaIqrnwMXsbdJawCok/7va83kxN4QibnSizMo9Dc2mMvTFgfgCTmyi3R4Yy?=
- =?us-ascii?Q?uMhmEBXNetjkwnixnYAQkFQ9eUNUzcP/NfKhIGYs6i2P3x0Ng0QP0dKriehc?=
- =?us-ascii?Q?KUTK84bv6Ke+k+ZnJge+v6CeNWJHVzhsghmqtDSJ0NRFDoKNmLMw1HDFcEln?=
- =?us-ascii?Q?v6n1Dw/Lt39Y2aj+rLqB+ChszDhF/uulVjR2VcvKlfLQFleLECsNhFY3tDWJ?=
- =?us-ascii?Q?vB+y0Q6EP/LV+oyw8HHS+L3JvNLoLkNU65FgKpgdjCWNQ4v/h9gxkk6ATxO+?=
- =?us-ascii?Q?npX/YzUv9b0IQpMgy+W+L1JkRK/DFBrsApw2VnpUcFlZ58FuFZbnosOVsens?=
- =?us-ascii?Q?hwyUZ1VTi9BXALYpJDcjYz+PbQjrXlRu1T+ziCfYcwAleQkC2rJhxjDaZ6pR?=
- =?us-ascii?Q?CQPkQCEbTzn51fNhDIUhHXQYrlY5rjwmh4DwR7TTvXyHxJOdxrz1HZPo2ys9?=
- =?us-ascii?Q?P0XrxqmiERdCSMzDzJWPC3kBb3RSbWXckck3tcrvOps/lzeseUYJwINKRI8q?=
- =?us-ascii?Q?5IMGNUX+lVAKGr7p2qmtRoG8sVdxej0Q/2axrZD29EuMPns8Fbwix4E+TS3h?=
- =?us-ascii?Q?u7WCND3h/4q0aTGG19ztvaA/hBlJxbCV0Hr4gGLfwCop3Z1V7pA4RZbsCpjb?=
- =?us-ascii?Q?LibH2eCsvZyXqKrgD/LfHNugwzKUxG5DeZchzPC3fjatWuDgLlWX0yuzrFrf?=
- =?us-ascii?Q?Z0XsH92CPxAIwKA1u4zE59vIpXA+shw2m+OCU0KLNhAEqHWpfIHNMgCa/NeT?=
- =?us-ascii?Q?WAWkwqN/HwyZPYODZ9mhWCgRv+nVJggGWN5DxYHuiXmNOZy+kBDUBsXfmWiu?=
- =?us-ascii?Q?IyJ3iHKyKZZxjOSbnR00xMrq8f17YhYtqu8jMXBhrAYWniWhYoCVb8iIun1l?=
- =?us-ascii?Q?ZQ=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	F5/0b/MRNH2y4MjW6IJmpwTikagAQZdi22uzc9vAOEQMG6aZa7c9Cm5MV2FWT+sXgwF05Non5/ZSXPvf9bFfBJ+k+4t7FM44fH0XMLSo6Nn8L6qjawXd0z3q4YyfQ598UujaKT7B4lCfyv79QsgF1wwSXp8QdxDLsuaJo9CWA23MiYfzKOUXKkcYcSpZPDad3DPeQ5iAQDrfpS6zYnQ3jcF0sJhPekCy95I5zXCxbiVVLUAlHwfoTp6pNHS2tFsNInaMq8KBj5Y3SWFzjae5Dmu+5qpVsYSGzm/Kfv6ccAVSeNmMyfT8oU+Tokuip0fabxb/de1rfjYm1IYv5LG6FbCQIDz070IqO3eV9F5p0Nn9neti/OGJAzgdQeb2sk47N0ONjrEDgHShkgC0otqfgeWCXa8Obbrd2H1ZQ/6CHMBb6yUX5b1J7IPqhuFXDF3KnxxYA8Oy2bc2L1EO/FqT/YbQ4/KR8SmXEy8zxO2gmSHTHljEMmzgBDEaHxTVMpS9p49JnneUhLzg845S1wJoI1YnnUw61WMq8xinJNnnNPWF6VYqDgaSgbJ0Ivd3j08vM55cAzwOLn7OZVxiJ+QF5MtVqY2ERxm/cHvRmEpFXJM=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 607de5c7-6777-448c-b4d2-08dc390edfc1
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB7080.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Feb 2024 10:12:02.6917
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8RjP8noqipW4hpaYfdXGpz3OepJghLbczsnT9SWYt//DAY1v71encV6MmGmIeuh10lMN4e1vlFUxdVZzQWb8LWqCHa0cqYAML6/QwDbXhdg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4591
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-29_02,2024-02-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0 phishscore=0
- spamscore=0 mlxlogscore=999 malwarescore=0 adultscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2402290077
-X-Proofpoint-ORIG-GUID: jIAC-M-2iJgC4AFT_gMs7pdgGrOsSu21
-X-Proofpoint-GUID: jIAC-M-2iJgC4AFT_gMs7pdgGrOsSu21
+References: <20240224052436.3552333-1-saravanak@google.com>
+In-Reply-To: <20240224052436.3552333-1-saravanak@google.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 29 Feb 2024 11:11:39 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWhm1WaX3X3P7tyB+e-rX=iwkwm8LxE3=gfHzJ1umhsFg@mail.gmail.com>
+Message-ID: <CAMuHMdWhm1WaX3X3P7tyB+e-rX=iwkwm8LxE3=gfHzJ1umhsFg@mail.gmail.com>
+Subject: Re: [PATCH] of: property: fw_devlink: Fix stupid bug in
+ remote-endpoint parsing
+To: Saravana Kannan <saravanak@google.com>
+Cc: Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, 
+	=?UTF-8?Q?Herv=C3=A9_Codina?= <herve.codina@bootlin.com>, 
+	Luca Ceresoli <luca.ceresoli@bootlin.com>, kernel-team@android.com, 
+	Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The update_cpumask(), checks for newly requested cpumask by calling
-validate_change(), which returns an error on passing an invalid set
-of cpu(s). Independent of the error returned, update_cpumask() always
-returns zero, suppressing the error and returning success to the user
-on writing an invalid cpu range for a cpuset. Fix it by returning
-retval instead, which is returned by validate_change().
+Hi Saravana,
 
-Fixes: 99fe36ba6fc1 ("cgroup/cpuset: Improve temporary cpumasks handling")
-Signed-off-by: Kamalesh Babulal <kamalesh.babulal@oracle.com>
----
- kernel/cgroup/cpuset.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Sat, Feb 24, 2024 at 6:25=E2=80=AFAM Saravana Kannan <saravanak@google.c=
+om> wrote:
+> Introduced a stupid bug in commit 782bfd03c3ae ("of: property: Improve
+> finding the supplier of a remote-endpoint property") due to a last minute
+> incorrect edit of "index !=3D0" into "!index". This patch fixes it to be
+> "index > 0" to match the comment right next to it.
+>
+> Reported-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
+> Link: https://lore.kernel.org/lkml/20240223171849.10f9901d@booty/
+> Fixes: 782bfd03c3ae ("of: property: Improve finding the supplier of a rem=
+ote-endpoint property")
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
 
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index ba36c073304a..2ddbfaa4efa9 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -2562,7 +2562,7 @@ static int update_cpumask(struct cpuset *cs, struct cpuset *trialcs,
- 		update_partition_sd_lb(cs, old_prs);
- out_free:
- 	free_cpumasks(NULL, &tmp);
--	return 0;
-+	return retval;
- }
- 
- /**
+Thanks for your patch!
 
-base-commit: cf1182944c7cc9f1c21a8a44e0d29abe12527412
--- 
-2.44.0
+> --- a/drivers/of/property.c
+> +++ b/drivers/of/property.c
+> @@ -1304,7 +1304,7 @@ static struct device_node *parse_remote_endpoint(st=
+ruct device_node *np,
+>                                                  int index)
+>  {
+>         /* Return NULL for index > 0 to signify end of remote-endpoints. =
+*/
+> -       if (!index || strcmp(prop_name, "remote-endpoint"))
+> +       if (index > 0 || strcmp(prop_name, "remote-endpoint"))
+>                 return NULL;
+>
+>         return of_graph_get_remote_port_parent(np);
+> --
+> 2.44.0.rc0.258.g7320e95886-goog
 
+After this, the "Fixed dependency cycle" messages I reported to be
+gone in [1] are back.
+
+In fact, they are slightly different, and there are now even more of them:
+
+-platform fea80000.csi2: Fixed dependency cycle(s) with
+/soc/video@e6ef7000/ports/port@1/endpoint@0
+-platform fea80000.csi2: Fixed dependency cycle(s) with
+/soc/video@e6ef6000/ports/port@1/endpoint@0
+-platform fea80000.csi2: Fixed dependency cycle(s) with
+/soc/video@e6ef5000/ports/port@1/endpoint@0
+-platform fea80000.csi2: Fixed dependency cycle(s) with
+/soc/video@e6ef4000/ports/port@1/endpoint@0
+-platform fea80000.csi2: Fixed dependency cycle(s) with
+/soc/video@e6ef3000/ports/port@1/endpoint@0
+-platform fea80000.csi2: Fixed dependency cycle(s) with
+/soc/video@e6ef2000/ports/port@1/endpoint@0
+-platform fea80000.csi2: Fixed dependency cycle(s) with
+/soc/video@e6ef1000/ports/port@1/endpoint@0
+-platform fea80000.csi2: Fixed dependency cycle(s) with
+/soc/video@e6ef0000/ports/port@1/endpoint@0
+-platform feaa0000.csi2: Fixed dependency cycle(s) with
+/soc/video@e6ef3000/ports/port@1/endpoint@2
+-platform feaa0000.csi2: Fixed dependency cycle(s) with
+/soc/video@e6ef2000/ports/port@1/endpoint@2
+-platform feaa0000.csi2: Fixed dependency cycle(s) with
+/soc/video@e6ef1000/ports/port@1/endpoint@2
+-platform feaa0000.csi2: Fixed dependency cycle(s) with
+/soc/video@e6ef0000/ports/port@1/endpoint@2
+-platform fead0000.hdmi: Fixed dependency cycle(s) with
+/soc/sound@ec500000/ports/port@1/endpoint
+-platform feae0000.hdmi: Fixed dependency cycle(s) with
+/soc/sound@ec500000/ports/port@2/endpoint
+-platform feb00000.display: Fixed dependency cycle(s) with
+/soc/hdmi@feae0000/ports/port@0/endpoint
+-platform feb00000.display: Fixed dependency cycle(s) with
+/soc/hdmi@fead0000/ports/port@0/endpoint
+-platform hdmi0-out: Fixed dependency cycle(s) with
+/soc/hdmi@fead0000/ports/port@1/endpoint
+-platform hdmi1-out: Fixed dependency cycle(s) with
+/soc/hdmi@feae0000/ports/port@1/endpoint
+-platform vga-encoder: Fixed dependency cycle(s) with /vga/port/endpoint
+-platform vga-encoder: Fixed dependency cycle(s) with
+/soc/display@feb00000/ports/port@0/endpoint
++platform e6ef0000.video: Fixed dependency cycle(s) with /soc/csi2@feaa0000
++platform e6ef0000.video: Fixed dependency cycle(s) with /soc/csi2@fea80000
++platform e6ef1000.video: Fixed dependency cycle(s) with /soc/csi2@feaa0000
++platform e6ef1000.video: Fixed dependency cycle(s) with /soc/csi2@fea80000
++platform e6ef2000.video: Fixed dependency cycle(s) with /soc/csi2@feaa0000
++platform e6ef2000.video: Fixed dependency cycle(s) with /soc/csi2@fea80000
++platform e6ef3000.video: Fixed dependency cycle(s) with /soc/csi2@feaa0000
++platform e6ef3000.video: Fixed dependency cycle(s) with /soc/csi2@fea80000
++platform e6ef4000.video: Fixed dependency cycle(s) with /soc/csi2@fea80000
++platform e6ef5000.video: Fixed dependency cycle(s) with /soc/csi2@fea80000
++platform e6ef6000.video: Fixed dependency cycle(s) with /soc/csi2@fea80000
++platform e6ef7000.video: Fixed dependency cycle(s) with /soc/csi2@fea80000
++platform ec500000.sound: Fixed dependency cycle(s) with /soc/hdmi@feae0000
++platform ec500000.sound: Fixed dependency cycle(s) with /soc/hdmi@fead0000
++platform ec500000.sound: Fixed dependency cycle(s) with
+/soc/i2c@e6510000/codec@10
++platform e6ef7000.video: Fixed dependency cycle(s) with /soc/csi2@fea80000
++platform e6ef6000.video: Fixed dependency cycle(s) with /soc/csi2@fea80000
++platform e6ef5000.video: Fixed dependency cycle(s) with /soc/csi2@fea80000
++platform e6ef4000.video: Fixed dependency cycle(s) with /soc/csi2@fea80000
++platform e6ef3000.video: Fixed dependency cycle(s) with /soc/csi2@fea80000
++platform e6ef2000.video: Fixed dependency cycle(s) with /soc/csi2@fea80000
++platform e6ef1000.video: Fixed dependency cycle(s) with /soc/csi2@fea80000
++platform e6ef0000.video: Fixed dependency cycle(s) with /soc/csi2@fea80000
++platform fea80000.csi2: Fixed dependency cycle(s) with /soc/video@e6ef7000
++platform fea80000.csi2: Fixed dependency cycle(s) with /soc/video@e6ef6000
++platform fea80000.csi2: Fixed dependency cycle(s) with /soc/video@e6ef5000
++platform fea80000.csi2: Fixed dependency cycle(s) with /soc/video@e6ef4000
++platform fea80000.csi2: Fixed dependency cycle(s) with /soc/video@e6ef3000
++platform fea80000.csi2: Fixed dependency cycle(s) with /soc/video@e6ef2000
++platform fea80000.csi2: Fixed dependency cycle(s) with /soc/video@e6ef1000
++platform fea80000.csi2: Fixed dependency cycle(s) with /soc/video@e6ef0000
++platform fea80000.csi2: Fixed dependency cycle(s) with
+/soc/i2c@e66d8000/video-receiver@70
++platform e6ef3000.video: Fixed dependency cycle(s) with /soc/csi2@feaa0000
++platform e6ef2000.video: Fixed dependency cycle(s) with /soc/csi2@feaa0000
++platform e6ef1000.video: Fixed dependency cycle(s) with /soc/csi2@feaa0000
++platform e6ef0000.video: Fixed dependency cycle(s) with /soc/csi2@feaa0000
++platform feaa0000.csi2: Fixed dependency cycle(s) with /soc/video@e6ef3000
++platform feaa0000.csi2: Fixed dependency cycle(s) with /soc/video@e6ef2000
++platform feaa0000.csi2: Fixed dependency cycle(s) with /soc/video@e6ef1000
++platform feaa0000.csi2: Fixed dependency cycle(s) with /soc/video@e6ef0000
++platform feaa0000.csi2: Fixed dependency cycle(s) with
+/soc/i2c@e66d8000/video-receiver@70
++platform ec500000.sound: Fixed dependency cycle(s) with /soc/hdmi@fead0000
++platform fead0000.hdmi: Fixed dependency cycle(s) with /soc/sound@ec500000
++platform fead0000.hdmi: Fixed dependency cycle(s) with /soc/display@feb000=
+00
++platform ec500000.sound: Fixed dependency cycle(s) with /soc/hdmi@feae0000
++platform feae0000.hdmi: Fixed dependency cycle(s) with /soc/sound@ec500000
++platform feae0000.hdmi: Fixed dependency cycle(s) with /soc/display@feb000=
+00
++platform feae0000.hdmi: Fixed dependency cycle(s) with /soc/display@feb000=
+00
++platform fead0000.hdmi: Fixed dependency cycle(s) with /soc/display@feb000=
+00
++platform feb00000.display: Fixed dependency cycle(s) with /soc/hdmi@feae00=
+00
++platform feb00000.display: Fixed dependency cycle(s) with /soc/hdmi@fead00=
+00
++platform cvbs-in: Fixed dependency cycle(s) with
+/soc/i2c@e66d8000/video-receiver@70
++platform hdmi-in: Fixed dependency cycle(s) with
+/soc/i2c@e66d8000/video-receiver@70
++platform fead0000.hdmi: Fixed dependency cycle(s) with /hdmi0-out
++platform hdmi0-out: Fixed dependency cycle(s) with /soc/hdmi@fead0000
++platform feae0000.hdmi: Fixed dependency cycle(s) with /hdmi1-out
++platform hdmi1-out: Fixed dependency cycle(s) with /soc/hdmi@feae0000
++platform vga: Fixed dependency cycle(s) with /vga-encoder
++platform feb00000.display: Fixed dependency cycle(s) with /vga-encoder
++platform vga-encoder: Fixed dependency cycle(s) with /vga
++platform vga-encoder: Fixed dependency cycle(s) with /soc/display@feb00000
+
+-i2c 2-0010: Fixed dependency cycle(s) with
+/soc/sound@ec500000/ports/port@0/endpoint
++platform ec500000.sound: Fixed dependency cycle(s) with
+/soc/i2c@e6510000/codec@10
+
+-i2c 4-0070: Fixed dependency cycle(s) with
+/soc/csi2@fea80000/ports/port@0/endpoint
+-i2c 4-0070: Fixed dependency cycle(s) with
+/soc/csi2@feaa0000/ports/port@0/endpoint
+-i2c 4-0070: Fixed dependency cycle(s) with /hdmi-in/port/endpoint
+-i2c 4-0070: Fixed dependency cycle(s) with /cvbs-in/port/endpoint
++platform feaa0000.csi2: Fixed dependency cycle(s) with
+/soc/i2c@e66d8000/video-receiver@70
++platform fea80000.csi2: Fixed dependency cycle(s) with
+/soc/i2c@e66d8000/video-receiver@70
++i2c 4-0070: Fixed dependency cycle(s) with /soc/csi2@fea80000
++i2c 4-0070: Fixed dependency cycle(s) with /soc/csi2@feaa0000
+
+I guess all of that is expected?
+
+[1] https://lore.kernel.org/all/CAMuHMdVon3mdivZQ0O6D4+va0nGBrUQbDp23bEq661=
+QD=3D4t7+g@mail.gmail.com/
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
