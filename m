@@ -1,187 +1,180 @@
-Return-Path: <linux-kernel+bounces-86184-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86186-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A659586C0D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 07:39:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4242486C0E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 07:40:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 174D81F23721
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 06:39:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8F62EB25EE6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 06:40:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14820446B5;
-	Thu, 29 Feb 2024 06:38:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EA4645009;
+	Thu, 29 Feb 2024 06:39:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="kKYCfUTj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Sa5uX/5L"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F38DD3E47E;
-	Thu, 29 Feb 2024 06:38:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C2EF50A78;
+	Thu, 29 Feb 2024 06:39:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709188698; cv=none; b=Wmsz4zifx49HpJj0O+RkULaHEHkyctyEteCcPxZmtw6If8Smie/P4Qfp4YeIt+A4CXDF4ihYIrk/EhIN+AA/dJdw+B5i75KZw0XkV3JHh58tikTWu1oAWVWqPW0g+0LIsIz1z7VZRZ///nuOcnCchLXnTTkQPPmGyhjAzEzeJGc=
+	t=1709188740; cv=none; b=FtLY9H4B1TLdOumwLBdXvnL+J/YNhgDTluDCzBFWoA329M1sZhnkfsDzHIHSgl2xfow4b8BwlwttqhHo4sIZ20wt9vVWc64QIBAsD+kfsUJXYBE0olD0P/Q/02giIT7Uy/RlDUqnvkEJI6TJ8CLgLiHpsy4ybBVEhL+JtGaPLJc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709188698; c=relaxed/simple;
-	bh=VnaCGmTbhdOxcaI9YOBv8ChVZ1c9Uo+mqEnOdGTunRQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y6lU9woth/+VHM9O0ysU5bGJuzJHeGVbQ67jhyr5EJb37UUDV/GCyYW1zUnFvthvHt+EZVZfviScqAJaD9EtZLeV3bqsIH9HEcaXPaw3Q1ErIlm9P4Bq2yQM05pRARCMrm8nzEppYBWUziE+BGZNi3cQNERiycI7iuEuoN6Seh4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=kKYCfUTj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04749C433C7;
-	Thu, 29 Feb 2024 06:38:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1709188697;
-	bh=VnaCGmTbhdOxcaI9YOBv8ChVZ1c9Uo+mqEnOdGTunRQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kKYCfUTjlHsSI85yXg91f1hcMEnc4IaSOnLMDBbHvnFG2xlO0wNdWa54lUmmrwNV3
-	 zixmUh28pPClhwMvdtSbq7f9l/+KvVaJ4kYS0lLlRCI+zzWN78REdRrON6GuO8seJH
-	 4a4A2VfAATpOLLwi8Q3XbDrwQHpFLvKlgwX8br7c=
-Date: Thu, 29 Feb 2024 07:38:14 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc: rafael@kernel.org, bhelgaas@google.com, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Ricky Wu <ricky_wu@realtek.com>,
-	Kees Cook <keescook@chromium.org>, Tony Luck <tony.luck@intel.com>,
-	"Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-	linux-hardening@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v3] driver core: Cancel scheduled pm_runtime_idle() on
- device removal
-Message-ID: <2024022925-kudos-frugally-04a0@gregkh>
-References: <20240229062201.49500-1-kai.heng.feng@canonical.com>
+	s=arc-20240116; t=1709188740; c=relaxed/simple;
+	bh=cfh98lsnK1WA24iz8Eoegn/HEuWd+0TrFqTV/dJ6qbA=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=JtqQ85uiA52x9XWSIk3/XJPZhMxIPwToC6R07FEO1StAlbFguiBfatwe4spOXMW15XReoDw2cTbneGTPnJiFrn/ZRu2MrJIz3hL04WgLUACZZVWKGP0C6UikVoy1Djwn3beSUCzcWOHamxW26E4d3Ci0PIKDwtFuNqSKM+vbu9c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Sa5uX/5L; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54D02C433F1;
+	Thu, 29 Feb 2024 06:38:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709188740;
+	bh=cfh98lsnK1WA24iz8Eoegn/HEuWd+0TrFqTV/dJ6qbA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Sa5uX/5L0fo+9Xu4rwU36fBtU3OqtGH71/qOtqqJ6XyZrV71FtwYXIHJ8WUSJqdDj
+	 gd/pZAU0+epjdcjKLR771mYZbVUrf5BzsPE5wBu2b5Y29N14X/PcS7yphvWyFuu+JQ
+	 zyJdsqLIHXyQSx2PFZHdTBdK2SfghMc3+08UFJAS9+SSADAsL3jnoeHssoyscRNynZ
+	 4wii49o7xSJSDrx0NHv2wTVyNMXOQO23MnazuB6SaZjRnugWDEuU6sBXWA/tEuD+VB
+	 x6Bx88vlC1dTVpSgQ5JOY8NKlNcCXlx83iE4UtTayWE113TLVezg8gvh+i4KBGjQx0
+	 aI8rfRWHDiTdg==
+Date: Thu, 29 Feb 2024 15:38:55 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v2 0/7] tracing/probes: Support function parameter
+ access from return probe
+Message-Id: <20240229153855.6fe3fb454cf56eebc6ea9953@kernel.org>
+In-Reply-To: <20240229145139.a215085c44add62302463312@kernel.org>
+References: <170891987362.609861.6767830614537418260.stgit@devnote2>
+	<Zd9eBn2FTQzYyg7L@krava>
+	<20240229145139.a215085c44add62302463312@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20240229062201.49500-1-kai.heng.feng@canonical.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, Feb 29, 2024 at 02:22:00PM +0800, Kai-Heng Feng wrote:
-> When inserting an SD7.0 card to Realtek card reader, the card reader
-> unplugs itself and morph into a NVMe device. The slot Link down on hot
-> unplugged can cause the following error:
->=20
-> pcieport 0000:00:1c.0: pciehp: Slot(8): Link Down
-> BUG: unable to handle page fault for address: ffffb24d403e5010
-> PGD 100000067 P4D 100000067 PUD 1001fe067 PMD 100d97067 PTE 0
-> Oops: 0000 [#1] PREEMPT SMP PTI
-> CPU: 3 PID: 534 Comm: kworker/3:10 Not tainted 6.4.0 #6
-> Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.M./H370M Pro4, =
-BIOS P3.40 10/25/2018
-> Workqueue: pm pm_runtime_work
-> RIP: 0010:ioread32+0x2e/0x70
-> Code: ff 03 00 77 25 48 81 ff 00 00 01 00 77 14 8b 15 08 d9 54 01 b8 ff f=
-f ff ff 85 d2 75 14 c3 cc cc cc cc 89 fa ed c3 cc cc cc cc <8b> 07 c3 cc cc=
- cc cc 55 83 ea 01 48 89 fe 48 c7 c7 98 6f 15 99 48
-> RSP: 0018:ffffb24d40a5bd78 EFLAGS: 00010296
-> RAX: ffffb24d403e5000 RBX: 0000000000000152 RCX: 000000000000007f
-> RDX: 000000000000ff00 RSI: ffffb24d403e5010 RDI: ffffb24d403e5010
-> RBP: ffffb24d40a5bd98 R08: ffffb24d403e5010 R09: 0000000000000000
-> R10: ffff9074cd95e7f4 R11: 0000000000000003 R12: 000000000000007f
-> R13: ffff9074e1a68c00 R14: ffff9074e1a68d00 R15: 0000000000009003
-> FS:  0000000000000000(0000) GS:ffff90752a180000(0000) knlGS:0000000000000=
-000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: ffffb24d403e5010 CR3: 0000000152832006 CR4: 00000000003706e0
-> Call Trace:
->  <TASK>
->  ? show_regs+0x68/0x70
->  ? __die_body+0x20/0x70
->  ? __die+0x2b/0x40
->  ? page_fault_oops+0x160/0x480
->  ? search_bpf_extables+0x63/0x90
->  ? ioread32+0x2e/0x70
->  ? search_exception_tables+0x5f/0x70
->  ? kernelmode_fixup_or_oops+0xa2/0x120
->  ? __bad_area_nosemaphore+0x179/0x230
->  ? bad_area_nosemaphore+0x16/0x20
->  ? do_kern_addr_fault+0x8b/0xa0
->  ? exc_page_fault+0xe5/0x180
->  ? asm_exc_page_fault+0x27/0x30
->  ? ioread32+0x2e/0x70
->  ? rtsx_pci_write_register+0x5b/0x90 [rtsx_pci]
->  rtsx_set_l1off_sub+0x1c/0x30 [rtsx_pci]
->  rts5261_set_l1off_cfg_sub_d0+0x36/0x40 [rtsx_pci]
->  rtsx_pci_runtime_idle+0xc7/0x160 [rtsx_pci]
->  ? __pfx_pci_pm_runtime_idle+0x10/0x10
->  pci_pm_runtime_idle+0x34/0x70
->  rpm_idle+0xc4/0x2b0
->  pm_runtime_work+0x93/0xc0
->  process_one_work+0x21a/0x430
->  worker_thread+0x4a/0x3c0
->  ? __pfx_worker_thread+0x10/0x10
->  kthread+0x106/0x140
->  ? __pfx_kthread+0x10/0x10
->  ret_from_fork+0x29/0x50
->  </TASK>
-> Modules linked in: nvme nvme_core snd_hda_codec_hdmi snd_sof_pci_intel_cn=
-l snd_sof_intel_hda_common snd_hda_codec_realtek snd_hda_codec_generic snd_=
-soc_hdac_hda soundwire_intel ledtrig_audio nls_iso8859_1 soundwire_generic_=
-allocation soundwire_cadence snd_sof_intel_hda_mlink snd_sof_intel_hda snd_=
-sof_pci snd_sof_xtensa_dsp snd_sof snd_sof_utils snd_hda_ext_core snd_soc_a=
-cpi_intel_match snd_soc_acpi soundwire_bus snd_soc_core snd_compress ac97_b=
-us snd_pcm_dmaengine snd_hda_intel i915 snd_intel_dspcfg snd_intel_sdw_acpi=
- intel_rapl_msr snd_hda_codec intel_rapl_common snd_hda_core x86_pkg_temp_t=
-hermal intel_powerclamp snd_hwdep coretemp snd_pcm kvm_intel drm_buddy ttm =
-mei_hdcp kvm drm_display_helper snd_seq_midi snd_seq_midi_event cec crct10d=
-if_pclmul ghash_clmulni_intel sha512_ssse3 aesni_intel crypto_simd rc_core =
-cryptd rapl snd_rawmidi drm_kms_helper binfmt_misc intel_cstate i2c_algo_bi=
-t joydev snd_seq snd_seq_device syscopyarea wmi_bmof snd_timer sysfillrect =
-input_leds snd ee1004 sysimgblt mei_me soundcore
->  mei intel_pch_thermal mac_hid acpi_tad acpi_pad sch_fq_codel msr parport=
-_pc ppdev lp ramoops drm parport reed_solomon efi_pstore ip_tables x_tables=
- autofs4 hid_generic usbhid hid rtsx_pci_sdmmc crc32_pclmul ahci e1000e i2c=
-_i801 i2c_smbus rtsx_pci xhci_pci libahci xhci_pci_renesas video wmi
-> CR2: ffffb24d403e5010
-> ---[ end trace 0000000000000000 ]---
->=20
-> This happens because scheduled pm_runtime_idle() is not cancelled.
->=20
-> So before releasing the device, stop all runtime power managements by
-> using pm_runtime_barrier() to fix the issue.
->=20
-> Link: https://lore.kernel.org/all/2ce258f371234b1f8a1a470d5488d00e@realte=
-k.com/
-> Cc: Ricky Wu <ricky_wu@realtek.com>
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+On Thu, 29 Feb 2024 14:51:39 +0900
+Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
 
-What commit id does this fix?
+> On Wed, 28 Feb 2024 17:23:34 +0100
+> Jiri Olsa <olsajiri@gmail.com> wrote:
+> 
+> > On Mon, Feb 26, 2024 at 12:57:53PM +0900, Masami Hiramatsu (Google) wrote:
+> > > Hi,
+> > > 
+> > > Here is version 2 series of patches to support accessing function entry data
+> > > from function *return* probes (including kretprobe and fprobe-exit event).
+> > > 
+> > > In this version, I added another cleanup [4/7], updated README[5/7], added
+> > > testcases[6/7] and updated document[7/7].
+> > > 
+> > > This allows us to access the results of some functions, which returns the
+> > > error code and its results are passed via function parameter, such as an
+> > > structure-initialization function.
+> > > 
+> > > For example, vfs_open() will link the file structure to the inode and update
+> > > mode. Thus we can trace that changes.
+> > > 
+> > >  # echo 'f vfs_open mode=file->f_mode:x32 inode=file->f_inode:x64' >> dynamic_events
+> > >  # echo 'f vfs_open%return mode=file->f_mode:x32 inode=file->f_inode:x64' >> dynamic_events 
+> > >  # echo 1 > events/fprobes/enable 
+> > >  # cat trace
+> > >               sh-131     [006] ...1.  1945.714346: vfs_open__entry: (vfs_open+0x4/0x40) mode=0x2 inode=0x0
+> > >               sh-131     [006] ...1.  1945.714358: vfs_open__exit: (do_open+0x274/0x3d0 <- vfs_open) mode=0x4d801e inode=0xffff888008470168
+> > >              cat-143     [007] ...1.  1945.717949: vfs_open__entry: (vfs_open+0x4/0x40) mode=0x1 inode=0x0
+> > >              cat-143     [007] ...1.  1945.717956: vfs_open__exit: (do_open+0x274/0x3d0 <- vfs_open) mode=0x4a801d inode=0xffff888005f78d28
+> > >              cat-143     [007] ...1.  1945.720616: vfs_open__entry: (vfs_open+0x4/0x40) mode=0x1 inode=0x0
+> > >              cat-143     [007] ...1.  1945.728263: vfs_open__exit: (do_open+0x274/0x3d0 <- vfs_open) mode=0xa800d inode=0xffff888004ada8d8
+> > 
+> > hi,
+> > I hit a crash while playing with this, by runnning:
+> > 
+> >   # echo 'f vfs_read%return $arg*' >> dynamic_events
+> >   # echo 1 > events/fprobes/enable 
+> 
+> Thanks for reporting! But I can not reproduce it.
+> Can you share your kconfig?
 
-Should it also go to stable kernels?
+No problem, I could reproduce it.
+
+/sys/kernel/tracing # echo 'f vfs_read%return $arg* $retval' >> dynamic_events 
+/sys/kernel/tracing # echo 1 > events/fprobes/enable 
+/sys/kernel/tracing # 
+/sys/kernel/tracing # [   67.709725] general protection fault, maybe for address 0xffffc9000047bef8: 0000 [#1] PREEMPT SMP PTI
+[   67.714672] CPU: 5 PID: 132 Comm: sh Tainted: G                 N 6.8.0-rc5-00007-gd5e41e4cee7e #149
+[   67.716491] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
+[   67.718036] RIP: 0010:__x86_indirect_thunk_r13+0xa/0x20
+[   67.719087] Code: e8 01 00 00 00 cc 4c 89 24 24 c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 66 0f 1f 44 00 00 e8 01 00 00 00 cc 4c 89 2c 24 <c3> cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 66 0f 1f 44 00 00
+[   67.722314] RSP: 0018:ffffc9000047bdf0 EFLAGS: 00010286
+[   67.723251] RAX: ffffc9000047bef8 RBX: ffff8880073258e0 RCX: ffffc9000047be48
+[   67.724704] RDX: ffffffff813aba09 RSI: 0000000000000000 RDI: ffff8880073258d0
+[   67.725840] RBP: ffff8880073258e0 R08: 0000000000000000 R09: ffff888005053648
+[   67.727017] R10: ffff888008452388 R11: 0000000000000001 R12: ffffffff813aba09
+[   67.728107] R13: 9c73d7ba3660c600 R14: ffffc9000047bef0 R15: ffffc9000047be48
+[   67.729630] FS:  000000000115d8c0(0000) GS:ffff88807d940000(0000) knlGS:0000000000000000
+[   67.731231] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   67.732285] CR2: 00000000005a2319 CR3: 0000000005ad6000 CR4: 00000000000006b0
+[   67.733502] Call Trace:
+[   67.734013]  <TASK>
+[   67.734504]  ? die_addr+0x37/0x90
+[   67.735307]  ? exc_general_protection+0x1ac/0x3f0
+[   67.736158]  ? asm_exc_general_protection+0x26/0x30
+[   67.736984]  ? ksys_read+0x69/0xf0
+[   67.737559]  ? ksys_read+0x69/0xf0
+[   67.738142]  ? __x86_indirect_thunk_r13+0xa/0x20
+[   67.739160]  ? rethook_trampoline_handler+0x95/0x200
+[   67.739919]  ? arch_rethook_trampoline_callback+0x3a/0x50
+[   67.740665]  ? arch_rethook_trampoline+0x2c/0x60
+[   67.741362]  ? ksys_read+0x69/0xf0
+[   67.741980]  ? trace_clock_x86_tsc+0x20/0x20
+[   67.742662]  ? do_syscall_64+0xcc/0x1e0
+[   67.743289]  ? entry_SYSCALL_64_after_hwframe+0x6f/0x77
+[   67.744620]  </TASK>
+[   67.745044] Modules linked in:
+[   67.745559] ---[ end trace 0000000000000000 ]---
+[   67.746221] RIP: 0010:__x86_indirect_thunk_r13+0xa/0x20
+[   67.746927] Code: e8 01 00 00 00 cc 4c 89 24 24 c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 66 0f 1f 44 00 00 e8 01 00 00 00 cc 4c 89 2c 24 <c3> cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 66 0f 1f 44 00 00
+[   67.749176] RSP: 0018:ffffc9000047bdf0 EFLAGS: 00010286
+[   67.749835] RAX: ffffc9000047bef8 RBX: ffff8880073258e0 RCX: ffffc9000047be48
+[   67.750687] RDX: ffffffff813aba09 RSI: 0000000000000000 RDI: ffff8880073258d0
+[   67.751880] RBP: ffff8880073258e0 R08: 0000000000000000 R09: ffff888005053648
+[   67.752810] R10: ffff888008452388 R11: 0000000000000001 R12: ffffffff813aba09
+[   67.753721] R13: 9c73d7ba3660c600 R14: ffffc9000047bef0 R15: ffffc9000047be48
+[   67.754554] FS:  000000000115d8c0(0000) GS:ffff88807d940000(0000) knlGS:0000000000000000
+[   67.755568] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   67.756278] CR2: 00000000005a2319 CR3: 0000000005ad6000 CR4: 00000000000006b0
+[   67.757089] Kernel panic - not syncing: Fatal exception
+[   67.757917] Kernel Offset: disabled
+[   67.758404] ---[ end Kernel panic - not syncing: Fatal exception ]---
+
+Hmm, this seems arch_rethook_trampoline caused the issue.
+
+And curiously, it depends on the number of stored data.
+
+OK:
+/sys/kernel/tracing # echo 'f vfs_read%return $arg1 $arg2 $arg3' >> dynamic_events 
+/sys/kernel/tracing # echo 1 > events/fprobes/enable 
+
+NG:
+/sys/kernel/tracing # echo 'f vfs_read%return $arg1 $arg2 $arg3 $arg4' >> dynamic_events 
+/sys/kernel/tracing # echo 1 > events/fprobes/enable 
+
+I also confirmed that on 'vfs_write' caused the same result. 3 arguments(24 bytes) is OK,
+but 4 arguments (32bytes) is NG.
+
+Thank you,
 
 
-> ---
-> v3:
->   Move the change the device driver core.
-> =20
-> v2:
->   Cover more cases than just pciehp.
->=20
->  drivers/base/dd.c | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-> index 85152537dbf1..38c815e2b3a2 100644
-> --- a/drivers/base/dd.c
-> +++ b/drivers/base/dd.c
-> @@ -1244,6 +1244,7 @@ static void __device_release_driver(struct device *=
-dev, struct device *parent)
-> =20
->  	drv =3D dev->driver;
->  	if (drv) {
-> +		pm_runtime_barrier(dev);
->  		pm_runtime_get_sync(dev);
-
-This is going to affect every device, are you sure about that?
-
-And shouldn't we be checking the return value?  Wait, why does EVERYONE
-ignore the return value of this call?
-
-thanks,
-
-greg k-h
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
