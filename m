@@ -1,172 +1,174 @@
-Return-Path: <linux-kernel+bounces-86891-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86893-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1706786CC56
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:06:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2D1986CC5A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:07:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B4B171F23757
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:06:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5954028402B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:07:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C80801384A4;
-	Thu, 29 Feb 2024 15:06:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1191137C21;
+	Thu, 29 Feb 2024 15:07:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="HmkNoC/0"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="YLcnSk4B"
+Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BFC4137750;
-	Thu, 29 Feb 2024 15:06:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F41BB7D07B
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 15:07:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709219169; cv=none; b=qzeYeQKRvCxoptgB6GvHfIDjDfa+l34QJqAzw2wN0VtP/MdrLJTPyyuff6xF5W2rg5sp4eOf5Talr+fD0YqaC64B8yNVlIWS+0N9tYMSPx3bhei0fvlwYRsRFQ+8zBQpedd1BlmYoPT4u+vW+zaq1ZcnJAIi7wyq1vTQ7rkKBB4=
+	t=1709219234; cv=none; b=BHSe/xfp3C3R701Ru3geiXjDc58Ues9TGDvjohYO6YSjAimyKMN1mfObXgBRHJSvuwEgOMbmBTBw8C1wu4kOiH2wMosfJu9CSPNGiFKZJNfT1C+9Qsg7fwboMh3NAiIUV5rJpjNjo5imWvYslKCB2LyGyW+B4+LMyKsWx69mHsw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709219169; c=relaxed/simple;
-	bh=6h4hJKdMJ/mUzFPTHkW+CQwyfVnMV3EorukJNOsAz3g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dgtmirgkLBOAFCXjEHQbvPM/+cyC+revkQ29Dh6lYM4r2hjksVhXOudURHrF3qIB663X7tarJSOtMHQ+OMEq/FV+NfoaKNp3TqDpI/B7EpWHJwwc/BQVPehxtRDiCWZsI6HYrZUnTabXmvwEJzqBp8SZqNbHKPN9+wHUtZduNQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=HmkNoC/0; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
-	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
-	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
-	In-Reply-To:References; bh=vkq1cSPFx4ixNxWnCzVtyGnhzokMMdq2KSDQeGVzjh4=; b=Hm
-	kNoC/0tf2wu5Kum9eNsJqARb6GTT3hVSccJw2ov4WPtd/sPqx53htebi6yrbp4xHVTco/26xuE8CL
-	Fdpn1jMc8Kg3r9irWKZdBMKXXbg2oDJcxpnKHsdPP5W5W+dMRGLnMjZkEBs35zNmDaK6wLm0UBqaQ
-	ptHuFuxaLD0LyD4=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rfhzL-009397-J9; Thu, 29 Feb 2024 16:06:23 +0100
-Date: Thu, 29 Feb 2024 16:06:23 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Raju.Lakkaraju@microchip.com
-Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-	linux-kernel@vger.kernel.org, Bryan.Whitehead@microchip.com,
-	richardcochran@gmail.com, UNGLinuxDriver@microchip.com
-Subject: Re: [PATCH net 3/3] net: lan743x: Address problems with wake option
- flags configuration sequences
-Message-ID: <e038ec4e-c54d-4628-8997-90510c0d96ab@lunn.ch>
-References: <20240226080934.46003-1-Raju.Lakkaraju@microchip.com>
- <20240226080934.46003-4-Raju.Lakkaraju@microchip.com>
- <b83b74b7-3221-4747-8b71-17738c18c042@lunn.ch>
- <LV8PR11MB8700C2F9461F4200431446D49F5F2@LV8PR11MB8700.namprd11.prod.outlook.com>
+	s=arc-20240116; t=1709219234; c=relaxed/simple;
+	bh=eQoYcoWIrFj7gRUjrrGk3RBO7jWfySCV0Qbg3y5bQck=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=X0a39X2EP5Xn1XCiNXMJibwolc7IPUzQgY3jqdUXUA2mUKowG9K2RMCHwXySt2/ama27ia/sc/F9OcTSNnBFD/QAOkgvQLWhuWISJByvdyZE0nWod0X84fuij8JICnJtcdP24i8zz9ooj1Ud4vvEedSUeAIa3Tq0U3naRwAQqMM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=YLcnSk4B; arc=none smtp.client-ip=209.85.166.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-365b413549eso1400975ab.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 07:07:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1709219232; x=1709824032; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lUr9WwPm1bDr07bGVGyHcZBKICuYFoD9+zTSPH1u+LA=;
+        b=YLcnSk4Bkqf+xK4M7Z0Fu/4wyMjkRvC+iSXz0JP2E56T1gksz21Vrqwhtr9wdK3xdZ
+         jv8bu135TvSwWt8LHo0tZH/lHqWfn52lLGb9LfhXjftKMJo4WkOjsWc6ycTJ3FbyAHN2
+         v6MOsGTrUWM7/B32QcbmZNX0+tcxovms/yr2U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709219232; x=1709824032;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lUr9WwPm1bDr07bGVGyHcZBKICuYFoD9+zTSPH1u+LA=;
+        b=hqKYaiOdU7Mkg27dNHDgmt2ICRB693r59Mse+FHMq70j+rdhhdIUHoWpFQKcmej7pn
+         gmKYWC1Obs1neSZkk0LPQlrwQi/44xFosxjzT5BS6v/QnO6k9GUaaDsu0DO7pAya202h
+         hXcWOAMuemL9eEQYHHfGdJ3/N1hEa5qGJK1jf1/pd91PNEbT2U/P6UcHZcXGSxXNWYZo
+         QFUBowjwoOySKglgBol9Sr9vx4+HI6xlvzacVJ73ccoOu1BRxN3TiKbxql7vAokkg1zW
+         9otMVCClzEFRv4faK1wlBwdNJjBRtx+MFzcHBnVrH5rWq37BcTImy3Zk/mAxx4nek3+g
+         OzuA==
+X-Forwarded-Encrypted: i=1; AJvYcCU04+wQKzbyA28qKCrtJkcp1T2FMrTJ1uGkhFQpwxghc3kNpQAVutyJuG+hxIw7efiZvvc8rkQVs8PTGxYcwIQzk3bPwslJFI+PY/Gj
+X-Gm-Message-State: AOJu0YwXmoLGoufyx3g2M+9Qk7w6IYYjVy5mE6/PQMQdpb4zhI0yMAL6
+	qJlknOPYGf812PvuianXd6qdOJs+GxQk5hka8Mbn6XZSduWMNkJ9N8vOgDstqvRUeIxzSQpgiyt
+	pa3k=
+X-Google-Smtp-Source: AGHT+IGnBv7cnuB5+Ygx0Spp8dOixJyI7HqA7kTIXE4S9xFxwubQmYW37F+sI4cGzNH5Sqb9chjpgg==
+X-Received: by 2002:a05:6e02:1a27:b0:365:2bd4:2f74 with SMTP id g7-20020a056e021a2700b003652bd42f74mr2811151ile.0.1709219232030;
+        Thu, 29 Feb 2024 07:07:12 -0800 (PST)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id m15-20020a02c88f000000b004745b40ba6fsm346477jao.164.2024.02.29.07.07.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Feb 2024 07:07:11 -0800 (PST)
+Message-ID: <be2e812c-3898-4be8-8a9d-e221acb837c3@linuxfoundation.org>
+Date: Thu, 29 Feb 2024 08:07:10 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <LV8PR11MB8700C2F9461F4200431446D49F5F2@LV8PR11MB8700.namprd11.prod.outlook.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: linux-next: build failure after merge of the kunit-next tree
+To: Stephen Rothwell <sfr@canb.auug.org.au>,
+ Brendan Higgins <brendanhiggins@google.com>,
+ Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc: Intel Graphics <intel-gfx@lists.freedesktop.org>,
+ DRI <dri-devel@lists.freedesktop.org>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Matthew Auld <matthew.auld@intel.com>, David Gow <davidgow@google.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux Next Mailing List <linux-next@vger.kernel.org>,
+ Shuah Khan <skhan@linuxfoundation.org>
+References: <20240229152653.09ecf771@canb.auug.org.au>
+Content-Language: en-US
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20240229152653.09ecf771@canb.auug.org.au>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Feb 29, 2024 at 08:59:20AM +0000, Raju.Lakkaraju@microchip.com wrote:
-> Hi Andrew,
+Hi Stephen,
+
+On 2/28/24 21:26, Stephen Rothwell wrote:
+> Hi all,
 > 
-> Thank you for review comments.
+> After merging the kunit-next tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
 > 
-> > -----Original Message-----
-> > From: Andrew Lunn <andrew@lunn.ch>
-> > Sent: Tuesday, February 27, 2024 7:28 AM
-> > To: Raju Lakkaraju - I30499 <Raju.Lakkaraju@microchip.com>
-> > Cc: netdev@vger.kernel.org; davem@davemloft.net; kuba@kernel.org; linux-
-> > kernel@vger.kernel.org; Bryan Whitehead - C21958
-> > <Bryan.Whitehead@microchip.com>; richardcochran@gmail.com;
-> > UNGLinuxDriver <UNGLinuxDriver@microchip.com>
-> > Subject: Re: [PATCH net 3/3] net: lan743x: Address problems with wake option
-> > flags configuration sequences
-> > 
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the
-> > content is safe
-> > 
-> > On Mon, Feb 26, 2024 at 01:39:34PM +0530, Raju Lakkaraju wrote:
-> > > Wake options handling has been reworked as follows:
-> > > a. We only enable secure on magic packet when both secure and magic wol
-> > >    options are requested together.
-> > > b. If secure-on magic packet had been previously enabled, and a
-> > subsequent
-> > >    command does not include it, we add it. This was done to workaround a
-> > >    problem with the 'pm-suspend' application which is unaware of secure-on
-> > >    magic packet being enabled and can unintentionally disable it prior to
-> > >    putting the system into suspend.
-> > 
-> > This seems to be in a bit of a grey area. But ethtool says:
-> > 
-> >            wol p|u|m|b|a|g|s|f|d...
-> >                   Sets  Wake-on-LAN  options.   Not  all devices support this.
-> >                   The argument to this option is a string of characters speci‐
-> >                   fying which options to enable.
-> >                   p   Wake on PHY activity
-> >                   u   Wake on unicast messages
-> >                   m   Wake on multicast messages
-> >                   b   Wake on broadcast messages
-> >                   a   Wake on ARP
-> >                   g   Wake on MagicPacket™
-> >                   s   Enable SecureOn™ password for MagicPacket™
-> >                   f   Wake on filter(s)
-> >                   d   Disable (wake on  nothing).   This  option
-> >                       clears all previous options.
-> > 
-> > d clears everything. All other things enable one option. There does not
-> > appear to be a way to disable a single option, and i would say, adding options
-> > is incremental.
-> > 
+> In file included from drivers/gpu/drm/tests/drm_buddy_test.c:7:
+> drivers/gpu/drm/tests/drm_buddy_test.c: In function 'drm_test_buddy_alloc_range_bias':
+> drivers/gpu/drm/tests/drm_buddy_test.c:191:40: error: format '%u' expects a matching 'unsigned int' argument [-Werror=format=]
+>    191 |                                        "buddy_alloc failed with bias(%x-%x), size=%u, ps=%u\n",
+>        |                                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> include/kunit/test.h:597:37: note: in definition of macro '_KUNIT_FAILED'
+>    597 |                                     fmt,                                       \
+>        |                                     ^~~
+> include/kunit/test.h:662:9: note: in expansion of macro 'KUNIT_UNARY_ASSERTION'
+>    662 |         KUNIT_UNARY_ASSERTION(test,                                            \
+>        |         ^~~~~~~~~~~~~~~~~~~~~
+> include/kunit/test.h:1233:9: note: in expansion of macro 'KUNIT_FALSE_MSG_ASSERTION'
+>   1233 |         KUNIT_FALSE_MSG_ASSERTION(test,                                        \
+>        |         ^~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/gpu/drm/tests/drm_buddy_test.c:186:17: note: in expansion of macro 'KUNIT_ASSERT_FALSE_MSG'
+>    186 |                 KUNIT_ASSERT_FALSE_MSG(test,
+>        |                 ^~~~~~~~~~~~~~~~~~~~~~
+> drivers/gpu/drm/tests/drm_buddy_test.c:191:91: note: format string is defined here
+>    191 |                                        "buddy_alloc failed with bias(%x-%x), size=%u, ps=%u\n",
+>        |                                                                                          ~^
+>        |                                                                                           |
+>        |                                                                                           unsigned int
+> cc1: all warnings being treated as errors
 > 
-> Yes. "d" clears everything.
-> But, if we enable "g" then enable "a", "g" option overwritten by "a"
-
-This is where i say it is a bit of a grey area. For me, they are
-incremental. You can enable a and then later enable g, and you should
-have both enabled.
-
-> Please find the attached log information 
-> > So:
-> > 
-> > > a. We only enable secure on magic packet when both secure and magic wol
-> > >    options are requested together.
-> > 
-> > I don't think they need to be requested together. I think you can first enable
-> > Wake on MagicPacket and then in a second call to ethtool Enable SecureOn
-> > password for MagicPacket. I also don't think it would unreasonable to accept
-> > Enable SecureOn password for MagicPacket and have that imply Wake on
-> > MagicPacket.
-> > 
+> Caused by commit
 > 
-> If we need to enable any 2 options, we have to provide both options together.
-> i.e.
-> sudo ethtool -s enp9s0 wol ga
-
-which i think is wrong. A driver should allow incremental adding WoL
-options.
-
+>    806cb2270237 ("kunit: Annotate _MSG assertion variants with gnu printf specifiers")
 > 
-> > And:
-> > 
-> > > b. If secure-on magic packet had been previously enabled, and a
-> > subsequent
-> > >    command does not include it, we add it.
-> > 
-> > If there has not been a d, secure-on magic packet should remain enabled until
-> > there is a d.
-> > 
+
+Thank you. I did allmodconfig build on kselftest kunit branch to make
+sure all is well, before I pushed the commits.
+
+> interacting with commit
 > 
-> This is not happened with existing "Ethtool".
-> Please find the log information in an attachment file.
+>    c70703320e55 ("drm/tests/drm_buddy: add alloc_range_bias test")
+  > 
+> from the drm-misc-fixes tree.
+> 
+> I have applied the following patch for today (this should probably
+> actually be fixed in the drm-misc-fixes tree).
+> 
 
-That could just be a driver bug.
+Danial, David,
 
-Take a step back. Is there any clear documentation about how ethtool
--s wol should really work? Any comments in the code? Any man page
-documentation.
+I can carry the fix through kselftest kunit if it works
+for all.
 
-Lets first understand how it is expected to work. Then we can decided
-if the driver is implementing it correctly.
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Thu, 29 Feb 2024 15:18:36 +1100
+> Subject: [PATCH] fix up for "drm/tests/drm_buddy: add alloc_range_bias test"
+> 
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+>   drivers/gpu/drm/tests/drm_buddy_test.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/tests/drm_buddy_test.c b/drivers/gpu/drm/tests/drm_buddy_test.c
+> index 1e73e3f0d278..369edf587b44 100644
+> --- a/drivers/gpu/drm/tests/drm_buddy_test.c
+> +++ b/drivers/gpu/drm/tests/drm_buddy_test.c
+> @@ -188,7 +188,7 @@ static void drm_test_buddy_alloc_range_bias(struct kunit *test)
+>   							      bias_end, size, ps,
+>   							      &allocated,
+>   							      DRM_BUDDY_RANGE_ALLOCATION),
+> -				       "buddy_alloc failed with bias(%x-%x), size=%u, ps=%u\n",
+> +				       "buddy_alloc failed with bias(%x-%x), size=%u\n",
+>   				       bias_start, bias_end, size);
+>   		bias_rem -= size;
+>   
 
-   Andrew
+thanks,
+-- Shuah
 
