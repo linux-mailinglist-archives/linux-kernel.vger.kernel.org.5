@@ -1,72 +1,85 @@
-Return-Path: <linux-kernel+bounces-86921-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86917-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3C1086CCDA
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:25:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8902186CCCA
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:23:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 652711F2512E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:25:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 39AFC1F24119
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:23:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 824B51468E6;
-	Thu, 29 Feb 2024 15:25:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EED81143C48;
+	Thu, 29 Feb 2024 15:23:34 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E14613EFF6
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 15:25:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70C0D137747;
+	Thu, 29 Feb 2024 15:23:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709220323; cv=none; b=bSXDfYyQQHNzt04I0YWWS/LfFkwNXuo9aF6uHjXDLB3mP20DGGCMwXqEUlY5rOS0SKzHcyaxKPZTL5pgybZtf6YRJsjFklOdDWK0y0XcokXBwUtgEwmjuQ3zOla3DaI0NPPi6V0uaNC0JznCPwsNHyGc5LB9Hpaart4cJaXVXIk=
+	t=1709220214; cv=none; b=CpGXg25+G1iyExjDdszILmI9zu6CUprX853sEjR2NLuWcGWvLycl1tblNgXcee7nC451taPLqxUPAaHclm5XyJaOBVdjeaEo4GEoBlYWC7IlDRZOvJs7bXCgOvKRtcv/mcJO1d2SxqHIpGBle0vQEuN+WZ3+rDlNq6yA/Szedn4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709220323; c=relaxed/simple;
-	bh=sHkcD/snZ9V2Xv3mBv4VaxRarjPZsfN4VaX4NZfL+Mg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cK26tGXIdTyoUGlvodVMWgWUIFM56qplCIr4GpQF6nAsiTMOHgUFdIqIZ7euZiNFHtndxolM560ifpxYQ+xC5B+f5Vhrw+vV3es2HzMRGNjkG8LxA2ZonRjEskPkyx8Rqr8hf5uu0+NNrrOu9W6EYHssAilphpgBs2liYjse8uA=
+	s=arc-20240116; t=1709220214; c=relaxed/simple;
+	bh=k7crVsD5v0qeg9j9DQK+km2c/pv7bSk2LsFkgOUaYeA=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=BLAuyFS3Wf5muPw6hLa1FO/t8oE4M5+EMZ+WROZNb8aHHjyK5Am0eliJLI5DnXH+aBIukpsnK3xbqotm8Rd0jrFqiJNyAmDSJkxw+LJQXtO8BMexPOUAEeWkF/dAV+0YUbPuIAkf4FSGPisV0V34XnELP10iJbjoCbioX5okow0=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C302FC43399;
-	Thu, 29 Feb 2024 15:25:21 +0000 (UTC)
-Date: Thu, 29 Feb 2024 15:25:19 +0000
-From: Catalin Marinas <catalin.marinas@arm.com>
-To: Waiman Long <longman@redhat.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, Audra Mitchell <aubaker@redhat.com>
-Subject: Re: [PATCH] mm/kmemleak: Don't hold kmemleak_lock when calling
- printk()
-Message-ID: <ZeCh30o8i-wJVT7N@arm.com>
-References: <20240228191444.481048-1-longman@redhat.com>
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85CB9C433F1;
+	Thu, 29 Feb 2024 15:23:31 +0000 (UTC)
+Date: Thu, 29 Feb 2024 10:25:37 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Huang Yiwei <quic_hyiwei@quicinc.com>
+Cc: <mhiramat@kernel.org>, <mark.rutland@arm.com>, <mcgrof@kernel.org>,
+ <keescook@chromium.org>, <j.granados@samsung.com>,
+ <mathieu.desnoyers@efficios.com>, <corbet@lwn.net>,
+ <linux-kernel@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
+ <linux-fsdevel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+ <quic_bjorande@quicinc.com>, <quic_tsoni@quicinc.com>,
+ <quic_satyap@quicinc.com>, <quic_aiquny@quicinc.com>, <kernel@quicinc.com>,
+ Ross Zwisler <zwisler@google.com>, Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH v5] tracing: Support to dump instance traces by
+ ftrace_dump_on_oops
+Message-ID: <20240229102537.28d46135@gandalf.local.home>
+In-Reply-To: <dbcd66cd-4d59-4246-88ab-db32abbd8e00@quicinc.com>
+References: <20240208131814.614691-1-quic_hyiwei@quicinc.com>
+	<20240226204757.1a968a10@gandalf.local.home>
+	<dbcd66cd-4d59-4246-88ab-db32abbd8e00@quicinc.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240228191444.481048-1-longman@redhat.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 28, 2024 at 02:14:44PM -0500, Waiman Long wrote:
-> When some error conditions happen (like OOM), some kmemleak functions
-> call printk() to dump out some useful debugging information while holding
-> the kmemleak_lock. This may cause deadlock as the printk() function
-> may need to allocate additional memory leading to a create_object()
-> call acquiring kmemleak_lock again.
+On Thu, 29 Feb 2024 17:11:49 +0800
+Huang Yiwei <quic_hyiwei@quicinc.com> wrote:
+
+> > And you can add here as well:
+> > 
+> >    ftrace_dump_on_oops[=[<0|1|2|orig_cpu>,][<instance_name>[=<1|2|orig_cpu>][,...]]
+> > 
+> > 
+> > Thanks,
+> > 
+> > --Steve
+> >   
+> The explanation is below, I think it's correct?
+>   - "ftrace_dump_on_oops," means global buffer on all CPUs
+>   - "foo," means foo instance on all CPUs
+>   - "bar=orig_cpu" means bar instance on CPU that triggered the oops.
 > 
-> Fix this deadlock issue by making sure that printk() is only called
-> after releasing the kmemleak_lock.
+> I'm trying to make the example to cover more possibilities.
 
-I can't say I'm familiar with the printk() code but I always thought it
-uses some ring buffers as it can be called from all kind of contexts and
-allocation is not guaranteed.
+Ah, I didn't think the command line processing would work with commas. I
+guess it does (I just tried it out).
 
-If printk() ends up taking kmemleak_lock through the slab allocator, I
-wonder whether we have bigger problems. The lock order is always
-kmemleak_lock -> object->lock but if printk() triggers a callback into
-kmemleak, we can also get object->lock -> kmemleak_lock ordering, so
-another potential deadlock.
+OK, then I guess that's fine.
 
--- 
-Catalin
+-- Steve
+
 
