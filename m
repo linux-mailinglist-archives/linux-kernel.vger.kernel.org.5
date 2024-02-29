@@ -1,151 +1,170 @@
-Return-Path: <linux-kernel+bounces-86611-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86612-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 440F686C7C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:12:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB0CF86C7CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:13:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9116E283C46
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:12:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 28B05283B1A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:13:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9FF07A73A;
-	Thu, 29 Feb 2024 11:12:41 +0000 (UTC)
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 425697B3C7;
+	Thu, 29 Feb 2024 11:12:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FCuJGVvm"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA38579DA7
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 11:12:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8D2F7A706
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 11:12:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709205161; cv=none; b=ATNN+G6ptChZkuIiONn+5/YKTZTf+KW8SI8D30CWHR+ThdyugQp7894YbLjPnStsO8FIj3Fjx6eLeqIgBsPQ9DaHOG1miLf0XiFcO8pbRK5lxybU/vY11N49Rr6OVy2go4IypEAzKwmmQBTYCNh0SidYh7SKpOQl0Q1wtk5vnNk=
+	t=1709205172; cv=none; b=YKg4TaU+A6o1n2R9Vgpf7KgZn/u96rwZNa6sSCtqCOZSrRklQPwxivO9EKIXC32qq90ax/ZAP5k/U5cwNXq4pBmWNSH1KNRt4sDBg1SMyjJW4LVDAx34JiWe3YQlhuqVnWuP/1EKv0fWVKPK+uQVAn5/VHvSuChgQIEZrdacBQs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709205161; c=relaxed/simple;
-	bh=cxeycH8tCuEZDYMhi2lhSLpSgbgDBpAwm99i4PAz+5I=;
-	h=CC:Subject:To:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=rRIu/LCe/zMV7Be5AbJRY/yV8vVCbBncuZzJ3kn/ZZkePgIL3awM8fAit29gb236cSTEihhQJGNYENcK72cFIeF1bk51X11Y3G/gWlj9JNbZLqs/Dcaz18Am4RLxpDd+R8P0AcKW18K7Yj9/PN4uCGi18oTl/rYCSaMbscxcbDI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4TlpR84Msgz1Q9Nn;
-	Thu, 29 Feb 2024 19:10:12 +0800 (CST)
-Received: from canpemm500009.china.huawei.com (unknown [7.192.105.203])
-	by mail.maildlp.com (Postfix) with ESMTPS id D36581402CE;
-	Thu, 29 Feb 2024 19:12:28 +0800 (CST)
-Received: from [10.67.121.177] (10.67.121.177) by
- canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 29 Feb 2024 19:12:28 +0800
-CC: <will@kernel.org>, <jonathan.cameron@huawei.com>,
-	<yangyicong@hisilicon.com>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linuxarm@huawei.com>,
-	<prime.zeng@hisilicon.com>
-Subject: Re: [PATCH v2] drivers/perf: hisi: Enable HiSilicon Erratum 162700402
- quirk for HIP09
-To: Junhao He <hejunhao3@huawei.com>
-References: <20240227125231.53127-1-hejunhao3@huawei.com>
-From: Yicong Yang <yangyicong@huawei.com>
-Message-ID: <4d628dcb-e54f-a6da-83aa-822957674819@huawei.com>
-Date: Thu, 29 Feb 2024 19:12:28 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+	s=arc-20240116; t=1709205172; c=relaxed/simple;
+	bh=N7Mhx8vT1jnELD9+9yC9rVTfdvP/sYDILPO0ay84HGM=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=kgbtjFYLYiSKdvIgwQuucUuKHq3CXMvp2d8St30vpFN5KnpNjf1bUcq5kPeCH/emNG0AGSM11J3f5N/YC8ra5ofkWtuclgSg9dOC2JvZ7R3hn8cxIBq2As27V1p8FtReAhLAeZXIt0D522bVjvyhRFbCgrlUN1eStFd9j/PWMh4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FCuJGVvm; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709205169;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=J1ljLBvAKrzOfqXsdymMG4sOPRNjFy8nCCCQL/VLcRg=;
+	b=FCuJGVvmBolUlHyQBm1XQBXIBokTImgYlUiM36k4Bug9tSN8IX9hsgh56Ttqy+Kc1e2q/8
+	KAYw8PKnCsMseguJsxKvXxKcDpYlm0vNdbkKWbQkqEgRd4Aq76pspxZ5ALqJbBfuccvkH/
+	uFf5ZalGVMyR7zzks7zJAf3JYz2X/vw=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-452-vhPW0KreMgOHtOCAdlBMrg-1; Thu, 29 Feb 2024 06:12:48 -0500
+X-MC-Unique: vhPW0KreMgOHtOCAdlBMrg-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-41293adf831so1138475e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 03:12:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709205167; x=1709809967;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=J1ljLBvAKrzOfqXsdymMG4sOPRNjFy8nCCCQL/VLcRg=;
+        b=bzH5AcglTCMceACsmLH0f5FT6tfRISe63cuMvbhlYI3XV1E8ODSmXCeRX7LrmWlhjM
+         f60Mi5YCMnC3r02XXYWUfzF2JGn5JqqbQhDbJR9bR438PZPUYPJjooWQsp4na0qsvKxh
+         XZG6U3J3y0iFxIW17JtLSnkVs2zrZrrmENvomPTociT9LHICBmzec8VDPpqVlVv4+VaU
+         6cpYPSt9YeMgGqowZqhXDthUVHx7Hid+4JnLHqe8oKfeWEkxe88cZ/qH16VqD1gi2/tb
+         tJdEK8JGY9yilw5smnmIYvKYDl3iAEDM7+J6cc9l1FNwvUaCwfGYTkzFPZjcHyWXfviy
+         UYeg==
+X-Forwarded-Encrypted: i=1; AJvYcCVDNj19qHb60IOlxJ4G6rr/Qce3MEcJlYiQbXsrcNCejOn5hZTIcFHhEAuQN4txofHByBmaHMgDz95w17gx3d1PU8xUL5Dd4lnCjRNx
+X-Gm-Message-State: AOJu0YwX/4ZQV8Jxk+NSyihROteXEQjfXMbY7JNQXN30xcpESqFFwKIN
+	D0k2EmOQdhrUCzxOThc4ula34PgGVTmRwR7QsMLATqKSJ+hDDbXnb3jIYKoR6UeFysblIgjKMkp
+	tIu5G6ntzK7OBklQkXwMKra6r93csq7eX80L7/9+Jmc4R4E6W1qhzaWJ4YO00Ww==
+X-Received: by 2002:a05:6000:18a9:b0:33d:9e15:12bf with SMTP id b9-20020a05600018a900b0033d9e1512bfmr1372339wri.3.1709205167099;
+        Thu, 29 Feb 2024 03:12:47 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHfKKnPq3F5LjzBgxvLGpBosG5KZdsojuxXv+y3866lEvo3VcN/Hqtb7eOfxFpQwYKS/TI+dQ==
+X-Received: by 2002:a05:6000:18a9:b0:33d:9e15:12bf with SMTP id b9-20020a05600018a900b0033d9e1512bfmr1372320wri.3.1709205166722;
+        Thu, 29 Feb 2024 03:12:46 -0800 (PST)
+Received: from gerbillo.redhat.com (146-241-250-174.dyn.eolo.it. [146.241.250.174])
+        by smtp.gmail.com with ESMTPSA id e5-20020adff345000000b0033b278cf5fesm1462888wrp.102.2024.02.29.03.12.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Feb 2024 03:12:46 -0800 (PST)
+Message-ID: <7d478cb842e28094f4d6102e593e3de25ab27dfe.camel@redhat.com>
+Subject: Re: [PATCH net-next v2 3/3] tun: AF_XDP Tx zero-copy support
+From: Paolo Abeni <pabeni@redhat.com>
+To: Yunjian Wang <wangyunjian@huawei.com>, mst@redhat.com, 
+	willemdebruijn.kernel@gmail.com, jasowang@redhat.com, kuba@kernel.org, 
+	bjorn@kernel.org, magnus.karlsson@intel.com, maciej.fijalkowski@intel.com, 
+	jonathan.lemon@gmail.com, davem@davemloft.net
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org,  kvm@vger.kernel.org,
+ virtualization@lists.linux.dev, xudingke@huawei.com,  liwei395@huawei.com
+Date: Thu, 29 Feb 2024 12:12:44 +0100
+In-Reply-To: <1709118356-133960-1-git-send-email-wangyunjian@huawei.com>
+References: <1709118356-133960-1-git-send-email-wangyunjian@huawei.com>
+Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240227125231.53127-1-hejunhao3@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm500009.china.huawei.com (7.192.105.203)
 
-On 2024/2/27 20:52, Junhao He wrote:
-> HiSilicon UC PMU v2 suffers the erratum 162700402 that the PMU counter
-> cannot be set due to the lack of clock under power saving mode. This will
-> lead to error or inaccurate counts. The clock can be enabled by the PMU
-> global enabling control.
-> 
-> This patch tries to fix this by set the UC PMU enable before set event
-> period to turn on the clock, and then restore the UC PMU configuration.
-> The counter register can hold its value without a clock.
-> 
-> Signed-off-by: Junhao He <hejunhao3@huawei.com>
-> ---
-> 
-> Changes since V1:
-> - Updated the comment regarding the quirk function.
-> - Extract write counter normal to a helper function.
-> Link: https://lore.kernel.org/all/20240207094245.34195-1-hejunhao3@huawei.com/
-> 
-
-This version looks clearer to me,
-
-Reviewed-by: Yicong Yang <yangyicong@hisilicon.com>
-
->  drivers/perf/hisilicon/hisi_uncore_uc_pmu.c | 42 ++++++++++++++++++++-
->  1 file changed, 41 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/perf/hisilicon/hisi_uncore_uc_pmu.c b/drivers/perf/hisilicon/hisi_uncore_uc_pmu.c
-> index 636fb79647c8..481dcc9e8fbf 100644
-> --- a/drivers/perf/hisilicon/hisi_uncore_uc_pmu.c
-> +++ b/drivers/perf/hisilicon/hisi_uncore_uc_pmu.c
-> @@ -287,12 +287,52 @@ static u64 hisi_uc_pmu_read_counter(struct hisi_pmu *uc_pmu,
->  	return readq(uc_pmu->base + HISI_UC_CNTR_REGn(hwc->idx));
+On Wed, 2024-02-28 at 19:05 +0800, Yunjian Wang wrote:
+> @@ -2661,6 +2776,54 @@ static int tun_ptr_peek_len(void *ptr)
+>  	}
 >  }
->  
-> -static void hisi_uc_pmu_write_counter(struct hisi_pmu *uc_pmu,
-> +static bool hisi_uc_pmu_get_glb_en_state(struct hisi_pmu *uc_pmu)
+> =20
+> +static void tun_peek_xsk(struct tun_file *tfile)
 > +{
-> +	u32 val;
+> +	struct xsk_buff_pool *pool;
+> +	u32 i, batch, budget;
+> +	void *frame;
 > +
-> +	val = readl(uc_pmu->base + HISI_UC_EVENT_CTRL_REG);
-> +	return !!FIELD_GET(HISI_UC_EVENT_GLB_EN, val);
-> +}
+> +	if (!ptr_ring_empty(&tfile->tx_ring))
+> +		return;
 > +
-> +static void hisi_uc_pmu_write_counter_normal(struct hisi_pmu *uc_pmu,
->  				      struct hw_perf_event *hwc, u64 val)
->  {
->  	writeq(val, uc_pmu->base + HISI_UC_CNTR_REGn(hwc->idx));
->  }
->  
-> +static void hisi_uc_pmu_write_counter_quirk_v2(struct hisi_pmu *uc_pmu,
-> +				      struct hw_perf_event *hwc, u64 val)
-> +{
-> +	hisi_uc_pmu_start_counters(uc_pmu);
-> +	hisi_uc_pmu_write_counter_normal(uc_pmu, hwc, val);
-> +	hisi_uc_pmu_stop_counters(uc_pmu);
-> +}
+> +	spin_lock(&tfile->pool_lock);
+> +	pool =3D tfile->xsk_pool;
+> +	if (!pool) {
+> +		spin_unlock(&tfile->pool_lock);
+> +		return;
+> +	}
 > +
-> +static void hisi_uc_pmu_write_counter(struct hisi_pmu *uc_pmu,
-> +				      struct hw_perf_event *hwc, u64 val)
-> +{
-> +	bool enable = hisi_uc_pmu_get_glb_en_state(uc_pmu);
-> +	bool erratum = uc_pmu->identifier == HISI_PMU_V2;
+> +	if (tfile->nb_descs) {
+> +		xsk_tx_completed(pool, tfile->nb_descs);
+> +		if (xsk_uses_need_wakeup(pool))
+> +			xsk_set_tx_need_wakeup(pool);
+> +	}
 > +
-> +	/*
-> +	 * HiSilicon UC PMU v2 suffers the erratum 162700402 that the
-> +	 * PMU counter cannot be set due to the lack of clock under power
-> +	 * saving mode. This will lead to error or inaccurate counts.
-> +	 * The clock can be enabled by the PMU global enabling control.
-> +	 * The irq handler and pmu_start() will call the function to set
-> +	 * period. If the function under irq context, the PMU has been
-> +	 * enabled therefore we set counter directly. Other situations
-> +	 * the PMU is disabled, we need to enable it to turn on the
-> +	 * counter clock to set period, and then restore PMU enable
-> +	 * status, the counter can hold its value without a clock.
-> +	 */
-> +	if (enable || !erratum)
-> +		hisi_uc_pmu_write_counter_normal(uc_pmu, hwc, val);
-> +	else
-> +		hisi_uc_pmu_write_counter_quirk_v2(uc_pmu, hwc, val);
-> +}
+> +	spin_lock(&tfile->tx_ring.producer_lock);
+> +	budget =3D min_t(u32, tfile->tx_ring.size, TUN_XDP_BATCH);
 > +
->  static void hisi_uc_pmu_enable_counter_int(struct hisi_pmu *uc_pmu,
->  					   struct hw_perf_event *hwc)
->  {
-> 
+> +	batch =3D xsk_tx_peek_release_desc_batch(pool, budget);
+> +	if (!batch) {
+
+This branch looks like an unneeded "optimization". The generic loop
+below should have the same effect with no measurable perf delta - and
+smaller code. Just remove this.
+
+> +		tfile->nb_descs =3D 0;
+> +		spin_unlock(&tfile->tx_ring.producer_lock);
+> +		spin_unlock(&tfile->pool_lock);
+> +		return;
+> +	}
+> +
+> +	tfile->nb_descs =3D batch;
+> +	for (i =3D 0; i < batch; i++) {
+> +		/* Encode the XDP DESC flag into lowest bit for consumer to differ
+> +		 * XDP desc from XDP buffer and sk_buff.
+> +		 */
+> +		frame =3D tun_xdp_desc_to_ptr(&pool->tx_descs[i]);
+> +		/* The budget must be less than or equal to tx_ring.size,
+> +		 * so enqueuing will not fail.
+> +		 */
+> +		__ptr_ring_produce(&tfile->tx_ring, frame);
+> +	}
+> +	spin_unlock(&tfile->tx_ring.producer_lock);
+> +	spin_unlock(&tfile->pool_lock);
+
+More related to the general design: it looks wrong. What if
+get_rx_bufs() will fail (ENOBUF) after successful peeking? With no more
+incoming packets, later peek will return 0 and it looks like that the
+half-processed packets will stay in the ring forever???
+
+I think the 'ring produce' part should be moved into tun_do_read().
+
+Cheers,
+
+Paolo
+
 
