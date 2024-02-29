@@ -1,161 +1,160 @@
-Return-Path: <linux-kernel+bounces-86685-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86684-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AA7686C900
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:19:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17EFC86C8FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:18:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 09DC81F248AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:19:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2FAA41C22B56
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:18:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9698F7CF2F;
-	Thu, 29 Feb 2024 12:19:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DC037D06A;
+	Thu, 29 Feb 2024 12:18:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="YPQZvCho"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="IH3OE8JS"
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AC877B3D1
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 12:19:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40D197CF36;
+	Thu, 29 Feb 2024 12:18:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709209145; cv=none; b=hg/IC6XuX4/O1rAUXw1BdJAhoQjTgKDqDt6aPPSDuoUJg/jPKu3dKeWDCknSQAuUEG85DOcEggrNUdU2wzYaH5ppSXTOa8uttyoaq8R4ts4ibabbgZNjxRICcLBgJz0kgqstGqpqcHd+R738c5FXf2EexuPHgMBNpKC6aiYKPzE=
+	t=1709209102; cv=none; b=tBkGdz+23UYNkmnG1XCugqBW0GwbJd7/zjAjzZql39izeMApN2iyA0WmXuYhBAavGIRT+jHii94Nt5f4YgDEhdlx6FmRk+fATjwSECMSBKpmqYr7Y4Gy0lFRwQsv7TcX9zRpQl2s1KxbnjcCUHVlGRQDo+UQR5NdeHe+LkzMX74=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709209145; c=relaxed/simple;
-	bh=ob9I68XwHPK2eYEM0MtrNgpwmwAN/WdbqJzDEKS2+i8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Kdy/bMQMcP9ez4WFxNaDz16LAo2Zp53RgyCiLO2f4Q+DHJOBLZjcm7MY0EkbPrZoVa+Ed2dtVi279z31YFrcaxQF7cHXh2o3GqREb7AfQoVedXjj+vR7emScyr0nVBC3PUME+CMsuAc1MJwaTrjk3N7OAp3J9YZLpvSm+2+DPUs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=YPQZvCho; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a4348aaa705so131052066b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 04:19:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1709209142; x=1709813942; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=CK/gyhWcnx3ozsMFB9IWH6XZsidf01J5WrD6CcF2Cpk=;
-        b=YPQZvChopeY9iFwuo+s48f4HVQ9CKnfYQCIZgELkj334wmHYIa8L1G150L3OhACbrA
-         f5EszpFYTRKuNXuaMPaTM3xYGsmKm/71bjMuUo+Dxxdbt8UzAtRuBn0bV1pBm+MvzjoE
-         yr2jjOyAR9seg4Cn5eXubaztErGFbQlS2FvlW/F852VnqCuc6xApmAhlD0x3VZnErZEc
-         CamXHbHmj53Nrpeka3SD6fquFODbv8IXEXnd9eCI0tD4bLBNjziptU/UqVbLZDhh1iCS
-         U8aGNiZSJl0/597qrfO4Ax7IZ54tsioY4FOkXRVtaqHMz2Oh5HMEXgvKDJj+PAlcIOpX
-         eTrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709209142; x=1709813942;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CK/gyhWcnx3ozsMFB9IWH6XZsidf01J5WrD6CcF2Cpk=;
-        b=Tj37i+o6beEqgr5LmzikYIW8RpymEbKuoqzSvW5A04KqAMBcFaI+UYaCo9c5jsF9nE
-         ko6bx3yOEvlWdrwG4cZ3fSbvAGTRMwNEeRr2KnTu2gxl+Lnf7Tmxl76FMOXQf75kQEOJ
-         kWMVF6qiF6wJ4NEpMWy9KfHFVAZGH8OapSznBrUorTiTpgLPfbFiWKAj8kv8lOT53Ez/
-         bDlNRW9qEEOtRTjYEhHICjQOubwtuxSmNNnaFowh1JqqAIb31TBSoQrS84+ZfaHAeEfq
-         7qtPDAFoE8o8GJxuco95ad+KWzFPv1G1Jo3/vSUbr/AAR46v7ruhfrElAz8u4G0zSOFp
-         tMuA==
-X-Forwarded-Encrypted: i=1; AJvYcCV4VgFT5vzToF/2/bvBwdoTYq8IG/jl2+ckyHWV03nG22gENZWSxxUfCIcDmx5eLrWOsoTIQB5ngXWEvgxiFWpM+Egg0PGgWDjFSYNR
-X-Gm-Message-State: AOJu0YwJf3fjqv6GY3Rp6DwSxh24ncEwkoRFeJNBb/eDxtFtol1FOUzL
-	l5/XXbje+iH03wNK/wUOEMzm+uxyAgHq5QDwNvdo3ATcoTvaf3ARsRFbb5wEgcg=
-X-Google-Smtp-Source: AGHT+IF6pa9RCtJLn2UJSZqPkK7BUg0kISl2l4MpvEHaWBWsTVgXcg8Nrgt3oGsfmrlMYsK5JbqVOQ==
-X-Received: by 2002:a17:906:f6d2:b0:a44:415d:fa3b with SMTP id jo18-20020a170906f6d200b00a44415dfa3bmr1229733ejb.6.1709209142367;
-        Thu, 29 Feb 2024 04:19:02 -0800 (PST)
-Received: from fedora.fritz.box (aftr-82-135-80-35.dynamic.mnet-online.de. [82.135.80.35])
-        by smtp.gmail.com with ESMTPSA id vi10-20020a170907d40a00b00a445db55f39sm161039ejc.156.2024.02.29.04.19.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 04:19:02 -0800 (PST)
-From: Thorsten Blum <thorsten.blum@toblux.com>
-To: Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Cc: linux-nilfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Thorsten Blum <thorsten.blum@toblux.com>
-Subject: [PATCH] nilfs2: Use div64_ul() instead of do_div()
-Date: Thu, 29 Feb 2024 13:16:50 +0100
-Message-ID: <20240229121650.33983-1-thorsten.blum@toblux.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1709209102; c=relaxed/simple;
+	bh=8Eelp2TJHh8fMmaYaoIG0d+mIvZQwLFJthLx9DhOBLg=;
+	h=Mime-Version:Content-Type:Date:Message-Id:From:Subject:Cc:To:
+	 References:In-Reply-To; b=Ip0fJ9t44tOw2MzgmEqROg+gRRP2vS436OH4V3AtPLe7zuJFLywMEyTK9k9YWk6ZeiAONJxMZYx6gRYMOqOTSNYFDB0yZC+U3UwzPw2s9ga4UhDEf+rOjn4mk3b4NYn58QTQ0o+PDhIWRP3Zm0afdq4LI70zoSur3fe5nf2x1bk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=IH3OE8JS; arc=none smtp.client-ip=217.70.183.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id C64F31BF20A;
+	Thu, 29 Feb 2024 12:18:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709209089;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rivbcy22OyT/FZEzxvNP0xJkQRC61DIMcbwv6BnP3xA=;
+	b=IH3OE8JSAMKn+Ls6dirQEB0XuO2Y6HcF9GIJPUJoHwnocUzLz7Ez1whX6c3fgNaTzwz6W4
+	NSefEg/uekQgeRhfCZOQuVsTXCrbS7xgiAJOy+RYmvY7f6a9uIQEqInD1RHHK2nt9Xyt2p
+	SsJSO4zrN3IwB38ObMZ5Ynu417CznPxN2vQKd12LMYDmAI8bA2laQiALFUAWDRJaS/BPHE
+	Z/4VCACO8BMVmQZy0aJND/4zDvsgv43KhtR0EwjOo0tDwGEM0zmptCMTQsd8pCuT07bfxq
+	MBzMHCxh6oJLiIaPh2Q4jxl9Hxlnd12EtMfGqhaT5GVGLJShK8gIFkdxHpgoEw==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Thu, 29 Feb 2024 13:18:08 +0100
+Message-Id: <CZHK1ZCSROM5.X4WYN7SAZJTH@bootlin.com>
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Subject: Re: [PATCH v8 04/10] reset: eyeq5: add platform driver
+Cc: "Gregory CLEMENT" <gregory.clement@bootlin.com>, "Michael Turquette"
+ <mturquette@baylibre.com>, "Stephen Boyd" <sboyd@kernel.org>, "Rob Herring"
+ <robh+dt@kernel.org>, "Krzysztof Kozlowski"
+ <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
+ "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>, "Linus Walleij"
+ <linus.walleij@linaro.org>, =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?=
+ <rafal@milecki.pl>, "Philipp Zabel" <p.zabel@pengutronix.de>, "Vladimir
+ Kondratiev" <vladimir.kondratiev@mobileye.com>,
+ <linux-mips@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "Thomas
+ Petazzoni" <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
+ <tawfik.bayouk@mobileye.com>, <linux-gpio@vger.kernel.org>
+To: "Andy Shevchenko" <andriy.shevchenko@intel.com>
+X-Mailer: aerc 0.15.2
+References: <20240227-mbly-clk-v8-0-c57fbda7664a@bootlin.com>
+ <20240227-mbly-clk-v8-4-c57fbda7664a@bootlin.com>
+ <Zd4bbCsY54XEnvJM@smile.fi.intel.com>
+ <CZGVIWR4H4DE.3M5H3H99X0QPT@bootlin.com>
+ <ZeBo4N204gLO0eUd@smile.fi.intel.com>
+In-Reply-To: <ZeBo4N204gLO0eUd@smile.fi.intel.com>
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-Fixes Coccinelle/coccicheck warning reported by do_div.cocci.
+Hello,
 
-Compared to do_div(), div64_ul() does not implicitly cast the divisor and
-does not unnecessarily calculate the remainder.
+On Thu Feb 29, 2024 at 12:22 PM CET, Andy Shevchenko wrote:
+> On Wed, Feb 28, 2024 at 06:04:47PM +0100, Th=C3=A9o Lebrun wrote:
+> > On Tue Feb 27, 2024 at 6:27 PM CET, Andy Shevchenko wrote:
+> > > On Tue, Feb 27, 2024 at 03:55:25PM +0100, Th=C3=A9o Lebrun wrote:
+>
+> ...
+>
+> > > > +	u32 offset =3D id & GENMASK(7, 0);
+> > > > +	u32 domain =3D id >> 8;
+> > >
+> > > Perhaps
+> > >
+> > > 	u32 offset =3D (id & GENMASK(7, 0)) >> 0;
+> > > 	u32 domain =3D (id & GENMASK(31, 8)) >> 8;
+> > >
+> > > for better understanding the split?
+> >=20
+> > Do the additional zero-bit-shift and GENMASK() help understanding? My
+> > brain needs time to parse them to then notice they do nothing and
+> > simplify the code in my head, back to the original version.
+>
+> In my opinion yes, as you exactly showing the split.
+> But. The better is to use FIELD_GET().
 
-Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
----
- fs/nilfs2/cpfile.c | 2 +-
- fs/nilfs2/dat.c    | 2 +-
- fs/nilfs2/ioctl.c  | 4 ++--
- fs/nilfs2/sufile.c | 2 +-
- 4 files changed, 5 insertions(+), 5 deletions(-)
+I'll go with the FIELD_GET() option!
 
-diff --git a/fs/nilfs2/cpfile.c b/fs/nilfs2/cpfile.c
-index 39136637f715..bafbdca1a17d 100644
---- a/fs/nilfs2/cpfile.c
-+++ b/fs/nilfs2/cpfile.c
-@@ -28,7 +28,7 @@ nilfs_cpfile_get_blkoff(const struct inode *cpfile, __u64 cno)
- {
- 	__u64 tcno = cno + NILFS_MDT(cpfile)->mi_first_entry_offset - 1;
- 
--	do_div(tcno, nilfs_cpfile_checkpoints_per_block(cpfile));
-+	tcno = div64_ul(tcno, nilfs_cpfile_checkpoints_per_block(cpfile));
- 	return (unsigned long)tcno;
- }
- 
-diff --git a/fs/nilfs2/dat.c b/fs/nilfs2/dat.c
-index 9cf6ba58f585..df5324b0c0cd 100644
---- a/fs/nilfs2/dat.c
-+++ b/fs/nilfs2/dat.c
-@@ -460,7 +460,7 @@ ssize_t nilfs_dat_get_vinfo(struct inode *dat, void *buf, unsigned int visz,
- 		kaddr = kmap_atomic(entry_bh->b_page);
- 		/* last virtual block number in this block */
- 		first = vinfo->vi_vblocknr;
--		do_div(first, entries_per_block);
-+		first = div64_ul(first, entries_per_block);
- 		first *= entries_per_block;
- 		last = first + entries_per_block - 1;
- 		for (j = i, n = 0;
-diff --git a/fs/nilfs2/ioctl.c b/fs/nilfs2/ioctl.c
-index cfb6aca5ec38..f1a01c191cf5 100644
---- a/fs/nilfs2/ioctl.c
-+++ b/fs/nilfs2/ioctl.c
-@@ -1111,7 +1111,7 @@ static int nilfs_ioctl_set_alloc_range(struct inode *inode, void __user *argp)
- 	segbytes = nilfs->ns_blocks_per_segment * nilfs->ns_blocksize;
- 
- 	minseg = range[0] + segbytes - 1;
--	do_div(minseg, segbytes);
-+	minseg = div64_ul(minseg, segbytes);
- 
- 	if (range[1] < 4096)
- 		goto out;
-@@ -1120,7 +1120,7 @@ static int nilfs_ioctl_set_alloc_range(struct inode *inode, void __user *argp)
- 	if (maxseg < segbytes)
- 		goto out;
- 
--	do_div(maxseg, segbytes);
-+	maxseg = div64_ul(maxseg, segbytes);
- 	maxseg--;
- 
- 	ret = nilfs_sufile_set_alloc_range(nilfs->ns_sufile, minseg, maxseg);
-diff --git a/fs/nilfs2/sufile.c b/fs/nilfs2/sufile.c
-index 0a8119456c21..c02b523d9c7e 100644
---- a/fs/nilfs2/sufile.c
-+++ b/fs/nilfs2/sufile.c
-@@ -48,7 +48,7 @@ nilfs_sufile_get_blkoff(const struct inode *sufile, __u64 segnum)
- {
- 	__u64 t = segnum + NILFS_MDT(sufile)->mi_first_entry_offset;
- 
--	do_div(t, nilfs_sufile_segment_usages_per_block(sufile));
-+	t = div64_ul(t, nilfs_sufile_segment_usages_per_block(sufile));
- 	return (unsigned long)t;
- }
- 
--- 
-2.44.0
+[...]
+
+>
+> > > > +	priv->rcdev.of_node =3D np;
+> > >
+> > > It's better to use device_set_node().
+> >=20
+> > I don't see how device_set_node() can help? It works on struct device
+> > pointers. Here priv->rcdev is a reset_controller_dev struct. There are
+> > no users of device_set_node() in drivers/reset/.
+>
+> No users doesn't mean it's good. The API is relatively "new" and takes
+> care of two things:
+> 1) it uses agnostic interface;
+> 2) it doesn't require any firmware node direct dereference.
+>
+> The 2) is most important here as allows us to refactor (firmware node) co=
+de
+> in the future.
+
+I think I get the point of device_set_node(). I still do not understand
+how it could help me fill the ->of_node field in a reset_controller_dev
+structure?
+
+Should I be using device_set_node() to fill the struct device pointer
+and the reset subsystem, by some magic, will pick this up and use it
+for its own of_node field? I've not seen any magic/code doing that.
+
+[...]
+
+> > > > +		priv->rcdev.nr_resets +=3D __builtin_popcount(eq5r_valid_masks[i=
+]);
+> > >
+> > > Please, use corresponding hweightXX() API.
+> >
+> > Noted. I did not find this keyword even though I searched quite a bit
+> > for it. "popcount" sounds more logical to me. :-)
+>
+> Hmm... But it's fundamental, it's called Hamming weight.
+> https://en.wikipedia.org/wiki/Hamming_weight
+
+Makes sense now. I've always called it population count following the
+name of the matching instruction on x86 (and I believe other ISAs). TIL.
+
+Regards,
+
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
 
