@@ -1,69 +1,71 @@
-Return-Path: <linux-kernel+bounces-86608-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86610-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7971C86C7C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:11:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71C5B86C7C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:12:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D3C7283B92
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:11:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 956F51C2108E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:12:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B0C37A706;
-	Thu, 29 Feb 2024 11:11:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 816BB7BAF9;
+	Thu, 29 Feb 2024 11:11:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZFPh2E+J"
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UERIIl8h"
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82BC25645B;
-	Thu, 29 Feb 2024 11:11:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA7DE7B3CD;
+	Thu, 29 Feb 2024 11:11:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709205091; cv=none; b=gBCGIGKFT3d0LLsEWnc189raASL0/O+NGo1w/s+orpq8UqoAY3ahk+78aFhpGM6aANHVYRMdhIeM4XHSRsi2iJEXgUl9/aNh8T3CgQwXVAVGAiafMbuC4zkrwHBTak7EEEtCgyZUXAkNXua1A3R/wsz2OQTFV6Cszm/wLSrzjiU=
+	t=1709205096; cv=none; b=c3SrgMrFIm7sDRksJ+TKGK/LerKjlVuhRPjOXVWZgcAmHc6W/aFmEpVvxZ/5WPgSQYX+bOmPnHj3BvQA0+XGHa+KoMlRM6CAyzPd0OebprY/It3xIsxpyYni/EK4BbpXuk2ucHQMurz1eGBwkGXc5YjiSO0o4uVqImT5NSXEAsk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709205091; c=relaxed/simple;
-	bh=XPsbpw3Ya203VVljXb2dm7Y5oJM6qHuo1gKjM/dy0PE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=rCwVJxWCGO0vGRWV3yvFPQpP/ak/eaFUE5OtaJWUSw+OSNwcPiUfPR5RAdgMALFpn4Ikow4Y5nKyBUMeJk8TFFPXkP/1F6CdLNYjxM/c6fgsEarbG1bew5bEWyR8Ipov+QSA0BKuK/574tg96RmiX4gypQQteVo6STHAmTT5NRA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZFPh2E+J; arc=none smtp.client-ip=209.85.210.174
+	s=arc-20240116; t=1709205096; c=relaxed/simple;
+	bh=ccYnjhH5EoXBC3ZMdZNrvPl2xOXrjr3sTtF2dUvXFzA=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=l6iaBdEfV6KjrUD+fb5MloJU5krFVEkyMXL8hh+asgQiQgMiRemuDRIfbwAajrZ9at7QrK7LBFiUGymk0vkxMhQTUN5jqo7HfOpyssCbyFMmMtOogDiyYY7NOnIchthJNFMy07Qlkh1cFjEK0qHeoDgJwKzNC8EDSKQBeWaoUMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UERIIl8h; arc=none smtp.client-ip=209.85.210.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6e5629d5237so663167b3a.3;
-        Thu, 29 Feb 2024 03:11:30 -0800 (PST)
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6e57ab846a1so490658b3a.3;
+        Thu, 29 Feb 2024 03:11:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709205090; x=1709809890; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=jO6eku8lXVRKAP6IeLQ8bJS8fk+8Lg2YNxQYKhinIjg=;
-        b=ZFPh2E+J5uINQkjPMO0SU+RjQjQOWrIs0qW5eq7cbKlObjoXHDIEwKSRvjYnWin7mR
-         ugbfrjrvKYnhIyz9vpb6HWrLPxD0bipKwAByKfP6o9Ol/+QE3TIakKuWyR/5fv7LbUft
-         DdDYFOZAuYLz1Z/p/kkgeExRetQjgkrg0XYWq7uFjjVp0sudODWq4xXf4WtSe8enBAub
-         GZLzdkuBCEunneruJshaSiFLK1S+31NHWIa1j3e3201A+DV0zsd3E0hUI6C0qGHSx9MW
-         77e9N7lvgUwTd7eMn7bE3eyQVnAN7NSH4ZsKw/DEAVEinB3qW6JCEWGnGvu8+XWdBVrR
-         hrjA==
+        d=gmail.com; s=20230601; t=1709205094; x=1709809894; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tzBaudLyufF66rX72+tonqy9eFxvsUGBqKa8grj+LfA=;
+        b=UERIIl8h6GSknS9RWpsdUlMIDBpOWXAxcnRgYTGpHPm+NR+Z/aZs3nKnIz8VI0yw09
+         Z1i/nROO41K5/uGUa7BRNBb5EdkIJ17yDEk6C+97cGGphRIuG/k8dqL5nThB5jqvjf14
+         RGENE7EjrrRUj1sOZxftcSX8ku55C9o8Bm0NKIml/ilKqfjij1qZh0lz+KECfZE5XSrZ
+         oCWK2guiCehoSL9wqpQKfXsdzFpibAvHzeUgHMg5I4+lYDy7RqowbaEYPNL7sEc0KVdp
+         G4C/8upPJsBi+ve938F27MUSJxjn2EdQzjH+GmBua1OpW1nD352Trcn4eiyiva62Tc6l
+         c9zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709205090; x=1709809890;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jO6eku8lXVRKAP6IeLQ8bJS8fk+8Lg2YNxQYKhinIjg=;
-        b=uJ5jVNVaBgsguKoi63LGiAoxkmuxsibkSmhBqtHCvUw/VgM0ZM4pTC8FGNH/2VxgjY
-         x+gshSG+cfEHp3lO/9dLn/5EqG06mzO2bT9dWyxrtbcEzJPvAJrJdVlwvHFQzThcCnTl
-         wxDbXi5YyM1GKY+Hu9JgUuaq23c21HwiVcvXcDXxnxiYosWy8I9W2S4BaxHh/+C4+I83
-         0Iw3Uml7orsZboG1YawuSoVaTnu2lCmH4vXzrHTy/Saw/HRjSc/4HKTGVJNsFk1jW6iH
-         Fa8xgKK+2tuC1fz30U/fgqhDT7s7+6iDH5sv4e4O09tRjxTL6AagDUueRnToj20Z150V
-         WZYg==
-X-Forwarded-Encrypted: i=1; AJvYcCVw6s40Y+tjJMZITCZZLeTGnGOSvwVI7cW7QYquHDThP6PGduokqsNSPxTfypEnhixLB3Dhs1PyJkRqfI97/yac4tlZzKIzGEHousN/Qn7D9UBwRj3RxfFuNQrHYytOTFpZw4SlbmA15A==
-X-Gm-Message-State: AOJu0YxasOpCd1pmbstzobtfpoNH5OwTKXGnW8i238yDIGIkPCcwvNGv
-	Rx6GIhgzZGNNc4GPraLPrRwDyKwr1Om58+IURdrmHlpstQrV6oAY
-X-Google-Smtp-Source: AGHT+IEEUhledkGZQdNvS8ZfWsIcs1RBN17VYoP47ddRaH/RIRP8Ha9Yjztrg8wNgMQP8BGOPvGfxw==
-X-Received: by 2002:a05:6a21:3a41:b0:1a1:2b0e:f23d with SMTP id zu1-20020a056a213a4100b001a12b0ef23dmr1034065pzb.62.1709205089685;
-        Thu, 29 Feb 2024 03:11:29 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709205094; x=1709809894;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tzBaudLyufF66rX72+tonqy9eFxvsUGBqKa8grj+LfA=;
+        b=nPQT+Nut+19q3lElSnLFcnDIsUUQaWsT+sr17/7Tzb9tZjaIN+p9mESLf4rNQV7U4c
+         AvfCTOq1as7lpJ9+r9Gmiw3HDL+WE8Qof3AK0uQPvu7rzgYbrIsVYNadigY70/cwfu0K
+         dnjtCpaDLyx1XB5ulIwcl/ih0IeYHw5asUnCbe3k0/tsuLuyVa7QGGPY7mNWkct6w2mF
+         htzwU+7/FRiIGGymjC2nodD1YNPyW8gP9Id/LAvEikevGKClPu/YdBFKh/Zx9hi5WLjZ
+         4AfGLR28damY7PD1qS+H09eYtq0xMKRQ8PzijgPO0/GwjuTHYqQigktUcYhcqqhieR73
+         2VVg==
+X-Forwarded-Encrypted: i=1; AJvYcCWH0Egw9C3d+4DY1PhP4QXoKIIystzSqQj3FfHOmqR7fD8Z0Yueuau1YNsr0kizCzeCpI2C0H3x39Rc2tAT65seBr09yWrdNlzGoAQAsiXpw35olCOvfj89t9kLmXjkF6GA+2/5EFFHIA==
+X-Gm-Message-State: AOJu0Yzf/btA5O5/VmLtcedZ6POn5rcKd/JY2DzjkiRAny1Z8O0mMsdG
+	wY7YvuD3l3duo1RuzejujncBdbnlwhyOeCbL/v3L+xcnZuC5WKIf
+X-Google-Smtp-Source: AGHT+IHAwlE9NyyAtguHDuWr5D6NSWavPEZnna+1oVFKvCOAWvz/eenNKEMCl3zZuuvfCEhHBQDbKA==
+X-Received: by 2002:a05:6a20:d907:b0:1a0:e234:bc79 with SMTP id jd7-20020a056a20d90700b001a0e234bc79mr2443760pzb.0.1709205093939;
+        Thu, 29 Feb 2024 03:11:33 -0800 (PST)
 Received: from localhost.localdomain (125-229-150-10.hinet-ip.hinet.net. [125.229.150.10])
-        by smtp.gmail.com with ESMTPSA id k6-20020a63f006000000b005e4666261besm1059693pgh.50.2024.02.29.03.11.27
+        by smtp.gmail.com with ESMTPSA id k6-20020a63f006000000b005e4666261besm1059693pgh.50.2024.02.29.03.11.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 03:11:29 -0800 (PST)
+        Thu, 29 Feb 2024 03:11:33 -0800 (PST)
 From: Kelly Hung <ppighouse@gmail.com>
 X-Google-Original-From: Kelly Hung <Kelly_Hung@asus.com>
 To: robh+dt@kernel.org
@@ -79,10 +81,12 @@ Cc: krzysztof.kozlowski+dt@linaro.org,
 	kelly_hung@asus.com,
 	Allenyy_Hsu@asus.com,
 	Kelly Hung <Kelly_Hung@asus.com>
-Subject: [PATCH v5 1/2] dt-bindings: arm: aspeed: add ASUS X4TF board
-Date: Thu, 29 Feb 2024 19:11:22 +0800
-Message-Id: <20240229111123.1932504-1-Kelly_Hung@asus.com>
+Subject: [PATCH v5 2/2] ARM: dts: aspeed: x4tf: Add dts for asus x4tf project
+Date: Thu, 29 Feb 2024 19:11:23 +0800
+Message-Id: <20240229111123.1932504-2-Kelly_Hung@asus.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240229111123.1932504-1-Kelly_Hung@asus.com>
+References: <20240229111123.1932504-1-Kelly_Hung@asus.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -91,32 +95,626 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Document the new compatibles used on ASUS X4TF.
+Base on aspeed-g6.dtsi and can boot into BMC console.
 
 Signed-off-by: Kelly Hung <Kelly_Hung@asus.com>
 
 ---
-V4 -> V5: Update all changelog from v1 to v5.
-V3 -> V4: The new compatible is a BMC for a ASUS X4TF server which use a ast2600-a3 chip,
-so correct string to asus,x4tf-bmc.
-V2 -> V3: Add a label to indicate it is new compatible for bmc.
-V1 -> V2: Remove blank in front of the string x4tf.
+V4 -> V5: None
+V3 -> V4: None
+V2 -> V3:
+- fmc lable change to bmc.
+- use 64M partition layout.
+- rename spi1 label to bios.
+- remove bios partition section.
+V1 -> V2:
+- do schema check and remove all warings.
+- remove all unnecessary sections.
 ---
- Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/boot/dts/aspeed/Makefile             |   1 +
+ .../boot/dts/aspeed/aspeed-bmc-asus-x4tf.dts  | 581 ++++++++++++++++++
+ 2 files changed, 582 insertions(+)
+ create mode 100644 arch/arm/boot/dts/aspeed/aspeed-bmc-asus-x4tf.dts
 
-diff --git a/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml b/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
-index 749ee54a3..0047eb4ab 100644
---- a/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
-+++ b/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
-@@ -74,6 +74,7 @@ properties:
-               - ampere,mtmitchell-bmc
-               - aspeed,ast2600-evb
-               - aspeed,ast2600-evb-a1
-+              - asus,x4tf-bmc
-               - facebook,bletchley-bmc
-               - facebook,cloudripper-bmc
-               - facebook,elbert-bmc
+diff --git a/arch/arm/boot/dts/aspeed/Makefile b/arch/arm/boot/dts/aspeed/Makefile
+index d3ac20e31..32c41f3d9 100644
+--- a/arch/arm/boot/dts/aspeed/Makefile
++++ b/arch/arm/boot/dts/aspeed/Makefile
+@@ -10,6 +10,7 @@ dtb-$(CONFIG_ARCH_ASPEED) += \
+ 	aspeed-bmc-arm-stardragon4800-rep2.dtb \
+ 	aspeed-bmc-asrock-e3c246d4i.dtb \
+ 	aspeed-bmc-asrock-romed8hm3.dtb \
++	aspeed-bmc-asus-x4tf.dtb \
+ 	aspeed-bmc-bytedance-g220a.dtb \
+ 	aspeed-bmc-delta-ahe50dc.dtb \
+ 	aspeed-bmc-facebook-bletchley.dtb \
+diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-asus-x4tf.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-asus-x4tf.dts
+new file mode 100644
+index 000000000..64f4ed07c
+--- /dev/null
++++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-asus-x4tf.dts
+@@ -0,0 +1,581 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++// Copyright 2024 ASUS Corp.
++
++/dts-v1/;
++
++#include "aspeed-g6.dtsi"
++#include "aspeed-g6-pinctrl.dtsi"
++#include <dt-bindings/i2c/i2c.h>
++#include <dt-bindings/gpio/aspeed-gpio.h>
++
++/ {
++	model = "ASUS-X4TF";
++	compatible = "asus,x4tf-bmc", "aspeed,ast2600";
++
++	aliases {
++		serial4 = &uart5;
++	};
++
++	chosen {
++		stdout-path = "serial4:115200n8";
++	};
++
++	memory@80000000 {
++		device_type = "memory";
++		reg = <0x80000000 0x40000000>;
++	};
++
++	reserved-memory {
++		#address-cells = <1>;
++		#size-cells = <1>;
++		ranges;
++
++		video_engine_memory: video {
++			size = <0x04000000>;
++			alignment = <0x01000000>;
++			compatible = "shared-dma-pool";
++			reusable;
++		};
++	};
++
++	iio-hwmon {
++		compatible = "iio-hwmon";
++		io-channels = <&adc0 0>, <&adc0 1>, <&adc0 2>, <&adc0 3>,
++				<&adc0 4>, <&adc0 5>, <&adc0 6>, <&adc0 7>,
++				<&adc1 0>, <&adc1 1>, <&adc1 2>, <&adc1 3>,
++				<&adc1 4>, <&adc1 5>, <&adc1 6>, <&adc1 7>;
++	};
++
++	leds {
++		compatible = "gpio-leds";
++
++		led-heartbeat {
++			gpios = <&gpio0 ASPEED_GPIO(P, 7) GPIO_ACTIVE_LOW>;
++			linux,default-trigger = "heartbeat";
++		};
++
++		led-uid {
++			gpios = <&gpio0 ASPEED_GPIO(P, 1) (GPIO_ACTIVE_LOW | GPIO_OPEN_DRAIN)>;
++			default-state = "off";
++		};
++
++		led-status_Y {
++			gpios = <&gpio1 ASPEED_GPIO(B, 1) GPIO_ACTIVE_LOW>;
++			default-state = "off";
++		};
++
++		led-sys_boot_status {
++			gpios = <&gpio1 ASPEED_GPIO(B, 0) GPIO_ACTIVE_LOW>;
++			default-state = "off";
++		};
++	};
++};
++
++&adc0 {
++	vref = <2500>;
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_adc0_default &pinctrl_adc1_default
++		&pinctrl_adc2_default &pinctrl_adc3_default
++		&pinctrl_adc4_default &pinctrl_adc5_default
++		&pinctrl_adc6_default &pinctrl_adc7_default>;
++};
++
++&adc1 {
++	vref = <2500>;
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_adc8_default &pinctrl_adc9_default
++		&pinctrl_adc10_default &pinctrl_adc11_default
++		&pinctrl_adc12_default &pinctrl_adc13_default
++		&pinctrl_adc14_default &pinctrl_adc15_default>;
++};
++
++&peci0 {
++	status = "okay";
++};
++
++&lpc_snoop {
++	snoop-ports = <0x80>;
++	status = "okay";
++};
++
++&mac2 {
++	status = "okay";
++	phy-mode = "rmii";
++	use-ncsi;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_rmii3_default>;
++};
++
++&mac3 {
++	status = "okay";
++	phy-mode = "rmii";
++	use-ncsi;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_rmii4_default>;
++};
++
++&fmc {
++	status = "okay";
++
++	flash@0 {
++		status = "okay";
++		m25p,fast-read;
++		label = "bmc";
++		spi-max-frequency = <50000000>;
++#include "openbmc-flash-layout-64.dtsi"
++	};
++};
++
++&spi1 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_spi1_default>;
++
++	flash@0 {
++		status = "okay";
++		label = "bios";
++		spi-max-frequency = <50000000>;
++	};
++};
++
++&i2c0 {
++	status = "okay";
++};
++
++&i2c1 {
++	status = "okay";
++};
++
++&i2c2 {
++	status = "okay";
++};
++
++&i2c3 {
++	status = "okay";
++};
++
++&i2c4 {
++	status = "okay";
++
++	temperature-sensor@48 {
++		compatible = "ti,tmp75";
++		reg = <0x48>;
++	};
++
++	temperature-sensor@49 {
++		compatible = "ti,tmp75";
++		reg = <0x49>;
++	};
++
++	pca9555_4_20: gpio@20 {
++		compatible = "nxp,pca9555";
++		reg = <0x20>;
++		gpio-controller;
++		#gpio-cells = <2>;
++	};
++
++	pca9555_4_22: gpio@22 {
++		compatible = "nxp,pca9555";
++		reg = <0x22>;
++		gpio-controller;
++		#gpio-cells = <2>;
++	};
++
++	pca9555_4_24: gpio@24 {
++		compatible = "nxp,pca9555";
++		reg = <0x24>;
++		gpio-controller;
++		#gpio-cells = <2>;
++		gpio-line-names =
++		/*A0 - A3 0*/	"", "STRAP_BMC_BATTERY_GPIO1", "", "",
++		/*A4 - A7 4*/	"", "", "", "",
++		/*B0 - B7 8*/	"", "", "", "", "", "", "", "";
++	};
++
++	pca9555_4_26: gpio@26 {
++		compatible = "nxp,pca9555";
++		reg = <0x26>;
++		gpio-controller;
++		#gpio-cells = <2>;
++	};
++
++	i2c-mux@70 {
++		compatible = "nxp,pca9546";
++		status = "okay";
++		reg = <0x70>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		channel_1: i2c@0 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <0>;
++		};
++
++		channel_2: i2c@1 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <1>;
++		};
++
++		channel_3: i2c@2 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <2>;
++		};
++
++		channel_4: i2c@3 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <3>;
++		};
++	};
++};
++
++&i2c5 {
++	status = "okay";
++
++	pca9555_5_24: gpio@24 {
++		compatible = "nxp,pca9555";
++		reg = <0x24>;
++		gpio-controller;
++		#gpio-cells = <2>;
++	};
++
++	i2c-mux@70  {
++		compatible = "nxp,pca9546";
++		status = "okay";
++		reg = <0x70 >;
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		channel_5: i2c@0 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <0>;
++
++			pca9555_5_5_20: gpio@20 {
++				compatible = "nxp,pca9555";
++				reg = <0x20>;
++				gpio-controller;
++				#gpio-cells = <2>;
++				gpio-line-names =
++					"", "", "", "", "", "", "", "",
++					"", "", "SYS_FAN6", "SYS_FAN5",
++					"SYS_FAN4", "SYS_FAN3",
++					"SYS_FAN2", "SYS_FAN1";
++			};
++
++			pca9555_5_5_21: gpio@21 {
++				compatible = "nxp,pca9555";
++				reg = <0x21>;
++				gpio-controller;
++				#gpio-cells = <2>;
++			};
++
++			power-monitor@44 {
++				compatible = "ti,ina219";
++				reg = <0x44>;
++				shunt-resistor = <2>;
++			};
++		};
++
++		channel_6: i2c@1 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <1>;
++		};
++
++		channel_7: i2c@2 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <2>;
++		};
++
++		channel_8: i2c@3 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <3>;
++		};
++	};
++};
++
++&i2c6 {
++	status = "okay";
++
++	pca9555_6_27: gpio@27 {
++		compatible = "nxp,pca9555";
++		reg = <0x27>;
++		gpio-controller;
++		#gpio-cells = <2>;
++	};
++
++	pca9555_6_20: gpio@20 {
++		compatible = "nxp,pca9555";
++		reg = <0x20>;
++		gpio-controller;
++		#gpio-cells = <2>;
++		gpio-line-names =
++		/*A0 0*/	"", "", "", "", "", "", "", "",
++		/*B0 8*/	"Drive_NVMe1", "Drive_NVMe2", "", "",
++		/*B4 12*/	"", "", "", "";
++	};
++
++	pca9555_6_21: gpio@21 {
++		compatible = "nxp,pca9555";
++		reg = <0x21>;
++		gpio-controller;
++		#gpio-cells = <2>;
++	};
++};
++
++&i2c7 {
++	status = "okay";
++
++	i2c-mux@70 {
++		compatible = "nxp,pca9546";
++		status = "okay";
++		reg = <0x70>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++		idle-state = <1>;
++
++		channel_9: i2c@0 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <0>;
++
++			temperature-sensor@48 {
++				compatible = "ti,tmp75";
++				reg = <0x48>;
++			};
++
++			temperature-sensor@49 {
++				compatible = "ti,tmp75";
++				reg = <0x49>;
++			};
++
++			power-monitor@40 {
++				compatible = "ti,ina219";
++				reg = <0x40>;
++				shunt-resistor = <2>;
++			};
++
++			power-monitor@41 {
++				compatible = "ti,ina219";
++				reg = <0x41>;
++				shunt-resistor = <5>;
++			};
++		};
++
++		channel_10: i2c@1 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <1>;
++		};
++
++		channel_11: i2c@2 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <2>;
++		};
++
++		channel_12: i2c@3 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <3>;
++		};
++	};
++
++	i2c-mux@71 {
++		compatible = "nxp,pca9546";
++		status = "okay";
++		reg = <0x71>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++		i2c-mux-idle-disconnect;
++
++		channel_13: i2c@0 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <0>;
++		};
++
++		channel_14: i2c@1 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <1>;
++		};
++
++		channel_15: i2c@2 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <2>;
++		};
++
++		channel_16: i2c@3 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <3>;
++		};
++	};
++};
++
++&i2c8 {
++	status = "okay";
++
++	i2c-mux@70 {
++		compatible = "nxp,pca9546";
++		status = "okay";
++		reg = <0x70>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++		i2c-mux-idle-disconnect;
++
++		channel_17: i2c@0 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <0>;
++		};
++
++		channel_18: i2c@1 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <1>;
++
++			temperature-sensor@48 {
++				compatible = "ti,tmp75";
++				reg = <0x48>;
++			};
++
++			power-monitor@41 {
++				compatible = "ti,ina219";
++				reg = <0x41>;
++				shunt-resistor = <5>;
++			};
++		};
++
++		channel_19: i2c@2 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <2>;
++		};
++
++		channel_20: i2c@3 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <3>;
++		};
++	};
++};
++
++&i2c9 {
++	status = "okay";
++};
++
++&i2c10 {
++	status = "okay";
++};
++
++&i2c11 {
++	status = "okay";
++};
++
++&i2c14 {
++	status = "okay";
++	multi-master;
++
++	eeprom@50 {
++		compatible = "atmel,24c08";
++		reg = <0x50>;
++	};
++
++	eeprom@51 {
++		compatible = "atmel,24c08";
++		reg = <0x51>;
++	};
++};
++
++&sgpiom0 {
++	status = "okay";
++	ngpios = <128>;
++};
++
++&video {
++	status = "okay";
++	memory-region = <&video_engine_memory>;
++};
++
++&sdc {
++	status = "okay";
++};
++
++&lpc_snoop {
++	status = "okay";
++	snoop-ports = <0x80>;
++};
++
++&kcs1 {
++	aspeed,lpc-io-reg = <0xca0>;
++	status = "okay";
++};
++
++&kcs2 {
++	aspeed,lpc-io-reg = <0xca8>;
++	status = "okay";
++};
++
++&kcs3 {
++	aspeed,lpc-io-reg = <0xca2>;
++	status = "okay";
++};
++
++&uart3 {
++	status = "okay";
++};
++
++&uart5 {
++	status = "okay";
++};
++
++&uart_routing {
++	status = "okay";
++};
++
++&vhub {
++	status = "okay";
++};
++
++&gpio0 {
++	gpio-line-names =
++	/*A0 0*/	"", "", "", "", "", "", "", "",
++	/*B0 8*/	"", "", "", "", "", "", "PS_PWROK", "",
++	/*C0 16*/	"", "", "", "", "", "", "", "",
++	/*D0 24*/	"", "", "", "", "", "", "", "",
++	/*E0 32*/	"", "", "", "", "", "", "", "",
++	/*F0 40*/	"", "", "", "", "", "", "", "",
++	/*G0 48*/	"", "", "", "", "", "", "", "",
++	/*H0 56*/	"", "", "", "", "", "", "", "",
++	/*I0 64*/	"", "", "", "", "", "", "", "",
++	/*J0 72*/	"", "", "", "", "", "", "", "",
++	/*K0 80*/	"", "", "", "", "", "", "", "",
++	/*L0 88*/	"", "", "", "", "", "", "", "",
++	/*M0 96*/	"", "", "", "", "", "", "", "",
++	/*N0 104*/	"", "", "", "",
++	/*N4 108*/	"POST_COMPLETE", "ESR1_GPIO_AST_SPISEL", "", "",
++	/*O0 112*/	"", "", "", "", "", "", "", "",
++	/*P0 120*/	"ID_BUTTON", "ID_OUT", "POWER_BUTTON", "POWER_OUT",
++	/*P4 124*/	"RESET_BUTTON", "RESET_OUT", "", "HEARTBEAT",
++	/*Q0 128*/	"", "", "", "", "", "", "", "",
++	/*R0 136*/	"", "", "", "", "", "", "", "",
++	/*S0 144*/	"", "", "", "", "", "", "", "",
++	/*T0 152*/	"", "", "", "", "", "", "", "",
++	/*U0 160*/	"", "", "", "", "", "", "", "",
++	/*V0 168*/	"", "", "", "", "", "", "", "",
++	/*W0 176*/	"", "", "", "", "", "", "", "",
++	/*X0 184*/	"", "", "", "", "", "", "", "",
++	/*Y0 192*/	"", "", "", "", "", "", "", "",
++	/*Z0 200*/	"", "", "", "", "", "", "", "";
++};
 -- 
 2.25.1
 
