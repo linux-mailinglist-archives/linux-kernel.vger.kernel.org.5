@@ -1,79 +1,117 @@
-Return-Path: <linux-kernel+bounces-85871-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85877-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66DD186BC8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:12:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96FC386BC99
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:16:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20F8A28899F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:12:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C84301C210CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:16:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 695F92116;
-	Thu, 29 Feb 2024 00:12:05 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1BB21102;
+	Thu, 29 Feb 2024 00:15:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="c8EToDgm"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1BBE15C3
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 00:12:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D4C9107B3
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 00:15:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709165524; cv=none; b=qyFe86zvS6fiU2/YtKlBgzMaUzj9vl9ibuzIsO5D28fomhljgE20wyg2qM+Z48St7mbZ/15ZitaPyO5WHPDZWhXAa59if8bFzCFUZ2h5dfciLQNpWZ/SPUpPxXHn9gcF3Bn8fDqlD4lXjDnjswTgLO93kbkTzORRV6ubpUjY1LA=
+	t=1709165745; cv=none; b=Wkw7nfvTCcSarGrVobsc0V7VJK0cqv2WCBXDfm9NxA8IamZmKO5doSEAsx4zdXqNdeXv5ki3NDcYWOSWuePy1amsdOy5O7jJxUazpCNCqnZ407Lthh1kmwJZloiA9l8HfqhXrsnPeb7vDN6PtoNQMz07Y9AMwMwvb/mHoXocFU4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709165524; c=relaxed/simple;
-	bh=N6YGuaJ74E7TWcJgDpeFOe4+YYQa16bTIgjQ4usJsg8=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=kUQUX9FUmmV0VbkOmLoCO51SqGT/aqord5ryX7207KVpQzZJwzgzPsCm7+jAXJ9MYVQURghPlbvRiFr1TXE9UwnPZZhsiInsdI0NckeCC7tC+D8acgq4t13Y3Yu6d51v14KPq7d7jz5UEg8rkFn7WY5NohtTMP7ssBobKJ2H2UI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B81C8C433F1;
-	Thu, 29 Feb 2024 00:12:01 +0000 (UTC)
-Date: Wed, 28 Feb 2024 19:14:06 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Josh Poimboeuf <jpoimboe@kernel.org>
-Cc: Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
- linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Vince
- Weaver <vincent.weaver@maine.edu>, Dave Jones <dsj@fb.com>, Jann Horn
- <jannh@google.com>, Miroslav Benes <mbenes@suse.cz>, Andy Lutomirski
- <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Masami Hiramatsu
- <mhiramat@kernel.org>, Nilay Vaish <nilayvaish@google.com>
-Subject: Re: [PATCH v2 06/11] x86/unwind/orc: Convert global variables to
- static
-Message-ID: <20240228191406.21e894b0@gandalf.local.home>
-In-Reply-To: <20240229000309.ibtuk7gr27d7cbxz@treble>
-References: <cover.1587808742.git.jpoimboe@redhat.com>
-	<43ae310bf7822b9862e571f36ae3474cfde8f301.1587808742.git.jpoimboe@redhat.com>
-	<20240228183507.78c5f130@gandalf.local.home>
-	<20240229000309.ibtuk7gr27d7cbxz@treble>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1709165745; c=relaxed/simple;
+	bh=w/dBhGtqOiet87mj9CIQnP4Eds9GW8q+8jq3/Y99j+Q=;
+	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=Iaoo1ZhHF0dc5gdvm3hUGhxxSzuvhGkovxipTUyCxaEmUEC8vU+QrQRN7yK+IZxfxbFCTjvnIztHTRBkke4M0P7pSWdBNWdKbGVKnBzgJfm6T2FafXeeWcMEIaunr3n151+wNL+EE2X2BRjqu5rqJkojHor1gnRVoQsNvBc+Dvs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=c8EToDgm; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc64b659a9cso695073276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 16:15:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709165742; x=1709770542; darn=vger.kernel.org;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=dcL9AcUcVelYgbT04eVXrPkevsg/BMkfHE93xGttlPQ=;
+        b=c8EToDgm3weolB5MosjoVzxiKMjJhwCczhCLU6c4JRdhkzC+UTLpnTzNV5ofHhZxCh
+         n3VM45pP3GyRjTswNoq8WK3EJSISyzG550UXdZXecDQUJofvpuWWzznR0aLx/6pvlAhl
+         mdrHq5dSkDTTSjGQvyCbSB2X8wy2mFReBpe7OEsI4g0LzRuGX+BhAMEUjtGUzdbnxrpX
+         5DL9wlB4X4Vy0upWgubY3KYcjtRcx+jvR3mYvjcNw2pT8NDsTJDPNiZs4moGrm+GP7J/
+         BZXYNjzx/ZePPvtbkzSmG2xWPsdn1rSM6nPA01zAoV8vyG7STB6c0/E+uBDXpnrHQRi9
+         bTlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709165742; x=1709770542;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dcL9AcUcVelYgbT04eVXrPkevsg/BMkfHE93xGttlPQ=;
+        b=sTmb2bqdHudN7RhVyuvGJt5cJHUPC/zx8HP4kHNPYEyx4MJEEZl5Srq9GsXBEl9xlj
+         Anjo3KAip/kC6F0nIyR9HwgSmgWBsYFkgyhD77D73xOD9Axr5mTOigm66A9LbzszuBi7
+         dQf/lVBolXnIsDpNVukkZiRQoLE/DGd4C/HED5SHlUXSIsiayzrEqtd7fUBvYAqVMr+2
+         iAEC/OHA9jBY4zb4TVt3/jZTuuOJ5Vg+pE/H0YacVQErWD/XuMdA2lQIhQpqByNd2tDs
+         LUm9eEwuPZCYDnTWSiMyEmrAH8MGij7cBfkPrvO+DnITBJixIx4ibDxCafEyzFVgSZ6F
+         V0jA==
+X-Forwarded-Encrypted: i=1; AJvYcCVDR0DxS5fTSQ9xfHabPwtMlVNpQt6m2TC5BWNULCGoTZJ/mb8VV5vpqBLRCVQWB7+ekYyCUndnlpX5bgXiXuuvCEhpWk759s8BsvXX
+X-Gm-Message-State: AOJu0YwP41dNKWsLsrAoGm6SV75pfMQ9qO+ijMmcGdGK2es68k6vwbFP
+	NN1nXEE/hjTCgHppQAps/aXy54+Y961DN5lGklJsobLZWs+iZbGUw02d2WJ68Bb2PQGzSnBTgD2
+	ZzloLGw==
+X-Google-Smtp-Source: AGHT+IGND6Qa1OhIK+/LURQLPHsXWevjR53gBA3AGOP9QOSuPeaerLixCesSaoA8q007Yg/DowVW9VFapZST
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:77dc:144c:334e:e2dd])
+ (user=irogers job=sendgmr) by 2002:a05:6902:250d:b0:dc6:f877:ea7b with SMTP
+ id dt13-20020a056902250d00b00dc6f877ea7bmr198122ybb.9.1709165742694; Wed, 28
+ Feb 2024 16:15:42 -0800 (PST)
+Date: Wed, 28 Feb 2024 16:15:24 -0800
+Message-Id: <20240229001537.4158049-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
+Subject: [PATCH v1 00/13] Python generated AMD Zen metrics
+From: Ian Rogers <irogers@google.com>
+To: Sandipan Das <sandipan.das@amd.com>, Ravi Bangoria <ravi.bangoria@amd.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	John Garry <john.g.garry@oracle.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	Jing Zhang <renyu.zj@linux.alibaba.com>, Thomas Richter <tmricht@linux.ibm.com>, 
+	James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, 28 Feb 2024 16:03:09 -0800
-Josh Poimboeuf <jpoimboe@kernel.org> wrote:
+Generate thirteen sets of additional metrics for AMD zen.  Rapl and
+Idle metrics aren't specific to AMD but are placed here for ease and
+convenience. Uncore L3 metrics are added along with the majority of
+core metrics.
 
-> On Wed, Feb 28, 2024 at 06:35:07PM -0500, Steven Rostedt wrote:
-> > On Sat, 25 Apr 2020 05:03:05 -0500
-> > Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> >   
-> > > These variables aren't used outside of unwind_orc.c, make them static.
-> > > 
-> > > Also annotate some of them with '__ro_after_init', as applicable.  
-> > 
-> > So it appears that crash uses "lookup_num_blocks" to be able to do
-> > back-traces with the ORC unwinder. But because it's now static, crash can no
-> > longer do that.  
-> 
-> Hm, but why?  Even a static variable has a known address.
-> 
+The patches should be applied on top of:
+https://lore.kernel.org/lkml/20240228175617.4049201-1-irogers@google.com/
 
-I'm guessing because we don't have the full dwarf info?
+Ian Rogers (13):
+  perf jevents: Add RAPL event metric for AMD zen models
+  perf jevents: Add idle metric for AMD zen models
+  perf jevents: Add upc metric for uops per cycle for AMD
+  perf jevents: Add br metric group for branch statistics on AMD
+  perf jevents: Add software prefetch (swpf) metric group for AMD
+  perf jevents: Add hardware prefetch (hwpf) metric group for AMD
+  perf jevents: Add itlb metric group for AMD
+  perf jevents: Add dtlb metric group for AMD
+  perf jevents: Add uncore l3 metric group for AMD
+  perf jevents: Add load store breakdown metrics ldst for AMD
+  perf jevents: Add ILP metrics for AMD
+  perf jevents: Add context switch metrics for AMD
+  perf jevents: Add cycles breakdown metric for AMD
 
--- Steve
+ tools/perf/pmu-events/amd_metrics.py | 642 ++++++++++++++++++++++++++-
+ 1 file changed, 639 insertions(+), 3 deletions(-)
+
+-- 
+2.44.0.278.ge034bb2e1d-goog
+
 
