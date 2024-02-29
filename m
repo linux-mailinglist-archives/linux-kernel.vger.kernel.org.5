@@ -1,107 +1,175 @@
-Return-Path: <linux-kernel+bounces-87603-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87604-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE68386D667
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:53:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4762386D669
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:53:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2A58284738
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:53:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0260B28579A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:53:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 134E36D527;
-	Thu, 29 Feb 2024 21:53:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="CKKg21h0"
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D80B6D531;
+	Thu, 29 Feb 2024 21:53:35 +0000 (UTC)
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15C766D513
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 21:53:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 520EF16FF46;
+	Thu, 29 Feb 2024 21:53:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709243583; cv=none; b=Nsl13pCpGPwbeO94lAKgPBFoC1qVNZOKp5aykhfTTY62rmMQpVZNLqaynp5LUxoa2gO3QB0LKOl0TJlGoj+X8/pz3ndNKhDYNFegixxFSLv0n6mUR6YqUHz4Ib6cDjaNF8VcdrTTCGzGPjJlCGexvr2Svu+wcyYCoYmua+RLOSo=
+	t=1709243614; cv=none; b=VbhZuKQjLdQLpj1lTUplml4yLYb7N9z7wxSXYBrMW1XFs2ijQLMk6rz4j5Akl6sbQP0U6YTiMTYQDj0zhHFBweVZR1jeGmM+D8HrMIOQ9ly//8UG6tY7REyfDXElRQl7jzQ0E3TO+Z1ffae5R4gN6OGagwhu7urhm/ZNRSykX/I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709243583; c=relaxed/simple;
-	bh=40LOGwLLO1L0EdJYZW5tRFxEBHq3W8RHKzr/KIs3gAo=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ZJql0gTMjx9DvL+AbuAZXVvqGviST1o+OrN417Al7wZiPPKqDxYVBxD1SY2CK0oant8uyWnEYPKplfPzc/rlIUhHaRLinYfDo5Okf9+S89DQxwmYo4n5RFMjzOY1PWJpj6q9Hu1rrC5EM9DUoxRkA1749Z2TXT9HQFX8u+Ud3MM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=CKKg21h0; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1dc1e7c0e29so1118635ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 13:53:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709243581; x=1709848381; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VfVmIftr9u8G53CVoGBCv9uMSPlzLWhBX0yxZViPO7o=;
-        b=CKKg21h0vpw6xzLXV5wJwTLWeJopuFECBiuk8h23l7cNxO0xeZ9RVnFLq2hzHEj5Bj
-         IYFg4tYrIWtWaFohxBvyRb1wZp5uZSQiiXAJQOuuy5af4J7rE6uCZ4gkLDQL2/DJtOuP
-         1dKLmU6NqIlSrk+eHS0VUSuyhERE2Iyy7aSo0=
+	s=arc-20240116; t=1709243614; c=relaxed/simple;
+	bh=POqv0h1t39Wybcz3NApqo2vEL4LbOvoTJUL75VTqPzc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZkRZLRrxRMbf8pBUB57CTlU0UdlWP4ye6YODUbu1XpwkIqopzOB+B4YwbksL/w2nwTTkmBVyMr45KWjHWxda3ug0AMF5bXeHJT/oOzujldLCtM2J2KV77uv7ZUPNRh1Yyt2e9xtBkIX94H6QfvyB02F4P2kmMrSIrd7IC3uLjGM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5d8b519e438so1278691a12.1;
+        Thu, 29 Feb 2024 13:53:33 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709243581; x=1709848381;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1709243612; x=1709848412;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VfVmIftr9u8G53CVoGBCv9uMSPlzLWhBX0yxZViPO7o=;
-        b=eg3sVF0MEMZMCjFWe0T7xCY3rS3H7n3TexvIESlGj9vvadPJ5loC7/6hliYrTOVAsc
-         PCaPw30UhLyES7ZEMfKO4LVtUqeT3kUtK0FDPLkNS1Ov9hqbbDgBCVXYaxP2VB3PqLWG
-         Rh7QSraBg8l+tgdvOUz45DH4Bpcu/KSd9FZP1xvvnlAvZOfF72vtBHqMRbx0Djg673b8
-         8BxXGAHNb2nFnWcqbuFCR8g7fl8JItcpzcRWJ+HXVqf91HMCzrvW7acLY911vBlNBX9S
-         Hw2W7eeg9wwUplgkrOCYF8LXJn5IjLao5CDf4vNQxkrmT+DbvHRsuJsYob4HPDfG9DxU
-         wt7A==
-X-Forwarded-Encrypted: i=1; AJvYcCWGsEdJLlkIO7wrEXkaq3CXwJdzMHcoL94JYKWK51R8L+GhO+x6EyKv7kP9mvaKYdTL4tiRGHnxIEzD1FJoI7CQ28lveXH7w5MyN6/B
-X-Gm-Message-State: AOJu0YxcNj5kZ5DEd496zoTg6dp/Y6vzKi6zcbWFOnjm87ad5kRHBDiG
-	4vXhlHGR4bY9Y9zbuDfgVeAnpjXvjgrbTCK6c+AfY0rmJzqkzPg3WZ6pUfw+rQ==
-X-Google-Smtp-Source: AGHT+IEjOzizZx4W19g0cQia1GAOC69UKAExPf80Lg4HJzLCbfInVD20wOPFxsp6aKfWtETmCZseew==
-X-Received: by 2002:a17:902:f603:b0:1dc:c45c:5d1d with SMTP id n3-20020a170902f60300b001dcc45c5d1dmr4470230plg.24.1709243581294;
-        Thu, 29 Feb 2024 13:53:01 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id x11-20020a170902a38b00b001dcdb39613fsm1911625pla.244.2024.02.29.13.53.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 13:53:00 -0800 (PST)
-From: Kees Cook <keescook@chromium.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>,
-	linux-hardening@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Kees Cook <keescook@chromium.org>,
-	Andy Shevchenko <andy@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Suren Baghdasaryan <surenb@google.com>
-Subject: Re: [PATCH v1 1/1] lib/string_helpers: Add flags param to string_get_size()
-Date: Thu, 29 Feb 2024 13:52:34 -0800
-Message-Id: <170924355200.1509550.2313379734413200100.b4-ty@chromium.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240229205345.93902-1-andriy.shevchenko@linux.intel.com>
-References: <20240229205345.93902-1-andriy.shevchenko@linux.intel.com>
+        bh=haUJa+5TdcS6m1vT9CvX3WylWRv8eifDwIPUXf2O2d4=;
+        b=Do1ObdRP8QG+kkhUk6dkmaevdkREhUKq2DqKlKm+XYu1P8MxdNoF5GJWrgLYgaV5c/
+         Et1rU50JVnU7WT/dz2gYTsp+NYXIqWnUOtlXWEu9pe1trWEM5Z5b6Mo6aAt9lB2yBz3z
+         PaF7RnvOFUSWBo4PEIE/5Uxh4mzkorqTDFZpfcivto/y3IZxNsoewhZ5FOXVhv1fWx7b
+         tTnP1exq6BAmEzNjVP1HQ0jOe6axJIBM4OK8rVIDeo1aGVXlX2v6OXULAgmp9NjMMldz
+         wRMJV+R8bU3XTrgfrP/ZNINbxcrxkr3yFunDM4WTIX0QkZeYssc7tRFPYIU0GBuseb8Z
+         Ss1A==
+X-Forwarded-Encrypted: i=1; AJvYcCXhGNq8JE5E4wjdLrmyLleWnpGNeVLF0XWB5SJ5QWQfADvVnJFced4I9DaVZTw2zVJTLuI+FsG/eUdvMWnh32Z58TPnysg/weSIBdrZJT5bHPWNIu/xTyHLZ9FFoUKlBKoevO8uw3ccXKfTfGq6ELpj4rDbZ/20bT2v2Rpmkn43wAyl7Q==
+X-Gm-Message-State: AOJu0YxpSYA9Ml7qGYhnsc0VNyBRtqCc5ZHgcH/PC+b07Zs/wCqZ+vY5
+	vJLMKMCL2vf78JlH2tPsPkzBJt02S7tDuwkQZI2kWZn5c8auVTqHgrt4sdjQsqQGlne4kTG1ASP
+	cChquKwRFwl/kzW2AsM/yavUojuaWuzvZ
+X-Google-Smtp-Source: AGHT+IFBSRvQ+r0EXa9q2GBrMWhn0LzDwgGCDrMn25SAlWV3W/po7XZ7pjMbxhZRxGVyf5m/1cmFj6Vee7TppEkoLO4=
+X-Received: by 2002:a17:902:a70c:b0:1dc:a844:a38b with SMTP id
+ w12-20020a170902a70c00b001dca844a38bmr3162774plq.67.1709243612496; Thu, 29
+ Feb 2024 13:53:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20240228053335.312776-1-namhyung@kernel.org> <Zd8lkcb5irCOY4-m@x1>
+ <CAM9d7cicRtxCvMWu4pk6kdZAqT2pt3erpzL4_Jdt1pKLLYoFgQ@mail.gmail.com>
+ <Zd-UmcqV0mbrKnd0@x1> <CAM9d7cg-M_8V0O2rv_gx+1u=axpRmCp4XcBkkqsiGmDgeU2xZw@mail.gmail.com>
+ <ZeC9ki-4SGa-iU0C@x1>
+In-Reply-To: <ZeC9ki-4SGa-iU0C@x1>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Thu, 29 Feb 2024 13:53:21 -0800
+Message-ID: <CAM9d7cgb+-treat5Mf_hitEjLDJH8B-RFZYoDxzaGXu0VbNr8A@mail.gmail.com>
+Subject: Re: [PATCH v2] perf lock contention: Account contending locks too
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 29 Feb 2024 22:52:30 +0200, Andy Shevchenko wrote:
-> The new flags parameter allows controlling
->  - Whether or not the units suffix is separated by a space, for
->    compatibility with sort -h
->  - Whether or not to append a B suffix - we're not always printing
->    bytes.
+On Thu, Feb 29, 2024 at 9:23=E2=80=AFAM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> On Wed, Feb 28, 2024 at 01:19:12PM -0800, Namhyung Kim wrote:
+> > On Wed, Feb 28, 2024 at 12:16=E2=80=AFPM Arnaldo Carvalho de Melo <acme=
+@kernel.org> wrote:
+> > > On Wed, Feb 28, 2024 at 12:01:55PM -0800, Namhyung Kim wrote:
+> > > > On Wed, Feb 28, 2024 at 4:22=E2=80=AFAM Arnaldo Carvalho de Melo <a=
+cme@kernel.org> wrote:
+> > > > > On Tue, Feb 27, 2024 at 09:33:35PM -0800, Namhyung Kim wrote:
+> > > > > > Currently it accounts the contention using delta between timest=
+amps in
+> > > > > > lock:contention_begin and lock:contention_end tracepoints.  But=
+ it means
+> > > > > > the lock should see the both events during the monitoring perio=
+d.
+>
+> > > > > > Actually there are 4 cases that happen with the monitoring:
+>
+> > > > > >                 monitoring period
+> > > > > >             /                       \
+> > > > > >             |                       |
+> > > > > >  1:  B------+-----------------------+--------E
+> > > > > >  2:    B----+-------------E         |
+> > > > > >  3:         |           B-----------+----E
+> > > > > >  4:         |     B-------------E   |
+> > > > > >             |                       |
+> > > > > >             t0                      t1
+>
+> > > > > > where B and E mean contention BEGIN and END, respectively.  So =
+it only
+> > > > > > accounts the case 4 for now.  It seems there's no way to handle=
+ the case
+> > > > > > 1.  The case 2 might be handled if it saved the timestamp (t0),=
+ but it
+> > > > > > lacks the information from the B notably the flags which shows =
+the lock
+> > > > > > types.  Also it could be a nested lock which it currently ignor=
+es.  So
+> > > > > > I think we should ignore the case 2.
+>
+> > > > > Perhaps have a separate output listing locks that were found to b=
+e with
+> > > > > at least tE - t0 time, with perhaps a backtrace at that END time?
+>
+> > > > Do you mean long contentions in case 3?  I'm not sure what do
+> > > > you mean by tE, but they started after t0 so cannot be greater
+>
+> > > case 2
+>
+> > >                 monitoring period
+> > >             /                       \
+> > >             |                       |
+> > >  2:    B----+-------------E         |
+> > >             |             |         |
+> > >             t0            tE        t1
+> > >
+> > > We get a notification for event E, right? We don=C2=B4t have one for =
+B,
+> > > because it happened before we were monitoring.
+> >
+> > Ah, ok.  But there should be too many events in case 2 and
+> > I don't think users want to see them all.  And they don't have
+>
+> So maybe a summary, something like:
+>
+>   N locks that were locked before this session started have been
+>   released, no further info besides this histogram of in-session
+>   durations:
+>
+>     0-N units of time: ++
+>   N+1-M units of time: ++++
+>     ...
 
-I cleaned up the Co-developed-by/S-o-b and applied to for-next/hardening, thanks!
+Summary could work.  But I'm not sure about the histogram
+since different locks would have different behavior - spinlock
+vs. mutex/semaphore.  Maybe it's more meaningful when
+you have filters or separate histograms for each lock.
 
-[1/1] lib/string_helpers: Add flags param to string_get_size()
-      https://git.kernel.org/kees/c/ec8815c56558
 
-Take care,
+>
+> > flags.  But maybe we can update the flag when it sees exactly
+> > the same callstack later.
+>
+>   The callstack, if going all the way to userspace may have the workload
+> targeted in the command line ( some pid, tid, CPU, etc) and thus would
+> point for things the user probably is interested than some other lock
+> that may affect it but indirectly.
 
--- 
-Kees Cook
+It doesn't collect user callstacks yet since it requires recording memory
+address space information of every process - basically FORK and MMAP.
+Maybe we can use callstacks with build-ID and offsets but it also requires
+mapping from build-ID to binary somewhere.
 
+Anyway, it's good to add more features to it.  Let me process this
+patch first and think about more later. :)
+
+Thanks,
+Namhyung
 
