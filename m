@@ -1,61 +1,59 @@
-Return-Path: <linux-kernel+bounces-87510-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87511-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D324386D550
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:59:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B17E86D555
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:00:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 80145B27DC5
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:59:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ABB631C2259D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:00:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9475D169E08;
-	Thu, 29 Feb 2024 20:41:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82C3816A342;
+	Thu, 29 Feb 2024 20:41:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EHcJRa89"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RaoBVYq7"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDBF116A375;
-	Thu, 29 Feb 2024 20:41:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1930169E32;
+	Thu, 29 Feb 2024 20:41:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709239299; cv=none; b=YgyybDJgUkDiHK+vaDZsjcIUVjLX2kLJcb+0jA4QL+/7dk2xM3NZty3FA74AJac+hPmovlFKRBzaYUGkqAQUN0nsWTZEy8xQ7Id4EeDD7csdaLJesJfHOsjoosWaOpTcoupIDT9EH4w9RH2t4W+pXwms+IcpsqoF0f0XaMo4uzw=
+	t=1709239301; cv=none; b=p2i6DyYZJTYm8Vaz2XI+or6TVHEJbaL1u1jGT3Q/9Fyph2WmXKE9hy+DEEFPSdV59XAL0XdIJpLtHGhIaMRgi8ssa6O++np9ZCKjm3+i1DdP25VHce49h1WZaf9tRqNXpQ70Jg5yrPIRzTfrIhuZKX7VjKUDx5Uc4QB1zpHXkHo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709239299; c=relaxed/simple;
-	bh=/+JbcQspYtn1cfE7npVm5z6VSjqlZ5+MhDIb1KgxOJY=;
+	s=arc-20240116; t=1709239301; c=relaxed/simple;
+	bh=Fg21IVBdDngt1etfWcnPSEvzp7Y5DXNt8psD2PSobPY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jFAHKFR6GXwlY6OirN93zr7LH/yda10GVWTCfC/0Cvov6wao4oNJuAOBDmS1ZnKO/Klkh3Jb0oKr4jQ48heCycC/yVWHSmbiv6btn+EqPjnXmJ+6RLyX9K0Pb1tXdxerKRhuZjhKRyfO1KOzDlJ621FjAvOI0ttdR+2hoZRLcgE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EHcJRa89; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2927DC43330;
-	Thu, 29 Feb 2024 20:41:38 +0000 (UTC)
+	 MIME-Version; b=Xv82ZxSoLlXd6Vqh0b+Qpul/apeQwDooGi8MdewG7P2ks3PKbx5rom51yiiOdgIIX5WWwJE/Ql7Fb4lAodL3EFwGbeN3l5dZoh5sG/+ls/lEzdywjK4c8Pqz+VVFyF81vliBlgS/GTv2IHYvrTs44mJxjyu7qHx5y1HySwHoevw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RaoBVYq7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15B71C433F1;
+	Thu, 29 Feb 2024 20:41:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709239299;
-	bh=/+JbcQspYtn1cfE7npVm5z6VSjqlZ5+MhDIb1KgxOJY=;
+	s=k20201202; t=1709239301;
+	bh=Fg21IVBdDngt1etfWcnPSEvzp7Y5DXNt8psD2PSobPY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=EHcJRa89sa/JNhV1RtNgILyhebxnCYZUr9pXoU7umhFKgL/5R9EiTSVqtWeB0yKhn
-	 a0E61/XrwpNupKhURnh55WzQXnUjKKblkXcfMklXB3W5vTNtdrupTU6zlbr+vSRPyv
-	 cqyot7ym71EC3gdGj5u9K+MOrOUtJhL/ZbipGwabAZYLTb9Y4lX0BH7pJtFFWGPko/
-	 bMolewgUAVQGSBRFpUPLuHnj4QMhrCJgUHS/0SDW+JrVpU/UCrnbl8HGC1aoJd4qpW
-	 tuRcW1Irv/VpnQ5F0T89M62GrxduGl6mKr2zk4ks8ow/usAnKThdwwD2nYlBlqhJw5
-	 5CufV9aRNAkZA==
+	b=RaoBVYq7BeVGjzC6CScbrJNQpU8mTKf7/73tiPZMT7Lfdh8FQHUrBluTXyX+dweU6
+	 jnlfFqQ9O+O4Dck9W5U/tVmf4/Ou48Zvc5yjpCKqUf4RqGvrAl8OkJGYk/HH8I7n+p
+	 WAK80Ck6nknxmozvulq0zbdF0GrNc/akNeRiGrER4duX1lm8l8cB2Kr0H6h+WbXuYA
+	 boBpbtFnNeusFdgSMB+lAiXUurj8PbxuxzxIGvoxIbMmBtFNq7Rbhr9pngrcYgijgS
+	 bgkvTIbLn+QZ+JYDnj2aJs7rvb+vLD1ZgGMZu2i8DPSg+bGPz4KP3rdpmVZuOQIZP8
+	 gAnHt3Wq9MDMQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Alexander Gordeev <agordeev@linux.ibm.com>,
-	Alexandra Winter <wintera@linux.ibm.com>,
-	"David S . Miller" <davem@davemloft.net>,
+Cc: Max Kellermann <max.kellermann@ionos.com>,
+	Helge Deller <deller@gmx.de>,
 	Sasha Levin <sashal@kernel.org>,
-	twinkler@linux.ibm.com,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	linux-s390@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 5/8] net/iucv: fix the allocation size of iucv_path_table array
-Date: Thu, 29 Feb 2024 15:41:22 -0500
-Message-ID: <20240229204127.2861980-5-sashal@kernel.org>
+	rostedt@goodmis.org,
+	mhiramat@kernel.org,
+	James.Bottomley@HansenPartnership.com,
+	linux-trace-kernel@vger.kernel.org,
+	linux-parisc@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 6/8] parisc/ftrace: add missing CONFIG_DYNAMIC_FTRACE check
+Date: Thu, 29 Feb 2024 15:41:23 -0500
+Message-ID: <20240229204127.2861980-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240229204127.2861980-1-sashal@kernel.org>
 References: <20240229204127.2861980-1-sashal@kernel.org>
@@ -70,44 +68,40 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.210
 Content-Transfer-Encoding: 8bit
 
-From: Alexander Gordeev <agordeev@linux.ibm.com>
+From: Max Kellermann <max.kellermann@ionos.com>
 
-[ Upstream commit b4ea9b6a18ebf7f9f3a7a60f82e925186978cfcf ]
+[ Upstream commit 250f5402e636a5cec9e0e95df252c3d54307210f ]
 
-iucv_path_table is a dynamically allocated array of pointers to
-struct iucv_path items. Yet, its size is calculated as if it was
-an array of struct iucv_path items.
+Fixes a bug revealed by -Wmissing-prototypes when
+CONFIG_FUNCTION_GRAPH_TRACER is enabled but not CONFIG_DYNAMIC_FTRACE:
 
-Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
-Reviewed-by: Alexandra Winter <wintera@linux.ibm.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+ arch/parisc/kernel/ftrace.c:82:5: error: no previous prototype for 'ftrace_enable_ftrace_graph_caller' [-Werror=missing-prototypes]
+    82 | int ftrace_enable_ftrace_graph_caller(void)
+       |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ arch/parisc/kernel/ftrace.c:88:5: error: no previous prototype for 'ftrace_disable_ftrace_graph_caller' [-Werror=missing-prototypes]
+    88 | int ftrace_disable_ftrace_graph_caller(void)
+       |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
+Signed-off-by: Helge Deller <deller@gmx.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/iucv/iucv.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/parisc/kernel/ftrace.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/iucv/iucv.c b/net/iucv/iucv.c
-index 6f84978a77265..ed0dbdbba4d94 100644
---- a/net/iucv/iucv.c
-+++ b/net/iucv/iucv.c
-@@ -156,7 +156,7 @@ static char iucv_error_pathid[16] = "INVALID PATHID";
- static LIST_HEAD(iucv_handler_list);
+diff --git a/arch/parisc/kernel/ftrace.c b/arch/parisc/kernel/ftrace.c
+index 63e3ecb9da812..8538425cc43e0 100644
+--- a/arch/parisc/kernel/ftrace.c
++++ b/arch/parisc/kernel/ftrace.c
+@@ -81,7 +81,7 @@ void notrace __hot ftrace_function_trampoline(unsigned long parent,
+ #endif
+ }
  
- /*
-- * iucv_path_table: an array of iucv_path structures.
-+ * iucv_path_table: array of pointers to iucv_path structures.
-  */
- static struct iucv_path **iucv_path_table;
- static unsigned long iucv_max_pathid;
-@@ -542,7 +542,7 @@ static int iucv_enable(void)
- 
- 	get_online_cpus();
- 	rc = -ENOMEM;
--	alloc_size = iucv_max_pathid * sizeof(struct iucv_path);
-+	alloc_size = iucv_max_pathid * sizeof(*iucv_path_table);
- 	iucv_path_table = kzalloc(alloc_size, GFP_KERNEL);
- 	if (!iucv_path_table)
- 		goto out;
+-#ifdef CONFIG_FUNCTION_GRAPH_TRACER
++#if defined(CONFIG_DYNAMIC_FTRACE) && defined(CONFIG_FUNCTION_GRAPH_TRACER)
+ int ftrace_enable_ftrace_graph_caller(void)
+ {
+ 	return 0;
 -- 
 2.43.0
 
