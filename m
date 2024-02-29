@@ -1,152 +1,147 @@
-Return-Path: <linux-kernel+bounces-86194-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86193-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B73086C164
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 07:53:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CBFC86C15F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 07:52:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF095286A04
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 06:53:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E6AD1C21327
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 06:52:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 165453BBF4;
-	Thu, 29 Feb 2024 06:53:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02466446AD;
+	Thu, 29 Feb 2024 06:52:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="j/eShJSs"
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2047.outbound.protection.outlook.com [40.107.212.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QdZO2z78"
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EA093CF6E;
-	Thu, 29 Feb 2024 06:53:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.212.47
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709189588; cv=fail; b=KxeX3g/ArSvXuFWCog4tJWB0ZQIG0D5jxDVI5CMqCKV9DxU9qF8atCL5tg4zVDlENnO3aJncCWCKRDIA4Klv3oPf9pKXrdNlQoIdfO9yQ6WAn5Kz4vBB4tEI4g0cUCqUqizLBi+CEtbEPQIU8VfGSarzhwQuyL2eVdVeMP+YOQA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709189588; c=relaxed/simple;
-	bh=s3W16HeXxHw/37+rmaDK/JJGIMG3a3aKcxaoeoG8zM4=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=EQItavPmjpc/iCGxN/j+7LGFsHpATK9Nz03CKJA1MIt5jxs2hgGut8lVTgJtlOvnxqPoKl5mJH7nIOlzIa3lRcTp9FC2upsyMx+Cq8dGM4RVu94i6YOU1OUMRzhzmeuZ7AaZ9bOyZydmwYP4+oDppvCtl4xtMzjTEKWUC+IJPrI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=j/eShJSs; arc=fail smtp.client-ip=40.107.212.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hS3eBYjhQo3iC2SYtrkwbESQa+LFCQIfBoAchh/azJk+dA965R8vuuxT1RosYU4Rh9BAcONZY7iRfppQGSNvYBrS9uf9kiSTusldspe+vkB6eFblt1ZxWyTkJRZ5N4wQM5l2cMhgnJ7FVLMH6g7Be9XQ8yOrAzW9PIV9HkiNMzez5IeXOX0cG8X0/L7PXk22XCAVL/Z7ZPpPOOYAEa/Cq/ylX/nd5D5mDc4tsns0vvSd82Tdoh1G5QQuIWchHvkW+PVa6hGFQkJD7Yxw2pmzgk4z9i394Nsye786Jn/o4vZfq3kXzIl1ZWBb3Gc7B4od1UYWM1Jew8kBPI8yRENqDw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2OFWpu8fHclyDH+epjIffj7bs4jIfEhWJE6n15cATT8=;
- b=UK802L2xCfY/8DD5W7BQjGfTEq7HSwsOL3Tw+DUOLoFZv5rFhr/5tcfVeqx7n/twNTpeq7X768HlYYB0qMrcEV+C0lIsygQrZW66xd7cRXu9v9y7nNXZLSx0r5xkG95g24luWPH+7AD4s0gfNm3NmQCJONoZsjinJnF4Zj1SFwDXapcM/n2PlcTjLHNm/7pu3doj9jNyrFFxWp6wk6Tqd4mADgRIyrpzrDh9rD/rf5GfK710h2VtQqC9zVKfBPjAzJjyg7TiGCBweaxLa48MHkwHUysD+epV3sprL+b6rLUkSk3Cvd0MVfzPxMJT72iCbk9cPgcGDSSLKYmKcIkHbg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2OFWpu8fHclyDH+epjIffj7bs4jIfEhWJE6n15cATT8=;
- b=j/eShJSsWu/na+vI5IZsw5Z3NQIZp5wt6qFcDDkDgOwtCp4cxfmHHtWdleIiVN1XfsWcw5riXFiJSxXEbPVfGCCaW7bOYy3Jpfy6YUscWhCqZbyRS2RH11Po4kA//WrNKWxlygOdpmq4LmJ4zdtnx6s0ys1mCIa7Vs0xcD4hrmTx0R98qBI5iAfkHBDL5r0m7VABNiUsGQ/co2AjNV6nQUuv2hueLY5lthU+FrzSsDPBjrt+4Dh0KvELuBo+1yeBuKYprXc9o4ippV6+tTeGGg8OCVDBzK4De8XeNnNRSjG0bm03G5GfwJtoa0fPAu+zb6jk4leABP3+NSbVlaRYaQ==
-Received: from BN9PR03CA0616.namprd03.prod.outlook.com (2603:10b6:408:106::21)
- by LV8PR12MB9109.namprd12.prod.outlook.com (2603:10b6:408:18a::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.36; Thu, 29 Feb
- 2024 06:53:03 +0000
-Received: from BN2PEPF000044A1.namprd02.prod.outlook.com
- (2603:10b6:408:106:cafe::7c) by BN9PR03CA0616.outlook.office365.com
- (2603:10b6:408:106::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.27 via Frontend
- Transport; Thu, 29 Feb 2024 06:53:03 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- BN2PEPF000044A1.mail.protection.outlook.com (10.167.243.152) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7292.25 via Frontend Transport; Thu, 29 Feb 2024 06:53:03 +0000
-Received: from rnnvmail205.nvidia.com (10.129.68.10) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 28 Feb
- 2024 22:52:52 -0800
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail205.nvidia.com
- (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.12; Wed, 28 Feb
- 2024 22:52:51 -0800
-Received: from BUILDSERVER-IO-L4T.nvidia.com (10.127.8.14) by mail.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server id 15.2.1258.12 via Frontend
- Transport; Wed, 28 Feb 2024 22:52:49 -0800
-From: Akhil R <akhilrajeev@nvidia.com>
-To: <ldewangan@nvidia.com>, <jonathanh@nvidia.com>, <vkoul@kernel.org>,
-	<thierry.reding@gmail.com>, <digetx@gmail.com>, <dmaengine@vger.kernel.org>,
-	<linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC: Akhil R <akhilrajeev@nvidia.com>
-Subject: [PATCH] dmaengine: tegra186: Fix residual calculation
-Date: Thu, 29 Feb 2024 12:22:23 +0530
-Message-ID: <20240229065223.7295-1-akhilrajeev@nvidia.com>
-X-Mailer: git-send-email 2.43.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEFAD8F4A;
+	Thu, 29 Feb 2024 06:52:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709189566; cv=none; b=A3waFE6a/NK6qzjc29dLXPBmSJePzB2DMYRB4Eu1JWJQKe7L+q9VqE7aXLiSRepJdgAbYGr7ICKrfUPngrWXcCbCnyBBK+HMYzSXIwWzVsbdSuYtR7Qpd0RmMraMe1GfMx4VLDTtP41cdMKoxBVVZOlBo5wmiD82u6gmv6Q475Q=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709189566; c=relaxed/simple;
+	bh=QEJAoHeT2wh90dI+ZjoF1ZHx+LcAYE5U/em2XDUBioM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=atALxQJHlNUCOMFuP3B8F7t8lQcteFeA4/+hI/nZzZ837GXor4FByfQ2NKljMTvF5CgtM/BdvbLMfMocOUgkU+PHeL6VjCd6HHmVPEu6cWuAIH8f5E3M4Un9WNxQvFdzjpYr6NxTsCWi2UHnfbdoBiN4kCYI4xj5puvv56ROQ7w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QdZO2z78; arc=none smtp.client-ip=209.85.160.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-42e8758fd52so4332761cf.1;
+        Wed, 28 Feb 2024 22:52:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709189564; x=1709794364; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iPX1yFcE2Qv3sy/mqTmODI/j9a9JW9C8YeAhgYmhLGs=;
+        b=QdZO2z78FLEY4RWdjVmUdbrKoq0N/fYM+uC5aG9e6ZJmCKek53xR3UVmADzlUwOLDO
+         0iBOf6bXHyV01JkM2zJzFHb8bKVhsB8s38YRrrvk2sgrbA+vndWnP86CWUOx44UcvRa3
+         gAI9IhZLtJi89nlvmaE1yGQ+S7Y3208HzgJylGPszXl84JeLy7N81pzYM1W70jF6mPUa
+         t+kMHNiUb6lzQHrGrYzQ7CnAT0H1lZ7gJh68GFElWJGU1DXh5naQWJFqp/QYvc/tMx+6
+         G2GSrQRboLWvQAf9z74/RRxegpLpCW1i8fUo6VtRdLCbNFyMWzFmN7QKqFrzAw0SFXfg
+         XRMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709189564; x=1709794364;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iPX1yFcE2Qv3sy/mqTmODI/j9a9JW9C8YeAhgYmhLGs=;
+        b=d7qDmIclWJrCQsb6+dBgVnj8sI/SrJZAo7vNQW5pnyrxQMTqwD/+RShwRXj2P/IpYt
+         Zv9yN0AIBZFEDJoGQVcUvLrIxSPDdv4gfHM3AkDpu6YZP6PDh+n6S/UyYou/1gswljoH
+         QFh1eR7jEP7ezi1TIeHp6Oqcm7dDxK3hocQSioEr2w4fCGm2Iij9A4AtOYHth8tlNEZA
+         JthQdmjaI3qJW32ctRXsldx4JzLqqInEER1A1RRcYHPRv7mnxB7yK9KszWcp0XsHGess
+         N+Zg1IdNPSjJ+qSJDXPX6ykHAK9No9T4N/1LfXaCFsQxNpLD0KPxPb7cLBGNaYpWMKUu
+         rTYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVr4zRzWPu3iYMXgfM5TETbOozfb4d0Ch1BvjNcSq6dfd40P7HLNGiNNN7zVCTVH4AjPIph63xKb0zqRpIEgiJILBL6QvjLllEMVQuJUezZPYDMfkzFQjoI/YiOuAE8eGNTmLgju/Fl+QK9oLMYfamIfijAsFaEFurew1kNYdOpw4seeuU8Czn1h0h2hk2aY4bfz8GXBX9KnChX8GR4cUbIjA==
+X-Gm-Message-State: AOJu0YzFCvZPqENBTpu15bNMO4Q7ZVZBFNZ0n9WXZLBvm60a+617cdCs
+	3KXbkbXVoTLkcEL8Zox3IyLw/kf1evhb2tOBjYdrV/+21vuNQsoWoC5tvSeXubUZQdrTuq7nGcr
+	Dun4i/FjXah7NM81MiCjWmTDomRs=
+X-Google-Smtp-Source: AGHT+IFn20kiezhjvNWVPNWkvhcd3j6u19avlEPGAe1WEmIZ6yWLp27W9XetikSPB9EKVwpdSFz5h3OKt1KsGriybmc=
+X-Received: by 2002:ac8:7f82:0:b0:42e:8c8f:42f6 with SMTP id
+ z2-20020ac87f82000000b0042e8c8f42f6mr1421021qtj.40.1709189563696; Wed, 28 Feb
+ 2024 22:52:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN2PEPF000044A1:EE_|LV8PR12MB9109:EE_
-X-MS-Office365-Filtering-Correlation-Id: 68fd5541-61d7-45d2-556d-08dc38f31382
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	KgNsIpF1G41n5q9zE5BazhberERYqHKSnYak+OgS9T7OrTEfy4mnlirM3Gjq/zRjTC0VIMQcDWzzDnNb7oiJ7yHxh7Brw+qn5jrn9X9Xn0JZCD9lojJUVv26QV3GjS/owT3RJevSZYcGwGW39U8UdrHBXAH8rCxP+Il4hbHmT4wVX1oJm/vIuF3qjx+xNcFlDNuUKrK66QPpD1XI/j8krdISumJZrfUF08pjgxFmGPTegzjmDMssJLvlQJ1NHnr0n4lEUmmzaYoW2vqJ8mMrLSOeuu3QfRF7ymSXeyOalG39t2wgKnfIA3/BQPXGNJDB5Mfwt81UdAtEayrbljYlcab3mDUI/Y2VegFnO4V2DSThJB7Y+NAwXSHFZJEg2dEOuBEHd/NAKfjEfVwxeP2kpbcymw6EThYP5WCRjdyjvbZpDhrI/V1ojTKlxhrw3bgk0jOKcw9z/oMcrnQ1PJQG7L4T34IDwOROjKKtcmKdCPRMze8lmiqMCdOSJc5U147VoFJUojB5CtnGzNYhnoRG+j3MorfSnSPNH4ZIXo7g+ucl+Ey+49CybsyHiv1BBU1avT9hBVCPU25Mgimkj6xQy45+cFkirSRFthSOmIcbjhgqT95Ik/ZgRe/XaeS7EYF4O0Km5UP1zqbIxuEt3e8kAtVOjo41XyYcn6gRnM2/x/GVMa60RBlQG1cOym5PxzCIgu6lIXttKaeKV6wlr7HUrJiUxWAyusPzWDA86024WKBfrtU44BzcwBHA9wkqqRSs
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(36860700004)(82310400014);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Feb 2024 06:53:03.3097
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 68fd5541-61d7-45d2-556d-08dc38f31382
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BN2PEPF000044A1.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR12MB9109
+References: <cover.1708709155.git.john@groves.net>
+In-Reply-To: <cover.1708709155.git.john@groves.net>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Thu, 29 Feb 2024 08:52:32 +0200
+Message-ID: <CAOQ4uxiPc5ciD_zm3jp5sVQaP4ndb40mApw5hx2DL+8BZNd==A@mail.gmail.com>
+Subject: Re: [RFC PATCH 00/20] Introduce the famfs shared-memory file system
+To: John Groves <John@groves.net>
+Cc: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Dan Williams <dan.j.williams@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, 
+	Dave Jiang <dave.jiang@intel.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>, 
+	linux-cxl@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	nvdimm@lists.linux.dev, john@jagalactic.com, 
+	Dave Chinner <david@fromorbit.com>, Christoph Hellwig <hch@infradead.org>, dave.hansen@linux.intel.com, 
+	gregory.price@memverge.com, Miklos Szeredi <miklos@szeredi.hu>, 
+	Vivek Goyal <vgoyal@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The exisiting residual calculation returns an incorrect value when
-bytes_xfer == bytes_req. This scenario occurs particularly with
-drivers like UART where DMA is scheduled for maximum number of bytes and
-is terminated when the bytes inflow stops. At higher baud rates, it
-could request the tx_status while there is no bytes left to transfer.
-This will lead to incorrect residual being set. Hence return residual as
-'0' when bytes transferred equals to the bytes requested.
+On Fri, Feb 23, 2024 at 7:42=E2=80=AFPM John Groves <John@groves.net> wrote=
+:
+>
+> This patch set introduces famfs[1] - a special-purpose fs-dax file system
+> for sharable disaggregated or fabric-attached memory (FAM). Famfs is not
+> CXL-specific in anyway way.
+>
+> * Famfs creates a simple access method for storing and sharing data in
+>   sharable memory. The memory is exposed and accessed as memory-mappable
+>   dax files.
+> * Famfs supports multiple hosts mounting the same file system from the
+>   same memory (something existing fs-dax file systems don't do).
+> * A famfs file system can be created on either a /dev/pmem device in fs-d=
+ax
+>   mode, or a /dev/dax device in devdax mode (the latter depending on
+>   patches 2-6 of this series).
+>
+> The famfs kernel file system is part the famfs framework; additional
+> components in user space[2] handle metadata and direct the famfs kernel
+> module to instantiate files that map to specific memory. The famfs user
+> space has documentation and a reasonably thorough test suite.
+>
 
-Fixes: ee17028009d4 ("dmaengine: tegra: Add tegra gpcdma driver")
-Signed-off-by: Akhil R <akhilrajeev@nvidia.com>
----
- drivers/dma/tegra186-gpc-dma.c | 3 +++
- 1 file changed, 3 insertions(+)
+So can we say that Famfs is Fuse specialized for DAX?
 
-diff --git a/drivers/dma/tegra186-gpc-dma.c b/drivers/dma/tegra186-gpc-dma.c
-index 88547a23825b..3642508e88bb 100644
---- a/drivers/dma/tegra186-gpc-dma.c
-+++ b/drivers/dma/tegra186-gpc-dma.c
-@@ -746,6 +746,9 @@ static int tegra_dma_get_residual(struct tegra_dma_channel *tdc)
- 	bytes_xfer = dma_desc->bytes_xfer +
- 		     sg_req[dma_desc->sg_idx].len - (wcount * 4);
- 
-+	if (dma_desc->bytes_req == bytes_xfer)
-+		return 0;
-+
- 	residual = dma_desc->bytes_req - (bytes_xfer % dma_desc->bytes_req);
- 
- 	return residual;
--- 
-2.43.2
+I am asking because you seem to have asked it first:
+https://lore.kernel.org/linux-fsdevel/0100018b2439ebf3-a442db6f-f685-4bc4-b=
+4b0-28dc333f6712-000000@email.amazonses.com/
+I guess that you did not get your answers to your questions before or at LP=
+C?
 
+I did not see your question back in October.
+Let me try to answer your questions and we can discuss later if a new dedic=
+ated
+kernel driver + userspace API is really needed, or if FUSE could be used as=
+ is
+extended for your needs.
+
+You wrote:
+"...My naive reading of the existence of some sort of fuse/dax support
+for virtiofs
+suggested that there might be a way of doing this - but I may be wrong
+about that."
+
+I'm not virtiofs expert, but I don't think that you are wrong about this.
+IIUC, virtiofsd could map arbitrary memory region to any fuse file mmaped
+by virtiofs client.
+
+So what are the gaps between virtiofs and famfs that justify a new filesyst=
+em
+driver and new userspace API?
+
+Thanks,
+Amir.
 
