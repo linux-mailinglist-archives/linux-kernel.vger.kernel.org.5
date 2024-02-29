@@ -1,114 +1,258 @@
-Return-Path: <linux-kernel+bounces-86880-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86882-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8629886CC29
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:54:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A942B86CC30
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:56:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E9B8288914
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:54:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 38BA21F263E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:56:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E21913A891;
-	Thu, 29 Feb 2024 14:54:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F41A513DBA4;
+	Thu, 29 Feb 2024 14:55:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DlslagbC"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="EWQRPLnf";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="kgwswZqC"
+Received: from fout2-smtp.messagingengine.com (fout2-smtp.messagingengine.com [103.168.172.145])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8381B137777;
-	Thu, 29 Feb 2024 14:53:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B8FF137747;
+	Thu, 29 Feb 2024 14:55:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.145
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709218439; cv=none; b=jiOGqZLoTWNYEpH99LFwaxF4hQOws74Cfk/BwO1a3333+9e9sAR40ZY5Cc80msZKrIf56AC8zG8YtwKDNsvF7aCrmRY6MGCPwm+Da3wHQari6meSr0OqpSBhpwSDUe148Uj0Ummn110W0eAgBkf9ZG5smvyY02XG3oGark0sd/M=
+	t=1709218547; cv=none; b=aKJg6FUDmMfHKCAOPr8MeWjeLk9Xg8eFLPED/9g6tDmXUcGhA4wRSlnlpAGnD6nV4mP/T63oMggMNNhTA2wg6nffKPDXuPaQqLBXrOI9v2xUAPwRMljfKW3gHRutkEqxijvKQy6a8AiRjve5TGg5DJVkTXMquEVoxEK/xNlBLmw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709218439; c=relaxed/simple;
-	bh=H/xypjHg3RAGtOrdFLSQMFFbI9FZppPqPGCTlvgpMy8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=L8PIyhS+Uqtv7g/yC69Pr3ZO6oTwiZG/ClI0Tnk/KksqtRkRGlgsJrAIW9BttMEfz0RaQFBJMygHZuaDkpZGf9+h34Qgk+7ILBx6ULsmpXwJtgt6ShpZ+jb+v4+xQCiGy5Z2S5KBnhxvCekVJa+OJu14zbBOgGkd0SvfdyFtLyU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DlslagbC; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709218438; x=1740754438;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=H/xypjHg3RAGtOrdFLSQMFFbI9FZppPqPGCTlvgpMy8=;
-  b=DlslagbCfXQK676474bV3pAjKHVKN+B6FAm5kPYwRIOIcOOKDcw81Q3O
-   qfBYM7LSuTBWPSrrsusAMDihGCLPFK7IGKdkMX6nIX5D4rvMjdZ85Wrf2
-   09vM1XfxWWJIBauatfLHd8e58v75Dh6TfjP6emtV4bZse3+Eik+rPysMC
-   x1YhBrSwzHrumEj/XnK8wywfbxR6vdRkQKHbCHXKlk2P5LjM/sGwZIm9Q
-   DGTOdxf3flKmTZaIGTdZxKmhi8x8oeRfmzfB1GAnCG58vzUYnlrup0qg7
-   teMB8+cy8LOxH+sANI3RoC+H1hqylxURboVjDvXOIRpkQKlw+3n+1ddzx
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="7470968"
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="7470968"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 06:53:56 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="913983848"
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="913983848"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 06:53:52 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rfhnA-00000008hMb-38bp;
-	Thu, 29 Feb 2024 16:53:48 +0200
-Date: Thu, 29 Feb 2024 16:53:48 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Vinod Koul <vkoul@kernel.org>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Mark Brown <broonie@kernel.org>, Kees Cook <keescook@chromium.org>,
-	linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-	linux-spi@vger.kernel.org, netdev@vger.kernel.org,
-	linux-hardening@vger.kernel.org,
-	Jonathan Cameron <jic23@kernel.org>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: Re: [PATCH v4 8/8] dmaengine: ste_dma40: Use new helpers from
- overflow.h
-Message-ID: <ZeCafPgtU1FeyzJG@smile.fi.intel.com>
-References: <20240228204919.3680786-1-andriy.shevchenko@linux.intel.com>
- <20240228204919.3680786-9-andriy.shevchenko@linux.intel.com>
- <CACRpkdaEzexhCYFf-NKnbcagXc6Tqcn4J+sFWk94mbJG9LkpVw@mail.gmail.com>
+	s=arc-20240116; t=1709218547; c=relaxed/simple;
+	bh=SxpffWLnyNDN/1841uyE0oshS0QJzdCO3z1ODT/FKfo=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=DuWEneNleS0hwbKKNTWjFZ/rlwVHNeV2QMPuj/xMKudF92ajXKuh8n2+JkJAQTHMoD9EwcnWzsNJk9DpertiF7qJZW+Sxb2jFi+aUOv9RoXaMwWwvE1xSlCbgFGNPQgiXn9VxBjUcUSl+dtfs+HvKEAv/MZ/cbjYDAEZt2rBnnQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=EWQRPLnf; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=kgwswZqC; arc=none smtp.client-ip=103.168.172.145
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.nyi.internal (Postfix) with ESMTP id 702F3138008A;
+	Thu, 29 Feb 2024 09:55:44 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Thu, 29 Feb 2024 09:55:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1709218544; x=1709304944; bh=ElrnHAwLCy
+	WSxuQyqqrk5ArK2AElYsG6snJ116Z584E=; b=EWQRPLnfAbMJ1vDBCYnB5QTE3e
+	PLshvLt0jsi6tRuTJJoZPcl4feTqh1YXFSSKYV/YmQvGkEMu7GVLyskmA/ABLWMG
+	U7xzycyYSldlE8gHjaM9LSIqka1RHuuOqOSDRMTBAE8XVBHKjeUckTMzOIwikybO
+	3Hr7Yw92Js2IS3DsozWuTicFAb/LVvXy5PJLcc/1timwMSsAvIKg8IX+1xQEfyVD
+	yU64E18jscl0f3Dq9tFFR0xFck6QmyyU9XrC3QGD/8q1JVl2VPx+VGwiCdRLDZp6
+	mjb38T7lXSUkFmj97lIqdT4lTRxp6kCzvRbX+Rv0bcEtl9vF2O1FB7/DwM9w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1709218544; x=1709304944; bh=ElrnHAwLCyWSxuQyqqrk5ArK2AEl
+	YsG6snJ116Z584E=; b=kgwswZqCGD30lv4lfhqoahxAFWzB1FCW0aXfcoy3GJlZ
+	SNKbg9kgzF5d53gGrBiXd/h/utj+SaFZwnQ/wqJ2KkiwHMlsPHvCkQu1RpMKlCx0
+	7oJ2GPwSWN5GGCxHRc+1tx09K4aSBiKaEJXOsou3KvA0O2MHcZXmu1IHnEZ5hCmq
+	ksEPw7zb8VJqwxpNbWVqQ80RSx3mCdTI0w5VnarZ55MS5OSUzIAEftvKiQ5eF5bO
+	XcvMwMh8BW/32k28VNwTb+2H6kFa2a4h1JQX+Nq9KsFhjVx/kW5aB2PEbDgNAlm7
+	eciwXGJbtEWMgH3x1PSSyOLrOh7RBblb1Tu3irtuoQ==
+X-ME-Sender: <xms:75rgZSMKxAllCEagoly7NiuxF63DbKEpTqSiS1TCkDtHMCF6s3ELwg>
+    <xme:75rgZQ_fzUNwiHNOui847k7ktzT6trggMvKmZy_GHw2tOYoNquEVnnt8-Xt9k6dTs
+    mrydnhUq08WsKyQrxo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrgeelgdeilecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeeihfejueefkeevteevheethedtfedtteeufeefteffkeetffeuvdevtdelhfeu
+    veenucffohhmrghinhepthhugihsuhhithgvrdgtohhmpdhlihhnrghrohdrohhrghenuc
+    evlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnuges
+    rghrnhgusgdruggv
+X-ME-Proxy: <xmx:75rgZZTLQ3Bg016M5OCdhxkkx8XK3VRMQYoG9tT1hI4RqtVQh7wSjQ>
+    <xmx:75rgZSsSGP9j94QBUe-H6MtiEBXEuuRyh2u1I5faMevfQHlX5hU0yQ>
+    <xmx:75rgZacieoMGqqaFHsBpsq1Sz4QDHvZlPELmnQv7hxGxVtbN4UxtMA>
+    <xmx:8JrgZW0vILFsu5BdPZ5eg6exUya_gGwgXk6wdMz-RgYYQUD0cCc32Q>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 4DEC0B6008D; Thu, 29 Feb 2024 09:55:43 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-182-gaab6630818-fm-20240222.002-gaab66308
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACRpkdaEzexhCYFf-NKnbcagXc6Tqcn4J+sFWk94mbJG9LkpVw@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Message-Id: <d5c07950-6f42-4ac9-b0d8-776d444252ae@app.fastmail.com>
+In-Reply-To: 
+ <CA+G9fYtddf2Fd3be+YShHP6CmSDNcn0ptW8qg+stUKW+Cn0rjQ@mail.gmail.com>
+References: 
+ <CA+G9fYtddf2Fd3be+YShHP6CmSDNcn0ptW8qg+stUKW+Cn0rjQ@mail.gmail.com>
+Date: Thu, 29 Feb 2024 15:55:10 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Naresh Kamboju" <naresh.kamboju@linaro.org>,
+ linux-block <linux-block@vger.kernel.org>, lkft-triage@lists.linaro.org,
+ "open list" <linux-kernel@vger.kernel.org>
+Cc: "Jens Axboe" <axboe@kernel.dk>, "Christoph Hellwig" <hch@lst.de>,
+ "Christian Brauner" <brauner@kernel.org>,
+ "Ulf Hansson" <ulf.hansson@linaro.org>,
+ "Dan Carpenter" <dan.carpenter@linaro.org>,
+ "Anders Roxell" <anders.roxell@linaro.org>,
+ "Ulf Hansson" <ulf.hansson@linaro.org>,
+ "Jaehoon Chung" <jh80.chung@samsung.com>, linux-mmc@vger.kernel.org
+Subject: Re: WinLink E850-96: WARNING: at block/blk-settings.c:204 blk_validate_limits
+Content-Type: text/plain
 
-On Thu, Feb 29, 2024 at 03:14:03PM +0100, Linus Walleij wrote:
-> On Wed, Feb 28, 2024 at 9:49 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> 
-> > We have two new helpers struct_size_with_data() and struct_data_pointer()
-> > that we can utilize in d40_hw_detect_init(). Do it so.
-> >
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> 
-> Wow really neat! Much easier to read and understand the code like this.
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+On Thu, Feb 29, 2024, at 15:14, Naresh Kamboju wrote:
+> The arm64 WinLink E850-96 Board boot failed with 16K and 64K page size builds
+> Please find the below warning log on Linux next-20240229.
+> First noticed on the next-20240220 tag.
+>
+> This issue arises only when one of these Kconfig options is enabled.
+>   CONFIG_ARM64_16K_PAGES=y
+>   CONFIG_ARM64_64K_PAGES=y
+>
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+>
+> Warning log:
+> -------
+> [    2.231008] mmc_host mmc0: Bus speed (slot 0) = 49968750Hz (slot
+> req 52000000Hz, actual 49968750HZ div = 0)
+> [    2.231714] mmc_host mmc0: Bus speed (slot 0) = 399750000Hz (slot
+> req 200000000Hz, actual 199875000HZ div = 1)
+> [    2.241961] mmc0: new HS400 Enhanced strobe MMC card at address 0001
+> [    2.249182] ------------[ cut here ]------------
+> [    2.252371] WARNING: CPU: 3 PID: 90 at block/blk-settings.c:204
+> blk_validate_limits (block/blk-settings.c:204 (discriminator 1))
 
-Thanks, but Kees has seems even better suggestion.
 
--- 
-With Best Regards,
-Andy Shevchenko
+The warning was added with commit d690cb8ae14b ("block: add
+an API to atomically update queue limits")
 
++               if (!lim->max_segment_size)
++                       lim->max_segment_size = BLK_MAX_SEGMENT_SIZE;
++               if (WARN_ON_ONCE(lim->max_segment_size < PAGE_SIZE))
++                       return -EINVAL;
 
+Whereas mmc_alloc_disk sets the limit as
+
+        /*
+         * Setting a virt_boundary implicity sets a max_segment_size, so try
+         * to set the hardware one here.
+         */
+        if (host->can_dma_map_merge) {
+                lim.virt_boundary_mask = dma_get_merge_boundary(mmc_dev(host));
+                lim.max_segments = MMC_DMA_MAP_MERGE_SEGMENTS;
+        } else {
+                lim.max_segment_size =
+                        round_down(host->max_seg_size, lim.logical_block_size);
+                lim.max_segments = host->max_segs;
+        }
+
+and max_seg_size gets initialized to either one less
+than 64k, or to exactly 4k in the dwmmc driver here:
+
+        /* Useful defaults if platform data is unset. */
+        if (host->use_dma == TRANS_MODE_IDMAC) {
+                mmc->max_segs = host->ring_size;
+                mmc->max_blk_size = 65535;
+                mmc->max_seg_size = 0x1000;
+                mmc->max_req_size = mmc->max_seg_size * host->ring_size;
+                mmc->max_blk_count = mmc->max_req_size / 512;
+        } else if (host->use_dma == TRANS_MODE_EDMAC) {
+                mmc->max_segs = 64;
+                mmc->max_blk_size = 65535;
+                mmc->max_blk_count = 65535;
+                mmc->max_req_size =
+                                mmc->max_blk_size * mmc->max_blk_count;
+                mmc->max_seg_size = mmc->max_req_size;
+        } else {
+                /* TRANS_MODE_PIO */
+                mmc->max_segs = 64;
+                mmc->max_blk_size = 65535; /* BLKSIZ is 16 bits */
+                mmc->max_blk_count = 512;
+                mmc->max_req_size = mmc->max_blk_size *
+                                    mmc->max_blk_count;
+                mmc->max_seg_size = mmc->max_req_size;
+        }
+
+Adding the mmc and dw-mmc maintainers to cc for clarification.
+
+     Arnd
+
+> [    2.261056] Modules linked in:
+> [    2.264082] CPU: 3 PID: 90 Comm: kworker/3:1 Not tainted
+> 6.8.0-rc6-next-20240229 #1
+> [    2.271724] Hardware name: WinLink E850-96 board (DT)
+> [    2.276756] Workqueue: events_freezable mmc_rescan
+> [    2.281534] pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> [    2.288479] pc : blk_validate_limits (block/blk-settings.c:204
+> (discriminator 1))
+> [    2.293076] lr : blk_set_default_limits (block/blk-settings.c:241)
+> <trim>
+> [    2.337595] PM: genpd: Disabling unused power domains
+> [    2.338361] xhci-hcd xhci-hcd.0.auto: remove, state 84
+> [    2.338391] usb usb1: USB disconnect, device number 1
+> [    2.343322]  x1 : 0000000000001000 x0 : ffff8000a504f888
+> [    2.343335] Call trace:
+> [    2.343339] blk_validate_limits (block/blk-settings.c:204 (discriminator 1))
+> [    2.343350] blk_alloc_queue (block/blk-core.c:421)
+> [    2.343362] blk_mq_alloc_queue (block/blk-mq.c:4083 (discriminator 4))
+> [    2.350571] ALSA device list:
+> [    2.352700] xhci-hcd xhci-hcd.0.auto: USB bus 1 deregistered
+> [    2.355651] __blk_mq_alloc_disk (block/blk-mq.c:4130)
+> [    2.355664] mmc_alloc_disk (drivers/mmc/core/queue.c:379)
+> [    2.355678] mmc_init_queue (drivers/mmc/core/queue.c:463)
+> [    2.359577]   No soundcards found.
+> [    2.362942] mmc_blk_alloc_req (drivers/mmc/core/block.c:2500
+> (discriminator 1))
+> [    2.362951] mmc_blk_probe (drivers/mmc/core/block.c:2603
+> drivers/mmc/core/block.c:3025)
+> [    2.446877] mmc_bus_probe (drivers/mmc/core/bus.c:132)
+> [    2.446892] really_probe (drivers/base/dd.c:579 drivers/base/dd.c:658)
+> [    2.454016] __driver_probe_device (drivers/base/dd.c:800)
+> [    2.458346] driver_probe_device (drivers/base/dd.c:830)
+> [    2.462513] __device_attach_driver (drivers/base/dd.c:959)
+> [    2.466939] bus_for_each_drv (drivers/base/bus.c:457)
+> [    2.470761] __device_attach (drivers/base/dd.c:1032)
+> [    2.474579] device_initial_probe (drivers/base/dd.c:1080)
+> [    2.478746] bus_probe_device (drivers/base/bus.c:532)
+> [    2.482563] device_add (drivers/base/core.c:3646)
+> [    2.486037] mmc_add_card (drivers/mmc/core/bus.c:371)
+> [    2.489683] mmc_attach_mmc (drivers/mmc/core/mmc.c:2353)
+> [    2.493500] mmc_rescan (drivers/mmc/core/core.c:2097 (discriminator
+> 1) drivers/mmc/core/core.c:2259 (discriminator 1))
+> [    2.496974] process_one_work (kernel/workqueue.c:3253)
+> [    2.500966] worker_thread (kernel/workqueue.c:3322 (discriminator
+> 2) kernel/workqueue.c:3409 (discriminator 2))
+> [    2.504700] kthread (kernel/kthread.c:388)
+> [    2.507914] ret_from_fork (arch/arm64/kernel/entry.S:861)
+> [    2.511473] ---[ end trace 0000000000000000 ]---
+> [    2.516435] mmcblk: probe of mmc0:0001 failed with error -22
+> [    2.522114] Waiting for root device /dev/mmcblk0p12...
+>
+> Kconfig:
+>  - 
+> https://storage.tuxsuite.com/public/linaro/lkft/builds/2ccVUNsQjaWBcREYI0wFRjzG3oa/config
+>
+> Steps to reproduce:
+>  - 
+> https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2ccVWjLtBJ3IuDSKLkyaFholQ67/reproducer
+>
+> Links:
+>  - 
+> https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240229/testrun/22884460/suite/boot/test/gcc-13-lkftconfig-16k_page_size/log
+>  - 
+> https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240229/testrun/22884435/suite/boot/test/gcc-13-lkftconfig-64k_page_size/details/
+>  - 
+> https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2d2JxLaSCZ6cTNGMeKdCbAjk9Sh
+>  - 
+> https://storage.tuxsuite.com/public/linaro/lkft/builds/2d2JuyeiEHCtWGJYV80n1tF77lh/
+>
+>
+> --
+> Linaro LKFT
+> https://lkft.linaro.org
 
