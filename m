@@ -1,51 +1,39 @@
-Return-Path: <linux-kernel+bounces-86232-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86233-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D20F86C27F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:29:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E81FA86C281
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:30:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F9A61C22DB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 07:29:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 257B41C20893
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 07:30:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68E3645941;
-	Thu, 29 Feb 2024 07:28:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="mfuTIlIr"
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A71044C7B;
+	Thu, 29 Feb 2024 07:30:09 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE88D13D31F;
-	Thu, 29 Feb 2024 07:28:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 738B539AF9
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 07:30:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709191737; cv=none; b=VXGkASdW4o4EtFYhXTzwIDB79rKP0vYY1QEBKXjZOhVPR17yxlalCqdaoGeXWiUWwHnm62djkcGm7AKygFLIKyJ+3/k8twmQRtkuh0DwIWsIQU0sY7oT4oqCNA/InR7YMzOSezI/BysduJhWZFH5BWwI8FocBblOBGBow0vK+YE=
+	t=1709191808; cv=none; b=XaagliZmA3GMqQ25QsIoQ/JfbduyJFTfFLgrPRJX6AGFtLQk+diOOyW/HHMAPwJeJou7SYCuaXzj4GdKX/YBDe+jT39rgzzH93EDXdmU0hy1aSLj7IoAfzZ6AML+BnoTIbW1DieVDuIjc8pTQasuauOyLSnpbaKGwgFJK+Ovguc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709191737; c=relaxed/simple;
-	bh=BNbUtZKAY9WIJQ+LXoEoIqpg2tgwfPuz7uDBz6FAzlk=;
+	s=arc-20240116; t=1709191808; c=relaxed/simple;
+	bh=rjKQsLKBAzqSr4dtcHw0J7MTGh8WjlmBAOHPzrDr92M=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JRtq9MFjYhfmrjwUDpBkUsUIdaBIJa2fEpQVRkKHA4MjtAww/Eg09G+gXI44aHTSFwmxspyLYjY25egY9/8RJJHmXMjw38zbKbyZHlh8zm8Tc5vvQGgzekxF902iyjGQLCMn4FtdpV4jZ+2Vx3LdO3OSD3bVYou8rFwDQCIfUPs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=mfuTIlIr; arc=none smtp.client-ip=217.70.183.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 51BED60004;
-	Thu, 29 Feb 2024 07:28:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709191733;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hSmjHPU1m34PxGjrak0OtXcvXk2Aj1aj+/aArU74NH8=;
-	b=mfuTIlIrHoeLGjhtkzROtLXolPCsYl8Q6pj+XBnVlwTcPyoXhAYzh1V3caitDiGZKdP8kL
-	hnquzy/52h9Rt7yeApOntnQhl9gtmQGdIFd5LhAm/eLVwiV3pgB5yRd9lI5OtRYw58CYiM
-	YF/a+WsWjvBJXPZrg/I4goMIZJv2umuED+b4NARHs/1prFjIK0VsMfba9s3SOULe2mlRIv
-	8YwdI2rXk2GTfV83E0SUPWlOIVmH9Tjt+Cz7/ENi4Pa8DEQbfYjg/C1ZcAaBTykut4bDnn
-	1HQPuwQ+E9vclCYzqEVSNRQCacw50/MjJdWcFNEmHjaANefgOXNwytZyfQyj0g==
-Message-ID: <1a6df254-a6fa-46bd-b28c-1c123e9689c4@bootlin.com>
-Date: Thu, 29 Feb 2024 08:28:51 +0100
+	 In-Reply-To:Content-Type; b=AxsWeB1LUVJg1AZd8ORvODiR90hCS5b+GSXTd1Uc0rzJeEUAwzIE1N2h+beXljFzTVTaL7UA8aFLl3u+v5aqTX6Q4R/ogfKhEeSorTIQktZgATkPFfLNEaj3VPp2OneI320qXiunsYHzH7K/Rh4Jb0nyxelOzWTFmAEQkOljpkw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=[127.0.0.1])
+	by metis.whiteo.stw.pengutronix.de with esmtp (Exim 4.92)
+	(envelope-from <a.fatoum@pengutronix.de>)
+	id 1rfarW-0000Gw-9K; Thu, 29 Feb 2024 08:29:50 +0100
+Message-ID: <0d03e5d4-12d0-4cc5-b17c-692471ee3c2d@pengutronix.de>
+Date: Thu, 29 Feb 2024 08:29:47 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,67 +41,65 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/6] net: phy: DP83640: Add LED handling
+Subject: Re: [PATCH 2/6] PCI: imx6: Rename pci-imx6.c and PCI_IMX6 config
 Content-Language: en-US
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Pavel Machek <pavel@ucw.cz>,
- Lee Jones <lee@kernel.org>, Richard Cochran <richardcochran@gmail.com>,
- Heiner Kallweit <hkallweit1@gmail.com>, Russell King
- <linux@armlinux.org.uk>, linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org, devicetree@vger.kernel.org,
- linux-leds@vger.kernel.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- herve.codina@bootlin.com, maxime.chevallier@bootlin.com,
- christophercordahi@nanometrics.ca
-References: <20240227093945.21525-1-bastien.curutchet@bootlin.com>
- <20240227093945.21525-4-bastien.curutchet@bootlin.com>
- <9b06003c-afc9-419a-af36-7b81aab8517e@lunn.ch>
-From: Bastien Curutchet <bastien.curutchet@bootlin.com>
-In-Reply-To: <9b06003c-afc9-419a-af36-7b81aab8517e@lunn.ch>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Frank Li <Frank.li@nxp.com>, Bjorn Helgaas <helgaas@kernel.org>
+Cc: =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+ imx@lists.linux.dev, Richard Zhu <hongxing.zhu@nxp.com>,
+ Philipp Zabel <p.zabel@pengutronix.de>, Rob Herring <robh@kernel.org>,
+ Fabio Estevam <festevam@gmail.com>, Lorenzo Pieralisi
+ <lpieralisi@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ NXP Linux Team <linux-imx@nxp.com>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>, linux-pci@vger.kernel.org,
+ Bjorn Helgaas <bhelgaas@google.com>, bpf@vger.kernel.org,
+ Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
+ linux-arm-kernel@lists.infradead.org, Lucas Stach <l.stach@pengutronix.de>
+References: <20240227-pci2_upstream-v1-2-b952f8333606@nxp.com>
+ <20240228230520.GA314710@bhelgaas>
+ <Zd/DlibuoSxvjPW5@lizhi-Precision-Tower-5810>
+From: Ahmad Fatoum <a.fatoum@pengutronix.de>
+In-Reply-To: <Zd/DlibuoSxvjPW5@lizhi-Precision-Tower-5810>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-GND-Sasl: bastien.curutchet@bootlin.com
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-Hi
+Hello Frank,
 
-On 2/28/24 16:04, Andrew Lunn wrote:
->> +static int dp83640_led_brightness_set(struct phy_device *phydev, u8 index,
->> +				      enum led_brightness brightness)
->> +{
->> +	int val;
->> +
->> +	if (index > DP83640_SPDLED_IDX)
->> +		return -EINVAL;
->> +
->> +	phy_write(phydev, PAGESEL, 0);
->> +
->> +	val = phy_read(phydev, LEDCR) & ~DP83640_LED_DIS(index);
->> +	val |= DP83640_LED_DRV(index);
->> +	if (brightness)
->> +		val |= DP83640_LED_VAL(index);
->> +	else
->> +		val &= ~DP83640_LED_VAL(index);
->> +	phy_write(phydev, LEDCR, val);
-> I don't understand this driver too well, but should this be using
-> ext_read() and ext_write().
->
-> I'm also woundering if it would be good to implement the .read_page
-> and .write_page members in phy_driver and then use phy_write_paged()
-> and phy_write_paged() and phy_modify_paged(), which should do better
-> locking.
-I don't feel comfortable implementing .read_page and write_page members 
-as I have
-only one PHY on my board so I'll not be able to test all the broadcast 
-thing.
+On 29.02.24 00:36, Frank Li wrote:
+> On Wed, Feb 28, 2024 at 05:05:20PM -0600, Bjorn Helgaas wrote:
+>> On Tue, Feb 27, 2024 at 04:47:09PM -0500, Frank Li wrote:
+>>> -config PCI_IMX6
+>>> +config PCI_IMX
+>>
+>> What does this look like to users who carry an old .config file
+>> forward?
+> 
+> I don't think people will use old .config when update to new kernel. I can
+> keep PCI_IMX6 for config if have to.
 
-If that's OK with you, I'll use the ext_read() and ext_write()
+I'd argue it's the complete opposite. Most users don't use the in-tree defconfig,
+but use olddefconfig on their customized .config, either explicitly or
+implicitly via menuconfig and saving.
 
+This would result in non-functional PCI after an update. I don't mind renaming
+the file, but please leave the Kconfig symbol as-is.
 
-Best regards,
+Thanks,
+Ahmad
 
-Bastien
+> 
+> 
+> 
+> 
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
 
