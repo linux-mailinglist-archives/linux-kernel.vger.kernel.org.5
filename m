@@ -1,167 +1,127 @@
-Return-Path: <linux-kernel+bounces-86858-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86859-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A477086CBD3
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:43:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12F5C86CBD7
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:44:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 347121F246CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:43:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A74961F2499D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:44:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CD60137754;
-	Thu, 29 Feb 2024 14:42:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F62E137751;
+	Thu, 29 Feb 2024 14:44:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="tnCsGb3Z"
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k58fXegZ"
+Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com [209.85.161.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C51347F79
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 14:42:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80C9E47F79;
+	Thu, 29 Feb 2024 14:44:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709217777; cv=none; b=UX06pncO9Xt7kAzmFHQ/IPhsWNCVlQVTP+Uy973EPz1DCi2tUKcMHjtHUQ9ojWYv1RHN1Xsf7KpOfiY5KeoQ1jgodtLJc3pg84EJmfSNyUffab5+/6GIdjJJTBHFQYlgv+sUvNSV5I2sstDrt1XzlHTK3v7uNTOba6l97Z51bCw=
+	t=1709217881; cv=none; b=Md/CDt06zBDOCjtPBKlhCwhzg3mnnef3EjWxBjKud5Sxg5zXxuOdAhzx/VcnHnd/NqxF1mKZZnc2/SAsNJq6RrggdLpnbSmxndshn+/aERzpdkFO0qCIUe4IVxl7ky9FO7jh2/0OqlRSZndWsej4HBTXtgLizH1xeu9Yn0Kn+U4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709217777; c=relaxed/simple;
-	bh=ES9enoNgnkqWdPYetfZj1fjEWXAhCMXaUdM4x2i4NBs=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=Zvtu2hifKEK+EGfDSYXysEC29DNsEhMK5g1QSCjXxy89ncxUW+5hHzND2iVluo2QrmVwYbW12TNFIsaCen1hrhUyjiSUHgUziDDL6oewt2tYI/jV2pDv3mzFLeNG4I7cp159Fobxmx+IeZgDhez6+cvyZShUoa6Fp7lNOTKj4F4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=tnCsGb3Z; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-412c227c80bso2383185e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 06:42:54 -0800 (PST)
+	s=arc-20240116; t=1709217881; c=relaxed/simple;
+	bh=dXtDhlsf7pQPfK6ufrBS9a6McdcVUQKs8DBa7MJUAEg=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=XFqTqkqz6XO2WaN2FbX33RpWTOrMBsg4CF+KsZEQX0s5YELxhhybhVbbwjwICrPaBQUJaJ3+isvHqVbD2ujgfncSVSMnvQPGjrWtGJzOgKAEoYV9zgmbi3tokgHZxmDHvFzTjpnpbaabm4xc3wzQzmMk8IpjYLwxnKPbqv3N9bc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=k58fXegZ; arc=none smtp.client-ip=209.85.161.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-5a0cf64bafbso499805eaf.2;
+        Thu, 29 Feb 2024 06:44:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1709217773; x=1709822573; darn=vger.kernel.org;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1709217879; x=1709822679; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HvFUVHgs0WkHQ8lyy0DH+ud+r327AtQ3M1EUgtTUDUg=;
-        b=tnCsGb3ZlL8ZdCzylUZkdAHfVPHm66Y7IjJx94gCVRud8rK5rxoPLvgh7qqDSE9Mk7
-         MN0G6O/BYPtZj7u0nKMLT76A5sGlEOODAqh9BQN+0jGoC+xeHzoV4RmhV8htYP+8knkN
-         DyyPlFhYemOaulVUMqOHgtKC+V1/NAobPBZ5CjrOHkcwIzO4tj2ySVvCV1eQW2x5Vd2r
-         dyVot6Okon0b37BNpgNNgRqIRTtxKTdKcArOB2M1qXtfubPMtb7z6TknF6I6ADD8zr91
-         MTb42tDk4ZJMKfJPQBFAJBcGUh+v/NxEaXjYHkhvsJUABg2uhmLLXV23tijtVFbW2jDt
-         jybA==
+        bh=l0CAiLHud0nDRyjF930+lZrMaqZL4tMe8/fznj4yCQ0=;
+        b=k58fXegZuLiJOL6/KWumrQ1LskwiIh5AN93A1BKpTPHEEREXHVv0Kocf5P1ZS5GntQ
+         dfKWDe5JfSHJ5ghWwa7l8CXiwjuXsX9exOxRPVR+WNPUfuOfgRslKVjwQ+8j+1Vyk3vd
+         QVsGYfl8bBG1RUqJ3mrSPjsC8wFoZizZjtbMidI4HqyALKeYS93ZQD64+3H8uZKl43ll
+         6e9Q+lA3uBJ/ZSGdYYFxh9ol5+hh1s87FQxTVmi4CjI8hOkVmoixDxzo6+2c32qSx+Rn
+         1leVUE9sBa4BqlPLYGhPDflZ2uxatNQYKQo3ZlasD4MKraNqJPKNUb/LEaYQT0mLQhoA
+         9sGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709217773; x=1709822573;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+        d=1e100.net; s=20230601; t=1709217879; x=1709822679;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=HvFUVHgs0WkHQ8lyy0DH+ud+r327AtQ3M1EUgtTUDUg=;
-        b=vOwInHcDz6LQfpmtQbapWApYsJ6bBCoNRdFwHuC2zeC5aV7MYVvzWjQ1E+U9xRjpjl
-         4c4bf097LSh9lLx8KDIPWekDj7H/ElbTcFCfWwHq+h5KKQjeb5dyNdgv/UMRHuMFEv3Y
-         8LQ4hPKWyCXbXNJQ43Du2OmPhsL+UOuq9cf5P2CInHm3+s+ZysDPV59nfXKWGgFoovys
-         SxHjLsKyATOVjev6n0mRt7hvrLtga0wrVdkBVUW/Ph6ywfcS+oomAwKGvrAI3ylsZpiI
-         6tu6X7WFxUBNild9e5NlGScgiTuarQehtB9CQMCxt/yjKLMmw7ETdmNonDDRjbcfEtQC
-         1Iog==
-X-Forwarded-Encrypted: i=1; AJvYcCV6e0v3QiwmvqKLNpi9pReb5ooZb4R+5pgSfw4DCnOvtS9p4DxEkC5FGjAJ5oXPDZvYSqsHVKgXkviFxpDXpt0G9hwpaBtO6CiMoLot
-X-Gm-Message-State: AOJu0YxMuVsfTQI5HqBCXA4TBnDkzROAjan2Sct02dYddVOinhOD5hDF
-	tNGfY5cWkh0hIxDiJf8L/mUIae2551n2pwu2Y6DPlmKfUUmmgba5pWMQ2p5Pyeo=
-X-Google-Smtp-Source: AGHT+IHh+ON/LL6ZZNj2crn5+292UIB9nm79QnO4uDOpHItauFzeue6Uksr2VBCfylunYEg865eO6w==
-X-Received: by 2002:a05:600c:4fd0:b0:412:bfa1:2139 with SMTP id o16-20020a05600c4fd000b00412bfa12139mr1184812wmq.37.1709217772375;
-        Thu, 29 Feb 2024 06:42:52 -0800 (PST)
-Received: from localhost (alyon-651-1-22-137.w82-122.abo.wanadoo.fr. [82.122.123.137])
-        by smtp.gmail.com with ESMTPSA id dx14-20020a05600c63ce00b004129f28e2cdsm5339141wmb.3.2024.02.29.06.42.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Feb 2024 06:42:51 -0800 (PST)
+        bh=l0CAiLHud0nDRyjF930+lZrMaqZL4tMe8/fznj4yCQ0=;
+        b=Yy2e8K6gF7Xbe6yCt9eX/K9DPEDQbYyNQ5KlRn3uQwHqsBuP/TU4/1NEfFWk/hnUAp
+         Mmd1UuZ/H8+xDFGd+TpK5BBpm2cRF9hglYTg7EIZ3FBRzDQPWc0UqGfI7+gd1s61Xky/
+         UK09QIkxU4MRZECJJdVX408HPF1v2jDCrpJ2zbbk7BiQouoPIE057FAYL9UPfCkVgtYE
+         CQq0/ziY7ZtO8m0gV/pD8LPdFPnPODgDZnqrgB7Y4UUIsmUEHb/bTnF8XnSLzVod/uor
+         WJjlAWM24a8DhZOQK80yhn56FEd6XzemM0WNRNJ3FeuK2O4M7e5iDU9lapQY269bmK/J
+         bjiQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX3CtFxNXiZuX4PvgVZZnNESN2emm556hSOtdhygVHzToNJsdEWEcb4ycxAUThD+1ge+wwEwoulDEzcq2bayn9ZLY4HaKQ/tJ9n6ek/aTqwhpnjyS1e0gi6IikK1U8raAhuEnm4
+X-Gm-Message-State: AOJu0YzWryHsAuIM/qdEdVreoxCwObYHCxoImx0QmCinsNqRCS17uBJK
+	mVcW/nU+orgyHdmSgCSNCYuLv2+1NVfhnVRNFR3uG8QIj+lgkS+L
+X-Google-Smtp-Source: AGHT+IHuo8YHYpTYpW/u80P7K6hdSbg1sDALDZSK3H+Kyv6nIOziJEuCvxOy1LL3bqFCIPdUvm2CaQ==
+X-Received: by 2002:a05:6358:578f:b0:176:b2af:9bf2 with SMTP id m15-20020a056358578f00b00176b2af9bf2mr3347798rwf.15.1709217879154;
+        Thu, 29 Feb 2024 06:44:39 -0800 (PST)
+Received: from localhost (56.148.86.34.bc.googleusercontent.com. [34.86.148.56])
+        by smtp.gmail.com with ESMTPSA id op8-20020a056214458800b0068fc5887c9fsm796522qvb.97.2024.02.29.06.44.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Feb 2024 06:44:38 -0800 (PST)
+Date: Thu, 29 Feb 2024 09:44:38 -0500
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Martin KaFai Lau <martin.lau@linux.dev>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+ Abhishek Chauhan <quic_abchauha@quicinc.com>
+Cc: kernel@quicinc.com, 
+ "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, 
+ netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ Andrew Halaney <ahalaney@redhat.com>, 
+ Martin KaFai Lau <martin.lau@kernel.org>
+Message-ID: <65e098566b4c3_d40e329486@willemb.c.googlers.com.notmuch>
+In-Reply-To: <cfd6d590-2bf0-45df-97a4-f9359b5d454b@linux.dev>
+References: <20240228011219.1119105-1-quic_abchauha@quicinc.com>
+ <65df56f6ba002_7162829435@willemb.c.googlers.com.notmuch>
+ <cfd6d590-2bf0-45df-97a4-f9359b5d454b@linux.dev>
+Subject: Re: [PATCH net-next v2] net: Modify mono_delivery_time with
+ clockid_delivery_time
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 29 Feb 2024 15:42:50 +0100
-Message-Id: <CZHN4S2QW6MY.KKKHHRPPY4ZG@baylibre.com>
-Cc: <m.nirmaladevi@ltts.com>, <lee@kernel.org>, <robh+dt@kernel.org>,
- <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
- <jpanis@baylibre.com>, <devicetree@vger.kernel.org>, <arnd@arndb.de>,
- <gregkh@linuxfoundation.org>, <lgirdwood@gmail.com>, <broonie@kernel.org>,
- <linus.walleij@linaro.org>, <linux-gpio@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>, <nm@ti.com>, <vigneshr@ti.com>,
- <kristo@kernel.org>
-Subject: Re: [PATCH v2 12/14] regulator: tps6594-regulator: Add TI TPS65224
- PMIC regulators
-From: "Esteban Blanc" <eblanc@baylibre.com>
-To: "Bhargav Raviprakash" <bhargav.r@ltts.com>,
- <linux-kernel@vger.kernel.org>
-X-Mailer: aerc 0.17.0
-References: <20240223093701.66034-1-bhargav.r@ltts.com>
- <20240223093701.66034-13-bhargav.r@ltts.com>
-In-Reply-To: <20240223093701.66034-13-bhargav.r@ltts.com>
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-On Fri Feb 23, 2024 at 10:36 AM CET, Bhargav Raviprakash wrote:
-> From: Nirmala Devi Mal Nadar <m.nirmaladevi@ltts.com>
+Martin KaFai Lau wrote:
+> On 2/28/24 7:53 AM, Willem de Bruijn wrote:
+> > Sidenote: with sk_clockid, FQ could detect when skb->tstamp is not
+> > set in monotonic (i.e., set by SO_TXTIME) and drop the packet or
+> > ignore the embedded timestamp, warn, etc.
+> 
+> Thanks for cc-ing me. Sorry for the late reply. I just catch up to this thread 
+> and the v1.
+> 
+> I think it is needed to detect if skb->tstamp is monotonic or not in fq. The 
+> container (with the veth setup) may use sch_etf while the host usually uses fq 
+> at the physical NIC and expects monotonic skb->tstamp.
+> 
+> During forward (e.g. by bpf_redirect / ip[6]_forward from a veth to a physical 
+> NIC), skb_clear_tstamp() only forwards the monotonic skb->tstamp now. While 
+> sch_etf does check sk_clockid first before using skb->tstamp, fq does not check 
+> that now.
+> or fq_packet_beyond_horizon() is enough to catch this clock discrepancy?
 
-> @@ -122,6 +131,27 @@ static const struct linear_range ldos_4_ranges[] =3D=
- {
->  	REGULATOR_LINEAR_RANGE(1200000, 0x20, 0x74, 25000),
->  };
-> =20
-> +/* Voltage range for TPS65224 Bucks and LDOs */
-> +static const struct linear_range tps65224_bucks_1_ranges[] =3D {
+Before your patch, I believe FQ had no such guard rails. An skb with
+any clockid from SO_TXTIME can arrive at FQ.
 
-You prefixed your arrays with `tps65224` and that makes sense. However
-you should also prefix the old ones with `tps6594` then.
-This applies to the whole driver.
+With the new clockid field, we could add guard rails in fq_enqueue.
+If the bit is set, look up sk_clockid.
 
-> @@ -374,11 +518,17 @@ static int tps6594_request_reg_irqs(struct platform=
-_device *pdev,
->  {
->  	struct tps6594_regulator_irq_type *irq_type;
->  	struct tps6594 *tps =3D dev_get_drvdata(pdev->dev.parent);
-> -	int j;
-> +	size_t j;
->  	int irq;
->  	int error;
-> +	size_t interrupt_cnt;
-> =20
-> -	for (j =3D 0; j < REGS_INT_NB; j++) {
-> +	/* Number of interrupts supported by each voltage source */
-> +	interrupt_cnt =3D (tps->chip_id =3D=3D TPS6594) ?
-> +			 ARRAY_SIZE(tps6594_buck1_irq_types) :
-> +			 ARRAY_SIZE(tps65224_buck1_irq_types);
 
-The comment is not adding anything, the name is clear and ARRAY_SIZE is
-quite explicit.
 
-> +		for (i =3D 0; i < LDO_NB; i++) {
-> +			if (ldo_configured[i] =3D=3D 1)
-> +				continue;
-> =20
-> -			error =3D tps6594_request_reg_irqs(pdev, rdev, irq_data,
-> -							 tps6594_ldos_irq_types[i],
-> -							 &irq_idx);
-> -			if (error)
-> -				return error;
-> +		struct tps6594_regulator_irq_type **ldos_irq_types =3D (tps->chip_id =
-=3D=3D TPS65224) ?
-> +								       tps65224_ldos_irq_types :
-> +								       tps6594_ldos_irq_types;
-> +
-> +		const struct regulator_desc *ldo_regs =3D (tps->chip_id =3D=3D TPS6522=
-4) ?
-> +							 tps65224_ldo_regs :
-> +							 tps6594_ldo_regs;
-> +
-> +		rdev =3D devm_regulator_register(&pdev->dev, &ldo_regs[i], &config);
-> +		if (IS_ERR(rdev))
-> +			return dev_err_probe(tps->dev, PTR_ERR(rdev),
-> +					     "failed to register %s regulator\n", pdev->name);
-> +
-> +		error =3D tps6594_request_reg_irqs(pdev, rdev, irq_data, ldos_irq_type=
-s[i], &irq_idx);
-> +		if (error)
-> +			return error;
-
-There is an indentation missing on the content of the `for` loop.
-
-Best regards,
-
---=20
-Esteban "Skallwar" Blanc
-BayLibre
 
