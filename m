@@ -1,94 +1,148 @@
-Return-Path: <linux-kernel+bounces-86863-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86865-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A39EC86CBE6
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:47:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 527F886CBE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:48:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D601F1C21547
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:47:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E10B21F21E58
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:48:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 181D2137747;
-	Thu, 29 Feb 2024 14:47:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DD9C13774E;
+	Thu, 29 Feb 2024 14:48:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fd8bWomS"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="UfYoVems"
+Received: from mail-4319.protonmail.ch (mail-4319.protonmail.ch [185.70.43.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 568A841A80
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 14:47:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4962A41A80
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 14:48:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709218064; cv=none; b=U2dxfilCkpV49TnMQcKALmw4/SytAj2E2UOiglNCxb4Y3NEIFK2qnK+DjGCZK/TQb8L4uCpdEj9US/EREigOGIJ9YO1runC1TlNNliD70WPtT7E/z//qj/suYwmWTQaIT+gik5M4FmJzdMZTCd7kzTr8SMzj6RFIl7yizckKQ30=
+	t=1709218099; cv=none; b=dXjC10M5S8XjlTo0YaTv+mGIpeadRdqj0Jw08oZK7cX+q4opK0ilGcUWLlCIbO0hotLmRTW0kn7knVT3EpxrZuWJztfQ1pNspy9SgaMP/cRfKBSPDBqTocHY/+8Ta8SuTidNJeZzFA6gk0kRZnCIfj94iKe51sXmrW2tM9Y+7ww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709218064; c=relaxed/simple;
-	bh=c7GmbVJf43ArHWG9m+LgTeyF8QmqxKm6DE7najW6vkw=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=mzGUPa4vosMk3jBUUnczdugx5KjYfl+djVaJbxV1UxU/r2gLlEktUNDjk9eHxgykYHYhnetuIy1QyajfXfGpTD/9k6QQ4DHplPVYhGQWzRhqVi3WtdFSbqTaPtAqpLuh5qPjdLkUWPDtKc6IhQLoiwKCRYTyFXif2QkT45bal1U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fd8bWomS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C91BC43390;
-	Thu, 29 Feb 2024 14:47:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709218063;
-	bh=c7GmbVJf43ArHWG9m+LgTeyF8QmqxKm6DE7najW6vkw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=fd8bWomSDlRNZkU9IB07feEamaa19n8kfPgUJONxZEAcmwiJIjF9ianrPSh2PUQ2+
-	 NQOJxKk8u6voltML5yygA3M0NCgqDtOjxDmGmqtquTBDRHh66gOOOyIC1JThtsl6Ui
-	 Z22/moAG2DQUoobCnXVA1JIYppGFI1eu86YJTtx9/j43KU+80OhaM0eDYlu72OPp0N
-	 gXicsCxEPUx0xW+xxKkjldIor83o1qhPBJTdeCerzQkG7Ka/I5NvebRky5wr1Krvlp
-	 +AY+VMQJOL5jaSejJsGunF6zMZc+2RzWh2YPdu2w4rjTBm3O48z4WQw6x9yhL1hPI8
-	 XLt3LA5uibv0Q==
-Date: Thu, 29 Feb 2024 06:47:42 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Eric Dumazet <edumazet@google.com>
-Cc: Tasmiya Nalatwad <tasmiya@linux.vnet.ibm.com>, Vadim Fedorenko
- <vadim.fedorenko@linux.dev>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, arkadiusz.kubalewski@intel.com,
- jiri@nvidia.com, "abdhalee@linux.vnet.ibm.com"
- <abdhalee@linux.vnet.ibm.com>, "mputtash@linux.vnet.com"
- <mputtash@linux.vnet.com>, "sachinp@linux.vnet.com"
- <sachinp@linux.vnet.com>, venkat88@linux.vnet.ibm.com,
- "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: [revert 0d60d8df6f49] [net/net-next] [6.8-rc5] Build Failure
-Message-ID: <20240229064742.36c2f476@kernel.org>
-In-Reply-To: <CANn89iKdaMFCKnGRL4ffnbyrr2PUaKn1hoiu4VZ=sRyX=Vy0Wg@mail.gmail.com>
-References: <3fcf3a2c-1c1b-42c1-bacb-78fdcd700389@linux.vnet.ibm.com>
-	<85b78dad-affa-47c3-9cd0-79a4321460b8@linux.dev>
-	<CANn89iJEzTjwxF7wXSnUR+NyDu-S-zEOYVXA+fEaYs_1o1g5HQ@mail.gmail.com>
-	<a1fdd2c2-4443-458e-86db-280e7cbd4a36@linux.vnet.ibm.com>
-	<CANn89iKdaMFCKnGRL4ffnbyrr2PUaKn1hoiu4VZ=sRyX=Vy0Wg@mail.gmail.com>
+	s=arc-20240116; t=1709218099; c=relaxed/simple;
+	bh=WGL9qM33Nk7fRGwrV2mf7JvJ3jNhdkTxb/e39Lrf8ZY=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=h+3oD74aVz/4sK9k/D94zC9xGhl8E6/J0PrQRFgJd75qTlHFe/QXl+A1VMudGMmUM9ih7ATlJcd57SBhyk0rMfPnNz3Jek3x/HSm5SNWJnUUasFiUeR+IVzn+5GZSH9Fqo5/vcFFqfwSJ7t2Qmu7Z0lFCv2kUEeGw+pg/MWChZk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=UfYoVems; arc=none smtp.client-ip=185.70.43.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1709218090; x=1709477290;
+	bh=oSUfZi1cGfdeB2IvoV8ev5peOvcG5sVLj13qHsWtvCc=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=UfYoVemsMrQXXTx6rDIs2sKrXk0meAWKVEgf/yHRQx7M1rDUxGzvpEqxfNE2Y74XE
+	 t1TiBTeQl3lF75ZupVeL9itL2H2iEebx1xVAQiDcbaCzdGvHy8ZL2nRS2BSGOSAQwg
+	 Eq4Yt0EWBcXzdh0fDzMj4fiBZbRz3tn+V26n/v8cb4Vw3fK8oC6XHqDd3TY1M4V+0P
+	 FmTlx3Kn4I8gJhPIqv0kftgY8YKYPDkPsbem+/HOIwDlw0Hwg1rs7p2Jit4YJ/OckL
+	 sEkVM19++zYWIL7lG9LC5G+gNutZklt4F/23hsa5cX6rrqjRbcHQ/OKhdiWi+dG4hi
+	 IxQpaaVxQFJ0w==
+Date: Thu, 29 Feb 2024 14:47:59 +0000
+To: o-takashi@sakamocchi.jp
+From: Edmund Raile <edmund.raile@proton.me>
+Cc: linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, Edmund Raile <edmund.raile@proton.me>
+Subject: [PATCH v2] firewire: ohci: prevent leak of left-over IRQ on unbind
+Message-ID: <20240229144723.13047-2-edmund.raile@proton.me>
+In-Reply-To: <20240229101236.8074-1-edmund.raile@proton.me>
+References: <20240229101236.8074-1-edmund.raile@proton.me>
+Feedback-ID: 45198251:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 29 Feb 2024 09:55:22 +0100 Eric Dumazet wrote:
-> I do not see other solution than this, otherwise we have to add more
-> pollution to include/linux/netdevice.h
 
-Right :(
+Commit 5a95f1ded28691e6 ("firewire: ohci: use devres for requested IRQ")
+also removed the call to free_irq() in pci_remove(), leading to a
+leftover irq of devm_request_irq() at pci_disable_msi() in pci_remove()
+when unbinding the driver from the device
 
-> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> index a9c973b92294bb110cf3cd336485972127b01b58..40797ea80bc6273cae6b7773d0a3e47459a72150
-> 100644
-> --- a/include/linux/netdevice.h
-> +++ b/include/linux/netdevice.h
-> @@ -2469,7 +2469,7 @@ struct net_device {
->         struct devlink_port     *devlink_port;
-> 
->  #if IS_ENABLED(CONFIG_DPLL)
-> -       struct dpll_pin __rcu   *dpll_pin;
-> +       void __rcu *dpll_pin;
->  #endif
+remove_proc_entry: removing non-empty directory 'irq/136', leaking at
+least 'firewire_ohci'
+Call Trace:
+ ? remove_proc_entry+0x19c/0x1c0
+ ? __warn+0x81/0x130
+ ? remove_proc_entry+0x19c/0x1c0
+ ? report_bug+0x171/0x1a0
+ ? console_unlock+0x78/0x120
+ ? handle_bug+0x3c/0x80
+ ? exc_invalid_op+0x17/0x70
+ ? asm_exc_invalid_op+0x1a/0x20
+ ? remove_proc_entry+0x19c/0x1c0
+ unregister_irq_proc+0xf4/0x120
+ free_desc+0x3d/0xe0
+ ? kfree+0x29f/0x2f0
+ irq_free_descs+0x47/0x70
+ msi_domain_free_locked.part.0+0x19d/0x1d0
+ msi_domain_free_irqs_all_locked+0x81/0xc0
+ pci_free_msi_irqs+0x12/0x40
+ pci_disable_msi+0x4c/0x60
+ pci_remove+0x9d/0xc0 [firewire_ohci
+     01b483699bebf9cb07a3d69df0aa2bee71db1b26]
+ pci_device_remove+0x37/0xa0
+ device_release_driver_internal+0x19f/0x200
+ unbind_store+0xa1/0xb0
 
-If DPLL wants to hide its type definitions the helpers must live
-in dpll? IOW move netdev_dpll_pin() to drivers/dpll/dpll_core.c
+remove irq with devm_free_irq() before pci_disable_msi()
+also remove it in fail_msi: of pci_probe() as this would lead to
+an identical leak
 
-BTW Tasmiya, please do tell us what compiler you're using.
+Fixes: 5a95f1ded28691e6 ("firewire: ohci: use devres for requested IRQ")
+
+Signed-off-by: Edmund Raile <edmund.raile@proton.me>
+
+---
+
+Using FW643 with vfio-pci required unbinding from firewire_ohci,
+doing so currently produces a memory leak due to a leftover irq
+which this patch removes.
+
+The irq can be observed while the driver is loaded and bound:
+find /proc/irq -type d -name "firewire_ohci"
+
+Is it a good idea to submit a patch to devm_request_irq() in
+include/linux/interrupt.h to add the function comment
+/*
+ * counterpart: devm_free_irq()
+ */
+so LSPs show that hint?
+
+v2 change: corrected patch title
+
+ drivers/firewire/ohci.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/firewire/ohci.c b/drivers/firewire/ohci.c
+index 9db9290c3269..7bc71f4be64a 100644
+--- a/drivers/firewire/ohci.c
++++ b/drivers/firewire/ohci.c
+@@ -3773,6 +3773,7 @@ static int pci_probe(struct pci_dev *dev,
+ =09return 0;
+=20
+  fail_msi:
++=09devm_free_irq(&dev->dev, dev->irq, ohci);
+ =09pci_disable_msi(dev);
+=20
+ =09return err;
+@@ -3800,6 +3801,7 @@ static void pci_remove(struct pci_dev *dev)
+=20
+ =09software_reset(ohci);
+=20
++=09devm_free_irq(&dev->dev, dev->irq, ohci);
+ =09pci_disable_msi(dev);
+=20
+ =09dev_notice(&dev->dev, "removing fw-ohci device\n");
+--=20
+2.43.0
+
+
 
