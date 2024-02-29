@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-87679-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87680-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD8D886D7AA
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 00:24:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D14A86D7AB
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 00:24:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C10521C21595
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 23:24:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE6561C2174A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 23:24:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F170144043;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F678144052;
 	Thu, 29 Feb 2024 23:22:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="k6LDVrnp"
-Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="Mk6byHHF"
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7766B143720
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 23:22:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4883C14373B
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 23:22:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709248943; cv=none; b=s5QBXL9PgzljNNAjLlL6RkCPmuniqwz/0Ze+tGqJ3rqy40wzB79A2lEeXOCpx9wxjMFXibUKC5cfS3A/VXtoI2dVjWepzlswSOKYiWzOiBEqCG7rPXrPh0jxdlpo289LJE6OEgxVZvOwICc6hGhb1bjh9KY/vZk8xAqU+mYR1Z0=
+	t=1709248943; cv=none; b=AMmtoKVpn2ZrS94o/+gH6D2FXUeSyVMGapQ6Tb2SIcHdY4Q/JPwolEmZrDvUf545bahtru8ZGcO2lBW4FOAay/VYwcLlpSjUDb66u0fhUtWENRshSwGoPRwc3wAwVOE5mMXql0IUpIxB6twWSbsR9gnjbXLp6RweY/4Vt71TAP8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1709248943; c=relaxed/simple;
-	bh=mxWZWiyysmkBFHfNnHhHfYVQO5Mh4OcNRTXlF0LxGbA=;
+	bh=jkqIBDvnCBgBGk4k5FZq/mUWCLaMf0fOgLBnB4HUugQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=t2P+EoqVJrYGq6yDFbSNJNYUxnbRlXu/y9q6F5JPWuy/2j2AJFQ5IA5WuAd+5haam40ueXJ7HwR2cF6CsqKz1iv+O0NkS+4jOChaY5rVoCNlq5Mp8Xrd/z35ev4JtItJV40lwWpjX/d3h0vCUL7eGI5z4PcBpsjhLrcrbyHKMZM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=k6LDVrnp; arc=none smtp.client-ip=209.85.210.51
+	 MIME-Version; b=bRnNmwiKAtb6EWjj3ws0iEtL3okN0omImDgmcJ87Oh+MqbGbTEMEyyws/2bLuRHlSAI83+1wG/1+k+0xlAzvYFR9zFjakefpidBkXfUrR+18xRvF6de3Jl9SGwiHJMcodSI317Xqkjz3Obb3Rwx6VYpcso4GVCOUH8ClCJg+lMM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=Mk6byHHF; arc=none smtp.client-ip=209.85.210.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-6e49812ba77so722927a34.2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 15:22:21 -0800 (PST)
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6e5675f2ca2so977775b3a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 15:22:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1709248940; x=1709853740; darn=vger.kernel.org;
+        d=sifive.com; s=google; t=1709248942; x=1709853742; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4jEC1X5CZdJa4ryFg9hWmhSsIovSPBi+ZbblNH/6mwk=;
-        b=k6LDVrnpThZ8kscB1/zh8r7zr/HU+vP/rlweyGAIXTA+x6BUdHnjrbbqh3Fg0TRtbt
-         4U0JGHQlI7Q1yv9VsJ/Xjn0KK4NIA3o3x6IXPLwhUf3mFyj5scNI3EmajkuGgWHX6xU8
-         jy1XOcrTDFHK+Ma0fG+gNobfVutCHNMcaUyBTBJUpqzTBtrquZXZIzMeumznZZZurM6d
-         ISK+cjUeFvHEgjCV6oISSwnznccB6ovGfNcMgVKPLdOTFwqvoMa1ql4PpfMxC+lixQiP
-         VpVjYNfHcm+TuakQlNtv6n6che7Y1vjG9nkH7zrKrTxBn7PmjxbUPB8wF+pcXYoCHhIn
-         q22g==
+        bh=wHMbuRyYmPRZ8L34XsarFB0wBhmLHt6PApeEi+FQBPY=;
+        b=Mk6byHHFJBfEZXYBz3yaFeDsYmhz51BLgR3FLsX2wkqi9auwAdRoNcOz4xF2PHrJqv
+         xpWBYapxHBuxwdwbv5akbzUDAUGoJfkzhIj3XsbYQwZXuWaSgOVG09gQ8a6LItOl2xzK
+         dYfdaLp9AqFTyOH2mKXHQG0vxaVPG53NTPp/nE1jIF6/R07qNph5W1vRYqGaGGX8XB8c
+         DbQl6t7ayGZnf58pIQ2dPCgG20zvHSOGAyBClPTMgwpkBHSjpyrGRSsMsPvgORGsTbaM
+         yORJYsEf6I9qaWMPUYERuZuUerMIkity5L+Qr5CDL12kVBfYTiAAw/8gFtt76NuCOimc
+         VDkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709248940; x=1709853740;
+        d=1e100.net; s=20230601; t=1709248942; x=1709853742;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4jEC1X5CZdJa4ryFg9hWmhSsIovSPBi+ZbblNH/6mwk=;
-        b=EPPtPxhAvBA+lTAFirFw+VIOFxwAS6BrFp3lzAWPItbTUCsjog07P6f7SQD60hctED
-         1sV53uMTPy/PErDH9QJ3qQeOdJ4MpXNtQgCHDkRBZJkCwOLR74UAzsemh9OhA6L29WWr
-         RsvdoIfDioMk1FJ9LVl6m4EyKyvKcWw6FrftQgeg0YXXvkGNc7h2d7hb/j4dV6w7xKzp
-         EWD474IyJT2ocLq/uZkcm1jJ9IWwB7EjX7pDNIB+Fdh0yTTxDregPGckzzk6amf6iCyW
-         oPE/CdmO48GsIFkFgPuwiCt59c7R1v+IyieFc+/Ohhy7vr/IZfWtoz5k4zqjgBr2ZvZA
-         dLsQ==
-X-Gm-Message-State: AOJu0YwEB6dY0OyVoGSVBDEoyq++Lpv8//lIdB/7dAPy9mKclg/QPQfL
-	2ZX9pROTUBDJcckafLKTgNECVT6O+hxVj7IX627dPA5uj4AWDc3xti8RAdZUvDo=
-X-Google-Smtp-Source: AGHT+IGX4/HV5W58fetZh8Yw57gYr75gd/4aFWyaezvIp/BsV5LakI2yn+mW+sbVnuOSeLnU1moubA==
-X-Received: by 2002:a05:6870:ac22:b0:21e:dd7a:2d3e with SMTP id kw34-20020a056870ac2200b0021edd7a2d3emr4104469oab.22.1709248940592;
-        Thu, 29 Feb 2024 15:22:20 -0800 (PST)
+        bh=wHMbuRyYmPRZ8L34XsarFB0wBhmLHt6PApeEi+FQBPY=;
+        b=RNtprg5gYgEGTMm+1odHO43NhOs8q+JpancBHY1l9h4cnqskjPfwtQm2/SFH+nNXVh
+         DSVXN1dQBqJjTMu5jCy6K+KtZ2JfzNU2nC0wW2BTf//85P2XRP3U0FRuwoiq/QxNh3I3
+         IQbjljyO0AB0Mbw6mV0/wZ39wgFVAsrhWx964sODVDJS/2YjCDdMUcdHfom8jW9GxGbh
+         lJ/gkC9TJG96XhjiJbR9SGpgMYHELBLyxLbyMpohliG6Kn1SVJs90X7rPGOEJ9NDhdGP
+         IUJ/RYOpa6RwU+aYycHFbBHu95K9KCdbKgeCNv/W2SlpaBmBme0tXi1EQx92XzNWcM1A
+         cfaA==
+X-Gm-Message-State: AOJu0YxDAlUp3bvIQWrpRLJMxoO43jvf4JCb+mq/IkHKoEmGxk4c0eBe
+	yoak3kmr4/pZJMQBZMH752XJTewC4GssEjyh2w842YNL/pu2bKlowj7myy37NGI=
+X-Google-Smtp-Source: AGHT+IE0KT3RuIOZoiwK4WAulPfaiFPRjhF12PREr/S+YlSI1LgFKc32EbVKWDUbhqJfm1349m8bOA==
+X-Received: by 2002:a05:6a00:1955:b0:6e4:eb29:357 with SMTP id s21-20020a056a00195500b006e4eb290357mr165166pfk.12.1709248941678;
+        Thu, 29 Feb 2024 15:22:21 -0800 (PST)
 Received: from sw06.internal.sifive.com ([4.53.31.132])
-        by smtp.gmail.com with ESMTPSA id c6-20020aa78806000000b006e55aa75d6csm1779719pfo.122.2024.02.29.15.22.19
+        by smtp.gmail.com with ESMTPSA id c6-20020aa78806000000b006e55aa75d6csm1779719pfo.122.2024.02.29.15.22.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 15:22:20 -0800 (PST)
+        Thu, 29 Feb 2024 15:22:21 -0800 (PST)
 From: Samuel Holland <samuel.holland@sifive.com>
 To: Palmer Dabbelt <palmer@dabbelt.com>,
 	linux-riscv@lists.infradead.org
@@ -74,9 +74,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Jisheng Zhang <jszhang@kernel.org>,
 	Yunhui Cui <cuiyunhui@bytedance.com>,
 	Samuel Holland <samuel.holland@sifive.com>
-Subject: [PATCH v5 07/13] riscv: Apply SiFive CIP-1200 workaround to single-ASID sfence.vma
-Date: Thu, 29 Feb 2024 15:21:48 -0800
-Message-ID: <20240229232211.161961-8-samuel.holland@sifive.com>
+Subject: [PATCH v5 08/13] riscv: Avoid TLB flush loops when affected by SiFive CIP-1200
+Date: Thu, 29 Feb 2024 15:21:49 -0800
+Message-ID: <20240229232211.161961-9-samuel.holland@sifive.com>
 X-Mailer: git-send-email 2.43.1
 In-Reply-To: <20240229232211.161961-1-samuel.holland@sifive.com>
 References: <20240229232211.161961-1-samuel.holland@sifive.com>
@@ -88,123 +88,68 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-commit 3f1e782998cd ("riscv: add ASID-based tlbflushing methods") added
-calls to the sfence.vma instruction with rs2 != x0. These single-ASID
-instruction variants are also affected by SiFive errata CIP-1200.
-
-Until now, the errata workaround was not needed for the single-ASID
-sfence.vma variants, because they were only used when the ASID allocator
-was enabled, and the affected SiFive platforms do not support multiple
-ASIDs. However, we are going to start using those sfence.vma variants
-regardless of ASID support, so now we need alternatives covering them.
+Since implementations affected by SiFive errata CIP-1200 always use the
+global variant of the sfence.vma instruction, they only need to execute
+the instruction once. The range-based loop only hurts performance.
 
 Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
 ---
 
-(no changes since v2)
+(no changes since v4)
 
-Changes in v2:
- - Rebase on Alexandre's "riscv: tlb flush improvements" series v5
+Changes in v4:
+ - Only set tlb_flush_all_threshold when CONFIG_MMU=y.
 
- arch/riscv/include/asm/errata_list.h | 12 +++++++++++-
- arch/riscv/include/asm/tlbflush.h    | 19 ++++++++++++++++++-
- arch/riscv/mm/tlbflush.c             | 23 -----------------------
- 3 files changed, 29 insertions(+), 25 deletions(-)
+Changes in v3:
+ - New patch for v3
 
-diff --git a/arch/riscv/include/asm/errata_list.h b/arch/riscv/include/asm/errata_list.h
-index ea33288f8a25..6e2762101968 100644
---- a/arch/riscv/include/asm/errata_list.h
-+++ b/arch/riscv/include/asm/errata_list.h
-@@ -43,11 +43,21 @@ ALTERNATIVE(__stringify(RISCV_PTR do_page_fault),			\
- 	    CONFIG_ERRATA_SIFIVE_CIP_453)
- #else /* !__ASSEMBLY__ */
- 
--#define ALT_FLUSH_TLB_PAGE(x)						\
-+#define ALT_SFENCE_VMA_ASID(asid)					\
-+asm(ALTERNATIVE("sfence.vma x0, %0", "sfence.vma", SIFIVE_VENDOR_ID,	\
-+		ERRATA_SIFIVE_CIP_1200, CONFIG_ERRATA_SIFIVE_CIP_1200)	\
-+		: : "r" (asid) : "memory")
+ arch/riscv/errata/sifive/errata.c | 5 +++++
+ arch/riscv/include/asm/tlbflush.h | 2 ++
+ arch/riscv/mm/tlbflush.c          | 2 +-
+ 3 files changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/arch/riscv/errata/sifive/errata.c b/arch/riscv/errata/sifive/errata.c
+index 3d9a32d791f7..716cfedad3a2 100644
+--- a/arch/riscv/errata/sifive/errata.c
++++ b/arch/riscv/errata/sifive/errata.c
+@@ -42,6 +42,11 @@ static bool errata_cip_1200_check_func(unsigned long  arch_id, unsigned long imp
+ 		return false;
+ 	if ((impid & 0xffffff) > 0x200630 || impid == 0x1200626)
+ 		return false;
 +
-+#define ALT_SFENCE_VMA_ADDR(addr)					\
- asm(ALTERNATIVE("sfence.vma %0", "sfence.vma", SIFIVE_VENDOR_ID,	\
- 		ERRATA_SIFIVE_CIP_1200, CONFIG_ERRATA_SIFIVE_CIP_1200)	\
- 		: : "r" (addr) : "memory")
- 
-+#define ALT_SFENCE_VMA_ADDR_ASID(addr, asid)				\
-+asm(ALTERNATIVE("sfence.vma %0, %1", "sfence.vma", SIFIVE_VENDOR_ID,	\
-+		ERRATA_SIFIVE_CIP_1200, CONFIG_ERRATA_SIFIVE_CIP_1200)	\
-+		: : "r" (addr), "r" (asid) : "memory")
++#ifdef CONFIG_MMU
++	tlb_flush_all_threshold = 0;
++#endif
 +
- /*
-  * _val is marked as "will be overwritten", so need to set it to 0
-  * in the default case.
+ 	return true;
+ }
+ 
 diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm/tlbflush.h
-index 4f86424b1ba5..463b615d7728 100644
+index 463b615d7728..8e329721375b 100644
 --- a/arch/riscv/include/asm/tlbflush.h
 +++ b/arch/riscv/include/asm/tlbflush.h
-@@ -22,10 +22,27 @@ static inline void local_flush_tlb_all(void)
- 	__asm__ __volatile__ ("sfence.vma" : : : "memory");
- }
- 
-+static inline void local_flush_tlb_all_asid(unsigned long asid)
-+{
-+	if (asid != FLUSH_TLB_NO_ASID)
-+		ALT_SFENCE_VMA_ASID(asid);
-+	else
-+		local_flush_tlb_all();
-+}
+@@ -66,6 +66,8 @@ void arch_tlbbatch_add_pending(struct arch_tlbflush_unmap_batch *batch,
+ 			       unsigned long uaddr);
+ void arch_flush_tlb_batched_pending(struct mm_struct *mm);
+ void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch);
 +
- /* Flush one page from local TLB */
- static inline void local_flush_tlb_page(unsigned long addr)
- {
--	ALT_FLUSH_TLB_PAGE(__asm__ __volatile__ ("sfence.vma %0" : : "r" (addr) : "memory"));
-+	ALT_SFENCE_VMA_ADDR(addr);
-+}
-+
-+static inline void local_flush_tlb_page_asid(unsigned long addr,
-+					     unsigned long asid)
-+{
-+	if (asid != FLUSH_TLB_NO_ASID)
-+		ALT_SFENCE_VMA_ADDR_ASID(addr, asid);
-+	else
-+		local_flush_tlb_page(addr);
- }
- 
- void flush_tlb_all(void);
++extern unsigned long tlb_flush_all_threshold;
+ #else /* CONFIG_MMU */
+ #define local_flush_tlb_all()			do { } while (0)
+ #endif /* CONFIG_MMU */
 diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-index 69402c260a89..365e0a0e4725 100644
+index 365e0a0e4725..22870f213188 100644
 --- a/arch/riscv/mm/tlbflush.c
 +++ b/arch/riscv/mm/tlbflush.c
-@@ -7,29 +7,6 @@
- #include <asm/sbi.h>
- #include <asm/mmu_context.h>
- 
--static inline void local_flush_tlb_all_asid(unsigned long asid)
--{
--	if (asid != FLUSH_TLB_NO_ASID)
--		__asm__ __volatile__ ("sfence.vma x0, %0"
--				:
--				: "r" (asid)
--				: "memory");
--	else
--		local_flush_tlb_all();
--}
--
--static inline void local_flush_tlb_page_asid(unsigned long addr,
--		unsigned long asid)
--{
--	if (asid != FLUSH_TLB_NO_ASID)
--		__asm__ __volatile__ ("sfence.vma %0, %1"
--				:
--				: "r" (addr), "r" (asid)
--				: "memory");
--	else
--		local_flush_tlb_page(addr);
--}
--
- /*
+@@ -11,7 +11,7 @@
   * Flush entire TLB if number of entries to be flushed is greater
   * than the threshold below.
+  */
+-static unsigned long tlb_flush_all_threshold __read_mostly = 64;
++unsigned long tlb_flush_all_threshold __read_mostly = 64;
+ 
+ static void local_flush_tlb_range_threshold_asid(unsigned long start,
+ 						 unsigned long size,
 -- 
 2.43.1
 
