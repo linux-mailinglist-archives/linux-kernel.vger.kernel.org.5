@@ -1,102 +1,120 @@
-Return-Path: <linux-kernel+bounces-87332-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87333-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B8F686D2F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:17:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E41686D2F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:17:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A9F061F2476A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:17:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B6341C2186E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:17:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFAB3137775;
-	Thu, 29 Feb 2024 19:17:24 +0000 (UTC)
-Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 638C8136994;
+	Thu, 29 Feb 2024 19:17:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ics.forth.gr header.i=@ics.forth.gr header.b="gYOL+XtN"
+Received: from mailgate.ics.forth.gr (mailgate.ics.forth.gr [139.91.1.2])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13E167828A;
-	Thu, 29 Feb 2024 19:17:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1606C134439
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 19:17:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.91.1.2
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709234244; cv=none; b=Ty+mzYyDDBXEbEEU4ed/mxWIcWOVRzxOtdWbGzQQy6HCmToxOJvwrlPXMObomqIrKA91D7MM6+Llb/gvULPlbHPK2l8mrrPSX/+EfzobCdGIqe8BOEU1D7VDRGQ2Nw6Xv4Pwkfjoc5FOlb7G+YAw2TCOgldN4E/qzI1eaLc4Sro=
+	t=1709234266; cv=none; b=BVWOcg+7M819ZYaflbe846mte0f4tD8QuL/VzlxHDiUAL/GCMbWEqw/B2p7W9uAEePJc6ias3WXbHzYHLEepQYKRD+BYisNtfRgLJdPTCzzjXvxetSIfJ9HHf889BLYNPkPOS0ZEoXH48b8TLdBeNItsSwd50igXYuISjCFSUvs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709234244; c=relaxed/simple;
-	bh=FBZleihRz//Gl+B2DFY+Ko0MRtXnH634JYwkpERaJM8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fyhmU8ZuOYiVE64IvN3TLj71yO/iXYzBUndAUuLLm5uIHQLgDZQZ3lmlFSoriI6sf62Y6gt3i+5kYZKh6V1TKpzaRvOfA9OOsV7YOFajk7DmvpHmSZkIr+wpdaiPX6ZnlIlWrmZ/fas91t+heHkGkwF7CiN/8v7rpY0zwQ8wFmQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-6e4857d93ebso319717a34.0;
-        Thu, 29 Feb 2024 11:17:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709234242; x=1709839042;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Y4kpkILx+rl+5M6wPy0kCyBMrKJ22BL2YvhP99fGIT4=;
-        b=ffRJ+fLRnj8w41JPom5XetUZowX34+8pRD4pRDLuvRrGdnNk33IphLmqd5pttKVxSF
-         fLbkzAsMGC4b0oiFLF6LkNP90B4b6UNy7qykST+6CW9Y/OLOtyh1Wfv3Lc2ZkTBIBBMP
-         wc6/GOLRg28aZJa7hTaxbev+hNQA3oYxDo1os/vQlLRdZK9dKk4WANN8pzW8MzD+tP37
-         tzyQIGTS3jxw96bTrHus/9xT6wdjgJ1PzzIrzk0Wo5wcFxKWLMuhvi51J59ZwHPY39rg
-         ptCQqN5FVbIjDphlZDPEI2k6pOjwPhfJX5+sSyIpYOQzecYMDVN010HBUM65AgxEcAgF
-         YO2w==
-X-Forwarded-Encrypted: i=1; AJvYcCXsoaU0oZObLYUGRXB6jikOnl5bcSvw/6TCc+WNYDEJ19e5I/xEz6Hoq1zIz5NFuW6TOuGd0dBjja1oD8D3OjUX9+h2sgQvLQx3wj8KiQjuwFVUZJqS22Q/6ecxNWxPg8gaSh0vpEIdBIbXXfCYQmuIKnBugp2W2SALHfljoBeyOiw=
-X-Gm-Message-State: AOJu0YwcDFR+L83cDc4bQoOQyv2WwvDgQejnFKf6F2JmAW6fql4GQGjv
-	Yct4FsRw3oBfv7R93Lj8N2jrD/Zf7l6qFXm6k000i4p8gFpQyS+ciRhEVdK9bqGWzQvjxSjZkIA
-	oNjpeH/iPGmiA/thcPoYPzQKBQjc=
-X-Google-Smtp-Source: AGHT+IET15oeZ9A4Gl+g3bcOmsjvaP/3t9x/x3o3O+8cGgdoAH1s+bxhozrHbmv7trCPELLedqDj5+QwUra+XDo4tCQ=
-X-Received: by 2002:a4a:625e:0:b0:5a0:4d78:975d with SMTP id
- y30-20020a4a625e000000b005a04d78975dmr3185438oog.1.1709234242209; Thu, 29 Feb
- 2024 11:17:22 -0800 (PST)
+	s=arc-20240116; t=1709234266; c=relaxed/simple;
+	bh=rRXx9P2fyWPVK8sV8uJDbjnXN7ir2je1z7JiOtduc5E=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=T2kwDMqH3AGiYNbibqbymUiJUPsBlcNIVIhRJUaOQIn/MNqGF/31yy5eTtX8GaxZqzSeVqJsNUxk2jR4p8O3jsEidj1EvaHRC3lgd0cqnev6blNPxm9iNssLxnKBsyVPNzuQgNTGepWsjCOKNvOd5JoLqJAWQbAx5Fugv+g9S2c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ics.forth.gr; spf=pass smtp.mailfrom=ics.forth.gr; dkim=pass (2048-bit key) header.d=ics.forth.gr header.i=@ics.forth.gr header.b=gYOL+XtN; arc=none smtp.client-ip=139.91.1.2
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ics.forth.gr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ics.forth.gr
+Received: from av3.ics.forth.gr (av3in.ics.forth.gr [139.91.1.77])
+	by mailgate.ics.forth.gr (8.15.2/ICS-FORTH/V10-1.8-GATE) with ESMTP id 41TJHc52009359
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 21:17:38 +0200 (EET)
+DKIM-Signature: v=1; a=rsa-sha256; d=ics.forth.gr; s=av; c=relaxed/simple;
+	q=dns/txt; i=@ics.forth.gr; t=1709234253; x=1711826253;
+	h=From:Sender:Reply-To:Subject:Date:Message-Id:To:Cc:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=rRXx9P2fyWPVK8sV8uJDbjnXN7ir2je1z7JiOtduc5E=;
+	b=gYOL+XtNrBpNzN3U4R08zOgYYjq7OJGSI0FAUc7Ds5BFAe1uGxztFtSq2Bf+t33+
+	06AeFOtAPEcA6X4E59LB/CCSO5rVUBc0r87SLIb7CP2DH5+zPMH0OEJdd1e5ZYPh
+	QEgpXuUa6nN2nEXffPI95/AR9lTtr+2sIOTSJAJ2+qGgLIObeBYPiWi0fNd9qWB/
+	+6ZuNFwuBQSm+RQFT3Bi19TP81SBJm2Kk9zALrBY0aVggJkjc5512mnX7oRB+zGh
+	vjxb8jw4Tb4zzqAvw3XI6ozac2gzIHg4it4Qub/CyDFRUDDfTaH4/Cf/de5s/ZQF
+	FI+fK8HtKed5sCPuLMitJA==;
+X-AuditID: 8b5b014d-a17eb70000002178-80-65e0d84d3c1c
+Received: from enigma.ics.forth.gr (webmail.ics.forth.gr [139.91.151.35])
+	by av3.ics.forth.gr (Symantec Messaging Gateway) with SMTP id 49.7E.08568.D48D0E56; Thu, 29 Feb 2024 21:17:33 +0200 (EET)
+X-ICS-AUTH-INFO: Authenticated user: dvlachos at ics.forth.gr
+From: Dimitris Vlachos <dvlachos@ics.forth.gr>
+To: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        palmer@dabbelt.com, alexghiti@rivosinc.com, paul.walmsley@sifive.com
+Cc: clameter@sgi.com, akpm@linux-foundation.org, rppt@kernel.org,
+        arnd@arndb.de, mick@ics.forth.gr, csd4492@csd.uoc.gr,
+        maraz@ics.forth.gr
+Subject: [PATCH -fixes v2] riscv: Sparse-Memory/vmemmap out-of-bounds fix
+Date: Thu, 29 Feb 2024 21:17:23 +0200
+Message-Id: <20240229191723.32779-1-dvlachos@ics.forth.gr>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240225130057.42633-1-s921975628@gmail.com>
-In-Reply-To: <20240225130057.42633-1-s921975628@gmail.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Thu, 29 Feb 2024 20:17:11 +0100
-Message-ID: <CAJZ5v0hAcR1oWYJX2oADdyY14dxC_ohS5hOxuAx3D_1rCSesUg@mail.gmail.com>
-Subject: Re: [PATCH] Documentation: PM: Fix runtime_pm.rst markdown syntax
-To: Yiwei Lin <s921975628@gmail.com>
-Cc: rafael@kernel.org, corbet@lwn.net, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrGLMWRmVeSWpSXmKPExsXSHT1dWdf3xoNUg+N3lSzmrF/DZvG48Tij
+	xd9Jx9gt1jeuY7dY8zTE4vKuOWwW2z63sFnM6P/PatH87hy7xcvLPcwWbbP4LY6s387kwOPx
+	+9ckRo9Pl3+xeLx5+ZLF4+GmS0wem1Z1snmcmPGbxWPzknqPG7MiPO5ef8nkcan5OrvH501y
+	AdxRXDYpqTmZZalF+nYJXBm3dzYyF/RwV8x9vZK5gXEvZxcjJ4eEgInE/75mpi5GLg4hgaOM
+	Ev+f/WCFSNhK7F1wnAnEZhPQk1g/fw87SJGIwARGiV/vDzODOMwCcxglbrzqBspwcAgLeEpc
+	P+oA0sAioCrxu+kiC4jNK2AlsfXlUyaQEgkBeYnFDyQgwoISJ2c+YQEJMwuoS6yfJwQSZgaq
+	aN46m3kCI+8sJFWzEKpmIalawMi8ilEgscxYLzO5WC8tv6gkQy+9aBMjOOgZfXcw3t78Vu8Q
+	IxMH4yFGCQ5mJRFeGcG7qUK8KYmVValF+fFFpTmpxYcYpTlYlMR5T9guSBYSSE8sSc1OTS1I
+	LYLJMnFwSjUwCVpGr3xR84O7+JyGQ5jcQtZ3U+ymBXxp4kni+v1f+tW99NVVDDpSXLtDPW5n
+	Fv/ok+KYxTPpeol05GVBpz86NiIbJhR0M3exp70S3xinVqqw78GFnoxHvx69WRpTEZ4avZn9
+	0wTDeaFy8/Rj5R8EL3j+NHPp+Q1FEWZvg7UZ06NvTHo8w1iuYJoz844DIeaGHyeVXQn2WxPW
+	qPc2LTYydWeawJeK9xLGd9IvXXiWvO9k6stjWsV359vs/LZl2Uphbev62nmLntTKLyyvvHU1
+	94pb/Zc0+3kBFjPs+GcmdWot/ZUd4V60JH/d9AMXr2ae+SoU9/jXDt9ZbqvcDlk2fDmpdy78
+	vn7Fne7b1hwuSizFGYmGWsxFxYkA01WTUOkCAAA=
 
-On Sun, Feb 25, 2024 at 4:46=E2=80=AFPM Yiwei Lin <s921975628@gmail.com> wr=
-ote:
->
-> The '7. Generic subsystem callbacks' should be
-> a section title, but the markdown syntax now is wrong to show
-> this as expected. Fix it so we can to link the chapter
-> at docs.kernel.org correctly.
->
-> Signed-off-by: Yiwei Lin <s921975628@gmail.com>
-> ---
->  Documentation/power/runtime_pm.rst | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/Documentation/power/runtime_pm.rst b/Documentation/power/run=
-time_pm.rst
-> index 65b86e487..82bc76d3d 100644
-> --- a/Documentation/power/runtime_pm.rst
-> +++ b/Documentation/power/runtime_pm.rst
-> @@ -730,6 +730,7 @@ out the following operations:
->      for it, respectively.
->
->  7. Generic subsystem callbacks
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
->
->  Subsystems may wish to conserve code space by using the set of generic p=
-ower
->  management callbacks provided by the PM core, defined in
-> --
+Offset vmemmap so that the first page of vmemmap will be mapped
+to the first page of physical memory in order to ensure that
+vmemmap’s bounds will be respected during
+pfn_to_page()/page_to_pfn() operations.
+The conversion macros will produce correct SV39/48/57 addresses
+for every possible/valid DRAM_BASE inside the physical memory limits.
 
-Applied as 6.9 material (with changelog edits), thanks!
+v2:Address Alex's comments
+
+Suggested-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+Signed-off-by: Dimitris Vlachos <dvlachos@ics.forth.gr>
+Reported-by: Dimitris Vlachos <dvlachos@ics.forth.gr>
+Closes: https://lore.kernel.org/linux-riscv/20240202135030.42265-1-csd4492@csd.uoc.gr
+Fixes: d95f1a542c3d ("RISC-V: Implement sparsemem")
+Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+---
+ arch/riscv/include/asm/pgtable.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+index 0c94260b5..875c9a079 100644
+--- a/arch/riscv/include/asm/pgtable.h
++++ b/arch/riscv/include/asm/pgtable.h
+@@ -84,7 +84,7 @@
+  * Define vmemmap for pfn_to_page & page_to_pfn calls. Needed if kernel
+  * is configured with CONFIG_SPARSEMEM_VMEMMAP enabled.
+  */
+-#define vmemmap		((struct page *)VMEMMAP_START)
++#define vmemmap		((struct page *)VMEMMAP_START - (phys_ram_base >> PAGE_SHIFT))
+ 
+ #define PCI_IO_SIZE      SZ_16M
+ #define PCI_IO_END       VMEMMAP_START
+-- 
+2.39.2
+
 
