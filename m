@@ -1,147 +1,169 @@
-Return-Path: <linux-kernel+bounces-86712-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86714-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B831786C969
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:46:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D847186C97D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:50:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E9C831C21A0B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:46:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 083501C20C06
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:50:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D30767D403;
-	Thu, 29 Feb 2024 12:46:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UYbQHJJK"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 945497D087
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 12:46:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A62847D405;
+	Thu, 29 Feb 2024 12:50:38 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C5777A72D;
+	Thu, 29 Feb 2024 12:50:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709210771; cv=none; b=C/ATb3XPhwNjvBUrcRcU/4Ps76Qaj9GPN8zNgrdw8artKxbNJ2LKyiZnjLb7lMlFS3L3lSkjZ8ESOJvWSGy2Eh6MoT1liiOzPj1qUd8Beae9QTeKsNvWG7tbEMdPFeGHJZgmSW8yK1oSgT9fUoePjo8NN8lzHsZtzrVhBAP6z+c=
+	t=1709211038; cv=none; b=YhE2iZ2Xq2hDBowoayzX5fzGELg1pojrd0gW8N+D0uVaZMjFdbNk0KpPw0UTefXXDpPTynufw3DowixQVzXGcNWbCTpdUdu4ScSAS+Nhf6TLP6P038IxSeeffz4kLSomYahkRNLCC4e9cLBXEghNTXpXjdMLDCL+xMBA0XGj1FI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709210771; c=relaxed/simple;
-	bh=WZ9GC1UAZA9PhjCIOq74EvlVw5d0YIJ1tOkPKmdkzyM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Et2FesINuWXNksYnvAHmiim6GnkS3bLgQiFEbv9S+WYEm9coww3dFfGAHJA47Zzs6AkMZ1BszqLRve9OFzfVNN+CKCdJp58CHdI5iaA6uKdSN/+BqyLjRaw2BTjT1rWB29JuvMOEJoL7Yn+0KgzICa6LSbybYmFq7axAxXt+Qs0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UYbQHJJK; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a3ed9cae56fso381198666b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 04:46:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709210766; x=1709815566; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Clp72FczazQSKbLIcT40/U9haor6HXf5C1kMTuaxg/s=;
-        b=UYbQHJJK+uFxNgP0/RpAxE6dJwWPBFBkHhTnqcqW1PPPyTKFyfJ7ThPuJHPWW6CID0
-         qN3RGEMA6YBYx6+1byyY93+CFbv5LRBXOm1mE6msVUiT2XZ1ugQKgwu6hZw/vZST55fV
-         sP5dmRGLDspaf6Szro7j9Hr/KC4gxSdt7DTlQEG5lzKISmK0fyxbf4v5HD6tP0nkN2DB
-         MQr42B7Hx5TJZzmcEmpYRksRkUvSEwT00pXkqHgPCXPgo75796+rKkNaLIIdmPswpajn
-         njb6msTdzV0c2eDBENlVsXPX0mX+M2k5vkZCh7IAUhp2m9MSenTjzMJp52H3lJDpDmSP
-         cixQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709210766; x=1709815566;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Clp72FczazQSKbLIcT40/U9haor6HXf5C1kMTuaxg/s=;
-        b=TCEq0Ip+mhnj+EBXy3QCPvdFyya8yjr/wqM+eKcFK3btrxUQkQH3KwxBNdNgFbYXv6
-         r8OLrBDAKtde8JmJtiYrEGCsPA8Af+p2a4U2u848E23b7EVTNkecjNSFgVMBG0EFMfgi
-         WAnZfd6akOryGjQB3CZS67NVBY14KOFmF3P7Z6mDmHade3dnUbrEhgaqtasbnVmEoxew
-         boOFpOxGNeBSe8z9lOEG1B2lmWUzaROPCbuVrCSk+N08tMGXRHuqPhayyQnGY3T/fV54
-         dfR73efhuFpWgCnf1I/oINNdf9wD1a+OX1uzcKBGzti0sHB3t1Nz2k6oX8CnakhSECMj
-         FLOA==
-X-Forwarded-Encrypted: i=1; AJvYcCWKsZyZIFk8NXD93LwXW6d7pck1ZckfX4rjTIjPn9Ixpdqd2sT59kU/wInFQaxxV09TEjt9Exs7tnOTwg21boI0TzbLP6S2+qJIGSIg
-X-Gm-Message-State: AOJu0Yz8nZuOiueSg17vge6gbEPAJ/MpgSnqgcyGOU70Q/agM8Ul/448
-	fZPxliTIK5uEIB6Cr+NJSUJEdnNLdkVIrOgJ9YV3vj3NNmmwokiwLlev9QYqIRg=
-X-Google-Smtp-Source: AGHT+IEbc5TOsBDYIZbxJZluVIqRpWDGJIcTKTs2jSWq0poKpB4ruewhGMO+AuZvX14rCHkXubUxhg==
-X-Received: by 2002:a17:906:71d6:b0:a44:eb5:dd4a with SMTP id i22-20020a17090671d600b00a440eb5dd4amr1240876ejk.25.1709210765889;
-        Thu, 29 Feb 2024 04:46:05 -0800 (PST)
-Received: from krzk-bin.. ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id cx10-20020a170907168a00b00a3cf9b832eesm655991ejd.40.2024.02.29.04.46.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 04:46:05 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Olof Johansson <olof@lixom.net>,
-	Arnd Bergmann <arnd@arndb.de>,
-	arm@kernel.org,
-	soc@kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	linux-kernel@vger.kernel.org,
-	Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [GIT PULL] memory: drivers for v6.9, part two
-Date: Thu, 29 Feb 2024 13:46:00 +0100
-Message-Id: <20240229124600.405016-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1709211038; c=relaxed/simple;
+	bh=v4Z+oXuXx0D5jdKPs8wfHh7ousIZoYSShg2LKWjb2ZA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CzHs0DA5BjzmXAEIDgPFEW2wfpW/JWnuk1/U+cesxY9GijMr+5UqjdEOyvPjGNRsDOWAQbxAX7Abwt7V+MaoBCjeYoEXWI0/j6OFv4z4nZ23l8cXwSjn2GeCOMHN2OfH/GbTgIlL8CN1ze5Rgdp3xLhvvOWvp4fdsNq7oAbrUYs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D44CB1FB;
+	Thu, 29 Feb 2024 04:51:13 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.67.138])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D29AD3F762;
+	Thu, 29 Feb 2024 04:50:29 -0800 (PST)
+Date: Thu, 29 Feb 2024 12:50:24 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	will@kernel.org, catalin.marinas@arm.com,
+	Mark Brown <broonie@kernel.org>, James Clark <james.clark@arm.com>,
+	Rob Herring <robh@kernel.org>, Marc Zyngier <maz@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	linux-perf-users@vger.kernel.org,
+	Oliver Upton <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>, kvmarm@lists.linux.dev
+Subject: Re: [PATCH V16 2/8] KVM: arm64: Prevent guest accesses into BRBE
+ system registers/instructions
+Message-ID: <ZeB9kHheAGJ__TQU@FVFF77S0Q05N>
+References: <20240125094119.2542332-1-anshuman.khandual@arm.com>
+ <20240125094119.2542332-3-anshuman.khandual@arm.com>
+ <ZdYCUi9YVDNDz7fr@FVFF77S0Q05N>
+ <ab50e67e-3d06-4ba7-a5f8-4684e9ef98a4@arm.com>
+ <Zd2zy0oUk8XvoDJM@FVFF77S0Q05N>
+ <b134c30d-d855-41bb-a260-9f6437b77697@arm.com>
+ <62e64ddd-266c-414e-b66a-8ca94f3c2bbf@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <62e64ddd-266c-414e-b66a-8ca94f3c2bbf@arm.com>
 
-Hi,
+Hi Suzuki,
 
-On top of previous pull request.
+On Thu, Feb 29, 2024 at 11:45:08AM +0000, Suzuki K Poulose wrote:
+> On 27/02/2024 11:13, Anshuman Khandual wrote:
+> > On 2/27/24 15:34, Mark Rutland wrote:
+> > > On Fri, Feb 23, 2024 at 12:58:48PM +0530, Anshuman Khandual wrote:
+> > > > On 2/21/24 19:31, Mark Rutland wrote:
+> > > > > On Thu, Jan 25, 2024 at 03:11:13PM +0530, Anshuman Khandual wrote:
+> > > > > > Currently BRBE feature is not supported in a guest environment. This hides
+> > > > > > BRBE feature availability via masking ID_AA64DFR0_EL1.BRBE field.
+> > > > > 
+> > > > > Does that means that a guest can currently see BRBE advertised in the
+> > > > > ID_AA64DFR0_EL1.BRB field, or is that hidden by the regular cpufeature code
+> > > > > today?
+> > > > 
+> > > > IIRC it is hidden, but will have to double check. When experimenting for BRBE
+> > > > guest support enablement earlier, following changes were need for the feature
+> > > > to be visible in ID_AA64DFR0_EL1.
+> > > > 
+> > > > diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+> > > > index 646591c67e7a..f258568535a8 100644
+> > > > --- a/arch/arm64/kernel/cpufeature.c
+> > > > +++ b/arch/arm64/kernel/cpufeature.c
+> > > > @@ -445,6 +445,7 @@ static const struct arm64_ftr_bits ftr_id_mmfr0[] = {
+> > > >   };
+> > > >   static const struct arm64_ftr_bits ftr_id_aa64dfr0[] = {
+> > > > +       S_ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_EL1_BRBE_SHIFT, 4, ID_AA64DFR0_EL1_BRBE_IMP),
+> > > >          S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_EL1_DoubleLock_SHIFT, 4, 0),
+> > > >          ARM64_FTR_BITS(FTR_HIDDEN, FTR_NONSTRICT, FTR_LOWER_SAFE, ID_AA64DFR0_EL1_PMSVer_SHIFT, 4, 0),
+> > > >          ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_EL1_CTX_CMPs_SHIFT, 4, 0),
+> > > > 
+> > > > Should we add the following entry - explicitly hiding BRBE from the guest
+> > > > as a prerequisite patch ?
+> 
+> This has nothing to do with the Guest visibility of the BRBE. This is
+> specifically for host "userspace" (via MRS emulation).
+> 
+> > > > 
+> > > > S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_EL1_BRBE_SHIFT, 4, ID_AA64DFR0_EL1_BRBE_NI)
+> > > 
+> > > Is it visbile currently, or is it hidden currently?
+> > > 
+> > > * If it is visible before this patch, that's a latent bug that we need to go
+> > >    fix first, and that'll require more coordination.
+> > > 
+> > > * If it is not visible before this patch, there's no problem in the code, but
+> > >    the commit message needs to explicitly mention that's the case as the commit
+> > >    message currently implies it is visible by only mentioning hiding it.
+> > > 
+> > > ... so can you please double check as you suggested above? We should be able to
+> > > explain why it is or is not visible today.
+> > 
+> > It is currently hidden i.e following code returns 1 in the host
+> > but returns 0 inside the guest.
+> > 
+> > aa64dfr0 = read_sysreg_s(SYS_ID_AA64DFR0_EL1);
+> > brbe = cpuid_feature_extract_unsigned_field(aa64dfr0, ID_AA64DFR0_EL1_BRBE_SHIFT);
+> > 
+> > Hence - will update the commit message here as suggested.
+> 
+> This is by virtue of the masking we do in the kvm/sysreg.c below.
 
-Best regards,
-Krzysztof
+Yep, once this patch is applied.
 
+I think we might have some crossed wires here; I'm only really asking for the
+commit message (and title) to be updated and clarified.
 
-The following changes since commit 2f542c937c48c2bd5a8ddf180b417fbe7152559f:
+Ignoring the patchlet above, and just considering the original patch:
 
-  dt-bindings: memory-controllers: narrow regex for unit address to hex numbers (2024-01-25 12:04:09 +0100)
+IIUC before the patch is applied, the ID_AA64DFR0_EL1.BRBE field is zero for
+the guest because we don't have an arm64_ftr_bits entry for the
+ID_AA64DFR0_EL1.BRBE field, and so init_cpu_ftr_reg() will leave that as zero
+in arm64_ftr_reg::sys_val, and hence when read_sanitised_id_aa64dfr0_el1()
+calls read_sanitised_ftr_reg(SYS_ID_AA64DFR0_EL1), the BRBE field will be zero.
 
-are available in the Git repository at:
+This series as-is doesn't add an arm64_ftr_bits entry for ID_AA64DFR0_EL1.BRBE,
+so it'd still be hidden from a guest regardless of whether we add explicit
+masking in read_sanitised_id_aa64dfr0_el1(). The reason to add that masking is
+to be explicit, so that if/when we add an arm64_ftr_bits entry for
+ID_AA64DFR0_EL1.BRBE, it isn't exposed to a guest unexpectedly.
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux-mem-ctrl.git tags/memory-controller-drv-6.9-2
+Similarly, IIUC the BRBE register accesses are *already* trapped, and
+emulate_sys_reg() will log a warning an inject an UNDEFINED exception into the
+guest if the guest tries to access the BRBE registers. Any well-behaved guest
+*shouldn't* do that, but a poorly-behaved guest could do that and (slowly) spam
+dmesg with messages about the unhandled sysreg traps. The reasons to handle
+thos regs is largely to suppress that warning, and to make it clear that we
+intend for those to be handled as undef.
 
-for you to fetch changes up to e46076906722ee6f9e7fd5abad7f909cd11a26af:
+So the commit title should be something like:
 
-  memory: stm32-fmc2-ebi: keep power domain on (2024-02-27 10:18:04 +0100)
+  KVM: arm64: explicitly handle BRBE register accesses as UNDEFINED
 
-----------------------------------------------------------------
-Memory controller drivers for v6.9, part two
+.. and the message should mention the key points from the above.
 
-1. Renesas RPC-IF: add bindings for R-Car V4M.
-2. Tegra MC: correct and extend support for Tegra234 memory controller.
-3. STM32: add support for Flexible Memory Controller on MP25 SoC.
-4. NXP WEIM bindings: convert to DT schema.
+Suzuki, does that sound right to you?
 
-----------------------------------------------------------------
-Christophe Kerello (5):
-      dt-bindings: memory-controller: st,stm32: add MP25 support
-      memory: stm32-fmc2-ebi: check regmap_read return value
-      memory: stm32-fmc2-ebi: add MP25 support
-      memory: stm32-fmc2-ebi: add MP25 RIF support
-      memory: stm32-fmc2-ebi: keep power domain on
+Anshuman, can you go re-write the commit message with that in mind?
 
-Geert Uytterhoeven (1):
-      dt-bindings: memory: renesas,rpc-if: Document R-Car V4M support
-
-Jon Hunter (3):
-      memory: tegra: Correct DLA client names
-      memory: tegra: Add BPMP and ICC info for DLA clients
-      memory: tegra: Fix indentation
-
-Sebastian Reichel (1):
-      dt-bindings: bus: imx-weim: convert to YAML
-
- Documentation/devicetree/bindings/bus/imx-weim.txt | 117 ----
- .../fsl/fsl,imx-weim-peripherals.yaml              |  31 +
- .../memory-controllers/fsl/fsl,imx-weim.yaml       | 204 ++++++
- .../memory-controllers/mc-peripheral-props.yaml    |   1 +
- .../memory-controllers/renesas,rpc-if.yaml         |   1 +
- .../memory-controllers/st,stm32-fmc2-ebi.yaml      |   7 +-
- drivers/memory/stm32-fmc2-ebi.c                    | 729 +++++++++++++++++++--
- drivers/memory/tegra/tegra234.c                    |  48 +-
- .../bindings/fieldbus/arcx,anybus-controller.txt   |   2 +-
- 9 files changed, 963 insertions(+), 177 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/bus/imx-weim.txt
- create mode 100644 Documentation/devicetree/bindings/memory-controllers/fsl/fsl,imx-weim-peripherals.yaml
- create mode 100644 Documentation/devicetree/bindings/memory-controllers/fsl/fsl,imx-weim.yaml
+Mark.
 
