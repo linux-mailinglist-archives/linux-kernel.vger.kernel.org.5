@@ -1,108 +1,138 @@
-Return-Path: <linux-kernel+bounces-86673-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86674-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECF7486C8DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:08:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6782986C8E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:10:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 281DB1C22117
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:08:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 29E78B24ECB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:10:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6196C7CF2A;
-	Thu, 29 Feb 2024 12:07:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78B657CF31;
+	Thu, 29 Feb 2024 12:10:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SQyiAbXv"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="d5v9QSPE"
+Received: from out203-205-221-242.mail.qq.com (out203-205-221-242.mail.qq.com [203.205.221.242])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE0517CF11
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 12:07:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8A207C6F6;
+	Thu, 29 Feb 2024 12:10:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.242
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709208467; cv=none; b=lo4R2JgwTEeeZqOkFS2pfZs/adnX0X1g/w9sRlf0Q3VJsWchdkDy3wy9tYip5J8FlalFiWLkFPcrlYyFj5zeSW8ZztJ2dFDIbOFEnJLPmRzren/ht8bQiRfMimhVOHL4BWRc2n5KSFdJh4YPvbu9kia3LceEVGGc0tHsEImF80M=
+	t=1709208645; cv=none; b=rsPLKRrEtBKA2aKDGEKcSfEpIuUyV6Aec9Jh/gDPua5q6kiygNMLD8OShK7Ut21UiDd23zHYXA6/NNp2gTdRvvHir8KYaxEzBPGUk5UbH4Wkxwt4vkPK6huOMx1HSuUxNbRVeicY7s4FgRlwDz0UzNPxlSmu8BRi2uqp/FzB0aE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709208467; c=relaxed/simple;
-	bh=HyuVlckc5Kl8c8OInENlmlezaCytk+CSvl2MIBYylYc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dF2anlzgWswXmNDGZ+05sExFJM7dyEaglJUZnnKR3eiZeXnqUKp47EjMXEpvqqKD3dNoy/Xumkqmqr8HIFw/21aFAiW4lJWA17jt2MQclotmfiRX0YlmY+SrRGwNvZwFYMPgn69nNqDGFkHX2qPrTllUcF5qB0CAsaVkPvqwTXo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SQyiAbXv; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709208464;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=H+Xze/yxxajNWL1KhoG/Ul/vP6wDJGvmG9gREiC46JA=;
-	b=SQyiAbXvva0MFOzZsGdFZ1+uPhZnynlnuY9YzU5NwJ/AF0fMTAAGXzxokm++voT1vzpTy2
-	0r/Usc6A3+icabz9ifBSLRRev/K70pv/8lHKn9lhG1i54wp2xx6SPhFHUADbLs/2s0696l
-	C9LrRG+Z0xlJk8HEhS8Jk6PbmvGDQhc=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-641-N4lH7H4rMUC6jgPKjgmmBA-1; Thu,
- 29 Feb 2024 07:07:40 -0500
-X-MC-Unique: N4lH7H4rMUC6jgPKjgmmBA-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 155863C100B0;
-	Thu, 29 Feb 2024 12:07:40 +0000 (UTC)
-Received: from localhost (unknown [10.72.116.6])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id C4B63492BE2;
-	Thu, 29 Feb 2024 12:07:38 +0000 (UTC)
-Date: Thu, 29 Feb 2024 20:07:35 +0800
-From: Baoquan He <bhe@redhat.com>
-To: "Huang, Rulin" <rulin.huang@intel.com>
-Cc: urezki@gmail.com, akpm@linux-foundation.org, colin.king@intel.com,
-	hch@infradead.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	lstoakes@gmail.com, tianyou.li@intel.com, tim.c.chen@intel.com,
-	wangyang.guo@intel.com, zhiguo.zhou@intel.com
-Subject: Re: [PATCH v6] mm/vmalloc: lock contention optimization under
- multi-threading
-Message-ID: <ZeBzh/rVXwj0Yr8w@MiWiFi-R3L-srv>
-References: <20240229082611.4104839-1-rulin.huang@intel.com>
- <aa8f0413-d055-4b49-bcd3-401e93e01c6d@intel.com>
+	s=arc-20240116; t=1709208645; c=relaxed/simple;
+	bh=GjZu7M2FGwc+Hi/c/R1k6nT9nTfZTaYpiLyQ0ozy8CM=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=nU9bjm0uL42yrDGzPImceW3JF5kyTMBq4PnWJeAfh8hbSsgE0j5NIpLavCnPBymPk4ko7MTLxZ0HWxGc9D8D+Acunv+Iisrk8MMIa4WP8OcqLNTlZnZ+egn52Pqm7lrAMILaxru1xUyLulcUXAFlkPcm+AmE/BVb7N6dH7MsM50=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name; spf=none smtp.mailfrom=cyyself.name; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=d5v9QSPE; arc=none smtp.client-ip=203.205.221.242
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cyyself.name
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1709208634; bh=FXLGu9tMm3TBy8l3UYEso98K6Li1B3GrMam+HnDFMzg=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=d5v9QSPEyEZTpth4ZJJYpv5M9SezOZsW1CDhrG2mqXuwbU+WbMO1rNoEObKbDcONs
+	 cQG8fvllsRuUkoY6hV80ssZq6M4IW++OpxxTS1NW0QyxXAndGpginqJ/pik6oQ3wuV
+	 JLqSJXoQ5wDeGeCgJN1NhOoZkcoHUB8XfPCKPEWQ=
+Received: from localhost.localdomain ([2001:da8:c800:d084:427:1102:8aff:8b6e])
+	by newxmesmtplogicsvrszb9-1.qq.com (NewEsmtp) with SMTP
+	id 283B6817; Thu, 29 Feb 2024 20:10:03 +0800
+X-QQ-mid: xmsmtpt1709208603tcjm8z9wa
+Message-ID: <tencent_3E8D4B7CAE824BDA238EA2B821310F21EE08@qq.com>
+X-QQ-XMAILINFO: OATpkVjS499u19AglRscYPH4jyzJB+Vl8Fnt0SaLDIolkFrK9wPPPy0jK+e7cO
+	 Ht3l64KsXh/Qll1xXkeRBT+W4Zmuz4GGc1jxddbiJA6iJD5p7nB2X85F1dXA4jTu2iaM/Rbqif2t
+	 upImo5lLq5wHcftQLQepl6hLI3t/CdtvR26+UW8W8COiGWbcTERgB8KrFSkv8lMdMPXkJO4hz0RK
+	 WNqvq1J8brOOVQ65AgGgtusp3vSoY+QuyNB9pZFKP+A7tGlqBX6xy0OP6BTXsALE4AMR5Mff16OL
+	 cPIhvjyJvR2q1HbHcoSeB6yWtRekGj/6nLvN7vM0mhr8ZbBTPuPSEeJfu8ipqf+3RZ4RB6dT5sug
+	 s7YQfmuPKsEXEvIh+aN5Ct5NjRwFTV3GWAQXLfgVmShKi3lbn0QqZNdHe5dsLc+B4Sp/a71Ya6en
+	 WkHVt8v3HG+vpoeqVR1ySdYieuQEXrmryVuRWaWWsviqEzWx56/jTGILpvYOMPs6CdnySWgAAuiY
+	 xCuzZPEREmGsLkARwLy5zgsPb/TaDj4Le9F/X75IeNsnoKSBBJRdBjomvV7Gc8FNTrZJd+lJISU/
+	 qiGxO9WreS+EZe6gh7Us27BEmq96DXElSo6Ysd+mBZw730A20dO/6ZAUmRVt0/jok8VUskE9xS8C
+	 BNh/ojbk/+OpeWSwUFNK2T+lndMhAelXvhQomyChV8Iwxjj+Szuvx2l+XoM+I58NP7PL56+El3+K
+	 cPdC6TIkqhQfZqankMrfm+WrfZF9jlaMns1HtyDoqqandsHlugDFZ1mzcelBseHQDXEqEEFnx996
+	 hZECdOD/DHaAYY0/uHdwgDM0iFjpgYJpPbJ/NPJ7E2pKFiarAF0/DnetYAbdYRgH3kB53lXPVrMk
+	 xjaUG9sPizVOtTFChkom/HA7+5r/xkJZA+Xt4AKz4/WFw6JQXfnTlFiSs21pWs+uGd0BWDWT//Ae
+	 3zZxZJUrmiM1HD7R2ng6R43PhVTm/K9iApYrQdafTQHQGthGLXb1n7M9iegdXc0XF+Ie0EdqFQtp
+	 HKvpSw1lp9WcRue8QlEKNlloIuotM4WRHVz055rwDcpDbqld5tAgrjraCD+q5ufZNfK32a8/SUxO
+	 YgY/XV
+X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
+From: Yangyu Chen <cyy@cyyself.name>
+To: cyy@cyyself.name
+Cc: alexghiti@rivosinc.com,
+	andy.chiu@sifive.com,
+	charlie@rivosinc.com,
+	conor.dooley@microchip.com,
+	guoren@kernel.org,
+	jszhang@kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-riscv@lists.infradead.org,
+	palmer@dabbelt.com,
+	paul.walmsley@sifive.com
+Subject: Re: [PATCH v2 0/3] RISC-V: mm: do not treat hint addr on mmap as the upper bound to search
+Date: Thu, 29 Feb 2024 20:10:03 +0800
+X-OQ-MSGID: <20240229121003.14374-1-cyy@cyyself.name>
+X-Mailer: git-send-email 2.39.3 (Apple Git-145)
+In-Reply-To: <tencent_B2D0435BC011135736262764B511994F4805@qq.com>
+References: <tencent_B2D0435BC011135736262764B511994F4805@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aa8f0413-d055-4b49-bcd3-401e93e01c6d@intel.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+Content-Transfer-Encoding: 8bit
 
-On 02/29/24 at 04:31pm, Huang, Rulin wrote:
-> Apologizes for the confusions the original format led to and thanks so
-> much for your guidance which will surely enhance the efficiency when
-> communicating with the kernel community.
-> 
-> We've submitted the v6 of the patch, which more rigorously checks
-> va_flag with BUG_ON, and at the same time ensures the additional
-> performance overhead is subtle. In this modification we also moved the
-> position of the macros because the definition of VMAP_RAM should be
-> placed before alloc_vmap_area().
-> 
-> Much appreciation from you and Uladzislau on the code refinement. And at
-> the same time, we'd also respect the internal review comments and
-> suggestions from Tim and Colin, without which this patch cannot be
-> qualified to be sent out for your review. Although the current
-> implementation has been much different from its first version, I'd still
-> recommend properly recognizing their contributions with the "review-by"
-> tag. Does it make sense?
+This patch has not been reviewed for more than a month. There is another patch that did the same fix but in another way and still has not been reviewed like this. I'm here to do a comparison of some choices briefly to let the maintainer understand the issues and the solutions. I think it's time to make a decision before the next Linux LTS v6.9. As a number of sv48 chips will be released this year.
 
-Just checked Documentation/process/submitting-patches.rst, seems below
-tags are more appropriate? Because the work you mentioned is your
-internal cooperation and effort, may not be related to upstream patch
-reviewing.
+Issues:
 
-Co-developed-by: "Chen, Tim C" <tim.c.chen@intel.com>
-Signed-off-by: "Chen, Tim C" <tim.c.chen@intel.com>
-Co-developed-by: "King, Colin" <colin.king@intel.com>
-Signed-off-by: "King, Colin" <colin.king@intel.com>
+Since commit add2cc6b6515 ("RISC-V: mm: Restrict address space for sv39,sv48,sv57") from patch [1], userspace software cannot create virtual address memory mapping on the hint address if the address larger than (1<<38) on sv48, sv57 capable CPU using mmap without MAP_FIXED set. 
+
+This is because since that commit, the hint address is treated as the upper bound to create the mapping when the hint address is larger than (1<<38).
+
+Existing regression for userspace software since that commit:
+- box64 [2]
+
+Some choices are:
+
+1. Do not change it
+
+Con:
+
+This behavior is not the same as x86, arm64, and powerpc when treating memory address space larger than 48-bit. On x86, arm64, and powerpc, if the hint address is larger than 48-bit, mmap will not limit the upper bound to use.
+
+Also, these ISAs limit the mmap to 48-bit by default. However, RISC-V currently uses sv39 by default, which is not the same as the document and commit message.
+
+2. Use my patch
+
+which limits the upper bound of mmap to 47-bit by default, if the hint address is larger than (1<<47), then no limit.
+
+Pros: Let the behavior of mmap align with x86, arm64, powerpc
+
+Cons: A new regression for software that assumes mmap will not return an address larger than the hint address if the hint address is larger than (1<<38) as it has been documented on RISC-V since v6.6. However, there is no change in the widespread sv39 systems we use now.
+
+3. Use Charlie's patch [3]
+
+which adjusts the upper bound to hint address + size.
+
+Pros: Still has upper-bound limit using hint address but allows userspace to create mapping on the hint address without MAP_FIXED set.
+
+Cons: That patch will introduce a new regression even for the sv39 system when creating mmap with the same hint address more than one time if the hint address is less than round-gap.
+
+4. Some new ideas currently are not on the mailing list
+
+Hope this issue can be fixed before the Linux v6.9 release.
+
+Thanks,
+Yangyu Chen
+
+[1] https://lore.kernel.org/linux-riscv/20230809232218.849726-2-charlie@rivosinc.com/
+[2] https://github.com/ptitSeb/box64/commit/5b700cb6e6f397d2074c49659f7f9915f4a33c5f
+[3] https://lore.kernel.org/linux-riscv/20240130-use_mmap_hint_address-v3-0-8a655cfa8bcb@rivosinc.com/
 
 
