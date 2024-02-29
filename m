@@ -1,183 +1,231 @@
-Return-Path: <linux-kernel+bounces-86743-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86744-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0B2B86CA17
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:20:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E55B786CA19
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:21:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 30DE21F22E6E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:20:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D1FA28519C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:20:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B78F7E575;
-	Thu, 29 Feb 2024 13:20:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C40A17E56F;
+	Thu, 29 Feb 2024 13:20:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HxxatgB/"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Oa0GGqSL"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAED760EDC;
-	Thu, 29 Feb 2024 13:20:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 893F97E111
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 13:20:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709212828; cv=none; b=W7DHxVFyqGPmjro0Y3kooW53IR1Qju4unc6fSb5OJ2jg+Y4cw3j0KJId177FIYs53aQxi7l5ZqjilPoHgPhh6cfuhEO6BHAOOc8soVYQzQAKTZ5e4KYQe0eljicGWGfG5XYgPMP+F/r31QkT1d06ojbki8Rsio9+pQS8uw3B1VU=
+	t=1709212838; cv=none; b=g2B93rlTMrMAG2HfJ6arqvxo3zzlt3mJVdQOS9pp+SoljUN2ZpMruqN7USB3SCqijG8YEN133JFuLQxiuT+RpPFY3mSGzINZUVrD9C65JK4pu1BZhR18SmTXepGJjyCZF6qepXWE5CKPQALy2F0QClninfKTLSsgOu7T7K21tFw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709212828; c=relaxed/simple;
-	bh=3o9ZCKEWx1uwHV9n0/7XRzWyr48MSOodxXI+/MVbGzY=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=f3GCeJznTQcmPGioiNLZlnAHcOOGl3+dQUJ8E2uEdi/kYxpGhw6y6D39W3v5T9Lbswo5FdyEwgIenLnNpRpkhB5j7W7Qoh+KSLMz6xKKe1HTaw6ANaJRR26JKlxIXRhBVQwp1f0NVFjzDURbMlfebQl9fCM6VJOC+JMwcYDPHkI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HxxatgB/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 0ED88C433C7;
-	Thu, 29 Feb 2024 13:20:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709212828;
-	bh=3o9ZCKEWx1uwHV9n0/7XRzWyr48MSOodxXI+/MVbGzY=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=HxxatgB/k9lPyz4wVFI589MyuvO6a/Pm2Nlmx/gNO3qIG+c0giYy+b4EuiOnhOsZL
-	 HR1QZJ2+4bt8L5xe/yrM/toCx1ZJIlnTjKdKX4jkwMTnEFX85kVwkRLmrUhvs9hGAS
-	 3SgfBA2ivwMyusXr++OQNuQqSX7Abh/oUMN/W1srnw1FQuoMEpygSjmvGVUMSFhNjq
-	 Y0x2iSumj3BFYoZq2wdRgzoKm152bbvauKat9HwvraUgSyxnS4gX1ieLTNQ2tcrzvB
-	 uTkOIkdQ5phSpwCr0n6+Mg+7IhY9EuFEK5qhkivTwjYnhSc7piv2Gy1FMCocYWS+LJ
-	 COp5r4cSpnVEw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E27F7D84BBA;
-	Thu, 29 Feb 2024 13:20:27 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1709212838; c=relaxed/simple;
+	bh=2mDKZoNhqA6KwiIyJMf1WwliOgLL4LslKSfwI69kzRI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=c+RKUJ6EerFh3fptzupAwOiCCiqsv26+LdTpDegX/RAPssZikdDzaeZL5SD8ZcbErOgXMwTLkl7Lzfr8VSCQPMS2U+O02E9lUIO0E38arEUZ7aXLzkAWcmgdgoZiNySEkkX+bXY/IO/rf+a6Tq6aDFOVJRGG7nHPfdARPobBMJw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Oa0GGqSL; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709212835;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=D8FPvNCThAzMGWf/6aelSKyJOfzZ8ye0pmRD0bMhP8w=;
+	b=Oa0GGqSLUrGx7242d7RStPKaqW4W4hKFCaR2W6ijoG0M/S46oWM6k2hZfRmlN3mRRfgYWp
+	XFLz2r3geD8vUAP3JmNTpq0dGi16MpVqHFkyv1L7SL09A4fTDPSlFShbctOQXtCZ8KqMPD
+	MU/du6/hQvemjBR1Cbd9bB+UFm793vY=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-553-PjWL3gDsO7yJYZ_4c0RDJA-1; Thu, 29 Feb 2024 08:20:33 -0500
+X-MC-Unique: PjWL3gDsO7yJYZ_4c0RDJA-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-33e0d943844so233964f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 05:20:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709212832; x=1709817632;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=D8FPvNCThAzMGWf/6aelSKyJOfzZ8ye0pmRD0bMhP8w=;
+        b=ljEw4mL9SqBrig0kPEKezJIrQG6M9RtiugezEwcxPOV9N7xiOzCqjRdyl9reoQkJ9O
+         53YzjksOgid8HlsFgc0f2JRfk0bY7Bl0FtGzGqlliYCLh0y3rWAB+dv8o2xhYxSB2ZKp
+         ej2nH7pHqH6dDS6wOYwwRIKy/lFUicPGjSgFbLyYoc5STEfPhe6u5HeNEJjFoA5hRePC
+         WfqkaZTNNF0YfjILW2QxlkM6y+ZsJzgh3Udf+MQ+9z9xXxeUDZg7GD6BUkXC8aXb0XE0
+         cGWG6Lba+IDvKZ/WipKtmIzFDPD6KlTMzPqTlxQjXskQeul2blSA6+6GjiFjOekIq8cK
+         qUlw==
+X-Forwarded-Encrypted: i=1; AJvYcCW1RslIDDLYRfHN/otn2nClMb0Cz3gv0YDksXcDtt/SAlaTJFV2SiDmmvZdiuBXMd48JmP0R+q2Rju6YPboGCRfYFIjwJOdCmc/NOG6
+X-Gm-Message-State: AOJu0YwFWh+qC4AHknqLKQ2VPTF5yWpzvWpMeoi2fWvXa4v/+TyvvZjN
+	o+ZKZukNHMxSHK5qtyia5rSZELub5t/LTHYFxtHr3NbsqldNoy/QhLaf4aTxVXxmA4dbndGVlgC
+	003/4AxZcBF3mNDmWSj1Dle9TxJkMzSCMmKvNgpyBLxF0G8cXK9BIQC5mOwn7xPSOnp7zlgusby
+	aDBBHxHcDBP1pKhPeY7UG38LPx03dR7FATR7RtanlZqz8rGA==
+X-Received: by 2002:adf:9c8d:0:b0:33e:90f:4f6f with SMTP id d13-20020adf9c8d000000b0033e090f4f6fmr1646318wre.14.1709212832700;
+        Thu, 29 Feb 2024 05:20:32 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEiuVF8842wUv3u08GXziRB44OGXBOBvG0f/dEr/pahBbe2rNRTTSWeFPE8Np93pekFUHFT4A==
+X-Received: by 2002:adf:9c8d:0:b0:33e:90f:4f6f with SMTP id d13-20020adf9c8d000000b0033e090f4f6fmr1646293wre.14.1709212832208;
+        Thu, 29 Feb 2024 05:20:32 -0800 (PST)
+Received: from fedora (g2.ign.cz. [91.219.240.8])
+        by smtp.gmail.com with ESMTPSA id g25-20020adfa499000000b0033d6c928a95sm1771693wrb.63.2024.02.29.05.20.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Feb 2024 05:20:31 -0800 (PST)
+From: Vitaly Kuznetsov <vkuznets@redhat.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>, Li RongQing
+ <lirongqing@baidu.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] KVM: x86: Use actual kvm_cpuid.base for clearing
+ KVM_FEATURE_PV_UNHALT
+In-Reply-To: <Zd_BY8Us6TYNBueI@google.com>
+References: <20240228101837.93642-1-vkuznets@redhat.com>
+ <20240228101837.93642-3-vkuznets@redhat.com> <Zd_BY8Us6TYNBueI@google.com>
+Date: Thu, 29 Feb 2024 14:20:30 +0100
+Message-ID: <87h6hrmmox.fsf@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] gtp: fix use-after-free and null-ptr-deref in
- gtp_newlink()
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170921282792.3692.2017750155322648868.git-patchwork-notify@kernel.org>
-Date: Thu, 29 Feb 2024 13:20:27 +0000
-References: <20240228114703.465107-1-oficerovas@altlinux.org>
-In-Reply-To: <20240228114703.465107-1-oficerovas@altlinux.org>
-To: Alexander Ofitserov <oficerovas@altlinux.org>
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, edumazet@google.com,
- pablo@netfilter.org, laforge@gnumonks.org, davem@davemloft.net,
- kuba@kernel.org, pabeni@redhat.com, kovalev@altlinux.org,
- nickel@altlinux.org, dutyrok@altlinux.org, stable@vger.kernel.org
+Content-Type: text/plain
 
-Hello:
+Sean Christopherson <seanjc@google.com> writes:
 
-This patch was applied to netdev/net.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
+> On Wed, Feb 28, 2024, Vitaly Kuznetsov wrote:
+>> @@ -273,6 +273,7 @@ static void __kvm_update_cpuid_runtime(struct kvm_vcpu *vcpu, struct kvm_cpuid_e
+>>  				       int nent)
+>>  {
+>>  	struct kvm_cpuid_entry2 *best;
+>> +	struct kvm_hypervisor_cpuid kvm_cpuid;
+>>  
+>>  	best = cpuid_entry2_find(entries, nent, 1, KVM_CPUID_INDEX_NOT_SIGNIFICANT);
+>>  	if (best) {
+>> @@ -299,10 +300,12 @@ static void __kvm_update_cpuid_runtime(struct kvm_vcpu *vcpu, struct kvm_cpuid_e
+>>  		     cpuid_entry_has(best, X86_FEATURE_XSAVEC)))
+>>  		best->ebx = xstate_required_size(vcpu->arch.xcr0, true);
+>>  
+>> -	best = __kvm_find_kvm_cpuid_features(vcpu, entries, nent);
+>> -	if (kvm_hlt_in_guest(vcpu->kvm) && best &&
+>> -		(best->eax & (1 << KVM_FEATURE_PV_UNHALT)))
+>> -		best->eax &= ~(1 << KVM_FEATURE_PV_UNHALT);
+>> +	kvm_cpuid = __kvm_get_hypervisor_cpuid(entries, nent, KVM_SIGNATURE);
+>> +	if (kvm_cpuid.base) {
+>> +		best = __kvm_find_kvm_cpuid_features(entries, nent, kvm_cpuid.base);
+>> +		if (kvm_hlt_in_guest(vcpu->kvm) && best)
+>> +			best->eax &= ~(1 << KVM_FEATURE_PV_UNHALT);
+>> +	}
+>>  
+>>  	if (!kvm_check_has_quirk(vcpu->kvm, KVM_X86_QUIRK_MISC_ENABLE_NO_MWAIT)) {
+>>  		best = cpuid_entry2_find(entries, nent, 0x1, KVM_CPUID_INDEX_NOT_SIGNIFICANT);
+>
+> Not now, as we need a minimal fix, but we need to fix the root problem, this is
+> way to brittle.  Multiple helpers take @vcpu, including __kvm_update_cpuid_runtime(),
+> before the incoming CPUID is set.  That's just asking for new bugs to
+> crop up.
 
-On Wed, 28 Feb 2024 14:47:03 +0300 you wrote:
-> The gtp_link_ops operations structure for the subsystem must be
-> registered after registering the gtp_net_ops pernet operations structure.
-> 
-> Syzkaller hit 'general protection fault in gtp_genl_dump_pdp' bug:
-> 
-> [ 1010.702740] gtp: GTP module unloaded
-> [ 1010.715877] general protection fault, probably for non-canonical address 0xdffffc0000000001: 0000 [#1] SMP KASAN NOPTI
-> [ 1010.715888] KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
-> [ 1010.715895] CPU: 1 PID: 128616 Comm: a.out Not tainted 6.8.0-rc6-std-def-alt1 #1
-> [ 1010.715899] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.0-alt1 04/01/2014
-> [ 1010.715908] RIP: 0010:gtp_newlink+0x4d7/0x9c0 [gtp]
-> [ 1010.715915] Code: 80 3c 02 00 0f 85 41 04 00 00 48 8b bb d8 05 00 00 e8 ed f6 ff ff 48 89 c2 48 89 c5 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <80> 3c 02 00 0f 85 4f 04 00 00 4c 89 e2 4c 8b 6d 00 48 b8 00 00 00
-> [ 1010.715920] RSP: 0018:ffff888020fbf180 EFLAGS: 00010203
-> [ 1010.715929] RAX: dffffc0000000000 RBX: ffff88800399c000 RCX: 0000000000000000
-> [ 1010.715933] RDX: 0000000000000001 RSI: ffffffff84805280 RDI: 0000000000000282
-> [ 1010.715938] RBP: 000000000000000d R08: 0000000000000001 R09: 0000000000000000
-> [ 1010.715942] R10: 0000000000000001 R11: 0000000000000001 R12: ffff88800399cc80
-> [ 1010.715947] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000400
-> [ 1010.715953] FS:  00007fd1509ab5c0(0000) GS:ffff88805b300000(0000) knlGS:0000000000000000
-> [ 1010.715958] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [ 1010.715962] CR2: 0000000000000000 CR3: 000000001c07a000 CR4: 0000000000750ee0
-> [ 1010.715968] PKRU: 55555554
-> [ 1010.715972] Call Trace:
-> [ 1010.715985]  ? __die_body.cold+0x1a/0x1f
-> [ 1010.715995]  ? die_addr+0x43/0x70
-> [ 1010.716002]  ? exc_general_protection+0x199/0x2f0
-> [ 1010.716016]  ? asm_exc_general_protection+0x1e/0x30
-> [ 1010.716026]  ? gtp_newlink+0x4d7/0x9c0 [gtp]
-> [ 1010.716034]  ? gtp_net_exit+0x150/0x150 [gtp]
-> [ 1010.716042]  __rtnl_newlink+0x1063/0x1700
-> [ 1010.716051]  ? rtnl_setlink+0x3c0/0x3c0
-> [ 1010.716063]  ? is_bpf_text_address+0xc0/0x1f0
-> [ 1010.716070]  ? kernel_text_address.part.0+0xbb/0xd0
-> [ 1010.716076]  ? __kernel_text_address+0x56/0xa0
-> [ 1010.716084]  ? unwind_get_return_address+0x5a/0xa0
-> [ 1010.716091]  ? create_prof_cpu_mask+0x30/0x30
-> [ 1010.716098]  ? arch_stack_walk+0x9e/0xf0
-> [ 1010.716106]  ? stack_trace_save+0x91/0xd0
-> [ 1010.716113]  ? stack_trace_consume_entry+0x170/0x170
-> [ 1010.716121]  ? __lock_acquire+0x15c5/0x5380
-> [ 1010.716139]  ? mark_held_locks+0x9e/0xe0
-> [ 1010.716148]  ? kmem_cache_alloc_trace+0x35f/0x3c0
-> [ 1010.716155]  ? __rtnl_newlink+0x1700/0x1700
-> [ 1010.716160]  rtnl_newlink+0x69/0xa0
-> [ 1010.716166]  rtnetlink_rcv_msg+0x43b/0xc50
-> [ 1010.716172]  ? rtnl_fdb_dump+0x9f0/0x9f0
-> [ 1010.716179]  ? lock_acquire+0x1fe/0x560
-> [ 1010.716188]  ? netlink_deliver_tap+0x12f/0xd50
-> [ 1010.716196]  netlink_rcv_skb+0x14d/0x440
-> [ 1010.716202]  ? rtnl_fdb_dump+0x9f0/0x9f0
-> [ 1010.716208]  ? netlink_ack+0xab0/0xab0
-> [ 1010.716213]  ? netlink_deliver_tap+0x202/0xd50
-> [ 1010.716220]  ? netlink_deliver_tap+0x218/0xd50
-> [ 1010.716226]  ? __virt_addr_valid+0x30b/0x590
-> [ 1010.716233]  netlink_unicast+0x54b/0x800
-> [ 1010.716240]  ? netlink_attachskb+0x870/0x870
-> [ 1010.716248]  ? __check_object_size+0x2de/0x3b0
-> [ 1010.716254]  netlink_sendmsg+0x938/0xe40
-> [ 1010.716261]  ? netlink_unicast+0x800/0x800
-> [ 1010.716269]  ? __import_iovec+0x292/0x510
-> [ 1010.716276]  ? netlink_unicast+0x800/0x800
-> [ 1010.716284]  __sock_sendmsg+0x159/0x190
-> [ 1010.716290]  ____sys_sendmsg+0x712/0x880
-> [ 1010.716297]  ? sock_write_iter+0x3d0/0x3d0
-> [ 1010.716304]  ? __ia32_sys_recvmmsg+0x270/0x270
-> [ 1010.716309]  ? lock_acquire+0x1fe/0x560
-> [ 1010.716315]  ? drain_array_locked+0x90/0x90
-> [ 1010.716324]  ___sys_sendmsg+0xf8/0x170
-> [ 1010.716331]  ? sendmsg_copy_msghdr+0x170/0x170
-> [ 1010.716337]  ? lockdep_init_map_type+0x2c7/0x860
-> [ 1010.716343]  ? lockdep_hardirqs_on_prepare+0x430/0x430
-> [ 1010.716350]  ? debug_mutex_init+0x33/0x70
-> [ 1010.716360]  ? percpu_counter_add_batch+0x8b/0x140
-> [ 1010.716367]  ? lock_acquire+0x1fe/0x560
-> [ 1010.716373]  ? find_held_lock+0x2c/0x110
-> [ 1010.716384]  ? __fd_install+0x1b6/0x6f0
-> [ 1010.716389]  ? lock_downgrade+0x810/0x810
-> [ 1010.716396]  ? __fget_light+0x222/0x290
-> [ 1010.716403]  __sys_sendmsg+0xea/0x1b0
-> [ 1010.716409]  ? __sys_sendmsg_sock+0x40/0x40
-> [ 1010.716419]  ? lockdep_hardirqs_on_prepare+0x2b3/0x430
-> [ 1010.716425]  ? syscall_enter_from_user_mode+0x1d/0x60
-> [ 1010.716432]  do_syscall_64+0x30/0x40
-> [ 1010.716438]  entry_SYSCALL_64_after_hwframe+0x62/0xc7
-> [ 1010.716444] RIP: 0033:0x7fd1508cbd49
-> [ 1010.716452] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d ef 70 0d 00 f7 d8 64 89 01 48
-> [ 1010.716456] RSP: 002b:00007fff18872348 EFLAGS: 00000202 ORIG_RAX: 000000000000002e
-> [ 1010.716463] RAX: ffffffffffffffda RBX: 000055f72bf0eac0 RCX: 00007fd1508cbd49
-> [ 1010.716468] RDX: 0000000000000000 RSI: 0000000020000280 RDI: 0000000000000006
-> [ 1010.716473] RBP: 00007fff18872360 R08: 00007fff18872360 R09: 00007fff18872360
-> [ 1010.716478] R10: 00007fff18872360 R11: 0000000000000202 R12: 000055f72bf0e1b0
-> [ 1010.716482] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-> [ 1010.716491] Modules linked in: gtp(+) udp_tunnel ib_core uinput af_packet rfkill qrtr joydev hid_generic usbhid hid kvm_intel iTCO_wdt intel_pmc_bxt iTCO_vendor_support kvm snd_hda_codec_generic ledtrig_audio irqbypass crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel snd_hda_intel nls_utf8 snd_intel_dspcfg nls_cp866 psmouse aesni_intel vfat crypto_simd fat cryptd glue_helper snd_hda_codec pcspkr snd_hda_core i2c_i801 snd_hwdep i2c_smbus xhci_pci snd_pcm lpc_ich xhci_pci_renesas xhci_hcd qemu_fw_cfg tiny_power_button button sch_fq_codel vboxvideo drm_vram_helper drm_ttm_helper ttm vboxsf vboxguest snd_seq_midi snd_seq_midi_event snd_seq snd_rawmidi snd_seq_device snd_timer snd soundcore msr fuse efi_pstore dm_mod ip_tables x_tables autofs4 virtio_gpu virtio_dma_buf drm_kms_helper cec rc_core drm virtio_rng virtio_scsi rng_core virtio_balloon virtio_blk virtio_net virtio_console net_failover failover ahci libahci libata evdev scsi_mod input_leds serio_raw virtio_pci 
- intel_agp
-> [ 1010.716674]  virtio_ring intel_gtt virtio [last unloaded: gtp]
-> [ 1010.716693] ---[ end trace 04990a4ce61e174b ]---
-> 
-> [...]
+Yes, I'm all for making this all more robust but I think it would be
+nice to have a smaller, backportable fix for the real, observed issue first.
 
-Here is the summary with links:
-  - [net] gtp: fix use-after-free and null-ptr-deref in gtp_newlink()
-    https://git.kernel.org/netdev/net/c/616d82c3cfa2
+>
+> Am I missing something, or can we just swap() the new and old, update the new
+> in the context of the vCPU, and then undo the swap() if there's an issue?
+> vcpu->mutex is held, and accessing this state from a different task is wildly
+> unsafe, so I don't see any problem with temporarily having an in-flux state.
+>
 
-You are awesome, thank you!
+I don't see why this approach shouldn't work and I agree it looks like
+it would make things better but I can't say that I'm in love with
+it. Ideally, I would want to see the following "atomic" workflow for all
+updates:
+
+- Check that the supplied data is correct, return an error if not. No
+changes to the state on this step.
+- Tweak the data if needed.
+- Update the state and apply the side-effects of the update. Ideally,
+there should be no errors on this step as rollback can be
+problemmatic. In the real world we will have to handle e.g. failed
+memory allocations here but in most cases the best course of action is
+to kill the VM.
+
+Well, kvm_set_cpuid() is not like that. At least:
+- kvm_hv_vcpu_init() is a side-effect but we apply it before all checks
+are complete. There's no way back.
+- kvm_check_cpuid() sounds like a pure checker but in reallity we end up
+mangling guest FPU state in fpstate_realloc()
+
+Both are probably "no big deal" but certainly break the atomicity.
+
+> If we want to be paranoid, we can probably get away with killing the VM if the
+> vCPU has run and the incoming CPUID is "bad", e.g. to guard against something
+> in kvm_set_cpuid() consuming soon-to-be-stale state.  And that's actually a
+> feature of sorts, because _if_ something in kvm_set_cpuid() consumes the vCPU's
+> CPUID, then we have a bug _now_ that affects the happy path.
+>
+> Completely untested (I haven't updated the myriad helpers), but this would allow
+> us to revert/remove all of the changes that allow peeking at a CPUID array that
+> lives outside of the vCPU.
+
+Thanks, assuming there's no urgency, let me take a look at this in the
+course of the next week or so.
+
+>
+> static int kvm_set_cpuid(struct kvm_vcpu *vcpu, struct kvm_cpuid_entry2 *e2,
+>                         int nent)
+> {
+> 	int r, i;
+>
+> 	swap(vcpu->arch.cpuid_entries, e2);
+> 	swap(vcpu->arch.cpuid_nent, nent);
+>
+> #ifdef CONFIG_KVM_HYPERV
+> 	if (kvm_cpuid_has_hyperv(vcpu)) {
+> 		r = kvm_hv_vcpu_init(vcpu);
+> 		if (r)
+> 			goto err;
+> 	}
+> #endif
+>
+> 	r = kvm_check_cpuid(vcpu);
+> 	if (r)
+> 		goto err;
+>
+> 	kvm_update_cpuid_runtime(vcpu);
+>
+> 	/*
+> 	 * KVM does not correctly handle changing guest CPUID after KVM_RUN, as
+> 	 * MAXPHYADDR, GBPAGES support, AMD reserved bit behavior, etc.. aren't
+> 	 * tracked in kvm_mmu_page_role.  As a result, KVM may miss guest page
+> 	 * faults due to reusing SPs/SPTEs. In practice no sane VMM mucks with
+> 	 * the core vCPU model on the fly. It would've been better to forbid any
+> 	 * KVM_SET_CPUID{,2} calls after KVM_RUN altogether but unfortunately
+> 	 * some VMMs (e.g. QEMU) reuse vCPU fds for CPU hotplug/unplug and do
+> 	 * KVM_SET_CPUID{,2} again. To support this legacy behavior, check
+> 	 * whether the supplied CPUID data is equal to what's already set.
+> 	 */
+> 	if (kvm_vcpu_has_run(vcpu)) {
+> 		r = kvm_cpuid_check_equal(vcpu, e2, nent);
+> 		if (r)
+> 			goto err;
+> 	}
+>
+> 	vcpu->arch.kvm_cpuid = kvm_get_hypervisor_cpuid(vcpu, KVM_SIGNATURE);
+> #ifdef CONFIG_KVM_XEN
+> 	vcpu->arch.xen.cpuid = kvm_get_hypervisor_cpuid(vcpu, XEN_SIGNATURE);
+> #endif
+> 	kvm_vcpu_after_set_cpuid(vcpu);
+>
+> 	kvfree(e2);
+> 	return 0;
+>
+> err:
+> 	swap(vcpu->arch.cpuid_entries, e2);
+> 	swap(vcpu->arch.cpuid_nent, nent);
+> 	return r;
+> }
+>
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+Vitaly
 
 
