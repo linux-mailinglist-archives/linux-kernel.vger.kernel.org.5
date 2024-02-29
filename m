@@ -1,162 +1,141 @@
-Return-Path: <linux-kernel+bounces-86038-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86039-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A50AD86BED5
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 03:15:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CC3D86BED8
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 03:16:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C75F288B19
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 02:15:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DEA621F24186
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 02:16:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD7D9374C4;
-	Thu, 29 Feb 2024 02:15:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 465B436B16;
+	Thu, 29 Feb 2024 02:16:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="24ZP7AFU"
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SzubYY1D"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E899B36AF2
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 02:15:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 875F236B00;
+	Thu, 29 Feb 2024 02:16:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709172929; cv=none; b=CpiE43b0TADGz1CjVF9YYK/pE198YTSFkYBuW7/o09FYL0cAfweuaiOCjMW1EKJNDAFS5qta2l9uUK11+BVTzevBQxyEMxvJURF0EEwiO6S7jzmqV1AppDU+EC5EoKLIh01orDk2JWfbZOWM+6CDnJEy39LnzjttV9l3ORmaIpA=
+	t=1709172988; cv=none; b=Y5zERrmrroRrqfEsy+e0rhpp+1eZvCJW+ZcwRo42F7yfsKKZapg6xv8/NZo9TtuwjH9UovVWmNktEV5NeLkpZUVC5k/S903wy3SuM9BXlgWe6ZmNF2nP7CZgyN4OuFl4D7BzdruXxp1IA0Wugha6UjE53MRMEN+hfQY9N/gAQcU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709172929; c=relaxed/simple;
-	bh=gbK/8SPPoX50lcAPF/cWQzwwqAl+Hw5BLMUVJqzZZxU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AQNlADhtHaeT4Gk0d2IpcEioCq9BLwaUzVVmzxTAhABlxICb0T64cZy3c99Gib7iSJ1UxvOxLUy5xg9qW7++ZQPVP23LZAwcR9L9UHssBOV7q8ErKMPmkBn9plIKPEsV2JGEyAJ/vfG26In9ARTI5mOLuZg42hisMsjuahSFf3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=24ZP7AFU; arc=none smtp.client-ip=209.85.215.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-5d8b887bb0cso310301a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 18:15:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1709172927; x=1709777727; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=k82qC/YmHMBHWFt7RMlbhQ42CGo9M2erm3qHEzqFqxc=;
-        b=24ZP7AFUsGm90iTvAeh7kX7tO9QmyfmmTxt3PdS+tZHHmbYyw/Y6Z7BkmbALwmCggO
-         WGjhZSqDSGUp8QMU1Utfowr5wZayAnFwJNDPV1tW/BRGLs360ohFMR17/ixmjdljd174
-         nqAdGrdT66S/tlM8Dbk5UNRr7igAzRd/tzzJ7k/CKK7SLP43Uz5fNkLM4FzU6ZiA1EMJ
-         mGdegBAlG7fnOqRFDIRItIVgI+BkH4hGUeXKHNbPS8cF9zw+X/bm3hiSYIQZVNdOSogp
-         dmNxaHrQ6iQHm9kssQF+RRuC6hg4VG4ysZdx8IuP4lOeWnCnCu8apDtEfHnHSbAVb44u
-         5rfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709172927; x=1709777727;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=k82qC/YmHMBHWFt7RMlbhQ42CGo9M2erm3qHEzqFqxc=;
-        b=J4PxSnqL/RKmwU5KGwbm04XKnqJUT14VT6cI6/qc1PBPuK0qY6LRSVZZyzK+Opc1+9
-         7Sz1di2DgJfS3bUggh4S3/HoZXLqzHbGbVyPcZfpuLSXZFVKgs67xWZpO+cu4RkyxUFB
-         xmLjfrGtOjo10qbDnY9IY6SThCBPomx2GCgf9rva643obvEkiZ7cKqVI896jSGkv4gxV
-         CI4sBApBPR1IY+Zr8j0QPhXGHgOVIcnvGzlub6r0cDZI1yCfK/5LmClT44GlVF66NDqo
-         g1i6t7BogH9C65R5q86lmT+fYw/lLpEp+xbAeqW1LCbCJQzrTgNh10p3EfDqnYm+khKJ
-         /E1w==
-X-Forwarded-Encrypted: i=1; AJvYcCV2P7knsrbvgaQS2RO/rB38n3N8BR1052WJmT5s5hh7frgYDuGtXrGBFNHKWO0Ya1afxiOnzFCICW0mKGldeNbIaz6a2SaoaKAwoBz8
-X-Gm-Message-State: AOJu0Yyy3NU338q1HKZrKdsHkmAawv1R3CA5SJGjwCEmNIL0fuNG0Lvf
-	fb0MchpY6mV+K6YgTK5sOHsexVjzWwJtdVnWlQYH/plCJG1V1v40wLygvTY2e/0=
-X-Google-Smtp-Source: AGHT+IHlcUbGYgKkh9AJe9B6cyxTd0bn96C+Tels4WsobRn2K0DWuGc5NbJJ2I2uCc8hPOOH897Pnw==
-X-Received: by 2002:a05:6a21:1789:b0:1a1:2094:960b with SMTP id nx9-20020a056a21178900b001a12094960bmr1024668pzb.43.1709172927291;
-        Wed, 28 Feb 2024 18:15:27 -0800 (PST)
-Received: from dread.disaster.area (pa49-181-247-196.pa.nsw.optusnet.com.au. [49.181.247.196])
-        by smtp.gmail.com with ESMTPSA id w16-20020a1709026f1000b001dc90b62393sm141163plk.216.2024.02.28.18.15.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 18:15:26 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1rfVxE-00Cupu-1S;
-	Thu, 29 Feb 2024 13:15:24 +1100
-Date: Thu, 29 Feb 2024 13:15:24 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: John Groves <John@groves.net>
-Cc: Luis Chamberlain <mcgrof@kernel.org>, John Groves <jgroves@micron.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	Matthew Wilcox <willy@infradead.org>, linux-cxl@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev,
-	john@jagalactic.com, Christoph Hellwig <hch@infradead.org>,
-	dave.hansen@linux.intel.com, gregory.price@memverge.com
-Subject: Re: [RFC PATCH 00/20] Introduce the famfs shared-memory file system
-Message-ID: <Zd/ovHqO/16PsUsp@dread.disaster.area>
-References: <cover.1708709155.git.john@groves.net>
- <ZdkzJM6sze-p3EWP@bombadil.infradead.org>
- <cc2pabb3szzpm5jxxeku276csqu5vwqgzitkwevfluagx7akiv@h45faer5zpru>
- <Zdy0CGL6e0ri8LiC@bombadil.infradead.org>
- <w5cqtmdgqtjvbnrg5okdgmxe45vjg5evaxh6gg3gs6kwfqmn5p@wgakpqcumrbt>
- <CAB=NE6UvHSvTJJCq-YuBEZNo8F5Kg25aK+2im=V7DgEsTJ8wPg@mail.gmail.com>
- <mw4yhbmza4idassgbqeiti4ue7jq377ezxfrqrcbsbzsrmfiln@kn7qmqljvswl>
+	s=arc-20240116; t=1709172988; c=relaxed/simple;
+	bh=YREW50Mm9XizXo3Vg/YslHDwW+mx1PNC7jtuWaFg0Og=;
+	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
+	 Subject:From:Cc:To:Date; b=NEmXu1dQlOD5TQ+otfNa5xHCvHN3bkmI9877gE2MWtfFnnWP0J0nf0c8+ekL0/OOwM+hG8YOFslJqvy5bmTRDorWobEt0WhQUMsZAsUUpJ4kmm8c3RbAko2dNTb6GIC+31jHxfp/FN5bE3AoXypCwgQS41g8+TKKvPBSD4QJzGw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SzubYY1D; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05B4BC43390;
+	Thu, 29 Feb 2024 02:16:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709172987;
+	bh=YREW50Mm9XizXo3Vg/YslHDwW+mx1PNC7jtuWaFg0Og=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=SzubYY1DA+zhhrxp2Mg+Lfzw2OlCQL7NDf0xc1Tem4Nyoahhnnn0Yv5jnWdiQZLgV
+	 lryrljDAnssddQ4XoFhjBM0NVLBIHz6ijKMKhHDSEwIphU2sMRUEKuKxqlVwl7SlBs
+	 s1N2ySkzySaHatpuow//fODH/lcrgCgvGNOoWsGmZ8aneHzx+EwVlHiNkbdOkLMsuA
+	 KnYmfwZj59tx46ceWYi6FRtHzd1oy8J1aalOiut2k7cyOMirHZ/wE28IU5EKxAlFln
+	 Nl1TLXlRsuwZd/T49d4UbwOPfLAwaNvZLtxSR5Nm3t3j8QU4lolDuMFX7HCSYpchuu
+	 5fjFHxwd7O5cA==
+Message-ID: <e4c1e89450aa91ec684a48797bb5d132.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <mw4yhbmza4idassgbqeiti4ue7jq377ezxfrqrcbsbzsrmfiln@kn7qmqljvswl>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <9922942e-ea9e-4cdb-a091-5b8ea0a180d8@salutedevices.com>
+References: <20240126201433.1830600-1-jan.dakinevich@salutedevices.com> <c79909e4e55badc8f094d2ff8c4d34ca.sboyd@kernel.org> <9922942e-ea9e-4cdb-a091-5b8ea0a180d8@salutedevices.com>
+Subject: Re: [PATCH] clk: allow to skip clk_core_req_round_rate_nolock()
+From: Stephen Boyd <sboyd@kernel.org>
+Cc: kernel@salutedevices.com
+To: Jan Dakinevich <jan.dakinevich@salutedevices.com>, Michael Turquette <mturquette@baylibre.com>, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Date: Wed, 28 Feb 2024 18:16:24 -0800
+User-Agent: alot/0.10
 
-On Mon, Feb 26, 2024 at 08:05:58PM -0600, John Groves wrote:
-> On 24/02/26 04:58PM, Luis Chamberlain wrote:
-> > On Mon, Feb 26, 2024 at 1:16 PM John Groves <John@groves.net> wrote:
-> > >
-> > > On 24/02/26 07:53AM, Luis Chamberlain wrote:
-> > > > On Mon, Feb 26, 2024 at 07:27:18AM -0600, John Groves wrote:
-> > > > > Run status group 0 (all jobs):
-> > > > >   WRITE: bw=29.6GiB/s (31.8GB/s), 29.6GiB/s-29.6GiB/s (31.8GB/s-31.8GB/s), io=44.7GiB (48.0GB), run=1511-1511msec
-> > > >
-> > > > > This is run on an xfs file system on a SATA ssd.
-> > > >
-> > > > To compare more closer apples to apples, wouldn't it make more sense
-> > > > to try this with XFS on pmem (with fio -direct=1)?
-> > > >
-> > > >   Luis
-> > >
-> > > Makes sense. Here is the same command line I used with xfs before, but
-> > > now it's on /dev/pmem0 (the same 128G, but converted from devdax to pmem
-> > > because xfs requires that.
-> > >
-> > > fio -name=ten-256m-per-thread --nrfiles=10 -bs=2M --group_reporting=1 --alloc-size=1048576 --filesize=256MiB --readwrite=write --fallocate=none --numjobs=48 --create_on_open=0 --ioengine=io_uring --direct=1 --directory=/mnt/xfs
-> > 
-> > Could you try with mkfs.xfs -d agcount=1024
+Quoting Jan Dakinevich (2024-02-23 13:47:35)
+>=20
+>=20
+> On 2/23/24 02:20, Stephen Boyd wrote:
+> > Quoting Jan Dakinevich (2024-01-26 12:14:33)
+> >> Calling of clk_core_req_round_rate_nolock() can be time-consuming in a
+> >> case of deep hierarchy with multiple dividers/parents. But if the clock
+> >> already has exactly the same rate as desired, there is no need to
+> >> determine how it could be rounded.
+> >=20
+> > What exactly are you trying to avoid? Is this an optimization or a bug
+> > fix? TL;DR: I'm unlikely to apply this patch.
+> >=20
+>=20
+> It is an optimization, not a bug. The problem is that=20
+> clk_core_req_round_rate_nolock() is quite expensive, and I faced with=20
+> cases, where it takes tens and hundreds milliseconds (depending on SoC).
+>=20
+> As I see, it is irremovable feature of clk_core_req_round_rate_nolock()=20
+> design itself. Lets imagine, we have some clock, and its parent is a=20
+> divider. When clk_core_req_round_rate_nolock() is being called the=20
+> execution is walked through the following path:
+>=20
+> clk_core_determine_round_nolock
+>   core->ops->determine_rate
+>     divider_determine_rate
+>      clk_divider_bestdiv
+>=20
+> Inside clk_divider_bestdiv() for each possible divider=20
+> clk_hw_round_rate() is called for parent of the clock, which in turn=20
+> calls clk_core_determine_round_nolock().
+>=20
+> So, each divider and multiplexer in clock path multiplies many times an=20
+> amount of iteration required to execute=20
+> clk_core_req_round_rate_nolock(). When there are a lot of them the time=20
+> consumed by clk_core_req_round_rate_nolock() becomes sufficient.
 
-Won't change anything for the better, may make things worse.
+Do you have a more concrete example? I wonder if perhaps you've split up
+the clk hardware into multipliers and dividers, when they really could
+all be combined into one clk that does all the math at once without
+traversing the tree. But if the problem is really just that the
+clk_divider_bestdiv() implementation is slow then that's good to know.
 
->    bw (  MiB/s): min= 5085, max=27367, per=100.00%, avg=14361.95, stdev=165.61, samples=719
->    iops        : min= 2516, max=13670, avg=7160.17, stdev=82.88, samples=719
->   lat (usec)   : 4=0.05%, 10=0.72%, 20=2.23%, 50=2.48%, 100=3.02%
->   lat (usec)   : 250=1.54%, 500=2.37%, 750=1.34%, 1000=0.75%
->   lat (msec)   : 2=3.20%, 4=43.10%, 10=23.05%, 20=14.81%, 50=1.25%
+>=20
+> > I could see some driver implementing round_rate()/determine_rate() in a
+> > way that rounds the rate passed in, so that even if the rate is what the
+> > clk is running at _right now_, it still wants to change it to something
+> > else, or at least call down into the driver to call the set_rate clk_op.
+> > Applying this patch will break that. The contract is that
+> > clk_set_rate(rate) =3D=3D clk_set_rate(clk_round_rate(rate)). It doesn't
+> > look like anything needs to change.
+>=20
+> If I am not mistaken, clocks's rate is either equal to its parent rate=20
+> or calculated by ->recalc_rate(). I suppose, this callback should return =
 
-Most of the IO latencies are up round the 4-20ms marks. That seems
-kinda high for a 2MB IO. With a memcpy speed of 10GB/s, the 2MB
-should only take a couple of hundred microseconds. For Famfs, the
-latencies appear to be around 1-4ms.
+> valid rate value that is based on current clock parameters.
+>=20
+> Now, suppose the clock has rate "rateA" and we called clk_set_rate() to=20
+> set "rateA", but clk_core_req_round_rate_nolock() inside clk_set_rate()=20
+> rounds it to "rateB". Thus, although the clock is able to run on desired =
 
-So where's all that extra time coming from?
+> rate (and actually run on it), ->determine_rate() and ->round_rate() are =
 
+> unable to choose clocks's parameters for that value. Is it correct=20
+> behavior for clock driver?
+>=20
 
->   lat (msec)   : 100=0.08%
->   cpu          : usr=10.18%, sys=0.79%, ctx=67227, majf=0, minf=38511
+It's not really a question for the clk framework. If the clk driver
+wants to round rateA to rateB then it can. It could be that the
+recalc_rate() clk_op calculates a slightly different rate than what
+round_rate() clk op did, because maybe the driver has frequency tables
+and the rate the clk runs at is something like 933333Hz but the driver
+just says that's 930000Hz for simplicity. If that happens, recalc_rate()
+gives us the "true" rate, while round_rate() gives us the "approximate"
+rate. Either way, the set_rate() clk_op knows that 930000Hz means set
+some clk rate, even if that doesn't match what recalc_rate() returns
+once the rate is changed.
 
-And why is system time reporting at almost zero instead of almost
-all the remaining cpu time (i.e. up at 80-90%)?
-
-Can you run call-graph kernel profiles for XFS and famfs whilst
-running this workload so we have some insight into what is behaving
-differently here?
-
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+This is very much a real case, because this is essentially how the qcom
+clk driver works.
 
