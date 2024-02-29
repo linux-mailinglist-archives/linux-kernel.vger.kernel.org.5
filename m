@@ -1,133 +1,108 @@
-Return-Path: <linux-kernel+bounces-86915-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86913-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 581A386CCBD
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:21:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E94B886CCB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:19:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10D63284E8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:21:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2632C1C21700
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:19:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7A5813EFF6;
-	Thu, 29 Feb 2024 15:21:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AOQWrQkU"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 013BE13DBA4;
+	Thu, 29 Feb 2024 15:19:15 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6FB086275;
-	Thu, 29 Feb 2024 15:21:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8604312F362;
+	Thu, 29 Feb 2024 15:19:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709220070; cv=none; b=E7c3/N140WQh7eKsUZ2CrbG60BHruom+LnAx8cRi83SBBcgrwy0r6XajdVBQyCoGwIbABt07T6TEmGlOEC2enGvFLVq7w1hRV5lYHSx8htBUyYoeddm4Lbrlqt6Alt0izesxE3TcQNxZAgNIOfCwm1VSqI/01GACcBQI4GNi/9A=
+	t=1709219954; cv=none; b=NANCQa2OCtBA9qRs+j35c1XzmXMdsjy6tnkJgkZHQCFqroB+MDzw+FVzS0xvGeY/cp5rsa1zvsvuO1N83EE8dRbyVo1enN9pUrw2FPfO85DUo6n1Cxhn4nu24ByshSMyWi/pXC6jgm/rcl/dtj2yfwAoabr7hq92439Gr0VCKVg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709220070; c=relaxed/simple;
-	bh=mtw1Are5X4Bl/MyGWxpW8u5oJvyM4o2l4h/oPvehucM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rjXZ1i6o7GVH3/+Z5yLbMX/70yFN4E54bb6fRTsQSwhECNOT5PTJPhbO39IeN1auHwUxcfwDJJeKn8dQpNC12YQZi9KAFStuEldRGXUqBEAWhzILh/4cu2pTBD6XywMZkOp0LW+vJRWijg/5J+0pDZrgIZOKUncE1Bhhk1ATyRU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AOQWrQkU; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709220068; x=1740756068;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=mtw1Are5X4Bl/MyGWxpW8u5oJvyM4o2l4h/oPvehucM=;
-  b=AOQWrQkUmDn2qo6scC606kMUiVfLcFkcnLj+VdBd2J3qQ07WEMWbpVJ6
-   +SIhy5QeiFIIrTO2umDPe6HBvcewBgyvcwFfTcxBF4FObl2nYCYYlKtcU
-   O/cmgDRA56ZkZxCr3fJsp8cMc6r7mJpoNYZFx9g1/8mZRsqNglscIXPYp
-   gt/hOLHhxIxGZ9hCh0LmjbtHS85SkRp+2OQFQObHfUc3TKk7r5zQrMcmu
-   YLBoNZkErhSPwHBut8ziEvv3pLpbHb5z2q96J7XlNk1GMHWUL3+iEDXws
-   Ku5fE09bKsn0H7eV+mDk5cmMnXYZCYRmwXySgykOz3snKHLjAQSDiOvZK
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="3574679"
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="3574679"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 07:21:07 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="913984387"
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="913984387"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 07:21:03 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rfiDT-00000008hgQ-3rit;
-	Thu, 29 Feb 2024 17:20:59 +0200
-Date: Thu, 29 Feb 2024 17:20:59 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Herve Codina <herve.codina@bootlin.com>
-Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Yury Norov <yury.norov@gmail.com>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, Andrew Lunn <andrew@lunn.ch>,
-	Mark Brown <broonie@kernel.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v5 4/5] net: wan: fsl_qmc_hdlc: Add runtime timeslots
- changes support
-Message-ID: <ZeCg24Iv8qDmxNV9@smile.fi.intel.com>
-References: <20240229141554.836867-1-herve.codina@bootlin.com>
- <20240229141554.836867-5-herve.codina@bootlin.com>
+	s=arc-20240116; t=1709219954; c=relaxed/simple;
+	bh=AkQ/AaKsEPuD8c6bNddvXHBp1aND4HVn4Dv1rsPMEkg=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=balmccoC4WHyMnSdqlaXyIkZcrRINYj+Z+YBMaKzT7QRG8i3/nkFYdIWPGrbhrZZ1zlHOL9zwNSgBPo+VMNO3TCezEDpoRgPrR5PbGQwbdFHMhwZPSQVQEgJKeUsF12M0h5y3o+fpXJZP4DoMjGwMxT3p4+Jq1nW8tDlHA+SvZE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A192C433C7;
+	Thu, 29 Feb 2024 15:19:13 +0000 (UTC)
+Date: Thu, 29 Feb 2024 10:21:19 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: linke <lilinke99@qq.com>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ mathieu.desnoyers@efficios.com, mhiramat@kernel.org
+Subject: Re: [PATCH] ring-buffer: use READ_ONCE() to read
+ cpu_buffer->commit_page in concurrent environment
+Message-ID: <20240229102119.7c475dee@gandalf.local.home>
+In-Reply-To: <tencent_BE8C3169030CD9C2FC7548832C2994921609@qq.com>
+References: <tencent_BE8C3169030CD9C2FC7548832C2994921609@qq.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240229141554.836867-5-herve.codina@bootlin.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, Feb 29, 2024 at 03:15:52PM +0100, Herve Codina wrote:
-> QMC channels support runtime timeslots changes but nothing is done at
-> the QMC HDLC driver to handle these changes.
+On Thu, 29 Feb 2024 20:32:26 +0800
+linke <lilinke99@qq.com> wrote:
+
+> Hi Steven, sorry for the late reply.
 > 
-> Use existing IFACE ioctl in order to configure the timeslots to use.
+> > 
+> > Now the reason for the above READ_ONCE() is because the variables *are*
+> > going to be used again. We do *not* want the compiler to play any games
+> > with that.
+> >   
+> 
+> I don't think it is because the variables are going to be used again. 
+> Compiler optimizations barely do bad things in single thread programs. It
+> is because cpu_buffer->commit_page may change concurrently and should be
+> accessed atomically.
 
-..
+So basically you are worried about read-tearing?
 
-> +	bitmap_scatter(ts_mask, map, ts_mask_avail, 64);
+That wasn't mentioned in the change log.
 
-Wondering if we may have returned value more useful and hence having something like
+> 
+> 	/* Make sure commit page didn't change */
+> 	curr_commit_page = READ_ONCE(cpu_buffer->commit_page);
+> 	curr_commit_ts = READ_ONCE(curr_commit_page->page->time_stamp);
+> 
+> 	/* If the commit page changed, then there's more data */
+> 	if (curr_commit_page != commit_page ||
+> 	    curr_commit_ts != commit_ts)
+> 		return 0;
+> 
+> This code read cpu_buffer->commit_page and time_stamp again to check
+> whether commit page changed. It shows that cpu_buffer->commit_page and 
+> time_stamp may be changed by other threads.
+> 
+>         commit_page = cpu_buffer->commit_page;
+>         commit_ts = commit_page->page->time_stamp;
+> 
+> So the commit_page and time_stamp above is read while other threads may
+> change it. I think it is a data race if it is not atomic. Thus it is 
+> necessary to use READ_ONCE() here.
 
-	n = bitmap_scatter(...);
+Funny part is, if the above timestamp read did a tear, then this would
+definitely not match, and would return the correct value. That is, the
+buffer is not empty because the only way for this to get corrupted is if
+something is in the process of writing to it.
 
-> +	if (bitmap_weight(ts_mask, 64) != bitmap_weight(map, 64)) {
+Now we could add a comment stating this.
 
-	if (n != ...) {
+So, I don't even think the reading of the commit_page is needed (it's long
+size so it should not tear, and if it does, I consider that more a bug in
+the compiler).
 
-?
+Please explain why READ_ONCE() is needed, and what exactly is it "fixing".
+That is, what breaks if it's not there?
 
-> +		dev_err(qmc_hdlc->dev, "Cannot translate timeslots %64pb -> (%64pb, %64pb)\n",
-> +			map, ts_mask_avail, ts_mask);
-> +		return -EINVAL;
-> +	}
-
-..
-
-> +	bitmap_gather(map, ts_mask, ts_mask_avail, 64);
-> +
-> +	if (bitmap_weight(ts_mask, 64) != bitmap_weight(map, 64)) {
-> +		dev_err(qmc_hdlc->dev, "Cannot translate timeslots (%64pb, %64pb) -> %64pb\n",
-> +			ts_mask_avail, ts_mask, map);
-> +		return -EINVAL;
-> +	}
-
-Ditto.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+-- Steve
 
 
