@@ -1,236 +1,101 @@
-Return-Path: <linux-kernel+bounces-87182-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87185-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5073486D0CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:36:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5D8F86D0D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:37:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AA60AB21485
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:36:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 046841C2179B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:37:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88D7870AEE;
-	Thu, 29 Feb 2024 17:36:12 +0000 (UTC)
-Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com [209.85.161.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D00C7828D;
+	Thu, 29 Feb 2024 17:36:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fB+l7Dtw"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4511716062E;
-	Thu, 29 Feb 2024 17:36:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 272257828A
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 17:36:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709228171; cv=none; b=Bg2veMglUgwpUv2RYVTs1jDsLPhAeo8jelcVPU4JezQX1sr0ZepqeRpf8tlMEdGgGQfVXM+gDYQwQDinxhSAVPQcPA90rWZj/lniGfo5JXv5pgtyxcsXTIYAusBAq2qQW+OOOZso3PgJVj9oN8veetlm7uJ17BFfqjPv2sjr4oY=
+	t=1709228191; cv=none; b=ZT+1kS0QZVK4MRyYZRGRXTFAX9iL4p2D+eNKSqssP9PFVf9poM4xhXkUFl7APdUzmDis11Nvpu2Wjl8BD0GYWgcpv4waNz0uLCo6r/JuUZlwmJjNGLjFyjFkSL2FN0nhOO0Ab1WsmOClNIWsUUBa7vVBnOg1DLa6stUb5mcfZV0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709228171; c=relaxed/simple;
-	bh=5lQsEr6Qh9tHM7o+Jd5giKSHuT+ZJAdZpli4wmPcN48=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jdzewnuJkMdK60uSqs1ofvGwsFAxQ6sTozx7wR7fXlO9pcbd9dBR6YP0HdB9kQJlNKIWPI4bPYKL5sMaMbgx2/3/MAgEFBY9VD593aNcEWmuJqM+2e9rogsX634+fUufiHDlcYp91qzKhvhuRfj0EMQAmaSVc9VDepwOt7NHueU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-5a05210e560so44964eaf.1;
-        Thu, 29 Feb 2024 09:36:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709228169; x=1709832969;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jxEwKBuAzFb8rhBPqNIU8KxSxIjpcceOLSxQpziJruE=;
-        b=P7Vwulba4Xdbr1pIjbXnQ/7EZGCaP5cYzQ5IwT31jt4nFdYfKTnLgLsVwATQXeoReN
-         rze+/CUQksHt7ntitYyBm1aT1OoLkdh3zhvt4Wi15zSld34ZB7x6MnDA72UBm7/Mi0Uy
-         kuVb0Mb2wNfR1IhIwRcpuP8vtTqUFkx+u3fr3onzvd/TnwmEelj2wbmwbNqK/Q9cGIqf
-         bFpD77sjLrxw07tUKRD59sAqqWSCBNNyzNf4OiTrQaAOaTLi+/LjplnGTQd2s/TkJEwI
-         djxdkg9jRIvLolh5X3/ovC5tNfo172QUY9j590F/wAvki+nhsSGQrm+IOTWRBKpDw/zp
-         E8TQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU1UWxRrRMMohep3uHjvtkPFpxBmTGJSydmkCSzECM0Dp21vIvqy2WigJLL8onUAp6zoU7hpIpJgxVRK3wBp7S3T7qNs5xZQAakiuKd
-X-Gm-Message-State: AOJu0Yx2/NqjoVWdXht+A8TAVaa1wxWPYUgP72sRo+ZKw/Av1hVbRV2Y
-	CX/ueW6MMkEKkT5v0Mx//CThI6FPddFQk7/eZVbOYf4EmKS3DzVuActjGOaWFI2d8WUR3N7MMi5
-	cq2qTYQzSvKzLUVA+8GmirOnGfGg=
-X-Google-Smtp-Source: AGHT+IHSHULtjuulGXkkgXIXLdWokYIfmMcJqUGZZxuJPfoeScx8O2YVwHmCBwrCNkorYcyVsq5UUxrpvCxyIfyId0I=
-X-Received: by 2002:a4a:d317:0:b0:5a0:2cbe:43dd with SMTP id
- g23-20020a4ad317000000b005a02cbe43ddmr2801222oos.1.1709228169391; Thu, 29 Feb
- 2024 09:36:09 -0800 (PST)
+	s=arc-20240116; t=1709228191; c=relaxed/simple;
+	bh=Nfy+FvhiVO6FRr4RGFIgCjBGC56X8Ck24EWdzRnn+CA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-type; b=cpn+RNcG2b0GiV9p+qa42CqnHXV3iDQYvNBzI+xBExvTNlLGkXoCXSrXfNPGcN7qcgo/l+hFCCskBggByytqAabCNnXX0b2KHqD5CTNYWOw+ELprjpPwSCcKIdZ4MgsGLxZUGnUVmJGfn1bzTATAPZaHajStCc8IcTGqIWOd4eE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fB+l7Dtw; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709228189;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=8NCFY5/xqwqZ+BzOYm6QBuVWVdJZDIeZ/gZcGzEqZ/8=;
+	b=fB+l7DtwHuxqvbKXkzdZ/O45ea4GwhPX3XeG4SK/sUAWl1ljqcdaPG6NRvlUBq/GkSESSd
+	tm0l1FVtggYXQavXulHSavkZxHBBQS+l6IsxHfXXnA4aUVKvFFB2gK5A/tuKX+0oM5PY0B
+	3enVrGbDGuqTCOr7UKfExfZrVHEbDM4=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-562-FaAciST9MoWocjVqHzlTlg-1; Thu,
+ 29 Feb 2024 12:36:25 -0500
+X-MC-Unique: FaAciST9MoWocjVqHzlTlg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1C8701C0CCA5;
+	Thu, 29 Feb 2024 17:36:25 +0000 (UTC)
+Received: from rules.brq.redhat.com (unknown [10.45.242.24])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 7C6B220229A4;
+	Thu, 29 Feb 2024 17:36:23 +0000 (UTC)
+From: Vladis Dronov <vdronov@redhat.com>
+To: Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S . Miller" <davem@davemloft.net>
+Cc: Nicolai Stange <nstange@suse.de>,
+	linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Vladis Dronov <vdronov@redhat.com>
+Subject: [PATCH] crypto: tcrypt - add ffdhe2048(dh) test
+Date: Thu, 29 Feb 2024 18:36:03 +0100
+Message-ID: <20240229173603.10258-1-vdronov@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240229062245.2723548-1-avadhut.naik@amd.com>
-In-Reply-To: <20240229062245.2723548-1-avadhut.naik@amd.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Thu, 29 Feb 2024 18:35:58 +0100
-Message-ID: <CAJZ5v0h4Z_gND9nTBFeWmW+y5TMG-FjxmaFXPWPX7hRjWe9UPw@mail.gmail.com>
-Subject: Re: [PATCH v4] ACPI: APEI: Skip initialization of GHES_ASSIST
- structures for Machine Check Architecture
-To: Avadhut Naik <avadhut.naik@amd.com>
-Cc: linux-acpi@vger.kernel.org, rafael@kernel.org, lenb@kernel.org, 
-	james.morse@arm.com, tony.luck@intel.com, bp@alien8.de, 
-	linux-kernel@vger.kernel.org, yazen.ghannam@amd.com, avadnaik@amd.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-On Thu, Feb 29, 2024 at 7:22=E2=80=AFAM Avadhut Naik <avadhut.naik@amd.com>=
- wrote:
->
-> To support GHES_ASSIST on Machine Check Architecture (MCA) error sources,
-> a set of GHES structures is provided by the system firmware for each MCA
-> error source. Each of these sets consists of a GHES structure for each MC=
-A
-> bank on each logical CPU, with all structures of a set sharing a common
-> Related Source ID, equal to the Source ID of one of the MCA error source
-> structures.[1] On SOCs with large core counts, this typically equates to
-> tens of thousands of GHES_ASSIST structures for MCA under
-> "/sys/bus/platform/drivers/GHES".
->
-> Support for GHES_ASSIST however, hasn't been implemented in the kernel. A=
-s
-> such, the information provided through these structures is not consumed b=
-y
-> Linux. Moreover, these GHES_ASSIST structures for MCA, which are supposed
-> to provide supplemental information in context of an error reported by
-> hardware, are setup as independent error sources by the kernel during HES=
-T
-> initialization.
->
-> Additionally, if the Type field of the Notification structure, associated
-> with these GHES_ASSIST structures for MCA, is set to Polled, the kernel
-> sets up a timer for each individual structure. The duration of the timer
-> is derived from the Poll Interval field of the Notification structure. On
-> SOCs with high core counts, this will result in tens of thousands of
-> timers expiring periodically causing unnecessary preemptions and wastage
-> of CPU cycles. The problem will particularly intensify if Poll Interval
-> duration is not sufficiently high.
->
-> Since GHES_ASSIST support is not present in kernel, skip initialization
-> of GHES_ASSIST structures for MCA to eliminate their performance impact.
->
-> [1] ACPI specification 6.5, section 18.7
->
-> Signed-off-by: Avadhut Naik <avadhut.naik@amd.com>
-> Reviewed-by: Yazen Ghannam <yazen.ghannam@amd.com>
-> Reviewed-by: Tony Luck <tony.luck@intel.com>
-> ---
-> Changes in v2:
-> 1. Since is_ghes_assist_struct() returns if any of the conditions is hit
-> if-else-if chain is redundant. Replace it with just if statements.
-> 2. Fix formatting errors.
-> 3. Add Reviewed-by: Yazen Ghannam <yazen.ghannam@amd.com>
->
-> Changes in v3:
-> 1. Modify structure (mces) comment, per Tony's recommendation, to better
-> reflect the structure's usage.
->
-> Changes in v4:
-> 1. No changes within the patch. Just sending out to gather more attention=
-.
-> 2. Add Reviewed-by: Tony Luck <tony.luck@intel.com>
-> ---
->  drivers/acpi/apei/hest.c | 51 ++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 51 insertions(+)
->
-> diff --git a/drivers/acpi/apei/hest.c b/drivers/acpi/apei/hest.c
-> index 6aef1ee5e1bd..20d757687e3d 100644
-> --- a/drivers/acpi/apei/hest.c
-> +++ b/drivers/acpi/apei/hest.c
-> @@ -37,6 +37,20 @@ EXPORT_SYMBOL_GPL(hest_disable);
->
->  static struct acpi_table_hest *__read_mostly hest_tab;
->
-> +/*
-> + * Since GHES_ASSIST is not supported, skip initialization of GHES_ASSIS=
-T
-> + * structures for MCA.
-> + * During HEST parsing, detected MCA error sources are cached from early
-> + * table entries so that the Flags and Source Id fields from these cache=
-d
-> + * values are then referred to in later table entries to determine if th=
-e
-> + * encountered GHES_ASSIST structure should be initialized.
-> + */
-> +static struct {
-> +       struct acpi_hest_ia_corrected *cmc;
-> +       struct acpi_hest_ia_machine_check *mc;
-> +       struct acpi_hest_ia_deferred_check *dmc;
-> +} mces;
-> +
->  static const int hest_esrc_len_tab[ACPI_HEST_TYPE_RESERVED] =3D {
->         [ACPI_HEST_TYPE_IA32_CHECK] =3D -1,       /* need further calcula=
-tion */
->         [ACPI_HEST_TYPE_IA32_CORRECTED_CHECK] =3D -1,
-> @@ -70,22 +84,54 @@ static int hest_esrc_len(struct acpi_hest_header *hes=
-t_hdr)
->                 cmc =3D (struct acpi_hest_ia_corrected *)hest_hdr;
->                 len =3D sizeof(*cmc) + cmc->num_hardware_banks *
->                         sizeof(struct acpi_hest_ia_error_bank);
-> +               mces.cmc =3D cmc;
->         } else if (hest_type =3D=3D ACPI_HEST_TYPE_IA32_CHECK) {
->                 struct acpi_hest_ia_machine_check *mc;
->                 mc =3D (struct acpi_hest_ia_machine_check *)hest_hdr;
->                 len =3D sizeof(*mc) + mc->num_hardware_banks *
->                         sizeof(struct acpi_hest_ia_error_bank);
-> +               mces.mc =3D mc;
->         } else if (hest_type =3D=3D ACPI_HEST_TYPE_IA32_DEFERRED_CHECK) {
->                 struct acpi_hest_ia_deferred_check *mc;
->                 mc =3D (struct acpi_hest_ia_deferred_check *)hest_hdr;
->                 len =3D sizeof(*mc) + mc->num_hardware_banks *
->                         sizeof(struct acpi_hest_ia_error_bank);
-> +               mces.dmc =3D mc;
->         }
->         BUG_ON(len =3D=3D -1);
->
->         return len;
->  };
->
-> +/*
-> + * GHES and GHESv2 structures share the same format, starting from
-> + * Source Id and ending in Error Status Block Length (inclusive).
-> + */
-> +static bool is_ghes_assist_struct(struct acpi_hest_header *hest_hdr)
-> +{
-> +       struct acpi_hest_generic *ghes;
-> +       u16 related_source_id;
-> +
-> +       if (hest_hdr->type !=3D ACPI_HEST_TYPE_GENERIC_ERROR &&
-> +           hest_hdr->type !=3D ACPI_HEST_TYPE_GENERIC_ERROR_V2)
-> +               return false;
-> +
-> +       ghes =3D (struct acpi_hest_generic *)hest_hdr;
-> +       related_source_id =3D ghes->related_source_id;
-> +
-> +       if (mces.cmc && mces.cmc->flags & ACPI_HEST_GHES_ASSIST &&
-> +           related_source_id =3D=3D mces.cmc->header.source_id)
-> +               return true;
-> +       if (mces.mc && mces.mc->flags & ACPI_HEST_GHES_ASSIST &&
-> +           related_source_id =3D=3D mces.mc->header.source_id)
-> +               return true;
-> +       if (mces.dmc && mces.dmc->flags & ACPI_HEST_GHES_ASSIST &&
-> +           related_source_id =3D=3D mces.dmc->header.source_id)
-> +               return true;
-> +
-> +       return false;
-> +}
-> +
->  typedef int (*apei_hest_func_t)(struct acpi_hest_header *hest_hdr, void =
-*data);
->
->  static int apei_hest_parse(apei_hest_func_t func, void *data)
-> @@ -114,6 +160,11 @@ static int apei_hest_parse(apei_hest_func_t func, vo=
-id *data)
->                         return -EINVAL;
->                 }
->
-> +               if (is_ghes_assist_struct(hest_hdr)) {
-> +                       hest_hdr =3D (void *)hest_hdr + len;
-> +                       continue;
-> +               }
-> +
->                 rc =3D func(hest_hdr, data);
->                 if (rc)
->                         return rc;
->
-> base-commit: 07a90c3d91505e44a38e74e1588b304131ad8028
-> --
+Commit 7dce59819750 ("crypto: dh - implement ffdheXYZ(dh) templates")
+implemented the said templates. Add ffdhe2048(dh) test as it is the
+fastest one. This is a requirement for the FIPS certification.
 
-Applied as 6.9 material, thanks!
+Signed-off-by: Vladis Dronov <vdronov@redhat.com>
+---
+ crypto/tcrypt.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/crypto/tcrypt.c b/crypto/tcrypt.c
+index ea4d1cea9c06..8aea416f6480 100644
+--- a/crypto/tcrypt.c
++++ b/crypto/tcrypt.c
+@@ -1851,6 +1851,9 @@ static int do_test(const char *alg, u32 type, u32 mask, int m, u32 num_mb)
+ 		ret = min(ret, tcrypt_test("cbc(aria)"));
+ 		ret = min(ret, tcrypt_test("ctr(aria)"));
+ 		break;
++	case 193:
++		ret = min(ret, tcrypt_test("ffdhe2048(dh)"));
++		break;
+ 	case 200:
+ 		test_cipher_speed("ecb(aes)", ENCRYPT, sec, NULL, 0,
+ 				speed_template_16_24_32);
+-- 
+2.43.2
+
 
