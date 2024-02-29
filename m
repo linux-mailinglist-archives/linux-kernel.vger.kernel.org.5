@@ -1,113 +1,93 @@
-Return-Path: <linux-kernel+bounces-87613-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87614-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 097D586D67D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 23:00:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8E6B86D67F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 23:01:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1AFC284978
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:00:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 268691C212D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:01:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9D9574BF1;
-	Thu, 29 Feb 2024 22:00:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3621774BE0;
+	Thu, 29 Feb 2024 22:00:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bnLss1W+"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="L/s5U4z1"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8FA66D528;
-	Thu, 29 Feb 2024 22:00:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 693AA6D52F;
+	Thu, 29 Feb 2024 22:00:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709244035; cv=none; b=ZLM/WinsGVOxdHw/lumS5LvNhvwvTaQZV1p8BFz/Aw2vivCpR/xnomOgUZA9IaJMx/DspZwJkjIaOClir+iRtbhJdEnKaiJo706M0fEn/0crggX6heo3J7YmgR1MtPofRWo+SHXs3XLfV3SKYDK1gN1Msal1cREBY4G+IasBaEw=
+	t=1709244049; cv=none; b=f+r3ETLq0RXONqy4IT0+9uUyede7LfFRwRPcT5z737aS8mTuvD95GrBPyALtLMkZMnIYpjqCwe+J88ixAMHHHVIz3dOornlKFHSwPF7qELCrdEa0BPh78tYiwEMERvqJqo7BVz1UgHCbublK2fDdElzTaKKLti21WFZQFHIEX3o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709244035; c=relaxed/simple;
-	bh=DKB2o2S+feMPyuNFbB3ii6e3+RACDzpX5U78cW6QHLg=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=oKz4unf03JftsvKwqoofLKDuD34trVi5SowwxDHcpPOZfI5tbLoWEIGdzMVmdPvmmTgCzFjdzpZ0q0TxhJe2hE+ifLPgq7N/yObYDpPCmpSEbn1SitOjycwoouM+GapTWC3b7FLiqFOOP46d9EHLcxMm+MBiK05pGyfu6SjcznM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bnLss1W+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 5E039C43399;
-	Thu, 29 Feb 2024 22:00:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709244034;
-	bh=DKB2o2S+feMPyuNFbB3ii6e3+RACDzpX5U78cW6QHLg=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=bnLss1W+2l/1sqZokR2ESJQoKdRvn/Bsqg1lCQJuJJ7OjMjITbQtqMUE33okDC5Um
-	 DhlusOnGWg+gyKrv+ptLGC7uBUpaWggzJrY5a1RC+vujCYwb9l+4/33MuyRXE5o22Z
-	 klYcqmYTroM2wlRmGqE8YmbFd8XCFB6JhZCCAMPS3NYP46TTm8vyqJpGbIKuhdIKlB
-	 tFQb+7QzYz0Eea/ACrmXGkRi5Csr5/BTmt0k2dTVWZK3eBkIqjXZ6fVgbXRoxUhOML
-	 NsjrQ1J8OYj+hWnQ3AO3m9Xyqt765an9OSZ3j+f4jFuqBvf2G6YZzokyY2lxYa6yW7
-	 ZiDguuIfHIVaA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3EBE5C595D1;
-	Thu, 29 Feb 2024 22:00:34 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1709244049; c=relaxed/simple;
+	bh=Otvi24GU73XCeo3Jc053Uc3VjmLPm1+czoFS3dRaPro=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iay0hDzD3LQSpnkkXsC0H94Fv6drF9slgihcbCtaNPXWQPOiBQLWgY5cUMLwmEJZxRYTlxcRXVL9i/wp2O9oxVz/+Xt6I7G96kRYZovBr0n31XVJK5VuxzZuj13q2NfbeD/moLR/d+gul5QZZQ6RnvuR4SUN4XPT44lciKIynRE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=L/s5U4z1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C6F9C433C7;
+	Thu, 29 Feb 2024 22:00:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1709244048;
+	bh=Otvi24GU73XCeo3Jc053Uc3VjmLPm1+czoFS3dRaPro=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=L/s5U4z1gKMD/aFql4qJbtRtuDDHC2VPe+By7Vkog4myAQWbXIECVGWleGyAsI8LT
+	 tKYuniW/iTIqprbU5M8iiK43bHBW+IQaD00Z6edRsSLLIqCxKSCdlnjDD8kQ5nwQbS
+	 P5yqkIpvFFuOmYSAI7iBOB7UfAhyaFbaxKO/A5JI=
+Date: Thu, 29 Feb 2024 23:00:45 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: GuanBing Huang <albanhuang@outlook.com>
+Cc: jirislaby@kernel.org, linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org, albanhuang@tencent.com
+Subject: Re: [PATCH] serial: 8250_pnp: Support configurable reg shift property
+Message-ID: <2024022916-captivate-state-0255@gregkh>
+References: <PSAPR06MB49522EB50BDE08A5D9D0DACEC95F2@PSAPR06MB4952.apcprd06.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v6] bpf: Replace bpf_lpm_trie_key 0-length array with flexible
- array
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170924403425.8275.6534761971040087521.git-patchwork-notify@kernel.org>
-Date: Thu, 29 Feb 2024 22:00:34 +0000
-References: <20240222155612.it.533-kees@kernel.org>
-In-Reply-To: <20240222155612.it.533-kees@kernel.org>
-To: Kees Cook <keescook@chromium.org>
-Cc: daniel@iogearbox.net, mark.rutland@arm.com, gustavoars@kernel.org,
- ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
- yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
- haoluo@google.com, jolsa@kernel.org, mykolal@fb.com, shuah@kernel.org,
- baihaowen@meizu.com, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- yonghong.song@linux.dev, corbet@lwn.net, davem@davemloft.net,
- kuba@kernel.org, hawk@kernel.org, joannelkoong@gmail.com,
- laoar.shao@gmail.com, kuifeng@meta.com, aspsk@isovalent.com,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- netdev@vger.kernel.org, linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <PSAPR06MB49522EB50BDE08A5D9D0DACEC95F2@PSAPR06MB4952.apcprd06.prod.outlook.com>
 
-Hello:
-
-This patch was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Thu, 22 Feb 2024 07:56:15 -0800 you wrote:
-> Replace deprecated 0-length array in struct bpf_lpm_trie_key with
-> flexible array. Found with GCC 13:
+On Thu, Feb 29, 2024 at 07:51:54PM +0800, GuanBing Huang wrote:
+> From: albanhuang <albanhuang@tencent.com>
 > 
-> ../kernel/bpf/lpm_trie.c:207:51: warning: array subscript i is outside array bounds of 'const __u8[0]' {aka 'const unsigned char[]'} [-Warray-bounds=]
->   207 |                                        *(__be16 *)&key->data[i]);
->       |                                                   ^~~~~~~~~~~~~
-> ../include/uapi/linux/swab.h:102:54: note: in definition of macro '__swab16'
->   102 | #define __swab16(x) (__u16)__builtin_bswap16((__u16)(x))
->       |                                                      ^
-> ../include/linux/byteorder/generic.h:97:21: note: in expansion of macro '__be16_to_cpu'
->    97 | #define be16_to_cpu __be16_to_cpu
->       |                     ^~~~~~~~~~~~~
-> ../kernel/bpf/lpm_trie.c:206:28: note: in expansion of macro 'be16_to_cpu'
->   206 |                 u16 diff = be16_to_cpu(*(__be16 *)&node->data[i]
-> ^
->       |                            ^~~~~~~~~~~
-> In file included from ../include/linux/bpf.h:7:
-> ../include/uapi/linux/bpf.h:82:17: note: while referencing 'data'
->    82 |         __u8    data[0];        /* Arbitrary size */
->       |                 ^~~~
+> The 16550a serial port based on the ACPI table requires obtaining the
+> reg-shift attribute. In the ACPI scenario, If the reg-shift property
+> is not configured like in DTS, the 16550a serial driver cannot read or
+> write controller registers properly during initialization.
 > 
-> [...]
+> Signed-off-by: albanhuang <albanhuang@tencent.com>
+> Signed-off-by: tombinfan <tombinfan@tencent.com>
+> Signed-off-by: dylanlhdu <dylanlhdu@tencent.com>
 
-Here is the summary with links:
-  - [v6] bpf: Replace bpf_lpm_trie_key 0-length array with flexible array
-    https://git.kernel.org/bpf/bpf-next/c/896880ff3086
+"interesting" names, can you not just use your native encoding to make
+this easier?
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> ---
+>  drivers/tty/serial/8250/8250_pnp.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/tty/serial/8250/8250_pnp.c b/drivers/tty/serial/8250/8250_pnp.c
+> index 1974bbadc975..25b4e41e9745 100644
+> --- a/drivers/tty/serial/8250/8250_pnp.c
+> +++ b/drivers/tty/serial/8250/8250_pnp.c
+> @@ -473,6 +473,7 @@ serial_pnp_probe(struct pnp_dev *dev, const struct pnp_device_id *dev_id)
+>  		uart.port.flags |= UPF_SHARE_IRQ;
+>  	uart.port.uartclk = 1843200;
+>  	device_property_read_u32(&dev->dev, "clock-frequency", &uart.port.uartclk);
+> +	device_property_read_u8(&dev->dev, "reg-shift", &uart.port.regshift);
 
+Is this property documented somewhere?  What happens if the property
+isn't there?
 
+thanks,
+
+greg k-h
 
