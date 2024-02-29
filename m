@@ -1,185 +1,97 @@
-Return-Path: <linux-kernel+bounces-87428-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87429-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43EBF86D44B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:34:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E57886D44D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:34:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED31028A1F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:34:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1774528A3F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:34:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBA6D142916;
-	Thu, 29 Feb 2024 20:34:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD45C144048;
+	Thu, 29 Feb 2024 20:34:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fwJQeXTg"
-Received: from mail-io1-f44.google.com (mail-io1-f44.google.com [209.85.166.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="bNlkcPD/"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 925321428E9;
-	Thu, 29 Feb 2024 20:34:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5C7414403D;
+	Thu, 29 Feb 2024 20:34:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709238866; cv=none; b=i9b7zWHolHnJKw+K0LPCPIiL/55BQh2SFadqGmHtXoiD70L8rv4Eleqt3elyAb/hj3W2TPY1S0hvIuC44ytgck7Tm/H+jAFhHJiCqK5HNbAZBzMaxkASzYbC5XbVtAKV26NG10qwDGk1d/M/7UiAJ++LiFFJjx1vDalB1mNJQ00=
+	t=1709238870; cv=none; b=t5C+TkWbft88+xze58RdjPG9dSTgSVAhW1jd3xHrpZTRFj32vD8IsoEQwstWwP7mglSy2OHHJqEmHIXZnwOALlfzYY5kB5EAJOp53hCan6eKgHPujRAN6v5mHEmpmAwWt9b0awxmEDdXw+Xgeab4fO1M7ruaQGrJwHeEpnXEMqs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709238866; c=relaxed/simple;
-	bh=/qMOZjK4wOU66llXQWpikqHl04X9ZcNrBvWKO/NBqYs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=krO0HSXrsTHccqADX407yIVaXwnkE/bCL7D5yWSZFx49+ayKe6pMnosXs0N0PPDcMPilsVyJ3NdjkI+T8xMZ+r+299OjGkQ5uP40NDFU92xue2Tf9NdJb4h7IQyFebkg/6LslG3WH5GvxJqTALr0eLpJs8KIytCSVmx9FCOrWgs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fwJQeXTg; arc=none smtp.client-ip=209.85.166.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f44.google.com with SMTP id ca18e2360f4ac-7beda6a274bso56162039f.2;
-        Thu, 29 Feb 2024 12:34:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709238863; x=1709843663; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=uWyCbx/KnUHajBSclYbeo2RRj4QEB1MMvqG8/oUha1A=;
-        b=fwJQeXTg/ThrAr1XoDCl0JKncohRKtEBiy6fEngFlueulvd4bBTSudnOnziiifLcpe
-         L18k8f3kfpUWapD8Z/Grd+beC8H+fnTAySeZQMbIs7NPQqV43eXVBFeGn3e1JKHdZx+B
-         YdB/VMT/asvQUCi42wwrS22okJ3PxQBiDDRK3wJ+pBVd0qnojQ8ciDHycKY4yBL0b5te
-         fOVLG7v2Xwy3ZIRmKG2PQhLmjA9fEZHcE1ndEhvEg7AA53eUdebaoEA5bgedZ/SbBbVy
-         45q5+oJfr1cwbuOhgZroEv3hCOkGREvBY7GJjh27yj4oocANev6fP+YoK3aFHumz0KIQ
-         i1SA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709238863; x=1709843663;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uWyCbx/KnUHajBSclYbeo2RRj4QEB1MMvqG8/oUha1A=;
-        b=ZGpICdHLb83nG2g0/MRz658nzZBqFxm2y2kbWk4Qz1+rNCNq9gPtReEOsthu0HQCj/
-         SuQokAe1kvLcETJXtUOhpxSVqgJMl9IZ0z73CNJqm2OnbG/IkEzCdpflDZ9vYJQ7RKv0
-         Qfs3qHutKeXRZMc8wXRYSboQF+/7Rw2ubgtYqARCz2DjDPlS62874MW5/jhyOvnx7vTg
-         yukRJ7UUy2v+nr0F4K0P+RyghduhjVJTFa21NBNTqZkUhPmOozcp+CQOcEbWLDtBqjgw
-         oCobcI/Qqwi3KsKsjv+FRkcog+sdyEIOuAyiVVbydW9KvFn2D7LO+9mVb10Au0J+625F
-         iJAA==
-X-Forwarded-Encrypted: i=1; AJvYcCUPNanlLunQ0cQs9AwYANwsqGQf7D7MOPM4/rxsJ9UFINGdY8S84oyQx8coimDbM9SbAeAhRRwhS0nevaZNLtjN+RzXq0k8wOe87gGdMj97Pc+UvKZBGiYoxmD7ekdHtli/7QrrEFm46UPKZI/s2PSaQE/kGFqqS5Uuu0Hghzl6SI5eJAIB
-X-Gm-Message-State: AOJu0YyFClFbC656RUYW9ZcazTrCaHNtQpBFpwq0ol52mmYVEs3k5Ujx
-	/CeoSDsAQx3H1kZiwtIIX0ZCLpxj8f06lygtu3nYQ4JlqUzx7k7y
-X-Google-Smtp-Source: AGHT+IEiAApsVihXRSxIc8hc0cSvprBrtWT8BW9l2wSnEkIraPiFiEUorC/zL7B+dTpU6MDQy1A/xw==
-X-Received: by 2002:a05:6602:3fc5:b0:7c7:f06c:eeff with SMTP id fc5-20020a0566023fc500b007c7f06ceeffmr81949iob.16.1709238862775;
-        Thu, 29 Feb 2024 12:34:22 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id bp11-20020a056638440b00b004744c109a60sm463991jab.122.2024.02.29.12.34.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Feb 2024 12:34:22 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <228845bb-1a90-42eb-b2d7-47007734535e@roeck-us.net>
-Date: Thu, 29 Feb 2024 12:34:20 -0800
+	s=arc-20240116; t=1709238870; c=relaxed/simple;
+	bh=IOKmOaZ3f+R9G99MWOPlPCNobJh93nKUWXF4w2ekTL8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fRgGf1w36Zh8aGsZ7ryLCei0U05RInZDpGufgPLRrg/l27F3spQQjEV/8XrA0i0F9pxzDiy0M807zvznJc+BdnjqhNhNVCa3YmWyh1nHMExvVqoKvMr2jjZ0oZ/scXIuU1HaYEPqg1JpVBkfVRFRpZzNjXcElqnQGmI5Ejo2DE8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=bNlkcPD/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB7A6C43390;
+	Thu, 29 Feb 2024 20:34:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1709238869;
+	bh=IOKmOaZ3f+R9G99MWOPlPCNobJh93nKUWXF4w2ekTL8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bNlkcPD/X0lmlYMd78MNbai443tQVDwo9uKnP1hs+9G/zFsw+X3iFzIubktGbOZfV
+	 n5qYc0N8U5x8JBE9oiHpvwYxHElib4be4iuMwUa1Mvrl2tPYHpCDallMK2n8k2ndu5
+	 hlSolO3NEv/Abhu7oPhu7kdHtnhlerXDaw/TM4GU=
+Date: Thu, 29 Feb 2024 21:34:26 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Guan-Yu Lin <guanyulin@google.com>
+Cc: Florian Fainelli <f.fainelli@gmail.com>, rafael@kernel.org,
+	pavel@ucw.cz, len.brown@intel.com,
+	andriy.shevchenko@linux.intel.com, rdunlap@infradead.org,
+	james@equiv.tech, broonie@kernel.org, james.clark@arm.com,
+	masahiroy@kernel.org, linux-kernel@vger.kernel.org,
+	linux-pm@vger.kernel.org
+Subject: Re: [PATCH v3] PM / core: conditionally skip system pm in
+ device/driver model
+Message-ID: <2024022901-getaway-bacon-b805@gregkh>
+References: <20240223143833.1509961-1-guanyulin@google.com>
+ <a299118d-eeec-40b4-9a3d-48dc40f34e12@gmail.com>
+ <CAOuDEK3wP6zhEwgUn5zSedtwTYVFaJeBfeXkSg897EhpGP9=ig@mail.gmail.com>
+ <3208c5b9-5286-48d1-81ab-cc3b2bc4303e@gmail.com>
+ <CAOuDEK39Bdru5wAbxW-g2c=POgRxZwdQzPO5uNXP96AfSyA6pw@mail.gmail.com>
+ <7292dc5c-dff0-45f0-99b1-f1687451b23f@gmail.com>
+ <CAOuDEK2OtAO7GqPzWkdC=SARkuHYGzqW4iPdFfMx8dyw4Cy+Lg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: lock warnings in dev_addr_lists test
-Content-Language: en-US
-To: David Gow <davidgow@google.com>
-Cc: Jakub Kicinski <kuba@kernel.org>, Eric Dumazet <edumazet@google.com>,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- Brendan Higgins <brendanhiggins@google.com>,
- linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com
-References: <48c4d3db-66d5-4a9a-ab9e-9036db7222dc@roeck-us.net>
- <CABVgOSnpOzOr3VuKZc3okhJqf1yvsEe56YPdWn15Ag_RDEZi8Q@mail.gmail.com>
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- xsFNBE6H1WcBEACu6jIcw5kZ5dGeJ7E7B2uweQR/4FGxH10/H1O1+ApmcQ9i87XdZQiB9cpN
- RYHA7RCEK2dh6dDccykQk3bC90xXMPg+O3R+C/SkwcnUak1UZaeK/SwQbq/t0tkMzYDRxfJ7
- nyFiKxUehbNF3r9qlJgPqONwX5vJy4/GvDHdddSCxV41P/ejsZ8PykxyJs98UWhF54tGRWFl
- 7i1xvaDB9lN5WTLRKSO7wICuLiSz5WZHXMkyF4d+/O5ll7yz/o/JxK5vO/sduYDIlFTvBZDh
- gzaEtNf5tQjsjG4io8E0Yq0ViobLkS2RTNZT8ICq/Jmvl0SpbHRvYwa2DhNsK0YjHFQBB0FX
- IdhdUEzNefcNcYvqigJpdICoP2e4yJSyflHFO4dr0OrdnGLe1Zi/8Xo/2+M1dSSEt196rXaC
- kwu2KgIgmkRBb3cp2vIBBIIowU8W3qC1+w+RdMUrZxKGWJ3juwcgveJlzMpMZNyM1jobSXZ0
- VHGMNJ3MwXlrEFPXaYJgibcg6brM6wGfX/LBvc/haWw4yO24lT5eitm4UBdIy9pKkKmHHh7s
- jfZJkB5fWKVdoCv/omy6UyH6ykLOPFugl+hVL2Prf8xrXuZe1CMS7ID9Lc8FaL1ROIN/W8Vk
- BIsJMaWOhks//7d92Uf3EArDlDShwR2+D+AMon8NULuLBHiEUQARAQABzTJHdWVudGVyIFJv
- ZWNrIChMaW51eCBhY2NvdW50KSA8bGludXhAcm9lY2stdXMubmV0PsLBgQQTAQIAKwIbAwYL
- CQgHAwIGFQgCCQoLBBYCAwECHgECF4ACGQEFAlVcphcFCRmg06EACgkQyx8mb86fmYFg0RAA
- nzXJzuPkLJaOmSIzPAqqnutACchT/meCOgMEpS5oLf6xn5ySZkl23OxuhpMZTVX+49c9pvBx
- hpvl5bCWFu5qC1jC2eWRYU+aZZE4sxMaAGeWenQJsiG9lP8wkfCJP3ockNu0ZXXAXwIbY1O1
- c+l11zQkZw89zNgWgKobKzrDMBFOYtAh0pAInZ9TSn7oA4Ctejouo5wUugmk8MrDtUVXmEA9
- 7f9fgKYSwl/H7dfKKsS1bDOpyJlqhEAH94BHJdK/b1tzwJCFAXFhMlmlbYEk8kWjcxQgDWMu
- GAthQzSuAyhqyZwFcOlMCNbAcTSQawSo3B9yM9mHJne5RrAbVz4TWLnEaX8gA5xK3uCNCeyI
- sqYuzA4OzcMwnnTASvzsGZoYHTFP3DQwf2nzxD6yBGCfwNGIYfS0i8YN8XcBgEcDFMWpOQhT
- Pu3HeztMnF3HXrc0t7e5rDW9zCh3k2PA6D2NV4fews9KDFhLlTfCVzf0PS1dRVVWM+4jVl6l
- HRIAgWp+2/f8dx5vPc4Ycp4IsZN0l1h9uT7qm1KTwz+sSl1zOqKD/BpfGNZfLRRxrXthvvY8
- BltcuZ4+PGFTcRkMytUbMDFMF9Cjd2W9dXD35PEtvj8wnEyzIos8bbgtLrGTv/SYhmPpahJA
- l8hPhYvmAvpOmusUUyB30StsHIU2LLccUPPOwU0ETofVZwEQALlLbQeBDTDbwQYrj0gbx3bq
- 7kpKABxN2MqeuqGr02DpS9883d/t7ontxasXoEz2GTioevvRmllJlPQERVxM8gQoNg22twF7
- pB/zsrIjxkE9heE4wYfN1AyzT+AxgYN6f8hVQ7Nrc9XgZZe+8IkuW/Nf64KzNJXnSH4u6nJM
- J2+Dt274YoFcXR1nG76Q259mKwzbCukKbd6piL+VsT/qBrLhZe9Ivbjq5WMdkQKnP7gYKCAi
- pNVJC4enWfivZsYupMd9qn7Uv/oCZDYoBTdMSBUblaLMwlcjnPpOYK5rfHvC4opxl+P/Vzyz
- 6WC2TLkPtKvYvXmdsI6rnEI4Uucg0Au/Ulg7aqqKhzGPIbVaL+U0Wk82nz6hz+WP2ggTrY1w
- ZlPlRt8WM9w6WfLf2j+PuGklj37m+KvaOEfLsF1v464dSpy1tQVHhhp8LFTxh/6RWkRIR2uF
- I4v3Xu/k5D0LhaZHpQ4C+xKsQxpTGuYh2tnRaRL14YMW1dlI3HfeB2gj7Yc8XdHh9vkpPyuT
- nY/ZsFbnvBtiw7GchKKri2gDhRb2QNNDyBnQn5mRFw7CyuFclAksOdV/sdpQnYlYcRQWOUGY
- HhQ5eqTRZjm9z+qQe/T0HQpmiPTqQcIaG/edgKVTUjITfA7AJMKLQHgp04Vylb+G6jocnQQX
- JqvvP09whbqrABEBAAHCwWUEGAECAA8CGwwFAlVcpi8FCRmg08MACgkQyx8mb86fmYHNRQ/+
- J0OZsBYP4leJvQF8lx9zif+v4ZY/6C9tTcUv/KNAE5leyrD4IKbnV4PnbrVhjq861it/zRQW
- cFpWQszZyWRwNPWUUz7ejmm9lAwPbr8xWT4qMSA43VKQ7ZCeTQJ4TC8kjqtcbw41SjkjrcTG
- wF52zFO4bOWyovVAPncvV9eGA/vtnd3xEZXQiSt91kBSqK28yjxAqK/c3G6i7IX2rg6pzgqh
- hiH3/1qM2M/LSuqAv0Rwrt/k+pZXE+B4Ud42hwmMr0TfhNxG+X7YKvjKC+SjPjqp0CaztQ0H
- nsDLSLElVROxCd9m8CAUuHplgmR3seYCOrT4jriMFBtKNPtj2EE4DNV4s7k0Zy+6iRQ8G8ng
- QjsSqYJx8iAR8JRB7Gm2rQOMv8lSRdjva++GT0VLXtHULdlzg8VjDnFZ3lfz5PWEOeIMk7Rj
- trjv82EZtrhLuLjHRCaG50OOm0hwPSk1J64R8O3HjSLdertmw7eyAYOo4RuWJguYMg5DRnBk
- WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
- HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <CABVgOSnpOzOr3VuKZc3okhJqf1yvsEe56YPdWn15Ag_RDEZi8Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOuDEK2OtAO7GqPzWkdC=SARkuHYGzqW4iPdFfMx8dyw4Cy+Lg@mail.gmail.com>
 
-On 2/29/24 00:10, David Gow wrote:
-> On Thu, 29 Feb 2024 at 03:45, Guenter Roeck <linux@roeck-us.net> wrote:
->>
->> Hi,
->>
->> when running the dev_addr_lists unit test with lock debugging enabled,
->> I always get the following lockdep warning.
->>
->> [    7.031327] ====================================
->> [    7.031393] WARNING: kunit_try_catch/1886 still has locks held!
->> [    7.031478] 6.8.0-rc6-00053-g0fec7343edb5-dirty #1 Tainted: G        W        N
->> [    7.031728] ------------------------------------
->> [    7.031816] 1 lock held by kunit_try_catch/1886:
->> [    7.031896]  #0: ffffffff8ed35008 (rtnl_mutex){+.+.}-{3:3}, at: dev_addr_test_init+0x6a/0x100
->>
->> Instrumentation shows that dev_addr_test_exit() is called, but only
->> after the warning fires.
->>
->> Is this a problem with kunit tests or a problem with this specific test ?
-> 
-> A bit of both, I think. KUnit test cleanup is not guaranteed to run in
-> the same thread as the test, so that definitely is triggering lockdep
-> warnings.
-> 
-> On the other hand, we really should make this particular case work in
-> KUnit. Ideally test cleanup will happen on the test thread first, and
-> only fall back to another test if the test thread otherwise aborted.
-> 
-> So, this is probably something we won't be able to fix if the test
-> fails, but it definitely shouldn't be happening here where it passes.
-> I'll look into fixing that.
-> 
+On Thu, Feb 29, 2024 at 05:08:00PM +0800, Guan-Yu Lin wrote:
+> We want to introduce a mechanism that allows the Linux kernel to make
+> power transitions for the peripheral based on whether the other
+> operating system kernel is actively using it. To achieve this, we
+> propose this patch that adds a sysfs attribute, providing the Linux
+> kernel with the necessary information.
 
-Other tests seem to have similar problems with locking:
+Don't create random user/kernel apis in sysfs for no good reason just
+because it is "easy" :(
 
-[   25.762445]         # Subtest: drm_vc4_test_pv_muxing
-[   25.845857] [drm] Initialized vc4 0.0.0 20140616 for drm_vc4_test_pv_muxing.drm-kunit-mock-device on minor 0
-[   25.859603]
-[   25.859867] ====================================
-[   25.860085] WARNING: kunit_try_catch/1729 still has locks held!
-[   25.860354] 6.8.0-rc6-00066-g1c8c39f56e47-dirty #1 Tainted: G        W        N
-[   25.860675] ------------------------------------
-[   25.860918] 2 locks held by kunit_try_catch/1729:
-[   25.865468]  #0: ffff17e04945d850 (crtc_ww_class_acquire){+.+.}-{0:0}, at: drm_kunit_helper_acquire_ctx_alloc+0x44/0xd4
-[   25.866383]  #1: ffff17e047042518 (crtc_ww_class_mutex){+.+.}-{3:3}, at: modeset_lock.part.0+0x134/0x1d0
+If the "other operating system is actively using it" isn't able to be
+detected by Linux, then Linux shouldn't be able to change the PM state,
+so this sounds like you need to fix your Linux driver to properly know
+this information, just like any other device type (think about a sound
+device that needs to know if it is being used or not, nothing different
+here.)
 
-Guenter
+So please post your Linux driver and we can see what needs to be done
+there to get this to work properly, odds are you are just missing
+something.  Have a pointer to the code anywhere?
 
+Also, as you know, we can NOT add interfaces to the kernel without any
+real user, so without a driver for your hardware, none of this is able
+to go anywhere at all, sorry.
+
+thanks,
+
+greg k-h
 
