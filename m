@@ -1,87 +1,110 @@
-Return-Path: <linux-kernel+bounces-87154-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87156-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A63D86D05B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:18:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAA0A86D060
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:19:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8CB4E1C21823
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:18:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2C888B23A16
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:19:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F231A6CC0E;
-	Thu, 29 Feb 2024 17:18:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1FE76CC0A;
+	Thu, 29 Feb 2024 17:19:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C30cjscs"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="WCoLnECL"
+Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FFBE4AED8;
-	Thu, 29 Feb 2024 17:18:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 211CC383BB
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 17:19:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709227108; cv=none; b=WQudx63kkEPlP8HIPKeA8dUk7xk5/+WpUR+Lm8e0Uobde7esXJ/zqvh1Eh3mj+mB9cdqI0eyo4JxBm4Ghe08XPymTNkvDW4XBb1aIxd4gkceM1mwUbY2OD4D76GjlrLtjFq06sH9o2nR5hEtFbP8UHiAEGbR8gH0IH1a+hv9JoA=
+	t=1709227182; cv=none; b=R+D86E0MDrAkUfvKRvz/5Xfa0Hp7xg5zpBRlIytwU12nIJpVb6jSsdz3408TBaUfDLOQdLJ611zdnyg0/Sh97+MJwRRuonau+WVt//rYJs7/ppGWPKnbSg9ag3Km1Po499FAqXTBiUqXKKxUaHh1iZWSTQ6rq3zu2S2gjDuqOHQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709227108; c=relaxed/simple;
-	bh=+ZMo9iEMsSfz6V8Ou27C1FUbJqgrktdBSS/LmjvzYAo=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=lK7/kiCF1WRURLM6ux4IfVEzhmBK/YcvyxmJXxZZDg7RR977uVgBKOC6lUHwO5vVM/cKqqudSGhYUQi0n1RjmHqXWYd7GGyKMBD13EyOw90xw5DUFRh8vuSB2p2kTFmq6m/BwNl7K8qqQdLpmgFtiwys98O7K3/2E7aPrNQWd8k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C30cjscs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DA16C433F1;
-	Thu, 29 Feb 2024 17:18:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709227107;
-	bh=+ZMo9iEMsSfz6V8Ou27C1FUbJqgrktdBSS/LmjvzYAo=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=C30cjscst84mSSST8nBsirG+OfbAQON5hFMVORfzIaT1fNwG5X2+Eo6SpO4rI7iJs
-	 xpe9SXUxPA2WiVTbFKr2YOw6Ocub3AxcAqNwQHOa+qt7b7nUrT3YhZjbiQWmY18Y6X
-	 b4/yNIMexku+SIWin/2r1UxmIxA0+JQx+h0NgWyYexKVW4RaSLmbHm58ngpsnbfnR3
-	 Erb/sTy3XbNfAbA5gQzsjrBkZgTIDiOtKUSK7+qkGdSyxF71kv+Z3xwia2VpVlLCvG
-	 sHVznouwYKssgYFofqxmogJ4JYHg5WPCPWPrxuRFj2aF/UcO5oI3G7tRwps0B5YiwP
-	 rGqIFLAUDa7KA==
-From: Lee Jones <lee@kernel.org>
-To: Pavel Machek <pavel@ucw.cz>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
-Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
- Matthias Brugger <matthias.bgg@gmail.com>, linux-leds@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-kernel@vger.kernel.org, 
- =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>
-In-Reply-To: <20240223112223.1368-1-zajec5@gmail.com>
-References: <20240223112223.1368-1-zajec5@gmail.com>
-Subject: Re: (subset) [PATCH] dt-bindings: leds: Add
- LED_FUNCTION_WAN_ONLINE for Internet access
-Message-Id: <170922710524.1611805.15418765168874516395.b4-ty@kernel.org>
-Date: Thu, 29 Feb 2024 17:18:25 +0000
+	s=arc-20240116; t=1709227182; c=relaxed/simple;
+	bh=6+rl/GJVImeAP5L4FgFElC4Bja1VWI5nUPej4fO1So4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bY2MM8aM2OBly8Z/Q4K4Ct3UAoHRyuISflat2bzCCiiJQj2Pn/AqXnpOT+FcAO202/gtoRMGiKFdAYNughU7DjJ5bsn/Pdkzf4nXkSF7W8EMAKvHMiHOOqGiXobGPvx1RwvdfxGTgdx4jG6U6Yb3EsLvcC4GYGgtkDtyF5Z4/wU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=WCoLnECL; arc=none smtp.client-ip=209.85.166.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-3651ee59db4so1303405ab.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 09:19:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1709227178; x=1709831978; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=nOgy56I4Hpij+0HEOIiQF0kFHBK0lqM4qJcV/nWXy5g=;
+        b=WCoLnECLH1NUbvB9TmZacgdLottY0zEYjRkNh4TG0QlMKaCcfQeHpTOnRZeSHcXfLA
+         vveDG5kI/2k4E+4QCddNBTCbi8P9RlRFOxUBmbeC6Yb8blV4VASrdMe0y3POiTCCyWYj
+         ZXOdHcFYW4dsTeft1IuPbt125yN0YW7in6WADsLaYJYsex+qkEev+RFPTfPE2VKGSCMj
+         PCQEoxzHjE1GfBGr3rqdWOPwrE0KqZDdzSskFapLBGLCc539wsa8/H7AUyh//7Z5SRKl
+         sriXyxErrERkv8edUVAoc5h5mKsJwyuonyUA6wIe2IwPjx09TrHiqtET7w1fz87b4Grd
+         sSxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709227178; x=1709831978;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nOgy56I4Hpij+0HEOIiQF0kFHBK0lqM4qJcV/nWXy5g=;
+        b=uGmKbfTKgfJCCV/YnJZeR1Ia8E5YIMyD+OqRvcMJcYQSX9wA6OTXMGXKmyQc1dIpK2
+         xb7aGCqn0ywKsKWZCitsbDZpoLSl91G5OY4xlQ9xWx2RlkONqcxxYdlHY2gn/07n1C7G
+         Gb3vUxp7HyPZK+EtLim+ISG2Dv625IZ003o1Qp21YLQo2xfGvzaFhitpG8KasSOFcvj1
+         xcY4NvfRBA9+pUgT/odg3N9qer40mDUb2V0gBPdQd5MCSpWdb2pfQflQK8oo+8VIRY1S
+         CsYMJyzhV4AzDRQq3ke2kJzi6cEWOeJZ1Ol2CyVi/IWuCm0tw4te/vXx18yV3/7tY1j8
+         8ANA==
+X-Forwarded-Encrypted: i=1; AJvYcCWDDOO1Ahyw4xBRxngok6ErtdJChPlk3QyuOjY+GaWkMLwx2g1jgRSt7BTKmmyLeUlmLU3WD0ZKA3s4kZljaJPyIug/haJBdyrxNmS9
+X-Gm-Message-State: AOJu0YzFx/GGkTjWE0IJpmuaZv23M6GjXLJcGF4FBOkEJFLIZgaMzWFG
+	f1NPqMOPASmOOxC+OPE6DDHWc0uok5ReekhEVpjBhdqIMG89bX1XQivXST4+f8Q=
+X-Google-Smtp-Source: AGHT+IGKS/vzutMl+3Z3yfI9+PyG1fFtEDiGpu7nqJq12sQy7kqUUVuEOO2U3Bz+ISy7w+atkzDp5g==
+X-Received: by 2002:a05:6602:2561:b0:7c7:b54b:19b0 with SMTP id dj1-20020a056602256100b007c7b54b19b0mr2982780iob.0.1709227178021;
+        Thu, 29 Feb 2024 09:19:38 -0800 (PST)
+Received: from [192.168.1.116] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id z11-20020a056638000b00b00472d64a444csm405509jao.62.2024.02.29.09.19.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Feb 2024 09:19:37 -0800 (PST)
+Message-ID: <c3abe716-3d8f-47dc-9c7d-203b05b25393@kernel.dk>
+Date: Thu, 29 Feb 2024 10:19:36 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.12.4
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] sched/core: switch struct rq->nr_iowait to a normal
+ int
+Content-Language: en-US
+To: Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
+Cc: peterz@infradead.org, mingo@redhat.com
+References: <20240228192355.290114-1-axboe@kernel.dk>
+ <20240228192355.290114-2-axboe@kernel.dk> <8734tb8b57.ffs@tglx>
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <8734tb8b57.ffs@tglx>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, 23 Feb 2024 12:22:23 +0100, Rafał Miłecki wrote:
-> It's common for routers to have LED indicating link on the WAN port.
+On 2/29/24 9:53 AM, Thomas Gleixner wrote:
+> On Wed, Feb 28 2024 at 12:16, Jens Axboe wrote:
+>> In 3 of the 4 spots where we modify rq->nr_iowait we already hold the
 > 
-> Some devices however have an extra LED that's meant to be used if WAN
-> connection is actually "online" (there is Internet access available).
+> We modify something and hold locks? It's documented that changelogs
+> should not impersonate code. It simply does not make any sense.
+
+Agree it doesn't read that well... It's meant to say that we already
+hold the rq lock in 3 of the 4 spots, hence using atomic_inc/dec is
+pointless for those cases.
+
+> Other than that:
 > 
-> It was suggested to add #define for such use case.
-> 
-> [...]
+> Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
 
-Applied, thanks!
+Thanks for the review!
 
-[1/1] dt-bindings: leds: Add LED_FUNCTION_WAN_ONLINE for Internet access
-      commit: c0ef9799df8756968c236720658e492fbe636064
-
---
-Lee Jones [李琼斯]
+-- 
+Jens Axboe
 
 
