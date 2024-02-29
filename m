@@ -1,165 +1,128 @@
-Return-Path: <linux-kernel+bounces-86794-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86792-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7630F86CAE3
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:01:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBA9886CADE
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:00:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25305284182
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:01:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7AF101F2384E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:00:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12DE7135A64;
-	Thu, 29 Feb 2024 14:00:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 289A212EBD0;
+	Thu, 29 Feb 2024 14:00:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xuw+ahxL"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="YiZL+a3X"
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5E5C1361C2;
-	Thu, 29 Feb 2024 14:00:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D91A7E11C;
+	Thu, 29 Feb 2024 14:00:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709215243; cv=none; b=IJ8C2RVo83hR+IJIMoIzRpbw7RQzGxEq/MLuFIyjoSSX2Db4en0PB37bms3c186XoUivVOYXsi73vX1iBD/ksTkFU9PZvKWogWcwNudrgFDALJN3ekeqVmDdWDSsOPJF/FjoJlc3Yxp6pDFDlxNw4jbHWDBjAdpcsJ7zm7nBb1s=
+	t=1709215228; cv=none; b=b5EP88rFbwLHsfBF22rnHQfWO8Sylx5IK7FZc7aAZfEKjWKXQKBAzzmaKV35VrRNK3rsPWLkjwmfPPEP79pHctNhkQmZuMfhULqHTjis/WX48OoteP/zD/tJYBFHHI46mo0RyApLJLB/EXjty2RtsfAce7SNgcF3e2/voOYgg28=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709215243; c=relaxed/simple;
-	bh=wwJQMdpI6wzPFkGbG61u25Um1c0sM/55HL3azw3uZDc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-type; b=RO/2z2y7zdwL+16b7EJKWwfA9KzqH8/nkjxBVGbJqHXov3NQkkViUVFkCdcCaph02mJMRYb0vv7BG/MenB6swa+mv/GYMm9IFOD8zQXiIw83r1wKAMdwWSbMEsgcyjSBDsf2WvBGXx/VXH0HGwf8UoDj3nKj8LnImlReZEIo8rU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Xuw+ahxL; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-412c29da53dso1239545e9.0;
-        Thu, 29 Feb 2024 06:00:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709215240; x=1709820040; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=TV6GRMDY8Scq8jpKm5RnkX4lQVf+6dmwO1naHKeWIUI=;
-        b=Xuw+ahxLqRqSRI/JEigA+SohwZhihulykE/iIuXMl8xEVf4l5DAN89baFeDxoAbiIf
-         OYr0xonMSL9qbJ5Z2NuavZzlw8c1kMj65D57glMedBII1fiJWlRpVi7bVS6kH7OLaXbb
-         DxX/iytfOnxKJpg/obhlTFAMLZqKMllCbt5Tr4wwHlVZK+c9HfmAIWo6auBlDQjHLni4
-         GMx+qL3MRmcOM5CglWARNVER3XjlmEHrhPPfhtRm6TimrbBRcmAErHShvLacYlYUZMgC
-         DskH1PMxs5F5epa5lTzrKQssneS2e3OFLofGpgfxnv1tAueu46Y1e4OW8GTPVm0JoJSk
-         wYEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709215240; x=1709820040;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TV6GRMDY8Scq8jpKm5RnkX4lQVf+6dmwO1naHKeWIUI=;
-        b=j6F0S5WJ0V0MJFAGKboReM+AU2J1N3DdgKHI023b0jp2hLuIKyuOrdXBN3cnfgb5Gu
-         fjVTOgtxTUl1jxqcyvDlwnSpPdM95qxRbdSodlYgUYr66pbrcYQCEgr8MulZSgIg0pIE
-         Qem1f0aKb8OE5reiUCvevqO0vD4noctTYj/BL3ZXEyE+W/2LCziKXSVa6ZVWEEZbtL7i
-         mPcx8cKVdO+IUTa/x+WVBTxwx1wr0EKj/WOzWXoqXlCz2TQeZwrpeGdMff6wkNwPqH9Y
-         u6Vo3woa1pe27LPcGvhYmDDnZBhVfdNv60XLXCwUrB91RzAdii3vg+gVifEvJxu0wPIJ
-         Ko8A==
-X-Forwarded-Encrypted: i=1; AJvYcCU0TmzmY3rxPRQLoiyeYwmn5wAbNZ1uyltMuuYEsv2uoXGzfqhbUGv14sPV7vtw+XyGAoz+P0nTbuRgJ9FkKvWFKU46Ir3NwZ8pBXLVOCWhtRJgyTwNKHUCCQXQlujHWIbzi9lM1smUTyAlw0c2jsfl38hEXUPYj02GxjwFvLWcgj/X
-X-Gm-Message-State: AOJu0Yy8oDQyMVdVybdr8Si/rjbe3lYoT92j7Tt/utF1Q2SWhSoCKPe+
-	Oe6CjSipwxd6ssdNvuWt6wkZZGRfD/cRXpR/zzTViWSJ0iDB+7HO
-X-Google-Smtp-Source: AGHT+IEwf+/RVY7fF3mXhgA46Gx6Z7+tKPEdgZuVHVJ3dqiO6lqa68xkSLU+gRMERE5GETkvkB7+og==
-X-Received: by 2002:a05:600c:3512:b0:410:e43d:24e9 with SMTP id h18-20020a05600c351200b00410e43d24e9mr2137532wmq.22.1709215239735;
-        Thu, 29 Feb 2024 06:00:39 -0800 (PST)
-Received: from lab.hqhome163.com ([194.183.10.152])
-        by smtp.googlemail.com with ESMTPSA id g8-20020a05600c310800b00412b0ef22basm2216853wmo.10.2024.02.29.06.00.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 06:00:39 -0800 (PST)
-From: "Alessandro Carminati (Red Hat)" <alessandro.carminati@gmail.com>
-To: Andrii Nakryiko <andrii@kernel.org>,
-	Shuah Khan <shuah@kernel.org>
-Cc: Mykola Lysenko <mykolal@fb.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Alessandro Carminati <alessandro.carminati@gmail.com>,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] tools/testing/selftests/bpf/test_tc_tunnel.sh: Prevent client connect before server bind
-Date: Thu, 29 Feb 2024 14:00:00 +0000
-Message-Id: <20240229140000.175274-1-alessandro.carminati@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1709215228; c=relaxed/simple;
+	bh=9aTKfiP16X2IfNlrgDgZsUeZoHQ/POniTIXliywY110=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=K9I7OxFz0mQlAWFJt86BzDaM9BmuhjS93qhO4sjFU/zzpf8D1/HehrYvQ9eBjg6kwROmOS7EgxlZoHCsjWnaIfO9zcjCTTyRRdddGfQDmhVhhOqI4zL+rkuehtZFLTp00VsWzyUxWJxSpX10VUG4euTIsKTLcSzDl1+JogGXT3g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=YiZL+a3X; arc=none smtp.client-ip=217.70.183.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 11B8620016;
+	Thu, 29 Feb 2024 14:00:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709215221;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hSOPpxQOP4tSJrjvsMisvQMfvQyAh9en8MuxIImByDQ=;
+	b=YiZL+a3XES1qyOHC+3RPd4Wicyg9/e1BDpmcZlQI10R7AwwJpKtJLLcBDZK8qRWGwmIoyI
+	SMf2A8WVH+r3icOonZL9CUwLpHnp2JXqzeOGSTWaOmNLL8v6W+Ua53IT3KShINy0TeJNKp
+	6tWeQF0+S/vkqqqKdvq7cxffnMYRPgzGegiPmh5bv0zbUEVCMH2zfsZQWpclBNpVHMw/uz
+	uwFONn9LTssn8EFc6tjvtOLL1QXz7E2q4SPrkRbCY3S0C0pweVnATMxq92LQgXqDbJTXGi
+	2Gs/7mGeAaswXnhWHp5u+gnTGZIkyznmECNYZN+c7lWPZKMaWVVXg2w+UUvHgw==
+Date: Thu, 29 Feb 2024 15:00:19 +0100
+From: Herve Codina <herve.codina@bootlin.com>
+To: "Rafael J. Wysocki" <rafael@kernel.org>, Nuno =?UTF-8?B?U8Oh?=
+ <noname.nuno@gmail.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Rob Herring
+ <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, Lizhi Hou
+ <lizhi.hou@amd.com>, Max Zhen <max.zhen@amd.com>, Sonal Santan
+ <sonal.santan@amd.com>, Stefano Stabellini <stefano.stabellini@xilinx.com>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Allan Nielsen
+ <allan.nielsen@microchip.com>, Horatiu Vultur
+ <horatiu.vultur@microchip.com>, Steen Hegelund
+ <steen.hegelund@microchip.com>, Luca Ceresoli <luca.ceresoli@bootlin.com>,
+ Nuno Sa <nuno.sa@analog.com>, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, stable@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] driver core: Introduce
+ device_link_wait_removal()
+Message-ID: <20240229150019.07e6f7be@bootlin.com>
+In-Reply-To: <CAJZ5v0jwXiJU6SMwHZUJ0RVhGTmiwX1ijx4UcgbYdM6SnftSfA@mail.gmail.com>
+References: <20240229105204.720717-1-herve.codina@bootlin.com>
+	<20240229105204.720717-2-herve.codina@bootlin.com>
+	<9cc3d11bc3e1bb89a1c725f865d0c8d1494111c5.camel@gmail.com>
+	<CAJZ5v0hGfqrczS1Si8Bu67vTSkTKO_gO7ftO2R7CQxGKGWsbAA@mail.gmail.com>
+	<af8a97f3a187cc403b6184948d3e335ee83f44ec.camel@gmail.com>
+	<CAJZ5v0jwXiJU6SMwHZUJ0RVhGTmiwX1ijx4UcgbYdM6SnftSfA@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-type: text/plain
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
 
-In some systems, the netcat server can incur in delay to start listening.
-When this happens, the test can randomly fail in various points.
-This is an example error message:
-   # ip gre none gso
-   # encap 192.168.1.1 to 192.168.1.2, type gre, mac none len 2000
-   # test basic connectivity
-   # Ncat: Connection refused.
+Hi Rafael,
 
-Signed-off-by: Alessandro Carminati (Red Hat) <alessandro.carminati@gmail.com>
----
- tools/testing/selftests/bpf/test_tc_tunnel.sh | 19 ++++++++++++++++++-
- 1 file changed, 18 insertions(+), 1 deletion(-)
+On Thu, 29 Feb 2024 14:10:58 +0100
+"Rafael J. Wysocki" <rafael@kernel.org> wrote:
 
-diff --git a/tools/testing/selftests/bpf/test_tc_tunnel.sh b/tools/testing/selftests/bpf/test_tc_tunnel.sh
-index 910044f08908..01c0f4b1a8c2 100755
---- a/tools/testing/selftests/bpf/test_tc_tunnel.sh
-+++ b/tools/testing/selftests/bpf/test_tc_tunnel.sh
-@@ -72,7 +72,6 @@ cleanup() {
- server_listen() {
- 	ip netns exec "${ns2}" nc "${netcat_opt}" -l "${port}" > "${outfile}" &
- 	server_pid=$!
--	sleep 0.2
- }
- 
- client_connect() {
-@@ -93,6 +92,22 @@ verify_data() {
- 	fi
- }
- 
-+wait_for_port() {
-+	local digits=8
-+	local port2check=$(printf ":%04X" $1)
-+	local prot=$([ "$2" == "-6" ] && echo 6 && digits=32)
-+
-+	for i in $(seq 20); do
-+		if ip netns exec "${ns2}" cat /proc/net/tcp${prot} | \
-+			sed -r 's/^[ \t]+[0-9]+: ([0-9A-F]{'${digits}'}:[0-9A-F]{4}) .*$/\1/' | \
-+			grep -q "${port2check}"; then
-+			return 0
-+		fi
-+		sleep 0.1
-+	done
-+	return 1
-+}
-+
- set -e
- 
- # no arguments: automated test, run all
-@@ -193,6 +208,7 @@ setup
- # basic communication works
- echo "test basic connectivity"
- server_listen
-+wait_for_port ${port} ${netcat_opt}
- client_connect
- verify_data
- 
-@@ -204,6 +220,7 @@ ip netns exec "${ns1}" tc filter add dev veth1 egress \
- 	section "encap_${tuntype}_${mac}"
- echo "test bpf encap without decap (expect failure)"
- server_listen
-+wait_for_port ${port} ${netcat_opt}
- ! client_connect
- 
- if [[ "$tuntype" =~ "udp" ]]; then
--- 
-2.34.1
+..
+
+> > > > > +void device_link_wait_removal(void)
+> > > > > +{
+> > > > > +     /*
+> > > > > +      * devlink removal jobs are queued in the dedicated work queue.
+> > > > > +      * To be sure that all removal jobs are terminated, ensure that any
+> > > > > +      * scheduled work has run to completion.
+> > > > > +      */
+> > > > > +     drain_workqueue(device_link_wq);
+> > > > > +}  
+> > > >
+> > > > I'm still not convinced we can have a recursive call into devlinks removal
+> > > > so I
+> > > > do think flush_workqueue() is enough. I will defer to Saravana though...  
+> > >
+> > > AFAICS, the difference betwee flush_workqueue() and drain_workqueue()
+> > > is the handling of the case when a given work item can queue up itself
+> > > again.  This does not happen here.  
+> >
+> >
+> > Yeah, that's also my understanding...  
+> 
+> Moreover, IIUC this is called after dropping the last reference to the
+> device link in question and so after queuing up the link removal work.
+> Because that work does not requeue itself, flush_workqueue() is
+> sufficient to ensure that the removal work has been completed.
+> 
+> If anyone thinks that it may not be sufficient, please explain to me
+> why you think so.  Otherwise, don't do stuff to prevent things you
+> cannot explain.
+
+I will move to flush_workqueue() in the next iteration.
+
+Thanks for the review and the confirmation on this topic.
+
+Best regards,
+Hervé
 
 
