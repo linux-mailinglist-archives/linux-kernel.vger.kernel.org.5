@@ -1,80 +1,73 @@
-Return-Path: <linux-kernel+bounces-86259-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86262-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B71186C302
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:04:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5188786C30B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:05:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3108C288144
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:04:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5AD721C21B55
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:05:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6120047F73;
-	Thu, 29 Feb 2024 08:04:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 459A44CDE5;
+	Thu, 29 Feb 2024 08:05:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="YXEhbrYi"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JJcyCqy8"
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0DFE25630
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 08:04:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A9E847F42
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 08:05:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709193885; cv=none; b=f9oteQC8ZGyuRj+0tHUwtXnzdATVoFwxbaxmV0aFCnb6rSbM0EEYFcwAaqtX3Az/KmDtANDsRTD2CEj+CXkSHlYE16d5YuUndjt/q7V+zuoAn8IbKlMLZXW0NLBdaOMKC09bJzm4D5cbQrDUacw39xasgqvd1JQtZiOJg6HQdl0=
+	t=1709193939; cv=none; b=nnPY9V+fiOImclxG9DFAPNbfra0wS0r1jdW7lb0J9mxvEFj4RsMtRC4JcCx9qGCnYPR0h7dz/SyZeLiEuADEcQZZFaZoKgdDFc5tj5ITz231WFXc+B3P/KjcROHHj16xHV1WrUDPtiXKbq7SsX8JwrDWONIP0CDtoBLjeqC3p4c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709193885; c=relaxed/simple;
-	bh=1wCU2OdfGTf2Pk+hKAfOdXzpfNAMSl5L8KXtLBWlo/Y=;
+	s=arc-20240116; t=1709193939; c=relaxed/simple;
+	bh=YGBjBkU++BLi61ypdpIsyTQA1kq7ZmRX3WKk+zJ4CNs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MIOKZ9+SYJQTbqTZNzIi+uctDkvxAlzWMyjM2+d18wyRa7Jg/WU6GAhWDTuntYuzsROTbnnUzauLXmg+198VY1cAVRmmXjSfX7Iqd9cTYLonLT4SnVQRgKLmE4J4wklDwY0dQbLXQyoCq81xejTxgzlW5izU1CW+9S/fSfZWaDw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.vnet.ibm.com; spf=none smtp.mailfrom=linux.vnet.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=YXEhbrYi; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.vnet.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.vnet.ibm.com
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41T82PjR025147;
-	Thu, 29 Feb 2024 08:04:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=vNCloWa9rpkjDgB/cpjEFdYXPVzWq/UH1dD4hpZWK10=;
- b=YXEhbrYiYumGo0s0+qq3gTKDgMd5p5DmHMJx/g4YedGydPVZPC8k6BOHkAc4rvZIGZfu
- W4uAXTg9u714wGCRXFhK5M6tDLbOVGUo9JKCON5KTooPlumbOygUwVA/7QLfuMYB1AzZ
- SFIrW2KqR9A6dO47KgNwoANSGcVT00bAW2D5pSLtqpGfEJdEpLZ2nThEeNCcQ8YUWbDf
- gZsKOJctpWGWD0FgLTP4rQTHDzHzeOfMGSQ1J0WDjp2swiPGk+XEzBLciZMCKlNiWXVR
- RlZqJAzz86rtsFzumNentGL9mHqrJOizxkpOcTR7l0Nb04R/weRlfgZIbenB/OVkFnRe 9w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wjp2hr44e-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 29 Feb 2024 08:04:26 +0000
-Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41T83DM8031184;
-	Thu, 29 Feb 2024 08:04:26 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wjp2hr43e-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 29 Feb 2024 08:04:25 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41T5UpL8021316;
-	Thu, 29 Feb 2024 08:04:25 GMT
-Received: from smtprelay03.dal12v.mail.ibm.com ([172.16.1.5])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3wfuspbwfy-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 29 Feb 2024 08:04:25 +0000
-Received: from smtpav03.wdc07v.mail.ibm.com (smtpav03.wdc07v.mail.ibm.com [10.39.53.230])
-	by smtprelay03.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41T84Mnh40042988
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 29 Feb 2024 08:04:24 GMT
-Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 1B18C5805C;
-	Thu, 29 Feb 2024 08:04:22 +0000 (GMT)
-Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8EB9958079;
-	Thu, 29 Feb 2024 08:04:17 +0000 (GMT)
-Received: from [9.43.32.108] (unknown [9.43.32.108])
-	by smtpav03.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Thu, 29 Feb 2024 08:04:17 +0000 (GMT)
-Message-ID: <a1fdd2c2-4443-458e-86db-280e7cbd4a36@linux.vnet.ibm.com>
-Date: Thu, 29 Feb 2024 13:34:15 +0530
+	 In-Reply-To:Content-Type; b=GZ97z2E3ixh+q5iGUSGU+U20YA4WQ0CVXpYNkdLV2Mlf3jjpSIoyE0Am/9hnIObNJd8m2ueQS4Z4SwRzwWwXPWnn0NRzLJtcfoYIU/2T+Lhhs6/286AnUxt30ESDufvpaAXHgRAKx19CdN8IDJQJqXgiYTwTfHWGhGpm+DKCl/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=JJcyCqy8; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a3ee69976c9so107025666b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 00:05:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709193936; x=1709798736; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rN/E8RpF83uPbogI40q5YZ50rCteBPnh7UB/0xjqm+I=;
+        b=JJcyCqy8wK6mRHqib512hl5woaLKl0B2Fn65fc4fa+VgLkJlxC3gQ18roxSS0ZZsm6
+         FBMcmINfvoMt3PTWUqLIBGBVMmAPW4inl2NPkn/LB3VrmVxVNMA6j4ih5w32paZSj8uX
+         v3T+/PKEyOMYsIhOpK+Cm1sHKCOiBWTKurjyb8wqm0FRMdGykYXGiLak4e7a5r/00YtX
+         XLENSJ0oLtGhqFQ1bwMumZ7M2iYoAfehBV8ztzCANKeLStuZA2K15Ap5Y0Q5drTRe1k4
+         1QdLaS+c0Ge23eFK0yXRU2G4t5kkry/TN/vN58bEthp+twKUtjEmAvpDzRPLuDG7csYU
+         LZ1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709193936; x=1709798736;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rN/E8RpF83uPbogI40q5YZ50rCteBPnh7UB/0xjqm+I=;
+        b=Uln+XXB4q27TqMk4aMhhx6XhsJMysBP34LfBgpqbvZ8XHX/tq7mu1+GbFX3KLzhJvd
+         d3BVdOPS4AGDCgjGw5VjVZfI5h1vJVK2dVyfR5n+aW//kamUzjAfi9aDkm9cSHEHapJm
+         8d3kgG6i3xY+2MNbZ5xCAegshYlmT0BZuuAJLj4Xy28mlCz8YxWtToKvefgg1gkhPzZi
+         1U5iCOBRhen26DgIU7j0e3N8wMe4JRE2uOAiezW+8SIEYAvbINXpWzJQRdCOIDjtBhov
+         /sRdIjiz8v6Dnv9I0AvId/6YsGA8BXw9pOG8B9rX5ML0uTJJ307yaUlsQkUzFtOap/sp
+         UycQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX1KAwtlWaHMV6T2sj0XcAS/2LrxFZhFi8Yl95zy9Ks7VH89wpsgM9asArKzjGgfbSZV9yPhdIb3xECEqn9zOqrBabHBiy6RZ9MWWQV
+X-Gm-Message-State: AOJu0YyTP+X6Rm3Am1ZwZcNNZ0kpZpK/8vdvtrzshFTnyhCsLFL1GsQ5
+	y+SDk1xGghfYh9jxV7XkirmSau+FDTIKOTbSYTrofl8Dwd7qEIVpFWigGazNlGY=
+X-Google-Smtp-Source: AGHT+IFPI0388h2HvC0k28zze36/4Wly2yARAU2Bxc24NwqUSyB8WM3TT3v2AYCSXbiBHtVzeB2StA==
+X-Received: by 2002:a17:906:f198:b0:a3f:9629:d305 with SMTP id gs24-20020a170906f19800b00a3f9629d305mr907374ejb.28.1709193935942;
+        Thu, 29 Feb 2024 00:05:35 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id p20-20020a1709060e9400b00a3da3152c54sm413677ejf.78.2024.02.29.00.05.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Feb 2024 00:05:35 -0800 (PST)
+Message-ID: <cd990080-4bb3-4b01-82fa-547c5b1e6c08@linaro.org>
+Date: Thu, 29 Feb 2024 09:05:33 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,329 +75,130 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [revert 0d60d8df6f49] [net/net-next] [6.8-rc5] Build Failure
-To: Eric Dumazet <edumazet@google.com>,
-        Vadim Fedorenko <vadim.fedorenko@linux.dev>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        arkadiusz.kubalewski@intel.com, jiri@nvidia.com, kuba@kernel.org,
-        "abdhalee@linux.vnet.ibm.com" <abdhalee@linux.vnet.ibm.com>,
-        "mputtash@linux.vnet.com" <mputtash@linux.vnet.com>,
-        "sachinp@linux.vnet.com" <sachinp@linux.vnet.com>,
-        venkat88@linux.vnet.ibm.com,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-References: <3fcf3a2c-1c1b-42c1-bacb-78fdcd700389@linux.vnet.ibm.com>
- <85b78dad-affa-47c3-9cd0-79a4321460b8@linux.dev>
- <CANn89iJEzTjwxF7wXSnUR+NyDu-S-zEOYVXA+fEaYs_1o1g5HQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v6 04/11] dt-bindings: net: convert
+ hisi-femac.txt to YAML
 Content-Language: en-US
-From: Tasmiya Nalatwad <tasmiya@linux.vnet.ibm.com>
-In-Reply-To: <CANn89iJEzTjwxF7wXSnUR+NyDu-S-zEOYVXA+fEaYs_1o1g5HQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: OTJnR3xJPU91ToZ0GLSBpYQPlyNp7TsS
-X-Proofpoint-ORIG-GUID: oWDAQZrahUGh0cNSPpMnHqHdCbHr77Qj
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-28_08,2024-02-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 phishscore=0
- impostorscore=0 malwarescore=0 suspectscore=0 lowpriorityscore=0
- bulkscore=0 adultscore=0 priorityscore=1501 clxscore=1015 mlxscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402290062
+To: forbidden405@outlook.com, Yisen Zhuang <yisen.zhuang@huawei.com>,
+ Salil Mehta <salil.mehta@huawei.com>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+ Heiner Kallweit <hkallweit1@gmail.com>, Russell King <linux@armlinux.org.uk>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org
+References: <20240228-net-v6-0-6d78d3d598c1@outlook.com>
+ <20240228-net-v6-4-6d78d3d598c1@outlook.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240228-net-v6-4-6d78d3d598c1@outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Greetings,
+On 28/02/2024 10:02, Yang Xiwen via B4 Relay wrote:
+> From: Yang Xiwen <forbidden405@outlook.com>
+> 
+> convert the old text biinding to new YAML. No semantic change.
 
-I have tried the patch provided below. Moving struct to file 
-"net/core/rtnetlink.c" is not resolving the problem. Please find the 
-below traces.
+Typo: binding. Also missing capital letter.
 
---- Traces ---
-
-In file included from ./include/linux/rbtree.h:24,
-                  from ./include/linux/mm_types.h:11,
-                  from ./include/linux/mmzone.h:22,
-                  from ./include/linux/gfp.h:7,
-                  from ./include/linux/umh.h:4,
-                  from ./include/linux/kmod.h:9,
-                  from ./include/linux/module.h:17,
-                  from net/core/rtnetlink.c:17:
-net/core/rtnetlink.c: In function ‘netdev_dpll_pin’:
-/include/linux/rcupdate.h:439:9: error: dereferencing pointer to 
-incomplete type ‘struct dpll_pin’
-   typeof(*p) *local = (typeof(*p) *__force)READ_ONCE(p); \
-          ^
-/include/linux/rcupdate.h:587:2: note: in expansion of macro 
-‘__rcu_dereference_check’
-   __rcu_dereference_check((p), __UNIQUE_ID(rcu), \
-   ^~~~~~~~~~~~~~~~~~~~~~~
-/include/linux/rtnetlink.h:70:2: note: in expansion of macro 
-‘rcu_dereference_check’
-   rcu_dereference_check(p, lockdep_rtnl_is_held())
-   ^~~~~~~~~~~~~~~~~~~~~
-net/core/rtnetlink.c:1059:15: note: in expansion of macro 
-‘rcu_dereference_rtnl’
-         return rcu_dereference_rtnl(dev->dpll_pin);
-                ^~~~~~~~~~~~~~~~~~~~
-   CC      crypto/algboss.o
-net/core/rtnetlink.c:1063:1: error: control reaches end of non-void 
-function [-Werror=return-type]
-  }
-  ^
-   CC      crypto/authenc.o
-   CC      crypto/authencesn.o
-   CC      crypto/af_alg.o
-   CC      crypto/algif_hash.o
-   CC      crypto/algif_skcipher.o
-   CC      crypto/algif_rng.o
-   CC      crypto/algif_aead.o
-   AR      arch/powerpc/kernel/built-in.a
-cc1: some warnings being treated as errors
-make[4]: *** [scripts/Makefile.build:243: net/core/rtnetlink.o] Error 1
-make[4]: *** Waiting for unfinished jobs....
-   CC      lib/kobject_uevent.o
-   AR      drivers/net/mdio/built-in.a
-   AR      net/802/built-in.a
-   AR      drivers/connector/built-in.a
-   CC      lib/vsprintf.o
-   AR      ipc/built-in.a
-   AR      net/nsh/built-in.a
-   CC      lib/dynamic_debug.o
-In file included from ./arch/powerpc/include/generated/asm/rwonce.h:1,
-                  from ./include/linux/compiler.h:251,
-                  from ./include/linux/instrumented.h:10,
-                  from ./include/linux/uaccess.h:6,
-                  from net/core/dev.c:71:
-net/core/dev.c: In function ‘netdev_dpll_pin_assign’:
-/include/linux/rcupdate.h:462:36: error: dereferencing pointer to 
-incomplete type ‘struct dpll_pin’
-  #define RCU_INITIALIZER(v) (typeof(*(v)) __force __rcu *)(v)
-                                     ^~~~
-/include/asm-generic/rwonce.h:55:33: note: in definition of macro 
-‘__WRITE_ONCE’
-   *(volatile typeof(x) *)&(x) = (val);    \
-                                  ^~~
-/arch/powerpc/include/asm/barrier.h:76:2: note: in expansion of macro 
-‘WRITE_ONCE’
-   WRITE_ONCE(*p, v);      \
-   ^~~~~~~~~~
-/include/asm-generic/barrier.h:172:55: note: in expansion of macro 
-‘__smp_store_release’
-  #define smp_store_release(p, v) do { kcsan_release(); 
-__smp_store_release(p, v); } while (0)
-^~~~~~~~~~~~~~~~~~~
-/include/linux/rcupdate.h:503:3: note: in expansion of macro 
-‘smp_store_release’
-    smp_store_release(&p, RCU_INITIALIZER((typeof(p))_r_a_p__v)); \
-    ^~~~~~~~~~~~~~~~~
-/include/linux/rcupdate.h:503:25: note: in expansion of macro 
-‘RCU_INITIALIZER’
-    smp_store_release(&p, RCU_INITIALIZER((typeof(p))_r_a_p__v)); \
-                          ^~~~~~~~~~~~~~~
-net/core/dev.c:9081:2: note: in expansion of macro ‘rcu_assign_pointer’
-   rcu_assign_pointer(dev->dpll_pin, dpll_pin);
-   ^~~~~~~~~~~~~~~~~~
-
-On 2/28/24 20:13, Eric Dumazet wrote:
-> On Wed, Feb 28, 2024 at 3:07 PM Vadim Fedorenko
-> <vadim.fedorenko@linux.dev> wrote:
->> On 28/02/2024 11:09, Tasmiya Nalatwad wrote:
->>> Greetings,
->>>
->>> [revert 0d60d8df6f49] [net/net-next] [6.8-rc5] Build Failure
->>>
->>> Reverting below commit fixes the issue
->>>
->>> commit 0d60d8df6f493bb46bf5db40d39dd60a1bafdd4e
->>>       dpll: rely on rcu for netdev_dpll_pin()
->>>
->>> --- Traces ---
->>>
->>> ./include/linux/dpll.h: In function ‘netdev_dpll_pin’:
->>> ./include/linux/rcupdate.h:439:9: error: dereferencing pointer to
->>> incomplete type ‘struct dpll_pin’
->>>     typeof(*p) *local = (typeof(*p) *__force)READ_ONCE(p); \
->>>            ^
->>> ./include/linux/rcupdate.h:587:2: note: in expansion of macro
->>> ‘__rcu_dereference_check’
->>>     __rcu_dereference_check((p), __UNIQUE_ID(rcu), \
->>>     ^~~~~~~~~~~~~~~~~~~~~~~
->>> ./include/linux/rtnetlink.h:70:2: note: in expansion of macro
->>> ‘rcu_dereference_check’
->>>     rcu_dereference_check(p, lockdep_rtnl_is_held())
->>>     ^~~~~~~~~~~~~~~~~~~~~
->>> ./include/linux/dpll.h:175:9: note: in expansion of macro
->>> ‘rcu_dereference_rtnl’
->>>     return rcu_dereference_rtnl(dev->dpll_pin);
->>>            ^~~~~~~~~~~~~~~~~~~~
->>> make[4]: *** [scripts/Makefile.build:243: drivers/dpll/dpll_core.o] Error 1
->>> make[4]: *** Waiting for unfinished jobs....
->>>     AR      net/mpls/built-in.a
->>>     AR      net/l3mdev/built-in.a
->>> In file included from ./include/linux/rbtree.h:24,
->>>                    from ./include/linux/mm_types.h:11,
->>>                    from ./include/linux/mmzone.h:22,
->>>                    from ./include/linux/gfp.h:7,
->>>                    from ./include/linux/umh.h:4,
->>>                    from ./include/linux/kmod.h:9,
->>>                    from ./include/linux/module.h:17,
->>>                    from drivers/dpll/dpll_netlink.c:9:
->>> ./include/linux/dpll.h: In function ‘netdev_dpll_pin’:
->>> ./include/linux/rcupdate.h:439:9: error: dereferencing pointer to
->>> incomplete type ‘struct dpll_pin’
->>>     typeof(*p) *local = (typeof(*p) *__force)READ_ONCE(p); \
->>>            ^
->>> ./include/linux/rcupdate.h:587:2: note: in expansion of macro
->>> ‘__rcu_dereference_check’
->>>     __rcu_dereference_check((p), __UNIQUE_ID(rcu), \
->>>     ^~~~~~~~~~~~~~~~~~~~~~~
->>> ./include/linux/rtnetlink.h:70:2: note: in expansion of macro
->>> ‘rcu_dereference_check’
->>>     rcu_dereference_check(p, lockdep_rtnl_is_held())
->>>     ^~~~~~~~~~~~~~~~~~~~~
->>> ./include/linux/dpll.h:175:9: note: in expansion of macro
->>> ‘rcu_dereference_rtnl’
->>>     return rcu_dereference_rtnl(dev->dpll_pin);
->>>            ^~~~~~~~~~~~~~~~~~~~
->>> make[4]: *** [scripts/Makefile.build:243: drivers/dpll/dpll_netlink.o]
->>> Error 1
->>> make[3]: *** [scripts/Makefile.build:481: drivers/dpll] Error 2
->>> make[3]: *** Waiting for unfinished jobs....
->>> In file included from ./arch/powerpc/include/generated/asm/rwonce.h:1,
->>>                    from ./include/linux/compiler.h:251,
->>>                    from ./include/linux/instrumented.h:10,
->>>                    from ./include/linux/uaccess.h:6,
->>>                    from net/core/dev.c:71:
->>> net/core/dev.c: In function ‘netdev_dpll_pin_assign’:
->>> ./include/linux/rcupdate.h:462:36: error: dereferencing pointer to
->>> incomplete type ‘struct dpll_pin’
->>>    #define RCU_INITIALIZER(v) (typeof(*(v)) __force __rcu *)(v)
->>>                                       ^~~~
->>> ./include/asm-generic/rwonce.h:55:33: note: in definition of macro
->>> ‘__WRITE_ONCE’
->>>     *(volatile typeof(x) *)&(x) = (val);    \
->>>                                    ^~~
->>> ./arch/powerpc/include/asm/barrier.h:76:2: note: in expansion of macro
->>> ‘WRITE_ONCE’
->>>     WRITE_ONCE(*p, v);      \
->>>     ^~~~~~~~~~
->>> ./include/asm-generic/barrier.h:172:55: note: in expansion of macro
->>> ‘__smp_store_release’
->>>    #define smp_store_release(p, v) do { kcsan_release();
->>> __smp_store_release(p, v); } while (0)
->>> ^~~~~~~~~~~~~~~~~~~
->>> ./include/linux/rcupdate.h:503:3: note: in expansion of macro
->>> ‘smp_store_release’
->>>      smp_store_release(&p, RCU_INITIALIZER((typeof(p))_r_a_p__v)); \
->>>      ^~~~~~~~~~~~~~~~~
->>> ./include/linux/rcupdate.h:503:25: note: in expansion of macro
->>> ‘RCU_INITIALIZER’
->>>      smp_store_release(&p, RCU_INITIALIZER((typeof(p))_r_a_p__v)); \
->>>                            ^~~~~~~~~~~~~~~
->>> net/core/dev.c:9081:2: note: in expansion of macro ‘rcu_assign_pointer’
->>>     rcu_assign_pointer(dev->dpll_pin, dpll_pin);
->>>     ^~~~~~~~~~~~~~~~~~
->>> make[4]: *** [scripts/Makefile.build:243: net/core/dev.o] Error 1
->>> make[4]: *** Waiting for unfinished jobs....
->>>     AR      drivers/net/ethernet/built-in.a
->>>     AR      drivers/net/built-in.a
->>>     AR      net/dcb/built-in.a
->>>     AR      net/netlabel/built-in.a
->>>     AR      net/strparser/built-in.a
->>>     AR      net/handshake/built-in.a
->>>     GEN     lib/test_fortify.log
->>>     AR      net/8021q/built-in.a
->>>     AR      net/nsh/built-in.a
->>>     AR      net/unix/built-in.a
->>>     CC      lib/string.o
->>>     AR      net/packet/built-in.a
->>>     AR      net/switchdev/built-in.a
->>>     AR      lib/lib.a
->>>     AR      net/mptcp/built-in.a
->>>     AR      net/devlink/built-in.a
->>> In file included from ./include/linux/rbtree.h:24,
->>>                    from ./include/linux/mm_types.h:11,
->>>                    from ./include/linux/mmzone.h:22,
->>>                    from ./include/linux/gfp.h:7,
->>>                    from ./include/linux/umh.h:4,
->>>                    from ./include/linux/kmod.h:9,
->>>                    from ./include/linux/module.h:17,
->>>                    from net/core/rtnetlink.c:17:
->>> ./include/linux/dpll.h: In function ‘netdev_dpll_pin’:
->>> ./include/linux/rcupdate.h:439:9: error: dereferencing pointer to
->>> incomplete type ‘struct dpll_pin’
->>>     typeof(*p) *local = (typeof(*p) *__force)READ_ONCE(p); \
->>>            ^
->>> ./include/linux/rcupdate.h:587:2: note: in expansion of macro
->>> ‘__rcu_dereference_check’
->>>     __rcu_dereference_check((p), __UNIQUE_ID(rcu), \
->>>     ^~~~~~~~~~~~~~~~~~~~~~~
->>> ./include/linux/rtnetlink.h:70:2: note: in expansion of macro
->>> ‘rcu_dereference_check’
->>>     rcu_dereference_check(p, lockdep_rtnl_is_held())
->>>     ^~~~~~~~~~~~~~~~~~~~~
->>> ./include/linux/dpll.h:175:9: note: in expansion of macro
->>> ‘rcu_dereference_rtnl’
->>>     return rcu_dereference_rtnl(dev->dpll_pin);
->>>            ^~~~~~~~~~~~~~~~~~~~
->>> In file included from net/core/rtnetlink.c:60:
->>> ./include/linux/dpll.h:179:1: error: control reaches end of non-void
->>> function [-Werror=return-type]
->>>    }
->>>
->> Hi, Eric!
->>
->> Looks like we have to move struct dpll_pin definition to
->> include/linux/dpll.h to have this fixed, right?
->>
-> No idea what is wrong. Is it powerpc specific ? Some compiler version ?
->
-> netdev_dpll_pin() could be moved to net/core/rtnetlink.c, this is the only user.
->
-> diff --git a/include/linux/dpll.h b/include/linux/dpll.h
-> index 4ec2fe9caf5a3f284afd0cfe4fc7c2bf42cbbc60..72d21e710d7f201d2fc57bb3a32b4bc0ff2b1749
-> 100644
-> --- a/include/linux/dpll.h
-> +++ b/include/linux/dpll.h
-> @@ -169,13 +169,4 @@ int dpll_device_change_ntf(struct dpll_device *dpll);
->
->   int dpll_pin_change_ntf(struct dpll_pin *pin);
->
-> -static inline struct dpll_pin *netdev_dpll_pin(const struct net_device *dev)
-> -{
-> -#if IS_ENABLED(CONFIG_DPLL)
-> -       return rcu_dereference_rtnl(dev->dpll_pin);
-> -#else
-> -       return NULL;
-> -#endif
-> -}
-> -
->   #endif
-> diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
-> index 9c4f427f3a5057b52ec05405e8b15b8ca2246b4b..32dc601fd8ca66dfcd3cb8f38b533314de02d1d2
-> 100644
-> --- a/net/core/rtnetlink.c
-> +++ b/net/core/rtnetlink.c
-> @@ -1053,6 +1053,15 @@ static size_t rtnl_devlink_port_size(const
-> struct net_device *dev)
->          return size;
->   }
->
-> +static struct dpll_pin *netdev_dpll_pin(const struct net_device *dev)
-> +{
-> +#if IS_ENABLED(CONFIG_DPLL)
-> +       return rcu_dereference_rtnl(dev->dpll_pin);
-> +#else
-> +       return NULL;
-> +#endif
-> +}
+> 
+> Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
+> ---
+>  .../bindings/net/hisilicon,hisi-femac.yaml         | 82 ++++++++++++++++++++++
+>  .../devicetree/bindings/net/hisilicon-femac.txt    | 41 -----------
+>  2 files changed, 82 insertions(+), 41 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/hisilicon,hisi-femac.yaml b/Documentation/devicetree/bindings/net/hisilicon,hisi-femac.yaml
+> new file mode 100644
+> index 000000000000..016e9e409a30
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/hisilicon,hisi-femac.yaml
+> @@ -0,0 +1,82 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/net/hisilicon,hisi-femac.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
->   static size_t rtnl_dpll_pin_size(const struct net_device *dev)
->   {
->          size_t size = nla_total_size(0); /* nest IFLA_DPLL_PIN */
+> +title: Hisilicon Fast Ethernet MAC controller
+> +
+> +maintainers:
+> +  - Yang Xiwen <forbidden405@foxmail.com>
+> +
+> +allOf:
+> +  - $ref: ethernet-controller.yaml
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - hisilicon,hi3516cv300-femac
+> +      - enum:
+> +          - hisilicon,hisi-femac-v1
+> +          - hisilicon,hisi-femac-v2
 
--- 
-Regards,
-Tasmiya Nalatwad
-IBM Linux Technology Center
+This does not make sense. You cannot have two fallbacks. Old binding was
+here confusing or even incorrect, so please fix this in the conversion.
+It's fine to do the conversion and change, just explain what is done
+here and why.
+
+> +
+> +  reg:
+> +    items:
+> +      - description: The first region is the MAC core register base and size.
+> +      - description: The second region is the global MAC control register.
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+
+
+Best regards,
+Krzysztof
 
 
