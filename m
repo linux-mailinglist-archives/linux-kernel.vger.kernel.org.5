@@ -1,145 +1,183 @@
-Return-Path: <linux-kernel+bounces-86932-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86931-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3731D86CD1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:35:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 536F786CD1A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:35:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E14281F24DD0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:35:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45F061C2032E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:35:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8570E14A4CD;
-	Thu, 29 Feb 2024 15:35:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EDC91468EB;
+	Thu, 29 Feb 2024 15:35:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="efLsujqI"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Opfyu8Dk"
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B36B214A0B1;
-	Thu, 29 Feb 2024 15:35:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0404013A877;
+	Thu, 29 Feb 2024 15:35:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709220908; cv=none; b=E8fawCEsoCwdoIt04lkHzazqhRiCIrQ9wcyhOAVr34hiRnCgvOqYHavBT+VVDHM3Dt/YItVPUuCVSKrFjvjyDZWvifP8iCiuFOMwj+KmN29KppjQVey/ND3tG6mTXLRMZOC8HaWQ5mLHBu5G55SJ5HngQusLzlyjqSMbKlXhhNQ=
+	t=1709220906; cv=none; b=D50dPyUU8xKs7/h4puCwlhbaijNciTQPEEI5TsbyeUJGpLydxh2qoZgi9jC7VhM75YqNI0hGhL2NqhpK7SMDu6Lf9ycfjGyt2TsAbjl3n6+vlTc5a2j5bd3lmPBawRSMLt6wQb50LTly4iCYzddsJQRF2cBSBUppYG8fgu2x/78=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709220908; c=relaxed/simple;
-	bh=l18CMgXdli5STPwKCBhLq0812Z2tTCH2Xar7VZSxkks=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PSnG3y9yTJ0QMImG2oL2w3NnY+5suqqWsivaJn1xI3J8n3zrfIBJIXnx9QQQ7+fbn3Rlj0puaWbU72k+LGZpJ4wdt9yJcNJNkpOJUfhqLT2TZj47w2hlrzLs8TYmdouoVPO2OFer740lpYtt2OySK7nrNaGKT/9am7nkVA6oot8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=efLsujqI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38256C433F1;
-	Thu, 29 Feb 2024 15:35:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709220908;
-	bh=l18CMgXdli5STPwKCBhLq0812Z2tTCH2Xar7VZSxkks=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=efLsujqIF3ljKLuLvNkv5VqcLN49SgY6P7mFVtq1WhUKrkd9tuwqvrSfJG8M6VdHD
-	 fsWWu3iGBpnc2RxXWwrIiATggWE+N0jEiW4CaK63UMAvU1dC45RpAqk6G2wYK7cyT/
-	 qSVrcfkhvgDoY6HNUGqpw/beOPBSE0raHNL2ODp55+tIrGnQvOFG+xT5CS0MlMe3D0
-	 yxYamBLWRztV1C1kBRkvtNT37mzJQhBb/psWUBjY5hq2nQkq1XrUPTk3pNIwwJBz4d
-	 nQ53p1Dc4XG5sUJIlWmXjk0xEKL+IqPf+cdpBa1UYEnPgEGvtZScL73J5XdzM5i+cF
-	 AoHl2V2a/AKsg==
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-513173e8191so1154945e87.1;
-        Thu, 29 Feb 2024 07:35:08 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVkwix50YwEuc0HLhKnVRf7AU6A8jOyPXVYEfyI3d+FRLv6iWglOh8lCgChukT4Qpe2INtprXCmGtU4yvoTD5U2LFrGjkm3/FIP/SGR2HWfoAc7JOTwjAaxt+W5ALURTDZ8+bRMUXgot3iF
-X-Gm-Message-State: AOJu0YzAMXzcdbiTBPKmjICupRRQ0nOBn3ULJ6WDtgSFZz0JRiAREqUn
-	dhNavViC8y2Y/dLhxSVt4juA43MPD+ZlJQpKeDD+2DeAdbqVF3dMH1ReqbNlMi0YTzcp06JiRwE
-	VUrTr+MGJMKE10XXYQU2TtGomjBc=
-X-Google-Smtp-Source: AGHT+IHsPm1DP53fkDMID5DY4f73drdJTcrZi2yhUcZSZ9wkEDHG01rfp3WGkZAheyE6MmID345CT7JTxjbwcTUxPuk=
-X-Received: by 2002:a05:6512:1d1:b0:512:d554:f1df with SMTP id
- f17-20020a05651201d100b00512d554f1dfmr1740856lfp.65.1709220906626; Thu, 29
- Feb 2024 07:35:06 -0800 (PST)
+	s=arc-20240116; t=1709220906; c=relaxed/simple;
+	bh=zuPfxtCT90QQiUBaYCzb22chu+yUsCqPEAv1MWn4DQw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fSaHZZkBYV3hnK7igjwR8JnsEcZN93GIx3W6p3oVcAB5FTPGCHRCC9ZgLuiEMkmpQFFRipM/PtG5cEatbvrkB//kIF2uoxH0dPK1/OW+F0+xm5YYr7PN71l2KZXzevtPy834TcOaTFXXZmbw5wEaKJK5e6zMSTu4EhXsLbhHM/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Opfyu8Dk; arc=none smtp.client-ip=209.85.167.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-513230201b2so889882e87.1;
+        Thu, 29 Feb 2024 07:35:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709220903; x=1709825703; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QBLOLphE3NdfOJ934nKa7KCEvPg6yDpYhupj2MVRHGE=;
+        b=Opfyu8Dk8hDEsDsJKG+E+uVxezTSqYrTJ/kQXYKghJEj6NW1TS6QPRVsGfBc2D6Zsn
+         BmpK/+WT8IjDPspTuojrTGSzKs+wWdKn5VSH7jqnuOv5JC1TC5bmCwHGinJBpmAzGuga
+         qjMvLa7Y9hSmO1OsnHAnRIoO4Tf5/S3hGr51V+lU6AXCUL70lOVAo0xSl4EJUJleabwm
+         QchJbI5u2RwzPWw/Fdc8g+UgG5VSF2RWjOYWxtVm5Equa9jhypuSHtmr0aEw8cuNyR9L
+         ohfuZqRYuCq+f7TyOfns8B2Xt77L3yFTio7PELlhAFUfQribzqGBcRsdE9/47+YO5Mg3
+         USmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709220903; x=1709825703;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QBLOLphE3NdfOJ934nKa7KCEvPg6yDpYhupj2MVRHGE=;
+        b=q6AslzePoL9SbprgLvXtwCw4X/RVK4pEp/1XBzK9Ie1j2TXdnDxu8E4XqVhnElPOaE
+         Kac8mSGAHuU4H9rAi6fpbku34uvi4VtKLESDKjKd1ADOK6xr+rMPdDXbhkWjukm/gN3s
+         sUZqo1eGXVCXENpJ7Ar3KQ8BDEtMF9WbAMF7jLIa7JvgjZK0XAE9xSv5e7Ao3IeJyEHr
+         tGgLXKlnRO1bgDBLj8jMqx/0mAKvDdRTBCCysfvnHnOLs/besJ6MWxAYQQEwFiPe28cy
+         tyTYJPMqldB9bTYgKODdNL3xMojSjivjQTL6nbXoP5JxCIudPkDWA2CB/b4HaEwywgm6
+         5poQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU2th6vTWkRcHZYGfD49pyjKhGsUHUrlWGtSBfmeqnS1hvPa25UdJxDgAeoANlCzfPQMyHfVWTKaqnyM3gJqTmJuTtjn4A4MZRgxTLpgYTnpwsovUnhDUjtVwR4sX9GjCdV5HjAlbYPXfyQFnos6EBIXxBkdbKMZ40hOY2FC20ZQLJJPg==
+X-Gm-Message-State: AOJu0YyMnEmIDMHCW3M8VovnmXvWJsvlreMuF45AFerXSCl7Jvx42lNF
+	rjRBV1M/5FvYZqMUDZtScIHf5/oy5YEUOl8z0YYCJR2W3xA/07Zh
+X-Google-Smtp-Source: AGHT+IGREGNsgmXHr1yjEAArZqwnrmx0HadMKZoc0HPzLr+gTXApnJj7dhow2tE9gy/RWC2y/h6Bnw==
+X-Received: by 2002:a05:6512:2f1:b0:512:f1a5:709 with SMTP id m17-20020a05651202f100b00512f1a50709mr1562593lfq.41.1709220902833;
+        Thu, 29 Feb 2024 07:35:02 -0800 (PST)
+Received: from ?IPV6:2001:14ba:7426:df00::2? (drtxq0yyyyyyyyyyyyyby-3.rev.dnainternet.fi. [2001:14ba:7426:df00::2])
+        by smtp.gmail.com with ESMTPSA id u15-20020ac243cf000000b0051321818dc8sm284628lfl.259.2024.02.29.07.35.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Feb 2024 07:35:02 -0800 (PST)
+Message-ID: <a5aa10f3-e487-4e70-8010-1604bea3a936@gmail.com>
+Date: Thu, 29 Feb 2024 17:35:01 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240223092338.2433632-1-wenst@chromium.org> <CAK7LNAQmvyftnFJaByyjH+f4nxcNUKpjkDXwebEH5AhMF6U0Kw@mail.gmail.com>
- <CAGXv+5GmkZdqpNZDFN4dcTyZ-qVS0TjrrqBrBAei6DP+eXLnJg@mail.gmail.com>
-In-Reply-To: <CAGXv+5GmkZdqpNZDFN4dcTyZ-qVS0TjrrqBrBAei6DP+eXLnJg@mail.gmail.com>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Fri, 1 Mar 2024 00:34:30 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAS8tLuHYcPTb5pJZixn5Hb0yjo0nmbrfSUr5Cd_pc+WMg@mail.gmail.com>
-Message-ID: <CAK7LNAS8tLuHYcPTb5pJZixn5Hb0yjo0nmbrfSUr5Cd_pc+WMg@mail.gmail.com>
-Subject: Re: [PATCH RFC] kbuild: create a list of all built DTB files
-To: Chen-Yu Tsai <wenst@chromium.org>
-Cc: Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, linux-kbuild@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Simon Glass <sjg@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 5/5] iio: light: Add support for APDS9306 Light Sensor
+Content-Language: en-US, en-GB
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>,
+ Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Marek Vasut <marex@denx.de>,
+ Anshul Dalal <anshulusr@gmail.com>,
+ Javier Carrasco <javier.carrasco.cruz@gmail.com>,
+ Matt Ranostay <matt@ranostay.sg>,
+ Stefan Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>,
+ linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240228122408.18619-1-subhajit.ghosh@tweaklogic.com>
+ <20240228122408.18619-6-subhajit.ghosh@tweaklogic.com>
+ <a828e77c-b3d4-49bb-b0bb-b9fd6cb7d114@gmail.com>
+ <Zd9tApJClX7Frq20@smile.fi.intel.com>
+ <45386f39-a034-4d70-a6d4-8804c27aadce@tweaklogic.com>
+ <21ecfb62-30b7-4073-bad6-46a9e08e08b0@gmail.com>
+ <ZeCJ3T8HVaQZC1Ps@smile.fi.intel.com>
+From: Matti Vaittinen <mazziesaccount@gmail.com>
+In-Reply-To: <ZeCJ3T8HVaQZC1Ps@smile.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 29, 2024 at 11:38=E2=80=AFAM Chen-Yu Tsai <wenst@chromium.org> =
-wrote:
->
-> On Sun, Feb 25, 2024 at 4:21=E2=80=AFPM Masahiro Yamada <masahiroy@kernel=
-org> wrote:
-> >
-> > On Fri, Feb 23, 2024 at 6:23=E2=80=AFPM Chen-Yu Tsai <wenst@chromium.or=
-g> wrote:
-> > >
-> > > It is useful to have a list of all composite *.dtb files, along with
-> > > their individual components, generated from the current build.
-> > >
-> > > With this commit, 'make dtbs' creates arch/*/boot/dts/dtbs-components=
-,
-> > > which lists the composite dtb files created in the current build. It
-> > > maintains the order of the dtb-y additions in Makefiles although the
-> > > order is not important for DTBs.
-> > >
-> > > This compliments the list of all *.dtb and *.dtbo files in dtbs-list,
-> > > which only includes the files directly added to dtb-y.
-> > >
-> > > For example, consider this case:
-> > >
-> > >     foo-dtbs :=3D foo_base.dtb foo_overlay.dtbo
-> > >     dtb-y :=3D bar.dtb foo.dtb
-> > >
-> > > In this example, the new list will include foo.dtb with foo_base.dtb =
-and
-> > > foo_overlay.dtbo on the same line, but not bar.dtb.
-> > >
-> > > Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
-> > > ---
-> > > Hi,
-> > >
-> > > I hacked up this new thing to list out the individual components of e=
-ach
-> > > composite dtb. I think this information would be useful for FIT image
-> > > generation or other toolchains to consume. For example, instead of
-> > > including each dtb, a toolchain could realize that some are put toget=
-her
-> > > using others, and if the bootloader supports it, put together command=
-s
-> > > to reassemble the end result from the original parts.
-> > >
-> > > This is based on and complements Masahiro-san's recent dtbs-list work=
-.
-> >
-> >
-> >
-> > This is another format of my previous per-dtb "*.dtlst"
-> > (but I did not pick up 3/4, 4/4 because I did not know what we need aft=
-er all).
-> >
-> > This should be discussed together with how Simon's script will look lik=
-e.
-> >
-> > I can understand your Makefile code, but I still do not know
-> > how the entire overlay stuff will work in a big picture.
->
-> How would you like to proceed? I can through together some changes on top
-> of Simon's patches as an initial proposal if that helps?
->
-> I can use your format if you prefer.
+On 2/29/24 15:42, Andy Shevchenko wrote:
+> On Thu, Feb 29, 2024 at 02:58:52PM +0200, Matti Vaittinen wrote:
+>> On 2/29/24 14:34, Subhajit Ghosh wrote:
+>>> On 29/2/24 03:57, Andy Shevchenko wrote:
+>>>> On Wed, Feb 28, 2024 at 03:08:56PM +0200, Matti Vaittinen wrote:
+>>>>> On 2/28/24 14:24, Subhajit Ghosh wrote:
+> 
+> ...
+> 
+>>>>>> +    if (gain_new < 0) {
+>>>>>> +        dev_err_ratelimited(dev, "Unsupported gain with time\n");
+>>>>>> +        return gain_new;
+>>>>>> +    }
+>>>>
+>>>> What is the difference between negative response from the function
+>>>> itself and
+>>>> similar in gain_new?
+>>>>
+>>> -ve response form the function is an error condition.
+>>> -ve value in gain_new means - no valid gains could be computed.
+>>> In case of error conditions from the function, the gain_new is also set
+>>> to -1.
+>>> My use case is valid hardware gain so I went for checking only gain_new.
+>>> Matti will be the best person to answer on this.
+>>
+>> I now rely on the kerneldoc for the
+>> iio_gts_find_new_gain_by_old_gain_time() as it seems reasonable to me:
+>>
+>> * Return: 0 if an exactly matching supported new gain was found. When a
+>> * non-zero value is returned, the @new_gain will be set to a negative or
+>> * positive value. The negative value means that no gain could be computed.
+>> * Positive value will be the "best possible new gain there could be". There
+>> * can be two reasons why finding the "best possible" new gain is not deemed
+>> * successful. 1) This new value cannot be supported by the hardware. 2) The
+>> new
+>> * gain required to maintain the scale would not be an integer. In this case,
+>> * the "best possible" new gain will be a floored optimal gain, which may or
+>> * may not be supported by the hardware.
+> 
+>> Eg, if ret is zero, there is no need to check validity of the gain_new but
+>> it is guaranteed to be one of the supported gains.
+> 
+> Right, but this kernel doc despite being so verbose does not fully answer my
+> question. What is the semantic of that "negative value"? 
 
+Current approach is to always investigate the function return value as 
+error if the 'new_gain' is negative. Or, caller specific error if 
+new_gain is unsuitable in some other way. When this is done, the 
+absolute value of the negative 'new_gain' does not matter.
 
-How would you select base+addonX among
-other base+addonY or base+addonZ configurations?
+> I would expect to have
+> the error code there (maybe different to what the function returns), but at
+> least be able to return it to the upper layers if needed.
 
+I am not sure I see the benefit of returning the new_gain over returning 
+the error returned by the function. Well, maybe the benefit to be able 
+to not evaluate the value returned by the 
+iio_gts_find_new_gain_by_old_gain_time() - although I'm not sure I love it.
 
---=20
-Best Regards
-Masahiro Yamada
+> Hence 2 ARs I see:
+> 1) clarify the kernel documentation there;
+> 2) update the semantic of the gain_new to simplify caller's code.
+
+Yes, I agree. Patches welcome :) By the very least the kerneldoc can be 
+improved. I'm undecided on benefits of having the error code in 'new_gain'.
+
+The GTS API fixes shouldn't be required in the context of this driver 
+series though.
+
+Yours,
+	--Matti
+
+-- 
+Matti Vaittinen
+Linux kernel developer at ROHM Semiconductors
+Oulu Finland
+
+~~ When things go utterly wrong vim users can always type :help! ~~
+
 
