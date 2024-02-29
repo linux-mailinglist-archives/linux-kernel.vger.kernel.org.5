@@ -1,207 +1,114 @@
-Return-Path: <linux-kernel+bounces-87596-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87598-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E283B86D652
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:46:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7E8986D657
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:48:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 988C92894E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:46:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 555421F23A30
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:48:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9CCF6D518;
-	Thu, 29 Feb 2024 21:46:10 +0000 (UTC)
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 131626D50F;
+	Thu, 29 Feb 2024 21:48:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZDw7oitb"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADD5D6D501;
-	Thu, 29 Feb 2024 21:46:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57FF516FF21;
+	Thu, 29 Feb 2024 21:48:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709243170; cv=none; b=CRLHDx17/EG9DPIC7ZFBee7fu4JxQVgUlOsvqZloDoBNu1esKRT6mdc+xpwtolBhlaLIPV5/TTjjvlWG4px7CR/HL2AV4VLSE1RB55bzb10zG04YQKPv0r+t4jTOmLflQBSgj9XE63sIXhzlLQjUtqHyVEpihleVAf3qduazwaM=
+	t=1709243332; cv=none; b=sFqtdj5PQuDN/eWc3XWFy739MTH9uuVM1ggUacuqH1AqWi6bb8r8Tv6g23tt1tG6ArIoFuHXq7oCfC1t21YIGINKoPa1EKvncPgAZvbIwUzgXFak6PtSRVEfftl6tgPV+yrHZgr700uHvG5QwObqLI5CFoZ4RrwPlLJJuMiV8bo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709243170; c=relaxed/simple;
-	bh=TBV7p/A9ZyHEDsiJkjjc53X01jTLQ40txA1U2ZF54Pw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kXcp5jQxaLq1BVzhdPfDRMHPjWzCRI+zt3xenP7ZrTreLNqd/mIUZElmGEK4oM0vPyK77ZpPTJTF4PJiPYi7KlaEKSEffhy5dL1sxdytxjZwbYE18K/o+UflQOIsMas7UJ+/aamedWAFBrtho0aDD03cwPXLzRTCLmlIG+qVyfg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-29a2d0f69a6so1041715a91.3;
-        Thu, 29 Feb 2024 13:46:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709243168; x=1709847968;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FfW4L51998L0TyuxV9PTpRygcmWU5mrA12noE0Cj0WQ=;
-        b=nnSVOxOasuLmjL0znTZC7O6FpZmc76Wv1XzGfF48dCIdspys0erA5ku7X4i+vyESgR
-         z3CsV+rC2KgAnGh73d8QbC9Uu5YPLqT5M9Zx6c+uXCeKdCU7zh5dHUReFbzY8H+lCSiG
-         AK7qSf+SvQLdiwT2PdeRJy2PLT1R8XQi3jy5f3/uLtAEBIzGHb7aa45/oSu9ERkuydKZ
-         93DggwuqsHwNr3FzOsVlAH3W67qNWvuHtsJzA9DWTYc8GuTFWmMXuYA1HKSdEhHpSOuN
-         onuH+bSiLdJSd4Da6glP6Bb9ZlEacJaljM5orMfNGpvdz5tWIuJ7Y2A9bxYhGpo0pR8b
-         36+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWrbEpxXCSPO7yVidpUgrUfadT9eYzor+K2BN4GjtukWmkWUFD2XaY5juo0hbNKslDPdVvrP0I4Q2zetQzDhf+Fa5ID3JIbw9+BJ+bR9E1GANCcl5/P1gwx/kua7tAw+gqTlx4qzdSUpK+Jm2EgiQ==
-X-Gm-Message-State: AOJu0Yy/HRkGHpJOk6ENK2LwNkyUG+NmZCLE9E6SBkaBTnpUDQ3bQB10
-	8Qljc27Xy2uJJI20fRSMITqsmsDXmUvwtvlWZF8YMZnymAvl1L2c5boqMY8ayElhs53Uz9HJGuH
-	TVAKXVAUBaQutKyJOPy9vOEIcBbA=
-X-Google-Smtp-Source: AGHT+IGQQY+PNZqNy5SmeBd/wFkrNpFy/J39DvnWrygEt+Xrua7aIMppiLuKjugwfCdpUZ2aa1hJchliX0OOFCfzEDw=
-X-Received: by 2002:a17:90a:3d05:b0:29b:f79:2b75 with SMTP id
- h5-20020a17090a3d0500b0029b0f792b75mr346296pjc.7.1709243167868; Thu, 29 Feb
- 2024 13:46:07 -0800 (PST)
+	s=arc-20240116; t=1709243332; c=relaxed/simple;
+	bh=WzBVNuU8gyYdqlnWzHeJD0lxBnSeUPUhpjVNqPa44jw=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=DfzEwkLNB8ZltVTnZs4RB932bQgff66Yv1qgfFuQbYulINGNVTK0HbdpJFG+acbA3zuIdDzmXv3lUPo20tLB+kfu9jdAFRzpifqKoHHOzcbMguvI2F5qREX0FGOq9L7DR1hdOAbwrMtku/AX2OCxEIXK/RydM3xa/EfoAphIF/8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZDw7oitb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9948EC433C7;
+	Thu, 29 Feb 2024 21:48:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709243331;
+	bh=WzBVNuU8gyYdqlnWzHeJD0lxBnSeUPUhpjVNqPa44jw=;
+	h=From:Subject:Date:To:Cc:From;
+	b=ZDw7oitbKFVJM7q32xq0FubWrEZNpka1eFgbv6MixAG/ReUe4VJAmFg960pYSeqjV
+	 I4t36ZA7dp3H4/Do3fe8olClbttZDCrejqG6b+jODdo1uvhG3y4L6UDzL2ixgMpCMO
+	 o76SkwURe8C8p9maD9Lzx8DkeX+UJEwxJVyk73YmczdgZ2uwXm4VtEiYh4pnDtATme
+	 ZvbKJt5ExYi3icRTLMBPliIt1baXBxpH0t2jYvn4QjxC87xVmlt03yEoXj7Nx4X+of
+	 kVve1Hboo0hwjmam2GmRaRA1HwytulMGeL3Kdr0Eo3NN9kvJZlQMYp+9wSgObZXuBF
+	 ZQpWc6HshZ1SQ==
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH v2 0/2] KVM: arm64: Store a cpu_fp_state directly in the
+ vCPU data
+Date: Thu, 29 Feb 2024 21:47:33 +0000
+Message-Id: <20240229-kvm-arm64-group-fp-data-v2-0-276de0d550e8@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240229070757.796244-1-irogers@google.com>
-In-Reply-To: <20240229070757.796244-1-irogers@google.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Thu, 29 Feb 2024 13:45:56 -0800
-Message-ID: <CAM9d7chNekmdJyPbOOzZVhR+cBWajscSg3pVFKN4A4evKwFXjg@mail.gmail.com>
-Subject: Re: [PATCH v1] libperf evlist: Avoid out-of-bounds access
-To: Ian Rogers <irogers@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Yang Jihong <yangjihong1@huawei.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAHX74GUC/4WNTQ6CMBBGr0Jm7Zj+AdEV9zAsGhigQWgzxUZDu
+ LuVC7h8L/net0MkdhThXuzAlFx0fs2gLgV0k11HQtdnBiWUEUpVOKcFLS+VwZH9K+AQsLebRWF
+ JV7ojZQaCvA5Mg3uf5UebeXJx8/w5j5L82f/NJFGgqHup6/JWypqamXil59XzCO1xHF9yuuvMv
+ wAAAA==
+To: Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>, 
+ James Morse <james.morse@arm.com>, 
+ Suzuki K Poulose <suzuki.poulose@arm.com>, 
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, 
+ linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+X-Mailer: b4 0.13-dev-a684c
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1489; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=WzBVNuU8gyYdqlnWzHeJD0lxBnSeUPUhpjVNqPa44jw=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBl4Pu+i7B88JTtuAL3YxM8iBShhTXfFuBmsKTwDle7
+ XUORxkeJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZeD7vgAKCRAk1otyXVSH0LPjB/
+ 0b7ehU+vSkSpFfFlsDZ/3eZq7Ic6P3SALmeFu4XqK0LCCqd9O5eZTgDZvuucbafviaa4RIyn0QGpxZ
+ CgIE5K96VT1GQdJL+ZONRV4C8OF2Enlahogdtzl0kNSNjy4OuWSu2jUk2IpjiaAhIR7nPgDyBCeCc9
+ MfI+QXmxDwE4xP8xIWHeenTYySzu3ZdLMg2BCZXlKTG9DC3DKiP0KI7s9sdOdsciaSPAZA6Fx/sRY9
+ WsUpHLZ9iXvrysMjbfry2jP3ua5+9qjWh4L9V4DBkB+8Mp0XlUKhAc2wjWl81zkbEUT5ghzNptP4Ef
+ +wUSne3o0RaMj860eHu2LVtgqpfXcR
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 
-On Wed, Feb 28, 2024 at 11:08=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
-ote:
->
-> Parallel testing appears to show a race between allocating and setting
-> evsel ids. As there is a bounds check on the xyarray it yields a segv
-> like:
->
-> ```
-> AddressSanitizer:DEADLYSIGNAL
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
-> =3D=3D484408=3D=3DERROR: AddressSanitizer: SEGV on unknown address 0x0000=
-00000010
->
-> =3D=3D484408=3D=3DThe signal is caused by a WRITE memory access.
->
-> =3D=3D484408=3D=3DHint: address points to the zero page.
->
->     #0 0x55cef5d4eff4 in perf_evlist__id_hash tools/lib/perf/evlist.c:256
->     #1 0x55cef5d4f132 in perf_evlist__id_add tools/lib/perf/evlist.c:274
->     #2 0x55cef5d4f545 in perf_evlist__id_add_fd tools/lib/perf/evlist.c:3=
-15
->     #3 0x55cef5a1923f in store_evsel_ids util/evsel.c:3130
->     #4 0x55cef5a19400 in evsel__store_ids util/evsel.c:3147
->     #5 0x55cef5888204 in __run_perf_stat tools/perf/builtin-stat.c:832
->     #6 0x55cef5888c06 in run_perf_stat tools/perf/builtin-stat.c:960
->     #7 0x55cef58932db in cmd_stat tools/perf/builtin-stat.c:2878
-> ...
-> ```
->
-> Avoid this crash by early exiting the perf_evlist__id_add_fd and
-> perf_evlist__id_add is the access is out-of-bounds.
->
-> Signed-off-by: Ian Rogers <irogers@google.com>
+Simplify the binding of the guest state to the CPU when returning to the
+host by storing a copy of the structure used to pass the state in the
+vCPU data and initialising it during guest setup rather than creating a
+new copy each time we exit the guest.
 
-While I'm ok with this change, the real fix would be changing
-evsel_store__ids() to use xyarray__max_{x,y} for fd instead
-of cpu and thread map numbers.
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+Changes in v2:
+- Remove stale fp_state local.
+- Changelog updates.
+- Link to v1: https://lore.kernel.org/r/20240226-kvm-arm64-group-fp-data-v1-0-07d13759517e@kernel.org
 
-Thanks,
-Namhyung
+---
+Mark Brown (2):
+      KVM: arm64: Rename variable for tracking ownership of FP state
+      KVM: arm64: Reuse struct cpu_fp_state to track the guest FP state
 
-> ---
->  tools/lib/perf/evlist.c                  | 18 ++++++++++++------
->  tools/lib/perf/include/internal/evlist.h |  4 ++--
->  2 files changed, 14 insertions(+), 8 deletions(-)
->
-> diff --git a/tools/lib/perf/evlist.c b/tools/lib/perf/evlist.c
-> index 058e3ff10f9b..c6d67fc9e57e 100644
-> --- a/tools/lib/perf/evlist.c
-> +++ b/tools/lib/perf/evlist.c
-> @@ -248,10 +248,10 @@ u64 perf_evlist__read_format(struct perf_evlist *ev=
-list)
->
->  static void perf_evlist__id_hash(struct perf_evlist *evlist,
->                                  struct perf_evsel *evsel,
-> -                                int cpu, int thread, u64 id)
-> +                                int cpu_map_idx, int thread, u64 id)
->  {
->         int hash;
-> -       struct perf_sample_id *sid =3D SID(evsel, cpu, thread);
-> +       struct perf_sample_id *sid =3D SID(evsel, cpu_map_idx, thread);
->
->         sid->id =3D id;
->         sid->evsel =3D evsel;
-> @@ -269,21 +269,27 @@ void perf_evlist__reset_id_hash(struct perf_evlist =
-*evlist)
->
->  void perf_evlist__id_add(struct perf_evlist *evlist,
->                          struct perf_evsel *evsel,
-> -                        int cpu, int thread, u64 id)
-> +                        int cpu_map_idx, int thread, u64 id)
->  {
-> -       perf_evlist__id_hash(evlist, evsel, cpu, thread, id);
-> +       if (!SID(evsel, cpu_map_idx, thread))
-> +               return;
-> +
-> +       perf_evlist__id_hash(evlist, evsel, cpu_map_idx, thread, id);
->         evsel->id[evsel->ids++] =3D id;
->  }
->
->  int perf_evlist__id_add_fd(struct perf_evlist *evlist,
->                            struct perf_evsel *evsel,
-> -                          int cpu, int thread, int fd)
-> +                          int cpu_map_idx, int thread, int fd)
->  {
->         u64 read_data[4] =3D { 0, };
->         int id_idx =3D 1; /* The first entry is the counter value */
->         u64 id;
->         int ret;
->
-> +       if (!SID(evsel, cpu_map_idx, thread))
-> +               return -1;
-> +
->         ret =3D ioctl(fd, PERF_EVENT_IOC_ID, &id);
->         if (!ret)
->                 goto add;
-> @@ -312,7 +318,7 @@ int perf_evlist__id_add_fd(struct perf_evlist *evlist=
-,
->         id =3D read_data[id_idx];
->
->  add:
-> -       perf_evlist__id_add(evlist, evsel, cpu, thread, id);
-> +       perf_evlist__id_add(evlist, evsel, cpu_map_idx, thread, id);
->         return 0;
->  }
->
-> diff --git a/tools/lib/perf/include/internal/evlist.h b/tools/lib/perf/in=
-clude/internal/evlist.h
-> index d86ffe8ed483..f43bdb9b6227 100644
-> --- a/tools/lib/perf/include/internal/evlist.h
-> +++ b/tools/lib/perf/include/internal/evlist.h
-> @@ -126,11 +126,11 @@ u64 perf_evlist__read_format(struct perf_evlist *ev=
-list);
->
->  void perf_evlist__id_add(struct perf_evlist *evlist,
->                          struct perf_evsel *evsel,
-> -                        int cpu, int thread, u64 id);
-> +                        int cpu_map_idx, int thread, u64 id);
->
->  int perf_evlist__id_add_fd(struct perf_evlist *evlist,
->                            struct perf_evsel *evsel,
-> -                          int cpu, int thread, int fd);
-> +                          int cpu_map_idx, int thread, int fd);
->
->  void perf_evlist__reset_id_hash(struct perf_evlist *evlist);
->
-> --
-> 2.44.0.278.ge034bb2e1d-goog
->
+ arch/arm64/include/asm/kvm_emulate.h    |  4 ++--
+ arch/arm64/include/asm/kvm_host.h       | 25 ++++++++++++-------------
+ arch/arm64/kvm/arm.c                    | 14 +++++++++++++-
+ arch/arm64/kvm/fpsimd.c                 | 31 ++++++-------------------------
+ arch/arm64/kvm/guest.c                  | 21 ++++++++++++++-------
+ arch/arm64/kvm/hyp/include/hyp/switch.h |  6 +++---
+ arch/arm64/kvm/hyp/nvhe/hyp-main.c      |  9 +++++----
+ arch/arm64/kvm/hyp/nvhe/switch.c        |  2 +-
+ arch/arm64/kvm/hyp/vhe/switch.c         |  2 +-
+ arch/arm64/kvm/reset.c                  | 14 ++++++++------
+ 10 files changed, 65 insertions(+), 63 deletions(-)
+---
+base-commit: 54be6c6c5ae8e0d93a6c4641cb7528eb0b6ba478
+change-id: 20240226-kvm-arm64-group-fp-data-0ae363ce24fe
+
+Best regards,
+-- 
+Mark Brown <broonie@kernel.org>
+
 
