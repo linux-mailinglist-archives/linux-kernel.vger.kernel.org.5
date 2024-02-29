@@ -1,345 +1,144 @@
-Return-Path: <linux-kernel+bounces-86523-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86524-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3C5886C685
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:13:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63B5A86C687
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:13:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 45BCF1F22744
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:13:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0746328299B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:13:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4245C64A99;
-	Thu, 29 Feb 2024 10:12:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85F3E63518;
+	Thu, 29 Feb 2024 10:13:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gxdlJZI4"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="gOuDSN94"
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7063964A8A
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 10:12:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8554634FA;
+	Thu, 29 Feb 2024 10:12:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709201564; cv=none; b=o9qQCdmGvPOoDhTSqqGbvHn9wTz1as5udpZik3RBfx1+MH+4gh/r+luIb5bDKK2CVeOqfZpuDMKoFczX2cOSs6XSizhu9Ksr9PC4VwsI3vRg+dzEBF89IxU1Td3q1Uy+5vIWoPabDvDzd/smto9v99Q+TnG/VnRCOIXBFdIk+Pg=
+	t=1709201585; cv=none; b=kvrxbs2nCzkiMQIzHGmF/p2yTZ/+nfmyXMrxB1ZTfj2Y8X8XUIN3dcxQTrAUwAGE7tgfuAlkkKmr7U8bGkYVr3g9ij7sDzphw3Ep4+KB83XGw+VAp1jJkhw09u+5DBxukUgGte9BEKdVrvrNBYoxquihUZZJ7iWPf9HEKVqCmd4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709201564; c=relaxed/simple;
-	bh=l54BWmo2qBQhfU+nOETMwbUa9rPPpZylhZJ9ZNpclZM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nls+HVBslyB0Tx0bHf4UXP6JmkWGwManZdCZK69vThhjm8Qb2H8M7Co03gUJoLRZoqH+LoTuJ/dWUQb0AaT+x03U72kVkrZdUKrIxIJA3/uOrU+oepTgs51Memz1EPb9IqxCEFHLnkHduHR8GnN/oEq7T6XIf2+xx7TPLbLN53s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gxdlJZI4; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709201560;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MyG7advrzShaE4GD7r+5bwZTpy9MVwSz4bddaNdVD5I=;
-	b=gxdlJZI4n09dw22phMQnCViPkY0CPQ5OR7Z1dnldkjp83cQRxuGc52VWVGq+NLaIYduVxy
-	C7FJ/hbuGVmkJWZtN8S7r2tAdpcmT4GVc+AElJIV3YlUa6qJh1bVU22pLBA+9IJjlOpsiE
-	6C5+gyU4WrwLYF9O4fa+XZRr1luYPUs=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-395-g2_kueaYMjGjcrktKfdRQQ-1; Thu,
- 29 Feb 2024 05:12:35 -0500
-X-MC-Unique: g2_kueaYMjGjcrktKfdRQQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	s=arc-20240116; t=1709201585; c=relaxed/simple;
+	bh=3Y0napQcok6yYFzvKZKXvC27C5ldIaWsvbr5C99snto=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=h/aXKLzHKGuB5ViEjIBaqFyf0mxmEoNziLmQk7yxbCbv/qGNVShDuG6OD9R0fFsqkZFfnLLuKyfVVvwucwuYqdkGSQRwhXZSePdcEHKCs8qIfApt39XEV2wXv7FNt9ykB4LG1IJ1CCDoVS4lyHC0PFVsTJp4gEtx/dBWM4cX9Gc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=gOuDSN94; arc=none smtp.client-ip=93.104.207.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1709201583; x=1740737583;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=I0tG9nzHcCDklSXmw5EvPC2Z+AwV2Whi6F5Gzi5EvOI=;
+  b=gOuDSN94gLoT5fhWbf9HkSqfW/mjU2WxbYD1ZijHkjAbu4Rp0t7foYlp
+   ZK/3XpyBSSWxL4iqXJpBp0TPkEtwt5AYvvMkjCmIrWxYxyQfc0A2Oi156
+   4vv2udDUCCvvkTOVWngdhJYTuV27bbj3le7kqevmlTjpf3pZmRsq4XK7H
+   XQXoRBfNgX/ytwl4C2Qhay+Q6uauWdfgE5TGMtz7G+HQYl07brfTS3fdJ
+   ifjoEhWCnlJgOzfV9HHCzjf9lNF/FwwBKuYoSb007Oj0VYf4wJUnF/AOa
+   Wwh/oSUuqHHi7V/12GYAzQgPUQItojuyYbDWejxH6jcu2RbTZ3prQohhq
+   A==;
+X-IronPort-AV: E=Sophos;i="6.06,194,1705359600"; 
+   d="scan'208";a="35661153"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 29 Feb 2024 11:12:45 +0100
+Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.25])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7563F3C40B51;
-	Thu, 29 Feb 2024 10:12:34 +0000 (UTC)
-Received: from localhost (unknown [10.72.116.6])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 729CD2166B33;
-	Thu, 29 Feb 2024 10:12:31 +0000 (UTC)
-Date: Thu, 29 Feb 2024 18:12:00 +0800
-From: Baoquan He <bhe@redhat.com>
-To: rulinhuang <rulin.huang@intel.com>
-Cc: urezki@gmail.com, akpm@linux-foundation.org, colin.king@intel.com,
-	hch@infradead.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	lstoakes@gmail.com, tianyou.li@intel.com, tim.c.chen@intel.com,
-	wangyang.guo@intel.com, zhiguo.zhou@intel.com
-Subject: Re: [PATCH v6] mm/vmalloc: lock contention optimization under
- multi-threading
-Message-ID: <ZeBYcCAdHBCiDJkz@MiWiFi-R3L-srv>
-References: <20240229082611.4104839-1-rulin.huang@intel.com>
+	by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id EA6ED280071;
+	Thu, 29 Feb 2024 11:12:39 +0100 (CET)
+From: Alexander Stein <alexander.stein@ew.tq-group.com>
+To: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
+Cc: devicetree@vger.kernel.org, imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Frank Li <Frank.Li@nxp.com>, Alice Guo <alice.guo@nxp.com>, Peng Fan <peng.fan@nxp.com>, Frank Li <Frank.Li@nxp.com>
+Subject: Re: [PATCH 2/4] arm64: dts: imx8dxl: add lpuart device in cm40 subsystem
+Date: Thu, 29 Feb 2024 11:12:39 +0100
+Message-ID: <1889315.CQOukoFCf9@steina-w>
+Organization: TQ-Systems GmbH
+In-Reply-To: <20240228-m4_lpuart-v1-2-9e6947be15e7@nxp.com>
+References: <20240228-m4_lpuart-v1-0-9e6947be15e7@nxp.com> <20240228-m4_lpuart-v1-2-9e6947be15e7@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240229082611.4104839-1-rulin.huang@intel.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 
-Hi Rulin,
+Hi Frank,
 
-Thanks for the great work and v6, some concerns, please see inline
-comments.
+thanks for the patch.
 
-On 02/29/24 at 12:26am, rulinhuang wrote:
-> When allocating a new memory area where the mapping address range is
-> known, it is observed that the vmap_node->busy.lock is acquired twice.
-> 
-> The first acquisition occurs in the alloc_vmap_area() function when
-> inserting the vm area into the vm mapping red-black tree. The second
-> acquisition occurs in the setup_vmalloc_vm() function when updating the
-> properties of the vm, such as flags and address, etc.
-> 
-> Combine these two operations together in alloc_vmap_area(), which
-> improves scalability when the vmap_node->busy.lock is contended.
-> By doing so, the need to acquire the lock twice can also be eliminated
->  to once.
-> 
-> With the above change, tested on intel sapphire rapids
-> platform(224 vcpu), a 4% performance improvement is
-> gained on stress-ng/pthread(https://github.com/ColinIanKing/stress-ng),
-> which is the stress test of thread creations.
-> 
-> Reviewed-by: Uladzislau Rezki <urezki@gmail.com>
-> Reviewed-by: Baoquan He <bhe@redhat.com>
-> Reviewed-by: "Chen, Tim C" <tim.c.chen@intel.com>
-> Reviewed-by: "King, Colin" <colin.king@intel.com>
-
-
-We possibly need remove these reviewers' tags when new code change is
-taken so that people check and add Acked-by or Reviewed-by again if then
-agree, or add new comments if any concern.
-
-> Signed-off-by: rulinhuang <rulin.huang@intel.com>
+Am Mittwoch, 28. Februar 2024, 20:54:58 CET schrieb Frank Li:
+> From: Alice Guo <alice.guo@nxp.com>
+>=20
+> Adding lpuart device in cm40 subsystem.
+>=20
+> Signed-off-by: Alice Guo <alice.guo@nxp.com>
+> Reviewed-by: Peng Fan <peng.fan@nxp.com>
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
 > ---
-> V1 -> V2: Avoided the partial initialization issue of vm and
-> separated insert_vmap_area() from alloc_vmap_area()
-> V2 -> V3: Rebased on 6.8-rc5
-> V3 -> V4: Rebased on mm-unstable branch
-> V4 -> V5: cancel the split of alloc_vmap_area()
-> and keep insert_vmap_area()
-> V5 -> V6: add bug_on
-> ---
->  mm/vmalloc.c | 132 +++++++++++++++++++++++++--------------------------
->  1 file changed, 64 insertions(+), 68 deletions(-)
-> 
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index 25a8df497255..5ae028b0d58d 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -1841,15 +1841,66 @@ node_alloc(unsigned long size, unsigned long align,
->  	return va;
->  }
->  
-> +/*** Per cpu kva allocator ***/
+>  arch/arm64/boot/dts/freescale/imx8-ss-cm40.dtsi | 25 +++++++++++++++++++=
+++++++
+>  1 file changed, 25 insertions(+)
+>=20
+> diff --git a/arch/arm64/boot/dts/freescale/imx8-ss-cm40.dtsi b/arch/arm64=
+/boot/dts/freescale/imx8-ss-cm40.dtsi
+> index b1d626862ddf8..ecca5ada224b7 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8-ss-cm40.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8-ss-cm40.dtsi
+> @@ -64,4 +64,29 @@ cm40_intmux: intmux@37400000 {
+>  		power-domains =3D <&pd IMX_SC_R_M4_0_INTMUX>;
+>  		status =3D "disabled";
+>  	};
 > +
-> +/*
-> + * vmap space is limited especially on 32 bit architectures. Ensure there is
-> + * room for at least 16 percpu vmap blocks per CPU.
-> + */
-> +/*
-> + * If we had a constant VMALLOC_START and VMALLOC_END, we'd like to be able
-> + * to #define VMALLOC_SPACE		(VMALLOC_END-VMALLOC_START). Guess
-> + * instead (we just need a rough idea)
-> + */
-> +#if BITS_PER_LONG == 32
-> +#define VMALLOC_SPACE		(128UL*1024*1024)
-> +#else
-> +#define VMALLOC_SPACE		(128UL*1024*1024*1024)
-> +#endif
-> +
-> +#define VMALLOC_PAGES		(VMALLOC_SPACE / PAGE_SIZE)
-> +#define VMAP_MAX_ALLOC		BITS_PER_LONG	/* 256K with 4K pages */
-> +#define VMAP_BBMAP_BITS_MAX	1024	/* 4MB with 4K pages */
-> +#define VMAP_BBMAP_BITS_MIN	(VMAP_MAX_ALLOC*2)
-> +#define VMAP_MIN(x, y)		((x) < (y) ? (x) : (y)) /* can't use min() */
-> +#define VMAP_MAX(x, y)		((x) > (y) ? (x) : (y)) /* can't use max() */
-> +#define VMAP_BBMAP_BITS		\
-> +		VMAP_MIN(VMAP_BBMAP_BITS_MAX,	\
-> +		VMAP_MAX(VMAP_BBMAP_BITS_MIN,	\
-> +			VMALLOC_PAGES / roundup_pow_of_two(NR_CPUS) / 16))
-> +
-> +#define VMAP_BLOCK_SIZE		(VMAP_BBMAP_BITS * PAGE_SIZE)
-> +
-> +/*
-> + * Purge threshold to prevent overeager purging of fragmented blocks for
-> + * regular operations: Purge if vb->free is less than 1/4 of the capacity.
-> + */
-> +#define VMAP_PURGE_THRESHOLD	(VMAP_BBMAP_BITS / 4)
-> +
-> +#define VMAP_RAM		0x1 /* indicates vm_map_ram area*/
-> +#define VMAP_BLOCK		0x2 /* mark out the vmap_block sub-type*/
-> +#define VMAP_FLAGS_MASK		0x3
+> +	cm40_lpuart: serial@37220000 {
+> +		compatible =3D "fsl,imx8qxp-lpuart";
+> +		reg =3D <0x37220000 0x1000>;
+> +		interrupts =3D <7 IRQ_TYPE_LEVEL_HIGH>;
+> +		interrupt-parent =3D <&cm40_intmux>;
 
-These code moving is made because we need check VMAP_RAM in advance. We
-may need move all those data structures and basic helpers related to per
-cpu kva allocator up too to along with these macros, just as the newly
-introduced vmap_node does. If that's agreed, better be done in a
-separate patch. My personal opinion. Not sure if Uladzislau has
-different thoughts.
+With interrupt-parent set in Patch 1 for the whole subsystem, this line
+is not needed anymore.
 
-Other than this, the overall looks good to me.
+Best regards,
+Alexander
 
+> +		clocks =3D <&cm40_uart_lpcg 1>, <&cm40_uart_lpcg 0>;
+> +		clock-names =3D "ipg", "baud";
+> +		assigned-clocks =3D <&clk IMX_SC_R_M4_0_UART IMX_SC_PM_CLK_PER>;
+> +		assigned-clock-rates =3D <24000000>;
+> +		power-domains =3D <&pd IMX_SC_R_M4_0_UART>;
+> +		status =3D "disabled";
+> +	};
 > +
-> +static inline void setup_vmalloc_vm(struct vm_struct *vm,
-> +	struct vmap_area *va, unsigned long flags, const void *caller)
-> +{
-> +	vm->flags = flags;
-> +	vm->addr = (void *)va->va_start;
-> +	vm->size = va->va_end - va->va_start;
-> +	vm->caller = caller;
-> +	va->vm = vm;
-> +}
-> +
->  /*
->   * Allocate a region of KVA of the specified size and alignment, within the
-> - * vstart and vend.
-> + * vstart and vend. If vm is passed in, the two will also be bound.
->   */
->  static struct vmap_area *alloc_vmap_area(unsigned long size,
->  				unsigned long align,
->  				unsigned long vstart, unsigned long vend,
->  				int node, gfp_t gfp_mask,
-> -				unsigned long va_flags)
-> +				unsigned long va_flags, struct vm_struct *vm,
-> +				unsigned long flags, const void *caller)
->  {
->  	struct vmap_node *vn;
->  	struct vmap_area *va;
-> @@ -1912,6 +1963,11 @@ static struct vmap_area *alloc_vmap_area(unsigned long size,
->  	va->vm = NULL;
->  	va->flags = (va_flags | vn_id);
->  
-> +	if (vm) {
-> +		BUG_ON(va_flags & VMAP_RAM);
-> +		setup_vmalloc_vm(vm, va, flags, caller);
-> +	}
-> +
->  	vn = addr_to_node(va->va_start);
->  
->  	spin_lock(&vn->busy.lock);
-> @@ -2325,46 +2381,6 @@ static struct vmap_area *find_unlink_vmap_area(unsigned long addr)
->  	return NULL;
->  }
->  
-> -/*** Per cpu kva allocator ***/
-> -
-> -/*
-> - * vmap space is limited especially on 32 bit architectures. Ensure there is
-> - * room for at least 16 percpu vmap blocks per CPU.
-> - */
-> -/*
-> - * If we had a constant VMALLOC_START and VMALLOC_END, we'd like to be able
-> - * to #define VMALLOC_SPACE		(VMALLOC_END-VMALLOC_START). Guess
-> - * instead (we just need a rough idea)
-> - */
-> -#if BITS_PER_LONG == 32
-> -#define VMALLOC_SPACE		(128UL*1024*1024)
-> -#else
-> -#define VMALLOC_SPACE		(128UL*1024*1024*1024)
-> -#endif
-> -
-> -#define VMALLOC_PAGES		(VMALLOC_SPACE / PAGE_SIZE)
-> -#define VMAP_MAX_ALLOC		BITS_PER_LONG	/* 256K with 4K pages */
-> -#define VMAP_BBMAP_BITS_MAX	1024	/* 4MB with 4K pages */
-> -#define VMAP_BBMAP_BITS_MIN	(VMAP_MAX_ALLOC*2)
-> -#define VMAP_MIN(x, y)		((x) < (y) ? (x) : (y)) /* can't use min() */
-> -#define VMAP_MAX(x, y)		((x) > (y) ? (x) : (y)) /* can't use max() */
-> -#define VMAP_BBMAP_BITS		\
-> -		VMAP_MIN(VMAP_BBMAP_BITS_MAX,	\
-> -		VMAP_MAX(VMAP_BBMAP_BITS_MIN,	\
-> -			VMALLOC_PAGES / roundup_pow_of_two(NR_CPUS) / 16))
-> -
-> -#define VMAP_BLOCK_SIZE		(VMAP_BBMAP_BITS * PAGE_SIZE)
-> -
-> -/*
-> - * Purge threshold to prevent overeager purging of fragmented blocks for
-> - * regular operations: Purge if vb->free is less than 1/4 of the capacity.
-> - */
-> -#define VMAP_PURGE_THRESHOLD	(VMAP_BBMAP_BITS / 4)
-> -
-> -#define VMAP_RAM		0x1 /* indicates vm_map_ram area*/
-> -#define VMAP_BLOCK		0x2 /* mark out the vmap_block sub-type*/
-> -#define VMAP_FLAGS_MASK		0x3
-> -
->  struct vmap_block_queue {
->  	spinlock_t lock;
->  	struct list_head free;
-> @@ -2486,7 +2502,8 @@ static void *new_vmap_block(unsigned int order, gfp_t gfp_mask)
->  	va = alloc_vmap_area(VMAP_BLOCK_SIZE, VMAP_BLOCK_SIZE,
->  					VMALLOC_START, VMALLOC_END,
->  					node, gfp_mask,
-> -					VMAP_RAM|VMAP_BLOCK);
-> +					VMAP_RAM|VMAP_BLOCK, NULL,
-> +					0, NULL);
->  	if (IS_ERR(va)) {
->  		kfree(vb);
->  		return ERR_CAST(va);
-> @@ -2843,7 +2860,8 @@ void *vm_map_ram(struct page **pages, unsigned int count, int node)
->  		struct vmap_area *va;
->  		va = alloc_vmap_area(size, PAGE_SIZE,
->  				VMALLOC_START, VMALLOC_END,
-> -				node, GFP_KERNEL, VMAP_RAM);
-> +				node, GFP_KERNEL, VMAP_RAM,
-> +				NULL, 0, NULL);
->  		if (IS_ERR(va))
->  			return NULL;
->  
-> @@ -2946,26 +2964,6 @@ void __init vm_area_register_early(struct vm_struct *vm, size_t align)
->  	kasan_populate_early_vm_area_shadow(vm->addr, vm->size);
->  }
->  
-> -static inline void setup_vmalloc_vm_locked(struct vm_struct *vm,
-> -	struct vmap_area *va, unsigned long flags, const void *caller)
-> -{
-> -	vm->flags = flags;
-> -	vm->addr = (void *)va->va_start;
-> -	vm->size = va->va_end - va->va_start;
-> -	vm->caller = caller;
-> -	va->vm = vm;
-> -}
-> -
-> -static void setup_vmalloc_vm(struct vm_struct *vm, struct vmap_area *va,
-> -			      unsigned long flags, const void *caller)
-> -{
-> -	struct vmap_node *vn = addr_to_node(va->va_start);
-> -
-> -	spin_lock(&vn->busy.lock);
-> -	setup_vmalloc_vm_locked(vm, va, flags, caller);
-> -	spin_unlock(&vn->busy.lock);
-> -}
-> -
->  static void clear_vm_uninitialized_flag(struct vm_struct *vm)
->  {
->  	/*
-> @@ -3002,14 +3000,12 @@ static struct vm_struct *__get_vm_area_node(unsigned long size,
->  	if (!(flags & VM_NO_GUARD))
->  		size += PAGE_SIZE;
->  
-> -	va = alloc_vmap_area(size, align, start, end, node, gfp_mask, 0);
-> +	va = alloc_vmap_area(size, align, start, end, node, gfp_mask, 0, area, flags, caller);
->  	if (IS_ERR(va)) {
->  		kfree(area);
->  		return NULL;
->  	}
->  
-> -	setup_vmalloc_vm(area, va, flags, caller);
-> -
->  	/*
->  	 * Mark pages for non-VM_ALLOC mappings as accessible. Do it now as a
->  	 * best-effort approach, as they can be mapped outside of vmalloc code.
-> @@ -4584,7 +4580,7 @@ struct vm_struct **pcpu_get_vm_areas(const unsigned long *offsets,
->  
->  		spin_lock(&vn->busy.lock);
->  		insert_vmap_area(vas[area], &vn->busy.root, &vn->busy.head);
-> -		setup_vmalloc_vm_locked(vms[area], vas[area], VM_ALLOC,
-> +		setup_vmalloc_vm(vms[area], vas[area], VM_ALLOC,
->  				 pcpu_get_vm_areas);
->  		spin_unlock(&vn->busy.lock);
->  	}
-> 
-> base-commit: 7e6ae2db7f319bf9613ec6db8fa3c9bc1de1b346
-> -- 
-> 2.43.0
-> 
+> +	cm40_uart_lpcg: clock-controller@37620000 {
+> +		compatible =3D "fsl,imx8qxp-lpcg";
+> +		reg =3D <0x37620000 0x1000>;
+> +		#clock-cells =3D <1>;
+> +		clocks =3D <&clk IMX_SC_R_M4_0_UART IMX_SC_PM_CLK_PER>,
+> +			 <&cm40_ipg_clk>;
+> +		clock-indices =3D <IMX_LPCG_CLK_0>, <IMX_LPCG_CLK_1>;
+> +		clock-output-names =3D "cm40_lpcg_uart_clk",
+> +				     "cm40_lpcg_uart_ipg_clk";
+> +		power-domains =3D <&pd IMX_SC_R_M4_0_UART>;
+> +	};
+>  };
+>=20
+>=20
+
+
+=2D-=20
+TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
+Amtsgericht M=FCnchen, HRB 105018
+Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
+http://www.tq-group.com/
+
 
 
