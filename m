@@ -1,163 +1,191 @@
-Return-Path: <linux-kernel+bounces-87298-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87299-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4999486D264
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:34:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 150B086D26C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:36:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE9E21F21D49
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:34:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 391751C22A28
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:36:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AE994AEDE;
-	Thu, 29 Feb 2024 18:34:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AFAC7D08D;
+	Thu, 29 Feb 2024 18:36:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="aPKsceU8"
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Eeg5ydFc"
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 986EE2A8D7
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 18:34:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D67F8383B0;
+	Thu, 29 Feb 2024 18:36:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709231689; cv=none; b=biDtuaQUBQVuVqNrGqKf5TaQjH0g/m2aYazmEYXry/ggoSAHjwXEB9jBJ0nHqM0fuf4kXXH8jWt+x2AfD8jB6cG5G9jJXiScLVdX0cq11DATzri6E/Ctx03TGEWUGWQkIDGbDxFmbB6LE/dJgyZPL9FnispVWBXWbby6wKzI8Ak=
+	t=1709231766; cv=none; b=bR7W/DCZOfN3LqnwS9nwJ4Jo+wme+9cLFp4BUPmHW7/CJqzqsdaGSYt7vff5pneLnRPl27cGwLtH8bFLeZc5vzeUzhj+yUObMGhJjVkCACvqAkFMOF0YTgIp+IQiXwbYQWmksq/TcCbeuvXK5v6t4c9osq9hZmfxOkijdXVOHL4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709231689; c=relaxed/simple;
-	bh=nldKV6VMvMKd10q9dN8TTV6KiBI++xPO7VnBI/q7h94=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=O34WSQBEBOSMRCF7wfBSV7cjArunywJtmaUufGn5ZMJDIt2kPke1tZwH/ZpqI/xhq1U5VnOd41GzcyBHuZoMdBuDooF3r7IbFFDTeLMOEh/CsV7PqB25pyj7uQDpnab3aKmfvsFY2NVz/YDODR+pNkjfCJ0okSGS3Y/GRrd78g4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=aPKsceU8; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5643ae47cd3so1870704a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 10:34:47 -0800 (PST)
+	s=arc-20240116; t=1709231766; c=relaxed/simple;
+	bh=MTQ2Zp10v4EFATTAdn8YTq6PqucoTKlCqk+EsJm56cU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=YjSf9yGLOZVoxTFBJdvUPXGpZ1q/K/11GLNt0eMBgP038MoeZ0WYij2gUUwIt813sGjaXy2v09DaT1P5UhSe+gPxV07Z4AGkoBtRtjCehc3J6w7KvjzvY8b1aVjRmSLG/7qRimVvFRrx0d4cN8If3uTaNcd6eKUf9srNAVYiM9M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Eeg5ydFc; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6e55b33ad14so815694b3a.1;
+        Thu, 29 Feb 2024 10:36:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709231684; x=1709836484; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nldKV6VMvMKd10q9dN8TTV6KiBI++xPO7VnBI/q7h94=;
-        b=aPKsceU8Nj47rWD2R4llx8mU73kV2xuWTY8gzVCWZhKUSfD9OTiigmAZVKVE9SEU6n
-         dKPjU+w2rtdaEPpYqb+ouqb2VlBPNg2BTxX+6G+turyVfjJMU3mVhqDLpzywOx35CxxY
-         9J/7/QxNzR6Fq5VR1p9oIz4z1rhCzrrr4sMJo=
+        d=gmail.com; s=20230601; t=1709231764; x=1709836564; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3+gMaEJ0wh9SI3Z0iigxIJILHIqBzk3ZTRAx3N1QiYM=;
+        b=Eeg5ydFcSY54VaJ6RhfgXfB1a6w5OLQjCpzkM9P9ETX9onS+XapskhBo7cgReiEixY
+         V/zrNjvohFapiWsTwm5QXBOv+7uaRdWfnCaxczgNnm4FkbhqCfEMJShecEdzzqPRMM67
+         ZNvjn4PuYuOPUdVYbZh8TjKL1UdfA+op40GcPem4cSTY3sawObb0Cps1RZ03n3WlbDjy
+         W0rAgFBzuZrHEzuRehiuB2pbM1RjLp5Id9si/mzapnEMwI7RlXd+uYbN4I/WFYsmUE4W
+         hu3Z4PgJZglRYnNJN5hPQ55/N2TiZkNVzpKU0LPWu9LUCavvWvmcE2fu0BER8pf0Hovh
+         BAgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709231684; x=1709836484;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nldKV6VMvMKd10q9dN8TTV6KiBI++xPO7VnBI/q7h94=;
-        b=vpMDJhCKP5TW6s3sHRtBT+zARjQJOHO9Z4Pa2tOMkJ6GjKuCbUz81bXExaLZxZlRGT
-         3zwj0zqKUIXi4fXSmEz3fRCOxQIZNCfqysaxynh833kz86s+EevO+42TT18RQqnwqq7q
-         2Mx9+3DC6aR+s4AXiIBXCrNYyGS67qH56BhekY0qHUaiIonW6i0vujq5W7HPw/sI5OD0
-         PdhEH529SejGNybW6kgk8nsK5EBuKYZfoEu5akjMp2P5aF0NUXZOVcQfNw+gfFdpuS40
-         uT/T/aT6thgLxNrOdR0nZrDDFhQTBxKNTAU65gLutbmvM4sXdLmAbVrfgOE+Wg6CQP6m
-         pUXA==
-X-Forwarded-Encrypted: i=1; AJvYcCWdffxioo9ZMlm81zDQKqrC4bVqls90Ysq9LVDF3IDny3IjMcAuzBKXnwR8imLUtH12QzARCGCYDQQXfBGpYynHINgQwej/7zvxLSEx
-X-Gm-Message-State: AOJu0YzL8YxFi2FWcvTqWeCcoKQ3Gb7NYbWY8RJpjSpH9YO454jleB7P
-	JZ2sbidAyZvG6gDbRDu4+vEahrD5NjNolntizDiJBL0xGKvtPbXt3DGN1cmBKLYjjHwXUDp2c6U
-	on4Av
-X-Google-Smtp-Source: AGHT+IGu/GPlufo9ki33d4lTUOFVzDWD98AqqPpFwockWKNT4pXzb81A6TfS+XPP4tac0Bl1vqqB0A==
-X-Received: by 2002:a05:6402:348a:b0:565:9fc8:8f35 with SMTP id v10-20020a056402348a00b005659fc88f35mr2282358edc.42.1709231683898;
-        Thu, 29 Feb 2024 10:34:43 -0800 (PST)
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com. [209.85.128.52])
-        by smtp.gmail.com with ESMTPSA id be27-20020a0564021a3b00b0056650031d94sm829521edb.90.2024.02.29.10.34.42
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Feb 2024 10:34:42 -0800 (PST)
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-412a9f272f4so9485e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 10:34:42 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVxWoT0nngok2qMjJ4I7KqrVoGA6AB5mOqky+EmxdItLxrETTTouZ2f8QWGh6SsrIUzhFbBLXnrZ9FxTOLO2AD6OSTILs6zfYrVbWlE
-X-Received: by 2002:a05:600c:5185:b0:412:a039:945b with SMTP id
- fa5-20020a05600c518500b00412a039945bmr217511wmb.0.1709231682297; Thu, 29 Feb
- 2024 10:34:42 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709231764; x=1709836564;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3+gMaEJ0wh9SI3Z0iigxIJILHIqBzk3ZTRAx3N1QiYM=;
+        b=T5ZCPPqELB1h4K1gNN1D1llZsVlutTC+Yo2WG1rCT/cpGxMhncK0T5ax51Hze0VnNw
+         G+xyyCgiF/IJVeXxywRYhffXx0M4QZbruCX4NZ7xM2HWlfnazynQ66uqct67TjpWOSSE
+         hRaA60wHLGjHgtHZp5jYTQovz5PcAXFN344+IEcDRB9RsMZX5VZIlfgB5m0QAfQ1QjOr
+         RxUqmWhjLofmTMurQDKl6AkzUjQItlFouYplyhs00qEyk5oijBYRyAVxaw4+9FkjZchk
+         pATbAS+L2TThdpBNOMyKxmgtWZq32AoPAiBLSzIXGcTgXXm2doQncKKvWhn7IshHtIOh
+         H05w==
+X-Forwarded-Encrypted: i=1; AJvYcCXJnMDkLjvqkq+XC2xomdfZfqKaGDHIQQIZiodTnu/+ac8/9NP6YH78QxepvhaYpun2ewgWmfy4C8Ut1muc/1bCC8bHOPIBnb/pmJP0vJ6aUPlVIebgvJZh/UdoNa7//rIjGMOqLJ/s
+X-Gm-Message-State: AOJu0YxSj3s0gfPfczn0o2bxuoXa/uu3BTaGJk97+SP/M6d8DX+fWQZp
+	ik2sBhv67ipEwfhvJbVEyzjaEaErPWiqRiAZ10F7Uh2h0q4l1VOu
+X-Google-Smtp-Source: AGHT+IESfJPaPW4XdZ0Mu53/VQlgf7pW8jpNwrPcnJhzbPBfRKKNRO4uibv22o8d82QjfHXgqirXXQ==
+X-Received: by 2002:aa7:87d3:0:b0:6e5:5cc4:3fef with SMTP id i19-20020aa787d3000000b006e55cc43fefmr3166438pfo.11.1709231763675;
+        Thu, 29 Feb 2024 10:36:03 -0800 (PST)
+Received: from localhost ([2601:644:9381:2f20::119d])
+        by smtp.gmail.com with ESMTPSA id c2-20020a62e802000000b006e1463c18f8sm1595604pfi.37.2024.02.29.10.36.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Feb 2024 10:36:03 -0800 (PST)
+From: Matthew Wood <thepacketgeek@gmail.com>
+To: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Breno Leitao <leitao@debian.org>
+Cc: netdev@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v2] net: netconsole: Add continuation line prefix to userdata messages
+Date: Thu, 29 Feb 2024 10:36:01 -0800
+Message-ID: <20240229183602.321747-1-thepacketgeek@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231207170251.1.Id4817adef610302554b8aa42b090d57270dc119c@changeid>
- <CAD=FV=WtJCkdSY=HYDmBjn3hc4TYT7j0bMxGCV-=B3o3bm-kpQ@mail.gmail.com>
- <CAD=FV=XMkrWmA1D6UjdTs8oZiXxKc1xiUoRqtNqAE-7GoPk8mA@mail.gmail.com> <20240228131104.GB22898@aspen.lan>
-In-Reply-To: <20240228131104.GB22898@aspen.lan>
-From: Doug Anderson <dianders@chromium.org>
-Date: Thu, 29 Feb 2024 10:34:26 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=VYV_EMFXS0vvMZLGSRZcGwit6=DMdgSW349bVAu_7a1Q@mail.gmail.com>
-Message-ID: <CAD=FV=VYV_EMFXS0vvMZLGSRZcGwit6=DMdgSW349bVAu_7a1Q@mail.gmail.com>
-Subject: Re: [PATCH] arm64: smp: smp_send_stop() and crash_smp_send_stop()
- should try non-NMI first
-To: Daniel Thompson <daniel.thompson@linaro.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Marc Zyngier <maz@kernel.org>, 
-	Misono Tomohiro <misono.tomohiro@fujitsu.com>, Chen-Yu Tsai <wens@csie.org>, 
-	Stephen Boyd <swboyd@chromium.org>, Sumit Garg <sumit.garg@linaro.org>, 
-	Frederic Weisbecker <frederic@kernel.org>, "Guilherme G. Piccoli" <gpiccoli@igalia.com>, 
-	Josh Poimboeuf <jpoimboe@kernel.org>, Kees Cook <keescook@chromium.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, 
-	Tony Luck <tony.luck@intel.com>, Valentin Schneider <vschneid@redhat.com>, 
-	linux-arm-kernel@lists.infradead.org, linux-hardening@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi,
+Add a space (' ') prefix to every userdata line to match docs for
+dev-kmsg. To account for this extra character in each userdata entry,
+reduce userdata entry names (directory name) from 54 characters to 53.
 
-On Wed, Feb 28, 2024 at 5:11=E2=80=AFAM Daniel Thompson
-<daniel.thompson@linaro.org> wrote:
->
-> > I'm still hoping to get some sort of feedback here. If people think
-> > this is a terrible idea then I'll shut up now and leave well enough
-> > alone, but it would be nice to actively decide and get the patch out
-> > of limbo.
->
-> I've read patch through a couple of times and was generally convinced by
-> the "do what x86 does" argument.
->
-> However until now I've always held my council since I wasn't familiar
-> with these code paths and I figured it was OK for me to have no opinion
-> because the first line of the description says that kgdb/kdb is 100% not
-> involved in causing the problem ;-) .
->
-> However today I also took a look at the HAVE_NMI architectures and there
-> is no consensus between them about how to implement this: PowerPC uses
-> NMI and most of the others use IRQ only, s390 special cases for the
-> panic code path and acts differently compared to a normal SMP shutdown.
+According to the dev-kmsg docs, a space is used for subsequent lines to
+mark them as continuation lines.
 
-Thanks for taking a look! I think I just included you since long ago
-you were involved in the pseudo-NMI patches. ;-)
+> A line starting with ' ', is a continuation line, adding
+> key/value pairs to the log message, which provide the machine
+> readable context of the message, for reliable processing in
+> userspace.
 
+Testing for this patch::
 
-> FWIW the x86 route was irq-only and then switching to irq-plus-nmi
-> (after a short trial with NMI-only that had problems with pstore
-> reliability[1]) and that approach has been in place for over
-> a decade now!
+ cd /sys/kernel/config/netconsole && mkdir cmdline0
+ cd cmdline0
+ mkdir userdata/test && echo "hello" > userdata/test/value
+ mkdir userdata/test2 && echo "hello2" > userdata/test2/value
+ echo "message" > /dev/kmsg
 
-Ah, interesting. I guess this isn't a problem for me at the moment
-since we're not using any alternate pstore backends (ChromeOS just
-does pstore to RAM), but it's good to confirm that people were facing
-real issues. This matches what my gut told me: that it's nice to give
-CPUs a little chance to shut down more cleanly before jamming an NMI
-down their throats.
+Outputs::
 
+ 6.8.0-rc5-virtme,12,493,231373579,-;message
+  test=hello
+  test2=hello2
 
-> However, if we talking ourselves into copying x86 then perhaps we should
-> more accurately copy x86! Assuming I read the x86 code correctly then
-> crash_smp_send_stop() will (mostly) go staight to NMI rather
-> than trialling an IRQ first! That is not what is currently implemented
-> in the patch for arm64.
+And I confirmed all testing works as expected from the original patchset
 
-Sure, I'm happy to change the patch to work that way, though I might
-wait to get some confirmation from a maintainer that they think this
-idea is worth pursuing before spending more time on it. I don't think
-it would be hard to have the "crash stop" code jump straight to NMI if
-that's what people want. Matching x86 here seems reasonable, though
-I'd also say that my gut still says that even for crash stop we should
-try to stop things cleanly before jumping to NMI. I guess I could
-imagine that the code we're kexec-ing to generate the core file might
-be more likely to find the hardware in a funny state if we stopped
-CPUs w/ NMI vs IRQ.
+v1 -> v2:
+- Calculate 53 byte user data name from: entry length - formatting chars - value length
+- Update docs to reflect 53 byte limit for user data name (director)
 
+Fixes: df03f830d099 ("net: netconsole: cache userdata formatted string in netconsole_target")
+Signed-off-by: Matthew Wood <thepacketgeek@gmail.com>
+---
+ Documentation/networking/netconsole.rst | 8 ++++----
+ drivers/net/netconsole.c                | 8 +++++---
+ 2 files changed, 9 insertions(+), 7 deletions(-)
 
--Doug
+diff --git a/Documentation/networking/netconsole.rst b/Documentation/networking/netconsole.rst
+index b28c525e5d1e..d55c2a22ec7a 100644
+--- a/Documentation/networking/netconsole.rst
++++ b/Documentation/networking/netconsole.rst
+@@ -180,7 +180,7 @@ Custom user data can be appended to the end of messages with netconsole
+ dynamic configuration enabled. User data entries can be modified without
+ changing the "enabled" attribute of a target.
+ 
+-Directories (keys) under `userdata` are limited to 54 character length, and
++Directories (keys) under `userdata` are limited to 53 character length, and
+ data in `userdata/<key>/value` are limited to 200 bytes::
+ 
+  cd /sys/kernel/config/netconsole && mkdir cmdline0
+@@ -197,8 +197,8 @@ Messages will now include this additional user data::
+ Sends::
+ 
+  12,607,22085407756,-;This is a message
+- foo=bar
+- qux=baz
++  foo=bar
++  qux=baz
+ 
+ Preview the userdata that will be appended with::
+ 
+@@ -218,7 +218,7 @@ The `qux` key is omitted since it has no value::
+ 
+  echo "This is a message" > /dev/kmsg
+  12,607,22085407756,-;This is a message
+- foo=bar
++  foo=bar
+ 
+ Delete `userdata` entries with `rmdir`::
+ 
+diff --git a/drivers/net/netconsole.c b/drivers/net/netconsole.c
+index 0de108a1c0c8..46e447ea41b8 100644
+--- a/drivers/net/netconsole.c
++++ b/drivers/net/netconsole.c
+@@ -43,9 +43,11 @@ MODULE_DESCRIPTION("Console driver for network interfaces");
+ MODULE_LICENSE("GPL");
+ 
+ #define MAX_PARAM_LENGTH	256
+-#define MAX_USERDATA_NAME_LENGTH	54
+-#define MAX_USERDATA_VALUE_LENGTH	200
+ #define MAX_USERDATA_ENTRY_LENGTH	256
++#define MAX_USERDATA_VALUE_LENGTH	200
++#define MAX_USERDATA_NAME_LENGTH	MAX_USERDATA_ENTRY_LENGTH - \
++					MAX_USERDATA_VALUE_LENGTH - \
++					3 /* ' ' '=' '\n' characters */
+ #define MAX_USERDATA_ITEMS		16
+ #define MAX_PRINT_CHUNK		1000
+ 
+@@ -671,7 +673,7 @@ static void update_userdata(struct netconsole_target *nt)
+ 		 * checked to not exceed MAX items with child_count above
+ 		 */
+ 		complete_idx += scnprintf(&nt->userdata_complete[complete_idx],
+-					  MAX_USERDATA_ENTRY_LENGTH, "%s=%s\n",
++					  MAX_USERDATA_ENTRY_LENGTH, " %s=%s\n",
+ 					  item->ci_name, udm_item->value);
+ 	}
+ 	nt->userdata_length = strnlen(nt->userdata_complete,
+-- 
+2.44.0
+
 
