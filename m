@@ -1,211 +1,204 @@
-Return-Path: <linux-kernel+bounces-86708-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86709-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A69B186C95D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:40:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8912786C961
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:41:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 573A52843FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:40:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35584285655
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:41:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE3717D402;
-	Thu, 29 Feb 2024 12:40:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7326B7D077;
+	Thu, 29 Feb 2024 12:41:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="igRhD60z"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="DgavKIbQ"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA6807D06E;
-	Thu, 29 Feb 2024 12:40:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 093C776EF4
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 12:41:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709210441; cv=none; b=IHz/uqXJqNZFu9ac2ZJmh4QZTjBxBjbTPBiOqaXXZVDqiFPdPtp4W9TaklVvf4RAyA/a8HCj2CfDKh4hVI36yc1ruIZmbdzM2dV0CEG7VtVy35zs4AR6YbCeHE3FdorCmp/HUvVy+bLqr+7wAUQETuMiKtHexRCaDVzGw9TgQ78=
+	t=1709210503; cv=none; b=c1zL5bnFbkkqObFJniQahy7i8p1+tLP9RcsfXYH94uRTVgY7PN8E98vlz5sPe6wwFTlymf8G3HpY+Ylln1Cs0usxdSPHgLIZTJnmnOICZzFfHlrBT6Wegdfl2rt7Hqvi1DRcBCUyTMHj4eOVd7XzO4TwDIeIzibgbjXJv3Y7D4k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709210441; c=relaxed/simple;
-	bh=C74fudEZIJp8y6o4pvj1vAj1a7GmlDzym5p5G0Bm6Hg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HVmhGjMymoQJC2MWFbnM/tA18dFjAaon/JVSB75Wir+cmVCWyNYRg4X08MIRboPhcc9OQkbCU7zvZo5zdXbJ1Dju8A8Cfjg/G0hiOLP2fATpis+1eHyOGDe8HWEW+vDayORoJGuDobfOpbr8qZRbXRySR6rHIhsoxW3Sp45kyP4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=igRhD60z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8281AC433F1;
-	Thu, 29 Feb 2024 12:40:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709210440;
-	bh=C74fudEZIJp8y6o4pvj1vAj1a7GmlDzym5p5G0Bm6Hg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=igRhD60zQhE2flMc7jhx2MrzTM3u1/VMNwCv20yuLsBTePswSGs0X1xa0IEwh6qxp
-	 nGmGx20s2y/z2Y/7/x5KxqT2Pad88xVz6DFGlL2yA4QXSg/ZMY7abQgztMXgoYV+l6
-	 NUeKaPE8KreSQ/V4CePVSvOLMtPDBTGxjtGmtRtg70dR30dtLNk9SlFHIpCOi96TLy
-	 oqxYya9Bx84enGhB/y1vWh0l5jqH8u4QcGjHP+nlkbvDdQ/xdhjUqF6ABw7RDRbbtn
-	 MSrAAgCkrsqv6kkUQSN4WgHTdjz4fPUOQaf27+8z1dJpR+VSCd/y8Caw0vQ+G025fI
-	 zmTsCRQmtCINg==
-Date: Thu, 29 Feb 2024 13:40:29 +0100
-From: Niklas Cassel <cassel@kernel.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Marek Vasut <marek.vasut+renesas@gmail.com>,
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Kishon Vijay Abraham I <kishon@ti.com>,
-	Vidya Sagar <vidyas@nvidia.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Minghuan Lian <minghuan.Lian@nxp.com>,
-	Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v8 03/10] PCI: dwc: ep: Introduce dw_pcie_ep_cleanup()
- API for drivers supporting PERST#
-Message-ID: <ZeB7PQtkDSoCzE1Z@fedora>
-References: <20240224-pci-dbi-rework-v8-0-64c7fd0cfe64@linaro.org>
- <20240224-pci-dbi-rework-v8-3-64c7fd0cfe64@linaro.org>
+	s=arc-20240116; t=1709210503; c=relaxed/simple;
+	bh=bYwenActmo0DJIFiEmMoeGrYokDOzONoZ2KvaEqH3jQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=IASEH2o8LW3kIss4g5dMht/52yOtsC3T8wINNfTaBiEp+bDtpLlv8tTrHY5/knMqKXEo1mwhHP3Op08vyNc5AS5UNAstD8cE3c7KnHUkr0N26K61iiOc/vyVyTF5D2bWf1T1+M7Svvhwkr7LpDVhuQbSYG3FzU7ODl3vpvWnL3w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=DgavKIbQ; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709210500;
+	bh=bYwenActmo0DJIFiEmMoeGrYokDOzONoZ2KvaEqH3jQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=DgavKIbQIDwous2datEXLvFLQIqT8gkwH/KHbsvYsyazEvx1ex1CjAm0/yY63TT8z
+	 t3ThwFpUZ+QR+PwwV6rQgMGdhfnSirsMjJVRP54VSIwnle5jGcPFCqJqCz9WRDiEGm
+	 jMsAhLPLVYomlaB04GzQWI6Q+iXF906z9tLBMqYbk/Tjs00O58DtwUTznnyddBNtgr
+	 OfoRd0UgS4HTEmAX1cJpkpmScQ1oq3va+vMwoduScnNq5ww0iSkXy3a5mtTWaxTaDD
+	 MaHDdwKMlonV2Xe7YzWVs81i/peEZylWjis9Pn7u/9lCC2kWjbH7nevGAWWbLVW6ns
+	 SEVJPKlHwvWLQ==
+Received: from eldfell (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pq)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id EF34F3782089;
+	Thu, 29 Feb 2024 12:41:38 +0000 (UTC)
+Date: Thu, 29 Feb 2024 14:41:37 +0200
+From: Pekka Paalanen <pekka.paalanen@collabora.com>
+To: Arthur Grillo <arthurgrillo@riseup.net>
+Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>, Melissa Wen
+ <melissa.srw@gmail.com>, =?UTF-8?B?TWHDrXJh?= Canal
+ <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel
+ Vetter <daniel@ffwll.ch>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Jonathan Corbet <corbet@lwn.net>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, jeremie.dautheribes@bootlin.com,
+ miquel.raynal@bootlin.com, thomas.petazzoni@bootlin.com,
+ seanpaul@google.com, marcheu@google.com, nicolejadeyee@google.com
+Subject: Re: [PATCH v3 3/9] drm/vkms: write/update the documentation for
+ pixel conversion and pixel write functions
+Message-ID: <20240229144137.75ae1cde.pekka.paalanen@collabora.com>
+In-Reply-To: <592e5da7-7aac-4735-ae8f-625402e381ae@riseup.net>
+References: <20240226-yuv-v3-0-ff662f0994db@bootlin.com>
+	<20240226-yuv-v3-3-ff662f0994db@bootlin.com>
+	<406988be-48a4-4762-9c03-7a27c8e7b91e@riseup.net>
+	<Zd35csjqRMstzElA@localhost.localdomain>
+	<592e5da7-7aac-4735-ae8f-625402e381ae@riseup.net>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240224-pci-dbi-rework-v8-3-64c7fd0cfe64@linaro.org>
+Content-Type: multipart/signed; boundary="Sig_/ppy=jx7+zAsqz9DWBleezt6";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On Sat, Feb 24, 2024 at 12:24:09PM +0530, Manivannan Sadhasivam wrote:
-> For DWC glue drivers supporting PERST# (currently Qcom and Tegra194), some
-> of the DWC resources like eDMA should be cleaned up during the PERST#
-> assert time.
-> 
-> So let's introduce a dw_pcie_ep_cleanup() API that could be called by these
-> drivers to cleanup the DWC specific resources. Currently, it just removes
-> eDMA.
-> 
-> Reported-by: Niklas Cassel <cassel@kernel.org>
-> Closes: https://lore.kernel.org/linux-pci/ZWYmX8Y%2F7Q9WMxES@x1-carbon
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  drivers/pci/controller/dwc/pcie-designware-ep.c | 11 +++++++++--
->  drivers/pci/controller/dwc/pcie-designware.h    |  5 +++++
->  drivers/pci/controller/dwc/pcie-qcom-ep.c       |  1 +
->  drivers/pci/controller/dwc/pcie-tegra194.c      |  2 ++
->  4 files changed, 17 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
-> index 2b11290aab4c..1205bfba8310 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware-ep.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
-> @@ -564,12 +564,19 @@ int dw_pcie_ep_raise_msix_irq(struct dw_pcie_ep *ep, u8 func_no,
->  	return 0;
->  }
->  
-> -void dw_pcie_ep_deinit(struct dw_pcie_ep *ep)
-> +void dw_pcie_ep_cleanup(struct dw_pcie_ep *ep)
->  {
->  	struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
-> -	struct pci_epc *epc = ep->epc;
->  
->  	dw_pcie_edma_remove(pci);
+--Sig_/ppy=jx7+zAsqz9DWBleezt6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Hello Mani,
+On Tue, 27 Feb 2024 15:47:08 -0300
+Arthur Grillo <arthurgrillo@riseup.net> wrote:
 
-In this message:
-https://lore.kernel.org/linux-pci/20240130062938.GB32821@thinkpad/
+> On 27/02/24 12:02, Louis Chauvet wrote:
+> > Le 26/02/24 - 10:07, Arthur Grillo a =C3=A9crit : =20
+> >>
+> >>
+> >> On 26/02/24 05:46, Louis Chauvet wrote: =20
+> >>> Add some documentation on pixel conversion functions.
+> >>> Update of outdated comments for pixel_write functions.
+> >>>
+> >>> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
+> >>> ---
+> >>>  drivers/gpu/drm/vkms/vkms_composer.c |  4 +++
+> >>>  drivers/gpu/drm/vkms/vkms_drv.h      | 13 ++++++++
+> >>>  drivers/gpu/drm/vkms/vkms_formats.c  | 58 ++++++++++++++++++++++++++=
+++++------
+> >>>  3 files changed, 66 insertions(+), 9 deletions(-)
+> >>>
+> >>> diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/drm/v=
+kms/vkms_composer.c
+> >>> index c6d9b4a65809..5b341222d239 100644
+> >>> --- a/drivers/gpu/drm/vkms/vkms_composer.c
+> >>> +++ b/drivers/gpu/drm/vkms/vkms_composer.c
+> >>> @@ -189,6 +189,10 @@ static void blend(struct vkms_writeback_job *wb,
+> >>> =20
+> >>>  	size_t crtc_y_limit =3D crtc_state->base.crtc->mode.vdisplay;
+> >>> =20
+> >>> +	/*
+> >>> +	 * The planes are composed line-by-line. It is a necessary complexi=
+ty to avoid poor
+> >>> +	 * blending performance. =20
+> >>
+> >> At this moment in the series, you have not yet reintroduced the
+> >> line-by-line algorithm yet. Maybe it's better to add this comment when
+> >> you do. =20
+> >=20
+> > Is it better with this:
+> >=20
+> > 	/*
+> > 	 * The planes are composed line-by-line to avoid heavy memory usage. I=
+t is a necessary
+> > 	 * complexity to avoid poor blending performance.
+> > 	 *
+> > 	 * The function vkms_compose_row is used to read a line, pixel-by-pixe=
+l, into the staging
+> > 	 * buffer.
+> > 	 */
+> >   =20
+> >> Also, I think it's good to give more context, like:
+> >> "The planes are composed line-by-line, instead of pixel-by-pixel" =20
+> >=20
+> > And after PATCHv3 5/9:
+> >=20
+> > 	/*
+> > 	 * The planes are composed line-by-line to avoid heavy memory usage. I=
+t is a necessary
+> > 	 * complexity to avoid poor blending performance.
+> > 	 *
+> > 	 * The function pixel_read_line callback is used to read a line, using=
+ an efficient=20
+> > 	 * algorithm for a specific format, into the staging buffer.
+> > 	 */
+> >  =20
 
-You mentioned that you were going to clean up the BARs.
-(Like I wrote in that thread, I really think that we should merge a fix for
-the broken "do we have a saved value from find_first_zero_bit() in the array",
-by using a "if (!saved_value[bar])", when find_first_zero_bit() returns zero.)
+Hi,
 
-However, regardless of that, I do not see that this series (neither
-dw_pcie_ep_cleanup(), nor dw_pcie_ep_linkdown()), calls any function which
-will clean up the BARs.
+there are a few reasons for the line-by-line algorithm, and the
+optimizations at large:
 
-Since e.g. qcom-ep.c does a reset_control_assert() during perst
-assert/deassert, which should clear sticky registers, I think that
-you should let dw_pcie_ep_cleanup() clean up the BARs using
-dw_pcie_ep_clear_bar().
+VKMS uses temporary stage and output buffers so that blending functions
+can operate on just one high-precision pixel format, struct
+pixel_argb_u16. We can make pixel-format-specific read and write
+functions completely orthogonal from the blending operations and FB
+format combinations. This avoids a combinatorial explosion of needed
+functions for { input pixel formats =C3=97 blending operations =C3=97 outpu=
+t pixel
+formats }.
+
+We can use a temporary stage and output buffer whose size is one line
+and not whole FB or CRTC framebuffer. This is the memory savings.
+
+Using a temporary output buffer also avoids repeated
+read-decode-blend-encode-write cycles into the final destination
+buffer, as we don't need to decode/encode the pixel format.
+
+Finally, doing elementary operations (read, blend, write) line-by-line
+is much more efficient than pixel-by-pixel, because it allows making
+the inner-most loop very tight. It avoids repeatedly computing a result
+that does not change, like which function to call for a specific pixel
+format or blending equation.
 
 
-Kind regards,
-Niklas
+Thanks,
+pq
 
+--Sig_/ppy=jx7+zAsqz9DWBleezt6
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-> +}
-> +EXPORT_SYMBOL_GPL(dw_pcie_ep_cleanup);
-> +
-> +void dw_pcie_ep_deinit(struct dw_pcie_ep *ep)
-> +{
-> +	struct pci_epc *epc = ep->epc;
-> +
-> +	dw_pcie_ep_cleanup(ep);
->  
->  	pci_epc_mem_free_addr(epc, ep->msi_mem_phys, ep->msi_mem,
->  			      epc->mem->window.page_size);
-> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
-> index 61465203bb60..351d2fe3ea4d 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware.h
-> +++ b/drivers/pci/controller/dwc/pcie-designware.h
-> @@ -672,6 +672,7 @@ int dw_pcie_ep_init(struct dw_pcie_ep *ep);
->  int dw_pcie_ep_init_complete(struct dw_pcie_ep *ep);
->  void dw_pcie_ep_init_notify(struct dw_pcie_ep *ep);
->  void dw_pcie_ep_deinit(struct dw_pcie_ep *ep);
-> +void dw_pcie_ep_cleanup(struct dw_pcie_ep *ep);
->  int dw_pcie_ep_raise_intx_irq(struct dw_pcie_ep *ep, u8 func_no);
->  int dw_pcie_ep_raise_msi_irq(struct dw_pcie_ep *ep, u8 func_no,
->  			     u8 interrupt_num);
-> @@ -705,6 +706,10 @@ static inline void dw_pcie_ep_deinit(struct dw_pcie_ep *ep)
->  {
->  }
->  
-> +static inline void dw_pcie_ep_cleanup(struct dw_pcie_ep *ep)
-> +{
-> +}
-> +
->  static inline int dw_pcie_ep_raise_intx_irq(struct dw_pcie_ep *ep, u8 func_no)
->  {
->  	return 0;
-> diff --git a/drivers/pci/controller/dwc/pcie-qcom-ep.c b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-> index 36e5e80cd22f..59b1c0110288 100644
-> --- a/drivers/pci/controller/dwc/pcie-qcom-ep.c
-> +++ b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-> @@ -507,6 +507,7 @@ static void qcom_pcie_perst_assert(struct dw_pcie *pci)
->  		return;
->  	}
->  
-> +	dw_pcie_ep_cleanup(&pci->ep);
->  	qcom_pcie_disable_resources(pcie_ep);
->  	pcie_ep->link_status = QCOM_PCIE_EP_LINK_DISABLED;
->  }
-> diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
-> index 7afa9e9aabe2..68bfeed3429b 100644
-> --- a/drivers/pci/controller/dwc/pcie-tegra194.c
-> +++ b/drivers/pci/controller/dwc/pcie-tegra194.c
-> @@ -1715,6 +1715,8 @@ static void pex_ep_event_pex_rst_assert(struct tegra_pcie_dw *pcie)
->  	if (ret)
->  		dev_err(pcie->dev, "Failed to go Detect state: %d\n", ret);
->  
-> +	dw_pcie_ep_cleanup(&pcie->pci.ep);
-> +
->  	reset_control_assert(pcie->core_rst);
->  
->  	tegra_pcie_disable_phy(pcie);
-> 
-> -- 
-> 2.25.1
-> 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmXge4EACgkQI1/ltBGq
+qqekCA/9H2SBK6/zbiLJ1s9dhN6MeJPRfUQqtWLebfifxniKaSJuXOLHG2j6qemx
+zo6q6QAHexA+eD4oXWxpbVAzlmfpgxaiMxrQeTeG1ZrwJxbHZgpHO5PeplhIlLfF
+5w9uB0gjCn7SLyWABo7i0WIuj/GI7Sfgf+uhiOYbyEZLQzTs5Ob+whVt0CDGQUXq
+0TUhaXz0N/L/HlepprYdfRBF8UIIXoz90ASRgyPLHbzfjH18UqjvgY+y4O3nv2Fb
+jzvTLHJ4OwsSfNymDDGTeQBAFif+8B3KGt6bgsJLi7D+HxlOArAcQQtRjUC/GQYc
+ia2JXmD6ywS6h7+3NDZVEGqS5goSidPDXP+sZv+bH8j+7rF4OXCcubOe0pnzN50g
+OVlACtxWptXWlDebJLDyALk79C0RpcGkC+dhoNscjDSe8lsm++4eO6FxY85ikCGt
+x4KiemghnhkZxh24DPFjX6chGBvxuIIWf3Ku0iTj1HHinzkOCPxsoaRiIz8w6XtK
+VMFQRn5avEigcYTo4C8icSCpkGvJPt9XDEyZwWqX4uiVhFFrjd9ObP9evGoyi2fv
+NTIwy90iReIu6OMSwiiFa2kvVwTbGqsqKTpGpPlNPyF0aZnaN6nYz5Vz8JYPtNO3
+aHV+H77b8GX1wcdTAwXdANwVCbQm72Fuq6m28tClX8DNNiwvPZY=
+=Vbxy
+-----END PGP SIGNATURE-----
+
+--Sig_/ppy=jx7+zAsqz9DWBleezt6--
 
