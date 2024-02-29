@@ -1,154 +1,165 @@
-Return-Path: <linux-kernel+bounces-87321-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87322-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEA3A86D2B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:57:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36C8F86D2B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:58:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F5F2B2460A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:57:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 585F21C22011
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:58:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A88C134439;
-	Thu, 29 Feb 2024 18:57:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 132D0134436;
+	Thu, 29 Feb 2024 18:58:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hYhS6MBl"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="goCQmnLZ"
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3738132C1E;
-	Thu, 29 Feb 2024 18:57:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 426E37828A
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 18:58:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709233055; cv=none; b=mmT9bP93sZJfJdVuJg7yyc0JHOAa61BNZgAqEhV04+VpvO6RfO6Id6txEzTsBqTAcNcyrGLFIILk6L4UmZVR9dvqjQEz7UNoiTIHSK4jPcTxABKR63l9Sv0p1eVbEWBxG58esHvjWWve7KN1mwol75NATRX/0QltX8+sPscp5gQ=
+	t=1709233099; cv=none; b=VqatAVH+txlz3YO47JzmLWsC6k2dmLZ6145YWG6G7bjskr3N0b+xZYQ0LtNeZF3y7BUTWCu2LP0xIEKbDINCbw//u6Nr4HfjvHvF9muM7rZ3kJOIey3kUC+6tzVH1GkZ8/IjzCEPjmweEOTuP7MA5JzWI43lx7wM6nezRTH6OcQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709233055; c=relaxed/simple;
-	bh=SIV/OcKpLYJPRNLN8GBaovmuIE7JeHREf2m1wVfKbXs=;
+	s=arc-20240116; t=1709233099; c=relaxed/simple;
+	bh=qS96ijGQ0VA9eqcSA1aKuuwW+o+9E9lQmPLX2nzFYgg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QhYvDKykoTdb/Q/e8WjAMOaAF3I0n2V8UV86A5pRh7hGRitxZ6byBfJGatROomv2XexlUEh9LDgNPY3uvN1MqbfifEaH4I9KzoPIVuj5TbFfCnKBYNcRnGaAJymL+ahMnGjucYzuN/Jrnwmn65XZQX1KuNnoMkwbodk1s2ArX0E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hYhS6MBl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CFEAC433F1;
-	Thu, 29 Feb 2024 18:57:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709233055;
-	bh=SIV/OcKpLYJPRNLN8GBaovmuIE7JeHREf2m1wVfKbXs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hYhS6MBlpsnhmkO4XWsaOJSoYx/Xk1Q8er3w7XNweqd6L9IB9SaeG5ZN9onxFrcL2
-	 I+j6XEA6BXZy6hVm6gcqY5gGyoaRpXQVj0LG/GLVZVYnKAK5aBnC6NohkdG0Z8B8Hx
-	 fWdb265uz4rdZhqHsPALNaCOIGIc49/+GaCqVOUIpVTVqytRDgiLLK/Zf3amu92X21
-	 M0n1xyO1f6cS7rPjKkIZGk9Nd0eqWS/9nY8Tl3CWr9W3N53ggMC0sVFFvomeLCpHIe
-	 xNCQPJIlrWtJS3x32MtjNo/d55mHeoDoRPTMksZkCKewcljnzhiFpH1/BF7q/c8pnV
-	 ShLKoDhmDhdUg==
-Date: Thu, 29 Feb 2024 18:57:29 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	Shengjiu Wang <shengjiu.wang@nxp.com>, linux-sound@vger.kernel.org,
-	devicetree@vger.kernel.org, imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/4] ASoC: dt-bindings: fsl-sai: allow only one
- dma-names
-Message-ID: <20240229-rundown-isotope-954ba9ea4c57@spud>
-References: <20240227-asrc_8qxp-v2-0-521bcc7eb1c0@nxp.com>
- <20240227-asrc_8qxp-v2-3-521bcc7eb1c0@nxp.com>
- <20240229-husband-penalty-8c1ab0f57f55@spud>
+	 Content-Type:Content-Disposition:In-Reply-To; b=jh/JoMfVoN7ZB6FnLCGJXaWkGinRuqg4mw7Y76IHoGrvu8tM2cx/E3VzAIJ6kAgA8Ps7ffF4kzLuzJrL6txx3z7F0qOTLJlF4HZB65pVqojm45X9jMBxpNi7BvxwZ0y1EPHDvCInMBZ3BDGChEYM/SuVGnkKgEVTq5UUDnOToiQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=goCQmnLZ; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-412c286be35so3942105e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 10:58:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709233094; x=1709837894; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=QOMkV8+zwYA3EDl4Oj8veMVbhFWWtMnCBkuFp1N+OIc=;
+        b=goCQmnLZC19UjZUzaztMnc8jAHvVxejo6gaBAgbQyHaOCNU7OwRBUyKDMGECpjq8Uq
+         FbEI916TxXfRHu+zu65EfcNctTFzOEvLe4D1QXNtfoaFD7irqkvGQQrkVCTY5iwDT52C
+         vKhjmhzVMnMfqoOSmcO6YUqmHqpZJdV8CZc9B4u8d9UxmordwLQFU52ZZBSAC8mcREfD
+         RsUWA+/ACI3PBDqXUJ3PIAjWnn/vvzIeZOTj6r3viPkhbqfCBdpKzCNHyG2DEs4+30t3
+         xOkjR/rOLlwChYdbwn8ijwR2VaEn6oD9GXslLMN6etGqPWtB5udvdd12z2dHpcq2+ZKW
+         jqhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709233094; x=1709837894;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QOMkV8+zwYA3EDl4Oj8veMVbhFWWtMnCBkuFp1N+OIc=;
+        b=XqqB+x/ziZ/ZD+J6LjgxrBlCRPiImh1fEy12r4XjawzZAV1UIErksEbgF5fE6mfbqq
+         mEvtgVat9YTmyOvLS+ujFo25oBQ9KB2jCL/QCaICnU0wtQBwwiV6RgzMZVO8nBnP3ZXR
+         2VpbDH4sEK6vpscncC53tnidxk+Ci1rsTkFq8KhShXV73zSbZEy0/hra7DG9qfg3PK0T
+         yuxe7Fo4+Ztjd3Opr+4dY5BgdywgpboZlKPw+tSpdl8GUnsOIeBFbJD9WTkxhyLj6TgN
+         n5/bHpdXJbJ7j0Q5WQ6elMABg6LhDhoneP2/5B44++6NbROEyTxBc83WBfSEIszsfdjG
+         53CQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXLtoHoRicogf0bohJrSwOghv6WEqgaMr3D0xHVpgnZnH1ERdR/eKnpTmJlkO9BwnFMkqAyb7qFMFztp3weCX4BDrgZdUMrOsgD+NyW
+X-Gm-Message-State: AOJu0YxJkakD2mCLDLeIqtyPevt39mqJ+bv8N6m/keagqKzki1b4M4Ds
+	wBcqKKfEozkEvbNJ9QjARgM1bS/Tiu8D3OryNdnacJishk6BiHlYLES0Ag/WvIM=
+X-Google-Smtp-Source: AGHT+IE6N6/fBwdedrFzOy5DgpuEwQoJ27wC7Wfz2Gw6PuOexlU0y1KaywrIq7wNyzeVlhR8897a1g==
+X-Received: by 2002:a05:600c:1d24:b0:412:b74a:452a with SMTP id l36-20020a05600c1d2400b00412b74a452amr2732349wms.29.1709233094459;
+        Thu, 29 Feb 2024 10:58:14 -0800 (PST)
+Received: from ishi ([185.243.57.250])
+        by smtp.gmail.com with ESMTPSA id fc18-20020a05600c525200b00412aeb77bbcsm2863560wmb.19.2024.02.29.10.58.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Feb 2024 10:58:14 -0800 (PST)
+Date: Thu, 29 Feb 2024 13:58:08 -0500
+From: William Breathitt Gray <william.gray@linaro.org>
+To: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Cc: lee@kernel.org, alexandre.torgue@foss.st.com, linux-iio@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Julien Panis <jpanis@baylibre.com>,
+	Syed Nayyar Waris <syednwaris@gmail.com>
+Subject: Re: [PATCH v3 04/10] counter: stm32-timer-cnt: introduce clock signal
+Message-ID: <ZeDTwKMP7MX0Nlx5@ishi>
+References: <20231220145726.640627-1-fabrice.gasnier@foss.st.com>
+ <20231220145726.640627-5-fabrice.gasnier@foss.st.com>
+ <ZZwm7ZyrL7vFn0Xd@ubuntu-server-vm-macos>
+ <599a7357-b4d6-4581-9d5c-c1d0ade3e410@foss.st.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="f27rDTztjgMlItsA"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="el6dlSHLw0+sJrWy"
 Content-Disposition: inline
-In-Reply-To: <20240229-husband-penalty-8c1ab0f57f55@spud>
+In-Reply-To: <599a7357-b4d6-4581-9d5c-c1d0ade3e410@foss.st.com>
 
 
---f27rDTztjgMlItsA
+--el6dlSHLw0+sJrWy
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 29, 2024 at 06:55:58PM +0000, Conor Dooley wrote:
-> On Tue, Feb 27, 2024 at 03:54:11PM -0500, Frank Li wrote:
-> > Some sai only connect one direction. So allow only "rx" or "tx" for
-> > dma-names.
->=20
-> Which sai? Can you restrict this per compatible please, so that someone
-> cannot add 2 dmas for ones where only the tx is supported.
->=20
-> |  dmas:
-> |    minItems: 1
-> |    items:
-> |      - description: DMA controller phandle and request line for RX
-> |      - description: DMA controller phandle and request line for TX
->=20
-> The binding already allows only one, but it documents that the first dma
-> is always the RX dma, and that doesn't change with this patch..
-
-I said "doesn't change" - but I don't think you can change this
-trivially, as something could rely on the first dma being the rx one.
-You'd have to check that there is nothing using these using indices
-rather than names before making any changes here.
-
->=20
-> Cheers,
-> Conor.
->=20
+On Tue, Feb 27, 2024 at 06:43:20PM +0100, Fabrice Gasnier wrote:
+> On 1/8/24 17:46, William Breathitt Gray wrote:
+> > On Wed, Dec 20, 2023 at 03:57:20PM +0100, Fabrice Gasnier wrote:
+> >> Introduce the internal clock signal, used to count when in simple risi=
+ng
+> >> function. Also add the "frequency" extension to the clock signal.
+> >>
+> >> With this patch, signal action reports a consistent state when "increa=
+se"
+> >> function is used, and the counting frequency:
+> >>     $ echo increase > function
+> >>     $ grep -H "" signal*_action
+> >>     signal0_action:none
+> >>     signal1_action:none
+> >>     signal2_action:rising edge
+> >>     $ echo 1 > enable
+> >>     $ cat count
+> >>     25425
+> >>     $ cat count
+> >>     44439
+> >>     $ cat ../signal2/frequency
+> >>     208877930
+> >>
+> >> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
 > >=20
-> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > ---
-> >  Documentation/devicetree/bindings/sound/fsl,sai.yaml | 12 ++++++++----
-> >  1 file changed, 8 insertions(+), 4 deletions(-)
+> > Reviewed-by: William Breathitt Gray <william.gray@linaro.org>
 > >=20
-> > diff --git a/Documentation/devicetree/bindings/sound/fsl,sai.yaml b/Doc=
-umentation/devicetree/bindings/sound/fsl,sai.yaml
-> > index 2456d958adeef..0302752d58a2b 100644
-> > --- a/Documentation/devicetree/bindings/sound/fsl,sai.yaml
-> > +++ b/Documentation/devicetree/bindings/sound/fsl,sai.yaml
-> > @@ -86,10 +86,14 @@ properties:
-> >        - description: DMA controller phandle and request line for TX
-> > =20
-> >    dma-names:
-> > -    minItems: 1
-> > -    items:
-> > -      - const: rx
-> > -      - const: tx
-> > +    oneOf:
-> > +      - items:
-> > +          - const: rx
-> > +          - const: tx
-> > +      - items:
-> > +          - enum:
-> > +              - rx
-> > +              - tx
-> > =20
-> >    interrupts:
-> >      items:
+> > The code is all right, but some minor suggestions below.
 > >=20
-> > --=20
-> > 2.34.1
+> >> +static struct counter_comp stm32_count_clock_ext[] =3D {
+> >> +	COUNTER_COMP_SIGNAL_U64("frequency", stm32_count_clk_get_freq, NULL),
 > >=20
+> > It might be worth introducing a new COUNTER_COMP_FREQUENCY() macro now
+> > that we have a second driver with the 'frequency' extension
+> > (ti-ecap-capture also has 'frequency'). But it's up to you if you want
+> > to add a precursor patch to this series, or I'll introduce it separately
+> > myself in a independent patch.
+>=20
+> Thanks for suggesting.
+>=20
+> I added a precursor patch to this series.
+> I guess you wishes to see it used in both ti-ecap-capture and
+> stm32-timer-cnt. I only cared about stm32-timer-cnt in this series.
+>=20
+> Can I let you do ti-ecap-capture change if/when you're going to apply it?
 
+Thanks Fabrice, I'll pick up the precursor patch so we an start using it
+in other drivers. Syed will take on the ti-ecap-capture change, and I've
+CC'd Vignesh and Julien to this email as well so they are aware of the
+incoming patch.
 
+William Breathitt Gray
 
---f27rDTztjgMlItsA
+--el6dlSHLw0+sJrWy
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZeDTmQAKCRB4tDGHoIJi
-0rgHAQCYl6mE2L/hnElG11u6Vr/sR7gSJ+0qK71eDfW4f9aY6AEAs9EtjaVRKU6X
-4jUmpJiEOCgLYSSuInAcG40zvdKpfgg=
-=UzFD
+iHUEARYKAB0WIQSNN83d4NIlKPjon7a1SFbKvhIjKwUCZeDTwAAKCRC1SFbKvhIj
+K3yKAP9au8psfZPV7oz/mKiqINUHWTZ0uA0altrVA9qTHRrJWQEA6q36cJEVxyKY
+FxE179tE7UvScdEB6mKG/o/bFy2hVQk=
+=nCx4
 -----END PGP SIGNATURE-----
 
---f27rDTztjgMlItsA--
+--el6dlSHLw0+sJrWy--
 
