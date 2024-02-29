@@ -1,205 +1,142 @@
-Return-Path: <linux-kernel+bounces-87039-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87040-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D60D86CE87
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:16:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95DF486CE89
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:16:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A03331C22105
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:16:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C31AB298BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:16:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCD5170ACD;
-	Thu, 29 Feb 2024 15:56:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EKV8+0K7"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51EC16CC17
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 15:56:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB18470AD1;
+	Thu, 29 Feb 2024 15:56:50 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6E6270AD6;
+	Thu, 29 Feb 2024 15:56:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709222207; cv=none; b=MYe40ybXIo961n3TNR1Gc6lSIVbODrlvuJ27ifb3EqFJ08s5YWYr9HeWB31h/Mrpnc+kmXE8PPYB01WgR5vvSsFrwI/yvtWg1QPE/PtcPvlo6zu/4yi93C+TOh2j4jTX/f92P3VqRwskg5lFFhkcycWwNPI036m4ne/LkLAGroc=
+	t=1709222210; cv=none; b=XK46t64yDjZrBaE823AqliVeg5Kba//QrizNNnzRCoysWuRLrvT7DKYs/tSz8YVvA1VtuZAX7bIJRikz4uk6ruwnhdJqwGA1NS+cHD+oHfk70tLxP/7PT2FzOnlbe/dXmS+gr9ufq63VAUNGuTJcSs5hTya1Uzihmio1AaELi9k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709222207; c=relaxed/simple;
-	bh=P2TMqG7h7dnUJpKrrocNNNzpbY0+qjivekQDfKhl2bM=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tTm7NVpdq4Xc+aAK1XdNB79AjU0W/l5hl8eEy29bwADJSQr9bdW6EeBe3rYxbrMs8RnxwamuMr0D8IK6Pbyo6P50EBfJkGXv9CppDJfDpGrfJ6r1cMbt1dfF9uDI/HdOPOXeNFOO5hTbGkfxGrAelK+URZ/gz7uxaeDaiNG8gUM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EKV8+0K7; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709222204;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NK1oIanmqTW8WZH0kLEYVDI/xueTaYHkdWqNEI0DyFk=;
-	b=EKV8+0K7UILiYBQNvid7MmFlmaaXK5H1RuaQ4i2cv7jAi5ibqyg0WFDLuHr3lkiNCYDZv/
-	ReqcfsE+A3a8WifpBvUuyalMXtmuB1Y9tx0v2QEhqdAjGIV9h1QnGxzYqUV5zsvmUUbLpQ
-	tbcimpMvaJ+VP8CFIiS6n6eCCP83K+Y=
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com
- [209.85.166.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-679-goY0b5IJOrOGENJsI6eQGw-1; Thu, 29 Feb 2024 10:56:42 -0500
-X-MC-Unique: goY0b5IJOrOGENJsI6eQGw-1
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7c79b0aaa86so112779439f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 07:56:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709222201; x=1709827001;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NK1oIanmqTW8WZH0kLEYVDI/xueTaYHkdWqNEI0DyFk=;
-        b=S8A4xHAM0wD1j3sD6vsGhE28Mm5DR231xtqb3tXoAaDHeA4B0qepy5B49cYlYwW6qX
-         1fm1885+xWRoPuOxJhEBmtGTui3mrTVcidWFn9BnbwimMVOH9IPuh9Qcf5eYIsDKl+qH
-         kQNfsZSdn8d6DPJKOkjVncsoJIbojNh1psQOvC28K/nN/lIvbHBYwIXUNTuhzg4V02Kq
-         7YH7tGEZv/pGJ73txQtfRqsfGv1nCqO+f0Yi8pziDePZy8ecLJJuiGGI0/qcXAtrciIo
-         bZ3wYqQx9XNxVJ9oPvGU08ZK631g2CyI7k3YPIi5rYdp9DSxeH9e2NzmI0M7YZr+woUA
-         B0Fw==
-X-Forwarded-Encrypted: i=1; AJvYcCWxE1iQq7pweXe1Snu/D3Ke6zISaoPjMDDEksaxMMAURrNNXYZ4xhWfC7So5pAClSKn37Ur+NznChm95HOXX5V4jLv+r3wo/RHcKNyA
-X-Gm-Message-State: AOJu0YxYtjPWF9UluMKX9b9WhYKcA4uqX4D0R1o7AtJDgzWPvAZcnlvP
-	FsQGMHZEZwXXpshNmc2OKlNbWaHjXc7cnT4M9zfbwEycHSM/+2hho7h4v7JbHrMSnKLYLnhDaRl
-	B3pfMqTaUnF+iZzRNV3pf1JGUZjN5rTlon/Xzu+zeWzp2bNGRFiUeL0hB0d53vw==
-X-Received: by 2002:a05:6602:641d:b0:7c7:d3c6:e195 with SMTP id gn29-20020a056602641d00b007c7d3c6e195mr3443311iob.1.1709222201494;
-        Thu, 29 Feb 2024 07:56:41 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFS3pyDQfw+9kwU2WI8G5o84elkM6/6Ot566Bp3UBg2or4p9T85U4IZrIMXeiAPk8508EZT7Q==
-X-Received: by 2002:a05:6602:641d:b0:7c7:d3c6:e195 with SMTP id gn29-20020a056602641d00b007c7d3c6e195mr3443292iob.1.1709222201221;
-        Thu, 29 Feb 2024 07:56:41 -0800 (PST)
-Received: from redhat.com ([38.15.36.11])
-        by smtp.gmail.com with ESMTPSA id j13-20020a02a68d000000b00474420a484esm364815jam.98.2024.02.29.07.56.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 07:56:40 -0800 (PST)
-Date: Thu, 29 Feb 2024 08:56:39 -0700
-From: Alex Williamson <alex.williamson@redhat.com>
-To: <ankita@nvidia.com>
-Cc: <jgg@nvidia.com>, <yishaih@nvidia.com>,
- <shameerali.kolothum.thodi@huawei.com>, <kevin.tian@intel.com>,
- <aniketa@nvidia.com>, <cjia@nvidia.com>, <kwankhede@nvidia.com>,
- <targupta@nvidia.com>, <vsethi@nvidia.com>, <acurrid@nvidia.com>,
- <apopple@nvidia.com>, <jhubbard@nvidia.com>, <danw@nvidia.com>,
- <rrameshbabu@nvidia.com>, <zhiw@nvidia.com>, <anuaggarwal@nvidia.com>,
- <mochs@nvidia.com>, <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 1/1] vfio/nvgrace-gpu: Convey kvm that the device is
- wc safe
-Message-ID: <20240229085639.484b920c.alex.williamson@redhat.com>
-In-Reply-To: <20240228194801.2299-1-ankita@nvidia.com>
-References: <20240228194801.2299-1-ankita@nvidia.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1709222210; c=relaxed/simple;
+	bh=NSsjwYacVaMu1w7Lnxw+r+og5NN001gTRxc21cDBn5Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ASTZXkp8Uft2kF1w9RY3giqKR1kseQU8wjGnobydA4Ghd0oqG5XzQibJitQZR+TE0yX+WBfw81Z+H2c4WY4OunbU39kPwMAiP/7GD7U2jI40Dfrd+F6+O3eqbKkwq7EyOdqltXI1JCOtCoWunaS2Ldlr2UnuGxmnlMJYQ7MovNU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D93441FB;
+	Thu, 29 Feb 2024 07:57:26 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.68.196])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D02F33F6C4;
+	Thu, 29 Feb 2024 07:56:45 -0800 (PST)
+Date: Thu, 29 Feb 2024 15:56:40 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Sasha Levin <sashal@kernel.org>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	Fangrui Song <maskray@google.com>, Ard Biesheuvel <ardb@kernel.org>,
+	Will Deacon <will@kernel.org>, peterz@infradead.org,
+	jpoimboe@kernel.org, jbaron@akamai.com, catalin.marinas@arm.com,
+	nathan@kernel.org, linux-arm-kernel@lists.infradead.org,
+	llvm@lists.linux.dev
+Subject: Re: [PATCH AUTOSEL 6.7 07/26] arm64: jump_label: use constraints
+ "Si" instead of "i"
+Message-ID: <ZeCpOPDi18OBEclz@FVFF77S0Q05N>
+References: <20240229154851.2849367-1-sashal@kernel.org>
+ <20240229154851.2849367-7-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240229154851.2849367-7-sashal@kernel.org>
 
-On Wed, 28 Feb 2024 19:48:01 +0000
-<ankita@nvidia.com> wrote:
+On Thu, Feb 29, 2024 at 10:48:26AM -0500, Sasha Levin wrote:
+> From: Fangrui Song <maskray@google.com>
+> 
+> [ Upstream commit f9daab0ad01cf9d165dbbbf106ca4e61d06e7fe8 ]
 
-> From: Ankit Agrawal <ankita@nvidia.com>
+That upstream patch caused issues and was subsequently reverted in commit:
+
+  a6b3eb304a82c29665a0ab947cfe276f6d29f523
+  ("Revert "arm64: jump_label: use constraints "Si" instead of "i""")
+
+Please drop this; it'll break stable in the same way, and it wasn't necessary
+to backport in the first place.
+
+As an aside, that revert has been upstream since v6.8-rc4, ~2.5 weeks ago; it's
+unfortunate for the broken patch to be AUTOSEL'd now! It'd be good if something
+could automatically check for reverts in mainline...
+
+Mark.
+
+> The generic constraint "i" seems to be copied from x86 or arm (and with
+> a redundant generic operand modifier "c"). It works with -fno-PIE but
+> not with -fPIE/-fPIC in GCC's aarch64 port.
 > 
-> The NVIDIA Grace Hopper GPUs have device memory that is supposed to be
-> used as a regular RAM. It is accessible through CPU-GPU chip-to-chip
-> cache coherent interconnect and is present in the system physical
-> address space. The device memory is split into two regions - termed
-> as usemem and resmem - in the system physical address space,
-> with each region mapped and exposed to the VM as a separate fake
-> device BAR [1].
+> The machine constraint "S", which denotes a symbol or label reference
+> with a constant offset, supports PIC and has been available in GCC since
+> 2012 and in Clang since 7.0. However, Clang before 19 does not support
+> "S" on a symbol with a constant offset [1] (e.g.
+> `static_key_false(&nf_hooks_needed[pf][hook])` in
+> include/linux/netfilter.h), so we use "i" as a fallback.
 > 
-> Owing to a hardware defect for Multi-Instance GPU (MIG) feature [2],
-> there is a requirement - as a workaround - for the resmem BAR to
-> display uncached memory characteristics. Based on [3], on system with
-> FWB enabled such as Grace Hopper, the requisite properties
-> (uncached, unaligned access) can be achieved through a VM mapping (S1)
-> of NORMAL_NC and host mapping (S2) of MT_S2_FWB_NORMAL_NC.
-> 
-> KVM currently maps the MMIO region in S2 as MT_S2_FWB_DEVICE_nGnRE by
-> default. The fake device BARs thus displays DEVICE_nGnRE behavior in the
-> VM.
-> 
-> The following table summarizes the behavior for the various S1 and S2
-> mapping combinations for systems with FWB enabled [3].
-> S1           |  S2           | Result
-> NORMAL_WB    |  NORMAL_NC    | NORMAL_NC
-> NORMAL_WT    |  NORMAL_NC    | NORMAL_NC
-> NORMAL_NC    |  NORMAL_NC    | NORMAL_NC
-> NORMAL_WB    |  DEVICE_nGnRE | DEVICE_nGnRE
-> NORMAL_WT    |  DEVICE_nGnRE | DEVICE_nGnRE
-> NORMAL_NC    |  DEVICE_nGnRE | DEVICE_nGnRE
-> 
-> Recently a change was added that modifies this default behavior and
-> make KVM map MMIO as MT_S2_FWB_NORMAL_NC when a VMA flag
-> VM_ALLOW_ANY_UNCACHED is set. Setting S2 as MT_S2_FWB_NORMAL_NC
-> provides the desired behavior (uncached, unaligned access) for resmem.
-> 
-> Such setting is extended to the usemem as a middle-of-the-road
-> setting to take it closer to the desired final system memory
-> characteristics (cached, unaligned). This will eventually be
-> fixed with the ongoing proposal [4].
-> 
-> To use VM_ALLOW_ANY_UNCACHED flag, the platform must guarantee that
-> no action taken on the MMIO mapping can trigger an uncontained
-> failure. The Grace Hopper satisfies this requirement. So set
-> the VM_ALLOW_ANY_UNCACHED flag in the VMA.
-> 
-> Applied over next-20240227.
-> base-commit: 22ba90670a51
-> 
-> Link: https://lore.kernel.org/all/20240220115055.23546-4-ankita@nvidia.com/ [1]
-> Link: https://www.nvidia.com/en-in/technologies/multi-instance-gpu/ [2]
-> Link: https://developer.arm.com/documentation/ddi0487/latest/ section D8.5.5 [3]
-> Link: https://lore.kernel.org/all/20230907181459.18145-2-ankita@nvidia.com/ [4]
-> 
-> Cc: Alex Williamson <alex.williamson@redhat.com>
-> Cc: Kevin Tian <kevin.tian@intel.com>
-> Cc: Jason Gunthorpe <jgg@nvidia.com>
-> Cc: Vikram Sethi <vsethi@nvidia.com>
-> Cc: Zhi Wang <zhiw@nvidia.com>
-> Signed-off-by: Ankit Agrawal <ankita@nvidia.com>
+> Suggested-by: Ard Biesheuvel <ardb@kernel.org>
+> Signed-off-by: Fangrui Song <maskray@google.com>
+> Link: https://github.com/llvm/llvm-project/pull/80255 [1]
+> Acked-by: Mark Rutland <mark.rutland@arm.com>
+> Link: https://lore.kernel.org/r/20240206074552.541154-1-maskray@google.com
+> Signed-off-by: Will Deacon <will@kernel.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 > ---
->  drivers/vfio/pci/nvgrace-gpu/main.c | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
+>  arch/arm64/include/asm/jump_label.h | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/vfio/pci/nvgrace-gpu/main.c b/drivers/vfio/pci/nvgrace-gpu/main.c
-> index 25814006352d..5539c9057212 100644
-> --- a/drivers/vfio/pci/nvgrace-gpu/main.c
-> +++ b/drivers/vfio/pci/nvgrace-gpu/main.c
-> @@ -181,6 +181,24 @@ static int nvgrace_gpu_mmap(struct vfio_device *core_vdev,
+> diff --git a/arch/arm64/include/asm/jump_label.h b/arch/arm64/include/asm/jump_label.h
+> index 48ddc0f45d228..b7716b215f91a 100644
+> --- a/arch/arm64/include/asm/jump_label.h
+> +++ b/arch/arm64/include/asm/jump_label.h
+> @@ -15,6 +15,10 @@
 >  
->  	vma->vm_pgoff = start_pfn;
+>  #define JUMP_LABEL_NOP_SIZE		AARCH64_INSN_SIZE
 >  
-> +	/*
-> +	 * The VM_ALLOW_ANY_UNCACHED VMA flag is implemented for ARM64,
-> +	 * allowing KVM stage 2 device mapping attributes to use Normal-NC
-> +	 * rather than DEVICE_nGnRE, which allows guest mappings
-> +	 * supporting write-combining attributes (WC). This also
-> +	 * unlocks memory-like operations such as unaligned accesses.
-> +	 * This setting suits the fake BARs as they are expected to
-> +	 * demonstrate such properties within the guest.
-> +	 *
-> +	 * ARM does not architecturally guarantee this is safe, and indeed
-> +	 * some MMIO regions like the GICv2 VCPU interface can trigger
-> +	 * uncontained faults if Normal-NC is used. The nvgrace-gpu
-> +	 * however is safe in that the platform guarantees that no
-> +	 * action taken on the MMIO mapping can trigger an uncontained
-> +	 * failure. Hence VM_ALLOW_ANY_UNCACHED is set in the VMA flags.
-> +	 */
-> +	vm_flags_set(vma, VM_ALLOW_ANY_UNCACHED);
-> +
->  	return 0;
->  }
+> +/*
+> + * Prefer the constraint "S" to support PIC with GCC. Clang before 19 does not
+> + * support "S" on a symbol with a constant offset, so we use "i" as a fallback.
+> + */
+>  static __always_inline bool arch_static_branch(struct static_key * const key,
+>  					       const bool branch)
+>  {
+> @@ -23,9 +27,9 @@ static __always_inline bool arch_static_branch(struct static_key * const key,
+>  		 "	.pushsection	__jump_table, \"aw\"	\n\t"
+>  		 "	.align		3			\n\t"
+>  		 "	.long		1b - ., %l[l_yes] - .	\n\t"
+> -		 "	.quad		%c0 - .			\n\t"
+> +		 "	.quad		(%[key] - .) + %[bit0]  \n\t"
+>  		 "	.popsection				\n\t"
+> -		 :  :  "i"(&((char *)key)[branch]) :  : l_yes);
+> +		 :  :  [key]"Si"(key), [bit0]"i"(branch) :  : l_yes);
 >  
-
-The commit log sort of covers it, but this comment doesn't seem to
-cover why we're setting an uncached attribute to the usemem region
-which we're specifically mapping as coherent... did we end up giving
-this flag a really poor name if it's being used here to allow unaligned
-access?  Thanks,
-
-Alex
-
+>  	return false;
+>  l_yes:
+> @@ -40,9 +44,9 @@ static __always_inline bool arch_static_branch_jump(struct static_key * const ke
+>  		 "	.pushsection	__jump_table, \"aw\"	\n\t"
+>  		 "	.align		3			\n\t"
+>  		 "	.long		1b - ., %l[l_yes] - .	\n\t"
+> -		 "	.quad		%c0 - .			\n\t"
+> +		 "	.quad		(%[key] - .) + %[bit0]  \n\t"
+>  		 "	.popsection				\n\t"
+> -		 :  :  "i"(&((char *)key)[branch]) :  : l_yes);
+> +		 :  :  [key]"Si"(key), [bit0]"i"(branch) :  : l_yes);
+>  
+>  	return false;
+>  l_yes:
+> -- 
+> 2.43.0
+> 
 
