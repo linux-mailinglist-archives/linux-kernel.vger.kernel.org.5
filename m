@@ -1,149 +1,226 @@
-Return-Path: <linux-kernel+bounces-87325-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87326-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C7E586D2CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:07:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 825C486D2D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:09:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A63E91F240B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:07:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D5D21C21C2A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:09:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E2341353EF;
-	Thu, 29 Feb 2024 19:06:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D99BD1361B3;
+	Thu, 29 Feb 2024 19:08:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="kxnjBHj1"
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kOXGXdD7"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D468179933
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 19:06:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A501C134431;
+	Thu, 29 Feb 2024 19:08:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709233614; cv=none; b=RfAYoEN3Ba3NxK6znJ3EViaSMoXXSpuw2r14OtpWm4SPFyS/6R7/LUOvkChXFP/6DdqX1ACEGHfOWX6CclCMGzWViKaOqZkuqeMfWZl5RPSwt8KDZfO2kZPxvWJ40mVgCe4Fi/AyGGS5+ju0IUOQ7OjMSEl9XlbRVNlNIThPjP4=
+	t=1709233737; cv=none; b=FEp2F5T0EWJN/t74DtJPxT250u/0tYCoPHutiD0vDffDyJ7Ti6I+lawx6zEUK4uzk5BI8uKWycso35lRVLhN7QFe0/G0+8vZCiCeA2I2cX7TT9r/5lP0ICOqE4QR4KRfB32WoBMrOhnCcBfQ+dmcBDtqbiQ1QCS2hAzEPnZIg34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709233614; c=relaxed/simple;
-	bh=cvBzs9lLYilkxC4ILAVJnxBxncOeLsaV186D3Cgz1VY=;
+	s=arc-20240116; t=1709233737; c=relaxed/simple;
+	bh=0U1r3Qu+GxSx2ucDrDnXmdR2XAz3quO+6oo/ITF3EOU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Z6rNTrUmejvwSJnERatHhZkcoc8r9NcywktwhEDU+QTjeCf1EM9UoUtH18twwmC2lLAiMaSDJ6Grx5TqMDyc4kH4yFBJHThORWQiZTGqs8m1AnGNwxCvkFCN43gfYQmz1pmcEKhDc0tcxMl6hrsNqIQYFgh2YE6EWnUU1mRKAQE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=kxnjBHj1; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-33e17342ea7so276104f8f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 11:06:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709233610; x=1709838410; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6C2bXPH86iM1wIE2+OdewUkS7BtP29sQZelrAG7pDTU=;
-        b=kxnjBHj1tFt9eBvtoCdD6PuI740LcU8GMuo3Oek8GTCSo4BdNZ07ydaVgf7DXUhfD4
-         JfxdXZxzLhb+pF9Id1LMkI7I3vs5Jb6DBl6kfVUPK01+y9aQqJsgev5UfCMCahIdHvGF
-         fd9vC+CF7mE1nfRGaR9Bm29JGwMGLk/JCqr2yCtPcSX8P6cv+/XSPC0x3gr58wX3NzWm
-         MgK3C3GtHrd2OIHceDzOXxab0ab0IRTVM81ABSASIbLZWQIcryh+2tnpKIZDQwkYjiXG
-         0976SSIlgIMK6rjnGqembA5VR82ylsI8YSRxJtLNpXbk/d8Gvagg0rsC5u6ecztoNiYx
-         xZ+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709233610; x=1709838410;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6C2bXPH86iM1wIE2+OdewUkS7BtP29sQZelrAG7pDTU=;
-        b=AS1PDkemZiq7gZ+dFRAhQG/mVp+bFgESWIOpxNE88eDkiOgE6ZYRcahq2QsBSpMnVZ
-         9SDZTOFxQs25ZTHwMJ8V0fK30tTfZ15incyD2Tt6Jrm8zSpBhytbuzALhnmN5qAX92p0
-         cmu46saMsd/8vbEiWgMxet338CwPhHRWoehgbcI9+MSuyaj2X8qh4dv7ltR9pTeWFiZS
-         JMw/wZHpQku0drhQ1H+cy6WZzz13+q4koL86Eooq8UmeFQ0QCy3BH17m9w5vvflz+4U4
-         AQ0ClyFifMei1fELm6AijEG0PR2R8oIoKVRyZtrMiorLBxP48V3jPol+/4IWN8VqVpLU
-         cCMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUX5ubEMoysFA3FGbxO9gJooIaV4+FM+utg/AJJFVp7MwG8jnOnDjZ2HCQBpBHgYH5F7JGGJ4d8BC0q5lmMu1eylh02ivxoNNidqj3n
-X-Gm-Message-State: AOJu0YwIHg8mpbrMEv5dzOzapZm5SWbvvCIF5puafmZSsBGLpVuq62bF
-	NzNO9dX8XhUg6WeySQ/2h4IOgLF6IylD/92Mc0Uq7UgguE+6pbuGxmUrNxSQ/nE=
-X-Google-Smtp-Source: AGHT+IEfyXff5Z/Catutq/9H1tJ1Tcp6NVWBS0uS4QEHmqL14qct73+IMdbYhpAanS6tRs2B0CzIBQ==
-X-Received: by 2002:a5d:58f2:0:b0:33d:29c1:c28c with SMTP id f18-20020a5d58f2000000b0033d29c1c28cmr2219550wrd.66.1709233609591;
-        Thu, 29 Feb 2024 11:06:49 -0800 (PST)
-Received: from ishi ([185.243.57.250])
-        by smtp.gmail.com with ESMTPSA id t1-20020a5d5341000000b0033e11acf84asm1996039wrv.15.2024.02.29.11.06.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 11:06:49 -0800 (PST)
-Date: Thu, 29 Feb 2024 14:06:43 -0500
-From: William Breathitt Gray <william.gray@linaro.org>
-To: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Cc: lee@kernel.org, alexandre.torgue@foss.st.com, linux-iio@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Syed Nayyar Waris <syednwaris@gmail.com>
-Subject: Re: [PATCH v4 01/11] counter: Introduce the COUNTER_COMP_FREQUENCY()
- macro
-Message-ID: <ZeDVwzOKEpV48cXx@ishi>
-References: <20240227173803.53906-1-fabrice.gasnier@foss.st.com>
- <20240227173803.53906-2-fabrice.gasnier@foss.st.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=mLQax2d9Fr0sIn9uzzQkqscVqkz9zL1+1ZlU0yDthIy3O0zi2wTn1//+yf6+frzPUHn2L8nQQLBr63wAJYZh7nPPGLC3ZcX1DLHivjxyrlfp0PejKryaXya67ELRvNMxVh+7ZaQqXJY2fqiUxQ97WAMY0/vJdUy1Qiow//c9XsA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kOXGXdD7; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709233736; x=1740769736;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=0U1r3Qu+GxSx2ucDrDnXmdR2XAz3quO+6oo/ITF3EOU=;
+  b=kOXGXdD72wgpf5YrJbz9hwsFGqTat+f8lMdBM9zltAe7NfcyuLOwxECi
+   KKWJ4JEIGuaV+ITk6MgXVqrTrMoQVdlRlHERGjy/poGPy+jO3o0nvDANt
+   Cnn7kqF2fLAqc9kxBIU8ep/reQRForXxqF/gqqCIIPTjAx5cX5Fp4ZfLx
+   CPJdI5td1YdnIh1NICiKMt0ktc28yxgzbTmhnRx2uDkGdxpvSTjaTTY5E
+   OZMxj0j+y+hODAwyKdWT27lMVpnBe105S1Vj6kkAsbR7raSQ2pVvr/Otv
+   +sl+dVXrgoV1m/f1rbsckWWRELBH6WOfXqNX1ffH+v11eRbcgp0q2s0ph
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="14304520"
+X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
+   d="scan'208";a="14304520"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 11:08:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
+   d="scan'208";a="12587396"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by orviesa004.jf.intel.com with ESMTP; 29 Feb 2024 11:08:52 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rfllx-000DDf-1u;
+	Thu, 29 Feb 2024 19:08:49 +0000
+Date: Fri, 1 Mar 2024 03:08:21 +0800
+From: kernel test robot <lkp@intel.com>
+To: Frank Li <Frank.Li@nxp.com>, Vinod Koul <vkoul@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, Peng Fan <peng.fan@nxp.com>
+Cc: oe-kbuild-all@lists.linux.dev, imx@lists.linux.dev,
+	dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org, Frank Li <Frank.Li@nxp.com>
+Subject: Re: [PATCH 1/5] dmaengine: fsl-edma: remove 'slave_id' from
+ fsl_edma_chan
+Message-ID: <202403010227.FvhhLScs-lkp@intel.com>
+References: <20240227-8ulp_edma-v1-1-7fcfe1e265c2@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="m8RbYN6cnf/6A/iU"
-Content-Disposition: inline
-In-Reply-To: <20240227173803.53906-2-fabrice.gasnier@foss.st.com>
-
-
---m8RbYN6cnf/6A/iU
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240227-8ulp_edma-v1-1-7fcfe1e265c2@nxp.com>
 
-On Tue, Feb 27, 2024 at 06:37:53PM +0100, Fabrice Gasnier wrote:
-> Now that there are two users for the "frequency" extension, introduce a
-> new COUNTER_COMP_FREQUENCY() macro.
->=20
-> Suggested-by: William Breathitt Gray <william.gray@linaro.org>
-> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-> ---
->  include/linux/counter.h | 3 +++
->  1 file changed, 3 insertions(+)
->=20
-> diff --git a/include/linux/counter.h b/include/linux/counter.h
-> index 702e9108bbb4..03472d7407de 100644
-> --- a/include/linux/counter.h
-> +++ b/include/linux/counter.h
-> @@ -602,6 +602,9 @@ struct counter_array {
->  #define COUNTER_COMP_FLOOR(_read, _write) \
->  	COUNTER_COMP_COUNT_U64("floor", _read, _write)
-> =20
-> +#define COUNTER_COMP_FREQUENCY(_read, _write) \
-> +	COUNTER_COMP_SIGNAL_U64("frequency", _read, _write)
-> +
->  #define COUNTER_COMP_POLARITY(_read, _write, _available) \
->  { \
->  	.type =3D COUNTER_COMP_SIGNAL_POLARITY, \
-> --=20
-> 2.25.1
+Hi Frank,
 
-Sorry, would you make one minor change? The "frequency" extension is
-read-only so there is no need for a _write parameter (it'll always be
-NULL).
+kernel test robot noticed the following build errors:
 
-You don't need to rebase and submit the entire patchset again just yet
-because I will likely have more comments when I review. Just submit the
-next version of this particular patch separately and I'll pick it up so
-we can get it merged into counter-next.
+[auto build test ERROR on 2d5c7b7eb345249cb34d42cbc2b97b4c57ea944e]
 
-Thanks,
+url:    https://github.com/intel-lab-lkp/linux/commits/Frank-Li/dmaengine-fsl-edma-remove-slave_id-from-fsl_edma_chan/20240228-012842
+base:   2d5c7b7eb345249cb34d42cbc2b97b4c57ea944e
+patch link:    https://lore.kernel.org/r/20240227-8ulp_edma-v1-1-7fcfe1e265c2%40nxp.com
+patch subject: [PATCH 1/5] dmaengine: fsl-edma: remove 'slave_id' from fsl_edma_chan
+config: s390-allyesconfig (https://download.01.org/0day-ci/archive/20240301/202403010227.FvhhLScs-lkp@intel.com/config)
+compiler: s390-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240301/202403010227.FvhhLScs-lkp@intel.com/reproduce)
 
-William Breathitt Gray
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403010227.FvhhLScs-lkp@intel.com/
 
---m8RbYN6cnf/6A/iU
-Content-Type: application/pgp-signature; name="signature.asc"
+All errors (new ones prefixed by >>):
 
------BEGIN PGP SIGNATURE-----
+   drivers/dma/mcf-edma-main.c: In function 'mcf_edma_probe':
+>> drivers/dma/mcf-edma-main.c:198:25: error: 'struct fsl_edma_chan' has no member named 'slave_id'
+     198 |                 mcf_chan->slave_id = i;
+         |                         ^~
+   drivers/dma/mcf-edma-main.c: In function 'mcf_edma_filter_fn':
+   drivers/dma/mcf-edma-main.c:280:33: error: 'struct fsl_edma_chan' has no member named 'slave_id'
+     280 |                 return (mcf_chan->slave_id == (uintptr_t)param);
+         |                                 ^~
 
-iHUEARYKAB0WIQSNN83d4NIlKPjon7a1SFbKvhIjKwUCZeDVwwAKCRC1SFbKvhIj
-K5a/AP9ESChk0LtM25VBIa/YG3unlk+bBAuqQsCttKitBbei5AEAnS35RlwlEo91
-tAqqQcOWaRtMdGXsFtre4ov5nr6/HQY=
-=Az87
------END PGP SIGNATURE-----
 
---m8RbYN6cnf/6A/iU--
+vim +198 drivers/dma/mcf-edma-main.c
+
+af802728e4ab07 drivers/dma/mcf-edma.c      Robin Gong         2019-06-25  152  
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  153  static int mcf_edma_probe(struct platform_device *pdev)
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  154  {
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  155  	struct mcf_edma_platform_data *pdata;
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  156  	struct fsl_edma_engine *mcf_edma;
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  157  	struct edma_regs *regs;
+923b138388928a drivers/dma/mcf-edma.c      Christophe JAILLET 2023-05-06  158  	int ret, i, chans;
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  159  
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  160  	pdata = dev_get_platdata(&pdev->dev);
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  161  	if (!pdata) {
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  162  		dev_err(&pdev->dev, "no platform data supplied\n");
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  163  		return -EINVAL;
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  164  	}
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  165  
+0a46781c89dece drivers/dma/mcf-edma.c      Christophe JAILLET 2023-07-12  166  	if (!pdata->dma_channels) {
+0a46781c89dece drivers/dma/mcf-edma.c      Christophe JAILLET 2023-07-12  167  		dev_info(&pdev->dev, "setting default channel number to 64");
+0a46781c89dece drivers/dma/mcf-edma.c      Christophe JAILLET 2023-07-12  168  		chans = 64;
+0a46781c89dece drivers/dma/mcf-edma.c      Christophe JAILLET 2023-07-12  169  	} else {
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  170  		chans = pdata->dma_channels;
+0a46781c89dece drivers/dma/mcf-edma.c      Christophe JAILLET 2023-07-12  171  	}
+0a46781c89dece drivers/dma/mcf-edma.c      Christophe JAILLET 2023-07-12  172  
+923b138388928a drivers/dma/mcf-edma.c      Christophe JAILLET 2023-05-06  173  	mcf_edma = devm_kzalloc(&pdev->dev, struct_size(mcf_edma, chans, chans),
+923b138388928a drivers/dma/mcf-edma.c      Christophe JAILLET 2023-05-06  174  				GFP_KERNEL);
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  175  	if (!mcf_edma)
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  176  		return -ENOMEM;
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  177  
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  178  	mcf_edma->n_chans = chans;
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  179  
+af802728e4ab07 drivers/dma/mcf-edma.c      Robin Gong         2019-06-25  180  	/* Set up drvdata for ColdFire edma */
+af802728e4ab07 drivers/dma/mcf-edma.c      Robin Gong         2019-06-25  181  	mcf_edma->drvdata = &mcf_data;
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  182  	mcf_edma->big_endian = 1;
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  183  
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  184  	mutex_init(&mcf_edma->fsl_edma_mutex);
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  185  
+4b23603a251d24 drivers/dma/mcf-edma.c      Tudor Ambarus      2022-11-10  186  	mcf_edma->membase = devm_platform_ioremap_resource(pdev, 0);
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  187  	if (IS_ERR(mcf_edma->membase))
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  188  		return PTR_ERR(mcf_edma->membase);
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  189  
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  190  	fsl_edma_setup_regs(mcf_edma);
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  191  	regs = &mcf_edma->regs;
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  192  
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  193  	INIT_LIST_HEAD(&mcf_edma->dma_dev.channels);
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  194  	for (i = 0; i < mcf_edma->n_chans; i++) {
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  195  		struct fsl_edma_chan *mcf_chan = &mcf_edma->chans[i];
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  196  
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  197  		mcf_chan->edma = mcf_edma;
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19 @198  		mcf_chan->slave_id = i;
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  199  		mcf_chan->idle = true;
+0fa89f972da607 drivers/dma/mcf-edma.c      Laurentiu Tudor    2019-01-18  200  		mcf_chan->dma_dir = DMA_NONE;
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  201  		mcf_chan->vchan.desc_free = fsl_edma_free_desc;
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  202  		vchan_init(&mcf_chan->vchan, &mcf_edma->dma_dev);
+7536f8b371adcc drivers/dma/mcf-edma-main.c Frank Li           2023-08-21  203  		mcf_chan->tcd = mcf_edma->membase + EDMA_TCD
+7536f8b371adcc drivers/dma/mcf-edma-main.c Frank Li           2023-08-21  204  				+ i * sizeof(struct fsl_edma_hw_tcd);
+b51dd7c8aac292 drivers/dma/mcf-edma-main.c Frank Li           2023-12-21  205  		edma_write_tcdreg(mcf_chan, cpu_to_le32(0), csr);
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  206  	}
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  207  
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  208  	iowrite32(~0, regs->inth);
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  209  	iowrite32(~0, regs->intl);
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  210  
+af802728e4ab07 drivers/dma/mcf-edma.c      Robin Gong         2019-06-25  211  	ret = mcf_edma->drvdata->setup_irq(pdev, mcf_edma);
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  212  	if (ret)
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  213  		return ret;
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  214  
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  215  	dma_cap_set(DMA_PRIVATE, mcf_edma->dma_dev.cap_mask);
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  216  	dma_cap_set(DMA_SLAVE, mcf_edma->dma_dev.cap_mask);
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  217  	dma_cap_set(DMA_CYCLIC, mcf_edma->dma_dev.cap_mask);
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  218  
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  219  	mcf_edma->dma_dev.dev = &pdev->dev;
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  220  	mcf_edma->dma_dev.device_alloc_chan_resources =
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  221  			fsl_edma_alloc_chan_resources;
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  222  	mcf_edma->dma_dev.device_free_chan_resources =
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  223  			fsl_edma_free_chan_resources;
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  224  	mcf_edma->dma_dev.device_config = fsl_edma_slave_config;
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  225  	mcf_edma->dma_dev.device_prep_dma_cyclic =
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  226  			fsl_edma_prep_dma_cyclic;
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  227  	mcf_edma->dma_dev.device_prep_slave_sg = fsl_edma_prep_slave_sg;
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  228  	mcf_edma->dma_dev.device_tx_status = fsl_edma_tx_status;
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  229  	mcf_edma->dma_dev.device_pause = fsl_edma_pause;
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  230  	mcf_edma->dma_dev.device_resume = fsl_edma_resume;
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  231  	mcf_edma->dma_dev.device_terminate_all = fsl_edma_terminate_all;
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  232  	mcf_edma->dma_dev.device_issue_pending = fsl_edma_issue_pending;
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  233  
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  234  	mcf_edma->dma_dev.src_addr_widths = FSL_EDMA_BUSWIDTHS;
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  235  	mcf_edma->dma_dev.dst_addr_widths = FSL_EDMA_BUSWIDTHS;
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  236  	mcf_edma->dma_dev.directions =
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  237  			BIT(DMA_DEV_TO_MEM) | BIT(DMA_MEM_TO_DEV);
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  238  
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  239  	mcf_edma->dma_dev.filter.fn = mcf_edma_filter_fn;
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  240  	mcf_edma->dma_dev.filter.map = pdata->slave_map;
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  241  	mcf_edma->dma_dev.filter.mapcnt = pdata->slavecnt;
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  242  
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  243  	platform_set_drvdata(pdev, mcf_edma);
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  244  
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  245  	ret = dma_async_device_register(&mcf_edma->dma_dev);
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  246  	if (ret) {
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  247  		dev_err(&pdev->dev,
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  248  			"Can't register Freescale eDMA engine. (%d)\n", ret);
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  249  		return ret;
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  250  	}
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  251  
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  252  	/* Enable round robin arbitration */
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  253  	iowrite32(EDMA_CR_ERGA | EDMA_CR_ERCA, regs->cr);
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  254  
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  255  	return 0;
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  256  }
+e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  257  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
