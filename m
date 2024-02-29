@@ -1,65 +1,61 @@
-Return-Path: <linux-kernel+bounces-87500-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87501-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5613186D530
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:57:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C2A686D535
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:57:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EC09AB272D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:57:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08691281C9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:57:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FB25165907;
-	Thu, 29 Feb 2024 20:41:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 104B51509BC;
+	Thu, 29 Feb 2024 20:41:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HFmrXKtj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OndRqQVv"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6EA91658F2;
-	Thu, 29 Feb 2024 20:41:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D7A1165911;
+	Thu, 29 Feb 2024 20:41:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709239277; cv=none; b=lRWIYyLy3PehBYlQbAGw1UROVWVDBAK2690ernql16wdyspq2bk46aLN3y/moU5MbVB89+XwqjqUS3AM7/MYQ1ReecnksHTB5EjJb/vMUrk5foyu6cYBuuGEtm8Oz+YqfdlysZqNR+uxEDiDIxNtVSwz5rHAEHLn/vIZRSulz4o=
+	t=1709239279; cv=none; b=V/dN54QJPwsIn83Lpb/QMKobjDfNivnwtiqSmI3mPhyxMsIMGhPtect1xPrl4lIyIzQa3/JHmP+Hg+cZs5j2i9W/K7z4Ya4dXCwVE5AWx4dAgVcGE0cwo0Q95wq4x4rVJ0zDq3i2cXj1QHuX1ontoVbcRkENxyWRsZdP1oSE4zI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709239277; c=relaxed/simple;
-	bh=Vo3k/UgoRrmyUGzlldwCCqinbenvGMIr4yM+BJI4MQQ=;
+	s=arc-20240116; t=1709239279; c=relaxed/simple;
+	bh=+L8wkVGdqLlELuYmKWeEuKakPfIif0WoiIE0dd9miA8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lZCqGd82cJ27xN7lBJ3KDno6QQ33vZxTb77jupOe03dF25rv4zEh3kBGc/khmTyTlyP339+oy5wRGSqZFzCmoHEkfF9QG8UcjYpsf5TBTikWEXYiTCEBPQOJGYRfCRD6nMBUjGGB5kMZ5yT+XwQQvfhOul2sxCJY5/od11Q1xz0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HFmrXKtj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D282C43601;
-	Thu, 29 Feb 2024 20:41:15 +0000 (UTC)
+	 MIME-Version; b=XbmKrrYRJzQstp3UTX/6cXKhiyN/BOkuxoB/rYIMtNhkWT9LTF5wHMPg34KXLZjCYHtsCQqYf54DQqwvvmNGKaTt4i6g7VdvDXKYQhNtq4OrYfKV0J0HKOJu8FN14fGTC7xuVpirjhM3+CoS+/Kj9aRr0GKKEdb0quV6KnIsp5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OndRqQVv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE65EC43399;
+	Thu, 29 Feb 2024 20:41:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709239277;
-	bh=Vo3k/UgoRrmyUGzlldwCCqinbenvGMIr4yM+BJI4MQQ=;
+	s=k20201202; t=1709239279;
+	bh=+L8wkVGdqLlELuYmKWeEuKakPfIif0WoiIE0dd9miA8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=HFmrXKtjoimn3UjW5D65IeFvTdm2qjA2TSSiofVpqFxRziOAKyEJh2ic3hSnn8eyX
-	 vBYOG8bc0LjKFI9kwS29UYjQlWTGMi/1PXSplJxSLCR+StuAO7CwD55UfQLAnxUbkm
-	 ZhBxHzsfa//UJ0MrQWV22EYnv68KkrnArpV2ttCbJeeWfzk3m7fAHVPQR2dMclo23v
-	 FHwKfCNqnIxGZjSqXRKUPS454Sx9530UWEE35Q7whhBISkIFWIu+Q3l9E8/aJOj0sP
-	 N4I+T9S4WZLjyaNklvlzbRq+2MFVRkoquMqn97s9rCzSODOPfbfqjWfo1Myl4aqobw
-	 oft4GtN7KB+Jg==
+	b=OndRqQVvlze3x1yuDANXwUWxTwq6IFtU6SXWL/ECRq1h9VVGuzQLwWWszlAjBoYRA
+	 qLS9BNjVfaoTMB4rF3Xu8uILPeOd3v9m95RAUs/+ZJo5LKm2aqhfR1BfTYgJDsFlXR
+	 YISNRR0C8R5JCGQ9FnbEH6NA70TyhLSsl+5JVwob1Q7C7jBXHcUdveDq3bFwkfhY1d
+	 gix2PYvAnMrhI8K8HlNpSD38JhT5snQ0CQjF9nH84VEu6nTXUPdvLKo3q1dTO5faPS
+	 vFAcVz6fQSVBDBzuHwEaHt38dosY2FqG/DJIMSQvRhjPcFplHGYSu9i8+tX79zxczF
+	 69105rmcztyzQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Hou Tao <houtao1@huawei.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	syzbot+72aa0161922eba61b50e@syzkaller.appspotmail.com,
-	xingwei lee <xrivendell7@gmail.com>,
-	Sohil Mehta <sohil.mehta@intel.com>,
-	Alexei Starovoitov <ast@kernel.org>,
+Cc: Alexander Gordeev <agordeev@linux.ibm.com>,
+	Alexandra Winter <wintera@linux.ibm.com>,
+	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>,
-	dave.hansen@linux.intel.com,
-	luto@kernel.org,
-	peterz@infradead.org,
-	mingo@redhat.com,
-	bp@alien8.de,
-	x86@kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 5/9] x86/mm: Disallow vsyscall page read for copy_from_kernel_nofault()
-Date: Thu, 29 Feb 2024 15:41:01 -0500
-Message-ID: <20240229204107.2861780-5-sashal@kernel.org>
+	twinkler@linux.ibm.com,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	linux-s390@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 6/9] net/iucv: fix the allocation size of iucv_path_table array
+Date: Thu, 29 Feb 2024 15:41:02 -0500
+Message-ID: <20240229204107.2861780-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240229204107.2861780-1-sashal@kernel.org>
 References: <20240229204107.2861780-1-sashal@kernel.org>
@@ -74,98 +70,44 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.149
 Content-Transfer-Encoding: 8bit
 
-From: Hou Tao <houtao1@huawei.com>
+From: Alexander Gordeev <agordeev@linux.ibm.com>
 
-[ Upstream commit 32019c659ecfe1d92e3bf9fcdfbb11a7c70acd58 ]
+[ Upstream commit b4ea9b6a18ebf7f9f3a7a60f82e925186978cfcf ]
 
-When trying to use copy_from_kernel_nofault() to read vsyscall page
-through a bpf program, the following oops was reported:
+iucv_path_table is a dynamically allocated array of pointers to
+struct iucv_path items. Yet, its size is calculated as if it was
+an array of struct iucv_path items.
 
-  BUG: unable to handle page fault for address: ffffffffff600000
-  #PF: supervisor read access in kernel mode
-  #PF: error_code(0x0000) - not-present page
-  PGD 3231067 P4D 3231067 PUD 3233067 PMD 3235067 PTE 0
-  Oops: 0000 [#1] PREEMPT SMP PTI
-  CPU: 1 PID: 20390 Comm: test_progs ...... 6.7.0+ #58
-  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996) ......
-  RIP: 0010:copy_from_kernel_nofault+0x6f/0x110
-  ......
-  Call Trace:
-   <TASK>
-   ? copy_from_kernel_nofault+0x6f/0x110
-   bpf_probe_read_kernel+0x1d/0x50
-   bpf_prog_2061065e56845f08_do_probe_read+0x51/0x8d
-   trace_call_bpf+0xc5/0x1c0
-   perf_call_bpf_enter.isra.0+0x69/0xb0
-   perf_syscall_enter+0x13e/0x200
-   syscall_trace_enter+0x188/0x1c0
-   do_syscall_64+0xb5/0xe0
-   entry_SYSCALL_64_after_hwframe+0x6e/0x76
-   </TASK>
-  ......
-  ---[ end trace 0000000000000000 ]---
-
-The oops is triggered when:
-
-1) A bpf program uses bpf_probe_read_kernel() to read from the vsyscall
-page and invokes copy_from_kernel_nofault() which in turn calls
-__get_user_asm().
-
-2) Because the vsyscall page address is not readable from kernel space,
-a page fault exception is triggered accordingly.
-
-3) handle_page_fault() considers the vsyscall page address as a user
-space address instead of a kernel space address. This results in the
-fix-up setup by bpf not being applied and a page_fault_oops() is invoked
-due to SMAP.
-
-Considering handle_page_fault() has already considered the vsyscall page
-address as a userspace address, fix the problem by disallowing vsyscall
-page read for copy_from_kernel_nofault().
-
-Originally-by: Thomas Gleixner <tglx@linutronix.de>
-Reported-by: syzbot+72aa0161922eba61b50e@syzkaller.appspotmail.com
-Closes: https://lore.kernel.org/bpf/CAG48ez06TZft=ATH1qh2c5mpS5BT8UakwNkzi6nvK5_djC-4Nw@mail.gmail.com
-Reported-by: xingwei lee <xrivendell7@gmail.com>
-Closes: https://lore.kernel.org/bpf/CABOYnLynjBoFZOf3Z4BhaZkc5hx_kHfsjiW+UWLoB=w33LvScw@mail.gmail.com
-Signed-off-by: Hou Tao <houtao1@huawei.com>
-Reviewed-by: Sohil Mehta <sohil.mehta@intel.com>
-Acked-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20240202103935.3154011-3-houtao@huaweicloud.com
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
+Reviewed-by: Alexandra Winter <wintera@linux.ibm.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/mm/maccess.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ net/iucv/iucv.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/mm/maccess.c b/arch/x86/mm/maccess.c
-index 6993f026adec9..42115ac079cfe 100644
---- a/arch/x86/mm/maccess.c
-+++ b/arch/x86/mm/maccess.c
-@@ -3,6 +3,8 @@
- #include <linux/uaccess.h>
- #include <linux/kernel.h>
+diff --git a/net/iucv/iucv.c b/net/iucv/iucv.c
+index 8efc369934fc7..68edefed79f16 100644
+--- a/net/iucv/iucv.c
++++ b/net/iucv/iucv.c
+@@ -156,7 +156,7 @@ static char iucv_error_pathid[16] = "INVALID PATHID";
+ static LIST_HEAD(iucv_handler_list);
  
-+#include <asm/vsyscall.h>
-+
- #ifdef CONFIG_X86_64
- bool copy_from_kernel_nofault_allowed(const void *unsafe_src, size_t size)
- {
-@@ -15,6 +17,14 @@ bool copy_from_kernel_nofault_allowed(const void *unsafe_src, size_t size)
- 	if (vaddr < TASK_SIZE_MAX + PAGE_SIZE)
- 		return false;
+ /*
+- * iucv_path_table: an array of iucv_path structures.
++ * iucv_path_table: array of pointers to iucv_path structures.
+  */
+ static struct iucv_path **iucv_path_table;
+ static unsigned long iucv_max_pathid;
+@@ -544,7 +544,7 @@ static int iucv_enable(void)
  
-+	/*
-+	 * Reading from the vsyscall page may cause an unhandled fault in
-+	 * certain cases.  Though it is at an address above TASK_SIZE_MAX, it is
-+	 * usually considered as a user space address.
-+	 */
-+	if (is_vsyscall_vaddr(vaddr))
-+		return false;
-+
- 	/*
- 	 * Allow everything during early boot before 'x86_virt_bits'
- 	 * is initialized.  Needed for instruction decoding in early
+ 	cpus_read_lock();
+ 	rc = -ENOMEM;
+-	alloc_size = iucv_max_pathid * sizeof(struct iucv_path);
++	alloc_size = iucv_max_pathid * sizeof(*iucv_path_table);
+ 	iucv_path_table = kzalloc(alloc_size, GFP_KERNEL);
+ 	if (!iucv_path_table)
+ 		goto out;
 -- 
 2.43.0
 
