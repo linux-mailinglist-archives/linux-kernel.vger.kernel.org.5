@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-87684-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87685-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45DAC86D7AF
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 00:25:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6204686D7B0
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 00:25:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 77DB81C218C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 23:25:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0E9AEB22648
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 23:25:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6E9914A4F3;
-	Thu, 29 Feb 2024 23:22:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82DF614BD51;
+	Thu, 29 Feb 2024 23:22:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="XSvn8kij"
-Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="e+Pa+A3E"
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94168145668
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 23:22:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71C86145679
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 23:22:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709248948; cv=none; b=GpIUqyhwn9sJmdsEICsn57css4NLH71GWWKZ3+7Uns4HDkDzvCNRrwY+uJcDOrwyH4frePlmaZpyEXRoIkwTNEjkdW8ltOmUJWqaJve3Pu63XuGSUqse2ZvBRqAvRN6TrLl5HMDDBZL1A1p2UXo+izpaWW5WUvzwkzvD9QnvYok=
+	t=1709248948; cv=none; b=Ux4QAhlHH5KYasppMubXsEr/CSnwVUOH7Is/ROQwm8ocKfFVKsSK5iedN1EOw7qvEITTeS2Lhefx9cfPTkf5Ub8nVyaumVOudax+dMgK8uDfRuDupatIkqwBxZyAyCZlc+OzmVKNw+Xeddsxa1sy8pqLR9gRurh0APNz2mWgBwk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1709248948; c=relaxed/simple;
-	bh=MRE4XT0P9lLUUCp1Ujsa6SQk4prpBDb9nMVRKvQ6tEU=;
+	bh=iR1wf5c+BMYzI7Dk7MIElBjHFZAAvj9ByRRGMTXW5IA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=E4GAX3Xv+UI+98BgTuHZlqCVwwEnsm2gYONN4Xv2SfQbR+SejtyfS/lsvxpcBK9uJMORDX3H7Gm0NgIQXrL8ebwxxSa7AyLVn9ZDBS3nhroaLkcaYaTzApXJWD3/SDW6yYq2VcVBlklXI4xstQAWmtd7V2QvI45QRu/c8CFDTBg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=XSvn8kij; arc=none smtp.client-ip=209.85.167.170
+	 MIME-Version; b=AhXNJqvUQtp5NTnVOX4R5APkVJb/zANiHAVK5NSu3RGD0JNXT5yZ7WEcWDiNqDBOrUTG5rL7k/Vl04/oKdkfrDVIdhrFIQiF0zm/A1zRPuXsVrttmYA317KeoHgQ+3GpTyyQTqx5UgYuntEq+MybzqqdApucU2xWFt9mkZToqAA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=e+Pa+A3E; arc=none smtp.client-ip=209.85.210.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3bb9b28acb4so1094686b6e.2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 15:22:26 -0800 (PST)
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6e5a232fe80so701516b3a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 15:22:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1709248946; x=1709853746; darn=vger.kernel.org;
+        d=sifive.com; s=google; t=1709248947; x=1709853747; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hwpkv2OuO7YHUplKH98oFVfOa+CFbclxXNu0ysmduyU=;
-        b=XSvn8kijH43lMHYjQhBT0h1zp2LObu8ygYFKiDSr3mS/HXqIzckAiAmvpc+COu0a2e
-         3jOeUVSnSk+Onb1pHstwBjfqUS5KGf8RXtO6tAtJm6eaCHkXou/JQiWDojnRBlolaYHM
-         kBUDXsvMVoJVYzEmE1oL5rZfj/ljFQ26OMJ1meUy3YBJ8i3hlPYk/OSLOkUHA5KGTZrU
-         jbxkqEEbCl5g12LXsmxXoSIRe3rVDZFQSFjX0o0s0dTO28YG2KbXa7laBLDx5j4GGwn9
-         lK4IDJko3KLj3es+Gy7PODJy5cb4nvbV9LZxJ5ACeZHpQCJ4Y1SwtE00qMWrJT4JaNoG
-         LPfw==
+        bh=cJvv9umwOkXOwc0iOvLk+NQYD7Mm5kACvwQaK1YGZP0=;
+        b=e+Pa+A3EB/w6kupfp9BgaUqZShW6EPMpsncIOTv/l1dVOxtBqjGKlDsQBm7MtnR1JN
+         4SnYfrzns3hITSjfawED+HzdC3tP9fKxIm5ZueckFyxVNHvZRjZOJMakDv7iJfyG3qZ3
+         Qh9q5QeXaJYeWlqTI+yVedi05TUrmreisshxgKOtl1CQ7fJTZu3o88tEunmZDptSRhrX
+         +E4LgwjC0O7SBMY5bEf+4imc8HWHDz9HUx1jiD9IIQxxHixE0rmHa5tGHAxVBHdKwPun
+         1ndp8tpgfVlzt4dRo+6bprH5MRxPu5n6GCbiL71RqlY8+GSGc+y/9BTIm0+hG06Cf0Zo
+         xnGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709248946; x=1709853746;
+        d=1e100.net; s=20230601; t=1709248947; x=1709853747;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hwpkv2OuO7YHUplKH98oFVfOa+CFbclxXNu0ysmduyU=;
-        b=DRvGW7+TLapQHMFqVqMOK1dSanEk6P6tYCcCvhqciRup2ORjyzFt/inCea4qikuUOX
-         Rey35XDu1R5AsX152gsfy+P4lzW9bIAcWdbPnDrwzenKqQrl4zzHfEAmOiex8DSHVkCt
-         YWVxa130ohLvXktkz0oy2uLlPQBel5WebQxkQKlwAlerAV7opgjFbidGZVH6beG8M1U+
-         4slINWcQScDEGlfBhfjOJivfDaNHfEXkT7LKE56feHiCoiNVwg3HvPDGstlMX3oykRbD
-         XmZGSSIFT014P7r0nnsk429vS23OSuFgyOHH2m1SNQ9YM7j3xkTGxu0voYl0Ha080pjK
-         tUVQ==
-X-Gm-Message-State: AOJu0YyPLL4gG6leb9aGuFLI4a76KCLB3ZvrLpUanB0cPLhOB2Ecssx+
-	C4tOi1U9Oty7EbrjYNZEudr5KI21ZTtRIdV7H0drvTpYqKtrWCApNp1qRW9yBNk=
-X-Google-Smtp-Source: AGHT+IHmmt9lzZLUCIFAbm5GqyPJaePE9QFXJ4x/3NAo+fPZmowQvwtei5P759brqGkqtPXCOnb8SQ==
-X-Received: by 2002:a05:6808:17a7:b0:3c1:af49:222b with SMTP id bg39-20020a05680817a700b003c1af49222bmr47209oib.37.1709248945851;
-        Thu, 29 Feb 2024 15:22:25 -0800 (PST)
+        bh=cJvv9umwOkXOwc0iOvLk+NQYD7Mm5kACvwQaK1YGZP0=;
+        b=pFmcP/27HCLSFFPYW8C405ju4v+p4GkhfFlh0+i+hXrqtsiKcgpno4gu6GfGtHbJik
+         ehEJRzbM4PLKt7FFzSgfK8OvrlejNU+24KGTKseEZnzBQxbSyXbTaAJKvp3y4SrqFqCZ
+         nr3j4pfSm7NkdikHM9HjJ/Af4AIhNDbMGLmNdqhjeKtbygmMl96FRbRrswgIoTyPNM74
+         zyE+j+mKCVwuDBJjjF9VgV5jog0K7ouegYdcBR+OUSazihlT9/IRddtsQoJ1M1WfuQ9V
+         omT/PUSqxSWZJh2Rv3L613yxwDz9Av3FzL+URfKH74fDHI6vZTwxPg+cLdYEG1MYlWQb
+         Iz1w==
+X-Gm-Message-State: AOJu0YwEvz5XD8MHpgwF7NE6PHrGj2IKXANt4L0g8NaqL/IAAmXFyMzJ
+	D4rSFuQpXUSbUYHvMUnZIQDC8sJSMML+98nnWQCfa4bNM1m8Zf8jl+VY3dXTh4M=
+X-Google-Smtp-Source: AGHT+IG000bMn11OdL3LH1zGovTy9Qg+UUgYE8CMrW4h6bNv2nzitQBp1dzsEHx4shrcmNE8zaAVpw==
+X-Received: by 2002:a05:6a00:27a3:b0:6e5:3dea:bf51 with SMTP id bd35-20020a056a0027a300b006e53deabf51mr562992pfb.7.1709248946831;
+        Thu, 29 Feb 2024 15:22:26 -0800 (PST)
 Received: from sw06.internal.sifive.com ([4.53.31.132])
-        by smtp.gmail.com with ESMTPSA id c6-20020aa78806000000b006e55aa75d6csm1779719pfo.122.2024.02.29.15.22.25
+        by smtp.gmail.com with ESMTPSA id c6-20020aa78806000000b006e55aa75d6csm1779719pfo.122.2024.02.29.15.22.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 15:22:25 -0800 (PST)
+        Thu, 29 Feb 2024 15:22:26 -0800 (PST)
 From: Samuel Holland <samuel.holland@sifive.com>
 To: Palmer Dabbelt <palmer@dabbelt.com>,
 	linux-riscv@lists.infradead.org
@@ -74,9 +74,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Jisheng Zhang <jszhang@kernel.org>,
 	Yunhui Cui <cuiyunhui@bytedance.com>,
 	Samuel Holland <samuel.holland@sifive.com>
-Subject: [PATCH v5 12/13] riscv: mm: Preserve global TLB entries when switching contexts
-Date: Thu, 29 Feb 2024 15:21:53 -0800
-Message-ID: <20240229232211.161961-13-samuel.holland@sifive.com>
+Subject: [PATCH v5 13/13] riscv: mm: Always use an ASID to flush mm contexts
+Date: Thu, 29 Feb 2024 15:21:54 -0800
+Message-ID: <20240229232211.161961-14-samuel.holland@sifive.com>
 X-Mailer: git-send-email 2.43.1
 In-Reply-To: <20240229232211.161961-1-samuel.holland@sifive.com>
 References: <20240229232211.161961-1-samuel.holland@sifive.com>
@@ -88,46 +88,40 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-If the CPU does not support multiple ASIDs, all MM contexts use ASID 0.
-In this case, it is still beneficial to flush the TLB by ASID, as the
-single-ASID variant of the sfence.vma instruction preserves TLB entries
-for global (kernel) pages.
-
-This optimization is recommended by the RISC-V privileged specification:
-
-  If the implementation does not provide ASIDs, or software chooses
-  to always use ASID 0, then after every satp write, software should
-  execute SFENCE.VMA with rs1=x0. In the common case that no global
-  translations have been modified, rs2 should be set to a register
-  other than x0 but which contains the value zero, so that global
-  translations are not flushed.
-
-It is not possible to apply this optimization when using the ASID
-allocator, because that code must flush the TLB for all ASIDs at once
-when incrementing the version number.
+Even if multiple ASIDs are not supported, using the single-ASID variant
+of the sfence.vma instruction preserves TLB entries for global (kernel)
+pages. So it is always more efficient to use the single-ASID code path.
 
 Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
 Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
 ---
 
-(no changes since v1)
+Changes in v5:
+ - Leave use_asid_allocator declared in asm/mmu_context.h
 
- arch/riscv/mm/context.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changes in v4:
+ - There is now only one copy of __flush_tlb_range()
 
-diff --git a/arch/riscv/mm/context.c b/arch/riscv/mm/context.c
-index 0bf6d0070a14..60cb0b82240e 100644
---- a/arch/riscv/mm/context.c
-+++ b/arch/riscv/mm/context.c
-@@ -200,7 +200,7 @@ static void set_mm_noasid(struct mm_struct *mm)
+Changes in v2:
+ - Update both copies of __flush_tlb_range()
+
+ arch/riscv/mm/tlbflush.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
+index e194e14e5b2b..5b473588a985 100644
+--- a/arch/riscv/mm/tlbflush.c
++++ b/arch/riscv/mm/tlbflush.c
+@@ -108,8 +108,7 @@ static void __flush_tlb_range(struct cpumask *cmask, unsigned long asid,
+ 
+ static inline unsigned long get_mm_asid(struct mm_struct *mm)
  {
- 	/* Switch the page table and blindly nuke entire local TLB */
- 	csr_write(CSR_SATP, virt_to_pfn(mm->pgd) | satp_mode);
--	local_flush_tlb_all();
-+	local_flush_tlb_all_asid(0);
+-	return static_branch_unlikely(&use_asid_allocator) ?
+-			cntx2asid(atomic_long_read(&mm->context.id)) : FLUSH_TLB_NO_ASID;
++	return cntx2asid(atomic_long_read(&mm->context.id));
  }
  
- static inline void set_mm(struct mm_struct *prev,
+ void flush_tlb_mm(struct mm_struct *mm)
 -- 
 2.43.1
 
