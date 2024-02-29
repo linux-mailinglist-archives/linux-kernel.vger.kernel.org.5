@@ -1,148 +1,113 @@
-Return-Path: <linux-kernel+bounces-86865-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86866-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 527F886CBE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:48:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5011786CBF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:49:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E10B21F21E58
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:48:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9D5F5B22A4C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:49:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DD9C13774E;
-	Thu, 29 Feb 2024 14:48:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23C29137C38;
+	Thu, 29 Feb 2024 14:48:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="UfYoVems"
-Received: from mail-4319.protonmail.ch (mail-4319.protonmail.ch [185.70.43.19])
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="J+3/eSbU"
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4962A41A80
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 14:48:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 581A9137750;
+	Thu, 29 Feb 2024 14:48:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.61.82.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709218099; cv=none; b=dXjC10M5S8XjlTo0YaTv+mGIpeadRdqj0Jw08oZK7cX+q4opK0ilGcUWLlCIbO0hotLmRTW0kn7knVT3EpxrZuWJztfQ1pNspy9SgaMP/cRfKBSPDBqTocHY/+8Ta8SuTidNJeZzFA6gk0kRZnCIfj94iKe51sXmrW2tM9Y+7ww=
+	t=1709218136; cv=none; b=ApNs2F2b7cMfzUwWCS4PY1UrYbcoCLUOqkE7AbBn7F+0byCM/H11Fl9+wcz2t4oJSANmGxAGlmJ9nlizT3afKdJyl65DKlD+VYbwVQe5hVyANTeN2DXBqwKjfu6CwV914NEJ5XhvtRFCUnmRJGJG0lcMhG9dUGuNY1JAYIAGfaQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709218099; c=relaxed/simple;
-	bh=WGL9qM33Nk7fRGwrV2mf7JvJ3jNhdkTxb/e39Lrf8ZY=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=h+3oD74aVz/4sK9k/D94zC9xGhl8E6/J0PrQRFgJd75qTlHFe/QXl+A1VMudGMmUM9ih7ATlJcd57SBhyk0rMfPnNz3Jek3x/HSm5SNWJnUUasFiUeR+IVzn+5GZSH9Fqo5/vcFFqfwSJ7t2Qmu7Z0lFCv2kUEeGw+pg/MWChZk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=UfYoVems; arc=none smtp.client-ip=185.70.43.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1709218090; x=1709477290;
-	bh=oSUfZi1cGfdeB2IvoV8ev5peOvcG5sVLj13qHsWtvCc=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=UfYoVemsMrQXXTx6rDIs2sKrXk0meAWKVEgf/yHRQx7M1rDUxGzvpEqxfNE2Y74XE
-	 t1TiBTeQl3lF75ZupVeL9itL2H2iEebx1xVAQiDcbaCzdGvHy8ZL2nRS2BSGOSAQwg
-	 Eq4Yt0EWBcXzdh0fDzMj4fiBZbRz3tn+V26n/v8cb4Vw3fK8oC6XHqDd3TY1M4V+0P
-	 FmTlx3Kn4I8gJhPIqv0kftgY8YKYPDkPsbem+/HOIwDlw0Hwg1rs7p2Jit4YJ/OckL
-	 sEkVM19++zYWIL7lG9LC5G+gNutZklt4F/23hsa5cX6rrqjRbcHQ/OKhdiWi+dG4hi
-	 IxQpaaVxQFJ0w==
-Date: Thu, 29 Feb 2024 14:47:59 +0000
-To: o-takashi@sakamocchi.jp
-From: Edmund Raile <edmund.raile@proton.me>
-Cc: linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, Edmund Raile <edmund.raile@proton.me>
-Subject: [PATCH v2] firewire: ohci: prevent leak of left-over IRQ on unbind
-Message-ID: <20240229144723.13047-2-edmund.raile@proton.me>
-In-Reply-To: <20240229101236.8074-1-edmund.raile@proton.me>
-References: <20240229101236.8074-1-edmund.raile@proton.me>
-Feedback-ID: 45198251:user:proton
+	s=arc-20240116; t=1709218136; c=relaxed/simple;
+	bh=J7zMkYOe2z8RSW6CzHBrvBDRO22h9G0bvk/JDVtgOP4=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=tErM/RVqcV6wOTyDDqGn/IZ3RdUvJRGLt+xt6rbc3oLZRrqcyaoDYSQsZJBX4P5X0ZaRGnPIELApxBfug0K7AIotUJC9KIQqbgnLpWQC7K+ekUnlV2v5JZi+qV9bfGP8wEJAVnO5tAohwrNZvQbd1TPCipXqDF8gTy4qcVqI6pw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=J+3/eSbU; arc=none smtp.client-ip=210.61.82.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: a5027550d71111ee935d6952f98a51a9-20240229
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=YDUB1R45Ja1nwbtgjCXo8zSwQLjgVdrkkmfZ6bu7GoU=;
+	b=J+3/eSbUeoXKccyIhkaSnKldhx9CcZfyYNtzBG0t6tYC3c+7rsTUHEICXI70zFHELoGN1b0l1EuhaOWjSIar7F70giHF94az1kP5jERP689rcRIvtBmVaqfQ8QcoB+s3yx7c/mkuReLhoe+T2+Yj/0J4dzbutgNZhYeThSbfMWk=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:112a96f9-84d3-4b6b-8219-523cd1fef6ee,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:0
+X-CID-META: VersionHash:6f543d0,CLOUDID:c517f580-4f93-4875-95e7-8c66ea833d57,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
+	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULS
+X-UUID: a5027550d71111ee935d6952f98a51a9-20240229
+Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw02.mediatek.com
+	(envelope-from <jason-jh.lin@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 1723561320; Thu, 29 Feb 2024 22:48:47 +0800
+Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
+ mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Thu, 29 Feb 2024 22:48:46 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Thu, 29 Feb 2024 22:48:46 +0800
+From: Jason-JH.Lin <jason-jh.lin@mediatek.com>
+To: Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
+	<angelogioacchino.delregno@collabora.com>, Chun-Kuang Hu
+	<chunkuang.hu@kernel.org>
+CC: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
+	<dri-devel@lists.freedesktop.org>, <linux-media@vger.kernel.org>,
+	<linaro-mm-sig@lists.linaro.org>, Jason-ch Chen <jason-ch.chen@mediatek.com>,
+	Johnson Wang <johnson.wang@mediatek.com>, "Jason-JH . Lin"
+	<jason-jh.lin@mediatek.com>, Singo Chang <singo.chang@mediatek.com>, Nancy
+ Lin <nancy.lin@mediatek.com>, Shawn Sung <shawn.sung@mediatek.com>,
+	<Project_Global_Chrome_Upstream_Group@mediatek.com>, Fei Shao
+	<fshao@chromium.org>, Jason-jh Lin
+	<jason-jh.lin@mediatek.corp-partner.google.com>
+Subject: [PATCH v2 0/3] Add GAMMA 12-bit LUT support for MT8188
+Date: Thu, 29 Feb 2024 22:48:41 +0800
+Message-ID: <20240229144844.1688-1-jason-jh.lin@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-MTK: N
 
+From: Jason-jh Lin <jason-jh.lin@mediatek.corp-partner.google.com>
 
-Commit 5a95f1ded28691e6 ("firewire: ohci: use devres for requested IRQ")
-also removed the call to free_irq() in pci_remove(), leading to a
-leftover irq of devm_request_irq() at pci_disable_msi() in pci_remove()
-when unbinding the driver from the device
+Since MT8195 supports GAMMA 12-bit LUT after the landing of [1] series,
+we can now add support for MT8188.
 
-remove_proc_entry: removing non-empty directory 'irq/136', leaking at
-least 'firewire_ohci'
-Call Trace:
- ? remove_proc_entry+0x19c/0x1c0
- ? __warn+0x81/0x130
- ? remove_proc_entry+0x19c/0x1c0
- ? report_bug+0x171/0x1a0
- ? console_unlock+0x78/0x120
- ? handle_bug+0x3c/0x80
- ? exc_invalid_op+0x17/0x70
- ? asm_exc_invalid_op+0x1a/0x20
- ? remove_proc_entry+0x19c/0x1c0
- unregister_irq_proc+0xf4/0x120
- free_desc+0x3d/0xe0
- ? kfree+0x29f/0x2f0
- irq_free_descs+0x47/0x70
- msi_domain_free_locked.part.0+0x19d/0x1d0
- msi_domain_free_irqs_all_locked+0x81/0xc0
- pci_free_msi_irqs+0x12/0x40
- pci_disable_msi+0x4c/0x60
- pci_remove+0x9d/0xc0 [firewire_ohci
-     01b483699bebf9cb07a3d69df0aa2bee71db1b26]
- pci_device_remove+0x37/0xa0
- device_release_driver_internal+0x19f/0x200
- unbind_store+0xa1/0xb0
+[1] MediaTek DDP GAMMA - 12-bit LUT support
+- https://patchwork.kernel.org/project/linux-mediatek/list/?series=792516
 
-remove irq with devm_free_irq() before pci_disable_msi()
-also remove it in fail_msi: of pci_probe() as this would lead to
-an identical leak
+Change in v2:
+1. Keep MT8195 compatible in the group of MT8183.
+2. Move MT8195 compatible group to the end of items list.
 
-Fixes: 5a95f1ded28691e6 ("firewire: ohci: use devres for requested IRQ")
+Jason-JH.Lin (3):
+  dt-bindings: display: mediatek: gamma: Change MT8195 to single enum
+    group
+  dt-bindings: display: mediatek: gamma: Add support for MT8188
+  drm/mediatek: Add gamma support for MT8195
 
-Signed-off-by: Edmund Raile <edmund.raile@proton.me>
+ .../devicetree/bindings/display/mediatek/mediatek,gamma.yaml | 5 +++++
+ drivers/gpu/drm/mediatek/mtk_drm_drv.c                       | 2 ++
+ 2 files changed, 7 insertions(+)
 
----
-
-Using FW643 with vfio-pci required unbinding from firewire_ohci,
-doing so currently produces a memory leak due to a leftover irq
-which this patch removes.
-
-The irq can be observed while the driver is loaded and bound:
-find /proc/irq -type d -name "firewire_ohci"
-
-Is it a good idea to submit a patch to devm_request_irq() in
-include/linux/interrupt.h to add the function comment
-/*
- * counterpart: devm_free_irq()
- */
-so LSPs show that hint?
-
-v2 change: corrected patch title
-
- drivers/firewire/ohci.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/firewire/ohci.c b/drivers/firewire/ohci.c
-index 9db9290c3269..7bc71f4be64a 100644
---- a/drivers/firewire/ohci.c
-+++ b/drivers/firewire/ohci.c
-@@ -3773,6 +3773,7 @@ static int pci_probe(struct pci_dev *dev,
- =09return 0;
-=20
-  fail_msi:
-+=09devm_free_irq(&dev->dev, dev->irq, ohci);
- =09pci_disable_msi(dev);
-=20
- =09return err;
-@@ -3800,6 +3801,7 @@ static void pci_remove(struct pci_dev *dev)
-=20
- =09software_reset(ohci);
-=20
-+=09devm_free_irq(&dev->dev, dev->irq, ohci);
- =09pci_disable_msi(dev);
-=20
- =09dev_notice(&dev->dev, "removing fw-ohci device\n");
---=20
-2.43.0
-
+-- 
+2.18.0
 
 
