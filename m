@@ -1,175 +1,141 @@
-Return-Path: <linux-kernel+bounces-86735-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86736-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D90886C9DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:11:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8B1786C9DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:11:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9C4C284EF0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:11:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 566F01F21684
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:11:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 668527E0F8;
-	Thu, 29 Feb 2024 13:11:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 814407E10E;
+	Thu, 29 Feb 2024 13:11:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qmGpfaDq"
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DcMO1HHt"
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA97D7E0F9
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 13:11:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C80F97E0F9
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 13:11:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709212289; cv=none; b=goS10eRNn2/rWfhUL7PDGkcIObJ2VwDE9peu8DwXsmGwNso3ZziRekAuH1AERF70ubn04jytg6H/xEy3Iz2jKuTZtE6NFHWYR3sLLUc9v145gv2Vs0HmiavJCx+GLiGzqH3DXAmK1zYVy8Vyy1nkp9ieA975AMY0T3j408Ctaw8=
+	t=1709212305; cv=none; b=Z4Y/CholFhwqmAiUC8Qx1WGId1nAtOPpvM/rM4PiQGv4iOYfnfQKvT/afszVhmSCrUWTckrg4G4B4j4H99I50COVcRW6HuxJkuJnq1iNyotvmNXMnQ/KJH5Bm47FJe+kECEOl/LW9VO407jua/3pM9jLPB8QtgE8/OY3zgh3ukQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709212289; c=relaxed/simple;
-	bh=4W3ISLSnRmIIwJ4j/bvjd4H/z6Bi6dU9b3/N/JESk0o=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=OW5xkAMgohdDgtigzXKUAxcdcS2jIbvqqnW4eEzcnPI8Zl3XylYbK49o7pvNoyoLrmF3bADZKhKWyt44HmTo6gwB1xDEJlnOeJ568b6dnf1BeklrXklNIEgr9lppIx5bNlyrY+Uyix/9owNzpvjbTex0Hwrhjrq7kAg7OoaO46w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qmGpfaDq; arc=none smtp.client-ip=209.85.128.49
+	s=arc-20240116; t=1709212305; c=relaxed/simple;
+	bh=lQEzSztbGwuMcXFF6UoVbrUM+PR6UEuexVzSDmGCcRI=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=rmhPgD4oJdwp87ex8mqlrc2QwUbPI4SK7CALS0IhE73SZOcuRC2kSFupsXrKuYYmmF5cZpVcbBosQT/RxBmRC9O4XDn9dHAQBS0FFupm27p6x5pOMl2Ql94ntxu5KzfceSd0XRKqbhh8w8E9EW8VY3ssNJWmv5NB2YnNtQbDfQA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=DcMO1HHt; arc=none smtp.client-ip=209.85.128.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-412bcb76703so4613045e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 05:11:27 -0800 (PST)
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-412aec2505dso6328075e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 05:11:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709212286; x=1709817086; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:references:cc:to:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=h6M8B4BfVBtOt+STshPGZoAe3kMEQJjnBG/nPTu0M2I=;
-        b=qmGpfaDq8Z50tX8+hCyQWSiN4Z+4wcg3LnhMViIuiNrv0r3YPUruq78yN3EblWhLjW
-         7++GFvh58wYhKjOZI4WA8J5R+89494j7ZXyTozud8rlUMYmmBxynsxhjO2y6M3IexHKu
-         F31xYZNGUB3xKKtdgGWPnOiPS10PMejs+1XnMGKSDI9u6/kpGsdvVQIVVdB5Xla7rYCq
-         yhLuo1rx3VDxRk0qxtCE/DswXYp63szGzzQzmpFdQqxmS8NIxWQEcrNjnPQFYgQxZwdA
-         EhWG+49AKqGkuXQe5DTUpaArhehg1ygYh+9eFbTKBX5r2hCCAi/8ApSzUq4t4Cshfcs0
-         ymyg==
+        d=linaro.org; s=google; t=1709212301; x=1709817101; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Lg2hnToVZ/EBQAxgZOoEwHDmIEWKGQv1sU1Wb9UKAB0=;
+        b=DcMO1HHtRTX6QJOoTLOMlxgbshExarEF6zmAzlNZGW6Ffw38fZMv4hBvFm2heWxTex
+         ZNz/Y5/703WBmemRR4ODRgRIiXn5ruW+KkqY72++NnNAaLw+ioexydWpGR16diwu0rBH
+         XaDeJdL1cmWr/6uJLudpP5gjbt7OWWI4ufPrbfmMMb67IcJwILxPG08OLsWEL+bS7VQK
+         vg/ZKg7dK12DrmpDLSXEnUuGtJUcePyubOGU4IDsWVe5aqa0cNZF+kadi5A/u3zLGwYy
+         SI6/Hy4AJ/Hxq0Cn1V5v/n0a8GnQ+j4dalvUTtYCYpwF8vtPDlDp4Wb8aMfbMEp9mq02
+         tWDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709212286; x=1709817086;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:references:cc:to:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=h6M8B4BfVBtOt+STshPGZoAe3kMEQJjnBG/nPTu0M2I=;
-        b=lQXgxwRRv5WNQFnPsFWvxsJjF6xhfFOMsw2oPAIyzd+zfJKQLkWA8U9Zhs8G/+earV
-         FGY20kVECgcvgyKtzqzSBYBtZE9aIKZdEQAhGg7dJw1lv+AIDWk1F0YWW+dPLjEd5fqb
-         x32Yv+WIcpzJPYH5sJ8Dt5UrtVnu6z9mLNqrFK511xpz7EGrKgCAEpFUWROsVdGp0IFc
-         PcyhVO1xAd2bl9BEJ88+DyjeQZw+r736aLVSrD3In/Y0DEU8RbyxIQgSDVbJYKtszvSg
-         n6hrhVpXCT04eb92PRu+3PieuRdnzXeZsANQXFEmUOHv25PN/Peu9Va16ukDahT4ZGlE
-         ra4w==
-X-Forwarded-Encrypted: i=1; AJvYcCWQuD6VBtufOjMK+QQHIvaTWzBgSpbtU7eHll867AcbEx1TBFaSUDv7CQRSYYitjQxh8241w6u64cNjgjygPKxZpeJdGFz3tPWUY7pX
-X-Gm-Message-State: AOJu0YzM44Ux1XDiuRNRL2ts1X/i3CK+FHu4qsucorbT8l+sunsDaI6e
-	WqnjQrm6ZGG8ohf2kn+tQnFQw7Do1CFDe99hyrVhKxGx0b2q13zKdfwtwGekikc=
-X-Google-Smtp-Source: AGHT+IEBAMt+2DVoMzLFB2ujBnCPkPwxCpwtsJYFq8Gh+tlnMzHg/PTvDQu0GO3Pn/Hbi9aHlCngRg==
-X-Received: by 2002:a05:600c:4f51:b0:412:6dd7:1d44 with SMTP id m17-20020a05600c4f5100b004126dd71d44mr1651953wmq.17.1709212286296;
-        Thu, 29 Feb 2024 05:11:26 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:982:cbb0:651:5318:b12c:be82? ([2a01:e0a:982:cbb0:651:5318:b12c:be82])
-        by smtp.gmail.com with ESMTPSA id hg14-20020a05600c538e00b0041228b2e179sm2046504wmb.39.2024.02.29.05.11.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Feb 2024 05:11:25 -0800 (PST)
-Message-ID: <15239863-4e89-4322-8dc5-297661e22b40@linaro.org>
-Date: Thu, 29 Feb 2024 14:11:25 +0100
+        d=1e100.net; s=20230601; t=1709212301; x=1709817101;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Lg2hnToVZ/EBQAxgZOoEwHDmIEWKGQv1sU1Wb9UKAB0=;
+        b=EWE0daHQQl5dHnov+meKRF6IQ61cBrnmNOItIQf/Nujxqe0P3kSX/7PYgH4LEHyVmu
+         H3ME63KE/DJUbmdbObROjhJNqvj0D6hSReoApdtOmll4Wu1P+fGSZ4+1HthersCeJ0tL
+         NLXv/Th1hWNOocjkAgWXZfmuBDWRhzO31kDXu7qb+n4ejohWAfZmLW0lEIWZXsTARYdw
+         qU+jYz3/+OqamRcXHV0lGpA+uKjcgoQKzLgDtN8r5ncALtU1QC2nv88E/VzKsmfeYllE
+         2f7LwpdO0oh6Q/mUc5oIjguOz7BJeh1zz2fJb/pwSJRg544C9XgFghu4eRuGFmlvNLOK
+         jWwg==
+X-Forwarded-Encrypted: i=1; AJvYcCX0eeYawAadsfoKN0l56EtndfhfeH+Ii08f99hvavBMwhPO4FSOR/hIaXrzyoEp2U9+viC9TfXE1/cOY1hJ7kj+KPY8Hf/kScgVPpE0
+X-Gm-Message-State: AOJu0Yy8n0RBeePjpOgLmBbTe5B0QUYWFuxo8MOry+d80rzb0fdryQ3t
+	BRCjPkr8XlbLONHntY4h/jNuz/6Tmj9tcxtpu3Dvyni/GW+Vj5J9gP1TPhsj60o=
+X-Google-Smtp-Source: AGHT+IHo6JyA2wmSz5Sf2SkJPUbSX5WC3VJIKq8+L2nyxU86/uGcghVzDXPtXTd9UjeiMZU/E3gBug==
+X-Received: by 2002:a05:600c:4587:b0:412:bdc1:d0f9 with SMTP id r7-20020a05600c458700b00412bdc1d0f9mr1300832wmo.38.1709212301127;
+        Thu, 29 Feb 2024 05:11:41 -0800 (PST)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id jp21-20020a05600c559500b004126101915esm5165227wmb.4.2024.02.29.05.11.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Feb 2024 05:11:40 -0800 (PST)
+Date: Thu, 29 Feb 2024 16:11:36 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Shravan Kumar Ramani <shravankr@nvidia.com>
+Cc: Hans de Goede <hdegoede@redhat.com>,
+	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Vadim Pasternak <vadimp@nvidia.com>,
+	platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org
+Subject: [PATCH] platform/mellanox: mlxbf-pmc: fix signedness bugs
+Message-ID: <a4af764e-990b-4ebd-b342-852844374032@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH RFT 7/7] arm64: dts: qcom-mode-switch: allow 4 lanes for
- DisplayPort and enable QMP PHY mode-switch
-To: Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>,
- Kishon Vijay Abraham I <kishon@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240229-topic-sm8x50-upstream-phy-combo-typec-mux-v1-0-07e24a231840@linaro.org>
- <20240229-topic-sm8x50-upstream-phy-combo-typec-mux-v1-7-07e24a231840@linaro.org>
-Content-Language: en-US, fr
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <20240229-topic-sm8x50-upstream-phy-combo-typec-mux-v1-7-07e24a231840@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
 
-Bad copy-pasta, subject should be:
-[PATCH RFT 7/7] arm64: dts: wcom-sc8280xp-lenovo-thinkpad-x13: allow 4 lanes for DisplayPort and enable QMP PHY mode-switch
+These need to be signed for the error handling to work.  The
+mlxbf_pmc_get_event_num() function returns int so int type is correct.
 
-On 29/02/2024 14:07, Neil Armstrong wrote:
-> Allow up to 4 lanes for the DisplayPort link from the PHYs to the Controllers
-> and allow mode-switch events to the QMP Combo PHYs.
-> 
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-> ---
->   arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts | 6 ++++--
->   1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts b/arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts
-> index a0fdef55a40a..6c73e0fc001f 100644
-> --- a/arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts
-> +++ b/arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts
-> @@ -556,7 +556,7 @@ &mdss0_dp0 {
->   };
->   
->   &mdss0_dp0_out {
-> -	data-lanes = <0 1>;
-> +	data-lanes = <0 1 2 3>;
->   	remote-endpoint = <&usb_0_qmpphy_dp_in>;
->   };
->   
-> @@ -565,7 +565,7 @@ &mdss0_dp1 {
->   };
->   
->   &mdss0_dp1_out {
-> -	data-lanes = <0 1>;
-> +	data-lanes = <0 1 2 3>;
->   	remote-endpoint = <&usb_1_qmpphy_dp_in>;
->   };
->   
-> @@ -1112,6 +1112,7 @@ &usb_0_qmpphy {
->   	vdda-phy-supply = <&vreg_l9d>;
->   	vdda-pll-supply = <&vreg_l4d>;
->   
-> +	mode-switch;
->   	orientation-switch;
->   
->   	status = "okay";
-> @@ -1149,6 +1150,7 @@ &usb_1_qmpphy {
->   	vdda-phy-supply = <&vreg_l4b>;
->   	vdda-pll-supply = <&vreg_l3b>;
->   
-> +	mode-switch;
->   	orientation-switch;
->   
->   	status = "okay";
-> 
+Fixes: 1ae9ffd303c2 ("platform/mellanox: mlxbf-pmc: Cleanup signed/unsigned mix-up")
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+---
+The code in mlxbf_pmc_valid_range() has a check for negatives but that
+has a signedness bug too.  Fortunately "(u32)-EINVAL + 8" will not
+result in an integer overflow so the offset is treated as invalid.
+
+ drivers/platform/mellanox/mlxbf-pmc.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/platform/mellanox/mlxbf-pmc.c b/drivers/platform/mellanox/mlxbf-pmc.c
+index 250405bb59a7..bc91423c96b9 100644
+--- a/drivers/platform/mellanox/mlxbf-pmc.c
++++ b/drivers/platform/mellanox/mlxbf-pmc.c
+@@ -1496,8 +1496,9 @@ static ssize_t mlxbf_pmc_counter_show(struct device *dev,
+ {
+ 	struct mlxbf_pmc_attribute *attr_counter = container_of(
+ 		attr, struct mlxbf_pmc_attribute, dev_attr);
+-	unsigned int blk_num, cnt_num, offset;
++	unsigned int blk_num, cnt_num;
+ 	bool is_l3 = false;
++	int offset;
+ 	u64 value;
+ 
+ 	blk_num = attr_counter->nr;
+@@ -1530,9 +1531,10 @@ static ssize_t mlxbf_pmc_counter_store(struct device *dev,
+ {
+ 	struct mlxbf_pmc_attribute *attr_counter = container_of(
+ 		attr, struct mlxbf_pmc_attribute, dev_attr);
+-	unsigned int blk_num, cnt_num, offset, data;
++	unsigned int blk_num, cnt_num, data;
+ 	bool is_l3 = false;
+ 	u64 evt_num;
++	int offset;
+ 	int err;
+ 
+ 	blk_num = attr_counter->nr;
+@@ -1612,8 +1614,9 @@ static ssize_t mlxbf_pmc_event_store(struct device *dev,
+ {
+ 	struct mlxbf_pmc_attribute *attr_event = container_of(
+ 		attr, struct mlxbf_pmc_attribute, dev_attr);
+-	unsigned int blk_num, cnt_num, evt_num;
++	unsigned int blk_num, cnt_num;
+ 	bool is_l3 = false;
++	int evt_num;
+ 	int err;
+ 
+ 	blk_num = attr_event->nr;
+-- 
+2.43.0
 
 
