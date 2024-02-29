@@ -1,94 +1,83 @@
-Return-Path: <linux-kernel+bounces-86593-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86597-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABE7A86C782
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:58:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A7E686C790
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:59:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4CD711F228F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:58:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DFF6C1F24AF1
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:59:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BADF47A727;
-	Thu, 29 Feb 2024 10:57:53 +0000 (UTC)
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C86C57B3D2;
+	Thu, 29 Feb 2024 10:58:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="Nw0K+k7S"
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2D7679DC7;
-	Thu, 29 Feb 2024 10:57:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE67979DD5
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 10:58:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709204273; cv=none; b=AHI10LvCCtYDP4jtGoKWhQVdugPDjkD514py647F4cTnS08dT77pBEKd2DWDcHLQLjQM52DG4xcjUAZB1wYqsomsi/2bAH37nMRiVl4Mfztp+yFu9YJGN74om1EMGyO0dhKjeK4Z6N9BwOaUw7siQmssvWQQNKZ1yADTS6TAJAE=
+	t=1709204327; cv=none; b=Vzz7kDRldAXp3A4D0Ih8C8NQoDMPgh9IzCWOW1l3pb27bjysHj5OKQiDkjXsSt72sn3YEN5mrx1XHVL2JebSY97Lf/lfhbUimqhh87SLBtUHElZUin7xSsyYdoVRjn8p8mVS/zHIBqJ1bUJVRQfApVI+PcX4Sb0gpKVvvekbrhQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709204273; c=relaxed/simple;
-	bh=whOpIKlegCU2u5IQDyJ1QfSrQEr/pa1MZNJXpJVUI/A=;
-	h=From:In-Reply-To:Content-Type:References:Date:Cc:To:MIME-Version:
-	 Message-ID:Subject; b=Unocea3sl8vlv768DtWHHaE18hOI8LcQNfDL08zVSEM0YRhO8ENz8wvHJO5lOpWut06EoYrD2sSXwj5KoHY1okgLdokaf4mhvrBl/tRYvt4eTYs1posKyufB2xWVftUKqhHrlgpcZz4mB6y+5XKnR1ZBNanYpA7Gu2qv6OsmnHw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-Received: from harlem.collaboradmins.com (harlem.collaboradmins.com [IPv6:2a01:4f8:1c0c:5936::1])
-	by madrid.collaboradmins.com (Postfix) with ESMTP id DE9443780029;
-	Thu, 29 Feb 2024 10:57:48 +0000 (UTC)
-From: "Shreeya Patel" <shreeya.patel@collabora.com>
-In-Reply-To: <20240227131552.864701583@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"
-X-Forward: 127.0.0.1
-References: <20240227131552.864701583@linuxfoundation.org>
-Date: Thu, 29 Feb 2024 10:57:48 +0000
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, "Gustavo Padovan" <gustavo.padovan@collabora.com>, "kernelci-regressions mailing list" <kernelci-regressions@lists.collabora.co.uk>
-To: "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
+	s=arc-20240116; t=1709204327; c=relaxed/simple;
+	bh=Aspv0G+YG9614QQAmWGdnPtXhOIvyhPuhr5UY12xlXY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=iIlDlirM+uieWmKqJGclzD8TM3DXLWO6vwGg0jghe7Go3VpRvw/LZnHKMsFzfQmN/9Pf8lzZZa/kNYt7GJRrm+Xr3wtvTZ7sPokqzV6CnDrJn29p3i1h+U7Kc2NGpZirlXNd7GxHNd+qfs8NUFbAy/+2a6sI+bW5M+y45gSkBVE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=Nw0K+k7S; arc=none smtp.client-ip=194.117.254.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	sang-engineering.com; h=from:to:cc:subject:date:message-id
+	:mime-version:content-transfer-encoding; s=k1; bh=4eke9AvP60x46V
+	nmjd4TBJ7DFqyFYzBhCdKdqGcDHmc=; b=Nw0K+k7SmNbMyafANJF4722nBDDkAZ
+	0Ze+RcEjaxKrUnSR7D78LG9TfWECbQvvYKu1GS7v7bT/5bh80dzVGUM2nSGreUwF
+	tseEO05KXB57Y9NaIuFFXM2lSHuewTuFZSGF3Z6oJFVC0HLlLYYWJm4tx8fhlTuz
+	fdkheIywGwv3rBnXozXUpx5Dk6O7CKcAbRmTYe7m1Bqq9fJKgKKxn2KUULlfRaSe
+	00QYYfiv7IMtW8HIvFtqRXz/GvpUGQ9H8Iqoovy56yf6noX2jZ8q1xERNY4ygunK
+	22+pUleTSAG3T/8nkQ6bhUkwXqI0Pb5qfU9sy72Ky3BoHRMbY8nZjl2g==
+Received: (qmail 2277949 invoked from network); 29 Feb 2024 11:58:40 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 29 Feb 2024 11:58:40 +0100
+X-UD-Smtp-Session: l3s3148p1@jH5VJIMSejltKPFZ
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+To: linux-renesas-soc@vger.kernel.org
+Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>,
+	Rob Herring <robh+dt@kernel.org>,
+	Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	devicetree@vger.kernel.org,
+	linux-i2c@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH RFT 0/3] i2c: mpc: use proper binding for transfer timeouts
+Date: Thu, 29 Feb 2024 11:58:10 +0100
+Message-ID: <20240229105810.29220-5-wsa+renesas@sang-engineering.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <960c-65e06300-b-493af500@184811821>
-Subject: =?utf-8?q?Re=3A?= [PATCH =?utf-8?q?5=2E4?= 00/84] 
- =?utf-8?q?5=2E4=2E270-rc1?= review
-User-Agent: SOGoMail 5.10.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tuesday, February 27, 2024 18:56 IST, Greg Kroah-Hartman <gregkh@lin=
-uxfoundation.org> wrote:
+To clean up the confusing situation regarding I2C timeout bindings, here
+is the series to fix up the MPC driver which mixed up clock stretching
+timeout with transfer timeouts. Plus a minor cleanup while here.
 
-> This is the start of the stable review cycle for the 5.4.270 release.
-> There are 84 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, plea=
-se
-> let me know.
->=20
-> Responses should be made by Thu, 29 Feb 2024 13:15:36 +0000.
-> Anything received after that time might be too late.
->=20
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4=
-270-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc=
-git linux-5.4.y
-> and the diffstat can be found below.
->=20
+Only build tested, so actual testing is welcome.
 
-KernelCI report for stable-rc/linux-5.4.y for this week.
 
-## stable-rc HEAD for linux-5.4.y:
-Date: 2024-02-27
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.=
-git/log/?h=3D331c26fedbd3ec4b446d0f2ae002f93421d3daa6
+Wolfram Sang (3):
+  dt-bindings: i2c: mpc: use proper binding for transfer timeouts
+  i2c: mpc: use proper binding for transfer timeouts
+  i2c: mpc: remove outdated macro
 
-## Build failures:
-No build failures seen for the stable-rc/linux-5.4.y commit head \o/
+ .../devicetree/bindings/i2c/i2c-mpc.yaml         |  2 +-
+ drivers/i2c/busses/i2c-mpc.c                     | 16 +++++++---------
+ 2 files changed, 8 insertions(+), 10 deletions(-)
 
-## Boot failures:
-No **new** boot failures seen for the stable-rc/linux-5.4.y commit head=
- \o/
-
-Tested-by: kernelci.org bot <bot@kernelci.org>
-
-Thanks,
-Shreeya Patel
+-- 
+2.43.0
 
 
