@@ -1,105 +1,130 @@
-Return-Path: <linux-kernel+bounces-85891-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85892-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B875386BCA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:19:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A67B886BCA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:19:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB9061C21934
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:19:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A63B91C2197C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:19:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5E0B63D1;
-	Thu, 29 Feb 2024 00:17:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B242A16423;
+	Thu, 29 Feb 2024 00:18:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EA8mAUbJ"
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Q4LXKtwd"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F30823DB;
-	Thu, 29 Feb 2024 00:17:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D4DC20335
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 00:18:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709165860; cv=none; b=uffY+O1ZegXXeQxoEQfOIAfGFfhDauXuiXOPkFdxN6YWuyH1UarAC+omHMsEuWVabWiynCZi+/il0Ezzqh7NgoAUViCasVk6b5JpGT9uo6tBZwjs6w6dJGKUunIHTYEswq/8zjwKeYb/6f/I2aMULaBMBLXrhcHm5tzOnrQzZ0g=
+	t=1709165906; cv=none; b=FlpjosrCQ1dOpWul1J0vQf4/ACV8L5pSm5DC9M1T25KnWuh1g7MCBE5EMAvEkTYwW/oSbGJ5bzn44A9YVX9XAhZKB31O2J4Zg7H044H/Hl867LfdndroqnBzz3sfY8iGi7UTLNaa+TDB8hr9lNub+KIIpp9uYki8pVLDjp/U6yw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709165860; c=relaxed/simple;
-	bh=A13rBuLVSIDybkKSBfuKo7JY39JEFK1c6EyxhunAoNk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=W4+kDnfRIrB60m9ESWtN7GEzQ31sCSaPuZ34yvNteb4uUKk7JlKj5Wz94DgWR6boi4JEWVlcjWp7CghCg1fNzaqZm0004DBig9fsn184AbleDy8Ys1E09tEM/ZtN6WxmiHCiDxoELOMEkF5+pBzwjrHfsQT3bclFFkbbL516ti8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EA8mAUbJ; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a444205f764so3272366b.2;
-        Wed, 28 Feb 2024 16:17:38 -0800 (PST)
+	s=arc-20240116; t=1709165906; c=relaxed/simple;
+	bh=SNeE1H2bSvNelRyZsRJeUUph4hutQUY+T7ny61PsnSo=;
+	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=L30p6t7pWDbSiaSrBsaXk/M3H+FGG/X1++ZMbTrMvkuOri3Tsiom9EtGVmcsJ+wE3g0sdSJCfHuGeCWjpQuzbUCjQ1mmNngPR5fmOeNg2vTwomLMQlY66Hedp/XZQuiM0X2cOCIp6yvUZhNyuvoMe3cAEzHfZTnAwrKRRDd+cGc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Q4LXKtwd; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc647f65573so671387276.2
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 16:18:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709165857; x=1709770657; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=r8rCAw2z9zs66RJeYr65+ZavbW8aat8OfjJwJ3rblxo=;
-        b=EA8mAUbJuGVtEVmL8K/w36fkt82rvsEBrc7Jj9curX4C1Pbdn2UUVhnLQTexepsYXa
-         Ra2SI2tZVHUN76eFnwRZLJDw3d1b6wGa/hCOo57/vMjvZtnNOM+IOWpT6hX4L/s/UzBB
-         9WxXcvAC2a1UQ77ozFXYRVjVL6v7oU3dO7ZXhzVnDKcsVFf5Clr6S8MJIJvRACFSNmqM
-         2Yr3UqkJqTTvx1tTRWuxhsvrf7Q+o06Vo5lYnfAP7c44olqEwoYyUSH4NlDZhkjnTewF
-         GT9TzwVES2ThR75A1f5bEbi8ZQC+f6TPa3j0mkyvFre9zAsUugMP6Py0Lex6j2puuhsD
-         c7qw==
+        d=google.com; s=20230601; t=1709165903; x=1709770703; darn=vger.kernel.org;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=i9aZM8JSI75x3Nv5IZnCmGh+gLHZGhZIzWCbKV2hRuI=;
+        b=Q4LXKtwdwN6AQWuzlOJBKhCj7s4G6FBP9DnemaBa1biautNdnZip8ui+Z5XpbgH7Rs
+         on/fQHF5VZJZWMpEIz2lVF9P+UBmKjOyG5drxwHxwWcLM5hzZm+hfDtZqKUtmKP9Kew+
+         X/3JGhvKhM2NZ5V7RzB3wr0lAUt4zoxM5dP/i+ASAw/hVN5l6BxLfFtwIweerRzhIgME
+         MMp1drRG4gc6R9m/mF1D9JQaCmsobTupDlo0+te9piuvQ+m3hyfsJeAi2PDEBQt+qINc
+         WCJAfJDOyX7BM5GuiMgw/Ldh08a2UV9mmgNoOgTTwGgMYA6XADTWLvRbIbtXPuUHWWp/
+         YP7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709165857; x=1709770657;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=r8rCAw2z9zs66RJeYr65+ZavbW8aat8OfjJwJ3rblxo=;
-        b=f4yUWTrVjlykVkiUcPjqOjHqPdj4M+ryfeIDZKgcxR9IJAD3kPeGpzgjS0T1X3l5gO
-         rruHaUsSKYFWe0Zx4XrTmAVr/Qg3+rPFed9dOAtrGW+u4hLv+JAi/8XHkXqDNCdVCJiU
-         1C4S5ut0vZTST3onwkWLVRX55jipkDoztCfWS4lbKCPnIn2Kcr6kkZx+q713RqBmT4Dw
-         JLdvCg/qHp6mojJDwMC0v/gMPBrsLUwfqMmHsrb1OtJz2PFUN9XN34KKdkPzcuFq/Cvz
-         w/wcxpZaavPbvBW9j1K6SUhyFYB/euiyuV9UuY9TZBNqEANWdkPjs383Sr3x9OouSeLf
-         xjag==
-X-Forwarded-Encrypted: i=1; AJvYcCU/9znQ0eJ8DSSslKKmVJHAKy8hQKgsWJxmivRNZsaNNhD6iUmgKpDn/DiI9sVosC5D1lkEddohBHdDxFeonBly5QaSqW59099A6djSsBx9ZFbMp1+H0HWeQrwCVs0s9FC6BAtZC+wBS2m36jRj/b3l
-X-Gm-Message-State: AOJu0YywjU9dFb8RbwVFsb3DbNhQo0XqklPst2vyE4f5pM1h3LLUmurk
-	axff/vqz5nIoxr4tlTY+Wee91qfbthdajZPNMbIdJtrL62pxKorg
-X-Google-Smtp-Source: AGHT+IEz4pXkzI7v7mnnRyh2MjDkBgjqqrHxiELiDYhG8SJx+250Pq7fVPqhPfscjqy2xoAEZQfv2g==
-X-Received: by 2002:a17:906:7ad0:b0:a43:9857:8112 with SMTP id k16-20020a1709067ad000b00a4398578112mr312730ejo.20.1709165856356;
-        Wed, 28 Feb 2024 16:17:36 -0800 (PST)
-Received: from andrea ([31.189.122.3])
-        by smtp.gmail.com with ESMTPSA id ce18-20020a170906b25200b00a3f2dcdf18dsm69575ejb.33.2024.02.28.16.17.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 16:17:35 -0800 (PST)
-Date: Thu, 29 Feb 2024 01:17:31 +0100
-From: Andrea Parri <parri.andrea@gmail.com>
-To: Alexandre Ghiti <alexghiti@rivosinc.com>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Andrea Parri <andrea@rivosinc.com>,
-	Anup Patel <anup@brainfault.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] riscv: Remove superfluous smp_mb()
-Message-ID: <Zd/NG9IveQpamdDc@andrea>
-References: <20240228175149.162646-1-alexghiti@rivosinc.com>
- <20240228175149.162646-2-alexghiti@rivosinc.com>
+        d=1e100.net; s=20230601; t=1709165903; x=1709770703;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=i9aZM8JSI75x3Nv5IZnCmGh+gLHZGhZIzWCbKV2hRuI=;
+        b=r3wnquhzC20KgSZiT8JnB1I8AO8kloEpPOA3SOqOh8dzmkqc5D8LhxPIFG5jXbrsLS
+         7G895oxQYO9UKdgrIJwFsA2IH27v1zvv8bOtTKc+P2yrNJUWRdjglj7VusmQSVnTPXuV
+         ofwdvUXA253kKB8hfpv99gk8idQ8ILLvMVzoz07jxWh0jxTupt3jsnL9zx5jlhZpooad
+         6Ud+l7kPiNrL6Ke6DgO3JAs5auPtme3OSW0V9DZe6FOQMYDI+bDl3tvcWgrhaq4wpXVG
+         Li2NyqvxvuhFVCn02L7CDnKmOSvg7ukgZ5RZ2lTheXb+UdsvCYgeKns5ZbnfyS4sysFD
+         tJtw==
+X-Forwarded-Encrypted: i=1; AJvYcCUcdLUb4Y/OwNzR7C92bt14IPvHZr+A5rl6SCPnuRqMmW9AFZaTdRo+cHvH8WuXHKDuBYnVO+AMs6H7Rw0mLp0bi/2x2d+GuBkuet77
+X-Gm-Message-State: AOJu0Ywy6NvTkc/hMUneeshR0DS1tk0nZTTWlGABUnpnVfG/dNi6zKUh
+	QDURqsnkjpteUdZMp/CLM/z3563ftG7U9nnqet7iQpMKF3qSi1kKZJ0cpBtg9xp/a8XDT6wxVHQ
+	S4VbN5A==
+X-Google-Smtp-Source: AGHT+IFclBXaulwGLyHKgmDX3fdhdlzOA1oCM6xIgLIenj8gqb/f6kzn7lLC0pwUH1BMotojcewKwsc0F/Tm
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:77dc:144c:334e:e2dd])
+ (user=irogers job=sendgmr) by 2002:a05:6902:100a:b0:dc6:e5e9:f3af with SMTP
+ id w10-20020a056902100a00b00dc6e5e9f3afmr193174ybt.9.1709165903628; Wed, 28
+ Feb 2024 16:18:23 -0800 (PST)
+Date: Wed, 28 Feb 2024 16:17:45 -0800
+Message-Id: <20240229001806.4158429-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240228175149.162646-2-alexghiti@rivosinc.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
+Subject: [PATCH v1 00/20] Python generated Intel metrics
+From: Ian Rogers <irogers@google.com>
+To: Perry Taylor <perry.taylor@intel.com>, Samantha Alt <samantha.alt@intel.com>, 
+	Caleb Biggers <caleb.biggers@intel.com>, Weilin Wang <weilin.wang@intel.com>, 
+	Edward Baker <edward.baker@intel.com>, Andi Kleen <ak@linux.intel.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	John Garry <john.g.garry@oracle.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	Jing Zhang <renyu.zj@linux.alibaba.com>, Thomas Richter <tmricht@linux.ibm.com>, 
+	James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Feb 28, 2024 at 06:51:48PM +0100, Alexandre Ghiti wrote:
-> This memory barrier is not needed and not documented so simply remove
-> it.
-> 
-> Suggested-by: Andrea Parri <andrea@rivosinc.com>
-> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+Generate twenty sets of additional metrics for Intel. Rapl and Idle
+metrics aren't specific to Intel but are placed here for ease and
+convenience. Smi and tsx metrics are added so they can be dropped from
+the per model json files. There are four uncore sets of metrics and
+twelve core metrics.
 
-Reviewed-by: Andrea Parri <parri.andrea@gmail.com>
+The cstate metrics require the event encoding fix of:
+https://lore.kernel.org/lkml/20240228170529.4035675-1-irogers@google.com/
 
-  Andrea
+The patches should be applied on top of:
+https://lore.kernel.org/lkml/20240228175617.4049201-1-irogers@google.com/
+
+Ian Rogers (20):
+  perf jevents: Add RAPL metrics for all Intel models
+  perf jevents: Add idle metric for Intel models
+  perf jevents: Add smi metric group for Intel models
+  perf jevents: Add tsx metric group for Intel models
+  perf jevents: Add br metric group for branch statistics on Intel
+  perf jevents: Add software prefetch (swpf) metric group for Intel
+  perf jevents: Add ports metric group giving utilization on Intel
+  perf jevents: Add L2 metrics for Intel
+  perf jevents: Add load store breakdown metrics ldst for Intel
+  perf jevents: Add ILP metrics for Intel
+  perf jevents: Add context switch metrics for Intel
+  perf jevents: Add FPU metrics for Intel
+  perf jevents: Add cycles breakdown metric for Intel
+  perf jevents: Add Miss Level Parallelism (MLP) metric for Intel
+  perf jevents: Add mem_bw metric for Intel
+  perf jevents: Add local/remote "mem" breakdown metrics for Intel
+  perf jevents: Add dir breakdown metrics for Intel
+  perf jevents: Add C-State metrics from the PCU PMU for Intel
+  perf jevents: Add local/remote miss latency metrics for Intel
+  perf jevents: Add upi_bw metric for Intel
+
+ tools/perf/pmu-events/intel_metrics.py | 1040 +++++++++++++++++++++++-
+ 1 file changed, 1037 insertions(+), 3 deletions(-)
+
+-- 
+2.44.0.278.ge034bb2e1d-goog
+
 
