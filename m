@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-87438-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87439-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F33986D468
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:39:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C9DF86D46D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:39:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5994B28448D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:39:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 03E311F241F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:39:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5487914BD6D;
-	Thu, 29 Feb 2024 20:37:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1044714D421;
+	Thu, 29 Feb 2024 20:37:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mDEjjkAX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uLRkOdYw"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 800D114BF30;
-	Thu, 29 Feb 2024 20:37:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C9A014BF4B;
+	Thu, 29 Feb 2024 20:37:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709239059; cv=none; b=M+lSkpMrVFNniHz/YT52wAblSzti/6bE4OhTSAQSf2VBXAe0fgqGZaXgmAHr8CcBTfvC8AswJ2p5g36cmxCCKn7z5DzFuywJOerLjDZ7/KleAwecTt9GB5s60ujJ+uMX9WFSRnhsKYZhfY56GdZzjZgWFtwZcNfIVrGwh/Z03qU=
+	t=1709239061; cv=none; b=L4YKbrRer2VoYo5A0yze8I9I8VzpiCqKed3QeqPMewxuMUo7cHSihQNRPK9y8pPAmNcqhSMSVwjncS8ax1HyUlCYRswqsgSI0bMoUd5zijumMp87iD2qWIOfoArOMMoDMYJMQGhIH0LgxH53inbKCCn4NFm8mv1x3dZz2d4wLWE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709239059; c=relaxed/simple;
-	bh=ayO7XyN49cXFaYIdOLLp2HPoo0b7cB0hWQMIZqiT/UM=;
+	s=arc-20240116; t=1709239061; c=relaxed/simple;
+	bh=wGyL3labdAaMqFXA7KDslyStajtYj3CnrLy8cwVV/Tw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=d+CCUlEm0dR6eAJhICCHAWVICY0iS9T0KOQRov86vlDlFAsYxe3mkadesx/fvlxUB7psOUzBznfeqUtONHnsx78eNtOEtxN0IMnEpeJmGNCezl292wglAMMpm8JFpOGZMEh/CfUNU6acmGvJmuzjqvqbjCjwmOa9hap2RZlQdYs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mDEjjkAX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EAAAC433F1;
-	Thu, 29 Feb 2024 20:37:37 +0000 (UTC)
+	 MIME-Version; b=Oy2IZ72+81ybBv2BAnFimnPcDhNF4lLqhzErOPzIyefiHx2XsmxwGdQI/W9iTvB9u4KuT94nni6vMPsNRbjL0k8e9+fY88bpJF4liAr+V42QvfJf1zB1pOwl7OBttI0fdd7jloXreFOFOrLf2A//jf4sonVYDjXqXdHiZ3i69Zg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uLRkOdYw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 659EBC433C7;
+	Thu, 29 Feb 2024 20:37:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709239059;
-	bh=ayO7XyN49cXFaYIdOLLp2HPoo0b7cB0hWQMIZqiT/UM=;
+	s=k20201202; t=1709239060;
+	bh=wGyL3labdAaMqFXA7KDslyStajtYj3CnrLy8cwVV/Tw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=mDEjjkAXEhROgveSOcKjXv8GDp4TPf2GjXUPDM/aONIIEIWx9osn/lu6BDdCt4/ge
-	 XtNMekaEN2ugeWC34ArgB16/A0vcpQcaKmgqVP0WDWZkd4KYdhMLu6dPCXoDg78aA5
-	 nBxAqUNdp81j9k4hAMqxpL7q13u6hvfhVpsUpX4ZXx+JdN3gTUbdO+4SqMeqD8Z6wT
-	 /h5aXAYji+BnltxXJ8o8gidDZgiFC0+GpkKrVmDJ0KK/yO0XW+v7gmH/T/duT1U6wU
-	 RJKw21UjcM40XPDCpzpB2oxoq+B6Vcn2UtAWfnKGmHvtCqtsgS3JO++fIweVoWegQr
-	 +DACWuLgvcGag==
+	b=uLRkOdYwd99IswaI8cLLXX04lL8fp6oxOx+EnjK3+CgLuCIznA+NUqLwu0A3f//oB
+	 DjYNqVNXlawVf8UhsALFwtX3pTRnuqWUM/Fkp4F8YW0n/UjfOVF3b992gNjRPOYs/l
+	 OCAvWw0pGx1E+9KTLwLrlxitf2RHO4O4UEbVKX8Sbv2A1QhiagtbZVgi9O8yayyVxh
+	 gG+TrpWLtzvRk6EVioavy3BIcw/S2FobwQrIEsE3YFoTf65MgXFSPIyHvP0d+3iH8R
+	 50R6MCjWbxHaKZ1x3qa6mB4JymV2BB/wEIxXoO6a1mxG6rk4g5ciARmNsP0Hao7r0B
+	 AZJyMd2OcT7og==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	Heiko Stuebner <heiko@sntech.de>,
+Cc: Hari Bathini <hbathini@linux.ibm.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	David Vernet <void@manifault.com>,
 	Sasha Levin <sashal@kernel.org>,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.7 05/24] ARM: dts: rockchip: Drop interrupts property from pwm-rockchip nodes
-Date: Thu, 29 Feb 2024 15:36:45 -0500
-Message-ID: <20240229203729.2860356-5-sashal@kernel.org>
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.7 06/24] bpf: Fix warning for bpf_cpumask in verifier
+Date: Thu, 29 Feb 2024 15:36:46 -0500
+Message-ID: <20240229203729.2860356-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240229203729.2860356-1-sashal@kernel.org>
 References: <20240229203729.2860356-1-sashal@kernel.org>
@@ -64,100 +64,47 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.6
 Content-Transfer-Encoding: 8bit
 
-From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+From: Hari Bathini <hbathini@linux.ibm.com>
 
-[ Upstream commit f98643d8daf3443e3b414a82d0cb3d745f8c8bbc ]
+[ Upstream commit 11f522256e9043b0fcd2f994278645d3e201d20c ]
 
-The binding doesn't define interrupts and adding such a definition was
-refused because it's unclear how they should ever be used and the
-relevant registers are outside the PWM range. So drop them fixing
-several dtbs_check warnings like:
+Compiling with CONFIG_BPF_SYSCALL & !CONFIG_BPF_JIT throws the below
+warning:
 
-	arch/arm/boot/dts/rockchip/rv1108-elgin-r1.dtb: pwm@10280030: 'interrupts' does not match any of the regexes: 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/pwm/pwm-rockchip.yaml#
+  "WARN: resolve_btfids: unresolved symbol bpf_cpumask"
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Link: https://lore.kernel.org/r/20240129113205.2453029-2-u.kleine-koenig@pengutronix.de
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Fix it by adding the appropriate #ifdef.
+
+Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+Acked-by: Stanislav Fomichev <sdf@google.com>
+Acked-by: David Vernet <void@manifault.com>
+Link: https://lore.kernel.org/bpf/20240208100115.602172-1-hbathini@linux.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/rockchip/rv1108.dtsi | 8 --------
- 1 file changed, 8 deletions(-)
+ kernel/bpf/verifier.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm/boot/dts/rockchip/rv1108.dtsi b/arch/arm/boot/dts/rockchip/rv1108.dtsi
-index abf3006f0a842..f3291f3bbc6fd 100644
---- a/arch/arm/boot/dts/rockchip/rv1108.dtsi
-+++ b/arch/arm/boot/dts/rockchip/rv1108.dtsi
-@@ -196,7 +196,6 @@ spi: spi@10270000 {
- 	pwm4: pwm@10280000 {
- 		compatible = "rockchip,rv1108-pwm", "rockchip,rk3288-pwm";
- 		reg = <0x10280000 0x10>;
--		interrupts = <GIC_SPI 38 IRQ_TYPE_LEVEL_HIGH>;
- 		clocks = <&cru SCLK_PWM>, <&cru PCLK_PWM>;
- 		clock-names = "pwm", "pclk";
- 		pinctrl-names = "default";
-@@ -208,7 +207,6 @@ pwm4: pwm@10280000 {
- 	pwm5: pwm@10280010 {
- 		compatible = "rockchip,rv1108-pwm", "rockchip,rk3288-pwm";
- 		reg = <0x10280010 0x10>;
--		interrupts = <GIC_SPI 38 IRQ_TYPE_LEVEL_HIGH>;
- 		clocks = <&cru SCLK_PWM>, <&cru PCLK_PWM>;
- 		clock-names = "pwm", "pclk";
- 		pinctrl-names = "default";
-@@ -220,7 +218,6 @@ pwm5: pwm@10280010 {
- 	pwm6: pwm@10280020 {
- 		compatible = "rockchip,rv1108-pwm", "rockchip,rk3288-pwm";
- 		reg = <0x10280020 0x10>;
--		interrupts = <GIC_SPI 38 IRQ_TYPE_LEVEL_HIGH>;
- 		clocks = <&cru SCLK_PWM>, <&cru PCLK_PWM>;
- 		clock-names = "pwm", "pclk";
- 		pinctrl-names = "default";
-@@ -232,7 +229,6 @@ pwm6: pwm@10280020 {
- 	pwm7: pwm@10280030 {
- 		compatible = "rockchip,rv1108-pwm", "rockchip,rk3288-pwm";
- 		reg = <0x10280030 0x10>;
--		interrupts = <GIC_SPI 38 IRQ_TYPE_LEVEL_HIGH>;
- 		clocks = <&cru SCLK_PWM>, <&cru PCLK_PWM>;
- 		clock-names = "pwm", "pclk";
- 		pinctrl-names = "default";
-@@ -386,7 +382,6 @@ i2c0: i2c@20000000 {
- 	pwm0: pwm@20040000 {
- 		compatible = "rockchip,rv1108-pwm", "rockchip,rk3288-pwm";
- 		reg = <0x20040000 0x10>;
--		interrupts = <GIC_SPI 39 IRQ_TYPE_LEVEL_HIGH>;
- 		clocks = <&cru SCLK_PWM0_PMU>, <&cru PCLK_PWM0_PMU>;
- 		clock-names = "pwm", "pclk";
- 		pinctrl-names = "default";
-@@ -398,7 +393,6 @@ pwm0: pwm@20040000 {
- 	pwm1: pwm@20040010 {
- 		compatible = "rockchip,rv1108-pwm", "rockchip,rk3288-pwm";
- 		reg = <0x20040010 0x10>;
--		interrupts = <GIC_SPI 39 IRQ_TYPE_LEVEL_HIGH>;
- 		clocks = <&cru SCLK_PWM0_PMU>, <&cru PCLK_PWM0_PMU>;
- 		clock-names = "pwm", "pclk";
- 		pinctrl-names = "default";
-@@ -410,7 +404,6 @@ pwm1: pwm@20040010 {
- 	pwm2: pwm@20040020 {
- 		compatible = "rockchip,rv1108-pwm", "rockchip,rk3288-pwm";
- 		reg = <0x20040020 0x10>;
--		interrupts = <GIC_SPI 39 IRQ_TYPE_LEVEL_HIGH>;
- 		clocks = <&cru SCLK_PWM0_PMU>, <&cru PCLK_PWM0_PMU>;
- 		clock-names = "pwm", "pclk";
- 		pinctrl-names = "default";
-@@ -422,7 +415,6 @@ pwm2: pwm@20040020 {
- 	pwm3: pwm@20040030 {
- 		compatible = "rockchip,rv1108-pwm", "rockchip,rk3288-pwm";
- 		reg = <0x20040030 0x10>;
--		interrupts = <GIC_SPI 39 IRQ_TYPE_LEVEL_HIGH>;
- 		clocks = <&cru SCLK_PWM0_PMU>, <&cru PCLK_PWM0_PMU>;
- 		clock-names = "pwm", "pclk";
- 		pinctrl-names = "default";
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index e215413c79a52..571642c149e2f 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -5445,7 +5445,9 @@ BTF_ID(struct, prog_test_ref_kfunc)
+ #ifdef CONFIG_CGROUPS
+ BTF_ID(struct, cgroup)
+ #endif
++#ifdef CONFIG_BPF_JIT
+ BTF_ID(struct, bpf_cpumask)
++#endif
+ BTF_ID(struct, task_struct)
+ BTF_SET_END(rcu_protected_types)
+ 
 -- 
 2.43.0
 
