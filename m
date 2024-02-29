@@ -1,145 +1,169 @@
-Return-Path: <linux-kernel+bounces-87208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87209-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A81DA86D11B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:49:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C62986D11E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:50:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 637EC2823ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:49:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2816B28213A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:50:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 682B570AFD;
-	Thu, 29 Feb 2024 17:49:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F28B3757ED;
+	Thu, 29 Feb 2024 17:49:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="NZxTIiEr"
-Received: from mail-io1-f44.google.com (mail-io1-f44.google.com [209.85.166.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tyokibzF"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD81770AD1
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 17:49:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3941B6CC14;
+	Thu, 29 Feb 2024 17:49:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709228988; cv=none; b=TX5txXMVoYu45nc9KZQT5tdUMWbn47rq7xzg1HxXGLPyrg0wzFt7UYlkTGINNZ/X0Uq7EEEOGmzwKBB4SKoPyBBWC5iHdESvt/t9xrCsqjBl+0o1rE6SxjY8n9wltvotttGvjJCLJ/LKjrJ6t/nmYhC/95k3g9Iz/tIGCWmfj3c=
+	t=1709228999; cv=none; b=Z6BW3LMQUyUr6r7pjPJMeWXNnycFPP6rxgxd+5EK7DtEUdkjD/Zs6SQsat50ju5wutbvYMLs5odQnKzr1ZsRCY5SqevwDdPfVRI1lItlVvlE2C2yTtyQ7eKtlKyP3g3oHkASo+zIr1jZ56BtWn1X06l/3hQ2TNUEecseFO8FFnk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709228988; c=relaxed/simple;
-	bh=eIoPVAUf6xaGNqq1sBBQPXY9RNXPt8vYvvIJpMjG+Ic=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NfkWZoXohK99u565UbzaWh9Um1o0i3lTNMBwvLqw52GL89adpOmGckEBUN8/rNcwGBWpJYQAIONcGjIXZmURlHh3v40ffwOlRRzHPRuon22wdTkg0B3sL0MfnL58MlT+boGHFdQlcPtfqWiyCxDSo9frgRer7RrTKfSrQwzWGjE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=NZxTIiEr; arc=none smtp.client-ip=209.85.166.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f44.google.com with SMTP id ca18e2360f4ac-7c7bd118546so7374239f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 09:49:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1709228985; x=1709833785; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IiYm6YpIsJziJr0cSiPO0yde29VWCxecp6O1ZLr/6X4=;
-        b=NZxTIiEramkHvivhNkcDLeWowEBz+coktZSqVMs9nRzEFeUZo1m46d/XL8BgFsvGkB
-         qKn/fmTsyPIgCwRBfTM24HImLncx/8SRRoqzokBlwll7ZApRxkIx2pT8KaIIX5x4OvuY
-         AFeXgVKhALNFCLfeZ3TA+JwUWghPyCgBb6j09uHHbbZcTLxy1HyRF9Tf/gZEN3jTBkTa
-         OVm6HiMOOO7tFpPOE4j2XuQ65cWNZiohrJha+hKwt60AKf1XJZTA3R6dEzwwVe/Famz8
-         PeSguwiI8qLBhenzIKayb2QliF7He+lhDoUQ60WtHfgwOuqAfT2IF0QaMeTQEtxppMPb
-         wFGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709228985; x=1709833785;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IiYm6YpIsJziJr0cSiPO0yde29VWCxecp6O1ZLr/6X4=;
-        b=nkKSSp0mfwmfRxC/gDe+rLPTgyAcmqg3dhpYs69jtFPgA/yRryLPrTJPfKGwY1jw6r
-         UT915OViA+rK9xgyR7SgaXgKIPhr48FDqKT5OXdhdx2UgBOu5TaLNFALzJtl7T6qfQTQ
-         bkrRkDQ81A4AU04D1vd5atOcy0mbJnTgHTKJZNbWdf91MjZwXsa6aLG3R6FTBzLXOtyh
-         mRVYFUTB1fxjKJ1BWb/0WG7rQ5O3OqraJ/TpAKT44/fmJXivLgP9GUluulKEFUybcMFH
-         YUSGne+rBqiLFyezmeja02HEuuyHe1NjSryHOoFGr9a0UXfcRpMbB3JI8mxXtfrOODBw
-         zy7Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWGAvHyn2ndXWv7XQs3cVRbyr7t0cmiDIrD7k2wBwgGfCqvYjAgXlb01iubGieOGXwi/e+fyN8qYjnaHalAp7hsWYPSUK+EfSAHKODw
-X-Gm-Message-State: AOJu0Ywx2NNm2dj+oNWyoF+6Dul9Ooa+Hj4eX0tPpMorD3MRmEA5xHCB
-	GW33CNExMbNSvDivwm0KBSexSzLh3WzXkgVmzIs0EwIExU1ID2OSdjfXnNk4Xc8=
-X-Google-Smtp-Source: AGHT+IH5Cin3AqwTfyabvBRdAEa1W3Mss9ze0/ydVLfUHhfSSClXwwy53WbahTvUqK/IUM3ItB/Prw==
-X-Received: by 2002:a6b:580f:0:b0:7c7:99f8:2893 with SMTP id m15-20020a6b580f000000b007c799f82893mr2632799iob.2.1709228984892;
-        Thu, 29 Feb 2024 09:49:44 -0800 (PST)
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id v25-20020a02cbb9000000b00474a5ac435dsm414881jap.179.2024.02.29.09.49.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Feb 2024 09:49:44 -0800 (PST)
-Message-ID: <edd520ab-b95f-4a60-a35a-2490a6d5057f@kernel.dk>
-Date: Thu, 29 Feb 2024 10:49:42 -0700
+	s=arc-20240116; t=1709228999; c=relaxed/simple;
+	bh=JONg6HvGOojSoSRJPEKuGTsiCE0zDoykG6uAHJ/ihnc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=awi2trA0FDTvuogq55ye+i92CwUVc/BtqmQyADhdRWejw+I27GK/Xue22MNT+7/3SelfRpNZUOqnAigbwOXxWpsA2I6a/G2vQrqKw6tXx6ueTEnrlQkz2YvxV9T8CrQLq6frAkfvHb9eONFZ+IcdejMwUa/tIj/uQMmz79sswOA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tyokibzF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 260AFC433F1;
+	Thu, 29 Feb 2024 17:49:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709228998;
+	bh=JONg6HvGOojSoSRJPEKuGTsiCE0zDoykG6uAHJ/ihnc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=tyokibzFYDSIyPqU5nT/wdhPqG6vLhyOT0kDecmI7MbMWEMLmeO4fBQGLtP+IPQDl
+	 x6N2kI4/9prhKOSlrrhZrEl4Wb3eSmWsjt3an2nz3tGqeURQTpMfj4LbloSSMDnPne
+	 n4BPQ4lV+qH/lcDgxQwFpcafMMAC/0uM6viVXPOZGVv6+/ijF+KpvhLtw8R11qVDbb
+	 dkQ8r+RAZraVNlkGGVo69CLC9GLeYOKY9cnC1VvFYJKREOhQPnqd5f8uXRkDMuuisb
+	 1CU2NY4TQR/lpS57O+TBQoAnQSHEkhYnHP5ylEEJnq3Ih1pMSCNFB2BunecgUkXObe
+	 UMD4IAy/htCuQ==
+Date: Thu, 29 Feb 2024 17:49:52 +0000
+From: Lee Jones <lee@kernel.org>
+To: Bhargav Raviprakash <bhargav.r@ltts.com>
+Cc: linux-kernel@vger.kernel.org, m.nirmaladevi@ltts.com,
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, jpanis@baylibre.com,
+	devicetree@vger.kernel.org, arnd@arndb.de,
+	gregkh@linuxfoundation.org, lgirdwood@gmail.com, broonie@kernel.org,
+	linus.walleij@linaro.org, linux-gpio@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, nm@ti.com, vigneshr@ti.com,
+	kristo@kernel.org
+Subject: Re: [PATCH v2 00/14]  Add support for TI TPS65224 PMIC
+Message-ID: <20240229174952.GC1209090@google.com>
+References: <20240223093701.66034-1-bhargav.r@ltts.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] sched/core: switch struct rq->nr_iowait to a normal
- int
-Content-Language: en-US
-To: Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
-Cc: peterz@infradead.org, mingo@redhat.com
-References: <20240228192355.290114-1-axboe@kernel.dk>
- <20240228192355.290114-2-axboe@kernel.dk> <8734tb8b57.ffs@tglx>
- <c3abe716-3d8f-47dc-9c7d-203b05b25393@kernel.dk> <87wmqn6uaw.ffs@tglx>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <87wmqn6uaw.ffs@tglx>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240223093701.66034-1-bhargav.r@ltts.com>
 
-On 2/29/24 10:42 AM, Thomas Gleixner wrote:
-> On Thu, Feb 29 2024 at 10:19, Jens Axboe wrote:
->> On 2/29/24 9:53 AM, Thomas Gleixner wrote:
->>> On Wed, Feb 28 2024 at 12:16, Jens Axboe wrote:
->>>> In 3 of the 4 spots where we modify rq->nr_iowait we already hold the
->>>
->>> We modify something and hold locks? It's documented that changelogs
->>> should not impersonate code. It simply does not make any sense.
->>
->> Agree it doesn't read that well... It's meant to say that we already
->> hold the rq lock in 3 of the 4 spots, hence using atomic_inc/dec is
->> pointless for those cases.
-> 
-> That and the 'we'. Write it neutral.
-> 
-> The accounting of rq::nr_iowait is using an atomic_t but 3 out of 4
-> places hold runqueue lock already. ....
+On Fri, 23 Feb 2024, Bhargav Raviprakash wrote:
 
-Will do
-
-> So but I just noticed that there is actually an issue with this:
+> This series modifies the existing TPS6594 drivers to add support for the
+> TPS65224 PMIC device that is a derivative of TPS6594. TPS65224 has a
+> similar register map to TPS6594 with a few differences. SPI, I2C, ESM,
+> PFSM, Regulators and GPIO features overlap between the two devices.
 > 
->>  unsigned int nr_iowait_cpu(int cpu)
->>  {
->> -	return atomic_read(&cpu_rq(cpu)->nr_iowait);
->> +	struct rq *rq = cpu_rq(cpu);
->> +
->> +	return rq->nr_iowait - atomic_read(&rq->nr_iowait_remote);
+> TPS65224 is a Power Management IC (PMIC) which provides regulators and
+> other features like GPIOs, Watchdog, Error Signal Monitor (ESM) and
+> Pre-configurable Finite State Machine (PFSM). The SoC and the PMIC can
+> communicate through the I2C or SPI interfaces. The PMIC TPS65224
+> additionally has a 12-bit ADC.
+> Data Sheet for TPS65224: https://www.ti.com/product/TPS65224-Q1
 > 
-> The access to rq->nr_iowait is not protected by the runqueue lock and
-> therefore a data race when @cpu is not the current CPU.
+> Driver re-use is applied following the advice of the following series:
+> https://lore.kernel.org/lkml/2f467b0a-1d11-4ec7-8ca6-6c4ba66e5887@baylibre.com/
 > 
-> This needs to be properly annotated and explained why it does not
-> matter.
-
-But that was always racy before as well, if someone else is inc/dec'ing
-->nr_iowait while it's being read, you could get either the before or
-after value. This doesn't really change that. I could've sworn I
-mentioned that in the commit message, but I did not.
-
-> So s/Reviewed-by/Un-Reviewed-by/
+> The features implemented in this series are:
+> - TPS65224 Register definitions
+> - Core (MFD I2C and SPI entry points)
+> - PFSM	
+> - ESM
+> - Regulators
+> - Pinctrl
 > 
-> Though thinking about it some more. Is this split a real benefit over
-> always using the atomic? Do you have numbers to show?
+> TPS65224 Register definitions:
+> This patch adds macros for register field definitions of TPS65224
+> to the existing TPS6594 driver.  
+> 
+> Core description:
+> I2C and SPI interface protocols are implemented, with and without
+> the bit-integrity error detection feature (CRC mode).
+> 
+> PFSM description:
+> Strictly speaking, PFSM is not hardware. It is a piece of code.
+> PMIC integrates a state machine which manages operational modes.
+> Depending on the current operational mode, some voltage domains
+> remain energized while others can be off.
+> PFSM driver can be used to trigger transitions between configured
+> states.
+> 
+> ESM description:
+> This device monitors the SoC error output signal at its nERR_MCU
+> input pin. On error detection, ESM driver toggles the PMIC nRSTOUT pin
+> to reset the SoC.
+> 
+> Regulators description:
+> 4 BUCKs and 3 LDOs.
+> BUCK12 can be used in dual-phase mode.
+> 
+> Pinctrl description:
+> TPS65224 family has 6 GPIOs. Those GPIOs can also serve different
+> functions such as I2C or SPI interface or watchdog disable functions.
+> The driver provides both pinmuxing for the functions and GPIO capability.
+> 
+> This series was tested on linux-next tag: next-20240118
+> 
+> Test logs can be found here:
+> https://gist.github.com/LeonardMH/58ec135921fb1062ffd4a8b384831eb0
+> 
+> Changelog v1 -> v2:
+> - Changes to patch sign-off
+> - Commit message change in dt-bindings patch
+> - regmap config included in the of_match_table data field
+> 
+> Bhargav Raviprakash (11):
+>   mfd: tps6594: use volatile_table instead of volatile_reg
+>   mfd: tps6594: add regmap config in match data
+>   dt-bindings: mfd: ti,tps6594: Add TI TPS65224 PMIC
+>   mfd: tps6594-i2c: Add TI TPS65224 PMIC I2C
+>   mfd: tps6594-spi: Add TI TPS65224 PMIC SPI
+>   mfd: tps6594-core: Add TI TPS65224 PMIC core
+>   misc: tps6594-pfsm: Add TI TPS65224 PMIC PFSM
+>   misc: tps6594-esm: reversion check limited to TPS6594 family
+>   misc: tps6594-esm: use regmap_field
+>   misc: tps6594-esm: Add TI TPS65224 PMIC ESM
+>   arch: arm64: dts: ti: k3-am62p5-sk: Add TPS65224 PMIC support in AM62P
+>     dts
+> 
+> Nirmala Devi Mal Nadar (3):
+>   mfd: tps6594: Add register definitions for TI TPS65224 PMIC
+>   regulator: tps6594-regulator: Add TI TPS65224 PMIC regulators
+>   pinctrl: pinctrl-tps6594: Add TPS65224 PMIC pinctrl and GPIO
+> 
+>  .../devicetree/bindings/mfd/ti,tps6594.yaml   |   1 +
+>  arch/arm64/boot/dts/ti/k3-am62p5-sk.dts       |  95 +++++
+>  drivers/mfd/tps6594-core.c                    | 266 +++++++++++--
+>  drivers/mfd/tps6594-i2c.c                     |  41 +-
+>  drivers/mfd/tps6594-spi.c                     |  41 +-
+>  drivers/misc/tps6594-esm.c                    |  89 +++--
+>  drivers/misc/tps6594-pfsm.c                   |  55 ++-
+>  drivers/pinctrl/pinctrl-tps6594.c             | 287 ++++++++++++--
+>  drivers/regulator/Kconfig                     |   4 +-
+>  drivers/regulator/tps6594-regulator.c         | 244 ++++++++++--
+>  include/linux/mfd/tps6594.h                   | 369 +++++++++++++++++-
+>  11 files changed, 1325 insertions(+), 167 deletions(-)
 
-It was more on Peter's complaint that now we're trading a single atomic
-for two, hence I got to thinking about nr_iowait in general. I don't
-have numbers showing it matters, as mentioned in another email the most
-costly part about this seems to be fetching task->in_iowait and not the
-actual atomic.
+Does this set have to be taken in wholesale?
 
 -- 
-Jens Axboe
-
+Lee Jones [李琼斯]
 
