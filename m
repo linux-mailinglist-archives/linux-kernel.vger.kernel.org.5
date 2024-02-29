@@ -1,113 +1,149 @@
-Return-Path: <linux-kernel+bounces-86434-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86435-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E2B286C54E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:33:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 384F586C550
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:33:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4071C1C215BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:33:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9732128F06F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:33:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51F9B59B73;
-	Thu, 29 Feb 2024 09:33:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB3475D91A;
+	Thu, 29 Feb 2024 09:33:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nFkqfJvQ"
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TL9LNCsQ"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1158F5D8FA
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 09:33:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43D7B5B697
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 09:33:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709199196; cv=none; b=tfW9p5ionUnuo4L9ng3WDEzxaHzC8XzUQIZNGWQNCFpOqjujHcEICOOwqV2JOQdOcn1vDGdYy1Hcrpa8pI/1/TsZI2S9n6Mi8cCV2m0XbjpvWclS2C1BG4XuRK/R9i7NlTpE7kBxA7bCgQY/blpxAXQZGHU7F2l8+dfqpFYQlWg=
+	t=1709199214; cv=none; b=eawqtD6mgChOoxipI/3YnDpwrbaSlgudXGwNr8y4obex1ZA3/3dZZxCHWQfa6faD1lPweXGglMP+lOKy0l6TQ8F7/soeZkWnlv3fCCW/NrPM0P5CXeWm2lbMsHjhEWkvHmr7PIx7l84vB68RMlZVEhvoY9eoUkwSN3DmmLTWq/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709199196; c=relaxed/simple;
-	bh=TA5XDR0sixwyfoYxqxJ3AVyk4Nya6rVcdVMTi766fKQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fr1sVAt40k4xDkdbjLU5T0tRzdrB9Unsp+sXH+MUsIvbbxkZAIaI6x7vkwiXz/weuSRvj8e+WduqBAKo02KyOz+E6MWvfoaoWIF+7yblD8rPuAd9lyzYcrsvVHpvKxxuV/4p47eWeeZ6geanvF4MxEUCk3eblLFkDqkOti+lUYk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nFkqfJvQ; arc=none smtp.client-ip=209.85.219.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dcd9e34430cso745925276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 01:33:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709199194; x=1709803994; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TA5XDR0sixwyfoYxqxJ3AVyk4Nya6rVcdVMTi766fKQ=;
-        b=nFkqfJvQwFs+cxOrekeldas6aoDkkenIwcmU6e7vjZu9qZ/Xt01YdsdMlX5PJE+wF1
-         FKC9RHavdw7abnQhAQF9nF9cqLj5LuKrhCLGBUIluqeXWrIPqbeiV8COJ6eQHfaYiJi/
-         /e5g+q92Iz1j5AxoHXRfXlsxBlWEfqZEmNzwJiC4b21+9Egwx7i//D7rwHH8Fo12lING
-         HqlUsg7fIMUIHrpFhUCOgvnpRmlk/jurq5+XvQwktDfwnOkBTfeoKVMO4YHE25s/vYW/
-         OYub1WhyeV8XYVG/vewgNd7EHn55TihvNMg5TTXL2FXq9/ekgqnNJw4Ube2x15649p0K
-         HPuw==
+	s=arc-20240116; t=1709199214; c=relaxed/simple;
+	bh=OCAkzthHT1GednMqkQR0khKweCPNUd0S8CFHc0nINQw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RAjfuLoV9a2LzLfG4xrs2ea/BgGWlR9OEEbDz0n9q9nu3cHVnBu2z4uV3uilJDoqh+vaUvZnkxSNjteLjS2fQUlHM61iaaNtBisiD21crHUha8zMLI7PqtRVUB/IR73fHTLeCcDvife6fLGsz6T9/2WobOEiHoeNqSt7hBSqXMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TL9LNCsQ; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709199211;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=n0lTD41pfzWAqfwwm7qOf8/65xi10nz/8NBAoqHJCpo=;
+	b=TL9LNCsQ6av6BO/k9HfBZ8V6Jvb8ggjw8qYukNy5V4npsoSt9jiYWtvqjO2jiKR4fUZC4G
+	lN1VeA4zLN1Ggwq9cpUlNv9I+Dkvk3vCYDDAwf06EW9zzwUpxj5jJXt5mnTBV3VPcs0kVu
+	3BnMmgrB0DZWHkSM8/9JX8v7TW97qTE=
+Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
+ [209.85.167.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-507-QPWg-4uQP8yJOiyNhTouIQ-1; Thu, 29 Feb 2024 04:33:29 -0500
+X-MC-Unique: QPWg-4uQP8yJOiyNhTouIQ-1
+Received: by mail-oi1-f199.google.com with SMTP id 5614622812f47-3c1c1e68dc5so716460b6e.3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 01:33:29 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709199194; x=1709803994;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TA5XDR0sixwyfoYxqxJ3AVyk4Nya6rVcdVMTi766fKQ=;
-        b=s4jtKkdb+BUS8Rwv6yvnkKC4MBZyH8h2/gicRNHM71f6dxZ2tdSTuBl8XcmeArbGZj
-         FvfF9AjsJpJT2AFUW6kX9klxS9Aym+WEkTPt+DDkYFeUtNiKOs4SE8KKX06ToFScwPv9
-         hk9wSmdHdSpkv7f9K+LVdEZpXdP/sPK4d/qiWUPatYcIqOOnRHFagVBNe8eMDGcsRb1T
-         PawOoFUbAq2odzPL2tCbolIcO5ICt/9tw58mkgKTC2FB1AgUAf94bCM7/wRI7M1yhvRB
-         9H78Utcj3hid86sd1aakuHXNgyF7v3AXwQVDFumjMNITr4f7Fz3guQLJ5Uf7rnVtzj4z
-         dKyg==
-X-Forwarded-Encrypted: i=1; AJvYcCXwssk9Oln9ywb92Ti1icr+J8zb50IXraP5xa4x9b0DBN8imFnZQupo/qpbWHv5KB0ifVn+WMjSWj6DsM2HOeYFIWNUJGikjXwE1XMK
-X-Gm-Message-State: AOJu0YxWSfZqVJ98HH2iNSNIGK6tn8f+dFQ6bqwfLdPPJ1hHsL4/eN0w
-	pyD+ihnYbd95rDWhLLfs5G+8W0n0XpdsmWMOnfGr9wZl4nW+UsnPF+XU+G3FrkGfZlrWdEMWEZz
-	JsJ25WskcH8c77DfDYq9KCbkV7R25O/WqkBXeJQ==
-X-Google-Smtp-Source: AGHT+IFJx7qNkajaqQQOEZz9bg4d/0XSAClSsgSr7+DWG04FeqoP5n/XZvXvx+LASciVRHXOSFjzxgkNPnaVjJuZjkE=
-X-Received: by 2002:a5b:f05:0:b0:dcd:aee6:fa9 with SMTP id x5-20020a5b0f05000000b00dcdaee60fa9mr1802025ybr.53.1709199194095;
- Thu, 29 Feb 2024 01:33:14 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709199208; x=1709804008;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=n0lTD41pfzWAqfwwm7qOf8/65xi10nz/8NBAoqHJCpo=;
+        b=eLd77aGioICZvyEpVnepyXTYZhVe4WJ2QKhsAMTjOd+kHVRdrcjveJjDTJ0k3oUP2g
+         2TAMX/9dySGB9uMIlceOpRAmgomgj0h9TvF4LVmaonsCJKLAz+Hl/g2V7l/1jySbd80P
+         6ILXZmuKm2lEA1N7I4BqsUWp+pvXYWF1G+OxJvAAm/4TqoCrxAwqUfeupHdklb8cdXtG
+         Fg5cUpn1q0mXsC0Wvx2hCDIL7rbG5V9+zJUp6cdld4ZdJeoNaVbF7NoH6x0/+go4YCqp
+         3rMRxCrOvHzR0Bq0wVmA15SEzew/v+pKK4c4CHwrX3eyLbHCCgqcw8EvxybcZcjEugES
+         5pKw==
+X-Gm-Message-State: AOJu0YyFIsWFmK35KBI76N+Npw7e0IlhPJrEeWdNMaS3NLAy/E8aGJyO
+	mya4izcYX8l4aCbCvwKx3fr1ziAEugIrJ6lqCCf1gZU77UwR5069XoNotaCoZ+EXxA6IvllrWig
+	o3MwpMG+XHvq3YR/aK2cHCTukwzSKRHZEhNnQhv1sYMhAV54AhEis939DBGsbmzymPPXpy/An
+X-Received: by 2002:a05:6358:5923:b0:17b:8a02:a9b6 with SMTP id g35-20020a056358592300b0017b8a02a9b6mr1475332rwf.21.1709199208223;
+        Thu, 29 Feb 2024 01:33:28 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFJ3FhXf54FrmUmhWMB78EuZTnPJKOo+16rR9CKAmGMemUrKffmyritMCgFqds8i13JNwSKlg==
+X-Received: by 2002:a05:6358:5923:b0:17b:8a02:a9b6 with SMTP id g35-20020a056358592300b0017b8a02a9b6mr1475314rwf.21.1709199207832;
+        Thu, 29 Feb 2024 01:33:27 -0800 (PST)
+Received: from localhost.localdomain ([176.206.22.187])
+        by smtp.gmail.com with ESMTPSA id qq1-20020a0562142c0100b0069030b7dee3sm542406qvb.30.2024.02.29.01.33.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Feb 2024 01:33:27 -0800 (PST)
+Date: Thu, 29 Feb 2024 10:33:16 +0100
+From: Juri Lelli <juri.lelli@redhat.com>
+To: Ankur Arora <ankur.a.arora@oracle.com>
+Cc: linux-kernel@vger.kernel.org, tglx@linutronix.de, peterz@infradead.org,
+	torvalds@linux-foundation.org, paulmck@kernel.org,
+	akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+	dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+	vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
+	jpoimboe@kernel.org, mark.rutland@arm.com, jgross@suse.com,
+	andrew.cooper3@citrix.com, bristot@kernel.org,
+	mathieu.desnoyers@efficios.com, geert@linux-m68k.org,
+	glaubitz@physik.fu-berlin.de, anton.ivanov@cambridgegreys.com,
+	mattst88@gmail.com, krypton@ulrich-teichert.org,
+	rostedt@goodmis.org, David.Laight@aculab.com, richard@nod.at,
+	mjguzik@gmail.com, jon.grimm@amd.com, bharata@amd.com,
+	raghavendra.kt@amd.com, boris.ostrovsky@oracle.com,
+	konrad.wilk@oracle.com
+Subject: Re: [PATCH 23/30] sched/fair: handle tick expiry under lazy
+ preemption
+Message-ID: <ZeBPXNFkipU9yytp@localhost.localdomain>
+References: <20240213055554.1802415-1-ankur.a.arora@oracle.com>
+ <20240213055554.1802415-24-ankur.a.arora@oracle.com>
+ <Zd85iRyY6-zlo2wl@localhost.localdomain>
+ <871q8v7otl.fsf@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240228-mbly-gpio-v2-0-3ba757474006@bootlin.com> <20240228-mbly-gpio-v2-19-3ba757474006@bootlin.com>
-In-Reply-To: <20240228-mbly-gpio-v2-19-3ba757474006@bootlin.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 29 Feb 2024 10:33:03 +0100
-Message-ID: <CACRpkdboVcO2+RT5r+FkJ6t-Uru3vrwOodRPn+vmBvv7LFtM1A@mail.gmail.com>
-Subject: Re: [PATCH v2 19/30] gpio: nomadik: request dynamic ID allocation
-To: =?UTF-8?B?VGjDqW8gTGVicnVu?= <theo.lebrun@bootlin.com>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Philipp Zabel <p.zabel@pengutronix.de>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-mips@vger.kernel.org, Gregory CLEMENT <gregory.clement@bootlin.com>, 
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <871q8v7otl.fsf@oracle.com>
 
-On Wed, Feb 28, 2024 at 12:28=E2=80=AFPM Th=C3=A9o Lebrun <theo.lebrun@boot=
-lin.com> wrote:
+On 28/02/24 22:43, Ankur Arora wrote:
+> Juri Lelli <juri.lelli@redhat.com> writes:
 
-> Move away from statically allocated GPIO IDs. Switch to dynamic ID
-> allocation. Static IDs are deprecated because they cause issues when
-> multiple GPIO controllers are to be found on the same platform.
->
-> Add a bit of complexity to do pin number -> GPIO chip + offset.
-> Previously, bank number and offsets were retrieved using division and
-> remainder (bank size being constant 32). Now, to get the pin number
-> matching a bank base, we must know the sum of ngpios of previous banks.
-> This is done in find_nmk_gpio_from_pin() which also exposes the offset
-> inside the bank.
->
-> Also remove the assumption that bank sizes are constant. Instead of
-> using NMK_GPIO_PER_CHIP as bank size, use nmk_gpio_chips[i]->ngpio.
->
-> Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+..
 
-Patch applied!
+> > For deadline we call resched_curr_tick() from the throttle part of
+> > update_curr_dl_se() if the dl_se happens to not be the leftmost anymore,
+> > so in this case I believe we really want to reschedule straight away and
+> > not wait for the second time around (otherwise we might be breaking the
+> > new leftmost tasks guarantees)?
+> 
+> Yes, agreed, this looks like it breaks the deadline invariant for both
+> preempt=none and preempt=voluntary.
+> 
+> For RT, update_curr_rt() seems to have a similar problem if the task
+> doesn't have RUNTIME_INF.
+> 
+> Relatedly, do you think there's a similar problem when switching to
+> a task with a higher scheduling class?
+> (Related to code is in patch 25, 26.)
+> 
+> For preempt=voluntary, wakeup_preempt() will do the right thing, but
 
-Yours,
-Linus Walleij
+Right.
+
+> for preempt=none, we only reschedule lazily so the target might
+> continue to run until the end of the tick.
+
+Hummm, not sure honestly, but I seem to understand that with
+preempt=none we want to be super conservative wrt preemptions, so maybe
+current behavior (1 tick of laziness) is OK? Otherwise what would be the
+difference wrt preempt=voluntary from a scheduler pow? Yes, it might
+break deadline guarantees, but if you wanted to use preempt=none maybe
+there is a strong reason for it, I'm thinking.
+
+> Thanks for the review, btw.
+
+Sure. Thanks for working on this actually! :)
+
+Best,
+Juri
+
 
