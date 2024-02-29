@@ -1,216 +1,151 @@
-Return-Path: <linux-kernel+bounces-86658-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86659-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 999EC86C87B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:52:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A88586C87F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:52:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2CBE81F2215E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:52:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F5181C20E96
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:52:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E77CA7C6D2;
-	Thu, 29 Feb 2024 11:52:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7389C7D062;
+	Thu, 29 Feb 2024 11:52:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=tweaklogic.com header.i=@tweaklogic.com header.b="N3WgZVhb"
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="mOoBduo4"
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01olkn2090.outbound.protection.outlook.com [40.92.53.90])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BCCC7C6C3
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 11:52:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709207523; cv=none; b=XNk19ybRkMfU7kIFv7XuR0EIU5qk99/87sdN/ljqshs3d7D2xnb31/Uu3yWoJHRiV3DJG4wwxKhLt3kRKaH8j24KqgB6jX5A/7yXbDaF2kA8O1vZqlvhr/mfIdVvsimMvzXZPEfgn7Y+ntMyy4EfHfS3X1cJCrpXmavLrOM5nWs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709207523; c=relaxed/simple;
-	bh=D85HgNvJu1Gzvl020npgZHkDOdsFs37kMKJLoOsvX54=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LJknvau0gsyU0wNBNGwUfFIQDtLwLDKdB2uWjTJQxFNdAn3n35FcUZj31DW0/mYq73G2Hunc7Z2Fm5v7PypLPDjIu1TPWUOxPxotey8yJqu9z2TETPuJe9FMmCE/ZfKLoq2RDTxSm6ToM+zqb1IPAxlGgKMlbI7cWP7zMrMXRRw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tweaklogic.com; spf=pass smtp.mailfrom=tweaklogic.com; dkim=pass (2048-bit key) header.d=tweaklogic.com header.i=@tweaklogic.com header.b=N3WgZVhb; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tweaklogic.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tweaklogic.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6e5896846f2so509612b3a.2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 03:52:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tweaklogic.com; s=google; t=1709207521; x=1709812321; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qhmR6t/CulZWvzzb/0EOr6cxXMFcQffpsaxkHKFIuTA=;
-        b=N3WgZVhb2jgpApYbEypLHOaKHd6HWdpGixE8U6c1NRD6hAYNrxe7d9IuvrGSHFgByW
-         uR4/ptrrBpL8RUuw6pLsiXWe7nBYx80NpjcrjMwO7/U7MmpITGEQ3LS7pOkkjj+EhaXZ
-         YcARQr1VqJhM51ve/pZv7dUTtw49/rCLF97gToe86k8UxDUuN+h2uKj2nCd8Xt4Q1/tb
-         yOPEb8ppTTmBQps34kZLjYd7sDGDEzqSKNBINO4+crurvU3wlnA7VO6I0JMRBJt7AOkY
-         /zCnNPF0yFGACPNsSZTC+wkp/wRx8c1gRCpWiIh1ATuoD38/zH+pkkdCW+mHrfT+kaF3
-         nSwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709207521; x=1709812321;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qhmR6t/CulZWvzzb/0EOr6cxXMFcQffpsaxkHKFIuTA=;
-        b=N0NWyBR77+TNe4kmzaz+xqFrCVuwAbkB+NjTH+aAgnTNxkVpzTtzAfSL46SC+TKhNn
-         +5PJzbO4AFhU8NF1G2Rnl6DbJPDoPkkDWWMmMUovTNG9vuF2uzOkjudXZMPBaXUEWPBL
-         Cy27iJ0QJ1Eg+eR5hHJFuOWN3hcSTa1yI/26GAachO29vmBGHa/hAoqYRj32t+iFR8Jb
-         fy5XGafSb9TH/Lz8/f6KERADRzlpE7RoXhvB1KrQKEXL/f15MZ9UXnXvNQJYtFsoJsbN
-         OhKq7E980+Pto6SdvXVMn8xLjyetMe5/Np60+VItO9j9HGOqdxPhCntDUlW7wRiMbH/W
-         zvCQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUdstpAPXUS8fXCUAcLlVSSwT1spik/DVdGGDZCh6KkXUbXbWhPCqKIjW1wH9pjQN7uCh/kjQjprPwWjHZQxluycrOyHug5585sOQrx
-X-Gm-Message-State: AOJu0YzgQlQloOXAVU3U+CpnBOhFPsliaK1/i9QPbrTYo9c3ss2SqLeK
-	Ls00Foa8vwlxBvoN8a9mm2upuAvSytykiZpNbCuEcDvzJxtf2TWreeA49J4JNKE=
-X-Google-Smtp-Source: AGHT+IGp29uOUWn17twBCuCVxLB5YWzr3khAzZeff3T4HNJqrtRTDGQv6AebAdB2GeE+LDlQxvcd5Q==
-X-Received: by 2002:aa7:8602:0:b0:6e5:980:361f with SMTP id p2-20020aa78602000000b006e50980361fmr1811761pfn.25.1709207520660;
-        Thu, 29 Feb 2024 03:52:00 -0800 (PST)
-Received: from [192.168.20.11] ([180.150.112.31])
-        by smtp.gmail.com with ESMTPSA id r5-20020aa79885000000b006e530aca55asm1086214pfl.123.2024.02.29.03.51.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Feb 2024 03:52:00 -0800 (PST)
-Message-ID: <47739cca-db41-4182-9f80-ff138f5b8ec8@tweaklogic.com>
-Date: Thu, 29 Feb 2024 22:21:52 +1030
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FC1D7CF29;
+	Thu, 29 Feb 2024 11:52:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.53.90
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709207528; cv=fail; b=mdwKN5buAxXf59mfDhtMLe6t6UIcVazSCTEGQPTDDlSOUI2/YbOLMijSiC7H3kOTzi0K01WCGIKRFCPk9745AnrIl5hxQhpt2pn64oHkS9CKWN/tQfnk091gb+NaxOyTfRiRkEraijMquqSwJ9Xg3pZQuojGstpJo0bpJ6yttQA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709207528; c=relaxed/simple;
+	bh=ZVNWUDac2T4xdsKzIde6ZFGJ36GYBuTszLkBnT6UtiA=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=UEKkg4y32NlV0yYxw4LpnhwSlSdmNtY5E2ohCnsznc+UBNqLPJJtvOEAsElMvlGNUM45beQB2IECBmMDdAc9zVtSWfg+0136GYPncDrFJRp3upN5HnMsELa8QnD6wZXKMRYS+0Apf6zxpNnCFPTAn8/tsgV8yK6dOKo+kpLABEg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=mOoBduo4; arc=fail smtp.client-ip=40.92.53.90
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VvysMCnhWu93fAVdSbBPI7TE4rYeHe1Wk/y73W/ZCP34TDElS102q4yDLSza4Y1MN2ckhPRp51swKYXxvdWktqRIK0BSccb2jPTcqQ0IbFOS0bu9GcOvWFy3Xz+483tet3Pft5QsuqNiSCHF47Rm0EBkZYIkckmeswd8rjGFaOe1KR1XcqGfK1dYcooHNYhmCS0uknbqcWm6xHum3H0oEhpCMS0Be56qffMWTV0bdX3qD5CObK5/LzeO7eLRLyXnwvfCH60fbTiegoKQ5N95nVMPWKyJY9XQRd5CzZ7SqPt/SOmZa68ch6iVQq1M6w3fjjE2izAPenrTm+s7Ks3PRA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=0PXPH6wLfc8+olI67/P2tQlj6vGxopXd7xlFHEzKT5o=;
+ b=bzv4NwAqudNJ5wFsBD6a0nXh9ShC5chlBlOdSwTKrx4AAOjFWuvhjj9SMvieu1t9qWQGxmnBWEhelDhNOker2ekg2ZeQjN75S94Bn60cEqhvTTFpJ3UGvjgQzfONfIzMLgHkuYBtNCz0ncuC66RdgDOc2q5TZi+EZWYd0HL6ySF07mkKAdSd5pP/cxxSPdeaZJlUJMYwkEdrv1xaF7/j+Z35G++RrkWSlRw05mrKZaXwuzImjeJvBgWR0vjj+4Y1466gWShI5eP9OjNwJU/aNyRK5B5TFHX1BaogsDteeyLxqc9oY2UQvizlOhSg5zagepDgpF5zwF09UCR2UXqPJg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0PXPH6wLfc8+olI67/P2tQlj6vGxopXd7xlFHEzKT5o=;
+ b=mOoBduo4RqV0QBrzmdzpvEiDd4tZs1HQMMsFqs0rx1ithsm7RmVZabX6zqc/rSxhuJ2tZkEAZtEQ2v3h0Qvz3a7cL27allvd27TsL9W/46qSsEuEIyTYJrBsF7+LvQ0bB94EGkJGqMQs7mFPZTqDR/R24fIdC7Wd5m0jqxsgth/gYE5P6tkZII5LMlfQkYk5GwDoFccBFaSVy6WHBec7qn+X/tyLEg3QjRZFUTCLzD5crBcWBBt54HaeE9BllBw+KoZl5laWuh+kVNXgP/0qXJ/W9yhz5dakCUjtEGK4TztRj7M18Ny0lT+KmNsgYZJDxHY+648sAPBZuNdw5Xu93w==
+Received: from PSAPR06MB4952.apcprd06.prod.outlook.com (2603:1096:301:a3::11)
+ by TY0PR06MB5836.apcprd06.prod.outlook.com (2603:1096:400:31f::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.41; Thu, 29 Feb
+ 2024 11:52:03 +0000
+Received: from PSAPR06MB4952.apcprd06.prod.outlook.com
+ ([fe80::1e13:cc11:3196:e0a6]) by PSAPR06MB4952.apcprd06.prod.outlook.com
+ ([fe80::1e13:cc11:3196:e0a6%5]) with mapi id 15.20.7316.039; Thu, 29 Feb 2024
+ 11:52:02 +0000
+From: GuanBing Huang <albanhuang@outlook.com>
+To: gregkh@linuxfoundation.org
+Cc: jirislaby@kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org,
+	albanhuang@tencent.com
+Subject: [PATCH] serial: 8250_pnp: Support configurable reg shift property
+Date: Thu, 29 Feb 2024 19:51:54 +0800
+Message-ID:
+ <PSAPR06MB49522EB50BDE08A5D9D0DACEC95F2@PSAPR06MB4952.apcprd06.prod.outlook.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-TMN: [Ll0BneyBssgM4Uxpt7eo5+4dP4M4x0S1]
+X-ClientProxiedBy: SG2PR02CA0119.apcprd02.prod.outlook.com
+ (2603:1096:4:92::35) To PSAPR06MB4952.apcprd06.prod.outlook.com
+ (2603:1096:301:a3::11)
+X-Microsoft-Original-Message-ID:
+ <20240229115154.80311-1-albanhuang@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 5/5] iio: light: Add support for APDS9306 Light Sensor
-To: Matti Vaittinen <mazziesaccount@gmail.com>,
- Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Marek Vasut <marex@denx.de>, Anshul Dalal <anshulusr@gmail.com>,
- Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Cc: Matt Ranostay <matt@ranostay.sg>,
- Stefan Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>,
- linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240228122408.18619-1-subhajit.ghosh@tweaklogic.com>
- <20240228122408.18619-6-subhajit.ghosh@tweaklogic.com>
- <a828e77c-b3d4-49bb-b0bb-b9fd6cb7d114@gmail.com>
-Content-Language: en-US
-From: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
-In-Reply-To: <a828e77c-b3d4-49bb-b0bb-b9fd6cb7d114@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PSAPR06MB4952:EE_|TY0PR06MB5836:EE_
+X-MS-Office365-Filtering-Correlation-Id: 91505cd2-3ea5-49f8-ba22-08dc391cd808
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	kHoTdC+O0WDlav6JKFQGMQpWPepzqUEXsQkpypuW8dz2Xv8sgKbdoHaow/SIMZLX5+UYJ0qIEf0AxBLQcrLwen/sdyXzAEu+Wyl/sZfxChCfgRMPQcvf58VHp4tMllL0oFMk4w4/xpA2TN91u/qWSEKgkwmwP7KdOyr6kPQEm/DxSmRWiG5s7mGsxgsoxL/zz0mmq1HYBWP5sdTlr6z59SabUKYXX5iPMTNEGAoxRm3q2HkVPbRhk0PKxioiPXcj+MyFZMUtoBE1Jp48PB8Rz0ZQca0YQ8AD8c0PrY3adaITdhckprmRume/4BqvY6609TTl42dqpWHk0WHSwefHxjDsvdpPKcH/XmcooJ+Hv4+jaw9TeQk+1f95bvg15ldzH83KsrJuAvoZlGIH11v/sZv94zzhKNQ30b4fUunVcSMS9/Rgzuq5C60AbsTs9XWU68ve1WVNBHJcaojFBH7eXc3w7bZYlLBgJU4ja0+njxtuGTnGu9G2rvu6OwoD7WdEi+RzAxNumL1goGj/AgEjjGjqd4wKiatIYZ4gs0zR0iwUHp5Bm+BzEWmWwKbW7tZ4
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?FdKSY+oaEOlQT1iiA6QQTHAiOP+StXpKx3sQb4l/EDbW08OvLoQCnapoxiGM?=
+ =?us-ascii?Q?K/vTnlwhF5aIrj/2ofzeXNnR57jcaCujvQKlb34+Y8eHdO1sqbHLhUc2CkPV?=
+ =?us-ascii?Q?6IkYOls+EsrF7S5RNJ+mFyUn/HO3UYI+3bK3UabRVhnTTb7unpDtI9XpRf36?=
+ =?us-ascii?Q?YLSapICsC83uJErHrptTFEbKBx++YBTM6OHmMxkuiKEvDPLK+d1qYt0RqFNM?=
+ =?us-ascii?Q?mMEn4myJ0ohPAmxQXR1pVw6jmyaJ25t7kfYnlYkFp/Ijxsi1rxW1nz+S8GS+?=
+ =?us-ascii?Q?+JilY8jG9dhceMVgdQ+rdJk/pBaJwjemEDA/Smdkh6XpWCoLTq9JFgafRKIj?=
+ =?us-ascii?Q?+OetvN0Zx6FDiHDXbWcaRXpwrRsGlYNTMGf4i6P3Udre+4YAwGVwjYNoQED6?=
+ =?us-ascii?Q?aaa1JGWnkVhFtj1efhaUW759ZRemtf5HwFaLgLejdfEAUrMJYV4f5EmX6EZ6?=
+ =?us-ascii?Q?+5Y/NQi67ZbqrNw9IHbWFQhcRZHXdNqP9JzWEMGt68cScT18ouLbuhZJLFMn?=
+ =?us-ascii?Q?/0Igghd2qLyMLX5rmB03iiCblYvTS9dwtGb9wLo7mTekZvRZEW60nNTdc/qB?=
+ =?us-ascii?Q?l4qnHyV+Fl7XrX5NxQsouUm5hjWsGpAgBvqXt4nCC+CC+D1fm5SPmIJ9SCrh?=
+ =?us-ascii?Q?ZxydQo88cIaF+9xKiDrJBVJI7AE8B2qfoFwsRU8xSiBuZq4uTiCrMo17dFsi?=
+ =?us-ascii?Q?6TeWgZ+agJGJSoj/zG30eRpcVfw8vUh/kf0xzY9P+sDZsqUnqsIvW0gA3b6g?=
+ =?us-ascii?Q?LPcpISNJitHnOyAJWvKOaZBOvuWgG4QQNuz5wbtnWkpThI8lsShSHizkvY9Y?=
+ =?us-ascii?Q?qtjIS9M2xg8hfhmd9I9DpFpXOJEq+Uf5tv6+NPHqLK0CroSRfOdXTwgoU2wq?=
+ =?us-ascii?Q?7M6Nar6p+4+FJKcu+/jRlhjK0QVJorQHOwzEXiEOGEVNSL6CghKfj/6Wilf8?=
+ =?us-ascii?Q?IboXJDybv1zkNbasi75W6jSax2MfzGP6OirAWEM+E7wtOC8rb3kARceKe/Da?=
+ =?us-ascii?Q?uT/mUVpHux8//L9wAX3QW1M6gaZgvnnrmatq6kJOScqLqfX0CMy7LpQjnVCA?=
+ =?us-ascii?Q?7Juppq8AIAKc00XRQd/7/17p4Ds2uudvdwUi4rapI5aDJ6JDrIKzpPaJq9ek?=
+ =?us-ascii?Q?Rszuwl0qiIqXwp2P/qwtVZtEXzQoAQhkL6+riU6SHcTAZkoFt3Qv9DSrZuaE?=
+ =?us-ascii?Q?3buwAkFfI5prh6G8FJTC1cTKUak3YRSOUdWuzz8jWH2pT2HKdXQ2PI3xqeM?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 91505cd2-3ea5-49f8-ba22-08dc391cd808
+X-MS-Exchange-CrossTenant-AuthSource: PSAPR06MB4952.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Feb 2024 11:52:02.8567
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY0PR06MB5836
 
-On 28/2/24 23:38, Matti Vaittinen wrote:
-> On 2/28/24 14:24, Subhajit Ghosh wrote:
->> Driver support for Avago (Broadcom) APDS9306 Ambient Light Sensor.
->> It has two channels - ALS and CLEAR. The ALS (Ambient Light Sensor)
->> channel approximates the response of the human-eye providing direct
->> read out where the output count is proportional to ambient light levels.
->> It is internally temperature compensated and rejects 50Hz and 60Hz flicker
->> caused by artificial light sources. Hardware interrupt configuration is
->> optional. It is a low power device with 20 bit resolution and has
->> configurable adaptive interrupt mode and interrupt persistence mode.
->> The device also features inbuilt hardware gain, multiple integration time
->> selection options and sampling frequency selection options.
->>
->> This driver also uses the IIO GTS (Gain Time Scale) Helpers Namespace for
->> Scales, Gains and Integration time implementation.
->>
->> Signed-off-by: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
->> ---
->> v7 -> v8:
->>   - Renamed APDS9306_INT_CH_CLEAR to APDS9306_INT_SRC_CLEAR macro for higher
->>     readability
->>   - Removed APDS9306_CHANNEL macro for higher readability
->>   - Updated iio_push_event() functions with correct type of events (Light or Intensity)
->>   - Updated variable name "event_ch_is_light" to "int_src" and change as per
->>     review to fix compiler warning
->>   - Used scope for guard() functions
->>   - Other fixes as per reviews
->>     https://lore.kernel.org/all/20240224151340.3f2f51e8@jic23-huawei/
->>     https://lore.kernel.org/all/ZdycR6nr3rtrnuth@smile.fi.intel.com/
->>
-..
+From: albanhuang <albanhuang@tencent.com>
 
-Hi Matti,
->> ---
-> 
-> Hi Subhajit,
-> 
-> I just happened to notice couple of minor things. I see the series is already in a v8 and don't want to cause extra re-spins. So, perhaps consider these points if you need to do v9 but I am sending these only as 'nits'. I don't think any of my findings are very serious.
->Thank for reviewing. I will do as many re-spins as it takes to get things correct if required.
-It is best possible source of learning for me.
-> ...
-> 
->> +static int apds9306_intg_time_set(struct apds9306_data *data, int val2)
->> +{
->> +    struct device *dev = data->dev;
->> +    struct apds9306_regfields *rf = &data->rf;
->> +    int ret, intg_old, gain_old, gain_new, gain_new_closest, intg_time_idx;
->> +    int gain_idx;
->> +    bool ok;
->> +
->> +    if (!iio_gts_valid_time(&data->gts, val2)) {
->> +        dev_err_ratelimited(dev, "Unsupported integration time %u\n", val2);
->> +        return -EINVAL;
->> +    }
->> +
->> +    ret = regmap_field_read(rf->intg_time, &intg_time_idx);
->> +    if (ret)
->> +        return ret;
->> +
->> +    ret = regmap_field_read(rf->gain, &gain_idx);
->> +    if (ret)
->> +        return ret;
->> +
->> +    intg_old = iio_gts_find_int_time_by_sel(&data->gts, intg_time_idx);
->> +    if (ret < 0)
->> +        return ret;
->> +
->> +    if (intg_old == val2)
->> +        return 0;
->> +
->> +    gain_old = iio_gts_find_gain_by_sel(&data->gts, gain_idx);
->> +    if (gain_old < 0)
->> +        return gain_old;
->> +
->> +    ret = iio_gts_find_new_gain_by_old_gain_time(&data->gts, gain_old,
->> +                             intg_old, val2, &gain_new);
-> 
-> You don't use the 'ret' here, so maybe for the clarity, not assign it.
-> Or, maybe you wan't to try to squeeze out few cycles for succesful case and check the ret for '0' - in which case you should be able to omit the check right below as well as the call to iio_find_closest_gain_low(). OTOH, this is likely not a "hot path" so I don't care too much about the extra call if you think code is clearer this way.
-I will stick to the first option and remove the unused ret. The code looks linear and clearer
-that way. Although it depends upon further reviews.
+The 16550a serial port based on the ACPI table requires obtaining the
+reg-shift attribute. In the ACPI scenario, If the reg-shift property
+is not configured like in DTS, the 16550a serial driver cannot read or
+write controller registers properly during initialization.
 
-Regards,
-Subhajit Ghosh
-> 
->> +    if (gain_new < 0) {
->> +        dev_err_ratelimited(dev, "Unsupported gain with time\n");
->> +        return gain_new;
->> +    }
->> +
->> +    gain_new_closest = iio_find_closest_gain_low(&data->gts, gain_new, &ok);
->> +    if (gain_new_closest < 0) {
->> +        gain_new_closest = iio_gts_get_min_gain(&data->gts);
->> +        if (gain_new_closest < 0)
->> +            return gain_new_closest;
->> +    }
->> +    if (!ok)
->> +        dev_dbg(dev, "Unable to find optimum gain, setting minimum");
->> +
->> +    ret = iio_gts_find_sel_by_int_time(&data->gts, val2);
->> +    if (ret < 0)
->> +        return ret;
->> +
->> +    ret = regmap_field_write(rf->intg_time, ret);
->> +    if (ret)
->> +        return ret;
->> +
->> +    ret = iio_gts_find_sel_by_gain(&data->gts, gain_new_closest);
->> +    if (ret < 0)
->> +        return ret;
->> +
->> +    return regmap_field_write(rf->gain, ret);
->> +}
-> 
-> 
+Signed-off-by: albanhuang <albanhuang@tencent.com>
+Signed-off-by: tombinfan <tombinfan@tencent.com>
+Signed-off-by: dylanlhdu <dylanlhdu@tencent.com>
+---
+ drivers/tty/serial/8250/8250_pnp.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/tty/serial/8250/8250_pnp.c b/drivers/tty/serial/8250/8250_pnp.c
+index 1974bbadc975..25b4e41e9745 100644
+--- a/drivers/tty/serial/8250/8250_pnp.c
++++ b/drivers/tty/serial/8250/8250_pnp.c
+@@ -473,6 +473,7 @@ serial_pnp_probe(struct pnp_dev *dev, const struct pnp_device_id *dev_id)
+ 		uart.port.flags |= UPF_SHARE_IRQ;
+ 	uart.port.uartclk = 1843200;
+ 	device_property_read_u32(&dev->dev, "clock-frequency", &uart.port.uartclk);
++	device_property_read_u8(&dev->dev, "reg-shift", &uart.port.regshift);
+ 	uart.port.dev = &dev->dev;
+ 
+ 	line = serial8250_register_8250_port(&uart);
+-- 
+2.17.1
 
 
