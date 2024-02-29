@@ -1,125 +1,171 @@
-Return-Path: <linux-kernel+bounces-87286-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87240-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97B4A86D236
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:27:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE77F86D18B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:10:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 28AA3B275BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:27:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7D17285C55
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:10:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C724F7A159;
-	Thu, 29 Feb 2024 18:27:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 411E37A138;
+	Thu, 29 Feb 2024 18:09:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=cybernetics.com header.i=@cybernetics.com header.b="EHNEAJpH"
-Received: from mail.cybernetics.com (mail.cybernetics.com [72.215.153.18])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lR5uVimo"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F10137A157
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 18:27:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=72.215.153.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E27678293;
+	Thu, 29 Feb 2024 18:08:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709231239; cv=none; b=McJRNt2y8x4V5tDNLKNizqRDcHmzvMjQlndSGIXgXwj6ZR7gGPMckWmOqZ2rVSgNiW0/Le2WN4ts/XthIS0LmllmcQkPrX5FkEWhfLnUo+HXNibckz0+TIYx2TgtY4UjksYRCK3vfI+PLioeYnwS7KyrNOl2zHlBcMtfnDLiSr8=
+	t=1709230139; cv=none; b=WY1cUSX7L/xxXE7TVkbc8AcYjXJVxRzb3Ve+w1hUoAssFAzavY6NE1JgVISlS7n+4PNg7+uo6CYCBK04YxEr96RVLqrhVuehy3m9ar8xxAUWXPSLN0dazUSBkjiWaE7WLI9CLV+IkAZZZE+GDps92K54ijmbXBwJctJ4jyLT1Qs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709231239; c=relaxed/simple;
-	bh=0ujY1W7EPTMDMv8Qjd/XFEAXcyl4EZ0O06CzvoVFYCc=;
-	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=FiR/9aIhjQFwCcGsuFzwQkxGWNm59SZ7msxGDbtjYsdvf6iXcn7dI608YwFTkHmC3eFzxKf1ltpqELWk64bJenyUAMC8ebgvaQZIbqdVc0eUudNvCw5K3lSeHMBsZHrYvkL9ZSkEtYrFDxGsimDLVUkDXzfopEpYw59bi1dOZ7A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cybernetics.com; spf=pass smtp.mailfrom=cybernetics.com; dkim=pass (1024-bit key) header.d=cybernetics.com header.i=@cybernetics.com header.b=EHNEAJpH; arc=none smtp.client-ip=72.215.153.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cybernetics.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cybernetics.com
-X-ASG-Debug-ID: 1709230070-1cf4391a1c4fcf0003-xx1T2L
-Received: from cybernetics.com ([10.10.4.126]) by mail.cybernetics.com with ESMTP id skGYSPFiFfPsVh4j for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 13:08:13 -0500 (EST)
-X-Barracuda-Envelope-From: tonyb@cybernetics.com
-X-Barracuda-RBL-Trusted-Forwarder: 10.10.4.126
-X-ASG-Whitelist: Client
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=cybernetics.com; s=mail;
-	bh=GyTYh7rZxyuaZxAK4E6INt0hy/oXnF2VsS983Qgm9WI=;
-	h=Content-Transfer-Encoding:Content-Type:Subject:From:Cc:To:Content-Language:
-	MIME-Version:Date:Message-ID; b=EHNEAJpH9NO6DGJeblalbgxMQVo9ZjLHP5lNuDo0CY5z+
-	3qRP6j8BSOQ1clNEfFa8V1xd1wyAxTkw7gIdJuf4r5DcXWB08/uQ/7qeVuc70mLwffJnHoNaXO4ro
-	5M6b7FYErqw/nqlHndEyRgwppLhJ5Aw8n43zpvTRnqCKTu0iA=
-Received: from [10.157.2.224] (HELO [192.168.200.1])
-  by cybernetics.com (CommuniGate Pro SMTP 7.1.1)
-  with ESMTPS id 13108803; Thu, 29 Feb 2024 13:08:10 -0500
-Message-ID: <86e592a9-98d4-4cff-a646-0c0084328356@cybernetics.com>
-X-Barracuda-RBL-Trusted-Forwarder: 10.157.2.224
-Date: Thu, 29 Feb 2024 13:08:09 -0500
+	s=arc-20240116; t=1709230139; c=relaxed/simple;
+	bh=nbZCCz5px6JjbfeYHv/GrHoTHGKZQxDjRcckuW8fpQw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XAcMmhb5aYeBhzAK5foetSlZs/0ad5z/laSksQVHGqk7CIdb09S41d0RWoQ0zebPvbz1q6oZRXFBdtHmzXuebpIMKAf+IhrcpVdSDDCKWE2IM+IVJtKjfvVI4W9AMn4M7/m6iYvzV1DB2hhm6SZglagLNtU7uq8vFmmyzIg1Rh0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lR5uVimo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59288C433F1;
+	Thu, 29 Feb 2024 18:08:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709230138;
+	bh=nbZCCz5px6JjbfeYHv/GrHoTHGKZQxDjRcckuW8fpQw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lR5uVimo391OfyuEVpj2RcpIVEXlBNj76gfYMLAl74R6gXtXEOxvPgArU7zYVEeAZ
+	 QiambT42WsLDIgidy8iBWQOIPHMtFlwgMucCPCrijo94Y7/lc5QCzOkkpwhHqdbzuX
+	 1GQJT7QIWJqVWO45VviJhXpDnh9oS7HB3r5MpUZXsNxZ3zpGWHSFisSLTIbAQZEQsn
+	 JOAxHrGRQrACScps7QyZha392ih++0i0qenVV1F5nS6lEiYZQ87BRVRmIMR7ja7vZv
+	 U/6Ylo+yUcn4Z2BWZd7UXljlPGukuJsTZb+LKoqKRp+c7gTjOX2CWZChUWih9P/7f5
+	 18S4C65Dbq1Ow==
+Date: Thu, 29 Feb 2024 18:08:54 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Frank Li <Frank.li@nxp.com>
+Cc: Rob Herring <robh@kernel.org>, imx@lists.linux.dev,
+	krzysztof.kozlowski+dt@linaro.org, kw@linux.com,
+	linux-kernel@vger.kernel.org, conor+dt@kernel.org,
+	linux-pci@vger.kernel.org, lpieralisi@kernel.org,
+	helgaas@kernel.org, bhelgaas@google.com, devicetree@vger.kernel.org
+Subject: Re: [PATCH v5 1/5] dt-bindings: pci: layerscape-pci: Convert to yaml
+ format
+Message-ID: <20240229-strategic-premises-967eae1f6d9f@spud>
+References: <20240228190321.580846-1-Frank.Li@nxp.com>
+ <20240228190321.580846-2-Frank.Li@nxp.com>
+ <170915420970.759733.12998246565079147606.robh@kernel.org>
+ <ZeDCQezI2zj8bWBP@lizhi-Precision-Tower-5810>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: Jens Axboe <axboe@kernel.dk>
-Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
- Hugh Dickins <hughd@google.com>, Hannes Reinecke <hare@suse.de>,
- Keith Busch <kbusch@kernel.org>, linux-mm <linux-mm@kvack.org>,
- linux-block@vger.kernel.org, linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From: Tony Battersby <tonyb@cybernetics.com>
-Subject: [PATCH] block: Fix page refcounts for unaligned buffers in
- __bio_release_pages()
-Content-Type: text/plain; charset=UTF-8
-X-ASG-Orig-Subj: [PATCH] block: Fix page refcounts for unaligned buffers in
- __bio_release_pages()
-Content-Transfer-Encoding: 7bit
-X-Barracuda-Connect: UNKNOWN[10.10.4.126]
-X-Barracuda-Start-Time: 1709230093
-X-Barracuda-URL: https://10.10.4.122:443/cgi-mod/mark.cgi
-X-Barracuda-BRTS-Status: 1
-X-Virus-Scanned: by bsmtpd at cybernetics.com
-X-Barracuda-Scan-Msg-Size: 1347
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Re0jwgYgtPOeuZKC"
+Content-Disposition: inline
+In-Reply-To: <ZeDCQezI2zj8bWBP@lizhi-Precision-Tower-5810>
 
-Fix an incorrect number of pages being released for buffers that do not
-start at the beginning of a page.
 
-Fixes: 1b151e2435fc ("block: Remove special-casing of compound pages")
-Cc: stable@vger.kernel.org
-Signed-off-by: Tony Battersby <tonyb@cybernetics.com>
----
+--Re0jwgYgtPOeuZKC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Tested with 6.1.79.  The 6.1 backport can just use
-folio_put_refs(fi.folio, nr_pages) instead of do {...} while.
+On Thu, Feb 29, 2024 at 12:43:29PM -0500, Frank Li wrote:
+> On Wed, Feb 28, 2024 at 03:03:31PM -0600, Rob Herring wrote:
+> >=20
+> > On Wed, 28 Feb 2024 14:03:17 -0500, Frank Li wrote:
+> > > Split layerscape-pci.txt into two yaml files: fsl,layerscape-pcie-ep.=
+yaml
+> > > and fsl,layerscape-pcie.yaml.
+> > > yaml files contain the same content as the original txt file.
+> > >=20
+> > > The subsequent commit will fix DTB_CHECK failure.
+> > >=20
+> > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > > ---
+> > >  .../bindings/pci/fsl,layerscape-pcie-ep.yaml  |  89 +++++++++++++
+> > >  .../bindings/pci/fsl,layerscape-pcie.yaml     | 123 ++++++++++++++++=
+++
+> > >  .../bindings/pci/layerscape-pci.txt           |  79 -----------
+> > >  3 files changed, 212 insertions(+), 79 deletions(-)
+> > >  create mode 100644 Documentation/devicetree/bindings/pci/fsl,layersc=
+ape-pcie-ep.yaml
+> > >  create mode 100644 Documentation/devicetree/bindings/pci/fsl,layersc=
+ape-pcie.yaml
+> > >  delete mode 100644 Documentation/devicetree/bindings/pci/layerscape-=
+pci.txt
+> > >=20
+> >=20
+> > My bot found errors running 'make DT_CHECKER_FLAGS=3D-m dt_binding_chec=
+k'
+> > on your patch (DT_CHECKER_FLAGS is new in v5.13):
+>=20
+> Please omit these errors. Bjorn require create a identical version as
+> old txt file.
+>=20
+> Origial txt will cause DTB_CHECK error. The problem will be fixed at next
+> patches.
 
- block/bio.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+One of these is a real error - caused by a typo. "dma-coherence" should
+be "dma-coherent".
 
-diff --git a/block/bio.c b/block/bio.c
-index b9642a41f286..b52b56067e79 100644
---- a/block/bio.c
-+++ b/block/bio.c
-@@ -1152,7 +1152,7 @@ void __bio_release_pages(struct bio *bio, bool mark_dirty)
- 
- 	bio_for_each_folio_all(fi, bio) {
- 		struct page *page;
--		size_t done = 0;
-+		size_t nr_pages;
- 
- 		if (mark_dirty) {
- 			folio_lock(fi.folio);
-@@ -1160,10 +1160,11 @@ void __bio_release_pages(struct bio *bio, bool mark_dirty)
- 			folio_unlock(fi.folio);
- 		}
- 		page = folio_page(fi.folio, fi.offset / PAGE_SIZE);
-+		nr_pages = (fi.offset + fi.length - 1) / PAGE_SIZE -
-+			   fi.offset / PAGE_SIZE + 1;
- 		do {
- 			bio_release_page(bio, page++);
--			done += PAGE_SIZE;
--		} while (done < fi.length);
-+		} while (--nr_pages != 0);
- 	}
- }
- EXPORT_SYMBOL_GPL(__bio_release_pages);
+>=20
+> >=20
+> > yamllint warnings/errors:
+> >=20
+> > dtschema/dtc warnings/errors:
+> > /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings=
+/pci/fsl,layerscape-pcie.example.dtb: pcie@3400000: Unevaluated properties =
+are not allowed ('#address-cells', '#interrupt-cells', '#size-cells', 'bus-=
+range', 'device_type', 'interrupt-map', 'interrupt-map-mask', 'iommu-map', =
+'msi-parent', 'ranges', 'reg-names' were unexpected)
+> > 	from schema $id: http://devicetree.org/schemas/pci/fsl,layerscape-pcie=
+=2Eyaml#
+> > /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings=
+/pci/fsl,layerscape-pcie.example.dtb: pcie@3400000: 'fsl,pcie-scfg' is a re=
+quired property
+> > 	from schema $id: http://devicetree.org/schemas/pci/fsl,layerscape-pcie=
+=2Eyaml#
+> > /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings=
+/pci/fsl,layerscape-pcie.example.dtb: pcie@3400000: 'dma-coherence' is a re=
+quired property
+> > 	from schema $id: http://devicetree.org/schemas/pci/fsl,layerscape-pcie=
+=2Eyaml#
+> >=20
+> > doc reference errors (make refcheckdocs):
+> >=20
+> > See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/2024=
+0228190321.580846-2-Frank.Li@nxp.com
+> >=20
+> > The base for the series is generally the latest rc1. A different depend=
+ency
+> > should be noted in *this* patch.
+> >=20
+> > If you already ran 'make dt_binding_check' and didn't see the above
+> > error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> > date:
+> >=20
+> > pip3 install dtschema --upgrade
+> >=20
+> > Please check and re-submit after running the above command yourself. No=
+te
+> > that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+> > your schema. However, it must be unset to test all examples with your s=
+chema.
+> >=20
 
-base-commit: d206a76d7d2726f3b096037f2079ce0bd3ba329b
--- 
-2.25.1
+--Re0jwgYgtPOeuZKC
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZeDINQAKCRB4tDGHoIJi
+0lRyAP9fEXfWNs46QnjOnUvH2S38xwB64vicfxsWzjSwnN6DzAD/Z/FNBFX2hAZ4
+3gNGGsWbqATFWZOMzrQPjVBaQcNQKAw=
+=Bh1c
+-----END PGP SIGNATURE-----
+
+--Re0jwgYgtPOeuZKC--
 
