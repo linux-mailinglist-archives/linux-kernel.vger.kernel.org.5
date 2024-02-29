@@ -1,128 +1,99 @@
-Return-Path: <linux-kernel+bounces-86606-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86607-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1867F86C7C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:10:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1ECDA86C7C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:10:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A467EB2575C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:10:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE69F1F253C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:10:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54A1F7A739;
-	Thu, 29 Feb 2024 11:10:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kNX8kW0h"
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC3DF7AE4E;
-	Thu, 29 Feb 2024 11:10:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 282E97AE5D;
+	Thu, 29 Feb 2024 11:10:47 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5497A7A73F
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 11:10:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709205022; cv=none; b=IkoRkPDZgefPOLh9rMBWTLTBG2fY5q7sKovTaQ8i8HGGIF5ZmXfoYkSjbR6FIz6SkduYF1WSQGGJsUbWl+Wd4W1hdsD1r/dtpp9zeqhvhn5UHWT0n73ti0mlJKTPFB/RQ9f6l5z65f+4oa2Lklu7v/mOX911awq+tS9MHld41ZE=
+	t=1709205046; cv=none; b=HHllVzFF8yYKkI+BKOZp/12WUqGZSwsQL/stlG4FffC+3aGIMa38G6Iff4xsjJqsRVt2SYWGZusrvru7NC7WGwZ9X/8wPHge7ON5GxRjCiwvH+hKri/kdcme/GNQxZD9WBqG3QdCNohPclIBuG6Y4RNB2O0gui76D84rhOe8lnQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709205022; c=relaxed/simple;
-	bh=pN/tSJjuwssSSwy9xAYBREIgl/Vm4/Oz1DWXTc9me3k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pSL6AjN8V5PCedPq9KoJXIVj5VP9C00s7Ys+qFHzGrwJEISwr4XKmOn2AgCYFOk1LpRDkf+FWWrjvAltwx/ktq2icMOplX2A7LIo3IT31MAlI5sTFe2c+LXFDS7oSGDyWnGa+30vgQDtFyU9nuUTRVbAhg7ksAyrjU9VXfPxGJo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kNX8kW0h; arc=none smtp.client-ip=209.85.167.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-512e4f4e463so632814e87.1;
-        Thu, 29 Feb 2024 03:10:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709205019; x=1709809819; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GIBPoOk+1kYrUDtUJWUP6LK4VMtPXxz+WnWICgzvGsc=;
-        b=kNX8kW0hIh69svYkIMjXK2Zfna7FvnvX/9vXPhnzjAPMhCW2451Ka+ZlrISnv6AOmI
-         J3Z0zQ1GfArUb8HSiycK48dKj1G8UCC8X+MJ2naxSXM9k/RnsAJhi6gNFi/QvGtHnYcK
-         13rK8NcxVzuUP05KEiajgUa8pj6GsmJMp4Uenk6IIhoB0DcgET3BiS3gjBzpFNm+pKxB
-         /zQ8WB3YYjVWgrI0cXOfn8v6oA68ULOQpZ54HcY7FfDjR0tUNSqB8fs6CPTZitqXLxc1
-         fCQ9orQWIQ6wE7n1f8ork3416G2GPD5wof4eeF1DnAZF5yd5Bse2vcZOJ0skABDdmL2Z
-         BqsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709205019; x=1709809819;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GIBPoOk+1kYrUDtUJWUP6LK4VMtPXxz+WnWICgzvGsc=;
-        b=WsEQeJBPrpRZ6h37mfNqp7uDpTawrZEr5PmfmklbvFFGpQCPzk88GzHsQdM4+5s3xn
-         zLvlGCegQKR0pm6o0y4g4yTUI/xVTsaSP0dP29Ik3mjuofB6yFuE/P6IoElQ+zecfpCn
-         Ldxj+xoUKYV3TL4MEe48QmmeIx6hWPbg1sGa1LbjMcz6XHntSHDoHRTKFleFF1RPwBDz
-         tZCh2kYZCgrhFpk2WlUFnGCZ6J0X+/oS49avv/+3e8ublzH53G42bJUcRsupjafqkXqJ
-         cRoGoetPje5qLxaakpQgjXU8Fh8wencRJKT0VcfcEi37yoOFHRPxteWOHIG8LCUfTG05
-         JeOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVJMXoUlde2Zpqx2HxFqZjrEz/lMtR/bzpOo3Qnzpqm2jDavJwUsRneQqTL1Ywkpaxnq2AZCP62eS0AScSNhu3vaYMMwINYKknO1hiZ1LDL1TxAOYklqDEKQccqGIjDcVMFkpa/j/h+RQ9xl6kSnc6Vv6xl9D/OMCPEFYAwCXHrKCajpssPzWfj
-X-Gm-Message-State: AOJu0YzEVF8ZJvGLM3uWrj4i3td3p9BXB2BSCxdh1fP7WAdaXRuQCqRm
-	uF57lEBYENew6KpbFqI8AmtEvYkz09ltVEEDxS/9PjQRPedeWJtY
-X-Google-Smtp-Source: AGHT+IE1rn1IKpuRyvo4Opm0Zt3B82O24f9hp/M7IbQ1wdOiuJCWMOZg3kcfpBECPXoLQ+BpqOoHNg==
-X-Received: by 2002:ac2:547a:0:b0:513:22d2:ede8 with SMTP id e26-20020ac2547a000000b0051322d2ede8mr1329851lfn.39.1709205018795;
-        Thu, 29 Feb 2024 03:10:18 -0800 (PST)
-Received: from [10.32.57.243] (yritysnetti-5422ea-26.businessinternet.fi. [84.34.234.26])
-        by smtp.gmail.com with ESMTPSA id m17-20020ac24ad1000000b005128d91b9f2sm210079lfp.161.2024.02.29.03.10.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Feb 2024 03:10:18 -0800 (PST)
-Message-ID: <655f89fa-6ccb-4b54-adcd-69024b4a1e28@gmail.com>
-Date: Thu, 29 Feb 2024 13:10:16 +0200
+	s=arc-20240116; t=1709205046; c=relaxed/simple;
+	bh=gnJYMBD5vxbFQv3VEdHFXgM/A+bEYir69Dix+1doZkc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hWucDsySBkzfvSMVaqW/Auqwh34BYc884pbbAyJUhJG8atv+ghxR9GEUpkAP7hVg/51SoSEyCUNC9zdVt/11eGMtHdibo8yp82i6Itod+OQYrur+HOBZKZwPnWuxlvsbGBlCTWjsrsw2m8tY0YgfnCqbHQoHAjnwa/1GRBjlegU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3D16A1FB;
+	Thu, 29 Feb 2024 03:11:21 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.67.138])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 617D63F762;
+	Thu, 29 Feb 2024 03:10:40 -0800 (PST)
+Date: Thu, 29 Feb 2024 11:10:37 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Liao Chang <liaochang1@huawei.com>
+Cc: catalin.marinas@arm.com, will@kernel.org, broonie@kernel.org,
+	maz@kernel.org, joey.gouly@arm.com, kristina.martsenko@arm.com,
+	ryan.roberts@arm.com, jeremy.linton@arm.com,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: cpufeatures: Clean up temporary variable to
+ simplify code
+Message-ID: <ZeBmLc9bLhT5qfrB@FVFF77S0Q05N>
+References: <20240229105208.456704-1-liaochang1@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/3] kci-gitlab: Introducing GitLab-CI Pipeline for Kernel
- Testing
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: Helen Koike <helen.koike@collabora.com>, linuxtv-ci@linuxtv.org,
- dave.pigott@collabora.com, mripard@kernel.org, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux-kselftest@vger.kernel.org,
- gustavo.padovan@collabora.com, pawiecz@collabora.com,
- tales.aparecida@gmail.com, workflows@vger.kernel.org,
- kernelci@lists.linux.dev, skhan@linuxfoundation.org,
- kunit-dev@googlegroups.com, nfraprado@collabora.com, davidgow@google.com,
- cocci@inria.fr, Julia.Lawall@inria.fr, laura.nao@collabora.com,
- ricardo.canuelo@collabora.com, kernel@collabora.com,
- torvalds@linuxfoundation.org, gregkh@linuxfoundation.org
-References: <20240228225527.1052240-1-helen.koike@collabora.com>
- <20240228230725.GF1659@pendragon.ideasonboard.com>
- <0a5bf7d1-0a7e-4071-877a-a3d312d80084@gmail.com>
- <20240229093402.GA30889@pendragon.ideasonboard.com>
-Content-Language: en-US
-From: Nikolai Kondrashov <spbnick@gmail.com>
-In-Reply-To: <20240229093402.GA30889@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240229105208.456704-1-liaochang1@huawei.com>
 
-On 2/29/24 11:34 AM, Laurent Pinchart wrote:
-> On Thu, Feb 29, 2024 at 11:26:51AM +0200, Nikolai Kondrashov wrote:
->> On 2/29/24 01:07, Laurent Pinchart wrote:
->>> On Wed, Feb 28, 2024 at 07:55:24PM -0300, Helen Koike wrote:
->>>> **Join Our Slack Channel:**
->>>> We have a Slack channel, #gitlab-ci, on the KernelCI Slack instance https://kernelci.slack.com/ .
->>>> Feel free to join and contribute to the conversation. The KernelCI team has
->>>> weekly calls where we also discuss the GitLab-CI pipeline.
->>>
->>> Could we communicate using free software please ? Furthermore, it's not
->>> possible to create an account on that slack instance unless you have an
->>> e-mail address affiliated with a small number of companies
->>> (https://kernelci.slack.com/signup#/domain-signup). That's a big no-go
->>> for me.
->>
->> Yes, it's not ideal that we use closed-source software for communication, but
->> FWIW I'd be happy to invite you there. Perhaps if you try logging in e.g. with
->> a Google account, I'd be able to see and approve your attempt too.
+On Thu, Feb 29, 2024 at 10:52:08AM +0000, Liao Chang wrote:
+> Clean up one temporary variable to simplifiy code in capability
+> detection.
 > 
-> I don't use Google accounts to authenticate to third-party services,
-> sorry. And in any case, that won't make slack free software.
+> Signed-off-by: Liao Chang <liaochang1@huawei.com>
 
-Of course. You're also welcome to join the #kernelci channel on libera.chat.
+This looks line a nice cleanup, so:
 
-It's much quieter there, though.
+Acked-by: Mark Rutland <mark.rutland@arm.com>
 
-Nick
+For context, we removed the last other user of 'num' in commit:
+
+  21fb26bfb01ffe0d ("arm64: alternatives: add alternative_has_feature_*()")
+
+Mark.
+
+> ---
+>  arch/arm64/kernel/cpufeature.c | 8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+> index 8d1a634a403e..0e900b23f7ab 100644
+> --- a/arch/arm64/kernel/cpufeature.c
+> +++ b/arch/arm64/kernel/cpufeature.c
+> @@ -3052,13 +3052,9 @@ static void __init enable_cpu_capabilities(u16 scope_mask)
+>  	boot_scope = !!(scope_mask & SCOPE_BOOT_CPU);
+>  
+>  	for (i = 0; i < ARM64_NCAPS; i++) {
+> -		unsigned int num;
+> -
+>  		caps = cpucap_ptrs[i];
+> -		if (!caps || !(caps->type & scope_mask))
+> -			continue;
+> -		num = caps->capability;
+> -		if (!cpus_have_cap(num))
+> +		if (!caps || !(caps->type & scope_mask) ||
+> +		    !cpus_have_cap(caps->capability))
+>  			continue;
+>  
+>  		if (boot_scope && caps->cpu_enable)
+> -- 
+> 2.34.1
+> 
 
