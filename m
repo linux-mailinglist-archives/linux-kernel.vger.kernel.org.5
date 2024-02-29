@@ -1,59 +1,55 @@
-Return-Path: <linux-kernel+bounces-87474-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87475-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 236E386D4D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:50:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1697786D4DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:50:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9C911F243B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:50:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6C34284B0D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:50:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF94315FE29;
-	Thu, 29 Feb 2024 20:40:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B55D160886;
+	Thu, 29 Feb 2024 20:40:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gy3/fMOt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oKQn4wiG"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D15E15FE17;
-	Thu, 29 Feb 2024 20:40:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8B7915FE37;
+	Thu, 29 Feb 2024 20:40:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709239207; cv=none; b=bFYunWaqQHwym84RpqLAOupmWEnmR6WLWCpz5fr8wSgt/Ou+vjiExlR8w34TdxSabefRWokKMldYAsegfcV5iQoX6llML4jsbEtwDx8r6cKK84MxB5zRPJ0KUupcNbZNWoceX6nu/ELI1GOPxH+SY1y2JZofQZke6Vgo9n8XCeQ=
+	t=1709239208; cv=none; b=Cp1AxSSLZmP2KRLYia2OGUPyYvRgZGAOjenRxRK5JLrhwPEaYhXiBM6sCv6hp/4HzKdflCSa9vXaJNE8GDusJg99Bl73MwaU2k5xpBXVNOxi+6HX7CwHzLPA2LhZ9qBpgsB/L/Uyoho84A2EIlEnnpcwFFuQP/VB0Zj57hfDkoM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709239207; c=relaxed/simple;
-	bh=45ZrZ9a6InGLOX3zCd/VX2084a+7yRSkog5VZIcOYcM=;
+	s=arc-20240116; t=1709239208; c=relaxed/simple;
+	bh=NkYNaqC8gUpfieNnjfBQsil8TTp5PmLuCYEYfbeDJzw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=la/8w98spqavpPkM4TeXooC2liQUqizdC2xPINLjwRKnGMUVxV+XmsrTnkJFux24G27ve8VoXwzmiE4wcymYyi/wz84UlNPZ8qvP3JnvkEYDCNjKWU/vQPq1sxg8QDfbDG0fkl0y2AThN8UeaayOO1oBcEHs15xVedhwvH+GJLk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gy3/fMOt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1F4FC43399;
-	Thu, 29 Feb 2024 20:40:05 +0000 (UTC)
+	 MIME-Version; b=icZ1ciKkgMC6R+J+ft3xxJQtETxJat+jkx4i8FHyGPdoeLzCMQF7IgBoaAQ8B4tLzHI7RsJz8ze++mAD+lvx5VITXsPHowrvDQ3HTHD3kajBKpCCAEFKSKZ4T20enKrR9nV8oK5pnQS33uQB/kkvQwDrLhUzi4GlD1ibX+F31Bs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oKQn4wiG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58F10C433F1;
+	Thu, 29 Feb 2024 20:40:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709239206;
-	bh=45ZrZ9a6InGLOX3zCd/VX2084a+7yRSkog5VZIcOYcM=;
+	s=k20201202; t=1709239208;
+	bh=NkYNaqC8gUpfieNnjfBQsil8TTp5PmLuCYEYfbeDJzw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=gy3/fMOti/adMjE74HoKA8FR6MWUiXGnnMcm5UvGvd04Cf/uKsFpfk224VBNsmN5s
-	 RYMAcePPOkuzzRopwKhjo6Y3Bb1YskqBvdpSGEv/kdd9TKDkaQ7+kSiXPhV8d1HmLz
-	 1FlA169eh+7lV4QkFi2NDXGq3WK2g24uvhT1rrsIH1jufLUMroUviY6v58IKD+6YC0
-	 xxL2ZfgvacWtLjjUiHtJKRD7APgwqImIRAs0tkKgE8iACRl4+pjlwR/rVH4jbVCbJX
-	 urExGHfWNLsyrh+WhXp77Nt11Qckcl3iBh878Ere93N/QvDenKLPemcGlv1v/P2Oh3
-	 TG1AaSQRld8Qw==
+	b=oKQn4wiGMZnPlOVpuXAvMhX7Dtv/UM2C5JCqUi1Nrj8zOSjkjgYSL9lmNNoA4Iqyt
+	 i4z6whE3eOQ65z02mjaTjQ6emVZVRjNj4jxNIWGXI9mzF6viIXE3+WVV+5/ia9Mv7V
+	 F3WIAz91cxAHuH46oOnv9kT6OY7ROm5DxeNPgHZ8ZCMq7wFOFPsSOFJ+9Cgu7mWMFm
+	 x71fWLti1T+UUPTs6+DoK0qIkwPmMuKKRcBDhpsXWY51EbRvVN7wSO9pqBm9cMWddO
+	 2JRKs8iL1nNpSjMY9n+9LRdhBLc6lqTSdZq4A2ZiDmQk6cTVuCTTqXrAJoZeSokLPg
+	 b6WReoCZcKC7Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Hojin Nam <hj96.nam@samsung.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Will Deacon <will@kernel.org>,
+Cc: Hans de Goede <hdegoede@redhat.com>,
 	Sasha Levin <sashal@kernel.org>,
-	jonathan.cameron@huawei.com,
-	mark.rutland@arm.com,
-	linux-cxl@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.6 15/22] perf: CXL: fix CPMU filter value mask length
-Date: Thu, 29 Feb 2024 15:39:08 -0500
-Message-ID: <20240229203933.2861006-15-sashal@kernel.org>
+	ilpo.jarvinen@linux.intel.com,
+	platform-driver-x86@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 16/22] platform/x86: x86-android-tablets: Fix acer_b1_750_goodix_gpios name
+Date: Thu, 29 Feb 2024 15:39:09 -0500
+Message-ID: <20240229203933.2861006-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240229203933.2861006-1-sashal@kernel.org>
 References: <20240229203933.2861006-1-sashal@kernel.org>
@@ -68,57 +64,45 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.18
 Content-Transfer-Encoding: 8bit
 
-From: Hojin Nam <hj96.nam@samsung.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 802379b8f9e169293e9ba7089e5f1a6340e2e7a3 ]
+[ Upstream commit 8215ca518164d35f10c0b5545c8bb80f538638b8 ]
 
-CPMU filter value is described as 4B length in CXL r3.0 8.2.7.2.2.
-However, it is used as 2B length in code and comments.
+The Acer B1 750 tablet used a Novatek NVT-ts touchscreen,
+not a Goodix touchscreen.
 
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Hojin Nam <hj96.nam@samsung.com>
-Link: https://lore.kernel.org/r/20240216014522.32321-1-hj96.nam@samsung.com
-Signed-off-by: Will Deacon <will@kernel.org>
+Rename acer_b1_750_goodix_gpios to acer_b1_750_nvt_ts_gpios
+to correctly reflect this.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20240216201721.239791-5-hdegoede@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/perf/cxl_pmu.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/platform/x86/x86-android-tablets/other.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/perf/cxl_pmu.c b/drivers/perf/cxl_pmu.c
-index bc0d414a6aff9..308c9969642e1 100644
---- a/drivers/perf/cxl_pmu.c
-+++ b/drivers/perf/cxl_pmu.c
-@@ -59,7 +59,7 @@
- #define   CXL_PMU_COUNTER_CFG_EVENT_GRP_ID_IDX_MSK	GENMASK_ULL(63, 59)
+diff --git a/drivers/platform/x86/x86-android-tablets/other.c b/drivers/platform/x86/x86-android-tablets/other.c
+index e79549c6aae17..fe5f68fa7bca7 100644
+--- a/drivers/platform/x86/x86-android-tablets/other.c
++++ b/drivers/platform/x86/x86-android-tablets/other.c
+@@ -66,7 +66,7 @@ static const struct x86_i2c_client_info acer_b1_750_i2c_clients[] __initconst =
+ 	},
+ };
  
- #define CXL_PMU_FILTER_CFG_REG(n, f)	(0x400 + 4 * ((f) + (n) * 8))
--#define   CXL_PMU_FILTER_CFG_VALUE_MSK			GENMASK(15, 0)
-+#define   CXL_PMU_FILTER_CFG_VALUE_MSK			GENMASK(31, 0)
+-static struct gpiod_lookup_table acer_b1_750_goodix_gpios = {
++static struct gpiod_lookup_table acer_b1_750_nvt_ts_gpios = {
+ 	.dev_id = "i2c-NVT-ts",
+ 	.table = {
+ 		GPIO_LOOKUP("INT33FC:01", 26, "reset", GPIO_ACTIVE_LOW),
+@@ -75,7 +75,7 @@ static struct gpiod_lookup_table acer_b1_750_goodix_gpios = {
+ };
  
- #define CXL_PMU_COUNTER_REG(n)		(0xc00 + 8 * (n))
- 
-@@ -314,9 +314,9 @@ static bool cxl_pmu_config1_get_edge(struct perf_event *event)
- }
- 
- /*
-- * CPMU specification allows for 8 filters, each with a 16 bit value...
-- * So we need to find 8x16bits to store it in.
-- * As the value used for disable is 0xffff, a separate enable switch
-+ * CPMU specification allows for 8 filters, each with a 32 bit value...
-+ * So we need to find 8x32bits to store it in.
-+ * As the value used for disable is 0xffff_ffff, a separate enable switch
-  * is needed.
-  */
- 
-@@ -642,7 +642,7 @@ static void cxl_pmu_event_start(struct perf_event *event, int flags)
- 		if (cxl_pmu_config1_hdm_filter_en(event))
- 			cfg = cxl_pmu_config2_get_hdm_decoder(event);
- 		else
--			cfg = GENMASK(15, 0); /* No filtering if 0xFFFF_FFFF */
-+			cfg = GENMASK(31, 0); /* No filtering if 0xFFFF_FFFF */
- 		writeq(cfg, base + CXL_PMU_FILTER_CFG_REG(hwc->idx, 0));
- 	}
- 
+ static struct gpiod_lookup_table * const acer_b1_750_gpios[] = {
+-	&acer_b1_750_goodix_gpios,
++	&acer_b1_750_nvt_ts_gpios,
+ 	&int3496_reference_gpios,
+ 	NULL
+ };
 -- 
 2.43.0
 
