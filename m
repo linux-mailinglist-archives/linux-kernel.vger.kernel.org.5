@@ -1,243 +1,121 @@
-Return-Path: <linux-kernel+bounces-86130-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86131-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDBD186C01B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 06:16:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5850686C01D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 06:17:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D7B3A1C20CDB
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 05:16:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A4841C20FCC
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 05:17:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF68A39AEF;
-	Thu, 29 Feb 2024 05:16:36 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3428C39FD1;
+	Thu, 29 Feb 2024 05:17:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fM8gQKCO"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DB27383BE;
-	Thu, 29 Feb 2024 05:16:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C246939AD5
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 05:17:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709183796; cv=none; b=d2A0QGr4iAuk2Pj9pjmnpcYO646ndebo978/+BSbcUKwC6QXnSBs1FpWYoKkbjRaqg+IPKHCTmCVzV2OS4hHgeCpqDADKCYk60A7wK6dhzOd+j3LYlQED8rqG4vX8xGOb66G1XVTSVuGqLzHZQ/esorY/BNM3fvir7623hZSRh4=
+	t=1709183861; cv=none; b=g5/CPcUIrYIAPxldG1OvOItTNm8lapBoRMvTZH+dDqkc44HUTN3CHoQze1mxVxADWRhDG4HUUDFeMHtQrq84ceWM4bxA+nYMxR6ljZmEJg6PM1I6LjA/UmcnPDjXPwO2yz/WwkLZkO3Uf2gKwHCThKb0wsDAj0+We3KCO4KWQNo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709183796; c=relaxed/simple;
-	bh=t3j1woEgvFnLc8x11g+kBPBzZ/jeWchNm0SifGt5RgQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=WCmdME/qRXKMc6KHaMfRdmj0HM1vdhwNWIEIi3jV402G40AN44fuIgDEVk1AkrgkucmddARErsIMvaJjJ8H0firwyC+kZ80h3Iim7eqlKYW9rKw8DFy+AZl+eBk8dqB5/wq97ThhbTIwvt7YjX4bMhW5851hP8FHisfUJ3LngWg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: d08d34d4130e45a8a69a80c8dd358203-20240229
-X-CID-O-RULE: Release_Ham
-X-CID-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:9f5ee081-2332-4efc-8847-62d1591c6024,IP:10,
-	URL:0,TC:0,Content:-5,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACT
-	ION:release,TS:-10
-X-CID-INFO: VERSION:1.1.37,REQID:9f5ee081-2332-4efc-8847-62d1591c6024,IP:10,UR
-	L:0,TC:0,Content:-5,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:-10
-X-CID-META: VersionHash:6f543d0,CLOUDID:888d54ff-c16b-4159-a099-3b9d0558e447,B
-	ulkID:240229131626BIG1UWI7,BulkQuantity:0,Recheck:0,SF:17|19|44|66|38|24|1
-	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC
-	:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: d08d34d4130e45a8a69a80c8dd358203-20240229
-X-User: aichao@kylinos.cn
-Received: from localhost.localdomain [(112.64.161.44)] by mailgw
-	(envelope-from <aichao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 724790857; Thu, 29 Feb 2024 13:16:23 +0800
-From: Ai Chao <aichao@kylinos.cn>
-To: hdegoede@redhat.com,
-	ilpo.jarvinen@linux.intel.com,
-	linux-kernel@vger.kernel.org,
-	platform-driver-x86@vger.kernel.org
-Cc: Ai Chao <aichao@kylinos.cn>
-Subject: [PATCH] platform/x86: add lenovo generic wmi driver
-Date: Thu, 29 Feb 2024 13:16:21 +0800
-Message-Id: <20240229051621.12341-1-aichao@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1709183861; c=relaxed/simple;
+	bh=QLdvRcyiMne/VT/oSplWRmRIFKGFh7UjVB3Dd95hIss=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=l45FG3Yu7RHZzTLNwrTeAwz1bGNw5UGJ3EwTCMX43km3p3xJw8bYmqnxeatt94tQKr20vEx9fx8qpnxnZ5DNkeVe2pBui11s1zhoNh5aXbM2WVHg82lTKdbPoG7t0F7J0k3IOovw4Ztk8WQow7DMHrdN0MPchj84fpBXflAzgak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fM8gQKCO; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-51327cd65beso47365e87.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 21:17:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709183858; x=1709788658; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=oEDigR9B35jgh3NUhIDi4WoeBZW/WlBf7UzIlNaTSiw=;
+        b=fM8gQKCOShiWKrB26gzgpPYI/kJ023iAn4RikPbYSOQdmn4Al4Rb2h5AG7wbGip2X5
+         HUHbrErzE7QPmkDWCOiz6Aby9y1IgD47lNGHpO5wst/hgFLZ1pUAoLfpW3rFGCyVgYmG
+         hVTMm4/CHJWhDw2lQ4T6lPeC9Wy6ctOO35+1mXFa/HYTNMkulUy5WblMgdFTQBJZ3ZiG
+         u0TZzm6xkCAVt0lv4Lt++sLaMR9yuyLKspo2cb0vcKZzvP4EsNXqshqc1SJo/XTDE1Ll
+         jdDMdEgGp22Vpya5k2UBVM8EJEUlIyKneeWgyKFWeyaSiXVBoDAw3iminNEqG7gy2CRS
+         3hGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709183858; x=1709788658;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oEDigR9B35jgh3NUhIDi4WoeBZW/WlBf7UzIlNaTSiw=;
+        b=VoDb09/xXRijktpZtPPl2nTsA5zDJajq7n+ipPr9N9ZvloqNx8xdINlKm2L9V2ziJN
+         LtqEtrTQoxhIfXaILVkepW3K3VMzQhyi1t8Eb+jJspFSxuSU4jpZcCprpnkgVRJTkDT7
+         kZ1dDUbSnW+319NSUp378RftobnhkCfsT+uYixv2T/7ienFcOiS4tW0NptqY6ms+J+7E
+         qYyKSK3gvJxAV9RrLl5bhRKiPQnlVZVr4qa8sarz67gBOEYRiiTj1dXvrjyVlk0wnAQE
+         sYKRsOQsdjJ/QZbLM42W/wmrylmb/b2C40HOCihj0whZUhW8ik2Bj1hepfFQJBeBkI9H
+         WQNQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWR7K9CpMcKm6QvnwdTBoIX2reJlt68S6owA1p7S5b+Oj62EgNHK2QdbJyGNHSF9M46ph6nb+BCGssW+WViK27YjKz3/3LLRmwz3UPl
+X-Gm-Message-State: AOJu0YzrGT0JUTtn9Y81YJdlF1rA+QQpnWByZR/UywDRNGQ/tRUr5c2q
+	iS9AIBh6QkybukPtm2NQJlZXMljRHTTcoSLAnX3ig/1/SadIkb9W
+X-Google-Smtp-Source: AGHT+IHxbIGnVddxTEb8eZVws/jmRpTTm4E/db4m/qINhv+hBD1QscgPzEdEUCBi9/LxGQEwXYBn+Q==
+X-Received: by 2002:a05:6512:10cb:b0:513:1cc8:6d05 with SMTP id k11-20020a05651210cb00b005131cc86d05mr666989lfg.2.1709183857655;
+        Wed, 28 Feb 2024 21:17:37 -0800 (PST)
+Received: from [192.168.0.102] (p54a07fa0.dip0.t-ipconnect.de. [84.160.127.160])
+        by smtp.gmail.com with ESMTPSA id o3-20020a05600c4fc300b0041297d7e181sm858237wmq.6.2024.02.28.21.17.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Feb 2024 21:17:37 -0800 (PST)
+Message-ID: <5b9b2619-eea8-4b8f-8e66-e343272ab51f@gmail.com>
+Date: Thu, 29 Feb 2024 06:17:35 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/8] Staging: rtl8192e: Fix Checkpatch warnings in
+ rtl819x_BAProc.c
+To: Tree Davies <tdavies@darkphysics.net>, gregkh@linuxfoundation.org,
+ anjan@momi.ca
+Cc: linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20240229024325.453374-1-tdavies@darkphysics.net>
+Content-Language: en-US
+From: Philipp Hortmann <philipp.g.hortmann@gmail.com>
+In-Reply-To: <20240229024325.453374-1-tdavies@darkphysics.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Add lenovo generic wmi driver to support camera button.
+On 2/29/24 03:43, Tree Davies wrote:
+> This series fixes the remaining checkpatch issues in rtl819x_BAProc.c
+> These patches are to be applied after patch-series: '[PATCH v2 00/20]
+> Staging: rtl8192e: Fix checkpatch warning for rtllib_softmac.c ''
+> Thank you to all reviewers
+> ~ Tree Davies
+> 
+> v2: Change commit message in patches 7 and 8
+> 
+> Tree Davies (8):
+>    Staging: rtl8192e: Fix 5 chckpatch alignment warnings in
+>      rtl819x_BAProc.c
+>    Staging: rtl8192e: Rename variable TxRxSelect
+>    Staging: rtl8192e: Rename function rtllib_send_ADDBAReq()
+>    Staging: rtl8192e: Rename function rtllib_send_ADDBARsp()
+>    Staging: rtl8192e: Rename goto OnADDBAReq_Fail
+>    Staging: rtl8192e: Rename goto OnADDBARsp_Reject
+>    Staging: rtl8192e: Rename function rtllib_FlushRxTsPendingPkts()
+>    Staging: rtl8192e: Rename function GetHalfNmodeSupportByAPsHandler()
+> 
+>   drivers/staging/rtl8192e/rtl8192e/rtl_core.c |  2 +-
+>   drivers/staging/rtl8192e/rtl8192e/rtl_dm.c   |  2 +-
+>   drivers/staging/rtl8192e/rtl819x_BAProc.c    | 66 ++++++++++----------
+>   drivers/staging/rtl8192e/rtl819x_HTProc.c    |  8 +--
+>   drivers/staging/rtl8192e/rtl819x_TSProc.c    | 24 +++----
+>   drivers/staging/rtl8192e/rtllib.h            | 10 +--
+>   drivers/staging/rtl8192e/rtllib_rx.c         |  4 +-
+>   7 files changed, 58 insertions(+), 58 deletions(-)
+> 
 
-Signed-off-by: Ai Chao <aichao@kylinos.cn>
----
- drivers/platform/x86/Kconfig      |  10 +++
- drivers/platform/x86/Makefile     |   1 +
- drivers/platform/x86/lenovo-wmi.c | 121 ++++++++++++++++++++++++++++++
- 3 files changed, 132 insertions(+)
- create mode 100644 drivers/platform/x86/lenovo-wmi.c
-
-diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-index bdd302274b9a..fbbb8fb843d7 100644
---- a/drivers/platform/x86/Kconfig
-+++ b/drivers/platform/x86/Kconfig
-@@ -1001,6 +1001,16 @@ config INSPUR_PLATFORM_PROFILE
- 	To compile this driver as a module, choose M here: the module
- 	will be called inspur-platform-profile.
- 
-+config LENOVO_WMI
-+	tristate "Lenovo Geneirc WMI driver"
-+	depends on ACPI_WMI
-+	depends on INPUT
-+	help
-+	This driver provides support for Lenovo WMI driver.
-+
-+	To compile this driver as a module, choose M here: the module
-+	will be called lenovo-wmi.
-+
- source "drivers/platform/x86/x86-android-tablets/Kconfig"
- 
- config FW_ATTR_CLASS
-diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
-index 1de432e8861e..d51086552192 100644
---- a/drivers/platform/x86/Makefile
-+++ b/drivers/platform/x86/Makefile
-@@ -66,6 +66,7 @@ obj-$(CONFIG_SENSORS_HDAPS)	+= hdaps.o
- obj-$(CONFIG_THINKPAD_ACPI)	+= thinkpad_acpi.o
- obj-$(CONFIG_THINKPAD_LMI)	+= think-lmi.o
- obj-$(CONFIG_YOGABOOK)		+= lenovo-yogabook.o
-+obj-$(CONFIG_LENOVO_WMI)	+= lenovo-wmi.o
- 
- # Intel
- obj-y				+= intel/
-diff --git a/drivers/platform/x86/lenovo-wmi.c b/drivers/platform/x86/lenovo-wmi.c
-new file mode 100644
-index 000000000000..e8b1c401b53e
---- /dev/null
-+++ b/drivers/platform/x86/lenovo-wmi.c
-@@ -0,0 +1,121 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ *  Lenovo Generic WMI Driver
-+ *
-+ *  Copyright (C) 2018	      Ai Chao <aichao@kylinos.cn>
-+ */
-+
-+#include <linux/acpi.h>
-+#include <linux/device.h>
-+#include <linux/input.h>
-+#include <linux/module.h>
-+#include <linux/wmi.h>
-+
-+#define WMI_LENOVO_CAMERABUTTON_EVENT_GUID "50C76F1F-D8E4-D895-0A3D-62F4EA400013"
-+
-+static u8 camera_mode;
-+
-+struct lenovo_wmi_priv {
-+	struct input_dev *idev;
-+};
-+
-+static ssize_t camerabutton_show(struct device *dev,
-+				 struct device_attribute *attr, char *buf)
-+{
-+	return sprintf(buf, "%u\n", camera_mode);
-+}
-+
-+DEVICE_ATTR_RO(camerabutton);
-+
-+static struct attribute *lenovo_wmi_attrs[] = {
-+	&dev_attr_camerabutton.attr,
-+	NULL,
-+};
-+
-+static const struct attribute_group lenovo_wmi_group = {
-+	.attrs = lenovo_wmi_attrs,
-+};
-+
-+const struct attribute_group *lenovo_wmi_groups[] = {
-+	&lenovo_wmi_group,
-+	NULL,
-+};
-+
-+static void lenovo_wmi_notify(struct wmi_device *wdev, union acpi_object *obj)
-+{
-+	struct lenovo_wmi_priv *priv = dev_get_drvdata(&wdev->dev);
-+
-+	if (obj->type == ACPI_TYPE_BUFFER) {
-+		camera_mode = obj->buffer.pointer[0];
-+		input_report_key(priv->idev, KEY_CAMERA, 1);
-+		input_sync(priv->idev);
-+		input_report_key(priv->idev, KEY_CAMERA, 0);
-+		input_sync(priv->idev);
-+	} else {
-+		dev_info(&wdev->dev, "Bad response type %d\n", obj->type);
-+	}
-+}
-+
-+static int lenovo_wmi_input_setup(struct wmi_device *wdev)
-+{
-+	struct lenovo_wmi_priv *priv = dev_get_drvdata(&wdev->dev);
-+
-+	priv->idev = devm_input_allocate_device(&wdev->dev);
-+	if (!priv->idev)
-+		return -ENOMEM;
-+
-+	priv->idev->name = "Lenovo WMI Camera Button";
-+	priv->idev->phys = "wmi/input0";
-+	priv->idev->id.bustype = BUS_HOST;
-+	priv->idev->dev.parent = &wdev->dev;
-+	priv->idev->evbit[0] = BIT_MASK(EV_KEY);
-+	priv->idev->keybit[BIT_WORD(KEY_CAMERA)] = BIT_MASK(KEY_CAMERA);
-+
-+	return input_register_device(priv->idev);
-+}
-+
-+static int lenovo_wmi_probe(struct wmi_device *wdev, const void *context)
-+{
-+	struct lenovo_wmi_priv *priv;
-+	int err;
-+
-+	priv = devm_kzalloc(&wdev->dev, sizeof(struct lenovo_wmi_priv),
-+			    GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	dev_set_drvdata(&wdev->dev, priv);
-+
-+	err = lenovo_wmi_input_setup(wdev);
-+	return err;
-+}
-+
-+static void lenovo_wmi_remove(struct wmi_device *wdev)
-+{
-+	struct lenovo_wmi_priv *priv = dev_get_drvdata(&wdev->dev);
-+
-+	input_unregister_device(priv->idev);
-+}
-+
-+static const struct wmi_device_id lenovo_wmi_id_table[] = {
-+	{ .guid_string = WMI_LENOVO_CAMERABUTTON_EVENT_GUID },
-+	{  }
-+};
-+
-+static struct wmi_driver lenovo_wmi_driver = {
-+	.driver = {
-+		.name = "lenovo-wmi",
-+		.dev_groups = lenovo_wmi_groups,
-+	},
-+	.id_table = lenovo_wmi_id_table,
-+	.probe = lenovo_wmi_probe,
-+	.notify = lenovo_wmi_notify,
-+	.remove = lenovo_wmi_remove,
-+};
-+
-+module_wmi_driver(lenovo_wmi_driver);
-+
-+MODULE_DEVICE_TABLE(wmi, lenovo_wmi_id_table);
-+MODULE_AUTHOR("Ai Chao <aichao@kylinos.cn>");
-+MODULE_DESCRIPTION("Lenovo Generic WMI Driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.25.1
-
+Tested-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
 
