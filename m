@@ -1,198 +1,211 @@
-Return-Path: <linux-kernel+bounces-87084-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87085-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAC4786CF34
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:31:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01A9386CF36
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:31:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5CF0528504D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:31:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 840D61F27507
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:31:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57EE26CC08;
-	Thu, 29 Feb 2024 16:28:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D171570ADE;
+	Thu, 29 Feb 2024 16:29:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="Q14FqFwO"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="D1ELQ90Q"
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2049.outbound.protection.outlook.com [40.107.220.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9E3F6CBE0;
-	Thu, 29 Feb 2024 16:28:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709224138; cv=none; b=RlgEzoPp+HymUrW2RLArSw1cIFH9NrXWkKrWacZIn1157k0RpUUoscb3roUjsfIEN8CnbgVlwhSKDilbscOsNIBnqcIjis05xNcNj8EZ0asgcJMGFu9DZRiM5JedBb+dhnu852HNY76khrC74HfJvun/7Bj4g0ohGnMlqPGQRxk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709224138; c=relaxed/simple;
-	bh=z4pcMkbx7CwYtTLR1xVSD2jGRP8EoN4FBh8txazgN9A=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Yk8q9AvQFOuB1esStVtnxxiAbNRAJO0Lil2m8r8FT9CAlg2fRrQ9+bKc1dG78FWod6jA/kKEmM1XWRNFEVvAAoBpuN1c4pE1xPbR54pFkpMR8/156j57BTE2ApuKfjKdf/J/LB4tFx3BJDN5W/hxEU0A/Q+Os1ZE7XUJ9fUKEPg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=Q14FqFwO; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709224134;
-	bh=z4pcMkbx7CwYtTLR1xVSD2jGRP8EoN4FBh8txazgN9A=;
-	h=Subject:From:To:Date:In-Reply-To:References:From;
-	b=Q14FqFwOkU3VixMurYxnw1yk1ZbMV9inkY4T1bEtUk4/XS5dyG+R94vFtllvI/t1b
-	 BLOtyXu7swxRNfucTD11pVsSgdE0emaKDk+nNA+iRUqy11TXgGKLTE0dbr4QtYhiAW
-	 3R3NW0akW34+qswicx0By/kpbDHalnrt0hcUHs1fQf08vDKcmYxD0p4odjklxshMID
-	 bek9QpSuvYFpYd2ms1DWsCyijWVcDNkR+DROy3guaDoYd21B1zBqeAE/1j+qZu0tTL
-	 nVulcl3OdM19BKtZutlAs+shYJGgpfIoXjlhEB9AgDh2FFQa2kdoq7wtco/LS2xlHT
-	 dlzl/nirPPcnA==
-Received: from nicolas-tpx395.localdomain (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: nicolas)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 92CC13782066;
-	Thu, 29 Feb 2024 16:28:51 +0000 (UTC)
-Message-ID: <51fa8932e57010620e9a9e16a1979f4883e95a7d.camel@collabora.com>
-Subject: Re: [PATCH 0/3] kci-gitlab: Introducing GitLab-CI Pipeline for
- Kernel Testing
-From: Nicolas Dufresne <nicolas.dufresne@collabora.com>
-To: Nikolai Kondrashov <spbnick@gmail.com>, Guillaume Tucker
- <gtucker@gtucker.io>, Helen Koike <helen.koike@collabora.com>, 
- linuxtv-ci@linuxtv.org, dave.pigott@collabora.com, mripard@kernel.org, 
- linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
- linux-kselftest@vger.kernel.org, gustavo.padovan@collabora.com, 
- pawiecz@collabora.com, tales.aparecida@gmail.com,
- workflows@vger.kernel.org,  kernelci@lists.linux.dev,
- skhan@linuxfoundation.org, kunit-dev@googlegroups.com, 
- nfraprado@collabora.com, davidgow@google.com, cocci@inria.fr, 
- Julia.Lawall@inria.fr, laura.nao@collabora.com,
- ricardo.canuelo@collabora.com,  kernel@collabora.com,
- torvalds@linuxfoundation.org, gregkh@linuxfoundation.org
-Date: Thu, 29 Feb 2024 11:28:48 -0500
-In-Reply-To: <a5726043-1906-44ba-a6ee-a725a2776269@gmail.com>
-References: <20240228225527.1052240-1-helen.koike@collabora.com>
-	 <d99d026e-ed32-4432-bab3-db75296e67d8@gtucker.io>
-	 <a5726043-1906-44ba-a6ee-a725a2776269@gmail.com>
-Autocrypt: addr=nicolas.dufresne@collabora.com; prefer-encrypt=mutual;
- keydata=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
-Content-Type: text/plain; charset="UTF-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0448470AC3;
+	Thu, 29 Feb 2024 16:29:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.49
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709224149; cv=fail; b=mWUcEJWTAppcPxrgE2lUn2qYJqhfJZTf4/kcKlm9oOs2Nr9vJjRIXPsja3E5jVe5ko8SjfMJG1ykNQqc9AQ0rj+1DQn5njI+7hSdpK4AX3S4kMu1dA0NqwS3mIWOMw2kZ5N37K/A7VdFmJBHw2uI2UxHKcRWWp5H3p2aJ68O0r0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709224149; c=relaxed/simple;
+	bh=hve+xvBKTxM5PVZ6iUVdye9neb/OZl1OBRmyNfiBW5M=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=jHrQWHN4ko0pgpsnTb/4NZFSggLM9iSYEkWivtpvmFSpVZDjO4DaComvhv1sffzWy52YzlzCJ4ZcDoPpkvjw9hs1Xn1bNcB0iTPQU1eez1xTTjaAGw3FvOFWtwE+0WyRTdlLt7VYxqbJaz5hAOL4RH8hNuJMRd0oP+aZ9hetkss=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=D1ELQ90Q; arc=fail smtp.client-ip=40.107.220.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=E0cgcCdzyMHKawIUHYOh0JCLYcKseNs08KZ1AH1E1NyJIeP1JpWRqThieKDU2pVq1hbqAAksP9w8LhX8BSro/rL7wAWxYuMkK9BgFQgNL/29xEBU8dPlSfFpJ/oYUj7guOmaaNGiKZGLb0Jca2b1wLKBprmm+J/hV8RkDI1TSeoIzptDtkduEg79Snz4Jy1Iai+S++dZBZX8rj1wd3FRHRRl+S47hgnRmURSyxHvdc5rt0nVhDPJ5CRCNFBti9rbign4SWZB/h4jX8e48gMGvUo7Unum5Rg5iahB8yfBfymuHZpHda3e6wCKEJ/AZ2ja4cUDPD780bS3RZqaIEY46g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hve+xvBKTxM5PVZ6iUVdye9neb/OZl1OBRmyNfiBW5M=;
+ b=P071q50llGAYNzBIEO+0dW31LTk8ZK5mXnCf2nEqOSQ56bPpB1NyKzN6r2+nJynOkaR/Td2DPjGbBIsnID+BFZLjkIdCJ83Vd8MxEhVn+mkW4fLYL9O42NXMzlhYIW8Lapv8+t1+fKe9bbUYGlBGTehkVKC2jRzuuMlogslspqeCeLgBjoAZdHS0CVoyZtuTX1shq1/30LpQ3GetNKWRzPcdLlmFgMdF1rP8UHSeYwp6cmLwiG8fdUE3A6XZLVFAy48SPxAzaQpTcwx+KDuKOXB4+CiKu4iyxUqrOk4ugvrhQWhdwa8J7DPM2wvUQnu3mA/qDaC/HbaLvYaf11IoYA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hve+xvBKTxM5PVZ6iUVdye9neb/OZl1OBRmyNfiBW5M=;
+ b=D1ELQ90QjiKsIADgRRDSb32xs150oLWuJxIXF4SHz0GuExwhoWgpEZJAfJaQd5Vf3cEIbSccThfOGvR88bwu+mrxyutHkkwTZBEDY3o9y51pft+04evixK0IvxbtHVbNnX4r+FJa4Rf4DvuFEX2rkhriFc3hMCEk6aO2V+HdwiZqvNngnq47+VXN/gqIOxYOnIW+59WjzNogK/QgvS7C3zk8FFaxHkSAk1HcHgmW3/QU456CaJ+YzCjjO2+x7qqzN0+54HHebhR1dkdsAtcsRT4vbTczsvk9z8L0BDvgpsYQtwja/euF2Ti8yVjknXRqGE6rvRZqE+ySMurbk9BwWg==
+Received: from SA1PR12MB7199.namprd12.prod.outlook.com (2603:10b6:806:2bc::21)
+ by MN2PR12MB4406.namprd12.prod.outlook.com (2603:10b6:208:268::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.41; Thu, 29 Feb
+ 2024 16:29:04 +0000
+Received: from SA1PR12MB7199.namprd12.prod.outlook.com
+ ([fe80::284c:211f:16dc:f7b2]) by SA1PR12MB7199.namprd12.prod.outlook.com
+ ([fe80::284c:211f:16dc:f7b2%5]) with mapi id 15.20.7316.032; Thu, 29 Feb 2024
+ 16:29:04 +0000
+From: Ankit Agrawal <ankita@nvidia.com>
+To: Jason Gunthorpe <jgg@nvidia.com>, Alex Williamson
+	<alex.williamson@redhat.com>
+CC: Yishai Hadas <yishaih@nvidia.com>, "shameerali.kolothum.thodi@huawei.com"
+	<shameerali.kolothum.thodi@huawei.com>, "kevin.tian@intel.com"
+	<kevin.tian@intel.com>, Aniket Agashe <aniketa@nvidia.com>, Neo Jia
+	<cjia@nvidia.com>, Kirti Wankhede <kwankhede@nvidia.com>, "Tarun Gupta
+ (SW-GPU)" <targupta@nvidia.com>, Vikram Sethi <vsethi@nvidia.com>, Andy
+ Currid <acurrid@nvidia.com>, Alistair Popple <apopple@nvidia.com>, John
+ Hubbard <jhubbard@nvidia.com>, Dan Williams <danw@nvidia.com>, Rahul
+ Rameshbabu <rrameshbabu@nvidia.com>, Zhi Wang <zhiw@nvidia.com>, "Anuj
+ Aggarwal (SW-GPU)" <anuaggarwal@nvidia.com>, Matt Ochs <mochs@nvidia.com>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 1/1] vfio/nvgrace-gpu: Convey kvm that the device is wc
+ safe
+Thread-Topic: [PATCH v1 1/1] vfio/nvgrace-gpu: Convey kvm that the device is
+ wc safe
+Thread-Index: AQHaan8STeXbyerayU2Kw+zSatmIBbEhesSAgAACnQCAAAUMTA==
+Date: Thu, 29 Feb 2024 16:29:04 +0000
+Message-ID:
+ <SA1PR12MB71990CC60F96FEBFA9CABC58B05F2@SA1PR12MB7199.namprd12.prod.outlook.com>
+References: <20240228194801.2299-1-ankita@nvidia.com>
+ <20240229085639.484b920c.alex.williamson@redhat.com>
+ <20240229160600.GJ9179@nvidia.com>
+In-Reply-To: <20240229160600.GJ9179@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA1PR12MB7199:EE_|MN2PR12MB4406:EE_
+x-ms-office365-filtering-correlation-id: bdec695d-8e8c-4b71-e4e1-08dc39438b72
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ hm3HR27jKXDZynHbXwrVd0p9UocD8FxnLzgpUK+JkrDb/Cp3CeXzA0FV9b8Wn/j24bAxziO06uYa9ohPCMQ41rr5jqyFGIzak1u7mIF6pYNpZ6CYjxfcQjqxx8EApQ2gyC7t87uXKfEB4BOXkAMCwxUdoKF60ZIXvgPpvfTqoIl70yXR2mCsjyRTlIAOiDQj16iD2ciczhz0Im7Y9R6iWmIZyLYb3gGX8c+HZZUse/u/BF5+4/XOnLE1YZz27olk2HoSBiQz/srAKOxu2//dTUOrLY+mQnk880n1v9Mil91Evmw9OpwQyOIAypi6iv0UuH2Ak6enUeid1epLG4ucVZpPjr9P3R01bGCBo+4PfUadVEgoiIx3eyU4klYwvqEBVaLaQnN/Eu0ZkD7CxW3CvaZhIbR4/mluOa0Vs8H9KYajvD9Myj1nYf30OBaH0fklvr/U7izHptiPytNBPKjcWuvuF5s5yGMC1fLi9VnT0gQIDVQnNjz+YyCj4q20NEFDgDPp7mXQhLScotyOCvUG+fS7fMpvz76Q+N5/zjBsBDHVD6ame2enP+40JUYGTgSO2qcHxTZiMwzC28AFloEeL/5BjOXiONUn2F/lBIj266gYAYBv2ktJkGlOmYnzrKVFM3Xr5xTT4WWqD094Z6Ud3GsSXBW/bKFpnaC/eXELaLM0UxLs795ie19PVBpPzomcaPde39iCyFK8iwakviGGX50Mzw8jxumRPs8JQWnVySI=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR12MB7199.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?iso-8859-1?Q?GwYtnkjb8nZLDjAr/wlrcKynY5Z94gxipXw0K87V+DrTKVRfvNJSflrU3k?=
+ =?iso-8859-1?Q?Cywv1hN3Xkqa1WRtrYQZB8BJH9YOPpVV2UbQ5PnildKr1dbrilHNDYbvq0?=
+ =?iso-8859-1?Q?/hej4qt/ezQwu/L3RyOHCmp2D5t/wu+1EoUiSlBddPKcOX/Gnzzt67XDfr?=
+ =?iso-8859-1?Q?Ijl45Y7XQ/8fjlrQlTYp08BrMCuNQfb2ruXsqRj1c7VYvC3uytGuK7BMhC?=
+ =?iso-8859-1?Q?GK9T4l1E265SK96Z6tCaGYSkChF0WbHZzdyIZq9FJt9V9gWbpucAFkh3zV?=
+ =?iso-8859-1?Q?Y7cE5ydr2jSi1FIFHGo+pxjFxhDJu2//IyZoeuLELF/I6qVFzUjWmJNohY?=
+ =?iso-8859-1?Q?FC8likAAEansbtkXP3acLggsFsJusHsZAKYMlJNhD62beXMhu6YYyFd1th?=
+ =?iso-8859-1?Q?sa87QDoeALyN3Ahdu+pivNFk4c94hXYHTawYA4pYo2Yq4BGzVgXwC3ghAV?=
+ =?iso-8859-1?Q?KXtVgk6cTY+C0UPAEgppl1oFbNP7YNmv374jeEVJ/rWP2kffMwf5nWlrhj?=
+ =?iso-8859-1?Q?Sfk1/hhaeyqFwRwWtNEcbojfeV9JcntaUuOngSoDjtdJdKlMwN3ITJ2oKK?=
+ =?iso-8859-1?Q?pPaHOZcsmhNY5qS5Tb6FS2kSfyCjAZUl759/BLn16oJvAqAJkjGsBk24Hw?=
+ =?iso-8859-1?Q?5koY/Sqxej+Y3uO10GNBZdEQrj35Qqw5On09t3WW+Aco229mL6zeweOMoN?=
+ =?iso-8859-1?Q?h5zhRreGLes7wnulWb25qCLG5598ReAiSu/sz6i3N+uDZwC5Zq3PSX281a?=
+ =?iso-8859-1?Q?+D8F9glZHJRju6LslSupTqFF9CsCp91A4aKVgK3N0ZFnmjxep5MQZoXRLG?=
+ =?iso-8859-1?Q?Dt5dGq0Ec2nFTr+fh98cEMgmQzxLjHa8aFnePSrtZ2+4izgJP/TV+jSqWs?=
+ =?iso-8859-1?Q?m3bneNM45TxXaondAMif2UJeOSVzl7q7c5oZArofiqtNy02pnMlWPrzk7U?=
+ =?iso-8859-1?Q?5RgFg4WzCUuCMSXwEmdlQFOtIfSMJuwMx5FK3ZdIW5QK1qIXodhbB+I0v/?=
+ =?iso-8859-1?Q?VJFCGgw8MVrINOwowGeLIrdtXYQ8AJGv4Y6LycYmXD2dE7x500CXf+Wo6v?=
+ =?iso-8859-1?Q?kW3mZfDyOZhJ3y86tlAG53O/KRBpjgcFW/XD2E8sjd18Xl55Dtkk7ZqaFA?=
+ =?iso-8859-1?Q?FtctJbMIRmRCTYQMJPvyt7GtKvR8cy1CJyy9Nch7n+En2UuGX+6HXJuSD0?=
+ =?iso-8859-1?Q?7xTngtYiH7f3Bp04cdPJMaCM9LRe+6dWZ2gnh9l/+82eKZJBa42ZczHBmP?=
+ =?iso-8859-1?Q?BGjIv9dHMwv//iakqWObY+wxTQOZGi3MUam7ZlKlxf3xQ/NtvXBDxe2j8K?=
+ =?iso-8859-1?Q?sDF+kSwNgqMaVT8DL5ot9JwBRqgurWZ6oeujOWQXdrrmo8iArSlRB9LrG/?=
+ =?iso-8859-1?Q?YmZ/15ucglCAV7JIrdsCxq3MLGWWPoKM0zyCawyGFTDnsc7iroKhefmX7F?=
+ =?iso-8859-1?Q?tB0q7RCfzAjoRecAdxRIv4uwv4rP4UzwsmPjKRMTPU18J3FOLGE5RBx3Yt?=
+ =?iso-8859-1?Q?TSjma46+U64ZHCGn87DGhTVfBhsF1hAkRNbdEmpS0rtKLql+cMygJzvV1e?=
+ =?iso-8859-1?Q?iV9YnZupv2fVAL3aS5Pg9V2s39JC1zvbfPZ6BRAw4DLL+XULxRU8QwfG/y?=
+ =?iso-8859-1?Q?WUK5kb/MNqGDc=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR12MB7199.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bdec695d-8e8c-4b71-e4e1-08dc39438b72
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Feb 2024 16:29:04.4890
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: GpJbdJeY+J1wYM3yj5wEVbsscxQdvopSbMvw1Czfk4HWqBTIkttHwy+zTYYmxTyz6zjcUdofJxBWrD7VGgiD1g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4406
 
-Hi,
-
-Le jeudi 29 f=C3=A9vrier 2024 =C3=A0 16:16 +0200, Nikolai Kondrashov a =C3=
-=A9crit=C2=A0:
-> On 2/29/24 2:20 PM, Guillaume Tucker wrote:
-> > Hello,
-> >=20
-> > On 28/02/2024 23:55, Helen Koike wrote:
-> > > Dear Kernel Community,
-> > >=20
-> > > This patch introduces a `.gitlab-ci` file along with a `ci/` folder, =
-defining a
-> > > basic test pipeline triggered by code pushes to a GitLab-CI instance.=
- This
-> > > initial version includes static checks (checkpatch and smatch for now=
-) and build
-> > > tests across various architectures and configurations. It leverages a=
-n
-> > > integrated cache for efficient build times and introduces a flexible =
-'scenarios'
-> > > mechanism for subsystem-specific extensions.
-> >=20
-> > This sounds like a nice starting point to me as an additional way
-> > to run tests upstream.  I have one particular question as I see a
-> > pattern through the rest of the email, please see below.
-> >=20
-> > [...]
-> >=20
-> > > 4. **Collaborative Testing Environment:** The kernel community is alr=
-eady
-> > > engaged in numerous testing efforts, including various GitLab-CI pipe=
-lines such
-> > > as DRM-CI, which I maintain, along with other solutions like KernelCI=
- and
-> > > BPF-CI. This proposal is designed to further stimulate contributions =
-to the
-> > > evolving testing landscape. Our goal is to establish a comprehensive =
-suite of
-> > > common tools and files.
-> >=20
-> > [...]
-> >=20
-> > > **Leveraging External Test Labs:**
-> > > We can extend our testing to external labs, similar to what DRM-CI cu=
-rrently
-> > > does. This includes:
-> > > - Lava labs
-> > > - Bare metal labs
-> > > - Using KernelCI-provided labs
-> > >=20
-> > > **Other integrations**
-> > > - Submit results to KCIDB
-> >=20
-> > [...]
-> >=20
-> > > **Join Our Slack Channel:**
-> > > We have a Slack channel, #gitlab-ci, on the KernelCI Slack instance h=
-ttps://kernelci.slack.com/ .
-> > > Feel free to join and contribute to the conversation. The KernelCI te=
-am has
-> > > weekly calls where we also discuss the GitLab-CI pipeline.
-> > >=20
-> > > **Acknowledgments:**
-> > > A special thanks to Nikolai Kondrashov, Tales da Aparecida - both fro=
-m Red Hat -
-> > > and KernelCI community for their valuable feedback and support in thi=
-s proposal.
-> >=20
-> > Where does this fit on the KernelCI roadmap?
-> >=20
-> > I see it mentioned a few times but it's not entirely clear
-> > whether this initiative is an independent one or in some way
-> > linked to KernelCI.  Say, are you planning to use the kci tool,
-> > new API, compiler toolchains, user-space and Docker images etc?
-> > Or, are KernelCI plans evolving to follow this move?
->=20
-> I would say this is an important part of KernelCI the project, considerin=
-g its=20
-> aim to improve testing and CI in the kernel. It's not a part of KernelCI =
-the=20
-> service as it is right now, although I would say it would be good to have=
-=20
-> ability to submit KernelCI jobs from GitLab CI and pull results in the sa=
-me=20
-> pipeline, as we discussed earlier.
-
-I'd like to add that both CI have a different purpose in the Linux project.=
- This
-CI work is a pre-merge verification. Everyone needs to run checkpatch and
-smatch, this is automating it (and will catch those that forgot or ran it
-incorrectly). But it can go further by effectively testing specific patches=
- on
-real hardware (with pretty narrow filters). It will help catch submission i=
-ssues
-earlier, and reduce kernelCI regression rate. As a side effect, kernelCI in=
-fra
-will endup catching the "integration" issues, which are the issue as a resu=
-lt of
-simultenous changes in different trees. They are also often more complex an=
-d
-benefit from the bisection capabilities.
-
-kernelCI tests are also a lot more intensive, they usually covers everythin=
-g,
-but they bundle multiple changes per run. The pre-merge tests will be reduc=
-ed to
-what seems meaningful for the changes. Its important to understand that pre=
--
-merge CI have a time cost, and we need to make sure CI time does not exceed=
- the
-merge window period.
-
-Nicolas
+>> >=A0=0A=
+>> > +=A0=A0 /*=0A=
+>> > +=A0=A0=A0 * The VM_ALLOW_ANY_UNCACHED VMA flag is implemented for ARM=
+64,=0A=
+>> > +=A0=A0=A0 * allowing KVM stage 2 device mapping attributes to use Nor=
+mal-NC=0A=
+>> > +=A0=A0=A0 * rather than DEVICE_nGnRE, which allows guest mappings=0A=
+>> > +=A0=A0=A0 * supporting write-combining attributes (WC). This also=0A=
+>> > +=A0=A0=A0 * unlocks memory-like operations such as unaligned accesses=
+=0A=
+>> > +=A0=A0=A0 * This setting suits the fake BARs as they are expected to=
+=0A=
+>> > +=A0=A0=A0 * demonstrate such properties within the guest.=0A=
+>> > +=A0=A0=A0 *=0A=
+>> > +=A0=A0=A0 * ARM does not architecturally guarantee this is safe, and =
+indeed=0A=
+>> > +=A0=A0=A0 * some MMIO regions like the GICv2 VCPU interface can trigg=
+er=0A=
+>> > +=A0=A0=A0 * uncontained faults if Normal-NC is used. The nvgrace-gpu=
+=0A=
+>> > +=A0=A0=A0 * however is safe in that the platform guarantees that no=
+=0A=
+>> > +=A0=A0=A0 * action taken on the MMIO mapping can trigger an uncontain=
+ed=0A=
+>> > +=A0=A0=A0 * failure. Hence VM_ALLOW_ANY_UNCACHED is set in the VMA fl=
+ags.=0A=
+>> > +=A0=A0=A0 */=0A=
+>> > +=A0=A0 vm_flags_set(vma, VM_ALLOW_ANY_UNCACHED);=0A=
+>> > +=0A=
+>> >=A0=A0=A0=A0=A0 return 0;=0A=
+>> >=A0 }=0A=
+>> >=A0=0A=
+>>=0A=
+>> The commit log sort of covers it, but this comment doesn't seem to=0A=
+>> cover why we're setting an uncached attribute to the usemem region=0A=
+>> which we're specifically mapping as coherent... did we end up giving=0A=
+>> this flag a really poor name if it's being used here to allow unaligned=
+=0A=
+>> access?=A0 Thanks,=0A=
+>=0A=
+> Yeah, I sugged to fold that hunk into this:=0A=
+>=0A=
+>=A0=A0=A0=A0=A0=A0=A0 if (index =3D=3D RESMEM_REGION_INDEX)=0A=
+>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 vma->vm_page_prot =3D pgprot=
+_writecombine(vma->vm_page_prot);=0A=
+>=0A=
+> So it makes more sense. VM_ALLOW_ANY_UNCACHED shouldn't be used on the=0A=
+> cachable mapping. The comment should be more specific to this driver=0A=
+> and not so generic:=0A=
+>=0A=
+> /*=0A=
+> * nvgrace has no issue with uncontained failures on NORMAL_NC=0A=
+>=A0* access. Tell KVM to open up guest usage of NORMAL_NC for this mapping=
+=0A=
+>=A0*/=0A=
+=0A=
+Sure, I will restrict this to resmem. Also will update the comment accordin=
+gly.=0A=
+=0A=
+>=0A=
+> Jason=
 
