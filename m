@@ -1,106 +1,141 @@
-Return-Path: <linux-kernel+bounces-87167-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87168-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1671E86D08C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:26:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3EE386D093
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:27:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5FC9289504
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:26:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5595128A06E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:27:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BEDC6CC04;
-	Thu, 29 Feb 2024 17:26:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F095A70ACC;
+	Thu, 29 Feb 2024 17:27:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="jyuudsHt"
-Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com [209.85.222.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iE/bZrx8"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 270766CC02
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 17:26:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A53785E082;
+	Thu, 29 Feb 2024 17:26:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709227602; cv=none; b=SVVw6yScOZzoVr7uVmDQhn24uyXCHicM8xwGaA06umNdR6mxZtROSWztNLFVOexRcWe6a+zeYYRmKFlBL3Uokb/UEn7U4um5fvJj+CKisgZ7Xp9Ulci85syz0eWX/3itVIs1gBi9SjCdTTYCaQBQ3EDu9gJ/hpA2Pu9/Vqemu6w=
+	t=1709227620; cv=none; b=potryGPIIHOjjs50krfXwEoN/rMKE0C/+rbdZV1Hj30NapaTHfTPRR8wy+YGnHKlkLn4dSorPGMMLtor1wevqQoD/zYtFxpvgCV1sIY5LkacCJawPJZgJ5Jx6wx7ZNqh4tH/LpeE2RlzLf7GHnokc7ARItkdx/AShKttRrC6Pzc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709227602; c=relaxed/simple;
-	bh=SyjKEYVew5m9zUU9ZMwdROqu52vc9bJrfOA47hQzAww=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ye7/aB9VNzZo0QAblf/UVj0+6LExtOoH3liUSdSN6TEyUB4RntVIDpg7K0WeDnzwctVML0zeNhYzb2nbIsbF4badsGSd34et2tKALDuLUiMsGN2W09f52LmnsJ9aWAVgUCvqeaqRO8S1AvLLrpgIhrJZKzQgzQap9KNNp4U8Oo4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=jyuudsHt; arc=none smtp.client-ip=209.85.222.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-ua1-f46.google.com with SMTP id a1e0cc1a2514c-7cedcea89a0so618843241.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 09:26:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1709227600; x=1709832400; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SyjKEYVew5m9zUU9ZMwdROqu52vc9bJrfOA47hQzAww=;
-        b=jyuudsHtZ2ZYs1WZcU/W8nrOO4dCsdKtmJwb65ec3niioqB2cirsmFCYLTmlGPseBo
-         gTHJfUo8Z5jEkXDvr+wqh5xGrZ6Dyc55I3V5a3HlNA9/TCcWwDiPpv1Xcnsko9AeqAFk
-         IEu8rIwTaN79DXOERGDUJwFJjJzOCT+QsW6zT6a+O6o5yfIM+q0/hvA1jAG74JMA9kp8
-         Yz8MlL4NFdd/Ghy0/H76phParkGKAoIrhjGwXzjV40gG6DrN1+YXfLuukvZkYpsBMqIO
-         c1dImv+MXSODmDyVTsEwTwBZKVaYNuxds5e/cz4l0V6AA3K/X7iyTw78g28l7rj2I1FI
-         BUQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709227600; x=1709832400;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SyjKEYVew5m9zUU9ZMwdROqu52vc9bJrfOA47hQzAww=;
-        b=tME5VzNRNc04TqW5AS+Rq8aXXp6yVxYNXwPs8YDpTatvb15M0Xo7bdmUDg5ONe5yy3
-         pOSg6LimEfk4tvrjzYYhEhBD5S5JIX7JeRTTT+a7evKyRwJcfZ/mnuHQZJWYrPJ5YzYd
-         tecahqhurmQdvusl0NcMVkC/a6r3byOIakrDv4VtxF5dZp2yjEAVoW4jjUYhhOHf6Qru
-         vzdBQv9pImHwExxzj5UVVF+qatdQjwgroLGfjYpF2jv2hunqPNPQO33waIqYNh8E3zhv
-         atPQz90LHkZycyhxshX0L916APW9zCLbY4m5lQKGuuXXuTOla5W/fYO4ej4b9w05MPRK
-         SJ6g==
-X-Forwarded-Encrypted: i=1; AJvYcCXSeQ6VQJBH8fEzHYKFFMD1VcEei0Mcc4B5A3YvFGBHIClVivwwsmm+xJdg5QTdozKlBYsdKIVrSV0VJotJUUG9lIxa7tg3wuEV2OWQ
-X-Gm-Message-State: AOJu0YwQE3XbEaHIwesb7VXLkIoFFkWGhn5rQ+rWTgTYEycBFhb6lOCc
-	WeU2ETkXcKQiCnUfh1KyebqU2gO81cG4QGkQxOSLXNk8xB8ObqsXKiiRcYGyAA1rUooMJMz+xyC
-	UihomZBEiJBS5EpYakp0ZM0o1ME1sovRvGqUv7g==
-X-Google-Smtp-Source: AGHT+IENN9hkUa/eueNHGpnumeQR0qC+f2AJiya9lAHk3TbgLuACYT7KNIIao33kBn6o5QD5xMiLvm3jT6mR6rwCkz0=
-X-Received: by 2002:a1f:e082:0:b0:4d3:3a0f:77ce with SMTP id
- x124-20020a1fe082000000b004d33a0f77cemr2902281vkg.13.1709227600036; Thu, 29
- Feb 2024 09:26:40 -0800 (PST)
+	s=arc-20240116; t=1709227620; c=relaxed/simple;
+	bh=/JaDBH1RUWq1bA062JryjFL4ALd2l03adAlP7w/617s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=O1pZYdJUPWS6iMnuJCzTUmli+Slig/2VjLrZaUYomY8k7uUNKF+mZJzFKARedL08XtuUh5p/mBP9rvjjc7uPVHgXD7s3zvQ35NEdKHiVv6D955ZO/R78O8xyQMRSWhpSCuL/uOOIzoidTKZPsC8iv6N0U8uUzPHBNWTOBtiGVuU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iE/bZrx8; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709227619; x=1740763619;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=/JaDBH1RUWq1bA062JryjFL4ALd2l03adAlP7w/617s=;
+  b=iE/bZrx8WtZ7QF16L0fruAOK8FXRB00cK6Ryx/O7dTVlgV7vwOjpBjSU
+   COZOM7go0WX9RYk7Ch7A7EFrzSmKYjs/a75eFK5FavfiSjG5UmJ79EyVY
+   D+AZm4ta8c5ks5KYsgd5PXvXcoWQaBcqWLwG2VnpIDYnEvLO1Oc61ehad
+   YA7uPFnf4U6rYT7QfTY3/3jd+JhszQ6yoV9dH5qNAy0CAhU5se+BxNAqM
+   60WDqkbACjVIGdqApgO8xMiijaZ3JxDcz50w3NvxyQB/o/MEg0Usl+HrS
+   M+pExvvYPpLAZm/FckLWdtFq9MrcTzKf4ZuoN6Y/6+KI1i25gmt6hbsEc
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="3600313"
+X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
+   d="scan'208";a="3600313"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 09:26:58 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
+   d="scan'208";a="7820865"
+Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.105])
+  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 09:26:58 -0800
+Date: Thu, 29 Feb 2024 09:26:56 -0800
+From: Tony Luck <tony.luck@intel.com>
+To: "Naik, Avadhut" <avadnaik@amd.com>
+Cc: Borislav Petkov <bp@alien8.de>, "Mehta, Sohil" <sohil.mehta@intel.com>,
+	"x86@kernel.org" <x86@kernel.org>,
+	"linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"yazen.ghannam@amd.com" <yazen.ghannam@amd.com>,
+	Avadhut Naik <avadhut.naik@amd.com>
+Subject: Re: [PATCH] x86/mce: Dynamically size space for machine check records
+Message-ID: <ZeC-YGnnYAMh5kPn@agluck-desk3>
+References: <20240212175408.GIZcpbQHVjEtwRKLS-@fat_crate.local>
+ <SJ1PR11MB60830AF35FA89C7869B8C11EFC482@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <20240212191401.GLZcpt-XHFqPg3cDw-@fat_crate.local>
+ <SJ1PR11MB6083C60D7584B02E9CAF19D5FC482@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <ZcqPhVO_DtD2x5N7@agluck-desk3>
+ <20240212220833.GQZcqW4WxKH34i-oBR@fat_crate.local>
+ <20240212221913.GRZcqZYRd6EPTTnN97@fat_crate.local>
+ <20240212224220.GSZcqezMhPojxvIcvO@fat_crate.local>
+ <Zd--PJp-NbXGrb39@agluck-desk3>
+ <8ee24cad-e9b8-4321-aad4-9a9ba4f8b7b6@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221192846.4156888-1-andriy.shevchenko@linux.intel.com>
- <CAMRc=MdvYdx6x=gSiOZ3SXAdJORnqhsNW79G2c7wABofWARwFw@mail.gmail.com>
- <ZddLRAqxFr7v3Zqs@smile.fi.intel.com> <CAMRc=Mdxtx-wh3HGu+SNrCwfSq0PEm3fG7hK_6wPAk2uzk8xpA@mail.gmail.com>
- <ZddOKTP73ja6ejTc@smile.fi.intel.com> <CAMRc=Mf_w_E4B7c_Uj1WV3zv9DbmJ22oFvJJwtd-+3oUDVcvXA@mail.gmail.com>
- <ZeCw3pzHdrXw46of@smile.fi.intel.com>
-In-Reply-To: <ZeCw3pzHdrXw46of@smile.fi.intel.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Thu, 29 Feb 2024 18:26:29 +0100
-Message-ID: <CAMRc=MdKFvAefKxLnovxnQt_tpiW+dCviWXKuHqg3vqHhEtPNA@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] gpiolib: Fix the error path order in gpiochip_add_data_with_key()
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, 
-	Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8ee24cad-e9b8-4321-aad4-9a9ba4f8b7b6@amd.com>
 
-On Thu, Feb 29, 2024 at 5:29=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> > >
-> > > I'm sorry I really need more (morning) coffee, maybe you can simply u=
-pdate
-> > > yourself or submit a correct fix?
-> >
-> > Ok, I'll apply this and send a fix on top of it.
->
-> I don't see any progress with this. Do I need to do something?
+On Thu, Feb 29, 2024 at 12:42:38AM -0600, Naik, Avadhut wrote:
+> Hi,
+> 
+> On 2/28/2024 17:14, Tony Luck wrote:
+> > Systems with a large number of CPUs may generate a large
+> > number of machine check records when things go seriously
+> > wrong. But Linux has a fixed buffer that can only capture
+> > a few dozen errors.
+> > 
+> > Allocate space based on the number of CPUs (with a minimum
+> > value based on the historical fixed buffer that could store
+> > 80 records).
+> > 
+> > Signed-off-by: Tony Luck <tony.luck@intel.com>
+> > ---
+> > 
+> > Discussion earlier concluded with the realization that it is
+> > safe to dynamically allocate the mce_evt_pool at boot time.
+> > So here's a patch to do that. Scaling algorithm here is a
+> > simple linear "4 records per possible CPU" with a minimum
+> > of 80 to match the legacy behavior. I'm open to other
+> > suggestions.
+> > 
+> > Note that I threw in a "+1" to the return from ilog2() when
+> > calling gen_pool_create(). From reading code, and running
+> > some tests, it appears that the min_alloc_order argument
+> > needs to be large enough to allocate one of the mce_evt_llist
+> > structures.
+> > 
+> > Some other gen_pool users in Linux may also need this "+1".
+> > 
+> 
+> Somewhat confused here. Weren't we also exploring ways to avoid
+> duplicate records from being added to the genpool? Has something
+> changed in that regard?
 
-No, it just fell through the cracks. I applied this now and sent my
-own fix on top.
+I'm going to cover this in the reply to Boris.
 
-Bart
+> > +	mce_numrecords = max(80, num_possible_cpus() * 4);
+> > +	mce_poolsz = mce_numrecords * (1 << order);
+> > +	mce_pool = kmalloc(mce_poolsz, GFP_KERNEL);
+> 
+> To err on the side of caution, wouldn't kzalloc() be a safer choice here?
+
+Seems like too much caution. When mce_gen_pool_add() allocates
+an entry from the pool it does:
+
+	memcpy(&node->mce, mce, sizeof(*mce));
+	llist_add(&node->llnode, &mce_event_llist);
+
+between those two lines, every field in the struct mce_evt_llist
+is written (including any holes in the struct mce part of the structure).
+
+-Tony
 
