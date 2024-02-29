@@ -1,133 +1,103 @@
-Return-Path: <linux-kernel+bounces-87525-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87526-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB86B86D57E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:03:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5AA386D581
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:04:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 553E9288DD7
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:03:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA48D1C2297D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:04:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9648C16FF4B;
-	Thu, 29 Feb 2024 20:42:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97AF9153503;
+	Thu, 29 Feb 2024 20:43:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HQkzByet"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="SfBEQkle"
+Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D742716FF2F;
-	Thu, 29 Feb 2024 20:42:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6F7914405D;
+	Thu, 29 Feb 2024 20:43:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.149.199.84
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709239334; cv=none; b=MFymk+pfHUdgrPLnVkczgM2qxWfd/nIP21F6OXo0QBMQbIuUZRG3J7lFXAvmHNF2QgEn5HcmyU8nbz+3vpFfz4hTwIGaUpe6lf99U/rL6nwXLpnxRfpV+G6IBcGBTTfXu6xJaME0NthQrMqiOCdIDfMbIfZWk1G+lCcEEbvb2sY=
+	t=1709239383; cv=none; b=tUk5LwHHlPngCfjMqqjpvzPN6vd4mEABquqAS8JnStkJepF3rMY5uKHxNgKrqxfMDSt32QYhvr5QLe7QBt4qBoHY29i8SPbVkc9jmEY0mjiFXD/qwNDpupZhbu/ugnqrRwF1VB43k9I09EQUz1c0tfaw1uOXxh3i9cqQU+0aVSw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709239334; c=relaxed/simple;
-	bh=TPoEWdsLsO5MgKxk/CGhcQr3scilYGPhI2nKziaOJO0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tuc9uJ9OtfLjm7Vshw/0qngaK/xcmwy7M/B7ZvANZiO9AY3/LzQfhBQ1KRGZjqckWy9MWBHQCuzvidGao5wa417SZouwekLDb4/U4+4UZZxnpdR+o8YD2Z1COsrbV+gaFAhpUPBdoe8sfbRbPCqYbi0n0dTm5hDpoXxLAcHsa8c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HQkzByet; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9119C43394;
-	Thu, 29 Feb 2024 20:42:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709239334;
-	bh=TPoEWdsLsO5MgKxk/CGhcQr3scilYGPhI2nKziaOJO0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=HQkzByetWDnsoa4ofUfqBbGY4lzFaPJpAQe1ixKn8HCJjXaYXgvITzEGBFaUtc3CJ
-	 GCil8vEFz9IcSV8WtpQ0hNAuYJpCZtC87dTB/9dXIW0b4Cz7qKfs7h+UeAhEzIdf1i
-	 MF3HOcxs9PBvcC+reKZg+7yOs6T50ocUFkEWBOkpJ+5wW7s40Vk1Q5ijFSLgliOpt8
-	 gyxfV8+x1Uz/LJR036EwC8DXwvMasPXS2+YDXIIDhkn1oq1GpycqHvTmASofRVZW2c
-	 iqpYAzqsRJlH1gmVwl/MWZNZw5rch/wIwQUg0g+g52db4dmUYw6jHVXGSZSbpArLOn
-	 IqXizZ1ksRRcA==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
+	s=arc-20240116; t=1709239383; c=relaxed/simple;
+	bh=KXdgm/I/ewft6TDONs1/C8PbLQ8HZujA3uwky710JcQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bc+hElg0ImP5fyCqGEj5EDL9MDjPRqMa5IGKW3XW6z71U9hsjT9VZcPQ1R9fjXeQ78Ha2pGlxHrAr67sUFrAgst3BLA4J48WZZzn/wqJc1c8c4q49v5/zUmbkWxOyrMe8uK/gOnwj2+jBdsm1kXHgO6vyxIW/VUP0aYTkjf5Dck=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru; spf=pass smtp.mailfrom=ispras.ru; dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b=SfBEQkle; arc=none smtp.client-ip=83.149.199.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
+Received: from localhost.ispras.ru (unknown [10.10.165.8])
+	by mail.ispras.ru (Postfix) with ESMTPSA id 3295940B27A1;
+	Thu, 29 Feb 2024 20:42:51 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 3295940B27A1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
+	s=default; t=1709239372;
+	bh=eANDFJjcF28TbbY3NAVdjRQJ+bbD85155CR8rqMcY8E=;
+	h=From:To:Cc:Subject:Date:From;
+	b=SfBEQkleMTQQB8i9ri0DjO6Qh0zDw1x5+QA69r+8BbMw93Gf8bbETFYaG4995ugcW
+	 lxfXENFRm1JGJ1peL2XYto6WOYj07fixAqX41BTfoWTSAD/03u4eLrGLcwVomxKABH
+	 sU264do6bHhtUbcKqgQjdJfblDDtLGX38dd5fH6E=
+From: Fedor Pchelkin <pchelkin@ispras.ru>
+To: Richard Weinberger <richard@nod.at>
+Cc: Fedor Pchelkin <pchelkin@ispras.ru>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Alexey Khoroshilov <khoroshilov@ispras.ru>,
+	lvc-project@linuxtesting.org,
 	stable@vger.kernel.org
-Cc: Mikulas Patocka <mpatocka@redhat.com>,
-	Mike Snitzer <snitzer@kernel.org>,
-	Sasha Levin <sashal@kernel.org>,
-	agk@redhat.com,
-	dm-devel@lists.linux.dev
-Subject: [PATCH AUTOSEL 4.19 4/4] dm-verity, dm-crypt: align "struct bvec_iter" correctly
-Date: Thu, 29 Feb 2024 15:42:04 -0500
-Message-ID: <20240229204208.2862333-4-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240229204208.2862333-1-sashal@kernel.org>
-References: <20240229204208.2862333-1-sashal@kernel.org>
+Subject: [PATCH] ubi: eba: properly rollback inside self_check_eba
+Date: Thu, 29 Feb 2024 23:42:36 +0300
+Message-ID: <20240229204237.30453-1-pchelkin@ispras.ru>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 4.19.307
 Content-Transfer-Encoding: 8bit
 
-From: Mikulas Patocka <mpatocka@redhat.com>
+In case of a memory allocation failure in the volumes loop we can only
+process the already allocated scan_eba and fm_eba array elements on the
+error path - others are still uninitialized.
 
-[ Upstream commit 787f1b2800464aa277236a66eb3c279535edd460 ]
+Found by Linux Verification Center (linuxtesting.org).
 
-"struct bvec_iter" is defined with the __packed attribute, so it is
-aligned on a single byte. On X86 (and on other architectures that support
-unaligned addresses in hardware), "struct bvec_iter" is accessed using the
-8-byte and 4-byte memory instructions, however these instructions are less
-efficient if they operate on unaligned addresses.
-
-(on RISC machines that don't have unaligned access in hardware, GCC
-generates byte-by-byte accesses that are very inefficient - see [1])
-
-This commit reorders the entries in "struct dm_verity_io" and "struct
-convert_context", so that "struct bvec_iter" is aligned on 8 bytes.
-
-[1] https://lore.kernel.org/all/ZcLuWUNRZadJr0tQ@fedora/T/
-
-Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-Signed-off-by: Mike Snitzer <snitzer@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 00abf3041590 ("UBI: Add self_check_eba()")
+Cc: stable@vger.kernel.org
+Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
 ---
- drivers/md/dm-crypt.c  | 4 ++--
- drivers/md/dm-verity.h | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/mtd/ubi/eba.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
-index 908bf07688275..d094dd274c461 100644
---- a/drivers/md/dm-crypt.c
-+++ b/drivers/md/dm-crypt.c
-@@ -46,11 +46,11 @@
- struct convert_context {
- 	struct completion restart;
- 	struct bio *bio_in;
--	struct bio *bio_out;
- 	struct bvec_iter iter_in;
-+	struct bio *bio_out;
- 	struct bvec_iter iter_out;
--	u64 cc_sector;
- 	atomic_t cc_pending;
-+	u64 cc_sector;
- 	union {
- 		struct skcipher_request *req;
- 		struct aead_request *req_aead;
-diff --git a/drivers/md/dm-verity.h b/drivers/md/dm-verity.h
-index 6e65ec0e627a6..04ef89e318564 100644
---- a/drivers/md/dm-verity.h
-+++ b/drivers/md/dm-verity.h
-@@ -72,11 +72,11 @@ struct dm_verity_io {
- 	/* original value of bio->bi_end_io */
- 	bio_end_io_t *orig_bi_end_io;
+diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
+index 8d1f0e05892c..6f5eadb1598d 100644
+--- a/drivers/mtd/ubi/eba.c
++++ b/drivers/mtd/ubi/eba.c
+@@ -1557,6 +1557,7 @@ int self_check_eba(struct ubi_device *ubi, struct ubi_attach_info *ai_fastmap,
+ 					  GFP_KERNEL);
+ 		if (!fm_eba[i]) {
+ 			ret = -ENOMEM;
++			kfree(scan_eba[i]);
+ 			goto out_free;
+ 		}
  
-+	struct bvec_iter iter;
-+
- 	sector_t block;
- 	unsigned n_blocks;
+@@ -1592,7 +1593,7 @@ int self_check_eba(struct ubi_device *ubi, struct ubi_attach_info *ai_fastmap,
+ 	}
  
--	struct bvec_iter iter;
--
- 	struct work_struct work;
+ out_free:
+-	for (i = 0; i < num_volumes; i++) {
++	while (--i >= 0) {
+ 		if (!ubi->volumes[i])
+ 			continue;
  
- 	/*
 -- 
-2.43.0
+2.43.2
 
 
