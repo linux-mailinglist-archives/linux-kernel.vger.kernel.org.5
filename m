@@ -1,91 +1,89 @@
-Return-Path: <linux-kernel+bounces-86152-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86153-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2B0E86C084
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 07:04:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 430B086C085
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 07:05:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 724561F248D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 06:04:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7450E1C22121
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 06:05:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF9D43C47B;
-	Thu, 29 Feb 2024 06:04:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA2343BBFA;
+	Thu, 29 Feb 2024 06:05:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="IHB86wWZ"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="NxHYq+NN"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D5413BBD8;
-	Thu, 29 Feb 2024 06:04:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2390C3E46B
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 06:05:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709186670; cv=none; b=RiknXJn+pZMuV2TFIQb0sLAP0JDOwe39e6Ght4VWxgZfqzYsD6E1VI4lR6V4XsRb15FRKE4pMkrfSdJpDD1+7UiuN9zL1tCWgy0c2U1Q0iKcVtkaE262Ml483PxG23xJCdG4rZVn534NVICFQoODpjDHri7XoftMG/Kc0fyiwpY=
+	t=1709186706; cv=none; b=SPdEp4eOFX6BSOowlSG7uHZilEp3SC1ou35U67nSzQNTw7FY5biBderkhg+HNitjDhkAIPwe20N4R4Qxy3RyD/mM/N8pKzPIur1X28AHhLp284gLBxpBaxrqNb87gBYPyq9Z/COUIAnzepQdhonVtaFpNpme3/samvSfG85XVVE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709186670; c=relaxed/simple;
-	bh=lODg7xEbsH7/rJSZ6/Sv/aGlo0vRxv09DUpNmbq5mCk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PfNd3x/57YJEaig3tJrcJDc4+ofJ8Gmo00RqPb4ke/FxX3sS3l5QJIY33D/EvptOFrXA4A5CJWRSvmt9JQVNjS9tcwIgwvuP7CELWlbfyjk2YodBXMota/mm9BD/z0OJtoYROA1c2gOpliGKJPsk5SJrL1G7UuPKa2012+QlTds=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=IHB86wWZ; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=jVLaPOcNfzOtiM0Q70Qg2FhdH5/N6bESWo4OOnctJm8=; b=IHB86wWZoZTLVULVzh9BRzgavb
-	b3VktEXdWG1SN43F3+etBoUkOEM9VcynLDn09CSQL44aUEN6YPJeMFbO4tn+E94XXWxlBqRt8ZpJr
-	xtO8EG3kCO3XtC0tcC2CueZ3A7kuaDFAF3aTRAlT5MD5ateKPaonpQdzsOMBAvGEPWjiSvvF11khX
-	xdGBSR0W6lI9UeWPHn64A/OSy2XAgzLztO2CzBH2U6Rf8pI2T5rOAjonKUyLf6ZNu2BQo4Hmeob91
-	5YHCuaQMuh4APbYZgCmJqtDyi3MuVFVHasSfdqUufM0iKuP/F6U7T20HTMBdWt0n/qvQcO7Vh+Rv7
-	oVZ2wVDQ==;
-Received: from [50.53.50.0] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rfZWu-0000000CEVm-08oi;
-	Thu, 29 Feb 2024 06:04:28 +0000
-Message-ID: <a288a0b3-78fc-4166-b1c5-81a51441abb3@infradead.org>
-Date: Wed, 28 Feb 2024 22:04:27 -0800
+	s=arc-20240116; t=1709186706; c=relaxed/simple;
+	bh=EjH2NC3zEjhzbW1ez6ZFtRVVeQ4Ai1TXy79No3Io1G8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oQ/luwzTOpXyofnVUSDJUc72sEwtgD2HOuRd1p0TJ81LSWrH3saumLF6z9FiTGEaqeeoDzPL2ZtgkGGYo9VnWhR8qqRypxzvJIlvXNnoa1Xf6fFHUFjdS4Nt8jankuIutGG8IXcvnDzLfLQo9pwTzlHtGK5UpRMjDkIYolAVoiI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=NxHYq+NN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28846C433F1;
+	Thu, 29 Feb 2024 06:05:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1709186705;
+	bh=EjH2NC3zEjhzbW1ez6ZFtRVVeQ4Ai1TXy79No3Io1G8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=NxHYq+NNgqwqinADtTPn3iT6Tsc0FY6SaKTBjMRUYHSNP6eyhcoLoDPoEV1HWfrrF
+	 bIib9KfISfDK8b0jp0aZF+VDWuUMMivcHd9ZBv1leBir75FtmLyv+xOQ7FgtZkipyJ
+	 vBFhFN/2ry790lEo0a960hrUag9ogVuAx0BJ5SUY=
+Date: Thu, 29 Feb 2024 07:05:02 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+	cve@kernel.org, Jiri Kosina <jkosina@suse.cz>
+Subject: Re: CVE-2023-52437: Revert "md/raid5: Wait for MD_SB_CHANGE_PENDING
+ in raid5d"
+Message-ID: <2024022918-deepen-composed-c680@gregkh>
+References: <bec7c1db-c13e-4b00-a968-4ae69539d7ac@redhat.com>
+ <ZdYKSkqRckOc5aRO@sashalap>
+ <a9652aa2-e79b-4144-b3b7-746587af9eca@redhat.com>
+ <ZdYSmdUKzQAYpprc@sashalap>
+ <3ebbc121-8cb8-4b8d-ad5d-fb5c576e5171@redhat.com>
+ <2024022129-expiring-resurface-146c@gregkh>
+ <288132ea-87cf-4b56-908e-2263b6c6b67f@redhat.com>
+ <2024022236-stock-wielder-fcbc@gregkh>
+ <7be9ad00-1432-4a19-a954-32fa0f24fecd@redhat.com>
+ <2024022949-uncapped-crushing-e5f9@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/3] docs: submit-checklist: use subheadings
-Content-Language: en-US
-To: Lukas Bulwahn <lukas.bulwahn@gmail.com>, Jonathan Corbet
- <corbet@lwn.net>, Jani Nikula <jani.nikula@intel.com>,
- workflows@vger.kernel.org, linux-doc@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240229030743.9125-1-lukas.bulwahn@gmail.com>
- <20240229030743.9125-3-lukas.bulwahn@gmail.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240229030743.9125-3-lukas.bulwahn@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2024022949-uncapped-crushing-e5f9@gregkh>
 
-
-
-On 2/28/24 19:07, Lukas Bulwahn wrote:
-> During review (see Link), Jani Nikula suggested to use proper subheadings
-> instead of using italics to indicate the different new top-level
-> categories in the checklist. Further the top heading should follow the
-> common scheme.
+On Thu, Feb 29, 2024 at 06:32:03AM +0100, Greg Kroah-Hartman wrote:
+> On Thu, Feb 22, 2024 at 02:31:06PM +0100, Paolo Bonzini wrote:
+> > So if the reply-to points to LKML + the subsystem mailing
+> > list for the maintainers + a new ML for the security folks (and these three
+> > are also CC'd on the announcements, at least the last two), that would be
+> > nice to have.  I can work on patches to vulns.git, for example to integrate
+> > with get_maintainer.pl, if you ack the idea.
 > 
-> Use subheadings. Adjust to common heading adornment.
-> 
-> Link: https://lore.kernel.org/linux-doc/87o7c3mlwb.fsf@intel.com/
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
->  Documentation/process/submit-checklist.rst | 26 ++++++++++++----------
->  1 file changed, 14 insertions(+), 12 deletions(-)
-> 
+> That might be a bit noisy, for some commits, but sure, I can see the
+> value in being notified about a CVE for my subsystem.  If you have a
+> specific 'get_maintainer.pl' command line invocation you think would be
+> good, I can easily add it to the scripts.
 
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+Would:
+	--no-keywords --no-git --no-git-fallback --norolestats --nol
 
-thanks.
--- 
-#Randy
+be a good pattern to follow?
+
+thanks,
+
+greg k-h
 
