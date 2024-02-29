@@ -1,132 +1,218 @@
-Return-Path: <linux-kernel+bounces-86845-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86846-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71DDE86CBA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:30:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE86F86CBA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:32:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 68D6B1C2136B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:30:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68DE2283E76
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:32:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F46E137747;
-	Thu, 29 Feb 2024 14:30:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03A1E13342A;
+	Thu, 29 Feb 2024 14:32:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZFIUgaPv"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QqaSM1RH"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 723D43E489
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 14:30:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709217050; cv=none; b=TmgEFQpunOHMTMdMvotx8/RjRsZIMsMOtwzrY+FYc4C21LNDjLmyGYrNAFd8wayklldFoonxPzZddIPlrotkYqJ2ZyPXEl1nDS5uNUpQ09cR+GEXlUbN9cAu4b6Kh3SsfeLhKgpGrNJi0pWoMqQJYQ4neltlRd4WYw9Ihd/II9g=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709217050; c=relaxed/simple;
-	bh=Nm70cXVcjS/7SOH+8hlVgINNBfCzrbBJi9RE81WyQeY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TqhuObMlA65W2deE8wmlznwIjYpGRxR31tmBadtNMVF44oLFkddoplNSap1ndWsKPK8USHN+zrOt3QJTLBZ9BYvr5We0YfrNSTexKem2KyLueSOkMvXm3FE8Gy6fShVPksuYdv94rfKgxOYsYQoIvikkeYv+isjoLOsnbyec+n8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZFIUgaPv; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709217047;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ddpr4robXIIsOuX1oCrFxRil1JaqONSPHPNvPLZCoIM=;
-	b=ZFIUgaPvnagv2gbUGsuh7CYY5Fbf/5vaXDk4eUe65FPee+5tEfGvuKxRtH5eRtl1Jqcyh8
-	PXTpEfsF2srnsLaU+3vcGAUm0im2jffxMFncAqlKukt6R20zm4DwqCuTBHV25xpFhisCRL
-	eyUDCU3j/7ssmqs8obZF+KMEswFh9Z0=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-15-cnWRXdVSPx2B1dK3VwPbEg-1; Thu, 29 Feb 2024 09:30:41 -0500
-X-MC-Unique: cnWRXdVSPx2B1dK3VwPbEg-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BB1B283DDE0;
-	Thu, 29 Feb 2024 14:30:40 +0000 (UTC)
-Received: from [10.22.8.117] (unknown [10.22.8.117])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 1CC73492BFA;
-	Thu, 29 Feb 2024 14:30:39 +0000 (UTC)
-Message-ID: <9d04f0c6-c4f4-407a-af0c-eda8328fd22a@redhat.com>
-Date: Thu, 29 Feb 2024 09:30:39 -0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9642E7E10D
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 14:32:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.9
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709217133; cv=fail; b=a0yV+MoNxdo6fgMV3XiEnlo1fuKLy+BbGt2dJZRfcOQu0yWIEKkG7AVnmFSL6Y6yccJ/hdLeVvM5nY+UPyOon/G5QtT8+Pnb65NmQSwhQU4iNme6j+hT08MEuCJsgOWGP09BZMuiasHDgVl/5iH3iHXlbrWRIhLsWGmQ6imBDGg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709217133; c=relaxed/simple;
+	bh=wMf7sFJVt/XuijSdp6odt/zy43GSnY+Qy6bmhUC5aD8=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=supj1rOm+fnTsN6BeL6yGp9Ycuyd5YraHqwNiC6maIDCguSUJuvUOrKNyUh1OeTFL2uHO17p/E5baGpocK8EryYB0kxKU7D723FMJFdCiPViia5fiFgv8zfvwI0t02hsc4BvO2EDSXWuXLCdLHNXrc8fdgDcf9hTsYQ3w9UTTzQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QqaSM1RH; arc=fail smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709217129; x=1740753129;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=wMf7sFJVt/XuijSdp6odt/zy43GSnY+Qy6bmhUC5aD8=;
+  b=QqaSM1RHIuiuviwIZVpqOiakz4NgU9oNFu8kclDztU4b1lgG0mkjpNdl
+   uUMFFz/TjHDSUPxtZXJlPXQ/CfYzQ8t1JD5qWQUFBBQIPoCMlc/25AjIj
+   ajIEyweRaHwDEC/ywJOav9QDy2yJPxbhCRSaOtbBYI2Sw0Ddk/rHLPt5+
+   khzt6zHpPEYv8QHVFIam3Eyb5O8w/zJ/2Dm+DSwo33oM6C2iKq5VM094/
+   ljikHTT+/Xj766FYMbwjp3wc2Nwbdt0ABOlUMvWAluxzmmtyrTRSkoNPh
+   tq70TN7L++NUYiYjOZjpotI2EI60hd57FhCmvAlv2PukJUFjoXGBrDRsu
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="14395752"
+X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
+   d="scan'208";a="14395752"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 06:32:08 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
+   d="scan'208";a="8075233"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmviesa006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 29 Feb 2024 06:32:07 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 29 Feb 2024 06:32:07 -0800
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 29 Feb 2024 06:32:07 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 29 Feb 2024 06:32:04 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=F79z0+pR5MYOkmXLPZAXeRcbKlWaXOOLtgZJghrECH+ZrGXeHWw1U9s+BVpTXpyFWkM86h3I44II3OSJ2tq+dDJGaO+vobtpoIzE/gMisisZeJ6TI3MozMwcJQLZXAzTmMJe6gqB2Oja1DcUx2EAqu4x4/Xb/W5z7FpZrU5y0T94xneZ4e05eeLbjHep7OaVd8jy7ZYWKsdM9W9XebBQJfJ0Jh3vrCjdaZjliJs3XYvs3/r73TbjtF46Fe/v30m8P6ZWYOekEZ9mzO+EDmmRuZfLvDs15gb3ZbYUK1FuUBtmAX9IIKGqZiFl5GCHR1xQwhFlwCGpFDZ4a/xndb8byA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=XORuQLkGPDTWmIwvUw6vPmC9VGbarZg0mRq8agr2WTc=;
+ b=dcEjx09rF9V+Y6c4ypxIsVkzth0OehczuT+6v7E8S40A78VL7B/yu9LsPauxfbLV4Jn/q9k7HEer49a1BIQ+TSq6F3WdfBYinZy5+Pa4Jog5ZwrqkuYue9P9byENHXNjNzX32+UPZncPPixeoD/VL/1iygMn9/JPQnypNINVNjDyptuleOveyIx4Y5UF29eWAEdB0hT+qWVacRCIZHXIa7MNK5WX+4ZtlY45zhyop9Ojn3D7y0XnpaPXlFQhSjSWS9qwF/7oF15g/L0+ipo3ERlxMHCzahl51j4nw4BCYOpAzRam6EwGz2Q+tS2AzvyF8TyZAscmyREgyYVM9Hfy8Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from MN0PR11MB6059.namprd11.prod.outlook.com (2603:10b6:208:377::9)
+ by CH3PR11MB8414.namprd11.prod.outlook.com (2603:10b6:610:17e::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.16; Thu, 29 Feb
+ 2024 14:32:02 +0000
+Received: from MN0PR11MB6059.namprd11.prod.outlook.com
+ ([fe80::a7f1:384c:5d93:1d1d]) by MN0PR11MB6059.namprd11.prod.outlook.com
+ ([fe80::a7f1:384c:5d93:1d1d%4]) with mapi id 15.20.7339.024; Thu, 29 Feb 2024
+ 14:32:02 +0000
+Date: Thu, 29 Feb 2024 09:31:57 -0500
+From: Rodrigo Vivi <rodrigo.vivi@intel.com>
+To: Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+CC: <Intel-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
+	<linux-kernel@vger.kernel.org>, Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+	Daniel Vetter <daniel@ffwll.ch>, Dave Airlie <airlied@redhat.com>, "Jani
+ Nikula" <jani.nikula@intel.com>, Joonas Lahtinen
+	<joonas.lahtinen@linux.intel.com>
+Subject: Re: [PATCH] MAINTAINERS: Update email address for Tvrtko Ursulin
+Message-ID: <ZeCVXUw35tPZikMN@intel.com>
+References: <20240228142240.2539358-1-tvrtko.ursulin@linux.intel.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240228142240.2539358-1-tvrtko.ursulin@linux.intel.com>
+X-ClientProxiedBy: SJ0PR03CA0265.namprd03.prod.outlook.com
+ (2603:10b6:a03:3a0::30) To MN0PR11MB6059.namprd11.prod.outlook.com
+ (2603:10b6:208:377::9)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] cgroup/cpuset: Mark memory_spread_slab as obsolete
-Content-Language: en-US
-To: Xiongwei Song <xiongwei.song@windriver.com>, lizefan.x@bytedance.com,
- tj@kernel.org, hannes@cmpxchg.org, corbet@lwn.net
-Cc: vbabka@suse.cz, yosryahmed@google.com, rostedt@goodmis.org, cl@linux.com,
- chengming.zhou@linux.dev, zhengyejian1@huawei.com, cgroups@vger.kernel.org,
- linux-mmc@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240229142007.1278610-1-xiongwei.song@windriver.com>
- <20240229142007.1278610-2-xiongwei.song@windriver.com>
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <20240229142007.1278610-2-xiongwei.song@windriver.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR11MB6059:EE_|CH3PR11MB8414:EE_
+X-MS-Office365-Filtering-Correlation-Id: f038a901-e1e1-4b40-2ffc-08dc393331d0
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CO1wMBQa3kDNg17cwiooXJ9QyZD0TUHfZw8UKj2wfEjSHpMcxOKPUoY1je+M0XJC7FzVYRtT1d9dCR23c2V90ZNN32IZudMrKZbKs4OkYY8dsTtmcZLf3JAFXcVlfgbiYZPTxvIp0DisqVICRsw3aMszRVYA/1qwHhay+EQAkt2xMb/Azk3aNWsLs8x3Yllh1R5wc3yoKn4ZWkAYOQ3c9fV4cPi6I12gucFsZ4D/zSOA20TKT6WQFBmj6OM3itUMSluy0oDRMVYJZGz0fLw5zXmrz93WBOVpPpCXDx7bUohPcRTKRh5Oo0/zjfgGV1vkjuYgwKOi8NfOn24GSRb+/p194Z43XdG7+YUZKR93FOGBG6FE6Bms9LUKwlHzOyPaNQQ07yPsEXKqDKegTgcDoEVQf+82EkV30qwUPdvaPpPWDLl9h7wYEET9pp9S0yhE7MokWOVrgIaUVEbuORVfDyPfdcfwbb7ro+RBrdgACFqr9ttjQA9REJQBeyk5KnHUcuQN4U7tFuMJEjY8ZNiMN0qGW8mhO0uTz3Hiv93QTxciqzkNIVAshX757ZO3ryNdWILBmq7Bp57zbr2XAUu6tA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6059.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?LCNnx3iWsF/gvIboC7FJ/xaZRRFVWiLmTjzdUv36Gvl01LOhLuJybemZSo?=
+ =?iso-8859-1?Q?a45+YDmUUVfuoeejeWxxfjl7TWz3gQUZzLMBADzwk6WiY28U1AGZavsfwj?=
+ =?iso-8859-1?Q?UMKJYbz65DxYb01hKp2is+5PW/Lu2twegpvJMlm7XUYYf3x+pSlJlMM6H+?=
+ =?iso-8859-1?Q?H71ZzetKx4tu7gCQc8U5VmwSxF44SaKOBoojpXAyfeaFDFXuLPPopQo8Eg?=
+ =?iso-8859-1?Q?vUJAlitbTrp2UEDpqaauG/aec86erd6I/X7RkDLQ/5XZwP9NbNO2lMlpan?=
+ =?iso-8859-1?Q?LC8+mZYpT5fyn/oIpTtZjvhFIWFY/on3i7zaF09D6ob8j1QBQYyhOjQ3cb?=
+ =?iso-8859-1?Q?JblPiTcwCwrSXtiTzigqaWm0rBKsPGlpaXQvSLJezvXhvb8l/id7KoLvEK?=
+ =?iso-8859-1?Q?lncGkZEBSzB0fI3fY9s26tLFs4Uq7OMcfLwKLVYfaRfMfWiBr97SmWMKAj?=
+ =?iso-8859-1?Q?l9ouaviMi/2QnxbYCAUgmwPo5f/d+BvqGMVcjLm5PtOIqB33gKk5bVqbMG?=
+ =?iso-8859-1?Q?7Zy16jjxuDh8dY2ZWYzuWvPtcnHxKU3nLNy444wzVJa8f4aNP04anbXyU7?=
+ =?iso-8859-1?Q?YzoqcPbsA/gRMu7NhTG0tgAYEmMNmu0s3wOXNCKnc+eq+X1KwMWJZZWuAV?=
+ =?iso-8859-1?Q?Sol7YNZeMQjBKZTaDSu8QA5cq4keyKUM7bBlG1sgcwMbuCtQ9t9b86XRal?=
+ =?iso-8859-1?Q?GeP0ujSSDpiGeNqd+ivELgKJyNezzrp7meM0iltlbs4/dXkffwUMqQAdDx?=
+ =?iso-8859-1?Q?+5LHwTG4+e0XsHSfBsgW+M5ClkyMNIoLSMxWS0DxcrrnwiQdJDLGnNJics?=
+ =?iso-8859-1?Q?WCb9F68xOmzxO0WfvvCtudSQEaa8klPsRbU0Lr/X9EsixVLe9XzzjPo0kh?=
+ =?iso-8859-1?Q?u3n5qEHigaId0IczkMnPnF4E2rkJtTWOcndwXQGedvhOHNcrb0YegBAxON?=
+ =?iso-8859-1?Q?eTqaKBMM2ajLvdwmvtQOXuG66Ua2SEUztkYUcfLw6gFILyl/WOI4LfKZng?=
+ =?iso-8859-1?Q?ddR7nsDkJHtkZgeDpsSe53+OXCD0IwBBO1R/3kNXTkjM7E8e8iOPKhFAJj?=
+ =?iso-8859-1?Q?AF3AVRbPohraaL5q9bKblCJ0CUW23pKo/LdSd4d1X+0ry6iu1wNikFC2B0?=
+ =?iso-8859-1?Q?KoHVCMkq94h1iFvQ4yYAsbpuFCakipm/8boJlCNop637vtEfqFOLAPXb8u?=
+ =?iso-8859-1?Q?Lf7NoDy3kYXV53fbKgzgFCljQs8dlHpHjVi1VptxU0hLZEyX6ZadWdcQru?=
+ =?iso-8859-1?Q?qcyXwns/EYD6k6leZIcXubMm5CEmoXo6iYg7gn8OH1dVK1j4kSRwMgLFab?=
+ =?iso-8859-1?Q?Q+CQzlb6gMfUSODNNzgIQeyTeorf5SAeZwBkpJlcW+vMTRETq4m7XL4oqS?=
+ =?iso-8859-1?Q?IAHbdb1HOXViIQ0QsQwTkfvVxXqQmideWTDRPT8KfDZV2KKiajMPdxz/8q?=
+ =?iso-8859-1?Q?73GIpv/XnHSiz13jGo7240QBERF3El38H3C+wsUpLFsKY1NKCH3Uhk6R0w?=
+ =?iso-8859-1?Q?cS6okOKOS2QLBr0dfZG6qIZNHNdsVL6+O/L6vP6JYX3jx2ILyqiKFSFGXd?=
+ =?iso-8859-1?Q?1ZAaEoB7VnXpOhCK+66gJmu40UbVoXhyhxwtKN183qYkHb9zxi0gWnSeyk?=
+ =?iso-8859-1?Q?2SeCOgn590q1kybP5Q/bfswTblKt12IS4f?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: f038a901-e1e1-4b40-2ffc-08dc393331d0
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6059.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Feb 2024 14:32:02.4806
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: k+Xk6Byb+1k1nsn/huiOKLJ3ss95V8UDwxztDtvhp/5e0bJoDmlleqgtAJoHG+ogIiXvWhNQnDgtrFioP6MjLA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB8414
+X-OriginatorOrg: intel.com
 
-On 2/29/24 09:20, Xiongwei Song wrote:
-> We've removed the SLAG allocator, cpuset_do_slab_mem_spread() and
+On Wed, Feb 28, 2024 at 02:22:40PM +0000, Tvrtko Ursulin wrote:
+> From: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+> 
+> I will lose access to my @.*intel.com e-mail addresses soon so let me
+> adjust the maintainers entry and update the mailmap too.
+> 
+> While at it consolidate a few other of my old emails to point to the
+> main one.
+> 
+> Signed-off-by: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Dave Airlie <airlied@redhat.com>
+> Cc: Jani Nikula <jani.nikula@intel.com>
+> Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+> Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
 
-Typo: "SLAG" --> SLAB.
+Acked-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
 
-Other than that,
-
-Acked-by: Waiman Long <longman@redhat.com>
-
-> SLAB_MEM_SPREAD, memory_spread_slab is a no-op now. We can mark
-> memory_spread_slab as obsolete in case someone still wants to use it
-> after cpuset_do_slab_mem_spread() removed. For more details, please
-> check [1].
->
-> [1] https://lore.kernel.org/lkml/32bc1403-49da-445a-8c00-9686a3b0d6a3@redhat.com/T/#m8e292e21b00f95a4bb8086371fa7387fa4ea8f60
->
-> Signed-off-by: Xiongwei Song <xiongwei.song@windriver.com>
 > ---
->   Documentation/admin-guide/cgroup-v1/cpusets.rst | 2 +-
->   kernel/cgroup/cpuset.c                          | 3 +++
->   2 files changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/Documentation/admin-guide/cgroup-v1/cpusets.rst b/Documentation/admin-guide/cgroup-v1/cpusets.rst
-> index ae646d621a8a..88d0e7fa2ee0 100644
-> --- a/Documentation/admin-guide/cgroup-v1/cpusets.rst
-> +++ b/Documentation/admin-guide/cgroup-v1/cpusets.rst
-> @@ -179,7 +179,7 @@ files describing that cpuset:
->    - cpuset.mem_hardwall flag:  is memory allocation hardwalled
->    - cpuset.memory_pressure: measure of how much paging pressure in cpuset
->    - cpuset.memory_spread_page flag: if set, spread page cache evenly on allowed nodes
-> - - cpuset.memory_spread_slab flag: if set, spread slab cache evenly on allowed nodes
-> + - cpuset.memory_spread_slab flag: IT'S OBSOLETE. Please don't use it anymore
->    - cpuset.sched_load_balance flag: if set, load balance within CPUs on that cpuset
->    - cpuset.sched_relax_domain_level: the searching range when migrating tasks
->   
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index ba36c073304a..728d06fe9382 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -3897,6 +3897,9 @@ static struct cftype legacy_files[] = {
->   	},
->   
->   	{
-> +		/* It's obsolete. Please don't use it anymore. We will remove it
-> +		 * in the future.
-> +		 */
->   		.name = "memory_spread_slab",
->   		.read_u64 = cpuset_read_u64,
->   		.write_u64 = cpuset_write_u64,
-
+>  .mailmap    | 5 +++++
+>  MAINTAINERS | 2 +-
+>  2 files changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/.mailmap b/.mailmap
+> index b99a238ee3bd..d67e351bce8e 100644
+> --- a/.mailmap
+> +++ b/.mailmap
+> @@ -608,6 +608,11 @@ TripleX Chung <xxx.phy@gmail.com> <triplex@zh-kernel.org>
+>  TripleX Chung <xxx.phy@gmail.com> <zhongyu@18mail.cn>
+>  Tsuneo Yoshioka <Tsuneo.Yoshioka@f-secure.com>
+>  Tudor Ambarus <tudor.ambarus@linaro.org> <tudor.ambarus@microchip.com>
+> +Tvrtko Ursulin <tursulin@ursulin.net> <tvrtko.ursulin@intel.com>
+> +Tvrtko Ursulin <tursulin@ursulin.net> <tvrtko.ursulin@linux.intel.com>
+> +Tvrtko Ursulin <tursulin@ursulin.net> <tvrtko.ursulin@sophos.com>
+> +Tvrtko Ursulin <tursulin@ursulin.net> <tvrtko.ursulin@onelan.co.uk>
+> +Tvrtko Ursulin <tursulin@ursulin.net> <tvrtko@ursulin.net>
+>  Tycho Andersen <tycho@tycho.pizza> <tycho@tycho.ws>
+>  Tzung-Bi Shih <tzungbi@kernel.org> <tzungbi@google.com>
+>  Uwe Kleine-König <ukleinek@informatik.uni-freiburg.de>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 19f6f8014f94..b940bfe2a692 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -10734,7 +10734,7 @@ INTEL DRM I915 DRIVER (Meteor Lake, DG2 and older excluding Poulsbo, Moorestown
+>  M:	Jani Nikula <jani.nikula@linux.intel.com>
+>  M:	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+>  M:	Rodrigo Vivi <rodrigo.vivi@intel.com>
+> -M:	Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+> +M:	Tvrtko Ursulin <tursulin@ursulin.net>
+>  L:	intel-gfx@lists.freedesktop.org
+>  S:	Supported
+>  W:	https://drm.pages.freedesktop.org/intel-docs/
+> -- 
+> 2.40.1
+> 
 
