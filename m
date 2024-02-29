@@ -1,134 +1,138 @@
-Return-Path: <linux-kernel+bounces-85983-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85984-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5523B86BE0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 02:11:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D168C86BE12
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 02:11:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E809D1F2AFE6
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:11:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B7DF284F5C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:11:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACDCE364DA;
-	Thu, 29 Feb 2024 01:03:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B750637163;
+	Thu, 29 Feb 2024 01:04:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="BWLInSMj"
-Received: from omta034.useast.a.cloudfilter.net (omta034.useast.a.cloudfilter.net [44.202.169.33])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="QeLn0EuP"
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BD45364AC
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 01:03:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D20023D2
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 01:04:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709168609; cv=none; b=ReQbatAEMk6OjJxqQPdt2twWDlPxVU6KgFmYzShnvO40UzLMS9P2G3lge2f7UN55yfYZj58jFH4YtztAADTsDwme0FUkvc7qeAsp5YDsD+NwthMeN1eScxe7e1E+5S4NlbbCiJOjZJdcMtwRIwASKqgDS6R7IDVxlDfik/Qjl7U=
+	t=1709168699; cv=none; b=kERR2uQG598Z30QoNrFZTOJaX/UmCh/9TsmeJIn+IumAKqnaLZzjM9dv2l4ZaeU1icmRHJYB8lgLQEWPbjrbYp4U46gFWrI0+njdaGuzxyq8/df3IabTTPKC01baNG6C2YUStPX7LIbnM4Fh++0kC7Y4tsZ4aSVw99ze52oClBg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709168609; c=relaxed/simple;
-	bh=aFMYAjr2Kwl3Bq7QOoD1HkmCDlg/qynNYcIWlH3skcQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=K9PWNwAzFnj8XyDhIAW+d4aQODhlu5DmIsQMdxAHioHwZOeX3DjLKoMwSplE99gUCF2Z5l4bef6uaP/Op4OkJW0sDLqAtB443Nat1qwppFIJnoBpzMKtFqgoXvEhHYDTvAjNyYbYmm4U6lR3bv5C7NCF90yVAEd825arw3rat5g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=BWLInSMj; arc=none smtp.client-ip=44.202.169.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
-Received: from eig-obgw-5004a.ext.cloudfilter.net ([10.0.29.221])
-	by cmsmtp with ESMTPS
-	id fSS5r4OG9s4yTfUpariU7z; Thu, 29 Feb 2024 01:03:26 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-	by cmsmtp with ESMTPS
-	id fUpZrQhiapZ2hfUpZruRV1; Thu, 29 Feb 2024 01:03:26 +0000
-X-Authority-Analysis: v=2.4 cv=EZvOQumC c=1 sm=1 tr=0 ts=65dfd7de
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=VhncohosazJxI00KdYJ/5A==:17
- a=IkcTkHD0fZMA:10 a=k7vzHIieQBIA:10 a=wYkD_t78qR0A:10
- a=geO6l3TllUDVLW6gesMA:9 a=QEXdDO2ut3YA:10
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=KBOTTqsdtZgwVhU0ouDC8P1Pw8ERk6YxtzTNZWn5OtE=; b=BWLInSMjsxRqyUlKy1+ZZI/0mw
-	rChvfHJHA7IhUbQR20kcbnULtGDxOtyDM4WwAAlnZj+p16hPezaj5k+oL2pEX1dL7IYxGdtAScO59
-	+n+HA2/lhE38EZ98aFuE3k5gC1b+9KmX+5OAvV6dr2kq3Ny0tcGu+mzsGOYoZkCcuh1OQw6CbsdJn
-	hIGPJj3EfmQmA5HNFKJdpMw7PMNx2Qm2EUik3O+fqQbY9HJlfRcxiBl3ia62+9U48Z5hdDpPQwlFx
-	Eup+wtSYRzz89/gG5NiWhg+oI4n6WArW/Teq8lImknBwSiEG4YuUQa6P0dtBE/XAn8tNk5r6CuYh4
-	4x1bwyKQ==;
-Received: from [201.172.172.225] (port=35524 helo=[192.168.15.10])
-	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <gustavo@embeddedor.com>)
-	id 1rfUpX-002Jt3-2S;
-	Wed, 28 Feb 2024 19:03:24 -0600
-Message-ID: <49f55b02-ce21-40ac-a4cc-02894cd5eb8f@embeddedor.com>
-Date: Wed, 28 Feb 2024 19:03:12 -0600
+	s=arc-20240116; t=1709168699; c=relaxed/simple;
+	bh=mlW/QceuhwMc0DNGKXMDyALlNyqTylgx0y9zgyIvfV4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=J4zMGxL9uqzHkn/CYlZrBzDvB8K/C0YjucLNvCoLyKHZS+bkvbRr8BRwLp+hvqp9FKveqv03iwYZm8ZWHfp9W4eu9FobZz69OJwi+n9kp5Z/HgVyoj5J/VVOpEg8h/26B0vzUIuVjasPdq2p3rxVdMlLUfp8HbhPV/V1K0ppT+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=QeLn0EuP; arc=none smtp.client-ip=209.85.210.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6e49872f576so189458a34.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 17:04:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1709168696; x=1709773496; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=R+B/QFkmhGVByeQP+/pLiaj4NFRJ5VlaaL5Kc+sknpU=;
+        b=QeLn0EuPWaRqunHl7x4cD+na0SOlzWd0UypLEeZKh0a4LKb7qdGCa+nlI04mMvYRJ7
+         69qTszzOC7wVQFvZxaoyMXaurxDa1wAmVD6h2OW+UudllFeStTdQU6psw6vEDO7OoTtz
+         dUdx5zRml7AYwKXqUAv4df+km5Ik1U1pz0lgY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709168696; x=1709773496;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=R+B/QFkmhGVByeQP+/pLiaj4NFRJ5VlaaL5Kc+sknpU=;
+        b=SiZPR8UOzWct/XgqCVonI7eqGIbCgbkOwf6UPiiPMX55OnZ80EodfyqElFLOIu5xCo
+         rj9JDpp7OYGK3abC+AV3F8bzKe2PFcq3M5S8zQNJKly79vB2/ezuU67gv/GBKzHA1tjM
+         eunVMtq1LX+Lpt9zM+whA1hXrRp7Vst4IFWpm9ieFBSBzFKV3l5+c5IhnimB9fqqQjqi
+         dFV5EanMVFZa38H51uPgoCNG1LnRZ0f+EnpkODQNp64TU1S8eoTKi3X4mLM58eDCUA3g
+         GKKMb4SzHkchoX1maE4sWF3vR88z3wezKt2HTXrWsYMT6x1J1fGU2nSSZH7cvMeEwryI
+         4WUg==
+X-Forwarded-Encrypted: i=1; AJvYcCWMsgQ3RkiNgHHuIgTgMeYjUk4LzunfYHigTsw+P8JrFTXvk7xb0S1iwt94R/ltVcpB8iwkgdc21yFE8IuXdaSUeKnv8Pzzf5XKn+SB
+X-Gm-Message-State: AOJu0YyoLbb6RKOvZsxTRM47KBtFq1xTOjQc2dFAwNGEBcV36acsk/q6
+	omj9GqsnMa5bTZzAAN2Sz0g+EMcVC56SoGA4QdJbnTjn7T9lssVG9G8qWTIfaKeSvpB33YYeJFx
+	SAQ3525LPuma8jnQZkbVmDKKbinLg9dBeNkIr
+X-Google-Smtp-Source: AGHT+IFhWTqT6PtD4JEMKkFFd3nv0wlgYavQr4yUhVPVv9OfdNYWexXhMXSXQcwUC632H3U5Qtfim6FlE06VQO+AHt0=
+X-Received: by 2002:a05:6830:2013:b0:6e4:8d2d:64e5 with SMTP id
+ e19-20020a056830201300b006e48d2d64e5mr578147otp.13.1709168696649; Wed, 28 Feb
+ 2024 17:04:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 7/8] net-device: Use new helpers from overflow.h in
- netdevice APIs
-Content-Language: en-US
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Vinod Koul <vkoul@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
- Jonathan Cameron <Jonathan.Cameron@huawei.com>,
- Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org,
- dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-iio@vger.kernel.org, linux-spi@vger.kernel.org,
- netdev@vger.kernel.org, linux-hardening@vger.kernel.org,
- Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Paolo Abeni <pabeni@redhat.com>, "Gustavo A. R. Silva"
- <gustavoars@kernel.org>
-References: <20240228204919.3680786-1-andriy.shevchenko@linux.intel.com>
- <20240228204919.3680786-8-andriy.shevchenko@linux.intel.com>
- <202402281341.AC67EB6E35@keescook> <20240228144148.5c227487@kernel.org>
- <202402281554.C1CEEF744@keescook>
- <653bbfe8-1b35-4f5e-b89d-9e374c64e46b@embeddedor.com>
- <20240228165730.3171d76c@kernel.org>
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20240228165730.3171d76c@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 201.172.172.225
-X-Source-L: No
-X-Exim-ID: 1rfUpX-002Jt3-2S
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.15.10]) [201.172.172.225]:35524
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 11
-X-Org: HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfIejUPpcs3ONXF99mtvefk0dH/jIn3cueMepzHonThISUAvDsCRkspuXbvImAqQgIMr36MvQtV1O7gE5O2f9pCI97CD8QW+CKAe/YqNDdqO0HQHQYFGS
- vQ2D8Blahg5k1yZeztXtqfpeHKP0Pnt1y+34xIk4jWtHje6pUBmU5l0FAvrhS6gvnfF8GdqCB4/X/SSsLrzalCu7RhkVqqBiE/sa+baD1txAJjqlRQThuFpi
+References: <20240228011133.1238439-1-hsinyi@chromium.org> <20240228011133.1238439-4-hsinyi@chromium.org>
+ <CAD=FV=VV6fprky=v9koiVGmWcXKL3V4F2LOu7FriPbT_zT6xyA@mail.gmail.com>
+In-Reply-To: <CAD=FV=VV6fprky=v9koiVGmWcXKL3V4F2LOu7FriPbT_zT6xyA@mail.gmail.com>
+From: Hsin-Yi Wang <hsinyi@chromium.org>
+Date: Wed, 28 Feb 2024 17:04:31 -0800
+Message-ID: <CAJMQK-gmWHXNmxk4fWM0DEDN0kdUxVJF_D8pU_8CYCpBnd3-Ag@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] drm/panel: panel-edp: Fix AUO 0x405c panel naming
+ and add a variant
+To: Doug Anderson <dianders@chromium.org>
+Cc: Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
+	Sam Ravnborg <sam@ravnborg.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Feb 28, 2024 at 4:22=E2=80=AFPM Doug Anderson <dianders@chromium.or=
+g> wrote:
+>
+> Hi,
+>
+> On Tue, Feb 27, 2024 at 5:11=E2=80=AFPM Hsin-Yi Wang <hsinyi@chromium.org=
+> wrote:
+> >
+> > There are 2 different AUO panels using the same panel id. One of the
+> > variants requires using overridden modes to resolve glitching issue as
+> > described in commit 70e0d5550f5c ("drm/panel-edp: Add auo_b116xa3_mode"=
+).
+> > Other variants should use the modes parsed from EDID.
+> >
+> > Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> > ---
+> > v2: new
+> > ---
+> >  drivers/gpu/drm/panel/panel-edp.c | 17 ++++++++++++++++-
+> >  1 file changed, 16 insertions(+), 1 deletion(-)
+>
+> The previous version of this patch that we reverted also had an
+> override for AUO 0x615c. Is that one no longer needed?
+>
+>
+> > @@ -1990,7 +2003,9 @@ static const struct edp_panel_entry edp_panels[] =
+=3D {
+> >         EDP_PANEL_ENTRY('A', 'U', 'O', 0x239b, &delay_200_500_e50, "B11=
+6XAN06.1"),
+> >         EDP_PANEL_ENTRY('A', 'U', 'O', 0x255c, &delay_200_500_e50, "B11=
+6XTN02.5"),
+> >         EDP_PANEL_ENTRY('A', 'U', 'O', 0x403d, &delay_200_500_e50, "B14=
+0HAN04.0"),
+> > -       EDP_PANEL_ENTRY('A', 'U', 'O', 0x405c, &auo_b116xak01.delay, "B=
+116XAK01.0"),
+> > +       EDP_PANEL_ENTRY('A', 'U', 'O', 0x405c, &auo_b116xak01.delay, "B=
+116XAN04.0 "),
+> > +       EDP_PANEL_ENTRY2('A', 'U', 'O', 0x405c, &auo_b116xak01.delay, "=
+B116XAK01.0 ",
+> > +                        &auo_b116xa3_mode),
+>
+> The name string now has a space at the end of it. I _guess_ that's OK.
+> Hmmm, but I guess you should update the kernel doc for "struct
+> edp_panel_entry". The name field is described as "Name of this panel
+> (for printing to logs)". Now it should include that it's also used for
+> matching EDIDs in some cases too.
 
-
-On 2/28/24 18:57, Jakub Kicinski wrote:
-> On Wed, 28 Feb 2024 18:49:25 -0600 Gustavo A. R. Silva wrote:
->> struct net_device {
->> 	struct_group_tagged(net_device_hdr, hdr,
->> 		...
->> 		u32			priv_size;
->> 	);
->> 	u8			priv_data[] __counted_by(priv_size) __aligned(NETDEV_ALIGN);
->> }
-> 
-> No, no, that's not happening.
-
-Thanks, one less flex-struct to change. :)
-
-
+The space here is because in the EDID, there is space at the end,
+before 0x0a (\n).
+Okay I will update the kernel doc to mention that the same should be
+exactly the same as the panel name.
 
