@@ -1,95 +1,150 @@
-Return-Path: <linux-kernel+bounces-87593-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87595-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E37C86D64A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:43:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0ADB86D64F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:46:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E7551C21D5B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:43:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86F81281106
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:46:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DC896D50F;
-	Thu, 29 Feb 2024 21:43:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF61B6D52F;
+	Thu, 29 Feb 2024 21:45:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Zrosst/R"
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b9/CjJ8M"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7515516FF2B;
-	Thu, 29 Feb 2024 21:43:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1EEE6D50C;
+	Thu, 29 Feb 2024 21:45:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709242991; cv=none; b=EYato30pkr9uLRJe7l8bkTyyyK16edtshz+QsJ9RJo4TGLmQsOxkAB7bGeghCUDfG4KZ188oOSMTdZWGR/+bMBzE634B695tOK7CD1GlWQon6mr8kdfQe4hmm0vMWp3vtZ1nHBi3hYmi77wj7O4pXEvX8S5dn4OGik1kcC1YDMM=
+	t=1709243150; cv=none; b=GG3N9TkZuspsS6yj6GPowgp5bLliBiRJnSNdI45+WsA1j3bJ2NZsIJSokOioOnGkY5ySclmXcfYVraoilJ/1nA541SEvR7Bxw/5yPfEAURxFZpQZJs01PXDprFQIuTLiKDVM+dUa0J9l8IVobdoUKUZiLTrlK+eUsEhZe3j0klQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709242991; c=relaxed/simple;
-	bh=TN7ukpRAnvDh6NBrd7p6obmiLiecfrTl5mJrQ0iRthU=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lc/sbd2s7VeFFtHcriTDd3eQUUyJ1nlH/kGuVpa0zodMEhXUH3XwbWEX1rOMiUYYNzZBNx7WMFQDP2yw/9UQOYRl/fLTDS1FQNyVbvOnrD9DhexXzlpB5slFB1bVn8KkRsHUy4Ppe17DtLj/9lGgKNYDdzo81kFtusAe/MkV1HI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Zrosst/R; arc=none smtp.client-ip=217.70.183.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 8EBF260005;
-	Thu, 29 Feb 2024 21:43:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709242987;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OShvIFfEdMeWCoFCfPRr8zGu3Ce+ntI0blKGZdKOKZ4=;
-	b=Zrosst/RLgBz/8e6Xq91zLKNnC8Qh301tjNQ6ZiiwD9MKqHD9opx0D6D250TBV3ZYqcdvb
-	XVtHoP03RdGKqgfvKd4/Sp6gEjyzzFjYER0Fq+5D8vjvVSs4yQ6darMI8IBWk88VEXbuU1
-	dAcEIL1lTHxtDTtB3lofzYVAp7gZt1rSooGgp5eINeby3pAWycP2P5GdkoL93mqoWOoTMO
-	dTrXwxVthwa+H9MJXWgppI9HV+49u3L7c/ZB5LRXuJsqaqfd35EM/pwjBNqaOeS8gFbV4B
-	RNRiVNCZRJvGfBMCRU7uVDKd1xgldhKLqESdPtEgNNWdETprmoeF7/ALG8pWdw==
-Date: Thu, 29 Feb 2024 22:43:06 +0100
-From: Alexandre Belloni <alexandre.belloni@bootlin.com>
-To: Guenter Roeck <linux@roeck-us.net>, linux-rtc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Antoniu Miclaus <antoniu.miclaus@analog.com>
-Subject: Re: [PATCH] rtc: max31335: fix interrupt status reg
-Message-ID: <170924288521.1876058.17039410988641228858.b4-ty@bootlin.com>
-References: <20240219091616.24480-1-antoniu.miclaus@analog.com>
+	s=arc-20240116; t=1709243150; c=relaxed/simple;
+	bh=G4EYkzPzFZ97EhbBfqtvrgTbhgg2qWPt+odKPoorlmM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NqJlyBlLG3CE2ppbNiv1FSi1Ek/N/GdEcO8H49ZzhAR9SSajsSTRxKZqHy1t/BBDI61Aih9H9gNV2xQPMbSUvG2TtrwZrLljcqwWgWCCD0gKwUG9Md0yTsHPfV2J1pNo1/eAf3wm68Z+H88ieCpEFLqdbGLuO8B9S2krbi5c75E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b9/CjJ8M; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9021C433C7;
+	Thu, 29 Feb 2024 21:45:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709243149;
+	bh=G4EYkzPzFZ97EhbBfqtvrgTbhgg2qWPt+odKPoorlmM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=b9/CjJ8MOWWmJ77VMYivZMauQoKvUZky6TY1nilZ/ZH+J4l+3gH4vhVrEjDUmgAP6
+	 iTyd+A2kT0zdOhpzMbCpeKuawtG1hXwkF1OmrfbDy8bWOuauKzcnU4EDtBTWYK9njK
+	 rXp9msPg34jWdRG61D8CFJhzoWUmuN/823DH7FEhm9kePll/FcPWSlm+9q1lV2NV9S
+	 eojbqeNA6LFj4wleY/5QkiYVW9FItDzWhabFF86uEdJAqtkjVER2a5ZBOriDDJ2t4G
+	 9UqXiZTiMf9DBU0eiSIZ+/uwHTcL7ODurX4VIUJc7fvquTvcD55TuVqfWW/EO371it
+	 2irBvLnw8Y3WQ==
+Date: Thu, 29 Feb 2024 21:45:40 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Thiago Jung Bauermann <thiago.bauermann@linaro.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Marc Zyngier <maz@kernel.org>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
+	Eric Biederman <ebiederm@xmission.com>,
+	Kees Cook <keescook@chromium.org>, Shuah Khan <shuah@kernel.org>,
+	"Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+	Deepak Gupta <debug@rivosinc.com>, Ard Biesheuvel <ardb@kernel.org>,
+	Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+	"H.J. Lu" <hjl.tools@gmail.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Florian Weimer <fweimer@redhat.com>,
+	Christian Brauner <brauner@kernel.org>,
+	linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+	kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+	linux-arch@vger.kernel.org, linux-mm@kvack.org,
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v8 33/38] kselftest/arm64: Add a GCS test program built
+ with the system libc
+Message-ID: <c710a6b1-cf58-4e32-ada0-c0b256a62b2c@sirena.org.uk>
+References: <20240203-arm64-gcs-v8-0-c9fec77673ef@kernel.org>
+ <20240203-arm64-gcs-v8-33-c9fec77673ef@kernel.org>
+ <87sf1n7uea.fsf@linaro.org>
+ <9b899b4e-7410-4c3b-967b-7794dac742e4@sirena.org.uk>
+ <87ttlzsyro.fsf@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="+ic7W6qvciabkElL"
+Content-Disposition: inline
+In-Reply-To: <87ttlzsyro.fsf@linaro.org>
+X-Cookie: Marriage is the sole cause of divorce.
+
+
+--+ic7W6qvciabkElL
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240219091616.24480-1-antoniu.miclaus@analog.com>
-X-GND-Sasl: alexandre.belloni@bootlin.com
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 19 Feb 2024 11:16:15 +0200, Antoniu Miclaus wrote:
-> Fix the register value comparison in the `max31335_volatile_reg`
-> function for the interrupt status register.
-> 
-> MAX31335_STATUS1 macro definition corresponds to the actual
-> interrupt status register.
-> 
-> 
-> [...]
+On Thu, Feb 22, 2024 at 11:24:59PM -0300, Thiago Jung Bauermann wrote:
+> Mark Brown <broonie@kernel.org> writes:
 
-I hope you realize that this is exactly what Guenter was referring to
-when he said:
+> > I believe based on prior discussions that you're running this using
+> > shrinkwrap - can you confirm exactly how please, including things like
+> > which firmware configuration you're using?  I'm using current git with
+> >
+> >   shrinkwrap run \
+> >         --rtvar KERNEL=3Darch/arm64/boot/Image \
+> >         --rtvar ROOTFS=3D${ROOTFS} \
+> >         --rtvar CMDLINE=3D"${CMDLINE}" \
+> >         --overlay=3Darch/v9.4.yaml ns-edk2.yaml
+> >
+> > and a locally built yocto and everything seems perfectly happy.
+>=20
+> Yes, this is how I'm running it:
+>=20
+>   CMDLINE=3D"Image dtb=3Dfdt.dtb console=3DttyAMA0 earlycon=3Dpl011,0x1c0=
+90000 root=3D/dev/vda2 ip=3Ddhcp maxcpus=3D1"
+>=20
+>   shrinkwrap run \
+>       --rtvar=3DKERNEL=3DImage-gcs-v8-v6.7-rc4-14743-ga551a7d7af93 \
 
-"It seems to be quite common for automotive chips, though, that they are held
-tightly under wrap, making it all but impossible to properly review their drivers.
-I have observed several times now that information not available to reviewers
-resulted in bad or buggy drivers."
+I guess that's bitrotted?
 
+> My rootfs is Ubuntu 22.04.3. In case it's useful, my kernel config is
+> here:
 
-Applied
+=2E..
 
-[1/1] rtc: max31335: fix interrupt status reg
-      https://git.kernel.org/abelloni/c/c12e67e076cb
+> https://people.linaro.org/~thiago.bauermann/gcs/config-v6.8.0-rc2
 
-Best regards,
+Thanks, it seems to be something in your config that's making a
+difference - I can see issues with that.  Hopefully that'll help me get
+to the bottom of this quickly.  I spent a bunch of time fighting with
+Ubuntu images to get them running but once I did they didn't seem to
+make much difference.
 
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+--+ic7W6qvciabkElL
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXg+wQACgkQJNaLcl1U
+h9DZxgf/UlqOshXqv9IbI4UXiot4QEsHhZ0uPw/+cIwJW0LPVndUMhKWjgagc3yv
+HwCf2QQxjkRQTOAeO7dsMdW9WhMBi4cPzta19y3Z9rkAn8XuQM7LXg97WIQDNp7O
+3ommNUjVAxq47zUvZhrQC18uzEb8WggdwNqJhcgn4mo/2GwN9uZp2xEZt1CRjZuk
+9BOCuvR8dqbQvTXBik+7OZ45roOoTCLl8XUrmPk6VAlcK+DcBoDFt9jm9tgdG6zb
+1Ua3jh2YvNe6s/qM5auYh/qB/V6wlz4n5yT0zvnhbC5XXzhaHkjV1/We3jerpisD
+2teyFuaDxTwqX+5D8D871wwBTD3IPg==
+=WDVJ
+-----END PGP SIGNATURE-----
+
+--+ic7W6qvciabkElL--
 
