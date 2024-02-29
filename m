@@ -1,102 +1,118 @@
-Return-Path: <linux-kernel+bounces-86461-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86463-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E4B086C5CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:43:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D8EC786C5D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:43:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF7DE1F23243
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:43:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7991C1F27041
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:43:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 813E7612EC;
-	Thu, 29 Feb 2024 09:42:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC49A60EEB;
+	Thu, 29 Feb 2024 09:43:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="O1jLiK5t"
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cr0nGGfQ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAA1760ECF
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 09:42:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21DBD612CE;
+	Thu, 29 Feb 2024 09:43:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709199750; cv=none; b=YbmCvRfAV52qCYjhd4XQDnxIl8zU/tMZm3h1xg9izT5FuhO8bRKSf//LjihOR8KLNXS1O6bLL/FLTeztIMjYX9I0eQSglptX+U/gZ3Jl/N9JLmqNB/4r0TPXCq+OsoQykrrmwS8cLZxvfZQj16VQdbD9PgIbWRzM/NohqLV7S6o=
+	t=1709199791; cv=none; b=VeGg7lwFHJiF4Iof8GM/jgLwSD7kC36+a650IN5xiC7saoYgSy/yN87jlpyvonxcazVvxCWNox3T6m+qAGFjgqYF8VVhK7XKAo5MHVTBbNlaCekHWDvWFE0s3V6Ue8YgzMVX6jj/qCtiHEWlu1MDZ8/a3EyyOk/KrEtfTw4HAXU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709199750; c=relaxed/simple;
-	bh=7uKC/FvBJpACc0ZQ/imEXkYWFQ7oYf5ML6Z59yi/fM8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=P1SsZ74eOi21QktiWQkxQcexzxlIZ+5eiqWGqBOCWGZZnOvcIFN6nwmXS8IPVD/A3YbumfHgEt9jR9q92AsdpFt1N9ue0EgPHZKxg7q8yKi9ZR/gIBWzZf92IIyrQxRtUkeub6WyJow95d36oVn0w+pYATQOaBHEgyBgI10Hz6c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=O1jLiK5t; arc=none smtp.client-ip=209.85.128.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-60943ad307fso6805667b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 01:42:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709199747; x=1709804547; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7uKC/FvBJpACc0ZQ/imEXkYWFQ7oYf5ML6Z59yi/fM8=;
-        b=O1jLiK5tNdoIuhCWhmcMHOSCl+L+Kub7p0BfgOb1lMu1o2jlqrTYRSyoKbF5aRoX4z
-         5MSaYrAQnCbJeGc5GXnMbEPeYADekqm4IAUkFJriINVsoqRmrzRFt0DpwDirM9x56BIF
-         UbWCEfxBvaTDPDM+9ixQMC34dC9XkT5POpdhDExEmPyrM9uQOct4w6HuHa3MFqbo1vbX
-         hi819j8TpZbYX4vof/2qWPfXVI1wcLVBQbR1ARAlWrdsxb83xn8LYzKnN07W/iOOnX9m
-         GtPP1IOks/RruAlPcHdKCQ4ulubCKdLdWFOWzO4eMrh+MgYwipz9wkftRO2+zJ9VdfXW
-         6Y5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709199747; x=1709804547;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7uKC/FvBJpACc0ZQ/imEXkYWFQ7oYf5ML6Z59yi/fM8=;
-        b=j4CMbLKUBLksCQ/ft3rP5k4khgSj+T3fCo39pvfVCTzFODcox+3XSwy1cyw4GdMDNq
-         ZlK3/LtnzjF9Y38r+c/Vcb0hSRU6WGtDjUKxEv5eoK3/7URMoArdBeHn7yVEHZ8SWpFt
-         SdH9a4WMfQe/5Q4Bi5eXdIC9RwFHiYIzEgyEKjd8uApPYlpHSA1AslCBFr7lcKQK5xhZ
-         H8BtJmTNmHM6bzDK0oCv3iLEB/hPXS3M15tmUF1w+du45TlU+d4jWo6ryHd2Td/ejUkZ
-         pu/pZiZAZNe43VFQeNQZQm6uwv99KrqrJFuoD1Z2hnJTrXoPUjW0lXv9xUCxYn4fRRaD
-         PesQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWcE/5we795fhcG9Kb9yhkHHKJQtXbtRQwUko9oV6E99O/psuUYMTYEb8tAUKf8a02jGRPhE0E3M/Z8RuRQUNnEV8QPiKWeJrObEhCi
-X-Gm-Message-State: AOJu0Yw/Hw+WFCaMJYxrqHQx5leFVPyFk5FMQzeWXRqj6GppY0S1ocUc
-	5zoqKq4MxjqXH09MPUmqwEfFLroIF5dIWokSE6FAlRYIsGieB1omK9phl1rcrd4jwSG9WYcqSWK
-	n46FhBW67lKAUd+2MO50374FwW8DDC8czqFImOA==
-X-Google-Smtp-Source: AGHT+IEpJ3NFu5a8qlfTHTx/bDighLY1fBT+nS1X9VL0cGXlwBe5EOlcAMNoF6lc/EO/wb8zGIf7qpxZCEmSAd7rIAg=
-X-Received: by 2002:a25:ad62:0:b0:dcd:13ba:cdd6 with SMTP id
- l34-20020a25ad62000000b00dcd13bacdd6mr1498057ybe.47.1709199746956; Thu, 29
- Feb 2024 01:42:26 -0800 (PST)
+	s=arc-20240116; t=1709199791; c=relaxed/simple;
+	bh=aDbHWCEN87gifEkin69igfn4UnaUalbm7Xpzz7Tjuw4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GidAiNcg8fvKSQwsYP9mGe7GJmLDEqQpXvGC/E53ASWYTy2hYf0IRSCNlF+sbB5QeUl8wlgpyfMGkrfT4ENmaepHJN1nRWA/OyVZrjNeFpe/0nl/S6Pnb3wI/KXzBRbmWkcvpQX03s3z/VZbrz3LyvTGoE/R3XtRIlLdga3c6V4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cr0nGGfQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1605BC43390;
+	Thu, 29 Feb 2024 09:43:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709199790;
+	bh=aDbHWCEN87gifEkin69igfn4UnaUalbm7Xpzz7Tjuw4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cr0nGGfQcPJzRlpgBOWurWE1FlP0/lVOeyoJ0y+JMWFPkBi7Z8r358ncafvax+LcU
+	 Utr4eykovmyPVLbRrMd9NNaM5I2CsGLModtc7FUdwAqEqrde8pi5ztd3SWRrtB7q2n
+	 yFcYOJo7yRqY5TEgHSWuwo52+FQvMzf/Px27hOyrwc90xeLmHZ8loRRFRRfZFIgy8H
+	 6nplNOpn0Z+LhIHagrRGsVo3ANvtj8700A0dL9clQp1aeAWYxzr+8tRSUX5W6L9bWb
+	 vZzJ+9zg/s/2116gI22aOiKJiQCK8U4Z3pzPLfAI3O2e7nwXPGiAhbLXW8C5yO/cnj
+	 iqjhmV+h7jGzw==
+Date: Thu, 29 Feb 2024 11:42:23 +0200
+From: Mike Rapoport <rppt@kernel.org>
+To: Yaxiong Tian <13327272236@163.com>
+Cc: David Hildenbrand <david@redhat.com>, rafael@kernel.org, pavel@ucw.cz,
+	len.brown@intel.com, keescook@chromium.org, tony.luck@intel.com,
+	gpiccoli@igalia.com, akpm@linux-foundation.org, ardb@kernel.org,
+	wangkefeng.wang@huawei.com, catalin.marinas@arm.com,
+	will@kernel.org, linux-pm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+	Yaxiong Tian <tianyaxiong@kylinos.cn>,
+	xiongxin <xiongxin@kylinos.cn>
+Subject: Re: [PATCH] PM: hibernate: Fix level3 translation fault in
+ swsusp_save()
+Message-ID: <ZeBRfxQ8WTEVzpfL@kernel.org>
+References: <20240226034225.48689-1-13327272236@163.com>
+ <8d70939f-ca14-4167-9647-b8f44ddcbb98@redhat.com>
+ <ZdxWcG2XCqBum3_R@kernel.org>
+ <3399d2af-3d42-4ac1-9b74-8475bec25f7f@163.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240228-mbly-gpio-v2-0-3ba757474006@bootlin.com> <20240228-mbly-gpio-v2-29-3ba757474006@bootlin.com>
-In-Reply-To: <20240228-mbly-gpio-v2-29-3ba757474006@bootlin.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 29 Feb 2024 10:42:16 +0100
-Message-ID: <CACRpkda7m9qvTED-meROn=U1RQUYe4sW47n9EJisPFoVV10Z0w@mail.gmail.com>
-Subject: Re: [PATCH v2 29/30] MIPS: mobileye: eyeq5: add resets to GPIO banks
-To: =?UTF-8?B?VGjDqW8gTGVicnVu?= <theo.lebrun@bootlin.com>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Philipp Zabel <p.zabel@pengutronix.de>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-mips@vger.kernel.org, Gregory CLEMENT <gregory.clement@bootlin.com>, 
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3399d2af-3d42-4ac1-9b74-8475bec25f7f@163.com>
 
-On Wed, Feb 28, 2024 at 12:28=E2=80=AFPM Th=C3=A9o Lebrun <theo.lebrun@boot=
-lin.com> wrote:
+On Tue, Feb 27, 2024 at 03:51:25PM +0800, Yaxiong Tian wrote:
+> 
+> 在 2024/2/26 17:14, Mike Rapoport 写道:
+> > On Mon, Feb 26, 2024 at 09:37:06AM +0100, David Hildenbrand wrote:
+> > > On 26.02.24 04:42, Yaxiong Tian wrote:
+> > > > From: Yaxiong Tian <tianyaxiong@kylinos.cn>
+> > > > 
+> > > > On ARM64 machines using UEFI, if the linear map is not set (can_set_direct_map()
+> > > > return false), swsusp_save() will fail due to can't finding the map table
+> > > > under the nomap memory.such as:
+> > can_set_direct_map() has nothing to do with presence or absence of the
+> > linear map.
+> > 
+> > Do you mean that kernel_page_present() presumes that a page is present when
+> > can_set_direct_map() returns false even for NOMAP ranges?
+> Yes， in swsusp_save()->copy_data_pages()->page_is_saveable(),
+> kernel_page_present() presumes that a page is present when
+> can_set_direct_map()
+> returns false even for NOMAP ranges.So NOMAP pages will saved in after,and
+> then
+> cause level3 translation fault in this pages.
 
-> The two GPIO banks share a single reset line.
->
-> Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+So this should be the description of the problem in the changelog rather
+than saying "if the linear map is not set (can_set_direct_map() return
+false)"
 
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+> > > > QEMU ARM64 using UEFI also has the problem by setting can_set_direct_map()
+> > > > return false.
+> >
+> > Huh?
+> > Why would you do that?
+> >
+> I discovered this problem when upgrading from 5.4 to 6.6 using the 5.4
+> configuration.
+> So I using latest linux-next code,find the problem still exist.To rule out
+> the effects
+> of a particular machine，I also use qemu to check it.
 
-Yours,
-Linus Walleij
+I believe this can be reproduced if you boot with rodata=off and then
+a better description would be something like
+
+	This issue can be reproduced in QEMU when booting with rodata=off
+
+-- 
+Sincerely yours,
+Mike.
 
