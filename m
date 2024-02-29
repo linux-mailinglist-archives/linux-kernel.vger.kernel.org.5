@@ -1,108 +1,141 @@
-Return-Path: <linux-kernel+bounces-86619-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86620-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE9D686C7E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:19:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBD8286C7E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:19:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF6D01C214A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:19:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 887C9287549
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:19:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC3E47B3D2;
-	Thu, 29 Feb 2024 11:19:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B5DC7B3F1;
+	Thu, 29 Feb 2024 11:19:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="DrPgchJl"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="gqa1zfhZ"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC11B64A9B;
-	Thu, 29 Feb 2024 11:19:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37D3D7B3C5
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 11:19:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709205563; cv=none; b=GamjNvL0Cjyndl6qeG6fyOFBYFoZeGVikcY19ufldKReQIga7yBzGnA2JeIHySURHZDGHzRKySvdKZx0MKYimu2MANLb9cPRylxVibIPm9kpifDK0eDq2CjsDdIqZVvd9mahrU275C5QdWxyNvix8zG+Xsib29J3Zp0f4+nZXWo=
+	t=1709205586; cv=none; b=W9z+4LS4auR9Yylm7nCuT4M5SvGzv1ZxM/6ELvCpMDcJK8rk9xDc4qu2U5qQfGkm86EzwhCOvVeL77zRCrALWbPX2QsxqppwgNE8hSWWH6txZDOc7f0or1FuEgFdv4Lb8PAktVoT2V60a0fc3IQyIMEJOO8SflW+dL+76OmSklI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709205563; c=relaxed/simple;
-	bh=7Eihvt86sWz7EP3y44dO8crLxvUcOmGXPcGktOO6u/c=;
+	s=arc-20240116; t=1709205586; c=relaxed/simple;
+	bh=CrfqeJfglTo/ajTyw1Gwgn0fWvXeO8/9hjzuKoGnGV8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FgEyE3JmedhwO6jJQCnN0lE52IctYui7+adox5GjW6FCxOKrgC4sfW7NvgoaateqHzXwwSlCKxVCSNmz29WVG/25tKUQwm50Jn1p5NYpRw8SMrB3fe0UK5Lo/X4FeER8AR6kQ//49484zBCS8djz07iW21kmnFVOzyTLkGkt0mE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=DrPgchJl; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (89-27-53-110.bb.dnainternet.fi [89.27.53.110])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 2CA8BC67;
-	Thu, 29 Feb 2024 12:19:04 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1709205544;
-	bh=7Eihvt86sWz7EP3y44dO8crLxvUcOmGXPcGktOO6u/c=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DrPgchJl8eyBsuuIvu1KwAAxBvUE2LhSUIkFpyBTTNDzjdFgAe2QAKOs5GKt4FLC1
-	 Hu4OTxmiFybg7PokMEe+AuTDBS89RjdgLUEi8PP2idrIgn1lO9betXc1NcDq+3Y+8l
-	 Hbdh3a/hEQ2dpoICE8v7cXWXcj4nvPXvdidvztlQ=
-Date: Thu, 29 Feb 2024 13:19:19 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Nikolai Kondrashov <spbnick@gmail.com>
-Cc: Helen Koike <helen.koike@collabora.com>, linuxtv-ci@linuxtv.org,
-	dave.pigott@collabora.com, mripard@kernel.org,
-	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	linux-kselftest@vger.kernel.org, gustavo.padovan@collabora.com,
-	pawiecz@collabora.com, tales.aparecida@gmail.com,
-	workflows@vger.kernel.org, kernelci@lists.linux.dev,
-	skhan@linuxfoundation.org, kunit-dev@googlegroups.com,
-	nfraprado@collabora.com, davidgow@google.com, cocci@inria.fr,
-	Julia.Lawall@inria.fr, laura.nao@collabora.com,
-	ricardo.canuelo@collabora.com, kernel@collabora.com,
-	torvalds@linuxfoundation.org, gregkh@linuxfoundation.org
-Subject: Re: [PATCH 0/3] kci-gitlab: Introducing GitLab-CI Pipeline for
- Kernel Testing
-Message-ID: <20240229111919.GF30889@pendragon.ideasonboard.com>
-References: <20240228225527.1052240-1-helen.koike@collabora.com>
- <20240228230725.GF1659@pendragon.ideasonboard.com>
- <0a5bf7d1-0a7e-4071-877a-a3d312d80084@gmail.com>
- <20240229093402.GA30889@pendragon.ideasonboard.com>
- <655f89fa-6ccb-4b54-adcd-69024b4a1e28@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=lK6gRbEOe3ofj7rN8g0guIV1aAAXtCp4A8KkuFvPmB9XpbHdXwQWJecIXKnbQjtB+moVaOIGcTWOXD+2GGLXuEEpeJg8gje2fL6dpb3HAYJpBwueUaU400XriWt+Ly3DjKOD0OqFEPncdIHF9qJfddu4ydp6gyE3BqF9gptM4RM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=gqa1zfhZ; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a43dba50bb7so115752866b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 03:19:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1709205582; x=1709810382; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/Z3D5o73PHWTzmlfs+M2Cnag+Z5lMOi+i4eWtfpyC5s=;
+        b=gqa1zfhZpH/XoQsnsXOeJQE3z4zB0jQ/0A05eCIxqGXr7tkxtMxIzNVamr5yLMQ4gm
+         jdVcMEUTXzK6Yt9a8n+XRurTm1Y8c/bK9G2Wt/uiC86RzKkydDgXDhDZY2Blpr+xwhsb
+         hlk0n/q8cGNbKxRFY8UzyC2gMNhyvS46te7HJhXv+8yjMYCBjIRXjckPmENZgB2EcZRL
+         DlVCJoVeZkgtyWW8aCFyptr9HUa056uqELyv2pwNgqJ2781ZQXtkAHnlFqnnl6NrAKt4
+         cVzQltFlMEHg47/XF7yOhOoF3pZxXkAV/fseMG1ied5B41A3VYER06ZKwlGCsqcIwKFa
+         pseQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709205582; x=1709810382;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/Z3D5o73PHWTzmlfs+M2Cnag+Z5lMOi+i4eWtfpyC5s=;
+        b=EtwzePbXN7InEzEEsMc3z8kzZKhPCM3wrxp3rnYuTZ7JXX7xr4lS9xqtA7EPfvw1l1
+         O8FMT4y99I0rp+OmUyHVoG/gXKy6W+QrWvIy/Dc59FpCqusIGu77C5qgNixch18sljAa
+         ga8er8qrNvSicmFg30EHeMlmV0PDZF8HYlvChr9Lq/jRAg2OTemMXcgmIJ7zEiGEMfPX
+         GJYi66QgkVWunpF8qcA40cyfyzDQh/S5QGI/peqOm/XSZed9olAPrwiDYAraaO/v7PAP
+         WYb7I5W2QvP4m5NpLmPvzeSPCLEyr5GWW2n1X4iPLscw0BLsCTp0QJ8z3TDIFWqv6q6J
+         yTrg==
+X-Forwarded-Encrypted: i=1; AJvYcCWEvU3qAjbQHet6fWZLXgMvTqgovpuw/F1l27AwtQqT2V7jgt9ruiq8peFQkEx1+65aT3556H0GfwDCbHU79tlyunT6sziyXb2Eqmgn
+X-Gm-Message-State: AOJu0YyhWaDgURa9+0GJmpfBuRFbbJfWgNin6jNPmCiRlikycmOJEVf9
+	BgwVJwU3zURA7cWu1PgbhUCdSSpsnP1aSw3VGlQPa603gS3j4i6P0Ej5bHAHG64=
+X-Google-Smtp-Source: AGHT+IEiTJIiVnJYh/o1Q6xEvLv1ebup90kGwCYruTGxf4JFDCbY03BB8m2v4P8ypxT/TpQ4Rn8CDw==
+X-Received: by 2002:a17:906:474c:b0:a44:553e:5a1d with SMTP id j12-20020a170906474c00b00a44553e5a1dmr539793ejs.20.1709205582558;
+        Thu, 29 Feb 2024 03:19:42 -0800 (PST)
+Received: from alley ([176.114.240.50])
+        by smtp.gmail.com with ESMTPSA id r9-20020a170906550900b00a3d5d8ff745sm588862ejp.144.2024.02.29.03.19.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Feb 2024 03:19:42 -0800 (PST)
+Date: Thu, 29 Feb 2024 12:19:40 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: "John B. Wyatt IV" <jwyatt@redhat.com>
+Cc: John Ogness <john.ogness@linutronix.de>,
+	Clark Williams <williams@redhat.com>, jlelli@redhat.com,
+	Derek Barbosa <debarbos@redhat.com>,
+	"John B. Wyatt IV" <sageofredondo@gmail.com>,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-rt-users <linux-rt-users@vger.kernel.org>
+Subject: Re: NMI Reported with console_blast.sh
+Message-ID: <ZeBoTNe2cjb4BeXb@alley>
+References: <ZcQjxa4UA6hzXHnU@thinkpad2021>
+ <87v86yc88b.fsf@jogness.linutronix.de>
+ <ZcaQI8l1dcBx2feC@thinkpad2021>
+ <87a5o8j9gp.fsf@jogness.linutronix.de>
+ <ZcqMOKtHsZ9qnxNg@thinkpad2021>
+ <ZdbZz-v_lug9_t6C@thinkpad2021>
+ <ZeBnUCk598gttpds@alley>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <655f89fa-6ccb-4b54-adcd-69024b4a1e28@gmail.com>
+In-Reply-To: <ZeBnUCk598gttpds@alley>
 
-On Thu, Feb 29, 2024 at 01:10:16PM +0200, Nikolai Kondrashov wrote:
-> On 2/29/24 11:34 AM, Laurent Pinchart wrote:
-> > On Thu, Feb 29, 2024 at 11:26:51AM +0200, Nikolai Kondrashov wrote:
-> >> On 2/29/24 01:07, Laurent Pinchart wrote:
-> >>> On Wed, Feb 28, 2024 at 07:55:24PM -0300, Helen Koike wrote:
-> >>>> **Join Our Slack Channel:**
-> >>>> We have a Slack channel, #gitlab-ci, on the KernelCI Slack instance https://kernelci.slack.com/ .
-> >>>> Feel free to join and contribute to the conversation. The KernelCI team has
-> >>>> weekly calls where we also discuss the GitLab-CI pipeline.
-> >>>
-> >>> Could we communicate using free software please ? Furthermore, it's not
-> >>> possible to create an account on that slack instance unless you have an
-> >>> e-mail address affiliated with a small number of companies
-> >>> (https://kernelci.slack.com/signup#/domain-signup). That's a big no-go
-> >>> for me.
-> >>
-> >> Yes, it's not ideal that we use closed-source software for communication, but
-> >> FWIW I'd be happy to invite you there. Perhaps if you try logging in e.g. with
-> >> a Google account, I'd be able to see and approve your attempt too.
+On Thu 2024-02-29 12:15:30, Petr Mladek wrote:
+> On Thu 2024-02-22 00:21:19, John B. Wyatt IV wrote:
+> > On Mon, Feb 12, 2024 at 04:23:04PM -0500, John B. Wyatt IV wrote:
+> > > 
+> > > Red Hat's conservers are having an issue with the machine I was testing
+> > > on. It may take me a while to get back to you with more test results.
+> > > 
 > > 
-> > I don't use Google accounts to authenticate to third-party services,
-> > sorry. And in any case, that won't make slack free software.
+> > Found a work-around with conserver. I was able to follow up on the printk-caller
+> > info you requested.
+> > 
+> > I found 2 additional NMIs for a total of 3. Number 2 is very
+> > large-please feel free to let me know what specific information you
+> > wanted if it was unnecessary.
+
+[...]
+
+> > Compared to the two NMIs with throughput-performance (no preemption)
+> > 
+> >   <NMI>
+> >   cpus=0
+> >    .runnable_avg                  : 3072
+> >  kthread (kernel/kthread.c:388) 
+> >    .util_est_enqueued             : 0
+> >   stack:0     pid:1733  tgid:1733  ppid:2      flags:0x00004000
+> >    .min_vruntime                  : 2084315.290254
+> >    .removed.load_avg              : 0
+> >    .avg_vruntime                  : 2084315.290254
+> >  console_blast.s  3497     34770.405603 N     34773.405603         3.000000     34764.898340         4   120 
+> >    .util_avg                      : 1024
+> >    .util_avg                      : 1024
 > 
-> Of course. You're also welcome to join the #kernelci channel on libera.chat.
+> It looks like messages from more (many) CPUs are mixed. I guess that they
+> are printed by print_cfs_rq(). But the order looks random.
+> 
+> Also I wonder why it is printed from NMI context. Maybe, it is from
+> some perf event, similar to hardlockup detector?
 
-Isn't that a bit pointless if it's no the main IM channel ?
+I have realized that we most likely see only small part of the mixed
+output. I wonder if it is because it is printed from the emergency
+context. Here the messages are flushed when leaving the context
+and many might be lost.
 
-> It's much quieter there, though.
-
--- 
-Regards,
-
-Laurent Pinchart
+Best Regards,
+Petr
 
