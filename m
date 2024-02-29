@@ -1,108 +1,202 @@
-Return-Path: <linux-kernel+bounces-86555-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86556-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFE0F86C6F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:32:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C27486C6FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:33:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 706661F26564
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:32:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A886EB27191
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:33:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DF1876C7A;
-	Thu, 29 Feb 2024 10:32:41 +0000 (UTC)
-Received: from zg8tndyumtaxlji0oc4xnzya.icoremail.net (zg8tndyumtaxlji0oc4xnzya.icoremail.net [46.101.248.176])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C92A6768F4;
-	Thu, 29 Feb 2024 10:32:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.101.248.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07FA67995E;
+	Thu, 29 Feb 2024 10:33:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Awnze/Ea"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1553F79B7A
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 10:33:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709202760; cv=none; b=C50IpytTR6Tw6dLj7cdz+4x076xkHynwoaZTrCYhCfbHZBIggEMCjM+8ZQF+Y5NRRb4y0w0HNZyvqKroKNs5sLvjn13Y2n6GUAlRgTEOr8mwc+ze32VvLvNKi3QCAE9YldioKeWAVz2e9alMaroKUSOCPJIWGY4eOb0wUyoh6eE=
+	t=1709202813; cv=none; b=lCjTOvKElEX7aT4xecB/FgFr7KX8SebIu/+9+SGCe6JJUNMhD9EtQMZafdtnQcW8sCR3IwlHeH2tNaJ7bO6wbQ0h7oUAhgQG7ywg3lZkHG7pumt8gNy/vToo4PHD8UYd+yIPXHxaSvEku9i1h6LQn32Q40HLO81bPJJCvyfqJdo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709202760; c=relaxed/simple;
-	bh=LflXo9uhwDjMO2CtqfGpFbBk07gB8N/MJw3BYUAPA5E=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=DJ+SNaMvDUnLJgTSkxFRzZlQYap2TyrnJ7ehRAplXs3Xs4ndYmCmXxZYT862k2/3Wpv/vJsy4UT2zyqW7nlNNmYhDKlR2UyE2c30ytxy+gvTK3OzTjqmfK/xzTC5ohMHKb/0ef5QfJ7+25eytfuEnbZbHmTdQ+W2WXiv/+8mhP4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=46.101.248.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from ubuntu.localdomain (unknown [218.12.19.137])
-	by mail-app3 (Coremail) with SMTP id cC_KCgBXOzUZXeBlwXS1AQ--.1150S2;
-	Thu, 29 Feb 2024 18:32:05 +0800 (CST)
-From: Duoming Zhou <duoming@zju.edu.cn>
-To: linux-kernel@vger.kernel.org
-Cc: brcm80211-dev-list.pdl@broadcom.com,
-	brcm80211@lists.linux.dev,
-	linux-wireless@vger.kernel.org,
-	justinstitt@google.com,
-	quic_alokad@quicinc.com,
-	jisoo.jang@yonsei.ac.kr,
-	petr.tesarik.ext@huawei.com,
-	hdegoede@redhat.com,
-	keescook@chromium.org,
-	johannes.berg@intel.com,
-	kvalo@kernel.org,
-	arend.vanspriel@broadcom.com,
-	Duoming Zhou <duoming@zju.edu.cn>
-Subject: [PATCH v3] wifi: brcm80211: handle pmk_op allocation failure
-Date: Thu, 29 Feb 2024 18:31:53 +0800
-Message-Id: <20240229103153.18533-1-duoming@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID:cC_KCgBXOzUZXeBlwXS1AQ--.1150S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7XFyDAF1UAr4kCw1xuFyrtFb_yoW8JrW7pw
-	4xGFyqyr1UWw4Ykw4rtF92yryFg3W7K34Fkr4jva4fuFs3Gr18Jw48KFyYvF1kArW2y3y2
-	yFWkJasxWrs8X37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9E14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
-	Y2ka0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFylc2xSY4AK67AK6r4DMxAIw28IcxkI7VAKI4
-	8JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xv
-	wVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjx
-	v20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20E
-	Y4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267
-	AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VU1VyI5UUUUU==
-X-CM-SenderInfo: qssqjiasttq6lmxovvfxof0/1tbiAwQGAWXfgNMKpABfsY
+	s=arc-20240116; t=1709202813; c=relaxed/simple;
+	bh=0143QA1Xyj0N42m47GM1F46kirWTT27+RVAWs5tQJok=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WWZZdt6N+YvnvNVU2rZc6MF07LMf+grXIffUPtw+y56Tj+QLfZC+Vgc0NURY2wCLgA44PTPdECrUv+NQb20ekt/i/ZNK/nUuXvhVzo4XWZr7+1WKDriUOcEEGY2aa9uQ9IWoFSZobx2B9syxJZkDhlbwL8u6K0EIhXQY60GI830=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Awnze/Ea; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-5132b1c9f7fso179358e87.3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 02:33:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709202808; x=1709807608; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=nQl+fyrc7gr5M0XagvOsbZaoINJk1clL/Vv0rjJoV4s=;
+        b=Awnze/EaknmgRud32YeWaZ3yOJLY6dSPsNY6ALVT9QtgYnflsaLF5b2IBlX0oJv/eV
+         aiVHZ4qph2w0jUuJSmwIKPOCxdYngk3VzPomIOFgOIAW3+1EkZJoAzn2trGSvy2IO4JR
+         Zfv5rMNKnRojI7RO4Sn5ESAToIUVaH+qzwKCxpjjJvoI4SpnfJuR4wdki+ZroiQuniJJ
+         5Y54z1I9xM7nC23aH70ZQEDfdqfN2x0E26SoPaiqvqkeAdhPL3sm5U1SQlKNuhNlgNse
+         CxS4rDJgVCduesIwSqsFKp2xMpLh3NYkcip6Dwe1JZl8W8kjh+0I9wnnJaTRJPAw84dB
+         b7tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709202808; x=1709807608;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nQl+fyrc7gr5M0XagvOsbZaoINJk1clL/Vv0rjJoV4s=;
+        b=WBZpcH7+OUPAFL650PLFlUsj/Ez46jiTnV+1Y5X167uyNTMlW6GvmYsVs/u1ZM00iL
+         n6si7kLYtQaEQQRY/YANBG9stNbUj/KgQnOFQWucY8hUlI2FKhEX8KtevK3/3GEAXW2V
+         6ParzLBqLk5PWROU2bE1K2nn2tr5f6Q/VZRTrauvyDj1RkZoKeA4M+lSEu3MyyFW5cpv
+         NIGb1jhPuVH8+OBUM1tPg93ywfcbdt7hb7oT+jH1N3x23TdCGz0NB1t3OjxeGe1S8isU
+         707nTI8eWdwij1ZApWimpseiRfVtQ9BJh3hXofTAAMnYPjmaUUcU1uVFO+703/gZZX0l
+         nFBQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU56kPAKUWuzW0a8E5fqZcBf6FMc3Pn+hBKvIwL95n9G7DEG+nVHKyW3LlOEJZSOiu7ypFwljDAL/WdtErQyEe2+gXUuB6/oTeEmYKe
+X-Gm-Message-State: AOJu0Yzzd7vNy6Gs3HW65vkC/seItdMw7PAeNz64q+kq4g1mIYccMItY
+	krVpCgmT+zx0uY6V5DK230a2CtAhblBw0OUvNd+pMC85iTXZU4fuI22AhJxVsSo=
+X-Google-Smtp-Source: AGHT+IFWyjKjAlNiSjqaRPUs0Xu6bGmQJGy4LpaFWeaebN2VSos2G1fvUr4d/OWaFa8UC3DEJ1Beaw==
+X-Received: by 2002:ac2:43d0:0:b0:513:2473:9b93 with SMTP id u16-20020ac243d0000000b0051324739b93mr997542lfl.8.1709202807738;
+        Thu, 29 Feb 2024 02:33:27 -0800 (PST)
+Received: from pc636 (host-90-233-206-150.mobileonline.telia.com. [90.233.206.150])
+        by smtp.gmail.com with ESMTPSA id a15-20020a056512200f00b00512daaef13bsm201261lfb.102.2024.02.29.02.33.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Feb 2024 02:33:27 -0800 (PST)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Thu, 29 Feb 2024 11:33:24 +0100
+To: Baoquan He <bhe@redhat.com>, rulinhuang <rulin.huang@intel.com>
+Cc: rulinhuang <rulin.huang@intel.com>, urezki@gmail.com,
+	akpm@linux-foundation.org, colin.king@intel.com, hch@infradead.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	lstoakes@gmail.com, tianyou.li@intel.com, tim.c.chen@intel.com,
+	wangyang.guo@intel.com, zhiguo.zhou@intel.com
+Subject: Re: [PATCH v6] mm/vmalloc: lock contention optimization under
+ multi-threading
+Message-ID: <ZeBddOuKQKHO0V6b@pc636>
+References: <20240229082611.4104839-1-rulin.huang@intel.com>
+ <ZeBYcCAdHBCiDJkz@MiWiFi-R3L-srv>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZeBYcCAdHBCiDJkz@MiWiFi-R3L-srv>
 
-The kzalloc() in brcmf_pmksa_v3_op() will return null if the
-physical memory has run out. As a result, if we dereference
-the null value, the null pointer dereference bug will happen.
+On Thu, Feb 29, 2024 at 06:12:00PM +0800, Baoquan He wrote:
+> Hi Rulin,
+> 
+> Thanks for the great work and v6, some concerns, please see inline
+> comments.
+> 
+> On 02/29/24 at 12:26am, rulinhuang wrote:
+> > When allocating a new memory area where the mapping address range is
+> > known, it is observed that the vmap_node->busy.lock is acquired twice.
+> > 
+> > The first acquisition occurs in the alloc_vmap_area() function when
+> > inserting the vm area into the vm mapping red-black tree. The second
+> > acquisition occurs in the setup_vmalloc_vm() function when updating the
+> > properties of the vm, such as flags and address, etc.
+> > 
+> > Combine these two operations together in alloc_vmap_area(), which
+> > improves scalability when the vmap_node->busy.lock is contended.
+> > By doing so, the need to acquire the lock twice can also be eliminated
+> >  to once.
+> > 
+> > With the above change, tested on intel sapphire rapids
+> > platform(224 vcpu), a 4% performance improvement is
+> > gained on stress-ng/pthread(https://github.com/ColinIanKing/stress-ng),
+> > which is the stress test of thread creations.
+> > 
+> > Reviewed-by: Uladzislau Rezki <urezki@gmail.com>
+> > Reviewed-by: Baoquan He <bhe@redhat.com>
+> > Reviewed-by: "Chen, Tim C" <tim.c.chen@intel.com>
+> > Reviewed-by: "King, Colin" <colin.king@intel.com>
+> 
+> 
+> We possibly need remove these reviewers' tags when new code change is
+> taken so that people check and add Acked-by or Reviewed-by again if then
+> agree, or add new comments if any concern.
+> 
+> > Signed-off-by: rulinhuang <rulin.huang@intel.com>
+> > ---
+> > V1 -> V2: Avoided the partial initialization issue of vm and
+> > separated insert_vmap_area() from alloc_vmap_area()
+> > V2 -> V3: Rebased on 6.8-rc5
+> > V3 -> V4: Rebased on mm-unstable branch
+> > V4 -> V5: cancel the split of alloc_vmap_area()
+> > and keep insert_vmap_area()
+> > V5 -> V6: add bug_on
+> > ---
+> >  mm/vmalloc.c | 132 +++++++++++++++++++++++++--------------------------
+> >  1 file changed, 64 insertions(+), 68 deletions(-)
+> > 
+> > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> > index 25a8df497255..5ae028b0d58d 100644
+> > --- a/mm/vmalloc.c
+> > +++ b/mm/vmalloc.c
+> > @@ -1841,15 +1841,66 @@ node_alloc(unsigned long size, unsigned long align,
+> >  	return va;
+> >  }
+> >  
+> > +/*** Per cpu kva allocator ***/
+> > +
+> > +/*
+> > + * vmap space is limited especially on 32 bit architectures. Ensure there is
+> > + * room for at least 16 percpu vmap blocks per CPU.
+> > + */
+> > +/*
+> > + * If we had a constant VMALLOC_START and VMALLOC_END, we'd like to be able
+> > + * to #define VMALLOC_SPACE		(VMALLOC_END-VMALLOC_START). Guess
+> > + * instead (we just need a rough idea)
+> > + */
+> > +#if BITS_PER_LONG == 32
+> > +#define VMALLOC_SPACE		(128UL*1024*1024)
+> > +#else
+> > +#define VMALLOC_SPACE		(128UL*1024*1024*1024)
+> > +#endif
+> > +
+> > +#define VMALLOC_PAGES		(VMALLOC_SPACE / PAGE_SIZE)
+> > +#define VMAP_MAX_ALLOC		BITS_PER_LONG	/* 256K with 4K pages */
+> > +#define VMAP_BBMAP_BITS_MAX	1024	/* 4MB with 4K pages */
+> > +#define VMAP_BBMAP_BITS_MIN	(VMAP_MAX_ALLOC*2)
+> > +#define VMAP_MIN(x, y)		((x) < (y) ? (x) : (y)) /* can't use min() */
+> > +#define VMAP_MAX(x, y)		((x) > (y) ? (x) : (y)) /* can't use max() */
+> > +#define VMAP_BBMAP_BITS		\
+> > +		VMAP_MIN(VMAP_BBMAP_BITS_MAX,	\
+> > +		VMAP_MAX(VMAP_BBMAP_BITS_MIN,	\
+> > +			VMALLOC_PAGES / roundup_pow_of_two(NR_CPUS) / 16))
+> > +
+> > +#define VMAP_BLOCK_SIZE		(VMAP_BBMAP_BITS * PAGE_SIZE)
+> > +
+> > +/*
+> > + * Purge threshold to prevent overeager purging of fragmented blocks for
+> > + * regular operations: Purge if vb->free is less than 1/4 of the capacity.
+> > + */
+> > +#define VMAP_PURGE_THRESHOLD	(VMAP_BBMAP_BITS / 4)
+> > +
+> > +#define VMAP_RAM		0x1 /* indicates vm_map_ram area*/
+> > +#define VMAP_BLOCK		0x2 /* mark out the vmap_block sub-type*/
+> > +#define VMAP_FLAGS_MASK		0x3
+> 
+> These code moving is made because we need check VMAP_RAM in advance. We
+> may need move all those data structures and basic helpers related to per
+> cpu kva allocator up too to along with these macros, just as the newly
+> introduced vmap_node does. If that's agreed, better be done in a
+> separate patch. My personal opinion. Not sure if Uladzislau has
+> different thoughts.
+> 
+> Other than this, the overall looks good to me.
+> 
+I agree, the split should be done. One is a preparation move saying that
+no functional change happens and final one an actual change is.
 
-Return -ENOMEM from brcmf_pmksa_v3_op() if kzalloc() fails
-for pmk_op.
-
-Fixes: a96202acaea4 ("wifi: brcmfmac: cfg80211: Add support for PMKID_V3 operations")
-Acked-by: Arend van Spriel <arend.vanspriel@broadcom.com>
-Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
----
-Changes in v3:
-  - Just return -ENOMEM.
-
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-index 28d6a30cc01..1a5d7494f5e 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-@@ -4322,6 +4322,9 @@ brcmf_pmksa_v3_op(struct brcmf_if *ifp, struct cfg80211_pmksa *pmksa,
- 	int ret;
- 
- 	pmk_op = kzalloc(sizeof(*pmk_op), GFP_KERNEL);
-+	if (!pmk_op)
-+		return -ENOMEM;
-+
- 	pmk_op->version = cpu_to_le16(BRCMF_PMKSA_VER_3);
- 
- 	if (!pmksa) {
--- 
-2.17.1
-
+--
+Uladzislau Rezki
 
