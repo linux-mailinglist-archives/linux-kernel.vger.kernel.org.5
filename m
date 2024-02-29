@@ -1,39 +1,39 @@
-Return-Path: <linux-kernel+bounces-86646-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86648-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E93186C851
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:45:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EAB386C855
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:45:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A70A61F23FDA
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:45:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D547E1F23E73
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:45:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBC3B7C6CA;
-	Thu, 29 Feb 2024 11:45:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DFCD7D06B;
+	Thu, 29 Feb 2024 11:45:17 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B04DE7C6C1
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 11:45:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C29C7CF25;
+	Thu, 29 Feb 2024 11:45:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709207110; cv=none; b=rDdzy/ZrsE8kdXBtJd2iUbzrsFaRT+IYl4zaTFUwvLR4ewdG+jrI3jubp1fnOqjphn6pDd0dNwpl/UEBgOgKd2Crj39mxcgMrGSUv4/yUnMHAtZBRqmAC/Jsi2C5wsg1cvgqjtbAQI0P+l/SqjIYXtEqvjv3+WTL/Uct/mO0gJw=
+	t=1709207116; cv=none; b=i0iLVfr672bHpI2WBLhrZ+pPB6vn3B03DfvaxM3gMBDSmw91fFYIJpnuX1M90u8lw9YUE3uCNhh29cpqlp6/Xxxfovmz9C64NI7iXo2Gn6O064DmQE2FUIpSqx9xebVZdfuxuIsMCz9dirpDDqrtCCR6xk+4I8ajke8hbRrfEXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709207110; c=relaxed/simple;
-	bh=ZMvT27zZmRa7OAu43iihzVGaDwsXtfM9wdl37+5gSbU=;
+	s=arc-20240116; t=1709207116; c=relaxed/simple;
+	bh=nd/b2uYlCb8E5dfzti2/q6XqGYbwdWariXVO650ml4k=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jGvjwEG84laA5LTIrUNDROdYq1E8tgwO8Y/QUe4eY/GEJTgaqDbZfkUgdHbKtf2Qq+u6h3R3mRs9W85Lrmzas/+R1ERBr5P0I4jsH2Ju0uxv8ngZBTdS9l3skmIVZAM4K51r3UuILNr4+VsAQw4ah5lD19qlbiMprPs2+nMVMHw=
+	 In-Reply-To:Content-Type; b=acJKjzf+ha6EeRk02y9gEkhctrK5njZxfcJJ9qzRTJhiZ4MqLcSWJyoIw74ySxdnM44Ooto8EntGUzFCAGhJ+iMoEGQSZFV6ndtMRUNjKWjXBdXWY76lxze1+iqoyyzU4O0MkuM/6T/HOLBL2nLXsT3chuHG7c1KooYWfbBTIfg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 019FE1FB;
-	Thu, 29 Feb 2024 03:45:46 -0800 (PST)
-Received: from [10.57.68.58] (unknown [10.57.68.58])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 225483F762;
-	Thu, 29 Feb 2024 03:45:05 -0800 (PST)
-Message-ID: <58c4726d-73ec-40e5-8f1d-e00c37532af9@arm.com>
-Date: Thu, 29 Feb 2024 11:45:04 +0000
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 77A24150C;
+	Thu, 29 Feb 2024 03:45:51 -0800 (PST)
+Received: from [10.57.50.133] (unknown [10.57.50.133])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 19A5E3F762;
+	Thu, 29 Feb 2024 03:45:09 -0800 (PST)
+Message-ID: <62e64ddd-266c-414e-b66a-8ca94f3c2bbf@arm.com>
+Date: Thu, 29 Feb 2024 11:45:08 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,227 +41,236 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] mm: convert folio_estimated_sharers() to
- folio_likely_mapped_shared()
+Subject: Re: [PATCH V16 2/8] KVM: arm64: Prevent guest accesses into BRBE
+ system registers/instructions
 Content-Language: en-GB
-To: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org, Barry Song <v-songbaohua@oppo.com>,
- Vishal Moola <vishal.moola@gmail.com>
-References: <20240227201548.857831-1-david@redhat.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20240227201548.857831-1-david@redhat.com>
-Content-Type: text/plain; charset=UTF-8
+To: Anshuman Khandual <anshuman.khandual@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ will@kernel.org, catalin.marinas@arm.com, Mark Brown <broonie@kernel.org>,
+ James Clark <james.clark@arm.com>, Rob Herring <robh@kernel.org>,
+ Marc Zyngier <maz@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+ Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
+ linux-perf-users@vger.kernel.org, Oliver Upton <oliver.upton@linux.dev>,
+ James Morse <james.morse@arm.com>, kvmarm@lists.linux.dev
+References: <20240125094119.2542332-1-anshuman.khandual@arm.com>
+ <20240125094119.2542332-3-anshuman.khandual@arm.com>
+ <ZdYCUi9YVDNDz7fr@FVFF77S0Q05N>
+ <ab50e67e-3d06-4ba7-a5f8-4684e9ef98a4@arm.com>
+ <Zd2zy0oUk8XvoDJM@FVFF77S0Q05N>
+ <b134c30d-d855-41bb-a260-9f6437b77697@arm.com>
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <b134c30d-d855-41bb-a260-9f6437b77697@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 27/02/2024 20:15, David Hildenbrand wrote:
-> Callers of folio_estimated_sharers() only care about "mapped shared vs.
-> mapped exclusively", not the exact estimate of sharers. Let's consolidate
-> and unify the condition users are checking. While at it clarify the
-> semantics and extend the discussion on the fuzziness.
+On 27/02/2024 11:13, Anshuman Khandual wrote:
 > 
-> Use the "likely mapped shared" terminology to better express what the
-> (adjusted) function actually checks.
 > 
-> Whether a partially-mappable folio is more likely to not be partially
-> mapped than partially mapped is debatable. In the future, we might be able
-> to improve our estimate for partially-mappable folios, though.
-> 
-> Note that we will now consistently detect "mapped shared" only if the
-> first subpage is actually mapped multiple times. When the first subpage
-> is not mapped, we will consistently detect it as "mapped exclusively".
-> This change should currently only affect the usage in
-> madvise_free_pte_range() and queue_folios_pte_range() for large folios: if
-> the first page was already unmapped, we would have skipped the folio.
-> 
-> Cc: Barry Song <v-songbaohua@oppo.com>
-> Cc: Vishal Moola (Oracle) <vishal.moola@gmail.com>
-> Cc: Ryan Roberts <ryan.roberts@arm.com>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+> On 2/27/24 15:34, Mark Rutland wrote:
+>> On Fri, Feb 23, 2024 at 12:58:48PM +0530, Anshuman Khandual wrote:
+>>>
+>>>
+>>> On 2/21/24 19:31, Mark Rutland wrote:
+>>>> On Thu, Jan 25, 2024 at 03:11:13PM +0530, Anshuman Khandual wrote:
+>>>>> Currently BRBE feature is not supported in a guest environment. This hides
+>>>>> BRBE feature availability via masking ID_AA64DFR0_EL1.BRBE field.
+>>>>
+>>>> Does that means that a guest can currently see BRBE advertised in the
+>>>> ID_AA64DFR0_EL1.BRB field, or is that hidden by the regular cpufeature code
+>>>> today?
+>>>
+>>> IIRC it is hidden, but will have to double check. When experimenting for BRBE
+>>> guest support enablement earlier, following changes were need for the feature
+>>> to be visible in ID_AA64DFR0_EL1.
+>>>
+>>> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+>>> index 646591c67e7a..f258568535a8 100644
+>>> --- a/arch/arm64/kernel/cpufeature.c
+>>> +++ b/arch/arm64/kernel/cpufeature.c
+>>> @@ -445,6 +445,7 @@ static const struct arm64_ftr_bits ftr_id_mmfr0[] = {
+>>>   };
+>>>   
+>>>   static const struct arm64_ftr_bits ftr_id_aa64dfr0[] = {
+>>> +       S_ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_EL1_BRBE_SHIFT, 4, ID_AA64DFR0_EL1_BRBE_IMP),
+>>>          S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_EL1_DoubleLock_SHIFT, 4, 0),
+>>>          ARM64_FTR_BITS(FTR_HIDDEN, FTR_NONSTRICT, FTR_LOWER_SAFE, ID_AA64DFR0_EL1_PMSVer_SHIFT, 4, 0),
+>>>          ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_EL1_CTX_CMPs_SHIFT, 4, 0),
+>>>
+>>> Should we add the following entry - explicitly hiding BRBE from the guest
+>>> as a prerequisite patch ?
 
-Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
+This has nothing to do with the Guest visibility of the BRBE. This is
+specifically for host "userspace" (via MRS emulation).
 
-> ---
->  include/linux/mm.h | 46 ++++++++++++++++++++++++++++++++++++----------
->  mm/huge_memory.c   |  2 +-
->  mm/madvise.c       |  6 +++---
->  mm/memory.c        |  2 +-
->  mm/mempolicy.c     | 14 ++++++--------
->  mm/migrate.c       |  8 ++++----
->  6 files changed, 51 insertions(+), 27 deletions(-)
+>>>
+>>> S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_EL1_BRBE_SHIFT, 4, ID_AA64DFR0_EL1_BRBE_NI)
+>>
+>> Is it visbile currently, or is it hidden currently?
+>>
+>> * If it is visible before this patch, that's a latent bug that we need to go
+>>    fix first, and that'll require more coordination.
+>>
+>> * If it is not visible before this patch, there's no problem in the code, but
+>>    the commit message needs to explicitly mention that's the case as the commit
+>>    message currently implies it is visible by only mentioning hiding it.
+>>
+>> ... so can you please double check as you suggested above? We should be able to
+>> explain why it is or is not visible today.
 > 
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 6f4825d829656..795c89632265f 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -2147,21 +2147,47 @@ static inline size_t folio_size(struct folio *folio)
->  }
->  
->  /**
-> - * folio_estimated_sharers - Estimate the number of sharers of a folio.
-> + * folio_likely_mapped_shared - Estimate if the folio is mapped into the page
-> + *				tables of more than one MM
->   * @folio: The folio.
->   *
-> - * folio_estimated_sharers() aims to serve as a function to efficiently
-> - * estimate the number of processes sharing a folio. This is done by
-> - * looking at the precise mapcount of the first subpage in the folio, and
-> - * assuming the other subpages are the same. This may not be true for large
-> - * folios. If you want exact mapcounts for exact calculations, look at
-> - * page_mapcount() or folio_total_mapcount().
-> + * This function checks if the folio is currently mapped into more than one
-> + * MM ("mapped shared"), or if the folio is only mapped into a single MM
-> + * ("mapped exclusively").
->   *
-> - * Return: The estimated number of processes sharing a folio.
-> + * As precise information is not easily available for all folios, this function
-> + * estimates the number of MMs ("sharers") that are currently mapping a folio
-> + * using the number of times the first page of the folio is currently mapped
-> + * into page tables.
-> + *
-> + * For small anonymous folios (except KSM folios) and anonymous hugetlb folios,
-> + * the return value will be exactly correct, because they can only be mapped
-> + * at most once into an MM, and they cannot be partially mapped.
-> + *
-> + * For other folios, the result can be fuzzy:
-> + * (a) For partially-mappable large folios (THP), the return value can wrongly
-> + *     indicate "mapped exclusively" (false negative) when the folio is
-> + *     only partially mapped into at least one MM.
-> + * (b) For pagecache folios (including hugetlb), the return value can wrongly
-> + *     indicate "mapped shared" (false positive) when two VMAs in the same MM
-> + *     cover the same file range.
-> + * (c) For (small) KSM folios, the return value can wrongly indicate "mapped
-> + *     shared" (false negative), when the folio is mapped multiple times into
-> + *     the same MM.
-> + *
-> + * Further, this function only considers current page table mappings that
-> + * are tracked using the folio mapcount(s). It does not consider:
-> + * (1) If the folio might get mapped in the (near) future (e.g., swapcache,
-> + *     pagecache, temporary unmapping for migration).
-> + * (2) If the folio is mapped differently (VM_PFNMAP).
-> + * (3) If hugetlb page table sharing applies. Callers might want to check
-> + *     hugetlb_pmd_shared().
-> + *
-> + * Return: Whether the folio is estimated to be mapped into more than one MM.
->   */
-> -static inline int folio_estimated_sharers(struct folio *folio)
-> +static inline bool folio_likely_mapped_shared(struct folio *folio)
->  {
-> -	return page_mapcount(folio_page(folio, 0));
-> +	return page_mapcount(folio_page(folio, 0)) > 1;
->  }
->  
->  #ifndef HAVE_ARCH_MAKE_PAGE_ACCESSIBLE
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index 50d146eb248ff..4d10904fef70c 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -1829,7 +1829,7 @@ bool madvise_free_huge_pmd(struct mmu_gather *tlb, struct vm_area_struct *vma,
->  	 * If other processes are mapping this folio, we couldn't discard
->  	 * the folio unless they all do MADV_FREE so let's skip the folio.
->  	 */
-> -	if (folio_estimated_sharers(folio) != 1)
-> +	if (folio_likely_mapped_shared(folio))
->  		goto out;
->  
->  	if (!folio_trylock(folio))
-> diff --git a/mm/madvise.c b/mm/madvise.c
-> index 44a498c94158c..32a534d200219 100644
-> --- a/mm/madvise.c
-> +++ b/mm/madvise.c
-> @@ -366,7 +366,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
->  		folio = pfn_folio(pmd_pfn(orig_pmd));
->  
->  		/* Do not interfere with other mappings of this folio */
-> -		if (folio_estimated_sharers(folio) != 1)
-> +		if (folio_likely_mapped_shared(folio))
->  			goto huge_unlock;
->  
->  		if (pageout_anon_only_filter && !folio_test_anon(folio))
-> @@ -453,7 +453,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
->  		if (folio_test_large(folio)) {
->  			int err;
->  
-> -			if (folio_estimated_sharers(folio) > 1)
-> +			if (folio_likely_mapped_shared(folio))
->  				break;
->  			if (pageout_anon_only_filter && !folio_test_anon(folio))
->  				break;
-> @@ -677,7 +677,7 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
->  		if (folio_test_large(folio)) {
->  			int err;
->  
-> -			if (folio_estimated_sharers(folio) != 1)
-> +			if (folio_likely_mapped_shared(folio))
->  				break;
->  			if (!folio_trylock(folio))
->  				break;
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 1c45b6a42a1b9..8394a9843ca06 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -5173,7 +5173,7 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
->  	 * Flag if the folio is shared between multiple address spaces. This
->  	 * is later used when determining whether to group tasks together
->  	 */
-> -	if (folio_estimated_sharers(folio) > 1 && (vma->vm_flags & VM_SHARED))
-> +	if (folio_likely_mapped_shared(folio) && (vma->vm_flags & VM_SHARED))
->  		flags |= TNF_SHARED;
->  
->  	nid = folio_nid(folio);
-> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> index f60b4c99f1302..0b92fde395182 100644
-> --- a/mm/mempolicy.c
-> +++ b/mm/mempolicy.c
-> @@ -642,12 +642,11 @@ static int queue_folios_hugetlb(pte_t *pte, unsigned long hmask,
->  	 * Unless MPOL_MF_MOVE_ALL, we try to avoid migrating a shared folio.
->  	 * Choosing not to migrate a shared folio is not counted as a failure.
->  	 *
-> -	 * To check if the folio is shared, ideally we want to make sure
-> -	 * every page is mapped to the same process. Doing that is very
-> -	 * expensive, so check the estimated sharers of the folio instead.
-> +	 * See folio_likely_mapped_shared() on possible imprecision when we
-> +	 * cannot easily detect if a folio is shared.
->  	 */
->  	if ((flags & MPOL_MF_MOVE_ALL) ||
-> -	    (folio_estimated_sharers(folio) == 1 && !hugetlb_pmd_shared(pte)))
-> +	    (!folio_likely_mapped_shared(folio) && !hugetlb_pmd_shared(pte)))
->  		if (!isolate_hugetlb(folio, qp->pagelist))
->  			qp->nr_failed++;
->  unlock:
-> @@ -1032,11 +1031,10 @@ static bool migrate_folio_add(struct folio *folio, struct list_head *foliolist,
->  	 * Unless MPOL_MF_MOVE_ALL, we try to avoid migrating a shared folio.
->  	 * Choosing not to migrate a shared folio is not counted as a failure.
->  	 *
-> -	 * To check if the folio is shared, ideally we want to make sure
-> -	 * every page is mapped to the same process. Doing that is very
-> -	 * expensive, so check the estimated sharers of the folio instead.
-> +	 * See folio_likely_mapped_shared() on possible imprecision when we
-> +	 * cannot easily detect if a folio is shared.
->  	 */
-> -	if ((flags & MPOL_MF_MOVE_ALL) || folio_estimated_sharers(folio) == 1) {
-> +	if ((flags & MPOL_MF_MOVE_ALL) || !folio_likely_mapped_shared(folio)) {
->  		if (folio_isolate_lru(folio)) {
->  			list_add_tail(&folio->lru, foliolist);
->  			node_stat_mod_folio(folio,
-> diff --git a/mm/migrate.c b/mm/migrate.c
-> index 73a052a382f13..35d376969f8b9 100644
-> --- a/mm/migrate.c
-> +++ b/mm/migrate.c
-> @@ -2568,11 +2568,11 @@ int migrate_misplaced_folio(struct folio *folio, struct vm_area_struct *vma,
->  	/*
->  	 * Don't migrate file folios that are mapped in multiple processes
->  	 * with execute permissions as they are probably shared libraries.
-> -	 * To check if the folio is shared, ideally we want to make sure
-> -	 * every page is mapped to the same process. Doing that is very
-> -	 * expensive, so check the estimated mapcount of the folio instead.
-> +	 *
-> +	 * See folio_likely_mapped_shared() on possible imprecision when we
-> +	 * cannot easily detect if a folio is shared.
->  	 */
-> -	if (folio_estimated_sharers(folio) != 1 && folio_is_file_lru(folio) &&
-> +	if (folio_likely_mapped_shared(folio) && folio_is_file_lru(folio) &&
->  	    (vma->vm_flags & VM_EXEC))
->  		goto out;
->  
+> It is currently hidden i.e following code returns 1 in the host
+> but returns 0 inside the guest.
+> 
+> aa64dfr0 = read_sysreg_s(SYS_ID_AA64DFR0_EL1);
+> brbe = cpuid_feature_extract_unsigned_field(aa64dfr0, ID_AA64DFR0_EL1_BRBE_SHIFT);
+> 
+> Hence - will update the commit message here as suggested.
+
+This is by virtue of the masking we do in the kvm/sysreg.c below.
+
+> 
+>>
+>> Mark.
+>>
+>>>>> This also blocks guest accesses into BRBE system registers and instructions
+>>>>> as if the underlying hardware never implemented FEAT_BRBE feature.
+>>>>>
+>>>>> Cc: Marc Zyngier <maz@kernel.org>
+>>>>> Cc: Oliver Upton <oliver.upton@linux.dev>
+>>>>> Cc: James Morse <james.morse@arm.com>
+>>>>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+>>>>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>>>>> Cc: Will Deacon <will@kernel.org>
+>>>>> Cc: kvmarm@lists.linux.dev
+>>>>> Cc: linux-arm-kernel@lists.infradead.org
+>>>>> Cc: linux-kernel@vger.kernel.org
+>>>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>>>>> ---
+>>>>> Changes in V16:
+>>>>>
+>>>>> - Added BRB_INF_SRC_TGT_EL1 macro for corresponding BRB_[INF|SRC|TGT] expansion
+>>>>>
+>>>>>   arch/arm64/kvm/sys_regs.c | 56 +++++++++++++++++++++++++++++++++++++++
+>>>>>   1 file changed, 56 insertions(+)
+>>>>>
+>>>>> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
+>>>>> index 30253bd19917..6a06dc2f0c06 100644
+>>>>> --- a/arch/arm64/kvm/sys_regs.c
+>>>>> +++ b/arch/arm64/kvm/sys_regs.c
+>>>>> @@ -1304,6 +1304,11 @@ static int set_pmcr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r,
+>>>>>   	return 0;
+>>>>>   }
+>>>>>   
+>>>>> +#define BRB_INF_SRC_TGT_EL1(n)					\
+>>>>> +	{ SYS_DESC(SYS_BRBINF##n##_EL1), undef_access },	\
+>>>>> +	{ SYS_DESC(SYS_BRBSRC##n##_EL1), undef_access },	\
+>>>>> +	{ SYS_DESC(SYS_BRBTGT##n##_EL1), undef_access }		\
+>>>>
+>>>> With the changes suggested on the previous patch, this would need to change to be:
+>>>>
+>>>> 	#define BRB_INF_SRC_TGT_EL1(n)					\
+>>>> 		{ SYS_DESC(SYS_BRBINF_EL1(n)), undef_access },	\
+>>>> 		{ SYS_DESC(SYS_BRBSRC_EL1(n)), undef_access },	\
+>>>> 		{ SYS_DESC(SYS_BRBTGT_EL1(n)), undef_access }	\
+>>>
+>>> Sure, already folded back in these above changes.
+>>>
+>>>>
+>>>>
+>>>> ... which would also be easier for backporting (if necessary), since those
+>>>> definitions have existed for a while.
+>>>>
+>>>> Otherwise (modulo Suzuki's comment about rebasing), this looks good to me.
+>>>
+>>> Okay.
+>>>
+>>>>
+>>>> Mark.
+>>>>
+>>>>>   /* Silly macro to expand the DBG{BCR,BVR,WVR,WCR}n_EL1 registers in one go */
+>>>>>   #define DBG_BCR_BVR_WCR_WVR_EL1(n)					\
+>>>>>   	{ SYS_DESC(SYS_DBGBVRn_EL1(n)),					\
+>>>>> @@ -1707,6 +1712,9 @@ static u64 read_sanitised_id_aa64dfr0_el1(struct kvm_vcpu *vcpu,
+>>>>>   	/* Hide SPE from guests */
+>>>>>   	val &= ~ID_AA64DFR0_EL1_PMSVer_MASK;
+>>>>>   
+>>>>> +	/* Hide BRBE from guests */
+>>>>> +	val &= ~ID_AA64DFR0_EL1_BRBE_MASK;
+>>>>> +
+
+This controls what the guest sees.
+
+Suzuki
+
+
+>>>>>   	return val;
+>>>>>   }
+>>>>>   
+>>>>> @@ -2195,6 +2203,8 @@ static const struct sys_reg_desc sys_reg_descs[] = {
+>>>>>   	{ SYS_DESC(SYS_DC_CISW), access_dcsw },
+>>>>>   	{ SYS_DESC(SYS_DC_CIGSW), access_dcgsw },
+>>>>>   	{ SYS_DESC(SYS_DC_CIGDSW), access_dcgsw },
+>>>>> +	{ SYS_DESC(OP_BRB_IALL), undef_access },
+>>>>> +	{ SYS_DESC(OP_BRB_INJ), undef_access },
+>>>>>   
+>>>>>   	DBG_BCR_BVR_WCR_WVR_EL1(0),
+>>>>>   	DBG_BCR_BVR_WCR_WVR_EL1(1),
+>>>>> @@ -2225,6 +2235,52 @@ static const struct sys_reg_desc sys_reg_descs[] = {
+>>>>>   	{ SYS_DESC(SYS_DBGCLAIMCLR_EL1), trap_raz_wi },
+>>>>>   	{ SYS_DESC(SYS_DBGAUTHSTATUS_EL1), trap_dbgauthstatus_el1 },
+>>>>>   
+>>>>> +	/*
+>>>>> +	 * BRBE branch record sysreg address space is interleaved between
+>>>>> +	 * corresponding BRBINF<N>_EL1, BRBSRC<N>_EL1, and BRBTGT<N>_EL1.
+>>>>> +	 */
+>>>>> +	BRB_INF_SRC_TGT_EL1(0),
+>>>>> +	BRB_INF_SRC_TGT_EL1(16),
+>>>>> +	BRB_INF_SRC_TGT_EL1(1),
+>>>>> +	BRB_INF_SRC_TGT_EL1(17),
+>>>>> +	BRB_INF_SRC_TGT_EL1(2),
+>>>>> +	BRB_INF_SRC_TGT_EL1(18),
+>>>>> +	BRB_INF_SRC_TGT_EL1(3),
+>>>>> +	BRB_INF_SRC_TGT_EL1(19),
+>>>>> +	BRB_INF_SRC_TGT_EL1(4),
+>>>>> +	BRB_INF_SRC_TGT_EL1(20),
+>>>>> +	BRB_INF_SRC_TGT_EL1(5),
+>>>>> +	BRB_INF_SRC_TGT_EL1(21),
+>>>>> +	BRB_INF_SRC_TGT_EL1(6),
+>>>>> +	BRB_INF_SRC_TGT_EL1(22),
+>>>>> +	BRB_INF_SRC_TGT_EL1(7),
+>>>>> +	BRB_INF_SRC_TGT_EL1(23),
+>>>>> +	BRB_INF_SRC_TGT_EL1(8),
+>>>>> +	BRB_INF_SRC_TGT_EL1(24),
+>>>>> +	BRB_INF_SRC_TGT_EL1(9),
+>>>>> +	BRB_INF_SRC_TGT_EL1(25),
+>>>>> +	BRB_INF_SRC_TGT_EL1(10),
+>>>>> +	BRB_INF_SRC_TGT_EL1(26),
+>>>>> +	BRB_INF_SRC_TGT_EL1(11),
+>>>>> +	BRB_INF_SRC_TGT_EL1(27),
+>>>>> +	BRB_INF_SRC_TGT_EL1(12),
+>>>>> +	BRB_INF_SRC_TGT_EL1(28),
+>>>>> +	BRB_INF_SRC_TGT_EL1(13),
+>>>>> +	BRB_INF_SRC_TGT_EL1(29),
+>>>>> +	BRB_INF_SRC_TGT_EL1(14),
+>>>>> +	BRB_INF_SRC_TGT_EL1(30),
+>>>>> +	BRB_INF_SRC_TGT_EL1(15),
+>>>>> +	BRB_INF_SRC_TGT_EL1(31),
+>>>>> +
+>>>>> +	/* Remaining BRBE sysreg addresses space */
+>>>>> +	{ SYS_DESC(SYS_BRBCR_EL1), undef_access },
+>>>>> +	{ SYS_DESC(SYS_BRBFCR_EL1), undef_access },
+>>>>> +	{ SYS_DESC(SYS_BRBTS_EL1), undef_access },
+>>>>> +	{ SYS_DESC(SYS_BRBINFINJ_EL1), undef_access },
+>>>>> +	{ SYS_DESC(SYS_BRBSRCINJ_EL1), undef_access },
+>>>>> +	{ SYS_DESC(SYS_BRBTGTINJ_EL1), undef_access },
+>>>>> +	{ SYS_DESC(SYS_BRBIDR0_EL1), undef_access },
+>>>>> +
+>>>>>   	{ SYS_DESC(SYS_MDCCSR_EL0), trap_raz_wi },
+>>>>>   	{ SYS_DESC(SYS_DBGDTR_EL0), trap_raz_wi },
+>>>>>   	// DBGDTR[TR]X_EL0 share the same encoding
+>>>>> -- 
+>>>>> 2.25.1
+>>>>>
+> 
 
 
