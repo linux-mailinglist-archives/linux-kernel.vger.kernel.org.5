@@ -1,255 +1,132 @@
-Return-Path: <linux-kernel+bounces-87142-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87143-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CC2586D020
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:07:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CA8586D023
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:07:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C56352870EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:07:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46FF928468E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:07:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94E731361B0;
-	Thu, 29 Feb 2024 17:04:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="O7SkJiHr"
-Received: from smtp-8fa9.mail.infomaniak.ch (smtp-8fa9.mail.infomaniak.ch [83.166.143.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D25BA6CC01;
+	Thu, 29 Feb 2024 17:04:57 +0000 (UTC)
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82D1F7A134
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 17:04:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.166.143.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99D17160636;
+	Thu, 29 Feb 2024 17:04:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709226283; cv=none; b=PryKpL05BySIuJnaUq3qdutr5HRZMHwd47MyhbG1UXAZIFgPa4NJxU8xNT1jG0GQQCbneZgO4PvZfMz+e6OHZpBc1qGAY0lEWlV9PZy9kYzNI3CD3INRvIs+SlInuFc5o2I7z5OGLICxiw9Nz5pGMBgbsKxP7OGefrKBc08q+j8=
+	t=1709226297; cv=none; b=pBPNk/BA1L58cOusmqkHAzLWQ+K5KoRqsHfJXuOoadoZCLbGiaWPEUE0UA9zmm03/xEvpAjvp12LbroNKuygUAB3nAC/Vv4/gxuyDbKKJZFZx2HGFWzkJgcWBLhet/Mp2ZhqmWQJzCB00aRQLlFFzC8WVwtcouFJh9mGbThcwns=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709226283; c=relaxed/simple;
-	bh=jgxgVIds0Uq+q7sp2eMMdlRM5SUWajSTadOwGNRm2Fs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=VgyeuUZ/+ldQwycJ88VIROtWT14dlgkdwH1TXwDCbpQ0cXcIp+Y4Vt6xLHzL/KsmGUVGEzVjNlPL0vynKjQ0tVFMHkyRJBJKPxbCCL+D3g4fbzGAcRXcONbZVqw5tMNZtTOTeER8+OmYnrf4el4HcMsvtD8HvHl895brRI3snes=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=O7SkJiHr; arc=none smtp.client-ip=83.166.143.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
-Received: from smtp-3-0000.mail.infomaniak.ch (smtp-3-0000.mail.infomaniak.ch [10.4.36.107])
-	by smtp-4-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4TlyJ06NtNz23G;
-	Thu, 29 Feb 2024 18:04:32 +0100 (CET)
-Received: from unknown by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4TlyJ01KS6z3c;
-	Thu, 29 Feb 2024 18:04:32 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
-	s=20191114; t=1709226272;
-	bh=jgxgVIds0Uq+q7sp2eMMdlRM5SUWajSTadOwGNRm2Fs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=O7SkJiHrACJveUBYih6KHS2MoK6Y4pu39o0bmrh+/H6EdBfY1u3VZX8uGsKFJXi+a
-	 WByMKyxBUC+h89F9ItJ41Svn8x0gBISiaYBOEAxH4PZonYP3aTFWiPtMTboZgZYUP1
-	 9KoOsvsJogUIH9wR1oxyIDnWxnLfeIr+w9ncsLKQ=
-From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-To: Brendan Higgins <brendanhiggins@google.com>,
-	David Gow <davidgow@google.com>,
-	Kees Cook <keescook@chromium.org>,
-	Rae Moar <rmoar@google.com>,
-	Shuah Khan <skhan@linuxfoundation.org>
-Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H . Peter Anvin" <hpa@zytor.com>,
-	Ingo Molnar <mingo@redhat.com>,
-	James Morris <jamorris@linux.microsoft.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	"Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>,
-	Marco Pagani <marpagan@redhat.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Sean Christopherson <seanjc@google.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Thara Gopinath <tgopinath@microsoft.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Wanpeng Li <wanpengli@tencent.com>,
-	Zahra Tarkhani <ztarkhani@microsoft.com>,
-	kvm@vger.kernel.org,
-	linux-hardening@vger.kernel.org,
-	linux-hyperv@vger.kernel.org,
+	s=arc-20240116; t=1709226297; c=relaxed/simple;
+	bh=tTf5DGA4/EdGbxqRxWUdMDKOzj/3epteLSgwhMqPiA4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=POAuBOu6rUa2fJVeEGfVdAM0DtGH24OmVZjI8OiZ2XgvJDF2U/F/VMgS0WO0UhMBx82/QKyHffJRBYKnyMz7quUeFwJlI3X7sxaVO3bhHIUqHWOO9V0++lHrAiz8P+OPeFC9H3S1uHrwMxRnbftbGGsB2s9CJlwMOx23K8qNuas=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2d2fad80eacso11622911fa.2;
+        Thu, 29 Feb 2024 09:04:55 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709226294; x=1709831094;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=C7eSu5LAngYuG4yyZo6XzjOmxDsHUKU5MZ0QDXjzOq8=;
+        b=hnqgUKFqH7cbMuRutH5//i0o1Mym0Vf++S1Zf+x8nmZPdLdGq4TkO9aWtgFWAW3vpf
+         hPlcjLQvAIVb9DAn1yBwQpjGrvzQaocDaEPzioFYmrf4+w3bzVvFfjT4o21NexDRo3op
+         Ml1DaiP1veK4iW8aQETg/kunJjduuir1oM6sR+d3rtfqpEoX/c4pEX5WZwhxFtWkuMXP
+         Hn+6icMQDB5k7vh9t7fLaNu6sU+EswADkdfzzUbusU9oXytCVQccsmsRCCqnDiswcgpJ
+         P1HYRMmE2+iVxB1JxkVcavlofhqyTYv9+foy56IKt6y71it1HOthsbp6Cztq28U5Bmfw
+         UP7w==
+X-Forwarded-Encrypted: i=1; AJvYcCV7UUdIlJBuvkqSy8Jkqy6u2NDm6cM7nuI8BPr4HG7vK/UBjoj1h/1fCIlZFtwCfnOdvjJiKWJYHRVr70dieOre8NIbxyhnY0+188gt
+X-Gm-Message-State: AOJu0Yx1D7ccwsgJmyTnF63ZLdp3oa2d/wIiNv/czPLocl4iDpN/wT2x
+	PW+JhI7qWMLo7xQ+PXwJcalc17S3a2r6ciUsCs6n6qhWzL0Xu+0a
+X-Google-Smtp-Source: AGHT+IHVvv37XKBHxeMbPUTK+oooXHJhgULZY/r3t3cWxLlVISuKpQHZmbVYY3b2qOjj9jRkkqXl1A==
+X-Received: by 2002:a2e:8194:0:b0:2d2:c937:6fea with SMTP id e20-20020a2e8194000000b002d2c9376feamr1960270ljg.6.1709226293467;
+        Thu, 29 Feb 2024 09:04:53 -0800 (PST)
+Received: from localhost (fwdproxy-lla-118.fbsv.net. [2a03:2880:30ff:76::face:b00c])
+        by smtp.gmail.com with ESMTPSA id y16-20020a05600c365000b00412656ba919sm5599122wmq.20.2024.02.29.09.04.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Feb 2024 09:04:53 -0800 (PST)
+From: Breno Leitao <leitao@debian.org>
+To: kuba@kernel.org,
+	davem@davemloft.net,
+	pabeni@redhat.com,
+	edumazet@google.com
+Cc: netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
-	linux-um@lists.infradead.org,
-	x86@kernel.org
-Subject: [PATCH v1 8/8] kunit: Add tests for faults
-Date: Thu, 29 Feb 2024 18:04:09 +0100
-Message-ID: <20240229170409.365386-9-mic@digikod.net>
-In-Reply-To: <20240229170409.365386-1-mic@digikod.net>
-References: <20240229170409.365386-1-mic@digikod.net>
+	horms@kernel.org,
+	dsahern@kernel.org
+Subject: [PATCH net-next 1/2] net: bareudp: Do not allocate stats in the driver
+Date: Thu, 29 Feb 2024 09:04:23 -0800
+Message-ID: <20240229170425.3895238-1-leitao@debian.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Infomaniak-Routing: alpha
 
-The first test checks NULL pointer dereference and make sure it would
-result as a failed test.
+With commit 34d21de99cea9 ("net: Move {l,t,d}stats allocation to core and
+convert veth & vrf"), stats allocation could be done on net core
+instead of this driver.
 
-The second and third tests check that read-only data is indeed read-only
-and trying to modify it would result as a failed test.
+With this new approach, the driver doesn't have to bother with error
+handling (allocation failure checking, making sure free happens in the
+right spot, etc). This is core responsibility now.
 
-This kunit_x86_fault test suite is marked as skipped when run on a
-non-x86 native architecture.  It is then skipped on UML because such
-test would result to a kernel panic.
+Remove the allocation in the bareudp driver and leverage the network
+core allocation.
 
-Tested with:
-/tools/testing/kunit/kunit.py run --arch x86_64 kunit_x86_fault
-
-Cc: Brendan Higgins <brendanhiggins@google.com>
-Cc: David Gow <davidgow@google.com>
-Cc: Rae Moar <rmoar@google.com>
-Cc: Shuah Khan <skhan@linuxfoundation.org>
-Signed-off-by: Mickaël Salaün <mic@digikod.net>
+Signed-off-by: Breno Leitao <leitao@debian.org>
 ---
- lib/kunit/kunit-test.c | 115 ++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 114 insertions(+), 1 deletion(-)
+ drivers/net/bareudp.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
-diff --git a/lib/kunit/kunit-test.c b/lib/kunit/kunit-test.c
-index f7980ef236a3..57d8eff00c66 100644
---- a/lib/kunit/kunit-test.c
-+++ b/lib/kunit/kunit-test.c
-@@ -10,6 +10,7 @@
- #include <kunit/test-bug.h>
+diff --git a/drivers/net/bareudp.c b/drivers/net/bareudp.c
+index 4db6122c9b43..27408f0b93d6 100644
+--- a/drivers/net/bareudp.c
++++ b/drivers/net/bareudp.c
+@@ -194,15 +194,10 @@ static int bareudp_init(struct net_device *dev)
+ 	struct bareudp_dev *bareudp = netdev_priv(dev);
+ 	int err;
  
- #include <linux/device.h>
-+#include <linux/init.h>
- #include <kunit/device.h>
+-	dev->tstats = netdev_alloc_pcpu_stats(struct pcpu_sw_netstats);
+-	if (!dev->tstats)
+-		return -ENOMEM;
+-
+ 	err = gro_cells_init(&bareudp->gro_cells, dev);
+-	if (err) {
+-		free_percpu(dev->tstats);
++	if (err)
+ 		return err;
+-	}
++
+ 	return 0;
+ }
  
- #include "string-stream.h"
-@@ -109,6 +110,117 @@ static struct kunit_suite kunit_try_catch_test_suite = {
- 	.test_cases = kunit_try_catch_test_cases,
- };
+@@ -211,7 +206,6 @@ static void bareudp_uninit(struct net_device *dev)
+ 	struct bareudp_dev *bareudp = netdev_priv(dev);
  
-+#ifdef CONFIG_X86
-+
-+static void kunit_test_null_dereference(void *data)
-+{
-+	struct kunit *test = data;
-+	int *null = NULL;
-+
-+	*null = 0;
-+
-+	KUNIT_FAIL(test, "This line should never be reached\n");
-+}
-+
-+static void kunit_test_fault_null_dereference(struct kunit *test)
-+{
-+	struct kunit_try_catch_test_context *ctx = test->priv;
-+	struct kunit_try_catch *try_catch = ctx->try_catch;
-+
-+	kunit_try_catch_init(try_catch,
-+			     test,
-+			     kunit_test_null_dereference,
-+			     kunit_test_catch);
-+	kunit_try_catch_run(try_catch, test);
-+
-+	KUNIT_EXPECT_EQ(test, try_catch->try_result, -EINTR);
-+	KUNIT_EXPECT_TRUE(test, ctx->function_called);
-+}
-+
-+#if defined(CONFIG_STRICT_KERNEL_RWX) || defined(CONFIG_STRICT_MODULE_RWX)
-+
-+const int test_const = 1;
-+
-+static void kunit_test_const(void *data)
-+{
-+	struct kunit *test = data;
-+	/* Bypasses compiler check. */
-+	int *ptr = (int *)&test_const;
-+
-+	KUNIT_EXPECT_EQ(test, test_const, 1);
-+	*ptr = 2;
-+
-+	KUNIT_FAIL(test, "This line should never be reached\n");
-+}
-+
-+static void kunit_test_fault_const(struct kunit *test)
-+{
-+	struct kunit_try_catch_test_context *ctx = test->priv;
-+	struct kunit_try_catch *try_catch = ctx->try_catch;
-+
-+	kunit_try_catch_init(try_catch, test, kunit_test_const,
-+			     kunit_test_catch);
-+	kunit_try_catch_run(try_catch, test);
-+
-+	KUNIT_EXPECT_EQ(test, test_const, 1);
-+	KUNIT_EXPECT_EQ(test, try_catch->try_result, -EINTR);
-+	KUNIT_EXPECT_TRUE(test, ctx->function_called);
-+}
-+
-+static int test_rodata __ro_after_init = 1;
-+
-+static void kunit_test_rodata(void *data)
-+{
-+	struct kunit *test = data;
-+
-+	KUNIT_EXPECT_EQ(test, test_rodata, 1);
-+	test_rodata = 2;
-+
-+	KUNIT_FAIL(test, "This line should never be reached\n");
-+}
-+
-+static void kunit_test_fault_rodata(struct kunit *test)
-+{
-+	struct kunit_try_catch_test_context *ctx = test->priv;
-+	struct kunit_try_catch *try_catch = ctx->try_catch;
-+
-+	if (!rodata_enabled)
-+		kunit_skip(test, "Strict RWX is not enabled");
-+
-+	kunit_try_catch_init(try_catch, test, kunit_test_rodata,
-+			     kunit_test_catch);
-+	kunit_try_catch_run(try_catch, test);
-+
-+	KUNIT_EXPECT_EQ(test, test_rodata, 1);
-+	KUNIT_EXPECT_EQ(test, try_catch->try_result, -EINTR);
-+	KUNIT_EXPECT_TRUE(test, ctx->function_called);
-+}
-+
-+#else /* defined(CONFIG_STRICT_KERNEL_RWX) || defined(CONFIG_STRICT_MODULE_RWX) */
-+
-+static void kunit_test_fault_rodata(struct kunit *test)
-+{
-+	kunit_skip(test, "Strict RWX is not supported");
-+}
-+
-+#endif /* defined(CONFIG_STRICT_KERNEL_RWX) || defined(CONFIG_STRICT_MODULE_RWX) */
-+#endif /* CONFIG_X86 */
-+
-+static struct kunit_case kunit_x86_fault_test_cases[] = {
-+#ifdef CONFIG_X86
-+	KUNIT_CASE(kunit_test_fault_null_dereference),
-+	KUNIT_CASE(kunit_test_fault_const),
-+	KUNIT_CASE(kunit_test_fault_rodata),
-+#endif /* CONFIG_X86 */
-+	{}
-+};
-+
-+static struct kunit_suite kunit_x86_fault_test_suite = {
-+	.name = "kunit_x86_fault",
-+	.init = kunit_try_catch_test_init,
-+	.test_cases = kunit_x86_fault_test_cases,
-+};
-+
- /*
-  * Context for testing test managed resources
-  * is_resource_initialized is used to test arbitrary resources
-@@ -826,6 +938,7 @@ static struct kunit_suite kunit_current_test_suite = {
+ 	gro_cells_destroy(&bareudp->gro_cells);
+-	free_percpu(dev->tstats);
+ }
  
- kunit_test_suites(&kunit_try_catch_test_suite, &kunit_resource_test_suite,
- 		  &kunit_log_test_suite, &kunit_status_test_suite,
--		  &kunit_current_test_suite, &kunit_device_test_suite);
-+		  &kunit_current_test_suite, &kunit_device_test_suite,
-+		  &kunit_x86_fault_test_suite);
+ static struct socket *bareudp_create_sock(struct net *net, __be16 port)
+@@ -567,6 +561,7 @@ static void bareudp_setup(struct net_device *dev)
+ 	netif_keep_dst(dev);
+ 	dev->priv_flags |= IFF_NO_QUEUE;
+ 	dev->flags = IFF_POINTOPOINT | IFF_NOARP | IFF_MULTICAST;
++	dev->pcpu_stat_type = NETDEV_PCPU_STAT_TSTATS;
+ }
  
- MODULE_LICENSE("GPL v2");
+ static int bareudp_validate(struct nlattr *tb[], struct nlattr *data[],
 -- 
-2.44.0
+2.43.0
 
 
