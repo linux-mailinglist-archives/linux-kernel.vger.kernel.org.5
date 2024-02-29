@@ -1,121 +1,154 @@
-Return-Path: <linux-kernel+bounces-86131-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86133-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5850686C01D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 06:17:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C82E86C021
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 06:21:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A4841C20FCC
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 05:17:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF55828335D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 05:21:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3428C39FD1;
-	Thu, 29 Feb 2024 05:17:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8FE739AD5;
+	Thu, 29 Feb 2024 05:21:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fM8gQKCO"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FVuPTr/c"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C246939AD5
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 05:17:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29ECE3BBE8
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 05:21:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709183861; cv=none; b=g5/CPcUIrYIAPxldG1OvOItTNm8lapBoRMvTZH+dDqkc44HUTN3CHoQze1mxVxADWRhDG4HUUDFeMHtQrq84ceWM4bxA+nYMxR6ljZmEJg6PM1I6LjA/UmcnPDjXPwO2yz/WwkLZkO3Uf2gKwHCThKb0wsDAj0+We3KCO4KWQNo=
+	t=1709184094; cv=none; b=N1VDyf/AM7VbwzAFXi1Jn8bB6L2YcRjoN64rGWO4wley36+zxIS8HUbDb739uWjWrgh+vt42hF+6FgrcvEi8KkTE+OdiTxZvep6bb7lWR0BC8mg15CjMSdrYFpOxcVudH2jGzg/O4PVn1/uRcRapsFQiQh3yoy2Bdnf1GWHsoic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709183861; c=relaxed/simple;
-	bh=QLdvRcyiMne/VT/oSplWRmRIFKGFh7UjVB3Dd95hIss=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=l45FG3Yu7RHZzTLNwrTeAwz1bGNw5UGJ3EwTCMX43km3p3xJw8bYmqnxeatt94tQKr20vEx9fx8qpnxnZ5DNkeVe2pBui11s1zhoNh5aXbM2WVHg82lTKdbPoG7t0F7J0k3IOovw4Ztk8WQow7DMHrdN0MPchj84fpBXflAzgak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fM8gQKCO; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-51327cd65beso47365e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 21:17:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709183858; x=1709788658; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=oEDigR9B35jgh3NUhIDi4WoeBZW/WlBf7UzIlNaTSiw=;
-        b=fM8gQKCOShiWKrB26gzgpPYI/kJ023iAn4RikPbYSOQdmn4Al4Rb2h5AG7wbGip2X5
-         HUHbrErzE7QPmkDWCOiz6Aby9y1IgD47lNGHpO5wst/hgFLZ1pUAoLfpW3rFGCyVgYmG
-         hVTMm4/CHJWhDw2lQ4T6lPeC9Wy6ctOO35+1mXFa/HYTNMkulUy5WblMgdFTQBJZ3ZiG
-         u0TZzm6xkCAVt0lv4Lt++sLaMR9yuyLKspo2cb0vcKZzvP4EsNXqshqc1SJo/XTDE1Ll
-         jdDMdEgGp22Vpya5k2UBVM8EJEUlIyKneeWgyKFWeyaSiXVBoDAw3iminNEqG7gy2CRS
-         3hGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709183858; x=1709788658;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oEDigR9B35jgh3NUhIDi4WoeBZW/WlBf7UzIlNaTSiw=;
-        b=VoDb09/xXRijktpZtPPl2nTsA5zDJajq7n+ipPr9N9ZvloqNx8xdINlKm2L9V2ziJN
-         LtqEtrTQoxhIfXaILVkepW3K3VMzQhyi1t8Eb+jJspFSxuSU4jpZcCprpnkgVRJTkDT7
-         kZ1dDUbSnW+319NSUp378RftobnhkCfsT+uYixv2T/7ienFcOiS4tW0NptqY6ms+J+7E
-         qYyKSK3gvJxAV9RrLl5bhRKiPQnlVZVr4qa8sarz67gBOEYRiiTj1dXvrjyVlk0wnAQE
-         sYKRsOQsdjJ/QZbLM42W/wmrylmb/b2C40HOCihj0whZUhW8ik2Bj1hepfFQJBeBkI9H
-         WQNQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWR7K9CpMcKm6QvnwdTBoIX2reJlt68S6owA1p7S5b+Oj62EgNHK2QdbJyGNHSF9M46ph6nb+BCGssW+WViK27YjKz3/3LLRmwz3UPl
-X-Gm-Message-State: AOJu0YzrGT0JUTtn9Y81YJdlF1rA+QQpnWByZR/UywDRNGQ/tRUr5c2q
-	iS9AIBh6QkybukPtm2NQJlZXMljRHTTcoSLAnX3ig/1/SadIkb9W
-X-Google-Smtp-Source: AGHT+IHxbIGnVddxTEb8eZVws/jmRpTTm4E/db4m/qINhv+hBD1QscgPzEdEUCBi9/LxGQEwXYBn+Q==
-X-Received: by 2002:a05:6512:10cb:b0:513:1cc8:6d05 with SMTP id k11-20020a05651210cb00b005131cc86d05mr666989lfg.2.1709183857655;
-        Wed, 28 Feb 2024 21:17:37 -0800 (PST)
-Received: from [192.168.0.102] (p54a07fa0.dip0.t-ipconnect.de. [84.160.127.160])
-        by smtp.gmail.com with ESMTPSA id o3-20020a05600c4fc300b0041297d7e181sm858237wmq.6.2024.02.28.21.17.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Feb 2024 21:17:37 -0800 (PST)
-Message-ID: <5b9b2619-eea8-4b8f-8e66-e343272ab51f@gmail.com>
-Date: Thu, 29 Feb 2024 06:17:35 +0100
+	s=arc-20240116; t=1709184094; c=relaxed/simple;
+	bh=+OKbZBg8INtp2Ye+Yftr/WMz8Wbb90mWnLDPuYct/UY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Rtss1KTpYzvTBC80h3zftWnueVjAlRAlUAYDuFARLcqzPdP8p0+d+YgK9zP0i5IpaIpGhP3/k5tbq23Q6q0m0AYlRH6/2mdeOIF+2e50VaU1/Lu+LaDk46nMBDIkITmWsS2GsKVNv/4vEFbmWFtTV0MeDafiqrO042ZGSjCicSU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FVuPTr/c; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709184093; x=1740720093;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=+OKbZBg8INtp2Ye+Yftr/WMz8Wbb90mWnLDPuYct/UY=;
+  b=FVuPTr/cYdiMHpDCKkFYSsq6YOCrTSQ7cwT+MmeEyRl3aDJsMvMCn99b
+   7GI4mYj2wo5h4thU1pAck+wa6bs9zp7xearsMhOfrR/VHp1RWJgFxFCNf
+   m6/8DMqaqVhIFjrQzro+xrez1hoYxm6jP0TcBrzgInP3GC+TWDpU8Dd6n
+   vNbgpoQLeF5MB4Lyu470+iId/UXgBiuDEYnjTLRecIZmeDk0tt+Y6OsJ8
+   6r+iSDOfIrfs3vIpdc/ecLPFIUlapSbGYe/dbGzS7rXIRSgl9uetj9OSz
+   k7xq2TgATsQL00IBNRafh0XKfwbx7O013wUjfk4PsygI5gxjSwwsVeSng
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="26097756"
+X-IronPort-AV: E=Sophos;i="6.06,192,1705392000"; 
+   d="scan'208";a="26097756"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 21:21:30 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,192,1705392000"; 
+   d="scan'208";a="7735235"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by orviesa009.jf.intel.com with ESMTP; 28 Feb 2024 21:21:26 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rfYrD-000CfY-1k;
+	Thu, 29 Feb 2024 05:21:23 +0000
+Date: Thu, 29 Feb 2024 13:17:36 +0800
+From: kernel test robot <lkp@intel.com>
+To: peterx@redhat.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	Yang Shi <shy828301@gmail.com>, Muchun Song <muchun.song@linux.dev>,
+	Jason Gunthorpe <jgg@nvidia.com>, x86@kernel.org,
+	"Kirill A . Shutemov" <kirill@shutemov.name>,
+	linuxppc-dev@lists.ozlabs.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Linux Memory Management List <linux-mm@kvack.org>,
+	peterx@redhat.com
+Subject: Re: [PATCH 5/5] mm/treewide: Drop pXd_large()
+Message-ID: <202402291233.CVhChP2c-lkp@intel.com>
+References: <20240228085350.520953-6-peterx@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/8] Staging: rtl8192e: Fix Checkpatch warnings in
- rtl819x_BAProc.c
-To: Tree Davies <tdavies@darkphysics.net>, gregkh@linuxfoundation.org,
- anjan@momi.ca
-Cc: linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20240229024325.453374-1-tdavies@darkphysics.net>
-Content-Language: en-US
-From: Philipp Hortmann <philipp.g.hortmann@gmail.com>
-In-Reply-To: <20240229024325.453374-1-tdavies@darkphysics.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240228085350.520953-6-peterx@redhat.com>
 
-On 2/29/24 03:43, Tree Davies wrote:
-> This series fixes the remaining checkpatch issues in rtl819x_BAProc.c
-> These patches are to be applied after patch-series: '[PATCH v2 00/20]
-> Staging: rtl8192e: Fix checkpatch warning for rtllib_softmac.c ''
-> Thank you to all reviewers
-> ~ Tree Davies
-> 
-> v2: Change commit message in patches 7 and 8
-> 
-> Tree Davies (8):
->    Staging: rtl8192e: Fix 5 chckpatch alignment warnings in
->      rtl819x_BAProc.c
->    Staging: rtl8192e: Rename variable TxRxSelect
->    Staging: rtl8192e: Rename function rtllib_send_ADDBAReq()
->    Staging: rtl8192e: Rename function rtllib_send_ADDBARsp()
->    Staging: rtl8192e: Rename goto OnADDBAReq_Fail
->    Staging: rtl8192e: Rename goto OnADDBARsp_Reject
->    Staging: rtl8192e: Rename function rtllib_FlushRxTsPendingPkts()
->    Staging: rtl8192e: Rename function GetHalfNmodeSupportByAPsHandler()
-> 
->   drivers/staging/rtl8192e/rtl8192e/rtl_core.c |  2 +-
->   drivers/staging/rtl8192e/rtl8192e/rtl_dm.c   |  2 +-
->   drivers/staging/rtl8192e/rtl819x_BAProc.c    | 66 ++++++++++----------
->   drivers/staging/rtl8192e/rtl819x_HTProc.c    |  8 +--
->   drivers/staging/rtl8192e/rtl819x_TSProc.c    | 24 +++----
->   drivers/staging/rtl8192e/rtllib.h            | 10 +--
->   drivers/staging/rtl8192e/rtllib_rx.c         |  4 +-
->   7 files changed, 58 insertions(+), 58 deletions(-)
-> 
+Hi,
 
-Tested-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on akpm-mm/mm-everything]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/peterx-redhat-com/mm-ppc-Define-pXd_large-with-pXd_leaf/20240228-170049
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20240228085350.520953-6-peterx%40redhat.com
+patch subject: [PATCH 5/5] mm/treewide: Drop pXd_large()
+config: i386-buildonly-randconfig-001-20240228 (https://download.01.org/0day-ci/archive/20240229/202402291233.CVhChP2c-lkp@intel.com/config)
+compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240229/202402291233.CVhChP2c-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402291233.CVhChP2c-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   In file included from arch/x86/kernel/asm-offsets.c:14:
+   In file included from include/linux/suspend.h:5:
+   In file included from include/linux/swap.h:9:
+   In file included from include/linux/memcontrol.h:13:
+   In file included from include/linux/cgroup.h:17:
+   In file included from include/linux/fs.h:33:
+   In file included from include/linux/percpu-rwsem.h:7:
+   In file included from include/linux/rcuwait.h:6:
+   In file included from include/linux/sched/signal.h:9:
+   In file included from include/linux/sched/task.h:13:
+   In file included from include/linux/uaccess.h:11:
+   In file included from arch/x86/include/asm/uaccess.h:17:
+   In file included from arch/x86/include/asm/tlbflush.h:16:
+>> arch/x86/include/asm/pgtable.h:1099:19: error: redefinition of 'pud_leaf'
+    1099 | static inline int pud_leaf(pud_t pud)
+         |                   ^
+   include/asm-generic/pgtable-nopmd.h:34:19: note: previous definition is here
+      34 | static inline int pud_leaf(pud_t pud)           { return 0; }
+         |                   ^
+   1 error generated.
+   make[3]: *** [scripts/Makefile.build:116: arch/x86/kernel/asm-offsets.s] Error 1 shuffle=298844285
+   make[3]: Target 'prepare' not remade because of errors.
+   make[2]: *** [Makefile:1191: prepare0] Error 2 shuffle=298844285
+   make[2]: Target 'prepare' not remade because of errors.
+   make[1]: *** [Makefile:240: __sub-make] Error 2 shuffle=298844285
+   make[1]: Target 'prepare' not remade because of errors.
+   make: *** [Makefile:240: __sub-make] Error 2 shuffle=298844285
+   make: Target 'prepare' not remade because of errors.
+
+
+vim +/pud_leaf +1099 arch/x86/include/asm/pgtable.h
+
+  1093	
+  1094	static inline int pud_bad(pud_t pud)
+  1095	{
+  1096		return (pud_flags(pud) & ~(_KERNPG_TABLE | _PAGE_USER)) != 0;
+  1097	}
+  1098	#else
+> 1099	static inline int pud_leaf(pud_t pud)
+  1100	{
+  1101		return 0;
+  1102	}
+  1103	#endif	/* CONFIG_PGTABLE_LEVELS > 2 */
+  1104	#define pud_leaf pud_leaf
+  1105	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
