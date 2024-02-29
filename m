@@ -1,213 +1,297 @@
-Return-Path: <linux-kernel+bounces-85937-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85938-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C99FC86BCFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:49:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47EA386BD02
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:52:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 520C91F2586E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:49:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 682F11C2254F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:52:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 857CA20335;
-	Thu, 29 Feb 2024 00:49:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D62D21EB22;
+	Thu, 29 Feb 2024 00:52:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="Rl5bViV4"
-Received: from omta038.useast.a.cloudfilter.net (omta038.useast.a.cloudfilter.net [44.202.169.37])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="CzFXUayO"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6EB8168B7
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 00:49:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11E242599
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 00:52:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709167778; cv=none; b=BwaM/KF6ylH0G4lujWzXIIzIKLASOdYj5dtrCwyKwTvR+tPmf8vsgxIbec7PoumeBjT2pYQmCSpZL5b+axDq2fNOSGQ6yGK+5nXS23NHSV7TDemr2Je/kgGNt5Qw3MKpzX6HQrh0DGdTqw3+OP8yc4ZSZCcDwNNCjeDVAaTtJ/Y=
+	t=1709167946; cv=none; b=KEw+gQQSBmzvTS/fp3zE33pc/onnKwWzTvhzUo1qsaNvReMAXg4PYrrsUFll7oqMhIEF4TRvKGvk5a0a3LpvkbJBRKKD7UPqCj3K8/3VZ+984Oi5JUE99n3P/qTMIA1f5OGr5LbLvUcyofe0auUoG2lWnLkWe9jmAVO4DObt9uU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709167778; c=relaxed/simple;
-	bh=eJy7526b/+zGVIKSV9uSj1O67nrOJUqsliwJDm6XgBE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hoiUFOIxffdx00KoRkEM89bjaH4cDH8yoC/QUdgZm6DFogi/J3p9R/hXRSNHe+tOGaGYvni3Ws6CAnAJsPvWbbF8rquKhRD5E+dWCPSL/Z7k0yV6tH5NtrnMtejMV3s+w/BD5GNtyPTN37Zza0VDvPl2AEkaAW6gnrJI+m6y9rY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=Rl5bViV4; arc=none smtp.client-ip=44.202.169.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
-Received: from eig-obgw-5003a.ext.cloudfilter.net ([10.0.29.159])
-	by cmsmtp with ESMTPS
-	id fTFCrckViQr4SfUc6rE8rW; Thu, 29 Feb 2024 00:49:30 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-	by cmsmtp with ESMTPS
-	id fUc4rFGgxe1rDfUc5rtQL2; Thu, 29 Feb 2024 00:49:29 +0000
-X-Authority-Analysis: v=2.4 cv=TvrghiXh c=1 sm=1 tr=0 ts=65dfd499
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=VhncohosazJxI00KdYJ/5A==:17
- a=IkcTkHD0fZMA:10 a=k7vzHIieQBIA:10 a=wYkD_t78qR0A:10
- a=fHn5IWyn-i4c8q1BtbYA:9 a=QEXdDO2ut3YA:10
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=Zjlg/tH38rkBMLvt/9bxLn+QRmwhVCWKNt+AkXN6Nec=; b=Rl5bViV4SrEtyy1Y3IFyKLvsG9
-	NoXIGdPO99YzGOuke1rEDMsjndNpL3tNMskf8gDdDzZDq99nndWo7lajWsZPuNaH0Mf12xnJvFpiP
-	CPIrNtDA0iIPqLxqfBqs2bBl6s8JWqDhqMsfTwu193K08NAwcfyqBPf45tmEmrrrzSYtoLfxvVXip
-	kUpIXchdNxJxiFOmFzeeF1wmZTmXI8MNa66yskG1TQVtFIz9Gu6cdUOJy1WEzbIC7P30QQsrTD+Ws
-	/jO3qhhf+nJrs6IxdAkWj/ZCBfRv5sp9A9ZGNWe3A3JMZkqlA2S7KnXjf4w+bKLtPcaKUGrh5YaKB
-	8Iq1SE7A==;
-Received: from [201.172.172.225] (port=57006 helo=[192.168.15.10])
-	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <gustavo@embeddedor.com>)
-	id 1rfUc3-00272c-2T;
-	Wed, 28 Feb 2024 18:49:27 -0600
-Message-ID: <653bbfe8-1b35-4f5e-b89d-9e374c64e46b@embeddedor.com>
-Date: Wed, 28 Feb 2024 18:49:25 -0600
+	s=arc-20240116; t=1709167946; c=relaxed/simple;
+	bh=TuCMlpZG79u3CzHRmniQwJCFUVTO1G4BzKK5naL1Dwc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Ud11Ix8A4bmvlruIPHtVE6YRgz6FxL4QWNdtthk7DzOpckvewsm3wbWvHiaNMTkoObyReaWpCMovEjJyqkruU8rb5R4AOp/dIUduW+spAdvM5hPnvptHtYD4CASLdjF24XqQM2nJMGubSfqpRVMtJhjcLxPhWqNHa9YLv0N9QrM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CzFXUayO; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a3566c0309fso54453166b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 16:52:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709167943; x=1709772743; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JOoFnCufx7taaiCSkKihrCSXYV9CGIUvZlyJqjbocTk=;
+        b=CzFXUayO1+3GaivLtXeTCKY9C5POufDlX31zNpIt5RUhq9e5un0/X4rp+Iicy4HQBr
+         trCRHKs/N+tQfQP/AItQ1SH3pysR2j1aDp4PeWotsKkYHAqpvqCLKkFY5My/e/3DBIDF
+         V/idj0zHy0ocsTxO3MAfZUpoLSbSP8Y47AHO0i+yLJpzEynYmGUYeNlxUw32tQH21ag1
+         IT5WZL9tj31qqnSD4ErbCv3T/jYkwELbrcPTh1nA68ij7aITPoP0J/ZQpWKwR9b1nJMa
+         A8wPDOvZVt4RjbNkQAEcnJCTY17ryTYRkyhTscTUGqGTIOjhBxBN5HCzAAHvr6EvssoA
+         lj/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709167943; x=1709772743;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JOoFnCufx7taaiCSkKihrCSXYV9CGIUvZlyJqjbocTk=;
+        b=TZiuu1WdqdoOvLGGnbAtUNAxCh7+nHAlkM5TJULs6EajAzOJG6O+yS7UJq3Q8Z2w4D
+         gZjcXF61DFmvNN5j4ECuu0gygU+DlIOun9DRL5AZztupmDhRtsaWwsHLA+lde1rH9Nmd
+         +nzfd7PmoH454KOuLixIUszhEsYbXAveu06JwmLBjyJjOHh47JT5iMmophGxXuO+lznM
+         8+bcjH9QgXdeLZnwBWshNBFW4kz84YYY3PIupUumRpLd2lTsBqHMNDR7u4QDD77mRM95
+         NDBux4MlBepdF1HGEbI1u5yf2bMhjBttp7f+GRQxSm7u1RTarXhaUmgeWm78PUqVWNRR
+         PEgg==
+X-Forwarded-Encrypted: i=1; AJvYcCWEkus+n4kva+2rsnmm3oSBLYz/tTqgAbF9Fbrqik2c0W8T20Lt9ZJBeyfALVvcNvfRRBfPRqMQePXkE0726KNdmgZXGQidmMBVNKLz
+X-Gm-Message-State: AOJu0Yzrk1vvylGUFQEGpWTfL5Kx7NMgGU88zH0J0dFoNhNwhaCW3+tP
+	KClXvHNW+XRkRKGDoOXb0eTzeMMbbyLXYVy+JMEHIGwzLyV0w+pOIp0lpU+2oAq1tqFJ4MujNp4
+	20M4OZW5KZ4gMq6S7e2+ywJhrcvMGE7iyMzb8
+X-Google-Smtp-Source: AGHT+IEPA4ZTo8LTkRBSWlvTNJeoKH3nUD5wkqOYyabq6B7/WHJkyx0NFuHjRttWmpSWiJ+8mr+rCudvqOHhtPP1YwI=
+X-Received: by 2002:a17:906:508:b0:a3e:b442:cfdd with SMTP id
+ j8-20020a170906050800b00a3eb442cfddmr324683eja.17.1709167943213; Wed, 28 Feb
+ 2024 16:52:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 7/8] net-device: Use new helpers from overflow.h in
- netdevice APIs
-Content-Language: en-US
-To: Kees Cook <keescook@chromium.org>, Jakub Kicinski <kuba@kernel.org>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Vinod Koul <vkoul@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
- Jonathan Cameron <Jonathan.Cameron@huawei.com>,
- Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org,
- dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-iio@vger.kernel.org, linux-spi@vger.kernel.org,
- netdev@vger.kernel.org, linux-hardening@vger.kernel.org,
- Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Paolo Abeni <pabeni@redhat.com>, "Gustavo A. R. Silva"
- <gustavoars@kernel.org>
-References: <20240228204919.3680786-1-andriy.shevchenko@linux.intel.com>
- <20240228204919.3680786-8-andriy.shevchenko@linux.intel.com>
- <202402281341.AC67EB6E35@keescook> <20240228144148.5c227487@kernel.org>
- <202402281554.C1CEEF744@keescook>
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <202402281554.C1CEEF744@keescook>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 201.172.172.225
-X-Source-L: No
-X-Exim-ID: 1rfUc3-00272c-2T
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.15.10]) [201.172.172.225]:57006
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 11
-X-Org: HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfBolf4+BXRkiiCBgwb+KmASosVKxAFsXETBtc6NiFp/xWI7VVYOkt9jHFyfz31XcjoJLFUgTX6Jk5M67QvlC5fynPSHvMsGnx+vLNqMHauDciRUacEiZ
- GwYqmN0UZ+XCO+omPgA2560Nwh2MMtYqDntLM9WVXWsX78xI4DqcNmX/6U69fIddEwpnC2vAascXiDnOrr1JQf6rz2/wmy3s6s6gnu35OdDoFL/FgwLaquMN
+References: <20240229003753.134193-1-21cnbao@gmail.com> <20240229003753.134193-5-21cnbao@gmail.com>
+In-Reply-To: <20240229003753.134193-5-21cnbao@gmail.com>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Wed, 28 Feb 2024 16:51:45 -0800
+Message-ID: <CAJD7tkYWvxeCLmDO83tGyde7e4wPDPMnNbQfnB+pyTJAoSHqbg@mail.gmail.com>
+Subject: Re: [PATCH RFC v2 4/5] mm: swap: introduce swapcache_prepare_nr and
+ swapcache_clear_nr for large folios swap-in
+To: Barry Song <21cnbao@gmail.com>
+Cc: akpm@linux-foundation.org, david@redhat.com, linux-mm@kvack.org, 
+	ryan.roberts@arm.com, chrisl@kernel.org, linux-kernel@vger.kernel.org, 
+	mhocko@suse.com, shy828301@gmail.com, steven.price@arm.com, surenb@google.com, 
+	wangkefeng.wang@huawei.com, willy@infradead.org, xiang@kernel.org, 
+	ying.huang@intel.com, yuzhao@google.com, kasong@tencent.com, 
+	nphamcs@gmail.com, chengming.zhou@linux.dev, hannes@cmpxchg.org, 
+	linux-arm-kernel@lists.infradead.org, Barry Song <v-songbaohua@oppo.com>, 
+	Hugh Dickins <hughd@google.com>, Minchan Kim <minchan@kernel.org>, SeongJae Park <sj@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Feb 28, 2024 at 4:39=E2=80=AFPM Barry Song <21cnbao@gmail.com> wrot=
+e:
+>
+> From: Barry Song <v-songbaohua@oppo.com>
+>
+> Commit 13ddaf26be32 ("mm/swap: fix race when skipping swapcache") support=
+s
+> one entry only, to support large folio swap-in, we need to handle multipl=
+e
+> swap entries.
+>
+> Cc: Kairui Song <kasong@tencent.com>
+> Cc: "Huang, Ying" <ying.huang@intel.com>
+> Cc: Yu Zhao <yuzhao@google.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Chris Li <chrisl@kernel.org>
+> Cc: Hugh Dickins <hughd@google.com>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Minchan Kim <minchan@kernel.org>
+> Cc: Yosry Ahmed <yosryahmed@google.com>
+> Cc: Yu Zhao <yuzhao@google.com>
+> Cc: SeongJae Park <sj@kernel.org>
+> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+> ---
+>  include/linux/swap.h |   1 +
+>  mm/swap.h            |   1 +
+>  mm/swapfile.c        | 117 ++++++++++++++++++++++++++-----------------
+>  3 files changed, 72 insertions(+), 47 deletions(-)
+>
+> diff --git a/include/linux/swap.h b/include/linux/swap.h
+> index b3581c976e5f..2691c739d9a4 100644
+> --- a/include/linux/swap.h
+> +++ b/include/linux/swap.h
+> @@ -480,6 +480,7 @@ extern int add_swap_count_continuation(swp_entry_t, g=
+fp_t);
+>  extern void swap_shmem_alloc(swp_entry_t);
+>  extern int swap_duplicate(swp_entry_t);
+>  extern int swapcache_prepare(swp_entry_t);
+> +extern int swapcache_prepare_nr(swp_entry_t, int nr);
+>  extern void swap_free(swp_entry_t);
+>  extern void swap_nr_free(swp_entry_t entry, int nr_pages);
+>  extern void swapcache_free_entries(swp_entry_t *entries, int n);
+> diff --git a/mm/swap.h b/mm/swap.h
+> index fc2f6ade7f80..1cec991efcda 100644
+> --- a/mm/swap.h
+> +++ b/mm/swap.h
+> @@ -42,6 +42,7 @@ void delete_from_swap_cache(struct folio *folio);
+>  void clear_shadow_from_swap_cache(int type, unsigned long begin,
+>                                   unsigned long end);
+>  void swapcache_clear(struct swap_info_struct *si, swp_entry_t entry);
+> +void swapcache_clear_nr(struct swap_info_struct *si, swp_entry_t entry, =
+int nr);
+>  struct folio *swap_cache_get_folio(swp_entry_t entry,
+>                 struct vm_area_struct *vma, unsigned long addr);
+>  struct folio *filemap_get_incore_folio(struct address_space *mapping,
+> diff --git a/mm/swapfile.c b/mm/swapfile.c
+> index c0c058ee7b69..c8c8b6dbaeda 100644
+> --- a/mm/swapfile.c
+> +++ b/mm/swapfile.c
+> @@ -3308,7 +3308,7 @@ void si_swapinfo(struct sysinfo *val)
+>  }
+>
+>  /*
+> - * Verify that a swap entry is valid and increment its swap map count.
+> + * Verify that nr swap entries are valid and increment their swap map co=
+unt.
+>   *
+>   * Returns error code in following case.
+>   * - success -> 0
+> @@ -3318,66 +3318,73 @@ void si_swapinfo(struct sysinfo *val)
+>   * - swap-cache reference is requested but the entry is not used. -> ENO=
+ENT
+>   * - swap-mapped reference requested but needs continued swap count. -> =
+ENOMEM
+>   */
+> -static int __swap_duplicate(swp_entry_t entry, unsigned char usage)
+> +static int __swap_duplicate_nr(swp_entry_t entry, int nr, unsigned char =
+usage)
+>  {
+>         struct swap_info_struct *p;
+>         struct swap_cluster_info *ci;
+>         unsigned long offset;
+> -       unsigned char count;
+> -       unsigned char has_cache;
+> -       int err;
+> +       unsigned char count[SWAPFILE_CLUSTER];
+> +       unsigned char has_cache[SWAPFILE_CLUSTER];
 
+I am not closely following this series, but a couple of things caught my ey=
+es.
 
-On 2/28/24 18:01, Kees Cook wrote:
-> On Wed, Feb 28, 2024 at 02:41:48PM -0800, Jakub Kicinski wrote:
->> On Wed, 28 Feb 2024 13:46:10 -0800 Kees Cook wrote:
->>> I really don't like hiding these trailing allocations from the compiler.
->>> Why can't something like this be done (totally untested):
->>>
->>>
->>> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
->>> index 118c40258d07..dae6df4fb177 100644
->>> --- a/include/linux/netdevice.h
->>> +++ b/include/linux/netdevice.h
->>> @@ -2475,6 +2475,8 @@ struct net_device {
->>>   	/** @page_pools: page pools created for this netdevice */
->>>   	struct hlist_head	page_pools;
->>>   #endif
->>> +	u32			priv_size;
->>> +	u8			priv_data[] __counted_by(priv_size) __aligned(NETDEV_ALIGN);
->>
->> I like, FWIW, please submit! :)
-> 
-> So, I found several cases where struct net_device is included in the
-> middle of another structure, which makes my proposal more awkward. But I
-> also don't understand why it's in the _middle_. Shouldn't it always be
-> at the beginning (with priv stuff following it?)
-> Quick search and examined manually: git grep 'struct net_device [a-z0-9_]*;'
-> 
-> struct rtw89_dev
-> struct ath10k
-> etc.
-> 
-> Some even have two included (?)
-> 
-> But I still like the idea -- Gustavo has been solving these cases with
-> having two structs, e.g.:
-> 
-> struct net_device {
-> 	...unchanged...
-> };
-> 
-> struct net_device_alloc {
-> 	struct net_device	dev;
-> 	u32			priv_size;
-> 	u8			priv_data[] __counted_by(priv_size) __aligned(NETDEV_ALIGN);
-> };
-> 
-> And internals can use struct net_device_alloc...
+Is this reasonable for stack usage?
 
-Yep, we should really consider going with the above, otherwise we would
-have to do something like the following, to avoid having the flexible-array
-member nested in the middle of other structs:
+> +       int err, i;
+>
+>         p =3D swp_swap_info(entry);
+>
+>         offset =3D swp_offset(entry);
+>         ci =3D lock_cluster_or_swap_info(p, offset);
+>
+> -       count =3D p->swap_map[offset];
+> -
+> -       /*
+> -        * swapin_readahead() doesn't check if a swap entry is valid, so =
+the
+> -        * swap entry could be SWAP_MAP_BAD. Check here with lock held.
+> -        */
+> -       if (unlikely(swap_count(count) =3D=3D SWAP_MAP_BAD)) {
+> -               err =3D -ENOENT;
+> -               goto unlock_out;
+> -       }
+> +       for (i =3D 0; i < nr; i++) {
+> +               count[i] =3D p->swap_map[offset + i];
+>
+> -       has_cache =3D count & SWAP_HAS_CACHE;
+> -       count &=3D ~SWAP_HAS_CACHE;
+> -       err =3D 0;
+> -
+> -       if (usage =3D=3D SWAP_HAS_CACHE) {
+> -
+> -               /* set SWAP_HAS_CACHE if there is no cache and entry is u=
+sed */
+> -               if (!has_cache && count)
+> -                       has_cache =3D SWAP_HAS_CACHE;
+> -               else if (has_cache)             /* someone else added cac=
+he */
+> -                       err =3D -EEXIST;
+> -               else                            /* no users remaining */
+> +               /*
+> +                * swapin_readahead() doesn't check if a swap entry is va=
+lid, so the
+> +                * swap entry could be SWAP_MAP_BAD. Check here with lock=
+ held.
+> +                */
+> +               if (unlikely(swap_count(count[i]) =3D=3D SWAP_MAP_BAD)) {
+>                         err =3D -ENOENT;
+> +                       goto unlock_out;
+> +               }
 
-struct net_device {
-	struct_group_tagged(net_device_hdr, hdr,
-		...
-		u32			priv_size;
-	);
-	u8			priv_data[] __counted_by(priv_size) __aligned(NETDEV_ALIGN);
-}
+Here we immediately exit if there is an error, but we don't below, we
+just keep overwriting the error every iteration as far as I can tell.
+Also, it doesn't seem like we do any cleanups if we hit an error
+halfway through. Should we undo previously updated swap entries, or am
+I missing something here?
 
-We are grouping together the members in `struct net_device`, except the
-flexible-array member, into a tagged `struct net_device_hdr`. This allows
-us to exclude the flex array from its inclusion in any other struct
-that contains `struct net_device` as a member without having to create
-a completely separate struct definition.
-
-And let's take as example `struct hfi1_netdev_rx`, where `struct net_device` is
-included in the beginning:
-
-drivers/infiniband/hw/hfi1/netdev.h:
-struct hfi1_netdev_rx {
-
--	struct net_device rx_napi;
-+       struct net_device_hdr rx_napi;
-
-
-         struct hfi1_devdata *dd;
-         struct hfi1_netdev_rxq *rxq;
-         int num_rx_q;
-         int rmt_start;
-         struct xarray dev_tbl;
-         /* count of enabled napi polls */
-         atomic_t enabled;
-         /* count of netdevs on top */
-         atomic_t netdevs;
-};
-
-Of course we would also have to update the code that access `struct net_device`
-members through `rx_napi` in `struct hfi1_netdev_rx`.
-
-I'm currently working on the above solution for all the cases where having two
-separate structs is not currently feasible. And with that we are looking to enable
-`-Wflex-array-member-not-at-end`
-
-So, if we can prevent this from the beginning it'd be really great. :)
-
---
-Gustavo
+>
+> -       } else if (count || has_cache) {
+> -
+> -               if ((count & ~COUNT_CONTINUED) < SWAP_MAP_MAX)
+> -                       count +=3D usage;
+> -               else if ((count & ~COUNT_CONTINUED) > SWAP_MAP_MAX)
+> -                       err =3D -EINVAL;
+> -               else if (swap_count_continued(p, offset, count))
+> -                       count =3D COUNT_CONTINUED;
+> -               else
+> -                       err =3D -ENOMEM;
+> -       } else
+> -               err =3D -ENOENT;                  /* unused swap entry */
+> -
+> -       if (!err)
+> -               WRITE_ONCE(p->swap_map[offset], count | has_cache);
+> +               has_cache[i] =3D count[i] & SWAP_HAS_CACHE;
+> +               count[i] &=3D ~SWAP_HAS_CACHE;
+> +               err =3D 0;
+> +
+> +               if (usage =3D=3D SWAP_HAS_CACHE) {
+> +
+> +                       /* set SWAP_HAS_CACHE if there is no cache and en=
+try is used */
+> +                       if (!has_cache[i] && count[i])
+> +                               has_cache[i] =3D SWAP_HAS_CACHE;
+> +                       else if (has_cache[i])          /* someone else a=
+dded cache */
+> +                               err =3D -EEXIST;
+> +                       else                            /* no users remai=
+ning */
+> +                               err =3D -ENOENT;
+> +               } else if (count[i] || has_cache[i]) {
+> +
+> +                       if ((count[i] & ~COUNT_CONTINUED) < SWAP_MAP_MAX)
+> +                               count[i] +=3D usage;
+> +                       else if ((count[i] & ~COUNT_CONTINUED) > SWAP_MAP=
+_MAX)
+> +                               err =3D -EINVAL;
+> +                       else if (swap_count_continued(p, offset + i, coun=
+t[i]))
+> +                               count[i] =3D COUNT_CONTINUED;
+> +                       else
+> +                               err =3D -ENOMEM;
+> +               } else
+> +                       err =3D -ENOENT;                  /* unused swap =
+entry */
+> +       }
+>
+> +       if (!err) {
+> +               for (i =3D 0; i < nr; i++)
+> +                       WRITE_ONCE(p->swap_map[offset + i], count[i] | ha=
+s_cache[i]);
+> +       }
+>  unlock_out:
+>         unlock_cluster_or_swap_info(p, ci);
+>         return err;
+>  }
 
