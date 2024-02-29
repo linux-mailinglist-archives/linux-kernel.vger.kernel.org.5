@@ -1,284 +1,210 @@
-Return-Path: <linux-kernel+bounces-87641-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87640-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BB9E86D6D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 23:26:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 986A486D6D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 23:26:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E28FE1F22011
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:26:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 543CD284E00
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:26:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BC3B13C9DB;
-	Thu, 29 Feb 2024 22:26:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E06107E57D;
+	Thu, 29 Feb 2024 22:26:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="MS3pjJW6";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="4ZDJEX44";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="MS3pjJW6";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="4ZDJEX44"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IZ3wpNni"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5010674C05;
-	Thu, 29 Feb 2024 22:26:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709245577; cv=none; b=PU6hReXq8VKWUP2AvsO9xHnqAiajUUDp8js1htUFWsz2nUa3jbuQc3uBt6qHUaytrwNm+ardB/G6ehOTj0Byh/NXamJN4YxgiLLYGcNDLMRkeVTUVYxnm9gFsrwynA3QCKRj2ZjzzyNxbT3UR/SEAM+Du4SY+yBDiDaP1tHU9Q0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709245577; c=relaxed/simple;
-	bh=GCKf4NzvtDireLM5jhckX6LS/rVF23UYmVzpTj/hb10=;
-	h=Content-Type:MIME-Version:From:To:Cc:Subject:In-reply-to:
-	 References:Date:Message-id; b=XPiCJDO3g6dzTyMHzrFVEQs+DRukB5EkQX6pc9eGdruXIDnaFv4XAfReCECzim+5euxndX8zxHpZ7+7cgq63BjIBxEMPk8NRN4Wtcg5ZXymHTlHTllk44LmHPq6/PmqnvH0KZXMQPbcpVBAGnUvqVDSwHUDibwCCgW8DyZM/bAs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=MS3pjJW6; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=4ZDJEX44; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=MS3pjJW6; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=4ZDJEX44; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 7115C22021;
-	Thu, 29 Feb 2024 22:26:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1709245573; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1q2ff3tk7upYT+U6Oils45T4A6BE5V/TKvYs9aQhOf0=;
-	b=MS3pjJW6r8bDMR6CiG1ewHmzJ8BB8txTH4E93v03zYvnVGChlfO53iRi3w6FravzY2x7Qn
-	4yuRMfvwmAGhKP1iCbmAHY31vZwx4FaTkHYaey2f6KyWzdoE6nT503AeCJBR79qdpHj0D6
-	s6z7LuCdvYbL7yZp1PzXXs8nMBrX+jU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1709245573;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1q2ff3tk7upYT+U6Oils45T4A6BE5V/TKvYs9aQhOf0=;
-	b=4ZDJEX44He0G5lt8Px2VxgM1drHmvCus0ETy/7TbXiI/lW/a2AU7Mq0d4TqaSgxR9Uq4E2
-	TppBLK8g1ODDMZAA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1709245573; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1q2ff3tk7upYT+U6Oils45T4A6BE5V/TKvYs9aQhOf0=;
-	b=MS3pjJW6r8bDMR6CiG1ewHmzJ8BB8txTH4E93v03zYvnVGChlfO53iRi3w6FravzY2x7Qn
-	4yuRMfvwmAGhKP1iCbmAHY31vZwx4FaTkHYaey2f6KyWzdoE6nT503AeCJBR79qdpHj0D6
-	s6z7LuCdvYbL7yZp1PzXXs8nMBrX+jU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1709245573;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1q2ff3tk7upYT+U6Oils45T4A6BE5V/TKvYs9aQhOf0=;
-	b=4ZDJEX44He0G5lt8Px2VxgM1drHmvCus0ETy/7TbXiI/lW/a2AU7Mq0d4TqaSgxR9Uq4E2
-	TppBLK8g1ODDMZAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6E47A13503;
-	Thu, 29 Feb 2024 22:26:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id jW9rBIIE4WVzEQAAD6G6ig
-	(envelope-from <neilb@suse.de>); Thu, 29 Feb 2024 22:26:10 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 282BD74C03;
+	Thu, 29 Feb 2024 22:26:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.10
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709245576; cv=fail; b=ap4XepyD3qsGCh53IDT+nPgu3g1VqkK+m2jGA3i2gg40VBZ1LhJIBWUxbrF2ssMIEYG6i5kEAkwwGv0MWB6pyckxrDUL1oRUWeLwGWRPhmbt3f9+gQZByLBk79hBLrjXJMom8+hCe52KeRgqmVVs289IxF9EhhPvPfvSCYNiiKA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709245576; c=relaxed/simple;
+	bh=l8i7TukRRHpZr/+nCwpuKcwM8uOH1BpZ6h2iZupaGng=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=WdGkOn84XZAC9jNUWSs8jNPGACJaEe4fbxxjJFSrUSScH4ABDOvx/wKZVaoZwSG++mKGORuKlegQWkVOnF2JWE4M/QIzd0HbEmCKVWheSSWVYLpw+PQburdt8mAubcc7TTk9HwCvUo8Yy8/mG1jXhgCLjAP1RsjUTe14QR7kAE0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IZ3wpNni; arc=fail smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709245575; x=1740781575;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=l8i7TukRRHpZr/+nCwpuKcwM8uOH1BpZ6h2iZupaGng=;
+  b=IZ3wpNniZtpqXtbdnKSkZcnAewDJS+kUVq1Y/FqEM9qVIUg9CGywcDs+
+   ULanMxf5RZBO9uc9yV1bfirbsS12rdaqzlRM4N7ERJ7kO/UeOTZVIBsGP
+   UA5UEvFrBEzjCtyMZ7h6DXCte4cUSLk8QB3y4SKqgPtQAMPBycSeGwNuC
+   t1Q4Dt682wivgQ5WgHTOKdWDUv8APfHdqhbof0DsKarPJIrLiD3m17vNI
+   SrlYMj0tbb/CzqvX6gtJnyGC5FJVynju3XVSId4taucaw5A/qETcRWdrO
+   5Xm25O15HDAErXLjyuJ/XCDdvZg+hRIgt6jGyQwzW9gIVS9zYHAKL3HK7
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="21215370"
+X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
+   d="scan'208";a="21215370"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 14:26:14 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
+   d="scan'208";a="12667792"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orviesa003.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 29 Feb 2024 14:26:14 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 29 Feb 2024 14:26:13 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 29 Feb 2024 14:26:12 -0800
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 29 Feb 2024 14:26:12 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.101)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 29 Feb 2024 14:26:12 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RG0iLTRORdokO1r24fDxqokWlI+2k2gFTi5L5GerPpTpLJqxGCAFZGvZDCoiB7Rh1/UR7lNDAqv8dDwsucIgiN7mA8vDdOx8L/xiqK/FnbQSq2MVAoXeIUOuJt0VOAwYiTz1/D43GZdVwQXzdVr2KMpR1wyVNkFtdDLQEb9BLZOiURzkfDkqYorjX4lkmZmLMmHFV4RWl/eZFbZQWLItL1rXtJD7w4LVgbQ9pDMyro+p8lSdS47PRCXYJqSyy+yQMgsiHEo9nw26nW1ocWxoZTc/rLMfzdog8Gw2uPn+JqVCbOVA1pR3SYuhRJtZf+ktejPAkupwyzhQWpwM5yIFFw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=CKqNKj1cIEb8nwulG9ykL8R/zZgUNNX0Oe4Paj4ImLg=;
+ b=XKZm36Xv57t2hp+gxonn5iF3uqbnFye34TiE4JZ3hN9eCAUiYtbr5xWvTjVRNvIQV5xEImv4hOWJj2j8+wrFcpZw1zd/b1d5Tf0svoVSqPYNCACBgw9QudANwdP/eRbo32MvjWbQfdySc1CyCDnBKVZp8pOYgzPxqiDf4I6Caa23v30xT/wZD59N67dCARL5+lgCGsUyDYREpbugipqPghF48BS978XhW9KRTByuEnPRzaZ5armi6OG2JRBlcIKCErCAw4xy/jbgpFwemMrPqG2pcsCoaatV5LjpMqSnN7SOwAbswKEXEOvtINaO0vm11H/e4uuOVPJAiwmM4EI7HA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
+ by SA1PR11MB6967.namprd11.prod.outlook.com (2603:10b6:806:2bb::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.23; Thu, 29 Feb
+ 2024 22:26:10 +0000
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::ef2c:d500:3461:9b92]) by BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::ef2c:d500:3461:9b92%4]) with mapi id 15.20.7339.024; Thu, 29 Feb 2024
+ 22:26:10 +0000
+Message-ID: <2237d6b1-1c90-4acd-99e9-f051556dd6ac@intel.com>
+Date: Fri, 1 Mar 2024 11:26:00 +1300
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 08/16] KVM: x86/mmu: WARN and skip MMIO cache on private,
+ reserved page faults
+Content-Language: en-US
+To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini
+	<pbonzini@redhat.com>
+CC: <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Yan Zhao
+	<yan.y.zhao@intel.com>, Isaku Yamahata <isaku.yamahata@intel.com>, "Michael
+ Roth" <michael.roth@amd.com>, Yu Zhang <yu.c.zhang@linux.intel.com>, "Chao
+ Peng" <chao.p.peng@linux.intel.com>, Fuad Tabba <tabba@google.com>, "David
+ Matlack" <dmatlack@google.com>
+References: <20240228024147.41573-1-seanjc@google.com>
+ <20240228024147.41573-9-seanjc@google.com>
+From: "Huang, Kai" <kai.huang@intel.com>
+In-Reply-To: <20240228024147.41573-9-seanjc@google.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW4PR04CA0071.namprd04.prod.outlook.com
+ (2603:10b6:303:6b::16) To BL1PR11MB5978.namprd11.prod.outlook.com
+ (2603:10b6:208:385::18)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: "NeilBrown" <neilb@suse.de>
-To: "Jeff Layton" <jlayton@kernel.org>
-Cc: "Chuck Lever" <chuck.lever@oracle.com>,
- "Olga Kornievskaia" <kolga@netapp.com>, "Dai Ngo" <Dai.Ngo@oracle.com>,
- "Tom Talpey" <tom@talpey.com>, linux-nfs@vger.kernel.org,
- linux-kernel@vger.kernel.org, "Jeff Layton" <jlayton@kernel.org>
-Subject: Re: [PATCH RFC] nfsd: return NFS4ERR_DELAY on contention for v4.0
- replay_owner rp_mutex
-In-reply-to: <20240229-rp_mutex-v1-1-47deb9e4d32d@kernel.org>
-References: <20240229-rp_mutex-v1-1-47deb9e4d32d@kernel.org>
-Date: Fri, 01 Mar 2024 09:25:58 +1100
-Message-id: <170924555835.24797.12031946610700753493@noble.neil.brown.name>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-3.10 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -3.10
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL1PR11MB5978:EE_|SA1PR11MB6967:EE_
+X-MS-Office365-Filtering-Correlation-Id: 341050b0-1fb0-4aa8-70d8-08dc39756e0b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: fAKyMKgzBBPz2E6PcePcq12CrP1ZXrkjcBOCRvXLY4J9KZY2uwEpCC0buVKEzLFCjr5vWeERCJTonL4WZNaEMBnWw+byqX0nuEQP+W3kKcJYtC+7i8U22aZQtWcZ8wME9gg/wYvvlvNUJzchquI18eLP7dTHLleljUDy/OGh6zsN/MPe+L/2rIVM8iKvyuIVM2xe69LKDJkNdOyPwHe7mEXKiM5AwWkLAgt8i0UQMiO4hs7XRXOLC61BndTzEGnlpronHql0Sp3Cgv8II0qQygR3PqGKdI/7Cmkrr//kFMf/fDeer+HlWLlzhhEipKTd2/CbXkN/XMXZ+M0nd35XMBhJz/S7J/T91l2lbIVhSN7YT8uXFslGrjIdNjVHQsxaMwToOjKtxei5g5ByMHNctxOp7sUqe1Y9R004MiwN2nVW4Y2oQuOh6lrVQ5d4kc90GphSB5LK8anyknSlvp+5KYNNDNx8WprcbwrKfcL9dD0jjKIChPNjvtf78Hrr9amIAkMuKfOALpsiXUj7ys0CqPGmSvfac+1UL8ImpBe6n/umAjZnE4lzP+LRf5q3fMfMpIhSJdoofrKNLQ4yQK5RBHu6e26flnb7gq/mPUI+s2PCXSOcaFyRdwtd2JKnrKG15QXeZkgtTb0lo5t1ZWc8xg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?M2xIby8xTWdxbFBodkxIbHYxS1g4MXpOTm03emhSZ2ZuN0ZOQmU2R1R3MGxN?=
+ =?utf-8?B?azZ2MCtqa0V5WDVIVDdJUjRrTDIxZFZHVEVqZzFNcDhGWUZCUFZZdVpIbE05?=
+ =?utf-8?B?R0JSSTBLY1UyY1VmVG5OL042bFBkMnpMMm5ySk53amkvOHJJWnQzL3Y1eEl2?=
+ =?utf-8?B?ZnBoSWlyaTVkcGxUem5GNzZ5QisrTlYwL2N1MjJOQzQyUWY0YVRYWkM3Z3M5?=
+ =?utf-8?B?cnVUcTVhbHNuN0MwWVZGMmRleGpkbmdXSjcvRi9hdk1LSy9ha0FxVmk1Tllj?=
+ =?utf-8?B?cHMvVWRkaUZMMzBLM3pibExNK0dCYXlvemlGano1MG9GeEVmTDMrQjNOL2tR?=
+ =?utf-8?B?K0JoM3gzOERKTyt5WGgrL3VXT1pUb08xVEdBcGJBSjV0ZlJ0UjlkWi93c3hn?=
+ =?utf-8?B?L2xEa1p4dVk3aVBkMnoybU1aRGZxWG9SVTBOQUpoQTFVdUZabURPS3FVNXRt?=
+ =?utf-8?B?RHZzQlE2MkMzRGNtRStrM0pKOHM1KzJvOGtWdW1rZGQyaFFDU25NMW5OK1I2?=
+ =?utf-8?B?TGh2S1hrOFc2Q1ZOZmZkMFhYeXZYMjRmSTVpQVNrVUxJbTBOcGRJS21aRFUw?=
+ =?utf-8?B?d0swY01LR3NLT21pK2cxQ245Y01ET1VCaWZFSE1TUGI4c3JUeFRXR0creW1Q?=
+ =?utf-8?B?K0MrRjQ2SDJjZWdCcnBxQnhDeDUyVi85ZmNUbTJmdU1seS84R25OaXBZK1VP?=
+ =?utf-8?B?UUIyeXRHenFjNExyUjRmaVpycHQzdjhaRmpjT3VjZGJCcmozbnRQUjQyNC84?=
+ =?utf-8?B?TXZ5ajVVdTdldHFJV05jck5IdGh5bFplWGpvOUtqdXpLcURKRldqbDM4QS9W?=
+ =?utf-8?B?cjIza0RQL1RpQlE4Z3dXTjErdUp5Y2cwMVkvSXlJNGVUVTBvVVhMSlFrYlE2?=
+ =?utf-8?B?Vjc2N05DWVRsK0gwMWRLcHMvOUhVZlhRQTRVSUk5LzdORGcvUy8zT3FLWEd1?=
+ =?utf-8?B?a3YyN29FeWlTa1lkcm5HVElxQmpqY1BjcFUvdnRSZWJRSnUwZ3VaOVd6b0Vo?=
+ =?utf-8?B?TTRjcCtBQjUwNlpWMGpoVTRjdksyZTF1aCt3a05XQi9FU0FsaDlVcGhZUGFD?=
+ =?utf-8?B?NUZlcXNCOWxwRkYzOC9zQy9HZ2g4VmtlcGhIMUY1eWF2dG9YYmZXNm9hMFhU?=
+ =?utf-8?B?Mk9ma1VUbWIzTlBSRzhwSitaSUVBbmNTVnIxYTlGZkhwOU00alNuRkZ2bXFI?=
+ =?utf-8?B?c01vMDVrRzgzdndzVThHMXpac2MybXMrYWl0eWt1bDlyZDRqZmhNeXdzbzdV?=
+ =?utf-8?B?ekk3N2s1aEx6M0ZCL1NKOHIvOTYwSmlVVXZvMld4Zy9mdEFSMjgvdyt2dVVL?=
+ =?utf-8?B?Sll0bC9hVnpJai9tM1c5VTk3UHVmL0tuOGx6V0pway82ditZZ2hkRW9FYzBU?=
+ =?utf-8?B?RDVLUis1UG5vNGJ3aS96QlZIdHlZRE9zL2NKZTRmd3hheGJ4a3h1dDQwMDRv?=
+ =?utf-8?B?SFhoc3I5NG5lZXlqd1JQSHJETUxQaU1QeGdFN0lLaHJnYXZHSFZXVGY5Ynhi?=
+ =?utf-8?B?bXM3Nlk0WlY1YjVOS1BPK29rL3J3bWJ5UzRYeFF2WmhvN2VhRURxaWFhMkMz?=
+ =?utf-8?B?dG96V0xlWUVINko0S1B3ZDZPL0MyQkkxeVFWWWQzNjNpTitkdU5VVTluOFNW?=
+ =?utf-8?B?WHY4R0VzNUhUb3VGbWt3OUJtSk9KZ2F5WHRJTitNZkpwRFpGMXdQaEZSK0NW?=
+ =?utf-8?B?QjF0K241d2pBTDdvQ0gzc1RsQ1EzazRaaFl2S3UvbEJzMlViajYvcVVVRkFs?=
+ =?utf-8?B?OWdiV2FOcTNRNHNDNHNDZm5CRW52Y1RQai9qTVNJRWJkWW9LQ2pQdFBQOUZS?=
+ =?utf-8?B?ZUkyNjI3TVZ1cEdwRUozSlNaSTkzdm1uRTBSSTduYXhsMjRYdVFBNGJ2S01o?=
+ =?utf-8?B?NzFZK0tHcUFaVTNyTC80L1paaklJVHQvT2lCUG1UbTRIR0I5eDd5WVN5a1Zl?=
+ =?utf-8?B?K0NKazE2VUlPd0twbys5MnhROTJSSHhHNUR2bjN4dXgrSGtmempnLzhLNUVu?=
+ =?utf-8?B?b2x3NWZuaktaaEluTHVNa0FadzR5MUhOenB3Ry9kRmVRSjVOWWwvb05mUGNu?=
+ =?utf-8?B?bDhscXNtbngxLzcwd2l5OFZrYW5vNC93OEJMMkhrMDhURkVQL1p4NTJoRWZK?=
+ =?utf-8?Q?bekbC3ftgqwRRuB9tWU7EXS8K?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 341050b0-1fb0-4aa8-70d8-08dc39756e0b
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Feb 2024 22:26:10.1393
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Fg7TBSR6NFuXU9fcbMQJNhNM0FILNJeLiirG+qJIFHz6vcMRvuikQVwpP8fOVKUv/KsICWciUFs9TpwDmibMuw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB6967
+X-OriginatorOrg: intel.com
 
-On Fri, 01 Mar 2024, Jeff Layton wrote:
-> move_to_close_lru() is currently called with ->st_mutex and .rp_mutex held.
-> This can lead to a deadlock as move_to_close_lru() waits for sc_count to
-> drop to 2, and some threads holding a reference might be waiting for either
-> mutex.  These references will never be dropped so sc_count will never
-> reach 2.
->=20
-> There have been a couple of attempted fixes (see [1] and [2]), but both
-> were problematic for different reasons.
->=20
-> This patch attempts to break the impasse by simply not waiting for the
-> rp_mutex. If it's contended then we just have it return NFS4ERR_DELAY.
-> This will likely cause parallel opens by the same openowner to be even
-> slower on NFSv4.0, but it should break the deadlock.
->=20
-> One way to address the performance impact might be to allow the wait for
-> the mutex to time out after a period of time (30ms would be the same as
-> NFSD_DELEGRETURN_TIMEOUT). We'd need to add a mutex_lock_timeout
-> function in order for that to work.
->=20
-> Chuck also suggested that we may be able to utilize the svc_defer
-> mechanism instead of returning NFS4ERR_DELAY in this situation, but I'm
-> not quite sure how feasible that is.
->=20
-> [1]: https://lore.kernel.org/lkml/4dd1fe21e11344e5969bb112e954affb@jd.com/T/
-> [2]: https://lore.kernel.org/linux-nfs/170546328406.23031.11217818844350800=
-811@noble.neil.brown.name/
->=20
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+
+
+On 28/02/2024 3:41 pm, Sean Christopherson wrote:
+> WARN and skip the emulated MMIO fastpath if a private, reserved page fault
+> is encountered, as private+reserved should be an impossible combination
+> (KVM should never create an MMIO SPTE for a private access).
+> 
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 > ---
->  fs/nfsd/nfs4state.c | 30 +++++++++++++++++-------------
->  1 file changed, 17 insertions(+), 13 deletions(-)
->=20
-> diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
-> index aee12adf0598..4b667eeb06c8 100644
-> --- a/fs/nfsd/nfs4state.c
-> +++ b/fs/nfsd/nfs4state.c
-> @@ -4658,13 +4658,16 @@ static void init_nfs4_replay(struct nfs4_replay *rp)
->  	mutex_init(&rp->rp_mutex);
->  }
-> =20
-> -static void nfsd4_cstate_assign_replay(struct nfsd4_compound_state *cstate,
-> +static __be32 nfsd4_cstate_assign_replay(struct nfsd4_compound_state *csta=
-te,
->  		struct nfs4_stateowner *so)
->  {
->  	if (!nfsd4_has_session(cstate)) {
-> -		mutex_lock(&so->so_replay.rp_mutex);
-> +		WARN_ON_ONCE(cstate->replay_owner);
-> +		if (!mutex_trylock(&so->so_replay.rp_mutex))
-> +			return nfserr_jukebox;
->  		cstate->replay_owner =3D nfs4_get_stateowner(so);
->  	}
-> +	return nfs_ok;
->  }
-> =20
->  void nfsd4_cstate_clear_replay(struct nfsd4_compound_state *cstate)
-> @@ -5332,15 +5335,17 @@ nfsd4_process_open1(struct nfsd4_compound_state *cs=
-tate,
->  	strhashval =3D ownerstr_hashval(&open->op_owner);
->  	oo =3D find_openstateowner_str(strhashval, open, clp);
->  	open->op_openowner =3D oo;
-> -	if (!oo) {
-> +	if (!oo)
->  		goto new_owner;
-> -	}
->  	if (!(oo->oo_flags & NFS4_OO_CONFIRMED)) {
->  		/* Replace unconfirmed owners without checking for replay. */
->  		release_openowner(oo);
->  		open->op_openowner =3D NULL;
->  		goto new_owner;
->  	}
-> +	status =3D nfsd4_cstate_assign_replay(cstate, &oo->oo_owner);
-> +	if (status)
-> +		return status;
->  	status =3D nfsd4_check_seqid(cstate, &oo->oo_owner, open->op_seqid);
->  	if (status)
->  		return status;
-> @@ -5350,6 +5355,9 @@ nfsd4_process_open1(struct nfsd4_compound_state *csta=
-te,
->  	if (oo =3D=3D NULL)
->  		return nfserr_jukebox;
->  	open->op_openowner =3D oo;
-> +	status =3D nfsd4_cstate_assign_replay(cstate, &oo->oo_owner);
-> +	if (status)
-> +		return status;
->  alloc_stateid:
->  	open->op_stp =3D nfs4_alloc_open_stateid(clp);
->  	if (!open->op_stp)
-> @@ -6121,12 +6129,8 @@ nfsd4_process_open2(struct svc_rqst *rqstp, struct s=
-vc_fh *current_fh, struct nf
->  void nfsd4_cleanup_open_state(struct nfsd4_compound_state *cstate,
->  			      struct nfsd4_open *open)
->  {
-> -	if (open->op_openowner) {
-> -		struct nfs4_stateowner *so =3D &open->op_openowner->oo_owner;
-> -
-> -		nfsd4_cstate_assign_replay(cstate, so);
-> -		nfs4_put_stateowner(so);
-> -	}
-> +	if (open->op_openowner)
-> +		nfs4_put_stateowner(&open->op_openowner->oo_owner);
->  	if (open->op_file)
->  		kmem_cache_free(file_slab, open->op_file);
->  	if (open->op_stp)
-> @@ -7193,9 +7197,9 @@ nfs4_preprocess_seqid_op(struct nfsd4_compound_state =
-*cstate, u32 seqid,
->  	if (status)
->  		return status;
->  	stp =3D openlockstateid(s);
-> -	nfsd4_cstate_assign_replay(cstate, stp->st_stateowner);
-> -
-> -	status =3D nfs4_seqid_op_checks(cstate, stateid, seqid, stp);
-> +	status =3D nfsd4_cstate_assign_replay(cstate, stp->st_stateowner);
-> +	if (!status)
-> +		status =3D nfs4_seqid_op_checks(cstate, stateid, seqid, stp);
->  	if (!status)
->  		*stpp =3D stp;
->  	else
->=20
-> ---
-> base-commit: 2eb3d14898b97bdc0596d184cbf829b5a81cd639
-> change-id: 20240229-rp_mutex-d20e3319e315
->=20
-> Best regards,
-> --=20
-> Jeff Layton <jlayton@kernel.org>
->=20
->=20
+>   arch/x86/kvm/mmu/mmu.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index bd342ebd0809..9206cfa58feb 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -5866,7 +5866,8 @@ int noinline kvm_mmu_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa, u64 err
+>   		error_code |= PFERR_PRIVATE_ACCESS;
+>   
+>   	r = RET_PF_INVALID;
+> -	if (unlikely(error_code & PFERR_RSVD_MASK)) {
+> +	if (unlikely((error_code & PFERR_RSVD_MASK) &&
+> +		     !WARN_ON_ONCE(error_code & PFERR_PRIVATE_ACCESS))) {
+>   		r = handle_mmio_page_fault(vcpu, cr2_or_gpa, direct);
+>   		if (r == RET_PF_EMULATE)
+>   			goto emulate;
 
-I haven't reviewed this thoroughly but I think it is heading in the
-right direction.
-I think moving the nfsd4_cstate_assign_replay() call out of
-nfsd4_cleanup_open_state() and into nfsd4_process_open1() is a really
-good idea and possible should be a separate patch.
+It seems this will make KVM continue to call kvm_mmu_do_page_fault() 
+when such private+reserve error code actually happens (e.g., due to 
+bug), because @r is still RET_PF_INVALID in such case.
 
-I wonder if return NFS4ERR_DELAY is really best.
-
-I imagine replacing rp_mutex with an atomic_t rp_locked.
-This is normally 0, becomes 1 when nfsd4_cstate_assign_replay()
-succeeds, and is set to 2 in move_to_close_lru().
-In nfsd4_cstate_assign_replay() we wait while the value is 1.
-If it becomes 0, we can get the lock and continue.
-If it becomes 2, we return an error.
-If this happens, the state has been unhashed.  So instead of returning
-NFS4ERR_DELAY we can loop back and repeat the nfsd4_lookup_stateid() or
-find_openstateowner_str(), which we can be certain won't find the same
-owner.
-
-I started writing this, but stumbled over the
-nfsd4_cstate_assign_replay() in nfsd4_cleanup_open_state().  Now that
-you've shown me how to fix that, I'll have another go.
-
-Thanks,
-NeilBrown
+Is it better to just return error, e.g., -EINVAL, and give up?
 
