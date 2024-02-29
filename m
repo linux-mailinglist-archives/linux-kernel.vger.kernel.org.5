@@ -1,224 +1,157 @@
-Return-Path: <linux-kernel+bounces-87586-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87587-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65C1086D632
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:30:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E3DAA86D634
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:31:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1464E289CF6
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:30:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F21D28AAE2
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:30:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A85AC6D522;
-	Thu, 29 Feb 2024 21:30:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F12EB6D503;
+	Thu, 29 Feb 2024 21:30:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="i1i5/iVx"
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="PZR67QWI"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FCE538DD7
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 21:30:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A645516FF50;
+	Thu, 29 Feb 2024 21:30:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709242227; cv=none; b=t/LKYjiOP9vQ5AhEr33PVruDli4ZT0uSCt25X0vz9EdlsfA/S26nQ57ENBw41gVNY3Rw1gaBZT9WXaUOqIo9/np8ssrzb/8YPxZJ8tf27oLFjDZcGPMmo/9/h0un7GT5taYq2ldg9rWLaqE9JkNnA+rfPgN980OHsDRjsC9I17o=
+	t=1709242241; cv=none; b=jo4ek6Jhr2AaDfLJZyZxpLj5eJfINUfm1aGa6ce99BeRUQiWjQUlLjkFCqwpE8O+aN1gp5rv6yPDDvT3fX2A2i2YYaeFNdmwd+wu7OMqEqn+RYvQftdjcZyAi4GaPDQTEANPibWn5vhACEPmOaiFDoKeHjxGD6XoHn84Jay7rUM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709242227; c=relaxed/simple;
-	bh=5LI5FhBPLVL/nLqNxgej59M7c5t5lHMIG1duUiMYBxY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Dnt26wpWegSkDmXQViCR7ZjMVWXODIQf8u1wdlW/vWaMbWq4xpOUvRhTA71E2Hf6lWpzsqkfnwWaah52b+0cqWcl886z0vlAOmxAa+3YaVrrOIEmRk2n4JcTX8SN+JYudmOUvXtAR0y0trGQqXNAFLmlO1m/OuE6tz11EOjME4M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=i1i5/iVx; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1dca3951ad9so13298455ad.3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 13:30:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709242225; x=1709847025; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=xh1jcXkILK80WQZmy82e7JGTZm4CDqcJRw4hqrM1eNI=;
-        b=i1i5/iVx9iVsAjeABafxswUp5PfGI29P5LbrUgQ6+0DWMXV5bhi7VQ7Ke3c/jE8MTB
-         fdiHTen6imxDMkfCA2c8xnXGY/u/+Y4uHyP8gOPZGeT2AfNB9j+W1t4ik/DXO1ncerpJ
-         x6sUCy9Qz6HxkN8SxOm1rrg2VfBwY0Tu7y8Hw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709242225; x=1709847025;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xh1jcXkILK80WQZmy82e7JGTZm4CDqcJRw4hqrM1eNI=;
-        b=ukd7aFIUB2MjTXL7VRiMmmkWKmtNzTNnYfCFFO0T+EEUcictwXdmZEGYKPJadvf0uN
-         5rdCd1J+xZAsKKlMHiczFDjBIwaYKRG73Q5sRng9DdFIsPEnDLOjUVLvIhN5WlrlMlLi
-         J3K6U9nN25YeUrxz+9h1AulLe318sa5t/N0KqxtEW+Iy3srZmFHWFCuE8g+YmJUzzUlx
-         RAqPZNGarst4PzbpeBdPLFwfudMa+SBR6lDxB54esGiBff5o2emuGG35hEQIDMrJMRcr
-         GBSiue8+4FmALGOng02lBEKjr2WFB2uXfHCp5Tci5gGEi6gWryBPCJ5C00f8FCA8h+GO
-         TZyw==
-X-Forwarded-Encrypted: i=1; AJvYcCXt6UNq/ZElA8yCrIXZHP6U0Fr1xtDRarL9l8ny45DyY12o5eMWDe4PeaT6hY5MtNt+5AY10ZeAsazhkKPo0+7KKa4lTZbnQw/F5e96
-X-Gm-Message-State: AOJu0Yz7FnRRUG1wBnUgiwRdiB+qxFw2KqDsthFtebVteifvWxMr3frL
-	of/uuP+4PYyaOPj3bCII14cqUv9FdWGgNIrk/riXQrvLZqJrIemJZTGPKbOGjA==
-X-Google-Smtp-Source: AGHT+IEUJdpSnWjoA4iBwFvgvTLMvOOcVICf9LGRpOwo2J5JJm3HZ+/auM7yPCFCw7J7d4L7kQA9pQ==
-X-Received: by 2002:a17:902:f788:b0:1dc:8ba1:edc3 with SMTP id q8-20020a170902f78800b001dc8ba1edc3mr4091453pln.9.1709242225119;
-        Thu, 29 Feb 2024 13:30:25 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id h7-20020a170902680700b001dc38eaa5d1sm2009536plk.181.2024.02.29.13.30.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 13:30:24 -0800 (PST)
-From: Kees Cook <keescook@chromium.org>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	netdev@vger.kernel.org,
-	linux-hardening@vger.kernel.org,
-	Simon Horman <horms@kernel.org>,
-	Jiri Pirko <jiri@resnulli.us>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Coco Li <lixiaoyan@google.com>,
-	Amritha Nambiar <amritha.nambiar@intel.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] netdev: Use flexible array for trailing private bytes
+	s=arc-20240116; t=1709242241; c=relaxed/simple;
+	bh=5a3jWBJA2+rxYnjqEPcx2eUyCjZ+0C+TmvvBVMeapK0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=uiMPgutwrPcM7ZuafDHawpHDhibahXtaTIcA04aVaDMGKyUgXZlhs7mjXyU9arsI0zm0m4R3zU/5buSfp9samQynNic3QS6B5Q+EN+O58TprIXYXHDnEUXGEhocPx35L5RiDj4VIrWujhS0BiVIpSLZrX72ioxWKMU5+fMP+lIo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=PZR67QWI; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41T60xOw011993;
+	Thu, 29 Feb 2024 21:30:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=2XAL70ahopTl3Ft92hpHa/oa4WdjMZaAss/IdzUZWzA=; b=PZ
+	R67QWIUSP2bcOFnJ0JhXAWP6tpzjGwyWi33htZHjEWIReK6NcbiQ3t7j7kSm/EUA
+	+s5csKXAgar4t3UJeT8O135LLTOzRXf8aQWqx5P4WmwyekYmz2LMyPu/z67tplDZ
+	nnMLN5jb/9oixLY2KzIOlocOde+u54vcizaq1p+rSere50ha9SFZm2Ao5nhMSBCr
+	n7AX0yArZdAAq6orjd5mhE1zFp6wRePYKRNunV9vzXgGNwAtaWVgTnSmnKF3ulR8
+	rtDuCc3t02fmJ1wHgrlhM08uYwsICLYWS+VY2Ekw6QF2hc6xBcoAIZlCDb4boTyx
+	3l9BI8TMpbfDPnQqtExw==
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wjm9mjk7u-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 29 Feb 2024 21:30:25 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41TLUOJC025968
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 29 Feb 2024 21:30:24 GMT
+Received: from [10.71.111.207] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 29 Feb
+ 2024 13:30:23 -0800
+Message-ID: <aea154d3-e272-48e1-9e91-890c9ae3fa0f@quicinc.com>
 Date: Thu, 29 Feb 2024 13:30:22 -0800
-Message-Id: <20240229213018.work.556-kees@kernel.org>
-X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3685; i=keescook@chromium.org;
- h=from:subject:message-id; bh=5LI5FhBPLVL/nLqNxgej59M7c5t5lHMIG1duUiMYBxY=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBl4PdtBLrEdX83S23zQRWfwyNlQTw4SUYeca8kr
- GEwg+5/BFaJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZeD3bQAKCRCJcvTf3G3A
- JsiPD/oCv5q3TrUymiUfaXxnvQvG+kgItEV8NdpjthDQvlVc5gFjmUc9D+F6/sdy2Z2beCQ8TT6
- 1iq2lF1444sWUyo4qfJuc9jeITUPTFgbpHKhOg3KQlSXEqSDjB3ToWrqoQtS8YnAFn5niFI1G53
- Pk//UBSoE8BOX7cJ/y6WYB9W2EK7j+orB0bvrkDqXLPy1LHkgql4Su4L0UIVvVOCBmp85SN9sXD
- xOPOg2D3Y0xSgRBgpwe1axJ9jn4DZg1Ja1rCi5QckqvyGh4DeC++ee4w8g9QvWwZV/PH1mvlflw
- uF+VXOjPJzwLagpdDngobUxsFsNIvvCT0WE9mpmMfS6JgsXzZmSEbQKOccW2KoPx45QoCo6rU7N
- DDzmyqSY0KiFDv6jsZFpUAAiY9CmibX+sH6WM+Zq8sDwofihP+RS+eHk3NpLJXkpv6hMxLs6BmY
- SWW4J8sVa7oN0BRzcafpeShZBhjp2vva6nMwyvL/t4zfWR1j/0VqfonrUwd+5H0avBseXrPWceZ
- N/U69cHY7/GqaB4/vuKFXibwBo2wLiS/zjpsjdK6VeXhYBJa2VTOjZU9F8mP2/aRIfAg1748zRF
- fd4i2wBSvunxy+CUPyFuJejP3MDww6QsqNDcYBRmBjF7nkDBtHfhpHzgTRDDXEOPxyyKidzoIz9
- HBzReKg upyNa87w==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] drm: panel: st7701: Add Hardkernel ODROID-GO Ultra
+ panel support
+Content-Language: en-US
+To: Adam Green <greena88@gmail.com>, Jagan Teki <jagan@amarulasolutions.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard
+	<mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie
+	<airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring
+	<robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20240221194528.1855714-1-greena88@gmail.com>
+ <20240222164332.3864716-1-greena88@gmail.com>
+ <20240222164332.3864716-2-greena88@gmail.com>
+ <f9446923-acd3-41cf-92d4-676b946280c4@quicinc.com>
+ <79a4b60e-24f3-47fd-b3b3-7d207cec1470@gmail.com>
+ <a13eeb01-7df9-4577-975f-34b3aed8400f@quicinc.com>
+ <8bbb2957-9452-424a-8e9f-4ddbd4f24722@gmail.com>
+From: Jessica Zhang <quic_jesszhan@quicinc.com>
+In-Reply-To: <8bbb2957-9452-424a-8e9f-4ddbd4f24722@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 3uUMOATMM-pFSjbRxSaYOWXO5EAknyy8
+X-Proofpoint-ORIG-GUID: 3uUMOATMM-pFSjbRxSaYOWXO5EAknyy8
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-29_06,2024-02-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
+ lowpriorityscore=0 impostorscore=0 malwarescore=0 clxscore=1015
+ adultscore=0 bulkscore=0 priorityscore=1501 mlxlogscore=999 suspectscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2402290167
 
-Introduce a new struct net_device_priv that contains struct net_device
-but also accounts for the commonly trailing bytes through the "size" and
-"data" members. As many dummy struct net_device instances exist still,
-it is non-trivial to but this flexible array inside struct net_device
-itself. But we can add a sanity check in netdev_priv() to catch any
-attempts to access the private data of a dummy struct.
 
-Adjust allocation logic to use the new full structure.
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Paolo Abeni <pabeni@redhat.com>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: netdev@vger.kernel.org
-Cc: linux-hardening@vger.kernel.org
----
- include/linux/netdevice.h | 21 ++++++++++++++++++---
- net/core/dev.c            | 12 ++++--------
- 2 files changed, 22 insertions(+), 11 deletions(-)
+On 2/29/2024 9:23 AM, Adam Green wrote:
+> On 26/02/2024 21:29, Jessica Zhang wrote:
+>  > Got it. Was the shorter sleep time breaking the display and is it
+>  > required for the new panel to work?
+>  >
+>  > Thanks,
+>  >
+>  > Jessica Zhang
+> 
+> Hi Jessica,
+> 
+> I will be submitting a v3 shortly, the change to the sleep time was not 
+> necessary for the new panel
+> to work.
 
-diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index 118c40258d07..b476809d0bae 100644
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -1815,6 +1815,8 @@ enum netdev_stat_type {
- 	NETDEV_PCPU_STAT_DSTATS, /* struct pcpu_dstats */
- };
- 
-+#define	NETDEV_ALIGN		32
-+
- /**
-  *	struct net_device - The DEVICE structure.
-  *
-@@ -2476,6 +2478,14 @@ struct net_device {
- 	struct hlist_head	page_pools;
- #endif
- };
-+
-+struct net_device_priv {
-+	struct net_device	dev;
-+	u32			size;
-+	u8			data[] __counted_by(size)
-+				       __aligned(NETDEV_ALIGN);
-+};
-+
- #define to_net_dev(d) container_of(d, struct net_device, dev)
- 
- /*
-@@ -2496,8 +2506,6 @@ static inline bool netif_elide_gro(const struct net_device *dev)
- 	return false;
- }
- 
--#define	NETDEV_ALIGN		32
--
- static inline
- int netdev_get_prio_tc_map(const struct net_device *dev, u32 prio)
- {
-@@ -2665,7 +2673,14 @@ void dev_net_set(struct net_device *dev, struct net *net)
-  */
- static inline void *netdev_priv(const struct net_device *dev)
- {
--	return (char *)dev + ALIGN(sizeof(struct net_device), NETDEV_ALIGN);
-+	struct net_device_priv *priv;
-+
-+	/* Dummy struct net_device have no trailing data. */
-+	if (WARN_ON_ONCE(dev->reg_state == NETREG_DUMMY))
-+		return NULL;
-+
-+	priv = container_of(dev, struct net_device_priv, dev);
-+	return (u8 *)priv->data;
- }
- 
- /* Set the sysfs physical device reference for the network logical device
-diff --git a/net/core/dev.c b/net/core/dev.c
-index cb2dab0feee0..0fcaf6ae8486 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -10800,7 +10800,7 @@ struct net_device *alloc_netdev_mqs(int sizeof_priv, const char *name,
- {
- 	struct net_device *dev;
- 	unsigned int alloc_size;
--	struct net_device *p;
-+	struct net_device_priv *p;
- 
- 	BUG_ON(strlen(name) >= sizeof(dev->name));
- 
-@@ -10814,20 +10814,16 @@ struct net_device *alloc_netdev_mqs(int sizeof_priv, const char *name,
- 		return NULL;
- 	}
- 
--	alloc_size = sizeof(struct net_device);
--	if (sizeof_priv) {
--		/* ensure 32-byte alignment of private area */
--		alloc_size = ALIGN(alloc_size, NETDEV_ALIGN);
--		alloc_size += sizeof_priv;
--	}
-+	alloc_size = struct_size(p, data, sizeof_priv);
- 	/* ensure 32-byte alignment of whole construct */
- 	alloc_size += NETDEV_ALIGN - 1;
- 
- 	p = kvzalloc(alloc_size, GFP_KERNEL_ACCOUNT | __GFP_RETRY_MAYFAIL);
- 	if (!p)
- 		return NULL;
-+	p->size = sizeof_priv;
- 
--	dev = PTR_ALIGN(p, NETDEV_ALIGN);
-+	dev = &PTR_ALIGN(p, NETDEV_ALIGN)->dev;
- 	dev->padded = (char *)dev - (char *)p;
- 
- 	ref_tracker_dir_init(&dev->refcnt_tracker, 128, name);
--- 
-2.34.1
+Hi Adam,
 
+Got it. If the panel isn't affected by the 20ms sleep time, I'd prefer 
+to keep it since 100ms is a pretty big increase.
+
+> 
+> I have been able to re-use the gip sequence from the kd50t048a panel 
+> used in the Hardkernel Odroid
+> Go Super as I have been led to believe it is the same elida panel, 
+> unfortunately the same modes
+> used by that device do not work for the Odroid Go Ultra and so its still 
+> necessary to have the
+> patchset,
+Got it. FWIW, I do see the Odroid Go Ultra being described as having the 
+kd50t048a panel [1] [2]. Looking forward to seeing the v3 changes.
+
+Thanks,
+
+Jessica Zhang
+
+[1] https://gitlab.com/amlogic-foss/mainline-linux-issues-tracker/-/issues/7
+
+[2] 441e129cbf81 ("dt-bindings: display: panel: sitronix,st7701: Add 
+Elida KD50T048A Panel")
+
+> 
+> Best regards,
+> 
+> Adam
 
