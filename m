@@ -1,141 +1,267 @@
-Return-Path: <linux-kernel+bounces-86620-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86621-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBD8286C7E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:19:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D686A86C7E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:21:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 887C9287549
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:19:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 06CD41C2111E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:21:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B5DC7B3F1;
-	Thu, 29 Feb 2024 11:19:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E986D7B3F5;
+	Thu, 29 Feb 2024 11:21:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="gqa1zfhZ"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="M4bEXrYR"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37D3D7B3C5
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 11:19:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DC9864A9B;
+	Thu, 29 Feb 2024 11:21:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709205586; cv=none; b=W9z+4LS4auR9Yylm7nCuT4M5SvGzv1ZxM/6ELvCpMDcJK8rk9xDc4qu2U5qQfGkm86EzwhCOvVeL77zRCrALWbPX2QsxqppwgNE8hSWWH6txZDOc7f0or1FuEgFdv4Lb8PAktVoT2V60a0fc3IQyIMEJOO8SflW+dL+76OmSklI=
+	t=1709205663; cv=none; b=IwCO5emBoflFXdn0MkPmdchxJVLeiSTwovXDkqXd41s6r+Rt4UxomvHLlSuOn6CvCtwxCNdIGzUsgismmaZ3bclexQwyOkgumke8pWY7xUIQ0jLl1WvApT81c+/qRJNyEWL31hOyqfwiCnrUBeUh/MZVh6yZVEJtc9xb3jhygIA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709205586; c=relaxed/simple;
-	bh=CrfqeJfglTo/ajTyw1Gwgn0fWvXeO8/9hjzuKoGnGV8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lK6gRbEOe3ofj7rN8g0guIV1aAAXtCp4A8KkuFvPmB9XpbHdXwQWJecIXKnbQjtB+moVaOIGcTWOXD+2GGLXuEEpeJg8gje2fL6dpb3HAYJpBwueUaU400XriWt+Ly3DjKOD0OqFEPncdIHF9qJfddu4ydp6gyE3BqF9gptM4RM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=gqa1zfhZ; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a43dba50bb7so115752866b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 03:19:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1709205582; x=1709810382; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/Z3D5o73PHWTzmlfs+M2Cnag+Z5lMOi+i4eWtfpyC5s=;
-        b=gqa1zfhZpH/XoQsnsXOeJQE3z4zB0jQ/0A05eCIxqGXr7tkxtMxIzNVamr5yLMQ4gm
-         jdVcMEUTXzK6Yt9a8n+XRurTm1Y8c/bK9G2Wt/uiC86RzKkydDgXDhDZY2Blpr+xwhsb
-         hlk0n/q8cGNbKxRFY8UzyC2gMNhyvS46te7HJhXv+8yjMYCBjIRXjckPmENZgB2EcZRL
-         DlVCJoVeZkgtyWW8aCFyptr9HUa056uqELyv2pwNgqJ2781ZQXtkAHnlFqnnl6NrAKt4
-         cVzQltFlMEHg47/XF7yOhOoF3pZxXkAV/fseMG1ied5B41A3VYER06ZKwlGCsqcIwKFa
-         pseQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709205582; x=1709810382;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/Z3D5o73PHWTzmlfs+M2Cnag+Z5lMOi+i4eWtfpyC5s=;
-        b=EtwzePbXN7InEzEEsMc3z8kzZKhPCM3wrxp3rnYuTZ7JXX7xr4lS9xqtA7EPfvw1l1
-         O8FMT4y99I0rp+OmUyHVoG/gXKy6W+QrWvIy/Dc59FpCqusIGu77C5qgNixch18sljAa
-         ga8er8qrNvSicmFg30EHeMlmV0PDZF8HYlvChr9Lq/jRAg2OTemMXcgmIJ7zEiGEMfPX
-         GJYi66QgkVWunpF8qcA40cyfyzDQh/S5QGI/peqOm/XSZed9olAPrwiDYAraaO/v7PAP
-         WYb7I5W2QvP4m5NpLmPvzeSPCLEyr5GWW2n1X4iPLscw0BLsCTp0QJ8z3TDIFWqv6q6J
-         yTrg==
-X-Forwarded-Encrypted: i=1; AJvYcCWEvU3qAjbQHet6fWZLXgMvTqgovpuw/F1l27AwtQqT2V7jgt9ruiq8peFQkEx1+65aT3556H0GfwDCbHU79tlyunT6sziyXb2Eqmgn
-X-Gm-Message-State: AOJu0YyhWaDgURa9+0GJmpfBuRFbbJfWgNin6jNPmCiRlikycmOJEVf9
-	BgwVJwU3zURA7cWu1PgbhUCdSSpsnP1aSw3VGlQPa603gS3j4i6P0Ej5bHAHG64=
-X-Google-Smtp-Source: AGHT+IEiTJIiVnJYh/o1Q6xEvLv1ebup90kGwCYruTGxf4JFDCbY03BB8m2v4P8ypxT/TpQ4Rn8CDw==
-X-Received: by 2002:a17:906:474c:b0:a44:553e:5a1d with SMTP id j12-20020a170906474c00b00a44553e5a1dmr539793ejs.20.1709205582558;
-        Thu, 29 Feb 2024 03:19:42 -0800 (PST)
-Received: from alley ([176.114.240.50])
-        by smtp.gmail.com with ESMTPSA id r9-20020a170906550900b00a3d5d8ff745sm588862ejp.144.2024.02.29.03.19.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 03:19:42 -0800 (PST)
-Date: Thu, 29 Feb 2024 12:19:40 +0100
-From: Petr Mladek <pmladek@suse.com>
-To: "John B. Wyatt IV" <jwyatt@redhat.com>
-Cc: John Ogness <john.ogness@linutronix.de>,
-	Clark Williams <williams@redhat.com>, jlelli@redhat.com,
-	Derek Barbosa <debarbos@redhat.com>,
-	"John B. Wyatt IV" <sageofredondo@gmail.com>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-rt-users <linux-rt-users@vger.kernel.org>
-Subject: Re: NMI Reported with console_blast.sh
-Message-ID: <ZeBoTNe2cjb4BeXb@alley>
-References: <ZcQjxa4UA6hzXHnU@thinkpad2021>
- <87v86yc88b.fsf@jogness.linutronix.de>
- <ZcaQI8l1dcBx2feC@thinkpad2021>
- <87a5o8j9gp.fsf@jogness.linutronix.de>
- <ZcqMOKtHsZ9qnxNg@thinkpad2021>
- <ZdbZz-v_lug9_t6C@thinkpad2021>
- <ZeBnUCk598gttpds@alley>
+	s=arc-20240116; t=1709205663; c=relaxed/simple;
+	bh=HdspKmySgyiroiAYzlGt40P665iw545abFyHhuJz8ic=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=TErbFDRQz5axjEZ6Njr+lX1uvcCbx3o8gB0jT5rBlpcfAbAejjlUHd+b0NfP2LNXimqGwG7hVtjie5IoI47dFmu6owxxmqZdE65t6CmKEvwxkxmgVHvUlC2+lk0+O+B2TLxJ/qvlnhx2WkmE5t2HI3aeKjlDVSqN0aIWRbFX22A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=M4bEXrYR; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41TBKkkF004012;
+	Thu, 29 Feb 2024 05:20:46 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1709205646;
+	bh=JkBFq8xJSuzGW0iZAfO9iPQEBKS1+WYKIh8tLyGsD/U=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=M4bEXrYRbmrT8Yz7WDTSLjU3A7XnJrLeijIQ6bSBP+9x6t15iQcBEjL8u0xd8gQAb
+	 R8Pywsp9MykZQKw7A2nbUc+8/UhrG+bl4gZam6EWbNpngiqC0NG6Tzk8s4tlLXh+Ku
+	 DblSv+a1Mv+U21dKgpkcPw2acOyPUcPYlMcK3Udc=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41TBKkh6043592
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 29 Feb 2024 05:20:46 -0600
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 29
+ Feb 2024 05:20:46 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 29 Feb 2024 05:20:46 -0600
+Received: from [172.24.227.193] (devarsht.dhcp.ti.com [172.24.227.193])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41TBKd19112484;
+	Thu, 29 Feb 2024 05:20:40 -0600
+Message-ID: <7a83fe91-5afa-6aee-a8a4-44f6e3d713c2@ti.com>
+Date: Thu, 29 Feb 2024 16:50:38 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZeBnUCk598gttpds@alley>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v6 1/3] media: dt-bindings: Add Imagination E5010 JPEG
+ Encoder
+Content-Language: en-US
+To: Sebastian Fricke <sebastian.fricke@collabora.com>
+CC: <mchehab@kernel.org>, <robh@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <hverkuil-cisco@xs4all.nl>, <linux-media@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <benjamin.gaignard@collabora.com>, <laurent.pinchart@ideasonboard.com>,
+        <praneeth@ti.com>, <nm@ti.com>, <vigneshr@ti.com>, <a-bhatia1@ti.com>,
+        <j-luthra@ti.com>, <b-brnich@ti.com>, <detheridge@ti.com>,
+        <p-mantena@ti.com>, <vijayp@ti.com>, <andrzej.p@collabora.com>,
+        <nicolas@ndufresne.ca>, <afd@ti.com>, <milkfafa@gmail.com>
+References: <20240228141140.3530612-1-devarsht@ti.com>
+ <20240228141140.3530612-2-devarsht@ti.com>
+ <20240229102623.ihwhbba4qwzvxzzq@basti-XPS-13-9310>
+From: Devarsh Thakkar <devarsht@ti.com>
+In-Reply-To: <20240229102623.ihwhbba4qwzvxzzq@basti-XPS-13-9310>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Thu 2024-02-29 12:15:30, Petr Mladek wrote:
-> On Thu 2024-02-22 00:21:19, John B. Wyatt IV wrote:
-> > On Mon, Feb 12, 2024 at 04:23:04PM -0500, John B. Wyatt IV wrote:
-> > > 
-> > > Red Hat's conservers are having an issue with the machine I was testing
-> > > on. It may take me a while to get back to you with more test results.
-> > > 
-> > 
-> > Found a work-around with conserver. I was able to follow up on the printk-caller
-> > info you requested.
-> > 
-> > I found 2 additional NMIs for a total of 3. Number 2 is very
-> > large-please feel free to let me know what specific information you
-> > wanted if it was unnecessary.
+Hi Sebastian,
 
-[...]
+Thanks for the review.
 
-> > Compared to the two NMIs with throughput-performance (no preemption)
-> > 
-> >   <NMI>
-> >   cpus=0
-> >    .runnable_avg                  : 3072
-> >  kthread (kernel/kthread.c:388) 
-> >    .util_est_enqueued             : 0
-> >   stack:0     pid:1733  tgid:1733  ppid:2      flags:0x00004000
-> >    .min_vruntime                  : 2084315.290254
-> >    .removed.load_avg              : 0
-> >    .avg_vruntime                  : 2084315.290254
-> >  console_blast.s  3497     34770.405603 N     34773.405603         3.000000     34764.898340         4   120 
-> >    .util_avg                      : 1024
-> >    .util_avg                      : 1024
+On 29/02/24 15:56, Sebastian Fricke wrote:
+> Hey Devarsh,
 > 
-> It looks like messages from more (many) CPUs are mixed. I guess that they
-> are printed by print_cfs_rq(). But the order looks random.
+> On 28.02.2024 19:41, Devarsh Thakkar wrote:
+>> Add dt-bindings for Imagination E5010 JPEG Encoder [1] which is implemented
+>> as stateful V4L2 M2M driver.
+>>
+>> The device supports baseline encoding with two different quantization
+>> tables and compression ratio as demanded.
+>>
+>> Minimum resolution supported is 64x64 and Maximum resolution supported is
+>> 8192x8192.
+>>
+>> [1]:  AM62A TRM (Section 7.6 is for JPEG Encoder)
+>> Link: https://www.ti.com/lit/pdf/spruj16
+>>
+>> Co-developed-by: David Huang <d-huang@ti.com>
+>> Signed-off-by: David Huang <d-huang@ti.com>
+>> Signed-off-by: Devarsh Thakkar <devarsht@ti.com>
+>> Reviewed-by: Rob Herring <robh@kernel.org>
 > 
-> Also I wonder why it is printed from NMI context. Maybe, it is from
-> some perf event, similar to hardlockup detector?
+> hmmm when did Rob give his reviewed by on this patch? (As this is not a
+> DT binding I find that odd)
 
-I have realized that we most likely see only small part of the mixed
-output. I wonder if it is because it is printed from the emergency
-context. Here the messages are flushed when leaving the context
-and many might be lost.
+[PATCH v6 1/3] media: dt-bindings: Add Imagination E5010 JPEG Encoder : This
+is indeed the dt-binding patch. Also As shared in version history it is at V4
+where Rob Herring added a Reviewed-By as seen here [0]
 
-Best Regards,
-Petr
+> And where is the Reviewed by tag from Benjamin that he provided on V5?
+> 
+
+As captured in patch version history here [1] I thought to remove the
+Reviewed-By since the Reviewed-By tag was on V5 and with V6 the driver got
+updated with some changes to handle reported sparse warnings and so I have
+asked Benjamin to check the range-diff and help with a quick review again if
+possible.
+
+Kindly let me know if I missed something or anything needs to be done from my end.
+
+[0] :
+https://lore.kernel.org/all/170716378412.295212.11603162949482063011.robh@kernel.org/
+[1] : https://lore.kernel.org/all/20240228141140.3530612-4-devarsht@ti.com/
+
+
+Regards
+Devarsh
+
+> Greetings,
+> Sebastian
+> 
+>> ---
+>> V2: No change
+>> V3:
+>> - Add vendor specific compatible
+>> - Update reg names
+>> - Update clocks to 1
+>> - Fix dts example with proper naming
+>> V4:
+>> - Use ti-specific compatible ti,am62a-jpeg-enc as secondary one
+>> - Update commit message and title
+>> - Remove clock-names as only single clock
+>> V5:
+>> - Add Reviewed-By tag
+>> V6:
+>> - No change
+>>
+>> .../bindings/media/img,e5010-jpeg-enc.yaml    | 75 +++++++++++++++++++
+>> MAINTAINERS                                   |  5 ++
+>> 2 files changed, 80 insertions(+)
+>> create mode 100644
+>> Documentation/devicetree/bindings/media/img,e5010-jpeg-enc.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/media/img,e5010-jpeg-enc.yaml
+>> b/Documentation/devicetree/bindings/media/img,e5010-jpeg-enc.yaml
+>> new file mode 100644
+>> index 000000000000..085020cb9e61
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/media/img,e5010-jpeg-enc.yaml
+>> @@ -0,0 +1,75 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/media/img,e5010-jpeg-enc.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Imagination E5010 JPEG Encoder
+>> +
+>> +maintainers:
+>> +  - Devarsh Thakkar <devarsht@ti.com>
+>> +
+>> +description: |
+>> +  The E5010 is a JPEG encoder from Imagination Technologies implemented on
+>> +  TI's AM62A SoC. It is capable of real time encoding of YUV420 and YUV422
+>> +  inputs to JPEG and M-JPEG. It supports baseline JPEG Encoding up to
+>> +  8Kx8K resolution.
+>> +
+>> +properties:
+>> +  compatible:
+>> +    oneOf:
+>> +      - items:
+>> +          - const: ti,am62a-jpeg-enc
+>> +          - const: img,e5010-jpeg-enc
+>> +      - const: img,e5010-jpeg-enc
+>> +
+>> +  reg:
+>> +    items:
+>> +      - description: The E5010 core register region
+>> +      - description: The E5010 mmu register region
+>> +
+>> +  reg-names:
+>> +    items:
+>> +      - const: core
+>> +      - const: mmu
+>> +
+>> +  power-domains:
+>> +    maxItems: 1
+>> +
+>> +  resets:
+>> +    maxItems: 1
+>> +
+>> +  clocks:
+>> +    maxItems: 1
+>> +
+>> +  interrupts:
+>> +    maxItems: 1
+>> +
+>> +required:
+>> +  - compatible
+>> +  - reg
+>> +  - reg-names
+>> +  - interrupts
+>> +  - clocks
+>> +
+>> +additionalProperties: false
+>> +
+>> +examples:
+>> +  - |
+>> +    #include <dt-bindings/soc/ti,sci_pm_domain.h>
+>> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+>> +    #include <dt-bindings/interrupt-controller/irq.h>
+>> +
+>> +    soc {
+>> +      #address-cells = <2>;
+>> +      #size-cells = <2>;
+>> +      jpeg-encoder@fd20000 {
+>> +          compatible = "img,e5010-jpeg-enc";
+>> +          reg = <0x00 0xfd20000 0x00 0x100>,
+>> +                <0x00 0xfd20200 0x00 0x200>;
+>> +          reg-names = "core", "mmu";
+>> +          clocks = <&k3_clks 201 0>;
+>> +          power-domains = <&k3_pds 201 TI_SCI_PD_EXCLUSIVE>;
+>> +          interrupts = <GIC_SPI 98 IRQ_TYPE_LEVEL_HIGH>;
+>> +      };
+>> +    };
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>> index e1475ca38ff2..6b34ee8d92b5 100644
+>> --- a/MAINTAINERS
+>> +++ b/MAINTAINERS
+>> @@ -10572,6 +10572,11 @@ S:    Maintained
+>> F:    Documentation/devicetree/bindings/auxdisplay/img,ascii-lcd.yaml
+>> F:    drivers/auxdisplay/img-ascii-lcd.c
+>>
+>> +IMGTEC JPEG ENCODER DRIVER
+>> +M:    Devarsh Thakkar <devarsht@ti.com>
+>> +S:    Supported
+>> +F:    Documentation/devicetree/bindings/media/img,e5010-jpeg-enc.yaml
+>> +
+>> IMGTEC IR DECODER DRIVER
+>> S:    Orphan
+>> F:    drivers/media/rc/img-ir/
+>> -- 
+>> 2.39.1
+>>
 
