@@ -1,140 +1,107 @@
-Return-Path: <linux-kernel+bounces-86518-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86519-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF3AD86C675
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:10:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1E4B86C676
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:10:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4A927B29382
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:10:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7661628B16E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:10:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BFBA651B1;
-	Thu, 29 Feb 2024 10:09:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45A3363504;
+	Thu, 29 Feb 2024 10:10:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mBFjhK5d"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h7dYoOTy"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7722164A8E;
-	Thu, 29 Feb 2024 10:09:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A0A8634FE
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 10:10:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709201371; cv=none; b=tulC48sAA9mM+la66TubO7m9fLoUObm8ODtBY+ZT6uDCZkwcUvHRh/C/5pJJK7tSPehrq9/jNjLw/DcvMzkqZbE79fvsnuZSN6nMNs0VzyMejqxW0h3hE0rUvXeYP2Y27LBp4IYMq4rmVGzjl0Xl7unvsaGHvTwcCwqDZVm2PVY=
+	t=1709201401; cv=none; b=M4vZg9drazBq8XmxgVAEYsHNzP8QEZ4AjaVlH5c0tcZUIPVs4YzRuUTtlilfX07b1q4fZZCXyOJdm39NfSSX8FCtDG8dSosUNcFaDyhTpOsJ0yd8m72wdbCnfq6RfekaxuJV4QOry3cu1ZdoG4IHFlJ4KDaCBdUNtjxvHPyYWuI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709201371; c=relaxed/simple;
-	bh=jTspB3iUz57ARAjdinxW+/Q91yDRnm3gqja4T9fxZTA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WrsTKjF96HJg9LsuOEf9iM8DPCUw7ftyD5DjIfnF9N71rtx7kO4DJjCgPx/wzCNFJP7+KfJ9nS4RSXO4XdgE9oetLb29/R4b6pQFobMgvFTTvJWWa4QV7LhkhKpTe/4xVVOWZLf5GYtGfn552X3lNcuA8X369E/+grAN3nLIlHw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mBFjhK5d; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F695C433F1;
-	Thu, 29 Feb 2024 10:09:27 +0000 (UTC)
+	s=arc-20240116; t=1709201401; c=relaxed/simple;
+	bh=NFCnMoMrVuC4cCuJvgRycjqyC2YcWg3DtXlKvOroRlc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Hi3JRTawwtMOqAXyQrNzT9YSgbTQC0mmU7QG50yAXG54PEG8sNW3qkoJbJGwMwYoJKk5EW9pw6T0JRCYCICHgoEVewJJ01vOM2gJ1qTUbwqCWBxOUMrj0fxuV3k+qSd3S1xZm7HCmrLj/oSUFR5TXd93PQw/g+i4xhcMFY21OVg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h7dYoOTy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04CA8C433C7;
+	Thu, 29 Feb 2024 10:09:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709201371;
-	bh=jTspB3iUz57ARAjdinxW+/Q91yDRnm3gqja4T9fxZTA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mBFjhK5d7fJpVw/6bDbc5tkU6ElHDTpzVkK/jIbuftZBarsoqfd0J/td4ycX7Y0NI
-	 OwuwPlDbj8ZtIqnlCXOF2pG3huqmMUj5GBAof4EEoDRc9P6XPkyLOZ8+aLsqxoP9yI
-	 E+m7pUJjav8Pn5m1m75Em6T0UBx+RyRZKKV0gXMgKErQBBb2lSrjaJ6CNubQUijnjS
-	 Dck5QGzkyUjQu7qNjOmf68ZPRsSaTKxIdhCuhIRwbtTaqNBpNuQDQRK4HppSWMejtG
-	 bsu5gpSsPoHrMRolGv5LGA7fro/ZxAwUPx7adyrYyWYoONQWysvfvvefct3/hkMK84
-	 UhWf04m39lTrg==
-Date: Thu, 29 Feb 2024 11:09:24 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Daniel =?utf-8?B?RMOtYXo=?= <daniel.diaz@linaro.org>, 
-	Naresh Kamboju <naresh.kamboju@linaro.org>, open list <linux-kernel@vger.kernel.org>, 
-	linux-ext4 <linux-ext4@vger.kernel.org>, linux-fsdevel@vger.kernel.org, lkft-triage@lists.linaro.org, 
-	Jan Kara <jack@suse.cz>, Andreas Dilger <adilger.kernel@dilger.ca>, 
-	Theodore Ts'o <tytso@mit.edu>, Randy Dunlap <rdunlap@infradead.org>, shikemeng@huaweicloud.com, 
-	Arnd Bergmann <arnd@arndb.de>, Dan Carpenter <dan.carpenter@linaro.org>
-Subject: Re: ext4_mballoc_test: Internal error: Oops: map_id_range_down
- (kernel/user_namespace.c:318)
-Message-ID: <20240229-stapfen-eistee-9d946b4a3a9d@brauner>
-References: <CA+G9fYvnjDcmVBPwbPwhFDMewPiFj6z69iiPJrjjCP4Z7Q4AbQ@mail.gmail.com>
- <CAEUSe79PhGgg4-3ucMAzSE4fgXqgynAY_t8Xp+yiuZsw4Aj1jg@mail.gmail.com>
- <7e1c18e3-7523-4fe6-affe-d3f143ad79e3@roeck-us.net>
+	s=k20201202; t=1709201401;
+	bh=NFCnMoMrVuC4cCuJvgRycjqyC2YcWg3DtXlKvOroRlc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=h7dYoOTyoUUwJfUYKS8oc/GOmVFCi8gYJOMVwQbnlmCkF71wUj/BjdSpyavLaqZAF
+	 /yr1BrQ4NDTDhRqWHMrV6k5OtKvz0ncEGnszdFth4oVSBafR9nc3kcrpvxSfXl6kZz
+	 PLjtxRSsf5QuzJ+CKvdXlBvik7E7v2mzKPGPIb3+WDmc4FrFyNH7B51w2e8KmgUUBh
+	 DkAUyzz9sQ72N6vTA7Ht5/glAnJlC3jBMWQCQuNEDnniCiBhij7ERX6x/W93UbIyZV
+	 dgtYvgHoNTqbhz4MAnlx80D1XtTPFJM4hs+egJ9ueV/Bf3tGygu6NxEzZnemyxjfBZ
+	 U8DWDAUF7NBFg==
+Message-ID: <2b81aa6f-db51-4a7c-97ab-2af2c2fea056@kernel.org>
+Date: Thu, 29 Feb 2024 18:09:56 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7e1c18e3-7523-4fe6-affe-d3f143ad79e3@roeck-us.net>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/4] f2fs: fix blkofs_end correctly in
+ f2fs_migrate_blocks()
+Content-Language: en-US
+To: jaegeuk@kernel.org, Daeho Jeong <daehojeong@google.com>
+Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+References: <20240226013208.2389246-1-chao@kernel.org>
+From: Chao Yu <chao@kernel.org>
+In-Reply-To: <20240226013208.2389246-1-chao@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 28, 2024 at 11:33:36AM -0800, Guenter Roeck wrote:
-> On 2/28/24 11:26, Daniel Díaz wrote:
-> > Hello!
-> > 
-> > On Wed, 28 Feb 2024 at 12:19, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
-> > > Kunit ext4_mballoc_test tests found following kernel oops on Linux next.
-> > > All ways reproducible on all the architectures and steps to reproduce shared
-> > > in the bottom of this email.
-> > > 
-> > > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> > > 
+Jaegeuk, Daeho,
+
+Any comments on this serials?
+
+Thanks,
+
+On 2024/2/26 9:32, Chao Yu wrote:
+> In f2fs_migrate_blocks(), when traversing blocks in last section,
+> blkofs_end should be (start_blk + blkcnt - 1) % blk_per_sec, fix it.
 > 
-> [ ... ]
+> Signed-off-by: Chao Yu <chao@kernel.org>
+> ---
+>   fs/f2fs/data.c | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
 > 
-> > +Guenter. Just the thing we were talking about, at about the same time.
-> > 
-> 
-> Good that others see the same problem. Thanks a lot for reporting!
-
-Hm...
-
-static struct super_block *mbt_ext4_alloc_super_block(void)
-{                                                                                                                                                                                                       struct ext4_super_block *es = kzalloc(sizeof(*es), GFP_KERNEL);
-        struct ext4_sb_info *sbi = kzalloc(sizeof(*sbi), GFP_KERNEL);
-        struct mbt_ext4_super_block *fsb = kzalloc(sizeof(*fsb), GFP_KERNEL);
-
-        if (fsb == NULL || sbi == NULL || es == NULL)
-                goto out;
-
-        sbi->s_es = es;
-        fsb->sb.s_fs_info = sbi;
-        return &fsb->sb;
-
-out:
-        kfree(fsb);
-        kfree(sbi);
-        kfree(es);
-        return NULL;
-}
-
-That VFS level struct super_block that is returned from this function is
-never really initialized afaict? Therefore, sb->s_user_ns == NULL:
-
-i_uid_write(sb, ...)
--> NULL = i_user_ns(sb)
-   -> make_kuid(NULL)
-      -> map_id_range_down(NULL)
-
-Outside of this test this can never be the case. See alloc_super() in
-fs/super.c. So to stop the bleeding this needs something like:
-
-static struct super_block *mbt_ext4_alloc_super_block(void)
-{
-        struct ext4_super_block *es = kzalloc(sizeof(*es), GFP_KERNEL);
-        struct ext4_sb_info *sbi = kzalloc(sizeof(*sbi), GFP_KERNEL);
-        struct mbt_ext4_super_block *fsb = kzalloc(sizeof(*fsb), GFP_KERNEL);
-
-        if (fsb == NULL || sbi == NULL || es == NULL)
-                goto out;
-
-        sbi->s_es = es;
-        fsb->sb.s_fs_info = sbi;
-+       fsb.sb.s_user_ns = &init_user_ns;
-        return &fsb->sb;
-
-out:
-        kfree(fsb);
-        kfree(sbi);
-        kfree(es);
-        return NULL;
-}
+> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> index c21b92f18463..0c728e82d936 100644
+> --- a/fs/f2fs/data.c
+> +++ b/fs/f2fs/data.c
+> @@ -3841,13 +3841,14 @@ static int f2fs_migrate_blocks(struct inode *inode, block_t start_blk,
+>   	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+>   	unsigned int blkofs;
+>   	unsigned int blk_per_sec = BLKS_PER_SEC(sbi);
+> +	unsigned int end_blk = start_blk + blkcnt - 1;
+>   	unsigned int secidx = start_blk / blk_per_sec;
+>   	unsigned int end_sec;
+>   	int ret = 0;
+>   
+>   	if (!blkcnt)
+>   		return 0;
+> -	end_sec = secidx + (blkcnt - 1) / blk_per_sec;
+> +	end_sec = end_blk / blk_per_sec;
+>   
+>   	f2fs_down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+>   	filemap_invalidate_lock(inode->i_mapping);
+> @@ -3857,7 +3858,7 @@ static int f2fs_migrate_blocks(struct inode *inode, block_t start_blk,
+>   
+>   	for (; secidx <= end_sec; secidx++) {
+>   		unsigned int blkofs_end = secidx == end_sec ?
+> -			(blkcnt - 1) % blk_per_sec : blk_per_sec - 1;
+> +				end_blk % blk_per_sec : blk_per_sec - 1;
+>   
+>   		f2fs_down_write(&sbi->pin_sem);
+>   
 
