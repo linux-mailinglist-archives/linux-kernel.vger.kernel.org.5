@@ -1,42 +1,42 @@
-Return-Path: <linux-kernel+bounces-87073-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87074-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D43C86CF13
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:28:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 113AB86CF16
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:28:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36E6E289466
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:28:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7408286139
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:28:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD08570AD4;
-	Thu, 29 Feb 2024 16:25:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA39570AFA;
+	Thu, 29 Feb 2024 16:25:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b="MOQ5jQpn"
+	dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b="f7EJXINd"
 Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2131.outbound.protection.outlook.com [40.107.95.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83AA616063A;
-	Thu, 29 Feb 2024 16:25:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A329A6CC1B;
+	Thu, 29 Feb 2024 16:25:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.95.131
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709223934; cv=fail; b=pRJadsBXdt9/d4tV+ToVnYRoBOrbEGYd3mqOQRty68DaiWf5WiJhnkcCUeW1/Z2CT5noiGjy9C/0057gvDkhyuXhF5eUFLiCB1qC7W/nEtE7XJKZY66AGkYR+ZVyY8/8Zc12HLbSJ6zQbSuwXh+gpRvTS3iZ9p6Yu94exIGo24M=
+	t=1709223936; cv=fail; b=GYfmFnLPtYJfHkjraBngtmTCXcRq8lpdeY9Z4XsuFm3VvItvi7gQ+887tLETgRB4XEhMFIIDOo4kjcwyOIU9Mfnx2I6L6zjoca7ZvyW8qDFboshM319N9frEd8gODyp2Fwds71lcUcB4Kfxn8dOrBnNe7mgwUJ1vnyx4E4LhTDQ=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709223934; c=relaxed/simple;
-	bh=c8IB9JQtAQLRn4tDN+0mjtpB+twHCIeOvinT3yVba6A=;
+	s=arc-20240116; t=1709223936; c=relaxed/simple;
+	bh=QCkTf3OnGasVu/7kR6MWYXsw22rGxvMFCvLCOdlbyGM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=D59LMvIrAbDEK7D+6WT+kceZz1ht5jm/lpqxcHNEk0KMvE1NjHgmOw7sAjHp4WuLAq+ATbj3+Wo3M/uUFHUzlgZw1+SsXuP0rIPR6785arUFImvsq3FeSMwjHwyc6/PwEGMzzg9wms2/iXgQDzOj+4UyzxpJ/r+jnjFbrbiUHZY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com; spf=pass smtp.mailfrom=os.amperecomputing.com; dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b=MOQ5jQpn; arc=fail smtp.client-ip=40.107.95.131
+	 Content-Type:MIME-Version; b=E5pWQfnRZo5WodSQkX3xnc6SvQKKA3YwODwaIeYH7vpHMdpFwucum9SiUoT2+TNQWcMIYkwiINDHsHVcWrZo72BRLfECkSRvZi6+LR6HhKEoE6q4xLV4PnEChz5Pz0kEBZc8j2ezAE86eD/BdZ2AXUt3L2ImGfQJpzTe2ELsfDc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com; spf=pass smtp.mailfrom=os.amperecomputing.com; dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b=f7EJXINd; arc=fail smtp.client-ip=40.107.95.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=os.amperecomputing.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ie86MZ/UPWFz2qGZruLcfjUw0cugGo8AGbhD9rNkbLByibPqXIyWi0lj7R0MxhFDyx1NUXYCGTv8pUssTK89b9173wiN/kvl6Baz2HlLIFm/rDPlABlZ3KRpXaYv6rOj8aZ/7cwR124zF1R2JCuwZp04SAWx5psEu3n2fAjR7aJtcEH5CU2/vEOns6TjQop55oPjjta9YPn0+IxZql/y++VLWiKQ5C3EoAMJcJxYteOoT6BIL6ne4rm3Mp5iPoCkjDPlSDefolQSkNdjvHhqWr/1ih+G96YB1QQ4mE8JjfE8stzGsJQxP1uIIeJDeRKQNodXoTLzONrN/4/Ehnl+TQ==
+ b=Qc7nJnPmi69LJVwbo0BpsT/7nFH3PRTE9YNVHIJ7v9cAfQiiYuVT1TL6spjA9dcR++GHMt+EnjK2BskX3jgUuR48yMtWK4okM+lj+RTkLXSkG3MQMozWWJGbTZoJTNEki+LUvAtk8tQOiKHgRBayht1yAbnJ8QFhD5D4Kwfh/XB9az1N2Dn+kCwhIczVibUShVUqqZbtD9lPqPrMGc0yzHaSKdkn2gZgW5T0tE0jEN7f90GcK8yixDWth4Fkqgbt2a1EM7TgQKZaWrsn0Yp1cPXhwAAE6i1Ti94grHVVvIpsZpmkJPLOJoZ3uAdWBnQDlULLsqT33yQR89DjHPEqwA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wSz2qDlKix/6vaArGmJ2NJgkGJOSduawb/qLuGOk+yw=;
- b=kMm998ZHtpK4KHFU5dwb57oCC2qkr2+yDaGwrzr6IIJQd6pApQZ3dhV35uqasAoBGM9ZcjE/0UN/dOJ0v+eoHiDGMycZRWnI4iYd5+vlFZLnMQxIph19Rn1BnYQEvMsuVwtGVO3lkALajaiTwXs3wivKr/xxslWTp0LgEAf1aGxK2mHy47ekJkRBdXc0YMvbPG2T+0KGsUqtpKYDJ7xuhS78xXfYjBQanmqlXgzoiOQzazsSoWXHd5kd8SScZBFrW1z3F+rwes4FxbCbIXWQGqPM4XjBe22n2grNKS8j7jzXFy4pZMJSNRw+KdC0s2zV4aQ9OvgyCub+jD1sjTN+Sw==
+ bh=dPf8ktNOUncWzsFgeSsltCK0HgC4tkxBS9eGBpVMFiU=;
+ b=doSxpmUbImMpDYTeOtfcPnFyej67/3k+wJrJnw0BB6Q3coo/1+gVSx+/VvI7gKAfB2U9woAP3zuRcYy6kL1c3g2KMnhmyw2csfj1Y7pnApsAxva0TJgoecG9zLnzOqxOCTsBLNDhQUIpsWxmN6D+E0SRc86BqGT2v42cLt/sqLwor/NzH3Fd821sO/nV9WQGgX8uJNoN2zJLrlSsZQzWQj/CfDc2JvOc/tm0miF0GsBCvj+lqCKMyFckxr6sKb7AUQnyQwQc1Mp/gp6/U+B4wvQrotJE2t9G7gv8bmBNA+i9XlJ9Leeqc/pAikgqAaLCn4Nm+FqnS4k/h+Bpf4U+rQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
  header.from=os.amperecomputing.com; dkim=pass
@@ -44,17 +44,17 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=os.amperecomputing.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wSz2qDlKix/6vaArGmJ2NJgkGJOSduawb/qLuGOk+yw=;
- b=MOQ5jQpnq44SpSdGORDELnLE8hw2AnegI1480zPB1Bw+SFYkLx1V4ILVuQKTH7FJgtE7kTjQ5PIZZ6YUH0OsRWJ9rDzFGp1laUUr+eyJBtmyGCEV33/6QjuO7GgM4bze4hnEQXQVk/fjw6qMXbWBVR3x/xYnJjOj5fgm5jmpGnw=
+ bh=dPf8ktNOUncWzsFgeSsltCK0HgC4tkxBS9eGBpVMFiU=;
+ b=f7EJXINdRr4Fdo0riDk9INCbjqjuAKesblJ+Q+gOEcoXt5/lD/R66Oj4dlqC70TGbirrQAlSOznbeQCSUtYRpdldkgD2cnge28Hvr1SbajAYpDBbAB/S+2MSOPdIcpm83BYCPyu1i19IDRxoVHwIuOO4JAWa0XNsaCWdmM+E55A=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
 Received: from SJ0PR01MB6509.prod.exchangelabs.com (2603:10b6:a03:294::17) by
  CO1PR01MB7225.prod.exchangelabs.com (2603:10b6:303:160::21) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7316.33; Thu, 29 Feb 2024 16:25:27 +0000
+ 15.20.7316.33; Thu, 29 Feb 2024 16:25:30 +0000
 Received: from SJ0PR01MB6509.prod.exchangelabs.com ([fe80::3bf9:56fb:dd12:56])
  by SJ0PR01MB6509.prod.exchangelabs.com ([fe80::3bf9:56fb:dd12:56%6]) with
- mapi id 15.20.7316.037; Thu, 29 Feb 2024 16:25:27 +0000
+ mapi id 15.20.7316.037; Thu, 29 Feb 2024 16:25:30 +0000
 From: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
 To: Huisong Li <lihuisong@huawei.com>,
 	Beata Michalska <beata.michalska@arm.com>
@@ -72,16 +72,16 @@ Cc: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>,
 	liuyonglong@huawei.com,
 	zhanjie9@hisilicon.com,
 	linux-acpi@vger.kernel.org
-Subject: [PATCH v1 1/3] arm64: topology: Add arch_freq_get_on_cpu() support
-Date: Thu, 29 Feb 2024 08:25:13 -0800
-Message-ID: <20240229162520.970986-2-vanshikonda@os.amperecomputing.com>
+Subject: [PATCH v1 2/3] arm64: idle: Cache AMU counters before entering idle
+Date: Thu, 29 Feb 2024 08:25:14 -0800
+Message-ID: <20240229162520.970986-3-vanshikonda@os.amperecomputing.com>
 X-Mailer: git-send-email 2.43.1
 In-Reply-To: <20240229162520.970986-1-vanshikonda@os.amperecomputing.com>
 References: <20240229162520.970986-1-vanshikonda@os.amperecomputing.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: CH0PR03CA0393.namprd03.prod.outlook.com
- (2603:10b6:610:11b::21) To SJ0PR01MB6509.prod.exchangelabs.com
+X-ClientProxiedBy: CH2PR04CA0004.namprd04.prod.outlook.com
+ (2603:10b6:610:52::14) To SJ0PR01MB6509.prod.exchangelabs.com
  (2603:10b6:a03:294::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -91,244 +91,113 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: SJ0PR01MB6509:EE_|CO1PR01MB7225:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4568ed09-1d69-4a92-5f82-08dc394309ee
+X-MS-Office365-Filtering-Correlation-Id: 0438bab8-55c4-4a1e-4fa0-08dc39430bbc
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	qDgXxHpSro7q3jd+pPMtPTaWgidW2fviQBN0dgL4ExvOI+kJ9ix40DZLsoDe+WVF1u0OpeKewB55l5PeTqIXZ1gHtRZ6hXHNn8URmDxvE9P0p7olEB3iYYJ70XgxKIwSm9xrAHWB6rTF8JedUgMSOUkfNUKkVXY2ZFB6U4d9QXncuo97Eg9jievotf23cBwT4grMKbOAA1tQ+U7Z8pc+/TaAXNPGlz8eKqDicBHEjU7qfFM5YQMw1Fl3wQd3JvdeChLKTjV4VsLvnzb2Pq7byk1585rOZVMISOsoQnq/n5c4bO7/kztaLxO5FkJPFPQKt80HgfYgOb6YkowTzLUhgKEIYFzPtBkN+VaEGXSEGFgXG/z2GrXk9p4PONUrKjXyFujsMZCglCNj2x/FdSsdNKH3CgKYgLugUIcNnQAqFpX13gzuxvjZcFgGBKk6UVUcmND6lFLsZEv+5TUIsFocz4lmeg8g/kCSGio0zS6H77TRDHJvSNEXSisJOhLFva1IkODzeAf0/xcotRG1bKtpk478bJ+ih6SZ68VEBqIHFlZi+qlx7go5urksZ5a0Co9Re1mnk7qRDIzJ6slvUzdfXTpq6MweW/dVvUN3E1Lv+rEavfa8YH1Of0WmARygrV8hIfwTEmr3Omv0zZWD7EPwFA==
+	HNAtoXAAlsqmiF57P1BveLuRXGHBKDk2sI09fkflhn3NHSH55/OPxJeRuHozw+wEJFANi6kUmGAS2v1vM8IkvHrLBsgY7JsSQRIEX1n0LwPX2S3x1OEuhebut/KnPi1mILYNQ/B9bSn5v4QFu3VEj4QzNsDvNMQdc21TCXrnyyjqssNGTAEC3fGIL4cnF20cW7IZmUaIo5kaU7UxDXn5P7AaZBBpu6FMC4a6MCWi6jVSYxg6DWiZi+qjYgw17sHfmUc2t/cy7KbpZjNIK1uwPX180z9kBn/K8gCIYJrPzBrQqv1fCKkB/hcLwt+7JgyX/HJ12sKxyKyZcnQ+1GJ1VTRW/2eNB7DDy9P0KW+YXQwDK48F5UtnOcpyUhGLZRjRgb3bW0o4RL8boIEwL3sdQ5QSsWs4xVO/hX6irimnhozyW2TXNxrdzQfMr1uo8H84LivKi7EqkXLL4nNgRtWa8eYA8JTVFS5tCDT0wuHGG2z0VMl+dL4VBc7K0vLreCacXjulp7lwm5LEimpPE5VXV9aAgAHfa559/J2h/o1v0yyWa82ueHxDp+sRSYahSkz9maiT1t0L58DWasclKiQZSn2p/ZPgdJXg1a7Ieh2h8f9E6CwZoNqVReyiw9L9W7KPAP4yat4NDn923MmMkrhVBA==
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR01MB6509.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?qZhycgWvOYoEDfDJCEWDI+f3nI5RSvDFD/bPv2gLLoYfN7kDzTN3B7O3bpFF?=
- =?us-ascii?Q?mlRxFRth8XGV1M+eFNzPWKIYfXWTDOi25L8V9IiTcnC32cFJfbOrR3r/0bsS?=
- =?us-ascii?Q?eSqSV37kl7Tchem5usWdDLG0cHEApGELACFigeGD+XnxCJsFMs/zqrt9NNXQ?=
- =?us-ascii?Q?YFyrJCX8fdyttTVd5LPnaNKWdPtpTBIvduQ02Z91Nd6HM/GPcxRrXCg7OBJc?=
- =?us-ascii?Q?+KWWQKYSTe8lAP4jHPcf0ZE/KBY+1paFybiCv6hK0f70HufH/pqlDs4S/N11?=
- =?us-ascii?Q?uxZ+oSiDjRhSx8zUDdpdHVof2blOeSa4oTNMyGmBPqutvn33wOeVCFmoOAAt?=
- =?us-ascii?Q?iWgvZ0EneaKf9hwQHF4P8HhNd+Bh3YtkyLGnzDIv2gNPfDXOYDLQzprJAhxT?=
- =?us-ascii?Q?KdK/qRgy+S7GWSHuh7EoRAhJmnM9n18yMlrRAifjvEUiu2IODjsWIi+7kR2v?=
- =?us-ascii?Q?TN3pQXjhXWlYstdkyC+49bBkzpWY62nRDbvlnnirW+m2QhmUTyEXdagb2qZr?=
- =?us-ascii?Q?Z5wy3phOjUPKQV63XSUIe52K9mCIoB5jjKDimCP3CFbPwpzML3H2iHwsXpjo?=
- =?us-ascii?Q?Z4kBp2m/c74V49/uSaMMkSTThwV4ZRUvzNNOr3j0Ipc4oU6TbhdInd1EPhHb?=
- =?us-ascii?Q?ZmTk6XBfWeSJgB3JcDIM0X5EMTldIrgnFa204fvQhLx2EBzE2a2BZu7CuxOv?=
- =?us-ascii?Q?55f1D8QMWefS/urzw3g5mZUKe+lCQRJXMumDQoviewj0fLMEgSkNHS5WX2Of?=
- =?us-ascii?Q?pgeQt/1YSxYqOnnGkpXl5njRjK6iH4HBVpCi7udtKxJBNPYjHym6eCY4MKvH?=
- =?us-ascii?Q?1JFaSCyZo6cIcrsmF8YKS9c+WSyKpWX/as4lbdaArZsvEHeZupOHW+bws51r?=
- =?us-ascii?Q?6WD05cFMeAE9Y4g65ua8gEzmRnVgGwxBVwBmHaezoZ0iGHWcYDVUeJYxDwaD?=
- =?us-ascii?Q?eq2uZ4SfiFz2qkWiYS8vCoLVi+eKTq4Y2TzcCZkWy3s6+z6RbrYXJobHvsy6?=
- =?us-ascii?Q?qyLjoLAacpz36BFmuFWWk5JtGaM9CgTljqjTBTrVcGzYd6Nq9YaXwnNcJi9k?=
- =?us-ascii?Q?iHLsV4ZI2H5E1fQX/HQ532r9n5t6oyMuHsT4wrXdhZiL+47zdq1BRVSrHAml?=
- =?us-ascii?Q?sxPrCu3eWQ8wi1ofyyr+28N4k6GIA0Z0hjz8hTA12rewJFVmbedlTZIpWYKO?=
- =?us-ascii?Q?1mBDBzRrBjV7sQ/KQDdM58bK15xdKc2nopAR5fuogohnBoJeC4sQuq3G7CTu?=
- =?us-ascii?Q?FHHqvqgIJcZeTiPzcTuHkxh3w8uUjsc6mzo29abTQ61tqp+cUOl0SSGy7+UE?=
- =?us-ascii?Q?eWUr++AEr1eIqbpS5YoXi/HNwX3QWtaGIKZteYB/pFRVHrWYmDs3YVMMAdZ+?=
- =?us-ascii?Q?reR1qCRX49ywRWLMSld/+t6RBkt7QXNLgyHWXEhgD9SVBAtrXxJhDbGDrGc3?=
- =?us-ascii?Q?vGmUkyqIsm7GXt2Zrcng9mEHO3KEdOVGvgiF0xA6/8vbzmxc/3/Jgru1eers?=
- =?us-ascii?Q?kl2kzVh7U2iF+fIKXhPMeqFutAgfW1cJNwR1Xs22bVPJdXbVGuhE68mOg4Le?=
- =?us-ascii?Q?FgTGdCcbzMcjOFES0PYSem8swniwS9O0ejrXJkPN2lR/nl2DAyB7izAJcjKa?=
- =?us-ascii?Q?aWGvfZOW8UE64DMJYt9NZDkLczr9TVxBB5IDjh32fWxJ?=
+	=?us-ascii?Q?mZXXGNDYfKwAyu6DqR1zsRDlosfzWAelgwxSnFnGnOJhwsiTR0fGKzrhOLan?=
+ =?us-ascii?Q?U1EoEtXIbSKxrzLWTAKHeKLiIOM9HIYfvl6SdCZcDUCnmB5TLXLIiqObTRZI?=
+ =?us-ascii?Q?zRMQXR039nJ8QXEIdMSx5fehf0g6xBencm+3WDzRqn/hV9rQdL74PkOoeu/V?=
+ =?us-ascii?Q?4I8grGZdJCU0eHrK+/nCnjiGEUgo3sBQeehRHoWqK62/0h5n8s1sWRlwPI8q?=
+ =?us-ascii?Q?26FpClPdzL7GFrDTr9GH+vi4D9LETg3Xxr3aIzgGl36TsQqznQsIEeLSwVIT?=
+ =?us-ascii?Q?bIfcHLpsTLp6mcwntE1lS/h3lLmNna/QUlsmQbqQnAkxuLV6n3iYHj9eWUKR?=
+ =?us-ascii?Q?8DaBMgtAb+WywuxvTnxSwKnVZ8qZDql2NUFKzRs+0PEVRVu1q4UAmMvMeL+S?=
+ =?us-ascii?Q?Lj/m31AiffvT3rm1eDCDpq/MAz0roXmW7459uSxoVX06Q6VnM4yOPe0wFGZE?=
+ =?us-ascii?Q?StioelABP9l3jbH1RBKZGl4KSxr8C5KG4dfD34mm3nsEaSvWdMAiQplWA9q2?=
+ =?us-ascii?Q?gKITt+eNvuDtukAuAvWe0icdpXnFfmypfBvifmKCr9IP2zLqLtJGwK/I3p+P?=
+ =?us-ascii?Q?lIyGlTiR/38gzKL5OrxcizC9L0eP8yPsFDXvQm7zmR0LpWiWRy6bS9607u4Q?=
+ =?us-ascii?Q?JYDPOvmOxf4mb5kRFQYkks3kXzynMLvxdVRCm88ULTctRSOJBT4JSAKXPiGP?=
+ =?us-ascii?Q?iejYV4AOF6T5srCYIEs3+oRk1bpAFVHRpcJtazMVx1HY8O1n+BPSKMNH652X?=
+ =?us-ascii?Q?GtlLldvfewHnvjlnKxiAcfyFrPbWA2ZZMVYgKY8CRBk5KWnvt0rNSEfbF/Mf?=
+ =?us-ascii?Q?gktnlgOsJ3RMuGxjatnwfPeow0EuURriSWIT5j+RWcapSo3TsuxexI+lI8RY?=
+ =?us-ascii?Q?DRwUSZDSWr+0ZIr4MC6gJmQr0em7hj49Ww1iXayaqakZEueBQ+0sL3rZCZgi?=
+ =?us-ascii?Q?GpkFpsi9QECaWagfvXnu2UCr/vWc2IyDFqKy84dh1+Iz4OHwnlmG+jinfYMQ?=
+ =?us-ascii?Q?dtm/Zr4dZBEH2lCA/LX2nuC0Y0wueqlS4B9PYuM3dYWelSq1EvTSjwr8xJL/?=
+ =?us-ascii?Q?EtHoqwYXLh7qrDOVT3x1QkKXjLCM4Bat9TAy9eAwOH0GN1fFbnwgJDE0w2VB?=
+ =?us-ascii?Q?hDO0VDoH20vt+RH0g2QPwSOBR+pKw0d4qtNzCLjr8+W1OM86kqG0Jbv4T1cD?=
+ =?us-ascii?Q?LXl6/Rabq36+MuxkAlNlp59luBKDkp3ZlXMeENGWMAS6CJLvGSVDuoDXFWrY?=
+ =?us-ascii?Q?N+zAoZ+rmffA49gc9QXx0ggRNTVivf5E+0PdjZlV+unMTRitOKn5lnfVuVTF?=
+ =?us-ascii?Q?naYavtp/E6O7S48hfm1VGNyFR0Kzgrdq1o3Zk/T7tTTpWa5Lz+v1qERYEDtL?=
+ =?us-ascii?Q?QvFnUNzagoP87N5n3/DKbR6Ai8kqYovv6dT0SbAoUIqMAUkyq0ybv6Rf8gvY?=
+ =?us-ascii?Q?+xzjPhY7IRTmFCG0L5nMFY6kZozEddueh1FU29daTtQMHiozmhA30SerMCeY?=
+ =?us-ascii?Q?vdJ3VVKsN4oNdKt964BgpnCr4mAtCcKSW1vdlGCcmHXcPg08sArhkqCMW9ni?=
+ =?us-ascii?Q?/nS93+1tcF1UsYcWaT4fI64bhih4NmgTd9zUTVycvAW4oCD/PFcEwllRIx6B?=
+ =?us-ascii?Q?XG4KI9rnh7nVxI9A005mpQpdOLOW5Gr2yvxPxdITioLj?=
 X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4568ed09-1d69-4a92-5f82-08dc394309ee
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0438bab8-55c4-4a1e-4fa0-08dc39430bbc
 X-MS-Exchange-CrossTenant-AuthSource: SJ0PR01MB6509.prod.exchangelabs.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Feb 2024 16:25:27.3101
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Feb 2024 16:25:30.3520
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rsuUjr8LakPzpB3G+M4Sxx0Zl4vQAhGJ9QI1jXKg8lFDJF0UBEUqM6bY05NdJwunDhSRhhMZKcPWg90Yur6m4Ay0tIVH/Ffr4/z9ltIrb4RLS9rt7kz4J8wtO4vbsB3H
+X-MS-Exchange-CrossTenant-UserPrincipalName: vH4t4MSGMXgTi+QWHeDz7xSWfUgEdaINwGF5tNJYWirCEvg0jo5fDB91IzhVVBD42+AjL/FDedJ3EmvTTtfLoU2M1o8vCi5fTu5BDntqdtX7k5G/waRyMoruItw3eV0p
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR01MB7225
 
-AMU counters are used by the Frequency Invariance Engine (FIE) to
-estimate the CPU utilization during each tick. The delta of the AMU
-counters between two ticks can also be used to estimate the average CPU
-frequency of each core over the tick duration. Measure the AMU counters
-during tick, compute the delta and store it. When the frequency of the
-core is queried, use the stored delta to determine the frequency.
-
-arch_freq_get_on_cpu() is used on x86 systems to estimate the frequency
-of each CPU. It can be wired up on arm64 for the same functionality.
+AMU counters do not increment while a CPU is in idle. Saving the value
+of the core and constant counters prior to invoking WFI allows FIE to
+compute the frequency of a CPU that is idle.
 
 Signed-off-by: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
 ---
- arch/arm64/kernel/topology.c | 114 +++++++++++++++++++++++++++++------
- 1 file changed, 96 insertions(+), 18 deletions(-)
+ arch/arm64/kernel/idle.c     | 10 ++++++++++
+ arch/arm64/kernel/topology.c | 14 ++++++++------
+ 2 files changed, 18 insertions(+), 6 deletions(-)
 
+diff --git a/arch/arm64/kernel/idle.c b/arch/arm64/kernel/idle.c
+index 05cfb347ec26..5ed2e57188a8 100644
+--- a/arch/arm64/kernel/idle.c
++++ b/arch/arm64/kernel/idle.c
+@@ -26,6 +26,16 @@ void __cpuidle cpu_do_idle(void)
+ 
+ 	arm_cpuidle_save_irq_context(&context);
+ 
++#ifdef CONFIG_ARM64_AMU_EXTN
++	/* Update the AMU counters before entering WFI. The cached AMU counter
++	 * value is used to determine CPU frequency while the CPU is idle
++	 * without needing to wake up the CPU.
++	 */
++
++	if (cpu_has_amu_feat(smp_processor_id()))
++		update_freq_counters_refs();
++#endif
++
+ 	dsb(sy);
+ 	wfi();
+ 
 diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
-index 1a2c72f3e7f8..db8d14525cf4 100644
+index db8d14525cf4..8905eb0c681f 100644
 --- a/arch/arm64/kernel/topology.c
 +++ b/arch/arm64/kernel/topology.c
-@@ -17,6 +17,8 @@
- #include <linux/cpufreq.h>
- #include <linux/init.h>
- #include <linux/percpu.h>
-+#include <linux/sched/isolation.h>
-+#include <linux/seqlock_types.h>
- 
- #include <asm/cpu.h>
- #include <asm/cputype.h>
-@@ -82,20 +84,54 @@ int __init parse_acpi_topology(void)
- #undef pr_fmt
- #define pr_fmt(fmt) "AMU: " fmt
- 
-+struct amu_counters {
-+	seqcount_t	seq;
-+	unsigned long	last_update;
-+	u64		core_cnt;
-+	u64		const_cnt;
-+	u64		delta_core_cnt;
-+	u64		delta_const_cnt;
-+};
-+
- /*
-  * Ensure that amu_scale_freq_tick() will return SCHED_CAPACITY_SCALE until
-  * the CPU capacity and its associated frequency have been correctly
-  * initialized.
-  */
--static DEFINE_PER_CPU_READ_MOSTLY(unsigned long, arch_max_freq_scale) =  1UL << (2 * SCHED_CAPACITY_SHIFT);
--static DEFINE_PER_CPU(u64, arch_const_cycles_prev);
--static DEFINE_PER_CPU(u64, arch_core_cycles_prev);
-+static DEFINE_PER_CPU_READ_MOSTLY(unsigned long, arch_max_freq_scale) =
-+	1UL << (2 * SCHED_CAPACITY_SHIFT);
-+static DEFINE_PER_CPU_SHARED_ALIGNED(struct amu_counters, cpu_samples) = {
-+	.seq = SEQCNT_ZERO(cpu_samples.seq)
-+};
- static cpumask_var_t amu_fie_cpus;
- 
- void update_freq_counters_refs(void)
- {
--	this_cpu_write(arch_core_cycles_prev, read_corecnt());
--	this_cpu_write(arch_const_cycles_prev, read_constcnt());
-+	struct amu_counters *cpu_sample = this_cpu_ptr(&cpu_samples);
-+	u64 core_cnt, const_cnt, delta_core_cnt, delta_const_cnt;
-+
-+	const_cnt = read_constcnt();
-+	core_cnt = read_corecnt();
-+
-+	if (unlikely(core_cnt < cpu_sample->core_cnt) ||
-+	    unlikely(const_cnt < cpu_sample->const_cnt)) {
-+		WARN(1, "AMU counter values should be monotonic.\n");
-+		cpu_sample->delta_const_cnt = 0;
-+		cpu_sample->delta_core_cnt = 0;
-+		return;
-+	}
-+
-+	delta_core_cnt = core_cnt - cpu_sample->core_cnt;
-+	delta_const_cnt = const_cnt - cpu_sample->const_cnt;
-+
-+	cpu_sample->core_cnt = core_cnt;
-+	cpu_sample->const_cnt = const_cnt;
-+
-+	raw_write_seqcount_begin(&cpu_sample->seq);
-+	cpu_sample->last_update = jiffies;
-+	cpu_sample->delta_const_cnt = delta_const_cnt;
-+	cpu_sample->delta_core_cnt = delta_core_cnt;
-+	raw_write_seqcount_end(&cpu_sample->seq);
- }
- 
- static inline bool freq_counters_valid(int cpu)
-@@ -108,8 +144,7 @@ static inline bool freq_counters_valid(int cpu)
- 		return false;
- 	}
- 
--	if (unlikely(!per_cpu(arch_const_cycles_prev, cpu) ||
--		     !per_cpu(arch_core_cycles_prev, cpu))) {
-+	if (unlikely(per_cpu_ptr(&cpu_samples, cpu) == NULL)) {
- 		pr_debug("CPU%d: cycle counters are not enabled.\n", cpu);
- 		return false;
- 	}
-@@ -152,19 +187,15 @@ void freq_inv_set_max_ratio(int cpu, u64 max_rate)
- 
- static void amu_scale_freq_tick(void)
- {
--	u64 prev_core_cnt, prev_const_cnt;
--	u64 core_cnt, const_cnt, scale;
--
--	prev_const_cnt = this_cpu_read(arch_const_cycles_prev);
--	prev_core_cnt = this_cpu_read(arch_core_cycles_prev);
-+	struct amu_counters *cpu_sample = this_cpu_ptr(&cpu_samples);
-+	u64 delta_core_cnt, delta_const_cnt, scale;
- 
- 	update_freq_counters_refs();
- 
--	const_cnt = this_cpu_read(arch_const_cycles_prev);
--	core_cnt = this_cpu_read(arch_core_cycles_prev);
-+	delta_const_cnt = cpu_sample->delta_const_cnt;
-+	delta_core_cnt = cpu_sample->delta_core_cnt;
- 
--	if (unlikely(core_cnt <= prev_core_cnt ||
--		     const_cnt <= prev_const_cnt))
-+	if ((delta_const_cnt == 0) || (delta_core_cnt == 0))
- 		return;
+@@ -240,13 +240,15 @@ unsigned int arch_freq_get_on_cpu(int cpu)
+ 	} while (read_seqcount_retry(&cpu_sample->seq, seq));
  
  	/*
-@@ -175,15 +206,62 @@ static void amu_scale_freq_tick(void)
- 	 * See validate_cpu_freq_invariance_counters() for details on
- 	 * arch_max_freq_scale and the use of SCHED_CAPACITY_SHIFT.
+-	 * Bail on invalid count and when the last update was too long ago,
+-	 * which covers idle and NOHZ full CPUs.
++	 * Bail on invalid count and when the last update was too long ago.
++	 * This covers idle, NOHZ full and isolated CPUs.
++	 *
++	 * Idle CPUs don't need to be measured because AMU counters stop
++	 * incrementing during WFI/WFE.
  	 */
--	scale = core_cnt - prev_core_cnt;
-+	scale = delta_core_cnt;
- 	scale *= this_cpu_read(arch_max_freq_scale);
- 	scale = div64_u64(scale >> SCHED_CAPACITY_SHIFT,
--			  const_cnt - prev_const_cnt);
-+			  delta_const_cnt);
- 
- 	scale = min_t(unsigned long, scale, SCHED_CAPACITY_SCALE);
- 	this_cpu_write(arch_freq_scale, (unsigned long)scale);
- }
- 
-+/*
-+ * Discard samples older than the define maximum sample age of 20ms. There
-+ * is no point in sending IPIs in such a case. If the scheduler tick was
-+ * not running then the CPU is either idle or isolated.
-+ */
-+#define MAX_SAMPLE_AGE	((unsigned long)HZ / 50)
-+
-+unsigned int arch_freq_get_on_cpu(int cpu)
-+{
-+	struct amu_counters *cpu_sample = per_cpu_ptr(&cpu_samples, cpu);
-+	u64 delta_const_cnt, delta_core_cnt;
-+	unsigned int seq, freq;
-+	unsigned long last;
-+
-+	if (!freq_counters_valid(cpu))
+-	if (!delta_const_cnt || ((jiffies - last) > MAX_SAMPLE_AGE)) {
+-		if (!(housekeeping_cpu(cpu, HK_TYPE_TICK) && idle_cpu(cpu)))
+-			goto fallback;
+-	}
++	if (!delta_const_cnt ||
++	    ((jiffies - last) > MAX_SAMPLE_AGE && !idle_cpu(cpu)))
 +		goto fallback;
-+
-+	do {
-+		seq = raw_read_seqcount_begin(&cpu_sample->seq);
-+		last = cpu_sample->last_update;
-+		delta_core_cnt = cpu_sample->delta_core_cnt;
-+		delta_const_cnt = cpu_sample->delta_const_cnt;
-+	} while (read_seqcount_retry(&cpu_sample->seq, seq));
-+
-+	/*
-+	 * Bail on invalid count and when the last update was too long ago,
-+	 * which covers idle and NOHZ full CPUs.
-+	 */
-+	if (!delta_const_cnt || ((jiffies - last) > MAX_SAMPLE_AGE)) {
-+		if (!(housekeeping_cpu(cpu, HK_TYPE_TICK) && idle_cpu(cpu)))
-+			goto fallback;
-+	}
-+
-+	/*
-+	 * CPU frequency = reference perf (in Hz) * (/\ delivered) / (/\ reference)
-+	 * AMU reference performance counter increment rate is equal to the rate
-+	 * of increment of the System counter, CNTPCT_EL0 and can be used to
-+	 * compute the CPU frequency.
-+	 */
-+	return div64_u64((delta_core_cnt * (arch_timer_get_rate() / HZ)),
-+			 delta_const_cnt);
-+
-+fallback:
-+	freq = cpufreq_quick_get(cpu);
-+	return freq ? freq : cpufreq_get_hw_max_freq(cpu);
-+}
-+
- static struct scale_freq_data amu_sfd = {
- 	.source = SCALE_FREQ_SOURCE_ARCH,
- 	.set_freq_scale = amu_scale_freq_tick,
+ 
+ 	/*
+ 	 * CPU frequency = reference perf (in Hz) * (/\ delivered) / (/\ reference)
 -- 
 2.43.1
 
