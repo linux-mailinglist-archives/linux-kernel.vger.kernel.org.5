@@ -1,119 +1,225 @@
-Return-Path: <linux-kernel+bounces-86542-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86546-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42D3386C6D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:25:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C09086C6DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:27:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CE501C211C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:25:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 438C3284600
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:27:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79B8864CCF;
-	Thu, 29 Feb 2024 10:25:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79229657B2;
+	Thu, 29 Feb 2024 10:26:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uSZwf0pJ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="JPSuK2bg"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B319860BA7;
-	Thu, 29 Feb 2024 10:25:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12E856351F;
+	Thu, 29 Feb 2024 10:26:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709202341; cv=none; b=gZMdzNojXlpLMi1tuQhuPv5jUYv/Id0dDFKeS6hCTxNtFa0SwnN+5/pkswtf0NfmnlDPGocdxIjK916NhfrGxIbkXEGdUDFh13Hcc3pPphK/U861BuOobBAWFXmCUAgKC97pMvA/hoAEDWj446p7ljIrNhDiMWncS542Pg+xAfw=
+	t=1709202387; cv=none; b=GClIHZrqmv9AzB+lAQtv91SCrkW4sSVkEya2hN9TJi2w+oPopSUpD1Ci5+fyu+sAKeifLz1zZUW5Ogn1wafrnSCOLbyIL3n78uxVE8DJtwlDvna1HzPAfFyn3ASmvk7tPf8HXDzA676T8FcH7ClB/ge4WZP1+/kQnauW+fAW/GE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709202341; c=relaxed/simple;
-	bh=Jy/7w7KEnfQklosMbmnBXq3PIa9EaMOSK5qguujWYHU=;
+	s=arc-20240116; t=1709202387; c=relaxed/simple;
+	bh=gXhCYPfBYIHkJrxh0g/yMPKvsE9GaHghoyujBMl6GD8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ojRuVTcRwhfVEMSI6uDi1+M1jsCXEc+DNxtlVngYHZNjPmWY57pMrTpRP0M5C3WxsMrQ7JWYQSHJNUGqtPxRGpqi7Y05QUR0FGvAw4VAWC7x+hpRMFlcdJLsCynI9sCEVF2hH+k1SBEbOsKScdop299q71WweIim5ZtcK6lhStk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uSZwf0pJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38338C433F1;
-	Thu, 29 Feb 2024 10:25:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709202341;
-	bh=Jy/7w7KEnfQklosMbmnBXq3PIa9EaMOSK5qguujWYHU=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=l931poLYrkEz6sFbYwsOGJGt056sL2gHSL+SwHNgWbO0eTb4AFuXzlBoKzEJZrmKRWCuPWVBTIzwN4cfToidLRpMnp7apsXckuZAh0jbOrVb296zXZqEF8xr2UKYDqdIA+myA38bAU1HwXu2fecNZqw4HgEnpRDW86d1G0ynfaM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=JPSuK2bg; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709202384;
+	bh=gXhCYPfBYIHkJrxh0g/yMPKvsE9GaHghoyujBMl6GD8=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uSZwf0pJg3JOSpFylltxG0i+NQp5EjBAyeI6hEtkmnqYcmGVzLyLHsf711+x1bigJ
-	 chu1NMkhr+3ZYAmetg+itT3WLsGvd7Fca3qmNyTZLk36TQK0U7Cbqh+jULZ/4yMhna
-	 0LIuZEPrjCtKrE1Syt9or8s9icOfgoVkXmug/Tzzu0jxESoWUxeCisRC2jNpPP+0Wl
-	 Qjs5HKReD93uJ/ZR+d6nHyFF6gP10oVeHYGyKV9DeL9w0leLrr+HHxHGwnnPBNLGZU
-	 dxjcj3ikVdnWI/7AuuOzjqhykU8xV5gJ1HMT8kBOSUpVcRzxbKeo1o7T9eBgbvcfJS
-	 8PnGZhj3ELtrA==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rfdbo-000000000xS-3Hnm;
-	Thu, 29 Feb 2024 11:25:49 +0100
-Date: Thu, 29 Feb 2024 11:25:48 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Bjorn Helgaas <helgaas@kernel.org>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 00/12] arm64: dts: qcom: sc8280xp: PCIe fixes and
- GICv3 ITS enable
-Message-ID: <ZeBbrJhks46XByMD@hovoldconsulting.com>
-References: <20240223152124.20042-1-johan+linaro@kernel.org>
- <20240228220843.GA309344@bhelgaas>
- <20240229100853.GA2999@thinkpad>
+	b=JPSuK2bgSXQhmuusK+php+YwnbzxpjPKdEbzk0urTBGylKHhiF0LDJAqeIq+HykFb
+	 ZaJ1rN/6Voi6igYsPrYOnhRiJXF913rqk7fB1wEhhFISYAAC4WGuUizAZUdhZnJYEq
+	 EwMU9g7cy2b7osjHFC6v0oQVow6Ym2QqgQLzGKRjmx84JLeH/09eo9QsQAwOD8Hc4/
+	 fL/ZRKleqO+tr3IrsCv528rjPOhcFU1odWjUjGrVt4WQ5s3bMXJRaLi4GslrS9gyoU
+	 thHSqW63xGJjmzvG4Cmv/EHhobjUilw3nRW1YvpHc4E3pojyI2pkNqInodGeEYsATa
+	 9QfhpAj18KlbA==
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: sebastianfricke)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 00BC23780029;
+	Thu, 29 Feb 2024 10:26:23 +0000 (UTC)
+Date: Thu, 29 Feb 2024 11:26:23 +0100
+From: Sebastian Fricke <sebastian.fricke@collabora.com>
+To: Devarsh Thakkar <devarsht@ti.com>
+Cc: mchehab@kernel.org, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, hverkuil-cisco@xs4all.nl,
+	linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, benjamin.gaignard@collabora.com,
+	laurent.pinchart@ideasonboard.com, praneeth@ti.com, nm@ti.com,
+	vigneshr@ti.com, a-bhatia1@ti.com, j-luthra@ti.com, b-brnich@ti.com,
+	detheridge@ti.com, p-mantena@ti.com, vijayp@ti.com,
+	andrzej.p@collabora.com, nicolas@ndufresne.ca, afd@ti.com,
+	milkfafa@gmail.com
+Subject: Re: [PATCH v6 1/3] media: dt-bindings: Add Imagination E5010 JPEG
+ Encoder
+Message-ID: <20240229102623.ihwhbba4qwzvxzzq@basti-XPS-13-9310>
+References: <20240228141140.3530612-1-devarsht@ti.com>
+ <20240228141140.3530612-2-devarsht@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20240229100853.GA2999@thinkpad>
+In-Reply-To: <20240228141140.3530612-2-devarsht@ti.com>
 
-On Thu, Feb 29, 2024 at 03:38:53PM +0530, Manivannan Sadhasivam wrote:
-> On Wed, Feb 28, 2024 at 04:08:43PM -0600, Bjorn Helgaas wrote:
-> > On Fri, Feb 23, 2024 at 04:21:12PM +0100, Johan Hovold wrote:
+Hey Devarsh,
 
-> > > Johan Hovold (12):
-> > >   dt-bindings: PCI: qcom: Allow 'required-opps'
-> > >   dt-bindings: PCI: qcom: Do not require 'msi-map-mask'
-> > >   dt-bindings: PCI: qcom: Allow 'aspm-no-l0s'
-> > >   PCI: qcom: Add support for disabling ASPM L0s in devicetree
-> > 
-> > The ASPM patches fix a v6.7 regression, so it would be good to fix
-> > that in v6.8.
-> > 
-> > Mani, if you are OK with them, I can add them to for-linus for v6.8.  
-> > 
-> > What about the 'required-opps' and 'msi-map-mask' patches?  If they're
-> > important, I can merge them for v6.8, too, but it's late in the cycle
-> > and it's not clear from the commit logs why they shouldn't wait for
-> > v6.9.
-> > 
-> 
-> I'm checking with Qcom HW team on the ASPM behavior. So please hold off the ASPM
-> related patches until I get an answer. But 'required-opps' and 'msi-map-mask'
-> patches can be applied for 6.9 (not strictly fixing anything in 6.8).
+On 28.02.2024 19:41, Devarsh Thakkar wrote:
+>Add dt-bindings for Imagination E5010 JPEG Encoder [1] which is implemented
+>as stateful V4L2 M2M driver.
+>
+>The device supports baseline encoding with two different quantization
+>tables and compression ratio as demanded.
+>
+>Minimum resolution supported is 64x64 and Maximum resolution supported is
+>8192x8192.
+>
+>[1]:  AM62A TRM (Section 7.6 is for JPEG Encoder)
+>Link: https://www.ti.com/lit/pdf/spruj16
+>
+>Co-developed-by: David Huang <d-huang@ti.com>
+>Signed-off-by: David Huang <d-huang@ti.com>
+>Signed-off-by: Devarsh Thakkar <devarsht@ti.com>
+>Reviewed-by: Rob Herring <robh@kernel.org>
 
-As I mentioned, the 'required-opps' binding update is needed to fix the
-missing OPP vote so blocking the binding patch would block merging the
-DT fix which could otherwise go into 6.8.
+hmmm when did Rob give his reviewed by on this patch? (As this is not a
+DT binding I find that odd)
+And where is the Reviewed by tag from Benjamin that he provided on V5?
 
-The 'msi-map-mask' is arguably a fix of the binding which should never
-have had that property, but sure, it's strictly only needed for 6.9.
+Greetings,
+Sebastian
 
-And Bjorn A has already checked with the Qualcomm PCI team regarding
-ASPM. It's also been two weeks since you said you were going to check
-with your contacts. Is it really worth waiting more for an answer from
-that part of the team? We can always amend the ASPM fixes later when/if
-we learn more.
-
-Note that this is also a blocker for merging ITS support for 6.9.
-
-Johan
+>---
+>V2: No change
+>V3:
+>- Add vendor specific compatible
+>- Update reg names
+>- Update clocks to 1
+>- Fix dts example with proper naming
+>V4:
+> - Use ti-specific compatible ti,am62a-jpeg-enc as secondary one
+> - Update commit message and title
+> - Remove clock-names as only single clock
+>V5:
+> - Add Reviewed-By tag
+>V6:
+> - No change
+>
+> .../bindings/media/img,e5010-jpeg-enc.yaml    | 75 +++++++++++++++++++
+> MAINTAINERS                                   |  5 ++
+> 2 files changed, 80 insertions(+)
+> create mode 100644 Documentation/devicetree/bindings/media/img,e5010-jpeg-enc.yaml
+>
+>diff --git a/Documentation/devicetree/bindings/media/img,e5010-jpeg-enc.yaml b/Documentation/devicetree/bindings/media/img,e5010-jpeg-enc.yaml
+>new file mode 100644
+>index 000000000000..085020cb9e61
+>--- /dev/null
+>+++ b/Documentation/devicetree/bindings/media/img,e5010-jpeg-enc.yaml
+>@@ -0,0 +1,75 @@
+>+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>+%YAML 1.2
+>+---
+>+$id: http://devicetree.org/schemas/media/img,e5010-jpeg-enc.yaml#
+>+$schema: http://devicetree.org/meta-schemas/core.yaml#
+>+
+>+title: Imagination E5010 JPEG Encoder
+>+
+>+maintainers:
+>+  - Devarsh Thakkar <devarsht@ti.com>
+>+
+>+description: |
+>+  The E5010 is a JPEG encoder from Imagination Technologies implemented on
+>+  TI's AM62A SoC. It is capable of real time encoding of YUV420 and YUV422
+>+  inputs to JPEG and M-JPEG. It supports baseline JPEG Encoding up to
+>+  8Kx8K resolution.
+>+
+>+properties:
+>+  compatible:
+>+    oneOf:
+>+      - items:
+>+          - const: ti,am62a-jpeg-enc
+>+          - const: img,e5010-jpeg-enc
+>+      - const: img,e5010-jpeg-enc
+>+
+>+  reg:
+>+    items:
+>+      - description: The E5010 core register region
+>+      - description: The E5010 mmu register region
+>+
+>+  reg-names:
+>+    items:
+>+      - const: core
+>+      - const: mmu
+>+
+>+  power-domains:
+>+    maxItems: 1
+>+
+>+  resets:
+>+    maxItems: 1
+>+
+>+  clocks:
+>+    maxItems: 1
+>+
+>+  interrupts:
+>+    maxItems: 1
+>+
+>+required:
+>+  - compatible
+>+  - reg
+>+  - reg-names
+>+  - interrupts
+>+  - clocks
+>+
+>+additionalProperties: false
+>+
+>+examples:
+>+  - |
+>+    #include <dt-bindings/soc/ti,sci_pm_domain.h>
+>+    #include <dt-bindings/interrupt-controller/arm-gic.h>
+>+    #include <dt-bindings/interrupt-controller/irq.h>
+>+
+>+    soc {
+>+      #address-cells = <2>;
+>+      #size-cells = <2>;
+>+      jpeg-encoder@fd20000 {
+>+          compatible = "img,e5010-jpeg-enc";
+>+          reg = <0x00 0xfd20000 0x00 0x100>,
+>+                <0x00 0xfd20200 0x00 0x200>;
+>+          reg-names = "core", "mmu";
+>+          clocks = <&k3_clks 201 0>;
+>+          power-domains = <&k3_pds 201 TI_SCI_PD_EXCLUSIVE>;
+>+          interrupts = <GIC_SPI 98 IRQ_TYPE_LEVEL_HIGH>;
+>+      };
+>+    };
+>diff --git a/MAINTAINERS b/MAINTAINERS
+>index e1475ca38ff2..6b34ee8d92b5 100644
+>--- a/MAINTAINERS
+>+++ b/MAINTAINERS
+>@@ -10572,6 +10572,11 @@ S:	Maintained
+> F:	Documentation/devicetree/bindings/auxdisplay/img,ascii-lcd.yaml
+> F:	drivers/auxdisplay/img-ascii-lcd.c
+>
+>+IMGTEC JPEG ENCODER DRIVER
+>+M:	Devarsh Thakkar <devarsht@ti.com>
+>+S:	Supported
+>+F:	Documentation/devicetree/bindings/media/img,e5010-jpeg-enc.yaml
+>+
+> IMGTEC IR DECODER DRIVER
+> S:	Orphan
+> F:	drivers/media/rc/img-ir/
+>-- 
+>2.39.1
+>
 
