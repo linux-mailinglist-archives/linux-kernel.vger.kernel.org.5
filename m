@@ -1,176 +1,176 @@
-Return-Path: <linux-kernel+bounces-86896-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86898-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA46386CC69
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:09:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16E0D86CC70
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:09:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1F103B262EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:09:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 80B5F1F237AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:09:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7A9E143C48;
-	Thu, 29 Feb 2024 15:08:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8352C13F01E;
+	Thu, 29 Feb 2024 15:09:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qbE142na"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Z6x3HCOH"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D42D7141995;
-	Thu, 29 Feb 2024 15:08:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFEB213776F;
+	Thu, 29 Feb 2024 15:09:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709219331; cv=none; b=ob++XbgfYLMCWtYvz0q3r2v8ZLBhRbAuhgf/cbPzSGKmRYJG99tc+/9IFO8HtvXX3rGG0wmxJpJRMNjXKB+M2twec0+8+/P01Wl+DT6+fiY3ZmXj/zEggwpc59g9+EXGtBPu5wauslAsKjyq6tQeL5RnO0j4OdYZCvxu3BH52pI=
+	t=1709219377; cv=none; b=ro0jIntkPvNAyHXN2k46Bs2NjFdp5+j4j77dWXoiENIWEE33RTH61uNDmGLOgHxLmKqKQfIadcbD7qp3E8xC3/i4eKEeTtmpuVLDUB8IlWZEgVq3+QMSBkrC0107Wos0CBx9+lbzKBhgD2qT0XNnN46uEn7tfCMagxH3K36TMRY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709219331; c=relaxed/simple;
-	bh=1Zyw6/15dc8py4UHaheILppIr29j2DVuoJ+GnLmxmI0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=X9XJiR3pC9M4eo+I2oYI5kOqL8g/TeCyy3VLvHFl3GyvsQopbtVY6d8G9W20DJ7ufg/uBiRgo2mV4xJwdftuYY9AzyA4/hEFWG9XA9x76yd6BYciaOQjGaGsUN7FuCe7Y3ekJkUIBzHlyaYsp2w5fkZg5PkSvb0vvmqLnHE2ILk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qbE142na; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8C5DC43394;
-	Thu, 29 Feb 2024 15:08:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709219331;
-	bh=1Zyw6/15dc8py4UHaheILppIr29j2DVuoJ+GnLmxmI0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qbE142naa92rUgW7jL/DgquUxvIA8orHcRMgUTDyddce65pfDrm5hqA2gW1XhNEW1
-	 M9mhn4t1LH5FmGr+9vxIZj3lWezTgwutUTT9MFvgOEbxD3MUXBEe2+gj4i08VwWHnU
-	 AZRLl0FrHrOBNbBj3B9joRiitw1QbIUaM58sENEelec+3rzJe+v9gtvOJ1DxJBcLVC
-	 Q992XY0FVty+LT18+GMGFLjH+GGFEJ1RwHcuUU8sIFGQGNxQ6B3B/4vFkw5Aq7alGS
-	 57Xq1IPbNKu1IcM0c12i1Q/3MttMRGg6tdlxmEibgCn3P5lMdEJsiugpx10dhXtF+l
-	 hPvdF3nQRkfWg==
-Date: Thu, 29 Feb 2024 16:08:43 +0100
-From: Lorenzo Pieralisi <lpieralisi@kernel.org>
-To: Minda Chen <minda.chen@starfivetech.com>
-Cc: Conor Dooley <conor@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Daire McNamara <daire.mcnamara@microchip.com>,
-	Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-pci@vger.kernel.org,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Mason Huo <mason.huo@starfivetech.com>,
-	Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-	Kevin Xie <kevin.xie@starfivetech.com>
-Subject: Re: [PATCH v15,RESEND 22/23] PCI: starfive: Offload the NVMe timeout
- workaround to host drivers.
-Message-ID: <ZeCd+xqE6x2ZFtJN@lpieralisi>
-References: <20240227103522.80915-1-minda.chen@starfivetech.com>
- <20240227103522.80915-23-minda.chen@starfivetech.com>
+	s=arc-20240116; t=1709219377; c=relaxed/simple;
+	bh=tek9DUSGqpyfY4A1mYJ+aK0P4X9tgkILz9JjuHu4vjU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=RMQa2eFlqhVV1T9YNqjYI9eCAxoAkWQuvgllKvmlkminpUio1qeU1z8y/zLKe9ZK9rO9RiLEHrgWpB3oeEPESCfQr7kmgEiAUQq8LanGojqFrWtqo/5Sav5JWV0Zx/WRM0gG3rMDc8L5e2pm2qmIsR7cLdoaw53MsP+Bj9A2hnk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Z6x3HCOH; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41T5L4Jb009844;
+	Thu, 29 Feb 2024 15:09:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=FuENqAaB6m4xxxysjIYTNmhvkd60JBJYJz+44lqrGUQ=; b=Z6
+	x3HCOH0kVx/pcLmufD5esd7HnZkpkSLdzDeAEh8+ilHlZjCfo1kK+xjDzTNJ4WvR
+	HIxHov3CPxqVaqTqGmtNLL18I5iTFhlbh3rVVvy6mZKFg5nm7hH5YzJCAEIGfT7y
+	3lEbuKFCUP11Dd+hld89fbKac6HW0fi9xhxcEs0Fb2aL/cijV+UBYsN/0/zUpOoS
+	oUXYrtmuYsH8clTMSKcTTMb4tTdivVPAt35iwK1t8YKfTcnAWm55O4PYq5sFZe5q
+	xIV7lc8YZypTUy5/dLuEX+WeJw6zFHrgpoq5nxM3ZAzNhEEuGoE9y9Av0KMHQe6B
+	cxp+2w1mw4ug8ET/AnKA==
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wjey3a2bh-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 29 Feb 2024 15:09:19 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41TF9IfM019512
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 29 Feb 2024 15:09:18 GMT
+Received: from [10.216.47.47] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 29 Feb
+ 2024 07:09:14 -0800
+Message-ID: <8bf182b1-e05f-0c90-a358-e5c8bf6bd430@quicinc.com>
+Date: Thu, 29 Feb 2024 20:39:11 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240227103522.80915-23-minda.chen@starfivetech.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 00/34] Qualcomm video encoder and decoder driver
+Content-Language: en-US
+To: Hans Verkuil <hans.verkuil@cisco.com>, <mchehab@kernel.org>,
+        <stanimir.k.varbanov@gmail.com>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <bryan.odonoghue@linaro.org>,
+        <agross@kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC: <linux-arm-msm@vger.kernel.org>, <quic_abhinavk@quicinc.com>,
+        "Dikshita
+ Agarwal" <quic_dikshita@quicinc.com>
+References: <1702899149-21321-1-git-send-email-quic_dikshita@quicinc.com>
+From: Vikash Garodia <quic_vgarodia@quicinc.com>
+In-Reply-To: <1702899149-21321-1-git-send-email-quic_dikshita@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 3-EWurB-1zpOuXLBF9A3jEH-Z7CLGVlc
+X-Proofpoint-GUID: 3-EWurB-1zpOuXLBF9A3jEH-Z7CLGVlc
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-29_02,2024-02-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=19
+ lowpriorityscore=19 clxscore=1011 priorityscore=1501 impostorscore=0
+ mlxscore=0 malwarescore=0 phishscore=0 spamscore=0 mlxlogscore=999
+ adultscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2402120000 definitions=main-2402290116
 
-On Tue, Feb 27, 2024 at 06:35:21PM +0800, Minda Chen wrote:
-> From: Kevin Xie <kevin.xie@starfivetech.com>
-> 
-> As the Starfive JH7110 hardware can't keep two inbound post write in
-> order all the time, such as MSI messages and NVMe completions. If the
-> NVMe completion update later than the MSI, an NVMe IRQ handle will miss.
+Hello All,
 
-Please explain what the problem is and what "NVMe completions" means
-given that you are talking about posted writes.
+On 12/18/2023 5:01 PM, Dikshita Agarwal wrote:
+> This patch series introduces support for Qualcomm new video acceleration
+> hardware architecture, used for video stream decoding/encoding. This driver
+> is based on new communication protocol between video hardware and application
+> processor.
+> This driver comes with below capabilities:
+> - V4L2 complaint video driver with M2M and STREAMING capability.
+> - Supports H264, H265, VP9 decoders.
+> - Supports H264, H265 encoders.
+> This driver comes with below features:
+> - Centralized resource and memory management.
+> - Centralized management of core and instance states.
+> - Defines platform specific capabilities and features. As a results, it provides
+>   a single point of control to enable/disable a given feature depending on 
+>   specific platform capabilities.
+> - Handles hardware interdependent configurations. For a given configuration from
+>   client, the driver checks for hardware dependent configuration/s and updates
+>   the same.
+> - Handles multiple complex video scenarios involving state transitions - DRC,
+>   Drain, Seek, back to back DRC, DRC during Drain sequence, DRC during Seek
+>   sequence.
+> - Introduces a flexible way for driver to subscribe for any property with
+>   hardware. Hardware would inform driver with those subscribed property with any
+>   change in value.
+> - Introduces performance (clock and bus) model based on new hardware
+>   architecture.
+> - Introduces multi thread safe design to handle communication between client and
+>   hardware.
+> - Adapts encoder quality improvements available in new hardware architecture.
+> - Implements asynchronous communication with hardware to achieve better
+>   experience in low latency usecases.
+> - Supports multi stage hardware architecture for encode/decode.
+> - Output and capture planes are controlled independently. Thereby providing a
+>   way to reconfigure individual plane.
+> - Hardware packetization layer supports synchronization between configuration
+>   packet and data packet.
+> - Introduces a flexibility to receive a hardware response for a given command
+>   packet.
+> - Native hardware support of LAST flag which is mandatory to align with port
+>   reconfiguration and DRAIN sequence as per V4L guidelines.
+> - Native hardware support for drain sequence.
 
-If you have a link to an erratum write-up it would certainly help.
+1. We considered enhancing the venus driver to support iris functionality but
+concluded that the result would essentially be two parallel drivers implemented
+in the same folder.
+2. Although the underlying hardware for venus and iris are quite similar, but
+there are other factors which brings the need of new driver:
+   a. the host firmware interface (HFI) changed between the two. Venus supports
+HFI protocol 1.0 while iris supports HFI protocol 2.0.
+   b. unlike HFI protocol 1.0, HFI protocol 2.0 is better aligned to V4L2 APIs.
+   c. iris driver modularize platforms, hardware variants, and states to extend
+it for any upcoming SOC. Thereby more extendable to newer SOCs in future.
+   d. Iris also supports many advanced features.
+3. Based on the comments received on posted iris driver [1], we evaluated it
+further and to better align with the upstream standard and practices, we
+acknowledge that even though iris driver is the way forward, it would be ideal
+to bring in the Venus hardwares enabled in this driver.
+4. Hence, we decided to rework iris driver to add support of HFI protocol 1.0 as
+well.
+5. Initially we would start with adding support for one HFI protocol 1.0 based
+platform which would be SM8250.
+6. SM8250 enablement on iris driver would be incremental, starting with basic
+decode for H264 codec.
+7. In long-term, all venus supported platforms would be migrated to iris.
+8. Iris driver and venus driver will co-exist till remaining supported targets
+also gets migrated to iris driver.
+9. We would continue to support and maintain venus driver during this phased out
+approach.
 
-This looks completely broken to me, if the controller can't guarantee
-PCIe transactions ordering it is toast, there is not even a point
-considering mainline merging.
+Please share your thoughts on the above proposal.
 
-> As a workaround, we will wait a while before going to the generic
-> handle here.
-> 
-> Verified with NVMe SSD, USB SSD, R8169 NIC.
-> The performance are stable and even higher after this patch.
+[1]
+https://patchwork.kernel.org/project/linux-media/cover/1702899149-21321-1-git-send-email-quic_dikshita@quicinc.com/#25643473
 
-I assume this is a joke even though it does not make me laugh.
-
-Thanks,
-Lorenzo
-
-> 
-> Signed-off-by: Kevin Xie <kevin.xie@starfivetech.com>
-> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
-> ---
->  drivers/pci/controller/plda/pcie-plda-host.c | 12 ++++++++++++
->  drivers/pci/controller/plda/pcie-plda.h      |  1 +
->  drivers/pci/controller/plda/pcie-starfive.c  |  1 +
->  3 files changed, 14 insertions(+)
-> 
-> diff --git a/drivers/pci/controller/plda/pcie-plda-host.c b/drivers/pci/controller/plda/pcie-plda-host.c
-> index a18923d7cea6..9e077ddf45c0 100644
-> --- a/drivers/pci/controller/plda/pcie-plda-host.c
-> +++ b/drivers/pci/controller/plda/pcie-plda-host.c
-> @@ -13,6 +13,7 @@
->  #include <linux/msi.h>
->  #include <linux/pci_regs.h>
->  #include <linux/pci-ecam.h>
-> +#include <linux/delay.h>
->  
->  #include "pcie-plda.h"
->  
-> @@ -44,6 +45,17 @@ static void plda_handle_msi(struct irq_desc *desc)
->  			       bridge_base_addr + ISTATUS_LOCAL);
->  		status = readl_relaxed(bridge_base_addr + ISTATUS_MSI);
->  		for_each_set_bit(bit, &status, msi->num_vectors) {
-> +			/*
-> +			 * As the Starfive JH7110 hardware can't keep two
-> +			 * inbound post write in order all the time, such as
-> +			 * MSI messages and NVMe completions.
-> +			 * If the NVMe completion update later than the MSI,
-> +			 * an NVMe IRQ handle will miss.
-> +			 * As a workaround, we will wait a while before
-> +			 * going to the generic handle here.
-> +			 */
-> +			if (port->msi_quirk_delay_us)
-> +				udelay(port->msi_quirk_delay_us);
->  			ret = generic_handle_domain_irq(msi->dev_domain, bit);
->  			if (ret)
->  				dev_err_ratelimited(dev, "bad MSI IRQ %d\n",
-> diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/controller/plda/pcie-plda.h
-> index 04e385758a2f..feccf285dfe8 100644
-> --- a/drivers/pci/controller/plda/pcie-plda.h
-> +++ b/drivers/pci/controller/plda/pcie-plda.h
-> @@ -186,6 +186,7 @@ struct plda_pcie_rp {
->  	int msi_irq;
->  	int intx_irq;
->  	int num_events;
-> +	u16 msi_quirk_delay_us;
->  };
->  
->  struct plda_event {
-> diff --git a/drivers/pci/controller/plda/pcie-starfive.c b/drivers/pci/controller/plda/pcie-starfive.c
-> index 9bb9f0e29565..5cfc30572b7f 100644
-> --- a/drivers/pci/controller/plda/pcie-starfive.c
-> +++ b/drivers/pci/controller/plda/pcie-starfive.c
-> @@ -391,6 +391,7 @@ static int starfive_pcie_probe(struct platform_device *pdev)
->  
->  	plda->host_ops = &sf_host_ops;
->  	plda->num_events = PLDA_MAX_EVENT_NUM;
-> +	plda->msi_quirk_delay_us = 1;
->  	/* mask doorbell event */
->  	plda->events_bitmap = GENMASK(PLDA_INT_EVENT_NUM - 1, 0)
->  			     & ~BIT(PLDA_AXI_DOORBELL)
-> -- 
-> 2.17.1
-> 
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+Regards,
+Vikash
 
