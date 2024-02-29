@@ -1,198 +1,118 @@
-Return-Path: <linux-kernel+bounces-86207-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86208-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CADFC86C19F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:08:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 542A486C1A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:11:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B8C3C1F237B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 07:08:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9D5A289C91
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 07:11:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF2D3446D3;
-	Thu, 29 Feb 2024 07:08:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26ACE446BA;
+	Thu, 29 Feb 2024 07:11:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="WQpY1uoc"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b="dYmPl4IX"
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 706421EB3F
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 07:08:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFA6239855
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 07:11:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709190485; cv=none; b=NdAg6caBkTN6hJKcjvdyEip9IZjB428s+krHWz9hEN4ncaGaw2T1N6IMfdMQ1n6a79ZycJUip7E/V07WTccpMzH5uYhQ+Op8iSPZMqGnJLcqXlBChyS7mPGNeaaG+TlV5ySO6SdbsTbQleEPoeSdnV/CKJSl7JE7HfSlTjBtVV8=
+	t=1709190705; cv=none; b=B1zRZ10nyPufhKYLr3sA1iasZQRcO2PFm+SOpQkfPeOZRosI5yRTCD3PlkAUADeJ34NHPmfb/HL/fJpcTXDDdtE/7ecMchoxcXmyJXRD8sLl5aipBGfwECaGJS5mC2F9KeECVH5w2oV+3FXzoh/onkucARz2WvxaRVQE5Cs6J/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709190485; c=relaxed/simple;
-	bh=X5CjbOavFTdLCWMYm3y2Rv94aMC10AjSMyqm+ipd/P8=;
-	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=LSbKg3R6q+fdkmPGd0Srt2BebLcYHg9JlGdi5Wuy/KnPf/aRIlqsiVSii7kIyXFdnqS0IkUrtnDXVddgujyR1dGEf5gYA906oYEBxH/jyrMWMLQCpiQ2plDYcVNoumwiyPmD9XyZEdmfJjylAa69T+OZXqnMyt+AwDFO/doWdUI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=WQpY1uoc; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-6081639fecfso8442027b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 23:08:02 -0800 (PST)
+	s=arc-20240116; t=1709190705; c=relaxed/simple;
+	bh=7vAgu6TBZL7wP1Dtd6yaFXTUrfrzipiuyuEYGbCV1P8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=LpZgcw5z0FcT/ozGSUo0DCZ3X7yj+r4djImJuqbEOZKLZl/9zfPRJq3EWj05y05hZsTSM+/GCbjXNkmJyboKaHJBTvq8w70s9mgzyNaC5fFxqheRP6Sk0FdCGPDm1uEYkg0HO7NDTGT3P/Fk3x6OEQHozFlJiCW0uVj1HZUyoYw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com; spf=pass smtp.mailfrom=shopee.com; dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b=dYmPl4IX; arc=none smtp.client-ip=209.85.215.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shopee.com
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-5e152c757a5so365658a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 23:11:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709190481; x=1709795281; darn=vger.kernel.org;
-        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=I9FoM/+qtTmDdR7edVTU9MewkXhRm/JQfAPMWm3w7Gg=;
-        b=WQpY1uoc8zh+vi6uC4OG/1bW4Kydx4kh7+FPWfy3sRpqNLYYZb3M0LdLsC7JASRaHy
-         WzUDDXsWUp+23DVBqRWYCaqmTaROfKPy1LE04RORSWVVfpydPX98D6L761xi8Qb+Atm0
-         Bdna1pUGoRCq6ob01hcwafC7j0uO6uTPUTdFBgIKfs4KZQb5g8fBNUdz/2mEpqF2tZkM
-         CaMrvFtwVStA0sxdG6AFMkt/yb/cUMV5hUWJQ5uwZgqEON5LpZzLhOlfSoP92q1gFnSB
-         nmK9JCZgs5n1yxWIu2xPLUCB8YZao0/LVJYhzu23qeIzyt5wmtndOk/hEPu+5XBHhL0C
-         LC3A==
+        d=shopee.com; s=shopee.com; t=1709190703; x=1709795503; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5xkvwofC69rUn+/tUb8tSJSWKoL6A2axBP8LYZRaIO0=;
+        b=dYmPl4IX441oFZYR0DhldlECYDULQS6hLSVzx2IyRD2hSfhuANctbtHHnokgsia/1N
+         IGb190jZHU88vQRp2B1VW7bWmwM4KPdRB+zCZki6QhEMyyD4VDGCvKa1Zqh6Ht4z8won
+         tV+Q0+dFSTLAzrTk2aB8Je9jKtMwwIikKTo9WoeRNF6aHfKWbOVGt3jHolPwLvNDjUjM
+         TCZz13AghDTniQ0UcvhzpoJ8A/9qkDfaKMLM93aagjdnSowStUblErDnA35UpG+gIFNM
+         HrsqWbKzOqJxPzvhRx3t2hOOqVPOf0xgyk5HG4+JqXrdjtQnTQ7GBWcXJa1mBGeOtjk7
+         7WFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709190481; x=1709795281;
-        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=I9FoM/+qtTmDdR7edVTU9MewkXhRm/JQfAPMWm3w7Gg=;
-        b=ndM8qfd0BeHa/QM2+4m3y8gf46LO3Pk6uAzbjVZVo4DtBCz8EWXb8RV90ClFCsudjM
-         Zz7Qifg1P93OrcKlJQomemyBoQiC1nY1saUndbarCBtbw2UifsWG19Lj1ITfaskTVaAY
-         kY4gHyIqVsb2t/E0tX3olCh1P1k7/Hy3G9s94cZg8ce1zEC6bOcDfvAygM/M4QezfXf+
-         c073qW57veuT/k/IifE0O4TduCdRXItXv0elz0ZJlIv/MSZGE7kkEgy9gUhjDor91CPv
-         SfhYETgDnTn3vQ/G/VZ/x7PEVykpFmpjqba8EfWJzkEP+LwknqwQb7kRWT+lGKf422+P
-         CI/A==
-X-Forwarded-Encrypted: i=1; AJvYcCXrjBV7wkXzCeDgbwHDVWFVaXuji2aPiULwHMwYBI6oaNt2nEMdsaKuxrQYiu8+i851uzWf+PGmOpFrRlvDcdybvQYL8qAC2lAN8sfG
-X-Gm-Message-State: AOJu0Yy0EjPthyIoD8Oi6/TfUo+MSGLzbRI2WvOiY2nsHc+jK/I34Pn1
-	lPGLyfFBy+UZvlJeAeNY1Mi+ytRt7JdeT0cQVvzJGJlegMIwh1CRqTQca2W+XjFlH/vwUuhbUgW
-	fLPb7OQ==
-X-Google-Smtp-Source: AGHT+IHlWorP4oTbxmh83gtnKSvh7NkNEGALjj7s+rjwojJPkv5tQUt0pKnr8V8DWymJkJUnd6ZyQfNtuDj9
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:77dc:144c:334e:e2dd])
- (user=irogers job=sendgmr) by 2002:a25:aaec:0:b0:dcc:8927:7496 with SMTP id
- t99-20020a25aaec000000b00dcc89277496mr56690ybi.5.1709190481547; Wed, 28 Feb
- 2024 23:08:01 -0800 (PST)
-Date: Wed, 28 Feb 2024 23:07:57 -0800
-Message-Id: <20240229070757.796244-1-irogers@google.com>
+        d=1e100.net; s=20230601; t=1709190703; x=1709795503;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5xkvwofC69rUn+/tUb8tSJSWKoL6A2axBP8LYZRaIO0=;
+        b=PoXA2cjb+ACSXx7mYnhXND+IdpecwN6ZF3dbJbf6HTRO5ecJE2wg8El9p7U4KYiEA+
+         KUXbWKsAfAfy5ggrQpyc2Es1hN8DKvU7aXt0GTn7G5d2x77DWCU+1hyybSMeM+h9ktIV
+         +cLRIIBbAM7Sq/SPV0VF0LUFHB+YifRyW4N5RXHUg65sDrCedG3w/FvnJbLJkkGVaBZj
+         cbjca75B+QU1En6S/kp3jNFA+M8N7BUXctud+25mUWbrE81/GC+u3W+1Pg+E6jW2I4h/
+         2538GDh8hbJSn3T0njzt2CCn7c1TGsJ9/SY11zl1WEXqG65I2FXUOv8qivQ23o+m0m1w
+         7IsQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX9+ZzAgaGVBpxgoqK2TP8tugML3u4FGpbX0p21TdbCM/77UvPyoYIVyfhptD2RD/YXFuQVFVF2rA8Q/iDCIObjQafYjQM2OUnw0MbG
+X-Gm-Message-State: AOJu0Yz2P3J4jIglgAXf/RhtiMuDqofgy22PsKvBEIjUH8qpLzkfDS/8
+	sZiE7nqyHIdfeUFmlE6GMRWIl465cWJzdPKJEVKmwy+Nm7ZXD+UeodlFDA3jYMk=
+X-Google-Smtp-Source: AGHT+IEQ2H0ctLrhNW65UhI/DSyWp0KM/Psk2LhoPNH1eSLgOJSdJDUzp4czSyjdmhJqPxdJFvn9aw==
+X-Received: by 2002:a17:90a:49cc:b0:29a:9952:67b7 with SMTP id l12-20020a17090a49cc00b0029a995267b7mr1299423pjm.48.1709190703179;
+        Wed, 28 Feb 2024 23:11:43 -0800 (PST)
+Received: from seacloud.vm ([143.92.64.18])
+        by smtp.gmail.com with ESMTPSA id gg12-20020a17090b0a0c00b002995e9aca72sm691659pjb.29.2024.02.28.23.11.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Feb 2024 23:11:42 -0800 (PST)
+From: Haifeng Xu <haifeng.xu@shopee.com>
+To: reinette.chatre@intel.com
+Cc: james.morse@arm.com,
+	fenghua.yu@intel.com,
+	babu.moger@amd.com,
+	peternewman@google.com,
+	x86@kernel.org,
+	linux-kernel@vger.kernel.org,
+	Haifeng Xu <haifeng.xu@shopee.com>
+Subject: [PATCH 0/2] x86/resctrl: Track llc_occupancy of RMIDs in limbo list
+Date: Thu, 29 Feb 2024 15:11:23 +0800
+Message-Id: <20240229071125.100991-1-haifeng.xu@shopee.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Subject: [PATCH v1] libperf evlist: Avoid out-of-bounds access
-From: Ian Rogers <irogers@google.com>
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Yang Jihong <yangjihong1@huawei.com>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Parallel testing appears to show a race between allocating and setting
-evsel ids. As there is a bounds check on the xyarray it yields a segv
-like:
+After removing a monitor group, its RMID may not be freed immediately
+unless its llc_occupancy is less than the re-allocation threshold. If
+turning up the threshold, the RMID can be reused. In order to know how
+much the threshold should be, it's necessary to acquire the llc_occupancy.
 
-```
-AddressSanitizer:DEADLYSIGNAL
+The patch series provides a new tracepoint to track the llc_occupancy.
 
-=================================================================
+Changes since v1:
+- Rename pseudo_lock_event.h instead of creating a new header file.
+- Modify names used in the new tracepoint.
+- Update changelog.
 
-==484408==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000010
+Changes since v2:
+- Fix typo and use the x86/resctrl subject prefix in the cover letter.
+- Track both CLOSID and RMID in the tracepoint.
+- Remove the details on how perf can be used in patch2's changelog.
 
-==484408==The signal is caused by a WRITE memory access.
+Haifeng Xu (2):
+  x86/resctrl: Rename pseudo_lock_event.h to trace.h
+  x86/resctrl: Add tracepoint for llc_occupancy tracking
 
-==484408==Hint: address points to the zero page.
+ arch/x86/kernel/cpu/resctrl/monitor.c         |  8 +++++++
+ arch/x86/kernel/cpu/resctrl/pseudo_lock.c     |  2 +-
+ .../resctrl/{pseudo_lock_event.h => trace.h}  | 23 +++++++++++++++----
+ 3 files changed, 28 insertions(+), 5 deletions(-)
+ rename arch/x86/kernel/cpu/resctrl/{pseudo_lock_event.h => trace.h} (59%)
 
-    #0 0x55cef5d4eff4 in perf_evlist__id_hash tools/lib/perf/evlist.c:256
-    #1 0x55cef5d4f132 in perf_evlist__id_add tools/lib/perf/evlist.c:274
-    #2 0x55cef5d4f545 in perf_evlist__id_add_fd tools/lib/perf/evlist.c:315
-    #3 0x55cef5a1923f in store_evsel_ids util/evsel.c:3130
-    #4 0x55cef5a19400 in evsel__store_ids util/evsel.c:3147
-    #5 0x55cef5888204 in __run_perf_stat tools/perf/builtin-stat.c:832
-    #6 0x55cef5888c06 in run_perf_stat tools/perf/builtin-stat.c:960
-    #7 0x55cef58932db in cmd_stat tools/perf/builtin-stat.c:2878
-..
-```
-
-Avoid this crash by early exiting the perf_evlist__id_add_fd and
-perf_evlist__id_add is the access is out-of-bounds.
-
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/lib/perf/evlist.c                  | 18 ++++++++++++------
- tools/lib/perf/include/internal/evlist.h |  4 ++--
- 2 files changed, 14 insertions(+), 8 deletions(-)
-
-diff --git a/tools/lib/perf/evlist.c b/tools/lib/perf/evlist.c
-index 058e3ff10f9b..c6d67fc9e57e 100644
---- a/tools/lib/perf/evlist.c
-+++ b/tools/lib/perf/evlist.c
-@@ -248,10 +248,10 @@ u64 perf_evlist__read_format(struct perf_evlist *evlist)
- 
- static void perf_evlist__id_hash(struct perf_evlist *evlist,
- 				 struct perf_evsel *evsel,
--				 int cpu, int thread, u64 id)
-+				 int cpu_map_idx, int thread, u64 id)
- {
- 	int hash;
--	struct perf_sample_id *sid = SID(evsel, cpu, thread);
-+	struct perf_sample_id *sid = SID(evsel, cpu_map_idx, thread);
- 
- 	sid->id = id;
- 	sid->evsel = evsel;
-@@ -269,21 +269,27 @@ void perf_evlist__reset_id_hash(struct perf_evlist *evlist)
- 
- void perf_evlist__id_add(struct perf_evlist *evlist,
- 			 struct perf_evsel *evsel,
--			 int cpu, int thread, u64 id)
-+			 int cpu_map_idx, int thread, u64 id)
- {
--	perf_evlist__id_hash(evlist, evsel, cpu, thread, id);
-+	if (!SID(evsel, cpu_map_idx, thread))
-+		return;
-+
-+	perf_evlist__id_hash(evlist, evsel, cpu_map_idx, thread, id);
- 	evsel->id[evsel->ids++] = id;
- }
- 
- int perf_evlist__id_add_fd(struct perf_evlist *evlist,
- 			   struct perf_evsel *evsel,
--			   int cpu, int thread, int fd)
-+			   int cpu_map_idx, int thread, int fd)
- {
- 	u64 read_data[4] = { 0, };
- 	int id_idx = 1; /* The first entry is the counter value */
- 	u64 id;
- 	int ret;
- 
-+	if (!SID(evsel, cpu_map_idx, thread))
-+		return -1;
-+
- 	ret = ioctl(fd, PERF_EVENT_IOC_ID, &id);
- 	if (!ret)
- 		goto add;
-@@ -312,7 +318,7 @@ int perf_evlist__id_add_fd(struct perf_evlist *evlist,
- 	id = read_data[id_idx];
- 
- add:
--	perf_evlist__id_add(evlist, evsel, cpu, thread, id);
-+	perf_evlist__id_add(evlist, evsel, cpu_map_idx, thread, id);
- 	return 0;
- }
- 
-diff --git a/tools/lib/perf/include/internal/evlist.h b/tools/lib/perf/include/internal/evlist.h
-index d86ffe8ed483..f43bdb9b6227 100644
---- a/tools/lib/perf/include/internal/evlist.h
-+++ b/tools/lib/perf/include/internal/evlist.h
-@@ -126,11 +126,11 @@ u64 perf_evlist__read_format(struct perf_evlist *evlist);
- 
- void perf_evlist__id_add(struct perf_evlist *evlist,
- 			 struct perf_evsel *evsel,
--			 int cpu, int thread, u64 id);
-+			 int cpu_map_idx, int thread, u64 id);
- 
- int perf_evlist__id_add_fd(struct perf_evlist *evlist,
- 			   struct perf_evsel *evsel,
--			   int cpu, int thread, int fd);
-+			   int cpu_map_idx, int thread, int fd);
- 
- void perf_evlist__reset_id_hash(struct perf_evlist *evlist);
- 
 -- 
-2.44.0.278.ge034bb2e1d-goog
+2.25.1
 
 
