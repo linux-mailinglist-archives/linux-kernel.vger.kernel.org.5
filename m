@@ -1,229 +1,147 @@
-Return-Path: <linux-kernel+bounces-86004-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85999-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14E3286BE5F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 02:37:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DC4B86BE4D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 02:36:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 95E291F21A86
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:37:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 417AFB21C20
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:36:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54BFA374C4;
-	Thu, 29 Feb 2024 01:36:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA2462E413;
+	Thu, 29 Feb 2024 01:36:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fJfE2cpV"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="ELJO8Bj9"
+Received: from omta36.uswest2.a.cloudfilter.net (omta36.uswest2.a.cloudfilter.net [35.89.44.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 436942E405;
-	Thu, 29 Feb 2024 01:36:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8253F17554
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 01:36:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709170617; cv=none; b=tNEFhZ690PXGipgGyhb4amGjOAK4Ee33DwWxaY6SZOcWJ9wCvTkVq+hbDfWsHMHMsDGCyUQU/4xdwyNL9LozR2atXDGMoNMH0TocIE1JNgnzymDQZg/mAGMQ3ibzJ10/rZQkDWgg2fMck6O/3tWHd+BHxIIebZ+ypJlaUT/hWsE=
+	t=1709170589; cv=none; b=D5Q/WdHZ+92kyKAPJWC4FWQPZs36auHBj164gHP6B9wCxqrrQefXvKiEKoR0kUIS/t49mjF2EX/7riEB/QZFFx6DAh+abZOfSPmZ20YisfHBNF8gF+3QPh2nG4tVhD2vpSknAjP3tqNbwkvpe7g8yYxD6LuJbh/mzUXHLx+0xys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709170617; c=relaxed/simple;
-	bh=ZAX9Em2I3TtnHcZcltf0TchJ6NPlrQE8PyBaCkDKCT0=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=U5dgxdDA7kzZgFDz0Profv3mOqSvtCoy5i28g8jaE0s8moiVkxvf9KBuRPj3Q4KTs/fdB2ZQS444yFapZHb2tU+jrj0E9rF6Zzw0oKKzpWlDZRWU3w4/Sf2iLWMyKwiQXiOnZBw87RPYv95CUYLXUOaacrcKx8AXT4OdNImMptU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fJfE2cpV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id DBC2BC433B2;
-	Thu, 29 Feb 2024 01:36:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709170617;
-	bh=ZAX9Em2I3TtnHcZcltf0TchJ6NPlrQE8PyBaCkDKCT0=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=fJfE2cpVEv1aeWqnrwcrBCiXfVeXoJr1Ghu5XQPrnDCiL9ZrkmyE6d1bKmEKHZiIm
-	 E5x2f8SMzHYv2Ww9py8mhD6do31O3vcUjIa9yz70zEJnveGNTlz6vb4sooZsbHrbHO
-	 cwXRJ7TuHftHZYYOrHc8AYw6yjO1O7pFmR3l1BXA8QWmTY923UlAdlgq9rN+q7wqPX
-	 f6tqgf/2jlP+cg9F6D6Fgy+cF6ZwGdlc31jaOK6H6YNJJoy/MiP0YiQ2QZpDtzNIyk
-	 M7AEC8tRUr68CFqVp90pB6LtQkCRZVmKEaPhfn1Uz6hA+17gsXxpdAqUWQgE583ln/
-	 0U3oieBm8cueA==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BBF22C54E58;
-	Thu, 29 Feb 2024 01:36:56 +0000 (UTC)
-From: Yang Xiwen via B4 Relay <devnull+forbidden405.outlook.com@kernel.org>
-Date: Thu, 29 Feb 2024 09:36:21 +0800
-Subject: [PATCH v7 3/5] dt-bindings: mmc: dw-mshc-hi3798cv200: convert to
- YAML
+	s=arc-20240116; t=1709170589; c=relaxed/simple;
+	bh=+q2AytV+UscXohFfoUnQzX7SS5YtqNU5pYoLOmw3iMI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=W4MyBFZsWc/YdCylCGkzlc10vu/9/l4+g6ZYTivoXFMqi00PSapZFx6lxob6eIXlSlx3togLYhZA2Ua/sFYwKeJXnWquLXXBIQmNQWRunWmea4zCQ4V5DSPAkDBS7RkzF9zQNtYpUR50hCEK2r7st4zf/2wPQevyZfa69FiY0No=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=ELJO8Bj9; arc=none smtp.client-ip=35.89.44.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
+Received: from eig-obgw-5004a.ext.cloudfilter.net ([10.0.29.221])
+	by cmsmtp with ESMTPS
+	id fSS6ru3fntf2QfVLXrZnS5; Thu, 29 Feb 2024 01:36:27 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+	by cmsmtp with ESMTPS
+	id fVLWrRBaHpZ2hfVLWruoIh; Thu, 29 Feb 2024 01:36:26 +0000
+X-Authority-Analysis: v=2.4 cv=EZvOQumC c=1 sm=1 tr=0 ts=65dfdf9a
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=VhncohosazJxI00KdYJ/5A==:17
+ a=IkcTkHD0fZMA:10 a=k7vzHIieQBIA:10 a=wYkD_t78qR0A:10
+ a=kwRZLr0jWMAg0_Wj33cA:9 a=QEXdDO2ut3YA:10 a=zZCYzV9kfG8A:10
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=iICL8pgfW/eValc0KcsgShjcYjIIkOjZx3q+9YTL2YU=; b=ELJO8Bj9iMneFv7JC7NmH7UfR+
+	g3TzcaAOp/fsvnRTc0nv6FPuxXS1rmofZjAgM9xgiqmDJbxCRVeT7z4+baskZePZ5zAGQtgXwgHQu
+	JpUd4pr/VhZ+kJ7GI3K6iYAyeoPdAtuevqTXNuCNgUcY77pw2nZlDUlNd5N4gjcNQwEsDEqG5XKGQ
+	v+lCm6CmYcGG1ilpML1wGXvZYFSTc3fZhNlLZS+DTF2vbrRFYwR9/fBstubGpRgqQkbXWlwdLFVCF
+	EkuimUCvI7CTu+JWTBXZU5tyNGxXGwZFlqF6/BNo3duYtIOpN/De+o3hBnbkGy4+XX6pGfM6koybY
+	nKqEsKDA==;
+Received: from [201.172.172.225] (port=34076 helo=[192.168.15.10])
+	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <gustavo@embeddedor.com>)
+	id 1rfVLV-002v75-09;
+	Wed, 28 Feb 2024 19:36:25 -0600
+Message-ID: <126f4cb7-7164-43d2-bf0e-1192d1438338@embeddedor.com>
+Date: Wed, 28 Feb 2024 19:36:22 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 7/8] net-device: Use new helpers from overflow.h in
+ netdevice APIs
+Content-Language: en-US
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Vinod Koul <vkoul@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org,
+ dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-iio@vger.kernel.org, linux-spi@vger.kernel.org,
+ netdev@vger.kernel.org, linux-hardening@vger.kernel.org,
+ Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Paolo Abeni <pabeni@redhat.com>, "Gustavo A. R. Silva"
+ <gustavoars@kernel.org>
+References: <20240228204919.3680786-1-andriy.shevchenko@linux.intel.com>
+ <20240228204919.3680786-8-andriy.shevchenko@linux.intel.com>
+ <202402281341.AC67EB6E35@keescook> <20240228144148.5c227487@kernel.org>
+ <202402281554.C1CEEF744@keescook>
+ <653bbfe8-1b35-4f5e-b89d-9e374c64e46b@embeddedor.com>
+ <20240228165730.3171d76c@kernel.org>
+ <49f55b02-ce21-40ac-a4cc-02894cd5eb8f@embeddedor.com>
+ <20240228171509.4eeb5519@kernel.org>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20240228171509.4eeb5519@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240229-b4-mmc-hi3798mv200-v7-3-10c03f316285@outlook.com>
-References: <20240229-b4-mmc-hi3798mv200-v7-0-10c03f316285@outlook.com>
-In-Reply-To: <20240229-b4-mmc-hi3798mv200-v7-0-10c03f316285@outlook.com>
-To: Ulf Hansson <ulf.hansson@linaro.org>, 
- Jaehoon Chung <jh80.chung@samsung.com>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>, 
- Andrew Jeffery <andrew@codeconstruct.com.au>, Joel Stanley <joel@jms.id.au>
-Cc: Igor Opaniuk <igor.opaniuk@linaro.org>, 
- tianshuliang <tianshuliang@hisilicon.com>, David Yang <mmyangfl@gmail.com>, 
- linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-aspeed@lists.ozlabs.org, 
- openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, 
- Yang Xiwen <forbidden405@outlook.com>, 
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1709170614; l=4709;
- i=forbidden405@outlook.com; s=20240228; h=from:subject:message-id;
- bh=z5/cBD8zJzGgT2WFAWSZ2rRYPe9PGIgRVLWNL1lYtXo=;
- b=rrz0p4sOIrPNdi1gVfnAyczCSjjccKIOPM/v2Yyb5PUYvEd3TPkyAtFBFTRgEn3Zwn/rFDB/e
- EBC4BW3ON6VA9BQ8beQAiDIwAF+tBxcYmafgpcR73ft2y85RS+TDR34
-X-Developer-Key: i=forbidden405@outlook.com; a=ed25519;
- pk=KAWv6ZzFsT54MGllOczJgFiWB+DuayEmyn24iiVVThU=
-X-Endpoint-Received:
- by B4 Relay for forbidden405@outlook.com/20240228 with auth_id=136
-X-Original-From: Yang Xiwen <forbidden405@outlook.com>
-Reply-To: <forbidden405@outlook.com>
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 201.172.172.225
+X-Source-L: No
+X-Exim-ID: 1rfVLV-002v75-09
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.15.10]) [201.172.172.225]:34076
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 31
+X-Org: HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfE3kDWldOfuUSzFT8eDwHtJ9EpS/4JTEXOy2pbp9KYZQs82QUVrn6q3TTW0osT2IJX+ILcOxiUUUVa9F9D+l1nhsFgM7F6OjgbR3iZhY2wiVbDRDqFdi
+ qBThToDWCghe6b8YJ4oiLnQOXSTTIgfqKB3rliEsBZfxn6Bf4zxbpcTf9IyeI/tixx68u9nBYeOrTdAFUwyI7QBQQ0ECItRPvHMqbMyGIktKWNM5Uhig0qt9
 
-From: Yang Xiwen <forbidden405@outlook.com>
 
-convert the legacy txt binding to modern YAML and rename to
-hisilicon,hi3798cv200-dw-mshc.yaml. No semantic change.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
----
- .../bindings/mmc/hi3798cv200-dw-mshc.txt           | 40 ------------
- .../mmc/hisilicon,hi3798cv200-dw-mshc.yaml         | 75 ++++++++++++++++++++++
- 2 files changed, 75 insertions(+), 40 deletions(-)
+On 2/28/24 19:15, Jakub Kicinski wrote:
+> On Wed, 28 Feb 2024 19:03:12 -0600 Gustavo A. R. Silva wrote:
+>> On 2/28/24 18:57, Jakub Kicinski wrote:
+>>> On Wed, 28 Feb 2024 18:49:25 -0600 Gustavo A. R. Silva wrote:
+>>>> struct net_device {
+>>>> 	struct_group_tagged(net_device_hdr, hdr,
+>>>> 		...
+>>>> 		u32			priv_size;
+>>>> 	);
+>>>> 	u8			priv_data[] __counted_by(priv_size) __aligned(NETDEV_ALIGN);
+>>>> }
+>>>
+>>> No, no, that's not happening.
+>>
+>> Thanks, one less flex-struct to change. :)
+> 
+> I like the flex struct.
+> I don't like struct group around a 360LoC declaration just to avoid
+> having to fix up a handful of users.
 
-diff --git a/Documentation/devicetree/bindings/mmc/hi3798cv200-dw-mshc.txt b/Documentation/devicetree/bindings/mmc/hi3798cv200-dw-mshc.txt
-deleted file mode 100644
-index a0693b7145f2..000000000000
---- a/Documentation/devicetree/bindings/mmc/hi3798cv200-dw-mshc.txt
-+++ /dev/null
-@@ -1,40 +0,0 @@
--* Hisilicon Hi3798CV200 specific extensions to the Synopsys Designware Mobile
--  Storage Host Controller
--
--Read synopsys-dw-mshc.txt for more details
--
--The Synopsys designware mobile storage host controller is used to interface
--a SoC with storage medium such as eMMC or SD/MMC cards. This file documents
--differences between the core Synopsys dw mshc controller properties described
--by synopsys-dw-mshc.txt and the properties used by the Hisilicon Hi3798CV200
--specific extensions to the Synopsys Designware Mobile Storage Host Controller.
--
--Required Properties:
--- compatible: Should contain "hisilicon,hi3798cv200-dw-mshc".
--- clocks: A list of phandle + clock-specifier pairs for the clocks listed
--  in clock-names.
--- clock-names: Should contain the following:
--	"ciu" - The ciu clock described in synopsys-dw-mshc.txt.
--	"biu" - The biu clock described in synopsys-dw-mshc.txt.
--	"ciu-sample" - Hi3798CV200 extended phase clock for ciu sampling.
--	"ciu-drive"  - Hi3798CV200 extended phase clock for ciu driving.
--
--Example:
--
--	emmc: mmc@9830000 {
--		compatible = "hisilicon,hi3798cv200-dw-mshc";
--		reg = <0x9830000 0x10000>;
--		interrupts = <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
--		clocks = <&crg HISTB_MMC_CIU_CLK>,
--			 <&crg HISTB_MMC_BIU_CLK>,
--			 <&crg HISTB_MMC_SAMPLE_CLK>,
--			 <&crg HISTB_MMC_DRV_CLK>;
--		clock-names = "ciu", "biu", "ciu-sample", "ciu-drive";
--		fifo-depth = <256>;
--		clock-frequency = <200000000>;
--		cap-mmc-highspeed;
--		mmc-ddr-1_8v;
--		mmc-hs200-1_8v;
--		non-removable;
--		bus-width = <8>;
--	};
-diff --git a/Documentation/devicetree/bindings/mmc/hisilicon,hi3798cv200-dw-mshc.yaml b/Documentation/devicetree/bindings/mmc/hisilicon,hi3798cv200-dw-mshc.yaml
-new file mode 100644
-index 000000000000..f3dc973cb490
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mmc/hisilicon,hi3798cv200-dw-mshc.yaml
-@@ -0,0 +1,75 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mmc/hisilicon,hi3798cv200-dw-mshc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Hisilicon Hi3798CV200 SoC specific extensions to the Synopsys DWMMC controller
-+
-+maintainers:
-+  - Yang Xiwen <forbidden405@outlook.com>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - hisilicon,hi3798cv200-dw-mshc
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description: bus interface unit clock
-+      - description: card interface unit clock
-+      - description: card input sample phase clock
-+      - description: controller output drive phase clock
-+
-+  clock-names:
-+    items:
-+      - const: ciu
-+      - const: biu
-+      - const: ciu-sample
-+      - const: ciu-drive
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+
-+allOf:
-+  - $ref: synopsys-dw-mshc-common.yaml#
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/histb-clock.h>
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+
-+    mmc@9830000 {
-+        compatible = "hisilicon,hi3798cv200-dw-mshc";
-+        reg = <0x9830000 0x10000>;
-+        interrupts = <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
-+        clocks = <&crg HISTB_MMC_CIU_CLK>,
-+                 <&crg HISTB_MMC_BIU_CLK>,
-+                 <&crg HISTB_MMC_SAMPLE_CLK>,
-+                 <&crg HISTB_MMC_DRV_CLK>;
-+        clock-names = "ciu", "biu", "ciu-sample", "ciu-drive";
-+        resets = <&crg 0xa0 4>;
-+        reset-names = "reset";
-+        pinctrl-names = "default";
-+        pinctrl-0 = <&emmc_pins_1 &emmc_pins_2
-+                     &emmc_pins_3 &emmc_pins_4>;
-+        fifo-depth = <256>;
-+        clock-frequency = <200000000>;
-+        cap-mmc-highspeed;
-+        mmc-ddr-1_8v;
-+        mmc-hs200-1_8v;
-+        non-removable;
-+        bus-width = <8>;
-+    };
+That's what I mean. If we can prevent the flex array ending up in the
+middle of a struct by any means, then I wouldn't have to change the
+flex struct.
 
--- 
-2.43.0
-
+--
+Gustavo
 
