@@ -1,102 +1,90 @@
-Return-Path: <linux-kernel+bounces-87363-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87364-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CEA7586D356
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:38:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FCED86D35C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:39:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DAB2C1C2242B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:38:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C34641F25A7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:39:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E53313C9FF;
-	Thu, 29 Feb 2024 19:38:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B67E613C9F9;
+	Thu, 29 Feb 2024 19:39:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="TD9nXLrq"
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="PKuAhuaM"
+Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D78813C9E1
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 19:38:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E7331E499
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 19:39:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709235519; cv=none; b=jI8DVI4KLc+ZAKu1H4xn0/iJjndOi2DT6eGGaQIRGhWre+hwBcayM0BugjdFKjiCyYyDvqLS70e7mZ5vX6+au9WvY8U7JHVggW88kMBdC+YPdcBKMeB+XuhZutRQW17Xm/+wplFdfJXcO+AWWerTB1lWNQfuEd8wH2EyB6HkaCQ=
+	t=1709235573; cv=none; b=QQNwcRFGjAf5aQRdBm8ihg2JEZMJl0ylpUiCMeoMXmyQBMA3+eJwPgbys9OtketY5OPqmEh/64D7MaYK3TffgfUckAhKq2ixKHE3lumSq53TacN4YTfFrssT7NkRTks1kHFinvbMB3o5kGwkdVhOvw9ZWt4jy3U1C5+RZqRefHw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709235519; c=relaxed/simple;
-	bh=4aW9MYhuIFjdLhubgiG7js2bZ/KKs/H3S5wRJKpoVzI=;
+	s=arc-20240116; t=1709235573; c=relaxed/simple;
+	bh=C+JJWelZGwVqdA3olYAOFPwLiYZ4xCxGhyr4cc7HScs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SumgchI/9gz/XYeuhSBk7XG+2JMQUxjiT/1ZgTnpwofEy+gSk6Zz+a1ED0hrZLBv9ch7rxCLe61EOA/Do8Zm/inkVQU+y06U/ePoGqscriyleYinQh3QgaN8Qf+qT32AUO3MDIDSuRii0HaUtnFRh2WDr3xLD3aKr93rPXbQNbk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=TD9nXLrq; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1dc9222b337so14069115ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 11:38:37 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=aZzkWzD6mD43xVqqi09cAdproaMG3JM+7TNxcPxiOKHPj2FIC3IjlDErHbjHqcRRCQdw/estb5veLr+PhsZM0MaeJPcRt5yG3twz7ZlBeLNKufrq+zoiRSLeAElN+dOluU0i+aT3dFIJGxGxf0DdaZA87dHWjgnBOyT6sJxzU4w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=PKuAhuaM; arc=none smtp.client-ip=209.85.166.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-7c7f3f66d17so65111339f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 11:39:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1709235517; x=1709840317; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=rcIkG6HFp7uZcYBkm60c3cGbHaaSPPHBdXFb5C4zZf4=;
-        b=TD9nXLrqzbhs3NYuVki1G1ktfdGoNAy0+EMDRaNz4iVHNAlwzLuET+oLPnffra7tjo
-         PetgQsZB5ACGahEddvt8mXrGeEqfOfnI5ZBt8BkVax9kNyX/kT3OSBYP74a0j36EldRz
-         51PeGymirMoJN3iNnCFeN3rJ0qQ2/+RDVYDaAeT2TLs+5KSl9BwsEtfw+WYdinj6vTUh
-         KjlNoKcfMi8i1xDz/nJnwc6P8Ip5sjHSXIpMvhwQInIcGtO0qD8b8ytYdwWsPtfoxC2F
-         Bk3luh6z2/IruzBVUqzIBD3Et+ev7/eJkbZHlAC4l7KxTDzXCQUmPWW+8vAuBhWMJHAp
-         qXLQ==
+        d=chromium.org; s=google; t=1709235570; x=1709840370; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2Gj+BEkBgEqWivQ9srAklb104D0qLcRARdb72wK6r78=;
+        b=PKuAhuaMP8LVFhKCMwblPJuUacOs/osxN+NdGDZvkQ/VJ2pHAipwWYhzZyvJ42ZKY0
+         WMCXfAsu5wpKJL2BrGycPI+Q0FGvGdaxWOS2ofVvlgxhYUl3YlqofP6c3ic/UgKj01Sa
+         9UfVQ0iJoF5PPMhV1Qx77LSJDoF/kN5ZW+p0o=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709235517; x=1709840317;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rcIkG6HFp7uZcYBkm60c3cGbHaaSPPHBdXFb5C4zZf4=;
-        b=rK5cQpENICwrGwjQoGvFVYmYwt0XCoEvUyIl9YCjjNCW18y8L6gAgcQcpJlnKeyeWW
-         Mk9jN6pYkddUCL7P0HoMNIcNUWZJVZmaoL8W2kjlG4Ax5EhOpJ6Uf16CBw5d3/YT6Rh1
-         5hG5nSmA4KQ3XCxU2OTuufI3P5sf1kfzIjKfrBg+C7YCflQhXiQWTQJsCimfoMi04Rq6
-         wcPH/JmVzgfj8Xaoz/rP2zu1CpXOk2jf2vYRhc4zWl5eGGYQ/YmUW2HWcntJIrDwi/Gh
-         ZW8HBBLFVuaX2QlPajcLPb0dd/6RmsHVJpj1i3t973XB4wgDKWZf8CrRJxr0gyo7RH9Q
-         18yA==
-X-Forwarded-Encrypted: i=1; AJvYcCVb2QyN3O35MYLsQZC8dYq/rDF8+eS/TrfCz0I2QpWPA+n/LBSMp1+ZI3tf1AWj0HRYPt2xIlqpTExjogh11Mnaa8++HBLn6LcDuMNE
-X-Gm-Message-State: AOJu0Yw9UOec12a3LGD7aeLotnB9/kNrFJ6d+NGoNKOwybvg0T+vcpT6
-	Sr97idMBMMGeV4tYA76AZj3eA6k+Oy8JKPK8rO2LRmcU7GP1SLcyAaMM+sgbxWs=
-X-Google-Smtp-Source: AGHT+IEc/+N/zfBWL2SjIGOuFZU9HIIzbM7d4fTNXNz5BNU0WgDZNIZtrvJHlvscGNOnWmqdoKxhBg==
-X-Received: by 2002:a17:902:f806:b0:1dc:2755:16e4 with SMTP id ix6-20020a170902f80600b001dc275516e4mr3088414plb.22.1709235517284;
-        Thu, 29 Feb 2024 11:38:37 -0800 (PST)
-Received: from ghost (mobile-166-137-160-039.mycingular.net. [166.137.160.39])
-        by smtp.gmail.com with ESMTPSA id u5-20020a170902b28500b001d6ee9d8957sm1864423plr.281.2024.02.29.11.38.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 11:38:36 -0800 (PST)
-Date: Thu, 29 Feb 2024 11:38:32 -0800
-From: Charlie Jenkins <charlie@rivosinc.com>
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"Russell King (Oracle)" <linux@armlinux.org.uk>,
-	David Laight <David.Laight@aculab.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Helge Deller <deller@gmx.de>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Parisc List <linux-parisc@vger.kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Palmer Dabbelt <palmer@rivosinc.com>,
-	Linux ARM <linux-arm-kernel@lists.infradead.org>,
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
-	KUnit Development <kunit-dev@googlegroups.com>
-Subject: Re: [PATCH v10] lib: checksum: Use aligned accesses for ip_fast_csum
- and csum_ipv6_magic tests
-Message-ID: <ZeDdOH0zBY8qKrVH@ghost>
-References: <b13b8847977d4cfa99b6a0c9a0fcbbcf@AcuMS.aculab.com>
- <Zd0b8SDT8hrG/0yW@ghost>
- <cdd09f7a-83b2-41ba-a32c-9886dd79c43e@roeck-us.net>
- <9b4ce664-3ddb-4789-9d5d-8824f9089c48@csgroup.eu>
- <Zd25XWTkDPuIjpF8@shell.armlinux.org.uk>
- <Zd58jvN3PjQSe+yt@ghost>
- <c0449c0a-33bc-49c4-97e3-56a79a6ce93e@csgroup.eu>
- <02bb92c3-a14c-4a77-a3b0-a7c857d1d60d@roeck-us.net>
- <CAMuHMdW-sUYr8_y6av9Dbtz6JJAxBUsiTGZcK2QYEHo0x1z44w@mail.gmail.com>
- <e9112858-76b8-4b91-88b1-b5694cda3350@roeck-us.net>
+        d=1e100.net; s=20230601; t=1709235570; x=1709840370;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2Gj+BEkBgEqWivQ9srAklb104D0qLcRARdb72wK6r78=;
+        b=mEiOA0zoGjSzOZlbK7C6fBQTS9JSferfjGj8INgwB4vpfhtluKR0NPwwf03AAVqukz
+         zlR6FB1fykWWWQslgt9bUhjN0JM7g/0H2GuYyXCwrEk10FU44K/MXLneq2hdufUn9gQP
+         Hm17ohIvjtj8tjd3OYE8K7Ap/2DFqA6WBhFShfy7itk3XkDT+16Eh4PU0/qRP/KRuwu3
+         cUrZnwrTtRE5S6ZYy3WcR6QrcxXNJDVY593tikW+iVInC5KF5BhvOcb9++eZ/CLBa9jR
+         2axIvimbEntaREAljQnfaJnuNJzLdfL9bHFMdEZGr1cFS6ceBe3i9rJCrO2oTOi9r5qW
+         Phsg==
+X-Forwarded-Encrypted: i=1; AJvYcCWmeOveKpFKGveOYBEwR8odXYe62Tv7cKTlDP9jad05jmMj/DWvU83+lDNyTQq2zNzyov/JWRbP1VZbyV5SM3G8aVt1SAYmWPfwHz99
+X-Gm-Message-State: AOJu0YwxTMEEdMuD7XDXfcjnwvNqUwVC4pevzOIJ8sXVvzjz7h+c5b1T
+	Pu9e9DbdXurOYPggM9IHls/Ozw/AUHSu9ZdGdV+UdCLKuwO/srJGUSS/vGEjvA==
+X-Google-Smtp-Source: AGHT+IFflBENGybw7AkP83/tQKr6kJsdZWm0Sw/tOPw0d/8ecXfBEQAjJ/Tt6ipaHpc0qkUXGk0Gbw==
+X-Received: by 2002:a6b:5b08:0:b0:7c7:a1e1:e2ec with SMTP id v8-20020a6b5b08000000b007c7a1e1e2ecmr3715738ioh.17.1709235570008;
+        Thu, 29 Feb 2024 11:39:30 -0800 (PST)
+Received: from localhost (144.57.222.35.bc.googleusercontent.com. [35.222.57.144])
+        by smtp.gmail.com with UTF8SMTPSA id dy2-20020a0566381d4200b004747cfba9cesm448794jab.104.2024.02.29.11.39.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Feb 2024 11:39:29 -0800 (PST)
+Date: Thu, 29 Feb 2024 19:39:29 +0000
+From: Matthias Kaehlcke <mka@chromium.org>
+To: Javier Carrasco <javier.carrasco@wolfvision.net>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Helen Koike <helen.koike@collabora.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Russell King <linux@armlinux.org.uk>,
+	linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v6 3/9] usb: misc: onboard_hub: rename to onboard_dev
+Message-ID: <ZeDdcZHCNNjKizDa@google.com>
+References: <20240229-onboard_xvf3500-v6-0-a0aff2947040@wolfvision.net>
+ <20240229-onboard_xvf3500-v6-3-a0aff2947040@wolfvision.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -105,71 +93,59 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e9112858-76b8-4b91-88b1-b5694cda3350@roeck-us.net>
+In-Reply-To: <20240229-onboard_xvf3500-v6-3-a0aff2947040@wolfvision.net>
 
-On Wed, Feb 28, 2024 at 07:40:43AM -0800, Guenter Roeck wrote:
-> On 2/28/24 02:15, Geert Uytterhoeven wrote:
-> > CC testing
-> > 
-> > On Wed, Feb 28, 2024 at 8:59 AM Guenter Roeck <linux@roeck-us.net> wrote:
-> > > On 2/27/24 23:25, Christophe Leroy wrote:
-> > > [ ... ]
-> > > > > 
-> > > > > This test case is supposed to be as true to the "general case" as
-> > > > > possible, so I have aligned the data along 14 + NET_IP_ALIGN. On ARM
-> > > > > this will be a 16-byte boundary since NET_IP_ALIGN is 2. A driver that
-> > > > > does not follow this may not be appropriately tested by this test case,
-> > > > > but anyone is welcome to submit additional test cases that address this
-> > > > > additional alignment concern.
-> > > > 
-> > > > But then this test case is becoming less and less true to the "general
-> > > > case" with this patch, whereas your initial implementation was almost
-> > > > perfect as it was covering most cases, a lot more than what we get with
-> > > > that patch applied.
-> > > > 
-> > > NP with me if that is where people want to go. I'll simply disable checksum
-> > > tests on all architectures which don't support unaligned accesses (so far
-> > > it looks like that is only arm with thumb instructions, and possibly nios2).
-> > > I personally find that less desirable and would have preferred a second
-> > > configurable set of tests for unaligned accesses, but I have no problem
-> > > with it.
-> > 
-> > IMHO the tests should validate the expected functionality.  If a test
-> > fails, either functionality is missing or behaves wrong, or the test
-> > is wrong.
-> > 
-> > What is the point of writing tests for a core functionality like network
-> > checksumming that do not match the expected functionality?
-> > 
+On Thu, Feb 29, 2024 at 09:34:46AM +0100, Javier Carrasco wrote:
+> This patch prepares onboad_hub to support non-hub devices by renaming
+> the driver files and their content, the headers and their references.
 > 
-> Tough one. I can't enable CONFIG_NET_TEST on nios2, parisc, and arm with THUMB
-> enabled due to crashes or hangs in gso tests. I accept that. Downside is that I
-> have to disable CONFIG_NET_TEST on those architectures/platforms entirely,
-> meaning a whole class of tests are missing for those architectures. I would
-> prefer to have a configuration option such as CONFIG_NET_GSO_TEST to let me
-> disable the problematic tests for the affected platforms so I can run all
-> the other network unit tests. Yes, obviously something is wrong either with
-> the affected tests or with the implementation of the tested functionality
-> on the affected systems, but that could be handled separately if a separate
-> configuration option existed, and new regressions in other tests on the affected
-> architectures could be identified as they happen.
+> The comments and descriptions have been slightly modified to keep
+> coherence and account for the specific cases that only affect onboard
+> hubs (e.g. peer-hub).
+> 
+> The "hub" variables in functions where "dev" (and similar names) variables
+> already exist have been renamed to onboard_dev for clarity, which adds a
+> few lines in cases where more than 80 characters are used.
+> 
+> No new functionality has been added.
+> 
+> Signed-off-by: Javier Carrasco <javier.carrasco@wolfvision.net>
 
-I think I got confused here, is this an issue with the tests included in
-this patch or is it unrelated?
+Acked-by: Matthias Kaehlcke <mka@chromium.org>
 
-- Charlie
+This should land together with "usb: misc: onboard_dev: add support for
+non-hub devices".
 
-> 
-> This case is similar. I'd prefer to have a separate configuration option,
-> say, CONFIG_CHECKSUM_MISALIGNED_KUNIT, which I can disable to be able to
-> run the common checksum tests on platforms / architectures which don't
-> support unaligned accesses.
-> 
-> However, as I said, if the community wants to take a harsh stance, I have no
-> problem with just disabling groups of tests entirely on platforms which have
-> a problem with part of it.
-> 
-> Guenter
-> 
+> diff --git a/drivers/usb/misc/onboard_usb_dev.c b/drivers/usb/misc/onboard_usb_dev.c
+> new file mode 100644
+> index 000000000000..4ae580445408
+> --- /dev/null
+> +++ b/drivers/usb/misc/onboard_usb_dev.c
+>
+> ...
+>
+> +static const struct usb_device_id onboard_dev_id_table[] = {
+> +	{ USB_DEVICE(VENDOR_ID_CYPRESS, 0x6504) }, /* CYUSB33{0,1,2}x/CYUSB230x 3.0 HUB */
+> +	{ USB_DEVICE(VENDOR_ID_CYPRESS, 0x6506) }, /* CYUSB33{0,1,2}x/CYUSB230x 2.0 HUB */
+> +	{ USB_DEVICE(VENDOR_ID_CYPRESS, 0x6570) }, /* CY7C6563x 2.0 HUB */
+> +	{ USB_DEVICE(VENDOR_ID_GENESYS, 0x0608) }, /* Genesys Logic GL850G USB 2.0 HUB */
+> +	{ USB_DEVICE(VENDOR_ID_GENESYS, 0x0610) }, /* Genesys Logic GL852G USB 2.0 HUB */
+> +	{ USB_DEVICE(VENDOR_ID_GENESYS, 0x0620) }, /* Genesys Logic GL3523 USB 3.1 HUB */
+> +	{ USB_DEVICE(VENDOR_ID_MICROCHIP, 0x2412) }, /* USB2412 USB 2.0 HUB */
+> +	{ USB_DEVICE(VENDOR_ID_MICROCHIP, 0x2514) }, /* USB2514B USB 2.0 HUB */
+> +	{ USB_DEVICE(VENDOR_ID_MICROCHIP, 0x2517) }, /* USB2517 USB 2.0 HUB */
+> +	{ USB_DEVICE(VENDOR_ID_MICROCHIP, 0x2744) }, /* USB5744 USB 2.0 HUB */
+> +	{ USB_DEVICE(VENDOR_ID_MICROCHIP, 0x5744) }, /* USB5744 USB 3.0 HUB */
+> +	{ USB_DEVICE(VENDOR_ID_REALTEK, 0x0411) }, /* RTS5411 USB 3.1 HUB */
+> +	{ USB_DEVICE(VENDOR_ID_REALTEK, 0x5411) }, /* RTS5411 USB 2.1 HUB */
+> +	{ USB_DEVICE(VENDOR_ID_REALTEK, 0x0414) }, /* RTS5414 USB 3.2 HUB */
+> +	{ USB_DEVICE(VENDOR_ID_REALTEK, 0x5414) }, /* RTS5414 USB 2.1 HUB */
+> +	{ USB_DEVICE(VENDOR_ID_TI, 0x8140) }, /* TI USB8041 3.0 HUB */
+> +	{ USB_DEVICE(VENDOR_ID_TI, 0x8142) }, /* TI USB8041 2.0 HUB */
+> +	{ USB_DEVICE(VENDOR_ID_VIA, 0x0817) }, /* VIA VL817 3.1 HUB */
+> +	{ USB_DEVICE(VENDOR_ID_VIA, 0x2817) }, /* VIA VL817 2.0 HUB */
+> +	{}
+> +};
+
+nit: 'hub' isn't an acronym, please s/HUB/hub/ in the next revision.
 
