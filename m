@@ -1,88 +1,152 @@
-Return-Path: <linux-kernel+bounces-87329-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87330-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7D4B86D2EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:13:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 44C2286D2EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:15:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6405B284A33
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:13:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E81EC284A20
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:15:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C031613B2B1;
-	Thu, 29 Feb 2024 19:13:15 +0000 (UTC)
-Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90476651A1;
+	Thu, 29 Feb 2024 19:15:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=squebb.ca header.i=@squebb.ca header.b="maUn7J8h";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Dfm5r3+7"
+Received: from fout4-smtp.messagingengine.com (fout4-smtp.messagingengine.com [103.168.172.147])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE888134436;
-	Thu, 29 Feb 2024 19:13:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5172F13442D;
+	Thu, 29 Feb 2024 19:15:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709233995; cv=none; b=XUmY95We0CIyco+M3wUnh7wszFxWXitWmK5m0fCGlPWnUZ43+o3pcq2yBvxpRvXi/Drh3JnftDTjdi+8gRFHakQSA1NkDIdq14LjnUe5/QAnIsPMHXDEEDJhRstmYvWT73UlgBWzrzWOgmmsxmsLPmnKNT0SY3dp2PsVmSbBwDw=
+	t=1709234129; cv=none; b=BF7ThBCpMBYHV6QTsA4dotPrqMOV+Wlg7GQeK4yNHuCnZYQ1yEbMv28J31siWGFEFcfz7uBiWVWNiFLaNk9vGFsQsk9vXo2FNtn/+o+UbzRPNB7C5BG5zK1MhvAVxupmdqAgjNdMbQoY74jwEw85jUctsvySeeBQUzC6Lk6fzXY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709233995; c=relaxed/simple;
-	bh=68Mvbb3k7QKn33UXowNqEyn3+hdJ3GOVrggv3kvEHxA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HxxK06VBQnwwVggGPz2uUSkUChRxhlPPplJdal84d4fLHwnaa7v1fkxa/xb4cn4189hIeAlDyP1pfZo5QmPy5kRNAEOleiKzkrBWW4xBQwqDpASlgh98vrZ82NxI1MSU+gJFYl2Su3R+dC3oKDTaX+hBDmh/D7Q1SqjGB41BXpw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-5a0c7c87dc6so12061eaf.1;
-        Thu, 29 Feb 2024 11:13:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709233993; x=1709838793;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=68Mvbb3k7QKn33UXowNqEyn3+hdJ3GOVrggv3kvEHxA=;
-        b=sgTUr2Ti4J/P7cXkwRXVnJCnWuaZXMqRtOSLW/cXdpO01d6dnppq7a5mXzYJmoX1c+
-         xwKC0dFfkex/Cc7M1gUCfqarDwnPjsbLwb19msxUk6C5e4XzWOKJGvqEUcJcHYDw38Zf
-         zs+EzKoOW5BYzCwSc48bSNdvOnTko9l5tdiwndWvm9jq15ja/69QCscMbGRCSuBYpANO
-         mcT7yIrGKjNuSEUhkyrsHH79yd48ouDhZvca4/DkIZ8R28u0L/bJEtgOG3UweioKszwH
-         pNrrSxpCCcvSbQ1GMbpxHhmqHSckMHCMFjmhb0lgFctapgidqQdEx5e/mWu3CcFWhqA0
-         iLYg==
-X-Forwarded-Encrypted: i=1; AJvYcCX4RqQXk7RI2rExytGz8rEww5ecvs92xuhOCT8WoU0ph0EFUO+YHjfmg2XsgjauUb5a46UEuGy9NGYFTyIyph47Sf5qW+lh5xzifRqhw5vBk9Y7iJNCduz9O15ClC85gxKSmfpmNNHi+x8p/EjXlo2bumxZY0ArbHV6W4U7l/gEWB3msZne2noI28URDt6FYdNM0sv08oVgdnQaZWFrqh3nQUml
-X-Gm-Message-State: AOJu0YzkkpLvz26ATR9Px2FO3x0UBpFAvFKOjg09PHD8Cnjqu9n3RPgO
-	TV4e+MlTafzi5K8i/LWxx9++brv9sxzcqI/RU33jkkXEVbkdNP1LTc1omn6Ksx6COBX4dAQHJ3n
-	jBklMuRY9my9n4j8ql3M2HKCwn2c=
-X-Google-Smtp-Source: AGHT+IFzdeSRC0oF4uYm+ATN7F6IC2O/WKB17N/8gWXOt1JzeF+PGQ+XImDO55nGGMnGakXbb12L7seyAmOMa7GGSHY=
-X-Received: by 2002:a05:6820:352:b0:5a0:6ef3:ed8e with SMTP id
- m18-20020a056820035200b005a06ef3ed8emr3028823ooe.1.1709233993024; Thu, 29 Feb
- 2024 11:13:13 -0800 (PST)
+	s=arc-20240116; t=1709234129; c=relaxed/simple;
+	bh=zXomuryHc3URaDVyA8RmSDnNUVl9W1EXal3bVsoWlF4=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=O0qgLn/KUKzN7KsWOUWApd09yEkSBj6cKgSEudO3CCtXxGjmdU2mwm6GZMCkYG6AMsnR1wr9P9nNOGd0IHrkgzQ1f2CvfrvpzBdH+MavE5Id8fTvVcwZGiA6T1OBLc4/PQTd81EAuZyEhS6f8H+651zrx6bfPBkCIqRESPO4Erg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=squebb.ca; spf=pass smtp.mailfrom=squebb.ca; dkim=pass (2048-bit key) header.d=squebb.ca header.i=@squebb.ca header.b=maUn7J8h; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Dfm5r3+7; arc=none smtp.client-ip=103.168.172.147
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=squebb.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=squebb.ca
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailfout.nyi.internal (Postfix) with ESMTP id 4D77E13800D4;
+	Thu, 29 Feb 2024 14:15:26 -0500 (EST)
+Received: from imap52 ([10.202.2.102])
+  by compute3.internal (MEProxy); Thu, 29 Feb 2024 14:15:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=squebb.ca; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1709234126; x=1709320526; bh=19TErd8Ckr
+	DetDe9IDAuQlxdopRaTQfnJEAjo+XBylI=; b=maUn7J8hUeDgrsNtrY7v6xeu8Z
+	1CfPig1dL+HbO3HSdU/UAwTtNqnPUWfXVwgbqkwUWpf6zJJ2W/7yWG46HIK6XIrT
+	/+eHug7NZTlHZfa4ca4bv125OtWp8Tz1UAQQh5rzhzx/ifhgv1SRXbPnMzUVknMX
+	JSn/Dxnj5r3Ccb3HzHQMLHEHc7bx5jDrARAtHk7Y5nATFrVPygIXwn2qUuLhZSE1
+	e+gIuZU4uqnos2jW6+M4P7hVf+ZNDbPAD5ZGQ+AC7UKZDaY+dt23biOWx84GS57S
+	K68/SuarQwKQlrFZqBp15LbkElR0vWUfQgcHTvZteB6G211hjU3he+UEzKeg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1709234126; x=1709320526; bh=19TErd8CkrDetDe9IDAuQlxdopRa
+	TQfnJEAjo+XBylI=; b=Dfm5r3+7Y+jzCThCJP3T8ojofWKN9fSAolUOhCCiMCj5
+	gVxg/8CQ0qMS2lLtSUjDMxofoT5Q2zcoH9zWYy6RM8raruGEy68m4WVnHFnxgZnv
+	GBIcaAPM1a1Hhfe8CyjLYivLSxA4ZYFdq9EICdVjN4qsRydxxZcOzYn0wGZxstnC
+	bmxCPZs63hzXQoRti0jeiR9yQVtdLoB9LofKtHDI/89vicNNvsh6bOIU+cifw2t7
+	cf2HAvzNHEev6jXplXaxCAqk2JtF7Z+ifq2vHI3gTtbgqPXA8aLy7RrI3K223/fS
+	kNKzjzVXx21Yf77+QKgJK/mPR+5lecNnlb/GMTrqxA==
+X-ME-Sender: <xms:zdfgZdX4eTqSZwYYs-eXSeCWcqKUpdHkTv9AoE_1Tro48_m7DiiZQQ>
+    <xme:zdfgZdls0N283m1DJr_jbWqYpowcrqAbDEShrXrpVanlHORy2WvKuvygkefC6bp7L
+    qgJLWCOp9XHnCeAhVQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrgeelgdduvdduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedfofgr
+    rhhkucfrvggrrhhsohhnfdcuoehmphgvrghrshhonhesshhquhgvsggsrdgtrgeqnecugg
+    ftrfgrthhtvghrnhepueevffdtfeejveevjeehhefhveefleffheefgfehffejtedvvdfh
+    udffgeehfeeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
+    homhepmhhpvggrrhhsohhnsehsqhhuvggssgdrtggr
+X-ME-Proxy: <xmx:zdfgZZam9TBcUMr2v0fQvKhL46M9sWEMao3YuTYHBI3WXHa8gE55rA>
+    <xmx:zdfgZQUebncXE8BM0h7M1VWj5hs47AIb3_7hjWCrroxc_tLq8egaQA>
+    <xmx:zdfgZXkKuwfYmgGcP9y6SNt6kerTo8wDiYZ8GqPIGbtFm1DhS_YFqQ>
+    <xmx:ztfgZStAJ_dphyceWcCQ6kysO_dcv2epMFrIJJ7SgrMe3cTBv8gq8Q>
+Feedback-ID: ic2b14614:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id B6E0DC60099; Thu, 29 Feb 2024 14:15:25 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-204-gba07d63ee1-fm-20240229.003-gba07d63e
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240227073924.3573398-1-li.meng@amd.com> <f1964180-458f-4c22-90f6-bda2aee5dbf8@amd.com>
-In-Reply-To: <f1964180-458f-4c22-90f6-bda2aee5dbf8@amd.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Thu, 29 Feb 2024 20:13:01 +0100
-Message-ID: <CAJZ5v0hHS2YSuQnXbyHOqErEaz1BPbxO5pWPa4PY6fKQch1VNg@mail.gmail.com>
-Subject: Re: [PATCH] cpufreq: amd-pstate: adjust min/max limit perf
-To: Mario Limonciello <mario.limonciello@amd.com>, Meng Li <li.meng@amd.com>
-Cc: "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>, Huang Rui <ray.huang@amd.com>, 
-	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org, 
-	linux-acpi@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>, 
-	linux-kselftest@vger.kernel.org, Nathan Fontenot <nathan.fontenot@amd.com>, 
-	Deepak Sharma <deepak.sharma@amd.com>, Alex Deucher <alexander.deucher@amd.com>, 
-	Shimmer Huang <shimmer.huang@amd.com>, Perry Yuan <Perry.Yuan@amd.com>, 
-	Xiaojian Du <Xiaojian.Du@amd.com>, Viresh Kumar <viresh.kumar@linaro.org>, 
-	Borislav Petkov <bp@alien8.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-Id: <a91ff3fa-5c0f-4302-9f98-6cbb254e747c@app.fastmail.com>
+In-Reply-To: <06bf41c9-34b8-4361-a6d9-72afeddae1b4@roeck-us.net>
+References: <20230721122931.505957-1-dober6023@gmail.com>
+ <a361ce91-beba-43d8-b969-285063658da5@app.fastmail.com>
+ <6b0373a2-7750-4d57-8839-95c6fa30c6b8@roeck-us.net>
+ <4209014c-1730-4c31-87d8-4192d68bcbc6@app.fastmail.com>
+ <6615ab2a-3267-477c-ad1b-a72d5a4244e0@roeck-us.net>
+ <412acdd3-6b1f-4c45-966f-c493b6fc3ddf@app.fastmail.com>
+ <42a7e7e9-01b0-4d41-8af1-328de90934ef@roeck-us.net>
+ <74a39cd0-cee3-49a2-a47b-92a9cf9ca008@app.fastmail.com>
+ <45490a63-e46a-4eb3-a55d-2e2642588ccd@app.fastmail.com>
+ <6066862c-cad6-4845-8e90-32d4572c7a23@roeck-us.net>
+ <6c97c63b-af35-4919-b5a2-a867776be8e9@app.fastmail.com>
+ <06bf41c9-34b8-4361-a6d9-72afeddae1b4@roeck-us.net>
+Date: Thu, 29 Feb 2024 14:15:38 -0500
+From: "Mark Pearson" <mpearson@squebb.ca>
+To: "Guenter Roeck" <linux@roeck-us.net>, "David Ober" <dober6023@gmail.com>,
+ wim@linux-watchdog.org
+Cc: linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org,
+ "David Ober" <dober@lenovo.com>
+Subject: Re: [PATCH v3] Watchdog: New module for ITE 5632 watchdog
+Content-Type: text/plain
 
-On Tue, Feb 27, 2024 at 4:36=E2=80=AFPM Mario Limonciello
-<mario.limonciello@amd.com> wrote:
+
+On Thu, Feb 29, 2024, at 1:47 PM, Guenter Roeck wrote:
+> On 2/29/24 10:12, Mark Pearson wrote:
+> [ ... ]
 >
-> On 2/27/2024 01:39, Meng Li wrote:
-> > The min/max limit perf values calculated based on frequency
-> > may exceed the reasonable range of perf(highest perf, lowest perf).
-> >
-> > Signed-off-by: Meng Li <li.meng@amd.com>
-> Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
+>>> Is it necessary to treat this differently than, say,
+>>> drivers/hwmon/it87.c and drivers/watchdog/it87_wdt.c ?
+>>> Those work together nicely because most of the address space is
+>>> separate; access through Super-IO registers
+>>> is limited enough that it can be shared by using request_muxed_region()
+>>> in both drivers.
+>>>
+>>> I'll have to look deeper into NCT6692D (and NCT6686, for that matter),
+>>> to see if those require mfd drivers.
+>>> I'll also need to get the datasheets for those chips and confirm that
+>>> they really need different watchdog
+>>> drivers to start with.
+>>>
+>> Ack - I'll look at those and see. Quick look at the watchdog driver and it looks possible but I need to check the details more carefully.
+>> Afraid I can't share the datasheet as I don't have permission to release it. How much of a blocker is that for you?
+>> 
+>
+> I do have the datasheet for the NCT6683 EC space. I'll need to check if
+> it matches the code submitted for the NCT6686 watchdog.
+>
+> For NCT6692D, I asked Nuvoton if they can share the datasheet.
+> Given that it is some kind of security controller chip, it may well be
+> that Lenovo has an NDA with Nuvoton which prevents them from sharing
+> the datasheet. We'll see.
+>
+> Undocumented ITE chips are simply not supportable. No matter what, someone
+> will have to step up as maintainer for those chips.
+>
+Ack, but given the ITE chip is for our platform, are we as the submitter not on the hook for maintaining it - especially if we're making so it's only usable on the Lenovo platform? 
+I'd expect myself or David to need to respond to any issues.
 
-Applied as 6.9 material, thanks!
+Looking at the it87 driver - it looks like the main thing is the request/release of the region when doing a superio_enter/exit, which we are missing and would be needed. Can definitely do that in our version, instead of the MFD, if that is preferred.
+
+I haven't gone and looked back at the NCT devices again. Need to do that.
+
+Thanks
+Mark
 
