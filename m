@@ -1,181 +1,96 @@
-Return-Path: <linux-kernel+bounces-87058-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87059-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC4DF86CECE
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:23:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2824286CED4
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:23:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3784B1F22164
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:23:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59A0D1C2273B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:23:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC98A14BD4F;
-	Thu, 29 Feb 2024 16:11:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="bEv1V9xR"
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2634C1361DF
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 16:11:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB63514EA29;
+	Thu, 29 Feb 2024 16:12:37 +0000 (UTC)
+Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
+	by smtp.subspace.kernel.org (Postfix) with SMTP id 403691361DF
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 16:12:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.131.102.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709223112; cv=none; b=kmmANSMW5CzMiMZr3pk9uvIA4kmvCZ5kSytAz8xM30DnPETLfzZX/UTcyED8rkebwGcpvjfaN85HyBpfHIqPDwjeeE2jZKhi0z49wtI14Cc+PsGt6CgGUZaeiZHExdM200XUdloU9qpfF5CuuEoJp29XmgBRyeJFQxmK47cbakc=
+	t=1709223157; cv=none; b=swYHECdtX7egygYsHZQXl/zonMYp6MDT5bcjCNDGi9OX0Nwg+4h45A8iJDD+xx55u9I+vtRuxh4y65JjvcvXdj9vtl1fisUCDqnECrAY+wTTo80HGGmDyt/71AxuMGPKCAqYU8oGRu4WBsr8A29pN04Al/yCumlwyToqRlxQKBw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709223112; c=relaxed/simple;
-	bh=PRvP/AE2jgDmBBLXF9/R3s6ZrxACG2eyhjflYyvi4c4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YrUfRv3NfTdI9ypQ9NBvwzvkaebsWmPjYQDpHvjBKeiJLJjQ0AwqV+neEB+pO2Je8oOEIl9xRC9Wy/aXEykkacQLmXsHeef67RwFYicNtERJbRhxVHOfQJUKgQqumrUiYS0laNQT9zubQeC/s1fwl+aU5UQiGx6D9V+j3XqiyuA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=bEv1V9xR; arc=none smtp.client-ip=185.125.188.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com [209.85.161.71])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id E1B0B4070A
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 16:11:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1709223107;
-	bh=PRvP/AE2jgDmBBLXF9/R3s6ZrxACG2eyhjflYyvi4c4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type;
-	b=bEv1V9xRuYXGfBI9ST22LLKz5GAOvH46UO74zlUICLsWj6l80pQywAYO9HBj244ko
-	 bM4di2O2h7490PGdAPbgxtZYAaUyihD1N5kefovY1vsw19HKM5e0QjKH9jIKbHhjlS
-	 1enGha4CkjeYyeo0OoQjFVTQCQngwlCSvP/BWcPew4l2e0DELGo6aCpqsgdZg58/UB
-	 78kCsEdR9vEUtRd059B7xjLGJZglAoiu7LIdESRTJuniuDpprmaCnp0lOjbq7aLXae
-	 i5tFX+gfKC+P9nQNxuTAJJ9JpID6JWMCSbAQsM9bjKiQOdXt5icjgspzchg7ndFlVe
-	 SbfgP6rIGZGQA==
-Received: by mail-oo1-f71.google.com with SMTP id 006d021491bc7-5a04adc9c3fso1139168eaf.3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 08:11:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709223106; x=1709827906;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PRvP/AE2jgDmBBLXF9/R3s6ZrxACG2eyhjflYyvi4c4=;
-        b=O1lX/fqIcSsImY93Z6jnIMApj34B7RD7vcWFIPhDB72DyeVJuAYbADSuMREmed/bQk
-         e6E7sbj4j36fZkl59LpNgeuZbBOndkdhvAzE0ZJIH6nACU7G9YD1mWkS+UydZqGeaiWx
-         OfxOU0JsfIDKkNoay6D++lsOLUFZCRmk30X7ZDMbETVNliCl0iOYyQhbdNAxtwmVy6hJ
-         sqBOECmSxkDeZEHw+Pc9PfLoR7ddJ04WsF697em7CCx3XD2NMo9MJgnMrFY+sgUAJhBR
-         asjws0N2GQPOU3YmqVl6bHWCYsKSY/l6ms2JtJnPb+MDvsIHLrPd/A04O9XlUSyyRziG
-         dVmA==
-X-Forwarded-Encrypted: i=1; AJvYcCUIxlpilYpdnO0jVcBq70t+WZxF0wW2ZS83ZrOGja0KWs/uDhDmgso9FYT25oQHx+f2LVScgodzb4a87x/Q5c0nf+gjbrH3uM724axA
-X-Gm-Message-State: AOJu0Yw/lzqDqAGMroOfvCgYx+1kuy6ItN3VZnpyrLwe50lPmxriASMN
-	QtmOx3BwHas5oiExH1jBXFoJShoTFVOIOtQ5sTGo+XyBsnZ5s+hNOGXpE5IePBKMIewPw8AY5XJ
-	pGbC2imTzdtJW3YuHq6ROliJGyfXe+5tisNne4RzDHiy3xdKIsXmRVBXUQY0NOM8m8K8E3Lcaxa
-	GyDXY81hzc5/ogdH/SfgG6LTwoMiZ3DjBOYwwOICiELVbMRWe7U9LZPTuHWHwXisw=
-X-Received: by 2002:a05:6358:c87:b0:179:ff:2486 with SMTP id o7-20020a0563580c8700b0017900ff2486mr3218681rwj.29.1709223106440;
-        Thu, 29 Feb 2024 08:11:46 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHlA6u9Z7bK4Bo0CjsKePGPt3OWP6blInR4iHjL4WE6T4jPF7a1VHsRjNKbf3ENj2qHa9iYpHu7KXuOf4lnjrg=
-X-Received: by 2002:a05:6358:c87:b0:179:ff:2486 with SMTP id
- o7-20020a0563580c8700b0017900ff2486mr3218660rwj.29.1709223106046; Thu, 29 Feb
- 2024 08:11:46 -0800 (PST)
+	s=arc-20240116; t=1709223157; c=relaxed/simple;
+	bh=xE7eCf2afOkbN/IXPS0kJovnnnCwLLZjFOX4LCX4JMk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qIcxo74xvdZaenKyPiLqKVkjUNXaYW3NJXDnPo/YCh5QcQxHaa6cGhwh2BBwr+kDE2xAqQfDUNTKdi1p6Q9RhSaspagm0LVC27vtR97OXRUUa7Je64c3/18pK5PJ6/oqBI6BvtgafODnoxpFRKJbQ0V5OLTD+sXPEzw3EkxQxA0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu; spf=pass smtp.mailfrom=netrider.rowland.org; arc=none smtp.client-ip=192.131.102.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netrider.rowland.org
+Received: (qmail 827938 invoked by uid 1000); 29 Feb 2024 11:12:27 -0500
+Date: Thu, 29 Feb 2024 11:12:27 -0500
+From: Alan Stern <stern@rowland.harvard.edu>
+To: Aleksandr Nogikh <nogikh@google.com>
+Cc: syzbot <syzbot+28748250ab47a8f04100@syzkaller.appspotmail.com>,
+  bvanassche@acm.org, emilne@redhat.com, gregkh@linuxfoundation.org,
+  linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+  martin.petersen@oracle.com, syzkaller-bugs@googlegroups.com,
+  tasos@tasossah.com, usb-storage@lists.one-eyed-alien.net
+Subject: Re: [syzbot] [usb-storage?] divide error in isd200_ata_command
+Message-ID: <914a01e5-9c7d-4f2c-9d2b-c5c8c99b4a0e@rowland.harvard.edu>
+References: <8fe3f46c-4ee5-4597-bf2d-12a5d634a264@rowland.harvard.edu>
+ <0000000000008b026406126a4bbe@google.com>
+ <13add23d-af18-4f84-9f1a-043932a9712b@rowland.harvard.edu>
+ <CANp29Y4DUvL5zsnqQmhPGkbc=EN6UjFrWF9EZGE5U_=0C9+1Nw@mail.gmail.com>
+ <380909e4-6e0a-402f-b3ac-de07e520c910@rowland.harvard.edu>
+ <CANp29Y6hPF--pjWCa4bsAXWY15XoP2kmSg8BFP4ATGUpVbQgHQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240222160915.315255-1-aleksandr.mikhalitsyn@canonical.com>
- <20240222160915.315255-3-aleksandr.mikhalitsyn@canonical.com>
- <Zdd8MAJJD3M11yeR@tycho.pizza> <20240223-kantholz-knallen-558beba46c62@brauner>
- <ZdoEavHorDs3IlF5@tycho.pizza> <20240226-gestrafft-pastinaken-94ff0e993a51@brauner>
- <Zdyumw6OfWBqQMTj@tycho.pizza> <CAEivzxcVbEZtr+wPL1p+dM4r8+vFNnPoF+E-QvG_nLNHGDYJQg@mail.gmail.com>
-In-Reply-To: <CAEivzxcVbEZtr+wPL1p+dM4r8+vFNnPoF+E-QvG_nLNHGDYJQg@mail.gmail.com>
-From: Aleksandr Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-Date: Thu, 29 Feb 2024 17:11:34 +0100
-Message-ID: <CAEivzxfOff_PrEfCmh_pJM4hm0PGVQjna4ucQi9_zKsaJPw42g@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] tests/pid_namespace: add pid_max tests
-To: Tycho Andersen <tycho@tycho.pizza>
-Cc: Christian Brauner <brauner@kernel.org>, stgraber@stgraber.org, cyphar@cyphar.com, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANp29Y6hPF--pjWCa4bsAXWY15XoP2kmSg8BFP4ATGUpVbQgHQ@mail.gmail.com>
 
-On Thu, Feb 29, 2024 at 4:14=E2=80=AFPM Aleksandr Mikhalitsyn
-<aleksandr.mikhalitsyn@canonical.com> wrote:
->
-> On Mon, Feb 26, 2024 at 4:30=E2=80=AFPM Tycho Andersen <tycho@tycho.pizza=
-> wrote:
+On Thu, Feb 29, 2024 at 04:40:05PM +0100, Aleksandr Nogikh wrote:
+> On Wed, Feb 28, 2024 at 8:18 PM Alan Stern <stern@rowland.harvard.edu> wrote:
 > >
-> > On Mon, Feb 26, 2024 at 09:57:47AM +0100, Christian Brauner wrote:
-> > > > > > A small quibble, but I wonder about the semantics here. "You ca=
-n write
-> > > > > > whatever you want to this file, but we'll ignore it sometimes" =
-seems
-> > > > > > weird to me. What if someone (CRIU) wants to spawn a pid number=
-ed 450
-> > > > > > in this case? I suppose they read pid_max first, they'll be abl=
-e to
-> > > > > > tell it's impossible and can exit(1), but returning E2BIG from =
-write()
-> > > > > > might be more useful.
-> > > > >
-> > > > > That's a good idea. But it's a bit tricky. The straightforward th=
-ing is
-> > > > > to walk upwards through all ancestor pid namespaces and use the l=
-owest
-> > > > > pid_max value as the upper bound for the current pid namespace. T=
-his
-> > > > > will guarantee that you get an error when you try to write a valu=
-e that
-> > > > > you would't be able to create. The same logic should probably app=
-ly to
-> > > > > ns_last_pid as well.
-> > > > >
-> > > > > However, that still leaves cases where the current pid namespace =
-writes
-> > > > > a pid_max limit that is allowed (IOW, all ancestor pid namespaces=
- are
-> > > > > above that limit.). But then immediately afterwards an ancestor p=
-id
-> > > > > namespace lowers the pid_max limit. So you can always end up in a
-> > > > > scenario like this.
-> > > >
-> > > > I wonder if we can push edits down too? Or an render .effective fil=
-e, like
+> > On Wed, Feb 28, 2024 at 05:52:50PM +0100, Aleksandr Nogikh wrote:
+> > > Hi Alan,
 > > >
-> > > I don't think that works in the current design? The pid_max value is =
-per
-> > > struct pid_namespace. And while there is a 1:1 relationship between a
-> > > child pid namespace to all of its ancestor pid namespaces there's a 1=
- to
-> > > many relationship between a pid namespace and it's child pid namespac=
-es.
-> > > IOW, if you change pid_max in pidns_level_1 then you'd have to go
-> > > through each of the child pid namespaces on pidns_level_2 which could=
- be
-> > > thousands. So you could only do this lazily. IOW, compare and possibl=
-y
-> > > update the pid_max value of the child pid namespace everytime it's re=
-ad
-> > > or written. Maybe that .effective is the way to go; not sure right no=
-w.
->
-> Hi Tycho!
->
+> > > Please try it once more with the full commit hash.
 > >
-> > I wonder then, does it make sense to implement this as a cgroup thing
-> > instead, which is used to doing this kind of traversal?
+> > Thanks for the advice.  Are you a good person to complain to about the
+> > difference between what syzbot provides and what it will accept?  This
+> > bug report states
 > >
-> > Or I suppose not, since the idea is to get legacy software that's
-> > writing to pid_max to work?
->
-> Yes, this is mostly for legacy software that expects host-like
-> behavior in the container.
-> I know that folks who work on running Android inside the container are
-> very-very interested in this.
+> > HEAD commit:    f2e367d6ad3b Merge tag 'for-6.8/dm-fix-3' of git://git.ker..
+> > git tree:       upstream
+> >
+> > But if I specify "upstream" as the git tree on a syz test request, it
+> > doesn't accept it.  Now you're suggesting that if I put f2e367d6ad3b as
+> > the commit ID, it won't accept it.
+> >
+> > There's probably already a bugfix request for this, but I'd like to push
+> > on it some more.  Syzbot's output should be acceptable as its input!
+> 
+> That all totally makes sense. Thanks for highlighting the problems!
+> 
+> For accepting "upstream" (and alike) as input, there was already a github issue:
+> https://github.com/google/syzkaller/issues/2265
+> That syzbot is not able to fetch commits by their short hashes was
+> only discovered yesterday.
+> 
+> I've just sent PRs with fixes for both issues.
+> 
+> If there's anything else that can make syzbot reports better, please
+> let me know :)
 
-My colleague, Simon Fels, shared with me:
-https://android.googlesource.com/platform/bionic.git/+/refs/heads/main/docs=
-/32-bit-abi.md#is-too-small-for-large-pids
+That's great news!  Thanks a lot.
 
->
-> Kind regards,
-> Alex
->
-> >
-> > Tycho
+How will we know when the fixes have been accepted and we can use them?
+
+Alan Stern
 
