@@ -1,375 +1,295 @@
-Return-Path: <linux-kernel+bounces-86353-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86354-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0341C86C44F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:55:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB5CC86C450
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:56:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 26AB01C20A88
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:55:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF98B1C2169C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:56:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 588D855E6E;
-	Thu, 29 Feb 2024 08:55:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ceKTU5oi"
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15DF755C13
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 08:55:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7F2055C05;
+	Thu, 29 Feb 2024 08:56:08 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8842C54BFC;
+	Thu, 29 Feb 2024 08:56:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709196941; cv=none; b=riF7fDvhTJdaWgs5MOP92arQwBviQZzUd/8AhsW1DBcoghys9DEVFgPXu4S5bBuYn85HndZobXJip2+PGkCAk0uMCMbW9MaF3wDBT/0qCGQAIv9sQYcXcoVCfmPiN1BARtPGc9uGoTOaWDa4lCAQY0enb5R0X5ndvqG0dD6uhTs=
+	t=1709196967; cv=none; b=akYYrDujQX/u1aB7hIVdANXWmzcoK27DaMzoq5uzSDiGwbpzdWKva6bteMP8pwYwYDlCt1X8CG4Q47v4P84z1RevNxyhrpVpWSfi1oxreFErs5YPklSbQ3tR+R7Dh7wj5ELEeV0Y8MQzgHhAr/DJTXd8IwPmEw8BWEjeSqBwJQg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709196941; c=relaxed/simple;
-	bh=3eiVAnXutPSgjA/7X0nO+xyLGj0ZVBBzJ4J9ik27/ng=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=A6bWvdXO9s9K74U1RU7yCKwm3xW1xF2TKDx7iGCBSXHbkWIjLX1UxnvyqFZVkvRN8Y0fZzRks8Tn4mhm9Sfm1hycPJMMqeBRM6AtNcxKU4H5OCl4V2L2YDla67zPxTQ80dYSiZm67xzIi4G1gB4S6+kgsm6G7k2YSoq/0qPIJYw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ceKTU5oi; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-565223fd7d9so6472a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 00:55:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709196937; x=1709801737; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iBB3ZRtHtlRaOVjaKAvj1TeBqt93SACeJpqho7/F2vs=;
-        b=ceKTU5oiHQiqU2r6afNb9vvIZHA/I73wzBqy+qRmLCEc/AM/ez9zqZwb+e8+r68Yi9
-         nI9nBJnsmRCIW8/+731B4ucxvt9WaqXCIOf+O3OcMw2yIQNUK+ZduuMuYWosFy37XJrB
-         qYMH7zf2zBl144CKOhi4ik5Mr5cvZOUwawg5HfTmsfPXSgLU5ZY151HLpPn7/ecfwEAs
-         4sPXwAp1H8xkHcWILNIWIjipXN5kNUXTSUWyWffZ8KORQDXiddl6ekC5ih1UwcqXOg+U
-         nkukfeJFbtlcEhAZHd6HNsiO7mBDDO+DKMqc4ytHEZ0TMeq1Omp8OTfXnM1p1Us1KHXP
-         5W+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709196937; x=1709801737;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iBB3ZRtHtlRaOVjaKAvj1TeBqt93SACeJpqho7/F2vs=;
-        b=sikKehA7apjPgQUWVitur+wMtCZHPSh7zFW6aTYHC4gdkI19GabNnkUk/aKVoIK8KY
-         AHPFiu8whPW/4yGoulDa3CkUFSku9KonZU6Kawye4EpxQJYv3QN2PMm8T//gSauBlt3e
-         GOKX75+b9zyu482jP4oepkk3RScFPJyeTtpQBjuViSTOTCfffIZQqADLwN4eqI45vI1p
-         S5MCcC3SGfHMA9ZFfP/yNWlmrw3PSFMxk9QXTYbiGCptXRthiaewKoiNHlOTd5wYG7S1
-         rbY9JRK8v7vYOUKiarXixT17yATYvR1w+lQzv/aJlU3fYdLDg8yaxejP/GCAwAFMbwh2
-         tnTw==
-X-Forwarded-Encrypted: i=1; AJvYcCWGgoU0L6hifaQVpo7mib8g/AjdDAw5n3QjfmDfmiq6ujgL+hiMI2yL5f4KvMsN48jaob94aWMd+qTDHf5JXR9ut7wMAI33AkSZ3zG7
-X-Gm-Message-State: AOJu0YzEftkjyGOEGFPfJ0jAuQ6ByFa38nPjUDYiXMrzknCgVHlNMCWO
-	+hO2l2n7CaxS0QgPn2ZyP0RWlUVZHw0H9cOwlBxanDXzc5BJthYatuRruXbup7h6hOC77ooPZDw
-	MCpmYMXyWUJhSRjRriZp2cFbJXCDhO6h71J1Z
-X-Google-Smtp-Source: AGHT+IGynF+a6/344UeE1w8xJSD5fMiW6denW7bKWrVT2N4O3XLJEnj8jcArzi200u9QX3eURd05eVbMTlwTlbDE+8c=
-X-Received: by 2002:a05:6402:2227:b0:561:a93:49af with SMTP id
- cr7-20020a056402222700b005610a9349afmr51902edb.7.1709196937172; Thu, 29 Feb
- 2024 00:55:37 -0800 (PST)
+	s=arc-20240116; t=1709196967; c=relaxed/simple;
+	bh=kfnakJ2LhbIuc1MYqpnklalb+//KhlmKSZbOZPastVE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=W2N21jVflCvDHmvBeauc9diA5iJL2v3ZdK1i43zkPb0yD5C7JKyZrGoDoQY7Im2A3cRbgSJp00YNGPsPI05fD8AlTwPbEPKM6qd3Ob/R2cvoXGT48xxnKyb4VlDyb2d0Z+lfLxkRRs7WDFELHj/N9lo8pIXK7TWFIoUjl/szhpo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 460461FB;
+	Thu, 29 Feb 2024 00:56:43 -0800 (PST)
+Received: from [10.163.47.238] (unknown [10.163.47.238])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EC5B73F6C4;
+	Thu, 29 Feb 2024 00:55:59 -0800 (PST)
+Message-ID: <feecbdd3-155a-4b95-8366-403637fd73d5@arm.com>
+Date: Thu, 29 Feb 2024 14:25:57 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <3fcf3a2c-1c1b-42c1-bacb-78fdcd700389@linux.vnet.ibm.com>
- <85b78dad-affa-47c3-9cd0-79a4321460b8@linux.dev> <CANn89iJEzTjwxF7wXSnUR+NyDu-S-zEOYVXA+fEaYs_1o1g5HQ@mail.gmail.com>
- <a1fdd2c2-4443-458e-86db-280e7cbd4a36@linux.vnet.ibm.com>
-In-Reply-To: <a1fdd2c2-4443-458e-86db-280e7cbd4a36@linux.vnet.ibm.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Thu, 29 Feb 2024 09:55:22 +0100
-Message-ID: <CANn89iKdaMFCKnGRL4ffnbyrr2PUaKn1hoiu4VZ=sRyX=Vy0Wg@mail.gmail.com>
-Subject: Re: [revert 0d60d8df6f49] [net/net-next] [6.8-rc5] Build Failure
-To: Tasmiya Nalatwad <tasmiya@linux.vnet.ibm.com>
-Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, arkadiusz.kubalewski@intel.com, 
-	jiri@nvidia.com, kuba@kernel.org, 
-	"abdhalee@linux.vnet.ibm.com" <abdhalee@linux.vnet.ibm.com>, 
-	"mputtash@linux.vnet.com" <mputtash@linux.vnet.com>, "sachinp@linux.vnet.com" <sachinp@linux.vnet.com>, 
-	venkat88@linux.vnet.ibm.com, 
-	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V16 4/8] drivers: perf: arm_pmuv3: Enable branch stack
+ sampling via FEAT_BRBE
+Content-Language: en-US
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ will@kernel.org, catalin.marinas@arm.com, Mark Brown <broonie@kernel.org>,
+ James Clark <james.clark@arm.com>, Rob Herring <robh@kernel.org>,
+ Marc Zyngier <maz@kernel.org>, Suzuki Poulose <suzuki.poulose@arm.com>,
+ Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>, linux-perf-users@vger.kernel.org
+References: <20240125094119.2542332-1-anshuman.khandual@arm.com>
+ <20240125094119.2542332-5-anshuman.khandual@arm.com>
+ <ZdY_oEYPGSj7nwvP@FVFF77S0Q05N>
+ <781dd6a8-cf18-48ab-93f3-5256d161b359@arm.com>
+ <Zd8eYHbLebKLV648@FVFF77S0Q05N>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <Zd8eYHbLebKLV648@FVFF77S0Q05N>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Feb 29, 2024 at 9:04=E2=80=AFAM Tasmiya Nalatwad
-<tasmiya@linux.vnet.ibm.com> wrote:
->
-> Greetings,
->
-> I have tried the patch provided below. Moving struct to file
-> "net/core/rtnetlink.c" is not resolving the problem. Please find the
-> below traces.
->
-> --- Traces ---
->
-> In file included from ./include/linux/rbtree.h:24,
->                   from ./include/linux/mm_types.h:11,
->                   from ./include/linux/mmzone.h:22,
->                   from ./include/linux/gfp.h:7,
->                   from ./include/linux/umh.h:4,
->                   from ./include/linux/kmod.h:9,
->                   from ./include/linux/module.h:17,
->                   from net/core/rtnetlink.c:17:
-> net/core/rtnetlink.c: In function =E2=80=98netdev_dpll_pin=E2=80=99:
-> ./include/linux/rcupdate.h:439:9: error: dereferencing pointer to
-> incomplete type =E2=80=98struct dpll_pin=E2=80=99
->    typeof(*p) *local =3D (typeof(*p) *__force)READ_ONCE(p); \
->           ^
-> ./include/linux/rcupdate.h:587:2: note: in expansion of macro
-> =E2=80=98__rcu_dereference_check=E2=80=99
->    __rcu_dereference_check((p), __UNIQUE_ID(rcu), \
->    ^~~~~~~~~~~~~~~~~~~~~~~
-> ./include/linux/rtnetlink.h:70:2: note: in expansion of macro
-> =E2=80=98rcu_dereference_check=E2=80=99
->    rcu_dereference_check(p, lockdep_rtnl_is_held())
->    ^~~~~~~~~~~~~~~~~~~~~
-> net/core/rtnetlink.c:1059:15: note: in expansion of macro
-> =E2=80=98rcu_dereference_rtnl=E2=80=99
->          return rcu_dereference_rtnl(dev->dpll_pin);
->                 ^~~~~~~~~~~~~~~~~~~~
->    CC      crypto/algboss.o
-> net/core/rtnetlink.c:1063:1: error: control reaches end of non-void
-> function [-Werror=3Dreturn-type]
->   }
->   ^
->    CC      crypto/authenc.o
->    CC      crypto/authencesn.o
->    CC      crypto/af_alg.o
->    CC      crypto/algif_hash.o
->    CC      crypto/algif_skcipher.o
->    CC      crypto/algif_rng.o
->    CC      crypto/algif_aead.o
->    AR      arch/powerpc/kernel/built-in.a
-> cc1: some warnings being treated as errors
-> make[4]: *** [scripts/Makefile.build:243: net/core/rtnetlink.o] Error 1
-> make[4]: *** Waiting for unfinished jobs....
->    CC      lib/kobject_uevent.o
->    AR      drivers/net/mdio/built-in.a
->    AR      net/802/built-in.a
->    AR      drivers/connector/built-in.a
->    CC      lib/vsprintf.o
->    AR      ipc/built-in.a
->    AR      net/nsh/built-in.a
->    CC      lib/dynamic_debug.o
-> In file included from ./arch/powerpc/include/generated/asm/rwonce.h:1,
->                   from ./include/linux/compiler.h:251,
->                   from ./include/linux/instrumented.h:10,
->                   from ./include/linux/uaccess.h:6,
->                   from net/core/dev.c:71:
-> net/core/dev.c: In function =E2=80=98netdev_dpll_pin_assign=E2=80=99:
-> ./include/linux/rcupdate.h:462:36: error: dereferencing pointer to
-> incomplete type =E2=80=98struct dpll_pin=E2=80=99
->   #define RCU_INITIALIZER(v) (typeof(*(v)) __force __rcu *)(v)
->                                      ^~~~
-> ./include/asm-generic/rwonce.h:55:33: note: in definition of macro
-> =E2=80=98__WRITE_ONCE=E2=80=99
->    *(volatile typeof(x) *)&(x) =3D (val);    \
->                                   ^~~
-> ./arch/powerpc/include/asm/barrier.h:76:2: note: in expansion of macro
-> =E2=80=98WRITE_ONCE=E2=80=99
->    WRITE_ONCE(*p, v);      \
->    ^~~~~~~~~~
-> ./include/asm-generic/barrier.h:172:55: note: in expansion of macro
-> =E2=80=98__smp_store_release=E2=80=99
->   #define smp_store_release(p, v) do { kcsan_release();
-> __smp_store_release(p, v); } while (0)
-> ^~~~~~~~~~~~~~~~~~~
-> ./include/linux/rcupdate.h:503:3: note: in expansion of macro
-> =E2=80=98smp_store_release=E2=80=99
->     smp_store_release(&p, RCU_INITIALIZER((typeof(p))_r_a_p__v)); \
->     ^~~~~~~~~~~~~~~~~
-> ./include/linux/rcupdate.h:503:25: note: in expansion of macro
-> =E2=80=98RCU_INITIALIZER=E2=80=99
->     smp_store_release(&p, RCU_INITIALIZER((typeof(p))_r_a_p__v)); \
->                           ^~~~~~~~~~~~~~~
-> net/core/dev.c:9081:2: note: in expansion of macro =E2=80=98rcu_assign_po=
-inter=E2=80=99
->    rcu_assign_pointer(dev->dpll_pin, dpll_pin);
->    ^~~~~~~~~~~~~~~~~~
->
-> On 2/28/24 20:13, Eric Dumazet wrote:
-> > On Wed, Feb 28, 2024 at 3:07=E2=80=AFPM Vadim Fedorenko
-> > <vadim.fedorenko@linux.dev> wrote:
-> >> On 28/02/2024 11:09, Tasmiya Nalatwad wrote:
-> >>> Greetings,
-> >>>
-> >>> [revert 0d60d8df6f49] [net/net-next] [6.8-rc5] Build Failure
-> >>>
-> >>> Reverting below commit fixes the issue
-> >>>
-> >>> commit 0d60d8df6f493bb46bf5db40d39dd60a1bafdd4e
-> >>>       dpll: rely on rcu for netdev_dpll_pin()
-> >>>
-> >>> --- Traces ---
-> >>>
-> >>> ./include/linux/dpll.h: In function =E2=80=98netdev_dpll_pin=E2=80=99=
-:
-> >>> ./include/linux/rcupdate.h:439:9: error: dereferencing pointer to
-> >>> incomplete type =E2=80=98struct dpll_pin=E2=80=99
-> >>>     typeof(*p) *local =3D (typeof(*p) *__force)READ_ONCE(p); \
-> >>>            ^
-> >>> ./include/linux/rcupdate.h:587:2: note: in expansion of macro
-> >>> =E2=80=98__rcu_dereference_check=E2=80=99
-> >>>     __rcu_dereference_check((p), __UNIQUE_ID(rcu), \
-> >>>     ^~~~~~~~~~~~~~~~~~~~~~~
-> >>> ./include/linux/rtnetlink.h:70:2: note: in expansion of macro
-> >>> =E2=80=98rcu_dereference_check=E2=80=99
-> >>>     rcu_dereference_check(p, lockdep_rtnl_is_held())
-> >>>     ^~~~~~~~~~~~~~~~~~~~~
-> >>> ./include/linux/dpll.h:175:9: note: in expansion of macro
-> >>> =E2=80=98rcu_dereference_rtnl=E2=80=99
-> >>>     return rcu_dereference_rtnl(dev->dpll_pin);
-> >>>            ^~~~~~~~~~~~~~~~~~~~
-> >>> make[4]: *** [scripts/Makefile.build:243: drivers/dpll/dpll_core.o] E=
-rror 1
-> >>> make[4]: *** Waiting for unfinished jobs....
-> >>>     AR      net/mpls/built-in.a
-> >>>     AR      net/l3mdev/built-in.a
-> >>> In file included from ./include/linux/rbtree.h:24,
-> >>>                    from ./include/linux/mm_types.h:11,
-> >>>                    from ./include/linux/mmzone.h:22,
-> >>>                    from ./include/linux/gfp.h:7,
-> >>>                    from ./include/linux/umh.h:4,
-> >>>                    from ./include/linux/kmod.h:9,
-> >>>                    from ./include/linux/module.h:17,
-> >>>                    from drivers/dpll/dpll_netlink.c:9:
-> >>> ./include/linux/dpll.h: In function =E2=80=98netdev_dpll_pin=E2=80=99=
-:
-> >>> ./include/linux/rcupdate.h:439:9: error: dereferencing pointer to
-> >>> incomplete type =E2=80=98struct dpll_pin=E2=80=99
-> >>>     typeof(*p) *local =3D (typeof(*p) *__force)READ_ONCE(p); \
-> >>>            ^
-> >>> ./include/linux/rcupdate.h:587:2: note: in expansion of macro
-> >>> =E2=80=98__rcu_dereference_check=E2=80=99
-> >>>     __rcu_dereference_check((p), __UNIQUE_ID(rcu), \
-> >>>     ^~~~~~~~~~~~~~~~~~~~~~~
-> >>> ./include/linux/rtnetlink.h:70:2: note: in expansion of macro
-> >>> =E2=80=98rcu_dereference_check=E2=80=99
-> >>>     rcu_dereference_check(p, lockdep_rtnl_is_held())
-> >>>     ^~~~~~~~~~~~~~~~~~~~~
-> >>> ./include/linux/dpll.h:175:9: note: in expansion of macro
-> >>> =E2=80=98rcu_dereference_rtnl=E2=80=99
-> >>>     return rcu_dereference_rtnl(dev->dpll_pin);
-> >>>            ^~~~~~~~~~~~~~~~~~~~
-> >>> make[4]: *** [scripts/Makefile.build:243: drivers/dpll/dpll_netlink.o=
-]
-> >>> Error 1
-> >>> make[3]: *** [scripts/Makefile.build:481: drivers/dpll] Error 2
-> >>> make[3]: *** Waiting for unfinished jobs....
-> >>> In file included from ./arch/powerpc/include/generated/asm/rwonce.h:1=
-,
-> >>>                    from ./include/linux/compiler.h:251,
-> >>>                    from ./include/linux/instrumented.h:10,
-> >>>                    from ./include/linux/uaccess.h:6,
-> >>>                    from net/core/dev.c:71:
-> >>> net/core/dev.c: In function =E2=80=98netdev_dpll_pin_assign=E2=80=99:
-> >>> ./include/linux/rcupdate.h:462:36: error: dereferencing pointer to
-> >>> incomplete type =E2=80=98struct dpll_pin=E2=80=99
-> >>>    #define RCU_INITIALIZER(v) (typeof(*(v)) __force __rcu *)(v)
-> >>>                                       ^~~~
-> >>> ./include/asm-generic/rwonce.h:55:33: note: in definition of macro
-> >>> =E2=80=98__WRITE_ONCE=E2=80=99
-> >>>     *(volatile typeof(x) *)&(x) =3D (val);    \
-> >>>                                    ^~~
-> >>> ./arch/powerpc/include/asm/barrier.h:76:2: note: in expansion of macr=
-o
-> >>> =E2=80=98WRITE_ONCE=E2=80=99
-> >>>     WRITE_ONCE(*p, v);      \
-> >>>     ^~~~~~~~~~
-> >>> ./include/asm-generic/barrier.h:172:55: note: in expansion of macro
-> >>> =E2=80=98__smp_store_release=E2=80=99
-> >>>    #define smp_store_release(p, v) do { kcsan_release();
-> >>> __smp_store_release(p, v); } while (0)
-> >>> ^~~~~~~~~~~~~~~~~~~
-> >>> ./include/linux/rcupdate.h:503:3: note: in expansion of macro
-> >>> =E2=80=98smp_store_release=E2=80=99
-> >>>      smp_store_release(&p, RCU_INITIALIZER((typeof(p))_r_a_p__v)); \
-> >>>      ^~~~~~~~~~~~~~~~~
-> >>> ./include/linux/rcupdate.h:503:25: note: in expansion of macro
-> >>> =E2=80=98RCU_INITIALIZER=E2=80=99
-> >>>      smp_store_release(&p, RCU_INITIALIZER((typeof(p))_r_a_p__v)); \
-> >>>                            ^~~~~~~~~~~~~~~
-> >>> net/core/dev.c:9081:2: note: in expansion of macro =E2=80=98rcu_assig=
-n_pointer=E2=80=99
-> >>>     rcu_assign_pointer(dev->dpll_pin, dpll_pin);
-> >>>     ^~~~~~~~~~~~~~~~~~
-> >>> make[4]: *** [scripts/Makefile.build:243: net/core/dev.o] Error 1
-> >>> make[4]: *** Waiting for unfinished jobs....
-> >>>     AR      drivers/net/ethernet/built-in.a
-> >>>     AR      drivers/net/built-in.a
-> >>>     AR      net/dcb/built-in.a
-> >>>     AR      net/netlabel/built-in.a
-> >>>     AR      net/strparser/built-in.a
-> >>>     AR      net/handshake/built-in.a
-> >>>     GEN     lib/test_fortify.log
-> >>>     AR      net/8021q/built-in.a
-> >>>     AR      net/nsh/built-in.a
-> >>>     AR      net/unix/built-in.a
-> >>>     CC      lib/string.o
-> >>>     AR      net/packet/built-in.a
-> >>>     AR      net/switchdev/built-in.a
-> >>>     AR      lib/lib.a
-> >>>     AR      net/mptcp/built-in.a
-> >>>     AR      net/devlink/built-in.a
-> >>> In file included from ./include/linux/rbtree.h:24,
-> >>>                    from ./include/linux/mm_types.h:11,
-> >>>                    from ./include/linux/mmzone.h:22,
-> >>>                    from ./include/linux/gfp.h:7,
-> >>>                    from ./include/linux/umh.h:4,
-> >>>                    from ./include/linux/kmod.h:9,
-> >>>                    from ./include/linux/module.h:17,
-> >>>                    from net/core/rtnetlink.c:17:
-> >>> ./include/linux/dpll.h: In function =E2=80=98netdev_dpll_pin=E2=80=99=
-:
-> >>> ./include/linux/rcupdate.h:439:9: error: dereferencing pointer to
-> >>> incomplete type =E2=80=98struct dpll_pin=E2=80=99
-> >>>     typeof(*p) *local =3D (typeof(*p) *__force)READ_ONCE(p); \
-> >>>            ^
-> >>> ./include/linux/rcupdate.h:587:2: note: in expansion of macro
-> >>> =E2=80=98__rcu_dereference_check=E2=80=99
-> >>>     __rcu_dereference_check((p), __UNIQUE_ID(rcu), \
-> >>>     ^~~~~~~~~~~~~~~~~~~~~~~
-> >>> ./include/linux/rtnetlink.h:70:2: note: in expansion of macro
-> >>> =E2=80=98rcu_dereference_check=E2=80=99
-> >>>     rcu_dereference_check(p, lockdep_rtnl_is_held())
-> >>>     ^~~~~~~~~~~~~~~~~~~~~
-> >>> ./include/linux/dpll.h:175:9: note: in expansion of macro
-> >>> =E2=80=98rcu_dereference_rtnl=E2=80=99
-> >>>     return rcu_dereference_rtnl(dev->dpll_pin);
-> >>>            ^~~~~~~~~~~~~~~~~~~~
-> >>> In file included from net/core/rtnetlink.c:60:
-> >>> ./include/linux/dpll.h:179:1: error: control reaches end of non-void
-> >>> function [-Werror=3Dreturn-type]
-> >>>    }
-> >>>
-> >> Hi, Eric!
-> >>
-> >> Looks like we have to move struct dpll_pin definition to
-> >> include/linux/dpll.h to have this fixed, right?
-> >>
-> > No idea what is wrong. Is it powerpc specific ? Some compiler version ?
-> >
-> > netdev_dpll_pin() could be moved to net/core/rtnetlink.c, this is the o=
-nly user.
 
-OK, it seems netdev_dpll_pin() has to be moved in a place the
-structure is known,
-because rcu_dereference() needs to know its size.
 
-I do not see other solution than this, otherwise we have to add more
-pollution to include/linux/netdevice.h
+On 2/28/24 17:22, Mark Rutland wrote:
+> On Wed, Feb 28, 2024 at 01:41:05PM +0530, Anshuman Khandual wrote:
+>> On 2/21/24 23:53, Mark Rutland wrote:
+>>> On Thu, Jan 25, 2024 at 03:11:15PM +0530, Anshuman Khandual wrote:
+> 
+>>>> +============================================
+>>>> +Branch Record Buffer Extension aka FEAT_BRBE
+>>>> +============================================
+>>>> +
+>>>> +Author: Anshuman Khandual <anshuman.khandual@arm.com>
+>>>> +
+>>>> +FEAT_BRBE is an optional architecture feature, which creates branch records
+>>>> +containing information about change in control flow. The branch information
+>>>> +contains source address, target address, and some relevant metadata related
+>>>> +to that change in control flow. BRBE can be configured to filter out branch
+>>>> +records based on their type and privilege level.
+>>>
+>>> Do we actually need this documentation?
+>>
+>> IMHO we do need some documentation.
+>>
+>>> The set of peopl writing kernel code can read the ARM ARM or the kernel code,
+>>> and there's not much here useful to users.
+>>
+>> But not all documentation write ups in the kernel are only for the users, there
+>> are examples in many subsystems where documentations help explain implementation
+>> details including data structures and function flows, for upcoming developers to
+>> understand the code better and make further improvements.
+> 
+> Sure, but that's for things where there are *many* kernel developers that will
+> consume this. The set of people who will modify the BRBE code in a meaningful
+> way can be counted on a hand or two, and so I don't think there's a need or
+> justification for having this detail under Documentation/.
 
-diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index a9c973b92294bb110cf3cd336485972127b01b58..40797ea80bc6273cae6b7773d0a=
-3e47459a72150
-100644
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -2469,7 +2469,7 @@ struct net_device {
-        struct devlink_port     *devlink_port;
+Understood.
 
- #if IS_ENABLED(CONFIG_DPLL)
--       struct dpll_pin __rcu   *dpll_pin;
-+       void __rcu *dpll_pin;
- #endif
- #if IS_ENABLED(CONFIG_PAGE_POOL)
-        /** @page_pools: page pools created for this netdevice */
+> 
+>>> I think it may make sense to document what userspace and/or VMs can and cannot
+>>> do (which is why we describe the ID registers), and any 'gotchas' (e.g.
+>>> restrictions we have that other architectures don't, or vice-versa). I do not
+>>
+>> Agreed - such documentations must be included for better technology adoption, but
+>> those are not the only type of documentation available in the kernel - even right
+>> now.
+>>
+>>> think that we should try to describe the hardware beyond what is necessary to
+>>> describe that, and I do not think that we should describe the structure of the
+>>> perf code beyond what is necessary to desribe that.
+>>>
+>>> Otherwise, this is just a maintenance burden
+>>
+>> I think we should have some documentation for BRBE implementation, and if there
+>> are suggestions to improve the proposed one, will be happy to change. But for
+>> now, will try and rewrite the documentation with your above suggestions in mind.
+> 
+> I think that any documentation on the implementation details should be within
+> the driver itself; please limit anything under Documentation/ to be on details
+> relevant to userspace.
+
+Understood.
+
+> 
+> [...]
+> 
+>> I believe the proposed code is already well documented but will revisit and
+>> try to fill gaps if any but the point being in code documentation might not
+>> be a substitute for a Documentation/arch/arm64/ based file.
+> 
+> For the moment I'm not asking that you add new comments to the BRBE code, so
+> please don't feel like you need to add anything there. I'm only asking that you
+> limit the Documentation/ coverage to details which are directly relevant to
+> userspace.
+
+BRBE enables perf branch stack sampling here, hence all user space related
+documentation should be done for the generic perf itself, unless there are
+arm64 specific things such as unsupported branch filters, any rationale for
+mapping the captured platform branch types into generic branch types etc. I
+will look into the Documentation/arch/arm64/brbe.rst requirement with this
+perspective, and get back with a new write up.
+
+> 
+>>
+>>>
+>>> [...]
+>>>
+>>>> diff --git a/arch/arm64/include/asm/el2_setup.h b/arch/arm64/include/asm/el2_setup.h
+>>>> index b7afaa026842..649b926bf69d 100644
+>>>> --- a/arch/arm64/include/asm/el2_setup.h
+>>>> +++ b/arch/arm64/include/asm/el2_setup.h
+>>>> @@ -154,6 +154,51 @@
+>>>>  .Lskip_set_cptr_\@:
+>>>>  .endm
+>>>>  
+>>>> +#ifdef CONFIG_ARM64_BRBE
+>>>> +/*
+>>>> + * Enable BRBE cycle count
+>>>> + *
+>>>> + * BRBE requires both BRBCR_EL1.CC and BRBCR_EL2.CC fields, be set
+>>>> + * for the cycle counts to be available in BRBINF<N>_EL1.CC during
+>>>> + * branch record processing after a PMU interrupt. This enables CC
+>>>> + * field on both these registers while still executing inside EL2.
+>>>> + *
+>>>> + * BRBE driver would still be able to toggle branch records cycle
+>>>> + * count support via BRBCR_EL1.CC field regardless of whether the
+>>>> + * kernel ends up executing in EL1 or EL2.
+>>>> + */
+>>>> +.macro __init_el2_brbe
+>>>> +	mrs	x1, id_aa64dfr0_el1
+>>>> +	ubfx	x1, x1, #ID_AA64DFR0_EL1_BRBE_SHIFT, #4
+>>>> +	cbz	x1, .Lskip_brbe_cc_\@
+>>>> +
+>>>> +	mrs_s	x0, SYS_BRBCR_EL2
+>>>> +	orr	x0, x0, BRBCR_ELx_CC
+>>>> +	msr_s	SYS_BRBCR_EL2, x0
+>>>
+>>> Please initialise this to a specific value rather than using a
+>>> read-modify-write.
+>>
+>> I will change this as follows - which will be written into both BRBCR_EL2
+>> and BRBCR_EL12 registers as applicable.
+>>
+>>         mov     x0, xzr
+>>         orr     x0, x0, #(BRBCR_ELx_CC |BRBCR_ELx_MPRED)
+> 
+> Please generate the value directly, and only use ORR for bits that need to be
+> conditionally set, e.g. the above can be:
+> 
+> 	mov_q	x0, #(BRBCR_ELx_CC | BRBCR_ELx_MPRED)
+> 	msr_s	SYS_BRBCR_EL2, x0
+
+Okay, will change as suggested above.
+
+> 
+> [...]
+> 
+>>>> +/*
+>>>> + * A branch record with BRBINFx_EL1.LASTFAILED set, implies that all
+>>>> + * preceding consecutive branch records, that were in a transaction
+>>>> + * (i.e their BRBINFx_EL1.TX set) have been aborted.
+>>>> + *
+>>>> + * Similarly BRBFCR_EL1.LASTFAILED set, indicate that all preceding
+>>>> + * consecutive branch records up to the last record, which were in a
+>>>> + * transaction (i.e their BRBINFx_EL1.TX set) have been aborted.
+>>>> + *
+>>>> + * --------------------------------- -------------------
+>>>> + * | 00 | BRBSRC | BRBTGT | BRBINF | | TX = 1 | LF = 0 | [TX success]
+>>>> + * --------------------------------- -------------------
+>>>> + * | 01 | BRBSRC | BRBTGT | BRBINF | | TX = 1 | LF = 0 | [TX success]
+>>>> + * --------------------------------- -------------------
+>>>> + * | 02 | BRBSRC | BRBTGT | BRBINF | | TX = 0 | LF = 0 |
+>>>> + * --------------------------------- -------------------
+>>>> + * | 03 | BRBSRC | BRBTGT | BRBINF | | TX = 1 | LF = 0 | [TX failed]
+>>>> + * --------------------------------- -------------------
+>>>> + * | 04 | BRBSRC | BRBTGT | BRBINF | | TX = 1 | LF = 0 | [TX failed]
+>>>> + * --------------------------------- -------------------
+>>>> + * | 05 | BRBSRC | BRBTGT | BRBINF | | TX = 0 | LF = 1 |
+>>>> + * --------------------------------- -------------------
+>>>> + * | .. | BRBSRC | BRBTGT | BRBINF | | TX = 0 | LF = 0 |
+>>>> + * --------------------------------- -------------------
+>>>> + * | 61 | BRBSRC | BRBTGT | BRBINF | | TX = 1 | LF = 0 | [TX failed]
+>>>> + * --------------------------------- -------------------
+>>>> + * | 62 | BRBSRC | BRBTGT | BRBINF | | TX = 1 | LF = 0 | [TX failed]
+>>>> + * --------------------------------- -------------------
+>>>> + * | 63 | BRBSRC | BRBTGT | BRBINF | | TX = 1 | LF = 0 | [TX failed]
+>>>> + * --------------------------------- -------------------
+>>>> + *
+>>>> + * BRBFCR_EL1.LASTFAILED == 1
+>>>> + *
+>>>> + * BRBFCR_EL1.LASTFAILED fails all those consecutive, in transaction
+>>>> + * branches records near the end of the BRBE buffer.
+>>>> + *
+>>>> + * Architecture does not guarantee a non transaction (TX = 0) branch
+>>>> + * record between two different transactions. So it is possible that
+>>>> + * a subsequent lastfailed record (TX = 0, LF = 1) might erroneously
+>>>> + * mark more than required transactions as aborted.
+>>>> + */
+>>>> +static void process_branch_aborts(struct pmu_hw_events *cpuc)
+>>>> +{
+>>>> +	u64 brbfcr = read_sysreg_s(SYS_BRBFCR_EL1);
+>>>> +	bool lastfailed = !!(brbfcr & BRBFCR_EL1_LASTFAILED);
+>>>> +	int idx = brbe_get_numrec(cpuc->percpu_pmu->reg_brbidr) - 1;
+>>>> +	struct perf_branch_entry *entry;
+>>>> +
+>>>> +	do {
+>>>> +		entry = &cpuc->branches->branch_entries[idx];
+>>>> +		if (entry->in_tx) {
+>>>> +			entry->abort = lastfailed;
+>>>> +		} else {
+>>>> +			lastfailed = entry->abort;
+>>>> +			entry->abort = false;
+>>>> +		}
+>>>> +	} while (idx--, idx >= 0);
+>>>> +}
+>>>
+>>> Please consider:
+>>>
+>>> 1) There are no extant CPU implementations with TME.
+>>> 2) There are no plans for anyone to build TME.
+>>> 3) The kernel doesn't support TME.
+>>>
+>>> ... so why are we tryting to handle this architectural edge-case (complete with
+>>> what is arguably an architectural bug!) that can only happen on a CPU with TME,
+>>> under a kernel that's using TME?
+>>>
+>>> This cannot possibly have been tested, trivially by point 3.
+>>>
+>>> This is purely a maintenance and review burden.
+>>>
+>>> Please delete this and replace it with a comment somewhere that *if* we ever
+>>> add support for TME this will need to be handled somehow.
+>>
+>> Alright, will drop TME handling completely.
+>>
+>> - Dropped process_branch_aborts() completely
+>>
+>> - Added an warning if transaction states get detected some how unexpectedly
+>>
+>>                 /*
+>>                  * Currently TME feature is neither implemented in any hardware
+>>                  * nor it is being supported in the kernel. Just warn here once
+>>                  * if TME related information shows up rather unexpectedly.
+>>                  */
+>>                 if (entry->abort || entry->in_tx)
+>>                         pr_warn_once("Unknown transaction states %d %d\n",
+>>                                       entry->abort, entry->in_tx);
+> 
+> Something of that shape sounds good; thanks!
+
+Understood.
 
