@@ -1,96 +1,80 @@
-Return-Path: <linux-kernel+bounces-87211-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87212-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBF9286D124
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:52:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 58EE486D12B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:53:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92ADA283FF2
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:52:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 100E4286CBE
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:53:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A43E7757EE;
-	Thu, 29 Feb 2024 17:52:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D36D75806;
+	Thu, 29 Feb 2024 17:53:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SwMcL2mJ"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DYGYvzwN"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEEEC70AF4
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 17:52:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14B18757E7;
+	Thu, 29 Feb 2024 17:53:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709229140; cv=none; b=SUGZeBwFbH4H4XGrqjzQ0jcKOfR/TZi7aK4nwFlIKYO+z57wFQ9Hj4uRi5nEF4SGlcL6SNiCRrn8yn4/JZEl3w60f5GMoT5k0YU2X/uPFdMfL19R9caBsqw8FQNLt35kq9RRoWfTz5ZWH9d2dT+rbAMEbjFHVO2iA9yqEoLy4Nc=
+	t=1709229211; cv=none; b=WEnaFtMGsgz01xaq9cIfW9P8Ava7C2LBuMblkaWe+ANjmlohasSYGxik8hL9w+UZyjGRICS6D5ACJ66JXuCOaZ+78fVAV2TALNxf1F4gtKZodPW/7+zZkZJdtmEPjHcgwbIU7fkD2qZQjjsW55UZjQzAvVb+uYHyVoQF5V7Frw0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709229140; c=relaxed/simple;
-	bh=PXUEP1C71co4eWA+/1jmwXfKYcFuP3HFaOJuu0HG8fQ=;
+	s=arc-20240116; t=1709229211; c=relaxed/simple;
+	bh=IZ8tXHi4D6VeM3kc0kx68z1bYQSTMxGuNMx6zsNFNB0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jSfPL1IZKwgP7VNCXTdD8AtjSwR+p3bZlkXt4ITziZW0/xr2NlG1313do7UWhmZTzQAV+Uo2jhT8QrAgDIg03CuUGpumY9fB6kUeKn20q0++3PJgXO+F8e753q4tgTE4hsLfX60YsCjd43W2WSqeZeXgYQ12g4ZvaabYSsh5TXo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SwMcL2mJ; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709229137;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Tm+DA3s213+nIlC3/1Pqt2BegQwfSDXngZs51zMT49Y=;
-	b=SwMcL2mJK9xaesmicHWFvirMMBwcKAUIpwzlMkmzwaMaSRTOC90L0RqnUoZKHemhe64vnv
-	p3ElpJ6Q9mQwu1EHTix4V0mOMaoPr4R0PTKRzcCbbcwWP2TPghjMh3ap5mMQ8753+jXXi9
-	UYW14xoWVUEHs+XZExz++npWM75lq4k=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-678-a5bB9H7gMAeO3qBDfy5JCQ-1; Thu, 29 Feb 2024 12:52:15 -0500
-X-MC-Unique: a5bB9H7gMAeO3qBDfy5JCQ-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-412a64bf17eso7188535e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 09:52:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709229134; x=1709833934;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Tm+DA3s213+nIlC3/1Pqt2BegQwfSDXngZs51zMT49Y=;
-        b=WZllIB07mXxu8D1LJjVDryyvQBixUf1XZrDC5uvNIXIkQ5mBEFLyx7XQmmqKW0Uwpl
-         yD6f7/9z969y6k01eBHnOi53pp3I/1OW587yBcxCUUz5+oHOsAUjBkjRerwHs1yUuZfd
-         hWmsFF417MEXKA9CXMTeG9fTAqRn5zpekP7j6wAj8yVBUpG9xJw7lhLEapYsFh3lqn+0
-         EycVimbwyg1oFXAowvu8Jg04uCL0toc5mWMZA17C6k13k6fiePurf4HNpPGS4BE4TTdN
-         JlmMCshmUlxi9puURZWC67vDTahGx0l83Gw280i5MNLliTtqYGmDFHYxqHQAgTK6OMc+
-         eHGw==
-X-Forwarded-Encrypted: i=1; AJvYcCVOsoeDdBNbZ9WSSc741LicQ6GDyEOU+lEnNEW7SI3ZJhpKzbPiZ/IdvV0X9r4H/Symn8qiOikIfB8r1F/lgylB6Sx3MgjOvRNCvdQN
-X-Gm-Message-State: AOJu0YxaQNPQFuoA/Vjn4fLHXYH8MwSCw13gF9GYs9/KswAITtSJomRg
-	vHa7B4+JBgczxvvFdfH1BQEeH4RfK1IUK6K5XOVaQE4Zkm3uOl8S2/8IrehyuTPa3uDAGetzodS
-	cV9Ck4voqM2f7YCnYGMBZzCNenWyDmkucS2Wj6MKYEGSRJzeIytkLL840vltrLQ==
-X-Received: by 2002:a05:600c:8518:b0:412:af48:9d9e with SMTP id gw24-20020a05600c851800b00412af489d9emr2266661wmb.20.1709229134053;
-        Thu, 29 Feb 2024 09:52:14 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IG2SwLF5eJE0m6m+v9VypbvNmkAsfLUQ1tB/JSeTZDmR75YYBw7SUYGhSzX37cfN2+Y/sn01A==
-X-Received: by 2002:a05:600c:8518:b0:412:af48:9d9e with SMTP id gw24-20020a05600c851800b00412af489d9emr2266647wmb.20.1709229133682;
-        Thu, 29 Feb 2024 09:52:13 -0800 (PST)
-Received: from toolbox ([2001:9e8:8984:bd00:2340:7b35:5e60:4abd])
-        by smtp.gmail.com with ESMTPSA id j5-20020a05600c488500b004127de1ba84sm2694455wmp.0.2024.02.29.09.52.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 09:52:12 -0800 (PST)
-Date: Thu, 29 Feb 2024 18:52:11 +0100
-From: Sebastian Wick <sebastian.wick@redhat.com>
-To: Arthur Grillo <arthurgrillo@riseup.net>
-Cc: Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
-	Haneen Mohammed <hamohammed.sa@gmail.com>,
-	Harry Wentland <harry.wentland@amd.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	=?iso-8859-1?Q?Ma=EDra?= Canal <mairacanal@riseup.net>,
-	Melissa Wen <melissa.srw@gmail.com>,
-	Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	linux-doc@vger.kernel.org
-Subject: Re: [PATCH v2 0/7] Add YUV formats to VKMS
-Message-ID: <20240229175211.GA166694@toolbox>
-References: <20240110-vkms-yuv-v2-0-952fcaa5a193@riseup.net>
- <20240115150600.GC160656@toolbox>
- <9e6ed0e5-c9aa-4fb9-a6d8-4c3b1d658ef2@riseup.net>
+	 Content-Type:Content-Disposition:In-Reply-To; b=RYXJ5JzfsrXOKyPKPaOZfC+frCzhJTMmVpwoZmD6WQWn46MtsESRzlFzVRPXNJr6v6XgXzfuxNma5IYyOUrDWDMymO1Ah2cQtF/WbxjsSQyzuiIR+X6EKRswxiFq3Uy2R+GXjvlL6Air+wTg+IT9AT5Co81bq/4+GSOMYQdIlvM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DYGYvzwN; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709229209; x=1740765209;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=IZ8tXHi4D6VeM3kc0kx68z1bYQSTMxGuNMx6zsNFNB0=;
+  b=DYGYvzwNfmxpq7ObKabx3RVT+vH5D36T5LzWrArpkzqj2/KUc4irIBPj
+   cGq202ta97rlS3PMXi9aoHB84NMrRe18my66Ff+UQYf4pDbS+uwPyk6f/
+   8m2kIQAYccR22eHSD4YSxm4H6tO8N1clT/4Zptzt7BcpZe8vX9nIJHCBt
+   5xeTpcFQr8F/IyEL+e0LTVNFlrUK3R4GQBYgtcnc5hrtLtO2jCgPAxdmY
+   OPbSU2j/m2om5QW0owi2It8+w2PeozaJp1BPQacj2FSGTcLg8MlQW37nX
+   bfg6NN15QGUKCTMHFNkFDKGtu4FJeaudn6n2UMGI3pRZB/YH/4VM4D6wR
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="21177108"
+X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
+   d="scan'208";a="21177108"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 09:53:28 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
+   d="scan'208";a="12511155"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by fmviesa004.fm.intel.com with ESMTP; 29 Feb 2024 09:53:23 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rfkav-000DAD-0q;
+	Thu, 29 Feb 2024 17:53:21 +0000
+Date: Fri, 1 Mar 2024 01:52:41 +0800
+From: kernel test robot <lkp@intel.com>
+To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+	Abel Vesa <abelvesa@kernel.org>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	linux-clk@vger.kernel.org, imx@lists.linux.dev,
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
+Subject: Re: [PATCH 2/2] clk: imx: add i.MX95 BLK CTL clk driver
+Message-ID: <202403010142.5gu9hKpX-lkp@intel.com>
+References: <20240228-imx95-blk-ctl-v1-2-9b5ae3c14d83@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -99,130 +83,91 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9e6ed0e5-c9aa-4fb9-a6d8-4c3b1d658ef2@riseup.net>
+In-Reply-To: <20240228-imx95-blk-ctl-v1-2-9b5ae3c14d83@nxp.com>
 
-On Wed, Feb 28, 2024 at 08:42:41PM -0300, Arthur Grillo wrote:
-> 
-> 
-> On 15/01/24 12:06, Sebastian Wick wrote:
-> > On Wed, Jan 10, 2024 at 02:44:00PM -0300, Arthur Grillo wrote:
-> >> This patchset aims to add support for additional buffer YUV formats.
-> >> More specifically, it adds support to:
-> >>
-> >> Semi-planar formats:
-> >>
-> >> - NV12
-> >> - NV16
-> >> - NV24
-> >> - NV21
-> >> - NV61
-> >> - NV42
-> >>
-> >> Planar formats:
-> >>
-> >> - YUV440
-> >> - YUV422
-> >> - YUV444
-> >> - YVU440
-> >> - YVU422
-> >> - YVU444
-> >>
-> >> These formats have more than one plane, and most have chroma
-> >> subsampling. These properties don't have support on VKMS, so I had to
-> >> work on this before.
-> >>
-> >> To ensure that the conversions from YUV to RGB are working, I wrote a
-> >> KUnit test. As the work from Harry on creating KUnit tests on VKMS[1] is
-> >> not yet merged, I took the setup part (Kconfig entry and .kunitfile)
-> >> from it.
-> >>
-> >> Furthermore, I couldn't find any sources with the conversion matrices,
-> >> so I had to work out the values myself based on the ITU papers[2][3][4].
-> >> So, I'm not 100% sure if the values are accurate. I'd appreciate some
-> >> input if anyone has more knowledge in this area.
-> > 
-> > H.273 CICP [1] has concise descriptions of the required values for most
-> > widely used formats and the colour python framework [2] also can be used
-> > to quickly get to the desired information most of the time.
-> > 
-> > [1]: https://www.itu.int/rec/T-REC-H.273
-> > [2]: https://www.colour-science.org/
-> 
-> I want to thank you for suggesting the python framework, it helped
-> immensely now that I'm changing the precision from 8-bit to 32-bit[1].
-> 
-> If I'd known about this framework while developing this patch, I
-> would've saved myself a few weeks of pain and suffering recreating a
-> part of this library XD.
+Hi Peng,
 
-I'm glad this is useful for you! We also used it for our color-and-hdr
-project https://gitlab.freedesktop.org/pq/color-and-hdr/.
+kernel test robot noticed the following build errors:
 
-> [1]: https://lore.kernel.org/all/b23da076-0bfb-48b2-9386-383a6dec1868@riseup.net/
-> 
-> Best Regards,
-> ~Arthur Grillo
-> 
-> > 
-> >> Also, I used two IGT tests to check if the formats were having a correct
-> >> conversion (all with the --extended flag):
-> >>
-> >> - kms_plane@pixel_format
-> >> - kms_plane@pixel_format_source_clamping.
-> >>
-> >> The nonsubsampled formats don't have support on IGT, so I sent a patch
-> >> fixing this[5].
-> >>
-> >> Currently, this patchset does not add those formats to the writeback, as
-> >> it would require a rewrite of how the conversions are done (similar to
-> >> what was done on a previous patch[6]). So, I would like to review this
-> >> patchset before I start the work on this other part.
-> >>
-> >> [1]: https://lore.kernel.org/all/20231108163647.106853-5-harry.wentland@amd.com/
-> >> [2]: https://www.itu.int/rec/R-REC-BT.601-7-201103-I/en
-> >> [3]: https://www.itu.int/rec/R-REC-BT.709-6-201506-I/en
-> >> [4]: https://www.itu.int/rec/R-REC-BT.2020-2-201510-I/en
-> >> [5]: https://lists.freedesktop.org/archives/igt-dev/2024-January/066937.html
-> >> [6]: https://lore.kernel.org/dri-devel/20230414135151.75975-2-mcanal@igalia.com/
-> >>
-> >> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
-> >> ---
-> >> Changes in v2:
-> >> - Use EXPORT_SYMBOL_IF_KUNIT instead of including the .c test
-> >>   file (Maxime)
-> >> - Link to v1: https://lore.kernel.org/r/20240105-vkms-yuv-v1-0-34c4cd3455e0@riseup.net
-> >>
-> >> ---
-> >> Arthur Grillo (7):
-> >>       drm/vkms: Use drm_frame directly
-> >>       drm/vkms: Add support for multy-planar framebuffers
-> >>       drm/vkms: Add range and encoding properties to pixel_read function
-> >>       drm/vkms: Add chroma subsampling
-> >>       drm/vkms: Add YUV support
-> >>       drm/vkms: Drop YUV formats TODO
-> >>       drm/vkms: Create KUnit tests for YUV conversions
-> >>
-> >>  Documentation/gpu/vkms.rst                    |   3 +-
-> >>  drivers/gpu/drm/vkms/Kconfig                  |  15 ++
-> >>  drivers/gpu/drm/vkms/Makefile                 |   1 +
-> >>  drivers/gpu/drm/vkms/tests/.kunitconfig       |   4 +
-> >>  drivers/gpu/drm/vkms/tests/Makefile           |   3 +
-> >>  drivers/gpu/drm/vkms/tests/vkms_format_test.c | 156 ++++++++++++++++
-> >>  drivers/gpu/drm/vkms/vkms_drv.h               |   6 +-
-> >>  drivers/gpu/drm/vkms/vkms_formats.c           | 247 ++++++++++++++++++++++----
-> >>  drivers/gpu/drm/vkms/vkms_formats.h           |   9 +
-> >>  drivers/gpu/drm/vkms/vkms_plane.c             |  26 ++-
-> >>  drivers/gpu/drm/vkms/vkms_writeback.c         |   5 -
-> >>  11 files changed, 426 insertions(+), 49 deletions(-)
-> >> ---
-> >> base-commit: eeb8e8d9f124f279e80ae679f4ba6e822ce4f95f
-> >> change-id: 20231226-vkms-yuv-6f7859f32df8
-> >>
-> >> Best regards,
-> >> -- 
-> >> Arthur Grillo <arthurgrillo@riseup.net>
-> >>
-> > 
-> 
+[auto build test ERROR on 22ba90670a51a18c6b36d285fddf92b9887c0bc3]
 
+url:    https://github.com/intel-lab-lkp/linux/commits/Peng-Fan-OSS/dt-bindindgs-clock-support-NXP-i-MX95-BLK-CTL-module/20240228-122408
+base:   22ba90670a51a18c6b36d285fddf92b9887c0bc3
+patch link:    https://lore.kernel.org/r/20240228-imx95-blk-ctl-v1-2-9b5ae3c14d83%40nxp.com
+patch subject: [PATCH 2/2] clk: imx: add i.MX95 BLK CTL clk driver
+config: hexagon-allmodconfig (https://download.01.org/0day-ci/archive/20240301/202403010142.5gu9hKpX-lkp@intel.com/config)
+compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project 325f51237252e6dab8e4e1ea1fa7acbb4faee1cd)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240301/202403010142.5gu9hKpX-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403010142.5gu9hKpX-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   In file included from drivers/clk/imx/clk-imx95-blk-ctl.c:13:
+   In file included from include/linux/io.h:13:
+   In file included from arch/hexagon/include/asm/io.h:328:
+   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     547 |         val = __raw_readb(PCI_IOBASE + addr);
+         |                           ~~~~~~~~~~ ^
+   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     560 |         val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
+         |                                                         ~~~~~~~~~~ ^
+   include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded from macro '__le16_to_cpu'
+      37 | #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
+         |                                                   ^
+   In file included from drivers/clk/imx/clk-imx95-blk-ctl.c:13:
+   In file included from include/linux/io.h:13:
+   In file included from arch/hexagon/include/asm/io.h:328:
+   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     573 |         val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
+         |                                                         ~~~~~~~~~~ ^
+   include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded from macro '__le32_to_cpu'
+      35 | #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
+         |                                                   ^
+   In file included from drivers/clk/imx/clk-imx95-blk-ctl.c:13:
+   In file included from include/linux/io.h:13:
+   In file included from arch/hexagon/include/asm/io.h:328:
+   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     584 |         __raw_writeb(value, PCI_IOBASE + addr);
+         |                             ~~~~~~~~~~ ^
+   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     594 |         __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
+         |                                                       ~~~~~~~~~~ ^
+   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     604 |         __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
+         |                                                       ~~~~~~~~~~ ^
+>> drivers/clk/imx/clk-imx95-blk-ctl.c:425:25: error: use of undeclared identifier 'imx95_blk_ctl_match'; did you mean 'imx95_bc_of_match'?
+     425 | MODULE_DEVICE_TABLE(of, imx95_blk_ctl_match);
+         |                         ^~~~~~~~~~~~~~~~~~~
+         |                         imx95_bc_of_match
+   include/linux/module.h:244:15: note: expanded from macro 'MODULE_DEVICE_TABLE'
+     244 | extern typeof(name) __mod_##type##__##name##_device_table               \
+         |               ^
+   drivers/clk/imx/clk-imx95-blk-ctl.c:416:34: note: 'imx95_bc_of_match' declared here
+     416 | static const struct of_device_id imx95_bc_of_match[] = {
+         |                                  ^
+   6 warnings and 1 error generated.
+
+
+vim +425 drivers/clk/imx/clk-imx95-blk-ctl.c
+
+   415	
+   416	static const struct of_device_id imx95_bc_of_match[] = {
+   417		{ .compatible = "nxp,imx95-cameramix-csr", .data = &camblk_dev_data },
+   418		{ .compatible = "nxp,imx95-display-master-csr", },
+   419		{ .compatible = "nxp,imx95-dispmix-lvds-csr", .data = &lvds_csr_dev_data },
+   420		{ .compatible = "nxp,imx95-dispmix-csr", .data = &dispmix_csr_dev_data },
+   421		{ .compatible = "nxp,imx95-netcmix-blk-ctrl", },
+   422		{ .compatible = "nxp,imx95-vpumix-csr", .data = &vpublk_dev_data },
+   423		{ /* Sentinel */ },
+   424	};
+ > 425	MODULE_DEVICE_TABLE(of, imx95_blk_ctl_match);
+   426	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
