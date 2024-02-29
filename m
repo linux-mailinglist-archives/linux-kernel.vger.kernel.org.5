@@ -1,72 +1,71 @@
-Return-Path: <linux-kernel+bounces-87537-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87536-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E825486D5A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:07:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72A7A86D5A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:07:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C457B1C232A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:06:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05A0728D97A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:07:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8876C14EA4B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7315145656;
 	Thu, 29 Feb 2024 20:56:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UvrbEA5i"
-Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Xxy4KQYy"
+Received: from mail-il1-f175.google.com (mail-il1-f175.google.com [209.85.166.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9F46145651
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 20:56:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42CBE144044
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 20:56:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709240165; cv=none; b=etW5spyna7o19qqgWM3iakHs2IGP7MFsvy55IhX4QEAI43uwIDIzHqybZukeH1ELFnJ51iwfRrq9jk2pGzDVQYOOywZCBu9BYgKDk2qz7CMmls/OsdYo/xkndTkmGmiT/93Dgi4ylKAaHMgxtMisI8ihghhGeRCKrzAlAuCq5aA=
+	t=1709240165; cv=none; b=rBONfnTVDwn/UB1OSnBO1gXKPSNDT0daHH0aPusTA7Qazra/7O7Iyie6U8AFmUra8Kc1GCx8G0iXRhuhbolxNCzJ9sC/5Mdu2FWMp43kW7LnG2RQ3p03jXWbNzI2z2YIjk2AG7XN6Yz9o30YgA5YFSrtALOskisp6Ejeob1OFag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1709240165; c=relaxed/simple;
-	bh=58ZSVqSazsVEHoU8qFXXAJJ94ldiaiahFmGNCpA1b2A=;
+	bh=FDSlKNUB8yAuzsdtIKb1kKDg1IzUCFaxWW4Ug8df6gI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=apV0Q6oCgqfuIE50Kte4ES+vhtcaDMHOxPIcm4/1RLyEl/pyVtp0jSh/TngXnrUIXKFV4LHyPICyJKSGFB5mI4Amt4YgwcLQerdi+LliXa7S5fmUqgTeejNX6LUfsrPSFIhmUZBmbUcRiQkHrNSzYw06k/xCyxZ9F4zXKtfW5Bg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UvrbEA5i; arc=none smtp.client-ip=209.85.166.173
+	 MIME-Version; b=HZqBwQZxbSwwNcMZh6ZMIDYha1U35rap59LXvtW0lLOTHECV3d6J3wXOAv+nIETc14K12BCSXn94U5IrMPd2OKvNOB1Ag5gWQlHCl3Jr+ndpxczJT4nxRi+G6hYuAK1y6Ulv3bArWo039muv5+d+06EUn0dSpdiDVrSoajwq+A8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Xxy4KQYy; arc=none smtp.client-ip=209.85.166.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-36540b9885cso6289685ab.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 12:56:01 -0800 (PST)
+Received: by mail-il1-f175.google.com with SMTP id e9e14a558f8ab-3657dbe2008so6784145ab.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 12:56:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709240161; x=1709844961; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1709240162; x=1709844962; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3K7f3RiTowa/EAhWLKI1GEo5jRAquYP1bOnRd1hO3Z4=;
-        b=UvrbEA5iEz7Z3nDmxZ/U1S1OUpBy/DhhvQn1WpBgSeeT/WHxJR+FQaBcOFVgC6x53K
-         QxblbfmMqkaNlXhj6ngPZY+Prt5ziVS5WmvvpVZPiS3aNnsf9mYKSsPKJesFJcxMVARr
-         BzuxAYR2ueM2l+SvmiQN44hadgfENG1JZHGOEvx0JYnxo1tjBF9HqAzeZFGwi2O1odld
-         8iyJsjLoJWl4We3wGCjbjmIeaclZ8ZHZUeeWj+qMxG04IQwRUDlhqpVvLr2pvY+disrX
-         Fy0EQthAtfXb11KWKwqkTnKB6ugcp5JrhB2rgYcSrLrPqk2xEc/lSzTErTSawkoil24x
-         BWCA==
+        bh=dFAkZ9ZdIx7DYJ4QiNOc9lo+FzdYYDRog98IZKbIYpw=;
+        b=Xxy4KQYyEODV2aMjoc4wxsIdFRiMne6eVTIyCqq3WKDsTTokDQbkOr+yQePS87Z9v2
+         nAbBCTPBBnTVLiDL+Lfbef4pMgx9hJ4v8KBu20f8DZkq8Ng9MvV9/Q2Q81WMJRVfS/bp
+         JHtdBwAGoX+3PJQvWOhpeBurYUGVk81MNyR/pQoIeaUdC/f9T09Reqn5xmhbr2pR3d55
+         ubke961Aw0nVh0sWYyWITmqLrQKxcE8yyjMlBoOFfuyWrCITAyPA1Q8c7Pi9KQGO+P2g
+         ehPScjCy4riHiPRu64gfzoH+BKbgnxRy2RTITWazFMdJftM7x9HnKpVgVZOkMZND0Sy0
+         lKVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709240161; x=1709844961;
+        d=1e100.net; s=20230601; t=1709240162; x=1709844962;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3K7f3RiTowa/EAhWLKI1GEo5jRAquYP1bOnRd1hO3Z4=;
-        b=QcLVc3B7jd/3uLIq3W/qpi3zs5Q4abZ8KKxRzzS5YAkcoFHTftoLu52tmYHbZdkh1y
-         eqxOeeLDwctbpLDzCKdy2fj6Vq9KhRk+qegvfphDHjjLtgQVbDXhZpcayakiwaSrZNn0
-         92Vdp02RwuKVh/sVu/8fqH5yhhih8QHTTzgJP3N+hMxRkiU4JHy4Upgcr0eEmf+C0OZl
-         HOKtBH1DoUL9yorM5Cv+foilhNhuQYhFxonYbeNuYCBf8XDcUz9qXH32YlBRa5R6eA/A
-         qCiym/MNxd6BrIZHpl52r/K3zjp8n9BMWUC3TMoUGD2veuy62Pqp1JUM/zyqeNwD2o65
-         23jw==
-X-Forwarded-Encrypted: i=1; AJvYcCXAb4gLi8+JjEHmHrbHlwCDz16c4ajs0LhbwDoLOMP2oQTpt9WzeTntGNSByHBSU8go8IOnqB1GNR8pU/m29S+NR9PgR0iH6HSjPy5F
-X-Gm-Message-State: AOJu0Yz9D5JsmD2cFkbEQEm2B0D0v7rZPHH1IxsRcbJ+W5y88cQ6AzUz
-	0DWZAn9cNz0MdsbuBvoCTBf9zm3sewPM4osVjK19ZRX8UNZZsljNg7HhM8LTFZ+j1+KaM6jfhnK
-	7
-X-Google-Smtp-Source: AGHT+IEKCJy8er2U/25XopKWelRMq3W5Ar+pFByoKiRgsBU7iDIUhRe2uF9ci9DOl1lDMQm020cB6A==
-X-Received: by 2002:a05:6e02:12c3:b0:365:3a69:1e20 with SMTP id i3-20020a056e0212c300b003653a691e20mr47922ilm.3.1709240161169;
-        Thu, 29 Feb 2024 12:56:01 -0800 (PST)
+        bh=dFAkZ9ZdIx7DYJ4QiNOc9lo+FzdYYDRog98IZKbIYpw=;
+        b=gALaY/8XduOKZE0WJSSxmfro5jyd0GvbXo7NZ7jTM40zsJJOVaNnNKCmCz90C+0JgC
+         g6BgtMiOcxPKiqe/rvgvHrKiunEOHtIKnWlKGoehT1Mdm0WIo/4xRrxLt2IspQcP3LWS
+         VP3fujLFf6oIC7werc7ED7D80vCZ5Eq5fRWRdsNmuyxm7OU04Dh52UoJUx7lwsLOxRIX
+         QZk4FQQaxIm82kvicsVD+ttJJN/PlcTRuQv3BktG1uMBQxCmEN25MW50a366igNRxLV3
+         LDTBpeqmWF/aTtqTPeJqnhZ68oM1l4NvTEQe9cKDS934B3kAhHuTvDcYQiyT35pGEzZm
+         QMoQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUgHkHTWAAEITyK6MsrprHgfys/Lt7E6IIOr7Dz/v/Tgr+nuug5qGWeh+E5BBzG4N/k+EqfmjbfkQkbgwkNgmyuZlRMH8IpKguGn5Zv
+X-Gm-Message-State: AOJu0YyVR87rnDmEe/Nsu9/5yEe8X7ipQ0NaojH7S8BOUS54OCg0xNkT
+	6O8LwgpOYc6zaGMPu7hctGjDT8IdO8fOo1sqNH2qzq3gx9r4HcDVua15I/IF66I=
+X-Google-Smtp-Source: AGHT+IEKKxW/LV+o0zAsVvesg0GcPXgpiUqdeuj3zxgMS7BJbamqwjIinASTSCOBzwuam5Dt8/Fjtg==
+X-Received: by 2002:a05:6e02:2148:b0:365:c748:57cf with SMTP id d8-20020a056e02214800b00365c74857cfmr247482ilv.13.1709240162366;
+        Thu, 29 Feb 2024 12:56:02 -0800 (PST)
 Received: from localhost.localdomain (c-73-228-159-35.hsd1.mn.comcast.net. [73.228.159.35])
-        by smtp.gmail.com with ESMTPSA id h14-20020a056e020d4e00b003658fbcf55dsm521551ilj.72.2024.02.29.12.56.00
+        by smtp.gmail.com with ESMTPSA id h14-20020a056e020d4e00b003658fbcf55dsm521551ilj.72.2024.02.29.12.56.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 12:56:00 -0800 (PST)
+        Thu, 29 Feb 2024 12:56:01 -0800 (PST)
 From: Alex Elder <elder@linaro.org>
 To: davem@davemloft.net,
 	edumazet@google.com,
@@ -82,9 +81,9 @@ Cc: mka@chromium.org,
 	netdev@vger.kernel.org,
 	linux-arm-msm@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 1/7] net: ipa: change ipa_interrupt_config() prototype
-Date: Thu, 29 Feb 2024 14:55:48 -0600
-Message-Id: <20240229205554.86762-2-elder@linaro.org>
+Subject: [PATCH net-next 2/7] net: ipa: introduce ipa_interrupt_init()
+Date: Thu, 29 Feb 2024 14:55:49 -0600
+Message-Id: <20240229205554.86762-3-elder@linaro.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240229205554.86762-1-elder@linaro.org>
 References: <20240229205554.86762-1-elder@linaro.org>
@@ -96,132 +95,208 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Change the return type of ipa_interrupt_config() to be an error
-code rather than an IPA interrupt structure pointer, and assign the
-the pointer within that function.
+Create a new function ipa_interrupt_init() that is called at probe
+time to allocate and initialize the IPA interrupt data structure.
+Create ipa_interrupt_exit() as its inverse.
 
-Change ipa_interrupt_deconfig() to take the IPA pointer as argument
-and have it invalidate the ipa->interrupt pointer.
+This follows the normal IPA driver pattern of *_init() functions
+doing things that can be done before access to hardware is required.
 
 Signed-off-by: Alex Elder <elder@linaro.org>
 ---
- drivers/net/ipa/ipa_interrupt.c | 15 ++++++++++-----
- drivers/net/ipa/ipa_interrupt.h | 10 +++++-----
- drivers/net/ipa/ipa_main.c      | 13 ++++---------
- 3 files changed, 19 insertions(+), 19 deletions(-)
+ drivers/net/ipa/ipa_interrupt.c | 50 +++++++++++++++++++++------------
+ drivers/net/ipa/ipa_interrupt.h | 14 +++++++++
+ drivers/net/ipa/ipa_main.c      | 28 ++++++++++++++----
+ 3 files changed, 69 insertions(+), 23 deletions(-)
 
 diff --git a/drivers/net/ipa/ipa_interrupt.c b/drivers/net/ipa/ipa_interrupt.c
-index 4d80bf77a5323..a298d922dd871 100644
+index a298d922dd871..26e84a5c30bff 100644
 --- a/drivers/net/ipa/ipa_interrupt.c
 +++ b/drivers/net/ipa/ipa_interrupt.c
-@@ -236,7 +236,7 @@ void ipa_interrupt_simulate_suspend(struct ipa_interrupt *interrupt)
- }
+@@ -19,6 +19,7 @@
+  * time only these three are supported.
+  */
  
++#include <linux/platform_device.h>
+ #include <linux/types.h>
+ #include <linux/interrupt.h>
+ #include <linux/pm_runtime.h>
+@@ -238,29 +239,15 @@ void ipa_interrupt_simulate_suspend(struct ipa_interrupt *interrupt)
  /* Configure the IPA interrupt framework */
--struct ipa_interrupt *ipa_interrupt_config(struct ipa *ipa)
-+int ipa_interrupt_config(struct ipa *ipa)
+ int ipa_interrupt_config(struct ipa *ipa)
  {
++	struct ipa_interrupt *interrupt = ipa->interrupt;
  	struct device *dev = &ipa->pdev->dev;
- 	struct ipa_interrupt *interrupt;
-@@ -254,10 +254,12 @@ struct ipa_interrupt *ipa_interrupt_config(struct ipa *ipa)
+-	struct ipa_interrupt *interrupt;
++	unsigned int irq = interrupt->irq;
+ 	const struct reg *reg;
+-	unsigned int irq;
+ 	int ret;
  
- 	interrupt = kzalloc(sizeof(*interrupt), GFP_KERNEL);
- 	if (!interrupt)
--		return ERR_PTR(-ENOMEM);
-+		return -ENOMEM;
+-	ret = platform_get_irq_byname(ipa->pdev, "ipa");
+-	if (ret <= 0) {
+-		dev_err(dev, "DT error %d getting \"ipa\" IRQ property\n",
+-			ret);
+-		return ERR_PTR(ret ? : -EINVAL);
+-	}
+-	irq = ret;
+-
+-	interrupt = kzalloc(sizeof(*interrupt), GFP_KERNEL);
+-	if (!interrupt)
+-		return -ENOMEM;
  	interrupt->ipa = ipa;
- 	interrupt->irq = irq;
+-	interrupt->irq = irq;
  
-+	ipa->interrupt = interrupt;
-+
- 	/* Start with all IPA interrupts disabled */
+-	ipa->interrupt = interrupt;
+-
+-	/* Start with all IPA interrupts disabled */
++	/* Disable all IPA interrupt types */
  	reg = ipa_reg(ipa, IPA_IRQ_EN);
  	iowrite32(0, ipa->reg_virt + reg_offset(reg));
-@@ -282,13 +284,16 @@ struct ipa_interrupt *ipa_interrupt_config(struct ipa *ipa)
- err_kfree:
- 	kfree(interrupt);
  
--	return ERR_PTR(ret);
-+	return ret;
- }
+@@ -277,7 +264,7 @@ int ipa_interrupt_config(struct ipa *ipa)
+ 		goto err_free_irq;
+ 	}
  
- /* Inverse of ipa_interrupt_config() */
--void ipa_interrupt_deconfig(struct ipa_interrupt *interrupt)
-+void ipa_interrupt_deconfig(struct ipa *ipa)
- {
--	struct device *dev = &interrupt->ipa->pdev->dev;
-+	struct ipa_interrupt *interrupt = ipa->interrupt;
-+	struct device *dev = &ipa->pdev->dev;
-+
-+	ipa->interrupt = NULL;
+-	return interrupt;
++	return 0;
+ 
+ err_free_irq:
+ 	free_irq(interrupt->irq, interrupt);
+@@ -297,5 +284,32 @@ void ipa_interrupt_deconfig(struct ipa *ipa)
  
  	dev_pm_clear_wake_irq(dev);
  	free_irq(interrupt->irq, interrupt);
++}
++
++/* Initialize the IPA interrupt structure */
++struct ipa_interrupt *ipa_interrupt_init(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct ipa_interrupt *interrupt;
++	int irq;
++
++	irq = platform_get_irq_byname(pdev, "ipa");
++	if (irq <= 0) {
++		dev_err(dev, "DT error %d getting \"ipa\" IRQ property\n", irq);
++
++		return ERR_PTR(irq ? : -EINVAL);
++	}
++
++	interrupt = kzalloc(sizeof(*interrupt), GFP_KERNEL);
++	if (!interrupt)
++		return ERR_PTR(-ENOMEM);
++	interrupt->irq = irq;
++
++	return interrupt;
++}
++
++/* Inverse of ipa_interrupt_init() */
++void ipa_interrupt_exit(struct ipa_interrupt *interrupt)
++{
+ 	kfree(interrupt);
+ }
 diff --git a/drivers/net/ipa/ipa_interrupt.h b/drivers/net/ipa/ipa_interrupt.h
-index 53e1b71685c75..1947654e3e360 100644
+index 1947654e3e360..f3f4f4330a597 100644
 --- a/drivers/net/ipa/ipa_interrupt.h
 +++ b/drivers/net/ipa/ipa_interrupt.h
-@@ -76,17 +76,17 @@ void ipa_interrupt_irq_enable(struct ipa *ipa);
- void ipa_interrupt_irq_disable(struct ipa *ipa);
- 
- /**
-- * ipa_interrupt_config() - Configure the IPA interrupt framework
-+ * ipa_interrupt_config() - Configure IPA interrupts
-  * @ipa:	IPA pointer
-  *
-- * Return:	Pointer to IPA SMP2P info, or a pointer-coded error
-+ * Return:	0 if successful, or a negative error code
+@@ -89,4 +89,18 @@ int ipa_interrupt_config(struct ipa *ipa);
   */
--struct ipa_interrupt *ipa_interrupt_config(struct ipa *ipa);
-+int ipa_interrupt_config(struct ipa *ipa);
+ void ipa_interrupt_deconfig(struct ipa *ipa);
  
- /**
-  * ipa_interrupt_deconfig() - Inverse of ipa_interrupt_config()
-- * @interrupt:	IPA interrupt structure
-+ * @ipa:	IPA pointer
-  */
--void ipa_interrupt_deconfig(struct ipa_interrupt *interrupt);
-+void ipa_interrupt_deconfig(struct ipa *ipa);
- 
++/**
++ * ipa_interrupt_init() - Initialize the IPA interrupt structure
++ * @pdev:	IPA platform device pointer
++ *
++ * Return:	Pointer to an IPA interrupt structure, or a pointer-coded error
++ */
++struct ipa_interrupt *ipa_interrupt_init(struct platform_device *pdev);
++
++/**
++ * ipa_interrupt_exit() - Inverse of ipa_interrupt_init()
++ * @interrupt:	IPA interrupt structure
++ */
++void ipa_interrupt_exit(struct ipa_interrupt *interrupt);
++
  #endif /* _IPA_INTERRUPT_H_ */
 diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
-index 00475fd7a2054..0c6e6719d99e3 100644
+index 0c6e6719d99e3..6cf5c1280aa4e 100644
 --- a/drivers/net/ipa/ipa_main.c
 +++ b/drivers/net/ipa/ipa_main.c
-@@ -542,12 +542,9 @@ static int ipa_config(struct ipa *ipa, const struct ipa_data *data)
- 	if (ret)
- 		goto err_hardware_deconfig;
+@@ -803,6 +803,7 @@ static enum ipa_firmware_loader ipa_firmware_loader(struct device *dev)
+ static int ipa_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
++	struct ipa_interrupt *interrupt;
+ 	enum ipa_firmware_loader loader;
+ 	const struct ipa_data *data;
+ 	struct ipa_power *power;
+@@ -834,12 +835,21 @@ static int ipa_probe(struct platform_device *pdev)
+ 	if (loader == IPA_LOADER_DEFER)
+ 		return -EPROBE_DEFER;
  
--	ipa->interrupt = ipa_interrupt_config(ipa);
--	if (IS_ERR(ipa->interrupt)) {
--		ret = PTR_ERR(ipa->interrupt);
--		ipa->interrupt = NULL;
-+	ret = ipa_interrupt_config(ipa);
-+	if (ret)
- 		goto err_mem_deconfig;
--	}
+-	/* The clock and interconnects might not be ready when we're
+-	 * probed, so might return -EPROBE_DEFER.
++	/* The IPA interrupt might not be ready when we're probed, so this
++	 * might return -EPROBE_DEFER.
++	 */
++	interrupt = ipa_interrupt_init(pdev);
++	if (IS_ERR(interrupt))
++		return PTR_ERR(interrupt);
++
++	/* The clock and interconnects might not be ready when we're probed,
++	 * so this might return -EPROBE_DEFER.
+ 	 */
+ 	power = ipa_power_init(dev, data->power_data);
+-	if (IS_ERR(power))
+-		return PTR_ERR(power);
++	if (IS_ERR(power)) {
++		ret = PTR_ERR(power);
++		goto err_interrupt_exit;
++	}
  
- 	ipa_uc_config(ipa);
+ 	/* No more EPROBE_DEFER.  Allocate and initialize the IPA structure */
+ 	ipa = kzalloc(sizeof(*ipa), GFP_KERNEL);
+@@ -850,6 +860,7 @@ static int ipa_probe(struct platform_device *pdev)
  
-@@ -572,8 +569,7 @@ static int ipa_config(struct ipa *ipa, const struct ipa_data *data)
- 	ipa_endpoint_deconfig(ipa);
- err_uc_deconfig:
- 	ipa_uc_deconfig(ipa);
--	ipa_interrupt_deconfig(ipa->interrupt);
--	ipa->interrupt = NULL;
-+	ipa_interrupt_deconfig(ipa);
- err_mem_deconfig:
- 	ipa_mem_deconfig(ipa);
- err_hardware_deconfig:
-@@ -591,8 +587,7 @@ static void ipa_deconfig(struct ipa *ipa)
- 	ipa_modem_deconfig(ipa);
- 	ipa_endpoint_deconfig(ipa);
- 	ipa_uc_deconfig(ipa);
--	ipa_interrupt_deconfig(ipa->interrupt);
--	ipa->interrupt = NULL;
-+	ipa_interrupt_deconfig(ipa);
- 	ipa_mem_deconfig(ipa);
- 	ipa_hardware_deconfig(ipa);
+ 	ipa->pdev = pdev;
+ 	dev_set_drvdata(dev, ipa);
++	ipa->interrupt = interrupt;
+ 	ipa->power = power;
+ 	ipa->version = data->version;
+ 	ipa->modem_route_count = data->modem_route_count;
+@@ -934,6 +945,8 @@ static int ipa_probe(struct platform_device *pdev)
+ 	kfree(ipa);
+ err_power_exit:
+ 	ipa_power_exit(power);
++err_interrupt_exit:
++	ipa_interrupt_exit(interrupt);
+ 
+ 	return ret;
+ }
+@@ -941,10 +954,14 @@ static int ipa_probe(struct platform_device *pdev)
+ static void ipa_remove(struct platform_device *pdev)
+ {
+ 	struct ipa *ipa = dev_get_drvdata(&pdev->dev);
+-	struct ipa_power *power = ipa->power;
+ 	struct device *dev = &pdev->dev;
++	struct ipa_interrupt *interrupt;
++	struct ipa_power *power;
+ 	int ret;
+ 
++	power = ipa->power;
++	interrupt = ipa->interrupt;
++
+ 	/* Prevent the modem from triggering a call to ipa_setup().  This
+ 	 * also ensures a modem-initiated setup that's underway completes.
+ 	 */
+@@ -986,6 +1003,7 @@ static void ipa_remove(struct platform_device *pdev)
+ 	ipa_reg_exit(ipa);
+ 	kfree(ipa);
+ 	ipa_power_exit(power);
++	ipa_interrupt_exit(interrupt);
+ 
+ 	dev_info(dev, "IPA driver removed");
  }
 -- 
 2.40.1
