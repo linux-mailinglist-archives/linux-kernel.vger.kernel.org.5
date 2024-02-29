@@ -1,235 +1,95 @@
-Return-Path: <linux-kernel+bounces-87302-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87303-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B59486D275
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:40:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90B8486D276
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:40:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5164E288674
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:40:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C1C4D1C20DCE
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:40:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E25AC130AC1;
-	Thu, 29 Feb 2024 18:40:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FEBD134426;
+	Thu, 29 Feb 2024 18:40:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="v98Jnhab"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="gZvtYW5R"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70D8D160629
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 18:40:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BD51160629
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 18:40:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709232009; cv=none; b=LUDEVbT4Nu+Qg3ifACAH9M9I2nR9nMSD3sYgck/KuD7Dh1aJ7nRBJO080HFS5OGiLeIUteEJfCv/buZCdsvTR/LQNY0V4InB5w3sK/VpHCfi+vk+xWLNV6IE5zP7vt9QXRhbKGfy0Ha+kW0YJBFBT2Wox15/37CTYnNReZjbs/Q=
+	t=1709232014; cv=none; b=fEfJZqxNiCYrRsh3rv1E2WABWLbLTqxO4Dy1mMZXe8J6cidSs639kasIvFht7Dfrh6SJb6SB2f2fZJ/B94tpYmKVyoA4RTZq6UBOOJsYdHxUZHMqhwDa2LEaceevF0gM67mPaFsHRQ7XE8dQQgH6m+2m80OIiZsTBpyNn2j8Fxw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709232009; c=relaxed/simple;
-	bh=EfSzWHQXiIuv/QXiMcoNXY6pXi3oCnDesgNhCcVu5z4=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=umM4UZaIvCyq/oDVDeoEsP8dsFjNrkK703LygDpbv8vIvIkZNUJ9eGsrrnaq6y252/gbaSFy1mF6DLTq8aJ1VaVG4oMEUsfvxExdPvBXTjE3+54kdGPUrHow8GLJOudoZpxZQW8BLVpE3WGsrbbcqeOWo+iiABra/3P8AXnaxyo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=v98Jnhab; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-607e613a1baso22984997b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 10:40:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709232005; x=1709836805; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vY/rdOoD7orW1sSyXqQMEdLlDPVHr5lpBJycktuWo78=;
-        b=v98JnhabzmqTSfjRq8Je7E5qmQeMOZC6VxwZfVfo30sJoX6NsNLR/KOz7t8MiLnF2n
-         DPbWvdtLZ60biyTC7scafSoEnF5ppBAbu3+9lzuKSdYDzL6vFwxYkPNSzuR3CgAGeXRH
-         NKxBxkTNc7FTgIcuYAD5BK4+bw54wqNX3M35ocCo/PvEFe9nVHbyQsrCRK9PRze8P36E
-         1Bi54/TgcYMKz71c8Myr8pvTJiSYvn3d79rCLyZcEEulFCqCj5CybtiQrpVbDL1wtj4o
-         iF/6Uq2dGV4Te9plU0lblnxmqr9xW/RinYxB/IvV4u8RtDhkUK7T2JQtJoUU1Fsb4iZw
-         VHJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709232005; x=1709836805;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=vY/rdOoD7orW1sSyXqQMEdLlDPVHr5lpBJycktuWo78=;
-        b=CWJJfkeni3YqaZKDC7QJHGnyW8s5cYoCjfG9HihnzXBmO29LhXDWqMGRy2Y3z9I3cw
-         DwAmcagP9aUVnrXLEYLq2bc+SxdzqcsH7k7F3dgrplIqzCaFcsjnW7hn44xKLaMvH994
-         0LK/vwFL+ruJrco0gdQkyO5KMrLPFTBIZ1uV98uAWetT/Tm3M9OrJD72Y/F5KhL6laAX
-         lYb4nZn0z6nBjmADEB5qcFdStxT4WwKazm3WOVGNjUKYORKzHBLxs0B65zXAtF5Cezd6
-         gOFOo37TIYbVTPUNi7i0aZFv4i7TgEWrH4NsY9ASL44jBwmQ/EgUh1j6CsdEOW7mhbbz
-         k6ww==
-X-Forwarded-Encrypted: i=1; AJvYcCXF12dAmgmBumRzck9mFqgemCS7YgXHiPx6w7Ld0PkKf+IWtfsJriP9z0jIQkf8JdZYuZ7kFd+s2cD1MP4IjQErrOi96MQJxl5CSVS8
-X-Gm-Message-State: AOJu0Yyohdh3t5Z6JbLH2bOjzNqTKQoIgFhYRxMGKL2ayriTyfjnYQEo
-	k0butdkTO6DCwO37EpmgyBy+C7u3UClaYSo+5F+DurxQgD12CRuuu/80vWeMBjpQJrMx18NW3ju
-	YeQ==
-X-Google-Smtp-Source: AGHT+IEg+77D7oFXFUtb7myxTYn0+eui+WQiWZe+o6cGIvgW/UaK+dQNFE4gTiVy8VFY9DzEUtC/JeMjDT8=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:9b47:0:b0:608:1b39:246b with SMTP id
- s68-20020a819b47000000b006081b39246bmr706371ywg.3.1709232005455; Thu, 29 Feb
- 2024 10:40:05 -0800 (PST)
-Date: Thu, 29 Feb 2024 10:40:03 -0800
-In-Reply-To: <CABgObfbtPJ6AAX9GnjNscPRTbNAOtamdxX677kx_r=zd4scw6w@mail.gmail.com>
+	s=arc-20240116; t=1709232014; c=relaxed/simple;
+	bh=G39x9X/r8wD8EZNMCjKX99fVjL/JmQl3/uLDdbycsUw=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=M6MU1VtFdaxkLy27QLDrp5fB4/d1ysZIcQKxdI7auLJeHhLi1ZMwmKDwXKWtvc0d09KSIhb9LGviPfSUaoszalXSB2X2a9gJFrz0kpSQKa1DafRfE19A/II4hDhZJQPjqqoURgWM5TiRQ76neyJCEnuo4yobC17HIn3HHdOAA8Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=gZvtYW5R; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8B82C433F1;
+	Thu, 29 Feb 2024 18:40:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1709232014;
+	bh=G39x9X/r8wD8EZNMCjKX99fVjL/JmQl3/uLDdbycsUw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=gZvtYW5RjwYGvMOcS1OD4p/NBFNkCvv+69I/19wQJojZcno1nDd8S9x6ufT9/b74c
+	 hrtO5sy9ttg1Enx/clLC3kgJM+v4EpMSxjvvkSPcfJxrZTOqz8FNt52Fus1uBgV5hG
+	 wdx/0gzpkwkSj4llp4f4J9CYk6lUE4gu9noxwvvA=
+Date: Thu, 29 Feb 2024 10:40:13 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Hao Ge <gehao@kylinos.cn>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, gehao618@163.com
+Subject: Re: [PATCH v2] mm/vmstat: Add order's information for extfrag_index
+ and unusable_index
+Message-Id: <20240229104013.5ed8c1ca9c2dbd0bd5fb571f@linux-foundation.org>
+In-Reply-To: <20240229141443.99408-1-gehao@kylinos.cn>
+References: <20240229141443.99408-1-gehao@kylinos.cn>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-References: <20240228024147.41573-1-seanjc@google.com> <20240228024147.41573-3-seanjc@google.com>
- <CABgObfbtPJ6AAX9GnjNscPRTbNAOtamdxX677kx_r=zd4scw6w@mail.gmail.com>
-Message-ID: <ZeDPgx1O_AuR2Iz3@google.com>
-Subject: Re: [PATCH 02/16] KVM: x86: Remove separate "bit" defines for page
- fault error code masks
-From: Sean Christopherson <seanjc@google.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Yan Zhao <yan.y.zhao@intel.com>, Isaku Yamahata <isaku.yamahata@intel.com>, 
-	Michael Roth <michael.roth@amd.com>, Yu Zhang <yu.c.zhang@linux.intel.com>, 
-	Chao Peng <chao.p.peng@linux.intel.com>, Fuad Tabba <tabba@google.com>, 
-	David Matlack <dmatlack@google.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, Feb 29, 2024, Paolo Bonzini wrote:
-> On Wed, Feb 28, 2024 at 3:46=E2=80=AFAM Sean Christopherson <seanjc@googl=
-e.com> wrote:
-> > diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
-> > index 60f21bb4c27b..e8b620a85627 100644
-> > --- a/arch/x86/kvm/mmu.h
-> > +++ b/arch/x86/kvm/mmu.h
-> > @@ -213,7 +213,7 @@ static inline u8 permission_fault(struct kvm_vcpu *=
-vcpu, struct kvm_mmu *mmu,
-> >          */
-> >         u64 implicit_access =3D access & PFERR_IMPLICIT_ACCESS;
-> >         bool not_smap =3D ((rflags & X86_EFLAGS_AC) | implicit_access) =
-=3D=3D X86_EFLAGS_AC;
-> > -       int index =3D (pfec + (not_smap << PFERR_RSVD_BIT)) >> 1;
-> > +       int index =3D (pfec + (not_smap << ilog2(PFERR_RSVD_MASK))) >> =
-1;
->=20
-> Just use "(pfec + (not_smap ? PFERR_RSVD_MASK : 0)) >> 1".
->=20
-> Likewise below, "pte_access & PT_USER_MASK ? PFERR_RSVD_MASK : 0"/
->=20
-> No need to even check what the compiler produces, it will be either
-> exactly the same code or a bunch of cmov instructions.
+On Thu, 29 Feb 2024 22:14:43 +0800 Hao Ge <gehao@kylinos.cn> wrote:
 
-I couldn't resist :-)
+> Current cat /sys/kernel/debug/extfrag/extfrag_index and
+> /sys/kernel/debug/extfrag/unusable_index is not friendly to userspace.
+> 
+> We should add order's information so that users can clearly understand
+> the situation of each order at a glance like pagetypeinfo.
+> 
+> before:
+> cat /sys/kernel/debug/extfrag/extfrag_index:
+> Node 0, zone    DMA32  ...... ...... ...... ......
+> Node 0, zone   Normal  ...... ...... ...... ......
+> 
+> cat /sys/kernel/debug/extfrag/unusable_index:
+> Node 0, zone    DMA32 ..... ..... ..... .....
+> Node 0, zone   Normal ..... ..... ..... .....
+> 
+> after:
+> cat /sys/kernel/debug/extfrag/extfrag_index:
+> Extfrag index at order:       0      1      2      3
+> Node 0, zone        DMA  ...... ...... ...... ......
+> Node 0, zone     Normal  ...... ...... ...... ......
+> 
+> cat /sys/kernel/debug/extfrag/unusable_index:
+> Unusable index at order:     0     1     2     3
+> Node 0, zone         DMA ..... ..... ..... .....
+> Node 0, zone      Normal ..... ..... ..... .....
+> 
 
-The second one generates identical code, but for this one:
+This may break existing parsers of this file.
 
-  int index =3D (pfec + (not_smap << PFERR_RSVD_BIT)) >> 1;
+And that would be allowed if these files were under debugfs.  But
+they're under sysfs/debug, where the rules are less clear.
 
-gcc generates almost bizarrely different code in the call from vcpu_mmio_gv=
-a_to_gpa().
-clang is clever enough to realize "pfec" can only contain USER_MASK and/or =
-WRITE_MASK,
-and so does a ton of dead code elimination and other optimizations.  But fo=
-r some
-reason, gcc doesn't appear to realize that, and generates a MOVSX when comp=
-uting
-"index", i.e. sign-extends the result of the ADD (at least, I think that's =
-what it's
-doing).
-
-There's no actual bug today, and the vcpu_mmio_gva_to_gpa() path is super s=
-afe
-since KVM fully controls the error code.  But the call from FNAME(walk_addr=
-_generic)
-uses a _much_ more dynamic error code.
-
-If an error code with unexpected bits set managed to get into permission_fa=
-ult(),
-I'm pretty sure we'd end up with out-of-bounds accesses.  KVM sanity checks=
- that
-PK and RSVD aren't set,=20
-
-	WARN_ON(pfec & (PFERR_PK_MASK | PFERR_RSVD_MASK));
-
-but KVM unnecessarily uses an ADD instead of OR, here
-
-
-	int index =3D (pfec + (not_smap << PFERR_RSVD_BIT)) >> 1;
-
-and here
-
-		/* clear present bit, replace PFEC.RSVD with ACC_USER_MASK. */
-		offset =3D (pfec & ~1) +
-			((pte_access & PT_USER_MASK) << (PFERR_RSVD_BIT - PT_USER_SHIFT));
-
-i.e. if the WARN fired, KVM would generate completely unexpected values due=
- to
-adding two RSVD bit flags.
-
-And if _really_ unexpected flags make their way into permission_fault(), e.=
-g. the
-upcoming RMP flag (bit 31) or Intel's SGX flag (bit 15), then the use of in=
-dex
-
-	fault =3D (mmu->permissions[index] >> pte_access) & 1;
-
-could generate a read waaaya outside of the array.  It can't/shouldn't happ=
-en in
-practice since KVM shouldn't be trying to emulate RMP violations or faults =
-in SGX
-enclaves, but it's unnecessarily dangerous.
-
-Long story short, I think we should get to the below (I'll post a separate =
-series,
-assuming I'm not missing something).
-
-	unsigned long rflags =3D static_call(kvm_x86_get_rflags)(vcpu);
-	unsigned int pfec =3D access & (PFERR_PRESENT_MASK |
-				      PFERR_WRITE_MASK |
-				      PFERR_USER_MASK |
-				      PFERR_FETCH_MASK);
-
-	/*
-	 * For explicit supervisor accesses, SMAP is disabled if EFLAGS.AC =3D 1.
-	 * For implicit supervisor accesses, SMAP cannot be overridden.
-	 *
-	 * SMAP works on supervisor accesses only, and not_smap can
-	 * be set or not set when user access with neither has any bearing
-	 * on the result.
-	 *
-	 * We put the SMAP checking bit in place of the PFERR_RSVD_MASK bit;
-	 * this bit will always be zero in pfec, but it will be one in index
-	 * if SMAP checks are being disabled.
-	 */
-	u64 implicit_access =3D access & PFERR_IMPLICIT_ACCESS;
-	bool not_smap =3D ((rflags & X86_EFLAGS_AC) | implicit_access) =3D=3D X86_=
-EFLAGS_AC;
-	int index =3D (pfec | (not_smap ? PFERR_RSVD_MASK : 0)) >> 1;
-	u32 errcode =3D PFERR_PRESENT_MASK;
-	bool fault;
-
-	kvm_mmu_refresh_passthrough_bits(vcpu, mmu);
-
-	fault =3D (mmu->permissions[index] >> pte_access) & 1;
-
-	/*
-	 * Sanity check that no bits are set in the legacy #PF error code
-	 * (bits 31:0) other than the supported permission bits (see above).
-	 */
-	WARN_ON_ONCE(pfec !=3D (unsigned int)access);
-
-	if (unlikely(mmu->pkru_mask)) {
-		u32 pkru_bits, offset;
-
-		/*
-		* PKRU defines 32 bits, there are 16 domains and 2
-		* attribute bits per domain in pkru.  pte_pkey is the
-		* index of the protection domain, so pte_pkey * 2 is
-		* is the index of the first bit for the domain.
-		*/
-		pkru_bits =3D (vcpu->arch.pkru >> (pte_pkey * 2)) & 3;
-
-		/* clear present bit, replace PFEC.RSVD with ACC_USER_MASK. */
-		offset =3D (pfec & ~1) | (pte_access & PT_USER_MASK ? PFERR_RSVD_MASK : 0=
-);
-
-		pkru_bits &=3D mmu->pkru_mask >> offset;
-		errcode |=3D -pkru_bits & PFERR_PK_MASK;
-		fault |=3D (pkru_bits !=3D 0);
-	}
-
-	return -(u32)fault & errcode;
+Still, it's unclear to me that the benefit is worth this risk.  What do
+others think?
 
