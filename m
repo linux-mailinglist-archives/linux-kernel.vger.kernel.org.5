@@ -1,233 +1,188 @@
-Return-Path: <linux-kernel+bounces-86073-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86064-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0080986BF39
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 04:01:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED36386BF24
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 03:58:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6B6ADB25773
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 03:01:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 714D12853F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 02:58:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0722047F65;
-	Thu, 29 Feb 2024 02:59:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C01F9364C7;
+	Thu, 29 Feb 2024 02:58:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Nf0AUKpu"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="jPg2dr5p"
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3669D47F47
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 02:59:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74F6C36123
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 02:58:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709175545; cv=none; b=Fysn3Oz+avFcykSj+cRyOi7zGwN8nyNn8671kRQpG0HlGT0XdgyXN0HXSHgOtanTjWUW44hMVx/W+vViOZdpMMPlGjrinxtVf6RYmhzYBDbEZ3yErKQW12b8cIevD59iVnGxGKt0XdaLQZX0I5t87V/PFEWVoz8LBozJ5ScX2iw=
+	t=1709175489; cv=none; b=S7PMHI1fVSfld/MFsUale/J3ZqHlLKo52FutzqHPnAbq59C7/LokId0fGJXpxlnUNx3dEoHVcRHYPqJZvomrxiQU0cjkQMGwzbIBE2S4Ax1JH/xMXtSB38Nyy1z3m9C0xuceF//u2vmIVvia3ZnXAE42ZZpyX2gXoXi8xf3ZRPo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709175545; c=relaxed/simple;
-	bh=bvh4LIy0JThGuT1F6fFtxn+KkjZVxZJQK1/rTLG++/A=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=jomhqmQWphLfYp5ZuAEUPHyfHn+9ZCvDs/BQ2+JN+F61O7Hl7JhL7wGS4DTyx6pwBLKeRmwaay0NFMfM4+JiyrqkstlamQye8+iwOu5wXrH9ntvQuv5+aOWjSPEk9e0Zev9GnXX2Uk9WdF3InYVS7oJqJ3Iuaw865oCuNfUxkTc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Nf0AUKpu; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709175543; x=1740711543;
-  h=date:from:to:cc:subject:message-id;
-  bh=bvh4LIy0JThGuT1F6fFtxn+KkjZVxZJQK1/rTLG++/A=;
-  b=Nf0AUKpu3n2+NuvcZ5EMkpep+rYM+3kSw48wjKcUf7IjBWw3ihkRXtqR
-   9cNQOlCJI2ZmRYlQE7PLCfWTUlttXYJjSCBG08khDyT6yAxarvG3LjBhm
-   H2dDnv/WNcOXZoe+6iS/WJEJF9rQ8pcUXaKG85pBc06/YW0/mBg0jElxB
-   f1+RwTOZrrjSYlxuZJdFHQ++sD4ORunSlrCC+FysNDr7TyMGf7Y87ZLWG
-   ZhCucXyAj1S7K4/32hC7pxTol32GBTP1p4EhHKq2jIO6Szr19RDskBIv2
-   bonuRUfPOI+zyVMhzOteMvulepLyAzizTs5Wrf05jpuHWa+nDBXTvg7NA
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="4202910"
-X-IronPort-AV: E=Sophos;i="6.06,192,1705392000"; 
-   d="scan'208";a="4202910"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 18:59:02 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,192,1705392000"; 
-   d="scan'208";a="38695094"
-Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by fmviesa001.fm.intel.com with ESMTP; 28 Feb 2024 18:59:01 -0800
-Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rfWd5-000CbF-1s;
-	Thu, 29 Feb 2024 02:58:46 +0000
-Date: Thu, 29 Feb 2024 10:57:18 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:x86/sev] BUILD SUCCESS
- d7b69b590bc9a5d299c82d3b27772cece0238d38
-Message-ID: <202402291014.h3TK7epJ-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1709175489; c=relaxed/simple;
+	bh=vTo43K8wKC81JH1cmE6G3o/ZjBDx+QgMlTVTqwHGI38=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=T7hTYaxxM9Jhu3fhlTpIqNB6jd6HRnQRhXswyafbn26jw5kwTpIlGoXi2ckKalRq8sfkHQ2uTyx0ME3RnkUNGfxetKA0AcuYmwGR5L9Rg82KHFX3/jOJNUMdftJ1E7UIrjqN4F3Rs+W1pP7AV+0Yzl886n+w+hHsk+Ct3iwKFeA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=jPg2dr5p; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1d93edfa76dso4861585ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 18:58:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1709175487; x=1709780287; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=GYrIjEX8sBb4dT+FuvYa3Se1T3Bf/IWCGgkiK7PdSp0=;
+        b=jPg2dr5pROUofHcv0fIh3KOujgBfZOUB8aC6+4UuVmVQYEwGVSeQhRO5VY0Uw6U+j/
+         79BvHRZCSKjJxQUo6XaO1PO7MJDLtnSyNcozeglUTOM8mOujpMR0wsu8zA6xDs01YwUW
+         dOdMjW95ZXju/hC+bPLMZ7If2CCINPfOknExc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709175487; x=1709780287;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GYrIjEX8sBb4dT+FuvYa3Se1T3Bf/IWCGgkiK7PdSp0=;
+        b=stxtpVuybznz8kv2Q5qniT83NZGV0OtLTH/CsiGYgTC7dr/qNruof2rkjlLohywY+B
+         rfgtEl4/LUr72OTm1EDbFRFz81NmB2bLQhSgYK8J2kwtsfAFJsk3618xVSyUp6paPyq0
+         fqKye5rGG+iPdX5vQ5I7B+UOHC7TUa3F9YdXiiOK5Z+VT2jYXhi77csqsXP9HTnnal/e
+         egSYjN2YlDlClpGraqofUKg51K2cMZQxCmQQzwOC5hmh2Lp8Eob5uBO67LrdN5L8+5i0
+         Ig0QjHB0o+0TUJFn84BYYcwPaxx2VjAtD1VklP7PUpXt6F3DGJ8EwQjk9PCpfAtirmBO
+         +nqQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXW231/2+sGAp9mYRPJi86gWchoTHmTKMgiDcukuTklyrEUhlaSe2cgnPT24jIG5l9yNPJH0stbs+BifEpNuCuqRVTV/75q5y8HhPlS
+X-Gm-Message-State: AOJu0Yz0HZRB5tNaBX38e4Io+qKVQIH6t1SOo1mUoJn+8I5PqqQbKZgq
+	+S2Des18gpul4sfqtv3e5vuBeACSvlJmUpQu7NBG8KqPf4fSX+8mV/GokeHcsg==
+X-Google-Smtp-Source: AGHT+IGX2J1qRGPAk8Cl6s48psnsoyoG+In7Glf3fzZVHLi4UU8vhZ5C51T0Oye4gDcJQGTRUdVsaQ==
+X-Received: by 2002:a17:902:6b41:b0:1db:ccd0:e77e with SMTP id g1-20020a1709026b4100b001dbccd0e77emr849550plt.35.1709175486838;
+        Wed, 28 Feb 2024 18:58:06 -0800 (PST)
+Received: from localhost ([2401:fa00:8f:203:f51:e79e:9056:77ea])
+        by smtp.gmail.com with UTF8SMTPSA id i6-20020a170902eb4600b001dc38eaa7fdsm174087pli.278.2024.02.28.18.58.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Feb 2024 18:58:06 -0800 (PST)
+From: David Stevens <stevensd@chromium.org>
+X-Google-Original-From: David Stevens <stevensd@google.com>
+To: Sean Christopherson <seanjc@google.com>,
+	Paolo Bonzini <pbonzini@redhat.com>
+Cc: Yu Zhang <yu.c.zhang@linux.intel.com>,
+	Isaku Yamahata <isaku.yamahata@gmail.com>,
+	Zhi Wang <zhi.wang.linux@gmail.com>,
+	Maxim Levitsky <mlevitsk@redhat.com>,
+	kvmarm@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	kvm@vger.kernel.org,
+	David Stevens <stevensd@chromium.org>
+Subject: [PATCH v11 0/8] KVM: allow mapping non-refcounted pages
+Date: Thu, 29 Feb 2024 11:57:51 +0900
+Message-ID: <20240229025759.1187910-1-stevensd@google.com>
+X-Mailer: git-send-email 2.44.0.rc1.240.g4c46232300-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/sev
-branch HEAD: d7b69b590bc9a5d299c82d3b27772cece0238d38  x86/sev: Dump SEV_STATUS
+From: David Stevens <stevensd@chromium.org>
 
-elapsed time: 810m
+This patch series adds support for mapping VM_IO and VM_PFNMAP memory
+that is backed by struct pages that aren't currently being refcounted
+(e.g. tail pages of non-compound higher order allocations) into the
+guest.
 
-configs tested: 145
-configs skipped: 3
+Our use case is virtio-gpu blob resources [1], which directly map host
+graphics buffers into the guest as "vram" for the virtio-gpu device.
+This feature currently does not work on systems using the amdgpu driver,
+as that driver allocates non-compound higher order pages via
+ttm_pool_alloc_page().
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+First, this series replaces the gfn_to_pfn_memslot() API with a more
+extensible kvm_follow_pfn() API. The updated API rearranges
+gfn_to_pfn_memslot()'s args into a struct and where possible packs the
+bool arguments into a FOLL_ flags argument. The refactoring changes do
+not change any behavior.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240229   gcc  
-arc                   randconfig-002-20240229   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                                 defconfig   clang
-arm                   randconfig-001-20240229   gcc  
-arm                   randconfig-002-20240229   gcc  
-arm                   randconfig-003-20240229   clang
-arm                   randconfig-004-20240229   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240229   clang
-arm64                 randconfig-002-20240229   gcc  
-arm64                 randconfig-003-20240229   clang
-arm64                 randconfig-004-20240229   clang
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240229   gcc  
-csky                  randconfig-002-20240229   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20240229   clang
-hexagon               randconfig-002-20240229   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386                                defconfig   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240229   gcc  
-loongarch             randconfig-002-20240229   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240229   gcc  
-nios2                 randconfig-002-20240229   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240229   gcc  
-parisc                randconfig-002-20240229   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc               randconfig-001-20240229   clang
-powerpc               randconfig-002-20240229   gcc  
-powerpc               randconfig-003-20240229   clang
-powerpc64             randconfig-001-20240229   gcc  
-powerpc64             randconfig-002-20240229   clang
-powerpc64             randconfig-003-20240229   clang
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-riscv                 randconfig-001-20240229   clang
-riscv                 randconfig-002-20240229   clang
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-s390                  randconfig-001-20240229   clang
-s390                  randconfig-002-20240229   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                    randconfig-001-20240229   gcc  
-sh                    randconfig-002-20240229   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240229   gcc  
-sparc64               randconfig-002-20240229   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20240229   gcc  
-um                    randconfig-002-20240229   gcc  
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20240229   gcc  
-x86_64       buildonly-randconfig-002-20240229   clang
-x86_64       buildonly-randconfig-003-20240229   gcc  
-x86_64       buildonly-randconfig-004-20240229   gcc  
-x86_64       buildonly-randconfig-005-20240229   gcc  
-x86_64       buildonly-randconfig-006-20240229   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20240229   clang
-x86_64                randconfig-002-20240229   clang
-x86_64                randconfig-003-20240229   clang
-x86_64                randconfig-004-20240229   clang
-x86_64                randconfig-005-20240229   clang
-x86_64                randconfig-006-20240229   clang
-x86_64                randconfig-011-20240229   gcc  
-x86_64                randconfig-012-20240229   gcc  
-x86_64                randconfig-013-20240229   gcc  
-x86_64                randconfig-014-20240229   gcc  
-x86_64                randconfig-015-20240229   gcc  
-x86_64                randconfig-016-20240229   gcc  
-x86_64                randconfig-071-20240229   clang
-x86_64                randconfig-072-20240229   clang
-x86_64                randconfig-073-20240229   clang
-x86_64                randconfig-074-20240229   clang
-x86_64                randconfig-075-20240229   gcc  
-x86_64                randconfig-076-20240229   clang
-x86_64                          rhel-8.3-rust   clang
-xtensa                            allnoconfig   gcc  
-xtensa                randconfig-001-20240229   gcc  
-xtensa                randconfig-002-20240229   gcc  
+From there, this series extends the kvm_follow_pfn() API so that
+non-refconuted pages can be safely handled. This invloves adding an
+input parameter to indicate whether the caller can safely use
+non-refcounted pfns and an output parameter to tell the caller whether
+or not the returned page is refcounted. This change includes a breaking
+change, by disallowing non-refcounted pfn mappings by default, as such
+mappings are unsafe. To allow such systems to continue to function, an
+opt-in module parameter is added to allow the unsafe behavior.
 
+This series only adds support for non-refcounted pages to x86. Other
+MMUs can likely be updated without too much difficulty, but it is not
+needed at this point. Updating other parts of KVM (e.g. pfncache) is not
+straightforward [2].
+
+[1]
+https://patchwork.kernel.org/project/dri-devel/cover/20200814024000.2485-1-gurchetansingh@chromium.org/
+[2] https://lore.kernel.org/all/ZBEEQtmtNPaEqU1i@google.com/
+
+v10 -> v11:
+ - Switch to u64 __read_mostly shadow_refcounted_mask.
+ - Update comments about allow_non_refcounted_struct_page.
+v9 -> v10:
+ - Re-add FOLL_GET changes.
+ - Split x86/mmu spte+non-refcount-page patch into two patches.
+ - Rename 'foll' variables to 'kfp'.
+ - Properly gate usage of refcount spte bit when it's not available.
+ - Replace kfm_follow_pfn's is_refcounted_page output parameter with
+   a struct page *refcounted_page pointing to the page in question.
+ - Add patch downgrading BUG_ON to WARN_ON_ONCE.
+v8 -> v9:
+ - Make paying attention to is_refcounted_page mandatory. This means
+   that FOLL_GET is no longer necessary. For compatibility with
+   un-migrated callers, add a temporary parameter to sidestep
+   ref-counting issues.
+ - Add allow_unsafe_mappings, which is a breaking change.
+ - Migrate kvm_vcpu_map and other callsites used by x86 to the new API.
+ - Drop arm and ppc changes.
+v7 -> v8:
+ - Set access bits before releasing mmu_lock.
+ - Pass FOLL_GET on 32-bit x86 or !tdp_enabled.
+ - Refactor FOLL_GET handling, add kvm_follow_refcounted_pfn helper.
+ - Set refcounted bit on >4k pages.
+ - Add comments and apply formatting suggestions.
+ - rebase on kvm next branch.
+v6 -> v7:
+ - Replace __gfn_to_pfn_memslot with a more flexible __kvm_faultin_pfn,
+   and extend that API to support non-refcounted pages (complete
+   rewrite).
+
+David Stevens (7):
+  KVM: Relax BUG_ON argument validation
+  KVM: mmu: Introduce kvm_follow_pfn()
+  KVM: mmu: Improve handling of non-refcounted pfns
+  KVM: Migrate kvm_vcpu_map() to kvm_follow_pfn()
+  KVM: x86: Migrate to kvm_follow_pfn()
+  KVM: x86/mmu: Track if sptes refer to refcounted pages
+  KVM: x86/mmu: Handle non-refcounted pages
+
+Sean Christopherson (1):
+  KVM: Assert that a page's refcount is elevated when marking
+    accessed/dirty
+
+ arch/x86/kvm/mmu/mmu.c          | 108 +++++++---
+ arch/x86/kvm/mmu/mmu_internal.h |   2 +
+ arch/x86/kvm/mmu/paging_tmpl.h  |   7 +-
+ arch/x86/kvm/mmu/spte.c         |   5 +-
+ arch/x86/kvm/mmu/spte.h         |  16 +-
+ arch/x86/kvm/mmu/tdp_mmu.c      |  22 +-
+ arch/x86/kvm/x86.c              |  11 +-
+ include/linux/kvm_host.h        |  58 +++++-
+ virt/kvm/guest_memfd.c          |   8 +-
+ virt/kvm/kvm_main.c             | 345 +++++++++++++++++++-------------
+ virt/kvm/kvm_mm.h               |   3 +-
+ virt/kvm/pfncache.c             |  11 +-
+ 12 files changed, 399 insertions(+), 197 deletions(-)
+
+
+base-commit: 54be6c6c5ae8e0d93a6c4641cb7528eb0b6ba478
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.44.0.rc1.240.g4c46232300-goog
+
 
