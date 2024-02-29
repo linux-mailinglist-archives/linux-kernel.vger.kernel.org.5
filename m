@@ -1,163 +1,236 @@
-Return-Path: <linux-kernel+bounces-87627-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87628-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8427C86D6AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 23:14:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FDC486D6B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 23:15:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1961B283E83
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:14:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3050D1C22AF2
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:15:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6451074C16;
-	Thu, 29 Feb 2024 22:14:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B19174BF6;
+	Thu, 29 Feb 2024 22:15:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vEJlEXp/"
-Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="e0yP1pzt"
+Received: from omta34.uswest2.a.cloudfilter.net (omta34.uswest2.a.cloudfilter.net [35.89.44.33])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFBD574BE8
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 22:13:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B40B46D535
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 22:15:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709244840; cv=none; b=VxH64TSPoiFvKMeAqO52N6Kn0/8xw/+huCe7W3P3ZWy28tT+eVwlHLDLpkRhB0cZ0meStVz2VEm2htXfMP1DfUspugxsQocJNaHLd8em934AI03g68FZwglP/Z8/jpGpmeOLdX9IjQKR89mst5hBzOd8S+/C2X/Rr9BNgDgByGc=
+	t=1709244920; cv=none; b=SfuUo0Fln8FT4ljilxx4k/MiBE39mMy/KFHZKUMi4ZOqRGYnDgexfw1M1YvSlWb63bdApKMqDGffdbHXbhoo3wdynyxNLuBh1vbWV9EtG14/x21mycKJtX9/WU6JpUjQ1cQrklIUEBqkZLu5nw+zJCPS2FAcAwmNAZ7xjDe+pwI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709244840; c=relaxed/simple;
-	bh=t21HnzIGHk+n6QlvVMMSXJY9HBCCiiEVREtwL2Cu0k0=;
-	h=References:From:To:Cc:Subject:In-reply-to:Date:Message-ID:
-	 MIME-Version:Content-Type; b=mHGXyjAxxiwF4D+6696F2Ws0/Zw5CpIWwn5v3tm+HDG344O4wzCI8SezZoLadVgGF2pF5rds4+POLED2OjjxBugcS1rKAFtuz0622anXXeHXUQmsVyUKoy6EoH3097WZbRyo5nua8eJzBovheq/7SiJR9+f5PRdmFP+OjRGwsKo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=vEJlEXp/; arc=none smtp.client-ip=209.85.167.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-3c19b79535aso825968b6e.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 14:13:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709244838; x=1709849638; darn=vger.kernel.org;
-        h=mime-version:message-id:date:in-reply-to:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=F0bbqczj3Keglw64JiNfdvO4M759XtAlzANrlsOPWOc=;
-        b=vEJlEXp/t0sGocdgJ+1M/q7Vfl/icZb3SlgkPnVhhgAUne7jyVapSyV5iz0w6jQESv
-         eLMmE3SE59/cufa8fdT8VBWPspFkAJb+ps0oVBcTePciNYAzhreUrDI7V2xiduDdhhEU
-         QFdHdaZzqfv6my4Zp98pxSdcHPEx0I3q8W0dGJ6CqwagyxzDTpBAiTCLnpIlQ+O6O5M4
-         y2jWTnaNTZAxe1mVKuNtWOkE9OiZ+4BHWVQQHl5icIcLMZidNcECZeWYzlnehjpykhYU
-         BEVCyq3LDwkHt3zS64N+l1AleFgaLMccgfZDfMNJP3K02ojEikeQuLjWNC2fn4E++25u
-         ME6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709244838; x=1709849638;
-        h=mime-version:message-id:date:in-reply-to:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=F0bbqczj3Keglw64JiNfdvO4M759XtAlzANrlsOPWOc=;
-        b=WFk+VkeeNQLd5USeg4yw+tXE1VRX22szKSfJyg1w2sHpKFpMC6ARsrMnpHNON15tqI
-         f4qzIG3gsxTDAHdNGbwS8UH8DwtT3uKRooQeanTCo/g8iHjekdyhnQErueN/xQMzLmmM
-         UdUvY9yDtmtU16/SYfS/uUYiN1eCy5vrhIE5VdJS4eBMM1zOfnE7F15+jcBYcdUuelsO
-         zimoL+02gs069wEZbtOBH6EPAKKAd3Eta3b1BFEpR/M+mdbO139wkv0/tRarxPVyNqXx
-         AhBbwUipguZNut/rWUCVBG8J4Rizm9IJBjpAaQd2YCmGMQQgJuV4DTxx19uJ4Fnuw2Pm
-         3v/g==
-X-Forwarded-Encrypted: i=1; AJvYcCW6AEpv722cwsh4YFuCRwZyFc4pu61tpfiF6/f4MJO0HfMzUOM/JWWccU50LUb6waWIhb+4sP4HGDws70JGb49Z6X/8xvMKtIW+Kkqz
-X-Gm-Message-State: AOJu0YzYNmVXZ0oxIh1OkGgUXL9GXFSAw0vZChiVgfTmZmHvhACqJonp
-	jrffJYNo7KdLWKvzMcD6n6uxwtU9fg2L05k1BlTXFDNL5IgME6MK0Xp2aZPOO9k=
-X-Google-Smtp-Source: AGHT+IHdJxypAmK3qvNYc2vGOAmkw9y2ZwPcLUGqtAKe2grsU0Su0E62P6Tt4LBvrgbMxt6+5DcYzg==
-X-Received: by 2002:a05:6808:438f:b0:3c1:c2e6:b046 with SMTP id dz15-20020a056808438f00b003c1c2e6b046mr3051822oib.23.1709244837897;
-        Thu, 29 Feb 2024 14:13:57 -0800 (PST)
-Received: from localhost ([2804:14d:7e39:8470:a90b:ac37:af4a:feb9])
-        by smtp.gmail.com with ESMTPSA id ei4-20020a056a0080c400b006e57e220ceasm1771460pfb.6.2024.02.29.14.13.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 14:13:57 -0800 (PST)
-References: <20240203-arm64-gcs-v8-0-c9fec77673ef@kernel.org>
- <20240203-arm64-gcs-v8-33-c9fec77673ef@kernel.org>
- <87sf1n7uea.fsf@linaro.org>
- <9b899b4e-7410-4c3b-967b-7794dac742e4@sirena.org.uk>
- <87ttlzsyro.fsf@linaro.org>
- <c710a6b1-cf58-4e32-ada0-c0b256a62b2c@sirena.org.uk>
-User-agent: mu4e 1.10.8; emacs 29.1
-From: Thiago Jung Bauermann <thiago.bauermann@linaro.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon
- <will@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Andrew Morton
- <akpm@linux-foundation.org>, Marc Zyngier <maz@kernel.org>, Oliver Upton
- <oliver.upton@linux.dev>, James Morse <james.morse@arm.com>, Suzuki K
- Poulose <suzuki.poulose@arm.com>, Arnd Bergmann <arnd@arndb.de>, Oleg
- Nesterov <oleg@redhat.com>, Eric Biederman <ebiederm@xmission.com>, Kees
- Cook <keescook@chromium.org>, Shuah Khan <shuah@kernel.org>, "Rick P.
- Edgecombe" <rick.p.edgecombe@intel.com>, Deepak Gupta
- <debug@rivosinc.com>, Ard Biesheuvel <ardb@kernel.org>, Szabolcs Nagy
- <Szabolcs.Nagy@arm.com>, "H.J. Lu" <hjl.tools@gmail.com>, Paul Walmsley
- <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
- <aou@eecs.berkeley.edu>, Florian Weimer <fweimer@redhat.com>, Christian
- Brauner <brauner@kernel.org>, linux-arm-kernel@lists.infradead.org,
- linux-doc@vger.kernel.org, kvmarm@lists.linux.dev,
- linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
- linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v8 33/38] kselftest/arm64: Add a GCS test program built
- with the system libc
-In-reply-to: <c710a6b1-cf58-4e32-ada0-c0b256a62b2c@sirena.org.uk>
-Date: Thu, 29 Feb 2024 19:13:55 -0300
-Message-ID: <878r329avw.fsf@linaro.org>
+	s=arc-20240116; t=1709244920; c=relaxed/simple;
+	bh=5FSiTuqHmDsjXTZPDXr3lj4oUQySDL+fFiia69OcWH4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gwgticShBNWF0tt084fF8X9OadXoIHe0RN60D7kvFi9ZMV3qBb+MXHQZ6+flz+Y4+rpUgMmJl0lqZ0oN+kX9mQJevICtvKf6EiHUip461jUhN8KFMSDF2MvwM/iezURP3YIVDz8RfPoVUDXA1BwM77KkMe9nFRsv1Ps4iIC/ZYg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=e0yP1pzt; arc=none smtp.client-ip=35.89.44.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
+Received: from eig-obgw-6008a.ext.cloudfilter.net ([10.0.30.227])
+	by cmsmtp with ESMTPS
+	id fnAwrKH91HXmAfogPrdLXD; Thu, 29 Feb 2024 22:15:17 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+	by cmsmtp with ESMTPS
+	id fogOrRKWy2l0ifogOreC0A; Thu, 29 Feb 2024 22:15:16 +0000
+X-Authority-Analysis: v=2.4 cv=fPk/34ae c=1 sm=1 tr=0 ts=65e101f4
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=VhncohosazJxI00KdYJ/5A==:17
+ a=IkcTkHD0fZMA:10 a=k7vzHIieQBIA:10 a=wYkD_t78qR0A:10 a=cm27Pg_UAAAA:8
+ a=VwQbUJbxAAAA:8 a=J1Y8HTJGAAAA:8 a=1XWaLZrsAAAA:8 a=20KFwNOVAAAA:8
+ a=QyXUC8HyAAAA:8 a=xfJypzPxiScX5pcAhuAA:9 a=QEXdDO2ut3YA:10
+ a=xmb-EsYY8bH0VWELuYED:22 a=AjGcO6oz07-iQ99wixmX:22 a=y1Q9-5lHfBjTkpIzbSAN:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=cf1DZ2erRbMxD8JvVLJPv18i9Hg6aww57G4W3t9Oeoc=; b=e0yP1pztbkxkhpcJxYDiCSOm9p
+	fihMzZKmaTkeqIBnkZZupDuJlp5aNCxO2ey9rO97gUBe4WSG8LzztnW4JPppdUM6t1XjnLPbt1CLP
+	bWp+VnMM7SkP+NJpbTAmj6GdeKiGJU69QxgmuFo4zx4EPNUDjrhSXLipqVR7anVOJdv9OOLDjtbDG
+	xu3x7Ww1m0CEEA1WCr5l0lDJxqPh99MM5R7NpSOKYbs4drDgFiWxObM2b2SL8JobMShCccoSZ/rc+
+	iVH/f3WVNC4K9jVImTVChD53aiFwo3zDZfX/oLxl2aD/4xQC8HIhRIX9AZ3/jdrBgBDIMelq8rgX2
+	M8Az3Fzw==;
+Received: from [201.172.172.225] (port=53434 helo=[192.168.15.10])
+	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <gustavo@embeddedor.com>)
+	id 1rfogM-002d6M-1s;
+	Thu, 29 Feb 2024 16:15:14 -0600
+Message-ID: <93cbd0a3-60cf-400f-a05c-f81dc3d8c75d@embeddedor.com>
+Date: Thu, 29 Feb 2024 16:15:12 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] netdev: Use flexible array for trailing private bytes
+Content-Language: en-US
+To: Kees Cook <keescook@chromium.org>, Jakub Kicinski <kuba@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>, netdev@vger.kernel.org,
+ linux-hardening@vger.kernel.org, Simon Horman <horms@kernel.org>,
+ Jiri Pirko <jiri@resnulli.us>, Daniel Borkmann <daniel@iogearbox.net>,
+ Coco Li <lixiaoyan@google.com>, Amritha Nambiar <amritha.nambiar@intel.com>,
+ linux-kernel@vger.kernel.org
+References: <20240229213018.work.556-kees@kernel.org>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20240229213018.work.556-kees@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 201.172.172.225
+X-Source-L: No
+X-Exim-ID: 1rfogM-002d6M-1s
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.15.10]) [201.172.172.225]:53434
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 1
+X-Org: HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfHiOeYWfrPDCxfGwqkTIPftgYSQ0ePEzGtTq9mHHaH6HmlCmhH5DbqLF7Roys/T4bAD0jlt9jNjIbUVkAN/tRQIO7ce5F15iII2CioWgBFyp2p8/3co8
+ 7kQ6afnXEyWceb/e5dsLGevbUk1ExQ+/thjSusg375ltImxu+EJHPAEZDqELF8UvNZGd6XgSMa50TV1P5to2gcqE7/cXPgWglKQ0mIc1JulAl3mAlGd1VwB5
 
 
-Mark Brown <broonie@kernel.org> writes:
 
-> [[PGP Signed Part:Undecided]]
-> On Thu, Feb 22, 2024 at 11:24:59PM -0300, Thiago Jung Bauermann wrote:
->> Mark Brown <broonie@kernel.org> writes:
->
->> > I believe based on prior discussions that you're running this using
->> > shrinkwrap - can you confirm exactly how please, including things like
->> > which firmware configuration you're using?  I'm using current git with
->> >
->> >   shrinkwrap run \
->> >         --rtvar KERNEL=arch/arm64/boot/Image \
->> >         --rtvar ROOTFS=${ROOTFS} \
->> >         --rtvar CMDLINE="${CMDLINE}" \
->> >         --overlay=arch/v9.4.yaml ns-edk2.yaml
->> >
->> > and a locally built yocto and everything seems perfectly happy.
->> 
->> Yes, this is how I'm running it:
->> 
->>   CMDLINE="Image dtb=fdt.dtb console=ttyAMA0 earlycon=pl011,0x1c090000 root=/dev/vda2 ip=dhcp maxcpus=1"
->> 
->>   shrinkwrap run \
->>       --rtvar=KERNEL=Image-gcs-v8-v6.7-rc4-14743-ga551a7d7af93 \
->
-> I guess that's bitrotted?
+On 2/29/24 15:30, Kees Cook wrote:
+> Introduce a new struct net_device_priv that contains struct net_device
+> but also accounts for the commonly trailing bytes through the "size" and
+> "data" members. As many dummy struct net_device instances exist still,
+> it is non-trivial to but this flexible array inside struct net_device
+> itself. But we can add a sanity check in netdev_priv() to catch any
+> attempts to access the private data of a dummy struct.
+> 
+> Adjust allocation logic to use the new full structure.
+> 
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-Ah, sorry. When I renamed the Image I messed up the kernel version in the
-filename, but I did confirm via "uname -r" that I was running the
-correct version: 6.8.0-rc2-ga551a7d7af93.
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+[for the flex `struct net_device_priv`, `struct_size()`, `__counted_by()`,
+and the use of `container_of()` to retrieve a pointer to the flex struct
+and return pointer to flex-array member `data` in `netdev_priv()`]
 
->> My rootfs is Ubuntu 22.04.3. In case it's useful, my kernel config is
->> here:
->
-> ...
->
->> https://people.linaro.org/~thiago.bauermann/gcs/config-v6.8.0-rc2
->
-> Thanks, it seems to be something in your config that's making a
-> difference - I can see issues with that.  Hopefully that'll help me get
-> to the bottom of this quickly.  I spent a bunch of time fighting with
-> Ubuntu images to get them running but once I did they didn't seem to
-> make much difference.
+Thanks
+--
+Gustavo
 
-In that case, it's interesting that I still run into the problem with
-the defconfig. One thing I failed to mention and perhaps is relevant
-considering your result, is that I didn't copy the modules into the disk
-image, so the FVP was running just with was built into the kernel.
-
-That was actually the main reason for me to use a custom config:
-I didn't want to have to deal with kernel modules, so I created a config
-that didn't have any.
-
--- 
-Thiago
+> ---
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Eric Dumazet <edumazet@google.com>
+> Cc: Paolo Abeni <pabeni@redhat.com>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+> Cc: netdev@vger.kernel.org
+> Cc: linux-hardening@vger.kernel.org
+> ---
+>   include/linux/netdevice.h | 21 ++++++++++++++++++---
+>   net/core/dev.c            | 12 ++++--------
+>   2 files changed, 22 insertions(+), 11 deletions(-)
+> 
+> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> index 118c40258d07..b476809d0bae 100644
+> --- a/include/linux/netdevice.h
+> +++ b/include/linux/netdevice.h
+> @@ -1815,6 +1815,8 @@ enum netdev_stat_type {
+>   	NETDEV_PCPU_STAT_DSTATS, /* struct pcpu_dstats */
+>   };
+>   
+> +#define	NETDEV_ALIGN		32
+> +
+>   /**
+>    *	struct net_device - The DEVICE structure.
+>    *
+> @@ -2476,6 +2478,14 @@ struct net_device {
+>   	struct hlist_head	page_pools;
+>   #endif
+>   };
+> +
+> +struct net_device_priv {
+> +	struct net_device	dev;
+> +	u32			size;
+> +	u8			data[] __counted_by(size)
+> +				       __aligned(NETDEV_ALIGN);
+> +};
+> +
+>   #define to_net_dev(d) container_of(d, struct net_device, dev)
+>   
+>   /*
+> @@ -2496,8 +2506,6 @@ static inline bool netif_elide_gro(const struct net_device *dev)
+>   	return false;
+>   }
+>   
+> -#define	NETDEV_ALIGN		32
+> -
+>   static inline
+>   int netdev_get_prio_tc_map(const struct net_device *dev, u32 prio)
+>   {
+> @@ -2665,7 +2673,14 @@ void dev_net_set(struct net_device *dev, struct net *net)
+>    */
+>   static inline void *netdev_priv(const struct net_device *dev)
+>   {
+> -	return (char *)dev + ALIGN(sizeof(struct net_device), NETDEV_ALIGN);
+> +	struct net_device_priv *priv;
+> +
+> +	/* Dummy struct net_device have no trailing data. */
+> +	if (WARN_ON_ONCE(dev->reg_state == NETREG_DUMMY))
+> +		return NULL;
+> +
+> +	priv = container_of(dev, struct net_device_priv, dev);
+> +	return (u8 *)priv->data;
+>   }
+>   
+>   /* Set the sysfs physical device reference for the network logical device
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index cb2dab0feee0..0fcaf6ae8486 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -10800,7 +10800,7 @@ struct net_device *alloc_netdev_mqs(int sizeof_priv, const char *name,
+>   {
+>   	struct net_device *dev;
+>   	unsigned int alloc_size;
+> -	struct net_device *p;
+> +	struct net_device_priv *p;
+>   
+>   	BUG_ON(strlen(name) >= sizeof(dev->name));
+>   
+> @@ -10814,20 +10814,16 @@ struct net_device *alloc_netdev_mqs(int sizeof_priv, const char *name,
+>   		return NULL;
+>   	}
+>   
+> -	alloc_size = sizeof(struct net_device);
+> -	if (sizeof_priv) {
+> -		/* ensure 32-byte alignment of private area */
+> -		alloc_size = ALIGN(alloc_size, NETDEV_ALIGN);
+> -		alloc_size += sizeof_priv;
+> -	}
+> +	alloc_size = struct_size(p, data, sizeof_priv);
+>   	/* ensure 32-byte alignment of whole construct */
+>   	alloc_size += NETDEV_ALIGN - 1;
+>   
+>   	p = kvzalloc(alloc_size, GFP_KERNEL_ACCOUNT | __GFP_RETRY_MAYFAIL);
+>   	if (!p)
+>   		return NULL;
+> +	p->size = sizeof_priv;
+>   
+> -	dev = PTR_ALIGN(p, NETDEV_ALIGN);
+> +	dev = &PTR_ALIGN(p, NETDEV_ALIGN)->dev;
+>   	dev->padded = (char *)dev - (char *)p;
+>   
+>   	ref_tracker_dir_init(&dev->refcnt_tracker, 128, name);
 
