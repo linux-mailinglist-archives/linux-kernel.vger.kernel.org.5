@@ -1,81 +1,102 @@
-Return-Path: <linux-kernel+bounces-86762-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86763-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EBBF86CA64
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:36:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A839586CA69
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:37:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C32681F22258
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:36:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58910284CD0
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:37:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 630F086266;
-	Thu, 29 Feb 2024 13:36:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96F8186241;
+	Thu, 29 Feb 2024 13:37:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Yf7Fif6n"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="F7PLT07C"
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 510867E0F8;
-	Thu, 29 Feb 2024 13:36:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E5137E599
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 13:37:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709213800; cv=none; b=AYve3ZacbMMU+3UgAaZk2XDXRr7yAxY8lrsHHOBwMRTtKD9dLFJI0L0/XMLAUq4t1ssh5tSICZabIY6Ep5boaXeG0v4O844AwH3QccQfrVWPavXlet5JABucWuj8aJCNsziR9bJcSDjnQDFdPE2MkOK+Ap9LC8nF4xBxGUydZCc=
+	t=1709213848; cv=none; b=ZCTveTBpItXne2ZtZZ7AVOijsVzvJJwPd1ctivfDJSsG2tIAuoct83GF+GS1Vd1jDsV8uM1hd34poKZVn9cS9cVE9D9DHpjOQiCDy+xPcRcMhmcByeN9alRF2bw7CbszsGoB2k4/lI2PhoMVmsPiHn2Q0k+ddmQoRE34FOC2llw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709213800; c=relaxed/simple;
-	bh=OLeINhUfZtPKoUaRZ8erFl7pF5Trs9Ph8RVF20T1Ib0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=m0TxetqLe7pf9sek+5gVYmWrRQGRufT3jTHjxKLmrQ0nkrfMTOiO6NqanprAMN7QtwZrqSq2yDqHtyICIjgPDQI9Ld+Aj5R+iAjWHVbCGnsyUVkCvRXEeNswKddXsirNJDqB3LaJI56yiMmIFytjqlQUjPsVjVIgNUF+BXH9qb4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Yf7Fif6n; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=OLeINhUfZtPKoUaRZ8erFl7pF5Trs9Ph8RVF20T1Ib0=; b=Yf7Fif6nPkaaSVI/xvdE9mfbMP
-	QdXu1MI+7vjxb2/wVe6xYz9eGlekFdNKWlsb6XlxrTRBZT2g7FKFxqVDoyyqIB0ik5aTlAUzCCnMj
-	w3+EgQRz9ZF0vQWhPcPJ6emIWXt+IRFHjvZcSaCgxNajY4Dx96dcSdfelJ35PBkCllfDYqgXDt+LG
-	TBgXppz8RkhtOMnBOAIuar5QspnqqzGMAWI24QNbbi5TaWXBP+uyTn+6MW7Xpg2LDPJADlSkaR9Ix
-	ilKUVP0Va8iES5XdVMr1T/lDU5dSowDIZbY50JWsvGngswAJXTyy83fHYHf2L1b91Ftk8w75kvxSU
-	gDzDaUwQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rfgaN-0000000Dgvg-2sfO;
-	Thu, 29 Feb 2024 13:36:31 +0000
-Date: Thu, 29 Feb 2024 05:36:31 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: David Stevens <stevensd@chromium.org>
-Cc: Sean Christopherson <seanjc@google.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Yu Zhang <yu.c.zhang@linux.intel.com>,
-	Isaku Yamahata <isaku.yamahata@gmail.com>,
-	Zhi Wang <zhi.wang.linux@gmail.com>,
-	Maxim Levitsky <mlevitsk@redhat.com>, kvmarm@lists.linux.dev,
-	linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH v11 0/8] KVM: allow mapping non-refcounted pages
-Message-ID: <ZeCIX5Aw5s1L0YEh@infradead.org>
-References: <20240229025759.1187910-1-stevensd@google.com>
+	s=arc-20240116; t=1709213848; c=relaxed/simple;
+	bh=jRIC3inpQYVl05aLG7u0tOU2SIStN8WcCQsGMVDW6OE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bwW36ylA0z3J0bjUCCxrKZBvKbmT/sLGNw461ngHdgahAN31MCo5/ERHFb4xyEf4BWEiUNwGTmP4zw/XGp2PpMEjBJU4s3DBqMxDgKqp+IdoabzML5ecpLkSfAvRZbPyLpJhxWNLrmXKTsx9gXm+hH7ynyglBZ43vCWMmhIM0L4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=F7PLT07C; arc=none smtp.client-ip=209.85.219.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dc238cb1b17so1011726276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 05:37:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709213845; x=1709818645; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jRIC3inpQYVl05aLG7u0tOU2SIStN8WcCQsGMVDW6OE=;
+        b=F7PLT07CUmWk4tyrAfO1wpH6n1+QyJLoTISpZvypmFcFhldNT9lXL5ldbg2s5xOG7V
+         Prm7i+RozSXzpoGxtlScnCDCGOh/K+JDpzOkQMxK/K/WiIY88gplfgzdodXTHHZ89lvu
+         SZj68SX21GntFy8YZKPbZEgrevekkjVAYa2g7CpBv0LHOj3Ni8viSKpOn+aTPBjW1qI4
+         moMnk7fldk3XUrfDU08zsQSmdIkWydaEOHZH0Czy6kPIbMwr16JjuBFGNhjTGQw/iEgi
+         dR/OndMhh8MvweWVYdvbOQvA/hwt7KwIanTDUnrqqIWaMY3T8Ci4YXW4IMVUYLOJ9wEy
+         0lNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709213845; x=1709818645;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jRIC3inpQYVl05aLG7u0tOU2SIStN8WcCQsGMVDW6OE=;
+        b=wy2mIZ/I0CD3RoUu2E2CHxloDqy7FeRfbm3fai5fTMG5rI3ZK57cBVFt6po5px8noS
+         6e47ZFph6jouGEixOPqL05wAY1k324zt1FbHXZpaTpATSMKK00GyZ05MhBxWCOsqr55u
+         CLCM2rlAVjp2AS/SPNjPW0RPJTUyifaPzzryi0NxQuKlAT7SDXNBvFxvZnLUdE+O0wfs
+         vCTDhtnUbWfX86SeAiR4EfDfTrR0GZcKQoPwXZ3KbsLOgeNARU1nPPqlaMQ4qAKYfaBy
+         cYxMNzOdL7+OPppTynEXe7vwN/+nsrRAx158mlCO0FcUMYiKUJlIWtflel2wxiB3fDJR
+         De0Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXX6rTi1Wk2ZfNELarD1/m4a/Xotsroks7uFUFS1ByJQbhpyQpLlmXGVWRoIW/3b5FNlkJV0Kpe/tMtkir/H+vYexkwmaUCi4ri79+/
+X-Gm-Message-State: AOJu0Yza2NZPHLtoFCY3QbeWxU3tc3wZwyMFzSn0uoe84pGalfxXsJIQ
+	kuN8yIkhwDdIqpPHIQKGdBHqSgOfKFQXHrioBGGNy9SxCeeYnUOuwIWEoYbS+bg9v6v2oI1tMIa
+	Roa6e2SCr5AB1M9QLbT4E7NksKDLaSa6JRIb9rw==
+X-Google-Smtp-Source: AGHT+IEMh6s/EUM+PFmpWfZpJLi60H0JYBSs53MwWi3aRXQ1sYvHhKkVKi/rHlsRVf1EVaybg37zMg1n7n9kjEny9V8=
+X-Received: by 2002:a25:8701:0:b0:dc6:c510:447a with SMTP id
+ a1-20020a258701000000b00dc6c510447amr2201760ybl.58.1709213845284; Thu, 29 Feb
+ 2024 05:37:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240229025759.1187910-1-stevensd@google.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+References: <20240223123214.288181-1-brgl@bgdev.pl>
+In-Reply-To: <20240223123214.288181-1-brgl@bgdev.pl>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Thu, 29 Feb 2024 14:37:14 +0100
+Message-ID: <CACRpkdZ3fFS9yCRkr2iO2=8ftRDs-pVdArhScY6Fse5e6SmPSQ@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: don't put the reference to GPIO device in pinctrl_pins_show()
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, David Arcari <darcari@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 29, 2024 at 11:57:51AM +0900, David Stevens wrote:
-> Our use case is virtio-gpu blob resources [1], which directly map host
-> graphics buffers into the guest as "vram" for the virtio-gpu device.
-> This feature currently does not work on systems using the amdgpu driver,
-> as that driver allocates non-compound higher order pages via
-> ttm_pool_alloc_page().
+On Fri, Feb 23, 2024 at 1:32=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
+ wrote:
 
-. and just as last time around that is still the problem that needs
-to be fixed instead of creating a monster like this to map
-non-refcounted pages.
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>
+> The call to gpiod_to_gpio_device() does not increase the reference count
+> of the GPIO device struct so it must not be decreased. Remove the buggy
+> __free() decorator.
+>
+> Fixes: 524fc108b895 ("pinctrl: stop using gpiod_to_chip()")
+> Reported-by: David Arcari <darcari@redhat.com>
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
+Patch applied for fixes!
+
+Yours,
+Linus Walleij
 
