@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-85895-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85896-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A69E86BCAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:20:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3655086BCAD
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:20:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C0D71C21B47
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:20:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 910201C20CA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:20:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FA2129CEF;
-	Thu, 29 Feb 2024 00:18:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 996EF42AA7;
+	Thu, 29 Feb 2024 00:18:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0DKo0cfc"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="kU4+lA1v"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22C5E2E851
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 00:18:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4323E3E47F
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 00:18:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709165913; cv=none; b=LikWfCiyFvqWp0kufmGyIaJk0V3CjOO3R1EYDVOe1lEg3zL8QoF2KihCObwtT4LH6TJ6XRtjntcuUtFoSeBBQJb0rBfDshBJqiyaOWUzcxo2kBnp6/jWbaSo7qb5dbHxC76gtdS3ElJ+yVKP+I3ZFVXzYVoxqMO176tnfBv6tPE=
+	t=1709165915; cv=none; b=da/YsWPvyzlm0rvQ+C8YacVNfwQDsnkZgswM1skVaADXpjfGqaQALfYjY6ytwen/tcizFXYoLjfuiRc6HICZ+M0PCpsv2dnGPTHrTkq7JOW5JL4CN143Zhuq7dnb2QJhK04GJXlPLhD7ewji760J+XfxqZVo7gX+8fw2L5a2rwg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709165913; c=relaxed/simple;
-	bh=HP0z9zpsAm/qTeZtLVT9exF49dLNPcCcFWKRdfJf6nA=;
+	s=arc-20240116; t=1709165915; c=relaxed/simple;
+	bh=OmwxBjnIGvz+HpCZV0zi77V/88wRlOeFcpNY7K4ifsw=;
 	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Content-Type; b=qDi3zdGvvq0Lfa4aZMhDCMTmYi45ylKRbZe9QYITgn3ktGNv5bot9/fsXGE54mN9BZ3yT6Z25hFU8c/V4NNkJBjVqXsWhudP+nPb/gZOjZF1Dg5JmH/BtIzSdcivDw6wVXmk14ZCNCuxyL8srSrREsYUEPT2FHBYSiMwuZRNjpM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0DKo0cfc; arc=none smtp.client-ip=209.85.128.202
+	 To:Content-Type; b=tp5WdOTgo80WuINC2zFWM2G0R71jzi21azvGFIZWb5y9HNuDj3JydjTgN454VsBjL5+OXoU0Zsd2+ViCW0aehCXBezW6XLz5thzdKjss3nqIPymCbh7jFl0mtAR9Y+C9oApJ8vyQoU8L5J/djh8gP5B5U6N9hQh4nv4w0sTfYJQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=kU4+lA1v; arc=none smtp.client-ip=209.85.219.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-6093c69afafso5830447b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 16:18:31 -0800 (PST)
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dcbee93a3e1so605319276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 16:18:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709165911; x=1709770711; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1709165913; x=1709770713; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=dSyxWL9CUFX3fE6recAd0yV0Q+Es3D3sjDkm1nLuaoo=;
-        b=0DKo0cfcYcLlMxdtDJlIhQjM0JdBLbm+JXZENN+2tKejdWX1G7fxC3qGsvv/0o9QfY
-         Kq6wJqvoWwfj7anM2JiTkQ5H/be0aWKSpXJ6TNqhnbatjobhcx2Sg9IvfRzcitJ2oVU2
-         bJ4ZUSVPWwBjrzOmZmFThh5pDkVBDAP8pDm0hBq5NIJaBuhAggkD/bJnKPnJpKhqmrbY
-         hQluloJt+DHG2MUG5XhJJ1IK+TfO8xrYvOiABGzPJ8MruRpNsYpUEpMVBb8SSx8imRRP
-         T2GyKNxhhIqZ8+BgUsACa7zX5mroqqVkS3ouudEN5f6QtlgkvbTQ2hMMEIV44mDu7mko
-         fCTQ==
+        bh=c0JvchFYB4X0MvBleracqYs3OMeU4l9tJWCec7y6q3w=;
+        b=kU4+lA1vHpZlDtSYyQVmEqdMYtzbTNAl9JAhc+YlQASrTBVwKHTrDpbRrDRvzkd1wa
+         5m15EGPbVBtoxxaQolL5ls7vXYVOt5lyf7taw91lUTMd7bRN9/PjhnKC6sYb9SfOR7TS
+         UpPOYIwwGN7+KlWO0liZAJyZ+Coxt64rYyNxFUYDQI78mcsmQS25tOrECNYq0Rc5u+/t
+         R3LwjWQgVX5QajjMz1jS07+mbgVTi0cfLBz8Xx2P5pHO3QMeBccy0emf+Q/bpufeoMbW
+         4KdsmNplZXb3Ec/vJEhmhQ0ajrMnf3axysXmdEebjbFGBtKRLDgB+vnH/LwHekB1kO2R
+         es7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709165911; x=1709770711;
+        d=1e100.net; s=20230601; t=1709165913; x=1709770713;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dSyxWL9CUFX3fE6recAd0yV0Q+Es3D3sjDkm1nLuaoo=;
-        b=hX3ryv79EJBWsXCe3ggq00tR7yraZiJlk6H5sIt1XNaaMQIP/zE28qxjJWiqbDsKfk
-         rfk6+5wHHtOikYVA01Pw6pghvgK3pENmz6s4zYC3hfSu8N49UTyNMfYVdPF/BKZFUU3d
-         KhwaaxkvA3PVNBqi1Lc3kCkKUgADoGUcVoA82X6fCzGksZkjBKza0OeL0spKyd1Au1zp
-         H0m6FC+fTUonKX47JYEvWz7VShYrl6MwgtF0Xrq89pJnrdvPEksjH5ynr8PLtH5mXhVC
-         fiqVxn9pwCmCyHgOa/YdPVI6PIcM+9gX4lfQLm0Y0iJmF7nGws7MmdMn5B8BTnV/dfZ0
-         McEw==
-X-Forwarded-Encrypted: i=1; AJvYcCWxMHS2kWpC171pU0lZi2m99zA1ygIgX1F7M1gOdA5Add5sKnd7OnNKIZyoGvuOl39Xk40hA+8jd2Jzby/DC9rXl9TmX9UrMuPPkAyt
-X-Gm-Message-State: AOJu0YxdUGYfCjIxqZIoVTSk8F87fWNa3H7P5ef9UoJv+7FSeVIHFdyx
-	0dhMCn2hhSYobEjsWBf20Uo+mZwHbSNQ5dt4uZITVFC7Zht9e+SwT6g9jkfFfOLLaVUJVvQR/JD
-	CIKtY9w==
-X-Google-Smtp-Source: AGHT+IGkLWovybGk6gwh+A1P85UnzlqVNysPtM89sVktgUn5ygdnsQY6ps7QDV7yq7flJSk6HvCEYq3tHXLQ
+        bh=c0JvchFYB4X0MvBleracqYs3OMeU4l9tJWCec7y6q3w=;
+        b=BzlrI/RxzYmPQMXcFhRIUUsYeRfgrVOlFhvUFZ7FLTiEV7hLFvIv50p+nCex8SAWOu
+         zyj5ia/gCabcT/heaxj8Ce9bD5OSEJ6jjePzmauFl3ZtsrypXm7fKAYvq6lAaRBbLQNb
+         tiHIPuobn9p6CJIdWNWCYKwn8WPIV7CM6WeOGrc5aaXNsZGfVxA0lZNDdpncla7FyGiL
+         ytA2zlO9h6T/MZ0f/9HNC+LS+Ys9AUZfFd0biqr9BrBZDMbbEqpbU6ko+1/vadaHqxlc
+         B6KoeiIoJe0b3R7TsuVIHJ8a8sBpLiIDZLvy0LdXL97+6yGCCJuuLz7bNJuKedRP1bJ9
+         VBpA==
+X-Forwarded-Encrypted: i=1; AJvYcCX3FF8++yJWmH3oO5z407akRWZwyDy6iSCVzLsNW18U7xZGBPGQjv7Az8qohcsPlALuSinceIQpaOrq6qUramid7SU1ztM31iVdaBLN
+X-Gm-Message-State: AOJu0YyG3p4AGo8wqwrqPyBgEcEZHiKXYi8uONWpsWZmZ+yagmSda33k
+	r7KIJfh7G6iIN3ptuaK9oicxT8hGFAtKMceSndSvPBPh+EdYfKHbI1sv17GQdhAQBEH6agetxm6
+	5dkdo+g==
+X-Google-Smtp-Source: AGHT+IF4yyKMvNlhv6U8pRqNcLZNCYg3Z26k0Gc0xtubKv4Xv2n8sOabvsJGIRYNUOBQTrCaMmLreqpr4qjp
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:77dc:144c:334e:e2dd])
- (user=irogers job=sendgmr) by 2002:a05:6902:1885:b0:dc6:b768:2994 with SMTP
- id cj5-20020a056902188500b00dc6b7682994mr43238ybb.0.1709165911067; Wed, 28
- Feb 2024 16:18:31 -0800 (PST)
-Date: Wed, 28 Feb 2024 16:17:48 -0800
+ (user=irogers job=sendgmr) by 2002:a05:6902:1244:b0:dc6:e20f:80cb with SMTP
+ id t4-20020a056902124400b00dc6e20f80cbmr44028ybu.3.1709165913274; Wed, 28 Feb
+ 2024 16:18:33 -0800 (PST)
+Date: Wed, 28 Feb 2024 16:17:49 -0800
 In-Reply-To: <20240229001806.4158429-1-irogers@google.com>
-Message-Id: <20240229001806.4158429-4-irogers@google.com>
+Message-Id: <20240229001806.4158429-5-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,7 +74,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240229001806.4158429-1-irogers@google.com>
 X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Subject: [PATCH v1 03/20] perf jevents: Add smi metric group for Intel models
+Subject: [PATCH v1 04/20] perf jevents: Add tsx metric group for Intel models
 From: Ian Rogers <irogers@google.com>
 To: Perry Taylor <perry.taylor@intel.com>, Samantha Alt <samantha.alt@intel.com>, 
 	Caleb Biggers <caleb.biggers@intel.com>, Weilin Wang <weilin.wang@intel.com>, 
@@ -94,45 +94,79 @@ Allow duplicated metric to be dropped from json files.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/pmu-events/intel_metrics.py | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+ tools/perf/pmu-events/intel_metrics.py | 51 ++++++++++++++++++++++++++
+ 1 file changed, 51 insertions(+)
 
 diff --git a/tools/perf/pmu-events/intel_metrics.py b/tools/perf/pmu-events/intel_metrics.py
-index 46866a25b166..20c25d142f24 100755
+index 20c25d142f24..1096accea2aa 100755
 --- a/tools/perf/pmu-events/intel_metrics.py
 +++ b/tools/perf/pmu-events/intel_metrics.py
-@@ -2,7 +2,7 @@
- # SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
- from metric import (d_ratio, has_event, max, Event, JsonEncodeMetric,
-                     JsonEncodeMetricGroupDescriptions, LoadEvents, Metric,
--                    MetricGroup, Select)
-+                    MetricGroup, MetricRef, Select)
- import argparse
+@@ -7,6 +7,7 @@ import argparse
  import json
  import math
-@@ -62,9 +62,25 @@ def Rapl() -> MetricGroup:
-                      description="Processor socket power consumption estimates")
+ import os
++from typing import Optional
+ 
+ parser = argparse.ArgumentParser(description="Intel perf json generator")
+ parser.add_argument("-metricgroups", help="Generate metricgroups data", action='store_true')
+@@ -77,10 +78,60 @@ def Smi() -> MetricGroup:
+     ])
  
  
-+def Smi() -> MetricGroup:
-+    aperf = Event('msr/aperf/')
++def Tsx() -> Optional[MetricGroup]:
++    if args.model not in [
++        'alderlake',
++        'cascadelakex',
++        'icelake',
++        'icelakex',
++        'rocketlake',
++        'sapphirerapids',
++        'skylake',
++        'skylakex',
++        'tigerlake',
++    ]:
++        return None
++
++    pmu = "cpu_core" if args.model == "alderlake" else "cpu"
 +    cycles = Event('cycles')
-+    smi_num = Event('msr/smi/')
-+    smi_cycles = Select((aperf - cycles) / aperf, smi_num > 0, 0)
-+    return MetricGroup('smi', [
-+        Metric('smi_num', 'Number of SMI interrupts.',
-+               smi_num, 'SMI#'),
-+        # Note, the smi_cycles "Event" is really a reference to the metric.
-+        Metric('smi_cycles',
-+               'Percentage of cycles spent in System Management Interrupts.',
-+               smi_cycles, '100%', threshold=(MetricRef('smi_cycles') > 0.10))
-+    ])
++    cycles_in_tx = Event(f'{pmu}/cycles\-t/')
++    transaction_start = Event(f'{pmu}/tx\-start/')
++    cycles_in_tx_cp = Event(f'{pmu}/cycles\-ct/')
++    metrics = [
++        Metric('tsx_transactional_cycles',
++                      'Percentage of cycles within a transaction region.',
++                      Select(cycles_in_tx / cycles, has_event(cycles_in_tx), 0),
++                      '100%'),
++        Metric('tsx_aborted_cycles', 'Percentage of cycles in aborted transactions.',
++                      Select(max(cycles_in_tx - cycles_in_tx_cp, 0) / cycles,
++                                    has_event(cycles_in_tx),
++                                    0),
++                      '100%'),
++        Metric('tsx_cycles_per_transaction',
++                      'Number of cycles within a transaction divided by the number of transactions.',
++                      Select(cycles_in_tx / transaction_start,
++                                    has_event(cycles_in_tx),
++                                    0),
++                      "cycles / transaction"),
++    ]
++    if args.model != 'sapphirerapids':
++        elision_start = Event(f'{pmu}/el\-start/')
++        metrics += [
++            Metric('tsx_cycles_per_elision',
++                          'Number of cycles within a transaction divided by the number of elisions.',
++                          Select(cycles_in_tx / elision_start,
++                                        has_event(elision_start),
++                                        0),
++                          "cycles / elision"),
++        ]
++    return MetricGroup('transaction', metrics)
 +
 +
  all_metrics = MetricGroup("", [
      Idle(),
      Rapl(),
-+    Smi(),
+     Smi(),
++    Tsx(),
  ])
  
  if args.metricgroups:
