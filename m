@@ -1,122 +1,98 @@
-Return-Path: <linux-kernel+bounces-87265-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87267-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17E2186D1DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:17:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA5E486D1E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:18:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 498B81C22DAF
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:17:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D82C1F22B91
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:18:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41A8C7A13A;
-	Thu, 29 Feb 2024 18:16:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4602378289;
+	Thu, 29 Feb 2024 18:18:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m+5mCg7w"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="feqEOwGg"
+Received: from smtp-42ab.mail.infomaniak.ch (smtp-42ab.mail.infomaniak.ch [84.16.66.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77E9B160648;
-	Thu, 29 Feb 2024 18:16:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE96278261
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 18:18:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=84.16.66.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709230604; cv=none; b=PF2R9DcFxiXe289hewIjPrgT7SETZr8wJNxAfMgN+EVa2FB/iEPL3RfKaYVu9sk07A79JgOKI52gcXZ+Wg+lEl1bh8HBNRoY5rljLECZCtppxahMbSEFxx5JAvhCheanvGmbXep1vNt+as6Kxztghgc2K5l5RUUxQIF8VOzEBT8=
+	t=1709230708; cv=none; b=T1vrMzFhW8mJo6fJv79VGzSFAfH39NeklkVeWhg2A4lqKzXCjo0+VAA9+GH19hQJjwgjLsU6aTubRYg9ayJqIV+aZ5FuUdzKdOm5ttpHaMqMbZmZv2Ei/Vg1qKh7AeDROwT62IkymUEU+GDYLFdHPJd2fcqC4j3zYqvXf+h/lNA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709230604; c=relaxed/simple;
-	bh=3CbSXxuONRZ0lG9ZqV/7qAp0SdzOirXNAMLNdA3lpGY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=T5dJ1/VolaZflqca+TiVUeEk4OdHulaYxdpNvhd1AuQqDnnWYM/ogX7jtAEWjuymvc0MZ22LurEOeHRJMghjfocS9j8qzv5uSDVhIihUssatEBuJUdMZFjlyyyor90GdI++YSe48+omUVUtnlksLKBqrRcJEb/aYx/1jK1nD3Uo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m+5mCg7w; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B116C433F1;
-	Thu, 29 Feb 2024 18:16:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709230604;
-	bh=3CbSXxuONRZ0lG9ZqV/7qAp0SdzOirXNAMLNdA3lpGY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=m+5mCg7w63r7Z5MFOKERYRB7WPa7MXWJ72o5e+WXXyPAuANuGl/DHcU4BjOeJqEFT
-	 8iX7/DIfW8qsldkc4ZC4VMrTbv/troUkZO3qae4Z/yu7zhwgRzSlrmPuYswtxFGDGv
-	 Ixcdjub4uFUPtvgkjFrjCU6HsP5u9kA8eaVJPpr3h0M4GDTq1ffijdek5YG5JgBkNo
-	 fQs7N1NjawmnnJvv7YThPna82xkHQ789SX7AGhwzMJ9qwXufFkxG9pR99/WlWZJWzM
-	 K7qKC9aS0d7oCO6mzW+XA3U2qjTqaL+mwk/c7SQllHjJNKGVPmjVkXwSAllFi1jhUF
-	 UlNG+JOc46xtA==
-Date: Thu, 29 Feb 2024 18:16:39 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: helgaas@kernel.org, bhelgaas@google.com, conor+dt@kernel.org,
-	devicetree@vger.kernel.org, imx@lists.linux.dev,
-	krzysztof.kozlowski+dt@linaro.org, kw@linux.com,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	lpieralisi@kernel.org, robh@kernel.org
-Subject: Re: [PATCH v5 5/5] dt-bindings: pci: layerscape-pci-ep: Remove
- 'fsl,pcie-scfg' and 'dma-coherence' from required
-Message-ID: <20240229-putdown-gyration-6aaa6d156547@spud>
-References: <20240228190321.580846-1-Frank.Li@nxp.com>
- <20240228190321.580846-6-Frank.Li@nxp.com>
+	s=arc-20240116; t=1709230708; c=relaxed/simple;
+	bh=FnDnPP7Y9XQwoylss8G5T67X/FVEG5s4Rcpw8ybX4Gg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=SEgYHwH3fu9M/QruZPGwGM/6Ghtc4EpHDgL63TDyShRyo49bbbkPw+p4Zml4xcfMdIbAnRL9VSzdXEnxxuuqNfUVy+hJJ+arkr4mgmWoszc3SbLtPNauzBfhYA+2taBHIih+YG560lsn48+F4XoIKKqQnCQma+W0b6xHwp5+mPQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=feqEOwGg; arc=none smtp.client-ip=84.16.66.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
+Received: from smtp-3-0000.mail.infomaniak.ch (smtp-3-0000.mail.infomaniak.ch [10.4.36.107])
+	by smtp-4-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4Tlzx26Grtzbjw;
+	Thu, 29 Feb 2024 19:18:14 +0100 (CET)
+Received: from unknown by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4Tlzx22tb3z3f;
+	Thu, 29 Feb 2024 19:18:14 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
+	s=20191114; t=1709230694;
+	bh=FnDnPP7Y9XQwoylss8G5T67X/FVEG5s4Rcpw8ybX4Gg=;
+	h=From:To:Cc:Subject:Date:From;
+	b=feqEOwGg2Iv1NZObT2SyiKHajiqlnot4568scHg3m89CcsazsxfIz4uDzwadqQH9s
+	 jYxn3EckYSIiS0hPurynyy42hLR+eUYNsQhfdo8+VWbPJNr0d6qnJx8o8JfHbaYyj3
+	 pIHnXTojevktxGB4/C2S3Xmc6uYmZINC8sLDrDKI=
+From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
+	=?UTF-8?q?G=C3=BCnther=20Noack?= <gnoack@google.com>,
+	Konstantin Meskhidze <konstantin.meskhidze@huawei.com>,
+	linux-kernel@vger.kernel.org,
+	linux-security-module@vger.kernel.org
+Subject: [GIT PULL] Landlock fixes for v6.8-rc7
+Date: Thu, 29 Feb 2024 19:18:02 +0100
+Message-ID: <20240229181802.371558-1-mic@digikod.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="i/bXdY1OaIYJCArs"
-Content-Disposition: inline
-In-Reply-To: <20240228190321.580846-6-Frank.Li@nxp.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Infomaniak-Routing: alpha
 
+Hi Linus,
 
---i/bXdY1OaIYJCArs
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This PR fixes a potential issue when handling inodes with inconsistent
+properties.
 
-On Wed, Feb 28, 2024 at 02:03:21PM -0500, Frank Li wrote:
-> Remove 'fsl,pcie-scfg' and 'dma-coherence' properties from required becau=
-se
-> not all chips is dma coherenced and have supplement configuration unit
-> (scfg).
->=20
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+Please pull these changes for v6.8-rc7.  This commit merged cleanly with
+your master branch.  The kernel code has been tested in the latest
+linux-next releases since last week.
 
-I'd squash this with 3/5 and move both of them before the addition of
-the reference to the main snps stuff. That way you'll not get
-dt_binding_check complaints on multiple patches.
+Regards,
+ Mickaël
 
-Cheers,
-Conor.
+--
+The following changes since commit d206a76d7d2726f3b096037f2079ce0bd3ba329b:
 
-> ---
->  .../devicetree/bindings/pci/fsl,layerscape-pcie-ep.yaml         | 2 --
->  1 file changed, 2 deletions(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie-ep=
-=2Eyaml b/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie-ep.yaml
-> index e75b8853dca8c..07965683beece 100644
-> --- a/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie-ep.yaml
-> +++ b/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie-ep.yaml
-> @@ -67,8 +67,6 @@ required:
->    - compatible
->    - reg
->    - interrupt-names
-> -  - fsl,pcie-scfg
-> -  - dma-coherence
-> =20
->  allOf:
->    - $ref: /schemas/pci/snps,dw-pcie-ep.yaml#
-> --=20
-> 2.34.1
->=20
+  Linux 6.8-rc6 (2024-02-25 15:46:06 -0800)
 
---i/bXdY1OaIYJCArs
-Content-Type: application/pgp-signature; name="signature.asc"
+are available in the Git repository at:
 
------BEGIN PGP SIGNATURE-----
+  git://git.kernel.org/pub/scm/linux/kernel/git/mic/linux.git tags/landlock-6.8-rc7
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZeDKBwAKCRB4tDGHoIJi
-0gE3AP4uvIutdJbc+UtQUdw8Ctv+/W7dwfFJ2yR2E9RtaHN1SgEAx9+lhU1T/ZFP
-HrV6OMDlJTF/of4ImXSZsFXNN873cA0=
-=RyZI
------END PGP SIGNATURE-----
+for you to fetch changes up to d9818b3e906a0ee1ab02ea79e74a2f755fc5461a:
 
---i/bXdY1OaIYJCArs--
+  landlock: Fix asymmetric private inodes referring (2024-02-26 18:23:53 +0100)
+
+----------------------------------------------------------------
+Landlock fix for v6.8-rc7
+
+----------------------------------------------------------------
+Mickaël Salaün (1):
+      landlock: Fix asymmetric private inodes referring
+
+ security/landlock/fs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
