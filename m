@@ -1,127 +1,208 @@
-Return-Path: <linux-kernel+bounces-86324-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86330-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D77686C3F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:43:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0F6386C3FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:44:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DACCE1F23BC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:43:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E7171F2497D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:44:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FD5544391;
-	Thu, 29 Feb 2024 08:43:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53B0B53E30;
+	Thu, 29 Feb 2024 08:43:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MW9qslLd"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="A5hUWNJT"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4873024A19
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 08:43:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E806D53807
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 08:43:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709196192; cv=none; b=gNGwzfI5TKDAT9vj+wlwfHasFts39itRh9zzNDHwfDYlBc2L8v75NTxEIOpn/K6HwdLTrMF3KwnyQ/cy8H5MtsZGDhNiy8AHJWU/fb4uALNKp9+D1gDI9UorU5ugrM8W3lCteysPcdYk67OnBLwO18JtVjazYzrWN9o/4uXJd7A=
+	t=1709196216; cv=none; b=p0sR6CYf4BC+VkB/GZf+sEiCQ6u9hUy/kZwxqx+x3iRExxuq7GXSSmPbjx1rSx4vFpcB8TUQ3a+mqTD/4fSnDh40wEga1ZGupo7GEUuv3klkrq28+JOcv99WlXc/+slm84E5Kz9cA1ce+1Xv+Qf5xpc4uDflQeIglDEsNsExLVY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709196192; c=relaxed/simple;
-	bh=hikBQBwK+HCibV9Ay+uw3hwq6fhlJ+kbZbSIdNLQbuc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XmemDDRaEepIVe/ABohlIkoTCL01tABuGEoCcdpXOBeGatOYdMEwj43FgKigQF4JcJTwVZgtjUMtukhWvKWSjeaAEO9ST49HPHogUX+VXdtOtBJOYnxisouLr/xAs8lW9kiwELxuL0o0t3pup9guf14LLVH6Rzndzt2a63wdsX4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MW9qslLd; arc=none smtp.client-ip=170.10.133.124
+	s=arc-20240116; t=1709196216; c=relaxed/simple;
+	bh=O05i6JF7XUFfS5IvQ0UbpArVDfLhD1s0LTIF086EXAs=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=KhM5p4GGLJVqZ+43tVOrtyommPJbjvRmeLNwWx21huTYDmZJiPyYmRwXnKWc4cszmZzpLFoiFfk+maEijvn/UBw4w9nR2AcSHXIaZMuoiUlgPkoE1TlD6DMhqnU/4+wPHABesNQ1SvvQLpjtOKuZcZFaUDkYUgbn23yrHjq9u3c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=A5hUWNJT; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709196189;
+	s=mimecast20190719; t=1709196214;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=DEuBlHD3kgoIX0ziveljn5872wJi8XDsY60eCgSwad4=;
-	b=MW9qslLdZwCW3fRiPfuIk56YiiyYuIdZhYkCK9JiFrrlCDca3VDd9haUpsWxEMHh6R5Qx7
-	IDxnwBPFM8sD8woZOPSGAXN76WDgg205MjAKkilhJK+GryPELnhSjE/NyZ0J/RpZwzd8vV
-	k+cDPsG5EUQeJ7CQ1qG9hTwVtxEgmF4=
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
- [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=jnT5L9L6w21lKd8yQkJVObKwVcge77cGSeo5m2W2yic=;
+	b=A5hUWNJTLtSAnqGur5kZXWT0SRKBTqbkbmcQuPGwf9q8I37NeJPzEwEZvLabVe0m721Hlo
+	HKeyY0ncR1arv5NlJlgo1fej+7asdennqhGY4r3twmBq71qHG5jTzxgsRzh/VZbSfNaMck
+	ou9Fz5W4rJpFGKJ5hM8Hv8lybWPyWEw=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-426-FcqhayKvMoyMHcmJFL_Rzg-1; Thu, 29 Feb 2024 03:43:06 -0500
-X-MC-Unique: FcqhayKvMoyMHcmJFL_Rzg-1
-Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1dc685df4adso5312335ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 00:43:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709196186; x=1709800986;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DEuBlHD3kgoIX0ziveljn5872wJi8XDsY60eCgSwad4=;
-        b=J/2ch0wz/tFKvGlVOF1Urh5l3o5X7/xWD82r3JyroTAlOE9fdlu1qVH/yfO23rAvNg
-         oTXXhTZh06q47QvPGh93E+xURgebuhu+9gFN4P7Fd4hImd1uhC3pq06jAwSG/f+JO+cb
-         x1eBs+2mOXJ3pxI6Ex/gIX48i4k7rvHFr6V5q2wfuk+iInCfhs0Z7eL6MRLOyNwWWJlw
-         7P5j37TSdEEz24N1Y2tKBRxvyeID6AHZjR3yHrLl2Ba64x2C4AfsVmaYYshruGyiG5d6
-         zpAOwXk6Lpt665bwsDzcvFLoa+0Jl9MM+XKd1ZefiyJi+uZrFWkYPGMvR0z4cpbGzppO
-         DbDQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUciS2BkKsHjdjpWj8ehcl/KETxwib79hWz21bhjXTBNvjp2KGH/ONsEL+3I82m+aieL4jnQFRJzlDERzLZ4SsAV2Ti4vrcyFWhzflJ
-X-Gm-Message-State: AOJu0Ywe6uEVFYfvp9cvn+R02Z/VBs3a1tcrFwcbad81PIRhrRF/3XQm
-	uyXrwJGRa3DGqlEvEfzfjgsswyWw8izOaMk76ddxovf2g27qNxp4cwSF+5a5soAEDgix1tTj4By
-	KknXvMKmW5A7Fdp5xhCk+nOcUCmOrYqAbhx/UvRRxwPY8ZJi/NDPu2lHyOz9NDykb1kyeFJkd6N
-	MnOiz8MAKp1RjeXYPLASY+1hTY0rzVZKSSGD5/
-X-Received: by 2002:a17:902:da8f:b0:1dc:ca09:6b7d with SMTP id j15-20020a170902da8f00b001dcca096b7dmr1826112plx.2.1709196185777;
-        Thu, 29 Feb 2024 00:43:05 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHRJixUvjUtpkuPEzMa01pFKLhC0GOFKYvulFM09afef/K1eyl+EDf7oLoFQwQVwElle44GHMlouy/Ss7TyUcc=
-X-Received: by 2002:a17:902:da8f:b0:1dc:ca09:6b7d with SMTP id
- j15-20020a170902da8f00b001dcca096b7dmr1826093plx.2.1709196185336; Thu, 29 Feb
- 2024 00:43:05 -0800 (PST)
+ us-mta-7-XVRBeMQtPOS0aNn2-IbSjA-1; Thu, 29 Feb 2024 03:43:30 -0500
+X-MC-Unique: XVRBeMQtPOS0aNn2-IbSjA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4FD4485A58A;
+	Thu, 29 Feb 2024 08:43:29 +0000 (UTC)
+Received: from x1n.redhat.com (unknown [10.72.116.12])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id D063428D;
+	Thu, 29 Feb 2024 08:43:22 +0000 (UTC)
+From: peterx@redhat.com
+To: linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org,
+	Yang Shi <shy828301@gmail.com>,
+	"Kirill A . Shutemov" <kirill@shutemov.name>,
+	Jason Gunthorpe <jgg@nvidia.com>,
+	peterx@redhat.com,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	x86@kernel.org,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>
+Subject: [PATCH v2 3/7] mm/x86: Replace p4d_large() with p4d_leaf()
+Date: Thu, 29 Feb 2024 16:42:54 +0800
+Message-ID: <20240229084258.599774-4-peterx@redhat.com>
+In-Reply-To: <20240229084258.599774-1-peterx@redhat.com>
+References: <20240229084258.599774-1-peterx@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <00000000000029b00c05ef9c1802@google.com> <000000000000cf2d2d06127def32@google.com>
-In-Reply-To: <000000000000cf2d2d06127def32@google.com>
-From: Andreas Gruenbacher <agruenba@redhat.com>
-Date: Thu, 29 Feb 2024 09:42:53 +0100
-Message-ID: <CAHc6FU7GqeMROfnoFLbTaNnoDhwr1+eFAsP_=rQD_JkfF__AqQ@mail.gmail.com>
-Subject: Re: [syzbot] [gfs2?] WARNING in gfs2_check_blk_type
-To: syzbot <syzbot+092b28923eb79e0f3c41@syzkaller.appspotmail.com>
-Cc: axboe@kernel.dk, brauner@kernel.org, cluster-devel@redhat.com, 
-	gfs2@lists.linux.dev, jack@suse.cz, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, rpeterso@redhat.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
-On Thu, Feb 29, 2024 at 5:46=E2=80=AFAM syzbot
-<syzbot+092b28923eb79e0f3c41@syzkaller.appspotmail.com> wrote:
-> syzbot suspects this issue was fixed by commit:
->
-> commit 6f861765464f43a71462d52026fbddfc858239a5
-> Author: Jan Kara <jack@suse.cz>
-> Date:   Wed Nov 1 17:43:10 2023 +0000
->
->     fs: Block writes to mounted block devices
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D108aa9ba18=
-0000
-> start commit:   861deac3b092 Linux 6.7-rc7
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D10c7857ed774d=
-c3e
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3D092b28923eb79e0=
-f3c41
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D1440171ae80=
-000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D11b1205ee8000=
-0
->
-> If the result looks correct, please mark the issue as fixed by replying w=
-ith:
->
-> #syz fix: fs: Block writes to mounted block devices
+From: Peter Xu <peterx@redhat.com>
 
-Sounds reasonable:
+p4d_large() is always defined as p4d_leaf().  Merge their usages.  Chose
+p4d_leaf() because p4d_leaf() is a global API, while p4d_large() is not.
 
-#syz fix: fs: Block writes to mounted block devices
+Only x86 has p4d_leaf() defined as of now.  So it also means after this
+patch we removed all p4d_large() usages.
 
-Andreas
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: x86@kernel.org
+Signed-off-by: Peter Xu <peterx@redhat.com>
+---
+ arch/x86/mm/fault.c          | 4 ++--
+ arch/x86/mm/init_64.c        | 2 +-
+ arch/x86/mm/pat/set_memory.c | 4 ++--
+ arch/x86/mm/pti.c            | 2 +-
+ arch/x86/power/hibernate.c   | 2 +-
+ arch/x86/xen/mmu_pv.c        | 2 +-
+ 6 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+index 679b09cfe241..8b69ce3f4115 100644
+--- a/arch/x86/mm/fault.c
++++ b/arch/x86/mm/fault.c
+@@ -368,7 +368,7 @@ static void dump_pagetable(unsigned long address)
+ 		goto bad;
+ 
+ 	pr_cont("P4D %lx ", p4d_val(*p4d));
+-	if (!p4d_present(*p4d) || p4d_large(*p4d))
++	if (!p4d_present(*p4d) || p4d_leaf(*p4d))
+ 		goto out;
+ 
+ 	pud = pud_offset(p4d, address);
+@@ -1039,7 +1039,7 @@ spurious_kernel_fault(unsigned long error_code, unsigned long address)
+ 	if (!p4d_present(*p4d))
+ 		return 0;
+ 
+-	if (p4d_large(*p4d))
++	if (p4d_leaf(*p4d))
+ 		return spurious_kernel_fault_check(error_code, (pte_t *) p4d);
+ 
+ 	pud = pud_offset(p4d, address);
+diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
+index ebdbcae48011..d691e7992a9a 100644
+--- a/arch/x86/mm/init_64.c
++++ b/arch/x86/mm/init_64.c
+@@ -1197,7 +1197,7 @@ remove_p4d_table(p4d_t *p4d_start, unsigned long addr, unsigned long end,
+ 		if (!p4d_present(*p4d))
+ 			continue;
+ 
+-		BUILD_BUG_ON(p4d_large(*p4d));
++		BUILD_BUG_ON(p4d_leaf(*p4d));
+ 
+ 		pud_base = pud_offset(p4d, 0);
+ 		remove_pud_table(pud_base, addr, next, altmap, direct);
+diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
+index e9b448d1b1b7..5359a9c88099 100644
+--- a/arch/x86/mm/pat/set_memory.c
++++ b/arch/x86/mm/pat/set_memory.c
+@@ -676,7 +676,7 @@ pte_t *lookup_address_in_pgd(pgd_t *pgd, unsigned long address,
+ 		return NULL;
+ 
+ 	*level = PG_LEVEL_512G;
+-	if (p4d_large(*p4d) || !p4d_present(*p4d))
++	if (p4d_leaf(*p4d) || !p4d_present(*p4d))
+ 		return (pte_t *)p4d;
+ 
+ 	pud = pud_offset(p4d, address);
+@@ -739,7 +739,7 @@ pmd_t *lookup_pmd_address(unsigned long address)
+ 		return NULL;
+ 
+ 	p4d = p4d_offset(pgd, address);
+-	if (p4d_none(*p4d) || p4d_large(*p4d) || !p4d_present(*p4d))
++	if (p4d_none(*p4d) || p4d_leaf(*p4d) || !p4d_present(*p4d))
+ 		return NULL;
+ 
+ 	pud = pud_offset(p4d, address);
+diff --git a/arch/x86/mm/pti.c b/arch/x86/mm/pti.c
+index 669ba1c345b3..dc0a81f5f60e 100644
+--- a/arch/x86/mm/pti.c
++++ b/arch/x86/mm/pti.c
+@@ -206,7 +206,7 @@ static pmd_t *pti_user_pagetable_walk_pmd(unsigned long address)
+ 	if (!p4d)
+ 		return NULL;
+ 
+-	BUILD_BUG_ON(p4d_large(*p4d) != 0);
++	BUILD_BUG_ON(p4d_leaf(*p4d) != 0);
+ 	if (p4d_none(*p4d)) {
+ 		unsigned long new_pud_page = __get_free_page(gfp);
+ 		if (WARN_ON_ONCE(!new_pud_page))
+diff --git a/arch/x86/power/hibernate.c b/arch/x86/power/hibernate.c
+index 6f955eb1e163..28153789f873 100644
+--- a/arch/x86/power/hibernate.c
++++ b/arch/x86/power/hibernate.c
+@@ -165,7 +165,7 @@ int relocate_restore_code(void)
+ 	pgd = (pgd_t *)__va(read_cr3_pa()) +
+ 		pgd_index(relocated_restore_code);
+ 	p4d = p4d_offset(pgd, relocated_restore_code);
+-	if (p4d_large(*p4d)) {
++	if (p4d_leaf(*p4d)) {
+ 		set_p4d(p4d, __p4d(p4d_val(*p4d) & ~_PAGE_NX));
+ 		goto out;
+ 	}
+diff --git a/arch/x86/xen/mmu_pv.c b/arch/x86/xen/mmu_pv.c
+index e21974f2cf2d..12a43a4abebf 100644
+--- a/arch/x86/xen/mmu_pv.c
++++ b/arch/x86/xen/mmu_pv.c
+@@ -1104,7 +1104,7 @@ static void __init xen_cleanmfnmap_p4d(p4d_t *p4d, bool unpin)
+ 	pud_t *pud_tbl;
+ 	int i;
+ 
+-	if (p4d_large(*p4d)) {
++	if (p4d_leaf(*p4d)) {
+ 		pa = p4d_val(*p4d) & PHYSICAL_PAGE_MASK;
+ 		xen_free_ro_pages(pa, P4D_SIZE);
+ 		return;
+-- 
+2.43.0
 
 
