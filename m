@@ -1,244 +1,142 @@
-Return-Path: <linux-kernel+bounces-86096-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86097-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9BD186BF83
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 04:36:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DB5186BF86
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 04:37:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54FA11F219AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 03:36:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B7106B24DC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 03:37:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7450374EF;
-	Thu, 29 Feb 2024 03:36:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4514374EF;
+	Thu, 29 Feb 2024 03:37:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="QJVh8MXs"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2083.outbound.protection.outlook.com [40.107.94.83])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A16j6n1D"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BED1A1F95F
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 03:36:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.83
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709177794; cv=fail; b=jRZ/w4Ym4TopzeNd+uIZ1x+ihmRS0Tco9wtR5dQm5L6Aesrwjx/fOjL9UxRTml7WEVIfKgIjQhkgKT3ebjT94iKKn3ksFu8qkyB8XWjTQfsa17q1sKstbHDK2jgdYEXejr1AbtHJ4XFFJKBPKdLns1Giigk8C7xrXK/W03hibR4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709177794; c=relaxed/simple;
-	bh=BnLd8pef4JJrVDq9ec2l+bZsUdAwoW914ZF7lUbziqk=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=ucZE13dLw/gGow9i+HtF3S2829Jv9H40RmCUU6ItFgPN8Bvdl4GoLJz5pmk+ceJZ/1pqRrKCdwa9paPAqOmlLLqw9UUp0WL9I9sXxKamHkFtD3VGz4qX7kcVVPEr3cbXvJbWeMvWmwsl+8JpL0gED6is8Q59R8AjDqU4OyrLFec=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=QJVh8MXs; arc=fail smtp.client-ip=40.107.94.83
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=INn9TVpYzRjjPcBG+NyM7R6jq4XRC6gwB1I5ZGL4spBA8RNpYDtQc6SA50Xby8ROg2oZGY6pWgGOX0j5NaPxok7A08i46eWYXaSN6k3FqXLEvryljzLYU9AtJY4vY7H+qtuneE4dW5aAR5aRo1dqzQu18Drfb3EOWgWlTejCmOTGErzuEjTjJ4QUa1NF1UjrgeWCrAcGvYz3S+24CPxx+h+NRf3DIh9yEkvJJFnz5XV7BxDxIYlTHBYrrUgIP0h0c369Ms868IWmEJuqUCPPHdJwjn/KxHPlnwNBcYOrgSt/ZGUZYuw1T2vngKzZ+5U30Hid0hKgdtOJJ3b8xeKFdQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lVKELm0svmed5Q2fQ+aTFh3AoUo0NACKlnkaBecJiiI=;
- b=FVk5P8lKmqhqHq1YWhV2IYyFoPsryZuEoo+J/FCCRhS45M/EvBtdvU9v4jK7RxBXvQeFMtlHEQJoHAU5Mev7f2rqwm+GmTAU7QqMo785D8Sh6rmi/wXQ4vrKYX2ZGponurT+NAuGegdq3OKtlTwuMd5vl+btc4KbntNRrpykE9EnLQeTH+BfEU1Wm8ZtXl6yzP/PVh32uYbOl/lySwlruJU8ZyY6aIMvAgYtmOjLadLIFdEd9yxYhHfDE/Pb+n3CFfeew+6kHcBugpdpO8frcoWndHE6x9nZgGb2WdDpEmoeqJf0buCrXmguzZKgN7URRSfY6khoBFwYaUH/sxpQ0g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lVKELm0svmed5Q2fQ+aTFh3AoUo0NACKlnkaBecJiiI=;
- b=QJVh8MXsRn6eLaTVuOEVDBG4bC9AfkYeV0A6siKrf65q6bgWlqimka+UkdZhDpB+DSkNKpUHx740ArCQGZePrU9gmkBmSNvhugetMIY/QENddH83Jje7oNQVnpquuCiytZqVwOKJmdUqI9CmmTK14U45wXHTfaedEzw7gThazIk=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MW2PR12MB2379.namprd12.prod.outlook.com (2603:10b6:907:9::24)
- by SJ0PR12MB7068.namprd12.prod.outlook.com (2603:10b6:a03:4ae::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.39; Thu, 29 Feb
- 2024 03:36:27 +0000
-Received: from MW2PR12MB2379.namprd12.prod.outlook.com
- ([fe80::3150:d50f:7411:e6bb]) by MW2PR12MB2379.namprd12.prod.outlook.com
- ([fe80::3150:d50f:7411:e6bb%4]) with mapi id 15.20.7316.037; Thu, 29 Feb 2024
- 03:36:27 +0000
-Message-ID: <fe8462ae-9144-6925-1679-a5079e5b0556@amd.com>
-Date: Thu, 29 Feb 2024 09:06:16 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.1
-Subject: Re: [RFC] sched/eevdf: sched feature to dismiss lag on wakeup
-Content-Language: en-US
-To: Tobias Huschle <huschle@linux.ibm.com>, linux-kernel@vger.kernel.org
-Cc: mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
- vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org,
- bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
- vschneid@redhat.com, sshegde@linux.vnet.ibm.com, srikar@linux.vnet.ibm.com,
- linuxppc-dev@lists.ozlabs.org, Xuewen Yan <xuewen.yan@unisoc.com>,
- xuewen.yan94@gmail.com, ke.wang@unisoc.com
-References: <20240228161018.14253-1-huschle@linux.ibm.com>
-From: K Prateek Nayak <kprateek.nayak@amd.com>
-In-Reply-To: <20240228161018.14253-1-huschle@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PN3PR01CA0153.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:c8::18) To MW2PR12MB2379.namprd12.prod.outlook.com
- (2603:10b6:907:9::24)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F071C1F95F;
+	Thu, 29 Feb 2024 03:37:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709177856; cv=none; b=AF9yUAv/DvD/9gP9FfKXwZD6cs7SlQwbDYO0SpbM+7//W48gIOuJ/q3qeEuRacfBrktb2eCWA3QYg9Li/fCwKX9A0Cj1LyKW99SVvAhAtus0FtLigP5DFYCXoW0KomEmWBtixZBfGg1vvoYiyk5GmqW4EL8Y4vNHSJKlvOlpBlo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709177856; c=relaxed/simple;
+	bh=L+mOE66O8U9SCG8RnbvjTtTj/VvI6p4qJikWxk+t3j8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=IMg40wUCan6531JzadOm2X6W93udFqAn6Cn2vHOswRGx6YGy8ItZypy1j25ui6BBNOueAO6U4gxr5V5g3kGyKaPO6nwBMosuv6+ak3vYhGAadcX98Yo8hu94I1ffrQlbKyBBAR5bf4mzkZCiYcSH/T/m+VUrg/0ZEMQ6Q8/8SZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A16j6n1D; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62B2EC43390;
+	Thu, 29 Feb 2024 03:37:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709177855;
+	bh=L+mOE66O8U9SCG8RnbvjTtTj/VvI6p4qJikWxk+t3j8=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=A16j6n1Dduqnr10YexLqQYvilFKPpZj0fIiZwe8MSflwqmaxyLGI5MwjZkg/tz/Ks
+	 3Vu0nTVlizR7uRu4lHu/G6v0un47wNmQBBDVHpzrOTPbmKE8Mcf4GQ6bplLkqQUGic
+	 GQYdLkcQephhNa94W9mnVWV14nKZHgy/Ss+62iayKNHvLnSezzqvAkqHQ3yVL4X44c
+	 Ub7qZyu6jEVDjRXCx5vQNHjXbPnwpWHJkGGcu+ZfjR8NcjBr+lMWQn0UWzyGM5NL7c
+	 GRwmNHs/fAu7NsJCoLLM76xBLNzLPN2hNYEEDgazguYX7eFxw86mZpiefe2F7kbGhM
+	 lUsEsK2r1TZSw==
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-512e39226efso338054e87.0;
+        Wed, 28 Feb 2024 19:37:35 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWBf2l/SYzZctPsqE0NRTOrsIAt9hYACl21EArLeEZKZD7LCSztOmPswEFxCSk8gweWSe2J6BlDamj1n9sHHKTiNk01YBzFs/fPcFJT
+X-Gm-Message-State: AOJu0Ywp2/3eT42MhZwsQBFygHsLG06915yySbp6GYeuD9zhEPMswUUS
+	oi3jZKJY0+FuUnsHLC+Np9D+IQJFzsbGL2HmcUobxGY+7344Q5rwFi0eQ1MbHrm3lWrYy8yVH7Y
+	mlVEmIdKsW2vLDUWVoIqVwTXeJDs=
+X-Google-Smtp-Source: AGHT+IE0nO14VESRX8+ct8Oksg0Kq77saILla9wQmzGsTX6W2dCOw2hKgOu9rBd0s74yYTK6Jdxro5smuDYi1cjAhgo=
+X-Received: by 2002:a19:2d11:0:b0:513:ed7:32a1 with SMTP id
+ k17-20020a192d11000000b005130ed732a1mr413741lfj.69.1709177853718; Wed, 28 Feb
+ 2024 19:37:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW2PR12MB2379:EE_|SJ0PR12MB7068:EE_
-X-MS-Office365-Filtering-Correlation-Id: 524c8ea6-0f7c-41bd-bc93-08dc38d79c60
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	kXLw7ySy6EqNCvRS8RfIJD2j8M7x7VgpI8R+xzJ0cJlKWUd0SrhtGMI3yVk3sMU58gqUQR6+qvitVIzCSUHVGGhKsPQSmvUp//6qsK21z83lHGA7bctN+bG4hiFPDdhH5zJMBjxBCGQjcLX/trJIyYLlsUlhJ1lPsNAf57QDNGOpRceYfFAAlEXN333ktRfO0PgqPTuo31mNPZItBpWEbA+ao1RSQjEgqEybJhZ4uMS+igtJY3hA6jj0XcMPHPVb7Z/Imc7CF4IQa3ayIjzAhraJvarVz0j6WYHmmXwQj8LoyK3AhqKXSA4G+xpKnGaTtiqsYJvlEKQVcKJSpLHoiW+sjxGpr+lO+UhhqXZ5goTNLzsvD1WoQowkum0NPLBWKfwpq0FsyCBAGi5ZDWtM75uYXscd00/2jGQMaW2jB0rbn8kpU1ttyeOtH8q0L9ew/Xke/hpCZz78Du3hnePCJRJuHvDSi7Qpgv5wmBxd2OaCT6OLD6bdQFyC0dVUYCD1ddTW6cSVMTkMGCN+WqXmYd+MVx8hfx9y57WTaPUJZN7gb4OXfQKrfu6cjME8URPjr5YQ0VneVLLDQUXE7UHhxN98lKomx5Gw6ei6CtvkqhcP5nW/Wo23XjRi+6oZA/7Z
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR12MB2379.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?Z1JRbmk3RUUvYzdOZU1yYzMzNXd4KzFrS2hua05HcEhBNWRLWmdabjB2M3po?=
- =?utf-8?B?OFpOaVB1OElNT2ducGFmODdUcy9KbkQ2NjNDelVLdWF6c3pBOFJsNVFmWkVL?=
- =?utf-8?B?R3J6TGt5MVNtZFRYUzhFTDYvaW1uaFdOR2hiQzBwV1hPV0g5cGI1TG0rM3BJ?=
- =?utf-8?B?WGcwMStPKzYzRVNqVVloOGorOHVFWS91c00yUXRjYW9QSkpGLytoemJOS3lE?=
- =?utf-8?B?dDQ1cWdnR3NOUVdiZ1psc3l6M3FWSTdnRGF5TmtldWxudmgvUWdtL25LVWxa?=
- =?utf-8?B?TzVka1NQZlNEM0RrOWR5RU16d2dXcmM3SnduUFlYRkNhd0xHL0JCenBGQWZF?=
- =?utf-8?B?SFUrNlRMQXA1ZUtqZHN0YTg3TDlHbFlhUjVHY2dIQzRUVTJrQnovUENpalBW?=
- =?utf-8?B?SkJaV0lrZGZrQ2cxRVpIczlJTzAveXlCdk1yRjNpemU0Q083aDZuMmMyRkM5?=
- =?utf-8?B?NXEvbldVdi9BcEtnWEZGa3dZSWNOMDY3ZDZMYzd5OXFyM3FGZWRjSDNhc2M4?=
- =?utf-8?B?TFd5VlBFdVZCVGpUWXlZamRmUERjVXo0RVk4cjhvT1JONVlBVVI2Y1NpS2px?=
- =?utf-8?B?NENkZWtGY3M5aUEvUEk3VS9uR2s4cWJqYzlrU2pTOENiQk9aMVJTWEtXQmdY?=
- =?utf-8?B?cHhJTGo3ODJURU5qRjl6eVRDL24vU0NmRVNjL1V5WGErN1UvV3JKS3AzZzMr?=
- =?utf-8?B?VlJQMk9ITTZXMmdUKzR3ZTkwSS82bVFMNGZCQ0JIZHlTOWRSdEJZSngwSHJu?=
- =?utf-8?B?aGZJcFhUY2Y0TWZFYUEyN2pvdkRJRkRtU2pMeFh1aDRNMXhBS28xRnhtM0pQ?=
- =?utf-8?B?a0hhcmhGNGNkSDBUMzBjZnEzWUhSOTlhLy9SRDhrcFFOS2ltcFBlbDNXeDdq?=
- =?utf-8?B?ME5qR05wWjczTm9kQmp6UzhDTUFoY3NwTHcyTnZhWm01TWdYamI4ZXJ4Vzkx?=
- =?utf-8?B?dnpDOWgzc2lEbHJtQUtkeldpalgyV3JuYmdKWjdjMzNmTmRCcnNaNnY5c2Ux?=
- =?utf-8?B?OGc5SGdRaHVPbmt5OXdYWXFqdTFtOUFLUEhYZkJWTlpsNEVHVzc2RzBiVnhi?=
- =?utf-8?B?d082MGYyQWh6TzJYa2hURnZUQkIvb1Y2N3dZZVZQNHBEVTVXYzlXUlBhK1Ay?=
- =?utf-8?B?S01sVnA5VCsvUFZDSVB4Yjh1RFcyZDUyaHZ5SkJ6OERFRTkzY3orTTEvV0VE?=
- =?utf-8?B?L0xNL2xOMkdaKzE0SDJFVDc0K1M0WmJMb2QyZGxnUWhna1BVRnhWT2xwNitw?=
- =?utf-8?B?TzZlaWJYYmNVRkhId2JlQUZ6QWFtS1p2clp1SW5JWkZaNy9FbEg0MFNSb3Z0?=
- =?utf-8?B?UU9MaitRSTRBM0tKRTkwaUVHR2ZnZTFhWHhMTkZnMEloM25aV2xtU1lsM01k?=
- =?utf-8?B?VEtaWXdKUlFjR3JIWDE1Z3Q3QXc2NGh2ZXJjQ041dDF4Q2JIYTZuK0plcGNW?=
- =?utf-8?B?aVBSR2lLUExrQkVIVU5VTmErTmNrMGFzb1FSYVQxaGNCZmcxUnhpd3U1WDVt?=
- =?utf-8?B?MUJPZEFpQlJDeEtQU0tBUUZ1M2NWa25MMWtVdU1KdlhQcHJRejlGNWxOTS9j?=
- =?utf-8?B?L09qRGMxeDM0eW9OZkhKbFN6UEUzUHNwOXNLS3MreXRsZFZXVXJTczhOSDJk?=
- =?utf-8?B?NUhwMVFScmVKZlNYU3huMXpvVGI4QUZSejhuTVltY1J1K20wYWplT25FU3Bn?=
- =?utf-8?B?N0hKekdCUUphU255NHNFUzlZOWZVMDI4dUtYRjVueXdvMEJNTDM1VFhMUkl1?=
- =?utf-8?B?N1VnLzJqOWVSSVBBZjNCbGYzMTVJNTJjUVVIeDduQ1lTZVI0czdDdnJzWlRn?=
- =?utf-8?B?Ny9CenpaK25zdlFhQjBxOVRpYTlwUnE0dmt2TzVUMG5wUldBcWhYc3VQNmpq?=
- =?utf-8?B?YTI2QlM0ZnFUelNJTkY2VVRDb3Z6NXhsdHJFUFk3N095TnpjQzRjZ0UwblJB?=
- =?utf-8?B?YlVldXowRzl1REpmbGlsNTlNbjV0dTl0SU9XQVY4RU1EWlhrSFFudUREa1Vy?=
- =?utf-8?B?a0FXVEpMR25IckNKckFmTW5hS3JWbmwvem1vSUd5enpCWFhTTjhXTEVaS3JF?=
- =?utf-8?B?bW8rdTdBZEc0TVphSTlvVnZLRWNQSFFpajMxNzdHOVhOL3VWeVA5bGJiYjFK?=
- =?utf-8?Q?QLBDU5fZaxTIovayJvY93x2XI?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 524c8ea6-0f7c-41bd-bc93-08dc38d79c60
-X-MS-Exchange-CrossTenant-AuthSource: MW2PR12MB2379.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Feb 2024 03:36:27.6458
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CxLJhGRd/SlOpg/Dc7ToKkfx8IZ1nMMo2sr/JXaRy566MHDRcxGCDE1oVjoQkp9lHtJ/Q5Ttk+SByX3xTgPFOA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB7068
+References: <20240222031801.GG11472@google.com> <20240222032559.496127-1-senozhatsky@chromium.org>
+ <CAK7LNARo4L6qxoqRU-0dgABarukJKAaZpCRtfA3MyUHhSuDQxQ@mail.gmail.com>
+ <20240222051621.GH11472@google.com> <20240228045652.GH11972@google.com>
+ <CAK7LNAQ8OyNMeGzVoTRg-sHDZ4YK0EKY_eEWNepekaibO_ZKwg@mail.gmail.com> <20240229021010.GM11972@google.com>
+In-Reply-To: <20240229021010.GM11972@google.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Thu, 29 Feb 2024 12:36:57 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASujf8m4PpMyoCC1cTN_YGeG1HVaOR+3pZx5=3OJp=85A@mail.gmail.com>
+Message-ID: <CAK7LNASujf8m4PpMyoCC1cTN_YGeG1HVaOR+3pZx5=3OJp=85A@mail.gmail.com>
+Subject: Re: [PATCHv2] kconfig: add some Kconfig env variables to make help
+To: Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-(+ Xuewen Yan, Ke Wang)
+On Thu, Feb 29, 2024 at 11:10=E2=80=AFAM Sergey Senozhatsky
+<senozhatsky@chromium.org> wrote:
+>
+> On (24/02/29 11:03), Masahiro Yamada wrote:
+> > > > > > +++ b/scripts/kconfig/Makefile
+> > > > > > @@ -158,6 +158,10 @@ help:
+> > > > > >                 if help=3D$$(grep -m1 '^# Help: ' $(f)); then \
+> > > > > >                         printf '  %-25s - %s\n' '$(notdir $(f))=
+' "$${help#*: }"; \
+> > > > > >                 fi;)
+> > > > > > +       @echo  ''
+> > > > > > +       @echo  'Configuration environment variables:'
+> > > > > > +       @echo  '  KCONFIG_WERROR                 - Turn some Kc=
+onfig warnings into error conditions'
+> > > > > > +       @echo  '  KCONFIG_WARN_UNKNOWN_SYMBOLS   - Make Kconfig=
+ warn about all unrecognized config symbols'
+> > > > > >
+> > > > > >  # =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+> > > > > >  # object files used by all kconfig flavours
+> > > > > > --
+> > > > > > 2.44.0.rc0.258.g7320e95886-goog
+> > > > > >
+> > > > > >
+> > > > >
+> > > > > Why only two, while Kconfig supports more env variables?
+> > > >
+> > > > Right.  I wanted to add only those that we use (and familiar with) =
+for
+> > > > starters.  I'm not familiar with things like KCONFIG_PROBABILITY, f=
+or
+> > > > instance, and not sure how to document it (its Documentation/kbuild=
+/kconfig.rst
+> > > > description is pretty lengthy).
+> > >
+> > > Masahiro, any opinion?
+> >
+> >
+> > I do not need this patch.
+>
+> Do you agree that putting kconfig env knobs into help makes sense
+> in general?  Especially those add valuable sanity checks.
 
-Hello Tobias,
 
-On 2/28/2024 9:40 PM, Tobias Huschle wrote:
-> The previously used CFS scheduler gave tasks that were woken up an
-> enhanced chance to see runtime immediately by deducting a certain value
-> from its vruntime on runqueue placement during wakeup.
-> 
-> This property was used by some, at least vhost, to ensure, that certain
-> kworkers are scheduled immediately after being woken up. The EEVDF
-> scheduler, does not support this so far. Instead, if such a woken up
-> entitiy carries a negative lag from its previous execution, it will have
-> to wait for the current time slice to finish, which affects the
-> performance of the process expecting the immediate execution negatively.
-> 
-> To address this issue, implement EEVDF strategy #2 for rejoining
-> entities, which dismisses the lag from previous execution and allows
-> the woken up task to run immediately (if no other entities are deemed
-> to be preferred for scheduling by EEVDF).
-> 
-> The vruntime is decremented by an additional value of 1 to make sure,
-> that the woken up tasks gets to actually run. This is of course not
-> following strategy #2 in an exact manner but guarantees the expected
-> behavior for the scenario described above. Without the additional
-> decrement, the performance goes south even more. So there are some
-> side effects I could not get my head around yet.
-> 
-> Questions:
-> 1. The kworker getting its negative lag occurs in the following scenario
->    - kworker and a cgroup are supposed to execute on the same CPU
->    - one task within the cgroup is executing and wakes up the kworker
->    - kworker with 0 lag, gets picked immediately and finishes its
->      execution within ~5000ns
->    - on dequeue, kworker gets assigned a negative lag
->    Is this expected behavior? With this short execution time, I would
->    expect the kworker to be fine.
->    For a more detailed discussion on this symptom, please see:
->    https://lore.kernel.org/netdev/ZWbapeL34Z8AMR5f@DESKTOP-2CCOB1S./T/
 
-Does the lag clamping path from Xuewen Yan [1] work for the vhost case
-mentioned in the thread? Instead of placing the task just behind the
-0-lag point, clamping the lag seems to be more principled approach since
-EEVDF already does it in update_entity_lag().
 
-If the lag is still too large, maybe the above coupled with Peter's
-delayed dequeue patch can help [2] (Note: tree is prone to force
-updates)
+I cannot accept the attitude:
+  "I am interested only in these. I do not care about the rest,
+  as keeping the correctness and consistency is the
+  work for somebody else (=3D very likely the maintainer)"
 
-[1] https://lore.kernel.org/lkml/20240130080643.1828-1-xuewen.yan@unisoc.com/
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git/commit/?h=sched/eevdf&id=e62ef63a888c97188a977daddb72b61548da8417
 
-> 2. The proposed code change of course only addresses the symptom. Am I
->    assuming correctly that this is in general the exepected behavior and
->    that the task waking up the kworker should rather do an explicit
->    reschedule of itself to grant the kworker time to execute?
->    In the vhost case, this is currently attempted through a cond_resched
->    which is not doing anything because the need_resched flag is not set.
-> 
-> Feedback and opinions would be highly appreciated.
-> 
-> Signed-off-by: Tobias Huschle <huschle@linux.ibm.com>
-> ---
->  kernel/sched/fair.c     | 5 +++++
->  kernel/sched/features.h | 1 +
->  2 files changed, 6 insertions(+)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 533547e3c90a..c20ae6d62961 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -5239,6 +5239,11 @@ place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
->  		lag = div_s64(lag, load);
->  	}
->  
-> +	if (sched_feat(NOLAG_WAKEUP) && (flags & ENQUEUE_WAKEUP)) {
-> +		se->vlag = 0;
-> +		lag = 1;
-> +	}
-> +
->  	se->vruntime = vruntime - lag;
->  
->  	/*
-> diff --git a/kernel/sched/features.h b/kernel/sched/features.h
-> index 143f55df890b..d3118e7568b4 100644
-> --- a/kernel/sched/features.h
-> +++ b/kernel/sched/features.h
-> @@ -7,6 +7,7 @@
->  SCHED_FEAT(PLACE_LAG, true)
->  SCHED_FEAT(PLACE_DEADLINE_INITIAL, true)
->  SCHED_FEAT(RUN_TO_PARITY, true)
-> +SCHED_FEAT(NOLAG_WAKEUP, true)
->  
->  /*
->   * Prefer to schedule the task we woke last (assuming it failed
+This should be all or nothing.
+
+I do not think all the env variables can be summarized
+to fit in help.
+
+
+
+
+
+
 
 --
-Thanks and Regards,
-Prateek
+Best Regards
+Masahiro Yamada
 
