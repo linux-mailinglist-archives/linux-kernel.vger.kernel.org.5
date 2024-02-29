@@ -1,161 +1,149 @@
-Return-Path: <linux-kernel+bounces-85861-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85862-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5758286BC68
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:00:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CA4AA86BC73
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:02:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11B5428A6A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:00:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C9C82875CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:02:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3249ED0;
-	Thu, 29 Feb 2024 00:00:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C754168C7;
+	Thu, 29 Feb 2024 00:01:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CfyjDQ15"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Y3RfdnXT"
+Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7808E13D2FD;
-	Thu, 29 Feb 2024 00:00:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6EECA28
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 00:01:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709164812; cv=none; b=OO6DW+krpYRFRZaGqyRHR+gUwJEjgpT1JScFbUwiuXr5dOzqG7+ZAbQaAUl+WZZkn+AHjMKsoRqTbfg92D9gfGW0Cgu9ix+ZlL7sKtgyLMSMljX8JHx3n8CxRU5CBb9G9b29c1KnwhokhoH4wKLbAvYPIo+R5w7lglVXglVHZQI=
+	t=1709164913; cv=none; b=dNPOmlozGdi11bpfFOHJrfF1kpdirt3836jOBdbMvnNCURwLgEV3iKPJbiVMpQ9cYx7K4tEzvS7cGdjx2Fu/4ROhOCEQ/ilhS1GwETdKkr+MKobryG8Wxn1vX95NF6wdMoI93MFUpo7nddWTsoF+qqoe0c/lQsfHS0CY40/wEo4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709164812; c=relaxed/simple;
-	bh=qo1L9+mSe0yIWvvN760Et2xlAvVq2979ZfEn++Kk//I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gdsnoCBy1alguecqQcIlRrS4FTRAgd0rqnvL2e/DhZbkscogV3M/kTqeQJrJE8pxRIRX/FhkzW4gXbUO+b9GNZlpd8DR7+XFcSt2LCcxpeMvTSdfKcI4zTC8CSc5FzN2a0AnR+OJ5/ViRanX9TaTrlcwABslRl1Pvtqo9CxjSu0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CfyjDQ15; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709164811; x=1740700811;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=qo1L9+mSe0yIWvvN760Et2xlAvVq2979ZfEn++Kk//I=;
-  b=CfyjDQ15YM1r2TiNytL9Kwhx0Nh12ohOTMYYeLUBJA3uBAXm31o5KmIV
-   Maa/fIJy5y5IrjpP4Hhyl+QXRCscKIaH86qaXCQ4bzwlnL/5o5AVLSzgO
-   jCryq4Ve/mxtnmxCErY1IjZQIjpAveAjsqi3F8fr1zR5SiwYsnqJkZqrf
-   lzv/Kvvzd9qGtib7q0YE1ZbeuVKA05EspzkJOQ1FAza8E4lRq6NjAl4TV
-   EZ/+K/LJmNK+S5d2ahMlJPuLXG7oDY1CvYLTJ6HaQn96f8DPiV66sRvav
-   7vFm6sIWUbHvJG2NZQ8Nvin2ucH61ztd5Mw/DXdurud2ilmkfU71YTH42
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="4183220"
-X-IronPort-AV: E=Sophos;i="6.06,191,1705392000"; 
-   d="scan'208";a="4183220"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 16:00:08 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,191,1705392000"; 
-   d="scan'208";a="30785492"
-Received: from smitpat1-mobl.amr.corp.intel.com (HELO [10.209.30.182]) ([10.209.30.182])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 16:00:06 -0800
-Message-ID: <f446dfda-53e1-4e65-bbe5-0488028f55ad@linux.intel.com>
-Date: Wed, 28 Feb 2024 16:00:06 -0800
+	s=arc-20240116; t=1709164913; c=relaxed/simple;
+	bh=qxsoqrA85W0ZABODeQ55zexBoMTqe+0G6tTR4C4edFg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Z87aOskke2QqYd9BiXav3Hw9Js5eS93GOW/0LBl5e/XyWaTuSnRe5kc8J3pz+Wz0CorFT3LIkOeA9YB2XetT9TstBGmI8B4BURSmRmKocwGKY7mEKLs5FqSLcnz3yW6p+DrU0RQhDhfqO/yYcNHLzsZrtGU1YQees3PHWuEoNLo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Y3RfdnXT; arc=none smtp.client-ip=209.85.167.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3c19b79535aso229653b6e.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 16:01:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1709164911; x=1709769711; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=iEBIJm8L8y8D/KMJdxSN242jmeihBdO84S0mND9uaps=;
+        b=Y3RfdnXTWmbJLlQXNnkjy+ZF0gXZKzA0KjRs2qwdBt21m8GvVCMIXgNMBURHBwjeKJ
+         IyVQt+Po3ndN5q7/hWcZF56J5FgF+RMhrM8DzLqJmi0EnLfSTqemYneQq1kvGQU9wY3x
+         Apg7VWhU2fM47BtJyjtDA9BGDyI3ypa2yFpm8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709164911; x=1709769711;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iEBIJm8L8y8D/KMJdxSN242jmeihBdO84S0mND9uaps=;
+        b=MPZQu8Lg1JZ+2J7z7oLC92rrSs3Y5bKn8eSHVaqUryAM4nAtES12DVRgXDMyrQgVn1
+         wx9f1X8m/g5oIz/tLtKeB08A0B0WHp1HHbNLR/6DneBRgGBc6rqBM1GuUa/5EkB6YBLS
+         s6PR3bVAAdM92pzn9KZDlT4rFkIJIQ3uR43wspf4K4qid70xGG4xeuJz8+d8F93m+ylj
+         eka2wteTKArwhFA9Opd1bFWDXiozNLtnmKRV0/pLDivPo4B9a1sslleu9nsPPaqYS+lz
+         VjfKPi1bP2QIZDBHrqmagMc9fMMbOBOwrT4jicy14CdFjWIDwqSgLaV0cWLMnp9KaXGj
+         c2sg==
+X-Forwarded-Encrypted: i=1; AJvYcCUOlox0Yal3bqjb7Bjv4zTeqqecF34Un5gqhuDZYCiEZH8E/j7j0l1DBMKT7H/86wWADn53L1DzsbSeCt3jjGmEDkyaAfx1+uGq/7jA
+X-Gm-Message-State: AOJu0YwgFwirQIFV4+9OEVDQf9YhaB+wiFIgSQzIWNg2Y8e/D7m+tao1
+	HVhsHJpwHmSClfinAlfN74AaDz1rfUbUkOelV9prQODWNwA/koaMsuDSUkgVOw==
+X-Google-Smtp-Source: AGHT+IGs0rI0VXo4/NJKO1cSeuk/mHsATz8xyv2BYMzSCXsOlf2JpK8n8vhC+odnJINdbkFZX6M9Dw==
+X-Received: by 2002:a05:6808:19a4:b0:3c1:af9f:a866 with SMTP id bj36-20020a05680819a400b003c1af9fa866mr607658oib.45.1709164910890;
+        Wed, 28 Feb 2024 16:01:50 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id a24-20020a631a18000000b005dc491ccdcesm60329pga.14.2024.02.28.16.01.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Feb 2024 16:01:50 -0800 (PST)
+Date: Wed, 28 Feb 2024 16:01:49 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Vinod Koul <vkoul@kernel.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Mark Brown <broonie@kernel.org>,
+	linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+	linux-spi@vger.kernel.org, netdev@vger.kernel.org,
+	linux-hardening@vger.kernel.org,
+	Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: Re: [PATCH v4 7/8] net-device: Use new helpers from overflow.h in
+ netdevice APIs
+Message-ID: <202402281554.C1CEEF744@keescook>
+References: <20240228204919.3680786-1-andriy.shevchenko@linux.intel.com>
+ <20240228204919.3680786-8-andriy.shevchenko@linux.intel.com>
+ <202402281341.AC67EB6E35@keescook>
+ <20240228144148.5c227487@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/3] PCI/DPC: Clean up DPC vs AER/EDR ownership and
- Kconfig
-Content-Language: en-US
-To: Ethan Zhao <haifeng.zhao@linux.intel.com>,
- Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, Matthew W Carlis <mattc@purestorage.com>,
- Keith Busch <kbusch@kernel.org>, Lukas Wunner <lukas@wunner.de>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- Jesse Brandeburg <jesse.brandeburg@intel.com>,
- Bjorn Helgaas <bhelgaas@google.com>
-References: <20240222221521.32159-1-helgaas@kernel.org>
- <89984f11-b84e-4da0-ab5b-f2048461aae0@linux.intel.com>
- <52245cb8-879e-4997-a1b5-cdfbd702dee7@linux.intel.com>
- <81f2dfa4-14c6-423c-96ee-b11b8a4670ed@linux.intel.com>
-From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <81f2dfa4-14c6-423c-96ee-b11b8a4670ed@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240228144148.5c227487@kernel.org>
 
+On Wed, Feb 28, 2024 at 02:41:48PM -0800, Jakub Kicinski wrote:
+> On Wed, 28 Feb 2024 13:46:10 -0800 Kees Cook wrote:
+> > I really don't like hiding these trailing allocations from the compiler.
+> > Why can't something like this be done (totally untested):
+> > 
+> > 
+> > diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> > index 118c40258d07..dae6df4fb177 100644
+> > --- a/include/linux/netdevice.h
+> > +++ b/include/linux/netdevice.h
+> > @@ -2475,6 +2475,8 @@ struct net_device {
+> >  	/** @page_pools: page pools created for this netdevice */
+> >  	struct hlist_head	page_pools;
+> >  #endif
+> > +	u32			priv_size;
+> > +	u8			priv_data[] __counted_by(priv_size) __aligned(NETDEV_ALIGN);
+> 
+> I like, FWIW, please submit! :)
 
-On 2/26/24 11:12 PM, Ethan Zhao wrote:
-> On 2/27/2024 2:35 PM, Kuppuswamy Sathyanarayanan wrote:
->> Hi,
->>
->> On 2/26/24 10:18 PM, Ethan Zhao wrote:
->>> On 2/23/2024 6:15 AM, Bjorn Helgaas wrote:
->>>> From: Bjorn Helgaas <bhelgaas@google.com>
->>>>
->>>> Previously we could request control of DPC without AER, which is illegal
->>>> per spec.  Also, we could enable CONFIG_PCIE_DPC without CONFIG_PCIE_EDR,
->>>> which is also illegal.  This series addresses both.
->>> I have a question here, how to understand the relationship EDR & AER ?
->>> somewhere EDR touches AER status without checking _OSC granted bits,
->>> such as
->>>     pci_aer_raw_clear_status(edev);
->>
->> Which_OSC bits?
->>
->> EDR code will only get triggered if OS advertises the EDR support (which
->> also means OS supports AER and DPC), and both AER and DPC is owned by
->> the firmware. During the EDR notification, the OS is allowed to touch AER
->
-> Means no need to check if host->native_aer ? why checked in
-> pcie_do_recovery() ?
+So, I found several cases where struct net_device is included in the
+middle of another structure, which makes my proposal more awkward. But I
+also don't understand why it's in the _middle_. Shouldn't it always be
+at the beginning (with priv stuff following it?)
+Quick search and examined manually: git grep 'struct net_device [a-z0-9_]*;'
 
-pcie_do_recovery() can be called form EDR (FF) or native path. That check is used
-to skip device status clearing in FF mode. You can find details about it in
+struct rtw89_dev
+struct ath10k
+etc.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/drivers/pci/pcie/err.c?id=068c29a248b6ddbfdf7bb150b547569759620d36
+Some even have two included (?)
 
+But I still like the idea -- Gustavo has been solving these cases with
+having two structs, e.g.:
 
+struct net_device {
+	...unchanged...
+};
 
->
-> Thanks,
-> Ethan
->
->> and DPC registers. So there is no problem with EDR code using AER routines.
->>
->>
->>> sometimes EDR calling AER with host->native_aer checked, like
->>>
->>> pcie_do_recovery()
->>> {
->>>   ...
->>>   if (host->native_aer || pcie_ports_native) {
->>>          pcie_clear_device_status(dev);
->>>          pci_aer_clear_nonfatal_status(dev);
->>>      }
->>>   ...
->>> }
->>>
->>> That is really confusing. could we do some cleanup to eliminate it ?
->>> such as seperate AER code into common code and runtime part.
->>>
->>>
->>> Thanks,
->>> Ethan
->>>  
->>>> Bjorn Helgaas (3):
->>>>     PCI/DPC: Request DPC only if also requesting AER
->>>>     PCI/DPC: Remove CONFIG_PCIE_EDR
->>>>     PCI/DPC: Encapsulate pci_acpi_add_edr_notifier()
->>>>
->>>>    drivers/acpi/pci_root.c   | 22 ++++++++++++----------
->>>>    drivers/pci/pci.h         |  4 ++++
->>>>    drivers/pci/pcie/Kconfig  | 14 ++++----------
->>>>    drivers/pci/pcie/Makefile |  5 ++++-
->>>>    drivers/pci/pcie/dpc.c    | 10 ----------
->>>>    include/linux/pci-acpi.h  |  8 --------
->>>>    6 files changed, 24 insertions(+), 39 deletions(-)
->>>>
->
+struct net_device_alloc {
+	struct net_device	dev;
+	u32			priv_size;
+	u8			priv_data[] __counted_by(priv_size) __aligned(NETDEV_ALIGN);
+};
+
+And internals can use struct net_device_alloc...
+
+-Kees
+
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
-
+Kees Cook
 
