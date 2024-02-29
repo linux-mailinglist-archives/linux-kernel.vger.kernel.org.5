@@ -1,86 +1,116 @@
-Return-Path: <linux-kernel+bounces-87056-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87057-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E69C86CEC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:22:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0627386CEC7
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:22:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8CB141C225B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:22:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B427E28221E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:22:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C21C214BD57;
-	Thu, 29 Feb 2024 16:09:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pbFHJlAs"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43ADA14BF27;
+	Thu, 29 Feb 2024 16:11:02 +0000 (UTC)
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 148A413F43D
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 16:09:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ACDD144059;
+	Thu, 29 Feb 2024 16:10:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.27.120
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709222953; cv=none; b=Ahx8Nj5GaE1p+lucK1SAOx4IAApzSmYe+vu9PzF7haU34dbO0Lyben+VjfQCNcmoC8R/TjDpYmDGuEz/NHKPElKk5p8Fzhl++FQhz8bUAyJ8ceS8wJc5lXgeJM1Y8hkyh5nWp9M17wylWpNyxm7dSKXa3VbI6yPBhYN8CXFEolc=
+	t=1709223061; cv=none; b=s9d2TcGw3XOuqgPfTiC7F1A0kTNQE+YN0Gg+cmvg78kRN1YJWVj/3z9MoOraiFha/Wa+/xhTdAxbNLJ2ZZZWJyJi9RnmTA2ktLrcGt+WUdNyhiy6dihJ6R48ha6WODxPhmd5D2pAnowU95YNomBHsQjZSSvJ86jN2nO0hRZoEE4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709222953; c=relaxed/simple;
-	bh=B46J4uzHUgJuznz2HROPAX865HM+JUojwgXeecuRwQ4=;
+	s=arc-20240116; t=1709223061; c=relaxed/simple;
+	bh=X99fyzIl3BzdVUyIVfrX2sEXZjIkx/BM0jeCNyNhsHk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PBkgLu7xKKOIOJXN857C+q5bOUyQPMxRXdS8VJJPLnu/ix40JhGNyC+CM8Pbuf4gSV0K9Vg1TPXbuj4DIkMPIwPBk78M9AAH380XwHw//DzMcAleUzQzcadeqUqxQCOR2JKwpDK3l6U53X5lRG6HnE0CR1lmmVGngspuEbj1qY0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pbFHJlAs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86E1EC433C7;
-	Thu, 29 Feb 2024 16:09:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709222952;
-	bh=B46J4uzHUgJuznz2HROPAX865HM+JUojwgXeecuRwQ4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pbFHJlAsZiqoeITfPabS31eKuzprLlvAKL81KrIstk0L9MPBkVlG50jgTB12pL1m4
-	 IvhtSohR8x7shZxtr7ipMlz1GElIwd7CU8ZghsIPXUZ+JEzk3klVImTGCc4yF1DXud
-	 AXHmOQfv7Rh6gM/C8yhGWg7WMU2y6jkwXvwO+FtB8v6BFo/Z0c5kTaCr7mEdPylG+s
-	 /HKKYM+3DFGr4sIvDJ5wQOi7xj63Hq/8jEaEg16BIHdc68nAmDDHYzJrnKMp+1VakQ
-	 UzrXvK/MT7h9K2tXMa+ttYiKdV40XGH4svQAasO7dwpQyYZhnOJw9W7/JR7P4Twmg7
-	 3QgC2gbQpOAzA==
-Date: Thu, 29 Feb 2024 11:09:12 -0500
-From: Sasha Levin <sashal@kernel.org>
-To: Jiri Kosina <jikos@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Michal Hocko <mhocko@suse.com>, Kees Cook <keescook@chromium.org>,
-	cve@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: CVE-2023-52451: powerpc/pseries/memhp: Fix access beyond end of
- drmem array
-Message-ID: <ZeCsKGwU96sKi_S_@sashalap>
-References: <2024022639-wronged-grafted-6777@gregkh>
- <ZdytVTOgfvKBBvtn@tiehlicka>
- <202402271029.FD67395@keescook>
- <Zd8hPpP_6q_o8uQW@tiehlicka>
- <202402280906.D6D5590DB@keescook>
- <ZeA-281OudkWBhd_@tiehlicka>
- <2024022915-dissuade-grandson-ebd4@gregkh>
- <ZeBRZqJd5HAKaOfC@tiehlicka>
- <2024022913-borrower-resource-ecc9@gregkh>
- <nycvar.YFH.7.76.2402291605370.4159@cbobk.fhfr.pm>
+	 Content-Type:Content-Disposition:In-Reply-To; b=hAtGMUj9kYXk+m95AkVs7B95gWOAFS4CT/cBgVMPQdoiVYk3E1quP20TyONjVLybn3pHsv8E1NwVQqGZlDVEN9ZPQeV0BFAkRHpqdXjnxiXoLqfwbDrnXkzoxp+MIJCXFu1rbRDQrUD3ikIyCrF/BW0XNu5fbzlVg3oIJ8yI9ok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=gnumonks.org; arc=none smtp.client-ip=213.95.27.120
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnumonks.org
+Received: from [78.30.41.52] (port=35722 helo=gnumonks.org)
+	by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <pablo@gnumonks.org>)
+	id 1rfizf-0066XT-HB; Thu, 29 Feb 2024 17:10:49 +0100
+Date: Thu, 29 Feb 2024 17:10:46 +0100
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: Vasiliy Kovalev <kovalev@altlinux.org>
+Cc: Alexander Ofitserov <oficerovas@altlinux.org>,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	edumazet@google.com, laforge@gnumonks.org, davem@davemloft.net,
+	kuba@kernel.org, pabeni@redhat.com, nickel@altlinux.org,
+	dutyrok@altlinux.org, stable@vger.kernel.org
+Subject: Re: [PATCH net] gtp: fix use-after-free and null-ptr-deref in
+ gtp_newlink()
+Message-ID: <ZeCshnw9Ac1fd5pV@calendula>
+References: <20240228114703.465107-1-oficerovas@altlinux.org>
+ <Zd_HAGqXSE6Nwcag@calendula>
+ <3d8314ae-03d9-6e43-86ad-f830ea01c737@basealt.ru>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <nycvar.YFH.7.76.2402291605370.4159@cbobk.fhfr.pm>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3d8314ae-03d9-6e43-86ad-f830ea01c737@basealt.ru>
+X-Spam-Score: -1.8 (-)
 
-On Thu, Feb 29, 2024 at 04:09:24PM +0100, Jiri Kosina wrote:
->On Thu, 29 Feb 2024, Greg Kroah-Hartman wrote:
+On Thu, Feb 29, 2024 at 11:37:28AM +0300, Vasiliy Kovalev wrote:
+[...]
+> This patch fixes another problem, but a similar one, since the sequence is
+> incorrect when registering subsystems.
+> 
+> Initially, the registration sequence in the gtp module was as follows:
+> 
+> 1) rtnl_link_register();
+> 
+> 2) genl_register_family();
+> 
+> 3) register_pernet_subsys();
+> 
+> During debugging of the module, when starting the syzkaller reproducer, it
+> turned out that after genl_register_family() (2),
+> 
+> without waiting for register_pernet_subsys()(3), the /.dumpit/  event is
+> triggered, in which the data of the unregistered pernet subsystem is
+> accessed.
+> 
+> That is, the bug was fixed by the commit
+> 
+> 136cfaca2256 ("gtp: fix use-after-free and null-ptr-deref in gtp_genl_dump_pdp()")[1]
+> 
+> and the registration sequence became as follows:
+> 
+> 1) rtnl_link_register();
+> 
+> 2) register_pernet_subsys();
+> 
+> 3) genl_register_family();
+> 
+> However, syzkaller has discovered another problem:
+> 
+> after registering rtnl_link_register, the .newlink event is triggered, in
+> which the data of the unregistered pernet subsystem is accessed.
+> 
+> This problem is reproducible on current stable kernels and the latest
+> upstream kernel 6.8-rc6, in which the patch 136cfaca2256 [1] is applied.
+> 
+> Therefore, the correct sequence should be as follows:
+> 
+> 1)register_pernet_subsys();
+> 
+> 2) rtnl_link_register();
+> 
+> 3) genl_register_family();
+> 
+> The proposed patch is developed on top of the commit changes [1], does not
+> conflict with it and fixes the described bug.
 >
->> It's pretty trivial to get root on most of the "enterprise" kernels
->
->Wow, that's a very strong statement you are making here, and I'd now
->really like to ask you to back that up with some real data.
+> [1] https://lore.kernel.org/lkml/20240220160434.29bcaf43@kernel.org/T/#mb1f72c2ad57b7ea6d47333e8616beccf8bce0e23
 
-Is something like https://www.suse.com/security/cve/CVE-2023-52447.html
-a good example?
-
--- 
-Thanks,
-Sasha
+Thanks for explaining, fix LGTM.
 
