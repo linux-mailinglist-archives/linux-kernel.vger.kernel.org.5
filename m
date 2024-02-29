@@ -1,61 +1,60 @@
-Return-Path: <linux-kernel+bounces-87022-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87023-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DE1586CE5A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:10:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B83F086CE5F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:11:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E15AD1F237C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:10:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E7791F237C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:11:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D603615E04E;
-	Thu, 29 Feb 2024 15:51:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42461154E8A;
+	Thu, 29 Feb 2024 15:51:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HBiASsyc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UI0pXjMu"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24D8915E03A;
-	Thu, 29 Feb 2024 15:51:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80A27154C04;
+	Thu, 29 Feb 2024 15:51:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709221885; cv=none; b=WYYlgL774JDHGQhD7fd+V4DYoEQmo0UIPaxyq9z3BnfbH6AI3UPDS5CbgHUvqt2Op76VP9th8Br5iyHPO0syaOzigOj6xK+vDrDLBX07Mbo7I8WvXzsguzzdqiCTcxY62QUO5qRDMlcvPBYomiIYt27ZZnbcXrmcU8zmciQ7JQc=
+	t=1709221889; cv=none; b=Mr7QLvSuL/k1nqtfsbyLEdz2AVJm3jbXkNzVasWpa2ZjYGZWXPPXq2dB+0/sa1P2HIVvXj9RN9pvABaWDcHIlKd8IHa8V0qgjXPWyjVfHlpj3XTXZ4qk0ELr6CG30QjkXcezDmT+xpq9ldYnvcoBY4/QefkmI/9nasIzgLxEIUo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709221885; c=relaxed/simple;
-	bh=iDEiulklPJxiT0KxN848Zac4TFlvECiWKebGAJuHqZI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=O9Go6UsWUZiBh8x4FdxRyuSbXKKTz8CCHljMhIRueoim7SU0tzH3Ko+Zid+CIuE5jbE+y6jFwJXEBfjclae9KKuoeQzC7aoN8cuU0RiptSCxA+FoQkHXKHU2TvJjipN6LXClva1bk4y+NZzb4czHsFjPfLEuifVHqxqLTR0ZD20=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HBiASsyc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8576C433F1;
-	Thu, 29 Feb 2024 15:51:23 +0000 (UTC)
+	s=arc-20240116; t=1709221889; c=relaxed/simple;
+	bh=GFFbQlzh6HC4SDDh95NsXiORtcwm6elGZF0AA+G9MdQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=S9/tddTZ82eppyrDeeMhoK4idbxCqwe2YDtrK2LA1FyBjWJ979D7L86pComo3lKFIzXz9/aoW0qtB9g9PYGjb6p3le+4ZJH/Gok0d1W3DP4WXIgon89wTEGAwWqUgTplIv1z9c7uBxxyKjdp1TBRBbB9481lUGGHhvSJo45JxgU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UI0pXjMu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1432C43394;
+	Thu, 29 Feb 2024 15:51:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709221885;
-	bh=iDEiulklPJxiT0KxN848Zac4TFlvECiWKebGAJuHqZI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=HBiASsycXTDZ5NiRfOw1SSJuZsGWGjfc013+iG36KMlrmBFpE0o8Z9EW/D9UddWmQ
-	 txexwDCboCQRZAqF/OBTcLvume2rG/cBm2xLnI8MSXyMATTYvQex1ncJL0ev7Ym8Ol
-	 v40nkSSQ7ubqzMOvtiRQhWKfvr0MEO3S7cXehVIAhc+3MP6JtRSQziWMMDhRwzUPy9
-	 herUJ76XMWT2Hwh/1YnIzKhcNRtoTwPuN5dnfbCbSUkt0Dg1972r3BoESLQZ+eoVfQ
-	 ZXmXd2DAD5WT2kQQUUsla1qJatejSH3gRwR/kMhJ50q4UvKpSuIsv8tI6MOK/svu4H
-	 0F+FBBnmH1oLw==
+	s=k20201202; t=1709221889;
+	bh=GFFbQlzh6HC4SDDh95NsXiORtcwm6elGZF0AA+G9MdQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=UI0pXjMuYJrggUHoJQ6a81sleIwYavVgZwF/5W1mIYQUrQErNNl29edWcfoJweFam
+	 PeHnzQis+cTmplxB3xc4qWYdrviu5GeESWOfVB+XQI5DrGRtiVmDKR5VkWtdpFSjYI
+	 dcBuOtIDNbHDO5fQ45T94lzKHWTk+t0Q+flCQS9jA458UjK40MDzrCYLdJek8QCd7n
+	 6tEhSRAz+zym4FVX7zbiQet3cVzcVQEdJqsmGqlDoqCR2xxaskOA/WtRt4crt7wuHE
+	 IqacyrFhyVj+GxMcmh9JPZjKhneVvLe74OnsO3CMb62eI+AH7D/qeg1pRV39kc9Dzl
+	 IEvgNPmZ0Jt+w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Andrew Ballance <andrewjballance@gmail.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Masahiro Yamada <masahiroy@kernel.org>,
+Cc: Jakub Kicinski <kuba@kernel.org>,
+	Simon Horman <horms@kernel.org>,
+	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>,
-	nathan@kernel.org,
-	linux-kbuild@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [PATCH AUTOSEL 5.10 7/7] gen_compile_commands: fix invalid escape sequence warning
-Date: Thu, 29 Feb 2024 10:51:11 -0500
-Message-ID: <20240229155112.2851155-7-sashal@kernel.org>
+	edumazet@google.com,
+	pabeni@redhat.com,
+	shuah@kernel.org,
+	netdev@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 1/5] selftests: tls: use exact comparison in recv_partial
+Date: Thu, 29 Feb 2024 10:51:23 -0500
+Message-ID: <20240229155127.2851327-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240229155112.2851155-1-sashal@kernel.org>
-References: <20240229155112.2851155-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,37 +63,45 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.10.210
+X-stable-base: Linux 5.4.269
 Content-Transfer-Encoding: 8bit
 
-From: Andrew Ballance <andrewjballance@gmail.com>
+From: Jakub Kicinski <kuba@kernel.org>
 
-[ Upstream commit dae4a0171e25884787da32823b3081b4c2acebb2 ]
+[ Upstream commit 49d821064c44cb5ffdf272905236012ea9ce50e3 ]
 
-With python 3.12, '\#' results in this warning
-    SyntaxWarning: invalid escape sequence '\#'
+This exact case was fail for async crypto and we weren't
+catching it.
 
-Signed-off-by: Andrew Ballance <andrewjballance@gmail.com>
-Reviewed-by: Justin Stitt <justinstitt@google.com>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Reviewed-by: Simon Horman <horms@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/clang-tools/gen_compile_commands.py | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/testing/selftests/net/tls.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/scripts/clang-tools/gen_compile_commands.py b/scripts/clang-tools/gen_compile_commands.py
-index 8bf55bb4f515c..96e4865ee934d 100755
---- a/scripts/clang-tools/gen_compile_commands.py
-+++ b/scripts/clang-tools/gen_compile_commands.py
-@@ -176,7 +176,7 @@ def process_line(root_directory, command_prefix, file_path):
-     # escape the pound sign '#', either as '\#' or '$(pound)' (depending on the
-     # kernel version). The compile_commands.json file is not interepreted
-     # by Make, so this code replaces the escaped version with '#'.
--    prefix = command_prefix.replace('\#', '#').replace('$(pound)', '#')
-+    prefix = command_prefix.replace(r'\#', '#').replace('$(pound)', '#')
+diff --git a/tools/testing/selftests/net/tls.c b/tools/testing/selftests/net/tls.c
+index 837206dbe5d6e..81bb3cc6704f8 100644
+--- a/tools/testing/selftests/net/tls.c
++++ b/tools/testing/selftests/net/tls.c
+@@ -580,12 +580,12 @@ TEST_F(tls, recv_partial)
  
-     # Use os.path.abspath() to normalize the path resolving '.' and '..' .
-     abs_path = os.path.abspath(os.path.join(root_directory, file_path))
+ 	memset(recv_mem, 0, sizeof(recv_mem));
+ 	EXPECT_EQ(send(self->fd, test_str, send_len, 0), send_len);
+-	EXPECT_NE(recv(self->cfd, recv_mem, strlen(test_str_first),
+-		       MSG_WAITALL), -1);
++	EXPECT_EQ(recv(self->cfd, recv_mem, strlen(test_str_first),
++		       MSG_WAITALL), strlen(test_str_first));
+ 	EXPECT_EQ(memcmp(test_str_first, recv_mem, strlen(test_str_first)), 0);
+ 	memset(recv_mem, 0, sizeof(recv_mem));
+-	EXPECT_NE(recv(self->cfd, recv_mem, strlen(test_str_second),
+-		       MSG_WAITALL), -1);
++	EXPECT_EQ(recv(self->cfd, recv_mem, strlen(test_str_second),
++		       MSG_WAITALL), strlen(test_str_second));
+ 	EXPECT_EQ(memcmp(test_str_second, recv_mem, strlen(test_str_second)),
+ 		  0);
+ }
 -- 
 2.43.0
 
