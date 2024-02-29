@@ -1,66 +1,81 @@
-Return-Path: <linux-kernel+bounces-86169-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86165-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CD6186C0AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 07:30:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AE4F86C0A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 07:23:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D874828460B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 06:30:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92DE31F2227F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 06:23:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55EBE28F7;
-	Thu, 29 Feb 2024 06:30:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B6DF3C49A;
+	Thu, 29 Feb 2024 06:22:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="Py5BOV+C"
-Received: from smtp-relay-canonical-0.canonical.com (smtp-relay-canonical-0.canonical.com [185.125.188.120])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="nHcUIb2u"
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2087.outbound.protection.outlook.com [40.107.220.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2DF93C482;
-	Thu, 29 Feb 2024 06:30:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.120
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709188206; cv=none; b=fAVLJ0299qXp/0oc4zecb7hrsuYSDD9zjQ/HaOgckXXgdNcTh3DSxO9v+kGyWlYOzj+Go2/p9oiAyg8rqLDiNFzaJbE619bhEVl0OONYrLC5J8/6f5DhNXcSmEdQp2m2ztS4PYn3fBePVP/PwHxj4uMMxJZsyLvTBmiVZloBNrw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709188206; c=relaxed/simple;
-	bh=WVuqvTOEQ6pYEpNxVPfaI9ms3Fa4vc/Kgpc6dbIhRII=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HqyDUlQplu3DY/KcZJDCDiu/1H5Vbg/MeDttkXLK6lZDWHzGiBeIWHN2Al7iKosBZNjSe4tfQQxguKbh1811Sl3+RcY7+3dNjcxkcQSU9uHaCx0b0Wh45G9J6qtnR08TdEMC6dSW8mueFwrrfjx4sAlME5MFlAptw2jHOAijO0w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=Py5BOV+C; arc=none smtp.client-ip=185.125.188.120
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from localhost.localdomain (unknown [10.101.196.174])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id A73813F201;
-	Thu, 29 Feb 2024 06:22:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1709187772;
-	bh=UHhKDh3X5z3R9YB/4OvFCQo1lCDQTCu4OguuN5U9shg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-	b=Py5BOV+Cq38XtZYzUo9GvgcmuwMisj8LnXjIDD/i5vu+/U4zcLKZpoOtcjTnZipRn
-	 ZlieYODemFTDxUMBkRKsTnJnHLTQTTrphiAoQV9uRsJsrWob5s6IrUML326iJOX310
-	 bsmO0FgYHDtlCVdHaEvZOy0Oqn7f29RNBCTnHMF0ahpPZkJKnSz/GV0+0ZgytzGjei
-	 sMjZya6ufrcSB+dwanpo+DMs8+9US8DJ8OFGHEhKyMObkWNFEJjMLi14DmteL5mWeA
-	 qAkrbB8wyAB5YWH8oUrDxGShDTQ1W6Vbzpo8MersXgQg5yDzk6m8fTsp7a/5C2hpVO
-	 QHvgj+LP3rpOg==
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
-To: gregkh@linuxfoundation.org,
-	rafael@kernel.org,
-	bhelgaas@google.com
-Cc: linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Kai-Heng Feng <kai.heng.feng@canonical.com>,
-	Ricky Wu <ricky_wu@realtek.com>,
-	Kees Cook <keescook@chromium.org>,
-	Tony Luck <tony.luck@intel.com>,
-	"Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-	linux-hardening@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH v3] driver core: Cancel scheduled pm_runtime_idle() on device removal
-Date: Thu, 29 Feb 2024 14:22:00 +0800
-Message-Id: <20240229062201.49500-1-kai.heng.feng@canonical.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D54F92E415;
+	Thu, 29 Feb 2024 06:22:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.87
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709187777; cv=fail; b=J2YbikFk5OvJFvxi/aPrCkG3G8xf+ZE3/3Ysy9bUQWhOX0NoNYuHSnqQAOgOuUsVOV1lP1OQUmPCIeFlpI1Bgn7VYpryigxPEmzYvr5UC+GN6E6inuIRaw6a3pybh7weHYSbdWmEApxfgp+am6SMAC1VLUJxn/9M/SWiwK10oGk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709187777; c=relaxed/simple;
+	bh=RVbikJl+sHQ/i0PajLBdOzeS7lLhV7wty90TnUqhRgI=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=e6E4+HqMzTCI2kyq1rOSLCSfxpp9Z+cEKQYb+K5lRfjG8sLoQiLKuHojicpchZe3lRYDIVkeLkQdKUeZTKPAJdHoxnAKMYRiqwWU9lWl7FrrFgQJC2CESI2MZdGC1Ao5HycdyF3Y0mbpQRAPmaaxEKXUFjpyRQmTv1g4D0IZPy8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=nHcUIb2u; arc=fail smtp.client-ip=40.107.220.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JIXLLxtau59TL2TlE7dZUjfhv8LKHB9BdSZCmDKT5rqv9Xeci3Mt6nocLvfhXFnIOvdILu4uY5OLrbfzjJlob6hB/Va/+3p/VMMeIz7gI3M/NEMJ7wJww7KerPuPpIOFQpl4vNZnV93xgZF5GuDP3k/3T0Ec3iKESk+67UwI9ajBoi84lteylY2q1Fh/KOohHxcyxw07p/XIq9Q1JwxXS8gXND3QQ7EUkSuBYazVLhvJXwVLXNK8ciQtCpwvPr3+gi4JolEea47yuoJX75QO2C/7ZvxQA2C+ZAey4Gr79GPzskjuEqBHi8Bg2jAnLeK93Pj+VxOQegqzX4sY6yXTAw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=GREByrcmPJ1umQ89Kz0166OzFwUmSCBN0U7GUNxqByk=;
+ b=ZfiRCzPukp0veq+zxAbl5oX7iSgQ0WKQaTeldUs+RjFEWfouW8/mrWVItriOt326UoWKPBeYkekXbPiiag0C+XaVIq+jotSaBdnLl1KLQCtfMaf2dHl3qIreUM+8fmpUnm0C0CMnP/JXMEkXuLLgF4OSdU7kMTk8Vi7ugBas2F9//OC/S87QXyOpXYF1ZtnLsyCEiVuADmhMAgEDnvthweNxXkORUiJla0NdXSZpRP+D+mdcMM7S3BlSyGm5BPEQUHaVqIEX/wacQ/hjl1Mp2QbATZ7LRIgljL+LfBZUGyIwN+DLbaUOuXGsFgjeSfTL0lTbKIJlWJYfiziDdo+8yA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GREByrcmPJ1umQ89Kz0166OzFwUmSCBN0U7GUNxqByk=;
+ b=nHcUIb2uD3yD0ZnrIUoTA5q78vbffIJLg6zMa9oSn8pPslOlumEYOYd9oRzaU3NVVhmF4nvFpSF3XTYUqxgstnplUlGbYSf123tmGKENxSn8xgD3r9Y/50YCRX69VO3w4tqNyoTkv9jBEZZL5LM9G4JyF3Z/ALt7ZYf+ZNVU6Fg=
+Received: from CY5PR19CA0053.namprd19.prod.outlook.com (2603:10b6:930:1a::30)
+ by PH7PR12MB9202.namprd12.prod.outlook.com (2603:10b6:510:2ef::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.39; Thu, 29 Feb
+ 2024 06:22:52 +0000
+Received: from CY4PEPF0000EE33.namprd05.prod.outlook.com
+ (2603:10b6:930:1a:cafe::2c) by CY5PR19CA0053.outlook.office365.com
+ (2603:10b6:930:1a::30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.28 via Frontend
+ Transport; Thu, 29 Feb 2024 06:22:51 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CY4PEPF0000EE33.mail.protection.outlook.com (10.167.242.39) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7292.25 via Frontend Transport; Thu, 29 Feb 2024 06:22:51 +0000
+Received: from titanite-d354host.amd.com (10.180.168.240) by
+ SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 29 Feb 2024 00:22:50 -0600
+From: Avadhut Naik <avadhut.naik@amd.com>
+To: <linux-acpi@vger.kernel.org>
+CC: <rafael@kernel.org>, <lenb@kernel.org>, <james.morse@arm.com>,
+	<tony.luck@intel.com>, <bp@alien8.de>, <linux-kernel@vger.kernel.org>,
+	<yazen.ghannam@amd.com>, <avadnaik@amd.com>
+Subject: [PATCH v4] ACPI: APEI: Skip initialization of GHES_ASSIST structures for Machine Check Architecture
+Date: Thu, 29 Feb 2024 00:22:45 -0600
+Message-ID: <20240229062245.2723548-1-avadhut.naik@amd.com>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -68,118 +83,179 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE33:EE_|PH7PR12MB9202:EE_
+X-MS-Office365-Filtering-Correlation-Id: c3408d4c-8fa1-44d6-b320-08dc38eedb9a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	SlixrivOAus2KmaN7rhtT8331x5EykIh8KdfukyD4AOOgfiiOQTRynEfeea5ZztfRDxtG87Xs/gYGm3R4WZPgWrRfJtckJSwp8AJgc+JxGRQiTUg6bYHQcRM3vuV6y0JTT2h/oAwy8gQLsUy8xURgRYVbLv8rV9N0di6ymkrU3DS4Ue59EGzKSn2JA3JBGmyJsoUYnHcAskdvEhH3IwfoqzpAfSsur+swbBLSNEC00TXUGLdi1tXMXomsjLmpx8bpbSHV/0QCcFWi4CZ54ZtfX8Vk+x4OZtIHGqAkf8dhmlsmxpQzWphwZA9rhQs7AkywImXh47YSApIuoIzhOwNokTfFIXD1ErtjOqDNTOgoI4CgCZ+YCEYDED7fdiqHjWKhdTef/uAMZlQEgxZ254KnQFxHRIA0CXTUQ3aOL1rnTqWk3r0I0g0/F0uA82fdZYL5MioJYTV+SQkNi4hXfTT5EvxGP35vtJsEIRHmLIlNrykvgGzcenB8sYkZSyrj5bSAOzzqzGC9n7wmBTKVmZYvIQiG53mthIG6ObUzt01cfbSVBjYb5gpQpneLsaFcyWF2Xjm6QmnApOCSd6UfnAyRQ+T75TssOK78chtXPH8HbimTU4lTmLP7ZoKTbltz4XMLqMV0QCnWB5qAF6fh4e581gRhqmkSGLtIjtT+nf1cLI2k4OjGjcXZq6v2ri5U66Q9RAYIi8iHbGaDDDsI6ZoXSsInQYDAQ+mwcBr/YBYNjqf94PVs0dI0VCrHKpS17Oe
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(82310400014);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Feb 2024 06:22:51.6550
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: c3408d4c-8fa1-44d6-b320-08dc38eedb9a
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CY4PEPF0000EE33.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB9202
 
-When inserting an SD7.0 card to Realtek card reader, the card reader
-unplugs itself and morph into a NVMe device. The slot Link down on hot
-unplugged can cause the following error:
+To support GHES_ASSIST on Machine Check Architecture (MCA) error sources,
+a set of GHES structures is provided by the system firmware for each MCA
+error source. Each of these sets consists of a GHES structure for each MCA
+bank on each logical CPU, with all structures of a set sharing a common
+Related Source ID, equal to the Source ID of one of the MCA error source
+structures.[1] On SOCs with large core counts, this typically equates to
+tens of thousands of GHES_ASSIST structures for MCA under
+"/sys/bus/platform/drivers/GHES".
 
-pcieport 0000:00:1c.0: pciehp: Slot(8): Link Down
-BUG: unable to handle page fault for address: ffffb24d403e5010
-PGD 100000067 P4D 100000067 PUD 1001fe067 PMD 100d97067 PTE 0
-Oops: 0000 [#1] PREEMPT SMP PTI
-CPU: 3 PID: 534 Comm: kworker/3:10 Not tainted 6.4.0 #6
-Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.M./H370M Pro4, BI=
-OS P3.40 10/25/2018
-Workqueue: pm pm_runtime_work
-RIP: 0010:ioread32+0x2e/0x70
-Code: ff 03 00 77 25 48 81 ff 00 00 01 00 77 14 8b 15 08 d9 54 01 b8 ff ff =
-ff ff 85 d2 75 14 c3 cc cc cc cc 89 fa ed c3 cc cc cc cc <8b> 07 c3 cc cc c=
-c cc 55 83 ea 01 48 89 fe 48 c7 c7 98 6f 15 99 48
-RSP: 0018:ffffb24d40a5bd78 EFLAGS: 00010296
-RAX: ffffb24d403e5000 RBX: 0000000000000152 RCX: 000000000000007f
-RDX: 000000000000ff00 RSI: ffffb24d403e5010 RDI: ffffb24d403e5010
-RBP: ffffb24d40a5bd98 R08: ffffb24d403e5010 R09: 0000000000000000
-R10: ffff9074cd95e7f4 R11: 0000000000000003 R12: 000000000000007f
-R13: ffff9074e1a68c00 R14: ffff9074e1a68d00 R15: 0000000000009003
-FS:  0000000000000000(0000) GS:ffff90752a180000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffb24d403e5010 CR3: 0000000152832006 CR4: 00000000003706e0
-Call Trace:
- <TASK>
- ? show_regs+0x68/0x70
- ? __die_body+0x20/0x70
- ? __die+0x2b/0x40
- ? page_fault_oops+0x160/0x480
- ? search_bpf_extables+0x63/0x90
- ? ioread32+0x2e/0x70
- ? search_exception_tables+0x5f/0x70
- ? kernelmode_fixup_or_oops+0xa2/0x120
- ? __bad_area_nosemaphore+0x179/0x230
- ? bad_area_nosemaphore+0x16/0x20
- ? do_kern_addr_fault+0x8b/0xa0
- ? exc_page_fault+0xe5/0x180
- ? asm_exc_page_fault+0x27/0x30
- ? ioread32+0x2e/0x70
- ? rtsx_pci_write_register+0x5b/0x90 [rtsx_pci]
- rtsx_set_l1off_sub+0x1c/0x30 [rtsx_pci]
- rts5261_set_l1off_cfg_sub_d0+0x36/0x40 [rtsx_pci]
- rtsx_pci_runtime_idle+0xc7/0x160 [rtsx_pci]
- ? __pfx_pci_pm_runtime_idle+0x10/0x10
- pci_pm_runtime_idle+0x34/0x70
- rpm_idle+0xc4/0x2b0
- pm_runtime_work+0x93/0xc0
- process_one_work+0x21a/0x430
- worker_thread+0x4a/0x3c0
- ? __pfx_worker_thread+0x10/0x10
- kthread+0x106/0x140
- ? __pfx_kthread+0x10/0x10
- ret_from_fork+0x29/0x50
- </TASK>
-Modules linked in: nvme nvme_core snd_hda_codec_hdmi snd_sof_pci_intel_cnl =
-snd_sof_intel_hda_common snd_hda_codec_realtek snd_hda_codec_generic snd_so=
-c_hdac_hda soundwire_intel ledtrig_audio nls_iso8859_1 soundwire_generic_al=
-location soundwire_cadence snd_sof_intel_hda_mlink snd_sof_intel_hda snd_so=
-f_pci snd_sof_xtensa_dsp snd_sof snd_sof_utils snd_hda_ext_core snd_soc_acp=
-i_intel_match snd_soc_acpi soundwire_bus snd_soc_core snd_compress ac97_bus=
- snd_pcm_dmaengine snd_hda_intel i915 snd_intel_dspcfg snd_intel_sdw_acpi i=
-ntel_rapl_msr snd_hda_codec intel_rapl_common snd_hda_core x86_pkg_temp_the=
-rmal intel_powerclamp snd_hwdep coretemp snd_pcm kvm_intel drm_buddy ttm me=
-i_hdcp kvm drm_display_helper snd_seq_midi snd_seq_midi_event cec crct10dif=
-_pclmul ghash_clmulni_intel sha512_ssse3 aesni_intel crypto_simd rc_core cr=
-yptd rapl snd_rawmidi drm_kms_helper binfmt_misc intel_cstate i2c_algo_bit =
-joydev snd_seq snd_seq_device syscopyarea wmi_bmof snd_timer sysfillrect in=
-put_leds snd ee1004 sysimgblt mei_me soundcore
- mei intel_pch_thermal mac_hid acpi_tad acpi_pad sch_fq_codel msr parport_p=
-c ppdev lp ramoops drm parport reed_solomon efi_pstore ip_tables x_tables a=
-utofs4 hid_generic usbhid hid rtsx_pci_sdmmc crc32_pclmul ahci e1000e i2c_i=
-801 i2c_smbus rtsx_pci xhci_pci libahci xhci_pci_renesas video wmi
-CR2: ffffb24d403e5010
----[ end trace 0000000000000000 ]---
+Support for GHES_ASSIST however, hasn't been implemented in the kernel. As
+such, the information provided through these structures is not consumed by
+Linux. Moreover, these GHES_ASSIST structures for MCA, which are supposed
+to provide supplemental information in context of an error reported by
+hardware, are setup as independent error sources by the kernel during HEST
+initialization.
 
-This happens because scheduled pm_runtime_idle() is not cancelled.
+Additionally, if the Type field of the Notification structure, associated
+with these GHES_ASSIST structures for MCA, is set to Polled, the kernel
+sets up a timer for each individual structure. The duration of the timer
+is derived from the Poll Interval field of the Notification structure. On
+SOCs with high core counts, this will result in tens of thousands of
+timers expiring periodically causing unnecessary preemptions and wastage
+of CPU cycles. The problem will particularly intensify if Poll Interval
+duration is not sufficiently high.
 
-So before releasing the device, stop all runtime power managements by
-using pm_runtime_barrier() to fix the issue.
+Since GHES_ASSIST support is not present in kernel, skip initialization
+of GHES_ASSIST structures for MCA to eliminate their performance impact.
 
-Link: https://lore.kernel.org/all/2ce258f371234b1f8a1a470d5488d00e@realtek.=
-com/
-Cc: Ricky Wu <ricky_wu@realtek.com>
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+[1] ACPI specification 6.5, section 18.7
+
+Signed-off-by: Avadhut Naik <avadhut.naik@amd.com>
+Reviewed-by: Yazen Ghannam <yazen.ghannam@amd.com>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
 ---
-v3:
-  Move the change the device driver core.
-=20
-v2:
-  Cover more cases than just pciehp.
+Changes in v2:
+1. Since is_ghes_assist_struct() returns if any of the conditions is hit
+if-else-if chain is redundant. Replace it with just if statements.
+2. Fix formatting errors.
+3. Add Reviewed-by: Yazen Ghannam <yazen.ghannam@amd.com>
 
- drivers/base/dd.c | 1 +
- 1 file changed, 1 insertion(+)
+Changes in v3:
+1. Modify structure (mces) comment, per Tony's recommendation, to better
+reflect the structure's usage.
 
-diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-index 85152537dbf1..38c815e2b3a2 100644
---- a/drivers/base/dd.c
-+++ b/drivers/base/dd.c
-@@ -1244,6 +1244,7 @@ static void __device_release_driver(struct device *de=
-v, struct device *parent)
-=20
- 	drv =3D dev->driver;
- 	if (drv) {
-+		pm_runtime_barrier(dev);
- 		pm_runtime_get_sync(dev);
-=20
- 		while (device_links_busy(dev)) {
---=20
+Changes in v4:
+1. No changes within the patch. Just sending out to gather more attention.
+2. Add Reviewed-by: Tony Luck <tony.luck@intel.com>
+---
+ drivers/acpi/apei/hest.c | 51 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 51 insertions(+)
+
+diff --git a/drivers/acpi/apei/hest.c b/drivers/acpi/apei/hest.c
+index 6aef1ee5e1bd..20d757687e3d 100644
+--- a/drivers/acpi/apei/hest.c
++++ b/drivers/acpi/apei/hest.c
+@@ -37,6 +37,20 @@ EXPORT_SYMBOL_GPL(hest_disable);
+ 
+ static struct acpi_table_hest *__read_mostly hest_tab;
+ 
++/*
++ * Since GHES_ASSIST is not supported, skip initialization of GHES_ASSIST
++ * structures for MCA.
++ * During HEST parsing, detected MCA error sources are cached from early
++ * table entries so that the Flags and Source Id fields from these cached
++ * values are then referred to in later table entries to determine if the
++ * encountered GHES_ASSIST structure should be initialized.
++ */
++static struct {
++	struct acpi_hest_ia_corrected *cmc;
++	struct acpi_hest_ia_machine_check *mc;
++	struct acpi_hest_ia_deferred_check *dmc;
++} mces;
++
+ static const int hest_esrc_len_tab[ACPI_HEST_TYPE_RESERVED] = {
+ 	[ACPI_HEST_TYPE_IA32_CHECK] = -1,	/* need further calculation */
+ 	[ACPI_HEST_TYPE_IA32_CORRECTED_CHECK] = -1,
+@@ -70,22 +84,54 @@ static int hest_esrc_len(struct acpi_hest_header *hest_hdr)
+ 		cmc = (struct acpi_hest_ia_corrected *)hest_hdr;
+ 		len = sizeof(*cmc) + cmc->num_hardware_banks *
+ 			sizeof(struct acpi_hest_ia_error_bank);
++		mces.cmc = cmc;
+ 	} else if (hest_type == ACPI_HEST_TYPE_IA32_CHECK) {
+ 		struct acpi_hest_ia_machine_check *mc;
+ 		mc = (struct acpi_hest_ia_machine_check *)hest_hdr;
+ 		len = sizeof(*mc) + mc->num_hardware_banks *
+ 			sizeof(struct acpi_hest_ia_error_bank);
++		mces.mc = mc;
+ 	} else if (hest_type == ACPI_HEST_TYPE_IA32_DEFERRED_CHECK) {
+ 		struct acpi_hest_ia_deferred_check *mc;
+ 		mc = (struct acpi_hest_ia_deferred_check *)hest_hdr;
+ 		len = sizeof(*mc) + mc->num_hardware_banks *
+ 			sizeof(struct acpi_hest_ia_error_bank);
++		mces.dmc = mc;
+ 	}
+ 	BUG_ON(len == -1);
+ 
+ 	return len;
+ };
+ 
++/*
++ * GHES and GHESv2 structures share the same format, starting from
++ * Source Id and ending in Error Status Block Length (inclusive).
++ */
++static bool is_ghes_assist_struct(struct acpi_hest_header *hest_hdr)
++{
++	struct acpi_hest_generic *ghes;
++	u16 related_source_id;
++
++	if (hest_hdr->type != ACPI_HEST_TYPE_GENERIC_ERROR &&
++	    hest_hdr->type != ACPI_HEST_TYPE_GENERIC_ERROR_V2)
++		return false;
++
++	ghes = (struct acpi_hest_generic *)hest_hdr;
++	related_source_id = ghes->related_source_id;
++
++	if (mces.cmc && mces.cmc->flags & ACPI_HEST_GHES_ASSIST &&
++	    related_source_id == mces.cmc->header.source_id)
++		return true;
++	if (mces.mc && mces.mc->flags & ACPI_HEST_GHES_ASSIST &&
++	    related_source_id == mces.mc->header.source_id)
++		return true;
++	if (mces.dmc && mces.dmc->flags & ACPI_HEST_GHES_ASSIST &&
++	    related_source_id == mces.dmc->header.source_id)
++		return true;
++
++	return false;
++}
++
+ typedef int (*apei_hest_func_t)(struct acpi_hest_header *hest_hdr, void *data);
+ 
+ static int apei_hest_parse(apei_hest_func_t func, void *data)
+@@ -114,6 +160,11 @@ static int apei_hest_parse(apei_hest_func_t func, void *data)
+ 			return -EINVAL;
+ 		}
+ 
++		if (is_ghes_assist_struct(hest_hdr)) {
++			hest_hdr = (void *)hest_hdr + len;
++			continue;
++		}
++
+ 		rc = func(hest_hdr, data);
+ 		if (rc)
+ 			return rc;
+
+base-commit: 07a90c3d91505e44a38e74e1588b304131ad8028
+-- 
 2.34.1
 
 
