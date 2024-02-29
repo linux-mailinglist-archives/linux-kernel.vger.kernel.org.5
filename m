@@ -1,149 +1,228 @@
-Return-Path: <linux-kernel+bounces-86514-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86515-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FD5086C66B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:09:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA5A486C66D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:09:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A56EF1F21486
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:09:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 005B71C22B7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:09:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0A396341B;
-	Thu, 29 Feb 2024 10:09:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE74064A9A;
+	Thu, 29 Feb 2024 10:09:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Kr0FBfpg"
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="GYPJkjo7"
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C49B562805
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 10:09:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B42B634FC;
+	Thu, 29 Feb 2024 10:09:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709201344; cv=none; b=GXwkfWgLv0J4Re5iRg4olt1EtXazPY19ElAzSKTyEPWar2ZryYDeiJiqG+FCD9r6XKg5Vs9zi3rZ4tefoBuxZ7+NCoTWQ6EvLUOsFGdy9W9X41c2/H/wyuKxH2UE1KGJI2V+28LECB9PY4Qc4zekLIP5c8kcXiYF7fYCNuv4m/k=
+	t=1709201347; cv=none; b=qfkdeZIkRsADxlEMvAlnYJrgAFa2+xbMt2xnp/SP+2qpY/zRKEVCEo3e/mbZrg07GQ4n6JIpx1Rd7oFH+SYl00AtR8qNIEzKvVAJKHlL98I49A/wCfEcsrMxd0tAm7Wc9seqcryRqb7Iisdn/hglDugUJcYylwTvU15si2zc3RE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709201344; c=relaxed/simple;
-	bh=TaJ1vIO6c48ourx3qLmNDyG/UNK2kz8FQnWudKrG3+U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YTq3f4rPiLgBIVQY7NxzE0TnAKbRV7rVLuOHw4jwb0dHbZs9KZTtH8IjQad9p+T21Gp29AerI7hCu74Q4svxfAiZg8bMPOt2uhiNQxfYygPrPvQsL4ModYdoteLnNqQHArYOkBAnKRYXuV21HMMGWLlUtByMu5GIt6kgVfhDNys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Kr0FBfpg; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6e48eef8be5so467656b3a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 02:09:02 -0800 (PST)
+	s=arc-20240116; t=1709201347; c=relaxed/simple;
+	bh=to0pqzDR7LrhVm0qSi41jiJVSNT18v1OXQ6F3rRfJmw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=c07PRwhCxzLtHtGrjAgxemkSaDh53WkbsZUuqLxCduoGP7b06xDvhw3o7HK3ro6kANV/VLWmVwep2nXKtuJbtxQ7AgKfVagSkak72WevZpxwMLFTIL+TMwxj5F/rhtrlQkAcaxpVaoNPbom106Y2er78UHL2ET2p/G2mSh+AMHc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=GYPJkjo7; arc=none smtp.client-ip=93.104.207.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709201342; x=1709806142; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=D/kwhfPvnRW9V0TZ9Zxmbl7MMjclgSBvckKEZL8M5Jw=;
-        b=Kr0FBfpgQFwAksr4glLYr1po7XztJ4d3WiN/XQKeiKy7ZI7vrH7PRXpNvwV1sUm78F
-         5QRdKcc83wqfs2PEa9T/T/B5aVr0bJnjgTt3KNEgWjibzVuoLd9K4VQUFSbVKQflUOo8
-         7U77G18fDLs7SiNfL/5QR5WRPNF2mlSC4UF9ZmfQPex93E+MAxGQOCg/kB811VGkbki9
-         HyGjnixmJ4u5spe42djvFy1Qi11txaZjyoY61dln3fVlpsAnZuSq6BhIbJSLU6rOGoix
-         eQjRMXAXJdQrCq5FlruVE+KvkUAt0lGtyL9PsGv1LG3pDb71kpT88DCHa0FNLILKNZ8K
-         5bTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709201342; x=1709806142;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=D/kwhfPvnRW9V0TZ9Zxmbl7MMjclgSBvckKEZL8M5Jw=;
-        b=JkRiNSnAqW+mybbr5HaujSX4/Ett7FXmlEO65NuOWx5anh7iNFOBY21wQo8USwStsD
-         OHcGwY4jGyLDg0F/i2j3AP7lDYJTKudntsDA1SJOjD4t2J/x3LzdhP+oaNer4PMZ1Uv4
-         8KtFKvJyc/KAVrQz2Cmi2UnUI+4T1v2RoAGoGYfSBO9i1GH/zWhkHhN1xzxZQFFmlOeK
-         CtyymPaKTLhU/EtMFbazK1irDAhwjwiWCfq02b7vd/R7fE4L06DZlJ7kt326F+obgUyq
-         qRhblMPby68Ima+TAp6drw/K4fdZsQZFs82gCdW/xlAm/w499w8oogUxS7umcv+tTQOq
-         6lEg==
-X-Forwarded-Encrypted: i=1; AJvYcCWqsuGohVJ+prp7npVjr80iRKNQysKSuLpvuEzH+lw/IyYaKb0wLlQ5hWwt25NidR7jijqNdA+ewpz3NmE3FWpJa9yviHJgWuWprO3U
-X-Gm-Message-State: AOJu0YymH6uxiesx9HJhFvdKPMu0b2xOfxLjETLjtnPepkSnOhleWrYN
-	NOpL+rXFWv8LAn3EEzBpy08lihD8V5zbbioZQ+7txTofQynldTjaUYHsXCwNoA==
-X-Google-Smtp-Source: AGHT+IEoKjra9mFZzOPhAe+Au9fB+EVWfIlT9YQfWmQ8+50P2HzB/vOroWKiVTnfxOxLKr9CWwQkPw==
-X-Received: by 2002:a05:6a20:d907:b0:1a0:e944:15b7 with SMTP id jd7-20020a056a20d90700b001a0e94415b7mr2728509pzb.5.1709201342188;
-        Thu, 29 Feb 2024 02:09:02 -0800 (PST)
-Received: from thinkpad ([120.138.12.68])
-        by smtp.gmail.com with ESMTPSA id lc11-20020a170902fa8b00b001dc668e145asm1052267plb.200.2024.02.29.02.08.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 02:09:01 -0800 (PST)
-Date: Thu, 29 Feb 2024 15:38:53 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Johan Hovold <johan+linaro@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 00/12] arm64: dts: qcom: sc8280xp: PCIe fixes and
- GICv3 ITS enable
-Message-ID: <20240229100853.GA2999@thinkpad>
-References: <20240223152124.20042-1-johan+linaro@kernel.org>
- <20240228220843.GA309344@bhelgaas>
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1709201344; x=1740737344;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=mXMDKKpauy1Jui0sKkU8gCrmH7275RH1plO5L2PIEX0=;
+  b=GYPJkjo7+SSJyUOvi1pmMSK8/SWKsqx6Xa34wkz5MxbRVGKJsAY2wEiT
+   MiTudKz5zwvaVZD2f2TYeI4aKsnNdLKQ+cPxJFSyPiuTjGtsLH8CM8Z2G
+   zjlP6uptj6328XC+de7SERFZVZbuEyWipTbNY8WPGJ66Mv03OwDnDLbQx
+   B/uGUky8gbE1e+YME4XJ9z6i1ZgBQ5Q6l1wh0RmnyROh78dxVEhLGHAkQ
+   6n4hudSfUizl2wHdmDIGLM801QeqLyxO/j2k0cegSf3YnuZ6MEnxO/u+a
+   H93yhupF7DkU+3XfHOaAJDN3/wz7sAcRwjuiLHnsqw5Yp4GOKYbib50LQ
+   g==;
+X-IronPort-AV: E=Sophos;i="6.06,194,1705359600"; 
+   d="scan'208";a="35660989"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 29 Feb 2024 11:08:56 +0100
+Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.25])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id C6BDA280071;
+	Thu, 29 Feb 2024 11:08:55 +0100 (CET)
+From: Alexander Stein <alexander.stein@ew.tq-group.com>
+To: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
+Cc: devicetree@vger.kernel.org, imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Frank Li <Frank.Li@nxp.com>, Dong Aisheng <aisheng.dong@nxp.com>, Frank Li <Frank.Li@nxp.com>
+Subject: Re: [PATCH 1/4] arm64: dts: imx8: add cm40 subsystem dtsi
+Date: Thu, 29 Feb 2024 11:08:55 +0100
+Message-ID: <8387443.NyiUUSuA9g@steina-w>
+Organization: TQ-Systems GmbH
+In-Reply-To: <20240228-m4_lpuart-v1-1-9e6947be15e7@nxp.com>
+References: <20240228-m4_lpuart-v1-0-9e6947be15e7@nxp.com> <20240228-m4_lpuart-v1-1-9e6947be15e7@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240228220843.GA309344@bhelgaas>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 
-On Wed, Feb 28, 2024 at 04:08:43PM -0600, Bjorn Helgaas wrote:
-> [+to Mani]
-> 
-> On Fri, Feb 23, 2024 at 04:21:12PM +0100, Johan Hovold wrote:
-> > This series addresses a few problems with the sc8280xp PCIe
-> > implementation.
-> > ...
-> 
-> > A recent commit enabling ASPM on certain Qualcomm platforms introduced
-> > further errors when using the Wi-Fi on the X13s as well as when
-> > accessing the NVMe on the CRD. The exact reason for this has not yet
-> > been identified, but disabling ASPM L0s makes the errors go away. This
-> > could suggest that either the current ASPM implementation is incomplete
-> > or that L0s is not supported with these devices.
-> > ...
-> 
-> > As this series fixes a regression in 6.7 (which enabled ASPM) and fixes
-> > a user-reported problem with the Wi-Fi often not starting at boot, I
-> > think we should merge this series for the 6.8 cycle. The final patch
-> > enabling the GIC ITS should wait for 6.9.
-> > 
-> > The DT bindings and PCI patch are expected to go through the PCI tree,
-> > while Bjorn A takes the devicetree updates through the Qualcomm tree.
-> > ...
-> 
-> > Johan Hovold (12):
-> >   dt-bindings: PCI: qcom: Allow 'required-opps'
-> >   dt-bindings: PCI: qcom: Do not require 'msi-map-mask'
-> >   dt-bindings: PCI: qcom: Allow 'aspm-no-l0s'
-> >   PCI: qcom: Add support for disabling ASPM L0s in devicetree
-> 
-> The ASPM patches fix a v6.7 regression, so it would be good to fix
-> that in v6.8.
-> 
-> Mani, if you are OK with them, I can add them to for-linus for v6.8.  
-> 
-> What about the 'required-opps' and 'msi-map-mask' patches?  If they're
-> important, I can merge them for v6.8, too, but it's late in the cycle
-> and it's not clear from the commit logs why they shouldn't wait for
-> v6.9.
-> 
+Hi Frank,
 
-I'm checking with Qcom HW team on the ASPM behavior. So please hold off the ASPM
-related patches until I get an answer. But 'required-opps' and 'msi-map-mask'
-patches can be applied for 6.9 (not strictly fixing anything in 6.8).
+thanks for the patch.
 
-- Mani
+Am Mittwoch, 28. Februar 2024, 20:54:57 CET schrieb Frank Li:
+> From: Dong Aisheng <aisheng.dong@nxp.com>
+>=20
+> Add cm40 subsystem dtsi.
+>=20
+> Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+>  arch/arm64/boot/dts/freescale/imx8-ss-cm40.dtsi | 67 +++++++++++++++++++=
+++++++
+>  arch/arm64/boot/dts/freescale/imx8dxl.dtsi      |  2 +
+>  arch/arm64/boot/dts/freescale/imx8qxp.dtsi      |  1 +
+>  3 files changed, 70 insertions(+)
+>=20
+> diff --git a/arch/arm64/boot/dts/freescale/imx8-ss-cm40.dtsi b/arch/arm64=
+/boot/dts/freescale/imx8-ss-cm40.dtsi
+> new file mode 100644
+> index 0000000000000..b1d626862ddf8
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/freescale/imx8-ss-cm40.dtsi
+> @@ -0,0 +1,67 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * Copyright 2019 NXP
+> + *	Dong Aisheng <aisheng.dong@nxp.com>
+> + */
+> +
+> +#include <dt-bindings/firmware/imx/rsrc.h>
+> +
+> +cm40_subsys: bus@34000000 {
+> +	compatible =3D "simple-bus";
+> +	#address-cells =3D <1>;
+> +	#size-cells =3D <1>;
+> +	ranges =3D <0x34000000 0x0 0x34000000 0x4000000>;
 
--- 
-மணிவண்ணன் சதாசிவம்
+You should set interrupt-parent =3D <&cm40_intmux> here already.
+So you can skip it for all subsequent nodes, but the cm40_intmux itself.
+
+> +
+> +	cm40_ipg_clk: clock-cm40-ipg {
+> +		compatible =3D "fixed-clock";
+> +		#clock-cells =3D <0>;
+> +		clock-frequency =3D <132000000>;
+> +		clock-output-names =3D "cm40_ipg_clk";
+> +	};
+> +
+> +	cm40_i2c: i2c@37230000 {
+> +		compatible =3D "fsl,imx8qxp-lpi2c", "fsl,imx7ulp-lpi2c";
+> +		reg =3D <0x37230000 0x1000>;
+> +		interrupts =3D <9 IRQ_TYPE_LEVEL_HIGH>;
+> +		interrupt-parent =3D <&cm40_intmux>;
+
+I personally prefer the parent to be stated first.
+
+> +		clocks =3D <&cm40_i2c_lpcg 0>,
+> +			 <&cm40_i2c_lpcg 1>;
+> +		clock-names =3D "per", "ipg";
+> +		assigned-clocks =3D <&clk IMX_SC_R_M4_0_I2C IMX_SC_PM_CLK_PER>;
+> +		assigned-clock-rates =3D <24000000>;
+> +		power-domains =3D <&pd IMX_SC_R_M4_0_I2C>;
+> +		status =3D "disabled";
+> +	};
+> +
+> +	cm40_i2c_lpcg: clock-controller@37630000 {
+
+Please sort the nodes by bus address.
+
+> +		compatible =3D "fsl,imx8qxp-lpcg";
+> +		reg =3D <0x37630000 0x1000>;
+> +		#clock-cells =3D <1>;
+> +		clocks =3D <&clk IMX_SC_R_M4_0_I2C IMX_SC_PM_CLK_PER>,
+> +			 <&cm40_ipg_clk>;
+> +		clock-indices =3D <IMX_LPCG_CLK_0>, <IMX_LPCG_CLK_4>;
+> +		clock-output-names =3D "cm40_lpcg_i2c_clk",
+> +				     "cm40_lpcg_i2c_ipg_clk";
+> +		power-domains =3D <&pd IMX_SC_R_M4_0_I2C>;
+> +	};
+> +
+> +	cm40_intmux: intmux@37400000 {
+> +		compatible =3D "fsl,imx-intmux";
+> +		reg =3D <0x37400000 0x1000>;
+> +		interrupts =3D <GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI 17 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI 19 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI 20 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI 22 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI 23 IRQ_TYPE_LEVEL_HIGH>;
+> +		interrupt-controller;
+> +		interrupt-parent =3D <&gic>;
+> +		#interrupt-cells =3D <2>;
+> +		clocks =3D <&cm40_ipg_clk>;
+> +		clock-names =3D "ipg";
+> +		power-domains =3D <&pd IMX_SC_R_M4_0_INTMUX>;
+> +		status =3D "disabled";
+> +	};
+> +};
+> diff --git a/arch/arm64/boot/dts/freescale/imx8dxl.dtsi b/arch/arm64/boot=
+/dts/freescale/imx8dxl.dtsi
+> index a0674c5c55766..9d49c75a26222 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8dxl.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8dxl.dtsi
+> @@ -5,6 +5,7 @@
+> =20
+>  #include <dt-bindings/clock/imx8-clock.h>
+>  #include <dt-bindings/dma/fsl-edma.h>
+> +#include <dt-bindings/clock/imx8-lpcg.h>
+>  #include <dt-bindings/firmware/imx/rsrc.h>
+>  #include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/interrupt-controller/arm-gic.h>
+> @@ -231,6 +232,7 @@ xtal24m: clock-xtal24m {
+>  	};
+> =20
+>  	/* sorted in register address */
+> +	#include "imx8-ss-cm40.dtsi"
+>  	#include "imx8-ss-adma.dtsi"
+>  	#include "imx8-ss-conn.dtsi"
+>  	#include "imx8-ss-ddr.dtsi"
+> diff --git a/arch/arm64/boot/dts/freescale/imx8qxp.dtsi b/arch/arm64/boot=
+/dts/freescale/imx8qxp.dtsi
+> index 10e16d84c0c3b..c49fb1282ae65 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
+> @@ -316,6 +316,7 @@ map0 {
+> =20
+>  	/* sorted in register address */
+>  	#include "imx8-ss-img.dtsi"
+> +	#include "imx8-ss-cm40.dtsi"
+
+cm40 subsystem is bus@34000000, so IMHO it should go below vpu subsystem,
+which is vpu@2c000000.
+
+Best regards,
+Alexander
+
+>  	#include "imx8-ss-vpu.dtsi"
+>  	#include "imx8-ss-gpu0.dtsi"
+>  	#include "imx8-ss-adma.dtsi"
+>=20
+>=20
+
+
+=2D-=20
+TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
+Amtsgericht M=FCnchen, HRB 105018
+Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
+http://www.tq-group.com/
+
+
 
