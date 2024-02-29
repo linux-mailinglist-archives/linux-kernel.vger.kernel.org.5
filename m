@@ -1,61 +1,73 @@
-Return-Path: <linux-kernel+bounces-86838-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86839-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D295C86CB73
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:26:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66B5B86CB75
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:27:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 106491C20FDE
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:26:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CF2C28466F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:27:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DDA8137769;
-	Thu, 29 Feb 2024 14:25:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8096C12FB1F;
+	Thu, 29 Feb 2024 14:26:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TAyZAnAW"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="E1pBneX2"
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A32DD137746
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 14:25:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD3007D077
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 14:26:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709216705; cv=none; b=heYQPKdOWC+YO4lDWt8NqklRb/wlVNfv/sEQ0uar07l7jU37N5aZEtCjcNV0Px+Inze/maS7YMnwCjLI20O/FdrRRtlYqHLEZET/4UdH7AVPCO41QpVkcM7eMkotCkBrckwzgeq9X7LYL3JdSGVpLLgZHEF2YcotJAOClWjImHQ=
+	t=1709216816; cv=none; b=TDBZfr4YfTRD4BwmpiBp38BYJrdeO26jLScgqb96UWgY7OnjJx+XqlZ/NX1xNDtSDAxgpMSFsb6hKl7KxQHFIg5j0lrJFatEipmJ7CJMAjTDEpavd2QEFuTC9aA7fMKnhxjowgwfmhjMQuCdoX07yNwChAbpGc9YH+yiDXBFZW0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709216705; c=relaxed/simple;
-	bh=N+5moBTraylCNNTWb3cy+j7uayzPyE60qSB2vr31vOY=;
+	s=arc-20240116; t=1709216816; c=relaxed/simple;
+	bh=bzjgNSKoSU8cQ4ureTNHKpEbcTPZZ48+o+gmq9XCD/g=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OX3pk+4AUI/ENJyXqv3+yi40lKIz87RESoCNi0l9jupf6ifmo4+uYnaxY4h41RdnQ8ddb970b3ZjkdqcLkxL4OQpPw0zyARfEhEy6864vPcWeujnRdPcG8dzPSGpWUZeFKj9GEQik3lvoFn2CX3fHlneHuxRhSZzDRcAbtPbxyM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TAyZAnAW; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709216701;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DGDq1NUIAIPOPbfxiL7bhWCZkKjKYVk+M07BdvjqBpI=;
-	b=TAyZAnAWQiXVXuZkbLE7+pczWJBuYT4g6tQ0PoPwt2oUNkHc7mrZeymDEDIZT0BqdslPRA
-	c/M9716gpCWEaNTEnVmn57ozvsFP/YF/eCA6+ASAvNkqZRwk8HHjGKcuzOLoBGUxh1QBCc
-	NJv+5rOUK35nFvHcQ/OE8azPhymkoZA=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-643-cGc6HtCCNtOQhgf5F6uljQ-1; Thu, 29 Feb 2024 09:24:59 -0500
-X-MC-Unique: cGc6HtCCNtOQhgf5F6uljQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DFF9B1020210;
-	Thu, 29 Feb 2024 14:24:58 +0000 (UTC)
-Received: from [10.22.8.117] (unknown [10.22.8.117])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 67CC18CED;
-	Thu, 29 Feb 2024 14:24:58 +0000 (UTC)
-Message-ID: <52f842b8-2907-4eb0-ad0a-3784d54daa12@redhat.com>
-Date: Thu, 29 Feb 2024 09:24:58 -0500
+	 In-Reply-To:Content-Type; b=WIVaEwFqk1DwKjLhYnE3/2rWPkqsS85/uFx4nBJrJZX9ZZcMs4PcaJFzbUyAflLb5NmzjIWSQ+ssd+kNtBJ3Xh5ECydELPMN8pNCxPWwRcep7C5Rt03ME6eVzaLp+pteI/7mhd9l1Mpd03BTeq/6+vFr1Wy2MoWqCDDFrmjFb4Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=E1pBneX2; arc=none smtp.client-ip=209.85.216.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-29a430c3057so678500a91.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 06:26:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1709216814; x=1709821614; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZoxsmwunD3kBPWbwwdtLfnrTSWRtrCBfDnhBS5exbak=;
+        b=E1pBneX2k/gyutOVJPwABXIT14ht7Pw+AQFNPQVVQn6GMqAXYjKo+ql84B48b+MKHm
+         EYp7v7F8UHuNeyESqIAfGcmALGLrOpxEAo8eOE8cfdm7jms5knVDypzEbIxYMD0Oa5XZ
+         0JSoBd6hijEPHwY0NN7Yw5HF1djt2Ae4Wzr8P+yRpPqc0dy/7GySyEnPe0rgPz7/TVPc
+         IyyB6hWQHK870B2ARMfBrOTtORBuJaIs0YgliEZ4XU+7UQtuFS89kv7TKmL1OOr/yqEH
+         Bz6WZQQTHX0yqJg3p+dbvPKu5ro1UvyBFJf/53+bX1/nEWRxN+G7BpcMTKjVGPH6mBro
+         Exrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709216814; x=1709821614;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZoxsmwunD3kBPWbwwdtLfnrTSWRtrCBfDnhBS5exbak=;
+        b=OHDb99ca7gYadtXi/2hTH0NW+uDWQjx7I1b2DpXUnvZfxt0NasiLdTB09UW22jtN/d
+         havZAkdSMm4tBuSOcEaKP6AXJXkmjzUkR6ZhCJATwc/Q0ml0rfcKaRzpjGTIvSWKWwCA
+         /pwaEz0C/9oEBaV9uPJKeYYVu0uYwObee3KZVn1TwJXCG+Jn+jQ32ApmDrrlBNrQKvMD
+         5DZhdWefRu7FBkCW0MNE0RsWjH9vC9Mzm26L6ujEWcKmTYV48Fgj2h80uauDQehXYkEq
+         NC6sKdYNNEsqpg1a0CVeTMVZkl8fz5jHdnu+rYtHwSHmzgTc5Ff+ub2h3UFerKT0SubL
+         TLug==
+X-Forwarded-Encrypted: i=1; AJvYcCU33buVMpAoNbbcJz8f0oXjGpfPqq1rePDuu0enb7rV9hWhe96zLg7XqmWmDSdrkUd43MucUMlIqZpcCK6zpWM/0j5aGyuxCWOIg6J+
+X-Gm-Message-State: AOJu0YwYLQkdOydQ1IiLDOv4b6nPp8WE+75WnpsB4tusoX7UbdmDVa25
+	vPT2vJqS84600X+xMEQF8kfHsa1t/rdRCBxlNzjEgfnm1hHeT2+cV3OjEemkPtU=
+X-Google-Smtp-Source: AGHT+IFDujHDEpGzcRKCpejmIx29QpyEwREP5k2f97svfF1nbqXgXYH+keTGpqWs21ToWKSj1QuiXA==
+X-Received: by 2002:a17:90a:4a15:b0:299:63ff:9c0f with SMTP id e21-20020a17090a4a1500b0029963ff9c0fmr2129502pjh.21.1709216813843;
+        Thu, 29 Feb 2024 06:26:53 -0800 (PST)
+Received: from [10.84.152.139] ([203.208.167.155])
+        by smtp.gmail.com with ESMTPSA id db12-20020a17090ad64c00b00298ca3a93f1sm3741069pjb.4.2024.02.29.06.26.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Feb 2024 06:26:53 -0800 (PST)
+Message-ID: <59585184-d13d-46e0-8d68-42838e97a702@bytedance.com>
+Date: Thu, 29 Feb 2024 22:25:30 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,52 +75,71 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] cgroup/cpuset: Fix retval in update_cpumask()
+Subject: Re: Re: [PATCH 1/4] sched/eevdf: Fix vruntime adjustment on reweight
 Content-Language: en-US
-To: Kamalesh Babulal <kamalesh.babulal@oracle.com>
-Cc: Zefan Li <lizefan.x@bytedance.com>, Tejun Heo <tj@kernel.org>,
- Tom Hromatka <tom.hromatka@oracle.com>, cgroups@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240229101116.60043-1-kamalesh.babulal@oracle.com>
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <20240229101116.60043-1-kamalesh.babulal@oracle.com>
+To: Tianchen Ding <dtcccc@linux.alibaba.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Valentin Schneider <valentin.schneider@arm.com>,
+ Barry Song <21cnbao@gmail.com>, Benjamin Segall <bsegall@google.com>,
+ Chen Yu <yu.c.chen@intel.com>, Daniel Jordan <daniel.m.jordan@oracle.com>,
+ "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+ Joel Fernandes <joel@joelfernandes.org>,
+ K Prateek Nayak <kprateek.nayak@amd.com>, Mike Galbraith <efault@gmx.de>,
+ Qais Yousef <qyousef@layalina.io>, Tim Chen <tim.c.chen@linux.intel.com>,
+ Yicong Yang <yangyicong@huawei.com>,
+ Youssef Esmat <youssefesmat@chromium.org>, linux-kernel@vger.kernel.org
+References: <c2ceff07-e1b4-4dbc-b945-f91a9076375e@linux.alibaba.com>
+From: Abel Wu <wuyun.abel@bytedance.com>
+In-Reply-To: <c2ceff07-e1b4-4dbc-b945-f91a9076375e@linux.alibaba.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
+Hi Tianchen,
 
-On 2/29/24 05:11, Kamalesh Babulal wrote:
-> The update_cpumask(), checks for newly requested cpumask by calling
-> validate_change(), which returns an error on passing an invalid set
-> of cpu(s). Independent of the error returned, update_cpumask() always
-> returns zero, suppressing the error and returning success to the user
-> on writing an invalid cpu range for a cpuset. Fix it by returning
-> retval instead, which is returned by validate_change().
->
-> Fixes: 99fe36ba6fc1 ("cgroup/cpuset: Improve temporary cpumasks handling")
-> Signed-off-by: Kamalesh Babulal <kamalesh.babulal@oracle.com>
-> ---
->   kernel/cgroup/cpuset.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index ba36c073304a..2ddbfaa4efa9 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -2562,7 +2562,7 @@ static int update_cpumask(struct cpuset *cs, struct cpuset *trialcs,
->   		update_partition_sd_lb(cs, old_prs);
->   out_free:
->   	free_cpumasks(NULL, &tmp);
-> -	return 0;
-> +	return retval;
->   }
->   
->   /**
->
-> base-commit: cf1182944c7cc9f1c21a8a44e0d29abe12527412
+On 2/29/24 5:24 PM, Tianchen Ding Wrote:
+> Hi Abel:
+> 
+> I'm not so familiar with eevdf and still learning. Here I've some questions about this patch.
+> 
+> 1. You did proof that V will not change during reweight (COROLLARY #2). However, according to the original paper, the new V will be:
+> V' = V + lag(j)/(W - w_j) - lag(j)/(W - w_j + w'_j)
+> So the V' in paper will change (when lag is not zero).
+> Is the V in Linux code slightly different from the paper?
 
-LGTM, thanks for the fix.
+Good catch. And to the best of my knowledge, the answer is YES. The
+above Equation in the paper, which is Eq. (20), is based on the
+assumption that:
 
-Reviewed-by: Waiman Long <longman@redhat.com>
+	"once client 3 leaves, the remaining two clients will
+	 proportionally support the eventual loss or gain in the
+	 service time"  -- Page 10
 
+	"by updating the virtual time according to Eq. (18,19) we
+	 ensure that the sum over the lags of all active clients
+	 is always zero"  -- Page 11
+
+But in Peter's implementation, it is the competitors in the new group
+that client 3 later joins in who actually support the effect. So when
+client 3 leaves competition with !0-lag in Linux, the rq's sum(lag_i)
+is no longer zero.
+
+> 
+> 2. I print some log around reweight_entity(), mainly want to print V by calling avg_vruntime(cfs_rq). I found your algorithm only keeps the V unchanged during reweight_eevdf(), but not reweight_entity().
+> 
+> In detail:
+> If curr is true (i.e., cfs_rq->curr == se), we will directly run reweight_eevdf(), and the V is not changed.
+> If curr is false, we will have __dequeue_entity() -> reweight_eevdf() -> __enqueue_entity(). The V is finally changed due to dequeue and enqueue. So the result of reweight_entity() will be impacted by "cfs_rq->curr == se", is this expected?
+
+Good catch again! It smells like a bug. Since this @se is still on_rq,
+it should be taken into consideration when calculating avg_runtime(),
+but in fact it isn't because __dequeue_entity() will remove its share.
+
+And I seem to spot another bug, although not relate to this problem,
+that we actually need to call update_curr() unconditionally if curr is
+available, because we need to commit curr's outstanding runtime to
+ensure the result of avg_runtime() is up to date.
+
+Thanks & BR,
+	Abel
 
