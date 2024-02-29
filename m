@@ -1,61 +1,56 @@
-Return-Path: <linux-kernel+bounces-87493-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87494-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5294486D519
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:55:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E899586D51C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:55:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D4531C227DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:55:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8183E285DD5
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:55:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62CF51504E1;
-	Thu, 29 Feb 2024 20:40:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD5AB160ED8;
+	Thu, 29 Feb 2024 20:40:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RYC6qSoA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S0tah5ck"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 949D315F149;
-	Thu, 29 Feb 2024 20:40:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A156160EC9;
+	Thu, 29 Feb 2024 20:40:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709239257; cv=none; b=jEdRmgJpQ7O8uMZonTXTh+c2oCMS/YeKkrMfJwV8RaBZHmca66omG7V8xxmSXEnFCDM0Z3xtiH/eTkdrwcc5R/rbMES9GDGlYUIp1p1LAwvCZtUkTUynISS9vdrhUxMp4/zj5u6Mhi8CMyhMn1Dd4QoKw4pNWcVJDrNlLJBtP0Y=
+	t=1709239259; cv=none; b=VqRi7ZwzOc21ejJbujJIMmpiV+7Dymsy8TUAOl7Whi3ZJQNl3Zp8weI/Ck5X2XuJnOWzAgaEYIFrYuQTCPI9HSETWsaLr5cc/k5L1+vrjL8AVvICQ5Hy7rQ5wLoUmgaYY86FA6/s9PiurdZM1YTimoYdzaMNJaXCHMTJEj1yuqA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709239257; c=relaxed/simple;
-	bh=fCm23I8sefIMiHN4Ppc70lTcvGhr+Jve9juzMu0LdPM=;
+	s=arc-20240116; t=1709239259; c=relaxed/simple;
+	bh=k5TJ/unVkkl2NEEhs0cdRZBa4hmgu0vlMRhP0EoE5UA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nVyOBcHMXVnTLScA6EKoFWcMxvCpfX+0dEo/GH8wqjq5yjdjnyKmbRK4mERGy/nZ0BfPf9rJdIHm9GwaSe8ttTlr6zUOx/8FfIghhjbK/Eb+ewvipRbQkKMwVLPL/5wLYmypTfIR/OuvmSaoY0CHQMEu8DHATtIBRe0g8w4+eHo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RYC6qSoA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E27A5C43390;
-	Thu, 29 Feb 2024 20:40:55 +0000 (UTC)
+	 MIME-Version; b=hH7xyqejn3oQRGMZTtQoza+vRe4LJsEzGzUi7VWFj5zveHNS2wheUp/lx4eutoX/eUF6zyjuZV5EpCzqum1Qnm5T9xdXK9sLfYbj5NOTLhDBmn1fXJKlZlFLwAb93+q5OeYrXQ9xsF0ek0PfozTbxlp8/6bbvO26/W+rbUeH2LQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S0tah5ck; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E262CC43390;
+	Thu, 29 Feb 2024 20:40:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709239257;
-	bh=fCm23I8sefIMiHN4Ppc70lTcvGhr+Jve9juzMu0LdPM=;
+	s=k20201202; t=1709239258;
+	bh=k5TJ/unVkkl2NEEhs0cdRZBa4hmgu0vlMRhP0EoE5UA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RYC6qSoACVgp1rwOf0YXU0IIXXxDy62bFztx7Nos22X+kbLlHn3L32O83/8fiomta
-	 +6JwLXtkgAOj3gQpmo2n1b9KWi9S+NlJBznFZHX5M3E6Orcfl6ZgMUtj1EqpqR9lIJ
-	 3Kh+NUa9XAfODDhxRv8rRxXhyGN7uhpUlTVWonh51ifD7K52sTn/9E95dAF79tzjeH
-	 KcvoxXP3xl68rs1djD9Wa2sNNKWwLRsHvy4eD3gY0ZVcMyTQ0VrzbbN6wj2Q89NJgh
-	 PNwXT2LD2JuYPc9dlZBjwLHDtUgCIAV/0ZvyDx5EvlQZ1QPZJRvRVjd/CiAhZp0ubs
-	 5zriKstLPD58Q==
+	b=S0tah5ckOS0lTUbFyfYVQSbdqrKhvhFZBb+BXp5XPjHUJNbHNmOPUDe6NMXvNkwg3
+	 r7bgDFoLj7fWs2KLXifO7ZbsdDXReLYeLHw36gwUe6w0CNrGTUMrqjo/G+v3TpvLGe
+	 1/o3Cbp3+Vzjc6WBx+tJBfVZa/TJSxIYAxPracyS2qdxf0OHvmb08rtIecNtrFBdLZ
+	 1YXME0JOj8VIagzo6yTsx2hT8SCfr6QOG3pA2KnWYBZ+WdcO+jv3e6JqT+8i0I+L8a
+	 wRuXlOLzFE8dFBM2A9RBZg+boNQZ0V/r7NfzCFmxc1PFpwibcpNGrw19SgNFhokhgQ
+	 gnp7JCDQbs3mA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Kees Cook <keescook@chromium.org>,
-	"David S . Miller" <davem@davemloft.net>,
+Cc: Mikulas Patocka <mpatocka@redhat.com>,
+	Mike Snitzer <snitzer@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	benve@cisco.com,
-	satishkh@cisco.com,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	netdev@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 10/12] enic: Avoid false positive under FORTIFY_SOURCE
-Date: Thu, 29 Feb 2024 15:40:32 -0500
-Message-ID: <20240229204039.2861519-10-sashal@kernel.org>
+	agk@redhat.com,
+	dm-devel@lists.linux.dev
+Subject: [PATCH AUTOSEL 6.1 11/12] dm-verity, dm-crypt: align "struct bvec_iter" correctly
+Date: Thu, 29 Feb 2024 15:40:33 -0500
+Message-ID: <20240229204039.2861519-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240229204039.2861519-1-sashal@kernel.org>
 References: <20240229204039.2861519-1-sashal@kernel.org>
@@ -70,41 +65,69 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.79
 Content-Transfer-Encoding: 8bit
 
-From: Kees Cook <keescook@chromium.org>
+From: Mikulas Patocka <mpatocka@redhat.com>
 
-[ Upstream commit 40b9385dd8e6a0515e1c9cd06a277483556b7286 ]
+[ Upstream commit 787f1b2800464aa277236a66eb3c279535edd460 ]
 
-FORTIFY_SOURCE has been ignoring 0-sized destinations while the kernel
-code base has been converted to flexible arrays. In order to enforce
-the 0-sized destinations (e.g. with __counted_by), the remaining 0-sized
-destinations need to be handled. Unfortunately, struct vic_provinfo
-resists full conversion, as it contains a flexible array of flexible
-arrays, which is only possible with the 0-sized fake flexible array.
+"struct bvec_iter" is defined with the __packed attribute, so it is
+aligned on a single byte. On X86 (and on other architectures that support
+unaligned addresses in hardware), "struct bvec_iter" is accessed using the
+8-byte and 4-byte memory instructions, however these instructions are less
+efficient if they operate on unaligned addresses.
 
-Use unsafe_memcpy() to avoid future false positives under
-CONFIG_FORTIFY_SOURCE.
+(on RISC machines that don't have unaligned access in hardware, GCC
+generates byte-by-byte accesses that are very inefficient - see [1])
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+This commit reorders the entries in "struct dm_verity_io" and "struct
+convert_context", so that "struct bvec_iter" is aligned on 8 bytes.
+
+[1] https://lore.kernel.org/all/ZcLuWUNRZadJr0tQ@fedora/T/
+
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+Signed-off-by: Mike Snitzer <snitzer@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/cisco/enic/vnic_vic.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/md/dm-crypt.c  | 4 ++--
+ drivers/md/dm-verity.h | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/cisco/enic/vnic_vic.c b/drivers/net/ethernet/cisco/enic/vnic_vic.c
-index 20fcb20b42ede..66b5778353389 100644
---- a/drivers/net/ethernet/cisco/enic/vnic_vic.c
-+++ b/drivers/net/ethernet/cisco/enic/vnic_vic.c
-@@ -49,7 +49,8 @@ int vic_provinfo_add_tlv(struct vic_provinfo *vp, u16 type, u16 length,
+diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
+index 0e6068ee783e7..6aaf8416ef56b 100644
+--- a/drivers/md/dm-crypt.c
++++ b/drivers/md/dm-crypt.c
+@@ -52,11 +52,11 @@
+ struct convert_context {
+ 	struct completion restart;
+ 	struct bio *bio_in;
+-	struct bio *bio_out;
+ 	struct bvec_iter iter_in;
++	struct bio *bio_out;
+ 	struct bvec_iter iter_out;
+-	u64 cc_sector;
+ 	atomic_t cc_pending;
++	u64 cc_sector;
+ 	union {
+ 		struct skcipher_request *req;
+ 		struct aead_request *req_aead;
+diff --git a/drivers/md/dm-verity.h b/drivers/md/dm-verity.h
+index f3f6070084196..5265b0d9ea37c 100644
+--- a/drivers/md/dm-verity.h
++++ b/drivers/md/dm-verity.h
+@@ -76,12 +76,12 @@ struct dm_verity_io {
+ 	/* original value of bio->bi_end_io */
+ 	bio_end_io_t *orig_bi_end_io;
  
- 	tlv->type = htons(type);
- 	tlv->length = htons(length);
--	memcpy(tlv->value, value, length);
-+	unsafe_memcpy(tlv->value, value, length,
-+		      /* Flexible array of flexible arrays */);
++	struct bvec_iter iter;
++
+ 	sector_t block;
+ 	unsigned int n_blocks;
+ 	bool in_tasklet;
  
- 	vp->num_tlvs = htonl(ntohl(vp->num_tlvs) + 1);
- 	vp->length = htonl(ntohl(vp->length) +
+-	struct bvec_iter iter;
+-
+ 	struct work_struct work;
+ 
+ 	/*
 -- 
 2.43.0
 
