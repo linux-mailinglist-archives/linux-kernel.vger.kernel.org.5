@@ -1,141 +1,112 @@
-Return-Path: <linux-kernel+bounces-86736-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86737-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8B1786C9DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:11:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9890486C9DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:12:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 566F01F21684
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:11:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53373284CEB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:12:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 814407E10E;
-	Thu, 29 Feb 2024 13:11:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 466F17E11B;
+	Thu, 29 Feb 2024 13:12:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DcMO1HHt"
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MzyuMOsF"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C80F97E0F9
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 13:11:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 835717E108;
+	Thu, 29 Feb 2024 13:12:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709212305; cv=none; b=Z4Y/CholFhwqmAiUC8Qx1WGId1nAtOPpvM/rM4PiQGv4iOYfnfQKvT/afszVhmSCrUWTckrg4G4B4j4H99I50COVcRW6HuxJkuJnq1iNyotvmNXMnQ/KJH5Bm47FJe+kECEOl/LW9VO407jua/3pM9jLPB8QtgE8/OY3zgh3ukQ=
+	t=1709212326; cv=none; b=oZAduC8aWOUpNIg0XOugUP5lZID5AyzsRjDZtRYd2hzEN98K7TkkJSRlwpSLXn512f8oB7V4iSxwcvu2RV4SGwdv+Fqz9mfnctG192qbhfRGmX1Zd+zjniCXMZcIdh04qJ8l70ajA55xtTI70+KnrE3anZXEgUGKLMqXOyN9yHA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709212305; c=relaxed/simple;
-	bh=lQEzSztbGwuMcXFF6UoVbrUM+PR6UEuexVzSDmGCcRI=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=rmhPgD4oJdwp87ex8mqlrc2QwUbPI4SK7CALS0IhE73SZOcuRC2kSFupsXrKuYYmmF5cZpVcbBosQT/RxBmRC9O4XDn9dHAQBS0FFupm27p6x5pOMl2Ql94ntxu5KzfceSd0XRKqbhh8w8E9EW8VY3ssNJWmv5NB2YnNtQbDfQA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=DcMO1HHt; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-412aec2505dso6328075e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 05:11:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709212301; x=1709817101; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Lg2hnToVZ/EBQAxgZOoEwHDmIEWKGQv1sU1Wb9UKAB0=;
-        b=DcMO1HHtRTX6QJOoTLOMlxgbshExarEF6zmAzlNZGW6Ffw38fZMv4hBvFm2heWxTex
-         ZNz/Y5/703WBmemRR4ODRgRIiXn5ruW+KkqY72++NnNAaLw+ioexydWpGR16diwu0rBH
-         XaDeJdL1cmWr/6uJLudpP5gjbt7OWWI4ufPrbfmMMb67IcJwILxPG08OLsWEL+bS7VQK
-         vg/ZKg7dK12DrmpDLSXEnUuGtJUcePyubOGU4IDsWVe5aqa0cNZF+kadi5A/u3zLGwYy
-         SI6/Hy4AJ/Hxq0Cn1V5v/n0a8GnQ+j4dalvUTtYCYpwF8vtPDlDp4Wb8aMfbMEp9mq02
-         tWDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709212301; x=1709817101;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Lg2hnToVZ/EBQAxgZOoEwHDmIEWKGQv1sU1Wb9UKAB0=;
-        b=EWE0daHQQl5dHnov+meKRF6IQ61cBrnmNOItIQf/Nujxqe0P3kSX/7PYgH4LEHyVmu
-         H3ME63KE/DJUbmdbObROjhJNqvj0D6hSReoApdtOmll4Wu1P+fGSZ4+1HthersCeJ0tL
-         NLXv/Th1hWNOocjkAgWXZfmuBDWRhzO31kDXu7qb+n4ejohWAfZmLW0lEIWZXsTARYdw
-         qU+jYz3/+OqamRcXHV0lGpA+uKjcgoQKzLgDtN8r5ncALtU1QC2nv88E/VzKsmfeYllE
-         2f7LwpdO0oh6Q/mUc5oIjguOz7BJeh1zz2fJb/pwSJRg544C9XgFghu4eRuGFmlvNLOK
-         jWwg==
-X-Forwarded-Encrypted: i=1; AJvYcCX0eeYawAadsfoKN0l56EtndfhfeH+Ii08f99hvavBMwhPO4FSOR/hIaXrzyoEp2U9+viC9TfXE1/cOY1hJ7kj+KPY8Hf/kScgVPpE0
-X-Gm-Message-State: AOJu0Yy8n0RBeePjpOgLmBbTe5B0QUYWFuxo8MOry+d80rzb0fdryQ3t
-	BRCjPkr8XlbLONHntY4h/jNuz/6Tmj9tcxtpu3Dvyni/GW+Vj5J9gP1TPhsj60o=
-X-Google-Smtp-Source: AGHT+IHo6JyA2wmSz5Sf2SkJPUbSX5WC3VJIKq8+L2nyxU86/uGcghVzDXPtXTd9UjeiMZU/E3gBug==
-X-Received: by 2002:a05:600c:4587:b0:412:bdc1:d0f9 with SMTP id r7-20020a05600c458700b00412bdc1d0f9mr1300832wmo.38.1709212301127;
-        Thu, 29 Feb 2024 05:11:41 -0800 (PST)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id jp21-20020a05600c559500b004126101915esm5165227wmb.4.2024.02.29.05.11.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 05:11:40 -0800 (PST)
-Date: Thu, 29 Feb 2024 16:11:36 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Shravan Kumar Ramani <shravankr@nvidia.com>
-Cc: Hans de Goede <hdegoede@redhat.com>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Vadim Pasternak <vadimp@nvidia.com>,
-	platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org
-Subject: [PATCH] platform/mellanox: mlxbf-pmc: fix signedness bugs
-Message-ID: <a4af764e-990b-4ebd-b342-852844374032@moroto.mountain>
+	s=arc-20240116; t=1709212326; c=relaxed/simple;
+	bh=S2JXTl32YEuY1PDCJSwXgJ30YBV0RjOa23Q9t+6tBIk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VyDV1Vrfz/Fbk2f06M4BnfnaFlwS0Z2NZzy8dbEsQFOwswpMbuZYOJtF1X/vh1twFa75LEZEjgidqcc/s7G74HdZm2QZdFj9D7wmVpY6gvyHDae3WpTjVT/fmuemwFQW5iwRDUJV5JG4ieVLM8X0LdOAMRxEGKFpZla21snWB3Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MzyuMOsF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87AFAC433C7;
+	Thu, 29 Feb 2024 13:12:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709212326;
+	bh=S2JXTl32YEuY1PDCJSwXgJ30YBV0RjOa23Q9t+6tBIk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=MzyuMOsFQo69++Xy8sFsWI3XRB2G3WY2jrazH4uGPmS/QzihYQrHiasSVa368Ykfn
+	 BswLd97BnvxWkgvjmE9hcFE+IfqaljRrms0g5oLg3EXZkaYA4mE1APc6TssCT7EKoh
+	 14RMiEkBG+XvCiRFbHVnluuYknAO3q8hGJxTI48X6vEBFOt7C6JzSV8Q5X9Ye69s4y
+	 2KC43y5z/j4XBeBsq5hE5KHzOijVfc26JZP5LYLZdIbcby20pHmXGPyTUAqWfzbtez
+	 BAmgaWD5hi5ERHojhek7hhUan/PcLMHgYgF8CNQgLaiOTt0d55QScv8aFNgSY8mLS9
+	 6i+MmAxq+ZhLw==
+Date: Thu, 29 Feb 2024 13:12:00 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Sean Christopherson <seanjc@google.com>
+Cc: Thomas Huth <thuth@redhat.com>, kvm@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Andrew Jones <ajones@ventanamicro.com>,
+	Marc Zyngier <maz@kernel.org>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	Aishwarya TCV <aishwarya.tcv@arm.com>
+Subject: Re: [PATCH v3 3/8] KVM: selftests: Move setting a vCPU's entry point
+ to a dedicated API
+Message-ID: <9de8ab51-48ef-4377-8ae1-d84bc8488747@sirena.org.uk>
+References: <20240208204844.119326-1-thuth@redhat.com>
+ <20240208204844.119326-4-thuth@redhat.com>
+ <501ac94d-11ab-4765-a25d-75013c021be6@sirena.org.uk>
+ <Zd-JjBNCpFG5iDul@google.com>
+ <Zd-jdAtI_C_d_fp4@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="RZvqkvqzp8xe3gFv"
+Content-Disposition: inline
+In-Reply-To: <Zd-jdAtI_C_d_fp4@google.com>
+X-Cookie: Marriage is the sole cause of divorce.
+
+
+--RZvqkvqzp8xe3gFv
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
+Content-Transfer-Encoding: quoted-printable
 
-These need to be signed for the error handling to work.  The
-mlxbf_pmc_get_event_num() function returns int so int type is correct.
+On Wed, Feb 28, 2024 at 01:19:48PM -0800, Sean Christopherson wrote:
 
-Fixes: 1ae9ffd303c2 ("platform/mellanox: mlxbf-pmc: Cleanup signed/unsigned mix-up")
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
----
-The code in mlxbf_pmc_valid_range() has a check for negatives but that
-has a signedness bug too.  Fortunately "(u32)-EINVAL + 8" will not
-result in an integer overflow so the offset is treated as invalid.
+> @@ -386,6 +386,7 @@ static struct kvm_vcpu *__aarch64_vcpu_add(struct kvm=
+_vm *vm, uint32_t vcpu_id,
+>         aarch64_vcpu_setup(vcpu, init);
+> =20
+>         vcpu_set_reg(vcpu, ARM64_CORE_REG(sp_el1), stack_vaddr + stack_si=
+ze);
+> +       return vcpu;
+>  }
+> =20
+>  struct kvm_vcpu *aarch64_vcpu_add(struct kvm_vm *vm, uint32_t vcpu_id,
+>=20
+> I'll squash the above and force push.
 
- drivers/platform/mellanox/mlxbf-pmc.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+Confirmed that this fixes the originally reported issue.
 
-diff --git a/drivers/platform/mellanox/mlxbf-pmc.c b/drivers/platform/mellanox/mlxbf-pmc.c
-index 250405bb59a7..bc91423c96b9 100644
---- a/drivers/platform/mellanox/mlxbf-pmc.c
-+++ b/drivers/platform/mellanox/mlxbf-pmc.c
-@@ -1496,8 +1496,9 @@ static ssize_t mlxbf_pmc_counter_show(struct device *dev,
- {
- 	struct mlxbf_pmc_attribute *attr_counter = container_of(
- 		attr, struct mlxbf_pmc_attribute, dev_attr);
--	unsigned int blk_num, cnt_num, offset;
-+	unsigned int blk_num, cnt_num;
- 	bool is_l3 = false;
-+	int offset;
- 	u64 value;
- 
- 	blk_num = attr_counter->nr;
-@@ -1530,9 +1531,10 @@ static ssize_t mlxbf_pmc_counter_store(struct device *dev,
- {
- 	struct mlxbf_pmc_attribute *attr_counter = container_of(
- 		attr, struct mlxbf_pmc_attribute, dev_attr);
--	unsigned int blk_num, cnt_num, offset, data;
-+	unsigned int blk_num, cnt_num, data;
- 	bool is_l3 = false;
- 	u64 evt_num;
-+	int offset;
- 	int err;
- 
- 	blk_num = attr_counter->nr;
-@@ -1612,8 +1614,9 @@ static ssize_t mlxbf_pmc_event_store(struct device *dev,
- {
- 	struct mlxbf_pmc_attribute *attr_event = container_of(
- 		attr, struct mlxbf_pmc_attribute, dev_attr);
--	unsigned int blk_num, cnt_num, evt_num;
-+	unsigned int blk_num, cnt_num;
- 	bool is_l3 = false;
-+	int evt_num;
- 	int err;
- 
- 	blk_num = attr_event->nr;
--- 
-2.43.0
+--RZvqkvqzp8xe3gFv
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXggp8ACgkQJNaLcl1U
+h9C6zgf+P8pQLInGOUy0s8LJ/t462LYP5YG9G9fwpErOQMfHbQdbXOvmV6uDSX+y
+VTfC3vSh/DclihVoYk2JOzP9HrirYQ6VLiUaEkZ/Yg7+9tADpmkxwrVjjSZcVm65
+s7YxCSK8oafLNboCJ62Do6ucUCtXioaDUQTg6DswlCAkBoEWUaywNiwHjJoej/ai
+M0zRRq8dGYicuWDJamB7UB7ahlhsd5H9fBHbaCqtzNxt9eFaF0ScKOSS/bFXmxwP
+aDQAtqoVnkg+sn7i3wEAHsg5+TplThn03AJ30L+AeuBZrIQBhsujGWi0K2uUSpVL
+FzsvwIMz0GkRoBJBxF1KNcxxQZ746A==
+=Vvkt
+-----END PGP SIGNATURE-----
+
+--RZvqkvqzp8xe3gFv--
 
