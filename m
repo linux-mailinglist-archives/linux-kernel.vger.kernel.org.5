@@ -1,62 +1,65 @@
-Return-Path: <linux-kernel+bounces-87466-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87467-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6A1586D4C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:48:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0269F86D4C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:48:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C80B01C22187
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:48:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E71781C221E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:48:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A993615AAC5;
-	Thu, 29 Feb 2024 20:39:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B5B514402B;
+	Thu, 29 Feb 2024 20:39:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HPnApAQf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tDXjuP66"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE43C14402B;
-	Thu, 29 Feb 2024 20:39:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E0D415AADE;
+	Thu, 29 Feb 2024 20:39:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709239190; cv=none; b=CFbZwrR6emJ6GOH6chnvVFcBM1W0cZahvr38B+Lu6cXLkG46du1JrVpj3YT5YdJZxoCjn2UB+wW6XeWt7ZBtpIay2qRoy88DYZUjKkJIZqd695oxGzl5k+IPFB3dUj1RWznleU1ZQzyBVtJCI6s1X1fPrDZdR056mSOjpwTiuyo=
+	t=1709239192; cv=none; b=hkZlgWrF1SIu0TlJ4uyhHRfnH25cLAsXt7RAUgNjzWFKr85SoJn8WIgbwjPMMBqPkQWazliXOcRgdcncXsbbNnbwaclKw0lv0ZgPsOR/xPz9WIfZT/RckU3pyOgNDLYO9fzT3fvY23ECipDzNLgVZ2/iikx6B+xcI0/eeS3cOfQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709239190; c=relaxed/simple;
-	bh=du2aFlm+xs0pTQLEJ971wtsOkmAlatVJgbY9t73ZhnI=;
+	s=arc-20240116; t=1709239192; c=relaxed/simple;
+	bh=Vo3k/UgoRrmyUGzlldwCCqinbenvGMIr4yM+BJI4MQQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=IrlXR4IMY2Zlg4Zv5/GHJZ7u8ym1eyfIlFFKOsBiG4tKyIL5S9MG2/1pVDOTV55L0Hx7WwXV6Qa5OTDduF56ZFu9W18IwFSfQrfUh7EoK9Kd14iqbNPJpPzr5xKYmU/aXzz0msqwl1QVfvK8edxC1eS8b7waZCuI7+aAGvIwINk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HPnApAQf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37C2BC433C7;
-	Thu, 29 Feb 2024 20:39:48 +0000 (UTC)
+	 MIME-Version; b=SaD9TVmj1se/v/MspJNKyVR4jiELo524t4INwkHhBbNMWxqXF8imONPb3zuDv80MuUi589NCIeoUA5WBqHk0sQ3H+oSkcA7N81X7kiwvCq0XY98riiiEYfsrCt7LYdnscvHrTcCQoVujZ8HYY7LLzQMguUxrwWS7g2RnPuZz7/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tDXjuP66; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58CA1C433B1;
+	Thu, 29 Feb 2024 20:39:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709239189;
-	bh=du2aFlm+xs0pTQLEJ971wtsOkmAlatVJgbY9t73ZhnI=;
+	s=k20201202; t=1709239192;
+	bh=Vo3k/UgoRrmyUGzlldwCCqinbenvGMIr4yM+BJI4MQQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=HPnApAQfkXgZKnOOfKBhvt5f08XpOzHThJEb+BMNqxwguOPtfSuWwCpwlcJjsXY49
-	 mMotL08HUHgcs/nGDXGmQMP0QzKHED62fDK2N2R4+x25YmJfZ2AiU6intBaDS1EfOr
-	 z/hX3iMYqMx04qlkdXuG0NGkVuiz/7yd8f1AZ4pFQ0zZ8cstxyXPAmJ8b1qQMPUC8H
-	 fYtuQw8020rWsz2eP/N9GGAXZ/Ki2/4XmUREqZ7k9H1m1C22DKEbUj11/aqLALfuKf
-	 u+aXiL+A0blmPkZl/Brcq3Oml647A2zZitnFAxh7Jhd4B6ES8ifwoBnximGCHThMQk
-	 3xQnivzahBREg==
+	b=tDXjuP660O0g7DUB7/MSdlfNaB0OMbNWWgBSQBSq8Fiboilan1jLEhRMJXZ5rUswB
+	 MPUhDpOrUd9jBK+TOjBB1KjkLyAEF80tYGS597+3uJaKcteJ3PYQzPV1YATD8pAObY
+	 MLrIvB68so0GRGn+EiHktcOKgM1sKQm15aEZum4AoMm3FwJg63OoROqpWoLoyz9oFl
+	 WdAnlZgg/8T69TqDmvwacEeQ/PE3qsS85y+p7isI74I352m3a+YP34Q6JGOWcwsavI
+	 0OenL3lWhHLqhffP9Xskmc3sVls/2DBwd/19EHOXhyDqlrVN/ISyxilAKOMAHewMYQ
+	 RyY6HNpJbATeQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Hou Tao <houtao1@huawei.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	syzbot+72aa0161922eba61b50e@syzkaller.appspotmail.com,
+	xingwei lee <xrivendell7@gmail.com>,
 	Sohil Mehta <sohil.mehta@intel.com>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	tglx@linutronix.de,
+	dave.hansen@linux.intel.com,
+	luto@kernel.org,
+	peterz@infradead.org,
 	mingo@redhat.com,
 	bp@alien8.de,
-	dave.hansen@linux.intel.com,
 	x86@kernel.org,
-	luto@kernel.org,
-	peterz@infradead.org
-Subject: [PATCH AUTOSEL 6.6 07/22] x86/mm: Move is_vsyscall_vaddr() into asm/vsyscall.h
-Date: Thu, 29 Feb 2024 15:39:00 -0500
-Message-ID: <20240229203933.2861006-7-sashal@kernel.org>
+	bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 08/22] x86/mm: Disallow vsyscall page read for copy_from_kernel_nofault()
+Date: Thu, 29 Feb 2024 15:39:01 -0500
+Message-ID: <20240229203933.2861006-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240229203933.2861006-1-sashal@kernel.org>
 References: <20240229203933.2861006-1-sashal@kernel.org>
@@ -73,67 +76,96 @@ Content-Transfer-Encoding: 8bit
 
 From: Hou Tao <houtao1@huawei.com>
 
-[ Upstream commit ee0e39a63b78849f8abbef268b13e4838569f646 ]
+[ Upstream commit 32019c659ecfe1d92e3bf9fcdfbb11a7c70acd58 ]
 
-Move is_vsyscall_vaddr() into asm/vsyscall.h to make it available for
-copy_from_kernel_nofault_allowed() in arch/x86/mm/maccess.c.
+When trying to use copy_from_kernel_nofault() to read vsyscall page
+through a bpf program, the following oops was reported:
 
-Reviewed-by: Sohil Mehta <sohil.mehta@intel.com>
+  BUG: unable to handle page fault for address: ffffffffff600000
+  #PF: supervisor read access in kernel mode
+  #PF: error_code(0x0000) - not-present page
+  PGD 3231067 P4D 3231067 PUD 3233067 PMD 3235067 PTE 0
+  Oops: 0000 [#1] PREEMPT SMP PTI
+  CPU: 1 PID: 20390 Comm: test_progs ...... 6.7.0+ #58
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996) ......
+  RIP: 0010:copy_from_kernel_nofault+0x6f/0x110
+  ......
+  Call Trace:
+   <TASK>
+   ? copy_from_kernel_nofault+0x6f/0x110
+   bpf_probe_read_kernel+0x1d/0x50
+   bpf_prog_2061065e56845f08_do_probe_read+0x51/0x8d
+   trace_call_bpf+0xc5/0x1c0
+   perf_call_bpf_enter.isra.0+0x69/0xb0
+   perf_syscall_enter+0x13e/0x200
+   syscall_trace_enter+0x188/0x1c0
+   do_syscall_64+0xb5/0xe0
+   entry_SYSCALL_64_after_hwframe+0x6e/0x76
+   </TASK>
+  ......
+  ---[ end trace 0000000000000000 ]---
+
+The oops is triggered when:
+
+1) A bpf program uses bpf_probe_read_kernel() to read from the vsyscall
+page and invokes copy_from_kernel_nofault() which in turn calls
+__get_user_asm().
+
+2) Because the vsyscall page address is not readable from kernel space,
+a page fault exception is triggered accordingly.
+
+3) handle_page_fault() considers the vsyscall page address as a user
+space address instead of a kernel space address. This results in the
+fix-up setup by bpf not being applied and a page_fault_oops() is invoked
+due to SMAP.
+
+Considering handle_page_fault() has already considered the vsyscall page
+address as a userspace address, fix the problem by disallowing vsyscall
+page read for copy_from_kernel_nofault().
+
+Originally-by: Thomas Gleixner <tglx@linutronix.de>
+Reported-by: syzbot+72aa0161922eba61b50e@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/bpf/CAG48ez06TZft=ATH1qh2c5mpS5BT8UakwNkzi6nvK5_djC-4Nw@mail.gmail.com
+Reported-by: xingwei lee <xrivendell7@gmail.com>
+Closes: https://lore.kernel.org/bpf/CABOYnLynjBoFZOf3Z4BhaZkc5hx_kHfsjiW+UWLoB=w33LvScw@mail.gmail.com
 Signed-off-by: Hou Tao <houtao1@huawei.com>
-Link: https://lore.kernel.org/r/20240202103935.3154011-2-houtao@huaweicloud.com
+Reviewed-by: Sohil Mehta <sohil.mehta@intel.com>
+Acked-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20240202103935.3154011-3-houtao@huaweicloud.com
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/include/asm/vsyscall.h | 10 ++++++++++
- arch/x86/mm/fault.c             |  9 ---------
- 2 files changed, 10 insertions(+), 9 deletions(-)
+ arch/x86/mm/maccess.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/arch/x86/include/asm/vsyscall.h b/arch/x86/include/asm/vsyscall.h
-index ab60a71a8dcb9..472f0263dbc61 100644
---- a/arch/x86/include/asm/vsyscall.h
-+++ b/arch/x86/include/asm/vsyscall.h
-@@ -4,6 +4,7 @@
+diff --git a/arch/x86/mm/maccess.c b/arch/x86/mm/maccess.c
+index 6993f026adec9..42115ac079cfe 100644
+--- a/arch/x86/mm/maccess.c
++++ b/arch/x86/mm/maccess.c
+@@ -3,6 +3,8 @@
+ #include <linux/uaccess.h>
+ #include <linux/kernel.h>
  
- #include <linux/seqlock.h>
- #include <uapi/asm/vsyscall.h>
-+#include <asm/page_types.h>
- 
- #ifdef CONFIG_X86_VSYSCALL_EMULATION
- extern void map_vsyscall(void);
-@@ -24,4 +25,13 @@ static inline bool emulate_vsyscall(unsigned long error_code,
- }
- #endif
- 
-+/*
-+ * The (legacy) vsyscall page is the long page in the kernel portion
-+ * of the address space that has user-accessible permissions.
-+ */
-+static inline bool is_vsyscall_vaddr(unsigned long vaddr)
-+{
-+	return unlikely((vaddr & PAGE_MASK) == VSYSCALL_ADDR);
-+}
++#include <asm/vsyscall.h>
 +
- #endif /* _ASM_X86_VSYSCALL_H */
-diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-index ab778eac19520..a9d69ec994b75 100644
---- a/arch/x86/mm/fault.c
-+++ b/arch/x86/mm/fault.c
-@@ -798,15 +798,6 @@ show_signal_msg(struct pt_regs *regs, unsigned long error_code,
- 	show_opcodes(regs, loglvl);
- }
+ #ifdef CONFIG_X86_64
+ bool copy_from_kernel_nofault_allowed(const void *unsafe_src, size_t size)
+ {
+@@ -15,6 +17,14 @@ bool copy_from_kernel_nofault_allowed(const void *unsafe_src, size_t size)
+ 	if (vaddr < TASK_SIZE_MAX + PAGE_SIZE)
+ 		return false;
  
--/*
-- * The (legacy) vsyscall page is the long page in the kernel portion
-- * of the address space that has user-accessible permissions.
-- */
--static bool is_vsyscall_vaddr(unsigned long vaddr)
--{
--	return unlikely((vaddr & PAGE_MASK) == VSYSCALL_ADDR);
--}
--
- static void
- __bad_area_nosemaphore(struct pt_regs *regs, unsigned long error_code,
- 		       unsigned long address, u32 pkey, int si_code)
++	/*
++	 * Reading from the vsyscall page may cause an unhandled fault in
++	 * certain cases.  Though it is at an address above TASK_SIZE_MAX, it is
++	 * usually considered as a user space address.
++	 */
++	if (is_vsyscall_vaddr(vaddr))
++		return false;
++
+ 	/*
+ 	 * Allow everything during early boot before 'x86_virt_bits'
+ 	 * is initialized.  Needed for instruction decoding in early
 -- 
 2.43.0
 
