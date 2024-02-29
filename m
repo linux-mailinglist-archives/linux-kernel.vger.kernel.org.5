@@ -1,128 +1,114 @@
-Return-Path: <linux-kernel+bounces-86021-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86023-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D38B86BEA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 02:58:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3637086BEA8
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 02:59:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3EC031C2262C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:58:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 681CD1C22F5A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:59:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D26F36AEC;
-	Thu, 29 Feb 2024 01:58:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFDFC364B1;
+	Thu, 29 Feb 2024 01:59:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ppqXCoRE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RZ0pvQSl"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EDAE22F13;
-	Thu, 29 Feb 2024 01:58:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2B2036AF2;
+	Thu, 29 Feb 2024 01:59:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709171901; cv=none; b=Nzwn9DQccp2zTIfSUGPvlYLa9LhSNdtZPEqzcakfhMXkhW8y/EAtlamB1ZryIiBd3Rhy8b1Pzfxs+FsXr6Y1/yI+hOY/0EnmOkOsGGenRTgxBvheUcMw7fSFrYpR+zpJHsmtbZOveCYnMp/NFpRI0dctnFTuUrvkcVSjn8anSKk=
+	t=1709171954; cv=none; b=X+Jk16v/hkQ+EpHeCzyiQXqaf4jA64wTiYr+IVGeJj3fBtCRRIjQaxcYB2hFsVWMaa9gEvI9KBKczf8vNhZ4e14gJ1RrQTgYOGvxtuHJenZlHCDEGh7oEMepyV1xRz7AeqIkXZuM+ojhPvmbX51SzY93QDJcGu4/mO+c9+OlIhw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709171901; c=relaxed/simple;
-	bh=J41cmZC7bQsegjax8yQD7VpQyLCqWbWDH7KNEl/+hnA=;
-	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
-	 Subject:From:Cc:To:Date; b=fJcPiULOL6XtkqMIZYuliMpJLnoZBM68KYSEmWVt4oanbEx2tHgURsqltv9sw5pIqD3v7kV/0rl0llffcB4O+WL8PtD0v4mypy/GjGdmuFzQx0/aa3SP8VBz6u/mlotndiJu1kr36iNb4LNKisjaL7I3atHSBtGvNaQY1HSAlJ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ppqXCoRE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEE00C433F1;
-	Thu, 29 Feb 2024 01:58:20 +0000 (UTC)
+	s=arc-20240116; t=1709171954; c=relaxed/simple;
+	bh=qCUF4ZiJ/WUEdYewRqWljvO+xUTWXzcWRS3iZxX10/c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lrWsqNoKhs4VatD3qvdfALLRkdvbWKsvzw5EeZEcGDAW+Q3tCmfjTvTOj79F4+UtemMxmR6jQa9rKgTARLBImaQv6pVZgoqtBWx7Yi1jjUSwUmcoAk701L9DheRdWIs7/imiPrJYJbm2LjWLLi9xjrdU266ffW5TZ8b01r4GiXY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RZ0pvQSl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86682C433F1;
+	Thu, 29 Feb 2024 01:59:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709171900;
-	bh=J41cmZC7bQsegjax8yQD7VpQyLCqWbWDH7KNEl/+hnA=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=ppqXCoRECb8qXQoHJV/NedfjPoAvUrCzaLZWrdv36y63x9YACBjE83Eip0svG9PBf
-	 lngFZh81/sv5eDP0xqh+DP9e55gJN9nUSINtJ7SDCGddGHywnAG9VF9O9sfnwpDvc2
-	 0DApIgUKBUF6iPHDCAtlJ1DK0gKip1voMF7pZ86nP9sOb7kjkWPfHqhxj77yh/sBOa
-	 2q3EsdbMQVAEfZwDuQMVAuuZpDuJzOJC7kxaTC+BIP9+j/2B1z4PTHwh0CN0xmeuIJ
-	 TCfGVBP7w7kadNgohRjctolPlhaclQhNnuqOvYyBZN1Hfa5EWDb+GWJwCmuxqzHi7B
-	 1OW1E2HfMn97A==
-Message-ID: <0db752d31016823ccd3799925255a74a.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1709171953;
+	bh=qCUF4ZiJ/WUEdYewRqWljvO+xUTWXzcWRS3iZxX10/c=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=RZ0pvQSlAPxwedBHuaikZ+HTmSfix/qT5zJS52KOPE3INtIoFKe+DKzBmIEojzsud
+	 L7F/1LIYwEtucCYDTqmpVmuD1J4dpkvvNsYrmyLz+0iZ7UqG9WoAoGUFSlR3Hrj38H
+	 repSzw+nJGOwH1nUeygy37F43qqx0+uu0vsm073j2uHXtsAxRf5hn+VE5e1W3sS0hl
+	 vbwhAZDyzftr28d9Ib/8AReJbl03HvJtC+CY3tOfUUcXgnPGMFwHF1yhu4E3Yf4cmw
+	 5qcpTmTptnyc/tC27QkAQ0IP+Z3qEG+j5bAL62xbbBYgyTFhqNSyyPdjMhP+h0ImPN
+	 5Q9BE6W4haJrg==
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-5131a9b3d5bso344093e87.0;
+        Wed, 28 Feb 2024 17:59:13 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVgL8EJtI+2adPPpwZa5Q7PvGBotnkIXTkMRB3vatPjUvT0vzZQ2DQgv1q7lgWfc/wa6bDldADTVvkcnzXihAaqKk3kKNwk6JJyRl2e
+X-Gm-Message-State: AOJu0YySFzY/ou9NuPNoWWN0Y6X81l9FyhSXbP41x8eBT1ZnbLPEfGdl
+	H2kPrJq1Ee7s3vGTdY2CHCIE1kD8qrdHyugkOQFlYUNgTb3jrrN/HWMyzUxmhXlcvgV1gAepI3o
+	zxFs0lleUNHDKjgpluLL74Q1m1no=
+X-Google-Smtp-Source: AGHT+IGoAeg4nTUz5td/qqnZ3Wy3kX0L5UJIJyywFprzNK5dvnX0pLiYznRExSB/H6H7E4LE17Tp8oDd7b7P/8fpCT0=
+X-Received: by 2002:ac2:5e2f:0:b0:513:2508:7b2d with SMTP id
+ o15-20020ac25e2f000000b0051325087b2dmr266304lfg.42.1709171952095; Wed, 28 Feb
+ 2024 17:59:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240228060006.13274-1-tfiga@chromium.org>
+In-Reply-To: <20240228060006.13274-1-tfiga@chromium.org>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Thu, 29 Feb 2024 10:58:35 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASjnwOcybuag62LkCQZGg73Dpa--jkfgtnB-r1Z=2Xqsw@mail.gmail.com>
+Message-ID: <CAK7LNASjnwOcybuag62LkCQZGg73Dpa--jkfgtnB-r1Z=2Xqsw@mail.gmail.com>
+Subject: Re: [PATCH v2] kconfig: menuconfig: Make hidden options show with
+ different color
+To: Tomasz Figa <tfiga@chromium.org>
+Cc: linux-kbuild@vger.kernel.org, Nicolas Schier <n.schier@avm.de>, 
+	linux-kernel@vger.kernel.org, Jesse Taube <Mr.Bossman075@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20240224-mux-v1-1-608cc704ef43@outlook.com>
-References: <20240224-mux-v1-1-608cc704ef43@outlook.com>
-Subject: Re: [PATCH RESEND] clk: set initial best mux parent to current parent when determining rate
-From: Stephen Boyd <sboyd@kernel.org>
-Cc: linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, Yang Xiwen <forbidden405@outlook.com>
-To: Michael Turquette <mturquette@baylibre.com>, Yang Xiwen via B4 Relay <devnull+forbidden405.outlook.com@kernel.org>, forbidden405@outlook.com
-Date: Wed, 28 Feb 2024 17:58:18 -0800
-User-Agent: alot/0.10
 
-Quoting Yang Xiwen via B4 Relay (2024-02-23 09:18:52)
-> From: Yang Xiwen <forbidden405@outlook.com>
->=20
-> Originally, the initial clock rate is hardcoded to 0, this can lead to
-> some problem when setting a very small rate with CLK_MUX_ROUND_NEAREST.
-
-Did you mean CLK_MUX_ROUND_CLOSEST?
-
->=20
-> For example, if the lowest possible rate privided by the mux is 1000Hz,
-
-s/privided/provided/
-
-> setting a rate below 500Hz will fail, because no clock can provide a
-> better rate than the non-existant 0. But it should succeed with 1000Hz
-> being set.
->=20
-> Setting the initial best parent to current parent could solve this bug
-> very well.
->=20
-> Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
+On Wed, Feb 28, 2024 at 3:00=E2=80=AFPM Tomasz Figa <tfiga@chromium.org> wr=
+ote:
+>
+> When hidden options are toggled on (using 'z'), the number of options
+> on the screen can be overwhelming and may make it hard to distinguish
+> between available and hidden ones. Make them easier to distinguish by
+> displaying the hidden one with a different color (COLOR_YELLOW for color
+> themes and A_DIM for mono).
+>
+> Signed-off-by: Tomasz Figa <tfiga@chromium.org>
 > ---
-> This is actually a v2 of [1], but seems too simple to have a unittest.
-> It's tested in a mmc host driver.
 
-It's not too simple for a unittest.
 
->=20
-> [1]: https://lore.kernel.org/linux-clk/20230421-clk-v3-1-9ff79e7e7fed@out=
-look.com/
+> diff --git a/scripts/kconfig/lxdialog/util.c b/scripts/kconfig/lxdialog/u=
+til.c
+> index 3f78fb265136..161224dd6fb5 100644
+> --- a/scripts/kconfig/lxdialog/util.c
+> +++ b/scripts/kconfig/lxdialog/util.c
+> @@ -38,6 +38,8 @@ static void set_mono_theme(void)
+>         dlg.menubox_border.atr =3D A_NORMAL;
+>         dlg.item.atr =3D A_NORMAL;
+>         dlg.item_selected.atr =3D A_REVERSE;
+> +       dlg.item_hidden.atr =3D A_NORMAL | A_DIM;
 
-In that thread I asked you to please Cc Maxime. Please do that.
 
-> ---
->  drivers/clk/clk.c | 4 ++++
->  1 file changed, 4 insertions(+)
->=20
-> diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-> index 2253c154a824..d98cebd7ff03 100644
-> --- a/drivers/clk/clk.c
-> +++ b/drivers/clk/clk.c
-> @@ -649,6 +649,10 @@ int clk_mux_determine_rate_flags(struct clk_hw *hw,
-> =20
->         /* find the parent that can provide the fastest rate <=3D rate */
->         num_parents =3D core->num_parents;
-> +       if (core->parent) {
-> +               best_parent =3D core->parent;
-> +               best =3D clk_core_get_rate_nolock(best_parent);
-> +       }
+Nit.
 
-Is the problem that we're not using abs_diff()?
 
-----8<----
-diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-index a3bc7fb90d0f..91023345595f 100644
---- a/drivers/clk/clk.c
-+++ b/drivers/clk/clk.c
-@@ -542,7 +542,7 @@ static bool mux_is_better_rate(unsigned long rate, unsi=
-gned long now,
- 			   unsigned long best, unsigned long flags)
- {
- 	if (flags & CLK_MUX_ROUND_CLOSEST)
--		return abs(now - rate) < abs(best - rate);
-+		return abs_diff(now, rate) < abs_diff(best, rate);
-=20
- 	return now <=3D rate && now > best;
- }
+(A_NORMAL | A_DIM) should be A_DIM.
+
+
+A_NORMAL is zero.
+
+Other A_* attributes are bit flags that can be OR'ed.
+
+
+
+
+--
+Best Regards
+Masahiro Yamada
 
