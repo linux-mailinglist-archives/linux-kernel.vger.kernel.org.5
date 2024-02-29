@@ -1,430 +1,173 @@
-Return-Path: <linux-kernel+bounces-87658-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87659-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1415986D713
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 23:55:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07E4986D718
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 23:57:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4B5BBB22236
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:55:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B7421C216C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:57:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6BE445948;
-	Thu, 29 Feb 2024 22:54:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7DE274BE0;
+	Thu, 29 Feb 2024 22:57:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="pJLd0YIF"
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ddn.com header.i=@ddn.com header.b="Wcd9sWB6"
+Received: from outbound-ip168b.ess.barracuda.com (outbound-ip168b.ess.barracuda.com [209.222.82.102])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEB9A16FF51
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 22:54:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709247290; cv=none; b=iOZvBWCkj0TPJVmuShVZRlrB053lPPaXlgz2q/TVfI0+7Ict3qlhWX0nTdn+IXuQODYF0/TMZxeBlGc8p7fcIKLolsK6kbxcZyztwe88rdn8HwOV9yzXHEQrYxFyjGyC3Jr0d2J9LTXOtoNi43b+JKNe4zdZ9SWAEb0CM+lQjFo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709247290; c=relaxed/simple;
-	bh=BzE9TtJXw0OT2ctsGuF95nCD3XyMd/gwzOIC9DeYU9M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=frACu2ce8IbsLyQjAcoDESSVi4sm+cVuuAhg25Ltu7StpVdPu+6Ry0MM0P7sooYrupBUwZEpELA5O82poA4HshhEMvakH+Iuiub67qFTg2oTvHyM30+/wKcgfxbx7Bc/MnExnMQuNr7kjIYdG9+LyeMl/OcVhn5frhl46iVpKQc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pJLd0YIF; arc=none smtp.client-ip=209.85.160.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-42ec412cafdso12121cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 14:54:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709247287; x=1709852087; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JX/J+zkh43A2orxP0xrWTQKrggtmjMs6UPrRYq8Gb98=;
-        b=pJLd0YIFIpvAceYD17Q+0/Shqq1nq8Iy3yCUMkoHw8fBqt0SsdH/2AaI7Kd+sF+Wg9
-         wF0aqR9WUIQu8x3BJNTZ6RAGO+UFLglFP8p9TXy1PBZKhJBWv+PKacUMHqs+yPe1Q8uD
-         3Ee8xreJSqw02fCi047g97uSLNy4K+XqEHS/4CdW4nhaTtJevKf1gyvXrS9azTxpq4v2
-         nJt3379eR5qJwSNAFqnmkaF6QQ6ieBbGENeUGzYHbw4nrJqaYYPZq16tTwx5jCbEfTFk
-         3LmXUbyaYivGkuEFZ05G/eYjqSfGwhI0C0hKe3FpAGI+ejmgvycp16fr+pstyIltWQn3
-         S3gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709247287; x=1709852087;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JX/J+zkh43A2orxP0xrWTQKrggtmjMs6UPrRYq8Gb98=;
-        b=gRBKqTC9HKk3nl9ClgyCHTvgL0CZRXdziyq/kgfKLEcJ3AjqfgMjud+BjfbwdQrDAt
-         ZRusEAd7QC+/wkBzvAh+FnHFudhchL2XppD3T0uuCqXAdznPyPAf3322MGWZYgLs9G1/
-         nf6eYXNwK1kmeMJ+/to+kn28DB9+n1uf+ZWXVlXFJkrCpOTQYoqgv5zNKlBOD/ronc+Q
-         vWGllOvWVqsjAtYoQ7fOnkmaB3vPl4nqcgeIPo+zLy2EY4/2zTpL8XjQAnO85O4aCScw
-         h9WdMsCw4KYK+/E1OW6Q+ijA1adgE9toAEN2vf1nbzmsJUMlGVjwdTPjJUHBpypOIzPE
-         5CCg==
-X-Forwarded-Encrypted: i=1; AJvYcCUPH1CG2qzMz6AFExgm/P4ar+OKZx7/VJIXBbKIuD9DcwqaOD1qnrktMtFiAtuwms30ajm+t3K57UvlfrbRDc8JfHjkadwYuCSOzRMp
-X-Gm-Message-State: AOJu0YyffTPoIcucYnphG2gTLVgGJBx/X0H6EuEMSkFa50yvc9A2bX4W
-	jYod7R2AbjZTbfWVSH4Az4UJNaZIFTNCgD7L+Dth3CsxnYxPDnOkUU1PRGQ0UqOdgWEz5W7kMsf
-	kZytFhD29bTE2dxhzGPLJYUQcGsLhW2gcMCGD
-X-Google-Smtp-Source: AGHT+IEOvoF7/kpM84OCXfzuF8A0OL2YCdxY9gR0t1QHdHGse+BvDX8iygl9ABpbBt/oCG2T8+/rabifwnpvmcjJ3sQ=
-X-Received: by 2002:ac8:542:0:b0:42e:b6c4:f33a with SMTP id
- c2-20020ac80542000000b0042eb6c4f33amr12820qth.19.1709247287378; Thu, 29 Feb
- 2024 14:54:47 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9CCD200CD;
+	Thu, 29 Feb 2024 22:56:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=209.222.82.102
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709247420; cv=fail; b=FPVw/PUmjiwoKzOiHozuNAn3NLoSqpUN1RaSNebOsWNxoe6Kk826H3xbrwsNqdtBfkWlUoU7FDmF3il7QmmP8FaIWXeek4f7Bd2XvvWExHmsvJTdPjPjHlg6XxAbnxpIVxtPR1COtbrhcNikBteOeb89kYLyYan7O7aat6ER8v4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709247420; c=relaxed/simple;
+	bh=nMSWRaaz/HFQYLPWTr+1+xX1xbxfh9oQOziqH+PXaAQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=G+ls7Y1VAFc4FrNzOvBpjGVekLxbmBSdMIW/Xz9Tc3fmfs7uOqjM3Ic9O87foHKYn866UaD/6+ku2SY7M/CAlAdqS+xvkseoaDum4nCiihgJx0oaeLvBtMAsPtvWqh5LBKZ/+Nbz3TI7n9i87OCR1Xyp/ea86T6XU82NohsKj2w=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ddn.com; spf=pass smtp.mailfrom=ddn.com; dkim=pass (1024-bit key) header.d=ddn.com header.i=@ddn.com header.b=Wcd9sWB6; arc=fail smtp.client-ip=209.222.82.102
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ddn.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ddn.com
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2101.outbound.protection.outlook.com [104.47.58.101]) by mx-outbound45-215.us-east-2c.ess.aws.cudaops.com (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO); Thu, 29 Feb 2024 22:56:39 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YAuxL8QIt3mbWHd0kh7ejHdlicELwBaxOc4jtmG42OUzyCm4yKEeyv1aqKAJWySIPkqiS224PcsvwKMD4dgN0mTSm/aJfVPrhkRVUf4JJ4SEYthiwlFbiEE5ZBMl2RrEYzn8ifkaRyx2No1OdAcVxrOGM+zc4Gx+4T5roOR3zQTq2EcMv2UAvbEISsdh4dQflNTHkUlZhduCJ6AtfyVZEcCWndr+4iI3dbZ8Se+Xhj0GPiP0oCh6/bxEAT7AFCnQVfbzAka7/5J9ta0RhUYcDhQrFgzIJXvNvd08B7ubW4CeMZw/DtWUk3LoVkS/colltmwrjgns+ofj1UkzCQSFOw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=NK+3cTMw5mbk7dwmWuxsD/Mgj0CoFLRo7TTBLh6zwEw=;
+ b=F1CarhO6zVUTpHmdYbLDnrfcjjsIQAK5NsiY6rFftyURWfd42UHGkqKAiSQlrzxtlVduu/9TD9JlayalebrEzP4Ps1WTQMtS8pR3Hphm+i4j3byxsg9mxrK9p87jh2lxlkrkrbA2tsFeZlk4dcl+e2evhE0LGd8VXO+Uo4+YVt0JrbsgZ2tQlWEfX7nSAFx8cJFkpxvg7In1rykP+paEW645/lFqq3U27etbeMYFKk7Gzz58l0M9xCaYQaq5+6kSJILZdF6nfd+tdEA0yd7CVGuzYKxWYvmQIXUa+lYKGWfLq2nBJmoG6JRbnhYXR+jE0sy0zssFvzaTT+C4I/fU5w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=ddn.com; dmarc=pass action=none header.from=ddn.com; dkim=pass
+ header.d=ddn.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ddn.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NK+3cTMw5mbk7dwmWuxsD/Mgj0CoFLRo7TTBLh6zwEw=;
+ b=Wcd9sWB6hdnDIEUDDgFuYZl1Idx3/67M2bLO5ahPxIlBcbwoaQjGGHosqaVsNuHAQxVjfQK28DzQDx9g/rbaP3VDoUx0/XRK2zjPpEqih2JxcMZlu36BfrvgpeAzOuR9kVE6JwJ/wnnA2xTtF4i4pXcpInibLKNu3GDD2m25tx8=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=ddn.com;
+Received: from PH7PR19MB8187.namprd19.prod.outlook.com (2603:10b6:510:2f3::18)
+ by PH7PR19MB5704.namprd19.prod.outlook.com (2603:10b6:510:1d0::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.41; Thu, 29 Feb
+ 2024 22:56:34 +0000
+Received: from PH7PR19MB8187.namprd19.prod.outlook.com
+ ([fe80::e517:bf4e:593b:7f43]) by PH7PR19MB8187.namprd19.prod.outlook.com
+ ([fe80::e517:bf4e:593b:7f43%4]) with mapi id 15.20.7339.031; Thu, 29 Feb 2024
+ 22:56:34 +0000
+Date: Thu, 29 Feb 2024 15:56:30 -0700
+From: Greg Edwards <gedwards@ddn.com>
+To: Tony Battersby <tonyb@cybernetics.com>
+Cc: Jens Axboe <axboe@kernel.dk>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	"Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+	Hugh Dickins <hughd@google.com>, Hannes Reinecke <hare@suse.de>,
+	Keith Busch <kbusch@kernel.org>, linux-mm <linux-mm@kvack.org>,
+	linux-block@vger.kernel.org,
+	linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] block: Fix page refcounts for unaligned buffers in
+ __bio_release_pages()
+Message-ID: <20240229225630.GA460680@bobdog.home.arpa>
+References: <86e592a9-98d4-4cff-a646-0c0084328356@cybernetics.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <86e592a9-98d4-4cff-a646-0c0084328356@cybernetics.com>
+X-ClientProxiedBy: SA9PR13CA0009.namprd13.prod.outlook.com
+ (2603:10b6:806:21::14) To PH7PR19MB8187.namprd19.prod.outlook.com
+ (2603:10b6:510:2f3::18)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240207011803.2637531-1-saravanak@google.com>
- <20240207011803.2637531-3-saravanak@google.com> <20240223171849.10f9901d@booty>
- <CAGETcx99hhfOaEn1CH1OLDGp_pnrVeJ2nWb3X5=0j8tij4NR9w@mail.gmail.com>
- <20240226125226.705efef3@booty> <CAL_JsqLMY94KmiEUcOYT4p1HdHENffOFgRJ+Tv6RDH7ewVbyig@mail.gmail.com>
- <CAGETcx_6UEpOJteQ0Gmfb=NgU+9MZumtmyLbn++C=uj7nOon=g@mail.gmail.com>
- <CAL_Jsq+edTZ3yC0Xxojo5bR3aCwAMFERjuqVFaU8sFmj=nAB8w@mail.gmail.com>
- <20240229103423.1244de38@booty> <CAL_JsqLxDozqONeN818qYg9QxQVte-9Cv_GuAz7SQ1FsscwuVw@mail.gmail.com>
-In-Reply-To: <CAL_JsqLxDozqONeN818qYg9QxQVte-9Cv_GuAz7SQ1FsscwuVw@mail.gmail.com>
-From: Saravana Kannan <saravanak@google.com>
-Date: Thu, 29 Feb 2024 14:54:09 -0800
-Message-ID: <CAGETcx_Sdt7o2aOzHHfTmC5gugwXEEdgEkzUAXt1M51HgnPLZA@mail.gmail.com>
-Subject: Re: [REGRESSION] Re: [PATCH v2 2/3] of: property: Improve finding the
- supplier of a remote-endpoint property
-To: Rob Herring <robh+dt@kernel.org>
-Cc: Luca Ceresoli <luca.ceresoli@bootlin.com>, Frank Rowand <frowand.list@gmail.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Xu Yang <xu.yang_2@nxp.com>, kernel-team@android.com, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	=?UTF-8?Q?Herv=C3=A9_Codina?= <herve.codina@bootlin.com>, 
-	Geert Uytterhoeven <geert@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR19MB8187:EE_|PH7PR19MB5704:EE_
+X-MS-Office365-Filtering-Correlation-Id: 94cddc09-0e81-44cd-cd4d-08dc3979ad73
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	4lLzSIGHC1vsRsO+J8MPfJ+ODXGFiUoLjUfNVbD7V2pyqYIgahFD95vGY1EIbXZC4buHjmopz0ZYLas4bNq8pCRTaKVbcR+NdK0mI438TIVe3hgvvR7b7JSxu8teW6G/c66lTGZ7iz9JJRvhac98eMbyPCy5+xkK6KHcNDEzLHF+4uHUn5mRb+CVC3QyYpfEurjLLVl59sVihGo+QW7dPw98zK+/1sLiyLZNR35/XtF1DThvUgkNA4iBepGDDASygtkzK/z5ZGCvATyjGgVQTqav3YNRWGdt0CMaHeVX7L6qzjUlIKidM/TBhVnB3UGHO3wJECjQMMASqly7z3ZTFk36urObfFeO9+JxpGN/5yNBztFI0hPCzdwtUjR4HyNAniGS24AMU7Zu2cv1xJcEtq3SGTuz2XVUa+LKvxksZN2gmtgW0VXWlFH0FJZ1izFYyzL+y6DllsI3ofZ8olvtlgQmkrdFDO5WGDtI0EYTiEd7ttgXYdNDrIAcjTrj9yCOt+iufzmjxLbyWqngWqMBRhhN3xo6rOYyNtCCYxo8HRmcPcqFyouHAIvE+2HiMuFzHxkSPVUzjGLqJh5ddivfwg==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR19MB8187.namprd19.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?X+jDuXpn8OEwuR4wCceIefpngnHDn57XtcSP9rgEH096CWXJCyYaSS/y+Pl+?=
+ =?us-ascii?Q?ktX3WZQuIFqmM0wZeoZm5Q+DeNSu8+5sw8qqPa4DmH+5q/xxdvXXYLLOc/hT?=
+ =?us-ascii?Q?a5anzYYQj0JreGOARNquW3XK5F2Ok43LrZEF4N8jZmxp2jOEpEUpU6gMRF/d?=
+ =?us-ascii?Q?Y14iiFC1/Q/GC8iCnG8i38qXLGfyKGtiCSnGIIECj4sf/SEIuD8OtI053jgO?=
+ =?us-ascii?Q?9LMNarnqNwh+SNlgo++gnAVTV+94DLJSS82v+9prusUyPT9h/wgSKbskXvvA?=
+ =?us-ascii?Q?P+nbVlePStCD1lZFTF1zPmi2QMKv8LBv7GTxxIi2VBYiG6JdFyxyQ0mezhKG?=
+ =?us-ascii?Q?XlXWNSeDkp7r8/PuS1Xfa3d8xDr9gk9tv67r55EnXW+xYlFxIOqCBvxbJLZT?=
+ =?us-ascii?Q?ATtzimQttgttuXebXPgqHRR1bqt5hoIPeFQlMBkRn41hdWrmCc9aQ7DBhdsp?=
+ =?us-ascii?Q?PH0z9Juf0vcnbfefbhzJvXSSj5g5PsZK9sjwBYhc9pZSGl7WiKiM38EqJoHB?=
+ =?us-ascii?Q?g80BgvmidiHRgcEMn+gnqCnldkbFBv7wyDyvU61Ya2NFLV2WJvkQCe32xhS+?=
+ =?us-ascii?Q?NS1nZCIvV4BnUctGsUab3JThWvmvPjym49jg3EMqJlATAylrWrgBi3hZrBeC?=
+ =?us-ascii?Q?EDwrYu4IHvDF7j4Va1ikCKSclv4ZMNTR2XNDzdB6rUGQehE3ZziYvy2pp/i1?=
+ =?us-ascii?Q?PSMuAb2irFNdeoFqsSkvLOm5f3eW9HB1z9RrcwPbPEAgnjGTCW4MdDpUl5g/?=
+ =?us-ascii?Q?u0COkY3hkV507uH+hhrVBnvIfDCsvkjHn0uT9NnkUZ7LtVsTW4nzADO3BUh8?=
+ =?us-ascii?Q?Nqg8jkd4+HmL7mTW6il5HQ2EmuwI2XwTdavxv8ylTFMAYq56ObhOIpGgVpF+?=
+ =?us-ascii?Q?AqLFvh9nC5DUXybBeaOgo3cqnc5yzuuiVg6JuMnRMi/zYnxPkYTO9aLuIii7?=
+ =?us-ascii?Q?poz9tXerrZF7RF+zULRehWM4MpVtULaeWEdTBoV8A/XAUWfoidsEPnCFoPac?=
+ =?us-ascii?Q?ucnyN67eiCmmKwLOcWQAjiTsdCQTfLAfoVOB0J7FRWDN00fLSyPSWPN8+5Rx?=
+ =?us-ascii?Q?P+U/+uZBVUyD9Sw/1vytHky3M7PjXEyTNL6KKq401IX03y1fc7AmdKhNlj2m?=
+ =?us-ascii?Q?eccvwKPtZwE9w/nFjr89FWE2WR9oT13MFa+8lleQNj+qgj+BHO3zcSj5Hdtd?=
+ =?us-ascii?Q?YwDsB99G8iQm88YVEox8mHP2uLguDKHIfy0RUp8kue+x1EPDwmi+9gZQdgmO?=
+ =?us-ascii?Q?ijdP7dxD9t3e3+NF3WMMvez4LrQpvr8THxQuJ2v8oNjfExFCoWUpH/CFigQc?=
+ =?us-ascii?Q?Fy790J8/6xfwl1wYhUdXuPLVWN1p4NNSsQ8HFKCDkcVnJwkFmqyNlHLmUqzk?=
+ =?us-ascii?Q?qP4bzkGtWLza8Mp3W+ee659bdMyGNVlayx5/+Q/XQ1DJvkZfJehtv92GAEyi?=
+ =?us-ascii?Q?Uj4W3tyi1OSkBshii9Denmy1hN+kchWQ3M+M1gosvY8HaJ1jlAzaoIwQzx+e?=
+ =?us-ascii?Q?dxnS1u4oJWkEwbxrctY21VSNIHIkk1IhZXT0Sexc96aStskkTZipE2fJYLva?=
+ =?us-ascii?Q?u1BbKG3udbDq/imVZfat3jrSH865lGK4CSo6BhHo3BrzxolBI2/NmEteUQoL?=
+ =?us-ascii?Q?Lg=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	KS3zk2lQm4+KKSWN7jl5Re8wZt1KZKR5/yv7I4VH+mgZWZoeKkpwvk6HAMFVs6lRDhrwIiQd9Rsyo+E/sq1hGCxxMdb7gWl4apa0tZ2FuPy6KiUwhKOWAMvKDitWFfzkrHKltTs1Fmt3a/J9SrP41Pf4+Q/BMmsxt9mbiG2qWiXevdRHIPIsYFpuMPru+fWAfZYLdN8UYaERa0LrhtFQHeACGJUMPV++lbqsf1rgzrWjU4Cna9y9PmbGNxTUrXQYrq0UTvjGbfgRoLWSiNMEfzJoqFp3jUgvAxbTs158vW87EikGaoKqhhp+lMbn8yuzYB/4Zdyi0n9NXZi5K2LJ9NobsqKVxRNqFFCrZpQCoBN7oznLgUSQbuABN9qUZbBuEd+cqgxj7vE5U5ExEY7dHBl82c4zZ/oDr2/xRWVwYpk6rPPEezxNoqTfQ+gRj5l7WtBKgfdi4/IAS6D889jckWnxUB/CcIGHgxFwtaoKOo0rYD14aziW48NZxmQ0n3AWiWC2Iaz35RhC8lBNW3StpgQo82Jcjk7uiq+7JLG9eUIhSaSBXY2RzDX0Ljvh4BOIZ66SGdoH/MyqqYpDV0fZka3K/kB4BlbR954sLHft78SJ8nhyjrO5+kwwrlPidHox/Py1bgbkuqFg7Sk6qqrB0A==
+X-OriginatorOrg: ddn.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 94cddc09-0e81-44cd-cd4d-08dc3979ad73
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR19MB8187.namprd19.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Feb 2024 22:56:34.5402
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 753b6e26-6fd3-43e6-8248-3f1735d59bb4
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: a7C85DpNcfUnWb7yXU6rIkR6vAzlD+KzTxTsMizwj6nmfnkdW8wzNZvfNSdb82kgVc9MiOGTSVhvqMs7kqwiEA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR19MB5704
+X-BESS-ID: 1709247399-111735-7444-3003-1
+X-BESS-VER: 2019.1_20240229.2154
+X-BESS-Apparent-Source-IP: 104.47.58.101
+X-BESS-Parts: H4sIAAAAAAACA4uuVkqtKFGyUioBkjpK+cVKVmZGpkBGBlDMzNTSyCLJ1DA1zc
+	DQ0DjJyMTM1MLc0DjNwtDYKNnC0lKpNhYACwxRaEAAAAA=
+X-BESS-Outbound-Spam-Score: 0.00
+X-BESS-Outbound-Spam-Report: Code version 3.2, rules version 3.2.2.254560 [from 
+	cloudscan19-59.us-east-2b.ess.aws.cudaops.com]
+	Rule breakdown below
+	 pts rule name              description
+	---- ---------------------- --------------------------------
+	0.00 BSF_BESS_OUTBOUND      META: BESS Outbound 
+X-BESS-Outbound-Spam-Status: SCORE=0.00 using account:ESS124931 scores of KILL_LEVEL=7.0 tests=BSF_BESS_OUTBOUND
+X-BESS-BRTS-Status:1
 
-On Thu, Feb 29, 2024 at 2:10=E2=80=AFPM Rob Herring <robh+dt@kernel.org> wr=
-ote:
+On Thu, Feb 29, 2024 at 01:08:09PM -0500, Tony Battersby wrote:
+> Fix an incorrect number of pages being released for buffers that do not
+> start at the beginning of a page.
 >
-> On Thu, Feb 29, 2024 at 3:34=E2=80=AFAM Luca Ceresoli <luca.ceresoli@boot=
-lin.com> wrote:
-> >
-> > Hi Rob, Saravana,
-> >
-> > On Wed, 28 Feb 2024 18:26:36 -0600
-> > Rob Herring <robh+dt@kernel.org> wrote:
-> >
-> > > On Wed, Feb 28, 2024 at 5:58=E2=80=AFPM Saravana Kannan <saravanak@go=
-ogle.com> wrote:
-> > > >
-> > > > On Wed, Feb 28, 2024 at 1:56=E2=80=AFPM Rob Herring <robh+dt@kernel=
-org> wrote:
-> > > > >
-> > > > > On Mon, Feb 26, 2024 at 5:52=E2=80=AFAM Luca Ceresoli <luca.ceres=
-oli@bootlin.com> wrote:
-> > > > > >
-> > > > > > Hello Saravana,
-> > > > > >
-> > > > > > On Fri, 23 Feb 2024 17:35:24 -0800
-> > > > > > Saravana Kannan <saravanak@google.com> wrote:
-> > > > > >
-> > > > > > > On Fri, Feb 23, 2024 at 8:18=E2=80=AFAM Luca Ceresoli <luca.c=
-eresoli@bootlin.com> wrote:
-> > > > > > > >
-> > > > > > > > Hello Saravana,
-> > > > > > > >
-> > > > > > > > [+cc Herv=C3=A9 Codina]
-> > > > > > > >
-> > > > > > > > On Tue,  6 Feb 2024 17:18:01 -0800
-> > > > > > > > Saravana Kannan <saravanak@google.com> wrote:
-> > > > > > > >
-> > > > > > > > > After commit 4a032827daa8 ("of: property: Simplify of_lin=
-k_to_phandle()"),
-> > > > > > > > > remote-endpoint properties created a fwnode link from the=
- consumer device
-> > > > > > > > > to the supplier endpoint. This is a tiny bit inefficient =
-(not buggy) when
-> > > > > > > > > trying to create device links or detecting cycles. So, im=
-prove this the
-> > > > > > > > > same way we improved finding the consumer of a remote-end=
-point property.
-> > > > > > > > >
-> > > > > > > > > Fixes: 4a032827daa8 ("of: property: Simplify of_link_to_p=
-handle()")
-> > > > > > > > > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > > > > > > >
-> > > > > > > > After rebasing my own branch on v6.8-rc5 from v6.8-rc1 I st=
-arted
-> > > > > > > > getting unexpected warnings during device tree overlay remo=
-val. After a
-> > > > > > > > somewhat painful bisection I identified this patch as the o=
-ne that
-> > > > > > > > triggers it all.
-> > > > > > >
-> > > > > > > Thanks for the report.
-> > > > > > >
-> > > > > > > >
-> > > > > > > > > ---
-> > > > > > > > > --- a/drivers/of/property.c
-> > > > > > > > > +++ b/drivers/of/property.c
-> > > > > > > > > @@ -1232,7 +1232,6 @@ DEFINE_SIMPLE_PROP(pinctrl5, "pinct=
-rl-5", NULL)
-> > > > > > > > >  DEFINE_SIMPLE_PROP(pinctrl6, "pinctrl-6", NULL)
-> > > > > > > > >  DEFINE_SIMPLE_PROP(pinctrl7, "pinctrl-7", NULL)
-> > > > > > > > >  DEFINE_SIMPLE_PROP(pinctrl8, "pinctrl-8", NULL)
-> > > > > > > > > -DEFINE_SIMPLE_PROP(remote_endpoint, "remote-endpoint", N=
-ULL)
-> > > > > > > > >  DEFINE_SIMPLE_PROP(pwms, "pwms", "#pwm-cells")
-> > > > > > > > >  DEFINE_SIMPLE_PROP(resets, "resets", "#reset-cells")
-> > > > > > > > >  DEFINE_SIMPLE_PROP(leds, "leds", NULL)
-> > > > > > > > > @@ -1298,6 +1297,17 @@ static struct device_node *parse_i=
-nterrupts(struct device_node *np,
-> > > > > > > > >       return of_irq_parse_one(np, index, &sup_args) ? NUL=
-L : sup_args.np;
-> > > > > > > > >  }
-> > > > > > > > >
-> > > > > > > > > +static struct device_node *parse_remote_endpoint(struct =
-device_node *np,
-> > > > > > > > > +                                              const char=
- *prop_name,
-> > > > > > > > > +                                              int index)
-> > > > > > > > > +{
-> > > > > > > > > +     /* Return NULL for index > 0 to signify end of remo=
-te-endpoints. */
-> > > > > > > > > +     if (!index || strcmp(prop_name, "remote-endpoint"))
-> > > > > > > >
-> > > > > > > > There seem to be a bug here: "!index" should be "index > 0"=
-, as the
-> > > > > > > > comment suggests. Otherwise NULL is always returned.
-> > > > > > >
-> > > > > > > Ah crap, I think you are right. It should have been "index". =
-Not
-> > > > > > > "!index". But I tested this! Sigh. I probably screwed up my t=
-esting.
-> > > > > > >
-> > > > > > > Please send out a Fix for this.
-> > > > > > >
-> > > > > > > Geert, we got excited too soon. :(
-> > > > > > >
-> > > > > > > > I am going to send a quick patch for that, but haven't done=
- so yet
-> > > > > > > > because it still won't solve the problem, so I wanted to op=
-en the topic
-> > > > > > > > here without further delay.
-> > > > > > > >
-> > > > > > > > Even with the 'index > 0' fix I'm still getting pretty much=
- the same:
-> > > > > > >
-> > > > > > > This part is confusing though. If I read your DT correctly, t=
-here's a
-> > > > > > > cycle between platform:panel-dsi-lvds and i2c:13-002c. And fw=
-_devlink
-> > > > > > > should not be enforcing any ordering between those devices ev=
-er.
-> > > > > > >
-> > > > > > > I'm surprised that in your "working" case, fw_devlink didn't =
-detect
-> > > > > > > any cycle. It should have. If there's any debugging to do, th=
-at's the
-> > > > > > > one we need to debug.
-> > > > > > >
-> > > > > > > >
-> > > > > > > > [   34.836781] ------------[ cut here ]------------
-> > > > > > > > [   34.841401] WARNING: CPU: 2 PID: 204 at drivers/base/dev=
-res.c:1064 devm_kfree+0x8c/0xfc
-> > > > > > > > ...
-> > > > > > > > [   35.024751] Call trace:
-> > > > > > > > [   35.027199]  devm_kfree+0x8c/0xfc
-> > > > > > > > [   35.030520]  devm_drm_panel_bridge_release+0x54/0x64 [dr=
-m_kms_helper]
-> > > > > > > > [   35.036990]  devres_release_group+0xe0/0x164
-> > > > > > > > [   35.041264]  i2c_device_remove+0x38/0x9c
-> > > > > > > > [   35.045196]  device_remove+0x4c/0x80
-> > > > > > > > [   35.048774]  device_release_driver_internal+0x1d4/0x230
-> > > > > > > > [   35.054003]  device_release_driver+0x18/0x24
-> > > > > > > > [   35.058279]  bus_remove_device+0xcc/0x10c
-> > > > > > > > [   35.062292]  device_del+0x15c/0x41c
-> > > > > > > > [   35.065786]  device_unregister+0x18/0x34
-> > > > > > > > [   35.069714]  i2c_unregister_device+0x54/0x88
-> > > > > > > > [   35.073988]  of_i2c_notify+0x98/0x224
-> > > > > > > > [   35.077656]  blocking_notifier_call_chain+0x6c/0xa0
-> > > > > > > > [   35.082543]  __of_changeset_entry_notify+0x100/0x16c
-> > > > > > > > [   35.087515]  __of_changeset_revert_notify+0x44/0x78
-> > > > > > > > [   35.092398]  of_overlay_remove+0x114/0x1c4
-> > > > > > > > ...
-> > > > > > > >
-> > > > > > > > By comparing the two versions I found that before removing =
-the overlay:
-> > > > > > > >
-> > > > > > > >  * in the "working" case (with this patch reverted) I have:
-> > > > > > > >
-> > > > > > > >    # ls /sys/class/devlink/ | grep 002c
-> > > > > > > >    platform:hpbr--i2c:13-002c
-> > > > > > > >    platform:panel-dsi-lvds--i2c:13-002c
-> > > > > > >
-> > > > > > > Can you check the "status" and "sync_state_only" file in this=
- folder
-> > > > > > > and tell me what it says?
-> > > > > > >
-> > > > > > > Since these devices have a cyclic dependency between them, it=
- should
-> > > > > > > have been something other than "not tracked" and "sync_state_=
-only"
-> > > > > > > should be "1". But my guess is you'll see "active" and "0".
-> > > > > > >
-> > > > > > > >    platform:regulator-sys-1v8--i2c:13-002c
-> > > > > > > >    regulator:regulator.31--i2c:13-002c
-> > > > > > > >    #
-> > > > > > > >
-> > > > > > > >  * in the "broken" case (v6.8-rc5 + s/!index/index > 0/ as =
-mentioned):
-> > > > > > > >
-> > > > > > > >    # ls /sys/class/devlink/ | grep 002c
-> > > > > > > >    platform:hpbr--i2c:13-002c
-> > > > > > > >    platform:regulator-sys-1v8--i2c:13-002c
-> > > > > > > >    regulator:regulator.30--i2c:13-002c
-> > > > > > > >    #
-> > > > > > > >
-> > > > > > > > So in the latter case the panel-dsi-lvds--i2c:13-002c link =
-is missing.
-> > > > > > > > I think it gets created but later on removed. Here's a snip=
-pet of the
-> > > > > > > > kernel log when that happens:
-> > > > > > > >
-> > > > > > > > [    9.578279] ----- cycle: start -----
-> > > > > > > > [    9.578283] /soc@0/bus@30800000/i2c@30ad0000/i2cmux@70/i=
-2c@3/dsi-lvds-bridge@2c: cycle: depends on /panel-dsi-lvds
-> > > > > > > > [    9.578308] /panel-dsi-lvds: cycle: depends on /soc@0/bu=
-s@30800000/i2c@30ad0000/i2cmux@70/i2c@3/dsi-lvds-bridge@2c
-> > > > > > > > [    9.578329] ----- cycle: end -----
-> > > > > > > > [    9.578334] platform panel-dsi-lvds: Fixed dependency cy=
-cle(s) with /soc@0/bus@30800000/i2c@30ad0000/i2cmux@70/i2c@3/dsi-lvds-bridg=
-e@2c
-> > > > > > > > ...
-> > > > > > >
-> > > > > > > Somewhere in this area, I'm thinking you'll also see "device:
-> > > > > > > 'i2c:13-002c--platform:panel-dsi-lvds': device_add" do you no=
-t? And if
-> > > > > > > you enabled device link logs, you'll see that it was "sync st=
-ate only"
-> > > > > > > link.
-> > > > > > >
-> > > > > > > > [    9.590620] /panel-dsi-lvds Dropping the fwnode link to =
-/soc@0/bus@30800000/i2c@30ad0000/i2cmux@70/i2c@3/dsi-lvds-bridge@2c
-> > > > > > > > ...
-> > > > > > > > [    9.597280] ----- cycle: start -----
-> > > > > > > > [    9.597283] /panel-dsi-lvds: cycle: depends on /soc@0/bu=
-s@30800000/i2c@30ad0000/i2cmux@70/i2c@3/dsi-lvds-bridge@2c
-> > > > > > > > [    9.602781] /soc@0/bus@30800000/i2c@30ad0000/i2cmux@70/i=
-2c@3/dsi-lvds-bridge@2c: cycle: depends on /panel-dsi-lvds
-> > > > > > > > [    9.607581] ----- cycle: end -----
-> > > > > > > > [    9.607585] i2c 13-002c: Fixed dependency cycle(s) with =
-/panel-dsi-lvds
-> > > > > > > > [    9.614217] device: 'platform:panel-dsi-lvds--i2c:13-002=
-c': device_add
-> > > > > > > > ...
-> > > > > > > > [    9.614277] /soc@0/bus@30800000/i2c@30ad0000/i2cmux@70/i=
-2c@3/dsi-lvds-bridge@2c Dropping the fwnode link to /panel-dsi-lvds
-> > > > > > > > [    9.614369] /soc@0/bus@30800000/i2c@30ad0000/i2cmux@70/i=
-2c@3/dsi-lvds-bridge@2c Dropping the fwnode link to /regulator-dock-sys-1v8
-> > > > > > > > ...
-> > > > > > > > [    9.739840] panel-simple panel-dsi-lvds: Dropping the li=
-nk to 13-002c
-> > > > > > > > [    9.739846] device: 'i2c:13-002c--platform:panel-dsi-lvd=
-s': device_unregister
-> > > > > > >
-> > > > > > > Oh yeah, see. The "device_add" I expected earlier is getting =
-removed here.
-> > > > > > >
-> > > > > > > > [   10.247037] sn65dsi83 13-002c: Dropping the link to pane=
-l-dsi-lvds
-> > > > > > > > [   10.247049] device: 'platform:panel-dsi-lvds--i2c:13-002=
-c': device_unregister
-> > > > > > > >
-> > > > > > > > And here's the relevant portion of my device tree overlay:
-> > > > > > > >
-> > > > > > > > --------------------8<--------------------
-> > > > > > > >
-> > > > > > >
-> > > > > > > I think the eventual fix would be this series + adding a
-> > > > > > > "post-init-providers" property to the device that's supposed =
-to probe
-> > > > > > > first and point it to the device that's supposed to probe nex=
-t. Do
-> > > > > > > this at the device node level, not the endpoint level.
-> > > > > > > https://lore.kernel.org/lkml/20240221233026.2915061-1-saravan=
-ak@google.com/
-> > > > > >
-> > > > > > I'm certainly going to look at this series in more detail and a=
-t the
-> > > > > > debugging you asked for, however I'm afraid I won't have access=
- to the
-> > > > > > hardware this week and it's not going to be a quick task anyway=
-.
-> > > > > >
-> > > > > > So in this moment I think it's quite clear that this specific p=
-atch
-> > > > > > creates a regression and there is no clear fix that is reasonab=
-ly
-> > > > > > likely to get merged before 6.8.
-> > > > > >
-> > > > > > I propose reverting this patch immediately, unless you have a b=
-etter
-> > > > > > short-term solution.
-> > > > >
-> > > > > It's just this one of the 3 patches that needs reverting?
-> >
-> > Just this patch. I reverted only this and the issue disappeared.
-> >
-> > > > I sent a fix. With the fix, it's just exposing a bug elsewhere.
-> >
-> > Exactly, this patch has two issues and only the easy one has a fix [0]
-> > currently as far as I know.
-> >
-> > > You say apply the fix. Luca says revert. I say I wish I made this 6.9
-> > > material. Which is it?
-> > >
-> > > If the overlay applying depends on out of tree code (likely as there
-> > > are limited ways to apply an overlay in mainline), then I don't reall=
-y
-> > > care if there is still a regression.
-> >
-> > Obviously, to load and unload the overlays I'm using code not yet
-> > in mainline. It is using of_overlay_fdt_apply() and of_overlay_remove()
-> > via a driver underdevelopment that is similar to the one Herv=C3=A9 and
-> > Lizhi Hou are working on [1][2].
-> >
-> > I see the point that "we are not breaking existing use cases as no code
-> > is (un)loading overlays except unittest", sure.
-> >
-> > As I see it, we have a feature in the kernel that is not used, but it
-> > will be, eventually: there are use cases, development is progressing an=
-d
-> > patches are being sent actively. My opinion is that we should not
-> > put additional known obstacles that will make it even harder than it
-> > already is.
->
-> Well, I don't care to do extra work of applying things and then have
-> to turn right around fix or revert them. It happens enough as-is with
-> just mainline. And no one wants to step up and fix the problems with
-> overlays, but are fine just carrying their out of tree patches. What's
-> one more. This is the 2nd case of overlay problems with out of tree
-> users *today*! Some days I'm tempted to just remove overlay support
-> altogether given the only way to apply them is unittest.
+> Fixes: 1b151e2435fc ("block: Remove special-casing of compound pages")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Tony Battersby <tonyb@cybernetics.com>
+> ---
 
-Rob,
+This resolves the QEMU hugetlb issue I noted earlier today here [1].
+I tested it on 6.1.79, 6.8-rc6 and linux-next-20240229.  Thank you!
 
-Sorry I couldn't reply yesterday. And sorry for getting this into 6.8
-and causing headaches for you.
+Feel free to add a:
 
-With [1], there are no more bugs to fix in fw_devlink wrt
-remote-endpoints for sure.
-[1] - https://lore.kernel.org/lkml/20240224052436.3552333-1-saravanak@googl=
-e.com/
+Tested-by: Greg Edwards <gedwards@ddn.com>
 
-It's solely exposing a bug in another driver. If this was upstream
-code, I might have been okay with reverting things just to make their
-bug for now. I didn't realize this was downstream stuff until you
-asked/Luca confirmed. We definitely shouldn't revert anything. Luca
-can take my pointers and debug their driver and I'm happy to help
-debug this further.
-
-Also, post-init-providers should definitely help in this case. So,
-Luca can use that once we land it.
-
-> Given Geert is having issues too, I guess I'm going to revert.
-
-It's just extra/explicit logging because as the original series was
-meant to do, it improves remote-enpoint parsing.
-
--Saravana
+[1] https://lore.kernel.org/linux-block/20240229182513.GA17355@bobdog.home.arpa/
 
