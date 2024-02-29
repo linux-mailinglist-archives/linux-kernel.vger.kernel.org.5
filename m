@@ -1,150 +1,145 @@
-Return-Path: <linux-kernel+bounces-86933-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86932-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4447C86CD28
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:35:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3731D86CD1F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:35:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9D1E28A56D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:35:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E14281F24DD0
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:35:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3BE814AD15;
-	Thu, 29 Feb 2024 15:35:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8570E14A4CD;
+	Thu, 29 Feb 2024 15:35:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="P/2kS/ie"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="efLsujqI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53ED9145B20;
-	Thu, 29 Feb 2024 15:35:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B36B214A0B1;
+	Thu, 29 Feb 2024 15:35:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709220918; cv=none; b=C0geB7mVQ2OHwYngcTAJZLgeQbevb4rQWwl7GiLKOx9RBiHfldB8MZfEnr7kYNCSswseqvR4+fNV3oyKJy1rFlQ7gJctd/qVnjJowCVXN2bSHw1AuAnlOjySWYOZwho06iTKGDOSPQZkHy38ZYuixiXHYr5eio0G50cERdvb74Y=
+	t=1709220908; cv=none; b=E8fawCEsoCwdoIt04lkHzazqhRiCIrQ9wcyhOAVr34hiRnCgvOqYHavBT+VVDHM3Dt/YItVPUuCVSKrFjvjyDZWvifP8iCiuFOMwj+KmN29KppjQVey/ND3tG6mTXLRMZOC8HaWQ5mLHBu5G55SJ5HngQusLzlyjqSMbKlXhhNQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709220918; c=relaxed/simple;
-	bh=VyLF2sZrx+sakktPpGpYEkXykCZGegYDpKq0Eu7radg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HcI6SbexUatPE/t8rAkuIXs1lhtAIiW2tI814l5E0DD2p/ijU5ZrDKtTPtomO4KxASZJMXPA5i/fcCzd+uRe0Kuv5zvco6johcB3FHbODzsBGVOh/W3BRyGDjXwhwYWy7FCF/TBCw7wMNRBI6KNMzYwLlDjckuVpj5FC7fQu9do=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=P/2kS/ie; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709220916; x=1740756916;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=VyLF2sZrx+sakktPpGpYEkXykCZGegYDpKq0Eu7radg=;
-  b=P/2kS/ieY68sNAtfoJGf5L4gOfKSHs8vHf75P20oYLu62hAvVqPhUv8r
-   a181lFN1oEVV/5FyOVc5ZuZafCA5gEq06KKAJcdWh+DCt9RBZE9WOLFZT
-   tIjXUh4c9PvGP4wRO6LxlG7LeVn6SvNboy5OygRMTMs76d2KLge0DWpuD
-   jp1YOZxKsK8Kkq5IPYVZ9W/jMtURBg58ESjl/ZQEp0xpxcmhu1uJNZaSN
-   rsvw8yryhxhQ9Jct3ImfN+g5BwW7DwqTNKJWPWJsvLyHQ8e0QtiISZ1TF
-   pGYdu2UJrjUZeRIrcNVYQCVPQXtEhJ9VKJAbrgvvsEe35nFPPMA0FEzZl
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="3552795"
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="3552795"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 07:33:51 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="913984676"
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="913984676"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 07:33:46 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@intel.com>)
-	id 1rfiPn-00000008hrW-21W4;
-	Thu, 29 Feb 2024 17:33:43 +0200
-Date: Thu, 29 Feb 2024 17:33:43 +0200
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-To: =?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>
-Cc: Gregory CLEMENT <gregory.clement@bootlin.com>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-	linux-mips@vger.kernel.org, linux-clk@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
-	linux-gpio@vger.kernel.org
-Subject: Re: [PATCH v8 04/10] reset: eyeq5: add platform driver
-Message-ID: <ZeCj13CekGTO62Be@smile.fi.intel.com>
-References: <20240227-mbly-clk-v8-0-c57fbda7664a@bootlin.com>
- <20240227-mbly-clk-v8-4-c57fbda7664a@bootlin.com>
- <Zd4bbCsY54XEnvJM@smile.fi.intel.com>
- <CZGVIWR4H4DE.3M5H3H99X0QPT@bootlin.com>
- <ZeBo4N204gLO0eUd@smile.fi.intel.com>
- <CZHK1ZCSROM5.X4WYN7SAZJTH@bootlin.com>
- <ZeCLS17PhKPuGvkm@smile.fi.intel.com>
- <CZHNZJJ600CC.1WV7Q2520ZSKU@bootlin.com>
+	s=arc-20240116; t=1709220908; c=relaxed/simple;
+	bh=l18CMgXdli5STPwKCBhLq0812Z2tTCH2Xar7VZSxkks=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PSnG3y9yTJ0QMImG2oL2w3NnY+5suqqWsivaJn1xI3J8n3zrfIBJIXnx9QQQ7+fbn3Rlj0puaWbU72k+LGZpJ4wdt9yJcNJNkpOJUfhqLT2TZj47w2hlrzLs8TYmdouoVPO2OFer740lpYtt2OySK7nrNaGKT/9am7nkVA6oot8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=efLsujqI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38256C433F1;
+	Thu, 29 Feb 2024 15:35:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709220908;
+	bh=l18CMgXdli5STPwKCBhLq0812Z2tTCH2Xar7VZSxkks=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=efLsujqIF3ljKLuLvNkv5VqcLN49SgY6P7mFVtq1WhUKrkd9tuwqvrSfJG8M6VdHD
+	 fsWWu3iGBpnc2RxXWwrIiATggWE+N0jEiW4CaK63UMAvU1dC45RpAqk6G2wYK7cyT/
+	 qSVrcfkhvgDoY6HNUGqpw/beOPBSE0raHNL2ODp55+tIrGnQvOFG+xT5CS0MlMe3D0
+	 yxYamBLWRztV1C1kBRkvtNT37mzJQhBb/psWUBjY5hq2nQkq1XrUPTk3pNIwwJBz4d
+	 nQ53p1Dc4XG5sUJIlWmXjk0xEKL+IqPf+cdpBa1UYEnPgEGvtZScL73J5XdzM5i+cF
+	 AoHl2V2a/AKsg==
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-513173e8191so1154945e87.1;
+        Thu, 29 Feb 2024 07:35:08 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVkwix50YwEuc0HLhKnVRf7AU6A8jOyPXVYEfyI3d+FRLv6iWglOh8lCgChukT4Qpe2INtprXCmGtU4yvoTD5U2LFrGjkm3/FIP/SGR2HWfoAc7JOTwjAaxt+W5ALURTDZ8+bRMUXgot3iF
+X-Gm-Message-State: AOJu0YzAMXzcdbiTBPKmjICupRRQ0nOBn3ULJ6WDtgSFZz0JRiAREqUn
+	dhNavViC8y2Y/dLhxSVt4juA43MPD+ZlJQpKeDD+2DeAdbqVF3dMH1ReqbNlMi0YTzcp06JiRwE
+	VUrTr+MGJMKE10XXYQU2TtGomjBc=
+X-Google-Smtp-Source: AGHT+IHsPm1DP53fkDMID5DY4f73drdJTcrZi2yhUcZSZ9wkEDHG01rfp3WGkZAheyE6MmID345CT7JTxjbwcTUxPuk=
+X-Received: by 2002:a05:6512:1d1:b0:512:d554:f1df with SMTP id
+ f17-20020a05651201d100b00512d554f1dfmr1740856lfp.65.1709220906626; Thu, 29
+ Feb 2024 07:35:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CZHNZJJ600CC.1WV7Q2520ZSKU@bootlin.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240223092338.2433632-1-wenst@chromium.org> <CAK7LNAQmvyftnFJaByyjH+f4nxcNUKpjkDXwebEH5AhMF6U0Kw@mail.gmail.com>
+ <CAGXv+5GmkZdqpNZDFN4dcTyZ-qVS0TjrrqBrBAei6DP+eXLnJg@mail.gmail.com>
+In-Reply-To: <CAGXv+5GmkZdqpNZDFN4dcTyZ-qVS0TjrrqBrBAei6DP+eXLnJg@mail.gmail.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Fri, 1 Mar 2024 00:34:30 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAS8tLuHYcPTb5pJZixn5Hb0yjo0nmbrfSUr5Cd_pc+WMg@mail.gmail.com>
+Message-ID: <CAK7LNAS8tLuHYcPTb5pJZixn5Hb0yjo0nmbrfSUr5Cd_pc+WMg@mail.gmail.com>
+Subject: Re: [PATCH RFC] kbuild: create a list of all built DTB files
+To: Chen-Yu Tsai <wenst@chromium.org>
+Cc: Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, linux-kbuild@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Simon Glass <sjg@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 29, 2024 at 04:23:01PM +0100, Théo Lebrun wrote:
-> On Thu Feb 29, 2024 at 2:48 PM CET, Andy Shevchenko wrote:
-> > On Thu, Feb 29, 2024 at 01:18:08PM +0100, Théo Lebrun wrote:
-> > > On Thu Feb 29, 2024 at 12:22 PM CET, Andy Shevchenko wrote:
-> > > > On Wed, Feb 28, 2024 at 06:04:47PM +0100, Théo Lebrun wrote:
-> > > > > On Tue Feb 27, 2024 at 6:27 PM CET, Andy Shevchenko wrote:
-> > > > > > On Tue, Feb 27, 2024 at 03:55:25PM +0100, Théo Lebrun wrote:
-
-..
-
-> > > > > > > +	priv->rcdev.of_node = np;
-> > > > > >
-> > > > > > It's better to use device_set_node().
-> > > > > 
-> > > > > I don't see how device_set_node() can help? It works on struct device
-> > > > > pointers. Here priv->rcdev is a reset_controller_dev struct. There are
-> > > > > no users of device_set_node() in drivers/reset/.
-> > > >
-> > > > No users doesn't mean it's good. The API is relatively "new" and takes
-> > > > care of two things:
-> > > > 1) it uses agnostic interface;
-> > > > 2) it doesn't require any firmware node direct dereference.
-> > > >
-> > > > The 2) is most important here as allows us to refactor (firmware node) code
-> > > > in the future.
-> > > 
-> > > I think I get the point of device_set_node(). I still do not understand
-> > > how it could help me fill the ->of_node field in a reset_controller_dev
-> > > structure?
+On Thu, Feb 29, 2024 at 11:38=E2=80=AFAM Chen-Yu Tsai <wenst@chromium.org> =
+wrote:
+>
+> On Sun, Feb 25, 2024 at 4:21=E2=80=AFPM Masahiro Yamada <masahiroy@kernel=
+org> wrote:
 > >
-> > Exactly why I put the above comment as recommendation. And then I elaborated
-> > that entire reset framework should rather move towards fwnode.
-> 
-> OK now I get it. One question: would using fwnode abstractions make
-> sense for a driver that is devicetree-only, and will stay that way?
+> > On Fri, Feb 23, 2024 at 6:23=E2=80=AFPM Chen-Yu Tsai <wenst@chromium.or=
+g> wrote:
+> > >
+> > > It is useful to have a list of all composite *.dtb files, along with
+> > > their individual components, generated from the current build.
+> > >
+> > > With this commit, 'make dtbs' creates arch/*/boot/dts/dtbs-components=
+,
+> > > which lists the composite dtb files created in the current build. It
+> > > maintains the order of the dtb-y additions in Makefiles although the
+> > > order is not important for DTBs.
+> > >
+> > > This compliments the list of all *.dtb and *.dtbo files in dtbs-list,
+> > > which only includes the files directly added to dtb-y.
+> > >
+> > > For example, consider this case:
+> > >
+> > >     foo-dtbs :=3D foo_base.dtb foo_overlay.dtbo
+> > >     dtb-y :=3D bar.dtb foo.dtb
+> > >
+> > > In this example, the new list will include foo.dtb with foo_base.dtb =
+and
+> > > foo_overlay.dtbo on the same line, but not bar.dtb.
+> > >
+> > > Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
+> > > ---
+> > > Hi,
+> > >
+> > > I hacked up this new thing to list out the individual components of e=
+ach
+> > > composite dtb. I think this information would be useful for FIT image
+> > > generation or other toolchains to consume. For example, instead of
+> > > including each dtb, a toolchain could realize that some are put toget=
+her
+> > > using others, and if the bootloader supports it, put together command=
+s
+> > > to reassemble the end result from the original parts.
+> > >
+> > > This is based on and complements Masahiro-san's recent dtbs-list work=
+.
+> >
+> >
+> >
+> > This is another format of my previous per-dtb "*.dtlst"
+> > (but I did not pick up 3/4, 4/4 because I did not know what we need aft=
+er all).
+> >
+> > This should be discussed together with how Simon's script will look lik=
+e.
+> >
+> > I can understand your Makefile code, but I still do not know
+> > how the entire overlay stuff will work in a big picture.
+>
+> How would you like to proceed? I can through together some changes on top
+> of Simon's patches as an initial proposal if that helps?
+>
+> I can use your format if you prefer.
 
-In my opinion, yes. But less beneficial from it.
 
-> However this sounds out-of-scope of such a driver addition. I also am
-> not familiar enough (yet?) with the reset subsystem and/or fwnode to be
-> able to bring this kind of changes upstream.
-
-Right.
-
--- 
-With Best Regards,
-Andy Shevchenko
+How would you select base+addonX among
+other base+addonY or base+addonZ configurations?
 
 
+--=20
+Best Regards
+Masahiro Yamada
 
