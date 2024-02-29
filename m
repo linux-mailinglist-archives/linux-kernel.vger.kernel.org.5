@@ -1,180 +1,134 @@
-Return-Path: <linux-kernel+bounces-87045-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87046-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BB0C86CE9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:18:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF46886CEA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:19:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 878181F264D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:18:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 01EBBB2477C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:18:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02B307829B;
-	Thu, 29 Feb 2024 15:58:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LTeJNH/j"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 796B678260
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 15:58:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50D897A150;
+	Thu, 29 Feb 2024 15:58:59 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EC4C7A145;
+	Thu, 29 Feb 2024 15:58:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709222309; cv=none; b=PrM6w7YtE4JqGaJOoTEU3hNiHtcmciJf95XSBS5xHRqBIfTF4g6z0l1Mj8JtgTOPP6ydT+uuH/jujPlWUU7wEp/fwxeVx3AdU46bnDu8u4956RL8QVac0kDrWPwPkuO3coQMV6cWv9fAcRdjbk+U4LGF9TR/lTuQrZqNpL3M7xw=
+	t=1709222338; cv=none; b=saf4c20phbkf+Jhic23zFtJoGuFqAqRC7KEPxp3e/i1wW2Ov8ilTTBWA/H0IuHASMpkbzYrIAVCN1bhcRgTSk8H6bRu3s4zKLuWzAyaOXA4GL1aDNuyFfriegT1XVIkG8ZNVH+uwvl00PzkJXhRpLJheK40PuKqZaMy2cBst5ho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709222309; c=relaxed/simple;
-	bh=3tf4NQCYAowqTqv1FcOVo/z26fMA/xtvIX8z01+H5fA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bmTF6XTaUkGXSFv+bowB2L1zlfGzxH5XOnUi27S/UY2EcHbcLLV+Nu2KVpWSItMru4ZLF898IAF+S8REEJpzr6IUMEXfXL1P3k55/jeE1uP86lhlJjmQo8UfnKtCf4oRHYv09UBL1OKIk3dLXeXHKEq7zP7Eec5svbGedluYGpQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LTeJNH/j; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-563c595f968so1847024a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 07:58:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709222306; x=1709827106; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5LTOfx2GQ4CBnGepMff9R5kxjiek93kg9AQREW+HsbQ=;
-        b=LTeJNH/jaQja//EXrW0ELTupuRfKWgr7W2fGvpgLV263xLcRYkgl4YnZXeGsbUAKj5
-         3FyqePjElDrPIiYDFJfA1n3MdgA/JRgzRpk4g5rgt0guhwTGQu8uc9QI7rky9a+ig9aK
-         O7eTc9D5ynRFKb/V9RjNdJuz9SrlgWuT2StCDlStchzbJB5x30LWew53Q2339VACBCdu
-         8yHDg0eFfh6vI5o4BrNIcL4hijVUeTabD71HFGcpcS0m1XXFdAT4na4l98PYzrKUxtBY
-         HU9betXCU7zmlxlInl7/26eaBKUSP1KNkZgZXb0kEix82fvN8+dW5RFhTqClxFNCrf8w
-         /deQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709222306; x=1709827106;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5LTOfx2GQ4CBnGepMff9R5kxjiek93kg9AQREW+HsbQ=;
-        b=I/rkKelI79Cke3xzor1nAhrHU8zVYydXC/VQjeTsoNS+YDJua5X6QXBsg90VbNOrL2
-         SHQvS3fxQuayo0ZMtl0fRycSOvcnJOIcwxr7YjY8mcEtEw67LARFf72vbSVCFc0fxRx7
-         aIbLeXht/WAK+42bHDX1ZRSWHdte2Gg2ucHPEq1juTVetMAUgXBJmgY87Q+Q8c3XsQXe
-         Dse6txltuBfr6d18VgtjI1uXEFhdFDIMKsY1UDEaDONkUH5igSNNOXWr7q+ipFPTaAR4
-         jbJ+n7BRl/3MzfK3kXBgYk5+0injx63hXCd7XJJYC5pOO4tfBxJYUnoTnRkBQbsboHq5
-         rWBg==
-X-Forwarded-Encrypted: i=1; AJvYcCW11N7w9HZtFK2EIgZTSIOb8MJ9OsUK4NBJNv3FudYFRTDFAOhgZ/B5pS30b+BZnH6lzaRIZ2mAndVUqir6GKCw+tgDZ5AmKX/7wvk+
-X-Gm-Message-State: AOJu0Yymx8vtMrIjB7gugT5OXIAK4X34UszHYzWt540nlJr+z82EJCy4
-	TskYQPAfhYaYAMJbZ79Ej6KclXCJlU5G/zlwFbdD28RQ1bKf3xDCRpx4aejokwU=
-X-Google-Smtp-Source: AGHT+IHTGeLGUGjtiB1k+eXZpXGYhVOB/sIIBY0nmIrddEjUJPgB9ttQaeo1rZgsB2tq84eA/L0rYg==
-X-Received: by 2002:a05:6402:2156:b0:566:4a85:ceba with SMTP id bq22-20020a056402215600b005664a85cebamr1729228edb.1.1709222306044;
-        Thu, 29 Feb 2024 07:58:26 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id e20-20020a056402105400b0056518035195sm718183edu.69.2024.02.29.07.58.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Feb 2024 07:58:25 -0800 (PST)
-Message-ID: <ec835855-49f6-4b9a-9c58-e3fb90946c26@linaro.org>
-Date: Thu, 29 Feb 2024 16:58:23 +0100
+	s=arc-20240116; t=1709222338; c=relaxed/simple;
+	bh=iK16lpg66h+HuxC4HWv0FU1/t+BijC+nfepzGRcL53c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ji/fxLt4j42KjNtekBc6gcJ4YE3NedtfsDU3wN6KsxTkQQJxMnfTCaV2wadoPqOAERTwywCAdOfFFPs/PwFHaJwExb3g0UTNHeyuOA35oev9W3BjqA4h/Kqabv14zz/wbxhRIh7wYABGa886nCrvZfMm391BoewbSmv8kSeYUEw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8BCA01FB;
+	Thu, 29 Feb 2024 07:59:34 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.68.196])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7F17D3F6C4;
+	Thu, 29 Feb 2024 07:58:53 -0800 (PST)
+Date: Thu, 29 Feb 2024 15:58:50 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Sasha Levin <sashal@kernel.org>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	Fangrui Song <maskray@google.com>, Ard Biesheuvel <ardb@kernel.org>,
+	Will Deacon <will@kernel.org>, peterz@infradead.org,
+	jpoimboe@kernel.org, jbaron@akamai.com, catalin.marinas@arm.com,
+	nathan@kernel.org, linux-arm-kernel@lists.infradead.org,
+	llvm@lists.linux.dev
+Subject: Re: [PATCH AUTOSEL 6.6 06/21] arm64: jump_label: use constraints
+ "Si" instead of "i"
+Message-ID: <ZeCpuiBtS1HLSQZp@FVFF77S0Q05N>
+References: <20240229154946.2850012-1-sashal@kernel.org>
+ <20240229154946.2850012-6-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/5] dt-bindings: fsl-dma: fsl-edma: add fsl,imx8ulp-edma
- compatible string
-Content-Language: en-US
-To: Frank Li <Frank.li@nxp.com>
-Cc: Vinod Koul <vkoul@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Peng Fan <peng.fan@nxp.com>,
- imx@lists.linux.dev, dmaengine@vger.kernel.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- Joy Zou <joy.zou@nxp.com>
-References: <20240227-8ulp_edma-v1-0-7fcfe1e265c2@nxp.com>
- <20240227-8ulp_edma-v1-4-7fcfe1e265c2@nxp.com>
- <bb3b61b6-4f39-4123-be50-0e2c8f07eb99@linaro.org>
- <ZeCooFQtOK9MuuJn@lizhi-Precision-Tower-5810>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <ZeCooFQtOK9MuuJn@lizhi-Precision-Tower-5810>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240229154946.2850012-6-sashal@kernel.org>
 
-On 29/02/2024 16:54, Frank Li wrote:
-> On Thu, Feb 29, 2024 at 10:49:43AM +0100, Krzysztof Kozlowski wrote:
->> On 27/02/2024 18:21, Frank Li wrote:
->>>  
->>> +  - if:
->>> +      properties:
->>> +        compatible:
->>> +          contains:
->>> +            const: fsl,imx8ulp-edma
->>> +    then:
->>> +      properties:
->>> +        clock:
->>> +          maxItems: 33
->>> +        clock-names:
->>> +          items:
->>> +            - const: dma
->>> +            - pattern: "^CH[0-31]-clk$"
->>> +        interrupt-names: false
->>> +        interrupts:
->>> +          maxItems: 32
->>> +        "#dma-cells":
->>> +          const: 3
->>
->> Why suddenly fsl,vf610-edma can have from 2 to 33 clocks? Constrain
->> properly the variants.
+On Thu, Feb 29, 2024 at 10:49:26AM -0500, Sasha Levin wrote:
+> From: Fangrui Song <maskray@google.com>
 > 
-> Suppose you talk about 'fsl,imx8ulp-edma' instead 'fsl,vf610-edma'.
+> [ Upstream commit f9daab0ad01cf9d165dbbbf106ca4e61d06e7fe8 ]
+
+Please drop this; same story as wit the v6.7 backport:
+
+  https://lore.kernel.org/lkml/ZeCpOPDi18OBEclz@FVFF77S0Q05N/
+
+Mark.
+
+> The generic constraint "i" seems to be copied from x86 or arm (and with
+> a redundant generic operand modifier "c"). It works with -fno-PIE but
+> not with -fPIE/-fPIC in GCC's aarch64 port.
 > 
-> imx8ulp each channel have one clk, there are 32 channel. 1 channel for core
-> controller. So max became 32.
+> The machine constraint "S", which denotes a symbol or label reference
+> with a constant offset, supports PIC and has been available in GCC since
+> 2012 and in Clang since 7.0. However, Clang before 19 does not support
+> "S" on a symbol with a constant offset [1] (e.g.
+> `static_key_false(&nf_hooks_needed[pf][hook])` in
+> include/linux/netfilter.h), so we use "i" as a fallback.
 > 
-> I can add above information in commit message.
-
-No, I meant Vybrid. Quick look at this code and the actual file suggest
-that you allow vybrid with 30-whatever clocks. Test it.
-
-Best regards,
-Krzysztof
-
+> Suggested-by: Ard Biesheuvel <ardb@kernel.org>
+> Signed-off-by: Fangrui Song <maskray@google.com>
+> Link: https://github.com/llvm/llvm-project/pull/80255 [1]
+> Acked-by: Mark Rutland <mark.rutland@arm.com>
+> Link: https://lore.kernel.org/r/20240206074552.541154-1-maskray@google.com
+> Signed-off-by: Will Deacon <will@kernel.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  arch/arm64/include/asm/jump_label.h | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/jump_label.h b/arch/arm64/include/asm/jump_label.h
+> index 48ddc0f45d228..b7716b215f91a 100644
+> --- a/arch/arm64/include/asm/jump_label.h
+> +++ b/arch/arm64/include/asm/jump_label.h
+> @@ -15,6 +15,10 @@
+>  
+>  #define JUMP_LABEL_NOP_SIZE		AARCH64_INSN_SIZE
+>  
+> +/*
+> + * Prefer the constraint "S" to support PIC with GCC. Clang before 19 does not
+> + * support "S" on a symbol with a constant offset, so we use "i" as a fallback.
+> + */
+>  static __always_inline bool arch_static_branch(struct static_key * const key,
+>  					       const bool branch)
+>  {
+> @@ -23,9 +27,9 @@ static __always_inline bool arch_static_branch(struct static_key * const key,
+>  		 "	.pushsection	__jump_table, \"aw\"	\n\t"
+>  		 "	.align		3			\n\t"
+>  		 "	.long		1b - ., %l[l_yes] - .	\n\t"
+> -		 "	.quad		%c0 - .			\n\t"
+> +		 "	.quad		(%[key] - .) + %[bit0]  \n\t"
+>  		 "	.popsection				\n\t"
+> -		 :  :  "i"(&((char *)key)[branch]) :  : l_yes);
+> +		 :  :  [key]"Si"(key), [bit0]"i"(branch) :  : l_yes);
+>  
+>  	return false;
+>  l_yes:
+> @@ -40,9 +44,9 @@ static __always_inline bool arch_static_branch_jump(struct static_key * const ke
+>  		 "	.pushsection	__jump_table, \"aw\"	\n\t"
+>  		 "	.align		3			\n\t"
+>  		 "	.long		1b - ., %l[l_yes] - .	\n\t"
+> -		 "	.quad		%c0 - .			\n\t"
+> +		 "	.quad		(%[key] - .) + %[bit0]  \n\t"
+>  		 "	.popsection				\n\t"
+> -		 :  :  "i"(&((char *)key)[branch]) :  : l_yes);
+> +		 :  :  [key]"Si"(key), [bit0]"i"(branch) :  : l_yes);
+>  
+>  	return false;
+>  l_yes:
+> -- 
+> 2.43.0
+> 
 
