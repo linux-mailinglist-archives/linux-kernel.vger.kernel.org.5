@@ -1,151 +1,128 @@
-Return-Path: <linux-kernel+bounces-87327-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87328-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5785A86D2DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:09:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 425CF86D2E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:13:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D18D1C21CE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:09:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0D24B21DAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:13:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FA6F13C9EB;
-	Thu, 29 Feb 2024 19:09:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4415713443A;
+	Thu, 29 Feb 2024 19:12:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="WPFTpjyi"
-Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PZ+RGWNm"
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19BD213C9C2
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 19:08:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4097037A
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 19:12:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709233741; cv=none; b=ILW9BwCxZATAvDBEmQuvPuHKuBo+d8SrlvD4LqT5rKYXECChZdCg34ShroXpbZYIzwsRo/uELXLgFsaHcndLTixeig9NP3sqm7XmJcMvTUXNzAcFX1FJBY1SVU2eSTDu2GKedQiwJe1mCWUetG4YW2hGOl+U+X+aI7MphwmW3d0=
+	t=1709233974; cv=none; b=fQoo9BBUR6rGi3ok5kUMV2Gtw5Ki2PFmd7Mlqn/TlGbKv1iWrwpTeoY2yl0BqCT8DeSrx1RegHEfe7tPz4Gv8R9oAuDFJX65Dtk30Iw3H49fTOP1PxJBlCO49XPIhrAHKoUFNTmBt4cRC6RIZMVlcZDBCJRIrKrfH9if3f0/kUE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709233741; c=relaxed/simple;
-	bh=XhYVxNr3yIQGYfPBq8eZl7fW5SFxmb1whNnII5+VYe8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iNWKc/rH3F1/5XvU2EZrdmMQJ6PInESpz90VTC27Z/jiCOY7mdI6oiR7mwZ8T+zu1S1xQtfZJ/XigRqfZHA9oHnyenXYR7nsOsRaMoGEA1mEqAnajy1LVQUHID8L9ASVWMgkC3HghJguy4693v6tzinudnji6T1RUtvU4hTUw2g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=WPFTpjyi; arc=none smtp.client-ip=209.85.210.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6e48153c13aso667854a34.3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 11:08:59 -0800 (PST)
+	s=arc-20240116; t=1709233974; c=relaxed/simple;
+	bh=z2wEAt7zpR7E6YWtpUvu+3gKjErwKwxgYcFIWwcgxww=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=D+DEXWZrFCtkWL0H7fQz+sgctJjbqjTGSqhmoYzIFVMP7RtUKvw/pwKzCRp2nQ9WDE9vtJMiPUyIC90+lk6wDr+UhwqjYU0KQdHRyiP58CtiWCjUchrWaVK3nunn1EQojdcPYokCZ2hsXgJUw+Ja5ZDrZ04yCZVW3KyKrTjZu1Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PZ+RGWNm; arc=none smtp.client-ip=209.85.215.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5ce9555d42eso1002330a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 11:12:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709233739; x=1709838539; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=UPNx03vL5gJBUsLY5izQNSc5f5aQFQJTo3mFc1Gcb0A=;
-        b=WPFTpjyiRDs+msv4Rcc4/qQvq3jlA5SfObvFs8J1jxZ+hsqoA8y2mmS/xj0bHHmGxt
-         4RQ+Vbpb7J99vt2blfAzhImkl3cMVSnvDq/urcg/XftJn0Pc/UZqL0z2YxSQtfwPOIwG
-         q5FuNu5UmCxQohquaFF0QadN7TK8tF6YHwPZ8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709233739; x=1709838539;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1709233972; x=1709838772; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UPNx03vL5gJBUsLY5izQNSc5f5aQFQJTo3mFc1Gcb0A=;
-        b=ZFVsQfyO+QNhpzMLTkfSUFHk9HcY9+NvhREr0b1wDjAKmyht4H/nh9T0uC01RCHNRN
-         RlEYhz8xN3Psj2IEss4ZZqR/XSJSPJiDm5TnmW5UbHam3ctUw5m9Tg8oO+V8RMg6Vtxu
-         eZE/Ln9w6tG6kg0M4jj3GPyIqJv9h1TlV6YMpRVOluSZKdWGCiSt6/+wkQnNwq8qE4dV
-         XkaKFOWAEqThovnHbpFmiFuWEQ4oomaxdSpoWkHBJoJe/F1Wnyf1bp59mctq8kmx4Ypu
-         4+O4dVW2X18vsewOFEvAMuZlibUXvYHmsK2gtGvvD2sU1M3Ku4lrvWTX81/AdlE6CDJI
-         WnNg==
-X-Forwarded-Encrypted: i=1; AJvYcCX5pzfz34Euxt/Y/avJ5FIWZw1kXOnz/YGEWNI0JB1SK1WJBWLsRnEDzVuynqc9EsUZRUpQEF1dV+8hsMmszsqrjPyqOHO8t/Oziq4V
-X-Gm-Message-State: AOJu0Yzew2pxp6f08qgHPk3Yak6Ud5ZlihVwBPi7s/fxAnDCewzOuHiZ
-	W3YFUs/M3cONW4XTqXsuoaKl1ZSw267R3BpsSa/r0zLdJuCsCs/AG8iihbVo5g==
-X-Google-Smtp-Source: AGHT+IHgyC7clemZIshyNx4SoJ7Udvxw9GwegtcRM1FBJfrzoLTLgcJeKmWLE72ksvmhiwetvndvRw==
-X-Received: by 2002:a9d:618c:0:b0:6e4:9e38:37a7 with SMTP id g12-20020a9d618c000000b006e49e3837a7mr2725366otk.23.1709233739242;
-        Thu, 29 Feb 2024 11:08:59 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id c4-20020aa78804000000b006e05c801748sm1613455pfo.199.2024.02.29.11.08.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 11:08:58 -0800 (PST)
-Date: Thu, 29 Feb 2024 11:08:58 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Vinod Koul <vkoul@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Mark Brown <broonie@kernel.org>,
-	linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-	linux-spi@vger.kernel.org, netdev@vger.kernel.org,
-	linux-hardening@vger.kernel.org,
-	Jonathan Cameron <jic23@kernel.org>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: Re: [PATCH v4 7/8] net-device: Use new helpers from overflow.h in
- netdevice APIs
-Message-ID: <202402291059.491B5E03@keescook>
-References: <20240228204919.3680786-1-andriy.shevchenko@linux.intel.com>
- <20240228204919.3680786-8-andriy.shevchenko@linux.intel.com>
- <202402281341.AC67EB6E35@keescook>
- <20240228144148.5c227487@kernel.org>
- <202402281554.C1CEEF744@keescook>
- <20240228165609.06f5254a@kernel.org>
+        bh=Px+JyXf4tLpdcNsZuGtIfGj/dsN60RYAYJbqilYoB+8=;
+        b=PZ+RGWNm+h6Y/Bsum4eDDib3kBeX5OsNPcBj5zsKSGJBk/EoXc95RK/mc/aNTtem4y
+         c17tlw2iitf+eLHen0HZ+myzCe6dAGU0VG184HlItyZPMzLZBzy16lfh7wXz+Tg21Tm1
+         tY5Z6w9UVIFEbZqXzU4E1WVVz070w7rWbUYw3MSkFncjgzWYrhbRbUjxZkL1v0YcOUQZ
+         W9O6wc8dRvLopvK01FuYmDfBQrJ7S2dPWanlmEOqB+/wFsZgalR+XErazIUhnSGmlfz3
+         yRLWLLPchs9bQuA31mCnko+t/7TqcBr+WqE1mVgIKKJlTwQ/YF3SKK8K6oEsz5I2bBbF
+         Oo6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709233972; x=1709838772;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Px+JyXf4tLpdcNsZuGtIfGj/dsN60RYAYJbqilYoB+8=;
+        b=GzAyN0xmMSQHi2WlfbcAcle/oX49+LkmTQgLBi2dS0cBaMeGcaATgAX767HuSq423i
+         a+xhU+m3u6j3489LOQliLyxzujWoz49Hyp8ArB3UsESm/dF54AUbBL+aLeZJU8xGxaCw
+         sQR3lSkvv7A0DgcGVLUeVO1hJZ+utlR3YXzBJ8io5Y4OzxJVmTPiaqVnbR7XQUkkvqDM
+         cznb4RWHU1KWnNYRDoLe+md7/DFSIVy6TzjOi8cwZWS3lysXKL59lAMi0BBGur2pG0eN
+         rDqFwRrxG9vF2Q4W5ZOb1HjbIW8Xen/LiykLCQHwugP7JSJPKa/A56LLfPDcjhOVTeq1
+         8QHA==
+X-Forwarded-Encrypted: i=1; AJvYcCV4DWaSLjIMfsRLpQBJtcPFcZkhXSqNnW9EU4UoruNAIgxyFX/X4UUvD2BB/w0Jx/35yAx0q2JjxEGMe7cKfQdkhOrJgmD8u81zFy26
+X-Gm-Message-State: AOJu0Yx66NfxkbQx++BQQP/k4l9ERSU+mYFaLzgjgMR/KPU+/fmggzxT
+	6mmbdkX3N7jhIme4AGGL7tJGdcfyXNSew5IzbxQmdc+oNld8C99iS/BS3CVJFa7qOr7TNNdFxJ9
+	vEF1FfeNyt33Sfo+85oA5AH1RcpY=
+X-Google-Smtp-Source: AGHT+IFMzzhy10NqDN+BK2sKx5qHOBOz1iWOCM7oh2BvBq+hmVZas4TDKA77iA356owZsETodRWHQmax6qLWPeR7z20=
+X-Received: by 2002:a17:90b:ec6:b0:29b:17de:6951 with SMTP id
+ gz6-20020a17090b0ec600b0029b17de6951mr1582952pjb.3.1709233972379; Thu, 29 Feb
+ 2024 11:12:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240228165609.06f5254a@kernel.org>
+References: <20240229181106.351877-1-helgaas@kernel.org>
+In-Reply-To: <20240229181106.351877-1-helgaas@kernel.org>
+From: Alex Deucher <alexdeucher@gmail.com>
+Date: Thu, 29 Feb 2024 14:12:40 -0500
+Message-ID: <CADnq5_OdYfOOckVNzxZHgxCn5tuYHrCUuaTEnEubJS_2jwXw-Q@mail.gmail.com>
+Subject: Re: [PATCH] drm/amdgpu: remove misleading amdgpu_pmops_runtime_idle() comment
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Alex Deucher <alexander.deucher@amd.com>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	Pan@freedesktop.org, Xinhui <Xinhui.Pan@amd.com>, amd-gfx@lists.freedesktop.org, 
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+	Bjorn Helgaas <bhelgaas@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 28, 2024 at 04:56:09PM -0800, Jakub Kicinski wrote:
-> On Wed, 28 Feb 2024 16:01:49 -0800 Kees Cook wrote:
-> > So, I found several cases where struct net_device is included in the
-> > middle of another structure, which makes my proposal more awkward. But I
-> > also don't understand why it's in the _middle_. Shouldn't it always be
-> > at the beginning (with priv stuff following it?)
-> > Quick search and examined manually: git grep 'struct net_device [a-z0-9_]*;'
-> > 
-> > struct rtw89_dev
-> > struct ath10k
-> > etc.
-> 
-> Ugh, yes, the (ab)use of NAPI.
-> 
-> > Some even have two included (?)
-> 
-> And some seem to be cargo-culted from out-of-tree code and are unused :S
+Applied.  Thanks!
 
-Ah, which can I remove?
-
-> That's... less pretty. I'd rather push the ugly into the questionable
-> users. Make them either allocate the netdev dynamically and store 
-> a pointer, or move the netdev to the end of the struct.
-> 
-> But yeah, that's a bit of a cleanup :(
-
-So far, it's not too bad. I'm doing some test builds now.
-
-
-As a further aside, this code:
-
-        struct net_device *dev;
-	...
-        struct net_device *p;
-	...
-        /* ensure 32-byte alignment of whole construct */
-        alloc_size += NETDEV_ALIGN - 1;
-        p = kvzalloc(alloc_size, GFP_KERNEL_ACCOUNT | __GFP_RETRY_MAYFAIL);
-	...
-        dev = PTR_ALIGN(p, NETDEV_ALIGN);
-
-Really screams for a dynamic-sized (bucketed) kmem_cache_alloc
-API. Alignment constraints can be described in a regular kmem_cache
-allocator (rather than this open-coded version). I've been intending to
-build that for struct msg_msg for a while now, and here's another user. :)
-
--Kees
-
--- 
-Kees Cook
+On Thu, Feb 29, 2024 at 1:11=E2=80=AFPM Bjorn Helgaas <helgaas@kernel.org> =
+wrote:
+>
+> From: Bjorn Helgaas <bhelgaas@google.com>
+>
+> After 4020c2280233 ("drm/amdgpu: don't runtime suspend if there are
+> displays attached (v3)"), "ret" is unconditionally set later before being
+> used, so there's point in initializing it and the associated comment is n=
+o
+> longer meaningful.
+>
+> Remove the comment and the unnecessary initialization.
+>
+> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> ---
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c b/drivers/gpu/drm/am=
+d/amdgpu/amdgpu_drv.c
+> index cc69005f5b46..68416e2a9130 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
+> @@ -2744,8 +2744,7 @@ static int amdgpu_pmops_runtime_idle(struct device =
+*dev)
+>  {
+>         struct drm_device *drm_dev =3D dev_get_drvdata(dev);
+>         struct amdgpu_device *adev =3D drm_to_adev(drm_dev);
+> -       /* we don't want the main rpm_idle to call suspend - we want to a=
+utosuspend */
+> -       int ret =3D 1;
+> +       int ret;
+>
+>         if (adev->pm.rpm_mode =3D=3D AMDGPU_RUNPM_NONE) {
+>                 pm_runtime_forbid(dev);
+> --
+> 2.34.1
+>
 
