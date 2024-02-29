@@ -1,120 +1,188 @@
-Return-Path: <linux-kernel+bounces-87275-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87276-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2922886D20A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:23:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F38D986D210
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:23:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A60E7B2593B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:23:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 68CA61F2688D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:23:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3BB27A121;
-	Thu, 29 Feb 2024 18:22:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8D597A12E;
+	Thu, 29 Feb 2024 18:23:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="NHD3BP2H"
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+	dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b="3X0T5qTt"
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7DE87829E
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 18:22:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D066F160653
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 18:23:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709230972; cv=none; b=qg4cP2LkCHdiQmhw/AWqor9e1S2ELjQ1I3R96LdYPodY+D29raKyUxRWSmtxEGvgwZ5S2vy/7V9AUEirUniV7dosEF1njdIxltOsfB6PxvoFApypLglLv+Hi82ydUoDyYVG610HPbj+GfQiK2emzwxh0q2tagDL59bEYmlR4fAU=
+	t=1709231022; cv=none; b=oCuDFEjR0Yf62X+RJV9baXx5FtzTftKumsPdg/sEhx/DGs8Hw525kGGSf6DT0APyi9zu7eQwx57lkvf434bkw8Zv5PErI5Jfn3HgPxxnUgILuoWU/wSvlWQ1+Wa6dpcTSAfGUjdQxqwcKz5grtbDntWtxbbfZGM3gjAtx61qfZo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709230972; c=relaxed/simple;
-	bh=g80ZHMfkap5e1XvdbqJdFJDCZAoVlfr93qwV4iryYMg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hvd9l6uQrshPm0SKZl5mKyKqhKclerhKbVVyg2cm48SwPDLHLMYx2KT77VHOqGBhnsbeQyZeZGDU5GlbefOROy+Zv4PgZFIEeW08qbbyF9yEVfPMmc9vtkftLutzkRyJk+OKDvM1kDYEM4TJeoysD6oJHTR5CynhE99xJbup6Bo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=NHD3BP2H; arc=none smtp.client-ip=209.85.216.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-299566373d4so904386a91.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 10:22:49 -0800 (PST)
+	s=arc-20240116; t=1709231022; c=relaxed/simple;
+	bh=IUs2P2eBk1wf7ezQbtubT+nO2sA2RiLqnI5zaQm0gd4=;
+	h=Date:Subject:In-Reply-To:CC:From:To:Message-ID:Mime-Version:
+	 Content-Type; b=dvB0HPiigmP96eBRmaNXvgV+6PvxMh2zCWE5W1ugbWqoZly3QGptWPo8P5Vq4mOWPe2DEeCepn4wxTmA+janwnoQmfv0giFlsZljHnDHKa6H0t0apcrt7v4AtB0n631LhnpgDODBCkD/lHVFh2Ado4aKkJoFY0p3hLd/ACguBZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com; spf=pass smtp.mailfrom=dabbelt.com; dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b=3X0T5qTt; arc=none smtp.client-ip=209.85.215.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dabbelt.com
+Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5d8b519e438so1098150a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 10:23:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709230969; x=1709835769; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=SME3hkkQyGOJtg72h1VtA8SKZ4fgYrx6Seh5LXcBQ8Y=;
-        b=NHD3BP2HmpZYqK4Q5E35+nXruIJPzrSQyLpUi4XNguSxfkVoOmJsSl1BEQf0TBLCX+
-         TbH3MdWSFEWkq8D4u25f0Ljh7+ycO3DD5CTc93Sl6RUuc75jXzLNdXE7iaE+9Q+v8pJY
-         7CyO4t8HdmhowkEtiYNEp54rP4rGvMHgdcpS4=
+        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1709231020; x=1709835820; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sbYjGWbVPUoMA9yoLV4Bq9DdL9YDbwpcvfQ5i1IxNJY=;
+        b=3X0T5qTtgCF2MJ5+gFyS39y8RtnaZYouEWL67WNHj9DYPTfIzqgVMrvu2QAbzfvi9m
+         jMYZXwgzuaS10zTshKYIzLZOgXTrYEH9cwWmR3XZ+5Xyo6TtFOpwOpu94JmRviPkZfya
+         OBeEoTqoli4iMnLpiEclZC9YjscXFCKBblVFFwTIEFxEGcENPm2QNzUTLXFOt9APC+hY
+         sjs85sZ+3r/yasSNT0/vh959gzXCQuFulZEwg5y9qNf60zmbdfUgDoWQy6xt0w8QcZVL
+         H73YaSMVc0KlkMyrrUFOpA7/jJc5ytitJhPGROd31lrUs20+vi+NNukreE0nFq5UgnrV
+         r72A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709230969; x=1709835769;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SME3hkkQyGOJtg72h1VtA8SKZ4fgYrx6Seh5LXcBQ8Y=;
-        b=EpRR5p7midabOOX3mUHFPWUlmRYmgdgDY5xzTHJKGOtpj+kmj65Hl6rII8jYMJWyQS
-         GO/7fXp8P37SAG3/1n/HakQjJ35fSUElUaWjAOocW91NGgmRktMSyXRqqMgGYMw+ifWD
-         DZT2idPJgpij6gMwIzkdm4GU7DzqqO0dhtHJ6jQabHKN+VlNbb8xyswfRVWhFtZ/f44a
-         mdvOb7V6UeGrba9svpjv/5y8XfA33jXlTFLDeMBEILDHhGEDwVhmike0MsrArd+8IWp7
-         kZkSjxPszNFvW8om/E0WNJ7VAnCQe9YLYnRMsZ1e2VBHVM7hs56MzTG1JgwGEyQZJXsD
-         YjBA==
-X-Forwarded-Encrypted: i=1; AJvYcCVb/yJZ4tZWw1msFN6Es0K2p22crGYebTv8hUOxirizy9kx/Qd2Nbj5dvthXP0j6o43ip+rFJCEgOk1NcgkiKIJa6QOukRi7wBwUI+w
-X-Gm-Message-State: AOJu0Yx4tBGtE8oziP5hRpxoaXk2ZiCJay1KeEFRfcHB4tdkwYaUVUbQ
-	S0tSTqUHNtczUKCUFiejpcjNKTzy1eFa9PKXCIhlnZlYQM06uktsMVDW62q7Lg==
-X-Google-Smtp-Source: AGHT+IGYdlTHCZzP2Rg0F0nElhv750jePTpguZzrPB+4WF7VZs5zNJs7UO3cl1UWFqPeurqTqikR6A==
-X-Received: by 2002:a17:90a:4a02:b0:29a:f233:2882 with SMTP id e2-20020a17090a4a0200b0029af2332882mr2856150pjh.12.1709230969105;
-        Thu, 29 Feb 2024 10:22:49 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id c88-20020a17090a496100b0029a7a2fbb25sm1930138pjh.57.2024.02.29.10.22.48
+        d=1e100.net; s=20230601; t=1709231020; x=1709835820;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sbYjGWbVPUoMA9yoLV4Bq9DdL9YDbwpcvfQ5i1IxNJY=;
+        b=fiKjo7gGxkGmdUYyU5L5OsWhPRS2PcJiEW8IyCe8YtdDkHTkOzAaQK5U1sdjcm2JPp
+         A+h3ab5AJ50YQjRR2U0oWGb9pc6SlYpobHogziUhbE0J+CuESr5pSWLpIqeGpL/HTcBC
+         R0aMXn6R13zYAzd1inW3ETOzSZUGPd510BIygRrH0r50VMIOkM9SR6W1uP/RadedCxM7
+         Q5wfatM0jXme84QCHbs4evEIHCAlMhSjO50nfXT4WmzAWI+/PUfPxnJuepv2YTAQ5DOd
+         NJWi2oUkUpg12oHtkyXVStjScvcLNdiEbYB3GEMsRVKaiu8SZQMqJyKU7M71HfvWJ2zn
+         1Hyg==
+X-Forwarded-Encrypted: i=1; AJvYcCUIX3tSSnRHz7Nqv4xfBq2oQsV1mxpDnCzoiZlxp9qJ/kF/cEi/GIOjjDcShoUCcfb8MHCglrvzdFUDt+gcCAQft9xmLlzl/TXjdRd7
+X-Gm-Message-State: AOJu0YxL0hSIepEGy7XKw8vpvMwdwYlpq6gCrW7TwOWOEU7jmf+pNsZM
+	/kXhGP/6kCtOrY3WMLad4C7hQ7jHYSeV6O9tpvqk67vDVvreqeZavtPxl+qLwCGI07nnZuHW/53
+	Q
+X-Google-Smtp-Source: AGHT+IGQTeBXjtlyAuNzBCl4pxIJl5lxn1BCm16ZbGfviqXJmKWQHlcF7bZ7LSjJ4SHO2MxyFQm++w==
+X-Received: by 2002:a17:903:2284:b0:1dc:cbaa:f5dd with SMTP id b4-20020a170903228400b001dccbaaf5ddmr3655020plh.39.1709231020032;
+        Thu, 29 Feb 2024 10:23:40 -0800 (PST)
+Received: from localhost ([50.213.54.97])
+        by smtp.gmail.com with ESMTPSA id u17-20020a170902e81100b001dbcfa0f1acsm1810677plg.83.2024.02.29.10.23.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 10:22:48 -0800 (PST)
-Date: Thu, 29 Feb 2024 10:22:48 -0800
-From: Kees Cook <keescook@chromium.org>
-To: =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
-Cc: Brendan Higgins <brendanhiggins@google.com>,
-	David Gow <davidgow@google.com>, Rae Moar <rmoar@google.com>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-	James Morris <jamorris@linux.microsoft.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	"Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>,
-	Marco Pagani <marpagan@redhat.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Sean Christopherson <seanjc@google.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Thara Gopinath <tgopinath@microsoft.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Wanpeng Li <wanpengli@tencent.com>,
-	Zahra Tarkhani <ztarkhani@microsoft.com>, kvm@vger.kernel.org,
-	linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org,
-	linux-um@lists.infradead.org, x86@kernel.org
-Subject: Re: [PATCH v1 4/8] kunit: Fix timeout message
-Message-ID: <202402291022.E3529BD@keescook>
-References: <20240229170409.365386-1-mic@digikod.net>
- <20240229170409.365386-5-mic@digikod.net>
+        Thu, 29 Feb 2024 10:23:39 -0800 (PST)
+Date: Thu, 29 Feb 2024 10:23:39 -0800 (PST)
+X-Google-Original-Date: Thu, 29 Feb 2024 10:23:34 PST (-0800)
+Subject:     Re: [PATCH -fixes v4 2/3] riscv: Add a custom ISA extension for the [ms]envcfg CSR
+In-Reply-To: <20240228-goldsmith-shrine-97fc4610e0bc@spud>
+CC: samuel.holland@sifive.com, ajones@ventanamicro.com, linux-kernel@vger.kernel.org,
+  alex@ghiti.fr, linux-riscv@lists.infradead.org, sorear@fastmail.com, stable@vger.kernel.org
+From: Palmer Dabbelt <palmer@dabbelt.com>
+To: Conor Dooley <conor@kernel.org>
+Message-ID: <mhng-94e8034f-eda3-45df-bcf0-1bd5bd9cb869@palmer-ri-x1c9a>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240229170409.365386-5-mic@digikod.net>
 
-On Thu, Feb 29, 2024 at 06:04:05PM +0100, Mickaël Salaün wrote:
-> The exit code is always checked, so let's properly handle the -ETIMEDOUT
-> error code.
-> 
-> Cc: Brendan Higgins <brendanhiggins@google.com>
-> Cc: David Gow <davidgow@google.com>
-> Cc: Rae Moar <rmoar@google.com>
-> Cc: Shuah Khan <skhan@linuxfoundation.org>
-> Signed-off-by: Mickaël Salaün <mic@digikod.net>
+On Wed, 28 Feb 2024 02:12:14 PST (-0800), Conor Dooley wrote:
+> On Tue, Feb 27, 2024 at 10:55:34PM -0800, Samuel Holland wrote:
+>> The [ms]envcfg CSR was added in version 1.12 of the RISC-V privileged
+>> ISA (aka S[ms]1p12). However, bits in this CSR are defined by several
+>> other extensions which may be implemented separately from any particular
+>> version of the privileged ISA (for example, some unrelated errata may
+>> prevent an implementation from claiming conformance with Ss1p12). As a
+>> result, Linux cannot simply use the privileged ISA version to determine
+>> if the CSR is present. It must also check if any of these other
+>> extensions are implemented. It also cannot probe the existence of the
+>> CSR at runtime, because Linux does not require Sstrict, so (in the
+>> absence of additional information) it cannot know if a CSR at that
+>> address is [ms]envcfg or part of some non-conforming vendor extension.
+>> 
+>> Since there are several standard extensions that imply the existence of
+>> the [ms]envcfg CSR, it becomes unwieldy to check for all of them
+>> wherever the CSR is accessed. Instead, define a custom Xlinuxenvcfg ISA
+>> extension bit that is implied by the other extensions and denotes that
+>> the CSR exists as defined in the privileged ISA, containing at least one
+>> of the fields common between menvcfg and senvcfg.
+>
+>> This extension does not need to be parsed from the devicetree or ISA
+>> string because it can only be implemented as a subset of some other
+>> standard extension.
+>
+> NGL, every time I look at the superset stuff I question whether or not
+> it is a good implementation, but it is nice to see that it at least
+> makes the creation of quasi-extension flags like this straightforward.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+We can always add it to the DT list as a proper extension, but I think 
+for this sort of stuff it's good enough for now -- we've already got a 
+bunch of complexity for the proper ISA-defined extension dependencies, 
+so it's not like we could really get away from it entirely.
 
--- 
-Kees Cook
+> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+>
+> Cheers,
+> Conor.
+>
+>
+>> 
+>> Cc: <stable@vger.kernel.org> # v6.7+
+>> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+>> ---
+>> 
+>> Changes in v4:
+>>  - New patch for v4
+>> 
+>>  arch/riscv/include/asm/hwcap.h |  2 ++
+>>  arch/riscv/kernel/cpufeature.c | 14 ++++++++++++--
+>>  2 files changed, 14 insertions(+), 2 deletions(-)
+>> 
+>> diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
+>> index 5340f818746b..1f2d2599c655 100644
+>> --- a/arch/riscv/include/asm/hwcap.h
+>> +++ b/arch/riscv/include/asm/hwcap.h
+>> @@ -81,6 +81,8 @@
+>>  #define RISCV_ISA_EXT_ZTSO		72
+>>  #define RISCV_ISA_EXT_ZACAS		73
+>>  
+>> +#define RISCV_ISA_EXT_XLINUXENVCFG	127
+>> +
+>>  #define RISCV_ISA_EXT_MAX		128
+>>  #define RISCV_ISA_EXT_INVALID		U32_MAX
+>>  
+>> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+>> index c5b13f7dd482..dacffef68ce2 100644
+>> --- a/arch/riscv/kernel/cpufeature.c
+>> +++ b/arch/riscv/kernel/cpufeature.c
+>> @@ -201,6 +201,16 @@ static const unsigned int riscv_zvbb_exts[] = {
+>>  	RISCV_ISA_EXT_ZVKB
+>>  };
+>>  
+>> +/*
+>> + * While the [ms]envcfg CSRs were not defined until version 1.12 of the RISC-V
+>> + * privileged ISA, the existence of the CSRs is implied by any extension which
+>> + * specifies [ms]envcfg bit(s). Hence, we define a custom ISA extension for the
+>> + * existence of the CSR, and treat it as a subset of those other extensions.
+>> + */
+>> +static const unsigned int riscv_xlinuxenvcfg_exts[] = {
+>> +	RISCV_ISA_EXT_XLINUXENVCFG
+>> +};
+>> +
+>>  /*
+>>   * The canonical order of ISA extension names in the ISA string is defined in
+>>   * chapter 27 of the unprivileged specification.
+>> @@ -250,8 +260,8 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
+>>  	__RISCV_ISA_EXT_DATA(c, RISCV_ISA_EXT_c),
+>>  	__RISCV_ISA_EXT_DATA(v, RISCV_ISA_EXT_v),
+>>  	__RISCV_ISA_EXT_DATA(h, RISCV_ISA_EXT_h),
+>> -	__RISCV_ISA_EXT_DATA(zicbom, RISCV_ISA_EXT_ZICBOM),
+>> -	__RISCV_ISA_EXT_DATA(zicboz, RISCV_ISA_EXT_ZICBOZ),
+>> +	__RISCV_ISA_EXT_SUPERSET(zicbom, RISCV_ISA_EXT_ZICBOM, riscv_xlinuxenvcfg_exts),
+>> +	__RISCV_ISA_EXT_SUPERSET(zicboz, RISCV_ISA_EXT_ZICBOZ, riscv_xlinuxenvcfg_exts),
+>>  	__RISCV_ISA_EXT_DATA(zicntr, RISCV_ISA_EXT_ZICNTR),
+>>  	__RISCV_ISA_EXT_DATA(zicond, RISCV_ISA_EXT_ZICOND),
+>>  	__RISCV_ISA_EXT_DATA(zicsr, RISCV_ISA_EXT_ZICSR),
+>> -- 
+>> 2.43.1
+>> 
 
