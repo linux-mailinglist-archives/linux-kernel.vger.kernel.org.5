@@ -1,157 +1,236 @@
-Return-Path: <linux-kernel+bounces-87180-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87182-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 228DD86D0C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:33:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5073486D0CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:36:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7BB4BB25CA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:33:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AA60AB21485
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:36:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9A06757F9;
-	Thu, 29 Feb 2024 17:33:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="taU9xXE3"
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88D7870AEE;
+	Thu, 29 Feb 2024 17:36:12 +0000 (UTC)
+Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com [209.85.161.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D0CA70ADD
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 17:33:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4511716062E;
+	Thu, 29 Feb 2024 17:36:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709228003; cv=none; b=mYldfo+tg/T/PGG3i0cGK2BPDkfs0uI0ee/KI4zm+18iIgsZhQyuAw0yvfJJENHKvi+ePPH1G5E0hVB0JFVZHOmdFk6fC92VN23BWenPGH3HSJaSeQK4WvFzofYkpmYqqwyRELSDiIVwKwr2n6JLSF/fGBf7XxHIFKsyiXccsM4=
+	t=1709228171; cv=none; b=Bg2veMglUgwpUv2RYVTs1jDsLPhAeo8jelcVPU4JezQX1sr0ZepqeRpf8tlMEdGgGQfVXM+gDYQwQDinxhSAVPQcPA90rWZj/lniGfo5JXv5pgtyxcsXTIYAusBAq2qQW+OOOZso3PgJVj9oN8veetlm7uJ17BFfqjPv2sjr4oY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709228003; c=relaxed/simple;
-	bh=NT2aoqPD+H3UxArx7GoWp/jyurJbnP5jZY2m5x3dC6I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kiR8uas4V/BX6E8eRckFyBX869EYfOb7VKHWs2zkwLPrga0wsrgBH2TpF8kkZPXAVpq1Rge/r2jhKXpPO5MTqyxBgEZZrGIXKc8LmJNt/h4hXIlXTyGBi44N0m0uNTUPhohEjMTwBxUHustMJvw0umCZk+2dqKJk5t13I3ff/qA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=taU9xXE3; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-563d32ee33aso1737274a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 09:33:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709228000; x=1709832800; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=g4SW9IEV1AHr8zcIVjzCtrupsEd2zmLHvwRqfkyVnQo=;
-        b=taU9xXE3feQe+ZLrcZvMjOk+xXdIbRazR4JooUeCDkDMA2WqEtp/Wttod4XXjyz6Gq
-         1D6RqjLecLyFTmrMmdcRWit2bAo8ZsTTLZsvZk/TpGldZMCU3gak5jckKuxPh83DSvmh
-         sTmngTm7hPmvIby3BW5ZoQMPmTsSMFzoPfT+o8F27JGRka0i1t8tQIcrJ/E1yqwfpEAh
-         dyFcupoNLiJ0hZHt6doN6d/3MeBUSh0XjZm5bqoxcOuGl7hwUBDKelLWfVt1ywx+p86+
-         yAdq40t49q6KgbDmqTCWCY3EH8b0+c4gu8HLHEn8ic71pp6BXMLvi0NpMlWkW5VGW91K
-         lzwA==
+	s=arc-20240116; t=1709228171; c=relaxed/simple;
+	bh=5lQsEr6Qh9tHM7o+Jd5giKSHuT+ZJAdZpli4wmPcN48=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jdzewnuJkMdK60uSqs1ofvGwsFAxQ6sTozx7wR7fXlO9pcbd9dBR6YP0HdB9kQJlNKIWPI4bPYKL5sMaMbgx2/3/MAgEFBY9VD593aNcEWmuJqM+2e9rogsX634+fUufiHDlcYp91qzKhvhuRfj0EMQAmaSVc9VDepwOt7NHueU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-5a05210e560so44964eaf.1;
+        Thu, 29 Feb 2024 09:36:10 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709228000; x=1709832800;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=g4SW9IEV1AHr8zcIVjzCtrupsEd2zmLHvwRqfkyVnQo=;
-        b=FH2T4+XrHGOrf0WWcaRhLu3sXAWqKoApFEVqp2T5EL2T5OZus4aTFoY5RVcHy1WSIJ
-         CZWZikahDqnoVShZhuQyKAw9m3+CD5xvWxqkqyPSPCHV1IDW3FClozWcxa7flzNHpTt6
-         To1Xkc/ZmZHFc1Ig1sRQTr2WwSvfRJ4NTFUNUFAcwamBD6YSfJFuv1FR0PX3Wu1Dqyp1
-         2U4fWlhRqnRdmgoNcJ8ctuBiF3yuHtgkdOf1BQ8ovmnCMWoU2scWn396QgseEuLOykNg
-         weQYSBzFdyJ7HBVWayPsVJgqdybcBYrfxgHIUq5hRPGrgXwGGo15qCDfti8jLWHH5hZ8
-         uFSQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV2PnzTuOyyexVaT6T5EbvkaP22A+iIvr//Qe+vNO+3hH/OA/D26hTb9+jXPx5+CWX5Rct+aJca+joH8ufdm+BuwZIiMtNqprwRjmBt
-X-Gm-Message-State: AOJu0Yw5enjdwslNoM3D2jxKknEL5pRpclkjZ3EFA+gjHb8T76KLD/ty
-	+ucd1ZTbx7tZyzqIukNXtjYY2/NYQMXVSKH9FTp0i2Dgdrn9/XETiaUFzDlxWk4=
-X-Google-Smtp-Source: AGHT+IEKMsPkZ39TgyCZPSJIyfL82K1VoIXkvFpH3Et+GrJuX3JxausyV7UmalyVsNVcRwEc/HuKRQ==
-X-Received: by 2002:a50:9e4e:0:b0:565:6dde:ed2e with SMTP id z72-20020a509e4e000000b005656ddeed2emr1877940ede.33.1709228000487;
-        Thu, 29 Feb 2024 09:33:20 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id a10-20020a50ff0a000000b005665a6e07fcsm795398edu.30.2024.02.29.09.33.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Feb 2024 09:33:19 -0800 (PST)
-Message-ID: <e1a7ce61-016b-4052-bca6-81264269c0a2@linaro.org>
-Date: Thu, 29 Feb 2024 18:33:17 +0100
+        d=1e100.net; s=20230601; t=1709228169; x=1709832969;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jxEwKBuAzFb8rhBPqNIU8KxSxIjpcceOLSxQpziJruE=;
+        b=P7Vwulba4Xdbr1pIjbXnQ/7EZGCaP5cYzQ5IwT31jt4nFdYfKTnLgLsVwATQXeoReN
+         rze+/CUQksHt7ntitYyBm1aT1OoLkdh3zhvt4Wi15zSld34ZB7x6MnDA72UBm7/Mi0Uy
+         kuVb0Mb2wNfR1IhIwRcpuP8vtTqUFkx+u3fr3onzvd/TnwmEelj2wbmwbNqK/Q9cGIqf
+         bFpD77sjLrxw07tUKRD59sAqqWSCBNNyzNf4OiTrQaAOaTLi+/LjplnGTQd2s/TkJEwI
+         djxdkg9jRIvLolh5X3/ovC5tNfo172QUY9j590F/wAvki+nhsSGQrm+IOTWRBKpDw/zp
+         E8TQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU1UWxRrRMMohep3uHjvtkPFpxBmTGJSydmkCSzECM0Dp21vIvqy2WigJLL8onUAp6zoU7hpIpJgxVRK3wBp7S3T7qNs5xZQAakiuKd
+X-Gm-Message-State: AOJu0Yx2/NqjoVWdXht+A8TAVaa1wxWPYUgP72sRo+ZKw/Av1hVbRV2Y
+	CX/ueW6MMkEKkT5v0Mx//CThI6FPddFQk7/eZVbOYf4EmKS3DzVuActjGOaWFI2d8WUR3N7MMi5
+	cq2qTYQzSvKzLUVA+8GmirOnGfGg=
+X-Google-Smtp-Source: AGHT+IHSHULtjuulGXkkgXIXLdWokYIfmMcJqUGZZxuJPfoeScx8O2YVwHmCBwrCNkorYcyVsq5UUxrpvCxyIfyId0I=
+X-Received: by 2002:a4a:d317:0:b0:5a0:2cbe:43dd with SMTP id
+ g23-20020a4ad317000000b005a02cbe43ddmr2801222oos.1.1709228169391; Thu, 29 Feb
+ 2024 09:36:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: net: add phy-supply property for stm32
-Content-Language: en-US
-To: Christophe Roullier <christophe.roullier@foss.st.com>,
- "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Richard Cochran <richardcochran@gmail.com>, Jose Abreu
- <joabreu@synopsys.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>
-Cc: netdev@vger.kernel.org, devicetree@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240229134724.1353903-1-christophe.roullier@foss.st.com>
- <20240229134724.1353903-2-christophe.roullier@foss.st.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240229134724.1353903-2-christophe.roullier@foss.st.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240229062245.2723548-1-avadhut.naik@amd.com>
+In-Reply-To: <20240229062245.2723548-1-avadhut.naik@amd.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Thu, 29 Feb 2024 18:35:58 +0100
+Message-ID: <CAJZ5v0h4Z_gND9nTBFeWmW+y5TMG-FjxmaFXPWPX7hRjWe9UPw@mail.gmail.com>
+Subject: Re: [PATCH v4] ACPI: APEI: Skip initialization of GHES_ASSIST
+ structures for Machine Check Architecture
+To: Avadhut Naik <avadhut.naik@amd.com>
+Cc: linux-acpi@vger.kernel.org, rafael@kernel.org, lenb@kernel.org, 
+	james.morse@arm.com, tony.luck@intel.com, bp@alien8.de, 
+	linux-kernel@vger.kernel.org, yazen.ghannam@amd.com, avadnaik@amd.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 29/02/2024 14:47, Christophe Roullier wrote:
-> Phandle to a regulator that provides power to the PHY. This
-> regulator will be managed during the PHY power on/off sequence.
-> 
-> Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
+On Thu, Feb 29, 2024 at 7:22=E2=80=AFAM Avadhut Naik <avadhut.naik@amd.com>=
+ wrote:
+>
+> To support GHES_ASSIST on Machine Check Architecture (MCA) error sources,
+> a set of GHES structures is provided by the system firmware for each MCA
+> error source. Each of these sets consists of a GHES structure for each MC=
+A
+> bank on each logical CPU, with all structures of a set sharing a common
+> Related Source ID, equal to the Source ID of one of the MCA error source
+> structures.[1] On SOCs with large core counts, this typically equates to
+> tens of thousands of GHES_ASSIST structures for MCA under
+> "/sys/bus/platform/drivers/GHES".
+>
+> Support for GHES_ASSIST however, hasn't been implemented in the kernel. A=
+s
+> such, the information provided through these structures is not consumed b=
+y
+> Linux. Moreover, these GHES_ASSIST structures for MCA, which are supposed
+> to provide supplemental information in context of an error reported by
+> hardware, are setup as independent error sources by the kernel during HES=
+T
+> initialization.
+>
+> Additionally, if the Type field of the Notification structure, associated
+> with these GHES_ASSIST structures for MCA, is set to Polled, the kernel
+> sets up a timer for each individual structure. The duration of the timer
+> is derived from the Poll Interval field of the Notification structure. On
+> SOCs with high core counts, this will result in tens of thousands of
+> timers expiring periodically causing unnecessary preemptions and wastage
+> of CPU cycles. The problem will particularly intensify if Poll Interval
+> duration is not sufficiently high.
+>
+> Since GHES_ASSIST support is not present in kernel, skip initialization
+> of GHES_ASSIST structures for MCA to eliminate their performance impact.
+>
+> [1] ACPI specification 6.5, section 18.7
+>
+> Signed-off-by: Avadhut Naik <avadhut.naik@amd.com>
+> Reviewed-by: Yazen Ghannam <yazen.ghannam@amd.com>
+> Reviewed-by: Tony Luck <tony.luck@intel.com>
 > ---
+> Changes in v2:
+> 1. Since is_ghes_assist_struct() returns if any of the conditions is hit
+> if-else-if chain is redundant. Replace it with just if statements.
+> 2. Fix formatting errors.
+> 3. Add Reviewed-by: Yazen Ghannam <yazen.ghannam@amd.com>
+>
+> Changes in v3:
+> 1. Modify structure (mces) comment, per Tony's recommendation, to better
+> reflect the structure's usage.
+>
+> Changes in v4:
+> 1. No changes within the patch. Just sending out to gather more attention=
+.
+> 2. Add Reviewed-by: Tony Luck <tony.luck@intel.com>
+> ---
+>  drivers/acpi/apei/hest.c | 51 ++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 51 insertions(+)
+>
+> diff --git a/drivers/acpi/apei/hest.c b/drivers/acpi/apei/hest.c
+> index 6aef1ee5e1bd..20d757687e3d 100644
+> --- a/drivers/acpi/apei/hest.c
+> +++ b/drivers/acpi/apei/hest.c
+> @@ -37,6 +37,20 @@ EXPORT_SYMBOL_GPL(hest_disable);
+>
+>  static struct acpi_table_hest *__read_mostly hest_tab;
+>
+> +/*
+> + * Since GHES_ASSIST is not supported, skip initialization of GHES_ASSIS=
+T
+> + * structures for MCA.
+> + * During HEST parsing, detected MCA error sources are cached from early
+> + * table entries so that the Flags and Source Id fields from these cache=
+d
+> + * values are then referred to in later table entries to determine if th=
+e
+> + * encountered GHES_ASSIST structure should be initialized.
+> + */
+> +static struct {
+> +       struct acpi_hest_ia_corrected *cmc;
+> +       struct acpi_hest_ia_machine_check *mc;
+> +       struct acpi_hest_ia_deferred_check *dmc;
+> +} mces;
+> +
+>  static const int hest_esrc_len_tab[ACPI_HEST_TYPE_RESERVED] =3D {
+>         [ACPI_HEST_TYPE_IA32_CHECK] =3D -1,       /* need further calcula=
+tion */
+>         [ACPI_HEST_TYPE_IA32_CORRECTED_CHECK] =3D -1,
+> @@ -70,22 +84,54 @@ static int hest_esrc_len(struct acpi_hest_header *hes=
+t_hdr)
+>                 cmc =3D (struct acpi_hest_ia_corrected *)hest_hdr;
+>                 len =3D sizeof(*cmc) + cmc->num_hardware_banks *
+>                         sizeof(struct acpi_hest_ia_error_bank);
+> +               mces.cmc =3D cmc;
+>         } else if (hest_type =3D=3D ACPI_HEST_TYPE_IA32_CHECK) {
+>                 struct acpi_hest_ia_machine_check *mc;
+>                 mc =3D (struct acpi_hest_ia_machine_check *)hest_hdr;
+>                 len =3D sizeof(*mc) + mc->num_hardware_banks *
+>                         sizeof(struct acpi_hest_ia_error_bank);
+> +               mces.mc =3D mc;
+>         } else if (hest_type =3D=3D ACPI_HEST_TYPE_IA32_DEFERRED_CHECK) {
+>                 struct acpi_hest_ia_deferred_check *mc;
+>                 mc =3D (struct acpi_hest_ia_deferred_check *)hest_hdr;
+>                 len =3D sizeof(*mc) + mc->num_hardware_banks *
+>                         sizeof(struct acpi_hest_ia_error_bank);
+> +               mces.dmc =3D mc;
+>         }
+>         BUG_ON(len =3D=3D -1);
+>
+>         return len;
+>  };
+>
+> +/*
+> + * GHES and GHESv2 structures share the same format, starting from
+> + * Source Id and ending in Error Status Block Length (inclusive).
+> + */
+> +static bool is_ghes_assist_struct(struct acpi_hest_header *hest_hdr)
+> +{
+> +       struct acpi_hest_generic *ghes;
+> +       u16 related_source_id;
+> +
+> +       if (hest_hdr->type !=3D ACPI_HEST_TYPE_GENERIC_ERROR &&
+> +           hest_hdr->type !=3D ACPI_HEST_TYPE_GENERIC_ERROR_V2)
+> +               return false;
+> +
+> +       ghes =3D (struct acpi_hest_generic *)hest_hdr;
+> +       related_source_id =3D ghes->related_source_id;
+> +
+> +       if (mces.cmc && mces.cmc->flags & ACPI_HEST_GHES_ASSIST &&
+> +           related_source_id =3D=3D mces.cmc->header.source_id)
+> +               return true;
+> +       if (mces.mc && mces.mc->flags & ACPI_HEST_GHES_ASSIST &&
+> +           related_source_id =3D=3D mces.mc->header.source_id)
+> +               return true;
+> +       if (mces.dmc && mces.dmc->flags & ACPI_HEST_GHES_ASSIST &&
+> +           related_source_id =3D=3D mces.dmc->header.source_id)
+> +               return true;
+> +
+> +       return false;
+> +}
+> +
+>  typedef int (*apei_hest_func_t)(struct acpi_hest_header *hest_hdr, void =
+*data);
+>
+>  static int apei_hest_parse(apei_hest_func_t func, void *data)
+> @@ -114,6 +160,11 @@ static int apei_hest_parse(apei_hest_func_t func, vo=
+id *data)
+>                         return -EINVAL;
+>                 }
+>
+> +               if (is_ghes_assist_struct(hest_hdr)) {
+> +                       hest_hdr =3D (void *)hest_hdr + len;
+> +                       continue;
+> +               }
+> +
+>                 rc =3D func(hest_hdr, data);
+>                 if (rc)
+>                         return rc;
+>
+> base-commit: 07a90c3d91505e44a38e74e1588b304131ad8028
+> --
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-Best regards,
-Krzysztof
-
+Applied as 6.9 material, thanks!
 
