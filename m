@@ -1,129 +1,153 @@
-Return-Path: <linux-kernel+bounces-86795-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86803-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1631F86CAE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:03:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43BAD86CAFD
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:10:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45C231C20D77
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:03:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F0A7C1F23C21
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:10:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B9D112E1FD;
-	Thu, 29 Feb 2024 14:03:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="I8NS4JOl"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E9101420CA;
+	Thu, 29 Feb 2024 14:08:26 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECB9415D2;
-	Thu, 29 Feb 2024 14:03:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C952912F387
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 14:08:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709215390; cv=none; b=aLTaQJ3JgVXWLTQLJ+la10NCxkYGKpXSdhva8/g1NhWEf7z7EpNDdZYKtWqkDHhsUFSPYdllJI/Bi7162K/987Jlytq95kKsr3O74jrzHzVe/mG7X0sGJkzu4RuweOI5saKG1ewqbhmyshd7kkkSoG/FIvxIEkLwXxJ2PsYdPgw=
+	t=1709215705; cv=none; b=OVWmtz/5e/WWv+5AyPKma7YxJ4Vme9nHxyfiorXX3+sMrJb8gzcSFXjxWxlcU4ZPZJ6Ho+CuuK+HjojXSq59wM61Xl5ycNVAPbUZZDUcwru0Kb4I16yz3VhZG7FHPYmCbW2f9BA7ZmnNI0DkWHpDGmXZteKXfwxVWpN4+/YiqCY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709215390; c=relaxed/simple;
-	bh=of78azqk9pyl3dbaAzM1nddstYUe6Qj3+UufZgaZ84Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ts46bBVKn0509a/QMcjm41E80c2dt2OuFNS4poJ4CYVm9BwygyMG+WHZWFPrd17jnvE3irE7Kl2mM0yhkrpcCIDKaVHq29fMejQULQgH4W2YU80zk9re1oK4y5HYGHIK6tetK4ko9RNDose3TuAdQwzE/6hFZf8Meg6rAB1q/90=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=I8NS4JOl; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709215389; x=1740751389;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=of78azqk9pyl3dbaAzM1nddstYUe6Qj3+UufZgaZ84Y=;
-  b=I8NS4JOllwUcL1Wlm9oWfF+kiV7QZ4/ISS/kVEfI29ZJqarOTiyNmmUO
-   EUMvavfeRVsKSWGI9V4f2mQUrrT32qwMJ1NwHsad90B6IpVmbYC3qBMPv
-   DzvqyxEZSFNHDbm0F0kxYzuo+ddz0cRX1TasZc0U1hauPSvtWybIG91xz
-   6lzAPXEccAPFStq+/IBLQG6t9LptCPEJZWXkA32uP7nFykFEiuPAe5U1n
-   wFbzc88LB2ocdf3Q4zcTI0eWrwmNOMEaGRjjBDGsVKE1zjBb/jDCn7wN9
-   ObBsicUTEmbqGD+BTHwA/ZViIuF5FbjCmsYyGPWRMlUsiCl4X/BDvlIGV
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="29116843"
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="29116843"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 06:03:08 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="913982839"
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="913982839"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 06:03:06 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@intel.com>)
-	id 1rfh03-00000008gdV-1Zia;
-	Thu, 29 Feb 2024 16:03:03 +0200
-Date: Thu, 29 Feb 2024 16:03:03 +0200
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Herve Codina <herve.codina@bootlin.com>
-Cc: Luc Van Oostenryck <lucvoo@kernel.org>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-	linux-sparse@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] parse: handle __cleanup__ attribute
-Message-ID: <ZeCOlzq6qLJtuc0O@smile.fi.intel.com>
-References: <8d596a06-9f25-4d9f-8282-deb2d03a6b0a@moroto.mountain>
- <i4s2gnr6rlq3yhmfiy7lkbsahnaioilksvmx3eocdjfh2434zo@zhxhwwgqpxt2>
- <44e22df1-734e-49c5-b20b-4f4cdbce24a6@suswa.mountain>
- <75ee8bd3-aa80-46dc-9f0c-874a8f4e9d48@suswa.mountain>
- <k6ztyjq24ik24qtsu3aqpipodzgq37i2ko42ag7wzn4t2ryrzf@i4gbxu7kvslt>
- <c3884893-44fe-4622-8e8e-576a0bdff19f@suswa.mountain>
- <troz4beymvsw2m4y4ocghwiidohi4nbj45ry2tfmbekanu2ray@ooravawiynxr>
- <Zag2fYsyJDtDR7a6@google.com>
+	s=arc-20240116; t=1709215705; c=relaxed/simple;
+	bh=ZVSqi1TRTwnHKFz1ZpV4p58yxYhpcdlkjnKW0r9Y3S4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pJL7qbMBHbSwMa1M373luAC7gAY/5/4awesGI5eb4UVNLJP5PqgIQRbQdurpe+NFu9g9Tf5uaVxUuqD6WVJkY/bZ9HBhbRqyi9uyYoImO0hmtmAExr1Qup1H7VYIFnpPof4wj1KFaRfsfjpFDXvuVAQDtJGDvDUAuLx6RcCRyXI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rfh4t-0000Sr-CD; Thu, 29 Feb 2024 15:08:03 +0100
+Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rfh4r-003bZl-GU; Thu, 29 Feb 2024 15:08:01 +0100
+Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rfh4r-00ELlb-0n;
+	Thu, 29 Feb 2024 15:08:01 +0100
+From: Oleksij Rempel <o.rempel@pengutronix.de>
+To: Wei Fang <wei.fang@nxp.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>
+Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
+	kernel@pengutronix.de,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	Shenwei Wang <shenwei.wang@nxp.com>,
+	Clark Wang <xiaoning.wang@nxp.com>,
+	NXP Linux Team <linux-imx@nxp.com>
+Subject: [PATCH net-next v7 0/8] net: ethernet: Rework EEE
+Date: Thu, 29 Feb 2024 15:07:52 +0100
+Message-Id: <20240229140800.3420180-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zag2fYsyJDtDR7a6@google.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Wed, Jan 17, 2024 at 12:20:13PM -0800, Dmitry Torokhov wrote:
-> On Mon, Dec 18, 2023 at 02:51:32PM +0100, Luc Van Oostenryck wrote:
-> > On Thu, Dec 14, 2023 at 04:20:20PM +0300, Dan Carpenter wrote:
-> > > Yep.  Perfect.  Thanks so much!
-> > 
-> > Pushed now.
-> 
-> Any chance someone is looking at making context tracking working for
-> code annotated as __cleanup? We already have a bunch of code using
-> constructs like:
-> 
-> 	...
-> 	guard(spinlock_irqsave)(&gpio_lock);
-> 
-> 	if (!test_bit(FLAG_REQUESTED, &desc->flags))
-> 		return NULL;
-> 	...
-> 
-> which resuls in:
-> 
-> $ make C=1 W=1 drivers/gpio/gpiolib.o
->   CALL    scripts/checksyscalls.sh
->   DESCEND objtool
->   INSTALL libsubcmd_headers
->   CC      drivers/gpio/gpiolib.o
->   CHECK   drivers/gpio/gpiolib.c
-> drivers/gpio/gpiolib.c:2359:6: warning: context imbalance in 'gpiochip_dup_line_label' - different lock contexts for basic block
-> 
-> and I expect we'll see more and more of this.
+Hello all,
 
-+1 here. It's quite annoying for every Linux kernel developer in the world
-(which are at least 2k of active ones).
+with Andrew's permission I'll continue mainlining this patches:
+
+==============================================================
+
+Most MAC drivers get EEE wrong. The API to the PHY is not very
+obvious, which is probably why. Rework the API, pushing most of the
+EEE handling into phylib core, leaving the MAC drivers to just
+enable/disable support for EEE in there change_link call back.
+
+MAC drivers are now expect to indicate to phylib if they support
+EEE. This will allow future patches to configure the PHY to advertise
+no EEE link modes when EEE is not supported. The information could
+also be used to enable SmartEEE if the PHY supports it.
+
+With these changes, the uAPI configuration eee_enable becomes a global
+on/off. tx-lpi must also be enabled before EEE is enabled. This fits
+the discussion here:
+
+https://lore.kernel.org/netdev/af880ce8-a7b8-138e-1ab9-8c89e662eecf@gmail.com/T/
+
+This patchset puts in place all the infrastructure, and converts one
+MAC driver to the new API. Following patchsets will convert other MAC
+drivers, extend support into phylink, and when all MAC drivers are
+converted to the new scheme, clean up some unneeded code.
+
+v7:
+--
+add phy_link_down() before phy_link_up()
+rewrite comment for phy_ethtool_set_eee_noneg()
+add check for changed tx_lpi_timer
+
+v6:
+--
+Reword different comments. See per patch change comments.
+
+v5:
+--
+Rebase against latest netdev-next
+Use keee instead of eee struct
+
+v4
+--
+Only convert one MAC driver
+Drop all phylink code
+Conform to the uAPI discision.
+
+v3
+--
+Rework phylink code to add a new callback.
+Rework function to indicate clock should be stopped during LPI
+
+Andrew Lunn (7):
+  net: phy: Add phydev->enable_tx_lpi to simplify adjust link callbacks
+  net: phy: Add helper to set EEE Clock stop enable bit
+  net: phy: Keep track of EEE configuration
+  net: phy: Immediately call adjust_link if only tx_lpi_enabled changes
+  net: phy: Add phy_support_eee() indicating MAC support EEE
+  net: fec: Move fec_enet_eee_mode_set() and helper earlier
+  net: fec: Fixup EEE
+
+Russell King (1):
+  net: add helpers for EEE configuration
+
+ drivers/net/ethernet/freescale/fec_main.c | 84 ++++++++++-------------
+ drivers/net/phy/phy-c45.c                 | 14 +++-
+ drivers/net/phy/phy.c                     | 68 +++++++++++++++++-
+ drivers/net/phy/phy_device.c              | 28 ++++++++
+ include/linux/phy.h                       |  9 ++-
+ include/net/eee.h                         | 38 ++++++++++
+ 6 files changed, 187 insertions(+), 54 deletions(-)
+ create mode 100644 include/net/eee.h
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.39.2
 
 
