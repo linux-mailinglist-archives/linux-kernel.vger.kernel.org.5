@@ -1,147 +1,136 @@
-Return-Path: <linux-kernel+bounces-87317-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87319-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB24986D297
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:54:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F6E386D2AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:56:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81C54288591
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:54:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3967A285FBC
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:56:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E39F134423;
-	Thu, 29 Feb 2024 18:54:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0659C1361DF;
+	Thu, 29 Feb 2024 18:56:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Kz0bMdNp"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="RW+iLcSi"
+Received: from mout.web.de (mout.web.de [212.227.15.3])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF2AC7A730
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 18:54:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2678132C1E;
+	Thu, 29 Feb 2024 18:56:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709232862; cv=none; b=crBzkDA0+1feDQA952wqQSD3kDbNzvMTzv0Oe72ksttQkG//DQ7thnysBZwXqLZbpdpOQhlcNzCAZ1Zonbnn5ogfGfNPQn0i7mx524hgpiKyYxjsZ0Ipxuu3sxbrQYjRYvRZb2QKtu49LIXNo74bojc4Rq8nW3NPkGwHttp3Qqw=
+	t=1709232987; cv=none; b=iluQHQFksYie2NJ2il0+JrHCl5Hs1morQ1fcIFLL0JJ1MYk0vDaDHWSescQa8govA3FXDyBtdv1KJslHzy/Eyzs/SfjcYiFnZjdUCAJG3FYi2339KJGP8PHcdALdWNKuP9b0op6vk9zSy9vTrcrcLiPRMYV4sSrhNPwppe4BT8Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709232862; c=relaxed/simple;
-	bh=c3H3vBFipsXo3Sef6GdzrpDZnYGyG/8rNuySDhgx7MU=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=rhJQAXfgNwTyFichgFe4tQP3Im13LOiLRrssjzpZEq3Gl5pIvcPRRzO5eSkb5rxmKYwQ31PAemzQlS5Dh9wP4UyEiRttZtbyI+tNpT6nw/ai2TuhUpR1x5VaxJlFSG6wGWkAf5nj5ud3qE+nmBABOllPt1PH3m2FeRfN+Ar+a+I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Kz0bMdNp; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbf216080f5so2079909276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 10:54:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709232860; x=1709837660; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=T5dFvqCRIbO656OOkYJr9SD1ZDKhVN7MuRH/M19ZUc4=;
-        b=Kz0bMdNpg5P5GRj0peYH1lYzxhoeGeRPf3eViYvuw487ZCOszgOjq5JPtVBB7OLOUj
-         ohGmt69+cBCH2LFBHmS1oquVL1PP9m8VCbjhTKEhpIEXqjdgpp2PPxe0Nbav6OymqJC7
-         fztId74OpYOE5fj/7ehdaUIiWZi71biMTBR6pQIyKrA4UBo/XC3RbADz5IhjLc2DnMkB
-         euamMARpBXVjAHosqT0ivz+eOju7fDCfZAii+5CDXHXwkIGQU0+EA3QyT/tqaAnek+Hb
-         8CUtIbQXNo4eNvMx4hOnR/dhiajbTZzbNQJeQF85QEg/PDqiwFTUGgKJ7e8TS+Uz+VXi
-         Xkdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709232860; x=1709837660;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=T5dFvqCRIbO656OOkYJr9SD1ZDKhVN7MuRH/M19ZUc4=;
-        b=WsbZA/5GAB2JQrNlP6gK9Ccj+x8S08l++k/eaQcCNk7IdhbeHsUKLPu60lkUJaiAL8
-         FMTewLj+ZyYqSveaVBLUEu+IRrcImlDf3DRKV+uC0/+Cfxle36u6KWsnnceVZeo70Rnu
-         3Xt9vT3AGB1VZ3N0QTalkRznxx206NtXGMF3MG9BhyvosIXgSIGXC+wzLevkVAjCrv8+
-         loSBWE3cJ0/0myfuxxK+FKt5bEjVNquJSK2ZlplkMWReX0QljtgLR1CXqY8f2e5J6W7I
-         WpSkGsMX01zMfb/qjZ89dTKaQELSouZj/r99iM6Zd+0KTVGjzuqxmftc1dQEjzPHA5Xi
-         5JFA==
-X-Forwarded-Encrypted: i=1; AJvYcCVWrB9AyGCR5X4OogJ137S13dLzVRxyKewC1fU2nyyCacH/1i1/4XMWYQygUuODKA6qyAirZT5D8mH5nN0jbs+iG4O/9CwEG91EgO1B
-X-Gm-Message-State: AOJu0YzoU6j5vsOXPsh+Ax+CrVooci0AYpgNr4Ofj9U3XUqahNXzPEMk
-	2EmQoyvHNH7wv9RYvsxBuu547wKGwQlwSqtN5tFzlQ5N1p9wZXOJU5xU1yU6SjGd8dCTeVxfcge
-	V5g==
-X-Google-Smtp-Source: AGHT+IGy7cy+CsI630B50Nc5GYMwlKcoDrJ/CHzlWTNRj7zzuz8ZyLkMc3db8YwqGl9a0Vqfx/M/rZSQf+k=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:188d:b0:dcc:54d0:85e0 with SMTP id
- cj13-20020a056902188d00b00dcc54d085e0mr768688ybb.11.1709232859989; Thu, 29
- Feb 2024 10:54:19 -0800 (PST)
-Date: Thu, 29 Feb 2024 10:54:18 -0800
-In-Reply-To: <87h6hrmmox.fsf@redhat.com>
+	s=arc-20240116; t=1709232987; c=relaxed/simple;
+	bh=EKoWtZULRre8yAsyfn1dkM46JTGZw1nHFJhhwMcc01w=;
+	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=RGdFuD7d8EAFZdI1cr1tlRIO600ELot2PqwyUBywr4mkm/T9Yj3dN7wd7GXIjznr4uji2D3atbFlaliTGqEOpfas3wqdUA+eZRXZ04X1tVMYr1NnBR5g79x0iHUiOj49t4zWuzW6lFhJ1Ifqlu3P0iGoTUeEv7F+sPiVvT76ABw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=RW+iLcSi; arc=none smtp.client-ip=212.227.15.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1709232962; x=1709837762; i=markus.elfring@web.de;
+	bh=EKoWtZULRre8yAsyfn1dkM46JTGZw1nHFJhhwMcc01w=;
+	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
+	b=RW+iLcSiUD808cZ3zD3bg/NTr9RTIrGu16aY5OuhN0LTR/PMuABUuoeAaIES7eGB
+	 VxhIJz4QQPQb8XRdIgLtLMAauYMR4DuC61QHS3UVxqlv7gJZlij7HctCREGO3LjDW
+	 INrA0S6XUN6Yg4grq0XGARDR86SCYXX2KyhjEWxIVdcdMRer/Gbk9J4p07d33Aj1x
+	 Rruu1caBmS5WlsvSEpvUybEab6ZRBV+BTD5CyQSoDn42KvO/B/2yZiaH8x9E+v6iA
+	 VMUteae4DWXjt5gw/q8moZeMZ+NB4M14X1KIAXmZO+kDVC9AObzHYy2eA9sIsg57Q
+	 w+Mkae/6PpbXZ2jhnA==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.91.95]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MoecP-1r4X1f18yP-00oyA6; Thu, 29
+ Feb 2024 19:56:02 +0100
+Message-ID: <dbebaea7-289c-47d9-ba06-cd58a10ea662@web.de>
+Date: Thu, 29 Feb 2024 19:55:46 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240228101837.93642-1-vkuznets@redhat.com> <20240228101837.93642-3-vkuznets@redhat.com>
- <Zd_BY8Us6TYNBueI@google.com> <87h6hrmmox.fsf@redhat.com>
-Message-ID: <ZeDS2nhkK_QDBJS0@google.com>
-Subject: Re: [PATCH 2/3] KVM: x86: Use actual kvm_cpuid.base for clearing KVM_FEATURE_PV_UNHALT
-From: Sean Christopherson <seanjc@google.com>
-To: Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc: kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>, 
-	Li RongQing <lirongqing@baidu.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+To: linux-staging@lists.linux.dev, linux-tegra@vger.kernel.org,
+ linux-media@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Jonathan Hunter <jonathanh@nvidia.com>,
+ Luca Ceresoli <luca.ceresoli@bootlin.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Sowjanya Komatineni <skomatineni@nvidia.com>,
+ Thierry Reding <thierry.reding@gmail.com>
+Content-Language: en-GB
+Cc: LKML <linux-kernel@vger.kernel.org>
+From: Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH] staging: media: tegra-video: Use common error handling code
+ in tegra_vi_graph_parse_one()
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:5nHI55wJDHdGpQyhkuvBJi5YqQfCTQ34RVAV54eYhVrFpht0hYJ
+ dpu9AIS51aPwIEo4rVbUDLJtfkgUxasRSgpRVDR7zFZEPiHWrjypWHDp27FpQ4tG8KPiKr8
+ ZsgNifA8T+kv2cMCCRS/BVc/UcwogkKQY67JZgp15hfwnnwhZztIRGMvQZseWL2AwnNj8Np
+ g8bk4/kPqrA8tmfqa8XRQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:8wIh9N3RJr4=;roRuaNv5zMgHjQW6x4d3+75EZOG
+ 74AgeDDDFxXuCBhSq5CvNPRp2bsPirhPPZxPGxHPE8jOtuFJx67/052c/Y+uNG3h8tpobITmA
+ 7QI3VdnQzMwDtEQxsokDbc70rYfgGD2OkdzntHfBmCdMMSj96b9Qo20FfEbmFm4HjtBOBfHpf
+ 17BSHM39B5uH5TV0rb78dPztfbQLcXZoPtltQrrSEg2iTQ4azX0Gbps3NjjrPpurq1a/hPTuN
+ gC5HIB7OulJJQsYww1RiPCg/yIDodvmwzqoRozB4n/cvTi64Qq6uZax7Xh5CV6Z/anNRSH0aG
+ nC8/9VT87Tlyp99PtLmAhGS8ix51Cn1szrvf5SkIqErcwwo08aU8mRqbqei61IlDYHHB4Grq0
+ S2qIwPqWbG/5uN/b6pJJFDwSHZ1d5b/HsR8Kya3uFTebWKPSUPU40Z730sKUAL4Y5/7dYfa7L
+ oMFuTLCbeCQiWK6DNa9R4q74ZyPjodVmwp3CmjOAG+VN9iL4vuE3t/Z2Iptt3pmntsNkJEAbS
+ TwP0zjN54m6wwoTIDBNr4LVJBW8Ssr4kdsPFJ4QUGzTRt8A0+qojnuN+Nf4pbar2xC4j2mf4f
+ vL/XR3La9h+WMrLcVY6340jvYV6WI82HJdElt2+J0dbMoaCReDnCrqNadeOe11i2ZY/D62ja7
+ hBzYJA8wY9/ef/bqS27fvR6Y3lUYzDbuQjbDseBRHkL8klj0ZZeUlLWIGTHOcfch3PvgV/izz
+ oD9dMvZPjdWFm/yAozYjbN3Qh4MzFSwsAb2JtgMEAf9+KmBDEMTp3km4TYAsQY/imurcWDlDe
+ GFp6eugJIc5b07rgr1RbRxBSYC5jMVduAYGl6xI+bsvlc=
 
-On Thu, Feb 29, 2024, Vitaly Kuznetsov wrote:
-> Sean Christopherson <seanjc@google.com> writes:
-> > Am I missing something, or can we just swap() the new and old, update the new
-> > in the context of the vCPU, and then undo the swap() if there's an issue?
-> > vcpu->mutex is held, and accessing this state from a different task is wildly
-> > unsafe, so I don't see any problem with temporarily having an in-flux state.
-> >
-> 
-> I don't see why this approach shouldn't work and I agree it looks like
-> it would make things better but I can't say that I'm in love with
-> it.
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Thu, 29 Feb 2024 19:44:36 +0100
 
-Agreed, but the lack of atomicity is a pre-existing problem, though as proposed,
-my idea would make it worse.  More below.
+Add a jump target so that a bit of exception handling can be better reused
+at the end of this function implementation.
 
-> Ideally, I would want to see the following "atomic" workflow for all
-> updates:
-> 
-> - Check that the supplied data is correct, return an error if not. No
-> changes to the state on this step.
-> - Tweak the data if needed.
-> - Update the state and apply the side-effects of the update. Ideally,
-> there should be no errors on this step as rollback can be
-> problemmatic. In the real world we will have to handle e.g. failed
-> memory allocations here but in most cases the best course of action is
-> to kill the VM.
-> 
-> Well, kvm_set_cpuid() is not like that. At least:
-> - kvm_hv_vcpu_init() is a side-effect but we apply it before all checks
-> are complete. There's no way back.
-> - kvm_check_cpuid() sounds like a pure checker but in reallity we end up
-> mangling guest FPU state in fpstate_realloc()
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+=2D--
+ drivers/staging/media/tegra-video/vi.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-Yeah, I really, really don't like the call to fpu_enable_guest_xfd_features().
-But to not make it worse, that call could be hoisted out of kvm_check_cpuid()
-so that it can be performed after kvm_cpuid_check_equal(), i.e. be kept dead last
-(and with a comment saying it needs to be dead last due to side effects that are
-visible to serspace).
+diff --git a/drivers/staging/media/tegra-video/vi.c b/drivers/staging/medi=
+a/tegra-video/vi.c
+index af6e3a0d8df4..5a08d9551f8b 100644
+=2D-- a/drivers/staging/media/tegra-video/vi.c
++++ b/drivers/staging/media/tegra-video/vi.c
+@@ -1730,21 +1730,20 @@ static int tegra_vi_graph_parse_one(struct tegra_v=
+i_channel *chan,
+ 			ret =3D PTR_ERR(tvge);
+ 			dev_err(vi->dev,
+ 				"failed to add subdev to notifier: %d\n", ret);
+-			fwnode_handle_put(remote);
+-			goto cleanup;
++			goto put_fwnode;
+ 		}
 
-> Both are probably "no big deal" but certainly break the atomicity.
->
-> > If we want to be paranoid, we can probably get away with killing the VM if the
-> > vCPU has run and the incoming CPUID is "bad", e.g. to guard against something
-> > in kvm_set_cpuid() consuming soon-to-be-stale state.  And that's actually a
-> > feature of sorts, because _if_ something in kvm_set_cpuid() consumes the vCPU's
-> > CPUID, then we have a bug _now_ that affects the happy path.
-> >
-> > Completely untested (I haven't updated the myriad helpers), but this would allow
-> > us to revert/remove all of the changes that allow peeking at a CPUID array that
-> > lives outside of the vCPU.
-> 
-> Thanks, assuming there's no urgency
+ 		ret =3D tegra_vi_graph_parse_one(chan, remote);
+-		if (ret < 0) {
+-			fwnode_handle_put(remote);
+-			goto cleanup;
+-		}
++		if (ret < 0)
++			goto put_fwnode;
 
-Definitely no urgency.
+ 		fwnode_handle_put(remote);
+ 	}
 
-> let me take a look at this in the course of the next week or so.
+ 	return 0;
 
-No need, it was more of an "FYI, this is what I may go futz with".  Specifically,
-it will impact what I want to do with guest cpu_caps[*], hopefully in a good way.
-My plan is to play around with it when I get back to that series.
-
-[*] https://lore.kernel.org/all/20231110235528.1561679-1-seanjc@google.com
++put_fwnode:
++	fwnode_handle_put(remote);
+ cleanup:
+ 	dev_err(vi->dev, "failed parsing the graph: %d\n", ret);
+ 	v4l2_async_nf_cleanup(&chan->notifier);
+=2D-
+2.44.0
 
 
