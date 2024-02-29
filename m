@@ -1,149 +1,112 @@
-Return-Path: <linux-kernel+bounces-87381-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87366-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B52F986D3A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:48:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5354186D371
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:41:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7A731C2258E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:48:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E89A11F25CA8
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:41:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87C3013C9E5;
-	Thu, 29 Feb 2024 19:48:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0299613C9E1;
+	Thu, 29 Feb 2024 19:41:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ceIxmeb5";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="9dn6pwSn";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="THp5s5wg";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="7ymqVR50"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="G4Yg9EHh"
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C618213C9D5;
-	Thu, 29 Feb 2024 19:48:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77C0C13C9E8
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 19:41:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709236092; cv=none; b=r8ZDMNlWXIqeBZ4lSb+h9dzTjkoKWdYsfGvBBeRJDG7sCmHAdHBojvgoo78pui12rOE5ShWtDt38gfYDl3nE0sgYZW/KBkYcUAg9rMIttSN85KEyBDyF1ZRdZz3K0cqJE3N0JOj5RRs/N1h5Pa4VHIGc9YI7TGlpsyTGjjY9Y04=
+	t=1709235707; cv=none; b=h+uaGM6aExbPRaKCh3G/YPotyQe7jT+xCsypB0s+BSD2Sx2HvNqv/Dpz9tdwRJPHhyiWpfRLsChEunRFpIC256ZBRPTYQH6cPTvZxiWsO6OeDZY56XOw5ep6JtYVC1ErnbdS68+QFoyQ5k9cd08Bbg37kgtF44OX9vTAjYulhc4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709236092; c=relaxed/simple;
-	bh=DZfc0jcucjAXJEl0NBJPZr9xKMQAiv1ZGKz+suOqMoE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=l4mCgeEB3WHZRftbHaRN8HrIh4IMx9kUsRHaKtSY6Vi4wTirwmbYCV8xyQA6CGYrthdKFFCVnoitPx+7nS3bGu2a7lHxY/qou9kKgg25NAfs5dIRSJnoesEcZ8R403ydE+5Y/E5+qJxV94QVG/F8qmqOoKocbinS2tVK/JowgIk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ceIxmeb5; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=9dn6pwSn; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=THp5s5wg; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=7ymqVR50; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id D64C221C54;
-	Thu, 29 Feb 2024 19:48:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1709236089;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=udyHSS1C9B2fKVmEXwRQ/ir9SjpEwHdWjZ3YEgMGnXk=;
-	b=ceIxmeb5Fg0tsbSZXcWrhSp1w/vFXaZBXKEwGo7xuI6YjqbxVUcvZed73NBKTEyfURvFjK
-	jRxhjcToxorldksg5ffW9Io5hQ4n5u6qED1J8h0+SnZ3zPt025gqmCVrpwIvKx4mgmZU3h
-	o68J/JD9bLqzGXCJHG/Xby9/x4kimx4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1709236089;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=udyHSS1C9B2fKVmEXwRQ/ir9SjpEwHdWjZ3YEgMGnXk=;
-	b=9dn6pwSnfmkjEjRiBeHWW0Ed3b3YRVtQS/Wr0AAwQmQmc1/aKb4qNxxFjbeF8cPix3AXMU
-	HKboapMIQJ8XDKDw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1709236088;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=udyHSS1C9B2fKVmEXwRQ/ir9SjpEwHdWjZ3YEgMGnXk=;
-	b=THp5s5wgzsjkN9cV+b62DUTStASRyqbzaJZdyCFIfYZwjDsy8/ildL3mkhuPD48Hji6QM3
-	nsrMQZPqoZmBzSqverXJxOEnrxQvq7IJjBFOAXa8xLuQ/6MK629olRbus3b8WyI+BokHpV
-	N5pbe+lEWvEYWEXjszrAgmo0X60MoX8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1709236088;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=udyHSS1C9B2fKVmEXwRQ/ir9SjpEwHdWjZ3YEgMGnXk=;
-	b=7ymqVR505ZyBvshcdlMFZiwqcNOZAaoj5jMEqmv7Kzgsc8daz7L3sac48AWtOPjRQ4ztie
-	dErzvKV7ThPzM5Cg==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id BEEF613451;
-	Thu, 29 Feb 2024 19:48:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id 6URrLnjf4GUSfQAAn2gu4w
-	(envelope-from <dsterba@suse.cz>); Thu, 29 Feb 2024 19:48:08 +0000
-Date: Thu, 29 Feb 2024 20:41:01 +0100
-From: David Sterba <dsterba@suse.cz>
-To: lilijuan@iscas.ac.cn
-Cc: clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-	pengpeng@iscas.ac.cn
-Subject: Re: [PATCH] btrfs: mark btrfs_put_caching_control static
-Message-ID: <20240229194101.GE2604@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20240229083007.679804-1-lilijuan@iscas.ac.cn>
+	s=arc-20240116; t=1709235707; c=relaxed/simple;
+	bh=1WeRi85DTX5lSTK6mlOcymKvnVy6AoW4RjHw5tld64Q=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=BBYxu482MdoZa/HX/KeiSWaPOICRWrz1bJaIc2cKpcDL36dFBexuJHtvGM9EcBFaGNalIb6lO5fnwL2PPKHVXpEPmH6RkLGcftT0tIRT4QpyFxP1liYnkPqBVqMQNYQrMFT2YTuwmJ6g+NmsFaY4Pu10cg87uJ3dO0+X74g/Xrc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=G4Yg9EHh; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a3ddc13bbb3so413323566b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 11:41:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1709235704; x=1709840504; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1WeRi85DTX5lSTK6mlOcymKvnVy6AoW4RjHw5tld64Q=;
+        b=G4Yg9EHhQaMtTfrL2N4vtrib1wEkvhZiBq3QLw/DBR3fCyzaQYGikMN5C7nDEtrMli
+         ZjSgqEaecxu+AS4NymYOnIYHSN/DU04wQGB55cwLb1YrpaRXt5iwz32PtD2Y/G1bNt3U
+         VXFm4cBy0heTcLmv+P9Ka28sw7uHNHw0F150sbgv1iexcWNKTM10yvsHvMH82EiIh1pz
+         IAaI9+lW5iBmx/zknPpHtgidYQEguk1CVbgYts9deGZ5xOgg59wQgvMkwIbhv5BUK07x
+         sb3y6loJdXv2Z41oxUVz+aqAwJqFnpPghbP3XgQFGZ3HS7wi6BeHAuSA7PE1S7HSjRhE
+         4NqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709235704; x=1709840504;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1WeRi85DTX5lSTK6mlOcymKvnVy6AoW4RjHw5tld64Q=;
+        b=RKzNLQ8b1yzg/NiPQ2ekiNOVo7aDPlRTJyCV/egEvwiORwnZyv/4jThA8YTUdubL1Z
+         IObwBIO3eHWyLZPWcWniRSAU5gtLmenlfDODwh/20OaSXb1XdshR6YxOO8N5KarOAZ4K
+         n/oNNqlFz6ogkeU+xPAnQ608Dk5dJNMqsQACboI2lb20+OEF7Wirugm+PlgWS9Z671gW
+         of6ksLQBBaGBw0a87/dr64IE6+9xB2Vixhx/iXtly2NWz/0K18B6wbPRB3brZHKQLTAv
+         zixBVik5r9Jp/y89X9MGBBwYvnfbsouo10N9Zl//UcVD+rCcJNkLSTukt8NfNIUHXwLt
+         HaPw==
+X-Forwarded-Encrypted: i=1; AJvYcCXmzyur78x/XPPfeusNPxiJ5XtfH+38ZMGufYGpj0wKMsa/Phb1rNbEfpXwgg5HicPMDL0+eAA7FIIcpbL2IctrWycZRCKvdhJ7R/oZ
+X-Gm-Message-State: AOJu0YydZwNksbefibwlJhiq4LmjhVSw0bxEc64WpKbzUNgbdn0fGVla
+	PRklpCW4/QAh/kVa38sBif4lVlUjm1u0zJyZ/T6qOz7QbNOb3wrwNMW2o/iFr4o=
+X-Google-Smtp-Source: AGHT+IGa8cHSa2YssKkjMsxGZwqzI4YU3LhHoWTI53iNfFzF2CIuO8B+o/NL/Td0ZrJKNRmMt6XnzQ==
+X-Received: by 2002:a17:906:ce28:b0:a44:591:a3d8 with SMTP id sd8-20020a170906ce2800b00a440591a3d8mr2030486ejb.31.1709235703096;
+        Thu, 29 Feb 2024 11:41:43 -0800 (PST)
+Received: from smtpclient.apple ([2001:a61:1069:f701:6c1a:d05d:ad7c:b80d])
+        by smtp.gmail.com with ESMTPSA id tj7-20020a170907c24700b00a413d1eda4bsm976623ejc.87.2024.02.29.11.41.42
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 29 Feb 2024 11:41:42 -0800 (PST)
+Content-Type: text/plain;
+	charset=us-ascii
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240229083007.679804-1-lilijuan@iscas.ac.cn>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=THp5s5wg;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=7ymqVR50
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-1.46 / 50.00];
-	 ARC_NA(0.00)[];
-	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 TO_DN_NONE(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[7];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.25)[73.20%];
-	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from]
-X-Spam-Score: -1.46
-X-Rspamd-Queue-Id: D64C221C54
-X-Spam-Flag: NO
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.400.31\))
+Subject: Re: [PATCH] nilfs2: Use div64_ul() instead of do_div()
+From: Thorsten Blum <thorsten.blum@toblux.com>
+In-Reply-To: <CAKFNMomtp7ZwB0gmxoemp_ums4rqOSbfF2BMS6kX+LwtKYtvCg@mail.gmail.com>
+Date: Thu, 29 Feb 2024 20:41:31 +0100
+Cc: linux-nilfs@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <19910196-DFF3-4F94-B6D3-B9BF722DF8B8@toblux.com>
+References: <20240229121650.33983-1-thorsten.blum@toblux.com>
+ <CAKFNMomtp7ZwB0gmxoemp_ums4rqOSbfF2BMS6kX+LwtKYtvCg@mail.gmail.com>
+To: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+X-Mailer: Apple Mail (2.3774.400.31)
 
-On Thu, Feb 29, 2024 at 04:30:07PM +0800, lilijuan@iscas.ac.cn wrote:
-> From: Lijuan Li <lilijuan@iscas.ac.cn>
-> 
-> btrfs_put_caching_control is only used in block-group.c,
-> so mark it static.
-> 
-> Signed-off-by: Lijuan Li <lilijuan@iscas.ac.cn>
 
-Added to for-next, thanks.
+> On Feb 29, 2024, at 19:45, Ryusuke Konishi <konishi.ryusuke@gmail.com> =
+wrote:
+>=20
+> All of the fixes in this patch seem to be correct, but this doesn't
+> cover nilfs_resize_fs(), nilfs_max_segment_count(), and
+> nilfs_sb2_bad_offset(), which also have do_div() that doesn't use the
+> return value.
+
+I just tested this, and Coccinelle didn't report nilfs_resize_fs() or
+nilfs_max_segment_count() because both divisors are fields of a struct. =
+I will
+refactor this and submit a v2.
+
+For nilfs_sb2_bad_offset(), where the dividend is u64 and the divisor is =
+u32, we
+would need a dedicated function like div64_u32() that doesn't calculate =
+the
+remainder, which doesn't seem to exist. What do you think?
+
+Thanks,
+Thorsten=
 
