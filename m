@@ -1,155 +1,190 @@
-Return-Path: <linux-kernel+bounces-87291-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87292-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 204B986D246
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:28:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DE2A86D249
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:29:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4FEF2B28265
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:28:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 418761C2379F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:29:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 263F17D08D;
-	Thu, 29 Feb 2024 18:28:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A4DE7A14E;
+	Thu, 29 Feb 2024 18:28:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Ft0sFR8H"
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="4cK6EvIc"
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2056.outbound.protection.outlook.com [40.107.244.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D69CD7A159
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 18:28:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709231301; cv=none; b=pa6tdgbJY2XO8dQmfui2TAyG7/txR0x8eT85IXHeLTDMtMdHne8ovQXAv4cKYTg0eSwk2WZde9++1ZaPuz/e//S9acFZP9FwVLyQnlVqUKP/9TETEP783coK+TsSaNZWHCh/BTdT8OJsSXU/B1DAszf32hzZF3XG88h8bEaqE0E=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709231301; c=relaxed/simple;
-	bh=TsNS9H9GnTpwvcccMLUCGH9dbY20A+4uTVdeOoyOT04=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IhjLVrnJVzYoFH4v1pqaPrYQ7VI/4sBX55hoyUkitbGj2OUhEoqnDZnZ5r1jbBMMBbHnRUTsk07JA+/AZapihLcrbOcThFywmcZ2UKsK5zXPHczbmqTbJiSb7vY2ssYQrtzWZZ+qMTOzxAf/rMj4rZ2J1biGzMJouGZpbuHahyY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Ft0sFR8H; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1dca8b86ee7so12094325ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 10:28:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709231299; x=1709836099; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=S7hpS9VpNEze5H4aDuNsMr11UTcGSJ5cm/3AR7/T5Hc=;
-        b=Ft0sFR8H+zbuiyIAKexQ970Fx7JhlQ21wk125e53FUT7WAKC0Kv6b32aFjCXt31Cdw
-         YwYLEbkFU1Po8mGu8gHM0AYQkev29ajaqmVNJ4DBrDOwUjH4EJ7hpCS/vvFEMnYKoku/
-         +7G7W9Sd+q+dG+9hp6MIjgFNMao++iFBvT/iM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709231299; x=1709836099;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=S7hpS9VpNEze5H4aDuNsMr11UTcGSJ5cm/3AR7/T5Hc=;
-        b=K1H4sKBKqgD8a9FYCtC744cexu/NiA2PD7I2EYpHK6MD1rPac7b+S8ULi1JQV658To
-         4OFsqzCPYoXxIzB6owW4NGrsDMQT4YlQC/D6iyJNzBUo1PJGbNWhSsiEnp/vIU6OLbbw
-         spWpYdbBBHJjd5sXjuUY4pB6uea7gBZe2CnW57WGy2HcSzAvbSfnTz8SMnVMAgUC0HzF
-         1yrpsV/sKRkgNNSfv+oTk/0WUhaN6Xu3Mykr+qireLgClyQ/kNx0mp6r6qrE5qWn/3de
-         n1GCcAhufetV6Qdj+ySxioFx+58styXezWZ0y1oX7Yl+UBzmUowg7J1ZwnUL9TUPN9gd
-         T4yw==
-X-Forwarded-Encrypted: i=1; AJvYcCUZcmYq7Wpex530mGERqdwqSE5P/vmfuI5kqCTsN+4ZR+0wdH3MEm/qznTlybO58knN702fNhV+fV2poUI0opwm57ctfvBJUdKTAyJF
-X-Gm-Message-State: AOJu0Yx+qZOp3w/xi6OU6MlvP80m3POHuE1KB0cTJrA3GuxCTtI+62UJ
-	2KPYMGPVGIguFeWubCK7AZeomT4JpWV/yDmo6UnYC5CfqlGv/pDq18cYb50b/A==
-X-Google-Smtp-Source: AGHT+IFv6v7GCq84bRF/XSbui043ytODMyWUS4Rfqf+IDs54+SrN6ooF1PL5gcE4I2rCfOz2B9orlw==
-X-Received: by 2002:a17:902:c394:b0:1dc:1831:8ede with SMTP id g20-20020a170902c39400b001dc18318edemr3025429plg.53.1709231299355;
-        Thu, 29 Feb 2024 10:28:19 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id n4-20020a170903110400b001dc391cc28fsm1798569plh.121.2024.02.29.10.28.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 10:28:18 -0800 (PST)
-Date: Thu, 29 Feb 2024 10:28:18 -0800
-From: Kees Cook <keescook@chromium.org>
-To: =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
-Cc: Brendan Higgins <brendanhiggins@google.com>,
-	David Gow <davidgow@google.com>, Rae Moar <rmoar@google.com>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-	James Morris <jamorris@linux.microsoft.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	"Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>,
-	Marco Pagani <marpagan@redhat.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Sean Christopherson <seanjc@google.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Thara Gopinath <tgopinath@microsoft.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Wanpeng Li <wanpengli@tencent.com>,
-	Zahra Tarkhani <ztarkhani@microsoft.com>, kvm@vger.kernel.org,
-	linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org,
-	linux-um@lists.infradead.org, x86@kernel.org
-Subject: Re: [PATCH v1 8/8] kunit: Add tests for faults
-Message-ID: <202402291027.6F0E4994@keescook>
-References: <20240229170409.365386-1-mic@digikod.net>
- <20240229170409.365386-9-mic@digikod.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C58D7827A;
+	Thu, 29 Feb 2024 18:28:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.56
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709231333; cv=fail; b=iFM+f+UOUaeEMmvDqqgfPdSDJFCrqeIr8WyteLhmrvyhhNL9lv/z18T8PVTaQ46ABpT6hDSMpeMRIy0aXZbTne7Wu9O7W9XdAvtNwfL33ajnyPJbxT8kJvBDNUsp2LE3B+DdjrNYJNc4FXgIyYB3T2IVmRk/vwGlpVZci/7S5Fg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709231333; c=relaxed/simple;
+	bh=+vV9+tpmO7/jGJIu6VI4kk3mA6FkeYvS+XG2vnzBp78=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=r1zMfMKZfmHUYESSp7sYns5XcN4uE15AMgEYOWMFll1MwqQUExdSgez2p/xNFOOKJzw0/i4RCPWr15EUVTx5giywqwdnt2dc7XMJARZSKWs5P0WT5EfZ/30PQLI7qBvE9MnzaeCXTZjXahrSDW3yrobIiAbthOy5qzB6bqEzLdE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=4cK6EvIc; arc=fail smtp.client-ip=40.107.244.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mSnHT3vj2CTomEm4VnX5s+lUp/TaVM+sypsVjceBv2VsS+E8mRBeSf4MkNWc1l/n0AP1NFPXYIfwUXsPt2MUW1yq0muA2NbRsEJUSeZRDAHCOuQO7SmB1RProemmPuTHNFBV/8YonFyFVnjwFbe2e/wMRz9TIHApQlRtOjI4KwZHC65szVPZs/0pE2aPlBx2GBWZhlpksGsvaFXrAUAKt9DDe2zya4Vr3IEXNsLFdzN5U1vWHnyBWEXredx2RAkBqpgkxQWnX0rs0AILBwr8qDsn56lLsNVX3rgNV6UKeJfYp5zqRkQ3zNF/V8eH8+IiP+FNG/FAP5+xpWWAubjHtA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=QA+eMpNskDgAStNxacdGcpJmr3L7XcZ0IX1twKb91C4=;
+ b=Vch1YE+ka3k9fBmmrQxSN1rVfzqMpOXlyF8K2DuSpX+islhYzAocWKCE0uWMMdkqR2ZyZA96ttIjUK92pZuUoIggJ+P4Va52OngCACGClop0dyh6lYnYTpWtPijmNr86HlFQCq2lXX3gvBPZ0Db8OkX29SnNWNcQ9kidrzuQYiAAE1Jqsn5SRAfPzYqw8TMG51l1G4yEFQufj8AscnpWhLGatnmEoEgq2J3HCOyTJ5oyxJfTcwzr06Ed1PNtMY7VbmfgyRPR6rFSFBTWiOV73MUT3V1P+GreYJzeUQU3drzFcyVknZv5aOpyxIvettaQopYXq/mwEtrNdm3ybh3xXg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QA+eMpNskDgAStNxacdGcpJmr3L7XcZ0IX1twKb91C4=;
+ b=4cK6EvIcTGfNmkZFk0Pxb9odvQYPW3PkQPj1IcZMUdmNzK9gZqOrwAk64K+SgBs5ITjqC2E5eBoXlZzK6Pr1kn+HRvHD5iu+lo/BO1sy2N3UwC47kw9ekGrV1q0w3Ir3phZMQRmszpJdfpdRt1juIPMyzsYyQonkz5zNL6a0lKU=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from CH3PR12MB8403.namprd12.prod.outlook.com (2603:10b6:610:133::14)
+ by MW6PR12MB8916.namprd12.prod.outlook.com (2603:10b6:303:24b::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.41; Thu, 29 Feb
+ 2024 18:28:47 +0000
+Received: from CH3PR12MB8403.namprd12.prod.outlook.com
+ ([fe80::aaa1:af99:e0e5:7f14]) by CH3PR12MB8403.namprd12.prod.outlook.com
+ ([fe80::aaa1:af99:e0e5:7f14%4]) with mapi id 15.20.7316.039; Thu, 29 Feb 2024
+ 18:28:47 +0000
+Message-ID: <f17da20f-4379-4dc6-b988-cb3a07f4aa6f@amd.com>
+Date: Thu, 29 Feb 2024 12:28:45 -0600
+User-Agent: Mozilla Thunderbird
+Subject: [PATCH] x86/mce: Dynamically size space for machine check records
+To: Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>
+Cc: "Mehta, Sohil" <sohil.mehta@intel.com>, "x86@kernel.org"
+ <x86@kernel.org>, "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "yazen.ghannam@amd.com" <yazen.ghannam@amd.com>,
+ Avadhut Naik <avadhut.naik@amd.com>
+References: <SJ1PR11MB60830AF35FA89C7869B8C11EFC482@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <20240212191401.GLZcpt-XHFqPg3cDw-@fat_crate.local>
+ <SJ1PR11MB6083C60D7584B02E9CAF19D5FC482@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <ZcqPhVO_DtD2x5N7@agluck-desk3>
+ <20240212220833.GQZcqW4WxKH34i-oBR@fat_crate.local>
+ <20240212221913.GRZcqZYRd6EPTTnN97@fat_crate.local>
+ <20240212224220.GSZcqezMhPojxvIcvO@fat_crate.local>
+ <Zd--PJp-NbXGrb39@agluck-desk3>
+ <8ee24cad-e9b8-4321-aad4-9a9ba4f8b7b6@amd.com>
+ <20240229083951.GAZeBC1yS3MPonWwKv@fat_crate.local>
+ <ZeDDLLQWPyyZve_s@agluck-desk3>
+Content-Language: en-US
+From: "Naik, Avadhut" <avadnaik@amd.com>
+In-Reply-To: <ZeDDLLQWPyyZve_s@agluck-desk3>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SA1PR02CA0017.namprd02.prod.outlook.com
+ (2603:10b6:806:2cf::23) To CH3PR12MB8403.namprd12.prod.outlook.com
+ (2603:10b6:610:133::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240229170409.365386-9-mic@digikod.net>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR12MB8403:EE_|MW6PR12MB8916:EE_
+X-MS-Office365-Filtering-Correlation-Id: b991dc4d-48c8-4d9f-47a8-08dc39544496
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	925q1AprDhmnJnkLxtA51iKESBOBM5bQKg5E1fE0q+j5V4pRwOM6v7xyHRLwsyro+FPOlG7pbGhYqBHpK2ux9Sizy/xl4Tl3nujtJkXRyc5nZq5pmos8vB325cD+1N4VnOXCZHz0vZJmRaO1IBydeIHNb+FU44pOtZQBnkGma36PexoNCGfcLCfB0Za/7W9Ym2QIOJfxHkLEhh7Jr3aGT4RA9/Pk85Fv0Q+ywPf10e3d2LR4IIr06S6tUAL5L3D6nPbhPu/RObMyXhtuIbmMFrSPqBozSDEKwVRUfPTgNL+3EsDEddj97zSOXfKxb0BzXsjeLR855xgRlI48u2fCVCsGG4AQ7pFQrk32DdB3gs0PdmA4bwdUo1lYMIbqj4UJUl/6BuWDCC5uU9sIs/1HFCnXyBo+wOReRZe31zdPEfAGYYzW452F+uTW0oeE1teki2Wuq8548UYuwAij3v7AN2OtZm/smbarik5d7xCVtDeBSDvR6VE+xuN6dj9C44hpsairDjQrMj83Q7pO3ZS6k2uQR/JSi0M4VkzjgIqTBi8LuBYQUId/Ly4CNkV5ljGmqIHSjn8PJpDAwtEjvWzA2QRPLTffXsWaN36NvDyZjRMcZ19AsytlUBqj5gf8VAzVHico2pSkaXBW8fwNwRcA8Q==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8403.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?OFJKaXdubFdIdzJUOXlnTlR1bi9TN1pHY2tRTTFQcTROcXNucmlsQlFHUXF2?=
+ =?utf-8?B?aFZFdUIrQVJINHZhL1BGdEZmdHgrb0RtdjF3d1dqemZiWThsbG1mcUpIcitI?=
+ =?utf-8?B?dUQ5RkszM1NTV1U3aFRKeHNpNmRaWTMrbUQvNktHUmRwdW0wZldQeGdBS1VK?=
+ =?utf-8?B?a0d3KzJvRkJPOXdzK1FMc2V0WE1LT0dHOS9PemZCb0NGOUNHN2dEcGRXZHd4?=
+ =?utf-8?B?M29DendVWDI1NHp2dk5STkQxYjBxcHA4UnhFVDF1MXNvMGVaUWU0ZkVFdmJY?=
+ =?utf-8?B?cG9wZURhOFZXNEZvdkQzWXNHd1FKcDkyVExUZjA2NGJJaVFHQ1ExaVV0aW5E?=
+ =?utf-8?B?ejZJa1RFQWc4RVdQL04vNVpHVnA5QWFIZi9jem1PcDJ0QWQ2aUZpZStkWjNt?=
+ =?utf-8?B?YWoxTklOQWNmdUNaQTdBdXphQkxQY0hHYnRJY2Q3cjA3dmNRMVlJeU53SCt4?=
+ =?utf-8?B?MlRCc25oa2Zwc0VXTXFEenBPekczVE9oQTNnNDJSUm8weUpvVXk0SjlsQkFV?=
+ =?utf-8?B?RUxJRTg0ZWJIdEQ3bFJtTUFTdlhOcnM2VjgwSnpZS1BhVHNObzZNWDdGUjBs?=
+ =?utf-8?B?WjFwaC9kZ2tDQlZhdGNnUFp6NWsvMFhPbXk0akpaVThXMG9PZ3Juck1vVXB6?=
+ =?utf-8?B?YlFNYVVOTEc5Nzc1cVF6ekpMaVQzOHgrOUFSMkR4WXBLK1c0UU1OT0t1SDBS?=
+ =?utf-8?B?UzdpbFY4R1lqNW5kUmpPczFzcnVwUHd4dTIxOTdkaXVZWStsSVhGcm1BbEZ1?=
+ =?utf-8?B?TkJRb29NdFovTmR2QkltUjJOcXkwdmhMUjJrM2loZ01UdmlsQmx1cEhXcDNa?=
+ =?utf-8?B?ejlmTnpnTlJ1aWRzMjNGWnhMUWd3Z1FBbE5MTWl2S3V1KzRrdzgzUkp0OHlQ?=
+ =?utf-8?B?aHJ2WmVpd3BFMGhtc1YwZzJURHZHS0NWejh6UE9yZmFQbmNKamF1ODNZeUJu?=
+ =?utf-8?B?RnYvMk9UUzNXbTRleG9CQjJEeS9oYW1NMzExcWNPSGRGU2FnbCtpaGJOMW0w?=
+ =?utf-8?B?ZmJZQjh4RVdEbXJZOWFhVGFsajFncFpNcW0xUDZSOWpMR1JxY29DbEg1YkZ3?=
+ =?utf-8?B?a2V0ZHdTdExDUlVYSk5QUjcrRjJacWlBN1FUU1FSWThtVkoxMVhEa0xXSjQ3?=
+ =?utf-8?B?UGVWcXROR1l6WW1qeFM1ZnM0MmxRN3dQTkNkUFV6aVp6WlRSUEZONVBZdDdF?=
+ =?utf-8?B?QWJFUzR5SmVrK21Dd2lMUWhEcDFOc1d6TTY5aElWSmIvWmQrbW9QQXRqMVJL?=
+ =?utf-8?B?cWxJc0pnWnQ2QUxuellFZTQ4cGVRN09ueG04UWFkUnk5QVBSVS9lMlExWkNS?=
+ =?utf-8?B?cTU4czZKZ2lWV21aUHdDRUdxaU9KamJLWEhHR0VyYkNYdmRZcDl5ZVRPQmdW?=
+ =?utf-8?B?TzY0K3M5OHI0cjBIbmE2RytWTHJEWFFhS1htUlc5MklmclRySkYwWEVCTEJm?=
+ =?utf-8?B?ZHFJa0tXQ3pkY1JhY0w3bUpPTUNTejEyb2RWczZXYjVlL0oyWXhDYjZQckQw?=
+ =?utf-8?B?bEtOaC8xV21VNEJld2t1UWlRdTgwRjVTUDFDQXBuTkhaQ0YzeGh6SlZ6WEMw?=
+ =?utf-8?B?WFpyeGoxRlFMdm16R3ZBaHkrWnNnb2JTL1pxTml2bGlFUlNvcUtkaTR4KzF2?=
+ =?utf-8?B?REpjMnAxTEhXN0E2c1htTnROdFAzREx2Y1kwWldTT0hML05NRWVUdUYxb1RP?=
+ =?utf-8?B?SFhmQmptK2RIdXdXTTkxcS92dXI2aFpXSFJoaFliK2YxSE9aMmV6eHAyV1hE?=
+ =?utf-8?B?SGNCU2s2UklJK0Y3RTRTMElCMzVJK2RWNnkyL3N1ZDlsbUt0ai82dSszakpv?=
+ =?utf-8?B?RmlOY2xCRUd0RzBkbGEyUUQ5NnJFcVBUSHVHL3hyaDU0Yk9mSUNQRE8rdHlL?=
+ =?utf-8?B?WXdEMHQ0NUtpbGR2SHpUMGVyelB0ZXlwdXorWFUvRGpiVkw2MEtpQUhXNEkz?=
+ =?utf-8?B?TjdMYzg1ekI3RlRneDhjaDJCYUI0Y05ycUVHSm5nUjdTNTllbXRhTXpieG55?=
+ =?utf-8?B?NFBvUGkrbE4vbW43ZWRrQ1FhUktXY1ByTFBzMWMvR3hmRHUzRC9ldGI4eDJ6?=
+ =?utf-8?B?MkVOVUt5SVB4MUNTTHp4eGlFa28ydWxCUWlVeWpacmJFdmp5VWcxcGRkOXVW?=
+ =?utf-8?Q?95CyTahCK36Vgrfr10dzUUqsE?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b991dc4d-48c8-4d9f-47a8-08dc39544496
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8403.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Feb 2024 18:28:47.2722
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: AklhPD6s9f2fIWMYz30z2z7zXWrAmlR4uaAJ4tc8cZjSSKg4ETf9OnugazbNctnCJ8ba71JByAaT5bp4wdqqwg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR12MB8916
 
-On Thu, Feb 29, 2024 at 06:04:09PM +0100, Mickaël Salaün wrote:
-> The first test checks NULL pointer dereference and make sure it would
-> result as a failed test.
-> 
-> The second and third tests check that read-only data is indeed read-only
-> and trying to modify it would result as a failed test.
-> 
-> This kunit_x86_fault test suite is marked as skipped when run on a
-> non-x86 native architecture.  It is then skipped on UML because such
-> test would result to a kernel panic.
-> 
-> Tested with:
-> ./tools/testing/kunit/kunit.py run --arch x86_64 kunit_x86_fault
-> 
-> Cc: Brendan Higgins <brendanhiggins@google.com>
-> Cc: David Gow <davidgow@google.com>
-> Cc: Rae Moar <rmoar@google.com>
-> Cc: Shuah Khan <skhan@linuxfoundation.org>
-> Signed-off-by: Mickaël Salaün <mic@digikod.net>
 
-If we can add some way to collect WARN/BUG output for examination, I
-could rewrite most of LKDTM in KUnit! I really like this!
 
-> ---
->  lib/kunit/kunit-test.c | 115 ++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 114 insertions(+), 1 deletion(-)
+On 2/29/2024 11:47, Tony Luck wrote:
+> On Thu, Feb 29, 2024 at 09:39:51AM +0100, Borislav Petkov wrote:
+>> On Thu, Feb 29, 2024 at 12:42:38AM -0600, Naik, Avadhut wrote:
+>>> Somewhat confused here. Weren't we also exploring ways to avoid
+>>> duplicate records from being added to the genpool? Has something
+>>> changed in that regard?
+>>
+>> You can always send patches proposing how *you* think this duplicate
+>> elimination should look like and we can talk. :)
+>>
+>> I don't think anyone would mind it if done properly but first you'd need
+>> a real-life use case. As in, do we log sooo many duplicates such that
+>> we'd want to dedup?
 > 
-> diff --git a/lib/kunit/kunit-test.c b/lib/kunit/kunit-test.c
-> index f7980ef236a3..57d8eff00c66 100644
-> --- a/lib/kunit/kunit-test.c
-> +++ b/lib/kunit/kunit-test.c
-> @@ -10,6 +10,7 @@
->  #include <kunit/test-bug.h>
->  
->  #include <linux/device.h>
-> +#include <linux/init.h>
->  #include <kunit/device.h>
->  
->  #include "string-stream.h"
-> @@ -109,6 +110,117 @@ static struct kunit_suite kunit_try_catch_test_suite = {
->  	.test_cases = kunit_try_catch_test_cases,
->  };
->  
-> +#ifdef CONFIG_X86
+> There are definitly cases where dedup will not help. If a row fails in a
+> DIMM there will be a flood of correctable errors with different addresses
+> (depending on number of channels in the interleave schema for a system
+> this may be dozens or hundreds of distinct addresses).
+> 
+> Same for other failures in structures like column and rank.
+> 
 
-Why is this x86 specific?
+Wouldn't having dedup actually increase the time we spend #MC context?
+Comparing the new MCE record against each existing record in the
+genpool.
+
+AFAIK, MCEs cannot be nested. Correct me if I am wrong here.
+
+In a flood situation, like the one described above, that is exactly
+what may happen: An MCE coming in while the dedup mechanism is
+underway (in #MC context).
 
 -- 
-Kees Cook
+Thanks,
+Avadhut Naik
 
