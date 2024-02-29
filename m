@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-85906-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85907-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D73C86BCBD
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:22:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 695A086BCBE
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:22:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0DD5DB24FCE
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:22:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C99172819B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:22:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52A685C61A;
-	Thu, 29 Feb 2024 00:18:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFB2C5CDE2;
+	Thu, 29 Feb 2024 00:18:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="cv5Mz9Xn"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="L26MF88Z"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F93D5A0EA
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 00:18:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 651005C8E0
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 00:18:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709165936; cv=none; b=nr3buHyCS7PahX1ulNkCVO9mRez3Qk3cxuYwII1Af3dC5OFHHCsNDEeDGWnse72oG0/3iviDFpWsaJ+rm5Ux6LlGpLWtf28L4cj8/afQOGHDo/JiPsiVL1ZKnrUBRoIGKZjwcO01bQv9eFFf2dfLwHExLhKnBfDI4BI5oIZzPCE=
+	t=1709165939; cv=none; b=SelaJQkRU0etQMWGScSvKT5ojtcdY7h5xISm0mNiCrW2rnA+2e79TNI29a+Bc5lFBVCxBzy1hGocWDGo5V+5WnRLDBhoDrdcZcSKcu2djrWx+UUxTLTDyGrmBVc5xh0AhJ6diz9v8NkCDIIrJMhjX2O/bvNy8gLDjtjw9VTlU50=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709165936; c=relaxed/simple;
-	bh=v5ABchTQpnOktYWaziSCuW1XX126+T9HD5NGgP4r64Q=;
+	s=arc-20240116; t=1709165939; c=relaxed/simple;
+	bh=Qu4qP63a5Y9CrGCImGaK6yBhwp9wAZMVltq+qFK/h0Y=;
 	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Content-Type; b=qdQS8FdzDKpslGOQgDtGku5hvkaTf0mBxOU8wqioq0iCkOh1Ni6qn8q8/JVMMmEWw7PcKMDo6oKcwuH8RsrK1wpuubmTcQzOYZ3WJWvgxVRHlmyjaDmi8czFZWnI9sLYDdoAPbcsEnFLXAC9Y9DKI5bMvSd8da39Imvd/Hk0nj4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=cv5Mz9Xn; arc=none smtp.client-ip=209.85.219.202
+	 To:Content-Type; b=MLsAhsMPDaLcv667OhLbuRuY2F9Fe2CNElsoDR2CEkBYd6SDbyi0yAj2mkcSX21Z5HbhJQo2544Ql5WZsH/q2PsPbrojc6JdO8tcGMb8dvAMbj27YwBrirJk71tLG17yy5eB/78uIn8piMuaLxHapn6+6QJbh+ZqgFPcBNgBLXs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=L26MF88Z; arc=none smtp.client-ip=209.85.219.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6dbdcfd39so705879276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 16:18:54 -0800 (PST)
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6b267bf11so444944276.2
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 16:18:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709165934; x=1709770734; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1709165936; x=1709770736; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=nEWMbeD73ltjKkx6wjteD4TdhZhnTqNw+z4QfFdR0Xg=;
-        b=cv5Mz9Xn851PoHzwY/s7tDctOCA1uwhB84iMDCNAWRukfJB5/61FSTKs0BUFAZ+oYn
-         ABhK2ZAqwsTETsRP36y66QwLGBTGGg3gZR2oJPucKHoXrqi9UFxf9iwWlcboB71s0gvx
-         oOknQGF4vB6+boswVezJnRQfgnhoWuRYhDEXW+WfqZwFzT2UiJz3BZAQM4RlM1PuCjrB
-         0VkvGCCQKajdsCwsLDJ0t8IcBgwobZw2u6VQRhUnasHddcoh87xiEUZkAmEfKYpHE30Z
-         zJoztG8o5CaO/Prq69rhZLP1IVEq/j4jmE2+Hvy4APEv1HnTbeHXBSMU6e2XtGiwN7J9
-         OWVQ==
+        bh=Wt3W9ZcbAW1zDD9azPxHXaT0ia+NyzLn1A0me08+DuM=;
+        b=L26MF88ZMojJIDofhZMd9KkyDI4vGYuhVr6qdWGL2YZZ+e42LlE1EIQgGqy7e+z2yR
+         0wnghwy0hlKHKV/z9VeVqu9x4L0ydd+zWk95/nQpRFZEjtjSQYQyN0JFs6MPHxd5iB0W
+         WnOpfngbWv5Z7Rt8w20if0qJ0w7nqZ5SRZeypQCEx8TZ1NTv3e4sPpDh67sIHX84Sy//
+         8bYTxUUr8kHcDOYN9K75AhgX5q0QXL8GWe4EgjmzpVIX3aB/f6321ALnvprBP0wcCZb+
+         a+KiZaDLtCLk6a+nnUnmmnbmDRswyi0DzJLnxSe6FgpO4nnfuWw5tY/WhjuT351fxUwO
+         d3Pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709165934; x=1709770734;
+        d=1e100.net; s=20230601; t=1709165936; x=1709770736;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nEWMbeD73ltjKkx6wjteD4TdhZhnTqNw+z4QfFdR0Xg=;
-        b=es9CkG4z85dwXvImo463u8cjDdP5zoJdR0WIdDHeg/DNIVyOPXdpj3oQy0tX3+VJHD
-         rVTOngv7X5rGwwUc/hKDs+ocWuJ6SvnCT2fJqyNsUF+/6dh+s8/r0qIXD2KS/QlCBLsc
-         VwYcexe+MSQTzzbDz5CbPKM3D7ptt6BPzy5FDD1Q6K9SY2aMuT49U2yiMP7n2yEQ2hvV
-         No9zQo1q9U4158KqCE5kOwJqS52VlARHZLT54aXrWuC9oNBrU7tpVBhto0Fe2NPhVgJ5
-         6tD/ZaHiLjqVOUgM3gqOUJdMtc92BiXdhFJuoDSNDt71c4X2Eb9GF3I+tsaaSwy+o9qJ
-         N9ag==
-X-Forwarded-Encrypted: i=1; AJvYcCUz514+ssvJscIz/gCUTQIXhAzK8zMD2HZLvnl0114H8zqleWdzq4n5wH4J6a476OpEwzVa7d3mTsqeD9vQfpYRywMEH+dtARu0cKeD
-X-Gm-Message-State: AOJu0YwKNw0HQIfApvyeOEUd9oUxB0oERMOfxRIkrq3hzmEty0iTrVeJ
-	kaTskZlihob0x2i09gwOb+HFr0R01Vh1ZheEkSQoKiBNxTuR7TqSkUgAGFWYhl/T3LttNpqfwKh
-	cSmhTEQ==
-X-Google-Smtp-Source: AGHT+IEJb5VW34AwdxpVKBuzoStD9RSRzgrbaIVXVct5TzwAEjIblZgUt1eFNmQgufvv+zH2ji/1rFQJZfgv
+        bh=Wt3W9ZcbAW1zDD9azPxHXaT0ia+NyzLn1A0me08+DuM=;
+        b=fBecPoSekZV4eolA2bDEcMRBmrrkAnSY/e3jGk3eEhvhj/NK7+rnNjrd5Qx0HqtUQP
+         hUwRs3MeG94AjTw4lgOxplBz8UIG6x2cGEM3az4K8R+pfrGoHHJjKUZaVcIBL6wAUNON
+         p2fkDOan5cJuXSDJkKjShTFDbTvSBvQq73Emv0hCPkMboWDKgFaoSzxNfjWqhyqcXsCN
+         CsfgpmOpa+7fMK4ibvl80p3bMNlKAefZA6Ya0vV5GX6/Un8uHuclDzM2h4aDW+/Rzmuy
+         x0nSls2OqfBKHS0k3+JJ26dbYY/aVoOzZeneh23Mob/r9W0FwgvOSO+hoHuvbVlvbMPf
+         Nvzw==
+X-Forwarded-Encrypted: i=1; AJvYcCWUvELAvV52feHCA/Zt262gsVFnVOkWku7UFh2ki65sJLHHrDoc+P75BIfOGc6djN5l5CekbXqFbOJTf8NPjND5jNORy2DTTxMS6oqu
+X-Gm-Message-State: AOJu0YxaZfPdFUTGgJLUskqhDLpMye2z8lv0i1WcXNkHOA3nweaCcNxu
+	AbiVjpDT3mBqOKQ+G34PLzXgIGNiGRAISkf8fU6H3Ev89fNsrb/RelcI9o3eqg8CR8WPWkKOYGY
+	6rCZd8w==
+X-Google-Smtp-Source: AGHT+IGUBulIB0EcVC9cQ1MEXMXtqcNX6iDWn1TNNmA27BTL87q2tAn8K8mQi2yLo5e07l8f4F0DhycAxfEU
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:77dc:144c:334e:e2dd])
- (user=irogers job=sendgmr) by 2002:a25:b225:0:b0:dcf:6b50:9bd7 with SMTP id
- i37-20020a25b225000000b00dcf6b509bd7mr214560ybj.7.1709165934246; Wed, 28 Feb
- 2024 16:18:54 -0800 (PST)
-Date: Wed, 28 Feb 2024 16:17:58 -0800
+ (user=irogers job=sendgmr) by 2002:a05:6902:10c2:b0:dc6:b982:cfa2 with SMTP
+ id w2-20020a05690210c200b00dc6b982cfa2mr42080ybu.8.1709165936522; Wed, 28 Feb
+ 2024 16:18:56 -0800 (PST)
+Date: Wed, 28 Feb 2024 16:17:59 -0800
 In-Reply-To: <20240229001806.4158429-1-irogers@google.com>
-Message-Id: <20240229001806.4158429-14-irogers@google.com>
+Message-Id: <20240229001806.4158429-15-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,7 +74,8 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240229001806.4158429-1-irogers@google.com>
 X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Subject: [PATCH v1 13/20] perf jevents: Add cycles breakdown metric for Intel
+Subject: [PATCH v1 14/20] perf jevents: Add Miss Level Parallelism (MLP)
+ metric for Intel
 From: Ian Rogers <irogers@google.com>
 To: Perry Taylor <perry.taylor@intel.com>, Samantha Alt <samantha.alt@intel.com>, 
 	Caleb Biggers <caleb.biggers@intel.com>, Weilin Wang <weilin.wang@intel.com>, 
@@ -90,49 +91,46 @@ To: Perry Taylor <perry.taylor@intel.com>, Samantha Alt <samantha.alt@intel.com>
 	linux-perf-users@vger.kernel.org, Stephane Eranian <eranian@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Breakdown cycles to user, kernel and guest.
+Number of oustanding load misses per cycle.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/pmu-events/intel_metrics.py | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ tools/perf/pmu-events/intel_metrics.py | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
 diff --git a/tools/perf/pmu-events/intel_metrics.py b/tools/perf/pmu-events/intel_metrics.py
-index dae44d296861..fef40969a4b8 100755
+index fef40969a4b8..e373f87d499d 100755
 --- a/tools/perf/pmu-events/intel_metrics.py
 +++ b/tools/perf/pmu-events/intel_metrics.py
-@@ -26,6 +26,23 @@ core_cycles = Event("CPU_CLK_UNHALTED.THREAD_P_ANY",
- smt_cycles = Select(core_cycles / 2, Literal("#smt_on"), core_cycles)
+@@ -617,6 +617,20 @@ def IntelL2() -> Optional[MetricGroup]:
+   ], description = "L2 data cache analysis")
  
  
-+def Cycles() -> MetricGroup:
-+  cyc_k = Event("cycles:kHh")
-+  cyc_g = Event("cycles:G")
-+  cyc_u = Event("cycles:uH")
-+  cyc = cyc_k + cyc_g + cyc_u
++def IntelMlp() -> Optional[Metric]:
++  try:
++    l1d = Event("L1D_PEND_MISS.PENDING")
++    l1dc = Event("L1D_PEND_MISS.PENDING_CYCLES")
++  except:
++    return None
 +
-+  return MetricGroup("cycles", [
-+      Metric("cycles_total", "Total number of cycles", cyc, "cycles"),
-+      Metric("cycles_user", "User cycles as a percentage of all cycles",
-+             d_ratio(cyc_u, cyc), "100%"),
-+      Metric("cycles_kernel", "Kernel cycles as a percentage of all cycles",
-+             d_ratio(cyc_k, cyc), "100%"),
-+      Metric("cycles_guest", "Hypervisor guest cycles as a percentage of all cycles",
-+             d_ratio(cyc_g, cyc), "100%"),
-+  ], description = "cycles breakdown per privilege level (users, kernel, guest)")
++  l1dc = Select(l1dc / 2, Literal("#smt_on"), l1dc)
++  ml = d_ratio(l1d, l1dc)
++  return Metric("mlp",
++                "Miss level parallelism - number of oustanding load misses per cycle (higher is better)",
++                ml, "load_miss_pending/cycle")
 +
 +
- def Idle() -> Metric:
-   cyc = Event("msr/mperf/")
-   tsc = Event("msr/tsc/")
-@@ -770,6 +787,7 @@ def IntelLdSt() -> Optional[MetricGroup]:
- 
- 
- all_metrics = MetricGroup("", [
-+    Cycles(),
-     Idle(),
-     Rapl(),
-     Smi(),
+ def IntelPorts() -> Optional[MetricGroup]:
+   pipeline_events = json.load(open(f"{os.path.dirname(os.path.realpath(__file__))}"
+                                    f"/arch/x86/{args.model}/pipeline.json"))
+@@ -798,6 +812,7 @@ all_metrics = MetricGroup("", [
+     IntelIlp(),
+     IntelL2(),
+     IntelLdSt(),
++    IntelMlp(),
+     IntelPorts(),
+     IntelSwpf(),
+ ])
 -- 
 2.44.0.278.ge034bb2e1d-goog
 
