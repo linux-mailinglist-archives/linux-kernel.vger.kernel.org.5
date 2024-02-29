@@ -1,131 +1,115 @@
-Return-Path: <linux-kernel+bounces-87391-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87392-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5950686D3C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:54:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 546EC86D3C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:54:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8BC011C22E26
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:54:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 861D51C21F1C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:54:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D60C814291F;
-	Thu, 29 Feb 2024 19:54:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7110B13F45E;
+	Thu, 29 Feb 2024 19:54:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="XikPLy5N"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="V1UJeWzV"
+Received: from mail-il1-f178.google.com (mail-il1-f178.google.com [209.85.166.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E684C13C9F0;
-	Thu, 29 Feb 2024 19:54:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E41313C9EE
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 19:54:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709236450; cv=none; b=bN6NbpkA8wsHhGm1GJGzh97Co0JIhIjqvyfSaUyLECWDAunkNa0XueaL9g7kFbBjNoh5TJgIKwgkrCCB3dYUyC49TTdngYc9jKu8vO6iSbRW0u4uyYRBKvn/X0O6UYTZZPYv4Qj5we4qwiExb0ZMDRxmIYU/p0QaI+Bj9Ppxnz4=
+	t=1709236481; cv=none; b=QhRSLcNiq/VrSQM+Nl9tTyVRLCeh7gqXUL5qlHpAyndccWvXUo2eEDEcpKOVG13Sj//NxJxOhp6d8vNBctclArXyQiLLpQ6djbjFSy737G7AJciHU+PgrXfSqIjs5BBbpAVlxOUBQlK3dvbCEbhE4rCQW1qbRxddmB/byxaAcRY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709236450; c=relaxed/simple;
-	bh=zWQt1iQ4/+xGXNV8nMzVwEapO4EgGz7oXUPhT66Bbso=;
+	s=arc-20240116; t=1709236481; c=relaxed/simple;
+	bh=V5tqxVF3dkrvK31EtdECnEz+I9bzgrFJSeBVV6ZF86Y=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UbQwuZLIHaCK6SZ89t5GGNlW2SC5+M3uAGwfjb2H2fTvHTsrUTg/r0C5MAcUK9ldVB5y+1UgOeWGt1umeUODBmKH1Kr739u1EgE+4U0AEFozGvxYfBs6pdRwkFUFeQ2tLsBAn02kdFpPr3077HiDX52puubNgcZdFn0DKq+dbhs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=XikPLy5N; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9EBEC433C7;
-	Thu, 29 Feb 2024 19:54:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1709236449;
-	bh=zWQt1iQ4/+xGXNV8nMzVwEapO4EgGz7oXUPhT66Bbso=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XikPLy5N4w7KUwQ5Ux1ncrrvWUuorVCkIAiQLMmsrfZ4vQdP0llWj9glBu0CBlUNy
-	 5birv+2EM4Yk3qgb0Oym/CTF8spTo+1hvplKkwbQPqtRhHAUNB0GhrzT7WXBdQtvfQ
-	 Tgu4h75hgkDQ6UvqP+O/Vt17wsLs1quz14TonNxo=
-Date: Thu, 29 Feb 2024 20:54:06 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-	jonathanh@nvidia.com, f.fainelli@gmail.com,
-	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-	conor@kernel.org, allen.lkml@gmail.com, paul@crapouillou.net
-Subject: Re: [PATCH 5.15 000/245] 5.15.150-rc1 review
-Message-ID: <2024022905-skinny-making-7852@gregkh>
-References: <20240227131615.098467438@linuxfoundation.org>
- <ac2c579e-4ff0-42e2-ab70-efb8ded2d257@linaro.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=o/RlBSv9J8Xhv+R6zY9d7ppxwi3Nxk+fMvZRk9YbLw1+MGXXfgazwwjm2WeutOVkAlvcMWoNbzo4oppGDa1qmlL2gORFjXvWJyltLg1jR/OamPk9YoQs0+JvEK6Ec840o9bIpL8nn9+2j+umrx1lF8dAbkLefsJYi/qImawFeWo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=V1UJeWzV; arc=none smtp.client-ip=209.85.166.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-il1-f178.google.com with SMTP id e9e14a558f8ab-36523b9fa11so5903355ab.3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 11:54:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1709236479; x=1709841279; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=nUYjDsz8R+v6rHJ3y7OAU2D1Csa/Qz5IVStrXkn7les=;
+        b=V1UJeWzVshJMcHepdfCWJfdWHOR1OnRMF7dr/PosRSsn8+NYDtWwxq42IbT9hLX/Qp
+         o7knhdBDcF2MXzcOlgB84TCLg5agWsUHJ8BSlipWoc4dwbZ5MvlhPAyi9P4h7XOqXe/O
+         6EITAv6ZPt0faYCo5OGqkLJTqhzb8o2k5Vnrc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709236479; x=1709841279;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nUYjDsz8R+v6rHJ3y7OAU2D1Csa/Qz5IVStrXkn7les=;
+        b=WMTaeUuNiYfzR2cS5M+pncwShsq7HnGPo4sRqcG3Rey3/g8GmdUQ+cHx5dVKwQw7e0
+         CQHjjSj2Swj6y6nx/mQ7OVutT3o65Q3FJzkkkxCi5308WBmI0y9JTjQ5dzVB46HBMpdn
+         gJLehXhKJBe5NXE3h3SuOHArTflnOHoxdMEnS3GooG0KcUn7isIGZMqRPpsZ141Vp3rz
+         quwQ/4V0Uyan2WqCITMYktdw6x+NIMqgB7L3GYtWT4HdEaMvLQhaF00AYJ/7Twr59IkB
+         MJduRPbFaN/cpeFovEC/Du+mI69lx841uJ4NOKJjlt3mb8WLS3egh4OETk/ngWkkGUL4
+         e0NA==
+X-Forwarded-Encrypted: i=1; AJvYcCXiwY0i5dFqEsvdiM/9ghpZWM5iRpQasuqgFCTAWJ6y2yYb+DyAcge7vLnGCJOeGuHxHozOzqrQyFHXgwCj+TiE9QPeorZ3kso3CMbf
+X-Gm-Message-State: AOJu0YyCMNnYCsExu20P6EJ54FZ3fvhcXrrMSThZ5yuNsQVY1Zjgk2zY
+	LiWFzTKu/Ayt3TFt/h6EOTJQ83/LkSl2ZJ1BgTv89LuCejH89WVIxYX42OdDig==
+X-Google-Smtp-Source: AGHT+IGGZoKxldQ+DP+Axi8YKT3jN9VQUWSq7FAtq78rNujQCKd4lgSM0meggARCt9I6uWVFT1LKHg==
+X-Received: by 2002:a92:ca4e:0:b0:365:19f0:f2ae with SMTP id q14-20020a92ca4e000000b0036519f0f2aemr40689ilo.31.1709236479442;
+        Thu, 29 Feb 2024 11:54:39 -0800 (PST)
+Received: from localhost (144.57.222.35.bc.googleusercontent.com. [35.222.57.144])
+        by smtp.gmail.com with UTF8SMTPSA id l12-20020a056e021c0c00b003657f6b23e4sm497553ilh.68.2024.02.29.11.54.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Feb 2024 11:54:38 -0800 (PST)
+Date: Thu, 29 Feb 2024 19:54:38 +0000
+From: Matthias Kaehlcke <mka@chromium.org>
+To: Javier Carrasco <javier.carrasco@wolfvision.net>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Helen Koike <helen.koike@collabora.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Russell King <linux@armlinux.org.uk>,
+	linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v6 9/9] usb: misc: onboard_dev: add support for XMOS
+ XVF3500
+Message-ID: <ZeDg_s4ob7TVb1wx@google.com>
+References: <20240229-onboard_xvf3500-v6-0-a0aff2947040@wolfvision.net>
+ <20240229-onboard_xvf3500-v6-9-a0aff2947040@wolfvision.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ac2c579e-4ff0-42e2-ab70-efb8ded2d257@linaro.org>
+In-Reply-To: <20240229-onboard_xvf3500-v6-9-a0aff2947040@wolfvision.net>
 
-On Tue, Feb 27, 2024 at 12:56:32PM -0600, Daniel Díaz wrote:
-> Hello!
+On Thu, Feb 29, 2024 at 09:34:52AM +0100, Javier Carrasco wrote:
+> The XMOS XVF3500 VocalFusion Voice Processor[1] is a low-latency, 32-bit
+> multicore controller for voice processing.
 > 
-> On 27/02/24 7:23 a. m., Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.15.150 release.
-> > There are 245 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Thu, 29 Feb 2024 13:15:36 +0000.
-> > Anything received after that time might be too late.
-> > 
-> > The whole patch series can be found in one patch at:
-> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.150-rc1.gz
-> > or in the git tree and branch at:
-> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> > and the diffstat can be found below.
-> > 
-> > thanks,
-> > 
-> > greg k-h
+> This device requires a specific power sequence, which consists of
+> enabling the regulators that control the 3V3 and 1V0 device supplies,
+> and a reset de-assertion after a delay of at least 100ns.
 > 
-> We're seeing build regressions here with RISC-V, with GCC 8, GCC 12, and Clang 17:
+> Once in normal operation, the XVF3500 registers itself as a USB device,
+> and it does not require any device-specific operations in the driver.
 > 
-> -----8<-----
->   In file included from /builds/linux/include/linux/list.h:9,
->                    from /builds/linux/include/linux/module.h:12,
->                    from /builds/linux/drivers/net/ethernet/realtek/r8169_main.c:12:
->   /builds/linux/drivers/net/ethernet/realtek/r8169_main.c:5512:35: error: 'rtl8169_pm_ops' undeclared here (not in a function); did you mean 'rtl8169_poll'?
->    5512 |         .driver.pm      = pm_ptr(&rtl8169_pm_ops),
->         |                                   ^~~~~~~~~~~~~~
->   /builds/linux/include/linux/kernel.h:46:44: note: in definition of macro 'PTR_IF'
->      46 | #define PTR_IF(cond, ptr)       ((cond) ? (ptr) : NULL)
->         |                                            ^~~
->   /builds/linux/drivers/net/ethernet/realtek/r8169_main.c:5512:27: note: in expansion of macro 'pm_ptr'
->    5512 |         .driver.pm      = pm_ptr(&rtl8169_pm_ops),
->         |                           ^~~~~~
->   make[5]: *** [/builds/linux/scripts/Makefile.build:289: drivers/net/ethernet/realtek/r8169_main.o] Error 1
-> ----->8-----
+> [1] https://www.xmos.com/xvf3500/
 > 
-> Bisection points to:
-> 
->   commit ac2871f646a8f556203f5b6be875ce406d855ddb
->   Author: Paul Cercueil <paul@crapouillou.net>
->   Date:   Tue Dec 7 00:20:59 2021 +0000
->       PM: core: Redefine pm_ptr() macro
->       [ Upstream commit c06ef740d401d0f4ab188882bf6f8d9cf0f75eaf ]
-> 
-> A revert could not be done cleanly.
-> 
-> Tuxmake reproducer:
-> 
->   tuxmake --runtime podman --target-arch riscv --toolchain gcc-12 --kconfig defconfig
-> 
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> Signed-off-by: Javier Carrasco <javier.carrasco@wolfvision.net>
 
-I've been beating on this for a while and I really don't know what is
-happening, sorry.  The driver looks fine, something is "odd" with riscv
-here that is not "odd" with other arches.
-
-I'll leave this as-is for now and hopefully someone who relies on riscv
-can help track it down.
-
-thanks,
-
-greg k-h
+Acked-by: Matthias Kaehlcke <mka@chromium.org>
 
