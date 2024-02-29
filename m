@@ -1,115 +1,160 @@
-Return-Path: <linux-kernel+bounces-87392-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87393-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 546EC86D3C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:54:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DD2786D3CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:56:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 861D51C21F1C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:54:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EDBE1B2526C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:56:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7110B13F45E;
-	Thu, 29 Feb 2024 19:54:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59DE313C9D6;
+	Thu, 29 Feb 2024 19:56:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="V1UJeWzV"
-Received: from mail-il1-f178.google.com (mail-il1-f178.google.com [209.85.166.178])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ACdicXmw"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E41313C9EE
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 19:54:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31B9313C9F7;
+	Thu, 29 Feb 2024 19:55:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709236481; cv=none; b=QhRSLcNiq/VrSQM+Nl9tTyVRLCeh7gqXUL5qlHpAyndccWvXUo2eEDEcpKOVG13Sj//NxJxOhp6d8vNBctclArXyQiLLpQ6djbjFSy737G7AJciHU+PgrXfSqIjs5BBbpAVlxOUBQlK3dvbCEbhE4rCQW1qbRxddmB/byxaAcRY=
+	t=1709236563; cv=none; b=L5hNYnjmdk6lmqFyUUsWylErvX4BrtqrjER3/5SD5HkDySN78kmiDaOTNgbXWZhnhiT09u65zRcImxcSrVY5iYXv8uiybcTcveYfy9Xe5lAS+eBTwTpaASjQsfFvCbuJCSibSUBu+za86Fhe2FxOJup0Dfgox6ITzBQmov0R9Hg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709236481; c=relaxed/simple;
-	bh=V5tqxVF3dkrvK31EtdECnEz+I9bzgrFJSeBVV6ZF86Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=o/RlBSv9J8Xhv+R6zY9d7ppxwi3Nxk+fMvZRk9YbLw1+MGXXfgazwwjm2WeutOVkAlvcMWoNbzo4oppGDa1qmlL2gORFjXvWJyltLg1jR/OamPk9YoQs0+JvEK6Ec840o9bIpL8nn9+2j+umrx1lF8dAbkLefsJYi/qImawFeWo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=V1UJeWzV; arc=none smtp.client-ip=209.85.166.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-il1-f178.google.com with SMTP id e9e14a558f8ab-36523b9fa11so5903355ab.3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 11:54:40 -0800 (PST)
+	s=arc-20240116; t=1709236563; c=relaxed/simple;
+	bh=NVI5WFKeuJH0tx6oWGjB5QE4SI3b+PhYHwaN02LOX7I=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KUuMYxQxgQa3vYl0ZOn46NB5dvH1e37z8i5yQ3PENqMti4xlcmNJUemxHjOvMqr6MkcD7+61PvNyjdckjIS+BTTBEDmTIAFaGvSV5o90j3R0yFH5w/7B9wQ9qEuPlKm+gJOzWKAA8j8xzEj+tuLiFbavSmjvnurJCa6PWjZlaW4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ACdicXmw; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a44665605f3so83288066b.2;
+        Thu, 29 Feb 2024 11:55:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709236479; x=1709841279; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=nUYjDsz8R+v6rHJ3y7OAU2D1Csa/Qz5IVStrXkn7les=;
-        b=V1UJeWzVshJMcHepdfCWJfdWHOR1OnRMF7dr/PosRSsn8+NYDtWwxq42IbT9hLX/Qp
-         o7knhdBDcF2MXzcOlgB84TCLg5agWsUHJ8BSlipWoc4dwbZ5MvlhPAyi9P4h7XOqXe/O
-         6EITAv6ZPt0faYCo5OGqkLJTqhzb8o2k5Vnrc=
+        d=gmail.com; s=20230601; t=1709236556; x=1709841356; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=y3dRCI30Cqlop6Z/piqJrZ5N5wWPVcx8trh55DUTij0=;
+        b=ACdicXmwY7VJDaymlfb8CmBOswjUhBDoKCTT/gGmdmEGNnyZZrDjFZ3GxzYq1eTPHP
+         MsTpIoCbYktadsqeSetsb5F+UKIaUUN5q/FZ3XTMJI3vQPdyczfyRS86zLOcCbuJW00s
+         cW/ogbCBWjM8UVtVAnBAvx4pnnuDOZzIUGLOjocovJOS+ANC5PS5q8kpNStIstlUG0+7
+         ikyFUSWPrbnFmi8mpzf31W6dTSrrAiqC/DuA467wit+i1u22URCqd/bW2m/DbDXvZgyE
+         rJXUaX9CJZR9js5hMx8y5sOtT7XaK9N/dUnM0PeDVEDYweisbvdBGGlCoZv+pPlxcLIq
+         j4UQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709236479; x=1709841279;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nUYjDsz8R+v6rHJ3y7OAU2D1Csa/Qz5IVStrXkn7les=;
-        b=WMTaeUuNiYfzR2cS5M+pncwShsq7HnGPo4sRqcG3Rey3/g8GmdUQ+cHx5dVKwQw7e0
-         CQHjjSj2Swj6y6nx/mQ7OVutT3o65Q3FJzkkkxCi5308WBmI0y9JTjQ5dzVB46HBMpdn
-         gJLehXhKJBe5NXE3h3SuOHArTflnOHoxdMEnS3GooG0KcUn7isIGZMqRPpsZ141Vp3rz
-         quwQ/4V0Uyan2WqCITMYktdw6x+NIMqgB7L3GYtWT4HdEaMvLQhaF00AYJ/7Twr59IkB
-         MJduRPbFaN/cpeFovEC/Du+mI69lx841uJ4NOKJjlt3mb8WLS3egh4OETk/ngWkkGUL4
-         e0NA==
-X-Forwarded-Encrypted: i=1; AJvYcCXiwY0i5dFqEsvdiM/9ghpZWM5iRpQasuqgFCTAWJ6y2yYb+DyAcge7vLnGCJOeGuHxHozOzqrQyFHXgwCj+TiE9QPeorZ3kso3CMbf
-X-Gm-Message-State: AOJu0YyCMNnYCsExu20P6EJ54FZ3fvhcXrrMSThZ5yuNsQVY1Zjgk2zY
-	LiWFzTKu/Ayt3TFt/h6EOTJQ83/LkSl2ZJ1BgTv89LuCejH89WVIxYX42OdDig==
-X-Google-Smtp-Source: AGHT+IGGZoKxldQ+DP+Axi8YKT3jN9VQUWSq7FAtq78rNujQCKd4lgSM0meggARCt9I6uWVFT1LKHg==
-X-Received: by 2002:a92:ca4e:0:b0:365:19f0:f2ae with SMTP id q14-20020a92ca4e000000b0036519f0f2aemr40689ilo.31.1709236479442;
-        Thu, 29 Feb 2024 11:54:39 -0800 (PST)
-Received: from localhost (144.57.222.35.bc.googleusercontent.com. [35.222.57.144])
-        by smtp.gmail.com with UTF8SMTPSA id l12-20020a056e021c0c00b003657f6b23e4sm497553ilh.68.2024.02.29.11.54.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Feb 2024 11:54:38 -0800 (PST)
-Date: Thu, 29 Feb 2024 19:54:38 +0000
-From: Matthias Kaehlcke <mka@chromium.org>
-To: Javier Carrasco <javier.carrasco@wolfvision.net>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Helen Koike <helen.koike@collabora.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Russell King <linux@armlinux.org.uk>,
-	linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        d=1e100.net; s=20230601; t=1709236556; x=1709841356;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=y3dRCI30Cqlop6Z/piqJrZ5N5wWPVcx8trh55DUTij0=;
+        b=g0AxiyNYG9pRaNa5IyRHtmFcNHuRWPnxBJ9hAgnF9pOA/r1B2WzwOOmdsWGYl/rSnW
+         ycATGh6upDsZ7NXaxZtm1j1XEskw8Goy8p0Bic9aY6NDL8sdqdyA+E7z8IbL+MEWT0Eo
+         r5D++B+XWGZPDRu5sTnZQTYb//EfXk3ERnIOf/O6/FI1bwohcLeVD2QQRIsEc9JC663P
+         0A8+5An0FJPVOt3UjLuG00QGTJ2DcrVjnnPJWdl8+4nxRHtC9+SEvPf6YabDbsrQeMkb
+         mzaK8XAi0ip0gs56FnFGX88bveISglGObhSOTccHuBgwKE0ZUdJAcDhS1F4zRFZ0j5Wz
+         Wgqw==
+X-Forwarded-Encrypted: i=1; AJvYcCXKo7TIXbXKWZeTQlyOComTHSoV4mz3KqLqiWkYsS5O8aqTbEjlBe0tQgSXpbCVB9VOVkASm2emw6/mbicnmfva+T0//3hgKA1Jn+JsEoetlTAvpZsyKjFMJPVczx5SuRQEsCuH
+X-Gm-Message-State: AOJu0YxUfJu5hShmhI+vqhY4PbtKrp/1uOKAYFsx2BJItYnKiFo82Iwc
+	PDFtLHGYqvVvAAuCWhLUUH9ZrQJr0HxXV03KXO4I4FGMRYQyTddU
+X-Google-Smtp-Source: AGHT+IEL9jkj54S+9kUY1V3QOVu73bHEonB9uQVtq3A5M1oTgOFv1MjQ8H5XvVG8CsK/6VnEfZlLhg==
+X-Received: by 2002:a17:906:71d8:b0:a41:2f5e:f9b4 with SMTP id i24-20020a17090671d800b00a412f5ef9b4mr2226517ejk.59.1709236556351;
+        Thu, 29 Feb 2024 11:55:56 -0800 (PST)
+Received: from localhost.localdomain (80-108-76-242.cable.dynamic.surfer.at. [80.108.76.242])
+        by smtp.gmail.com with ESMTPSA id ti9-20020a170907c20900b00a43a4e405bbsm983214ejc.115.2024.02.29.11.55.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Feb 2024 11:55:55 -0800 (PST)
+From: Christian Gmeiner <christian.gmeiner@gmail.com>
+To: Lucas Stach <l.stach@pengutronix.de>,
+	Russell King <linux+etnaviv@armlinux.org.uk>,
+	Christian Gmeiner <christian.gmeiner@gmail.com>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>
+Cc: Christian Gmeiner <cgmeiner@igalia.com>,
+	stable@vger.kernel.org,
+	etnaviv@lists.freedesktop.org,
 	dri-devel@lists.freedesktop.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v6 9/9] usb: misc: onboard_dev: add support for XMOS
- XVF3500
-Message-ID: <ZeDg_s4ob7TVb1wx@google.com>
-References: <20240229-onboard_xvf3500-v6-0-a0aff2947040@wolfvision.net>
- <20240229-onboard_xvf3500-v6-9-a0aff2947040@wolfvision.net>
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] etnaviv: Restore some id values
+Date: Thu, 29 Feb 2024 20:55:31 +0100
+Message-ID: <20240229195532.7815-1-christian.gmeiner@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240229-onboard_xvf3500-v6-9-a0aff2947040@wolfvision.net>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 29, 2024 at 09:34:52AM +0100, Javier Carrasco wrote:
-> The XMOS XVF3500 VocalFusion Voice Processor[1] is a low-latency, 32-bit
-> multicore controller for voice processing.
-> 
-> This device requires a specific power sequence, which consists of
-> enabling the regulators that control the 3V3 and 1V0 device supplies,
-> and a reset de-assertion after a delay of at least 100ns.
-> 
-> Once in normal operation, the XVF3500 registers itself as a USB device,
-> and it does not require any device-specific operations in the driver.
-> 
-> [1] https://www.xmos.com/xvf3500/
-> 
-> Signed-off-by: Javier Carrasco <javier.carrasco@wolfvision.net>
+From: Christian Gmeiner <cgmeiner@igalia.com>
 
-Acked-by: Matthias Kaehlcke <mka@chromium.org>
+The hwdb selection logic as a feature that allows it to mark some fields
+as 'don't care'. If we match with such a field we memcpy(..)
+the current etnaviv_chip_identity into ident.
+
+This step can overwrite some id values read from the GPU with the
+'don't care' value.
+
+Fix this issue by restoring the affected values after the memcpy(..).
+
+As this is crucial for user space to know when this feature works as
+expected increment the minor version too.
+
+Fixes: 4078a1186dd3 ("drm/etnaviv: update hwdb selection logic")
+Cc: stable@vger.kernel.org
+Signed-off-by: Christian Gmeiner <cgmeiner@igalia.com>
+---
+ drivers/gpu/drm/etnaviv/etnaviv_drv.c  |  2 +-
+ drivers/gpu/drm/etnaviv/etnaviv_hwdb.c | 14 ++++++++++++++
+ 2 files changed, 15 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/etnaviv/etnaviv_drv.c b/drivers/gpu/drm/etnaviv/etnaviv_drv.c
+index 6228ce603248..9a2965741dab 100644
+--- a/drivers/gpu/drm/etnaviv/etnaviv_drv.c
++++ b/drivers/gpu/drm/etnaviv/etnaviv_drv.c
+@@ -494,7 +494,7 @@ static const struct drm_driver etnaviv_drm_driver = {
+ 	.desc               = "etnaviv DRM",
+ 	.date               = "20151214",
+ 	.major              = 1,
+-	.minor              = 3,
++	.minor              = 4,
+ };
+ 
+ /*
+diff --git a/drivers/gpu/drm/etnaviv/etnaviv_hwdb.c b/drivers/gpu/drm/etnaviv/etnaviv_hwdb.c
+index 67201242438b..1e38d66702f1 100644
+--- a/drivers/gpu/drm/etnaviv/etnaviv_hwdb.c
++++ b/drivers/gpu/drm/etnaviv/etnaviv_hwdb.c
+@@ -265,6 +265,9 @@ static const struct etnaviv_chip_identity etnaviv_chip_identities[] = {
+ bool etnaviv_fill_identity_from_hwdb(struct etnaviv_gpu *gpu)
+ {
+ 	struct etnaviv_chip_identity *ident = &gpu->identity;
++	const u32 product_id = ident->product_id;
++	const u32 customer_id = ident->customer_id;
++	const u32 eco_id = ident->eco_id;
+ 	int i;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(etnaviv_chip_identities); i++) {
+@@ -278,6 +281,17 @@ bool etnaviv_fill_identity_from_hwdb(struct etnaviv_gpu *gpu)
+ 			 etnaviv_chip_identities[i].eco_id == ~0U)) {
+ 			memcpy(ident, &etnaviv_chip_identities[i],
+ 			       sizeof(*ident));
++
++			/* Restore some id values if ~0U aka 'don't care' is used. */
++			if (etnaviv_chip_identities[i].product_id == ~0U)
++				ident->product_id = product_id;
++
++			if (etnaviv_chip_identities[i].customer_id == ~0U)
++				ident->customer_id = customer_id;
++
++			if (etnaviv_chip_identities[i].eco_id == ~0U)
++				ident->eco_id = eco_id;
++
+ 			return true;
+ 		}
+ 	}
+-- 
+2.44.0
+
 
