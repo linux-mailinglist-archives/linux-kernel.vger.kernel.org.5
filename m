@@ -1,150 +1,137 @@
-Return-Path: <linux-kernel+bounces-87422-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87424-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFABA86D437
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:29:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 294D686D43E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:30:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 67279B21237
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:29:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF2861F23F46
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:30:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AF68142902;
-	Thu, 29 Feb 2024 20:29:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4901A1428FC;
+	Thu, 29 Feb 2024 20:29:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iqTpmYdv"
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="bYdTaTPK"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 003D113F447;
-	Thu, 29 Feb 2024 20:29:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8CFF1428E0;
+	Thu, 29 Feb 2024 20:29:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709238573; cv=none; b=agpULMY/5nE7y0dTHv04TkiMif9hY9fBR1diPfAjYXPQv+2OoqnhX9kJbuAYq61mmdcq7Wd0yGOGHlbA0NQkEtugoeuKjT4+YFqoEf7UbRcUq40r5JokW6RLM4RFhHYr+Z80WAvUOOuEUlNgj6vEGGLEcwhazmpEF8ioKYc/rhM=
+	t=1709238591; cv=none; b=qRIxSirQzA9GVl18bzMJtFYqGMCUwyDaG9HG9/RXqoK9csAhYBSA1xtl9U3sWdXWP4OC5vW5ZOcgvJzFE0PI749Vjpjha/Vxro/xRDn97w/Zeook4KtsR9ubI/O8uvhFlFiKWdffcA+pMU8Qgjr8P7+gv4QH2KIDP3n+0iKE21w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709238573; c=relaxed/simple;
-	bh=wDnbbqB5aUHpb6fJcebChgfzTyYFaOf22lmLVESnSNw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g/LyAcZT6b2vRZJHlp3m4xnKMLer2+Dqzb0L2rs0/pL2YDO5iRqYQFbYbltSc0r11eBiZeCdzrUH8OSX1eNHZXEUxMgDu2ADoxl599asIHyIkY6n0+vnTjEs6No0S3ymTgIkwocklbusSECdE6g098bc4UClV0wQi6dIDU0z+cQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iqTpmYdv; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1db6e0996ceso11501605ad.2;
-        Thu, 29 Feb 2024 12:29:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709238571; x=1709843371; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xSz/dUHpTksrWDau7UTGPuG7xxZjtedv1CB25dUHJFg=;
-        b=iqTpmYdvp+NG9qIiDF/WH1KQVbK++HHWcuO+hdchIRnpptzJDDtDwwcYt0298AJO1d
-         CxaE8cwtEdk5cLvRjdotRVUmWK2ReeoBdsmmtc+5vTel8ksmRhVyB8ZF5FtIbPPnEqMF
-         VH2Otyzw4+p8Hyts/aJKQhQfAw8+RMKdCjC4ssPsXmEj2U0X2/aVZojMscMPYTZZ+Dkc
-         /bgc1bZkp6Kqb/IHfm/bXISSaI81t51CTr9VzZoBPt9VY+4OYL1vovJ/o6P+oWYNW+EB
-         6btPOfsIZOWeZ80JdkYKcKAEbDBujprcqtryBNcnbd/cNJPwHDP9CxD7FB/u2pRrjGdS
-         ukFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709238571; x=1709843371;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xSz/dUHpTksrWDau7UTGPuG7xxZjtedv1CB25dUHJFg=;
-        b=X3x1Rh5hPsWdBzeV9xNpowxNAtb9jUpeP0+DDxJzrF35b/f0eptKIAzYbdVgR52VQI
-         wElMk8NYJudQ/5Ml113IFCVXx4dJFyqh1mrrL7R3us1no8qxoRHMY79EPwGKCjaDf6qu
-         Q7vsEVrLDY/dlO8h86HTwL0pDO9XKoQhsv9wh5WeupP7hUC2SWhteCA8kL4bIIkbDdvc
-         r30e6yjvvBMd3/7r08ozkQlLOM3sF7aCkOnMeMziwbrMV7la52TSoA7T6fpZD1W5Worc
-         bF9LW+4T3f9JK0Rj2qZ558gseHoafzn3CzDIYk9Ow/f929Pkm/JPTOmZ9eEwkZxWVZmC
-         Q9rg==
-X-Forwarded-Encrypted: i=1; AJvYcCWbop5Pgh6RP1aYbET+O0t9VKQJzNEB/XZXBzzHvWBqG7WHZxt1DYx2q0GPaBW1J47s1yKByGbxYl0cbfG/JIkSDaAy4UVLZFPFFfTRLW1J2gaMDwIqX4WYjs8jgKnzcCPqO8sbL3xr/2qlPlD4CL77m3yjJ9HESmDFdM9Cn7Q8QI9osdiHX9Q30nt4aBOR3wy5XttVP7zFj5eZMw==
-X-Gm-Message-State: AOJu0YynPHGr+J8QDwq1O01gKLDYveqAXk9DdgQR2KPK054JrxVPZQBW
-	AGhhDNeDFGUiMaJWnRA/91prsn/eC/2k/p37lVyUe9YqkDuz1dP/bbdGpNo/m5o=
-X-Google-Smtp-Source: AGHT+IEl3W5R3KIqZYg3g66+tVVU2vPgDmNnOp/Ux0a8p2pYOCsVOCjZol70UqtEdVEfLXXhxBd/8A==
-X-Received: by 2002:a17:903:1208:b0:1d8:f129:a0bc with SMTP id l8-20020a170903120800b001d8f129a0bcmr3441334plh.13.1709238571238;
-        Thu, 29 Feb 2024 12:29:31 -0800 (PST)
-Received: from localhost ([2620:10d:c090:400::5:8305])
-        by smtp.gmail.com with ESMTPSA id kx4-20020a170902f94400b001d9aa663282sm1926375plb.266.2024.02.29.12.29.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 12:29:30 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Thu, 29 Feb 2024 10:29:29 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Xiongwei Song <xiongwei.song@windriver.com>
-Cc: longman@redhat.com, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-	corbet@lwn.net, vbabka@suse.cz, yosryahmed@google.com,
-	rostedt@goodmis.org, cl@linux.com, chengming.zhou@linux.dev,
-	zhengyejian1@huawei.com, cgroups@vger.kernel.org,
-	linux-mmc@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] cgroup/cpuset: Mark memory_spread_slab as obsolete
-Message-ID: <ZeDpKRX3mQqcoFJx@slm.duckdns.org>
-References: <20240229142007.1278610-1-xiongwei.song@windriver.com>
- <20240229142007.1278610-2-xiongwei.song@windriver.com>
+	s=arc-20240116; t=1709238591; c=relaxed/simple;
+	bh=QrhFl7E6Li6WE3UgfE5eeDFHXvNCYJaAYjR49lKDZv0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=G4HbF2OOwx6B7JrPDFwi/gJl8nXQhEBYyjWutJoM+4XOL+YIZYNFHdbQl8wH++KzxlpHdEBBRdAkdiqRi8qRPMZqFZHqpBRQjwVM0AxFNspyhcjt3jSK6QJeNfL+zf4UdM8O1hD9PHyfj9oqG6N/F0o7CQEtaBKELi0jlzItB8I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=bYdTaTPK; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41TKD5kT012650;
+	Thu, 29 Feb 2024 20:29:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=PBg+gMB7bf5lDowU5BKUpKKCa2MjD+00vjMdHznDRq0=;
+ b=bYdTaTPKWqVulhan9y3PB/IBfk+azxrWIL983UBt7ovk1NIwib/wE6doGIrqCkP35fp/
+ dHaq9266ihd5hnlOb9xQEBWy+qBOgk5u+Ql+O5/q6EK9/sHlwXl15yt/mW+hM4XtVicr
+ rUn6AU9U76PMCMTLgE7KivfkSmlrGJPMy75fdhW/Ko5NgiWJ6zYErguj/cc8Yrar4C4i
+ 1TBOLZQM8BTERR+8ljqjsDnAsUnXTTynCLpMhuR0gZn0J7f9GdOIPEMywKBuS3/JuYUA
+ rwazV55ZerAULTzXff9f1idrpcJ4Sq1zNhEMwBfAu+6Ne/bt0LjFNfe6XmnWAT+pQhIN YQ== 
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wk0rv8gnp-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 29 Feb 2024 20:29:43 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41TJpfYY024154;
+	Thu, 29 Feb 2024 20:29:38 GMT
+Received: from smtprelay03.dal12v.mail.ibm.com ([172.16.1.5])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wfw0kqpt5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 29 Feb 2024 20:29:38 +0000
+Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
+	by smtprelay03.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41TKTZGR33882408
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 29 Feb 2024 20:29:38 GMT
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 7CF225805B;
+	Thu, 29 Feb 2024 20:29:35 +0000 (GMT)
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id C61D35806B;
+	Thu, 29 Feb 2024 20:29:34 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+	by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 29 Feb 2024 20:29:34 +0000 (GMT)
+Message-ID: <bd4f59d7-5633-4259-83b2-97fe28ee2610@linux.ibm.com>
+Date: Thu, 29 Feb 2024 15:29:34 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240229142007.1278610-2-xiongwei.song@windriver.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 06/10] crypte: ecc - Implement ecc_curve_get_nbits to
+ get number of bits
+Content-Language: en-US
+To: Lukas Wunner <lukas@wunner.de>
+Cc: keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        linux-kernel@vger.kernel.org, saulo.alessandre@tse.jus.br
+References: <20240223204149.4055630-1-stefanb@linux.ibm.com>
+ <20240223204149.4055630-7-stefanb@linux.ibm.com>
+ <20240227201552.GA32765@wunner.de>
+From: Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <20240227201552.GA32765@wunner.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: K_owe_xLI1ZgbAYkwAlJM9t4bygaibjX
+X-Proofpoint-GUID: K_owe_xLI1ZgbAYkwAlJM9t4bygaibjX
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-29_06,2024-02-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1015
+ mlxlogscore=999 bulkscore=0 adultscore=0 lowpriorityscore=0 mlxscore=0
+ impostorscore=0 phishscore=0 spamscore=0 priorityscore=1501 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2402290159
 
-Hello,
 
-Applied to cgroup/for-6.9 with some adjustments.
 
-Thanks.
+On 2/27/24 15:15, Lukas Wunner wrote:
+> On Fri, Feb 23, 2024 at 03:41:45PM -0500, Stefan Berger wrote:
+>> --- a/include/crypto/internal/ecc.h
+>> +++ b/include/crypto/internal/ecc.h
+>> @@ -75,6 +75,17 @@ static inline void ecc_digits_from_bytes(const u8 *in, unsigned int nbytes,
+>>   	ecc_swap_digits(tmp, out, ndigits);
+>>   }
+>>   
+>> +/**
+>> + * ecc_curve_get_nbits() - Get the number of bits of the curve
+>> + * @curve:    The curve
+>> + */
+>> +static inline unsigned int ecc_curve_get_nbits(const struct ecc_curve *curve)
+>> +{
+>> +	if (curve->nbits)
+>> +		return curve->nbits;
+>> +	return curve->g.ndigits << ECC_DIGITS_TO_BYTES_SHIFT * 8;
+>> +}
+> 
+> Since you're amending struct ecc_curve with an extra nbits value anyway,
+> why not statically fill it in for all curves, instead of adding this
+> extra complexity in the code?
 
------ 8< -----
-From 3ab67a9ce82ff22447b1dad53b49a91d1abbf1ff Mon Sep 17 00:00:00 2001
-From: Xiongwei Song <xiongwei.song@windriver.com>
-Date: Thu, 29 Feb 2024 22:20:07 +0800
-Subject: [PATCH] cgroup/cpuset: Mark memory_spread_slab as obsolete
+I filled in all curves now, including ecrdsa cruves and curve25519.
 
-We've removed the SLAB allocator, cpuset_do_slab_mem_spread() and
-SLAB_MEM_SPREAD, memory_spread_slab is a no-op now. We can mark
-memory_spread_slab as obsolete in case someone still wants to use it after
-cpuset_do_slab_mem_spread() removed. For more details, please check [1].
+    Stefan
 
-[1] https://lore.kernel.org/lkml/32bc1403-49da-445a-8c00-9686a3b0d6a3@redhat.com/T/#m8e292e21b00f95a4bb8086371fa7387fa4ea8f60
-
-tj: Description and cosmetic updates.
-
-Signed-off-by: Xiongwei Song <xiongwei.song@windriver.com>
-Acked-by: Waiman Long <longman@redhat.com>
-Signed-off-by: Tejun Heo <tj@kernel.org>
----
- Documentation/admin-guide/cgroup-v1/cpusets.rst | 2 +-
- kernel/cgroup/cpuset.c                          | 1 +
- 2 files changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/admin-guide/cgroup-v1/cpusets.rst b/Documentation/admin-guide/cgroup-v1/cpusets.rst
-index ae646d621a8a..7d3415eea05d 100644
---- a/Documentation/admin-guide/cgroup-v1/cpusets.rst
-+++ b/Documentation/admin-guide/cgroup-v1/cpusets.rst
-@@ -179,7 +179,7 @@ containing (on top of the standard cgroup files) the following
-  - cpuset.mem_hardwall flag:  is memory allocation hardwalled
-  - cpuset.memory_pressure: measure of how much paging pressure in cpuset
-  - cpuset.memory_spread_page flag: if set, spread page cache evenly on allowed nodes
-- - cpuset.memory_spread_slab flag: if set, spread slab cache evenly on allowed nodes
-+ - cpuset.memory_spread_slab flag: OBSOLETE. Doesn't have any function.
-  - cpuset.sched_load_balance flag: if set, load balance within CPUs on that cpuset
-  - cpuset.sched_relax_domain_level: the searching range when migrating tasks
- 
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index ba36c073304a..c940cf01b148 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -3897,6 +3897,7 @@ static struct cftype legacy_files[] = {
- 	},
- 
- 	{
-+		/* obsolete, may be removed in the future */
- 		.name = "memory_spread_slab",
- 		.read_u64 = cpuset_read_u64,
- 		.write_u64 = cpuset_write_u64,
--- 
-2.43.2
-
+> 
+> Thanks,
+> 
+> Lukas
 
