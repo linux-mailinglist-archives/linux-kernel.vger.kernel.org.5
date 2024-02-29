@@ -1,101 +1,187 @@
-Return-Path: <linux-kernel+bounces-86768-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86769-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2592486CA7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:41:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 410DF86CA85
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:43:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 57DC31C22102
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:41:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 64E2F1C22151
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:43:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 507568626A;
-	Thu, 29 Feb 2024 13:41:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CED27E0E7;
+	Thu, 29 Feb 2024 13:43:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="p7qqsNkv"
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linumiz.com header.i=@linumiz.com header.b="DdFVivt/"
+Received: from omta36.uswest2.a.cloudfilter.net (omta36.uswest2.a.cloudfilter.net [35.89.44.35])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BF705A7AE
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 13:41:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F00411EB46
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 13:42:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709214077; cv=none; b=uCeWEM9VaeNx1tU57RwNcAUvMTEe+cEFRcDtMK1sL+hklIiqubZv5OvH20q38P5yIXKYAh6QhioQL9l/p488s0k6psIeR3kd5xA1RKn1kLdXWlaIf87spZxEkaT/B+sFwkXGFButnGNdk/kjIugLxRc+Km7f+BBeSARm4I/ks/4=
+	t=1709214180; cv=none; b=jHdJxAUu/qJtwCFymJY0GjjrE6TTZ80G2/U5XtO/lD/oIqK8nknxaibqYzsbqtt4SZH+/5awMwZ9h7u0zac8fAKeMXbyAvU58X7cskLVPEUHDNSVlbrcax1IEd1tN6KOYvtNqHZzvBL53QU3R1WeL9Hdl3ttYgCPPamNi2uK6sg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709214077; c=relaxed/simple;
-	bh=jcLKZbs/Zu5zER3Eia5mbXdz3hwiV7UiWd3xeKHKlGE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qmd2pbrDrWrwt8dVsp+fetc54oP2KMVerZpiXDzW/S4GeDmnRwtTcW+y4zXz+NEI1Kii06rlxLpibzpj2Pq7taQvdrLWb0z16nWx1obevGjQl3IXwjgv8JOAZdNO+Nhcy2RgZ8X9HfnPXA9gatUPeMUTSPJLWiiEIz6IX3tvBOE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=p7qqsNkv; arc=none smtp.client-ip=209.85.219.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dc6e080c1f0so931577276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 05:41:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709214075; x=1709818875; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jcLKZbs/Zu5zER3Eia5mbXdz3hwiV7UiWd3xeKHKlGE=;
-        b=p7qqsNkvZHpe0Acca7BW264B+NGM6cSkipEoOcLeCAmKE2wGHAoY2r5QvC2f4P/DeX
-         BI7W+TDtCjCvgk3rvB2FCj/AVebWGjpqdvIbY9gozU+Iraq8rXXR0gSiyWGbaerBBhhA
-         eUuHp/26xTFB0Gei6JIRcHda+8rla8AIKifk0GSHJXZwt8C22xzgnhHN/ZV6W4qOaPMI
-         E9lOpuw4s2oEgeKTcQ+K0iuu1r3ww5k1vgJEbyKgB64zX5BGQgtTGUvfVa71PgrtttDu
-         LZ9hMtb5+1r+2fdmfRlloI4VRUJ6gkFOZeYERVHPrv8hWD2YgV2oFIKjuXjBeWLp9/4j
-         eEOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709214075; x=1709818875;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jcLKZbs/Zu5zER3Eia5mbXdz3hwiV7UiWd3xeKHKlGE=;
-        b=gVOtuF//DqW3LUe8tyCUdB7Sxyw4i9RMWK5egawmLIAIuT+yvABx+91DMmmRgFQKzW
-         aPkx/Z2MTCdBBTJLHcfDXrI4cW7bri5lhq2BK/G4tpRIFujmXkEd6jgr4oKxFQWjIFdd
-         1+WtClMzqtHbX6YmxIalMJC6xypVoQHZUwcYrFA5quBGwsQ04xt//BoFBtGPzvwtlLkd
-         faGKha6RrMp4SpuktQV4MB2OlYOs2HKcwnXWeWeVDTMbTyJCxGkBKa7RXTvRrn7XuehI
-         vG0Ybjw/F6WZFm0sRndPW2pR1mriNPvi8h/iEY8dIdKQgc+y69XJXtnHUCu16L7eNCZj
-         0erQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU0pM+s/6UnvcKiBus7OjUTvfZPbVqoVQ/bQxoExNLfhMAAQaFO3BoI5ilOofE7rhWJKS4jLcw4oiBTbY4MBol8vzeVpmRkAImdHj5q
-X-Gm-Message-State: AOJu0Yx5OVuRnzYGswMrMPp8Mt8te5UzNf0tEYl6XKNsDKnXCUWRqWxk
-	KyzqPtAOjJpt7reDu1ceav8MaGtprVZL6EkwCIrqOK14PGTzZft7V8hILF2c/qNFYAFZq4AQEM3
-	LXySEqCkdeAjzTTUj6uSZnxfgOKeqajgbgzH8zw==
-X-Google-Smtp-Source: AGHT+IEFluKafOIkQh7uIVwL3dhx6caOcBL2Ibez/sreRcv91OBaMnMo5ESm+hheZpBF3A5q8BHVqdEeRF/mItRX2mQ=
-X-Received: by 2002:a25:a348:0:b0:dcd:1b8f:e6d3 with SMTP id
- d66-20020a25a348000000b00dcd1b8fe6d3mr2293406ybi.48.1709214075085; Thu, 29
- Feb 2024 05:41:15 -0800 (PST)
+	s=arc-20240116; t=1709214180; c=relaxed/simple;
+	bh=8rYwzbxYj4vrnha0t2AKzLRwzjvgBm6Z1yuT19Cy4XU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cp444Mk3JOrKFTeZZVe7bwdJYhO4zRdq5URnhKpLOdiwkyQObw83NGir4VYR58zoqhcFMbXdYuKBL2MFgGKnfZnJnL0wrX+OBu361/rMHLS1JV1zCc+wTom97o1reFPUWrnOfwkwMiq1U6fqlG+Q6Dteh/Q0pX+APVeorZjnz5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linumiz.com; spf=pass smtp.mailfrom=linumiz.com; dkim=pass (2048-bit key) header.d=linumiz.com header.i=@linumiz.com header.b=DdFVivt/; arc=none smtp.client-ip=35.89.44.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linumiz.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linumiz.com
+Received: from eig-obgw-6001a.ext.cloudfilter.net ([10.0.30.140])
+	by cmsmtp with ESMTPS
+	id ffhfrxPn6tf2QfggbrenRW; Thu, 29 Feb 2024 13:42:57 +0000
+Received: from md-in-79.webhostbox.net ([43.225.55.182])
+	by cmsmtp with ESMTPS
+	id fggXroSleMdRYfggZrazTj; Thu, 29 Feb 2024 13:42:56 +0000
+X-Authority-Analysis: v=2.4 cv=HdMSTDE8 c=1 sm=1 tr=0 ts=65e089e0
+ a=LfuyaZh/8e9VOkaVZk0aRw==:117 a=kofhyyBXuK/oEhdxNjf66Q==:17
+ a=IkcTkHD0fZMA:10 a=k7vzHIieQBIA:10 a=oz0wMknONp8A:10 a=vU9dKmh3AAAA:8
+ a=gEfo2CItAAAA:8 a=30BekZBjpCcCcibuRJYA:9 a=QEXdDO2ut3YA:10
+ a=rsP06fVo5MYu2ilr0aT5:22 a=sptkURWiP4Gy88Gu7hUp:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=linumiz.com
+	; s=default; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=FrgbLBsNF0iWzcBTdaTIwKxZagkFXCPdJPVu5FIYbjQ=; b=DdFVivt/Q9LFR5NHCWVK9gIp6C
+	9j5x6z00P0eb+0B0nIFQvWtWbDjVMGWjVT7am0LzHSL/AVQoV7n4HS9MQYMQAxFnJr4b/z/HzxCLY
+	fwURMkl7x92zwHm7bkwikPzZrfyfsYiOwoUqJtm0He2PDRz8oQNvtm5CuP+9yCw14D95yUHnGJStO
+	0YvEK6/qOzzwSRciKvvMrUBy5VOQdevfBU+eisiCFXaSJy2VTUWMXz9EXEHm0YguIoXkpWAtK+zz5
+	9Y2jQYj8SoRxTGFVR3P46IVEBVYXSVjLC5ArrdlTM4BUUWgmPblNwz5s8jfWKyJV9ijtMaCqIaDdu
+	Nkq7jcvA==;
+Received: from [122.165.245.213] (port=44614 helo=[192.168.1.101])
+	by md-in-79.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <parthiban@linumiz.com>)
+	id 1rfggU-0029Zh-2M;
+	Thu, 29 Feb 2024 19:12:50 +0530
+Message-ID: <f1cb3511-c960-4986-996c-6bc7a7fd93c6@linumiz.com>
+Date: Thu, 29 Feb 2024 19:12:47 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240223171342.669133-1-varshini.rajendran@microchip.com> <20240223172531.671993-1-varshini.rajendran@microchip.com>
-In-Reply-To: <20240223172531.671993-1-varshini.rajendran@microchip.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 29 Feb 2024 14:41:04 +0100
-Message-ID: <CACRpkdYcjX1UKwtZorEcw_1W+=0WGpjA=41BLAEN-apvwWqF-w@mail.gmail.com>
-Subject: Re: [PATCH v4 09/39] dt-bindings: pinctrl: at91: add sam9x7
-To: Varshini Rajendran <varshini.rajendran@microchip.com>
-Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com, 
-	claudiu.beznea@tuxon.dev, linux-gpio@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] dt-bindings: arm: fsl: Add Seeed studio NPi based
+ boards
+Content-Language: en-US
+To: Rob Herring <robh@kernel.org>
+Cc: robh+dt@kernel.org, linux-imx@nxp.com, linux-kernel@vger.kernel.org,
+ kernel@pengutronix.de, shawnguo@kernel.org, devicetree@vger.kernel.org,
+ festevam@gmail.com, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org,
+ Parthiban <parthiban@linumiz.com>
+References: <20240229082337.3090778-1-parthiban@linumiz.com>
+ <170921330970.3211978.15088255449645039046.robh@kernel.org>
+From: Parthiban <parthiban@linumiz.com>
+Organization: Linumiz
+In-Reply-To: <170921330970.3211978.15088255449645039046.robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - md-in-79.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - linumiz.com
+X-BWhitelist: no
+X-Source-IP: 122.165.245.213
+X-Source-L: No
+X-Exim-ID: 1rfggU-0029Zh-2M
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.1.101]) [122.165.245.213]:44614
+X-Source-Auth: parthiban@linumiz.com
+X-Email-Count: 9
+X-Org: HG=dishared_whb_net_legacy;ORG=directi;
+X-Source-Cap: bGludW1jbWM7aG9zdGdhdG9yO21kLWluLTc5LndlYmhvc3Rib3gubmV0
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfM7SfllwxibrF20OQolI9wpbzUOnaPi7fPTlTg+An1/vkc1YUU2IdV62vIiQEXLnK3E5hxAW32KhNTRrLZ0sc1vEErE8Poy/oxWD8pESeBGXj0u2CeqD
+ I3nRFp1Nj1UsheTwn1gbNahrhSdAd6HbT1MFvHMeypjMKu/xIwBs4UIoEJv6nxWX+Bb8SjI8S41VqcVLqsw+nrC/lPW1An+PVQg=
 
-On Fri, Feb 23, 2024 at 6:25=E2=80=AFPM Varshini Rajendran
-<varshini.rajendran@microchip.com> wrote:
+Dear Rob,
 
-> Add device tree binding for SAM9X7 pin controller.
->
-> Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
-> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+On 2/29/24 19:05, Rob Herring wrote:
+> 
+> On Thu, 29 Feb 2024 13:53:36 +0530, Parthiban Nallathambi wrote:
+>> NPi i.MX6ULL eMMC/NAND is Seed Studios SoM using i.MX6ULL.
+>> Development baords can be either based on NAND or eMMC
+>> SoM.
+>>
+>> Signed-off-by: Parthiban Nallathambi <parthiban@linumiz.com>
+>> ---
+>>  Documentation/devicetree/bindings/arm/fsl.yaml | 8 ++++++++
+>>  1 file changed, 8 insertions(+)
+>>
+> 
+> 
+> My bot found new DT warnings on the .dts files added or changed in this
+> series.
+> 
+> Some warnings may be from an existing SoC .dtsi. Or perhaps the warnings
+> are fixed by another series. Ultimately, it is up to the platform
+> maintainer whether these warnings are acceptable or not.
 
-This one patch applied to the pinctrl tree.
+Yes I noticed the same in my end. AFAIK these warnings are from existing dtsi. Quick check different dtb resulted the same,
 
-Yours,
-Linus Walleij
+make CHECK_DTBS=y ARCH=arm CROSS_COMPILE=arm-none-linux-gnueabihf- nxp/imx/imx6ull-tarragon-master.dtb O=./master -j32
+make[1]: Entering directory '/home/parthiban/data/parthiban/mainline/linux/master'
+  DTC_CHK arch/arm/boot/dts/nxp/imx/imx6ull-tarragon-master.dtb
+arch/arm/boot/dts/nxp/imx/imx6ull-tarragon-master.dtb: /soc/bus@2000000/spba-bus@2000000/spi@200c000/ethernet@0: failed to match any schema with compatible: ['qca,qca7000']
+arch/arm/boot/dts/nxp/imx/imx6ull-tarragon-master.dtb: /soc/bus@2000000/spba-bus@2000000/spi@2014000/ethernet@0: failed to match any schema with compatible: ['qca,qca7000']
+arch/arm/boot/dts/nxp/imx/imx6ull-tarragon-master.dtb: /soc/bus@2000000/spba-bus@2000000/asrc@2034000: failed to match any schema with compatible: ['fsl,imx6ul-asrc', 'fsl,imx53-asrc']
+arch/arm/boot/dts/nxp/imx/imx6ull-tarragon-master.dtb: /soc/bus@2000000/spba-bus@2000000/asrc@2034000: failed to match any schema with compatible: ['fsl,imx6ul-asrc', 'fsl,imx53-asrc']
+arch/arm/boot/dts/nxp/imx/imx6ull-tarragon-master.dtb: /soc/bus@2000000/tsc@2040000: failed to match any schema with compatible: ['fsl,imx6ul-tsc']
+arch/arm/boot/dts/nxp/imx/imx6ull-tarragon-master.dtb: /soc/bus@2000000/anatop@20c8000: failed to match any schema with compatible: ['fsl,imx6ul-anatop', 'fsl,imx6q-anatop', 'syscon', 'simple-mfd']
+arch/arm/boot/dts/nxp/imx/imx6ull-tarragon-master.dtb: /soc/bus@2000000/anatop@20c8000: failed to match any schema with compatible: ['fsl,imx6ul-anatop', 'fsl,imx6q-anatop', 'syscon', 'simple-mfd']
+/home/parthiban/data/parthiban/mainline/linux/master/arch/arm/boot/dts/nxp/imx/imx6ull-tarragon-master.dtb: tempmon: '#thermal-sensor-cells' is a required property
+        from schema $id: http://devicetree.org/schemas/thermal/imx-thermal.yaml#
+arch/arm/boot/dts/nxp/imx/imx6ull-tarragon-master.dtb: /soc/bus@2000000/pinctrl@20e0000: failed to match any schema with compatible: ['fsl,imx6ul-iomuxc']
+arch/arm/boot/dts/nxp/imx/imx6ull-tarragon-master.dtb: /soc/bus@2000000/iomuxc-gpr@20e4000: failed to match any schema with compatible: ['fsl,imx6ul-iomuxc-gpr', 'fsl,imx6q-iomuxc-gpr', 'syscon']
+arch/arm/boot/dts/nxp/imx/imx6ull-tarragon-master.dtb: /soc/bus@2000000/iomuxc-gpr@20e4000: failed to match any schema with compatible: ['fsl,imx6ul-iomuxc-gpr', 'fsl,imx6q-iomuxc-gpr', 'syscon']
+arch/arm/boot/dts/nxp/imx/imx6ull-tarragon-master.dtb: /soc/bus@2100000/weim@21b8000: failed to match any schema with compatible: ['fsl,imx6ul-weim', 'fsl,imx6q-weim']
+arch/arm/boot/dts/nxp/imx/imx6ull-tarragon-master.dtb: /soc/bus@2100000/weim@21b8000: failed to match any schema with compatible: ['fsl,imx6ul-weim', 'fsl,imx6q-weim']
+arch/arm/boot/dts/nxp/imx/imx6ull-tarragon-master.dtb: /soc/bus@2200000/iomuxc-snvs@2290000: failed to match any schema with compatible: ['fsl,imx6ull-iomuxc-snvs']
+make[1]: Leaving directory '/home/parthiban/data/parthiban/mainline/linux/master'
+
+> 
+> If you already ran DT checks and didn't see these error(s), then
+> make sure dt-schema is up to date:
+> 
+>   pip3 install dtschema --upgrade
+
+Thanks, am already using the latest version.
+
+Thanks,
+Parthiban N
+
+> 
+> 
+> New warnings running 'make CHECK_DTBS=y nxp/imx/imx6ull-seeed-npi-dev-board-emmc.dtb nxp/imx/imx6ull-seeed-npi-dev-board-nand.dtb' for 20240229082337.3090778-1-parthiban@linumiz.com:
+> 
+> arch/arm/boot/dts/nxp/imx/imx6ull-seeed-npi-dev-board-emmc.dtb: /soc/bus@2000000/touchscreen@2040000: failed to match any schema with compatible: ['fsl,imx6ul-tsc']
+> arch/arm/boot/dts/nxp/imx/imx6ull-seeed-npi-dev-board-nand.dtb: /soc/bus@2000000/touchscreen@2040000: failed to match any schema with compatible: ['fsl,imx6ul-tsc']
+> arch/arm/boot/dts/nxp/imx/imx6ull-seeed-npi-dev-board-emmc.dtb: /soc/bus@2000000/anatop@20c8000: failed to match any schema with compatible: ['fsl,imx6ul-anatop', 'fsl,imx6q-anatop', 'syscon', 'simple-mfd']
+> arch/arm/boot/dts/nxp/imx/imx6ull-seeed-npi-dev-board-emmc.dtb: /soc/bus@2000000/anatop@20c8000: failed to match any schema with compatible: ['fsl,imx6ul-anatop', 'fsl,imx6q-anatop', 'syscon', 'simple-mfd']
+> arch/arm/boot/dts/nxp/imx/imx6ull-seeed-npi-dev-board-nand.dtb: /soc/bus@2000000/anatop@20c8000: failed to match any schema with compatible: ['fsl,imx6ul-anatop', 'fsl,imx6q-anatop', 'syscon', 'simple-mfd']
+> arch/arm/boot/dts/nxp/imx/imx6ull-seeed-npi-dev-board-nand.dtb: /soc/bus@2000000/anatop@20c8000: failed to match any schema with compatible: ['fsl,imx6ul-anatop', 'fsl,imx6q-anatop', 'syscon', 'simple-mfd']
+> arch/arm/boot/dts/nxp/imx/imx6ull-seeed-npi-dev-board-emmc.dtb: /soc/bus@2000000/pinctrl@20e0000: failed to match any schema with compatible: ['fsl,imx6ul-iomuxc']
+> arch/arm/boot/dts/nxp/imx/imx6ull-seeed-npi-dev-board-nand.dtb: /soc/bus@2000000/pinctrl@20e0000: failed to match any schema with compatible: ['fsl,imx6ul-iomuxc']
+> arch/arm/boot/dts/nxp/imx/imx6ull-seeed-npi-dev-board-emmc.dtb: /soc/bus@2000000/iomuxc-gpr@20e4000: failed to match any schema with compatible: ['fsl,imx6ul-iomuxc-gpr', 'fsl,imx6q-iomuxc-gpr', 'syscon']
+> arch/arm/boot/dts/nxp/imx/imx6ull-seeed-npi-dev-board-emmc.dtb: /soc/bus@2000000/iomuxc-gpr@20e4000: failed to match any schema with compatible: ['fsl,imx6ul-iomuxc-gpr', 'fsl,imx6q-iomuxc-gpr', 'syscon']
+> arch/arm/boot/dts/nxp/imx/imx6ull-seeed-npi-dev-board-nand.dtb: /soc/bus@2000000/iomuxc-gpr@20e4000: failed to match any schema with compatible: ['fsl,imx6ul-iomuxc-gpr', 'fsl,imx6q-iomuxc-gpr', 'syscon']
+> arch/arm/boot/dts/nxp/imx/imx6ull-seeed-npi-dev-board-nand.dtb: /soc/bus@2000000/iomuxc-gpr@20e4000: failed to match any schema with compatible: ['fsl,imx6ul-iomuxc-gpr', 'fsl,imx6q-iomuxc-gpr', 'syscon']
+> arch/arm/boot/dts/nxp/imx/imx6ull-seeed-npi-dev-board-emmc.dtb: /soc/bus@2200000/pinctrl@2290000: failed to match any schema with compatible: ['fsl,imx6ull-iomuxc-snvs']
+> arch/arm/boot/dts/nxp/imx/imx6ull-seeed-npi-dev-board-nand.dtb: /soc/bus@2200000/pinctrl@2290000: failed to match any schema with compatible: ['fsl,imx6ull-iomuxc-snvs']
+> 
+> 
+> 
+> 
+> 
 
