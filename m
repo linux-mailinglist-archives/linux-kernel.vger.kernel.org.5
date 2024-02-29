@@ -1,88 +1,103 @@
-Return-Path: <linux-kernel+bounces-87153-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87155-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BBCD86D051
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:16:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 63FC386D05D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:18:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 50C241F22281
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:16:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 170161F22A7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:18:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AAE56CBF4;
-	Thu, 29 Feb 2024 17:16:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 645D370AC4;
+	Thu, 29 Feb 2024 17:18:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mfToqY1U"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="VBYTBo5T"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D8656CBF3;
-	Thu, 29 Feb 2024 17:16:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41EDC5E082;
+	Thu, 29 Feb 2024 17:18:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709227007; cv=none; b=r2KvZIfwwPX0H8WcoHfrqCBcJcvvbczzyYDXqHeGZ1a/O/BBxCIe9/IIhvaBsTAZDYAgD17Hl3znBssHHmQGKzcvRMSe2iqqyrTjbjBx4JXir3wnhg2gj85H7XONfG2CdUiWyVa1XJuW38Qy8tfnIaouVVIqGLxUB37nlYcP0O4=
+	t=1709227108; cv=none; b=RKLgK5tRDyHnMYrUOb1tR53u9H/K6YXWviFFg+3Q5QHx5XI7EYe80Y8mz3jkLZMtGfJHbMOCqUcWg7kxW0IzPqiEpfNNCD0Vi4LKvT2G/UC+K49NJWeT8nNeg+Fu/L504IL/coEiYOnukRqnFyh+yzXqkfAN07NYKGG88gIr3sA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709227007; c=relaxed/simple;
-	bh=sO1V/9+1+1pxQKgovU9SQDqskwQ8QcDLkagOKz3zDZ0=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=nzZYrh6upu+pVRf7j4ZRq8+8tEKg2IO+gfX6+eCdoev3VPsbceng375WW2TAtYrPii15zLhjHft1y/dhi2IH8z+NFr3U+gzOMkAKeJ3oj5hzK+WF7xRCQjZbBp+sl7QCTT15ZnnKEm1AmG0Pw5lebzCILS3oVnyxCHXwv/vqlWo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mfToqY1U; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1824CC433C7;
-	Thu, 29 Feb 2024 17:16:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709227006;
-	bh=sO1V/9+1+1pxQKgovU9SQDqskwQ8QcDLkagOKz3zDZ0=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=mfToqY1UgqQ+hOSLiBwz5q1cVaoYgKNvmupbOIIYnauOFK0aKp92jB6ZmhbylaFeY
-	 8r1F4/C3a/qPC19E63rOohIBGLpGSCl6j6AM4f3cqoiD/+9zKRNuWCw2ZQqfB0c8I0
-	 r9qSGfwE2kzt7oAfOLU+OrnNo4UnjgqcQNyVYgWUnUeWEjw7C/KEtkEpdUP+b12pP2
-	 UGVn81mjeg3vt9JnfV3jkn5O33wDyeHynm9zXszN08fTUR6I6dHVP1v4V5CCY6Lvvx
-	 a/RDIRsfMEd1o/ja99bO2sus/5QmQKyqPEktgo2/km7KLbNReQu/GNcd5vbsq5q3I4
-	 RiWHgCLEWgH4w==
-From: Lee Jones <lee@kernel.org>
-To: Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>, 
- Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>, 
- Roger Quadros <rogerq@kernel.org>
-Cc: Andrew Davis <afd@ti.com>, b-liu@ti.com, srk@ti.com, 
- r-gunasekaran@ti.com, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- Rob Herring <robh@kernel.org>
-In-Reply-To: <20240226-b4-for-v6-5-am62-usb-typec-dt-v6-1-acf77fff4344@kernel.org>
-References: <20240226-b4-for-v6-5-am62-usb-typec-dt-v6-0-acf77fff4344@kernel.org>
- <20240226-b4-for-v6-5-am62-usb-typec-dt-v6-1-acf77fff4344@kernel.org>
-Subject: Re: (subset) [PATCH v6 1/4] dt-bindings: mfd: syscon: Add
- ti,am62-usb-phy-ctrl compatible
-Message-Id: <170922700382.1610849.6482403854629206955.b4-ty@kernel.org>
-Date: Thu, 29 Feb 2024 17:16:43 +0000
+	s=arc-20240116; t=1709227108; c=relaxed/simple;
+	bh=wLFkbz3gkSljFGtwkfV2wWbaprCVgevB+4kcM+B8hRM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FTLuM7qtkjK7QKrO6t9FFWYiNlp9kzyRpixL4wGzKWlDr7sCbyk4vgdfqKBCkmRvemZb90mdWK5UliFVZH6ur1HhLHK2GJA+pL+7E7HZ1fFvi9BECtRb+6y3aJsN6KH37R3GuizjAOiHFlHCkHyFDXrhBRbA6Ovsz6Br0OrhIss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=VBYTBo5T; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=nDTd85D0N7TgWSzEKq+BxgNnlzgmZW1OM2gxs9VR3ZY=; b=VBYTBo5TjEwXvKL7n0GEU/Bl4R
+	qlsi7iODH1JwrBMD+xa9T0IEeF+ITk8FVf1E3AWKHXTguVNnaB0m7XV/71KwVaCTFpvn5whbFRyi2
+	EoHvxhoXmXLjV3vOjie/Uc5vH6rfpUgFw0FAOIjvKHPCX6idla2gYa/5a9CyD46UOrt4=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rfk34-0093vZ-5V; Thu, 29 Feb 2024 18:18:22 +0100
+Date: Thu, 29 Feb 2024 18:18:22 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: forbidden405@outlook.com
+Cc: Yisen Zhuang <yisen.zhuang@huawei.com>,
+	Salil Mehta <salil.mehta@huawei.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH net-next v6 07/11] dt-bindings: net: hisi-femac: replace
+ deprecated phy-mode with recommended phy-connection-type
+Message-ID: <1cba5245-08c7-43b0-8ae3-11db52e036aa@lunn.ch>
+References: <20240228-net-v6-0-6d78d3d598c1@outlook.com>
+ <20240228-net-v6-7-6d78d3d598c1@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.12.4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240228-net-v6-7-6d78d3d598c1@outlook.com>
 
-On Mon, 26 Feb 2024 14:03:07 +0200, Roger Quadros wrote:
-> Add the compatible for TI AM62 USB PHY Control register. This
-> register is found in the TI AM62 WKUP_CTRL_MMR0 space [1]. It
-> is used to indicate the USB PHY PLL reference clock rate and
-> core voltage level to the USB controller.
+On Wed, Feb 28, 2024 at 05:02:31PM +0800, Yang Xiwen via B4 Relay wrote:
+> From: Yang Xiwen <forbidden405@outlook.com>
 > 
-> [1] - https://www.ti.com/lit/pdf/spruiv7
-> 
-> [...]
+> The old property "phy-mode" should be replaced with the latest
+> "phy-connection-type".
 
-Applied, thanks!
+In practice, phy-mode is typically used, and phy-connection-type is
+not used much. All new user tend to be phy-mode.
 
-[1/4] dt-bindings: mfd: syscon: Add ti,am62-usb-phy-ctrl compatible
-      commit: e9f06bd428d3f07c8d26506ed35d9f8bb836950b
+~/linux$ grep -r phy-mode arch/* | wc
+   1561    6258  113122
+~/linux$ grep -r phy-connection-type arch/* | wc
+    372    1489   28981
 
---
-Lee Jones [李琼斯]
+Most of the phy-connection-type appear in PowerPC.
 
+~/linux$ grep -r phy-connection-type arch/powerpc/* | wc
+    247     990   18335
+
+It was the early adopter of DT, long before ARM. The DT standard of
+the time, which PowerPC followed, said to use
+phy-connection-type. When ARM started using DT, it did not follow the
+standard too well, and phy-mode got used a lot. Officially, phy-mode
+is deprecated because it is not part of the standard. But practice
+does not always follow the standard.
+
+So both are O.K, all the generic code accepts both, and there is no
+real reason to change.
+
+	Andrew
 
