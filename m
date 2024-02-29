@@ -1,204 +1,203 @@
-Return-Path: <linux-kernel+bounces-86709-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86710-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8912786C961
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:41:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5E9186C963
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:44:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35584285655
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:41:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90C8C285AE1
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:44:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7326B7D077;
-	Thu, 29 Feb 2024 12:41:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 051387D3EB;
+	Thu, 29 Feb 2024 12:44:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="DgavKIbQ"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="W52H4Zoh"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 093C776EF4
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 12:41:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45F3876F03
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 12:44:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709210503; cv=none; b=c1zL5bnFbkkqObFJniQahy7i8p1+tLP9RcsfXYH94uRTVgY7PN8E98vlz5sPe6wwFTlymf8G3HpY+Ylln1Cs0usxdSPHgLIZTJnmnOICZzFfHlrBT6Wegdfl2rt7Hqvi1DRcBCUyTMHj4eOVd7XzO4TwDIeIzibgbjXJv3Y7D4k=
+	t=1709210674; cv=none; b=kTIV95TavdJYe1h4B1LvNHqOTMR4DIVuyW5OWv1nnJIevYvLi+NE3xN/1jdO5aP+1QdRjnm5xMhb1yNlQ7Jv2SZKLyDQV6L6KCf+PxRv0nuSI5i4xwkdB8vKa8GPx8cZNAP3NBV7DI0i2yRwAlLpIRvAcN/RhcrHYYXGjy3JgW4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709210503; c=relaxed/simple;
-	bh=bYwenActmo0DJIFiEmMoeGrYokDOzONoZ2KvaEqH3jQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IASEH2o8LW3kIss4g5dMht/52yOtsC3T8wINNfTaBiEp+bDtpLlv8tTrHY5/knMqKXEo1mwhHP3Op08vyNc5AS5UNAstD8cE3c7KnHUkr0N26K61iiOc/vyVyTF5D2bWf1T1+M7Svvhwkr7LpDVhuQbSYG3FzU7ODl3vpvWnL3w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=DgavKIbQ; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709210500;
-	bh=bYwenActmo0DJIFiEmMoeGrYokDOzONoZ2KvaEqH3jQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=DgavKIbQIDwous2datEXLvFLQIqT8gkwH/KHbsvYsyazEvx1ex1CjAm0/yY63TT8z
-	 t3ThwFpUZ+QR+PwwV6rQgMGdhfnSirsMjJVRP54VSIwnle5jGcPFCqJqCz9WRDiEGm
-	 jMsAhLPLVYomlaB04GzQWI6Q+iXF906z9tLBMqYbk/Tjs00O58DtwUTznnyddBNtgr
-	 OfoRd0UgS4HTEmAX1cJpkpmScQ1oq3va+vMwoduScnNq5ww0iSkXy3a5mtTWaxTaDD
-	 MaHDdwKMlonV2Xe7YzWVs81i/peEZylWjis9Pn7u/9lCC2kWjbH7nevGAWWbLVW6ns
-	 SEVJPKlHwvWLQ==
-Received: from eldfell (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pq)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id EF34F3782089;
-	Thu, 29 Feb 2024 12:41:38 +0000 (UTC)
-Date: Thu, 29 Feb 2024 14:41:37 +0200
-From: Pekka Paalanen <pekka.paalanen@collabora.com>
-To: Arthur Grillo <arthurgrillo@riseup.net>
-Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>, Melissa Wen
- <melissa.srw@gmail.com>, =?UTF-8?B?TWHDrXJh?= Canal
- <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel
- Vetter <daniel@ffwll.ch>, Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- Jonathan Corbet <corbet@lwn.net>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, jeremie.dautheribes@bootlin.com,
- miquel.raynal@bootlin.com, thomas.petazzoni@bootlin.com,
- seanpaul@google.com, marcheu@google.com, nicolejadeyee@google.com
-Subject: Re: [PATCH v3 3/9] drm/vkms: write/update the documentation for
- pixel conversion and pixel write functions
-Message-ID: <20240229144137.75ae1cde.pekka.paalanen@collabora.com>
-In-Reply-To: <592e5da7-7aac-4735-ae8f-625402e381ae@riseup.net>
-References: <20240226-yuv-v3-0-ff662f0994db@bootlin.com>
-	<20240226-yuv-v3-3-ff662f0994db@bootlin.com>
-	<406988be-48a4-4762-9c03-7a27c8e7b91e@riseup.net>
-	<Zd35csjqRMstzElA@localhost.localdomain>
-	<592e5da7-7aac-4735-ae8f-625402e381ae@riseup.net>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1709210674; c=relaxed/simple;
+	bh=PFbKm9oVKbiYCFV4Te4gZX/SgyWpu5Ye7VYR9JHaY+I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PL9a65tKSrDQF0E2J/6OlCEheIAk19nQNdKmpjU71AA+2jcExJH2a3FZgiUZR30R+TjQkj+9DVkcDBynCrfYFvOcmGtyWehZqK0WAQdF6/ikV1qnZD41BfNQ3ZNS5q120bnyllw3xmvk8/Sj0PraQ7nl9eLfzqr2WpdfwxQULro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=W52H4Zoh; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709210671;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pkOonY3la2hSmoRffKrf9jEAOm9sMbK1Xqob1w0aSr4=;
+	b=W52H4ZohyPHTnPYIa2HxEQZzODLQxwHn4LeBgn29CnA+mu3yLu9gGLyKe6obSFavhKfMgR
+	SrTuEHSMwNIBPPRSADp4HgK8knxnd/6XEPEqXK9S5Cb1aKkHU1yGYjNxcaNaV4YeP7hEzk
+	OUngxQn4z/urIlImeeTPn02o+HiNN2U=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-53-kLYA2S9sOwm0xGZ-XnsxRw-1; Thu, 29 Feb 2024 07:44:29 -0500
+X-MC-Unique: kLYA2S9sOwm0xGZ-XnsxRw-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-33d29de76abso429814f8f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 04:44:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709210668; x=1709815468;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pkOonY3la2hSmoRffKrf9jEAOm9sMbK1Xqob1w0aSr4=;
+        b=m6VtPPeoFoDsc2XzXZ0hD7mOKaR1KVcBhuNWm6fNq1fVJDN/YxU/80honT6x0SGZd7
+         ZRrzq2OX+LIB4cO1svopOydoPnXQ1ueKdCj+UmhWySmpTiHwYujTGvVz9sDg83hW7xR5
+         NmQJzd3FWPSmGNdG0v6w7X2fKl3C9REp4jOFqIVsVTal7dbLRq1xyQR3Jd/PJ2mcdMvP
+         VjoTurPWfKQxGNGYbszq6h9LDUkcBOxnQL+MtTsBftTT+5TVKQBZ/52aWPc6zt0jHiYY
+         g9ZvLUzFHehIkecaXxieN1RZzLp7iuQ7xjTjEtkLlwlb6JhQzlitakCbzzGsmpQ8DcP/
+         E83A==
+X-Forwarded-Encrypted: i=1; AJvYcCWuu1trr03xyd4Q1I/5E1lBj2Tfocllh2+fZ3V7wIp89PYG9Y4gAgJA+3QKkQ7RmbAoOyrjnnQmF/64rFTrSVn3fxUe6x3WsulrrByw
+X-Gm-Message-State: AOJu0Yx8vo8D19xPxBB6bBw+yk1acxaOLvvG1z1Jr8x53v9DCx9JaMKu
+	W+CapAWHJnmsLZqIW3wbgSj4QQvhvndJoObMAF8vKnG4OQLce2HKFbO3Cqx5UTnt6ILn7U765Um
+	dn5gekBF8xTa+dh9ttUrFXtk6H87Y8a0pk95+SAFpplEDsQ5kErbEGhyBVBoc0va3NnsLTi5r1V
+	BhSTfl7PZ8g8lTZWett2roZlYlrgmNDLGQahMC
+X-Received: by 2002:adf:ed89:0:b0:33d:afbc:6c76 with SMTP id c9-20020adfed89000000b0033dafbc6c76mr1309773wro.1.1709210668667;
+        Thu, 29 Feb 2024 04:44:28 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEglXVoZOe+ZU/1XST6B32cGfv1HAd9jHRkeNp9F1qKgaZm3JWYARDroQFeN1J5fe1YJyfx6e92lYSUEKJHyoM=
+X-Received: by 2002:adf:ed89:0:b0:33d:afbc:6c76 with SMTP id
+ c9-20020adfed89000000b0033dafbc6c76mr1309759wro.1.1709210668323; Thu, 29 Feb
+ 2024 04:44:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ppy=jx7+zAsqz9DWBleezt6";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-
---Sig_/ppy=jx7+zAsqz9DWBleezt6
-Content-Type: text/plain; charset=UTF-8
+References: <20240228024147.41573-1-seanjc@google.com> <20240228024147.41573-3-seanjc@google.com>
+In-Reply-To: <20240228024147.41573-3-seanjc@google.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Thu, 29 Feb 2024 13:44:16 +0100
+Message-ID: <CABgObfbtPJ6AAX9GnjNscPRTbNAOtamdxX677kx_r=zd4scw6w@mail.gmail.com>
+Subject: Re: [PATCH 02/16] KVM: x86: Remove separate "bit" defines for page
+ fault error code masks
+To: Sean Christopherson <seanjc@google.com>
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Yan Zhao <yan.y.zhao@intel.com>, Isaku Yamahata <isaku.yamahata@intel.com>, 
+	Michael Roth <michael.roth@amd.com>, Yu Zhang <yu.c.zhang@linux.intel.com>, 
+	Chao Peng <chao.p.peng@linux.intel.com>, Fuad Tabba <tabba@google.com>, 
+	David Matlack <dmatlack@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 27 Feb 2024 15:47:08 -0300
-Arthur Grillo <arthurgrillo@riseup.net> wrote:
+On Wed, Feb 28, 2024 at 3:46=E2=80=AFAM Sean Christopherson <seanjc@google.=
+com> wrote:
+>
+> Open code the bit number directly in the PFERR_* masks and drop the
+> intermediate PFERR_*_BIT defines, as having to bounce through two macros
+> just to see which flag corresponds to which bit is quite annoying, as is
+> having to define two macros just to add recognition of a new flag.
+>
+> Use ilog2() to derive the bit in permission_fault(), the one function tha=
+t
+> actually needs the bit number (it does clever shifting to manipulate flag=
+s
+> in order to avoid conditional branches).
+>
+> No functional change intended.
+>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/include/asm/kvm_host.h | 32 ++++++++++----------------------
+>  arch/x86/kvm/mmu.h              |  4 ++--
+>  2 files changed, 12 insertions(+), 24 deletions(-)
+>
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_h=
+ost.h
+> index aaf5a25ea7ed..88cc523bafa8 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -254,28 +254,16 @@ enum x86_intercept_stage;
+>         KVM_GUESTDBG_INJECT_DB | \
+>         KVM_GUESTDBG_BLOCKIRQ)
+>
+> -
+> -#define PFERR_PRESENT_BIT 0
+> -#define PFERR_WRITE_BIT 1
+> -#define PFERR_USER_BIT 2
+> -#define PFERR_RSVD_BIT 3
+> -#define PFERR_FETCH_BIT 4
+> -#define PFERR_PK_BIT 5
+> -#define PFERR_SGX_BIT 15
+> -#define PFERR_GUEST_FINAL_BIT 32
+> -#define PFERR_GUEST_PAGE_BIT 33
+> -#define PFERR_IMPLICIT_ACCESS_BIT 48
+> -
+> -#define PFERR_PRESENT_MASK     BIT(PFERR_PRESENT_BIT)
+> -#define PFERR_WRITE_MASK       BIT(PFERR_WRITE_BIT)
+> -#define PFERR_USER_MASK                BIT(PFERR_USER_BIT)
+> -#define PFERR_RSVD_MASK                BIT(PFERR_RSVD_BIT)
+> -#define PFERR_FETCH_MASK       BIT(PFERR_FETCH_BIT)
+> -#define PFERR_PK_MASK          BIT(PFERR_PK_BIT)
+> -#define PFERR_SGX_MASK         BIT(PFERR_SGX_BIT)
+> -#define PFERR_GUEST_FINAL_MASK BIT_ULL(PFERR_GUEST_FINAL_BIT)
+> -#define PFERR_GUEST_PAGE_MASK  BIT_ULL(PFERR_GUEST_PAGE_BIT)
+> -#define PFERR_IMPLICIT_ACCESS  BIT_ULL(PFERR_IMPLICIT_ACCESS_BIT)
+> +#define PFERR_PRESENT_MASK     BIT(0)
+> +#define PFERR_WRITE_MASK       BIT(1)
+> +#define PFERR_USER_MASK                BIT(2)
+> +#define PFERR_RSVD_MASK                BIT(3)
+> +#define PFERR_FETCH_MASK       BIT(4)
+> +#define PFERR_PK_MASK          BIT(5)
+> +#define PFERR_SGX_MASK         BIT(15)
+> +#define PFERR_GUEST_FINAL_MASK BIT_ULL(32)
+> +#define PFERR_GUEST_PAGE_MASK  BIT_ULL(33)
+> +#define PFERR_IMPLICIT_ACCESS  BIT_ULL(48)
+>
+>  #define PFERR_NESTED_GUEST_PAGE (PFERR_GUEST_PAGE_MASK |       \
+>                                  PFERR_WRITE_MASK |             \
+> diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
+> index 60f21bb4c27b..e8b620a85627 100644
+> --- a/arch/x86/kvm/mmu.h
+> +++ b/arch/x86/kvm/mmu.h
+> @@ -213,7 +213,7 @@ static inline u8 permission_fault(struct kvm_vcpu *vc=
+pu, struct kvm_mmu *mmu,
+>          */
+>         u64 implicit_access =3D access & PFERR_IMPLICIT_ACCESS;
+>         bool not_smap =3D ((rflags & X86_EFLAGS_AC) | implicit_access) =
+=3D=3D X86_EFLAGS_AC;
+> -       int index =3D (pfec + (not_smap << PFERR_RSVD_BIT)) >> 1;
+> +       int index =3D (pfec + (not_smap << ilog2(PFERR_RSVD_MASK))) >> 1;
 
-> On 27/02/24 12:02, Louis Chauvet wrote:
-> > Le 26/02/24 - 10:07, Arthur Grillo a =C3=A9crit : =20
-> >>
-> >>
-> >> On 26/02/24 05:46, Louis Chauvet wrote: =20
-> >>> Add some documentation on pixel conversion functions.
-> >>> Update of outdated comments for pixel_write functions.
-> >>>
-> >>> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
-> >>> ---
-> >>>  drivers/gpu/drm/vkms/vkms_composer.c |  4 +++
-> >>>  drivers/gpu/drm/vkms/vkms_drv.h      | 13 ++++++++
-> >>>  drivers/gpu/drm/vkms/vkms_formats.c  | 58 ++++++++++++++++++++++++++=
-++++------
-> >>>  3 files changed, 66 insertions(+), 9 deletions(-)
-> >>>
-> >>> diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/drm/v=
-kms/vkms_composer.c
-> >>> index c6d9b4a65809..5b341222d239 100644
-> >>> --- a/drivers/gpu/drm/vkms/vkms_composer.c
-> >>> +++ b/drivers/gpu/drm/vkms/vkms_composer.c
-> >>> @@ -189,6 +189,10 @@ static void blend(struct vkms_writeback_job *wb,
-> >>> =20
-> >>>  	size_t crtc_y_limit =3D crtc_state->base.crtc->mode.vdisplay;
-> >>> =20
-> >>> +	/*
-> >>> +	 * The planes are composed line-by-line. It is a necessary complexi=
-ty to avoid poor
-> >>> +	 * blending performance. =20
-> >>
-> >> At this moment in the series, you have not yet reintroduced the
-> >> line-by-line algorithm yet. Maybe it's better to add this comment when
-> >> you do. =20
-> >=20
-> > Is it better with this:
-> >=20
-> > 	/*
-> > 	 * The planes are composed line-by-line to avoid heavy memory usage. I=
-t is a necessary
-> > 	 * complexity to avoid poor blending performance.
-> > 	 *
-> > 	 * The function vkms_compose_row is used to read a line, pixel-by-pixe=
-l, into the staging
-> > 	 * buffer.
-> > 	 */
-> >   =20
-> >> Also, I think it's good to give more context, like:
-> >> "The planes are composed line-by-line, instead of pixel-by-pixel" =20
-> >=20
-> > And after PATCHv3 5/9:
-> >=20
-> > 	/*
-> > 	 * The planes are composed line-by-line to avoid heavy memory usage. I=
-t is a necessary
-> > 	 * complexity to avoid poor blending performance.
-> > 	 *
-> > 	 * The function pixel_read_line callback is used to read a line, using=
- an efficient=20
-> > 	 * algorithm for a specific format, into the staging buffer.
-> > 	 */
-> >  =20
+Just use "(pfec + (not_smap ? PFERR_RSVD_MASK : 0)) >> 1".
 
-Hi,
+Likewise below, "pte_access & PT_USER_MASK ? PFERR_RSVD_MASK : 0"/
 
-there are a few reasons for the line-by-line algorithm, and the
-optimizations at large:
+No need to even check what the compiler produces, it will be either
+exactly the same code or a bunch of cmov instructions.
 
-VKMS uses temporary stage and output buffers so that blending functions
-can operate on just one high-precision pixel format, struct
-pixel_argb_u16. We can make pixel-format-specific read and write
-functions completely orthogonal from the blending operations and FB
-format combinations. This avoids a combinatorial explosion of needed
-functions for { input pixel formats =C3=97 blending operations =C3=97 outpu=
-t pixel
-formats }.
+Paolo
 
-We can use a temporary stage and output buffer whose size is one line
-and not whole FB or CRTC framebuffer. This is the memory savings.
+>         u32 errcode =3D PFERR_PRESENT_MASK;
+>         bool fault;
+>
+> @@ -235,7 +235,7 @@ static inline u8 permission_fault(struct kvm_vcpu *vc=
+pu, struct kvm_mmu *mmu,
+>
+>                 /* clear present bit, replace PFEC.RSVD with ACC_USER_MAS=
+K. */
+>                 offset =3D (pfec & ~1) +
+> -                       ((pte_access & PT_USER_MASK) << (PFERR_RSVD_BIT -=
+ PT_USER_SHIFT));
+> +                       ((pte_access & PT_USER_MASK) << (ilog2(PFERR_RSVD=
+_MASK) - PT_USER_SHIFT));
+>
+>                 pkru_bits &=3D mmu->pkru_mask >> offset;
+>                 errcode |=3D -pkru_bits & PFERR_PK_MASK;
+> --
+> 2.44.0.278.ge034bb2e1d-goog
+>
 
-Using a temporary output buffer also avoids repeated
-read-decode-blend-encode-write cycles into the final destination
-buffer, as we don't need to decode/encode the pixel format.
-
-Finally, doing elementary operations (read, blend, write) line-by-line
-is much more efficient than pixel-by-pixel, because it allows making
-the inner-most loop very tight. It avoids repeatedly computing a result
-that does not change, like which function to call for a specific pixel
-format or blending equation.
-
-
-Thanks,
-pq
-
---Sig_/ppy=jx7+zAsqz9DWBleezt6
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmXge4EACgkQI1/ltBGq
-qqekCA/9H2SBK6/zbiLJ1s9dhN6MeJPRfUQqtWLebfifxniKaSJuXOLHG2j6qemx
-zo6q6QAHexA+eD4oXWxpbVAzlmfpgxaiMxrQeTeG1ZrwJxbHZgpHO5PeplhIlLfF
-5w9uB0gjCn7SLyWABo7i0WIuj/GI7Sfgf+uhiOYbyEZLQzTs5Ob+whVt0CDGQUXq
-0TUhaXz0N/L/HlepprYdfRBF8UIIXoz90ASRgyPLHbzfjH18UqjvgY+y4O3nv2Fb
-jzvTLHJ4OwsSfNymDDGTeQBAFif+8B3KGt6bgsJLi7D+HxlOArAcQQtRjUC/GQYc
-ia2JXmD6ywS6h7+3NDZVEGqS5goSidPDXP+sZv+bH8j+7rF4OXCcubOe0pnzN50g
-OVlACtxWptXWlDebJLDyALk79C0RpcGkC+dhoNscjDSe8lsm++4eO6FxY85ikCGt
-x4KiemghnhkZxh24DPFjX6chGBvxuIIWf3Ku0iTj1HHinzkOCPxsoaRiIz8w6XtK
-VMFQRn5avEigcYTo4C8icSCpkGvJPt9XDEyZwWqX4uiVhFFrjd9ObP9evGoyi2fv
-NTIwy90iReIu6OMSwiiFa2kvVwTbGqsqKTpGpPlNPyF0aZnaN6nYz5Vz8JYPtNO3
-aHV+H77b8GX1wcdTAwXdANwVCbQm72Fuq6m28tClX8DNNiwvPZY=
-=Vbxy
------END PGP SIGNATURE-----
-
---Sig_/ppy=jx7+zAsqz9DWBleezt6--
 
