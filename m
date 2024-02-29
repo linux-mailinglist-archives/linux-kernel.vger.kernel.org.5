@@ -1,147 +1,149 @@
-Return-Path: <linux-kernel+bounces-86193-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86195-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CBFC86C15F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 07:52:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 980FA86C166
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 07:53:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E6AD1C21327
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 06:52:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB82E1C212B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 06:53:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02466446AD;
-	Thu, 29 Feb 2024 06:52:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45E4244C73;
+	Thu, 29 Feb 2024 06:53:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QdZO2z78"
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QM2UdW9a"
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEFAD8F4A;
-	Thu, 29 Feb 2024 06:52:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11C1744C60;
+	Thu, 29 Feb 2024 06:53:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709189566; cv=none; b=A3waFE6a/NK6qzjc29dLXPBmSJePzB2DMYRB4Eu1JWJQKe7L+q9VqE7aXLiSRepJdgAbYGr7ICKrfUPngrWXcCbCnyBBK+HMYzSXIwWzVsbdSuYtR7Qpd0RmMraMe1GfMx4VLDTtP41cdMKoxBVVZOlBo5wmiD82u6gmv6Q475Q=
+	t=1709189625; cv=none; b=S4KJkNfBrBDVuYMkDEEGTswaQFEZ3NQwKnhBtNRXxLOVDod8MEGs1Nia6LAuyrz9nIJy2jopOy5H1Db3F1N4GqdteTwdtIh3QMXMA6btkpEM/MjdJ0EdreOdg9mKHlFalysFGmMrtSoP/6wZicqfLR+qkez11eb9+ZKI3uXrqIA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709189566; c=relaxed/simple;
-	bh=QEJAoHeT2wh90dI+ZjoF1ZHx+LcAYE5U/em2XDUBioM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=atALxQJHlNUCOMFuP3B8F7t8lQcteFeA4/+hI/nZzZ837GXor4FByfQ2NKljMTvF5CgtM/BdvbLMfMocOUgkU+PHeL6VjCd6HHmVPEu6cWuAIH8f5E3M4Un9WNxQvFdzjpYr6NxTsCWi2UHnfbdoBiN4kCYI4xj5puvv56ROQ7w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QdZO2z78; arc=none smtp.client-ip=209.85.160.173
+	s=arc-20240116; t=1709189625; c=relaxed/simple;
+	bh=8X2WTLGoGhrnpWFa7Ve7NOVThu3WxcK6QPPqfZoY8vw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=tNlmXFKHxwMm4Emgq6p0zm5Ydw/zhE6ynIPbkdYM4WMkZt432FJ/AwkNJmQLA8cbh+aoJvv55LktV7ui9bdy80frSkH1pnVJmq4Cv4FxDZy3kOUfk/X63fCLfnRIb70rF0je00HTkopfc8PiUNBdTuTIrS3/CAayQKHlMWPnI4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QM2UdW9a; arc=none smtp.client-ip=209.85.215.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-42e8758fd52so4332761cf.1;
-        Wed, 28 Feb 2024 22:52:44 -0800 (PST)
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5ce942efda5so461080a12.2;
+        Wed, 28 Feb 2024 22:53:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709189564; x=1709794364; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iPX1yFcE2Qv3sy/mqTmODI/j9a9JW9C8YeAhgYmhLGs=;
-        b=QdZO2z78FLEY4RWdjVmUdbrKoq0N/fYM+uC5aG9e6ZJmCKek53xR3UVmADzlUwOLDO
-         0iBOf6bXHyV01JkM2zJzFHb8bKVhsB8s38YRrrvk2sgrbA+vndWnP86CWUOx44UcvRa3
-         gAI9IhZLtJi89nlvmaE1yGQ+S7Y3208HzgJylGPszXl84JeLy7N81pzYM1W70jF6mPUa
-         t+kMHNiUb6lzQHrGrYzQ7CnAT0H1lZ7gJh68GFElWJGU1DXh5naQWJFqp/QYvc/tMx+6
-         G2GSrQRboLWvQAf9z74/RRxegpLpCW1i8fUo6VtRdLCbNFyMWzFmN7QKqFrzAw0SFXfg
-         XRMQ==
+        d=gmail.com; s=20230601; t=1709189623; x=1709794423; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=PNs3sQhbdaqVv8ZPP5u2A+gIkdtehaTFBl7mfeYhS0E=;
+        b=QM2UdW9af72sLQdaTYIjEYy7LpSsH0n0q3x+WaCG6lY/S7Jz2kEuzoGAg+/TClSywE
+         Y4O40Vh7n2wkwDgd6jOjrQvuC8I5AZuB+cjLNX4KZ0Hq5G9bT5l340GrciXV2av4LMac
+         wfTw4vLEWRc2l4x8vmr9IoTa6zeTa1FzxlLyUa5Ddi43u4hHkuIFBeQvl/3z/D9Nbeqo
+         lW2FmVAKpcJ8F2GfoVDbOQzIjOw/5mUstqY3hPrhfEGAF6LkZPdqP+pybaVXPX5DEzW+
+         BdTJqj0sNcPlNDdfwbltomN5YMIx/5y4XlAJzN1AaBS1TQdSCfkHhuAuWRGtrRTPlvEC
+         Mezg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709189564; x=1709794364;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iPX1yFcE2Qv3sy/mqTmODI/j9a9JW9C8YeAhgYmhLGs=;
-        b=d7qDmIclWJrCQsb6+dBgVnj8sI/SrJZAo7vNQW5pnyrxQMTqwD/+RShwRXj2P/IpYt
-         Zv9yN0AIBZFEDJoGQVcUvLrIxSPDdv4gfHM3AkDpu6YZP6PDh+n6S/UyYou/1gswljoH
-         QFh1eR7jEP7ezi1TIeHp6Oqcm7dDxK3hocQSioEr2w4fCGm2Iij9A4AtOYHth8tlNEZA
-         JthQdmjaI3qJW32ctRXsldx4JzLqqInEER1A1RRcYHPRv7mnxB7yK9KszWcp0XsHGess
-         N+Zg1IdNPSjJ+qSJDXPX6ykHAK9No9T4N/1LfXaCFsQxNpLD0KPxPb7cLBGNaYpWMKUu
-         rTYQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVr4zRzWPu3iYMXgfM5TETbOozfb4d0Ch1BvjNcSq6dfd40P7HLNGiNNN7zVCTVH4AjPIph63xKb0zqRpIEgiJILBL6QvjLllEMVQuJUezZPYDMfkzFQjoI/YiOuAE8eGNTmLgju/Fl+QK9oLMYfamIfijAsFaEFurew1kNYdOpw4seeuU8Czn1h0h2hk2aY4bfz8GXBX9KnChX8GR4cUbIjA==
-X-Gm-Message-State: AOJu0YzFCvZPqENBTpu15bNMO4Q7ZVZBFNZ0n9WXZLBvm60a+617cdCs
-	3KXbkbXVoTLkcEL8Zox3IyLw/kf1evhb2tOBjYdrV/+21vuNQsoWoC5tvSeXubUZQdrTuq7nGcr
-	Dun4i/FjXah7NM81MiCjWmTDomRs=
-X-Google-Smtp-Source: AGHT+IFn20kiezhjvNWVPNWkvhcd3j6u19avlEPGAe1WEmIZ6yWLp27W9XetikSPB9EKVwpdSFz5h3OKt1KsGriybmc=
-X-Received: by 2002:ac8:7f82:0:b0:42e:8c8f:42f6 with SMTP id
- z2-20020ac87f82000000b0042e8c8f42f6mr1421021qtj.40.1709189563696; Wed, 28 Feb
- 2024 22:52:43 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709189623; x=1709794423;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PNs3sQhbdaqVv8ZPP5u2A+gIkdtehaTFBl7mfeYhS0E=;
+        b=kK1Wcb3cav1/0a9J5unk5YwD3xPkfxDjp8z0KF/cQGwufvLFumWRmNqrHp4NH869FF
+         gS6SBGNojZw/qovKWzd9WoSYroJFcg7HMYCcyFJgFP479GMok3eV8X2j8jqAo7VoL7fc
+         ydadZgO4PVb16l8c6Tz0zeeGfC4YyezDA+NFuKULbs7/rWJJmhPBJ768QMuWz7J0mJ0L
+         rfaQRswneiIY+grdrWGbdUo7gUlygqXcJK+bI0KXoZcY9592AYCy2r/lMDliySYktlm6
+         oww7uQ9nkJenh1e+Ef7a3tmsRDvJNmQ3U/SJlIml8MLMnS0L3XggFKqqvYdfXgDjm9pE
+         k3Sg==
+X-Forwarded-Encrypted: i=1; AJvYcCUVNQY9sJhmGYLme3hgC5RfpFiTRnbbAZ6DvOrsTm8tbFU40foGZaKxGEVav+H6ldsiTjE2T9P42Tp+j4Hb/DetPi28hOro/hhVBbcXA/mNT30fMT/Fkr+kN7r7UNyMGpia
+X-Gm-Message-State: AOJu0YyTg/2VF3TbQrXoYJBu5optgZGxy5V9VpQiawehKEaj+uahCS3W
+	aNdUmjFAYzikY4rYKlDqQ/DL7hhqq+BVcnJuYyk4BTzFhON5rQVQ
+X-Google-Smtp-Source: AGHT+IGR3AeUgX6Ckm/1EeUr7zSEu/FraIT4qP05sNIOuFJOR8o5ydulL1i+Vji1KWHyAW8VbG38jg==
+X-Received: by 2002:a05:6a20:3b28:b0:1a0:e66f:e46 with SMTP id c40-20020a056a203b2800b001a0e66f0e46mr1368140pzh.24.1709189623239;
+        Wed, 28 Feb 2024 22:53:43 -0800 (PST)
+Received: from localhost.localdomain ([43.132.141.8])
+        by smtp.gmail.com with ESMTPSA id c10-20020a170903234a00b001dc0d1fb3b1sm610509plh.58.2024.02.28.22.53.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Feb 2024 22:53:42 -0800 (PST)
+From: Yi Wang <up2wing@gmail.com>
+X-Google-Original-From: Yi Wang <foxywang@tencent.com>
+To: seanjc@google.com,
+	pbonzini@redhat.com,
+	tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	hpa@zytor.com,
+	kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	wanpengli@tencent.com,
+	foxywang@tencent.com,
+	oliver.upton@linux.dev,
+	maz@kernel.org,
+	anup@brainfault.org,
+	atishp@atishpatra.org,
+	borntraeger@linux.ibm.com,
+	frankja@linux.ibm.com,
+	imbrenda@linux.ibm.com
+Cc: up2wing@gmail.com
+Subject: [RESEND v3 0/3] KVM: irqchip: synchronize srcu only if needed
+Date: Thu, 29 Feb 2024 14:53:10 +0800
+Message-Id: <20240229065313.1871095-1-foxywang@tencent.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1708709155.git.john@groves.net>
-In-Reply-To: <cover.1708709155.git.john@groves.net>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Thu, 29 Feb 2024 08:52:32 +0200
-Message-ID: <CAOQ4uxiPc5ciD_zm3jp5sVQaP4ndb40mApw5hx2DL+8BZNd==A@mail.gmail.com>
-Subject: Re: [RFC PATCH 00/20] Introduce the famfs shared-memory file system
-To: John Groves <John@groves.net>
-Cc: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Dan Williams <dan.j.williams@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, 
-	Dave Jiang <dave.jiang@intel.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>, 
-	linux-cxl@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	nvdimm@lists.linux.dev, john@jagalactic.com, 
-	Dave Chinner <david@fromorbit.com>, Christoph Hellwig <hch@infradead.org>, dave.hansen@linux.intel.com, 
-	gregory.price@memverge.com, Miklos Szeredi <miklos@szeredi.hu>, 
-	Vivek Goyal <vgoyal@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Feb 23, 2024 at 7:42=E2=80=AFPM John Groves <John@groves.net> wrote=
-:
->
-> This patch set introduces famfs[1] - a special-purpose fs-dax file system
-> for sharable disaggregated or fabric-attached memory (FAM). Famfs is not
-> CXL-specific in anyway way.
->
-> * Famfs creates a simple access method for storing and sharing data in
->   sharable memory. The memory is exposed and accessed as memory-mappable
->   dax files.
-> * Famfs supports multiple hosts mounting the same file system from the
->   same memory (something existing fs-dax file systems don't do).
-> * A famfs file system can be created on either a /dev/pmem device in fs-d=
-ax
->   mode, or a /dev/dax device in devdax mode (the latter depending on
->   patches 2-6 of this series).
->
-> The famfs kernel file system is part the famfs framework; additional
-> components in user space[2] handle metadata and direct the famfs kernel
-> module to instantiate files that map to specific memory. The famfs user
-> space has documentation and a reasonably thorough test suite.
->
+From: Yi Wang <foxywang@tencent.com>
 
-So can we say that Famfs is Fuse specialized for DAX?
+We found that it may cost more than 20 milliseconds very accidentally
+to enable cap of KVM_CAP_SPLIT_IRQCHIP on a host which has many vms
+already.
 
-I am asking because you seem to have asked it first:
-https://lore.kernel.org/linux-fsdevel/0100018b2439ebf3-a442db6f-f685-4bc4-b=
-4b0-28dc333f6712-000000@email.amazonses.com/
-I guess that you did not get your answers to your questions before or at LP=
-C?
+The reason is that when vmm(qemu/CloudHypervisor) invokes
+KVM_CAP_SPLIT_IRQCHIP kvm will call synchronize_srcu_expedited() and
+might_sleep and kworker of srcu may cost some delay during this period.
+One way makes sence is setup empty irq routing when creating vm and
+so that x86/s390 don't need to setup empty/dummy irq routing.
 
-I did not see your question back in October.
-Let me try to answer your questions and we can discuss later if a new dedic=
-ated
-kernel driver + userspace API is really needed, or if FUSE could be used as=
- is
-extended for your needs.
+Note: I have no s390 machine so this patch has not been tested
+thoroughly on s390 platform. Thanks to Christian for a quick test on
+s390 and it still seems to work[1].
 
-You wrote:
-"...My naive reading of the existence of some sort of fuse/dax support
-for virtiofs
-suggested that there might be a way of doing this - but I may be wrong
-about that."
+Changelog:
+----------
+v3:
+  - squash setup empty routing function and use of that into one commit
+  - drop the comment in s390 part
 
-I'm not virtiofs expert, but I don't think that you are wrong about this.
-IIUC, virtiofsd could map arbitrary memory region to any fuse file mmaped
-by virtiofs client.
+v2:
+  - setup empty irq routing in kvm_create_vm
+  - don't setup irq routing in x86 KVM_CAP_SPLIT_IRQCHIP
+  - don't setup irq routing in s390 KVM_CREATE_IRQCHIP
 
-So what are the gaps between virtiofs and famfs that justify a new filesyst=
-em
-driver and new userspace API?
+v1: https://lore.kernel.org/kvm/20240112091128.3868059-1-foxywang@tencent.com/
 
-Thanks,
-Amir.
+1. https://lore.kernel.org/lkml/f898e36f-ba02-4c52-a3be-06caac13323e@linux.ibm.com/
+
+Yi Wang (3):
+  KVM: setup empty irq routing when create vm
+  KVM: x86: don't setup empty irq routing when KVM_CAP_SPLIT_IRQCHIP
+  KVM: s390: don't setup dummy routing when KVM_CREATE_IRQCHIP
+
+ arch/s390/kvm/kvm-s390.c |  9 +--------
+ arch/x86/kvm/irq.h       |  1 -
+ arch/x86/kvm/irq_comm.c  |  5 -----
+ arch/x86/kvm/x86.c       |  3 ---
+ include/linux/kvm_host.h |  1 +
+ virt/kvm/irqchip.c       | 19 +++++++++++++++++++
+ virt/kvm/kvm_main.c      |  4 ++++
+ 7 files changed, 25 insertions(+), 17 deletions(-)
+
+-- 
+2.39.3
+
 
