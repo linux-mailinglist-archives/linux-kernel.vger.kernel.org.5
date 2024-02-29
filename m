@@ -1,112 +1,143 @@
-Return-Path: <linux-kernel+bounces-86527-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86528-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 571D286C693
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:14:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB6EE86C696
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:14:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EEC2D1F21E30
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:14:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DDB491C2100D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:14:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6754C64CC1;
-	Thu, 29 Feb 2024 10:14:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4085C63CAE;
+	Thu, 29 Feb 2024 10:14:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="OQYLDG9W"
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="VfMcgvOY"
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 950E663512
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 10:14:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70A8561665;
+	Thu, 29 Feb 2024 10:14:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709201649; cv=none; b=Q5AbCVuPwG7tvRFKpxahkba5Y3zQFksMhK94waIjevg5E3ZD34BJ0wr8QEsR3G1fXrrEasOGUhrdzPWqqNt/uirtNYOs2Jt9Y/UZJFxxtWp8K2BAkYe0F+K2ETC+eR1bdOYzdybxTOnJYtQyZUHoPUnPR8aL88b5EcJ3hRsjUI8=
+	t=1709201678; cv=none; b=mIjw7BO0haAUkmmQKNtzRrbyetlUPn+6v53P2bVxKLDGwz48YLojqKueoYJjoTB2H4KU36lWRnRgxIAZR2+iYaeHb2HToBjdiLQ557/0+laTl4JVXNtvNB0LkHpMDOGart23mM2IdYsn1Y6ho6l/pzc1YwRJPhuFgSLZqPq14RY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709201649; c=relaxed/simple;
-	bh=aO/xACjri3DeJZJbYyZbIn3zPglqkV2lKn/RFIM8uSY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=V8zFjovWgye+E+jF1T6HgwI1qyanK+oiPkRP552i/gyOUxyKohjS3koKtAc8sy9T4acNWAJ7X9tNdyYhYA66W5OUZbH2lMR6eSvSR+WzVajmwOVBU9GcULzlhT1WZwfys2OoryfGDj933xRf79ged0ILLdkfQ6I11SzBKX94fhQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=OQYLDG9W; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-412b5a3d2e3so4975565e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 02:14:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1709201646; x=1709806446; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jnnbn314m5C/930ao7THUc7euOiuIRor/2uYI5CotuI=;
-        b=OQYLDG9WK5oGDUeJw3oEY+37s7u1HPzCaDnG2gE110jbPcu23xWvrOnaVu7Bkiii/s
-         AJrrnDMEsKhN88lCVoyaoV2YYhccDCU0M7qaJt43pziq3wPuIkg5+pwBWikz/tlF+Y11
-         jOd3d5VY8r7tWTNOxRIuQwZGisErRgfCUbDTB8VRcWhq5WUjXcxiEQdiX57JFJ/+yWW6
-         yifbG/lKq7t+l+AjUD1j6FtdR9alPKcumRLlIpflKpO8atep/xhR73UgB3lsGY2/i3pS
-         H0+0dwb2usPzGni/lsbMaKRrZlde7iqPQh6FFb+Nzc6NNwvjWKO72FLqp+DUUySl0Jkr
-         e80A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709201646; x=1709806446;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jnnbn314m5C/930ao7THUc7euOiuIRor/2uYI5CotuI=;
-        b=sRuShkylED+uUE2R18nJcypuUy0gigpOA908DfODtxqd/NjhPN56D/TiuW/Y/NIzCP
-         yidHFoh5gvlSjxNLVl8RE4pY4ctR3p0LjhrCyrrZwWJDEjrh1bhIYj22S1b24ZqmEbVa
-         GvHvINTj1i1c2DU8ecuDHgBq1kFP2FFYi5Tk7vglTePd5cbbLFdcRHSYehAR9czD+n0g
-         w/PbgNYL0+RormtacKxv4mJKjvvJ+DtjzezLQFf+sMJ86cshjzCoi3JOwWPSuFGmf253
-         2bYoB7Ky9MKtQGnVxOX/Sn8G/pGiCHBZRXCaoeQmVI9YV5qx2IXEH47YcYRHXKXpR35h
-         ZZoQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUGxPjAQBplsVNwe1gjYcwm7UhzUGSn/wGzwM4nyk+e+TnivfbhYrFg8TJQQmOGnBDBaJFYmOK1WySXAYD30MmDOng2+URLCHSoGkHq
-X-Gm-Message-State: AOJu0YyEVI1LkfxYzcuU3RFLm/bBsCIRVFmZFylO4otZGsJF72JGk0X+
-	5TOjY3CMVSEEsPt5+ocKWfh0lMq+WnUWL8pFuYCJxdNsuJtzYaSh93r+7h3v3eU=
-X-Google-Smtp-Source: AGHT+IGFyJEaCoJzyd7PF1nh1cjcVfv4xAAk+3Zq2JvER863k+1HDULiC8Ke+TEiagF31qTpvhzwyQ==
-X-Received: by 2002:a05:600c:a001:b0:412:bd5b:efbd with SMTP id jg1-20020a05600ca00100b00412bd5befbdmr1040220wmb.1.1709201645978;
-        Thu, 29 Feb 2024 02:14:05 -0800 (PST)
-Received: from ?IPV6:2001:a61:1366:6801:d8:8490:cf1a:3274? ([2001:a61:1366:6801:d8:8490:cf1a:3274])
-        by smtp.gmail.com with ESMTPSA id n33-20020a05600c3ba100b00412bca4cdf9sm1504987wms.36.2024.02.29.02.14.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Feb 2024 02:14:05 -0800 (PST)
-Message-ID: <62891b42-7662-463a-885b-fba1d29bafdd@suse.com>
-Date: Thu, 29 Feb 2024 11:14:04 +0100
+	s=arc-20240116; t=1709201678; c=relaxed/simple;
+	bh=N/24cYqXozyOmOacjrNVgBVLbi7RWjtfqxIR2O+6Iwo=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=MjrHgqcIYTMhyFtgGvPAdiXsg3pu7xuZTPT/DThBkYQ0IpmtjeHlHpNdJgpEr5LiRPq3YlQ/GCrJrvExfzSc0HV2jocFrgHcik+9BIX6VA+b9mXUUDADFyLQMjmIYzOxy4lxBhkcMyB8AW9des7PgiTxrdz50M3psYuAmiFcEZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=VfMcgvOY; arc=none smtp.client-ip=217.70.183.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 5DB2560003;
+	Thu, 29 Feb 2024 10:14:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709201672;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=C0Qg6WyRbahfjflhKo2Gr2gpsraYYAk4H6zxz/KiuF4=;
+	b=VfMcgvOYZaY3xiZssK0Ck2+vdea62Zr400HIkIteqKIYTIRamm8Zvb10WEdn2HzGqKyKWA
+	Qwi8tGsWypDoW2NX3GhWDwZMWjL/Cs3i9Qstgn/uqL3eWSGK7DjyXxrbG2uQ7dzQOYElY4
+	1KxFQhAG4KV+gtNB0L9AbZIS7MUbRNxGiEqJNPho10KN03/G5YP+1OTVThJevOSIaho6S9
+	DFeEJ16VUBD31OPV7yhA2eoEpU7N3zv82Xkbcgy59sY9BGxYoWsfOb90tIHmC99PUX/9k3
+	atBqJDpQeo1BBaZs5UEArjBtpCCNoHfD2m1tTH08qRs1/MQJh2ATSKFzA6k58A==
+Date: Thu, 29 Feb 2024 11:14:30 +0100
+From: Herve Codina <herve.codina@bootlin.com>
+To: Nuno =?UTF-8?B?U8Oh?= <noname.nuno@gmail.com>
+Cc: Greg Kroah-Hartman  <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
+ <rafael@kernel.org>, Rob Herring <robh+dt@kernel.org>, Frank Rowand
+ <frowand.list@gmail.com>, Lizhi Hou <lizhi.hou@amd.com>, Max Zhen
+ <max.zhen@amd.com>, Sonal Santan <sonal.santan@amd.com>, Stefano Stabellini
+ <stefano.stabellini@xilinx.com>, Jonathan Cameron
+ <Jonathan.Cameron@Huawei.com>, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, Allan Nielsen <allan.nielsen@microchip.com>,
+ Horatiu Vultur <horatiu.vultur@microchip.com>, Steen Hegelund
+ <steen.hegelund@microchip.com>, Luca Ceresoli <luca.ceresoli@bootlin.com>,
+ Nuno Sa <nuno.sa@analog.com>, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, stable@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] of: overlay: Synchronize of_overlay_remove()
+ with the devlink removals
+Message-ID: <20240229111430.54bdb6b1@bootlin.com>
+In-Reply-To: <c2b830bb4a4cf76dec8783f38b2477120edb1a15.camel@gmail.com>
+References: <20240229083953.607569-1-herve.codina@bootlin.com>
+	<20240229083953.607569-3-herve.codina@bootlin.com>
+	<c2b830bb4a4cf76dec8783f38b2477120edb1a15.camel@gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] USB:UAS:return ENODEV when submit urbs fail with
- device not attached.
-Content-Language: en-US
-To: "WeitaoWang-oc@zhaoxin.com" <WeitaoWang-oc@zhaoxin.com>,
- Oliver Neukum <oneukum@suse.com>, stern@rowland.harvard.edu,
- gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
- usb-storage@lists.one-eyed-alien.net
-Cc: WeitaoWang@zhaoxin.com, stable@vger.kernel.org
-References: <20240228111521.3864-1-WeitaoWang-oc@zhaoxin.com>
- <e8c4e8a3-bfc3-463f-afce-b9f600b588b2@suse.com>
- <07e80d55-d766-1781-ffc9-fab9ddcd33e3@zhaoxin.com>
- <49a365a7-199a-42cd-b8d3-86d72fe5bca6@suse.com>
- <0b0eefa5-71b6-dc08-d103-72b9aebd9237@zhaoxin.com>
- <9263b77e-9ebe-4987-bf7f-8f9fafcf06b3@suse.com>
- <bb269ab0-128b-1988-acf1-8df05f08cf86@zhaoxin.com>
-From: Oliver Neukum <oneukum@suse.com>
-In-Reply-To: <bb269ab0-128b-1988-acf1-8df05f08cf86@zhaoxin.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
 
+On Thu, 29 Feb 2024 10:50:21 +0100
+Nuno Sá <noname.nuno@gmail.com> wrote:
 
+> On Thu, 2024-02-29 at 09:39 +0100, Herve Codina wrote:
+> > In the following sequence:
+> >   1) of_platform_depopulate()
+> >   2) of_overlay_remove()
+> > 
+> > During the step 1, devices are destroyed and devlinks are removed.
+> > During the step 2, OF nodes are destroyed but
+> > __of_changeset_entry_destroy() can raise warnings related to missing
+> > of_node_put():
+> >   ERROR: memory leak, expected refcount 1 instead of 2 ...
+> > 
+> > Indeed, during the devlink removals performed at step 1, the removal
+> > itself releasing the device (and the attached of_node) is done by a job
+> > queued in a workqueue and so, it is done asynchronously with respect to
+> > function calls.
+> > When the warning is present, of_node_put() will be called but wrongly
+> > too late from the workqueue job.
+> > 
+> > In order to be sure that any ongoing devlink removals are done before
+> > the of_node destruction, synchronize the of_overlay_remove() with the
+> > devlink removals.
+> > 
+> > Fixes: 80dd33cf72d1 ("drivers: base: Fix device link removal")
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+> > ---
+> >  drivers/of/overlay.c | 9 ++++++++-
+> >  1 file changed, 8 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/of/overlay.c b/drivers/of/overlay.c
+> > index 2ae7e9d24a64..99659ae9fb28 100644
+> > --- a/drivers/of/overlay.c
+> > +++ b/drivers/of/overlay.c  
+> 
+> In the cover, you mention device.h inclusion but I'm not seeing it? This is
+> clearly up to the DT maintainers to decide but, IMHO, I would very much prefer
+> to see fwnode.h included in here rather than directly device.h (so yeah,
+> renaming the function to fwnode_*). But yeah, I might be biased by own series :)
+> 
 
-On 29.02.24 17:40, WeitaoWang-oc@zhaoxin.com wrote:
+Damned. I missed device.h in this patch.
+Without this one, the patch do not compile :(
 
-> OK, I'll submit a new version after you help to review the following patch.
+A fixup commit I missed to squash before sending.
 
-Hi,
+A v3 is planned to add this device.h.
 
-perfect.
+Nuno, do you prefer I wait few days before sending this v3 waiting for more replies
+or I send it right now and you re-do your comment on the v3 ?
 
-	Regards
-		Oliver
+I would really prefer to send it now :)
 
+Sorry about my mistake.
+Best regards,
+Hervé
+
+-- 
+Hervé Codina, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
