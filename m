@@ -1,146 +1,145 @@
-Return-Path: <linux-kernel+bounces-86491-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86492-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 206C986C631
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:57:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5C5F86C633
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:58:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B3CC81F247FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:57:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0A8F283456
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:58:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B447262A03;
-	Thu, 29 Feb 2024 09:56:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90CE463107;
+	Thu, 29 Feb 2024 09:57:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OjTTNoaO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JhuIblFQ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E85BC629F8;
-	Thu, 29 Feb 2024 09:56:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B586662A19;
+	Thu, 29 Feb 2024 09:57:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709200610; cv=none; b=hCkbOWr6WePGidmeBWh6YwScWyCB2+OF+4RlZcjpzh5hTaCbdRto+afo7PsjzrViKF78e4YbR8idOwofsK31kb54h85+sWEmOfXn8ovY+zOKxw9MuoxLUhYpvFUDBxEjW+Xr93vYC8nBHYp5axFWCNSvFOfLhcFNzr//FvOEwxM=
+	t=1709200621; cv=none; b=d8TDV8AGaYDzJtyHQLg9PtzuDpc3edpvtRp9H5V3rMPaMEJ1wxUqxMgWKvuDsWUmR3YcftQ9JzpB7pGT499S9yXg0gntQcEtNPjvGL4khReZ1xToUllhhMALSVWEwhotXUFAZ7J0CTR0Lb36Lo8emhjK4DayE6jz3rYjhsh78IY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709200610; c=relaxed/simple;
-	bh=ppq03LkPVFT8XGFcgYLvalWjL2zQMQQTUsLWOIlltzs=;
+	s=arc-20240116; t=1709200621; c=relaxed/simple;
+	bh=iNaRdEVaMHWobztCiAzO/M37ER6KhZR4DFakU8WYEZk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=S1MffAvpuajQqUJzRWQZIe/6qt0saY8Ris96BA1BHFBlwFE29agct4mUmRz5qasnbtRhQQVvdhdRnHgX+br+362rFNRgytPdiBxdwOfiKh/TO+NtOFpqJhyXOCH1DJ7G6dCK1nhI2zUJLXf/S8xIZ5JASI15c5S+dqk+h3D5e8Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OjTTNoaO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB882C433F1;
-	Thu, 29 Feb 2024 09:56:46 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=sD103aJtr8SEMgNJLfH3mwbo1FSFwsV1NgN+P80es4ea3lN1QbH9kMW5d/r9sW+9Iz0FyIpp/q/MgJtVhVtG3ko7jsObSIn4lTFQirgs3irvrBvRw3YLGLuWE75X7ckfs//pFxmY4B1kwZsgUjAUaqEPv2bCQS5L4zOEQByT7Zw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JhuIblFQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5388C433F1;
+	Thu, 29 Feb 2024 09:57:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709200609;
-	bh=ppq03LkPVFT8XGFcgYLvalWjL2zQMQQTUsLWOIlltzs=;
+	s=k20201202; t=1709200621;
+	bh=iNaRdEVaMHWobztCiAzO/M37ER6KhZR4DFakU8WYEZk=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OjTTNoaOwiRMz2sATCPHbdOKjqdn0+wWijzm4YwxmK5L0PkqCC/22BJIimXzPb3TD
-	 1t2UDEjHuaO7Ak4UeB9jQfGSDkdIXufhjgG8TW16UqEdcy1bhFvyFaUwUJzkgTVz1K
-	 s5i3XH59aUJtC1OSQ/dMyoOgh5hNbZmdMhx7wttTwr10rgK5YNp5clPJkH01UhPFjN
-	 dN5VXYC5ewB5HCv/DZkZff7D8Kz6o9Uvq5ON4HlTW0LYvvu6DR2PBJeNtI4HotGacD
-	 sqJAgNDC7EVlVBuV0B3Tp88FW41U6Q2B4Q1oOFMTs9n1My8WL85RV1kYY0gY81ZAu+
-	 J0+ePrx+1PslA==
-Date: Thu, 29 Feb 2024 10:56:43 +0100
-From: Niklas Cassel <cassel@kernel.org>
-To: Shradha Todi <shradha.t@samsung.com>
-Cc: lchen.firstlove@zohomail.com, lpieralisi@kernel.org, kw@linux.com,
-	mani@kernel.org, kishon@kernel.org, bhelgaas@google.com,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	pankaj.dubey@samsung.com
-Subject: Re: [PATCH v4] PCI: endpoint: Add prefetch BAR support
-Message-ID: <ZeBU23Ccvv8WqFx_@fedora>
-References: <17e7ad65ff5.d9de88b4962.1109678039880040918@zohomail.com>
- <CGME20240228134451epcas5p1b974d61fcab67fb5f52a7b291cf85966@epcas5p1.samsung.com>
- <20240228134448.56372-1-shradha.t@samsung.com>
+	b=JhuIblFQZzcu+2sLNm+9nD3/tRvPDe1ckx8Su0hfHrH/8Mael/sgXoHiKfIWSpkol
+	 QDk1/zVk2BU6wWlWCv9GQ/HMDWidR8UWAaeoIPcHkwXnz6KoXzzzskHQf06p/aG01Z
+	 xsvc2aWx2CMAFh8cYPYpov4NuL5tsjzYUZIVIDkanz53ApFeddAR0KWEz3BL4W9RsT
+	 NLi2oJBz1aJpaQiPJrhrrmy3Y1+1Y6XXKp1i6rC9rE8bvfF7hnAYz/oJumTOajlKd6
+	 6S9SvQsRB3+MZK3XNnyDF9cZ/VhedN78zFcvdAkApRSuYBRC8GEIN4pvhypsDe236h
+	 1wYM5lVbFYRTA==
+Date: Thu, 29 Feb 2024 10:56:58 +0100
+From: Maxime Ripard <mripard@kernel.org>
+To: Nikolai Kondrashov <spbnick@gmail.com>
+Cc: Helen Koike <helen.koike@collabora.com>, linuxtv-ci@linuxtv.org, 
+	dave.pigott@collabora.com, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	linux-kselftest@vger.kernel.org, gustavo.padovan@collabora.com, pawiecz@collabora.com, 
+	tales.aparecida@gmail.com, workflows@vger.kernel.org, kernelci@lists.linux.dev, 
+	skhan@linuxfoundation.org, kunit-dev@googlegroups.com, nfraprado@collabora.com, 
+	davidgow@google.com, cocci@inria.fr, Julia.Lawall@inria.fr, laura.nao@collabora.com, 
+	ricardo.canuelo@collabora.com, kernel@collabora.com, torvalds@linuxfoundation.org, 
+	gregkh@linuxfoundation.org
+Subject: Re: [PATCH 1/3] kci-gitlab: Introducing GitLab-CI Pipeline for
+ Kernel Testing
+Message-ID: <20240229-quizzical-persimmon-honeybee-b5db48@houat>
+References: <20240228225527.1052240-1-helen.koike@collabora.com>
+ <20240228225527.1052240-2-helen.koike@collabora.com>
+ <20240229-dancing-laughing-groundhog-d85161@houat>
+ <5d7ed81b-37f9-48e9-ab7e-484b74ca886c@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="vqbbrit24to5mmpq"
+Content-Disposition: inline
+In-Reply-To: <5d7ed81b-37f9-48e9-ab7e-484b74ca886c@gmail.com>
+
+
+--vqbbrit24to5mmpq
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240228134448.56372-1-shradha.t@samsung.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 28, 2024 at 07:14:48PM +0530, Shradha Todi wrote:
-> Reviewed-by: Shradha Todi <shradha.t@samsung.com>
-> 
-> This patch looks useful. Can we revisit this and get it merged?
+Hi!
 
-Hello Shradha,
+On Thu, Feb 29, 2024 at 11:23:22AM +0200, Nikolai Kondrashov wrote:
+> Hi everyone,
+>=20
+> On 2/29/24 11:02, Maxime Ripard wrote:
+> > On Wed, Feb 28, 2024 at 07:55:25PM -0300, Helen Koike wrote:
+> > > Which rating would you select?
+> >=20
+> > 4.5 :)
+> >=20
+> > One thing I'm wondering here is how we're going to cope with the
+> > different requirements each user / framework has.
+> >=20
+> > Like, Linus probably want to have a different set of CI before merging a
+> > PR than (say) linux-next does, or stable, or before doing an actual
+> > release.
+> >=20
+> > Similarly, DRM probably has a different set of requirements than
+> > drm-misc, drm-amd or nouveau.
+> >=20
+> > I don't see how the current architecture could accomodate for that. I
+> > know that Gitlab allows to store issues template in a separate repo,
+> > maybe we could ask them to provide a feature where the actions would be
+> > separate from the main repo? That way, any gitlab project could provide
+> > its own set of tests, without conflicting with each others (and we could
+> > still share them if we wanted to)
+> >=20
+> > I know some of use had good relationship with Gitlab, so maybe it would
+> > be worth asking?
+>=20
+> GitLab already supports getting the CI YAML from other repos. You can cha=
+nge
+> that in the repo settings.
 
-This patch is two years old, and no longer applies to pci-next.
+I'm interested but couldn't find it in the doc, do you have a link to
+the right section?
 
+> However, I think a better approach would be *not* to add the .gitlab-ci.y=
+aml
+> file in the root of the source tree, but instead change the very same repo
+> setting to point to a particular entry YAML, *inside* the repo (somewhere
+> under "ci" directory) instead.
+>=20
+> This way all the different subtrees can have completely different setup, =
+but
+> some could still use Helen's work and employ the "scenarios" she
+> implemented.
 
-However:
-Usually, fixed hardware requirements are specified in
-struct pci_epc_features (more specifically struct pci_epc_bar_desc).
+I'm worried that this kind of setup will just create duplicated YAML
+that will be developped in complete silos and will become difficult to
+maintain. But that's definitely an opinion :)
 
-A requested BAR configuration by an EPF is specified in struct epf_bar.
+Maxime
 
+--vqbbrit24to5mmpq
+Content-Type: application/pgp-signature; name="signature.asc"
 
-I don't think that Prefetch is a fixed hardware requirement,
-so I do not think that we should put it in struct pci_epc_features.
+-----BEGIN PGP SIGNATURE-----
 
-It seems more like something that an endpoint function driver can
-chose to request (or not to request), just like MEM_TYPE_64.
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZeBU6QAKCRDj7w1vZxhR
+xQ7BAP409AbFcwBdoKD+HMuHlPoXehR+KqHJiC/xTs+iNzmyNwEAkcokR20iK1ta
+dDEJ7oinWP3ncejFNUuTUwCM09uQGw0=
+=Y3AM
+-----END PGP SIGNATURE-----
 
-From the PCIe base spec:
-"Generally only 64-bit BARs are good candidates, since only Legacy
-Endpoints are permitted to set the Prefetchable bit in 32-bit BARs,
-and most scalable platforms map all 32-bit Memory BARs into
-non-prefetchable Memory Space regardless of the Prefetchable bit value."
-
-"For a PCI Express Endpoint, 64-bit addressing must be supported for all BARs
-that have the Prefetchable bit Set. 32-bit addressing is permitted for all BARs
-that do not have the Prefetchable bit Set."
-
-"Any device that has a range that behaves like normal memory should mark the
-range as prefetchable. A linear frame buffer in a graphics device is an example
-of a range that should be marked prefetchable."
-
-We are not a legacy endpoint, so we should never set Prefetch for 32-bit BARs.
-For 64-bit BARs, we should always set it, if the EPF-core allocated the memory
-(regular memory) for that BAR.
-
-
-Thus, I think the best solution is to do:
-
-diff --git a/drivers/pci/endpoint/functions/pci-epf-test.c b/drivers/pci/endpoint/functions/pci-epf-test.c
-index cd4ffb39dcdc..186c8cd87bb3 100644
---- a/drivers/pci/endpoint/functions/pci-epf-test.c
-+++ b/drivers/pci/endpoint/functions/pci-epf-test.c
-@@ -879,7 +879,8 @@ static void pci_epf_configure_bar(struct pci_epf *epf,
-        for (i = 0; i < PCI_STD_NUM_BARS; i++) {
-                epf_bar = &epf->bar[i];
-                if (epc_features->bar[i].only_64bit)
--                       epf_bar->flags |= PCI_BASE_ADDRESS_MEM_TYPE_64;
-+                       epf_bar->flags |= (PCI_BASE_ADDRESS_MEM_TYPE_64 |
-+                                          PCI_BASE_ADDRESS_MEM_PREFETCH);
-        }
- }
- 
-diff --git a/drivers/pci/endpoint/pci-epf-core.c b/drivers/pci/endpoint/pci-epf-core.c
-index 0a28a0b0911b..acb93055181b 100644
---- a/drivers/pci/endpoint/pci-epf-core.c
-+++ b/drivers/pci/endpoint/pci-epf-core.c
-@@ -305,7 +305,8 @@ void *pci_epf_alloc_space(struct pci_epf *epf, size_t size, enum pci_barno bar,
-        epf_bar[bar].size = size;
-        epf_bar[bar].barno = bar;
-        epf_bar[bar].flags |= upper_32_bits(size) ?
--                               PCI_BASE_ADDRESS_MEM_TYPE_64 :
-+                               (PCI_BASE_ADDRESS_MEM_TYPE_64 |
-+                                PCI_BASE_ADDRESS_MEM_PREFETCH) :
-                                PCI_BASE_ADDRESS_MEM_TYPE_32;
- 
-        return space;
-
-
-Now when I look at it, the whole "if (epc_features->bar[i].only_64bit)"
-should move to pci_epf_alloc_space() IMO, so that not all EPF drivers need to
-duplicate this code.
-
-
-Kind regards,
-Niklas
+--vqbbrit24to5mmpq--
 
