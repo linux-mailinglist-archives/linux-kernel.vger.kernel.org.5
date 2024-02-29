@@ -1,133 +1,118 @@
-Return-Path: <linux-kernel+bounces-87558-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87561-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EA8686D5E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:12:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9680886D5EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:13:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF82528A233
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:12:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7DF01C23CFE
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:13:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BADC6D51C;
-	Thu, 29 Feb 2024 21:07:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A0BA13E7FF;
+	Thu, 29 Feb 2024 21:09:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KmlYJ0BY"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fzs6N6p3"
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86AE574BE6;
-	Thu, 29 Feb 2024 21:07:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0835613E7ED
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 21:09:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709240848; cv=none; b=t7g6hDFzK4vCCaRHXJAaEOpudmctwE2wT/MdZdIdrPQ7lC7rTsdsPAxbNkBHgc29Lxquyqv05U0olNscxaj0xHikpqev0WoLQoWB2G11UHt4Mr+FsUz4ulj2JadvzCn2mtKxIGx0aMKqWNP/J2+gt1bWWtx6Ngww1FV+R4AFWRA=
+	t=1709240945; cv=none; b=Ut9VemH6s+hHcU2clXJGGaISvxniT1G4yH8YNjf+PRNp+B2z0VLVpvTX2N/2jqDyUDQOnR+w2KvGiRGgeFqkNji/Yi7ruWPw7VS3H+BBoKehTR8cIl5fTtfwtgnX/8xRi6gkJTqeMJ9qjQd5RuHKux3jqNsMMmOWilsxsywOz+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709240848; c=relaxed/simple;
-	bh=J6nl5xudWoaHe5zt2ZmvKLymkNzx1v+WzoPkxo7Ue94=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=suovqQg6Akop3TTz6AXuwdrhWVfWQM36myAEZBgx+Az7raOIoPYn55lOMbk6+z/E3dxTCL2NIYqqgCMB3Lha6SB3LtyFCvzDq/+ujGpT3CSnrmkL2+EtxgK6HEFVyYdRKR6llGoRW09WcAhlixF5REiVmqQZU40dhwyYVDzrJN0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KmlYJ0BY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC3BEC433F1;
-	Thu, 29 Feb 2024 21:07:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709240848;
-	bh=J6nl5xudWoaHe5zt2ZmvKLymkNzx1v+WzoPkxo7Ue94=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=KmlYJ0BYjLjSdDhJPfMWjeAbasyaPJyxC5J5JG5g9OpaBI/OR5KF5myyHrzftRLKT
-	 2d7M7lO5gv/wY3vsu9dOs+HU9cVpFI+2Lsea5uCZSwfPxH05KOrOAhVBUnqnaHZGx7
-	 AaACX2V6QPzfh9/UcwVxDoseikUQz2j/mvH/n7Tfc1II+lw45KCiBnVECXD9KFFiky
-	 403mfSB593j48zUgQkxtW24ECMmUNq440NoGr6WNlocpiZkhqmN+rjcMxQ1NRCJsHj
-	 ppa89wrCYjojAiPm8lKM+1dRhEF0s3tGyaSGiLIRKFC1qcIFpx6LxxEUbUmC3v3C6h
-	 oUmHBZwVqW3PQ==
-Date: Thu, 29 Feb 2024 15:07:26 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Ethan Zhao <haifeng.zhao@linux.intel.com>
-Cc: baolu.lu@linux.intel.com, bhelgaas@google.com, robin.murphy@arm.com,
-	jgg@ziepe.ca, kevin.tian@intel.com, dwmw2@infradead.org,
-	will@kernel.org, lukas@wunner.de, yi.l.liu@intel.com,
-	dan.carpenter@linaro.org, iommu@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iommu/vt-d: improve ITE fault handling if device was
- released
-Message-ID: <20240229210726.GA363458@bhelgaas>
+	s=arc-20240116; t=1709240945; c=relaxed/simple;
+	bh=abpgfmAPNQgCdMPNqKx7nKf6Y9+2suZjGsQJq2RC0wQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XVo6GCVtkwj7wvtzoaFnHChOFJrw4MQPkEAt3CzoEVW6GkDOLnyjpYgOhnDIrT+C3BWUNSwiVn9cr+Sk+H3GYZkOKLhAKP9dGTn8KGlKSKM5ThjqqkaLXYJAaQreBWCQNbOK/qrt5ZRzHv0UTaWhi/JkWsXmxYWYLfvbBTaEnlE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=fzs6N6p3; arc=none smtp.client-ip=209.85.219.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so1345056276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 13:09:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709240943; x=1709845743; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZbAUk2ubZXSXJfkn5aB8LTduIIAz+YJ7H6WyL+sPl1k=;
+        b=fzs6N6p3MIg9WyyNS/K08SDeuPHhxJvs9w2saj2KHNSUQX9caSXKndd5QOx59lN+Fh
+         QdgnGKWSk0zpI6bh3O8f6wd4m/ygBg9LTx+OlybMm1S4SfkDucnwo7ca7gXzLekzHHYi
+         n6WiVUMFVBsRTHSr775WytAB1PrryURQgoGWp6wn2XBBMnnbr1uvEQOS8fgHKiqcFHpP
+         heeWJw6dyL+6jZbNJU8FmliUIWZtZxw/6847n3lrhxeI3/xw7Ts3iabQxZECh6FOkbmM
+         2jfdV/yie4/2k+K4gaooYS0MjnMWiA0qpKbZcWRxl2nzQcTlQrDzcbvyLs7UP9Ucv/CB
+         PoMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709240943; x=1709845743;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZbAUk2ubZXSXJfkn5aB8LTduIIAz+YJ7H6WyL+sPl1k=;
+        b=Ta0/5vIvi2ZT/KfG2jQv9hpwQfYwDNOj/8Ya9+35+5L3j18xTyEBTzUUTtPXIwgiA/
+         n8tY12UtMy9RRabJKpmNA6BBfrH9fu5alQrqGw0pfe5DUQjFlVHS6djFVGgyjckCxNJ8
+         0EyQRUprCpTK2KDimEmUOFvyMoEwH6XH6Lng1jDcJ1WKqE+HiqB8egRb9O4UB51kxtSR
+         HlWt07pqKFcLAevgZ7e/3FFpuyLTzgn/L1op6X4r84YHIifff4+PKGYXLL289vxgxtGP
+         PEPEEfuE2rv6f2YIlTDCwXikhvI2ZQdvPLiAW2OyNGKv8K1SOdlht7Ou8EvzD3xT3FWf
+         wIng==
+X-Forwarded-Encrypted: i=1; AJvYcCWuWvg6t3/e8iBtaCV8sa7kpPpgjuEaLhpeWyKSJ0YXM8M2BrczJ0+HAZlCOyV3bwQw18tMD9xeOTHCh/FagWBeqCM3sUukAW5FyLea
+X-Gm-Message-State: AOJu0YyE8geuAolezrkvRxGnINKxp2ovjyErlLBiO4DJ8SnI7loUE2Cw
+	5Hl3rI+4Ae3GyvNJ6AiAWzEqIsbw5IsWxfYJ+s76G7ocsEmuTa4yNbaq4vRYdceAvx+8mqCReiS
+	ekJTiA+VteUF8Uslfi+q7vb1BEuNW9FUBJ7ZJaQ==
+X-Google-Smtp-Source: AGHT+IF8ln7WLyekvHJT3gKVoSoapL6K1womt5rWIbJrJz0MFoc/wyxR7h/qIOW5MqZBupdkc++ChmM9DDb81ZIyLKM=
+X-Received: by 2002:a25:a2c2:0:b0:dc2:3279:fde5 with SMTP id
+ c2-20020a25a2c2000000b00dc23279fde5mr3677872ybn.22.1709240942644; Thu, 29 Feb
+ 2024 13:09:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240229040724.3393042-1-haifeng.zhao@linux.intel.com>
+References: <20240229-mbly-i2c-v2-0-b32ed18c098c@bootlin.com> <20240229-mbly-i2c-v2-9-b32ed18c098c@bootlin.com>
+In-Reply-To: <20240229-mbly-i2c-v2-9-b32ed18c098c@bootlin.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Thu, 29 Feb 2024 22:08:51 +0100
+Message-ID: <CACRpkdbaRy-=p63Hq=ykSUeQ-R2S=DjqSBV6-GQWK4BRJNy+iA@mail.gmail.com>
+Subject: Re: [PATCH v2 09/11] i2c: nomadik: support Mobileye EyeQ5 I2C controller
+To: =?UTF-8?B?VGjDqW8gTGVicnVu?= <theo.lebrun@bootlin.com>
+Cc: Andi Shyti <andi.shyti@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, linux-arm-kernel@lists.infradead.org, 
+	linux-i2c@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, 
+	Gregory Clement <gregory.clement@bootlin.com>, 
+	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 28, 2024 at 11:07:24PM -0500, Ethan Zhao wrote:
-> Break the loop to blindly retry the timeout ATS invalidation request
-> after ITE fault hit if device was released or isn't present anymore.
-> 
-> This is part of the followup of prior proposed patchset
-> 
-> https://do-db2.lkml.org/lkml/2024/2/22/350
+On Thu, Feb 29, 2024 at 7:10=E2=80=AFPM Th=C3=A9o Lebrun <theo.lebrun@bootl=
+in.com> wrote:
 
-Use lore URL, please.
+> Add compatible for the integration of the same DB8500 IP block into the
+> Mobileye EyeQ5 platform. Two quirks are present:
+>
+>  - The memory bus only supports 32-bit accesses. Avoid writeb() and
+>    readb() by introducing helper functions that fallback to writel()
+>    and readl().
+>
+>  - A register must be configured for the I2C speed mode; it is located
+>    in a shared register region called OLB. We access that memory region
+>    using a syscon & regmap that gets passed as a phandle (mobileye,olb).
+>
+>    A two-bit enum per controller is written into the register; that
+>    requires us to know the global index of the I2C controller (cell arg
+>    to the mobileye,olb phandle).
+>
+> We add #include <linux/mfd/syscon.h> and <linux/regmap.h> and sort
+> headers.
+>
+> Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
 
-> Fixes: 6ba6c3a4cacf ("VT-d: add device IOTLB invalidation support")
-> Signed-off-by: Ethan Zhao <haifeng.zhao@linux.intel.com>
-> ---
->  drivers/iommu/intel/dmar.c | 25 +++++++++++++++++++++++++
->  1 file changed, 25 insertions(+)
-> 
-> diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
-> index d14797aabb7a..d01d68205557 100644
-> --- a/drivers/iommu/intel/dmar.c
-> +++ b/drivers/iommu/intel/dmar.c
-> @@ -1273,6 +1273,9 @@ static int qi_check_fault(struct intel_iommu *iommu, int index, int wait_index)
->  {
->  	u32 fault;
->  	int head, tail;
-> +	u64 iqe_err, ite_sid;
-> +	struct device *dev = NULL;
-> +	struct pci_dev *pdev = NULL;
->  	struct q_inval *qi = iommu->qi;
->  	int shift = qi_shift(iommu);
->  
-> @@ -1317,6 +1320,13 @@ static int qi_check_fault(struct intel_iommu *iommu, int index, int wait_index)
->  		tail = readl(iommu->reg + DMAR_IQT_REG);
->  		tail = ((tail >> shift) - 1 + QI_LENGTH) % QI_LENGTH;
->  
-> +		/*
-> +		 * SID field is valid only when the ITE field is Set in FSTS_REG
-> +		 * see Intel VT-d spec r4.1, section 11.4.9.9
-> +		 */
-> +		iqe_err = dmar_readq(iommu->reg + DMAR_IQER_REG);
-> +		ite_sid = DMAR_IQER_REG_ITESID(iqe_err);
-> +
->  		writel(DMA_FSTS_ITE, iommu->reg + DMAR_FSTS_REG);
->  		pr_info("Invalidation Time-out Error (ITE) cleared\n");
->  
-> @@ -1326,6 +1336,21 @@ static int qi_check_fault(struct intel_iommu *iommu, int index, int wait_index)
->  			head = (head - 2 + QI_LENGTH) % QI_LENGTH;
->  		} while (head != tail);
->  
-> +		/*
-> +		 * If got ITE, we need to check if the sid of ITE is one of the
-> +		 * current valid ATS invalidation target devices, if no, or the
-> +		 * target device isn't presnet, don't try this request anymore.
-> +		 * 0 value of ite_sid means old VT-d device, no ite_sid value.
-> +		 */
-> +		if (ite_sid) {
-> +			dev = device_rbtree_find(iommu, ite_sid);
-> +			if (!dev || !dev_is_pci(dev))
-> +				return -ETIMEDOUT;
-> +			pdev = to_pci_dev(dev);
-> +			if (!pci_device_is_present(pdev) &&
-> +				ite_sid == pci_dev_id(pci_physfn(pdev)))
-> +				return -ETIMEDOUT;
-> +		}
->  		if (qi->desc_status[wait_index] == QI_ABORT)
->  			return -EAGAIN;
->  	}
-> -- 
-> 2.31.1
-> 
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+
+Yours,
+Linus Walleij
 
