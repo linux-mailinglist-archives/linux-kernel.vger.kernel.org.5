@@ -1,95 +1,99 @@
-Return-Path: <linux-kernel+bounces-87149-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87150-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1E4E86D03F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:12:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C9A3C86D044
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:13:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D43CE1C21724
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:12:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ABEF31C212FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:13:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A10470AC2;
-	Thu, 29 Feb 2024 17:12:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7624C67E64;
+	Thu, 29 Feb 2024 17:13:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rC+eskhk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lWa47QdA"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1B076997F;
-	Thu, 29 Feb 2024 17:12:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B65A84AED8;
+	Thu, 29 Feb 2024 17:13:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709226723; cv=none; b=FDFW9SztbiphJZjDJo4zZdv75F5Ga0xhaaf6ogjms00c0qKyb36bU23MbBZbVf+srUnr6zBU2llra2GwWismDa+cIP5kXzDfnGK72gcTpoKTp5Oe+yjJzkzRsMpmD8sFu7pwOS4D+yryzEtvroLn5w7wYka0QpvlGYiKyZEuWTE=
+	t=1709226792; cv=none; b=IprbyrYyK2zRanfBWh4bFbkOwdYiFenTCr5Wrzkr4IJxx4aZYHrlkkhyM5X+gFHDDnQHXv8bL4Ql5VFWD3MrjD+G6fFdudWFnj1noa0f9cb1VsG+aWF76VDDgJO33FEpegsvuyVf4F/CQGJEbCUxGAl+IkIyKupMHL3y/NjTxR8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709226723; c=relaxed/simple;
-	bh=VG+D+qi/TZVphX/2CxdUZBtA1M2Vw5Tcn2yPs23Fek8=;
+	s=arc-20240116; t=1709226792; c=relaxed/simple;
+	bh=nM5maH2+iNjefCZwpxImht6QajZQX9eoc3g9Gu3mbGM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s31LHHPdH7W51s5dOMh1qKxwDOSXaYqDBuGU93RMTz3HahP13l5eQpJX9+9gLm6SObGljK7W4ThRNHMN+d7WxNi/HqFH+xRFLrGNXPdxxCWczk3/boRbYaGKKCeZ+1R3HUp3bd+zgsthb66hxXp0uGn6Ezpt/TuWqTdxF6MZEjc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rC+eskhk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 173AFC433C7;
-	Thu, 29 Feb 2024 17:12:03 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=KgAfCSB+wih7vImQVNnXWHBQLSthz/woNPl2GIlOihtNwUkb7oMKLB+SrSdqT85OM4HJJjdqzB1vCbqC7IAdJsCwVrAZiBJjwrKXKCNrwxoGnX43kSLzYFuXBUP3dVexLAJXjUEe7HeT2rzwOU17N4YzDfEk7H+Lt5ncSBd2GC8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lWa47QdA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69766C433F1;
+	Thu, 29 Feb 2024 17:13:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709226723;
-	bh=VG+D+qi/TZVphX/2CxdUZBtA1M2Vw5Tcn2yPs23Fek8=;
+	s=k20201202; t=1709226792;
+	bh=nM5maH2+iNjefCZwpxImht6QajZQX9eoc3g9Gu3mbGM=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rC+eskhkTRByz+sXdvXhNDcxf+Mqe8D5QmUEgaoQBf31TzfNH2Ev5uklY2tzJ99OS
-	 DSXSyFOQjZYURl2OZR3bK6W7eg4TpbTuZDYCR7nGNiWo7Ng6lWcjHn6/IBXmLDolkj
-	 KvdzYbhnFg62+kfriOhaQCZV7IWHbXkf55Phq/HzNPcCS4e10yW1GU/Siw9cjsEkAw
-	 VQbCG0m0b5xEkiUghvdle6d2qUimGgiPxMrsFKkZuwyIW7pOcbS4QUkS92ODgzQdPk
-	 3Wz9bBdAzlTuehcgQTnkRaAwimCnnX9uNkYHxiuUvrE5dLG0OoraFHirIfvvcQwUB+
-	 xPO8MV+i4A+8A==
-Date: Thu, 29 Feb 2024 09:12:01 -0800
-From: Jaegeuk Kim <jaegeuk@kernel.org>
-To: Colin Ian King <colin.i.king@gmail.com>
-Cc: Chao Yu <chao@kernel.org>, linux-f2fs-devel@lists.sourceforge.net,
-	kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] f2fs: Fix two spelling mistakes in
- f2fs_zone_status array
-Message-ID: <ZeC64dDr-nBGlsli@google.com>
-References: <20240229091449.105032-1-colin.i.king@gmail.com>
+	b=lWa47QdA3UVpHPxkDksYCqpuMO6/qTGaZ0JWREya6miGCyDzKDUmansLIqEr6/jRW
+	 +uuTZJRJyGq+eLjvPdwzLtM7x7CEHScKZeWV7pyqFuZyBEVkL1a4skBzd32jCUgXp6
+	 MtAUW3FqsmaO5auGsCBFrYBsknceEaHdP2mPOQ8bQV9JvWT0xggdS32YdKuzmj0sBc
+	 wbyCSnAj2I86JrEujnO61mysUN6y9/zM6AhR2goCfbu1nRQ745SVI74LOI0JUXNWop
+	 a4K5Z8fPSHLbo8qDivbd3y46OZ+07wVFVvUvAyktxTS2nhabEcfh9yZWkfq36IMKcw
+	 ar9xRcNeHkQWA==
+Date: Thu, 29 Feb 2024 17:13:07 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Doug Anderson <dianders@chromium.org>
+Cc: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org, Will Deacon <will@kernel.org>,
+	catalin.marinas@arm.com, oleg@redhat.com, mark.rutland@arm.com,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH AUTOSEL 6.6 21/21] arm64/sve: Lower the maximum
+ allocation for the SVE ptrace regset
+Message-ID: <05cbeae5-cd40-45a9-9b4f-68b9b20a6839@sirena.org.uk>
+References: <20240229154946.2850012-1-sashal@kernel.org>
+ <20240229154946.2850012-21-sashal@kernel.org>
+ <CAD=FV=Wb4meRvghR00LTzXRAobgioGo5g2oYqMLuO8nYWDa7Rg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="AguQ/ip/azlDhTFg"
+Content-Disposition: inline
+In-Reply-To: <CAD=FV=Wb4meRvghR00LTzXRAobgioGo5g2oYqMLuO8nYWDa7Rg@mail.gmail.com>
+X-Cookie: Marriage is the sole cause of divorce.
+
+
+--AguQ/ip/azlDhTFg
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240229091449.105032-1-colin.i.king@gmail.com>
 
-Hi Colin,
+On Thu, Feb 29, 2024 at 08:51:09AM -0800, Doug Anderson wrote:
 
-Thank you for the fix. If you don't mind, can I integrate this fix
-into the original patch?
+> As I mentioned [1], there's a hidden dependency here and without it
+> the patch doesn't actually do anything useful in kernel 6.6 nor kernel
+> 6.1. Maybe the right answer is to backport this with the hardcoded
+> value of "16" for those older kernels? Maybe Mark has a better
+> suggestion?
 
-Thanks,
+Your suggestion should be fine.
 
-On 02/29, Colin Ian King wrote:
-> The array f2fs_zone_status contains two spelling mistakes in
-> literal strings. Fix them.
-> 
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-> ---
->  fs/f2fs/segment.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-> index bdb27e4a604b..072c4355d3d3 100644
-> --- a/fs/f2fs/segment.c
-> +++ b/fs/f2fs/segment.c
-> @@ -4921,8 +4921,8 @@ static int sanity_check_curseg(struct f2fs_sb_info *sbi)
->  const char *f2fs_zone_status[BLK_ZONE_COND_OFFLINE + 1] = {
->  	[BLK_ZONE_COND_NOT_WP]		= "NOT_WP",
->  	[BLK_ZONE_COND_EMPTY]		= "EMPTY",
-> -	[BLK_ZONE_COND_IMP_OPEN]	= "IMPLICITE_OPEN",
-> -	[BLK_ZONE_COND_EXP_OPEN]	= "EXPLICITE_OPEN",
-> +	[BLK_ZONE_COND_IMP_OPEN]	= "IMPLICIT_OPEN",
-> +	[BLK_ZONE_COND_EXP_OPEN]	= "EXPLICIT_OPEN",
->  	[BLK_ZONE_COND_CLOSED]		= "CLOSED",
->  	[BLK_ZONE_COND_READONLY]	= "READONLY",
->  	[BLK_ZONE_COND_FULL]		= "FULL",
-> -- 
-> 2.39.2
+--AguQ/ip/azlDhTFg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXguyIACgkQJNaLcl1U
+h9CKIQf9E1N2oM+hr793lWZt35KNPBB/uEReGAKXgs5f9FrX7yCa6pRwbwlMlqdZ
+f//MVoW+AX7viQOtXfsALzPWxz04ePVz048cc447zHr/ma270G0lJCa2fdiycP+p
+CsGX/lhB5/EGoWJqweiiQImpL2aFpC9v+h7f5hbqNX1vzziibmDnGPh4QOatTZ/z
+lbLzAzvmDGH30A9PqUPcsJ03suqLRoGPQWTzykwnYmwLIMaNpwEdQhvn9C9Yizuu
+B9s+X2lAzuHT8kkJ7XL97K8hqktWFJ2QzeLoF/kbhvi/DFJpp7HPjivRdULU4fS4
+ykQtyyFepTmtOD/XL/3FGdmRyV0geA==
+=jo0J
+-----END PGP SIGNATURE-----
+
+--AguQ/ip/azlDhTFg--
 
