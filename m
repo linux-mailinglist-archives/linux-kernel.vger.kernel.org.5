@@ -1,42 +1,42 @@
-Return-Path: <linux-kernel+bounces-85953-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85955-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4FA686BD92
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:59:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CF4D86BD93
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:59:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90632289059
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:59:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B5CC1C24050
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:59:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16AB34E1CB;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 213F94E1DD;
 	Thu, 29 Feb 2024 00:55:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="akULg1jo"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="FbpDpkpo"
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C370F36AEE;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9104F364BF;
 	Thu, 29 Feb 2024 00:55:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709168127; cv=none; b=Yk4IoxQ1rKt3KigAyuehdhsgHTo5PXZEOr/MuAD56PrrsGznX79LZ33MM4PuP+ZHsJlEQPKXXrrjk7eeJ2rQH3eaZbPDUccar9s7k2/BdyXT0R2QLAvQEFme4TP5ivQRbDfWJPtDROfgTSkLGDlEpSa6cBo/MpIdz2o1H8ylLZg=
+	t=1709168127; cv=none; b=c/Qf/8Wlh4qc/xEk7OLcLBr1O77bohpSBIjjO7EondGfJu4lIOgDvJDlCWoRx8G35aRSYR63XVO+Yupi8HxfYEzjm/WEfPr4Xbi2X2RttJDFvjZK6bKScw11JoW3vvj752GRWR/U3T49QZcvveWSoF4LCrWr00lXTLxVaq6k9uc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1709168127; c=relaxed/simple;
-	bh=nLFXtzeBcjiMKyMP6dpEwHa6q1zR5t7lNC5xVrWtFS8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=A/LF5O+REb+/XkdOTY32Zl85PjlNq0m8+Ylf/d9EfrjCxq+2tWZsfflPgwYY17gA5sDkXuszHV6mqF/UvUrGOLlWX/vDxWoKgmLMvGSniQFhNpmZZjBgBWTRI9PxRgeUdiGtI0T/x6Wzw7aXtAWBW76W9eSiEPBDQw8uRXY274M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=akULg1jo; arc=none smtp.client-ip=13.77.154.182
+	bh=LGzD4DUlk5m+6PqDuOP70cYPyfFeTyVT9sEJQWfpMgk=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=pVJSDDzpQ7uEM3X9C7XgjKkfrau06xbWgq3YvrbiyogaVfkEtxTsnaKJzYMuDTldG9FR4cUayRkDvnyWGQOx6G/GiGDxQ1exEjgIx6ct4sFNeXlTVpQZk5SLsss0fxquPPERacfAE2ww8WFFg77Ey/hvUZNfQlfk88vbo80p6uU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=FbpDpkpo; arc=none smtp.client-ip=13.77.154.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
 Received: by linux.microsoft.com (Postfix, from userid 1052)
-	id 1564520B74D7; Wed, 28 Feb 2024 16:55:18 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1564520B74D7
+	id 23B7120B74D9; Wed, 28 Feb 2024 16:55:18 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 23B7120B74D9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
 	s=default; t=1709168119;
-	bh=XBFNFhZO2C2cRsijb6fK7ukrFdTouoAgBmyOuq/elfU=;
+	bh=YwptEEL5y7/tJ0FsiRUIXARo6KLdEYznOkxZQ8U/PTU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=akULg1jo9HtuVSFYgZ5rHE30PjIwlaYO8eGr0+bgCMSgRzruoP0iDYZkNCxbB1/3W
-	 DAGe4s+Ugn5lUI1avwC6PBE/UyWsljIXqa5zo/+Y8UtoCKpTqdkn1b8KKXCHz9zxBj
-	 267R6svgGCoUuVJERRazmMIXQZZFdBEkp6nWYNpE=
+	b=FbpDpkpo1MPGUITN9TGJl7T/8cAIj5J54faNJqgEg6GyP8r7yCsqOTZzIluiBx4jM
+	 qWmjSU6D9grE799L0/ca8ayEAFivDJXvNb+1xhpPH3YJcK5fbapbhlqpEzRDaI0u53
+	 3jiNlAhs7dE/PZJ28FyR9u7t/c6YKEftfH80gwok=
 From: Fan Wu <wufan@linux.microsoft.com>
 To: corbet@lwn.net,
 	zohar@linux.ibm.com,
@@ -58,9 +58,9 @@ Cc: linux-doc@vger.kernel.org,
 	audit@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Fan Wu <wufan@linux.microsoft.com>
-Subject: [RFC PATCH v13 12/20] dm verity: set DM_TARGET_SINGLETON feature flag
-Date: Wed, 28 Feb 2024 16:54:54 -0800
-Message-Id: <1709168102-7677-13-git-send-email-wufan@linux.microsoft.com>
+Subject: [RFC PATCH v13 13/20] dm: add finalize hook to target_type
+Date: Wed, 28 Feb 2024 16:54:55 -0800
+Message-Id: <1709168102-7677-14-git-send-email-wufan@linux.microsoft.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1709168102-7677-1-git-send-email-wufan@linux.microsoft.com>
 References: <1709168102-7677-1-git-send-email-wufan@linux.microsoft.com>
@@ -70,14 +70,13 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
-The device-mapper has a flag to mark targets as singleton, which is a
-required flag for immutable targets. Without this flag, multiple
-dm-verity targets can be added to a mapped device, which has no
-practical use cases. Also from dm_table_get_immutable_target(),
-it documented that "Immutable target is implicitly a singleton".
+This patch adds a target finalize hook.
 
-This patch adds the missing flag, restricting only one
-dm-verity target per mapped device.
+The hook is triggered just before activating an inactive table of a
+mapped device. If it returns an error the __bind get cancelled.
+
+The dm-verity target will use this hook to attach the dm-verity's
+roothash metadata to the block_device struct of the mapped device.
 
 Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
 
@@ -94,22 +93,58 @@ v12:
 v13:
   + No changes
 ---
- drivers/md/dm-verity-target.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/md/dm.c               | 12 ++++++++++++
+ include/linux/device-mapper.h |  7 +++++++
+ 2 files changed, 19 insertions(+)
 
-diff --git a/drivers/md/dm-verity-target.c b/drivers/md/dm-verity-target.c
-index 1b591bfa90d5..a99ef30e45ca 100644
---- a/drivers/md/dm-verity-target.c
-+++ b/drivers/md/dm-verity-target.c
-@@ -1559,7 +1559,7 @@ int dm_verity_get_root_digest(struct dm_target *ti, u8 **root_digest, unsigned i
+diff --git a/drivers/md/dm.c b/drivers/md/dm.c
+index 8dcabf84d866..15b46edae49f 100644
+--- a/drivers/md/dm.c
++++ b/drivers/md/dm.c
+@@ -2266,6 +2266,18 @@ static struct dm_table *__bind(struct mapped_device *md, struct dm_table *t,
+ 		goto out;
+ 	}
  
- static struct target_type verity_target = {
- 	.name		= "verity",
--	.features	= DM_TARGET_IMMUTABLE,
-+	.features	= DM_TARGET_SINGLETON | DM_TARGET_IMMUTABLE,
- 	.version	= {1, 10, 0},
- 	.module		= THIS_MODULE,
- 	.ctr		= verity_ctr,
++	for (unsigned int i = 0; i < t->num_targets; i++) {
++		struct dm_target *ti = dm_table_get_target(t, i);
++
++		if (ti->type->finalize) {
++			ret = ti->type->finalize(ti);
++			if (ret) {
++				old_map = ERR_PTR(ret);
++				goto out;
++			}
++		}
++	}
++
+ 	old_map = rcu_dereference_protected(md->map, lockdep_is_held(&md->suspend_lock));
+ 	rcu_assign_pointer(md->map, (void *)t);
+ 	md->immutable_target_type = dm_table_get_immutable_target_type(t);
+diff --git a/include/linux/device-mapper.h b/include/linux/device-mapper.h
+index 772ab4d74d94..627400b2d9af 100644
+--- a/include/linux/device-mapper.h
++++ b/include/linux/device-mapper.h
+@@ -160,6 +160,12 @@ typedef int (*dm_dax_zero_page_range_fn)(struct dm_target *ti, pgoff_t pgoff,
+  */
+ typedef size_t (*dm_dax_recovery_write_fn)(struct dm_target *ti, pgoff_t pgoff,
+ 		void *addr, size_t bytes, struct iov_iter *i);
++/*
++ * Returns:
++ *  < 0 : error
++ *  = 0 : success
++ */
++typedef int (*dm_finalize_fn) (struct dm_target *target);
+ 
+ void dm_error(const char *message);
+ 
+@@ -210,6 +216,7 @@ struct target_type {
+ 	dm_dax_direct_access_fn direct_access;
+ 	dm_dax_zero_page_range_fn dax_zero_page_range;
+ 	dm_dax_recovery_write_fn dax_recovery_write;
++	dm_finalize_fn finalize;
+ 
+ 	/* For internal device-mapper use. */
+ 	struct list_head list;
 -- 
 2.43.1
 
