@@ -1,138 +1,128 @@
-Return-Path: <linux-kernel+bounces-87163-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87166-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61CC686D07D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:23:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B587186D087
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:26:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C61B528686E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:23:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65979287748
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:26:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9F7170ACD;
-	Thu, 29 Feb 2024 17:23:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5276D70AE6;
+	Thu, 29 Feb 2024 17:26:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="athSDJtJ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="cou7Vty8"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E2346CBE3;
-	Thu, 29 Feb 2024 17:23:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDA6570AD2
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 17:25:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709227414; cv=none; b=iNuRKnT3UMwr+ok7g2Eohd9MdoOBurkC8BPpJlP4KiWbhZC8qQ912x5QgjEk0doZk+2UrpRYlJsFlKNGFBfJiQKd/vHq4JkBTcUKR9+pVyjPwHhwyfQTeJyMNOOL52eDxH9a2hy9EUD7VQm0vAxQC7AHtmk0hfnrleUqPQYRRHM=
+	t=1709227559; cv=none; b=mPpp33XKzOAKXrcim5Z/Ay67oqpMBcvy4rlI38N6H/gSFtI5/BWN0ONC60IoPKuQegoGg5jUX1ov/b2ovawhAAgzFVktbJMSLtN75pHtBkcD26w+DCC/rZ9vdFRPhhxVZQtTetpiSun4eTRbOILesAvfgLVjJw0VylgPdwLxhks=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709227414; c=relaxed/simple;
-	bh=Oa4oT6c0wAHeOFyXLWOIs7ozD28bcI/Oq64bMT9EcJs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TG5cYO5CM3NG3YBdGKwn10eay458B6+92wDCoATpbC1W4iCdM01YKKPNZLq9yU3utJ3vlPf/1NaVMg06r5Bs3iW0h6sGz+76UXuYyig1oQ00o0n5eE0rtZbZaPx+31UNbUE8HGjQ1TWqaRInfTAsNd4RfSuiIDyRLHJ5Sb3zP+Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=athSDJtJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4454EC433F1;
-	Thu, 29 Feb 2024 17:23:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709227413;
-	bh=Oa4oT6c0wAHeOFyXLWOIs7ozD28bcI/Oq64bMT9EcJs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=athSDJtJ8RuUu8fWSuuZtAHY+/s0ZdAujGSirhTSKDm+/GWp0C+aiudrumr6R8IRH
-	 tJN50ftZC/WUuPg26zLc3h6Pc+G6RYFagSlXWAK3lAzeZJD+qagCSAXYkMyz+q9Vvj
-	 Uqga1oiRlU9mhAsyCUVN9P5l8tuDd3u8fEKwYzO3OiM2bNStw1X+dW2lHQUPmRL3SR
-	 FkshneKh+/a1QToNkyGGsMo1Lsnr3hwR9zo2Top0LbKDRo8WMPow+45nOIJa5vdcLE
-	 4JKLfW96OOZpjYISfpxvrs7evO4dizAdNswCQiWnSRpOAAu20olEl7tIWDXWkgYJFw
-	 baswQ2+HSwgZQ==
-Date: Thu, 29 Feb 2024 14:23:30 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH v2] perf lock contention: Account contending locks too
-Message-ID: <ZeC9ki-4SGa-iU0C@x1>
-References: <20240228053335.312776-1-namhyung@kernel.org>
- <Zd8lkcb5irCOY4-m@x1>
- <CAM9d7cicRtxCvMWu4pk6kdZAqT2pt3erpzL4_Jdt1pKLLYoFgQ@mail.gmail.com>
- <Zd-UmcqV0mbrKnd0@x1>
- <CAM9d7cg-M_8V0O2rv_gx+1u=axpRmCp4XcBkkqsiGmDgeU2xZw@mail.gmail.com>
+	s=arc-20240116; t=1709227559; c=relaxed/simple;
+	bh=x023CuxQEDUhqmIMeqnfqJUbjUEG0Bp8dWnHTJB3rdI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=aZ1lqDtH/S1C5uVanYi2t61jsczk71JWl003aifUi+fIuGnEurkEKxvyLMabAEUUGossYlgxLmpYyJV9u7k1KE2IPS8R4j2txPAEC9TKr+LL/nxqJQaJM50Pr6vzJN8mFpMrUCraMNk1nGEf+wlAHFvweaBSZPlJnDmbKt94JDU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=cou7Vty8; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5658082d2c4so1826425a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 09:25:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1709227555; x=1709832355; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=x023CuxQEDUhqmIMeqnfqJUbjUEG0Bp8dWnHTJB3rdI=;
+        b=cou7Vty8VLoEFq4M6Yv86Ms99c7KUcdIfpRyFMLAeAznWgxF68ZxfCozRKV3mWOo8T
+         GEHS2DXF20JjjV4frDcXWoUIQq4+m+Ll0G7b2IwOGHqCdCc9RvIolbiyejpJKygZBwLy
+         dtUr0nq86E3jtQe83tMlNpOm+EZ8uZ6puVlTc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709227555; x=1709832355;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=x023CuxQEDUhqmIMeqnfqJUbjUEG0Bp8dWnHTJB3rdI=;
+        b=Bnk8wH8gGwguLdjaBpBV7vdnBTzXVQMa7qCBgN7VFzietWhcsiAU2kGSB6EVTpggHQ
+         j3M5ilB1BegiQSdDOxrrTQo8crdi+F4kU1dH8vBd8zwu59U897wGPh7uCrE34R2aaOVC
+         T54ZhIegqAMXIzXofoN8R+06doTPrcpSAMyJWZ+hq5Tn0HC8rD+MTCu5fgqCIWMqPH0G
+         l374ycBYZ1C4OMNpzvTV5SMmZ+i+H4XlXa4a+Pfg+sEf2RC80BBfUjgcrYRHZ16sB9vw
+         QpMnszSSxtjIm4NGpJo7u44pmOl8N+Q3fBkXGfpRBx24zEEkz6jndIq8GgVVHlQQa/+5
+         +cNA==
+X-Forwarded-Encrypted: i=1; AJvYcCU6wP6RONXHdWvE/fhyXb6gXEForSaatHwB22tTxTM8orkNqM/oWQVS3ocxpMYMAAdcihAdiLPREweuOEKX4d3ZzPR0kDmc/qPMcH1B
+X-Gm-Message-State: AOJu0YwMi8tS/a0PFWzq2m9GJkPMhO0EfZhI947kIMtD/lqJzc5Hp1jT
+	foOtZYb/U0qQ2IOCoRjKLrHQrDpAISrRKHMSrPdZhwuK1Jnr0YRS3ff9SCpnK/abKXp+1706+eP
+	p1K9U
+X-Google-Smtp-Source: AGHT+IFScoizlu7JiGmm/w1R1n7r3v02zrvK71MWDPqoB7RViOOrxeck70klBXRvvUjDLdkLFeL+tQ==
+X-Received: by 2002:a05:6402:26c5:b0:564:dd13:56e9 with SMTP id x5-20020a05640226c500b00564dd1356e9mr2388255edd.29.1709227554879;
+        Thu, 29 Feb 2024 09:25:54 -0800 (PST)
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com. [209.85.128.53])
+        by smtp.gmail.com with ESMTPSA id be27-20020a0564021a3b00b0056650031d94sm781572edb.90.2024.02.29.09.25.53
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Feb 2024 09:25:54 -0800 (PST)
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4129a5f7b54so84705e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 09:25:53 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWXYopRXolOw1kmaW72X0R85UVz7nwDY2D8fQ8WprLa4Si2nu1hq37XDL03FWeezRU2rivd2EmTnrSHdJ5pS1tLOq3PV0ZQbQe130kL
+X-Received: by 2002:a05:600c:3d90:b0:412:ba6c:8067 with SMTP id
+ bi16-20020a05600c3d9000b00412ba6c8067mr151782wmb.5.1709227553392; Thu, 29 Feb
+ 2024 09:25:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAM9d7cg-M_8V0O2rv_gx+1u=axpRmCp4XcBkkqsiGmDgeU2xZw@mail.gmail.com>
+References: <20240229154946.2850012-1-sashal@kernel.org> <20240229154946.2850012-21-sashal@kernel.org>
+ <CAD=FV=Wb4meRvghR00LTzXRAobgioGo5g2oYqMLuO8nYWDa7Rg@mail.gmail.com> <05cbeae5-cd40-45a9-9b4f-68b9b20a6839@sirena.org.uk>
+In-Reply-To: <05cbeae5-cd40-45a9-9b4f-68b9b20a6839@sirena.org.uk>
+From: Doug Anderson <dianders@chromium.org>
+Date: Thu, 29 Feb 2024 09:25:38 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=VG1DpW3YukX691P59eN=oAnDxfWvm6CjpWFg5SxUmCRA@mail.gmail.com>
+Message-ID: <CAD=FV=VG1DpW3YukX691P59eN=oAnDxfWvm6CjpWFg5SxUmCRA@mail.gmail.com>
+Subject: Re: [PATCH AUTOSEL 6.6 21/21] arm64/sve: Lower the maximum allocation
+ for the SVE ptrace regset
+To: Mark Brown <broonie@kernel.org>
+Cc: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
+	Will Deacon <will@kernel.org>, catalin.marinas@arm.com, oleg@redhat.com, 
+	mark.rutland@arm.com, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 28, 2024 at 01:19:12PM -0800, Namhyung Kim wrote:
-> On Wed, Feb 28, 2024 at 12:16 PM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> > On Wed, Feb 28, 2024 at 12:01:55PM -0800, Namhyung Kim wrote:
-> > > On Wed, Feb 28, 2024 at 4:22 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> > > > On Tue, Feb 27, 2024 at 09:33:35PM -0800, Namhyung Kim wrote:
-> > > > > Currently it accounts the contention using delta between timestamps in
-> > > > > lock:contention_begin and lock:contention_end tracepoints.  But it means
-> > > > > the lock should see the both events during the monitoring period.
+Hi,
 
-> > > > > Actually there are 4 cases that happen with the monitoring:
+On Thu, Feb 29, 2024 at 9:13=E2=80=AFAM Mark Brown <broonie@kernel.org> wro=
+te:
+>
+> On Thu, Feb 29, 2024 at 08:51:09AM -0800, Doug Anderson wrote:
+>
+> > As I mentioned [1], there's a hidden dependency here and without it
+> > the patch doesn't actually do anything useful in kernel 6.6 nor kernel
+> > 6.1. Maybe the right answer is to backport this with the hardcoded
+> > value of "16" for those older kernels? Maybe Mark has a better
+> > suggestion?
+>
+> Your suggestion should be fine.
 
-> > > > >                 monitoring period
-> > > > >             /                       \
-> > > > >             |                       |
-> > > > >  1:  B------+-----------------------+--------E
-> > > > >  2:    B----+-------------E         |
-> > > > >  3:         |           B-----------+----E
-> > > > >  4:         |     B-------------E   |
-> > > > >             |                       |
-> > > > >             t0                      t1
+Crud. Ignore me. The patch is fine as-is for 6.1, 6.6, and 6.7. :(
 
-> > > > > where B and E mean contention BEGIN and END, respectively.  So it only
-> > > > > accounts the case 4 for now.  It seems there's no way to handle the case
-> > > > > 1.  The case 2 might be handled if it saved the timestamp (t0), but it
-> > > > > lacks the information from the B notably the flags which shows the lock
-> > > > > types.  Also it could be a nested lock which it currently ignores.  So
-> > > > > I think we should ignore the case 2.
+git tag --contains f171f9e4097d
+..shows that the needed patch is actually in 5.19+
 
-> > > > Perhaps have a separate output listing locks that were found to be with
-> > > > at least tE - t0 time, with perhaps a backtrace at that END time?
+Instead of using the above "git tag --contains", I was naively just running=
+:
 
-> > > Do you mean long contentions in case 3?  I'm not sure what do
-> > > you mean by tE, but they started after t0 so cannot be greater
+git grep ZCR_ELx_LEN_SIZE
 
-> > case 2
+..and I saw that it still came back 9 on v6.6. ...but that's because
+it was still set as 9 in the tools directory and I didn't notice.
 
-> >                 monitoring period
-> >             /                       \
-> >             |                       |
-> >  2:    B----+-------------E         |
-> >             |             |         |
-> >             t0            tE        t1
-> >
-> > We get a notification for event E, right? We don´t have one for B,
-> > because it happened before we were monitoring.
-> 
-> Ah, ok.  But there should be too many events in case 2 and
-> I don't think users want to see them all.  And they don't have
+Sorry for the noise. We could still do the hardcoded solution of
+defining it as 16 for 5.15 and older if folks want.
 
-So maybe a summary, something like:
-
-  N locks that were locked before this session started have been
-  released, no further info besides this histogram of in-session
-  durations:
-
-    0-N units of time: ++
-  N+1-M units of time: ++++
-    ...
-
-> flags.  But maybe we can update the flag when it sees exactly
-> the same callstack later.
-
-  The callstack, if going all the way to userspace may have the workload
-targeted in the command line ( some pid, tid, CPU, etc) and thus would
-point for things the user probably is interested than some other lock
-that may affect it but indirectly.
-
-- Arnaldo
+-Doug
 
