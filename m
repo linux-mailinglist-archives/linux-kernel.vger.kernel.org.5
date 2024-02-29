@@ -1,119 +1,78 @@
-Return-Path: <linux-kernel+bounces-87215-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87216-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95F6186D134
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:54:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 894F686D137
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:54:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C81C91C20E3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:54:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42C1228302A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:54:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C9547580A;
-	Thu, 29 Feb 2024 17:54:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D29AA757F5;
+	Thu, 29 Feb 2024 17:54:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r7dVqRy9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iTscuO98"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50508651A1;
-	Thu, 29 Feb 2024 17:54:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 214AB651A1;
+	Thu, 29 Feb 2024 17:54:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709229256; cv=none; b=ktzZisH0YwCRG1TIvYRUJRmuDY4nBg3DoElFgC4R0L+ZSGsN3jTm6KGf22oOVFYZFhan678TgjtRnNcOPEcR7GxiOVRUmlGmZYpir0hkHM33cCxhsold29SAP2p3vgoMK7O3xe7UiCnc8TO7wiNQ40eil9Wr1DlaTRulYHp2vjw=
+	t=1709229292; cv=none; b=VZ0Vmqa1WyZK1RLnS+z68U2pTnSy/TxrAMR2LqmcMQMxew971IMUMdHkPFoyk/gyIuAHH9LSNSPsG2zTBEmMz7IVf4BM8Ffb4p2jSaLZkrpkYk4pIVhJylCQbfWToVc1UuY7tvai/xlVTfONTOw2IE/y3pAkzU02PeC0PRV4G1w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709229256; c=relaxed/simple;
-	bh=/UMEnyyhRyF9Pjefi/dD8N9hm6l2W4RsvKVlb5y5evo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=G58u9M3Ngugm6ZqwEYPLCdPdV8y5l6iAFpr0FhWNZGFyz1Pi8SoXJZuoSxW36X3OS3BWSmqe4wMrbISV2wWEVq/7Qd7afvWI2MyAO8gMHbmZzy8V0zbleNVwrZQpii8yVi8c94puoCOVqdVhCmTP550lmvWr0fSjK2k+SKjICOk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r7dVqRy9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C54BC433C7;
-	Thu, 29 Feb 2024 17:54:12 +0000 (UTC)
+	s=arc-20240116; t=1709229292; c=relaxed/simple;
+	bh=wcTJ+jcw4JHQfD5Uq2LZ/uVm9cXm5XQGypXgvX5wUZ0=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=gnoktyCqC/8yt81tnMRTRrxzyRWBZlgkwVtKhxygf4Z1rKbPeBK7hmp73UvGwfqKpzlYWz4YtXwnVvl5lgA/NK8WUoidnehfhHx1uPPKVqMKwbvwuCj0qI2ov3Yjzxjx/gP8gaZXccb2ZJqCITK3S39B3pqQS11hxU81IYQjvK8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iTscuO98; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 930CAC433C7;
+	Thu, 29 Feb 2024 17:54:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709229255;
-	bh=/UMEnyyhRyF9Pjefi/dD8N9hm6l2W4RsvKVlb5y5evo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=r7dVqRy9GIaUv6QtQsaFe5PfURVdXM1AshXWiT9ZJk3hepfHhWf2+eOuJkSfHGUkx
-	 qKWFnAcghZd6QgXCnaput2tZ3AwmvJK93Ygdl7JI0P/HmjfiOzSW1F6Aq87edhAE4V
-	 bEu3w6l7MXSRUz8zBHNTUWhJ5Sz52Ujwytby7Bvg4GFZynIF0LvzeJnN7EkBVe0qUp
-	 H/hXkUGZuFHfSdPLw7pnbiprrkd138ETnbAOkjCIhC1r0GwxxfNO0EH+DZHooZB70i
-	 WsgC+07jq6CPfp2vJZbzBsxT8F35mqwy85gwHEUiXR6hBMt5HaH3wbDYa2Vhbc3JDj
-	 B1myWaajAeJKA==
-Date: Thu, 29 Feb 2024 17:54:10 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Neil Armstrong <neil.armstrong@linaro.org>
-Cc: =?iso-8859-1?Q?J=E9r=E9mie?= Dautheribes <jeremie.dautheribes@bootlin.com>,
-	Jessica Zhang <quic_jesszhan@quicinc.com>,
-	Sam Ravnborg <sam@ravnborg.org>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Yen-Mei Goh <yen-mei.goh@keysight.com>
-Subject: Re: [PATCH 1/3] dt-bindings: Add Crystal Clear Technology vendor
- prefix
-Message-ID: <20240229-woven-lively-1d90687b2d03@spud>
-References: <20240223134517.728568-1-jeremie.dautheribes@bootlin.com>
- <20240223134517.728568-2-jeremie.dautheribes@bootlin.com>
- <20240223-prepay-stadium-f09044e3e123@spud>
- <23832e29-5bf4-4dab-ac00-4a4090233c3f@linaro.org>
+	s=k20201202; t=1709229291;
+	bh=wcTJ+jcw4JHQfD5Uq2LZ/uVm9cXm5XQGypXgvX5wUZ0=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=iTscuO98vJO1y21Tyz5KLRiBR7J4pdyIJq94pLizg1TyEe+7QGAsSai9L/gJ5PLey
+	 NwG7Hz3R3YjQ5GAQ0MF8A7gqLkUCpUTGtQuc9oELROVq7Q3qi5I22H32/V36mjgodE
+	 59c9vmnH0J5aizaW4sGBmVAXmiFuUbgVLfvb/jgq6/4yLVXo6/UmppJyPRd/0EUH3l
+	 4uCMaep8BYYacjXJmypJ8F5BYIhquO97Yjn2GPEwNTXU6FG4J17roQNmzsf0hvHJpD
+	 +tJ4b3VotRrEede2ginFiPjOA4gu+DwoPLt3V6akZ+H0IOJCEXocNbMEc87b3qrgtb
+	 o7D6fQznOlX9Q==
+From: Lee Jones <lee@kernel.org>
+To: Maciej Strozek <mstrozek@opensource.cirrus.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com, 
+ linux-kernel@vger.kernel.org, linux-sound@vger.kernel.org
+In-Reply-To: <20240229155616.118457-1-mstrozek@opensource.cirrus.com>
+References: <20240229155616.118457-1-mstrozek@opensource.cirrus.com>
+Subject: Re: (subset) [PATCH] mfd: cs42l43: Fix wrong register defaults
+Message-Id: <170922929033.1634028.9810093983638212642.b4-ty@kernel.org>
+Date: Thu, 29 Feb 2024 17:54:50 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="q7xXagaWtGMrPzGa"
-Content-Disposition: inline
-In-Reply-To: <23832e29-5bf4-4dab-ac00-4a4090233c3f@linaro.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.12.4
 
+On Thu, 29 Feb 2024 15:56:14 +0000, Maciej Strozek wrote:
+> A few regs have unnecessary values in defaults, change them to match the
+> datasheet
+> 
+> Fixes: ace6d1448138 ("mfd: cs42l43: Add support for cs42l43 core driver")
+> 
+> 
 
---q7xXagaWtGMrPzGa
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied, thanks!
 
-On Thu, Feb 29, 2024 at 09:54:59AM +0100, Neil Armstrong wrote:
-> Hi J=E9r=E9mie,
->=20
-> On 23/02/2024 19:22, Conor Dooley wrote:
-> > On Fri, Feb 23, 2024 at 02:45:15PM +0100, J=E9r=E9mie Dautheribes wrote:
-> > > Update Documentation/devicetree/bindings/vendor-prefixes.yaml to
-> > > include "cct" as a vendor prefix for "Crystal Clear Technology". CCT =
-is
-> > > the vendor of the CMT430B19N00 TFT-LCD panel.
-> > >=20
-> >=20
-> > Acked-by: Conor Dooley <conor.dooley@microchip.com>
-> >=20
-> > And add a
-> > Link: http://www.cct.com.my/
-> > as that actually explains why "cct" is the right choice.
->=20
-> Can you send a v2 with this change ?
+[1/1] mfd: cs42l43: Fix wrong register defaults
+      commit: c9e1e505cde1a8ddd0968b4d54ec2ea1937dfe00
 
-Does your workflow not allow you to pick up Link: tags while applying
-patches?
+--
+Lee Jones [李琼斯]
 
---q7xXagaWtGMrPzGa
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZeDEwQAKCRB4tDGHoIJi
-0gOYAQD8gdAfyltMcKsTe8gtkAcHUuFJ103breikb9/WgYuaKgD8Cwb3P1gxWrRS
-Gs+AZRfEnLD5LcwisP3RADU1M85cfQw=
-=867m
------END PGP SIGNATURE-----
-
---q7xXagaWtGMrPzGa--
 
