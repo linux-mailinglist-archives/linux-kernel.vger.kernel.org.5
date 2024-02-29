@@ -1,177 +1,98 @@
-Return-Path: <linux-kernel+bounces-86085-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86087-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2954086BF5D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 04:16:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02F6E86BF68
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 04:22:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB2EE1F241BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 03:16:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 980F3B22CFD
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 03:22:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE57736B17;
-	Thu, 29 Feb 2024 03:16:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4C63374EB;
+	Thu, 29 Feb 2024 03:22:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b="Jql3TE8E"
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b="fRNXX3Iz"
+Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32A4E364D6
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 03:16:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8D5A2030B;
+	Thu, 29 Feb 2024 03:22:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.29.241.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709176572; cv=none; b=kZ84jG8+HA1TxK/Q9zeVZacZOnVWVTPJuPcT/OtwJuO2hO591xPwKGV7yTmQgWyyuE6XwuRVAbHOeNtJeIRgw4oMdj1wBqNhK5MTwj+Kpw6N04V141J1ZWICi8IwnyaUg/1mEiYr9G+NoxJUC2UhONrVTEg6Tm2vqrp0G8ivG1s=
+	t=1709176923; cv=none; b=IcwBjjAu3J7VGCnuEfTXlxf02//Pg6Jm2CSDx1UjXPPmL3xVkh7sgMY/m0sL5a6zzNO99ZTILYsV19ro1pWEZ0iE+cMprVhNDnAPNOoTWGPB4VcPYMmWmx/IMZY2Uv0coBaymhmd+26piRqnYH1asaVw9S1W+tcUZKp9qgM8owE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709176572; c=relaxed/simple;
-	bh=EJZRbPECg0hDD4jIQFJ0zGYFELWwvvLjOzOPcGZulos=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sl2CwusyQGeOVDoCOIfvCju7wU/Y8PieFIJBNiYz1LSgGOhNBYMGW6+IfR9Kg6eBFIj/T1KP2NIbzp1ZxU24caXH/BXpdlnqfGzhI88aC2r8xQ99LFheHenN4AJkIPwTJfFYeAh5QlN1hYoJizVZh+yzlmdC1acQ1T9oErrLujM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com; spf=pass smtp.mailfrom=shopee.com; dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b=Jql3TE8E; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shopee.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1db6e0996ceso4359375ad.2
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 19:16:08 -0800 (PST)
+	s=arc-20240116; t=1709176923; c=relaxed/simple;
+	bh=LPgGynQ+A1/bnYxF+wO/SXRI5kLXQ3Qw06TO0sy0C24=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=SfeW0KKdnz3pJtUVF4iwuQIi1XySDVNYXjRBIIE+yGkZevDJ7VE143ybexBA0w0k0HyndizdApRENNYfe+Y7s9EXO5+g2ZmzJHbBEfcoyY2dZVpw5RLy8QOm3hqAIlu8pt3cZxr4g/Lq59VYJeo2/06dMLDLUs+c9dHiTbZXJls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au; spf=pass smtp.mailfrom=codeconstruct.com.au; dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b=fRNXX3Iz; arc=none smtp.client-ip=203.29.241.158
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeconstruct.com.au
+Received: from [192.168.68.112] (ppp14-2-70-176.adl-apt-pir-bras31.tpg.internode.on.net [14.2.70.176])
+	by mail.codeconstruct.com.au (Postfix) with ESMTPSA id 854162003C;
+	Thu, 29 Feb 2024 11:21:48 +0800 (AWST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shopee.com; s=shopee.com; t=1709176568; x=1709781368; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IHvPtHE9TbunhY9bCDHKeK6IELSH464L5v57KsFpdC8=;
-        b=Jql3TE8EO1FXrERSCJZ+KVI3rAmBNHXENn3Ig60BologLnzDCF9NjQUtIXd+UAtDJu
-         dqA5Artyao/EQmNCR1kTZMh9Eohl6ooxbMTjRopH7hi0BXmAnulT1mL7tV06XT7xo1va
-         8e+1aLfD4bbRvBam4YPbqNnU62wIiSwSli/hiOui0yVy2JDnNF9oFNtdByZszv/t65JL
-         McgSHEE94yozB/BBj/cfOn813EB/QSzXpjIwa5MepDDixS/Z+hGj5QZ6+2TZYpD4afR3
-         UD6URaf7nuvDWjp9OZ6RbLX6eSry9gtJORCu+N5VVopKTGzyaSp1ijabOX2kQO7iEU3p
-         l4VQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709176568; x=1709781368;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=IHvPtHE9TbunhY9bCDHKeK6IELSH464L5v57KsFpdC8=;
-        b=Wug2qsNnuFAN/8s1D1IS93SJbX6BKLeb+ODs/YvTB2O2V8qv+mYhlTIj/E+n/IhsuB
-         QwwF21HcJ2CfvW04u4pxhWZ8lTgMNBjlfquqgoEDI5/CbT+PcF3THEpGThz5TW4/m2VM
-         PumfKhqM51N5729I3on1IpYOIgep5vBeccGXpwfU4teXEKW6vFHlSJQd/5iLfUcpnv2n
-         vp71HzuQqTvuC++UJr5s23onXIQzUKLPWNXpIZdXkIh0tIULwYk9QIam3KjQ0AvG56tk
-         VOP5O0KSAMmc1Bogb2iDHUV4rQ6XA3utTrjsQZF6LSyPKIgJm/kWS726ViIjqsFB1Apt
-         l2dA==
-X-Forwarded-Encrypted: i=1; AJvYcCVOymOUipYFmsu5GZsRmYAnJzY9foJlaV3DRiw3DpksfgLdecMVjtrxKoGVNL/3cMz2/NODzhLBI6ublo6iXk3bPuUwL5rCV+dZztnS
-X-Gm-Message-State: AOJu0YylP194dzBvOJV0/cqfO5dVCFENYyz5aW1pGqdn4AD/gXXE2fdg
-	hvgRFlp6Co3RyKqKV4BJ88NUkKlXcyr3HtkXcsW1xpv61zwUEzG5EOg7L3zL71Y=
-X-Google-Smtp-Source: AGHT+IFk3ZeMCvpLvSoaOVIczRtg5SXJQ4rzviuRNgjKTu5cW9r74UB8HwAF53U4iiDkY5eykNGGog==
-X-Received: by 2002:a17:903:1104:b0:1dc:ad9c:5099 with SMTP id n4-20020a170903110400b001dcad9c5099mr946688plh.4.1709176568504;
-        Wed, 28 Feb 2024 19:16:08 -0800 (PST)
-Received: from [10.54.24.74] ([143.92.118.3])
-        by smtp.gmail.com with ESMTPSA id b11-20020a170902ed0b00b001dcc3b2cde0sm193396pld.264.2024.02.28.19.16.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Feb 2024 19:16:08 -0800 (PST)
-Message-ID: <c06dbac5-f849-4259-b395-83ba1c98c557@shopee.com>
-Date: Thu, 29 Feb 2024 11:16:04 +0800
+	d=codeconstruct.com.au; s=2022a; t=1709176912;
+	bh=RLcNqeFFO91l5U2c2IKNxo911MnrtAjB3bSLnMByv8c=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=fRNXX3IzTcEDeyZE4x/DP7vMGGIc5cp7BOkn7QL+57i48ck+9kkXj2c+UWUD9JxVX
+	 2EqFfWfksv4DLEqx48mVIcMgcys42fwv2FaWdBCdNGi9nyArnwCtBtvzDf7jUk5DR3
+	 /anASWfpRpAMG2muKIHLK/ZBzNlMpeM+0B9HZOepx0wgXeMYRdEj3m909jz4J63VTS
+	 aWztF4wAso9Qg9NuRqiVWWMiVr4GAYD35xnEa9cWmTkWE+vP5zCHwCiMvvsDAnUEjx
+	 hNZziqdSqQmtRsAZSeWSJSyWL5OIjPElh1aFlTOotSSxurW0x8g8Ryg1PYBbwVKuzz
+	 QNybC8fjN4CcA==
+Message-ID: <16ddd99007176da3f84462de217cb76c8fa4e1bd.camel@codeconstruct.com.au>
+Subject: Re: [PATCH v6] dt-bindings: gpio: aspeed,ast2400-gpio: Convert to
+ DT schema
+From: Andrew Jeffery <andrew@codeconstruct.com.au>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+	linus.walleij@linaro.org, brgl@bgdev.pl, krzysztof.kozlowski+dt@linaro.org
+Cc: robh+dt@kernel.org, conor+dt@kernel.org, joel@jms.id.au, 
+	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org, 
+	linux-kernel@vger.kernel.org
+Date: Thu, 29 Feb 2024 13:51:45 +1030
+In-Reply-To: <c2060450-4b76-4740-afe4-d14717245f01@linaro.org>
+References: <20240228003043.1167394-1-andrew@codeconstruct.com.au>
+	 <c2060450-4b76-4740-afe4-d14717245f01@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] x86/resctrl: Add tracepoint for llc_occupancy
- tracking
-To: Reinette Chatre <reinette.chatre@intel.com>,
- James Morse <james.morse@arm.com>
-Cc: fenghua.yu@intel.com, babu.moger@amd.com, peternewman@google.com,
- x86@kernel.org, linux-kernel@vger.kernel.org
-References: <20240221092101.90740-1-haifeng.xu@shopee.com>
- <20240221092101.90740-3-haifeng.xu@shopee.com>
- <371242fb-dce2-4de0-bba9-4d85475d5d9a@intel.com>
-From: Haifeng Xu <haifeng.xu@shopee.com>
-In-Reply-To: <371242fb-dce2-4de0-bba9-4d85475d5d9a@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
+On Wed, 2024-02-28 at 08:47 +0100, Krzysztof Kozlowski wrote:
+> On 28/02/2024 01:30, Andrew Jeffery wrote:
+> > Squash warnings such as:
+> >=20
+> > ```
+> > arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-galaxy100.dtb: /ahb/apb@1e=
+600000/gpio@1e780000: failed to match any schema with compatible: ['aspeed,=
+ast2400-gpio']
+> > ```
+> >=20
+> > Signed-off-by: Andrew Jeffery <andrew@codeconstruct.com.au>
+> > ---
+> > v6: Address more constraint feedback from Krzysztof:
+> >     https://lore.kernel.org/all/f69ef2ad-8ace-40c8-b923-4dde20eda2ec@li=
+naro.org/
+>=20
+> You still have way too many examples. One is enough, two is still okay.
+> We really do not want more of examples with minor differences.
 
+Noted, I'll keep them to a minimum in the future.
 
-On 2024/2/24 03:41, Reinette Chatre wrote:
-> (+James)
-> 
-> Hi Haifeng and James,
-> 
-> On 2/21/2024 1:21 AM, Haifeng Xu wrote:
->> In our production environment, after removing monitor groups, those unused
->> RMIDs get stuck in the limbo list forever because their llc_occupancy are
->> always larger than the threshold. But the unused RMIDs can be successfully
->> freed by turning up the threshold.
->>
->> In order to know how much the threshold should be, the following steps can
->> be taken to acquire the llc_occupancy of RMIDs in each rdt domain:
->>
->> 1) perf probe -a '__rmid_read eventid rmid'
->>    perf probe -a '__rmid_read%return $retval'
->> 2) perf record -e probe:__rmid_read -e probe:__rmid_read__return -aR sleep 10
->> 3) perf script > __rmid_read.txt
->> 4) cat __rmid_read.txt | grep "eventid=0x1 " -A 1 | grep "kworker" > llc_occupnacy.txt
->>
-> 
-> The details on how perf can be used was useful during the discussion of this
-> work but can be omitted from this changelog.
- 
-Got it.
+>=20
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-> 
->> Instead of using perf tool to track llc_occupancy and filter the log manually,
->> it is more convenient for users to use tracepoint to do this work. So add a new
->> tracepoint that shows the llc_occupancy of busy RMIDs when scanning the limbo
->> list.
->>
->> Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
->> Suggested-by: Reinette Chatre <reinette.chatre@intel.com>
->> ---
->>  arch/x86/kernel/cpu/resctrl/monitor.c |  2 ++
->>  arch/x86/kernel/cpu/resctrl/trace.h   | 13 +++++++++++++
->>  2 files changed, 15 insertions(+)
->>
->> diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
->> index f136ac046851..1533b1932b49 100644
->> --- a/arch/x86/kernel/cpu/resctrl/monitor.c
->> +++ b/arch/x86/kernel/cpu/resctrl/monitor.c
->> @@ -23,6 +23,7 @@
->>  #include <asm/resctrl.h>
->>  
->>  #include "internal.h"
->> +#include "trace.h"
->>  
->>  struct rmid_entry {
->>  	u32				rmid;
->> @@ -302,6 +303,7 @@ void __check_limbo(struct rdt_domain *d, bool force_free)
->>  			}
->>  		}
->>  		crmid = nrmid + 1;
->> +		trace_mon_llc_occupancy_limbo(nrmid, d->id, val);
-> 
-> This area recently received some changes (you can find the latest on the
-> x86/cache branch of the tip repo). Please see [1] for a good
-> description of the new "index". For this tracing to be useful to MPAM
-> I thus expect that the tracepoint will need to print the MPAM equivalent
-> to CLOSID, the PARTID. We can refer to this CLOSID/PARTID value as
-> "ctrl_hw_id".
-> 
-> This snippet can then change to use the new resctrl_arch_rmid_idx_decode()
-> to learn the "ctrl_hw_id" and "mon_hw_id" and print it as part of
-> tracepoint:
-> "ctrl_hw_id=%u mon_hw_id=%u domain=%d llc_occupancy=%llu"
+Thanks for the feedback.
 
-OK, I'll post a new patch based on tip repo.
+Andrew
 
-> 
-> This will be filesystem code so it cannot know how an architecture
-> treats these numbers. Consequently, this may look strange to x86 users
-> when ctrl_hw_id will always be X86_RESCTRL_EMPTY_CLOSID ... but it should
-> be clear that it is invalid? 
-> 
-> James, what do you think? Any thoughts on how MPAM will use the limbo handler
-> to understand what information can be useful to the user here?
-> 
-> Reinette
-> 
-> [1] https://urldefense.proofpoint.com/v2/url?u=https-3A__lore.kernel.org_lkml_20240213184438.16675-2D7-2Djames.morse-40arm.com_&d=DwICaQ&c=R1GFtfTqKXCFH-lgEPXWwic6stQkW4U7uVq33mt-crw&r=3uoFsejk1jN2oga47MZfph01lLGODc93n4Zqe7b0NRk&m=Grl-QGKKyzz601g4WQFhPFVML6pju3g8CUGyD2VF8r8BUlO_caHlZMafoTxW9iYc&s=ToJ7E8_Afpnn5zh-c-CVReg4WqM-T0pEgB9hN6ntj1A&e= 
 
