@@ -1,245 +1,295 @@
-Return-Path: <linux-kernel+bounces-87615-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87616-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB13586D684
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 23:04:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EA5986D68C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 23:05:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 06D21B20F82
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:04:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 727011C21D47
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:05:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEAAC74BEB;
-	Thu, 29 Feb 2024 22:04:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8E0D6D536;
+	Thu, 29 Feb 2024 22:05:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YtANYdoW"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=inwind.it header.i=@inwind.it header.b="mOa9X+RF"
+Received: from libero.it (smtp-16.italiaonline.it [213.209.10.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5CE16D522
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 22:04:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 433D216FF21
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 22:05:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.209.10.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709244255; cv=none; b=Ny/VwX41cAzY2K8pmFjlpjKLOoGULJpPNUCS7Ov8DlK+VfnbbQsJI/pDN18Qm3qwWRjcKJjTQ0F8dREE7nNHjnqfXpcqj/emPb4YUChSS5wALS+YT3SC5ipQctGY+bHi90wJvdgEqdQWKjiW8yg0D5LJhb8McwNIkO0/TDGTwgY=
+	t=1709244326; cv=none; b=spL0kvQLiH8ZOugpamYHnywMXn7vKS2uNk/vefvNLKqKO69P+fb5WQe2/tvG/dC/QQ2/pNVNpXpWkyFPZLB4Yvjz+Q4czEFTcseDgo+y761AEHvoCr2+yH8ckomOH/XqHc7tLAE52pWq3SQaXHFY4xoHKsvKYPsDe9OaLos5Yzs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709244255; c=relaxed/simple;
-	bh=5ubYRa2KwnGmMmdBlB9FaAnD69udRueK67E102lJcvs=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=TWXj6MaG29/bc+sxuSxI1dvI7RLl42Z4ugLjskwwLB436NnvMeKK1J4jT2mLj+e7LGBvk1miEsZHawtqnGfFZAEbYxY93m8z/aTOEWxwTA0GfKlJU9rr6iVa9+mWk3BL45C1RlmnvpfR9fXfYupDBrz4K+u3CApPOaIHESzu49s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YtANYdoW; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709244252;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aNG3+S9v1/vdCmBpDlDkhTu4/UoEKRmapR+0MWUUhG4=;
-	b=YtANYdoWfgBhOcrJmwgGVTm+gltPRuVJ2uAB1HqnfEkCJ9EIOpTNmC6IObHuH0Alswquuv
-	YLEQMyc2pvP3Iog2oy7DbSzRkbxIV3KAwPOjThFw4VproE+x0ILbiPBa7KY0Hm5Jl84YnV
-	8Qg87aukywiP1Ppxiy2Y1Wvp41BEDCM=
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com
- [209.85.166.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-269-VCctzu4UP7Ci7gdLDGOgiA-1; Thu, 29 Feb 2024 17:04:11 -0500
-X-MC-Unique: VCctzu4UP7Ci7gdLDGOgiA-1
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7c784b01313so193457239f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 14:04:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709244249; x=1709849049;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aNG3+S9v1/vdCmBpDlDkhTu4/UoEKRmapR+0MWUUhG4=;
-        b=nGh+MEuu3rNEpq6jtYN4894yH69w2HQowM1z0yHyAv8ozVM3ft/V04O0Nu/8BdbSXM
-         Ux9hsbTkq6v/hW8jLsdQrD31GSwTlCRFzqSQLyYs7lInRLYSDWmSag4MUhQNAIHatrRu
-         kRAvwb9WYIDJoKjL3TzD98EK2RV/1PcIGPPC15Nlaitn9w/SgWneqbsRG3NViWlHX4ZD
-         hw+9VnVXD8fnjrLSbQBF6WRqlrU+d/84G2QPv/XYb/KeP8RUBEroNdGqF2H4cBEtghWo
-         Pd4/TOq8KwsyqPRs4KNm6RXrSZ6Be5E4gtVP92m8RF/Cky4yp9rwTL89FuL6UU1DPycU
-         NSOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWzRXOyn0r/I87zjbna0A8El3hPQUSKp2NQmlruCO6i2MiBuGG/+5o9i2So9iBcpqQcNxJihLr0puuuflb98NkTIprJDR4xu0bpHYxi
-X-Gm-Message-State: AOJu0YzxZH6roLCR7ihjvPulzYcKDM2ss3xsa87DIUWRH4yZTBn9L78A
-	y25rSNcnLFA/1V/Fh2ELtsQga4jX+ujNH+Rj39I4HJ26QvL0pcI7vhxeVJnyMrgSJ0Vbf/C9JcB
-	yMjLLk3CB3YUnl1lOPSDwg79mtGJA5wjuePXHTcU/WsODqvpiU73FtFBkyQhn+g==
-X-Received: by 2002:a5e:c80a:0:b0:7c7:b1e4:50b with SMTP id y10-20020a5ec80a000000b007c7b1e4050bmr288976iol.13.1709244249614;
-        Thu, 29 Feb 2024 14:04:09 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEj18l3oxXB3QTSfTU/vUmW9+aA3E/E9I3F9nYwIu/isQya1T/o6ucp9pWRYhN/op7hidf3DQ==
-X-Received: by 2002:a5e:c80a:0:b0:7c7:b1e4:50b with SMTP id y10-20020a5ec80a000000b007c7b1e4050bmr288958iol.13.1709244249267;
-        Thu, 29 Feb 2024 14:04:09 -0800 (PST)
-Received: from redhat.com ([38.15.36.11])
-        by smtp.gmail.com with ESMTPSA id bv11-20020a056638448b00b004713170def2sm512021jab.93.2024.02.29.14.04.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 14:04:08 -0800 (PST)
-Date: Thu, 29 Feb 2024 15:04:06 -0700
-From: Alex Williamson <alex.williamson@redhat.com>
-To: David Hildenbrand <david@redhat.com>
-Cc: Yisheng Xie <ethan.xys@linux.alibaba.com>, akpm@linux-foundation.org,
- kvm@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH] vfio/type1: unpin PageReserved page
-Message-ID: <20240229150406.4d41db01.alex.williamson@redhat.com>
-In-Reply-To: <20240227132556.17e87767.alex.williamson@redhat.com>
-References: <20240226160106.24222-1-ethan.xys@linux.alibaba.com>
-	<20240226091438.1fc37957.alex.williamson@redhat.com>
-	<e10ace3f-78d3-4843-8028-a0e1cd107c15@linux.alibaba.com>
-	<20240226103238.75ad4b24.alex.williamson@redhat.com>
-	<abb00aef-378c-481a-a885-327a99aa7b09@redhat.com>
-	<20240227132556.17e87767.alex.williamson@redhat.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1709244326; c=relaxed/simple;
+	bh=WH9N2nGE9wF9zeEhcX5YQJXmxdCM+BrtfCHSzAb23pE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EYix4Xtt9HERIyCYpM9ErVEZg2ki4+gZT2DOQort+xKL2zzISOKxw/DCm7huaf8AJtjxPJVyi51ZPYyzxYkq1dSeFbcKNaH+VSI6dzgPKDW8b7Bf1ib/Xnd5ra5L1HLXxHKzp2lLmI5A7ZlvgtrZAdfNDXu4V6Wglaf0Muf28j8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=inwind.it; spf=pass smtp.mailfrom=inwind.it; dkim=pass (2048-bit key) header.d=inwind.it header.i=@inwind.it header.b=mOa9X+RF; arc=none smtp.client-ip=213.209.10.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=inwind.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inwind.it
+Received: from [192.168.1.27] ([84.220.171.3])
+	by smtp-16.iol.local with ESMTPA
+	id foWlrHHVGQc3jfoWlrPW3C; Thu, 29 Feb 2024 23:05:20 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
+	t=1709244320; bh=7JoWB01ufRE74I5GTXo+K0ciaCmPX3Y8/xI5JEkDWl0=;
+	h=From;
+	b=mOa9X+RFLOKx0GliWr4UvYNIcGBchwoV68Co3xehNjSdpX0e3kq0YGbGMckPbFy+6
+	 cerA4pN7npa8cUv6jUzL1HxXJp+zWzOxe4s19XnINdYHIZJxSpGmNboq8SoehDVhwH
+	 03SoujRY4gqsx3i2As7tULt3JGofyWotP1mOyPVFR3XeGiLUO6GT5pP3GlZ412kkHa
+	 9SOulFrLfOwrn/XgAgG/ZQH+TolQasovSc68dXVy2AgpZmzBUiDpmYTXfhVtFgclfa
+	 UPFwpQhzlnWqOxDf6GtcSpvvclQQrTs2SEM0JZ7kSewGRI9/zLE3gKvr9q7csNOl0p
+	 9Y20qj+0fWxGw==
+X-CNFS-Analysis: v=2.4 cv=eux8zZpX c=1 sm=1 tr=0 ts=65e0ffa0 cx=a_exe
+ a=hciw9o01/L1eIHAASTHaSw==:117 a=hciw9o01/L1eIHAASTHaSw==:17
+ a=IkcTkHD0fZMA:10 a=p0WdMEafAAAA:8 a=U-wgw_aUbNXxtflkicMA:9 a=3ZKOabzyN94A:10
+ a=QEXdDO2ut3YA:10 a=CEsIH-8HjQcA:10 a=EFd53GHqFYiFSGm04UA1:22
+Message-ID: <a783e5ed-db56-4100-956a-353170b1b7ed@inwind.it>
+Date: Thu, 29 Feb 2024 23:05:19 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Reply-To: kreijack@inwind.it
+Subject: Re: [REGRESSION] LVM-on-LVM: error while submitting device barriers
+Content-Language: en-US
+To: Patrick Plenefisch <simonpatp@gmail.com>
+Cc: stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Alasdair Kergon <agk@redhat.com>, Mike Snitzer <snitzer@kernel.org>,
+ Mikulas Patocka <mpatocka@redhat.com>, Chris Mason <clm@fb.com>,
+ Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+ regressions@lists.linux.dev, dm-devel@lists.linux.dev,
+ linux-btrfs@vger.kernel.org
+References: <CAOCpoWc_HQy4UJzTi9pqtJdO740Wx5Yd702O-mwXBE6RVBX1Eg@mail.gmail.com>
+ <CAOCpoWf3TSQkUUo-qsj0LVEOm-kY0hXdmttLE82Ytc0hjpTSPw@mail.gmail.com>
+ <CAOCpoWeNYsMfzh8TSnFqwAG1BhAYnNt_J+AcUNqRLF7zmJGEFA@mail.gmail.com>
+ <672e88f2-8ac3-45fe-a2e9-730800017f53@libero.it>
+ <CAOCpoWexiuYLu0fpPr71+Uzxw_tw3q4HGF9tKgx5FM4xMx9fWA@mail.gmail.com>
+ <a1e30dab-dfde-418e-a0dd-3e294838e839@inwind.it>
+ <CAOCpoWeB=2j+n+5K5ytj2maZxdrV80cxJcM5CL=z1bZKgpXPWQ@mail.gmail.com>
+From: Goffredo Baroncelli <kreijack@inwind.it>
+In-Reply-To: <CAOCpoWeB=2j+n+5K5ytj2maZxdrV80cxJcM5CL=z1bZKgpXPWQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfNqcLHk+pE4wHu/qk8irv70ZVHY76ly3H5UQjYaPVPJgqhzk8jIBU9DmO3r299cZrbhVPhUc2nqgB84zm7RaGdzrWSbtKHVDCGitCX1Px4wCLfYfauvu
+ VqxQ6mFzBt85iY2BCcb7CJgUhfXL7zIedQxaK480T4BpmdQbwKf/oRuDRr1epZFlYOamIDmrHPxZqBtg7uN1omKVoyq8rAXJuEjL79qsFZnYx3PRrwIceOPh
+ n0SNS9NQsj9MZDASyCLZp+0bGfj61gI/C/8FW+bhBQgm9KYnpGQAr07ZAaDY/D74RFHCVuvA+3fDUJwFK1FJjzfKU4m4WZiwIbElkYAdId6YJe243pM9iwgC
+ Dk0vT5yJz1oJLjqEVt9WIG4+DCgRKIYZSsmpb09EWkFDElg17FTTuRB71ZPlJAsXv3hW95q1eSALtMLDsINwhoh8ckac7xUkkkZEtndhYb0vZ77pzQYuzSn5
+ DT0S+SBoQG40oAB/aOM1molcPnrLY1ujGymfGONKUvBouZzQktYtQxC/caVta5sw/m+vXwAFCtHJN6Zv
 
-On Tue, 27 Feb 2024 13:25:56 -0700
-Alex Williamson <alex.williamson@redhat.com> wrote:
+On 29/02/2024 21.22, Patrick Plenefisch wrote:
+> On Thu, Feb 29, 2024 at 2:56 PM Goffredo Baroncelli <kreijack@inwind.it> wrote:
+>>
+>>> Your understanding is correct. The only thing that comes to my mind to
+>>> cause the problem is asymmetry of the SATA devices. I have one 8TB
+>>> device, plus a 1.5TB, 3TB, and 3TB drives. Doing math on the actual
+>>> extents, lowerVG/single spans (3TB+3TB), and
+>>> lowerVG/lvmPool/lvm/brokenDisk spans (3TB+1.5TB). Both obviously have
+>>> the other leg of raid1 on the 8TB drive, but my thought was that the
+>>> jump across the 1.5+3TB drive gap was at least "interesting"
+>>
+>>
+>> what about lowerVG/works ?
+>>
+> 
+> That one is only on two disks, it doesn't span any gaps
 
-> On Tue, 27 Feb 2024 11:27:08 +0100
-> David Hildenbrand <david@redhat.com> wrote:
->=20
-> > On 26.02.24 18:32, Alex Williamson wrote: =20
-> > > On Tue, 27 Feb 2024 01:14:54 +0800
-> > > Yisheng Xie <ethan.xys@linux.alibaba.com> wrote:
-> > >    =20
-> > >> =E5=9C=A8 2024/2/27 00:14, Alex Williamson =E5=86=99=E9=81=93:   =20
-> > >>> On Tue, 27 Feb 2024 00:01:06 +0800
-> > >>> Yisheng Xie<ethan.xys@linux.alibaba.com>  wrote:
-> > >>>      =20
-> > >>>> We meet a warning as following:
-> > >>>>    WARNING: CPU: 99 PID: 1766859 at mm/gup.c:209 try_grab_page.par=
-t.0+0xe8/0x1b0
-> > >>>>    CPU: 99 PID: 1766859 Comm: qemu-kvm Kdump: loaded Tainted: GOE =
- 5.10.134-008.2.x86_64 #1   =20
-> > >>>                                                                    =
-  ^^^^^^^^
-> > >>>
-> > >>> Does this issue reproduce on mainline?  Thanks,   =20
-> > >>
-> > >> I have check the code of mainline, the logical seems the same as my
-> > >> version.
-> > >>
-> > >> so I think it can reproduce if i understand correctly.   =20
-> > >=20
-> > > I obviously can't speak to what's in your 5.10.134-008.2 kernel, but I
-> > > do know there's a very similar issue resolved in v6.0 mainline and
-> > > included in v5.10.146 of the stable tree.  Please test.  Thanks,   =20
-> >=20
-> > This commit, to be precise:
-> >=20
-> > commit 873aefb376bbc0ed1dd2381ea1d6ec88106fdbd4
-> > Author: Alex Williamson <alex.williamson@redhat.com>
-> > Date:   Mon Aug 29 21:05:40 2022 -0600
-> >=20
-> >      vfio/type1: Unpin zero pages
-> >     =20
-> >      There's currently a reference count leak on the zero page.  We inc=
-rement
-> >      the reference via pin_user_pages_remote(), but the page is later h=
-andled
-> >      as an invalid/reserved page, therefore it's not accounted against =
-the
-> >      user and not unpinned by our put_pfn().
-> >     =20
-> >      Introducing special zero page handling in put_pfn() would resolve =
-the
-> >      leak, but without accounting of the zero page, a single user could
-> >      still create enough mappings to generate a reference count overflo=
-w.
-> >     =20
-> >      The zero page is always resident, so for our purposes there's no r=
-eason
-> >      to keep it pinned.  Therefore, add a loop to walk pages returned f=
-rom
-> >      pin_user_pages_remote() and unpin any zero pages.
-> >=20
-> >=20
-> > BUT
-> >=20
-> > in the meantime, we also have
-> >=20
-> > commit c8070b78751955e59b42457b974bea4a4fe00187
-> > Author: David Howells <dhowells@redhat.com>
-> > Date:   Fri May 26 22:41:40 2023 +0100
-> >=20
-> >      mm: Don't pin ZERO_PAGE in pin_user_pages()
-> >     =20
-> >      Make pin_user_pages*() leave a ZERO_PAGE unpinned if it extracts a=
- pointer
-> >      to it from the page tables and make unpin_user_page*() correspondi=
-ngly
-> >      ignore a ZERO_PAGE when unpinning.  We don't want to risk overrunn=
-ing a
-> >      zero page's refcount as we're only allowed ~2 million pins on it -
-> >      something that userspace can conceivably trigger.
-> >     =20
-> >      Add a pair of functions to test whether a page or a folio is a ZER=
-O_PAGE.
-> >=20
-> >=20
-> > So the unpin_user_page_* won't do anything with the shared zeropage.
-> >=20
-> > (likely, we could revert 873aefb376bbc0ed1dd2381ea1d6ec88106fdbd4) =20
->=20
->=20
-> Yes, according to the commit log it seems like the unpin is now just
-> wasted work since v6.5.  Thanks!
+Sorry, but re-reading the original email I found something that I missed before:
 
-I dusted off an old unit test for mapping the zeropage through vfio and
-started working on posting a revert for 873aefb376bb but I actually
-found that this appears to be resolved even before c8070b787519.  I
-bisected it to:
+> BTRFS error (device dm-75): bdev /dev/mapper/lvm-brokenDisk errs: wr
+> 0, rd 0, flush 1, corrupt 0, gen 0
+> BTRFS warning (device dm-75): chunk 13631488 missing 1 devices, max
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> tolerance is 0 for writable mount
+> BTRFS: error (device dm-75) in write_all_supers:4379: errno=-5 IO
+> failure (errors while submitting device barriers.)
 
-commit 84209e87c6963f928194a890399e24e8ad299db1
-Author: David Hildenbrand <david@redhat.com>
-Date:   Wed Nov 16 11:26:48 2022 +0100
+Looking at the code, it seems that if a FLUSH commands fails, btrfs
+considers that the disk is missing. The it cannot mount RW the device.
 
-    mm/gup: reliable R/O long-term pinning in COW mappings
-   =20
-    We already support reliable R/O pinning of anonymous memory.
-    However, assume we end up pinning (R/O long-term) a pagecache page
-    or the shared zeropage inside a writable private ("COW") mapping.
-    The next write access will trigger a write-fault and replace the
-    pinned page by an exclusive anonymous page in the process page
-    tables to break COW: the pinned page no longer corresponds to the
-    page mapped into the process' page table.=20
-    Now that FAULT_FLAG_UNSHARE can break COW on anything mapped into a
-    COW mapping, let's properly break COW first before R/O long-term
-    pinning something that's not an exclusive anon page inside a COW
-    mapping. FAULT_FLAG_UNSHARE will break COW and map an exclusive
-    anon page instead that can get pinned safely.
-   =20
-    With this change, we can stop using FOLL_FORCE|FOLL_WRITE for
-    reliable R/O long-term pinning in COW mappings.
+I would investigate with the LVM developers, if it properly passes
+the flush/barrier command through all the layers, when we have an
+lvm over lvm (raid1). The fact that the lvm is a raid1, is important because
+a flush command to be honored has to be honored by all the
+devices involved.
 
-[...]
 
-    Note 3: For users that use FOLL_LONGTERM right now without
-    FOLL_WRITE, such as VFIO, we'd now no longer pin the shared
-    zeropage. Instead, we'd populate exclusive anon pages that we can
-    pin. There was a concern that this could affect the memlock limit
-    of existing setups.
+> 
+>> However yes, I agree that the pair of disks involved may be the answer
+>> of the problem.
+>>
+>> Could you show us the output of
+>>
+>> $ sudo pvdisplay -m
+>>
+>>
+> 
+> I trimmed it, but kept the relevant bits (Free PE is thus not correct):
+> 
+> 
+>    --- Physical volume ---
+>    PV Name               /dev/lowerVG/lvmPool
+>    VG Name               lvm
+>    PV Size               <3.00 TiB / not usable 3.00 MiB
+>    Allocatable           yes
+>    PE Size               4.00 MiB
+>    Total PE              786431
+>    Free PE               82943
+>    Allocated PE          703488
+>    PV UUID               7p3LSU-EAHd-xUg0-r9vT-Gzkf-tYFV-mvlU1M
+> 
+>    --- Physical Segments ---
+>    Physical extent 0 to 159999:
+>      Logical volume      /dev/lvm/brokenDisk
+>      Logical extents     0 to 159999
+>    Physical extent 160000 to 339199:
+>      Logical volume      /dev/lvm/a
+>      Logical extents     0 to 179199
+>    Physical extent 339200 to 349439:
+>      Logical volume      /dev/lvm/brokenDisk
+>      Logical extents     160000 to 170239
+>    Physical extent 349440 to 351999:
+>      FREE
+>    Physical extent 352000 to 460026:
+>      Logical volume      /dev/lvm/brokenDisk
+>      Logical extents     416261 to 524287
+>    Physical extent 460027 to 540409:
+>      FREE
+>    Physical extent 540410 to 786430:
+>      Logical volume      /dev/lvm/brokenDisk
+>      Logical extents     170240 to 416260
+> 
+> 
+>    --- Physical volume ---
+>    PV Name               /dev/sda3
+>    VG Name               lowerVG
+>    PV Size               <2.70 TiB / not usable 3.00 MiB
+>    Allocatable           yes
+>    PE Size               4.00 MiB
+>    Total PE              707154
+>    Free PE               909
+>    Allocated PE          706245
+>    PV UUID               W8gJ0P-JuMs-1y3g-b5cO-4RuA-MoFs-3zgKBn
+> 
+>    --- Physical Segments ---
+>    Physical extent 0 to 52223:
+>      Logical volume      /dev/lowerVG/single_corig_rimage_0_iorig
+>      Logical extents     629330 to 681553
+>    Physical extent 52224 to 628940:
+>      Logical volume      /dev/lowerVG/single_corig_rimage_0_iorig
+>      Logical extents     0 to 576716
+>    Physical extent 628941 to 628941:
+>      Logical volume      /dev/lowerVG/single_corig_rmeta_0
+>      Logical extents     0 to 0
+>    Physical extent 628942 to 628962:
+>      Logical volume      /dev/lowerVG/single_corig_rimage_0_iorig
+>      Logical extents     681554 to 681574
+>    Physical extent 628963 to 634431:
+>      Logical volume      /dev/lowerVG/single_corig_rimage_0_imeta
+>      Logical extents     0 to 5468
+>    Physical extent 634432 to 654540:
+>      FREE
+>    Physical extent 654541 to 707153:
+>      Logical volume      /dev/lowerVG/single_corig_rimage_0_iorig
+>      Logical extents     576717 to 629329
+> 
+>    --- Physical volume ---
+>    PV Name               /dev/sdf2
+>    VG Name               lowerVG
+>    PV Size               <7.28 TiB / not usable 4.00 MiB
+>    Allocatable           yes
+>    PE Size               4.00 MiB
+>    Total PE              1907645
+>    Free PE               414967
+>    Allocated PE          1492678
+>    PV UUID               my0zQM-832Z-HYPD-sNfW-68ms-nddg-lMyWJM
+> 
+>    --- Physical Segments ---
+>    Physical extent 0 to 0:
+>      Logical volume      /dev/lowerVG/single_corig_rmeta_1
+>      Logical extents     0 to 0
+>    Physical extent 1 to 681575:
+>      Logical volume      /dev/lowerVG/single_corig_rimage_1_iorig
+>      Logical extents     0 to 681574
+>    Physical extent 681576 to 687044:
+>      Logical volume      /dev/lowerVG/single_corig_rimage_1_imeta
+>      Logical extents     0 to 5468
+>    Physical extent 687045 to 687045:
+>      Logical volume      /dev/lowerVG/lvmPool_rmeta_0
+>      Logical extents     0 to 0
+>    Physical extent 687046 to 1049242:
+>      Logical volume      /dev/lowerVG/lvmPool_rimage_0
+>      Logical extents     0 to 362196
+>    Physical extent 1049243 to 1056551:
+>      FREE
+>    Physical extent 1056552 to 1473477:
+>      Logical volume      /dev/lowerVG/lvmPool_rimage_0
+>      Logical extents     369506 to 786431
+>    Physical extent 1473478 to 1480786:
+>      Logical volume      /dev/lowerVG/lvmPool_rimage_0
+>      Logical extents     362197 to 369505
+>    Physical extent 1480787 to 1907644:
+>      FREE
+> 
+>    --- Physical volume ---
+>    PV Name               /dev/sdb3
+>    VG Name               lowerVG
+>    PV Size               1.33 TiB / not usable 3.00 MiB
+>    Allocatable           yes (but full)
+>    PE Size               4.00 MiB
+>    Total PE              349398
+>    Free PE               0
+>    Allocated PE          349398
+>    PV UUID               Ncmgdw-ZOXS-qTYL-1jAz-w7zt-38V2-f53EpI
+> 
+>    --- Physical Segments ---
+>    Physical extent 0 to 0:
+>      Logical volume      /dev/lowerVG/lvmPool_rmeta_1
+>      Logical extents     0 to 0
+>    Physical extent 1 to 349397:
+>      Logical volume      /dev/lowerVG/lvmPool_rimage_1
+>      Logical extents     0 to 349396
+> 
+> 
+>    --- Physical volume ---
+>    PV Name               /dev/sde2
+>    VG Name               lowerVG
+>    PV Size               2.71 TiB / not usable 3.00 MiB
+>    Allocatable           yes
+>    PE Size               4.00 MiB
+>    Total PE              711346
+>    Free PE               255111
+>    Allocated PE          456235
+>    PV UUID               xUG8TG-wvp0-roBo-GPo7-sbvn-aE7I-NAHU07
+> 
+>    --- Physical Segments ---
+>    Physical extent 0 to 416925:
+>      Logical volume      /dev/lowerVG/lvmPool_rimage_1
+>      Logical extents     369506 to 786431
+>    Physical extent 416926 to 437034:
+>      Logical volume      /dev/lowerVG/lvmPool_rimage_1
+>      Logical extents     349397 to 369505
+>    Physical extent 437035 to 711345:
+>      FREE
+> 
+> 
+> Finally, I am not sure if it's relevant, but I did struggle to expand
+> the raid1 volumes across gaps when creating this setup. I did file a
+> bug about that, though I am not sure if it's relevant, as I removed
+> integrity and cache for brokenDisk & lvmPool:
+> https://gitlab.com/lvmteam/lvm2/-/issues/6
+> 
+> Patrick
+> 
 
-    For example, a VM running with VFIO could run into the memlock
-    limit and fail to run. However, we essentially had the same
-    behavior already in commit 17839856fd58 ("gup: document and work
-    around "COW can break either way" issue") which got merged into
-    some enterprise distros, and there were not any such complaints. So
-    most probably, we're fine.
-
-IIUC, c8070b787519 fixes that we can no longer run up the refcount on
-the zeropage but with the above we're no longer using the zeropage
-anyway.  I also confirm that after your commit above, my unit test that
-previously triggered this with a read-only, anonymous mmap generates no
-unpin hits in the vfio loop.
-
-Anyway, all that to say that I think we're doubly covered that removing
-the heinous workaround in vfio is overdue.  Thanks,
-
-Alex
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
 
 
