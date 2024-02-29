@@ -1,109 +1,103 @@
-Return-Path: <linux-kernel+bounces-86431-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86432-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CD6786C544
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:31:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 850B286C548
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:32:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A1F53B25869
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:31:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B7A771C2237D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:32:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 708675D743;
-	Thu, 29 Feb 2024 09:31:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BE985B690;
+	Thu, 29 Feb 2024 09:32:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="dYHy0nIT"
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZJ6+A7rz"
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFC9D5B690;
-	Thu, 29 Feb 2024 09:31:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89A525B697
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 09:31:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709199105; cv=none; b=rUtmpdYVDGRa76jbaY2dVR8ssM3Ovqc/WX6iMlnwYGwt8/gOUKIBRVryxJxcZ7od2GwceMfhIFgv6lkeSHT1ICrRiJtf9+yvuEcoNYCLZW+4fGSWRrj0p/Qn4rCF+2ocZpC560+RtmzHnO4sybD7ax8NI21cwyegvdAdlK13z3g=
+	t=1709199120; cv=none; b=fqyES0JcQyVkNJGCQnDW6lAFC3t+JJuzwJXY/GxSoFphadBqCjNcAjjQx51QdKnMmrxyBCvqDd3OKJeuFFyK/4+xtOkxunHkqltLLLPES+DdyfrIDzc9Kpt+JAOJ6NlBt2B8v9AUNPbRzC9e59sS5OPCMmOfHanTqEh5JIRGYCY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709199105; c=relaxed/simple;
-	bh=PWzrG6VIjZLBT76F+KgpRQIxbWi9zLp+1US14SEgOzU=;
-	h=Mime-Version:Content-Type:Date:Message-Id:To:From:Subject:Cc:
-	 References:In-Reply-To; b=CHsobcp+kAxAwUCErDBSJ+7hJqIuMjYUSQrlD25PBzboafHWL+E3NRxiQufgj81Iq8bx/Ck+QIuUIlSem6rF1++SF6oCjrE4G7bjbtaFoBKU1KAO/dtOrdqJElPFg3svSlqORS681+MaGONkVtyJqlY/kkrDCgoIVnc4wAlTy7s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=dYHy0nIT; arc=none smtp.client-ip=217.70.183.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 1D3D7E0011;
-	Thu, 29 Feb 2024 09:31:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709199101;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PWzrG6VIjZLBT76F+KgpRQIxbWi9zLp+1US14SEgOzU=;
-	b=dYHy0nITyeQv9SDvJSf0KHiSFGyyJMx6bJY1VW+IopaZlmZOfJZBEwXe1kjXJZphSb7HFy
-	22+t/AXW5/rCaE0+feMCcC8OksOOb+K70PrnlcJX+ooZHUIl0Fju33omWcSX5njKkrSgIC
-	Id2wFpqxrJnaF/TDMXZ8nZfhanGK4j6XoEmag3stdmX8KamAQCJka+XurtxwGh0IVPGw3c
-	vz+j98XUXdQNXd0I295OsoBEuoC8vOE7vPu4jKpF/U3u02d+/UX80cuGwAiwBrglfSS1CT
-	aO+n9sgU9ywBxuHhCWq6eAhT3sz2b7DYCbgu+CMyHFKhNkZXBE0U+pmSys/64w==
+	s=arc-20240116; t=1709199120; c=relaxed/simple;
+	bh=opo7mQZWVYpVDdRyNsHJ8IMcbJUuM71Avs91Rn6IfU8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AtFaKazo2tjANmzrHibllgeUtPF6ACX13OSUsuXQxmiIsUmTsB+1zRZB61kck557gokrjN2ixiSlZ797k/22qR0jtgxvzKUP+KYz8sg0g809VWYvs5+6RV/ze1JFrewaBPu3VXwZOD/qyN5qoScOqSTp28oAzub9mZYlq9SHLIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ZJ6+A7rz; arc=none smtp.client-ip=209.85.128.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-607f8894550so4830717b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 01:31:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709199117; x=1709803917; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=opo7mQZWVYpVDdRyNsHJ8IMcbJUuM71Avs91Rn6IfU8=;
+        b=ZJ6+A7rzobmaN2J7fsUOYkME9qyeXF7N/DXobsyAzbvaGxu5/BRhUlWg2FP/jZd/OO
+         PnDvFYW8vRLMaawZgCN80i6aiRs+Pg8H27HhR1v3D6lYJ7Ed1Gu+Dn3/ZHO7ohiQv/DM
+         +B4o+uv5AtDOsqKozZnp/o+ua1HLgvsDkADAQ+2cUzccgzpgyW1GuDZ3JaCnEZQB9x/S
+         kbZRnMxIxe4AtQ0SPzQ7tToYkAXAKu3Zh2BsfFIOTqOlwm0u/0szLDpb7yvZ14Rq1EBm
+         5kMxLLtbun2MgmUljcHrB03TQ9JtQOH1JGclUCAILyhoDLS/Ht/vmdWtxVyWh5gl/7BE
+         69hQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709199117; x=1709803917;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=opo7mQZWVYpVDdRyNsHJ8IMcbJUuM71Avs91Rn6IfU8=;
+        b=Sw2jCul/Ts85TSaXRmtCoMnguiRbcjZr8MI4Q+QN9Llz02k/6C+D3sZs/petRnEUXr
+         /rJ4OlJzaZrZqvZnxKGBWwo/My1qs6DePPUeWOGt6IMMbzuCV7Sm6+0YjYr4gqSt5cMW
+         1eCSuB60Vf8TCoeQMkIh68JrShAOYuHzhm2eCYAA8UOgxCgJZv9RUgyfeqXZ8dB7kulm
+         Vu8LeN5OUY0BEfwkcnR/aBRNN3bcgBpxR9qHCKHeFvCXzZ3ikX9fhUs/j2G0jVsXtpOf
+         MIUnwMrqOMQwMlsEYtjdND20S0NDE1PJ6GWQ4kSAnLKQ8F+sqSSs2HmJB7Yb/KyvSN3e
+         g+bA==
+X-Forwarded-Encrypted: i=1; AJvYcCXguOiLyCNFT0rVTBeGZPgYGPxuvwgljhVTEE4IBaJPxg7uwooarPPWZet6WkbbVTCujBko7q++gt06j/VxQX/gn9dAgQr4hc/o8hKc
+X-Gm-Message-State: AOJu0YxdqNvuffT0CVC26yiG74Y5J2LajntwtMVjMFk4AyYxZ9U91kIb
+	IqMXjzJ8OspE3AhUajiZxvKo8mnyWBhAXbPIjqCXWCMRgfYfZB/aCSElUwmzv7XRj0LkUmxQ9AQ
+	sH5F0cuoT+S1YkdLYkmpl2dUUuyYoFfLX2ILCvw==
+X-Google-Smtp-Source: AGHT+IGNRvaOnTQfEEnOfUNmrrYTBcCW+lJEHgHZjPZ4w/d3EVPHcV3t0qD/I7wrRi4Jiume9znp9nxiaMzhZIyXCqg=
+X-Received: by 2002:a25:e444:0:b0:dc6:57d0:ac9 with SMTP id
+ b65-20020a25e444000000b00dc657d00ac9mr1830420ybh.6.1709199117653; Thu, 29 Feb
+ 2024 01:31:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
+MIME-Version: 1.0
+References: <20240228-mbly-gpio-v2-0-3ba757474006@bootlin.com> <20240228-mbly-gpio-v2-18-3ba757474006@bootlin.com>
+In-Reply-To: <20240228-mbly-gpio-v2-18-3ba757474006@bootlin.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Thu, 29 Feb 2024 10:31:46 +0100
+Message-ID: <CACRpkdaeVXAiVO3mukbtGMNRVAQcJKK7d8OQq1SnTfb8F16B5g@mail.gmail.com>
+Subject: Re: [PATCH v2 18/30] gpio: nomadik: use devres version of clk_get*()
+To: =?UTF-8?B?VGjDqW8gTGVicnVu?= <theo.lebrun@bootlin.com>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Philipp Zabel <p.zabel@pengutronix.de>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-mips@vger.kernel.org, Gregory CLEMENT <gregory.clement@bootlin.com>, 
+	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 29 Feb 2024 10:31:39 +0100
-Message-Id: <CZHGIIQPJ6KU.ZY00CXS7MHA7@bootlin.com>
-To: "Wolfram Sang" <wsa@kernel.org>
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Subject: Re: [PATCH 09/13] i2c: nomadik: fetch timeout-usecs property from
- devicetree
-Cc: "Linus Walleij" <linus.walleij@linaro.org>, "Andi Shyti"
- <andi.shyti@kernel.org>, "Rob Herring" <robh+dt@kernel.org>, "Krzysztof
- Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley"
- <conor+dt@kernel.org>, "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
- <linux-arm-kernel@lists.infradead.org>, <linux-i2c@vger.kernel.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <linux-mips@vger.kernel.org>, "Gregory Clement"
- <gregory.clement@bootlin.com>, "Vladimir Kondratiev"
- <vladimir.kondratiev@mobileye.com>, "Thomas Petazzoni"
- <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
- <tawfik.bayouk@mobileye.com>
-X-Mailer: aerc 0.15.2
-References: <20240215-mbly-i2c-v1-0-19a336e91dca@bootlin.com>
- <20240215-mbly-i2c-v1-9-19a336e91dca@bootlin.com>
- <Zd3SJMBp23ybgdsJ@shikoro> <CZFWIJE9978P.G3TZC2YIUST9@bootlin.com>
- <Zd8PtLsUc0G8KR97@shikoro> <CZGR61YHK1DJ.SVRE78BJ9WB4@bootlin.com>
- <ZeBNbx6PDGk8xqGX@shikoro>
-In-Reply-To: <ZeBNbx6PDGk8xqGX@shikoro>
-X-GND-Sasl: theo.lebrun@bootlin.com
 
-Hello,
+On Wed, Feb 28, 2024 at 12:28=E2=80=AFPM Th=C3=A9o Lebrun <theo.lebrun@boot=
+lin.com> wrote:
 
-On Thu Feb 29, 2024 at 10:25 AM CET, Wolfram Sang wrote:
-> > The alternative is that I keep going with a new revision of i2c-nomadik
-> > that manually parses the prop. It'll be refactored if/when the I2C core
-> > provides a better way to access the value. Is that OK?
+> Replace call to clk_get() by call to devm_clk_get(). Allow automatic
+> cleanup of the clock in case of probe error.
 >
-> That wouldn't have helped because there is still no user in-kernel of
-> that property, i.e. no DTS file with that property. But I just realized
-> that I need to convert i2c-mpc to avoid a deprecated binding, so we have
-> a user there. Lucky you ;)
->
-> I'll try to get the series done today.
+> Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
 
-Lucky me indeed!
+Patch applied!
 
-I just thought about it but I don't mind using the property in the eval
-board DTS. The default 200ms timeout makes no sense for us. Using a
-default of a few ms would be more sensible and make us the second user
-of the prop.
-
-Thanks,
-
---
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
-
+Yours,
+Linus Walleij
 
