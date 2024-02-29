@@ -1,102 +1,151 @@
-Return-Path: <linux-kernel+bounces-86806-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86807-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A600B86CB0B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:12:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D2DF86CB0D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:12:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58E9D2835B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:12:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 981741F23BAF
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:12:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D73612FB29;
-	Thu, 29 Feb 2024 14:12:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F84612F5BF;
+	Thu, 29 Feb 2024 14:12:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qW2PHaIm"
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KgwNgBlL"
+Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43FBD12EBD1
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 14:12:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7FD312AACE;
+	Thu, 29 Feb 2024 14:12:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709215935; cv=none; b=ci3XkkeyLS+/jH6NlWW6akTFAmVUDWX3YM9v35NzWiuVuUfHvrOBXgnUd7GN6FRUpNi5xaMxDGjgxEnYJP/tz62rRSolNtXwcsPOYhgs0kTW+yabeTpf9sAq7LU/kl9440h/mBcQk0rmu0qh4DqwyfC5zlPbDFXgzcUD0/2gsQ0=
+	t=1709215969; cv=none; b=cVYHi3SMWyqnbzO03oWwOOa76GGOrT9DsvmvAjGpEoFMXeJeXmiooR5zA7NAkZcQbwqrWvKKmww3jBOA+UMmoS5NkVsaFdwoxqO+ZxTF0ZDZfQEWdsr6dSXcPre2WVl5L9SgY4wlXn4K2PUzc7gPO0aiDwesMbNl9kscMcuy5hI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709215935; c=relaxed/simple;
-	bh=CvLDc1XcjbF1F7NzLO6PHxnaCxyOqxfcXll9ig8clKk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cdksF1M/gCMzALnNvmP7EjHNSdQ/2RmydFP0UpBPokeNioEWvbegwhG0OccTFGWAj9c+l30r9RWfzO2du22SaK0L55tKKLiUMIU3WIVb9/kzHjYcDpKjjq5Lf7iVD+4bTfvTVznnIrymOqJgj+Qre/u9/zP3EQauZnZL3luRD2w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qW2PHaIm; arc=none smtp.client-ip=209.85.219.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dc6d8bd612dso1038153276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 06:12:13 -0800 (PST)
+	s=arc-20240116; t=1709215969; c=relaxed/simple;
+	bh=01GBL4pM/RBuNtNrLzRrSJYob8hE0WMJGlmHyUb0aZQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Y+XL0NR0Pt2b/Z8xVFJBKts6gBt8mxFHoPCa63fYJXQcyoIXjHU59krZX54VNQuv9HBTpsNt28/0TQgt4xsJaPzl8HpoKEvL3mQ/pIxOnelCuUtj99wFS5a2vXhGQ83bXHE0/hU6QSH0ZqpkV/LfVBdTgBx9eZ2q5cw1Ioer0XE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KgwNgBlL; arc=none smtp.client-ip=209.85.161.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-5a0deaf21efso503416eaf.0;
+        Thu, 29 Feb 2024 06:12:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709215932; x=1709820732; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CvLDc1XcjbF1F7NzLO6PHxnaCxyOqxfcXll9ig8clKk=;
-        b=qW2PHaImxY/wGo6lfdvj0bTPJgkNFtmtma/qM6KM13lmeB/FICw+aOa0VYFj5uld0D
-         YR+WduKxVfpGYJrLn8iVjd9rO1fuph4a67wqaFh9fSQFxy3Mywn55EEsFTl3uTMfQ1EA
-         mnLF59f8BdO7JHeffXyyGIX+QSAzFeDi00mcL2Zsz8ik/Bb04BzfkhVRSY0HGb6cNKoj
-         5uXo7FPYuvOgwiM4eO22urHkhY/T3b6WPZ6ThbL+n0p4z0sk5hXTmPm8ODvZb3GmU3La
-         1Gns0To+tia5rH5VsBykkwd9+lxodD3zuxLvpZk9qClH6HXyHyZKfnf+m7mmnKhfMFX1
-         9TKQ==
+        d=gmail.com; s=20230601; t=1709215967; x=1709820767; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/6cP9W2AgQHJN8YU3o1XUoIxNAqqR6eg938KJPNmEGw=;
+        b=KgwNgBlLjopGold37CewkR6it1uExRFi4kUfUUucePSmFELpkfENqglJC/1zkUJydU
+         t4w/S+8PX/06XyTBe9/3idVwvZc+BNud921JqNO3CFwYOh7G0faglj/lQ711pmB3E/+G
+         AdzDv9ONRQEeJfrkmzh3sodiIOWxNzCsTmq/LJBDmfDJmrTj20v5Qr7gNJLVV9QZqXt0
+         epXntZ0DWve1DLlDh1zchDqv8fvOSE/Sd813Wmvf9Xx3IggnS4o+t9+nFpdSzrpLBSPB
+         UnhogjSX2EYO2BnIQvJAxYuhsQ/0lCplkRnmuzmiZqMSS+OSdD/YIRxosDl9MQhkVQIP
+         htWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709215932; x=1709820732;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CvLDc1XcjbF1F7NzLO6PHxnaCxyOqxfcXll9ig8clKk=;
-        b=Jro7siRL233wFjqnjoVxENYJaUrSrB+BiHOJUbi9GCTrBD9qYMmhErwsTQPgq2T2jG
-         +LrzcYgiT4lZ4u+touKtOijYdrxFRfDvpQxX/cCuyEvIvGrALYqQch2JZQkEnfMQFOm0
-         elDsGvkHk5WWi8YNqPSjl05qzTiw8xCCbIsVmsHMcW1T7QI/BHmvS+ixWai0/DlOjsob
-         ZdbBK6lNjXdjwXYKpr7zBsSe6HkuRO5qpgp4aD8/imh4zjeSvMF29JRB/WrRMcVVbwmP
-         KINxuNLOAyr8OU27U2TTcosWyWkiRozjq9Lm7ASJWIgH8yGrQ9casD5QKXmD9eehS+Oz
-         feWw==
-X-Forwarded-Encrypted: i=1; AJvYcCXUIZrQysw2aTReNt4tSSioG1xNoD98moDxsZJSoKEUCSf/F5H3stlkzvpzaRJMurdTDVpGHMtyiMvqtuSNMrwqXlKh9s2fkHlEOaDY
-X-Gm-Message-State: AOJu0Yw+/Uq2k2GLFMzD3iUIAOodOoAChw/j+96qTcFJsJO+A+Ihm6cu
-	oAm4THxhz3P+zDRZmz6QIW2JKeB26nNLsaHr6otIjFtBwJiq3cPDYkPaxlEQmmYPRLiZL9dilDg
-	ACRpeuMda0lfKd8y/INLjtZrCUkqAo+sfyaGABw==
-X-Google-Smtp-Source: AGHT+IHxnZN7aHNIGYMA311zt+7uvT7fk6b9fb24xADoJn/BmejCf0pjyDbjm52YexRoGE+uFY9V6BUytI28dnMCTLY=
-X-Received: by 2002:a25:890f:0:b0:dcc:7c0f:2222 with SMTP id
- e15-20020a25890f000000b00dcc7c0f2222mr2458086ybl.22.1709215932355; Thu, 29
- Feb 2024 06:12:12 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709215967; x=1709820767;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/6cP9W2AgQHJN8YU3o1XUoIxNAqqR6eg938KJPNmEGw=;
+        b=Yb1AZjtwdLDqkI/ZpmpmOg4xWOIAzFrsLPq6OY4IOXc+491l0FMCnIUbdUagHpIb0C
+         g3ZnwNTdl03EPAl7Ttg+9YekM/nJUplZ6KsLuH234O6M1HXxHoXzPT4M/KXXC2dOrpFj
+         xuWcUQd+FOt3twq8o6U+KvKB7mKt1LtPSuwnIA9t5B+KkMf/anAF9Kkk7Mq4Dt5SQXEc
+         77yeCcJmwx5gP0TuF8qmc6L9h6tU+ndENns4XX+55WS59aR29m1WhnxqcTF+H6N0aJYX
+         TwMICaLHWtBjq4Lr1MVk0Mz4Bo++lSzVTQpYHjXcRsD6PBe43s4X6ScVdykFvRxTD2iU
+         1tMQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXQElKVS+ZytkrQW040uxSqVVFpxiZJgsJ5Uavz1/XGeM3IqBkgNAtQnZzT87MeOXBC7vRy8eGmeovZVLYe2xqNdda/g/TQ5rb0WI7n4qcOn7Dd5BiMMA5uI1cgY40OTJNv6fjTBKFKYmOrsblRCjNvseL6HXYpewl0I1hzwdLoaZ6XpFp7Hakg
+X-Gm-Message-State: AOJu0YyJAOq7DfPGrMjBIgkYVpwE027E75RTRKOcqS9LO8ZHJw5LsFOv
+	jolFKWi/YWMZ7kuJnQEYEaDIkmN+Y20AcGU3hGEYdPGnMdPWEts6
+X-Google-Smtp-Source: AGHT+IGoMVeonTVGpUMbSC6NyXoI8L+u+UnR4N1COBsmWbb1vlDZFi37tyMwzHjqwQeUiotKpDL52A==
+X-Received: by 2002:a05:6358:428e:b0:17b:9e19:4fb9 with SMTP id s14-20020a056358428e00b0017b9e194fb9mr3273356rwc.22.1709215966734;
+        Thu, 29 Feb 2024 06:12:46 -0800 (PST)
+Received: from [192.168.0.118] (88-113-27-52.elisa-laajakaista.fi. [88.113.27.52])
+        by smtp.gmail.com with ESMTPSA id h20-20020a05620a13f400b00788033be0f6sm136142qkl.58.2024.02.29.06.12.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Feb 2024 06:12:46 -0800 (PST)
+Message-ID: <f9a3d871-dd51-453b-b510-d076ecf0fabd@gmail.com>
+Date: Thu, 29 Feb 2024 16:12:41 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240228184412.3591847-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20240228184412.3591847-1-andriy.shevchenko@linux.intel.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 29 Feb 2024 15:12:00 +0100
-Message-ID: <CACRpkdZPx4vyq8bHbQj_CbyrMprbdsLgCbW+T+c6vGPqFDJmdQ@mail.gmail.com>
-Subject: Re: [PATCH v1 0/2] gpiolib: Align prototypes of *gpio_count() APIs
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, linux-gpio@vger.kernel.org, 
-	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Mika Westerberg <mika.westerberg@linux.intel.com>, Bartosz Golaszewski <brgl@bgdev.pl>, 
-	Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/3] kci-gitlab: Introducing GitLab-CI Pipeline for Kernel
+ Testing
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Guillaume Tucker <gtucker@gtucker.io>
+Cc: Mark Brown <broonie@kernel.org>, Helen Koike <helen.koike@collabora.com>,
+ linuxtv-ci@linuxtv.org, dave.pigott@collabora.com, mripard@kernel.org,
+ linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-kselftest@vger.kernel.org, gustavo.padovan@collabora.com,
+ pawiecz@collabora.com, tales.aparecida@gmail.com, workflows@vger.kernel.org,
+ kernelci@lists.linux.dev, skhan@linuxfoundation.org,
+ kunit-dev@googlegroups.com, nfraprado@collabora.com, davidgow@google.com,
+ cocci@inria.fr, Julia.Lawall@inria.fr, laura.nao@collabora.com,
+ ricardo.canuelo@collabora.com, kernel@collabora.com,
+ torvalds@linuxfoundation.org, gregkh@linuxfoundation.org
+References: <20240228225527.1052240-1-helen.koike@collabora.com>
+ <20240228230725.GF1659@pendragon.ideasonboard.com>
+ <0a5bf7d1-0a7e-4071-877a-a3d312d80084@gmail.com>
+ <20240229093402.GA30889@pendragon.ideasonboard.com>
+ <655f89fa-6ccb-4b54-adcd-69024b4a1e28@gmail.com>
+ <20240229111919.GF30889@pendragon.ideasonboard.com>
+ <a4fc23e1-5689-4f86-beb7-5b63a0d13359@sirena.org.uk>
+ <b3fb89aa-56b4-4b3c-88f6-c6320bf5c489@gtucker.io>
+ <20240229122040.GG30889@pendragon.ideasonboard.com>
+ <20240229122503.GH30889@pendragon.ideasonboard.com>
+Content-Language: en-US
+From: Nikolai Kondrashov <spbnick@gmail.com>
+In-Reply-To: <20240229122503.GH30889@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 28, 2024 at 7:44=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+On 2/29/24 2:25 PM, Laurent Pinchart wrote:
+> On Thu, Feb 29, 2024 at 02:20:41PM +0200, Laurent Pinchart wrote:
+>> On Thu, Feb 29, 2024 at 12:53:38PM +0100, Guillaume Tucker wrote:
+>>> On 29/02/2024 12:41, Mark Brown wrote:
+>>>> On Thu, Feb 29, 2024 at 01:19:19PM +0200, Laurent Pinchart wrote:
+>>>>> On Thu, Feb 29, 2024 at 01:10:16PM +0200, Nikolai Kondrashov wrote:
+>>>>
+>>>>>> Of course. You're also welcome to join the #kernelci channel on libera.chat.
+>>>>
+>>>>> Isn't that a bit pointless if it's no the main IM channel ?
+>>>>
+>>>> It *was* the original channel and still gets some usage (mostly started
+>>>> by me admittedly since I've never joined slack for a bunch of reasons
+>>>> that make it hassle), IIRC the Slack was started because there were some
+>>>> interns who had trouble figuring out IRC and intermittent connectivity
+>>>> but people seem to have migrated.
+>>>
+>>> In fact it was initially created for the members of the Linux
+>>> Foundation project only, which is why registration is moderated
+>>> for emails that don't have a domain linked to a member (BTW not
+>>> any Google account will just work e.g. @gmail.com is moderated,
+>>> only @google.com for Google employees isn't).
+>>>
+>>> And yes IRC is the "least common denominator" chat platform.
+>>> Maybe having a bridge between the main Slack channel and IRC
+>>> would help.
+>>
+>> If the gitlab CI pipeline proposal wants to be considered for inclusion
+>> in the kernel, I think it needs to switch to a free software solution
+>> for its *main* communication channels.
+> 
+> And to clarify, I didn't meant the kernel CI project, but only the
+> gitlab CI pipeline for the Linux kernel project. I don't know how
+> tightly integrated the two projects are though.
 
-> Two out of three GPIO count APIs take device pointer. OF case clearly
-> does not need it as it immediately switches to device node inside, and
-> ACPI abstracts that to struct acpi_device pointer. Unify all these by
-> making them to take struct fwnode_handle pointer. This, in particular,
-> will allow to create fwnode_gpio_count() API if needed. The need of that
-> was discussed here [1].
+They're not tightly integrated so far. However, we're exploring the idea of 
+letting GitLab CI submit jobs to KernelCI and get results as a part of the 
+pipeline.
 
-This looks reasonable to me:
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Helen already joined the #kernelci channel, and we will maintain a presence 
+there for the GitLab CI project.
 
-Yours,
-Linus Walleij
+Nick
 
