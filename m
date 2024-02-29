@@ -1,106 +1,75 @@
-Return-Path: <linux-kernel+bounces-86922-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86924-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D73786CCDB
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:26:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BBE786CCE3
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:26:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E598E1F247DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:26:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E82F5289312
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:26:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F2A21420A5;
-	Thu, 29 Feb 2024 15:25:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67A1914A4D0;
+	Thu, 29 Feb 2024 15:26:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VJpUdHmF"
-Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="GATfAOGH"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BCC913A877
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 15:25:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56C511474A9;
+	Thu, 29 Feb 2024 15:26:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709220357; cv=none; b=UfU7QisIn9M0NofDbSik5J43xKb51iA+vA9fVEej3RMUjWZhGOVE2JVLFHQR7SEF7fO03fpejwJjZVN/SLMBvLnuSDUffsU3eZYGJeXws3M2zb8MAZtYFuZFwvXKV7TOPdqaLieR0I7SV6moVe/bz1soMcmkwrt2PzitSXc5Zs4=
+	t=1709220388; cv=none; b=sTRQSfeC0M1l2ebvHdBOUkSQ5pn56B/kk2TMoMVg7NMsaoA14SsQbaS8bRWqNkj5CMJWA0KOwKO3tVLrFxFP4gDw/vcBITEzzP9EDQ72/pKDFuoITlP/YQmBdi5WH5Qv6AVbMTN/KD9T9ZRVMogChkk85y5RVqboYC10EmIc2fk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709220357; c=relaxed/simple;
-	bh=7HaQhAX6xe9m6UV2kdfbt42WvZeWdh2pF9QplgSu0I0=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=RkyiLnYV1FFkLlR9j6j7jYD7Ik5XuCDxuVVC5+PjpdcZ1gu0W9OYM2OW2sNVWt6hni0ZOU1lIoc5Zr2UaSrXS9eJ1h5MkXXMlt0jG7mwsgThS8/Xn070JoQz0XNoq+7GGBvUVqZDcTX+PmYYvMxbqdzPvvM/OPH3zPXyhCmeurE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=VJpUdHmF; arc=none smtp.client-ip=209.85.215.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5dcab65d604so771956a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 07:25:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709220356; x=1709825156; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=J/OUKQeIqZ+tPyZREllTuis7KcKSDMU8Twx5UZE09wY=;
-        b=VJpUdHmFZI6P1bVHp2RR7lnAuXki0/vQUofLBZoQOBKfMt9/+ayg0UD9mCTgnb0VmN
-         QRjoLV2JXVTF3lF1YC8ICjEo5JkWGX5r8gXuHjXSCrh6iVW2n91uv/Qb971fHQeqWepM
-         cEGQKERG8XRTTC3nzBDxHzr6tzRyf83hz1i+VFXZWJ0EzngOuZO24kYyNJK9gJhydING
-         VBIA7rGDJWMGqzABGROo0f+sqht4z9jGHmuqY2TxQBIOAUI539Up5M9ctMRwFacXubf4
-         /GGOkox5snGrt3Zygojl8Fac7iuqQJfPCK1JE4MLLtlhQkEbi1fgtGxlCqu3WdDkYQLO
-         BPdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709220356; x=1709825156;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=J/OUKQeIqZ+tPyZREllTuis7KcKSDMU8Twx5UZE09wY=;
-        b=dtw36jKWtL0rqzeqHQWZr/Itn5x/rFejSCaBJ8VvbJhhHwpNPRYba4OVWA4IQi6k3S
-         x8FjMzf/RC8TjpmRmXJhmEqmtAxlC+QdkGMH7i/UictpcR+cU9ycbf8Ml57ieUiW6knL
-         Z9k/zD0gXzGPM7lSeIFei78Pobe2UYM6GSxD2bdnShN0GtZSUnzv8/EZ4BscwA2yym7c
-         vOVE/l+cSDluUQquKlscvaBgS1XOxsrbU57dxh6ojlLGgjh4U1VTRjgZzwcQR5JUAT0V
-         eOxiU0NXa3HXCcibR+ZevbxhKvxGpPous5WugYZAznq4SItkcSxHFgMiV+2Y7gtfOR9O
-         f4Xw==
-X-Forwarded-Encrypted: i=1; AJvYcCWzS2eLZ3H553VaH5/a1ShedL0F5a3Sp3s1TDroRDXh0uUTGbRa3IBoNMCIXggtlxK91qleCxvmWQRobSAzxXRMTKpEjjpmu5Dk62c3
-X-Gm-Message-State: AOJu0YwFuLnhDvmLngfhT7Mea+DBXT78EoLZjARg0F55QmzYS635xcJa
-	RDMT3aLb70id1pVZcpXHirlB/Ved3czRass997pa/HvmhclvsqXSWsy+69e+cbpSd4+jOF9hsYr
-	kkg==
-X-Google-Smtp-Source: AGHT+IFcY5ykGfuU2E3p3uqw4eLL/QbuMIeXA+dQAq99sKjkzUzTj45nanFflAnsDVDAhomKo3E14yeSXZ4=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a02:a0d:b0:5cd:9ea4:c99 with SMTP id
- cm13-20020a056a020a0d00b005cd9ea40c99mr6381pgb.6.1709220355807; Thu, 29 Feb
- 2024 07:25:55 -0800 (PST)
-Date: Thu, 29 Feb 2024 07:25:54 -0800
-In-Reply-To: <c0d80c37-ff1c-9c94-e1ac-78d26ee4da15@oracle.com>
+	s=arc-20240116; t=1709220388; c=relaxed/simple;
+	bh=AI8kOUhbOYdns3KMMDjVTMnWtl0XB8l9IYFlvRgSpkA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oLOgVfFvHxe/AmMilwGujzEYbTORNTJQJc35rjgNv0uPWLuLj5wCzQdV8BpOnBFXhgwE6IYCRui4G4eQ06ej49MUDjzMjaPmDn/HEYzgS0+QER+y9iZIwDZJ0aasz/WXdLN1GSsFIrxEeWK9q1JM7IxYB7ZZtoXWCptbZBU+H4w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=GATfAOGH; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=JDYqbpl/+BoYOgWj42ekyUhd06iuQi2g92l5iNt/wbI=; b=GATfAOGHCRpbgfl5msH8olx3yF
+	suXKEsjN8NvDG2Zyhy6wlb34vDh3q1/V6oOLi+mKOQ+SfHbVgoRcoNBm08jsdje9Ex0KZVdvgkJ7Z
+	PiV9HQy4cB6iyIwf8Kcj8Nwi99GLobDZk0Trr0rH1NlVWRbQZ00S1nnivboh9Oi0ls/E=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rfiJ3-0093Hj-GN; Thu, 29 Feb 2024 16:26:45 +0100
+Date: Thu, 29 Feb 2024 16:26:45 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Paolo Abeni <pabeni@redhat.com>
+Cc: Hariprasad Kelam <hkelam@marvell.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kuba@kernel.org, edumazet@google.com,
+	davem@davemloft.net, sbhatta@marvell.com, gakula@marvell.com,
+	sgoutham@marvell.com
+Subject: Re: [net-next PatchV3] octeontx2-pf: Add support to read eeprom
+ information
+Message-ID: <5aabaac2-155f-4d0e-8ab2-b864df9636fd@lunn.ch>
+References: <20240227084722.27110-1-hkelam@marvell.com>
+ <28d5c5b8-bd8f-458a-a62e-bb233add4a2b@lunn.ch>
+ <b1d6d86e0d31910abeb4c0d9c43b98947835d316.camel@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240228024147.41573-1-seanjc@google.com> <20240228024147.41573-3-seanjc@google.com>
- <c0d80c37-ff1c-9c94-e1ac-78d26ee4da15@oracle.com>
-Message-ID: <ZeCiAugERaMYq2Yw@google.com>
-Subject: Re: [PATCH 02/16] KVM: x86: Remove separate "bit" defines for page
- fault error code masks
-From: Sean Christopherson <seanjc@google.com>
-To: Dongli Zhang <dongli.zhang@oracle.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Yan Zhao <yan.y.zhao@intel.com>, Isaku Yamahata <isaku.yamahata@intel.com>, 
-	Michael Roth <michael.roth@amd.com>, Yu Zhang <yu.c.zhang@linux.intel.com>, 
-	Chao Peng <chao.p.peng@linux.intel.com>, Fuad Tabba <tabba@google.com>, 
-	David Matlack <dmatlack@google.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b1d6d86e0d31910abeb4c0d9c43b98947835d316.camel@redhat.com>
 
-On Thu, Feb 29, 2024, Dongli Zhang wrote:
-> I remember I read somewhere suggesting not to change the headers in selftest.
+> @Andrew: it looks like the firmware interface is going to be limited
+> for the time being, are ok with that?
 
-The "suggestion" is to not update the headers that perf tooling copies verbatim
-from the kernel, e.g. tools/include/uapi/linux/kvm.h.  The duplicates in tools/
-aren't used by KVM selftests, it's purely perf that needs identical copies from
-the kernel tree, so I strongly prefer to leave it to the perf folks to deal with
-synchronizing the headers as needed.
+Yes, i'm O.K. with it, just disappointed.
 
-> Just double-check if there is requirement to edit
-> tools/testing/selftests/kvm/include/x86_64/processor.h.
+Maybe the next version of the firmware will allow more?
 
-This header is a KVM selftests specific header that is independent from the kernel
-headers.  It does have _some_ copy+paste, mostly for architecturally defined
-bits and bobs, but it's not a straight copy of any kernel header.
-
-That said, yes, I think we should also clean up x86_64/processor.h.  That can be
-done in a one-off standalone patch though.
+      Andrew
 
