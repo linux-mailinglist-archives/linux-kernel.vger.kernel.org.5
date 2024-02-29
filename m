@@ -1,110 +1,125 @@
-Return-Path: <linux-kernel+bounces-86311-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86291-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A86AC86C3CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:39:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94C9886C37B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:30:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0FBBDB23E91
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:39:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4CD081F23B05
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:30:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CCB051034;
-	Thu, 29 Feb 2024 08:37:02 +0000 (UTC)
-Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B169842054;
+	Thu, 29 Feb 2024 08:30:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="cFQ0Eisi";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="cFQ0Eisi"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47F9A50A63;
-	Thu, 29 Feb 2024 08:36:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.84
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55A1C4F8B1
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 08:30:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709195822; cv=none; b=eZ8/D30LHGhpaLNxQHwv8abpet15kuUfujGUGfNPsXI4dhQCHW+sOs3SrKg47lYorpZ+f/zOGlFHNSojK52xmk/0f8Jd70GYaZsWzs36Lynx7LgauvD/whIa0muCLI1j6VYQh9DK7lQfY000pFP6bzgHQpwDmwHDZeVm97rg3QY=
+	t=1709195426; cv=none; b=KQRFT1FeKdzmttms+CYPv+/oKSKOX70fYF9cCFwJHRX6FAuIWziBcl5jT5QCRH1IlgZGB5kpt+f/saYm9KmrspJ/ruJq3uT2DVzXnPwbtgemcvv58qscz769RMH0T+6gsRAaKaaq0cDgMzoM58T+oxR45KKelDE//wVnEtlBDUk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709195822; c=relaxed/simple;
-	bh=DFpZU+iH4UhuNKIVT9kLtI0sltz21Wxk14OgBTiuG3Q=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Ud1Lx44XuQMJZPie3YAGjj2slCdifdyRk9nJufhZYVWSCu6rg4d8Kl8Y9gf2l6qQlWjFNTGTC7Si3YZHb0Z176Rv6DyUUUG5Vz/HQ8zsRrqjuu4neVt1w01cF1xkVeTZQw+F6vm7t+4tMicZJIlcVg52Vsz7g8hsMEhEz44FuK4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
-Received: from lijuan-ubuntu-04.home.arpa (unknown [124.16.138.129])
-	by APP-05 (Coremail) with SMTP id zQCowABXeKmRQOBlkqbJAw--.65446S2;
-	Thu, 29 Feb 2024 16:30:10 +0800 (CST)
-From: lilijuan@iscas.ac.cn
-To: clm@fb.com,
-	josef@toxicpanda.com,
-	dsterba@suse.com
-Cc: linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	pengpeng@iscas.ac.cn,
-	Lijuan Li <lilijuan@iscas.ac.cn>
-Subject: [PATCH] btrfs: mark btrfs_put_caching_control static
-Date: Thu, 29 Feb 2024 16:30:07 +0800
-Message-Id: <20240229083007.679804-1-lilijuan@iscas.ac.cn>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1709195426; c=relaxed/simple;
+	bh=nvXnwWang543Kg4c1rLsND678RJN37g+hl7NuEMNX84=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GhwZi0LdTkop4kG830tA8Et0T8ww1s3B9eQUErXbBnwWvUKf16MsBByqLL8yMiWEMsDnW3womf0y4ieywfTAQ+0TDfqDDPGf39XzKr/OUcDOiT7cbgwg6+xNI8AzGd4KbBclv7K7vANc7OHdZ0h+dnUpfvdeJXViohqAKh5P+pk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=cFQ0Eisi; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=cFQ0Eisi; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 06D4E1F7D3;
+	Thu, 29 Feb 2024 08:30:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1709195417; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=U3SgLAMcbyt4cYjxm3x7G7TRZQSDQ3+8ndmLBLajk+0=;
+	b=cFQ0Eisi6y+xRU4yxRwMby5dwuB6KBXeIm0d0jk3KMQqs5gL3QbtGFaBOyAI4CypXc3/lT
+	sQhqpUdxPn6A1eAzwQAZgry7638nQaw/+IoCEY1sh8sHo5UQ5J7PaWokfPk/THP8OJW2oJ
+	9iX1aprQetoDWPUAtbwWhl03eNScpOQ=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1709195417; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=U3SgLAMcbyt4cYjxm3x7G7TRZQSDQ3+8ndmLBLajk+0=;
+	b=cFQ0Eisi6y+xRU4yxRwMby5dwuB6KBXeIm0d0jk3KMQqs5gL3QbtGFaBOyAI4CypXc3/lT
+	sQhqpUdxPn6A1eAzwQAZgry7638nQaw/+IoCEY1sh8sHo5UQ5J7PaWokfPk/THP8OJW2oJ
+	9iX1aprQetoDWPUAtbwWhl03eNScpOQ=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DFB1A13A58;
+	Thu, 29 Feb 2024 08:30:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 5L9+NJhA4GXmSwAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Thu, 29 Feb 2024 08:30:16 +0000
+Date: Thu, 29 Feb 2024 09:30:12 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: cve@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: CVE-2021-46966: ACPI: custom_method: fix potential
+ use-after-free issue
+Message-ID: <ZeBAlGNuNZNuCsE5@tiehlicka>
+References: <2024022720-CVE-2021-46966-1469@gregkh>
+ <Zd9b3qpu3uLFP-eN@tiehlicka>
+ <2024022902-prancing-judgingly-c9ee@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:zQCowABXeKmRQOBlkqbJAw--.65446S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7ur4fZFWrGr43KrW7XrW3GFg_yoW8XF13pr
-	ykCrnxGF1UCFn0gF4UG3yYqw1Sgas5J3y7A3s5Cw4xZ343Kr17Zryqyw1rAa4UtFs8ArZr
-	Z3WY934UCFnIyr7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvF14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-	6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwAKzVCY07xG64k0F24l
-	c2xSY4AK67AK6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I
-	0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWU
-	AVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcV
-	CY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAF
-	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvj
-	fU8UUUUUUUU
-X-CM-SenderInfo: poloxyxxdqqxpvfd2hldfou0/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2024022902-prancing-judgingly-c9ee@gregkh>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [-1.27 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[3];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-1.67)[92.96%]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -1.27
 
-From: Lijuan Li <lilijuan@iscas.ac.cn>
+On Thu 29-02-24 06:22:34, Greg KH wrote:
+> On Wed, Feb 28, 2024 at 05:14:22PM +0100, Michal Hocko wrote:
+> > Hi,
+> > this seems like another example of a reasonable fix with a very dubious
+> > CVE IMHO. Allowing access to /sys/kernel/debug/acpi/custom_method to
+> > anybody but trusted actor is a huge security problem on its own. I
+> > really fail to see any value marking this clear bug fix as security
+> > related.
+> 
+> It was picked because it was a use-after-free fix, AND it is part of the
+> "import the GSD database into the CVE database" that the CVE project
+> asked us to do.
 
-btrfs_put_caching_control is only used in block-group.c,
-so mark it static.
-
-Signed-off-by: Lijuan Li <lilijuan@iscas.ac.cn>
----
- fs/btrfs/block-group.c | 2 +-
- fs/btrfs/block-group.h | 1 -
- 2 files changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 1b4be41495ea..84932d944d51 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -418,7 +418,7 @@ struct btrfs_caching_control *btrfs_get_caching_control(
- 	return ctl;
- }
- 
--void btrfs_put_caching_control(struct btrfs_caching_control *ctl)
-+static void btrfs_put_caching_control(struct btrfs_caching_control *ctl)
- {
- 	if (refcount_dec_and_test(&ctl->count))
- 		kfree(ctl);
-diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
-index c03971f50521..8656b38f1fa5 100644
---- a/fs/btrfs/block-group.h
-+++ b/fs/btrfs/block-group.h
-@@ -311,7 +311,6 @@ void btrfs_wait_nocow_writers(struct btrfs_block_group *bg);
- void btrfs_wait_block_group_cache_progress(struct btrfs_block_group *cache,
- 				           u64 num_bytes);
- int btrfs_cache_block_group(struct btrfs_block_group *cache, bool wait);
--void btrfs_put_caching_control(struct btrfs_caching_control *ctl);
- struct btrfs_caching_control *btrfs_get_caching_control(
- 		struct btrfs_block_group *cache);
- int btrfs_add_new_free_space(struct btrfs_block_group *block_group,
+OK I see. So now, does it make any sense to consider a bug fix in a
+security sensitive interface (that is even locked down) a security fix?
 -- 
-2.40.1
-
+Michal Hocko
+SUSE Labs
 
