@@ -1,155 +1,208 @@
-Return-Path: <linux-kernel+bounces-87048-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87031-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BFE886CEA2
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:19:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF64E86CE74
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:13:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 964F31F2654D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:19:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E1B2EB2253C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:13:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F395813443A;
-	Thu, 29 Feb 2024 15:59:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A47E157E8A;
+	Thu, 29 Feb 2024 15:53:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="VNP3auhV";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="v9Swsebb";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="VNP3auhV";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="v9Swsebb"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="C/CQefgI"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 808BC13442A;
-	Thu, 29 Feb 2024 15:59:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1E4D155A35;
+	Thu, 29 Feb 2024 15:53:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709222358; cv=none; b=GUGRzdGxNLg/tN+yrcWyuvaiB/Rmo2D0PlRHQzg4PASkTjc10z5SYgUqD0G6q5kgSgCrZWdlXHUPIy2uz0ojTXhmmdLuDDRSbYRA9bP7R0ehZOK2Qb+vqLQnQ9YreJb1C6MMJbtkmBjUWJsHpPac1q1cAuYrxsMNIInLEGgR6g4=
+	t=1709222015; cv=none; b=uN9kvY3uFutmkUTSSdMrhsFEh2xeIJPBgsQrjB5jdDJ6m2zMjoJBcoRcr2cEXeWHrJGnOEpwptIXuitKF7F/o3Cmeh5Z9epT2kdJkNsEtuTvrzHBB/SKzkd7cDS1N0/OBIiLz05Q3oLfOQQcqB9xsOfy8RmD80OcuyzfPYrT7aY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709222358; c=relaxed/simple;
-	bh=K9Fpeh3sdJ+G4Wuq+GdGrrJ4JISy6co0YpZVHKQ/UT4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I+Vpetx7hlV16/CpiuIVadmmra7doNh2PD7WZjchAwSCuvU6in8tOC2CDH8yOJ0IqgoyJGSuwTyO3qv6Tfu8vjAynApdCE5sB2mWI2S6szyaBGMUrHezpS17VXCqkUJhFOd94k1dV35Lw8kOWkf+ts0W6x2+hdynAkXTqLsYink=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=VNP3auhV; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=v9Swsebb; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=VNP3auhV; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=v9Swsebb; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	s=arc-20240116; t=1709222015; c=relaxed/simple;
+	bh=eH26C+V3gmZDbyoRlGOTopoefFB8XzOGpUJcXpz1tHI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=L6dr+duPePUumXOAkoY4OFLGytsbXkeLjDBT+DIUQTR9wi+8/9jj0O7v8MRNoo1yhILQ8TwpUbPhKdhe30Dh+xQ/FkDxrGLVEnygdSL+pY+8j6GunQMNixf/tVjebXKEHg+tBXfY1tzkRypxcJDE+mWDpryCSLv29g/QpBIaQds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=C/CQefgI; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709222011;
+	bh=eH26C+V3gmZDbyoRlGOTopoefFB8XzOGpUJcXpz1tHI=;
+	h=From:To:Cc:Subject:Date:From;
+	b=C/CQefgI3sOJj7jZTQlDP9R9Zlhn0+WOhFtJex+7xwdoprt+MjgC/v28XSGbBrrIs
+	 dbObe7Xp6y/0Lo/0mAukWJoPwEA0EmXqihZj3Ptsz9e5AuAaGGHNApxKqWHT4KzYX/
+	 T805pO7GpJeCkMpPv9HhFSrHD/IyTPitYTiwMsJxv1x+E1jHcCkva1hBxKNwCTUqQh
+	 DvqhFfaa4XJTEYiI+OEi481B4ScKPQ7XtKxXOycz4opVF5LaLGwSz5/mInIAbBHtx1
+	 FZm07Bosc0FNKHL6RrSV/P5038XD+Yb0oeU9sBAGmWBRkkYVF0ysuB93sqqZjexHAK
+	 p1KRKEwIJmTCw==
+Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 747E321227;
-	Thu, 29 Feb 2024 15:59:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1709222354;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jIdEnYpHZmcsGwhfQfdpgrGo6yqv0axPmnBxwJinK4I=;
-	b=VNP3auhV4Lz/0p6UVstn8dPkV0yn/+bf3Y+Jcoe6Was6QeWfVMxiiOzAZWG9hk31/+GUru
-	hN1wwGKlV/JQ/DE9jaf+zFzntbIboEuMm6vnCUWXaSM9bVQwwYHVntfzuXFLum+kC6VABY
-	qFuu2N6O+jiJInu+PpNhhNgOkxGUKDA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1709222354;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jIdEnYpHZmcsGwhfQfdpgrGo6yqv0axPmnBxwJinK4I=;
-	b=v9SwsebbqqDi1dNAz8HufuZpU+isTwzPifGAhe9vT+fsFftmEkBLKt65SkGm0O6fc4rUCa
-	fAneXOabUhnEtmBQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1709222354;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jIdEnYpHZmcsGwhfQfdpgrGo6yqv0axPmnBxwJinK4I=;
-	b=VNP3auhV4Lz/0p6UVstn8dPkV0yn/+bf3Y+Jcoe6Was6QeWfVMxiiOzAZWG9hk31/+GUru
-	hN1wwGKlV/JQ/DE9jaf+zFzntbIboEuMm6vnCUWXaSM9bVQwwYHVntfzuXFLum+kC6VABY
-	qFuu2N6O+jiJInu+PpNhhNgOkxGUKDA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1709222354;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jIdEnYpHZmcsGwhfQfdpgrGo6yqv0axPmnBxwJinK4I=;
-	b=v9SwsebbqqDi1dNAz8HufuZpU+isTwzPifGAhe9vT+fsFftmEkBLKt65SkGm0O6fc4rUCa
-	fAneXOabUhnEtmBQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 55B9A13451;
-	Thu, 29 Feb 2024 15:59:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id nOq0FNKp4GXcTgAAn2gu4w
-	(envelope-from <dsterba@suse.cz>); Thu, 29 Feb 2024 15:59:14 +0000
-Date: Thu, 29 Feb 2024 16:52:07 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Sasha Levin <sashal@kernel.org>
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-	Filipe Manana <fdmanana@suse.com>,
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-	Josef Bacik <josef@toxicpanda.com>, Boris Burkov <boris@bur.io>,
-	David Sterba <dsterba@suse.com>, clm@fb.com,
-	linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 6.7 09/26] btrfs: add and use helper to check if
- block group is used
-Message-ID: <20240229155207.GA2604@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <20240229154851.2849367-1-sashal@kernel.org>
- <20240229154851.2849367-9-sashal@kernel.org>
+	(Authenticated sender: laura.nao)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 0375537810EF;
+	Thu, 29 Feb 2024 15:53:29 +0000 (UTC)
+From: Laura Nao <laura.nao@collabora.com>
+To: ojeda@kernel.org,
+	alex.gaynor@gmail.com,
+	wedsonaf@gmail.com,
+	shuah@kernel.org
+Cc: usama.anjum@collabora.com,
+	a.hindborg@samsung.com,
+	aliceryhl@google.com,
+	benno.lossin@proton.me,
+	bjorn3_gh@protonmail.com,
+	boqun.feng@gmail.com,
+	gary@garyguo.net,
+	kernel@collabora.com,
+	laura.nao@collabora.com,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	rust-for-linux@vger.kernel.org,
+	kernel@valentinobst.de,
+	sergio.collado@gmail.com
+Subject: [PATCH v5] kselftest: Add basic test for probing the rust sample modules
+Date: Thu, 29 Feb 2024 16:52:35 +0100
+Message-Id: <20240229155235.263157-1-laura.nao@collabora.com>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240229154851.2849367-9-sashal@kernel.org>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=VNP3auhV;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=v9Swsebb
-X-Spamd-Result: default: False [-0.39 / 50.00];
-	 ARC_NA(0.00)[];
-	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 BAYES_HAM(-0.38)[77.11%];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[10];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: -0.39
-X-Rspamd-Queue-Id: 747E321227
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spamd-Bar: /
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 29, 2024 at 10:48:28AM -0500, Sasha Levin wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> [ Upstream commit 1693d5442c458ae8d5b0d58463b873cd879569ed ]
-> 
-> Add a helper function to determine if a block group is being used and make
-> use of it at btrfs_delete_unused_bgs(). This helper will also be used in
-> future code changes.
+Add new basic kselftest that checks if the available rust sample modules
+can be added and removed correctly.
 
-The patch is not a prerequisite for any other stable patch, right? Then
-please drop if from all versions, it's a simple cleanup.
+Signed-off-by: Laura Nao <laura.nao@collabora.com>
+Reviewed-by: Sergio Gonzalez Collado <sergio.collado@gmail.com>
+Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+---
+Depends on:
+- https://lore.kernel.org/all/20240102141528.169947-1-laura.nao@collabora.com/T/#u
+- https://lore.kernel.org/all/20240131-ktap-sh-helpers-extend-v1-0-98ffb468712c@collabora.com/
+Changes in v5:
+- Skip the test gracefully when ktap helpers file is missing
+- Skip the test when the sample modules are missing
+Changes in v4:
+- Added config file
+Changes in v3:
+- Removed useless KSFT_PASS, KSFT_FAIL, KSFT_SKIP constants
+- Used ktap_finished to print the results summary and handle the return code
+Changes in v2:
+- Added missing SPDX line
+- Edited test_probe_samples.sh script to use the common KTAP helpers file
+---
+ MAINTAINERS                                   |  1 +
+ tools/testing/selftests/Makefile              |  1 +
+ tools/testing/selftests/rust/Makefile         |  4 ++
+ tools/testing/selftests/rust/config           |  5 +++
+ .../selftests/rust/test_probe_samples.sh      | 41 +++++++++++++++++++
+ 5 files changed, 52 insertions(+)
+ create mode 100644 tools/testing/selftests/rust/Makefile
+ create mode 100644 tools/testing/selftests/rust/config
+ create mode 100755 tools/testing/selftests/rust/test_probe_samples.sh
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index e1475ca38ff2..94e31dac6d2c 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -19231,6 +19231,7 @@ F:	Documentation/rust/
+ F:	rust/
+ F:	samples/rust/
+ F:	scripts/*rust*
++F:	tools/testing/selftests/rust/
+ K:	\b(?i:rust)\b
+ 
+ RXRPC SOCKETS (AF_RXRPC)
+diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
+index f7255969b695..e1504833654d 100644
+--- a/tools/testing/selftests/Makefile
++++ b/tools/testing/selftests/Makefile
+@@ -80,6 +80,7 @@ TARGETS += riscv
+ TARGETS += rlimits
+ TARGETS += rseq
+ TARGETS += rtc
++TARGETS += rust
+ TARGETS += seccomp
+ TARGETS += sgx
+ TARGETS += sigaltstack
+diff --git a/tools/testing/selftests/rust/Makefile b/tools/testing/selftests/rust/Makefile
+new file mode 100644
+index 000000000000..fce1584d3bc0
+--- /dev/null
++++ b/tools/testing/selftests/rust/Makefile
+@@ -0,0 +1,4 @@
++# SPDX-License-Identifier: GPL-2.0
++TEST_PROGS += test_probe_samples.sh
++
++include ../lib.mk
+diff --git a/tools/testing/selftests/rust/config b/tools/testing/selftests/rust/config
+new file mode 100644
+index 000000000000..b4002acd40bc
+--- /dev/null
++++ b/tools/testing/selftests/rust/config
+@@ -0,0 +1,5 @@
++CONFIG_RUST=y
++CONFIG_SAMPLES=y
++CONFIG_SAMPLES_RUST=y
++CONFIG_SAMPLE_RUST_MINIMAL=m
++CONFIG_SAMPLE_RUST_PRINT=m
+\ No newline at end of file
+diff --git a/tools/testing/selftests/rust/test_probe_samples.sh b/tools/testing/selftests/rust/test_probe_samples.sh
+new file mode 100755
+index 000000000000..ad0397e4986f
+--- /dev/null
++++ b/tools/testing/selftests/rust/test_probe_samples.sh
+@@ -0,0 +1,41 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0
++#
++# Copyright (c) 2023 Collabora Ltd
++#
++# This script tests whether the rust sample modules can
++# be added and removed correctly.
++#
++DIR="$(dirname "$(readlink -f "$0")")"
++
++KTAP_HELPERS="${DIR}/../kselftest/ktap_helpers.sh"
++if [ -e "$KTAP_HELPERS" ]; then
++    source "$KTAP_HELPERS"
++else
++    echo "$KTAP_HELPERS file not found [SKIP]"
++    exit 4
++fi
++
++rust_sample_modules=("rust_minimal" "rust_print")
++
++ktap_print_header
++
++for sample in "${rust_sample_modules[@]}"; do
++    if ! /sbin/modprobe -n -q "$sample"; then
++        ktap_skip_all "module $sample is not found in /lib/modules/$(uname -r)"
++        exit "$KSFT_SKIP"
++    fi
++done
++
++ktap_set_plan "${#rust_sample_modules[@]}"
++
++for sample in "${rust_sample_modules[@]}"; do
++    if /sbin/modprobe -q "$sample"; then
++        /sbin/modprobe -q -r "$sample"
++        ktap_test_pass "$sample"
++    else
++        ktap_test_fail "$sample"
++    fi
++done
++
++ktap_finished
+-- 
+2.30.2
+
 
