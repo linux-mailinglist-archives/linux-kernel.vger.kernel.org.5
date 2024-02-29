@@ -1,107 +1,115 @@
-Return-Path: <linux-kernel+bounces-87709-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87711-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E71286D80A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 00:51:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D9BF86D810
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 00:56:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9BD27285EA4
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 23:51:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CBEFFB21E69
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 23:56:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A135A13E7C6;
-	Thu, 29 Feb 2024 23:51:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ShtDbs5l"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32FE413E7DB;
+	Thu, 29 Feb 2024 23:56:08 +0000 (UTC)
+Received: from regular1-06.263.net (regular1-06.263.net [211.150.70.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E154137763
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 23:51:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0A4842A8C;
+	Thu, 29 Feb 2024 23:56:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=211.150.70.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709250697; cv=none; b=uEjG6KHHpJiiwcMxRn6c0t76IECrUznBO+WRosmLdmA0cGz13DwWJgbnn08SfxMOm8jzZZvY/tNg5uuuYTICU3Darv6OW5kaptC55JsV7pI7wOcBAv0dCjwpTBhZhtv9/1pHwTWZrY/4DVMF7p0c/FmLONEE7bIrU4nCSnXPECM=
+	t=1709250967; cv=none; b=OOaR+kDUXyqOSVApXxUqPUL0dM8k6r7i49kOtF5G23AvSUgISoUxy2W1/h1J45Eh6sdrqFM48OQxiXZJeY7LD/dYN2ifhHgaEcDJhLVyROdwoZR2/0+ZtkQP+5V4+RobyQZuhea65twVGnYRWssduuzCNmUwQnCgOf2jO75Kdag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709250697; c=relaxed/simple;
-	bh=wGdhmGNHVTXKtr8Coxlis0Li3Bk52TXuxtZPxJDknj4=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=hC37h5EiMkl48mFK/2KWNmNKxKy/pfgMogZNx4BKUaNV+g8TSoJwIw2Rjaun3SPTubgR61+IUIZqVFE+pevsTsN3RSnyvFHJhLGbutPmJPAAmWO7RUVDQKfal4xqmH4NJ+w9gKWgixrRgWfTemtOr6k0dq4PrpHy6BKMYLrsTss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--axelrasmussen.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ShtDbs5l; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--axelrasmussen.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6b26783b4so2212737276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 15:51:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709250695; x=1709855495; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wGdhmGNHVTXKtr8Coxlis0Li3Bk52TXuxtZPxJDknj4=;
-        b=ShtDbs5lOFNRkk6Jtu8JScDIID2cRH09UM0rEHa6BxrEoF+X1yaRbj3RU6CeG2XhPK
-         zVUjNdXaoVzLz+bFIWeoKiSGRylGGXlRo6mJFlF7WJj9SahP4UalsFo0L/xewY5DgREa
-         osgTNe6OR3RRQ1TfTrYpVaq/8NkfmHVW81dOlE6j13uUtz/wCMExtr6qZBSip0UPZMxK
-         vBmnRFke3t1oLrdUr7NYDKmitiMwCeHgfNKwG14qmca5IiNjPuTgIS2r7LQdyFo65Aon
-         XhYFKgsUxJxKU4s5tCcQSfbzWi1ZTdPIQZ+MzTIgld13X5wetBVgn41crBn0GwIbqdz4
-         UKZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709250695; x=1709855495;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wGdhmGNHVTXKtr8Coxlis0Li3Bk52TXuxtZPxJDknj4=;
-        b=YKGUj3pKuR+06LDokpwgV1u1coh2nCRkIEGaPV4sv0ZG2rS56LdEXVgIBRj1/O1XFA
-         1qfAHkFH/fTbdtAendILxknGYQ7AqDt2jO8OMFPL9JUteSyKn9d1b1PUNjgmIoVQS23q
-         yi8Uh3hAl58CLnvkin9bnSIXZnpe8jvZruI0zOwF9Poe4V8BEhHpAxdrAY7UE0FglBku
-         be5HZod2j/FkDrB7+W3v3amPgTWamk4T8iztNxzrmQsW3BsZW4ty6LQN5KtB73RAoFA7
-         XmGbYaV2sYMYxyAabj2sPsP6AUrHvXJB2XOCdhokQL1a69kFfCUTuZ2MLsOfFv0Jx/GW
-         eeoA==
-X-Forwarded-Encrypted: i=1; AJvYcCUwCpZ7pNK+4ZlKdXyrpuApPCyCwttM3KlAFDtOQjh7eEqwc8DHh6KkrWQNOlTpcfZxLQoGGvjGOwKZKTdgJuSfCdEdrFDpfSROGfzB
-X-Gm-Message-State: AOJu0YxIoQVxIdoweXmjdCqSqGeKU1W2a6wDHCVhR1WnTOsG1gNIj41H
-	xXD0fzevAyU1dtvIgO2UaBcO2LmSOhVLXHB8tPFoX+8G7SpUre1TtXbUhuG2x7Fv98NrlA8EvrP
-	p1reLbtE+TIVqzhz79GIOY72K9RNvzQ==
-X-Google-Smtp-Source: AGHT+IH867rn03DULgpAnZN98NdftWiJfM3usfRmVuNXYLi9bkM7Uz9nOwttJ34eI/OIA2Ca2LK6EGXn14L13DXQ6nxP
-X-Received: from axel.svl.corp.google.com ([2620:15c:2a3:200:4ca4:66d0:de29:8d39])
- (user=axelrasmussen job=sendgmr) by 2002:a05:6902:100a:b0:dbe:387d:a8ef with
- SMTP id w10-20020a056902100a00b00dbe387da8efmr177541ybt.1.1709250695530; Thu,
- 29 Feb 2024 15:51:35 -0800 (PST)
-Date: Thu, 29 Feb 2024 15:51:33 -0800
-In-Reply-To: <ZcWOh9u3uqZjNFMa@chrisdown.name>
+	s=arc-20240116; t=1709250967; c=relaxed/simple;
+	bh=XSZhwMr9M5XqRVovzbNIdrRe0Vzc/jVfQbtwR0xjlOo=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=BbkuxHE6QHUDNTR24sY/E1JBaO+Xgkgijz5cvKI2NkPrT/pHNhJg7AybbBelNRSBZqswM044pQ4tYyVUfDGr5mBGmGToLdDxTqNZYv6X9rHQYok8lHI7FDjeJQapkj5NfImfwRukzF4kufpe3eHC0QDqT2xa2PcPGiTBEmOB2fU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=techyauld.com; spf=pass smtp.mailfrom=techyauld.com; arc=none smtp.client-ip=211.150.70.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=techyauld.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=techyauld.com
+Received: from localhost (unknown [192.168.167.69])
+	by regular1-06.263.net (Postfix) with ESMTP id F0FA31DAB;
+	Fri,  1 Mar 2024 07:52:30 +0800 (CST)
+X-MAIL-GRAY:0
+X-MAIL-DELIVERY:1
+X-ADDR-CHECKED4:1
+X-SKE-CHECKED:1
+X-ABS-CHECKED:1
+X-ANTISPAM-LEVEL:2
+Received: from localhost (unknown [118.193.106.122])
+	by smtp.263.net (postfix) whith ESMTP id P20140T140685814527744S1709250750224016_;
+	Fri, 01 Mar 2024 07:52:30 +0800 (CST)
+X-IP-DOMAINF:1
+X-RL-SENDER:yzheng@techyauld.com
+X-SENDER:yzheng@techyauld.com
+X-LOGIN-NAME:yzheng@techyauld.com
+X-FST-TO:rogerq@kernel.org
+X-RCPT-COUNT:6
+X-LOCAL-RCPT-COUNT:1
+X-MUTI-DOMAIN-COUNT:0
+X-SENDER-IP:118.193.106.122
+X-ATTACHMENT-NUM:0
+X-UNIQUE-TAG:<49e5b54e442e7c9fdccf77e484b484ff>
+X-System-Flag:0
+Date: Fri, 1 Mar 2024 07:52:30 +0800
+From: "Brock.Zheng" <yzheng@techyauld.com>
+To: Roger Quadros <rogerq@kernel.org>, Tony Lindgren <tony@atomide.com>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] memory: omap-gpmc: fixup wrongly hierarchy of the sub-devices
+Message-ID: <6fftq2zlkpaf7xptyff6ky63cinr76ziyvdbm5jhj2apubr5vf@l4gvbdax3l2e>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <ZcWOh9u3uqZjNFMa@chrisdown.name>
-X-Mailer: git-send-email 2.44.0.rc1.240.g4c46232300-goog
-Message-ID: <20240229235134.2447718-1-axelrasmussen@google.com>
-Subject: MGLRU premature memcg OOM on slow writes
-From: Axel Rasmussen <axelrasmussen@google.com>
-To: chris@chrisdown.name
-Cc: cgroups@vger.kernel.org, hannes@cmpxchg.org, kernel-team@fb.com, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, yuzhao@google.com
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=gb2312
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-Hi Chris,
+On TI-AM335x£¬my FPGA under GPMC local-bus can not work on 6.x kernel.
 
-A couple of dumb questions. In your test, do you have any of the following
-configured / enabled?
+GPMC <--> FPGA  <--> sub-devices....
 
-/proc/sys/vm/laptop_mode
-memory.low
-memory.min
+I found that the platform sub-devices is in wrongly organized
+hierarchy.  The grandchildren are now under the GPMC device
+directly, not under it's father(FPGA).
 
-Besides that, it looks like the place non-MGLRU reclaim wakes up the
-flushers is in shrink_inactive_list() (which calls wakeup_flusher_threads()).
-Since MGLRU calls shrink_folio_list() directly (from evict_folios()), I agree it
-looks like it simply will not do this.
+Signed-off-by: Brock.Zheng <yzheng@techyauld.com>
+---
+ drivers/memory/omap-gpmc.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Yosry pointed out [1], where MGLRU used to call this but stopped doing that. It
-makes sense to me at least that doing writeback every time we age is too
-aggressive, but doing it in evict_folios() makes some sense to me, basically to
-copy the behavior the non-MGLRU path (shrink_inactive_list()) has.
+diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
+index 80d038884207..1f2568e43086 100644
+--- a/drivers/memory/omap-gpmc.c
++++ b/drivers/memory/omap-gpmc.c
+@@ -2175,6 +2175,7 @@ static int gpmc_probe_generic_child(struct platform_device *pdev,
+	int ret, cs;
+	u32 val;
+	struct gpmc_device *gpmc = platform_get_drvdata(pdev);
++	struct platform_device *child_pdev = NULL;
+ 
+	if (of_property_read_u32(child, "reg", &cs) < 0) {
+		dev_err(&pdev->dev, "%pOF has no 'reg' property\n",
+@@ -2330,11 +2331,12 @@ static int gpmc_probe_generic_child(struct platform_device *pdev,
+ no_timings:
+ 
+	/* create platform device, NULL on error or when disabled */
+-	if (!of_platform_device_create(child, NULL, &pdev->dev))
++	child_pdev = of_platform_device_create(child, NULL, &pdev->dev);
++	if (!child_pdev)
+		goto err_child_fail;
+ 
+	/* create children and other common bus children */
+-	if (of_platform_default_populate(child, NULL, &pdev->dev))
++	if (of_platform_default_populate(child, NULL, &child_pdev->dev))
+		goto err_child_fail;
+ 
+	return 0;
+-- 
+2.44.0
 
-I can send a patch which tries to implement this next week. In the meantime, Yu,
-please let me know if what I've said here makes no sense for some reason. :)
 
-[1]: https://lore.kernel.org/lkml/YzSiWq9UEER5LKup@google.com/
 
