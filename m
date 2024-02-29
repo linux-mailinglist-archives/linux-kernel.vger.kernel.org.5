@@ -1,154 +1,96 @@
-Return-Path: <linux-kernel+bounces-86590-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86591-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7E7F86C77E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:55:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC71186C780
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:56:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8DA91C21EDE
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:55:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F3A36B284C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:56:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 294CD7A72F;
-	Thu, 29 Feb 2024 10:55:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="X29181Pg"
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37DD57A723;
+	Thu, 29 Feb 2024 10:56:24 +0000 (UTC)
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F7C979DDA;
-	Thu, 29 Feb 2024 10:55:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A5F16351C;
+	Thu, 29 Feb 2024 10:56:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709204144; cv=none; b=RXRCn/fliMovFHaV1chXOGpPdjfdIskgfWURXbcjsLs2C85mRhJReCsbDk6b2cDqwgg3snlNSaukukKhd0oGP6bYCJuMVJxvRZlUHFLcNwdUc3YDKB9ng46YvVtvhEd575TrZIjXMLm9OtlWxBaEJRoVCvK+ot1RcL220FhjdjI=
+	t=1709204183; cv=none; b=rwaQAv/6p+ZSleHM5WQcbse9pJP3yb65Vpz8AdTwQxWG49GoCTusA30Ej/MjqfbC1ugz5SsrUmGBBHpx8MDW6cPVLztKfkoK4O0VSmch4H/mkc622KNP2tJgwPF4cL6p0FxDLYw3dL5/TFJpdF9NXjE51uR6j89nmzGXLUS0MV8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709204144; c=relaxed/simple;
-	bh=uJQ8oK6S3btZM/i+xqMBD+VnKIFGNlckNP4cfaBVpp8=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Lmyn20S4nCfH9h/gOxk3/Rd4nsvbkCJpu+L5hm4KNnKcouaP4zTHr5gj6t0wSpJ61GpK3PIApqZj+NW7lbWOL9QCFm2pnWYraZMWTxDEeepV4I7mMt0xpjI/X61E3rotd3NofccZuXFvuiL0RT3jWghk6eQE3H1gKMJyO/tXs5w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=X29181Pg; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 5A92FFF809;
-	Thu, 29 Feb 2024 10:55:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709204140;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ucmCXKr9aC1Z8X3a+6gOaQampla6gbJJBtAdPFqD47o=;
-	b=X29181PgT3vCMk+kh1MSYsbzKUVA4SU2MSz62Y9uwO2DfTgwj92cYZ4UJKpoAudrvKwn3W
-	ZS+7H74PBUwe3jysNFI8q0sdKZBIsv5YzVwXN3jMcvzFDnZKjBzPDM7lNQLhWPdO56hFau
-	JY/r0WbXSzxd86RvGYvpBY+7aioaKto5lNzm8yLUoNm9EC4xB4uMRY/dgyOACGEfiTXZY0
-	pb30wl/Tr0bMXusNsuWgiFmsGFS4drC3yLIIuXjV9JQIYzzlkNW8DFaYHE7MJ4JFpv7eaI
-	BLfj0gE0dBUrcnGsBx+C2NtqYJjpfzXEXuZYcur7siSHAsjYaBUiKDvCbZJKsA==
-Date: Thu, 29 Feb 2024 11:55:38 +0100
-From: Herve Codina <herve.codina@bootlin.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
- <rafael@kernel.org>, Rob Herring <robh+dt@kernel.org>, Frank Rowand
- <frowand.list@gmail.com>
-Cc: Lizhi Hou <lizhi.hou@amd.com>, Max Zhen <max.zhen@amd.com>, Sonal Santan
- <sonal.santan@amd.com>, Stefano Stabellini <stefano.stabellini@xilinx.com>,
- Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Allan Nielsen
- <allan.nielsen@microchip.com>, Horatiu Vultur
- <horatiu.vultur@microchip.com>, Steen Hegelund
- <steen.hegelund@microchip.com>, Luca Ceresoli <luca.ceresoli@bootlin.com>,
- Nuno Sa <nuno.sa@analog.com>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 0/2] Synchronize DT overlay removal with devlink
- removals
-Message-ID: <20240229115538.7d2f5a35@bootlin.com>
-In-Reply-To: <20240229083953.607569-1-herve.codina@bootlin.com>
-References: <20240229083953.607569-1-herve.codina@bootlin.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1709204183; c=relaxed/simple;
+	bh=y1Jfip9o5DbaFiAazWsGG9BOH9m4j+SXIazClg4zvj8=;
+	h=From:In-Reply-To:Content-Type:References:Date:Cc:To:MIME-Version:
+	 Message-ID:Subject; b=fCLcmu8u8wiY1OSgnnDnwPJWXhqv4UrE4LTwH4BQwxSCkYj3qHgkyDtS3lKS6D2X0i6t/LRetxFAMA2Q7fPUbGjDX6ZFD3FsboA1hcYk3xOT9FuZJmCmNMNXC6ph8W1X262SvoGqRY6MbMtsfelVZiNaRPvllcDZ2WVHFRjukRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+Received: from harlem.collaboradmins.com (harlem.collaboradmins.com [IPv6:2a01:4f8:1c0c:5936::1])
+	by madrid.collaboradmins.com (Postfix) with ESMTP id AFE843780029;
+	Thu, 29 Feb 2024 10:56:17 +0000 (UTC)
+From: "Shreeya Patel" <shreeya.patel@collabora.com>
+In-Reply-To: <20240227131558.694096204@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"
+X-Forward: 127.0.0.1
+References: <20240227131558.694096204@linuxfoundation.org>
+Date: Thu, 29 Feb 2024 10:56:17 +0000
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, "Gustavo Padovan" <gustavo.padovan@collabora.com>, "kernelci-regressions mailing list" <kernelci-regressions@lists.collabora.co.uk>
+To: "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
+Message-ID: <95c1-65e06300-b-71f47500@137610097>
+Subject: =?utf-8?q?Re=3A?= [PATCH =?utf-8?q?5=2E10?= 000/122] 
+ =?utf-8?q?5=2E10=2E211-rc1?= review
+User-Agent: SOGoMail 5.10.0
+Content-Transfer-Encoding: quoted-printable
 
-Hi All,
+On Tuesday, February 27, 2024 18:56 IST, Greg Kroah-Hartman <gregkh@lin=
+uxfoundation.org> wrote:
 
-I did a mistake in this series.
-As noted by Nuno, the device.h include is missing in patch 2 and so
-the patch 2 doesn't compile :(
+> This is the start of the stable review cycle for the 5.10.211 release=
+.
+> There are 122 patches in this series, all will be posted as a respons=
+e
+> to this one.  If anyone has any issues with these being applied, plea=
+se
+> let me know.
+>=20
+> Responses should be made by Thu, 29 Feb 2024 13:15:36 +0000.
+> Anything received after that time might be too late.
+>=20
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.1=
+0.211-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc=
+git linux-5.10.y
+> and the diffstat can be found below.
+>=20
 
-A v3 is already sent fixing my missing device.h mistake.
-  https://lore.kernel.org/all/20240229105204.720717-1-herve.codina@bootlin.com/
+KernelCI report for stable-rc/linux-5.10.y for this week.
 
-Sorry for this error.
-Best regards,
-Hervé
+## stable-rc HEAD for linux-5.10.y:
+Date: 2024-02-27
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.=
+git/log/?h=3D5d69d611e74dd9f58af23f171ccd3405a650c6ed
 
-On Thu, 29 Feb 2024 09:39:40 +0100
-Herve Codina <herve.codina@bootlin.com> wrote:
+## Build failures:
+No build failures seen for the stable-rc/linux-5.10.y commit head \o/
 
-> Hi,
-> 
-> In the following sequence:
->   of_platform_depopulate(); /* Remove devices from a DT overlay node */
->   of_overlay_remove(); /* Remove the DT overlay node itself */
-> 
-> Some warnings are raised by __of_changeset_entry_destroy() which  was
-> called from of_overlay_remove():
->   ERROR: memory leak, expected refcount 1 instead of 2 ...
-> 
-> The issue is that, during the device devlink removals triggered from the
-> of_platform_depopulate(), jobs are put in a workqueue.
-> These jobs drop the reference to the devices. When a device is no more
-> referenced (refcount == 0), it is released and the reference to its
-> of_node is dropped by a call to of_node_put().
-> These operations are fully correct except that, because of the
-> workqueue, they are done asynchronously with respect to function calls.
-> 
-> In the sequence provided, the jobs are run too late, after the call to
-> __of_changeset_entry_destroy() and so a missing of_node_put() call is
-> detected by __of_changeset_entry_destroy().
-> 
-> This series fixes this issue introducing device_link_wait_removal() in
-> order to wait for the end of jobs execution (patch 1) and using this
-> function to synchronize the overlay removal with the end of jobs
-> execution (patch 2).
-> 
-> Compared to the previous iteration:
->   https://lore.kernel.org/linux-kernel/20231130174126.688486-1-herve.codina@bootlin.com/
-> this v2 series mainly:
-> - Renames the workqueue used.
-> - Calls device_link_wait_removal() a bit later to handle cases reported
->   by Luca [1] and Nuno [2].
->   [1]: https://lore.kernel.org/all/20231220181627.341e8789@booty/
->   [2]: https://lore.kernel.org/all/20240205-fix-device-links-overlays-v2-2-5344f8c79d57@analog.com/
-> 
-> Best regards,
-> Hervé
-> 
-> Changes v1 -> v2
->   - Patch 1
->     Rename the workqueue to 'device_link_wq'
->     Add 'Fixes' tag and Cc stable
-> 
->   - Patch 2
->     Add device.h inclusion.
->     Call device_link_wait_removal() later in the overlay removal
->     sequence (i.e. in free_overlay_changeset() function).
->     Drop of_mutex lock while calling device_link_wait_removal().
->     Add	'Fixes'	tag and Cc stable
-> 
-> Herve Codina (2):
->   driver core: Introduce device_link_wait_removal()
->   of: overlay: Synchronize of_overlay_remove() with the devlink removals
-> 
->  drivers/base/core.c    | 26 +++++++++++++++++++++++---
->  drivers/of/overlay.c   |  9 ++++++++-
->  include/linux/device.h |  1 +
->  3 files changed, 32 insertions(+), 4 deletions(-)
-> 
+## Boot failures:
+No **new** boot failures seen for the stable-rc/linux-5.10.y commit hea=
+d \o/
+
+Tested-by: kernelci.org bot <bot@kernelci.org>
+
+Thanks,
+Shreeya Patel
+
 
