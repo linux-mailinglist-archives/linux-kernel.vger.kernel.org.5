@@ -1,84 +1,71 @@
-Return-Path: <linux-kernel+bounces-87421-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87423-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 777AE86D433
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:29:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 19D1186D43B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:29:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F0D01F23D26
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:29:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C1AAD1F23249
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:29:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A580A144034;
-	Thu, 29 Feb 2024 20:28:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D323A144021;
+	Thu, 29 Feb 2024 20:29:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TZx/Wzeb"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="OhCzDT6d"
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FD0913F447;
-	Thu, 29 Feb 2024 20:28:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B82CF1428E0;
+	Thu, 29 Feb 2024 20:29:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709238530; cv=none; b=DWiHfWIWkL21BSd13O3A445zlq3+f308CcdWQYrF4dGMdRC1yZQiAqv+LMnK/qlb6H6XI3mN3UHtNw1FcXW5jKQtWZyhkOC6gt/lYzHXK9kx+RDngOXtI2/eU7T9V2fE2EyI7PnS5BHRXx5WCoo77Y60htP0ODNuFI6JmzK7cz4=
+	t=1709238576; cv=none; b=uB3Smj8D9aD5oaxwg77wbTEzugZ0ZJPA3yBt2plEFohG0BMi7qlyxIDhFYLM0ZSuxBb7irb5bzWAwTKc/dSg9ieuF+VodbM4Q4d1K1ozF3wNOtYvigesMzvQQJZAWuB1n0cZ0wNGRYkGn+w2UJv+Y3txlstCks+izfABdBMaNb4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709238530; c=relaxed/simple;
-	bh=KFX1TCMwnm/yL0uHJIWoMdu2yhBd4riGw+GeL8KJaF8=;
+	s=arc-20240116; t=1709238576; c=relaxed/simple;
+	bh=L/s/b9tSVs9z239pdMRuvKxK6VQN+DzuuFGrb2AJ0Ws=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tLf6Rm0XP+wiedmqLtvkaKGEklpesdHk/N13nH8qWpYqTpSArT+FkgV5zzGVrP1qJurOaKrVwPqgQqvEKqYilokJe8/UfoWG50LsBdbiJQwN8/loJKLQ77gYo8CpoQ1VEDEjA20kWOlyKIJ+fzPlLc46qNi1bnd4DuQDaq6aMfc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TZx/Wzeb; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1dcafff3c50so11789845ad.0;
-        Thu, 29 Feb 2024 12:28:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709238528; x=1709843328; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9VSE+Pm8C/sEK5iU2pg56gusVe39c03R2dAi7lJgdVQ=;
-        b=TZx/Wzebt2rzqyXN8RSVDwErWQV+EpSbv0cWukYa+vzJ47b7HuolBnrNDuEyJJV3/8
-         9PHu54xTlIYaBce/cK4XhcKrBn5fU6ecnTuwCIBf1SqTBof3UunUuOYOiye6yMGibLZ+
-         MALgCvKQkKLyGd3YB+tunO8lIuHNdxHLhPksrmfTWHeHgDy/jbX3YkYfw9+SUPzFK8F4
-         56CeqVlDrv/DPuPBGHrqJbNRmdxfxRzYwNIbGB8Jm6WLiRrWfpQEwCfTkWpqO877VUFB
-         9xqCHl0yBqyi6xJh8YN+HaMqyzmNU/BakwraV61l5+bMZIgNP4fP32iYaJ1Vfo8d52ng
-         xLsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709238528; x=1709843328;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9VSE+Pm8C/sEK5iU2pg56gusVe39c03R2dAi7lJgdVQ=;
-        b=P2qFaIbgEK6UQIJRDNecCN4ewTB9QbphVH3IOd+1BEzyo/LI1Ko37ugDhz7iDZvL+o
-         aMh1Th2v8XsbVlicWBB44X+dWZ8H9upF8V8GXzneWHnF8HCdk48+pMunrmXy7hLcXOs2
-         bSYa8x4CIMBBbZDTu88z+3Oq6Q8m9aksSCd4X+rbwhzWfWKtBrxcYQUfK9vsHyeu8Tla
-         oA9AOt+G4AGoBbMCHjCvrZzUl/sOX3hupEW3CGY3S5av8w9EzkqXVmJ78waBmtfUok5F
-         g3pJFFXrCrk1ZQPzzoeA4DIKLLuDHYzHhIBDYUkKScOgMmfBlvSAAa1twzHbhE5kXbt6
-         jJOw==
-X-Forwarded-Encrypted: i=1; AJvYcCWscRtEyfDFGiT6+YSMKtBdWX3EkXzpTASRltdtFrF47bohggu/tqnsArvJUdEV7H53FVe3UKm6JYheer7ryNXiFrdR2t4LetVCNtUu2xEKy1jZIYRKqvkf1csxVCkWVaZijB5Y6LY9pusD9Wrksb+s/yI207OPT42s+MuckCX6yoFNayyRYI2j+i7VzHyLeHwfsyGkkXzj9xEm5Q==
-X-Gm-Message-State: AOJu0Yxw79B6FghOU5npwnZwnIbONjceC24J5g8g77zAbLm1XG1fVeDD
-	sKxM8HYcCgdvxzYifrklZlalDNrFo2hwjflj39kKrFDZzuvvJuQ4
-X-Google-Smtp-Source: AGHT+IGRU+IzisICIwXmJa1iH8rdoES4zwYMUZNyG1kCHKTbFlaZJKAx3cqhxR9JFJXiLqyuOKk7zg==
-X-Received: by 2002:a17:902:e811:b0:1dc:7856:2210 with SMTP id u17-20020a170902e81100b001dc78562210mr4168597plg.36.1709238527798;
-        Thu, 29 Feb 2024 12:28:47 -0800 (PST)
-Received: from localhost ([2620:10d:c090:400::5:8305])
-        by smtp.gmail.com with ESMTPSA id kw13-20020a170902f90d00b001dc90ac1cecsm1917293plb.284.2024.02.29.12.28.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 12:28:47 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Thu, 29 Feb 2024 10:28:45 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Xiongwei Song <xiongwei.song@windriver.com>
-Cc: longman@redhat.com, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-	corbet@lwn.net, vbabka@suse.cz, yosryahmed@google.com,
-	rostedt@goodmis.org, cl@linux.com, chengming.zhou@linux.dev,
-	zhengyejian1@huawei.com, cgroups@vger.kernel.org,
-	linux-mmc@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] cgroup/cpuset: Remove cpuset_do_slab_mem_spread()
-Message-ID: <ZeDo_U5j7N7sH_v0@slm.duckdns.org>
-References: <20240229142007.1278610-1-xiongwei.song@windriver.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=DmyT7Ll6Te7b6YU0msQpfHkEuZUfxbFgr5L0UwH1UI0IrMpDY52Je7vEjfGQ5W5CNVBxP430k/1e0U1NPX6YcMIqtU5mKldWK0sap+DXWCLQVL03AGwm7Ianhvsyp9DZhzn6ISYEC/1KWRvAeOATDttfsQs1EcgsTwQs/IDNsj4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=OhCzDT6d; arc=none smtp.client-ip=217.70.183.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id EF869FF802;
+	Thu, 29 Feb 2024 20:29:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709238570;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Xsz9d2+yFSQZeecH2hOJtT+4TSF8kgLSBhGXKWhoDpQ=;
+	b=OhCzDT6diyX9INg49zfgB6KwEWfdYjAzQMAaaMbxmHZ7yT1l6ewOG/X0HJ120MHMVo/Hw2
+	ZfOIUYhTiqAVHadjdJMmkzkbxIP3hV0y5nyrK40vRfXJfV2lRtS/dIoK5oRs3TEFYQ+FrC
+	pvDhHrPBDj6wx2nmTtjANKDIV1ovkCo5EWg+LU9ATvPEDVr6yDi19MIpYDmyBFTRIHJ2EF
+	Wgg1Cd4id6LQdh51SlsqUDlRZIgIhUDb+nEtNMFj2XOI5FAw4iVyl4vBI8ZTpYVmr8F5ZO
+	jFlEnUWaHt/p5RrZR8Mf47xH6KNbvdyJ3hb7TU0OFLOftZlrOlAXYAGlTMAKKg==
+Date: Thu, 29 Feb 2024 21:29:28 +0100
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Cc: Conor Dooley <conor@kernel.org>,
+	"antoniu.miclaus@analog.com" <antoniu.miclaus@analog.com>,
+	"robh+dt@kernel.org" <robh+dt@kernel.org>,
+	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+	"conor+dt@kernel.org" <conor+dt@kernel.org>,
+	"jdelvare@suse.com" <jdelvare@suse.com>,
+	"linux@roeck-us.net" <linux@roeck-us.net>,
+	"linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+	Zeynep Arslanbenzer <Zeynep.Arslanbenzer@analog.com>
+Subject: Re: [PATCH v8 2/2] dt-bindings: rtc: add max313xx RTCs
+Message-ID: <2024022920292837621a4f@mail.local>
+References: <20240227010312.3305966-1-chris.packham@alliedtelesis.co.nz>
+ <20240227010312.3305966-3-chris.packham@alliedtelesis.co.nz>
+ <20240228-embark-rimmed-d81bab3d42b8@spud>
+ <bd43a198-6287-40b2-be15-2734c5d2742d@alliedtelesis.co.nz>
+ <20240229-skeletal-ultimatum-27cd91e8d8a8@spud>
+ <b2ebc2a7-0347-40a0-8302-c84ba898fd16@alliedtelesis.co.nz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -87,24 +74,76 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240229142007.1278610-1-xiongwei.song@windriver.com>
+In-Reply-To: <b2ebc2a7-0347-40a0-8302-c84ba898fd16@alliedtelesis.co.nz>
+X-GND-Sasl: alexandre.belloni@bootlin.com
 
-On Thu, Feb 29, 2024 at 10:20:06PM +0800, Xiongwei Song wrote:
-> The SLAB allocator has been removed sine 6.8-rc1 [1], so there is no user
-> with SLAB_MEM_SPREAD and cpuset_do_slab_mem_spread(). Then SLAB_MEM_SPREAD
-> is marked as unused by [2]. Here we can remove
-> cpuset_do_slab_mem_spread(). For more details, please check [3].
+On 29/02/2024 20:11:16+0000, Chris Packham wrote:
 > 
-> [1] https://lore.kernel.org/linux-mm/20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz/
-> [2] https://lore.kernel.org/linux-kernel/20240223-slab-cleanup-flags-v2-0-02f1753e8303@suse.cz/T/
-> [3] https://lore.kernel.org/lkml/32bc1403-49da-445a-8c00-9686a3b0d6a3@redhat.com/T/#mf14b838c5e0e77f4756d436bac3d8c0447ea4350
+> On 1/03/24 07:07, Conor Dooley wrote:
+> > On Wed, Feb 28, 2024 at 08:21:35PM +0000, Chris Packham wrote:
+> >> On 29/02/24 00:58, Conor Dooley wrote:
+> >>> On Tue, Feb 27, 2024 at 02:03:10PM +1300, Chris Packham wrote:
+> >>>
+> >>>>      interrupts:
+> >>>> +    description:
+> >>>> +      Alarm1 interrupt line of the RTC. Some of the RTCs have two interrupt
+> >>>> +      lines and alarm1 interrupt muxing depends on the clockin/clockout
+> >>>> +      configuration.
+> >>>>        maxItems: 1
+> >>> The maxItems: 1 looks odd here when you state "some of the RTCs have two
+> >>> interrupt lines", which makes it sound as if there are actually two
+> >>> interrupts that should be exposed here. If those two interrupts get
+> >>> muxed to the same pin for output I'd suggest that you clarify that here.
+> >> This may end up changing if I can come up with something that Alexandre
+> >> is happy with. Basically (some of) the chips have a configurable pin
+> >> that can either be dedicated to the ALARM1 output (annoyingly labelled
+> >> as INTB) or to a clock output. There is an INTA line that has other
+> >> interrupts and if the clock output option is used then it also has
+> >> ALARM1. The driver doesn't currently do anything with the other
+> >> interrupt sources so as written this needs to correspond to whichever
+> >> interrupt output is asserted for ALARM1.
+> > So you're saying that depending on whether or not the clock output is
+> > used, there could be two interrupts?
+> Correct.
+> > Without looking further, it sounds like you should be setting maxItems
+> > to 1 if #clock-cells is present and to 2 if it is not.
+> My idea was an explicit property about the function of the INTB/CLKOUT 
+> pin. The current code does use #clock-cells as a proxy for this (and 
+> Alexandre has some concerns with how this is handled).
+
+#clock-cells must not be used for pinmuxing, I can't see how anyone
+would allow this.
+
+> >   Then if there are
+> > two interrupts provided, the driver is free to configure whatever way it
+> > wants. If there aren't, send everything to INTA.
+> >
+> > Am I missing something?
 > 
-> Signed-off-by: Xiongwei Song <xiongwei.song@windriver.com>
+> Right now the only interrupt that the RTC cares about is for ALARM1 
+> (which moves between INTA and INTB depending on the clock config). There 
+> are other hardware events and an ALARM2 that can generate an interrupt 
+> but these are ignored. I don't think the rtc framework supports more 
+> than one alarm.
+> 
+> Binding wise I think this should take 1 or 2 interrupts. For simplicity 
+> the first interrupt should always correspond to ALARM1 (which could be 
+> INTB or INTA depending on the hardware design). The 2nd interrupt (if 
+> supplied) would be for the other events (which we don't currently do 
+> anything with).
 
-Applied to cgroup/for-6.9.
+Not using an interrupt simply means the CPU doesn't care about it but
+there are other components that may care for example a PMIC. If you
+reason about what linux and the CPU it is running on can do, you will
+cripple functionality and we will have to break the devicetree binding
+later on to restore it.
+We need to be able to express all the possible pin configurations with
+the binding. I'm not sure why everyone is so resistant to use pinmuxing
+to mux pins....
 
-Thanks.
 
 -- 
-tejun
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
