@@ -1,74 +1,105 @@
-Return-Path: <linux-kernel+bounces-86134-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86136-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5730886C024
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 06:22:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D770E86C03D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 06:31:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DB80AB24439
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 05:22:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 155B51C21271
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 05:31:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 872CC39FD4;
-	Thu, 29 Feb 2024 05:22:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="vm1E9n6H"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83C3136AE1
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 05:22:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC6103A8F7;
+	Thu, 29 Feb 2024 05:31:46 +0000 (UTC)
+Received: from mx9.didiglobal.com (mx9.didiglobal.com [111.202.70.124])
+	by smtp.subspace.kernel.org (Postfix) with SMTP id 192CA3A28D;
+	Thu, 29 Feb 2024 05:31:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=111.202.70.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709184157; cv=none; b=cUzyzNFsHIM5NiIQoGtqhCz2++jtkDSXcgkQrWGpVlF0CnD6gB+gCRttg6rpEFNrGT1PgsLz28+z648EdqCRh5g/ZewrnITfMrojh9HadPapgKV1WvIstSTT0LXPVq2nbsbXosUBVokcZXyHiHPDU+dGFuGMScir0E8hH8dlwwA=
+	t=1709184706; cv=none; b=PFI/jDW9ISHqKRptjXoJM8KIjP1JlKhuClsm8yuP2Eh/KZgExR7eamvN9QWvkXfcvAx8ZHy6SfMSZ82/qa6XC94Ybnlpudowz3ECF5bmCBfoEdO68F7UtnMH8MPBVCCTXhyPlsrAOUi58wwmfyhC6/4pdMiJPD4SX2jVqY7+8ZY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709184157; c=relaxed/simple;
-	bh=oNX4WDKOi3u73StaYCbLq0KirwMdi79LCSisLZhHFs0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XM7zRtVP+P0J+pYKEgFjsU6IsSySImBL5VxxXbhGePe4pdCNhAnFJNX69mfhM0KGHagrlBcmOX2JjaJnNPKRj/pNZpB22qyK9ERXkebMJ1hsNciBmrR20fQytClDx202jG/9HoJLoy2hbvDRLDdBIWMJMgwB4T11Q/Eey2/5oUg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=vm1E9n6H; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE86AC433F1;
-	Thu, 29 Feb 2024 05:22:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1709184157;
-	bh=oNX4WDKOi3u73StaYCbLq0KirwMdi79LCSisLZhHFs0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=vm1E9n6HG2cBM66J7owZRDiH3B2WO2f54gxMPbNz9Qud89pY6N6/+whuUIpqjmKvz
-	 RakEwfWQrgUMfphSKQ7WsUVYHW0KazLAvHyD+7cxQr/AHXxgkZN1qrHV56JdMYT2cV
-	 7AG2Ihsn3+/d13Eu20FsFFNTF/PvTv7d/WMsTzlE=
-Date: Thu, 29 Feb 2024 06:22:34 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Michal Hocko <mhocko@suse.com>
-Cc: cve@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: CVE-2021-46966: ACPI: custom_method: fix potential
- use-after-free issue
-Message-ID: <2024022902-prancing-judgingly-c9ee@gregkh>
-References: <2024022720-CVE-2021-46966-1469@gregkh>
- <Zd9b3qpu3uLFP-eN@tiehlicka>
+	s=arc-20240116; t=1709184706; c=relaxed/simple;
+	bh=ItNNI5PI2/YfqekAfeRz73Do4tEfWpAAJlwE9t9osO4=;
+	h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=l5a/Y35iPu3p5DXLRl7KueenygWiVQnbUFUtbhBjFgcw8sijHxMmrdCwKI+6zEv95js3+xDuIfOUxS/JXEX/tXD3Eybxs+dKoK62+rd4ssFYWLJ1R6L7jKi1JIafpXBSxkgQCokGDq8EWr8ZLHQ+bQhqxePG0MwAmPaEnw7ZcpE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=didiglobal.com; spf=pass smtp.mailfrom=didiglobal.com; arc=none smtp.client-ip=111.202.70.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=didiglobal.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=didiglobal.com
+Received: from mail.didiglobal.com (unknown [10.79.65.12])
+	by mx9.didiglobal.com (MailData Gateway V2.8.8) with ESMTPS id 6D60D1875C42A1;
+	Thu, 29 Feb 2024 13:28:31 +0800 (CST)
+Received: from didi-ThinkCentre-M920t-N000 (10.79.64.101) by
+ ZJY02-ACTMBX-02.didichuxing.com (10.79.65.12) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 29 Feb 2024 13:28:30 +0800
+Date: Thu, 29 Feb 2024 13:28:22 +0800
+X-MD-Sfrom: fuyuanli@didiglobal.com
+X-MD-SrcIP: 10.79.65.12
+From: fuyuanli <fuyuanli@didiglobal.com>
+To: <edumazet@google.com>
+CC: <rostedt@goodmis.org>, <mhiramat@kernel.org>,
+	<mathieu.desnoyers@efficios.com>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
+	<fuyuanli@didiglobal.com>
+Subject: [PATCH] tcp: Add skb addr and sock addr to arguments of tracepoint
+ tcp_probe.
+Message-ID: <20240229052813.GA23899@didi-ThinkCentre-M920t-N000>
+Mail-Followup-To: edumazet@google.com, rostedt@goodmis.org,
+	mhiramat@kernel.org, mathieu.desnoyers@efficios.com,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, fuyuanli@didiglobal.com
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <Zd9b3qpu3uLFP-eN@tiehlicka>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: ZJY02-PUBMBX-01.didichuxing.com (10.79.65.31) To
+ ZJY02-ACTMBX-02.didichuxing.com (10.79.65.12)
 
-On Wed, Feb 28, 2024 at 05:14:22PM +0100, Michal Hocko wrote:
-> Hi,
-> this seems like another example of a reasonable fix with a very dubious
-> CVE IMHO. Allowing access to /sys/kernel/debug/acpi/custom_method to
-> anybody but trusted actor is a huge security problem on its own. I
-> really fail to see any value marking this clear bug fix as security
-> related.
+It is useful to expose skb addr and sock addr to user in tracepoint
+tcp_probe, so that we can get more information while monitoring
+receiving of tcp data, by ebpf or other ways.
 
-It was picked because it was a use-after-free fix, AND it is part of the
-"import the GSD database into the CVE database" that the CVE project
-asked us to do.
+For example, we need to identify a packet by seq and end_seq when
+calculate transmit latency between lay 2 and lay 4 by ebpf, but which is
+not available in tcp_probe, so we can only use kprobe hooking
+tcp_rcv_esatblised to get them. But we can use tcp_probe directly if skb
+addr and sock addr are available, which is more efficient.
 
-thanks,
+Signed-off-by: fuyuanli <fuyuanli@didiglobal.com>
+---
+ include/trace/events/tcp.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-greg k-h
+diff --git a/include/trace/events/tcp.h b/include/trace/events/tcp.h
+index 7b1ddffa3dfc..096c15f64b92 100644
+--- a/include/trace/events/tcp.h
++++ b/include/trace/events/tcp.h
+@@ -258,6 +258,8 @@ TRACE_EVENT(tcp_probe,
+ 		__field(__u32, srtt)
+ 		__field(__u32, rcv_wnd)
+ 		__field(__u64, sock_cookie)
++		__field(const void *, skbaddr)
++		__field(const void *, skaddr)
+ 	),
+ 
+ 	TP_fast_assign(
+@@ -285,6 +287,9 @@ TRACE_EVENT(tcp_probe,
+ 		__entry->ssthresh = tcp_current_ssthresh(sk);
+ 		__entry->srtt = tp->srtt_us >> 3;
+ 		__entry->sock_cookie = sock_gen_cookie(sk);
++
++		__entry->skbaddr = skb;
++		__entry->skaddr = sk;
+ 	),
+ 
+ 	TP_printk("family=%s src=%pISpc dest=%pISpc mark=%#x data_len=%d snd_nxt=%#x snd_una=%#x snd_cwnd=%u ssthresh=%u snd_wnd=%u srtt=%u rcv_wnd=%u sock_cookie=%llx",
+-- 
+2.17.1
+
 
