@@ -1,287 +1,116 @@
-Return-Path: <linux-kernel+bounces-86558-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86559-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 825AE86C70A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:36:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B962F86C70E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:37:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B6141F22493
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:36:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4459A286566
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:37:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D761679DA6;
-	Thu, 29 Feb 2024 10:36:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44F2279DCD;
+	Thu, 29 Feb 2024 10:36:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="s3MDGWeD"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TvCjNs+C"
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 380E779DA4;
-	Thu, 29 Feb 2024 10:36:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01D857995E;
+	Thu, 29 Feb 2024 10:36:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709202999; cv=none; b=lu8Vgj54yiWWe50fWb4cytv+p3AGYHemIuGqP6bfJM+1OuF0ayS6kROEtdMhf980SANMbKI8x7q82rBXSc2zmXKHED+jVCaG2qSbYL1KTu1VaSgYJFJJdptqql7gf7FTumoT8Ee0+ijm1hufFFoyZvO7PpNxNqeK5qPkZjxj9Tc=
+	t=1709203018; cv=none; b=FoyCb9BT6pRRcqfuMUniWmNx5W2lEtPiYzifamjaPag4qPQPoDSIzl56imp6pDcxRZyEg1yi7B7WS4qdaopxKrmGaj5R18maCWyYOfGwWUxphwD798LOkcsDKhM0AKwQgXAqio3y2DVgY06qxBgDUO8uJga/PASW9YVjzc0k33w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709202999; c=relaxed/simple;
-	bh=3aSzZhGz+bpRWbINAdnEu5co1kMfKQnkYjethc3a530=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HPCtKGIcBqlXDbHjAtEAKFR40W3haMZzrj40e9AbanIEsaOJl7iKJIvCwxOwBF69xBUCDqVZP8HRoiDXUk4SK/LVaYMDXKbsgsIgRqWmXeEx06QBlpy4b1SDwKwb4cTctzjIQBbs/M/+uuRGQQ3hJmGxhknC6n/JbiDvmXB0xf8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=s3MDGWeD; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709202996;
-	bh=3aSzZhGz+bpRWbINAdnEu5co1kMfKQnkYjethc3a530=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=s3MDGWeDkPkdarXIbAj9oa1fTy4TyYyv1ES/5Qccvw4OYaontwWZw5LVY3yNIfSHC
-	 p2/GPav+EaFfbFglfPuhzt8m1XYa7kDXcugOyCdQx3FS8tVobd5Cp14+esygYMdbm+
-	 UCpIX/2M+JlRGf6A1eDfAR59/l/qGxQTvbisXNBtrBsDJfaFeYTjaujsH33hbBrHlD
-	 +tsgfwyW8V5xdXREtR4Ym4wcI/RCPPTcOBZuHPG35+f2H61Dpra3FYR6i/1WtjHJy2
-	 +tQKbA+JWmqg5/lNLT9y+MkwSZ2fU1MDYgE+08zstDChJ0iqbvEMcAw5iQTErYUi5r
-	 XmGrAsA9qEkWg==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id BB4913780029;
-	Thu, 29 Feb 2024 10:36:35 +0000 (UTC)
-Message-ID: <dfdc6a65-3ccf-463c-95df-093f3c2fefd3@collabora.com>
-Date: Thu, 29 Feb 2024 11:36:34 +0100
+	s=arc-20240116; t=1709203018; c=relaxed/simple;
+	bh=Bsbvr0XH+zc8GCj+JI/JzIn86gN+UlJQiaX4Au6r7U8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HtDi2TpLhTVc3wVeN0M8C0hlKJMWqps42foff0gCLqN56rLg2ZqAf+qlxyEPmC58gRXn3j+OApBgO9X5oOvqJSNrYJ8O9ISi8LT7uROFsFtLWk6ulCAhpNnx8e6jhs959e2CIen1lS6kpHNgK13SVo/hcSK5V9nK1wVLpWBk1b0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TvCjNs+C; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-565b434f90aso1128588a12.3;
+        Thu, 29 Feb 2024 02:36:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709203015; x=1709807815; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=H1NlY8tMN7P2Y6bWlORzMKpAclH/YyADf97OHECAI4Q=;
+        b=TvCjNs+COqu/8jhd2Q+IWnTyg9nvyegB1GT8+SXzmiNcrNWjd8Z77pD/9sWB5WAYwd
+         /cJ0VbdJaghZPWd0wNzojy7QsZxQagHTm9k5WcRZ9+631/ZsqQZRT7Yb0pdkaaV5y+xo
+         QXeyLfvv6qhVFvg/0d7uRbI48C1yuKYLHWkPuDN/xw+kPsQTGprVJI7IyiYUU2r8xMtQ
+         OniIsRoR8nBxAHhmvI1zpJmo7lMysNAAT/yoM5148ZjpVRIflvxRjZE/tNPPdLs6VRus
+         3kprKC0rQvKUH3GV/TZJOR95aB3HIVxVQ78N1cqjBu/7A59wLkgME5yrYAI6bWwJcsUf
+         xU/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709203015; x=1709807815;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=H1NlY8tMN7P2Y6bWlORzMKpAclH/YyADf97OHECAI4Q=;
+        b=imEv6GcUKuru8htq1mX52G9TgECvK17/YgyOLB2L6lqkq2NLDYMOSBlX4Tjq30hY26
+         A/P2IEVd0x35CZcZ/WOkDHXPJt1qjFeBSBd3PLBNTrykX65UYTanDXyQpxqOR7dFU7un
+         M25anddkQrOTtosoG5kFrLufsivivLXHSpniWK+KFrfRVS6jtMl3Gz8pEdo54msxv26i
+         9SFObTG70AtV98fDZsCXX9KjugiY+2EIHRS4sE11ZflNFAG8jt/yy8RKYKwPBRsZxKpI
+         dXORoTF7EXU6+j0DlJ1PLqNqXc8fGfmk//QAaKF5cqWcJrJoaAugZvImpRUMuqvHEDwM
+         O85g==
+X-Forwarded-Encrypted: i=1; AJvYcCXV6B9yFUfZDGSnbSW+kWOTmPOJ2X6X99aBFZf7nUUqDlYO3szj4QniVHnGuJMSpaF4CdE+bceUnpPEBuNAWXpUgsE2kVphkwV6E/GOmFpHxr5ouU0xtlr3pPVxIAyN0B4WAXggBNAQNDbXjL+HRuria+jn+zS0fJV0sxtW0DWb/+m44ZZ/okLLsxCY1dETIjwlQY3dYqm5Wb2X8FNRZ2d5S/Tv
+X-Gm-Message-State: AOJu0YzmX7FmQC71iN/Bs3y3RRAZppLmLADgAlNe12+54nwxLxpIP7O0
+	LA6D7YbUhb0XYWBuYgS515cS/zckle04ok0tH19IKymqU+VBaF10vAgNVM9Rq6kgRcxxbaWn/ew
+	sTpJOb0c5zwjM0xLhz/FMqGWHzMBcYdFp/No=
+X-Google-Smtp-Source: AGHT+IGjKN7QsUcypeAA5SHqe0dGglsBIpMg+8XvC9BB3DHUw1Cx+eFzkMZiBo687XNl2n8mZmBho32y+QVbvKVpSLw=
+X-Received: by 2002:a17:906:278e:b0:a3f:c4f9:eb16 with SMTP id
+ j14-20020a170906278e00b00a3fc4f9eb16mr1185894ejc.20.1709203015072; Thu, 29
+ Feb 2024 02:36:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/2] clk: mediatek: Introduce need_pm_runtime to
- mtk_clk_desc
-Content-Language: en-US
-To: Chen-Yu Tsai <wenst@chromium.org>
-Cc: Pin-yen Lin <treapking@chromium.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
- Weiyi Lu <weiyi.lu@mediatek.com>, linux-kernel@vger.kernel.org,
- linux-clk@vger.kernel.org, linux-mediatek@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
-References: <20240108081834.408403-1-treapking@chromium.org>
- <CAGXv+5EnBt+7WrNb-QyziEaCihvjhFVf2tpzk=XyAoeELqucaw@mail.gmail.com>
- <e0e6febf-1045-49f8-a200-8bc095b0fa50@collabora.com>
- <CAGXv+5F5YFRKjaXu_XbXrUhqKL0NSRyt6tniQYfhRh+fsaxqmg@mail.gmail.com>
- <cc74422d-962f-4da5-867b-158a71db1a7b@collabora.com>
- <CAGXv+5EyRROsh_=J1Fg4K+ZgfkERF4dh4R6WoGw9MnTBMNUCgQ@mail.gmail.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <CAGXv+5EyRROsh_=J1Fg4K+ZgfkERF4dh4R6WoGw9MnTBMNUCgQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240229030743.9125-1-lukas.bulwahn@gmail.com> <87plwf8t3p.fsf@intel.com>
+In-Reply-To: <87plwf8t3p.fsf@intel.com>
+From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date: Thu, 29 Feb 2024 11:36:43 +0100
+Message-ID: <CAKXUXMzySDQfuF7+AY77hXQbP0GuNMwdTrx6w_1ZP5R4O4kNqw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] docs: submit-checklist: structure by category
+To: Jani Nikula <jani.nikula@intel.com>
+Cc: Jonathan Corbet <corbet@lwn.net>, Randy Dunlap <rdunlap@infradead.org>, workflows@vger.kernel.org, 
+	linux-doc@vger.kernel.org, kernel-janitors@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Il 29/02/24 11:34, Chen-Yu Tsai ha scritto:
-> On Thu, Feb 29, 2024 at 5:45 PM AngeloGioacchino Del Regno
-> <angelogioacchino.delregno@collabora.com> wrote:
->>
->> Il 29/02/24 08:17, Chen-Yu Tsai ha scritto:
->>> On Mon, Feb 26, 2024 at 7:16 PM AngeloGioacchino Del Regno
->>> <angelogioacchino.delregno@collabora.com> wrote:
->>>>
->>>> Il 23/02/24 05:27, Chen-Yu Tsai ha scritto:
->>>>> On Mon, Jan 8, 2024 at 4:18 PM Pin-yen Lin <treapking@chromium.org> wrote:
->>>>>>
->>>>>> Introduce a new need_pm_runtime variable to mtk_clk_desc to indicate
->>>>>> this clock controller needs runtime PM for its operations.
->>>>>> Also do a runtime PM get on the clock controller during the
->>>>>> probing stage to workaround a possible deadlock.
->>>>>>
->>>>>> Signed-off-by: Pin-yen Lin <treapking@chromium.org>
->>>>>
->>>>> Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
->>>>>
->>>>> The patch itself looks fine.
->>>>>
->>>>> Besides the MT8183 MFG clock issues, we do actually need this for the
->>>>> MT8192 ADSP clock. Its power domain is not enabled by default.
->>>>>
->>>>
->>>> ...but on MT8195 the ADSP clock works - because the ADSP node exists.
->>>
->>> That's an indirect dependency that should not be relied on. Say the clock
->>> driver probed but the ADSP hasn't, and you try to read out the current
->>> status. What would happen?
->>>
->>> - Read out works fine, because the power domain is default on, and hasn't
->>>     been turned off by late cleanup
->>> - Read out is bogus (but you can't tell)
->>> - Read out hangs.
->>>
->>> The third is what happens on MT8192. There's still some issues on that
->>> front, as even after I applied the ADSP power domain patches from MediaTek,
->>> the readout was still hanging.
->>>
->>
->> That MT8192 lockup story is getting crazy in my head... anyway, besides that,
->> I get the point - I was somehow ignoring the fact that kernel modules do exist.
->>
->> Eh, sorry about that :-)
->>
->>>> This poses a question: should we make clock controllers depend on power domains,
->>>> or should we keep everything powered off (hence clocks down - no power consumption)
->>>> *unless* the user exists?
->>>
->>> That's a policy discussion separate from actual hardware dependencies.
->>> *If* the clock controller needs the power domain to be active for the
->>> registers to be accessed, the clock controller *must* have a direct
->>> dependency on the power domain.
->>>
->>
->> I admit I should've worded that better.
->>
->> "should we make clock controllers depend on power domains" was actually implying
->> "IF those need one" :-)
->>
->> I really wonder if - at this point - it's simply a better idea to not restrict
->> the call to devm_pm_runtime_enable/resume_and_get to `need_runtime_pm == true`.
->>
->> Do we really need to exclude that on other clock controllers that don't have
->> any power domain dependency? Any side effect?
->>
->> Saying this because if we can avoid yet another per-SoC flag I'm really happy,
->> as readability is also impacted and besides - if we ever find out that one of
->> those need a power domain in the future, we'll need just one commit and just
->> only in the devicetree, instead of enabling a flag in driver X as well as that,
->> avoiding some (potentially unnecessary) noise... I guess.
->>
->> P.S.: I just noticed that the return value for the devm_pm_runtime_enable() call
->>         is not being checked!
->>
->> .......
->>
->> In short....
->>
->> Chen-Yu, at this point, do you have any reason why we wouldn't be able and/or it
->> wouldn't be a good idea to just avoid adding the `need_runtime_pm` flag (meaning
->> that we perform pm_runtime calls for all clock drivers unconditionally)?
->>
->> If this is about longer boot time, I don't think that it's going to be more than
->> a millisecond or two, so that should be completely ignorable.
-> 
-> I think it's just more of a "don't enable features you don't need" thing.
-> We already ran into a weird deadlock, which is why the devm_pm_runtime_enable()
-> call has that comment.
-> 
-> I don't think anyone has actually looked at it. As you said it shouldn't be
-> much, at least during boot time. It's one call per clock controller.
-> 
->> Can you please do a test for that, or should I?
-> 
-> The earliest I can work on it would be some time next week. Does that work
-> for you?
-> 
+On Thu, Feb 29, 2024 at 11:25=E2=80=AFAM Jani Nikula <jani.nikula@intel.com=
+> wrote:
+>
+> On Thu, 29 Feb 2024, Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+> > from Jani Nikula:
+> >   - turn categories into subheadings
+> >   - use common heading adornment
+> >   - change to bullet or autonumbered lists
+> >   - propose those changes as separate additional patches
+>
+> I was hoping these cleanups would've come *first*, but up to Jon to
+> decide if that really matters.
+>
 
-The earliest I'd be able to work on this myself would be at the end of next
-week if not later.. so yes, please take your time, no worries.
+I see, changing to autonumbered lists could be done before, but the
+subheadings only exist once reordered.
 
-Thank you!
+I am still in favor of the squashed commit: we are talking about a
+very small document that central content has not been touched for a
+long time. It is not code, where someone would bisect into. So, the
+history does not need to carry every single stylistic change as yet
+another commit.
 
-> ChenYu
-> 
->> Cheers
->> Angelo
->>
->>>> For the second one, this means that the *device* gets the power domain (adsp), and
->>>> not the clock controller (which clocks are effectively useless if there's no user).
->>>
->>> No. See my previous paragraph.
->>>
->>> ChenYu
->>>
->>>> Angelo
->>>>
->>>>>> ---
->>>>>>
->>>>>> Changes in v3:
->>>>>> - Update the commit message and the comments before runtime PM call
->>>>>>
->>>>>> Changes in v2:
->>>>>> - Fix the order of error handling
->>>>>> - Update the commit message and add a comment before the runtime PM call
->>>>>>
->>>>>>     drivers/clk/mediatek/clk-mtk.c | 19 +++++++++++++++++++
->>>>>>     drivers/clk/mediatek/clk-mtk.h |  2 ++
->>>>>>     2 files changed, 21 insertions(+)
->>>>>>
->>>>>> diff --git a/drivers/clk/mediatek/clk-mtk.c b/drivers/clk/mediatek/clk-mtk.c
->>>>>> index 2e55368dc4d8..ba1d1c495bc2 100644
->>>>>> --- a/drivers/clk/mediatek/clk-mtk.c
->>>>>> +++ b/drivers/clk/mediatek/clk-mtk.c
->>>>>> @@ -13,6 +13,7 @@
->>>>>>     #include <linux/of.h>
->>>>>>     #include <linux/of_address.h>
->>>>>>     #include <linux/platform_device.h>
->>>>>> +#include <linux/pm_runtime.h>
->>>>>>     #include <linux/slab.h>
->>>>>>
->>>>>>     #include "clk-mtk.h"
->>>>>> @@ -494,6 +495,18 @@ static int __mtk_clk_simple_probe(struct platform_device *pdev,
->>>>>>                            return IS_ERR(base) ? PTR_ERR(base) : -ENOMEM;
->>>>>>            }
->>>>>>
->>>>>> +
->>>>>> +       if (mcd->need_runtime_pm) {
->>>>>> +               devm_pm_runtime_enable(&pdev->dev);
->>>>>> +               /*
->>>>>> +                * Do a pm_runtime_resume_and_get() to workaround a possible
->>>>>> +                * deadlock between clk_register() and the genpd framework.
->>>>>> +                */
->>>>>> +               r = pm_runtime_resume_and_get(&pdev->dev);
->>>>>> +               if (r)
->>>>>> +                       return r;
->>>>>> +       }
->>>>>> +
->>>>>>            /* Calculate how many clk_hw_onecell_data entries to allocate */
->>>>>>            num_clks = mcd->num_clks + mcd->num_composite_clks;
->>>>>>            num_clks += mcd->num_fixed_clks + mcd->num_factor_clks;
->>>>>> @@ -574,6 +587,9 @@ static int __mtk_clk_simple_probe(struct platform_device *pdev,
->>>>>>                            goto unregister_clks;
->>>>>>            }
->>>>>>
->>>>>> +       if (mcd->need_runtime_pm)
->>>>>> +               pm_runtime_put(&pdev->dev);
->>>>>> +
->>>>>>            return r;
->>>>>>
->>>>>>     unregister_clks:
->>>>>> @@ -604,6 +620,9 @@ static int __mtk_clk_simple_probe(struct platform_device *pdev,
->>>>>>     free_base:
->>>>>>            if (mcd->shared_io && base)
->>>>>>                    iounmap(base);
->>>>>> +
->>>>>> +       if (mcd->need_runtime_pm)
->>>>>> +               pm_runtime_put(&pdev->dev);
->>>>>>            return r;
->>>>>>     }
->>>>>>
->>>>>> diff --git a/drivers/clk/mediatek/clk-mtk.h b/drivers/clk/mediatek/clk-mtk.h
->>>>>> index 22096501a60a..c17fe1c2d732 100644
->>>>>> --- a/drivers/clk/mediatek/clk-mtk.h
->>>>>> +++ b/drivers/clk/mediatek/clk-mtk.h
->>>>>> @@ -237,6 +237,8 @@ struct mtk_clk_desc {
->>>>>>
->>>>>>            int (*clk_notifier_func)(struct device *dev, struct clk *clk);
->>>>>>            unsigned int mfg_clk_idx;
->>>>>> +
->>>>>> +       bool need_runtime_pm;
->>>>>>     };
->>>>>>
->>>>>>     int mtk_clk_pdev_probe(struct platform_device *pdev);
->>>>>> --
->>>>>> 2.43.0.472.g3155946c3a-goog
->>>>>>
->>>>
->>>>
->>>>
->>
->>
->>
+Jani, I can do what you are asking for---but it is certainly going to
+take yet a few hours to have the commits exactly into that form of
+stylistic changes.
 
+Let us see what Jon thinks.
+
+Lukas
 
