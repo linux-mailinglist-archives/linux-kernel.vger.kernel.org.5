@@ -1,108 +1,127 @@
-Return-Path: <linux-kernel+bounces-86841-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86844-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92B1986CB8C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:28:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B53D86CB9B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:29:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B98A284055
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:28:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D6651C21961
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:29:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D18B1350EF;
-	Thu, 29 Feb 2024 14:27:53 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 600C712E1E3;
-	Thu, 29 Feb 2024 14:27:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B74371361A1;
+	Thu, 29 Feb 2024 14:29:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bZjMd6Nj"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 712F2130AC1
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 14:29:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709216873; cv=none; b=q5psmjm14rNFne1/9MM5EsPZ82AM6jb3nUUcdOTH8KrfBrucbH1nI3uN5lUz1i6p3imnXKS76Xvir2Oc39R76yGydDUVEbzWLNXCcMmtLnqLI6BOvX8Tvp0WCOZFfyYoXfsG4zapyctdhMiUEEoil0EqiEF4vcFtpLCbWctPdAQ=
+	t=1709216983; cv=none; b=LCqlidPCTtsDwsfhOdCSSpaXUOPNJ/I4lWCiMxSHpB9WYijFeRsTS9oFMjHJ1YmtjvaOw0F+Bw0tvdZu/VHMlRIHW+fc+fLXJ6PL5/0DpBysiU9mFFG3fqSWNTf5p86eVWlepIEh0mqg8G/5cbjidFtyR1BCTwSGrF6LWqQSGeo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709216873; c=relaxed/simple;
-	bh=mLugH3aooFG4/leFki5Lw96GURVocZkDSRqqnTwtSOU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gloHkOkrpJvwkTaac0ypU2XppV6zw4SiK2l/dyT0GWysnc21ck+DhPwwFnl9fQWIGL+Mh/BqBOfQqnXtD13NPBrvtlGm97FVe0RDiqANeJwrXamo7DL8Gy5dq9U/wIbOjF3Uy0gkuiPaAOkt0XaRwFf/Mq3h6AaLXsobmVsXfIs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8B09B1FB;
-	Thu, 29 Feb 2024 06:28:29 -0800 (PST)
-Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6FDBA3F6C4;
-	Thu, 29 Feb 2024 06:27:48 -0800 (PST)
-Date: Thu, 29 Feb 2024 14:27:45 +0000
-From: Sudeep Holla <sudeep.holla@arm.com>
-To: Sibi Sankar <quic_sibis@quicinc.com>
-Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Sudeep Holla <sudeep.holla@arm.com>, <cristian.marussi@arm.com>,
-	<andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-	<jassisinghbrar@gmail.com>, <robh+dt@kernel.org>,
-	<krzysztof.kozlowski+dt@linaro.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-	<quic_rgottimu@quicinc.com>, <quic_kshivnan@quicinc.com>,
-	<conor+dt@kernel.org>, Amir Vajid <avajid@quicinc.com>
-Subject: Re: [RFC 4/7] soc: qcom: Utilize qcom scmi vendor protocol for bus
- dvfs
-Message-ID: <ZeCUYVnZ8ZTRBobV@bogus>
-References: <20240117173458.2312669-1-quic_sibis@quicinc.com>
- <20240117173458.2312669-5-quic_sibis@quicinc.com>
- <CAA8EJpr8qLZ8Y7PjU05ZoxSHWOf=q-KtM+s-tnR5X2t96rFWhw@mail.gmail.com>
- <0adaa065-3883-ebfe-8259-05ebdbd821eb@quicinc.com>
+	s=arc-20240116; t=1709216983; c=relaxed/simple;
+	bh=K4+fbJQvKKYfXr6QSBPwM7KmLB+wWWg+oWBZ19i7qns=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=H5FkM2IMgkpQie0zCXaMDm801GuAP4cAi6+ScWyD/XBUwPHcmjhcx6dy5ksziLIRj02dF9CQVOsx0vMcpm7lu7aTgwm63I3ik1xCarZUzscBPEVM9HG7GOWSAAjTrMNPuKpf83+zhGznYuTpZQ4qmV4fMgzKTHBnjsUFWZNoDJM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bZjMd6Nj; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709216980;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=iiT3XNyZUH95vAKW5douxdlTZiY7Es2dmDaVN90xKxw=;
+	b=bZjMd6NjoqN22IXp0Hw1kGP8kyw7zWBqsZaiyLuXU9sQuhL7/nTKKnpoyrbgb4xafCfyLi
+	QItzu+vuKxVyUhRBTERP/YYglMLG7tBeghbGUMgItXxd5M4B35k9pNHStXJf7hYahjgJ6S
+	XumN6ckoeF6Q6YY0fTKKHWO3BfJ6ymg=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-214-MR_t1szwNcy432pLgrTpJA-1; Thu, 29 Feb 2024 09:29:35 -0500
+X-MC-Unique: MR_t1szwNcy432pLgrTpJA-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6338F85A599;
+	Thu, 29 Feb 2024 14:29:31 +0000 (UTC)
+Received: from [10.22.8.117] (unknown [10.22.8.117])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 36B2D492BE2;
+	Thu, 29 Feb 2024 14:29:30 +0000 (UTC)
+Message-ID: <90394965-e2a4-4915-a717-eef75f660dfb@redhat.com>
+Date: Thu, 29 Feb 2024 09:29:29 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0adaa065-3883-ebfe-8259-05ebdbd821eb@quicinc.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] cgroup/cpuset: Remove cpuset_do_slab_mem_spread()
+Content-Language: en-US
+To: Xiongwei Song <xiongwei.song@windriver.com>, lizefan.x@bytedance.com,
+ tj@kernel.org, hannes@cmpxchg.org, corbet@lwn.net
+Cc: vbabka@suse.cz, yosryahmed@google.com, rostedt@goodmis.org, cl@linux.com,
+ chengming.zhou@linux.dev, zhengyejian1@huawei.com, cgroups@vger.kernel.org,
+ linux-mmc@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240229142007.1278610-1-xiongwei.song@windriver.com>
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <20240229142007.1278610-1-xiongwei.song@windriver.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 
-On Mon, Feb 12, 2024 at 03:54:27PM +0530, Sibi Sankar wrote:
-> 
-> 
-> On 1/18/24 02:11, Dmitry Baryshkov wrote:
-> > On Wed, 17 Jan 2024 at 19:36, Sibi Sankar <quic_sibis@quicinc.com> wrote:
-> > > 
-> > > From: Shivnandan Kumar <quic_kshivnan@quicinc.com>
-> > > 
-> > > This patch introduces a client driver that interacts with the SCMI QCOM
-> > 
-> > git grep This.patch Documentation/process/
-> > 
-> > > vendor protocol and passes on the required tuneables to start various
-> > > features running on the SCMI controller.
-> > 
-> > Is there any word about the 'memlat'? No. Unless one  reads into the
-> > patch, one can not come up with the idea of what is being introduced.
-> 
-> ack, will fix it in the re-spin.
-> 
-> > 
-> > > 
-> > > Signed-off-by: Shivnandan Kumar <quic_kshivnan@quicinc.com>
-> > > Co-developed-by: Ramakrishna Gottimukkula <quic_rgottimu@quicinc.com>
-> > > Signed-off-by: Ramakrishna Gottimukkula <quic_rgottimu@quicinc.com>
-> > > Co-developed-by: Amir Vajid <avajid@quicinc.com>
-> > > Signed-off-by: Amir Vajid <avajid@quicinc.com>
-> > > Co-developed-by: Sibi Sankar <quic_sibis@quicinc.com>
-> > > Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
-> > > ---
-> > >   drivers/soc/qcom/Kconfig            |  10 +
-> > >   drivers/soc/qcom/Makefile           |   1 +
-> > >   drivers/soc/qcom/qcom_scmi_client.c | 486 ++++++++++++++++++++++++++++
-> > 
-> > Should it go to drivers/firmware/arm_scmi instead? Or maybe to drivers/devfreq?
-> 
-> I don't think it should go into arm_scmi unless Sudeep wants it there.
 
-I won't comment or worry about those silly details yet. I would like to
-understand the design better first and all these can be sorted when we
-get closer to getting this merged.
+On 2/29/24 09:20, Xiongwei Song wrote:
+> The SLAB allocator has been removed sine 6.8-rc1 [1], so there is no user
+> with SLAB_MEM_SPREAD and cpuset_do_slab_mem_spread(). Then SLAB_MEM_SPREAD
+> is marked as unused by [2]. Here we can remove
+> cpuset_do_slab_mem_spread(). For more details, please check [3].
+>
+> [1] https://lore.kernel.org/linux-mm/20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz/
+> [2] https://lore.kernel.org/linux-kernel/20240223-slab-cleanup-flags-v2-0-02f1753e8303@suse.cz/T/
+> [3] https://lore.kernel.org/lkml/32bc1403-49da-445a-8c00-9686a3b0d6a3@redhat.com/T/#mf14b838c5e0e77f4756d436bac3d8c0447ea4350
+>
+> Signed-off-by: Xiongwei Song <xiongwei.song@windriver.com>
+> ---
+>   include/linux/cpuset.h | 10 ----------
+>   1 file changed, 10 deletions(-)
+>
+> diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
+> index 875d12598bd2..0ce6ff0d9c9a 100644
+> --- a/include/linux/cpuset.h
+> +++ b/include/linux/cpuset.h
+> @@ -121,11 +121,6 @@ static inline int cpuset_do_page_mem_spread(void)
+>   	return task_spread_page(current);
+>   }
+>   
+> -static inline int cpuset_do_slab_mem_spread(void)
+> -{
+> -	return task_spread_slab(current);
+> -}
+> -
+>   extern bool current_cpuset_is_being_rebound(void);
+>   
+>   extern void rebuild_sched_domains(void);
+> @@ -264,11 +259,6 @@ static inline int cpuset_do_page_mem_spread(void)
+>   	return 0;
+>   }
+>   
+> -static inline int cpuset_do_slab_mem_spread(void)
+> -{
+> -	return 0;
+> -}
+> -
+>   static inline bool current_cpuset_is_being_rebound(void)
+>   {
+>   	return false;
+Reviewed-by: Waiman Long <longman@redhat.com>
 
--- 
-Regards,
-Sudeep
 
