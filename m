@@ -1,130 +1,152 @@
-Return-Path: <linux-kernel+bounces-85867-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85868-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB46986BC83
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:07:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 800ED86BC85
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:08:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B9E61F2598C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:07:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0F202884D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:08:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B97F17CB;
-	Thu, 29 Feb 2024 00:06:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F486EDB;
+	Thu, 29 Feb 2024 00:08:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b="zZ9VfmoK"
-Received: from omta040.useast.a.cloudfilter.net (omta040.useast.a.cloudfilter.net [44.202.169.39])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="kvLc2qxq"
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6B8D15B1
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 00:06:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.39
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8819536E
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 00:08:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709165217; cv=none; b=GBknN5ku2XC1H3/ar4C5X4nBHrpMgMHB8ysHfei4j96lZM1MJq19zxvOzHXtpRTqszTOvGSdWRnQ9+d+reTvIlw/1kJLa6WsGvtVhzgXr7dmGuRuXC+mYcPXeRbZMStrrKet1VF9YRx8VKO7jSWHHzC21N/yRYAQQpuGxBG/gb4=
+	t=1709165303; cv=none; b=Z8q3dT1H0cpFWCQHkYNcpKm6JtEW3nCKqTXSVqlrhwWmUYUxfJNjFSHhy+Cp+EMCn3Qt/weMC7Ts+VDoEqky5XuBHz1u6VkBLJhTVfzo6rj9rXeSofKLKpAxKNwdhM7kfmjNxkIfJ6jJDslTunT6TJADonaKPZAMJxBttFccnew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709165217; c=relaxed/simple;
-	bh=Hnv/otnAsfc6vNy+N/u39sTj2ipyfCftgZFmMPzENQw=;
-	h=Subject:To:Cc:References:In-Reply-To:From:Message-ID:Date:
-	 MIME-Version:Content-Type; b=IMGyizfeyQsr0od5KtqVFk4C1rIgzU5OucSe5DmcWnoW6MhGRgsmO6Bf/uU0BPs7fObsoTxh2sWPK2wtopV6J4MW2ngIWCH4ixtMpmQrjKdlm0IpahKuknRPOZ3FO5zIjAqco/uezFC/HGzcFMmgUd5pOHanMvBFzIHc9RWoXaQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net; spf=pass smtp.mailfrom=w6rz.net; dkim=pass (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b=zZ9VfmoK; arc=none smtp.client-ip=44.202.169.39
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=w6rz.net
-Received: from eig-obgw-6010a.ext.cloudfilter.net ([10.0.30.248])
-	by cmsmtp with ESMTPS
-	id fTFkrqr8Sl9dRfTwnrFJBm; Thu, 29 Feb 2024 00:06:49 +0000
-Received: from box5620.bluehost.com ([162.241.219.59])
-	by cmsmtp with ESMTPS
-	id fTwlrrD3TzReUfTwmrBXgl; Thu, 29 Feb 2024 00:06:48 +0000
-X-Authority-Analysis: v=2.4 cv=Ic+BW3qa c=1 sm=1 tr=0 ts=65dfca98
- a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
- a=IkcTkHD0fZMA:10 a=k7vzHIieQBIA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
- a=HaFmDPmJAAAA:8 a=KyoLkmSyMt9Nb96WE4AA:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
-	s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
-	Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=g1vl0B9haMY9iM8RKMvJ67dO1Zo7xoSVRan/r6FUn88=; b=zZ9VfmoKaaNjuaZHADX4QbixOb
-	BGcOnUy7Q2CIf8G0pJM1m38mUgdB8vDDkJ7KO1BCcyrMRhBH9cB7V1//qpd/KDWXhnPcGlm9rGzh2
-	BK3v8aXK15JkGeExTdh5xqh4AWpklqC54GCO6VeKfEQV3CZVwQUJzwBUlsHXDZm3Zk/Hz4wtRIpes
-	zPu7vW/ZK0KDPGAonBKdup/UM+vwDF0b07nnvgMJaAxXzQD35TNsEffUl9nT+jx8gJaAFrKC9cb9O
-	eJmrFlCaXakN4faIbFBKw+kSnbV3c69uFLwIWVFFtAGkFo6T6bfq9IU1TmbTnJw7hxMakRJFCLM4P
-	Ms+/y19Q==;
-Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:48316 helo=[10.0.1.47])
-	by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <re@w6rz.net>)
-	id 1rfTwj-0035q7-27;
-	Wed, 28 Feb 2024 17:06:45 -0700
-Subject: Re: [PATCH 6.6 000/299] 6.6.19-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
- rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
-References: <20240227131625.847743063@linuxfoundation.org>
-In-Reply-To: <20240227131625.847743063@linuxfoundation.org>
-From: Ron Economos <re@w6rz.net>
-Message-ID: <d63582e3-5480-e50c-fbad-95bbf639f9e1@w6rz.net>
-Date: Wed, 28 Feb 2024 16:06:43 -0800
-User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+	s=arc-20240116; t=1709165303; c=relaxed/simple;
+	bh=paDv2q3Pj0hk/petqVjdUe6Lv8ps2fhGqsGP8rMoAy4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LxzJTUb2oibfaNOhVlzqUesQ1v3bxeKxXLPCcF85vOOvT+CzVkZ6Sl5FVDyAvmyyV0trimW6Eb1IjkpRk7pyuSgSwmaTQeOexLav0dwYGpmoEuQkrkak1uSH1grCTBaSLizHPG/Osb7kV9nkhsjm4+MRkGEbPN2LnZH4IibQWIQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=kvLc2qxq; arc=none smtp.client-ip=209.85.128.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-412af574501so2207115e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 16:08:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1709165300; x=1709770100; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=r0wkdBufZ3Q5kPBTUCskgln+KBfpK1DSPE0KUyssAIE=;
+        b=kvLc2qxqcngNlHFW6M1J0mkeCv05Qyxg4hsOK3u0vxmew/ISCs7ZiS3qfDm4GvEC6O
+         QRCcH2eY3eripk7i/NWSucHObQNFYbls7xlqfBQjTtBgK9MzgV+42v+kXzCnyd1jYRHo
+         Vz5OSGIc14Y1yEgfghi58uZ0QEPbmDam7QQOrlEuZu/lrmG3AzIUVRtawGT+x0UR2Gpc
+         yN1BQkizQ76koCg+6ERdSPq14h7kKrI5qFU/Opi87q5a8wADfCdx9/lb8OuoQLBpdsdS
+         gifPAQLTgBe5yqqbE9e9MrVh01qC2WiI3Qy+qyMv2ZRrrnwrYf4zv6T7G/vGZpc9laNP
+         zHpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709165300; x=1709770100;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=r0wkdBufZ3Q5kPBTUCskgln+KBfpK1DSPE0KUyssAIE=;
+        b=IePM9/4mgGiY3JDoGRRMqd3oXEHOqXdL5BnQgZLvPMkJvLYUZZv1u8Hsv8QEz8mUi0
+         IezHllq5V7VOSSsolOUt557/nDNEOXyIqQ0EzgO8skYsL38gJfpwYZ8ymzDRBn6nvevw
+         /in0qP/M6Y3xi8sPbqcBcFmh1qPB1x++2NkVmFHPlXDKnIuPbq0iw6XHWVKLp7puvt0p
+         mPQebgwgWVD3hlvQJcKPEYYEdfxdw+zu9MxdPgwTn4PiYihWe0n8jix56AzPQij9XXDB
+         WO6pQwzibSj5Ju6ySMKNXbIBnLzr35tO+QvJRbRJlgNVE1ty7dX69S8PB51lD9Dv/rBH
+         V7mw==
+X-Forwarded-Encrypted: i=1; AJvYcCVmgPmLsUPl8Nkwc1JkyOrjNQoxx09ZYpr3sfXavx8eKOzhRYNqb5Yvcvl0CMKWYTA6RDCWLtyPAGzkX2Vb7FnF+lO14vVphaXuEds+
+X-Gm-Message-State: AOJu0Yzzbsy5y6pDmoBTK6klb4mSbYTaUQK9o3MXpzhdphT/AA4dM2Lw
+	34+sK/f1y67HzWvAFMmJIKZimpHK52KSsUxKho4iWdz2ZB/5SDvZb2cbJHH4uPGoEamU5CWvqjm
+	U
+X-Google-Smtp-Source: AGHT+IGZiwIML+HI/5sMSVGnCfBYssvJE6xopzMoC1X3fhBn5xxezA3YJXgljkpXlvG+ZH9NWo+TUw==
+X-Received: by 2002:a05:600c:4f8a:b0:412:b673:8b18 with SMTP id n10-20020a05600c4f8a00b00412b6738b18mr547072wmq.5.1709165299686;
+        Wed, 28 Feb 2024 16:08:19 -0800 (PST)
+Received: from airbuntu (host109-154-46-208.range109-154.btcentralplus.com. [109.154.46.208])
+        by smtp.gmail.com with ESMTPSA id p18-20020adf9d92000000b0033cf29a67c7sm139906wre.7.2024.02.28.16.08.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Feb 2024 16:08:19 -0800 (PST)
+Date: Thu, 29 Feb 2024 00:08:17 +0000
+From: Qais Yousef <qyousef@layalina.io>
+To: Shrikanth Hegde <sshegde@linux.ibm.com>
+Cc: mingo@kernel.org, peterz@infradead.org, vincent.guittot@linaro.org,
+	yu.c.chen@intel.com, dietmar.eggemann@arm.com,
+	linux-kernel@vger.kernel.org, nysal@linux.ibm.com,
+	aboorvad@linux.ibm.com, srikar@linux.vnet.ibm.com,
+	vschneid@redhat.com, pierre.gondois@arm.com,
+	morten.rasmussen@arm.com
+Subject: Re: [PATCH v2 0/2] sched/fair: Limit access to overutilized
+Message-ID: <20240229000817.n2bnr4kioigaqtct@airbuntu>
+References: <20240228071621.602596-1-sshegde@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - box5620.bluehost.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - w6rz.net
-X-BWhitelist: no
-X-Source-IP: 98.207.139.8
-X-Source-L: No
-X-Exim-ID: 1rfTwj-0035q7-27
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:48316
-X-Source-Auth: re@w6rz.net
-X-Email-Count: 4
-X-Org: HG=bhshared;ORG=bluehost;
-X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfEJtHnqh/dVIgApXU7z2AJiz6YNZzochFabPUeH+N0B8YjBySzX11loX/IZgxO5YBQmkfkGmfj8JEV1dLWhsArOnUw/bF5wJnjMixlBgB8chwtCTRbQO
- ltFsfxHCJvKS+gNFvJi0g4en0ustTF7iGlWUhlZJoNx77Ntmj/gV9VBQmsSdlc1MGC+4Xf78TJsXdjEA+pJltMMyaoe6XxXwy7w=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240228071621.602596-1-sshegde@linux.ibm.com>
 
-On 2/27/24 5:21 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.6.19 release.
-> There are 299 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 29 Feb 2024 13:15:36 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.19-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 02/28/24 12:46, Shrikanth Hegde wrote:
+> When running a ISV workload on a large system (240 Cores, SMT8), it was
+> observed from perf profile that newidle_balance and enqueue_task_fair
+> were consuming more cycles. Perf annotate showed that most of the time
+> was spent on accessing overutilized field of root domain.
+> 
+> Aboorva was able to simulate similar perf profile by making some
+> changes to stress-ng --wait. Both newidle_balance and enqueue_task_fair
+> consume close to 5-7%. Perf annotate shows that most of the cycles are spent
+> in accessing rd,rd->overutilized field.
+> 
+> Overutilized was added for EAS(Energy aware scheduler) to choose either
+> EAS aware load balancing or regular load balance. As checked, on x86 and
 
-Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
+It actually toggles load balance on/off (off if !overutilized).
 
-Tested-by: Ron Economos <re@w6rz.net>
+misfit load balance used to be controlled by this but this was decoupled since
+commit e5ed0550c04c ("sched/fair: unlink misfit task from cpu overutilized")
 
+> powerpc both overload and overutilized share the same cacheline in rd.
+> Updating overutilized is not required for non-EAS platforms.
+
+Is the fact these two share the cacheline is part of the problem? From patch
+1 it seems the fact that overutlized is updated often on different cpus is the
+problem? Did you try to move overutlized to different places to see if this
+alternatively helps?
+
+The patches look fine to me. I am just trying to verify that indeed the access
+to overutilzed is the problem, not something else being on the same cacheline
+is accidentally being slowed down, which means the problem can resurface in the
+future.
+
+> 
+> Patch 1/2 is the main patch. It helps in reducing the above said issue.
+> Both the functions don't show up in the profile. With patch comparison is in
+> changelog. With the patch stated problem in the ISV workload also got
+> solved and throughput has improved.
+> Patch 2/2 is only code refactoring to use the helper function instead of
+> direct access of the field, so one would come to know that it is accessed
+> only in EAS. This depends on 1/2 to be applied first
+> 
+> Thanks to Aboorva Devarajan and Nysal Jan K A for helping in recreating,
+> debugging this issue and verifying the patch.
+> Detailed perf annotate can be found in cover letter of v1.
+> 
+> v2 -> v1:
+> Chen Yu pointed out minor issue in code. corrected that code and updated
+> the changelog.
+> 
+> v1: https://lore.kernel.org/lkml/20240223150707.410417-1-sshegde@linux.ibm.com/
+> 
+> Shrikanth Hegde (2):
+>   sched/fair: Add EAS checks before updating overutilized
+>   sched/fair: Use helper function to access rd->overutilized
+> 
+>  kernel/sched/fair.c | 49 +++++++++++++++++++++++++++++++++------------
+>  1 file changed, 36 insertions(+), 13 deletions(-)
+> 
+> --
+> 2.39.3
+> 
 
