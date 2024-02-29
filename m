@@ -1,147 +1,144 @@
-Return-Path: <linux-kernel+bounces-86127-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86128-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54C0086C008
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 05:57:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96D3286C00B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 05:58:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C98B8B2458D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 04:57:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 242A81F235CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 04:58:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFC5C39FD4;
-	Thu, 29 Feb 2024 04:57:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C95603A1BF;
+	Thu, 29 Feb 2024 04:57:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="tTAGz0oA";
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="NGYGfSyF"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	dkim=pass (1024-bit key) header.d=marvell.onmicrosoft.com header.i=@marvell.onmicrosoft.com header.b="SsBVlLBp"
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB24138DED;
-	Thu, 29 Feb 2024 04:57:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.153.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23C6738DED;
+	Thu, 29 Feb 2024 04:57:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.148.174
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709182643; cv=fail; b=WwVd7O2l2jz7xIjRtD2KV5/Mrt/uR/8jwiayEsRhrVhFItR5PFhD+z0BX8e9DRxXFaour29ZdnsMQWwQlJjuiQjaJG4xoOWRl0gflAQbM7EVIgbyIek8ZpMA9CnDR29wwWeTfNslq7n0Un1qiFqiEFdbKOstMuO0/1uk4PDJe5Y=
+	t=1709182666; cv=fail; b=dlQRkwbJqwwi2VgAvHz9HUypsAvUDirqewg18XaO9guzfB1pJpXzTKiCCR1jgpIS1hD1GmSzojt10/DK8XJQCZ6n3457eTJL0FgXwJD6Llkb1NREZbyAH/AM54V5vY9QwV5tGmoFW735LJUN6TpWcmNAvZl2Ba0BY3K/lY1f0mg=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709182643; c=relaxed/simple;
-	bh=DJSxogogmskvIHJoeTepQ9k1MK8RPZigdOk+zwjmxdA=;
+	s=arc-20240116; t=1709182666; c=relaxed/simple;
+	bh=lDgTrsdHaTWMSwm/E0fQ8We9nVhQY5nz++pb8D483F4=;
 	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=duDiNzkkK6VxoLv0qirxbpgnrCDCwn129anbvz1aJ+evcIvQT7mis5glOdnch6wkpdQX7RIuFJtOSBYZPkLJDAWd+ycv2SdT4uFXGCEq4XaB942cAjWnV7igCUxEE3tg5pf3W+0XqqfDS1IIEVRBctQdf5BTsUGwOsr9h7x4nLo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=tTAGz0oA; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=NGYGfSyF; arc=fail smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1709182642; x=1740718642;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=DJSxogogmskvIHJoeTepQ9k1MK8RPZigdOk+zwjmxdA=;
-  b=tTAGz0oAkIa4qB0EHWtSeZQz46JyC64S1uMOFFDI4VRn1zxtPKfwe9Hb
-   /Yc8pHaZzw4ZXIxqr8YAlc5oHOwaTcbU3UK2obwOLOxhNxyqZ9ZQTj7+Z
-   lh8IFpb0QBAqjEqT6zp68ktKY+D4VNsjC1K+3nE3GjWY8wd8gbJU+vJuK
-   NztLbyMDOQYOWi7Yl0HYOJVNfNs+Z8NXORR+p5TkFCanYiTyZZR4Jj0Xp
-   CTsWurv98SB5VyKBEaSGXe96CSFxR0IzdGGV1PLx5/9NvLyfFPB/ool9A
-   CG/nXNUcy+i/AZKws4I+oHf0bCkgodgTX2X+ljRYjdfwVSX0CK6SlhEsn
-   g==;
-X-CSE-ConnectionGUID: KmAZlqJxRBWfEL8GLGBcOQ==
-X-CSE-MsgGUID: sD245cZPQNKBjCm+mk+L7g==
-X-IronPort-AV: E=Sophos;i="6.06,192,1705388400"; 
-   d="scan'208";a="247743891"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 28 Feb 2024 21:57:21 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 28 Feb 2024 21:57:11 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (10.10.215.250)
- by email.microchip.com (10.10.87.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 28 Feb 2024 21:57:11 -0700
+	 Content-Type:MIME-Version; b=HhXgIlZXKK2y+mqjOHVjMevj/J6AFiMlKxJ3CtNvVYQ02Fr5dGYfKUaks4cey0Lo5cu130qCWeHT9RZIRDqInSYqXFpaYF0fuKCet4yDIoxESrNsFFiJ0TT9t50yY526CvKwRdYtfQyxHVWewuqegyY3qbKoTIqZ+NDDbZW2CQQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (1024-bit key) header.d=marvell.onmicrosoft.com header.i=@marvell.onmicrosoft.com header.b=SsBVlLBp; arc=fail smtp.client-ip=67.231.148.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+	by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41T42Y0H007323;
+	Wed, 28 Feb 2024 20:57:30 -0800
+Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam04lp2169.outbound.protection.outlook.com [104.47.73.169])
+	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3wj8e8tqhw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 28 Feb 2024 20:57:30 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aXYJ0+jLpUJAKZsGkMciEVtLksPj0t7ZC5+ZTPjh85cTd/K7N/DHwK1sIVNF1udv/OmALCaw2Q7s/CbXy+GguzwbNOS82xPc1KVLR2wDFFp4lnqeo/cKmWj54SGx6fp2Loh6yp119V15ybDl9uhJLfZhNyCAJnoIje2piDYTR0Yp2e9mW4yNO6sUfaCtrK8DDfdzz+aGUW/lqUwMhXbLELuF5qPubdy6/a2cf5cfA4JKi3+OdL43rL9hL/trxnyx1itktFaMWlwP9tGVSlOLIaKIvRSLS3k+kgQLiOPN8ZYTjbOvW8plpGqlq+Hmq5N8lyTyRRHaeLNRqrx+jX9XeQ==
+ b=MxonM4SV6bn6PcQvpGFwj/qu7Ciq0yyhNSPsfpwsCCiinbQUmrBJMRt51ne7beO4eXo3a0v/W/3A/y812B980zHqiHWRgufYsRKrbksooshHDbQeFOCJHUn/vEVM4yrIdGJbJitDjFQytFiXHwcro/wRNo+0/WElzIlmuI3OJdfFUNHXd68zHGG7cWqKBWVw+HVHS3xOV5dwenwX5nEViOWfKwny6p3Q9nPMxa+4lwmIpZUe0UbWtCOb7MII9ePagGglwSNvcsIBfXjADdaoneMJRUqt+6m0pXLnTS6aMDNe2kil50FUjUVDSPLykWg9MMMmAdZbP0ci84ErrA9E3A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=m94QqFp/dmrcbZfaaX9kcG5dIhy01oWNSRvEp0IaKEE=;
- b=CleqqAEsiBeDUaOiPaf2FBRyyVv9G2AjWtCEnzhMM4Yf6xkeEAQtSXLpQw/70EZF0pKXcDSBiEPAuMzXKRxDSTfmb3PGKqTVwe+mt/PMgVe4nUxecPHRBlR0qzGty4x9O0JePQtUTZCF2werhSzHIR158klug0kOKVbGuK5zLZcGhBEYWOd5IXKu1Y2G3slubl+tyAKPTWFJO0Z9wWOz1Vyh8eVws0A92Z/eTVbyplcLiQglHJIY1048CYMG8GZezYa/IvLbOpwfBmqIkSdgPCJCQ7CiKcB3S13OUqj4ToJob4l3pY4nK1v9L/tjOP9oxokcFZODkoxQF1ZMyo4OFg==
+ bh=D9Ut48Nk9cIfP0vsaV3gMDf8Y9NEFRUrndwrauQidxg=;
+ b=SuH5WHL2GlUxHmJ+iNVM/hf5/F2QzMtWFTFWRQ37m3pc/hqFnKg6NsfYBdyL4exuYYXoxSJfJmyBYXcvev5VoOAAx6qEF7wzkRER+IOPLcngRthqOegij2UdFOa+8txDb4zuFA+XVUNh19kapywc7qfUMV4ZqcY32YEfyDhpFJrqrMiVhhxROyLSBdJdJOyIRuwmVdxrYGPoe1l2VatC7gLt1ZaCaTo96warJykWX5uHdF95jcje3+EgffVUHo4QN41WsZWZYeb5RfVYtSZuBe4zx3wql2kT5o9XwjyUpoA+UK+/O6/lPunlOgfd1F/uE/at0XWfEL5xUT3qZRpVIg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microchip.com;
- s=selector1;
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=m94QqFp/dmrcbZfaaX9kcG5dIhy01oWNSRvEp0IaKEE=;
- b=NGYGfSyFe50oca2rSzOlJb1E067Tel+Q7KaiJ7Z4eCd92KgRNLKVtADUuWLxIlwRcxZnk9Q1NFFm7hnrSeHlLJnlFAHYItwueOogs0nq+YYgqb5gazRZ6YxYrfkiL3P7I8pHgSOCRh24J8he2I3Jcn7yJg2adMm2rB3uRHwgyfAmnkB3SFnTtO8WWObpzr7hbYtfva5790nLvKwfNJlHjCiHM0SzlYTJN6QNXzZCfOjOFX+UrMgPlWQd4h1CXcq/zdrHwfBPeF+HeMLv5jrMdjbAMsbZCAgqU1UG761R1T6HXu4Or7D64QAGq2WNHtOzmpLOoyDhvIGgcYl//eVKOg==
-Received: from LV8PR11MB8700.namprd11.prod.outlook.com (2603:10b6:408:201::22)
- by SA1PR11MB5873.namprd11.prod.outlook.com (2603:10b6:806:228::11) with
+ bh=D9Ut48Nk9cIfP0vsaV3gMDf8Y9NEFRUrndwrauQidxg=;
+ b=SsBVlLBpLTKsPSU2OHs8ZkgbC9gmHCvFWnBSunixHkHBMqibdC2l1ldf34p17oFessAN0xVe1wJmJOva1OeSG+sKIqe9MByTQQZZYK7a8rAbyUfaOUKOIFkEEy5A0UzONwBE3Zh5YqeBaZShvFWqF9hPJeN7nBSQ2HqcXRgFzHM=
+Received: from BY3PR18MB4707.namprd18.prod.outlook.com (2603:10b6:a03:3ca::23)
+ by LV3PR18MB5801.namprd18.prod.outlook.com (2603:10b6:408:1b7::19) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.22; Thu, 29 Feb
- 2024 04:57:05 +0000
-Received: from LV8PR11MB8700.namprd11.prod.outlook.com
- ([fe80::bef5:e3b9:4214:8eda]) by LV8PR11MB8700.namprd11.prod.outlook.com
- ([fe80::bef5:e3b9:4214:8eda%6]) with mapi id 15.20.7339.009; Thu, 29 Feb 2024
- 04:57:05 +0000
-From: <Raju.Lakkaraju@microchip.com>
-To: <andrew@lunn.ch>
-CC: <netdev@vger.kernel.org>, <davem@davemloft.net>, <kuba@kernel.org>,
-	<linux-kernel@vger.kernel.org>, <Bryan.Whitehead@microchip.com>,
-	<richardcochran@gmail.com>, <UNGLinuxDriver@microchip.com>
-Subject: RE: [PATCH net 1/3] net: lan743x: disable WOL upon resume to restore
- full data path operation
-Thread-Topic: [PATCH net 1/3] net: lan743x: disable WOL upon resume to restore
- full data path operation
-Thread-Index: AQHaaIt4JiSb9wlTL0mxkmItOFoCmbEdakoAgANaEGA=
-Date: Thu, 29 Feb 2024 04:57:05 +0000
-Message-ID: <LV8PR11MB8700B74600C2FEC3687D2B379F5F2@LV8PR11MB8700.namprd11.prod.outlook.com>
-References: <20240226080934.46003-1-Raju.Lakkaraju@microchip.com>
- <20240226080934.46003-2-Raju.Lakkaraju@microchip.com>
- <ff0cea8c-5aed-431c-a525-210fd8c10c31@lunn.ch>
-In-Reply-To: <ff0cea8c-5aed-431c-a525-210fd8c10c31@lunn.ch>
-Accept-Language: en-GB, en-US
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.39; Thu, 29 Feb
+ 2024 04:57:27 +0000
+Received: from BY3PR18MB4707.namprd18.prod.outlook.com
+ ([fe80::493a:b05c:8118:9dd4]) by BY3PR18MB4707.namprd18.prod.outlook.com
+ ([fe80::493a:b05c:8118:9dd4%4]) with mapi id 15.20.7316.039; Thu, 29 Feb 2024
+ 04:57:26 +0000
+From: Sai Krishna Gajula <saikrishnag@marvell.com>
+To: Bjorn Helgaas <helgaas@kernel.org>
+CC: "bhelgaas@google.com" <bhelgaas@google.com>,
+        "linux-pci@vger.kernel.org"
+	<linux-pci@vger.kernel.org>,
+        "richardcochran@gmail.com"
+	<richardcochran@gmail.com>,
+        "horms@kernel.org" <horms@kernel.org>,
+        "vinicius.gomes@intel.com" <vinicius.gomes@intel.com>,
+        "vadim.fedorenko@linux.dev" <vadim.fedorenko@linux.dev>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org"
+	<kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sunil Kovvuri
+ Goutham <sgoutham@marvell.com>,
+        Geethasowjanya Akula <gakula@marvell.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        Hariprasad Kelam <hkelam@marvell.com>,
+        Subbaraya Sundeep Bhatta <sbhatta@marvell.com>,
+        Naveen Mamindlapalli
+	<naveenm@marvell.com>
+Subject: Re: [net-next PATCH v2] octeontx2: Add PTP clock driver for Octeon
+ PTM clock.
+Thread-Topic: [net-next PATCH v2] octeontx2: Add PTP clock driver for Octeon
+ PTM clock.
+Thread-Index: AQHaasvK86DrYSiqL06CYCDK0W5VDA==
+Date: Thu, 29 Feb 2024 04:57:26 +0000
+Message-ID: 
+ <BY3PR18MB4707E7764D59DF25C57CCB58A05F2@BY3PR18MB4707.namprd18.prod.outlook.com>
+References: 
+ <BY3PR18MB4707DBB80B5949EA26F7ABECA0582@BY3PR18MB4707.namprd18.prod.outlook.com>
+ <20240228160857.GA272997@bhelgaas>
+In-Reply-To: <20240228160857.GA272997@bhelgaas>
+Accept-Language: en-US
 Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microchip.com;
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
 x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: LV8PR11MB8700:EE_|SA1PR11MB5873:EE_
-x-ms-office365-filtering-correlation-id: ad2edc08-59cf-41a5-ffb4-08dc38e2e051
+x-ms-traffictypediagnostic: BY3PR18MB4707:EE_|LV3PR18MB5801:EE_
+x-ms-office365-filtering-correlation-id: fd67817f-c281-4d63-5565-08dc38e2ecbf
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: c9IFN8BvJ89vwXvqN3ater/IypnmSBdyBuSsKt2ZkLFXxdufcdNZ5auIOYmQA7l1Fvas6qE+VtJ51JyPKLcpBIqHG6YfnThT2xE4mJUW7UnBVD27htyLt6Z82Dh4NAXbgBWefKNmY+xTdtsQKOHWsb6XJdmp670Eutf86JBL23hOkekRYVNLFGm9fceBiaK9/zCwnyka1sFaW6QN9RIs1ahIVIy3Vnlq6dH7fHitVWHwEztcTHexyEiO0/8QB3aiZiRTGtfIcGhnWjUPJQQrj7TIAPEjuWNrlPz3pYtECmA897/QVR25fzGFlFxAnCO373Le8lIoWbx33QOw4/w5u8+TnSnHCLezZ0jl+IRJ83q1lijSxu062kINRf+QZTuxGQFwGAon7eMPySLyCJfPTbCJ7VYrziv+MET9oPtoeEVCLpNWtK6nMSnFvlsPuK9uxBDnI0PRg8nLoixk0TZQirHGEuVT5S2Egg/TsAETdJfuBo6TTnMHP+I2+neafX+agx4LAmpatz0VXjmdH8kXkx81QERqZz6oX7oG2IwyTbFrUluhBP/LyRUr/K7GET9nwstKCrw1dHw3qG+a9lgG0c23LsZDaYnQ5KX7Vrou+0K10MnFCOJF780JIktm7tF0ek9YjW8Z6mGJY21XuFmKJ9jT2K0LVDWTtAXC5IczeY3xr5lpkeKa+poDNlmqTrPwtF+kxC88rcKrzA5W681M2Q==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV8PR11MB8700.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38070700009);DIR:OUT;SFP:1101;
+x-microsoft-antispam-message-info: 
+ 9+9vLN8+wQGJBBfhPRW0CLGco93foKCRaKSTL0FJ3kmwgJwZNUqDdgAep6ExmL4aDYt+6yoE2up0z6zVo1J9a02KOQgDv4WDfokxFqrs0eueP/6tj1PEB5fCX7zvD8194WMi3I377GGCnvtqLCqOG8cQzjh3px8dCdRC6f1QiBHqEfJ5qh1AwAUOtVmvTcRY7nDZPu3x50Z7Q+nnKlgtx3xoNNFfi1JE16t6saDxDh118RT3i/J94h9zM7MHYm2M8ZysQMNuwS/QpIRiQtlxdUMh8VV1JZdANv9iKhUmMVNWThecnM89d5y9dsbQmUgm7nke28ZL2qZ6SXOnSsQCVqxZpvEA1nSNFIQWRwedWjnzbPR0dgxPy7yVU0QRSuEWZPr2K/veNGrxE/8C5yDiPXke5us/R/maLYlBs0CVPIZ2mHRXyITZ9rNlIROBnDQKm4azDlnTo0yOC6NLuR+PkN82kLTrQzDLNlVHp4HhSiVwyDMWrfLHwa7mGZT+hS9adrS94cya6CzTC31RrdOGoXs3cklAWoJ9S0jYyxurEZKcmnKGImoJE4NacImXeZR/1OiR2iSzIN8NVopxSYpKa8kmh5cHdcgh0nYgeDvCNDx/ZnHXJOY1bOq8b7ZmwuXYw75RIohTWb3c2v7KYv0ID3eoZHIQ2b7pr01oHk5a9DKXaXxa195R5fwyhadquYWHibAmOgp4T0HtVbaGLRrFItcT8p8m2rtfjV4J237VzF4=
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY3PR18MB4707.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38070700009);DIR:OUT;SFP:1102;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?FKREsHzOG7f/tBCcwxamKEXmgBjlnSmWG69EvovHHEf5MpdP/ndnPQwsRXBz?=
- =?us-ascii?Q?LXaFbNqphxUM5ub9cX6TsBuxTRPrxWE/Zm0SR/Ustm560c3gKvlDaBCwXhgp?=
- =?us-ascii?Q?ULAEIXkduZKrVMApu6ms5PUO3tXz+ojWwPs3KkYO/rYBuh2oFdPaX3Si9VNC?=
- =?us-ascii?Q?N/Jrd92sUz9XgxSBbBgU6d5JVvxC05f+n6F+W3f5lm53cPjO0aObZyx5S/AZ?=
- =?us-ascii?Q?qvOMCQQSwHQD32vXz/+WeNMadj7GB29Ah1+aggPRc6EGUHEbx3CCJ9piMvOx?=
- =?us-ascii?Q?JPF+sVo0m9zw/Petgra3sepxoUSJM1aYUGNk+OMKi1TFuY5/G7hSh7kRIhzk?=
- =?us-ascii?Q?isQ8rQD3rZ+6d0LxJpq65heQhLTXtiNepe4rHTUFPyHugCm+JPliz/5XOL2T?=
- =?us-ascii?Q?Ludz9pK3lWbJ9ESKd2MbkrLsIaTd1zpSPAN9TxTbwzSky9W7ux47YXg0gT86?=
- =?us-ascii?Q?Q9NJzEG6fsRRZ9i0p+Fr2e4NHYNHiPVg6W1BOqI3cUpC8OziNHTfCWO97MnZ?=
- =?us-ascii?Q?YyDnlgEMuvZvLJpIWAJaNNCgIqaY0CuM1EwEi2L8QyfIfDbnSoEYkSLZ2yaS?=
- =?us-ascii?Q?pclzw0o9v0jVXrDZ3JbwQF8OUXDlUVnaY0c97NJNYpX0Batj4XJBgPpo3cdI?=
- =?us-ascii?Q?Rz9u43vlJ23Y5pdZr9daWDTYKdACqpLVb9G2AejVITCh91haOG3z/R1E/xW4?=
- =?us-ascii?Q?mtr9m89E3XGHwG+OMIYq7n+XHZGpeFvzGR35S5Y1RykXct8WigENbjaLYYGr?=
- =?us-ascii?Q?wU3QGhzTu3LEgxdT3H2sSp/GJuWtCn/cqEkjEcLWaziHBA1LN2/0ksuvE2qq?=
- =?us-ascii?Q?0K+hFwG7Zy7cVBdviRySeRPfw4jJoJhzwQwxPD3PmAhbZ90TTyq+QMIPjrNs?=
- =?us-ascii?Q?fWSyZGBswi6z62TZPbmgIF1G+9/XApxwDTqbzKAirijk4kXcEqpG/50GNVmT?=
- =?us-ascii?Q?WEiCZtWcv7p/KjPoeC9uwZUaIirOqlzkwHtYiTvGUSH3lf0Zdvl9imaS3fPc?=
- =?us-ascii?Q?p2aVyTYE64VizuMgmCTwqiwBA0GKztuMTJvjJbedJuVYvmZzOBmtOimLk9eY?=
- =?us-ascii?Q?Zi9EviBdv84T/zBl2gwBUo1S9+5BvEg4yusTBZbbyet71c57gO2W3HaxqZcF?=
- =?us-ascii?Q?YixTq2N6SyBN72Uc/+0Ki7LkJbzHyWpjwpYf7WLVCJgsRC1/0wqYma1WVqJf?=
- =?us-ascii?Q?4/dCXZIjm3gZnpYmo4vGStt/LYa695Hhh43yw3TGBztyI6PMvReJGjIA1fV5?=
- =?us-ascii?Q?L6X60A0oV7+5IQ14a+165kOmW0+HTqTtOF7N0+FW2FmBoeqLpLrhMBbHZNHH?=
- =?us-ascii?Q?yTu+2cSb6gpn1gszzltZ1OxIsaN76TV83BjsMEalbZKEcEe37IjhAQiSgnTY?=
- =?us-ascii?Q?OLTEuiHwSPFIdsuVsmLu32pbKOMtSdglmZ43eZ6KfJ/5WK9CzgIwKoUJ2SvW?=
- =?us-ascii?Q?/wQGnAp/vi4FW+hFr+gBLpJJtzs/qRCVUAIXfVowMACgWUj9x0BsRk8IH85w?=
- =?us-ascii?Q?yUF6XMLq262kvVPVyWYPD02itt9rJNV95AVJRIoS27w/UfGA0lMwjbqsPtgP?=
- =?us-ascii?Q?FkyLOsYR+jN005jWSJO3jnikjyTPNLfubX11/+dvlZttq1pz3/0qxckrcaPU?=
- =?us-ascii?Q?DA=3D=3D?=
+x-ms-exchange-antispam-messagedata-0: 
+ =?us-ascii?Q?4sQkFrovQ1/VfYyhj+wrADGUQz10C26lwn1/oH05pTocD5B/ji54nH6dytaN?=
+ =?us-ascii?Q?1lrA0/VM8FAYc/0XsA+8COVsnMh7DaAwSl3wcU3SfeBowgbNyrbJkCreB+Qq?=
+ =?us-ascii?Q?hDBcZayuWtslL+xYxfg5W51Y8Wb66I2rkI4qEv0Gcgq1ZqMc1TvskDIEVnRQ?=
+ =?us-ascii?Q?VnAHQ/bVn720CfCQ2OwPtEgZ2busfQwZbXLJHLcGyxZrLLqrUp7/IGG3xhKl?=
+ =?us-ascii?Q?esaCFb3oGOsBP0zdZ7sakS2QOpoHPp152ZVTbmtLlMLVTZfIBvnFRRukjCAt?=
+ =?us-ascii?Q?x1jQmehdkTjs3iw1H8HFxS5vqbaiXVEXtOI4JOnnEj2RQH6OkIKq+JwSVvCH?=
+ =?us-ascii?Q?FEUBQN+pPeHkEu//scsy5cHo9fh6nC6xUzLEdo0GNdAzpf2SSQIn0R6rhAfx?=
+ =?us-ascii?Q?hq8k5pejPnoooa70s0gdPNKUzqOMJfCZVrkkjBA8fqKLhpEIvGatRNb7rWxe?=
+ =?us-ascii?Q?DEbH/Q9JeiKllMObRtNeibCMt9CvYQ/Cex26buKmWsxq0iyaVtJdwGNJl00T?=
+ =?us-ascii?Q?4UC3dGwOwFSatW84h1DsPlAHHqXBz8XPUQGpSTnUg3Ea8Ffzd3w/k9FvZNW9?=
+ =?us-ascii?Q?synmr09TyenyYsgIeJVySDm3MCz32dCjGpCDhwACrRbbLvjfL/d4SEeyqPx2?=
+ =?us-ascii?Q?gTkouZdpChD93Vzfo40GFj4YyeU2Q4UOh/vevFS0bktXn/MHgUEbjktC1Yfq?=
+ =?us-ascii?Q?JJFZGwHNIlJEL9HhV6orUR7MTvNz9EH9Iu6xYvrzsUEKNwpAkAUG47MG55gI?=
+ =?us-ascii?Q?IpBVPOkUMca8Xj+lEPIfE+vqnEaFNs5/yGIBlRKXt7js4zu0p/9Y8K7qSuVr?=
+ =?us-ascii?Q?6Oca+ET/KYJ1pouKnnSi2II9i5DFN/Y4UrJCGWoMRcjTGvNlqlfihK5Sktkv?=
+ =?us-ascii?Q?TDr5DXeiVR4ze6Ci4z8U9COxhvwxrQP/Ze7U38T8GevdJUPq4gWjnCLrZG0m?=
+ =?us-ascii?Q?GqeoWOfkLXl/y7fLPaGtz4eg6tyPTvQ5qASu9Xv6BiJvLw5jYs7OQzf0w5DT?=
+ =?us-ascii?Q?qRU8Gher+Iy2e+nPmCGPKbDGkUXdIiFOT2akpkzM1UfeNMtWAMNwbclXM6WO?=
+ =?us-ascii?Q?PsLqYqZPuJMAPQEIHi5WMiiUb7ADn9y77yX8KU4dCqFdL/6V26hujUic9/We?=
+ =?us-ascii?Q?JG3KVLHqy7pDQtYdrn2Rs3ddicMCjcxKgJ5vFgQpik8rOmRbaLxOkpPGuHaa?=
+ =?us-ascii?Q?7dyDnKXb/4WN3OPY4oxENNMh0qaHHqkvgFT9h8lJujMyuTvNORaHv/28ev7S?=
+ =?us-ascii?Q?YCDCQnwPEJYUclw4yMhrzBHmEA3WFIXCCQBH3Jy/gyeGs+ngyu52/WOr4OPE?=
+ =?us-ascii?Q?noy2B3Zxj0cjuXTKwqNPb+p4QDgME6DCejYdkobZ6AYAaPiB1fBXcjsC3iJS?=
+ =?us-ascii?Q?nR2ue9OmFZmGFh731BywZIw/mFEpCilM58eErW0ASCWTS4+DQO7qN4fgKAPw?=
+ =?us-ascii?Q?mPw87863x7gZ2767KMGzakG2NwmEIFZnYYqQpsNfAwLaseI65+lBqg5F0BC5?=
+ =?us-ascii?Q?5GFSb77oAJizs6Y/ZKcoD2xZMTQTflLtyOQQTyCsifyNWAUEwRUIFqkmrmzK?=
+ =?us-ascii?Q?Y3szxDJBxqIMd8BuUpHdkG1Z0M6NL6Ro1/IA/AZV?=
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
@@ -150,56 +147,116 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-OriginatorOrg: marvell.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: LV8PR11MB8700.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ad2edc08-59cf-41a5-ffb4-08dc38e2e051
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Feb 2024 04:57:05.6930
+X-MS-Exchange-CrossTenant-AuthSource: BY3PR18MB4707.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fd67817f-c281-4d63-5565-08dc38e2ecbf
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Feb 2024 04:57:26.5431
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Sg93+32K9YRZgPcJrNa+QCq7urDSPkh0MQQ32krjPPGheWGTRDiY8w6UTcGI11wsEbZCXGSggtr77xUauGfsmucP3B8Ctw4882abqBEPKIw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB5873
+X-MS-Exchange-CrossTenant-userprincipalname: 7Fah/SBUHE9z+M1nCrs4CeXVpojMEZlMvVYn7p6b+rxbtZBU4f0Mo5DqRnBx57o3EflXFiRa3hR/rJRYw8PAeQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR18MB5801
+X-Proofpoint-GUID: uD_YDwKbmSZDHXlTIVA-psUEioezzHBN
+X-Proofpoint-ORIG-GUID: uD_YDwKbmSZDHXlTIVA-psUEioezzHBN
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-28_08,2024-02-27_01,2023-05-22_02
 
-Hi Andrew,
-
-Thank you for review comments.
 
 > -----Original Message-----
-> From: Andrew Lunn <andrew@lunn.ch>
-> Sent: Tuesday, February 27, 2024 7:09 AM
-> To: Raju Lakkaraju - I30499 <Raju.Lakkaraju@microchip.com>
-> Cc: netdev@vger.kernel.org; davem@davemloft.net; kuba@kernel.org; linux-
-> kernel@vger.kernel.org; Bryan Whitehead - C21958
-> <Bryan.Whitehead@microchip.com>; richardcochran@gmail.com;
-> UNGLinuxDriver <UNGLinuxDriver@microchip.com>
-> Subject: Re: [PATCH net 1/3] net: lan743x: disable WOL upon resume to
-> restore full data path operation
+> From: Bjorn Helgaas <helgaas@kernel.org>
+> Sent: Wednesday, February 28, 2024 9:39 PM
+> To: Sai Krishna Gajula <saikrishnag@marvell.com>
+> Cc: bhelgaas@google.com; linux-pci@vger.kernel.org;
+> richardcochran@gmail.com; horms@kernel.org; vinicius.gomes@intel.com;
+> vadim.fedorenko@linux.dev; davem@davemloft.net; kuba@kernel.org;
+> netdev@vger.kernel.org; linux-kernel@vger.kernel.org; Sunil Kovvuri
+> Goutham <sgoutham@marvell.com>; Geethasowjanya Akula
+> <gakula@marvell.com>; Linu Cherian <lcherian@marvell.com>; Hariprasad
+> Kelam <hkelam@marvell.com>; Subbaraya Sundeep Bhatta
+> <sbhatta@marvell.com>; Naveen Mamindlapalli <naveenm@marvell.com>
+> Subject: Re: [net-next PATCH v2] octeontx2: Add PTP clock driver for
+> Octeon PTM clock.
 >=20
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know th=
+> On Wed, Feb 28, 2024 at 12:37:02PM +0000, Sai Krishna Gajula wrote:
+> > > -----Original Message-----
+> > > From: Bjorn Helgaas <helgaas@kernel.org>
+> > > Sent: Monday, February 26, 2024 10:31 PM
+> > ...
+> > > On Mon, Feb 26, 2024 at 03:40:25PM +0000, Sai Krishna Gajula wrote:
+> > > > > -----Original Message-----
+> > > > > From: Bjorn Helgaas <helgaas@kernel.org>
+> > > > > Sent: Wednesday, February 14, 2024 10:59 PM ...
+> > > > > On Wed, Feb 14, 2024 at 06:38:53PM +0530, Sai Krishna wrote:
+> > > > > > The PCIe PTM(Precision time measurement) protocol provides
+> > > > > > precise coordination of events across multiple components like
+> > > > > > PCIe host clock, PCIe EP PHC local clocks of PCIe devices.
+> > > > > > This patch adds support for ptp clock based PTM clock. We can
+> > > > > > use this PTP device to sync the PTM time with CLOCK_REALTIME
+> > > > > > or other PTP PHC devices using phc2sys.
+>=20
+> > > > > > +static int __init ptp_oct_ptm_init(void) {
+> > > > > > +	struct pci_dev *pdev =3D NULL;
+> > > > > > +
+> > > > > > +	pdev =3D pci_get_device(PCI_VENDOR_ID_CAVIUM,
+> > > > > > +			      PCI_DEVID_OCTEONTX2_PTP, pdev);
+> > > > >
+> > > > > pci_get_device() is a sub-optimal method for a driver to claim a
+> device.
+> > > > > pci_register_driver() is the preferred method.  If you can't use
+> > > > > that, a comment here explaining why not would be helpful.
+> > > >
+> > > > We just want to check the PTP device availability in the system as
+> > > > one of the use case is to sync PTM time to PTP.
+> > >
+> > > This doesn't explain why you can't use pci_register_driver().  Can
+> > > you clarify that?
+> >
+> > This is not a PCI endpoint driver.  This piece of code is used to
+> > identify the silicon version.  We will update the code by reading the
+> > silicon version from Endpoint internal BAR register offsets.
+>=20
+> > > I assume the PCI_DEVID_OCTEONTX2_PTP device is a PCIe Endpoint, and
+> > > this driver runs on the host?  I.e., this driver does not run as
+> > > firmware on the Endpoint itself?  So if you run lspci on the host,
+> > > you would see this device as one of the PCI devices?
+> > >
+> > > If that's the case, a driver would normally operate the device via
+> > > MMIO accesses to regions described by PCI BARs.  "lspci -v" would
+> > > show those addresses.
+> >
+> > This driver don't run on Host but runs on the EP firmware itself.
+>=20
+> The "endpoint driver" terminology is a bit confusing here.  See
+> Documentation/PCI/endpoint/pci-endpoint.rst for details.
+>=20
+> If this driver actually runs as part of the Endpoint firmware, it would n=
+ot
+> normally see a hierarchy of pci_devs, and I don't think
+> pci_get_device() would work.
+>=20
+> So I suspect this driver actually runs on the host, and it looks like it =
+wants to
+> use the same device (0x177d:0xa00c) as these two drivers:
+>=20
+>   drivers/net/ethernet/cavium/common/cavium_ptp.c:#define
+> PCI_DEVICE_ID_CAVIUM_PTP        0xA00C
+>   drivers/net/ethernet/marvell/octeontx2/af/ptp.c:#define
+> PCI_DEVID_OCTEONTX2_PTP                 0xA00C
+>=20
+> It seems like maybe it should be integrated into them?  Otherwise you hav=
 e
-> content is safe
->=20
-> On Mon, Feb 26, 2024 at 01:39:32PM +0530, Raju Lakkaraju wrote:
-> > In order for datapath to be restored to normal functionality after
-> > resume we disable all wakeup events. Additionally we clear all W1C
-> > status bits by writing 1's to them.
->=20
-> Just to make sure i'm understanding this correctly, you are just clearing=
- that
-> there was been a WoL wakeup. The WoL configuration is not cleared, so i
-> could suspend the device again and wake it up with WoL. There is no need =
-for
-> me to use ethtool, the WoL configuration is preserved.
+> multiple drivers thinking they are controlling a single device.
 
-Yes. Your understanding is correct.
-WoL configuration is not cleared.=20
-This clean-up helps us when resume from sleep due to system events.
-There is no need to use ethtool's configure WOL again.
+Though this device does not appear as a PCI device on EP firmware, but ther=
+e are some other internal PCI devices that will be enumerated.=20
+We will remove the dependency of reading the PTP device to check the SoC ve=
+rsions, instead we will read the config space of this PCI device itself.
+I hope this clears your doubt whether this driver is running on Host or EP =
+device.
 
 >=20
->         Andrew
-
-Thanks,
-Raju
+> Bjorn
 
