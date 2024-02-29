@@ -1,163 +1,87 @@
-Return-Path: <linux-kernel+bounces-87630-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87631-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 399D386D6BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 23:18:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8901586D6BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 23:19:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8E1E2856C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:18:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43F082855F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:19:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3E4F74BF3;
-	Thu, 29 Feb 2024 22:18:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ZzqnCwJI";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ZrFPrNcu"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B474574BF3;
+	Thu, 29 Feb 2024 22:19:27 +0000 (UTC)
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F4D45025E
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 22:18:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB8ED6D52F
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 22:19:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.85.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709245127; cv=none; b=ipCfYi4D9csH5Sm1O3nsYEcZFGXxAD1p3wblDlPDXWHgGRu57r6i05LpOyLAOqMgfaHn6YJPFZSLS2bCLp4CLHBKSKKq9LFBPJtq6Z8LWbrs4/RBHD+ifi9xyVsBwZABX02NoZ07eFVNDcK/uSGUoXQRIEgOwOdrCgJidId36Q0=
+	t=1709245167; cv=none; b=Ul59s4QSCkJ6vFiBgs+MfwquayQrBG0DVyD6titcTu9CftsJjb4+hCAhzSY9UBbJF9GQyu6kmt3pxVZceWPgRln55fyMfbZNCxO4SJ2ZRYSVLORyPBI+yU+WmzOjDHVTE/3QWiikcS1wq3VDSPwPrvyIrM1ylSS3aJZycFsKnJY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709245127; c=relaxed/simple;
-	bh=AZ8vFdseDArLDA3MltLutOe9fOfNmbM09SyXJH4sSSQ=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=JGVX8xSHvfALwN3mT/4wlVMDs7OjPe4YLRpy/ZS6lrXKh3vq2JwoT/TkefqPYjSjjzrl6od3VEOnMPeLsR0pmYv9xIvo2gIhl1M0qecmxikjIo59Vorxp/7FPTCkIUoOBnU354OIBZEJPl6KR6RVQuoLCCbIAtTIF9OHnNBkILI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ZzqnCwJI; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ZrFPrNcu; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1709245118;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HChKMC5lwAPM5OQ3TNfOuideypjcOh5mp5j1eeugdCU=;
-	b=ZzqnCwJIdsnJzyForWXkD39afr1UzcRMe+yCoFg+yUzg9aAibO01rPFZXCJb1PzSR/qjpm
-	ioAbp4XkH+4OC+nhnETymgN4Fc7AzuI17QW4GBb3DBsRIxl8ZHjZXzblmttTy6VTabYYU3
-	am5FS68SwPppnpGoXcZD7kk7DwiX9MOFAC9pzdR0Nnq1b+aZIeYKQ3EVpYnAjxaOf/nYgH
-	f5miZxMVdYxqdTnAuLsLZJXCsLzofepSwSoKUYjbxDXYHW6hCX5hUya+0S7+M7MKF0Lxz2
-	dml8GPiXVfr221UdVBHcLRuAwegHGRNIHgnOXk35QWXP3cib2n6VAV0879EdaA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1709245118;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HChKMC5lwAPM5OQ3TNfOuideypjcOh5mp5j1eeugdCU=;
-	b=ZrFPrNcu6WHGLZcJLQ4BHrpFkVLY22P9euudu1uVi5MQxx+pD4tkIKbBYblYkm+YMvxrK7
-	SigmuIl0MVDBIwBA==
-To: Dimitri Sivanich <sivanich@hpe.com>, Dimitri Sivanich
- <sivanich@hpe.com>, David Woodhouse <dwmw2@infradead.org>, Lu Baolu
- <baolu.lu@linux.intel.com>, Joerg Roedel <joro@8bytes.org>, Will Deacon
- <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
- iommu@lists.linux.dev
-Cc: linux-kernel@vger.kernel.org, Steve Wahl <steve.wahl@hpe.com>, Russ
- Anderson <russ.anderson@hpe.com>
-Subject: Re: [PATCH] Allocate DMAR fault interrupts locally
-In-Reply-To: <ZeDj/LK56borSxO4@hpe.com>
-References: <ZeDj/LK56borSxO4@hpe.com>
-Date: Thu, 29 Feb 2024 23:18:37 +0100
-Message-ID: <87plwe7w3m.ffs@tglx>
+	s=arc-20240116; t=1709245167; c=relaxed/simple;
+	bh=M6UYG5sei6C0Rzgn8R/42e/WauTCqLiaOxNsgR5MJLo=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=mp/SgmvYj5S6O8v0m51GDf8dWQF7NtahbGTOiAug27MBHmnAj3nD8gfJcY3JEzEEgjkrgsDlLPi5P/uJEqOxnvTjXiJdHh8zgM8ZyLbwwFhWRPRLC93ChbaFvDo4VoIxOl8oZC3SdvFl3NYHpjprxYcpFgbJlv7wL13qCCh3xgs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.85.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-66-3uv_vksaP4C8KFqGrkfj8Q-1; Thu, 29 Feb 2024 22:19:21 +0000
+X-MC-Unique: 3uv_vksaP4C8KFqGrkfj8Q-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 29 Feb
+ 2024 22:19:20 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Thu, 29 Feb 2024 22:19:20 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Guenter Roeck' <linux@roeck-us.net>, Geert Uytterhoeven
+	<geert@linux-m68k.org>
+CC: Linus Torvalds <torvalds@linux-foundation.org>, Linux Kernel Mailing List
+	<linux-kernel@vger.kernel.org>, Kees Cook <keescook@chromium.org>, linux-m68k
+	<linux-m68k@lists.linux-m68k.org>
+Subject: RE: Linux 6.8-rc6
+Thread-Topic: Linux 6.8-rc6
+Thread-Index: AQHaaYe1QmzCGfJCBU23M4aIzXNkALEh5vKA
+Date: Thu, 29 Feb 2024 22:19:20 +0000
+Message-ID: <b4fa177d6fcc42deb7db0dc0f9d36fe2@AcuMS.aculab.com>
+References: <CAHk-=whZ=iA6DhijePcW-pJjZ8YD4T5qLpLKVSUT+4gWNm_0sA@mail.gmail.com>
+ <6bb3f88b-bf57-442a-8b46-cb4784dd4cab@roeck-us.net>
+ <CAMuHMdVYjw9CEBUzxuJ-10wudK_mvJZgqP3gR4kuv-FDYBZ-Aw@mail.gmail.com>
+ <8403d8e3-c8ac-476b-8b8e-2c8b6ed8f464@roeck-us.net>
+In-Reply-To: <8403d8e3-c8ac-476b-8b8e-2c8b6ed8f464@roeck-us.net>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 
-Dimitri!
+Li4uDQo+ID4+IEkgc3VzcGVjdCB0aGlzIG1heSBiZSBjYXVzZWQgYnkgdGhlIHRlc3QgYXNzdW1p
+bmcgdGhhdCBzdGFjayBncm93dGggaXMNCj4gPj4gZG93bndhcmQsIGJ1dCBJIGRvbid0IHJlYWxs
+eSB1bmRlcnN0YW5kIHRoZSB0ZXN0IHdlbGwgZW5vdWdoIHRvIGJlIHN1cmUuDQo+ID4+IEknbGwg
+ZGlzYWJsZSB0aGlzIHNldCBvZiB0ZXN0cyBmb3IgbTY4ayBnb2luZyBmb3J3YXJkLCBzbyBJIGFt
+IG5vdCBnb2luZw0KPiA+PiB0byByZXBvcnQgdGhlIHByb2JsZW0gYWdhaW4gaW4gdGhlIGZ1dHVy
+ZS4NCj4gPg0KPiA+IE9uIG02OGssIHRoZSBzdGFjayBkb2VzIGdyb3cgZG93bndhcmQuDQo+IA0K
+PiBTb3JyeSwgSSBtZWFudCB0byBzYXkgdXB3YXJkLCBidXQgYXBwYXJlbnRseSBJIHdhcyB3cm9u
+Zy4NCg0KTWF5YmUgYmVjYXVzZSBtNjhrIG9ubHkgaGFzIDIgYnl0ZSBhbGlnbm1lbnQgZm9yIDMy
+IGJpdCBpdGVtcy4NClRoYXQgY2F1c2VzIGdyaWVmIGluIG1hbnkgcGxhY2VzLg0KQWx0aG91Z2gg
+a21hbGxvYygpIHJldHVybmluZyBhIGxhcmdlciBhbGlnbm1lbnQgd291bGQgZml4IHNvbWUNCm9m
+IHRoZW0gd2l0aG91dCB1c2luZyBtdWNoIG1vcmUgbWVtb3J5Pw0KDQoJRGF2aWQNCg0KLQ0KUmVn
+aXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRv
+biBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
-On Thu, Feb 29 2024 at 14:07, Dimitri Sivanich wrote:
-
-The subject lacks a subsystem prefix. You're doing this for how many
-decades now?
-
-> The Intel IOMMU code currently tries to allocate all DMAR fault interrupt
->  
-> +#ifdef CONFIG_X86_LOCAL_APIC
-
-I seriously doubt that this code can ever be compiled w/o X86_LOCAL_APIC:
-
-obj-$(CONFIG_DMAR_TABLE) += dmar.o
-
-config DMAR_TABLE
-        bool
-
-config INTEL_IOMMU
-        depends on PCI_MSI && ACPI && X86
-        select DMAR_TABLE
-
-config IRQ_REMAP
-        depends on X86_64 && X86_IO_APIC && PCI_MSI && ACPI
-        select DMAR_TABLE
-
-config X86_LOCAL_APIC
-        def_bool y
-        depends on X86_64 || SMP || X86_32_NON_STANDARD || X86_UP_APIC || PCI_MSI
-
-What are you trying to achieve here other than #ifdef voodoo?
-
-> +static void __init irq_remap_enable_fault_handling_thr(struct work_struct *work)
-> +{
-> +	irq_remap_enable_fault_handling();
-
-because if INTEL_IOMMU=y and IRQ_REMAP=n then X86_LOCAL_APIC=y and this
-muck gets invoked for nothing. 'git grep irq_remap_enable_fault_handling
-include/' might give you a hint.
-
-> +}
-> +
-> +static int __init assign_dmar_vectors(void)
-> +{
-> +	struct work_struct irq_remap_work;
-> +	int nid;
-> +
-> +	INIT_WORK(&irq_remap_work, irq_remap_enable_fault_handling_thr);
-> +	cpus_read_lock();
-> +	for_each_online_node(nid) {
-> +		/* Boot cpu dmar vectors are assigned before the rest */
-> +		if (nid == cpu_to_node(get_boot_cpu_id()))
-> +			continue;
-> +		schedule_work_on(cpumask_first(cpumask_of_node(nid)),
-> +				 &irq_remap_work);
-> +		flush_work(&irq_remap_work);
-> +	}
-> +	cpus_read_unlock();
-> +	return 0;
-> +}
-> +
-> +arch_initcall(assign_dmar_vectors);
-
-Stray newline before arch_initcall(), but that's not the problem.
-
-The real problems are:
-
- 1) This approach only works when _ALL_ APs have been brought up during
-    boot. With 'maxcpus=N' on the command line this will fail to enable
-    fault handling when the APs which have not been brought up initially
-    are onlined later on.
-
-    This might be working in practice because intel_iommu_init() will
-    enable the interrupts later on via init_dmars() unconditionally, but
-    that's far from correct because IRQ_REMAP does not depend on
-    INTEL_IOMMU.
-
- 2) It leaves a gap where the reporting is not working between bringing
-    up the APs during boot and this initcall. Mostly theoretical, but
-    that does not make it more correct either.
-
-What you really want is a cpu hotplug state in the CPUHP_BP_PREPARE_DYN
-space which enables the interrupt for the node _before_ the first AP of
-the node is brought up. That will solve the problem nicely w/o any of
-the above issues.
-
-Thanks,
-
-        tglx
 
