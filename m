@@ -1,240 +1,202 @@
-Return-Path: <linux-kernel+bounces-87300-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87301-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4008786D26D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:37:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0F7586D273
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:39:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 605A01C2265E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:37:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 875BE288709
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:39:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D09D70AE4;
-	Thu, 29 Feb 2024 18:37:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 539CF7E580;
+	Thu, 29 Feb 2024 18:39:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="Le9kEfzb"
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="l3nPNxaL"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 264C479F1
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 18:37:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709231847; cv=none; b=GxPxvuvG95fr08zreP+u2pJapica53gQcIxe9Elxy7IcUrTeNPyifeltPpT2MJ4ZsXzj5fFrAup5BmaEyO65ZC93K4NTmE1TuGX5lxKWs3rLghHSFuU/NVtwJeZzo7oMRw3+pjiCIbwyqvLZVhnWt+kTAEr/cZ8FlvyiIBDgFoE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709231847; c=relaxed/simple;
-	bh=Ux3FswKlCw14tBuSmwuKQ+NEkYX9d2zLS/mv+GpKMS0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qEXV1Ygb/B8XhsL/zqez8IwDzL43KnyxWj9/K7hpLBvRCNi/qw6MLgy9wwnvKP/q0sRYnz5sDxzo05eXpD//WEDyO5oA2tL5vnxo+epo/u/M/ohWVIzJrWzSzLiQiwhKNzoT6/dFvMeykbTBbgMQENL/oIDZX17scHSeWSinN54=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=Le9kEfzb; arc=none smtp.client-ip=209.85.215.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5c229dabbb6so779763a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 10:37:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1709231843; x=1709836643; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3onkurgGwZnEhJcVtKriZJa3VO4hJPZAGQWDNhD7hV4=;
-        b=Le9kEfzbjI/QDloZYdLk9+49Vhy44/plGXfzSneIyTi7ixFI1ksIlV2C0mvpJENgyU
-         nSLfNXaSNGCdQaPFhzhPDTcU3+MXxsSKrhVh6n5GruRiw5DU6Na1pXAcCeQqz3/TAO3L
-         VDD1cKAoTfF6ZO2tVFT9VUjyh9kBOwWHx2vcnCKKg5QNQx6b0TWPbRszQyas70O9jIEc
-         Mir8LZzPqCPTs+ViBP2Iax2XO9CJHN+FefFNsU9Npht1z4KFAlxcHwkXyySE6E+K+afG
-         6NfBnZ8GdwVjqaWjR1tuWS1chw47psKrqVuFhr8J0O1B7NM4qp+NpoXzd/TVJOueOz3d
-         zRDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709231843; x=1709836643;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3onkurgGwZnEhJcVtKriZJa3VO4hJPZAGQWDNhD7hV4=;
-        b=tm6TgqrYFF8x20la9a88fd2mCME7yxKEpHfihyD0a1xEom8a2FJcRWUY8qhL9nqtNC
-         T6kN5gVZmeY2IegP6ovC1yEdUVYQZynswO7xD5b/rVOU1IYTXTR9U3aJoupti1Bpx8pc
-         HVEQ7FhNQ6Jcd1ZcQGig9ojNgYz8tOPPTn1fU/xE+LxMVtrl3W/a4ZhCv1hokyw9zhog
-         erdDbf9yAA1gFntluEetc3szaQ+X/XXUsY5uYH6yyAF2dSqt8d9yPV1hYsd8bP+Z7iqJ
-         rUvExly3gkHUKJG+jE74DDK8Lw+5npn5gt4RsKXQ8kshviirbzLDdgINQHe4MPqQv57c
-         d0Pw==
-X-Forwarded-Encrypted: i=1; AJvYcCX//v4CIFuVf2DijQvTg93z1TTojo++XRagY1r9iOdyPG1BHgDW3qGwBOta5tcAq3sW5IjNIWFFAndlhKU/ze5b7nj6WGsJ8PyRIXi9
-X-Gm-Message-State: AOJu0Yxi328MAOBxiGIWvcLquo7n5fn/XvhFDNTPPpBBMGEu8ocppyUz
-	JLWXLgnXt8eokUnPJbfHNb/7vFv03gdLklXDuWR2y6R7gr8DN0lYl5GT9smb/1g=
-X-Google-Smtp-Source: AGHT+IGtuJS3MAvI4gpblQCoq0hyZ+R7ZzCqp75P0VIfk7XRT7G+I1gfdyMZoSlwNPIXcLTNBCc84Q==
-X-Received: by 2002:a17:90a:fa8e:b0:29a:9a57:f367 with SMTP id cu14-20020a17090afa8e00b0029a9a57f367mr3266565pjb.2.1709231843596;
-        Thu, 29 Feb 2024 10:37:23 -0800 (PST)
-Received: from ghost ([2601:647:5700:6860:b8d8:9761:53ea:51ce])
-        by smtp.gmail.com with ESMTPSA id sb3-20020a17090b50c300b00299db19a81asm3919157pjb.56.2024.02.29.10.37.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 10:37:22 -0800 (PST)
-Date: Thu, 29 Feb 2024 10:37:20 -0800
-From: Charlie Jenkins <charlie@rivosinc.com>
-To: Conor Dooley <conor@kernel.org>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Jisheng Zhang <jszhang@kernel.org>, Evan Green <evan@rivosinc.com>,
-	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
-	Eric Biggers <ebiggers@kernel.org>,
-	Elliot Berman <quic_eberman@quicinc.com>,
-	Charles Lohr <lohr85@gmail.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 2/2] riscv: Set unaligned access speed at compile time
-Message-ID: <ZeDO4CVOi6q4u8Lt@ghost>
-References: <20240227-disable_misaligned_probe_config-v5-0-b6853846e27a@rivosinc.com>
- <20240227-disable_misaligned_probe_config-v5-2-b6853846e27a@rivosinc.com>
- <20240229-company-taste-daa305961e3a@spud>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADBBB79F1;
+	Thu, 29 Feb 2024 18:39:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.16
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709231946; cv=fail; b=XZbA13SwdOlG3yXeKRynnZdtXws74h/anHhmoF4DHPvKJwol2xvE2BpFDxdVc1bIlZrinZBEk2yAv39s9RgEiVL6PmIaOtZ8tS6uVMgChhPMrFUqm5wZrZzpKjKmw7qhmCF/7ygEMNH8J2IIpU4ip+ZfCIVAX+lvfbXaDqfP2yc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709231946; c=relaxed/simple;
+	bh=tjkMqKkWhj7HWWYBWBr6GXpDYkhn95eYJxLK7aK6SWc=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=BGNb//ntFyaEJwSMvZjCKTRClwjuoXbWPPLIogzE8B56G6Vu2J8RETcHLd4Iq9pebNWSDv27cHrYbH2TVRgNs5REdc6vWyAGxgzlUoNH22bBdVF76HTiTcxHzLMJImXyLRGICJ8i7PpETiJaowIlso9ohstm6F+tmg/K7X11DCE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=l3nPNxaL; arc=fail smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709231944; x=1740767944;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=tjkMqKkWhj7HWWYBWBr6GXpDYkhn95eYJxLK7aK6SWc=;
+  b=l3nPNxaLMNOd64K7iZIJGhZsdUMjWFYQkwSViBYjNTOoPMOsO/Av7LZX
+   47v16YjZ0Egv4bg/Tie/Mx9py/g6gGpxznnOiqBFb8mIG743xjM1GY84D
+   XKcDAt5h9XrCvarbyP9FkenUshDg0XLRK2o3R6X6TRVdcBb5Cr6BQbDex
+   e8iJivkcwXceoApx1NrWy1qIAqgqCPQ8hE87y+hrR3yurkaGskmohj5n4
+   eID1F/1T0aRv8MVSQ57xuVZIlBC5fQD1ss7c0QytYOr7OZBLsFGw5L7L5
+   55cRZ+ev6zUCZ6yKBnGomMpsbrQIBfoiLfmLeU6WYZtV0rJx1FlE1xxIe
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="3843801"
+X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
+   d="scan'208";a="3843801"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 10:39:02 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
+   d="scan'208";a="7850932"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orviesa010.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 29 Feb 2024 10:39:02 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 29 Feb 2024 10:39:01 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 29 Feb 2024 10:39:01 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.100)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 29 Feb 2024 10:39:01 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ny0dL2oPvIABvvAHfZUsIie1P+c7M88xR6i9RNPN8FvBHUeCkgtBA+zKl/Uv86oDju5rO0EevnICUGmNol/tSTiCKc86UDq26Hgv7CZMzyJzNga+NAe2KQFS1zrI4yEFqo+sGgE95ovzyLQIVOZ87jH8pycee0Mdb/44b1c5xQj55GyW+q9mBPHfJ80EXHK845g0YlJGCD8PxHOgQz/j1i4b/mSbgYF1a2pI2FU7otYd7rDufX+kiadaABZqDZHbh0TAKhy3LO1E+eckb28Q/V6rZhmGrcCkfWTsINhFxLzqvsdPX+rPcn60IYorvK4CGMsWEjB9C9e1l/A7huRYHw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=tjkMqKkWhj7HWWYBWBr6GXpDYkhn95eYJxLK7aK6SWc=;
+ b=h2zMeD7nfy+zeZuJBnVGqU6R7hNk3OiNF4Z3o51JRFw1y+8ERIEzmBL071VWWdsQ4lKAR2M+tTEq9QM+uV3+UEyKH9/YafHHL6fjbVF9YsJzR+u5/H32VYlrh7cZESZIu7KnkoibkzC5BJojIZyGJ0O7xBzyrWO7M1mDxOtR4WlK7zQzYdYaWDIo+xXBikujHaA8lB8Ca1TuZG5JYm8bEEmbTdtmfzyauZeNodbcMtV0T0HtpYJw3DFxWRTTPXNERF1rSv1tr00QWgSsnhDwVe8aak/90rQqa651HLnHLI5LU+mMEkLjy62Oj5lXVWCnlouY8ULFIp9X0Juz5SWCEg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from SJ1PR11MB6083.namprd11.prod.outlook.com (2603:10b6:a03:48a::9)
+ by DM4PR11MB6287.namprd11.prod.outlook.com (2603:10b6:8:a6::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.25; Thu, 29 Feb
+ 2024 18:38:58 +0000
+Received: from SJ1PR11MB6083.namprd11.prod.outlook.com
+ ([fe80::d5ce:2b6c:458:3ca9]) by SJ1PR11MB6083.namprd11.prod.outlook.com
+ ([fe80::d5ce:2b6c:458:3ca9%7]) with mapi id 15.20.7339.023; Thu, 29 Feb 2024
+ 18:38:58 +0000
+From: "Luck, Tony" <tony.luck@intel.com>
+To: "Naik, Avadhut" <avadnaik@amd.com>, Borislav Petkov <bp@alien8.de>
+CC: "Mehta, Sohil" <sohil.mehta@intel.com>, "x86@kernel.org" <x86@kernel.org>,
+	"linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"yazen.ghannam@amd.com" <yazen.ghannam@amd.com>, Avadhut Naik
+	<avadhut.naik@amd.com>
+Subject: RE: [PATCH] x86/mce: Dynamically size space for machine check records
+Thread-Topic: [PATCH] x86/mce: Dynamically size space for machine check
+ records
+Thread-Index: AQHaatqf6DQhCXmfQUqRjrewOC7we7EhAAOAgACkomqAAACpsA==
+Date: Thu, 29 Feb 2024 18:38:58 +0000
+Message-ID: <SJ1PR11MB60831369FC6FEA7944DBEEC5FC5F2@SJ1PR11MB6083.namprd11.prod.outlook.com>
+References: <SJ1PR11MB60830AF35FA89C7869B8C11EFC482@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <20240212191401.GLZcpt-XHFqPg3cDw-@fat_crate.local>
+ <SJ1PR11MB6083C60D7584B02E9CAF19D5FC482@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <ZcqPhVO_DtD2x5N7@agluck-desk3>
+ <20240212220833.GQZcqW4WxKH34i-oBR@fat_crate.local>
+ <20240212221913.GRZcqZYRd6EPTTnN97@fat_crate.local>
+ <20240212224220.GSZcqezMhPojxvIcvO@fat_crate.local>
+ <Zd--PJp-NbXGrb39@agluck-desk3>
+ <8ee24cad-e9b8-4321-aad4-9a9ba4f8b7b6@amd.com>
+ <20240229083951.GAZeBC1yS3MPonWwKv@fat_crate.local>
+ <ZeDDLLQWPyyZve_s@agluck-desk3>
+ <f17da20f-4379-4dc6-b988-cb3a07f4aa6f@amd.com>
+In-Reply-To: <f17da20f-4379-4dc6-b988-cb3a07f4aa6f@amd.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SJ1PR11MB6083:EE_|DM4PR11MB6287:EE_
+x-ms-office365-filtering-correlation-id: 1f86620b-ced6-4d21-72de-08dc3955b0fe
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: PBSrnF0Uy+/eVidCF+qA5rIP1W1N2HEA18P8F3ZiRz42odAwKvI4TfZsiV4FVr77bIG+f3WPhmIeOk24FXkxNRawVT0T6LTF8hM+DjOEteVxfR+KTynbcZdBurI4uOY1XY9goWf82T7eaiRP6LsXuBFglqJg+55+TBEU281j/BfSaKEYAP4OVc0P7dYhiTG0kwPdgmopCoLrYuNBfxeL3Lf5GwCy2ddkGKJcjrVGG8yaV1jN3WbNNfm9rFKtLvcXDPDXEyFv98Ygbo9l9ryb1uVUsSMNVTEEdcX/yKEOCS60olq/3dqMn9ABONDtec7REcDs5F24jHBabAOWM8IYf/Pcgtj/rnxk0jKvkiPju+ElngUBAMnx2sIpVBdLuOAoKU+ElhvNsnA0jE025JK7flgTpAidjZJsWdX3LvByeA8cRWdokF/tVUr1NOeHIrNTEsOGLhk6Fh4XgwlEXD8gYkdlYrGXBP5L/oyK1qjYpj9Mi3saoiDzWDFxpRvK7+QbIvylje9NJlOx7AmyZjZOuKPtqUwCDJz4eMNf23i1iHelsi5Qfbtkcl5TUbIT7uEt60mZY+eLLOH539HZesxrNAumc3Fdr+4FcLMEq6pvh+SJIX8TlhDAIEdevfJqrQlC+hr8Dj8/gqlOqO+oittuu6JHDAYrERZ2YMGO3nCtGZoDhmXSLDkSIRmwDkyNGzs06zxbexXHDHCfnVP5W0zj/PnoZViVCda+oY/t2dRLvu4=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ1PR11MB6083.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ZlVIRWhldXQxOUcycEdid2R5OGtvWUw2QzlDN1gzL0FOaElRQ2Nvdmk2cnVQ?=
+ =?utf-8?B?Qk9pdmtia0l1bUZqc084RTdpWEswYTJmZWVZUE1hNHZIREVLd2s1N3FiVlRS?=
+ =?utf-8?B?ZjdUa211aDU0ZnEyR1J5RWJxb2pzV1dxVy9NYzhwNytYMkdCRFBuSlNIeUs2?=
+ =?utf-8?B?K29ObklDTkEzR1pxRzFyZ214VGVhN1FLdEpmbERkMkkvL09xWk9lUWIzb0N4?=
+ =?utf-8?B?L1BucWNKeG9SYlcxSllVN1RGbC9XOWtFSHNYNmgyWjBFT2t5bjlDR1lVNURD?=
+ =?utf-8?B?WTZ3d3p4OU01SmE3cUJ4U3JkV1RJQWZDcmpGUHNqQ1A2U1h3VmYrd3pvTFhC?=
+ =?utf-8?B?Q2xTTUFXUmRGUUpLNEpzSGdQa2NzVGN4Wk1vdjNobUdteE4wYkh5RnZyZzU4?=
+ =?utf-8?B?MGpQTnRZZjN4VjVVaW1ZSEFqYk9wQkluWDk2QjlSMHdXOUU5VU9HQTFhRWU2?=
+ =?utf-8?B?V243cWh5ZDFwSWlVYUVPeHhSSU5Mb0RCb0lULzZwK1ZGZHRKSFNuU3Q3SGJQ?=
+ =?utf-8?B?MGc1bzEvbHRCK2NrcUc1RzVwZElBNEJPa2hXODRmQ2hMSWlWMHFHT1BVN1l5?=
+ =?utf-8?B?eWFqM2xtUUl3RWhWOXY3R3dnVkhmdlRibGF0SlVJZ3NMN2FhUndzbzhkSDhh?=
+ =?utf-8?B?b1N1K1RLRm9BR2dWcDdCUHdic1pGSkNpVGhISlJGcVI2RlpqaGliN0FiWjUy?=
+ =?utf-8?B?aXFXTGZsSjBKQzZFU3BEbktvTXI0bExyNWZTY0d1cFl4ZFpyNnVDRlJOcENs?=
+ =?utf-8?B?bTNrVzdNT1pFL21TN2F4ZFdXajZsSm1wTitXbVFwSnNsVjVZVUdDL3U1S0hw?=
+ =?utf-8?B?RlY0MDJTeEpLM0E5QnM1S0ZyS2piZllNMXFNYWF4TkJxSStVNHYvTG5PcWtO?=
+ =?utf-8?B?dVUzTFpJeHU2VUlKVXJoNTVZb1Q1OWFwMUI0RDJsU3g2Q0hJYU04RnZ2VnJk?=
+ =?utf-8?B?OE9UMmdqZW45a0FMdzRjTmRzcFVobDRqZHhobmJKRmJCL1c3Q1RkcnNuOU1P?=
+ =?utf-8?B?eG9qbGRSWFZ6ZFlSYlNXQU1idEN6bkJxZzIxWU12UFdIL1NwR1RNdTJTbE9T?=
+ =?utf-8?B?R3BkMVlCQ3VHQ3o1YVZ0aFNoMFk4bmlnNHArSzRiL2ZHMk01aGhYdTZCbmZN?=
+ =?utf-8?B?MW0zTmhEa2xzYmZER3VxdmhxWXJFOVkvbjYvNGxmS2dpYURxNkJmRnpJUUIr?=
+ =?utf-8?B?dUI4bmlsM05IUEhmTUxmWkttRDhDeW5odktvTTBuZFNTN25nS0Q1d3NOeFBT?=
+ =?utf-8?B?cmRTTEU2KzNaQTBUQlBBZ3V5bWF3ZVhmdElxblU4cnB1bTZwRE1adTlWUDhG?=
+ =?utf-8?B?Ymx2N0N5TDl5L0k2R0EwOGpJTjBCUGNYQ1pDMGx2dUx0WUxUVDVWTzVJV1Q5?=
+ =?utf-8?B?YWtXRk5WMHQ4aERJYklxQ2tmMmIzeXBPYVQ0ODJTYVpvMHBKbE5BczRSU0xP?=
+ =?utf-8?B?T0hVOHJtNVdWdCtabmQ5MklldjNPbndSMG1BSFJTTnJJdFUrbGQ3K2xuVDhG?=
+ =?utf-8?B?YzVWZXgrNkdFaHZNMUozdTNHeGlXTFpVU2ExN0l5ZzRoTUFFMWt1bjhXOGly?=
+ =?utf-8?B?ZWRDOUozMlA5WWpHYWVsNWVPRWU4UkF4MloyOEc2RDBBTm9MRWk5dGdaMXk4?=
+ =?utf-8?B?SG5kTnozS0o5RitvTUs4R3lWYi92Y1gwRXRJREc0OTl2amFmZGJsSThrZnF0?=
+ =?utf-8?B?RnQ3cEFidWQwQ2hxV0FJRlVFMTZCVThtV2ZYUmF6Qis3OXlZTVlzeGxYSWhs?=
+ =?utf-8?B?T0R6d240RjZwdGQwV1RHTkphNEFlK25WWU9TSUh2WlZIaUw5Qlh5VEdmVFFG?=
+ =?utf-8?B?blRHZEZLeklGNFN2UzN2OElwNmE0RTVGYWRweXRPRlRObWwvQWgxT1p0MEZ3?=
+ =?utf-8?B?VjdrZXNnZmhqcXFOcUdIellEcXVKYmdJcmxtRWZoVFlwRk80Y0FDbnlEdVFs?=
+ =?utf-8?B?K3ltc1JzdngyWGZnUndLNHVMbURQS2VrTHRscnJoSVV3RG1jYmZNK2tYTThI?=
+ =?utf-8?B?OWxJVnh1S0NUU2JpUUo0K1dSdTA3a2N5RUg4eHBRNk1saTAwNVoxQ2RrYklq?=
+ =?utf-8?B?Um5wZlN1VVVUNlJGdlJzK1FKNHNqZ3dTLzFURWVKcUVZa2J5VzJNblBFRWRu?=
+ =?utf-8?Q?IWEj7dLGP5AJtiEM6HEBvfnSR?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240229-company-taste-daa305961e3a@spud>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ1PR11MB6083.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1f86620b-ced6-4d21-72de-08dc3955b0fe
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Feb 2024 18:38:58.4178
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: bP/Wqptjo90JMl4nogsaV8bYpQUbjoAOEumn66y1O2WlxfsJZL7xPcwMy03BQ9UaT8o0tOq+miFzGsQb50y5kw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB6287
+X-OriginatorOrg: intel.com
 
-On Thu, Feb 29, 2024 at 12:26:37PM +0000, Conor Dooley wrote:
-> On Tue, Feb 27, 2024 at 03:13:14PM -0800, Charlie Jenkins wrote:
-> 
-> > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> > index bffbd869a068..ad0a9c1f8802 100644
-> > --- a/arch/riscv/Kconfig
-> > +++ b/arch/riscv/Kconfig
-> > @@ -690,25 +690,58 @@ config THREAD_SIZE_ORDER
-> >  config RISCV_MISALIGNED
-> >  	bool "Support misaligned load/store traps for kernel and userspace"
-> >  	select SYSCTL_ARCH_UNALIGN_ALLOW
-> > +	depends on RISCV_PROBE_UNALIGNED_ACCESS || RISCV_EMULATED_UNALIGNED_ACCESS
-> >  	default y
-> >  	help
-> >  	  Say Y here if you want the kernel to embed support for misaligned
-> >  	  load/store for both kernel and userspace. When disable, misaligned
-> >  	  accesses will generate SIGBUS in userspace and panic in kernel.
-> >  
-> > +choice
-> > +	prompt "Unaligned Accesses Support"
-> > +	default RISCV_PROBE_UNALIGNED_ACCESS
-> > +	help
-> > +	  This selects the hardware support for unaligned accesses. This
-> > +	  information is used by the kernel to perform optimizations. It is also
-> > +	  exposed to user space via the hwprobe syscall. The hardware will be
-> > +	  probed at boot by default.
-> > +
-> > +config RISCV_PROBE_UNALIGNED_ACCESS
-> > +	bool "Probe for hardware unaligned access support"
-> > +	help
-> > +	  During boot, the kernel will run a series of tests to determine the
-> > +	  speed of unaligned accesses. This probing will dynamically determine
-> > +	  the speed of unaligned accesses on the boot hardware.
-> > +
-> > +config RISCV_EMULATED_UNALIGNED_ACCESS
-> > +	bool "Assume the system expects emulated unaligned memory accesses"
-> > +	help
-> > +	  Assume that the system expects emulated unaligned memory accesses.
-> > +	  When enabled, this option notifies the kernel and userspace that
-> > +	  unaligned memory accesses will be emulated by either the kernel or
-> > +	  firmware.
-> > +
-> > +config RISCV_SLOW_UNALIGNED_ACCESS
-> > +	bool "Assume the system supports slow unaligned memory accesses"
-> > +	depends on NONPORTABLE
-> > +	help
-> > +	  Assume that the system supports slow unaligned memory accesses. The
-> > +	  kernel may not be able to run at all on systems that do not support
-> > +	  unaligned memory accesses.
-> > +
-> >  config RISCV_EFFICIENT_UNALIGNED_ACCESS
-> > -	bool "Assume the CPU supports fast unaligned memory accesses"
-> > +	bool "Assume the system supports fast unaligned memory accesses"
-> >  	depends on NONPORTABLE
-> >  	select DCACHE_WORD_ACCESS if MMU
-> >  	select HAVE_EFFICIENT_UNALIGNED_ACCESS
-> >  	help
-> > -	  Say Y here if you want the kernel to assume that the CPU supports
-> > -	  efficient unaligned memory accesses.  When enabled, this option
-> > -	  improves the performance of the kernel on such CPUs.  However, the
-> > -	  kernel will run much more slowly, or will not be able to run at all,
-> > -	  on CPUs that do not support efficient unaligned memory accesses.
-> > +	  Assume that the system supports fast unaligned memory accesses. When
-> > +	  enabled, this option improves the performance of the kernel on such
-> > +	  systems.  However, the kernel will run much more slowly, or will not
-> > +	  be able to run at all, on systems that do not support efficient
-> > +	  unaligned memory accesses.
-> >  
-> > -	  If unsure what to do here, say N.
-> > +endchoice
-> 
-> Thinking about this some more, you've got 6 different options here:
-> 
-> 1 probed with no emulation available (choice set to probe + RISCV_MISALIGNED=n)
-> 2 probe with in-kernel emulation available (choice set to probe + RISCV_MISALIGNED=y)
-> 3 in-kernel emulation only (choice set to emulated + RISCV_MISALIGNED=y)
-> 4 no in-kernel emulation but report emulated (choice set to emulated + RISCV_MISALIGNED=n)
-> 5 slow unaligned (choice set to slow)
-> 6 fast unaligned (choice set to fast)
-> 
-> Out of these, only 2 and 3 are portable options, since 1, 4 and 5 will
-> cause uabi issues if the CPUs or firmware does not support unaligned
-> access & 6 will not run in the same circumstances.
-> 
-> My first thought here was about the motivation for the patch and what it
-> has resulted in. Being able to support HAVE_EFFICIENT_ALIGNED_ACCESS is
-> pretty nice, but it then seems like beyond that we are introducing
-> configuration for configurations sake, without looking at what the
-> resultant kernels will be useful for. Having 6 different options for how
-> the kernel can be configured in this way seems excessive and I don't
-> really get why some of them are even useful.
-> 
-> Take for example situation 4. Unless I have misunderstood the Kconfig
-> options above, if you configure a kernel in that way, it will always
-> report as emulated, but there is no emulation provided. This just seems
-> like a option that's only purpose is setting a hwprobe value, which is
-> a dog wagging the tail situation to me.
-
-This goes back to my earlier comment that it would make sense for
-somebody to select "emulated" even if the unaligned address is being
-emulated by firmware. However, there may be no users for this and if
-needed we can add that in the future.
-
-> 
-> The other thing is about what options are actually marked as
-> NONPORTABLE, given it is done in the choice option - but whether or not
-> something is actually non-portable actually depends on whether or not
-> the in-kernel emulator exists.
-> 
-> I think what I would do here is simplify this quite a bit, starting by
-> making RISCV_MISALIGNED an internal option that users cannot enable but
-> is selected by the PORTABLE choice options. I would then re-work the
-> choice options a bit. My 4 would be:
-> 
-> 1 probe: probe at boot time, falling back to emulated if not performant
-> 2 emulated: always emulate it in the kernel
-> 3 slow: don't probe or emulate in the kernel
-> 4 fast: Your current fast option
-
-Emulated doesn't mean that the kernel will always emulate the unaligned
-accesses. It means that the kernel has the ability to emulate them. It
-will only emulate them if the CPU traps on unaligned accesses. Kernel
-code can choose to forcefully align an address it thinks may cause an
-unaligned access, but that's slightly different from emulated.
-
-Emulated is much slower than "slow", so it seems like it unfairly
-penalizes "slow" to group the options for firmware emulated with a CPU
-that actually just does slow unaligned accesses.
-
-- Charlie
-
-> 
-> 1 & 2 select RISCV_UNALIGNED and are portable because they contain the
-> emulated support and thus satisfy the UABI constaints.
-> 3 & 4 are marked NONPORTABLE. I think 3 will run on systems that don't
-> support unaligned accesses but it will have UABI problems. 4 for the
-> reason mentioned in the Kconfig option above.
-> 
-> I think that that gives you 4 meaningful options, what do you think?
-> 
-> Cheers,
-> Conor.
-
-
+PiBXb3VsZG4ndCBoYXZpbmcgZGVkdXAgYWN0dWFsbHkgaW5jcmVhc2UgdGhlIHRpbWUgd2Ugc3Bl
+bmQgI01DIGNvbnRleHQ/DQo+IENvbXBhcmluZyB0aGUgbmV3IE1DRSByZWNvcmQgYWdhaW5zdCBl
+YWNoIGV4aXN0aW5nIHJlY29yZCBpbiB0aGUNCj4gZ2VucG9vbC4NCg0KWWVzLCBkZWR1cCB3b3Vs
+ZCB0YWtlIGV4dHJhIHRpbWUgKGluY3JlYXNpbmcgbGluZWFybHkgd2l0aCB0aGUgbnVtYmVyDQpv
+ZiBwZW5kaW5nIGVycm9ycyB0aGF0IHdlcmUgbm90IGZpbHRlcmVkIG91dCBieSB0aGUgZGVkdXAg
+cHJvY2VzcykuDQoNCj4gQUZBSUssIE1DRXMgY2Fubm90IGJlIG5lc3RlZC4gQ29ycmVjdCBtZSBp
+ZiBJIGFtIHdyb25nIGhlcmUuDQoNCkNhbid0IGJlIG5lc3RlZCBvbiB0aGUgc2FtZSBDUFUuIEJ1
+dCBtdWx0aXBsZSBDUFVzIG1heSB0YWtlDQphIGxvY2FsIG1hY2hpbmUgY2hlY2sgc2ltdWx0YW5l
+b3VzbHkuIExvY2FsIG1hY2hpbmUgY2hlY2sgaXMNCm9wdC1pbiBvbiBJbnRlbCwgSSBiZWxpZXZl
+IGl0IGlzIGRlZmF1bHQgb24gQU1ELg0KDQpFcnJvcnMgY2FuIGFsc28gYmUgc2lnbmFsZWQgd2l0
+aCBDTUNJLg0KDQo+IEluIGEgZmxvb2Qgc2l0dWF0aW9uLCBsaWtlIHRoZSBvbmUgZGVzY3JpYmVk
+IGFib3ZlLCB0aGF0IGlzIGV4YWN0bHkNCj4gd2hhdCBtYXkgaGFwcGVuOiBBbiBNQ0UgY29taW5n
+IGluIHdoaWxlIHRoZSBkZWR1cCBtZWNoYW5pc20gaXMNCj4gdW5kZXJ3YXkgKGluICNNQyBjb250
+ZXh0KS4NCg0KSW4gYSBmbG9vZCBvZiBlcnJvcnMgaXQgd291bGQgYmUgY29tcGxpY2F0ZWQgdG8g
+c3luY2hyb25pemUgZGVkdXAgZmlsdGVyaW5nDQpvbiBtdWx0aXBsZSBDUFVzLiBUaGUgdHJhZGUt
+b2ZmIGJldHdlZW4gdHJ5aW5nIHRvIGdldCB0aGF0IGNvZGUgcmlnaHQsDQphbmQganVzdCBhbGxv
+Y2F0aW5nIGEgZmV3IGV4dHJhIEtieXRlcyBvZiBtZW1vcnkgd291bGQgc2VlbSB0byBmYXZvcg0K
+YWxsb2NhdGluZyBtb3JlIG1lbW9yeS4NCg0KLS0gDQpUaGFua3MsDQpBdmFkaHV0IE5haWsNCg==
 
