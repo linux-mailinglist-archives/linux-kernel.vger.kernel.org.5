@@ -1,226 +1,259 @@
-Return-Path: <linux-kernel+bounces-86191-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86192-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1EB686C13F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 07:47:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68DC686C141
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 07:47:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E85921C2101A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 06:47:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE6A01F21471
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 06:47:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96E12482F4;
-	Thu, 29 Feb 2024 06:45:40 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0021F3D388;
+	Thu, 29 Feb 2024 06:46:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ijlTkJMd"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4767481D8
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 06:45:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64E3F4438E;
+	Thu, 29 Feb 2024 06:46:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709189140; cv=none; b=AG3MM7WVknPqQOhFFFIziSlcIVOP1yalGfkmT7CEYPzFqveqMytcv7n/cR3umWYaCNt29xrnFQLy/F0PfpKHCnUlY3TRJ4u/yMdPJIw+stK794dNI4NDKxbHAy/QIQdGRQEQ8HgAzdQTDcFKdTN9Vl4JcrfFYEgmc6gO6XU9M+U=
+	t=1709189192; cv=none; b=HCe7e9LAlJPRzhH9e1HhXej36ZH+2/hNR5x2zupAS+WfLaFbC/ELRBZdMW1ApmnXDGt4ORvjDDLlqzdqnLrT7QAzqGjmiEIJcQ9QU+7arAJRIznQMevtiv88zJnTGcaBNSmoeYmvyxKnImLQRWyxkThrvfBh1Md0o27yLyvo0B4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709189140; c=relaxed/simple;
-	bh=6aEWJp6j9qPHDqjJZGCS3CF3gKmVo4+AOMe86BoRIBA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=bHdIXwYJ150BG4BY7ozb/SBK2j1jYZ+uz/MbSXCvWZY0qVbU1G7rsgDsiaSZaKDZt1MQjW3RwEwPq40kn9tEcap4BcD05hu4NYYvJaMLxMuDVNthfMJPBSnvpy8sLzNDF0N7dny58lW5dFgvLtYmN7WpqYFboenRzGuG0xTEmt8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TlhYm4lPyz1FJ3B;
-	Thu, 29 Feb 2024 14:45:32 +0800 (CST)
-Received: from kwepemm600020.china.huawei.com (unknown [7.193.23.147])
-	by mail.maildlp.com (Postfix) with ESMTPS id 1CEF9140416;
-	Thu, 29 Feb 2024 14:45:34 +0800 (CST)
-Received: from [10.174.179.160] (10.174.179.160) by
- kwepemm600020.china.huawei.com (7.193.23.147) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 29 Feb 2024 14:45:33 +0800
-Message-ID: <65f1f671-e0c6-7ed9-a821-5cad979c6dc1@huawei.com>
-Date: Thu, 29 Feb 2024 14:45:32 +0800
+	s=arc-20240116; t=1709189192; c=relaxed/simple;
+	bh=wLx74cxDos7PYxlETX7eEY2HrA5tgmRwY2rfBPbGBKY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=JoNvCL+ODPuPBFcjOovMMpGt7YeDbacerCKZuBHR8i5Ntq14jo25147vgvzgIm2AlGSXM2hIHvEtiV35kpNWPt5eLwKGTEUcVQmn5AfiqwHYFNT2v6PemT7yVuV94IRey4AVN5UFCTH/XJMSZfDTSpRY3wmwuWbC52U5CZf6o/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ijlTkJMd; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709189191; x=1740725191;
+  h=message-id:date:mime-version:subject:to:references:from:
+   in-reply-to:content-transfer-encoding;
+  bh=wLx74cxDos7PYxlETX7eEY2HrA5tgmRwY2rfBPbGBKY=;
+  b=ijlTkJMdCXXDTweWCRLMWaulA24FhzPsV2AfZ4JIO4DIKTKhZ4OGQvcH
+   2SxllLDZXuwzmU7qlPa+mdCu/wVntVy5eqzGo8wY4F4kmmWHStxMCNMVK
+   wq39TTM7KAY9CRNQ6aJCmZi8J16sMEqnG+BXJWQld8fNbcpA5AWgLxQbg
+   fiEnUFLYdmLkh+6mdqQAZGTsNTknHdslCSfy6dUzYtiu06nh9cGLAAO9g
+   3fYkMarkWnkWjSRW4DKlD3FJvV2SegxNPtq1ZwWhpciSTd3jskTHb5BX5
+   2HMsmwafnBePzq2810KLUAEr8lvC8xyB7OTA391GEDfgoC/VpEfpfryqZ
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="3486504"
+X-IronPort-AV: E=Sophos;i="6.06,192,1705392000"; 
+   d="scan'208";a="3486504"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 22:46:30 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,192,1705392000"; 
+   d="scan'208";a="12373836"
+Received: from smitpat1-mobl.amr.corp.intel.com (HELO [10.209.30.182]) ([10.209.30.182])
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 22:46:30 -0800
+Message-ID: <a7b70317-7734-4e36-b79a-7cfeaf664f3b@linux.intel.com>
+Date: Wed, 28 Feb 2024 22:46:29 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH v3] filemap: avoid unnecessary major faults in
- filemap_fault()
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] platform/x86: add lenovo generic wmi driver
 Content-Language: en-US
-To: "Huang, Ying" <ying.huang@intel.com>
-CC: <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-	<akpm@linux-foundation.org>, <willy@infradead.org>, <fengwei.yin@intel.com>,
-	<david@redhat.com>, <aneesh.kumar@linux.ibm.com>, <shy828301@gmail.com>,
-	<hughd@google.com>, <wangkefeng.wang@huawei.com>, <sunnanyong@huawei.com>
-References: <20240229060907.836589-1-zhangpeng362@huawei.com>
- <87il27dbo4.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From: "zhangpeng (AS)" <zhangpeng362@huawei.com>
-In-Reply-To: <87il27dbo4.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To: Ai Chao <aichao@kylinos.cn>, hdegoede@redhat.com,
+ ilpo.jarvinen@linux.intel.com, linux-kernel@vger.kernel.org,
+ platform-driver-x86@vger.kernel.org
+References: <20240229051621.12341-1-aichao@kylinos.cn>
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20240229051621.12341-1-aichao@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600020.china.huawei.com (7.193.23.147)
 
-On 2024/2/29 14:31, Huang, Ying wrote:
 
-> Peng Zhang <zhangpeng362@huawei.com> writes:
+On 2/28/24 9:16 PM, Ai Chao wrote:
+> Add lenovo generic wmi driver to support camera button.
 >
->> From: ZhangPeng <zhangpeng362@huawei.com>
->>
->> The major fault occurred when using mlockall(MCL_CURRENT | MCL_FUTURE)
->> in application, which leading to an unexpected issue[1].
->>
->> This caused by temporarily cleared PTE during a read+clear/modify/write
->> update of the PTE, eg, do_numa_page()/change_pte_range().
->>
->> For the data segment of the user-mode program, the global variable area
->> is a private mapping. After the pagecache is loaded, the private anonymous
->> page is generated after the COW is triggered. Mlockall can lock COW pages
->> (anonymous pages), but the original file pages cannot be locked and may
->> be reclaimed. If the global variable (private anon page) is accessed when
->> vmf->pte is zeroed in numa fault, a file page fault will be triggered.
->> At this time, the original private file page may have been reclaimed.
->> If the page cache is not available at this time, a major fault will be
->> triggered and the file will be read, causing additional overhead.
->>
->> This issue affects our traffic analysis service. The inbound traffic is
->> heavy. If a major fault occurs, the I/O schedule is triggered and the
->> original I/O is suspended. Generally, the I/O schedule is 0.7 ms. If
->> other applications are operating disks, the system needs to wait for
->> more than 10 ms. However, the inbound traffic is heavy and the NIC buffer
->> is small. As a result, packet loss occurs. But the traffic analysis service
->> can't tolerate packet loss.
->>
->> Fix this by holding PTL and rechecking the PTE in filemap_fault() before
->> triggering a major fault. We do this check only if vma is VM_LOCKED. In
->> our service test environment, the baseline is 7 major faults / 12 hours.
->> After the patch is applied, no major fault will be triggered.
->>
->> Testing file anonymous page read and write page fault performance in
->> ext4, tmpfs and ramdisk using will-it-scale[2] on a x86 physical machine.
->> The data is the average change compared with the mainline after the patch
->> is applied. The test results are indicates some performance regressions.
->> We do this check only if vma is VM_LOCKED, therefore, no performance
->> regressions is caused for most common cases.
->>
->> The test results are as follows:
->>                            processes processes_idle threads threads_idle
->> ext4    private file write: -0.51%    0.08%          -0.03%  -0.04%
->> ext4    shared  file write:  0.135%  -0.531%          2.883% -0.772%
->> ramdisk private file write: -0.48%    0.23%          -1.08%   0.27%
->> ramdisk private file  read:  0.07%   -6.90%          -5.85%  -0.70%
-> Have you retested with the VM_LOCKED optimization?  Why are there still
-> performance regression?
+> Signed-off-by: Ai Chao <aichao@kylinos.cn>
+> ---
+>  drivers/platform/x86/Kconfig      |  10 +++
+>  drivers/platform/x86/Makefile     |   1 +
+>  drivers/platform/x86/lenovo-wmi.c | 121 ++++++++++++++++++++++++++++++
+>  3 files changed, 132 insertions(+)
+>  create mode 100644 drivers/platform/x86/lenovo-wmi.c
 >
->> tmpfs   private file write: -0.344%  -0.110%          0.200%  0.145%
->> tmpfs   shared  file write:  0.958%   0.101%          2.781% -0.337%
->> tmpfs   private file  read: -0.16%    0.00%          -0.12%   0.41%
->>
->> [1] https://lore.kernel.org/linux-mm/9e62fd9a-bee0-52bf-50a7-498fa17434ee@huawei.com/
->> [2] https://github.com/antonblanchard/will-it-scale/
->>
->> Suggested-by: "Huang, Ying" <ying.huang@intel.com>
->> Suggested-by: David Hildenbrand <david@redhat.com>
->> Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
->> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
->> ---
->> v2->v3:
->> - Do this check only if vma is VM_LOCKED per David Hildenbrand
->> - Hold PTL and recheck the PTE
->> - Place the recheck code in a new function filemap_fault_recheck_pte()
->>
->> v1->v2:
->> - Add more test results per Huang, Ying
->> - Add more comments before check PTE per Huang, Ying, David Hildenbrand
->>    and Yin Fengwei
->> - Change pte_offset_map_nolock to pte_offset_map as the PTL won't
->>    be used
->>
->> RFC->v1:
->> - Add error handling when ptep == NULL per Huang, Ying and Matthew
->>    Wilcox
->> - Check the PTE without acquiring PTL in filemap_fault(), suggested by
->>    Huang, Ying and Yin Fengwei
->> - Add pmd_none() check before PTE map
->> - Update commit message and add performance test information
->>
->>   mm/filemap.c | 40 ++++++++++++++++++++++++++++++++++++++++
->>   1 file changed, 40 insertions(+)
->>
->> diff --git a/mm/filemap.c b/mm/filemap.c
->> index b4858d89f1b1..2668bac68df7 100644
->> --- a/mm/filemap.c
->> +++ b/mm/filemap.c
->> @@ -3181,6 +3181,42 @@ static struct file *do_async_mmap_readahead(struct vm_fault *vmf,
->>   	return fpin;
->>   }
->>   
->> +/*
->> + * filemap_fault_recheck_pte - hold PTL and recheck whether pte is none.
->> + * @vmf - the vm_fault for this fault.
->> + *
->> + * Recheck PTE as the PTE can be cleared temporarily during a read+clear/modify
->> + * /write update of the PTE, eg, do_numa_page()/change_pte_range(). This will
->> + * trigger an unexpected major fault, even if we use mlockall(), which may
->> + * increase IO and thus cause other unexpected behavior.
->> + *
->> + * Return VM_FAULT_NOPAGE if the PTE is not none or pte_offset_map_lock()
->> + * fails. In other cases, 0 is returned.
->> + */
->> +static vm_fault_t filemap_fault_recheck_pte(struct vm_fault *vmf)
->> +{
->> +	struct vm_area_struct *vma = vmf->vma;
->> +	vm_fault_t ret = 0;
->> +	pte_t *ptep;
->> +
->> +	if (!(vma->vm_flags & VM_LOCKED))
->> +		return ret;
->> +
->> +	if (pmd_none(*vmf->pmd))
->> +		return ret;
->> +
-> How about check PTE without lock firstly?  I guess that this can improve
-> performance in common case (no race).
+> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+> index bdd302274b9a..fbbb8fb843d7 100644
+> --- a/drivers/platform/x86/Kconfig
+> +++ b/drivers/platform/x86/Kconfig
+> @@ -1001,6 +1001,16 @@ config INSPUR_PLATFORM_PROFILE
+>  	To compile this driver as a module, choose M here: the module
+>  	will be called inspur-platform-profile.
+>  
+> +config LENOVO_WMI
+> +	tristate "Lenovo Geneirc WMI driver"
+> +	depends on ACPI_WMI
+> +	depends on INPUT
+> +	help
+> +	This driver provides support for Lenovo WMI driver.
+> +
+> +	To compile this driver as a module, choose M here: the module
+> +	will be called lenovo-wmi.
+> +
+>  source "drivers/platform/x86/x86-android-tablets/Kconfig"
+>  
+>  config FW_ATTR_CLASS
+> diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
+> index 1de432e8861e..d51086552192 100644
+> --- a/drivers/platform/x86/Makefile
+> +++ b/drivers/platform/x86/Makefile
+> @@ -66,6 +66,7 @@ obj-$(CONFIG_SENSORS_HDAPS)	+= hdaps.o
+>  obj-$(CONFIG_THINKPAD_ACPI)	+= thinkpad_acpi.o
+>  obj-$(CONFIG_THINKPAD_LMI)	+= think-lmi.o
+>  obj-$(CONFIG_YOGABOOK)		+= lenovo-yogabook.o
+> +obj-$(CONFIG_LENOVO_WMI)	+= lenovo-wmi.o
+>  
+>  # Intel
+>  obj-y				+= intel/
+> diff --git a/drivers/platform/x86/lenovo-wmi.c b/drivers/platform/x86/lenovo-wmi.c
+> new file mode 100644
+> index 000000000000..e8b1c401b53e
+> --- /dev/null
+> +++ b/drivers/platform/x86/lenovo-wmi.c
+> @@ -0,0 +1,121 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + *  Lenovo Generic WMI Driver
+> + *
+> + *  Copyright (C) 2018	      Ai Chao <aichao@kylinos.cn>
+2024 ?
+> + */
+> +
+> +#include <linux/acpi.h>
+> +#include <linux/device.h>
+> +#include <linux/input.h>
+> +#include <linux/module.h>
+> +#include <linux/wmi.h>
+> +
+> +#define WMI_LENOVO_CAMERABUTTON_EVENT_GUID "50C76F1F-D8E4-D895-0A3D-62F4EA400013"
+> +
+> +static u8 camera_mode;
+> +
+> +struct lenovo_wmi_priv {
+> +	struct input_dev *idev;
+> +};
+> +
+> +static ssize_t camerabutton_show(struct device *dev,
+> +				 struct device_attribute *attr, char *buf)
+> +{
+> +	return sprintf(buf, "%u\n", camera_mode);
+> +}
+> +
+> +DEVICE_ATTR_RO(camerabutton);
+> +
+> +static struct attribute *lenovo_wmi_attrs[] = {
+> +	&dev_attr_camerabutton.attr,
+> +	NULL,
+> +};
+> +
+> +static const struct attribute_group lenovo_wmi_group = {
+> +	.attrs = lenovo_wmi_attrs,
+> +};
+> +
+> +const struct attribute_group *lenovo_wmi_groups[] = {
+> +	&lenovo_wmi_group,
+> +	NULL,
+> +};
+> +
+> +static void lenovo_wmi_notify(struct wmi_device *wdev, union acpi_object *obj)
+> +{
+> +	struct lenovo_wmi_priv *priv = dev_get_drvdata(&wdev->dev);
+> +
+> +	if (obj->type == ACPI_TYPE_BUFFER) {
+> +		camera_mode = obj->buffer.pointer[0];
+> +		input_report_key(priv->idev, KEY_CAMERA, 1);
+> +		input_sync(priv->idev);
+> +		input_report_key(priv->idev, KEY_CAMERA, 0);
+> +		input_sync(priv->idev);
+> +	} else {
+> +		dev_info(&wdev->dev, "Bad response type %d\n", obj->type);
+Does it needs to be dev_info? I don't think this affects the driver functionality, right?
 
-That's a good idea. IIUC, we can check PTE without lock firstly before checking VM_LOCKED,
-thus reducing the number of times we hold the PTL.
+May be dev_dbg() is better here?
+> +	}
+> +}
+> +
+> +static int lenovo_wmi_input_setup(struct wmi_device *wdev)
+> +{
+> +	struct lenovo_wmi_priv *priv = dev_get_drvdata(&wdev->dev);
+> +
+> +	priv->idev = devm_input_allocate_device(&wdev->dev);
+> +	if (!priv->idev)
+> +		return -ENOMEM;
+> +
+> +	priv->idev->name = "Lenovo WMI Camera Button";
+> +	priv->idev->phys = "wmi/input0";
+> +	priv->idev->id.bustype = BUS_HOST;
+> +	priv->idev->dev.parent = &wdev->dev;
+> +	priv->idev->evbit[0] = BIT_MASK(EV_KEY);
+> +	priv->idev->keybit[BIT_WORD(KEY_CAMERA)] = BIT_MASK(KEY_CAMERA);
+> +
+> +	return input_register_device(priv->idev);
+> +}
+> +
+> +static int lenovo_wmi_probe(struct wmi_device *wdev, const void *context)
+> +{
+> +	struct lenovo_wmi_priv *priv;
+> +	int err;
+> +
+> +	priv = devm_kzalloc(&wdev->dev, sizeof(struct lenovo_wmi_priv),
+> +			    GFP_KERNEL);
+> +	if (!priv)
+> +		return -ENOMEM;
+> +
+> +	dev_set_drvdata(&wdev->dev, priv);
+> +
+> +	err = lenovo_wmi_input_setup(wdev);
+> +	return err;
+> +}
+> +
+> +static void lenovo_wmi_remove(struct wmi_device *wdev)
+> +{
+> +	struct lenovo_wmi_priv *priv = dev_get_drvdata(&wdev->dev);
+> +
+> +	input_unregister_device(priv->idev);
 
->> +	ptep = pte_offset_map_lock(vma->vm_mm, vmf->pmd, vmf->address,
->> +				   &vmf->ptl);
->> +	if (unlikely(!ptep))
->> +		return VM_FAULT_NOPAGE;
->> +
->> +	if (unlikely(!pte_none(ptep_get(ptep))))
->> +		ret = VM_FAULT_NOPAGE;
->> +
->> +	pte_unmap_unlock(ptep, vmf->ptl);
->> +	return ret;
->> +}
->> +
->>   /**
->>    * filemap_fault - read in file data for page fault handling
->>    * @vmf:	struct vm_fault containing details of the fault
->> @@ -3236,6 +3272,10 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
->>   			mapping_locked = true;
->>   		}
->>   	} else {
->> +		ret = filemap_fault_recheck_pte(vmf);
->> +		if (unlikely(ret))
->> +			return ret;
->> +
->>   		/* No page in the page cache at all */
->>   		count_vm_event(PGMAJFAULT);
->>   		count_memcg_event_mm(vmf->vma->vm_mm, PGMAJFAULT);
-> --
-> Best Regards,
-> Huang, Ying
+Since you use devm_input_allocate_device() for allocation, you don't need to explicitly unregister the device.
+> +}
+> +
+> +static const struct wmi_device_id lenovo_wmi_id_table[] = {
+> +	{ .guid_string = WMI_LENOVO_CAMERABUTTON_EVENT_GUID },
+> +	{  }
+> +};
+> +
+> +static struct wmi_driver lenovo_wmi_driver = {
+> +	.driver = {
+> +		.name = "lenovo-wmi",
+> +		.dev_groups = lenovo_wmi_groups,
+> +	},
+> +	.id_table = lenovo_wmi_id_table,
+> +	.probe = lenovo_wmi_probe,
+> +	.notify = lenovo_wmi_notify,
+> +	.remove = lenovo_wmi_remove,
+> +};
+> +
+> +module_wmi_driver(lenovo_wmi_driver);
+> +
+> +MODULE_DEVICE_TABLE(wmi, lenovo_wmi_id_table);
+> +MODULE_AUTHOR("Ai Chao <aichao@kylinos.cn>");
+> +MODULE_DESCRIPTION("Lenovo Generic WMI Driver");
+> +MODULE_LICENSE("GPL v2");
 
 -- 
-Best Regards,
-Peng
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
 
 
