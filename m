@@ -1,107 +1,144 @@
-Return-Path: <linux-kernel+bounces-87090-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87091-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6925986CF59
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:33:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F0EF86CF5B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:34:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B5741C235DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:33:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 046AA1F2357D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:34:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76E367A135;
-	Thu, 29 Feb 2024 16:30:21 +0000 (UTC)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE2D3433C0;
+	Thu, 29 Feb 2024 16:30:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="EW77o+6R"
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74A1E381B0;
-	Thu, 29 Feb 2024 16:30:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5DDA160638;
+	Thu, 29 Feb 2024 16:30:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709224221; cv=none; b=lsF24aMoUe1awThDe0rxMPxaGCbqUkphiBAFU83JXSpF6R3hXjNQymk+p85QTGCMQsNXCQQXBoz7lVmjSVmDavlwPcoSOCLwJFhGMNg//soa7fttdjJC15vCAbx+UN0vV/YHGzj4UZFV8mYl0HmtIZ4AD8p2dlA2YdUleGtl0KI=
+	t=1709224251; cv=none; b=mO1fDgQzjnTA8VKzt/mOQMhSW5ANVkli/aaL2Vw+L9lcSC8bAsVN3xlihsTw3kisE6yTg0mOv+i+9msoZp7Jes8w1+kRLG89qaWEkB/90LRSPobNbJVj3g6RA+tkWPp0WzPp/D4qjd4xemHZkJrFDiD2i+zVnlulQXmhpExHu7s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709224221; c=relaxed/simple;
-	bh=6/KrjLjKH3bauC/9VQHcqfuKTv2YG01tiR8gHwzXGeM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=R7t78A9Rgy+56mEwEI0BXEbRdNzBjOnyFifnt3nC2YBcMfOnhD1Wpp8aaepujSZKFq3ScCG/GZH8hn20tsgmI7vPtJpQFQyGmEy7rRLPMsQlLmSclex/v9qIXz1XCAT+Dop4l94QYdknK0cyM8Xy64UfeQbE3yNQ5Jf7QnmOeDE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id A728921FE2;
-	Thu, 29 Feb 2024 16:30:17 +0000 (UTC)
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DA54713A4B;
-	Thu, 29 Feb 2024 16:30:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id CEMPMhix4GU0PwAAD6G6ig
-	(envelope-from <lhenriques@suse.de>); Thu, 29 Feb 2024 16:30:16 +0000
-Received: from localhost (brahms.olymp [local])
-	by brahms.olymp (OpenSMTPD) with ESMTPA id bdc647ed;
-	Thu, 29 Feb 2024 16:30:14 +0000 (UTC)
-From: Luis Henriques <lhenriques@suse.de>
-To: Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	Jan Kara <jack@suse.cz>,
-	Miklos Szeredi <miklos@szeredi.hu>,
-	Amir Goldstein <amir73il@gmail.com>
-Cc: linux-ext4@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-unionfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Luis Henriques <lhenriques@suse.de>
-Subject: [PATCH 3/3] overlay: fix mount parameters check for empty values
-Date: Thu, 29 Feb 2024 16:30:10 +0000
-Message-ID: <20240229163011.16248-4-lhenriques@suse.de>
-In-Reply-To: <20240229163011.16248-1-lhenriques@suse.de>
-References: <20240229163011.16248-1-lhenriques@suse.de>
+	s=arc-20240116; t=1709224251; c=relaxed/simple;
+	bh=ZFgn9dvYdWUi6qzXbxQCIoPqKZKJiWzRsNJ+igw7Mxk=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=kezLWPdKY5pVyRrWniAQ1raCvEgkJPSH27y+MvxwdT7VfPq6vp9ZpGAg0XaimjGqOfqgOFyoZVyeMNlZM5T6pM+Nd8O0EA923QecCULJSbEj/LkzMjJdDL2fhmw/zaSCBN3jlVVC48/Z1JTAkVog7/BX0VIwgVcetd/Wy/3P0Ds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=EW77o+6R; arc=none smtp.client-ip=217.70.183.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 4B303C000D;
+	Thu, 29 Feb 2024 16:30:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709224246;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RDGt+EA7hkCFccMGYrVs2zoZyoxmiDzvNkKrfbOvX+E=;
+	b=EW77o+6R6+tU3vtpYuza6yzR1k55eFiv3f2qtwo20rqmjPP5AeMUOmCIAsbt+6GAu+z3j/
+	/4nGFkCoCmPeA2hsE+ACxc4Me+Uusd/z3j9bn2Wg5XAg6YxQsOdnmOL0a3NZizgiw5HG2E
+	/5SS1B/WgSSSsG7E7Z+fMVxnyoT6KT8yy2B7/SERUqvhrR27hivzhBpxef2hj1K9xShYxJ
+	dpIDb8GpNhq4GocYrkZDTKki1UQRhGK8dCJMZEMmAwmqULU0U3By/kdvGAcskpVrAhOEmd
+	dMhQTouPzTeFBDXgqk5Liy8k1884JUfhtV+dOfuBWE15SrmId5NdYR9hQjdYhA==
+Date: Thu, 29 Feb 2024 17:30:43 +0100
+From: Herve Codina <herve.codina@bootlin.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+ <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Yury Norov
+ <yury.norov@gmail.com>, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, Andrew Lunn <andrew@lunn.ch>, Mark Brown
+ <broonie@kernel.org>, Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v5 4/5] net: wan: fsl_qmc_hdlc: Add runtime timeslots
+ changes support
+Message-ID: <20240229173043.3dc5decf@bootlin.com>
+In-Reply-To: <ZeCg24Iv8qDmxNV9@smile.fi.intel.com>
+References: <20240229141554.836867-1-herve.codina@bootlin.com>
+	<20240229141554.836867-5-herve.codina@bootlin.com>
+	<ZeCg24Iv8qDmxNV9@smile.fi.intel.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	 REPLY(-4.00)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: A728921FE2
-X-Spam-Level: 
-X-Spam-Score: -4.00
-X-Spam-Flag: NO
+X-GND-Sasl: herve.codina@bootlin.com
 
-Now that parameters that have the flag 'fs_param_can_be_empty' set and
-their value is NULL are handled as 'flag' type, we need to properly check
-for empty (NULL) values.
+Hi Andy,
 
-Signed-off-by: Luis Henriques <lhenriques@suse.de>
----
- fs/overlayfs/params.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Thu, 29 Feb 2024 17:20:59 +0200
+Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
 
-diff --git a/fs/overlayfs/params.c b/fs/overlayfs/params.c
-index 112b4b12f825..09428af6abc5 100644
---- a/fs/overlayfs/params.c
-+++ b/fs/overlayfs/params.c
-@@ -441,7 +441,7 @@ static int ovl_parse_param_lowerdir(const char *name, struct fs_context *fc)
- 	/* drop all existing lower layers */
- 	ovl_reset_lowerdirs(ctx);
- 
--	if (!*name)
-+	if (!name)
- 		return 0;
- 
- 	if (*name == ':') {
+> On Thu, Feb 29, 2024 at 03:15:52PM +0100, Herve Codina wrote:
+> > QMC channels support runtime timeslots changes but nothing is done at
+> > the QMC HDLC driver to handle these changes.
+> > 
+> > Use existing IFACE ioctl in order to configure the timeslots to use.  
+> 
+> ...
+> 
+> > +	bitmap_scatter(ts_mask, map, ts_mask_avail, 64);  
+> 
+> Wondering if we may have returned value more useful and hence having something like
+> 
+> 	n = bitmap_scatter(...);
+
+I thought about it.
+
+In bitmap_{scatter,gather}(dst, src, mask, nbits), only returning the
+weight of the third parameter (i.e. mask) can be efficient regarding to the
+for_each_set_bit() loop done in the functions.
+For dst parameter, we need to add a counter in the loop to count the number
+of bit set depending on the test_bit() result. Will this be more efficient
+than a call to bitmap_weight() ?
+
+Also, in my case, the third parameter is ts_mask_avail and I don't need
+its weight.
+
+I thing users that need to have the dst or src weight should call
+bitmap_weight() themselves as this is users context dependent.
+
+bitmap_{scatter,gather}(dst, src, mask, nbits) can be improved later with
+no impact to current users (except performance).
+
+That's why I concluded to return nothing from bitmap_{scatter,gather} when
+I took the old existing patches.
+
+> 
+> > +	if (bitmap_weight(ts_mask, 64) != bitmap_weight(map, 64)) {  
+> 
+> 	if (n != ...) {
+> 
+> ?
+> 
+> > +		dev_err(qmc_hdlc->dev, "Cannot translate timeslots %64pb -> (%64pb, %64pb)\n",
+> > +			map, ts_mask_avail, ts_mask);
+> > +		return -EINVAL;
+> > +	}  
+> 
+> ...
+> 
+> > +	bitmap_gather(map, ts_mask, ts_mask_avail, 64);
+> > +
+> > +	if (bitmap_weight(ts_mask, 64) != bitmap_weight(map, 64)) {
+> > +		dev_err(qmc_hdlc->dev, "Cannot translate timeslots (%64pb, %64pb) -> %64pb\n",
+> > +			ts_mask_avail, ts_mask, map);
+> > +		return -EINVAL;
+> > +	}  
+> 
+> Ditto.
+> 
+
+Best regards,
+Hervé
 
