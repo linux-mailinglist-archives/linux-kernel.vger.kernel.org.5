@@ -1,183 +1,162 @@
-Return-Path: <linux-kernel+bounces-86724-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86725-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 553DA86C9AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:05:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E51F186C9B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:07:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70E961C21235
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:05:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 23FD3B23BD4
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:07:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 451507E108;
-	Thu, 29 Feb 2024 13:05:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99D2A7E113;
+	Thu, 29 Feb 2024 13:07:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="Z0ZSWkfl"
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="eMQYZ8qj"
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7377D1EB46;
-	Thu, 29 Feb 2024 13:05:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C960E7E0E7
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 13:07:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709211929; cv=none; b=mUPuqffHXyiIR4sgVAaH0x8TerJSRrcAcPAqSpf3sljHJvk40md3+doV81o4EPrE18tkrmElZTDIz5oGa3mLBOjgI41ecIS5f4ug5f/hLbTylKJ6p9NAAT1J/DZg4dVgUExal8NM//e6horgABvKh3UR9eYyv3zeGjTg5bv9D3Q=
+	t=1709212034; cv=none; b=pbVlu6BYvqRlJN+4/RmcBCJr8Zal9H7DpDHHiBwM2aH9OJ1E3nxSdLSsim7gFtV+ssaFF0NEJq+lTSpsZxKbIVKZHgf5/GTQRLuPDvipD8GORn9kCO5dKZRw/tPuYQy+6vSfKNlzmAefxx/6dFbiaXNyYj3JW96D9Re6miwA0gI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709211929; c=relaxed/simple;
-	bh=XoeSuzG8jqCz1UT3PLYTSpgiX+WG8nr3dkKjB0srM1w=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=KER6XS+I6JWIyC8BmSnb1MfaQtbvNk2pf7B0cv5dmyGgBuQeAB1dl38wdsxk3yKAADQOd5xfspXv2joWY3V6YMeXF92foVdWdXnsl4SwvcTsBBLPEwbxGbaxjg7Gd5xTDIt8KA9uFCl0WMMZ9S91mBAbEiEMYFr+KkWNNDxny08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=Z0ZSWkfl; arc=none smtp.client-ip=45.89.224.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 43A361200E1;
-	Thu, 29 Feb 2024 16:05:15 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 43A361200E1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1709211915;
-	bh=umX0LQkKpv8OA4NwzbRwcDsOZahJ/+JAK3alNhNh6mY=;
-	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version:From;
-	b=Z0ZSWkflb/3WTeTWGLCVaFAvggT1+HLi6gWtWUbklDrHudg9ZgRq6Bj9yneR5TOIx
-	 YQvXnqsNchedAAQnKPIwYYs2lhTqrqNWDlgGZ9ZWSdO8B/Tc0J0bj2/YN1/H8uk6H/
-	 4wbjRYAq2nHaQOuCj05/yhgq+BsiXoTxg5cz4CbDrPw7sLLvt/RK3eb3PF29E1Tcqa
-	 ilTjzHjWDJXQTehH22Rwh0afOnufZOvNOfos6RXOfmG+8N6t0Aq6oyUV+X+slLLqUz
-	 y3v3nDhYbT68rLt4sG91YEeJNuymzq630EmLd92UV0vpaZgLWpvpDYmumivivRg8vU
-	 HpW02/xEMY6SA==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Thu, 29 Feb 2024 16:05:14 +0300 (MSK)
-Received: from p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) by
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 29 Feb 2024 16:05:14 +0300
-Received: from p-i-exch-sc-m01.sberdevices.ru ([fe80::6d41:e8f1:b95e:ba1]) by
- p-i-exch-sc-m01.sberdevices.ru ([fe80::6d41:e8f1:b95e:ba1%7]) with mapi id
- 15.02.1118.040; Thu, 29 Feb 2024 16:05:14 +0300
-From: Alexey Romanov <avromanov@salutedevices.com>
-To: Corentin Labbe <clabbe.montjoie@gmail.com>
-CC: "neil.armstrong@linaro.org" <neil.armstrong@linaro.org>,
-	"clabbe@baylibre.com" <clabbe@baylibre.com>, "herbert@gondor.apana.org.au"
-	<herbert@gondor.apana.org.au>, "davem@davemloft.net" <davem@davemloft.net>,
-	"robh+dt@kernel.org" <robh+dt@kernel.org>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"conor+dt@kernel.org" <conor+dt@kernel.org>, "khilman@baylibre.com"
-	<khilman@baylibre.com>, "jbrunet@baylibre.com" <jbrunet@baylibre.com>,
-	"martin.blumenstingl@googlemail.com" <martin.blumenstingl@googlemail.com>,
-	"vadim.fedorenko@linux.dev" <vadim.fedorenko@linux.dev>,
-	"linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-	"linux-amlogic@lists.infradead.org" <linux-amlogic@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, kernel <kernel@sberdevices.ru>
-Subject: Re: [PATCH v4 00/20] Support more Amlogic SoC families in crypto
- driver
-Thread-Topic: [PATCH v4 00/20] Support more Amlogic SoC families in crypto
- driver
-Thread-Index: AQHaXbqRFptCyAwKyUyy1Cn5x5FmZLEHrLEAgANeQYCABgkagIAOlJgAgABwfQCAAG4bgA==
-Date: Thu, 29 Feb 2024 13:05:14 +0000
-Message-ID: <20240229025337.ftbvoaafmu5zvyha@cab-wsm-0029881>
-References: <20240212135108.549755-1-avromanov@salutedevices.com>
- <ZcsYaPIUrBSg8iXu@Red>
- <20240215104719.njq6ie2niisntcnv@cab-wsm-0029881.sigma.sbrf.ru>
- <ZdL713ae1swwTU_B@Red> <20240228133656.24bic6djmjvkill7@cab-wsm-0029881>
- <Zd-VVGXHoH2ikbmV@Red>
-In-Reply-To: <Zd-VVGXHoH2ikbmV@Red>
-Accept-Language: ru-RU, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <5ABEBF99DA6D414FA14316970D4C439A@sberdevices.ru>
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1709212034; c=relaxed/simple;
+	bh=aqZRgp2yiWRPmMT6L1mHmGD73EcopqhjHSAXgidIbgk=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=jrm7XUyGqZQbNJ7wYko4H0MDQvlkB6M6BVZGnpRCH/7V9fE3vnZbmnt5WXB04lS1+sxMnwty7xBVSqZTSXEcyTLPVZtNbZ3TE4Dm1xLhGY2LHRsPXoS95MOSBMHAq47oxWNabzFGsw1WXdO9fLgdAvPbQWZ/W4Y64nmN656DTcs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=eMQYZ8qj; arc=none smtp.client-ip=209.85.167.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-512e4f4e463so756458e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 05:07:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709212031; x=1709816831; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=VpJyTXc1Ywh+o/rrJ2pOXjJ2ggpkjWz2aQ0FDxBOhIY=;
+        b=eMQYZ8qjJTl9QE9rOAbVUlR7Uc5m+sKBLLSbt7ThOnS+kG7bwcCTnSW7XVuv9Y353R
+         Oh8KTlRfHygakuX3ChnHD2KLNAwK6aZrukK8EHDVEhAV8fHVIp/B9I9OeFJXyCDCZmMW
+         NH57bbArFCg6TJq3hh8K7NSlnAzbG+jmIxbddH3SdecVQyIsZgy4EvhxJ7Qs3nLsXpwN
+         ykBmd4ykIfIaWDZ81ssk3c5Kdtcp4PPK7kviwsVtM2VDPQ1rv61sqfkMkwZCm6AG0Xg7
+         UQkqfbY9F6wqHDqKjLslDMDQbAZvX2jCd/DZP7OWyBAWRXZFCwySoGSuhlnrqFJbw9DE
+         vMzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709212031; x=1709816831;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VpJyTXc1Ywh+o/rrJ2pOXjJ2ggpkjWz2aQ0FDxBOhIY=;
+        b=Y/7ul750dJcLebAlnLD+X/KZ1rK/9Do73UvQnuDvUUHVdqHe+KM9BtugbCbH3lMAXG
+         auwMIGBwJ0llCYAzfZb+lg0UfbSS2o90JN0viyDX09oaulzfZEMZC+64NkWwk9la5GiB
+         bBBn3b1C6+x0KzvtLWvKoRsSiEppVj0w9sD3hjI9xf0Np7ownXXg0+MNhfUG8nKnnHf6
+         JDf7VCro942Mec/FbnkwzADlDbj0J3AclZOmdmzwFpLl/5OV0uDcVX08NRNgIuVs7vpO
+         5xNZED4kGR0FqWfMsRrUbCklhK1bnms8OcTe/YpvN9Lfae0e7Im66bZJHaaMSUDYZLwJ
+         eKEg==
+X-Forwarded-Encrypted: i=1; AJvYcCVXy7esp7/b/s4fXhe/B6NMGhv5IXMAgEsd+s1jBL/KbhyUJl56lw8ZMpBkdatRderysifylQ5uermDsSGpGgxxk0c1rtf304/Qy+b6
+X-Gm-Message-State: AOJu0YyxksGFy42nRl73NqjTXMw+tdQOFKX5bE7EC2f5soEA7dE5uBb7
+	S9ZiXTIx5U66geqa52bI0DfBZWqQxaOtxlQzeGPF4yXlCK+s5Pvq16nLNB7IHZU=
+X-Google-Smtp-Source: AGHT+IFTxPsS0B7q7kKEpGoSR07lplEbqHtwyaT9O3CctzbYkluJr32N4q6Bwnf9qN9P4GECQcJESQ==
+X-Received: by 2002:a05:6512:138d:b0:513:2ba9:4b14 with SMTP id fc13-20020a056512138d00b005132ba94b14mr536713lfb.46.1709212031012;
+        Thu, 29 Feb 2024 05:07:11 -0800 (PST)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
+        by smtp.gmail.com with ESMTPSA id t7-20020a05600c198700b00412a38e732csm2071473wmq.35.2024.02.29.05.07.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Feb 2024 05:07:10 -0800 (PST)
+From: Neil Armstrong <neil.armstrong@linaro.org>
+Subject: [PATCH RFT 0/7] arm64: qcom: allow up to 4 lanes for the Type-C
+ DisplayPort Altmode
+Date: Thu, 29 Feb 2024 14:07:00 +0100
+Message-Id: <20240229-topic-sm8x50-upstream-phy-combo-typec-mux-v1-0-07e24a231840@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 183854 [Feb 29 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.3
-X-KSMG-AntiSpam-Envelope-From: avromanov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Tracking_uf_ne_domains}, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;gist.github.com:7.1.1;smtp.sberdevices.ru:7.1.1,5.0.1, FromAlignment: s
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2024/02/29 11:23:00
-X-KSMG-LinksScanning: Clean, bases: 2024/02/29 11:23:00
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/02/29 08:31:00 #23888373
-X-KSMG-AntiVirus-Status: Clean, skipped
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAHSB4GUC/x2NQQrCMBAAv1L27EKSWrA+wAdIb+KhjavdQ5olm
+ 0pK6d8NMqe5zOyglJgUrs0Oib6sHJcq9tSAn8flQ8iv6uCMOxvnesxR2KOGS+kMrqI50RhQ5g1
+ 9DFPEvAl5DGvB1k6dq9jW91B7kujN5f96wP02wPM4fuclkP+AAAAA
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>, 
+ Kishon Vijay Abraham I <kishon@kernel.org>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Neil Armstrong <neil.armstrong@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2273;
+ i=neil.armstrong@linaro.org; h=from:subject:message-id;
+ bh=aqZRgp2yiWRPmMT6L1mHmGD73EcopqhjHSAXgidIbgk=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBl4IF64Q3vQhe8Ed4JVg0rO8vaK7Imt55fyQPjvmDn
+ /qxcxw+JAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZeCBegAKCRB33NvayMhJ0TqvD/
+ 9Pe1QxNJeonARwUNIv58+ZC9X0zLMPhhsW3n0g0YX64trQSgJfo1ipVCBFz3B6QRoQ7d79Zy6vr8Jo
+ p3h5KqBdtD8iXEg4RjDyFG4tEZ1/yfEfPpvNHOdXL1rvzswSBelfQAtUymOLpu4wAde4d0CoNBzAtN
+ wfBqrc+pgorJ9ZkQODfyH6PFEcCqYHiYi7wtr9UTupQDmQevpxezlRqgXjThLR5Wkh32vYAL6UaoZS
+ oFe/4EUWdE39zYj/S5C82ovTahV20EoKKAFjW4FyZuElpIph06rPM0LqZZamwrcdvHQG8PgWMqv+Zt
+ MRmv9WYWWUeXqunK4cbjd0tuK6RrcyZnB9FVoOZh1pw/h2I0ER0R3087l10FeJNCbg25IjAb6LKJ+E
+ +Ylm6LwXJUWTgNYCjy4yLWxMM2tz7FgBL+4btv+2JV0ZxaxuDqud9PeiEQkG4rn5R8gKkefuLukLKq
+ J1wDXNfJ7yDNDfS7Zp7kkBCruGQ06Th35oUOBsQ3XRJ2sH944iPQg/Id4PKHEMkFa/8k7sLqlZefhv
+ 0YxdgyR/n1TNnE2uEgzfiZ1LGDy1u4PM863oq1ZvKZff4UTRCXoZcwrnz0e0wxkkdegvNWNZVa5jCm
+ AioPNYeKX4y2iIt9SQU2D/sr9fbiuuyfkR5tX4sja42vc26AccpjVDvtMO9g==
+X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
+ fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 
-Hello!
+Register a typec mux in order to change the PHY mode on the Type-C
+mux events depending on the mode and the svid when in Altmode setup.
 
-On Wed, Feb 28, 2024 at 09:19:32PM +0100, Corentin Labbe wrote:
-> Le Wed, Feb 28, 2024 at 01:37:02PM +0000, Alexey Romanov a 'ecrit :
-> > Hello,
-> >=20
-> > On Mon, Feb 19, 2024 at 07:57:27AM +0100, Corentin Labbe wrote:
-> > > Le Thu, Feb 15, 2024 at 10:47:24AM +0000, Alexey Romanov a 'ecrit :
-> > > > On Tue, Feb 13, 2024 at 08:21:12AM +0100, Corentin Labbe wrote:
-> > > > > Le Mon, Feb 12, 2024 at 04:50:48PM +0300, Alexey Romanov a 'ecrit=
- :
-> > > > > > Hello!
-> > > > > >=20
-> > > > > > This patchset expand the funcionality of the Amlogic
-> > > > > > crypto driver by adding support for more SoC families:
-> > > > > > AXG, G12A, G12B, SM1, A1, S4.
-> > > > > >=20
-> > > > > > Also specify and enable crypto node in device tree
-> > > > > > for reference Amlogic devices.
-> > > > > >=20
-> > > > > > Tested on AXG, G12A/B, SM1, A1 and S4 devices via
-> > > > > > custom tests [1] and tcrypt module.
-> > > > > >=20
-> > > > > > ---
-> > > > > >=20
-> > > > >=20
-> > > > > added patchs up to  "drivers: crypto: meson: process more than MA=
-XDESCS descriptors"
-> > > >=20
-> > > > Including this patch or not?
-> > >=20
-> > > The crash start with "drivers: crypto: meson: move algs definition an=
-d cipher API to cipher.c"
-> >=20
-> > Unfortunately I was unable to reproduce this. I use Khadas Vim1 board
-> > and my custom tests (https://gist.github.com/mRrvz/3fb8943a7487ab7b943e=
-c140706995e7).
-> > Tried both build as module and built-in.
-> >=20
-> > Can you, please, give more information? Maybe your test cases?
->=20
-> My test case is simple, simply load the driver.
->=20
-> The problem is that you moved the algs[i].mc =3D mc after the register of=
- algs (in drivers: crypto: meson: move algs definition and cipher API to ci=
-pher.c)
-> Test could happen as soon the register is done and so mc is deferenced.
+The DisplayPort phy should be left enabled if is still powered on
+by the DRM DisplayPort controller, so bail out until the DisplayPort
+PHY is not powered off.
 
-Yeah, you are right. Will fix it. Thank you.
+The Type-C Mode/SVID only changes on plug/unplug, and USB SAFE states
+will be set in between of USB-Only, Combo and DisplayPort Only so
+this will leave enough time to the DRM DisplayPort controller to
+turn of the DisplayPort PHY.
 
->=20
-> Since you didnt hit the case, I suspect you didnt test the driver as modu=
-le.
+The patchset also includes bindings changes and DT changes.
 
-No, I test the driver as module.
-I think the problem is that on my system no one uses this crypto backend
-outside of my tests module, unlike your system.
+This has been successfully tested on an SM8550 board, but the
+Thinkpad X13s deserved testing between non-PD USB, non-PD DisplayPort,
+PD USB Hubs and PD Altmode Dongles to make sure the switch works
+as expected.
 
->=20
-> Regards
+The DisplayPort 4 lanes setup can be check with:
+$ cat /sys/kernel/debug/dri/ae01000.display-controller/DP-1/dp_debug
+	name = msm_dp
+	drm_dp_link
+		rate = 540000
+		num_lanes = 4
+..
 
---=20
-Thank you,
-Alexey=
+Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+---
+Neil Armstrong (7):
+      dt-bindings: phy: qcom,sc8280xp-qmp-usb43dp: Add mode-switch
+      phy: qcom: qmp-combo: store DP phy power state
+      phy: qcom: qmp-combo: introduce QPHY_MODE
+      phy: qcom: qmp-combo: register a typec mux to change the QPHY_MODE
+      arm64: dts: qcom-sm8550: allow 4 lanes for DisplayPort and enable QMP PHY mode-switch
+      arm64: dts: qcom-sm8650: allow 4 lanes for DisplayPort and enable QMP PHY mode-switch
+      arm64: dts: qcom-mode-switch: allow 4 lanes for DisplayPort and enable QMP PHY mode-switch
+
+ .../phy/qcom,sc8280xp-qmp-usb43dp-phy.yaml         |   5 +
+ .../dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts     |   6 +-
+ arch/arm64/boot/dts/qcom/sm8550-hdk.dts            |   3 +-
+ arch/arm64/boot/dts/qcom/sm8550-qrd.dts            |   3 +-
+ arch/arm64/boot/dts/qcom/sm8650-qrd.dts            |   3 +-
+ drivers/phy/qualcomm/phy-qcom-qmp-combo.c          | 168 +++++++++++++++++++--
+ 6 files changed, 173 insertions(+), 15 deletions(-)
+---
+base-commit: b321c0e8ca754d8cd9f23ceba958e3ea93c6519e
+change-id: 20240229-topic-sm8x50-upstream-phy-combo-typec-mux-31b5252513c9
+
+Best regards,
+-- 
+Neil Armstrong <neil.armstrong@linaro.org>
+
 
