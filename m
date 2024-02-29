@@ -1,267 +1,325 @@
-Return-Path: <linux-kernel+bounces-86286-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86288-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20D1486C368
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:25:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B41586C36A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:26:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 454191C20CDC
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:25:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E98B2893B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:26:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0BF14F1F5;
-	Thu, 29 Feb 2024 08:25:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA9774EB24;
+	Thu, 29 Feb 2024 08:26:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WRnN1GDG"
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nY9/lmKt"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00B5741AAC
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 08:25:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AC6E4CE00
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 08:26:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709195146; cv=none; b=hF9TB3HlKe9/UGv25PDzpTT70QayGBTNFRMGhwuf386o58jtQovYulBrasgRDhaJyBWo+fFezglllmEEr24GjUilrA1kJlNc7/hoTVps4RVugod+5vvaUa8RJBSsZnIeGARULKg4u61hVKwbmUosn1KLXNRoZ35IGKzWRQzw7lc=
+	t=1709195198; cv=none; b=lORfLT9SnR+lIfBP9fW0xQCzfdNvD3Wp7cNxu4NyFJ16lLmbdYbqd4JMlh1TPo1kGvGKEDXl7va56eXQknlECmC7iApSKI9+he4R7Gefol44j0/rlSRBUsSfT1PJGvPYoFwV+VvlXLSYLl2xD8IvZPghc08md9OAbFWkuIJA3yI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709195146; c=relaxed/simple;
-	bh=+k6SMQqyldQYNx3b9w5bYaQJ0OzTpSI5/8PRew5oMq0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=A2saZLA4+uQ9yX+hkPzl8sxML0UnysantIKX0aBkUbft4kQ+5LvuxKtBXfF3hsoPKDbmfDzukqo1poIRQA4Cea3nyO2D5No5LUrPkUaUWp3oo5+Ly56mpg2NGR9xc0HNPARXt04KInyxgx2REbFByWeCDCbqGEW4fipHNl5oS4E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=WRnN1GDG; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a2f22bfb4e6so112562266b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 00:25:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709195143; x=1709799943; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=PNXNtXezdPiz6WQwvH9xjCDeUeGJKj/mjFzziiI0LNM=;
-        b=WRnN1GDGXIPPP1I7suTsKDwVNT3HVjSB/Ua//71/w6Jx0UvquPVeiDo62pzzL4+1MN
-         ZdI4D+2uc/BQdPQ7oO3JWE9AMdrK1nGuL1P3c8GWd+0TlJI1jNLpqnJS5kYIbejrHvID
-         3Tb9vtollxuPabklhC4+amiWCOKJWCdxXuzev66KadeJWCP/JYqbpVdOyMB9OOOglzSP
-         dn1UbLDhGzPC8tQY8AQN/PYLnfsmcGvV8EFwvlBTsxEsZFkca6P71R067lnXSrI14O8O
-         e4fI1N4NOAtnWseSlmmv+UyKipS+r0f50XNutzVfPMnLA4SMr8nM3JIIx/loxu18YoYx
-         O3PA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709195143; x=1709799943;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PNXNtXezdPiz6WQwvH9xjCDeUeGJKj/mjFzziiI0LNM=;
-        b=MTN4HMIBqHiKtBg2zcMLdTyZLb/I9d8hmMVHoEP+d1EHPAHagssBMtECy5ZlaPT0vb
-         xApJnmkk/t5aYoGfdKKduO5hz0H1nObLZGqAN4PmufSxI89gIwKChckQRI+8QErrOPsU
-         53IbZLwMFe5HZt1hEYYu8EF2yCnf94dxaFanBT/U+I/u0mvzGxjMzNEEFA2D/VpNJvG0
-         ypR8MuM8bzKPti6IatgbEzvC0QxAxMpR1EvtCbsRUYLimJ5DwyUAiy6O0ORTM7vqm9hs
-         eLvD0cHE2p43C6Ghn6ogO207xQbQnGL2AgPIEGKbC6sisDCRMbrHVIJ5Lm0KNKLagpwv
-         qh9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXOPyxsFdnvOd20UUiyk2VPD7/OhXGndQ3L+TImwuM4lZqtKtavAMXpttYIpz+gQ4nWxrIX08MxcWk4BPoIap9XZ/81Y8Z274GUSiZp
-X-Gm-Message-State: AOJu0YwJYJY1Rw1olJpVdhdLxx+B2jfEuLWTOEMkCGV9TvXlismpyTHV
-	Aa58SRSRssEfZTOXJbtHNpRjRFGzqSRgnkjRbStQJ7mVIPkN7ffFmO24Rus2Sgg=
-X-Google-Smtp-Source: AGHT+IEdRFYEnX4kAM1kYEF58dkyCyyKP45xIa7ZLp2VZd7u2TobvUB+aubfigdaalNJ9d2eEa2QgA==
-X-Received: by 2002:a17:906:56d0:b0:a43:f22e:57a6 with SMTP id an16-20020a17090656d000b00a43f22e57a6mr715486ejc.67.1709195143177;
-        Thu, 29 Feb 2024 00:25:43 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id vg9-20020a170907d30900b00a4439b7756bsm434508ejc.6.2024.02.29.00.25.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Feb 2024 00:25:41 -0800 (PST)
-Message-ID: <32ff2f66-7a94-41ed-b77b-f78da2e57446@linaro.org>
-Date: Thu, 29 Feb 2024 09:25:37 +0100
+	s=arc-20240116; t=1709195198; c=relaxed/simple;
+	bh=juUcc4UcKK/NL61XUnA4t+5ff677KqidZ2CHwPWtVYc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hvWK4bytIVJy/KsJk3zLAYQtQQt14bIusYcGdMyMeDWcCAxMNIiobHtFvWUMuLFSxKjtSweTx7GP315Nm20vgxh1iQTfYMr3ZqsybdYJPkOUnnY9a8X1EPacKT9KiALsNCwOI6H+r592LfFasX7NKVwZMx4r4QJsYVdKwOd35a4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nY9/lmKt; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709195196; x=1740731196;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=juUcc4UcKK/NL61XUnA4t+5ff677KqidZ2CHwPWtVYc=;
+  b=nY9/lmKtN2mJm7OUgW9B5felRxxM+kkRVMH18cOxWdWkmQW2roldibY7
+   iZq59vTmq3ZejqR8/JbN2Njvv81ZgfkN7P0esAMIFBqKI5BlYgLZ9Q9KK
+   hrp0dqzd8WmGZrF2J3BcWb5BByM6isVKXNYDLJXcHECurQM7grrbi6CVz
+   m/ZQDceRrCEJqiPh/KkFbQSL7kHLjHwlBs43T/iNdQPD7gyh8PJELWwOh
+   CLxgjFmf7QqRan/9MaQ1cxcVlN9QnWgdC/9w4EwpuUXyjfivK01KZ4RGI
+   NRDmvWdVrPZOkpxDJcgGVKXyKVMbrSy+ZRi9l6npDlnQJ4obj30Ks9/2f
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="29082088"
+X-IronPort-AV: E=Sophos;i="6.06,192,1705392000"; 
+   d="scan'208";a="29082088"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 00:26:34 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,192,1705392000"; 
+   d="scan'208";a="12360365"
+Received: from a4bf01946c30.jf.intel.com ([10.165.116.30])
+  by fmviesa004.fm.intel.com with ESMTP; 29 Feb 2024 00:26:33 -0800
+From: rulinhuang <rulin.huang@intel.com>
+To: urezki@gmail.com,
+	bhe@redhat.com
+Cc: akpm@linux-foundation.org,
+	colin.king@intel.com,
+	hch@infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	lstoakes@gmail.com,
+	rulin.huang@intel.com,
+	tianyou.li@intel.com,
+	tim.c.chen@intel.com,
+	wangyang.guo@intel.com,
+	zhiguo.zhou@intel.com
+Subject: [PATCH v6] mm/vmalloc: lock contention optimization under multi-threading
+Date: Thu, 29 Feb 2024 00:26:11 -0800
+Message-ID: <20240229082611.4104839-1-rulin.huang@intel.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 18/22] ASoC: dt-bindings: mt8195: Document audio-routing
- and dai-link subnode
-Content-Language: en-US
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- broonie@kernel.org
-Cc: wenst@chromium.org, lgirdwood@gmail.com, robh@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- matthias.bgg@gmail.com, perex@perex.cz, tiwai@suse.com,
- trevor.wu@mediatek.com, maso.huang@mediatek.com,
- xiazhengqiao@huaqin.corp-partner.google.com, arnd@arndb.de,
- kuninori.morimoto.gx@renesas.com, shraash@google.com, amergnat@baylibre.com,
- nicolas.ferre@microchip.com, u.kleine-koenig@pengutronix.de,
- dianders@chromium.org, frank.li@vivo.com, allen-kh.cheng@mediatek.com,
- eugen.hristev@collabora.com, claudiu.beznea@tuxon.dev,
- jarkko.nikula@bitmer.com, jiaxin.yu@mediatek.com, alpernebiyasak@gmail.com,
- ckeepax@opensource.cirrus.com, zhourui@huaqin.corp-partner.google.com,
- nfraprado@collabora.com, alsa-devel@alsa-project.org,
- shane.chien@mediatek.com, linux-sound@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- kernel@collabora.com
-References: <20240227120939.290143-1-angelogioacchino.delregno@collabora.com>
- <20240227120939.290143-19-angelogioacchino.delregno@collabora.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240227120939.290143-19-angelogioacchino.delregno@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 27/02/2024 13:09, AngeloGioacchino Del Regno wrote:
-> Document the dai-link subnodes and the audio-routing property, allowing
-> to describe machine specific audio hardware and links in device tree.
-> 
-> While at it, also deprecate the old properties which were previously
-> used with driver hardcoded configuration.
-> 
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> ---
+When allocating a new memory area where the mapping address range is
+known, it is observed that the vmap_node->busy.lock is acquired twice.
 
+The first acquisition occurs in the alloc_vmap_area() function when
+inserting the vm area into the vm mapping red-black tree. The second
+acquisition occurs in the setup_vmalloc_vm() function when updating the
+properties of the vm, such as flags and address, etc.
 
->  
->    mediatek,adsp:
->      $ref: /schemas/types.yaml#/definitions/phandle
-> @@ -45,12 +56,75 @@ properties:
->        A list of the desired dai-links in the sound card. Each entry is a
->        name defined in the machine driver.
->  
-> +patternProperties:
-> +  ".*-dai-link$":
-> +    type: object
-> +    description:
-> +      Container for dai-link level properties and CODEC sub-nodes.
-> +
-> +    properties:
-> +      link-name:
-> +        description: Indicates dai-link name and PCM stream name
-> +        items:
+Combine these two operations together in alloc_vmap_area(), which
+improves scalability when the vmap_node->busy.lock is contended.
+By doing so, the need to acquire the lock twice can also be eliminated
+ to once.
 
-That's not a list, but just enum.
+With the above change, tested on intel sapphire rapids
+platform(224 vcpu), a 4% performance improvement is
+gained on stress-ng/pthread(https://github.com/ColinIanKing/stress-ng),
+which is the stress test of thread creations.
 
-> +          enum:
-> +            - DPTX_BE
-> +            - ETDM1_IN_BE
-> +            - ETDM2_IN_BE
-> +            - ETDM1_OUT_BE
-> +            - ETDM2_OUT_BE
-> +            - ETDM3_OUT_BE
-> +            - PCM1_BE
-> +
-> +      codec:
-> +        description: Holds subnode which indicates codec dai.
-> +        type: object
-> +        additionalProperties: false
-> +        properties:
-> +          sound-dai:
-> +            minItems: 1
-> +            maxItems: 2
-> +        required:
-> +          - sound-dai
-> +
-> +      dai-format:
-> +        description: audio format
-> +        items:
+Reviewed-by: Uladzislau Rezki <urezki@gmail.com>
+Reviewed-by: Baoquan He <bhe@redhat.com>
+Reviewed-by: "Chen, Tim C" <tim.c.chen@intel.com>
+Reviewed-by: "King, Colin" <colin.king@intel.com>
+Signed-off-by: rulinhuang <rulin.huang@intel.com>
+---
+V1 -> V2: Avoided the partial initialization issue of vm and
+separated insert_vmap_area() from alloc_vmap_area()
+V2 -> V3: Rebased on 6.8-rc5
+V3 -> V4: Rebased on mm-unstable branch
+V4 -> V5: cancel the split of alloc_vmap_area()
+and keep insert_vmap_area()
+V5 -> V6: add bug_on
+---
+ mm/vmalloc.c | 132 +++++++++++++++++++++++++--------------------------
+ 1 file changed, 64 insertions(+), 68 deletions(-)
 
-Ditto
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index 25a8df497255..5ae028b0d58d 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -1841,15 +1841,66 @@ node_alloc(unsigned long size, unsigned long align,
+ 	return va;
+ }
+ 
++/*** Per cpu kva allocator ***/
++
++/*
++ * vmap space is limited especially on 32 bit architectures. Ensure there is
++ * room for at least 16 percpu vmap blocks per CPU.
++ */
++/*
++ * If we had a constant VMALLOC_START and VMALLOC_END, we'd like to be able
++ * to #define VMALLOC_SPACE		(VMALLOC_END-VMALLOC_START). Guess
++ * instead (we just need a rough idea)
++ */
++#if BITS_PER_LONG == 32
++#define VMALLOC_SPACE		(128UL*1024*1024)
++#else
++#define VMALLOC_SPACE		(128UL*1024*1024*1024)
++#endif
++
++#define VMALLOC_PAGES		(VMALLOC_SPACE / PAGE_SIZE)
++#define VMAP_MAX_ALLOC		BITS_PER_LONG	/* 256K with 4K pages */
++#define VMAP_BBMAP_BITS_MAX	1024	/* 4MB with 4K pages */
++#define VMAP_BBMAP_BITS_MIN	(VMAP_MAX_ALLOC*2)
++#define VMAP_MIN(x, y)		((x) < (y) ? (x) : (y)) /* can't use min() */
++#define VMAP_MAX(x, y)		((x) > (y) ? (x) : (y)) /* can't use max() */
++#define VMAP_BBMAP_BITS		\
++		VMAP_MIN(VMAP_BBMAP_BITS_MAX,	\
++		VMAP_MAX(VMAP_BBMAP_BITS_MIN,	\
++			VMALLOC_PAGES / roundup_pow_of_two(NR_CPUS) / 16))
++
++#define VMAP_BLOCK_SIZE		(VMAP_BBMAP_BITS * PAGE_SIZE)
++
++/*
++ * Purge threshold to prevent overeager purging of fragmented blocks for
++ * regular operations: Purge if vb->free is less than 1/4 of the capacity.
++ */
++#define VMAP_PURGE_THRESHOLD	(VMAP_BBMAP_BITS / 4)
++
++#define VMAP_RAM		0x1 /* indicates vm_map_ram area*/
++#define VMAP_BLOCK		0x2 /* mark out the vmap_block sub-type*/
++#define VMAP_FLAGS_MASK		0x3
++
++static inline void setup_vmalloc_vm(struct vm_struct *vm,
++	struct vmap_area *va, unsigned long flags, const void *caller)
++{
++	vm->flags = flags;
++	vm->addr = (void *)va->va_start;
++	vm->size = va->va_end - va->va_start;
++	vm->caller = caller;
++	va->vm = vm;
++}
++
+ /*
+  * Allocate a region of KVA of the specified size and alignment, within the
+- * vstart and vend.
++ * vstart and vend. If vm is passed in, the two will also be bound.
+  */
+ static struct vmap_area *alloc_vmap_area(unsigned long size,
+ 				unsigned long align,
+ 				unsigned long vstart, unsigned long vend,
+ 				int node, gfp_t gfp_mask,
+-				unsigned long va_flags)
++				unsigned long va_flags, struct vm_struct *vm,
++				unsigned long flags, const void *caller)
+ {
+ 	struct vmap_node *vn;
+ 	struct vmap_area *va;
+@@ -1912,6 +1963,11 @@ static struct vmap_area *alloc_vmap_area(unsigned long size,
+ 	va->vm = NULL;
+ 	va->flags = (va_flags | vn_id);
+ 
++	if (vm) {
++		BUG_ON(va_flags & VMAP_RAM);
++		setup_vmalloc_vm(vm, va, flags, caller);
++	}
++
+ 	vn = addr_to_node(va->va_start);
+ 
+ 	spin_lock(&vn->busy.lock);
+@@ -2325,46 +2381,6 @@ static struct vmap_area *find_unlink_vmap_area(unsigned long addr)
+ 	return NULL;
+ }
+ 
+-/*** Per cpu kva allocator ***/
+-
+-/*
+- * vmap space is limited especially on 32 bit architectures. Ensure there is
+- * room for at least 16 percpu vmap blocks per CPU.
+- */
+-/*
+- * If we had a constant VMALLOC_START and VMALLOC_END, we'd like to be able
+- * to #define VMALLOC_SPACE		(VMALLOC_END-VMALLOC_START). Guess
+- * instead (we just need a rough idea)
+- */
+-#if BITS_PER_LONG == 32
+-#define VMALLOC_SPACE		(128UL*1024*1024)
+-#else
+-#define VMALLOC_SPACE		(128UL*1024*1024*1024)
+-#endif
+-
+-#define VMALLOC_PAGES		(VMALLOC_SPACE / PAGE_SIZE)
+-#define VMAP_MAX_ALLOC		BITS_PER_LONG	/* 256K with 4K pages */
+-#define VMAP_BBMAP_BITS_MAX	1024	/* 4MB with 4K pages */
+-#define VMAP_BBMAP_BITS_MIN	(VMAP_MAX_ALLOC*2)
+-#define VMAP_MIN(x, y)		((x) < (y) ? (x) : (y)) /* can't use min() */
+-#define VMAP_MAX(x, y)		((x) > (y) ? (x) : (y)) /* can't use max() */
+-#define VMAP_BBMAP_BITS		\
+-		VMAP_MIN(VMAP_BBMAP_BITS_MAX,	\
+-		VMAP_MAX(VMAP_BBMAP_BITS_MIN,	\
+-			VMALLOC_PAGES / roundup_pow_of_two(NR_CPUS) / 16))
+-
+-#define VMAP_BLOCK_SIZE		(VMAP_BBMAP_BITS * PAGE_SIZE)
+-
+-/*
+- * Purge threshold to prevent overeager purging of fragmented blocks for
+- * regular operations: Purge if vb->free is less than 1/4 of the capacity.
+- */
+-#define VMAP_PURGE_THRESHOLD	(VMAP_BBMAP_BITS / 4)
+-
+-#define VMAP_RAM		0x1 /* indicates vm_map_ram area*/
+-#define VMAP_BLOCK		0x2 /* mark out the vmap_block sub-type*/
+-#define VMAP_FLAGS_MASK		0x3
+-
+ struct vmap_block_queue {
+ 	spinlock_t lock;
+ 	struct list_head free;
+@@ -2486,7 +2502,8 @@ static void *new_vmap_block(unsigned int order, gfp_t gfp_mask)
+ 	va = alloc_vmap_area(VMAP_BLOCK_SIZE, VMAP_BLOCK_SIZE,
+ 					VMALLOC_START, VMALLOC_END,
+ 					node, gfp_mask,
+-					VMAP_RAM|VMAP_BLOCK);
++					VMAP_RAM|VMAP_BLOCK, NULL,
++					0, NULL);
+ 	if (IS_ERR(va)) {
+ 		kfree(vb);
+ 		return ERR_CAST(va);
+@@ -2843,7 +2860,8 @@ void *vm_map_ram(struct page **pages, unsigned int count, int node)
+ 		struct vmap_area *va;
+ 		va = alloc_vmap_area(size, PAGE_SIZE,
+ 				VMALLOC_START, VMALLOC_END,
+-				node, GFP_KERNEL, VMAP_RAM);
++				node, GFP_KERNEL, VMAP_RAM,
++				NULL, 0, NULL);
+ 		if (IS_ERR(va))
+ 			return NULL;
+ 
+@@ -2946,26 +2964,6 @@ void __init vm_area_register_early(struct vm_struct *vm, size_t align)
+ 	kasan_populate_early_vm_area_shadow(vm->addr, vm->size);
+ }
+ 
+-static inline void setup_vmalloc_vm_locked(struct vm_struct *vm,
+-	struct vmap_area *va, unsigned long flags, const void *caller)
+-{
+-	vm->flags = flags;
+-	vm->addr = (void *)va->va_start;
+-	vm->size = va->va_end - va->va_start;
+-	vm->caller = caller;
+-	va->vm = vm;
+-}
+-
+-static void setup_vmalloc_vm(struct vm_struct *vm, struct vmap_area *va,
+-			      unsigned long flags, const void *caller)
+-{
+-	struct vmap_node *vn = addr_to_node(va->va_start);
+-
+-	spin_lock(&vn->busy.lock);
+-	setup_vmalloc_vm_locked(vm, va, flags, caller);
+-	spin_unlock(&vn->busy.lock);
+-}
+-
+ static void clear_vm_uninitialized_flag(struct vm_struct *vm)
+ {
+ 	/*
+@@ -3002,14 +3000,12 @@ static struct vm_struct *__get_vm_area_node(unsigned long size,
+ 	if (!(flags & VM_NO_GUARD))
+ 		size += PAGE_SIZE;
+ 
+-	va = alloc_vmap_area(size, align, start, end, node, gfp_mask, 0);
++	va = alloc_vmap_area(size, align, start, end, node, gfp_mask, 0, area, flags, caller);
+ 	if (IS_ERR(va)) {
+ 		kfree(area);
+ 		return NULL;
+ 	}
+ 
+-	setup_vmalloc_vm(area, va, flags, caller);
+-
+ 	/*
+ 	 * Mark pages for non-VM_ALLOC mappings as accessible. Do it now as a
+ 	 * best-effort approach, as they can be mapped outside of vmalloc code.
+@@ -4584,7 +4580,7 @@ struct vm_struct **pcpu_get_vm_areas(const unsigned long *offsets,
+ 
+ 		spin_lock(&vn->busy.lock);
+ 		insert_vmap_area(vas[area], &vn->busy.root, &vn->busy.head);
+-		setup_vmalloc_vm_locked(vms[area], vas[area], VM_ALLOC,
++		setup_vmalloc_vm(vms[area], vas[area], VM_ALLOC,
+ 				 pcpu_get_vm_areas);
+ 		spin_unlock(&vn->busy.lock);
+ 	}
 
-> +          enum:
-> +            - i2s
-> +            - right_j
-> +            - left_j
-> +            - dsp_a
-> +            - dsp_b
-> +
-> +      mediatek,clk-provider:
-> +        $ref: /schemas/types.yaml#/definitions/string
-> +        description: Indicates dai-link clock master.
-> +        items:
-
-Ditto
-
-> +          enum:
-> +            - cpu
-> +            - codec
-> +
-> +    additionalProperties: false
-
-This goes either to the top of the section (after type:object) for
-readability or after required: block below.
-
-> +
-> +    required:
-> +      - link-name
-> +
->  additionalProperties: false
-
->  
->  required:
->    - compatible
->    - mediatek,platform
->  
-> +# Disallow legacy properties if dai-link-xxx nodes are specified
-> +if:
-> +  not:
-
-I don't think this works. To test if node is present or node, you would
-need to use required.
-https://elixir.bootlin.com/linux/v6.4-rc7/source/Documentation/devicetree/bindings/net/qcom,ipa.yaml#L174
-
-Are you sure this if:then: works as expected?
-
-
-> +    patternProperties:
-> +      ".*-dai-link$": false
-> +then:
-> +  properties:
-> +    mediatek,dptx-codec: false
-> +    mediatek,hdmi-codec: false
-> +
->  examples:
->    - |
->  
-
-
-Best regards,
-Krzysztof
+base-commit: 7e6ae2db7f319bf9613ec6db8fa3c9bc1de1b346
+-- 
+2.43.0
 
 
