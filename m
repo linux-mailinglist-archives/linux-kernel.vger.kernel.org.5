@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-87256-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87257-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDEEF86D1C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:14:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 950DF86D1C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:15:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5620D1F265F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:14:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C6E3C1C22B44
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:15:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1B45134411;
-	Thu, 29 Feb 2024 18:13:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5436D13442B;
+	Thu, 29 Feb 2024 18:13:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q4C7myv3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kLx6jYEv"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F30A8134404
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 18:13:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DEA012FB0B
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 18:13:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709230392; cv=none; b=ccMNGs7AeVHEIAjjSilWrrKOZ45I+RIoIATSOP/P4wRrqr7YO7P82L3hIx3Ge4fOIPPEBXo3Ol1QsPrSOXD2jI7syTNUvmrTkpxF7gGP7FwEfmVxP2xFpODghogizyTwC8vXY4/TBTcTB8M1YvMdLQOkVcwBb2Y44F967YjxNj0=
+	t=1709230393; cv=none; b=KfFmdRC3j0PTbus6eUMtRCe25k0pjrigG/lWBaTqLRI/P/qm+2U36ZJbUcM6ZpcygDeNWrwiPbivjiSYt4FbuemVrFVPuLsc93xalK4AFTijuln0Ft9XYl3CqI8RbQ0I4iKp+eAXTZ3XbHwBRUO01YWqaSexgPtPTwhN7hLtZF8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709230392; c=relaxed/simple;
-	bh=AE4Wax6AwWzhWNRdm2NepGfbrJaZkUojuHf7ZO1wUMM=;
+	s=arc-20240116; t=1709230393; c=relaxed/simple;
+	bh=Dkk4i1JgX0DpGT8BHQSypGGCaf+0/nlf7ejjaAd9LM4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ja+u4ckN71BSvyFpylKB0bTP35b6HtUnPU49xc5D/rtV9iH8vUPQZGsk/drIxUhwuMeV6QieFGqwVT4reDy7xnQDoJ+1X+uid9/n84LQCtZOQeP6ilIjJdJR13GuQBa46vi+4FM2ib2pFC1+l4X010SUMjcWEK076zeu8YPrxl8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q4C7myv3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E3F3C433F1;
-	Thu, 29 Feb 2024 18:13:11 +0000 (UTC)
+	 MIME-Version; b=QD7yXmPoPhCKB95ZXsgs90l2ipmUwBO5+snBQJwdAXSuD0+L+ETpkHvTx4mviCa7xoKFCW9+e+7ODsGgO10TYNwoYXPASQjUHoOuDXe/D03j7qVNzdRNWpT3X4aljSKhNn0N08TBmRyU567MrwMfUC2xZcIskBo2FJ3mEDoh6UY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kLx6jYEv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 029D1C43394;
+	Thu, 29 Feb 2024 18:13:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709230391;
-	bh=AE4Wax6AwWzhWNRdm2NepGfbrJaZkUojuHf7ZO1wUMM=;
+	s=k20201202; t=1709230393;
+	bh=Dkk4i1JgX0DpGT8BHQSypGGCaf+0/nlf7ejjaAd9LM4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=q4C7myv3oAagE1rI8WVPi5L1zholvwFbhRoaGGTQf6moCO+soeLoTeMCxMxiXr5L3
-	 pkH0Qt92RgAAWtbD5svK8/SWbnV2NPi7cG/Y+6l2cXL/fEoWrenkoYSL9yIgY7+IX7
-	 83wzlTnwTdBQoQYxPa/vATWIKBupgTmCdCfa2gE6eVjoiQufJN4ggKmwWKo3Yhk9bv
-	 qo3WMUKq3lTT7H+mMiRhzGOm8cma2iVSblxT5/AqO1y3FNhyTAJRIvaGeZw59P1bt6
-	 ea4xmkAoFsxiFPra7c8R70JJ7sD/P0xaoNOkkugooNlUryrub9tzVw6cwVWfe5u+E1
-	 DaqxeLl8i5brQ==
+	b=kLx6jYEvLDIJSohi1mL2aFZMKS5uU2mNnrYEkCq/W8DJMzoI873tRTsRnzQXMG/YZ
+	 ugENU1BojjNHkG/un/SXNZeBmRkekNS07BaH9oiDHC8I2qt0lwI8KBTU6GsV836uaa
+	 O2J4PuhTqxUhaXsAVet9f2U9C5Qx+g7bgUf8N1+T6SH6+uRKzrseoSzqHlH8iCIyp6
+	 he4iqhdzEgw8bBMYYIFF2GwS96VMrGG84NZkGB0H9h31H1yf2k/8cixzNYuW5B1q9l
+	 wEDDIYOLYhQro3EATwlFPEqfL++F2HmHWS/n1SGvTHO45Z9PXevSNPQYIkzzW/zaAy
+	 fBCzDkJtrlcJQ==
 From: Bjorn Helgaas <helgaas@kernel.org>
 To: Tomas Winkler <tomas.winkler@intel.com>,
 	Arnd Bergmann <arnd@arndb.de>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: linux-kernel@vger.kernel.org,
 	Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH 2/3] mei: txe: remove unnecessary NULL pointer checks
-Date: Thu, 29 Feb 2024 12:12:59 -0600
-Message-Id: <20240229181300.352077-3-helgaas@kernel.org>
+Subject: [PATCH 3/3] mei: me: remove unnecessary NULL pointer checks
+Date: Thu, 29 Feb 2024 12:13:00 -0600
+Message-Id: <20240229181300.352077-4-helgaas@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240229181300.352077-1-helgaas@kernel.org>
 References: <20240229181300.352077-1-helgaas@kernel.org>
@@ -71,16 +71,16 @@ Remove the unnecessary checks.
 
 Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 ---
- drivers/misc/mei/pci-txe.c | 40 ++++++--------------------------------
- 1 file changed, 6 insertions(+), 34 deletions(-)
+ drivers/misc/mei/pci-me.c | 38 ++++++--------------------------------
+ 1 file changed, 6 insertions(+), 32 deletions(-)
 
-diff --git a/drivers/misc/mei/pci-txe.c b/drivers/misc/mei/pci-txe.c
-index fa20d9a27813..2a584104ba38 100644
---- a/drivers/misc/mei/pci-txe.c
-+++ b/drivers/misc/mei/pci-txe.c
-@@ -166,11 +166,7 @@ static int mei_txe_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+diff --git a/drivers/misc/mei/pci-me.c b/drivers/misc/mei/pci-me.c
+index 676d566f38dd..1f0d983d3f06 100644
+--- a/drivers/misc/mei/pci-me.c
++++ b/drivers/misc/mei/pci-me.c
+@@ -295,11 +295,7 @@ static int mei_me_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
   */
- static void mei_txe_shutdown(struct pci_dev *pdev)
+ static void mei_me_shutdown(struct pci_dev *pdev)
  {
 -	struct mei_device *dev;
 -
@@ -91,22 +91,20 @@ index fa20d9a27813..2a584104ba38 100644
  
  	dev_dbg(&pdev->dev, "shutdown\n");
  	mei_stop(dev);
-@@ -191,13 +187,7 @@ static void mei_txe_shutdown(struct pci_dev *pdev)
+@@ -320,11 +316,7 @@ static void mei_me_shutdown(struct pci_dev *pdev)
   */
- static void mei_txe_remove(struct pci_dev *pdev)
+ static void mei_me_remove(struct pci_dev *pdev)
  {
 -	struct mei_device *dev;
 -
 -	dev = pci_get_drvdata(pdev);
--	if (!dev) {
--		dev_err(&pdev->dev, "mei: dev == NULL\n");
+-	if (!dev)
 -		return;
--	}
 +	struct mei_device *dev = pci_get_drvdata(pdev);
  
- 	pm_runtime_get_noresume(&pdev->dev);
- 
-@@ -218,9 +208,6 @@ static int mei_txe_pci_suspend(struct device *device)
+ 	if (mei_pg_is_enabled(dev))
+ 		pm_runtime_get_noresume(&pdev->dev);
+@@ -353,9 +345,6 @@ static int mei_me_pci_suspend(struct device *device)
  	struct pci_dev *pdev = to_pci_dev(device);
  	struct mei_device *dev = pci_get_drvdata(pdev);
  
@@ -116,12 +114,13 @@ index fa20d9a27813..2a584104ba38 100644
  	dev_dbg(&pdev->dev, "suspend\n");
  
  	mei_stop(dev);
-@@ -236,13 +223,9 @@ static int mei_txe_pci_suspend(struct device *device)
- static int mei_txe_pci_resume(struct device *device)
+@@ -371,14 +360,10 @@ static int mei_me_pci_suspend(struct device *device)
+ static int mei_me_pci_resume(struct device *device)
  {
  	struct pci_dev *pdev = to_pci_dev(device);
 -	struct mei_device *dev;
 +	struct mei_device *dev = pci_get_drvdata(pdev);
+ 	unsigned int irqflags;
  	int err;
  
 -	dev = pci_get_drvdata(pdev);
@@ -130,15 +129,15 @@ index fa20d9a27813..2a584104ba38 100644
 -
  	pci_enable_msi(pdev);
  
- 	mei_clear_interrupts(dev);
-@@ -273,13 +256,10 @@ static int mei_txe_pci_resume(struct device *device)
+ 	irqflags = pci_dev_msi_enabled(pdev) ? IRQF_ONESHOT : IRQF_SHARED;
+@@ -419,13 +404,10 @@ static void mei_me_pci_complete(struct device *device)
  #ifdef CONFIG_PM
- static int mei_txe_pm_runtime_idle(struct device *device)
+ static int mei_me_pm_runtime_idle(struct device *device)
  {
 -	struct mei_device *dev;
 +	struct mei_device *dev = dev_get_drvdata(device);
  
- 	dev_dbg(device, "rpm: txe: runtime_idle\n");
+ 	dev_dbg(device, "rpm: me: runtime_idle\n");
  
 -	dev = dev_get_drvdata(device);
 -	if (!dev)
@@ -146,15 +145,15 @@ index fa20d9a27813..2a584104ba38 100644
  	if (mei_write_is_idle(dev))
  		pm_runtime_autosuspend(device);
  
-@@ -287,15 +267,11 @@ static int mei_txe_pm_runtime_idle(struct device *device)
- }
- static int mei_txe_pm_runtime_suspend(struct device *device)
+@@ -434,15 +416,11 @@ static int mei_me_pm_runtime_idle(struct device *device)
+ 
+ static int mei_me_pm_runtime_suspend(struct device *device)
  {
 -	struct mei_device *dev;
 +	struct mei_device *dev = dev_get_drvdata(device);
  	int ret;
  
- 	dev_dbg(device, "rpm: txe: runtime suspend\n");
+ 	dev_dbg(device, "rpm: me: runtime suspend\n");
  
 -	dev = dev_get_drvdata(device);
 -	if (!dev)
@@ -163,15 +162,15 @@ index fa20d9a27813..2a584104ba38 100644
  	mutex_lock(&dev->device_lock);
  
  	if (mei_write_is_idle(dev))
-@@ -317,15 +293,11 @@ static int mei_txe_pm_runtime_suspend(struct device *device)
+@@ -462,15 +440,11 @@ static int mei_me_pm_runtime_suspend(struct device *device)
  
- static int mei_txe_pm_runtime_resume(struct device *device)
+ static int mei_me_pm_runtime_resume(struct device *device)
  {
 -	struct mei_device *dev;
 +	struct mei_device *dev = dev_get_drvdata(device);
  	int ret;
  
- 	dev_dbg(device, "rpm: txe: runtime resume\n");
+ 	dev_dbg(device, "rpm: me: runtime resume\n");
  
 -	dev = dev_get_drvdata(device);
 -	if (!dev)
@@ -179,7 +178,7 @@ index fa20d9a27813..2a584104ba38 100644
 -
  	mutex_lock(&dev->device_lock);
  
- 	mei_enable_interrupts(dev);
+ 	ret = mei_me_pg_exit_sync(dev);
 -- 
 2.34.1
 
