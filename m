@@ -1,39 +1,39 @@
-Return-Path: <linux-kernel+bounces-86648-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86649-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EAB386C855
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:45:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34AA986C85A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:46:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D547E1F23E73
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:45:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB976283F99
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:46:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DFCD7D06B;
-	Thu, 29 Feb 2024 11:45:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA63E7CF14;
+	Thu, 29 Feb 2024 11:45:29 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C29C7CF25;
-	Thu, 29 Feb 2024 11:45:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A02F7C6D2;
+	Thu, 29 Feb 2024 11:45:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709207116; cv=none; b=i0iLVfr672bHpI2WBLhrZ+pPB6vn3B03DfvaxM3gMBDSmw91fFYIJpnuX1M90u8lw9YUE3uCNhh29cpqlp6/Xxxfovmz9C64NI7iXo2Gn6O064DmQE2FUIpSqx9xebVZdfuxuIsMCz9dirpDDqrtCCR6xk+4I8ajke8hbRrfEXQ=
+	t=1709207129; cv=none; b=OjCKv31w0iNeVADKi/UmDMSeqNwitdzLWmFmGTj0aoKqOVjMLizl+GEMeksSHAwWwU4o67ITBJ6tK46HkDkTpYRMTdYFjw6g7/hVuUQPu4c9NtJP7gCFB9j528XictahBShoXFJaAycADss3K9wZH3Ur2t6tKXjwD86rv9ez4o8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709207116; c=relaxed/simple;
-	bh=nd/b2uYlCb8E5dfzti2/q6XqGYbwdWariXVO650ml4k=;
+	s=arc-20240116; t=1709207129; c=relaxed/simple;
+	bh=bQ1POsiBVxJpCj50R+gPzypiWjWcKy+68WnaAm1EsE4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=acJKjzf+ha6EeRk02y9gEkhctrK5njZxfcJJ9qzRTJhiZ4MqLcSWJyoIw74ySxdnM44Ooto8EntGUzFCAGhJ+iMoEGQSZFV6ndtMRUNjKWjXBdXWY76lxze1+iqoyyzU4O0MkuM/6T/HOLBL2nLXsT3chuHG7c1KooYWfbBTIfg=
+	 In-Reply-To:Content-Type; b=agnroo1Z5AOpcNvwANoi3Ok1Et9s4DZ7ghBJNClwYwlZ9sWJrg5NqQvyNUVezMF+NgoV9Y+Ms8gzmAkfKdIZN8c/MKPaghiDEKyWtK28FcSFV1ORDUrqcsd2+GnxgZcAOOVTktGCXs56A0SqvCNMbJFyqW/SOsFgs/lAM/0SLbY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 77A24150C;
-	Thu, 29 Feb 2024 03:45:51 -0800 (PST)
-Received: from [10.57.50.133] (unknown [10.57.50.133])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 19A5E3F762;
-	Thu, 29 Feb 2024 03:45:09 -0800 (PST)
-Message-ID: <62e64ddd-266c-414e-b66a-8ca94f3c2bbf@arm.com>
-Date: Thu, 29 Feb 2024 11:45:08 +0000
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 91AB51FB;
+	Thu, 29 Feb 2024 03:46:05 -0800 (PST)
+Received: from [10.57.12.184] (unknown [10.57.12.184])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 78D6E3F762;
+	Thu, 29 Feb 2024 03:45:24 -0800 (PST)
+Message-ID: <7c82b316-89d9-470d-b46d-f86e81e2add3@arm.com>
+Date: Thu, 29 Feb 2024 11:45:41 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,236 +41,152 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V16 2/8] KVM: arm64: Prevent guest accesses into BRBE
- system registers/instructions
-Content-Language: en-GB
-To: Anshuman Khandual <anshuman.khandual@arm.com>,
- Mark Rutland <mark.rutland@arm.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- will@kernel.org, catalin.marinas@arm.com, Mark Brown <broonie@kernel.org>,
- James Clark <james.clark@arm.com>, Rob Herring <robh@kernel.org>,
- Marc Zyngier <maz@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
- Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
- linux-perf-users@vger.kernel.org, Oliver Upton <oliver.upton@linux.dev>,
- James Morse <james.morse@arm.com>, kvmarm@lists.linux.dev
-References: <20240125094119.2542332-1-anshuman.khandual@arm.com>
- <20240125094119.2542332-3-anshuman.khandual@arm.com>
- <ZdYCUi9YVDNDz7fr@FVFF77S0Q05N>
- <ab50e67e-3d06-4ba7-a5f8-4684e9ef98a4@arm.com>
- <Zd2zy0oUk8XvoDJM@FVFF77S0Q05N>
- <b134c30d-d855-41bb-a260-9f6437b77697@arm.com>
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <b134c30d-d855-41bb-a260-9f6437b77697@arm.com>
+Subject: Re: [PATCH V3 2/2] cpufreq: scmi: Register for limit change
+ notifications
+Content-Language: en-US
+To: Cristian Marussi <cristian.marussi@arm.com>
+Cc: Sibi Sankar <quic_sibis@quicinc.com>, sudeep.holla@arm.com,
+ linux-arm-kernel@lists.infradead.org, pierre.gondois@arm.com,
+ dietmar.eggemann@arm.com, morten.rasmussen@arm.com, viresh.kumar@linaro.org,
+ rafael@kernel.org, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ quic_mdtipton@quicinc.com, linux-arm-msm@vger.kernel.org
+References: <20240227181632.659133-1-quic_sibis@quicinc.com>
+ <20240227181632.659133-3-quic_sibis@quicinc.com>
+ <f8bfc666-c216-44d5-a63b-99f04ff3b8ef@arm.com>
+ <2608b2d8-f3b0-b4f5-f8e4-1f2242043ded@quicinc.com>
+ <64c6a1bc-92f2-4f44-ab10-cbd2473746f3@arm.com>
+ <18c249b2-ce8c-435b-8d65-a1770a1f294e@arm.com> <ZeBqW04f8V4dHphn@pluto>
+From: Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <ZeBqW04f8V4dHphn@pluto>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 27/02/2024 11:13, Anshuman Khandual wrote:
-> 
-> 
-> On 2/27/24 15:34, Mark Rutland wrote:
->> On Fri, Feb 23, 2024 at 12:58:48PM +0530, Anshuman Khandual wrote:
+
+
+On 2/29/24 11:28, Cristian Marussi wrote:
+> On Thu, Feb 29, 2024 at 10:22:39AM +0000, Lukasz Luba wrote:
+>>
+>>
+>> On 2/29/24 09:59, Lukasz Luba wrote:
 >>>
 >>>
->>> On 2/21/24 19:31, Mark Rutland wrote:
->>>> On Thu, Jan 25, 2024 at 03:11:13PM +0530, Anshuman Khandual wrote:
->>>>> Currently BRBE feature is not supported in a guest environment. This hides
->>>>> BRBE feature availability via masking ID_AA64DFR0_EL1.BRBE field.
+>>> On 2/28/24 17:00, Sibi Sankar wrote:
 >>>>
->>>> Does that means that a guest can currently see BRBE advertised in the
->>>> ID_AA64DFR0_EL1.BRB field, or is that hidden by the regular cpufeature code
->>>> today?
->>>
->>> IIRC it is hidden, but will have to double check. When experimenting for BRBE
->>> guest support enablement earlier, following changes were need for the feature
->>> to be visible in ID_AA64DFR0_EL1.
->>>
->>> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
->>> index 646591c67e7a..f258568535a8 100644
->>> --- a/arch/arm64/kernel/cpufeature.c
->>> +++ b/arch/arm64/kernel/cpufeature.c
->>> @@ -445,6 +445,7 @@ static const struct arm64_ftr_bits ftr_id_mmfr0[] = {
->>>   };
->>>   
->>>   static const struct arm64_ftr_bits ftr_id_aa64dfr0[] = {
->>> +       S_ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_EL1_BRBE_SHIFT, 4, ID_AA64DFR0_EL1_BRBE_IMP),
->>>          S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_EL1_DoubleLock_SHIFT, 4, 0),
->>>          ARM64_FTR_BITS(FTR_HIDDEN, FTR_NONSTRICT, FTR_LOWER_SAFE, ID_AA64DFR0_EL1_PMSVer_SHIFT, 4, 0),
->>>          ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_EL1_CTX_CMPs_SHIFT, 4, 0),
->>>
->>> Should we add the following entry - explicitly hiding BRBE from the guest
->>> as a prerequisite patch ?
-
-This has nothing to do with the Guest visibility of the BRBE. This is
-specifically for host "userspace" (via MRS emulation).
-
->>>
->>> S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_EL1_BRBE_SHIFT, 4, ID_AA64DFR0_EL1_BRBE_NI)
->>
->> Is it visbile currently, or is it hidden currently?
->>
->> * If it is visible before this patch, that's a latent bug that we need to go
->>    fix first, and that'll require more coordination.
->>
->> * If it is not visible before this patch, there's no problem in the code, but
->>    the commit message needs to explicitly mention that's the case as the commit
->>    message currently implies it is visible by only mentioning hiding it.
->>
->> ... so can you please double check as you suggested above? We should be able to
->> explain why it is or is not visible today.
-> 
-> It is currently hidden i.e following code returns 1 in the host
-> but returns 0 inside the guest.
-> 
-> aa64dfr0 = read_sysreg_s(SYS_ID_AA64DFR0_EL1);
-> brbe = cpuid_feature_extract_unsigned_field(aa64dfr0, ID_AA64DFR0_EL1_BRBE_SHIFT);
-> 
-> Hence - will update the commit message here as suggested.
-
-This is by virtue of the masking we do in the kvm/sysreg.c below.
-
-> 
->>
->> Mark.
->>
->>>>> This also blocks guest accesses into BRBE system registers and instructions
->>>>> as if the underlying hardware never implemented FEAT_BRBE feature.
+>>>>
+>>>> On 2/28/24 18:54, Lukasz Luba wrote:
 >>>>>
->>>>> Cc: Marc Zyngier <maz@kernel.org>
->>>>> Cc: Oliver Upton <oliver.upton@linux.dev>
->>>>> Cc: James Morse <james.morse@arm.com>
->>>>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
->>>>> Cc: Catalin Marinas <catalin.marinas@arm.com>
->>>>> Cc: Will Deacon <will@kernel.org>
->>>>> Cc: kvmarm@lists.linux.dev
->>>>> Cc: linux-arm-kernel@lists.infradead.org
->>>>> Cc: linux-kernel@vger.kernel.org
->>>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->>>>> ---
->>>>> Changes in V16:
 >>>>>
->>>>> - Added BRB_INF_SRC_TGT_EL1 macro for corresponding BRB_[INF|SRC|TGT] expansion
->>>>>
->>>>>   arch/arm64/kvm/sys_regs.c | 56 +++++++++++++++++++++++++++++++++++++++
->>>>>   1 file changed, 56 insertions(+)
->>>>>
->>>>> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
->>>>> index 30253bd19917..6a06dc2f0c06 100644
->>>>> --- a/arch/arm64/kvm/sys_regs.c
->>>>> +++ b/arch/arm64/kvm/sys_regs.c
->>>>> @@ -1304,6 +1304,11 @@ static int set_pmcr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r,
->>>>>   	return 0;
->>>>>   }
->>>>>   
->>>>> +#define BRB_INF_SRC_TGT_EL1(n)					\
->>>>> +	{ SYS_DESC(SYS_BRBINF##n##_EL1), undef_access },	\
->>>>> +	{ SYS_DESC(SYS_BRBSRC##n##_EL1), undef_access },	\
->>>>> +	{ SYS_DESC(SYS_BRBTGT##n##_EL1), undef_access }		\
+>>>>> On 2/27/24 18:16, Sibi Sankar wrote:
+>>>>>> Register for limit change notifications if supported and use
+>>>>>> the throttled
+>>>>>> frequency from the notification to apply HW pressure.
 >>>>
->>>> With the changes suggested on the previous patch, this would need to change to be:
+>>>> Lukasz,
 >>>>
->>>> 	#define BRB_INF_SRC_TGT_EL1(n)					\
->>>> 		{ SYS_DESC(SYS_BRBINF_EL1(n)), undef_access },	\
->>>> 		{ SYS_DESC(SYS_BRBSRC_EL1(n)), undef_access },	\
->>>> 		{ SYS_DESC(SYS_BRBTGT_EL1(n)), undef_access }	\
+>>>> Thanks for taking time to review the series!
+>>>>
+>>>>>>
+>>>>>> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
+>>>>>> ---
+>>>>>>
+>>>>>> v3:
+>>>>>> * Sanitize range_max received from the notifier. [Pierre]
+>>>>>> * Update commit message.
+>>>>>>
+>>>>>> ï¿½ drivers/cpufreq/scmi-cpufreq.c | 29 ++++++++++++++++++++++++++++-
+>>>>>> ï¿½ 1 file changed, 28 insertions(+), 1 deletion(-)
+>>>>>>
+>>>>>> diff --git a/drivers/cpufreq/scmi-cpufreq.c
+>>>>>> b/drivers/cpufreq/scmi-cpufreq.c
+>>>>>> index 76a0ddbd9d24..78b87b72962d 100644
+>>>>>> --- a/drivers/cpufreq/scmi-cpufreq.c
+>>>>>> +++ b/drivers/cpufreq/scmi-cpufreq.c
+>>>>>> @@ -25,9 +25,13 @@ struct scmi_data {
+>>>>>> ï¿½ï¿½ï¿½ï¿½ï¿½ int domain_id;
+>>>>>> ï¿½ï¿½ï¿½ï¿½ï¿½ int nr_opp;
+>>>>>> ï¿½ï¿½ï¿½ï¿½ï¿½ struct device *cpu_dev;
+>>>>>> +ï¿½ï¿½ï¿½ struct cpufreq_policy *policy;
+>>>>>> ï¿½ï¿½ï¿½ï¿½ï¿½ cpumask_var_t opp_shared_cpus;
+>>>>>> +ï¿½ï¿½ï¿½ struct notifier_block limit_notify_nb;
+>>>>>> ï¿½ };
+>>>>>> +const struct scmi_handle *handle;
 >>>
->>> Sure, already folded back in these above changes.
->>>
->>>>
->>>>
->>>> ... which would also be easier for backporting (if necessary), since those
->>>> definitions have existed for a while.
->>>>
->>>> Otherwise (modulo Suzuki's comment about rebasing), this looks good to me.
->>>
->>> Okay.
->>>
->>>>
->>>> Mark.
->>>>
->>>>>   /* Silly macro to expand the DBG{BCR,BVR,WVR,WCR}n_EL1 registers in one go */
->>>>>   #define DBG_BCR_BVR_WCR_WVR_EL1(n)					\
->>>>>   	{ SYS_DESC(SYS_DBGBVRn_EL1(n)),					\
->>>>> @@ -1707,6 +1712,9 @@ static u64 read_sanitised_id_aa64dfr0_el1(struct kvm_vcpu *vcpu,
->>>>>   	/* Hide SPE from guests */
->>>>>   	val &= ~ID_AA64DFR0_EL1_PMSVer_MASK;
->>>>>   
->>>>> +	/* Hide BRBE from guests */
->>>>> +	val &= ~ID_AA64DFR0_EL1_BRBE_MASK;
->>>>> +
-
-This controls what the guest sees.
-
-Suzuki
-
-
->>>>>   	return val;
->>>>>   }
->>>>>   
->>>>> @@ -2195,6 +2203,8 @@ static const struct sys_reg_desc sys_reg_descs[] = {
->>>>>   	{ SYS_DESC(SYS_DC_CISW), access_dcsw },
->>>>>   	{ SYS_DESC(SYS_DC_CIGSW), access_dcgsw },
->>>>>   	{ SYS_DESC(SYS_DC_CIGDSW), access_dcgsw },
->>>>> +	{ SYS_DESC(OP_BRB_IALL), undef_access },
->>>>> +	{ SYS_DESC(OP_BRB_INJ), undef_access },
->>>>>   
->>>>>   	DBG_BCR_BVR_WCR_WVR_EL1(0),
->>>>>   	DBG_BCR_BVR_WCR_WVR_EL1(1),
->>>>> @@ -2225,6 +2235,52 @@ static const struct sys_reg_desc sys_reg_descs[] = {
->>>>>   	{ SYS_DESC(SYS_DBGCLAIMCLR_EL1), trap_raz_wi },
->>>>>   	{ SYS_DESC(SYS_DBGAUTHSTATUS_EL1), trap_dbgauthstatus_el1 },
->>>>>   
->>>>> +	/*
->>>>> +	 * BRBE branch record sysreg address space is interleaved between
->>>>> +	 * corresponding BRBINF<N>_EL1, BRBSRC<N>_EL1, and BRBTGT<N>_EL1.
->>>>> +	 */
->>>>> +	BRB_INF_SRC_TGT_EL1(0),
->>>>> +	BRB_INF_SRC_TGT_EL1(16),
->>>>> +	BRB_INF_SRC_TGT_EL1(1),
->>>>> +	BRB_INF_SRC_TGT_EL1(17),
->>>>> +	BRB_INF_SRC_TGT_EL1(2),
->>>>> +	BRB_INF_SRC_TGT_EL1(18),
->>>>> +	BRB_INF_SRC_TGT_EL1(3),
->>>>> +	BRB_INF_SRC_TGT_EL1(19),
->>>>> +	BRB_INF_SRC_TGT_EL1(4),
->>>>> +	BRB_INF_SRC_TGT_EL1(20),
->>>>> +	BRB_INF_SRC_TGT_EL1(5),
->>>>> +	BRB_INF_SRC_TGT_EL1(21),
->>>>> +	BRB_INF_SRC_TGT_EL1(6),
->>>>> +	BRB_INF_SRC_TGT_EL1(22),
->>>>> +	BRB_INF_SRC_TGT_EL1(7),
->>>>> +	BRB_INF_SRC_TGT_EL1(23),
->>>>> +	BRB_INF_SRC_TGT_EL1(8),
->>>>> +	BRB_INF_SRC_TGT_EL1(24),
->>>>> +	BRB_INF_SRC_TGT_EL1(9),
->>>>> +	BRB_INF_SRC_TGT_EL1(25),
->>>>> +	BRB_INF_SRC_TGT_EL1(10),
->>>>> +	BRB_INF_SRC_TGT_EL1(26),
->>>>> +	BRB_INF_SRC_TGT_EL1(11),
->>>>> +	BRB_INF_SRC_TGT_EL1(27),
->>>>> +	BRB_INF_SRC_TGT_EL1(12),
->>>>> +	BRB_INF_SRC_TGT_EL1(28),
->>>>> +	BRB_INF_SRC_TGT_EL1(13),
->>>>> +	BRB_INF_SRC_TGT_EL1(29),
->>>>> +	BRB_INF_SRC_TGT_EL1(14),
->>>>> +	BRB_INF_SRC_TGT_EL1(30),
->>>>> +	BRB_INF_SRC_TGT_EL1(15),
->>>>> +	BRB_INF_SRC_TGT_EL1(31),
->>>>> +
->>>>> +	/* Remaining BRBE sysreg addresses space */
->>>>> +	{ SYS_DESC(SYS_BRBCR_EL1), undef_access },
->>>>> +	{ SYS_DESC(SYS_BRBFCR_EL1), undef_access },
->>>>> +	{ SYS_DESC(SYS_BRBTS_EL1), undef_access },
->>>>> +	{ SYS_DESC(SYS_BRBINFINJ_EL1), undef_access },
->>>>> +	{ SYS_DESC(SYS_BRBSRCINJ_EL1), undef_access },
->>>>> +	{ SYS_DESC(SYS_BRBTGTINJ_EL1), undef_access },
->>>>> +	{ SYS_DESC(SYS_BRBIDR0_EL1), undef_access },
->>>>> +
->>>>>   	{ SYS_DESC(SYS_MDCCSR_EL0), trap_raz_wi },
->>>>>   	{ SYS_DESC(SYS_DBGDTR_EL0), trap_raz_wi },
->>>>>   	// DBGDTR[TR]X_EL0 share the same encoding
->>>>> -- 
->>>>> 2.25.1
->>>>>
+>>> I've missed this bit here.
+>>
+>> So for this change we actually have to ask Cristian or Sudeep
+>> because I'm not sure if we have only one 'handle' instance
+>> for all cpufreq devices.
+>>
+>> If we have different 'handle' we cannot move it to the
+>> global single pointer.
+>>
+>> Sudeep, Cristian what do you think?
+> 
+> I was just replying noticing this :D .... since SCMI drivers can be
+> probed multiple times IF you defined multiple scmi top nodes in your DT
+> containing the same protocol nodes, they receive a distinct sdev/handle/ph
+> for each probe...so any attempt to globalize these wont work...BUT...
+> 
+> ...this is a bit of a weird setup BUT it is not against the spec and it can
+> be used to parallelize more the SCMI accesses to disjont set of resources
+> within the same protocol (a long story here...) AND this type of setup is
+> something that it is already used by some other colleagues of Sibi working
+> on a different line of products (AFAIK)...
+> 
+> So, for these reasons, usually, all the other SCMI drivers have per-instance
+> non-global references to handle/sdev/ph....
+> 
+> ...having said that, thought, looking at the structure of CPUFReq
+> drivers, I am not sure that they can stand such a similar setup
+> where multiple instances of this same driver are probed
+> 
+> .... indeed the existent *ph refs above is already global....so it wont already
+> work anyway in case of multiple instances now...
+> 
+> ...and if I look at how CPUFreq expects the signature of scmi_cpufreq_get_rate()
+> to be annd how it is implemented now using the global *ph reference, it is
+> clearly already not working cleanly on a multi-instance setup...
+> 
+> ...now...I can imagine how to (maybe) fix the above removing the globals and
+> fixing this, BUT the question, more generally, is CPUFreq supposed to work at all in
+> this multi-probed mode of operation ?
+> Does it even make sense to be able to support this in CPUFREQ ?
+> 
+> (as an example in cpufreq,c there is static global cpufreq_driver
+>   pointing to the arch-specific configured driver BUT that also holds
+>   some .driver_data AND that cleraly wont be instance specific if you
+>   probe multiple times and register with CPUFreq multiple times...)
+> 
+>   More questions than answers here :D
 > 
 
+Thanks Cristian for instant response. Yes, indeed now we have more
+questions :) (which is good). But that's good description of the
+situation.
+
+So lets consider a few option what we could do now:
+1. Let Sibi add another global state the 'handle' but add
+    a BUG_ON() or WARN_ON() in the probe path if the next
+    'handle' instance is different than already set in global.
+    This would simply mean that we don't support (yet)
+    such configuration in a platform. As you said, we
+    already have the *ph global, so maybe such platforms
+    with multiple instances for this particular cpufreq and
+    performance protocol don't exist yet.
+2. Ask Sibi to wait with this change, till we refactor the
+    exiting driver such that it could support easily those
+    multiple instances. Then pick up this patch set.
+    Although, we would also like to have those notifications from our
+    Juno SCP reference FW, so the feature is useful.
+3. Ask Sibi to refactor his patch to somehow get the 'handle'
+    in different way, using exiting code and not introduce this global.
+
+IHMO we could do this in steps: 1. and then 2. When
+we create some mock platform to test this refactoring we can
+start cleaning it.
+
+What do you think?
+
+Regards,
+Lukasz
 
