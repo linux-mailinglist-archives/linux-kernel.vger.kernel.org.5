@@ -1,113 +1,261 @@
-Return-Path: <linux-kernel+bounces-86693-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86694-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8368386C91B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:22:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A04586C91C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:22:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA5B61C22B35
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:22:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C2881C22C25
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:22:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C23D47D3F5;
-	Thu, 29 Feb 2024 12:21:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="zLuFe7ZB"
-Received: from out203-205-221-240.mail.qq.com (out203-205-221-240.mail.qq.com [203.205.221.240])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E1A57D080;
+	Thu, 29 Feb 2024 12:21:56 +0000 (UTC)
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 511487D09C;
-	Thu, 29 Feb 2024 12:21:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.240
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC8767C0B9
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 12:21:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709209292; cv=none; b=nygQZAiRf+1bYbh+GMMLquRP7Xam6ZhExhwMdWfoO8iq00hwbcSkaHtUnmUOCsJIYQ6kAYJeGMQpZMIldXIOwETExn7b9+p3Vkiq1jmK9sdEaYwT+Mdvuf1pMqJHYMMEncUD7pHWfdaajTWgnWE+r4osAW5Ubu8Qi+trZtHYpAw=
+	t=1709209316; cv=none; b=Yuqr3qavrNGME7AXNKZ3JN2lrKRHXzo2bhoweGdpOFxY0HOUDOe/LjucuHZ7+0ThIyiiSnl4VBpkPBN+Xts3Fah20k7NWf368qhcO3OnwrYvrONlFDgFOM6EDEhSJAW9qBvlVHPULCTKK1uPbnEbTUnYQY/NpjyQxsjFGJ2mlQA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709209292; c=relaxed/simple;
-	bh=MSR7Gohd9L3H1wQbofEpvc+047GL8Hkx47b8e8xjZoY=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=NzfkbKSTcn4iK5II6bLSb+H6k/fMmy7EvVqAgUVpiK3d4OaGml+/bGFCfxKREkq9wR6V2XMEOzeS1HdRKLJr90E2OlfcFZTu7/kjiCpRUTh2vUB1Mzxcs/G/oHaYL2OS85nL1F8yVvR74qKstnK+quLg/VquC1BfSN3zl6VXBYw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=zLuFe7ZB; arc=none smtp.client-ip=203.205.221.240
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1709209285; bh=dU9WJsM0VvFTwAl60XiV2GQzCopZDxedDmkKAu/mywc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=zLuFe7ZBwRoc+faIla3ad/ExTAx0Rh69HtFTsevCtxonUZfXKzCraBpULdlD2ZnuM
-	 vufO9Zuu8u395UWgYv2KYqOLAQMUc4zXFndLxnxSwvqDenqoDCcCk2b6+161C+1qwP
-	 e58Bf2K2/QCi7uT+5IM6VwqPZeJFxWbCbUYpmSj4=
-Received: from pek-lxu-l1.wrs.com ([111.198.228.140])
-	by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
-	id 5563B03A; Thu, 29 Feb 2024 20:21:22 +0800
-X-QQ-mid: xmsmtpt1709209282tqirugosv
-Message-ID: <tencent_70C492C20645C99DEEC9EED28C8E27D40606@qq.com>
-X-QQ-XMAILINFO: MtZ4zLDUQmWfqDyLt8mHh4sepj+IqaTuKdCoCZQQq7B6VdFKCOOR22OzPvhGd+
-	 erMlmfzNiaYFwG6RnrohRlmnnXXJcg2/QGgS5PTEFW73iYyAlwn4wUYK5xTPOK8NVQl85ytkFfmv
-	 F2zOcs9pwq5GWnc63lkz6giUBIN8tcPGq3WRiV726ZWh49xWXT0CjNeyQHpUDLjep7cRxB8ll54o
-	 vvLJdZ1uHJN+8Ioc8+t7XYacScvMf6pJ8bCwdUlyhJREF3RHJfTC9MnB0YIMS3yALCR3NE2RAn8y
-	 QubRbWURu+/tFsCb7P/BigomPU8iJIbVZmsvW5818emUB9D9gyfLz14VyCfjX5zLV7cfj2wVqd9B
-	 n/QpIgGAxLXWr0789SU+wPPMmJ8Pip4GyYmN8dcENXFDa4Gn2vZRfpTZzj83ehUaUrF7QdeH6/so
-	 JLKConi+EZGAmDF4tiCAPR1eYdFLremb+U5Aa9Q6+hU3uwzMFNshcsriYhOWUp846YFkyck3SaHV
-	 MZhjwu0sL5xQJNUK3RGE5wdybGy8hRXZf4bceHCpU95lVTwi8b0+6vKgzU4pLfXPwK9TytZ+U9ap
-	 BvxEVlxKJFW6mD6j671tbXs1rRRgafNlQA/7rSDJOaESfAI4zmavVVOcFf4BXwCmDVADtHHe5Xuo
-	 DFgdB7C8UET45g+oe5xGr2CW7a4FiSJ9AXHbe/FphXDdIqUaY1Ju1gDEd1yEB1I0oEYuQHQyj7To
-	 h+nAalUaqbo3kt6iIX+rveWRprGGReBd0qJJ+BNiW+CrAi/WNIkT2QN7dLrIrg5WFkGaS6TEbyzs
-	 fp4HTLQ0SJx9YGhrKrbhVfnfCRzpei1Z2MOTNawRf/tuCKzWX1xIXUZUseZWdhtZmKhZJn9TheHB
-	 hqYXXjPpphy29mM3kkceIQCmI7j86WmoTgqlPjyiqo7KpIV30ja5g1J5aSeS9NWQ==
-X-QQ-XMRINFO: MSVp+SPm3vtS1Vd6Y4Mggwc=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+2622b51b35f91a00ea18@syzkaller.appspotmail.com
-Cc: linux-kernel@vger.kernel.org,
-	linux-media@vger.kernel.org,
-	linux-usb@vger.kernel.org,
-	m.szyprowski@samsung.com,
-	mchehab@kernel.org,
-	syzkaller-bugs@googlegroups.com,
-	tfiga@chromium.org
-Subject: [PATCH] media: fix task hung in vb2_video_unregister_device
-Date: Thu, 29 Feb 2024 20:21:22 +0800
-X-OQ-MSGID: <20240229122122.978268-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <0000000000008faf0a06126a0ffb@google.com>
-References: <0000000000008faf0a06126a0ffb@google.com>
+	s=arc-20240116; t=1709209316; c=relaxed/simple;
+	bh=v4fm/0Jn2L/Ipgu9QqWTjs/UX0h2u9JyctTVG6vxe/o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=MmYc2belQ1Ib0uM2vnx1D2jxM2Pshrl1DbE7HaZHKC7Uk5ssaF2dHjVqe1vLwqnyHzWn66jrfyYA+wcVMfxExrCPpsCZ7QEviYEO51lzNy/oeziui/esejvKfkIXFIQQ/Rbk2HjJDb8MZDFMz1j07ZymvLkevYYyb02ZIYHupeg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Tlr0w1h5zzqjgr;
+	Thu, 29 Feb 2024 20:21:04 +0800 (CST)
+Received: from kwepemm600020.china.huawei.com (unknown [7.193.23.147])
+	by mail.maildlp.com (Postfix) with ESMTPS id D859118002D;
+	Thu, 29 Feb 2024 20:21:41 +0800 (CST)
+Received: from [10.174.179.160] (10.174.179.160) by
+ kwepemm600020.china.huawei.com (7.193.23.147) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 29 Feb 2024 20:21:40 +0800
+Message-ID: <958b204f-63ec-55b3-b6e2-dc72a3ce704d@huawei.com>
+Date: Thu, 29 Feb 2024 20:21:39 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH v3] filemap: avoid unnecessary major faults in
+ filemap_fault()
+Content-Language: en-US
+To: David Hildenbrand <david@redhat.com>, <linux-mm@kvack.org>,
+	<linux-kernel@vger.kernel.org>
+CC: <akpm@linux-foundation.org>, <willy@infradead.org>,
+	<ying.huang@intel.com>, <fengwei.yin@intel.com>,
+	<aneesh.kumar@linux.ibm.com>, <shy828301@gmail.com>, <hughd@google.com>,
+	<wangkefeng.wang@huawei.com>, <sunnanyong@huawei.com>
+References: <20240229060907.836589-1-zhangpeng362@huawei.com>
+ <038e55eb-70a9-445d-89ef-4b989eaa9c66@redhat.com>
+From: "zhangpeng (AS)" <zhangpeng362@huawei.com>
+In-Reply-To: <038e55eb-70a9-445d-89ef-4b989eaa9c66@redhat.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm600020.china.huawei.com (7.193.23.147)
 
-vb2_video_unregister_device() will get vb2q_lock, so usbtv_video_free() does
-not need vb2q_lock.
+On 2024/2/29 16:56, David Hildenbrand wrote:
 
-Reported-and-tested-by: syzbot+2622b51b35f91a00ea18@syzkaller.appspotmail.com
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
----
- drivers/media/usb/usbtv/usbtv-video.c | 2 --
- 1 file changed, 2 deletions(-)
+> On 29.02.24 07:09, Peng Zhang wrote:
+>> From: ZhangPeng <zhangpeng362@huawei.com>
+>>
+>> The major fault occurred when using mlockall(MCL_CURRENT | MCL_FUTURE)
+>> in application, which leading to an unexpected issue[1].
+>>
+>> This caused by temporarily cleared PTE during a read+clear/modify/write
+>> update of the PTE, eg, do_numa_page()/change_pte_range().
+>>
+>> For the data segment of the user-mode program, the global variable area
+>> is a private mapping. After the pagecache is loaded, the private 
+>> anonymous
+>> page is generated after the COW is triggered. Mlockall can lock COW 
+>> pages
+>> (anonymous pages), but the original file pages cannot be locked and may
+>> be reclaimed. If the global variable (private anon page) is accessed 
+>> when
+>> vmf->pte is zeroed in numa fault, a file page fault will be triggered.
+>> At this time, the original private file page may have been reclaimed.
+>> If the page cache is not available at this time, a major fault will be
+>> triggered and the file will be read, causing additional overhead.
+>>
+>> This issue affects our traffic analysis service. The inbound traffic is
+>> heavy. If a major fault occurs, the I/O schedule is triggered and the
+>> original I/O is suspended. Generally, the I/O schedule is 0.7 ms. If
+>> other applications are operating disks, the system needs to wait for
+>> more than 10 ms. However, the inbound traffic is heavy and the NIC 
+>> buffer
+>> is small. As a result, packet loss occurs. But the traffic analysis 
+>> service
+>> can't tolerate packet loss.
+>>
+>> Fix this by holding PTL and rechecking the PTE in filemap_fault() before
+>> triggering a major fault. We do this check only if vma is VM_LOCKED. In
+>> our service test environment, the baseline is 7 major faults / 12 hours.
+>> After the patch is applied, no major fault will be triggered.
+>>
+>> Testing file anonymous page read and write page fault performance in
+>> ext4, tmpfs and ramdisk using will-it-scale[2] on a x86 physical 
+>> machine.
+>> The data is the average change compared with the mainline after the 
+>> patch
+>> is applied. The test results are indicates some performance regressions.
+>> We do this check only if vma is VM_LOCKED, therefore, no performance
+>> regressions is caused for most common cases.
+>>
+>> The test results are as follows:
+>>                            processes processes_idle threads threads_idle
+>> ext4    private file write: -0.51%    0.08%          -0.03% -0.04%
+>> ext4    shared  file write:  0.135%  -0.531%          2.883% -0.772%
+>> ramdisk private file write: -0.48%    0.23%          -1.08% 0.27%
+>> ramdisk private file  read:  0.07%   -6.90%          -5.85% -0.70%
+>> tmpfs   private file write: -0.344%  -0.110%          0.200% 0.145%
+>> tmpfs   shared  file write:  0.958%   0.101%          2.781% -0.337%
+>> tmpfs   private file  read: -0.16%    0.00%          -0.12% 0.41%
+>>
+>> [1] 
+>> https://lore.kernel.org/linux-mm/9e62fd9a-bee0-52bf-50a7-498fa17434ee@huawei.com/
+>> [2] https://github.com/antonblanchard/will-it-scale/
+>>
+>> Suggested-by: "Huang, Ying" <ying.huang@intel.com>
+>> Suggested-by: David Hildenbrand <david@redhat.com>
+>> Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
+>> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+>> ---
+>> v2->v3:
+>> - Do this check only if vma is VM_LOCKED per David Hildenbrand
+>> - Hold PTL and recheck the PTE
+>> - Place the recheck code in a new function filemap_fault_recheck_pte()
+>>
+>> v1->v2:
+>> - Add more test results per Huang, Ying
+>> - Add more comments before check PTE per Huang, Ying, David Hildenbrand
+>>    and Yin Fengwei
+>> - Change pte_offset_map_nolock to pte_offset_map as the PTL won't
+>>    be used
+>>
+>> RFC->v1:
+>> - Add error handling when ptep == NULL per Huang, Ying and Matthew
+>>    Wilcox
+>> - Check the PTE without acquiring PTL in filemap_fault(), suggested by
+>>    Huang, Ying and Yin Fengwei
+>> - Add pmd_none() check before PTE map
+>> - Update commit message and add performance test information
+>>
+>>   mm/filemap.c | 40 ++++++++++++++++++++++++++++++++++++++++
+>>   1 file changed, 40 insertions(+)
+>>
+>> diff --git a/mm/filemap.c b/mm/filemap.c
+>> index b4858d89f1b1..2668bac68df7 100644
+>> --- a/mm/filemap.c
+>> +++ b/mm/filemap.c
+>> @@ -3181,6 +3181,42 @@ static struct file 
+>> *do_async_mmap_readahead(struct vm_fault *vmf,
+>>       return fpin;
+>>   }
+>>   +/*
+>> + * filemap_fault_recheck_pte - hold PTL and recheck whether pte is 
+>> none.
+>> + * @vmf - the vm_fault for this fault.
+>> + *
+>> + * Recheck PTE as the PTE can be cleared temporarily during a 
+>> read+clear/modify
+>> + * /write update of the PTE, eg, do_numa_page()/change_pte_range(). 
+>> This will
+>> + * trigger an unexpected major fault, even if we use mlockall(), 
+>> which may
+>> + * increase IO and thus cause other unexpected behavior.
+>> + *
+>> + * Return VM_FAULT_NOPAGE if the PTE is not none or 
+>> pte_offset_map_lock()
+>> + * fails. In other cases, 0 is returned.
+>> + */
+>
+> That documentation is imprecise, as you are not explaining the mlock 
+> limitation.
+>
+> It's an internal helper, I'd drop all that and rather add a comment 
+> below right next to the conditions that are performing the check ...
+>
+That makes sense.
 
-diff --git a/drivers/media/usb/usbtv/usbtv-video.c b/drivers/media/usb/usbtv/usbtv-video.c
-index 62a583040cd4..b55f432b44d4 100644
---- a/drivers/media/usb/usbtv/usbtv-video.c
-+++ b/drivers/media/usb/usbtv/usbtv-video.c
-@@ -963,7 +963,6 @@ int usbtv_video_init(struct usbtv *usbtv)
- 
- void usbtv_video_free(struct usbtv *usbtv)
- {
--	mutex_lock(&usbtv->vb2q_lock);
- 	mutex_lock(&usbtv->v4l2_lock);
- 
- 	usbtv_stop(usbtv);
-@@ -971,7 +970,6 @@ void usbtv_video_free(struct usbtv *usbtv)
- 	v4l2_device_disconnect(&usbtv->v4l2_dev);
- 
- 	mutex_unlock(&usbtv->v4l2_lock);
--	mutex_unlock(&usbtv->vb2q_lock);
- 
- 	v4l2_device_put(&usbtv->v4l2_dev);
- }
+>> +static vm_fault_t filemap_fault_recheck_pte(struct vm_fault *vmf)
+>> +{
+>> +    struct vm_area_struct *vma = vmf->vma;
+>> +    vm_fault_t ret = 0;
+>> +    pte_t *ptep;
+>> +
+>> +    if (!(vma->vm_flags & VM_LOCKED))
+>> +        return ret;
+>
+> I was wondering if we also want to do:
+>
+> if (!is_cow_mappinng(vma->vm_flags))
+>     return 0;
+>
+> But likely it's not helpful.
+>
+Maybe it's enough to check if the VMA is VM_LOCKED?
+No performance degradation for most common scenarios.
+
+>
+> Then add something like:
+>
+> /*
+>  * We might have COW'ed a pageache folio and might now have an mlocked
+
+Nit: s/pageache/pagecache
+
+>  * anon folio mapped. The original pagecache folio is not mlocked and
+>  * might have been evicted. During a read+clear/modify/write update of
+>  * the PTE, such as done in do_numa_page()/change_pte_range(), we
+>  * temporarily clear the PTE under PT lock and might detect it here as
+>  * "none" when not holding the PT lock.
+>  *
+>  * Not rechecking the PTE under PT lock could result in an
+>  * unexpected major fault in an mlock'ed region. Recheck only for
+>  * this special scenario while holding the PT lock, to not degrade
+>  * non-mlocked scenarios.
+>  */
+>
+Thanks!
+
+I'll add these comments in the next version.
+
+>> +
+>> +    if (pmd_none(*vmf->pmd))
+>> +        return ret;
+>
+> I'd  simply return 0 in both cases, easier to read.
+>
+Agreed.
+
+>> +
+>> +    ptep = pte_offset_map_lock(vma->vm_mm, vmf->pmd, vmf->address,
+>> +                   &vmf->ptl);
+>> +    if (unlikely(!ptep))
+>> +        return VM_FAULT_NOPAGE;
+>> +
+>> +    if (unlikely(!pte_none(ptep_get(ptep))))
+>> +        ret = VM_FAULT_NOPAGE;
+>> +
+>> +    pte_unmap_unlock(ptep, vmf->ptl);
+>> +    return ret;
+>> +}
+>
 -- 
-2.43.0
+Best Regards,
+Peng
 
 
