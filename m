@@ -1,107 +1,185 @@
-Return-Path: <linux-kernel+bounces-87376-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87377-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8228786D395
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:46:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA97F86D399
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:46:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 228241F25F7F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:46:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CDE541C208CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:46:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FE0A13D316;
-	Thu, 29 Feb 2024 19:45:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C46413F443;
+	Thu, 29 Feb 2024 19:46:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="JyRjACOt"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="ifinzG2/"
+Received: from EUR02-DB5-obe.outbound.protection.outlook.com (mail-db5eur02on2076.outbound.protection.outlook.com [40.107.249.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E539144033;
-	Thu, 29 Feb 2024 19:45:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709235903; cv=none; b=nDeN1jZJyshkgypSE3oxKor5nqlfFAMztUlUrN/XSFbGEU99w5JbqpF6SwUK0+Ok33TJ5gaSu9qDraTeMbIn3QCYoE2rvK/q/Pv21uoOpB3P+308gOU+hwzZE5bMDlJu0g/FMgkEoubhKFdgDXJoYu+uuD8+kdC1vVl3/UjZdnI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709235903; c=relaxed/simple;
-	bh=SG+BNB9V12ilA2yy6/wOnUl0q+5MszvwNnI3Q2lsT4o=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=FWIBWTYwdXXNSpOrHL4/6UfP4osWcJYfl9KClrW9hHkP5qfYgF1S64sGAE/pRfGEY+NtzU3OWgXDR9EsOEU3pw2eYOB73ZM0YU3G3Yp+5e0toHQ3q2kE2Tkx9i+FspECGeGjUDJokeROhQwqO0Vp9SQgt+SSZpT7dXnr6aYTg1s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=JyRjACOt; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709235900;
-	bh=SG+BNB9V12ilA2yy6/wOnUl0q+5MszvwNnI3Q2lsT4o=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=JyRjACOtVwRIDyFZBlm2b3Sl2LfyksB2Ms9fxLyNNItBrhnxr34d180RyVl6uUdfP
-	 MhUQEdIH8Cg/gACRmnYYCkMPfc73kArD+znNzA0eG4+FpwxvapbgBJS9uPdy7xGrPk
-	 u0YCMYSSUk9ymTM2pID6BI+mVpkTKowhhbzaiR//U2xl4Bu9uxErv734g+ABfwo/nd
-	 X0PCPJ2m30eahQCpLxtRqqgzpjWZ/5iUSFSVXvQ8VKisJ6OlsKiTi9MUdmq5waCJ7/
-	 I8aO8mGRrY64EuxqlGIzROi8GqdcN1bLw/qp0yT0tOBjsb1D0hasoy7ak6FPL+Jlcf
-	 XIWu9Ak9T3Avw==
-Received: from [192.168.1.200] (zone.collabora.co.uk [167.235.23.81])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: nfraprado)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 9F1BF37820E2;
-	Thu, 29 Feb 2024 19:44:57 +0000 (UTC)
-From: =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>
-Date: Thu, 29 Feb 2024 14:44:31 -0500
-Subject: [PATCH 4/4] arm64: dts: mediatek: mt8195: Add missing
- gce-client-reg to mutex1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFAC9134411;
+	Thu, 29 Feb 2024 19:46:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.249.76
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709235980; cv=fail; b=koh2uPd468zj5DmVSRuRDgOhMVw0rjhTXHyHprCho+tpKqGVTZ6qAXuM1zdO0T1jEUWhBq/aoFLubktyN6wuUPZ2kwEEsxJiIFw6SKE9AfRGUqoIYZdP0KkuR94/iXpXRk7Ovxpn0noLtrJzfR3ar6KP/1EIXH4WovBeXVGn8os=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709235980; c=relaxed/simple;
+	bh=xcIPY6M2Sdn5SiPQKSOJ+bp+N8Wbftor6QM7jEuLcOU=;
+	h=From:To:Subject:Date:Message-Id:Content-Type:MIME-Version; b=XevDAwn32ylt6OB2zTfdWST6SOsr9KQGlFerBr+BybhfDptKB5WNYKVlpoIJA5JZe8l7hue+5gLvVP7zau4ChK5Fha7Jj4Fa6L2gWpMrA1SysCoZxYHwNf07D1i707xV5IM37dKCUvoZccK8Jhgy2ikBBMDFTK/TA5g7fB7QIvU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=ifinzG2/; arc=fail smtp.client-ip=40.107.249.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=G5JKIo9shbzjK6jnyUiOE0WmiDgn9JF9ii3IsGgxNBTwTxAO/fexldn5cYz/OO2uLrHOHZ+9v6yYbPqNGdAZREAZP3qfGSqENeTer8YLZopn3NKwgnuUsYutJE0LQ9Py4NfkoGPLorKDNtiQtv4vSTnl5cssG08lPlJ76jTysSZxehOCYG0gUT6hP3Zh+MARsYpS7Wqzjd7XdKG8+LYticm2kXWEhj6h7OSKPkMP79JbFwRCiW245T3PzBJ3pqyesd8vxMZx2+bRJu/5X/lTzk+17SSCOgMaKSQtHZeF2Mq06JKmmDt3ARh1uymWgzdFNxdVkUB56Ef+/rfeLj0+SQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=94Wsnbn3IwR5EvAEYoBxd7PI9/IApQorut/MNb1tbYk=;
+ b=L+9u3ju0stqZFVzrXocyrrlwn8PGhVgimoLFzfL0l/+rF21Zx+y9JNNLt0PaKFbXQXHn7TTN+ATR3O0Ay28WEVWQCqXanjdr3P7yBfmDuwliL0w5oYijQ5RMSkUzAz4EkkUULcEWXrLL9d5fhv/ZGyf1oBVBYua0Y0dTQT9sWBJvX7mRf3XTVAvrhLlpaDtH3jp95gfFKXA+Y6Nu1k97hRd8Wk9qzN5+HoYmdCZ+yByhQK9mgX/O0kAWfQCC+sSZfhnD+aeUSP5y7+EeXh5NG8AEftkd73HrLncpf7zCWEPo/38amFaRLFXbTxzGQ6tcom3CxxCe24f97ly2xwMFWQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=94Wsnbn3IwR5EvAEYoBxd7PI9/IApQorut/MNb1tbYk=;
+ b=ifinzG2/m32pO75G4PPh0ybV4EzaKc7NjXQ8TK531Qqf5T0Hpp+0K9/ef3VbeT7erA2WSUnv6gfaU/nMkn6TefLV2UgSlzxTS8zdv7pdMF4z/icABTVogCw2EaNB1wAyZzi2lZmMchEQspHopa4dhOYEP/3NQy5LPBrXKGGc8bY=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by AM8PR04MB7985.eurprd04.prod.outlook.com (2603:10a6:20b:234::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.32; Thu, 29 Feb
+ 2024 19:46:14 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::9af4:87e:d74:94aa]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::9af4:87e:d74:94aa%7]) with mapi id 15.20.7316.035; Thu, 29 Feb 2024
+ 19:46:14 +0000
+From: Frank Li <Frank.Li@nxp.com>
+To: Minghuan Lian <minghuan.Lian@nxp.com>,
+	Mingkai Hu <mingkai.hu@nxp.com>,
+	Roy Zang <roy.zang@nxp.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	=?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	linuxppc-dev@lists.ozlabs.org (open list:PCI DRIVER FOR FREESCALE LAYERSCAPE),
+	linux-pci@vger.kernel.org (open list:PCI DRIVER FOR FREESCALE LAYERSCAPE),
+	linux-arm-kernel@lists.infradead.org (moderated list:PCI DRIVER FOR FREESCALE LAYERSCAPE),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 1/1] PCI: layerscape(ep): Implement common 'dbi' reg-names for dbi_base
+Date: Thu, 29 Feb 2024 14:45:58 -0500
+Message-Id: <20240229194559.709182-1-Frank.Li@nxp.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BY5PR03CA0025.namprd03.prod.outlook.com
+ (2603:10b6:a03:1e0::35) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240229-gce-client-reg-add-missing-mt8192-95-v1-4-b12c233a8a33@collabora.com>
-References: <20240229-gce-client-reg-add-missing-mt8192-95-v1-0-b12c233a8a33@collabora.com>
-In-Reply-To: <20240229-gce-client-reg-add-missing-mt8192-95-v1-0-b12c233a8a33@collabora.com>
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
- Matthias Brugger <matthias.bgg@gmail.com>
-Cc: Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Allen-KH Cheng <allen-kh.cheng@mediatek.com>, 
- Tinghan Shen <tinghan.shen@mediatek.com>, 
- "Jason-JH.Lin" <jason-jh.lin@mediatek.com>, 
- "Nancy.Lin" <nancy.lin@mediatek.com>, kernel@collabora.com, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
- =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>
-X-Mailer: b4 0.13.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|AM8PR04MB7985:EE_
+X-MS-Office365-Filtering-Correlation-Id: 218ce07a-419d-47ca-b9f3-08dc395f1673
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	zR2fueHXiEdTV8ylaQ+fOYbm8ydSQ3UgLYONCzoz4MbvgAMaF3e3u5fXMFMdxn9jG2WnaBgDts/kI2J/btdq5enj7RMQCrTJATSqtpGQG5NzwSQUEPlXNX6yHMXPDh5cDc6A9F17eshDpsn9lfYy6feoOF1lnswcj1L365x4wNDAxWXldVvoDKh2xDx8zPS+8EOeWrdPlCpD9qtI2nkwGqq2bxlyfWme3a9+LZqBOhBUrp4gb5Tb1/kfZBLre023gVYnSeDCtAKepA4z+ITHIoujWA5AJK+Dock0LVqARtNWsWtglNsWzdPjuII8Xg8kdVcLlA4wBB2b3s6bbtYegt9HXlysCbTaXSTe3EXSAko4KrKTXvvAZ5rO1CuVVpuNGyA4p1SqbdR6JCQBebiM9ikecqU5IGp5W/XpbKQZ2Tya5Q5WB5pbyx5iP/DZ487aXEc/qZXtM2F4ua2RJ6IIn4EFpTfQfMBSHotCSgGhVzXQ9YyU8lmzADpQvqPk30yhEdkjZpTrQdoMrFUjz3kDpWIMQbDrqvOv6CbTsXeMXoUQ/FESz2VLH8ePnH0hyzlQTPLfxneNkZLCD1dR6b97w6s7NblVXknGf2mmYN68ZtE+XXzjgDiDimSeD6z7vZHUdkN2xPgksBINEhn7Qc87EMBD/sSfKkyF2NbJh7aQyeDnyrnFVD/xl5b9/A3EYYD2jEKtBdlUg2RYcwOIQgPJtUfedDsp+MfHMyFFT1+AlsU=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38350700005)(921011);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?whxdZmaV9b23zNuavIpkYjOVNKZa4tpW1jaqnsj88pgxjYtP2VfEElSFn8Ho?=
+ =?us-ascii?Q?afuBMlnXx7lazb/yxCQT1NhGXlliyH0UuqxGEnlBPi+ivNokWNTpbdzuZ+pb?=
+ =?us-ascii?Q?g+wqxg7yTgxIASyrrVi24wrbGiwBVgqC0kPOer9FhmOX/Kp0U6P/ttITCElO?=
+ =?us-ascii?Q?FeRnrO/zX1W67CPCTwXp9MW7JdvGMHlk62WW1C2nFbcD/+z5FeA8qTZPNxLH?=
+ =?us-ascii?Q?e6k+QfQhJ6Zd8ZVcGYUJkyb4Hd8REbY4m/vH/NFNrS7NzNxlg/x3vU0Sw+Dx?=
+ =?us-ascii?Q?05H46LqwMXTEogSAJcKZ0+Zy2l/LLxT7sWKPHYWfnNn0CeJpJf1muEca44N+?=
+ =?us-ascii?Q?0+Ly3UKQYJ6txkwF+k4aQnytLF+vkd7BFPAlmssiXwHlyf2+nREnmfKWiljm?=
+ =?us-ascii?Q?d1Hyd22w6uuGnuosv9aMmm7gFrXwQrDXwy+PFJ+wOFwyl7u0v0btiBEmcFZF?=
+ =?us-ascii?Q?C5R2PujGdO3RoSGEy/951CYOs4YR74JWu2nbhSbxq6trSr7chcN+FMb3XOyy?=
+ =?us-ascii?Q?TStfwk5txAfX2xm611nHapVaYDj4j4kAsh1XL8JYbDWyvMg+8BqOeEiSqQsv?=
+ =?us-ascii?Q?bcof5FYL2wu+DD4MnpHXQtA/1uz0Zo4/4n2FTFxMn80DOIg9e86cTDYetK7a?=
+ =?us-ascii?Q?clcOXwBBG1+OMsfEemcnMyn5pmOdY6ZbpSu0L+uqQsDTn45ok7dbOyRtQFRC?=
+ =?us-ascii?Q?n9Tbl934xCO8jg/fIN6ywGmDPNtUPDWQf+2PI9puC1thIZ4eoEYS5uu95KgY?=
+ =?us-ascii?Q?gm1WpWCL12lJFFu7XN/AEMDFBqbyaEHisTTMMbu7k7GuCHS+znw1k6fOuc4+?=
+ =?us-ascii?Q?QS6OhgGbJwUsf5cLhh4zNGUr7Tm1CfFjP53mE2W+7FEb3McxCNRJ0l9x4c3G?=
+ =?us-ascii?Q?Kd6rhgQQgA/RzCAZ/OwRh8MzJJCi7kKzGMOyCCutFckHLvAR/uoi0OrhoqCE?=
+ =?us-ascii?Q?OysCeX9/+uwKpxEyIN831UcAODxfl/hCMdMiChNTuN/HJ45nBWfVBdz8A15a?=
+ =?us-ascii?Q?tEnAoppT/3+gM02ZhuroDE0fL7lwKB42KtSwjlP7ErohBdCgi6OA/0fMIGa2?=
+ =?us-ascii?Q?c1usaBdwmdVAFTTO91DHiVpAvxbkgeZblYjnNcFbD7II8T3A4T0D0gxUlrFt?=
+ =?us-ascii?Q?F78SMKVkPJw4zjGa/d9iUis+dt34kAWP/A9wjbBkHgbBXbioTMB0AHPcxtfr?=
+ =?us-ascii?Q?qmcosB4wexBvB7SvPC2raaxd83ArDH4SeTSPcTIykbgjc6w4hl2KUv3TBGOY?=
+ =?us-ascii?Q?8B4bFlonsL2ybJAL5BK7awE4vwl1/8gns4HBH9HnzhxgRFT5FaRHPK2MsM7W?=
+ =?us-ascii?Q?BU8X33VrVlVHwKwpuqHyy9JiJePOsHVKkNcNu/elCVul3qe6YHxKCavmCMSy?=
+ =?us-ascii?Q?5NRck68F8AiMJXtNlZbsrXlWGtjyUUD2DQhdooyOgi4hhj5rLxJ+W1D2nPfa?=
+ =?us-ascii?Q?uozitMxD8zpSN2oarLeUb1FifjMSkPu3Yt3rw33z7z1geKcRAyA2Ua4wcSZ+?=
+ =?us-ascii?Q?XfvtqduC8sRxNZq+N1Bmn0xPHz/qWMmF2tVN++ghSnwdImj6FW6slMcT2hIB?=
+ =?us-ascii?Q?subgBEruWHpQAuQtoBsAWtUIRtwMD7z4nZFKL+rA?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 218ce07a-419d-47ca-b9f3-08dc395f1673
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Feb 2024 19:46:14.2570
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: a/6NUmowVVpfrLT7Dx+uU7Bt/4hYCyu4nzlJ3zLxPPapma4HPKMmBZ3A9X8Mh5wIWATVYVLBdUanXgkE6ADUeA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR04MB7985
 
-Add the missing mediatek,gce-client-reg property to the mutex1 node to
-allow it to use the GCE. This prevents the "can't parse gce-client-reg
-property" error from being printed and should result in better
-performance.
+Apply 'dbi' as the primary name for dbi_base register space in line with
+Designware common binding. Attempt resource acquisition using 'dbi' first
+via platform_get_resource_byname(). If encountering older device tree
+files, gracefully fallback to 'regs', issuing a warning message.
 
-Fixes: 92d2c23dc269 ("arm64: dts: mt8195: add display node for vdosys1")
-Suggested-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+Signed-off-by: Frank Li <Frank.Li@nxp.com>
 ---
- arch/arm64/boot/dts/mediatek/mt8195.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/pci/controller/dwc/pci-layerscape-ep.c | 7 ++++++-
+ drivers/pci/controller/dwc/pci-layerscape.c    | 7 ++++++-
+ 2 files changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8195.dtsi b/arch/arm64/boot/dts/mediatek/mt8195.dtsi
-index fd074103979c..5d8b68f86ce4 100644
---- a/arch/arm64/boot/dts/mediatek/mt8195.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8195.dtsi
-@@ -3335,6 +3335,7 @@ mutex1: mutex@1c101000 {
- 			power-domains = <&spm MT8195_POWER_DOMAIN_VDOSYS1>;
- 			clocks = <&vdosys1 CLK_VDO1_DISP_MUTEX>;
- 			clock-names = "vdo1_mutex";
-+			mediatek,gce-client-reg = <&gce0 SUBSYS_1c10XXXX 0x1000 0x1000>;
- 			mediatek,gce-events = <CMDQ_EVENT_VDO1_STREAM_DONE_ENG_0>;
- 		};
+diff --git a/drivers/pci/controller/dwc/pci-layerscape-ep.c b/drivers/pci/controller/dwc/pci-layerscape-ep.c
+index 1f6ee1460ec2a..92d4750611d07 100644
+--- a/drivers/pci/controller/dwc/pci-layerscape-ep.c
++++ b/drivers/pci/controller/dwc/pci-layerscape-ep.c
+@@ -259,7 +259,12 @@ static int __init ls_pcie_ep_probe(struct platform_device *pdev)
+ 	pcie->pci = pci;
+ 	pcie->ls_epc = ls_epc;
  
-
+-	dbi_base = platform_get_resource_byname(pdev, IORESOURCE_MEM, "regs");
++	dbi_base = platform_get_resource_byname(pdev, IORESOURCE_MEM, "dbi");
++	if (!dbi_base) {
++		dev_warn(dev, "Please update your dtb, reg-names 'regs' should be 'dbi'");
++		dbi_base = platform_get_resource_byname(pdev, IORESOURCE_MEM, "regs");
++	}
++
+ 	pci->dbi_base = devm_pci_remap_cfg_resource(dev, dbi_base);
+ 	if (IS_ERR(pci->dbi_base))
+ 		return PTR_ERR(pci->dbi_base);
+diff --git a/drivers/pci/controller/dwc/pci-layerscape.c b/drivers/pci/controller/dwc/pci-layerscape.c
+index ee6f525681337..1985086f6a1f3 100644
+--- a/drivers/pci/controller/dwc/pci-layerscape.c
++++ b/drivers/pci/controller/dwc/pci-layerscape.c
+@@ -345,7 +345,12 @@ static int ls_pcie_probe(struct platform_device *pdev)
+ 	pcie->pci = pci;
+ 	pci->pp.ops = pcie->drvdata->ops;
+ 
+-	dbi_base = platform_get_resource_byname(pdev, IORESOURCE_MEM, "regs");
++	dbi_base = platform_get_resource_byname(pdev, IORESOURCE_MEM, "dbi");
++	if (!dbi_base) {
++		dev_err(dev, "Please update your dtb, reg-names 'regs' should be 'dbi'");
++		dbi_base = platform_get_resource_byname(pdev, IORESOURCE_MEM, "regs");
++	}
++
+ 	pci->dbi_base = devm_pci_remap_cfg_resource(dev, dbi_base);
+ 	if (IS_ERR(pci->dbi_base))
+ 		return PTR_ERR(pci->dbi_base);
 -- 
-2.44.0
+2.34.1
 
 
