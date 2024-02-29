@@ -1,169 +1,116 @@
-Return-Path: <linux-kernel+bounces-86714-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86715-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D847186C97D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:50:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC49386C982
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:52:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 083501C20C06
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:50:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59525288785
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:52:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A62847D405;
-	Thu, 29 Feb 2024 12:50:38 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C5777A72D;
-	Thu, 29 Feb 2024 12:50:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACC647E0F9;
+	Thu, 29 Feb 2024 12:52:15 +0000 (UTC)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E83A07D3EB;
+	Thu, 29 Feb 2024 12:52:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709211038; cv=none; b=YhE2iZ2Xq2hDBowoayzX5fzGELg1pojrd0gW8N+D0uVaZMjFdbNk0KpPw0UTefXXDpPTynufw3DowixQVzXGcNWbCTpdUdu4ScSAS+Nhf6TLP6P038IxSeeffz4kLSomYahkRNLCC4e9cLBXEghNTXpXjdMLDCL+xMBA0XGj1FI=
+	t=1709211135; cv=none; b=ERBmj5iDJjF8BiE/XPB70+g8kBVHHFbSXgbV6iu8xgpdn3BcahnFFQ2h7tx43RrxP2S+6umPgc5uj8NKfEc21jvFoLQootToM7KtTXlfXQ2ZCIzmGrk1GGHI6HTfWXMbbcCndi4kq05sv0kaGOy9ID7/BNj4EdWydhRuAUZQ3AM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709211038; c=relaxed/simple;
-	bh=v4Z+oXuXx0D5jdKPs8wfHh7ousIZoYSShg2LKWjb2ZA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CzHs0DA5BjzmXAEIDgPFEW2wfpW/JWnuk1/U+cesxY9GijMr+5UqjdEOyvPjGNRsDOWAQbxAX7Abwt7V+MaoBCjeYoEXWI0/j6OFv4z4nZ23l8cXwSjn2GeCOMHN2OfH/GbTgIlL8CN1ze5Rgdp3xLhvvOWvp4fdsNq7oAbrUYs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D44CB1FB;
-	Thu, 29 Feb 2024 04:51:13 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.67.138])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D29AD3F762;
-	Thu, 29 Feb 2024 04:50:29 -0800 (PST)
-Date: Thu, 29 Feb 2024 12:50:24 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc: Anshuman Khandual <anshuman.khandual@arm.com>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	will@kernel.org, catalin.marinas@arm.com,
-	Mark Brown <broonie@kernel.org>, James Clark <james.clark@arm.com>,
-	Rob Herring <robh@kernel.org>, Marc Zyngier <maz@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	linux-perf-users@vger.kernel.org,
-	Oliver Upton <oliver.upton@linux.dev>,
-	James Morse <james.morse@arm.com>, kvmarm@lists.linux.dev
-Subject: Re: [PATCH V16 2/8] KVM: arm64: Prevent guest accesses into BRBE
- system registers/instructions
-Message-ID: <ZeB9kHheAGJ__TQU@FVFF77S0Q05N>
-References: <20240125094119.2542332-1-anshuman.khandual@arm.com>
- <20240125094119.2542332-3-anshuman.khandual@arm.com>
- <ZdYCUi9YVDNDz7fr@FVFF77S0Q05N>
- <ab50e67e-3d06-4ba7-a5f8-4684e9ef98a4@arm.com>
- <Zd2zy0oUk8XvoDJM@FVFF77S0Q05N>
- <b134c30d-d855-41bb-a260-9f6437b77697@arm.com>
- <62e64ddd-266c-414e-b66a-8ca94f3c2bbf@arm.com>
+	s=arc-20240116; t=1709211135; c=relaxed/simple;
+	bh=kb07Bofn5YvOT4z4iZNaMpVFkUQyAqY/FdzZob/hJ6s=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=JFXUsgwPDP+bo0E205GBmp4OlSPCAmhpVjQ4R4uWekSLba4JMt/qieVArjbJfu9bSBjX15Vun1GAprFOKF++/Dw6Wp4YJzVacTyW3oiEeDPZIIJvqR4zHdy+ry//pPYZ4nqL2y7iFAlLDQEnBRTiYqRHrm9Ua0iwtG7RfvIgle8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Tlrff5y2FzpVXm;
+	Thu, 29 Feb 2024 20:50:18 +0800 (CST)
+Received: from kwepemm600003.china.huawei.com (unknown [7.193.23.202])
+	by mail.maildlp.com (Postfix) with ESMTPS id EEBBB1404DB;
+	Thu, 29 Feb 2024 20:52:08 +0800 (CST)
+Received: from dggpemm500008.china.huawei.com (7.185.36.136) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 29 Feb 2024 20:52:08 +0800
+Received: from dggpemm500008.china.huawei.com ([7.185.36.136]) by
+ dggpemm500008.china.huawei.com ([7.185.36.136]) with mapi id 15.01.2507.035;
+ Thu, 29 Feb 2024 20:52:08 +0800
+From: wangyunjian <wangyunjian@huawei.com>
+To: Paolo Abeni <pabeni@redhat.com>, "mst@redhat.com" <mst@redhat.com>,
+	"willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>,
+	"jasowang@redhat.com" <jasowang@redhat.com>, "kuba@kernel.org"
+	<kuba@kernel.org>, "bjorn@kernel.org" <bjorn@kernel.org>,
+	"magnus.karlsson@intel.com" <magnus.karlsson@intel.com>,
+	"maciej.fijalkowski@intel.com" <maciej.fijalkowski@intel.com>,
+	"jonathan.lemon@gmail.com" <jonathan.lemon@gmail.com>, "davem@davemloft.net"
+	<davem@davemloft.net>
+CC: "bpf@vger.kernel.org" <bpf@vger.kernel.org>, "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"virtualization@lists.linux.dev" <virtualization@lists.linux.dev>, xudingke
+	<xudingke@huawei.com>, "liwei (DT)" <liwei395@huawei.com>
+Subject: RE: [PATCH net-next v2 1/3] xsk: Remove non-zero 'dma_page' check in
+ xp_assign_dev
+Thread-Topic: [PATCH net-next v2 1/3] xsk: Remove non-zero 'dma_page' check in
+ xp_assign_dev
+Thread-Index: AQHaajYJnbtzT7JgCU+QOT7x4zY88rEgnaQAgACpFNA=
+Date: Thu, 29 Feb 2024 12:52:08 +0000
+Message-ID: <55ef319de7084614b1883018f69de1eb@huawei.com>
+References: <1709118325-120336-1-git-send-email-wangyunjian@huawei.com>
+ <75b6f7686c03519a1aaeb461618070747890143b.camel@redhat.com>
+In-Reply-To: <75b6f7686c03519a1aaeb461618070747890143b.camel@redhat.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <62e64ddd-266c-414e-b66a-8ca94f3c2bbf@arm.com>
 
-Hi Suzuki,
-
-On Thu, Feb 29, 2024 at 11:45:08AM +0000, Suzuki K Poulose wrote:
-> On 27/02/2024 11:13, Anshuman Khandual wrote:
-> > On 2/27/24 15:34, Mark Rutland wrote:
-> > > On Fri, Feb 23, 2024 at 12:58:48PM +0530, Anshuman Khandual wrote:
-> > > > On 2/21/24 19:31, Mark Rutland wrote:
-> > > > > On Thu, Jan 25, 2024 at 03:11:13PM +0530, Anshuman Khandual wrote:
-> > > > > > Currently BRBE feature is not supported in a guest environment. This hides
-> > > > > > BRBE feature availability via masking ID_AA64DFR0_EL1.BRBE field.
-> > > > > 
-> > > > > Does that means that a guest can currently see BRBE advertised in the
-> > > > > ID_AA64DFR0_EL1.BRB field, or is that hidden by the regular cpufeature code
-> > > > > today?
-> > > > 
-> > > > IIRC it is hidden, but will have to double check. When experimenting for BRBE
-> > > > guest support enablement earlier, following changes were need for the feature
-> > > > to be visible in ID_AA64DFR0_EL1.
-> > > > 
-> > > > diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> > > > index 646591c67e7a..f258568535a8 100644
-> > > > --- a/arch/arm64/kernel/cpufeature.c
-> > > > +++ b/arch/arm64/kernel/cpufeature.c
-> > > > @@ -445,6 +445,7 @@ static const struct arm64_ftr_bits ftr_id_mmfr0[] = {
-> > > >   };
-> > > >   static const struct arm64_ftr_bits ftr_id_aa64dfr0[] = {
-> > > > +       S_ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_EL1_BRBE_SHIFT, 4, ID_AA64DFR0_EL1_BRBE_IMP),
-> > > >          S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_EL1_DoubleLock_SHIFT, 4, 0),
-> > > >          ARM64_FTR_BITS(FTR_HIDDEN, FTR_NONSTRICT, FTR_LOWER_SAFE, ID_AA64DFR0_EL1_PMSVer_SHIFT, 4, 0),
-> > > >          ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_EL1_CTX_CMPs_SHIFT, 4, 0),
-> > > > 
-> > > > Should we add the following entry - explicitly hiding BRBE from the guest
-> > > > as a prerequisite patch ?
-> 
-> This has nothing to do with the Guest visibility of the BRBE. This is
-> specifically for host "userspace" (via MRS emulation).
-> 
-> > > > 
-> > > > S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_EL1_BRBE_SHIFT, 4, ID_AA64DFR0_EL1_BRBE_NI)
-> > > 
-> > > Is it visbile currently, or is it hidden currently?
-> > > 
-> > > * If it is visible before this patch, that's a latent bug that we need to go
-> > >    fix first, and that'll require more coordination.
-> > > 
-> > > * If it is not visible before this patch, there's no problem in the code, but
-> > >    the commit message needs to explicitly mention that's the case as the commit
-> > >    message currently implies it is visible by only mentioning hiding it.
-> > > 
-> > > ... so can you please double check as you suggested above? We should be able to
-> > > explain why it is or is not visible today.
-> > 
-> > It is currently hidden i.e following code returns 1 in the host
-> > but returns 0 inside the guest.
-> > 
-> > aa64dfr0 = read_sysreg_s(SYS_ID_AA64DFR0_EL1);
-> > brbe = cpuid_feature_extract_unsigned_field(aa64dfr0, ID_AA64DFR0_EL1_BRBE_SHIFT);
-> > 
-> > Hence - will update the commit message here as suggested.
-> 
-> This is by virtue of the masking we do in the kvm/sysreg.c below.
-
-Yep, once this patch is applied.
-
-I think we might have some crossed wires here; I'm only really asking for the
-commit message (and title) to be updated and clarified.
-
-Ignoring the patchlet above, and just considering the original patch:
-
-IIUC before the patch is applied, the ID_AA64DFR0_EL1.BRBE field is zero for
-the guest because we don't have an arm64_ftr_bits entry for the
-ID_AA64DFR0_EL1.BRBE field, and so init_cpu_ftr_reg() will leave that as zero
-in arm64_ftr_reg::sys_val, and hence when read_sanitised_id_aa64dfr0_el1()
-calls read_sanitised_ftr_reg(SYS_ID_AA64DFR0_EL1), the BRBE field will be zero.
-
-This series as-is doesn't add an arm64_ftr_bits entry for ID_AA64DFR0_EL1.BRBE,
-so it'd still be hidden from a guest regardless of whether we add explicit
-masking in read_sanitised_id_aa64dfr0_el1(). The reason to add that masking is
-to be explicit, so that if/when we add an arm64_ftr_bits entry for
-ID_AA64DFR0_EL1.BRBE, it isn't exposed to a guest unexpectedly.
-
-Similarly, IIUC the BRBE register accesses are *already* trapped, and
-emulate_sys_reg() will log a warning an inject an UNDEFINED exception into the
-guest if the guest tries to access the BRBE registers. Any well-behaved guest
-*shouldn't* do that, but a poorly-behaved guest could do that and (slowly) spam
-dmesg with messages about the unhandled sysreg traps. The reasons to handle
-thos regs is largely to suppress that warning, and to make it clear that we
-intend for those to be handled as undef.
-
-So the commit title should be something like:
-
-  KVM: arm64: explicitly handle BRBE register accesses as UNDEFINED
-
-.. and the message should mention the key points from the above.
-
-Suzuki, does that sound right to you?
-
-Anshuman, can you go re-write the commit message with that in mind?
-
-Mark.
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBQYW9sbyBBYmVuaSBbbWFpbHRv
+OnBhYmVuaUByZWRoYXQuY29tXQ0KPiBTZW50OiBUaHVyc2RheSwgRmVicnVhcnkgMjksIDIwMjQg
+Njo0MyBQTQ0KPiBUbzogd2FuZ3l1bmppYW4gPHdhbmd5dW5qaWFuQGh1YXdlaS5jb20+OyBtc3RA
+cmVkaGF0LmNvbTsNCj4gd2lsbGVtZGVicnVpam4ua2VybmVsQGdtYWlsLmNvbTsgamFzb3dhbmdA
+cmVkaGF0LmNvbTsga3ViYUBrZXJuZWwub3JnOw0KPiBiam9ybkBrZXJuZWwub3JnOyBtYWdudXMu
+a2FybHNzb25AaW50ZWwuY29tOyBtYWNpZWouZmlqYWxrb3dza2lAaW50ZWwuY29tOw0KPiBqb25h
+dGhhbi5sZW1vbkBnbWFpbC5jb207IGRhdmVtQGRhdmVtbG9mdC5uZXQNCj4gQ2M6IGJwZkB2Z2Vy
+Lmtlcm5lbC5vcmc7IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmc7DQo+IGxpbnV4LWtlcm5lbEB2Z2Vy
+Lmtlcm5lbC5vcmc7IGt2bUB2Z2VyLmtlcm5lbC5vcmc7DQo+IHZpcnR1YWxpemF0aW9uQGxpc3Rz
+LmxpbnV4LmRldjsgeHVkaW5na2UgPHh1ZGluZ2tlQGh1YXdlaS5jb20+OyBsaXdlaSAoRFQpDQo+
+IDxsaXdlaTM5NUBodWF3ZWkuY29tPg0KPiBTdWJqZWN0OiBSZTogW1BBVENIIG5ldC1uZXh0IHYy
+IDEvM10geHNrOiBSZW1vdmUgbm9uLXplcm8gJ2RtYV9wYWdlJyBjaGVjayBpbg0KPiB4cF9hc3Np
+Z25fZGV2DQo+IA0KPiBPbiBXZWQsIDIwMjQtMDItMjggYXQgMTk6MDUgKzA4MDAsIFl1bmppYW4g
+V2FuZyB3cm90ZToNCj4gPiBOb3cgZG1hIG1hcHBpbmdzIGFyZSB1c2VkIGJ5IHRoZSBwaHlzaWNh
+bCBOSUNzLiBIb3dldmVyIHRoZSB2TklDIG1heWJlDQo+ID4gZG8gbm90IG5lZWQgdGhlbS4gU28g
+cmVtb3ZlIG5vbi16ZXJvICdkbWFfcGFnZScgY2hlY2sgaW4NCj4gPiB4cF9hc3NpZ25fZGV2Lg0K
+PiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogWXVuamlhbiBXYW5nIDx3YW5neXVuamlhbkBodWF3ZWku
+Y29tPg0KPiA+IC0tLQ0KPiA+ICBuZXQveGRwL3hza19idWZmX3Bvb2wuYyB8IDcgLS0tLS0tLQ0K
+PiA+ICAxIGZpbGUgY2hhbmdlZCwgNyBkZWxldGlvbnMoLSkNCj4gPg0KPiA+IGRpZmYgLS1naXQg
+YS9uZXQveGRwL3hza19idWZmX3Bvb2wuYyBiL25ldC94ZHAveHNrX2J1ZmZfcG9vbC5jIGluZGV4
+DQo+ID4gY2U2MGVjZDQ4YTRkLi5hNWFmNzViMWY0M2MgMTAwNjQ0DQo+ID4gLS0tIGEvbmV0L3hk
+cC94c2tfYnVmZl9wb29sLmMNCj4gPiArKysgYi9uZXQveGRwL3hza19idWZmX3Bvb2wuYw0KPiA+
+IEBAIC0yMTksMTYgKzIxOSw5IEBAIGludCB4cF9hc3NpZ25fZGV2KHN0cnVjdCB4c2tfYnVmZl9w
+b29sICpwb29sLA0KPiA+ICAJaWYgKGVycikNCj4gPiAgCQlnb3RvIGVycl91bnJlZ19wb29sOw0K
+PiA+DQo+ID4gLQlpZiAoIXBvb2wtPmRtYV9wYWdlcykgew0KPiA+IC0JCVdBUk4oMSwgIkRyaXZl
+ciBkaWQgbm90IERNQSBtYXAgemVyby1jb3B5IGJ1ZmZlcnMiKTsNCj4gPiAtCQllcnIgPSAtRUlO
+VkFMOw0KPiA+IC0JCWdvdG8gZXJyX3VucmVnX3hzazsNCj4gPiAtCX0NCj4gDQo+IFRoaXMgd291
+bGQgdW5jb25kaXRpb25hbGx5IHJlbW92ZSBhbiBvdGhlcndpc2UgdmFsaWQgY2hlY2sgZm9yIG1v
+c3QgTklDLiBXaGF0DQo+IGFib3V0IGxldCB0aGUgZHJpdmVyIGRlY2xhcmUgaXQgd29udCBuZWVk
+IERNQSBtYXAgd2l0aCBhDQo+IChwb29sPykgZmxhZy4NCg0KVGhpcyBjaGVjayBpcyByZWR1bmRh
+bnQuIFRoZSBOSUMncyBkcml2ZXIgZGV0ZXJtaW5lcyB3aGV0aGVyIGEgRE1BIG1hcCBpcyByZXF1
+aXJlZC4NCklmIHRoZSBOSUMnZHJpdmVyIHJlcXVpcmVzIHRoZSBETUEgbWFwLCBpdCB1c2VzIHRo
+ZSB4c2tfcG9vbF9kbWFfbWFwIGZ1bmN0aW9uLCB3aGljaA0KaW5pdGlhbGl6ZXMgdGhlIERNQSBt
+YXAgYW5kIHBlcmZvcm1zIGEgY2hlY2suDQoNClRoYW5rcw0KDQo+IA0KPiBDaGVlcnMsDQo+IA0K
+PiBQYW9sbw0KDQo=
 
