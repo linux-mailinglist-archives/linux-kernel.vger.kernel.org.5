@@ -1,141 +1,206 @@
-Return-Path: <linux-kernel+bounces-86039-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86040-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CC3D86BED8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 03:16:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8072B86BEDD
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 03:18:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DEA621F24186
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 02:16:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 206571F222F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 02:18:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 465B436B16;
-	Thu, 29 Feb 2024 02:16:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SzubYY1D"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C095A37149;
+	Thu, 29 Feb 2024 02:17:55 +0000 (UTC)
+Received: from CHN02-BJS-obe.outbound.protection.partner.outlook.cn (mail-bjschn02on2097.outbound.protection.partner.outlook.cn [139.219.17.97])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 875F236B00;
-	Thu, 29 Feb 2024 02:16:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709172988; cv=none; b=Y5zERrmrroRrqfEsy+e0rhpp+1eZvCJW+ZcwRo42F7yfsKKZapg6xv8/NZo9TtuwjH9UovVWmNktEV5NeLkpZUVC5k/S903wy3SuM9BXlgWe6ZmNF2nP7CZgyN4OuFl4D7BzdruXxp1IA0Wugha6UjE53MRMEN+hfQY9N/gAQcU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709172988; c=relaxed/simple;
-	bh=YREW50Mm9XizXo3Vg/YslHDwW+mx1PNC7jtuWaFg0Og=;
-	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
-	 Subject:From:Cc:To:Date; b=NEmXu1dQlOD5TQ+otfNa5xHCvHN3bkmI9877gE2MWtfFnnWP0J0nf0c8+ekL0/OOwM+hG8YOFslJqvy5bmTRDorWobEt0WhQUMsZAsUUpJ4kmm8c3RbAko2dNTb6GIC+31jHxfp/FN5bE3AoXypCwgQS41g8+TKKvPBSD4QJzGw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SzubYY1D; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05B4BC43390;
-	Thu, 29 Feb 2024 02:16:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709172987;
-	bh=YREW50Mm9XizXo3Vg/YslHDwW+mx1PNC7jtuWaFg0Og=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=SzubYY1DA+zhhrxp2Mg+Lfzw2OlCQL7NDf0xc1Tem4Nyoahhnnn0Yv5jnWdiQZLgV
-	 lryrljDAnssddQ4XoFhjBM0NVLBIHz6ijKMKhHDSEwIphU2sMRUEKuKxqlVwl7SlBs
-	 s1N2ySkzySaHatpuow//fODH/lcrgCgvGNOoWsGmZ8aneHzx+EwVlHiNkbdOkLMsuA
-	 KnYmfwZj59tx46ceWYi6FRtHzd1oy8J1aalOiut2k7cyOMirHZ/wE28IU5EKxAlFln
-	 Nl1TLXlRsuwZd/T49d4UbwOPfLAwaNvZLtxSR5Nm3t3j8QU4lolDuMFX7HCSYpchuu
-	 5fjFHxwd7O5cA==
-Message-ID: <e4c1e89450aa91ec684a48797bb5d132.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53341364A4;
+	Thu, 29 Feb 2024 02:17:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.17.97
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709173075; cv=fail; b=KkvQE57Y7HXqLfQAMVMErR3+Krq1wtJexUkt9xb7Ixkzf25OBhGnfoSnBCY9SU3QFQMflzhAZEvYBmKC6gXLsMS8KHY1gdrnTfXKqGUVQdTqu7xG6ke4xS7jA7mH99QI3iz3VNwwavSmrJgpUswmVP/gtSIT5DrTVfHQkvZDkoY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709173075; c=relaxed/simple;
+	bh=RZfN/X+Q0LUglOUjXxII0368Pq/yfAkOGSo0VmIjgn0=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=Y9rMP00KEfuHzsEgjZTiUIgLjlBOHLSj8Qb6CxAnYihv3tykwaFtbsPQ8sjbm1z/hYsdfJ+9hICzt03jOrOQGNAshcjZhBr7LV7+zEcF+jGjPyHGxhN4rH5LiP9eDpko3BUcIMJ58mE/eJPXmpOsHQ/SRQnoJPlbFrzXX2uVZcI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.17.97
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KwIIJ3gq742xLWYkY510cIel5fE5HA90P73CQKXYKwp5yBalv7CxB9inxi53Ez+NfwNRNNJG9/1ZsChy9fXyzZGxWwSQVpkOgFX0e0Q1zB6r1kF75MoBmuZBX6fLDU/OuB+yV/4cH69Xv0wGH4D4A4JZgM3QqZpWT16JkRxh5mvFHWex0ALSzeAtlRscF6HMLTko01/VjOM6p8c/31zuNM8TopPSi+323mGk9B812tgI1GrmIw400p/bwKmNB+iSK0D6InzrbZpNSwWI1lVhkT3//wIfGfvPpIWnVaqqw7vOBJkL9KiINeL4FadqpOFku/SEFErk4MoxdB8i6bbd6Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=CMZ4/XzeMZtL+3FZoUozKvX5yechUjquXIcNUdeKDdc=;
+ b=MZTDox8tm2bzizu8qRDJ3s/j5v+BJIT8fF9KRS4v4NDfH8VbalK208SwerGxWCnAmPbZD6WtsVwixjeC7MTp3QpMYrv3LBfq1H/Vc6vC20auK7cHOEipnLn2c7yPQRIT7VZvFJDIjQvtdOR7xY6igEneBsuT7J69RCexkIpsr5714a/F6+KrKclPH1DxuVrEXzNDAoIGrJex4CE9GV7+ThC+yqWpVCpXFXqlDGG0+RTnbkNHKowgGjM46gV+G3zBtamIxKTyacS9peaNBCUlGFPHp2hc9kvobCH/ZPboNUctf26SHoos5BwmXblQxMzsTwYYs+/8JYnuK9r6bRMIXA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=starfivetech.com; dmarc=pass action=none
+ header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
+Received: from SHXPR01MB0670.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c311:26::16) by SHXPR01MB0781.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c311:27::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.28; Thu, 29 Feb
+ 2024 02:17:41 +0000
+Received: from SHXPR01MB0670.CHNPR01.prod.partner.outlook.cn
+ ([fe80::9ffd:1956:b45a:4a5d]) by
+ SHXPR01MB0670.CHNPR01.prod.partner.outlook.cn ([fe80::9ffd:1956:b45a:4a5d%6])
+ with mapi id 15.20.7249.041; Thu, 29 Feb 2024 02:17:41 +0000
+From: JiaJie Ho <jiajie.ho@starfivetech.com>
+To: 'Rob Herring' <robh@kernel.org>
+CC: 'Herbert Xu' <herbert@gondor.apana.org.au>, "'David S . Miller'"
+	<davem@davemloft.net>, 'Krzysztof Kozlowski'
+	<krzysztof.kozlowski+dt@linaro.org>, 'Conor Dooley' <conor+dt@kernel.org>,
+	'Eugeniy Paltsev' <Eugeniy.Paltsev@synopsys.com>, 'Vinod Koul'
+	<vkoul@kernel.org>, "'linux-crypto@vger.kernel.org'"
+	<linux-crypto@vger.kernel.org>, "'devicetree@vger.kernel.org'"
+	<devicetree@vger.kernel.org>, "'linux-kernel@vger.kernel.org'"
+	<linux-kernel@vger.kernel.org>, "'dmaengine@vger.kernel.org'"
+	<dmaengine@vger.kernel.org>
+Subject: RE: [PATCH v3 1/6] dt-bindings: crypto: starfive: Add jh8100 support
+Thread-Topic: [PATCH v3 1/6] dt-bindings: crypto: starfive: Add jh8100 support
+Thread-Index: AQHaaZtYk3iqPNzLJ0a1+9ODjrwyHrEf6LEAgACucSA=
+Date: Thu, 29 Feb 2024 02:17:41 +0000
+Message-ID:
+ <SHXPR01MB067062096D7EE6FB5F9305C58A5FA@SHXPR01MB0670.CHNPR01.prod.partner.outlook.cn>
+References: <20240227163758.198133-1-jiajie.ho@starfivetech.com>
+ <20240227163758.198133-2-jiajie.ho@starfivetech.com>
+ <20240228155112.GA4059153-robh@kernel.org>
+In-Reply-To: <20240228155112.GA4059153-robh@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=starfivetech.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SHXPR01MB0670:EE_|SHXPR01MB0781:EE_
+x-ms-office365-filtering-correlation-id: 786ed7f3-1566-4fc7-6350-08dc38cc9bb9
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ JGOsJPPrMjeMjnOVof4y0wfeF5Q7CYzxNyYtg6UQVD476qYUejdsx4PPunH87pokeN87d/HZJkTvr5Yj4kI/7Txd3MHzw5O6x0k+gOKpxVRnd3QRKQjVcxDxoBy3m8MHrm+wNBaQi73/QjEetle7ghSd411k86G5dXRLuH9fsJ1RRslwEt1E6TqiNxHwgiNoZkqcWg8jBdp8sVYIfmiV/L7Z8/fF6qdWoUan1lDoJOUDmcAnkdWe3FQGvOay4Mwsbslw/Znmw8E2CUf+WDMsDuNt1JTY0xqcQvWZYXP/adnJep9JI6jJnlJ/98GrYqxGPGAVuTPWco6ewyDs57gvIeIKhFne0WxkW0/6hV5LyTWU6W53+1bC/KZ2ydjlV1bu7A0qCh7D32fFL9AwvWrGuJ71x7JH4F8jMh0BWOuhkX/kCgvLYjMd+l3UWWGZiFRujak223FBoLOFGy2lAGeXv0YgQtrXgfDHErEZrihZEKhpHKOEs419hG/sRjA+rkjm6E3Z+RI2rdVNnBec/rbZCHRljU3GGpzvU4MAAuSKt6ZYaQxoVcN0M2ttwwGDi5cVg6t0A/EZZSsFEdzxmAJ7uwVvjYymzBiD0tV1LdwPmt4zpCk07cUnsVz9gY/OWFAy
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SHXPR01MB0670.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?9DdpxgIOwP7wTnbwhLekxn97SOA3zUUxqe1SKoztwIcVdmhsMMNqfintq8H3?=
+ =?us-ascii?Q?QwDb3EKPfTa74Vazx6iHp1tHtczz+1izfb3fhFlYf3+lnPjuPcaI1Rsp2hL4?=
+ =?us-ascii?Q?QxKc4dyZTL9wGu07yPnEyPr0B8tHXfv42prW1/wE42uzm2J6Lfp7sDS85Vbb?=
+ =?us-ascii?Q?8542nAHGU2BFXXhFqT9a5/n56lEKbKiOpVjGstgOCAJ1Y9IvT8WYvNtYXntt?=
+ =?us-ascii?Q?qyw25SSIAbbC35lSzBvyh1w7pXgPP3LdZZ5QNh0JmqqY2Cro/60HExmbPb1H?=
+ =?us-ascii?Q?ZWroS+8gdfXarQ1luUtl6ZYIYETtYlnvZGksYWIv1vrwDWF/blGRoVCXoJAS?=
+ =?us-ascii?Q?H0pJu1nZCi7LE+NRTnfsy8+v1689u80FszjFxb48PSSdvHC5K4SG7P426T8B?=
+ =?us-ascii?Q?F2I/9PI9cn9L9cHwwVOyFNF3lYnRv3M0Kk5XnrLmVi6OZP+FkQ+BcQC0J3E+?=
+ =?us-ascii?Q?so1cC4UobvFV7HnV5MpT2+5bPV/tLbptOLzw7QCWQWOLoEMoHk+OMA3neRHc?=
+ =?us-ascii?Q?9t3cLOfSy2vWjlMVleB5CaWquTXfwSJavYvmor2813DcKiRHLtD5hOvKH+Ig?=
+ =?us-ascii?Q?kpTNj6QnPOOR6SHRj7hcWTYJXTJejSdQ92y2/Ab3ZSMMq5cx0l7TgqieJT04?=
+ =?us-ascii?Q?XhNn/GUe5j5AIiia7XxgwVDTxKrORy3gER9yTF/8vZyWlUIVmN+y2bm5GsHd?=
+ =?us-ascii?Q?KFjhUvmVCEJ69W+sY/Z1akMT3Xr9ufUUkQgTz8Ps/8OFPptMefdIcz7LJIrg?=
+ =?us-ascii?Q?6wYCrymTWU27ieNg2TwP5zzQvrnRkLkVxbzLekc9xeAI43NSW8YxCr+/qZ6M?=
+ =?us-ascii?Q?goUksJpsvMEWDm1Z3HRoZAZHKtBJDukTAf+QlncWnAWbgcZt1qxh9Bw/Qtf7?=
+ =?us-ascii?Q?/dlSDPn3TDQjrq0v13S2+AOFUUwngBobwpcQ0CTHLze2Jf+BYayiOrfIhpIT?=
+ =?us-ascii?Q?ZXtFTGh/d2P3Tk8w2mbuCQvLPXF8N05kD6x5duwgmgIgHgzdfkMgZkT15okj?=
+ =?us-ascii?Q?vLP9VT6I9cqSTGRErYg32vKrB473vU1CzFVv4gDRTQKFMkHj65jURC2hXx69?=
+ =?us-ascii?Q?nCMr6UJ+8YEQeXTHAPLFd9BI6hv1rztOXh4XLAoWO++N6L4OBmLsWYjzxfo2?=
+ =?us-ascii?Q?4RCaj+oRlznQ/y12ceizYuUlT4wXGrqMFndVy7EDbNCRg744qqFhhGuLQZi0?=
+ =?us-ascii?Q?UgXE48Io+j03JWgdF6ZDuJJ0kaHuUGMPxmxdMaxRANqPPVb6V2hgJBjPItOL?=
+ =?us-ascii?Q?bM5BC25xDDc99so4Ynn4ZNiKqlGh6xteyBhDjN7hRIVwYfmSuqYt69/CrZuR?=
+ =?us-ascii?Q?evRQgdQNdTp29CYPhel1rxAKn6cp7lvFWlOQONaHhzqbYJES6EAJ9K2hlyXj?=
+ =?us-ascii?Q?h0cimACxqu1IAmTVZPM23v9FdsR0XkXlAFh6O1LCEFtKWPF2jC7YPp+tMtb7?=
+ =?us-ascii?Q?x4TmP/MWZqTv3Im89xrN/m6x0Bk6LeA34UMzxsQ9c1NEIz5r3Yvpt6KOyw67?=
+ =?us-ascii?Q?Ry0tYT36kO10BjuaSsdMNBjzF5ZWIbYGmQQINC+1xczfTuoeqC6TO1KGeoQI?=
+ =?us-ascii?Q?aO/McELpK8/DTxUMBttvfZ1QQoHZACeL/WCCNIR0?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <9922942e-ea9e-4cdb-a091-5b8ea0a180d8@salutedevices.com>
-References: <20240126201433.1830600-1-jan.dakinevich@salutedevices.com> <c79909e4e55badc8f094d2ff8c4d34ca.sboyd@kernel.org> <9922942e-ea9e-4cdb-a091-5b8ea0a180d8@salutedevices.com>
-Subject: Re: [PATCH] clk: allow to skip clk_core_req_round_rate_nolock()
-From: Stephen Boyd <sboyd@kernel.org>
-Cc: kernel@salutedevices.com
-To: Jan Dakinevich <jan.dakinevich@salutedevices.com>, Michael Turquette <mturquette@baylibre.com>, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-Date: Wed, 28 Feb 2024 18:16:24 -0800
-User-Agent: alot/0.10
+X-OriginatorOrg: starfivetech.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SHXPR01MB0670.CHNPR01.prod.partner.outlook.cn
+X-MS-Exchange-CrossTenant-Network-Message-Id: 786ed7f3-1566-4fc7-6350-08dc38cc9bb9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Feb 2024 02:17:41.6826
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ZPdEbkY6c+0fHM5jzwROnBu+tNY6fE7lGsG4i/A1hmUWgv6oz1jk4zQgJUak3uVzLpjDhq6irQ+c8Z/qCf6e4afUHlc+Y1nNvQ2chwuDlrw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SHXPR01MB0781
 
-Quoting Jan Dakinevich (2024-02-23 13:47:35)
+> > Add compatible string and additional interrupt for StarFive JH8100
+> > crypto engine.
+> >
+> > Signed-off-by: Jia Jie Ho <jiajie.ho@starfivetech.com>
+> > ---
+> >  .../crypto/starfive,jh7110-crypto.yaml        | 30 +++++++++++++++++--
+> >  1 file changed, 28 insertions(+), 2 deletions(-)
+> >
+> > diff --git
+> > a/Documentation/devicetree/bindings/crypto/starfive,jh7110-crypto.yaml
+> > b/Documentation/devicetree/bindings/crypto/starfive,jh7110-crypto.yaml
+> > index 71a2876bd6e4..d44d77908966 100644
+> > ---
+> > a/Documentation/devicetree/bindings/crypto/starfive,jh7110-crypto.yaml
+> > +++ b/Documentation/devicetree/bindings/crypto/starfive,jh7110-crypto.
+> > +++ yaml
+> > @@ -12,7 +12,9 @@ maintainers:
+> >
+> >  properties:
+> >    compatible:
+> > -    const: starfive,jh7110-crypto
+> > +    enum:
+> > +      - starfive,jh8100-crypto
+> > +      - starfive,jh7110-crypto
+> >
+> >    reg:
+> >      maxItems: 1
+> > @@ -28,7 +30,10 @@ properties:
+> >        - const: ahb
+> >
+> >    interrupts:
+> > -    maxItems: 1
+> > +    minItems: 1
+> > +    items:
+> > +      - description: SHA2 module irq
+> > +      - description: SM3 module irq
+> >
+> >    resets:
+> >      maxItems: 1
+> > @@ -54,6 +59,27 @@ required:
+> >
+> >  additionalProperties: false
+> >
+> > +allOf:
+> > +  - if:
+> > +      properties:
+> > +        compatible:
+> > +          const: starfive,jh7110-crypto
+> > +
+> > +    then:
+> > +      properties:
+> > +        interrupts:
+> > +          maxItems: 1
+> > +
+> > +  - if:
+> > +      properties:
+> > +        compatible:
+> > +          const: starfive,jh8100-crypto
+> > +
+> > +    then:
+> > +      properties:
+> > +        interrupts:
+> > +          maxItems: 2
 >=20
->=20
-> On 2/23/24 02:20, Stephen Boyd wrote:
-> > Quoting Jan Dakinevich (2024-01-26 12:14:33)
-> >> Calling of clk_core_req_round_rate_nolock() can be time-consuming in a
-> >> case of deep hierarchy with multiple dividers/parents. But if the clock
-> >> already has exactly the same rate as desired, there is no need to
-> >> determine how it could be rounded.
-> >=20
-> > What exactly are you trying to avoid? Is this an optimization or a bug
-> > fix? TL;DR: I'm unlikely to apply this patch.
-> >=20
->=20
-> It is an optimization, not a bug. The problem is that=20
-> clk_core_req_round_rate_nolock() is quite expensive, and I faced with=20
-> cases, where it takes tens and hundreds milliseconds (depending on SoC).
->=20
-> As I see, it is irremovable feature of clk_core_req_round_rate_nolock()=20
-> design itself. Lets imagine, we have some clock, and its parent is a=20
-> divider. When clk_core_req_round_rate_nolock() is being called the=20
-> execution is walked through the following path:
->=20
-> clk_core_determine_round_nolock
->   core->ops->determine_rate
->     divider_determine_rate
->      clk_divider_bestdiv
->=20
-> Inside clk_divider_bestdiv() for each possible divider=20
-> clk_hw_round_rate() is called for parent of the clock, which in turn=20
-> calls clk_core_determine_round_nolock().
->=20
-> So, each divider and multiplexer in clock path multiplies many times an=20
-> amount of iteration required to execute=20
-> clk_core_req_round_rate_nolock(). When there are a lot of them the time=20
-> consumed by clk_core_req_round_rate_nolock() becomes sufficient.
+> This is already the max. Don't you want 'minItems: 2'?
 
-Do you have a more concrete example? I wonder if perhaps you've split up
-the clk hardware into multipliers and dividers, when they really could
-all be combined into one clk that does all the math at once without
-traversing the tree. But if the problem is really just that the
-clk_divider_bestdiv() implementation is slow then that's good to know.
+I'll fix this in the next version.
+Thanks for reviewing this.
 
->=20
-> > I could see some driver implementing round_rate()/determine_rate() in a
-> > way that rounds the rate passed in, so that even if the rate is what the
-> > clk is running at _right now_, it still wants to change it to something
-> > else, or at least call down into the driver to call the set_rate clk_op.
-> > Applying this patch will break that. The contract is that
-> > clk_set_rate(rate) =3D=3D clk_set_rate(clk_round_rate(rate)). It doesn't
-> > look like anything needs to change.
->=20
-> If I am not mistaken, clocks's rate is either equal to its parent rate=20
-> or calculated by ->recalc_rate(). I suppose, this callback should return =
-
-> valid rate value that is based on current clock parameters.
->=20
-> Now, suppose the clock has rate "rateA" and we called clk_set_rate() to=20
-> set "rateA", but clk_core_req_round_rate_nolock() inside clk_set_rate()=20
-> rounds it to "rateB". Thus, although the clock is able to run on desired =
-
-> rate (and actually run on it), ->determine_rate() and ->round_rate() are =
-
-> unable to choose clocks's parameters for that value. Is it correct=20
-> behavior for clock driver?
->=20
-
-It's not really a question for the clk framework. If the clk driver
-wants to round rateA to rateB then it can. It could be that the
-recalc_rate() clk_op calculates a slightly different rate than what
-round_rate() clk op did, because maybe the driver has frequency tables
-and the rate the clk runs at is something like 933333Hz but the driver
-just says that's 930000Hz for simplicity. If that happens, recalc_rate()
-gives us the "true" rate, while round_rate() gives us the "approximate"
-rate. Either way, the set_rate() clk_op knows that 930000Hz means set
-some clk rate, even if that doesn't match what recalc_rate() returns
-once the rate is changed.
-
-This is very much a real case, because this is essentially how the qcom
-clk driver works.
+Regards,
+Jia Jie
 
