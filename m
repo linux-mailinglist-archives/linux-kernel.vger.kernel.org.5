@@ -1,150 +1,419 @@
-Return-Path: <linux-kernel+bounces-86113-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86114-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBCC686BFC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 05:09:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10E1386BFC6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 05:10:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7409AB24042
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 04:09:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 382AA1C23764
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 04:10:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 476AC37705;
-	Thu, 29 Feb 2024 04:09:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB425383A2;
+	Thu, 29 Feb 2024 04:10:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="W8T7iXww"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KYHB2mTZ"
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FD41376E4
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 04:09:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D69738382
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 04:10:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709179745; cv=none; b=nvmuYLor3AvXcF+QNRi2kHJhmr679tKLh9SQPsLDg9KtzVXTJvQjz6uUJ+HAvAdfSzZWFzcJR5l9LkjoNt/IPV2x6IHRxITqL6rOQOqevlhAQQsKVfUPd/RHRfoR1d+qahm/qyhP8KyVvmrXG3Hd5rMSsFo36yVrpK2uXT9qfHA=
+	t=1709179820; cv=none; b=HnepP6QXqaVfDYvKwqJWKPScVAzTXlo9WCvSY1gwu/l9SntWz8U8hQinYAuBqyuUPvSTYAF+92doaoC0HMesqUiP7EjLgTmjxFv4mQXsHMyVCKXQdkCRAMoG4c66E5IEd23qslwQueJ5YORhFeGSQiaIB2+1MSxzbXa86NFlfo0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709179745; c=relaxed/simple;
-	bh=boKa93IVjNEOFQLBBYcUwqu3popS6xnt4z3tH9DYuak=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VXUforXERt5k0YxRyyddIUqx1zbk3EhHwxkbzWA28mTrKaMmeEfKElZErFw/JSfD/niaOSP5/7Qg4KK9syUOKQmIzlPIKX8UqBHtcnyRit4fcSOFDESqEFP2NnW69tHez1qOfDYFmAm3gvIAo9WBtjsHVTzSEzLoLOAwk3tzmQg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=W8T7iXww; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709179744; x=1740715744;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=boKa93IVjNEOFQLBBYcUwqu3popS6xnt4z3tH9DYuak=;
-  b=W8T7iXwwjamExRwGI+fRJ5ymi4PXnwiuKFlQDM0jSo7dp+TV5i2XQ41s
-   IGUJI+x/Bo7EiYIuls+FgemJEAQ0tyATRzjBw7+bmHru8aQUuUpoGKyfm
-   G1aK9/XibfsPly/lHwF4Gg6ZJ9128lL/DZ2uL5GAfOG1OURwQM8XCBm8v
-   TSq+vF6CyBMxqj3Yqn0Pu+cM2rYNldamrwtBJYkGV6NHiz5EzhQiAi+M5
-   mfC0XTUTXtHb09KpbM/x5547GADdyCYh02whskXMGb5xylIBVQ8AO+qQU
-   SU7tV1Fptj+/GQBYass4sgMkmdWsdvbOBCDkmvjYGbykN9c8uQWQO7uID
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="14336888"
-X-IronPort-AV: E=Sophos;i="6.06,192,1705392000"; 
-   d="scan'208";a="14336888"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 20:09:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,192,1705392000"; 
-   d="scan'208";a="12376381"
-Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.124.229.115]) ([10.124.229.115])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 20:09:00 -0800
-Message-ID: <32475465-caef-4202-80f4-410a173e400e@linux.intel.com>
-Date: Thu, 29 Feb 2024 12:08:57 +0800
+	s=arc-20240116; t=1709179820; c=relaxed/simple;
+	bh=UYYdqxLFb7MLmjI9KG+IhZDCP1e6tLTAJCM3IvY8lU4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dCQg8maebItFCtA8kkhiPXaia4s8XLFVdA3hiUc06DOM9RY81SLhzJAu0RnqQ2wfsMXvdcSu6Sm2eK9NLit735pe4glfJm/fik/0ZffqDO/RmifueopiwmJl93fcWEHmzavx9XgjFwvpYA1p2foy1qdU0DlmKCxBJuDYd7t+J0A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=KYHB2mTZ; arc=none smtp.client-ip=95.215.58.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 28 Feb 2024 23:10:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1709179815;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2UgdVcpIPLfsNvZm0q0FbdYag8AhkH5OxKUeK3SGo7w=;
+	b=KYHB2mTZE2ZvOKGMJgZDzM20KxF+JqZnV5ecW3LKOCcCwd66Hns6V9Vj4Ckq6g5ulQhrX/
+	HPfqlVf9WRt5t9+oyQyRaXnDmQiNUZJdqZkMsm0KkXH+33MZfQxMLmOw9+9sM/ub8hzHhw
+	pGZYEyucDPH7Oc+aZlD45aux5vSWAGc=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Brian Foster <bfoster@redhat.com>
+Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	djwong@kernel.org
+Subject: Re: [PATCH 04/21] bcachefs: Disk space accounting rewrite
+Message-ID: <3dug3vvjmlkhu42glwhkm5ozgkp4tzqvekxdabbgv4dv4yhxig@r5bw746uaxym>
+References: <20240225023826.2413565-1-kent.overstreet@linux.dev>
+ <20240225023826.2413565-5-kent.overstreet@linux.dev>
+ <Zd4F1qE1IFCz0/ML@bfoster>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] iommu/vt-d: improve ITE fault handling if device was
- released
-To: baolu.lu@linux.intel.com, bhelgaas@google.com, robin.murphy@arm.com,
- jgg@ziepe.ca
-Cc: kevin.tian@intel.com, dwmw2@infradead.org, will@kernel.org,
- lukas@wunner.de, yi.l.liu@intel.com, dan.carpenter@linaro.org,
- iommu@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20240229040724.3393042-1-haifeng.zhao@linux.intel.com>
-From: Ethan Zhao <haifeng.zhao@linux.intel.com>
-In-Reply-To: <20240229040724.3393042-1-haifeng.zhao@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zd4F1qE1IFCz0/ML@bfoster>
+X-Migadu-Flow: FLOW_OUT
 
-On 2/29/2024 12:07 PM, Ethan Zhao wrote:
-> Break the loop to blindly retry the timeout ATS invalidation request
-> after ITE fault hit if device was released or isn't present anymore.
->
-> This is part of the followup of prior proposed patchset
->
-> https://do-db2.lkml.org/lkml/2024/2/22/350
->
-> Fixes: 6ba6c3a4cacf ("VT-d: add device IOTLB invalidation support")
-> Signed-off-by: Ethan Zhao <haifeng.zhao@linux.intel.com>
-> ---
->   drivers/iommu/intel/dmar.c | 25 +++++++++++++++++++++++++
->   1 file changed, 25 insertions(+)
->
-> diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
-> index d14797aabb7a..d01d68205557 100644
-> --- a/drivers/iommu/intel/dmar.c
-> +++ b/drivers/iommu/intel/dmar.c
-> @@ -1273,6 +1273,9 @@ static int qi_check_fault(struct intel_iommu *iommu, int index, int wait_index)
->   {
->   	u32 fault;
->   	int head, tail;
-> +	u64 iqe_err, ite_sid;
-> +	struct device *dev = NULL;
-> +	struct pci_dev *pdev = NULL;
->   	struct q_inval *qi = iommu->qi;
->   	int shift = qi_shift(iommu);
->   
-> @@ -1317,6 +1320,13 @@ static int qi_check_fault(struct intel_iommu *iommu, int index, int wait_index)
->   		tail = readl(iommu->reg + DMAR_IQT_REG);
->   		tail = ((tail >> shift) - 1 + QI_LENGTH) % QI_LENGTH;
->   
-> +		/*
-> +		 * SID field is valid only when the ITE field is Set in FSTS_REG
-> +		 * see Intel VT-d spec r4.1, section 11.4.9.9
-> +		 */
-> +		iqe_err = dmar_readq(iommu->reg + DMAR_IQER_REG);
-> +		ite_sid = DMAR_IQER_REG_ITESID(iqe_err);
-> +
->   		writel(DMA_FSTS_ITE, iommu->reg + DMAR_FSTS_REG);
->   		pr_info("Invalidation Time-out Error (ITE) cleared\n");
->   
-> @@ -1326,6 +1336,21 @@ static int qi_check_fault(struct intel_iommu *iommu, int index, int wait_index)
->   			head = (head - 2 + QI_LENGTH) % QI_LENGTH;
->   		} while (head != tail);
->   
-> +		/*
-> +		 * If got ITE, we need to check if the sid of ITE is one of the
-> +		 * current valid ATS invalidation target devices, if no, or the
-> +		 * target device isn't presnet, don't try this request anymore.
-> +		 * 0 value of ite_sid means old VT-d device, no ite_sid value.
-> +		 */
-> +		if (ite_sid) {
-> +			dev = device_rbtree_find(iommu, ite_sid);
-> +			if (!dev || !dev_is_pci(dev))
-> +				return -ETIMEDOUT;
-> +			pdev = to_pci_dev(dev);
-> +			if (!pci_device_is_present(pdev) &&
-> +				ite_sid == pci_dev_id(pci_physfn(pdev)))
-> +				return -ETIMEDOUT;
-> +		}
->   		if (qi->desc_status[wait_index] == QI_ABORT)
->   			return -EAGAIN;
->   	}
+On Tue, Feb 27, 2024 at 10:55:02AM -0500, Brian Foster wrote:
+> On Sat, Feb 24, 2024 at 09:38:06PM -0500, Kent Overstreet wrote:
+> > Main part of the disk accounting rewrite.
+> > 
+> > This is a wholesale rewrite of the existing disk space accounting, which
+> > relies on percepu counters that are sharded by journal buffer, and
+> > rolled up and added to each journal write.
+> > 
+> > With the new scheme, every set of counters is a distinct key in the
+> > accounting btree; this fixes scaling limitations of the old scheme,
+> > where counters took up space in each journal entry and required multiple
+> > percpu counters.
+> > 
+> > Now, in memory accounting requires a single set of percpu counters - not
+> > multiple for each in flight journal buffer - and in the future we'll
+> > probably also have counters that don't use in memory percpu counters,
+> > they're not strictly required.
+> > 
+> > An accounting update is now a normal btree update, using the btree write
+> > buffer path. At transaction commit time, we apply accounting updates to
+> > the in memory counters, which are percpu counters indexed in an
+> > eytzinger tree by the accounting key.
+> > 
+> > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> > ---
+> >  fs/bcachefs/alloc_background.c      |  68 +++++-
+> >  fs/bcachefs/bcachefs.h              |   6 +-
+> >  fs/bcachefs/bcachefs_format.h       |   1 -
+> >  fs/bcachefs/bcachefs_ioctl.h        |   7 +-
+> >  fs/bcachefs/btree_gc.c              |   3 +-
+> >  fs/bcachefs/btree_iter.c            |   9 -
+> >  fs/bcachefs/btree_trans_commit.c    |  62 ++++--
+> >  fs/bcachefs/btree_types.h           |   1 -
+> >  fs/bcachefs/btree_update.h          |   8 -
+> >  fs/bcachefs/buckets.c               | 289 +++++---------------------
+> >  fs/bcachefs/buckets.h               |  33 +--
+> >  fs/bcachefs/disk_accounting.c       | 308 ++++++++++++++++++++++++++++
+> >  fs/bcachefs/disk_accounting.h       | 126 ++++++++++++
+> >  fs/bcachefs/disk_accounting_types.h |  20 ++
+> >  fs/bcachefs/ec.c                    |  24 ++-
+> >  fs/bcachefs/inode.c                 |   9 +-
+> >  fs/bcachefs/recovery.c              |  12 +-
+> >  fs/bcachefs/recovery_types.h        |   1 +
+> >  fs/bcachefs/replicas.c              |  42 ++--
+> >  fs/bcachefs/replicas.h              |  11 +-
+> >  fs/bcachefs/replicas_types.h        |  16 --
+> >  fs/bcachefs/sb-errors_types.h       |   3 +-
+> >  fs/bcachefs/super.c                 |  49 +++--
+> >  23 files changed, 704 insertions(+), 404 deletions(-)
+> >  create mode 100644 fs/bcachefs/disk_accounting_types.h
+> > 
+> ...
+> > diff --git a/fs/bcachefs/disk_accounting.c b/fs/bcachefs/disk_accounting.c
+> > index 209f59e87b34..327c586ac661 100644
+> > --- a/fs/bcachefs/disk_accounting.c
+> > +++ b/fs/bcachefs/disk_accounting.c
+> ...
+> > @@ -13,6 +17,44 @@ static const char * const disk_accounting_type_strs[] = {
+> >  	NULL
+> >  };
+> >  
+> 
+> So I'm gonna need to stare at all this much more than I have so far, but
+> one initial thing that stands out to me is the lack of high level
+> function comments. IMO, something that helps tremendously in
+> reading/reviewing these sorts of systemic changes is having a a couple
+> sentence or so comment at the top of the main/external interfaces just
+> to briefly explain what they do in plain english.
+> 
+> So here, something like "modify an accounting key in the btree based on
+> <whatever> ..." helps explain what it does and why it's used where it
+> is. The same goes for some of the other interface level functions, like
+> reading in accounting from disk, updating in-memory accounting (from
+> journal entries in committing transactions?), updating the superblock,
+> etc. I think I've started to put some of those pieces together, but
+> having to jump all through the implementation to piece together high
+> level behaviors is significantly more time consuming than having the
+> author guide one through the high level interactions.
+> 
+> IOW, I think if you minimally document the functions that are sufficient
+> to help understand how accounting works as a black box (somewhere
+> beneath the [nice] higher level big comment descriptions of the whole
+> thing and above the low level implementation details), that helps the
+> reviewer establish an understanding of the mechanism before having to
+> dig through the implementation details and also serves as a reference
+> going forward for the next person who is in a similar position and wants
+> to read/debug/tweak/whatever this code.
+> 
+> > +int bch2_disk_accounting_mod(struct btree_trans *trans,
+> > +			     struct disk_accounting_key *k,
+> > +			     s64 *d, unsigned nr)
+> > +{
+> > +	/* Normalize: */
+> > +	switch (k->type) {
+> > +	case BCH_DISK_ACCOUNTING_replicas:
+> > +		bubble_sort(k->replicas.devs, k->replicas.nr_devs, u8_cmp);
+> > +		break;
+> > +	}
+> > +
+> > +	BUG_ON(nr > BCH_ACCOUNTING_MAX_COUNTERS);
+> > +
+> > +	struct {
+> > +		__BKEY_PADDED(k, BCH_ACCOUNTING_MAX_COUNTERS);
+> > +	} k_i;
+> > +	struct bkey_i_accounting *acc = bkey_accounting_init(&k_i.k);
+> > +
+> > +	acc->k.p = disk_accounting_key_to_bpos(k);
+> > +	set_bkey_val_u64s(&acc->k, sizeof(struct bch_accounting) / sizeof(u64) + nr);
+> > +
+> > +	memcpy_u64s_small(acc->v.d, d, nr);
+> > +
+> > +	return bch2_trans_update_buffered(trans, BTREE_ID_accounting, &acc->k_i);
+> > +}
+> > +
+> ...
+> > diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
+> > index a7f9de220d90..685d54d0ddbb 100644
+> > --- a/fs/bcachefs/super.c
+> > +++ b/fs/bcachefs/super.c
+> ...
+> > @@ -1618,6 +1621,16 @@ int bch2_dev_remove(struct bch_fs *c, struct bch_dev *ca, int flags)
+> >  	if (ret)
+> >  		goto err;
+> >  
+> > +	/*
+> > +	 * We need to flush the entire journal to get rid of keys that reference
+> > +	 * the device being removed before removing the superblock entry
+> > +	 */
+> > +	bch2_journal_flush_all_pins(&c->journal);
+> 
+> I thought this needed to occur between the device removal and superblock
+> update (according to the comment below). Is that not the case? Either
+> way, is it moved for reasons related to accounting?
 
-This patch based on Baolu's per iommu device rbtree patchset
+I think it ended up not needing to be moved, and I just forgot to drop
+it - originally I disallowed accounting entries that referenced
+nonexistent devices, but that wasn't workable so now it's only nonzero
+accounting keys that aren't allowed to reference nonexistent devices.
 
-https://github.com/LuBaolu/intel-iommu/commits/rbtree-for-device-info-v2
+I'll see if I can delete it.
 
-Thanks,
-Ethan
+Applying the following fixup patch, renaming for consistency but mostly
+adding documentation. Helpful?
 
+From 2f2c088f5a4c374d6e7357398c5307425dc52140 Mon Sep 17 00:00:00 2001
+From: Kent Overstreet <kent.overstreet@linux.dev>
+Date: Wed, 28 Feb 2024 23:09:28 -0500
+Subject: [PATCH] fixup! bcachefs: Disk space accounting rewrite
+
+
+diff --git a/fs/bcachefs/btree_trans_commit.c b/fs/bcachefs/btree_trans_commit.c
+index b005e20039bb..3a5b815af8bc 100644
+--- a/fs/bcachefs/btree_trans_commit.c
++++ b/fs/bcachefs/btree_trans_commit.c
+@@ -697,7 +697,7 @@ bch2_trans_commit_write_locked(struct btree_trans *trans, unsigned flags,
+ 			a->k.version = journal_pos_to_bversion(&trans->journal_res,
+ 							(u64 *) entry - (u64 *) trans->journal_entries);
+ 			BUG_ON(bversion_zero(a->k.version));
+-			ret = bch2_accounting_mem_add(trans, accounting_i_to_s_c(a));
++			ret = bch2_accounting_mem_mod(trans, accounting_i_to_s_c(a));
+ 			if (ret)
+ 				goto revert_fs_usage;
+ 		}
+@@ -784,7 +784,7 @@ bch2_trans_commit_write_locked(struct btree_trans *trans, unsigned flags,
+ 			struct bkey_s_accounting a = bkey_i_to_s_accounting(entry2->start);
+ 
+ 			bch2_accounting_neg(a);
+-			bch2_accounting_mem_add(trans, a.c);
++			bch2_accounting_mem_mod(trans, a.c);
+ 			bch2_accounting_neg(a);
+ 		}
+ 	percpu_up_read(&c->mark_lock);
+diff --git a/fs/bcachefs/disk_accounting.c b/fs/bcachefs/disk_accounting.c
+index df9791da1ab7..e8a6ff191acd 100644
+--- a/fs/bcachefs/disk_accounting.c
++++ b/fs/bcachefs/disk_accounting.c
+@@ -10,6 +10,45 @@
+ #include "journal_io.h"
+ #include "replicas.h"
+ 
++/*
++ * Notes on disk accounting:
++ *
++ * We have two parallel sets of counters to be concerned with, and both must be
++ * kept in sync.
++ *
++ *  - Persistent/on disk accounting, stored in the accounting btree and updated
++ *    via btree write buffer updates that treat new accounting keys as deltas to
++ *    apply to existing values. But reading from a write buffer btree is
++ *    expensive, so we also have
++ *
++ *  - In memory accounting, where accounting is stored as an array of percpu
++ *    counters, indexed by an eytzinger array of disk acounting keys/bpos (which
++ *    are the same thing, excepting byte swabbing on big endian).
++ *
++ *    Cheap to read, but non persistent.
++ *
++ * To do a disk accounting update:
++ * - initialize a disk_accounting_key, to specify which counter is being update
++ * - initialize counter deltas, as an array of 1-3 s64s
++ * - call bch2_disk_accounting_mod()
++ *
++ * This queues up the accounting update to be done at transaction commit time.
++ * Underneath, it's a normal btree write buffer update.
++ *
++ * The transaction commit path is responsible for propagating updates to the in
++ * memory counters, with bch2_accounting_mem_mod().
++ *
++ * The commit path also assigns every disk accounting update a unique version
++ * number, based on the journal sequence number and offset within that journal
++ * buffer; this is used by journal replay to determine which updates have been
++ * done.
++ *
++ * The transaction commit path also ensures that replicas entry accounting
++ * updates are properly marked in the superblock (so that we know whether we can
++ * mount without data being unavailable); it will update the superblock if
++ * bch2_accounting_mem_mod() tells it to.
++ */
++
+ static const char * const disk_accounting_type_strs[] = {
+ #define x(t, n, ...) [n] = #t,
+ 	BCH_DISK_ACCOUNTING_TYPES()
+@@ -133,6 +172,10 @@ static int bch2_accounting_update_sb_one(struct bch_fs *c, struct bpos p)
+ 		: 0;
+ }
+ 
++/*
++ * Ensure accounting keys being updated are present in the superblock, when
++ * applicable (i.e. replicas updates)
++ */
+ int bch2_accounting_update_sb(struct btree_trans *trans)
+ {
+ 	for (struct jset_entry *i = trans->journal_entries;
+@@ -147,7 +190,7 @@ int bch2_accounting_update_sb(struct btree_trans *trans)
+ 	return 0;
+ }
+ 
+-static int __bch2_accounting_mem_add_slowpath(struct bch_fs *c, struct bkey_s_c_accounting a)
++static int __bch2_accounting_mem_mod_slowpath(struct bch_fs *c, struct bkey_s_c_accounting a)
+ {
+ 	struct bch_replicas_padded r;
+ 
+@@ -191,16 +234,24 @@ static int __bch2_accounting_mem_add_slowpath(struct bch_fs *c, struct bkey_s_c_
+ 	return 0;
+ }
+ 
+-int bch2_accounting_mem_add_slowpath(struct bch_fs *c, struct bkey_s_c_accounting a)
++int bch2_accounting_mem_mod_slowpath(struct bch_fs *c, struct bkey_s_c_accounting a)
+ {
+ 	percpu_up_read(&c->mark_lock);
+ 	percpu_down_write(&c->mark_lock);
+-	int ret = __bch2_accounting_mem_add_slowpath(c, a);
++	int ret = __bch2_accounting_mem_mod_slowpath(c, a);
+ 	percpu_up_write(&c->mark_lock);
+ 	percpu_down_read(&c->mark_lock);
+ 	return ret;
+ }
+ 
++/*
++ * Read out accounting keys for replicas entries, as an array of
++ * bch_replicas_usage entries.
++ *
++ * Note: this may be deprecated/removed at smoe point in the future and replaced
++ * with something more general, it exists to support the ioctl used by the
++ * 'bcachefs fs usage' command.
++ */
+ int bch2_fs_replicas_usage_read(struct bch_fs *c, darray_char *usage)
+ {
+ 	struct bch_accounting_mem *acc = &c->accounting;
+@@ -234,15 +285,6 @@ int bch2_fs_replicas_usage_read(struct bch_fs *c, darray_char *usage)
+ 	return ret;
+ }
+ 
+-static bool accounting_key_is_zero(struct bkey_s_c_accounting a)
+-{
+-
+-	for (unsigned i = 0; i < bch2_accounting_counters(a.k); i++)
+-		if (a.v->d[i])
+-			return false;
+-	return true;
+-}
+-
+ static int accounting_read_key(struct bch_fs *c, struct bkey_s_c k)
+ {
+ 	struct printbuf buf = PRINTBUF;
+@@ -251,10 +293,10 @@ static int accounting_read_key(struct bch_fs *c, struct bkey_s_c k)
+ 		return 0;
+ 
+ 	percpu_down_read(&c->mark_lock);
+-	int ret = __bch2_accounting_mem_add(c, bkey_s_c_to_accounting(k));
++	int ret = __bch2_accounting_mem_mod(c, bkey_s_c_to_accounting(k));
+ 	percpu_up_read(&c->mark_lock);
+ 
+-	if (accounting_key_is_zero(bkey_s_c_to_accounting(k)) &&
++	if (bch2_accounting_key_is_zero(bkey_s_c_to_accounting(k)) &&
+ 	    ret == -BCH_ERR_btree_insert_need_mark_replicas)
+ 		ret = 0;
+ 
+@@ -272,6 +314,10 @@ static int accounting_read_key(struct bch_fs *c, struct bkey_s_c k)
+ 	return ret;
+ }
+ 
++/*
++ * At startup time, initialize the in memory accounting from the btree (and
++ * journal)
++ */
+ int bch2_accounting_read(struct bch_fs *c)
+ {
+ 	struct bch_accounting_mem *acc = &c->accounting;
+diff --git a/fs/bcachefs/disk_accounting.h b/fs/bcachefs/disk_accounting.h
+index 5fd053a819df..d9f2ce327761 100644
+--- a/fs/bcachefs/disk_accounting.h
++++ b/fs/bcachefs/disk_accounting.h
+@@ -105,15 +105,15 @@ static inline int accounting_pos_cmp(const void *_l, const void *_r)
+ 	return bpos_cmp(*l, *r);
+ }
+ 
+-int bch2_accounting_mem_add_slowpath(struct bch_fs *, struct bkey_s_c_accounting);
++int bch2_accounting_mem_mod_slowpath(struct bch_fs *, struct bkey_s_c_accounting);
+ 
+-static inline int __bch2_accounting_mem_add(struct bch_fs *c, struct bkey_s_c_accounting a)
++static inline int __bch2_accounting_mem_mod(struct bch_fs *c, struct bkey_s_c_accounting a)
+ {
+ 	struct bch_accounting_mem *acc = &c->accounting;
+ 	unsigned idx = eytzinger0_find(acc->k.data, acc->k.nr, sizeof(acc->k.data[0]),
+ 				       accounting_pos_cmp, &a.k->p);
+ 	if (unlikely(idx >= acc->k.nr))
+-		return bch2_accounting_mem_add_slowpath(c, a);
++		return bch2_accounting_mem_mod_slowpath(c, a);
+ 
+ 	unsigned offset = acc->k.data[idx].offset;
+ 
+@@ -124,7 +124,12 @@ static inline int __bch2_accounting_mem_add(struct bch_fs *c, struct bkey_s_c_ac
+ 	return 0;
+ }
+ 
+-static inline int bch2_accounting_mem_add(struct btree_trans *trans, struct bkey_s_c_accounting a)
++/*
++ * Update in memory counters so they match the btree update we're doing; called
++ * from transaction commit path
++ */
++static inline int bch2_accounting_mem_mod(struct btree_trans *trans, struct
++					  bkey_s_c_accounting a)
+ {
+ 	struct disk_accounting_key acc_k;
+ 	bpos_to_disk_accounting_key(&acc_k, a.k->p);
+@@ -137,7 +142,7 @@ static inline int bch2_accounting_mem_add(struct btree_trans *trans, struct bkey
+ 		fs_usage_data_type_to_base(&trans->fs_usage_delta, acc_k.replicas.data_type, a.v->d[0]);
+ 		break;
+ 	}
+-	return __bch2_accounting_mem_add(trans->c, a);
++	return __bch2_accounting_mem_mod(trans->c, a);
+ }
+ 
+ static inline void bch2_accounting_mem_read_counters(struct bch_fs *c,
 
