@@ -1,92 +1,114 @@
-Return-Path: <linux-kernel+bounces-86122-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86123-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D35BE86BFF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 05:46:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07F9686BFFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 05:46:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F9581F25A6E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 04:46:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B78682890F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 04:46:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AAB439AD5;
-	Thu, 29 Feb 2024 04:46:06 +0000 (UTC)
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60D8E3A1CC;
+	Thu, 29 Feb 2024 04:46:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I0SfIz6K"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FEB92030B
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 04:46:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89F1638F80;
+	Thu, 29 Feb 2024 04:46:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709181965; cv=none; b=N2QctIzjBbMsqcc+hdXdA7I1B32DaPEvbpPKmXRIwdVpwJE61GNr5Gw/C8VhVXcgkK7GVRKG4Gw5yl9AOmD+RGexfzfVi5QAvCGSeQzhBhl0+BusUBkwuhmpi0EEZ4ovMirNv/wRbWm1LqnJL3hHqWc5EFRVmzJ5iauIvQZn18g=
+	t=1709181988; cv=none; b=BQLfsatGnFvgOB4ky7BC2ICZKC6z2lwiu+rNTcZHuu/TZ2EnefvnK++8SegPwscKM5jVs1KGyCMCYBgOV1WY6n31CvznpBr4ZpDJMd+T8nMpX+NmRraiXWgjS1LPEmmyUG2ooJPqnhRVOzeC2JqZoE5QkuoA5xNSvAOp7JTz/g0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709181965; c=relaxed/simple;
-	bh=uyjOIENxq69Mlcc4mc+sqUi2mtkubLj29ms1NoSVQk8=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=qGd7N+LCeUFr7XWeU91RIS8/XG7xRMzARGVeNJ/nqqBenFLl2EdJu9yUe7vpgd05LiWdQittuR94xl4i7BTOJ4r1IX6Yobt+cV4NkOVtdlL+KYxw2WE/QrumtFxCo0MVBhXDI7fUjgNvayR5Ztm5u3nvBVa23GT7aJe1RkZp2hY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3657ae3e87fso7291915ab.2
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 20:46:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709181963; x=1709786763;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FEjUJh9OkG09y0YRlfLvgKOC1GUAUaQDR1N3zpLExVA=;
-        b=naz56mNLbw8MdjFr4x9j5QwSG9R59ubgsZsKf86eIU4WIXQv5eTFyow6kwlleR1wQb
-         LyrYjU94M7QULeQVs2eOte9c5CGvlgIf+DZjsLZl6TCX+WFXCdDm5J4wS7yRCnXrN+cw
-         xUWfxIIwHCdo4t2CcuU4kKMltWpnhcOEIlSU03HD0q6FN/rWnoimCRAOXNozw+Z6J9dB
-         wkwKrTGZqko9CFXsyuyjkZ1215zls/QoD0hOWIRjWqGYwX1zpaBAx+/mqRLDyjHfmpoT
-         98SDMyHzm8Yzokf0mBbB/pXC4X/6rxWbSuZZNUnxqkrkxFBqz7j//DZgpFEsFnr9wgeb
-         Xnqw==
-X-Forwarded-Encrypted: i=1; AJvYcCUS1YVphWDA1YMVqz5xTuKxthXyiLvoULW9KxD0v/YSkYoSzEXhgBRi8EEQRo2M29tuTqbZocOHKVKbJGzyuKndnJ5VG0n/sjDwrX5R
-X-Gm-Message-State: AOJu0Yx4TSJg4c53RlC2bQY+Py1FPzrBiMsjA0p2C/SvfDNAwlnY4OpW
-	+CEhBtgyu17scwvwiU4nNfVb755bLljNooqXSF6MUpb7qjvY+FY8DtdITH8Xc/PZ9pfNMcjnlmP
-	xPKG86soWvBpH/KfONzECMe5Q8vw2SR7ZnwoqN7hMkEBftxb5ZAMNzGU=
-X-Google-Smtp-Source: AGHT+IEdCtFwvSTo9IsVW4KKbhjExbFAmwCruc2QMMuLHxCBRQbrllGS6/9TC1/gdsUCxxkl5OaeSLKpXGOdphGqQzZ98gXSHGHl
+	s=arc-20240116; t=1709181988; c=relaxed/simple;
+	bh=G615x2fPETkC6k8ewYPfYhknWUlajYkHMppEN+Pscsw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=o3789GLX/Y5YoaEqTls+PFvjdb/VOg0mhBlCy2a3i1OwAqztxHhj656cJgkWqQ9yDZaWhvvHZBqvglpdFK5H06ZRcQWFUJPfcVSmY5ezRBOGhxuLUPfIG0hE5OMAdRLqlVcHTyWrgMvxYWzf05QbQaGHq/S2z1BKeBDZi0Ni0GY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I0SfIz6K; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 723F2C433C7;
+	Thu, 29 Feb 2024 04:46:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709181988;
+	bh=G615x2fPETkC6k8ewYPfYhknWUlajYkHMppEN+Pscsw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=I0SfIz6K4eWboYPJOn9QHUR9jcspDY0b9JguNlXodaayrm9xfqHOcEeY/fJfposd3
+	 V8r1gYbc8BJCo8zKx1EsIvKX6/RPT848BpEU2DP+eEv7Qt4Z46DEsLojDaKwEnPN8m
+	 wGp82+pjV8TU0IhG7W56CnPbV+7b+BPDIDbvmrWgXs1AeGWCYzVJ7JAM7HsfNdMB1s
+	 vzOb1/oCpJER2nuxDKX/t2FTZppQm9NocVloRX8bIAGRt9cjYU5h7gT+M5KbVMiELY
+	 9MKr7Y4dHClV+1ImFEhmA8MujCP60bPtXA8kI3Hv/gJ0oP+/dlLS8xUwST5T5gUuo8
+	 f95kSrKe/18PQ==
+Date: Wed, 28 Feb 2024 20:46:25 -0800
+From: Eric Biggers <ebiggers@kernel.org>
+To: Fan Wu <wufan@linux.microsoft.com>
+Cc: corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
+	serge@hallyn.com, tytso@mit.edu, axboe@kernel.dk, agk@redhat.com,
+	snitzer@kernel.org, eparis@redhat.com, paul@paul-moore.com,
+	linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
+	dm-devel@lists.linux.dev, audit@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Deven Bowers <deven.desai@linux.microsoft.com>
+Subject: Re: [RFC PATCH v13 17/20] ipe: enable support for fs-verity as a
+ trust provider
+Message-ID: <20240229044625.GA1946@sol.localdomain>
+References: <1709168102-7677-1-git-send-email-wufan@linux.microsoft.com>
+ <1709168102-7677-18-git-send-email-wufan@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1cad:b0:365:1f8b:d103 with SMTP id
- x13-20020a056e021cad00b003651f8bd103mr66821ill.6.1709181963802; Wed, 28 Feb
- 2024 20:46:03 -0800 (PST)
-Date: Wed, 28 Feb 2024 20:46:03 -0800
-In-Reply-To: <00000000000029b00c05ef9c1802@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000cf2d2d06127def32@google.com>
-Subject: Re: [syzbot] [gfs2?] WARNING in gfs2_check_blk_type
-From: syzbot <syzbot+092b28923eb79e0f3c41@syzkaller.appspotmail.com>
-To: agruenba@redhat.com, axboe@kernel.dk, brauner@kernel.org, 
-	cluster-devel@redhat.com, gfs2@lists.linux.dev, jack@suse.cz, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	rpeterso@redhat.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1709168102-7677-18-git-send-email-wufan@linux.microsoft.com>
 
-syzbot suspects this issue was fixed by commit:
+On Wed, Feb 28, 2024 at 04:54:59PM -0800, Fan Wu wrote:
+> diff --git a/security/ipe/hooks.c b/security/ipe/hooks.c
+> index f5190a1347a6..ca1573ff21b7 100644
+> --- a/security/ipe/hooks.c
+> +++ b/security/ipe/hooks.c
+> @@ -254,3 +254,33 @@ int ipe_bdev_setsecurity(struct block_device *bdev, const char *key,
+>  	return -EOPNOTSUPP;
+>  }
+>  #endif /* CONFIG_IPE_PROP_DM_VERITY */
+> +
+> +#ifdef CONFIG_IPE_PROP_FS_VERITY
+> +/**
+> + * ipe_inode_setsecurity - Sets fields of a inode security blob from @key.
+> + * @inode: The inode to source the security blob from.
+> + * @name: The name representing the information to be stored.
+> + * @value: The value to be stored.
+> + * @size: The size of @value.
+> + * @flags: unused
+> + *
+> + * Saves fsverity signature & digest into inode security blob
+> + *
+> + * Return:
+> + * * 0	- OK
+> + * * !0	- Error
+> + */
+> +int ipe_inode_setsecurity(struct inode *inode, const char *name,
+> +			  const void *value, size_t size,
+> +			  int flags)
+> +{
+> +	struct ipe_inode *inode_sec = ipe_inode(inode);
+> +
+> +	if (!strcmp(name, FS_VERITY_INODE_SEC_NAME)) {
+> +		inode_sec->fs_verity_signed = size > 0 && value;
+> +		return 0;
+> +	}
+> +
+> +	return -EOPNOTSUPP;
+> +}
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
+So IPE is interested in whether a file has an fsverity builtin signature, but it
+doesn't care what the signature is or whether it has been checked.  What is the
+point?
 
-    fs: Block writes to mounted block devices
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=108aa9ba180000
-start commit:   861deac3b092 Linux 6.7-rc7
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=10c7857ed774dc3e
-dashboard link: https://syzkaller.appspot.com/bug?extid=092b28923eb79e0f3c41
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1440171ae80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11b1205ee80000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: fs: Block writes to mounted block devices
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+- Eric
 
