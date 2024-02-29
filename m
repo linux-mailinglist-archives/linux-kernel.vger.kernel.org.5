@@ -1,145 +1,148 @@
-Return-Path: <linux-kernel+bounces-86492-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86498-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5C5F86C633
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:58:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id ABFF086C647
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:03:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0A8F283456
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:58:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 619FC28768B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:03:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90CE463107;
-	Thu, 29 Feb 2024 09:57:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JhuIblFQ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AC7364CC1;
+	Thu, 29 Feb 2024 10:03:25 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B586662A19;
-	Thu, 29 Feb 2024 09:57:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B15EB63502;
+	Thu, 29 Feb 2024 10:03:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709200621; cv=none; b=d8TDV8AGaYDzJtyHQLg9PtzuDpc3edpvtRp9H5V3rMPaMEJ1wxUqxMgWKvuDsWUmR3YcftQ9JzpB7pGT499S9yXg0gntQcEtNPjvGL4khReZ1xToUllhhMALSVWEwhotXUFAZ7J0CTR0Lb36Lo8emhjK4DayE6jz3rYjhsh78IY=
+	t=1709201005; cv=none; b=GTX5dFBjWbxBOsgA0SZBtkwbM1Xu7+2f96BZz60qpXcGv3VcspK0cVeKt7p6QOve0toraQmsu/cQUIP05k6ojV+93EjBnG63JHOmGPpW4muMA8wBpUIGYsfNdOjkNpIOvY15GTOlnWZKAXLYOMuU/Y/glJ2XZ1Mnit8730MAVXE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709200621; c=relaxed/simple;
-	bh=iNaRdEVaMHWobztCiAzO/M37ER6KhZR4DFakU8WYEZk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sD103aJtr8SEMgNJLfH3mwbo1FSFwsV1NgN+P80es4ea3lN1QbH9kMW5d/r9sW+9Iz0FyIpp/q/MgJtVhVtG3ko7jsObSIn4lTFQirgs3irvrBvRw3YLGLuWE75X7ckfs//pFxmY4B1kwZsgUjAUaqEPv2bCQS5L4zOEQByT7Zw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JhuIblFQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5388C433F1;
-	Thu, 29 Feb 2024 09:57:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709200621;
-	bh=iNaRdEVaMHWobztCiAzO/M37ER6KhZR4DFakU8WYEZk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JhuIblFQZzcu+2sLNm+9nD3/tRvPDe1ckx8Su0hfHrH/8Mael/sgXoHiKfIWSpkol
-	 QDk1/zVk2BU6wWlWCv9GQ/HMDWidR8UWAaeoIPcHkwXnz6KoXzzzskHQf06p/aG01Z
-	 xsvc2aWx2CMAFh8cYPYpov4NuL5tsjzYUZIVIDkanz53ApFeddAR0KWEz3BL4W9RsT
-	 NLi2oJBz1aJpaQiPJrhrrmy3Y1+1Y6XXKp1i6rC9rE8bvfF7hnAYz/oJumTOajlKd6
-	 6S9SvQsRB3+MZK3XNnyDF9cZ/VhedN78zFcvdAkApRSuYBRC8GEIN4pvhypsDe236h
-	 1wYM5lVbFYRTA==
-Date: Thu, 29 Feb 2024 10:56:58 +0100
-From: Maxime Ripard <mripard@kernel.org>
-To: Nikolai Kondrashov <spbnick@gmail.com>
-Cc: Helen Koike <helen.koike@collabora.com>, linuxtv-ci@linuxtv.org, 
-	dave.pigott@collabora.com, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	linux-kselftest@vger.kernel.org, gustavo.padovan@collabora.com, pawiecz@collabora.com, 
-	tales.aparecida@gmail.com, workflows@vger.kernel.org, kernelci@lists.linux.dev, 
-	skhan@linuxfoundation.org, kunit-dev@googlegroups.com, nfraprado@collabora.com, 
-	davidgow@google.com, cocci@inria.fr, Julia.Lawall@inria.fr, laura.nao@collabora.com, 
-	ricardo.canuelo@collabora.com, kernel@collabora.com, torvalds@linuxfoundation.org, 
-	gregkh@linuxfoundation.org
-Subject: Re: [PATCH 1/3] kci-gitlab: Introducing GitLab-CI Pipeline for
- Kernel Testing
-Message-ID: <20240229-quizzical-persimmon-honeybee-b5db48@houat>
-References: <20240228225527.1052240-1-helen.koike@collabora.com>
- <20240228225527.1052240-2-helen.koike@collabora.com>
- <20240229-dancing-laughing-groundhog-d85161@houat>
- <5d7ed81b-37f9-48e9-ab7e-484b74ca886c@gmail.com>
+	s=arc-20240116; t=1709201005; c=relaxed/simple;
+	bh=LI79+lN+wYIqz4NOlOpAtm7WOMi4Tp6Qb9OVs4Xtbk0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=D+f/fIWBw/29fuaBeWeb98h8uWSxvJ13RkfH22obhNldYD86DNsYL6aHikKq1HWj0lPI4CLFXYfkAtWI4e3va5SY/rrmGUMul4GjnzaUb1vLXPTGkJvPFWTfKKwCIupmK6tZQkdoH4cNeMDHILt9z2ohSs0P5Net1IKUAbU/nLI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Tlmxs54pjz4f3jqZ;
+	Thu, 29 Feb 2024 18:03:13 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 19D141A06D9;
+	Thu, 29 Feb 2024 18:03:17 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP1 (Coremail) with SMTP id cCh0CgAX5g5hVuBlFsMHFg--.11578S4;
+	Thu, 29 Feb 2024 18:03:15 +0800 (CST)
+From: Yu Kuai <yukuai1@huaweicloud.com>
+To: xni@redhat.com,
+	paul.e.luse@linux.intel.com,
+	song@kernel.org,
+	neilb@suse.com,
+	shli@fb.com
+Cc: linux-raid@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	yukuai3@huawei.com,
+	yukuai1@huaweicloud.com,
+	yi.zhang@huawei.com,
+	yangerkun@huawei.com
+Subject: [PATCH md-6.9 v4 00/11] md/raid1: refactor read_balance() and some minor fix
+Date: Thu, 29 Feb 2024 17:57:03 +0800
+Message-Id: <20240229095714.926789-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="vqbbrit24to5mmpq"
-Content-Disposition: inline
-In-Reply-To: <5d7ed81b-37f9-48e9-ab7e-484b74ca886c@gmail.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgAX5g5hVuBlFsMHFg--.11578S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxZw18XFyfJr13Zr15Kr1UAwb_yoW5XFyfp3
+	yavFyfXw4DZrZxAFn7Za1xG34fG3s3JFWxJrn7Ww1F9r1aqrWDt3yfJrWxCFWDCFy3trnr
+	Wr43KrZ7uF10ya7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+	n2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+	0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFyl
+	IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
+	AFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUb
+	XdbUUUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
+From: Yu Kuai <yukuai3@huawei.com>
 
---vqbbrit24to5mmpq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Changes in v4:
+ - fix a problem in v2, that replacement rdev->raid_disk is set to
+ raid_disk + conf->mirros, which will cause test 01replace to run
+ forever, and mdadm tests looks good now(no new regression);
+Changes in v3:
+ - add patch 2, and fix that setup_conf() is missing in patch3;
+ - add some review tag from Xiao Ni(other than patch 2,3);
+Changes in v2:
+ - add new conter in conf for patch 2;
+ - fix the case choose next idle while there is no other idle disk in
+ patch 3;
+ - add some review tag from Xiao Ni for patch 1, 4-8
 
-Hi!
+The original idea is that Paul want to optimize raid1 read
+performance([1]), however, we think that the original code for
+read_balance() is quite complex, and we don't want to add more
+complexity. Hence we decide to refactor read_balance() first, to make
+code cleaner and easier for follow up.  
 
-On Thu, Feb 29, 2024 at 11:23:22AM +0200, Nikolai Kondrashov wrote:
-> Hi everyone,
->=20
-> On 2/29/24 11:02, Maxime Ripard wrote:
-> > On Wed, Feb 28, 2024 at 07:55:25PM -0300, Helen Koike wrote:
-> > > Which rating would you select?
-> >=20
-> > 4.5 :)
-> >=20
-> > One thing I'm wondering here is how we're going to cope with the
-> > different requirements each user / framework has.
-> >=20
-> > Like, Linus probably want to have a different set of CI before merging a
-> > PR than (say) linux-next does, or stable, or before doing an actual
-> > release.
-> >=20
-> > Similarly, DRM probably has a different set of requirements than
-> > drm-misc, drm-amd or nouveau.
-> >=20
-> > I don't see how the current architecture could accomodate for that. I
-> > know that Gitlab allows to store issues template in a separate repo,
-> > maybe we could ask them to provide a feature where the actions would be
-> > separate from the main repo? That way, any gitlab project could provide
-> > its own set of tests, without conflicting with each others (and we could
-> > still share them if we wanted to)
-> >=20
-> > I know some of use had good relationship with Gitlab, so maybe it would
-> > be worth asking?
->=20
-> GitLab already supports getting the CI YAML from other repos. You can cha=
-nge
-> that in the repo settings.
+Before this patchset, read_balance() has many local variables and many
+branches, it want to consider all the scenarios in one iteration. The
+idea of this patch is to divide them into 4 different steps:
 
-I'm interested but couldn't find it in the doc, do you have a link to
-the right section?
+1) If resync is in progress, find the first usable disk, patch 5;
+Otherwise:
+2) Loop through all disks and skipping slow disks and disks with bad
+blocks, choose the best disk, patch 10. If no disk is found:
+3) Look for disks with bad blocks and choose the one with most number of
+sectors, patch 8. If no disk is found:
+4) Choose first found slow disk with no bad blocks, or slow disk with
+most number of sectors, patch 7.
 
-> However, I think a better approach would be *not* to add the .gitlab-ci.y=
-aml
-> file in the root of the source tree, but instead change the very same repo
-> setting to point to a particular entry YAML, *inside* the repo (somewhere
-> under "ci" directory) instead.
->=20
-> This way all the different subtrees can have completely different setup, =
-but
-> some could still use Helen's work and employ the "scenarios" she
-> implemented.
+Note that step 3) and step 4) are super code path, and performance
+should not be considered.
 
-I'm worried that this kind of setup will just create duplicated YAML
-that will be developped in complete silos and will become difficult to
-maintain. But that's definitely an opinion :)
+And after this patchset, we'll continue to optimize read_balance for
+step 2), specifically how to choose the best rdev to read.
 
-Maxime
+[1] https://lore.kernel.org/all/20240102125115.129261-1-paul.e.luse@linux.intel.com/
 
---vqbbrit24to5mmpq
-Content-Type: application/pgp-signature; name="signature.asc"
+Yu Kuai (11):
+  md: add a new helper rdev_has_badblock()
+  md/raid1: factor out helpers to add rdev to conf
+  md/raid1: record nonrot rdevs while adding/removing rdevs to conf
+  md/raid1: fix choose next idle in read_balance()
+  md/raid1-10: add a helper raid1_check_read_range()
+  md/raid1-10: factor out a new helper raid1_should_read_first()
+  md/raid1: factor out read_first_rdev() from read_balance()
+  md/raid1: factor out choose_slow_rdev() from read_balance()
+  md/raid1: factor out choose_bb_rdev() from read_balance()
+  md/raid1: factor out the code to manage sequential IO
+  md/raid1: factor out helpers to choose the best rdev from
+    read_balance()
 
------BEGIN PGP SIGNATURE-----
+ drivers/md/md.h       |  11 +
+ drivers/md/raid1-10.c |  69 ++++++
+ drivers/md/raid1.c    | 550 +++++++++++++++++++++++++-----------------
+ drivers/md/raid1.h    |   1 +
+ drivers/md/raid10.c   |  58 ++---
+ drivers/md/raid5.c    |  35 +--
+ 6 files changed, 444 insertions(+), 280 deletions(-)
 
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZeBU6QAKCRDj7w1vZxhR
-xQ7BAP409AbFcwBdoKD+HMuHlPoXehR+KqHJiC/xTs+iNzmyNwEAkcokR20iK1ta
-dDEJ7oinWP3ncejFNUuTUwCM09uQGw0=
-=Y3AM
------END PGP SIGNATURE-----
+-- 
+2.39.2
 
---vqbbrit24to5mmpq--
 
