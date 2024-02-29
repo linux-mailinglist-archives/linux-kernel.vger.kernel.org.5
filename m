@@ -1,137 +1,125 @@
-Return-Path: <linux-kernel+bounces-87239-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87286-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18AA786D187
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:10:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97B4A86D236
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:27:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AD12B1F25F36
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:10:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 28AA3B275BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:27:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07D1E13C9C8;
-	Thu, 29 Feb 2024 18:08:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C724F7A159;
+	Thu, 29 Feb 2024 18:27:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eVm7/hCX"
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=cybernetics.com header.i=@cybernetics.com header.b="EHNEAJpH"
+Received: from mail.cybernetics.com (mail.cybernetics.com [72.215.153.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2A6F134430;
-	Thu, 29 Feb 2024 18:08:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F10137A157
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 18:27:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=72.215.153.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709230113; cv=none; b=B8wZxz2tsApCutqoRMejM56iytH3I+7+DmB34S5Cl3NOXSbobBsYJbfaDG24RHdlNPJtq5Ms0CK5XQhgnDAD2LWm/KF+JCChadLBRO1uTNfNL/TNr/JZebDJ7ZclrxE6Jd17QLNcchYJ2sgkxJMn1HIykN3SmbSvNvwLfAYTOcU=
+	t=1709231239; cv=none; b=McJRNt2y8x4V5tDNLKNizqRDcHmzvMjQlndSGIXgXwj6ZR7gGPMckWmOqZ2rVSgNiW0/Le2WN4ts/XthIS0LmllmcQkPrX5FkEWhfLnUo+HXNibckz0+TIYx2TgtY4UjksYRCK3vfI+PLioeYnwS7KyrNOl2zHlBcMtfnDLiSr8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709230113; c=relaxed/simple;
-	bh=RzhBA7EI+AvZLHUDZAghc882r6aBdz/AAQ9BqIdQzMY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=OTQ0iPH7G5RQfoyBipQpZY8u7sPNu/krjQdGAblL63ska+yFcWA/LPTANkJvmCJkHjurfWjTH3s9abkSh7a4zLDB6pyoy2zSubPnS6sQUxLk4v+EwhbnnFjeWyyjxLnXSANyL69/kD6d2s4q9quINg9Cs/lrr57wunkNLKqseTM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eVm7/hCX; arc=none smtp.client-ip=209.85.221.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-33d90dfe73cso719926f8f.0;
-        Thu, 29 Feb 2024 10:08:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709230110; x=1709834910; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AKW+JTh7ZVcxWjWl6fkeHkCopDJAnEXK1oMhXl+IbeY=;
-        b=eVm7/hCXCSB2xqYU24KKJEQOssd694VA3X72iGEIXMHM3BafPCTfEzt53CyfA0XwW5
-         0lW/uq0Z7XmNGfGTuzIfiCpA9ERkAruWQD++g2+Ku2CDVM8yHECWzOoM6I1hgEUfSUMf
-         MZ+yDuIT54ZynxlbYO/CZPUjm1q/9LCFeJiM8E2jrB5n6zBzXCtqxMgPuJs1qgXsqdcZ
-         +csNQc6DZI7dlNNroKpM2cJ3ApQO3d93ujie6ucDGOXkBb2VsgfIdJ+C8291Ov5B5uIW
-         frr+zZJD7Z0qi0e0ZhS6WMO05igQWaEBwv/S3fDiN9flWAePW59DO9timTStS+r8zPpm
-         aTnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709230110; x=1709834910;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AKW+JTh7ZVcxWjWl6fkeHkCopDJAnEXK1oMhXl+IbeY=;
-        b=D7lQYu5XXruEyiW8Kdx3qIroeJvOYJEJlpb2MMPu7JwsMlqDySU8TA2jHVaUIAnWnb
-         7aXcuBl4i23iS91tU5aHATUAvc1nvDObbulXTS4FHgtRs22s9lh0uy5y6TfzdInhYlsC
-         eqhTBbAK9O0eizQ2ivv+cIz+UtIwMDGQJk+cZmIH6p+lFG3FTBngbUk5G7lrye1C4CeQ
-         VXZl2K0RRzPdivbGww1VkkiUThm/HR4ungkQOufMD6hywq9FlF87uA7wcgZaq19xax9z
-         x+/Rf8CWuqhX5MsvsU+IbREOA92rk4L0G8gSiGzdm2hXG7vmL7MImrTsncBSStKqJCcP
-         8gmQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWxgNgivSHTzykLHOIwgCsr2kxjL+flqUC/g9oERp8a0IAjGX+T8i7LPhDvZLxvjB3sMXEXuojoE6lmXGlW72BuqybN48pny/JavZex0YjYjgYQ3n6w6p6CLTuKalhuOkNb1+rLl2lN
-X-Gm-Message-State: AOJu0Yy6kzwRXmkKA7QYcqgbJy3diYOwJmhXd66EHu/wBRbOsylmoWu2
-	RRUROuvKF3BjNQT5eRhZoapzQ2yRG6JIBP/J1R2Hzyaaa8odaX9q
-X-Google-Smtp-Source: AGHT+IFUxNMPTM1Ga7zfS168Xb0IV1PNWM/z8HXaluNXepo4buu4oO06cDiHid6vaB41t9A7fb6YVQ==
-X-Received: by 2002:adf:c5c3:0:b0:33e:12a4:8619 with SMTP id v3-20020adfc5c3000000b0033e12a48619mr2547610wrg.24.1709230110057;
-        Thu, 29 Feb 2024 10:08:30 -0800 (PST)
-Received: from [192.168.20.102] (57657817.catv.pool.telekom.hu. [87.101.120.23])
-        by smtp.googlemail.com with ESMTPSA id z11-20020a1c4c0b000000b00412ba5cda16sm3100620wmf.33.2024.02.29.10.08.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 10:08:29 -0800 (PST)
-From: Gabor Juhos <j4g8y7@gmail.com>
-Date: Thu, 29 Feb 2024 19:07:52 +0100
-Subject: [PATCH 7/7] clk: qcom: mmcc-msm8974: fix terminating of frequency
- table arrays
+	s=arc-20240116; t=1709231239; c=relaxed/simple;
+	bh=0ujY1W7EPTMDMv8Qjd/XFEAXcyl4EZ0O06CzvoVFYCc=;
+	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=FiR/9aIhjQFwCcGsuFzwQkxGWNm59SZ7msxGDbtjYsdvf6iXcn7dI608YwFTkHmC3eFzxKf1ltpqELWk64bJenyUAMC8ebgvaQZIbqdVc0eUudNvCw5K3lSeHMBsZHrYvkL9ZSkEtYrFDxGsimDLVUkDXzfopEpYw59bi1dOZ7A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cybernetics.com; spf=pass smtp.mailfrom=cybernetics.com; dkim=pass (1024-bit key) header.d=cybernetics.com header.i=@cybernetics.com header.b=EHNEAJpH; arc=none smtp.client-ip=72.215.153.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cybernetics.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cybernetics.com
+X-ASG-Debug-ID: 1709230070-1cf4391a1c4fcf0003-xx1T2L
+Received: from cybernetics.com ([10.10.4.126]) by mail.cybernetics.com with ESMTP id skGYSPFiFfPsVh4j for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 13:08:13 -0500 (EST)
+X-Barracuda-Envelope-From: tonyb@cybernetics.com
+X-Barracuda-RBL-Trusted-Forwarder: 10.10.4.126
+X-ASG-Whitelist: Client
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=cybernetics.com; s=mail;
+	bh=GyTYh7rZxyuaZxAK4E6INt0hy/oXnF2VsS983Qgm9WI=;
+	h=Content-Transfer-Encoding:Content-Type:Subject:From:Cc:To:Content-Language:
+	MIME-Version:Date:Message-ID; b=EHNEAJpH9NO6DGJeblalbgxMQVo9ZjLHP5lNuDo0CY5z+
+	3qRP6j8BSOQ1clNEfFa8V1xd1wyAxTkw7gIdJuf4r5DcXWB08/uQ/7qeVuc70mLwffJnHoNaXO4ro
+	5M6b7FYErqw/nqlHndEyRgwppLhJ5Aw8n43zpvTRnqCKTu0iA=
+Received: from [10.157.2.224] (HELO [192.168.200.1])
+  by cybernetics.com (CommuniGate Pro SMTP 7.1.1)
+  with ESMTPS id 13108803; Thu, 29 Feb 2024 13:08:10 -0500
+Message-ID: <86e592a9-98d4-4cff-a646-0c0084328356@cybernetics.com>
+X-Barracuda-RBL-Trusted-Forwarder: 10.157.2.224
+Date: Thu, 29 Feb 2024 13:08:09 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: Jens Axboe <axboe@kernel.dk>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+ Hugh Dickins <hughd@google.com>, Hannes Reinecke <hare@suse.de>,
+ Keith Busch <kbusch@kernel.org>, linux-mm <linux-mm@kvack.org>,
+ linux-block@vger.kernel.org, linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From: Tony Battersby <tonyb@cybernetics.com>
+Subject: [PATCH] block: Fix page refcounts for unaligned buffers in
+ __bio_release_pages()
+Content-Type: text/plain; charset=UTF-8
+X-ASG-Orig-Subj: [PATCH] block: Fix page refcounts for unaligned buffers in
+ __bio_release_pages()
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240229-freq-table-terminator-v1-7-074334f0905c@gmail.com>
-References: <20240229-freq-table-terminator-v1-0-074334f0905c@gmail.com>
-In-Reply-To: <20240229-freq-table-terminator-v1-0-074334f0905c@gmail.com>
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Michael Turquette <mturquette@baylibre.com>, 
- Stephen Boyd <sboyd@kernel.org>, 
- Sricharan Ramabadhran <quic_srichara@quicinc.com>, 
- Varadarajan Narayanan <quic_varada@quicinc.com>, 
- Gokul Sriram Palanisamy <quic_gokulsri@quicinc.com>, 
- Devi Priya <quic_devipriy@quicinc.com>, 
- Anusha Rao <quic_anusha@quicinc.com>, 
- Bryan O'Donoghue <bryan.odonoghue@linaro.org>, 
- Georgi Djakov <gdjakov@mm-sol.com>
-Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Gabor Juhos <j4g8y7@gmail.com>
-X-Mailer: b4 0.12.3
+X-Barracuda-Connect: UNKNOWN[10.10.4.126]
+X-Barracuda-Start-Time: 1709230093
+X-Barracuda-URL: https://10.10.4.122:443/cgi-mod/mark.cgi
+X-Barracuda-BRTS-Status: 1
+X-Virus-Scanned: by bsmtpd at cybernetics.com
+X-Barracuda-Scan-Msg-Size: 1347
 
-The frequency table arrays are supposed to be terminated with an
-empty element. Add such entry to the end of the arrays where it
-is missing in order to avoid possible out-of-bound access when
-the table is traversed by functions like qcom_find_freq() or
-qcom_find_freq_floor().
+Fix an incorrect number of pages being released for buffers that do not
+start at the beginning of a page.
 
-Only compile tested.
-
-Fixes: d8b212014e69 ("clk: qcom: Add support for MSM8974's multimedia clock controller (MMCC)")
-Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
+Fixes: 1b151e2435fc ("block: Remove special-casing of compound pages")
+Cc: stable@vger.kernel.org
+Signed-off-by: Tony Battersby <tonyb@cybernetics.com>
 ---
- drivers/clk/qcom/mmcc-msm8974.c | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/clk/qcom/mmcc-msm8974.c b/drivers/clk/qcom/mmcc-msm8974.c
-index a31f6cf0c4e0c..36f460b78be2c 100644
---- a/drivers/clk/qcom/mmcc-msm8974.c
-+++ b/drivers/clk/qcom/mmcc-msm8974.c
-@@ -290,6 +290,7 @@ static struct freq_tbl ftbl_mmss_axi_clk[] = {
- 	F(291750000, P_MMPLL1, 4, 0, 0),
- 	F(400000000, P_MMPLL0, 2, 0, 0),
- 	F(466800000, P_MMPLL1, 2.5, 0, 0),
-+	{ }
- };
- 
- static struct clk_rcg2 mmss_axi_clk_src = {
-@@ -314,6 +315,7 @@ static struct freq_tbl ftbl_ocmemnoc_clk[] = {
- 	F(150000000, P_GPLL0, 4, 0, 0),
- 	F(291750000, P_MMPLL1, 4, 0, 0),
- 	F(400000000, P_MMPLL0, 2, 0, 0),
-+	{ }
- };
- 
- static struct clk_rcg2 ocmemnoc_clk_src = {
+Tested with 6.1.79.  The 6.1 backport can just use
+folio_put_refs(fi.folio, nr_pages) instead of do {...} while.
 
+ block/bio.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/block/bio.c b/block/bio.c
+index b9642a41f286..b52b56067e79 100644
+--- a/block/bio.c
++++ b/block/bio.c
+@@ -1152,7 +1152,7 @@ void __bio_release_pages(struct bio *bio, bool mark_dirty)
+ 
+ 	bio_for_each_folio_all(fi, bio) {
+ 		struct page *page;
+-		size_t done = 0;
++		size_t nr_pages;
+ 
+ 		if (mark_dirty) {
+ 			folio_lock(fi.folio);
+@@ -1160,10 +1160,11 @@ void __bio_release_pages(struct bio *bio, bool mark_dirty)
+ 			folio_unlock(fi.folio);
+ 		}
+ 		page = folio_page(fi.folio, fi.offset / PAGE_SIZE);
++		nr_pages = (fi.offset + fi.length - 1) / PAGE_SIZE -
++			   fi.offset / PAGE_SIZE + 1;
+ 		do {
+ 			bio_release_page(bio, page++);
+-			done += PAGE_SIZE;
+-		} while (done < fi.length);
++		} while (--nr_pages != 0);
+ 	}
+ }
+ EXPORT_SYMBOL_GPL(__bio_release_pages);
+
+base-commit: d206a76d7d2726f3b096037f2079ce0bd3ba329b
 -- 
-2.44.0
+2.25.1
 
 
