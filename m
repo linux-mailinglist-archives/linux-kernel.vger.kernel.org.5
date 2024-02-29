@@ -1,95 +1,82 @@
-Return-Path: <linux-kernel+bounces-87588-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87589-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65ABA86D639
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:31:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A66686D63C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:33:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5F6E2841FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:31:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EA385B256EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:33:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 838866D512;
-	Thu, 29 Feb 2024 21:31:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BC336D503;
+	Thu, 29 Feb 2024 21:32:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Otdgupdr"
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="I+9QetA6"
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7054916FF43
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 21:31:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AFEF16FF47
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 21:32:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709242306; cv=none; b=cj4cLng/KmiFvY4LqJtW7EIXXtBIjZRnTo983GYpohLf2CVPzZjkNHBua3FmtIwcWlnb5SBr5gohy5XAsXBIWOe/p29iVA7+9/awXwVQbSKqCfjfVGtUJL4+8N3nvgDSyBH0+vzMcTyF/jEj59DnPMLz8oaPMA3Ko8BsnivEARU=
+	t=1709242376; cv=none; b=VSKLhm4YZEjYknYRHZOXLpRZFbmqxlkUP7N1L/UycqvTYgH5d5OZ63DNqd48oNDTJSfCMZ2CLqIGkmIPub8QL0iJaqtqPfJwhsn0zQuBTrfL/FURUbqGHLAyEyxzxLhh/BcTt5YQLQAPB4QruupiE1lRxo+27kHZvSxf6eFgaEE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709242306; c=relaxed/simple;
-	bh=QzZTm6RzwKOCXz1s1DDgA6t36vWxFMgXU9qMOsdvjRM=;
+	s=arc-20240116; t=1709242376; c=relaxed/simple;
+	bh=M1OIAA0ItaLeA6OMZsMNhafiM0P2mVk8eYOUN2HrEfw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hLVAldLQEn6ZYYkcKIGxhvrJyQlVSwDqYCtI0OLRSpW00UlNvUqb42YEK3gO9vmAmjYJ2Cx44qApyvslKt9Tt8QLyc2dDfb1ZHebSYKd9ocFnjrJY1TGQiMQ2o8UwMuxV0byDdOQBMh37WUavSlDfFTre+rKyL6efw4mzGywJ2k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Otdgupdr; arc=none smtp.client-ip=209.85.214.169
+	 Content-Type:Content-Disposition:In-Reply-To; b=jnm/JaE5ZrTAUxPg06MOcNz5Nrc3RoRORi04zhh9y4V+taCWIfi7C1of6vsH+yQgYzzquPSAC+2edK8FjCLVFi+cEiNHY/jkA6vQVMf6qD03dLnvQA3rP2XQDaj+U5OtAKl9D9CIcK+qs9LibcBiyLUM15CKujVR9pGj/IfjLSs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=I+9QetA6; arc=none smtp.client-ip=209.85.216.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1dc0e5b223eso13742465ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 13:31:45 -0800 (PST)
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-299b818d63aso1140074a91.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 13:32:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709242305; x=1709847105; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1709242374; x=1709847174; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=fi9gJh0JIT3rydMe7Re3YRcK5pxmffs/i/bQwJvpoAc=;
-        b=OtdgupdrMqUU6v6YG5ItdSUVYWtggtW7CLi08MPwU/tGTaozH8afksz/j9WnraUdkZ
-         gQO7+saJw0TruPFKJJShHIMwzH14EPnGlOS+T/kEWAOEPVR4l6UaIrHpoabCCEf3XPtP
-         BuKQeG2cQ0ZPa/TIhRpwB3WIcITiVw6Bv0O6A=
+        bh=nZXiBnNhAhi4ZtO0SADmUcnGG7Y1r2RQ91McDK9U7hM=;
+        b=I+9QetA60AKN7+t5WCRGjyqQwKr9rI+ukig6Mf/i2z299vpTYLGtWS9tn9ZHxElQkt
+         dFio/wStFf14NLTi30iYq8N8D09+JygkatmXoIRG1z9YbJKvEnTi8GQHUGsOWiK/spJF
+         1zSwoSK5171OWb4jpi4BY+BLYI7PQ+0/a6jaE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709242305; x=1709847105;
+        d=1e100.net; s=20230601; t=1709242374; x=1709847174;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fi9gJh0JIT3rydMe7Re3YRcK5pxmffs/i/bQwJvpoAc=;
-        b=gOTEw+Uk8OYMIGEmTy/7+lZ8EGhH+PP52MhoHIhUkXLcj57ihEo23GVOcBxEg/rJ33
-         7qo63aIrOS0tDUOrOU3MvDVP0H14EMDCZXq+J1iTV3QUUO/UErfwynO0AQAnFvwADMLI
-         veVd4BjVzvslKedt6Fk4vr2cvbTebWYS0QEhvdeMsDa8Djs7b0r1ym1MDHZxrBKoojHi
-         v6/r2nIL4MEx0CRuAfqL5zNk9kwj9n3X3tOaIbac+C/IsB2xU8LsoHPlgz8m0BNh1tIp
-         Z7OCA5/dSDN95T+xnLmKoE8AbvAw+llDHL2NNXqc/wQaTdY1p1oXUviJtj8H+OPHjl6w
-         p8ow==
-X-Forwarded-Encrypted: i=1; AJvYcCUduAWpyP9kJKUwIRoruGiXhKnQErdsMbfS48TTy3LyBmO/4aXrOgn0DjNKGnNGZrbhR1U16eQeLx9qo0jm9sJD7XQV71zIRroKZrG1
-X-Gm-Message-State: AOJu0YwH1ODkGGxoGfvrZhLaS+uxxn4ODf+TpztGVSiwf3HnLc85Qcqa
-	HFsFYnJjPKGOw5GQmLF4CHe3WeiftnAfmFtkbXu4CqSwqmVzzBBL3mQuQIT2ng==
-X-Google-Smtp-Source: AGHT+IE+DUv8Qdh0LZ32jo8m9iF3a01wivEsDDN/MHriPt719iWzbKIbR1Qbd56MoYjYqe7Ub9Claw==
-X-Received: by 2002:a17:902:654a:b0:1dc:ca72:8318 with SMTP id d10-20020a170902654a00b001dcca728318mr2807886pln.37.1709242304905;
-        Thu, 29 Feb 2024 13:31:44 -0800 (PST)
+        bh=nZXiBnNhAhi4ZtO0SADmUcnGG7Y1r2RQ91McDK9U7hM=;
+        b=NkAXZZxEZyqmluRyWZ82Z/1vqul1EA68TK6rFPdoRsF/eTxEMR1EnE9x0PWkcs9BAs
+         5wRXkLXzmwTVfhvbhc/ZgQut8FHJtJ7D3EBwa2dqq/X+BnH4MCk8NQUUeN8MAql9QMvX
+         7EtiJcvwzYSQ0CBip7TT6361dviJFEYf9cVx5znUmagkO+zy6YbLU2DGPz8cCgf/5GtC
+         lqJvk5BntjdgR/P+nZLBEQ/6WrXBINneygTgIsl4VU/APCwC+i+oSyNEwSMMToPxfZzU
+         spioUhUquUq/7VompOEuWQohe/hwo6GFYILHCw6sNvdGEcU1GtQMFMBMy2EGNZt5yjWW
+         H7hw==
+X-Forwarded-Encrypted: i=1; AJvYcCUUH5tTtmCwGpsaeMo9/shUzxZBZIpVmLJBqSBBqRDiq9OA/pXPH6nRo9p/QHN+nIxVGHPWM8MOSHP/WaEAbNg9Pj55I9+3a0LEAfDz
+X-Gm-Message-State: AOJu0YxN6DJYXg9H5nWqPKuwF1RdlPRC9bhwt5PMjPSxYL183AulnSFZ
+	Lg6W5needsI5Aw3yiZ7nk/kCm6b/TuZZYOz33Fc6k5T69RVlpcbczSp7l8vtjg==
+X-Google-Smtp-Source: AGHT+IEvsn9DgpO+cW37vUplHd97MaD5TAZWQ0EdSVcQR53nFAD39hdF/sei1lWoc7NAH+n5Ef2cEw==
+X-Received: by 2002:a17:90a:4491:b0:299:3c2c:b680 with SMTP id t17-20020a17090a449100b002993c2cb680mr241994pjg.15.1709242374560;
+        Thu, 29 Feb 2024 13:32:54 -0800 (PST)
 Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id y9-20020a1709027c8900b001db717d2dbbsm1954387pll.210.2024.02.29.13.31.44
+        by smtp.gmail.com with ESMTPSA id c6-20020aa78806000000b006e53cc789c3sm1728164pfo.107.2024.02.29.13.32.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 13:31:44 -0800 (PST)
-Date: Thu, 29 Feb 2024 13:31:43 -0800
+        Thu, 29 Feb 2024 13:32:54 -0800 (PST)
+Date: Thu, 29 Feb 2024 13:32:53 -0800
 From: Kees Cook <keescook@chromium.org>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Vinod Koul <vkoul@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Mark Brown <broonie@kernel.org>,
-	linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-	linux-spi@vger.kernel.org, netdev@vger.kernel.org,
-	linux-hardening@vger.kernel.org,
-	Jonathan Cameron <jic23@kernel.org>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: Re: [PATCH v4 7/8] net-device: Use new helpers from overflow.h in
- netdevice APIs
-Message-ID: <202402291330.0510946B67@keescook>
-References: <20240228204919.3680786-1-andriy.shevchenko@linux.intel.com>
- <20240228204919.3680786-8-andriy.shevchenko@linux.intel.com>
- <202402281341.AC67EB6E35@keescook>
- <20240228144148.5c227487@kernel.org>
- <202402281554.C1CEEF744@keescook>
- <20240228165609.06f5254a@kernel.org>
- <202402291059.491B5E03@keescook>
- <20240229113706.42c877a1@kernel.org>
+To: Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Sam Ravnborg <sam@ravnborg.org>, Helge Deller <deller@gmx.de>,
+	Guo Ren <guoren@kernel.org>, sparclinux@vger.kernel.org,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] sparc: vdso: Disable UBSAN instrumentation
+Message-ID: <202402291332.2C89081A@keescook>
+References: <20240223165942.work.950-kees@kernel.org>
+ <ZeDiZrrLuqkvxrIY@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -98,20 +85,34 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240229113706.42c877a1@kernel.org>
+In-Reply-To: <ZeDiZrrLuqkvxrIY@smile.fi.intel.com>
 
-On Thu, Feb 29, 2024 at 11:37:06AM -0800, Jakub Kicinski wrote:
-> On Thu, 29 Feb 2024 11:08:58 -0800 Kees Cook wrote:
-> > > And some seem to be cargo-culted from out-of-tree code and are unused :S  
+On Thu, Feb 29, 2024 at 10:00:38PM +0200, Andy Shevchenko wrote:
+> On Fri, Feb 23, 2024 at 08:59:45AM -0800, Kees Cook wrote:
+> > The UBSAN instrumentation cannot work in the vDSO since it is executing
+> > in userspace, so disable it in the Makefile. Fixes the build failures
+> > such as:
 > > 
-> > Ah, which can I remove?
+> > arch/sparc/vdso/vclock_gettime.c:217: undefined reference to `__ubsan_handle_shift_out_of_bounds'
+> > 
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > ---
+> > Cc: "David S. Miller" <davem@davemloft.net>
+> > Cc: Andreas Larsson <andreas@gaisler.com>
+> > Cc: Masahiro Yamada <masahiroy@kernel.org>
+> > Cc: Sam Ravnborg <sam@ravnborg.org>
+> > Cc: Helge Deller <deller@gmx.de>
+> > Cc: Guo Ren <guoren@kernel.org>
+> > Cc: sparclinux@vger.kernel.org
 > 
-> The one in igc.h does not seem to be referenced by anything in the igc
-> directory. Pretty sure it's unused.
+> I dunno how you applied patches, but these Cc seems to appear in a few commits
+> in your hardening branch.
+> 
+> I formatted patch from 9fd54b08040669, checked out the new branch just before
+> this commit and run `git am 0001-...`. I don't see them.
 
-I'll double check. After trying to do a few conversions I really hit
-stuff I didn't like, so I took a slightly different approach in the
-patch I sent.
+Ah, hm, yes, I'll need to split up my trees a bit to get the right
+results. Thanks for pointing that out!
 
 -- 
 Kees Cook
