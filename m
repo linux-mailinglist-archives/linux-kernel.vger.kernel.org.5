@@ -1,54 +1,57 @@
-Return-Path: <linux-kernel+bounces-87254-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87255-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A8B886D1C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:14:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AD5FE86D1C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:14:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25717286B8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:14:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66BBE286B49
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:14:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E44AF7A159;
-	Thu, 29 Feb 2024 18:13:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A250A7D3F2;
+	Thu, 29 Feb 2024 18:13:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GDGFtnP3"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fBwWb12H"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3138B70AE4
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 18:13:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E74497BAEB
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 18:13:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709230388; cv=none; b=GtB8hEE2RhGo8AO6XYDKCzlOxsVndR0oFuLUKv9VvoLU+Gxn8C9wTPZD80wX8sgs8DHQSzU9aSPfvaGzbyd6xyl+lyDQO1K63ZhYARx1i8j6uabY4Ss9brsz0oHr/FCQYHBzhQhne9oE0qoTCPEU9GsNDoVrTXOY1GIpzV7Ud2w=
+	t=1709230390; cv=none; b=bFy9w/x6qaKAr2IWyP65EBVJ5xVS8fm/DuCxqXuNWcJxg31z/h96M0Xpp+Z4fk4HiZr549t0olNiF8jYBqVe7VfCP87HmV8zxT+c+VZZDBojscj+TDDL7nHQKAXFnB5B8vU/y06pEBc9EDISiGfkim/A5mDBXItjUeReXKdUf9Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709230388; c=relaxed/simple;
-	bh=wwT/73TZLUN9nMPo1iubmrl4kKujUgP+nvI3bxKowtY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=CqMd/8ODAq391stNxwA4ALRqB/EJr1MhWx0axV+6fjJtCdvbBgJgvrXi6XWJUdiKjrV2g9JgvH9rFeGYK9ehiW7TdGz59P/bUI3xz2yuYZ/UPLI/72FajVP/4R/Z4PFwnbNYupd1ULIb79b39EULKdxGsZy/BOEy7eXXpjDyzXk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GDGFtnP3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E5A3C433F1;
-	Thu, 29 Feb 2024 18:13:07 +0000 (UTC)
+	s=arc-20240116; t=1709230390; c=relaxed/simple;
+	bh=4UHafzd9xCDmrdK5pv4Mx3tzDTPiSQz7ubBe9sEoTrs=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=okDQ6HNJm31d9LRXs4RvR5hhxQUH2MVSUYZ9W1jIizSBXqELVzJAoJNJTcD6qzA2zbZjxxPN5ckwzQFGDH+bf7intwrcgUKbg7rJa/HSHy9zxEiB/92LCwU22BklNEjeA4B3Za6lUKICQDsDYnMJ2WWbhMIUUrSvNmnv8iUFBW8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fBwWb12H; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4808DC43394;
+	Thu, 29 Feb 2024 18:13:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709230387;
-	bh=wwT/73TZLUN9nMPo1iubmrl4kKujUgP+nvI3bxKowtY=;
-	h=From:To:Cc:Subject:Date:From;
-	b=GDGFtnP3zxkG5xvsUeTyTb0eCeqhsiYlMgxf4/Z48Av8OSdGxu7kDcQA69IaFLywn
-	 iBhqJ8braZpPHJ+6Gw6NNkys2BaSONIIQIpLRT2wL7n4evJpO4oX1H8BAdZ6t2wl3J
-	 vTnVXxqVHVbUc11tdOTfYFOpwcX7mG/CIYZ/ttecaSkDHBXPDDOR1wJTRdPV8aF4+3
-	 AyPBXV9F0bMRvL5YiwXvVR+nY8todt8+taPkqrE9gQGTN5GjEGanqS3B58/IljrT7l
-	 mwhvQCFlZW/kXG5m7be0AvHzsK8dXeSq290YwlgtGpbvKwwUSeTslUQULpyStz2kej
-	 yi6uw1S2UgiEA==
+	s=k20201202; t=1709230389;
+	bh=4UHafzd9xCDmrdK5pv4Mx3tzDTPiSQz7ubBe9sEoTrs=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=fBwWb12HgkQEskAVKOOBPEXt6nrLTrqw8Vd9Z2e4IAmTl+AOC334G04LrqPPrNzUc
+	 c1605660oH8KtAZrOUCpdQge9+aGYC2RshjZK7x4mY+GrGBgI6mkUT+VB7OGw6VwnA
+	 hvTopz55/OBEtnP7l4LqGR4iWi9pJKkk6XI9JcF6HOyONJ0F4v5viUDvSrYh9cyuvH
+	 aZhQH61Wb/mLIBC9wvhymlsX+A/bc+QPCK2ekASfSeP1voKiD0x+vlypvjRUVKadL9
+	 xHSS66qT/CsHQkK3xxY2DryONRBfwI8+kZYvNWa+3LaNqVm/mMviBtUwy7cVMZ+Nld
+	 YR0xHviTS9Q8g==
 From: Bjorn Helgaas <helgaas@kernel.org>
 To: Tomas Winkler <tomas.winkler@intel.com>,
 	Arnd Bergmann <arnd@arndb.de>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: linux-kernel@vger.kernel.org,
 	Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH 0/3] mei: remove unnecessary NULL pointer checks
-Date: Thu, 29 Feb 2024 12:12:57 -0600
-Message-Id: <20240229181300.352077-1-helgaas@kernel.org>
+Subject: [PATCH 1/3] mei: gsc: remove unnecessary NULL pointer checks
+Date: Thu, 29 Feb 2024 12:12:58 -0600
+Message-Id: <20240229181300.352077-2-helgaas@kernel.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240229181300.352077-1-helgaas@kernel.org>
+References: <20240229181300.352077-1-helgaas@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,19 +62,80 @@ Content-Transfer-Encoding: 8bit
 
 From: Bjorn Helgaas <bhelgaas@google.com>
 
-After .probe() has returned success, drvdata has been set to a non-NULL
-value, so there's no need to check for NULL in other callbacks.
+The .remove() and power management callbacks are never called unless
+probe() has already returned success, which means it has set drvdata to a
+non-NULL pointer, so "dev" can never be NULL in the other callbacks.
 
-Bjorn Helgaas (3):
-  mei: gsc: remove unnecessary NULL pointer checks
-  mei: txe: remove unnecessary NULL pointer checks
-  mei: me: remove unnecessary NULL pointer checks
+Remove the unnecessary checks.
 
- drivers/misc/mei/gsc-me.c  | 17 ----------------
- drivers/misc/mei/pci-me.c  | 38 ++++++------------------------------
- drivers/misc/mei/pci-txe.c | 40 ++++++--------------------------------
- 3 files changed, 12 insertions(+), 83 deletions(-)
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+---
+ drivers/misc/mei/gsc-me.c | 17 -----------------
+ 1 file changed, 17 deletions(-)
 
+diff --git a/drivers/misc/mei/gsc-me.c b/drivers/misc/mei/gsc-me.c
+index 6be8f1cc052c..45c10974b12b 100644
+--- a/drivers/misc/mei/gsc-me.c
++++ b/drivers/misc/mei/gsc-me.c
+@@ -144,9 +144,6 @@ static void mei_gsc_remove(struct auxiliary_device *aux_dev)
+ 	struct mei_me_hw *hw;
+ 
+ 	dev = dev_get_drvdata(&aux_dev->dev);
+-	if (!dev)
+-		return;
+-
+ 	hw = to_me_hw(dev);
+ 
+ 	mei_stop(dev);
+@@ -168,9 +165,6 @@ static int __maybe_unused mei_gsc_pm_suspend(struct device *device)
+ {
+ 	struct mei_device *dev = dev_get_drvdata(device);
+ 
+-	if (!dev)
+-		return -ENODEV;
+-
+ 	mei_stop(dev);
+ 
+ 	mei_disable_interrupts(dev);
+@@ -186,9 +180,6 @@ static int __maybe_unused mei_gsc_pm_resume(struct device *device)
+ 	int err;
+ 	struct mei_me_hw *hw;
+ 
+-	if (!dev)
+-		return -ENODEV;
+-
+ 	hw = to_me_hw(dev);
+ 	aux_dev = to_auxiliary_dev(device);
+ 	adev = auxiliary_dev_to_mei_aux_dev(aux_dev);
+@@ -211,8 +202,6 @@ static int __maybe_unused mei_gsc_pm_runtime_idle(struct device *device)
+ {
+ 	struct mei_device *dev = dev_get_drvdata(device);
+ 
+-	if (!dev)
+-		return -ENODEV;
+ 	if (mei_write_is_idle(dev))
+ 		pm_runtime_autosuspend(device);
+ 
+@@ -225,9 +214,6 @@ static int  __maybe_unused mei_gsc_pm_runtime_suspend(struct device *device)
+ 	struct mei_me_hw *hw;
+ 	int ret;
+ 
+-	if (!dev)
+-		return -ENODEV;
+-
+ 	mutex_lock(&dev->device_lock);
+ 
+ 	if (mei_write_is_idle(dev)) {
+@@ -252,9 +238,6 @@ static int __maybe_unused mei_gsc_pm_runtime_resume(struct device *device)
+ 	struct mei_me_hw *hw;
+ 	irqreturn_t irq_ret;
+ 
+-	if (!dev)
+-		return -ENODEV;
+-
+ 	mutex_lock(&dev->device_lock);
+ 
+ 	hw = to_me_hw(dev);
 -- 
 2.34.1
 
