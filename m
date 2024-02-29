@@ -1,167 +1,108 @@
-Return-Path: <linux-kernel+bounces-86554-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86555-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3D0986C6F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:31:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFE0F86C6F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:32:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5CC9428450E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:31:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 706661F26564
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:32:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 034E66BB4F;
-	Thu, 29 Feb 2024 10:31:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="QU0VLTe5"
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B3926A8D7
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 10:31:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DF1876C7A;
+	Thu, 29 Feb 2024 10:32:41 +0000 (UTC)
+Received: from zg8tndyumtaxlji0oc4xnzya.icoremail.net (zg8tndyumtaxlji0oc4xnzya.icoremail.net [46.101.248.176])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C92A6768F4;
+	Thu, 29 Feb 2024 10:32:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.101.248.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709202685; cv=none; b=WKSKlto+ZpUbYmhNzVKw+Kl/pWnWiiuBJOmK8TUzJ3aGZjGaTl1TIR0kYDnJSKZ8cwf7AoqGhupbSIX9qokBZW2jbHQR1arLB6YuTxG+vI83N+pKx+UQ/74/+1Xeo3pt2AFsbXf8Fk2ZP3BAG1mTIz7DQ9Kt1cu7amCE3rTYcZ4=
+	t=1709202760; cv=none; b=C50IpytTR6Tw6dLj7cdz+4x076xkHynwoaZTrCYhCfbHZBIggEMCjM+8ZQF+Y5NRRb4y0w0HNZyvqKroKNs5sLvjn13Y2n6GUAlRgTEOr8mwc+ze32VvLvNKi3QCAE9YldioKeWAVz2e9alMaroKUSOCPJIWGY4eOb0wUyoh6eE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709202685; c=relaxed/simple;
-	bh=X9genLYk5vEwjtUt1AvHjc3bwNpSYBG4qQ/naf2npqs=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=FV8P8xXm37FDEwweCuBaC2z16N6j75tTGQccI2MZH8iBU4Axgt/N7rCEXi5CV0tXrfZcY1TFb2t9hzhd1JZaBOPb+4td4hBP5zWvOylFqtUA60CaAP9duZBcRotuLl3AHcS+/e4HajtpCGnwbUpsDT+tpf2z1Wd2icrn8rtx/zo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=QU0VLTe5; arc=none smtp.client-ip=217.70.183.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 12CF7E0008;
-	Thu, 29 Feb 2024 10:31:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709202681;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xB/mH2t7HucMvUeJIJZB7RytH2L7kmSd4lRMo452s7Q=;
-	b=QU0VLTe5qBP5PiMq57AosE7CFqBFOBXnPt5TwOODUBfDS3l8/e/Tj4B7hh+x34uzlZmPPw
-	pKfLh3ILuGLD4Lfvgm84/9sbL/BkupVZes47Yz598J+Pug6lLYjHqbN3Vy0vJeWZ9h2WmB
-	1WLaySXulLngWCHOW64VKR8LS2bLJn91gPYZhsuPF4NIiPjYORzX18ZyDzuIVE1SFZfbIv
-	wTD8UtHmvCK8K4T8UusSmytLGagbr5oezKNJHjbYaICQlSIeQIB2fjcoKjYj9KveHPYxVl
-	slKXGYK+StUOcpqaoN9pENEGE6UFLjHJILKrmEcwrylplnI8G8ozEEfK30DXWw==
-Date: Thu, 29 Feb 2024 11:31:19 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: William Zhang <william.zhang@broadcom.com>
-Cc: Linux MTD List <linux-mtd@lists.infradead.org>, Linux ARM List
- <linux-arm-kernel@lists.infradead.org>, Broadcom Kernel List
- <bcm-kernel-feedback-list@broadcom.com>, f.fainelli@gmail.com,
- kursad.oney@broadcom.com, joel.peshkin@broadcom.com,
- anand.gore@broadcom.com, dregan@mail.com, kamal.dasu@broadcom.com,
- tomer.yacoby@broadcom.com, dan.beygelman@broadcom.com, David Regan
- <dregan@broadcom.com>, linux-kernel@vger.kernel.org, Vignesh Raghavendra
- <vigneshr@ti.com>, Brian Norris <computersforpeace@gmail.com>, Richard
- Weinberger <richard@nod.at>
-Subject: Re: [PATCH v6 12/13] mtd: rawnand: brcmnand: Add support for
- getting ecc setting from strap
-Message-ID: <20240229113119.30f7cee6@xps-13>
-In-Reply-To: <be75db7d-a698-43ab-b29e-dea3a0f60ba2@broadcom.com>
-References: <20240223034758.13753-1-william.zhang@broadcom.com>
-	<20240223034758.13753-13-william.zhang@broadcom.com>
-	<20240223101852.005da3ad@xps-13>
-	<db1c1e68-40e2-4c6c-afb2-2fb591883a46@broadcom.com>
-	<20240226093632.089d594c@xps-13>
-	<be75db7d-a698-43ab-b29e-dea3a0f60ba2@broadcom.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1709202760; c=relaxed/simple;
+	bh=LflXo9uhwDjMO2CtqfGpFbBk07gB8N/MJw3BYUAPA5E=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=DJ+SNaMvDUnLJgTSkxFRzZlQYap2TyrnJ7ehRAplXs3Xs4ndYmCmXxZYT862k2/3Wpv/vJsy4UT2zyqW7nlNNmYhDKlR2UyE2c30ytxy+gvTK3OzTjqmfK/xzTC5ohMHKb/0ef5QfJ7+25eytfuEnbZbHmTdQ+W2WXiv/+8mhP4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=46.101.248.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
+Received: from ubuntu.localdomain (unknown [218.12.19.137])
+	by mail-app3 (Coremail) with SMTP id cC_KCgBXOzUZXeBlwXS1AQ--.1150S2;
+	Thu, 29 Feb 2024 18:32:05 +0800 (CST)
+From: Duoming Zhou <duoming@zju.edu.cn>
+To: linux-kernel@vger.kernel.org
+Cc: brcm80211-dev-list.pdl@broadcom.com,
+	brcm80211@lists.linux.dev,
+	linux-wireless@vger.kernel.org,
+	justinstitt@google.com,
+	quic_alokad@quicinc.com,
+	jisoo.jang@yonsei.ac.kr,
+	petr.tesarik.ext@huawei.com,
+	hdegoede@redhat.com,
+	keescook@chromium.org,
+	johannes.berg@intel.com,
+	kvalo@kernel.org,
+	arend.vanspriel@broadcom.com,
+	Duoming Zhou <duoming@zju.edu.cn>
+Subject: [PATCH v3] wifi: brcm80211: handle pmk_op allocation failure
+Date: Thu, 29 Feb 2024 18:31:53 +0800
+Message-Id: <20240229103153.18533-1-duoming@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID:cC_KCgBXOzUZXeBlwXS1AQ--.1150S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7XFyDAF1UAr4kCw1xuFyrtFb_yoW8JrW7pw
+	4xGFyqyr1UWw4Ykw4rtF92yryFg3W7K34Fkr4jva4fuFs3Gr18Jw48KFyYvF1kArW2y3y2
+	yFWkJasxWrs8X37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9E14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFylc2xSY4AK67AK6r4DMxAIw28IcxkI7VAKI4
+	8JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xv
+	wVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjx
+	v20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20E
+	Y4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267
+	AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VU1VyI5UUUUU==
+X-CM-SenderInfo: qssqjiasttq6lmxovvfxof0/1tbiAwQGAWXfgNMKpABfsY
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
 
-Hi William,
+The kzalloc() in brcmf_pmksa_v3_op() will return null if the
+physical memory has run out. As a result, if we dereference
+the null value, the null pointer dereference bug will happen.
 
-william.zhang@broadcom.com wrote on Mon, 26 Feb 2024 12:05:18 -0800:
+Return -ENOMEM from brcmf_pmksa_v3_op() if kzalloc() fails
+for pmk_op.
 
-> On 2/26/24 00:36, Miquel Raynal wrote:
-> > Hi William,
-> >=20
-> > william.zhang@broadcom.com wrote on Fri, 23 Feb 2024 09:25:09 -0800:
-> >  =20
-> >> Hi Miquel,
-> >>
-> >> On 2/23/24 01:18, Miquel Raynal wrote: =20
-> >>> Hi William,
-> >>>
-> >>> william.zhang@broadcom.com wrote on Thu, 22 Feb 2024 19:47:57 -0800: =
-=20
-> >>>    >>>> BCMBCA broadband SoC based board design does not specify ecc =
-setting in =20
-> >>>> dts but rather use the SoC NAND strap info to obtain the ecc strength
-> >>>> and spare area size setting. Add brcm,nand-ecc-use-strap dts propety=
- for
-> >>>> this purpose and update driver to support this option. However these=
- two
-> >>>> options can not be used at the same time.
-> >>>>
-> >>>> Signed-off-by: William Zhang <william.zhang@broadcom.com>
-> >>>> Reviewed-by: David Regan <dregan@broadcom.com> =20
-> >>>>   >>> =20
-> >>> FYI I did not receive patches 7, 8, 9, which makes the series numberi=
-ng
-> >>> very odd. =20
-> >>>    >> I was using the get maintainer script mainly and it sends to th=
-e linux MTD list.  I will add your email directly next time. =20
-> >=20
-> > Yes, I prefer to be in Cc of the whole series, please.
-> >  =20
-> Sure.  And thanks for applying other patches.  Do you want me to just sen=
-d a new single patch for the update?
+Fixes: a96202acaea4 ("wifi: brcmfmac: cfg80211: Add support for PMKID_V3 operations")
+Acked-by: Arend van Spriel <arend.vanspriel@broadcom.com>
+Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
+---
+Changes in v3:
+  - Just return -ENOMEM.
 
-Yes just the missing patch.
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-> >>>>    >> +static int brcmnand_get_sector_size_1k(struct brcmnand_host *=
-host) =20
-> >>>> +{
-> >>>> +	struct brcmnand_controller *ctrl =3D host->ctrl;
-> >>>> +	int sector_size_bit =3D brcmnand_sector_1k_shift(ctrl);
-> >>>> +	u16 acc_control_offs =3D brcmnand_cs_offset(ctrl, host->cs,
-> >>>> +						  BRCMNAND_CS_ACC_CONTROL);
-> >>>> +	u32 acc_control;
-> >>>> +
-> >>>> +	if (sector_size_bit < 0)
-> >>>> +		return 0;
-> >>>> +
-> >>>> +	acc_control =3D nand_readreg(ctrl, acc_control_offs);
-> >>>> +
-> >>>> +	return (acc_control & BIT(sector_size_bit)) >> sector_size_bit; =20
-> >>>
-> >>> FIELD_PREP, FIELD_GET, *please*. =20
-> >> You probably missed my reply to your comments on the same patch in v5.=
- Here is the link for the post in case it lost in your email:
-> >> https://lore.kernel.org/lkml/c145b90c-e9f0-4d82-94cc-baf7bfda5954@gmai=
-l.com/T/#m1d911d2f119f3bd345c575a81b60bc2bd8c461eb =20
-> >=20
-> > I didn't miss it, but the reason does not sound legitimate to me.
-> > Please work on it, it will be so much cleaner.
-> >  =20
-> I understand FIELD_PREP/GET is the preferred way of linux accessing the r=
-egister fields but it requires a constant MASK value and does not apply to =
-our case as we have different versions of the register and have different m=
-ask.  There is way to workaround it. i.e defining the multiple constants di=
-rectly and using these macros with if/else based on reg version. But it is =
-not clean and since we already have helper functions that handle and return=
- different shift/mask value, I see this is a perfect way for our situation =
-and can adapt to future reg version change easily and cleanly.
->=20
-> >> The mask is not constant here and cause build errors. =20
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+index 28d6a30cc01..1a5d7494f5e 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+@@ -4322,6 +4322,9 @@ brcmf_pmksa_v3_op(struct brcmf_if *ifp, struct cfg80211_pmksa *pmksa,
+ 	int ret;
+ 
+ 	pmk_op = kzalloc(sizeof(*pmk_op), GFP_KERNEL);
++	if (!pmk_op)
++		return -ENOMEM;
++
+ 	pmk_op->version = cpu_to_le16(BRCMF_PMKSA_VER_3);
+ 
+ 	if (!pmksa) {
+-- 
+2.17.1
 
-Which errors?
-
-+       acc_control =3D nand_readreg(ctrl, acc_control_offs);
-+       return FIELD_GET(BIT(sector_size_bit), acc_control);
-
-Does not return any error here.
-
-Thanks,
-Miqu=C3=A8l
 
