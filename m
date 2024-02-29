@@ -1,119 +1,140 @@
-Return-Path: <linux-kernel+bounces-86516-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86518-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C56C086C66F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:09:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF3AD86C675
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:10:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69BDC1F220A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:09:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4A927B29382
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:10:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8DD96350D;
-	Thu, 29 Feb 2024 10:09:18 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89F5C63408;
-	Thu, 29 Feb 2024 10:09:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BFBA651B1;
+	Thu, 29 Feb 2024 10:09:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mBFjhK5d"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7722164A8E;
+	Thu, 29 Feb 2024 10:09:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709201358; cv=none; b=Im48sKjodaL6V2AwHS1zM5o63cNfaLH/uLD0v43BxqMJo+RDf7Fy4Xjj5GE+nGCyu7qssWOa9aM1aCsAT5TsiRzRIyKtIpkMJewLFacubbAU/k4XlCEQhhr2UhMzwXYoo0QUcFDoWWvZXOAeDox7jTsJa1I43iPY1+Y3FhNTgBU=
+	t=1709201371; cv=none; b=tulC48sAA9mM+la66TubO7m9fLoUObm8ODtBY+ZT6uDCZkwcUvHRh/C/5pJJK7tSPehrq9/jNjLw/DcvMzkqZbE79fvsnuZSN6nMNs0VzyMejqxW0h3hE0rUvXeYP2Y27LBp4IYMq4rmVGzjl0Xl7unvsaGHvTwcCwqDZVm2PVY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709201358; c=relaxed/simple;
-	bh=8bR6PwZBq4qbVJA3nu9uxIqMtWjtSXCP92eEOytRYyw=;
+	s=arc-20240116; t=1709201371; c=relaxed/simple;
+	bh=jTspB3iUz57ARAjdinxW+/Q91yDRnm3gqja4T9fxZTA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eTWGWuy8glQWK24AoNQM28JA8FXgBNbditrvBGhSaraBVSeEmiHdKrJVXtRVWMfWv4pKPAQXfNwGrdTariEG8HsSGH+/+6bDlauyAh8x5ZlRfRp33KCJT2XmXbbwJ7UORXcjtAIU7e+fPnQsa4OL0KmKegvpv8Ae3OWrmdC9No8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9978D1FB;
-	Thu, 29 Feb 2024 02:09:53 -0800 (PST)
-Received: from pluto (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F29D73F762;
-	Thu, 29 Feb 2024 02:09:12 -0800 (PST)
-Date: Thu, 29 Feb 2024 10:09:10 +0000
-From: Cristian Marussi <cristian.marussi@arm.com>
-To: Stephen Boyd <sboyd@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	sudeep.holla@arm.com, james.quinlan@broadcom.com,
-	f.fainelli@gmail.com, vincent.guittot@linaro.org,
-	peng.fan@oss.nxp.com, michal.simek@amd.com, quic_sibis@quicinc.com,
-	quic_nkela@quicinc.com, souvik.chakravarty@arm.com,
-	Michael Turquette <mturquette@baylibre.com>,
-	linux-clk@vger.kernel.org
-Subject: Re: [PATCH 6/7] clk: scmi: Allocate CLK operations dynamically
-Message-ID: <ZeBXxjKiDMT2YPtP@pluto>
-References: <20240214183006.3403207-1-cristian.marussi@arm.com>
- <20240214183006.3403207-7-cristian.marussi@arm.com>
- <500e265eb7c6a03a40e0067c8806e059.sboyd@kernel.org>
- <ZdcFuV0KQDXTH8L8@pluto>
- <1d0baf6dbaa1c2ca6594f9a2bcade2c4.sboyd@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=WrsTKjF96HJg9LsuOEf9iM8DPCUw7ftyD5DjIfnF9N71rtx7kO4DJjCgPx/wzCNFJP7+KfJ9nS4RSXO4XdgE9oetLb29/R4b6pQFobMgvFTTvJWWa4QV7LhkhKpTe/4xVVOWZLf5GYtGfn552X3lNcuA8X369E/+grAN3nLIlHw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mBFjhK5d; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F695C433F1;
+	Thu, 29 Feb 2024 10:09:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709201371;
+	bh=jTspB3iUz57ARAjdinxW+/Q91yDRnm3gqja4T9fxZTA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=mBFjhK5d7fJpVw/6bDbc5tkU6ElHDTpzVkK/jIbuftZBarsoqfd0J/td4ycX7Y0NI
+	 OwuwPlDbj8ZtIqnlCXOF2pG3huqmMUj5GBAof4EEoDRc9P6XPkyLOZ8+aLsqxoP9yI
+	 E+m7pUJjav8Pn5m1m75Em6T0UBx+RyRZKKV0gXMgKErQBBb2lSrjaJ6CNubQUijnjS
+	 Dck5QGzkyUjQu7qNjOmf68ZPRsSaTKxIdhCuhIRwbtTaqNBpNuQDQRK4HppSWMejtG
+	 bsu5gpSsPoHrMRolGv5LGA7fro/ZxAwUPx7adyrYyWYoONQWysvfvvefct3/hkMK84
+	 UhWf04m39lTrg==
+Date: Thu, 29 Feb 2024 11:09:24 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: Daniel =?utf-8?B?RMOtYXo=?= <daniel.diaz@linaro.org>, 
+	Naresh Kamboju <naresh.kamboju@linaro.org>, open list <linux-kernel@vger.kernel.org>, 
+	linux-ext4 <linux-ext4@vger.kernel.org>, linux-fsdevel@vger.kernel.org, lkft-triage@lists.linaro.org, 
+	Jan Kara <jack@suse.cz>, Andreas Dilger <adilger.kernel@dilger.ca>, 
+	Theodore Ts'o <tytso@mit.edu>, Randy Dunlap <rdunlap@infradead.org>, shikemeng@huaweicloud.com, 
+	Arnd Bergmann <arnd@arndb.de>, Dan Carpenter <dan.carpenter@linaro.org>
+Subject: Re: ext4_mballoc_test: Internal error: Oops: map_id_range_down
+ (kernel/user_namespace.c:318)
+Message-ID: <20240229-stapfen-eistee-9d946b4a3a9d@brauner>
+References: <CA+G9fYvnjDcmVBPwbPwhFDMewPiFj6z69iiPJrjjCP4Z7Q4AbQ@mail.gmail.com>
+ <CAEUSe79PhGgg4-3ucMAzSE4fgXqgynAY_t8Xp+yiuZsw4Aj1jg@mail.gmail.com>
+ <7e1c18e3-7523-4fe6-affe-d3f143ad79e3@roeck-us.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1d0baf6dbaa1c2ca6594f9a2bcade2c4.sboyd@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7e1c18e3-7523-4fe6-affe-d3f143ad79e3@roeck-us.net>
 
-On Wed, Feb 28, 2024 at 06:20:34PM -0800, Stephen Boyd wrote:
-> Quoting Cristian Marussi (2024-02-22 00:28:41)
-> > On Wed, Feb 21, 2024 at 09:44:14PM -0800, Stephen Boyd wrote:
+On Wed, Feb 28, 2024 at 11:33:36AM -0800, Guenter Roeck wrote:
+> On 2/28/24 11:26, Daniel Díaz wrote:
+> > Hello!
+> > 
+> > On Wed, 28 Feb 2024 at 12:19, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+> > > Kunit ext4_mballoc_test tests found following kernel oops on Linux next.
+> > > All ways reproducible on all the architectures and steps to reproduce shared
+> > > in the bottom of this email.
 > > > 
-> > > It's not great to move these function pointer structs out of RO memory
-> > > to RW. I'm also not convinced that it's any better to construct them at
-> > > runtime. Isn't there a constant set of possible clk configurations? Or
-> > > why can't we simply add some failures to the clk_ops functions instead?
-> > 
-> > Well, the real clock devices managed by the SCMI server can be a of
+> > > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> > > 
 > 
-> SCMI is a server!? :)
+> [ ... ]
 > 
-
-..well the platform fw act as a server in the client-server SCMI
-model...so...I know these days it's cooler to be "serverless" but..hey...
-..at least is not a BO2k server :P
-
-> > varying nature and so the minimum set of possible clk configurations
-> > to cover will amount to all the possible combinations of supported ops
-> > regarding the specific clock properties (i.e. .set_parent / .set_rate /
-> > .enable / .get/set_duty_cycle / atomic_capability ... for now)...we
-> > simply cannot know in advance what the backend SCMI server is handling.
-> > 
-> > These seemed to me too much in number (and growing) to be pre-allocated
-> > in all possible combinations. (and mostly wasted since you dont really
-> > probably use all combinations all the time)
-> > 
-> > Moreover, SCMI latest spec now exposes some clock properties (or not) to
-> > be able avoid even sending an actual SCMI message that we know will be
-> > denied all the time; one option is that we return an error,, as you said,
-> > but what is the point (I thought) to provide at all a clk-callback that
-> > we know upfront will fail to be executed every time ? (and some consumer
-> > drivers have been reported by partners not to be happy with these errors)
-> > 
-> > What I think could be optimized here instead, and I will try in the next
-> > respin, it is that now I am allocating one set of custom ops for each clock
-> > at the end, even if exactly the same ops are provided since the clock
-> > capabilities are the same; I could instead allocate dynamically and fill only
-> > one single set of ops for each distinct set of combinations, so as to avoid
-> > useless duplication and use only the miminum strict amount of RW memory
-> > needed.
+> > +Guenter. Just the thing we were talking about, at about the same time.
 > > 
 > 
-> Yes please don't allocate a clk_op per clk. And, please add these
-> answers to the commit text so that we know why it's not possible to know
-> all combinations or fail clk_ops calls.
+> Good that others see the same problem. Thanks a lot for reporting!
 
-Sure I posted this series a couple of days ago about this rework:
+Hm...
 
-	https://lore.kernel.org/linux-arm-kernel/20240227194812.1209532-1-cristian.marussi@arm.com/
+static struct super_block *mbt_ext4_alloc_super_block(void)
+{                                                                                                                                                                                                       struct ext4_super_block *es = kzalloc(sizeof(*es), GFP_KERNEL);
+        struct ext4_sb_info *sbi = kzalloc(sizeof(*sbi), GFP_KERNEL);
+        struct mbt_ext4_super_block *fsb = kzalloc(sizeof(*fsb), GFP_KERNEL);
 
-with a bit of context in the cover-letter and in the commit...but I can
-add more commenting of course if needed.
+        if (fsb == NULL || sbi == NULL || es == NULL)
+                goto out;
 
-Thanks for the review,
-Cristian
+        sbi->s_es = es;
+        fsb->sb.s_fs_info = sbi;
+        return &fsb->sb;
+
+out:
+        kfree(fsb);
+        kfree(sbi);
+        kfree(es);
+        return NULL;
+}
+
+That VFS level struct super_block that is returned from this function is
+never really initialized afaict? Therefore, sb->s_user_ns == NULL:
+
+i_uid_write(sb, ...)
+-> NULL = i_user_ns(sb)
+   -> make_kuid(NULL)
+      -> map_id_range_down(NULL)
+
+Outside of this test this can never be the case. See alloc_super() in
+fs/super.c. So to stop the bleeding this needs something like:
+
+static struct super_block *mbt_ext4_alloc_super_block(void)
+{
+        struct ext4_super_block *es = kzalloc(sizeof(*es), GFP_KERNEL);
+        struct ext4_sb_info *sbi = kzalloc(sizeof(*sbi), GFP_KERNEL);
+        struct mbt_ext4_super_block *fsb = kzalloc(sizeof(*fsb), GFP_KERNEL);
+
+        if (fsb == NULL || sbi == NULL || es == NULL)
+                goto out;
+
+        sbi->s_es = es;
+        fsb->sb.s_fs_info = sbi;
++       fsb.sb.s_user_ns = &init_user_ns;
+        return &fsb->sb;
+
+out:
+        kfree(fsb);
+        kfree(sbi);
+        kfree(es);
+        return NULL;
+}
 
