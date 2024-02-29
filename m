@@ -1,134 +1,108 @@
-Return-Path: <linux-kernel+bounces-86671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86673-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC87B86C8BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:06:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECF7486C8DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:08:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 154A41C21BD5
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:06:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 281DB1C22117
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:08:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12C677D06D;
-	Thu, 29 Feb 2024 12:05:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6196C7CF2A;
+	Thu, 29 Feb 2024 12:07:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kDBklEfB"
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SQyiAbXv"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C13487CF16;
-	Thu, 29 Feb 2024 12:05:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE0517CF11
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 12:07:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709208346; cv=none; b=ZQBgPLFv0iKU7oW3yccviSdnqVN+uNP+c7u5CL6ONipPAaKBOsvGyYU11aBHWDetM29S6SH1kgz0R5b/XTrm/arlgrC5KURxwVXOVX9iAJA3bSvNrWR1bTBWL9x7i2AcbKA40gaaYrhuCrpAFCyi/80BcFPkyzqWsSR9FR5VOU0=
+	t=1709208467; cv=none; b=lo4R2JgwTEeeZqOkFS2pfZs/adnX0X1g/w9sRlf0Q3VJsWchdkDy3wy9tYip5J8FlalFiWLkFPcrlYyFj5zeSW8ZztJ2dFDIbOFEnJLPmRzren/ht8bQiRfMimhVOHL4BWRc2n5KSFdJh4YPvbu9kia3LceEVGGc0tHsEImF80M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709208346; c=relaxed/simple;
-	bh=/bbb7l83hj76pskoFmjDlhlQeqTmupIOHZ/UQmFJtMg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=bM98s3dkl0ivauIxiG/N8l11aj/6xVDggKRSOfU6LjZcfDk5VrLqgUkdT17Kr1X7CSkzVf+oLjK8M15gXvpKp5Kk0v35Wm9P4GwdORMgN7VZ2neQjRj+QzJGCxPAv5bW5if5prCCMdAXrq0y/hcqNm4QUQ1wwDvcjXsRVmUy894=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kDBklEfB; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-33e151a1434so86475f8f.2;
-        Thu, 29 Feb 2024 04:05:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709208343; x=1709813143; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=AKTrC5BUEoERGt6YpPOVR4/EueT/sWktcgEEY9nn3IA=;
-        b=kDBklEfB5a2IiUyyO7bkZzsYM8mo5La/NcUOYLpF0DHeE0dZPfrRGdS6yiSBcxKTQ0
-         6LzmH9KUeKo0v2r8BqnTJPDwgwDoR8IfKDZsDwMNoh8RBfT1swGAj8F85C3ZwvH4l/mD
-         FSpM0YoPy3nIFUo7IOzS8pVnyGin8GmYbm/2bHZmK8iLTb0KUmXrAR9EDDHyh9hVSMjc
-         0Z4/4DpueFCG5AhWZAW6jQm/pJOYf2J3c3Gmu927FyHDWnJKc8aj/qPyqDvouqwMLd82
-         8ClJEY0Q70vX/o5AgOSSybRs6FHsnnpIz038iWZBTJMDVq3fQ8KmzHTL6BIHJHosAWYP
-         v2rQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709208343; x=1709813143;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AKTrC5BUEoERGt6YpPOVR4/EueT/sWktcgEEY9nn3IA=;
-        b=wDYglsUK9FxC3odqAljAdwq3RBdgJtt07eFbGydSuy3F0Y1UuvVAuBgrsIs6ApsQ+S
-         IgG9FBnGyMLdfzd8+09EZSTIT0ZiC2GacMyLrhVdUB63r1tYm++iOUWwMopKdUefyojc
-         8zWeeNGuKNCnZiz2FFoZO/BSNlCh5qpruSH+Gegafc0aaeW85c4YHfWJFSB3ZDmL1xuX
-         OdUibAMPHWyQQl0kCq/YwfEP87hNe2n7xJL6dn8RMMk1xlrRkWsyjG3aIGEdfqZQ6HUE
-         FvVPpi37JkDRO0IR1Tc2mw2NV6xydbpZktuGx1UCwCQKE9uXnqs9JXKN1/6Cv+TJ792m
-         goNg==
-X-Forwarded-Encrypted: i=1; AJvYcCWRcb5JR6GBYBD5pqOsRvKN7r/piFj2LgspBJlOUq+xigYdpGKyeSWFvqjRR6eQQgMNnqoJ9cWIivSSzy/4gltAbshxrIfNna1lVxz1
-X-Gm-Message-State: AOJu0YyQQdWkbg67bl/Z1J48WX7Damz6tGeYqcAMig7R4A12D2y4SRJC
-	UBALRd7T//3OcDxh8SR/cn9u9SVP2ZxIRXAukTwb4N1NhpLFFWi6
-X-Google-Smtp-Source: AGHT+IHflToI7cmVEoLUgAq6Qi4/DXWnunqwZQL/91orV5BJE1B14iuKUeIa2YpviLArwrKjin+VxQ==
-X-Received: by 2002:a5d:484a:0:b0:33d:297d:75a9 with SMTP id n10-20020a5d484a000000b0033d297d75a9mr1311981wrs.24.1709208343075;
-        Thu, 29 Feb 2024 04:05:43 -0800 (PST)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id dp14-20020a0560000c8e00b0033d8ce120f2sm1588446wrb.95.2024.02.29.04.05.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 04:05:42 -0800 (PST)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: Vaibhav Agarwal <vaibhav.sr@gmail.com>,
-	Mark Greer <mgreer@animalcreek.com>,
-	Johan Hovold <johan@kernel.org>,
-	Alex Elder <elder@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	greybus-dev@lists.linaro.org,
-	linux-staging@lists.linux.dev
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH][next] staging: greybus: Remove redundant variable 'mask'
-Date: Thu, 29 Feb 2024 12:05:41 +0000
-Message-Id: <20240229120541.219429-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1709208467; c=relaxed/simple;
+	bh=HyuVlckc5Kl8c8OInENlmlezaCytk+CSvl2MIBYylYc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dF2anlzgWswXmNDGZ+05sExFJM7dyEaglJUZnnKR3eiZeXnqUKp47EjMXEpvqqKD3dNoy/Xumkqmqr8HIFw/21aFAiW4lJWA17jt2MQclotmfiRX0YlmY+SrRGwNvZwFYMPgn69nNqDGFkHX2qPrTllUcF5qB0CAsaVkPvqwTXo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SQyiAbXv; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709208464;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=H+Xze/yxxajNWL1KhoG/Ul/vP6wDJGvmG9gREiC46JA=;
+	b=SQyiAbXvva0MFOzZsGdFZ1+uPhZnynlnuY9YzU5NwJ/AF0fMTAAGXzxokm++voT1vzpTy2
+	0r/Usc6A3+icabz9ifBSLRRev/K70pv/8lHKn9lhG1i54wp2xx6SPhFHUADbLs/2s0696l
+	C9LrRG+Z0xlJk8HEhS8Jk6PbmvGDQhc=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-641-N4lH7H4rMUC6jgPKjgmmBA-1; Thu,
+ 29 Feb 2024 07:07:40 -0500
+X-MC-Unique: N4lH7H4rMUC6jgPKjgmmBA-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 155863C100B0;
+	Thu, 29 Feb 2024 12:07:40 +0000 (UTC)
+Received: from localhost (unknown [10.72.116.6])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id C4B63492BE2;
+	Thu, 29 Feb 2024 12:07:38 +0000 (UTC)
+Date: Thu, 29 Feb 2024 20:07:35 +0800
+From: Baoquan He <bhe@redhat.com>
+To: "Huang, Rulin" <rulin.huang@intel.com>
+Cc: urezki@gmail.com, akpm@linux-foundation.org, colin.king@intel.com,
+	hch@infradead.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	lstoakes@gmail.com, tianyou.li@intel.com, tim.c.chen@intel.com,
+	wangyang.guo@intel.com, zhiguo.zhou@intel.com
+Subject: Re: [PATCH v6] mm/vmalloc: lock contention optimization under
+ multi-threading
+Message-ID: <ZeBzh/rVXwj0Yr8w@MiWiFi-R3L-srv>
+References: <20240229082611.4104839-1-rulin.huang@intel.com>
+ <aa8f0413-d055-4b49-bcd3-401e93e01c6d@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aa8f0413-d055-4b49-bcd3-401e93e01c6d@intel.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 
-The variable mask is being assigned and bit-set but it is never
-being used apart from this. The variable is redundant and can
-be removed.
+On 02/29/24 at 04:31pm, Huang, Rulin wrote:
+> Apologizes for the confusions the original format led to and thanks so
+> much for your guidance which will surely enhance the efficiency when
+> communicating with the kernel community.
+> 
+> We've submitted the v6 of the patch, which more rigorously checks
+> va_flag with BUG_ON, and at the same time ensures the additional
+> performance overhead is subtle. In this modification we also moved the
+> position of the macros because the definition of VMAP_RAM should be
+> placed before alloc_vmap_area().
+> 
+> Much appreciation from you and Uladzislau on the code refinement. And at
+> the same time, we'd also respect the internal review comments and
+> suggestions from Tim and Colin, without which this patch cannot be
+> qualified to be sent out for your review. Although the current
+> implementation has been much different from its first version, I'd still
+> recommend properly recognizing their contributions with the "review-by"
+> tag. Does it make sense?
 
-Cleans up clang scan build warning:
-drivers/staging/greybus/audio_topology.c:764:15: warning: variable 'mask'
-set but not used [-Wunused-but-set-variable]
+Just checked Documentation/process/submitting-patches.rst, seems below
+tags are more appropriate? Because the work you mentioned is your
+internal cooperation and effort, may not be related to upstream patch
+reviewing.
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- drivers/staging/greybus/audio_topology.c | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/drivers/staging/greybus/audio_topology.c b/drivers/staging/greybus/audio_topology.c
-index 08e6a807c132..5dc4721105d4 100644
---- a/drivers/staging/greybus/audio_topology.c
-+++ b/drivers/staging/greybus/audio_topology.c
-@@ -761,7 +761,6 @@ static int gbcodec_enum_dapm_ctl_put(struct snd_kcontrol *kcontrol,
- {
- 	int ret, wi, ctl_id;
- 	unsigned int val, mux, change;
--	unsigned int mask;
- 	struct snd_soc_dapm_widget_list *wlist = snd_kcontrol_chip(kcontrol);
- 	struct snd_soc_dapm_widget *widget = wlist->widgets[0];
- 	struct gb_audio_ctl_elem_value gbvalue;
-@@ -802,7 +801,6 @@ static int gbcodec_enum_dapm_ctl_put(struct snd_kcontrol *kcontrol,
- 
- 	mux = ucontrol->value.enumerated.item[0];
- 	val = mux << e->shift_l;
--	mask = e->mask << e->shift_l;
- 
- 	if (le32_to_cpu(gbvalue.value.enumerated_item[0]) !=
- 	    ucontrol->value.enumerated.item[0]) {
-@@ -815,7 +813,6 @@ static int gbcodec_enum_dapm_ctl_put(struct snd_kcontrol *kcontrol,
- 		if (ucontrol->value.enumerated.item[1] > e->items - 1)
- 			return -EINVAL;
- 		val |= ucontrol->value.enumerated.item[1] << e->shift_r;
--		mask |= e->mask << e->shift_r;
- 		if (le32_to_cpu(gbvalue.value.enumerated_item[1]) !=
- 		    ucontrol->value.enumerated.item[1]) {
- 			change = 1;
--- 
-2.39.2
+Co-developed-by: "Chen, Tim C" <tim.c.chen@intel.com>
+Signed-off-by: "Chen, Tim C" <tim.c.chen@intel.com>
+Co-developed-by: "King, Colin" <colin.king@intel.com>
+Signed-off-by: "King, Colin" <colin.king@intel.com>
 
 
