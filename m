@@ -1,208 +1,116 @@
-Return-Path: <linux-kernel+bounces-86252-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86254-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAA2F86C2E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:55:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 803D786C2E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:56:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D67028A81A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 07:55:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 20DD91F231C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 07:56:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7FF547F6F;
-	Thu, 29 Feb 2024 07:55:30 +0000 (UTC)
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF37F482E5;
+	Thu, 29 Feb 2024 07:56:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OcNZpG3O"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4352446AD;
-	Thu, 29 Feb 2024 07:55:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=211.75.126.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A18A0481D1
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 07:56:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709193330; cv=none; b=IJE7IYWsCQULcU13fNBXOXGqF9Hu1zVb/aTR5E/h1RE5VE8TZFi5kk7HtKaHhpJfaU86Rl+atGskWEzirkOpeqPuNG0cdRcGJt++HU6r5X39cARgb0d/bY6fLqqGj961waVcj6ZdKdZ+/0DS+XvFP5qgSEF+9Co31bp1FSgIaWA=
+	t=1709193387; cv=none; b=mjo+gUQTRIu07puMC70Id3LVGFRiUjevpHKp8vlubHzdK5BTO5rbN4U6HlBz2dgbSiGBcVFP3ZezuZzWsMBhWkNj08BWuI+EP5YJU+305W0pZw6zvWTosgPWk9O2Bii6gHkO2gQnwoRHZQ5ctvu9XpA2JzfBAAkq6W0iSD9uTOo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709193330; c=relaxed/simple;
-	bh=IVtuPS1lBPaj/zxrsGhLxqcDNjuzZOdLuezGWMB8DKo=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=GyD24lYX9e4MTTL76ZnOEY65p4X4SeHCMULcshLUcCbDEADpHFigCSOkP1CMxOCIHJ36Kl3561Lbew/9TqDeKURSnUwXsSu+Ytv6VI1xAxDmUAXy+X5XnZB2vlRXq1fK0wkQyfO3TIkxj2xFfkhST8fxEqFpxEGWTLLkA5KfgPY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com; spf=pass smtp.mailfrom=realtek.com; arc=none smtp.client-ip=211.75.126.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=realtek.com
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 41T7skWyB1231943, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
-	by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 41T7skWyB1231943
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 29 Feb 2024 15:54:46 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.17; Thu, 29 Feb 2024 15:54:47 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 29 Feb 2024 15:54:47 +0800
-Received: from RTEXMBS01.realtek.com.tw ([fe80::48bb:4f38:369c:d153]) by
- RTEXMBS01.realtek.com.tw ([fe80::48bb:4f38:369c:d153%9]) with mapi id
- 15.01.2507.035; Thu, 29 Feb 2024 15:54:47 +0800
-From: Ricky WU <ricky_wu@realtek.com>
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        "gregkh@linuxfoundation.org"
-	<gregkh@linuxfoundation.org>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>
-CC: "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kees Cook
-	<keescook@chromium.org>, Tony Luck <tony.luck@intel.com>,
-        "Guilherme G.
- Piccoli" <gpiccoli@igalia.com>,
-        "linux-hardening@vger.kernel.org"
-	<linux-hardening@vger.kernel.org>,
-        "bpf@vger.kernel.org"
-	<bpf@vger.kernel.org>
-Subject: RE: [PATCH v3] driver core: Cancel scheduled pm_runtime_idle() on device removal
-Thread-Topic: [PATCH v3] driver core: Cancel scheduled pm_runtime_idle() on
- device removal
-Thread-Index: AQHaate/5A+a/3dg+UCIxr7elsRj3rEg7uxQ
-Date: Thu, 29 Feb 2024 07:54:46 +0000
-Message-ID: <ac998dfd10074f77a66d59bcc0ca2213@realtek.com>
-References: <20240229062201.49500-1-kai.heng.feng@canonical.com>
-In-Reply-To: <20240229062201.49500-1-kai.heng.feng@canonical.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1709193387; c=relaxed/simple;
+	bh=q5m5axH+BLCl2agZv8n9DXtP46+hpfFVeTafKX3WiDA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MKJQb0PVQH6gQv4oEyD7VyACHalop5ixKtJs9Uj7wCpDYenqyzRea1lwDt48lboLhf79Fc5t7W6SXzFa/XXhECXBRF3ZainaPfhpzxKxlRTgWiqhfLfjw60zugFm+8QpmOm8PDvXCxJF6FiDYD9SBkPxFYuD5aTAXUD4tAya/B0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OcNZpG3O; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709193384;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rZYUQ2/MyEIs+wTU4JfVi5JkU9l2GM3/3Nd9NcCBnAo=;
+	b=OcNZpG3OqsPzefSEb+z7yVLiWaxHDw4HUkeb04QiETegz7Tlhyw0xJ736Ay30oBZuQ2gpy
+	uwLfIUnvV+l1pziHTd3UTUK0HFOV7Hst26lC31qASqJBYt43dn+W8KMrf08DXNm9Xi8VU2
+	Xbzt66PwreGN6UgicytwGfp2GSmwhNo=
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com
+ [209.85.166.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-647-Muph3YawPpac88wV6CBblQ-1; Thu, 29 Feb 2024 02:56:23 -0500
+X-MC-Unique: Muph3YawPpac88wV6CBblQ-1
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3651eecf80dso1091725ab.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 23:56:22 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709193382; x=1709798182;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rZYUQ2/MyEIs+wTU4JfVi5JkU9l2GM3/3Nd9NcCBnAo=;
+        b=f2AYfaE49Om3Tp9orBFJdTXganQmzpkU4QvaGWVTE0FD5T13FL+iMiuqpiSMKX2yHC
+         IMeWDv6UwqNBfegF5DlIzLCIPX2cQJUNJ5ZD5N0TtRpF+42y7Pqn7pJb4OFAu3fALvM3
+         Gula8wgiZUkpRXbLYhCgyqjvtz5XAIMww6e01qON5kYlRkEtRETihAYQDWDKnOiYTbHB
+         22XnaK9o6kHkCz4fRaotvOtJqElqHrxqLz/N1IZ+dTV6F4W1sgQHKqZvapv4DNPfF2XU
+         leexeJQCXN8Yi/TWtzKytyX5UO75khEQTsBtIuLOxMOyzD5AnDaQ5PLliX1pzNcMKenx
+         CrQA==
+X-Gm-Message-State: AOJu0Yz0Bx9JOxBc74QHDx/p15xcYUn3aOvGNjAxrxN/sa8iIz0LQycF
+	ockn+hnc4pK22XwnyaqyI6oLEs9dMTASJVODFATMrrNTB8d+VcA2X8bDA1AwDe+EVAuZytmJ+hE
+	kpNeqx/dkwnDTfr94IU/qW51CEQ3YkWNJDFu04Ue/9t3w+gzS2qUwecno51phIQ==
+X-Received: by 2002:a05:6e02:20ee:b0:365:aeb8:26d1 with SMTP id q14-20020a056e0220ee00b00365aeb826d1mr1725571ilv.0.1709193382281;
+        Wed, 28 Feb 2024 23:56:22 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFK2Caj/CnSM8btPacrXhbRxxuWkGYLUk6S0weGtsslNFGdZ2LEbvNGX15pEdr1SssPwwCMDw==
+X-Received: by 2002:a05:6e02:20ee:b0:365:aeb8:26d1 with SMTP id q14-20020a056e0220ee00b00365aeb826d1mr1725558ilv.0.1709193381990;
+        Wed, 28 Feb 2024 23:56:21 -0800 (PST)
+Received: from x1n ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id ff11-20020a056a002f4b00b006e57b37a932sm664588pfb.9.2024.02.28.23.56.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Feb 2024 23:56:21 -0800 (PST)
+Date: Thu, 29 Feb 2024 15:56:11 +0800
+From: Peter Xu <peterx@redhat.com>
+To: kernel test robot <lkp@intel.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, llvm@lists.linux.dev,
+	oe-kbuild-all@lists.linux.dev, Yang Shi <shy828301@gmail.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Jason Gunthorpe <jgg@nvidia.com>, x86@kernel.org,
+	"Kirill A . Shutemov" <kirill@shutemov.name>,
+	linuxppc-dev@lists.ozlabs.org,
+	Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 5/5] mm/treewide: Drop pXd_large()
+Message-ID: <ZeA4m7DK03oHE1Kz@x1n>
+References: <20240228085350.520953-6-peterx@redhat.com>
+ <202402291233.CVhChP2c-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <202402291233.CVhChP2c-lkp@intel.com>
 
-> When inserting an SD7.0 card to Realtek card reader, the card reader
-> unplugs itself and morph into a NVMe device. The slot Link down on hot
-> unplugged can cause the following error:
->=20
-> pcieport 0000:00:1c.0: pciehp: Slot(8): Link Down
-> BUG: unable to handle page fault for address: ffffb24d403e5010
-> PGD 100000067 P4D 100000067 PUD 1001fe067 PMD 100d97067 PTE 0
-> Oops: 0000 [#1] PREEMPT SMP PTI
-> CPU: 3 PID: 534 Comm: kworker/3:10 Not tainted 6.4.0 #6
-> Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.M./H370M Pro4,
-> BIOS P3.40 10/25/2018
-> Workqueue: pm pm_runtime_work
-> RIP: 0010:ioread32+0x2e/0x70
-> Code: ff 03 00 77 25 48 81 ff 00 00 01 00 77 14 8b 15 08 d9 54 01 b8 ff f=
-f ff ff
-> 85 d2 75 14 c3 cc cc cc cc 89 fa ed c3 cc cc cc cc <8b> 07 c3 cc cc cc cc=
- 55 83
-> ea 01 48 89 fe 48 c7 c7 98 6f 15 99 48
-> RSP: 0018:ffffb24d40a5bd78 EFLAGS: 00010296
-> RAX: ffffb24d403e5000 RBX: 0000000000000152 RCX: 000000000000007f
-> RDX: 000000000000ff00 RSI: ffffb24d403e5010 RDI: ffffb24d403e5010
-> RBP: ffffb24d40a5bd98 R08: ffffb24d403e5010 R09: 0000000000000000
-> R10: ffff9074cd95e7f4 R11: 0000000000000003 R12: 000000000000007f
-> R13: ffff9074e1a68c00 R14: ffff9074e1a68d00 R15: 0000000000009003
-> FS:  0000000000000000(0000) GS:ffff90752a180000(0000)
-> knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: ffffb24d403e5010 CR3: 0000000152832006 CR4: 00000000003706e0
-> Call Trace:
->  <TASK>
->  ? show_regs+0x68/0x70
->  ? __die_body+0x20/0x70
->  ? __die+0x2b/0x40
->  ? page_fault_oops+0x160/0x480
->  ? search_bpf_extables+0x63/0x90
->  ? ioread32+0x2e/0x70
->  ? search_exception_tables+0x5f/0x70
->  ? kernelmode_fixup_or_oops+0xa2/0x120
->  ? __bad_area_nosemaphore+0x179/0x230
->  ? bad_area_nosemaphore+0x16/0x20
->  ? do_kern_addr_fault+0x8b/0xa0
->  ? exc_page_fault+0xe5/0x180
->  ? asm_exc_page_fault+0x27/0x30
->  ? ioread32+0x2e/0x70
->  ? rtsx_pci_write_register+0x5b/0x90 [rtsx_pci]
->  rtsx_set_l1off_sub+0x1c/0x30 [rtsx_pci]
->  rts5261_set_l1off_cfg_sub_d0+0x36/0x40 [rtsx_pci]
->  rtsx_pci_runtime_idle+0xc7/0x160 [rtsx_pci]
->  ? __pfx_pci_pm_runtime_idle+0x10/0x10
->  pci_pm_runtime_idle+0x34/0x70
->  rpm_idle+0xc4/0x2b0
->  pm_runtime_work+0x93/0xc0
->  process_one_work+0x21a/0x430
->  worker_thread+0x4a/0x3c0
->  ? __pfx_worker_thread+0x10/0x10
->  kthread+0x106/0x140
->  ? __pfx_kthread+0x10/0x10
->  ret_from_fork+0x29/0x50
->  </TASK>
-> Modules linked in: nvme nvme_core snd_hda_codec_hdmi
-> snd_sof_pci_intel_cnl snd_sof_intel_hda_common snd_hda_codec_realtek
-> snd_hda_codec_generic snd_soc_hdac_hda soundwire_intel ledtrig_audio
-> nls_iso8859_1 soundwire_generic_allocation soundwire_cadence
-> snd_sof_intel_hda_mlink snd_sof_intel_hda snd_sof_pci snd_sof_xtensa_dsp
-> snd_sof snd_sof_utils snd_hda_ext_core snd_soc_acpi_intel_match
-> snd_soc_acpi soundwire_bus snd_soc_core snd_compress ac97_bus
-> snd_pcm_dmaengine snd_hda_intel i915 snd_intel_dspcfg snd_intel_sdw_acpi
-> intel_rapl_msr snd_hda_codec intel_rapl_common snd_hda_core
-> x86_pkg_temp_thermal intel_powerclamp snd_hwdep coretemp snd_pcm
-> kvm_intel drm_buddy ttm mei_hdcp kvm drm_display_helper snd_seq_midi
-> snd_seq_midi_event cec crct10dif_pclmul ghash_clmulni_intel sha512_ssse3
-> aesni_intel crypto_simd rc_core cryptd rapl snd_rawmidi drm_kms_helper
-> binfmt_misc intel_cstate i2c_algo_bit joydev snd_seq snd_seq_device
-> syscopyarea wmi_bmof snd_timer sysfillrect input_leds snd ee1004 sysimgbl=
-t
-> mei_me soundcore
->  mei intel_pch_thermal mac_hid acpi_tad acpi_pad sch_fq_codel msr
-> parport_pc ppdev lp ramoops drm parport reed_solomon efi_pstore ip_tables
-> x_tables autofs4 hid_generic usbhid hid rtsx_pci_sdmmc crc32_pclmul ahci
-> e1000e i2c_i801 i2c_smbus rtsx_pci xhci_pci libahci xhci_pci_renesas vide=
-o
-> wmi
-> CR2: ffffb24d403e5010
-> ---[ end trace 0000000000000000 ]---
->=20
-> This happens because scheduled pm_runtime_idle() is not cancelled.
->=20
-> So before releasing the device, stop all runtime power managements by
-> using pm_runtime_barrier() to fix the issue.
->=20
-> Link:
-> https://lore.kernel.org/all/2ce258f371234b1f8a1a470d5488d00e@realtek.com
-> /
-> Cc: Ricky Wu <ricky_wu@realtek.com>
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Tested-by: Ricky Wu <ricky_wu@realtek.com>
+On Thu, Feb 29, 2024 at 01:17:36PM +0800, kernel test robot wrote:
+> >> arch/x86/include/asm/pgtable.h:1099:19: error: redefinition of 'pud_leaf'
+>     1099 | static inline int pud_leaf(pud_t pud)
+>          |                   ^
+>    include/asm-generic/pgtable-nopmd.h:34:19: note: previous definition is here
+>       34 | static inline int pud_leaf(pud_t pud)           { return 0; }
+>          |                   ^
 
-I tested this patch, the result is GOOD.=20
-This issue is not happening with multiple plugging and unplugging
+This is CONFIG_PGTABLE_LEVELS=2.  IIUC patch 5 didn't do anything wrong,
+but when renaming pud_large() it caused this confliction, while in the past
+it was a silent confliction between the old pud_leaf() macro and pud_leaf()
+defintion, the macro could have silently overwrote the function.
 
-> ---
-> v3:
->   Move the change the device driver core.
->=20
-> v2:
->   Cover more cases than just pciehp.
->=20
->  drivers/base/dd.c | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-> index 85152537dbf1..38c815e2b3a2 100644
-> --- a/drivers/base/dd.c
-> +++ b/drivers/base/dd.c
-> @@ -1244,6 +1244,7 @@ static void __device_release_driver(struct device
-> *dev, struct device *parent)
->=20
->         drv =3D dev->driver;
->         if (drv) {
-> +               pm_runtime_barrier(dev);
->                 pm_runtime_get_sync(dev);
->=20
->                 while (device_links_busy(dev)) {
-> --
-> 2.34.1
+IIUC such pud_leaf() is not needed as we have a global fallback.  I'll add
+a pre-requisite patch to remove such pXd_leaf() definitions.
+
+-- 
+Peter Xu
 
 
