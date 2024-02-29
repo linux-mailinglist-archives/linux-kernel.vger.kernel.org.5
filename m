@@ -1,214 +1,186 @@
-Return-Path: <linux-kernel+bounces-87712-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87713-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FC8886D812
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 00:56:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 033D186D814
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:00:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E915A284668
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 23:56:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E6E31F22D7E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 00:00:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD6E413E7C4;
-	Thu, 29 Feb 2024 23:56:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D684D13C9EE;
+	Thu, 29 Feb 2024 23:59:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bgF+frGZ"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	dkim=pass (2048-bit key) header.d=elbertmai.com header.i=@elbertmai.com header.b="U3sIgO3l";
+	dkim=pass (2048-bit key) header.d=purelymail.com header.i=@purelymail.com header.b="bn/qr6Eb"
+Received: from sendmail.purelymail.com (sendmail.purelymail.com [34.202.193.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C10047A158;
-	Thu, 29 Feb 2024 23:56:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.14
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709251005; cv=fail; b=m3Lx7iR0tp/LtVCDVfGIpSTZBBhjKxg+izkVnsb7GG2LtQ2V/uDouMR/z73wanvln9L94dxCKKM/FVAiBzjHTO9L4NEiHZBRTSNSL3+GyAixPcU7DaQTFQNKPDy6wly81zc70Bt667iPZmiNbi9MJyri3NIsupCc2jV3iffz6xw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709251005; c=relaxed/simple;
-	bh=LVLv4AFiRQURzVYhVMKeRdsrvBfvJdsd3jtYZEwFHjU=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=t8xKYDbB0ynnaN9/+pq3B7rQEIdvZuPvUC0s2FVG89iH6vb/9tJbMqyhEbrYi04qH0EwnNsaSzPp0x87t4rN5DH66ePYscpqsQnCyS/As5Q3T37czXECoT9ZTot/m+g77bDP0bdJeIMOrvF8HTtsIlWsZT3I/VWEBybXTyVYeBc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bgF+frGZ; arc=fail smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709251003; x=1740787003;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=LVLv4AFiRQURzVYhVMKeRdsrvBfvJdsd3jtYZEwFHjU=;
-  b=bgF+frGZ+SWUajQ5lmwrPmhn9ENgU/bTwii025iwubFQl3hgl0ooJzh1
-   IHjCqecXEnfybBIp1mkeD+46kd8MSe77keLIbchw1eSyHO36Wcg2Gm2II
-   MuRA7gjXUyFXfreTb3KwZPLFr1wbf4QTW05ZVyQtises/dLPQPGtudNqr
-   LOCmJ3eVjwl1ygtk0ScmRZr3jjXmPhYhz6jYT2cHt7wnB4TcEAlvVufJo
-   lBk6LMGC5n17G+RfyxsAM3BfTF7CwlQoWbXJ//NVA2qHORDhBLPJ5n5+i
-   5+iidaT+j7P3JHJfARC0yDsHllNDG7wmmYei/Hy/uXXf/wYePvDTfsbx2
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="3929274"
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="3929274"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 15:56:42 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="12670516"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orviesa004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 29 Feb 2024 15:56:42 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 29 Feb 2024 15:56:41 -0800
-Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 29 Feb 2024 15:56:40 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 29 Feb 2024 15:56:40 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 29 Feb 2024 15:56:40 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Cm//wVyprcjzh1rJfy/LtRsWH5KD2OJgazZkAzOzzd3wBgSTi0ba2MfAvgTvKEu/uZNG5R80j4KXs8eVq+oFGQrJ8BJMa8x6977KhDEf99I6FFgQZw7EgYJWDGidY+ywAwsHdkjS+0DDYnvh26fbjs9MF61NBxMx+t+5ZOVJ5GWrA/kzHTYUnaS0Fk4WnCuYqRZM/FVGDfv3XF31ldUQfwbggF1HwuwbGXWXYCbLIjZ6M+joFurEkslsWNIKbAOCZ1ncmKgu67K2J4u72BroZw4jmbr13YC99deQ6vi4HQ1Fyer9vcOBpCUuaXN58qYQSR6qZpOr4ncteOjWUEKBeA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KRcBvRL7V83nxGecUDrtuyBiRAZd0DkBbuFStU7yGgg=;
- b=Lb7NeA5Zv+4boEGSPhQIdnIzq6mGZf1Rc6jn0Mok57DydcJDlP1CwZkqphjpjqiw7LRFS1Wca4oZH21l7CZ7N0DLh8R17c1+oIzEVisJcpIPSuLEthsDXLTOu0IiAajnPLLDckl4O4QEjgTUcSQCxM1EBOBXvsKuYMQoKR2GVMABv9jYKx2knrsFfYyJcPiu37MSwRpqUAVqMwWutG4iM6D2Dnwi0nqT5L6BP0JP0HX49fAUsTy1XJTmd5oUiJgcLmvcQ8JmH7RZiB3tjZw1YWrxXfsClIV1DweMb7cJOjkaGfVz5/uzoRxsudOEM+Gi2AKqKOS/k+4WoaGTwa+vIA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from BYAPR11MB3320.namprd11.prod.outlook.com (2603:10b6:a03:18::25)
- by CH0PR11MB5250.namprd11.prod.outlook.com (2603:10b6:610:e1::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.25; Thu, 29 Feb
- 2024 23:56:38 +0000
-Received: from BYAPR11MB3320.namprd11.prod.outlook.com
- ([fe80::940a:5c0a:1b08:67bb]) by BYAPR11MB3320.namprd11.prod.outlook.com
- ([fe80::940a:5c0a:1b08:67bb%3]) with mapi id 15.20.7339.023; Thu, 29 Feb 2024
- 23:56:38 +0000
-Message-ID: <3be03f9e-53cc-4b40-9933-5bf59db84477@intel.com>
-Date: Thu, 29 Feb 2024 15:56:36 -0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] x86/mce: Dynamically size space for machine check records
-To: Tony Luck <tony.luck@intel.com>
-CC: Borislav Petkov <bp@alien8.de>, "Naik, Avadhut" <avadnaik@amd.com>,
-	"x86@kernel.org" <x86@kernel.org>, "linux-edac@vger.kernel.org"
-	<linux-edac@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "yazen.ghannam@amd.com"
-	<yazen.ghannam@amd.com>, Avadhut Naik <avadhut.naik@amd.com>
-References: <20240212175408.GIZcpbQHVjEtwRKLS-@fat_crate.local>
- <SJ1PR11MB60830AF35FA89C7869B8C11EFC482@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <20240212191401.GLZcpt-XHFqPg3cDw-@fat_crate.local>
- <SJ1PR11MB6083C60D7584B02E9CAF19D5FC482@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <ZcqPhVO_DtD2x5N7@agluck-desk3>
- <20240212220833.GQZcqW4WxKH34i-oBR@fat_crate.local>
- <20240212221913.GRZcqZYRd6EPTTnN97@fat_crate.local>
- <20240212224220.GSZcqezMhPojxvIcvO@fat_crate.local>
- <Zd--PJp-NbXGrb39@agluck-desk3>
- <015bf75e-bbe7-44ea-a176-9f1257f56b81@intel.com>
- <ZeC8_jzdFnkpPVPf@agluck-desk3>
-Content-Language: en-US
-From: Sohil Mehta <sohil.mehta@intel.com>
-In-Reply-To: <ZeC8_jzdFnkpPVPf@agluck-desk3>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR05CA0014.namprd05.prod.outlook.com
- (2603:10b6:a03:33b::19) To BYAPR11MB3320.namprd11.prod.outlook.com
- (2603:10b6:a03:18::25)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B648344374
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 23:59:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=34.202.193.197
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709251192; cv=none; b=JvAtlPOTXHQAPTGXRtkfv3eCk6gR4Jn+HJG1/9G1sV/Y2mdJzH/nz20m7hgpOT8hfWVkBY+thBOJEfgMcn5Bihf94BhtqSbG0mSpRsFoU7qcevFst/i21I8F9gljxFcHn8bKcVobvk5VqJS1o+oZyZ4Mlu28OyLHV17UyOcDkWo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709251192; c=relaxed/simple;
+	bh=OOOCsGxQH/wxU/CG8sZCXZFdEfx3IZ9cD1UMgPqoejI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=tAAaQg8HeDgODtPOdfp5MczQfPV/RQaw23Knajne7Zag6k9AKiTMHvFnjyix4REbbEsOuKBrTRUdSVFh+U33KimOerWVchiQL7+ab9KaeHXeqeFbstssIIVKU5S9xnRm9uR+rrTj4cAgqSJzLw4ucUv0EwoqJbKb474ZIPguaKU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=elbertmai.com; spf=pass smtp.mailfrom=elbertmai.com; dkim=pass (2048-bit key) header.d=elbertmai.com header.i=@elbertmai.com header.b=U3sIgO3l; dkim=pass (2048-bit key) header.d=purelymail.com header.i=@purelymail.com header.b=bn/qr6Eb; arc=none smtp.client-ip=34.202.193.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=elbertmai.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=elbertmai.com
+Authentication-Results: purelymail.com; auth=pass
+DKIM-Signature: a=rsa-sha256; b=U3sIgO3lqTzN/z5hQyfzPw4s9+yl5E1EGxOdfTty0MSKjQ6d2FjCTouDqFDDUUqCWMQ+PPy2rhcDKy5qh9UYD6Vyaexsi/qN0O7Y35bNgfwziQRG7N/O5l1v9/86CqRr7TuqbaZzDwKxK00iGx8A+6oOCGBHD38x+swMLVUorvZPMDjYczSm+rKgiiS4h4TpqXo49czACtt0LflITl6DbSVMsr8KoY1N+iWQ9Us3Isjrz4hcewT4JK0mmDffSxiSsiLLxCDWEPKgYBVsjzmWW7IqVdCFdAzm01uY22rY3v4TATqs0YngMTxgYfmNgM34ryX+gQbKEx8Y0jPuosercw==; s=purelymail1; d=elbertmai.com; v=1; bh=OOOCsGxQH/wxU/CG8sZCXZFdEfx3IZ9cD1UMgPqoejI=; h=Received:From:To:Subject;
+DKIM-Signature: a=rsa-sha256; b=bn/qr6Ebpw63GwRPkSkgkHh2wf3tAJtJY7NPyPSTPM/OqoLUHRV1xuiuHvJOKgD/MjNX+dnMYO+vnNb3nvcZycNjSW0dODcVl/3yQdphUcpwhyB14hS7Omxul4L/IxlnXkbilCpFF6JxTyk8uArA2kxxYn29qR82d+a/EhJmx3aOnRq5c+cCHQ45L0BG9BNCZJxbtTAeBd9tKqsN4c5QKyprAkWPYiWcEhTm84pk7FvcPGDg/jPvFsMq6VK8LZN8R7AzjYe/b8n4pgiPhJR6bEiKMzPoUbNByMhOeq4Dt3Njb/TlNqhHuiGJ7KY90ocFvPEWzUPBOFv1NEhiLYZzhQ==; s=purelymail1; d=purelymail.com; v=1; bh=OOOCsGxQH/wxU/CG8sZCXZFdEfx3IZ9cD1UMgPqoejI=; h=Feedback-ID:Received:From:To:Subject;
+Feedback-ID: 5995:1482:null:purelymail
+X-Pm-Original-To: linux-kernel@vger.kernel.org
+Received: by smtp.purelymail.com (Purelymail SMTP) with ESMTPSA id -265359410;
+          (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
+          Thu, 29 Feb 2024 23:59:22 +0000 (UTC)
+From: Elbert Mai <code@elbertmai.com>
+To: gregkh@linuxfoundation.org,
+	linux-kernel@vger.kernel.org,
+	linux-usb@vger.kernel.org
+Cc: Elbert Mai <code@elbertmai.com>
+Subject: [PATCH] usb: Export BOS descriptor to sysfs
+Date: Thu, 29 Feb 2024 15:59:05 -0800
+Message-Id: <20240229235905.569705-1-code@elbertmai.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR11MB3320:EE_|CH0PR11MB5250:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0d8e4753-b803-442e-f6d1-08dc3982118a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dI7PVwRCI26crj23IOC8N8QFC7IGYJo5wHxm4L4a8RjU3HwKdAl94QqpwMNz3ICkY5O5x8XOpa9dM1PYJ61mkOnVzD+lpqLRPSScEIPrNJs4qtsVevcWZh2uYZxjMiFjXU7K406uNMEcKrQWJxBFQnVrrg4JWM3EkvYPQ3ZdETYqrcDF/STfRVBoEAIjx4EVx7nAdBOkMN/BVfNoVznd/ndJEZMZHVyAZHhO4LXJAKMtsHRuKH8ZdFDh9tUiIJwSc+cdtscoxulsbu6lzD9xF1VcqmwZhxM0+Ox0zRUbh+jouRwsieklP69sFNsO4id2eXxamSsQfuucnkc1D2aQoDhKX+ITOdb/wLFAlvttk3nJfVKCLu0Oq+ogYvdl6oYxh16dW8i5tJUuc2/5yS1WqTtorsFA3zA0lgOcHBy+PvdiTqwblXto/EbjqtPASO0jQ+EnniaiNEjCucwuWl18OWK1Ff6vXyB0VWym++rQa8A82VH2gaPTYrApOA8hKAKH6y1e9o0SJX1ENVAFEsP6Jn7JtyHtIM2BRrt5pq0LiU2wh/Re0Bqzgtzkth1bIlO8iY5uUY7MLaPNsH1puvX+Ul4V4XAGi0LNK70ZWbSwFzxL8bk3p92it+4rNncu0xYVj8KZRLccID5lGtEAbmqEEQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3320.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bHJRS011N2M1SmNXUlYyVmR6SW9TTzZCTHdiN0tyYVEvRTFRMUF6bG9QczFV?=
- =?utf-8?B?Nmh5TEpRZVVpa2l4SUZoRUJ6YUxlS3VvOHNTbEZ5WndEUDk2TVlPRXJ5cTlo?=
- =?utf-8?B?RDFQcmJpSVFlOVRPUWhKb0VyU0xHZlhXZzlNSmQ4d2RJZmMzeVpiSGRGQmJD?=
- =?utf-8?B?YWJ6L1B4NVhUd2RwVFZRdVpRTzJBRVU2SzJ0aTdnOGI5eGxPalVtUnpHYlZS?=
- =?utf-8?B?c2VyOWluTDk2MXdGblI1UmNOV09qbEM2bEdUcGhPUmN6MmFLYU9mRW1jMklQ?=
- =?utf-8?B?YTVZalJ1a0ZZNk5GZWZxTEZQbThMcDAyWjRhTFRnSDlqWFlFdkZmakY4eDVh?=
- =?utf-8?B?bXgvYXE5V3BjYTcvT3BlclJtbVVIa3ZMaEVKei94SGtXbWthWWk2RkZpRnJP?=
- =?utf-8?B?eFhDcXB5c2tiMktRNjkwb1I4M1RHdW02WlR2Qk1xcFJUTm10V1VBV3hPK1NT?=
- =?utf-8?B?M0VvMHVzMytNRloyY1BxMXQrbG80Kzlnak1YVkM1WU4yZGxEQVl5WEFNSWl5?=
- =?utf-8?B?ejh2eVZGc2ZXN01QbUZrblUwQ3lhSFRDWTBqTklqR3lOZ0E0K080UjE4RFZp?=
- =?utf-8?B?azF6TTAydVhwclVxMFloL0ltSHM4dUpSS2NuQ0hnajE0L0JFZjVkYTc2QVJo?=
- =?utf-8?B?ZEdlU240TXd5WCtXOG9hc1RKRktZa05nd2tYcEFhNmZjL25UTTBmN1Y2N2Nh?=
- =?utf-8?B?N1krR21hbG1wZzg0TzhqOXZFNlE3cW85cTNXK3d3T1dJSHpNM29GbVBjdFRM?=
- =?utf-8?B?V3psUXNFNUJIQWk1bnZvMVBTcWpIZFAwd04vRVQwTWptOHphRWl5T3o4b0Y5?=
- =?utf-8?B?UEZiZnZjVXJxSmNkVklwbXFKUUtrdDNDRXlnVHVuR0V5bTBKbEhzTkx2UFlF?=
- =?utf-8?B?VHMwbFVyVGV1b05nMnZjYXlaL1h1TDYza29POXdvamlDMVRUdnNLRlFXZjgy?=
- =?utf-8?B?V3VSU084dHA1NVlQQW4rSzhWeFI5b2VtbEFYSlpBcFo5YmJ3RHl1S1hwUkNS?=
- =?utf-8?B?MGxwVFRRT0dXT1FXcTg1M29NbVRPYzcrZXNid0ovTDV0aFljSDdlVURpazRh?=
- =?utf-8?B?QStYWHNTT1AybUVnK0xmOEw5WDBwQVVXNWdZYmNCSGc1VVN0Ly80ZmJteUQ5?=
- =?utf-8?B?aDdGV3BTNFUwc21ocFdpWTRYaGxrWStFNldjVXhwR0ZyOE9OYWlzMTJQV2lW?=
- =?utf-8?B?R1dKUy9ycGYxVm02NkxJV0g3Ny9XYjlvc1FjdTlUZUQ3YVR5RDlMRDBKbWhi?=
- =?utf-8?B?Q0xITnlZR29TL09sd09vOWVSUHVXWFhuOEVxemhveVpMSDRMWncxVXRkR1FL?=
- =?utf-8?B?Nnc2Uzg0b0IyT1FXZlhjaGNOUUFUUS9pZFBUS09yWFYwdk5nNzMvcTF5ZVAx?=
- =?utf-8?B?c0FBQWtQZzB3T1p4WXFEME1NQTl2Qjk1RER5Q3U2SGtORW1uSzNxSTZUc2JG?=
- =?utf-8?B?dEM4dkYwYTVWUXJXd2NwTEEwUTBHSmtEaDU5bjAvM2ZlMmx3aXQzT1pkWUFP?=
- =?utf-8?B?dkRKQ1lGcEhSN2I1c2Q1cGUwYis3QTNIWHdBLy8vVkN4S1d4aXpjaW9idmpH?=
- =?utf-8?B?Vk1WaSswa245R1lwTDNVRjVRTjRyYnlwOVJYWWFuNkRUR251NnNjdG9vVGs4?=
- =?utf-8?B?SmRIZFk0bzRnMkVKZkt6R2JPTXRDOTYrc1Urdit3aTF4eTJtQXkyaHU2cjVx?=
- =?utf-8?B?Ymg3MWluZjNpMkQvU0cwSkZvdDVXRnJzaHMxVm5QMUtGUlhHRnEwMTNFZ3NV?=
- =?utf-8?B?d2hOMjQzMlZHRjlkdjJhbStzbVJYSkJCUG5yVmRPRXZkWkZmU3ZFQXVJUjN2?=
- =?utf-8?B?cTR3S3ZqTWpBZkZIREpUNGc2TmpIQ1NSMDRoS0Nhb3RsLzZVbkI2dnBPZ1ZG?=
- =?utf-8?B?TUkzZVJ6ZVErbDZqQlVYS2kycnhMMWZWbmM2QzV6cmNLN21CdVo2c3dtUUNJ?=
- =?utf-8?B?aTA4QWR1Ti9RSTIzZTlVcHU2Q1NSa283bzdmS01lUWlIZXNCY2VYYStxZ05B?=
- =?utf-8?B?Z3ZmNnYxMDMvcUNvN0tTRE94d1lrbzlCckVEeWpPOWUvaW96VFRVekwzd3FZ?=
- =?utf-8?B?SG03SEorcmFmK0RMMWg1dXVaNGhWYVJ1ajlMLzVMMVUzclVFU1dHcHV4V01U?=
- =?utf-8?Q?pzdng1SAKNNAzkNz6cq60iMtt?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0d8e4753-b803-442e-f6d1-08dc3982118a
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3320.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Feb 2024 23:56:38.3699
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ERQgPVEelLTM8kI2X9J65rgUihT3kU7UQ54lb/KS+pybITwj/ReZwoez7U/mhOItSDnlM/jts4HBW0l++puIWQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB5250
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: quoted-printable
+X-MIME-Autoconverted: from 8bit to quoted-printable by Purelymail
+Content-Type: text/plain; charset=UTF-8
 
-On 2/29/2024 9:21 AM, Tony Luck wrote:
+Motivation
+----------
 
-> Looking at this specific case, sizeof(struct mce_evt_llist) is 136. So
-> the original version of this code picks order 7 to allocate in 128 byte
-> units. But this means that every allocation of a mce_evt_llist will take
-> two 128-byte blocks.
-> 
-> Net result is that the comment at the top of arch/x86/kernel/cpu/mce/genpool.c
-> that two pages are enough for ~80 records was wrong when written. At
-> that point struct mce_evt_llist was below 128, so order was 6, and each
-> allocation took two blocks. So two pages = 8192 bytes divided by (2 * 64)
-> results in 64 possible allocations.
-> 
+The kernel already retrieves and caches the binary device object store
+(BOS) descriptor from USB devices it enumerates. Export this descriptor to
+userspace via sysfs, so users do not need to open the USB device with the
+correct permissions and requesting the descriptor themselves.
 
-Thanks for the explanation. The part that got me is that I somehow
-expected ilog2() to round-up and not round-down.
+A BOS descriptor contains a set of device capability descriptors. One that
+is of interest to users is the platform descriptor. This contains a 128-bit
+UUID and arbitrary data. The descriptor allows parties outside of USB-IF to
+add additional metadata about a device in a standards-compliant manner.
 
-> But over time Intel and AMD added to the structure. So the current math
-> comes out at just 32 allocations before the pool is out of space.
-> 
-> Yazen provided the right answer for this. Change to use order_base_2()
-> 
+Notable examples include the WebUSB and Microsoft OS 2.0 descriptors. Of
+course, there could be more. By exporting the entire BOS descriptor we can
+handle these and all future device capabilities. In addition, tools like
+udev can match rules on device capabilities in the BOS without requiring
+additional I/O with the USB device.
 
-Yes, I agree. order_base_2() is better than doing ilog2(struct size) +
-1. In the rare scenario of the size exactly being a power of 2 we don't
-need to add the +1.
+Implementation
+--------------
 
+Add bos_descriptor file to sysfs. This is a binary file and it works the
+same way as the existing descriptors file. The file exists even if a device
+does not have a BOS descriptor (the file will be empty in this case). This
+allows users to detect if the kernel supports reading the BOS via sysfs and
+fall back to direct USB I/O if needed.
 
+Signed-off-by: Elbert Mai <code@elbertmai.com>
+---
+ Documentation/ABI/testing/sysfs-bus-usb |  9 +++++++
+ drivers/usb/core/sysfs.c                | 35 ++++++++++++++++++++++++-
+ 2 files changed, 43 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/ABI/testing/sysfs-bus-usb b/Documentation/ABI/te=
+sting/sysfs-bus-usb
+index 614d216dff1d..bfffaa752a13 100644
+--- a/Documentation/ABI/testing/sysfs-bus-usb
++++ b/Documentation/ABI/testing/sysfs-bus-usb
+@@ -293,3 +293,12 @@ Description:
+ =09=09USB 3.2 adds Dual-lane support, 2 rx and 2 tx -lanes over Type-C.
+ =09=09Inter-Chip SSIC devices support asymmetric lanes up to 4 lanes per
+ =09=09direction. Devices before USB 3.2 are single lane (tx_lanes =3D 1)
++
++What:=09=09/sys/bus/usb/devices/.../bos_descriptor
++Date:=09=09March 2024
++Contact:=09Elbert Mai <code@elbertmai.com>
++Description:
++=09=09Binary file containing the cached binary device object store (BOS)
++=09=09descriptor of the device. This file is empty if the BOS descriptor
++=09=09is not present. The kernel will not request a BOS descriptor from
++=09=09the device if its bcdUSB value is less than 0x0201.
+diff --git a/drivers/usb/core/sysfs.c b/drivers/usb/core/sysfs.c
+index a2ca38e25e0c..208d2f8cde2d 100644
+--- a/drivers/usb/core/sysfs.c
++++ b/drivers/usb/core/sysfs.c
+@@ -901,7 +901,7 @@ read_descriptors(struct file *filp, struct kobject *kob=
+j,
+ =09=09=09srclen =3D sizeof(struct usb_device_descriptor);
+ =09=09} else {
+ =09=09=09src =3D udev->rawdescriptors[cfgno];
+-=09=09=09srclen =3D __le16_to_cpu(udev->config[cfgno].desc.
++=09=09=09srclen =3D le16_to_cpu(udev->config[cfgno].desc.
+ =09=09=09=09=09wTotalLength);
+ =09=09}
+ =09=09if (off < srclen) {
+@@ -923,6 +923,34 @@ static struct bin_attribute dev_bin_attr_descriptors =
+=3D {
+ =09.size =3D 18 + 65535,=09/* dev descr + max-size raw descriptor */
+ };
+=20
++static ssize_t
++read_bos_descriptor(struct file *filp, struct kobject *kobj,
++=09=09struct bin_attribute *attr,
++=09=09char *buf, loff_t off, size_t count)
++{
++=09struct device *dev =3D kobj_to_dev(kobj);
++=09struct usb_device *udev =3D to_usb_device(dev);
++=09struct usb_host_bos *bos =3D udev->bos;
++=09struct usb_bos_descriptor *desc;
++=09size_t desclen, n =3D 0;
++
++=09if (bos) {
++=09=09desc =3D bos->desc;
++=09=09desclen =3D le16_to_cpu(desc->wTotalLength);
++=09=09if (off < desclen) {
++=09=09=09n =3D min(count, desclen - (size_t) off);
++=09=09=09memcpy(buf, (void *) desc + off, n);
++=09=09}
++=09}
++=09return n;
++}
++
++static struct bin_attribute dev_bin_attr_bos_descriptor =3D {
++=09.attr =3D {.name =3D "bos_descriptor", .mode =3D 0444},
++=09.read =3D read_bos_descriptor,
++=09.size =3D 65535,=09/* max-size BOS descriptor */
++};
++
+ /*
+  * Show & store the current value of authorized_default
+  */
+@@ -1042,6 +1070,10 @@ int usb_create_sysfs_dev_files(struct usb_device *ud=
+ev)
+ =09if (retval)
+ =09=09goto error;
+=20
++=09retval =3D device_create_bin_file(dev, &dev_bin_attr_bos_descriptor);
++=09if (retval)
++=09=09goto error;
++
+ =09retval =3D add_persist_attributes(dev);
+ =09if (retval)
+ =09=09goto error;
+@@ -1071,6 +1103,7 @@ void usb_remove_sysfs_dev_files(struct usb_device *ud=
+ev)
+=20
+ =09remove_power_attributes(dev);
+ =09remove_persist_attributes(dev);
++=09device_remove_bin_file(dev, &dev_bin_attr_bos_descriptor);
+ =09device_remove_bin_file(dev, &dev_bin_attr_descriptors);
+ }
+=20
+--=20
+2.34.1
 
 
