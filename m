@@ -1,88 +1,53 @@
-Return-Path: <linux-kernel+bounces-86856-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86857-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2248C86CBC7
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:40:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5790586CBCE
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:42:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4EB1286238
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:40:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B3FD1C20D44
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:42:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1204F1361B8;
-	Thu, 29 Feb 2024 14:40:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BRMMlmJR"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9614412E1CC
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 14:40:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C7EB13774C;
+	Thu, 29 Feb 2024 14:42:07 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 960E012F580;
+	Thu, 29 Feb 2024 14:42:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709217639; cv=none; b=b9g3MXcrwJdKDMZlDN2m6JlfAj2L/Yjdpk08x+vLkdKCN0vh+9bf1kaYkL6QYMsg1iy6WjuWbj80OzotXn/y+eENxs7emupwM7PZrawaY9nPmYrm7WdwVqY3Q3tAdQlaao4oYucUCR5tqdjMqLz843BEZ+kNOfse7fbJk+AsoYQ=
+	t=1709217727; cv=none; b=USn7R2B+hJfcxEVHPc1fWvorZcsdIFk3tWWTBeNguLQttdDNrBDyw0FkHHc7DAi5S2Sv0NQahMdlZ6G7ZZfGKYQBPp9qmkZmoMLRiwgoRRe4dBjZ9e3HdI6h8OlyzBHrUi+fvCDnbEXm6juH/Y66fntpDuf1mrCiVJ+OsNKGiHE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709217639; c=relaxed/simple;
-	bh=p2DX8xubba2iuV/dOoMIWytAJpO1FcXWNbLHMDea4O4=;
+	s=arc-20240116; t=1709217727; c=relaxed/simple;
+	bh=nieHaErrV6K3GIlaqVdHZU2SZ5kKZDLqrnYXcD8MWio=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YyUkfoCCDaUlCK9CwzOYXk21aGjIP6XhDHkUveKiOQqRMrGmPCrec1FINCoPg0N+vZUO/Slh3Qg2VCyLgxj7PkunO9DV5yaxrDbJInD6Jmx+6czQNkQOz/F2hmFvb3yQtUdJ5fgGbVxrnue/JBWA9NybwBmj3H/OvES+p3OSXog=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BRMMlmJR; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709217636;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QyWEFJ+yNqsYLqP/8VLeQ0BF2PSGGH8euQh2ckEVwzo=;
-	b=BRMMlmJRLAKqmajIeHvfoixPQsFQw8lFB+RiAbOjhI5OQk86qOhUyOc3sQAs2MHBfAxuoQ
-	CTf6TnWZ+gQXf9dRlTjHAuVZCw4GvshAyAvjgroYR4QXnuPEasChBxzMpjcwVRhLH+guVS
-	H1oWClaBH7rX6pj376HIOJRlD7n7jEU=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-81-iZtiUsxKOtCSnFyRzwBH_g-1; Thu, 29 Feb 2024 09:40:35 -0500
-X-MC-Unique: iZtiUsxKOtCSnFyRzwBH_g-1
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-69033ba441fso9064606d6.3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 06:40:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709217634; x=1709822434;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QyWEFJ+yNqsYLqP/8VLeQ0BF2PSGGH8euQh2ckEVwzo=;
-        b=OGFa29R6lT1pMs72/Urfp2LBKZ2TnhSavDOeQksSFRfoTkGHEnH9Z6XYyQsk9KKNQI
-         I/mtQxyV1Ro9VagJLj9Hr/p2uGVaBpiXSnll5N3ttJsLOCfpjtUFFN3Ph4EU2mRxTCJi
-         DhONZE0+on+70D+9Ly33e3yBx1QERYoiBCFr0kWEnVz8ZOIZcfGwht00OfNvFiPOQ97C
-         rdtPzYZWNyBVpYw/UWF6iPZnAsK47xf3f2X2IJP8QUspI/f/RbZgSUeM6Wp5+aedtPBt
-         0pi4Rapga3LL5QvoQsAeXVSvF4bINa9B+MtsYOf2JiZetC0/a+Jcm2PoBhFvYmJ/ibwM
-         wjqg==
-X-Forwarded-Encrypted: i=1; AJvYcCUypfviWCoSeKCMFGcNisfLT4acxUkngeKQoqqc+nHyOoE9I4XLzT8iVXtDPqBAZ3meoBFqAPShh6rmGgB/WcLGfjUweKQns5R//Xqz
-X-Gm-Message-State: AOJu0YxOuootMa3vGmgTycpVE6IuafLa9mCJydULSbzukTCWMIXpGpvQ
-	PrwUksPFos7Oac1k+VuNK0RukkDUJB5UESbSgUj7yiRombG+v64uOyzrLW+iEXrULZZ/kPjT1Q1
-	gvKJmAZSRoM64O+yiLSAST+tEwzIrNPKc4zDJMwB1YAKXoqmhESUWNMUHvmztHg==
-X-Received: by 2002:ad4:4e33:0:b0:68f:6f85:b1d5 with SMTP id dm19-20020ad44e33000000b0068f6f85b1d5mr2373665qvb.9.1709217634610;
-        Thu, 29 Feb 2024 06:40:34 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHdYyFRszf73jgTS8NKBbYyKil6pr8MJMzM+bEc/R2duxhWCgviXSBTbwSrroPnDmhzr3tfGA==
-X-Received: by 2002:ad4:4e33:0:b0:68f:6f85:b1d5 with SMTP id dm19-20020ad44e33000000b0068f6f85b1d5mr2373641qvb.9.1709217634333;
-        Thu, 29 Feb 2024 06:40:34 -0800 (PST)
-Received: from fedora ([2600:1700:1ff0:d0e0::37])
-        by smtp.gmail.com with ESMTPSA id lu19-20020a0562145a1300b0068fc83bb48fsm780149qvb.105.2024.02.29.06.40.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 06:40:33 -0800 (PST)
-Date: Thu, 29 Feb 2024 08:40:31 -0600
-From: Andrew Halaney <ahalaney@redhat.com>
-To: Abhishek Chauhan <quic_abchauha@quicinc.com>
-Cc: "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, kernel@quicinc.com
-Subject: Re: [PATCH net-next v2] net: Modify mono_delivery_time with
- clockid_delivery_time
-Message-ID: <5h23xaefpzjr544hw2lsiby7v4zokfnmxm5bye66yx7h3qn6br@te7gptkdamdj>
-References: <20240228011219.1119105-1-quic_abchauha@quicinc.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=fTq666wFtT8q2MuuAaJc7AoRshNda8ev9dO91tbmJOMTjaRY1JsQzxz50CcrjxlQoXQrHjtzStYKa++i3APY8LWjqEowoRWxaMBsCNaKfe+FcTPOVdaS7S0hcSUP5UMvyknbaPkRrpgwWkH14MbQEskk9lAsWXoNONhebE+E8yM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B6CDF1FB;
+	Thu, 29 Feb 2024 06:42:42 -0800 (PST)
+Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BFA333F6C4;
+	Thu, 29 Feb 2024 06:42:01 -0800 (PST)
+Date: Thu, 29 Feb 2024 14:41:59 +0000
+From: Sudeep Holla <sudeep.holla@arm.com>
+To: Cristian Marussi <cristian.marussi@arm.com>
+Cc: Sibi Sankar <quic_sibis@quicinc.com>, andersson@kernel.org,
+	Sudeep Holla <sudeep.holla@arm.com>, konrad.dybcio@linaro.org,
+	jassisinghbrar@gmail.com, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+	quic_rgottimu@quicinc.com, quic_kshivnan@quicinc.com,
+	conor+dt@kernel.org, Amir Vajid <avajid@quicinc.com>
+Subject: Re: [RFC 4/7] soc: qcom: Utilize qcom scmi vendor protocol for bus
+ dvfs
+Message-ID: <ZeCXtzwX2xTyEGtK@bogus>
+References: <20240117173458.2312669-1-quic_sibis@quicinc.com>
+ <20240117173458.2312669-5-quic_sibis@quicinc.com>
+ <ZdTQ9ur3XpNVlduo@pluto>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -91,77 +56,156 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240228011219.1119105-1-quic_abchauha@quicinc.com>
+In-Reply-To: <ZdTQ9ur3XpNVlduo@pluto>
 
-Hey ABC,
-
-One minor nit below.
-
-On Tue, Feb 27, 2024 at 05:12:19PM -0800, Abhishek Chauhan wrote:
-> Bridge driver today has no support to forward the userspace timestamp
-> packets and ends up resetting the timestamp. ETF qdisc checks the
-> packet coming from userspace and encounters to be 0 thereby dropping
-> time sensitive packets. These changes will allow userspace timestamps
-> packets to be forwarded from the bridge to NIC drivers.
+On Tue, Feb 20, 2024 at 04:19:02PM +0000, Cristian Marussi wrote:
+> On Wed, Jan 17, 2024 at 11:04:55PM +0530, Sibi Sankar wrote:
+> > From: Shivnandan Kumar <quic_kshivnan@quicinc.com>
+> > 
+> > This patch introduces a client driver that interacts with the SCMI QCOM
+> > vendor protocol and passes on the required tuneables to start various
+> > features running on the SCMI controller.
+> > 
+> > Signed-off-by: Shivnandan Kumar <quic_kshivnan@quicinc.com>
+> > Co-developed-by: Ramakrishna Gottimukkula <quic_rgottimu@quicinc.com>
+> > Signed-off-by: Ramakrishna Gottimukkula <quic_rgottimu@quicinc.com>
+> > Co-developed-by: Amir Vajid <avajid@quicinc.com>
+> > Signed-off-by: Amir Vajid <avajid@quicinc.com>
+> > Co-developed-by: Sibi Sankar <quic_sibis@quicinc.com>
+> > Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
+> > ---
+> >  drivers/soc/qcom/Kconfig            |  10 +
+> >  drivers/soc/qcom/Makefile           |   1 +
+> >  drivers/soc/qcom/qcom_scmi_client.c | 486 ++++++++++++++++++++++++++++
+> >  3 files changed, 497 insertions(+)
+> >  create mode 100644 drivers/soc/qcom/qcom_scmi_client.c
+> > 
+> > diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
+> > index c6ca4de42586..1530558aebfb 100644
+> > --- a/drivers/soc/qcom/Kconfig
+> > +++ b/drivers/soc/qcom/Kconfig
+> > @@ -264,6 +264,16 @@ config QCOM_ICC_BWMON
+> >  	  the fixed bandwidth votes from cpufreq (CPU nodes) thus achieve high
+> >  	  memory throughput even with lower CPU frequencies.
+> >  
+> > +config QCOM_SCMI_CLIENT
+> > +	tristate "Qualcomm Technologies Inc. SCMI client driver"
+> > +	depends on QCOM_SCMI_VENDOR_PROTOCOL || COMPILE_TEST
+> > +	default n
+> > +	help
+> > +	  SCMI client driver registers for SCMI QCOM vendor protocol.
+> > +
+> > +	  This driver interacts with the vendor protocol and passes on the required
+> > +	  tuneables to start various features running on the SCMI controller.
+> > +
+> >  config QCOM_INLINE_CRYPTO_ENGINE
+> >  	tristate
+> >  	select QCOM_SCM
+> > diff --git a/drivers/soc/qcom/Makefile b/drivers/soc/qcom/Makefile
+> > index 05b3d54e8dc9..c2a51293c886 100644
+> > --- a/drivers/soc/qcom/Makefile
+> > +++ b/drivers/soc/qcom/Makefile
+> > @@ -32,5 +32,6 @@ obj-$(CONFIG_QCOM_APR) += apr.o
+> >  obj-$(CONFIG_QCOM_LLCC) += llcc-qcom.o
+> >  obj-$(CONFIG_QCOM_KRYO_L2_ACCESSORS) +=	kryo-l2-accessors.o
+> >  obj-$(CONFIG_QCOM_ICC_BWMON)	+= icc-bwmon.o
+> > +obj-$(CONFIG_QCOM_SCMI_CLIENT)	+= qcom_scmi_client.o
+> >  qcom_ice-objs			+= ice.o
+> >  obj-$(CONFIG_QCOM_INLINE_CRYPTO_ENGINE)	+= qcom_ice.o
+> > diff --git a/drivers/soc/qcom/qcom_scmi_client.c b/drivers/soc/qcom/qcom_scmi_client.c
+> > new file mode 100644
+> > index 000000000000..418aa7900496
+> > --- /dev/null
+> > +++ b/drivers/soc/qcom/qcom_scmi_client.c
+> > @@ -0,0 +1,486 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +/*
+> > + * Copyright (c) 2024, The Linux Foundation. All rights reserved.
+> > + */
+> > +
+> > +#include <linux/cpu.h>
+> > +#include <linux/err.h>
+> > +#include <linux/errno.h>
+> > +#include <linux/init.h>
+> > +#include <linux/kernel.h>
+> > +#include <linux/module.h>
+> > +#include <linux/of.h>
+> > +#include <linux/platform_device.h>
+> > +#include <linux/qcom_scmi_vendor.h>
+> > +#include <linux/scmi_protocol.h>
+> > +
+> > +#define MAX_MEMORY_TYPES	3
+> > +#define MEMLAT_ALGO_STR		0x74616C6D656D /* "memlat" */
+> > +#define INVALID_IDX		0xFF
+> > +#define MAX_NAME_LEN		20
+> > +#define MAX_MAP_ENTRIES		6
+> > +#define MAX_MONITOR_CNT		4
+> > +#define SCMI_VENDOR_MSG_START	3
+> > +#define SCMI_VENDOR_MSG_MODULE_START	16
+> > +
+> > +enum scmi_memlat_protocol_cmd {
+> > +	MEMLAT_SET_LOG_LEVEL = SCMI_VENDOR_MSG_START,
+> > +	MEMLAT_FLUSH_LOGBUF,
+> > +	MEMLAT_SET_MEM_GROUP = SCMI_VENDOR_MSG_MODULE_START,
+> > +	MEMLAT_SET_MONITOR,
+> > +	MEMLAT_SET_COMMON_EV_MAP,
+> > +	MEMLAT_SET_GRP_EV_MAP,
+> > +	MEMLAT_ADAPTIVE_LOW_FREQ,
+> > +	MEMLAT_ADAPTIVE_HIGH_FREQ,
+> > +	MEMLAT_GET_ADAPTIVE_CUR_FREQ,
+> > +	MEMLAT_IPM_CEIL,
+> > +	MEMLAT_FE_STALL_FLOOR,
+> > +	MEMLAT_BE_STALL_FLOOR,
+> > +	MEMLAT_WB_PCT,
+> > +	MEMLAT_IPM_FILTER,
+> > +	MEMLAT_FREQ_SCALE_PCT,
+> > +	MEMLAT_FREQ_SCALE_CEIL_MHZ,
+> > +	MEMLAT_FREQ_SCALE_FLOOR_MHZ,
+> > +	MEMLAT_SAMPLE_MS,
+> > +	MEMLAT_MON_FREQ_MAP,
+> > +	MEMLAT_SET_MIN_FREQ,
+> > +	MEMLAT_SET_MAX_FREQ,
+> > +	MEMLAT_GET_CUR_FREQ,
+> > +	MEMLAT_START_TIMER,
+> > +	MEMLAT_STOP_TIMER,
+> > +	MEMLAT_GET_TIMESTAMP,
+> > +	MEMLAT_MAX_MSG
+> > +};
 > 
-> Existing functionality of mono_delivery_time is not altered here
-> instead just extended with userspace tstamp support for bridge
-> forwarding path.
+> So the reason why you can have just a single qualcomm vendor SCMI protocol is
+> that it really implements and expose just a couple of set/get generic commands
+> and exposes a few related ops so that you can piggyback any kind of real messages
+> into this new sort of transport layer and at the end the full final message payloads
+> are built here in the client driver...and any future further QC SCMI client driver
+> will implement its own set of payloads for different protocols.
 > 
-> Signed-off-by: Abhishek Chauhan <quic_abchauha@quicinc.com>
-> ---
-> Changes since v1 
-> - Changed the commit subject as i am modifying the mono_delivery_time 
->   bit with clockid_delivery_time.
-> - Took care of suggestion mentioned by Willem to use the same bit for 
->   userspace delivery time as there are no conflicts between TCP and 
->   SCM_TXTIME, because explicit cmsg makes no sense for TCP and only
->   RAW and DGRAM sockets interprets it. 
-> - Clear explaination of why this is needed mentioned below and this 
->   is extending the work done by Martin for mono_delivery_time 
->   https://patchwork.kernel.org/project/netdevbpf/patch/20220302195525.3480280-1-kafai@fb.com/
-> - Version 1 patch can be referenced with below link which states 
->   the exact problem with tc-etf and discussions which took place
->   https://lore.kernel.org/all/20240215215632.2899370-1-quic_abchauha@quicinc.com/
+> Seems a bit odd to me (but certainly a creative way to abuse the SCMI stack), anyway
+> I have personally nothing against it, if you are happy with this design, but the spec
+> says that the protocol messages have to be little endian-encoded so I suppose that you
+> should, down below, define your smuggled (:P) payloads with __le32 & friends and use
+> the proper helpers to be sure that the values tranferred are properly interpreted, from
+> the endianess point-of-view, on both sides of the channel.
 > 
->  include/linux/skbuff.h                     | 22 +++++++++++++---------
->  net/bridge/netfilter/nf_conntrack_bridge.c |  2 +-
->  net/core/dev.c                             |  2 +-
->  net/core/filter.c                          |  6 +++---
->  net/ieee802154/6lowpan/reassembly.c        |  2 +-
->  net/ipv4/inet_fragment.c                   |  2 +-
->  net/ipv4/ip_fragment.c                     |  2 +-
->  net/ipv4/ip_output.c                       | 13 +++++++++++--
->  net/ipv4/raw.c                             |  9 +++++++++
->  net/ipv6/ip6_output.c                      | 12 ++++++++++--
->  net/ipv6/netfilter.c                       |  2 +-
->  net/ipv6/netfilter/nf_conntrack_reasm.c    |  2 +-
->  net/ipv6/raw.c                             | 10 +++++++++-
->  net/ipv6/reassembly.c                      |  2 +-
->  net/sched/act_bpf.c                        |  4 ++--
->  net/sched/cls_bpf.c                        |  4 ++--
->  16 files changed, 67 insertions(+), 29 deletions(-)
-> 
-> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-> index 2dde34c29203..24a34d56cfa3 100644
-> --- a/include/linux/skbuff.h
-> +++ b/include/linux/skbuff.h
-> @@ -816,10 +816,14 @@ typedef unsigned char *sk_buff_data_t;
->   *	@dst_pending_confirm: need to confirm neighbour
->   *	@decrypted: Decrypted SKB
->   *	@slow_gro: state present at GRO time, slower prepare step required
-> - *	@mono_delivery_time: When set, skb->tstamp has the
-> + *	@clockid_delivery_time: When set, skb->tstamp has the
->   *		delivery_time in mono clock base (i.e. EDT).  Otherwise, the
->   *		skb->tstamp has the (rcv) timestamp at ingress and
->   *		delivery_time at egress.
-> + *		This bit is also set if the tstamp is set from userspace which
-> + *		acts as an information in the bridge forwarding path to net
+> ...but Sudeep could think differently...I would wait for his feedback...
 
-s/net/not/ or maybe "avoid resetting" ?
+No not really. I agree. I have more fundamental question which I expected to
+find some reasoning somewhere. It could be me not having followed the patches
+properly, but
 
-> + *		reset the tstamp value when user sets the timestamp using
-> + *		SO_TXTIME sockopts
+1. Why this bus/memlat dvfs can't be done using perf protocol ?
+2. What std perf protocol lacks that is needed here ?
+3. Why it needs to be vendor specific ?
+4. If so, why MEMLAT alone doesn't deserve a separate vendor protocol ?
+   IOW why is vendor protocol is implemented as more generic one for all
+   qcom needs(I am assuming here) and MEMLAT is just command extension
+   of that protocol(as Cristian said protocol on top of the generic qcom
+   vendor protocol)
 
+These are few details that helps to understand and review the patches. So
+please add as much as documentation. If it is too much, we can remove it
+(but I am sure we may not reach that point).
 
+-- 
+Regards,
+Sudeep
 
