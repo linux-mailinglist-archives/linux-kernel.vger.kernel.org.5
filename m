@@ -1,110 +1,116 @@
-Return-Path: <linux-kernel+bounces-87645-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87646-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1904186D6E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 23:34:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C72786D6E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 23:36:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4ADA01C21D2D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:34:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB99E28974C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:36:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDFF420326;
-	Thu, 29 Feb 2024 22:34:15 +0000 (UTC)
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37A1A21115;
+	Thu, 29 Feb 2024 22:36:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="b0DTi40j"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1825200CD
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 22:34:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A44A9200D9
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 22:36:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709246055; cv=none; b=MKU44TBP6isQY+wkX4qbN7S7sD+hU+f7ye5iOpc4D48UofPny0kQ4wbrBeFxWfcIyDHYX+BHqgoCCnJE1qXNdsmA4+xnCU6+Q57Wb48T9nLxPn5PEWXdhlFGR41kuRB7u86vB/zyoDvKjoyIWT/es1XqCed3bXp2RrQArl28dx4=
+	t=1709246164; cv=none; b=iEJyZz7yXzzzHq8WQ/iYsb1Mjca55nwM+z5syLFsbAiH+24U2rYL1S6JprP3elTdPp7bXSb+ZugZxaVle9s8zSh8Ij2tTSKlzJuYXa79bS2dp5dckHIVUhTPDZwf2uTU2MWfffnXDHHT897RZs4MqlnHQ9nzeo6w3c6C9iV/gBA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709246055; c=relaxed/simple;
-	bh=7EALCz77xII392vmdVOlbHTt8w5XLaXfm92K2aKepEs=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=ElyyfbQOLVON3XquJLr0xTGYOYeAZ7C9LNNMgEvBHuRvS1hSB2FIvgPz6sJF4n9XpjQ8ymTMhlo+dl5P2yr49KuL4LlT0qYcuZa2q3j3CrHLYvClrkLvOQ4vrq/Ak5PaWRuJRHyJidmseoAX9W2lWc26VTGsUIwbWcMXdICujSQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-265-q6YXCiPdNqa3VZ3VvtiocQ-1; Thu, 29 Feb 2024 22:34:04 +0000
-X-MC-Unique: q6YXCiPdNqa3VZ3VvtiocQ-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 29 Feb
- 2024 22:34:03 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Thu, 29 Feb 2024 22:34:03 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Kees Cook' <keescook@chromium.org>, Geert Uytterhoeven
-	<geert@linux-m68k.org>
-CC: Guenter Roeck <linux@roeck-us.net>, "linux-m68k@lists.linux-m68k.org"
-	<linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: RE: stackinit unit test failures on m68k
-Thread-Topic: stackinit unit test failures on m68k
-Thread-Index: AQHaacsEcesp84Z6QEmwBDAFOS1vdLEh6rvg
-Date: Thu, 29 Feb 2024 22:34:03 +0000
-Message-ID: <c74d249e503d490d9aea4666eb984521@AcuMS.aculab.com>
-References: <a0d10d50-2720-4ecd-a2c6-c2c5e5aeee65@roeck-us.net>
- <CAMuHMdXMsxRRMV8g6+9vTy_4o8HF49SUh2deNdFjgKwDLEWrxQ@mail.gmail.com>
- <202402271401.CB43AB2E8@keescook>
-In-Reply-To: <202402271401.CB43AB2E8@keescook>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	s=arc-20240116; t=1709246164; c=relaxed/simple;
+	bh=XiYWXAEkJNz3jiTdHBo8zNvpfm3+VlZhC+wdvHcT8wc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EcW+GjcpaQoT8lIDsUwnZOdLZr03ui1DxAL7GTRWNSz9WDr1fG7kfa2O6REbCg//h3c/ou7l952o7KmOlBgx3hbK5lWYa3wQrsRmt1uQpFNFjoAdGlTs9IsNSQ/crNrRPh745blEMyeKcBlyi0Q+b011u42cX90aEOsFwxfYUH8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=b0DTi40j; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709246161;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=pPbMIoaOFEzd4CIJyR5bdcWJChrXb88CaqXQOthl8XY=;
+	b=b0DTi40jb432G4jVZ7Sq7W6EG3xOwvZvnvvWg3ZYG7aLAlSR01hoIaeShLpoA5LlDpGXaB
+	LcUk0qh1Dc9WlgioCbgmT89mnTlMfw2Etl0/H27Zl+n2fJcuqut/0+j5LenyqS+98ty2du
+	3RwMLewnpNWAye0LLlK3T0lQjeWZeEs=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-8-TJBCsRcINEiRxl9Vde4ifw-1; Thu, 29 Feb 2024 17:35:59 -0500
+X-MC-Unique: TJBCsRcINEiRxl9Vde4ifw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5D296800074;
+	Thu, 29 Feb 2024 22:35:57 +0000 (UTC)
+Received: from omen.home.shazbot.org (unknown [10.22.8.20])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id BF4872166AE8;
+	Thu, 29 Feb 2024 22:35:56 +0000 (UTC)
+From: Alex Williamson <alex.williamson@redhat.com>
+To: alex.williamson@redhat.com
+Cc: david@redhat.com,
+	kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] Revert "vfio/type1: Unpin zero pages"
+Date: Thu, 29 Feb 2024 15:35:40 -0700
+Message-ID: <20240229223544.257207-1-alex.williamson@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
-Li4uDQo+IEl0IGlzIGJhc2ljYWxseSBkb2luZyB0aGlzOg0KPiANCj4gc3RhdGljIHZvaWQgKmZp
-bGxfc3RhcnQsICp0YXJnZXRfc3RhcnQ7DQo+IHN0YXRpYyBzaXplX3QgZmlsbF9zaXplLCB0YXJn
-ZXRfc2l6ZTsNCj4gDQo+IHN0YXRpYyBub2lubGluZSBpbnQgbGVhZl9jaGFyX2FycmF5X25vbmUo
-dW5zaWduZWQgbG9uZyBzcCwgYm9vbCBmaWxsLA0KPiAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgdW5zaWduZWQgY2hhciAqYXJnKQ0KPiB7DQo+ICAgICAgICAgY2hhciBidWZbMzJd
-Ow0KPiAgICAgICAgIHVuc2lnbmVkIGNoYXIgdmFyWzE2XTsNCj4gDQo+ICAgICAgICAgdGFyZ2V0
-X3N0YXJ0ID0gJnZhcjsNCj4gICAgICAgICB0YXJnZXRfc2l6ZSA9IHNpemVvZih2YXIpOw0KPiAg
-ICAgICAgIC8qDQo+ICAgICAgICAgICogS2VlcCB0aGlzIGJ1ZmZlciBhcm91bmQgdG8gbWFrZSBz
-dXJlIHdlJ3ZlIGdvdCBhDQo+ICAgICAgICAgICogc3RhY2sgZnJhbWUgb2YgU09NRSBraW5kLi4u
-DQo+ICAgICAgICAgICovDQo+ICAgICAgICAgbWVtc2V0KGJ1ZiwgKGNoYXIpKHNwICYgMHhmZiks
-IHNpemVvZihidWYpKTsNCj4gICAgICAgICAvKiBGaWxsIHZhcmlhYmxlIHdpdGggMHhGRi4gKi8N
-Cj4gICAgICAgICBpZiAoZmlsbCkgew0KPiAgICAgICAgICAgICAgICAgZmlsbF9zdGFydCA9ICZ2
-YXI7DQo+ICAgICAgICAgICAgICAgICBmaWxsX3NpemUgPSBzaXplb2YodmFyKTsNCj4gICAgICAg
-ICAgICAgICAgIG1lbXNldChmaWxsX3N0YXJ0LA0KPiAgICAgICAgICAgICAgICAgICAgICAgIChj
-aGFyKSgoc3AgJiAweGZmKSB8IGZvcmNlZF9tYXNrKSwNCj4gICAgICAgICAgICAgICAgICAgICAg
-ICBmaWxsX3NpemUpOw0KPiAgICAgICAgIH0NCj4gDQo+ICAgICAgICAgLyogU2lsZW5jZSAibmV2
-ZXIgaW5pdGlhbGl6ZWQiIHdhcm5pbmdzLiAqLw0KPiAJZG9fbm90aGluZ19jaGFyX2FycmF5KHZh
-cik7DQo+IA0KPiAgICAgICAgIC8qIEV4ZmlsdHJhdGUgInZhciIuICovDQo+ICAgICAgICAgbWVt
-Y3B5KGNoZWNrX2J1ZiwgdGFyZ2V0X3N0YXJ0LCB0YXJnZXRfc2l6ZSk7DQo+IA0KPiAgICAgICAg
-IHJldHVybiAoaW50KWJ1ZlswXSB8IChpbnQpYnVmW3NpemVvZihidWYpIC0gMV07DQo+IH0NCj4g
-DQo+IGFuZCBpdCdzIGNhbGxlZCBhczoNCj4gDQo+IA0KPiAgICAgICAgIGlnbm9yZWQgPSBsZWFm
-X2NoYXJfYXJyYXlfbm9uZSgodW5zaWduZWQgbG9uZykmaWdub3JlZCwgMSwgemVybyk7DQo+IAku
-Li4NCj4gICAgICAgICBpZ25vcmVkID0gbGVhZl9jaGFyX2FycmF5X25vbmUoKHVuc2lnbmVkIGxv
-bmcpJmlnbm9yZWQsIDAsIHplcm8pOw0KPiANCj4gVGhlIGZpcnN0IGNhbGwgcmVtZW1iZXJzIHdo
-ZXJlICJ2YXIiIGlzIGluIHRoZSBzdGFjayBmcmFtZSB2aWEgdGhlDQo+IGZpbGxfc3RhcnQgYXNz
-aWdubWVudCwgYW5kIHRoZSBzZWNvbmQgY2FsbCByZWNvcmRzIHdoZXJlICJ2YXIiIGlzIHZpYQ0K
-PiB0aGUgdGFyZ2V0X3N0YXJ0IGFzc2lnbm1lbnQuDQo+IA0KPiBUaGUgY29tcGxhaW50IGlzIHRo
-YXQgaXQgX2NoYW5nZXNfIGJldHdlZW4gdGhlIHR3byBjYWxscy4gLi4uIE9oLCBJDQo+IHRoaW5r
-IEkgc2VlIHdoYXQncyBoYXBwZW5lZC4gQmV0d2VlbiB0aGUgdHdvIGNhbGxzLCB0aGUgc3RhY2sg
-Z3Jvd3MgKGFuZA0KPiBpcyBmb3Igc29tZSByZWFzb24gbm90IHJlY2xhaW1lZCkgZHVlIHRvIHRo
-ZSBLVU5JVCBjaGVja3MgYmV0d2VlbiB0aGUgdHdvDQo+IGxlYWYgY2FsbHMuIFllcywgbW92aW5n
-IHRoYXQgZml4ZXMgaXQuDQoNCklzIHRoZSBub2lubGluZSBlbm91Z2ggdG8gc3RvcCBnY2MgZ2Vu
-ZXJhdGluZyB0d28gY29waWVzIG9mIHRoZQ0KZnVuY3Rpb24gZm9yIHRoZSBkaWZmZXJlbnQgdmFs
-dWVzIG9mICdmaWxsJz8NCg0KWW91IG1pZ2h0IG5lZWQgdG8gY2FsbCB0aHJvdWdoIGEgdm9sYXRp
-bGUgZ2xvYmFsIGZ1bmN0aW9uIHBvaW50ZXINCnZhcmlhYmxlPw0KDQoJRGF2aWQNCg0KLQ0KUmVn
-aXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRv
-biBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+This reverts commit 873aefb376bbc0ed1dd2381ea1d6ec88106fdbd4.
+
+This was a heinous workaround and it turns out it's been fixed in mm
+twice since it was introduced.  Most recently, commit c8070b787519
+("mm: Don't pin ZERO_PAGE in pin_user_pages()") would have prevented
+running up the zeropage refcount, but even before that commit
+84209e87c696 ("mm/gup: reliable R/O long-term pinning in COW mappings")
+avoids the vfio use case from pinning the zeropage at all, instead
+replacing it with exclusive anonymous pages.
+
+Remove this now useless overhead.
+
+Suggested-by: David Hildenbrand <david@redhat.com>
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+---
+ drivers/vfio/vfio_iommu_type1.c | 12 ------------
+ 1 file changed, 12 deletions(-)
+
+diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+index b2854d7939ce..b5c15fe8f9fc 100644
+--- a/drivers/vfio/vfio_iommu_type1.c
++++ b/drivers/vfio/vfio_iommu_type1.c
+@@ -567,18 +567,6 @@ static int vaddr_get_pfns(struct mm_struct *mm, unsigned long vaddr,
+ 	ret = pin_user_pages_remote(mm, vaddr, npages, flags | FOLL_LONGTERM,
+ 				    pages, NULL);
+ 	if (ret > 0) {
+-		int i;
+-
+-		/*
+-		 * The zero page is always resident, we don't need to pin it
+-		 * and it falls into our invalid/reserved test so we don't
+-		 * unpin in put_pfn().  Unpin all zero pages in the batch here.
+-		 */
+-		for (i = 0 ; i < ret; i++) {
+-			if (unlikely(is_zero_pfn(page_to_pfn(pages[i]))))
+-				unpin_user_page(pages[i]);
+-		}
+-
+ 		*pfn = page_to_pfn(pages[0]);
+ 		goto done;
+ 	}
+-- 
+2.43.2
 
 
