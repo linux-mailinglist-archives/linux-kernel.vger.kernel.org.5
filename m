@@ -1,151 +1,118 @@
-Return-Path: <linux-kernel+bounces-86659-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86660-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A88586C87F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:52:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D0FB86C886
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:52:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F5181C20E96
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:52:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D99BDB25315
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:52:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7389C7D062;
-	Thu, 29 Feb 2024 11:52:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9293E7CF2C;
+	Thu, 29 Feb 2024 11:52:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="mOoBduo4"
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01olkn2090.outbound.protection.outlook.com [40.92.53.90])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="HGQMKhTm"
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FC1D7CF29;
-	Thu, 29 Feb 2024 11:52:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.53.90
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709207528; cv=fail; b=mdwKN5buAxXf59mfDhtMLe6t6UIcVazSCTEGQPTDDlSOUI2/YbOLMijSiC7H3kOTzi0K01WCGIKRFCPk9745AnrIl5hxQhpt2pn64oHkS9CKWN/tQfnk091gb+NaxOyTfRiRkEraijMquqSwJ9Xg3pZQuojGstpJo0bpJ6yttQA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709207528; c=relaxed/simple;
-	bh=ZVNWUDac2T4xdsKzIde6ZFGJ36GYBuTszLkBnT6UtiA=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=UEKkg4y32NlV0yYxw4LpnhwSlSdmNtY5E2ohCnsznc+UBNqLPJJtvOEAsElMvlGNUM45beQB2IECBmMDdAc9zVtSWfg+0136GYPncDrFJRp3upN5HnMsELa8QnD6wZXKMRYS+0Apf6zxpNnCFPTAn8/tsgV8yK6dOKo+kpLABEg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=mOoBduo4; arc=fail smtp.client-ip=40.92.53.90
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VvysMCnhWu93fAVdSbBPI7TE4rYeHe1Wk/y73W/ZCP34TDElS102q4yDLSza4Y1MN2ckhPRp51swKYXxvdWktqRIK0BSccb2jPTcqQ0IbFOS0bu9GcOvWFy3Xz+483tet3Pft5QsuqNiSCHF47Rm0EBkZYIkckmeswd8rjGFaOe1KR1XcqGfK1dYcooHNYhmCS0uknbqcWm6xHum3H0oEhpCMS0Be56qffMWTV0bdX3qD5CObK5/LzeO7eLRLyXnwvfCH60fbTiegoKQ5N95nVMPWKyJY9XQRd5CzZ7SqPt/SOmZa68ch6iVQq1M6w3fjjE2izAPenrTm+s7Ks3PRA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0PXPH6wLfc8+olI67/P2tQlj6vGxopXd7xlFHEzKT5o=;
- b=bzv4NwAqudNJ5wFsBD6a0nXh9ShC5chlBlOdSwTKrx4AAOjFWuvhjj9SMvieu1t9qWQGxmnBWEhelDhNOker2ekg2ZeQjN75S94Bn60cEqhvTTFpJ3UGvjgQzfONfIzMLgHkuYBtNCz0ncuC66RdgDOc2q5TZi+EZWYd0HL6ySF07mkKAdSd5pP/cxxSPdeaZJlUJMYwkEdrv1xaF7/j+Z35G++RrkWSlRw05mrKZaXwuzImjeJvBgWR0vjj+4Y1466gWShI5eP9OjNwJU/aNyRK5B5TFHX1BaogsDteeyLxqc9oY2UQvizlOhSg5zagepDgpF5zwF09UCR2UXqPJg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0PXPH6wLfc8+olI67/P2tQlj6vGxopXd7xlFHEzKT5o=;
- b=mOoBduo4RqV0QBrzmdzpvEiDd4tZs1HQMMsFqs0rx1ithsm7RmVZabX6zqc/rSxhuJ2tZkEAZtEQ2v3h0Qvz3a7cL27allvd27TsL9W/46qSsEuEIyTYJrBsF7+LvQ0bB94EGkJGqMQs7mFPZTqDR/R24fIdC7Wd5m0jqxsgth/gYE5P6tkZII5LMlfQkYk5GwDoFccBFaSVy6WHBec7qn+X/tyLEg3QjRZFUTCLzD5crBcWBBt54HaeE9BllBw+KoZl5laWuh+kVNXgP/0qXJ/W9yhz5dakCUjtEGK4TztRj7M18Ny0lT+KmNsgYZJDxHY+648sAPBZuNdw5Xu93w==
-Received: from PSAPR06MB4952.apcprd06.prod.outlook.com (2603:1096:301:a3::11)
- by TY0PR06MB5836.apcprd06.prod.outlook.com (2603:1096:400:31f::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.41; Thu, 29 Feb
- 2024 11:52:03 +0000
-Received: from PSAPR06MB4952.apcprd06.prod.outlook.com
- ([fe80::1e13:cc11:3196:e0a6]) by PSAPR06MB4952.apcprd06.prod.outlook.com
- ([fe80::1e13:cc11:3196:e0a6%5]) with mapi id 15.20.7316.039; Thu, 29 Feb 2024
- 11:52:02 +0000
-From: GuanBing Huang <albanhuang@outlook.com>
-To: gregkh@linuxfoundation.org
-Cc: jirislaby@kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org,
-	albanhuang@tencent.com
-Subject: [PATCH] serial: 8250_pnp: Support configurable reg shift property
-Date: Thu, 29 Feb 2024 19:51:54 +0800
-Message-ID:
- <PSAPR06MB49522EB50BDE08A5D9D0DACEC95F2@PSAPR06MB4952.apcprd06.prod.outlook.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-TMN: [Ll0BneyBssgM4Uxpt7eo5+4dP4M4x0S1]
-X-ClientProxiedBy: SG2PR02CA0119.apcprd02.prod.outlook.com
- (2603:1096:4:92::35) To PSAPR06MB4952.apcprd06.prod.outlook.com
- (2603:1096:301:a3::11)
-X-Microsoft-Original-Message-ID:
- <20240229115154.80311-1-albanhuang@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 763977C0B4
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 11:52:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709207546; cv=none; b=tvCVxqkgXhRZxSIlRrXArs75nML6+ukH3GypI3npTzRqk+vNiCmsmNyzja3oyoel8K9BCebT8gXI/2c48MYcTob9bzylH9JtwKqEIIWMEJttdDNun8NHtqYDzcvKtXYhPnDlXaLRoLMYhFVhQOkqMjzO0Yg1fBaqJ8smR/xJMpY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709207546; c=relaxed/simple;
+	bh=7d6CvrWmzaz6TNCwdkf499bxCEdW1K7nR/01VhW1RJA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=k353H0bfJeoQhslqFO5UJtcMTexDQc1cqGtlHXwMjWtsyDc5g9auiYB2Kx9fEYcby24uUCBK5YSSzcg/QiCc8wq0ZBeniOrZFmoX4s0N4IBWCuXjqg9wDrgVNztHUyXPHtIzdxsN3ywTnh81C8QFjYkDfkiytd5vRS0PtE6OU1s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=HGQMKhTm; arc=none smtp.client-ip=209.85.208.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d27184197cso9112351fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 03:52:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1709207542; x=1709812342; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=79gNBOsuDeIYR+Lh3gRA6KG8pNTkHwRoYAWTsnujzmg=;
+        b=HGQMKhTmMZ63lzVoTzex9HePv1nw+L0kznKo07FxUoEhDn3SN21QGPemUEeRKCjkIk
+         xq894Z/ER8zch3mA6RgqfFqqIUO73VhbknagdGEgOlQgzvBpiNBEuVTGtiGKVvOs1Iik
+         mjHtAAISejZNbTTv7TBDPyeZv8Bji+gbG9+bmbSxRzOxDKBlbj9AtyetNR8jpToZgchq
+         KTuOWQSjXxNRD4LyuLLjp7rq/rht4MmtvdLvw9t4ldZrkhwGy0GOjP9tUTlTahDmWARR
+         hgPPZ7JF3xlveDxrewDZjAy1AhNYZfh44V6Y9CvTupghnqSVQa0fdKQWqBOPmru7/w6R
+         69jQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709207542; x=1709812342;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=79gNBOsuDeIYR+Lh3gRA6KG8pNTkHwRoYAWTsnujzmg=;
+        b=GDOM0pEoqW73spQhyYO0blJnUxfAwC8VRITs+TcD+XibNgY+JrxmXH+D6zjOMgk6u3
+         Tl/2PbxUgTC3TZ5eIpCw+6HrLVjTKOVU9rHgshD/B4ldwYQ+i6tKLRMsoqcRcrClY5O1
+         maIVlFG4Q+jf+abfO0LxRtMqLyMGT07aiTwScBFF4MCHEZzCIahozs4VZcAilh4oloqT
+         PXkMmRSJDlRCK/1xbdx21usEenD90WuDWFEz2/2QYu245URjPULJj9fpU9RGqY5vcdCP
+         I9NRntn5DpThvlrdeEX8ppA8JrvLRVr0z5140fXKPs+XXIkY99qnqsPC8kkE0osoIXEV
+         5Psg==
+X-Forwarded-Encrypted: i=1; AJvYcCVBKl1fqs9W8G69mq9Ax/Vex1Mabn6GDJ/v0Fpra6YlDMWPjWI8LkPpuaocNm8qr6PTuR8TCAk42U/LxoNUJ+cBAqkoARRX9FR2CB2p
+X-Gm-Message-State: AOJu0Yx6u27dsc9b7YT8+8+4kmd82AHg9Pc/EsGh1t50T7XQRR8UldBy
+	kQFiEtqixMYVHroqHo/cdD8u7XllfNIVK7SgHCFiPrWnNQz2+iwHhT0SZI+adJ8=
+X-Google-Smtp-Source: AGHT+IGhwPu+Q2oxJ6EL93Dq/uuQN0NQLhyZbY884uXBca6OJ0LijbNlZgjt3A3mOMZBdiCsTv8nRA==
+X-Received: by 2002:a2e:9f46:0:b0:2d2:64ca:7a2d with SMTP id v6-20020a2e9f46000000b002d264ca7a2dmr1304324ljk.31.1709207542106;
+        Thu, 29 Feb 2024 03:52:22 -0800 (PST)
+Received: from ?IPV6:2001:a61:1366:6801:d8:8490:cf1a:3274? ([2001:a61:1366:6801:d8:8490:cf1a:3274])
+        by smtp.gmail.com with ESMTPSA id bj12-20020a0560001e0c00b0033db0bbc2ccsm1690355wrb.3.2024.02.29.03.52.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Feb 2024 03:52:21 -0800 (PST)
+Message-ID: <7a48c332-acbe-4677-b189-9dda01151d18@suse.com>
+Date: Thu, 29 Feb 2024 12:52:18 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PSAPR06MB4952:EE_|TY0PR06MB5836:EE_
-X-MS-Office365-Filtering-Correlation-Id: 91505cd2-3ea5-49f8-ba22-08dc391cd808
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	kHoTdC+O0WDlav6JKFQGMQpWPepzqUEXsQkpypuW8dz2Xv8sgKbdoHaow/SIMZLX5+UYJ0qIEf0AxBLQcrLwen/sdyXzAEu+Wyl/sZfxChCfgRMPQcvf58VHp4tMllL0oFMk4w4/xpA2TN91u/qWSEKgkwmwP7KdOyr6kPQEm/DxSmRWiG5s7mGsxgsoxL/zz0mmq1HYBWP5sdTlr6z59SabUKYXX5iPMTNEGAoxRm3q2HkVPbRhk0PKxioiPXcj+MyFZMUtoBE1Jp48PB8Rz0ZQca0YQ8AD8c0PrY3adaITdhckprmRume/4BqvY6609TTl42dqpWHk0WHSwefHxjDsvdpPKcH/XmcooJ+Hv4+jaw9TeQk+1f95bvg15ldzH83KsrJuAvoZlGIH11v/sZv94zzhKNQ30b4fUunVcSMS9/Rgzuq5C60AbsTs9XWU68ve1WVNBHJcaojFBH7eXc3w7bZYlLBgJU4ja0+njxtuGTnGu9G2rvu6OwoD7WdEi+RzAxNumL1goGj/AgEjjGjqd4wKiatIYZ4gs0zR0iwUHp5Bm+BzEWmWwKbW7tZ4
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?FdKSY+oaEOlQT1iiA6QQTHAiOP+StXpKx3sQb4l/EDbW08OvLoQCnapoxiGM?=
- =?us-ascii?Q?K/vTnlwhF5aIrj/2ofzeXNnR57jcaCujvQKlb34+Y8eHdO1sqbHLhUc2CkPV?=
- =?us-ascii?Q?6IkYOls+EsrF7S5RNJ+mFyUn/HO3UYI+3bK3UabRVhnTTb7unpDtI9XpRf36?=
- =?us-ascii?Q?YLSapICsC83uJErHrptTFEbKBx++YBTM6OHmMxkuiKEvDPLK+d1qYt0RqFNM?=
- =?us-ascii?Q?mMEn4myJ0ohPAmxQXR1pVw6jmyaJ25t7kfYnlYkFp/Ijxsi1rxW1nz+S8GS+?=
- =?us-ascii?Q?+JilY8jG9dhceMVgdQ+rdJk/pBaJwjemEDA/Smdkh6XpWCoLTq9JFgafRKIj?=
- =?us-ascii?Q?+OetvN0Zx6FDiHDXbWcaRXpwrRsGlYNTMGf4i6P3Udre+4YAwGVwjYNoQED6?=
- =?us-ascii?Q?aaa1JGWnkVhFtj1efhaUW759ZRemtf5HwFaLgLejdfEAUrMJYV4f5EmX6EZ6?=
- =?us-ascii?Q?+5Y/NQi67ZbqrNw9IHbWFQhcRZHXdNqP9JzWEMGt68cScT18ouLbuhZJLFMn?=
- =?us-ascii?Q?/0Igghd2qLyMLX5rmB03iiCblYvTS9dwtGb9wLo7mTekZvRZEW60nNTdc/qB?=
- =?us-ascii?Q?l4qnHyV+Fl7XrX5NxQsouUm5hjWsGpAgBvqXt4nCC+CC+D1fm5SPmIJ9SCrh?=
- =?us-ascii?Q?ZxydQo88cIaF+9xKiDrJBVJI7AE8B2qfoFwsRU8xSiBuZq4uTiCrMo17dFsi?=
- =?us-ascii?Q?6TeWgZ+agJGJSoj/zG30eRpcVfw8vUh/kf0xzY9P+sDZsqUnqsIvW0gA3b6g?=
- =?us-ascii?Q?LPcpISNJitHnOyAJWvKOaZBOvuWgG4QQNuz5wbtnWkpThI8lsShSHizkvY9Y?=
- =?us-ascii?Q?qtjIS9M2xg8hfhmd9I9DpFpXOJEq+Uf5tv6+NPHqLK0CroSRfOdXTwgoU2wq?=
- =?us-ascii?Q?7M6Nar6p+4+FJKcu+/jRlhjK0QVJorQHOwzEXiEOGEVNSL6CghKfj/6Wilf8?=
- =?us-ascii?Q?IboXJDybv1zkNbasi75W6jSax2MfzGP6OirAWEM+E7wtOC8rb3kARceKe/Da?=
- =?us-ascii?Q?uT/mUVpHux8//L9wAX3QW1M6gaZgvnnrmatq6kJOScqLqfX0CMy7LpQjnVCA?=
- =?us-ascii?Q?7Juppq8AIAKc00XRQd/7/17p4Ds2uudvdwUi4rapI5aDJ6JDrIKzpPaJq9ek?=
- =?us-ascii?Q?Rszuwl0qiIqXwp2P/qwtVZtEXzQoAQhkL6+riU6SHcTAZkoFt3Qv9DSrZuaE?=
- =?us-ascii?Q?3buwAkFfI5prh6G8FJTC1cTKUak3YRSOUdWuzz8jWH2pT2HKdXQ2PI3xqeM?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 91505cd2-3ea5-49f8-ba22-08dc391cd808
-X-MS-Exchange-CrossTenant-AuthSource: PSAPR06MB4952.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Feb 2024 11:52:02.8567
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY0PR06MB5836
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] USB:UAS:return ENODEV when submit urbs fail with
+ device not attached
+Content-Language: en-US
+To: Weitao Wang <WeitaoWang-oc@zhaoxin.com>, oneukum@suse.com,
+ stern@rowland.harvard.edu, gregkh@linuxfoundation.org,
+ linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-scsi@vger.kernel.org, usb-storage@lists.one-eyed-alien.net
+Cc: WeitaoWang@zhaoxin.com, stable@vger.kernel.org
+References: <20240229193349.5407-1-WeitaoWang-oc@zhaoxin.com>
+From: Oliver Neukum <oneukum@suse.com>
+In-Reply-To: <20240229193349.5407-1-WeitaoWang-oc@zhaoxin.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: albanhuang <albanhuang@tencent.com>
 
-The 16550a serial port based on the ACPI table requires obtaining the
-reg-shift attribute. In the ACPI scenario, If the reg-shift property
-is not configured like in DTS, the 16550a serial driver cannot read or
-write controller registers properly during initialization.
 
-Signed-off-by: albanhuang <albanhuang@tencent.com>
-Signed-off-by: tombinfan <tombinfan@tencent.com>
-Signed-off-by: dylanlhdu <dylanlhdu@tencent.com>
----
- drivers/tty/serial/8250/8250_pnp.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/tty/serial/8250/8250_pnp.c b/drivers/tty/serial/8250/8250_pnp.c
-index 1974bbadc975..25b4e41e9745 100644
---- a/drivers/tty/serial/8250/8250_pnp.c
-+++ b/drivers/tty/serial/8250/8250_pnp.c
-@@ -473,6 +473,7 @@ serial_pnp_probe(struct pnp_dev *dev, const struct pnp_device_id *dev_id)
- 		uart.port.flags |= UPF_SHARE_IRQ;
- 	uart.port.uartclk = 1843200;
- 	device_property_read_u32(&dev->dev, "clock-frequency", &uart.port.uartclk);
-+	device_property_read_u8(&dev->dev, "reg-shift", &uart.port.regshift);
- 	uart.port.dev = &dev->dev;
- 
- 	line = serial8250_register_8250_port(&uart);
--- 
-2.17.1
-
+On 29.02.24 20:33, Weitao Wang wrote:
+> In the scenario of entering hibernation with udisk in the system, if the
+> udisk was gone or resume fail in the thaw phase of hibernation. Its state
+> will be set to NOTATTACHED. At this point, usb_hub_wq was already freezed
+> and can't not handle disconnect event. Next, in the poweroff phase of
+> hibernation, SYNCHRONIZE_CACHE SCSI command will be sent to this udisk
+> when poweroff this scsi device, which will cause uas_submit_urbs to be
+> called to submit URB for sense/data/cmd pipe. However, these URBs will
+> submit fail as device was set to NOTATTACHED state. Then, uas_submit_urbs
+> will return a value SCSI_MLQUEUE_DEVICE_BUSY to the caller. That will lead
+> the SCSI layer go into an ugly loop and system fail to go into hibernation.
+> 
+> On the other hand, when we specially check for -ENODEV in function
+> uas_queuecommand_lck, returning DID_ERROR to SCSI layer will cause device
+> poweroff fail and system shutdown instead of entering hibernation.
+> 
+> To fix this issue, let uas_submit_urbs to return original generic error
+> when submitting URB failed. At the same time, we need to translate -ENODEV
+> to DID_NOT_CONNECT for the SCSI layer.
+> 
+> Suggested-by: Oliver Neukum<oneukum@suse.com>
+> Cc:stable@vger.kernel.org
+> Signed-off-by: Weitao Wang<WeitaoWang-oc@zhaoxin.com>
+Acked-by: Oliver Neukum <oneukum@suse.com>
 
