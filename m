@@ -1,111 +1,153 @@
-Return-Path: <linux-kernel+bounces-85998-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86000-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD37486BE48
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 02:35:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 091DC86BE5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 02:37:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6EEFC287347
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:35:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B33D11F218FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:37:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9B232E40F;
-	Thu, 29 Feb 2024 01:35:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4208137169;
+	Thu, 29 Feb 2024 01:36:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="jiPlFYOp"
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="txjeDK0+"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C93EF12E5B
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 01:35:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 436102D61B;
+	Thu, 29 Feb 2024 01:36:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709170507; cv=none; b=u3QbGmjolUiCWnpXnMx98BSOyGR2uVf/7u4hws6u+bIRbsBzsA5buR9z1/xKzvTZ4yNC44zT6yFvsqFETbHAAQPqytAgBZfe2uE4CLKSz/ieInN3WlISFwx+7vZs7og79Ac5iZ+ezqvMaPZSoOpQJRLJn+psP5M6X0OCRV/jOCw=
+	t=1709170617; cv=none; b=NBorVsE5WHhgP9carqnJuqErxtg6kgT4Xn8UTlLKD61e2Yy6GPNwdz5OkJn9MSkGzQnLVYS5yjT3xJkoZRRlz80mOGvG2opGjPjKeulBQbxMaztmAdD2uBINvRQENqS0MdeW6ZLF1kxUCTZ6aqc6H8S32VqeSxAqg5ix83RDZhU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709170507; c=relaxed/simple;
-	bh=rNhXvztlPIMQxaT3uBcxWgppme382OuBdUXTLAuCzMQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WAZlw2c9xeYt+bS8vQVvom6vvsaVQMScu1XML1A0hn26+qdxR/DEXHIkphSYAm7LfuT7ddkmjpOwnb1QqLG8pGsZcYkot9evTBqOplCLojHaZSZemheaGfBX/NsRqdkGHpIrbWnQCOvD6gm4x47g/j5g8luJJpnJh4nvCr1WUDo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=jiPlFYOp; arc=none smtp.client-ip=209.85.210.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6e5760eeb7aso306888b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 17:35:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709170505; x=1709775305; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+iy/LQHSKsmIm2Ae2f5kmdkaP9KIdMysWT/fEuU36SA=;
-        b=jiPlFYOpUGz9wYjFKfG1HdNQe55ZF6z44B5lFhR9TB4twaDKd8MsQ6u9kPk6n1vXxI
-         APuBjVtKWLDs5IxvahQSunDhoR5kjO3OjIXtv0d8lyxErLAh0FVvaQzAbY3INgcP4L6i
-         Y+kop3OMLnCpPW2Xlg904RVRrjThXBswRTBMw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709170505; x=1709775305;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+iy/LQHSKsmIm2Ae2f5kmdkaP9KIdMysWT/fEuU36SA=;
-        b=LZIjJ+Rit2An+oFNdVIzkRiS7UcR+Rh6/bObk8iirYuhB6+VwHXHDYP7D7v1Am7H4k
-         0pCkn6x98yPlBzoVXyhGgwv5Vn5qIInK7X8GSIr4/jzG6Yr9Nx/9FR4J6rC7NZkY4vC3
-         shGPR9w+0vAm9cwecZepABwgx1Nc/uFFfirDWf/8AzAS85hk8FGGnHzz4/pr/IHqEeQO
-         ch/8lDKZVY0BCDHk/iSzwzauOHlEyQhEzsjEKG9p/NRxeFkNl10/ozj3q8FAvFjZR0ju
-         Zz3FIDzS2rOXvrkeeIE0UhfCbwYCt9yzOR0dg4uF/7EqsNQi/UfIB7XPpdYY5tqSkDwc
-         BRTQ==
-X-Gm-Message-State: AOJu0YyH59LwXp51FkZc0/TWizHqVQX89cHE6ShE1p6YWZZupQcRVwew
-	u+ZnbuZqnzt7mUxrh9uLC72lLt3Cjw2mWg6x0LKJMKu2Fmuvc+k8KeSwPjs8pQ==
-X-Google-Smtp-Source: AGHT+IHe8q/7Uap3Rq440sONVc3d/cawGrolo7Z307D4Y05inxotsQMMYjUjiMMfqtXROHeogJrWVQ==
-X-Received: by 2002:aa7:8482:0:b0:6e4:eb29:357 with SMTP id u2-20020aa78482000000b006e4eb290357mr839544pfn.12.1709170505147;
-        Wed, 28 Feb 2024 17:35:05 -0800 (PST)
-Received: from localhost (217.108.125.34.bc.googleusercontent.com. [34.125.108.217])
-        by smtp.gmail.com with UTF8SMTPSA id b26-20020aa7871a000000b006e13a88d52esm97174pfo.61.2024.02.28.17.35.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Feb 2024 17:35:04 -0800 (PST)
-From: Stephen Boyd <swboyd@chromium.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Bjorn Andersson <andersson@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	patches@lists.linux.dev,
-	linux-arm-msm@vger.kernel.org,
-	cros-qcom-dts-watchers@chromium.org,
-	Souradeep Chowdhury <quic_schowdhu@quicinc.com>
-Subject: [PATCH] arm64: dts: qcom: sc7180: Disable DCC node by default
-Date: Wed, 28 Feb 2024 17:35:01 -0800
-Message-ID: <20240229013503.483651-1-swboyd@chromium.org>
-X-Mailer: git-send-email 2.44.0.rc1.240.g4c46232300-goog
+	s=arc-20240116; t=1709170617; c=relaxed/simple;
+	bh=DbESgbLm8iXZ1xAIRzvPJVCUiiqIdNKZWaT+1vVOvZ0=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=ovhjlTcv165hCDiuQtN9swzR/iAW9KUznNXWLSaA/OKjf1V//MkRZ5Kx+S1IvT4fbNcUMtYvyMMk81vTf4Mq4/mf4531/hAG9p54w/35k0wOBRG1vRmt3PmEpH/6bkzNnHV55jCfV8CbeyBHLFy7LNE2LWcC4kJtvsf3QIX/aQU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=txjeDK0+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B5E50C433C7;
+	Thu, 29 Feb 2024 01:36:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709170616;
+	bh=DbESgbLm8iXZ1xAIRzvPJVCUiiqIdNKZWaT+1vVOvZ0=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=txjeDK0+8//21KLVNW5XiKexTTpb8rf/pX9PHaEyX2JsA0MpqAvGt/cmD/87zCcKa
+	 n7UeeNR0K3BbMJslRkxAcV4Ga9jiX3vS5/iPTkMXvvZMyBHZpeUbiSkecumViBLSv+
+	 4AmADfW6qYbF9KEaNZ03vs0jwIbmocoZN2SwxqxOlzs9JlTSKkBVdoFZx2jol8GBUy
+	 IAWRUeOg9oASxvm+e3OgKY0vWWQN0glQRTwVA8mD3Y5qp5KV1pxhlessNq2slppbkj
+	 VSU8JFzVs82UPdeJ1A55MeEj5Oq+32lD6Z8uyZfww1Cm+uV98Q/JQCR7QxA/1QemjJ
+	 bohqSH5IgfHyg==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96B2CC5475B;
+	Thu, 29 Feb 2024 01:36:56 +0000 (UTC)
+From: Yang Xiwen via B4 Relay <devnull+forbidden405.outlook.com@kernel.org>
+Subject: [PATCH v7 0/5] mmc: add hi3798mv200 specific extensions of DWMMC
+Date: Thu, 29 Feb 2024 09:36:18 +0800
+Message-Id: <20240229-b4-mmc-hi3798mv200-v7-0-10c03f316285@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAJLf32UC/4XRS07EMAwG4KuMsiYodhynZcU9EIs2DxpBJ6gdI
+ tCodycdNkWtNMvfkj/b8lXMYUphFk+nq5hCSXPK5xrsw0m4oTu/BZl8zQIVkgIE2ZMcRyeHpG3
+ bjAWVkp2xWgUfAdGJ2vg5hZi+b+jLa81Dmi95+rnNKLBW/zgEPuIKSCWtJ/Z9Q6YL/Jy/Lh85v
+ z+6PIoVLHgfwYooUJ514A682SN6i9hDRFckgiEmsNyS3SN0H6F1k+h923tqjMY9YjYIqkPErJs
+ Yxc6Y2ATSe4S3yOGfClekdwR95K6tB/1HlmX5BeEHM1kPAgAA
+To: Ulf Hansson <ulf.hansson@linaro.org>, 
+ Jaehoon Chung <jh80.chung@samsung.com>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>, 
+ Andrew Jeffery <andrew@codeconstruct.com.au>, Joel Stanley <joel@jms.id.au>
+Cc: Igor Opaniuk <igor.opaniuk@linaro.org>, 
+ tianshuliang <tianshuliang@hisilicon.com>, David Yang <mmyangfl@gmail.com>, 
+ linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-aspeed@lists.ozlabs.org, 
+ openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, 
+ Yang Xiwen <forbidden405@outlook.com>, Paul Menzel <pmenzel@molgen.mpg.de>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1709170614; l=3128;
+ i=forbidden405@outlook.com; s=20240228; h=from:subject:message-id;
+ bh=DbESgbLm8iXZ1xAIRzvPJVCUiiqIdNKZWaT+1vVOvZ0=;
+ b=lqJUGZQRau+vHK8zzfG0TQhZLe44ISqDiBVhDKit2Z7lPJv2XYc1hzqzRZs3Sl3dKFjfCV0AH
+ GbgNgWa0197D8TwR67DQTdMBcMSbYcKtgLGGRTvSOOwNH86bhNe27/E
+X-Developer-Key: i=forbidden405@outlook.com; a=ed25519;
+ pk=KAWv6ZzFsT54MGllOczJgFiWB+DuayEmyn24iiVVThU=
+X-Endpoint-Received:
+ by B4 Relay for forbidden405@outlook.com/20240228 with auth_id=136
+X-Original-From: Yang Xiwen <forbidden405@outlook.com>
+Reply-To: <forbidden405@outlook.com>
 
-We don't use this device on Trogdor boards. If we did, it would be
-enabled in the sc7180-trogdor.dtsi file. Let's disable this here so that
-boards with t he sc7180 SoC can decide to enable or disable this device.
+it's modified from hi3798cv200 driver, but quite a lot of code gets
+rewritten because of the hardware differences. Actually cv200 DWMMC core
+is called HIMCIV200 while mv200 DWMMC core is called HIMCIV300 in
+downstream.
 
-Cc: Souradeep Chowdhury <quic_schowdhu@quicinc.com>
-Fixes: add74cad7c9d ("arm64: dts: qcom: sc7180: Add Data Capture and Compare(DCC) support node")
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
 ---
- arch/arm64/boot/dts/qcom/sc7180.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+Changes in v7:
+- driver: simplify tuning logic (Ulf Hansson)
+- bindings: fix patch order (Ulf Hansson)
+- Link to v6: https://lore.kernel.org/r/20240221-b4-mmc-hi3798mv200-v6-0-bc41bf6a9769@outlook.com
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index 4dcaa15caef2..f390bf3eccbe 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -2239,6 +2239,7 @@ dma@10a2000 {
- 			compatible = "qcom,sc7180-dcc", "qcom,dcc";
- 			reg = <0x0 0x010a2000 0x0 0x1000>,
- 			      <0x0 0x010ae000 0x0 0x2000>;
-+			status = "disabled";
- 		};
- 
- 		stm@6002000 {
+Changes in v6:
+- apply the comments to the first patch, add their trailers
+- Link to v5: https://lore.kernel.org/r/20240220-b4-mmc-hi3798mv200-v5-0-f506c55f8e43@outlook.com
 
-base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+Changes in v5:
+- pick the dependant patch: https://lore.kernel.org/all/20240215-mmc_phase-v1-1-f27644ee13e4@outlook.com/
+  to fix the bot build error.
+- edit the semantic meaning of hisilicon,sap-dll-reg property (Rob Herring)
+  The suggestion is from the CRG driver side:
+  https://lore.kernel.org/all/20240218205741.GA1561527-robh@kernel.org/
+- Link to v4: https://lore.kernel.org/r/20240217-b4-mmc-hi3798mv200-v4-0-0fdd9bd48532@outlook.com
+
+Changes in v4:
+- rename dw_mmc-hi3798 back to hi3798cv200 - Suggested by Krzysztof Kozlowski.
+- add r-bs to patch 1 and 2 - Reviewed by Krzysztof Kozlowski.
+- Link to v3: https://lore.kernel.org/r/20240217-b4-mmc-hi3798mv200-v3-0-f15464176947@outlook.com
+
+Changes in v3:
+- dw_mmc-hi3798: fix bot error (Rob Herring)
+- Link to v2: https://lore.kernel.org/r/20240216-b4-mmc-hi3798mv200-v2-0-010d63e6a1d5@outlook.com
+
+Changes in v2:
+- dw_mmc-hi3798mv200: use dev_err_probe() helper - Suggested by Krzysztof Kozlowski.
+- dw_mmc-hi3798mv200: add missing err=0;
+- dw_mmc-hi3798c(m)v200: remove unused MODULE_ALIAS() - Suggested by Krzysztof Kozlowski.
+- binding: rename the binding, a lot of tweaks suggested by Krzysztof Kozlowski.
+- Link to v1: https://lore.kernel.org/r/20240216-b4-mmc-hi3798mv200-v1-0-7d46db845ae6@outlook.com
+
+---
+Yang Xiwen (5):
+      mmc: host: mmc_of_parse_clk_phase(): Pass struct device * instead of mmc_host *
+      mmc: dw_mmc-hi3798cv200: remove MODULE_ALIAS()
+      dt-bindings: mmc: dw-mshc-hi3798cv200: convert to YAML
+      dt-bindings: mmc: hisilicon,hi3798cv200-dw-mshc: add Hi3798MV200 binding
+      mmc: dw_mmc: add support for hi3798mv200
+
+ .../bindings/mmc/hi3798cv200-dw-mshc.txt           |  40 ----
+ .../mmc/hisilicon,hi3798cv200-dw-mshc.yaml         |  97 ++++++++
+ drivers/mmc/core/host.c                            |   4 +-
+ drivers/mmc/host/Kconfig                           |   9 +
+ drivers/mmc/host/Makefile                          |   1 +
+ drivers/mmc/host/dw_mmc-hi3798cv200.c              |   1 -
+ drivers/mmc/host/dw_mmc-hi3798mv200.c              | 251 +++++++++++++++++++++
+ drivers/mmc/host/sdhci-of-aspeed.c                 |   2 +-
+ include/linux/mmc/host.h                           |   2 +-
+ 9 files changed, 361 insertions(+), 46 deletions(-)
+---
+base-commit: d206a76d7d2726f3b096037f2079ce0bd3ba329b
+change-id: 20240121-b4-mmc-hi3798mv200-a5730edf122c
+
+Best regards,
 -- 
-https://chromeos.dev
+Yang Xiwen <forbidden405@outlook.com>
 
 
