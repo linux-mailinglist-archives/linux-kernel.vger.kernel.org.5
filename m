@@ -1,269 +1,147 @@
-Return-Path: <linux-kernel+bounces-86560-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86561-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1ADE686C711
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:37:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D53CE86C716
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:38:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9ACCE1F284DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:37:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6969828635F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:38:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D71B79DC0;
-	Thu, 29 Feb 2024 10:37:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61B2979DC0;
+	Thu, 29 Feb 2024 10:38:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dx1gwm0r"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="LR15xKGC"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 457B279B7A
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 10:37:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CAFB651A1
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 10:38:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709203040; cv=none; b=WKUrbEJsajF5k1h/kRj7eTHHCPMljdALwr55IcR5BaZXCEw4Hg79uRcgOY+fgaUCTYxuQN/wwX3QBsZtQJYv6A35QFkLG99nTb1qqoM36LHzgnfw4eQdtAfPtX5kNs0upN5CY0mkPU/gY1IICkn/e97TEuUUXt8GA8qGKRR7WW8=
+	t=1709203086; cv=none; b=JRQbWYZmQZnKm+v9o/RJTbxiLyjoHnmVcfa1q+enL5m3Uu9dxWzip6QbO8Tc7kZHKO3vrouCAbwU9OAcYQWU3MfEtrgTh1TofIG64qnUwtYSeXUshvXHolvh0FVjjtUYTGHAt6fxX6kmq0WKHi7QMw44wcHuiPtMNntXpbOwJ5o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709203040; c=relaxed/simple;
-	bh=xkeld8Lk8IBplM8fZKyDA8lxo+4YDzsa8AtbNMPtOrg=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=Gng3Y+DejndQkhvrnHuVfWPWx6tZJcsVyEk+WwqcGIek1yYROLn5MBK+rS77YKZ7kX6n7O7fFxvHIcC5hsFpOU1OErqL9ghfZSWkvxmjwz5jiL8dMU03LdDs6unU1ELqww3nzv14v3MUvWdNSEVy6LaN59DvRxwnDgv/+SgXNmI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dx1gwm0r; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709203036;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VmmqZdgeBo5f2z5C02fBhM61/leQCIABlPf1lTPL92E=;
-	b=dx1gwm0rj0sDbUxjo/004aecaRCGsul2qlWW+AWCv1ILmmBdovZUrZ5McfwLiZYIku65e8
-	7sbyc5SzqBp6sI5r6u5cSk2FItigCnogsMXSjOLLqz1jtLacZC33oAB123r8X0AzyC1A4R
-	L5SELf9nTUdoiVrrD4I5FX+uPNXL3RQ=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-497-G7sbZNxlPFOkzb6vP8ilGw-1; Thu, 29 Feb 2024 05:37:15 -0500
-X-MC-Unique: G7sbZNxlPFOkzb6vP8ilGw-1
-Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-787f80399caso77804585a.3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 02:37:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709203034; x=1709807834;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VmmqZdgeBo5f2z5C02fBhM61/leQCIABlPf1lTPL92E=;
-        b=Kqk/RdGFyPDf+2izv2Dh5BxGroHEiykm3KArUUiEWSFlktU5x6ywQISt7byaD2kxhK
-         nh/j9x14m0v6Lr0jeNCyIdbi7PGPHnCr6lzbPizoyd90NbuF1Ich1ovOCUBOR4xnZJlA
-         CxTvSROyCmb0ooLAy6Yo41E6k9mntovo7P151+UyuHFjfldgfbbs+XFfEFwGtZrCoYiB
-         JIZ0dI7L4RNk8nohfaV4BJQ+jfO0l+LQwrkkSTOJWIcv5j/SJrEAvgOcMbaYT92jM0rP
-         JH0Q9rGBMZtd+AQah9pwgLYCJGhmRhsasYPYPibdW3d3YrlBwCHpdGnyRGqvXm3zTC5x
-         gMaA==
-X-Forwarded-Encrypted: i=1; AJvYcCUMmMkB1PmDaOUlglIFw7JaQjkw6OUawThOW66i6zk4RjAylfSHUDoRgHPdKuQXGI4b6elsI3KFdntzpITipezF5XOsht0IX2MlekTy
-X-Gm-Message-State: AOJu0YxnWoJ7IFYXsp0taWpixZguPZOw29gWS/oDDAHy/KLmH+K8LV+j
-	hCDBQZKxsOmqThcdug9OyVb+AXWsKKGs2rs0McR6cRig3gA218xz5qu3LTfAt5djcInoUpXd3aM
-	piqPyPN8Zzre/l/ge+eo0iXOZY/K+YGnyxpyA1G6vvavxxbzoT6MUXa1awQ8V
-X-Received: by 2002:ac8:57d1:0:b0:42e:8145:8589 with SMTP id w17-20020ac857d1000000b0042e81458589mr1720859qta.2.1709203034648;
-        Thu, 29 Feb 2024 02:37:14 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGvjZZh4qSQgCFe2Zwl1bZvlNHTz+j+elx5TttakPKlYeodm3M1v9KlIIjfLmbzsJBo6Cq7pw==
-X-Received: by 2002:ac8:57d1:0:b0:42e:8145:8589 with SMTP id w17-20020ac857d1000000b0042e81458589mr1720840qta.2.1709203034266;
-        Thu, 29 Feb 2024 02:37:14 -0800 (PST)
-Received: from [192.168.9.34] (net-2-34-30-118.cust.vodafonedsl.it. [2.34.30.118])
-        by smtp.gmail.com with ESMTPSA id d3-20020ac851c3000000b0042c61b99f42sm582123qtn.46.2024.02.29.02.37.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Feb 2024 02:37:13 -0800 (PST)
-Message-ID: <0c885ff2-44bc-4158-b5dd-3d7513cb2857@redhat.com>
-Date: Thu, 29 Feb 2024 11:37:10 +0100
+	s=arc-20240116; t=1709203086; c=relaxed/simple;
+	bh=C1LH26YhXc3fHATx6eQEtJ6WdmRuT1TXi+gudRwwMaA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uDUMBEv90AgHcCl2Nn0bSLKObYAAR08oIjZuDiyBRbq1MxooiWEk1YAH2pFfq9o5RBa4XIwujIAk4tdK4Squ2+Za4gIpP/uWL+ySRuY2e3rinljAWAyX4TrhRTgNSB67I8+L5Zo4plB3BYHv0OzpZL6bwlrdYxZh+d+WnE6+eTM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=LR15xKGC; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id D6DF940E0028;
+	Thu, 29 Feb 2024 10:38:00 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id qNk3YuGXQug9; Thu, 29 Feb 2024 10:37:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1709203077; bh=0StLIprXskarneurs0igA75jz9KvpMszEkdlQp9iLBg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=LR15xKGCawRu9vpsUebpRU7e5dQg2S8FI3uGokogXeFWtgGznj1saZkC5Y16bRWuP
+	 JoPa+2lz0+10vUEczmM8A8l4j3N7m+E30D3lpdk7zPg1xGgIja94qNAfAHjx0KI9qN
+	 BmIi5JmMgwJIwsmaBwPBnD8N3FqOP5lStc9zSVRH5J1EmBOvcJFD4wO8g7V2oojPAf
+	 q66PetU2SEg1hiqlR7aMOmPpgyT6GTdd3B6NQ/Q9il1T54YNhvWUM06gmyfRVqZxY3
+	 QiDCQnhMCrlbq/M81Qw4uxX5As/ABDaYlnwB1DWIIZWefitKRGmInBexM/86V4kgR/
+	 nFIYF0ca17++/msxsYNVfZ+fGaOpzQuGXHY3FBkLG71qybIVn7/zCoHuDG0zC+mfzi
+	 YOw3wdKOPcvktVmMApPJuERFWZCqvgPMD8gFVI3aWGswSuVlIBTwWzNPwG6JEd1Qg/
+	 DwmbVZDBlQS0LaYWd+E0F6U6viizq8/Qa879JEldZjVgBWlTOdUWQNL8G5k+ybSkea
+	 QXCqGLlXmAU4rUGMHF30lmdUqJe550d09xZdoGY1QMFW6WdezvhBr/LNZ5fpK/Z7tJ
+	 i51h3e32dMb7k+vb4cK0Zdt54oYLTy0+NIuitbqwmt77+Rx7DmvYzDoQ8l+kBBc94J
+	 ssZTJjuJXq36ZsOU502t9HDM=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AC52040E0196;
+	Thu, 29 Feb 2024 10:37:46 +0000 (UTC)
+Date: Thu, 29 Feb 2024 11:37:40 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Ard Biesheuvel <ardb+git@google.com>
+Cc: linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+	Kevin Loughlin <kevinloughlin@google.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Dionna Glaze <dionnaglaze@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Andy Lutomirski <luto@kernel.org>, Brian Gerst <brgerst@gmail.com>
+Subject: Re: [PATCH v7 4/9] x86/startup_64: Simplify virtual switch on
+ primary boot
+Message-ID: <20240229103740.GKZeBedEybE0IeOXUG@fat_crate.local>
+References: <20240227151907.387873-11-ardb+git@google.com>
+ <20240227151907.387873-15-ardb+git@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Marco Pagani <marpagan@redhat.com>
-Subject: Re: [RFC PATCH v5 1/1] fpga: add an owner and use it to take the
- low-level module's refcount
-To: Xu Yilun <yilun.xu@linux.intel.com>
-Cc: Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
- Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
- Jonathan Corbet <corbet@lwn.net>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Alan Tull <atull@opensource.altera.com>, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-fpga@vger.kernel.org
-References: <20240111160242.149265-1-marpagan@redhat.com>
- <20240111160242.149265-2-marpagan@redhat.com>
- <Zbh7iO9wlm9ekzB7@yilunxu-OptiPlex-7050>
- <0720eb91-72f9-4781-8558-8a1b0a3691c2@redhat.com>
- <Zb8dd9af0Ru/fzGi@yilunxu-OptiPlex-7050>
- <4aaa131a-4b64-4b86-9548-68aef63c87b3@redhat.com>
- <ZdHWaeU+/On6LmHX@yilunxu-OptiPlex-7050>
- <9a9d4018-fd65-49be-9e0a-1eecc9cbf15d@redhat.com>
- <ZdYKnZxdTCvu5THG@yilunxu-OptiPlex-7050>
- <ae3cd81b-82af-4977-91d7-fa809c6fc45a@redhat.com>
- <Zd7cff43ffbJOGNY@yilunxu-OptiPlex-7050>
-Content-Language: en-US
-In-Reply-To: <Zd7cff43ffbJOGNY@yilunxu-OptiPlex-7050>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240227151907.387873-15-ardb+git@google.com>
 
+First
 
-On 2024-02-28 08:10, Xu Yilun wrote:
-> On Tue, Feb 27, 2024 at 12:49:06PM +0100, Marco Pagani wrote:
->>
->>
->> On 2024-02-21 15:37, Xu Yilun wrote:
->>> On Tue, Feb 20, 2024 at 12:11:26PM +0100, Marco Pagani wrote:
->>>>
->>>>
->>>> On 2024-02-18 11:05, Xu Yilun wrote:
->>>>> On Mon, Feb 05, 2024 at 06:47:34PM +0100, Marco Pagani wrote:
->>>>>>
->>>>>>
->>>>>> On 2024-02-04 06:15, Xu Yilun wrote:
->>>>>>> On Fri, Feb 02, 2024 at 06:44:01PM +0100, Marco Pagani wrote:
->>>>>>>>
->>>>>>>>
->>>>>>>> On 2024-01-30 05:31, Xu Yilun wrote:
->>>>>>>>>> +#define fpga_mgr_register_full(parent, info) \
->>>>>>>>>> +	__fpga_mgr_register_full(parent, info, THIS_MODULE)
->>>>>>>>>>  struct fpga_manager *
->>>>>>>>>> -fpga_mgr_register_full(struct device *parent, const struct fpga_manager_info *info);
->>>>>>>>>> +__fpga_mgr_register_full(struct device *parent, const struct fpga_manager_info *info,
->>>>>>>>>> +			 struct module *owner);
->>>>>>>>>>  
->>>>>>>>>> +#define fpga_mgr_register(parent, name, mops, priv) \
->>>>>>>>>> +	__fpga_mgr_register(parent, name, mops, priv, THIS_MODULE)
->>>>>>>>>>  struct fpga_manager *
->>>>>>>>>> -fpga_mgr_register(struct device *parent, const char *name,
->>>>>>>>>> -		  const struct fpga_manager_ops *mops, void *priv);
->>>>>>>>>> +__fpga_mgr_register(struct device *parent, const char *name,
->>>>>>>>>> +		    const struct fpga_manager_ops *mops, void *priv, struct module *owner);
->>>>>>>>>> +
->>>>>>>>>>  void fpga_mgr_unregister(struct fpga_manager *mgr);
->>>>>>>>>>  
->>>>>>>>>> +#define devm_fpga_mgr_register_full(parent, info) \
->>>>>>>>>> +	__devm_fpga_mgr_register_full(parent, info, THIS_MODULE)
->>>>>>>>>>  struct fpga_manager *
->>>>>>>>>> -devm_fpga_mgr_register_full(struct device *parent, const struct fpga_manager_info *info);
->>>>>>>>>> +__devm_fpga_mgr_register_full(struct device *parent, const struct fpga_manager_info *info,
->>>>>>>>>> +			      struct module *owner);
->>>>>>>>>
->>>>>>>>> Add a line here. I can do it myself if you agree.
->>>>>>>>
->>>>>>>> Sure, that is fine by me. I also spotted a typo in the commit log body
->>>>>>>> (in taken -> is taken). Do you want me to send a v6, or do you prefer
->>>>>>>> to fix that in place?
->>>>>>>
->>>>>>> No need, I can fix it.
->>>>>>>
->>>>>>>>
->>>>>>>>>
->>>>>>>>> There is still a RFC prefix for this patch. Are you ready to get it merged?
->>>>>>>>> If yes, Acked-by: Xu Yilun <yilun.xu@intel.com>
->>>>>>>>
->>>>>>>> I'm ready for the patch to be merged. However, I recently sent an RFC
->>>>>>>> to propose a safer implementation of try_module_get() that would
->>>>>>>> simplify the code and may also benefit other subsystems. What do you
->>>>>>>> think?
->>>>>>>>
->>>>>>>> https://lore.kernel.org/linux-modules/20240130193614.49772-1-marpagan@redhat.com/
->>>>>>>
->>>>>>> I suggest take your fix to linux-fpga/for-next now. If your try_module_get()
->>>>>>> proposal is applied before the end of this cycle, we could re-evaluate
->>>>>>> this patch.
->>>>>>
->>>>>> That's fine by me.
->>>>>
->>>>> Sorry, I still found issues about this solution.
->>>>>
->>>>> void fpga_mgr_unregister(struct fpga_manager *mgr)
->>>>> {
->>>>>         dev_info(&mgr->dev, "%s %s\n", __func__, mgr->name);
->>>>>
->>>>>         /*
->>>>>          * If the low level driver provides a method for putting fpga into
->>>>>          * a desired state upon unregister, do it.
->>>>>          */
->>>>>         fpga_mgr_fpga_remove(mgr);
->>>>>
->>>>>         mutex_lock(&mgr->mops_mutex);
->>>>>
->>>>>         mgr->mops = NULL;
->>>>>
->>>>>         mutex_unlock(&mgr->mops_mutex);
->>>>>
->>>>>         device_unregister(&mgr->dev);
->>>>> }
->>>>>
->>>>> Note that fpga_mgr_unregister() doesn't have to be called in module_exit().
->>>>> So if we do fpga_mgr_get() then fpga_mgr_unregister(), We finally had a
->>>>> fpga_manager dev without mops, this is not what the user want and cause
->>>>> problem when using this fpga_manager dev for other FPGA APIs.
->>>>
->>>> How about moving mgr->mops = NULL from fpga_mgr_unregister() to
->>>> class->dev_release()? In that way, mops will be set to NULL only when the
->>>> manager dev refcount reaches 0.
->>>
->>> I'm afraid it doesn't help.  The lifecycle of the module and the fpga
->>> mgr dev is different.
->>>
->>> We use mops = NULL to indicate module has been freed or will be freed in no
->>> time.  On the other hand mops != NULL means module is still there, so
->>> that try_module_get() could be safely called.  It is possible someone
->>> has got fpga mgr dev but not the module yet, at that time the module is
->>> unloaded, then try_module_get() triggers crash.
->>>
->>>>
->>>> If fpga_mgr_unregister() is called from module_exit(), we are sure that nobody
->>>> got the manager dev earlier using fpga_mgr_get(), or it would have bumped up
->>>
->>> No, someone may get the manager dev but not the module yet, and been
->>> scheduled out.
->>>
->>
->> You are right. Overall, it's a bad idea. How about then using an additional 
->> bool flag instead of "overloading" the mops pointer? Something like:
->>
->> get:
->> 	if (!mgr->owner_valid || !try_module_get(mgr->mops_owner))
->>
->> remove:
->> 	mgr->owner_valid = false;
-> 
-> I'm not quite sure which function is actually mentioned by "remove".  I
-> assume it should be fpga_mgr_unregister().
+Reviewed-by: Borislav Petkov (AMD) <bp@alien8.de>
 
-Yes, I was referring to fpga_mgr_unregister().
+for the patch.
 
-> IIUC this flag means no more reference to fpga mgr, but existing
-> references are still valid.
+On Tue, Feb 27, 2024 at 04:19:12PM +0100, Ard Biesheuvel wrote:
+> +	/*
+> +	 * Switch to early_top_pgt which still has the identity mappings
+> +	 * present.
 
-Yes.
+I was wondering why we've had this "discrepancy" forever - the boot CPU
+would have early_top_pgt *with* the ident mappings while the APs would do
+init_top_pgt.
 
-> 
-> It works for me. But the name of this flag could be reconsidered to
-> avoid misunderstanding.  The owner is still valid (we still need to put
-> the owner) but allows no more reference.  Maybe "owner_inactive"?
+But we end up loading init_top_pgt on the BSP too in init_mem_mapping()
+so there's a short time during boot where we have this difference.
+I haven't found a reason to have it yet except "why bother"...
 
-Right, owner_valid might be misleading. How about removing any
-reference to the owner module and name the flag unreg?
+And now some details just for future reference:
 
-__fpga_mgr_get:
-	if (mgr->unreg || !try_module_get(mgr->mops_owner))
-		mgr = ERR_PTR(-ENODEV);
+On the BSP:
 
-fpga_mgr_unregister:
- 	mgr->unreg = true;
+=> 0x10000a0:   mov    %rax,%cr3
 
-> I still wanna this owner reference change been splitted, so that
-> we could simply revert it when the try_module_get_safe() got accepted.
+cr3            0x9922000
+111850: ffffffff89922000  8192 OBJECT  GLOBAL DEFAULT   22 early_top_pgt
 
-I guess it may take some time to have try_module_get_safe() accepted.
-What do you prefer to do with the bridge and the region in the
-meantime?
+(gdb) p/x early_top_pgt
+$3 = {{pgd = 0x9924063}, {pgd = 0x9924063}, {pgd = 0x0} <repeats 509 times>, {pgd = 0x2418067}}
 
-Thanks,
-Marco
+first two PGDs and the last one are populated.
 
+On the AP:
+
+cr3            0x2416000
+104747: ffffffff82416000  8192 OBJECT  GLOBAL DEFAULT   12 init_top_pgt
+
+(gdb) p/x (long[512])*0xffffffff82416000
+$8 = {0x0 <repeats 273 times>, 0xbe01067, 0x0 <repeats 128 times>, 0xc000067, 0xc001067, 0xc002067, 0xc003067, 0xc004067, 0xc005067,
+  0xc006067, 0xc007067, 0xc008067, 0xc009067, 0xc00a067, 0xc00b067, 0xc00c067, 0xc00d067, 0xc00e067, 0xc00f067, 0xc010067, 0xc011067,
+  0xc012067, 0xc013067, 0xc014067, 0xc015067, 0xc016067, 0xc017067, 0xc018067, 0xc019067, 0xc01a067, 0xc01b067, 0xc01c067, 0xc01d067,
+  0xc01e067, 0xc01f067, 0xc020067, 0xc021067, 0xc022067, 0xc023067, 0xc024067, 0xc025067, 0xc026067, 0xc027067, 0xc028067, 0xc029067,
+  0xc02a067, 0xc02b067, 0xc02c067, 0xc02d067, 0xc02e067, 0xc02f067, 0xc030067, 0xc031067, 0xc032067, 0xc033067, 0xc034067, 0xc035067,
+  0xc036067, 0xc037067, 0xc038067, 0xc039067, 0xc03a067, 0xc03b067, 0xc03c067, 0xc03d067, 0xc03e067, 0xc03f067, 0x0, 0x0, 0x7ffd3067,
+  0x0 <repeats 39 times>, 0x7ffd1067, 0x0, 0x9b11067, 0x2418067}
+
+and that one becomes the swapper_pg_dir which is the kernel pagetable we
+use.
+
+PTI then does two separate ones, which is a whole different topic.
+
+:-)
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
