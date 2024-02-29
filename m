@@ -1,205 +1,216 @@
-Return-Path: <linux-kernel+bounces-86723-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86722-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C66FB86C9AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:03:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB57286C9A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:03:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7BEB8286934
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:03:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D21D1F22CA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:03:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A74E87E104;
-	Thu, 29 Feb 2024 13:03:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39D527E0F8;
+	Thu, 29 Feb 2024 13:03:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="N7C9WFvE"
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nIfnjJpq"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3597F7D419
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 13:03:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CD441EB46;
+	Thu, 29 Feb 2024 13:03:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709211809; cv=none; b=n7X1q3a2sCNEFiFXuLABaF9ezIQ6WGOU5Kc2DpUAu5RAA5em7KKGeMkrx+zTLd7Ri8WUTpx3uWzQEH/ifaHZN+d4EF6xkrCwmCq1BIIs6kDkmGL9rSHbpI03R9lZ7TmphM6vydfcroL+Jbdoi3Qj+S7FjLzjIz+6RrTzrZ1IBPk=
+	t=1709211786; cv=none; b=SOtA0IH7iU7somXNnHQd57+MyXrn7LuoXwTf0WpkGdCKVkJPG7zgMU3Lv/7SgUF8v6IxjBh01gxF0XXs/zVjhhxWECkaHE33IN2PigHknaGQBsDNes5KJTpZtS4Puk91ncsQGn3TcOV37yKBf5vayS4dg2Py6Cus+2MfswTiLxg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709211809; c=relaxed/simple;
-	bh=3KFwAwzX3Nqj77zYQMOKvmHpYqpHOLy9C2qCRmqB3Is=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CEGSCNyxI1QttB/K2iQwoGNgTnGD9quoGU8CEXGvtAV6bPfs0U+2zbR2o3jfs9M2yGFp9jurP7nR1ls2NT8evJPClDI21WXlJ0hxUQ76zR62DLLs/8+ERCpPfIUijpg+P3JHIBQJ8O0kaSvD+gPGYX2YAzver5LB5zmXQwePPRk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=N7C9WFvE; arc=none smtp.client-ip=209.85.128.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-608ccac1899so9246897b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 05:03:26 -0800 (PST)
+	s=arc-20240116; t=1709211786; c=relaxed/simple;
+	bh=NF+J53s9ack+LK9clVcP6iNIeJuebRRdCkgajbisWOE=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=PjrkGP1lguVTPWHdxgefsykzlPAA3dPimv1lxzjOBo2Z5s4uJXUsWqn/bZojaDUo1ZmQZlopt5P1QoIrnQt2lsIp/oUqGpnkoGIK6+KK8Z2InHcx1H4zdxQiXBvUt6UYtw3pOERobasHA1fVif/lyunIK4YNenp94vDpU8IZ+xg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nIfnjJpq; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a3d5e77cfbeso160066866b.0;
+        Thu, 29 Feb 2024 05:03:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709211806; x=1709816606; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H7BfAiS0dMbweRAkXE/17W2K80r1DmpgC/baihcoMn4=;
-        b=N7C9WFvESgQgQ58sJGCBk1jKwXLcI+MQelQpsM/721oaHZQWNhetCrFNF/55vJ8iAW
-         ioAPKVieW6U/Mc05Yo2CB1vUKgxzM59tAn0zLXkku4ukQnFXdeDxR9Oz1KT8MoSvuJN5
-         zTUUjTRcmmhgAEJnby5p3thdXnAP7LQVVGvN8m1uwU1I2AVORs0Upy5t4zndGwtydU+K
-         ASxNpKAPG0N3LaIlpYUmVzxshTsb+CJToyV4KHovo+LHPYk/cWxXMQu7QiNgmpAt1+T9
-         mITGTGj1QwWstzUTpr3VwrtqGI6FuKz882epUfDEqXrn+X/DqQanSIMJvK5Gt9lHR09q
-         ztNA==
+        d=gmail.com; s=20230601; t=1709211783; x=1709816583; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=NF+J53s9ack+LK9clVcP6iNIeJuebRRdCkgajbisWOE=;
+        b=nIfnjJpq9DAufhbCaqrOrTRNq6dVRaekf1gZpfe6Ljmrr/gmlMmWLNY+Oc25EpawJ4
+         L0pytzVVdBYfQHXpb76gyJI+1/kwXoTo8d4Hc0V8771+ZIRLaPctxhSgTMm58rJ7Js/B
+         RSTzomwgBPmGgfCx2AfR5z6jeUe2b0uPGRZ/eQNwLcfORPTC8DuI3n50IVs8HPbuVnrN
+         C+AtibK23YYNFAJQOJpzW+yGqwiqnZEZXdrY1Z4TZ01lkdf3bzNO1IxYMi+k92mviJeb
+         PFuONEIPCAQTAyQ5ftxrgLWBkthbhzJtdkogZFLdE9n/H646pQhA1VvTmZ1DZ94A3g/H
+         Ohtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709211806; x=1709816606;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=H7BfAiS0dMbweRAkXE/17W2K80r1DmpgC/baihcoMn4=;
-        b=LHjUiVHMs/vypPb6JL67S2c3v29sqNacEYFoFy8mNL8CbC/319V127d2ZatUfU+qdS
-         hW7I0oWTjboGUvkrjiJ54y0Nt1wftiRSIebe6982GIVtRSvZmBGIS481re3rvPCAqBCk
-         oiRGSHNFQEzA6TSSTFpmsHgjcYQQCe/FQHSdgK2Y+8YIXH9yZFiUj871+QZQY0Q3fmQA
-         0j7Twfh0hgt4MCyCRE50Ya1+2ZJXylz/H0g++C64xgA6S9ftXSNvrmnr1GneqIf/TBXC
-         +LaN99+yi3/BX9fiRr8Dzq9SCa8q//T52dskx8MSdpSLJr07fLUAzCn90bjA5GQ0BmWH
-         yO4A==
-X-Forwarded-Encrypted: i=1; AJvYcCXFdGabCo/FkYVx7ZSeECx8s8ab5O8q+WGVXnh6Rh3K1IQkJ2tDJTr0rH6Gp1XZhvIxIOe3m05M54qmVxB0PlLQPDILRz5pTrnaRcBt
-X-Gm-Message-State: AOJu0Yz3La70AfIm8weQJdx5mLHBjcJGrTZmvzi9IjfrOI6Zle+twBSh
-	zHuoNA1POyADFMjJQjxZ6Wjx/wpJri9NSr7mBP77rA2ABRuKqAfpqd2y6IQEMLWdYFiWGnWIzi1
-	zd9KrHPKtIq9U3em15KUcxDYw/uHqSwWF6oU0qg==
-X-Google-Smtp-Source: AGHT+IHQz42wX2mAaaw9ho5RQMq4VSD4ZFqcEz4aryLKKrd9HwtJCvam+GQvCM1L9WJW5tUmbAJLU5/+2pI5vohfiqc=
-X-Received: by 2002:a25:ce02:0:b0:dcf:9019:a2fe with SMTP id
- x2-20020a25ce02000000b00dcf9019a2femr1786280ybe.64.1709211806087; Thu, 29 Feb
- 2024 05:03:26 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709211783; x=1709816583;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=NF+J53s9ack+LK9clVcP6iNIeJuebRRdCkgajbisWOE=;
+        b=qdepcjGXPSE8bTZnIqheHyNSX3CDv7V+cZdAeH0ni90srINTrYDGVlJnl5/mCkKLdv
+         mDN9PbZVEI6kQRccFgvBjfMxHdLP098NyHIfrKHs0U0bImHwIrEFtTB8xTH+GrTD4EqX
+         78zPa71dSuuvdnvwBrbc9zvXUOYG45pUeuuCNNw+oiNJkFZBmnra9UKmvO04Ak9xXTqL
+         Nj82TzggYbHIp+DjPXYl0LjJboT/tj/5Mi8GzrDDdHsJsXBeRkiyBIw8M2ZMMp6XpvYA
+         gstmOroO6ITHNTbfF5CkWkC52N/tXf6pPVLwNTMqeYYZGxknrjKSN6MY+U4vAwvRWsn8
+         JTAg==
+X-Forwarded-Encrypted: i=1; AJvYcCVTjch/0NUhT/MRecCOmYIZHP3mF3MY63UbF5oY3g1RY+lZ+z+o3YwE/nGXatRNfhlXD7P+aXuyFavIwQch0gHCPWyJP+ra1ZCIwJfw7gtzw2GrnsF04IuAGZTu0sKj87IL4/MuEQJKoTZm8SRiWcQIA6OTjsLsSKqlQWUrWtE8ww==
+X-Gm-Message-State: AOJu0YyuLz/CNNfb4wxPNBBk1fwjzgSHUofDyvH7532+V6vsLZ/VLzv5
+	naR6XTOrgo//aXKpPDTANREW84rMwfuf5wPLPEIUAAAjb4ttxYFQ
+X-Google-Smtp-Source: AGHT+IEDPxQCBGh3Ia0jt9ZWaBBa9PCJvA+qO+WlevHSeyZi1rwDKWtBI0Jfr1TaLVksgHmxMS/DWg==
+X-Received: by 2002:a17:906:3689:b0:a43:e812:fbc8 with SMTP id a9-20020a170906368900b00a43e812fbc8mr1505196ejc.18.1709211782649;
+        Thu, 29 Feb 2024 05:03:02 -0800 (PST)
+Received: from ?IPv6:2003:f6:ef1b:2000:15d4:fc17:481e:8afe? (p200300f6ef1b200015d4fc17481e8afe.dip0.t-ipconnect.de. [2003:f6:ef1b:2000:15d4:fc17:481e:8afe])
+        by smtp.gmail.com with ESMTPSA id cw10-20020a170907160a00b00a3e9ea356easm666794ejd.125.2024.02.29.05.03.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Feb 2024 05:03:02 -0800 (PST)
+Message-ID: <af8a97f3a187cc403b6184948d3e335ee83f44ec.camel@gmail.com>
+Subject: Re: [PATCH v3 1/2] driver core: Introduce device_link_wait_removal()
+From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Herve Codina <herve.codina@bootlin.com>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Rob Herring <robh+dt@kernel.org>, Frank
+ Rowand <frowand.list@gmail.com>, Lizhi Hou <lizhi.hou@amd.com>, Max Zhen
+ <max.zhen@amd.com>, Sonal Santan <sonal.santan@amd.com>, Stefano Stabellini
+ <stefano.stabellini@xilinx.com>, Jonathan Cameron
+ <Jonathan.Cameron@huawei.com>,  linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, Allan Nielsen <allan.nielsen@microchip.com>,
+ Horatiu Vultur <horatiu.vultur@microchip.com>,  Steen Hegelund
+ <steen.hegelund@microchip.com>, Luca Ceresoli <luca.ceresoli@bootlin.com>,
+ Nuno Sa <nuno.sa@analog.com>, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>,  stable@vger.kernel.org
+Date: Thu, 29 Feb 2024 14:06:25 +0100
+In-Reply-To: <CAJZ5v0hGfqrczS1Si8Bu67vTSkTKO_gO7ftO2R7CQxGKGWsbAA@mail.gmail.com>
+References: <20240229105204.720717-1-herve.codina@bootlin.com>
+	 <20240229105204.720717-2-herve.codina@bootlin.com>
+	 <9cc3d11bc3e1bb89a1c725f865d0c8d1494111c5.camel@gmail.com>
+	 <CAJZ5v0hGfqrczS1Si8Bu67vTSkTKO_gO7ftO2R7CQxGKGWsbAA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240220064246.467216-1-yuklin.soo@starfivetech.com> <20240220064246.467216-3-yuklin.soo@starfivetech.com>
-In-Reply-To: <20240220064246.467216-3-yuklin.soo@starfivetech.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 29 Feb 2024 14:03:14 +0100
-Message-ID: <CACRpkdZd9WuLmvBEjEOF5R+R8Yrva_KiEPRCOXU98yLDkS=+ZQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 2/6] pinctrl: starfive: jh8100: add main and
- sys_east driver
-To: Alex Soo <yuklin.soo@starfivetech.com>
-Cc: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, Hal Feng <hal.feng@starfivetech.com>, 
-	Ley Foon Tan <leyfoon.tan@starfivetech.com>, 
-	Jianlong Huang <jianlong.huang@starfivetech.com>, Emil Renner Berthing <kernel@esmil.dk>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Drew Fustini <drew@beagleboard.org>, linux-gpio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Thanks Alex,
+On Thu, 2024-02-29 at 14:01 +0100, Rafael J. Wysocki wrote:
+> On Thu, Feb 29, 2024 at 12:13=E2=80=AFPM Nuno S=C3=A1 <noname.nuno@gmail.=
+com> wrote:
+> >=20
+> > Hi,
+> >=20
+> > Just copy pasting my previous comments :)
+> >=20
+> > On Thu, 2024-02-29 at 11:52 +0100, Herve Codina wrote:
+> > > The commit 80dd33cf72d1 ("drivers: base: Fix device link removal")
+> > > introduces a workqueue to release the consumer and supplier devices u=
+sed
+> > > in the devlink.
+> > > In the job queued, devices are release and in turn, when all the
+> > > references to these devices are dropped, the release function of the
+> > > device itself is called.
+> > >=20
+> > > Nothing is present to provide some synchronisation with this workqueu=
+e
+> > > in order to ensure that all ongoing releasing operations are done and
+> > > so, some other operations can be started safely.
+> > >=20
+> > > For instance, in the following sequence:
+> > > =C2=A0 1) of_platform_depopulate()
+> > > =C2=A0 2) of_overlay_remove()
+> > >=20
+> > > During the step 1, devices are released and related devlinks are remo=
+ved
+> > > (jobs pushed in the workqueue).
+> > > During the step 2, OF nodes are destroyed but, without any
+> > > synchronisation with devlink removal jobs, of_overlay_remove() can ra=
+ise
+> > > warnings related to missing of_node_put():
+> > > =C2=A0 ERROR: memory leak, expected refcount 1 instead of 2
+> > >=20
+> > > Indeed, the missing of_node_put() call is going to be done, too late,
+> > > from the workqueue job execution.
+> > >=20
+> > > Introduce device_link_wait_removal() to offer a way to synchronize
+> > > operations waiting for the end of devlink removals (i.e. end of
+> > > workqueue jobs).
+> > > Also, as a flushing operation is done on the workqueue, the workqueue
+> > > used is moved from a system-wide workqueue to a local one.
+> > >=20
+> > > Fixes: 80dd33cf72d1 ("drivers: base: Fix device link removal")
+> > > Cc: stable@vger.kernel.org
+> > > Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+> > > ---
+> > > =C2=A0drivers/base/core.c=C2=A0=C2=A0=C2=A0 | 26 ++++++++++++++++++++=
++++---
+> > > =C2=A0include/linux/device.h |=C2=A0 1 +
+> > > =C2=A02 files changed, 24 insertions(+), 3 deletions(-)
+> > >=20
+> > > diff --git a/drivers/base/core.c b/drivers/base/core.c
+> > > index d5f4e4aac09b..80d9430856a8 100644
+> > > --- a/drivers/base/core.c
+> > > +++ b/drivers/base/core.c
+> > > @@ -44,6 +44,7 @@ static bool fw_devlink_is_permissive(void);
+> > > =C2=A0static void __fw_devlink_link_to_consumers(struct device *dev);
+> > > =C2=A0static bool fw_devlink_drv_reg_done;
+> > > =C2=A0static bool fw_devlink_best_effort;
+> > > +static struct workqueue_struct *device_link_wq;
+> > >=20
+> > > =C2=A0/**
+> > > =C2=A0 * __fwnode_link_add - Create a link between two fwnode_handles=
+.
+> > > @@ -532,12 +533,26 @@ static void devlink_dev_release(struct device *=
+dev)
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * It may take a while to complet=
+e this work because of the SRCU
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * synchronization in device_link=
+_release_fn() and if the consumer
+> > > or
+> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * supplier devices get deleted when i=
+t runs, so put it into the
+> > > "long"
+> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * workqueue.
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * supplier devices get deleted when i=
+t runs, so put it into the
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * dedicated workqueue.
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+> > > -=C2=A0=C2=A0=C2=A0=C2=A0 queue_work(system_long_wq, &link->rm_work);
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 queue_work(device_link_wq, &link->rm_work);
+> > > =C2=A0}
+> > >=20
+> > > +/**
+> > > + * device_link_wait_removal - Wait for ongoing devlink removal jobs =
+to
+> > > terminate
+> > > + */
+> > > +void device_link_wait_removal(void)
+> > > +{
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 /*
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * devlink removal jobs are queued in =
+the dedicated work queue.
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * To be sure that all removal jobs ar=
+e terminated, ensure that any
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * scheduled work has run to completio=
+n.
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 drain_workqueue(device_link_wq);
+> > > +}
+> >=20
+> > I'm still not convinced we can have a recursive call into devlinks remo=
+val
+> > so I
+> > do think flush_workqueue() is enough. I will defer to Saravana though..=
+.
+>=20
+> AFAICS, the difference betwee flush_workqueue() and drain_workqueue()
+> is the handling of the case when a given work item can queue up itself
+> again.=C2=A0 This does not happen here.
 
-this new version is much improved!
 
-On Tue, Feb 20, 2024 at 7:43=E2=80=AFAM Alex Soo <yuklin.soo@starfivetech.c=
-om> wrote:
-
-> Add JH8100 pinctrl main and sys_east domain driver.
->
-> Signed-off-by: Alex Soo <yuklin.soo@starfivetech.com>
-
-This commit message should at least explain what we are adding here,
-that it's a core driver that will be used by all the domains, what the
-SoC is etc etc.
-
-> +       select GPIOLIB_IRQCHIP
-(...)
-> +#include "../core.h"
-> +#include "../pinmux.h"
-> +#include "../pinconf.h"
-
-Do you really need to poke around in the internals like this?
-
-Please explain for each cross-include *why* you need to do this.
-
-> +++ b/drivers/pinctrl/starfive/pinctrl-starfive-jh8100.c
-(...)
-> +#include <linux/of_gpio.h>
-
-Never use this include. It is legacy and you should not be using
-it. Use <linux/gpio/consumer.h> solely. See comments below.
-
-> +#include <linux/pinctrl/consumer.h>
-
-Why?
-
-> +#include "../core.h"
-> +#include "../pinctrl-utils.h"
-> +#include "../pinmux.h"
-> +#include "../pinconf.h"
-
-Again all this. Explain for each one exactly why you need this.
-
-> +static int jh8100_gpio_irq_setup(struct device *dev, struct jh8100_pinct=
-rl *sfp)
-> +{
-> +       struct device_node *np =3D dev->of_node;
-> +       struct gpio_irq_chip *girq =3D &sfp->gc.irq;
-> +       struct gpio_desc *gpiod;
-> +       struct irq_desc *desc;
-> +       irq_hw_number_t hwirq;
-> +       int i, ret;
-> +       int dir;
-> +
-> +       if (!girq->domain) {
-> +               sfp->irq_domain =3D irq_domain_add_linear(np, sfp->gc.ngp=
-io,
-> +                                                       &irq_domain_simpl=
-e_ops,
-> +                                                       sfp);
-
-When would this happen? I don't quite get it.
-
-It looks like a probe order issue or something.
-
-> +       } else {
-> +               sfp->irq_domain =3D girq->domain;
-> +       }
-> +
-> +       if (!sfp->irq_domain) {
-> +               dev_err(dev, "Couldn't allocate IRQ domain\n");
-> +               return -ENXIO;
-> +       }
-> +
-> +       for (i =3D 0; i < sfp->gc.ngpio; i++) {
-> +               int virq =3D irq_create_mapping(sfp->irq_domain, i);
-> +
-> +               irq_set_chip_and_handler(virq, &jh8100_irq_chip,
-> +                                        handle_edge_irq);
-> +               irq_set_chip_data(virq, &sfp->gc);
-> +       }
-
-This duplicates core gpiolib irqchip handling, which you select using
-select GPIOLIB_IRQCHIP.
-
-Can you please look into just using the gpiolib irqchip handling?
-
-> +       sfp->wakeup_gpio =3D of_get_named_gpio(np, "wakeup-gpios", 0);
-
-No using <linux/of_gpio.h> please.
-
-Use just <linux/gpio/consumer.h> and something like:
-
-struct gpio_desc *wakeup;
-wakeup =3D devm_gpiod_get_optional(dev, "wakeup", GPIOD_IN);
-
-> +       if (gpio_is_valid(sfp->wakeup_gpio)) {
-> +               hwirq =3D pin_to_hwirq(sfp);
-> +               sfp->wakeup_irq =3D irq_find_mapping(sfp->irq_domain, hwi=
-rq);
-> +               desc =3D irq_to_desc(sfp->wakeup_irq);
-
-if (wakeup) {
-     irq =3D gpiod_to_irq(wakeup);
-     .. convert to irq descriptor etc...
-
-Actually: is this wakeup handling something we would like to add
-to the gpiolib irqchip so everyone can reuse it?
-In gpiochip_add_irqchip()?
-At least give it a thought.
-
-Yours,
-Linus Walleij
+Yeah, that's also my understanding...
 
