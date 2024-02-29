@@ -1,121 +1,114 @@
-Return-Path: <linux-kernel+bounces-86879-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86880-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01B9086CC23
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:54:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8629886CC29
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:54:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 335A81C22C10
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:54:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E9B8288914
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:54:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28BC513776A;
-	Thu, 29 Feb 2024 14:53:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E21913A891;
+	Thu, 29 Feb 2024 14:54:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="kCWnkroM"
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DlslagbC"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3780137754
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 14:53:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8381B137777;
+	Thu, 29 Feb 2024 14:53:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709218418; cv=none; b=ORZ5iYD4dhErIycPs4Gz3963dkA75IA0D+J0HWGHCUe7ek7F7cqg8TqMwi1spYA6TYxweVXmDnpSR0w2RRYyw/bi+El15ytmaxavX/HnbPz/bXVOchHI7wdiqJsS1o43MogeU80+XW0i/0TSML5L2+YGzQUezW/smfamFEbOLFc=
+	t=1709218439; cv=none; b=jiOGqZLoTWNYEpH99LFwaxF4hQOws74Cfk/BwO1a3333+9e9sAR40ZY5Cc80msZKrIf56AC8zG8YtwKDNsvF7aCrmRY6MGCPwm+Da3wHQari6meSr0OqpSBhpwSDUe148Uj0Ummn110W0eAgBkf9ZG5smvyY02XG3oGark0sd/M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709218418; c=relaxed/simple;
-	bh=+K45ry5ty52pZxfpGwoKoXzNaOLrzB9FcwlAIUZFd1k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=L8hdONgGnYvm3kkbEK97TaaLRbuNruRY+jSfm3hqWiOT5OXP8GVGFmJVXI5jlBsmhW1gtg4ejcH/4PgClIMhGiky67oAcRIywsI8NFHc89UxYeIoM2AEhVhrSMTQoqof993jQ575crUTzOU/vtYVhh8cgLumFn0sSn8Ndt7Y7Nc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=kCWnkroM; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-56693f0d235so10115a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 06:53:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709218415; x=1709823215; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CjXfEXjWPxF9nrfNVxhijA+unmpBjjqeq7wHcW/wKmI=;
-        b=kCWnkroMTwmlBxZXhkmP/g1D8/zVlk8bI/CsfqnuQE5ZMz0lynTzK+PkAb5aVL7N+f
-         uZOYMw3Sh7FxHpgj00DeA5LucmhTofPCPvsPlBI4FSx/hiASBpydJP4Y1jD9dC5ZiIOL
-         QwbE84jpExgpTpKpfxE/fkI9g0BMXns9gG7RzMruX3PL6l2jn2ogaS30y1JJ2WvB4RFd
-         KjYr2FlJNpqSIELFQHKT9/7QN2OWG0crN85IMWOD1AYQaCazDaY7EeLSR0TwdjBDRtJR
-         h1FwDAWkx8nhLk1IoKlbWAJ8KDNh8RSQOkLaYFDzawQ5ux2OINBO08ouJqQ24fJbcIoC
-         GFjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709218415; x=1709823215;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CjXfEXjWPxF9nrfNVxhijA+unmpBjjqeq7wHcW/wKmI=;
-        b=STrHFZJPBhk9brxzlr23BEbqnjxH+vdkzCuHJW7C6GGxZ2MInGHyO/sEo3hI4VwQNz
-         dmiCQqGSwiO0giWVTl+ze+QzUwE+j0jAIKMhl1I0XiSBpcDIdueIJ0E1rdBBCuyeaT3M
-         a5U0pgGlKskwcxkxerFRoVIMMy9OC+Y27ahWgPTe1Y5EusuExATgR1muRwpBKMaKWYwl
-         71iYmkZbmT15fzcwKaM3ZBvPQkdspa2sZ4t4uluIHQcYmWsC8ircFZsDVbQAKW7UQ36g
-         3RpLFPBI1JP2XNbqRG0AwXKqE6vwjOUja4zrQ87sI/Z4t1bArSBxAJM+u4aPaQ/5/UC2
-         ZsxA==
-X-Forwarded-Encrypted: i=1; AJvYcCURwr2OexSBnwBkB/tvIt+M/oTr+MAl/iyMOHfDBzfaXpcoS+n4aBSNd1lniYbrbmIg0hR5mumSh9jF8sxsNAQ9/J/gbJCHLbGGl9xt
-X-Gm-Message-State: AOJu0YwtZLvcs5cDWBEcl1QqfrfCGfpI14j3i5f1yCsn+crGUaDQRZrf
-	1NgZem2d5gwDIJOgHObe7nR6DC4ycxExeNm85TRKgaKTBNmWCQ+KKs9J/k9fMdJVAe394WGcwPZ
-	MB//8LzHti4DjneblPrRpWIQblISGotuPN64O
-X-Google-Smtp-Source: AGHT+IEZV/CwnlUEXnUq8RH7UeUwmSHrvKIi+bsCc+9wFC9WW10SxtgPDjqNPOwfhuvZ2/EUb+ZEwFWmhqvhYTDHURU=
-X-Received: by 2002:a05:6402:5206:b0:565:733d:2b30 with SMTP id
- s6-20020a056402520600b00565733d2b30mr154850edd.4.1709218414670; Thu, 29 Feb
- 2024 06:53:34 -0800 (PST)
+	s=arc-20240116; t=1709218439; c=relaxed/simple;
+	bh=H/xypjHg3RAGtOrdFLSQMFFbI9FZppPqPGCTlvgpMy8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=L8PIyhS+Uqtv7g/yC69Pr3ZO6oTwiZG/ClI0Tnk/KksqtRkRGlgsJrAIW9BttMEfz0RaQFBJMygHZuaDkpZGf9+h34Qgk+7ILBx6ULsmpXwJtgt6ShpZ+jb+v4+xQCiGy5Z2S5KBnhxvCekVJa+OJu14zbBOgGkd0SvfdyFtLyU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DlslagbC; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709218438; x=1740754438;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=H/xypjHg3RAGtOrdFLSQMFFbI9FZppPqPGCTlvgpMy8=;
+  b=DlslagbCfXQK676474bV3pAjKHVKN+B6FAm5kPYwRIOIcOOKDcw81Q3O
+   qfBYM7LSuTBWPSrrsusAMDihGCLPFK7IGKdkMX6nIX5D4rvMjdZ85Wrf2
+   09vM1XfxWWJIBauatfLHd8e58v75Dh6TfjP6emtV4bZse3+Eik+rPysMC
+   x1YhBrSwzHrumEj/XnK8wywfbxR6vdRkQKHbCHXKlk2P5LjM/sGwZIm9Q
+   DGTOdxf3flKmTZaIGTdZxKmhi8x8oeRfmzfB1GAnCG58vzUYnlrup0qg7
+   teMB8+cy8LOxH+sANI3RoC+H1hqylxURboVjDvXOIRpkQKlw+3n+1ddzx
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="7470968"
+X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
+   d="scan'208";a="7470968"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 06:53:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="913983848"
+X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
+   d="scan'208";a="913983848"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 06:53:52 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rfhnA-00000008hMb-38bp;
+	Thu, 29 Feb 2024 16:53:48 +0200
+Date: Thu, 29 Feb 2024 16:53:48 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: Vinod Koul <vkoul@kernel.org>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Mark Brown <broonie@kernel.org>, Kees Cook <keescook@chromium.org>,
+	linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+	linux-spi@vger.kernel.org, netdev@vger.kernel.org,
+	linux-hardening@vger.kernel.org,
+	Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: Re: [PATCH v4 8/8] dmaengine: ste_dma40: Use new helpers from
+ overflow.h
+Message-ID: <ZeCafPgtU1FeyzJG@smile.fi.intel.com>
+References: <20240228204919.3680786-1-andriy.shevchenko@linux.intel.com>
+ <20240228204919.3680786-9-andriy.shevchenko@linux.intel.com>
+ <CACRpkdaEzexhCYFf-NKnbcagXc6Tqcn4J+sFWk94mbJG9LkpVw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <3fcf3a2c-1c1b-42c1-bacb-78fdcd700389@linux.vnet.ibm.com>
- <85b78dad-affa-47c3-9cd0-79a4321460b8@linux.dev> <CANn89iJEzTjwxF7wXSnUR+NyDu-S-zEOYVXA+fEaYs_1o1g5HQ@mail.gmail.com>
- <a1fdd2c2-4443-458e-86db-280e7cbd4a36@linux.vnet.ibm.com> <CANn89iKdaMFCKnGRL4ffnbyrr2PUaKn1hoiu4VZ=sRyX=Vy0Wg@mail.gmail.com>
- <20240229064742.36c2f476@kernel.org>
-In-Reply-To: <20240229064742.36c2f476@kernel.org>
-From: Eric Dumazet <edumazet@google.com>
-Date: Thu, 29 Feb 2024 15:53:20 +0100
-Message-ID: <CANn89i+4Q2L7Gd5zGrSwT_v2wjL-ZKEFcM=oQ9w090+xc57HTQ@mail.gmail.com>
-Subject: Re: [revert 0d60d8df6f49] [net/net-next] [6.8-rc5] Build Failure
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Tasmiya Nalatwad <tasmiya@linux.vnet.ibm.com>, Vadim Fedorenko <vadim.fedorenko@linux.dev>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, arkadiusz.kubalewski@intel.com, 
-	jiri@nvidia.com, "abdhalee@linux.vnet.ibm.com" <abdhalee@linux.vnet.ibm.com>, 
-	"mputtash@linux.vnet.com" <mputtash@linux.vnet.com>, "sachinp@linux.vnet.com" <sachinp@linux.vnet.com>, 
-	venkat88@linux.vnet.ibm.com, 
-	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACRpkdaEzexhCYFf-NKnbcagXc6Tqcn4J+sFWk94mbJG9LkpVw@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Thu, Feb 29, 2024 at 3:47=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wr=
-ote:
->
-> On Thu, 29 Feb 2024 09:55:22 +0100 Eric Dumazet wrote:
-> > I do not see other solution than this, otherwise we have to add more
-> > pollution to include/linux/netdevice.h
->
-> Right :(
->
-> > diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> > index a9c973b92294bb110cf3cd336485972127b01b58..40797ea80bc6273cae6b777=
-3d0a3e47459a72150
-> > 100644
-> > --- a/include/linux/netdevice.h
-> > +++ b/include/linux/netdevice.h
-> > @@ -2469,7 +2469,7 @@ struct net_device {
-> >         struct devlink_port     *devlink_port;
+On Thu, Feb 29, 2024 at 03:14:03PM +0100, Linus Walleij wrote:
+> On Wed, Feb 28, 2024 at 9:49 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> 
+> > We have two new helpers struct_size_with_data() and struct_data_pointer()
+> > that we can utilize in d40_hw_detect_init(). Do it so.
 > >
-> >  #if IS_ENABLED(CONFIG_DPLL)
-> > -       struct dpll_pin __rcu   *dpll_pin;
-> > +       void __rcu *dpll_pin;
-> >  #endif
->
-> If DPLL wants to hide its type definitions the helpers must live
-> in dpll? IOW move netdev_dpll_pin() to drivers/dpll/dpll_core.c
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> 
+> Wow really neat! Much easier to read and understand the code like this.
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Oh for some reason I thought this stuff was a module.
+Thanks, but Kees has seems even better suggestion.
 
-Otherwise, why having dpll 'core' helpers in net/core/dev.c
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
