@@ -1,130 +1,92 @@
-Return-Path: <linux-kernel+bounces-86121-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86122-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3DBA86BFF2
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 05:42:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D35BE86BFF5
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 05:46:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 018C21C214F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 04:42:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F9581F25A6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 04:46:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C73C38F96;
-	Thu, 29 Feb 2024 04:42:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b="Vlse2Mbf"
-Received: from omta040.useast.a.cloudfilter.net (omta040.useast.a.cloudfilter.net [44.202.169.39])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AAB439AD5;
+	Thu, 29 Feb 2024 04:46:06 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 470BC383A9
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 04:42:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.39
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FEB92030B
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 04:46:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709181744; cv=none; b=j+271en4ZxwJCBgkvFj9JPC+P42Ax/DTT71ocjr3CrtpDrSm2N8/DF9CS2ze6RrXXDGFFQajACiivDZuvMfH0Quj1+zbVIPw+ULT7JRJadJtg/j31v2lAUiqdE9MDXj2zUo/MU7Qq0IleFVoGvRwxefTrJ1dqCLOlokwyJoDFhw=
+	t=1709181965; cv=none; b=N2QctIzjBbMsqcc+hdXdA7I1B32DaPEvbpPKmXRIwdVpwJE61GNr5Gw/C8VhVXcgkK7GVRKG4Gw5yl9AOmD+RGexfzfVi5QAvCGSeQzhBhl0+BusUBkwuhmpi0EEZ4ovMirNv/wRbWm1LqnJL3hHqWc5EFRVmzJ5iauIvQZn18g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709181744; c=relaxed/simple;
-	bh=7MdowiYFtd1YVdbQPrEzPUsEd/NWiP+n7PYwa3sOkvQ=;
-	h=Subject:To:Cc:References:In-Reply-To:From:Message-ID:Date:
-	 MIME-Version:Content-Type; b=GRWeUwacwFM2JF2QPoMylZ95gKpL8vqi9WTGFB+mRYOIyh1mUxCfRbnNdgUsWzUKW7CFjFt7v71JU7TPNInyHplcRwgH4y8eem9VnLvZk5lsHrjuDBKYRh/VhHcsXhJc9EBa3AnPUIF7gBpdNl02GiHyc5MychBa9Vzyib6Ldv4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net; spf=pass smtp.mailfrom=w6rz.net; dkim=pass (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b=Vlse2Mbf; arc=none smtp.client-ip=44.202.169.39
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=w6rz.net
-Received: from eig-obgw-5010a.ext.cloudfilter.net ([10.0.29.199])
-	by cmsmtp with ESMTPS
-	id fVfurrRhZl9dRfYFQrGs6C; Thu, 29 Feb 2024 04:42:20 +0000
-Received: from box5620.bluehost.com ([162.241.219.59])
-	by cmsmtp with ESMTPS
-	id fYFPrhcPi6b5LfYFPr0sFF; Thu, 29 Feb 2024 04:42:19 +0000
-X-Authority-Analysis: v=2.4 cv=LLRgQoW9 c=1 sm=1 tr=0 ts=65e00b2b
- a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
- a=IkcTkHD0fZMA:10 a=k7vzHIieQBIA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
- a=HaFmDPmJAAAA:8 a=KyoLkmSyMt9Nb96WE4AA:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
-	s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
-	Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=TqFmvHG+z+uzSLFLtBkJ2F44Thyw1ppS6+xzDkfk1W8=; b=Vlse2MbfSBM27PGyIBxpZjHGEm
-	oVkHIefNnEiXZLm02rVvzHsa4tT44fyy9Yz61F3jAQXRkS0Os7PECmol2zqTIngQXqy/T47yAIIKh
-	pgH/bG+Mzw9qU0IHse/1hddYnq4ymyg7NIwUXRZlyPcTms6s1/Nx17Fx5AE3PVIumlE4w9z8kH7Gc
-	8UkOCe2a8ZNwTzmOu76hRxzz7COyZ+Hk+5518UV/L7HaO5XrydVsZ9Swg/c1dWQtN8GVez+F5t0+G
-	knhEFjdXasODBFd7AJ/ATe14kNViFtCkkNegExKSCqqfHEKZvwqk/FjuAyG8V2hm4Wl/ibG1966es
-	bd/3UIdA==;
-Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:48354 helo=[10.0.1.47])
-	by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <re@w6rz.net>)
-	id 1rfYFN-000KVl-1E;
-	Wed, 28 Feb 2024 21:42:17 -0700
-Subject: Re: [PATCH 6.1 000/195] 6.1.80-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
- rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
-References: <20240227131610.391465389@linuxfoundation.org>
-In-Reply-To: <20240227131610.391465389@linuxfoundation.org>
-From: Ron Economos <re@w6rz.net>
-Message-ID: <1cfaf521-fef8-bfb6-060f-8f69d96396d2@w6rz.net>
-Date: Wed, 28 Feb 2024 20:42:14 -0800
-User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+	s=arc-20240116; t=1709181965; c=relaxed/simple;
+	bh=uyjOIENxq69Mlcc4mc+sqUi2mtkubLj29ms1NoSVQk8=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=qGd7N+LCeUFr7XWeU91RIS8/XG7xRMzARGVeNJ/nqqBenFLl2EdJu9yUe7vpgd05LiWdQittuR94xl4i7BTOJ4r1IX6Yobt+cV4NkOVtdlL+KYxw2WE/QrumtFxCo0MVBhXDI7fUjgNvayR5Ztm5u3nvBVa23GT7aJe1RkZp2hY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3657ae3e87fso7291915ab.2
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 20:46:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709181963; x=1709786763;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FEjUJh9OkG09y0YRlfLvgKOC1GUAUaQDR1N3zpLExVA=;
+        b=naz56mNLbw8MdjFr4x9j5QwSG9R59ubgsZsKf86eIU4WIXQv5eTFyow6kwlleR1wQb
+         LyrYjU94M7QULeQVs2eOte9c5CGvlgIf+DZjsLZl6TCX+WFXCdDm5J4wS7yRCnXrN+cw
+         xUWfxIIwHCdo4t2CcuU4kKMltWpnhcOEIlSU03HD0q6FN/rWnoimCRAOXNozw+Z6J9dB
+         wkwKrTGZqko9CFXsyuyjkZ1215zls/QoD0hOWIRjWqGYwX1zpaBAx+/mqRLDyjHfmpoT
+         98SDMyHzm8Yzokf0mBbB/pXC4X/6rxWbSuZZNUnxqkrkxFBqz7j//DZgpFEsFnr9wgeb
+         Xnqw==
+X-Forwarded-Encrypted: i=1; AJvYcCUS1YVphWDA1YMVqz5xTuKxthXyiLvoULW9KxD0v/YSkYoSzEXhgBRi8EEQRo2M29tuTqbZocOHKVKbJGzyuKndnJ5VG0n/sjDwrX5R
+X-Gm-Message-State: AOJu0Yx4TSJg4c53RlC2bQY+Py1FPzrBiMsjA0p2C/SvfDNAwlnY4OpW
+	+CEhBtgyu17scwvwiU4nNfVb755bLljNooqXSF6MUpb7qjvY+FY8DtdITH8Xc/PZ9pfNMcjnlmP
+	xPKG86soWvBpH/KfONzECMe5Q8vw2SR7ZnwoqN7hMkEBftxb5ZAMNzGU=
+X-Google-Smtp-Source: AGHT+IEdCtFwvSTo9IsVW4KKbhjExbFAmwCruc2QMMuLHxCBRQbrllGS6/9TC1/gdsUCxxkl5OaeSLKpXGOdphGqQzZ98gXSHGHl
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - box5620.bluehost.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - w6rz.net
-X-BWhitelist: no
-X-Source-IP: 98.207.139.8
-X-Source-L: No
-X-Exim-ID: 1rfYFN-000KVl-1E
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:48354
-X-Source-Auth: re@w6rz.net
-X-Email-Count: 4
-X-Org: HG=bhshared;ORG=bluehost;
-X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfD0YrEp3S0iivo7seAF9IUqUPSzDNSbzSFv+hMt4tRtJ53HtrxrmwM08mdSpQaQj071CT74uZ82oHflc3D0SO1LBvmbtIR/T5w/RFNCFKYVFN8I4lDjP
- W6RTEdln2K/7qiK9Px9VGJkqNmEHg/8hNVnM6oj35hx1UHNM6O2ff/oYT0Q4UxZW+yEr69dzSxY7HHS35PuJFU39sIp6mJGvkXA=
+X-Received: by 2002:a05:6e02:1cad:b0:365:1f8b:d103 with SMTP id
+ x13-20020a056e021cad00b003651f8bd103mr66821ill.6.1709181963802; Wed, 28 Feb
+ 2024 20:46:03 -0800 (PST)
+Date: Wed, 28 Feb 2024 20:46:03 -0800
+In-Reply-To: <00000000000029b00c05ef9c1802@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000cf2d2d06127def32@google.com>
+Subject: Re: [syzbot] [gfs2?] WARNING in gfs2_check_blk_type
+From: syzbot <syzbot+092b28923eb79e0f3c41@syzkaller.appspotmail.com>
+To: agruenba@redhat.com, axboe@kernel.dk, brauner@kernel.org, 
+	cluster-devel@redhat.com, gfs2@lists.linux.dev, jack@suse.cz, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	rpeterso@redhat.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 2/27/24 5:24 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.80 release.
-> There are 195 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 29 Feb 2024 13:15:36 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.80-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+syzbot suspects this issue was fixed by commit:
 
-Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
+commit 6f861765464f43a71462d52026fbddfc858239a5
+Author: Jan Kara <jack@suse.cz>
+Date:   Wed Nov 1 17:43:10 2023 +0000
 
-Tested-by: Ron Economos <re@w6rz.net>
+    fs: Block writes to mounted block devices
 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=108aa9ba180000
+start commit:   861deac3b092 Linux 6.7-rc7
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=10c7857ed774dc3e
+dashboard link: https://syzkaller.appspot.com/bug?extid=092b28923eb79e0f3c41
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1440171ae80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11b1205ee80000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: fs: Block writes to mounted block devices
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
