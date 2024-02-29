@@ -1,74 +1,65 @@
-Return-Path: <linux-kernel+bounces-87478-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87479-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7F0786D4E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:51:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36E3886D4ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:51:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11D7C1C215AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:51:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA8D9284578
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:51:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90E406D534;
-	Thu, 29 Feb 2024 20:40:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B4A214EA51;
+	Thu, 29 Feb 2024 20:40:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RogbHVy2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cqpPHg1J"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A68676D520;
-	Thu, 29 Feb 2024 20:40:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B56E6D518;
+	Thu, 29 Feb 2024 20:40:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709239226; cv=none; b=trq+0x9Ns5kVUToxTxcqeHbb4btlSchQSvNuRHTn9QFx3hfbSHeBHOXQ46EULBLzgTA6XzkYsk/LJGrxb1C5O03CdkuKR1KADBXgTeiLvKE0ga7e3isSwfvR2BsZIj8VxjMGbA1Msra6vlkps8qq3Rp+ov5ktCjkg40P0yEIkzI=
+	t=1709239228; cv=none; b=fExB9cgeoFnptJdTbrkV5L/K8E1tK7MKpHp3ChCg2nwBRU5ia/Pn0nQ/x+iC4QsMAlNK5UtJlXF3vG9xdHKgLCODsRXbJergvAhR/gx+tv1hNHSo2jfOGiYjlgQJU6TUKtNH0bzRaDPvcQ5JozFNT2USczQzp7Lje6HV0q418K8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709239226; c=relaxed/simple;
-	bh=v72yR9TvJL75rbdEOwqmwC5IEhpmO5X238jNeAFXJaU=;
+	s=arc-20240116; t=1709239228; c=relaxed/simple;
+	bh=eBUzn36vqZymU/CNWaaNunB4aUI45530KBqfOLornhs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Opwnj0SadpHbnxGnmyNm8hjjyBgDSNjnCEduF2HLVJFIOxuNqfu4wGCuPa12Co7oQH/f4s3AkY1BssSQR71pCH3a2yTjP3J+MKuaRlMNCuKnyIJgCqOxrlYeT4oAo/n5mJFECfF/iaEQoDfLEzfRkInVY+p1ubTwiFvLB04IMUM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RogbHVy2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68C96C43330;
-	Thu, 29 Feb 2024 20:40:22 +0000 (UTC)
+	 MIME-Version; b=aW1W4FFNHbCJz58JnN+M+5zUWHCeHfZwpvzOj1r6nu/xDKL1I3smWEjiE/OKu5spOxhHy/kAasUYILTpVstoLh22eEozRgGeONX6t9ozKioKbmN4ZRescWKpTsFPuZ/JGPf3IlQNXoi5+xiIrD5yFWKCiHodWn29niIdy+TR6q4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cqpPHg1J; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBFDFC433F1;
+	Thu, 29 Feb 2024 20:40:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709239225;
-	bh=v72yR9TvJL75rbdEOwqmwC5IEhpmO5X238jNeAFXJaU=;
+	s=k20201202; t=1709239227;
+	bh=eBUzn36vqZymU/CNWaaNunB4aUI45530KBqfOLornhs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RogbHVy2ewpx6oYzwsYA7t3aYhUsA36K9G70LPYPI5OfHSnN2HB6Bv/+XuNE9k265
-	 7hJNgLGrWN00FCXQTwKpKEgUtktl5ps0+gTYMgvAxMZ17h1nta/YM3LQklzrNT7tQ+
-	 ZNBD5oB5bSkuNzDuyp2jzFEZ6k/596pUdO+pQd39mvjRrIc/ZnVi9geQINLJEtrNAa
-	 grAlya4gAR1kUweVvCpTlixSdYCsmx1hjFdT61twcErdk9PL3LfALS2T/0ra7LQFPg
-	 4IS5+wiUfJndIjAIE4yoSabFgNIsc048nvSsznns/9BE2cChU8aY3on1wQ7b+F5qcr
-	 cyicPOUU7icJg==
+	b=cqpPHg1JF7O3eiDA7t/H5MFeUakNKrG2ervr8NaRFYStaeZpzou2DMTWVfqzr2FK5
+	 HdBB1rnC0mGEqy7oG8FDFPZaoMpltNHOxjRk+s+KoqeCRs51bWBQD3Grx/cwSxZWcO
+	 CwbMMFgZcQYu0e5iE4tcuvIDtHKLeI/NPS45opbdE3B4sOt4xpbKwDWKsMYBcaHXxB
+	 P0AyFyKVhW939npoqIgZlkvST+h5BMzzj4uY7Qz5OBxNdvkw9D9nzrvXCUz2tG1Hlh
+	 q1DDfQ/tlfzzhPehUxLs9OG+NyzOMQZv5qtKFjNioTaeaEEXvZjbgGXue7ZGRL7kAg
+	 cYlSi7Q1CK1tA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Rob Herring <robh@kernel.org>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Chanho Min <chanho.min@lge.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
 	Arnd Bergmann <arnd@arndb.de>,
 	Sasha Levin <sashal@kernel.org>,
-	tsahee@annapurnalabs.com,
-	atenart@kernel.org,
+	linusw@kernel.org,
+	kaloz@openwrt.org,
 	robh+dt@kernel.org,
 	krzysztof.kozlowski+dt@linaro.org,
 	conor+dt@kernel.org,
-	rjui@broadcom.com,
-	sbranden@broadcom.com,
-	andrew@lunn.ch,
-	gregory.clement@bootlin.com,
-	sebastian.hesselbarth@gmail.com,
-	matthias.bgg@gmail.com,
-	magnus.damm@gmail.com,
+	andersson@kernel.org,
+	konrad.dybcio@linaro.org,
 	linux-arm-kernel@lists.infradead.org,
 	devicetree@vger.kernel.org,
-	linux-mediatek@lists.infradead.org,
-	linux-renesas-soc@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 19/22] arm64: dts: Fix dtc interrupt_provider warnings
-Date: Thu, 29 Feb 2024 15:39:12 -0500
-Message-ID: <20240229203933.2861006-19-sashal@kernel.org>
+	linux-arm-msm@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 20/22] arm: dts: Fix dtc interrupt_map warnings
+Date: Thu, 29 Feb 2024 15:39:13 -0500
+Message-ID: <20240229203933.2861006-20-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240229203933.2861006-1-sashal@kernel.org>
 References: <20240229203933.2861006-1-sashal@kernel.org>
@@ -85,164 +76,68 @@ Content-Transfer-Encoding: 8bit
 
 From: Rob Herring <robh@kernel.org>
 
-[ Upstream commit 91adecf911e5df78ea3e8f866e69db2c33416a5c ]
+[ Upstream commit f02b0f0dc26fbb77fe47b6e47cc5c211f0432c37 ]
 
-The dtc interrupt_provider warning is off by default. Fix all the warnings
-so it can be enabled.
+The dtc interrupt_map warning is off because its dependency,
+interrupt_provider, is off by default. Fix all the warnings so it can be
+enabled.
 
 Signed-off-by: Rob Herring <robh@kernel.org>
-Reviewed-By: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com> #
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Acked-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Acked-by: Florian Fainelli <florian.fainelli@broadcom.com> #Broadcom
-Acked-by: Chanho Min <chanho.min@lge.com>
-Link: https://lore.kernel.org/r/20240213-arm-dt-cleanups-v1-3-f2dee1292525@kernel.org
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Link: https://lore.kernel.org/r/20240213-arm-dt-cleanups-v1-4-f2dee1292525@kernel.org
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/amazon/alpine-v2.dtsi           | 1 -
- arch/arm64/boot/dts/amazon/alpine-v3.dtsi           | 1 -
- arch/arm64/boot/dts/broadcom/northstar2/ns2.dtsi    | 1 +
- arch/arm64/boot/dts/broadcom/stingray/stingray.dtsi | 1 +
- arch/arm64/boot/dts/lg/lg1312.dtsi                  | 1 -
- arch/arm64/boot/dts/lg/lg1313.dtsi                  | 1 -
- arch/arm64/boot/dts/marvell/armada-ap80x.dtsi       | 1 -
- arch/arm64/boot/dts/mediatek/mt8195-demo.dts        | 1 +
- arch/arm64/boot/dts/renesas/ulcb-kf.dtsi            | 4 ++++
- 9 files changed, 7 insertions(+), 5 deletions(-)
+ arch/arm/boot/dts/intel/ixp/intel-ixp42x-gateway-7001.dts | 2 ++
+ .../boot/dts/intel/ixp/intel-ixp42x-goramo-multilink.dts  | 2 ++
+ arch/arm/boot/dts/qcom/qcom-sdx55.dtsi                    | 8 ++++----
+ 3 files changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/amazon/alpine-v2.dtsi b/arch/arm64/boot/dts/amazon/alpine-v2.dtsi
-index dccbba6e7f98e..dbf2dce8d1d68 100644
---- a/arch/arm64/boot/dts/amazon/alpine-v2.dtsi
-+++ b/arch/arm64/boot/dts/amazon/alpine-v2.dtsi
-@@ -145,7 +145,6 @@ pci@fbc00000 {
- 		msix: msix@fbe00000 {
- 			compatible = "al,alpine-msix";
- 			reg = <0x0 0xfbe00000 0x0 0x100000>;
--			interrupt-controller;
- 			msi-controller;
- 			al,msi-base-spi = <160>;
- 			al,msi-num-spis = <160>;
-diff --git a/arch/arm64/boot/dts/amazon/alpine-v3.dtsi b/arch/arm64/boot/dts/amazon/alpine-v3.dtsi
-index 39481d7fd7d4d..3ea178acdddfe 100644
---- a/arch/arm64/boot/dts/amazon/alpine-v3.dtsi
-+++ b/arch/arm64/boot/dts/amazon/alpine-v3.dtsi
-@@ -355,7 +355,6 @@ pcie@fbd00000 {
- 		msix: msix@fbe00000 {
- 			compatible = "al,alpine-msix";
- 			reg = <0x0 0xfbe00000 0x0 0x100000>;
--			interrupt-controller;
- 			msi-controller;
- 			al,msi-base-spi = <336>;
- 			al,msi-num-spis = <959>;
-diff --git a/arch/arm64/boot/dts/broadcom/northstar2/ns2.dtsi b/arch/arm64/boot/dts/broadcom/northstar2/ns2.dtsi
-index 9dcd25ec2c041..896d1f33b5b61 100644
---- a/arch/arm64/boot/dts/broadcom/northstar2/ns2.dtsi
-+++ b/arch/arm64/boot/dts/broadcom/northstar2/ns2.dtsi
-@@ -586,6 +586,7 @@ gpio_g: gpio@660a0000 {
- 			#gpio-cells = <2>;
- 			gpio-controller;
- 			interrupt-controller;
-+			#interrupt-cells = <2>;
- 			interrupts = <GIC_SPI 400 IRQ_TYPE_LEVEL_HIGH>;
- 		};
+diff --git a/arch/arm/boot/dts/intel/ixp/intel-ixp42x-gateway-7001.dts b/arch/arm/boot/dts/intel/ixp/intel-ixp42x-gateway-7001.dts
+index 4d70f6afd13ab..6d5e69035f94d 100644
+--- a/arch/arm/boot/dts/intel/ixp/intel-ixp42x-gateway-7001.dts
++++ b/arch/arm/boot/dts/intel/ixp/intel-ixp42x-gateway-7001.dts
+@@ -60,6 +60,8 @@ pci@c0000000 {
+ 			 * We have slots (IDSEL) 1 and 2 with one assigned IRQ
+ 			 * each handling all IRQs.
+ 			 */
++			#interrupt-cells = <1>;
++			interrupt-map-mask = <0xf800 0 0 7>;
+ 			interrupt-map =
+ 			/* IDSEL 1 */
+ 			<0x0800 0 0 1 &gpio0 11 IRQ_TYPE_LEVEL_LOW>, /* INT A on slot 1 is irq 11 */
+diff --git a/arch/arm/boot/dts/intel/ixp/intel-ixp42x-goramo-multilink.dts b/arch/arm/boot/dts/intel/ixp/intel-ixp42x-goramo-multilink.dts
+index 9ec0169bacf8c..5f4c849915db7 100644
+--- a/arch/arm/boot/dts/intel/ixp/intel-ixp42x-goramo-multilink.dts
++++ b/arch/arm/boot/dts/intel/ixp/intel-ixp42x-goramo-multilink.dts
+@@ -89,6 +89,8 @@ pci@c0000000 {
+ 			 * The slots have Ethernet, Ethernet, NEC and MPCI.
+ 			 * The IDSELs are 11, 12, 13, 14.
+ 			 */
++			#interrupt-cells = <1>;
++			interrupt-map-mask = <0xf800 0 0 7>;
+ 			interrupt-map =
+ 			/* IDSEL 11 - Ethernet A */
+ 			<0x5800 0 0 1 &gpio0 4 IRQ_TYPE_LEVEL_LOW>, /* INT A on slot 11 is irq 4 */
+diff --git a/arch/arm/boot/dts/qcom/qcom-sdx55.dtsi b/arch/arm/boot/dts/qcom/qcom-sdx55.dtsi
+index 5b86b4de1a1bd..f9ad5abfbd28b 100644
+--- a/arch/arm/boot/dts/qcom/qcom-sdx55.dtsi
++++ b/arch/arm/boot/dts/qcom/qcom-sdx55.dtsi
+@@ -345,10 +345,10 @@ pcie_rc: pcie@1c00000 {
+ 					  "msi8";
+ 			#interrupt-cells = <1>;
+ 			interrupt-map-mask = <0 0 0 0x7>;
+-			interrupt-map = <0 0 0 1 &intc 0 0 0 141 IRQ_TYPE_LEVEL_HIGH>, /* int_a */
+-					<0 0 0 2 &intc 0 0 0 142 IRQ_TYPE_LEVEL_HIGH>, /* int_b */
+-					<0 0 0 3 &intc 0 0 0 143 IRQ_TYPE_LEVEL_HIGH>, /* int_c */
+-					<0 0 0 4 &intc 0 0 0 144 IRQ_TYPE_LEVEL_HIGH>; /* int_d */
++			interrupt-map = <0 0 0 1 &intc 0 141 IRQ_TYPE_LEVEL_HIGH>, /* int_a */
++					<0 0 0 2 &intc 0 142 IRQ_TYPE_LEVEL_HIGH>, /* int_b */
++					<0 0 0 3 &intc 0 143 IRQ_TYPE_LEVEL_HIGH>, /* int_c */
++					<0 0 0 4 &intc 0 144 IRQ_TYPE_LEVEL_HIGH>; /* int_d */
  
-diff --git a/arch/arm64/boot/dts/broadcom/stingray/stingray.dtsi b/arch/arm64/boot/dts/broadcom/stingray/stingray.dtsi
-index f049687d6b96d..d8516ec0dae74 100644
---- a/arch/arm64/boot/dts/broadcom/stingray/stingray.dtsi
-+++ b/arch/arm64/boot/dts/broadcom/stingray/stingray.dtsi
-@@ -450,6 +450,7 @@ gpio_hsls: gpio@d0000 {
- 			#gpio-cells = <2>;
- 			gpio-controller;
- 			interrupt-controller;
-+			#interrupt-cells = <2>;
- 			interrupts = <GIC_SPI 183 IRQ_TYPE_LEVEL_HIGH>;
- 			gpio-ranges = <&pinmux 0 0 16>,
- 					<&pinmux 16 71 2>,
-diff --git a/arch/arm64/boot/dts/lg/lg1312.dtsi b/arch/arm64/boot/dts/lg/lg1312.dtsi
-index 48ec4ebec0a83..b864ffa74ea8b 100644
---- a/arch/arm64/boot/dts/lg/lg1312.dtsi
-+++ b/arch/arm64/boot/dts/lg/lg1312.dtsi
-@@ -126,7 +126,6 @@ eth0: ethernet@c1b00000 {
- 	amba {
- 		#address-cells = <2>;
- 		#size-cells = <1>;
--		#interrupt-cells = <3>;
- 
- 		compatible = "simple-bus";
- 		interrupt-parent = <&gic>;
-diff --git a/arch/arm64/boot/dts/lg/lg1313.dtsi b/arch/arm64/boot/dts/lg/lg1313.dtsi
-index 3869460aa5dcb..996fb39bb50c1 100644
---- a/arch/arm64/boot/dts/lg/lg1313.dtsi
-+++ b/arch/arm64/boot/dts/lg/lg1313.dtsi
-@@ -126,7 +126,6 @@ eth0: ethernet@c3700000 {
- 	amba {
- 		#address-cells = <2>;
- 		#size-cells = <1>;
--		#interrupt-cells = <3>;
- 
- 		compatible = "simple-bus";
- 		interrupt-parent = <&gic>;
-diff --git a/arch/arm64/boot/dts/marvell/armada-ap80x.dtsi b/arch/arm64/boot/dts/marvell/armada-ap80x.dtsi
-index 2c920e22cec2b..7ec7c789d87ef 100644
---- a/arch/arm64/boot/dts/marvell/armada-ap80x.dtsi
-+++ b/arch/arm64/boot/dts/marvell/armada-ap80x.dtsi
-@@ -138,7 +138,6 @@ pmu {
- 
- 			odmi: odmi@300000 {
- 				compatible = "marvell,odmi-controller";
--				interrupt-controller;
- 				msi-controller;
- 				marvell,odmi-frames = <4>;
- 				reg = <0x300000 0x4000>,
-diff --git a/arch/arm64/boot/dts/mediatek/mt8195-demo.dts b/arch/arm64/boot/dts/mediatek/mt8195-demo.dts
-index 5d635085fe3fd..9079e48aea23e 100644
---- a/arch/arm64/boot/dts/mediatek/mt8195-demo.dts
-+++ b/arch/arm64/boot/dts/mediatek/mt8195-demo.dts
-@@ -128,6 +128,7 @@ mt6360: pmic@34 {
- 		compatible = "mediatek,mt6360";
- 		reg = <0x34>;
- 		interrupt-controller;
-+		#interrupt-cells = <1>;
- 		interrupts-extended = <&pio 101 IRQ_TYPE_EDGE_FALLING>;
- 		interrupt-names = "IRQB";
- 
-diff --git a/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi b/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
-index 3885ef3454ff6..50de17e4fb3f2 100644
---- a/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
-+++ b/arch/arm64/boot/dts/renesas/ulcb-kf.dtsi
-@@ -234,6 +234,7 @@ gpio_exp_74: gpio@74 {
- 		gpio-controller;
- 		#gpio-cells = <2>;
- 		interrupt-controller;
-+		#interrupt-cells = <2>;
- 		interrupt-parent = <&gpio6>;
- 		interrupts = <8 IRQ_TYPE_EDGE_FALLING>;
- 
-@@ -294,6 +295,7 @@ gpio_exp_75: gpio@75 {
- 		gpio-controller;
- 		#gpio-cells = <2>;
- 		interrupt-controller;
-+		#interrupt-cells = <2>;
- 		interrupt-parent = <&gpio6>;
- 		interrupts = <4 IRQ_TYPE_EDGE_FALLING>;
- 	};
-@@ -314,6 +316,7 @@ gpio_exp_76: gpio@76 {
- 		gpio-controller;
- 		#gpio-cells = <2>;
- 		interrupt-controller;
-+		#interrupt-cells = <2>;
- 		interrupt-parent = <&gpio7>;
- 		interrupts = <3 IRQ_TYPE_EDGE_FALLING>;
- 	};
-@@ -324,6 +327,7 @@ gpio_exp_77: gpio@77 {
- 		gpio-controller;
- 		#gpio-cells = <2>;
- 		interrupt-controller;
-+		#interrupt-cells = <2>;
- 		interrupt-parent = <&gpio5>;
- 		interrupts = <9 IRQ_TYPE_EDGE_FALLING>;
- 	};
+ 			clocks = <&gcc GCC_PCIE_PIPE_CLK>,
+ 				 <&gcc GCC_PCIE_AUX_CLK>,
 -- 
 2.43.0
 
