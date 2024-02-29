@@ -1,82 +1,81 @@
-Return-Path: <linux-kernel+bounces-86530-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86531-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93CDD86C69A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:15:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AD2086C69C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:15:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 31B721F22D3F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:15:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04D72288B9A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:15:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4838C64AB6;
-	Thu, 29 Feb 2024 10:15:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DC0A651AB;
+	Thu, 29 Feb 2024 10:15:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IS5HIwDY"
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BXpXfCWU"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D20164AA8;
-	Thu, 29 Feb 2024 10:15:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3485764CE6;
+	Thu, 29 Feb 2024 10:15:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709201706; cv=none; b=Z+NNzbANhcF+2yLQV/hVhskxRdpPxl7RR86DMD3pL+YPFoVxF6ALhVgC+RrV/pCaD8XHxAs8NiPwVm+tdES6F4XEjyMj6yI3pmGCphoW1sFgE1+9EDd6+JV91cL94nh8iOM1upI3VK31qHb+ILeQVFDTJzvP6dyqzmPZtaPO27o=
+	t=1709201709; cv=none; b=YmeEUm5M8O6sQCEGihdFFP0EFpD/ijvO+s0QJDufIoxKMOqnJQdOo9KZ4XjR6aMz5yxmJ057VlCretSrdjvpolFGzXCncXUEJh/U4S7rT4VWfPu4TMAs/oFxBcL4Tu1EGhZ811V6BZQCavNkYVkASbiqBYAx+xHb59i0THDqr1w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709201706; c=relaxed/simple;
-	bh=XAPVfS9t8TOCNGonQw4q4SG8sv7NDvOP8vlbc7T7wp8=;
+	s=arc-20240116; t=1709201709; c=relaxed/simple;
+	bh=VS3k7Eme/hyQ7tEVQDrFi8KfYkX4wGsSA7G+IgQF6YA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Q3EVZAmafqHNna6CMyceOsM0xd4nxdAEAGfcut8UdyApto9dODsYpKvWpIHuYpTsMjfJsF9E5lOJnosnX+rAA7DrlPmCNc30/whsld6tt+I3nxtMao3cl5hU+XVFKVTdWNdB7/flJ7L3gtnoYfSmzEN8A3CeLgdKi0YF63looIs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IS5HIwDY; arc=none smtp.client-ip=209.85.214.174
+	 MIME-Version; b=f0JdKjhtjqEfwbwgKovfWG4nBUTw4NKOZjNZeoIQNCPO9sIi3SNBVTtCyjXx/1wCCqK8E2TSGpp3HMlOVp0gnwFXigwqbzR0oNiHisQCjVu3CFXhQ1bysD7Mg61uV1R+PWjRvo+JYyLIzaDKR+qypYmFnpRy1xvifT+bhfmbIi0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BXpXfCWU; arc=none smtp.client-ip=209.85.214.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1dbae7b8ff2so6092115ad.3;
-        Thu, 29 Feb 2024 02:15:05 -0800 (PST)
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1dbae7b8ff2so6092355ad.3;
+        Thu, 29 Feb 2024 02:15:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709201704; x=1709806504; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1709201707; x=1709806507; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LxP2XLwTLhcjh6Nu0DkhBrLBQzkVwKMK2PxdaxrpCmk=;
-        b=IS5HIwDYoL80TMHzFb7oXvsK9YBhFRObyyEc12lUxOJXv07A2yIaUaeN0m3/brr2qi
-         h/EEl5iNSeDnaWSJo55LKnZox7DKMbjV3B8i+T/c1/lDv6ueKFbrbGeJqjbdmitpqVYf
-         TBrtNfsQjBs1SVsNA8K1EduonTz7vCGvPQpvQktx/fFpnw88wFmF0iJ9um/lLP4Uf7Ki
-         B4Lqp2zUDho8Rj6z/Mcz2Q9zlfD3jDdIRRJXWmTHAJ61E5kCkfSME4Q2cy+mDbbhSsiD
-         a9UYQ8hZXEddakUhX27Z3MBEy2lvjGsthHkg6oSkqsGdpFO0gByh16ujrJVUdhHTatD0
-         UtZg==
+        bh=he/ItjnnuJyDwNl8joarj/oySXhyLeJqmRkPhPpRNSw=;
+        b=BXpXfCWUelIfLjf7C/DRFVL3gFAUCVNwnIiY4CYHIxIehs0boavoyV8xuciMX85sPp
+         rEGNQ9KwymmrZlv0UvJ9SSUETB1EDTamvE1VHRclA8t5ed2XH1xlpiz96OQW15tjV6fx
+         ugbrCF4gwKHFk9YbjWX/iRmEPOJd18Lfe3qSs9Z0jYqEGKM1OZYYcIIW4ive4q/8WZbE
+         pzAl2Ppfp2NhtoyepFhR5edE3QR7vxGchmx/+R1AQd3DioU9e8NLXPPTmI09qRkAZIBv
+         v0068vQSsoUd5sMrht+EjmfpCeDE1coZix0yJlkPfxpcHoSvndBEGYZ0ddvE89Kt21C8
+         jAQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709201704; x=1709806504;
+        d=1e100.net; s=20230601; t=1709201707; x=1709806507;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=LxP2XLwTLhcjh6Nu0DkhBrLBQzkVwKMK2PxdaxrpCmk=;
-        b=Qym4UrV4r4LieYJv6fggbDX4Xc+0rvhoFIbt+nrVsyj5f9Ns9uUkWtcsXBR6KoIhp/
-         I33+cEmup0Wrtnr/OJJCi8kVpSF857Bc+9IdYh7VTsf3cHc3lwQFqXAZVANI86y15L/d
-         Vl3QJTIHIormXkGxwPtFtxJM+9MwjWGn8NxgyiqBx9iu8L1K8d5UVPPErxblk+nTDc8X
-         wDvXFvkS7vsIGOrcXUq0OxLW32R/mKHwc/jcLjt969OUBEq7bHrBNTouS0NPq7rSgMoX
-         piCrPobeiAC/oDIgRBgbTwNZsOX0+Smt34zLHcC/m6gPJDEpbGrv3vjDqyooy3akKf78
-         RC9w==
-X-Forwarded-Encrypted: i=1; AJvYcCURlM6ZLNXPuMOv5tqcl0gt2+mr9UcHAClpemEWCCz2z8BCHH82DenBkY3DPodubOTHxr4O2qOV9kn8Ql5zaeJMwuVlfTE3MveqmDUh
-X-Gm-Message-State: AOJu0Yyhyk6uILLAZqz6CyZgOyoMUl/nFaQ/9U/QMzIvyPaNjpB4F9Q5
-	f0YFliLN5HiLQCRqc4hx8U9rmUbeEp+SuUFAnoVlbbOsGrS/DV2h
-X-Google-Smtp-Source: AGHT+IGXaKuifoDJbxqmpyFaAJdWeaThwvqn9ddV8SlKNHxzzQmVpEmxOkwjxAD6W0YeThUXHwze7g==
-X-Received: by 2002:a17:902:ed94:b0:1d9:6de3:9980 with SMTP id e20-20020a170902ed9400b001d96de39980mr1376216plj.48.1709201704500;
-        Thu, 29 Feb 2024 02:15:04 -0800 (PST)
+        bh=he/ItjnnuJyDwNl8joarj/oySXhyLeJqmRkPhPpRNSw=;
+        b=PhDo5gz8D7iZ1VbiSYmDof648mioW7TYcQ7Yp7iANIgXC5Kqz9YyxMpxq0AFqLJjvu
+         5r85aunV/84+gSCItfbSjqaaghu6AgsZE10LB+PVlLDiLqOxoGdHHIjJx247Xv1e2NvG
+         NrIg1CZu6gD5TptXxBJ+twBR9boIpCUfvXRwa4SGPWmuDr+RWp2i4h4cEBf6fn8UM0JZ
+         rd27DEw7U9R0Eipuof4Nxoc2IqOl0FWq91D4Qlq78sSurOy2jUW1hzd74IqsAAw1QrF/
+         gh3V4Qa8OUYgcywXRrf2YoqmhuUw92XdQXiBme7mJAP8NATEgszFJk2tCrEdi4XMPMHp
+         B2gQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUKYog+XN+cjJvk0Kicj/uG9JVw3Q90oq3Df7h15m3bWfbdhvk8Hf5moN+whmsqHqgScG/VkuTmMndZz1WkvRymsY2vSDRiKbwFLf8b
+X-Gm-Message-State: AOJu0YzNv30NDVC/AFZRcGjCitPsHsypBeZsI7mOYVG2TS5+TzhIc5/1
+	jkHjl0/h+UNg6FeJsbbAFHY1gnJW361ZrNMOtVsErZ8pZp+w1C7f
+X-Google-Smtp-Source: AGHT+IH6byZhriC+6ROnCkkVdld3fAcEBOYZQuXS5LEIhNL+V8ZkyXqw2nKcc/YDbgccqUh6melXwg==
+X-Received: by 2002:a17:902:eed5:b0:1dc:1ff5:3dfe with SMTP id h21-20020a170902eed500b001dc1ff53dfemr1537039plb.27.1709201707609;
+        Thu, 29 Feb 2024 02:15:07 -0800 (PST)
 Received: from localhost.localdomain ([2407:7000:8942:5500:5158:ed66:78b3:7fda])
-        by smtp.gmail.com with ESMTPSA id k23-20020a170902ba9700b001da105d6a83sm1061874pls.224.2024.02.29.02.15.01
+        by smtp.gmail.com with ESMTPSA id k23-20020a170902ba9700b001da105d6a83sm1061874pls.224.2024.02.29.02.15.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 02:15:04 -0800 (PST)
+        Thu, 29 Feb 2024 02:15:07 -0800 (PST)
 From: Barry Song <21cnbao@gmail.com>
 To: davem@davemloft.net,
 	herbert@gondor.apana.org.au,
 	linux-crypto@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	Barry Song <v-songbaohua@oppo.com>,
-	Zhou Wang <wangzhou1@hisilicon.com>,
-	Yang Shen <shenyang39@huawei.com>
-Subject: [PATCH v2 1/2] crypto: hisilicon/zip - fix the missing CRYPTO_ALG_ASYNC in cra_flags
-Date: Thu, 29 Feb 2024 23:14:48 +1300
-Message-Id: <20240229101449.227921-2-21cnbao@gmail.com>
+	Tom Zanussi <tom.zanussi@linux.intel.com>
+Subject: [PATCH v2 2/2] crypto: iaa - fix the missing CRYPTO_ALG_ASYNC in cra_flags
+Date: Thu, 29 Feb 2024 23:14:49 +1300
+Message-Id: <20240229101449.227921-3-21cnbao@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240229101449.227921-1-21cnbao@gmail.com>
 References: <20240229101449.227921-1-21cnbao@gmail.com>
@@ -90,28 +89,27 @@ Content-Transfer-Encoding: 8bit
 
 From: Barry Song <v-songbaohua@oppo.com>
 
-Add the missing CRYPTO_ALG_ASYNC flag since hisilizon zip driver
+Add the missing CRYPTO_ALG_ASYNC flag since intel iaa driver
 works asynchronously.
 
-Cc: Zhou Wang <wangzhou1@hisilicon.com>
 Signed-off-by: Barry Song <v-songbaohua@oppo.com>
-Acked-by: Yang Shen <shenyang39@huawei.com>
+Acked-by: Tom Zanussi <tom.zanussi@linux.intel.com>
 ---
- drivers/crypto/hisilicon/zip/zip_crypto.c | 1 +
+ drivers/crypto/intel/iaa/iaa_crypto_main.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/crypto/hisilicon/zip/zip_crypto.c b/drivers/crypto/hisilicon/zip/zip_crypto.c
-index c650c741a18d..94e2d66b04b6 100644
---- a/drivers/crypto/hisilicon/zip/zip_crypto.c
-+++ b/drivers/crypto/hisilicon/zip/zip_crypto.c
-@@ -591,6 +591,7 @@ static struct acomp_alg hisi_zip_acomp_deflate = {
+diff --git a/drivers/crypto/intel/iaa/iaa_crypto_main.c b/drivers/crypto/intel/iaa/iaa_crypto_main.c
+index dfd3baf0a8d8..91adf9d76a2e 100644
+--- a/drivers/crypto/intel/iaa/iaa_crypto_main.c
++++ b/drivers/crypto/intel/iaa/iaa_crypto_main.c
+@@ -1916,6 +1916,7 @@ static struct acomp_alg iaa_acomp_fixed_deflate = {
  	.base			= {
  		.cra_name		= "deflate",
- 		.cra_driver_name	= "hisi-deflate-acomp",
+ 		.cra_driver_name	= "deflate-iaa",
 +		.cra_flags		= CRYPTO_ALG_ASYNC,
+ 		.cra_ctxsize		= sizeof(struct iaa_compression_ctx),
  		.cra_module		= THIS_MODULE,
- 		.cra_priority		= HZIP_ALG_PRIORITY,
- 		.cra_ctxsize		= sizeof(struct hisi_zip_ctx),
+ 		.cra_priority		= IAA_ALG_PRIORITY,
 -- 
 2.34.1
 
