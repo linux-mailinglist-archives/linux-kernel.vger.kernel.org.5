@@ -1,139 +1,126 @@
-Return-Path: <linux-kernel+bounces-87553-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87534-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EFFD86D5D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:11:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7EFD86D59C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:06:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E18C2869A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:11:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9EDF71F25889
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:06:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFA69159575;
-	Thu, 29 Feb 2024 21:00:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C5aMrLWb"
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65FB1144043;
+	Thu, 29 Feb 2024 20:55:06 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 692EB1504FB;
-	Thu, 29 Feb 2024 21:00:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6798B6D50A;
+	Thu, 29 Feb 2024 20:55:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709240456; cv=none; b=AdcIr2c8MPjAD4rR8H95zBQzvXuT3Q+YK12D36e4Wzu7cjr8yeHrBFnseA/DhsC574CNEZzQiRZR8Y8Btz29+GhyeAHwki4IsnboHkvgQ7A69PE1Z1/J48jLeQwo4caT2qA+NJeSwBuKFOgVwf3CnW1KkOLK7T5FZLRjlBsI4nE=
+	t=1709240105; cv=none; b=bIeMuZhjAgUBLtw9NVGokzHs71DhK6hlpeFEC8ZmD82M6/agbtoTiRU8mMJqRzhUmVXPUtjWmd1iAF8X4Wb9pqd7De/LIrh4AHEFlKde7EZLqTXr2havIdGM6q8R8iw4sJg5Nk1UvccYiURLUQz+QnGL+Kp7KZigpdX3l6OYKOg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709240456; c=relaxed/simple;
-	bh=fh2szyAddSibibefZ4gfKtIWhGAidJRjH8vpo2f+lGM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Y4xoP/QD544/P9avvAoKdZrre2WqZ8IxfDeKtuazjvOCzCBCVOsxOrPLAMZvhNb4B1FJkZBuWuc2w2pvqYLorVLkYPqjXRYUQq2TTd0EXyd/zVlbagUZEmdUgda1wfeXHQ6OBeFTPTJnBkXLoaFHRNOC8YRDAovo5YCSSOuZo10=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C5aMrLWb; arc=none smtp.client-ip=209.85.167.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-512e568607aso1285127e87.1;
-        Thu, 29 Feb 2024 13:00:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709240452; x=1709845252; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=61xcQbBuP+qncwTpWvCEA8LwY1FmumIMLzlUbcrboIM=;
-        b=C5aMrLWbhXkbJbdLdKKEGliwXc21/11Rg+B39YikmhTfr887SbsnR+8/PR0H6jeUOb
-         3wfc3kIzgc0QRT0+nhUwFL+q67WCOjcVNqJKEY47QR9cJtZs8L/RPDr0OADE1yHm5I+h
-         6ECYOqyQXa0xzsxjdcbehQ8OkFncUWpk5aUY1L2lkugQnNkrR3kgOw/uYHdUz70ghQF2
-         gbn2LTexT3utwciTWic2I4vk84gZNenkIf4RAfkX5Q+F0k78kXAwyAZLxX39XES4BLTX
-         46WbDQ8HIu6n+pNJjMDPSaosgejaAHTbOMIKqUCeOsJeQhBDY8nm4wLhZWPCw54OkYpw
-         y74Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709240452; x=1709845252;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=61xcQbBuP+qncwTpWvCEA8LwY1FmumIMLzlUbcrboIM=;
-        b=F5XP8Erjlfz7SJnDuWWTc5OLpAIf34FqVwvKJBex1ortOrBrbqmZsRp9UXaYX+sfz3
-         Q2H23Smytc1ubyvTID5Yj4cAfSnpVIpB5RqnOIySds6MnIDt6+nY0o9y+MuBRK38BN4i
-         p0MdInI8aykzsZW5+izt7Tr5Ut4ugVXNTP5OiYqszlP1XGde8TLUFNmo9/Cr340yxjjz
-         XwLY2vRRAEKs4v2xoP82fqeQU7Ms+gw/CpGJyi2aevJTwfql992AW9MsyHqCIRt6czwz
-         fsjlQ/Bvvet4ZFDzmWX/SGFZ2hTIU4fAvF+PX1ctpF6vbqRO7KCFxHCFs3gI2/aBS5Mc
-         0Mqw==
-X-Forwarded-Encrypted: i=1; AJvYcCU9VxF5KsR+Ur2N9bLxJKD2LM9tex43yUgiyT111e5NMQb0NdxdXyPaQ+RwUsSQoVqxfcu9jpnBKOcf5XFygmE4FNcZoF1uoMLl7BotBxf55xt8pt/tF7rBl6yITH2AQgVu//fUSAvMN1bKdLQqPFi+MlNx16a97xgchR4REDVHrvvNtA+0H8Q=
-X-Gm-Message-State: AOJu0YwzcReN6DfutS4rXw7/+Tz78cKxyLouZrJ9Nhmel+gg82wlzizB
-	C+FNVSj03t/qgYh7tYDQ7aQLnNM6S4nlsVmmrSdG16/GX9CO55n2Rl7ukKA=
-X-Google-Smtp-Source: AGHT+IEKqTCkhKKM6RwcBjFa6DbKMNkuDKrqO09KCzkMybD56sC10cCnTprgXg+m+P8tOsff2vkVIw==
-X-Received: by 2002:a05:6512:3c9e:b0:513:2c91:7960 with SMTP id h30-20020a0565123c9e00b005132c917960mr851874lfv.44.1709240452063;
-        Thu, 29 Feb 2024 13:00:52 -0800 (PST)
-Received: from frutis-latitude7490.lan (public-gprs367196.centertel.pl. [37.47.65.157])
-        by smtp.googlemail.com with ESMTPSA id tj10-20020a170907c24a00b00a444526962asm943446ejc.128.2024.02.29.13.00.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 13:00:51 -0800 (PST)
-From: =?UTF-8?q?Pawe=C5=82=20Owoc?= <frut3k7@gmail.com>
-To: 
-Cc: =?UTF-8?q?Pawe=C5=82=20Owoc?= <frut3k7@gmail.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	linux-arm-msm@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: qcom: ipq8074: Add QUP UART6 node
-Date: Thu, 29 Feb 2024 21:54:16 +0100
-Message-ID: <20240229205426.232205-1-frut3k7@gmail.com>
-X-Mailer: git-send-email 2.43.2
+	s=arc-20240116; t=1709240105; c=relaxed/simple;
+	bh=GWMJIephgFCkyB7gv9JQpivlnHOMsUi+KcICdET6vg0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aCJXW9OcBhQ/xq8iYd/GDVL6flabKaLP1yQtgllp4wWrS6UuVP5M9RHNtPCdyz3DRcf0A8IonCqmraTbns99C/j5N/dlQqdS5h2LFbPbzYPy+D/dK1a879XVh391Wwzg63/3VsG9QiLRE4KJUNLYPIra0D5hkV0/cFuCuytUkx0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
+X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="26211658"
+X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
+   d="scan'208";a="26211658"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 12:55:03 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="913992414"
+X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
+   d="scan'208";a="913992414"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 12:54:47 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andy.shevchenko@gmail.com>)
+	id 1rfnQO-00000008nBm-1H3p;
+	Thu, 29 Feb 2024 22:54:40 +0200
+Date: Thu, 29 Feb 2024 22:54:40 +0200
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
+	mhocko@suse.com, vbabka@suse.cz, hannes@cmpxchg.org,
+	roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
+	willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net,
+	void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com,
+	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
+	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+	x86@kernel.org, peterx@redhat.com, david@redhat.com,
+	axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org,
+	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
+	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com,
+	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com,
+	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com,
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+	vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+	elver@google.com, dvyukov@google.com, shakeelb@google.com,
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+	cgroups@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	Paul Mackerras <paulus@samba.org>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Jason Wang <jasowang@redhat.com>,
+	Noralf =?iso-8859-1?Q?Tr=F8nnes?= <noralf@tronnes.org>
+Subject: Re: [PATCH v3 01/35] lib/string_helpers: Add flags param to
+ string_get_size()
+Message-ID: <ZeDvEKtlB73mnOYy@smile.fi.intel.com>
+References: <20240212213922.783301-1-surenb@google.com>
+ <20240212213922.783301-2-surenb@google.com>
+ <CAHp75Vek3DEYLHnpUDBo_bYSd-ksN_66=LQ5s0Z+EhnNvhybpw@mail.gmail.com>
+ <bicga3cv554ey4lby2twq3jw4tkkzx7mreakicf22sna63ye4x@x5di6km5x7fn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <bicga3cv554ey4lby2twq3jw4tkkzx7mreakicf22sna63ye4x@x5di6km5x7fn>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Add node to support the QUP UART6 controller inside of IPQ8074.
-Used by some routers to communicate with a Bluetooth controller.
+On Tue, Feb 13, 2024 at 05:06:24PM -0500, Kent Overstreet wrote:
+> On Tue, Feb 13, 2024 at 10:26:48AM +0200, Andy Shevchenko wrote:
+> > On Mon, Feb 12, 2024 at 11:39 PM Suren Baghdasaryan <surenb@google.com> wrote:
 
-Signed-off-by: Paweł Owoc <frut3k7@gmail.com>
----
- arch/arm64/boot/dts/qcom/ipq8074.dtsi | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+> > It seems most of my points from the previous review were refused...
+> 
+> Look, Andy, this is a pretty tiny part of the patchset, yet it's been
+> eating up a pretty disproprortionate amount of time and your review
+> feedback has been pretty unhelpful - asking for things to be broken up
+> in ways that would not be bisectable, or (as here) re-asking the same
+> things that I've already answered and that should've been obvious.
+> 
+> The code works. If you wish to complain about anything being broken, or
+> if you can come up with anything more actionable than what you've got
+> here, I will absolutely respond to that, but otherwise I'm just going to
+> leave things where they sit.
 
-diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-index 26441447c866..9c259257adb0 100644
---- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-@@ -321,6 +321,13 @@ serial_4_pins: serial4-state {
- 				bias-disable;
- 			};
- 
-+			serial_5_pins: serial5-state {
-+				pins = "gpio9", "gpio16";
-+				function = "blsp5_uart";
-+				drive-strength = <8>;
-+				bias-disable;
-+			};
-+
- 			i2c_0_pins: i2c-0-state {
- 				pins = "gpio42", "gpio43";
- 				function = "blsp1_i2c";
-@@ -469,6 +476,18 @@ blsp1_uart5: serial@78b3000 {
- 			status = "disabled";
- 		};
- 
-+		blsp1_uart6: serial@78b4000 {
-+			compatible = "qcom,msm-uartdm-v1.4", "qcom,msm-uartdm";
-+			reg = <0x078b4000 0x200>;
-+			interrupts = <GIC_SPI 309 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&gcc GCC_BLSP1_UART6_APPS_CLK>,
-+				 <&gcc GCC_BLSP1_AHB_CLK>;
-+			clock-names = "core", "iface";
-+			pinctrl-0 = <&serial_5_pins>;
-+			pinctrl-names = "default";
-+			status = "disabled";
-+		};
-+
- 		blsp1_spi1: spi@78b5000 {
- 			compatible = "qcom,spi-qup-v2.2.1";
- 			#address-cells = <1>;
+I do not understand why I should do *your* job.
+Nevertheless, I have just sent my version of this change.
+Enjoy!
+
 -- 
-2.43.2
+With Best Regards,
+Andy Shevchenko
+
 
 
