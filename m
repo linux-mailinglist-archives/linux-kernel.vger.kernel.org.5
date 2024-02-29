@@ -1,71 +1,85 @@
-Return-Path: <linux-kernel+bounces-87423-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87422-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19D1186D43B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:29:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFABA86D437
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:29:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C1AAD1F23249
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:29:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 67279B21237
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:29:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D323A144021;
-	Thu, 29 Feb 2024 20:29:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AF68142902;
+	Thu, 29 Feb 2024 20:29:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="OhCzDT6d"
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iqTpmYdv"
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B82CF1428E0;
-	Thu, 29 Feb 2024 20:29:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 003D113F447;
+	Thu, 29 Feb 2024 20:29:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709238576; cv=none; b=uB3Smj8D9aD5oaxwg77wbTEzugZ0ZJPA3yBt2plEFohG0BMi7qlyxIDhFYLM0ZSuxBb7irb5bzWAwTKc/dSg9ieuF+VodbM4Q4d1K1ozF3wNOtYvigesMzvQQJZAWuB1n0cZ0wNGRYkGn+w2UJv+Y3txlstCks+izfABdBMaNb4=
+	t=1709238573; cv=none; b=agpULMY/5nE7y0dTHv04TkiMif9hY9fBR1diPfAjYXPQv+2OoqnhX9kJbuAYq61mmdcq7Wd0yGOGHlbA0NQkEtugoeuKjT4+YFqoEf7UbRcUq40r5JokW6RLM4RFhHYr+Z80WAvUOOuEUlNgj6vEGGLEcwhazmpEF8ioKYc/rhM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709238576; c=relaxed/simple;
-	bh=L/s/b9tSVs9z239pdMRuvKxK6VQN+DzuuFGrb2AJ0Ws=;
+	s=arc-20240116; t=1709238573; c=relaxed/simple;
+	bh=wDnbbqB5aUHpb6fJcebChgfzTyYFaOf22lmLVESnSNw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DmyT7Ll6Te7b6YU0msQpfHkEuZUfxbFgr5L0UwH1UI0IrMpDY52Je7vEjfGQ5W5CNVBxP430k/1e0U1NPX6YcMIqtU5mKldWK0sap+DXWCLQVL03AGwm7Ianhvsyp9DZhzn6ISYEC/1KWRvAeOATDttfsQs1EcgsTwQs/IDNsj4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=OhCzDT6d; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id EF869FF802;
-	Thu, 29 Feb 2024 20:29:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709238570;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Xsz9d2+yFSQZeecH2hOJtT+4TSF8kgLSBhGXKWhoDpQ=;
-	b=OhCzDT6diyX9INg49zfgB6KwEWfdYjAzQMAaaMbxmHZ7yT1l6ewOG/X0HJ120MHMVo/Hw2
-	ZfOIUYhTiqAVHadjdJMmkzkbxIP3hV0y5nyrK40vRfXJfV2lRtS/dIoK5oRs3TEFYQ+FrC
-	pvDhHrPBDj6wx2nmTtjANKDIV1ovkCo5EWg+LU9ATvPEDVr6yDi19MIpYDmyBFTRIHJ2EF
-	Wgg1Cd4id6LQdh51SlsqUDlRZIgIhUDb+nEtNMFj2XOI5FAw4iVyl4vBI8ZTpYVmr8F5ZO
-	jFlEnUWaHt/p5RrZR8Mf47xH6KNbvdyJ3hb7TU0OFLOftZlrOlAXYAGlTMAKKg==
-Date: Thu, 29 Feb 2024 21:29:28 +0100
-From: Alexandre Belloni <alexandre.belloni@bootlin.com>
-To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-Cc: Conor Dooley <conor@kernel.org>,
-	"antoniu.miclaus@analog.com" <antoniu.miclaus@analog.com>,
-	"robh+dt@kernel.org" <robh+dt@kernel.org>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"conor+dt@kernel.org" <conor+dt@kernel.org>,
-	"jdelvare@suse.com" <jdelvare@suse.com>,
-	"linux@roeck-us.net" <linux@roeck-us.net>,
-	"linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-	Zeynep Arslanbenzer <Zeynep.Arslanbenzer@analog.com>
-Subject: Re: [PATCH v8 2/2] dt-bindings: rtc: add max313xx RTCs
-Message-ID: <2024022920292837621a4f@mail.local>
-References: <20240227010312.3305966-1-chris.packham@alliedtelesis.co.nz>
- <20240227010312.3305966-3-chris.packham@alliedtelesis.co.nz>
- <20240228-embark-rimmed-d81bab3d42b8@spud>
- <bd43a198-6287-40b2-be15-2734c5d2742d@alliedtelesis.co.nz>
- <20240229-skeletal-ultimatum-27cd91e8d8a8@spud>
- <b2ebc2a7-0347-40a0-8302-c84ba898fd16@alliedtelesis.co.nz>
+	 Content-Type:Content-Disposition:In-Reply-To; b=g/LyAcZT6b2vRZJHlp3m4xnKMLer2+Dqzb0L2rs0/pL2YDO5iRqYQFbYbltSc0r11eBiZeCdzrUH8OSX1eNHZXEUxMgDu2ADoxl599asIHyIkY6n0+vnTjEs6No0S3ymTgIkwocklbusSECdE6g098bc4UClV0wQi6dIDU0z+cQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iqTpmYdv; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1db6e0996ceso11501605ad.2;
+        Thu, 29 Feb 2024 12:29:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709238571; x=1709843371; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xSz/dUHpTksrWDau7UTGPuG7xxZjtedv1CB25dUHJFg=;
+        b=iqTpmYdvp+NG9qIiDF/WH1KQVbK++HHWcuO+hdchIRnpptzJDDtDwwcYt0298AJO1d
+         CxaE8cwtEdk5cLvRjdotRVUmWK2ReeoBdsmmtc+5vTel8ksmRhVyB8ZF5FtIbPPnEqMF
+         VH2Otyzw4+p8Hyts/aJKQhQfAw8+RMKdCjC4ssPsXmEj2U0X2/aVZojMscMPYTZZ+Dkc
+         /bgc1bZkp6Kqb/IHfm/bXISSaI81t51CTr9VzZoBPt9VY+4OYL1vovJ/o6P+oWYNW+EB
+         6btPOfsIZOWeZ80JdkYKcKAEbDBujprcqtryBNcnbd/cNJPwHDP9CxD7FB/u2pRrjGdS
+         ukFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709238571; x=1709843371;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xSz/dUHpTksrWDau7UTGPuG7xxZjtedv1CB25dUHJFg=;
+        b=X3x1Rh5hPsWdBzeV9xNpowxNAtb9jUpeP0+DDxJzrF35b/f0eptKIAzYbdVgR52VQI
+         wElMk8NYJudQ/5Ml113IFCVXx4dJFyqh1mrrL7R3us1no8qxoRHMY79EPwGKCjaDf6qu
+         Q7vsEVrLDY/dlO8h86HTwL0pDO9XKoQhsv9wh5WeupP7hUC2SWhteCA8kL4bIIkbDdvc
+         r30e6yjvvBMd3/7r08ozkQlLOM3sF7aCkOnMeMziwbrMV7la52TSoA7T6fpZD1W5Worc
+         bF9LW+4T3f9JK0Rj2qZ558gseHoafzn3CzDIYk9Ow/f929Pkm/JPTOmZ9eEwkZxWVZmC
+         Q9rg==
+X-Forwarded-Encrypted: i=1; AJvYcCWbop5Pgh6RP1aYbET+O0t9VKQJzNEB/XZXBzzHvWBqG7WHZxt1DYx2q0GPaBW1J47s1yKByGbxYl0cbfG/JIkSDaAy4UVLZFPFFfTRLW1J2gaMDwIqX4WYjs8jgKnzcCPqO8sbL3xr/2qlPlD4CL77m3yjJ9HESmDFdM9Cn7Q8QI9osdiHX9Q30nt4aBOR3wy5XttVP7zFj5eZMw==
+X-Gm-Message-State: AOJu0YynPHGr+J8QDwq1O01gKLDYveqAXk9DdgQR2KPK054JrxVPZQBW
+	AGhhDNeDFGUiMaJWnRA/91prsn/eC/2k/p37lVyUe9YqkDuz1dP/bbdGpNo/m5o=
+X-Google-Smtp-Source: AGHT+IEl3W5R3KIqZYg3g66+tVVU2vPgDmNnOp/Ux0a8p2pYOCsVOCjZol70UqtEdVEfLXXhxBd/8A==
+X-Received: by 2002:a17:903:1208:b0:1d8:f129:a0bc with SMTP id l8-20020a170903120800b001d8f129a0bcmr3441334plh.13.1709238571238;
+        Thu, 29 Feb 2024 12:29:31 -0800 (PST)
+Received: from localhost ([2620:10d:c090:400::5:8305])
+        by smtp.gmail.com with ESMTPSA id kx4-20020a170902f94400b001d9aa663282sm1926375plb.266.2024.02.29.12.29.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Feb 2024 12:29:30 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Thu, 29 Feb 2024 10:29:29 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Xiongwei Song <xiongwei.song@windriver.com>
+Cc: longman@redhat.com, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+	corbet@lwn.net, vbabka@suse.cz, yosryahmed@google.com,
+	rostedt@goodmis.org, cl@linux.com, chengming.zhou@linux.dev,
+	zhengyejian1@huawei.com, cgroups@vger.kernel.org,
+	linux-mmc@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] cgroup/cpuset: Mark memory_spread_slab as obsolete
+Message-ID: <ZeDpKRX3mQqcoFJx@slm.duckdns.org>
+References: <20240229142007.1278610-1-xiongwei.song@windriver.com>
+ <20240229142007.1278610-2-xiongwei.song@windriver.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,76 +88,63 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b2ebc2a7-0347-40a0-8302-c84ba898fd16@alliedtelesis.co.nz>
-X-GND-Sasl: alexandre.belloni@bootlin.com
+In-Reply-To: <20240229142007.1278610-2-xiongwei.song@windriver.com>
 
-On 29/02/2024 20:11:16+0000, Chris Packham wrote:
-> 
-> On 1/03/24 07:07, Conor Dooley wrote:
-> > On Wed, Feb 28, 2024 at 08:21:35PM +0000, Chris Packham wrote:
-> >> On 29/02/24 00:58, Conor Dooley wrote:
-> >>> On Tue, Feb 27, 2024 at 02:03:10PM +1300, Chris Packham wrote:
-> >>>
-> >>>>      interrupts:
-> >>>> +    description:
-> >>>> +      Alarm1 interrupt line of the RTC. Some of the RTCs have two interrupt
-> >>>> +      lines and alarm1 interrupt muxing depends on the clockin/clockout
-> >>>> +      configuration.
-> >>>>        maxItems: 1
-> >>> The maxItems: 1 looks odd here when you state "some of the RTCs have two
-> >>> interrupt lines", which makes it sound as if there are actually two
-> >>> interrupts that should be exposed here. If those two interrupts get
-> >>> muxed to the same pin for output I'd suggest that you clarify that here.
-> >> This may end up changing if I can come up with something that Alexandre
-> >> is happy with. Basically (some of) the chips have a configurable pin
-> >> that can either be dedicated to the ALARM1 output (annoyingly labelled
-> >> as INTB) or to a clock output. There is an INTA line that has other
-> >> interrupts and if the clock output option is used then it also has
-> >> ALARM1. The driver doesn't currently do anything with the other
-> >> interrupt sources so as written this needs to correspond to whichever
-> >> interrupt output is asserted for ALARM1.
-> > So you're saying that depending on whether or not the clock output is
-> > used, there could be two interrupts?
-> Correct.
-> > Without looking further, it sounds like you should be setting maxItems
-> > to 1 if #clock-cells is present and to 2 if it is not.
-> My idea was an explicit property about the function of the INTB/CLKOUT 
-> pin. The current code does use #clock-cells as a proxy for this (and 
-> Alexandre has some concerns with how this is handled).
+Hello,
 
-#clock-cells must not be used for pinmuxing, I can't see how anyone
-would allow this.
+Applied to cgroup/for-6.9 with some adjustments.
 
-> >   Then if there are
-> > two interrupts provided, the driver is free to configure whatever way it
-> > wants. If there aren't, send everything to INTA.
-> >
-> > Am I missing something?
-> 
-> Right now the only interrupt that the RTC cares about is for ALARM1 
-> (which moves between INTA and INTB depending on the clock config). There 
-> are other hardware events and an ALARM2 that can generate an interrupt 
-> but these are ignored. I don't think the rtc framework supports more 
-> than one alarm.
-> 
-> Binding wise I think this should take 1 or 2 interrupts. For simplicity 
-> the first interrupt should always correspond to ALARM1 (which could be 
-> INTB or INTA depending on the hardware design). The 2nd interrupt (if 
-> supplied) would be for the other events (which we don't currently do 
-> anything with).
+Thanks.
 
-Not using an interrupt simply means the CPU doesn't care about it but
-there are other components that may care for example a PMIC. If you
-reason about what linux and the CPU it is running on can do, you will
-cripple functionality and we will have to break the devicetree binding
-later on to restore it.
-We need to be able to express all the possible pin configurations with
-the binding. I'm not sure why everyone is so resistant to use pinmuxing
-to mux pins....
+----- 8< -----
+From 3ab67a9ce82ff22447b1dad53b49a91d1abbf1ff Mon Sep 17 00:00:00 2001
+From: Xiongwei Song <xiongwei.song@windriver.com>
+Date: Thu, 29 Feb 2024 22:20:07 +0800
+Subject: [PATCH] cgroup/cpuset: Mark memory_spread_slab as obsolete
 
+We've removed the SLAB allocator, cpuset_do_slab_mem_spread() and
+SLAB_MEM_SPREAD, memory_spread_slab is a no-op now. We can mark
+memory_spread_slab as obsolete in case someone still wants to use it after
+cpuset_do_slab_mem_spread() removed. For more details, please check [1].
 
+[1] https://lore.kernel.org/lkml/32bc1403-49da-445a-8c00-9686a3b0d6a3@redhat.com/T/#m8e292e21b00f95a4bb8086371fa7387fa4ea8f60
+
+tj: Description and cosmetic updates.
+
+Signed-off-by: Xiongwei Song <xiongwei.song@windriver.com>
+Acked-by: Waiman Long <longman@redhat.com>
+Signed-off-by: Tejun Heo <tj@kernel.org>
+---
+ Documentation/admin-guide/cgroup-v1/cpusets.rst | 2 +-
+ kernel/cgroup/cpuset.c                          | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/admin-guide/cgroup-v1/cpusets.rst b/Documentation/admin-guide/cgroup-v1/cpusets.rst
+index ae646d621a8a..7d3415eea05d 100644
+--- a/Documentation/admin-guide/cgroup-v1/cpusets.rst
++++ b/Documentation/admin-guide/cgroup-v1/cpusets.rst
+@@ -179,7 +179,7 @@ containing (on top of the standard cgroup files) the following
+  - cpuset.mem_hardwall flag:  is memory allocation hardwalled
+  - cpuset.memory_pressure: measure of how much paging pressure in cpuset
+  - cpuset.memory_spread_page flag: if set, spread page cache evenly on allowed nodes
+- - cpuset.memory_spread_slab flag: if set, spread slab cache evenly on allowed nodes
++ - cpuset.memory_spread_slab flag: OBSOLETE. Doesn't have any function.
+  - cpuset.sched_load_balance flag: if set, load balance within CPUs on that cpuset
+  - cpuset.sched_relax_domain_level: the searching range when migrating tasks
+ 
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index ba36c073304a..c940cf01b148 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -3897,6 +3897,7 @@ static struct cftype legacy_files[] = {
+ 	},
+ 
+ 	{
++		/* obsolete, may be removed in the future */
+ 		.name = "memory_spread_slab",
+ 		.read_u64 = cpuset_read_u64,
+ 		.write_u64 = cpuset_write_u64,
 -- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.43.2
+
 
