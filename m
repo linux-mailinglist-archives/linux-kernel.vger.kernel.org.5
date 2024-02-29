@@ -1,60 +1,65 @@
-Return-Path: <linux-kernel+bounces-87591-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87592-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 120D086D641
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:34:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15AEE86D643
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:38:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5C9F5B26C13
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:34:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 271001C215C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:38:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A348F6D50B;
-	Thu, 29 Feb 2024 21:34:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD4346D506;
+	Thu, 29 Feb 2024 21:38:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="dYjHh8DY"
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="KK/ZUxdM"
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B6E916FF2B;
-	Thu, 29 Feb 2024 21:33:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33D8B16FF21;
+	Thu, 29 Feb 2024 21:38:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709242442; cv=none; b=o7hbOL23dI14MfBjMhnwfycC7hFywwSOdYDAMqN/PpwvMQk8inYoNPTYMZIE0UmaXO7ECrZPO85aKuHgObfm72PGdH/k1XLCUhH5p96M6rz+qQ3GAc8sLOOr98Pdu+e+sFof5cEu/TZzSn4RN6ocM++oLTU0v9U2EVhe7Ng615M=
+	t=1709242709; cv=none; b=BxHkX2K72uVEqOE7G3HGTI3nkJNm5wCCsQd2VSE23RKR8Nc1JRtsyPaBnQYO1+9XmStPrDYkhsAE3aJOhwtdQrZES+7MqKak7+nwA8EXYuKjYwvZkpXgLmNPgHw90n6TKszRH3mHO3rbgEJ9AADNYOgjGkosagRCnPD51jBkk24=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709242442; c=relaxed/simple;
-	bh=dofoDQd/cvr1cec7GTuxonUZBm+meCKy+uphH2X8IHw=;
+	s=arc-20240116; t=1709242709; c=relaxed/simple;
+	bh=Jyx0yX1/osNIVS5HxoUVFoplp5LxTV1iTRgXQQ4GFlQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FdXmtm1DJ5mzwXkrZ/5AZYWnSbQX0RDsnL1mkSalQDdx1Craffiv6vupNtUunP1wceVA6Vfa4hdHpn9BvThQC6iTmuk9hSKyqrM7qdhYsM/24AltVZ3DHa3JkjF3g442sSGXHTol3/+gUlTq6tD8wa0bnfOsuSWU0lClnpQiVsw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=dYjHh8DY; arc=none smtp.client-ip=217.70.183.193
+	 Content-Type:Content-Disposition:In-Reply-To; b=QTHGOcg3smoVkzaKOItR2f9ensTB7dFSZ87GXGOlsgqT5v3CQ2l6ffLsHrcjDX1hkOLh7fu3ILkkhszqPpXbM5xopnJxuIzkSLFCLpwfWZcgvariWs6bNlIfgonKBkP1/lGAhltPt01RryHbDZUBOi8QcUEymTMJrcIZFMefhe0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=KK/ZUxdM; arc=none smtp.client-ip=217.70.183.199
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 3F9D3240002;
-	Thu, 29 Feb 2024 21:33:49 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 6FA29FF802;
+	Thu, 29 Feb 2024 21:38:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709242429;
+	t=1709242703;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=1uC45p+7yfD/FGTF6Mb901L2LMQYp2AR2orIm1bdqkc=;
-	b=dYjHh8DY/bTUZnNGrxT0m8mJ22qKILDE9LgOzSEU1k6iWOcsvW+AYx1fHGtq89qzrqd3WV
-	EnAkAo1HF9dJbYBqQdVCqGgU/TH+dvbaRs2eHiDwV0EjrlzRBTflJlDVLDAgAPsUVlKMCW
-	N+gfhCKQTaWmv/1gW9sGIQriePdyFlKmVY4j4/VPBJSlGlCZLU5VLZ13xbSU5hWv0AEgTw
-	yG6DF+96aAHcpFES1xJnqKkryLlma+SI+RECXhpIXa8A2alUcbssyVJZoN+3D6fC7OdJ9X
-	3A73K1TtfjNSitOZFncx4j2E+RH/8IOa9qzEojE24666xvn2gah+nmcP0QgoKg==
-Date: Thu, 29 Feb 2024 22:33:48 +0100
+	bh=06h+Dixp3pfmyNHLmEgwHvnmTLomiV3h0dUw0wK6Rv0=;
+	b=KK/ZUxdMUD8UIdRpFCufS6iKlqdVruNm8S81hf2wcXf/Raw2jCZcI4NK2pwFHkxIIq49Y2
+	t/VtghIveB0cag2gAQK8iKU3/fTWg+vk+qymC3OZUOKuD6fASsMaJymE2wBIqzuKPJSQdk
+	z37If8Lmeh1XECZMoRO1DEJBJ7zIF4kna7SrbKqxAUeRAp2kacwhxsdtL/1HfAijE98fFc
+	QotFWYt71t7aWuIgs4auu6joCsglV0fmaFw6ABF/1kwzYP3ZZZ8chL5RABl9JPi4DJ5P4f
+	V2F/IqwpVP5MWV9iKe/XQjJGWl6Teo+zTuQKJxOgv+YeK6a92Wss58YvgjtenQ==
+Date: Thu, 29 Feb 2024 22:38:21 +0100
 From: Alexandre Belloni <alexandre.belloni@bootlin.com>
-To: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-rtc@vger.kernel.org,
-	Josua Mayer <josua@solid-run.com>
-Cc: Yazan Shhady <yazan.shhady@solid-run.com>, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH v7] dt-bindings: rtc: abx80x: convert to yaml
-Message-ID: <170924241589.1874607.16703295987554323192.b4-ty@bootlin.com>
-References: <20240219-rtc-abracon-convert-bindings-v7-1-aca4fc3b8cec@solid-run.com>
+To: linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, Eddie Huang <eddie.huang@mediatek.com>,
+	Sean Wang <sean.wang@mediatek.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org,
+	Alessandro Zummo <a.zummo@towertech.it>, linux-rtc@vger.kernel.org,
+	Marc Zyngier <maz@kernel.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Peter Rosin <peda@axentia.se>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Subject: Re: [PATCH v2] rtc: mt6397: select IRQ_DOMAIN instead of depending
+ on it
+Message-ID: <170924268327.1875298.3046212604206136101.b4-ty@bootlin.com>
+References: <20240213050258.6167-1-rdunlap@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,21 +68,24 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240219-rtc-abracon-convert-bindings-v7-1-aca4fc3b8cec@solid-run.com>
+In-Reply-To: <20240213050258.6167-1-rdunlap@infradead.org>
 X-GND-Sasl: alexandre.belloni@bootlin.com
 
-On Mon, 19 Feb 2024 15:29:45 +0100, Josua Mayer wrote:
-> Convert the abracon abx80x rtc text bindings to dt-schema format.
+On Mon, 12 Feb 2024 21:02:58 -0800, Randy Dunlap wrote:
+> IRQ_DOMAIN is a hidden (not user visible) symbol. Users cannot set
+> it directly thru "make *config", so drivers should select it instead
+> of depending on it if they need it.
+> Relying on it being set for a dependency is risky.
 > 
-> In addition to the text description reference generic interrupts
-> properties and add an example.
+> Consistently using "select" or "depends on" can also help reduce
+> Kconfig circular dependency issues.
 > 
-> 
+> [...]
 
 Applied, thanks!
 
-[1/1] dt-bindings: rtc: abx80x: convert to yaml
-      https://git.kernel.org/abelloni/c/626e2b54645a
+[1/1] rtc: mt6397: select IRQ_DOMAIN instead of depending on it
+      https://git.kernel.org/abelloni/c/544c42f798e1
 
 Best regards,
 
