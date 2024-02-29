@@ -1,117 +1,149 @@
-Return-Path: <linux-kernel+bounces-87345-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87352-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CD2286D31B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:27:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EC3886D32A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:29:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 85DB71C21D97
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:27:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 431311C22064
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:29:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B38A134439;
-	Thu, 29 Feb 2024 19:26:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B25D613F43D;
+	Thu, 29 Feb 2024 19:27:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FCJCcUTx"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ykjDAxa4"
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 412BD13C9DA;
-	Thu, 29 Feb 2024 19:26:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40C7013F430
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 19:27:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709234813; cv=none; b=ldhYWT8piT4+78lnoKG3YkvP6DiXj48aHWaY0Lq/tCnhYYiUV2hIH3fnfQ/tnwf1RYpM45JvE0mjovJ24Y2jYhz6pX1iirVrNSRQ1o09kZXCmitiM4NuVEVIAGCo8n4SgG0nAZG3URfdnaSBqzL9joHK3m7flwF0D5JblX6PRZs=
+	t=1709234851; cv=none; b=uF43s8+hG35ejkGrT+X8MTRdZsoJYiQFd9yzU7EHlJJyc5nOEaaWKEcJ7VsT6/INKIJQBWcRCPG7BhfftigPUjHtB05iDnrDrB5rfxRhavEFzf549BYrNQqkUtnqWi+Eg3gCSbnKIK6p08d/KCK1pm6WH0pCYowIWy/sA96nyzg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709234813; c=relaxed/simple;
-	bh=dQBzFjbiyMY2YfsnEMAA2D18qSH0i0EESuIQfSa8Bos=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=E6QwpIJRUaoTiLsRD/yqBMuikz5IlQB5dI7U6mijoyNAEuG9mW3o/VGq3fuql5S4Fasu0vAnpO+Tz/KhvXvHiYTviBljolVoDm1f7qqqDeY9JMh8nqrq+wacO7BLUbJojns4YXRgtjMjpOVgpUTEeCoaxUKnQ7eX/2W74Qmw8Io=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FCJCcUTx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98BF4C433C7;
-	Thu, 29 Feb 2024 19:26:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709234811;
-	bh=dQBzFjbiyMY2YfsnEMAA2D18qSH0i0EESuIQfSa8Bos=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=FCJCcUTxHFiF2vBsMkiF1XIA1kLFEDBldowvgltYlnfplQRI/KrH4bGhod7q8aORO
-	 X/rrkYKtLDRDqNe7CwJqfIDMvsvtokaX3/OMpZCpJbRLU6zt02ytjlgWDzanOIECbZ
-	 EFtefDCRg9utWb8at5XYYiS7w6AriGL0fvWY/Q/fFVtTHgv2EKvGkH8tqNhsuSbX8W
-	 JeR8DdXDm0FEFx2we4NsYQPhrm0f9mpolPAkZsD+6OENZ8Ql+rFRoDzy8zSRj0dr4s
-	 AbSkFaJK1IJzmM2DiL5bQjj2D9Ni97TeO6S7iF5TJPCaCcWRHPBucoHW7YR01yFWYH
-	 nzw3iZP6CrtRg==
-Date: Thu, 29 Feb 2024 13:26:50 -0600
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=arc-20240116; t=1709234851; c=relaxed/simple;
+	bh=hOcD0Q8J4O6wInMOgi9Si1woMdBSCk09ZsxIVn4u/aU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jrRroLtTWAc2FGPb0KFIpjjjHIbT997kqn7JAKiJ0TIGTwKTwtBqdcs8LkSOH00PC6NHDNmNgYtZOePQW/wJ6EoXtDSQRqYa9nhLKX/JA6ez0GlH6CUWaN75cvFXZiw44V5vle88ifhP895A3MubEGO59CVYWKopFrCCQWbT7Wk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ykjDAxa4; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5655c7dd3b1so4551826a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 11:27:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709234848; x=1709839648; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Fvnfj72X5wncWNyMmos2XdBlSg34ykxktAW7UbkC3Yw=;
+        b=ykjDAxa4/2QhbazxyHkGs03ts+BxSHFmlfDtOlXrjK6ZBWDseivbe8qTJWzYPFJ3Xw
+         5poHUyBOsjdMWREJlfQjr3+aN+IHgMnNK71phkmXwIamLijPPtUqn9vgXnLJgqKE7l41
+         bvRwRfYPWaIdLK87xILs7CuS9bgMVEGZrgnRXFsTLCkneH0f9ZfeC8ywnao1r8JmgYf6
+         b/8VpmsHHIR/Ufm830TNM0pPvTkN1gtyx+Njy/meOC2yixUbdx8pZYqxv2DbtWT5RUPv
+         gH/6vr3VL/6MnLm7NnxtUsyyZwBtlSXJj3ht3F4Yhs4lu34+/CJJHxH3rkRPEnCQ02Z9
+         yDrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709234848; x=1709839648;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Fvnfj72X5wncWNyMmos2XdBlSg34ykxktAW7UbkC3Yw=;
+        b=MT5obBKMfzEvtL14QFz2SOpixjnrCIrBB0Z/pIltZ2fOGmQoOS5U5Yfg3V0N616ZJu
+         DV8yTgForwQI6hi/6nxAi8OHQ21ktE9KjXvsTXOkpg1MLWjAnrMjYo6QdtImClCOoZ/a
+         1Z+I7yRSNDd1eFM5k0rwQJW2ElKlQDK+QphvaKmGWxFDt9TS75Md/tITUtpX0zCWwq9B
+         2dzYEGN/FE+NZPLhUejL5oNLOKxwLhLRVt4RQddYbEt4YfYvxlA9JNttqkDXTV2BxXkW
+         3oZWjpPMtPm7w3B+pkwrKXkCgJSceB7EHnkmV0lqanEGYm/dYCCf6zbXKLecvWZMMtqu
+         ovPg==
+X-Forwarded-Encrypted: i=1; AJvYcCUnQ3OgV2SyvQHvbr9BuCN95nybeagTReDQ2iDEN/hHgLImREt27raQ7oQdYVtEsq4aMsNDjxEN0yZ/ms8BwlnC/u8g3FcrDtgBxXfO
+X-Gm-Message-State: AOJu0YzT//MeM3fLIIhUGxPO+KilIrJKqfsi7e2m7iHKpVV0TH1PJMhR
+	syzW3H/ER04BUAyqWw3Xk8kbcVjlZ3CKvDOeVF+AWamLzPT26HvghpeKo2Moe8w=
+X-Google-Smtp-Source: AGHT+IHfTo9n1QbGET/Haupdjrh48c25zzfscxRIovhV41mGnLdAdSUQuicUaGpT/7ZqNjbz165ACg==
+X-Received: by 2002:a17:906:7190:b0:a43:67fe:d484 with SMTP id h16-20020a170906719000b00a4367fed484mr2139068ejk.22.1709234848627;
+        Thu, 29 Feb 2024 11:27:28 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id h20-20020a170906591400b00a3d5efc65e0sm964589ejq.91.2024.02.29.11.27.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Feb 2024 11:27:28 -0800 (PST)
+Message-ID: <fa396749-c6c4-4610-b9a5-d94713153b86@linaro.org>
+Date: Thu, 29 Feb 2024 20:27:26 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Cc: Gregory Clement <gregory.clement@bootlin.com>, 
- Conor Dooley <conor+dt@kernel.org>, linux-kernel@vger.kernel.org, 
- linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- linux-hwmon@vger.kernel.org, Jean Delvare <jdelvare@suse.com>, 
- linux-i2c@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, 
- Linus Walleij <linus.walleij@linaro.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- devicetree@vger.kernel.org, Tawfik Bayouk <tawfik.bayouk@mobileye.com>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
- Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
- Guenter Roeck <linux@roeck-us.net>, Andi Shyti <andi.shyti@kernel.org>
-In-Reply-To: <20240229-mbly-i2c-v2-2-b32ed18c098c@bootlin.com>
-References: <20240229-mbly-i2c-v2-0-b32ed18c098c@bootlin.com>
- <20240229-mbly-i2c-v2-2-b32ed18c098c@bootlin.com>
-Message-Id: <170923480718.105821.4890305771845201981.robh@kernel.org>
-Subject: Re: [PATCH v2 02/11] dt-bindings: hwmon: lm75: use common hwmon
- schema
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/3] dt-bindings: arm: qcom: Document the HDK8650 board
+Content-Language: en-US
+To: Neil Armstrong <neil.armstrong@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240223-topic-sm8650-upstream-hdk-v1-0-ccca645cd901@linaro.org>
+ <20240223-topic-sm8650-upstream-hdk-v1-1-ccca645cd901@linaro.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240223-topic-sm8650-upstream-hdk-v1-1-ccca645cd901@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-
-On Thu, 29 Feb 2024 19:10:50 +0100, Théo Lebrun wrote:
-> Reference common hwmon schema which has the generic "label" property,
-> parsed by Linux hwmon subsystem.
+On 23/02/2024 09:52, Neil Armstrong wrote:
+> Document the Qualcomm SM8650 based HDK (Hardware Development Kit).
 > 
-> To: Jean Delvare <jdelvare@suse.com>
-> To: Guenter Roeck <linux@roeck-us.net>
-> Cc: linux-hwmon@vger.kernel.org
-> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 > ---
->  Documentation/devicetree/bindings/hwmon/lm75.yaml | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/hwmon/lm75.yaml:
-Error in referenced schema matching $id: http://devicetree.org/schemas/hwmon/hwmon-common.yaml
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/hwmon/lm75.example.dtb: sensor@48: False schema does not allow {'compatible': ['st,stlm75'], 'reg': [[72]], 'vs-supply': [[4294967295]], '$nodename': ['sensor@48']}
-	from schema $id: http://devicetree.org/schemas/hwmon/lm75.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/hwmon/lm75.example.dtb: temperature-sensor@48: False schema does not allow {'compatible': ['ams,as6200'], 'reg': [[72]], 'vs-supply': [[4294967295]], 'interrupts': [[17, 3]], '$nodename': ['temperature-sensor@48']}
-	from schema $id: http://devicetree.org/schemas/hwmon/lm75.yaml#
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240229-mbly-i2c-v2-2-b32ed18c098c@bootlin.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+Best regards,
+Krzysztof
 
 
