@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-85898-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85899-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5230086BCAF
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:20:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78B9A86BCB0
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:20:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 085822835BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:20:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C5671C20904
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:20:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43047524BF;
-	Thu, 29 Feb 2024 00:18:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D0965577E;
+	Thu, 29 Feb 2024 00:18:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pR06XwA5"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TXbLB6zI"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B059E44C9C
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 00:18:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B7DE3612D
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 00:18:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709165920; cv=none; b=iIOF9L9Umbkb+ksKsS9pu56VqKQbDTRlhmNOHF3BfvNJWYbjCjmACIHWbDEdUnEoJfRgNrGpVuTmeQ8+hVI7YCrsaWIBOm5Q9PVxE+X5h4nt/a3lMwvYCo5jx0eOaMAYH8/+KDqLdLoHjqufCHSycoeUdOZFVzeczUapqwucrBE=
+	t=1709165922; cv=none; b=YxjNBhgfoilh8njZa2akJ8HH8Sg/IvXhnG3T2Po2zP2m6yRYFsfp/ERj3+h0egdpbfTCG3sThN6UlABsc8dBN2SRyz4saOj/CtyjdafENaskvCo7M1VsRbyH55wJgyGgUStfeN1j8C3KpFhyU51zb2FjFNSZCci4uGaEv5ABFt4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709165920; c=relaxed/simple;
-	bh=OGxEkqtAUV2coFbRq/RJ+uPweZKIEnWlAUORKInoJ9k=;
+	s=arc-20240116; t=1709165922; c=relaxed/simple;
+	bh=yjVC8LCNIc1SkJJNK1huvdVoLuihBnJ8/xrqhZCq4ak=;
 	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Content-Type; b=o1OSfn4TSCNKQoyUDlmR4CxtUbLYRZkxxPq1x46Wl6DyBw8H1Of62gjXflVLGDW25zpaZ9eB1JpW/mC+hDq2D4SdC/pa1QpgkBaOby5xd06npUFimUAmPxe18UJPcYJP2jNa2vXlKMaLfAN4MP1TvO9QJHg8qNeebQS8ULR/Pjs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pR06XwA5; arc=none smtp.client-ip=209.85.128.202
+	 To:Content-Type; b=eBNxNGGeld5pOFhE5fREmNnLrOcTNkgenYXEo6soIer3xbFTP8ed1YCEjkLbuxEoLyY570l+LOj7PtLtxceExIbqdB8W3fzNV7B5yvbtRpgm+5RvlKfWU4cwAYwlIuGfnEnd/2TMrf/ZB2mO79Z1Ey8AhAPRKZq+8dOUBkXcJ5Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=TXbLB6zI; arc=none smtp.client-ip=209.85.219.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-607838c0800so16776767b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 16:18:38 -0800 (PST)
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6b26783b4so555114276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 16:18:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709165918; x=1709770718; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1709165920; x=1709770720; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=QHYTrWPQQfDvRO2Y3kXJ96unWdbam7XTLAS0vgfzft0=;
-        b=pR06XwA5lQ9LpnUlZYP7b9tIwA5e47krSbwhi7Nkhfatb4DJAwfubLgO90TwYDmEO4
-         FgbArula5qk/jcYnL0B9xl4pidhkd7LaDW/9t0NYBJzou60+vBBETmiZU9/x4C4kgg4L
-         HSoavzNP1z4zKcEjKV9DSD2fUAKrNLFvDWXebXOCa8re02Dtsjh0BEzggc407h0ZX8L8
-         mS7u2VxhhXGkfZEOA6E1hge/ToiGYDDt3cL0b5zMqUR14xMCgvxEq2JRDvsHMe6aU63c
-         Ka++HWop1e36Caj/nGWHNPzq4P1dnHlMaNH+GZiQFgH7lZK/QqOTOxKcdLQ9+EP5VaAe
-         oEQA==
+        bh=KevBgsY4J/pffn7xcpMTC+4LgPUcMPV9xIrPsMU+9Ks=;
+        b=TXbLB6zI+0/6+6vGkPpMthp8Vsxif4X0xxUustURUo4Ess3YNY0eTvkuNQgS3r8zrY
+         6tlSV5TwfJrVlkb2PNv6N2pmo6e/TfPgtzYAVWl5m5j2odk4t4guhryu4+IbHnSLrj92
+         hrFDri20zNOA+nBXBbIMxat0QybrWMIEJBprb6UIarzcJlbERzpMlijNb4tEY68XAR8I
+         8Y0vo1TH8e1VI/6Cr7bO2quv70VLeeHdfdzzIugHyLdoblgX6BWnqWhG0mMaOGoicXk+
+         16FuSWbkmuopilPWZY2FZiiajN9CaXBAAjN82uasqnF7GQLiYixrnjRl1HCfMF+5xwhq
+         nUYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709165918; x=1709770718;
+        d=1e100.net; s=20230601; t=1709165920; x=1709770720;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QHYTrWPQQfDvRO2Y3kXJ96unWdbam7XTLAS0vgfzft0=;
-        b=fSFUB1vaQKOzeDeUNobJr3jMkIT4PBLLr0G2C6XJ21UBAROVTKiS9bEYZu/wloJ+oj
-         OzqdTJfwlEniQJIckK4+JmN/mL+XD4vsMo9tHL3T+ptLPHnuNKnfxSQCPF0ss6zBBAgt
-         i6aVTLIY5kX/dPPfEHhBl2fZqechdl5BEVjchAB84puDTNtk/wcyc4MGUnOw0uJg4lNU
-         5iV5DxI1AYuRoZXt0RfNBx/oK2JWumr37jQUF8DKvDablYgbEZIV7w5IORst/UMufBLY
-         39IJwbQTRRZzv2aa4rw7upQp4gjuDawu+Nr5WqD0bv0UoI5AqZFqH4LdJewrDDSFQRCY
-         pnvQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWzX5v871M6VNb5FrmhNJXfmN4gxfKkbFCsWc/8xjIPmfwi980LHINlAnwjEQuqHv7AgT5iR8pSKBTesxa0dCj2WKYRSUnXkqmd7nqE
-X-Gm-Message-State: AOJu0YwjrqezrxKdBgS/IJbvgTFb4KHn4Ahx+6R+NC1uVwLDbcfLCO1w
-	SwN6FuutxJOM/Jd+0uzlaIW21e96N8QPRiNdhvSJj2YLToXAAdzrHMfylOjq09gGe47gIaWexz+
-	/CELFyg==
-X-Google-Smtp-Source: AGHT+IFsFIxXr34yPFaTcqdM+Heeyoehfw8+UOaykD8oVJ1gpIJF6XDDTAdFszmDzAu1PmNjo/KNp2O3QSMG
+        bh=KevBgsY4J/pffn7xcpMTC+4LgPUcMPV9xIrPsMU+9Ks=;
+        b=ChhEais+obh0hyWhmwR/wBPEXj+wGPabVpiyTXS9ZhRzvgaPjGGm+Qm97ESnBK8AnT
+         ukFwJzcTb4mYqROvkeezxYwEyS5j6JWMp30pb2BMEM7+ffZueX0sT5O1MVighKuDh9sX
+         affxzmYHrDFCde5GvF+3sz3vsMJ0VcvPI1GBTQVNPnCCAPko8yYZ7eVYE5skNCoAknlm
+         2dFF/mj2tbuFs/7avBDcfXX9vrWW8eIaeZpwSz4unS/WLJ7gmaI6SONFOw34sVDcD+jI
+         IO1IHHZWQIG83sRvD6kgVuEzUOOBB8cpCzoy/h0YybFyL34DbBUSbTCBn2r4t5zyi3il
+         0cBQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWyeWuLuaPbp0kQiGCPIYQriuZd6C0X1A8+nDZAAzp1EE4VvP5wVOt/NguT4NjUU2zI0P7i1UtQHSSDwiF+AYr547qASHTp6ljfWadr
+X-Gm-Message-State: AOJu0YwMATyLp8bMP5yFoTaExqreGM92geYBDNvHJZ/9Cvkr6xy4E1OS
+	h3ys9EcWoGiH8sV8+z/BvDjTxtMLu8d5DkwFqHXL3i29Gx/ILO8Vrr9YD6PXz5WeDzRKTjMsET8
+	l8ycHjw==
+X-Google-Smtp-Source: AGHT+IFlP6eN2j1eRfy7sjBDk7E7RwirfhLDiu6aNv3eb7Zo8EY3zKs948Zt9E48owNMTBeAfysMTufX7A6o
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:77dc:144c:334e:e2dd])
- (user=irogers job=sendgmr) by 2002:a05:6902:505:b0:dc7:4ca0:cbf0 with SMTP id
- x5-20020a056902050500b00dc74ca0cbf0mr46479ybs.3.1709165917807; Wed, 28 Feb
- 2024 16:18:37 -0800 (PST)
-Date: Wed, 28 Feb 2024 16:17:51 -0800
+ (user=irogers job=sendgmr) by 2002:a05:6902:e90:b0:dc6:b813:5813 with SMTP id
+ dg16-20020a0569020e9000b00dc6b8135813mr41854ybb.9.1709165920173; Wed, 28 Feb
+ 2024 16:18:40 -0800 (PST)
+Date: Wed, 28 Feb 2024 16:17:52 -0800
 In-Reply-To: <20240229001806.4158429-1-irogers@google.com>
-Message-Id: <20240229001806.4158429-7-irogers@google.com>
+Message-Id: <20240229001806.4158429-8-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,8 +74,8 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240229001806.4158429-1-irogers@google.com>
 X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Subject: [PATCH v1 06/20] perf jevents: Add software prefetch (swpf) metric
- group for Intel
+Subject: [PATCH v1 07/20] perf jevents: Add ports metric group giving
+ utilization on Intel
 From: Ian Rogers <irogers@google.com>
 To: Perry Taylor <perry.taylor@intel.com>, Samantha Alt <samantha.alt@intel.com>, 
 	Caleb Biggers <caleb.biggers@intel.com>, Weilin Wang <weilin.wang@intel.com>, 
@@ -91,95 +91,84 @@ To: Perry Taylor <perry.taylor@intel.com>, Samantha Alt <samantha.alt@intel.com>
 	linux-perf-users@vger.kernel.org, Stephane Eranian <eranian@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Add metrics that breakdown software prefetch instruction use.
+The ports metric group contains a metric for each port giving its
+utilization as a ratio of cycles. The metrics are created by looking
+for UOPS_DISPATCHED.PORT events.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/pmu-events/intel_metrics.py | 65 ++++++++++++++++++++++++++
- 1 file changed, 65 insertions(+)
+ tools/perf/pmu-events/intel_metrics.py | 33 ++++++++++++++++++++++++--
+ 1 file changed, 31 insertions(+), 2 deletions(-)
 
 diff --git a/tools/perf/pmu-events/intel_metrics.py b/tools/perf/pmu-events/intel_metrics.py
-index bee5da19d19d..f11273e9935c 100755
+index f11273e9935c..63d46ee1dca9 100755
 --- a/tools/perf/pmu-events/intel_metrics.py
 +++ b/tools/perf/pmu-events/intel_metrics.py
-@@ -265,12 +265,77 @@ def IntelBr():
+@@ -1,12 +1,13 @@
+ #!/usr/bin/env python3
+ # SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
+ from metric import (d_ratio, has_event, max, Event, JsonEncodeMetric,
+-                    JsonEncodeMetricGroupDescriptions, LoadEvents, Metric,
+-                    MetricGroup, MetricRef, Select)
++                    JsonEncodeMetricGroupDescriptions, Literal, LoadEvents,
++                    Metric, MetricGroup, MetricRef, Select)
+ import argparse
+ import json
+ import math
+ import os
++import re
+ from typing import Optional
+ 
+ parser = argparse.ArgumentParser(description="Intel perf json generator")
+@@ -18,6 +19,11 @@ directory = f"{os.path.dirname(os.path.realpath(__file__))}/arch/x86/{args.model
+ LoadEvents(directory)
+ 
+ interval_sec = Event("duration_time")
++core_cycles = Event("CPU_CLK_UNHALTED.THREAD_P_ANY",
++                    "CPU_CLK_UNHALTED.DISTRIBUTED",
++                    "cycles")
++# Number of CPU cycles scaled for SMT.
++smt_cycles = Select(core_cycles / 2, Literal("#smt_on"), core_cycles)
+ 
+ 
+ def Idle() -> Metric:
+@@ -265,6 +271,28 @@ def IntelBr():
                       description="breakdown of retired branch instructions")
  
  
-+def IntelSwpf() -> Optional[MetricGroup]:
-+  ins = Event("instructions")
-+  try:
-+    s_ld = Event("MEM_INST_RETIRED.ALL_LOADS", "MEM_UOPS_RETIRED.ALL_LOADS")
-+    s_nta = Event("SW_PREFETCH_ACCESS.NTA")
-+    s_t0 = Event("SW_PREFETCH_ACCESS.T0")
-+    s_t1 = Event("SW_PREFETCH_ACCESS.T1_T2")
-+    s_w = Event("SW_PREFETCH_ACCESS.PREFETCHW")
-+  except:
++def IntelPorts() -> Optional[MetricGroup]:
++  pipeline_events = json.load(open(f"{os.path.dirname(os.path.realpath(__file__))}"
++                                   f"/arch/x86/{args.model}/pipeline.json"))
++
++  metrics = []
++  for x in pipeline_events:
++    if "EventName" in x and re.search("^UOPS_DISPATCHED.PORT", x["EventName"]):
++      name = x["EventName"]
++      port = re.search(r"(PORT_[0-9].*)", name).group(0).lower()
++      if name.endswith("_CORE"):
++        cyc = core_cycles
++      else:
++        cyc = smt_cycles
++      metrics.append(Metric(port, f"{port} utilization (higher is better)",
++                            d_ratio(Event(name), cyc), "100%"))
++  if len(metrics) == 0:
 +    return None
 +
-+  all_sw = s_nta + s_t0 + s_t1 + s_w
-+  swp_r = d_ratio(all_sw, interval_sec)
-+  ins_r = d_ratio(ins, all_sw)
-+  ld_r = d_ratio(s_ld, all_sw)
-+
-+  return MetricGroup("swpf", [
-+      MetricGroup("swpf_totals", [
-+          Metric("swpf_totals_exec", "Software prefetch instructions per second",
-+                swp_r, "swpf/s"),
-+          Metric("swpf_totals_insn_per_pf",
-+                 "Average number of instructions between software prefetches",
-+                 ins_r, "insn/swpf"),
-+          Metric("swpf_totals_loads_per_pf",
-+                 "Average number of loads between software prefetches",
-+                 ld_r, "loads/swpf"),
-+      ]),
-+      MetricGroup("swpf_bkdwn", [
-+          MetricGroup("swpf_bkdwn_nta", [
-+              Metric("swpf_bkdwn_nta_per_swpf",
-+                     "Software prefetch NTA instructions as a percent of all prefetch instructions",
-+                     d_ratio(s_nta, all_sw), "100%"),
-+              Metric("swpf_bkdwn_nta_rate",
-+                     "Software prefetch NTA instructions per second",
-+                     d_ratio(s_nta, interval_sec), "insn/s"),
-+          ]),
-+          MetricGroup("swpf_bkdwn_t0", [
-+              Metric("swpf_bkdwn_t0_per_swpf",
-+                     "Software prefetch T0 instructions as a percent of all prefetch instructions",
-+                     d_ratio(s_t0, all_sw), "100%"),
-+              Metric("swpf_bkdwn_t0_rate",
-+                     "Software prefetch T0 instructions per second",
-+                     d_ratio(s_t0, interval_sec), "insn/s"),
-+          ]),
-+          MetricGroup("swpf_bkdwn_t1_t2", [
-+              Metric("swpf_bkdwn_t1_t2_per_swpf",
-+                     "Software prefetch T1 or T2 instructions as a percent of all prefetch instructions",
-+                     d_ratio(s_t1, all_sw), "100%"),
-+              Metric("swpf_bkdwn_t1_t2_rate",
-+                     "Software prefetch T1 or T2 instructions per second",
-+                     d_ratio(s_t1, interval_sec), "insn/s"),
-+          ]),
-+          MetricGroup("swpf_bkdwn_w", [
-+              Metric("swpf_bkdwn_w_per_swpf",
-+                     "Software prefetch W instructions as a percent of all prefetch instructions",
-+                     d_ratio(s_w, all_sw), "100%"),
-+              Metric("swpf_bkdwn_w_rate",
-+                     "Software prefetch W instructions per second",
-+                     d_ratio(s_w, interval_sec), "insn/s"),
-+          ]),
-+      ]),
-+  ], description="Sofware prefetch instruction breakdown")
++  return MetricGroup("ports", metrics, "functional unit (port) utilization -- "
++                     "fraction of cycles each port is utilized (higher is better)")
 +
 +
- all_metrics = MetricGroup("", [
-     Idle(),
-     Rapl(),
+ def IntelSwpf() -> Optional[MetricGroup]:
+   ins = Event("instructions")
+   try:
+@@ -335,6 +363,7 @@ all_metrics = MetricGroup("", [
      Smi(),
      Tsx(),
      IntelBr(),
-+    IntelSwpf(),
++    IntelPorts(),
+     IntelSwpf(),
  ])
  
- if args.metricgroups:
 -- 
 2.44.0.278.ge034bb2e1d-goog
 
