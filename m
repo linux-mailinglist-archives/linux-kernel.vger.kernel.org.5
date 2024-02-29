@@ -1,95 +1,201 @@
-Return-Path: <linux-kernel+bounces-87303-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87305-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90B8486D276
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:40:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C210B86D27A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:41:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C1C4D1C20DCE
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:40:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E0BE51C20381
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:41:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FEBD134426;
-	Thu, 29 Feb 2024 18:40:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2893823B0;
+	Thu, 29 Feb 2024 18:40:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="gZvtYW5R"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z4C0qKd/"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BD51160629
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 18:40:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 139707828D;
+	Thu, 29 Feb 2024 18:40:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709232014; cv=none; b=fEfJZqxNiCYrRsh3rv1E2WABWLbLTqxO4Dy1mMZXe8J6cidSs639kasIvFht7Dfrh6SJb6SB2f2fZJ/B94tpYmKVyoA4RTZq6UBOOJsYdHxUZHMqhwDa2LEaceevF0gM67mPaFsHRQ7XE8dQQgH6m+2m80OIiZsTBpyNn2j8Fxw=
+	t=1709232059; cv=none; b=l/y5ovLxuLvAhI14G6C5M0zUTvKgrHpEaeKMpCJiq3eDJBExvfMAFwUZqAOsTMgKlwyAaJaCl/tSiAYJbeRYgjW9BCZFqlWzEXO1qtgwzHz+aGZHFjaJlMygQUc6/AzVdXo4mquxZkTlUb+IBuDRJMb/TNTilpSJR1Y8QnIfqHE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709232014; c=relaxed/simple;
-	bh=G39x9X/r8wD8EZNMCjKX99fVjL/JmQl3/uLDdbycsUw=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=M6MU1VtFdaxkLy27QLDrp5fB4/d1ysZIcQKxdI7auLJeHhLi1ZMwmKDwXKWtvc0d09KSIhb9LGviPfSUaoszalXSB2X2a9gJFrz0kpSQKa1DafRfE19A/II4hDhZJQPjqqoURgWM5TiRQ76neyJCEnuo4yobC17HIn3HHdOAA8Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=gZvtYW5R; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8B82C433F1;
-	Thu, 29 Feb 2024 18:40:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1709232014;
-	bh=G39x9X/r8wD8EZNMCjKX99fVjL/JmQl3/uLDdbycsUw=;
+	s=arc-20240116; t=1709232059; c=relaxed/simple;
+	bh=XOIwSKahWpPR9jGAWZnUuaG5OHH6sWJYuNj9i3WFYso=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=S7uQqUJVScrQzx2qfpkpen3z3OFduL19my/oxwL80+9yt13pUXTA9AqvrYWr0zYQp+2K81ShkjG9xszAJGYLBqQ6m6zYBfOITkhzXo7hJvx91Uz5XwBDvw19BtNkPdF8Ozr1J5XV9Gc9ThVpu4ew+R/BCgGXnnpiJOD4c34ejI8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z4C0qKd/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B3F5C433C7;
+	Thu, 29 Feb 2024 18:40:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709232058;
+	bh=XOIwSKahWpPR9jGAWZnUuaG5OHH6sWJYuNj9i3WFYso=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=gZvtYW5RjwYGvMOcS1OD4p/NBFNkCvv+69I/19wQJojZcno1nDd8S9x6ufT9/b74c
-	 hrtO5sy9ttg1Enx/clLC3kgJM+v4EpMSxjvvkSPcfJxrZTOqz8FNt52Fus1uBgV5hG
-	 wdx/0gzpkwkSj4llp4f4J9CYk6lUE4gu9noxwvvA=
-Date: Thu, 29 Feb 2024 10:40:13 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Hao Ge <gehao@kylinos.cn>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, gehao618@163.com
-Subject: Re: [PATCH v2] mm/vmstat: Add order's information for extfrag_index
- and unusable_index
-Message-Id: <20240229104013.5ed8c1ca9c2dbd0bd5fb571f@linux-foundation.org>
-In-Reply-To: <20240229141443.99408-1-gehao@kylinos.cn>
-References: <20240229141443.99408-1-gehao@kylinos.cn>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	b=Z4C0qKd/Rb41/Yaf+xCj37agyrwn3r1ddkExRoiOTQQ1rOv6K0esta8w4jH7PujD+
+	 kD7/qP8No/C/78+0smVm9IZtu4d/jrk7LEqvuhyFtMxBc3j0LJtbp0URAThI+keGei
+	 qks/8U5YbqWJsiittU3E6aFngNaeGWrH/DmfvXcvuQjZSKoYhQxx9U49A0Gkb/15KR
+	 j9sQH34m8e6nV3/YFkW66ccdvDbTCUuikr9q5EpBgPuov6ncnUJDohVrx0fTvIKk01
+	 sVVwxjS5r90wPV2vfn4N5Gn1d3uC8zTkPgkNbpWl1EoFhHIEm+KMpBrfUVqBbnH6QE
+	 aw4KV5QlkVDCA==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rflKx-0088Cq-QW;
+	Thu, 29 Feb 2024 18:40:56 +0000
+Date: Thu, 29 Feb 2024 18:40:54 +0000
+Message-ID: <8634tb2jwp.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	will@kernel.org,
+	catalin.marinas@arm.com,
+	mark.rutland@arm.com,
+	Mark Brown <broonie@kernel.org>,
+	James Clark <james.clark@arm.com>,
+	Rob Herring <robh@kernel.org>,
+	Suzuki Poulose <suzuki.poulose@arm.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	linux-perf-users@vger.kernel.org,
+	Oliver Upton <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>,
+	kvmarm@lists.linux.dev
+Subject: Re: [PATCH V16 5/8] KVM: arm64: nvhe: Disable branch generation in nVHE guests
+In-Reply-To: <20240125094119.2542332-6-anshuman.khandual@arm.com>
+References: <20240125094119.2542332-1-anshuman.khandual@arm.com>
+	<20240125094119.2542332-6-anshuman.khandual@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: anshuman.khandual@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com, broonie@kernel.org, james.clark@arm.com, robh@kernel.org, suzuki.poulose@arm.com, peterz@infradead.org, mingo@redhat.com, acme@kernel.org, linux-perf-users@vger.kernel.org, oliver.upton@linux.dev, james.morse@arm.com, kvmarm@lists.linux.dev
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On Thu, 29 Feb 2024 22:14:43 +0800 Hao Ge <gehao@kylinos.cn> wrote:
+On Thu, 25 Jan 2024 09:41:16 +0000,
+Anshuman Khandual <anshuman.khandual@arm.com> wrote:
+> 
+> Disable the BRBE before we enter the guest, saving the status and enable it
+> back once we get out of the guest. This avoids capturing branch records in
+> the guest kernel or userspace, which would be confusing the host samples.
+> 
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Oliver Upton <oliver.upton@linux.dev>
+> Cc: James Morse <james.morse@arm.com>
+> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: kvmarm@lists.linux.dev
+> Cc: linux-arm-kernel@lists.infradead.org
+> CC: linux-kernel@vger.kernel.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+> Changes in V16:
+> 
+> - Dropped BRBCR_EL1 and BRBFCR_EL1 from enum vcpu_sysreg
+> - Reverted back the KVM NVHE patch - used host_debug_state based 'brbcr_el1'
+>   element, and dropped the previous dependency on Jame's coresight series
+> 
+>  arch/arm64/include/asm/kvm_host.h  |  5 ++++-
+>  arch/arm64/kvm/debug.c             |  5 +++++
+>  arch/arm64/kvm/hyp/nvhe/debug-sr.c | 33 ++++++++++++++++++++++++++++++
+>  3 files changed, 42 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> index 21c57b812569..bce8792092af 100644
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -569,7 +569,7 @@ struct kvm_vcpu_arch {
+>  	u8 cflags;
+>  
+>  	/* Input flags to the hypervisor code, potentially cleared after use */
+> -	u8 iflags;
+> +	u16 iflags;
+>  
+>  	/* State flags for kernel bookkeeping, unused by the hypervisor code */
+>  	u8 sflags;
+> @@ -610,6 +610,7 @@ struct kvm_vcpu_arch {
+>  		u64 pmscr_el1;
+>  		/* Self-hosted trace */
+>  		u64 trfcr_el1;
+> +		u64 brbcr_el1;
+>  	} host_debug_state;
+>  
+>  	/* VGIC state */
+> @@ -779,6 +780,8 @@ struct kvm_vcpu_arch {
+>  #define DEBUG_STATE_SAVE_TRBE	__vcpu_single_flag(iflags, BIT(6))
+>  /* vcpu running in HYP context */
+>  #define VCPU_HYP_CONTEXT	__vcpu_single_flag(iflags, BIT(7))
+> +/* Save BRBE context if active  */
+> +#define DEBUG_STATE_SAVE_BRBE	__vcpu_single_flag(iflags, BIT(8))
+>  
+>  /* SVE enabled for host EL0 */
+>  #define HOST_SVE_ENABLED	__vcpu_single_flag(sflags, BIT(0))
+> diff --git a/arch/arm64/kvm/debug.c b/arch/arm64/kvm/debug.c
+> index 8725291cb00a..99f85d8acbf3 100644
+> --- a/arch/arm64/kvm/debug.c
+> +++ b/arch/arm64/kvm/debug.c
+> @@ -335,10 +335,15 @@ void kvm_arch_vcpu_load_debug_state_flags(struct kvm_vcpu *vcpu)
+>  	if (cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_EL1_TraceBuffer_SHIFT) &&
+>  	    !(read_sysreg_s(SYS_TRBIDR_EL1) & TRBIDR_EL1_P))
+>  		vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_TRBE);
+> +
+> +	/* Check if we have BRBE implemented and available at the host */
+> +	if (cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_EL1_BRBE_SHIFT))
+> +		vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_BRBE);
+>  }
+>  
+>  void kvm_arch_vcpu_put_debug_state_flags(struct kvm_vcpu *vcpu)
+>  {
+>  	vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_SPE);
+>  	vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_TRBE);
+> +	vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_BRBE);
+>  }
+> diff --git a/arch/arm64/kvm/hyp/nvhe/debug-sr.c b/arch/arm64/kvm/hyp/nvhe/debug-sr.c
+> index 4558c02eb352..79bcf0fb1326 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/debug-sr.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/debug-sr.c
+> @@ -79,6 +79,34 @@ static void __debug_restore_trace(u64 trfcr_el1)
+>  	write_sysreg_s(trfcr_el1, SYS_TRFCR_EL1);
+>  }
+>  
+> +static void __debug_save_brbe(u64 *brbcr_el1)
+> +{
+> +	*brbcr_el1 = 0;
+> +
+> +	/* Check if the BRBE is enabled */
+> +	if (!(read_sysreg_s(SYS_BRBCR_EL1) & (BRBCR_ELx_E0BRE | BRBCR_ELx_ExBRE)))
+> +		return;
+> +
+> +	/*
+> +	 * Prohibit branch record generation while we are in guest.
+> +	 * Since access to BRBCR_EL1 is trapped, the guest can't
+> +	 * modify the filtering set by the host.
+> +	 */
+> +	*brbcr_el1 = read_sysreg_s(SYS_BRBCR_EL1);
+> +	write_sysreg_s(0, SYS_BRBCR_EL1);
 
-> Current cat /sys/kernel/debug/extfrag/extfrag_index and
-> /sys/kernel/debug/extfrag/unusable_index is not friendly to userspace.
-> 
-> We should add order's information so that users can clearly understand
-> the situation of each order at a glance like pagetypeinfo.
-> 
-> before:
-> cat /sys/kernel/debug/extfrag/extfrag_index:
-> Node 0, zone    DMA32  ...... ...... ...... ......
-> Node 0, zone   Normal  ...... ...... ...... ......
-> 
-> cat /sys/kernel/debug/extfrag/unusable_index:
-> Node 0, zone    DMA32 ..... ..... ..... .....
-> Node 0, zone   Normal ..... ..... ..... .....
-> 
-> after:
-> cat /sys/kernel/debug/extfrag/extfrag_index:
-> Extfrag index at order:       0      1      2      3
-> Node 0, zone        DMA  ...... ...... ...... ......
-> Node 0, zone     Normal  ...... ...... ...... ......
-> 
-> cat /sys/kernel/debug/extfrag/unusable_index:
-> Unusable index at order:     0     1     2     3
-> Node 0, zone         DMA ..... ..... ..... .....
-> Node 0, zone      Normal ..... ..... ..... .....
-> 
+As for TRFCR and PMSCR, this is broken on hVHE.
 
-This may break existing parsers of this file.
+Please see [1]
 
-And that would be allowed if these files were under debugfs.  But
-they're under sysfs/debug, where the rules are less clear.
+	M.
 
-Still, it's unclear to me that the benefit is worth this risk.  What do
-others think?
+[1] https://lore.kernel.org/r/20240229145417.3606279-1-maz@kernel.org
+
+-- 
+Without deviation from the norm, progress is not possible.
 
