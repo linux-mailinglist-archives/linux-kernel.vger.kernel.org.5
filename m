@@ -1,59 +1,63 @@
-Return-Path: <linux-kernel+bounces-87016-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87017-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDBFE86CE46
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:09:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 488B386CE4B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:09:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A34F81F22664
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:09:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 037B0285BD7
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:09:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02987154453;
-	Thu, 29 Feb 2024 15:51:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1584C159DFB;
+	Thu, 29 Feb 2024 15:51:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c3e2B6aV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bIDVxzl4"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A5A51547C0;
-	Thu, 29 Feb 2024 15:51:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5097F159DE4;
+	Thu, 29 Feb 2024 15:51:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709221875; cv=none; b=NLSwRKCESgmngxtHdYXCKwxnc4AiPnCjKgx7v+wx/SETRxykTA1zmS179vd6ULfHU6kiz3MCiG30nZHd0cAAjQ/J08/ebuZrgKivGiuEsmHl9puoY32GkYb1hJ5ZpMCOXunUA/LfHMkjFo6mg8HqSyUi/6F8MNndRvNR9KtwGAM=
+	t=1709221877; cv=none; b=K1D2KmF0fuWi81vKjUz4ppDCVZ+sJfPmA8Rlg9pcvvAOrOk40hJpN326OEMvKQybJ14DBzT5ZXJ7/o5ZwUhmRbVsE7TzSz0lBiiCMm7STazRQ//BZ/2PxtA+Akr7SQ2NCum9RUevp9ovIJ3HKwH8uMckOJ8FeHaql/xUNAuVxYE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709221875; c=relaxed/simple;
-	bh=W7EFPrddAiARLEIxEX/jN7SMYuIy9OT780TTtwsJlAg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hc6tTDjsQTNIYBUU4r9/Fbnqk/EOznqPJqpoa7jOl4gA6XkIvAc3D687UNf5tjWvaOxxlQIU+js3e5300MG7FcSW1JbAVDkDecnSnCdOqpIDjFgS+ppFpWNQ0Rlsuv1XncnRJUIigNzxQMMz5gOxlx2X+aOCbpymkLJjIUZn4ws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c3e2B6aV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1ACEC433F1;
-	Thu, 29 Feb 2024 15:51:13 +0000 (UTC)
+	s=arc-20240116; t=1709221877; c=relaxed/simple;
+	bh=Yo+IjX1HMF7yDU/yvovsGvcfnMLDjmAxJteTj1nN9MI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=U+2cNYkYCo7K4d6/h3zsvr0pt6HRlmN2wQkr/SuzUfI4Kh6ir6K6RbwkuQmEOBBYsNzq2mjimiQwLMNoaOQZwZnAo0eaFoRwVGDTt9W+uv/sV7gFi2qRz5fPsf3mL3xwWki4kzqLS8kWeZcSH4dgN6ngV4NNCH9jD/n2BAp+bvc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bIDVxzl4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7302C43390;
+	Thu, 29 Feb 2024 15:51:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709221875;
-	bh=W7EFPrddAiARLEIxEX/jN7SMYuIy9OT780TTtwsJlAg=;
-	h=From:To:Cc:Subject:Date:From;
-	b=c3e2B6aVmG4M15qM3q9olZ16c8xVfuNyJCKrGO/qpflYxRjyH8jZpV5UrTEy+hvhu
-	 M9qcvIxhDoIMASd4lWsLtucNjapXdkGAjnbiMq1zI1KoocqkuIR2EFqXLxTZATxHU7
-	 aRBYVUVvoxR8x4HiamsFfVJdtLsEEuHqhxlYyZDs9AlgT8uMEGNzGx2DcfdhsRhK03
-	 +TnlWT9iH4EKg9Z0EzGzB596zcph9o/f86jbFmLipKJLc4IT9ClI+sQFlY1uK6uAuv
-	 H3wYMCbQhXy8N5EKNc2XDuU2LwYgubsGhMPVTBJVIXtiXH1eQaFexd2Or/ybXO3mOm
-	 hgNjlxNUOgjjw==
+	s=k20201202; t=1709221877;
+	bh=Yo+IjX1HMF7yDU/yvovsGvcfnMLDjmAxJteTj1nN9MI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=bIDVxzl4ZwaUxKL1dxSj47TuR7uWQnZ7KELoiFMSZ2FVtVY4j8HwSrmINdlIPN9LH
+	 l6qBf3HfW4io4xpYXuJZL389u9k2+99Kx1SOjBDgO8NsJRADW634mzEohs7lXYP0vZ
+	 RVngztUzCq7SiHLQNM5DnfwepC4D5CwpiMlWW2U2CRCpACyVU3gyb2oLxAxzyVsHul
+	 ZXrxBzdM8aeWIrlEf1oNkhMf2ki1EvjWC249koiIgvkcQQ4EEy0YC0z7BHwK63nMDW
+	 IDMhm0plKuLwPAjKHhNNvgjgD3MAUy5XD5xqIoRvlhVcy7Xu9rAbCXfmzMSRbimmoL
+	 BKinU6AW9HeVA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Filipe Manana <fdmanana@suse.com>,
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-	Josef Bacik <josef@toxicpanda.com>,
-	Boris Burkov <boris@bur.io>,
-	David Sterba <dsterba@suse.com>,
+Cc: Jakub Kicinski <kuba@kernel.org>,
+	Simon Horman <horms@kernel.org>,
+	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>,
-	clm@fb.com,
-	linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 1/7] btrfs: add and use helper to check if block group is used
-Date: Thu, 29 Feb 2024 10:51:05 -0500
-Message-ID: <20240229155112.2851155-1-sashal@kernel.org>
+	edumazet@google.com,
+	pabeni@redhat.com,
+	shuah@kernel.org,
+	netdev@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 2/7] selftests: tls: use exact comparison in recv_partial
+Date: Thu, 29 Feb 2024 10:51:06 -0500
+Message-ID: <20240229155112.2851155-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240229155112.2851155-1-sashal@kernel.org>
+References: <20240229155112.2851155-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,58 +69,42 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.210
 Content-Transfer-Encoding: 8bit
 
-From: Filipe Manana <fdmanana@suse.com>
+From: Jakub Kicinski <kuba@kernel.org>
 
-[ Upstream commit 1693d5442c458ae8d5b0d58463b873cd879569ed ]
+[ Upstream commit 49d821064c44cb5ffdf272905236012ea9ce50e3 ]
 
-Add a helper function to determine if a block group is being used and make
-use of it at btrfs_delete_unused_bgs(). This helper will also be used in
-future code changes.
+This exact case was fail for async crypto and we weren't
+catching it.
 
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: Boris Burkov <boris@bur.io>
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Reviewed-by: Simon Horman <horms@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/block-group.c | 3 +--
- fs/btrfs/block-group.h | 7 +++++++
- 2 files changed, 8 insertions(+), 2 deletions(-)
+ tools/testing/selftests/net/tls.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index c4e3c1a5de059..9a7c7e0f7c233 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -1393,8 +1393,7 @@ void btrfs_delete_unused_bgs(struct btrfs_fs_info *fs_info)
- 		}
+diff --git a/tools/testing/selftests/net/tls.c b/tools/testing/selftests/net/tls.c
+index 44a25a9f1f722..956ee3c01dd1a 100644
+--- a/tools/testing/selftests/net/tls.c
++++ b/tools/testing/selftests/net/tls.c
+@@ -653,12 +653,12 @@ TEST_F(tls, recv_partial)
  
- 		spin_lock(&block_group->lock);
--		if (block_group->reserved || block_group->pinned ||
--		    block_group->used || block_group->ro ||
-+		if (btrfs_is_block_group_used(block_group) || block_group->ro ||
- 		    list_is_singular(&block_group->list)) {
- 			/*
- 			 * We want to bail if we made new allocations or have
-diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
-index 4c7614346f724..0d02b75f9e7e3 100644
---- a/fs/btrfs/block-group.h
-+++ b/fs/btrfs/block-group.h
-@@ -196,6 +196,13 @@ static inline u64 btrfs_block_group_end(struct btrfs_block_group *block_group)
- 	return (block_group->start + block_group->length);
+ 	memset(recv_mem, 0, sizeof(recv_mem));
+ 	EXPECT_EQ(send(self->fd, test_str, send_len, 0), send_len);
+-	EXPECT_NE(recv(self->cfd, recv_mem, strlen(test_str_first),
+-		       MSG_WAITALL), -1);
++	EXPECT_EQ(recv(self->cfd, recv_mem, strlen(test_str_first),
++		       MSG_WAITALL), strlen(test_str_first));
+ 	EXPECT_EQ(memcmp(test_str_first, recv_mem, strlen(test_str_first)), 0);
+ 	memset(recv_mem, 0, sizeof(recv_mem));
+-	EXPECT_NE(recv(self->cfd, recv_mem, strlen(test_str_second),
+-		       MSG_WAITALL), -1);
++	EXPECT_EQ(recv(self->cfd, recv_mem, strlen(test_str_second),
++		       MSG_WAITALL), strlen(test_str_second));
+ 	EXPECT_EQ(memcmp(test_str_second, recv_mem, strlen(test_str_second)),
+ 		  0);
  }
- 
-+static inline bool btrfs_is_block_group_used(const struct btrfs_block_group *bg)
-+{
-+	lockdep_assert_held(&bg->lock);
-+
-+	return (bg->used > 0 || bg->reserved > 0 || bg->pinned > 0);
-+}
-+
- static inline bool btrfs_is_block_group_data_only(
- 					struct btrfs_block_group *block_group)
- {
 -- 
 2.43.0
 
