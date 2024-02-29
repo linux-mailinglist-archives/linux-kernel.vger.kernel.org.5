@@ -1,120 +1,178 @@
-Return-Path: <linux-kernel+bounces-86030-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86031-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 157EE86BEBF
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 03:10:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B44E086BEC2
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 03:11:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B853E2887E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 02:10:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D382A1C21E18
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 02:11:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9776036AE5;
-	Thu, 29 Feb 2024 02:10:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D72C836B16;
+	Thu, 29 Feb 2024 02:11:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="VQk8oU0R"
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Da+2m1v7"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F27D3612A
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 02:10:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F8A136AEC
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 02:11:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709172616; cv=none; b=nf+X1nAP2e8BoAmG8x6QQ04HR9ERqhYTflNcJJgTTT5tvFxSoS+E+rWq2+jIVnhrGNkfIqK6qZgePmf4o3414WK0GeiaCAAMfPqyl7C2wTrhGOzYoVnD1BkCaSuWDEIpqx/4WUTkoGDL+XBJaCtKfWy/zPyyM81cCK9I0lsT6w4=
+	t=1709172668; cv=none; b=gMxxlxyDs5QyxxiCX+D6JxNMaxQ92GgjYhHjSgu/UAPqvuy9wml7buxrVw9GLhjHiq/aRB0KTDke7ToOIi8d2t6+Olb2zDbsK8wDz4kKFraW6FCf3SPpkAcD2kL7K7ik4kewuXskwk59zcxZPZD145KXVJJA0XKZC0qTK0YEl54=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709172616; c=relaxed/simple;
-	bh=lYm5sE8YtwjbzQspufWqcSCIqUUkVnEVFVICmUMwiEw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gQudpi2sjax0NM7OA4OLNxO/zmrkzVlWZlhifdEqtUywKxfiJunlKmgp0bvKrY8Kf4uhLMHgOe1sHrigU5vWnd0JFoO0s4LfPxx8fSO9KT8cLgHAuGwxnVh+VGvm7BXgBIeGI1JNTCskZnLOH7hJMDp2hYu2qwT3ejzwXmFwI4I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=VQk8oU0R; arc=none smtp.client-ip=209.85.210.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6e5796d01c8so274217b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 18:10:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709172615; x=1709777415; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=iUf9WkXQBXM7b/VI6HGYsA1IhCASFRsvc9ci4ULhUfk=;
-        b=VQk8oU0RI1vSyYS86APmvKgiLvvaCZmDZSN7axCYjOMIeCi2SoML4X6C+Wo7Kab0Pw
-         1qNY5Q+lsgbfMX9Tp41M0RrlHXDTm4udVDVC2xpoBbWzHNTOgmXpvsKwdC1Ai1xlU2i+
-         /tmhS//+fUNG/uoeeulag1LH0tLWnBm8DV6Og=
+	s=arc-20240116; t=1709172668; c=relaxed/simple;
+	bh=/dli9NzKDUlc8m+eNI7xFfLRpi/JkeuC0P4iaFpB2DU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rCF14nONtkYm2qP48N085NXKQftJLNRhsCuOoLdulHjGbG6ZBIz34rMV4vDJqTGmtk9omBP7181C4o9EL9f4/tXyOFpZalmuWtqmfKD6g4gdW7l/vJIK/0xqiqQW6ByxRsAnsy6IZpUcPn0d7lgX5CwFzYjf5iDKFSRkTGuwy8I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Da+2m1v7; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709172665;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gNJXcMKg/H8/hlnteu56zfMe6xk0cck9emthVMHdz9I=;
+	b=Da+2m1v7RyFRLFt/IPbcG6RpOBalgEifKQA+g8NTKMIw5SPI+4mYesH3dvFIeUiUa236PF
+	7UaTPsjmJzuik2xphzLzLKXbmRpTQP9BTkMfy4n/j5dwkzBGyameb+Ei8iDUoZghCu4Uge
+	Bi9lgVZoJj9711W31t53a/J/qvpxqfY=
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com
+ [209.85.166.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-563-RWqLgKfgOw-idIk94LEwqg-1; Wed, 28 Feb 2024 21:11:03 -0500
+X-MC-Unique: RWqLgKfgOw-idIk94LEwqg-1
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-36512fcf643so5936425ab.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 18:11:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709172615; x=1709777415;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iUf9WkXQBXM7b/VI6HGYsA1IhCASFRsvc9ci4ULhUfk=;
-        b=H4wjbygjh9dYNQEzOWRqUU0n6vFQajv6+GFqvopEFqus5UcYnvUgeweK2bxazk5GKz
-         wpBuUSBwtbu5XLdt69QI+X3ac88cqg90XGEN7CTTvLaekCE3ZvVL9WfCyCcz/aRqKiuJ
-         FWt23b1pTAC78XRnLkci1Btm4lVLhjziVbzoLbAJD2LLfXKF/iX8E4A6eG9OtFOPDwVI
-         ii+dy5wfWMQFUG5xl5rlYpikn9BxCXPSuDJy6ErQYM7tWiV12nrjMFdDdu/GKnYKNuam
-         EQ19FUUWzvt3tjh/fu5OO98Ccj61Zef+q8wYeL4kq8pCuzaOTov+J0O6fWnqtYRek3NV
-         hPhQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWpLgHoDR6AU6Hxf5gAKOMJX3uUv0Ftj0Xva+XObzoBHs5joNrIYWk6Yym+8u7TwpPZjD79XE+GicLbipQ+WZLiNz6BCMgliZ+FxKNf
-X-Gm-Message-State: AOJu0Yw8gT+sVvxXzJwPnJZ0OWAliiMr9dJZi/gX50PdCzjEwy3YlcIw
-	59/Mray9kFw7u7Mrv/ZlP6q3QF8uOQBtmqlxZxv2TutzqmvosusfCNgtLRb+SA==
-X-Google-Smtp-Source: AGHT+IEZYonSLMh6MVFKIARZL7tUW+oKjPQhV7L1Go8q2yV0UMkSm0FuLH2nTnBKTBOVUI1Xi6pxPg==
-X-Received: by 2002:a05:6a00:938a:b0:6e5:5bb4:7098 with SMTP id ka10-20020a056a00938a00b006e55bb47098mr1205300pfb.7.1709172614804;
-        Wed, 28 Feb 2024 18:10:14 -0800 (PST)
-Received: from google.com ([2401:fa00:8f:203:50c1:1ad2:3268:cacd])
-        by smtp.gmail.com with ESMTPSA id v5-20020aa78505000000b006e4f311f61bsm118197pfn.103.2024.02.28.18.10.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 18:10:14 -0800 (PST)
-Date: Thu, 29 Feb 2024 11:10:10 +0900
-From: Sergey Senozhatsky <senozhatsky@chromium.org>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
-	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv2] kconfig: add some Kconfig env variables to make help
-Message-ID: <20240229021010.GM11972@google.com>
-References: <20240222031801.GG11472@google.com>
- <20240222032559.496127-1-senozhatsky@chromium.org>
- <CAK7LNARo4L6qxoqRU-0dgABarukJKAaZpCRtfA3MyUHhSuDQxQ@mail.gmail.com>
- <20240222051621.GH11472@google.com>
- <20240228045652.GH11972@google.com>
- <CAK7LNAQ8OyNMeGzVoTRg-sHDZ4YK0EKY_eEWNepekaibO_ZKwg@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1709172663; x=1709777463;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=gNJXcMKg/H8/hlnteu56zfMe6xk0cck9emthVMHdz9I=;
+        b=DTZ5sJ/MHuwNX4CT2BWn1zGuM+FRS0PqUcPGfzYYDjA5kEvAzOcy2vVVYsYOeeNAtD
+         gdwGvc89D2f3Dqp07LQdxsKEsh98Dhq+ujz73BJP2VhtKZ4rjcbgX4wIxv2Id//cQnPw
+         1H1P3DgnW+OEVfXBTfMysRCei2ppEpoP/N8J1n/qY8VkelcphUujhsw82H6Qp6IxS9ds
+         gjWZm0MruNMhPR1KJTLQbPuq1mbdx2qTQtOgMASvuSDXVROB3odqkn+4+qXItaqNBoiK
+         A+r08xW96Xo244ElCvEg6mffzeFK7I20AxlFPMa0GJGdi7589lCz5goZJYI370VzgtKR
+         IQTQ==
+X-Gm-Message-State: AOJu0YwBgehAIbJhhfkKkgGw7NtzkFXF3i7sCrXE6o4E46SudfCg7ZDs
+	wT9ASTDAxwFuxANEJZM3PluT+FDB6g1rrsE2zUgDHbmPV+5xYiKuJgex+0KKbispQzMV3dNU8vM
+	CuRKQxmvn2Bs1pBtYs9+5JL+SGm63jP+Jrq/An3BtoFzx6v9j5zW+PnkQWAd9dg==
+X-Received: by 2002:a05:6e02:506:b0:365:1158:2828 with SMTP id d6-20020a056e02050600b0036511582828mr913274ils.15.1709172662767;
+        Wed, 28 Feb 2024 18:11:02 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEP9FxoguV6Q0tsCv3Hhxq7PWUuVECiu0SjUHkrxUEwbQ/rkc7kC9d3FN8zjmrEV4a+LErhnA==
+X-Received: by 2002:a05:6e02:506:b0:365:1158:2828 with SMTP id d6-20020a056e02050600b0036511582828mr913259ils.15.1709172662482;
+        Wed, 28 Feb 2024 18:11:02 -0800 (PST)
+Received: from [10.72.120.8] ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id u2-20020aa78482000000b006e48b41aba7sm130197pfn.12.2024.02.28.18.10.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Feb 2024 18:11:02 -0800 (PST)
+Message-ID: <60d75867-8fb7-4c67-96f7-3e5ba65bdbd9@redhat.com>
+Date: Thu, 29 Feb 2024 10:10:54 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK7LNAQ8OyNMeGzVoTRg-sHDZ4YK0EKY_eEWNepekaibO_ZKwg@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 05/14] md: don't suspend the array for interrupted
+ reshape
+To: Yu Kuai <yukuai1@huaweicloud.com>, mpatocka@redhat.com,
+ heinzm@redhat.com, blazej.kucman@linux.intel.com, agk@redhat.com,
+ snitzer@kernel.org, dm-devel@lists.linux.dev, song@kernel.org,
+ yukuai3@huawei.com, jbrassow@f14.redhat.com, neilb@suse.de, shli@fb.com,
+ akpm@osdl.org
+Cc: linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
+ yi.zhang@huawei.com, yangerkun@huawei.com
+References: <20240201092559.910982-1-yukuai1@huaweicloud.com>
+ <20240201092559.910982-6-yukuai1@huaweicloud.com>
+From: Xiao Ni <xni@redhat.com>
+In-Reply-To: <20240201092559.910982-6-yukuai1@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On (24/02/29 11:03), Masahiro Yamada wrote:
-> > > > > +++ b/scripts/kconfig/Makefile
-> > > > > @@ -158,6 +158,10 @@ help:
-> > > > >                 if help=$$(grep -m1 '^# Help: ' $(f)); then \
-> > > > >                         printf '  %-25s - %s\n' '$(notdir $(f))' "$${help#*: }"; \
-> > > > >                 fi;)
-> > > > > +       @echo  ''
-> > > > > +       @echo  'Configuration environment variables:'
-> > > > > +       @echo  '  KCONFIG_WERROR                 - Turn some Kconfig warnings into error conditions'
-> > > > > +       @echo  '  KCONFIG_WARN_UNKNOWN_SYMBOLS   - Make Kconfig warn about all unrecognized config symbols'
-> > > > >
-> > > > >  # ===========================================================================
-> > > > >  # object files used by all kconfig flavours
-> > > > > --
-> > > > > 2.44.0.rc0.258.g7320e95886-goog
-> > > > >
-> > > > >
-> > > >
-> > > > Why only two, while Kconfig supports more env variables?
-> > >
-> > > Right.  I wanted to add only those that we use (and familiar with) for
-> > > starters.  I'm not familiar with things like KCONFIG_PROBABILITY, for
-> > > instance, and not sure how to document it (its Documentation/kbuild/kconfig.rst
-> > > description is pretty lengthy).
-> >
-> > Masahiro, any opinion?
-> 
-> 
-> I do not need this patch.
 
-Do you agree that putting kconfig env knobs into help makes sense
-in general?  Especially those add valuable sanity checks.
+在 2024/2/1 下午5:25, Yu Kuai 写道:
+> From: Yu Kuai <yukuai3@huawei.com>
+>
+> md_start_sync() will suspend the array if there are spares that can be
+> added or removed from conf, however, if reshape is still in progress,
+
+
+Hi Kuai
+
+Why md_start_sync can run when reshape is still in progress? 
+md_check_recovery should return without queue sync_work, right?
+
+> this won't happen at all or data will be corrupted(remove_and_add_spares
+> won't be called from md_choose_sync_action for reshape), hence there is
+> no need to suspend the array if reshape is not done yet.
+>
+> Meanwhile, there is a potential deadlock for raid456:
+>
+> 1) reshape is interrupted;
+>
+> 2) set one of the disk WantReplacement, and add a new disk to the array,
+>     however, recovery won't start until the reshape is finished;
+>
+> 3) then issue an IO across reshpae position, this IO will wait for
+>     reshape to make progress;
+>
+> 4) continue to reshape, then md_start_sync() found there is a spare disk
+>     that can be added to conf, mddev_suspend() is called;
+
+
+I c. The answer for my above question is reshape is interrupted and then 
+it continues the reshape, right?
+
+
+Best Regards
+
+Xiao
+
+>
+> Step 4 and step 3 is waiting for each other, deadlock triggered. Noted
+> this problem is found by code review, and it's not reporduced yet.
+>
+> Fix this porblem by don't suspend the array for interrupted reshape,
+> this is safe because conf won't be changed until reshape is done.
+>
+> Fixes: bc08041b32ab ("md: suspend array in md_start_sync() if array need reconfiguration")
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> ---
+>   drivers/md/md.c | 13 +++++++++----
+>   1 file changed, 9 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/md/md.c b/drivers/md/md.c
+> index 6c5d0a372927..85fde05c37dd 100644
+> --- a/drivers/md/md.c
+> +++ b/drivers/md/md.c
+> @@ -9374,12 +9374,17 @@ static void md_start_sync(struct work_struct *ws)
+>   	bool suspend = false;
+>   	char *name;
+>   
+> -	if (md_spares_need_change(mddev))
+> +	/*
+> +	 * If reshape is still in progress, spares won't be added or removed
+> +	 * from conf until reshape is done.
+> +	 */
+> +	if (mddev->reshape_position == MaxSector &&
+> +	    md_spares_need_change(mddev)) {
+>   		suspend = true;
+> +		mddev_suspend(mddev, false);
+> +	}
+>   
+> -	suspend ? mddev_suspend_and_lock_nointr(mddev) :
+> -		  mddev_lock_nointr(mddev);
+> -
+> +	mddev_lock_nointr(mddev);
+>   	if (!md_is_rdwr(mddev)) {
+>   		/*
+>   		 * On a read-only array we can:
+
 
