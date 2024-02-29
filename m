@@ -1,61 +1,60 @@
-Return-Path: <linux-kernel+bounces-86985-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86986-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 393E186CDE9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:59:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D051786CDEE
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:00:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5CD091C20DF2
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:59:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 712B41F23DC6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:00:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBFA613C9D7;
-	Thu, 29 Feb 2024 15:50:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69FE013F449;
+	Thu, 29 Feb 2024 15:50:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kkQ3MTU2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QuMuH/bR"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D941013C9F0;
-	Thu, 29 Feb 2024 15:50:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9660D13F427;
+	Thu, 29 Feb 2024 15:50:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709221806; cv=none; b=VBd1pyRDOtMel4g+tnGSGoBaIn3o0zfUqWjrIS/WbANaD1PWgqdivkwCJaDotqQ40NADDZ+iV4QXP1kjldGyKeF1sRq5VtaGmeEl5eLW9m9cWvHjtgm3bQfzc/JrkV02Fx9al7CLHH7zLdyCACEz7MuViU+0/7lH5ixWXxrpX2A=
+	t=1709221808; cv=none; b=F+VjII1o4G+qmqy4j4QJCOzSUawxkQ2C6ROjCiY23fWlfxKCmg2pdyW7G6/3BZYmES2Ajn49kQ3mmvwvmHMdyCUNZx/GeSvxOJopcWgjooixYc0KzwNH8fjTtUlwxeCzEap6/gcmLT9B1JKpWd6bWtklatAjI3ysDQQ6EhyDp6A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709221806; c=relaxed/simple;
-	bh=rz0a3+wiVrtd9fnGLO+VCpTHQ3HQiXhNKsF2xOit+7w=;
+	s=arc-20240116; t=1709221808; c=relaxed/simple;
+	bh=8dD5To5M8RyoSt5fx2k/nign80MLUb757pypdZrbxBU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MHd/dn12O3qVueovuMGPnd3YOljgjWt+vWA9tG7hCpRiSFlZBj+NbwFQXtvC0DpgabFXuD0FdsHNvQEI5MG9RZq2rrgOxpFIw4+t4nEQ8tOSGQbWN5ddTMfNHafA2EFvcVOQvQpx7rM1/ZjMywJYFSeCn9glXcLgB0e2cJ0v3sM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kkQ3MTU2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B51EC43330;
-	Thu, 29 Feb 2024 15:50:05 +0000 (UTC)
+	 MIME-Version; b=saTC+EqdZsoNqvz2feFybjhb1CJSGuIVBUxCXOeW50+dd55OI8NNIX7jTWHuAm0dgd7TJKG0ya5D2e7cnG6NWYw94cXBa/loxrdvUFVwre/nsg6ZtJXF7Lv4d1lBfVbx97EwS9odB9SnKLoWgFtJqMQfgksIy2yzcG6yUSGC6uk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QuMuH/bR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B4DEC43390;
+	Thu, 29 Feb 2024 15:50:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709221806;
-	bh=rz0a3+wiVrtd9fnGLO+VCpTHQ3HQiXhNKsF2xOit+7w=;
+	s=k20201202; t=1709221808;
+	bh=8dD5To5M8RyoSt5fx2k/nign80MLUb757pypdZrbxBU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kkQ3MTU2Ohy8Yuy6NqF5OlVBuaCpkTwffswCYKF3dG8zQQhcoKfwP5R+k8lLxNcsl
-	 HFFQPvtdHp9w3HZkvpgApzl5G6OfEn/9s63RiM0EjULJAlGqOg79QKhnDYvybuUbis
-	 5RpT5CePUjWQeGP34NoEaoxVkqm7K6zmGYZEMLb8T3ADw78H/gHLm/KMKE7iP1NL9X
-	 yaNbEKDh7EaoLQKjlgrogQBFPDVt0CgqVLYt1+kuSN0eM2XM40FzeayXs7g7lrKqRi
-	 XLNnkxQ6z3Dpjm4Bz8n7KrY4te6vq/AEmD9H6GqrkP+U+ZP85dYC4R8nfW2cjQ6XgL
-	 jf7sNvjw3NKMw==
+	b=QuMuH/bRVAgjWF68YwABLs/0hy+UdID4u7f48DVdYieRzyeB24z6klEGlRXevaCyl
+	 6CeFf6cLPNraEFmBE7+ckQU2MEYiERebtOMCIXs3HtyBbWD6DAQxuQvPLkFY1+lRZc
+	 j17v5j3dz5o7mpUdq+5m3F2rlaA8YIWXCUL+QFgo6hGuBJBr3ynVpe/cYQVhCMqVLM
+	 LgvUqdifXbL0sPP8lvjCr2M8rIbemX79luYfTaZ7SwbDvW6voy+FBHLQls/un6y4kp
+	 i1A1+0sukxiSz2lwUA6sHMoNIiRFcqzGOuO4BQx6dWjEteIJrpCxFXir7wNRm6XOrd
+	 eroa5X6WJgM7w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Jakub Kicinski <kuba@kernel.org>,
 	Simon Horman <horms@kernel.org>,
-	Sabrina Dubroca <sd@queasysnail.net>,
 	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>,
-	borisp@nvidia.com,
-	john.fastabend@gmail.com,
 	edumazet@google.com,
 	pabeni@redhat.com,
-	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 10/21] net: tls: factor out tls_*crypt_async_wait()
-Date: Thu, 29 Feb 2024 10:49:30 -0500
-Message-ID: <20240229154946.2850012-10-sashal@kernel.org>
+	shuah@kernel.org,
+	netdev@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 11/21] selftests: tls: use exact comparison in recv_partial
+Date: Thu, 29 Feb 2024 10:49:31 -0500
+Message-ID: <20240229154946.2850012-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240229154946.2850012-1-sashal@kernel.org>
 References: <20240229154946.2850012-1-sashal@kernel.org>
@@ -72,184 +71,40 @@ Content-Transfer-Encoding: 8bit
 
 From: Jakub Kicinski <kuba@kernel.org>
 
-[ Upstream commit c57ca512f3b68ddcd62bda9cc24a8f5584ab01b1 ]
+[ Upstream commit 49d821064c44cb5ffdf272905236012ea9ce50e3 ]
 
-Factor out waiting for async encrypt and decrypt to finish.
-There are already multiple copies and a subsequent fix will
-need more. No functional changes.
-
-Note that crypto_wait_req() returns wait->err
+This exact case was fail for async crypto and we weren't
+catching it.
 
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Reviewed-by: Simon Horman <horms@kernel.org>
-Reviewed-by: Sabrina Dubroca <sd@queasysnail.net>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/tls/tls_sw.c | 96 +++++++++++++++++++++++-------------------------
- 1 file changed, 45 insertions(+), 51 deletions(-)
+ tools/testing/selftests/net/tls.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
-index dba523cdc73da..8ded200166745 100644
---- a/net/tls/tls_sw.c
-+++ b/net/tls/tls_sw.c
-@@ -230,6 +230,20 @@ static void tls_decrypt_done(void *data, int err)
- 	spin_unlock_bh(&ctx->decrypt_compl_lock);
+diff --git a/tools/testing/selftests/net/tls.c b/tools/testing/selftests/net/tls.c
+index 464853a7f9829..ad993ab3ac181 100644
+--- a/tools/testing/selftests/net/tls.c
++++ b/tools/testing/selftests/net/tls.c
+@@ -988,12 +988,12 @@ TEST_F(tls, recv_partial)
+ 
+ 	memset(recv_mem, 0, sizeof(recv_mem));
+ 	EXPECT_EQ(send(self->fd, test_str, send_len, 0), send_len);
+-	EXPECT_NE(recv(self->cfd, recv_mem, strlen(test_str_first),
+-		       MSG_WAITALL), -1);
++	EXPECT_EQ(recv(self->cfd, recv_mem, strlen(test_str_first),
++		       MSG_WAITALL), strlen(test_str_first));
+ 	EXPECT_EQ(memcmp(test_str_first, recv_mem, strlen(test_str_first)), 0);
+ 	memset(recv_mem, 0, sizeof(recv_mem));
+-	EXPECT_NE(recv(self->cfd, recv_mem, strlen(test_str_second),
+-		       MSG_WAITALL), -1);
++	EXPECT_EQ(recv(self->cfd, recv_mem, strlen(test_str_second),
++		       MSG_WAITALL), strlen(test_str_second));
+ 	EXPECT_EQ(memcmp(test_str_second, recv_mem, strlen(test_str_second)),
+ 		  0);
  }
- 
-+static int tls_decrypt_async_wait(struct tls_sw_context_rx *ctx)
-+{
-+	int pending;
-+
-+	spin_lock_bh(&ctx->decrypt_compl_lock);
-+	reinit_completion(&ctx->async_wait.completion);
-+	pending = atomic_read(&ctx->decrypt_pending);
-+	spin_unlock_bh(&ctx->decrypt_compl_lock);
-+	if (pending)
-+		crypto_wait_req(-EINPROGRESS, &ctx->async_wait);
-+
-+	return ctx->async_wait.err;
-+}
-+
- static int tls_do_decryption(struct sock *sk,
- 			     struct scatterlist *sgin,
- 			     struct scatterlist *sgout,
-@@ -495,6 +509,28 @@ static void tls_encrypt_done(void *data, int err)
- 		schedule_delayed_work(&ctx->tx_work.work, 1);
- }
- 
-+static int tls_encrypt_async_wait(struct tls_sw_context_tx *ctx)
-+{
-+	int pending;
-+
-+	spin_lock_bh(&ctx->encrypt_compl_lock);
-+	ctx->async_notify = true;
-+
-+	pending = atomic_read(&ctx->encrypt_pending);
-+	spin_unlock_bh(&ctx->encrypt_compl_lock);
-+	if (pending)
-+		crypto_wait_req(-EINPROGRESS, &ctx->async_wait);
-+	else
-+		reinit_completion(&ctx->async_wait.completion);
-+
-+	/* There can be no concurrent accesses, since we have no
-+	 * pending encrypt operations
-+	 */
-+	WRITE_ONCE(ctx->async_notify, false);
-+
-+	return ctx->async_wait.err;
-+}
-+
- static int tls_do_encryption(struct sock *sk,
- 			     struct tls_context *tls_ctx,
- 			     struct tls_sw_context_tx *ctx,
-@@ -984,7 +1020,6 @@ static int tls_sw_sendmsg_locked(struct sock *sk, struct msghdr *msg,
- 	int num_zc = 0;
- 	int orig_size;
- 	int ret = 0;
--	int pending;
- 
- 	if (!eor && (msg->msg_flags & MSG_EOR))
- 		return -EINVAL;
-@@ -1163,24 +1198,12 @@ static int tls_sw_sendmsg_locked(struct sock *sk, struct msghdr *msg,
- 	if (!num_async) {
- 		goto send_end;
- 	} else if (num_zc) {
--		/* Wait for pending encryptions to get completed */
--		spin_lock_bh(&ctx->encrypt_compl_lock);
--		ctx->async_notify = true;
--
--		pending = atomic_read(&ctx->encrypt_pending);
--		spin_unlock_bh(&ctx->encrypt_compl_lock);
--		if (pending)
--			crypto_wait_req(-EINPROGRESS, &ctx->async_wait);
--		else
--			reinit_completion(&ctx->async_wait.completion);
--
--		/* There can be no concurrent accesses, since we have no
--		 * pending encrypt operations
--		 */
--		WRITE_ONCE(ctx->async_notify, false);
-+		int err;
- 
--		if (ctx->async_wait.err) {
--			ret = ctx->async_wait.err;
-+		/* Wait for pending encryptions to get completed */
-+		err = tls_encrypt_async_wait(ctx);
-+		if (err) {
-+			ret = err;
- 			copied = 0;
- 		}
- 	}
-@@ -1229,7 +1252,6 @@ void tls_sw_splice_eof(struct socket *sock)
- 	ssize_t copied = 0;
- 	bool retrying = false;
- 	int ret = 0;
--	int pending;
- 
- 	if (!ctx->open_rec)
- 		return;
-@@ -1264,22 +1286,7 @@ void tls_sw_splice_eof(struct socket *sock)
- 	}
- 
- 	/* Wait for pending encryptions to get completed */
--	spin_lock_bh(&ctx->encrypt_compl_lock);
--	ctx->async_notify = true;
--
--	pending = atomic_read(&ctx->encrypt_pending);
--	spin_unlock_bh(&ctx->encrypt_compl_lock);
--	if (pending)
--		crypto_wait_req(-EINPROGRESS, &ctx->async_wait);
--	else
--		reinit_completion(&ctx->async_wait.completion);
--
--	/* There can be no concurrent accesses, since we have no pending
--	 * encrypt operations
--	 */
--	WRITE_ONCE(ctx->async_notify, false);
--
--	if (ctx->async_wait.err)
-+	if (tls_encrypt_async_wait(ctx))
- 		goto unlock;
- 
- 	/* Transmit if any encryptions have completed */
-@@ -2109,16 +2116,10 @@ int tls_sw_recvmsg(struct sock *sk,
- 
- recv_end:
- 	if (async) {
--		int ret, pending;
-+		int ret;
- 
- 		/* Wait for all previously submitted records to be decrypted */
--		spin_lock_bh(&ctx->decrypt_compl_lock);
--		reinit_completion(&ctx->async_wait.completion);
--		pending = atomic_read(&ctx->decrypt_pending);
--		spin_unlock_bh(&ctx->decrypt_compl_lock);
--		ret = 0;
--		if (pending)
--			ret = crypto_wait_req(-EINPROGRESS, &ctx->async_wait);
-+		ret = tls_decrypt_async_wait(ctx);
- 		__skb_queue_purge(&ctx->async_hold);
- 
- 		if (ret) {
-@@ -2435,16 +2436,9 @@ void tls_sw_release_resources_tx(struct sock *sk)
- 	struct tls_context *tls_ctx = tls_get_ctx(sk);
- 	struct tls_sw_context_tx *ctx = tls_sw_ctx_tx(tls_ctx);
- 	struct tls_rec *rec, *tmp;
--	int pending;
- 
- 	/* Wait for any pending async encryptions to complete */
--	spin_lock_bh(&ctx->encrypt_compl_lock);
--	ctx->async_notify = true;
--	pending = atomic_read(&ctx->encrypt_pending);
--	spin_unlock_bh(&ctx->encrypt_compl_lock);
--
--	if (pending)
--		crypto_wait_req(-EINPROGRESS, &ctx->async_wait);
-+	tls_encrypt_async_wait(ctx);
- 
- 	tls_tx_records(sk, -1);
- 
 -- 
 2.43.0
 
