@@ -1,106 +1,83 @@
-Return-Path: <linux-kernel+bounces-87175-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87176-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 970F986D0AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:31:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 978D586D0B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:32:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C92E71C225E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:31:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4FEA728C3A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:32:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C15470ADD;
-	Thu, 29 Feb 2024 17:31:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14BDB70AE8;
+	Thu, 29 Feb 2024 17:32:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="diJHgxM0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="edSCxE5E"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C08AF6CBF3;
-	Thu, 29 Feb 2024 17:31:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55B404AED8;
+	Thu, 29 Feb 2024 17:32:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709227889; cv=none; b=Cl+v/51rsuggxU4+S9gTsELMo83kiSXlKW10Qpt8MvasV82eHcubaNhQFRPo3ihWFf9NK0KIKJB8QLM6W11ELLwER7c1biMnbxK71Pksnq6nPKkWZNxFVcy3n0HgpSbapV1Qu/b5kjOUgbGlFNDDySih5Kiqu8bhwDrV2/3ppQY=
+	t=1709227943; cv=none; b=EtmTkG0oOZeggspooNjs3y7v1ERNg4bydMVITjq/9c/+wPqkozWAtCZVhn57VG6JiRuNmg8pcd0ZUA6SjknCnzpN6vLGLtdqmdp9MZWQXsXUVl4MyMgHAXNRBkZqBDDr/LOE96oFEVU0gifP2lXMilSDi2AI+fUOqN026k7Ve4E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709227889; c=relaxed/simple;
-	bh=9DzNczRfLQHZQ7xM/5Rsf1G4ssLJqqDQeagj+2HQ7og=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hXk0pu9DLg2AWM8bkoOpqJ65PW2OIItWLqo3hPH9ztBlRBJAPuDrgfqQRr7ZGoWc/mWXDFFkZkMlyj+fP3EniDE/uoStDp+PQov66EjervP1dH6U11tgnCPxUXLzlwUzEpsYcMF2Ok/HABcXQmHQPF+GCdnhJVR6mn3X7LytO9Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=diJHgxM0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D5D1C433F1;
-	Thu, 29 Feb 2024 17:31:29 +0000 (UTC)
+	s=arc-20240116; t=1709227943; c=relaxed/simple;
+	bh=6bXIeVlR0GAzaKfFhUu3O2VlxKDhrflLZZpXxWA96DA=;
+	h=From:To:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=ntFr3j6ssecYYHh66/XAxSZjpzP1J3PziBfPgv/pn5tZm9PxTv8QbpzmGR95UluuxtEHTnTSaVerkmp2d/cav7WwK1EyRacqrxjwi8xJrXA1OKU/peC+Q4+BzXiUE2ErrACkQzJDG89S+0GTUOsoAV6+SrbZz6YCPOAWppHSQNI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=edSCxE5E; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 289C5C433C7;
+	Thu, 29 Feb 2024 17:32:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709227889;
-	bh=9DzNczRfLQHZQ7xM/5Rsf1G4ssLJqqDQeagj+2HQ7og=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=diJHgxM014XnHKWcaxVwTBkW3gX57RmZxYWS+sJS+A7HG35g3mzRWzGi6YrIHriPn
-	 QgUZzvQlv4DAI1wWyZ+KYWohVL6+qvRqKOBAKh1Eg5afeYkADvoypyDL7wSSngpC9e
-	 gptRCTe8jpqiSosxVs/SQ/fTdvQu0bKclizFrICODQB/No3OTJkAMW8KxPl8K2qofN
-	 m3Sr8deGN0pYmVf2ay7keF8TOqQmkl3/tOgN+rS6S939MLrazA2ETU7a+bTmTSuvaX
-	 4tS8lqpbf3gxEcBRMFT2oG9c0M0T0FcQqIE7YxH2I2hK2idblOSQSfCKdGnWtET+pJ
-	 QvuC8j/TNBaQg==
-Date: Thu, 29 Feb 2024 09:31:27 -0800
-From: Jaegeuk Kim <jaegeuk@kernel.org>
-To: "Colin King (gmail)" <colin.i.king@gmail.com>
-Cc: Chao Yu <chao@kernel.org>, linux-f2fs-devel@lists.sourceforge.net,
-	kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] f2fs: Fix two spelling mistakes in
- f2fs_zone_status array
-Message-ID: <ZeC_b8JipJyjycW3@google.com>
-References: <20240229091449.105032-1-colin.i.king@gmail.com>
- <ZeC64dDr-nBGlsli@google.com>
- <5e705d83-871e-4403-a77f-ec197eefb7c4@gmail.com>
+	s=k20201202; t=1709227942;
+	bh=6bXIeVlR0GAzaKfFhUu3O2VlxKDhrflLZZpXxWA96DA=;
+	h=From:To:In-Reply-To:References:Subject:Date:From;
+	b=edSCxE5EhsVAGbQ0T7jh0+bQWa3i5pA8Fs+XchkY0tQyQq9CvX5CUWMjbCP52UaTI
+	 fC+xcQkkdcj88vz1DUAvTMqkaWkCkeq79JG1vtF2WkX+nLz+xhZ3kkbeWh9xaLDWYR
+	 EjBYLjJqgoMB3UTnKNemEFvW/GGTlMF4fOt1rDKMh5/Di2j7wBvTOQjcTC5d/mVsXz
+	 1dM0CXojJeP3cEw3GJMnCJsc3LFWLNWGK/bODOWrVVqztxkXHzOsQCOMvbbaf8bC5I
+	 dz9MBtjtfsGUgZ7Ge9yXbROHwAqQrpH7XgKa0TFPHzhzi/GnHbyU6nB1ayK5PBo1vf
+	 rF3FHOAuBlrfA==
+From: Lee Jones <lee@kernel.org>
+To: Pavel Machek <pavel@ucw.cz>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+ linux-leds@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20240226073713.19045-1-krzysztof.kozlowski@linaro.org>
+References: <20240226073713.19045-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH 1/2] dt-bindings: leds: qcom-lpg: Drop redundant
+ qcom,pm8550-pwm in if:then:
+Message-Id: <170922794089.1621047.4298674249267222601.b4-ty@kernel.org>
+Date: Thu, 29 Feb 2024 17:32:20 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5e705d83-871e-4403-a77f-ec197eefb7c4@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.12.4
 
-On 02/29, Colin King (gmail) wrote:
-> On 29/02/2024 17:12, Jaegeuk Kim wrote:
-> > Hi Colin,
-> > 
-> > Thank you for the fix. If you don't mind, can I integrate this fix
-> > into the original patch?
+On Mon, 26 Feb 2024 08:37:12 +0100, Krzysztof Kozlowski wrote:
+> "qcom,pm8550-pwm" is compatible with "qcom,pm8350c-pwm" (latter used as
+> fallback), thus it is enough for the "if:then:" clause to check for the
+> presence of the fallback "qcom,pm8350c-pwm".
 > 
-> Sure. No problem.
-
-Thank you so much!
-
 > 
-> Colin
-> > 
-> > Thanks,
-> > 
-> > On 02/29, Colin Ian King wrote:
-> > > The array f2fs_zone_status contains two spelling mistakes in
-> > > literal strings. Fix them.
-> > > 
-> > > Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-> > > ---
-> > >   fs/f2fs/segment.c | 4 ++--
-> > >   1 file changed, 2 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-> > > index bdb27e4a604b..072c4355d3d3 100644
-> > > --- a/fs/f2fs/segment.c
-> > > +++ b/fs/f2fs/segment.c
-> > > @@ -4921,8 +4921,8 @@ static int sanity_check_curseg(struct f2fs_sb_info *sbi)
-> > >   const char *f2fs_zone_status[BLK_ZONE_COND_OFFLINE + 1] = {
-> > >   	[BLK_ZONE_COND_NOT_WP]		= "NOT_WP",
-> > >   	[BLK_ZONE_COND_EMPTY]		= "EMPTY",
-> > > -	[BLK_ZONE_COND_IMP_OPEN]	= "IMPLICITE_OPEN",
-> > > -	[BLK_ZONE_COND_EXP_OPEN]	= "EXPLICITE_OPEN",
-> > > +	[BLK_ZONE_COND_IMP_OPEN]	= "IMPLICIT_OPEN",
-> > > +	[BLK_ZONE_COND_EXP_OPEN]	= "EXPLICIT_OPEN",
-> > >   	[BLK_ZONE_COND_CLOSED]		= "CLOSED",
-> > >   	[BLK_ZONE_COND_READONLY]	= "READONLY",
-> > >   	[BLK_ZONE_COND_FULL]		= "FULL",
-> > > -- 
-> > > 2.39.2
+
+Applied, thanks!
+
+[1/2] dt-bindings: leds: qcom-lpg: Drop redundant qcom,pm8550-pwm in if:then:
+      commit: 3cc566d0a66dfcf929fb01154ac66e798106261f
+[2/2] dt-bindings: leds: qcom-lpg: Narrow nvmem for other variants
+      commit: 8bebf994a972369e327b1d3e8fb1a43b25d0bd09
+
+--
+Lee Jones [李琼斯]
+
 
