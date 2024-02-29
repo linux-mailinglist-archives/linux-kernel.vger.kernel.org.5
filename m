@@ -1,105 +1,200 @@
-Return-Path: <linux-kernel+bounces-87042-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87041-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5C7D86CE91
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:17:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D97D486CE8C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:17:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C9A928B22D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:17:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78CFC1F2287D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:17:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C870975818;
-	Thu, 29 Feb 2024 15:57:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFE3C757F7;
+	Thu, 29 Feb 2024 15:56:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="k2mfONSN"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="SLOHzFi/"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B495B75806;
-	Thu, 29 Feb 2024 15:57:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6940370AEA;
+	Thu, 29 Feb 2024 15:56:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709222235; cv=none; b=H6XlB5pakAaascZdBpT75Ipa/6CsvjUJD9kueesqaUoBKTMpk+RW340ewZr7xo/9KAbaniRpst6tFR89MJ7oAxFFu6AUYRh5DFgOGt8SD9PNYA8SyPTuyxqG9VYask8a6CWBulW2ljNDv1dko5yCmzFk9FmqzIiL9jzF3Sy0ttQ=
+	t=1709222218; cv=none; b=L4WML5I7oIfA7Fb/8xNC45pYRZaa2Ov3JFx5905+Y50EG2GwoZICdZWkAQNZH6w+ws8bpQzaq0EDtWje3hq3tZy5ch7ELDv0C03lPLLvUA/BK3DO9ZBaFgC2Yf+eCnbevugiqOGWmWStlVWiIjypRyiMRwWh3pr+oTUxVz+/Xa4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709222235; c=relaxed/simple;
-	bh=eSlEN/iJzANN4Xwpoo5Ob1nnavsLRUR53xKJkQaQ76s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TWePj+bMZ6wVvcXlsdS3CNR+BEC9juFaAg1v4cfeKC+qwOpm5yhnRxYAbTBwKaCMdkBWOOt+5bOM080FEu7o0Mo4Ld15+MxUWweMboynpjKGMdBK+1kayBbsiGEPHt3zx3f12PKgUhBNvNjopYbR+nJ6DEzoL9UgCaqArckOa6Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=k2mfONSN; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709222234; x=1740758234;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=eSlEN/iJzANN4Xwpoo5Ob1nnavsLRUR53xKJkQaQ76s=;
-  b=k2mfONSNyDuOtBKpzf+3VhZB8g+6MoEA4KvJgFQsEL6A/D/76l7Et5vV
-   7deNGl8Nu5GNSN/JAUYtunEPS/EpQS1iqty/n0RGfaooTxAXGgLbVjgtC
-   TO41qzBWgMSab7Lbdv0DGX0ZwSh7J5POOJObC3K3KGBRIbf/vH21Rp95I
-   Hp4QGW6Vs2m1+IRJuWKfbFtCuKolD7WLzJKPYlgANJYcmwEkkDj/Xh6TH
-   5VGT8S4dJpoV+4v5BAf/zURszF+ufKXeptXaO2zeZGFKqCTqf7GnduStf
-   c1sMs5KsQT7hzgNTuh87uG8rWsCYTglOazRFjx8qsrANEs1I+7m0ANm+Y
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="3555527"
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="3555527"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 07:57:13 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="913985249"
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="913985249"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 07:57:10 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rfimR-00000008iFA-3NeJ;
-	Thu, 29 Feb 2024 17:57:07 +0200
-Date: Thu, 29 Feb 2024 17:57:07 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Cc: Bagas Sanjaya <bagasdotme@gmail.com>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux x86 Platform Drivers <platform-driver-x86@vger.kernel.org>,
-	Linux Regressions <regressions@lists.linux.dev>,
-	Linux Stable <stable@vger.kernel.org>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Klara Modin <klarasmodin@gmail.com>,
-	Hans de Goede <hdegoede@redhat.com>,
-	"danilrybakov249@gmail.com" <danilrybakov249@gmail.com>
-Subject: Re: Fwd: Continuous ACPI errors resulting in high CPU usage by
- journald
-Message-ID: <ZeCpU8PC3Fs5ZiOc@smile.fi.intel.com>
-References: <Zd2bsV8VsFJMlbFW@archie.me>
- <43nj7od4luzqjmto7tddhtp5kqi5gbqgeq5v5qiqijydkjgma5@li525a32nds3>
+	s=arc-20240116; t=1709222218; c=relaxed/simple;
+	bh=5MqajYlBTM2LyYGI8UKIlYOD9w76TbGbBDQ6lJ9+XIE=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=emmj/c7Kj1xVIg93AWFHXB/sxjjqhwaMWblJg6l0l9haHjYLyrF7xpDXn9kWIdPzrI6Gcnn9sLP9z1JtxL5g3b4kN+EdTHNtzQBLm8ctbCCNijoZrFh0yD2j2F1VTRTfylFe0WTDAOY0sXZH2cXF/46TU3ToZDpRAG1wgHqoyq8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=SLOHzFi/; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709222214;
+	bh=5MqajYlBTM2LyYGI8UKIlYOD9w76TbGbBDQ6lJ9+XIE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=SLOHzFi/zyXXDMV/LqPpin3I1xwtXEQwW7aJgazuhKXrn8L43/zthAJlXMPYgl4Z6
+	 ve+OrsmMFl1hqmD1YoF/5wcUCTbLDw2NZ29lRB5N/2X0ZMf8KWdKzpZDkuR+KXMvvV
+	 A3WdWjWnSjsZ9BVbz4uKWXDZXMfryye6R5LAXgTk4lpC5I8ImiyN3RcxTSanWpnzXM
+	 F2pW5gqDnqMNalRqOxEAE1zQS0zuw7/3o5u/5vuZbIqkTCq1lZ3GJtzr97gZ7iXbuN
+	 B+NOkXrX50lbXnPVf1jhVkEQovzTY6ZzcZ6KgZypeOqdiOjc+54iVwStTF5ZISknv1
+	 kYCmilskX/1Cw==
+Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: laura.nao)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 77DD337810EF;
+	Thu, 29 Feb 2024 15:56:52 +0000 (UTC)
+From: Laura Nao <laura.nao@collabora.com>
+To: skhan@linuxfoundation.org
+Cc: a.hindborg@samsung.com,
+	alex.gaynor@gmail.com,
+	aliceryhl@google.com,
+	benno.lossin@proton.me,
+	bjorn3_gh@protonmail.com,
+	boqun.feng@gmail.com,
+	gary@garyguo.net,
+	kernel@collabora.com,
+	kernel@valentinobst.de,
+	laura.nao@collabora.com,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	ojeda@kernel.org,
+	rust-for-linux@vger.kernel.org,
+	sergio.collado@gmail.com,
+	shuah@kernel.org,
+	usama.anjum@collabora.com,
+	wedsonaf@gmail.com
+Subject: Re: [PATCH v4] kselftest: Add basic test for probing the rust sample modules
+Date: Thu, 29 Feb 2024 16:57:11 +0100
+Message-Id: <20240229155711.264231-1-laura.nao@collabora.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <5df7d5b1-1387-41f5-a9e9-29c9aefa448e@linuxfoundation.org>
+References: <5df7d5b1-1387-41f5-a9e9-29c9aefa448e@linuxfoundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <43nj7od4luzqjmto7tddhtp5kqi5gbqgeq5v5qiqijydkjgma5@li525a32nds3>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 27, 2024 at 09:57:28AM +0000, Shinichiro Kawasaki wrote:
-> On Feb 27, 2024 / 15:22, Bagas Sanjaya wrote:
-> > 
-> > On Bugzilla, danilrybakov249@gmail.com reported stable-specific, ACPI error
-> > regression that led into high CPU temperature [1]. He wrote:
+Hi Shuah,
+
+On 2/28/24 01:01, Shuah Khan wrote:
+> Hi Laura,
 > 
-> Thanks for the report, and sorry for the trouble.
+> On 2/26/24 03:16, Laura Nao wrote:
+>> Add new basic kselftest that checks if the available rust sample modules
+>> can be added and removed correctly.
+>>
+>> Signed-off-by: Laura Nao <laura.nao@collabora.com>
+>> Reviewed-by: Sergio Gonzalez Collado <sergio.collado@gmail.com>
+>> Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+>> ---
+>> Depends on:
+>> - 
+>> https://lore.kernel.org/all/20240102141528.169947-1-laura.nao@collabora.com/T/#u
+>> - 
+>> https://lore.kernel.org/all/20240131-ktap-sh-helpers-extend-v1-0-98ffb468712c@collabora.com/
+>> Changes in v4:
+>> - Added config file
+>> Changes in v3:
+>> - Removed useless KSFT_PASS, KSFT_FAIL, KSFT_SKIP constants
+>> - Used ktap_finished to print the results summary and handle the 
+>> return code
+>> Changes in v2:
+>> - Added missing SPDX line
+>> - Edited test_probe_samples.sh script to use the common KTAP helpers file
+>> ---
+>>   MAINTAINERS                                   |  1 +
+>>   tools/testing/selftests/Makefile              |  1 +
+>>   tools/testing/selftests/rust/Makefile         |  4 +++
+>>   tools/testing/selftests/rust/config           |  5 +++
+>>   .../selftests/rust/test_probe_samples.sh      | 34 +++++++++++++++++++
+>>   5 files changed, 45 insertions(+)
+>>   create mode 100644 tools/testing/selftests/rust/Makefile
+>>   create mode 100644 tools/testing/selftests/rust/config
+>>   create mode 100755 tools/testing/selftests/rust/test_probe_samples.sh
+>>
+> 
+> I ran test again and I still see the same. I would like to
+> see the script to handle error conditions.
+> 
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>>
+>> +
+>> +DIR="$(dirname "$(readlink -f "$0")")"
+>> +
+>> +source "${DIR}"/../kselftest/ktap_helpers.sh
+> 
+> It tries to source and keeps going. Why can't we test for
+> the file to exist and skip gracefully without printing
+> the following messages.
+> 
+>   ./test_probe_samples.sh: line 12: 
+> /linux/linux_6.8/tools/testing/selftests/rust/../kselftest/ktap_helpers.sh: No such file or director
+> # ./test_probe_samples.sh: line 16: ktap_print_header: command not found
+> # ./test_probe_samples.sh: line 18: ktap_set_plan: command not found
+> # ./test_probe_samples.sh: line 22: ktap_test_skip: command not found
+> # ./test_probe_samples.sh: line 22: ktap_test_skip: command not found
+> # ./test_probe_samples.sh: line 34: ktap_finished: command not found
+> 
+> 
+> 
+> not ok 1 selftests: rust: test_probe_samples.sh # exit=127
+> 
+> 
 
-Heads up. The problem seems with the caching algo which includes function 0
-to be scanned. The investigation and fix development are in progress.
+Sorry, I misunderstood the request in your previous reply on v3 - will 
+do.
 
--- 
-With Best Regards,
-Andy Shevchenko
+>> +
+>> +rust_sample_modules=("rust_minimal" "rust_print")
+>> +
+>> +ktap_print_header
+>> +
+>> +ktap_set_plan "${#rust_sample_modules[@]}"
+>> +
+>> +for sample in "${rust_sample_modules[@]}"; do
+>> +    if ! /sbin/modprobe -n -q "$sample"; then
+>> +        ktap_test_skip "module $sample is not found in 
+>> /lib/modules/$(uname -r)"
+>> +        continue
+> 
+> Why are we continuing here? Isn't this skip condition?
+>
 
+At first, I hadn't planned for the kselftest to skip entirely if only
+one of the two sample modules was missing. However, considering that 
+this kselftest is designed to test all available sample modules, and 
+given that both are enabled with the provided configuration file, I 
+believe it's more logical to verify the presence of both modules before 
+running the test. If either of them is missing, then we exit the test 
+with a skip code. This also covers the case where rust is not available.
 
+>> +    fi
+>> +
+>> +    if /sbin/modprobe -q "$sample"; then
+>> +        /sbin/modprobe -q -r "$sample"
+>> +        ktap_test_pass "$sample"
+>> +    else
+>> +        ktap_test_fail "$sample"
+>> +    fi
+>> +done
+>> +
+>> +ktap_finished
+> 
+> 
+> I would like to see the test exit with skip code when RUST isn't
+> enabled. Please refer to existing tests that do this properly.
+> 
+
+Sent a v5 with the changes mentioned above: https://lore.kernel.org/linux-kselftest/20240229155235.263157-1-laura.nao@collabora.com/T/#u
+
+Thanks!
+
+Laura
 
