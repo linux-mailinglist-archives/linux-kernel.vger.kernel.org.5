@@ -1,41 +1,41 @@
-Return-Path: <linux-kernel+bounces-86506-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86508-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E919686C659
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:05:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 361AD86C65B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:06:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99B082876FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:05:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB1A01F23A5C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:06:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6839266B4B;
-	Thu, 29 Feb 2024 10:03:28 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 433BB67A16;
+	Thu, 29 Feb 2024 10:03:29 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B316E63CAC;
-	Thu, 29 Feb 2024 10:03:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65ED764AA8;
+	Thu, 29 Feb 2024 10:03:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709201006; cv=none; b=Y2a9nCLyMRiUAWv2dpVqPYJQNN7R2O8eT2vZ6gp4GaP/a1z67x1qg3d6LRphUkJfITr3g27qGmOgw/l1Kfx1y/t+Mm6JY4WtOBwS5+ndCbrWy5lHu0prsaYpAIgUtCLL1wJFLKJRJhNIeFYj6JvsMF+q59l9hs98oNcxwJl6Y9Q=
+	t=1709201007; cv=none; b=eRK3+G205MBhHM1vld1RD+Ps/zEbpntPyggt1fjDIu4yU7JLAt179nUjKodyPugTNNNOLzQHco3vV29bMgThagHcbA8zITHrHZhVsM7bJdqUC51JtCWE73GFOeVgH+K90ICK13i8RuosePas0P3rCtfzSdOshpV26VzbwN+eqzo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709201006; c=relaxed/simple;
-	bh=AdfUaPu0zOXRGxRzUsboVvYzUsy/7UX1uK/3ejRkSc8=;
+	s=arc-20240116; t=1709201007; c=relaxed/simple;
+	bh=Pm/KpNbqCbYA/G3QEkk1UqJbTioGqL2SAOONMPYucCo=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=j9ciX+nCt+HWefOuw3N6xRx4OtfMy8AfHxPaVKfcoP+DHLwVsI0MuZ6AzKtPmVGkrNQelR1EBXhaPPamAvdxQmNBcsxHJ8Hxkt/Qw7dr9INQzSmYHccoblfYucPJGqiC/YCpQW+/e1tI1y10UKtNW4hn/5RsGkwhwqhaRSB6f5E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+	 MIME-Version; b=ryEMvpOhVgfPY98qgcyee9N+6PkaJQqWh53R9h05Fh/zqshDBJcFHXT7slLsfDUCfKnSVf979uyrc1mAMwot2D+vLUbHilli3iidocrWbzd5EDpGDH5G+QzhJW3bvKMS9CMwnAnlqgmnUzGFdp/gSiCnJTTE7OCmUvpkVAGNDtc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Tlmxw3CBvz4f3khh;
-	Thu, 29 Feb 2024 18:03:16 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Tlmxt5s37z4f3mHR;
+	Thu, 29 Feb 2024 18:03:14 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id B03671A0232;
-	Thu, 29 Feb 2024 18:03:21 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 2F8601A0DA7;
+	Thu, 29 Feb 2024 18:03:22 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgAX5g5hVuBlFsMHFg--.11578S14;
+	by APP1 (Coremail) with SMTP id cCh0CgAX5g5hVuBlFsMHFg--.11578S15;
 	Thu, 29 Feb 2024 18:03:21 +0800 (CST)
 From: Yu Kuai <yukuai1@huaweicloud.com>
 To: xni@redhat.com,
@@ -49,9 +49,9 @@ Cc: linux-raid@vger.kernel.org,
 	yukuai1@huaweicloud.com,
 	yi.zhang@huawei.com,
 	yangerkun@huawei.com
-Subject: [PATCH md-6.9 v4 10/11] md/raid1: factor out the code to manage sequential IO
-Date: Thu, 29 Feb 2024 17:57:13 +0800
-Message-Id: <20240229095714.926789-11-yukuai1@huaweicloud.com>
+Subject: [PATCH md-6.9 v4 11/11] md/raid1: factor out helpers to choose the best rdev from read_balance()
+Date: Thu, 29 Feb 2024 17:57:14 +0800
+Message-Id: <20240229095714.926789-12-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240229095714.926789-1-yukuai1@huaweicloud.com>
 References: <20240229095714.926789-1-yukuai1@huaweicloud.com>
@@ -62,10 +62,10 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgAX5g5hVuBlFsMHFg--.11578S14
-X-Coremail-Antispam: 1UD129KBjvJXoWxZF45XFW8tF4kGF4kuFy8Krg_yoW5KFyDpa
-	1avwn3XrWkXr9xu3y3Jr4UCryS9w1fJF48GFZ7A34FgrySqrWUta18KrW3Zr97J393J34U
-	X3Z3GrW7C3WkCrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:cCh0CgAX5g5hVuBlFsMHFg--.11578S15
+X-Coremail-Antispam: 1UD129KBjvJXoW3JrWrWw15Wr1UAFyfAryxXwb_yoW3Zw1Upw
+	45GFn2yrWUZryruwn5tr4UWrWS934fJa18GrWkG34S93sagrZ0qFn7KryY9FyDGrs3Cw12
+	vw15Gr47C3Z7GFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUPI14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
 	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
 	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -84,109 +84,261 @@ X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-There is no functional change for now, make read_balance() cleaner and
-prepare to fix problems and refactor the handler of sequential IO.
+The way that best rdev is chosen:
+
+1) If the read is sequential from one rdev:
+ - if rdev is rotational, use this rdev;
+ - if rdev is non-rotational, use this rdev until total read length
+   exceed disk opt io size;
+
+2) If the read is not sequential:
+ - if there is idle disk, use it, otherwise:
+ - if the array has non-rotational disk, choose the rdev with minimal
+   inflight IO;
+ - if all the underlaying disks are rotational disk, choose the rdev
+   with closest IO;
+
+There are no functional changes, just to make code cleaner and prepare
+for following refactor.
 
 Co-developed-by: Paul Luse <paul.e.luse@linux.intel.com>
 Signed-off-by: Paul Luse <paul.e.luse@linux.intel.com>
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 Reviewed-by: Xiao Ni <xni@redhat.com>
 ---
- drivers/md/raid1.c | 71 ++++++++++++++++++++++++----------------------
- 1 file changed, 37 insertions(+), 34 deletions(-)
+ drivers/md/raid1.c | 175 +++++++++++++++++++++++++--------------------
+ 1 file changed, 98 insertions(+), 77 deletions(-)
 
 diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
-index f6e75c123e5a..17c2201d5d2b 100644
+index 17c2201d5d2b..afca975ec7f3 100644
 --- a/drivers/md/raid1.c
 +++ b/drivers/md/raid1.c
-@@ -705,6 +705,31 @@ static int choose_slow_rdev(struct r1conf *conf, struct r1bio *r1_bio,
- 	return bb_disk;
+@@ -730,74 +730,71 @@ static bool should_choose_next(struct r1conf *conf, int disk)
+ 	       mirror->next_seq_sect - opt_iosize >= mirror->seq_start;
  }
  
-+static bool is_sequential(struct r1conf *conf, int disk, struct r1bio *r1_bio)
-+{
-+	/* TODO: address issues with this check and concurrency. */
-+	return conf->mirrors[disk].next_seq_sect == r1_bio->sector ||
-+	       conf->mirrors[disk].head_position == r1_bio->sector;
-+}
-+
-+/*
-+ * If buffered sequential IO size exceeds optimal iosize, check if there is idle
-+ * disk. If yes, choose the idle disk.
-+ */
-+static bool should_choose_next(struct r1conf *conf, int disk)
-+{
-+	struct raid1_info *mirror = &conf->mirrors[disk];
-+	int opt_iosize;
-+
-+	if (!test_bit(Nonrot, &mirror->rdev->flags))
+-/*
+- * This routine returns the disk from which the requested read should
+- * be done. There is a per-array 'next expected sequential IO' sector
+- * number - if this matches on the next IO then we use the last disk.
+- * There is also a per-disk 'last know head position' sector that is
+- * maintained from IRQ contexts, both the normal and the resync IO
+- * completion handlers update this position correctly. If there is no
+- * perfect sequential match then we pick the disk whose head is closest.
+- *
+- * If there are 2 mirrors in the same 2 devices, performance degrades
+- * because position is mirror, not device based.
+- *
+- * The rdev for the device selected will have nr_pending incremented.
+- */
+-static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sectors)
++static bool rdev_readable(struct md_rdev *rdev, struct r1bio *r1_bio)
+ {
+-	const sector_t this_sector = r1_bio->sector;
+-	int sectors;
+-	int best_good_sectors;
+-	int best_disk, best_dist_disk, best_pending_disk, sequential_disk;
+-	int disk;
+-	sector_t best_dist;
+-	unsigned int min_pending;
+-	struct md_rdev *rdev;
++	if (!rdev || test_bit(Faulty, &rdev->flags))
++		return false;
+ 
+- retry:
+-	sectors = r1_bio->sectors;
+-	best_disk = -1;
+-	best_dist_disk = -1;
+-	sequential_disk = -1;
+-	best_dist = MaxSector;
+-	best_pending_disk = -1;
+-	min_pending = UINT_MAX;
+-	best_good_sectors = 0;
+-	clear_bit(R1BIO_FailFast, &r1_bio->state);
++	/* still in recovery */
++	if (!test_bit(In_sync, &rdev->flags) &&
++	    rdev->recovery_offset < r1_bio->sector + r1_bio->sectors)
++		return false;
+ 
+-	if (raid1_should_read_first(conf->mddev, this_sector, sectors))
+-		return choose_first_rdev(conf, r1_bio, max_sectors);
++	/* don't read from slow disk unless have to */
++	if (test_bit(WriteMostly, &rdev->flags))
 +		return false;
 +
-+	opt_iosize = bdev_io_opt(mirror->rdev->bdev) >> 9;
-+	return opt_iosize > 0 && mirror->seq_start != MaxSector &&
-+	       mirror->next_seq_sect > opt_iosize &&
-+	       mirror->next_seq_sect - opt_iosize >= mirror->seq_start;
++	/* don't split IO for bad blocks unless have to */
++	if (rdev_has_badblock(rdev, r1_bio->sector, r1_bio->sectors))
++		return false;
++
++	return true;
 +}
 +
- /*
-  * This routine returns the disk from which the requested read should
-  * be done. There is a per-array 'next expected sequential IO' sector
-@@ -768,43 +793,21 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
++struct read_balance_ctl {
++	sector_t closest_dist;
++	int closest_dist_disk;
++	int min_pending;
++	int min_pending_disk;
++	int sequential_disk;
++	int readable_disks;
++};
++
++static int choose_best_rdev(struct r1conf *conf, struct r1bio *r1_bio)
++{
++	int disk;
++	struct read_balance_ctl ctl = {
++		.closest_dist_disk      = -1,
++		.closest_dist           = MaxSector,
++		.min_pending_disk       = -1,
++		.min_pending            = UINT_MAX,
++		.sequential_disk	= -1,
++	};
+ 
+ 	for (disk = 0 ; disk < conf->raid_disks * 2 ; disk++) {
++		struct md_rdev *rdev;
+ 		sector_t dist;
+ 		unsigned int pending;
+ 
+-		rdev = conf->mirrors[disk].rdev;
+-		if (r1_bio->bios[disk] == IO_BLOCKED
+-		    || rdev == NULL
+-		    || test_bit(Faulty, &rdev->flags))
+-			continue;
+-		if (!test_bit(In_sync, &rdev->flags) &&
+-		    rdev->recovery_offset < this_sector + sectors)
+-			continue;
+-		if (test_bit(WriteMostly, &rdev->flags))
++		if (r1_bio->bios[disk] == IO_BLOCKED)
+ 			continue;
+-		if (rdev_has_badblock(rdev, this_sector, sectors))
++
++		rdev = conf->mirrors[disk].rdev;
++		if (!rdev_readable(rdev, r1_bio))
+ 			continue;
+ 
+-		if (best_disk >= 0)
+-			/* At least two disks to choose from so failfast is OK */
++		/* At least two disks to choose from so failfast is OK */
++		if (ctl.readable_disks++ == 1)
+ 			set_bit(R1BIO_FailFast, &r1_bio->state);
+ 
  		pending = atomic_read(&rdev->nr_pending);
- 		dist = abs(this_sector - conf->mirrors[disk].head_position);
+-		dist = abs(this_sector - conf->mirrors[disk].head_position);
++		dist = abs(r1_bio->sector - conf->mirrors[disk].head_position);
++
  		/* Don't change to another disk for sequential reads */
--		if (conf->mirrors[disk].next_seq_sect == this_sector
--		    || dist == 0) {
--			int opt_iosize = bdev_io_opt(rdev->bdev) >> 9;
--			struct raid1_info *mirror = &conf->mirrors[disk];
--
--			/*
--			 * If buffered sequential IO size exceeds optimal
--			 * iosize, check if there is idle disk. If yes, choose
--			 * the idle disk. read_balance could already choose an
--			 * idle disk before noticing it's a sequential IO in
--			 * this disk. This doesn't matter because this disk
--			 * will idle, next time it will be utilized after the
--			 * first disk has IO size exceeds optimal iosize. In
--			 * this way, iosize of the first disk will be optimal
--			 * iosize at least. iosize of the second disk might be
--			 * small, but not a big deal since when the second disk
--			 * starts IO, the first disk is likely still busy.
--			 */
--			if (test_bit(Nonrot, &rdev->flags) && opt_iosize > 0 &&
--			    mirror->seq_start != MaxSector &&
--			    mirror->next_seq_sect > opt_iosize &&
--			    mirror->next_seq_sect - opt_iosize >=
--			    mirror->seq_start) {
--				/*
--				 * Add 'pending' to avoid choosing this disk if
--				 * there is other idle disk.
--				 */
--				pending++;
--				/*
--				 * If there is no other idle disk, this disk
--				 * will be chosen.
--				 */
--				sequential_disk = disk;
--			} else {
-+		if (is_sequential(conf, disk, r1_bio)) {
-+			if (!should_choose_next(conf, disk)) {
- 				best_disk = disk;
- 				break;
- 			}
-+			/*
-+			 * Add 'pending' to avoid choosing this disk if
-+			 * there is other idle disk.
-+			 */
-+			pending++;
-+			/*
-+			 * If there is no other idle disk, this disk
-+			 * will be chosen.
-+			 */
-+			sequential_disk = disk;
+ 		if (is_sequential(conf, disk, r1_bio)) {
+-			if (!should_choose_next(conf, disk)) {
+-				best_disk = disk;
+-				break;
+-			}
++			if (!should_choose_next(conf, disk))
++				return disk;
++
+ 			/*
+ 			 * Add 'pending' to avoid choosing this disk if
+ 			 * there is other idle disk.
+@@ -807,17 +804,17 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
+ 			 * If there is no other idle disk, this disk
+ 			 * will be chosen.
+ 			 */
+-			sequential_disk = disk;
++			ctl.sequential_disk = disk;
  		}
  
- 		if (min_pending > pending) {
+-		if (min_pending > pending) {
+-			min_pending = pending;
+-			best_pending_disk = disk;
++		if (ctl.min_pending > pending) {
++			ctl.min_pending = pending;
++			ctl.min_pending_disk = disk;
+ 		}
+ 
+-		if (dist < best_dist) {
+-			best_dist = dist;
+-			best_dist_disk = disk;
++		if (ctl.closest_dist > dist) {
++			ctl.closest_dist = dist;
++			ctl.closest_dist_disk = disk;
+ 		}
+ 	}
+ 
+@@ -825,8 +822,8 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
+ 	 * sequential IO size exceeds optimal iosize, however, there is no other
+ 	 * idle disk, so choose the sequential disk.
+ 	 */
+-	if (best_disk == -1 && min_pending != 0)
+-		best_disk = sequential_disk;
++	if (ctl.sequential_disk != -1 && ctl.min_pending != 0)
++		return ctl.sequential_disk;
+ 
+ 	/*
+ 	 * If all disks are rotational, choose the closest disk. If any disk is
+@@ -834,25 +831,49 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
+ 	 * disk is rotational, which might/might not be optimal for raids with
+ 	 * mixed ratation/non-rotational disks depending on workload.
+ 	 */
+-	if (best_disk == -1) {
+-		if (READ_ONCE(conf->nonrot_disks) || min_pending == 0)
+-			best_disk = best_pending_disk;
+-		else
+-			best_disk = best_dist_disk;
+-	}
++	if (ctl.min_pending_disk != -1 &&
++	    (READ_ONCE(conf->nonrot_disks) || ctl.min_pending == 0))
++		return ctl.min_pending_disk;
++	else
++		return ctl.closest_dist_disk;
++}
+ 
+-	if (best_disk >= 0) {
+-		rdev = conf->mirrors[best_disk].rdev;
+-		if (!rdev)
+-			goto retry;
++/*
++ * This routine returns the disk from which the requested read should be done.
++ *
++ * 1) If resync is in progress, find the first usable disk and use it even if it
++ * has some bad blocks.
++ *
++ * 2) Now that there is no resync, loop through all disks and skipping slow
++ * disks and disks with bad blocks for now. Only pay attention to key disk
++ * choice.
++ *
++ * 3) If we've made it this far, now look for disks with bad blocks and choose
++ * the one with most number of sectors.
++ *
++ * 4) If we are all the way at the end, we have no choice but to use a disk even
++ * if it is write mostly.
++ *
++ * The rdev for the device selected will have nr_pending incremented.
++ */
++static int read_balance(struct r1conf *conf, struct r1bio *r1_bio,
++			int *max_sectors)
++{
++	int disk;
+ 
+-		sectors = best_good_sectors;
+-		update_read_sectors(conf, disk, this_sector, sectors);
+-	}
+-	*max_sectors = sectors;
++	clear_bit(R1BIO_FailFast, &r1_bio->state);
++
++	if (raid1_should_read_first(conf->mddev, r1_bio->sector,
++				    r1_bio->sectors))
++		return choose_first_rdev(conf, r1_bio, max_sectors);
+ 
+-	if (best_disk >= 0)
+-		return best_disk;
++	disk = choose_best_rdev(conf, r1_bio);
++	if (disk >= 0) {
++		*max_sectors = r1_bio->sectors;
++		update_read_sectors(conf, disk, r1_bio->sector,
++				    r1_bio->sectors);
++		return disk;
++	}
+ 
+ 	/*
+ 	 * If we are here it means we didn't find a perfectly good disk so
 -- 
 2.39.2
 
