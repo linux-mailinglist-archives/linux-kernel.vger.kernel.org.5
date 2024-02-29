@@ -1,128 +1,348 @@
-Return-Path: <linux-kernel+bounces-87166-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87164-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B587186D087
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:26:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7953786D082
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:25:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65979287748
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:26:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 256FF2867B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:25:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5276D70AE6;
-	Thu, 29 Feb 2024 17:26:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D4966CBED;
+	Thu, 29 Feb 2024 17:25:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="cou7Vty8"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TzOogL2Y"
+Received: from mail-io1-f47.google.com (mail-io1-f47.google.com [209.85.166.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDA6570AD2
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 17:25:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25AA2160642;
+	Thu, 29 Feb 2024 17:25:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709227559; cv=none; b=mPpp33XKzOAKXrcim5Z/Ay67oqpMBcvy4rlI38N6H/gSFtI5/BWN0ONC60IoPKuQegoGg5jUX1ov/b2ovawhAAgzFVktbJMSLtN75pHtBkcD26w+DCC/rZ9vdFRPhhxVZQtTetpiSun4eTRbOILesAvfgLVjJw0VylgPdwLxhks=
+	t=1709227552; cv=none; b=tJyGi6LOv3bTGQroY5Has6RYavpGUTnrJXxj/gEBR3bMASZ5188PeeYw2XMEHv3KUqZvOKPLW7oeFrj20pzX5w2AB/OyGecoN1jQdpE+4IESnRNf7AhnJnuX5RYemxaNh1mDm7ifrxoahL4zRf0zf+SRT0nnJwPH6Wyvm+nJ1zU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709227559; c=relaxed/simple;
-	bh=x023CuxQEDUhqmIMeqnfqJUbjUEG0Bp8dWnHTJB3rdI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aZ1lqDtH/S1C5uVanYi2t61jsczk71JWl003aifUi+fIuGnEurkEKxvyLMabAEUUGossYlgxLmpYyJV9u7k1KE2IPS8R4j2txPAEC9TKr+LL/nxqJQaJM50Pr6vzJN8mFpMrUCraMNk1nGEf+wlAHFvweaBSZPlJnDmbKt94JDU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=cou7Vty8; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5658082d2c4so1826425a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 09:25:57 -0800 (PST)
+	s=arc-20240116; t=1709227552; c=relaxed/simple;
+	bh=VHlRrEQxoJ9AwaN+mU+t2GkvJMvtQ0lkNidLHss7PNk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=IkPjgp3Fd0ke5sfFtLsZuQGQ/DKPbJipPECpEAo+GDFiOVAM+qw8q/tsZkCj7SEIFIKe5FFnK+Am1eEzFbi2Jk6btrJpxUSlFJs5uhWY1PXjHRRiLveBmpIf10YDCqSiGOm/unKnU+IGlDcDTJ2LQ0ZiZhrm7oAPKpOvYa/nq/Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TzOogL2Y; arc=none smtp.client-ip=209.85.166.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-io1-f47.google.com with SMTP id ca18e2360f4ac-7c7770fd687so61486239f.3;
+        Thu, 29 Feb 2024 09:25:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709227555; x=1709832355; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=x023CuxQEDUhqmIMeqnfqJUbjUEG0Bp8dWnHTJB3rdI=;
-        b=cou7Vty8VLoEFq4M6Yv86Ms99c7KUcdIfpRyFMLAeAznWgxF68ZxfCozRKV3mWOo8T
-         GEHS2DXF20JjjV4frDcXWoUIQq4+m+Ll0G7b2IwOGHqCdCc9RvIolbiyejpJKygZBwLy
-         dtUr0nq86E3jtQe83tMlNpOm+EZ8uZ6puVlTc=
+        d=gmail.com; s=20230601; t=1709227549; x=1709832349; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=ebEsXmgVEueWKo0joxt+Gy+zgd8hsScsn1/uE9nbbqU=;
+        b=TzOogL2YOMpKox0RGNB8Ig4g9fmPWfiPkIDvrYH/3fA547CAE5iFDVGDO0wFP4SYOd
+         /YKXNF/xyFDE51++WnoQAlxQ3WqOAMu1xT1HHJc0OFTokBnfBlNq5/0DJs4MMu0BNbH3
+         dyO25OnxeWkHKT/lpkOb+2GDt2aH9fVog5/7s4TKqfoRJfiUculdW9fj0S3paQOjpCIb
+         d6rC9XQ2volbZw1xxELw9W0scIB2xhjR4SUeqimAxwZBdleNOrre78/lVLCAW3neibxu
+         eKo/PI+5MNQQiWZfoKP9ZhZRdypWwPRnz4Nb8nNDiaE1O+/1pqRPPaTwPcNk5/wfxbDg
+         GANw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709227555; x=1709832355;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=x023CuxQEDUhqmIMeqnfqJUbjUEG0Bp8dWnHTJB3rdI=;
-        b=Bnk8wH8gGwguLdjaBpBV7vdnBTzXVQMa7qCBgN7VFzietWhcsiAU2kGSB6EVTpggHQ
-         j3M5ilB1BegiQSdDOxrrTQo8crdi+F4kU1dH8vBd8zwu59U897wGPh7uCrE34R2aaOVC
-         T54ZhIegqAMXIzXofoN8R+06doTPrcpSAMyJWZ+hq5Tn0HC8rD+MTCu5fgqCIWMqPH0G
-         l374ycBYZ1C4OMNpzvTV5SMmZ+i+H4XlXa4a+Pfg+sEf2RC80BBfUjgcrYRHZ16sB9vw
-         QpMnszSSxtjIm4NGpJo7u44pmOl8N+Q3fBkXGfpRBx24zEEkz6jndIq8GgVVHlQQa/+5
-         +cNA==
-X-Forwarded-Encrypted: i=1; AJvYcCU6wP6RONXHdWvE/fhyXb6gXEForSaatHwB22tTxTM8orkNqM/oWQVS3ocxpMYMAAdcihAdiLPREweuOEKX4d3ZzPR0kDmc/qPMcH1B
-X-Gm-Message-State: AOJu0YwMi8tS/a0PFWzq2m9GJkPMhO0EfZhI947kIMtD/lqJzc5Hp1jT
-	foOtZYb/U0qQ2IOCoRjKLrHQrDpAISrRKHMSrPdZhwuK1Jnr0YRS3ff9SCpnK/abKXp+1706+eP
-	p1K9U
-X-Google-Smtp-Source: AGHT+IFScoizlu7JiGmm/w1R1n7r3v02zrvK71MWDPqoB7RViOOrxeck70klBXRvvUjDLdkLFeL+tQ==
-X-Received: by 2002:a05:6402:26c5:b0:564:dd13:56e9 with SMTP id x5-20020a05640226c500b00564dd1356e9mr2388255edd.29.1709227554879;
-        Thu, 29 Feb 2024 09:25:54 -0800 (PST)
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com. [209.85.128.53])
-        by smtp.gmail.com with ESMTPSA id be27-20020a0564021a3b00b0056650031d94sm781572edb.90.2024.02.29.09.25.53
-        for <linux-kernel@vger.kernel.org>
+        d=1e100.net; s=20230601; t=1709227549; x=1709832349;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ebEsXmgVEueWKo0joxt+Gy+zgd8hsScsn1/uE9nbbqU=;
+        b=wPtdqKQvDp2EtA62YyPMAV2E5e0OJoNZWbasXvYXEvzXftGcICEXmqXYZ6p3em4Dvg
+         62FnF8l8p4MJd0F/NU1AHXMEQBNjAb++dnXNmx+9SUDpeVsCC6QjqkwXWYvvVdOH3d5X
+         5+CN5zl3xFw8SdPPjMP7BNjU5UDBnaTZIqSExNPwTUKfn1IrRDRBrWUvKgE+GkfYUpKc
+         QoYRv1mc7yXiiRP45sLbsfgeuNvG2rpMimYEiFsx5fwLTrdOHkvl3vCEP6/qqxGCahiN
+         1dhHx+gISaA7pUc+OHfjm85AsrxHI2FHJm3d1N4FM+LeqmyywxuBPNZYE7OKzgcJ0fJa
+         FMGQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXU3Nx7JxBC4ZsgjjC9Z0v8859hjg32iIDmQgVUIHt9g2+MgwbQHqiYCUlmvKUHeNzvfWmXjpv4T05X7TBKsqG8nGtA3idBIbpP+YbvOIk=
+X-Gm-Message-State: AOJu0YzyBntcF6L6wvhGNki7sCWuOKZORkmU4buGnJ/1A+LT4YtUURbt
+	HXXYgIVCSLOEt7tnYqSBkSB4VSC0phnYTD3s7l5sj7xtZNspHbGqS14nNxZM
+X-Google-Smtp-Source: AGHT+IFdllZKuPa9aTPXfVs4WCxeSUR7IL6HNiyNXtBy7MPporIFJ89uWYE/duJgqty0jLR2qnh+uA==
+X-Received: by 2002:a05:6602:641d:b0:7c8:a14:3181 with SMTP id gn29-20020a056602641d00b007c80a143181mr4356789iob.7.1709227548974;
+        Thu, 29 Feb 2024 09:25:48 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id g4-20020a5edf44000000b007c7a4c121f1sm385313ioq.19.2024.02.29.09.25.47
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Feb 2024 09:25:54 -0800 (PST)
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4129a5f7b54so84705e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 09:25:53 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWXYopRXolOw1kmaW72X0R85UVz7nwDY2D8fQ8WprLa4Si2nu1hq37XDL03FWeezRU2rivd2EmTnrSHdJ5pS1tLOq3PV0ZQbQe130kL
-X-Received: by 2002:a05:600c:3d90:b0:412:ba6c:8067 with SMTP id
- bi16-20020a05600c3d9000b00412ba6c8067mr151782wmb.5.1709227553392; Thu, 29 Feb
- 2024 09:25:53 -0800 (PST)
+        Thu, 29 Feb 2024 09:25:48 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <6066862c-cad6-4845-8e90-32d4572c7a23@roeck-us.net>
+Date: Thu, 29 Feb 2024 09:25:46 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240229154946.2850012-1-sashal@kernel.org> <20240229154946.2850012-21-sashal@kernel.org>
- <CAD=FV=Wb4meRvghR00LTzXRAobgioGo5g2oYqMLuO8nYWDa7Rg@mail.gmail.com> <05cbeae5-cd40-45a9-9b4f-68b9b20a6839@sirena.org.uk>
-In-Reply-To: <05cbeae5-cd40-45a9-9b4f-68b9b20a6839@sirena.org.uk>
-From: Doug Anderson <dianders@chromium.org>
-Date: Thu, 29 Feb 2024 09:25:38 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=VG1DpW3YukX691P59eN=oAnDxfWvm6CjpWFg5SxUmCRA@mail.gmail.com>
-Message-ID: <CAD=FV=VG1DpW3YukX691P59eN=oAnDxfWvm6CjpWFg5SxUmCRA@mail.gmail.com>
-Subject: Re: [PATCH AUTOSEL 6.6 21/21] arm64/sve: Lower the maximum allocation
- for the SVE ptrace regset
-To: Mark Brown <broonie@kernel.org>
-Cc: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
-	Will Deacon <will@kernel.org>, catalin.marinas@arm.com, oleg@redhat.com, 
-	mark.rutland@arm.com, linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] Watchdog: New module for ITE 5632 watchdog
+Content-Language: en-US
+To: Mark Pearson <mpearson@squebb.ca>, David Ober <dober6023@gmail.com>,
+ wim@linux-watchdog.org
+Cc: linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org,
+ David Ober <dober@lenovo.com>
+References: <20230721122931.505957-1-dober6023@gmail.com>
+ <a361ce91-beba-43d8-b969-285063658da5@app.fastmail.com>
+ <6b0373a2-7750-4d57-8839-95c6fa30c6b8@roeck-us.net>
+ <4209014c-1730-4c31-87d8-4192d68bcbc6@app.fastmail.com>
+ <6615ab2a-3267-477c-ad1b-a72d5a4244e0@roeck-us.net>
+ <412acdd3-6b1f-4c45-966f-c493b6fc3ddf@app.fastmail.com>
+ <42a7e7e9-01b0-4d41-8af1-328de90934ef@roeck-us.net>
+ <74a39cd0-cee3-49a2-a47b-92a9cf9ca008@app.fastmail.com>
+ <45490a63-e46a-4eb3-a55d-2e2642588ccd@app.fastmail.com>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <45490a63-e46a-4eb3-a55d-2e2642588ccd@app.fastmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi,
+On 2/29/24 08:40, Mark Pearson wrote:
+> Hi Guenter,
+> 
+> On Mon, Feb 26, 2024, at 11:23 AM, Mark Pearson wrote:
+>> Thanks!
+>>
+>> On Sun, Feb 25, 2024, at 1:43 AM, Guenter Roeck wrote:
+>>> On 2/24/24 12:19, Mark Pearson wrote:
+>>>> Thanks Guenter,
+>>>>
+>>>> On Sat, Feb 24, 2024, at 10:49 AM, Guenter Roeck wrote:
+>>>>> On 2/23/24 16:43, Mark Pearson wrote:
+>>>>>> Thanks Guenter
+>>>>>>
+>>>>>> On Fri, Feb 23, 2024, at 3:21 PM, Guenter Roeck wrote:
+>>>>>>> On 2/23/24 11:58, Mark Pearson wrote:
+>>>>>>>> On Fri, Jul 21, 2023, at 8:29 AM, David Ober wrote:
+>>>>>>>>> This modules is to allow for the new ITE 5632 EC chip
+>>>>>>>>> to support the watchdog for initial use in the Lenovo SE10
+>>>>>>>>>
+>>>>>>>>> Signed-off-by: David Ober <dober6023@gmail.com>
+>>>>>>>>>
+>>>>>>>>> V2 Fix stop to deactivate wdog on unload of module
+>>>>>>>>> V2 Remove extra logging that is not needed
+>>>>>>>>> V2 change udelays to usleep_range
+>>>>>>>>> V2 Changed to now request region on start and release on stop instead
+>>>>>>>>>        of for every ping and read/write
+>>>>>>>>> V3 add counter to while loops so it will not hang
+>>>>>>>>> V3 rework code to use platform_device_register_simple
+>>>>>>>>> V3 rework getting the Chip ID to remove duplicate code and close IO
+>>>>>>>>> V3 change some extra logging to be debug only
+>>>>>>>>> ---
+>>>>>>> [ ... ]
+>>>>>>>>> +config ITE5632_WDT
+>>>>>>>>> +        tristate "ITE 5632"
+>>>>>>>>> +        select WATCHDOG_CORE
+>>>>>>>>> +        help
+>>>>>>>>> +          If you say yes here you get support for the watchdog
+>>>>>>>>> +          functionality of the ITE 5632 eSIO chip.
+>>>>>>>>> +
+>>>>>>>>> +          This driver can also be built as a module. If so, the module
+>>>>>>>>> +          will be called ite5632_wdt.
+>>>>>>>>> +
+>>>>>>>
+>>>>>>> [ ... ]
+>>>>>>>
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> Please let us know if there is anything else needed to get this accepted. Happy to address any feedback.
+>>>>>>>>
+>>>>>>>
+>>>>>>> I am sure I commented on this before. The fact that the Lenovo SE10 uses an
+>>>>>>> ITE 5632 controller is completely irrelevant. Lenovo could decide tomorrow to
+>>>>>>> replace the ITE chip with a Nuvoton chip, use the same API to talk with it,
+>>>>>>> and the watchdog would work perfectly fine.
+>>>>>>>
+>>>>>>> This is a driver for the watchdog implemented in the embedded controller
+>>>>>>> on Lenovo SE10. It is not a watchdog driver for ITE5632. Again, the EC chip
+>>>>>>> used in that Lenovo system is completely irrelevant, even more so since
+>>>>>>> this seems to be one of those undocumented ITE chips which officially
+>>>>>>> don't even exist. Claiming that this would be a watchdog driver for ITE5632
+>>>>>>> would be not only misleading but simply wrong.
+>>>>>>>
+>>>>>>> It seems that we can not agree on this. That means that, from my perspective,
+>>>>>>> there is no real path to move forward. Wim will have to decide if and how
+>>>>>>> to proceed.
+>>>>>>>
+>>>>>> My apologies - I hadn't realised that was the issue (my fault for missing it). Appreciate the clarification.
+>>>>>>
+>>>>>> Is this as simple as renaming this driver as (for example) a lenovo_se_wdt device, and adding in the appropriate checking during the init that it is only used on Lenovo SE10 platforms?
+>>>>>>
+>>>>>
+>>>>> There would have to be additional changes. For example, the driver does not
+>>>>> return errors if its wait loops time out, and it doesn't reserve the IO address
+>>>>> range used by the chip. Tying the wait time to the number of wait loops
+>>>>> and not to the elapsed time is also something that would need to be explained.
+>>>>>
+>>>> Ack - we can look at those. Thanks for the feedback.
+>>>>
+>>>>> Also, I notice that the communication is similar to the communication with
+>>>>> Super-IO chips from ITE, but not the same. Specifically, the unlock key is
+>>>>> the same, but the lock key is different. This means that the code may unlock
+>>>>> other chips from ITE in a given system, but not lock them. Some of those chips
+>>>>> are ... let's call it less then perfect. They will act oddly on the bus if left
+>>>>> unlocked. Some of those chips will act oddly if an attempt is made to lock them
+>>>>> after unlocking them, and they have to remain unlocked to avoid corrupting
+>>>>> communication with other chips on the same bus. The impact on other chips
+>>>>> from the same vendor will have to be explored further.
+>>>>
+>>>> Afraid I'm still missing something here. If we make it so this driver is only used on the SE10 platform, then does that remove the concern? At that point it's specific to that HW platform and no HW changes are planned.
+>>>
+>>> Yes.
+>>>
+>>>> Agreed that having this available generically is not a good idea.
+>>>>
+>>>>>
+>>>>>> I don't understand the concern if a different chip was used - wouldn't that need a different driver at that point?
+>>>>>>
+>>>>>
+>>>>> Why would that be the case ?
+>>>>>
+>>>>> Maybe I am missing something essential. If you insist to tie this driver to the
+>>>>> ITE5632 and not to the system, you will have to provide additional information.
+>>>>
+>>>> I'm in agreement we should tie this to the platform - we'll make that change. No insistence implied :)
+>>>>
+>>>>> The chip does not even exist in public, so no one but you and ITE really knows
+>>>>> what its capabilities are. Is this is a chip which is used, or is going to be
+>>>>> used, in a variety of systems, possibly including systems from other vendors ?
+>>>>> Is the communication between main CPU and the chip tied to the chip and will/may
+>>>>> only be used with this chip or variants of it ? Is the ITE5632 a SuperIO-like
+>>>>> chip with fixed capabilities, or is it a programmed micro-controller ?
+>>>>>
+>>>>
+>>>> Afraid I don't understand the point about the chip not existing in public - do you just mean publicly available datasheets? At the risk of being repetitive, if this driver is locked to the Lenovo SE10 platform does that address the concerns?
+>>>>
+>>>
+>>> Just try to find information about this chip anywhere. The only
+>>> evidence that the
+>>> chip even exists appears to be this submission.
+>>>
+>>>>> To a large degree all that is due to ITE and its customers not
+>>>>> providing information
+>>>>> about their chips to the public. Due to that lack of information, my
+>>>>> assumption was
+>>>>> that it is a programmed micro-controller. The code itself suggests,
+>>>>> through the
+>>>>> use of the term "EC" in the driver, that it is an embedded controller,
+>>>>> not a Suoer-IO
+>>>>> or other fixed-capability chip. If that is not the case, and if the
+>>>>> communication
+>>>>> with the chip is fixed and not programmable, you'll have to explain
+>>>>> that.
+>>>>
+>>>> Yeah, ack to that - and in that's something we need to address going forward in contracts we set for platforms that will have Linux support. I can't change what has already been done I'm afraid. We do have access, under NDA, to more details - but we're also limited in what we can disclose.
+>>>> I need to go look at the details for this again, with David, and see what we can do to address any questions; but there are going to be some limits I'm afraid and I'm hoping they aren't blockers.
+>>>
+>>> I can't say that I am surprised. It is quite common for chips from ITE.
+>>> Most of them seem to be custom builds made for specific customers/boards,
+>>> with little if any information available. People providing tools for Windows
+>>> can often sign NDAs with board vendors to get the information they need to
+>>> implement support in those tools. Unfortunately that isn't an option for
+>>> Linux kernel maintainers.
+>>>
+>>>> The aim is to get a driver working for this platform in shape enough to get accepted upstream and be useful.
+>>>>
+>>>>>
+>>>>> If it is an EC, the protocol is defined by its microcode, and the
+>>>>> driver needs
+>>>>> to be tied to the systems using that microcode. If it is a
+>>>>> fixed-capability chip,
+>>>>> the driver should not suggest that it communicates with an embedded
+>>>>> controller
+>>>>> but with a fixed-capability chip.
+>>>>>
+>>>>
+>>>> OK - we may also have used some incorrect terminology inadvertently, so I don't want to jump to too many conclusions. Will look into this.
+>>>>
+>>>> Thanks for the detailed notes - we weren't sure what had been missing from the driver since the last submission so it's helpful to know where improvements are needed.
+>>>> Appreciate the patience as this is a learning experience for us for this kernel sub-tree.
+>>>>
+>>> And I still have no idea if this an EC or not ;-). My best guess would
+>>> be that it is an NDS32 based micro-controller, related to IT5671.
+>>>
+>>> Of course, the next question would be if this chip has additional
+>>> functionality, such as hardware monitoring. I guess I'll see that
+>>> when I get a patch introducing its hwmon driver.
+>>>
+>> We believe it is only providing watchdog functionality, but we're
+>> double checking with the HW team to be sure.
+>>
+>> Afraid I don't have the details on what it is based on to be able to
+>> answer that.
+>>
+> 
+> I got some answers - and I was wrong. This device is capable of more than watchdog functionality. On this platform it does provide some temperature sensors (it could do fan control but the device is fanless so that's moot).
+> 
+> My understanding is this means the right way forward is to create a MFD driver. I played with this a bit, and think I understand what is involved - but wanted to check if there were any recommendations on the following plan:
+> 
+>   - Create a lenovo-think-mfd driver. We'd use this to probe the system (DMI) and then match it up with our platforms and use appropriate mfd_cells.
+>   - Initially we'd target the device on the SE10. We also have the watchdog driver for the SE30 (NCT6692D device) that I think may be a good candidate too.
+>   - Create a new lenovo-se10-wdt watchdog driver, that would be linked to the MFD driver.
+>   - (Once confirmed) do the same for the lenovo-se30-wdt driver.
+>   - I'm going to look at the temp sensors for the SE10, but don't plan on having that in the initial patchset. It's something we'd add at a later date.
+> 
+> If that's all logical - are there any preferences as to how these come in as commits?
+> I'm guessing one for the mfd driver, one for the SE10 watchdog, one for the SE30 watchdog?
+> Documentation would need to be updated as well.
+> Anything else that would be important?
+> 
+> Would appreciate if you can let me know if I'm missing anything or if I'm heading in the wrong direction.
+> 
 
-On Thu, Feb 29, 2024 at 9:13=E2=80=AFAM Mark Brown <broonie@kernel.org> wro=
-te:
->
-> On Thu, Feb 29, 2024 at 08:51:09AM -0800, Doug Anderson wrote:
->
-> > As I mentioned [1], there's a hidden dependency here and without it
-> > the patch doesn't actually do anything useful in kernel 6.6 nor kernel
-> > 6.1. Maybe the right answer is to backport this with the hardcoded
-> > value of "16" for those older kernels? Maybe Mark has a better
-> > suggestion?
->
-> Your suggestion should be fine.
+This summarizes pretty much what I dislike about those undocumented chips.
 
-Crud. Ignore me. The patch is fine as-is for 6.1, 6.6, and 6.7. :(
+Is it necessary to treat this differently than, say, drivers/hwmon/it87.c and drivers/watchdog/it87_wdt.c ?
+Those work together nicely because most of the address space is separate; access through Super-IO registers
+is limited enough that it can be shared by using request_muxed_region() in both drivers.
 
-git tag --contains f171f9e4097d
-..shows that the needed patch is actually in 5.19+
+I'll have to look deeper into NCT6692D (and NCT6686, for that matter), to see if those require mfd drivers.
+I'll also need to get the datasheets for those chips and confirm that they really need different watchdog
+drivers to start with.
 
-Instead of using the above "git tag --contains", I was naively just running=
-:
+Guenter
 
-git grep ZCR_ELx_LEN_SIZE
-
-..and I saw that it still came back 9 on v6.6. ...but that's because
-it was still set as 9 in the tools directory and I didn't notice.
-
-Sorry for the noise. We could still do the hardcoded solution of
-defining it as 16 for 5.15 and older if folks want.
-
--Doug
 
