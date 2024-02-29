@@ -1,145 +1,111 @@
-Return-Path: <linux-kernel+bounces-85963-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85964-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F273586BD9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 02:02:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96ECC86BDA4
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 02:02:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 67FF2B2666C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:02:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8F12BB267FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:02:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 163F355E51;
-	Thu, 29 Feb 2024 00:55:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B3612E64F;
+	Thu, 29 Feb 2024 00:56:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ry6vHJpd"
-Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dtr4muXV"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BF2F2D051
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 00:55:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EC1213D2E8;
+	Thu, 29 Feb 2024 00:56:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709168142; cv=none; b=ppDblMUx/t7jk0j7uba14tXHa0t6bTY7NRQkqSiMtToqMqDzrA67DFxvk+EJEeUA5AJ65hRdbXQ4jF1tnAxyxahz3ZgGYODYy0TQkCF2eWDBrTESOYMJpjYsZRsMkc4jrk1HhSbezPc6Hh34VWWW/24VM+FUHtrhakXDVXNVMhM=
+	t=1709168172; cv=none; b=MM3q5JCcg1HxwnRY4Sz9sNO7kzsiamEePIThx+lJKLZODAynIsKUkH/dscStXh3nwEuXa83Qsy+cZOzRyZ/AVsM9k4gzE0mJO+0M42VMGeNxmPOSnwkosDnuyFWQINj+XzFW64WXXldkeXmkOueFWYPcRuWskQGNKzEYYOEobeA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709168142; c=relaxed/simple;
-	bh=i6eHilJBW3eqkl1QuCHLL88/9qCtvwmmijhDpn1hbzE=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=B6MVu5jQqLMf5y1AIK5fZJ0GlwemakhjaIvOqlX52CQQ7JUqpb0xcc3Y4PxzZact1o0iM2Ke19tqfGzBGzRFuk05vhoSf+SyQuViXxhQIOCMA2fFzuOE4GzNkmVQJ1kSN/l3TkBqBBmGvtTeC5pnBLofFanvWHPXA/24tHfDwZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ry6vHJpd; arc=none smtp.client-ip=209.85.216.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-299cae4f36bso247816a91.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 16:55:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709168138; x=1709772938; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=eliV97qbvjzlWA6WTHOIiPM9PEq5O0yXOeFOONF3xgI=;
-        b=ry6vHJpdDdYiKlwAWpC8vMAukyPbaD+CVeKJevP24TZ+XayMDosxX55EEiMAu5cgE6
-         Ic88IKKx0wosyDKT2THLTdtrfzCTjBLuPX+Q50IgjqHFdxzER229cDuvbW0XfMP8ic64
-         1VSERDBnmIhn5aWeTiamvkdj9G8btJhD+r6NWAltDR6naA++ArUVlcY8dILPAl5TbD5r
-         DLzM7lFLIsyy7Wapv5mLBP9Eqa1Sm9gmUDjALVrdrnUbFo7Okb0VcE1L5dv6Qv2hwIXo
-         Soq3/X12WhkmGy+qU1pxsayoWD9IOWweVg9klN7aZVgE2QVstxojbt7Yr9NSzWMRABo4
-         85sQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709168138; x=1709772938;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eliV97qbvjzlWA6WTHOIiPM9PEq5O0yXOeFOONF3xgI=;
-        b=M/lo673FLBNY7LehWx0zKl56xRK7vZwc6dZAjOxihmzBRsCOa7ztu/289neScOyxG8
-         3J9kBTjvKE88zOS5R0TGztXJPRcqmCVAuHdGVXuAUzO4Y6yd2hDXtXzVQ7IgRuBB4jj9
-         8z3JYK6eFiLrjR43PkYLd2fU60D7gCXlHtrdU82PhjM2llqer7f3GyHQuqwxbSEcizti
-         DMgI9lGIMwt7KYiNiBpG9lGpK9+IqZvdC5SZ4ULcrZL2WUn8fxqYsVLUDm0lNOjOewWt
-         RW1BYjGVi0d70Z8tCNpkfgO3+zilp3Wx2gO0mZD2Sw50FuNQ04Ktpvaz2BkNYiu8BLvx
-         mL9g==
-X-Forwarded-Encrypted: i=1; AJvYcCXkc76wxgyZtpXoZmndKQGnglf+3sitMIqgmbBIcYZSnztJdhdUi7pgBz940iY4Dr3kS5SZ8AO935bW9BZoBZ52hvvQHvI5fh+6upIm
-X-Gm-Message-State: AOJu0Yzf3hA2ns1+YwHJCAQu1wHtTAwJIh2oauf7pIPc5AO75amnOPhu
-	RSWy0lQQG3QffixSBGceTyMgEa52a5tU0MAKrzfEp1TgjMV4UyJS+GD8hNpjUCFdFOy+tZj+p7u
-	MIw==
-X-Google-Smtp-Source: AGHT+IGzoolXH5/Ep5baoVnZ7lanocljLeHRfew+WA071KUPfkGU9QcYsHqkuQzMw7/1VGlx+YyYgvht8/s=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90b:1b49:b0:299:dbe9:353b with SMTP id
- nv9-20020a17090b1b4900b00299dbe9353bmr2092pjb.9.1709168138371; Wed, 28 Feb
- 2024 16:55:38 -0800 (PST)
-Date: Wed, 28 Feb 2024 16:55:36 -0800
-In-Reply-To: <Zd-2VK2kvMr_t1jx@google.com>
+	s=arc-20240116; t=1709168172; c=relaxed/simple;
+	bh=8INiMNb8bGe9aH8MD1xrZEujm+XkODnaql/+pLNknt0=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=p6OqHIbueUtxk1Dr1eMs5BZH6HxoOYl+qaU+HH5xBE/IXaktzYRTtBF6aIZiS83DaUREBNcVwQHPsy73zprL4c36VI5DhlEMbUYWSEmfh7j3G+wejsg9Y46wl2oIP2WQ4tYIt4JPu3K5uviv2Yrv+uAjTLGPbqnJ8oorA1VmZck=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Dtr4muXV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6112C433C7;
+	Thu, 29 Feb 2024 00:56:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709168171;
+	bh=8INiMNb8bGe9aH8MD1xrZEujm+XkODnaql/+pLNknt0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Dtr4muXV2rTHbzpPr88K48luIP2g5EU4EX+96sQpgs2qtpPNDRTn8rPggkUSD2ZfG
+	 48BtLthfzFgdoGiQGSW+PLQjm11pds7mKoPGIR3Rw/7bEKrfufh4/jMX4q/Z8g5tAl
+	 oZTnu3DWuw1pvw9su+znP5UltSVjQB+QRC7dqkr1zFT8CYpE3nijeKnOMri4ozteck
+	 awembGWUfpqTpg/GNSa7/gHIq14jzb43s58g+58dZoM6Os779mvmpqmvCu1B9BC7Ms
+	 TKaGc1dS8DssrFm+AArg8gWcpHiw6UtNWSLatVqVUQ4JwwprQnoAH1ePVxfwbp3zaf
+	 XsNBq1wjQWgtQ==
+Date: Wed, 28 Feb 2024 16:56:09 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Kees Cook <keescook@chromium.org>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Vinod Koul
+ <vkoul@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, Jonathan
+ Cameron <Jonathan.Cameron@huawei.com>, Mark Brown <broonie@kernel.org>,
+ linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+ linux-spi@vger.kernel.org, netdev@vger.kernel.org,
+ linux-hardening@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
+ Lars-Peter Clausen <lars@metafoo.de>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
+ <pabeni@redhat.com>, "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: Re: [PATCH v4 7/8] net-device: Use new helpers from overflow.h in
+ netdevice APIs
+Message-ID: <20240228165609.06f5254a@kernel.org>
+In-Reply-To: <202402281554.C1CEEF744@keescook>
+References: <20240228204919.3680786-1-andriy.shevchenko@linux.intel.com>
+	<20240228204919.3680786-8-andriy.shevchenko@linux.intel.com>
+	<202402281341.AC67EB6E35@keescook>
+	<20240228144148.5c227487@kernel.org>
+	<202402281554.C1CEEF744@keescook>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240223004258.3104051-1-seanjc@google.com> <170900037528.3692126.18029642068469384283.b4-ty@google.com>
- <Zd-2VK2kvMr_t1jx@google.com>
-Message-ID: <Zd_WCJtlPpJVDcyg@google.com>
-Subject: Re: [PATCH v9 00/11] KVM: selftests: Add SEV and SEV-ES smoke tests
-From: Sean Christopherson <seanjc@google.com>
-To: Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>, 
-	Oliver Upton <oliver.upton@linux.dev>, Anup Patel <anup@brainfault.org>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
-	Janosch Frank <frankja@linux.ibm.com>, Claudio Imbrenda <imbrenda@linux.ibm.com>
-Cc: kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	kvmarm@lists.linux.dev, kvm-riscv@lists.infradead.org, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	Vishal Annapurve <vannapurve@google.com>, Ackerley Tng <ackerleytng@google.com>, 
-	Andrew Jones <andrew.jones@linux.dev>, Tom Lendacky <thomas.lendacky@amd.com>, 
-	Michael Roth <michael.roth@amd.com>, Carlos Bilbao <carlos.bilbao@amd.com>, 
-	Peter Gonda <pgonda@google.com>, Itaru Kitayama <itaru.kitayama@fujitsu.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 28, 2024, Sean Christopherson wrote:
-> FYI, the hashes changed due to a force push to squash a bug in a different
-> series.
+On Wed, 28 Feb 2024 16:01:49 -0800 Kees Cook wrote:
+> So, I found several cases where struct net_device is included in the
+> middle of another structure, which makes my proposal more awkward. But I
+> also don't understand why it's in the _middle_. Shouldn't it always be
+> at the beginning (with priv stuff following it?)
+> Quick search and examined manually: git grep 'struct net_device [a-z0-9_]*;'
 > 
-> [1/11] KVM: selftests: Extend VM creation's @shape to allow control of VM subtype
->       https://github.com/kvm-x86/linux/commit/126190379c57
-> [2/11] KVM: selftests: Make sparsebit structs const where appropriate
->       https://github.com/kvm-x86/linux/commit/35f50c91c43e
-> [3/11] KVM: selftests: Add a macro to iterate over a sparsebit range
->       https://github.com/kvm-x86/linux/commit/57e19f057758
-> [4/11] KVM: selftests: Add support for allocating/managing protected guest memory
->       https://github.com/kvm-x86/linux/commit/cd8eb2913205
-> [5/11] KVM: selftests: Add support for protected vm_vaddr_* allocations
->       https://github.com/kvm-x86/linux/commit/d210eebb51a2
-> [6/11] KVM: selftests: Explicitly ucall pool from shared memory
->       https://github.com/kvm-x86/linux/commit/31e00dae72fd
-> [7/11] KVM: selftests: Allow tagging protected memory in guest page tables
->       https://github.com/kvm-x86/linux/commit/bf47e87c65be
-> [8/11] KVM: selftests: Add library for creating and interacting with SEV guests
->       https://github.com/kvm-x86/linux/commit/bdceeebcddb8
-> [9/11] KVM: selftests: Use the SEV library APIs in the intra-host migration test
->       https://github.com/kvm-x86/linux/commit/8b174eb9d289
-> [10/11] KVM: selftests: Add a basic SEV smoke test
->       https://github.com/kvm-x86/linux/commit/faa0d7027de3
-> [11/11] KVM: selftests: Add a basic SEV-ES smoke test
->       https://github.com/kvm-x86/linux/commit/974ba6f0e595
+> struct rtw89_dev
+> struct ath10k
+> etc.
 
-That didn't last long.  I forgot that I needed to change the include guards in
-kvm_util_arch.h.  New-new hashes:
+Ugh, yes, the (ab)use of NAPI.
 
-[1/11] KVM: selftests: Extend VM creation's @shape to allow control of VM subtype
-      https://github.com/kvm-x86/linux/commit/126190379c57
-[2/11] KVM: selftests: Make sparsebit structs const where appropriate
-      https://github.com/kvm-x86/linux/commit/35f50c91c43e
-[3/11] KVM: selftests: Add a macro to iterate over a sparsebit range
-      https://github.com/kvm-x86/linux/commit/57e19f057758
-[4/11] KVM: selftests: Add support for allocating/managing protected guest memory
-      https://github.com/kvm-x86/linux/commit/cd8eb2913205
-[5/11] KVM: selftests: Add support for protected vm_vaddr_* allocations
-      https://github.com/kvm-x86/linux/commit/d210eebb51a2
-[6/11] KVM: selftests: Explicitly ucall pool from shared memory
-      https://github.com/kvm-x86/linux/commit/31e00dae72fd
-[7/11] KVM: selftests: Allow tagging protected memory in guest page tables
-      https://github.com/kvm-x86/linux/commit/be1bd4c5394f
-[8/11] KVM: selftests: Add library for creating and interacting with SEV guests
-      https://github.com/kvm-x86/linux/commit/ae20eef5323c
-[9/11] KVM: selftests: Use the SEV library APIs in the intra-host migration test
-      https://github.com/kvm-x86/linux/commit/69f8e15ab61f
-[10/11] KVM: selftests: Add a basic SEV smoke test
-      https://github.com/kvm-x86/linux/commit/be250ff437fa
-[11/11] KVM: selftests: Add a basic SEV-ES smoke test
-      https://github.com/kvm-x86/linux/commit/40e09b3ccfac
+> Some even have two included (?)
+
+And some seem to be cargo-culted from out-of-tree code and are unused :S
+
+> But I still like the idea -- Gustavo has been solving these cases with
+> having two structs, e.g.:
+> 
+> struct net_device {
+> 	...unchanged...
+> };
+> 
+> struct net_device_alloc {
+> 	struct net_device	dev;
+> 	u32			priv_size;
+> 	u8			priv_data[] __counted_by(priv_size) __aligned(NETDEV_ALIGN);
+> };
+> 
+> And internals can use struct net_device_alloc...
+
+That's... less pretty. I'd rather push the ugly into the questionable
+users. Make them either allocate the netdev dynamically and store 
+a pointer, or move the netdev to the end of the struct.
+
+But yeah, that's a bit of a cleanup :(
 
