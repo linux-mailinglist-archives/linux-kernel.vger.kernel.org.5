@@ -1,180 +1,183 @@
-Return-Path: <linux-kernel+bounces-87052-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87053-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0FB286CEB2
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:20:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8558D86CEBD
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:22:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A567528BACB
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:20:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C2B48B26082
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:21:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A35371428EA;
-	Thu, 29 Feb 2024 16:02:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C32327A15E;
+	Thu, 29 Feb 2024 16:04:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KcTK0148"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="n1W16ORT"
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2062.outbound.protection.outlook.com [40.107.6.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E69613F427
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 16:02:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709222562; cv=none; b=c2j7PX/IV7sgFCzksU8MrnezF/JDaiSC4MHzu14aNHb7WxpcvuTEMiOIHLSJTt1mHmh50s5Cyr4WnEsL0L6HXrMEpyKljvjGeM9R4NESh2Bprk5Jm8TRHBLxMQBqFyZbD2A1Y50cJCc7Yq7/ygjniL1cF1im+YUXY2nnPUrAY+U=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709222562; c=relaxed/simple;
-	bh=wA6/NCRWbGF4UBqPQpanKkBvk0zz/+RnoTAw/npQYHs=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=YGxsOZPG2PxdVMMV3mWvBd9xhV9lOe/bb9ySjkjuB4nt7f6aPQPjPs6TZLlk0aZod3uM6e+PU6BanjhQ7xuxA/Y42xYRRneq+Xhd/g5VzxF+yU7AVg+MqWoDXNeSJD7CDHDqKHt4sTLXuZF1HMJqKCzOoj+u0KY3Oa2IweohCL0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KcTK0148; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dccc49ef73eso1883638276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 08:02:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709222560; x=1709827360; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GAuXf0DJO8tOCKY3YV3tHsU6z5YsVb54ZKPvhRBV/xk=;
-        b=KcTK0148tHfabq5jySgVFnibytuzlyP/DQ2S8ww34Nnf9svJW/E/V0H5XROLhmaXBR
-         jQ9a0cL2bCdoy0f8NLcDwauMMvpugfzfvSpVctrsN/88d2bOhEBQDOefIcz3PINyIAl+
-         aTgaII5oJ3m2X1p043V9bOh7j2zJidY8hw1C45Myb0POTzsDqRpWTkl+iRwNbegrHtJG
-         W/jZYz3ECuJPwe88ws7oeYH2XOi0lqsCGw3kY8PVejfvoPntG+nySBfL24lFKaWk/iD7
-         WTfoMrdJHVX5Y9euKT//s0PDkSQVfPWeTsgf2k/sQQMFV7eyAqJm1at5A68Hx2bNkURa
-         Ba5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709222560; x=1709827360;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=GAuXf0DJO8tOCKY3YV3tHsU6z5YsVb54ZKPvhRBV/xk=;
-        b=kmjH+lw9MpwHWLgn6ilXYgGA8ov9M42e+p9VlShapx256vudEWEx+jVo9Vswp7+ldR
-         eDvcbpkaxKDhftkpadik0E9gRAwbJ0Oc3SAUtKAQ18WPnVEW22lBDODEEsZ3f0TARLNr
-         7bxW3kGP7B5sSQnHBsFurm3lXClcRsqXGiPDeJoLBK4fTqqVSzzhEu0w0oRjXIcLf0fq
-         a/BWPhOuR7G0JuJwhEB5XIh8l6n7OmPHd+E2/70ruIFffSNllIxngtvvwN8qvJcoR6Gp
-         2ytOv/ZqD3o7tohE104A4Ew7EX4PU4fdY6mS/hJSGGNWNo8FdscYAu2N53xdoArFkgUZ
-         Beew==
-X-Gm-Message-State: AOJu0YzDrEb7PhLj5jG+KtQHEJYeoNqS5pFJmR0++1Ecd+rsOIfjRXsB
-	Ke3d551NC5l31bhfhFMaspT7A+MoCowwz/rIE/9rl0F52vmGgdsXDtIBEKYICLYcFxQn4NvsjCA
-	K1g==
-X-Google-Smtp-Source: AGHT+IF5NR9OMvvFjif3DsgvK0jpQks91MFMKGd3JY1jrWeykZgUWksJDuC0Z/ca6xul8OXCuHsgaKTxvqI=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:10c2:b0:dc6:e823:9edb with SMTP id
- w2-20020a05690210c200b00dc6e8239edbmr106898ybu.12.1709222560220; Thu, 29 Feb
- 2024 08:02:40 -0800 (PST)
-Date: Thu, 29 Feb 2024 08:02:38 -0800
-In-Reply-To: <CABgObfaPodSSzArO99Hkn=vpGotO1wZ-0dZKEZHx9EqLZ7M_XQ@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1A471428F6;
+	Thu, 29 Feb 2024 16:03:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.6.62
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709222641; cv=fail; b=HXb2GBZQsXmNRoc1wJ+nhjhLy020g4d9mLP/Vo7gP+ywZ+h/MaG1cAFhPiX/N+dJ7hDF4RbEngZkkOxbOytpj64KurO48Oqvoyf2bRbo2Mm68oEfxJbqEjTofa3v8dsKIp0KxFBK/+/hiM8YpUAfQ9P2xdBPZX/KpIg6L9vInOo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709222641; c=relaxed/simple;
+	bh=J34PPTPZgDMqAJFs3GBmF2I1prgWnq03Z89gr/voEps=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=eFPd0RPIFOa3KKToQH2CdJk6ozD6CfWL0JUlBRNmasvFnnMuEGG74BTEEuyvbDM1mvpSqVxJw8HDTRJHlgb3xCQR68VbwNn5vzNrE76cgN7JllpBAmUN8hDPXLh007ScQUZXL1i2kYongkVkdnjLGuhUCnq8Tm0w2hSA+HJqelY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=n1W16ORT; arc=fail smtp.client-ip=40.107.6.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZsB1VpTf9q2ZZRj+8d6naV88OJb2oriN4MSDcoqSvhFllaT7yfjataVDG7xbXBDfKp+mbdZznVtFQ9G32+OMeNNkvAmfvxPU5NcOdjpquU5VtRF+vNeWnYjvG6K3foKrGAJq4LGw7NbSyg5c/l0YktsFtFX8cMk5gVThzQPQyD2p7ADyUHmPo/kM2w+/fwRSw3qdyoY22kBH3eBZyX5Jy5FlOvc3Otsj0Xzc+KDH9Mjd6vnZDfeU+IFD1Fm7pJV2nYsO19E6/n9nolldkdkYszmmJSCH9vC/qXNJ3qfdZ2x+EWPmS9VgpgU/kNjkWuhuV16l6Uz/FATW9CUC4XYEcg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZcBMaqnfcJaU3c109p+MopciobkS2+LH7jcK3QTrXEM=;
+ b=SjSu45uke1va1vVflCB0U4VT7gTiA0D0ZObIZ2z3pr78ptUXdPGN37mjpxILz2K7Y/6eKDGNSbxN2lEefL1Zmm/108inI/oSJyHlhI1S+YLlHpFw1MCX6JCmOg0rF+b++k1NmYFBRVKX15A1kvETd9YWuIMLPicS9sCPftgWzR7hszg8ByB0k3+OTQgmbB5MggHIlKoXw2E6zIJUf1ThSi2b59fReL3YEeENvHJG9BfZnMMO9AQLLU/AcNakYf9is4H49GIzhD/+fq5hAmbddZe8vKWQ3Bk+J+fVo+7QzCGRc71OkBZwjFbeExoY1gOMUg2NXyolE8xTsvLOU1aD+w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZcBMaqnfcJaU3c109p+MopciobkS2+LH7jcK3QTrXEM=;
+ b=n1W16ORTj+eUe6B8zHHVOOVc20DNdoxoebNQ6Ufs+Qw1S9vO/iYaWJvhBjQXP4wazfSNaSluXkgUYfSjpvnO9ZUAICmDWYTCRadnFyWRB9PXCxC00OUlNg5nfuFbcpzPByL+QcMQpC+LlITV2IGfmIyJ+PoIeN7pWvs14pp9E5M=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by PAXPR04MB8765.eurprd04.prod.outlook.com (2603:10a6:102:20c::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.41; Thu, 29 Feb
+ 2024 16:03:57 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::9af4:87e:d74:94aa]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::9af4:87e:d74:94aa%7]) with mapi id 15.20.7316.035; Thu, 29 Feb 2024
+ 16:03:57 +0000
+Date: Thu, 29 Feb 2024 11:03:49 -0500
+From: Frank Li <Frank.li@nxp.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Vinod Koul <vkoul@kernel.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Peng Fan <peng.fan@nxp.com>,
+	imx@lists.linux.dev, dmaengine@vger.kernel.org,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+	Joy Zou <joy.zou@nxp.com>
+Subject: Re: [PATCH 4/5] dt-bindings: fsl-dma: fsl-edma: add fsl,imx8ulp-edma
+ compatible string
+Message-ID: <ZeCq5Sk+sPA9rEtI@lizhi-Precision-Tower-5810>
+References: <20240227-8ulp_edma-v1-0-7fcfe1e265c2@nxp.com>
+ <20240227-8ulp_edma-v1-4-7fcfe1e265c2@nxp.com>
+ <bb3b61b6-4f39-4123-be50-0e2c8f07eb99@linaro.org>
+ <ZeCooFQtOK9MuuJn@lizhi-Precision-Tower-5810>
+ <ec835855-49f6-4b9a-9c58-e3fb90946c26@linaro.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ec835855-49f6-4b9a-9c58-e3fb90946c26@linaro.org>
+X-ClientProxiedBy: SJ0PR03CA0173.namprd03.prod.outlook.com
+ (2603:10b6:a03:338::28) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240227232100.478238-1-pbonzini@redhat.com> <20240227232100.478238-11-pbonzini@redhat.com>
- <Zd6T06Qghvutp8Qw@google.com> <CABgObfaPodSSzArO99Hkn=vpGotO1wZ-0dZKEZHx9EqLZ7M_XQ@mail.gmail.com>
-Message-ID: <ZeCqnq7dLcJI41O9@google.com>
-Subject: Re: [PATCH 10/21] KVM: SEV: Use a VMSA physical address variable for
- populating VMCB
-From: Sean Christopherson <seanjc@google.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, michael.roth@amd.com, 
-	isaku.yamahata@intel.com, thomas.lendacky@amd.com, 
-	Ashish Kalra <ashish.kalra@amd.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|PAXPR04MB8765:EE_
+X-MS-Office365-Filtering-Correlation-Id: b466f03a-a194-46d3-a01b-08dc39400906
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	U9y/MKehX7nFJ+ySl/9nISwxyqJ9wy5cxQnLPAvW0MtUyT6BTBJf9G4o2zoQz5k00hdju1zNpQ+jsgFbuEFhqHLdihVcltpMQ33RCX3dqjVpjgji9Qjr7kUtaivKqosnUpJKWI4nZ3BtMaDr8iNtWQ5+YYNYGnoIvAkOTVj+Zk2qyx3fS50hKo57TBGnLTj/p017GpKWnzLi1W3Jd2O2XkZsa8QWwBiGsBDdmxxYvhDYpWlLTgjghxAkLt7SxQEUZm4dzqXntBzD56xlRXieMSS3M56tiV4JTv99x6XvMQLE76JbL2hLyHYcbTf2nDD9dpVQO/e1oekIA5Zmcux5VUB+07Qo7nPKtkSpJjHz3ehEv4YZB+rvz30O0VCgPiekIUofCpJQjHm5YEeQoPl4TODW/16etEVJ6NG99pfhhyNMD1Yfq6PbGxeGeNtgJbtCt9KgspZ113UeZZcUZgNTtg1N3ueiW/2mVLfGx3nxiWnZBs3fMXfl0oPXQlfws2FyzLMxPenM7JaJ8/YVqDdZhtTnq3cQwCxYkwrKR+s3rje12UYeiLzJFG/L/urTjfQwclT8Syhr7trIZp87nFK3+xTsZtLX8xsZtZrYHe0AhkL5DGQYb4p7Rz83eJSyUwTBB+29o+p9BFrfZ9gPNOHNNzn8pFrK9wdFGUj5c0O84gJ6xp6hN2sfS4PKxgto9lJT6gQvwJ/Tmfri/kEl4KhB4w==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?IjcCy+mjIrDzqFzxHD0ERFqfa9FcsKI7nIPTx11guxHaFtYvbN1uytSjPp7r?=
+ =?us-ascii?Q?JF3+CNxEo/lBUgoIGkxVb0uVUuLq4qfDvicBTPY+/rgHZtyg3THJQfW60ihX?=
+ =?us-ascii?Q?nBCJw+pgTXdtoSXzh5yju/78cKrUkytc7YoKTpXYCD7WeHBMAnPZrx8nbh8h?=
+ =?us-ascii?Q?NaBkdc+1ZSpbEeSEUpqXcM61U2jZfAbWjmcU0uwAchcBLe9m0mNFG6W1Gay8?=
+ =?us-ascii?Q?84mJ3v2sOjOo+MwPPqaF5wpFTo5HJPEMOQIOKC+t7QXJ3L1V6OH5F/UkJfzS?=
+ =?us-ascii?Q?YLqjvwo7NfZYxEf8hGZNvm353iKurJeaxJygxqTQBekrPVVHK7hLOFSufrWn?=
+ =?us-ascii?Q?eoFnTBUcL1W5cSr/lPB1XmjRQV2ENDsKOP1A5IhbwrdfcYIJE3V7xYvZ2ZnG?=
+ =?us-ascii?Q?0tZqPAP+LbTFbplLv2AZi491VgwOtAF4mGRIXb/pb5ddQvrJhzdl6MEMrE49?=
+ =?us-ascii?Q?DLCjNPfh9+HNkxA40Nqk+p0/cJaV7yLWtkjx1kYXsZnvHcDeKm2i1BNXgaYv?=
+ =?us-ascii?Q?ShU61wiEs+wsSErmwIR/EasqCZ+BVZG1P9plmnpmTFcjrvosbl58uA55t+e6?=
+ =?us-ascii?Q?AZ6/0IcOelAk09JekXmye+i0MPtVTy5WUbNxrl7+ukQLSkwji4lFOX1kiFla?=
+ =?us-ascii?Q?0uX7Cfcz9lZPcRRjHYETxuLkpag3CepIqBeyW0pVN4QVINQBy3al3VsSLJNV?=
+ =?us-ascii?Q?E6lTCJBLZNvXwpyzgcL3A1ByHC0KHCi1Cuq9KJuCo+xFLGyhuSGzAr1LTFGq?=
+ =?us-ascii?Q?Ub/7mjn/cDP/Se2iR9t3wXygdksYuoG6B/fQp7AAI3em79ITy+3MA8X+aQtm?=
+ =?us-ascii?Q?62xmCaFzVdL/fNOJNmpfWLPBPnU7lu7LJ+sd3j0OFeTh2YBbOnSNknZeMxYW?=
+ =?us-ascii?Q?aqa0GiAMtc6lHZQpI1H39Q39RDpQIxC3DSdL0xE/Iyeg7DMLoAypwq66f8dH?=
+ =?us-ascii?Q?Po8h4DcN8UjCRnZuWQHf4Y83QbZacm7v0Ci++wyl69u1W+Au6g0K2ZIWI3IC?=
+ =?us-ascii?Q?eKfyBf1og2EEs+04pFubdVdcoqXAS2lNBlvURfKwgBqBD+c1DyqqqGVrolQt?=
+ =?us-ascii?Q?D9AMJHqOfsgzvA6sv1Bie90lN00Ii0WqvJHGaJOJ1PMmKYgL7HFdMpoYHM7A?=
+ =?us-ascii?Q?3F+ZU5Xxog1vA6cpv5lEq7wjRXxv9OwfPPJdNYg2p5McnnuNxH+hW4OQRl4Z?=
+ =?us-ascii?Q?mAHxh2P4h6tyEGqJEpfQP7V2fQ0hyk2DcUTygttffUhM3twhEm79SRW2THLm?=
+ =?us-ascii?Q?XAMoBz9pQPoMyUaVKY2fztDXd7kK7jaVIGZf3a7gOs3/6F58MQRlO2zCPuMk?=
+ =?us-ascii?Q?pQQ70y1Jsu+u0/yzyv2QVrheL2OLBYLvhLSuSrCyoHVG/eV/onNFSKw5oo7l?=
+ =?us-ascii?Q?kY5JMyTbSmhlxN8LihmNFN+0VVchhSDQbGLA2nfnk4M34tPzYrecsxo54vA6?=
+ =?us-ascii?Q?4IoijdEJwHRbFEXGp35DGpR+ZvJB300TgDbEMW5nrm9AeBuKgE5ddHjch3KE?=
+ =?us-ascii?Q?VhzE8vB7VFjImdDygxW3Une5EErEUXY3UuWQw7XnVYkfCR7nIeIowKM4cCjc?=
+ =?us-ascii?Q?uu2kgjM0TdwfVlJKT9jghA9HC8s1RPv//DPcjJep?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b466f03a-a194-46d3-a01b-08dc39400906
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Feb 2024 16:03:57.3073
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Kx4pFx9R/AkC10Hvnjo4HoMO5PY1V0zGfnMvw/AVQUVW9+DJoUOi1gqQdANAXxlkHXHx1RXelq4L7b5+5ZQqaA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8765
 
-On Wed, Feb 28, 2024, Paolo Bonzini wrote:
-> On Wed, Feb 28, 2024 at 3:00=E2=80=AFAM Sean Christopherson <seanjc@googl=
-e.com> wrote:
-> >
-> > On Tue, Feb 27, 2024, Paolo Bonzini wrote:
-> > > From: Tom Lendacky <thomas.lendacky@amd.com>
-> > >
-> > > In preparation to support SEV-SNP AP Creation, use a variable that ho=
-lds
-> > > the VMSA physical address rather than converting the virtual address.
-> > > This will allow SEV-SNP AP Creation to set the new physical address t=
-hat
-> > > will be used should the vCPU reset path be taken.
-> >
-> > No, this patch belongs in the SNP series.  The hanlding of vmsa_pa is b=
-roken
-> > (KVM leaks the page set by the guest; I need to follow-up in the SNP se=
-ries).
-> > On top of that, I detest duplicat variables, and I don't like that KVM =
-keeps its
-> > original VMSA (kernel allocation) after the guest creates its own.
-> >
-> > I can't possibly imagine why this needs to be pulled in early.  There's=
- no way
-> > TDX needs this, and while this patch is _small_, the functional change =
-it leads
-> > to is not.
->=20
-> Well, the point of this series (and there will be more if you agree)
-> is exactly to ask "why not" in a way that is more manageable than
-> through the huge TDX and SNP series. My reading of the above is that
-> you believe this is small enough that it can even be merged with "KVM:
-> SEV: Support SEV-SNP AP Creation NAE event" (with fixes), which I
-> don't disagree with.
+On Thu, Feb 29, 2024 at 04:58:23PM +0100, Krzysztof Kozlowski wrote:
+> On 29/02/2024 16:54, Frank Li wrote:
+> > On Thu, Feb 29, 2024 at 10:49:43AM +0100, Krzysztof Kozlowski wrote:
+> >> On 27/02/2024 18:21, Frank Li wrote:
+> >>>  
+> >>> +  - if:
+> >>> +      properties:
+> >>> +        compatible:
+> >>> +          contains:
+> >>> +            const: fsl,imx8ulp-edma
+> >>> +    then:
+> >>> +      properties:
+> >>> +        clock:
+> >>> +          maxItems: 33
+> >>> +        clock-names:
+> >>> +          items:
+> >>> +            - const: dma
+> >>> +            - pattern: "^CH[0-31]-clk$"
+> >>> +        interrupt-names: false
+> >>> +        interrupts:
+> >>> +          maxItems: 32
+> >>> +        "#dma-cells":
+> >>> +          const: 3
+> >>
+> >> Why suddenly fsl,vf610-edma can have from 2 to 33 clocks? Constrain
+> >> properly the variants.
+> > 
+> > Suppose you talk about 'fsl,imx8ulp-edma' instead 'fsl,vf610-edma'.
+> > 
+> > imx8ulp each channel have one clk, there are 32 channel. 1 channel for core
+> > controller. So max became 32.
+> > 
+> > I can add above information in commit message.
+> 
+> No, I meant Vybrid. Quick look at this code and the actual file suggest
+> that you allow vybrid with 30-whatever clocks. Test it.
 
-Maybe?  That wasn't my point.
+Any tools or good method to find it? 
 
-> Otherwise, if the approach was good there's no reason _not_ to get it
-> in early. It's just a refactoring.
+Frank
 
-It's not really a refactoring though, that's why I'm objecting.  If this pa=
-tch
-stored _just_ the physical adddress of the VMSA, then I would consider it a
-refactoring and would have no problem applying it earlier.
-
-But this patch adds a second, 100% duplicate field (as of now), and the rea=
-son
-it does so is to allow "svm->sev_es.vmsa" to become disconnected from the "=
-real"
-VMSA that is used by hardware, which is all kinds of messed up.  That's wha=
-t I
-meant by "the functional change it leads to is not (small)".
-
-> Talking in general: I think I agree about keeping the gmem parts in a
-> kvm-coco-queue branch (and in the meanwhile involving the mm people if
-> mm/filemap.c changes are needed). #VE too, probably, but what I
-> _really_ want to avoid is that these series (the plural is not a typo)
-> become a new bottleneck for everybody. Basically these are meant to be
-> a "these seem good to go to me, please confirm or deny" between
-> comaintainers more than a real patch posting; having an extra branch
-> is extra protection against screwups but we should be mindful that
-> force pushes are painful for everyone.
-
-Yes, which is largely why I suggested we separate the gmem.  I suspect we'l=
-l need
-to force push to fixup gmem things, whereas I'm confident the other prep wo=
-rk won't
-need to be tweaked once it's fully reviewed.
-
-For the other stuff, specifically to avoid creating another bottleneck, my =
-preference
-is to follow the "normal" rules for posting patches, with slightly relaxed =
-bundling
-rules.  I.e.  post multiple, independent series so that they can be reviewe=
-d,
-iterated upon, and applied like any other series.
-
-E.g. my objection to this VMSA tracking patch shouldn't get in the way of t=
-he MMU
-changes, the #VE patch shoudln't interfere with the vmx/main.c patch, etc. =
- In
-other words, throwing everything into a kitchen sink "TDX/SNP prep work" se=
-ries
-just creates another (smaller) bottleneck.
-
-I am 100% in favor of applying prep patches in advance of the larger SNP an=
-d TDX
-series.  That's actually partly why I ended up posting my series that inclu=
-des
-the PFERR_PRIVATE_ACCESS patch; I was trying to pull in using PFERR_GUEST_E=
-NC_MASK
-and some of the other "simple" patches, and the darn thing failed on me.
+> 
+> Best regards,
+> Krzysztof
+> 
 
