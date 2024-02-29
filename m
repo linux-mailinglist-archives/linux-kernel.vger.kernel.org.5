@@ -1,81 +1,81 @@
-Return-Path: <linux-kernel+bounces-86444-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86446-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98F0A86C571
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:36:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AAD2886C579
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:36:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50AB928E19A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:36:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5FC69292753
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:36:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CA86605BE;
-	Thu, 29 Feb 2024 09:36:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50965605C2;
+	Thu, 29 Feb 2024 09:36:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TnoDzhTP"
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="N+NkVQ4y"
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CA945788F
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 09:36:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAD275F86C
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 09:36:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709199380; cv=none; b=Bab/2eaGoNqmwWNmQg57qN81mmvYYCG7MbppTm0Riic2qlVxygB7tU8n/ymjWqCxCzq3qyv92Vd5xq5KkAiIMzxusz2HP4c9/m63ZT896EYRTah6CeaEDv6YXf07ni9SNZ7V8pds4dEhBkaDAVYvXH8+/Ys6l1C7Eyhj8NDBWiM=
+	t=1709199412; cv=none; b=qbYPrv+XQSbajWsu6wu8HEK8uyk3pNPIL6DDtQLy3oyTl6/zOa9qyG71840LBbx0PIbKBiLzuXevyXnYVFZo31vz9L4yums+jdo8wP1eElSG7W25Jf+g0ELhiavvU5kNdCyjU7X9QHnCXlEA3TnCO1cYvAJ1w9PUI5wLF41KG7M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709199380; c=relaxed/simple;
-	bh=NIqCg2Lig+ehBNYGyTvhpjqd6T9MIQgC1nLdSgKx46A=;
+	s=arc-20240116; t=1709199412; c=relaxed/simple;
+	bh=HRVE6hg2C8i2UwVPXbLbNe+/2xcMJm0w38qFCouRcX8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dWyUwx+EAz/XqmrSC5r87sWCeLVZHuwymubuSeZXowwUS2D67Gk979u8GhBTXuAa+BdKZKuE1fcYK2We+zOoLxYdDagZqb+xvCCv6PpLqEjHAOty3cYV6WISCDvpaP2dXoANRLCBq/KnlItwbrtcIKQfhmTAwEZ9mANaZtLjRtc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=TnoDzhTP; arc=none smtp.client-ip=209.85.128.172
+	 To:Cc:Content-Type; b=nO/pV3vWmNdTb5scl44CAbR5t51zA5LfvEWq9sUAl2Hlex2lN+8aG7mnJWjTew+aewtXnjuVe6skdMuNj/z2/m5SMBhfZNW4B6HafUYCoP2LGUeb3SIIBKrYrPYrp2C5lsNOfJPPEG+XfoUpNGS54/vBrf/06kJjC04fuvOgnac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=N+NkVQ4y; arc=none smtp.client-ip=209.85.219.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-6089b64f4eeso5981437b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 01:36:19 -0800 (PST)
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dcdb210cb6aso784723276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 01:36:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709199378; x=1709804178; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1709199410; x=1709804210; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NIqCg2Lig+ehBNYGyTvhpjqd6T9MIQgC1nLdSgKx46A=;
-        b=TnoDzhTPL1NMEZWMb9nWQeHeTZInkBgPurxPFKbH38pZIo44mqQN+t6kAy2aVwxtwX
-         ygc0IC1VlxoEdbV1zVbiW/Tuk7tUaI6FR9L5hYq/cjpqoq+s0alxRTDL+tQiVmkph/5r
-         jhsdwpAY/PeTtiDYGgLJdsQI1dP6yeSs7H0XyjbgQaL6A8CxF7xfgAxQNO+n+ljguT6W
-         AuAx1TfyDCFT0fci2mNf20G0doXt1oPguN4lNCxkQCR/gHTogrdQT1qVFbJ2z5FHfDJS
-         bLetwnTif5DKGj8evqSdsQ45zXUKFLfL3CnmaKJAUzYNPKslEM2Rj2+AtuHQAdMg0gOi
-         fzJQ==
+        bh=HRVE6hg2C8i2UwVPXbLbNe+/2xcMJm0w38qFCouRcX8=;
+        b=N+NkVQ4ym+hJ++FuHGWxjCQntnhgkVRmzxwVeleBIaOaEfaso+MqdJ7pXEeiqu2l1c
+         iTjOgvUsCG4LvuyDV51EmtTIy3iBs4qxbI+QiOhegFj1/+JVpLt01/xc+3/exjI4T7kv
+         qBqacYCybOydjJT8n+JR0+bi1qja12bQOGApRr0i9D9yoy+ughHFyH1GOoneyZOBzsro
+         /YqneMt7yNFDRMPiziP5ET0Y+zgicspC/OM1Pbeua4idX2n9O4BhzWSZPhI2UoBcen9h
+         G/0UMurtPgSZbJizdEbmXq+Bq99wcqUhREtlnXiwul9CZzz7yYn9EiLXJtIIM0OMHKdK
+         fTKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709199378; x=1709804178;
+        d=1e100.net; s=20230601; t=1709199410; x=1709804210;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NIqCg2Lig+ehBNYGyTvhpjqd6T9MIQgC1nLdSgKx46A=;
-        b=PggUQC/6nfyUvO3t6ymzxl+btLGeNNnhEKL2I7dQ6jr4J6DSls09PZYvO2KqA7qgJH
-         2mb/GqeKsDktdxo0+v3cGeRNoDaxgIqBYq6VrBXkeWiF8MZK43hz3/JccaqRYyQqtsm1
-         4SI1tQrzbzpWTHZV4Gpu2qGIZ1Zv8NWZCsXRv3PQMDf5hHCxVXHccw3mTu5cA0XJEJTS
-         yzyjR1goLvi1jT9rLbdyNTeh4SetT8euhU4K709ts8u/xCLajFSrR0iqOfyFdf7doX32
-         x+AFhlbxzbJEa2ujX7gwDuijKF2bkIC/RxQgJAINpLrS3uJzu4sk/2KWmb8j6iVYo5Gu
-         ol/A==
-X-Forwarded-Encrypted: i=1; AJvYcCVpAMCmvP6e1MLxrpigoyrp1RrXrqV9CXlgwVZsVDNmRHZezMp0cgc6KS+MCHFzT0FwHkHNrMhkJN0q1jgd2QDc56kzFed4J5Qi/d6f
-X-Gm-Message-State: AOJu0YwhxyhKaJ72kzTJ7zILeeCpyx7/6HPl7mecXYGzwOULexlu1ciO
-	yox3i5kQTVPGTO5tDSl6DUIcYtX7LN7FhImvDp5fy6K115Pbh6Yu4O1gA7yZBTrhibuvjF2xvrM
-	Udd1ruwDxSRjSJQuOXrAx+++Gj/dAm1MZdqzCGA==
-X-Google-Smtp-Source: AGHT+IGmwaMXnIIeUIA6Bhmf0jz+VJ67d+9hoLzM+6q8PV0Woj1UIg0FkmlH8MD2QBtjAqYNuO4XZHGyfTuC4wsmq/c=
-X-Received: by 2002:a25:aa67:0:b0:dcc:4a0a:d0ba with SMTP id
- s94-20020a25aa67000000b00dcc4a0ad0bamr1554828ybi.63.1709199378444; Thu, 29
- Feb 2024 01:36:18 -0800 (PST)
+        bh=HRVE6hg2C8i2UwVPXbLbNe+/2xcMJm0w38qFCouRcX8=;
+        b=Ru+X552fQ/xA+/RKSE2SpfM0TEx31yF6rO3FUFPPcUlwezrqokWlaF4DU4hTgRQU8O
+         PYfjVTz2rcRBsMHZVwLPpldC1OQMjZxwAETWjosH0FzlwHlvbHNUXlBpeP5YE7iAP0+e
+         qXBARBA6XHUc1j7K2Dw0ymPqo7ybX4L7TVgy0PeE0uy2W38jQvBNkOI0oXRSEyY7gVVw
+         4LVflJ4X/W3KrUDAETew+QNCWVWXj+a6eIVkrjhk//qXhyrqC7+LzfMzUaWy22AwWgf/
+         wjZliVC0b+/Y1mW57MUq8BeyuRDUKZUoH1H8604qnnI8N7mj21S42Yzfv8KeSh87GLIo
+         nQ0A==
+X-Forwarded-Encrypted: i=1; AJvYcCWOo2930IJOVKds1j/EjltWCLPA3rupbI2t5LEEm5HHHY9Gh85CtJ5A9x84IKdK4cirWVN9Gi2zLf6tMiIYLcUZ7bMAMXrKrFIBeTwb
+X-Gm-Message-State: AOJu0Yx0hxDVcZ0XsvnZEaSgW6DH6+PO5yecL+4ZyosoSIjMDrN2TSFn
+	kUIERSyW2tGwsByHHNwgmhNv06GolBkAVyzerr+vbmd95WgyhBbmf/jbSR3YA1BGpqaRRqBrNC/
+	W0bWshRx6BAuXFGhtRQFWtLjlsne4MhmuzVR9uw==
+X-Google-Smtp-Source: AGHT+IHhsAuM9klDDxUX49OMI/K+reZg5M4GVu3UBpyFzS8Yyn8s2dq8RMcE87J3B6/nRu2TcRiTs79BHRiZCfGsL/g=
+X-Received: by 2002:a25:c285:0:b0:dc7:4800:c758 with SMTP id
+ s127-20020a25c285000000b00dc74800c758mr1523503ybf.10.1709199409964; Thu, 29
+ Feb 2024 01:36:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240228-mbly-gpio-v2-0-3ba757474006@bootlin.com> <20240228-mbly-gpio-v2-22-3ba757474006@bootlin.com>
-In-Reply-To: <20240228-mbly-gpio-v2-22-3ba757474006@bootlin.com>
+References: <20240228-mbly-gpio-v2-0-3ba757474006@bootlin.com> <20240228-mbly-gpio-v2-23-3ba757474006@bootlin.com>
+In-Reply-To: <20240228-mbly-gpio-v2-23-3ba757474006@bootlin.com>
 From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 29 Feb 2024 10:36:07 +0100
-Message-ID: <CACRpkdZ01WqbRDA2B-8cM98RkPtcRbpf06oF2xHhYdfHqPhACQ@mail.gmail.com>
-Subject: Re: [PATCH v2 22/30] gpio: nomadik: support shared GPIO IRQs
+Date: Thu, 29 Feb 2024 10:36:38 +0100
+Message-ID: <CACRpkdYniG8Mf-Bybtq5t8VGZvMvBcugise7g78H19fPDn24aw@mail.gmail.com>
+Subject: Re: [PATCH v2 23/30] gpio: nomadik: handle variadic GPIO count
 To: =?UTF-8?B?VGjDqW8gTGVicnVu?= <theo.lebrun@bootlin.com>
 Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Rob Herring <robh+dt@kernel.org>, 
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
@@ -91,16 +91,15 @@ Content-Transfer-Encoding: quoted-printable
 On Wed, Feb 28, 2024 at 12:28=E2=80=AFPM Th=C3=A9o Lebrun <theo.lebrun@boot=
 lin.com> wrote:
 
-> Support a single IRQs used by multiple GPIO banks. Change the IRQ
-> handler type from a chained handler (as used by gpiolib
-> for ->parent_handler) to a threaded IRQ.
+> Read the "ngpios" property to determine the number of GPIOs for a bank.
+> If not available, fallback to NMK_GPIO_PER_CHIP ie 32 ie the current
+> behavior.
 >
-> Use the generic_handle_domain_irq_safe() helper. The non-safe version
-> must be called in a no-IRQ context.
+> The IP block always supports 32 GPIOs, but platforms can expose a lesser
+> amount. The Mobileye EyeQ5 is in this case; one bank is 29 GPIOs and
+> the other is 23.
 >
-> The Mobileye EyeQ5 platform uses this GPIO controller and share an IRQ
-> for its two banks.
->
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 > Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
 
 Patch applied!
