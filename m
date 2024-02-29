@@ -1,637 +1,241 @@
-Return-Path: <linux-kernel+bounces-86312-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86313-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D34E486C3CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:39:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C852186C3D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:39:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 47F9C1F22C62
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:39:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 27E02B244F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:39:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2806820312;
-	Thu, 29 Feb 2024 08:37:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B790353E07;
+	Thu, 29 Feb 2024 08:37:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linumiz.com header.i=@linumiz.com header.b="ZxtNsvT5"
-Received: from omta038.useast.a.cloudfilter.net (omta038.useast.a.cloudfilter.net [44.202.169.37])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NXb+8rEz"
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5371B5337A
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 08:37:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 009E052F92;
+	Thu, 29 Feb 2024 08:37:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709195840; cv=none; b=pAr+1PVfbO8umO/ecM2htCqYKnaTq2ivkuOaSj4TCbf50uKaiuDM4UPvnMmvvQNyKlCbIOy72nAUOjq5iS+Vl0MV8wV6q/dsX5NJUoKPP++aQWHB6pMG8sEgk76M27ykKeA8+OHgY9EVf/8sfRUlJjua026kxEso+O4otsOGLo8=
+	t=1709195852; cv=none; b=cfObxxMlrPj6w92PWA+he0yhrB75oleZnGB7DRC+Un7wt1+MZTtXy+3+oSP7cbEKXL6alr1F/+jABYGWZzKGJLCoeeimXWo1sWiSWqatuT58jWumfON9+0Fndm+9R1oED3jxHaJMJ3B+BZCAU4d7W1B7QEfHgz+eykRHtRrYM58=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709195840; c=relaxed/simple;
-	bh=ZFn/kKszJGJ+hZv439HEvXPN0ZEFAeizsC4LEBDDlco=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HJn/bsjhkLSWZFUAnJ9OTe675VO3Rv2WG9Q72HbpAec4LZf7gATSFoHT1vXOqwiOFnj1zDUZFLpFjb2/o4YkdpyXIfwTsiCdaPtN837OM1JRIXfMSvI6Us0W4+CSUdm3rrndAuOJkAjdrlWnFjgh5sFX4wE7Nq+jcXdgatBN13Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linumiz.com; spf=pass smtp.mailfrom=linumiz.com; dkim=pass (2048-bit key) header.d=linumiz.com header.i=@linumiz.com header.b=ZxtNsvT5; arc=none smtp.client-ip=44.202.169.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linumiz.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linumiz.com
-Received: from eig-obgw-6009a.ext.cloudfilter.net ([10.0.30.184])
-	by cmsmtp with ESMTPS
-	id fafAreZDCQr4SfbunrGwp2; Thu, 29 Feb 2024 08:37:17 +0000
-Received: from md-in-79.webhostbox.net ([43.225.55.182])
-	by cmsmtp with ESMTPS
-	id fbujrBqq7VgR0fbukrDZ34; Thu, 29 Feb 2024 08:37:15 +0000
-X-Authority-Analysis: v=2.4 cv=N50vFX9B c=1 sm=1 tr=0 ts=65e0423c
- a=LfuyaZh/8e9VOkaVZk0aRw==:117 a=kofhyyBXuK/oEhdxNjf66Q==:17
- a=IkcTkHD0fZMA:10 a=k7vzHIieQBIA:10 a=oz0wMknONp8A:10 a=vU9dKmh3AAAA:8
- a=UXIAUNObAAAA:8 a=AaZsPGPmsafA2eLmkNAA:9 a=QEXdDO2ut3YA:10 a=bFq2RbqkfqsA:10
- a=rsP06fVo5MYu2ilr0aT5:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=linumiz.com
-	; s=default; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=AnNK+AIrGk4ngQV5dAeJdqR4QKuqPbrScoRu615KNKM=; b=ZxtNsvT5ZVcsX295+OZjSW1VfU
-	SJD+TKqRbNTcqzXBmoIGQBH5GA4mtQJuORffJ8B0oLO/uCYYzycp5LyCwghtjdLQDExyoTXrTTRUJ
-	wQxoO/Ao7CUaMRF2PoP3+zuGz5Lf1Pz2AEB61vYOnSl30/T1p5WS1SgVFSzmM06sNXwhfTKznoDxL
-	GyDtFe9ev+vt7P2lYDjqO2KiXvmb7R7A/Sqrbhq6UQOcmnJzdmRGe2JdYTwWxyCJMPbG/EsYYAWYd
-	SglWvHXxiXAdzVNBVwgWNfcIryzGoMKfRhYrdKb5irzh8Ns8YqaC9/0GEpNXpv8ZkL19GQTnFJkOc
-	A1C6XdFg==;
-Received: from [122.165.245.213] (port=45048 helo=[192.168.1.101])
-	by md-in-79.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96.2)
-	(envelope-from <parthiban@linumiz.com>)
-	id 1rfbug-001KT2-26;
-	Thu, 29 Feb 2024 14:07:10 +0530
-Message-ID: <4f8287ae-acfa-447b-b9d0-d26d84d24b2d@linumiz.com>
-Date: Thu, 29 Feb 2024 14:07:06 +0530
+	s=arc-20240116; t=1709195852; c=relaxed/simple;
+	bh=73aWUygvtPP8Z7/LtZcyFtLnYpjq7zVAKtXzB+vWT2Q=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=snD+x5jb4mvRiSScunsXrgAwDI+Ef5qOo8BuHDX8d0BOnYzC65Al37aEJaOvuYjncJOLKWEjI1FhQo5iRhLvcSeJi6HK63/aNCBhK/vsZhO5S97jcT62mcwbFA0wo8LM43ZS03I49b2efHqLaFynfT+HH8ft7bIsWWITnFElaKM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NXb+8rEz; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5649c25369aso914167a12.2;
+        Thu, 29 Feb 2024 00:37:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709195848; x=1709800648; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=e8cTr0+z19J6pwkR8dLU+gDwd3ZIlpIHp0+RUxF/+gU=;
+        b=NXb+8rEznICGDIvxi2NKVXNB/qY1ALUVSCSh7mE4esPGBnZi5OXFqEQptaqYu1ee6y
+         sgguHcPh/8Y5ebb+l2Ak27KQ/7f5E36m+3QSL20RqAMyEqtiqvU55BxixT5/TcoJesy2
+         cNpAmIJvJJKcNbtq5Z8V9JZQJAuEOShdK1G6wyTubJ9OYc3W47J5jT+rxKdvX4UDevPN
+         nSFxaCUntShaF/1EP332iqT8QIYSnlxGC8zbkgpa3nwItqZ8rxSM8HhsQRQZTMHw9PN3
+         wnWcjf5IQKdP4okX76EoPs3y/Y1YlDpwh/mb0FpP/PSEFX+rScuVBW4JKby9nKJhyqkx
+         Q+/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709195848; x=1709800648;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=e8cTr0+z19J6pwkR8dLU+gDwd3ZIlpIHp0+RUxF/+gU=;
+        b=wH27xZK3Lv1xqKjOxw+mRa0+19FIRVA7FzuogvBrk/CRhFWsWs3QAqEa1qATopxNRN
+         JrDctP3b8f9d2RQpliV++irUiu/9Wasu4XX/dAFskPArUxQD5dxSqy1Bm4NcxgeyeSmA
+         CnFPHW4BboZtzR7U4PZVNsafD5B/Q/JOGwYp4eAiH/KB8QP12ZnDZB2CugTSKIr8nMSb
+         YbH5u7VQYJ4Ti4bti2YHtXcUKucWUQW3qSXxW6isEJXXgLQCWSZoJqs3q4WKxH0iRC/q
+         UMW9ggDE2PMG3OvlT6ghYtDwu8mSa95d8agD9KsTHtXL5U0sV6+YhtbJeOJGDf89ncMG
+         NtCA==
+X-Forwarded-Encrypted: i=1; AJvYcCV493dmPYQiJsPQ2g1FiLn7vNSQDVmWhTH91PCzqqWiQl+1YvHtftKYtsubPRDWIsEZfBnrns+kIFQfjm+5taNs1/50dLjnIeCPc3yB1Tk9LBxOmdHs9Lk+CfF7LCeNhaKWVGqWzTyJCtMZrFj47cQ41siiGYQb1Thn
+X-Gm-Message-State: AOJu0YxcyXv2i0VzWHnv8pT6w3o4IiQbqCxWFGlvzkdh7OeI3mG6zP3z
+	6k+F/Cr84s3zsLOGoVJMnCjhUu+NCwrbdIuagoLK4Nw43jl6/m3vkPcAlb8HPngkWw05Bv1CcUO
+	hdav7g1HATwiV3KhbgNz0Z3k3XXo=
+X-Google-Smtp-Source: AGHT+IFLhjfZIE6MHHesG5Kgo+lcNytIZXrW9TCaJs/ONRHajCriDWIZXmhUNamJ26KxMcmMKaD+7mSOf7PlKGyLbYs=
+X-Received: by 2002:a05:6402:3097:b0:564:65c5:f048 with SMTP id
+ de23-20020a056402309700b0056465c5f048mr902059edb.28.1709195848187; Thu, 29
+ Feb 2024 00:37:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: imx8mm: add support for compulab iot gateway
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, shawnguo@kernel.org,
- s.hauer@pengutronix.de
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
- Parthiban <parthiban@linumiz.com>
-References: <20230512055230.811421-1-parthiban@linumiz.com>
- <e24e877e-4065-35b4-bbd2-edbbc694edf6@linaro.org>
-From: Parthiban <parthiban@linumiz.com>
-Organization: Linumiz
-In-Reply-To: <e24e877e-4065-35b4-bbd2-edbbc694edf6@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - md-in-79.webhostbox.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - linumiz.com
-X-BWhitelist: no
-X-Source-IP: 122.165.245.213
-X-Source-L: No
-X-Exim-ID: 1rfbug-001KT2-26
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.1.101]) [122.165.245.213]:45048
-X-Source-Auth: parthiban@linumiz.com
-X-Email-Count: 26
-X-Org: HG=dishared_whb_net_legacy;ORG=directi;
-X-Source-Cap: bGludW1jbWM7aG9zdGdhdG9yO21kLWluLTc5LndlYmhvc3Rib3gubmV0
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfMkNRzp4wGcZcNJpSxVoTO3D97p17WaAdE/LEpx5gp5qRXs+Y8oTMRKQrwqlrDH9bYhcd5Qy0EdsLIYASCxIo5l3XPg5bm/AwsG3P4SJYbYIbwxq/awZ
- 03dx2loRH4Fa+IMTIyx71HiRSTi3q0ZUOdq8bhNOSE/5fMGYbZUoBpJVb4PAyzdDWVFkqqsRTzCHfapxZtrOZ/7Rv2LrfGxXcaU=
+References: <20240202121151.65710-1-liangchen.linux@gmail.com>
+ <c8d59e75-d0bb-4a03-9ef4-d6de65fa9356@kernel.org> <CAKhg4tJFpG5nUNdeEbXFLonKkFUP0QCh8A9CpwU5OvtnBuz4Sw@mail.gmail.com>
+ <5297dad6499f6d00f7229e8cf2c08e0eacb67e0c.camel@redhat.com>
+ <CAKhg4tLbF8SfYD4dU9U9Nhii4FY2dftjPKYz-Emrn-CRwo10mg@mail.gmail.com>
+ <73c242b43513bde04eebb4eb581deb189443c26b.camel@redhat.com>
+ <CAKhg4tJPjcShkw4-FHFkKOcgzHK27A5pMu9FP7OWj4qJUX1ApA@mail.gmail.com>
+ <1b2d471a5d06ecadcb75e3d9155b6d566afb2767.camel@redhat.com>
+ <1708652254.1517398-1-xuanzhuo@linux.alibaba.com> <CACGkMEuUeQTJYpZDx8ggqwBWULQS1Fjd_DgPvVMLq-_cjYfm7g@mail.gmail.com>
+ <65dcf7a775437_20e0a2087f@john.notmuch>
+In-Reply-To: <65dcf7a775437_20e0a2087f@john.notmuch>
+From: Liang Chen <liangchen.linux@gmail.com>
+Date: Thu, 29 Feb 2024 16:37:10 +0800
+Message-ID: <CAKhg4t+dzRPjyRXAifS_TCGPv3SfMMm1CF3pCs18OR+o9v+S_Q@mail.gmail.com>
+Subject: Re: [PATCH net-next v5] virtio_net: Support RX hash XDP hint
+To: John Fastabend <john.fastabend@gmail.com>
+Cc: Jason Wang <jasowang@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, 
+	Paolo Abeni <pabeni@redhat.com>, Jesper Dangaard Brouer <hawk@kernel.org>, mst@redhat.com, 
+	hengqi@linux.alibaba.com, davem@davemloft.net, edumazet@google.com, 
+	kuba@kernel.org, netdev@vger.kernel.org, virtualization@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net, 
+	ast@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for the review Krzysztof. I will send v2 after fixing the review comments.
+On Tue, Feb 27, 2024 at 4:42=E2=80=AFAM John Fastabend <john.fastabend@gmai=
+l.com> wrote:
+>
+> Jason Wang wrote:
+> > On Fri, Feb 23, 2024 at 9:42=E2=80=AFAM Xuan Zhuo <xuanzhuo@linux.aliba=
+ba.com> wrote:
+> > >
+> > > On Fri, 09 Feb 2024 13:57:25 +0100, Paolo Abeni <pabeni@redhat.com> w=
+rote:
+> > > > On Fri, 2024-02-09 at 18:39 +0800, Liang Chen wrote:
+> > > > > On Wed, Feb 7, 2024 at 10:27=E2=80=AFPM Paolo Abeni <pabeni@redha=
+t.com> wrote:
+> > > > > >
+> > > > > > On Wed, 2024-02-07 at 10:54 +0800, Liang Chen wrote:
+> > > > > > > On Tue, Feb 6, 2024 at 6:44=E2=80=AFPM Paolo Abeni <pabeni@re=
+dhat.com> wrote:
+> > > > > > > >
+> > > > > > > > On Sat, 2024-02-03 at 10:56 +0800, Liang Chen wrote:
+> > > > > > > > > On Sat, Feb 3, 2024 at 12:20=E2=80=AFAM Jesper Dangaard B=
+rouer <hawk@kernel.org> wrote:
+> > > > > > > > > > On 02/02/2024 13.11, Liang Chen wrote:
+> > > > > > > > [...]
+> > > > > > > > > > > @@ -1033,6 +1039,16 @@ static void put_xdp_frags(stru=
+ct xdp_buff *xdp)
+> > > > > > > > > > >       }
+> > > > > > > > > > >   }
+> > > > > > > > > > >
+> > > > > > > > > > > +static void virtnet_xdp_save_rx_hash(struct virtnet_=
+xdp_buff *virtnet_xdp,
+> > > > > > > > > > > +                                  struct net_device =
+*dev,
+> > > > > > > > > > > +                                  struct virtio_net_=
+hdr_v1_hash *hdr_hash)
+> > > > > > > > > > > +{
+> > > > > > > > > > > +     if (dev->features & NETIF_F_RXHASH) {
+> > > > > > > > > > > +             virtnet_xdp->hash_value =3D hdr_hash->h=
+ash_value;
+> > > > > > > > > > > +             virtnet_xdp->hash_report =3D hdr_hash->=
+hash_report;
+> > > > > > > > > > > +     }
+> > > > > > > > > > > +}
+> > > > > > > > > > > +
+> > > > > > > > > >
+> > > > > > > > > > Would it be possible to store a pointer to hdr_hash in =
+virtnet_xdp_buff,
+> > > > > > > > > > with the purpose of delaying extracting this, until and=
+ only if XDP
+> > > > > > > > > > bpf_prog calls the kfunc?
+> > > > > > > > > >
+> > > > > > > > >
+> > > > > > > > > That seems to be the way v1 works,
+> > > > > > > > > https://lore.kernel.org/all/20240122102256.261374-1-liang=
+chen.linux@gmail.com/
+> > > > > > > > > . But it was pointed out that the inline header may be ov=
+erwritten by
+> > > > > > > > > the xdp prog, so the hash is copied out to maintain its i=
+ntegrity.
+> > > > > > > >
+> > > > > > > > Why? isn't XDP supposed to get write access only to the pkt
+> > > > > > > > contents/buffer?
+> > > > > > > >
+> > > > > > >
+> > > > > > > Normally, an XDP program accesses only the packet data. Howev=
+er,
+> > > > > > > there's also an XDP RX Metadata area, referenced by the data_=
+meta
+> > > > > > > pointer. This pointer can be adjusted with bpf_xdp_adjust_met=
+a to
+> > > > > > > point somewhere ahead of the data buffer, thereby granting th=
+e XDP
+> > > > > > > program access to the virtio header located immediately befor=
+e the
+> > > > > >
+> > > > > > AFAICS bpf_xdp_adjust_meta() does not allow moving the meta_dat=
+a before
+> > > > > > xdp->data_hard_start:
+> > > > > >
+> > > > > > https://elixir.bootlin.com/linux/latest/source/net/core/filter.=
+c#L4210
+> > > > > >
+> > > > > > and virtio net set such field after the virtio_net_hdr:
+> > > > > >
+> > > > > > https://elixir.bootlin.com/linux/latest/source/drivers/net/virt=
+io_net.c#L1218
+> > > > > > https://elixir.bootlin.com/linux/latest/source/drivers/net/virt=
+io_net.c#L1420
+> > > > > >
+> > > > > > I don't see how the virtio hdr could be touched? Possibly even =
+more
+> > > > > > important: if such thing is possible, I think is should be some=
+what
+> > > > > > denied (for the same reason an H/W nic should prevent XDP from
+> > > > > > modifying its own buffer descriptor).
+> > > > >
+> > > > > Thank you for highlighting this concern. The header layout differ=
+s
+> > > > > slightly between small and mergeable mode. Taking 'mergeable mode=
+' as
+> > > > > an example, after calling xdp_prepare_buff the layout of xdp_buff
+> > > > > would be as depicted in the diagram below,
+> > > > >
+> > > > >                       buf
+> > > > >                        |
+> > > > >                        v
+> > > > >         +--------------+--------------+-------------+
+> > > > >         | xdp headroom | virtio header| packet      |
+> > > > >         | (256 bytes)  | (20 bytes)   | content     |
+> > > > >         +--------------+--------------+-------------+
+> > > > >         ^                             ^
+> > > > >         |                             |
+> > > > >  data_hard_start                    data
+> > > > >                                   data_meta
+> > > > >
+> > > > > If 'bpf_xdp_adjust_meta' repositions the 'data_meta' pointer a li=
+ttle
+> > > > > towards 'data_hard_start', it would point to the inline header, t=
+hus
+> > > > > potentially allowing the XDP program to access the inline header.
+>
+> Fairly late to the thread sorry. Given above layout does it make sense to
+> just delay extraction to the kfunc as suggested above? Sure the XDP progr=
+am
+> could smash the entry in virtio header, but this is already the case for
+> anything else there. A program writing over the virtio header is likely
+> buggy anyways. Worse that might happen is bad rss values and mappings?
+
+Thank you for raising the concern. I am not quite sure if the XDP
+program is considered buggy, as it is agnostic to the layout of the
+inline header.
+Let's say an XDP program calls bpf_xdp_adjust_meta to adjust data_meta
+to point to the inline header and overwrites it without even knowing
+of its existence. Later, when the XDP program invokes the kfunc to
+retrieve the hash, incorrect data would be returned. In this case, the
+XDP program seems to be doing everything legally but ends up with the
+wrong hash data.
 
 Thanks,
-Parthiban N
+Liang
 
-On 5/12/23 11:47, Krzysztof Kozlowski wrote:
-> On 12/05/2023 07:52, Parthiban Nallathambi wrote:
->> Add support for compulab for imx8mm IoT gateway with
->> UCM-iMX8M-Mini SoM. IoT gateway comes with dual ethernet,
->> USB and IO expansion.
->>
->> WLAN, Bluetooth can be part of SoM or extended over PCIE.
->>
->> Signed-off-by: Parthiban Nallathambi <parthiban@linumiz.com>
->> ---
->>  .../devicetree/bindings/arm/fsl.yaml          |   2 +
->>  .../bindings/net/microchip,lan95xx.yaml       |   1 +
->>  arch/arm64/boot/dts/freescale/Makefile        |   1 +
->>  .../freescale/imx8mm-compulab-iot-gate.dts    | 315 +++++++++++
->>  .../dts/freescale/imx8mm-compulab-ucm.dtsi    | 532 ++++++++++++++++++
->>  5 files changed, 851 insertions(+)
->>  create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-compulab-iot-gate.dts
->>  create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-compulab-ucm.dtsi
->>
->> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
->> index 15d411084065..d2425c5ed4b7 100644
->> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
->> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
->> @@ -895,6 +895,8 @@ properties:
->>        - description: i.MX8MM based Boards
->>          items:
->>            - enum:
->> +              - compulab,imx8mm-ucm-som   # UCM-iMX8M-Mini Compulab SoM
->> +              - compulab,iot-gate-imx8    # iMX8M IoT Compulab Gateway with UCM-iMX8M-Mini
-> 
-> Bindings are always separate patches.
-> 
-> Please run scripts/checkpatch.pl and fix reported warnings. Checkpatch
-> tells you this, so you apparently did not run it.
-> 
-> 
->>                - beacon,imx8mm-beacon-kit  # i.MX8MM Beacon Development Kit
->>                - boundary,imx8mm-nitrogen8mm  # i.MX8MM Nitrogen Board
->>                - dmo,imx8mm-data-modul-edm-sbc # i.MX8MM eDM SBC
->> diff --git a/Documentation/devicetree/bindings/net/microchip,lan95xx.yaml b/Documentation/devicetree/bindings/net/microchip,lan95xx.yaml
->> index 0b97e14d947f..86279724695e 100644
->> --- a/Documentation/devicetree/bindings/net/microchip,lan95xx.yaml
->> +++ b/Documentation/devicetree/bindings/net/microchip,lan95xx.yaml
->> @@ -22,6 +22,7 @@ properties:
->>        - enum:
->>            - usb424,9500   # SMSC9500 USB Ethernet Device
->>            - usb424,9505   # SMSC9505 USB Ethernet Device
->> +          - usb424,9514   # SMSC9514 USB Ethernet Device
-> 
-> No, really, I could understand squashing board bindings here but
-> changing drivers in the same patch is clearly too much.
-> 
->>            - usb424,9530   # SMSC LAN9530 USB Ethernet Device
->>            - usb424,9730   # SMSC LAN9730 USB Ethernet Device
->>            - usb424,9900   # SMSC9500 USB Ethernet Device (SAL10)
->> diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
->> index ef7d17aef58f..2a613c576d29 100644
->> --- a/arch/arm64/boot/dts/freescale/Makefile
->> +++ b/arch/arm64/boot/dts/freescale/Makefile
->> @@ -51,6 +51,7 @@ dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1028a-qds-9999.dtb
->>  
->>  dtb-$(CONFIG_ARCH_MXC) += imx8dxl-evk.dtb
->>  dtb-$(CONFIG_ARCH_MXC) += imx8mm-beacon-kit.dtb
->> +dtb-$(CONFIG_ARCH_MXC) += imx8mm-compulab-iot-gate.dtb
->>  dtb-$(CONFIG_ARCH_MXC) += imx8mm-data-modul-edm-sbc.dtb
->>  dtb-$(CONFIG_ARCH_MXC) += imx8mm-ddr4-evk.dtb
->>  dtb-$(CONFIG_ARCH_MXC) += imx8mm-emcon-avari.dtb
->> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-compulab-iot-gate.dts b/arch/arm64/boot/dts/freescale/imx8mm-compulab-iot-gate.dts
->> new file mode 100644
->> index 000000000000..678a9022549f
->> --- /dev/null
->> +++ b/arch/arm64/boot/dts/freescale/imx8mm-compulab-iot-gate.dts
->> @@ -0,0 +1,315 @@
->> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
->> +/*
->> + * Copyright 2018 Compulab
->> + */
->> +
->> +/dts-v1/;
->> +
->> +#include "imx8mm-compulab-ucm.dtsi"
->> +
->> +/ {
->> +	model = "CompuLab IOT-GATE-iMX8 board";
->> +	compatible = "compulab,iot-gate-imx8", "compulab,imx8mm-ucm-som", "fsl,imx8mm";
->> +
->> +	regulator-usbhub-ena {
->> +		compatible = "regulator-fixed";
->> +		regulator-name = "usbhub_ena";
->> +		regulator-min-microvolt = <3300000>;
->> +		regulator-max-microvolt = <3300000>;
->> +		gpio = <&gpio4 28 GPIO_ACTIVE_HIGH>;
->> +		regulator-always-on;
->> +		enable-active-high;
->> +	};
->> +
->> +	regulator-usbhub-rst {
->> +		compatible = "regulator-fixed";
->> +		regulator-name = "usbhub_rst";
->> +		regulator-min-microvolt = <3300000>;
->> +		regulator-max-microvolt = <3300000>;
->> +		gpio = <&gpio3 24 GPIO_ACTIVE_HIGH>;
->> +		regulator-always-on;
->> +		enable-active-high;
->> +	};
->> +
->> +	regulator-uart1-mode {
->> +		compatible = "regulator-fixed";
->> +		regulator-name = "uart1_mode";
->> +		regulator-min-microvolt = <3300000>;
->> +		regulator-max-microvolt = <3300000>;
->> +		gpio = <&gpio4 26 GPIO_ACTIVE_HIGH>;
->> +		enable-active-high;
->> +		regulator-always-on;
->> +	};
->> +
->> +	regulator-uart1-duplex {
->> +		compatible = "regulator-fixed";
->> +		regulator-name = "uart1_duplex";
->> +		regulator-min-microvolt = <3300000>;
->> +		regulator-max-microvolt = <3300000>;
->> +		gpio = <&gpio4 27 GPIO_ACTIVE_HIGH>;
->> +		regulator-always-on;
->> +		enable-active-high;
->> +	};
->> +
->> +	regulator-uart1-shdn {
->> +		compatible = "regulator-fixed";
->> +		regulator-name = "uart1_shdn";
->> +		regulator-min-microvolt = <3300000>;
->> +		regulator-max-microvolt = <3300000>;
->> +		gpio = <&gpio5 5 GPIO_ACTIVE_HIGH>;
->> +		regulator-always-on;
->> +		enable-active-high;
->> +	};
->> +
->> +	regulator-uart1-trmen {
->> +		compatible = "regulator-fixed";
->> +		regulator-name = "uart1_trmen";
->> +		regulator-min-microvolt = <3300000>;
->> +		regulator-max-microvolt = <3300000>;
->> +		gpio = <&gpio4 25 GPIO_ACTIVE_LOW>;
->> +		regulator-always-on;
->> +		enable-active-low;
->> +	};
->> +
->> +	regulator-usdhc2_v {
-> 
-> No underscores in node names. Fix it everywhere.
-> 
->> +		compatible = "regulator-fixed";
->> +		regulator-name = "usdhc2_v";
->> +		regulator-min-microvolt = <3300000>;
->> +		regulator-max-microvolt = <3300000>;
->> +		gpio = <&gpio1 4 GPIO_ACTIVE_HIGH>;
->> +		regulator-always-on;
->> +		enable-active-high;
->> +	};
->> +
->> +	reg_usdhc2_rst: regulator-usdhc2_rst {
->> +		compatible = "regulator-fixed";
->> +		pinctrl-names = "default";
->> +		pinctrl-0 = <&pinctrl_reg_usdhc2_rst>;
->> +		regulator-name = "usdhc2_rst";
->> +		regulator-min-microvolt = <3300000>;
->> +		regulator-max-microvolt = <3300000>;
->> +		gpio = <&gpio2 19 GPIO_ACTIVE_HIGH>;
->> +		startup-delay-us = <100>;
->> +		off-on-delay-us = <12000>;
->> +		enable-active-high;
->> +	};
->> +
->> +	regulator-mpcie2_rst {
->> +		compatible = "regulator-fixed";
->> +		regulator-name = "mpcie2_rst";
->> +		regulator-min-microvolt = <3300000>;
->> +		regulator-max-microvolt = <3300000>;
->> +		gpio = <&gpio3 22 GPIO_ACTIVE_HIGH>;
->> +		regulator-always-on;
->> +		enable-active-high;
->> +	};
->> +
->> +	regulator-mpcie2lora_dis {
->> +		compatible = "regulator-fixed";
->> +		regulator-name = "mpcie2lora_dis";
->> +		regulator-min-microvolt = <3300000>;
->> +		regulator-max-microvolt = <3300000>;
->> +		gpio = <&gpio3 21 GPIO_ACTIVE_HIGH>;
->> +		regulator-always-on;
->> +		enable-active-high;
->> +	};
->> +
->> +	pcie0_refclk: pcie0-refclk {
->> +		compatible = "fixed-clock";
->> +		#clock-cells = <0>;
->> +		clock-frequency = <100000000>;
->> +	};
->> +};
->> +
->> +&ethphy0 {
->> +	status = "okay";
->> +};
->> +
->> +&fec1 {
->> +	status = "okay";
->> +};
->> +
->> +&uart1 {
->> +	pinctrl-names = "default";
->> +	pinctrl-0 = <&pinctrl_uart1 &pinctrl_uart1_gpio>;
->> +	assigned-clocks = <&clk IMX8MM_CLK_UART1>;
->> +	assigned-clock-parents = <&clk IMX8MM_SYS_PLL1_80M>;
->> +	linux,rs485-enabled-at-boot-time;
->> +	rts-gpios = <&gpio4 24 GPIO_ACTIVE_LOW>;
->> +	status = "okay";
->> +};
->> +
->> +&uart4 {
->> +	status = "disabled";
->> +};
->> +
->> +&i2c1 {
->> +	clock-frequency = <100000>;
->> +	pinctrl-names = "default";
->> +	pinctrl-0 = <&pinctrl_i2c1>;
->> +	status = "okay";
->> +
->> +	eeprom@54 {
->> +		compatible = "atmel,24c08";
->> +		reg = <0x54>;
->> +		pagesize = <16>;
->> +	};
->> +};
->> +
->> +&ecspi1 {
->> +	#address-cells = <1>;
->> +	#size-cells = <0>;
->> +	fsl,spi-num-chipselects = <1>;
->> +	pinctrl-names = "default";
->> +	pinctrl-0 = <&pinctrl_ecspi1 &pinctrl_ecspi1_cs>;
->> +	cs-gpios = <&gpio5 9 GPIO_ACTIVE_LOW>;
->> +	status = "okay";
->> +};
->> +
->> +&usbotg1 {
->> +	dr_mode = "host";
->> +	disable-over-current;
->> +	status = "okay";
->> +};
->> +
->> +&usbotg2 {
->> +	dr_mode = "host";
->> +	disable-over-current;
->> +	status = "okay";
->> +
->> +	#address-cells = <1>;
->> +	#size-cells = <0>;
->> +
->> +	usb9514@1 {
-> 
-> Node names should be generic.
-> https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
-> 
->> +		compatible = "usb424,9514";
->> +		pinctrl-names = "default";
->> +		pinctrl-0 = <&pinctrl_usb9514>;
->> +		reg = <1>;
-> 
-> reg is always after compatible.
-> 
->> +		#address-cells = <1>;
->> +		#size-cells = <0>;
->> +
->> +		ethernet: usbether@1 {
->> +			compatible = "usb424,ec00";
->> +			reg = <1>;
->> +		};
->> +	};
->> +};
->> +
->> +&usdhc1 {
->> +	status = "disabled";
->> +};
->> +
->> +&usdhc2 {
->> +	pinctrl-names = "default";
->> +	pinctrl-0 = <&pinctrl_usdhc2>;
->> +	bus-width = <4>;
->> +	mmc-ddr-1_8v;
->> +	non-removable;
->> +	vmmc-supply = <&reg_usdhc2_rst>;
->> +	status = "okay";
->> +};
->> +
->> +&pcie0 {
->> +	pinctrl-names = "default";
->> +	pinctrl-0 = <&pinctrl_pcie0>;
->> +	reset-gpio = <&gpio3 20 GPIO_ACTIVE_LOW>;
->> +	clocks = <&clk IMX8MM_CLK_PCIE1_ROOT>,
->> +		 <&clk IMX8MM_CLK_PCIE1_AUX>,
->> +		 <&clk IMX8MM_CLK_PCIE1_PHY>,
->> +		 <&pcie0_refclk>;
->> +	clock-names = "pcie", "pcie_aux", "pcie_phy", "pcie_bus";
->> +	assigned-clocks = <&clk IMX8MM_CLK_PCIE1_AUX>,
->> +			  <&clk IMX8MM_CLK_PCIE1_PHY>,
->> +			  <&clk IMX8MM_CLK_PCIE1_CTRL>;
->> +	assigned-clock-rates = <10000000>, <100000000>, <250000000>;
->> +	assigned-clock-parents = <&clk IMX8MM_SYS_PLL2_50M>,
->> +				 <&clk IMX8MM_SYS_PLL2_100M>,
->> +				 <&clk IMX8MM_SYS_PLL2_250M>;
->> +	ext_osc = <1>;
->> +	status = "disabled";
->> +};
->> +
->> +&iomuxc {
->> +	pinctrl-names = "default";
->> +	pinctrl-0 = <&pinctrl_hog_sb_iotgimx8>;
->> +
->> +	sb-iotgimx8 {
->> +		pinctrl_hog_sb_iotgimx8: hoggrp_sb-iotgimx8 {
-> 
-> Does not look like you tested the DTS against bindings. Please run `make
-> dtbs_check` (see Documentation/devicetree/bindings/writing-schema.rst
-> for instructions).
-> 
->> +			fsl,pins = <
->> +				/* mPCIe2 */
->> +				MX8MM_IOMUXC_SAI5_RXD0_GPIO3_IO21	0x140 /* LORA_DISABLE */
->> +				MX8MM_IOMUXC_SAI5_RXD1_GPIO3_IO22	0x140 /* PERSTn */
->> +			>;
->> +		};
->> +
->> +		pinctrl_uart1: uart1grp {
->> +			fsl,pins = <
->> +				MX8MM_IOMUXC_SAI2_RXC_UART1_DCE_RX	0x140
->> +				MX8MM_IOMUXC_SAI2_RXFS_UART1_DCE_TX	0x140
->> +				MX8MM_IOMUXC_SAI2_TXFS_GPIO4_IO24	0x140 /* RTS */
->> +				MX8MM_IOMUXC_SAI2_RXD0_UART1_DCE_RTS_B	0x140 /* CTS */
->> +			>;
->> +		};
->> +
->> +		pinctrl_uart1_gpio: uart1gpiogrp {
->> +			fsl,pins = <
->> +				MX8MM_IOMUXC_SAI2_TXD0_GPIO4_IO26	0x000 /* RS_485_232_SEL */
->> +				MX8MM_IOMUXC_SAI2_MCLK_GPIO4_IO27	0x140 /* RS_485_H/F_SEL */
->> +				MX8MM_IOMUXC_SPDIF_EXT_CLK_GPIO5_IO5	0x140 /* SHDN */
->> +				MX8MM_IOMUXC_SAI2_TXC_GPIO4_IO25	0x140 /* RS_485_TRMEN */
->> +			>;
->> +		};
->> +
->> +		pinctrl_i2c1: i2c1grp {
->> +			fsl,pins = <
->> +				MX8MM_IOMUXC_I2C1_SCL_I2C1_SCL		0x400001c3
->> +				MX8MM_IOMUXC_I2C1_SDA_I2C1_SDA		0x400001c3
->> +			>;
->> +		};
->> +
->> +		pinctrl_ecspi1: ecspi1grp {
->> +			fsl,pins = <
->> +				MX8MM_IOMUXC_ECSPI1_SCLK_ECSPI1_SCLK	0x82
->> +				MX8MM_IOMUXC_ECSPI1_MOSI_ECSPI1_MOSI	0x82
->> +				MX8MM_IOMUXC_ECSPI1_MISO_ECSPI1_MISO	0x82
->> +			>;
->> +		};
->> +
->> +		pinctrl_ecspi1_cs: ecspi1cs {
-> 
-> Does not look like you tested the DTS against bindings. Please run `make
-> dtbs_check` (see Documentation/devicetree/bindings/writing-schema.rst
-> for instructions).
-> 
-> I guess you did not test it at all.
-> 
->> +			fsl,pins = <
->> +				MX8MM_IOMUXC_ECSPI1_SS0_GPIO5_IO9	0x40000
->> +			>;
->> +		};
->> +
->> +		pinctrl_usb9514: usb9514grp {
->> +			fsl,pins = <
->> +				MX8MM_IOMUXC_SAI3_RXFS_GPIO4_IO28	0x140 /* USB_PS_EN */
->> +				MX8MM_IOMUXC_SAI5_RXD3_GPIO3_IO24	0x140 /* HUB_RSTn */
->> +			>;
->> +		};
->> +
->> +		pinctrl_usdhc2: usdhc2grp {
->> +			fsl,pins = <
->> +				MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK		0x190
->> +				MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD		0x1d0
->> +				MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0	0x1d0
->> +				MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1	0x1d0
->> +				MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2	0x1d0
->> +				MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3	0x1d0
->> +				MX8MM_IOMUXC_GPIO1_IO04_GPIO1_IO4	0x1d0 /* SD2_VSEL */
->> +			>;
->> +		};
->> +
->> +		pinctrl_reg_usdhc2_rst: usdhc2rst {
->> +			fsl,pins = <
->> +				MX8MM_IOMUXC_SD2_RESET_B_GPIO2_IO19	0x41  /* EMMC_RST */
->> +			>;
->> +		};
->> +
->> +		pinctrl_pcie0: pcie0grp {
->> +			fsl,pins = <
->> +				MX8MM_IOMUXC_SAI5_RXC_GPIO3_IO20	0x140
->> +			>;
->> +		};
->> +	};
->> +};
->> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-compulab-ucm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-compulab-ucm.dtsi
->> new file mode 100644
->> index 000000000000..d6cdf833744e
->> --- /dev/null
->> +++ b/arch/arm64/boot/dts/freescale/imx8mm-compulab-ucm.dtsi
->> @@ -0,0 +1,532 @@
->> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
->> +/*
->> + * Copyright 2018 Compulab
->> + */
->> +
->> +#include "imx8mm.dtsi"
->> +
->> +/ {
->> +	model = "Compulab i.MX8M-Mini UCM SoM";
->> +	compatible = "compulab,imx8mm-ucm-som", "fsl,imx8mm";
->> +
->> +	aliases {
->> +		rtc0 = &rtc0;
->> +		rtc1 = &snvs_rtc;
->> +	};
->> +
->> +	leds {
->> +		compatible = "gpio-leds";
->> +		pinctrl-names = "default";
->> +		pinctrl-0 = <&pinctrl_gpio_led>;
->> +
->> +		heartbeat-led {
->> +			label = "Heartbeat";
->> +			gpios = <&gpio1 12 GPIO_ACTIVE_LOW>;
->> +			linux,default-trigger = "heartbeat";
->> +		};
->> +	};
->> +
->> +	pmic_osc: clock-pmic {
->> +		compatible = "fixed-clock";
->> +		#clock-cells = <0>;
->> +		clock-frequency = <32768>;
->> +		clock-output-names = "pmic_osc";
->> +	};
->> +
->> +	reg_ethphy: regulator-ethphy {
->> +		compatible = "regulator-fixed";
->> +		enable-active-high;
->> +		gpio = <&gpio1 10 GPIO_ACTIVE_HIGH>;
->> +		pinctrl-names = "default";
->> +		pinctrl-0 = <&pinctrl_reg_eth>;
->> +		regulator-always-on;
->> +		regulator-boot-on;
->> +		regulator-min-microvolt = <3300000>;
->> +		regulator-max-microvolt = <3300000>;
->> +		regulator-name = "On-module +V3.3_ETH";
->> +		startup-delay-us = <500>;
->> +	};
->> +
->> +	reg_usdhc3_vmmc: regulator-usdhc3-vmmc {
->> +		compatible = "regulator-fixed";
->> +		enable-active-high;
->> +		gpio = <&gpio3 16 GPIO_ACTIVE_HIGH>;
->> +		pinctrl-names = "default";
->> +		pinctrl-0 = <&pinctrl_reg_usdhc3>;
->> +		regulator-always-on;
->> +		regulator-min-microvolt = <3300000>;
->> +		regulator-max-microvolt = <3300000>;
->> +		regulator-name = "On-module +V3.3_USDHC";
->> +	};
->> +
->> +	usdhc1_pwrseq: usdhc1_pwrseq {
->> +		compatible = "mmc-pwrseq-simple";
->> +		reset-gpios = <&gpio2 10 GPIO_ACTIVE_LOW>;
->> +	};
->> +};
->> +
->> +&fec1 {
->> +	fsl,magic-packet;
->> +	fsl,rgmii_rxc_dly;
->> +	phy-handle = <&ethphy0>;
->> +	phy-mode = "rgmii-id";
->> +	phy-supply = <&reg_ethphy>;
->> +	pinctrl-names = "default";
->> +	pinctrl-0 = <&pinctrl_fec1>;
->> +
->> +	mdio {
->> +		#address-cells = <1>;
->> +		#size-cells = <0>;
->> +
->> +		ethphy0: ethernet-phy@0 {
->> +			compatible = "ethernet-phy-ieee802.3-c22";
->> +			micrel,led-mode = <0>;
->> +			reg = <0>;
->> +		};
->> +	};
->> +};
->> +
->> +&i2c2 {
->> +	clock-frequency = <400000>;
->> +	pinctrl-names = "default";
->> +	pinctrl-0 = <&pinctrl_i2c2>;
->> +	status = "okay";
->> +
->> +	rtc0: rtc@69 {
->> +		compatible = "abracon,ab1805";
->> +		reg = <0x69>;
->> +	};
->> +
->> +	pmic: bd71837@4b {
-> 
-> Node names should be generic.
-> https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
-> 
-> 
-> 
-> Best regards,
-> Krzysztof
-> 
+>
+> I like seeing more use cases for the hints though.
+>
+> Thanks!
+> John
 
