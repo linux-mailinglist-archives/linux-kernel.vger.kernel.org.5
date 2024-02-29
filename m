@@ -1,213 +1,153 @@
-Return-Path: <linux-kernel+bounces-87335-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87336-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DFEB86D2FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:22:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BADF486D2FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:23:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 782781F2449A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:22:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 675542837BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:23:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 633D9137773;
-	Thu, 29 Feb 2024 19:21:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E55513C9C7;
+	Thu, 29 Feb 2024 19:23:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J//fa1EN"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DiSyWptE"
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C4257A140;
-	Thu, 29 Feb 2024 19:21:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD8D34AEFF
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 19:23:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709234503; cv=none; b=drH1uaF3zNv/VhQE/4YVcrKHVBRDEURYNI/ZQ6R32ln/4UYqY0kCVv6haH7Rkkdu51voorTAj8mGWzaBXH4aP58fl53S1Edttv687Ne3u0+AY0mkbVQZtrzZWO6UeIarAILNnGhcn0Et3Tg18RwmBLgH8qiUbzG2GuTkLnLKpiM=
+	t=1709234588; cv=none; b=oxKLV3BEbWZaGiTEgb4QlmpYU8JeX/i9XfP3Usu4ON/KEjnshUQKbWP7Ea3jmC/hrfu2wwzeAALBHRih2U4T9mwfVzHfWY/fzdgEGmu7d+13V1GuHwEF0OzKah9aaNoSlRruErZTYp4sHT09rIOHW8dedpBI2t59mxjm6L+Za5U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709234503; c=relaxed/simple;
-	bh=GCWCeqhm4LZf/5l3dD8UzJw4yhk96djI2q+ZTnr4omM=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=XlzVBO5z3dvGCX4FwAPeyYeKfqs031tZf3zdAF+uFVXsrMqlZldkLASX/Bx8fVuy+UBn5BT4DHzRDOJOVkiqhgyTe6/KusVej67FamG1kcDFn52vlyvdTlw6dNsmSn0DPb+Fk4fRwuZIn4gGDiBtXaqintFIJu+qMThRCA67ubE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J//fa1EN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDFF6C433F1;
-	Thu, 29 Feb 2024 19:21:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709234503;
-	bh=GCWCeqhm4LZf/5l3dD8UzJw4yhk96djI2q+ZTnr4omM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=J//fa1ENXzUizJNH88cEPo1CGuloy2jsYmWq2XdCwen/umG6+yuHmdEsHxUlRv2zv
-	 Eofd3Dg7icI4hG5kINpL+qeNXX2khLN6WcRm/BBQvdMlTyJj4GsmD0ovvnMVd0bNtD
-	 DO1cx0/ZUte+iiw5YILsurewgvHQpkv8eLs3s0UcaoI3x95Hp9DOhPQCQ9UOp7Yp/b
-	 eY/MFQFQFBLACYsmEszokCbNAUkuUogPRt35hFW7j3c7egCZ2Vh9o9hhZa2MoXlwCs
-	 oGjIwYIzXjtXZVRXiiO1VaAH8PR909NB09aKEEAhPKWPzXwqvFDXfOR10qDpsVJu9W
-	 uJn3DDhjHOJJg==
-Date: Thu, 29 Feb 2024 13:21:41 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>,
-	"Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc: gregkh@linuxfoundation.org, rafael@kernel.org, bhelgaas@google.com,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Ricky Wu <ricky_wu@realtek.com>, Kees Cook <keescook@chromium.org>,
-	Tony Luck <tony.luck@intel.com>,
-	"Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-	linux-hardening@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v3] driver core: Cancel scheduled pm_runtime_idle() on
- device removal
-Message-ID: <20240229192141.GA342851@bhelgaas>
+	s=arc-20240116; t=1709234588; c=relaxed/simple;
+	bh=E7rUze/9yQ5UcUUgvH7mq9ctfuzSApX4/xSiDx35QFY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YsJASjy7FKThev3VxcYjmjbDjwBJx1iv2jVxjdZ/uO9C0XdcBpmD8fvZZv47C0bFSnTlXBQ9r6rgOEfJ2/Zv/Fzru6/AlMK8HGc1ulPX4rv1yig11RUnPkauwG04gu33NGAYirtQjCZW6NrSxX1KKyclmTjYcyNBvBrPkg6exkA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=DiSyWptE; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a3d484a58f6so216914866b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 11:23:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709234584; x=1709839384; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BT6/Unqy7bGkAwAnTCQlQ4SQfXHMrkz2yqUGon6o5KQ=;
+        b=DiSyWptE4COpK2ntKzse2tI/usKAN3ZZix8y92rWwLOeEYQkErrPshL1j6bZNCrkOc
+         HWK20I7XT0vZPbnvbpejIaEEDTGXr7OXIFzQatvnJEHMZxEoBiXTL6XBPXROTogEEL7M
+         xaAOTkLjdDDLstaENQ0v+hOsfjhwXXXefiF9U84bKllpQRSvtfAsk6X4VAzXv4pTgtGG
+         fUHqwWx2XF2N2u20szakQDMGIFeHFZLeGIypmzBUlxM7q8NKqP2tEwllQbO2tYOayAce
+         HXTFB5v7K0JHtbDUpiH4eron+KtrSFJAdmtLr9T3kLbJrWe0MBHcYoLSWZgIYefVbIlT
+         V1+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709234584; x=1709839384;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BT6/Unqy7bGkAwAnTCQlQ4SQfXHMrkz2yqUGon6o5KQ=;
+        b=S+/gMEuWXqH1phDoRzFkVGuUEQQ6KXQhgyfq49xU9leWByfnLMqjrbwmsaxq9L59Ps
+         dV7NQS+zQPi2LZVQH9Hv48Rf2F/glT2CkR9mgP4CRs7IWvGe78074/A6WWD8ZIbwS8Ln
+         SW1eH2scufE0hIAJxbZxMIdGzFIO5nYlk0NPhhYxNBeOIuLMT3dhB63k2S+49qTNiiLd
+         rrG7kZ/dJGxE0CIdpqerxIczkez9QGWmhDltsusObBqjtgNZWfYaiipVXwuukwzanFoX
+         tZwQp9xOCwwIT1RabyKLa3Jz9mKpyKFtslEe8MZFhCcmigUBxFsk+aDKWWhzUkbqNnmR
+         TfMQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUOp7kfxLZMSNf+i5QOYeL/kwnZlf6tsCsy1RIh8vv4peSFHFwNhCef7d5q5bHlIhXIxRuSjlmWGSVglBs60C5tVYSjQa1WA9YCJL9U
+X-Gm-Message-State: AOJu0Yz8xc5GSTW6+VQL2G2QCFeT7OH/XsGSJxxMS44ZiLK7ojMg0RKB
+	k9DkmSpY/Gq5ExHNCs8ZLZP8wwGoZcOybrNk73+8JnXn8u6Uu0O1dKi5nE/HPF8=
+X-Google-Smtp-Source: AGHT+IEpGOOY8qbmOgkVU38vstHszUIeyBMvJGAXli4Z11hCNV93+SSaNgEO0QN3zST2le9FBMW/tQ==
+X-Received: by 2002:a17:906:71b:b0:a44:5589:c098 with SMTP id y27-20020a170906071b00b00a445589c098mr1362039ejb.7.1709234584050;
+        Thu, 29 Feb 2024 11:23:04 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id bq20-20020a170906d0d400b00a3cfe376116sm960541ejb.57.2024.02.29.11.23.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Feb 2024 11:23:03 -0800 (PST)
+Message-ID: <6368e52a-f410-4561-b926-8c6d48b32887@linaro.org>
+Date: Thu, 29 Feb 2024 20:23:02 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20240229062201.49500-1-kai.heng.feng@canonical.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/5] media: dt-bindings: gc2145: use absolute path to
+ other schema
+Content-Language: en-US
+To: Alexander Stein <alexander.stein@ew.tq-group.com>,
+ Alain Volmat <alain.volmat@foss.st.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240223144746.2583749-1-alexander.stein@ew.tq-group.com>
+ <20240223144746.2583749-3-alexander.stein@ew.tq-group.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240223144746.2583749-3-alexander.stein@ew.tq-group.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-[+to Rafael, can you comment on whether this is the right fix for the
-=2Eremove() vs .runtime_idle() race?]
-
-On Thu, Feb 29, 2024 at 02:22:00PM +0800, Kai-Heng Feng wrote:
-> When inserting an SD7.0 card to Realtek card reader, the card reader
-> unplugs itself and morph into a NVMe device. The slot Link down on hot
-> unplugged can cause the following error:
->=20
-> pcieport 0000:00:1c.0: pciehp: Slot(8): Link Down
-> BUG: unable to handle page fault for address: ffffb24d403e5010
-> PGD 100000067 P4D 100000067 PUD 1001fe067 PMD 100d97067 PTE 0
-> Oops: 0000 [#1] PREEMPT SMP PTI
-> CPU: 3 PID: 534 Comm: kworker/3:10 Not tainted 6.4.0 #6
-> Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.M./H370M Pro4, =
-BIOS P3.40 10/25/2018
-> Workqueue: pm pm_runtime_work
-> RIP: 0010:ioread32+0x2e/0x70
-> Code: ff 03 00 77 25 48 81 ff 00 00 01 00 77 14 8b 15 08 d9 54 01 b8 ff f=
-f ff ff 85 d2 75 14 c3 cc cc cc cc 89 fa ed c3 cc cc cc cc <8b> 07 c3 cc cc=
- cc cc 55 83 ea 01 48 89 fe 48 c7 c7 98 6f 15 99 48
-> RSP: 0018:ffffb24d40a5bd78 EFLAGS: 00010296
-> RAX: ffffb24d403e5000 RBX: 0000000000000152 RCX: 000000000000007f
-> RDX: 000000000000ff00 RSI: ffffb24d403e5010 RDI: ffffb24d403e5010
-> RBP: ffffb24d40a5bd98 R08: ffffb24d403e5010 R09: 0000000000000000
-> R10: ffff9074cd95e7f4 R11: 0000000000000003 R12: 000000000000007f
-> R13: ffff9074e1a68c00 R14: ffff9074e1a68d00 R15: 0000000000009003
-> FS:  0000000000000000(0000) GS:ffff90752a180000(0000) knlGS:0000000000000=
-000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: ffffb24d403e5010 CR3: 0000000152832006 CR4: 00000000003706e0
-> Call Trace:
->  <TASK>
->  ? show_regs+0x68/0x70
->  ? __die_body+0x20/0x70
->  ? __die+0x2b/0x40
->  ? page_fault_oops+0x160/0x480
->  ? search_bpf_extables+0x63/0x90
->  ? ioread32+0x2e/0x70
->  ? search_exception_tables+0x5f/0x70
->  ? kernelmode_fixup_or_oops+0xa2/0x120
->  ? __bad_area_nosemaphore+0x179/0x230
->  ? bad_area_nosemaphore+0x16/0x20
->  ? do_kern_addr_fault+0x8b/0xa0
->  ? exc_page_fault+0xe5/0x180
->  ? asm_exc_page_fault+0x27/0x30
->  ? ioread32+0x2e/0x70
->  ? rtsx_pci_write_register+0x5b/0x90 [rtsx_pci]
->  rtsx_set_l1off_sub+0x1c/0x30 [rtsx_pci]
->  rts5261_set_l1off_cfg_sub_d0+0x36/0x40 [rtsx_pci]
->  rtsx_pci_runtime_idle+0xc7/0x160 [rtsx_pci]
->  ? __pfx_pci_pm_runtime_idle+0x10/0x10
->  pci_pm_runtime_idle+0x34/0x70
->  rpm_idle+0xc4/0x2b0
->  pm_runtime_work+0x93/0xc0
->  process_one_work+0x21a/0x430
->  worker_thread+0x4a/0x3c0
->  ? __pfx_worker_thread+0x10/0x10
->  kthread+0x106/0x140
->  ? __pfx_kthread+0x10/0x10
->  ret_from_fork+0x29/0x50
->  </TASK>
-> Modules linked in: nvme nvme_core snd_hda_codec_hdmi snd_sof_pci_intel_cn=
-l snd_sof_intel_hda_common snd_hda_codec_realtek snd_hda_codec_generic snd_=
-soc_hdac_hda soundwire_intel ledtrig_audio nls_iso8859_1 soundwire_generic_=
-allocation soundwire_cadence snd_sof_intel_hda_mlink snd_sof_intel_hda snd_=
-sof_pci snd_sof_xtensa_dsp snd_sof snd_sof_utils snd_hda_ext_core snd_soc_a=
-cpi_intel_match snd_soc_acpi soundwire_bus snd_soc_core snd_compress ac97_b=
-us snd_pcm_dmaengine snd_hda_intel i915 snd_intel_dspcfg snd_intel_sdw_acpi=
- intel_rapl_msr snd_hda_codec intel_rapl_common snd_hda_core x86_pkg_temp_t=
-hermal intel_powerclamp snd_hwdep coretemp snd_pcm kvm_intel drm_buddy ttm =
-mei_hdcp kvm drm_display_helper snd_seq_midi snd_seq_midi_event cec crct10d=
-if_pclmul ghash_clmulni_intel sha512_ssse3 aesni_intel crypto_simd rc_core =
-cryptd rapl snd_rawmidi drm_kms_helper binfmt_misc intel_cstate i2c_algo_bi=
-t joydev snd_seq snd_seq_device syscopyarea wmi_bmof snd_timer sysfillrect =
-input_leds snd ee1004 sysimgblt mei_me soundcore
->  mei intel_pch_thermal mac_hid acpi_tad acpi_pad sch_fq_codel msr parport=
-_pc ppdev lp ramoops drm parport reed_solomon efi_pstore ip_tables x_tables=
- autofs4 hid_generic usbhid hid rtsx_pci_sdmmc crc32_pclmul ahci e1000e i2c=
-_i801 i2c_smbus rtsx_pci xhci_pci libahci xhci_pci_renesas video wmi
-
-The module list is a big distraction and isn't relevant to this issue.
-
-> CR2: ffffb24d403e5010
-> ---[ end trace 0000000000000000 ]---
->=20
-> This happens because scheduled pm_runtime_idle() is not cancelled.
-
-I think it would be useful to include a little more background about
-how we got here.  In particular, I think we got here because
-=2Eruntime_idle() raced with .remove():
-
-  - rtsx_pci_runtime_idle() did iowrite32(pcr->remap_addr + RTSX_HAIMR)
-    in rtsx_pci_write_register() successfully
-
-  - rtsx_pci_remove() iounmapped pcr->remap_addr
-
-  - rtsx_pci_runtime_idle() did ioread32(pcr->remap_addr + RTSX_HAIMR)
-    in rtsx_pci_write_register(), which faulted
-
-The write and the read access the same register, but the write was
-successful and we faulted on the *read* (see [1]), which means
-rtsx_pci_runtime_idle() started execution first, and rtsx_pci_remove()
-raced with it and happened to unmap pcr->remap_addr (see [2]) between
-the write and the read.
-
-It looks like this kind of race between .runtime_idle() and .remove()
-could happen with any driver.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
-/drivers/misc/cardreader/rtsx_pcr.c?id=3Dv6.7#n164
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
-/drivers/misc/cardreader/rtsx_pcr.c?id=3Dv6.7#n1633
-
-> So before releasing the device, stop all runtime power managements by
-> using pm_runtime_barrier() to fix the issue.
->=20
-> Link: https://lore.kernel.org/all/2ce258f371234b1f8a1a470d5488d00e@realte=
-k.com/
-> Cc: Ricky Wu <ricky_wu@realtek.com>
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+On 23/02/2024 15:47, Alexander Stein wrote:
+> Absolute path to other DT schema is preferred over relative one.
+> 
+> Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
 > ---
-> v3:
->   Move the change the device driver core.
-> =20
-> v2:
->   Cover more cases than just pciehp.
->=20
->  drivers/base/dd.c | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-> index 85152537dbf1..38c815e2b3a2 100644
-> --- a/drivers/base/dd.c
-> +++ b/drivers/base/dd.c
-> @@ -1244,6 +1244,7 @@ static void __device_release_driver(struct device *=
-dev, struct device *parent)
-> =20
->  	drv =3D dev->driver;
->  	if (drv) {
-> +		pm_runtime_barrier(dev);
->  		pm_runtime_get_sync(dev);
-> =20
->  		while (device_links_busy(dev)) {
-> --=20
-> 2.34.1
->=20
+> Changes in v2:
+> * Added new patch
+> 
+
+This is a trivial change, please squash patches.
+
+Best regards,
+Krzysztof
+
 
