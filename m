@@ -1,164 +1,166 @@
-Return-Path: <linux-kernel+bounces-87103-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87106-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 507BD86CFB2
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:51:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DE5486CFB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:54:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 684001F22DB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:51:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 78D82B24C21
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:54:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECFCD3BBF3;
-	Thu, 29 Feb 2024 16:51:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08A6B6CBF7;
+	Thu, 29 Feb 2024 16:53:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="bJuiE59u"
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a1EhP9C1"
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8930E2E3E1
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 16:51:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 615A23770C;
+	Thu, 29 Feb 2024 16:53:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709225491; cv=none; b=Fla36iBuIGJMahGAhtSK64uUce2LzWGbfkKQ/lIGYR/GkulRNT3tDAfsNqVSVajHtEYQa7gUeGBPg0Fwtb3vWIN7WLo/ZMSKEDafK9nkl3j+Fqf9yELIKzQmd0mL0sPu74GizkQBzbuHJZmgBtTIW5DAt6KhtpqJd3Aqy2nhy7I=
+	t=1709225632; cv=none; b=JmN+uJpXNm/COot6FUhKpAApWBOjHxvJ8271echAyqguaJZIPD0zQPAvugq2RAqyh3n3yfBLznLwahOVNxImibEL6ViErlBX+rZAjk2Lqq7U/xOXwSMqp8t21fY2XnTBanTv4OUCJ3v2C+DYNfXyDvfOYmrUOzj9rYWpZQuwWlo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709225491; c=relaxed/simple;
-	bh=jeB0jLSy8q+eh9qYQtqC3QlywNP/Xfpi3Eu7iYzC4es=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gq8+F5NAvc4WqDg/z7IncKxOiOVX7MMh4w+rcmH07A5ql1VlUJ5kzHcqu6vMkv4zm58NdU1X4gPZ+ASZOTMtu9Tpvpj3zqWkD4wWJnpU8vAttu+ziZq7x1RyxQTe7ZraWLGWoNwuXpJ17/Dlul0HwyVotpX9aqwiPyaZfeCTdH8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=bJuiE59u; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a34c5ca2537so194037466b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 08:51:28 -0800 (PST)
+	s=arc-20240116; t=1709225632; c=relaxed/simple;
+	bh=6nUDMEYGUfxHVEKkeMkr+OYMLMqJ1KXcgPHzN5jW+is=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=P/5S74E1XjyNNDDvWGt9Bpsnjg7lusmfCI/brl84kLVdX6QAoeafbqf5mCSd2bOz9duWor8Ef195PAZPZzMwde9Gc5Q5pMcVmzlBAwlkVSf+nMU3jnTOiEnRxtCIsTcdvsQMX74ohisvOhjjs+wy6RaCoJwtSR0CGLMvMCLrrJI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a1EhP9C1; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d29111272eso13809351fa.0;
+        Thu, 29 Feb 2024 08:53:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709225485; x=1709830285; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KAGKZhcS7Vcqv+9qUnLEagGLoWPuyfJ/EEdRmEE/75w=;
-        b=bJuiE59uBnxLDLwmJHZCpz8l2z13AQsOVqU3GKcWKlowbC3YkfjaV31Bwff90H+ssM
-         h02luHq2+ECyGOBoj1jgmBokKY/fOF5oZ5TPzjjgmTR835WE+ioNeJ/ZDY+mvg1q1asw
-         GAEb+dOStFXUu6F4zPQ5sAs02jB7KLSCHcuNg=
+        d=gmail.com; s=20230601; t=1709225626; x=1709830426; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=YDgRtT3BGtrQFTqpJ/xCmUJivNRGOmFTEriQdIVVtdY=;
+        b=a1EhP9C16OgQqfPmftXOS66SjGgOwxjajY2bODVqlP+qrwl4j9Yyh9i9OxRMk1+o+O
+         lAAbT5P6RfWchNBf2O1KLh6SJs1ZlCiEKW0sbO/XGY8FDunJkH52aKrJzhwg/hwsxgGb
+         ZVR5n4gffgMPVM2AT2Lr95DXJapXnFqQtqzshpXd48tknLNZM/zCu4An4sVjhW310vzg
+         Kmz9DPLYx6BIJv6Gu3vUYCKIyNfu22n3opfcaZ5fSh0iN/17ldtMErqUMIEDq25drLvZ
+         IUZT6cV2xNJBkvf2JxCwwEYWhIdDE90wXm/OY4uzGvsP8M5iIiKStMm3+J03Xu6sni4M
+         Vtpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709225485; x=1709830285;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KAGKZhcS7Vcqv+9qUnLEagGLoWPuyfJ/EEdRmEE/75w=;
-        b=XWidCutqtdRWNrVD+nXPrlEnLyMXyYTDzG3yrJ2mmrNPTrpTUtXMLHg1e2g5ihDOXe
-         qa/msx6LlFSipjePN5+9GSON7ZIuWp0zM61NTdHa+usxU3XDhp+AYhk59uZHsiVL72/K
-         1WOB/cpVxRwNsqxXr71blf6Si1WQ+9izpRyOC365Renlf1CZUJziCJZn4gCqti8yQQMI
-         mH1BmUZScOS7i+k7hOSs8ZFnogGcYNS8Hz58CpS3UmTtZ7JoTSgrUCREgVU0UiUPyHOO
-         PZR8sjbir5NobrFJFW/wYQpKzY4mIWCnRFYGI/MQTZ4XoEb6mJXxAkHlVBk3FPRT6oGJ
-         ykbw==
-X-Gm-Message-State: AOJu0YxKmPR4j9oAgy00Vv04MYDnqI2MwFstlpV6ax8QgJxJ+H22auT5
-	M7e6QBC+QgXx+geNWVl+ehncimNz4eTpkbYcjj/AG44IXFVwKEOUGCsU15z7aMEvjeQ1Fh3XNya
-	OfSNy
-X-Google-Smtp-Source: AGHT+IFcLGnW0iXbacRx+s0/BGNPXALwz0PW+Glf8irZnYo/+JSx5BH3xSiRWDWant7mhx5xgE+5wA==
-X-Received: by 2002:a17:906:24db:b0:a44:4ed8:6a3e with SMTP id f27-20020a17090624db00b00a444ed86a3emr1360413ejb.13.1709225485547;
-        Thu, 29 Feb 2024 08:51:25 -0800 (PST)
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com. [209.85.208.47])
-        by smtp.gmail.com with ESMTPSA id gu24-20020a170906f29800b00a3e4f554900sm845922ejb.135.2024.02.29.08.51.24
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Feb 2024 08:51:25 -0800 (PST)
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-566b160f6eeso6888a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 08:51:24 -0800 (PST)
-X-Received: by 2002:a05:6402:34cc:b0:565:d0e4:d8a0 with SMTP id
- w12-20020a05640234cc00b00565d0e4d8a0mr153095edc.3.1709225484579; Thu, 29 Feb
- 2024 08:51:24 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709225626; x=1709830426;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YDgRtT3BGtrQFTqpJ/xCmUJivNRGOmFTEriQdIVVtdY=;
+        b=IRWdM63MqnpUK3NG5gGBt14vrgMuqYFIBvfIwvm1dtSHksagfWUQ8CDBpPe7+QMVBg
+         DUgXBJ/cDD92DmSGy2Wo/ShsFfH5eZZ1QyI6CgyF+mdK+nUtc5nSTxDgoVP34x37vD3z
+         qaIT0TmCstxog+E7pR8Xg6NHTte2/aogDqY+1CRL9ABeyEUmID1HnaGD7Oabxcu8GFSY
+         TWTh8n9Y1xAjjYoyPMztuXcj5zxSbyJJOlJaGjoDO23XgK2UKA7rABdKZYdpyQ4NWyJO
+         mOVqhOOMCbtNfTlfixU7cHBeP/PzDeIzcssdSyMclS0AxaQzUZ/jKS2uKeC7NwHEsmaN
+         dF1w==
+X-Forwarded-Encrypted: i=1; AJvYcCWwDBv3MPNRLRAHKGKLTRY3NKedzveRWykhNDIXr4fGAhPnBezFL/nF+AHAOWH9/bjbCvK77KC5gXHXjtEPMP6sX/oG/lMIdz0I0GB9
+X-Gm-Message-State: AOJu0YxPTQhDgsbfA51KqLTzaqFruZR4uLYAf48hbOptPMHXX2C1A7MH
+	SpNJj5SbwNfDGMqbttsi/JW1D2CGNMTm1XlMWn/LYq5skRo80tKODDmKlc+/PHA=
+X-Google-Smtp-Source: AGHT+IHrnNQ+VZCSRL3mER8oBxjLgfoNFkSHy2jOgg1LGXnuP4+EA4v1I0ExQfvPntbXGRVwiw+43Q==
+X-Received: by 2002:a2e:9613:0:b0:2d2:ed31:9fa6 with SMTP id v19-20020a2e9613000000b002d2ed319fa6mr1751801ljh.49.1709225625789;
+        Thu, 29 Feb 2024 08:53:45 -0800 (PST)
+Received: from localhost ([83.149.246.185])
+        by smtp.gmail.com with ESMTPSA id a26-20020a05651c031a00b002d318451854sm106048ljp.113.2024.02.29.08.53.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Feb 2024 08:53:45 -0800 (PST)
+From: Mikhail Rudenko <mike.rudenko@gmail.com>
+To: linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Sakari Ailus <sakari.ailus@linux.intel.com>,
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+	Jacopo Mondi <jacopo@jmondi.org>,
+	Tommaso Merciai <tomm.merciai@gmail.com>,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	Dave Stevenson <dave.stevenson@raspberrypi.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Mikhail Rudenko <mike.rudenko@gmail.com>
+Subject: [PATCH v3 00/20] Omnivision OV4689 refactoring and improvements
+Date: Thu, 29 Feb 2024 19:53:13 +0300
+Message-ID: <20240229165333.227484-1-mike.rudenko@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240229154946.2850012-1-sashal@kernel.org> <20240229154946.2850012-21-sashal@kernel.org>
-In-Reply-To: <20240229154946.2850012-21-sashal@kernel.org>
-From: Doug Anderson <dianders@chromium.org>
-Date: Thu, 29 Feb 2024 08:51:09 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=Wb4meRvghR00LTzXRAobgioGo5g2oYqMLuO8nYWDa7Rg@mail.gmail.com>
-Message-ID: <CAD=FV=Wb4meRvghR00LTzXRAobgioGo5g2oYqMLuO8nYWDa7Rg@mail.gmail.com>
-Subject: Re: [PATCH AUTOSEL 6.6 21/21] arm64/sve: Lower the maximum allocation
- for the SVE ptrace regset
-To: Sasha Levin <sashal@kernel.org>
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
-	Mark Brown <broonie@kernel.org>, Will Deacon <will@kernel.org>, catalin.marinas@arm.com, 
-	oleg@redhat.com, mark.rutland@arm.com, linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
 Hi,
 
+this is a third revision of the series containing refactoring and new
+features implementation for the Omnivision OV4689 sensor
+driver. Specifically, patches 1, 2, 3, 5, 6, 10, 15, 16, 18, and 19
+are refactorings, and are not supposed to introduce any functional
+change. Patches 4 and 7 perform migration to CCI helpers and subdevice
+active state respectively, and should not introduce any hardware-
+and/or user-visible change either. Patch 8 fixes a possible race
+condition due to v4l2_async_register_subdev_sensor being called too
+early in ov4689_probe, and patch 9 migrates power management to PM
+autosuspend.
 
-On Thu, Feb 29, 2024 at 7:50=E2=80=AFAM Sasha Levin <sashal@kernel.org> wro=
-te:
->
-> From: Mark Brown <broonie@kernel.org>
->
-> [ Upstream commit 2813926261e436d33bc74486b51cce60b76edf78 ]
->
-> Doug Anderson observed that ChromeOS crashes are being reported which
-> include failing allocations of order 7 during core dumps due to ptrace
-> allocating storage for regsets:
->
->   chrome: page allocation failure: order:7,
->           mode:0x40dc0(GFP_KERNEL|__GFP_COMP|__GFP_ZERO),
->           nodemask=3D(null),cpuset=3Durgent,mems_allowed=3D0
->    ...
->   regset_get_alloc+0x1c/0x28
->   elf_core_dump+0x3d8/0xd8c
->   do_coredump+0xeb8/0x1378
->
-> with further investigation showing that this is:
->
->    [   66.957385] DOUG: Allocating 279584 bytes
->
-> which is the maximum size of the SVE regset. As Doug observes it is not
-> entirely surprising that such a large allocation of contiguous memory mig=
-ht
-> fail on a long running system.
->
-> The SVE regset is currently sized to hold SVE registers with a VQ of
-> SVE_VQ_MAX which is 512, substantially more than the architectural maximu=
-m
-> of 16 which we might see even in a system emulating the limits of the
-> architecture. Since we don't expose the size we tell the regset core
-> externally let's define ARCH_SVE_VQ_MAX with the actual architectural
-> maximum and use that for the regset, we'll still overallocate most of the
-> time but much less so which will be helpful even if the core is fixed to
-> not require contiguous allocations.
->
-> Specify ARCH_SVE_VQ_MAX in terms of the maximum value that can be written
-> into ZCR_ELx.LEN (where this is set in the hardware). For consistency
-> update the maximum SME vector length to be specified in the same style
-> while we are at it.
->
-> We could also teach the ptrace core about runtime discoverable regset siz=
-es
-> but that would be a more invasive change and this is being observed in
-> practical systems.
->
-> Reported-by: Doug Anderson <dianders@chromium.org>
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-> Tested-by: Douglas Anderson <dianders@chromium.org>
-> Link: https://lore.kernel.org/r/20240213-arm64-sve-ptrace-regset-size-v2-=
-1-c7600ca74b9b@kernel.org
-> Signed-off-by: Will Deacon <will@kernel.org>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  arch/arm64/include/asm/fpsimd.h | 12 ++++++------
->  arch/arm64/kernel/ptrace.c      |  3 ++-
->  2 files changed, 8 insertions(+), 7 deletions(-)
+Patches 11-14 expose more sensor controls to the userspace, such as
+(read-write) HBLANK, VFLIP/HFLIP, digital gain, and color
+balance. Patch 17 implements configurable analogue crop rectangle via
+set_selection callback. And finally, patch 20 enables 2x2 binning
+option. It should be noted that publicly available sensor
+documentation is lacking description of many registers and their value
+ranges, so a lot of values had to be found by experimentation.
 
-As I mentioned [1], there's a hidden dependency here and without it
-the patch doesn't actually do anything useful in kernel 6.6 nor kernel
-6.1. Maybe the right answer is to backport this with the hardcoded
-value of "16" for those older kernels? Maybe Mark has a better
-suggestion?
+Changes in v3:
+- rebase on top of media_stage
+- collect Reviewed-by and Acked-by from v2
+- update copyright year
+- zero-initialize ret in ov4689_set_ctrl
+- get back blank line before return in ov4689_set_ctrl
+- move `sd->flags |= V4L2_SUBDEV_FL_HAS_DEVNODE` before
+  `ov4689_initialize_controls()` in ov4689_probe
+- remove blank line after `v4l2_subdev_init_finalize(sd)`
+- use pm_runtime_put instead of pm_runtime_put_sync
+- add comment for dummy columns/rows defines
+- fix OV4689_PIXEL_ARRAY_WIDTH use instead of OV4689_PIXEL_ARRAY_HEIGHT
+  in ov4689_get_selection
+- split s_stream into two functions for start and stop
 
-[1] https://lore.kernel.org/r/CAD=3DFV=3DWSi=3D9V-Oe5eq0J-Uew45cX9JfgB8me-N=
-w-iFRfXm59Xg@mail.gmail.com
+Changes in v2:
+- collect Laurent's r-b's
+- squash together "CCI conversion" and "Set gain in one 16 bit write"
+- use ctrl->val in ov4689_set_ctrl
+- rename try_fmt to fmt in ov4689_init_cfg and drop corresponding comment
+- rebase on top of media-stage and rename init_cfg->init_state
+- sort register definitions by address throughout the whole series
+- fix number of controls hint in v4l2_ctrl_handler_init
+- make all hexadecimal constants lowercase
+- disable runtime pm in probe error path
+- implement pm autosuspend
+
+Mikhail Rudenko (20):
+  media: i2c: ov4689: Clean up and annotate the register table
+  media: i2c: ov4689: Sort register definitions by address
+  media: i2c: ov4689: Fix typo in a comment
+  media: i2c: ov4689: CCI conversion
+  media: i2c: ov4689: Remove i2c_client from ov4689 struct
+  media: i2c: ov4689: Refactor ov4689_set_ctrl
+  media: i2c: ov4689: Use sub-device active state
+  media: i2c: ov4689: Enable runtime PM before registering sub-device
+  media: i2c: ov4689: Use runtime PM autosuspend
+  media: i2c: ov4689: Remove max_fps field from struct ov4689_mode
+  media: i2c: ov4689: Make horizontal blanking configurable
+  media: i2c: ov4689: Implement vflip/hflip controls
+  media: i2c: ov4689: Implement digital gain control
+  media: i2c: ov4689: Implement manual color balance controls
+  media: i2c: ov4689: Move pixel array size out of struct ov4689_mode
+  media: i2c: ov4689: Set timing registers programmatically
+  media: i2c: ov4689: Configurable analogue crop
+  media: i2c: ov4689: Eliminate struct ov4689_mode
+  media: i2c: ov4689: Refactor ov4689_s_stream
+  media: i2c: ov4689: Implement 2x2 binning
+
+ drivers/media/i2c/Kconfig  |    1 +
+ drivers/media/i2c/ov4689.c | 1003 ++++++++++++++++++++++--------------
+ 2 files changed, 618 insertions(+), 386 deletions(-)
+
+--
+2.43.0
 
