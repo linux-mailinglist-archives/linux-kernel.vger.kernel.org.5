@@ -1,57 +1,54 @@
-Return-Path: <linux-kernel+bounces-87430-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87431-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 135CC86D450
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:36:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CF3486D452
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:36:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0AB541C2148F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:36:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B7582841D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:36:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28D95142912;
-	Thu, 29 Feb 2024 20:36:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E02A144031;
+	Thu, 29 Feb 2024 20:36:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lV4Ea411"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZRVm5GsW"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ADFC5025E;
-	Thu, 29 Feb 2024 20:36:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81636142916;
+	Thu, 29 Feb 2024 20:36:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709238975; cv=none; b=Ph1VTj6+ruEeuZLZi5MhOtM6O9v0EGx9X3Ku4Gb1TAux7M65+ypng7uxKJhQpxgL4I4tLdNApl42R33pR8YnWlkWJYRWgZ3x1uHfZ8CcAu0Ds6lCaEG4IZyU8hAlrRtOBxYCfGjy++IkfjgdEzfQy1saGdMrJOtT7c5KjB97VL4=
+	t=1709238976; cv=none; b=WIhRcVxYQK9rkiMuS+Scd1czSzbyUzyNAIfGR1TweU5nehgNrbcGsUNeVkv3FeCqb13rKbQLc63FLb5PuPFajzygz4Tgg4or6TsT1xT1v6YwlEMXyaA58xDyadFP0FySf4YwPhCn4OeRtl+owSGg5xayoZfc07/g/LK1NPQAkpY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709238975; c=relaxed/simple;
-	bh=ZsVI6ulKl3T7yhn4W9VMHmXsIE6Urv1VYjHT9iHu+fc=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=FkglhqFLdkUidhQsImLPwOGJevXch9VNxq+IfG3fxIc98nHF+Hnh87bdDGBTHVANIODvLx1aXfMUJFhyv9xqGWxSlp+gIGHw4k6xb65adHsBu82uvM6qAWfv4zvMlb+kA1kzuM5tZdhDydB+J6lZqCFJ/J45Y0ajh+7u82DxBhQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lV4Ea411; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40823C433C7;
-	Thu, 29 Feb 2024 20:36:12 +0000 (UTC)
+	s=arc-20240116; t=1709238976; c=relaxed/simple;
+	bh=nP34NGSQNwe6QNazOIlFRyCKeC6s+ByReKFgz5kTUUA=;
+	h=From:To:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=OO7aT/xVbzfPMAzK/3mQWRFwHVTv216rCPPAX7/PSk9C++TqbUg7k3Kd2nEa/AimCmyjbOmV/b19YPXQbmyAQi3Vnw12fpQV1GrCbxijHSaQMBq9I5iB7aTLvXo0fQIQl+9rW5F03hKOKeZ0chQVp3id1XtlWxsZh/ACkVVyWQA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZRVm5GsW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 837DCC43390;
+	Thu, 29 Feb 2024 20:36:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709238975;
-	bh=ZsVI6ulKl3T7yhn4W9VMHmXsIE6Urv1VYjHT9iHu+fc=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=lV4Ea4112hZJR3UCTEQmvQCrmFaWfIHmxUqhl+yyWZJLwhOYyUFg50r2JCFJdRLph
-	 lTgQA+pvJv7EqefW8AisKcTS/uKVLTbLQ6HrcfaeChzB/suJDS3kVwbHwD0MFfah/K
-	 d2OngZ+1i9y5TIr+DgRzyudvBa0Is3wMjHnE3Spl6/7uxR1i+/YXZHvv73JG7bEDtU
-	 Yf+kAqyF8MAu78JBtuQD7Pu8+cjek0z8o8w5QWV4icdLxDnKtOPvXHgBsbjXjpBaiK
-	 tK/Yv/aeb/Y4G0EFWKhzLwMcZ1M8mHHxcBZxQuObZs/tn5sxvtBbgJQVsLSGUZdce6
-	 g9VOvcsWPzAFA==
+	s=k20201202; t=1709238976;
+	bh=nP34NGSQNwe6QNazOIlFRyCKeC6s+ByReKFgz5kTUUA=;
+	h=From:To:In-Reply-To:References:Subject:Date:From;
+	b=ZRVm5GsWcvG93KRCr4aChObX1l7dJ4CNsNE11kFVHc/36t7MkxN8iB5dW8ktCM2ft
+	 +lVsSxQlx9AVxB8hzS1ntuGhRB5YEbSwq9mzpxvrsEuZncC8KDGfeRzTs7PRscqVmx
+	 75kRisys8QDRKnmk5nO3Vi1xl7Nzjcv2uPx8XzGE5lVfXaiVkAEwvzlWwi+9JQf4k8
+	 HgvnX2/2rdvf0Uigg9QAq86pkrgOOYXcplPm8YuS7+Sk5IPeY98sDoDlGzlq5O1D4X
+	 1r8swUVJFXoVsCfkluhvr+hRfF+l/wuCYvANBz+p1VmOsPAUDwnW9jirf8BxlUlCsB
+	 Imjt+DO6B0g3Q==
 From: Mark Brown <broonie@kernel.org>
-To: linux-spi@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+To: Yang Yingliang <yangyingliang@huawei.com>, linux-spi@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
  Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
- Alexandre Torgue <alexandre.torgue@foss.st.com>
-In-Reply-To: <20240228194632.3606563-1-andriy.shevchenko@linux.intel.com>
-References: <20240228194632.3606563-1-andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v1 1/1] spi: stm32-qspi: Replace of_gpio.h by proper
- one
-Message-Id: <170923897279.237390.7206796794798995947.b4-ty@kernel.org>
-Date: Thu, 29 Feb 2024 20:36:12 +0000
+In-Reply-To: <20240228194818.3606841-1-andriy.shevchenko@linux.intel.com>
+References: <20240228194818.3606841-1-andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v2 1/1] spi: pic32: Replace of_gpio.h by proper one
+Message-Id: <170923897518.237390.1313071847105495953.b4-ty@kernel.org>
+Date: Thu, 29 Feb 2024 20:36:15 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,7 +59,7 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-a684c
 
-On Wed, 28 Feb 2024 21:46:32 +0200, Andy Shevchenko wrote:
+On Wed, 28 Feb 2024 21:48:08 +0200, Andy Shevchenko wrote:
 > of_gpio.h is deprecated and subject to remove.
 > The driver doesn't use it directly, replace it
 > with what is really being used.
@@ -75,8 +72,8 @@ Applied to
 
 Thanks!
 
-[1/1] spi: stm32-qspi: Replace of_gpio.h by proper one
-      commit: bc9c0a9967fea2c0333bea26ab1bbb66c2bff31a
+[1/1] spi: pic32: Replace of_gpio.h by proper one
+      commit: 18ebe6f6fccfb093eec85bcdf3e77d48cc03a592
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
