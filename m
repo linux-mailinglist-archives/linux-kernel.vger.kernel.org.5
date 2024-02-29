@@ -1,203 +1,144 @@
-Return-Path: <linux-kernel+bounces-86129-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86086-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 749C086C00D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 05:59:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0C3E86BF62
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 04:20:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CF307B233B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 04:59:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 73C46B22841
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 03:20:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D306E39ADF;
-	Thu, 29 Feb 2024 04:59:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Jyc+f1P+"
-Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6DDB37162;
+	Thu, 29 Feb 2024 03:20:07 +0000 (UTC)
+Received: from mx1.zhaoxin.com (MX1.ZHAOXIN.COM [210.0.225.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 927092E415;
-	Thu, 29 Feb 2024 04:59:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 787FC36B16
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 03:20:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.0.225.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709182766; cv=none; b=aMpW+xiMQxGZhAxZwgugo/1EfFGUgD9bTTAgQrtxpSGBkZAcXM+OrHpKtGjQUeb1tkEe8QzSQF6SghSzcaX8SzjzDjoCWgoqgBazmb9+m/MkEx9uoy9cOXkQBuLHtonwbr8bsq6hK1jTecZF3J+vv3nHCMC2aO5n5vSmRnNNV3U=
+	t=1709176807; cv=none; b=Dskdg9enNZbF5DI9FTZGhE6ODDXKtxEDw1j16jAGdi0CwtK3zWhj0asf20NcGa2CB7WOKJKSc7NcDG5l8DBHDhCAQg5MpsSnuNAR3PJmY/OquOMt6lOcuh09B7iK65z2c/rqjzAdgGiW2ACQDmFSaR0WYnS3o64x5R01JNMYPiQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709182766; c=relaxed/simple;
-	bh=LEJMaC1gxEsmiBbx7I2iVFrPGxeJ2sGR0TCSwaXBt48=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Kld92mB3c5KVpswq44hGaxl5/1cR3pfRtnc6/Q3wBDQstvvK/EOWV3wn3kvFqVq2Drx9P692h758VCE9Yr9XhXCkbBf//00AFAF0VaBHyCN5ioJ1K54vT/IktMzbgtZgcAz4mzIr52y3QDvWtQKbZ66MVLTNJi7XtC7BWjM119k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Jyc+f1P+; arc=none smtp.client-ip=209.85.222.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f179.google.com with SMTP id af79cd13be357-787b5c68253so26100685a.2;
-        Wed, 28 Feb 2024 20:59:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709182763; x=1709787563; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ln8ih9ys+HkjNsKguuawbY2jpQF93RZW6fsCYu3AHtU=;
-        b=Jyc+f1P+JeeFUt62sDk21FQwGJiqEKkuEsgo+WUd/RBkbz7qSp+KvyksuRxsH+k3mc
-         Wzq1Ej8Wyg0gPXXGqVm1/x7fIpWRYSI3L8A1JPPr5U0wJ/BLXUlHqmOVg8SMPg4Z7ZEx
-         3J8NsDp/ElcHDRogRzQjjrF+e9ikZERLhd6evQHd5ib6srHxdBoA1yqZetj15YeUBU+T
-         3kVnqEH39l9PzqE57vSczo0O39+NalPHVf0/UKhWP9VqAK1T5zjmOEJxn53TtzrFu1dZ
-         4s1u/0XQNvJZWsedaTRoNXcMNRLlTEoVva9daq9ViVDDJXTMrffgkMnDGOxKZsFezTFm
-         z75A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709182763; x=1709787563;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ln8ih9ys+HkjNsKguuawbY2jpQF93RZW6fsCYu3AHtU=;
-        b=DkRKaxRIUSrfkwlzR27vZ6C0gy8RMUrKYkhTAVSJgfRk49HeqMzN7OjQC5JRHvW0XU
-         vAUhOSQtAPFQU9DvyijavYWb41v412cDEBIs1WHHxfrA7zbtq7StEltEK1kFfwlgUq4D
-         Db3u2FcOohGHrd98AtiwWHFSH8gnfihk1/h6mQGMM2soa4MdbHjgYA/xefAujcVlEJui
-         3Gj40//wwUCnnQvX1GOFSt/5ZNq+a1YbPQLALnW12mH6dcxpABejRdUi0fQt6I5aRC8L
-         wOxll7DV56f25PI6lgXjIdZYRpt4CmIAw0JwYg5kWXbTBFdF3utX3bLOz0xFOSdCH0CV
-         SgOg==
-X-Forwarded-Encrypted: i=1; AJvYcCX9d7kj1ze5HOR/b4RSviUa+7u/lUrRzpZ5yig5lgM9CKM1AbK7EHIcRpggwOzh+POHAjt1LEPXAlVoNtyCHp01+z4tLuGANvp52diLMipJ3T8IMycyGZ6g5wxm92BX6tCJYRVj9fUBjg==
-X-Gm-Message-State: AOJu0Yyk25neWJ4yxQ0BITNX+wQ8e/fYeo2EdZpF0AFsFoCAOhjw5i2C
-	ahU6u8kLQPHR1TbBZEvTijTT1IeiS57Jx6SV15El0TNMc5H90PEF
-X-Google-Smtp-Source: AGHT+IH5EGqQke3S+1CI+MmbUruz8ZZK+JzIbyyCIsFQO2rwOg3IMuvm4r2pxdlAbncmy9S0OBtTXA==
-X-Received: by 2002:ac8:7f8d:0:b0:42e:a06b:415c with SMTP id z13-20020ac87f8d000000b0042ea06b415cmr1265815qtj.15.1709182763448;
-        Wed, 28 Feb 2024 20:59:23 -0800 (PST)
-Received: from fauth1-smtp.messagingengine.com (fauth1-smtp.messagingengine.com. [103.168.172.200])
-        by smtp.gmail.com with ESMTPSA id f14-20020a05622a1a0e00b0042e1950d591sm349502qtb.70.2024.02.28.20.59.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 20:59:22 -0800 (PST)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailfauth.nyi.internal (Postfix) with ESMTP id 0C27C1200043;
-	Wed, 28 Feb 2024 23:59:22 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Wed, 28 Feb 2024 23:59:22 -0500
-X-ME-Sender: <xms:KQ_gZbANjRN3IoJ575Vf-WHNiuRqMGCWiA1Pu_DpyGdWLica66Upcw>
-    <xme:KQ_gZRgQkZNQa1cXWIELHO-qBgsdDyFyKn0Rsrm27OgvZIfFARJib4OHL0MRHYnUq
-    fAWz1fuh_voxWUABA>
-X-ME-Received: <xmr:KQ_gZWnCucaO-27ZIJuQWKYEcRM-kqCJ-D-hEqkiNdm89mBMCAqnlTHPug>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrgeekgdejhecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeeuohhquhhn
-    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
-    htvghrnhepgfeivdeugeeujeduuedvueeuvdeuieekudejieehgfejvedtgefhleejtddu
-    vdeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsg
-    hoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieeg
-    qddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigi
-    hmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:KQ_gZdyIcQ2afB0rNU3V90wNC2mPWN2rX1ReH2tp6CQVq3jMvCdBxw>
-    <xmx:KQ_gZQSyYOkZxYmejKR6uDccwoLdO7cKjllytjTxdqMChmAvLZ36SQ>
-    <xmx:KQ_gZQYAslJ6ng6RO2cZBlOgFiJrFkZmSHT8w3jY_fyQjWCRZ1t8yw>
-    <xmx:Kg_gZfE-GfDOkB-QzjasOHSkz-anfg1T6af3BOycb8L2HTJ_KFEhnz7BPJw>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 28 Feb 2024 23:59:21 -0500 (EST)
-Date: Wed, 28 Feb 2024 20:59:17 -0800
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>,
-	"Rafael J. Wysocki" <rjw@rjwysocki.net>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Next Mailing List <linux-next@vger.kernel.org>,
-	Nikhil V <quic_nprakash@quicinc.com>
-Subject: Re: linux-next: manual merge of the rcu tree with the pm tree
-Message-ID: <ZeAPJYPfgc6q2tpu@tardis>
-References: <20240226135745.12ac854d@canb.auug.org.au>
+	s=arc-20240116; t=1709176807; c=relaxed/simple;
+	bh=nWI0xfyfsyOczyWzPno9G0ANgOD4EpWps6XT4tWG26c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=WaIC/pfUcrAjQUq5klxXx6vx5uocXF46QO6O+Qgf9wMPloFMqRfmYlq7twZRxWaQXEl9vaBcOPf/Ldf0rB7n271ckeUnjdpkOrxTR+tm00bFEuKZXoix8aTqhuFYpsVEyi4kfsLnN2f6yGLLoFcrq45+n9nxg3m1f3LfVw2ieYQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com; spf=pass smtp.mailfrom=zhaoxin.com; arc=none smtp.client-ip=210.0.225.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zhaoxin.com
+X-ASG-Debug-ID: 1709176794-086e2316ed02390001-xx1T2L
+Received: from ZXSHMBX2.zhaoxin.com (ZXSHMBX2.zhaoxin.com [10.28.252.164]) by mx1.zhaoxin.com with ESMTP id 1NWDjwmQUgYZ1sxI (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Thu, 29 Feb 2024 11:19:54 +0800 (CST)
+X-Barracuda-Envelope-From: WeitaoWang-oc@zhaoxin.com
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.164
+Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHMBX2.zhaoxin.com
+ (10.28.252.164) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 29 Feb
+ 2024 11:19:54 +0800
+Received: from [10.29.8.21] (10.29.8.21) by zxbjmbx1.zhaoxin.com
+ (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 29 Feb
+ 2024 11:19:52 +0800
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.164
+Message-ID: <0b0eefa5-71b6-dc08-d103-72b9aebd9237@zhaoxin.com>
+X-Barracuda-RBL-Trusted-Forwarder: 10.29.8.21
+Date: Thu, 29 Feb 2024 19:19:49 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="XJyYbvL4ZSs4ZkVx"
-Content-Disposition: inline
-In-Reply-To: <20240226135745.12ac854d@canb.auug.org.au>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH v2] USB:UAS:return ENODEV when submit urbs fail with
+ device not attached.
+Content-Language: en-US
+X-ASG-Orig-Subj: Re: [PATCH v2] USB:UAS:return ENODEV when submit urbs fail with
+ device not attached.
+To: Oliver Neukum <oneukum@suse.com>, <stern@rowland.harvard.edu>,
+	<gregkh@linuxfoundation.org>, <linux-usb@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
+	<usb-storage@lists.one-eyed-alien.net>
+CC: <WeitaoWang@zhaoxin.com>, <stable@vger.kernel.org>
+References: <20240228111521.3864-1-WeitaoWang-oc@zhaoxin.com>
+ <e8c4e8a3-bfc3-463f-afce-b9f600b588b2@suse.com>
+ <07e80d55-d766-1781-ffc9-fab9ddcd33e3@zhaoxin.com>
+ <49a365a7-199a-42cd-b8d3-86d72fe5bca6@suse.com>
+From: "WeitaoWang-oc@zhaoxin.com" <WeitaoWang-oc@zhaoxin.com>
+In-Reply-To: <49a365a7-199a-42cd-b8d3-86d72fe5bca6@suse.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: ZXSHCAS2.zhaoxin.com (10.28.252.162) To
+ zxbjmbx1.zhaoxin.com (10.29.252.163)
+X-Barracuda-Connect: ZXSHMBX2.zhaoxin.com[10.28.252.164]
+X-Barracuda-Start-Time: 1709176794
+X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
+X-Barracuda-URL: https://10.28.252.35:4443/cgi-mod/mark.cgi
+X-Virus-Scanned: by bsmtpd at zhaoxin.com
+X-Barracuda-Scan-Msg-Size: 1699
+X-Barracuda-BRTS-Status: 0
+X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
+X-Barracuda-Spam-Score: 1.09
+X-Barracuda-Spam-Status: No, SCORE=1.09 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=DATE_IN_FUTURE_06_12, DATE_IN_FUTURE_06_12_2
+X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.121467
+	Rule breakdown below
+	 pts rule name              description
+	---- ---------------------- --------------------------------------------------
+	0.01 DATE_IN_FUTURE_06_12   Date: is 6 to 12 hours after Received: date
+	3.10 DATE_IN_FUTURE_06_12_2 DATE_IN_FUTURE_06_12_2
 
+On 2024/2/28 22:47, Oliver Neukum wrote:
 
---XJyYbvL4ZSs4ZkVx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+>> I'm not sure I fully understand what your mean.
+>> Whether the above code is more reasonable? If not,could you give me some
+>> suggestion? Thanks for your help!
+> 
+> You want to change uas_submit_urbs() to return the reason for
+> errors, because -ENODEV needs to be handled differently. That
+> is good.
+> But why don't you just do
+> 
+> return err;
+> 
+> unconditionally? There is no point in using SCSI_MLQUEUE_DEVICE_BUSY
 
-On Mon, Feb 26, 2024 at 01:57:45PM +1100, Stephen Rothwell wrote:
-> Hi all,
->=20
-> Today's linux-next merge of the rcu tree got a conflict in:
->=20
->   Documentation/admin-guide/kernel-parameters.txt
->=20
-> between commit:
->=20
->   3fec6e5961b7 ("PM: hibernate: Support to select compression algorithm")
->=20
-> from the pm tree and commit:
->=20
->   600716592a3a ("doc: Add EARLY flag to early-parsed kernel boot paramete=
-rs")
->=20
-> from the rcu tree.
->=20
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->=20
+I got it, Thanks. New patch would like this sample:
 
-Thanks! The below looks good to me ;-)
+@@ -562,9 +561,9 @@ static int uas_submit_urbs(struct scsi_cmnd *cmnd,
 
-Regards,
-Boqun
+  	lockdep_assert_held(&devinfo->lock);
+  	if (cmdinfo->state & SUBMIT_STATUS_URB) {
+-		urb = uas_submit_sense_urb(cmnd, GFP_ATOMIC);
+-		if (!urb)
+-			return SCSI_MLQUEUE_DEVICE_BUSY;
++		err = uas_submit_sense_urb(cmnd, GFP_ATOMIC);
++		if (err)
++			return err;
+  		cmdinfo->state &= ~SUBMIT_STATUS_URB;
+  	}
+@@ -582,7 +581,7 @@ static int uas_submit_urbs(struct scsi_cmnd *cmnd,
+  		if (err) {
+  			usb_unanchor_urb(cmdinfo->data_in_urb);
+  			uas_log_cmd_state(cmnd, "data in submit err", err);
+-			return SCSI_MLQUEUE_DEVICE_BUSY;
++			return err;
+  		}
 
+When alloc urb fail in the same function uas_submit_urbs,
+whether we should replace SCSI_MLQUEUE_DEVICE_BUSY with generic
+error code -ENOMEM? Such like this:
 
-> --=20
-> Cheers,
-> Stephen Rothwell
->=20
-> diff --cc Documentation/admin-guide/kernel-parameters.txt
-> index c503770e8f0b,3f894fbb4916..000000000000
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@@ -1753,18 -1749,7 +1754,18 @@@
->   				(that will set all pages holding image data
->   				during restoration read-only).
->  =20
->  +	hibernate.compressor=3D 	[HIBERNATION] Compression algorithm to be
->  +				used with hibernation.
->  +				Format: { lzo | lz4 }
->  +				Default: lzo
->  +
->  +				lzo: Select LZO compression algorithm to
->  +				compress/decompress hibernation image.
->  +
->  +				lz4: Select LZ4 compression algorithm to
->  +				compress/decompress hibernation image.
->  +
-> - 	highmem=3Dnn[KMG]	[KNL,BOOT] forces the highmem zone to have an exact
-> + 	highmem=3Dnn[KMG]	[KNL,BOOT,EARLY] forces the highmem zone to have an =
-exact
->   			size of <nn>. This works even on boxes that have no
->   			highmem otherwise. This also works to reduce highmem
->   			size on bigger boxes.
+@@ -572,7 +571,7 @@ static int uas_submit_urbs(struct scsi_cmnd *cmnd,
+  		cmdinfo->data_in_urb = uas_alloc_data_urb(devinfo, GFP_ATOMIC,
+  							cmnd, DMA_FROM_DEVICE);
+  		if (!cmdinfo->data_in_urb)
+-			return SCSI_MLQUEUE_DEVICE_BUSY;
++			return -ENOMEM;
+  		cmdinfo->state &= ~ALLOC_DATA_IN_URB;
+  	}
 
-
-
---XJyYbvL4ZSs4ZkVx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEj5IosQTPz8XU1wRHSXnow7UH+rgFAmXgDx8ACgkQSXnow7UH
-+rh7sggApIMmADJfpEBuhu4yI0YxPVeG9zTgQbfWM+QuWH9fr6SnGyqsHumxER8D
-kdKD7h8xK3ZzFc4Fl/MjRu+/GrBLDKbH16kayjiCkiOkVVjFbpHw5nlZdFlXL3Ps
-h0WzOHY5URZuyXsy/eB4F5QElWNNHoCfQdS+c2JyWMagkRMwVGmhM2ZcyR4crzdK
-R93WLv5lJE3xY2auuUqMEqKQUyeg+rsH/dCXv2crDeMTcM4OVbshcD7OBPQka7VM
-lxkgDe7h6tp3+FioA5oVvp0YlNmXHMy85Mk2nPg7fJ9lZM4//NS4YJFFG2Gnwil4
-dYvQQMIyuqLqtYSowH6GsdK8k++GBw==
-=vVL1
------END PGP SIGNATURE-----
-
---XJyYbvL4ZSs4ZkVx--
+Thanks and Best regards,
+Weitao
 
