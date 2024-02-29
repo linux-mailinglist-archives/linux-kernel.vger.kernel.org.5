@@ -1,117 +1,203 @@
-Return-Path: <linux-kernel+bounces-85992-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85993-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7E9086BE2F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 02:20:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AD7C86BE32
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 02:21:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 38988287368
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:20:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1197228737C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:21:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F9782D048;
-	Thu, 29 Feb 2024 01:20:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A77A2D602;
+	Thu, 29 Feb 2024 01:21:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="33atkk5Q"
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="buonsf7v"
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A2F5125CA
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 01:20:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF3753611D
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 01:21:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709169642; cv=none; b=SoGKp+VnsWYuqi44bCQ+KuVdYFBnFYkDAGRqjDOoKzQ/VHDJtGYHqtkTo6609j2qsjQ6VmvMIfRwKiPC3KObIQJSF4NOwQQ8Ocpg2ayLP9x8Ed4KKIItKna/dsDqfhYk4RAtbo8iwE8PN2SQwDCftVJ8xHPnw/i9d00dhYZAqw0=
+	t=1709169676; cv=none; b=BCT5uT6qky2e6mR6TgBnE+g2hMSXQySDpO5BkUm4QsSZKgl0E1AgKHGCuvAG8SxBht7Pmq6qiSmW09+54Fga1RMzdM5lWZVVuJoVc7XQ9M+h4ysKZCBO9b+JjIo5egEpZAIIIdclp/eXBfs2Tcg1yTyICU5pSW91jkBlmaJdAPA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709169642; c=relaxed/simple;
-	bh=vErBZyjJ3yM0jaH8Ik5aT7QuifA4uHCNsWPcG0ae9yg=;
+	s=arc-20240116; t=1709169676; c=relaxed/simple;
+	bh=cEjYY9kFb7uzbm5TaEqlwralx1PFbTgPhxEn94bcWUc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=svFQMLfOrNaJZ9g8zf+gfyXvUuLdkjMfvcLUhgt6mzyCAuS2zkcG9FEYzfq3V0iXxl8k43P+DVGyH5L3ho7yiHt7S15c1k/e7S7xvD8YaXEEZfFzYHSootsIFtMEGy5Kbpzs84+L8gv/fMofblry2XMY9u+8K8Ji/T6ayej7YKU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=33atkk5Q; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-512fab8cc6aso811e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 17:20:40 -0800 (PST)
+	 To:Cc:Content-Type; b=c36pVnO2Ucze+L9mj8KFYhB5i506hXfP3xX9IMQfDqiRtAIijgkbyNQYMEQN1Ey9TAW9D+czK9k51EzKAjXCgVoO6Yr5ISoNDA+PVrn0bL/RYhW+9dF9wRG/xhJfzcBfyS1dMUcJxin4+DB2MZX0HXhQhn2PJJomDHA2sPfc/P0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=buonsf7v; arc=none smtp.client-ip=209.85.219.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dc236729a2bso409620276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 17:21:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709169638; x=1709774438; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vErBZyjJ3yM0jaH8Ik5aT7QuifA4uHCNsWPcG0ae9yg=;
-        b=33atkk5QgfeUJtmxf3OBHJqW9VYBJPrL6rte/QbkzBUAGLtvBQGXMOYabzFaa4YEw4
-         ZbmH+DB+i0PTMSvfWaD/6nLrmnjzAH9Ok0lHIplfF6psH+xFeWKUYfqbOMotyVzeDOU9
-         KnVuJqueGKsffQHZ5Rn74yxuwrFdebxiEX/NHFTDuUaXMo37HX3sTFT2Zl9OxHdVEVHL
-         /RISr5lIXa/e+hd6MzKbBSk4Uxrj02gYrh5EzsuRpRug+d8sM6hSLy/KrN76cu3+ndQz
-         kIGHPoaz0jRxX8THQT2B5ggAnr30+TghXN4htHnLADMgeYIUXVvW9bjwggc7ZIi0nnOd
-         w4Tg==
+        d=linaro.org; s=google; t=1709169673; x=1709774473; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=8pWxbY8bTdABWL4CghYjnRxjnKy4WA9CLN4FaXielgY=;
+        b=buonsf7v6bEg7h9To5xqL6Wl2jqeg6sWzd3f8qc9wc3tH4jAn9KgbZb/ZJpw7GvqVV
+         4rC9edN24m1wEqL9HPGNoeMJ3iSweJwDhipQWoOV9dfK4gmwVoZ8hwPn9WrwnC3iPLwx
+         LXhX1mm4kiDb5R9d9ccWFSlEl0nXweyBUsZCnbiqROGgY5/N2lRPDl9uWK8n0XzCSMYS
+         BCJNauGJ9YfdPuxG9AhzM6ZjVTj8N4RgittlCBSwFsjcvjRhGdDt2W1kdrO126rt4FPE
+         b6yir9MKjL9KcAcydw2ojys4sOBrCR/jvytdfDL+ROKbk+g7Jn0yPttpBNCSJ4s2Virs
+         EDFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709169638; x=1709774438;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vErBZyjJ3yM0jaH8Ik5aT7QuifA4uHCNsWPcG0ae9yg=;
-        b=hDdoozOdthmTJxP6yZPu8VbQgwaayQhFaPpiRryxyWYESfF7XYW6VeCUKojyMc2y5g
-         y1nlAwI99AGeYPE933/cB+1Y0MEAqPz2Pnl8ryWVSVRN8o96jrAntpFt5IUU4dtVTSpd
-         c1lduXZfLKDiUhSj6pJ0W3hjsu2aiRum4qGiETAMJR3JOzWfKVs3A7bApZtREDsrIfaf
-         lIh53OISQ6ujWEVFiwTQ2pbPKUu+eoFMyHZ5Vdqjwa2h+Qb100G0vhtwAEHqnyeH3op/
-         A4YO68Gq3DBWI00k5Pv0fEP2OuOLMdOgKWIBtXvQViVTSei1WhKh/e9aGC607Js2IG7D
-         f+ww==
-X-Forwarded-Encrypted: i=1; AJvYcCUtJGFfMuF1Ugg5/SjcXOyI1BXvsJLbSShZVs18/nhLe22I+EZl4JAfKLdSc4wqyHVVl7PgPR7A1hzrw59SFawmRnus0xmtWW53kc+L
-X-Gm-Message-State: AOJu0YyVNaCUNmj3loRyrRJLn/8X+yAla14KR6IHQOrSAIvqvkQo6iiB
-	5gBTwV6mC4U3be3CUvCXTcyQPSw3Z/rhhFpZ80cj8HNO6aPI01+C7NAqOPGpV5qYuIzdMRKGVfM
-	EDciBNlcZNXK/lff0/VIhUiu63czoZOrz64Y=
-X-Google-Smtp-Source: AGHT+IH+1faJQ6/uhk0gfw8WjBzEoA6yFwJGOjkqCCQ5VIO4G5fNEb/+XhhhpVB3yiDXkNVFX0KRVuH2xhjKWBo/N64=
-X-Received: by 2002:a05:6512:1247:b0:513:1cf2:e14f with SMTP id
- fb7-20020a056512124700b005131cf2e14fmr45944lfb.4.1709169638465; Wed, 28 Feb
- 2024 17:20:38 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709169673; x=1709774473;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8pWxbY8bTdABWL4CghYjnRxjnKy4WA9CLN4FaXielgY=;
+        b=iPbVkNNT6QolK8nmBgqo/Z+AUxhHwFrpC9EpjjQR7zGpp5sEJDrxOjtPb7bgebSD5z
+         dRIqqYeGxrfKs7Nb6mI4R8DsZxPUTfKt83yUH65zR2wrvWAh9kKRiXP4MCsMwkZ2q754
+         RUQ2WuGIbXSymF0Gp0dUXk4bJtMwGeGKJmGNVDhQfh1L1mnvn8MKVqQ5FX1e5t9O7e0n
+         opiCKex8fMXrj5cMitZGZEp6fT5aVQP1CW3Z8mZlOvQbvcQb29jYlS6PPkCiQ4mjYpiY
+         WS4u910E8/hTEtWIPxt3PX5QyJmtHms8gRDffMryJrnZkw9IV+uM+ctFcx5kBD2/tRPX
+         HkFQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVw8gV0YIoWTshoxooKM4/z2cHr+82YXdXG57nkCxSgdkd2FAqhJ0PPjUhbPgAmaib9cvsNF5cbFPAx/r8H4+kPsQkCO6VwQ9RkpPF7
+X-Gm-Message-State: AOJu0YxLCczSc+koy1mtNqUqYb2BNAHcMsHBI9+qvjoD2SYyNyKTMs95
+	nEmXkicdAB5ZgFG56ST7lZ6jle0iyCOCcz7ScOxL69KvIsWGucl5rRWnoBrcm70i0F5885mzIfh
+	q2wSZN94oOH0XzuPkZly7HXySVA2ZRO6e7Xr2eA==
+X-Google-Smtp-Source: AGHT+IHOpAZJPyGmQMjmMhQkQsXaBQmwz48/fjNR7YidqlvDqX1bph2DvMHP8sMPv0l6YYgtKS0uBk4CNLftjmfqwAI=
+X-Received: by 2002:a25:9f07:0:b0:dc2:48af:bf17 with SMTP id
+ n7-20020a259f07000000b00dc248afbf17mr940987ybq.62.1709169672236; Wed, 28 Feb
+ 2024 17:21:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240228140152.1824901-1-arnd@kernel.org> <87msrkhcz6.wl-tiwai@suse.de>
- <1265517d-b98a-4ec6-9215-10cd988ff78f@app.fastmail.com> <202402280925.5B709A60F@keescook>
-In-Reply-To: <202402280925.5B709A60F@keescook>
-From: Bill Wendling <morbo@google.com>
-Date: Wed, 28 Feb 2024 17:20:20 -0800
-Message-ID: <CAGG=3QU33tgfN_veiJWooXy2EhfZzUFkJZF3XdjSLE8fFCCkOA@mail.gmail.com>
-Subject: Re: Clang __bos vs loop unrolling (was Re: [PATCH] ALSA: asihpi: work
- around clang-17+ false positive fortify-string warning)
-To: Kees Cook <keescook@chromium.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Nathan Chancellor <nathan@kernel.org>, Takashi Iwai <tiwai@suse.de>, 
-	Arnd Bergmann <arnd@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Justin Stitt <justinstitt@google.com>, 
-	linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	llvm@lists.linux.dev
+References: <20240228-gpio-keys-v2-1-3beb60225abe@quicinc.com>
+In-Reply-To: <20240228-gpio-keys-v2-1-3beb60225abe@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Thu, 29 Feb 2024 03:21:00 +0200
+Message-ID: <CAA8EJppHUYZ46Bz48HzY-D9brBRj+TEw_-6j_VUDyMZPxwf8tQ@mail.gmail.com>
+Subject: Re: [PATCH RESEND v2] arm64: dts: qcom: qcm6490-idp: enable pwrkey
+ and volume-up/down function
+To: quic_huliu@quicinc.com
+Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 28, 2024 at 9:39=E2=80=AFAM Kees Cook <keescook@chromium.org> w=
-rote:
+On Wed, 28 Feb 2024 at 11:57, Hui Liu via B4 Relay
+<devnull+quic_huliu.quicinc.com@kernel.org> wrote:
 >
-> On Wed, Feb 28, 2024 at 04:03:56PM +0100, Arnd Bergmann wrote:
-> > My first thought was that clang warns about it here because
-> > the 'u16 adapter' declaration limits the index to something
-> > smaller than an 'int' or 'long', but changing the type
-> > did not get rid of the warning.
+> From: Hui Liu <quic_huliu@quicinc.com>
 >
-> Our current theory is that Clang has a bug with
-> __builtin_object_size/__builtin_dynamic_object_size when doing loop
-> unrolling (or other kinds of execution flow splitting). Some examples:
-> https://github.com/ClangBuiltLinux/linux/issues?q=3Dlabel%3A%22loop+unrol=
-ler%22+
->
-> Which is perhaps related to __bos miscalculations:
-> https://github.com/ClangBuiltLinux/linux/issues?q=3Dlabel%3A%22%5B__bos%5=
-D+miscalculation%22+
->
-The idea that there's a bug with the __b{d}os builtins is
-controversial. The consensus among GCC and Clang compiler developers
-is that returning *a* valid size, rather than the one asked for, is
-okay as long as it doesn't go past the current object's max size. (I
-couldn't disagree more.) There are a lot of situations where Clang
-reverts to that behavior. I'm working to change that.
+> Add configurations to enable pwrkey, volume-up and volume-down function.
 
--bw
+Please take a look at how similar patches describe the changes. E.g.
+commit bb47bfbd5aa8 ("arm64: dts: qcom: sm8550-qrd: enable PMIC Volume
+and Power buttons")
+
+
+
+>
+> Signed-off-by: Hui Liu <quic_huliu@quicinc.com>
+> ---
+> Changes in v2:
+> - Update the commit description.
+> - Link to v1: https://lore.kernel.org/r/20240206-gpio-keys-v1-1-7683799daf8d@quicinc.com
+> ---
+>  arch/arm64/boot/dts/qcom/qcm6490-idp.dts | 43 ++++++++++++++++++++++++++++++++
+>  1 file changed, 43 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
+> index acf145d1d97c..4199ebf667af 100644
+> --- a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
+> +++ b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
+> @@ -9,6 +9,7 @@
+>  #define PM7250B_SID 8
+>  #define PM7250B_SID1 9
+>
+> +#include <dt-bindings/input/linux-event-codes.h>
+>  #include <dt-bindings/leds/common.h>
+>  #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+>  #include "sc7280.dtsi"
+> @@ -39,6 +40,24 @@ chosen {
+>                 stdout-path = "serial0:115200n8";
+>         };
+>
+> +       gpio-keys {
+> +               compatible = "gpio-keys";
+> +               label = "gpio-keys";
+> +
+> +               pinctrl-names = "default";
+> +               pinctrl-0 = <&key_vol_up_default>;
+> +
+> +               key-volume-up {
+> +                       label = "volume_up";
+> +                       gpios = <&pm7325_gpios 6 GPIO_ACTIVE_LOW>;
+> +                       linux,input-type = <1>;
+> +                       linux,code = <KEY_VOLUMEUP>;
+> +                       wakeup-source;
+> +                       debounce-interval = <15>;
+> +                       linux,can-disable;
+> +               };
+> +       };
+> +
+>         reserved-memory {
+>                 xbl_mem: xbl@80700000 {
+>                         reg = <0x0 0x80700000 0x0 0x100000>;
+> @@ -421,6 +440,17 @@ vreg_bob_3p296: bob {
+>         };
+>  };
+>
+> +&pm7325_gpios {
+> +       key_vol_up_default: key-vol-up-state {
+> +               pins = "gpio6";
+> +               function = "normal";
+> +               input-enable;
+> +               bias-pull-up;
+> +               power-source = <0>;
+> +               qcom,drive-strength = <3>;
+
+Why is this property required? Anyway, it should use the defined name
+rather than just numeric value.
+
+> +       };
+> +};
+> +
+>  &pm8350c_pwm {
+>         status = "okay";
+>
+> @@ -448,6 +478,19 @@ led@3 {
+>         };
+>  };
+>
+> +&pmk8350_pon {
+> +       status = "okay";
+> +};
+> +
+> +&pon_pwrkey {
+> +       status = "okay";
+> +};
+> +
+> +&pon_resin {
+> +       linux,code = <KEY_VOLUMEDOWN>;
+> +       status = "okay";
+> +};
+> +
+>  &qupv3_id_0 {
+>         status = "okay";
+>  };
+>
+> ---
+> base-commit: 23e11d0318521e8693459b0e4d23aec614b3b68b
+> change-id: 20240206-gpio-keys-138bbd850298
+>
+> Best regards,
+> --
+> Hui Liu <quic_huliu@quicinc.com>
+>
+>
+
+
+-- 
+With best wishes
+Dmitry
 
