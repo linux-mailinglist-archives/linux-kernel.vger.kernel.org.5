@@ -1,104 +1,90 @@
-Return-Path: <linux-kernel+bounces-86108-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86109-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0461986BFBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 05:01:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3DED86BFBC
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 05:02:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E4B41C22754
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 04:01:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B1C41F249F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 04:02:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 787E0381DD;
-	Thu, 29 Feb 2024 04:01:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2751B37719;
+	Thu, 29 Feb 2024 04:02:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="kuP5Y7E0"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="iUryPJt+"
+Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAA9E364D8;
-	Thu, 29 Feb 2024 04:01:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F25D376E1;
+	Thu, 29 Feb 2024 04:02:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709179288; cv=none; b=FZMkEqOMMWzfDzZrKtoZs0/LD4LwtfSFAJkHCuMGyFdxPam0x3y9hJhmWVQuHcKtmCtON5UCflpP9VpeXwJ2jBgmiSMDrXJEzc4S1yvHB4+kBb+Y4sl/o1raGBxhXFL86AUr5uVgsaF1a0wDN3JGTra3dSRWu/UYcg7E/Dg+pMY=
+	t=1709179347; cv=none; b=FBXN7cI2vigU9HWToyuOfE5CB/R5zskdX9d9FH1Nkl1/Kn8hFzaRfwRahplOw2JR/Makmo9kipdZCBHeNEr2Xk/Q3F/UlOsliZPI3ZA/gJ3tXYgmCjYP8LJuz+jixT/kVBzj+lrkBmXMSbqqm/FC3OgBzYNGHnQKCUsfdMdYmmo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709179288; c=relaxed/simple;
-	bh=jXQXz+PeGueyYtvLDE3yOIBci2d2WEXu0s/u7WCNEZ0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AXVm8+sd0RB/YFPifLc5fIIgfreezUSap/w/vqXzaLUGlaolZXqEmTdqyt5O4BQ0lwLHxazltDJrnIHD40/vYYXZLSNY5B6YAKD7dbPBvNdiq+BwvZ/4pQV4uNTvL3WGURtM081N3XVq5lYi+5z5g8IkU8RaCJCYqszPZmP0Oqs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=kuP5Y7E0; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=IkaDFHzSJFvHKVuhr/vGVExR1dL16usQzaOTDa83SZU=; b=kuP5Y7E0UEVVvoc4oBQW9X5uCp
-	78BOH0TZU/YqS5GDK/mP3UJn1iH7u1777o24iLj1DiLnc+FW2KT1HTnoAZGjH/FLZ5Y5fq+04Dw/a
-	8ARxAHD5MksdRmCRZKP6DTdwpNNS95g8cDLdt3d9P39iOFm8rNjlvcdCOopxiw8KBDKOl8WqcWXJr
-	Y+iuI+pNr6CJ0noV1digXsts+JLu+IsxNjEl9Go0sRwhnsEHfLqi2Ldef34MzZ8HMhkqqKdDNimxU
-	Fi+Wx2Rsx7JeVSNJH+m0ceaasHOXSIAi3QWLUOenkUToasyCVbNPctbeQu/U+2mSk8XWb5+Y4k3Cb
-	290yUPhw==;
-Received: from [50.53.50.0] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rfXbh-0000000Bz2k-2ADm;
-	Thu, 29 Feb 2024 04:01:17 +0000
-Message-ID: <193bd5e5-2263-4e67-b7c6-bb25dc9a6854@infradead.org>
-Date: Wed, 28 Feb 2024 20:01:16 -0800
+	s=arc-20240116; t=1709179347; c=relaxed/simple;
+	bh=SNJwfg1tCer5bwynJe0otSI9bMprHgn4ovdKCtXmcfQ=;
+	h=Message-ID:Subject:Date:From:To:Cc:References:In-Reply-To; b=uHmF/kSqNg/jThTW7hSceF6QtyxsvTzB0sURio6/jpC0Q4gz59jgDpKuLT4F70FXk5npNYzJeVbKkKpTz9U7fP2QtU+a9LMQxZ6sTFR4TJcK7ILFdyqR6oLmw3h/dnfwpjV/1XmV62IZTalxI9v6ux69Ye3Em1na6d/AiFN4J8k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=iUryPJt+; arc=none smtp.client-ip=115.124.30.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1709179341; h=Message-ID:Subject:Date:From:To;
+	bh=qddl43JU3SFmVs7NY1GN/mCezcwGFQMX8A60Zl2vNvw=;
+	b=iUryPJt+YDBFPS2TqqlJjzZmy0q9ikdoXvHnh3EpRVLFErGwiZhOuz2xLB65PD2RfTJvfDI8KNBLcBu0+ZjRyyuffb9S03+QJOxZ+WQSIRXpekUUSHq/KTK1Hsb70jrkQ5NfyipJvt5tI4+NlxosDiBNFJi3391f6Kq1/uEYvhM=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R581e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0W1Rdkwc_1709179340;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W1Rdkwc_1709179340)
+          by smtp.aliyun-inc.com;
+          Thu, 29 Feb 2024 12:02:21 +0800
+Message-ID: <1709179304.522055-1-xuanzhuo@linux.alibaba.com>
+Subject: Re: linux-next: build failure after merge of the vhost tree
+Date: Thu, 29 Feb 2024 12:01:44 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux Next Mailing List <linux-next@vger.kernel.org>,
+ "Michael S. Tsirkin" <mst@redhat.com>
+References: <20240229145531.7f7369cb@canb.auug.org.au>
+In-Reply-To: <20240229145531.7f7369cb@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v13 17/20] ipe: enable support for fs-verity as a
- trust provider
-Content-Language: en-US
-To: Fan Wu <wufan@linux.microsoft.com>, corbet@lwn.net, zohar@linux.ibm.com,
- jmorris@namei.org, serge@hallyn.com, tytso@mit.edu, ebiggers@kernel.org,
- axboe@kernel.dk, agk@redhat.com, snitzer@kernel.org, eparis@redhat.com,
- paul@paul-moore.com
-Cc: linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
- linux-security-module@vger.kernel.org, linux-fscrypt@vger.kernel.org,
- linux-block@vger.kernel.org, dm-devel@lists.linux.dev,
- audit@vger.kernel.org, linux-kernel@vger.kernel.org,
- Deven Bowers <deven.desai@linux.microsoft.com>
-References: <1709168102-7677-1-git-send-email-wufan@linux.microsoft.com>
- <1709168102-7677-18-git-send-email-wufan@linux.microsoft.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <1709168102-7677-18-git-send-email-wufan@linux.microsoft.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+
+On Thu, 29 Feb 2024 14:55:31 +1100, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> Hi all,
+>
+> After merging the vhost tree, today's linux-next build (powerpc
+> ppc64_defconfig) failed like this:
+>
+> drivers/virtio/virtio_pci_modern.c: In function 'vp_modern_create_avq':
+> drivers/virtio/virtio_pci_modern.c:755:34: warning: passing argument 5 of 'vp_dev->setup_vq' makes integer from pointer without a cast [-Wint-conversion]
+>   755 |                               avq->name, NULL, VIRTIO_MSI_NO_VECTOR);
+>       |                               ~~~^~~~~~
+>       |                                  |
+>       |                                  char *
+> drivers/virtio/virtio_pci_modern.c:755:34: note: expected 'u16' {aka 'short unsigned int'} but argument is of type 'char *'
+> drivers/virtio/virtio_pci_modern.c:754:14: error: too many arguments to function 'vp_dev->setup_vq'
+>   754 |         vq = vp_dev->setup_vq(vp_dev, &vp_dev->admin_vq.info, avq->vq_index, NULL,
+>       |              ^~~~~~
+>
+> Caused by commit
+>
+>   4cceb2591a87 ("virtio: find_vqs: pass struct instead of multi parameters")
+>
+> I have used the vhost tree from next-20240228 for today.
+
+I will post new version for powerpc soon.
+
+Thanks.
 
 
-
-On 2/28/24 16:54, Fan Wu wrote:
-> diff --git a/security/ipe/Kconfig b/security/ipe/Kconfig
-> index 7afb1ce0cb99..9dd5c4769d79 100644
-> --- a/security/ipe/Kconfig
-> +++ b/security/ipe/Kconfig
-> @@ -30,6 +30,19 @@ config IPE_PROP_DM_VERITY
->  	  that was mounted with a signed root-hash or the volume's
->  	  root hash matches the supplied value in the policy.
->  
-> +	  If unsure, answer Y.
-> +
-> +config IPE_PROP_FS_VERITY
-> +	bool "Enable property for fs-verity files"
-> +	depends on FS_VERITY && FS_VERITY_BUILTIN_SIGNATURES
-> +	help
-> +	  This option enables the usage of properties "fsverity_signature"
-> +	  and "fsverity_digest". These properties evaluates to TRUE when
-> +	  a file is fsverity enabled and with a signed digest or its
-> +	  diegst matches the supplied value in the policy.
-
-	  digest
-
-> +
-> +	  if unsure, answer Y.
-
--- 
-#Randy
+>
+> --
+> Cheers,
+> Stephen Rothwell
+>
 
