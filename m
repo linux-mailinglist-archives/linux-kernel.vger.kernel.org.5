@@ -1,120 +1,139 @@
-Return-Path: <linux-kernel+bounces-87611-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87612-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5223086D675
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:59:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 500BD86D678
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 23:00:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D35FA2846C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:59:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3D47284749
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:00:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13CF76D539;
-	Thu, 29 Feb 2024 21:59:12 +0000 (UTC)
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C44756D53A;
+	Thu, 29 Feb 2024 22:00:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F6zGX4Fu"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D831574C0B
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 21:59:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.85.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F3F96D527;
+	Thu, 29 Feb 2024 22:00:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709243951; cv=none; b=RcZspNhM1ADdIm4yV3Eu/dfcmG0XRh74Mpk6ZKqoVUFghNrMJztSB8YBT++aAR52iT+1Q2DXgW+UydgrYf7ddzUuWLKh6elm9h+esrDfdu9DZxRKgsPyGAIthK6XF/VJFg4JBqnU4ayOyLWimdrLTi9bNxIsLsHzfL1+/DmlMh8=
+	t=1709244010; cv=none; b=YamjfDCIGt8GJLoeq8qep2QDmOiIJIeLnT//J93xRx4sOYv3XcjcqodjqIX4wiq0XeEUQMOQrro1BFWiJVGFIm9HuX3TmCUIdyGiI2HeGvV0c2XCPnRZuvVDfRU6tKayMmxE0yfEe7AczHm1msqtK4GCkwKwh069MqrVEzntCRo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709243951; c=relaxed/simple;
-	bh=uWXPeF56vr/v339KwbfxnISPdQpiF1+3ZeqWCZRFH/k=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=g8vXyD/q0EIZ7ExiHmFgjEdU3fKtyykScs0K4tSxept04/ipTusYpp5gs+2t778VwYO7heEB8FVulh/JoOo2hpSIhf0mXOU9kz0IDhGIqnJzz1j0TeUN1SzJvNpT8RohCo3SVTUQGQ4bJrJfZWQKnYBq98KiaXP+n8IPTDVh8GA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.85.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-180-NmCmjom7Nua_ep9rNF_b0w-1; Thu, 29 Feb 2024 21:59:07 +0000
-X-MC-Unique: NmCmjom7Nua_ep9rNF_b0w-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 29 Feb
- 2024 21:59:05 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Thu, 29 Feb 2024 21:59:05 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Ian Rogers' <irogers@google.com>, Namhyung Kim <namhyung@kernel.org>
-CC: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland
-	<mark.rutland@arm.com>, Alexander Shishkin
-	<alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, "Adrian
- Hunter" <adrian.hunter@intel.com>, Oliver Upton <oliver.upton@linux.dev>,
-	"Yang Jihong" <yangjihong1@huawei.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-perf-users@vger.kernel.org"
-	<linux-perf-users@vger.kernel.org>, "bpf@vger.kernel.org"
-	<bpf@vger.kernel.org>
-Subject: RE: [PATCH v1 4/6] perf threads: Move threads to its own files
-Thread-Topic: [PATCH v1 4/6] perf threads: Move threads to its own files
-Thread-Index: AQHaaU4SKMfy+yjiXUyp7JFHrIJbDLEh4dlA
-Date: Thu, 29 Feb 2024 21:59:05 +0000
-Message-ID: <b60c7731b8a84e01a77fea55c31a77b9@AcuMS.aculab.com>
-References: <20240214063708.972376-1-irogers@google.com>
- <20240214063708.972376-5-irogers@google.com>
- <CAM9d7cjuv2VAVfGM6qQEMYO--WvgPvAvmnF73QrS_PzGzCF32w@mail.gmail.com>
- <CAP-5=fUUSpHUUAc3jvJkPAUuuJAiSAO4mjCxa9qUppnqk76wWg@mail.gmail.com>
-In-Reply-To: <CAP-5=fUUSpHUUAc3jvJkPAUuuJAiSAO4mjCxa9qUppnqk76wWg@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	s=arc-20240116; t=1709244010; c=relaxed/simple;
+	bh=JuLKuv9vi1UpgjQb6iZ/s5tKM7G8kvJpQug1R9JQik4=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=PTW/IhK24RiFlfn8pwfotQmsc1I2exi0hSlSKM/FiY18DGD1Zl09sWn3hmgRjH+/sKSClBFhjuVHTjWyiJJOzr6bj27aJ2/d9YuHuYSomrK0pDLkGEYxuCjp7bw2rai0GdjZSeU9J9aYsQXGSFnFUdias1dX5aobeUGSC0CNGGI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F6zGX4Fu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C9B5C433C7;
+	Thu, 29 Feb 2024 22:00:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709244009;
+	bh=JuLKuv9vi1UpgjQb6iZ/s5tKM7G8kvJpQug1R9JQik4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=F6zGX4Fub1daiAOFxkzZN2JFUabRk6yUdYtB5+B5zBu/nT3JD5Hw3rwjsoaMu+6je
+	 ClInbM1yPNjmIK52UWeM401vCcBXqaWjNRah6umLHUC0M29dYJDCM7CBiHGpJIAf+a
+	 /CqazZmnPRVpCMWLwaHfqzkgEHdMUOGEsSCFV9QV3Ilivq8fe+epr22ob6GBkPNw05
+	 tqN2L4fIr32EJ+Cx9veSeV8TQmtXDJNDzU7ZkvFPR/aKlt0Q6G/I5LiOpYGtpK3z5A
+	 EVGk31enEnfhiikeNzk9tof79tL+TqL3ltxbAxS+RLlm51cLqevxeye6uEZ5oqJQNU
+	 puZW2DKayaNcw==
+Date: Thu, 29 Feb 2024 16:00:08 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Raag Jadav <raag.jadav@intel.com>
+Cc: bhelgaas@google.com, jarkko.nikula@linux.intel.com,
+	mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com,
+	stanislaw.gruszka@linux.intel.com, lukas@wunner.de,
+	rafael@kernel.org, ilpo.jarvinen@linux.intel.com,
+	linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+	sashal@kernel.org
+Subject: Re: [PATCH v2] PCI / PM: Really allow runtime PM without callback
+ functions
+Message-ID: <20240229220008.GA364904@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240227062648.16579-1-raag.jadav@intel.com>
 
-RnJvbTogSWFuIFJvZ2Vycw0KPiBTZW50OiAyNyBGZWJydWFyeSAyMDI0IDA3OjI0DQo+IA0KPiBP
-biBNb24sIEZlYiAyNiwgMjAyNCBhdCAxMTowN+KAr1BNIE5hbWh5dW5nIEtpbSA8bmFtaHl1bmdA
-a2VybmVsLm9yZz4gd3JvdGU6DQo+ID4NCj4gPiBPbiBUdWUsIEZlYiAxMywgMjAyNCBhdCAxMDoz
-N+KAr1BNIElhbiBSb2dlcnMgPGlyb2dlcnNAZ29vZ2xlLmNvbT4gd3JvdGU6DQo+ID4gPg0KPiA+
-ID4gTW92ZSB0aHJlYWRzIG91dCBvZiBtYWNoaW5lIGFuZCBtb3ZlIHRocmVhZF9yYl9ub2RlIGlu
-dG8gdGhlIEMNCj4gPiA+IGZpbGUuIFRoaXMgaGlkZXMgdGhlIGltcGxlbWVudGF0aW9uIG9mIHRo
-cmVhZHMgZnJvbSB0aGUgcmVzdCBvZiB0aGUNCj4gPiA+IGNvZGUgYWxsb3dpbmcgZm9yIGl0IHRv
-IGJlIHJlZmFjdG9yZWQuDQo+ID4gPg0KPiA+ID4gTG9ja2luZyBkaXNjaXBsaW5lIGlzIHRpZ2h0
-ZW5lZCB1cCBpbiB0aGlzIGNoYW5nZS4NCj4gPg0KPiA+IERvZXNuJ3QgbG9vayBsaWtlIGEgc2lt
-cGxlIGNvZGUgbW92ZS4gIENhbiB3ZSBzcGxpdCB0aGUgbG9ja2luZw0KPiA+IGNoYW5nZSBmcm9t
-IHRoZSBtb3ZlIHRvIG1ha2UgdGhlIHJldmlld2VyJ3MgbGlmZSBhIGJpdCBlYXNpZXI/IDopDQo+
-IA0KPiBOb3Qgc3VyZSBJIGZvbGxvdy4gVGFrZSB0aHJlYWRzX25yIGFzIGFuIGV4YW1wbGUuDQo+
-IA0KPiBUaGUgb2xkIGNvZGUgaXMgaW4gbWFjaGluZS5jLCBzbzoNCj4gLXN0YXRpYyBzaXplX3Qg
-bWFjaGluZV9fdGhyZWFkc19ucihjb25zdCBzdHJ1Y3QgbWFjaGluZSAqbWFjaGluZSkNCj4gLXsN
-Cj4gLSAgICAgICBzaXplX3QgbnIgPSAwOw0KPiAtDQo+IC0gICAgICAgZm9yIChpbnQgaSA9IDA7
-IGkgPCBUSFJFQURTX19UQUJMRV9TSVpFOyBpKyspDQo+IC0gICAgICAgICAgICAgICBuciArPSBt
-YWNoaW5lLT50aHJlYWRzW2ldLm5yOw0KPiAtDQo+IC0gICAgICAgcmV0dXJuIG5yOw0KPiAtfQ0K
-PiANCj4gVGhlIG5ldyBjb2RlIGlzIGluIHRocmVhZHMuYzoNCj4gK3NpemVfdCB0aHJlYWRzX19u
-cihzdHJ1Y3QgdGhyZWFkcyAqdGhyZWFkcykNCj4gK3sNCj4gKyAgICAgICBzaXplX3QgbnIgPSAw
-Ow0KPiArDQo+ICsgICAgICAgZm9yIChpbnQgaSA9IDA7IGkgPCBUSFJFQURTX19UQUJMRV9TSVpF
-OyBpKyspIHsNCj4gKyAgICAgICAgICAgICAgIHN0cnVjdCB0aHJlYWRzX3RhYmxlX2VudHJ5ICp0
-YWJsZSA9ICZ0aHJlYWRzLT50YWJsZVtpXTsNCj4gKw0KPiArICAgICAgICAgICAgICAgZG93bl9y
-ZWFkKCZ0YWJsZS0+bG9jayk7DQo+ICsgICAgICAgICAgICAgICBuciArPSB0YWJsZS0+bnI7DQo+
-ICsgICAgICAgICAgICAgICB1cF9yZWFkKCZ0YWJsZS0+bG9jayk7DQo+ICsgICAgICAgfQ0KPiAr
-ICAgICAgIHJldHVybiBucjsNCj4gK30NCj4gDQo+IFNvIGl0IGlzIGEgY29weSBwYXN0ZSBmcm9t
-IG9uZSBmaWxlIHRvIHRoZSBvdGhlci4gVGhlIG9ubHkgZGlmZmVyZW5jZQ0KPiBpcyB0aGF0IHRo
-ZSBvbGQgY29kZSBmYWlsZWQgdG8gdGFrZSBhIGxvY2sgd2hlbiByZWFkaW5nICJuciIgc28gdGhl
-DQo+IGxvY2tpbmcgaXMgYWRkZWQuIEkgd2FudGVkIHRvIG1ha2Ugc3VyZSBhbGwgdGhlIGZ1bmN0
-aW9ucyBpbiB0aHJlYWRzLmMNCj4gd2VyZSBwcm9wZXJseSBjb3JyZWN0IHdydCBsb2NraW5nLCBz
-ZW1hcGhvcmUgY3JlYXRpb24gYW5kIGRlc3RydWN0aW9uLA0KPiBldGMuICBXZSBjb3VsZCBoYXZl
-IGEgYnJva2VuIHRocmVhZHMuYyBhbmQgZml4IGl0IGluIHRoZSBuZXh0IGNoYW5nZSwNCj4gYnV0
-IGdpdmVuIHRoYXQncyBhIGJ1ZyBpdCBjb3VsZCBtYWtlIGJpc2VjdGlvbiBtb3JlIGRpZmZpY3Vs
-dC4NCj4gVWx0aW1hdGVseSBJIHRob3VnaHQgdGhlIGxvY2tpbmcgY2hhbmdlcyB3ZXJlIHNtYWxs
-IGVub3VnaCB0byBub3QNCj4gd2FycmFudCBiZWluZyBvbiB0aGVpciBvd24gY29tcGFyZWQgdG8g
-dGhlIGFkdmFudGFnZXMgb2YgaGF2aW5nIGEgc2FuZQ0KPiB0aHJlYWRzIGFic3RyYWN0aW9uLg0K
-DQpUaGUgbG9jayBpcyBwcmV0dHkgbXVjaCBlbnRpcmVseSBwb2ludGxlc3MuDQpBbGwgaXQgcmVh
-bGx5IGRvZXMgaXMgc2xvdyB0aGUgY29kZSBkb3duLg0KVGhlIG1vc3QgeW91IGNvdWxkIHdhbnQg
-aXM6DQoJbnIgKz0gUkVBRF9PTkNFKHRhYmxlLT5ucik7DQp0byBhdm9pZCBhbnkgaHlwb3RoZXRp
-Y2FsIGRhdGEgdGVhcmluZy4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtl
-c2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBV
-Sw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+On Tue, Feb 27, 2024 at 11:56:48AM +0530, Raag Jadav wrote:
+> Commit c5eb1190074c ("PCI / PM: Allow runtime PM without callback
+> functions") tried to eliminate the need for runtime PM callbacks by
+> modifying pci_pm_runtime_suspend() and pci_pm_runtime_resume(), but
+> didn't modify pci_pm_runtime_idle() with relevant changes, which still
+> returns -ENOSYS if the driver supplies no runtime PM callbacks.
+> 
+> Modify pci_pm_runtime_idle() such that it allows PCI device power state
+> transitions without runtime PM callbacks and complete the original
+> intention of commit c5eb1190074c ("PCI / PM: Allow runtime PM without
+> callback functions").
+> 
+> Signed-off-by: Raag Jadav <raag.jadav@intel.com>
+> Acked-by: Rafael J. Wysocki <rafael@kernel.org>
+> Tested-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Reviewed-by: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
 
+Applied to pci/pm for v6.9, thanks!
+
+I updated the commit log to try to clarify which drivers would be
+affected.  Now that I worked through those details, I see that it was
+all there from the beginning and it just took a long time to sink into
+my head:
+
+    PCI/PM: Allow runtime PM with no PM callbacks at all
+
+    Commit c5eb1190074c ("PCI / PM: Allow runtime PM without callback
+    functions") eliminated the need for PM callbacks in
+    pci_pm_runtime_suspend() and pci_pm_runtime_resume(), but
+    didn't do the same for pci_pm_runtime_idle().
+
+    Therefore, runtime suspend worked as long as the driver implemented at
+    least one PM callback.  But if the driver doesn't implement any PM
+    callbacks at all (driver->pm is NULL), pci_pm_runtime_idle() returned
+    -ENOSYS, which prevented runtime suspend.
+
+    Modify pci_pm_runtime_idle() to allow PCI device power state transitions
+    without runtime PM callbacks and complete the original intention of commit
+    c5eb1190074c ("PCI / PM: Allow runtime PM without callback functions").
+
+Bjorn
+
+> ---
+> 
+> This is not marked for linux-stable for the need of extensive testing
+> and can be backported after a few releases if no issues are reported.
+> 
+> Changes since v1:
+> - Update commit message and tags
+> 
+>  drivers/pci/pci-driver.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+> 
+> diff --git a/drivers/pci/pci-driver.c b/drivers/pci/pci-driver.c
+> index 51ec9e7e784f..bb7f6775b350 100644
+> --- a/drivers/pci/pci-driver.c
+> +++ b/drivers/pci/pci-driver.c
+> @@ -1382,10 +1382,7 @@ static int pci_pm_runtime_idle(struct device *dev)
+>  	if (!pci_dev->driver)
+>  		return 0;
+>  
+> -	if (!pm)
+> -		return -ENOSYS;
+> -
+> -	if (pm->runtime_idle)
+> +	if (pm && pm->runtime_idle)
+>  		return pm->runtime_idle(dev);
+>  
+>  	return 0;
+> -- 
+> 2.35.3
+> 
 
