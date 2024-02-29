@@ -1,181 +1,116 @@
-Return-Path: <linux-kernel+bounces-86785-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86786-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D6C086CABD
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:54:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 806FE86CAC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:55:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B4E4F1F2177A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:54:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 38C402855C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:55:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F5C812A179;
-	Thu, 29 Feb 2024 13:54:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A5E312C524;
+	Thu, 29 Feb 2024 13:55:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Owc2hXTe"
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OJmgoJRS"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FF9C127B5B
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 13:54:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB362127B5B;
+	Thu, 29 Feb 2024 13:55:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709214856; cv=none; b=ZTResVCPYiLOZdHEqnVMx35GrgWHwv3VCCDREpvLRomuLVlWubLFGNVngXs8EjKFcy9KyZ/BlWGW0OPWjBO52raRMsTtK3Outzf8eIZiw/5aponZ9yO+Xz1J3XXMkwlUqsI9qwibiZwGcFz5RswjzOKLGW+fXFP3hOsp9h7orGc=
+	t=1709214914; cv=none; b=RJdCp5RqPKH7EtS8KF57yOqN5JglBS7yzrma7Fr9dRZ5Mzi2i1AqnPMGcf/sFLsiqlyb4zQgTMVpL4jIyELicJommQ9flMVZiXUMCKIWg+2a5txU6INRXlH+oq8Q3GMLzQaKmxccPb0rsedTmBQbyMQ/8KVubxZ51m2NTRRJvi0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709214856; c=relaxed/simple;
-	bh=v7AgUbrbTmOdYPgovbts9D0RiAJ9tLCiiQRNel8KPYs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Wbuj+pbdOv8SOT8nzFhFfFNRUrNNK/vBT9o/ZaFT3jNwb879g8A/JsRnLyL/XFRiy3hokrYv5y0WlR6Gu3XR7N1lKhRAtu8zxWwNZVQ0D/NMUCQXPSNanFGSQL75ZDzpPaLx9N5s/SY29Nlmb7oi9BfAK2bB8eXvWPnDE+SOnFs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Owc2hXTe; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1dbae7b8ff2so7640615ad.3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 05:54:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709214855; x=1709819655; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=KFi6owlquWpJybLOnBr0GE/gVglg7A135XAv9MGMZ48=;
-        b=Owc2hXTe60+izH55CjRTO9K5aSUe3JuxD9OZJ8NjdfVgwMV45B1Oz0/+qXqqDxZ2Z+
-         lEZklQlNx0rmhyUZ9RV/rWIdZu650LThYHt8hlvLIq5Lm+TlMinxoQHnI9NnoH0uoTbf
-         UKkPPsFSerWzwWmuw34xCccLCeh5GS4Fvezjsk5SciTYI2i7ikmGWce5Np6xVRp8ROKb
-         TpGZuTyyo0xOGvDWkt9ac+OEHIV90irQFUbG1jlEXvuH/UM5rPV3XefJeLo8x0MxIKU1
-         g7k5a+4Qx2ZcKYgc3q9HSpzN2Hed1qbebTUfkz8Tl+r5FMmoaZX9oSb5VD50tKL7xAYh
-         tzwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709214855; x=1709819655;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KFi6owlquWpJybLOnBr0GE/gVglg7A135XAv9MGMZ48=;
-        b=gJUwJ3nz5Nz9DX+YwQrnyVwvUkfXWcifyDENteStd56DnKJeONU6Wb78fT3sRvwaRD
-         ittukq+vPsfk041fjZ6fCDXpPRI/hzsSEmjv+7fnugD6V6bS4sW5Uo5YLoRPK+iYW3gH
-         NsS3Sv1gqFzWWzMd3Oyyegp4nZUfYTMH5e/Mub+MvreOs/rIY6mae/8CQ0jl3aVdEQaW
-         4mFEiUO+qIwpYrkyXrpAgsw2w18F9vu4m9RHCNgznwiPp8k8VJyPV3u2QL+/KG8ShmsX
-         QmJjkAA2hiilTq5rNTkXkSQNtQlnQmP/AbfpsBWa2rJQLOsvTFTuM+xKoMaT4wINGYXL
-         CxLQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVzXgMox/0rvaSnaoo5TSyadLXSZW5qGFMgsFns5CuK8+4PTIZzC6XcABBxqdPppVwUyfM5TlIm8o15pL2n66CoK/IkOCv2wnLrycRS
-X-Gm-Message-State: AOJu0YynN+Xq/hn3d5x5VYK30zsjzxqWTBnVw1psneHXap9Xacp2nPWc
-	ojn7xaJ9SAt1SoUSMklyfDsadgzwyRCA8CbITwtOuTvGWuPW2CAbH9imvb7MfA==
-X-Google-Smtp-Source: AGHT+IHXl1bXWdS83nD1wqmxu04C1/sqKau8el88o5dRrtYuWLXqrfk+s6o/thw3Tq79HKdbJHBzhg==
-X-Received: by 2002:a17:902:c406:b0:1d8:ab27:d76c with SMTP id k6-20020a170902c40600b001d8ab27d76cmr2414876plk.51.1709214854696;
-        Thu, 29 Feb 2024 05:54:14 -0800 (PST)
-Received: from thinkpad ([120.138.12.68])
-        by smtp.gmail.com with ESMTPSA id j12-20020a170902c3cc00b001dca9a6fdf1sm1484066plj.183.2024.02.29.05.54.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 05:54:14 -0800 (PST)
-Date: Thu, 29 Feb 2024 19:24:07 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Johan Hovold <johan@kernel.org>
-Cc: Bjorn Helgaas <helgaas@kernel.org>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 00/12] arm64: dts: qcom: sc8280xp: PCIe fixes and
- GICv3 ITS enable
-Message-ID: <20240229135407.GE2999@thinkpad>
-References: <20240223152124.20042-1-johan+linaro@kernel.org>
- <20240228220843.GA309344@bhelgaas>
- <20240229100853.GA2999@thinkpad>
- <ZeBbrJhks46XByMD@hovoldconsulting.com>
- <20240229122416.GD2999@thinkpad>
- <ZeCCPRVvYCNfMYnd@hovoldconsulting.com>
+	s=arc-20240116; t=1709214914; c=relaxed/simple;
+	bh=LeS/h5krYSbncffIIacMEIdRyxkd65pv7/uGwUBWSjE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hY8EIS/aTDMgfTu2uZAsg4L1TT1NXI/z6BWy9/yL9jdsjWO5/h3DGGRwspS5gjAJ/uAQJrQEPhe/Izxog/wNyzk0RboklZ/W4ZHP2pC1SlauUd8FLK7cb7R/hOaRmFWLCCo/O3ucw3PEDEy/khDm+8o7rPYFg89L3L/n6k6tSmw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OJmgoJRS; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709214913; x=1740750913;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=LeS/h5krYSbncffIIacMEIdRyxkd65pv7/uGwUBWSjE=;
+  b=OJmgoJRSdmWr2kCDGGSzrueLIPF3KNd8LA+tcPXgeNY3xdFJR7VL6Q//
+   D/PXEi8TeLmSNQ2RLkrkWUfSVkpvum83jKXPRrfeBdqp6l7zH86wyZKr6
+   +9WF0N2G+cyNTrMcQiLwexQjOMllz8DawFtL1vjcnaJhL1RaMN5pm2zZR
+   g9cbVn8Uh+RcAn6tLTXU9I22tV7qK8SYPulTWqxC7scTpYtqV1H1tkGQw
+   pnWQs0Hqs2I3rr6r2p5SIRH4cbDimXG3WbJWbuHUC3z0izgxLhgIMsbyd
+   wKqR79YW6kYcMvI0+RR3b1YcG2uiLqifces3ZwdTwzWz1Fmy7uEVwXX8p
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="3528662"
+X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
+   d="scan'208";a="3528662"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 05:55:12 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
+   d="scan'208";a="7705704"
+Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.125.243.127]) ([10.125.243.127])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 05:55:09 -0800
+Message-ID: <5ac647f6-84aa-40e5-8d67-112e38a48382@intel.com>
+Date: Thu, 29 Feb 2024 21:55:04 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZeCCPRVvYCNfMYnd@hovoldconsulting.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 04/21] KVM: x86/mmu: Allow non-zero value for non-present
+ SPTE and removed SPTE
+Content-Language: en-US
+To: Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+ kvm@vger.kernel.org
+Cc: seanjc@google.com, michael.roth@amd.com, isaku.yamahata@intel.com,
+ thomas.lendacky@amd.com, Binbin Wu <binbin.wu@linux.intel.com>
+References: <20240227232100.478238-1-pbonzini@redhat.com>
+ <20240227232100.478238-5-pbonzini@redhat.com>
+From: Xiaoyao Li <xiaoyao.li@intel.com>
+In-Reply-To: <20240227232100.478238-5-pbonzini@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Feb 29, 2024 at 02:10:21PM +0100, Johan Hovold wrote:
-> On Thu, Feb 29, 2024 at 05:54:16PM +0530, Manivannan Sadhasivam wrote:
-> > On Thu, Feb 29, 2024 at 11:25:48AM +0100, Johan Hovold wrote:
+On 2/28/2024 7:20 AM, Paolo Bonzini wrote:
+> From: Sean Christopherson <seanjc@google.com>
 > 
-> > > As I mentioned, the 'required-opps' binding update is needed to fix the
-> > > missing OPP vote so blocking the binding patch would block merging the
-> > > DT fix which could otherwise go into 6.8.
+> For TD guest, the current way to emulate MMIO doesn't work any more, as KVM
+> is not able to access the private memory of TD guest and do the emulation.
+> Instead, TD guest expects to receive #VE when it accesses the MMIO and then
+> it can explicitly make hypercall to KVM to get the expected information.
 > 
-> > I agree that the fix gets the priority. But some maintainers perfer to merge fix
-> > patches _only_ if they are fixing the issue introduced in the ongoing release.
-> > But if Bjorn has no issues in merging these for 6.8, then it is fine.
+> To achieve this, the TDX module always enables "EPT-violation #VE" in the
+> VMCS control.  And accordingly, for the MMIO spte for the shared GPA,
+> 1. KVM needs to set "suppress #VE" bit for the non-present SPTE so that EPT
+> violation happens on TD accessing MMIO range.  2. On EPT violation, KVM
+> sets the MMIO spte to clear "suppress #VE" bit so the TD guest can receive
+> the #VE instead of EPT misconfiguration unlike VMX case.  For the shared GPA
+> that is not populated yet, EPT violation need to be triggered when TD guest
+> accesses such shared GPA.  The non-present SPTE value for shared GPA should
+> set "suppress #VE" bit.
 > 
-> It also depends on the severity of the issue and to some extent the
-> complexity of the fix. These binding fixes are certainly low risk. :)
+> Add "suppress #VE" bit (bit 63) to SHADOW_NONPRESENT_VALUE and
+> REMOVED_SPTE.  Unconditionally set the "suppress #VE" bit (which is bit 63)
+> for both AMD and Intel as: 1) AMD hardware doesn't use this bit when
+> present bit is off; 2) for normal VMX guest, KVM never enables the
+> "EPT-violation #VE" in VMCS control and "suppress #VE" bit is ignored by
+> hardware.
 > 
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> Reviewed-by: Binbin Wu <binbin.wu@linux.intel.com>
+> Message-Id: <a99cb866897c7083430dce7f24c63b17d7121134.1705965635.git.isaku.yamahata@intel.com>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 
-Right.
++ 1 to the nit pointed by Yilun,
 
-> > > The 'msi-map-mask' is arguably a fix of the binding which should never
-> > > have had that property, but sure, it's strictly only needed for 6.9.
-> > > 
-> > > And Bjorn A has already checked with the Qualcomm PCI team regarding
-> > > ASPM. It's also been two weeks since you said you were going to check
-> > > with your contacts. Is it really worth waiting more for an answer from
-> > > that part of the team? We can always amend the ASPM fixes later when/if
-> > > we learn more.
-> > > 
-> > > Note that this is also a blocker for merging ITS support for 6.9.
-> 
-> > I got it, but we cannot just merge the patches without finding the rootcause. I
-> > heard from Qcom that this AER error could also be due to PHY init sequence as
-> > spotted on some other platforms, so if that is the case then the DT property is
-> > not correct.
-> 
-> I've verified the PHY sequences both against what the UEFI firmware (and
-> hence Windows) uses as well as against the internal Qualcomm
-> documentation (with the help of Bjorn A). And Qualcomm did say that such
-> errors are also seen under Windows on these platforms.
-> 
+after that,
 
-Well, sometimes the init sequence published by qualcomm could turn out to be
-faulty. That's why they publish v2 sequence and such. And I want to rule out
-that possibility in this case.
+Reviewed-by: Xiaoyao Li <xiaoyao.li@intel.com>
 
-> But the fact that the symptoms differ between the CRD and X13s, which
-> use the same Atheros Wi-Fi controller (and the same PHY initialisation)
-> also suggests that this may to some extent be due to some property of
-> the machine.
-> 
-> Notably, on the X13s there are lot of errors when pushing data
-> (e.g. using iperf3), whereas on the CRD the are no errors when running
-> such tests.
-> 
-> When leaving the CRD on for long periods of time with the Wi-Fi
-> disconnected, I do however see occasional correctable errors.
-> 
-
-This may be due to hardware design that I agree (possibly influenced by driver
-defect).
-
-> > Since this is not the hot target now (for Qcom), it takes time to
-> > check things.
-> 
-> I think that based on the available data it's reasonable to go ahead and
-> merge these patches. In the event that this turns out to be a
-> configuration issue, we can just drop the 'aspm-no-l0s' properties
-> again.
-> 
-
-Well the problem is, if you are not sure, then adding the DT properties is
-certainly not correct. As that implies a hardware defect, but it may not be.
-So let's wait for some time to find out the actual issue.
-
-- Mani
-
--- 
-மணிவண்ணன் சதாசிவம்
 
