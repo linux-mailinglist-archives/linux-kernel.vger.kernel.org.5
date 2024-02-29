@@ -1,262 +1,203 @@
-Return-Path: <linux-kernel+bounces-86128-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86129-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96D3286C00B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 05:58:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 749C086C00D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 05:59:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 242A81F235CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 04:58:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CF307B233B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 04:59:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C95603A1BF;
-	Thu, 29 Feb 2024 04:57:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D306E39ADF;
+	Thu, 29 Feb 2024 04:59:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=marvell.onmicrosoft.com header.i=@marvell.onmicrosoft.com header.b="SsBVlLBp"
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Jyc+f1P+"
+Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23C6738DED;
-	Thu, 29 Feb 2024 04:57:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.148.174
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709182666; cv=fail; b=dlQRkwbJqwwi2VgAvHz9HUypsAvUDirqewg18XaO9guzfB1pJpXzTKiCCR1jgpIS1hD1GmSzojt10/DK8XJQCZ6n3457eTJL0FgXwJD6Llkb1NREZbyAH/AM54V5vY9QwV5tGmoFW735LJUN6TpWcmNAvZl2Ba0BY3K/lY1f0mg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709182666; c=relaxed/simple;
-	bh=lDgTrsdHaTWMSwm/E0fQ8We9nVhQY5nz++pb8D483F4=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=HhXgIlZXKK2y+mqjOHVjMevj/J6AFiMlKxJ3CtNvVYQ02Fr5dGYfKUaks4cey0Lo5cu130qCWeHT9RZIRDqInSYqXFpaYF0fuKCet4yDIoxESrNsFFiJ0TT9t50yY526CvKwRdYtfQyxHVWewuqegyY3qbKoTIqZ+NDDbZW2CQQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (1024-bit key) header.d=marvell.onmicrosoft.com header.i=@marvell.onmicrosoft.com header.b=SsBVlLBp; arc=fail smtp.client-ip=67.231.148.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-	by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41T42Y0H007323;
-	Wed, 28 Feb 2024 20:57:30 -0800
-Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam04lp2169.outbound.protection.outlook.com [104.47.73.169])
-	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3wj8e8tqhw-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 28 Feb 2024 20:57:30 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MxonM4SV6bn6PcQvpGFwj/qu7Ciq0yyhNSPsfpwsCCiinbQUmrBJMRt51ne7beO4eXo3a0v/W/3A/y812B980zHqiHWRgufYsRKrbksooshHDbQeFOCJHUn/vEVM4yrIdGJbJitDjFQytFiXHwcro/wRNo+0/WElzIlmuI3OJdfFUNHXd68zHGG7cWqKBWVw+HVHS3xOV5dwenwX5nEViOWfKwny6p3Q9nPMxa+4lwmIpZUe0UbWtCOb7MII9ePagGglwSNvcsIBfXjADdaoneMJRUqt+6m0pXLnTS6aMDNe2kil50FUjUVDSPLykWg9MMMmAdZbP0ci84ErrA9E3A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=D9Ut48Nk9cIfP0vsaV3gMDf8Y9NEFRUrndwrauQidxg=;
- b=SuH5WHL2GlUxHmJ+iNVM/hf5/F2QzMtWFTFWRQ37m3pc/hqFnKg6NsfYBdyL4exuYYXoxSJfJmyBYXcvev5VoOAAx6qEF7wzkRER+IOPLcngRthqOegij2UdFOa+8txDb4zuFA+XVUNh19kapywc7qfUMV4ZqcY32YEfyDhpFJrqrMiVhhxROyLSBdJdJOyIRuwmVdxrYGPoe1l2VatC7gLt1ZaCaTo96warJykWX5uHdF95jcje3+EgffVUHo4QN41WsZWZYeb5RfVYtSZuBe4zx3wql2kT5o9XwjyUpoA+UK+/O6/lPunlOgfd1F/uE/at0XWfEL5xUT3qZRpVIg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 927092E415;
+	Thu, 29 Feb 2024 04:59:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.179
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709182766; cv=none; b=aMpW+xiMQxGZhAxZwgugo/1EfFGUgD9bTTAgQrtxpSGBkZAcXM+OrHpKtGjQUeb1tkEe8QzSQF6SghSzcaX8SzjzDjoCWgoqgBazmb9+m/MkEx9uoy9cOXkQBuLHtonwbr8bsq6hK1jTecZF3J+vv3nHCMC2aO5n5vSmRnNNV3U=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709182766; c=relaxed/simple;
+	bh=LEJMaC1gxEsmiBbx7I2iVFrPGxeJ2sGR0TCSwaXBt48=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Kld92mB3c5KVpswq44hGaxl5/1cR3pfRtnc6/Q3wBDQstvvK/EOWV3wn3kvFqVq2Drx9P692h758VCE9Yr9XhXCkbBf//00AFAF0VaBHyCN5ioJ1K54vT/IktMzbgtZgcAz4mzIr52y3QDvWtQKbZ66MVLTNJi7XtC7BWjM119k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Jyc+f1P+; arc=none smtp.client-ip=209.85.222.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f179.google.com with SMTP id af79cd13be357-787b5c68253so26100685a.2;
+        Wed, 28 Feb 2024 20:59:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=D9Ut48Nk9cIfP0vsaV3gMDf8Y9NEFRUrndwrauQidxg=;
- b=SsBVlLBpLTKsPSU2OHs8ZkgbC9gmHCvFWnBSunixHkHBMqibdC2l1ldf34p17oFessAN0xVe1wJmJOva1OeSG+sKIqe9MByTQQZZYK7a8rAbyUfaOUKOIFkEEy5A0UzONwBE3Zh5YqeBaZShvFWqF9hPJeN7nBSQ2HqcXRgFzHM=
-Received: from BY3PR18MB4707.namprd18.prod.outlook.com (2603:10b6:a03:3ca::23)
- by LV3PR18MB5801.namprd18.prod.outlook.com (2603:10b6:408:1b7::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.39; Thu, 29 Feb
- 2024 04:57:27 +0000
-Received: from BY3PR18MB4707.namprd18.prod.outlook.com
- ([fe80::493a:b05c:8118:9dd4]) by BY3PR18MB4707.namprd18.prod.outlook.com
- ([fe80::493a:b05c:8118:9dd4%4]) with mapi id 15.20.7316.039; Thu, 29 Feb 2024
- 04:57:26 +0000
-From: Sai Krishna Gajula <saikrishnag@marvell.com>
-To: Bjorn Helgaas <helgaas@kernel.org>
-CC: "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-pci@vger.kernel.org"
-	<linux-pci@vger.kernel.org>,
-        "richardcochran@gmail.com"
-	<richardcochran@gmail.com>,
-        "horms@kernel.org" <horms@kernel.org>,
-        "vinicius.gomes@intel.com" <vinicius.gomes@intel.com>,
-        "vadim.fedorenko@linux.dev" <vadim.fedorenko@linux.dev>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org"
-	<kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sunil Kovvuri
- Goutham <sgoutham@marvell.com>,
-        Geethasowjanya Akula <gakula@marvell.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Hariprasad Kelam <hkelam@marvell.com>,
-        Subbaraya Sundeep Bhatta <sbhatta@marvell.com>,
-        Naveen Mamindlapalli
-	<naveenm@marvell.com>
-Subject: Re: [net-next PATCH v2] octeontx2: Add PTP clock driver for Octeon
- PTM clock.
-Thread-Topic: [net-next PATCH v2] octeontx2: Add PTP clock driver for Octeon
- PTM clock.
-Thread-Index: AQHaasvK86DrYSiqL06CYCDK0W5VDA==
-Date: Thu, 29 Feb 2024 04:57:26 +0000
-Message-ID: 
- <BY3PR18MB4707E7764D59DF25C57CCB58A05F2@BY3PR18MB4707.namprd18.prod.outlook.com>
-References: 
- <BY3PR18MB4707DBB80B5949EA26F7ABECA0582@BY3PR18MB4707.namprd18.prod.outlook.com>
- <20240228160857.GA272997@bhelgaas>
-In-Reply-To: <20240228160857.GA272997@bhelgaas>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BY3PR18MB4707:EE_|LV3PR18MB5801:EE_
-x-ms-office365-filtering-correlation-id: fd67817f-c281-4d63-5565-08dc38e2ecbf
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 
- 9+9vLN8+wQGJBBfhPRW0CLGco93foKCRaKSTL0FJ3kmwgJwZNUqDdgAep6ExmL4aDYt+6yoE2up0z6zVo1J9a02KOQgDv4WDfokxFqrs0eueP/6tj1PEB5fCX7zvD8194WMi3I377GGCnvtqLCqOG8cQzjh3px8dCdRC6f1QiBHqEfJ5qh1AwAUOtVmvTcRY7nDZPu3x50Z7Q+nnKlgtx3xoNNFfi1JE16t6saDxDh118RT3i/J94h9zM7MHYm2M8ZysQMNuwS/QpIRiQtlxdUMh8VV1JZdANv9iKhUmMVNWThecnM89d5y9dsbQmUgm7nke28ZL2qZ6SXOnSsQCVqxZpvEA1nSNFIQWRwedWjnzbPR0dgxPy7yVU0QRSuEWZPr2K/veNGrxE/8C5yDiPXke5us/R/maLYlBs0CVPIZ2mHRXyITZ9rNlIROBnDQKm4azDlnTo0yOC6NLuR+PkN82kLTrQzDLNlVHp4HhSiVwyDMWrfLHwa7mGZT+hS9adrS94cya6CzTC31RrdOGoXs3cklAWoJ9S0jYyxurEZKcmnKGImoJE4NacImXeZR/1OiR2iSzIN8NVopxSYpKa8kmh5cHdcgh0nYgeDvCNDx/ZnHXJOY1bOq8b7ZmwuXYw75RIohTWb3c2v7KYv0ID3eoZHIQ2b7pr01oHk5a9DKXaXxa195R5fwyhadquYWHibAmOgp4T0HtVbaGLRrFItcT8p8m2rtfjV4J237VzF4=
-x-forefront-antispam-report: 
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY3PR18MB4707.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: 
- =?us-ascii?Q?4sQkFrovQ1/VfYyhj+wrADGUQz10C26lwn1/oH05pTocD5B/ji54nH6dytaN?=
- =?us-ascii?Q?1lrA0/VM8FAYc/0XsA+8COVsnMh7DaAwSl3wcU3SfeBowgbNyrbJkCreB+Qq?=
- =?us-ascii?Q?hDBcZayuWtslL+xYxfg5W51Y8Wb66I2rkI4qEv0Gcgq1ZqMc1TvskDIEVnRQ?=
- =?us-ascii?Q?VnAHQ/bVn720CfCQ2OwPtEgZ2busfQwZbXLJHLcGyxZrLLqrUp7/IGG3xhKl?=
- =?us-ascii?Q?esaCFb3oGOsBP0zdZ7sakS2QOpoHPp152ZVTbmtLlMLVTZfIBvnFRRukjCAt?=
- =?us-ascii?Q?x1jQmehdkTjs3iw1H8HFxS5vqbaiXVEXtOI4JOnnEj2RQH6OkIKq+JwSVvCH?=
- =?us-ascii?Q?FEUBQN+pPeHkEu//scsy5cHo9fh6nC6xUzLEdo0GNdAzpf2SSQIn0R6rhAfx?=
- =?us-ascii?Q?hq8k5pejPnoooa70s0gdPNKUzqOMJfCZVrkkjBA8fqKLhpEIvGatRNb7rWxe?=
- =?us-ascii?Q?DEbH/Q9JeiKllMObRtNeibCMt9CvYQ/Cex26buKmWsxq0iyaVtJdwGNJl00T?=
- =?us-ascii?Q?4UC3dGwOwFSatW84h1DsPlAHHqXBz8XPUQGpSTnUg3Ea8Ffzd3w/k9FvZNW9?=
- =?us-ascii?Q?synmr09TyenyYsgIeJVySDm3MCz32dCjGpCDhwACrRbbLvjfL/d4SEeyqPx2?=
- =?us-ascii?Q?gTkouZdpChD93Vzfo40GFj4YyeU2Q4UOh/vevFS0bktXn/MHgUEbjktC1Yfq?=
- =?us-ascii?Q?JJFZGwHNIlJEL9HhV6orUR7MTvNz9EH9Iu6xYvrzsUEKNwpAkAUG47MG55gI?=
- =?us-ascii?Q?IpBVPOkUMca8Xj+lEPIfE+vqnEaFNs5/yGIBlRKXt7js4zu0p/9Y8K7qSuVr?=
- =?us-ascii?Q?6Oca+ET/KYJ1pouKnnSi2II9i5DFN/Y4UrJCGWoMRcjTGvNlqlfihK5Sktkv?=
- =?us-ascii?Q?TDr5DXeiVR4ze6Ci4z8U9COxhvwxrQP/Ze7U38T8GevdJUPq4gWjnCLrZG0m?=
- =?us-ascii?Q?GqeoWOfkLXl/y7fLPaGtz4eg6tyPTvQ5qASu9Xv6BiJvLw5jYs7OQzf0w5DT?=
- =?us-ascii?Q?qRU8Gher+Iy2e+nPmCGPKbDGkUXdIiFOT2akpkzM1UfeNMtWAMNwbclXM6WO?=
- =?us-ascii?Q?PsLqYqZPuJMAPQEIHi5WMiiUb7ADn9y77yX8KU4dCqFdL/6V26hujUic9/We?=
- =?us-ascii?Q?JG3KVLHqy7pDQtYdrn2Rs3ddicMCjcxKgJ5vFgQpik8rOmRbaLxOkpPGuHaa?=
- =?us-ascii?Q?7dyDnKXb/4WN3OPY4oxENNMh0qaHHqkvgFT9h8lJujMyuTvNORaHv/28ev7S?=
- =?us-ascii?Q?YCDCQnwPEJYUclw4yMhrzBHmEA3WFIXCCQBH3Jy/gyeGs+ngyu52/WOr4OPE?=
- =?us-ascii?Q?noy2B3Zxj0cjuXTKwqNPb+p4QDgME6DCejYdkobZ6AYAaPiB1fBXcjsC3iJS?=
- =?us-ascii?Q?nR2ue9OmFZmGFh731BywZIw/mFEpCilM58eErW0ASCWTS4+DQO7qN4fgKAPw?=
- =?us-ascii?Q?mPw87863x7gZ2767KMGzakG2NwmEIFZnYYqQpsNfAwLaseI65+lBqg5F0BC5?=
- =?us-ascii?Q?5GFSb77oAJizs6Y/ZKcoD2xZMTQTflLtyOQQTyCsifyNWAUEwRUIFqkmrmzK?=
- =?us-ascii?Q?Y3szxDJBxqIMd8BuUpHdkG1Z0M6NL6Ro1/IA/AZV?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20230601; t=1709182763; x=1709787563; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ln8ih9ys+HkjNsKguuawbY2jpQF93RZW6fsCYu3AHtU=;
+        b=Jyc+f1P+JeeFUt62sDk21FQwGJiqEKkuEsgo+WUd/RBkbz7qSp+KvyksuRxsH+k3mc
+         Wzq1Ej8Wyg0gPXXGqVm1/x7fIpWRYSI3L8A1JPPr5U0wJ/BLXUlHqmOVg8SMPg4Z7ZEx
+         3J8NsDp/ElcHDRogRzQjjrF+e9ikZERLhd6evQHd5ib6srHxdBoA1yqZetj15YeUBU+T
+         3kVnqEH39l9PzqE57vSczo0O39+NalPHVf0/UKhWP9VqAK1T5zjmOEJxn53TtzrFu1dZ
+         4s1u/0XQNvJZWsedaTRoNXcMNRLlTEoVva9daq9ViVDDJXTMrffgkMnDGOxKZsFezTFm
+         z75A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709182763; x=1709787563;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ln8ih9ys+HkjNsKguuawbY2jpQF93RZW6fsCYu3AHtU=;
+        b=DkRKaxRIUSrfkwlzR27vZ6C0gy8RMUrKYkhTAVSJgfRk49HeqMzN7OjQC5JRHvW0XU
+         vAUhOSQtAPFQU9DvyijavYWb41v412cDEBIs1WHHxfrA7zbtq7StEltEK1kFfwlgUq4D
+         Db3u2FcOohGHrd98AtiwWHFSH8gnfihk1/h6mQGMM2soa4MdbHjgYA/xefAujcVlEJui
+         3Gj40//wwUCnnQvX1GOFSt/5ZNq+a1YbPQLALnW12mH6dcxpABejRdUi0fQt6I5aRC8L
+         wOxll7DV56f25PI6lgXjIdZYRpt4CmIAw0JwYg5kWXbTBFdF3utX3bLOz0xFOSdCH0CV
+         SgOg==
+X-Forwarded-Encrypted: i=1; AJvYcCX9d7kj1ze5HOR/b4RSviUa+7u/lUrRzpZ5yig5lgM9CKM1AbK7EHIcRpggwOzh+POHAjt1LEPXAlVoNtyCHp01+z4tLuGANvp52diLMipJ3T8IMycyGZ6g5wxm92BX6tCJYRVj9fUBjg==
+X-Gm-Message-State: AOJu0Yyk25neWJ4yxQ0BITNX+wQ8e/fYeo2EdZpF0AFsFoCAOhjw5i2C
+	ahU6u8kLQPHR1TbBZEvTijTT1IeiS57Jx6SV15El0TNMc5H90PEF
+X-Google-Smtp-Source: AGHT+IH5EGqQke3S+1CI+MmbUruz8ZZK+JzIbyyCIsFQO2rwOg3IMuvm4r2pxdlAbncmy9S0OBtTXA==
+X-Received: by 2002:ac8:7f8d:0:b0:42e:a06b:415c with SMTP id z13-20020ac87f8d000000b0042ea06b415cmr1265815qtj.15.1709182763448;
+        Wed, 28 Feb 2024 20:59:23 -0800 (PST)
+Received: from fauth1-smtp.messagingengine.com (fauth1-smtp.messagingengine.com. [103.168.172.200])
+        by smtp.gmail.com with ESMTPSA id f14-20020a05622a1a0e00b0042e1950d591sm349502qtb.70.2024.02.28.20.59.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Feb 2024 20:59:22 -0800 (PST)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+	by mailfauth.nyi.internal (Postfix) with ESMTP id 0C27C1200043;
+	Wed, 28 Feb 2024 23:59:22 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 28 Feb 2024 23:59:22 -0500
+X-ME-Sender: <xms:KQ_gZbANjRN3IoJ575Vf-WHNiuRqMGCWiA1Pu_DpyGdWLica66Upcw>
+    <xme:KQ_gZRgQkZNQa1cXWIELHO-qBgsdDyFyKn0Rsrm27OgvZIfFARJib4OHL0MRHYnUq
+    fAWz1fuh_voxWUABA>
+X-ME-Received: <xmr:KQ_gZWnCucaO-27ZIJuQWKYEcRM-kqCJ-D-hEqkiNdm89mBMCAqnlTHPug>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrgeekgdejhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeeuohhquhhn
+    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
+    htvghrnhepgfeivdeugeeujeduuedvueeuvdeuieekudejieehgfejvedtgefhleejtddu
+    vdeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsg
+    hoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieeg
+    qddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigi
+    hmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:KQ_gZdyIcQ2afB0rNU3V90wNC2mPWN2rX1ReH2tp6CQVq3jMvCdBxw>
+    <xmx:KQ_gZQSyYOkZxYmejKR6uDccwoLdO7cKjllytjTxdqMChmAvLZ36SQ>
+    <xmx:KQ_gZQYAslJ6ng6RO2cZBlOgFiJrFkZmSHT8w3jY_fyQjWCRZ1t8yw>
+    <xmx:Kg_gZfE-GfDOkB-QzjasOHSkz-anfg1T6af3BOycb8L2HTJ_KFEhnz7BPJw>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 28 Feb 2024 23:59:21 -0500 (EST)
+Date: Wed, 28 Feb 2024 20:59:17 -0800
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>,
+	"Rafael J. Wysocki" <rjw@rjwysocki.net>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Next Mailing List <linux-next@vger.kernel.org>,
+	Nikhil V <quic_nprakash@quicinc.com>
+Subject: Re: linux-next: manual merge of the rcu tree with the pm tree
+Message-ID: <ZeAPJYPfgc6q2tpu@tardis>
+References: <20240226135745.12ac854d@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: marvell.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY3PR18MB4707.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fd67817f-c281-4d63-5565-08dc38e2ecbf
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Feb 2024 04:57:26.5431
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 7Fah/SBUHE9z+M1nCrs4CeXVpojMEZlMvVYn7p6b+rxbtZBU4f0Mo5DqRnBx57o3EflXFiRa3hR/rJRYw8PAeQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR18MB5801
-X-Proofpoint-GUID: uD_YDwKbmSZDHXlTIVA-psUEioezzHBN
-X-Proofpoint-ORIG-GUID: uD_YDwKbmSZDHXlTIVA-psUEioezzHBN
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-28_08,2024-02-27_01,2023-05-22_02
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="XJyYbvL4ZSs4ZkVx"
+Content-Disposition: inline
+In-Reply-To: <20240226135745.12ac854d@canb.auug.org.au>
 
 
-> -----Original Message-----
-> From: Bjorn Helgaas <helgaas@kernel.org>
-> Sent: Wednesday, February 28, 2024 9:39 PM
-> To: Sai Krishna Gajula <saikrishnag@marvell.com>
-> Cc: bhelgaas@google.com; linux-pci@vger.kernel.org;
-> richardcochran@gmail.com; horms@kernel.org; vinicius.gomes@intel.com;
-> vadim.fedorenko@linux.dev; davem@davemloft.net; kuba@kernel.org;
-> netdev@vger.kernel.org; linux-kernel@vger.kernel.org; Sunil Kovvuri
-> Goutham <sgoutham@marvell.com>; Geethasowjanya Akula
-> <gakula@marvell.com>; Linu Cherian <lcherian@marvell.com>; Hariprasad
-> Kelam <hkelam@marvell.com>; Subbaraya Sundeep Bhatta
-> <sbhatta@marvell.com>; Naveen Mamindlapalli <naveenm@marvell.com>
-> Subject: Re: [net-next PATCH v2] octeontx2: Add PTP clock driver for
-> Octeon PTM clock.
->=20
-> On Wed, Feb 28, 2024 at 12:37:02PM +0000, Sai Krishna Gajula wrote:
-> > > -----Original Message-----
-> > > From: Bjorn Helgaas <helgaas@kernel.org>
-> > > Sent: Monday, February 26, 2024 10:31 PM
-> > ...
-> > > On Mon, Feb 26, 2024 at 03:40:25PM +0000, Sai Krishna Gajula wrote:
-> > > > > -----Original Message-----
-> > > > > From: Bjorn Helgaas <helgaas@kernel.org>
-> > > > > Sent: Wednesday, February 14, 2024 10:59 PM ...
-> > > > > On Wed, Feb 14, 2024 at 06:38:53PM +0530, Sai Krishna wrote:
-> > > > > > The PCIe PTM(Precision time measurement) protocol provides
-> > > > > > precise coordination of events across multiple components like
-> > > > > > PCIe host clock, PCIe EP PHC local clocks of PCIe devices.
-> > > > > > This patch adds support for ptp clock based PTM clock. We can
-> > > > > > use this PTP device to sync the PTM time with CLOCK_REALTIME
-> > > > > > or other PTP PHC devices using phc2sys.
->=20
-> > > > > > +static int __init ptp_oct_ptm_init(void) {
-> > > > > > +	struct pci_dev *pdev =3D NULL;
-> > > > > > +
-> > > > > > +	pdev =3D pci_get_device(PCI_VENDOR_ID_CAVIUM,
-> > > > > > +			      PCI_DEVID_OCTEONTX2_PTP, pdev);
-> > > > >
-> > > > > pci_get_device() is a sub-optimal method for a driver to claim a
-> device.
-> > > > > pci_register_driver() is the preferred method.  If you can't use
-> > > > > that, a comment here explaining why not would be helpful.
-> > > >
-> > > > We just want to check the PTP device availability in the system as
-> > > > one of the use case is to sync PTM time to PTP.
-> > >
-> > > This doesn't explain why you can't use pci_register_driver().  Can
-> > > you clarify that?
-> >
-> > This is not a PCI endpoint driver.  This piece of code is used to
-> > identify the silicon version.  We will update the code by reading the
-> > silicon version from Endpoint internal BAR register offsets.
->=20
-> > > I assume the PCI_DEVID_OCTEONTX2_PTP device is a PCIe Endpoint, and
-> > > this driver runs on the host?  I.e., this driver does not run as
-> > > firmware on the Endpoint itself?  So if you run lspci on the host,
-> > > you would see this device as one of the PCI devices?
-> > >
-> > > If that's the case, a driver would normally operate the device via
-> > > MMIO accesses to regions described by PCI BARs.  "lspci -v" would
-> > > show those addresses.
-> >
-> > This driver don't run on Host but runs on the EP firmware itself.
->=20
-> The "endpoint driver" terminology is a bit confusing here.  See
-> Documentation/PCI/endpoint/pci-endpoint.rst for details.
->=20
-> If this driver actually runs as part of the Endpoint firmware, it would n=
-ot
-> normally see a hierarchy of pci_devs, and I don't think
-> pci_get_device() would work.
->=20
-> So I suspect this driver actually runs on the host, and it looks like it =
-wants to
-> use the same device (0x177d:0xa00c) as these two drivers:
->=20
->   drivers/net/ethernet/cavium/common/cavium_ptp.c:#define
-> PCI_DEVICE_ID_CAVIUM_PTP        0xA00C
->   drivers/net/ethernet/marvell/octeontx2/af/ptp.c:#define
-> PCI_DEVID_OCTEONTX2_PTP                 0xA00C
->=20
-> It seems like maybe it should be integrated into them?  Otherwise you hav=
-e
-> multiple drivers thinking they are controlling a single device.
+--XJyYbvL4ZSs4ZkVx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Though this device does not appear as a PCI device on EP firmware, but ther=
-e are some other internal PCI devices that will be enumerated.=20
-We will remove the dependency of reading the PTP device to check the SoC ve=
-rsions, instead we will read the config space of this PCI device itself.
-I hope this clears your doubt whether this driver is running on Host or EP =
-device.
-
+On Mon, Feb 26, 2024 at 01:57:45PM +1100, Stephen Rothwell wrote:
+> Hi all,
 >=20
-> Bjorn
+> Today's linux-next merge of the rcu tree got a conflict in:
+>=20
+>   Documentation/admin-guide/kernel-parameters.txt
+>=20
+> between commit:
+>=20
+>   3fec6e5961b7 ("PM: hibernate: Support to select compression algorithm")
+>=20
+> from the pm tree and commit:
+>=20
+>   600716592a3a ("doc: Add EARLY flag to early-parsed kernel boot paramete=
+rs")
+>=20
+> from the rcu tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+>=20
+
+Thanks! The below looks good to me ;-)
+
+Regards,
+Boqun
+
+
+> --=20
+> Cheers,
+> Stephen Rothwell
+>=20
+> diff --cc Documentation/admin-guide/kernel-parameters.txt
+> index c503770e8f0b,3f894fbb4916..000000000000
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@@ -1753,18 -1749,7 +1754,18 @@@
+>   				(that will set all pages holding image data
+>   				during restoration read-only).
+>  =20
+>  +	hibernate.compressor=3D 	[HIBERNATION] Compression algorithm to be
+>  +				used with hibernation.
+>  +				Format: { lzo | lz4 }
+>  +				Default: lzo
+>  +
+>  +				lzo: Select LZO compression algorithm to
+>  +				compress/decompress hibernation image.
+>  +
+>  +				lz4: Select LZ4 compression algorithm to
+>  +				compress/decompress hibernation image.
+>  +
+> - 	highmem=3Dnn[KMG]	[KNL,BOOT] forces the highmem zone to have an exact
+> + 	highmem=3Dnn[KMG]	[KNL,BOOT,EARLY] forces the highmem zone to have an =
+exact
+>   			size of <nn>. This works even on boxes that have no
+>   			highmem otherwise. This also works to reduce highmem
+>   			size on bigger boxes.
+
+
+
+--XJyYbvL4ZSs4ZkVx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEj5IosQTPz8XU1wRHSXnow7UH+rgFAmXgDx8ACgkQSXnow7UH
++rh7sggApIMmADJfpEBuhu4yI0YxPVeG9zTgQbfWM+QuWH9fr6SnGyqsHumxER8D
+kdKD7h8xK3ZzFc4Fl/MjRu+/GrBLDKbH16kayjiCkiOkVVjFbpHw5nlZdFlXL3Ps
+h0WzOHY5URZuyXsy/eB4F5QElWNNHoCfQdS+c2JyWMagkRMwVGmhM2ZcyR4crzdK
+R93WLv5lJE3xY2auuUqMEqKQUyeg+rsH/dCXv2crDeMTcM4OVbshcD7OBPQka7VM
+lxkgDe7h6tp3+FioA5oVvp0YlNmXHMy85Mk2nPg7fJ9lZM4//NS4YJFFG2Gnwil4
+dYvQQMIyuqLqtYSowH6GsdK8k++GBw==
+=vVL1
+-----END PGP SIGNATURE-----
+
+--XJyYbvL4ZSs4ZkVx--
 
