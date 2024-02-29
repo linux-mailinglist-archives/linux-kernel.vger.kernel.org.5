@@ -1,184 +1,159 @@
-Return-Path: <linux-kernel+bounces-86349-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86350-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09FE086C440
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:54:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14F5C86C441
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:54:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E6201F23391
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:54:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 85EED1F238EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:54:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0ED654FB3;
-	Thu, 29 Feb 2024 08:54:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DF5F54FBA;
+	Thu, 29 Feb 2024 08:54:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="PmLKteDr"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="mCNdjvcB"
+Received: from mail-ua1-f43.google.com (mail-ua1-f43.google.com [209.85.222.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71D0A53E30;
-	Thu, 29 Feb 2024 08:53:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C21154BFB
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 08:54:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709196841; cv=none; b=PaKMVhjuqN8Hdi6SPe/A6bs1T6T+ri0EH3QqAWE4MyFtsf61WD/R0F/UTg3/1DgJzP4pCUjhfr16o5sweO74F063wFp+Giw08SNjxy1rZlYSjNE+UXUrmQf3ysey+EMp60np0s316BHnPLrNFQF6GgaLmRO0VCBPGhLrQid1TLE=
+	t=1709196870; cv=none; b=t5dkf1MqqnJyw6N8USZPlioS/1IdtIXHKyga36OePTQAjGtUPbmkbXKTFjD5qYJ3fcorfeGLGI4chpJn3LCzp2KpRCjPowlZXfflXbpnchZv2gz0Ijz5kiVJrOaE4t7AlDKdKNJM1jCqgQteqbNu1fbGaPKwa3tueEZbB34OZh0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709196841; c=relaxed/simple;
-	bh=JFVXTAAuvueZGJ1qbFCAT1FQwjUtEjK+lf3R2RaGBnI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=C9d7BxCZwa8Nd95wCVsMDp8nvDRnZzIMDDWPRFTaGw9DOmLCgi6v8dL6zZfPUNQwHsy2XzRfNaHwsYpgPuNsus1uU6M0vqUePCeyQQq4dOeyYP6Zw9QYdQuAlsQTpn3bld7HH4qdb8H3Uoye6Zjxj24fCRRe342VPPD7XLTyeoA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=PmLKteDr; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41T6iDHP004522;
-	Thu, 29 Feb 2024 08:53:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=MBa7Nsq5ot2JW4JB8W984X8OIbqaIdGF/tU6QV5+1so=; b=Pm
-	LKteDrBhWD5tVSrdZnW3aTCRA45QXMIY+s5xCvEDMJlsPYOWzPRDkR0NZ2ubBVV0
-	yS7wtCl7NhyzgaM2gPHo8zuFQj1TCpk7ZQvkPW6A8bVY5Tm83p/vpoWDteFqsw1w
-	U4cqpQHHMxv6OqJX6p530zPD8t1Hx7RjQmI/GnBAZu/gh1SqFWKdVmYUltCj7qKq
-	cxGMcXdgQimAZa0F5P3hE6Wxu5VI1s175Un9BrvJQfTwN9WEH+WKGuOf+q9q25Wd
-	YOMVCY+7f1mqqz7rKayTvq5rZpKlNAN4DEgN4wnwgrYyvJVxuE2hE2KZCIUB3yoi
-	FGlj+g5PW74QkwaE/WPw==
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wjmwn8b7m-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 29 Feb 2024 08:53:54 +0000 (GMT)
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41T8rrxB014238
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 29 Feb 2024 08:53:54 GMT
-Received: from [10.216.40.135] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 29 Feb
- 2024 00:53:50 -0800
-Message-ID: <8b7b34b8-8b92-4475-fe6a-8a7340590fb2@quicinc.com>
-Date: Thu, 29 Feb 2024 14:23:43 +0530
+	s=arc-20240116; t=1709196870; c=relaxed/simple;
+	bh=C1F2Ot/uuDkqnCmlWjA10L6hOD4/wEZFsiSfuMKB0h8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JJOeCZSXAkVq9V1lWEuuAGaIJRUetypEi2yXOtixVTSMHJXQhozSriA0O81zijhotQt2EVlXF3XeHVd0zHNhjvFI/8d7kddGlr+qXKDEcqjAt7uaLjPhsbooDwviJTnQ9ABWsS/blNI389I5OmWVOCHsDgDndBDLmmkBsaah0No=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=mCNdjvcB; arc=none smtp.client-ip=209.85.222.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-ua1-f43.google.com with SMTP id a1e0cc1a2514c-7dadba3284cso282747241.2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 00:54:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1709196868; x=1709801668; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7ivoGOjqE6+MRAhBQTZ0x3vwRP2KnVaf9z7bWvGe1CQ=;
+        b=mCNdjvcBOLunjXt7EwMN8p+IhJRtz0aKHcntqG+3ZLEakgQF1VFWcA2VYsGw5uNh31
+         gqHP7X77x+4Wz9QwqikIb3hi/oXbthVG6DExwJ7iBigZWgfcrLuyob/H5H95TXCI+6tO
+         QLQLDKZC+c8HNq20X9DPuWzgtBa8PnElTqNccZI//DUQVDjESD5nYbXeLpz8lEpAKmuQ
+         p3Aa1dKptXTY42sW7mbeiHKOt9CXRIXvIVaBAZKfjzjXmPbCQIoLy0BKFwNS9XduM/Nh
+         ln/nSLutDoXZ9U8DjkgaLEFcfuvGy0zKNSZgjEgwImsfAN23DusxAJnWm3Tybga/KGsb
+         mVzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709196868; x=1709801668;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7ivoGOjqE6+MRAhBQTZ0x3vwRP2KnVaf9z7bWvGe1CQ=;
+        b=MkOznvvhcj4rcHO7CQLp4wgjfU25pCelCXMJ74jiQiLgo5zGRCiWUQYC3cxU9zPrZz
+         NcHKBtyQ/aeYF2FYbrKQQddKUFPkVm7aeIRuQK7UixMhuTkphYtTenmEtNlSO2ZF2CK9
+         67mkOFt0PUWlyQcEdZ5+T6sxW5/WwFwcIt3Wl1Z+goo6aMx2YeFQzhZzmT+GAwxqe/5i
+         UNH8BD0wh5myh6fS3GbwRWO+X39kDxajgVQDLH7+gNrBIr0tT0lHgtI3g7nBmOCjomGl
+         OJubLDb28Hw4wXM4Q+pUKPuUC9o1dK/+XYdreK9Ghk5xsNpwhTN3SxEEzvGgHAkCpTIH
+         Mj1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVVRo3tF8VdXArgPKDDnSO3lNZ0uALgEDH+GcF5dQYJiLv9BrozajKes18r5q2/H7Znti+tgLiji4nUmcPGxnGrpMgtH4oOHwEXHhA5
+X-Gm-Message-State: AOJu0Yxce7MelVVHCxNVt9JPtWavp9rJ8I/q+reRtmmsec4Z40+FJwjA
+	rBCfAkZJx3PphbTzbtSurvUBxHWzQ1L5yvFBog+Y8zt3JTPCwXNRgsGyE4N4GjaIPfNX3ieT4hS
+	3VJ+IRIo0fvEqs4oJZLXeZE0UZi7jQqf8IHTGGw==
+X-Google-Smtp-Source: AGHT+IE8KR0hqNGhiSGQT0yvEfNj2h1/XVWsiLkv68dkCjqTMzMmkNY8p8YJ7bhmOEX6w30P6C13O0TOFaoQft4qnsg=
+X-Received: by 2002:a05:6102:3166:b0:470:6d8a:a8f9 with SMTP id
+ l6-20020a056102316600b004706d8aa8f9mr984804vsm.34.1709196868030; Thu, 29 Feb
+ 2024 00:54:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] cpufreq: Don't unregister cpufreq cooling on CPU hotplug
-Content-Language: en-US
-To: Viresh Kumar <viresh.kumar@linaro.org>,
-        "Rafael J. Wysocki"
-	<rafael@kernel.org>
-CC: <linux-pm@vger.kernel.org>, Vincent Guittot <vincent.guittot@linaro.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Manaf Meethalavalappu Pallikunhi
-	<quic_manafm@quicinc.com>,
-        Roman Stratiienko <r.stratiienko@gmail.com>,
-        <linux-kernel@vger.kernel.org>
-References: <1333a397b93e0e15cb7cb358e21a289bc7d71a63.1709193295.git.viresh.kumar@linaro.org>
-From: Mukesh Ojha <quic_mojha@quicinc.com>
-In-Reply-To: <1333a397b93e0e15cb7cb358e21a289bc7d71a63.1709193295.git.viresh.kumar@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: H-3rVEc9b13FTWj-hwiPT42z-elOBFAP
-X-Proofpoint-ORIG-GUID: H-3rVEc9b13FTWj-hwiPT42z-elOBFAP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-29_01,2024-02-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- mlxlogscore=872 phishscore=0 priorityscore=1501 malwarescore=0
- suspectscore=0 clxscore=1011 bulkscore=0 adultscore=0 lowpriorityscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2402290068
+References: <20240229084555.43701-2-arturas.moskvinas@gmail.com>
+In-Reply-To: <20240229084555.43701-2-arturas.moskvinas@gmail.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Thu, 29 Feb 2024 09:54:17 +0100
+Message-ID: <CAMRc=MfTo7MnfMhRQsjeFsLv3yjEtP0C3ytqACN+nuGw0Sr-Bg@mail.gmail.com>
+Subject: Re: [PATCH v2] gpio: 74x164: Enable output pins after registers are reset
+To: Arturas Moskvinas <arturas.moskvinas@gmail.com>
+Cc: linus.walleij@linaro.org, u.kleine-koenig@pengutronix.de, 
+	andriy.shevchenko@linux.intel.com, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, Feb 29, 2024 at 9:47=E2=80=AFAM Arturas Moskvinas
+<arturas.moskvinas@gmail.com> wrote:
+>
+> Chip outputs are enabled[1] before actual reset is performed[2] which mig=
+ht
+> cause pin output value to flip flop if previous pin value was set to 1 in=
+ chip.
+> Change fixes that behavior by making sure chip is fully reset before all =
+outputs
+> are enabled.
+>
 
+Use imperative mood in commit messages - make it: "Fix that behavior
+by making sure ...".
 
-On 2/29/2024 1:42 PM, Viresh Kumar wrote:
-> Offlining a CPU and bringing it back online is a common operation and it
-> happens frequently during system suspend/resume, where the non-boot CPUs
-> are hotplugged out during suspend and brought back at resume.
-> 
-> The cpufreq core already tries to make this path as fast as possible as
-> the changes are only temporary in nature and full cleanup of resources
-> isn't required in this case. For example the drivers can implement
-> online()/offline() callbacks to avoid a lot of tear down of resources.
-> 
-> On similar lines, there is no need to unregister the cpufreq cooling
-> device during suspend / resume, but only while the policy is getting
-> removed.
-> 
-> Moreover, unregistering the cpufreq cooling device is resulting in an
-> unwanted outcome, where the system suspend is eventually aborted in the
-> process.  Currently, during system suspend the cpufreq core unregisters
-> the cooling device, which in turn removes a kobject using device_del()
-> and that generates a notification to the userspace via uevent broadcast.
-> This causes system suspend to abort in some setups.
-> 
-> This was also earlier reported (indirectly) by Roman [1]. Maybe there is
-> another way around to fixing that problem properly, but this change
-> makes sense anyways.
-> 
-> Move the registering and unregistering of the cooling device to policy
-> creation and removal times onlyy.
-> 
-> Reported-by: Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>
-> Reported-by: Roman Stratiienko <r.stratiienko@gmail.com>
-> Link: https://patchwork.kernel.org/project/linux-pm/patch/20220710164026.541466-1-r.stratiienko@gmail.com/ [1]
-> Tested-by: Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> Flip-flop can be noticed when module is removed and inserted again and on=
+e of
+> the pins was changed to 1 before removal. 100 microsecond flipping is
+> noticeable on oscilloscope (100khz SPI bus).
+>
+> For a properly reset chip - output is enabled around 100 microseconds (on=
+ 100khz
+> SPI bus) later during probing process hence should be irrelevant behavior=
+al
+> change.
+>
+> [1] - https://elixir.bootlin.com/linux/v6.7.4/source/drivers/gpio/gpio-74=
+x164.c#L130
+> [2] - https://elixir.bootlin.com/linux/v6.7.4/source/drivers/gpio/gpio-74=
+x164.c#L150
+>
+> Signed-off-by: Arturas Moskvinas <arturas.moskvinas@gmail.com>
+
+This looks much better, can you add a Fixes: tag as well?
+
+Bartosz
+
+>
 > ---
->   drivers/cpufreq/cpufreq.c | 17 +++++++++++------
->   1 file changed, 11 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-> index 44db4f59c4cc..4133c606dacb 100644
-> --- a/drivers/cpufreq/cpufreq.c
-> +++ b/drivers/cpufreq/cpufreq.c
-> @@ -1571,7 +1571,8 @@ static int cpufreq_online(unsigned int cpu)
->   	if (cpufreq_driver->ready)
->   		cpufreq_driver->ready(policy);
->   
-> -	if (cpufreq_thermal_control_enabled(cpufreq_driver))
-> +	/* Register cpufreq cooling only for a new policy */
-> +	if (new_policy && cpufreq_thermal_control_enabled(cpufreq_driver))
->   		policy->cdev = of_cpufreq_cooling_register(policy);
->   
->   	pr_debug("initialization complete\n");
-> @@ -1655,11 +1656,6 @@ static void __cpufreq_offline(unsigned int cpu, struct cpufreq_policy *policy)
->   	else
->   		policy->last_policy = policy->policy;
->   
-> -	if (cpufreq_thermal_control_enabled(cpufreq_driver)) {
-> -		cpufreq_cooling_unregister(policy->cdev);
-> -		policy->cdev = NULL;
-> -	}
+> v1 -> v2
+> * Updated commit message to contain more information why a change is made=
+.
+> ---
+>  drivers/gpio/gpio-74x164.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpio/gpio-74x164.c b/drivers/gpio/gpio-74x164.c
+> index e00c33310517..753e7be039e4 100644
+> --- a/drivers/gpio/gpio-74x164.c
+> +++ b/drivers/gpio/gpio-74x164.c
+> @@ -127,8 +127,6 @@ static int gen_74x164_probe(struct spi_device *spi)
+>         if (IS_ERR(chip->gpiod_oe))
+>                 return PTR_ERR(chip->gpiod_oe);
+>
+> -       gpiod_set_value_cansleep(chip->gpiod_oe, 1);
 > -
->   	if (has_target())
->   		cpufreq_exit_governor(policy);
->   
-> @@ -1720,6 +1716,15 @@ static void cpufreq_remove_dev(struct device *dev, struct subsys_interface *sif)
->   		return;
->   	}
->   
-> +	/*
-> +	 * Unregister cpufreq cooling once all the CPUs of the policy are
-> +	 * removed.
-> +	 */
-> +	if (cpufreq_thermal_control_enabled(cpufreq_driver)) {
-> +		cpufreq_cooling_unregister(policy->cdev);
-> +		policy->cdev = NULL;
-> +	}
+>         spi_set_drvdata(spi, chip);
+>
+>         chip->gpio_chip.label =3D spi->modalias;
+> @@ -153,6 +151,8 @@ static int gen_74x164_probe(struct spi_device *spi)
+>                 goto exit_destroy;
+>         }
+>
+> +       gpiod_set_value_cansleep(chip->gpiod_oe, 1);
 > +
-
-Looks fine than other solution..
-
--Mukesh
->   	/* We did light-weight exit earlier, do full tear down now */
->   	if (cpufreq_driver->offline)
->   		cpufreq_driver->exit(policy);
+>         ret =3D gpiochip_add_data(&chip->gpio_chip, chip);
+>         if (!ret)
+>                 return 0;
+>
+> base-commit: d206a76d7d2726f3b096037f2079ce0bd3ba329b
+> --
+> 2.44.0
+>
 
