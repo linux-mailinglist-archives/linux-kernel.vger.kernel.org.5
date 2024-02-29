@@ -1,56 +1,81 @@
-Return-Path: <linux-kernel+bounces-87609-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87610-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76BD886D672
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:59:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9305A86D673
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:59:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 121D9B21F60
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:59:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 218BB284862
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:59:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76FF06D52F;
-	Thu, 29 Feb 2024 21:58:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4517F6D53E;
+	Thu, 29 Feb 2024 21:59:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Vufomjse"
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RqIhjWur"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0352B16FF46;
-	Thu, 29 Feb 2024 21:58:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECA3E6D521;
+	Thu, 29 Feb 2024 21:58:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709243938; cv=none; b=i7Obq1iFF8iCkYCHxFVb1V6j1UIEw1fo9iSZ+ccMLQ3nr6gVAr98grd59uHI0SQ0DCfYUpv7Z5P7+Mr4nZUj/dXpYXvOzuwikL7cvnyHqgV4k0HzTNjElo3T4TR8o/eEBDQ4sDowsOyxmEb0g9YmrU0Mp6xHUszFUO6lLAiMDAs=
+	t=1709243939; cv=none; b=YiPskSYI3OcnkRPUcV9hFhJ9oHwcFvHPI6BRHXqiEcQxqEidDr+q2wTjyGDAnM/HSy9TSHgLM+cuP+qu9F5g6vNfbWaUZS93K5bAy/4bTDT6qHHoizQyPoixQ3vXKQ5WdEzWJ0ejNDrMMQLgkdsPLX+4xONLHhBUx2N9BIDC8+Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709243938; c=relaxed/simple;
-	bh=5JVabrlMLe/1NI62rmzy/ei3KAtCFMI1zLcwOM4J3wA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eZx7KXFi9bs9Z9QwfBwpTSyCX85p5KPjjO7gk501CTQdY475mE5ry5CemuPSTvNH8uLI5XxwqjOZDVGJNsszFV5EWj9NcXYY5akVUUjJQZEtQ6AXhV0SWCf8uN00LYis3KsR5pFLb3WIKY26p73mNDflmBNGot6I8qTLa0wClNA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Vufomjse; arc=none smtp.client-ip=217.70.183.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 9AEDF40003;
-	Thu, 29 Feb 2024 21:58:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709243934;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DiJQ8IEdW2Jkk/S4jOTeOO3q8QRmk15ZcHgGmWobrwI=;
-	b=Vufomjser0fMBgkFugDyP7xz2NZDrANrKG05Os5lRiWQQXwpRfMzls1U5UVZfCj5mGCYba
-	5aJ3QYmmc8fc0/4bxjHolLYyp6+I0mYpkgOkagq1VAy9ei7hF5XdFt9KRU8p7qKO5AFnSI
-	IDmHMn7xkIikioGrvhOglf1pB1piCcIgXRwijdx3iZwFVhiQWk0Z/Zc120AtPSiUql9bAZ
-	5Og6pScc2s5MeWAL+U4EWkNgFn//q4vYRkZ8AF6ALxhFwbXShvYnMej6r4x9QOp+qJYnwW
-	VB/q3oYjxHjy6ekb6CGKYrGj8M6OBOg3WeuUyEmA5yDBbTs4iyxSNx8tLH8WUw==
-Date: Thu, 29 Feb 2024 22:58:50 +0100
-From: Alexandre Belloni <alexandre.belloni@bootlin.com>
-To: Nicholas Miehlbradt <nicholas@linux.ibm.com>
-Cc: a.zummo@towertech.it, linux-rtc@vger.kernel.org,
+	s=arc-20240116; t=1709243939; c=relaxed/simple;
+	bh=u7emfAwG3izXFa50N+MC/c19/H8pMfUWBq0jlVhc5kc=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MAmn2/IrAU/QhX5CsRkCs0Cp3qsjYYPgAei0UcG8ENL8O3zvrkZmDeRpMSwje4/MeS5tB8Ga7mGZOzstOuDz8l7X3nyY2QBlqrLJuVsz/9OqR7HSuq3YfzwHGM05uZML9tgeCmwkQVBWZLSo9GmSZ45v/3aF8cb90YNxxw5kgVE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RqIhjWur; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a26ed1e05c7so265822266b.2;
+        Thu, 29 Feb 2024 13:58:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709243936; x=1709848736; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=YLB+AEOoGVHORFz2CPSFygKm0JXbti6HkSl+J6gRIxA=;
+        b=RqIhjWurkRxbaRi4Yd7F9VZsarPBQsSLs/BmStXTXf0YhrSiXBR2KUBOX/55xOG52o
+         0sS8ifaJQ/xUw/G62GldgMY6Fay8pcsIsyeQcRCHA6KYgqOzEKgZ8VquVVYOn5ru19zc
+         s4U9XgUUdWJicLU1eVhekKR9pn7nq3y3G/i4wgRlFbf5/1zQr3wRBiIfNu3d7v0HqcEq
+         JvBg71qsIEf0ZeXjjiuGKaNxg6bd+oKa+Ogdc03u3v97O8qTio1eUHvHhl4kEvoIOb4t
+         XzDLWQ90vEA+EEcciv+7SvYKl61S26b+x2oQVpwExZ/YvUluABgiI1UiPgDcovn6u3vP
+         dp1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709243936; x=1709848736;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YLB+AEOoGVHORFz2CPSFygKm0JXbti6HkSl+J6gRIxA=;
+        b=V99pb5bkLxKq1jMauA8c7l6dTcgckA0gSDTsc+6It3a9POzmCYJjoi/etdWppxOlX2
+         LT+MapE9cKie/LLwy1LM8IaAehh/plJbnqpHMzhC2e34MNRk3S2SqrFaKTTGrgeO8sTT
+         u4uDD8d5Ofv9iww2eYYlhJ5VGcwnxC2RTobqBoLtrMvxT4cxrVj6uACyHY6GFlnSTuby
+         RBSP6MOUq/admwq0TM7enCz8hghIc6bX4RnGqvtbWnbyXP5JvpykCHixokBrvFuA0H2U
+         byzB4+a+pqYPf7repcZ4QGOogrb0fZuEcj45Sx+a6Fov4ItQP9W8qCLjlZC1IVo6vQ3O
+         qTpg==
+X-Forwarded-Encrypted: i=1; AJvYcCX0GBbiysMMkbfuo4sFw+StjoH8eCsnUaIExRVmUQfbQ0S+806r72kOwpVSizflsm9hqLJUs4L8Veb3y3P4fMq77rX8x9gIx8NG9ANClc6kUnGhIa0YoP3pVrCNsIcJ/cwOZndtm2wkVfwGxOWs+9Kv
+X-Gm-Message-State: AOJu0Yy1q7bNfziQ94Lgdnq0fhnnhsCXYKcX2jhNtR0X68Sy0xSfekGP
+	yrpDfbTJLJU3RPaRezF/xA+/ByiO5jEs/88GUZGvFkCGPNePfyHsH3qmoNwu
+X-Google-Smtp-Source: AGHT+IGYvPEPGx1GzuuMu3WIOb3s2/UGCtmhtiTQFmVB3GgBAz8SOjLpVIUdUFdzdb47NctxLQy4Iw==
+X-Received: by 2002:a17:906:1689:b0:a3d:e2e9:a7f7 with SMTP id s9-20020a170906168900b00a3de2e9a7f7mr118482ejd.27.1709243935911;
+        Thu, 29 Feb 2024 13:58:55 -0800 (PST)
+Received: from krava ([83.240.61.14])
+        by smtp.gmail.com with ESMTPSA id ty8-20020a170907c70800b00a3ed975968esm1072293ejc.28.2024.02.29.13.58.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Feb 2024 13:58:55 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Thu, 29 Feb 2024 22:58:54 +0100
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+	linux-trace-kernel@vger.kernel.org, Jiri Olsa <olsajiri@gmail.com>,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rtc: fix uninitialized read of rtc_wkalrm.time
-Message-ID: <20240229215850a1990100@mail.local>
-References: <20231129073647.2624497-1-nicholas@linux.ibm.com>
+Subject: Re: [PATCH] fprobe: Fix to allocate entry_data_size buffer with
+ rethook instances
+Message-ID: <ZeD-HkC7bsAn_YgK@krava>
+References: <170920576727.107552.638161246679734051.stgit@devnote2>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,71 +84,65 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231129073647.2624497-1-nicholas@linux.ibm.com>
-X-GND-Sasl: alexandre.belloni@bootlin.com
+In-Reply-To: <170920576727.107552.638161246679734051.stgit@devnote2>
 
-Hello,
-
-On 29/11/2023 07:36:47+0000, Nicholas Miehlbradt wrote:
-> If either of the first two branches of the if statement in
-> rtc_read_alarm_internal are taken the fields of alarm->time are not
-> initialized but are subsequently read by the call to rtc_tm_to_time64.
+On Thu, Feb 29, 2024 at 08:22:47PM +0900, Masami Hiramatsu (Google) wrote:
+> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 > 
-> Refactor so that the time field is only read if the final branch of the
-> if statment which initializes the field is taken.
+> Fix to allocate fprobe::entry_data_size buffer with rethook instances.
+> If fprobe doesn't allocate entry_data_size buffer for each rethook instance,
+> fprobe entry handler can cause a buffer overrun when storing entry data in
+> entry handler.
 > 
+> Reported-by: Jiri Olsa <olsajiri@gmail.com>
 
-While the problem description is correct, the solution is not because
-you have no guarantee that the fields have been initialized if
-->read_alarm returns a value different from 0
+Tested-by: Jiri Olsa <olsajiri@gmail.com>
 
-So, instead of avoiding the conversion unless the final branch is taken,
-it should be avoided as long as err != 0.
+thanks,
+jirka
 
-But, I'm also wondering whether there is actually an issue. mktime64
-can be fed whatever value without bugging out and the value of err will
-be part of the trace so userspace knows that it shouldn't trust the
-value.
-
-So, what is the actual issue? :)
-
-> Signed-off-by: Nicholas Miehlbradt <nicholas@linux.ibm.com>
+> Fixes: 4bbd93455659 ("kprobes: kretprobe scalability improvement")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 > ---
->  drivers/rtc/interface.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+>  kernel/trace/fprobe.c |   14 ++++++--------
+>  1 file changed, 6 insertions(+), 8 deletions(-)
 > 
-> diff --git a/drivers/rtc/interface.c b/drivers/rtc/interface.c
-> index 1b63111cdda2..f40e76d2fe2b 100644
-> --- a/drivers/rtc/interface.c
-> +++ b/drivers/rtc/interface.c
-> @@ -179,6 +179,7 @@ static int rtc_read_alarm_internal(struct rtc_device *rtc,
->  				   struct rtc_wkalrm *alarm)
+> diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
+> index 6cd2a4e3afb8..9ff018245840 100644
+> --- a/kernel/trace/fprobe.c
+> +++ b/kernel/trace/fprobe.c
+> @@ -189,9 +189,6 @@ static int fprobe_init_rethook(struct fprobe *fp, int num)
 >  {
->  	int err;
-> +	time64_t trace_time = -1;
+>  	int size;
 >  
->  	err = mutex_lock_interruptible(&rtc->ops_lock);
->  	if (err)
-> @@ -201,11 +202,12 @@ static int rtc_read_alarm_internal(struct rtc_device *rtc,
->  		alarm->time.tm_yday = -1;
->  		alarm->time.tm_isdst = -1;
->  		err = rtc->ops->read_alarm(rtc->dev.parent, alarm);
-> +		trace_time = rtc_tm_to_time64(&alarm->time);
->  	}
+> -	if (num <= 0)
+> -		return -EINVAL;
+> -
+>  	if (!fp->exit_handler) {
+>  		fp->rethook = NULL;
+>  		return 0;
+> @@ -199,15 +196,16 @@ static int fprobe_init_rethook(struct fprobe *fp, int num)
 >  
->  	mutex_unlock(&rtc->ops_lock);
+>  	/* Initialize rethook if needed */
+>  	if (fp->nr_maxactive)
+> -		size = fp->nr_maxactive;
+> +		num = fp->nr_maxactive;
+>  	else
+> -		size = num * num_possible_cpus() * 2;
+> -	if (size <= 0)
+> +		num *= num_possible_cpus() * 2;
+> +	if (num <= 0)
+>  		return -EINVAL;
 >  
-> -	trace_rtc_read_alarm(rtc_tm_to_time64(&alarm->time), err);
-> +	trace_rtc_read_alarm(trace_time, err);
->  	return err;
->  }
+> +	size = sizeof(struct fprobe_rethook_node) + fp->entry_data_size;
+> +
+>  	/* Initialize rethook */
+> -	fp->rethook = rethook_alloc((void *)fp, fprobe_exit_handler,
+> -				sizeof(struct fprobe_rethook_node), size);
+> +	fp->rethook = rethook_alloc((void *)fp, fprobe_exit_handler, size, num);
+>  	if (IS_ERR(fp->rethook))
+>  		return PTR_ERR(fp->rethook);
 >  
-> -- 
-> 2.37.2
 > 
-
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
 
