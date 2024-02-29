@@ -1,100 +1,182 @@
-Return-Path: <linux-kernel+bounces-85939-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85940-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BD2686BD05
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:53:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BBA086BD06
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:53:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D5A61C22B2F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:53:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7AF342870E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:53:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 591511EB22;
-	Thu, 29 Feb 2024 00:53:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 332B9224DC;
+	Thu, 29 Feb 2024 00:53:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CUbJ0VlS"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OPMzu0ZA"
+Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 246E8620
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 00:53:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D86F21CD23
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 00:53:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709168006; cv=none; b=jiiCIiTnbIlV58RqptQV7GMHMm3BwJdS8oUO7XsAG/mlITkZGpEnj+cjlM24At50h+2TB8n0/OGLn6f4/aK5cxebl2Jsn9u7v5OKwd9NRT1ALTZSQanfrXRproOVcoyvEmWNOWp6p2R9kBUHTIBpgw1xZ/dYYVI5or9s+M48h2w=
+	t=1709168023; cv=none; b=nBsHHRDn6gt3um+Opi23UH3b+9U8eiz7b6b/6iQ/zsRjx8vabR5VrrClnoIIBmHYG72O43/zNMps9mARFrO+eyFlmbp1QlSqzhN9ZURbqcl23eEusi+lsJhgeZLHRR7YS6ArHb6ZJkPvZLfAihcSjuLILE1uuDjAhHlwJ0vulz0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709168006; c=relaxed/simple;
-	bh=GZ6/K3soNquxS65lu5RJtrESy2ITkAQ8xwiS+nmifcI=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=SJ74e3V5GP7F8kQ5kTuryDYjGonUsBiSoRu4AwC4dO4N7SMGdNLvRI/4mqLaboyv2U0Wyqpj9RTzkPbHPz+H9Cm+cTz9qDtMbLK4Lv08f1beIiZOFbOQ1saQ0oDv0QqsuKq8BXTt/YsgYqHXmIfvYO69139Gp/TUxF6cSXfX52A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CUbJ0VlS; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709168005; x=1740704005;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=GZ6/K3soNquxS65lu5RJtrESy2ITkAQ8xwiS+nmifcI=;
-  b=CUbJ0VlS9cTuhTYpsg/CwlFqwvTCk9YuO5tj/MoxJI1q/E/J+bBTECak
-   n8Rb6p3N4EcwoextMLCjWuFqmuAcKyvzjco738WQHljGOf6kN+JS/r7ke
-   b4TgqxDp7DcgYMNlZsTytS13eShtbnv0Opyt74B60B7TN978C6IMjVlvt
-   BjelXq0xlbAMj61IT0cy3Ae9fitEkf9tNvDxZdoYtozBpcZHjLGn33vsA
-   IBqtmyUNKxrtQhwgEydk2CKpHsJHqvoNJkoSRTNPN0c0NVLF3cltcjuRL
-   QkUdkpXBJR/M9y+LCssG8NHESkAJJsNJshGSSo0uMvl4Qj6nvxz2my3Qk
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="14174606"
-X-IronPort-AV: E=Sophos;i="6.06,191,1705392000"; 
-   d="scan'208";a="14174606"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 16:53:25 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,191,1705392000"; 
-   d="scan'208";a="12203525"
-Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by fmviesa005.fm.intel.com with ESMTP; 28 Feb 2024 16:53:23 -0800
-Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rfUfp-000CW5-0S;
-	Thu, 29 Feb 2024 00:53:21 +0000
-Date: Thu, 29 Feb 2024 08:53:00 +0800
-From: kernel test robot <lkp@intel.com>
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Catalin Marinas <catalin.marinas@arm.com>
-Subject: powerpc-linux-ld: warning: orphan section `.bss..Lubsan_data4' from
- `drivers/mtd/nand/raw/diskonchip.o' being placed in section
- `.bss..Lubsan_data4'
-Message-ID: <202402290803.JP5EWtl4-lkp@intel.com>
+	s=arc-20240116; t=1709168023; c=relaxed/simple;
+	bh=ixPn/WA/IkkMHbVj9xbnA+a/EFMiv0ErX3XQ1lo3UFc=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=YnIvk+csto2bYJJkknNusTSee66KBkjz3ORTy/WzjXnE8n24t5uXo0HARkvDIAvQ4mGulWfUhy/Hg8G02mkV6OriJOdLn5EWpJwCHQoiDEPP9E7teiKX1XKVweS4CdLb3W7bFq2jAJ7G+yyGviTHBRzNFaa04Ib0e7Ht5NwMIFQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=OPMzu0ZA; arc=none smtp.client-ip=209.85.216.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-29b0ac33382so104057a91.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 16:53:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709168021; x=1709772821; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q1fAxVxcSGJDtvwC4OA6vg9SQpipa+6cd4wlsruGTgI=;
+        b=OPMzu0ZAHxAiycSPECv0MUQt7f0j6ydg0SWk0sEWy/eTAluC396YCKvQ93hX08OHlG
+         aSWScuyyd3y2QyMIjRIPRU33yjMnjm+LBIM0+tiyJSiieYtKXhB9KfgMposHmfybmCis
+         6QssU/odGd6wEA2nbMgIs/wNN+cHmevK+KS966B3uuIITEng4/TTEyVQRgTD+tVz0W9o
+         tQ+hzvCFH8Iiim3oZK4A9v/qle9/mMUKC//21cJZ8DH2UnLljCMBW009Ki85JYrRm+qe
+         FGzOpBjhk1U7wRiFL+cEV6mZmtg8K6YBkc2lQ3ut7F+FtbnJ210STWpsxAiVh0ntSVBi
+         Nblw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709168021; x=1709772821;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q1fAxVxcSGJDtvwC4OA6vg9SQpipa+6cd4wlsruGTgI=;
+        b=krbX732+J5B1i3LrzjZxNG68FD5z7xM3O0Ac5s1v6g4sNQSJkE0mwCWbNqgFyDVnob
+         a0fgsnHkTKrlC+kQa/Hp+/OUYlr9cO+R7vVkJ1GOzwp6noY/TJFqMUcHfSn8Gty+EDoE
+         NYZ4Ksp1CzwOVTrYEJ1Uojyw5ZltaoatP6Smsy1kyV0v0vnfugroRLin0jFhry+E/ceG
+         9gQ9HRlIXmIOB8V207W5Mg62J9qgyFMnk4NZh0G1ARKzlybq2TSyxlH5k5YF99k4A8gS
+         xJrMT1l2ASGMu5lJ6i4hi+hnJRv7m2HfnrOVpuaICSIOmEKD7krht0OIPwXFexH6NtRo
+         VQAQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVY1kHsAR2Fs5I90eaW7Zn5isOEDuMteL1ihvn1/CLHYLdjqM5XDAtcRFXGS+qGPZZKHIbyJY2PFAFYFJ87K0m03dtbSy7ZhFVA2h+j
+X-Gm-Message-State: AOJu0Yxbhxpd+0+WGz8xsv5CPuV5MhPytuXmXnBN2eZrO3lSDvzWneAT
+	uHbjWKuLdbuUXxYkz7flYYTkCAwecNTRe4kp32C1yKpzr/nB+pwpFfJClAp5Wf9hxuVWp8DjiRw
+	m3A==
+X-Google-Smtp-Source: AGHT+IEGDx9KNnQuVlFL1a+o7VDJ3fqoKiHSZ9fod3C0H0yXTT9TpbbqlundidtZGFnRpu3hKNN8Sj3g9iY=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:90b:4f44:b0:29a:c5e6:c5f1 with SMTP id
+ pj4-20020a17090b4f4400b0029ac5e6c5f1mr15628pjb.6.1709168021232; Wed, 28 Feb
+ 2024 16:53:41 -0800 (PST)
+Date: Wed, 28 Feb 2024 16:53:39 -0800
+In-Reply-To: <Zd6Wo0hQu11L4aPc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Mime-Version: 1.0
+References: <20240223004258.3104051-1-seanjc@google.com> <20240223004258.3104051-8-seanjc@google.com>
+ <75d37243-e2a3-421a-b74f-ccbe307fef96@intel.com> <Zd6Wo0hQu11L4aPc@google.com>
+Message-ID: <Zd_Vk1dlpLNjUzQD@google.com>
+Subject: Re: [PATCH v9 07/11] KVM: selftests: Allow tagging protected memory
+ in guest page tables
+From: Sean Christopherson <seanjc@google.com>
+To: Xiaoyao Li <xiaoyao.li@intel.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>, 
+	Oliver Upton <oliver.upton@linux.dev>, Anup Patel <anup@brainfault.org>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Janosch Frank <frankja@linux.ibm.com>, Claudio Imbrenda <imbrenda@linux.ibm.com>, kvm@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, 
+	kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, Vishal Annapurve <vannapurve@google.com>, 
+	Ackerley Tng <ackerleytng@google.com>, Andrew Jones <andrew.jones@linux.dev>, 
+	Tom Lendacky <thomas.lendacky@amd.com>, Michael Roth <michael.roth@amd.com>, 
+	Carlos Bilbao <carlos.bilbao@amd.com>, Peter Gonda <pgonda@google.com>, 
+	Itaru Kitayama <itaru.kitayama@fujitsu.com>
+Content-Type: text/plain; charset="us-ascii"
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   805d849d7c3cc1f38efefd48b2480d62b7b5dcb7
-commit: c27cd083cfb9d392f304657ed00fcde1136704e7 Compiler attributes: GCC cold function alignment workarounds
-date:   1 year, 1 month ago
-config: powerpc-randconfig-r025-20220324 (https://download.01.org/0day-ci/archive/20240229/202402290803.JP5EWtl4-lkp@intel.com/config)
-compiler: powerpc-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240229/202402290803.JP5EWtl4-lkp@intel.com/reproduce)
+On Tue, Feb 27, 2024, Sean Christopherson wrote:
+> On Wed, Feb 28, 2024, Xiaoyao Li wrote:
+> > On 2/23/2024 8:42 AM, Sean Christopherson wrote:
+> > ...
+> > > diff --git a/tools/testing/selftests/kvm/include/aarch64/kvm_util_arch.h b/tools/testing/selftests/kvm/include/aarch64/kvm_util_arch.h
+> > > new file mode 100644
+> > > index 000000000000..218f5cdf0d86
+> > > --- /dev/null
+> > > +++ b/tools/testing/selftests/kvm/include/aarch64/kvm_util_arch.h
+> > > @@ -0,0 +1,7 @@
+> > > +/* SPDX-License-Identifier: GPL-2.0-only */
+> > > +#ifndef _TOOLS_LINUX_ASM_ARM64_KVM_HOST_H
+> > > +#define _TOOLS_LINUX_ASM_ARM64_KVM_HOST_H
+> > 
+> > Since the file name is changed from kvm_host.h (in v7) to kvm_util_arch.h,
+> > we need to update it as well.
+> > 
+> > Ditto for other archs
+> 
+> Ugh, nice catch.  I'll fixup and force push (likely tomorrow).
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402290803.JP5EWtl4-lkp@intel.com/
+Here's the diff of my fixup:
 
-All warnings (new ones prefixed by >>):
-
->> powerpc-linux-ld: warning: orphan section `.bss..Lubsan_data4' from `drivers/mtd/nand/raw/diskonchip.o' being placed in section `.bss..Lubsan_data4'
->> powerpc-linux-ld: warning: orphan section `.bss..Lubsan_data4' from `drivers/mtd/nand/raw/diskonchip.o' being placed in section `.bss..Lubsan_data4'
->> powerpc-linux-ld: warning: orphan section `.bss..Lubsan_data4' from `drivers/mtd/nand/raw/diskonchip.o' being placed in section `.bss..Lubsan_data4'
->> powerpc-linux-ld: warning: orphan section `.bss..Lubsan_data4' from `drivers/mtd/nand/raw/diskonchip.o' being placed in section `.bss..Lubsan_data4'
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+diff --git a/tools/testing/selftests/kvm/include/aarch64/kvm_util_arch.h b/tools/testing/selftests/kvm/include/aarch64/kvm_util_arch.h
+index 218f5cdf0d86..e43a57d99b56 100644
+--- a/tools/testing/selftests/kvm/include/aarch64/kvm_util_arch.h
++++ b/tools/testing/selftests/kvm/include/aarch64/kvm_util_arch.h
+@@ -1,7 +1,7 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
+-#ifndef _TOOLS_LINUX_ASM_ARM64_KVM_HOST_H
+-#define _TOOLS_LINUX_ASM_ARM64_KVM_HOST_H
++#ifndef SELFTEST_KVM_UTIL_ARCH_H
++#define SELFTEST_KVM_UTIL_ARCH_H
+ 
+ struct kvm_vm_arch {};
+ 
+-#endif  // _TOOLS_LINUX_ASM_ARM64_KVM_HOST_H
++#endif  // SELFTEST_KVM_UTIL_ARCH_H
+diff --git a/tools/testing/selftests/kvm/include/riscv/kvm_util_arch.h b/tools/testing/selftests/kvm/include/riscv/kvm_util_arch.h
+index c8280d5659ce..e43a57d99b56 100644
+--- a/tools/testing/selftests/kvm/include/riscv/kvm_util_arch.h
++++ b/tools/testing/selftests/kvm/include/riscv/kvm_util_arch.h
+@@ -1,7 +1,7 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
+-#ifndef _TOOLS_LINUX_ASM_RISCV_KVM_HOST_H
+-#define _TOOLS_LINUX_ASM_RISCV_KVM_HOST_H
++#ifndef SELFTEST_KVM_UTIL_ARCH_H
++#define SELFTEST_KVM_UTIL_ARCH_H
+ 
+ struct kvm_vm_arch {};
+ 
+-#endif  // _TOOLS_LINUX_ASM_RISCV_KVM_HOST_H
++#endif  // SELFTEST_KVM_UTIL_ARCH_H
+diff --git a/tools/testing/selftests/kvm/include/s390x/kvm_util_arch.h b/tools/testing/selftests/kvm/include/s390x/kvm_util_arch.h
+index 4c4c1c1e4bf8..e43a57d99b56 100644
+--- a/tools/testing/selftests/kvm/include/s390x/kvm_util_arch.h
++++ b/tools/testing/selftests/kvm/include/s390x/kvm_util_arch.h
+@@ -1,7 +1,7 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
+-#ifndef _TOOLS_LINUX_ASM_S390_KVM_HOST_H
+-#define _TOOLS_LINUX_ASM_S390_KVM_HOST_H
++#ifndef SELFTEST_KVM_UTIL_ARCH_H
++#define SELFTEST_KVM_UTIL_ARCH_H
+ 
+ struct kvm_vm_arch {};
+ 
+-#endif  // _TOOLS_LINUX_ASM_S390_KVM_HOST_H
++#endif  // SELFTEST_KVM_UTIL_ARCH_H
+diff --git a/tools/testing/selftests/kvm/include/x86_64/kvm_util_arch.h b/tools/testing/selftests/kvm/include/x86_64/kvm_util_arch.h
+index 205ed788aeb8..9f1725192aa2 100644
+--- a/tools/testing/selftests/kvm/include/x86_64/kvm_util_arch.h
++++ b/tools/testing/selftests/kvm/include/x86_64/kvm_util_arch.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
+-#ifndef _TOOLS_LINUX_ASM_X86_KVM_HOST_H
+-#define _TOOLS_LINUX_ASM_X86_KVM_HOST_H
++#ifndef SELFTEST_KVM_UTIL_ARCH_H
++#define SELFTEST_KVM_UTIL_ARCH_H
+ 
+ #include <stdbool.h>
+ #include <stdint.h>
+@@ -20,4 +20,4 @@ static inline bool __vm_arch_has_protected_memory(struct kvm_vm_arch *arch)
+ #define vm_arch_has_protected_memory(vm) \
+        __vm_arch_has_protected_memory(&(vm)->arch)
+ 
+-#endif  // _TOOLS_LINUX_ASM_X86_KVM_HOST_H
++#endif  // SELFTEST_KVM_UTIL_ARCH_H
 
