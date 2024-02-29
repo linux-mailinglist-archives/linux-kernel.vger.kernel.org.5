@@ -1,201 +1,134 @@
-Return-Path: <linux-kernel+bounces-86670-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86671-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86AE086C8BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:05:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC87B86C8BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:06:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4269428D2DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:05:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 154A41C21BD5
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:06:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF5097CF15;
-	Thu, 29 Feb 2024 12:05:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12C677D06D;
+	Thu, 29 Feb 2024 12:05:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bYqNAAko"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kDBklEfB"
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F3AE59B6A;
-	Thu, 29 Feb 2024 12:05:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C13487CF16;
+	Thu, 29 Feb 2024 12:05:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709208343; cv=none; b=afVrmkPhrDtlM8te2jQpPbZqiAvtdTAFUDCGUGPKwpIVpTMcJaUFPnt2IiWHcyFvQ4qDi1QPWDvQQdhiTS+V8d5eD2HGWMQJgB4CRNDlYP0J9M/C56habJ13zLfhbvIbrvu2Wfwn6mdSvzmRCXECVm0JmwO2wDNdzp2i75cMeqk=
+	t=1709208346; cv=none; b=ZQBgPLFv0iKU7oW3yccviSdnqVN+uNP+c7u5CL6ONipPAaKBOsvGyYU11aBHWDetM29S6SH1kgz0R5b/XTrm/arlgrC5KURxwVXOVX9iAJA3bSvNrWR1bTBWL9x7i2AcbKA40gaaYrhuCrpAFCyi/80BcFPkyzqWsSR9FR5VOU0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709208343; c=relaxed/simple;
-	bh=rASCOjdaALxOwnv1fyM1Ja2P+ffC4nwmUFnWAi0dR5E=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=durjHR56oy4xQWvAkocp+u+k6CruMet3hfkUmvvwJ7jpdZ2XPJK/9M8DELEdpys4LaIAtsIGpdUWDmFZNOgU/F/x6Jnhxy98KDyiANT7MJiZwN+/1cJJbMqk5GhozeC11raviB+9FlzC8m2J4V5y+3mdxdWTt5kcDkJumQhB3O0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bYqNAAko; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709208342; x=1740744342;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=rASCOjdaALxOwnv1fyM1Ja2P+ffC4nwmUFnWAi0dR5E=;
-  b=bYqNAAkoNvh63trp5AzX/0jgHyl5rvEIstcWPt3f04RdNsEuRjrmbNFl
-   jE2eU3JfUigoS+B1V7QWH5RjActf2JIOpdgCrkK/LuYuvHZV0UqlPjdUC
-   KpTsbw4jIHAIVoEnuKkUzoADJmAobqgEFuCGTABnj72pI5JvTc8Fa3JfH
-   uKAo5ugffZMv6UMKxSZL0J4O7GhH8+g4xzseD6MRGviVfdauyZUToEmQx
-   JtFVwnu/yDl7wZ+5csiZQvtR54WcFLwdARQ4b9y4B8UA5M30dn1/ROlAZ
-   Tpmfl3Veo8AgGANKttLoD0Ps4/8PAcKQpqWPG++rMouzC+Sb0ipzF0SI5
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="6619175"
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="6619175"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 04:05:42 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="30994683"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.51.250])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 04:05:39 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Thu, 29 Feb 2024 14:05:35 +0200 (EET)
-To: Armin Wolf <W_Armin@gmx.de>
-cc: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>, 
-    Hans de Goede <hdegoede@redhat.com>, platform-driver-x86@vger.kernel.org, 
-    LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/2] platform/x86/amd/pmf: Fix possible out-of-bound
- memory accesses
-In-Reply-To: <63ba267a-27db-456e-be32-2efe27fa26e1@gmx.de>
-Message-ID: <78bcd4cf-5573-a99f-5d8d-dd22d106dafd@linux.intel.com>
-References: <20240227145500.299683-1-W_Armin@gmx.de> <20240227145500.299683-2-W_Armin@gmx.de> <2dd63b5b-cf60-9f28-55b3-35eab537dc9b@linux.intel.com> <0e70681f-85c2-43f9-822a-2e07776c37c9@amd.com> <63ba267a-27db-456e-be32-2efe27fa26e1@gmx.de>
+	s=arc-20240116; t=1709208346; c=relaxed/simple;
+	bh=/bbb7l83hj76pskoFmjDlhlQeqTmupIOHZ/UQmFJtMg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=bM98s3dkl0ivauIxiG/N8l11aj/6xVDggKRSOfU6LjZcfDk5VrLqgUkdT17Kr1X7CSkzVf+oLjK8M15gXvpKp5Kk0v35Wm9P4GwdORMgN7VZ2neQjRj+QzJGCxPAv5bW5if5prCCMdAXrq0y/hcqNm4QUQ1wwDvcjXsRVmUy894=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kDBklEfB; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-33e151a1434so86475f8f.2;
+        Thu, 29 Feb 2024 04:05:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709208343; x=1709813143; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=AKTrC5BUEoERGt6YpPOVR4/EueT/sWktcgEEY9nn3IA=;
+        b=kDBklEfB5a2IiUyyO7bkZzsYM8mo5La/NcUOYLpF0DHeE0dZPfrRGdS6yiSBcxKTQ0
+         6LzmH9KUeKo0v2r8BqnTJPDwgwDoR8IfKDZsDwMNoh8RBfT1swGAj8F85C3ZwvH4l/mD
+         FSpM0YoPy3nIFUo7IOzS8pVnyGin8GmYbm/2bHZmK8iLTb0KUmXrAR9EDDHyh9hVSMjc
+         0Z4/4DpueFCG5AhWZAW6jQm/pJOYf2J3c3Gmu927FyHDWnJKc8aj/qPyqDvouqwMLd82
+         8ClJEY0Q70vX/o5AgOSSybRs6FHsnnpIz038iWZBTJMDVq3fQ8KmzHTL6BIHJHosAWYP
+         v2rQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709208343; x=1709813143;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AKTrC5BUEoERGt6YpPOVR4/EueT/sWktcgEEY9nn3IA=;
+        b=wDYglsUK9FxC3odqAljAdwq3RBdgJtt07eFbGydSuy3F0Y1UuvVAuBgrsIs6ApsQ+S
+         IgG9FBnGyMLdfzd8+09EZSTIT0ZiC2GacMyLrhVdUB63r1tYm++iOUWwMopKdUefyojc
+         8zWeeNGuKNCnZiz2FFoZO/BSNlCh5qpruSH+Gegafc0aaeW85c4YHfWJFSB3ZDmL1xuX
+         OdUibAMPHWyQQl0kCq/YwfEP87hNe2n7xJL6dn8RMMk1xlrRkWsyjG3aIGEdfqZQ6HUE
+         FvVPpi37JkDRO0IR1Tc2mw2NV6xydbpZktuGx1UCwCQKE9uXnqs9JXKN1/6Cv+TJ792m
+         goNg==
+X-Forwarded-Encrypted: i=1; AJvYcCWRcb5JR6GBYBD5pqOsRvKN7r/piFj2LgspBJlOUq+xigYdpGKyeSWFvqjRR6eQQgMNnqoJ9cWIivSSzy/4gltAbshxrIfNna1lVxz1
+X-Gm-Message-State: AOJu0YyQQdWkbg67bl/Z1J48WX7Damz6tGeYqcAMig7R4A12D2y4SRJC
+	UBALRd7T//3OcDxh8SR/cn9u9SVP2ZxIRXAukTwb4N1NhpLFFWi6
+X-Google-Smtp-Source: AGHT+IHflToI7cmVEoLUgAq6Qi4/DXWnunqwZQL/91orV5BJE1B14iuKUeIa2YpviLArwrKjin+VxQ==
+X-Received: by 2002:a5d:484a:0:b0:33d:297d:75a9 with SMTP id n10-20020a5d484a000000b0033d297d75a9mr1311981wrs.24.1709208343075;
+        Thu, 29 Feb 2024 04:05:43 -0800 (PST)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id dp14-20020a0560000c8e00b0033d8ce120f2sm1588446wrb.95.2024.02.29.04.05.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Feb 2024 04:05:42 -0800 (PST)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: Vaibhav Agarwal <vaibhav.sr@gmail.com>,
+	Mark Greer <mgreer@animalcreek.com>,
+	Johan Hovold <johan@kernel.org>,
+	Alex Elder <elder@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	greybus-dev@lists.linaro.org,
+	linux-staging@lists.linux.dev
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] staging: greybus: Remove redundant variable 'mask'
+Date: Thu, 29 Feb 2024 12:05:41 +0000
+Message-Id: <20240229120541.219429-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-511328752-1709208335=:1005"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+The variable mask is being assigned and bit-set but it is never
+being used apart from this. The variable is redundant and can
+be removed.
 
---8323328-511328752-1709208335=:1005
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Cleans up clang scan build warning:
+drivers/staging/greybus/audio_topology.c:764:15: warning: variable 'mask'
+set but not used [-Wunused-but-set-variable]
 
-On Wed, 28 Feb 2024, Armin Wolf wrote:
-> Am 28.02.24 um 12:16 schrieb Shyam Sundar S K:
-> > On 2/27/2024 21:15, Ilpo J=C3=A4rvinen wrote:
-> > > On Tue, 27 Feb 2024, Armin Wolf wrote:
-> > >=20
-> > > > The length of the policy buffer is not validated before accessing i=
-t,
-> > > > which means that multiple out-of-bounds memory accesses can occur.
-> > > >=20
-> > > > This is especially bad since userspace can load policy binaries ove=
-r
-> > > > debugfs.
-> > IMO, this patch is not required, reason being:
-> > - the debugfs patch gets created only when CONFIG_AMD_PMF_DEBUG is
-> > enabled.
-> > - Sideload of policy binaries is only supported with a valid signing
-> > key. (think like this can be tested & verified within AMD environment)
-> > - Also, in amd_pmf_get_pb_data() there are boundary conditions that
-> > are being checked. Is that not sufficient enough?
->=20
-> IMHO, amd_pmf_get_pb_data() only checks if the length of the binary is
-> between 0 and the maximum buffer size.
->=20
-> If for example the binary contains only 4 bytes, then there will be an
-> out-of-bounds access when trying to read the cookie and length.
->=20
-> Or if the length is bigger than the binary buffer, then the driver just
-> updates the buffer length even if the buffer is too small.
->=20
-> I think the driver should catch such cases and return an error.
->=20
-> (Please note that we are talking about the binary buffer, not the interna=
-l
-> structure of the remaining policy binary itself).
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ drivers/staging/greybus/audio_topology.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-Yes. Out of bound accesses are not okay during validation even if the
-binary itself would get rejected at a later stage. It doesn't matter if=20
-the interface is only for debug or wider scope.
+diff --git a/drivers/staging/greybus/audio_topology.c b/drivers/staging/greybus/audio_topology.c
+index 08e6a807c132..5dc4721105d4 100644
+--- a/drivers/staging/greybus/audio_topology.c
++++ b/drivers/staging/greybus/audio_topology.c
+@@ -761,7 +761,6 @@ static int gbcodec_enum_dapm_ctl_put(struct snd_kcontrol *kcontrol,
+ {
+ 	int ret, wi, ctl_id;
+ 	unsigned int val, mux, change;
+-	unsigned int mask;
+ 	struct snd_soc_dapm_widget_list *wlist = snd_kcontrol_chip(kcontrol);
+ 	struct snd_soc_dapm_widget *widget = wlist->widgets[0];
+ 	struct gb_audio_ctl_elem_value gbvalue;
+@@ -802,7 +801,6 @@ static int gbcodec_enum_dapm_ctl_put(struct snd_kcontrol *kcontrol,
+ 
+ 	mux = ucontrol->value.enumerated.item[0];
+ 	val = mux << e->shift_l;
+-	mask = e->mask << e->shift_l;
+ 
+ 	if (le32_to_cpu(gbvalue.value.enumerated_item[0]) !=
+ 	    ucontrol->value.enumerated.item[0]) {
+@@ -815,7 +813,6 @@ static int gbcodec_enum_dapm_ctl_put(struct snd_kcontrol *kcontrol,
+ 		if (ucontrol->value.enumerated.item[1] > e->items - 1)
+ 			return -EINVAL;
+ 		val |= ucontrol->value.enumerated.item[1] << e->shift_r;
+-		mask |= e->mask << e->shift_r;
+ 		if (le32_to_cpu(gbvalue.value.enumerated_item[1]) !=
+ 		    ucontrol->value.enumerated.item[1]) {
+ 			change = 1;
+-- 
+2.39.2
 
-> > > > +=09if (dev->policy_sz < POLICY_COOKIE_LEN + sizeof(length))
-> > > > +=09=09return -EINVAL;
-> > > > +
-> > > >   =09cookie =3D *(u32 *)(dev->policy_buf + POLICY_COOKIE_OFFSET);
-> > > >   =09length =3D *(u32 *)(dev->policy_buf + POLICY_COOKIE_LEN);
-> > > This starts to feel like adding a struct for the header(?) would be b=
-etter
-> > > course of action here as then one could compare against sizeof(*heade=
-r)
-> > > and avoid all those casts (IMO, just access the header fields directl=
-y
-> > > w/o the local variables).
-> > Not sure if I get your question clearly. Can you elaborate a bit more
-> > on the struct you are envisioning?
->=20
-> I think he envisions something like this:
->=20
-> struct __packed cookie_header {
-> =09u32 magic;
-> =09u32 length;
-> };
->=20
-> >=20
-> > but IHMO, we actually don't need a struct - as all that we would need
-> > is to make sure the signing cookie is part of the policy binary and
-> > leave the rest of the error handling to ASP/TEE modules (we can rely
-> > on the feedback from those modules).
-> >=20
-> > > Shyam, do you think a struct makes sense here? There's some header in
-> > > this policy, right?
-> > Yes, the policy binary on a whole has multiple sections within it and
-> > there are multiple headers (like signing, OEM header, etc).
-> >
-> > But that might be not real interest to the PMF driver. The only thing
-> > the driver has to make sure is that the policy binary going into ASP
-> > (AMD Secure Processor) is with in the limits and has a valid signing
-> > cookie. So this part is already taken care in the current code.
-
-Clearly the PMF driver is interested in the header which contains
-the cookie and length fields as proven by the code (even if that's for=20
-the validation purposes only). I'm not asking about add various other=20
-headers which are of no interest.
-
-> > > There are more thing to address here...
-> > >=20
-> > > 1) amd_pmf_start_policy_engine() function returns -EINVAL & res that =
-is
-> > >     TA_PMF_* which inconsistent in type of the return value
-> > >=20
-> > ah! it has mix of both int and u32 :-)
-
-I was talking more on a logical level not so much about C type itself.=20
-
-It is confusing to return error in two ways: as -Exx values and=20
-TA_PMF_* which are positive. As a general rule (IMO), the HW specific=20
-errors should be mapped to -Exx codes at latest when a function returns=20
-also -Exx code which is the case here.
-
---=20
- i.
-
-
-> > Armin, would you like to amend this in your current series? or else I
-> > will submit a change for this in my next series.
->
-> I can do so, but i will be unable to send a new patch series for the rest=
- of
-> this week.
->=20
-> > > 2) Once 1) is fixed, the caller shadowing the return code can be fixe=
-d as
-> > >     well:
-> > >          ret =3D amd_pmf_start_policy_engine(dev);
-> > >          if (ret)
-> > >                  return -EINVAL;
-> > >=20
-> > >=20
->=20
-
---8323328-511328752-1709208335=:1005--
 
