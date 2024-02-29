@@ -1,104 +1,144 @@
-Return-Path: <linux-kernel+bounces-86430-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86433-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00C7286C540
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:31:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8EAE86C54A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:32:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE887287E34
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:31:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 306C21F2243C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:32:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C91D65D749;
-	Thu, 29 Feb 2024 09:31:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01B4C5D8F5;
+	Thu, 29 Feb 2024 09:32:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="miaiGnrt"
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1Sk539cE"
+Received: from mail-vk1-f169.google.com (mail-vk1-f169.google.com [209.85.221.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0B8B5B690
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 09:31:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 960815D8E7
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 09:32:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709199088; cv=none; b=DzSNX2quDPVIvhp0fC2HDPIi24jc/5tvql1e3qU8RJBWMN6Qf39KE24kyIJIHH1Q2DgXgHuoxvCuaQVP6WaUirksM/DnjcROvVWjBo6QPaZWFMZYx0TimyqP3Eu+nG1gvLfhDP+XButXW518wA8N3RzJMbXs3r25TfGGaLoUfH4=
+	t=1709199125; cv=none; b=rBRyBzUye3tQN9Z+M2m8xBEXb+/H5duTkatoFYF+4SafMIDFdwDyC9xodUHirGN60TVGfWlZ8tuI+M2V70VD9j0+xCxaWM1AG1q0k3404fY/T1qGi1bI2eGNFNv5vQ2J06uSUrMJ85MInHyRVEbeyAiBlzgGQ16JwsqzlKrAXV0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709199088; c=relaxed/simple;
-	bh=yLDH/SmZ8OkNo4IKopG13DYJTMTGxHzaAKTzK5mwr88=;
+	s=arc-20240116; t=1709199125; c=relaxed/simple;
+	bh=o/MZbNUm82wJ0smN4ZI9fIXzGicdoFKBpqsdICiE+8w=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kpyRnhrOuYxhRqaY3YlckY68pg9xFcbWJmY6mwzxoloiMd+mA41pUyOgTUQDm2q3sK/ATgimsZqY/S8o9ftnT4xleYN6My444mu9gvOnp85DOdiVNE/rvA0nXFmWI+ikIXQvTDACleJdndZSllWZ7v6yMfaO9fJ10j/MvnOlcvI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=miaiGnrt; arc=none smtp.client-ip=209.85.219.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dcc86086c9fso767283276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 01:31:26 -0800 (PST)
+	 To:Cc:Content-Type; b=GLMLCea0aEZ0ir3wX/Hs1oXt5CGnA1cvLbdzYhK+UQ6/RKs3rEUSkXTbjFXQEFvfzJilBjDvaNY/43+ePe43E6CIzDcvlIQmWgBjkzpwBOybzJDdfUddiF1deYWwLvQrblqgG3ZEGvkRCosWYq9ddTFUYgO/iNh2le8laX/X1fE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1Sk539cE; arc=none smtp.client-ip=209.85.221.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-vk1-f169.google.com with SMTP id 71dfb90a1353d-4d355374878so34912e0c.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 01:32:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709199085; x=1709803885; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yLDH/SmZ8OkNo4IKopG13DYJTMTGxHzaAKTzK5mwr88=;
-        b=miaiGnrt0Ofo/Y9TQswPkiaTMl+dgvBYegpF6lL+Tla111mA5PVr0JxUPAjhFaXN8t
-         YPgwarVt4S8w8FCN8D+M950Teob1tIypeRLnkMqPeU4jRKp8b7TWdBBPT36bwfbkwXD/
-         POufNVxJ6LAzDlLr0WsuTatvvFG14Xojy+jC8GYqH4zfcdtn9wyFyr+uDya5ufUSjLEm
-         O0olpqp7JT7iqOlii1adZmBrxq5i5+U/JP0jK5Zqfs5vz0G4f5KXA0ieOK3KVyPXedBn
-         e40aVi/wAdwxsUEzL+3NTKhqtftZxv2VWjvzGDq3K+7YNRAo0Ir4QXofOrThA4Glammg
-         Zs+g==
+        d=google.com; s=20230601; t=1709199122; x=1709803922; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=o/MZbNUm82wJ0smN4ZI9fIXzGicdoFKBpqsdICiE+8w=;
+        b=1Sk539cE8o5FzNKJBVCxNknb7cr4kQ1+gNS7O6HPIi4yKHgsXR9eWePgrHyQvGADzW
+         E5YCtpImhX6r2r1JClF/kcWB1KNBdTbQQH0NHFWDsIR0ookkc4GxUX3+d4puRkTZTDrn
+         2HkpRDsYvOyhnjhekT8a0+sWG3qrCWiz9ml/ZSXREn4QrctOv/jGo8AyOwsgPa7GCheL
+         sGJv/FgEMuYNdmD/af2bvxd6fPvYMeP7Sg1elK8FXbHE2HRIMbxIBgJ0DwUIUrFHvY5i
+         Y9d74GvdrXAkOA9pV7tc5hRpeh4ZDIbDCYADAnPbSKrCwBMBblbOMjwvo9Qd+TW7+ooL
+         TGqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709199085; x=1709803885;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yLDH/SmZ8OkNo4IKopG13DYJTMTGxHzaAKTzK5mwr88=;
-        b=PJEZwDsBvPJdUxbZSPtZDFdJ9+kEXQ78EM+BAr3Xjlf1HHBGUZO9ppJ0VQmmlMeuUR
-         VNbYvzQDQIB5NLxu2w3UWWo/BMN3Ipbqo6V/qbbTp8TSzL3BlUfMfvakmAhx+oyBr0C+
-         OLt25uIhzJlhucer9ie5u5U0UzoYvpIU85lL6AKB7nSFkXJmc0AxAIO+ep6KgH3FmwQa
-         p/NKF96QZmpZ+VOHQ3eytCFst4gCed5UM8bzRUi+352uaSTNOEKNpqoNvaJzkDcb2qYp
-         eYdwfkkXl95alQk2w2Pg1V+RLIeBa9YNzXyKIXSVRnf1j/qA28BUNavPB08HI1J1gw24
-         y9xw==
-X-Forwarded-Encrypted: i=1; AJvYcCUTbTH4aCsFmu4/qMPOQTOxuRATdX8K+wr2stxC4TIz20N3WH77QVI9vE0kLp5L8qxTdE0HMTn0I4p+gnalGP7O5VfpN0zcAEE539iZ
-X-Gm-Message-State: AOJu0YwU+w4EztsJb5wKaNEVmpB6wBpG3epR9ef0VqrGp8ROV3xdUWEN
-	2U8DgrrLhbADq7XOjK29ffQMJ6pUln4o00WiUktdczFGGKGKBrvw5QXef6Ih6Xi5hIfgiNmXMBW
-	rwJMLVz5rL/LgdDrFmHp+HcVplY1puOslGTjR7Q==
-X-Google-Smtp-Source: AGHT+IGSggpuk2KLmltD3piA3qT24S+sa7pJ2na4Fu/l5Ohz9uHZf9k8yLApEggfc1Jf09gIebRKKbZvOzn1ChOVodk=
-X-Received: by 2002:a25:a28f:0:b0:dca:e4fd:b6d5 with SMTP id
- c15-20020a25a28f000000b00dcae4fdb6d5mr1603586ybi.27.1709199085627; Thu, 29
- Feb 2024 01:31:25 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709199122; x=1709803922;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=o/MZbNUm82wJ0smN4ZI9fIXzGicdoFKBpqsdICiE+8w=;
+        b=mcc2W2d1BAxMDBn57EvhO2rXAfAIkyuyKiOSIgSJDaXonWtAkYyDQj5Oza46oRWJZC
+         /4E9ZIGN0UuWEJAZo1LN9VN7PhyAfoezatMuVrXtCnBIinSBqnGlyY1cjGhVlUy5baAk
+         riTznBBcoplHuXb1Omruv2kuaRc/t6mbUv28O+Hb82V7vrNHZ3dSgPE6dSuZYVFACK+L
+         /hW2EHSvpKBbPC2xFDzAH194wx3+XNnUZny0NL8pF+4DnzL8P6qK5haHujGtliv/xDMP
+         kK1pJ7e6WnfU6gCGBZNdAYJN1LMsdduAx6uFTruR61VAbUPt78ky9UTaPRmCf1Qzbv70
+         pVlQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXfyJwEzMxrHD/6eob+mG4aPE57KURSdI731toDKj7NKlAgas26bt6RNQSI3mtMCjrMJV1lfZr+plKc1+MZ3VrFEOwrXDy2SxTljCZC
+X-Gm-Message-State: AOJu0YxGUaRSP/un+77Xhj2KQJHJmlIOGsruius0JSppWLW4f2gU0mfF
+	gZWIwOIWVftNIjnvrBwXhO4Is+B/61ATGk+Z7Xffl8WOySsX6BWpiKzOnGShdXAgpJ13RYtm1m5
+	xC82Y5zTlYX9gXRN1HuxOeE1qPeMOq3da0NM5
+X-Google-Smtp-Source: AGHT+IEcI+OzNlTqO+wq1gec5ZnsAEK9sGj+CdGnwfO2S0zJF19vgdJU5vBMHWClUBiikOWVe1MQp9GjXvVA0TX7hhc=
+X-Received: by 2002:a1f:da03:0:b0:4c0:25db:3618 with SMTP id
+ r3-20020a1fda03000000b004c025db3618mr1508020vkg.0.1709199122221; Thu, 29 Feb
+ 2024 01:32:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240228-mbly-gpio-v2-0-3ba757474006@bootlin.com> <20240228-mbly-gpio-v2-17-3ba757474006@bootlin.com>
-In-Reply-To: <20240228-mbly-gpio-v2-17-3ba757474006@bootlin.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 29 Feb 2024 10:31:14 +0100
-Message-ID: <CACRpkdbUNiK7wmtR0xastCgtsp+QpfEGgXTBf32S+R5xQtxD0Q@mail.gmail.com>
-Subject: Re: [PATCH v2 17/30] gpio: nomadik: use devm_platform_ioremap_resource()
- helper
-To: =?UTF-8?B?VGjDqW8gTGVicnVu?= <theo.lebrun@bootlin.com>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Philipp Zabel <p.zabel@pengutronix.de>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-mips@vger.kernel.org, Gregory CLEMENT <gregory.clement@bootlin.com>, 
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+References: <20221122203932.231377-1-mathieu.desnoyers@efficios.com>
+ <Zd-AfDcQ-r04CMXk@elver.google.com> <ed828ce7-2046-4884-ab1f-d7bff3c0a714@efficios.com>
+In-Reply-To: <ed828ce7-2046-4884-ab1f-d7bff3c0a714@efficios.com>
+From: Marco Elver <elver@google.com>
+Date: Thu, 29 Feb 2024 10:31:24 +0100
+Message-ID: <CANpmjNP9ApuE+FyeSPPEJZK9Q8BdY24i8xuqhTbXEQM_d_HmcQ@mail.gmail.com>
+Subject: Re: [PATCH 00/30] RSEQ node id and mm concurrency id extensions
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org, 
+	Thomas Gleixner <tglx@linutronix.de>, "Paul E . McKenney" <paulmck@kernel.org>, 
+	Boqun Feng <boqun.feng@gmail.com>, "H . Peter Anvin" <hpa@zytor.com>, Paul Turner <pjt@google.com>, 
+	linux-api@vger.kernel.org, Christian Brauner <brauner@kernel.org>, 
+	Florian Weimer <fw@deneb.enyo.de>, David.Laight@aculab.com, carlos@redhat.com, 
+	Peter Oskolkov <posk@posk.io>, Alexander Mikhalitsyn <alexander@mihalicyn.com>, 
+	Chris Kennelly <ckennelly@google.com>, dvyukov@google.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 28, 2024 at 12:28=E2=80=AFPM Th=C3=A9o Lebrun <theo.lebrun@boot=
-lin.com> wrote:
-
-> Replace calls to platform_get_resource() then devm_ioremap_resource() by
-> a single call to devm_platform_ioremap_resource().
+On Wed, 28 Feb 2024 at 21:01, Mathieu Desnoyers
+<mathieu.desnoyers@efficios.com> wrote:
+[...]
+> AFAIK the only project using the mm_cid concept I know of today is
+> tcmalloc. It's very useful to scale data structures such as memory
+> allocator arenas to the number of concurrently running threads
+> within a process without having to rely on heuristics on the
+> user-space side.
 >
-> Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+> I have plans to migrate LTTng-UST to per-ipc-namespace NUMA-aware
+> mm_cid as well (after I get around to submit this extension into the
+> Linux kernel) for user-space ring buffers over shared memory, but my
+> current focus has been on pushing support for extensible RSEQ into
+> GNU libc for the past year or so.
+>
+> We are getting there though:
+>
+> https://sourceware.org/pipermail/libc-alpha/2024-February/154390.html
 
-Patch applied!
+Glad to see this!
 
-Yours,
-Linus Walleij
+> Once we have this key piece in place within GNU libc, it will become
+> easier to extend rseq further because the libc will adapt to the extended
+> feature set.
+>
+> Note that the overhead of the mm_cid assignment within the scheduler
+> should be negligible after
+> commit 223baf9d17f2 ("sched: Fix performance regression introduced by mm_cid").
+>
+> Another thing we've actively been working on is to get the "librseq"
+> project [1] in shape so a copy the librseq headers can be integrated
+> into the GNU libc project as internal header files. So basically
+> librseq will become a GNU libc upstream. This will facilitate
+> implementation of rseq critical section within GNU libc. One of
+> the possible use-cases will be to move the GNU libc malloc
+> implementation to per-mm_cid arenas.
+
+I suppose if GNU libc malloc starts using it then usage would become
+ubiquitous in no time.
+
+> > I'm aware that TCMalloc was the inspiration for vCPUs [1], then renamed to
+> > CIDs, but am wondering if other users are out there.
+>
+> I'd be curious to learn about those as well.
+>
+> I suspect that the lack of official release of librseq critical section
+> helper headers may contribute to the fact that few applications use advanced
+> rseq features at this point.
+
+I guess you've answered my question, and I conclude "no known open
+source usage yet". A simple search on Github or the likes also didn't
+yield anything. I will go and check again in a year or so. ;-)
+
+Thanks,
+-- Marco
 
