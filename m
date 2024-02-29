@@ -1,316 +1,174 @@
-Return-Path: <linux-kernel+bounces-86265-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86266-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06E4886C314
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:07:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68E8186C317
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:07:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6EE35B23554
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:07:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C7261C21A93
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:07:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4186C481C7;
-	Thu, 29 Feb 2024 08:07:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DA59482FA;
+	Thu, 29 Feb 2024 08:07:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2klkpU9Y"
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="FjaZ+rre"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54B6347F73
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 08:07:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41980481C7
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 08:07:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709194040; cv=none; b=ALhLWJnFZ9aXr6H+8Z15sQQCnnxKN/n/KF+gIOlx25IdJRSFDR5r3zfeVgBBaPNKTs4MEh8vdfVQeGEWdvWbgpZMzh0zEQEoFlkQ39FNa6YmQSHw+QLxRZWuhumeVPL96tr72/26wBl31fXik2Lc06U6s8Qe1vp4kk7czU6ksYo=
+	t=1709194065; cv=none; b=XC8okaqKuOJYyBxyqsXw5qdcgf6FweUjKQo4LTVJDpHvayE3hwLx2AZyATsKO4EMb06IfDI7G6C9ff0gniljVQE2v+3iG11xWUG4fXru2v6ALkIa0VVq/a/MMXpVrIqYLEOyXS5UOQFeade0sYrJ7TpNYn4uV76sV8DxwnMxDIY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709194040; c=relaxed/simple;
-	bh=Zo0ojnXys1cbTRl7RfWuu8qjSBcQQaK7ILw+QWklT70=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oby3lNTde9ce/uNaCWzsBplbDC2jM4mEjog5Xyaz2g6bm+Y1KFEIyMiIHW+WiLn08VQgROUynep/YyIdCFmozad0fVUoRO4d6mLmu6WbIjf1HWqbUe3+jvfhvjSO20w7ac+AWe6VRxZyiEZ0ywxsyGZ848pdazTt3x/7sdjsB/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2klkpU9Y; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-4129a748420so53835e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 00:07:18 -0800 (PST)
+	s=arc-20240116; t=1709194065; c=relaxed/simple;
+	bh=jkwhLBlZK7iQc1kwp/SciO2/rAkv2rEeMTIM5LLyo4I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tcTLMwrtjBv1QhfEEQdC+TeRr2Zy4XdLK07MR0JA1sGOTS1TJqg8SW8iJmvyltmWjbiRjZH4gYK6vr8YDOvObiX6dJXgYPINjg9FK45FbYVvPQdrrkkxuZAdj6qmnihkBJj2lMDneSI5JkwmhA8j973HHFlHATPiQ3xiSHuUUiI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=FjaZ+rre; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a44360a8b9dso59517066b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 00:07:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709194037; x=1709798837; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=4Fjor6Y//rHfiKR7Cn/FDO5AIMMBBf+dphuZxWmVAmY=;
-        b=2klkpU9YmZlKufGnhR/vkIcG/qnrlOJ6kEMlnCiC3mhWaExE9PAZPay3L9+sBeZgJI
-         ok+8h9i8C0qY2MHlgmHDxM7lA1meTedZAfEv2BNO2dcKZVI0+VJE0NkwEcDWIAzr6VQw
-         TWyfr0cCXk1S/GK5+6LIe40NhfVcGlQrluWCodPCWRaSi4QIpJPM+j2gs3N8syoGwJJN
-         D6N+nw74DLZ/2YzUclTzPC0ZdB2/2hI8nuiNhqS+uWkEWQq9Mf76eJxdsRBppVocSxth
-         Ml1HAIUXC3I9RnndpSMUar2wAjvX0YWTUsF5KcBP2/MrbSCOE4QXBAUmQ/fb5h9rCzqx
-         Zqhg==
+        d=linaro.org; s=google; t=1709194061; x=1709798861; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=z/j4QtGQU6ak3DD1WRBmdjYqdwtld8ALJDrH10KQ3x0=;
+        b=FjaZ+rreN+gpGk3wSLEZzJZFVt1vVwYs4fKQ/sR+kBGHjIUd6vQ7erUQNlkMLaTPbE
+         lbMkG3Ie+s5zHFH6D1HQDJYZLtW8x2/GUE4li2WFBTAUo8xomqnoDFNlo8YsALaPGCci
+         /TZmCtX00msrDBOjwMkZR4/vvwIcrsN4zzF+XPkRyPhV+tx9Fk+mWyUW1EW/deJ/1smr
+         GERqIFp9reCfvTs5rKuCtrmgn7dsBtt4hyXww+CJUwGau43s7T9Wd7LoFXhe7LnoaoMb
+         WzI9SOBExeKnp5J5+0rhNQ7k3upnajiBaAFAT5ahWzwXekqyye5382g2B3OlcZd+Lrc3
+         pNXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709194037; x=1709798837;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4Fjor6Y//rHfiKR7Cn/FDO5AIMMBBf+dphuZxWmVAmY=;
-        b=llfLeMW0Vw8zk+cdFoE45vshug2Zo3sOVfD+E8oQ9OWzJu1VtjjUhg0QNm/gfZUADs
-         iPuHtKs1XlaRhQC/POq9yKTNn44qYCAnD80QLqODi9DVaPEl5/aL1mTgo7N3LPJlaGfQ
-         HPVjWLqcSzes5U8GRRc1QLxgKy15ev3aqet7+j0VX1ey4MsOkGlcSXPq+Ez+oSFlCyNE
-         OhGwGeEyDbmaA58M0LahzpChBMguqzDwc+9kZBv7ynMr8MDkbMzaMInTtP3H5AMyUHGQ
-         t03c5A2A99DxuFISEorkqxGDQRAOX91h3ilGYoaSBXzE5mDhrec4wH0eIU1sVQltLAWm
-         mPdQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW9W8egxjZB6m8fKAso/AO65jUQ+7LEEF1G/3Q9dkf98hfQNIcshDVvkLhxBITeBcYxmhpq3GM1YUpaJN5pLGMnrbXibWwsz6XlOmOQ
-X-Gm-Message-State: AOJu0YxtHOpB9I3c+TUxAoNDUIQ76PVGS6NdTi9WSPRGTUlO0XA5VA3I
-	0UE9mlYSfgF9oamujHctLyRQtO9ImfHpF8P6tMTs4ug+c6PkNs2RjH8YvEkhRoIpCvKPv546m9i
-	BrF0uHw66roAFZG6NXpmVekjUyxeeO9OLoOLG
-X-Google-Smtp-Source: AGHT+IEWUXRyvDJzguGJRJo9u6ikk3lpMufTn7b98D3Fo26NgVA3wj/ZyQyWVNHb90PS/WA4SgMHs7gH1Un5tLZFcfg=
-X-Received: by 2002:a05:600c:a386:b0:412:aa80:bdd9 with SMTP id
- hn6-20020a05600ca38600b00412aa80bdd9mr86479wmb.2.1709194036479; Thu, 29 Feb
- 2024 00:07:16 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709194061; x=1709798861;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=z/j4QtGQU6ak3DD1WRBmdjYqdwtld8ALJDrH10KQ3x0=;
+        b=PWh4/9xSq+V7GwBYgt5foBjN5KYWFp5/PXJp0ETiXbTIRQWRc1fq4+xhkjwOX5uKmn
+         Ud1h69dqgHW9+t6Sh93U/LIR4XXf4xY9AKqAPT4S0bjK/1myo7tHT9mk0OjowXm67a3+
+         PXyYPtgR8dxjC3S1n3XVYszFDilhY0EHMR9mhToE8/m+fsEpagKwQCib3MyKOkxXVcS1
+         JFAuoMF04y8HXrZJo8jj50WfyUHhTZvwdlrdTAX6w/SwwhIzeBblMd0D5P5XacmjiE5Y
+         PjLKPkjeS3VT8zNHYuz0phiPoBHV36nKpV41fJychBP+3h80MWSjmiPXjSeZG3H65eVC
+         VpMQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXMZ9nb6Pbatx4ShutBTRWZGN9MZgq0vduDcJ0xXobvxP8TfvMv17jczBWw/iWsoyoyjqr9see1SXcZdynEuihBuaH7V6oPhW/i3/2q
+X-Gm-Message-State: AOJu0YyYiSgq7q3vGR0jvTUkZzERemx0Er1pxFRXRSBjsE5RkuixmYpS
+	gli1+Jc2IvKNdvyUmCkLXxrQMwlbxqbVpahMNhILWDLwG/Qe3vUOSa55IaUW0EU=
+X-Google-Smtp-Source: AGHT+IEfqbnn0vNBpLTj2naxKMDTfLZBSwz57uktpCtc6vN6624bm3yVZVGteWdlkhykJU5Rcs+C0w==
+X-Received: by 2002:a17:906:553:b0:a44:1103:8282 with SMTP id k19-20020a170906055300b00a4411038282mr832668eja.24.1709194060747;
+        Thu, 29 Feb 2024 00:07:40 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id cu5-20020a170906ba8500b00a440ec600e3sm411228ejd.121.2024.02.29.00.07.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Feb 2024 00:07:39 -0800 (PST)
+Message-ID: <11d0bf3a-3341-4c7f-9a1a-e7c7bc078725@linaro.org>
+Date: Thu, 29 Feb 2024 09:07:36 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <7ae930a7-3b10-4470-94ee-89cb650b3349@csgroup.eu>
- <e11fea7a-e99e-4539-a489-0aa145ee65f0@roeck-us.net> <ZdzPgSCTntY7JD5i@shell.armlinux.org.uk>
- <ZdzZ5tk459bgUrgz@ghost> <ZdzhRntTHApp0doV@shell.armlinux.org.uk>
- <b13b8847977d4cfa99b6a0c9a0fcbbcf@AcuMS.aculab.com> <Zd0b8SDT8hrG/0yW@ghost>
- <cdd09f7a-83b2-41ba-a32c-9886dd79c43e@roeck-us.net> <9b4ce664-3ddb-4789-9d5d-8824f9089c48@csgroup.eu>
- <Zd25XWTkDPuIjpF8@shell.armlinux.org.uk> <Zd58jvN3PjQSe+yt@ghost>
- <c0449c0a-33bc-49c4-97e3-56a79a6ce93e@csgroup.eu> <02bb92c3-a14c-4a77-a3b0-a7c857d1d60d@roeck-us.net>
- <CAMuHMdW-sUYr8_y6av9Dbtz6JJAxBUsiTGZcK2QYEHo0x1z44w@mail.gmail.com> <e9112858-76b8-4b91-88b1-b5694cda3350@roeck-us.net>
-In-Reply-To: <e9112858-76b8-4b91-88b1-b5694cda3350@roeck-us.net>
-From: David Gow <davidgow@google.com>
-Date: Thu, 29 Feb 2024 16:07:03 +0800
-Message-ID: <CABVgOSn0uD+595fLvC0FWUoznCQTv0NeMAykyiOaS956eXQvGQ@mail.gmail.com>
-Subject: Re: [PATCH v10] lib: checksum: Use aligned accesses for ip_fast_csum
- and csum_ipv6_magic tests
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	Charlie Jenkins <charlie@rivosinc.com>, "Russell King (Oracle)" <linux@armlinux.org.uk>, 
-	David Laight <David.Laight@aculab.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Helge Deller <deller@gmx.de>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
-	Parisc List <linux-parisc@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Palmer Dabbelt <palmer@rivosinc.com>, 
-	Linux ARM <linux-arm-kernel@lists.infradead.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, 
-	KUnit Development <kunit-dev@googlegroups.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="0000000000006d72e4061280bf7e"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v6 10/11] net: hisi_femac: remove unused
+ compatible strings
+Content-Language: en-US
+To: forbidden405@outlook.com, Yisen Zhuang <yisen.zhuang@huawei.com>,
+ Salil Mehta <salil.mehta@huawei.com>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+ Heiner Kallweit <hkallweit1@gmail.com>, Russell King <linux@armlinux.org.uk>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org
+References: <20240228-net-v6-0-6d78d3d598c1@outlook.com>
+ <20240228-net-v6-10-6d78d3d598c1@outlook.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240228-net-v6-10-6d78d3d598c1@outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
---0000000000006d72e4061280bf7e
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On 28/02/2024 10:02, Yang Xiwen via B4 Relay wrote:
+> From: Yang Xiwen <forbidden405@outlook.com>
+> 
+> It's hard to get the version number for each FEMAC core and it's unknown
+> how the version can be used. Remove them until it's really needed.
+> 
+> Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
+> ---
+>  drivers/net/ethernet/hisilicon/hisi_femac.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/hisilicon/hisi_femac.c b/drivers/net/ethernet/hisilicon/hisi_femac.c
+> index 2406263c9dd3..3c5c095dad05 100644
+> --- a/drivers/net/ethernet/hisilicon/hisi_femac.c
+> +++ b/drivers/net/ethernet/hisilicon/hisi_femac.c
+> @@ -945,8 +945,7 @@ static int hisi_femac_drv_resume(struct platform_device *pdev)
+>  #endif
+>  
+>  static const struct of_device_id hisi_femac_match[] = {
+> -	{.compatible = "hisilicon,hisi-femac-v1",},
+> -	{.compatible = "hisilicon,hisi-femac-v2",},
+> +	{.compatible = "hisilicon,hisi-femac",},
 
-On Wed, 28 Feb 2024 at 23:40, Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On 2/28/24 02:15, Geert Uytterhoeven wrote:
-> > CC testing
-> >
-> > On Wed, Feb 28, 2024 at 8:59=E2=80=AFAM Guenter Roeck <linux@roeck-us.n=
-et> wrote:
-> >> On 2/27/24 23:25, Christophe Leroy wrote:
-> >> [ ... ]
-> >>>>
-> >>>> This test case is supposed to be as true to the "general case" as
-> >>>> possible, so I have aligned the data along 14 + NET_IP_ALIGN. On ARM
-> >>>> this will be a 16-byte boundary since NET_IP_ALIGN is 2. A driver th=
-at
-> >>>> does not follow this may not be appropriately tested by this test ca=
-se,
-> >>>> but anyone is welcome to submit additional test cases that address t=
-his
-> >>>> additional alignment concern.
-> >>>
-> >>> But then this test case is becoming less and less true to the "genera=
-l
-> >>> case" with this patch, whereas your initial implementation was almost
-> >>> perfect as it was covering most cases, a lot more than what we get wi=
-th
-> >>> that patch applied.
-> >>>
-> >> NP with me if that is where people want to go. I'll simply disable che=
-cksum
-> >> tests on all architectures which don't support unaligned accesses (so =
-far
-> >> it looks like that is only arm with thumb instructions, and possibly n=
-ios2).
-> >> I personally find that less desirable and would have preferred a secon=
-d
-> >> configurable set of tests for unaligned accesses, but I have no proble=
-m
-> >> with it.
-> >
-> > IMHO the tests should validate the expected functionality.  If a test
-> > fails, either functionality is missing or behaves wrong, or the test
-> > is wrong.
-> >
-> > What is the point of writing tests for a core functionality like networ=
-k
-> > checksumming that do not match the expected functionality?
-> >
->
-> Tough one. I can't enable CONFIG_NET_TEST on nios2, parisc, and arm with =
-THUMB
-> enabled due to crashes or hangs in gso tests. I accept that. Downside is =
-that I
-> have to disable CONFIG_NET_TEST on those architectures/platforms entirely=
-,
-> meaning a whole class of tests are missing for those architectures. I wou=
-ld
-> prefer to have a configuration option such as CONFIG_NET_GSO_TEST to let =
-me
-> disable the problematic tests for the affected platforms so I can run all
-> the other network unit tests. Yes, obviously something is wrong either wi=
-th
-> the affected tests or with the implementation of the tested functionality
-> on the affected systems, but that could be handled separately if a separa=
-te
-> configuration option existed, and new regressions in other tests on the a=
-ffected
-> architectures could be identified as they happen.
->
-> This case is similar. I'd prefer to have a separate configuration option,
-> say, CONFIG_CHECKSUM_MISALIGNED_KUNIT, which I can disable to be able to
-> run the common checksum tests on platforms / architectures which don't
-> support unaligned accesses.
->
-> However, as I said, if the community wants to take a harsh stance, I have=
- no
-> problem with just disabling groups of tests entirely on platforms which h=
-ave
-> a problem with part of it.
->
-> Guenter
->
+Drop and just use SoC compatibles.
 
-I think the ideal solution is for there to be some official stance on
-the required alignment, for every architecture to support that, and
-for the tests to exercise it. Now, judging from the sheer number of
-replies in this thread, it seems like there isn't any real agreement
-on that. (From my quick reading of some of the checksum code, my
-assumption was that this was either 1- or 2- byte alignment required,
-with 4-byte alignment being ideal for performance reasons in most
-setups).
+>  	{.compatible = "hisilicon,hi3516cv300-femac",},
 
-If different architectures have different alignment requirements
-(ouch!), my feeling is that the test suite should be written to the
-maximum such alignment (as any non-architecture-specific code will
-need to align things anyway), and architectures/drivers with
-non-aligned buffers can have their own tests. If it turns out there
-are a lot of such drivers/architectures, then we can add the extra
-config option.
 
-I'd rather, if there is a config option to disable these tests, it be
-of the form ARCH_HAS_UNALIGNED_CHECKSUM to enable it, or similar.
-There's also the option of having the test 'skip' itself on a
-configuration which doesn't support it. That way it'll still show up
-in the list of tests, but with a description, like "Disabled due to
-checksum alignment requirements" or something, which may be more
-obvious to people debugging it later.
 
-For the gso test hangs, I think it's probably quite sensible to have a
-config option for the GSO tests generally. I'd be more hesitant to
-have a separate CONFIG_NET_GSO_FREQUENTLY_BROKEN_TESTS, which is
-selected automatically by a bunch of architectures. At that point, I
-think we need to either just fix the bugs, or start thinking about a
-better solution for these tests / architectures.
+Best regards,
+Krzysztof
 
-One of the things I'm hoping to work on this year is some improvements
-to KUnit tooling to automatically run tests across a wider set of
-architectures and configs, so test authors can catch this sort of
-thing before even sending patches out. We can do a bit of this with
-the manual --arch <arch> option to kunit.py, but very few people will
-test things across more than a couple of architectures, and rarely
-will we get good testing on the less common architectures, like 32-bit
-ones, big endian ones, or ones with stricter alignment requirements.
-So we can do better there.
-
-tl;dr: I think it's a good idea for tests to sit behind config
-options. Obviously they shouldn't be either too broad, or too
-granular, but common sense usually prevails here. I'd rather not have
-config options explicitly for "broken" tests, though: if you have to,
-try to make the config option for the missing/broken feature (HAS_xxx)
-rather than the test if possible. Otherwise, 'skip' the test, with a
-suitable reason string if you can.
-
--- David
-
---0000000000006d72e4061280bf7e
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIIPqgYJKoZIhvcNAQcCoIIPmzCCD5cCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-gg0EMIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
-IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
-dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
-6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
-c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
-I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
-AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
-CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
-AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
-MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
-My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
-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
-7xDrOPfX3COqq162RFg/MFcGA1UdIARQME4wCQYHZ4EMAQUBATBBBgkrBgEEAaAyASgwNDAyBggr
-BgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wDAYDVR0TAQH/
-BAIwADCBmgYIKwYBBQUHAQEEgY0wgYowPgYIKwYBBQUHMAGGMmh0dHA6Ly9vY3NwLmdsb2JhbHNp
-Z24uY29tL2NhL2dzYXRsYXNyM3NtaW1lY2EyMDIwMEgGCCsGAQUFBzAChjxodHRwOi8vc2VjdXJl
-Lmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcnQwHwYDVR0jBBgw
-FoAUfMwKaNei6x4schvRzV2Vb4378mMwRgYDVR0fBD8wPTA7oDmgN4Y1aHR0cDovL2NybC5nbG9i
-YWxzaWduLmNvbS9jYS9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcmwwDQYJKoZIhvcNAQELBQADggEB
-AK0lDd6/eSh3qHmXaw1YUfIFy07B25BEcTvWgOdla99gF1O7sOsdYaTz/DFkZI5ghjgaPJCovgla
-mRMfNcxZCfoBtsB7mAS6iOYjuwFOZxi9cv6jhfiON6b89QWdMaPeDddg/F2Q0bxZ9Z2ZEBxyT34G
-wlDp+1p6RAqlDpHifQJW16h5jWIIwYisvm5QyfxQEVc+XH1lt+taSzCfiBT0ZLgjB9Sg+zAo8ys6
-5PHxFaT2a5Td/fj5yJ5hRSrqy/nj/hjT14w3/ZdX5uWg+cus6VjiiR/5qGSZRjHt8JoApD6t6/tg
-ITv8ZEy6ByumbU23nkHTMOzzQSxczHkT+0q10/MxggJqMIICZgIBATBoMFQxCzAJBgNVBAYTAkJF
-MRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFzIFIz
-IFNNSU1FIENBIDIwMjACEAHS+TgZvH/tCq5FcDC0n9IwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZI
-hvcNAQkEMSIEIIVyzxSwGRZg5JxRkLSUHB9wqFyP3fi9S3bEMxHOaqQZMBgGCSqGSIb3DQEJAzEL
-BgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MDIyOTA4MDcxNlowaQYJKoZIhvcNAQkPMVww
-WjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkq
-hkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCDxswZ
-cKnmei1SJwfjeHXR0YMr0Z2iYl0creflrItGTE7s+blJ9TiaTxsaJe3oL+tWN0apNBEHLK9qLdJS
-aj9qaWYpR72y475W/35MlQsGY+d+y9JwJmx+mALFanQ9c5TIGy4VV+95rza80KBzxEhDCsjXgrIu
-wdh1wwSVFROaGetcp+6L+haJnpuKz1y7ZpyXiLfBnTdjFRTxXabybXO3BAxm1eqAulWzFox1foFw
-Wm3d4K5ejtfWQjbKr+uAXLaX8EVUXq1n82/yXgkR8Gf69Jo/vQw+Z05i2n5q1n1Wb4poGvVeqrHm
-Rsc0wLmPOYQadOCMyhpMj7r3Smn+qL8s
---0000000000006d72e4061280bf7e--
 
