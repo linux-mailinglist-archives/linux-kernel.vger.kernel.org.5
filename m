@@ -1,71 +1,81 @@
-Return-Path: <linux-kernel+bounces-86912-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86914-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B44B986CCB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:17:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B51EB86CCBA
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:19:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E678C1C20C7C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:17:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46602283EDF
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:19:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E62F61474A8;
-	Thu, 29 Feb 2024 15:17:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92B6512F362;
+	Thu, 29 Feb 2024 15:19:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="XSu+wV/o"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="d7V7VvZQ"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68FFE137753;
-	Thu, 29 Feb 2024 15:17:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DC1E86275
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 15:19:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709219861; cv=none; b=EUt/Kdzcj+tx8zkchWMbtCy8SmWX2ak74DBfwq2ZaS9BvQnJ5kOST8lNjowgYE4n7xQIxKF4sWJ7ukr43jr7vGM69zIR0TSm4TS1JNFL1uVfGg/yCx8NAxGJa3nQeGjSspCfYDRZwUsyc+shENx2M1JWoPHVYRTA1D8UsGVr+qM=
+	t=1709219955; cv=none; b=LGR2FCwiTw7BJXG0Df/OP3WC/LoFOFAJ1Ore0Ncwud2bjGfXGZoIr5bmRYi35j81eJiR6Vh1lQGvxsxjLuoqq94/87ck/2UTpPg7lRvj2DOkxXFeGT1whE2Iqp/I9VhL+JH6RQ21xPJePQ7kDyhAOkVbYhh6HcicrWObtDgPOts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709219861; c=relaxed/simple;
-	bh=br/HWN6lmANGcA8lXtzi6rpYYGeQsWi3eahucRslWvM=;
+	s=arc-20240116; t=1709219955; c=relaxed/simple;
+	bh=8BKUzajgfT6HNmS1xP/5Vd8mKo4cmsOxiX9rNgycjXM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SMyULDPc+mxwlmB1X8yIulhrDpB9ChyALM4kPFiJFu/ugXAWxq3OZ8JJ0H7Cexg6bI6bJaGE+BMLQKdWPbbnNPQsc/AEMsh8EKkhDY/rr28JasSChqu6lGxmhCBpND5V+919SSbSP6coy/W08zY9ETbQiRqtZHki+4tvWzw5V4Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=XSu+wV/o; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=+c7Vmm6KMU5zSvglgfqufPHeSuGV1yw9KPRb+vUHbSs=; b=XSu+wV/oCNilQemLKrLXtUYJun
-	ZFsAIYQS4CPzcvXULpppRYMnMQAOaPDTBOQp4Fi0W33U9liiMEbP4aNMLs9Uom5a3ibtYmpr3Rxaf
-	Is3E4P5BVtL/4LPvUhWtCVpzV4TPKJ+aj8EJCpuSkF/AKfVbnwVkDlRKpXa4h+PFJb9Q=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rfiAN-0093D1-J5; Thu, 29 Feb 2024 16:17:47 +0100
-Date: Thu, 29 Feb 2024 16:17:47 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Bastien Curutchet <bastien.curutchet@bootlin.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-	Lee Jones <lee@kernel.org>,
-	Richard Cochran <richardcochran@gmail.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-leds@vger.kernel.org,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	herve.codina@bootlin.com, maxime.chevallier@bootlin.com,
-	christophercordahi@nanometrics.ca
-Subject: Re: [PATCH v2 2/6] leds: trigger: Create a new LED netdev trigger
- for collision
-Message-ID: <9dd1b2d0-4ba5-4d34-a892-a6cc8c01df28@lunn.ch>
-References: <20240227093945.21525-1-bastien.curutchet@bootlin.com>
- <20240227093945.21525-3-bastien.curutchet@bootlin.com>
- <e6351d0c-15e2-47a9-be6c-6f21aee9ae90@lunn.ch>
- <e1936774-14bf-4ae5-9754-e21f5a0c59b3@bootlin.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=fbCu0/plD7yvroUYomVM57Adhn5fGeXZ9vvaAESnYYfFSU309rOLsPeYTE4w3fZw9pXCjS/pSSKl3j5p/cFCU07+8sfqxmKxZzp9zwC1hfhS9DXtLfg9l1EdmQn3hbjsBE2NM0K3TCj7S3lsWT8nKHL1LgzUN9vCAJXhRtG6x+4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=d7V7VvZQ; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a446478b04bso45924866b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 07:19:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1709219952; x=1709824752; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Yn1zce3bQ2qXb3y/QswXWKJ5LaLDdAUGuIwkbuGCZvU=;
+        b=d7V7VvZQs3FB0yugiCm4ZBm4EEog4abnu082Bh4tJ98sPe0o5jdLzlnfjQ3gfsoVxz
+         yQeNU7VLxH2T9WR+BAI4cgRmlHGtHACd+/koYQmnUopXJMHQEFwPvZs+T8wo9o1naWBO
+         MdhR8KoFGP6xTNB2j0KqbfE3wQdE4+RP74PDsX2FmeJWvbJV0Ew5kUklKcHnsnxSn+/R
+         7P2DLwEsPx2jPfN82mJH2HU0WDvvmT9I8hFbu4FZB8u1mUtiQz1ESRV5eiWB+pr5IajH
+         tfsj9AY5OUgIU5PJ2kkMeb/6t7zou6nD/S1sJIqxgvfDspUWjh/Q7Ex7muk32oBEb+QO
+         tcSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709219952; x=1709824752;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Yn1zce3bQ2qXb3y/QswXWKJ5LaLDdAUGuIwkbuGCZvU=;
+        b=N7M2Ak3nulZBaCP7cTR4XaFVJCb2or7QkqKOf+H+znpglU7uWCEhSCJWWS8QfYlsYy
+         T4q3tMp/Mc1PM0xR7zHaQOFk7G9g+zN5nE1eJ9dfuSyuBmQWZzUVAX8NIEZ6Qk5AwsW+
+         +ADkd/5XnAeiZdIQ6RDN4KaBpwPEzXOJV/Im1ZMMdc7sjbWaKJI8P27NwYPUV3DE3N+8
+         A2kZvOLr9DUhvGBxZQW8ypmUgYqaHHVNHCbnPOXyvwmCIftMZ/8zyIEde6sgI9ePAR9j
+         //vIQ1mwvObMHbLjqyeizwuSkh4neiBvzMHYwJtBa0RKyL+Q5JgSY13c8Z0wZcoZXyHP
+         5MfA==
+X-Forwarded-Encrypted: i=1; AJvYcCWE5c/w69UQVG6HheJR+HKTrHh37DgTAaum8jSq7CU0yI2P1abzsnHFU9hW+jjcuzD/mTDU0gQpHpL2+Y8lLAGwYBWHpyxtpgHSLTxm
+X-Gm-Message-State: AOJu0YzeQEddfAmpmSmLugHlSiomuzoICPE+9DF2cP7GOS1ON7fm3Dbp
+	gsNjS3RP71jV1KYiCIOSVS00oT+gMqoNFzAKsON6I5ACHzJ075Se4hnqeru9W0E=
+X-Google-Smtp-Source: AGHT+IFrwNmwbJfrkgbJv1EeguIoo2X9D5Q/WjhOIHrpPrEivK2ywnhccAptttNke/Vdftzzg6Ltdw==
+X-Received: by 2002:a17:906:fb99:b0:a44:277c:1683 with SMTP id lr25-20020a170906fb9900b00a44277c1683mr1875406ejb.53.1709219951673;
+        Thu, 29 Feb 2024 07:19:11 -0800 (PST)
+Received: from alley ([176.114.240.50])
+        by smtp.gmail.com with ESMTPSA id tx18-20020a1709078e9200b00a431cc4bd3dsm769486ejc.182.2024.02.29.07.19.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Feb 2024 07:19:11 -0800 (PST)
+Date: Thu, 29 Feb 2024 16:19:09 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: John Ogness <john.ogness@linutronix.de>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk v2 19/26] printk: Avoid console_lock dance if no
+ legacy or boot consoles
+Message-ID: <ZeCgbRkIl2q3_9uh@alley>
+References: <20240218185726.1994771-1-john.ogness@linutronix.de>
+ <20240218185726.1994771-20-john.ogness@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,58 +84,81 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e1936774-14bf-4ae5-9754-e21f5a0c59b3@bootlin.com>
+In-Reply-To: <20240218185726.1994771-20-john.ogness@linutronix.de>
 
-> > How useful is collision? How did you test this? How did you cause
-> > collisions to see if the LED actually worked?
-> Indeed I am not able to generate collision on my setup so I did not test
-> this
-> collision part.
-> My use case is that the hardware strap configuration that selects the LED
-> output mode
-> can not be trusted so I have to force configuration with software. I added
-> this collision
-> part because I wanted to cover all the LED configuration modes offered by
-> the PHY.
-
-There are a few things i want to avoid here:
-
-1) Vendor SDK mentality. The hardware can do this, lets add a knob to
-make use of it. We end up with 100 of configuration knobs which nobody
-ever uses. Do you actually have a board where the strapping is wrong?
-Are you going to submit a .dts file making use of this option?
-
-2) LEDs are the wild west, because it is not part of 802.3. Every
-vendor does it differently, and has their own special blinking
-patterns. My preference is to keep it simple to what people actually
-use. You cannot actually generate a collision, the developer who wants
-to add support for collision. I have to ask, is collision actually
-useful?
-
-> > As far as i can see, this is just a normal 100Base-T PHY. Everybody
-> > uses that point-to-point nowadays. If it was an 100Base-T1, with a
-> > shared medium, good old CSMA/CD then collision might actually be
-> > useful.
-> > 
-> > I also disagree with not having software fallback:
-> > 
-> > ip -s link show eth0
-> > 2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000
-> >      link/ether 80:ee:73:83:60:27 brd ff:ff:ff:ff:ff:ff
-> >      RX:     bytes    packets errors dropped  missed   mcast
-> >      4382213540983 2947876747      0       0       0  154890
-> >      TX:     bytes    packets errors dropped carrier collsns
-> >        18742773651  197507119      0       0       0       0
-> > 
-> > collsns = 0. The information is there in a standard format. However,
-> > when did you last see it not 0?
+On Sun 2024-02-18 20:03:19, John Ogness wrote:
+> Currently the console lock is used to attempt legacy-type
+> printing even if there are no legacy or boot consoles registered.
+> If no such consoles are registered, the console lock does not
+> need to be taken.
 > 
-> Ok, I could add the software callback but I will not be able to test it ...
+> Add tracking of legacy console registration and use it with
+> boot console tracking to avoid unnecessary code paths, i.e.
+> do not use the console lock if there are no boot consoles
+> and no legacy consoles.
+> 
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -3958,7 +3983,11 @@ void defer_console_output(void)
+>  	 * New messages may have been added directly to the ringbuffer
+>  	 * using vprintk_store(), so wake any waiters as well.
+>  	 */
+> -	__wake_up_klogd(PRINTK_PENDING_WAKEUP | PRINTK_PENDING_OUTPUT);
+> +	int val = PRINTK_PENDING_WAKEUP;
+> +
+> +	if (printing_via_unlock)
+> +		val |= PRINTK_PENDING_OUTPUT;
+> +	__wake_up_klogd(val);
 
-My personal experience is, anything not tested is broken...
+I was thinking about handling this in wake_up_klogd_work_func().
+But then I saw that __wake_up_klogd() already handled
+PRINTK_PENDING_WAKEUP a similar way. And it even did not
+queue the work when there was nothing to do.
 
-Think about what Russell actually said. That should give you a clue
-how to cause collisions. If not, go study history books about CSMA/CD.
+It would be nice to handle both on the same place.
+It would even untangle the condition in __wake_up_klogd().
+Something like:
 
-   Andrew
+static void __wake_up_klogd(int val)
+{
+	if (!printk_percpu_data_ready())
+		return;
+
+	preempt_disable();
+
+	/*
+	 * Guarantee any new records can be seen by tasks preparing to wait
+	 * before this context checks if the wait queue is empty.
+	 *
+	 * The full memory barrier within wq_has_sleeper() pairs with the full
+	 * memory barrier within set_current_state() of
+	 * prepare_to_wait_event(), which is called after ___wait_event() adds
+	 * the waiter but before it has checked the wait condition.
+	 *
+	 * This pairs with devkmsg_read:A and syslog_print:A.
+	 */
+	if (!wq_has_sleeper(&log_wait))		/* LMM(__wake_up_klogd:A) */
+		val &= ~PRINTK_PENDING_WAKEUP;
+
+	/*
+	 * Simple read is safe. register_console() would flush a newly
+	 * registered legacy console when writing the message about
+	 * that it has been enabled.
+	 */
+	if (!printing_via_unlock)
+		val &= ~PRINTK_PENDING_OUTPUT;
+
+
+	if (val) {
+		this_cpu_or(printk_pending, val);
+		irq_work_queue(this_cpu_ptr(&wake_up_klogd_work));
+	}
+
+	preempt_enable();
+}
+
+Otherwise, it looks good.
+
+Best Regards,
+Petr
 
