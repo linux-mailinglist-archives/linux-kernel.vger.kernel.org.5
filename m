@@ -1,60 +1,62 @@
-Return-Path: <linux-kernel+bounces-87439-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87440-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C9DF86D46D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:39:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D8BF86D470
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:39:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 03E311F241F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:39:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD197284110
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:39:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1044714D421;
-	Thu, 29 Feb 2024 20:37:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9CF214EA38;
+	Thu, 29 Feb 2024 20:37:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uLRkOdYw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uH1hQs+U"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C9A014BF4B;
-	Thu, 29 Feb 2024 20:37:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C708414EA21;
+	Thu, 29 Feb 2024 20:37:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709239061; cv=none; b=L4YKbrRer2VoYo5A0yze8I9I8VzpiCqKed3QeqPMewxuMUo7cHSihQNRPK9y8pPAmNcqhSMSVwjncS8ax1HyUlCYRswqsgSI0bMoUd5zijumMp87iD2qWIOfoArOMMoDMYJMQGhIH0LgxH53inbKCCn4NFm8mv1x3dZz2d4wLWE=
+	t=1709239063; cv=none; b=gnYssOne9SxOVYsrbLO8bzSHmHU5efOEKLs0XoxSjX+9TANM/JlDOZsyis81V7wDVJTZXqTCUg2tQHHNPW5mPXQDmpRCp+wH+jTaNlqZUf8FT6igI7RCRMRY76gBc5T2e3hZmbnkc5MWxIELD8ULJWogolc3/4zt6QckOJyLaTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709239061; c=relaxed/simple;
-	bh=wGyL3labdAaMqFXA7KDslyStajtYj3CnrLy8cwVV/Tw=;
+	s=arc-20240116; t=1709239063; c=relaxed/simple;
+	bh=T/akRPi5ao0d12BmCz3WEgH+FPHY9KHNebOOEFBHkBM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Oy2IZ72+81ybBv2BAnFimnPcDhNF4lLqhzErOPzIyefiHx2XsmxwGdQI/W9iTvB9u4KuT94nni6vMPsNRbjL0k8e9+fY88bpJF4liAr+V42QvfJf1zB1pOwl7OBttI0fdd7jloXreFOFOrLf2A//jf4sonVYDjXqXdHiZ3i69Zg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uLRkOdYw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 659EBC433C7;
-	Thu, 29 Feb 2024 20:37:39 +0000 (UTC)
+	 MIME-Version; b=QcTGJPwZBLNnvk5tmhvKndEMxu2D56zt0xQx2AgEdu7Yh1TXejHB2L7kjK1bFWfaO8YQg92p4F4RIOzhuFTaVn15kHi4EkwbBnLVgDMybobThVwujX56rC3NW+PMXBSmX/vsZmRwmzE63/zrBKQQ0uUYJyBi7ThFlUjP6ZeMVGY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uH1hQs+U; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC154C433B2;
+	Thu, 29 Feb 2024 20:37:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709239060;
-	bh=wGyL3labdAaMqFXA7KDslyStajtYj3CnrLy8cwVV/Tw=;
+	s=k20201202; t=1709239063;
+	bh=T/akRPi5ao0d12BmCz3WEgH+FPHY9KHNebOOEFBHkBM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=uLRkOdYwd99IswaI8cLLXX04lL8fp6oxOx+EnjK3+CgLuCIznA+NUqLwu0A3f//oB
-	 DjYNqVNXlawVf8UhsALFwtX3pTRnuqWUM/Fkp4F8YW0n/UjfOVF3b992gNjRPOYs/l
-	 OCAvWw0pGx1E+9KTLwLrlxitf2RHO4O4UEbVKX8Sbv2A1QhiagtbZVgi9O8yayyVxh
-	 gG+TrpWLtzvRk6EVioavy3BIcw/S2FobwQrIEsE3YFoTf65MgXFSPIyHvP0d+3iH8R
-	 50R6MCjWbxHaKZ1x3qa6mB4JymV2BB/wEIxXoO6a1mxG6rk4g5ciARmNsP0Hao7r0B
-	 AZJyMd2OcT7og==
+	b=uH1hQs+Uc4ytqtrE09JCLb94Lf2WJEC8cOf6UhJ25B0vftYFF8ifI7ETjkDmeW0El
+	 DTWhPQEqo2nL54kJ/UwN6HZUygNxdclRk9fVsYjSQ7I2juRMDIdX1RoVabSCR9aAdb
+	 e/iy40FzlajZUYysdSfg1uv4PZIlo0NpZeqnvsz8XbE6wtEv0ucb+v57ngjQa8Uu5I
+	 WahslylSiZ0xty6M5K7mE/zd1PIrlrAReKtxDuoENEUQ0M1+k66RzLtXWVuxcKWdFU
+	 aDbN0gzfkrA4HNo8GkjiQLxWoEEmqHGxWLvhlM9MYT0CaJUTJcjQSrqBzHwQen/zbx
+	 VbswSbLW3QANQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Hari Bathini <hbathini@linux.ibm.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	David Vernet <void@manifault.com>,
+Cc: Conor Dooley <conor.dooley@microchip.com>,
+	Samuel Holland <samuel.holland@sifive.com>,
 	Sasha Levin <sashal@kernel.org>,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 06/24] bpf: Fix warning for bpf_cpumask in verifier
-Date: Thu, 29 Feb 2024 15:36:46 -0500
-Message-ID: <20240229203729.2860356-6-sashal@kernel.org>
+	conor@kernel.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	aou@eecs.berkeley.edu,
+	linux-riscv@lists.infradead.org,
+	devicetree@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.7 07/24] riscv: dts: sifive: add missing #interrupt-cells to pmic
+Date: Thu, 29 Feb 2024 15:36:47 -0500
+Message-ID: <20240229203729.2860356-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240229203729.2860356-1-sashal@kernel.org>
 References: <20240229203729.2860356-1-sashal@kernel.org>
@@ -69,42 +71,34 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.6
 Content-Transfer-Encoding: 8bit
 
-From: Hari Bathini <hbathini@linux.ibm.com>
+From: Conor Dooley <conor.dooley@microchip.com>
 
-[ Upstream commit 11f522256e9043b0fcd2f994278645d3e201d20c ]
+[ Upstream commit ce6b6d1513965f500a05f3facf223fa01fd74920 ]
 
-Compiling with CONFIG_BPF_SYSCALL & !CONFIG_BPF_JIT throws the below
-warning:
+At W=2 dtc complains:
+hifive-unmatched-a00.dts:120.10-238.4: Warning (interrupt_provider): /soc/i2c@10030000/pmic@58: Missing '#interrupt-cells' in interrupt provider
 
-  "WARN: resolve_btfids: unresolved symbol bpf_cpumask"
+Add the missing property.
 
-Fix it by adding the appropriate #ifdef.
-
-Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-Acked-by: Stanislav Fomichev <sdf@google.com>
-Acked-by: David Vernet <void@manifault.com>
-Link: https://lore.kernel.org/bpf/20240208100115.602172-1-hbathini@linux.ibm.com
+Reviewed-by: Samuel Holland <samuel.holland@sifive.com>
+Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/verifier.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index e215413c79a52..571642c149e2f 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -5445,7 +5445,9 @@ BTF_ID(struct, prog_test_ref_kfunc)
- #ifdef CONFIG_CGROUPS
- BTF_ID(struct, cgroup)
- #endif
-+#ifdef CONFIG_BPF_JIT
- BTF_ID(struct, bpf_cpumask)
-+#endif
- BTF_ID(struct, task_struct)
- BTF_SET_END(rcu_protected_types)
+diff --git a/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts b/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
+index 07387f9c135ca..72b87b08ab444 100644
+--- a/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
++++ b/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
+@@ -123,6 +123,7 @@ pmic@58 {
+ 		interrupt-parent = <&gpio>;
+ 		interrupts = <1 IRQ_TYPE_LEVEL_LOW>;
+ 		interrupt-controller;
++		#interrupt-cells = <2>;
  
+ 		onkey {
+ 			compatible = "dlg,da9063-onkey";
 -- 
 2.43.0
 
