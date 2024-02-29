@@ -1,202 +1,129 @@
-Return-Path: <linux-kernel+bounces-87607-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87609-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DE0B86D66E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:55:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76BD886D672
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:59:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B5911F24739
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:55:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 121D9B21F60
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:59:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFF446D52F;
-	Thu, 29 Feb 2024 21:55:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76FF06D52F;
+	Thu, 29 Feb 2024 21:58:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k1wmwJa1"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Vufomjse"
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B5126D521;
-	Thu, 29 Feb 2024 21:55:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0352B16FF46;
+	Thu, 29 Feb 2024 21:58:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709243730; cv=none; b=GiFyo/zukBIaWOfF+mGvMdtiJj2bbDSDufkWup+lPWLsy8uVwKWuCB6BEQFRBZBqPXpobr7v86koyNa5pOdvZu6LQUvLytAa2+ZiAQ1A2mGwfMkSxiYfmEogwy0L/HV9e4ykhTMGPdTJsVfCG5k+5xZ/CQqvP0oLjvPxR0SiE+0=
+	t=1709243938; cv=none; b=i7Obq1iFF8iCkYCHxFVb1V6j1UIEw1fo9iSZ+ccMLQ3nr6gVAr98grd59uHI0SQ0DCfYUpv7Z5P7+Mr4nZUj/dXpYXvOzuwikL7cvnyHqgV4k0HzTNjElo3T4TR8o/eEBDQ4sDowsOyxmEb0g9YmrU0Mp6xHUszFUO6lLAiMDAs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709243730; c=relaxed/simple;
-	bh=QXwImBHkQU4oBCMDlASAtoeObYm8w7DXrTIbSDNAt40=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=UzS09ioPX3CBBCHhen+Np8WArYZ4m4uTVNkuLiRvKFPHNgtRzJw4jb2bp7NKERQ02/Wjejp8zbsWcI3exGSofzBUTJk6zAHrE20GnjN1DAmYIJvf5WTgPrcBhRzyKBQC+jMlj7seDDLva8YS8BnneyzK4MPlv5YgyK52u8PS0qg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k1wmwJa1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBEC8C433C7;
-	Thu, 29 Feb 2024 21:55:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709243729;
-	bh=QXwImBHkQU4oBCMDlASAtoeObYm8w7DXrTIbSDNAt40=;
-	h=From:Date:Subject:To:Cc:From;
-	b=k1wmwJa15FhdfrnwodWdq/GkznfkCJ39jCfh2Gh0+PduWbc8Fr+MQT8hyv/uwO5Dc
-	 EwRyj0x63X3NcW3pzqf7I7qLkpwnGfM3HWrVnJs64WBRSMYdWXcgIHrK871ETYrIV4
-	 kqIllaLvUAXuBTcxoYr4+D7IkmUKFbqLdL8FNfnW3pb1AqINLhLh+vQUxEZjuRCEHD
-	 qb3CjuLCabAaRRRioC7RydS4LXHQ+eYSVdR2NCArTF8ZWsPqODlRJrrYvA7aFcVhAx
-	 x/ZH02Fq44gCPV6ivv3AvsrUfFSWaLySfsfgJHs5VTuhXmA4PieCwZF/BtjG8mugvn
-	 UBZtqOpFfjHew==
-From: Jeff Layton <jlayton@kernel.org>
-Date: Thu, 29 Feb 2024 16:55:26 -0500
-Subject: [PATCH RFC] nfsd: return NFS4ERR_DELAY on contention for v4.0
- replay_owner rp_mutex
+	s=arc-20240116; t=1709243938; c=relaxed/simple;
+	bh=5JVabrlMLe/1NI62rmzy/ei3KAtCFMI1zLcwOM4J3wA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eZx7KXFi9bs9Z9QwfBwpTSyCX85p5KPjjO7gk501CTQdY475mE5ry5CemuPSTvNH8uLI5XxwqjOZDVGJNsszFV5EWj9NcXYY5akVUUjJQZEtQ6AXhV0SWCf8uN00LYis3KsR5pFLb3WIKY26p73mNDflmBNGot6I8qTLa0wClNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Vufomjse; arc=none smtp.client-ip=217.70.183.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 9AEDF40003;
+	Thu, 29 Feb 2024 21:58:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709243934;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DiJQ8IEdW2Jkk/S4jOTeOO3q8QRmk15ZcHgGmWobrwI=;
+	b=Vufomjser0fMBgkFugDyP7xz2NZDrANrKG05Os5lRiWQQXwpRfMzls1U5UVZfCj5mGCYba
+	5aJ3QYmmc8fc0/4bxjHolLYyp6+I0mYpkgOkagq1VAy9ei7hF5XdFt9KRU8p7qKO5AFnSI
+	IDmHMn7xkIikioGrvhOglf1pB1piCcIgXRwijdx3iZwFVhiQWk0Z/Zc120AtPSiUql9bAZ
+	5Og6pScc2s5MeWAL+U4EWkNgFn//q4vYRkZ8AF6ALxhFwbXShvYnMej6r4x9QOp+qJYnwW
+	VB/q3oYjxHjy6ekb6CGKYrGj8M6OBOg3WeuUyEmA5yDBbTs4iyxSNx8tLH8WUw==
+Date: Thu, 29 Feb 2024 22:58:50 +0100
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+To: Nicholas Miehlbradt <nicholas@linux.ibm.com>
+Cc: a.zummo@towertech.it, linux-rtc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rtc: fix uninitialized read of rtc_wkalrm.time
+Message-ID: <20240229215850a1990100@mail.local>
+References: <20231129073647.2624497-1-nicholas@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240229-rp_mutex-v1-1-47deb9e4d32d@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAE394GUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDIyNL3aKC+NzSktQK3RQjg1RjY0PLVGNDUyWg8oKi1LTMCrBR0UpBbs5
- KsbW1AHYo3VZfAAAA
-To: Chuck Lever <chuck.lever@oracle.com>, Neil Brown <neilb@suse.de>, 
- Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, 
- Tom Talpey <tom@talpey.com>
-Cc: linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Jeff Layton <jlayton@kernel.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4484; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=QXwImBHkQU4oBCMDlASAtoeObYm8w7DXrTIbSDNAt40=;
- b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBl4P1Q440J9i93kJmvdFmdQ3HdXV5UpvE4Cp8fd
- o8U9xOHkfKJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZeD9UAAKCRAADmhBGVaC
- FTwcD/4wVDSH4NxzwIUI/ZD+cyBy+I6YFEUZaIlDCvWVXSpenQZq/ZiH+wiiQZRceeXscP0K+aa
- /6b9lnD1+PkgupDYAWCe4EMyd94Qpdfka42ZeKXDVwmeh//pk2ARmkichihJD+AQ4ZtIJDNYl/V
- vOjPXV9CwqVHgnRyc3XI8O+v42i0s5G2j72QTufhQLW+i14mRl1JB/AKLnthvV4hEHnk+5tKBY5
- z/KjBEz7nkBWq5HqCqUpKqgG4PLwmKNm6vZ00/5z4byC5r7wpAEd2FJk2gdThoZsAZtyDZ4b38U
- 9dOR5pK654/vAyFuelvtJxD5NE71FNX3PkBKmSi+Z0L/z3miAMR8V+/EGqicMFaKqcx3f0FeL3U
- NonNZ803fxYPglRq+k0u+DLwnVql1XCJZ3JBLFMq4+loHhqg4pm8zQOu2jkCz5IUhay6imX0gTU
- Us5sCLMoDGaT1KW4xprllM4+KeAs39yQ7JgqJPlls4KRcGIeSy8YZhh4EzyENuFBbaXfh/1pHzo
- xXwPrwu0dRkbvB/WAE6rnS72LP8+I6MNfFj2NzgGly9+W2ItUr8JTeBmodgssu2hZBLE9gLrUgT
- uC+Z/s4oJvcUxsepjtD0ivyWilkF5f30atJugJq0Ke/9FoPHN0HdpL81H5k02u2eXwbb34B2u5s
- EmEEtX9+qhFRHEw==
-X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
- fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231129073647.2624497-1-nicholas@linux.ibm.com>
+X-GND-Sasl: alexandre.belloni@bootlin.com
 
-move_to_close_lru() is currently called with ->st_mutex and .rp_mutex held.
-This can lead to a deadlock as move_to_close_lru() waits for sc_count to
-drop to 2, and some threads holding a reference might be waiting for either
-mutex.  These references will never be dropped so sc_count will never
-reach 2.
+Hello,
 
-There have been a couple of attempted fixes (see [1] and [2]), but both
-were problematic for different reasons.
+On 29/11/2023 07:36:47+0000, Nicholas Miehlbradt wrote:
+> If either of the first two branches of the if statement in
+> rtc_read_alarm_internal are taken the fields of alarm->time are not
+> initialized but are subsequently read by the call to rtc_tm_to_time64.
+> 
+> Refactor so that the time field is only read if the final branch of the
+> if statment which initializes the field is taken.
+> 
 
-This patch attempts to break the impasse by simply not waiting for the
-rp_mutex. If it's contended then we just have it return NFS4ERR_DELAY.
-This will likely cause parallel opens by the same openowner to be even
-slower on NFSv4.0, but it should break the deadlock.
+While the problem description is correct, the solution is not because
+you have no guarantee that the fields have been initialized if
+->read_alarm returns a value different from 0
 
-One way to address the performance impact might be to allow the wait for
-the mutex to time out after a period of time (30ms would be the same as
-NFSD_DELEGRETURN_TIMEOUT). We'd need to add a mutex_lock_timeout
-function in order for that to work.
+So, instead of avoiding the conversion unless the final branch is taken,
+it should be avoided as long as err != 0.
 
-Chuck also suggested that we may be able to utilize the svc_defer
-mechanism instead of returning NFS4ERR_DELAY in this situation, but I'm
-not quite sure how feasible that is.
+But, I'm also wondering whether there is actually an issue. mktime64
+can be fed whatever value without bugging out and the value of err will
+be part of the trace so userspace knows that it shouldn't trust the
+value.
 
-[1]: https://lore.kernel.org/lkml/4dd1fe21e11344e5969bb112e954affb@jd.com/T/
-[2]: https://lore.kernel.org/linux-nfs/170546328406.23031.11217818844350800811@noble.neil.brown.name/
+So, what is the actual issue? :)
 
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
- fs/nfsd/nfs4state.c | 30 +++++++++++++++++-------------
- 1 file changed, 17 insertions(+), 13 deletions(-)
+> Signed-off-by: Nicholas Miehlbradt <nicholas@linux.ibm.com>
+> ---
+>  drivers/rtc/interface.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/rtc/interface.c b/drivers/rtc/interface.c
+> index 1b63111cdda2..f40e76d2fe2b 100644
+> --- a/drivers/rtc/interface.c
+> +++ b/drivers/rtc/interface.c
+> @@ -179,6 +179,7 @@ static int rtc_read_alarm_internal(struct rtc_device *rtc,
+>  				   struct rtc_wkalrm *alarm)
+>  {
+>  	int err;
+> +	time64_t trace_time = -1;
+>  
+>  	err = mutex_lock_interruptible(&rtc->ops_lock);
+>  	if (err)
+> @@ -201,11 +202,12 @@ static int rtc_read_alarm_internal(struct rtc_device *rtc,
+>  		alarm->time.tm_yday = -1;
+>  		alarm->time.tm_isdst = -1;
+>  		err = rtc->ops->read_alarm(rtc->dev.parent, alarm);
+> +		trace_time = rtc_tm_to_time64(&alarm->time);
+>  	}
+>  
+>  	mutex_unlock(&rtc->ops_lock);
+>  
+> -	trace_rtc_read_alarm(rtc_tm_to_time64(&alarm->time), err);
+> +	trace_rtc_read_alarm(trace_time, err);
+>  	return err;
+>  }
+>  
+> -- 
+> 2.37.2
+> 
 
-diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
-index aee12adf0598..4b667eeb06c8 100644
---- a/fs/nfsd/nfs4state.c
-+++ b/fs/nfsd/nfs4state.c
-@@ -4658,13 +4658,16 @@ static void init_nfs4_replay(struct nfs4_replay *rp)
- 	mutex_init(&rp->rp_mutex);
- }
- 
--static void nfsd4_cstate_assign_replay(struct nfsd4_compound_state *cstate,
-+static __be32 nfsd4_cstate_assign_replay(struct nfsd4_compound_state *cstate,
- 		struct nfs4_stateowner *so)
- {
- 	if (!nfsd4_has_session(cstate)) {
--		mutex_lock(&so->so_replay.rp_mutex);
-+		WARN_ON_ONCE(cstate->replay_owner);
-+		if (!mutex_trylock(&so->so_replay.rp_mutex))
-+			return nfserr_jukebox;
- 		cstate->replay_owner = nfs4_get_stateowner(so);
- 	}
-+	return nfs_ok;
- }
- 
- void nfsd4_cstate_clear_replay(struct nfsd4_compound_state *cstate)
-@@ -5332,15 +5335,17 @@ nfsd4_process_open1(struct nfsd4_compound_state *cstate,
- 	strhashval = ownerstr_hashval(&open->op_owner);
- 	oo = find_openstateowner_str(strhashval, open, clp);
- 	open->op_openowner = oo;
--	if (!oo) {
-+	if (!oo)
- 		goto new_owner;
--	}
- 	if (!(oo->oo_flags & NFS4_OO_CONFIRMED)) {
- 		/* Replace unconfirmed owners without checking for replay. */
- 		release_openowner(oo);
- 		open->op_openowner = NULL;
- 		goto new_owner;
- 	}
-+	status = nfsd4_cstate_assign_replay(cstate, &oo->oo_owner);
-+	if (status)
-+		return status;
- 	status = nfsd4_check_seqid(cstate, &oo->oo_owner, open->op_seqid);
- 	if (status)
- 		return status;
-@@ -5350,6 +5355,9 @@ nfsd4_process_open1(struct nfsd4_compound_state *cstate,
- 	if (oo == NULL)
- 		return nfserr_jukebox;
- 	open->op_openowner = oo;
-+	status = nfsd4_cstate_assign_replay(cstate, &oo->oo_owner);
-+	if (status)
-+		return status;
- alloc_stateid:
- 	open->op_stp = nfs4_alloc_open_stateid(clp);
- 	if (!open->op_stp)
-@@ -6121,12 +6129,8 @@ nfsd4_process_open2(struct svc_rqst *rqstp, struct svc_fh *current_fh, struct nf
- void nfsd4_cleanup_open_state(struct nfsd4_compound_state *cstate,
- 			      struct nfsd4_open *open)
- {
--	if (open->op_openowner) {
--		struct nfs4_stateowner *so = &open->op_openowner->oo_owner;
--
--		nfsd4_cstate_assign_replay(cstate, so);
--		nfs4_put_stateowner(so);
--	}
-+	if (open->op_openowner)
-+		nfs4_put_stateowner(&open->op_openowner->oo_owner);
- 	if (open->op_file)
- 		kmem_cache_free(file_slab, open->op_file);
- 	if (open->op_stp)
-@@ -7193,9 +7197,9 @@ nfs4_preprocess_seqid_op(struct nfsd4_compound_state *cstate, u32 seqid,
- 	if (status)
- 		return status;
- 	stp = openlockstateid(s);
--	nfsd4_cstate_assign_replay(cstate, stp->st_stateowner);
--
--	status = nfs4_seqid_op_checks(cstate, stateid, seqid, stp);
-+	status = nfsd4_cstate_assign_replay(cstate, stp->st_stateowner);
-+	if (!status)
-+		status = nfs4_seqid_op_checks(cstate, stateid, seqid, stp);
- 	if (!status)
- 		*stpp = stp;
- 	else
-
----
-base-commit: 2eb3d14898b97bdc0596d184cbf829b5a81cd639
-change-id: 20240229-rp_mutex-d20e3319e315
-
-Best regards,
 -- 
-Jeff Layton <jlayton@kernel.org>
-
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
