@@ -1,124 +1,140 @@
-Return-Path: <linux-kernel+bounces-86403-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86402-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AA7E86C4EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:23:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92FD186C4EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:23:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C781728C5EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:23:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C50D31C21945
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:23:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 656765A7A3;
-	Thu, 29 Feb 2024 09:23:33 +0000 (UTC)
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BD3159B62;
+	Thu, 29 Feb 2024 09:23:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AlHri6tL"
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67D525A0FA;
-	Thu, 29 Feb 2024 09:23:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1A9359B71;
+	Thu, 29 Feb 2024 09:23:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709198613; cv=none; b=ZFxhmwoK5zRBTSOKurfDXCb6fXYYRXBF/i5vmhtdYXoQWAiZuu5tDwrSgaQUdyPCLb3DEeBqktsBPpU+T3VfQR3Uhdml87D31hg6k+Z3xpwVSs1mjiWtE/PmC0E7Xl2DFdjpnZFsOXkEKJA3VwnULqyRHTovouLHyTasEF/kA9M=
+	t=1709198608; cv=none; b=ddwcrNHwq/sl0FXTKssPTd+Z4+aTHJjayrHbpnZ368P/jT+zGO+4DIVSZhA/1GJG2Ob1fg88ZG0NgSsbJu80NbjXFTY2j+kF2tNrw+8sx9wu57tauILOPerenQMiy3gFpUTzYaje4NbBsqWtyudaGjnEJmPN+ZlAwEI1yqyjSH0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709198613; c=relaxed/simple;
-	bh=1XU1cs7VALNZKx8vt8v+2D2SZJDuWIN8jcuP7QRWL+0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=np4buvEanZHEdRFINyiPA7xKqA5YfLxQYSChM2s52DLCVR59kHiTwuoHHefdMoBgJ7LKbnLPgkuUITGx0ZScHbAeMBjGaCv8RcwYpwIoVA/Q6Ai3nm86woOS8ySxCLglfRCe+ml7YfU4uEkx7auwcnqiQkIda75xuREmxPbqgiE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	s=arc-20240116; t=1709198608; c=relaxed/simple;
+	bh=Y1VF961paWGjYTepm54lGjEBp1wEbEGeWrtYpW1U5Tc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AtRZcHe5JFxRe0Q9mMX4g/VN2uqaOFhPUSfr7BH1+7GhQlApprBJEZ+Vgs0KxdH7fdak7IwVs2fLxMbmxuoPYIuThLEvZtQfTHUfwPColv645QSSqKjVfftpAbWW/GIEYBjf4ovwXD930En9c5YKeH86nREp1+vOPs6eTp7CXn8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AlHri6tL; arc=none smtp.client-ip=209.85.167.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-607f8894550so4780917b3.1;
-        Thu, 29 Feb 2024 01:23:30 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709198608; x=1709803408;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OiC0kBtF19WK+LeOA4CJH8Hju+1dSIg0bD9jOGn2HI4=;
-        b=duHaSaSeyQBC6A/vEY2iPLI2tr85QyqIIH1AH6nWGMR50sXCDMtp5CD4UGVg5r+v6e
-         gtHYU+stNe6mo86+GNcQLfubLWqO6RAtvz4kAf6D6WBG/6MGMKUgDzIEafk9lIDlOBjv
-         ta6GHL1aeHC5byJXT+1SmQQYnaxUIAU7dy6HiuS5QwGCg62A/RcE2hQ1R0ErROf2XyOM
-         wVJrOw5oXKRT/1t6PpGvAb0iuZJJdF6X/av47UZQwK4fyyURWiqVi3J32xoehzoDFIlD
-         hWyHFUCLk8LkhStmjeHvuw0Kci0VWGAZ2MplG7Qsfu1+KpVAxue/rsZr5cEGuSx2YmKK
-         Qp3g==
-X-Forwarded-Encrypted: i=1; AJvYcCU5+H4nziWIF50Ce893L7qK/i80aNROXHYscSKqPThpZp+bskgkJga8ovjc0Gq6ZbTrmZNstTWHAKU0OR3aPF0Dzu0647vHF07w90TKXgwO0QA1rw+XpNwK8yAgi32qKsfI1AmguTY4QStg8PFiZdaeMES9d5FZQl9fHdsUVAkkzXT5Jas=
-X-Gm-Message-State: AOJu0YzbY8AlHDTZ1XC0YHjqrZcSEKbETAaWFgid1k8BmWdHgkR7LNm6
-	Efqhx4Ce946C62FPVxSEc7n27Z67XyUfjXi/9Nn1YNDCuKiotSjBfQIHgTxqhTc=
-X-Google-Smtp-Source: AGHT+IGvXpeYNw7meFiNlQliBLjcWukM3ve37TtSWhkfayEvg/75caWbmHFytSgCpxjWvbbIGoQbjA==
-X-Received: by 2002:a05:690c:dcd:b0:607:ca2e:f23e with SMTP id db13-20020a05690c0dcd00b00607ca2ef23emr1985495ywb.30.1709198608135;
-        Thu, 29 Feb 2024 01:23:28 -0800 (PST)
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com. [209.85.219.178])
-        by smtp.gmail.com with ESMTPSA id fr2-20020a05690c358200b006079f55766bsm258909ywb.68.2024.02.29.01.23.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Feb 2024 01:23:27 -0800 (PST)
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dc6d8bd612dso755284276.1;
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-512bd533be0so722709e87.0;
         Thu, 29 Feb 2024 01:23:26 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVd4N9ZxHM2NGYE/jajMl9VA4HhvWHlSnnilVGCiqOW/14KuADINTJT8yuL1QM2SzmfZHHBHFN6nCH+DVyoFFZ1oWYgaVeacFRCOC7Y/LvJPXz3IoC+BaauO5w/tJwgwwQzbq2pqGbLNLbHkh8YWmiIBZkIjGAf7MWMQTHwvcTp5usyQ4c=
-X-Received: by 2002:a25:2903:0:b0:dc7:1ab6:6aca with SMTP id
- p3-20020a252903000000b00dc71ab66acamr1586095ybp.63.1709198606631; Thu, 29 Feb
- 2024 01:23:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709198605; x=1709803405; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=N07RhVVTSDQOyo4eDr4hHwQOWKc0jlT5jQWzrwVgOx4=;
+        b=AlHri6tL+p+KMvMDOV07W/RELblZUakyMAoNzcjF/tdLk+R44ySamD0O8SDP+W+gwg
+         in+smscr7IN3f8VkY3490PxgFPiV1N9CqOXaqnaKDcfS8W+2pn1+z7fs8Ss5wpPLg0tN
+         0odJt4BBkCcMiVU20nRhxj5PbZhudhqwDvMVmLIqcRGKvM89J+vvFXjlq1YLxiK05kHp
+         zQx0SFGFw9UvN+B78lOK4yoSO4if5f4Hjz8YBbaX/jkmVatlm2l4ryhQJGt9OxRE2ik6
+         joX+MN5ZeVwbO20o1qDRNBPEnLdX8JiSgRlZzA+ucFGKS8kI73iPSRMWArmuxLy+dSCl
+         NeYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709198605; x=1709803405;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=N07RhVVTSDQOyo4eDr4hHwQOWKc0jlT5jQWzrwVgOx4=;
+        b=DqKggTmxQZoWqUeDqbopnWdgdRwweQuS5mf06/bEY1WmVkufrTqzIYHgLtg4OVQmji
+         +aFDrDINufb2x5RtFbYSx4u45Ge4SvcLvv1ENfF5NKyExIyElAdVNEKL/ADjDVrFRINU
+         gC/wetYCLPEMMVTFYsVJX/N4MB9kpsM1SjgPEO/6A6nBMJtNDfdcU4b0MYm+2j25ATtG
+         GPfI4Ykx7rmyUQPaMtZGhwi+sL+uMMP+P9VVe8GIckgbr9onQXwuYFPZGEmQysofAB3o
+         1UmuckB0yEYaJrpKQquFMf9J5xMnfu8+Jl9MCjJWdydcKfruOib3yLdrnwbtnJiO50Pu
+         j9Sg==
+X-Forwarded-Encrypted: i=1; AJvYcCXSLZ+IDsjw2kmbVwjINZmAU4VjH0kDLAQYysN3e7XTVvCsw13sVl/VH6Fa9qM8ebobPpgXLVTrszt06uvP61vjpDBKm1kSAtbbFsgCu3/H/hpwAV00Xeww2FJlapbDW9MpY8b/ICTiIFxS+z/G0JFRLO8D61s+XPpkJ1kQpq+agiYHdcKfLH23
+X-Gm-Message-State: AOJu0YzR4b0pYGWUOv0JIJ3J92LUPPyQa7rbb1ZoVv5ASUMWMAQJuFpE
+	WpH24yfWxJBGTOXI3SuK8a7nvNLpt4WbZPeMNBZCvDsT6YS1SVNT
+X-Google-Smtp-Source: AGHT+IH0NneLS2naHPyQSuK2V6PBB0Kthv4bW9sQwfbLO1EV2s0XyuAxODvSdoZ8N7aM5gfpHsgNCA==
+X-Received: by 2002:a05:6512:2147:b0:513:2016:47d5 with SMTP id s7-20020a056512214700b00513201647d5mr927401lfr.56.1709198604426;
+        Thu, 29 Feb 2024 01:23:24 -0800 (PST)
+Received: from [192.168.0.118] (88-113-27-52.elisa-laajakaista.fi. [88.113.27.52])
+        by smtp.gmail.com with ESMTPSA id 9-20020ac25f49000000b00513246fe458sm181985lfz.266.2024.02.29.01.23.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Feb 2024 01:23:24 -0800 (PST)
+Message-ID: <5d7ed81b-37f9-48e9-ab7e-484b74ca886c@gmail.com>
+Date: Thu, 29 Feb 2024 11:23:22 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240227212244.262710-1-chris.packham@alliedtelesis.co.nz>
- <20240227212244.262710-3-chris.packham@alliedtelesis.co.nz>
- <20240228140423.GA3307293-robh@kernel.org> <CAHp75VfW0Q7At+JnyWGXP3d=2dfWADRiQ-Z97B2JcZio3A_tyw@mail.gmail.com>
-In-Reply-To: <CAHp75VfW0Q7At+JnyWGXP3d=2dfWADRiQ-Z97B2JcZio3A_tyw@mail.gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 29 Feb 2024 10:23:15 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWgytkANQ19=pSfG7Jpddo7Htgp2P=p7EAVmpWYuGPmCg@mail.gmail.com>
-Message-ID: <CAMuHMdWgytkANQ19=pSfG7Jpddo7Htgp2P=p7EAVmpWYuGPmCg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] dt-bindings: auxdisplay: Add bindings for generic
- 7 segment LED
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Rob Herring <robh@kernel.org>, Chris Packham <chris.packham@alliedtelesis.co.nz>, andy@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, andrew@lunn.ch, 
-	gregory.clement@bootlin.com, sebastian.hesselbarth@gmail.com, 
-	ojeda@kernel.org, tzimmermann@suse.de, javierm@redhat.com, robin@protonic.nl, 
-	lee@kernel.org, pavel@ucw.cz, devicetree@vger.kernel.org, 
-	linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/3] kci-gitlab: Introducing GitLab-CI Pipeline for Kernel
+ Testing
+Content-Language: en-US
+To: Maxime Ripard <mripard@kernel.org>,
+ Helen Koike <helen.koike@collabora.com>
+Cc: linuxtv-ci@linuxtv.org, dave.pigott@collabora.com,
+ linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-kselftest@vger.kernel.org, gustavo.padovan@collabora.com,
+ pawiecz@collabora.com, tales.aparecida@gmail.com, workflows@vger.kernel.org,
+ kernelci@lists.linux.dev, skhan@linuxfoundation.org,
+ kunit-dev@googlegroups.com, nfraprado@collabora.com, davidgow@google.com,
+ cocci@inria.fr, Julia.Lawall@inria.fr, laura.nao@collabora.com,
+ ricardo.canuelo@collabora.com, kernel@collabora.com,
+ torvalds@linuxfoundation.org, gregkh@linuxfoundation.org
+References: <20240228225527.1052240-1-helen.koike@collabora.com>
+ <20240228225527.1052240-2-helen.koike@collabora.com>
+ <20240229-dancing-laughing-groundhog-d85161@houat>
+From: Nikolai Kondrashov <spbnick@gmail.com>
+In-Reply-To: <20240229-dancing-laughing-groundhog-d85161@houat>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Andy,
+Hi everyone,
 
-On Wed, Feb 28, 2024 at 3:58=E2=80=AFPM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Wed, Feb 28, 2024 at 4:04=E2=80=AFPM Rob Herring <robh@kernel.org> wro=
-te:
-> > On Wed, Feb 28, 2024 at 10:22:42AM +1300, Chris Packham wrote:
->
-> ...
->
-> > > +  segment-gpios:
-> > > +    description:
-> > > +      An array of GPIOs one per segment.
-> > > +    minItems: 7
-> >
-> > How does one know which GPIO is which segment?
->
-> I believe we need just to agree on this. Since anybody can shuffle
-> GPIOs in the DT, there is no need to support arbitrary orders. And
-> naturally 'a' is bit 0, 'g' is bit 6, 'dp' bit 7 if present.
+On 2/29/24 11:02, Maxime Ripard wrote:
+> On Wed, Feb 28, 2024 at 07:55:25PM -0300, Helen Koike wrote:
+>> Which rating would you select?
+> 
+> 4.5 :)
+> 
+> One thing I'm wondering here is how we're going to cope with the
+> different requirements each user / framework has.
+> 
+> Like, Linus probably want to have a different set of CI before merging a
+> PR than (say) linux-next does, or stable, or before doing an actual
+> release.
+> 
+> Similarly, DRM probably has a different set of requirements than
+> drm-misc, drm-amd or nouveau.
+> 
+> I don't see how the current architecture could accomodate for that. I
+> know that Gitlab allows to store issues template in a separate repo,
+> maybe we could ask them to provide a feature where the actions would be
+> separate from the main repo? That way, any gitlab project could provide
+> its own set of tests, without conflicting with each others (and we could
+> still share them if we wanted to)
+> 
+> I know some of use had good relationship with Gitlab, so maybe it would
+> be worth asking?
 
-Note that there are no bits involved at this level, only GPIO specifiers.
+GitLab already supports getting the CI YAML from other repos. You can change 
+that in the repo settings.
 
-Gr{oetje,eeting}s,
+However, I think a better approach would be *not* to add the .gitlab-ci.yaml 
+file in the root of the source tree, but instead change the very same repo 
+setting to point to a particular entry YAML, *inside* the repo (somewhere 
+under "ci" directory) instead.
 
-                        Geert
+This way all the different subtrees can have completely different setup, but 
+some could still use Helen's work and employ the "scenarios" she implemented.
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+Nick
 
