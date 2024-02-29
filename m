@@ -1,63 +1,61 @@
-Return-Path: <linux-kernel+bounces-86958-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86959-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C12F286CD90
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:51:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4F5586CD95
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:51:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D6EFA1C21A6C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:51:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 541911F2309B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:51:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB92B15531E;
-	Thu, 29 Feb 2024 15:49:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC703157E9E;
+	Thu, 29 Feb 2024 15:49:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a7iFWRAi"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hlpnsrw3"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC859154C08;
-	Thu, 29 Feb 2024 15:49:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E287315697B;
+	Thu, 29 Feb 2024 15:49:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709221752; cv=none; b=MgdOQvqwhrkKJCgb+f44wBG7S4XCYGUqm93Vpk5pmEoY4/ekFDNgUgxqliB+DNTJITqBTFkoVIZToMTSXHIMl2XvF+Imkccob9Zaa14upSYGPvBvVZ8B4jPVVHJ8Pn0DJcGHhunUnP+Js6uM13NB6vaz8TOaKo4HVOYQcLCusIY=
+	t=1709221754; cv=none; b=pkqNRxLzUm7EqkWXgd+autiJPgebSrZfd0DybCDxYB1LvPmBK1T56nn88WTXuMNZo6A46PWaC+wZXMXMPB46f7sVeg4V89b9WgP7daEg+WplCb05axfGwDx0DQymdRwe6u7pASi8QUhbC1fjQHWlrtp6mvQlJsOQMmc1II0ThXY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709221752; c=relaxed/simple;
-	bh=fAometgkYT+8afRTn5I8qtc/WQf0RndWwBfG1rn1ejA=;
+	s=arc-20240116; t=1709221754; c=relaxed/simple;
+	bh=9qydeZ7dVGJrZhYf5SEPFF/yp8kpRzWIKk8rEXwn+Ec=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FY1zN+OSRLWg990Z4YszO2cMv74jiAtRvWwnjFLbrQoBqKS+xT3Zu9KVuFcbedCXd5tIU7FKUrlFOAPF6CoGfBywnw2Y2jGTRJd3g5QjZYNwE5uMQk0/pj2muUrgKuNl8pRvhye1oLUyFZeQ631L/skx/iFyFu1HYUZvXYkyCNA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a7iFWRAi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92710C43399;
-	Thu, 29 Feb 2024 15:49:09 +0000 (UTC)
+	 MIME-Version; b=ZOpzSxVWwYoMR2E2wX6ohZhHm5OlpYt7NEGbIr2kJ4IZc3GPemgugdMXDdoybCRr00iEVqgHXvRvhbUoZkU6pZVY5ITyLywr6QBbVhdB6pnVoD++P8NUDWVYhgOVq+4dF/PZVLsXLaIbmby3mFxofAUTD31fmbFrXk0MCHbfXNs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Hlpnsrw3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 157B0C433C7;
+	Thu, 29 Feb 2024 15:49:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709221751;
-	bh=fAometgkYT+8afRTn5I8qtc/WQf0RndWwBfG1rn1ejA=;
+	s=k20201202; t=1709221753;
+	bh=9qydeZ7dVGJrZhYf5SEPFF/yp8kpRzWIKk8rEXwn+Ec=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=a7iFWRAimzL3PztuPKn2woouIj3US35MiqL8QLYkKAYunfg/kXTxhSgcArIrJQVLA
-	 x2GvLnByVxrRcFISqIT5MkXAXptzkbVgFRSAFWdAkhhgzsIWbwpXAhtjZ459vpGqQF
-	 1Z0JTfSjZ3rw2Fc2QGie5EdQuV9jHSY8oFQO+WLWLMgdDpLgK3XZ0n3N7R6e6qGinE
-	 jalL0kr7IM6txlyiA/Jj2iHm8Xmrt2yJYTGWLWRhu5PIhx9vhvyWoVA4iwswujMnWW
-	 MNXqu7a2uAAXph8JGwVV6jvRq9KoenH19SH97DGZd4Bu9zfE8ka8pZWMgLfEBpQPt1
-	 rRGTxhQHuxs+g==
+	b=Hlpnsrw3jTlexkwNCRD5wkL+o26sGTWE3XQlB4R5y2ud0g6M/FdaBhv2aIOmdNwQ5
+	 Ba4NaJuX5hNYAbTcxkAumCvNg4noGIl723UvUv8Hv2/A6M6/4d4oKqf4ZRtKDVayrG
+	 K/a3y1EQCPpjUSWnmzCNjKQz22stJNr3ZiJ0r7WM23UTWgSZE15csJ6CKkPpLPEnuL
+	 ttk2y0BygGkDxHziJ3hVYR9+yhN30lLQP3TXihcGjKmpU2fEj/ag6yWgrGU3zBgGrS
+	 DkDNwXnxms5FG40sm6g3SoN93ldZyjsHJhevqZikMIwmvLjSAWEFr3GANbIfBheNaz
+	 JNwwu9mT1qb7Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Aaron Conole <aconole@redhat.com>,
+Cc: Jakub Kicinski <kuba@kernel.org>,
 	Simon Horman <horms@kernel.org>,
-	Jakub Kicinski <kuba@kernel.org>,
+	Sabrina Dubroca <sd@queasysnail.net>,
+	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>,
-	pshelar@ovn.org,
-	davem@davemloft.net,
+	borisp@nvidia.com,
+	john.fastabend@gmail.com,
 	edumazet@google.com,
 	pabeni@redhat.com,
-	shuah@kernel.org,
-	netdev@vger.kernel.org,
-	dev@openvswitch.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 10/26] selftests: openvswitch: Add validation for the recursion test
-Date: Thu, 29 Feb 2024 10:48:29 -0500
-Message-ID: <20240229154851.2849367-10-sashal@kernel.org>
+	netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.7 11/26] net: tls: factor out tls_*crypt_async_wait()
+Date: Thu, 29 Feb 2024 10:48:30 -0500
+Message-ID: <20240229154851.2849367-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240229154851.2849367-1-sashal@kernel.org>
 References: <20240229154851.2849367-1-sashal@kernel.org>
@@ -72,199 +70,186 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.6
 Content-Transfer-Encoding: 8bit
 
-From: Aaron Conole <aconole@redhat.com>
+From: Jakub Kicinski <kuba@kernel.org>
 
-[ Upstream commit bd128f62c365504e1268dc09fcccdfb1f091e93a ]
+[ Upstream commit c57ca512f3b68ddcd62bda9cc24a8f5584ab01b1 ]
 
-Add a test case into the netlink checks that will show the number of
-nested action recursions won't exceed 16.  Going to 17 on a small
-clone call isn't enough to exhaust the stack on (most) systems, so
-it should be safe to run even on systems that don't have the fix
-applied.
+Factor out waiting for async encrypt and decrypt to finish.
+There are already multiple copies and a subsequent fix will
+need more. No functional changes.
 
-Signed-off-by: Aaron Conole <aconole@redhat.com>
-Reviewed-by: Simon Horman <horms@kernel.org>
-Link: https://lore.kernel.org/r/20240207132416.1488485-3-aconole@redhat.com
+Note that crypto_wait_req() returns wait->err
+
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Reviewed-by: Simon Horman <horms@kernel.org>
+Reviewed-by: Sabrina Dubroca <sd@queasysnail.net>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../selftests/net/openvswitch/openvswitch.sh  | 13 ++++
- .../selftests/net/openvswitch/ovs-dpctl.py    | 71 +++++++++++++++----
- 2 files changed, 69 insertions(+), 15 deletions(-)
+ net/tls/tls_sw.c | 96 +++++++++++++++++++++++-------------------------
+ 1 file changed, 45 insertions(+), 51 deletions(-)
 
-diff --git a/tools/testing/selftests/net/openvswitch/openvswitch.sh b/tools/testing/selftests/net/openvswitch/openvswitch.sh
-index f8499d4c87f3f..36e40256ab92a 100755
---- a/tools/testing/selftests/net/openvswitch/openvswitch.sh
-+++ b/tools/testing/selftests/net/openvswitch/openvswitch.sh
-@@ -502,7 +502,20 @@ test_netlink_checks () {
- 	    wc -l) == 2 ] || \
- 	      return 1
+diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
+index 31e8a94dfc111..6a73714f34cc4 100644
+--- a/net/tls/tls_sw.c
++++ b/net/tls/tls_sw.c
+@@ -230,6 +230,20 @@ static void tls_decrypt_done(void *data, int err)
+ 	spin_unlock_bh(&ctx->decrypt_compl_lock);
+ }
  
-+	info "Checking clone depth"
- 	ERR_MSG="Flow actions may not be safe on all matching packets"
-+	PRE_TEST=$(dmesg | grep -c "${ERR_MSG}")
-+	ovs_add_flow "test_netlink_checks" nv0 \
-+		'in_port(1),eth(),eth_type(0x800),ipv4()' \
-+		'clone(clone(clone(clone(clone(clone(clone(clone(clone(clone(clone(clone(clone(clone(clone(clone(clone(drop)))))))))))))))))' \
-+		>/dev/null 2>&1 && return 1
-+	POST_TEST=$(dmesg | grep -c "${ERR_MSG}")
++static int tls_decrypt_async_wait(struct tls_sw_context_rx *ctx)
++{
++	int pending;
 +
-+	if [ "$PRE_TEST" == "$POST_TEST" ]; then
-+		info "failed - clone depth too large"
-+		return 1
-+	fi
++	spin_lock_bh(&ctx->decrypt_compl_lock);
++	reinit_completion(&ctx->async_wait.completion);
++	pending = atomic_read(&ctx->decrypt_pending);
++	spin_unlock_bh(&ctx->decrypt_compl_lock);
++	if (pending)
++		crypto_wait_req(-EINPROGRESS, &ctx->async_wait);
 +
- 	PRE_TEST=$(dmesg | grep -c "${ERR_MSG}")
- 	ovs_add_flow "test_netlink_checks" nv0 \
- 		'in_port(1),eth(),eth_type(0x0806),arp()' 'drop(0),2' \
-diff --git a/tools/testing/selftests/net/openvswitch/ovs-dpctl.py b/tools/testing/selftests/net/openvswitch/ovs-dpctl.py
-index b97e621face95..5e0e539a323d5 100644
---- a/tools/testing/selftests/net/openvswitch/ovs-dpctl.py
-+++ b/tools/testing/selftests/net/openvswitch/ovs-dpctl.py
-@@ -299,7 +299,7 @@ class ovsactions(nla):
-         ("OVS_ACTION_ATTR_PUSH_NSH", "none"),
-         ("OVS_ACTION_ATTR_POP_NSH", "flag"),
-         ("OVS_ACTION_ATTR_METER", "none"),
--        ("OVS_ACTION_ATTR_CLONE", "none"),
-+        ("OVS_ACTION_ATTR_CLONE", "recursive"),
-         ("OVS_ACTION_ATTR_CHECK_PKT_LEN", "none"),
-         ("OVS_ACTION_ATTR_ADD_MPLS", "none"),
-         ("OVS_ACTION_ATTR_DEC_TTL", "none"),
-@@ -465,29 +465,42 @@ class ovsactions(nla):
-                     print_str += "pop_mpls"
-             else:
-                 datum = self.get_attr(field[0])
--                print_str += datum.dpstr(more)
-+                if field[0] == "OVS_ACTION_ATTR_CLONE":
-+                    print_str += "clone("
-+                    print_str += datum.dpstr(more)
-+                    print_str += ")"
-+                else:
-+                    print_str += datum.dpstr(more)
- 
-         return print_str
- 
-     def parse(self, actstr):
-+        totallen = len(actstr)
-         while len(actstr) != 0:
-             parsed = False
-+            parencount = 0
-             if actstr.startswith("drop"):
-                 # If no reason is provided, the implicit drop is used (i.e no
-                 # action). If some reason is given, an explicit action is used.
--                actstr, reason = parse_extract_field(
--                    actstr,
--                    "drop(",
--                    "([0-9]+)",
--                    lambda x: int(x, 0),
--                    False,
--                    None,
--                )
-+                reason = None
-+                if actstr.startswith("drop("):
-+                    parencount += 1
++	return ctx->async_wait.err;
++}
 +
-+                    actstr, reason = parse_extract_field(
-+                        actstr,
-+                        "drop(",
-+                        "([0-9]+)",
-+                        lambda x: int(x, 0),
-+                        False,
-+                        None,
-+                    )
+ static int tls_do_decryption(struct sock *sk,
+ 			     struct scatterlist *sgin,
+ 			     struct scatterlist *sgout,
+@@ -495,6 +509,28 @@ static void tls_encrypt_done(void *data, int err)
+ 		schedule_delayed_work(&ctx->tx_work.work, 1);
+ }
+ 
++static int tls_encrypt_async_wait(struct tls_sw_context_tx *ctx)
++{
++	int pending;
 +
-                 if reason is not None:
-                     self["attrs"].append(["OVS_ACTION_ATTR_DROP", reason])
-                     parsed = True
-                 else:
--                    return
-+                    actstr = actstr[len("drop"): ]
-+                    return (totallen - len(actstr))
- 
-             elif parse_starts_block(actstr, "^(\d+)", False, True):
-                 actstr, output = parse_extract_field(
-@@ -504,6 +517,7 @@ class ovsactions(nla):
-                     False,
-                     0,
-                 )
-+                parencount += 1
-                 self["attrs"].append(["OVS_ACTION_ATTR_RECIRC", recircid])
-                 parsed = True
- 
-@@ -516,12 +530,22 @@ class ovsactions(nla):
- 
-             for flat_act in parse_flat_map:
-                 if parse_starts_block(actstr, flat_act[0], False):
--                    actstr += len(flat_act[0])
-+                    actstr = actstr[len(flat_act[0]):]
-                     self["attrs"].append([flat_act[1]])
-                     actstr = actstr[strspn(actstr, ", ") :]
-                     parsed = True
- 
--            if parse_starts_block(actstr, "ct(", False):
-+            if parse_starts_block(actstr, "clone(", False):
-+                parencount += 1
-+                subacts = ovsactions()
-+                actstr = actstr[len("clone("):]
-+                parsedLen = subacts.parse(actstr)
-+                lst = []
-+                self["attrs"].append(("OVS_ACTION_ATTR_CLONE", subacts))
-+                actstr = actstr[parsedLen:]
-+                parsed = True
-+            elif parse_starts_block(actstr, "ct(", False):
-+                parencount += 1
-                 actstr = actstr[len("ct(") :]
-                 ctact = ovsactions.ctact()
- 
-@@ -553,6 +577,7 @@ class ovsactions(nla):
-                         natact = ovsactions.ctact.natattr()
- 
-                         if actstr.startswith("("):
-+                            parencount += 1
-                             t = None
-                             actstr = actstr[1:]
-                             if actstr.startswith("src"):
-@@ -607,15 +632,29 @@ class ovsactions(nla):
-                                     actstr = actstr[strspn(actstr, ", ") :]
- 
-                         ctact["attrs"].append(["OVS_CT_ATTR_NAT", natact])
--                        actstr = actstr[strspn(actstr, ",) ") :]
-+                        actstr = actstr[strspn(actstr, ", ") :]
- 
-                 self["attrs"].append(["OVS_ACTION_ATTR_CT", ctact])
-                 parsed = True
- 
--            actstr = actstr[strspn(actstr, "), ") :]
-+            actstr = actstr[strspn(actstr, ", ") :]
-+            while parencount > 0:
-+                parencount -= 1
-+                actstr = actstr[strspn(actstr, " "):]
-+                if len(actstr) and actstr[0] != ")":
-+                    raise ValueError("Action str: '%s' unbalanced" % actstr)
-+                actstr = actstr[1:]
++	spin_lock_bh(&ctx->encrypt_compl_lock);
++	ctx->async_notify = true;
 +
-+            if len(actstr) and actstr[0] == ")":
-+                return (totallen - len(actstr))
++	pending = atomic_read(&ctx->encrypt_pending);
++	spin_unlock_bh(&ctx->encrypt_compl_lock);
++	if (pending)
++		crypto_wait_req(-EINPROGRESS, &ctx->async_wait);
++	else
++		reinit_completion(&ctx->async_wait.completion);
 +
-+            actstr = actstr[strspn(actstr, ", ") :]
++	/* There can be no concurrent accesses, since we have no
++	 * pending encrypt operations
++	 */
++	WRITE_ONCE(ctx->async_notify, false);
 +
-             if not parsed:
-                 raise ValueError("Action str: '%s' not supported" % actstr)
++	return ctx->async_wait.err;
++}
++
+ static int tls_do_encryption(struct sock *sk,
+ 			     struct tls_context *tls_ctx,
+ 			     struct tls_sw_context_tx *ctx,
+@@ -984,7 +1020,6 @@ static int tls_sw_sendmsg_locked(struct sock *sk, struct msghdr *msg,
+ 	int num_zc = 0;
+ 	int orig_size;
+ 	int ret = 0;
+-	int pending;
  
-+        return (totallen - len(actstr))
-+
+ 	if (!eor && (msg->msg_flags & MSG_EOR))
+ 		return -EINVAL;
+@@ -1163,24 +1198,12 @@ static int tls_sw_sendmsg_locked(struct sock *sk, struct msghdr *msg,
+ 	if (!num_async) {
+ 		goto send_end;
+ 	} else if (num_zc) {
+-		/* Wait for pending encryptions to get completed */
+-		spin_lock_bh(&ctx->encrypt_compl_lock);
+-		ctx->async_notify = true;
+-
+-		pending = atomic_read(&ctx->encrypt_pending);
+-		spin_unlock_bh(&ctx->encrypt_compl_lock);
+-		if (pending)
+-			crypto_wait_req(-EINPROGRESS, &ctx->async_wait);
+-		else
+-			reinit_completion(&ctx->async_wait.completion);
+-
+-		/* There can be no concurrent accesses, since we have no
+-		 * pending encrypt operations
+-		 */
+-		WRITE_ONCE(ctx->async_notify, false);
++		int err;
  
- class ovskey(nla):
-     nla_flags = NLA_F_NESTED
-@@ -2111,6 +2150,8 @@ def main(argv):
-     ovsflow = OvsFlow()
-     ndb = NDB()
+-		if (ctx->async_wait.err) {
+-			ret = ctx->async_wait.err;
++		/* Wait for pending encryptions to get completed */
++		err = tls_encrypt_async_wait(ctx);
++		if (err) {
++			ret = err;
+ 			copied = 0;
+ 		}
+ 	}
+@@ -1229,7 +1252,6 @@ void tls_sw_splice_eof(struct socket *sock)
+ 	ssize_t copied = 0;
+ 	bool retrying = false;
+ 	int ret = 0;
+-	int pending;
  
-+    sys.setrecursionlimit(100000)
-+
-     if hasattr(args, "showdp"):
-         found = False
-         for iface in ndb.interfaces:
+ 	if (!ctx->open_rec)
+ 		return;
+@@ -1264,22 +1286,7 @@ void tls_sw_splice_eof(struct socket *sock)
+ 	}
+ 
+ 	/* Wait for pending encryptions to get completed */
+-	spin_lock_bh(&ctx->encrypt_compl_lock);
+-	ctx->async_notify = true;
+-
+-	pending = atomic_read(&ctx->encrypt_pending);
+-	spin_unlock_bh(&ctx->encrypt_compl_lock);
+-	if (pending)
+-		crypto_wait_req(-EINPROGRESS, &ctx->async_wait);
+-	else
+-		reinit_completion(&ctx->async_wait.completion);
+-
+-	/* There can be no concurrent accesses, since we have no pending
+-	 * encrypt operations
+-	 */
+-	WRITE_ONCE(ctx->async_notify, false);
+-
+-	if (ctx->async_wait.err)
++	if (tls_encrypt_async_wait(ctx))
+ 		goto unlock;
+ 
+ 	/* Transmit if any encryptions have completed */
+@@ -2109,16 +2116,10 @@ int tls_sw_recvmsg(struct sock *sk,
+ 
+ recv_end:
+ 	if (async) {
+-		int ret, pending;
++		int ret;
+ 
+ 		/* Wait for all previously submitted records to be decrypted */
+-		spin_lock_bh(&ctx->decrypt_compl_lock);
+-		reinit_completion(&ctx->async_wait.completion);
+-		pending = atomic_read(&ctx->decrypt_pending);
+-		spin_unlock_bh(&ctx->decrypt_compl_lock);
+-		ret = 0;
+-		if (pending)
+-			ret = crypto_wait_req(-EINPROGRESS, &ctx->async_wait);
++		ret = tls_decrypt_async_wait(ctx);
+ 		__skb_queue_purge(&ctx->async_hold);
+ 
+ 		if (ret) {
+@@ -2435,16 +2436,9 @@ void tls_sw_release_resources_tx(struct sock *sk)
+ 	struct tls_context *tls_ctx = tls_get_ctx(sk);
+ 	struct tls_sw_context_tx *ctx = tls_sw_ctx_tx(tls_ctx);
+ 	struct tls_rec *rec, *tmp;
+-	int pending;
+ 
+ 	/* Wait for any pending async encryptions to complete */
+-	spin_lock_bh(&ctx->encrypt_compl_lock);
+-	ctx->async_notify = true;
+-	pending = atomic_read(&ctx->encrypt_pending);
+-	spin_unlock_bh(&ctx->encrypt_compl_lock);
+-
+-	if (pending)
+-		crypto_wait_req(-EINPROGRESS, &ctx->async_wait);
++	tls_encrypt_async_wait(ctx);
+ 
+ 	tls_tx_records(sk, -1);
+ 
 -- 
 2.43.0
 
