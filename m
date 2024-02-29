@@ -1,136 +1,128 @@
-Return-Path: <linux-kernel+bounces-86916-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86918-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00D6186CCC5
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:23:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0974A86CCCC
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:23:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ADC23284C76
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:23:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B6D01C21F92
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:23:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 945A41419A6;
-	Thu, 29 Feb 2024 15:23:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6EAA1474A8;
+	Thu, 29 Feb 2024 15:23:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="p3HPaMpT"
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WsOx2Z2e"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5F93137747;
-	Thu, 29 Feb 2024 15:23:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFD0513DB9B;
+	Thu, 29 Feb 2024 15:23:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709220187; cv=none; b=ZoiUNUGgKhUj5PyTdQ9+cka1bHXawlPly8lYHdBwH5444wBreE1M0xs31c9Ql4zJPfmnyP/QFNlg1kmBHU0yc78Pw0Q6uvsBqIE1sDpRVPfCZJwfyG4uvDYxCLvnfJ3OQFViY0w25X+YiULtBqS8ylKw1ONbN6CrIK5AgBkOtjw=
+	t=1709220222; cv=none; b=IohCkPYQ1tCVJEp4by9TEuaM1qDb2xuXpaR0WlrEwTqpM7LgWmqj+7q/OaFRVR0ELmBhzVMurFVqcNQnxjNQ8qqJEdmST2WeOKjIL/7lDlB43GrUcw/oPXUlNmDjj0rWYbWlSWVuzmDO84ZTShnGemLu9Ky9tdhRFUT9b3HDEWw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709220187; c=relaxed/simple;
-	bh=FnJ5PRLHMbbCxiWolI/D484iJjQ+6LJl7Lv2B83l2e0=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:To:From:Subject:
-	 References:In-Reply-To; b=uXs3c3w2zhV40ET0q+e3t5zpzWpJu/jeVHNap5J2UHZUaKxgsYdktD/LNEl1W8y10LFwD88p/qDsFdsnzoS1lzzmm5AG8gklEgy0Q/SUktX6092voopZcvTfRVx/UhoCSzWO7o3GlRFSpFxKyQ0fQSaaLsgeOR1Jp6jPQAC+Nnc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=p3HPaMpT; arc=none smtp.client-ip=217.70.183.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 0933FE0005;
-	Thu, 29 Feb 2024 15:23:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709220183;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=g5kXwCtNU0te2FYTDQ4q2dN9S7SUT7EeSjehv7fCtCk=;
-	b=p3HPaMpTCeMnY+v+RhRzOMfYf1hJRqMHo3mDiIUesLh6hAPkP84BiA1/4vN1Np1RzhMxL8
-	BJ1uJHxtM7AqiEI1cce7u4UVp8r8LqfZvNHOW/0j4W5wzAXLW6F+JhykK4QY9t9Zz3xTdl
-	j5t56sDZpKxwbF01428OmZHp4O/tmvJKJ0i5CR2HNxmkDocrMQIwAQejdScrk0m5byvTF9
-	3VIS/Y/t49hoiyd4lu007tVtJ6g4y9Fn8feOCpQ8S4JKVl9bXptA2rWgpgV5SSxF9IA8s4
-	Cj1JmrOzfVw2vUNqgwV36ZYdpNXQ6AEMGdBx59t7Xj2S2jPkCVyDCR7zkbppIA==
+	s=arc-20240116; t=1709220222; c=relaxed/simple;
+	bh=0sy2ZSHMsNmRgHSSClE033djjcb7leBzhQfmozV+T4E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Sbdd+jEjaOxGENX1DmdIZPfJslAfXpzOGO0OpG7QZiXSmAg+qLMJd7Tq5GAUkG63NzVpJg2UtMZN8vZNsgXlO1GT/VHFF84vLuHLfiUr+LiLFvemgYE44drGnNCRuGAo0nsNeOfHaWgahjTQHaE91QC+4H/HvZeCG4wOQiB3Da0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WsOx2Z2e; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709220221; x=1740756221;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=0sy2ZSHMsNmRgHSSClE033djjcb7leBzhQfmozV+T4E=;
+  b=WsOx2Z2eWrcNWUr1Er1dYyW7tllSx2h4L90WGpZNHUe95AZiGWXgUog0
+   w7njIb3MA0L35QsF7D9I5HssvT6aHQhRUJkkuy6cTAXcmZ1mKhIVGTDL8
+   OEN549wvKTL4xdw8vrKb7BwK48kg9T0HfK7FAkl8QLeCjgOH/Ad2XM0G6
+   fwwphN353286tq5ml8fY8T37hdkOnhTkrh/n0XW/JI5ws4CUDvliD+QL0
+   Rr+fL6h6xDLLsBavD92jxooZmArF4r9+lA5+umoGZZHBiQycQ36gMgm+x
+   xQGmjzUlhElnVXlHUUsucNLpgYLHai5SDjAI8HHtt0wI1Jq38xUsifkBl
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="3575056"
+X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
+   d="scan'208";a="3575056"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 07:23:40 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="913984426"
+X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
+   d="scan'208";a="913984426"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 07:23:36 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rfiFw-00000008hib-27Mq;
+	Thu, 29 Feb 2024 17:23:32 +0200
+Date: Thu, 29 Feb 2024 17:23:32 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Herve Codina <herve.codina@bootlin.com>
+Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Yury Norov <yury.norov@gmail.com>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, Andrew Lunn <andrew@lunn.ch>,
+	Mark Brown <broonie@kernel.org>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v5 0/5] Add support for QMC HDLC
+Message-ID: <ZeChdAsAhrC8a75t@smile.fi.intel.com>
+References: <20240229141554.836867-1-herve.codina@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 29 Feb 2024 16:23:01 +0100
-Message-Id: <CZHNZJJ600CC.1WV7Q2520ZSKU@bootlin.com>
-Cc: "Gregory CLEMENT" <gregory.clement@bootlin.com>, "Michael Turquette"
- <mturquette@baylibre.com>, "Stephen Boyd" <sboyd@kernel.org>, "Rob Herring"
- <robh+dt@kernel.org>, "Krzysztof Kozlowski"
- <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
- "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>, "Linus Walleij"
- <linus.walleij@linaro.org>, =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?=
- <rafal@milecki.pl>, "Philipp Zabel" <p.zabel@pengutronix.de>, "Vladimir
- Kondratiev" <vladimir.kondratiev@mobileye.com>,
- <linux-mips@vger.kernel.org>, <linux-clk@vger.kernel.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "Thomas
- Petazzoni" <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
- <tawfik.bayouk@mobileye.com>, <linux-gpio@vger.kernel.org>
-To: "Andy Shevchenko" <andriy.shevchenko@intel.com>
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Subject: Re: [PATCH v8 04/10] reset: eyeq5: add platform driver
-X-Mailer: aerc 0.15.2
-References: <20240227-mbly-clk-v8-0-c57fbda7664a@bootlin.com>
- <20240227-mbly-clk-v8-4-c57fbda7664a@bootlin.com>
- <Zd4bbCsY54XEnvJM@smile.fi.intel.com>
- <CZGVIWR4H4DE.3M5H3H99X0QPT@bootlin.com>
- <ZeBo4N204gLO0eUd@smile.fi.intel.com>
- <CZHK1ZCSROM5.X4WYN7SAZJTH@bootlin.com>
- <ZeCLS17PhKPuGvkm@smile.fi.intel.com>
-In-Reply-To: <ZeCLS17PhKPuGvkm@smile.fi.intel.com>
-X-GND-Sasl: theo.lebrun@bootlin.com
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240229141554.836867-1-herve.codina@bootlin.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Hello,
+On Thu, Feb 29, 2024 at 03:15:48PM +0100, Herve Codina wrote:
+> Hi,
+> 
+> This series introduces the QMC HDLC support.
+> 
+> Patches were previously sent as part of a full feature series and were
+> previously reviewed in that context:
+> "Add support for QMC HDLC, framer infrastructure and PEF2256 framer" [1]
+> 
+> In order to ease the merge, the full feature series has been split and
+> needed parts were merged in v6.8-rc1:
+>  - "Prepare the PowerQUICC QMC and TSA for the HDLC QMC driver" [2]
+>  - "Add support for framer infrastructure and PEF2256 framer" [3]
+> 
+> This series contains patches related to the QMC HDLC part (QMC HDLC
+> driver):
+>  - Introduce the QMC HDLC driver (patches 1 and 2)
+>  - Add timeslots change support in QMC HDLC (patch 3)
+>  - Add framer support as a framer consumer in QMC HDLC (patch 4)
+> 
+> Compare to the original full feature series, a modification was done on
+> patch 3 in order to use a coherent prefix in the commit title.
+> 
+> I kept the patches unsquashed as they were previously sent and reviewed.
+> Of course, I can squash them if needed.
 
-On Thu Feb 29, 2024 at 2:48 PM CET, Andy Shevchenko wrote:
-> On Thu, Feb 29, 2024 at 01:18:08PM +0100, Th=C3=A9o Lebrun wrote:
-> > On Thu Feb 29, 2024 at 12:22 PM CET, Andy Shevchenko wrote:
-> > > On Wed, Feb 28, 2024 at 06:04:47PM +0100, Th=C3=A9o Lebrun wrote:
-> > > > On Tue Feb 27, 2024 at 6:27 PM CET, Andy Shevchenko wrote:
-> > > > > On Tue, Feb 27, 2024 at 03:55:25PM +0100, Th=C3=A9o Lebrun wrote:
->
-> ...
->
-> > > > > > +	priv->rcdev.of_node =3D np;
-> > > > >
-> > > > > It's better to use device_set_node().
-> > > >=20
-> > > > I don't see how device_set_node() can help? It works on struct devi=
-ce
-> > > > pointers. Here priv->rcdev is a reset_controller_dev struct. There =
-are
-> > > > no users of device_set_node() in drivers/reset/.
-> > >
-> > > No users doesn't mean it's good. The API is relatively "new" and take=
-s
-> > > care of two things:
-> > > 1) it uses agnostic interface;
-> > > 2) it doesn't require any firmware node direct dereference.
-> > >
-> > > The 2) is most important here as allows us to refactor (firmware node=
-) code
-> > > in the future.
-> >=20
-> > I think I get the point of device_set_node(). I still do not understand
-> > how it could help me fill the ->of_node field in a reset_controller_dev
-> > structure?
->
-> Exactly why I put the above comment as recommendation. And then I elabora=
-ted
-> that entire reset framework should rather move towards fwnode.
+I think it's a good series and next version will be final. The only question is
+possible use of the returned values from bitmap_scatter()/bitmap_gather(), the
+rest are minors.
 
-OK now I get it. One question: would using fwnode abstractions make
-sense for a driver that is devicetree-only, and will stay that way?
+Feel free to add
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+to patches 4 and 5.
 
-However this sounds out-of-scope of such a driver addition. I also am
-not familiar enough (yet?) with the reset subsystem and/or fwnode to be
-able to bring this kind of changes upstream.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Thanks,
-
---
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
 
 
