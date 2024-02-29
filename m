@@ -1,104 +1,184 @@
-Return-Path: <linux-kernel+bounces-86406-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86407-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 273B786C4F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:25:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCFCA86C4FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:25:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B9883B23A28
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:25:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE9EA1C2110F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:25:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAEA95B68F;
-	Thu, 29 Feb 2024 09:24:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 435CC5D464;
+	Thu, 29 Feb 2024 09:24:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="v6vBqw74"
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="FE6Hx8J8"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA3645B685
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 09:24:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15D245CDEC;
+	Thu, 29 Feb 2024 09:24:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709198694; cv=none; b=RiabHUEqm8FxCUzEDntiHC89zdSgrRi+z0nJs6ul1I3zLPCl1gyxUJgaP/lJryiQ0vJJnVjdSiT+nkU0+JyiooMVRobpAiiX+sZJpGF/1p8SmbfETN2icLgz+U3bUwJOIJvsKEcn7EOwONcyJd/jXKRn9ob3ohe8zgX+XI4iv8c=
+	t=1709198698; cv=none; b=uJo8FpM/wi01vJP0nCdslIBEFwfuFsjFr+nSX6RrA2VwRJTGmXLDVZjlYNiuvRnv3QcNTesq3tMXX7q8nEqkzR0jDcArq+/XwUBxdlVMv9zlngb5uV4Z8vWbvaeESQvd89cfyzRpnuTgeubIjLfx5UKB92EsFPCyaE0n3rugMM0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709198694; c=relaxed/simple;
-	bh=XgXKQRyPRkOd5imcOO1De6VPE1wNBifTMp3skwabjRc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ah1O6s+iw9x2On1TwrgDvwrt9fqBBMeqDwJZ8r0pfEEJJYqn6yC+nRuybzOF/mPzMOKp0yolsAWC4Jyoh2jcxQDy9drGKgZOZj5onlDsVum1HxpsLIJ0DUyAzcf0C3Lkgr9ld/CfEJ/+tCSzspqkS3oGISJxirW2kcvbIxhEIZA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=v6vBqw74; arc=none smtp.client-ip=209.85.219.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dcbc6a6808fso699761276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 01:24:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709198692; x=1709803492; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XgXKQRyPRkOd5imcOO1De6VPE1wNBifTMp3skwabjRc=;
-        b=v6vBqw74d53slVj6eUS5oP4PDIc7FrUrmVD3iWhvkfxsV3I3zDoqQJkcNaRyRLREZ6
-         RhjWGwvhFL99ywRdARPbXUBlb7/XcArkLTUhpqy6AEKI8FWjHVe0HyhS/m8x9TyRN4cY
-         C/sP3ySRvmnuj/WoECf6qSKQ1RRZy9IanYSZ35yiQt4wNWjvqzuS45+JdBrgGWx6fZQu
-         fL5m724TmHt8neG50fsHohOhG34QRmdddE0qIt1auUTGvYiD93KK5j/ohbH79LMB/+4l
-         FwjBtZ0GtFiPPWp5keoJBRo8dNTmSnD3vDjXvTg8owOVUxB0psQy5eNtcObc9q4SLaHD
-         +3dQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709198692; x=1709803492;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XgXKQRyPRkOd5imcOO1De6VPE1wNBifTMp3skwabjRc=;
-        b=cSbncoBv+fhlSK7vYMQ2Ze0hltEkj7Mk8tWwlKeqGGl890VBUOjxEeKZKWutTnBnfe
-         /WLTCs3+Cj5hREDxZE4Hr/kjQQRqlO5ao6NGP0liPveTt3KsPqyT0XFTkXQ31PDlAQJD
-         ZWMLQ8LZ//yd2+P7eXgDgT6GwBWav6afaXdo382ZDKmWfBjVam/DL/YF3cgY7FTHrYCL
-         P654mUVPulzxIQgItoRJ8LIR5Dtv3bFFBgiJAUAaTZyPfRuDaIuVfzeMkqrr5Lw8MfN6
-         guDnbAchsw05Thhv8tPaYtmIu2vNO8BlFovJN3wSOgQplB7ccEglkBSJ+prb1tJKMkyg
-         E8OQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVgTS0Ne2suPGfqJVLsqoqmO7FF6PK9ngQno070QlLa9OHsDm5zob7gknD4m32Jo1B055BRQPN6hl4vm8xObCcFi6gKhHEdd3PZeTQJ
-X-Gm-Message-State: AOJu0YyGdgUJ6TYtiux2UNQQh3k9EEQgMpyREbQOMgas1k0X6VhMojXk
-	4wUEEtQ2qTSGcIgBMMP679c0XLMGoFDqDF3BdxKlo8kJNdRyYGi/32DAs432KOyZ+/154RsLEzH
-	fUORLv4jGOHYV+3xeYSB7Et8iuOq7D/xn6nm+Vw==
-X-Google-Smtp-Source: AGHT+IHnSluj8noDkCdA/Cr1alfd3L//OLqOP/CsIY5MpMGMSAYZTI1jAe+ZOvEXeVS7SN/cMHdb2IbecrkNGXkvUmU=
-X-Received: by 2002:a25:3343:0:b0:dc6:b779:7887 with SMTP id
- z64-20020a253343000000b00dc6b7797887mr1579268ybz.20.1709198691706; Thu, 29
- Feb 2024 01:24:51 -0800 (PST)
+	s=arc-20240116; t=1709198698; c=relaxed/simple;
+	bh=XZJdntqJVNSHehc3tw3MJZhLBZVBynJltmGB3n7U+yE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=BNF7p88p4ui09DlQU81zBzPYKK5lRwukBnLyfqNuG1bqolKA00LPV86y1D9dtAfZVDj/c92xLGSxYDJ8nJDGdDBHF4ijmHvENUe73fhCd9PLJLM2vWVEB/quAHgA3eaksjRRlb2KvkU2GT+GzmbB/iofCpu3mCDz9Vj+70gkTv4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=FE6Hx8J8; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709198695;
+	bh=XZJdntqJVNSHehc3tw3MJZhLBZVBynJltmGB3n7U+yE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=FE6Hx8J82488o8NSMy1bbp1JLM8R52Ko3p7GNni4bCB77xmEPIgk44wLbS6SwVxv6
+	 8+Y0yrSKNWONxg70YavAoO2hCvpM7HBGnwl0pr9RuwWu5uP7Eu/a5ivZsWLDvHgNRQ
+	 X+5GQYWRjzAfEoax51YxfNJIjfe7GIo6ZF5fS3GnGLiLvTKpwE2HeI2kyVP2oGdT2a
+	 yGJolz2Uy13th8ImVnm+qQOSaWBthYiwdIN1UbC34CFltTH9AQnYMS/PboDgb5q3TN
+	 HDruuLr+Uwrgl46Da1blP6ukhCQojMinmmKGstfNDEtc32ddVV21KO19xHMSsbJX3f
+	 7lvPlVLP7Iw/w==
+Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 53A923781FE3;
+	Thu, 29 Feb 2024 09:24:54 +0000 (UTC)
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+To: linux-pci@vger.kernel.org
+Cc: ryder.lee@mediatek.com,
+	jianjun.wang@mediatek.com,
+	lpieralisi@kernel.org,
+	kw@linux.com,
+	robh@kernel.org,
+	bhelgaas@google.com,
+	p.zabel@pengutronix.de,
+	matthias.bgg@gmail.com,
+	linux-mediatek@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	kernel@collabora.com,
+	wenst@chromium.org,
+	nfraprado@collabora.com,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Subject: [PATCH v2] PCI: mediatek-gen3: Assert MAC reset only if PHY reset also present
+Date: Thu, 29 Feb 2024 10:24:49 +0100
+Message-ID: <20240229092449.580971-1-angelogioacchino.delregno@collabora.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240228-mbly-gpio-v2-0-3ba757474006@bootlin.com> <20240228-mbly-gpio-v2-7-3ba757474006@bootlin.com>
-In-Reply-To: <20240228-mbly-gpio-v2-7-3ba757474006@bootlin.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 29 Feb 2024 10:24:40 +0100
-Message-ID: <CACRpkda6hnuaEhpdXJ-S-60EdLVi4nay9bEb-Hf0sw-=d_XKVg@mail.gmail.com>
-Subject: Re: [PATCH v2 07/30] pinctrl: nomadik: Kconfig: allow building with COMPILE_TEST
-To: =?UTF-8?B?VGjDqW8gTGVicnVu?= <theo.lebrun@bootlin.com>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Philipp Zabel <p.zabel@pengutronix.de>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-mips@vger.kernel.org, Gregory CLEMENT <gregory.clement@bootlin.com>, 
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 28, 2024 at 12:28=E2=80=AFPM Th=C3=A9o Lebrun <theo.lebrun@boot=
-lin.com> wrote:
+Some SoCs have two PCI-Express controllers: in the case of MT8195,
+one of them is using a dedicated PHY, but the other uses a combo PHY
+that is shared with USB and in that case the PHY cannot be reset
+from the PCIe driver, or USB functionality will be unable to resume.
 
-> PINCTRL_NOMADIK, PINCTRL_STN8815 and PINCTRL_DB8500 depend on ARCH_U8500
-> or ARCH_NOMADIK. Add COMPILE_TEST as an option to allow test building
-> the driver.
->
-> Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+Resetting the PCIe MAC without also resetting the PHY will result in
+a full system lockup at PCIe resume time and the only option to
+resume operation is to hard reboot the system (with a PMIC cut-off).
 
-Patch applied to my immutable branch.
+To resolve this issue, check if we've got both a PHY and a MAC reset
+and, if not, never assert resets at PM suspend time: in that case,
+the link is still getting powered down as both the clocks and the
+power domains will go down anyway.
 
-Yours,
-Linus Walleij
+Fixes: d537dc125f07 ("PCI: mediatek-gen3: Add system PM support")
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+---
+
+Changes in v2:
+ - Rebased over next-20240229
+
+ drivers/pci/controller/pcie-mediatek-gen3.c | 25 ++++++++++++++-------
+ 1 file changed, 17 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/pci/controller/pcie-mediatek-gen3.c b/drivers/pci/controller/pcie-mediatek-gen3.c
+index 975b3024fb08..99b5d7a49be1 100644
+--- a/drivers/pci/controller/pcie-mediatek-gen3.c
++++ b/drivers/pci/controller/pcie-mediatek-gen3.c
+@@ -874,17 +874,26 @@ static int mtk_pcie_power_up(struct mtk_gen3_pcie *pcie)
+ 	return err;
+ }
+ 
+-static void mtk_pcie_power_down(struct mtk_gen3_pcie *pcie)
++static void mtk_pcie_power_down(struct mtk_gen3_pcie *pcie, bool is_suspend)
+ {
++	bool suspend_reset_supported = pcie->mac_reset && pcie->phy_reset;
++
+ 	clk_bulk_disable_unprepare(pcie->num_clks, pcie->clks);
+ 
+ 	pm_runtime_put_sync(pcie->dev);
+ 	pm_runtime_disable(pcie->dev);
+-	reset_control_assert(pcie->mac_reset);
++
++	/*
++	 * Assert MAC reset only if we also got a PHY reset, otherwise
++	 * the system will lockup at PM resume time.
++	 */
++	if (is_suspend && suspend_reset_supported)
++		reset_control_assert(pcie->mac_reset);
+ 
+ 	phy_power_off(pcie->phy);
+ 	phy_exit(pcie->phy);
+-	reset_control_assert(pcie->phy_reset);
++	if (is_suspend && suspend_reset_supported)
++		reset_control_assert(pcie->phy_reset);
+ }
+ 
+ static int mtk_pcie_setup(struct mtk_gen3_pcie *pcie)
+@@ -920,7 +929,7 @@ static int mtk_pcie_setup(struct mtk_gen3_pcie *pcie)
+ 	return 0;
+ 
+ err_setup:
+-	mtk_pcie_power_down(pcie);
++	mtk_pcie_power_down(pcie, false);
+ 
+ 	return err;
+ }
+@@ -951,7 +960,7 @@ static int mtk_pcie_probe(struct platform_device *pdev)
+ 	err = pci_host_probe(host);
+ 	if (err) {
+ 		mtk_pcie_irq_teardown(pcie);
+-		mtk_pcie_power_down(pcie);
++		mtk_pcie_power_down(pcie, false);
+ 		return err;
+ 	}
+ 
+@@ -969,7 +978,7 @@ static void mtk_pcie_remove(struct platform_device *pdev)
+ 	pci_unlock_rescan_remove();
+ 
+ 	mtk_pcie_irq_teardown(pcie);
+-	mtk_pcie_power_down(pcie);
++	mtk_pcie_power_down(pcie, false);
+ }
+ 
+ static void mtk_pcie_irq_save(struct mtk_gen3_pcie *pcie)
+@@ -1044,7 +1053,7 @@ static int mtk_pcie_suspend_noirq(struct device *dev)
+ 	dev_dbg(pcie->dev, "entered L2 states successfully");
+ 
+ 	mtk_pcie_irq_save(pcie);
+-	mtk_pcie_power_down(pcie);
++	mtk_pcie_power_down(pcie, true);
+ 
+ 	return 0;
+ }
+@@ -1060,7 +1069,7 @@ static int mtk_pcie_resume_noirq(struct device *dev)
+ 
+ 	err = mtk_pcie_startup_port(pcie);
+ 	if (err) {
+-		mtk_pcie_power_down(pcie);
++		mtk_pcie_power_down(pcie, false);
+ 		return err;
+ 	}
+ 
+-- 
+2.44.0
+
 
