@@ -1,122 +1,183 @@
-Return-Path: <linux-kernel+bounces-86739-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86743-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DC8286CA08
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:17:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0B2B86CA17
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:20:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4924A284CD5
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:17:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 30DE21F22E6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:20:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD5B17E583;
-	Thu, 29 Feb 2024 13:17:44 +0000 (UTC)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B78F7E575;
+	Thu, 29 Feb 2024 13:20:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HxxatgB/"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 369137D419;
-	Thu, 29 Feb 2024 13:17:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAED760EDC;
+	Thu, 29 Feb 2024 13:20:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709212664; cv=none; b=qJG+M6rgyz2JAzObx3j54pznAZ0nwE2yMkeWFrdCP7JldwPJcSmuHr5WWcaaoGXYdboA/z4n1IxZRkUXi14eaXZUKt1OP62vx/EeoXlhCsIyXvVwaNPIR8+vwSAbhF2qYje7jaALeoKV1sGHASYdwNlK/aAPkSAoSPjXEzpRijY=
+	t=1709212828; cv=none; b=W7DHxVFyqGPmjro0Y3kooW53IR1Qju4unc6fSb5OJ2jg+Y4cw3j0KJId177FIYs53aQxi7l5ZqjilPoHgPhh6cfuhEO6BHAOOc8soVYQzQAKTZ5e4KYQe0eljicGWGfG5XYgPMP+F/r31QkT1d06ojbki8Rsio9+pQS8uw3B1VU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709212664; c=relaxed/simple;
-	bh=ffaOsioAuW/jkHp3zdbo8WE/lDghqJi6iwSVpu984bw=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=HGlSmsyHLreiuC/aUNRC828B8eQAPNClzkSGTXTuR3Gwt590R8EAss39YtqpTw5WsO8++PAuNsklX+daB/+OzcR2pYZP7ndLVNecu1FduyTIsMn2KoZa/FYr7iE7if0MJzoqfFGxSqoreXUYcFH5f0jD5rEWmxOO+TYsGr8Im74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4TlsFL2KnqzNndD;
-	Thu, 29 Feb 2024 21:16:54 +0800 (CST)
-Received: from kwepemm000004.china.huawei.com (unknown [7.193.23.18])
-	by mail.maildlp.com (Postfix) with ESMTPS id 1140B14037F;
-	Thu, 29 Feb 2024 21:17:34 +0800 (CST)
-Received: from dggpemm500008.china.huawei.com (7.185.36.136) by
- kwepemm000004.china.huawei.com (7.193.23.18) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 29 Feb 2024 21:17:33 +0800
-Received: from dggpemm500008.china.huawei.com ([7.185.36.136]) by
- dggpemm500008.china.huawei.com ([7.185.36.136]) with mapi id 15.01.2507.035;
- Thu, 29 Feb 2024 21:17:33 +0800
-From: wangyunjian <wangyunjian@huawei.com>
-To: Paolo Abeni <pabeni@redhat.com>, "mst@redhat.com" <mst@redhat.com>,
-	"willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>,
-	"jasowang@redhat.com" <jasowang@redhat.com>, "kuba@kernel.org"
-	<kuba@kernel.org>, "bjorn@kernel.org" <bjorn@kernel.org>,
-	"magnus.karlsson@intel.com" <magnus.karlsson@intel.com>,
-	"maciej.fijalkowski@intel.com" <maciej.fijalkowski@intel.com>,
-	"jonathan.lemon@gmail.com" <jonathan.lemon@gmail.com>, "davem@davemloft.net"
-	<davem@davemloft.net>
-CC: "bpf@vger.kernel.org" <bpf@vger.kernel.org>, "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"virtualization@lists.linux.dev" <virtualization@lists.linux.dev>, xudingke
-	<xudingke@huawei.com>, "liwei (DT)" <liwei395@huawei.com>
-Subject: RE: [PATCH net-next v2 2/3] vhost_net: Call peek_len when using xdp
-Thread-Topic: [PATCH net-next v2 2/3] vhost_net: Call peek_len when using xdp
-Thread-Index: AQHaajYUllx6TBWEQkypM6YmziwRB7EgnzGAgACvRnA=
-Date: Thu, 29 Feb 2024 13:17:33 +0000
-Message-ID: <3841008ad79642d694779aaeac87516e@huawei.com>
-References: <1709118344-127812-1-git-send-email-wangyunjian@huawei.com>
- <94bd28f625f7ca066e8f2b2686c2493cfab386bd.camel@redhat.com>
-In-Reply-To: <94bd28f625f7ca066e8f2b2686c2493cfab386bd.camel@redhat.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
+	s=arc-20240116; t=1709212828; c=relaxed/simple;
+	bh=3o9ZCKEWx1uwHV9n0/7XRzWyr48MSOodxXI+/MVbGzY=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=f3GCeJznTQcmPGioiNLZlnAHcOOGl3+dQUJ8E2uEdi/kYxpGhw6y6D39W3v5T9Lbswo5FdyEwgIenLnNpRpkhB5j7W7Qoh+KSLMz6xKKe1HTaw6ANaJRR26JKlxIXRhBVQwp1f0NVFjzDURbMlfebQl9fCM6VJOC+JMwcYDPHkI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HxxatgB/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 0ED88C433C7;
+	Thu, 29 Feb 2024 13:20:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709212828;
+	bh=3o9ZCKEWx1uwHV9n0/7XRzWyr48MSOodxXI+/MVbGzY=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=HxxatgB/k9lPyz4wVFI589MyuvO6a/Pm2Nlmx/gNO3qIG+c0giYy+b4EuiOnhOsZL
+	 HR1QZJ2+4bt8L5xe/yrM/toCx1ZJIlnTjKdKX4jkwMTnEFX85kVwkRLmrUhvs9hGAS
+	 3SgfBA2ivwMyusXr++OQNuQqSX7Abh/oUMN/W1srnw1FQuoMEpygSjmvGVUMSFhNjq
+	 Y0x2iSumj3BFYoZq2wdRgzoKm152bbvauKat9HwvraUgSyxnS4gX1ieLTNQ2tcrzvB
+	 uTkOIkdQ5phSpwCr0n6+Mg+7IhY9EuFEK5qhkivTwjYnhSc7piv2Gy1FMCocYWS+LJ
+	 COp5r4cSpnVEw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E27F7D84BBA;
+	Thu, 29 Feb 2024 13:20:27 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] gtp: fix use-after-free and null-ptr-deref in
+ gtp_newlink()
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170921282792.3692.2017750155322648868.git-patchwork-notify@kernel.org>
+Date: Thu, 29 Feb 2024 13:20:27 +0000
+References: <20240228114703.465107-1-oficerovas@altlinux.org>
+In-Reply-To: <20240228114703.465107-1-oficerovas@altlinux.org>
+To: Alexander Ofitserov <oficerovas@altlinux.org>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, edumazet@google.com,
+ pablo@netfilter.org, laforge@gnumonks.org, davem@davemloft.net,
+ kuba@kernel.org, pabeni@redhat.com, kovalev@altlinux.org,
+ nickel@altlinux.org, dutyrok@altlinux.org, stable@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogUGFvbG8gQWJlbmkgW21h
-aWx0bzpwYWJlbmlAcmVkaGF0LmNvbV0NCj4gU2VudDogVGh1cnNkYXksIEZlYnJ1YXJ5IDI5LCAy
-MDI0IDY6NDkgUE0NCj4gVG86IHdhbmd5dW5qaWFuIDx3YW5neXVuamlhbkBodWF3ZWkuY29tPjsg
-bXN0QHJlZGhhdC5jb207DQo+IHdpbGxlbWRlYnJ1aWpuLmtlcm5lbEBnbWFpbC5jb207IGphc293
-YW5nQHJlZGhhdC5jb207IGt1YmFAa2VybmVsLm9yZzsNCj4gYmpvcm5Aa2VybmVsLm9yZzsgbWFn
-bnVzLmthcmxzc29uQGludGVsLmNvbTsgbWFjaWVqLmZpamFsa293c2tpQGludGVsLmNvbTsNCj4g
-am9uYXRoYW4ubGVtb25AZ21haWwuY29tOyBkYXZlbUBkYXZlbWxvZnQubmV0DQo+IENjOiBicGZA
-dmdlci5rZXJuZWwub3JnOyBuZXRkZXZAdmdlci5rZXJuZWwub3JnOw0KPiBsaW51eC1rZXJuZWxA
-dmdlci5rZXJuZWwub3JnOyBrdm1Admdlci5rZXJuZWwub3JnOw0KPiB2aXJ0dWFsaXphdGlvbkBs
-aXN0cy5saW51eC5kZXY7IHh1ZGluZ2tlIDx4dWRpbmdrZUBodWF3ZWkuY29tPjsgbGl3ZWkgKERU
-KQ0KPiA8bGl3ZWkzOTVAaHVhd2VpLmNvbT4NCj4gU3ViamVjdDogUmU6IFtQQVRDSCBuZXQtbmV4
-dCB2MiAyLzNdIHZob3N0X25ldDogQ2FsbCBwZWVrX2xlbiB3aGVuIHVzaW5nIHhkcA0KPiANCj4g
-T24gV2VkLCAyMDI0LTAyLTI4IGF0IDE5OjA1ICswODAwLCBZdW5qaWFuIFdhbmcgd3JvdGU6DQo+
-ID4gSWYgVFVOIHN1cHBvcnRzIEFGX1hEUCBUWCB6ZXJvLWNvcHksIHRoZSBYRFAgcHJvZ3JhbSB3
-aWxsIGVucXVldWUNCj4gPiBwYWNrZXRzIHRvIHRoZSBYRFAgcmluZyBhbmQgd2FrZSB1cCB0aGUg
-dmhvc3Qgd29ya2VyLiBUaGlzIHJlcXVpcmVzDQo+ID4gdGhlIHZob3N0IHdvcmtlciB0byBjYWxs
-IHBlZWtfbGVuKCksIHdoaWNoIGNhbiBiZSB1c2VkIHRvIGNvbnN1bWUgWERQDQo+ID4gZGVzY3Jp
-cHRvcnMuDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBZdW5qaWFuIFdhbmcgPHdhbmd5dW5qaWFu
-QGh1YXdlaS5jb20+DQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvdmhvc3QvbmV0LmMgfCAxNyArKysr
-KysrKysrKystLS0tLQ0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgMTIgaW5zZXJ0aW9ucygrKSwgNSBk
-ZWxldGlvbnMoLSkNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3Zob3N0L25ldC5jIGIv
-ZHJpdmVycy92aG9zdC9uZXQuYyBpbmRleA0KPiA+IGYyZWQ3MTY3Yzg0OC4uMDc3ZTc0NDIxNTU4
-IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvdmhvc3QvbmV0LmMNCj4gPiArKysgYi9kcml2ZXJz
-L3Zob3N0L25ldC5jDQo+ID4gQEAgLTIwNyw2ICsyMDcsMTEgQEAgc3RhdGljIGludCB2aG9zdF9u
-ZXRfYnVmX3BlZWtfbGVuKHZvaWQgKnB0cikNCj4gPiAgCXJldHVybiBfX3NrYl9hcnJheV9sZW5f
-d2l0aF90YWcocHRyKTsgIH0NCj4gPg0KPiA+ICtzdGF0aWMgYm9vbCB2aG9zdF9zb2NrX3hkcChz
-dHJ1Y3Qgc29ja2V0ICpzb2NrKSB7DQo+ID4gKwlyZXR1cm4gc29ja19mbGFnKHNvY2stPnNrLCBT
-T0NLX1hEUCk7IH0NCj4gPiArDQo+ID4gIHN0YXRpYyBpbnQgdmhvc3RfbmV0X2J1Zl9wZWVrKHN0
-cnVjdCB2aG9zdF9uZXRfdmlydHF1ZXVlICpudnEpICB7DQo+ID4gIAlzdHJ1Y3Qgdmhvc3RfbmV0
-X2J1ZiAqcnhxID0gJm52cS0+cnhxOyBAQCAtMjE0LDYgKzIxOSwxMyBAQCBzdGF0aWMNCj4gPiBp
-bnQgdmhvc3RfbmV0X2J1Zl9wZWVrKHN0cnVjdCB2aG9zdF9uZXRfdmlydHF1ZXVlICpudnEpDQo+
-ID4gIAlpZiAoIXZob3N0X25ldF9idWZfaXNfZW1wdHkocnhxKSkNCj4gPiAgCQlnb3RvIG91dDsN
-Cj4gPg0KPiA+ICsJaWYgKHB0cl9yaW5nX2VtcHR5KG52cS0+cnhfcmluZykpIHsNCj4gPiArCQlz
-dHJ1Y3Qgc29ja2V0ICpzb2NrID0gdmhvc3RfdnFfZ2V0X2JhY2tlbmQoJm52cS0+dnEpOw0KPiA+
-ICsJCS8qIENhbGwgcGVla19sZW4gdG8gY29uc3VtZSBYU0sgZGVzY3JpcHRvcnMsIHdoZW4gdXNp
-bmcgeGRwICovDQo+ID4gKwkJaWYgKHZob3N0X3NvY2tfeGRwKHNvY2spICYmIHNvY2stPm9wcy0+
-cGVla19sZW4pDQo+ID4gKwkJCXNvY2stPm9wcy0+cGVla19sZW4oc29jayk7DQo+IA0KPiBUaGlz
-IHJlYWxseSBsb29rcyBsaWtlIGEgc29ja2V0IEFQSSBtaXN1c2UuIFdoeSBjYW4ndCB5b3UgdXNl
-IHB0ci1yaW5nIHByaW1pdGl2ZXMNCj4gdG8gY29uc3VtZSBYU0sgZGVzY3JpcHRvcnM/IHBlZWtf
-bGVuIGNvdWxkIGJlIGNvbnN0aWZpZWQgc29tZSBkYXksIHRoaXMgY29kZQ0KPiB3aWxsIHByZXZl
-bnQgc3VjaCAoZ29vZCkgdGhpbmcuDQoNClRoYW5rIHlvdSBmb3IgeW91ciBzdWdnZXN0aW9uLiBJ
-IHdpbGwgY29uc2lkZXIgdGhhdCB3aXRoIFBhdGNoIDMvMy4NCg0KPiANCj4gQ2hlZXJzLA0KPiAN
-Cj4gUGFvbG8NCg0K
+Hello:
+
+This patch was applied to netdev/net.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
+
+On Wed, 28 Feb 2024 14:47:03 +0300 you wrote:
+> The gtp_link_ops operations structure for the subsystem must be
+> registered after registering the gtp_net_ops pernet operations structure.
+> 
+> Syzkaller hit 'general protection fault in gtp_genl_dump_pdp' bug:
+> 
+> [ 1010.702740] gtp: GTP module unloaded
+> [ 1010.715877] general protection fault, probably for non-canonical address 0xdffffc0000000001: 0000 [#1] SMP KASAN NOPTI
+> [ 1010.715888] KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
+> [ 1010.715895] CPU: 1 PID: 128616 Comm: a.out Not tainted 6.8.0-rc6-std-def-alt1 #1
+> [ 1010.715899] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.0-alt1 04/01/2014
+> [ 1010.715908] RIP: 0010:gtp_newlink+0x4d7/0x9c0 [gtp]
+> [ 1010.715915] Code: 80 3c 02 00 0f 85 41 04 00 00 48 8b bb d8 05 00 00 e8 ed f6 ff ff 48 89 c2 48 89 c5 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <80> 3c 02 00 0f 85 4f 04 00 00 4c 89 e2 4c 8b 6d 00 48 b8 00 00 00
+> [ 1010.715920] RSP: 0018:ffff888020fbf180 EFLAGS: 00010203
+> [ 1010.715929] RAX: dffffc0000000000 RBX: ffff88800399c000 RCX: 0000000000000000
+> [ 1010.715933] RDX: 0000000000000001 RSI: ffffffff84805280 RDI: 0000000000000282
+> [ 1010.715938] RBP: 000000000000000d R08: 0000000000000001 R09: 0000000000000000
+> [ 1010.715942] R10: 0000000000000001 R11: 0000000000000001 R12: ffff88800399cc80
+> [ 1010.715947] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000400
+> [ 1010.715953] FS:  00007fd1509ab5c0(0000) GS:ffff88805b300000(0000) knlGS:0000000000000000
+> [ 1010.715958] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [ 1010.715962] CR2: 0000000000000000 CR3: 000000001c07a000 CR4: 0000000000750ee0
+> [ 1010.715968] PKRU: 55555554
+> [ 1010.715972] Call Trace:
+> [ 1010.715985]  ? __die_body.cold+0x1a/0x1f
+> [ 1010.715995]  ? die_addr+0x43/0x70
+> [ 1010.716002]  ? exc_general_protection+0x199/0x2f0
+> [ 1010.716016]  ? asm_exc_general_protection+0x1e/0x30
+> [ 1010.716026]  ? gtp_newlink+0x4d7/0x9c0 [gtp]
+> [ 1010.716034]  ? gtp_net_exit+0x150/0x150 [gtp]
+> [ 1010.716042]  __rtnl_newlink+0x1063/0x1700
+> [ 1010.716051]  ? rtnl_setlink+0x3c0/0x3c0
+> [ 1010.716063]  ? is_bpf_text_address+0xc0/0x1f0
+> [ 1010.716070]  ? kernel_text_address.part.0+0xbb/0xd0
+> [ 1010.716076]  ? __kernel_text_address+0x56/0xa0
+> [ 1010.716084]  ? unwind_get_return_address+0x5a/0xa0
+> [ 1010.716091]  ? create_prof_cpu_mask+0x30/0x30
+> [ 1010.716098]  ? arch_stack_walk+0x9e/0xf0
+> [ 1010.716106]  ? stack_trace_save+0x91/0xd0
+> [ 1010.716113]  ? stack_trace_consume_entry+0x170/0x170
+> [ 1010.716121]  ? __lock_acquire+0x15c5/0x5380
+> [ 1010.716139]  ? mark_held_locks+0x9e/0xe0
+> [ 1010.716148]  ? kmem_cache_alloc_trace+0x35f/0x3c0
+> [ 1010.716155]  ? __rtnl_newlink+0x1700/0x1700
+> [ 1010.716160]  rtnl_newlink+0x69/0xa0
+> [ 1010.716166]  rtnetlink_rcv_msg+0x43b/0xc50
+> [ 1010.716172]  ? rtnl_fdb_dump+0x9f0/0x9f0
+> [ 1010.716179]  ? lock_acquire+0x1fe/0x560
+> [ 1010.716188]  ? netlink_deliver_tap+0x12f/0xd50
+> [ 1010.716196]  netlink_rcv_skb+0x14d/0x440
+> [ 1010.716202]  ? rtnl_fdb_dump+0x9f0/0x9f0
+> [ 1010.716208]  ? netlink_ack+0xab0/0xab0
+> [ 1010.716213]  ? netlink_deliver_tap+0x202/0xd50
+> [ 1010.716220]  ? netlink_deliver_tap+0x218/0xd50
+> [ 1010.716226]  ? __virt_addr_valid+0x30b/0x590
+> [ 1010.716233]  netlink_unicast+0x54b/0x800
+> [ 1010.716240]  ? netlink_attachskb+0x870/0x870
+> [ 1010.716248]  ? __check_object_size+0x2de/0x3b0
+> [ 1010.716254]  netlink_sendmsg+0x938/0xe40
+> [ 1010.716261]  ? netlink_unicast+0x800/0x800
+> [ 1010.716269]  ? __import_iovec+0x292/0x510
+> [ 1010.716276]  ? netlink_unicast+0x800/0x800
+> [ 1010.716284]  __sock_sendmsg+0x159/0x190
+> [ 1010.716290]  ____sys_sendmsg+0x712/0x880
+> [ 1010.716297]  ? sock_write_iter+0x3d0/0x3d0
+> [ 1010.716304]  ? __ia32_sys_recvmmsg+0x270/0x270
+> [ 1010.716309]  ? lock_acquire+0x1fe/0x560
+> [ 1010.716315]  ? drain_array_locked+0x90/0x90
+> [ 1010.716324]  ___sys_sendmsg+0xf8/0x170
+> [ 1010.716331]  ? sendmsg_copy_msghdr+0x170/0x170
+> [ 1010.716337]  ? lockdep_init_map_type+0x2c7/0x860
+> [ 1010.716343]  ? lockdep_hardirqs_on_prepare+0x430/0x430
+> [ 1010.716350]  ? debug_mutex_init+0x33/0x70
+> [ 1010.716360]  ? percpu_counter_add_batch+0x8b/0x140
+> [ 1010.716367]  ? lock_acquire+0x1fe/0x560
+> [ 1010.716373]  ? find_held_lock+0x2c/0x110
+> [ 1010.716384]  ? __fd_install+0x1b6/0x6f0
+> [ 1010.716389]  ? lock_downgrade+0x810/0x810
+> [ 1010.716396]  ? __fget_light+0x222/0x290
+> [ 1010.716403]  __sys_sendmsg+0xea/0x1b0
+> [ 1010.716409]  ? __sys_sendmsg_sock+0x40/0x40
+> [ 1010.716419]  ? lockdep_hardirqs_on_prepare+0x2b3/0x430
+> [ 1010.716425]  ? syscall_enter_from_user_mode+0x1d/0x60
+> [ 1010.716432]  do_syscall_64+0x30/0x40
+> [ 1010.716438]  entry_SYSCALL_64_after_hwframe+0x62/0xc7
+> [ 1010.716444] RIP: 0033:0x7fd1508cbd49
+> [ 1010.716452] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d ef 70 0d 00 f7 d8 64 89 01 48
+> [ 1010.716456] RSP: 002b:00007fff18872348 EFLAGS: 00000202 ORIG_RAX: 000000000000002e
+> [ 1010.716463] RAX: ffffffffffffffda RBX: 000055f72bf0eac0 RCX: 00007fd1508cbd49
+> [ 1010.716468] RDX: 0000000000000000 RSI: 0000000020000280 RDI: 0000000000000006
+> [ 1010.716473] RBP: 00007fff18872360 R08: 00007fff18872360 R09: 00007fff18872360
+> [ 1010.716478] R10: 00007fff18872360 R11: 0000000000000202 R12: 000055f72bf0e1b0
+> [ 1010.716482] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+> [ 1010.716491] Modules linked in: gtp(+) udp_tunnel ib_core uinput af_packet rfkill qrtr joydev hid_generic usbhid hid kvm_intel iTCO_wdt intel_pmc_bxt iTCO_vendor_support kvm snd_hda_codec_generic ledtrig_audio irqbypass crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel snd_hda_intel nls_utf8 snd_intel_dspcfg nls_cp866 psmouse aesni_intel vfat crypto_simd fat cryptd glue_helper snd_hda_codec pcspkr snd_hda_core i2c_i801 snd_hwdep i2c_smbus xhci_pci snd_pcm lpc_ich xhci_pci_renesas xhci_hcd qemu_fw_cfg tiny_power_button button sch_fq_codel vboxvideo drm_vram_helper drm_ttm_helper ttm vboxsf vboxguest snd_seq_midi snd_seq_midi_event snd_seq snd_rawmidi snd_seq_device snd_timer snd soundcore msr fuse efi_pstore dm_mod ip_tables x_tables autofs4 virtio_gpu virtio_dma_buf drm_kms_helper cec rc_core drm virtio_rng virtio_scsi rng_core virtio_balloon virtio_blk virtio_net virtio_console net_failover failover ahci libahci libata evdev scsi_mod input_leds serio_raw virtio_pci 
+ intel_agp
+> [ 1010.716674]  virtio_ring intel_gtt virtio [last unloaded: gtp]
+> [ 1010.716693] ---[ end trace 04990a4ce61e174b ]---
+> 
+> [...]
+
+Here is the summary with links:
+  - [net] gtp: fix use-after-free and null-ptr-deref in gtp_newlink()
+    https://git.kernel.org/netdev/net/c/616d82c3cfa2
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
