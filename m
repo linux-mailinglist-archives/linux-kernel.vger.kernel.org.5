@@ -1,158 +1,116 @@
-Return-Path: <linux-kernel+bounces-86205-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86204-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CEA9686C195
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:04:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA2E886C18B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:01:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 898001F23DD6
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 07:04:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA45D1F22073
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 07:01:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BB8D446AF;
-	Thu, 29 Feb 2024 07:04:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F81D446A9;
+	Thu, 29 Feb 2024 07:01:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fSsWhUrx"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="HITJQtNU"
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 429F03A1A7;
-	Thu, 29 Feb 2024 07:04:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 423BF224D7;
+	Thu, 29 Feb 2024 07:01:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709190265; cv=none; b=NCbDMiu7gFaeRinurFRv8x4aCajaAquVTDuM6UrqDL87cu678cTqNeci9/O7OvArRDBiGLDRv2HrmldnxYU1jB5p4L9gOMEQNbW+DS/hmTW7oylA+TmiAsUgUmEpP4bdC92t1j1bqCTXg4EsqKnsIhnZzKbMzsvVzWmQHtnYnkg=
+	t=1709190087; cv=none; b=pp6stXtlpKNK+13WsLtQ4ez2sw5W4ov2m70Mj3mx48mgrS1xwP+u7VpuQDaadKhMIlssEY8fvKYkf/Pwtbz0pOhlBV2HSvzdKBLy/q9r5pGPLUQnQpCy9UKCs+ccKQiiESBcZAkx4xNxUzoP3uu63lDMIED2dJkmcLXikduJlAs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709190265; c=relaxed/simple;
-	bh=oCcSrOSitVTGnp+3Z+lxM2uvxgOKnut/TyUvCifotlI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qFyhgvdTWtF4TQlmRfmSiYdSW9XQrHAtQC5WViYwNb64B7RhTVyLTZqAAvxDORYHBu8hjUDvJF2KkSy05aWYDNO3Ty2HGYw4S2YbbvJOPHm6Y8W5UNhPSkcZU76CcJQcudrtsBl6/hdRyvv82OciZ0mjLQ51ZSmaX+LkwDNDvG8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fSsWhUrx; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709190263; x=1740726263;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=oCcSrOSitVTGnp+3Z+lxM2uvxgOKnut/TyUvCifotlI=;
-  b=fSsWhUrxPH+Vk900O+gzecsnO/BihHOZDbWEYIo9X6pxQG6AB6zKk4Cw
-   rgVQoxQhb0ZgbfzbAOT+3tpJ9DCmi/HNognh+lub0OzLMcko61U7U6wh3
-   UIBVMx+G2ZLpeifqZ2Zb6MRaC0Wn2bD2Xk7cNUhGvCHiU2L+t+DZsWW0T
-   n3oeplscM//x4fQfeip4jduwjqcw1gkgAHTrqTyZ8NfqEC9WoZ6NSqWh0
-   5AQlZqLwvpFgHFMqrGgKQLTA20D2NMXYCXGmStznG2t7RouBLD9OwglJQ
-   SD0+1ykuXSYFymTTHEFwSya86gaaNDyhirhMct6ukJ4E64cPX3JF2NWz5
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="3563686"
-X-IronPort-AV: E=Sophos;i="6.06,192,1705392000"; 
-   d="scan'208";a="3563686"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 23:04:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,192,1705392000"; 
-   d="scan'208";a="12418862"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by orviesa005.jf.intel.com with ESMTP; 28 Feb 2024 23:04:20 -0800
-Date: Thu, 29 Feb 2024 15:00:14 +0800
-From: Xu Yilun <yilun.xu@linux.intel.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, seanjc@google.com,
-	michael.roth@amd.com, isaku.yamahata@intel.com,
-	thomas.lendacky@amd.com, Binbin Wu <binbin.wu@linux.intel.com>
-Subject: Re: [PATCH 04/21] KVM: x86/mmu: Allow non-zero value for non-present
- SPTE and removed SPTE
-Message-ID: <ZeArfhFJnftccuaZ@yilunxu-OptiPlex-7050>
-References: <20240227232100.478238-1-pbonzini@redhat.com>
- <20240227232100.478238-5-pbonzini@redhat.com>
+	s=arc-20240116; t=1709190087; c=relaxed/simple;
+	bh=lbTHGy/A0TH62lQcwcqZXsooj3qK3g+U7b7nGvW0TDU=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=lB9Yn4wXYdSssmA5d9P5K6kEP+3n2+ruMgcEhyQ9na2ze0SpZzvQvgM9Y9BDDp75WjV2zTNlcGfOOPuuwaSpjuqD35m3UbxkOlmZjpZaQ7H510pRP9LJpZ7qjxP7XHFNNIltksTO+hJXBdWXJxCDnfe6+WgHjgMNi9Z9S3wkfXw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=HITJQtNU; arc=none smtp.client-ip=217.70.183.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id AF2F120002;
+	Thu, 29 Feb 2024 07:01:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709190083;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rzzxaarDPZK4SfL8HWkqA2JOswOQEen30YwCunBSS64=;
+	b=HITJQtNUVVn+0A8zwl6ZPWFZBrMgqyaezwCRvd5nE3FoGDAbDg4hiaEeYcfEqsv6PihND/
+	0l9/BJNUoT2xlYFGDhcGM0zAaTUEUelvlCynP5bM8z1e3mQheBNVqo7xnArj6xw32N8mD4
+	R0PaGgvdEskVoGYS+LAxtf+eC0wYn6dQ5nh2C/HKveC1mqbTjTqt9or+Zf55j+wb5E85NY
+	IBke3AsNA4f/Z9iq1Exb/X2EBiI/3psaIkZGJLXr9b69XrxG1uaIZLq6WwLPNcSPatk7rG
+	gqxQmnVpOQAHBVBfgyLLC7AWphc5gjycYt0FGUsij+OqmF/Qhx59CqUvUhCdPw==
+Date: Thu, 29 Feb 2024 08:01:15 +0100
+From: Maxime Chevallier <maxime.chevallier@bootlin.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: davem@davemloft.net, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com, Andrew Lunn
+ <andrew@lunn.ch>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
+ <pabeni@redhat.com>, Russell King <linux@armlinux.org.uk>,
+ linux-arm-kernel@lists.infradead.org, Christophe Leroy
+ <christophe.leroy@csgroup.eu>, Herve Codina <herve.codina@bootlin.com>,
+ Florian Fainelli <f.fainelli@gmail.com>, Heiner Kallweit
+ <hkallweit1@gmail.com>, Vladimir Oltean <vladimir.oltean@nxp.com>,
+ =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>, Jesse Brandeburg
+ <jesse.brandeburg@intel.com>, Jonathan Corbet <corbet@lwn.net>, Marek
+ =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>, Piergiorgio Beruto
+ <piergiorgio.beruto@gmail.com>, Oleksij Rempel <o.rempel@pengutronix.de>,
+ =?UTF-8?B?Tmljb2zDsg==?= Veronese <nicveronese@gmail.com>, Simon Horman
+ <horms@kernel.org>, mwojtas@chromium.org
+Subject: Re: [PATCH net-next v9 08/13] netlink: specs: add ethnl PHY_GET
+ command set
+Message-ID: <20240229080115.692f2dbe@device-28.home>
+In-Reply-To: <20240228201018.44b7f97e@kernel.org>
+References: <20240228114728.51861-1-maxime.chevallier@bootlin.com>
+	<20240228114728.51861-9-maxime.chevallier@bootlin.com>
+	<20240228201018.44b7f97e@kernel.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240227232100.478238-5-pbonzini@redhat.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: maxime.chevallier@bootlin.com
 
-On Tue, Feb 27, 2024 at 06:20:43PM -0500, Paolo Bonzini wrote:
-> From: Sean Christopherson <seanjc@google.com>
-> 
-> For TD guest, the current way to emulate MMIO doesn't work any more, as KVM
-> is not able to access the private memory of TD guest and do the emulation.
-> Instead, TD guest expects to receive #VE when it accesses the MMIO and then
-> it can explicitly make hypercall to KVM to get the expected information.
-> 
-> To achieve this, the TDX module always enables "EPT-violation #VE" in the
-> VMCS control.  And accordingly, for the MMIO spte for the shared GPA,
-> 1. KVM needs to set "suppress #VE" bit for the non-present SPTE so that EPT
-> violation happens on TD accessing MMIO range.  2. On EPT violation, KVM
-> sets the MMIO spte to clear "suppress #VE" bit so the TD guest can receive
-> the #VE instead of EPT misconfiguration unlike VMX case.  For the shared GPA
-> that is not populated yet, EPT violation need to be triggered when TD guest
-> accesses such shared GPA.  The non-present SPTE value for shared GPA should
-> set "suppress #VE" bit.
-> 
-> Add "suppress #VE" bit (bit 63) to SHADOW_NONPRESENT_VALUE and
-> REMOVED_SPTE.  Unconditionally set the "suppress #VE" bit (which is bit 63)
-> for both AMD and Intel as: 1) AMD hardware doesn't use this bit when
-> present bit is off; 2) for normal VMX guest, KVM never enables the
-> "EPT-violation #VE" in VMCS control and "suppress #VE" bit is ignored by
-> hardware.
-> 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> Reviewed-by: Binbin Wu <binbin.wu@linux.intel.com>
-> Message-Id: <a99cb866897c7083430dce7f24c63b17d7121134.1705965635.git.isaku.yamahata@intel.com>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
->  arch/x86/kvm/mmu/spte.h | 15 ++++++++++++++-
->  1 file changed, 14 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/spte.h b/arch/x86/kvm/mmu/spte.h
-> index 4d1799ba2bf8..26bc95bbc962 100644
-> --- a/arch/x86/kvm/mmu/spte.h
-> +++ b/arch/x86/kvm/mmu/spte.h
-> @@ -149,7 +149,20 @@ static_assert(MMIO_SPTE_GEN_LOW_BITS == 8 && MMIO_SPTE_GEN_HIGH_BITS == 11);
->  
->  #define MMIO_SPTE_GEN_MASK		GENMASK_ULL(MMIO_SPTE_GEN_LOW_BITS + MMIO_SPTE_GEN_HIGH_BITS - 1, 0)
->  
-> +/*
-> + * Non-present SPTE value for both VMX and SVM for TDP MMU.
-> + * For SVM NPT, for non-present spte (bit 0 = 0), other bits are ignored.
-> + * For VMX EPT, bit 63 is ignored if #VE is disabled. (EPT_VIOLATION_VE=0)
-> + *              bit 63 is #VE suppress if #VE is enabled. (EPT_VIOLATION_VE=1)
-> + * For TDX:
-> + *   TDX module sets EPT_VIOLATION_VE for Secure-EPT and conventional EPT
-> + */
-> +#ifdef CONFIG_X86_64
-> +#define SHADOW_NONPRESENT_VALUE	BIT_ULL(63)
-> +static_assert(!(SHADOW_NONPRESENT_VALUE & SPTE_MMU_PRESENT_MASK));
-> +#else
->  #define SHADOW_NONPRESENT_VALUE	0ULL
-> +#endif
->  
->  extern u64 __read_mostly shadow_host_writable_mask;
->  extern u64 __read_mostly shadow_mmu_writable_mask;
-> @@ -196,7 +209,7 @@ extern u64 __read_mostly shadow_nonpresent_or_rsvd_mask;
+Hello Jakub,
 
-    * vulnerability.  Use only low bits to avoid 64-bit immediates.
-                      ^
+On Wed, 28 Feb 2024 20:10:18 -0800
+Jakub Kicinski <kuba@kernel.org> wrote:
 
-We may remove this comment. Others are fine.
+> On Wed, 28 Feb 2024 12:47:22 +0100 Maxime Chevallier wrote:
+> > +        reply:
+> > +          attributes:
+> > +            - header
+> > +            - index
+> > +            - drvname
+> > +            - name
+> > +            - upstream-type
+> > +            - upstream-phy-index  
+> 
+> doesn't exist: s/phy-//
 
-Reviewed-by: Xu Yilun <yilun.xu@linux.intel.com>
+Arg. Quite a silly mistake indeed :/
 
->   *
->   * Only used by the TDP MMU.
->   */
-> -#define REMOVED_SPTE	0x5a0ULL
-> +#define REMOVED_SPTE	(SHADOW_NONPRESENT_VALUE | 0x5a0ULL)
->  
->  /* Removed SPTEs must not be misconstrued as shadow present PTEs. */
->  static_assert(!(REMOVED_SPTE & SPTE_MMU_PRESENT_MASK));
-> -- 
-> 2.39.0
+> FWIW
 > 
+>   make -j $(nproc) -C tools/net/ynl/
 > 
-> 
+> should build reliably, again.
+
+Just tested with a fix and it builds fine indeed.
+
+I'll send another iteration.
+
+Sorry and thanks,
+
+Maxime
+
 
