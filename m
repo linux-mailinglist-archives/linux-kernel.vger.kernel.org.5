@@ -1,231 +1,316 @@
-Return-Path: <linux-kernel+bounces-86174-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86170-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBFF886C0B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 07:33:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C38686C0AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 07:32:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF99C1C20B8B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 06:33:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0372287307
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 06:32:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10E6F42A8C;
-	Thu, 29 Feb 2024 06:33:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OsZXghKi"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18C323FB87
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 06:33:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E005720332;
+	Thu, 29 Feb 2024 06:32:28 +0000 (UTC)
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8688A15C3
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 06:32:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709188388; cv=none; b=RA0HskuSbAUUWhgAGlAuwfdM1CHQIcuzN/px/GkMtQgtE7DjsJbbociJssw4YroA4jbtThI5sERXqil3OSiNz5P9sq1lxVNVcJK/cWzG5jKDbbYOaQxGgMZNeIhYO5ARhGFasYm4wYKhioBv3Fcns+qC4lt2DkrxOcnzNwb/R7E=
+	t=1709188348; cv=none; b=gYret3mKiIw+JQ870x+PFOkOZXZXKsGelgxTxgO4zlU4aXA7ma0yup3bXJiaV5R747+JAMweS56oWsJMl0gt5Hsa7L9Lxj+HAZhrcUVEKtuDkZpfnkJMo6zYWQjZmY10QWUTro5mIDvAKF79NtwbxX33P2FCRohTraBuDQAS/5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709188388; c=relaxed/simple;
-	bh=NSlHiZ9lIHUdp/N5IbtcCw+XhruNoYntUSB5WUs3eCI=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=PriOrrI3foo15yphCp3YEounxtVqvsAv6MaOKnqj/LS/aJrOjtc+ngDR5nVkhAu7kBeRFWefFp4IvI8LKEeufdryGaRze2sOLXphLnqcj84J4TrjX8vRO5kqcN+dAYY6vn9EaNFKqJ3VJkScT8YNYqfD3Q8LZuDE29XLIsrG26g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OsZXghKi; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709188386; x=1740724386;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=NSlHiZ9lIHUdp/N5IbtcCw+XhruNoYntUSB5WUs3eCI=;
-  b=OsZXghKi7axyU79XrKauUALLG8OjESQVFhS8jom0WDwkNfyLkPsn3MT0
-   MKt2dAyr3KtBAfwiwD5L2umTCx2WjNb1neRroImHtua/edMELTa9PZbz2
-   olH/u+mxnwlOlcgmFNlOJlqPTak5NRCbG1DRDJucmAWh385aIYuAs7kEj
-   /Zk5F31DTZW73PXW4u8/2rxJ23WxMAKlosh3GUshPVMRVlxgwVVLIPEce
-   1d4xDvxASL0PqPsh2XFLXtQ0JpnbDroBD1e1TbeXancy+N/KhcIstkxk8
-   PrRs3tALANzi+u1zUXrv7fdv1d4HpeG2GHICWdGJAALYeuWWt3OuWZDsb
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="21095163"
-X-IronPort-AV: E=Sophos;i="6.06,192,1705392000"; 
-   d="scan'208";a="21095163"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 22:33:05 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,192,1705392000"; 
-   d="scan'208";a="7928578"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 22:33:02 -0800
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Peng Zhang <zhangpeng362@huawei.com>
-Cc: <linux-mm@kvack.org>,  <linux-kernel@vger.kernel.org>,
-  <akpm@linux-foundation.org>,  <willy@infradead.org>,
-  <fengwei.yin@intel.com>,  <david@redhat.com>,
-  <aneesh.kumar@linux.ibm.com>,  <shy828301@gmail.com>,
-  <hughd@google.com>,  <wangkefeng.wang@huawei.com>,
-  <sunnanyong@huawei.com>
-Subject: Re: [PATCH v3] filemap: avoid unnecessary major faults in
- filemap_fault()
-In-Reply-To: <20240229060907.836589-1-zhangpeng362@huawei.com> (Peng Zhang's
-	message of "Thu, 29 Feb 2024 14:09:07 +0800")
-References: <20240229060907.836589-1-zhangpeng362@huawei.com>
-Date: Thu, 29 Feb 2024 14:31:07 +0800
-Message-ID: <87il27dbo4.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1709188348; c=relaxed/simple;
+	bh=Bjlrbp5DXZFgHfaCI9PUPMrX4MUHEAfJMQ8ZH/I0fbE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nciSgbOChmfa4y3CwTg4RUPREwWRfu1urJttNJSfiTJhydyCZR1n6s+Lpc6lF7LyZ8IRY+lQG6yBO3JfrZwt7gcOVEDvbmcP+6xBOk/xFbfCgSARRP46jl2k+wV5jcSdIYErG9lKiN3Nwy5210i/jX0S81uXhNuqJnuDsLVuTg8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-d85ff70000001748-3b-65e024f3aaf5
+Date: Thu, 29 Feb 2024 15:32:13 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: "Huang, Ying" <ying.huang@intel.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@suse.com>,
+	akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, kernel_team@skhynix.com, yuzhao@google.com,
+	Mel Gorman <mgorman@suse.de>, Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH v3] mm, vmscan: do not turn on cache_trim_mode if it
+ doesn't work
+Message-ID: <20240229063213.GA33390@system.software.com>
+References: <20240223054407.14829-1-byungchul@sk.com>
+ <ZdyM1nS8a8UR1dw_@tiehlicka>
+ <20240228223601.GA53666@cmpxchg.org>
+ <20240229061056.GA72813@system.software.com>
+ <87o7bzdc84.fsf@yhuang6-desk2.ccr.corp.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87o7bzdc84.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrALMWRmVeSWpSXmKPExsXC9ZZnke5nlQepBsuvc1vMWb+GzWL1Jl+L
+	y7vmsFncW/Of1WLyu2eMFvf7HCxmN/YxWpycNZnF4t2EL6wOnB6H37xn9liwqdRj8Z6XTB6b
+	Pk1i9zgx4zeLx/otV1k8ziw4wu6x+XS1x+dNcgGcUVw2Kak5mWWpRfp2CVwZu9elFfQEVCz7
+	fpq1gXGCdRcjJ4eEgInE1ydTWboYOcDsO6dsQcIsAqoS08/fZwax2QTUJW7c+AlmiwhoSHxa
+	uJy9i5GLg1mgnUmi7fA0FpCEsEC4RMfc3awgNq+AhcS03ffAioQE7jFKvO68xAKREJQ4OfMJ
+	mM0soCVx499LJpDFzALSEsv/cYCEOQXsJLauP8kGYosKKEsc2HacCWSOhMBtNolnq1ewQBwt
+	KXFwxQ2WCYwCs5CMnYVk7CyEsQsYmVcxCmXmleUmZuaY6GVU5mVW6CXn525iBMbDsto/0TsY
+	P10IPsQowMGoxMObYHM/VYg1say4MvcQowQHs5IIr4zg3VQh3pTEyqrUovz4otKc1OJDjNIc
+	LErivEbfylOEBNITS1KzU1MLUotgskwcnFINjL0XH0s66z8S7Dm7vuB5hK55odLhijm8h6cE
+	zPs8hX/xvAvRBcpnY79X2Fx/lHv/3a+QYmkJy7zoJMa9p4ILRJ7++v9y0W1mTbXP03YJ3Fd0
+	iv9++rBgnlYgX0DGgTMOaqUeh1UCk6b0l1SXRUl4tZaHr1nls3jSHzfR27r6f63EDj15/FPh
+	lxJLcUaioRZzUXEiAJ4wF8GDAgAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrOLMWRmVeSWpSXmKPExsXC5WfdrPtJ5UGqwakX5hZz1q9hs1i9ydfi
+	8NyTrBaXd81hs7i35j+rxeR3zxgt7vc5WMxu7GO0ODlrMovFuwlfWB24PA6/ec/ssWBTqcfi
+	PS+ZPDZ9msTucWLGbxaPxS8+MHms33KVxePMgiPsHptPV3t83iQXwBXFZZOSmpNZllqkb5fA
+	lbF7XVpBT0DFsu+nWRsYJ1h3MXJwSAiYSNw5ZdvFyMnBIqAqMf38fWYQm01AXeLGjZ9gtoiA
+	hsSnhcvZuxi5OJgF2pkk2g5PYwFJCAuES3TM3c0KYvMKWEhM230PrEhI4B6jxOvOSywQCUGJ
+	kzOfgNnMAloSN/69ZAJZzCwgLbH8HwdImFPATmLr+pNsILaogLLEgW3HmSYw8s5C0j0LSfcs
+	hO4FjMyrGEUy88pyEzNzTPWKszMq8zIr9JLzczcxAoN7We2fiTsYv1x2P8QowMGoxMObYHM/
+	VYg1say4MvcQowQHs5IIr4zg3VQh3pTEyqrUovz4otKc1OJDjNIcLErivF7hqQlCAumJJanZ
+	qakFqUUwWSYOTqkGxm6H/J0M74UXH1rd3nSnctWHB/pSJxtcTL6tX7DJliXlzKI/C848XO8u
+	f/bYBL6VN9e9WuVaeGVJh5n2lZxKmcwJV6S/81u+V3mb4+LWvfa470yzlrCT0Srpu+V37eIu
+	kNF/eiaJ9+vF6NoyTQfuU9pzHe11rTcp5b5e+fLtJb3gP+cf8nOrmyixFGckGmoxFxUnAgA4
+	geodagIAAA==
+X-CFilter-Loop: Reflected
 
-Peng Zhang <zhangpeng362@huawei.com> writes:
+On Thu, Feb 29, 2024 at 02:19:07PM +0800, Huang, Ying wrote:
+> Byungchul Park <byungchul@sk.com> writes:
+> 
+> > On Wed, Feb 28, 2024 at 05:36:01PM -0500, Johannes Weiner wrote:
+> >> On Mon, Feb 26, 2024 at 02:06:30PM +0100, Michal Hocko wrote:
+> >> > [CC Mel, Vlastimil and Johannes for awareness]
+> >> > 
+> >> > On Fri 23-02-24 14:44:07, Byungchul Park wrote:
+> >> > > Changes from v2:
+> >> > > 	1. Change the condition to stop cache_trim_mode.
+> >> > > 
+> >> > > 	   From - Stop it if it's at high scan priorities, 0 or 1.
+> >> > > 	   To   - Stop it if it's at high scan priorities, 0 or 1, and
+> >> > > 	          the mode didn't work in the previous turn.
+> >> > > 
+> >> > > 	   (feedbacked by Huang Ying)
+> >> > > 
+> >> > > 	2. Change the test result in the commit message after testing
+> >> > > 	   with the new logic.
+> >> > > 
+> >> > > Changes from v1:
+> >> > > 	1. Add a comment describing why this change is necessary in code
+> >> > > 	   and rewrite the commit message with how to reproduce and what
+> >> > > 	   the result is using vmstat. (feedbacked by Andrew Morton and
+> >> > > 	   Yu Zhao)
+> >> > > 	2. Change the condition to avoid cache_trim_mode from
+> >> > > 	   'sc->priority != 1' to 'sc->priority > 1' to reflect cases
+> >> > > 	   where the priority goes to zero all the way. (feedbacked by
+> >> > > 	   Yu Zhao)
+> >> > > 
+> >> > > --->8---
+> >> > > >From 05846e34bf02ac9b3e254324dc2d7afd97a025d9 Mon Sep 17 00:00:00 2001
+> >> > > From: Byungchul Park <byungchul@sk.com>
+> >> > > Date: Fri, 23 Feb 2024 13:47:16 +0900
+> >> > > Subject: [PATCH v3] mm, vmscan: do not turn on cache_trim_mode if it doesn't work
+> >> > > 
+> >> > > With cache_trim_mode on, reclaim logic doesn't bother reclaiming anon
+> >> > > pages.  However, it should be more careful to turn on the mode because
+> >> > > it's going to prevent anon pages from being reclaimed even if there are
+> >> > > a huge number of anon pages that are cold and should be reclaimed.  Even
+> >> > > worse, that leads kswapd_failures to reach MAX_RECLAIM_RETRIES and
+> >> > > stopping kswapd from functioning until direct reclaim eventually works
+> >> > > to resume kswapd.
+> >> > > 
+> >> > > So do not turn on cache_trim_mode if the mode doesn't work, especially
+> >> > > while the sytem is struggling against reclaim.
+> >> > > 
+> >> > > The problematic behavior can be reproduced by:
+> >> > > 
+> >> > >    CONFIG_NUMA_BALANCING enabled
+> >> > >    sysctl_numa_balancing_mode set to NUMA_BALANCING_MEMORY_TIERING
+> >> > >    numa node0 (8GB local memory, 16 CPUs)
+> >> > >    numa node1 (8GB slow tier memory, no CPUs)
+> >> > > 
+> >> > >    Sequence:
+> >> > > 
+> >> > >    1) echo 3 > /proc/sys/vm/drop_caches
+> >> > >    2) To emulate the system with full of cold memory in local DRAM, run
+> >> > >       the following dummy program and never touch the region:
+> >> > > 
+> >> > >          mmap(0, 8 * 1024 * 1024 * 1024, PROT_READ | PROT_WRITE,
+> >> > > 	      MAP_ANONYMOUS | MAP_PRIVATE | MAP_POPULATE, -1, 0);
+> >> > > 
+> >> > >    3) Run any memory intensive work e.g. XSBench.
+> >> > >    4) Check if numa balancing is working e.i. promotion/demotion.
+> >> > >    5) Iterate 1) ~ 4) until numa balancing stops.
+> >> > > 
+> >> > > With this, you could see that promotion/demotion are not working because
+> >> > > kswapd has stopped due to ->kswapd_failures >= MAX_RECLAIM_RETRIES.
+> >> > > 
+> >> > > Interesting vmstat delta's differences between before and after are like:
+> >> > > 
+> >> > >    +-----------------------+-------------------------------+
+> >> > >    | interesting vmstat	   | before	   | after	   |
+> >> > >    +-----------------------+-------------------------------+
+> >> > >    | nr_inactive_anon	   | 321935	   | 1636737	   |
+> >> > >    | nr_active_anon	   | 1780700	   | 465913	   |
+> >> > >    | nr_inactive_file	   | 30425	   | 35711	   |
+> >> > >    | nr_active_file	   | 14961	   | 8698	   |
+> >> > >    | pgpromote_success	   | 356	   | 1267785	   |
+> >> > >    | pgpromote_candidate   | 21953245	   | 1745631	   |
+> >> > >    | pgactivate		   | 1844523	   | 3309867	   |
+> >> > >    | pgdeactivate	   | 50634	   | 1545041	   |
+> >> > >    | pgfault		   | 31100294	   | 6411036	   |
+> >> > >    | pgdemote_kswapd	   | 30856	   | 2267467	   |
+> >> > >    | pgscan_kswapd	   | 1861981	   | 7729231	   |
+> >> > >    | pgscan_anon	   | 1822930	   | 7667544	   |
+> >> > >    | pgscan_file	   | 39051	   | 61687	   |
+> >> > >    | pgsteal_anon	   | 386	   | 2227217	   |
+> >> > >    | pgsteal_file	   | 30470	   | 40250	   |
+> >> > >    | pageoutrun		   | 30		   | 457	   |
+> >> > >    | numa_hint_faults	   | 27418279	   | 2752289	   |
+> >> > >    | numa_pages_migrated   | 356	   | 1267785 	   |
+> >> > >    +-----------------------+-------------------------------+
+> >> > > 
+> >> > > Signed-off-by: Byungchul Park <byungchul@sk.com>
+> >> > > ---
+> >> > >  mm/vmscan.c | 24 +++++++++++++++++++-----
+> >> > >  1 file changed, 19 insertions(+), 5 deletions(-)
+> >> > > 
+> >> > > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> >> > > index bba207f41b14..f7312d831fed 100644
+> >> > > --- a/mm/vmscan.c
+> >> > > +++ b/mm/vmscan.c
+> >> > > @@ -127,6 +127,9 @@ struct scan_control {
+> >> > >  	/* One of the zones is ready for compaction */
+> >> > >  	unsigned int compaction_ready:1;
+> >> > >  
+> >> > > +	/* If the last try was reclaimable */
+> >> > > +	unsigned int reclaimable:1;
+> >> > > +
+> >> > >  	/* There is easily reclaimable cold cache in the current node */
+> >> > >  	unsigned int cache_trim_mode:1;
+> >> > >  
+> >> > > @@ -2266,9 +2269,14 @@ static void prepare_scan_control(pg_data_t *pgdat, struct scan_control *sc)
+> >> > >  	 * If we have plenty of inactive file pages that aren't
+> >> > >  	 * thrashing, try to reclaim those first before touching
+> >> > >  	 * anonymous pages.
+> >> > > +	 *
+> >> > > +	 * It doesn't make sense to keep cache_trim_mode on if the mode
+> >> > > +	 * is not working while struggling against reclaim. So do not
+> >> > > +	 * turn it on if so. Note the highest priority of kswapd is 1.
+> >> > >  	 */
+> >> > >  	file = lruvec_page_state(target_lruvec, NR_INACTIVE_FILE);
+> >> > > -	if (file >> sc->priority && !(sc->may_deactivate & DEACTIVATE_FILE))
+> >> > > +	if (file >> sc->priority && !(sc->may_deactivate & DEACTIVATE_FILE) &&
+> >> > > +	    !(sc->cache_trim_mode && !sc->reclaimable && sc->priority <= 1))
+> >> > >  		sc->cache_trim_mode = 1;
+> >> > >  	else
+> >> > >  		sc->cache_trim_mode = 0;
+> >> 
+> >> The overall goal makes sense to me.
+> >> 
+> >> file >> priority is just a heuristic that there are enough potential
+> >> candidate pages, not a guarantee that any forward progress will
+> >> happen. So it makes sense to retry without before failing.
+> >> 
+> >> The way you wrote this conditional kind of hurts my head,
+> >> though. Please don't write negations of complex terms like this.
+> >
+> > Okay. I won't.
+> >
+> >> It expands to this:
+> >> 
+> >> 	!sc->cache_trim_mode || sc->reclaimable || sc->priority > 1
+> >> 
+> >> which I'm not sure makes sense. Surely it should be something like
+> >> 
+> >> 	!sc->cache_trim_mode && sc->reclaimable && sc->priority > 1
+> >
+> > It's a totally different condition as you know.
+> >
+> >> instead?
+> >> 
+> >> Also
+> >> 
+> >> 	if (!sc->cache_trim_mode)
+> >> 		sc->cache_trim_mode = 1
+> >> 	else
+> >> 		sc->cache_trim_mode = 0
+> >> 
+> >> will toggle on every loop. So if direct reclaim runs through a
+> >> zonelist, it'll cache trim every other numa node...?
+> >
+> > No way to toggle on every loop.
+> >
+> > What I tried was that:
+> >
+> > 	1. Don't turn it on again if it didn't work in the previous try.
+> > 	2. Let it go as it was if the priority is not that high though,
+> > 	   to keep the code as conservatively as possible.
+> >
+> > So again, the following condition is needed.
+> >
+> > 	(the original condition) &&
+> > 	(!sc->cache_trim_mode || sc->reclaimable || sc->priority > 1)
+> >
+> >> > > @@ -5862,7 +5870,6 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
+> >> > >  {
+> >> > >  	unsigned long nr_reclaimed, nr_scanned, nr_node_reclaimed;
+> >> > >  	struct lruvec *target_lruvec;
+> >> > > -	bool reclaimable = false;
+> >> > >  
+> >> > >  	if (lru_gen_enabled() && root_reclaim(sc)) {
+> >> > >  		lru_gen_shrink_node(pgdat, sc);
+> >> > > @@ -5877,6 +5884,14 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
+> >> > >  	nr_reclaimed = sc->nr_reclaimed;
+> >> > >  	nr_scanned = sc->nr_scanned;
+> >> > >  
+> >> > > +	/*
+> >> > > +	 * Reset to the default values at the start.
+> >> > > +	 */
+> >> > > +	if (sc->priority == DEF_PRIORITY) {
+> >
+> > This might need to be fixed if reclaim happens to start with other than
+> > DEF_PRIORITY. For now, reclaim always starts with the priority though.
+> >
+> >> > > +		sc->reclaimable = 1;
+> >> > > +		sc->cache_trim_mode = 0;
+> >> > > +	}
+> >
+> > For each shrink_node(), initialize all the variable at the start.
+> >
+> >> > > +
+> >> > >  	prepare_scan_control(pgdat, sc);
+> >> > >  
+> >> > >  	shrink_node_memcgs(pgdat, sc);
+> >> > > @@ -5890,8 +5905,7 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
+> >> > >  		vmpressure(sc->gfp_mask, sc->target_mem_cgroup, true,
+> >> > >  			   sc->nr_scanned - nr_scanned, nr_node_reclaimed);
+> >> > >  
+> >> > > -	if (nr_node_reclaimed)
+> >> > > -		reclaimable = true;
+> >> > > +	sc->reclaimable = !!nr_node_reclaimed;
+> >> 
+> >> The scope of this doesn't quite make sense. If direct reclaim scans
+> >> multiple nodes, reclaim failure on the first node would disable cache
+> >> trim mode on the second node, which is totally unrelated.
+> >
+> > As I mentioned, reclaim for every node would start with an initialized
+> > value because *each node is totally unrelated to another*.
+> 
+> No.  Please take a look at do_try_to_free_pages(), for each priority, it
+> will iterate every node.  But fortunately, we may not need this
+> heuristics for direct reclaiming.
 
-> From: ZhangPeng <zhangpeng362@huawei.com>
->
-> The major fault occurred when using mlockall(MCL_CURRENT | MCL_FUTURE)
-> in application, which leading to an unexpected issue[1].
->
-> This caused by temporarily cleared PTE during a read+clear/modify/write
-> update of the PTE, eg, do_numa_page()/change_pte_range().
->
-> For the data segment of the user-mode program, the global variable area
-> is a private mapping. After the pagecache is loaded, the private anonymous
-> page is generated after the COW is triggered. Mlockall can lock COW pages
-> (anonymous pages), but the original file pages cannot be locked and may
-> be reclaimed. If the global variable (private anon page) is accessed when
-> vmf->pte is zeroed in numa fault, a file page fault will be triggered.
-> At this time, the original private file page may have been reclaimed.
-> If the page cache is not available at this time, a major fault will be
-> triggered and the file will be read, causing additional overhead.
->
-> This issue affects our traffic analysis service. The inbound traffic is
-> heavy. If a major fault occurs, the I/O schedule is triggered and the
-> original I/O is suspended. Generally, the I/O schedule is 0.7 ms. If
-> other applications are operating disks, the system needs to wait for
-> more than 10 ms. However, the inbound traffic is heavy and the NIC buffer
-> is small. As a result, packet loss occurs. But the traffic analysis service
-> can't tolerate packet loss.
->
-> Fix this by holding PTL and rechecking the PTE in filemap_fault() before
-> triggering a major fault. We do this check only if vma is VM_LOCKED. In
-> our service test environment, the baseline is 7 major faults / 12 hours.
-> After the patch is applied, no major fault will be triggered.
->
-> Testing file anonymous page read and write page fault performance in
-> ext4, tmpfs and ramdisk using will-it-scale[2] on a x86 physical machine.
-> The data is the average change compared with the mainline after the patch
-> is applied. The test results are indicates some performance regressions.
-> We do this check only if vma is VM_LOCKED, therefore, no performance
-> regressions is caused for most common cases.
->
-> The test results are as follows:
->                           processes processes_idle threads threads_idle
-> ext4    private file write: -0.51%    0.08%          -0.03%  -0.04%
-> ext4    shared  file write:  0.135%  -0.531%          2.883% -0.772%
-> ramdisk private file write: -0.48%    0.23%          -1.08%   0.27%
-> ramdisk private file  read:  0.07%   -6.90%          -5.85%  -0.70%
+Indeed. You guys are right. Sorry for noise.
 
-Have you retested with the VM_LOCKED optimization?  Why are there still
-performance regression?
+Let me respin. Thanks.
 
-> tmpfs   private file write: -0.344%  -0.110%          0.200%  0.145%
-> tmpfs   shared  file write:  0.958%   0.101%          2.781% -0.337%
-> tmpfs   private file  read: -0.16%    0.00%          -0.12%   0.41%
->
-> [1] https://lore.kernel.org/linux-mm/9e62fd9a-bee0-52bf-50a7-498fa17434ee@huawei.com/
-> [2] https://github.com/antonblanchard/will-it-scale/
->
-> Suggested-by: "Huang, Ying" <ying.huang@intel.com>
-> Suggested-by: David Hildenbrand <david@redhat.com>
-> Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> ---
-> v2->v3:
-> - Do this check only if vma is VM_LOCKED per David Hildenbrand
-> - Hold PTL and recheck the PTE
-> - Place the recheck code in a new function filemap_fault_recheck_pte()
->
-> v1->v2:
-> - Add more test results per Huang, Ying
-> - Add more comments before check PTE per Huang, Ying, David Hildenbrand
->   and Yin Fengwei
-> - Change pte_offset_map_nolock to pte_offset_map as the PTL won't
->   be used
->
-> RFC->v1:
-> - Add error handling when ptep == NULL per Huang, Ying and Matthew
->   Wilcox
-> - Check the PTE without acquiring PTL in filemap_fault(), suggested by
->   Huang, Ying and Yin Fengwei
-> - Add pmd_none() check before PTE map
-> - Update commit message and add performance test information
->
->  mm/filemap.c | 40 ++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 40 insertions(+)
->
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index b4858d89f1b1..2668bac68df7 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -3181,6 +3181,42 @@ static struct file *do_async_mmap_readahead(struct vm_fault *vmf,
->  	return fpin;
->  }
->  
-> +/*
-> + * filemap_fault_recheck_pte - hold PTL and recheck whether pte is none.
-> + * @vmf - the vm_fault for this fault.
-> + *
-> + * Recheck PTE as the PTE can be cleared temporarily during a read+clear/modify
-> + * /write update of the PTE, eg, do_numa_page()/change_pte_range(). This will
-> + * trigger an unexpected major fault, even if we use mlockall(), which may
-> + * increase IO and thus cause other unexpected behavior.
-> + *
-> + * Return VM_FAULT_NOPAGE if the PTE is not none or pte_offset_map_lock()
-> + * fails. In other cases, 0 is returned.
-> + */
-> +static vm_fault_t filemap_fault_recheck_pte(struct vm_fault *vmf)
-> +{
-> +	struct vm_area_struct *vma = vmf->vma;
-> +	vm_fault_t ret = 0;
-> +	pte_t *ptep;
-> +
-> +	if (!(vma->vm_flags & VM_LOCKED))
-> +		return ret;
-> +
-> +	if (pmd_none(*vmf->pmd))
-> +		return ret;
-> +
+	Byungchul
 
-How about check PTE without lock firstly?  I guess that this can improve
-performance in common case (no race).
-
-> +	ptep = pte_offset_map_lock(vma->vm_mm, vmf->pmd, vmf->address,
-> +				   &vmf->ptl);
-> +	if (unlikely(!ptep))
-> +		return VM_FAULT_NOPAGE;
-> +
-> +	if (unlikely(!pte_none(ptep_get(ptep))))
-> +		ret = VM_FAULT_NOPAGE;
-> +
-> +	pte_unmap_unlock(ptep, vmf->ptl);
-> +	return ret;
-> +}
-> +
->  /**
->   * filemap_fault - read in file data for page fault handling
->   * @vmf:	struct vm_fault containing details of the fault
-> @@ -3236,6 +3272,10 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
->  			mapping_locked = true;
->  		}
->  	} else {
-> +		ret = filemap_fault_recheck_pte(vmf);
-> +		if (unlikely(ret))
-> +			return ret;
-> +
->  		/* No page in the page cache at all */
->  		count_vm_event(PGMAJFAULT);
->  		count_memcg_event_mm(vmf->vma->vm_mm, PGMAJFAULT);
-
---
-Best Regards,
-Huang, Ying
+> --
+> Best Regards,
+> Huang, Ying
 
