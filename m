@@ -1,190 +1,180 @@
-Return-Path: <linux-kernel+bounces-87051-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87052-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 054BA86CEB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:20:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0FB286CEB2
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:20:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84EA41F265CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:20:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A567528BACB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:20:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8C8A13F44B;
-	Thu, 29 Feb 2024 16:02:28 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A35371428EA;
+	Thu, 29 Feb 2024 16:02:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KcTK0148"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EB4A13C9D9
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 16:02:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E69613F427
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 16:02:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709222548; cv=none; b=Ow6xX19sGxLaJOxKLGtKdXfgdsKW2UOeYOjW3TxT677BszSIC/PzuPcY9RBSdimuXiKCfNxSUMy/s/qmho3u4mTrJ+nacAe94e6qprdgatdcesMqSFvlZrlrDljT86TBtxx2WNiL8yLYt0+BpEeb1Bk2To6PXlxwaDh6PeVZB+0=
+	t=1709222562; cv=none; b=c2j7PX/IV7sgFCzksU8MrnezF/JDaiSC4MHzu14aNHb7WxpcvuTEMiOIHLSJTt1mHmh50s5Cyr4WnEsL0L6HXrMEpyKljvjGeM9R4NESh2Bprk5Jm8TRHBLxMQBqFyZbD2A1Y50cJCc7Yq7/ygjniL1cF1im+YUXY2nnPUrAY+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709222548; c=relaxed/simple;
-	bh=rjWL/Y6Bha7shqu2uXqU543Fxw3IBBJbd/VYx5o4fuU=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=AsmB9R/9J5mlLbaqMcn65px4xGkbD9DJnVAEB7F97N3/ubS15Y6D5t7ZsxMn+N3NGzfNtW5aQ8+Zgo8+kP5iDlQb5EG6DjGrX7rYQKIWk9zLkGwRYSMxREr/E4ZAczd6H1pBL5w74wVM9qeXQkptAcDsICe24CYc1wo2LDgW1ls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7c7f57fa5eeso96819239f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 08:02:26 -0800 (PST)
+	s=arc-20240116; t=1709222562; c=relaxed/simple;
+	bh=wA6/NCRWbGF4UBqPQpanKkBvk0zz/+RnoTAw/npQYHs=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=YGxsOZPG2PxdVMMV3mWvBd9xhV9lOe/bb9ySjkjuB4nt7f6aPQPjPs6TZLlk0aZod3uM6e+PU6BanjhQ7xuxA/Y42xYRRneq+Xhd/g5VzxF+yU7AVg+MqWoDXNeSJD7CDHDqKHt4sTLXuZF1HMJqKCzOoj+u0KY3Oa2IweohCL0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KcTK0148; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dccc49ef73eso1883638276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 08:02:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709222560; x=1709827360; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GAuXf0DJO8tOCKY3YV3tHsU6z5YsVb54ZKPvhRBV/xk=;
+        b=KcTK0148tHfabq5jySgVFnibytuzlyP/DQ2S8ww34Nnf9svJW/E/V0H5XROLhmaXBR
+         jQ9a0cL2bCdoy0f8NLcDwauMMvpugfzfvSpVctrsN/88d2bOhEBQDOefIcz3PINyIAl+
+         aTgaII5oJ3m2X1p043V9bOh7j2zJidY8hw1C45Myb0POTzsDqRpWTkl+iRwNbegrHtJG
+         W/jZYz3ECuJPwe88ws7oeYH2XOi0lqsCGw3kY8PVejfvoPntG+nySBfL24lFKaWk/iD7
+         WTfoMrdJHVX5Y9euKT//s0PDkSQVfPWeTsgf2k/sQQMFV7eyAqJm1at5A68Hx2bNkURa
+         Ba5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709222545; x=1709827345;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=w59HKCZHVDRBtU6GpiuzXSQRPtBvO+bHfq45R2vkKWk=;
-        b=AjhWPHXC4qrXdF2tP+Y03tW8tlFdDrHi+0xQU26YNM/234y7SxsuBPvVmEA5rhHBW4
-         um4pACwhq1fSfmXCPWJS7cEidUVpQ78BYzr560bcrYwt7lU4goPsSHr/V7a097n+dHR/
-         Q9aUdUZHAfHQJEEuiQ59NzcAM+sUWZzb2Iygj+vp0zwWdCfiB4WeO6bpSaVExw6w/8SA
-         iydUzbsQKd7gIR68CX1g1atpGmNTQbwYtUQbggX+KeG9l7St2jQCnjcFgirAdS0n+8Dt
-         LX5ylVOXvn/0GD0hQEjX91XGYj2eXyk+PZ70Cs23Xc8LfDh7y3wjbDjbmLOY4iPiOxoP
-         qjYw==
-X-Forwarded-Encrypted: i=1; AJvYcCXn3oc6RG4opZ9Y309GGAJHQ6kxEcRgAZy5SdRd09QHp8Ubs+kcP/y/E6u92/DThycf+HuEM2JforW62axK7TW638U/YFy7QeR/y29C
-X-Gm-Message-State: AOJu0YxzSseB17kaNVU99Ry/j3LRe90x3cYZ7tOxXbQxbHpcbYJhqM7v
-	hgJA0nXexGcSQL0CGRHlZyPk/1phtvnHb6xl037JK7kkDHcxJPJ+m5fC/OdHpzqLwrbUtyGz3ZR
-	8YwIAKYNjHfNAU9mxZ1sdCX3Af6cmNd5BOqNJMgcK8vaMm/Pred1vUSo=
-X-Google-Smtp-Source: AGHT+IHlZaB58FrUBUqfgQdARWsIFPXOgb3PQbmyzMgVVPsTrZjgwSBmCh4aQsm4c14ippVuZ65X+PnHkSSd8Is0araDytLkWSkG
+        d=1e100.net; s=20230601; t=1709222560; x=1709827360;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=GAuXf0DJO8tOCKY3YV3tHsU6z5YsVb54ZKPvhRBV/xk=;
+        b=kmjH+lw9MpwHWLgn6ilXYgGA8ov9M42e+p9VlShapx256vudEWEx+jVo9Vswp7+ldR
+         eDvcbpkaxKDhftkpadik0E9gRAwbJ0Oc3SAUtKAQ18WPnVEW22lBDODEEsZ3f0TARLNr
+         7bxW3kGP7B5sSQnHBsFurm3lXClcRsqXGiPDeJoLBK4fTqqVSzzhEu0w0oRjXIcLf0fq
+         a/BWPhOuR7G0JuJwhEB5XIh8l6n7OmPHd+E2/70ruIFffSNllIxngtvvwN8qvJcoR6Gp
+         2ytOv/ZqD3o7tohE104A4Ew7EX4PU4fdY6mS/hJSGGNWNo8FdscYAu2N53xdoArFkgUZ
+         Beew==
+X-Gm-Message-State: AOJu0YzDrEb7PhLj5jG+KtQHEJYeoNqS5pFJmR0++1Ecd+rsOIfjRXsB
+	Ke3d551NC5l31bhfhFMaspT7A+MoCowwz/rIE/9rl0F52vmGgdsXDtIBEKYICLYcFxQn4NvsjCA
+	K1g==
+X-Google-Smtp-Source: AGHT+IF5NR9OMvvFjif3DsgvK0jpQks91MFMKGd3JY1jrWeykZgUWksJDuC0Z/ca6xul8OXCuHsgaKTxvqI=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:10c2:b0:dc6:e823:9edb with SMTP id
+ w2-20020a05690210c200b00dc6e8239edbmr106898ybu.12.1709222560220; Thu, 29 Feb
+ 2024 08:02:40 -0800 (PST)
+Date: Thu, 29 Feb 2024 08:02:38 -0800
+In-Reply-To: <CABgObfaPodSSzArO99Hkn=vpGotO1wZ-0dZKEZHx9EqLZ7M_XQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Received: by 2002:a05:6638:3789:b0:474:b754:3544 with SMTP id
- w9-20020a056638378900b00474b7543544mr178158jal.0.1709222545147; Thu, 29 Feb
- 2024 08:02:25 -0800 (PST)
-Date: Thu, 29 Feb 2024 08:02:25 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a97e9f061287624c@google.com>
-Subject: [syzbot] [net?] possible deadlock in team_port_change_check (2)
-From: syzbot <syzbot+3c47b5843403a45aef57@syzkaller.appspotmail.com>
-To: davem@davemloft.net, edumazet@google.com, jiri@resnulli.us, 
-	kuba@kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
-	pabeni@redhat.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+References: <20240227232100.478238-1-pbonzini@redhat.com> <20240227232100.478238-11-pbonzini@redhat.com>
+ <Zd6T06Qghvutp8Qw@google.com> <CABgObfaPodSSzArO99Hkn=vpGotO1wZ-0dZKEZHx9EqLZ7M_XQ@mail.gmail.com>
+Message-ID: <ZeCqnq7dLcJI41O9@google.com>
+Subject: Re: [PATCH 10/21] KVM: SEV: Use a VMSA physical address variable for
+ populating VMCB
+From: Sean Christopherson <seanjc@google.com>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, michael.roth@amd.com, 
+	isaku.yamahata@intel.com, thomas.lendacky@amd.com, 
+	Ashish Kalra <ashish.kalra@amd.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On Wed, Feb 28, 2024, Paolo Bonzini wrote:
+> On Wed, Feb 28, 2024 at 3:00=E2=80=AFAM Sean Christopherson <seanjc@googl=
+e.com> wrote:
+> >
+> > On Tue, Feb 27, 2024, Paolo Bonzini wrote:
+> > > From: Tom Lendacky <thomas.lendacky@amd.com>
+> > >
+> > > In preparation to support SEV-SNP AP Creation, use a variable that ho=
+lds
+> > > the VMSA physical address rather than converting the virtual address.
+> > > This will allow SEV-SNP AP Creation to set the new physical address t=
+hat
+> > > will be used should the vCPU reset path be taken.
+> >
+> > No, this patch belongs in the SNP series.  The hanlding of vmsa_pa is b=
+roken
+> > (KVM leaks the page set by the guest; I need to follow-up in the SNP se=
+ries).
+> > On top of that, I detest duplicat variables, and I don't like that KVM =
+keeps its
+> > original VMSA (kernel allocation) after the guest creates its own.
+> >
+> > I can't possibly imagine why this needs to be pulled in early.  There's=
+ no way
+> > TDX needs this, and while this patch is _small_, the functional change =
+it leads
+> > to is not.
+>=20
+> Well, the point of this series (and there will be more if you agree)
+> is exactly to ask "why not" in a way that is more manageable than
+> through the huge TDX and SNP series. My reading of the above is that
+> you believe this is small enough that it can even be merged with "KVM:
+> SEV: Support SEV-SNP AP Creation NAE event" (with fixes), which I
+> don't disagree with.
 
-syzbot found the following issue on:
+Maybe?  That wasn't my point.
 
-HEAD commit:    2a770cdc4382 tun: Fix xdp_rxq_info's queue_index when deta..
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=11bfb032180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=eff9f3183d0a20dd
-dashboard link: https://syzkaller.appspot.com/bug?extid=3c47b5843403a45aef57
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> Otherwise, if the approach was good there's no reason _not_ to get it
+> in early. It's just a refactoring.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+It's not really a refactoring though, that's why I'm objecting.  If this pa=
+tch
+stored _just_ the physical adddress of the VMSA, then I would consider it a
+refactoring and would have no problem applying it earlier.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/54ceb0944449/disk-2a770cdc.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/69b79e7b7a86/vmlinux-2a770cdc.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/dedbc599c2f7/bzImage-2a770cdc.xz
+But this patch adds a second, 100% duplicate field (as of now), and the rea=
+son
+it does so is to allow "svm->sev_es.vmsa" to become disconnected from the "=
+real"
+VMSA that is used by hardware, which is all kinds of messed up.  That's wha=
+t I
+meant by "the functional change it leads to is not (small)".
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+3c47b5843403a45aef57@syzkaller.appspotmail.com
+> Talking in general: I think I agree about keeping the gmem parts in a
+> kvm-coco-queue branch (and in the meanwhile involving the mm people if
+> mm/filemap.c changes are needed). #VE too, probably, but what I
+> _really_ want to avoid is that these series (the plural is not a typo)
+> become a new bottleneck for everybody. Basically these are meant to be
+> a "these seem good to go to me, please confirm or deny" between
+> comaintainers more than a real patch posting; having an extra branch
+> is extra protection against screwups but we should be mindful that
+> force pushes are painful for everyone.
 
-============================================
-WARNING: possible recursive locking detected
-6.8.0-rc5-syzkaller-00129-g2a770cdc4382 #0 Not tainted
---------------------------------------------
-syz-executor.1/20275 is trying to acquire lock:
-ffff888045338d00 (team->team_lock_key#2){+.+.}-{3:3}, at: team_port_change_check+0x51/0x1e0 drivers/net/team/team.c:2997
+Yes, which is largely why I suggested we separate the gmem.  I suspect we'l=
+l need
+to force push to fixup gmem things, whereas I'm confident the other prep wo=
+rk won't
+need to be tweaked once it's fully reviewed.
 
-but task is already holding lock:
-ffff888045338d00 (team->team_lock_key#2){+.+.}-{3:3}, at: team_add_slave+0xad/0x2750 drivers/net/team/team.c:1974
+For the other stuff, specifically to avoid creating another bottleneck, my =
+preference
+is to follow the "normal" rules for posting patches, with slightly relaxed =
+bundling
+rules.  I.e.  post multiple, independent series so that they can be reviewe=
+d,
+iterated upon, and applied like any other series.
 
-other info that might help us debug this:
- Possible unsafe locking scenario:
+E.g. my objection to this VMSA tracking patch shouldn't get in the way of t=
+he MMU
+changes, the #VE patch shoudln't interfere with the vmx/main.c patch, etc. =
+ In
+other words, throwing everything into a kitchen sink "TDX/SNP prep work" se=
+ries
+just creates another (smaller) bottleneck.
 
-       CPU0
-       ----
-  lock(team->team_lock_key#2);
-  lock(team->team_lock_key#2);
-
- *** DEADLOCK ***
-
- May be due to missing lock nesting notation
-
-2 locks held by syz-executor.1/20275:
- #0: ffffffff8f3759c8 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:79 [inline]
- #0: ffffffff8f3759c8 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x82c/0x1040 net/core/rtnetlink.c:6615
- #1: ffff888045338d00 (team->team_lock_key#2){+.+.}-{3:3}, at: team_add_slave+0xad/0x2750 drivers/net/team/team.c:1974
-
-stack backtrace:
-CPU: 0 PID: 20275 Comm: syz-executor.1 Not tainted 6.8.0-rc5-syzkaller-00129-g2a770cdc4382 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
- check_deadlock kernel/locking/lockdep.c:3062 [inline]
- validate_chain+0x15c0/0x58e0 kernel/locking/lockdep.c:3856
- __lock_acquire+0x1345/0x1fd0 kernel/locking/lockdep.c:5137
- lock_acquire+0x1e3/0x530 kernel/locking/lockdep.c:5754
- __mutex_lock_common kernel/locking/mutex.c:608 [inline]
- __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
- team_port_change_check+0x51/0x1e0 drivers/net/team/team.c:2997
- team_device_event+0x161/0x5b0 drivers/net/team/team.c:3023
- notifier_call_chain+0x18f/0x3b0 kernel/notifier.c:93
- call_netdevice_notifiers_extack net/core/dev.c:2004 [inline]
- call_netdevice_notifiers net/core/dev.c:2018 [inline]
- dev_close_many+0x33c/0x4c0 net/core/dev.c:1559
- vlan_device_event+0x18b7/0x1de0 net/8021q/vlan.c:449
- notifier_call_chain+0x18f/0x3b0 kernel/notifier.c:93
- call_netdevice_notifiers_extack net/core/dev.c:2004 [inline]
- call_netdevice_notifiers net/core/dev.c:2018 [inline]
- dev_close_many+0x33c/0x4c0 net/core/dev.c:1559
- dev_close+0x1c0/0x2c0 net/core/dev.c:1581
- team_port_add drivers/net/team/team.c:1312 [inline]
- team_add_slave+0x1aef/0x2750 drivers/net/team/team.c:1975
- do_set_master net/core/rtnetlink.c:2707 [inline]
- do_setlink+0xe58/0x41c0 net/core/rtnetlink.c:2913
- rtnl_setlink+0x40d/0x5a0 net/core/rtnetlink.c:3209
- rtnetlink_rcv_msg+0x885/0x1040 net/core/rtnetlink.c:6618
- netlink_rcv_skb+0x1e3/0x430 net/netlink/af_netlink.c:2543
- netlink_unicast_kernel net/netlink/af_netlink.c:1341 [inline]
- netlink_unicast+0x7ea/0x980 net/netlink/af_netlink.c:1367
- netlink_sendmsg+0xa3b/0xd70 net/netlink/af_netlink.c:1908
- sock_sendmsg_nosec net/socket.c:730 [inline]
- __sock_sendmsg+0x221/0x270 net/socket.c:745
- sock_write_iter+0x2dd/0x400 net/socket.c:1160
- do_iter_readv_writev+0x46c/0x640
- vfs_writev+0x395/0xbb0 fs/read_write.c:971
- do_writev+0x1b1/0x350 fs/read_write.c:1018
- do_syscall_64+0xf9/0x240
- entry_SYSCALL_64_after_hwframe+0x6f/0x77
-RIP: 0033:0x7ff40be7dda9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ff40cb2f0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000014
-RAX: ffffffffffffffda RBX: 00007ff40bfabf80 RCX: 00007ff40be7dda9
-RDX: 0000000000000001 RSI: 0000000020000400 RDI: 0000000000000003
-RBP: 00007ff40beca47a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007ff40bfabf80 R15: 00007ffdeb79a408
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+I am 100% in favor of applying prep patches in advance of the larger SNP an=
+d TDX
+series.  That's actually partly why I ended up posting my series that inclu=
+des
+the PFERR_PRIVATE_ACCESS patch; I was trying to pull in using PFERR_GUEST_E=
+NC_MASK
+and some of the other "simple" patches, and the darn thing failed on me.
 
