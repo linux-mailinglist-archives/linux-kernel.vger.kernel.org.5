@@ -1,92 +1,119 @@
-Return-Path: <linux-kernel+bounces-86543-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86542-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E3EB86C6D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:26:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 42D3386C6D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:25:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2895D1C21224
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:26:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CE501C211C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:25:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C88B651B3;
-	Thu, 29 Feb 2024 10:25:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79B8864CCF;
+	Thu, 29 Feb 2024 10:25:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iyQi1zYZ"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uSZwf0pJ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0D7F64A8A;
-	Thu, 29 Feb 2024 10:25:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B319860BA7;
+	Thu, 29 Feb 2024 10:25:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709202354; cv=none; b=XuDVt9NAIjo3YMaRmI45eihXHraapkew2UrtjziDWtI9vkE6XRoa9Rk8UbJtVaPsOhli06HTewEmXV8s/dJ+RLf7mBrAfM2E5YUfbXLT8Em5az3vQRv2yypFZXX+VDV1IOdPMdgXCVfQs8WmMqSn41XSNe/i4m/HqMGIAX3DsG8=
+	t=1709202341; cv=none; b=gZMdzNojXlpLMi1tuQhuPv5jUYv/Id0dDFKeS6hCTxNtFa0SwnN+5/pkswtf0NfmnlDPGocdxIjK916NhfrGxIbkXEGdUDFh13Hcc3pPphK/U861BuOobBAWFXmCUAgKC97pMvA/hoAEDWj446p7ljIrNhDiMWncS542Pg+xAfw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709202354; c=relaxed/simple;
-	bh=BZOzxkLaNwJzyuWMx5kdxPnNkLL7LABOOFE1Vzr+SB4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=JFFGpM0PEURtldhjh3+1B36GeMr8mX3o0Z3nYJMts+xJq4T0jjsZcA0eluSnMnpvYetbXb+MfyoL2zZwNO2MYURJAz+PzLfctKtI5/2XOTY5u58f1EPfdp5h1aWoMTlDpWx+//KKvznTo0RZUvGEn9X2fBlEdgGc+G+dAib1azQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iyQi1zYZ; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709202353; x=1740738353;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=BZOzxkLaNwJzyuWMx5kdxPnNkLL7LABOOFE1Vzr+SB4=;
-  b=iyQi1zYZ42f43Ljn2az1KeblEJTEekiREoJE3zWqfInP1FySP7MQRlTJ
-   qOXAnSd55kxvvnBp19T9c2T0njxYkI8dIKAO98U/TMmozsOx6/LILGJ0K
-   EMXhZV+tg/Rl6tJWFD8zpA+6C2AiV9Ox60PEk2IvEBW6/c2/g95Oj8iOk
-   tjRkU2jLUk4l0P6t3IHp15bXr10Lt4YqlSbSEv3iyyF+IUgg9N4xslF3y
-   C8vfTQIDdKt+wI2QZHlWwApbP48vEY1iQzbkJh70h4w3VPNu5+r242Ufc
-   isRRiO/4ouzRWmFsjxahYSFnhr3ly82B0IdHMcucWzwIxhfUyzcXDB7kw
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="3786392"
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="3786392"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 02:25:53 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="30961090"
-Received: from smatua-mobl.ger.corp.intel.com (HELO localhost) ([10.252.47.143])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 02:25:49 -0800
-From: Jani Nikula <jani.nikula@intel.com>
-To: Lukas Bulwahn <lukas.bulwahn@gmail.com>, Jonathan Corbet
- <corbet@lwn.net>, Randy Dunlap <rdunlap@infradead.org>,
- workflows@vger.kernel.org, linux-doc@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Lukas
- Bulwahn <lukas.bulwahn@gmail.com>
-Subject: Re: [PATCH v2 0/3] docs: submit-checklist: structure by category
-In-Reply-To: <20240229030743.9125-1-lukas.bulwahn@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20240229030743.9125-1-lukas.bulwahn@gmail.com>
-Date: Thu, 29 Feb 2024 12:25:46 +0200
-Message-ID: <87plwf8t3p.fsf@intel.com>
+	s=arc-20240116; t=1709202341; c=relaxed/simple;
+	bh=Jy/7w7KEnfQklosMbmnBXq3PIa9EaMOSK5qguujWYHU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ojRuVTcRwhfVEMSI6uDi1+M1jsCXEc+DNxtlVngYHZNjPmWY57pMrTpRP0M5C3WxsMrQ7JWYQSHJNUGqtPxRGpqi7Y05QUR0FGvAw4VAWC7x+hpRMFlcdJLsCynI9sCEVF2hH+k1SBEbOsKScdop299q71WweIim5ZtcK6lhStk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uSZwf0pJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38338C433F1;
+	Thu, 29 Feb 2024 10:25:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709202341;
+	bh=Jy/7w7KEnfQklosMbmnBXq3PIa9EaMOSK5qguujWYHU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=uSZwf0pJg3JOSpFylltxG0i+NQp5EjBAyeI6hEtkmnqYcmGVzLyLHsf711+x1bigJ
+	 chu1NMkhr+3ZYAmetg+itT3WLsGvd7Fca3qmNyTZLk36TQK0U7Cbqh+jULZ/4yMhna
+	 0LIuZEPrjCtKrE1Syt9or8s9icOfgoVkXmug/Tzzu0jxESoWUxeCisRC2jNpPP+0Wl
+	 Qjs5HKReD93uJ/ZR+d6nHyFF6gP10oVeHYGyKV9DeL9w0leLrr+HHxHGwnnPBNLGZU
+	 dxjcj3ikVdnWI/7AuuOzjqhykU8xV5gJ1HMT8kBOSUpVcRzxbKeo1o7T9eBgbvcfJS
+	 8PnGZhj3ELtrA==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rfdbo-000000000xS-3Hnm;
+	Thu, 29 Feb 2024 11:25:49 +0100
+Date: Thu, 29 Feb 2024 11:25:48 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Bjorn Helgaas <helgaas@kernel.org>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
+	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 00/12] arm64: dts: qcom: sc8280xp: PCIe fixes and
+ GICv3 ITS enable
+Message-ID: <ZeBbrJhks46XByMD@hovoldconsulting.com>
+References: <20240223152124.20042-1-johan+linaro@kernel.org>
+ <20240228220843.GA309344@bhelgaas>
+ <20240229100853.GA2999@thinkpad>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240229100853.GA2999@thinkpad>
 
-On Thu, 29 Feb 2024, Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
-> from Jani Nikula:
->   - turn categories into subheadings
->   - use common heading adornment
->   - change to bullet or autonumbered lists
->   - propose those changes as separate additional patches
+On Thu, Feb 29, 2024 at 03:38:53PM +0530, Manivannan Sadhasivam wrote:
+> On Wed, Feb 28, 2024 at 04:08:43PM -0600, Bjorn Helgaas wrote:
+> > On Fri, Feb 23, 2024 at 04:21:12PM +0100, Johan Hovold wrote:
 
-I was hoping these cleanups would've come *first*, but up to Jon to
-decide if that really matters.
+> > > Johan Hovold (12):
+> > >   dt-bindings: PCI: qcom: Allow 'required-opps'
+> > >   dt-bindings: PCI: qcom: Do not require 'msi-map-mask'
+> > >   dt-bindings: PCI: qcom: Allow 'aspm-no-l0s'
+> > >   PCI: qcom: Add support for disabling ASPM L0s in devicetree
+> > 
+> > The ASPM patches fix a v6.7 regression, so it would be good to fix
+> > that in v6.8.
+> > 
+> > Mani, if you are OK with them, I can add them to for-linus for v6.8.  
+> > 
+> > What about the 'required-opps' and 'msi-map-mask' patches?  If they're
+> > important, I can merge them for v6.8, too, but it's late in the cycle
+> > and it's not clear from the commit logs why they shouldn't wait for
+> > v6.9.
+> > 
+> 
+> I'm checking with Qcom HW team on the ASPM behavior. So please hold off the ASPM
+> related patches until I get an answer. But 'required-opps' and 'msi-map-mask'
+> patches can be applied for 6.9 (not strictly fixing anything in 6.8).
 
-BR,
-Jani.
+As I mentioned, the 'required-opps' binding update is needed to fix the
+missing OPP vote so blocking the binding patch would block merging the
+DT fix which could otherwise go into 6.8.
 
+The 'msi-map-mask' is arguably a fix of the binding which should never
+have had that property, but sure, it's strictly only needed for 6.9.
 
--- 
-Jani Nikula, Intel
+And Bjorn A has already checked with the Qualcomm PCI team regarding
+ASPM. It's also been two weeks since you said you were going to check
+with your contacts. Is it really worth waiting more for an answer from
+that part of the team? We can always amend the ASPM fixes later when/if
+we learn more.
+
+Note that this is also a blocker for merging ITS support for 6.9.
+
+Johan
 
