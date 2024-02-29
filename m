@@ -1,139 +1,105 @@
-Return-Path: <linux-kernel+bounces-87543-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87544-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4DE886D5B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:08:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81B1E86D5BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:09:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 715D2B23F1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:08:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 930291C2381C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:09:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D2851504F8;
-	Thu, 29 Feb 2024 20:56:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EB70154E85;
+	Thu, 29 Feb 2024 20:56:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZJx0nr8b"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="WZlyskx2"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72E48154BE3
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 20:56:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74522154C1D
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 20:56:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709240185; cv=none; b=hekeOcjqmTdOKVVSqIJSsNmXCbMl1umXaguU354WxjI9DBnhIuIVka/RDNr/VIlbQ17e0BmRpI58FMGsnG4ZPGSy+KpTmgSrtmXsNDQZZdluMdBmtJaJbHcHVqDhm0ZnR+iETiuXwZkDFV0diXqGQVK/qp49XQow5huiyJo3nvM=
+	t=1709240202; cv=none; b=s5raDSmgnUml0ad6kREjzpt7qEau6j1O0084QTHsB6eXil+n9ZBP81ySlae7kI3alv2jFpf1GfHw31HMWt+I81yVpp4WJ31osRJTNl8jmezJ5ABiQY7Zq3I1eI0vyn7zboOXucfpTon+n8kC8PBJwR2Uytn0krGmXoLKDaJkfDY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709240185; c=relaxed/simple;
-	bh=fV1kqpZQ/sSCXlptOjdZ28ZJ5cm/XhJs99VfeV8ikn8=;
+	s=arc-20240116; t=1709240202; c=relaxed/simple;
+	bh=y/PBEgT7ogzDQ/urnqR6G19WU2LN1p109s1hDqmO6oM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AMlNjOynoozlivV37D6Vfvh2p+YkuLAbfFWJYJucF63KyOotIE0FlLvUrHC0xQ4Yk+0V9Yv83LA6zwHCBmU8krX9ysHUd9pE7qOsGQ6oMhLmI4myv5edQQ8jNbnoGol5n8caMsXNXeKq1Pz02lx1WhDXOdBEFq0KSdwr+/EGPvg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZJx0nr8b; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709240179;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eiaPwrwhaqL9Ej4GtEw9LKGF9DdPVcepWFooDH+BsfA=;
-	b=ZJx0nr8bUNfBOS1tqzq/XWJUrGy5Spnui3AWH2n+j/5WVKi0+TRPqqsLn04zAuN/CIxcd1
-	D87dlziKWpGrBhEQxyFD3gQzPtUrpz8d1wuaSeHavDjxxNNlwYojvzg8WJJxYdmXF+Jmd3
-	/7uaJk/KXkmEriU3K9pxbKwc6w+S5Ns=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-65-lk-veFmqN4aitpyYJbdGhQ-1; Thu, 29 Feb 2024 15:56:17 -0500
-X-MC-Unique: lk-veFmqN4aitpyYJbdGhQ-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-412b2321084so5287375e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 12:56:17 -0800 (PST)
+	 To:Cc:Content-Type; b=JBTNvu42m4VgnngA2UNPZl2GZoGpZQaH/tCnlXsllKB+GYsZ6wibx32q8os5BfWaiY6SMv4F4LmZoFh919FA4zqMvzur/JbwFytuHDhW7c6XxtCRO6NGyRTzQZSzkFrVoTv61Gtp1zjwph2XSAwhVQkOpJpH4NlSM4E9VXnZYZ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=WZlyskx2; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-563b7b3e3ecso2302096a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 12:56:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1709240198; x=1709844998; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=SbiT+3jQ0ttBc0H4Cz/BNQ+s/TCQJGrbtGrlFN7KUM0=;
+        b=WZlyskx2LN9gbuLSAejuGCFL6C+JLTkBU0Vn5W7SgkoCsKOTelTTHb365VMVXbjgXq
+         xy4M30IslrKGLEXww0LDLQBMvH/WLxIElr2sx5ywIse1rb2gj2+9llIOO7U7krH6QMcU
+         5IEmYSswdvs6X8jioeqVJI8F4sHna+4/VZIbY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709240176; x=1709844976;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eiaPwrwhaqL9Ej4GtEw9LKGF9DdPVcepWFooDH+BsfA=;
-        b=HukYMU+QoMklrhYSqP3yiBV/njlFIi9a+TfD9UP5YbWu+wBf4SjuRMqtAAKNWyoiXT
-         temJU+HZ3zD9ASkxTOt2rsYf1ndN1tggSXX/2gLuR2TBm87uqHzVtOncXAvCKDGqNpiB
-         z18uqWzjbQTdsGxIak0IxwxU3fjxJxC289hCAmKaMHy/zjED1yb6YlIPIi4pv2REmDf/
-         JhArydmCDKV3crx/JqXnchOhodKo/Z3gvPx+3EHUmL7gf3uTkzEN77xiGuYc/ibV8WwF
-         55FfQm9jSPt6AGeRY6B+uGUa1985k9hkNQTyUwwm8Z8xy5kX6+U1UHfL+NEG9H5ibuo4
-         v9Ig==
-X-Forwarded-Encrypted: i=1; AJvYcCWHrBoD1w24zsW2i8eGW1PILmGtXl/quUhabo8Y7sNM2XA+nsEo7bz84i7roFMSwAlA4//z3KsKvHqFJK2AIT+7xo6OQNrA56fzQN0Z
-X-Gm-Message-State: AOJu0YzsHlKGMPpaqysJkOQ23EAwtV9gPs4ikPyJC3hDskJMsp2zSjgY
-	KDEw/yXbePdOZvrg1zulVUXbKshID23XaLx/6SVz9xWWfZBzfuwd71DdsIuRMeWoV4bpGbUGjJc
-	KigA2PQHs4UdNw7I67JSbM7qRlNg9CLc70uRdQIm6nAQvBX5Vedr9JUv5UrrUGzkUgGA6Ptk5uH
-	qO+La+RhzB1fLaeZCZtxRe1gAAR2X1BbvJHz++
-X-Received: by 2002:a05:600c:a386:b0:412:b6c4:ac21 with SMTP id hn6-20020a05600ca38600b00412b6c4ac21mr129744wmb.41.1709240176743;
-        Thu, 29 Feb 2024 12:56:16 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF/pLwxu7qVY+FEzPu28C2COXQu70si1JtMVmyrPRMvUbqeq+QPhQ4uW/IqUc+Dif1jUGUYHijFe39hpc6rWc8=
-X-Received: by 2002:a05:600c:a386:b0:412:b6c4:ac21 with SMTP id
- hn6-20020a05600ca38600b00412b6c4ac21mr129737wmb.41.1709240176364; Thu, 29 Feb
- 2024 12:56:16 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709240198; x=1709844998;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SbiT+3jQ0ttBc0H4Cz/BNQ+s/TCQJGrbtGrlFN7KUM0=;
+        b=QKWZS/rVSevX01JxDZZhgS5i3SJOqzsMI5Hl8B1pRGP/mTMKa6r86t3xnodEPb0iLR
+         xyix4hJ8j6EffA9mH1j+zC4f7+h2mH49TG7ZKXjFbNY7bLUvV/OXMmRUcsqSYS2hdMwG
+         RVDARC5EJAJKukGfJWe6PstAS23P40rycW08KQOBKxOIMczGvMn+XC30mVucs5yvXE6r
+         WrJq2yxbvkzjgl156mhSiRTCzJBS3//PSHVSLjClncTzf1sgWCOabKM3C72dyTMc7+BZ
+         gDdKeF+2VFVJVktpRBnyor48Bu02tAlmCBoX5Z5mqIT6U0k80qFczWoX7Xvpgt0O0xzU
+         xQPA==
+X-Forwarded-Encrypted: i=1; AJvYcCVWR6ffm2u74NxFB9rWUu6ouomA5KrFOVjTfwtyHkKJXzKAGIuWnak+k7E/H0WyozjMJhxXl3Ll8JDFk7PsU1wzmkzCIDWQ/5qJtdu1
+X-Gm-Message-State: AOJu0YyJIWWsc39kwfsfRqptfR1Jz9j8OZKYtw76sDdrIjT+Di1ED4BJ
+	PzTVtok6vFAu5xQMBENHkiMh8CIO7N5oRVOkhVlBFjfHXMnSzP49cSyRCCTEcSUnl4hekyGm6Ff
+	XOSqWLQ==
+X-Google-Smtp-Source: AGHT+IEpzcvW4v4lMfNVFmL/2XXke421bqaiedDFcaGuua3ZFAzD02qnA0rO0ro57/kahYku+pieXg==
+X-Received: by 2002:a17:907:bb92:b0:a3f:4eaf:ec66 with SMTP id xo18-20020a170907bb9200b00a3f4eafec66mr70440ejc.25.1709240198603;
+        Thu, 29 Feb 2024 12:56:38 -0800 (PST)
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com. [209.85.208.47])
+        by smtp.gmail.com with ESMTPSA id j12-20020a170906094c00b00a3e5adf11c7sm1020269ejd.157.2024.02.29.12.56.38
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Feb 2024 12:56:38 -0800 (PST)
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5658082d2c4so2109415a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 12:56:38 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCU1HOeDIZiMKFVvjqRmYAe8AAbMg4djMdFkOvRFB3ILmiTwq5KYOWlu3OrPtFt0Xnv+plZdlwsGAxZM5eb3bbqdZJt2lBnaiSQoGOTJ
+X-Received: by 2002:a17:906:40d4:b0:a44:4d9b:9062 with SMTP id
+ a20-20020a17090640d400b00a444d9b9062mr58037ejk.69.1709240197809; Thu, 29 Feb
+ 2024 12:56:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240228024147.41573-1-seanjc@google.com> <20240228024147.41573-3-seanjc@google.com>
- <CABgObfbtPJ6AAX9GnjNscPRTbNAOtamdxX677kx_r=zd4scw6w@mail.gmail.com> <ZeDPgx1O_AuR2Iz3@google.com>
-In-Reply-To: <ZeDPgx1O_AuR2Iz3@google.com>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Date: Thu, 29 Feb 2024 21:56:04 +0100
-Message-ID: <CABgObfaXQR7WaUwjvBz-1yJN3fyysj1BMyY0S9L3DbizWjgrSQ@mail.gmail.com>
-Subject: Re: [PATCH 02/16] KVM: x86: Remove separate "bit" defines for page
- fault error code masks
-To: Sean Christopherson <seanjc@google.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Yan Zhao <yan.y.zhao@intel.com>, Isaku Yamahata <isaku.yamahata@intel.com>, 
-	Michael Roth <michael.roth@amd.com>, Yu Zhang <yu.c.zhang@linux.intel.com>, 
-	Chao Peng <chao.p.peng@linux.intel.com>, Fuad Tabba <tabba@google.com>, 
-	David Matlack <dmatlack@google.com>
+References: <20240229203921.3037023-1-kuba@kernel.org>
+In-Reply-To: <20240229203921.3037023-1-kuba@kernel.org>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Thu, 29 Feb 2024 12:56:21 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wizM+YawbbsvdRnFXLipMXS+iwgD3fahUu4DeyQCKzSWA@mail.gmail.com>
+Message-ID: <CAHk-=wizM+YawbbsvdRnFXLipMXS+iwgD3fahUu4DeyQCKzSWA@mail.gmail.com>
+Subject: Re: [GIT PULL] Networking for v6.8-rc7
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: davem@davemloft.net, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	pabeni@redhat.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 29, 2024 at 7:40=E2=80=AFPM Sean Christopherson <seanjc@google.=
-com> wrote:
-> Long story short, I think we should get to the below (I'll post a separat=
-e series,
-> assuming I'm not missing something).
+On Thu, 29 Feb 2024 at 12:39, Jakub Kicinski <kuba@kernel.org> wrote:
 >
->         unsigned long rflags =3D static_call(kvm_x86_get_rflags)(vcpu);
->         unsigned int pfec =3D access & (PFERR_PRESENT_MASK |
->                                       PFERR_WRITE_MASK |
->                                       PFERR_USER_MASK |
->                                       PFERR_FETCH_MASK);
->
->         /*
->          * For explicit supervisor accesses, SMAP is disabled if EFLAGS.A=
-C =3D 1.
->          * For implicit supervisor accesses, SMAP cannot be overridden.
->          *
->          * SMAP works on supervisor accesses only, and not_smap can
->          * be set or not set when user access with neither has any bearin=
-g
->          * on the result.
->          *
->          * We put the SMAP checking bit in place of the PFERR_RSVD_MASK b=
-it;
->          * this bit will always be zero in pfec, but it will be one in in=
-dex
->          * if SMAP checks are being disabled.
->          */
->         u64 implicit_access =3D access & PFERR_IMPLICIT_ACCESS;
->         bool not_smap =3D ((rflags & X86_EFLAGS_AC) | implicit_access) =
-=3D=3D X86_EFLAGS_AC;
->         int index =3D (pfec | (not_smap ? PFERR_RSVD_MASK : 0)) >> 1;
->         u32 errcode =3D PFERR_PRESENT_MASK;
->         bool fault;
+> A few hours late, the commit on top fixes an odd "rcu_dereference()
+> needs to know full type" build issue I can't repro..
 
-Sounds good.  The whole series is
+Ugfh. That change literally makes a single load instruction be a
+function call. Pretty sad, particularly with all the crazy CPU
+mitigations causing that to be even more expensive than it is already.
 
-Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
+I really don't see how that error can happen, it sounds very odd.
 
-apart from the small nits that were pointed out here and there.
+Oh well.
 
-Paolo
-
+          Linus
 
