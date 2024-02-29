@@ -1,117 +1,284 @@
-Return-Path: <linux-kernel+bounces-87639-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87641-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CEE3A86D6D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 23:26:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BB9E86D6D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 23:26:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8846B1F24909
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:26:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E28FE1F22011
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:26:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7348D74C10;
-	Thu, 29 Feb 2024 22:26:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BC3B13C9DB;
+	Thu, 29 Feb 2024 22:26:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="jd3ijOUY"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="MS3pjJW6";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="4ZDJEX44";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="MS3pjJW6";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="4ZDJEX44"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 339446D53D;
-	Thu, 29 Feb 2024 22:26:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5010674C05;
+	Thu, 29 Feb 2024 22:26:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709245567; cv=none; b=CsMwGrgXoyvBSsvmncjqHxIt+b2Dr105siuxYuN65i1Kh+/WwA0nrH3EwROnLX4j0PAvTwjtoDtUa1uxNm3m/26IydXn6E3PL9/5EsJhjAi/iitbwHZA02wUxKON0iPWW6LrcrUZmGDZhXVR1VsE7TCGruGiQsPN/qytoniPffI=
+	t=1709245577; cv=none; b=PU6hReXq8VKWUP2AvsO9xHnqAiajUUDp8js1htUFWsz2nUa3jbuQc3uBt6qHUaytrwNm+ardB/G6ehOTj0Byh/NXamJN4YxgiLLYGcNDLMRkeVTUVYxnm9gFsrwynA3QCKRj2ZjzzyNxbT3UR/SEAM+Du4SY+yBDiDaP1tHU9Q0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709245567; c=relaxed/simple;
-	bh=E9m6Zo8Uif+WnkraC5S4fEqqz9edJTPoUmJDKqarSS4=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=j5Kr3ScZSlvupXwJ0IFbr1Hj+qR5tjdXfZZKmwahs1/52AYvTcGq49G4NrXmLoLPG8rPegOZHTLbacfjVB+NNkhurZazwaWW5JBJ/LTPJI0UEo0oSaqjE9VNXt0EDDNAnJuntmFeh0KUIMF+m02nZNKibbU6aR+0KYoKP2IEqGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=jd3ijOUY; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1709245560;
-	bh=0n1bA5SiHK2wBetkmMJKfRWf3uRLRYvi88heuEZlT08=;
-	h=Date:From:To:Cc:Subject:From;
-	b=jd3ijOUYM0tpU3c9banalfBj3YK62CzhRQjD4wm1mUARbBD65ir1BzSVHiRiv9W5u
-	 z6EgOpsXdlN4wJIvSyi5vw6Eak25zjNT0L2oogZjQTxL4fcUzs7f2/5ZEOFDzu4sZY
-	 RVKhQsWZwgm5iPpOJMd6VjVm5YpkirWzjXLH9pixyMIl/t0zJUTQpcHUpOlLefvUms
-	 +/IrbIhccYJiRl8iv3RnNIHItfcLDhLnr+41IqK++m9uCPyf2r6mSg4ePmsZ2KUDEK
-	 3XNZOiUdFW9T02b6AGqQHd4rK5xyswDKFlG3cXflOjUy+nuJ686yd8KB9S3DWzeZ4N
-	 P0IJZszdaVmMw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	s=arc-20240116; t=1709245577; c=relaxed/simple;
+	bh=GCKf4NzvtDireLM5jhckX6LS/rVF23UYmVzpTj/hb10=;
+	h=Content-Type:MIME-Version:From:To:Cc:Subject:In-reply-to:
+	 References:Date:Message-id; b=XPiCJDO3g6dzTyMHzrFVEQs+DRukB5EkQX6pc9eGdruXIDnaFv4XAfReCECzim+5euxndX8zxHpZ7+7cgq63BjIBxEMPk8NRN4Wtcg5ZXymHTlHTllk44LmHPq6/PmqnvH0KZXMQPbcpVBAGnUvqVDSwHUDibwCCgW8DyZM/bAs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=MS3pjJW6; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=4ZDJEX44; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=MS3pjJW6; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=4ZDJEX44; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tm5Qw3v78z4wc6;
-	Fri,  1 Mar 2024 09:26:00 +1100 (AEDT)
-Date: Fri, 1 Mar 2024 09:25:39 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg
- <johan.hedberg@gmail.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patches in the bluetooth tree
-Message-ID: <20240301092539.584c26b7@canb.auug.org.au>
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 7115C22021;
+	Thu, 29 Feb 2024 22:26:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1709245573; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1q2ff3tk7upYT+U6Oils45T4A6BE5V/TKvYs9aQhOf0=;
+	b=MS3pjJW6r8bDMR6CiG1ewHmzJ8BB8txTH4E93v03zYvnVGChlfO53iRi3w6FravzY2x7Qn
+	4yuRMfvwmAGhKP1iCbmAHY31vZwx4FaTkHYaey2f6KyWzdoE6nT503AeCJBR79qdpHj0D6
+	s6z7LuCdvYbL7yZp1PzXXs8nMBrX+jU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1709245573;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1q2ff3tk7upYT+U6Oils45T4A6BE5V/TKvYs9aQhOf0=;
+	b=4ZDJEX44He0G5lt8Px2VxgM1drHmvCus0ETy/7TbXiI/lW/a2AU7Mq0d4TqaSgxR9Uq4E2
+	TppBLK8g1ODDMZAA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1709245573; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1q2ff3tk7upYT+U6Oils45T4A6BE5V/TKvYs9aQhOf0=;
+	b=MS3pjJW6r8bDMR6CiG1ewHmzJ8BB8txTH4E93v03zYvnVGChlfO53iRi3w6FravzY2x7Qn
+	4yuRMfvwmAGhKP1iCbmAHY31vZwx4FaTkHYaey2f6KyWzdoE6nT503AeCJBR79qdpHj0D6
+	s6z7LuCdvYbL7yZp1PzXXs8nMBrX+jU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1709245573;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1q2ff3tk7upYT+U6Oils45T4A6BE5V/TKvYs9aQhOf0=;
+	b=4ZDJEX44He0G5lt8Px2VxgM1drHmvCus0ETy/7TbXiI/lW/a2AU7Mq0d4TqaSgxR9Uq4E2
+	TppBLK8g1ODDMZAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6E47A13503;
+	Thu, 29 Feb 2024 22:26:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id jW9rBIIE4WVzEQAAD6G6ig
+	(envelope-from <neilb@suse.de>); Thu, 29 Feb 2024 22:26:10 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/fz6vq1oknyxue1rEE73yG/l";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+From: "NeilBrown" <neilb@suse.de>
+To: "Jeff Layton" <jlayton@kernel.org>
+Cc: "Chuck Lever" <chuck.lever@oracle.com>,
+ "Olga Kornievskaia" <kolga@netapp.com>, "Dai Ngo" <Dai.Ngo@oracle.com>,
+ "Tom Talpey" <tom@talpey.com>, linux-nfs@vger.kernel.org,
+ linux-kernel@vger.kernel.org, "Jeff Layton" <jlayton@kernel.org>
+Subject: Re: [PATCH RFC] nfsd: return NFS4ERR_DELAY on contention for v4.0
+ replay_owner rp_mutex
+In-reply-to: <20240229-rp_mutex-v1-1-47deb9e4d32d@kernel.org>
+References: <20240229-rp_mutex-v1-1-47deb9e4d32d@kernel.org>
+Date: Fri, 01 Mar 2024 09:25:58 +1100
+Message-id: <170924555835.24797.12031946610700753493@noble.neil.brown.name>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [-3.10 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 RCPT_COUNT_SEVEN(0.00)[8];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -3.10
 
---Sig_/fz6vq1oknyxue1rEE73yG/l
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri, 01 Mar 2024, Jeff Layton wrote:
+> move_to_close_lru() is currently called with ->st_mutex and .rp_mutex held.
+> This can lead to a deadlock as move_to_close_lru() waits for sc_count to
+> drop to 2, and some threads holding a reference might be waiting for either
+> mutex.  These references will never be dropped so sc_count will never
+> reach 2.
+>=20
+> There have been a couple of attempted fixes (see [1] and [2]), but both
+> were problematic for different reasons.
+>=20
+> This patch attempts to break the impasse by simply not waiting for the
+> rp_mutex. If it's contended then we just have it return NFS4ERR_DELAY.
+> This will likely cause parallel opens by the same openowner to be even
+> slower on NFSv4.0, but it should break the deadlock.
+>=20
+> One way to address the performance impact might be to allow the wait for
+> the mutex to time out after a period of time (30ms would be the same as
+> NFSD_DELEGRETURN_TIMEOUT). We'd need to add a mutex_lock_timeout
+> function in order for that to work.
+>=20
+> Chuck also suggested that we may be able to utilize the svc_defer
+> mechanism instead of returning NFS4ERR_DELAY in this situation, but I'm
+> not quite sure how feasible that is.
+>=20
+> [1]: https://lore.kernel.org/lkml/4dd1fe21e11344e5969bb112e954affb@jd.com/T/
+> [2]: https://lore.kernel.org/linux-nfs/170546328406.23031.11217818844350800=
+811@noble.neil.brown.name/
+>=20
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+>  fs/nfsd/nfs4state.c | 30 +++++++++++++++++-------------
+>  1 file changed, 17 insertions(+), 13 deletions(-)
+>=20
+> diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
+> index aee12adf0598..4b667eeb06c8 100644
+> --- a/fs/nfsd/nfs4state.c
+> +++ b/fs/nfsd/nfs4state.c
+> @@ -4658,13 +4658,16 @@ static void init_nfs4_replay(struct nfs4_replay *rp)
+>  	mutex_init(&rp->rp_mutex);
+>  }
+> =20
+> -static void nfsd4_cstate_assign_replay(struct nfsd4_compound_state *cstate,
+> +static __be32 nfsd4_cstate_assign_replay(struct nfsd4_compound_state *csta=
+te,
+>  		struct nfs4_stateowner *so)
+>  {
+>  	if (!nfsd4_has_session(cstate)) {
+> -		mutex_lock(&so->so_replay.rp_mutex);
+> +		WARN_ON_ONCE(cstate->replay_owner);
+> +		if (!mutex_trylock(&so->so_replay.rp_mutex))
+> +			return nfserr_jukebox;
+>  		cstate->replay_owner =3D nfs4_get_stateowner(so);
+>  	}
+> +	return nfs_ok;
+>  }
+> =20
+>  void nfsd4_cstate_clear_replay(struct nfsd4_compound_state *cstate)
+> @@ -5332,15 +5335,17 @@ nfsd4_process_open1(struct nfsd4_compound_state *cs=
+tate,
+>  	strhashval =3D ownerstr_hashval(&open->op_owner);
+>  	oo =3D find_openstateowner_str(strhashval, open, clp);
+>  	open->op_openowner =3D oo;
+> -	if (!oo) {
+> +	if (!oo)
+>  		goto new_owner;
+> -	}
+>  	if (!(oo->oo_flags & NFS4_OO_CONFIRMED)) {
+>  		/* Replace unconfirmed owners without checking for replay. */
+>  		release_openowner(oo);
+>  		open->op_openowner =3D NULL;
+>  		goto new_owner;
+>  	}
+> +	status =3D nfsd4_cstate_assign_replay(cstate, &oo->oo_owner);
+> +	if (status)
+> +		return status;
+>  	status =3D nfsd4_check_seqid(cstate, &oo->oo_owner, open->op_seqid);
+>  	if (status)
+>  		return status;
+> @@ -5350,6 +5355,9 @@ nfsd4_process_open1(struct nfsd4_compound_state *csta=
+te,
+>  	if (oo =3D=3D NULL)
+>  		return nfserr_jukebox;
+>  	open->op_openowner =3D oo;
+> +	status =3D nfsd4_cstate_assign_replay(cstate, &oo->oo_owner);
+> +	if (status)
+> +		return status;
+>  alloc_stateid:
+>  	open->op_stp =3D nfs4_alloc_open_stateid(clp);
+>  	if (!open->op_stp)
+> @@ -6121,12 +6129,8 @@ nfsd4_process_open2(struct svc_rqst *rqstp, struct s=
+vc_fh *current_fh, struct nf
+>  void nfsd4_cleanup_open_state(struct nfsd4_compound_state *cstate,
+>  			      struct nfsd4_open *open)
+>  {
+> -	if (open->op_openowner) {
+> -		struct nfs4_stateowner *so =3D &open->op_openowner->oo_owner;
+> -
+> -		nfsd4_cstate_assign_replay(cstate, so);
+> -		nfs4_put_stateowner(so);
+> -	}
+> +	if (open->op_openowner)
+> +		nfs4_put_stateowner(&open->op_openowner->oo_owner);
+>  	if (open->op_file)
+>  		kmem_cache_free(file_slab, open->op_file);
+>  	if (open->op_stp)
+> @@ -7193,9 +7197,9 @@ nfs4_preprocess_seqid_op(struct nfsd4_compound_state =
+*cstate, u32 seqid,
+>  	if (status)
+>  		return status;
+>  	stp =3D openlockstateid(s);
+> -	nfsd4_cstate_assign_replay(cstate, stp->st_stateowner);
+> -
+> -	status =3D nfs4_seqid_op_checks(cstate, stateid, seqid, stp);
+> +	status =3D nfsd4_cstate_assign_replay(cstate, stp->st_stateowner);
+> +	if (!status)
+> +		status =3D nfs4_seqid_op_checks(cstate, stateid, seqid, stp);
+>  	if (!status)
+>  		*stpp =3D stp;
+>  	else
+>=20
+> ---
+> base-commit: 2eb3d14898b97bdc0596d184cbf829b5a81cd639
+> change-id: 20240229-rp_mutex-d20e3319e315
+>=20
+> Best regards,
+> --=20
+> Jeff Layton <jlayton@kernel.org>
+>=20
+>=20
 
-Hi all,
+I haven't reviewed this thoroughly but I think it is heading in the
+right direction.
+I think moving the nfsd4_cstate_assign_replay() call out of
+nfsd4_cleanup_open_state() and into nfsd4_process_open1() is a really
+good idea and possible should be a separate patch.
 
-The following commits are also in Linus Torvalds' tree as different
-commits (but the same patches):
+I wonder if return NFS4ERR_DELAY is really best.
 
-  2d958ee64d5e ("Bluetooth: qca: Fix triggering coredump implementation")
-  30a746ee2438 ("Bluetooth: Enforce validation on max value of connection i=
-nterval")
-  464f888b0534 ("Bluetooth: hci_sync: Check the correct flag before startin=
-g a scan")
-  5197b25a3803 ("Bluetooth: hci_sync: Fix accept_list when attempting to su=
-spend")
-  51fda2df0c7a ("Bluetooth: mgmt: Fix limited discoverable off timeout")
-  571dd44ebd09 ("Bluetooth: hci_event: Fix wrongly recorded wakeup BD_ADDR")
-  5befbb8e4260 ("Bluetooth: hci_event: Fix handling of HCI_EV_IO_CAPA_REQUE=
-ST")
-  83fd7383955f ("Bluetooth: hci_bcm4377: do not mark valid bd_addr as inval=
-id")
-  b44647f271b1 ("Bluetooth: Avoid potential use-after-free in hci_error_res=
-et")
-  c64e95bdf43b ("Bluetooth: rfcomm: Fix null-ptr-deref in rfcomm_check_secu=
-rity")
-  dae9093faed4 ("Bluetooth: qca: Fix wrong event type for patch config comm=
-and")
-  e8aacc745769 ("Bluetooth: hci_qca: Set BDA quirk bit if fwnode exists in =
-DT")
+I imagine replacing rp_mutex with an atomic_t rp_locked.
+This is normally 0, becomes 1 when nfsd4_cstate_assign_replay()
+succeeds, and is set to 2 in move_to_close_lru().
+In nfsd4_cstate_assign_replay() we wait while the value is 1.
+If it becomes 0, we can get the lock and continue.
+If it becomes 2, we return an error.
+If this happens, the state has been unhashed.  So instead of returning
+NFS4ERR_DELAY we can loop back and repeat the nfsd4_lookup_stateid() or
+find_openstateowner_str(), which we can be certain won't find the same
+owner.
 
---=20
-Cheers,
-Stephen Rothwell
+I started writing this, but stumbled over the
+nfsd4_cstate_assign_replay() in nfsd4_cleanup_open_state().  Now that
+you've shown me how to fix that, I'll have another go.
 
---Sig_/fz6vq1oknyxue1rEE73yG/l
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXhBGMACgkQAVBC80lX
-0GzhywgAlsozYk9dDmcDsEh+LYKKxM2GkRHJGK0NyHhvZyycJncgy5S6dc5BjNNC
-Dg1t2msAJhJrCkroVoSTNjEGuH1HZl3PQvtZ0Hj41SC67oV4DIFTHi29ddWZrfAs
-5XKz/BvyXWKlDHR4lGZU5JOnEuYCdgefLIjkQJYuVsXfT9AeubETmtVVi36anNXx
-WpsH40u+2lXqbQEmpzkCk5r0QMM22rMHQ9trx2WjKQ3xGQ8Ola8STq14EBxA9nXa
-aGDt/o72ZnN1hHnrmIozO0JsjH15VKNp1MF7HcQ2v8d2wSS6LVnEL+IRWDr2Mirl
-nTDw3doGUzcrmIa7oCRM9+iVxdEAmA==
-=/tlo
------END PGP SIGNATURE-----
-
---Sig_/fz6vq1oknyxue1rEE73yG/l--
+Thanks,
+NeilBrown
 
