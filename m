@@ -1,103 +1,87 @@
-Return-Path: <linux-kernel+bounces-87155-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87154-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63FC386D05D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:18:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A63D86D05B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:18:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 170161F22A7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:18:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8CB4E1C21823
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:18:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 645D370AC4;
-	Thu, 29 Feb 2024 17:18:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F231A6CC0E;
+	Thu, 29 Feb 2024 17:18:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="VBYTBo5T"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C30cjscs"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41EDC5E082;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FFBE4AED8;
 	Thu, 29 Feb 2024 17:18:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709227108; cv=none; b=RKLgK5tRDyHnMYrUOb1tR53u9H/K6YXWviFFg+3Q5QHx5XI7EYe80Y8mz3jkLZMtGfJHbMOCqUcWg7kxW0IzPqiEpfNNCD0Vi4LKvT2G/UC+K49NJWeT8nNeg+Fu/L504IL/coEiYOnukRqnFyh+yzXqkfAN07NYKGG88gIr3sA=
+	t=1709227108; cv=none; b=WQudx63kkEPlP8HIPKeA8dUk7xk5/+WpUR+Lm8e0Uobde7esXJ/zqvh1Eh3mj+mB9cdqI0eyo4JxBm4Ghe08XPymTNkvDW4XBb1aIxd4gkceM1mwUbY2OD4D76GjlrLtjFq06sH9o2nR5hEtFbP8UHiAEGbR8gH0IH1a+hv9JoA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1709227108; c=relaxed/simple;
-	bh=wLFkbz3gkSljFGtwkfV2wWbaprCVgevB+4kcM+B8hRM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FTLuM7qtkjK7QKrO6t9FFWYiNlp9kzyRpixL4wGzKWlDr7sCbyk4vgdfqKBCkmRvemZb90mdWK5UliFVZH6ur1HhLHK2GJA+pL+7E7HZ1fFvi9BECtRb+6y3aJsN6KH37R3GuizjAOiHFlHCkHyFDXrhBRbA6Ovsz6Br0OrhIss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=VBYTBo5T; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=nDTd85D0N7TgWSzEKq+BxgNnlzgmZW1OM2gxs9VR3ZY=; b=VBYTBo5TjEwXvKL7n0GEU/Bl4R
-	qlsi7iODH1JwrBMD+xa9T0IEeF+ITk8FVf1E3AWKHXTguVNnaB0m7XV/71KwVaCTFpvn5whbFRyi2
-	EoHvxhoXmXLjV3vOjie/Uc5vH6rfpUgFw0FAOIjvKHPCX6idla2gYa/5a9CyD46UOrt4=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rfk34-0093vZ-5V; Thu, 29 Feb 2024 18:18:22 +0100
-Date: Thu, 29 Feb 2024 18:18:22 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: forbidden405@outlook.com
-Cc: Yisen Zhuang <yisen.zhuang@huawei.com>,
-	Salil Mehta <salil.mehta@huawei.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH net-next v6 07/11] dt-bindings: net: hisi-femac: replace
- deprecated phy-mode with recommended phy-connection-type
-Message-ID: <1cba5245-08c7-43b0-8ae3-11db52e036aa@lunn.ch>
-References: <20240228-net-v6-0-6d78d3d598c1@outlook.com>
- <20240228-net-v6-7-6d78d3d598c1@outlook.com>
+	bh=+ZMo9iEMsSfz6V8Ou27C1FUbJqgrktdBSS/LmjvzYAo=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=lK7/kiCF1WRURLM6ux4IfVEzhmBK/YcvyxmJXxZZDg7RR977uVgBKOC6lUHwO5vVM/cKqqudSGhYUQi0n1RjmHqXWYd7GGyKMBD13EyOw90xw5DUFRh8vuSB2p2kTFmq6m/BwNl7K8qqQdLpmgFtiwys98O7K3/2E7aPrNQWd8k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C30cjscs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DA16C433F1;
+	Thu, 29 Feb 2024 17:18:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709227107;
+	bh=+ZMo9iEMsSfz6V8Ou27C1FUbJqgrktdBSS/LmjvzYAo=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=C30cjscst84mSSST8nBsirG+OfbAQON5hFMVORfzIaT1fNwG5X2+Eo6SpO4rI7iJs
+	 xpe9SXUxPA2WiVTbFKr2YOw6Ocub3AxcAqNwQHOa+qt7b7nUrT3YhZjbiQWmY18Y6X
+	 b4/yNIMexku+SIWin/2r1UxmIxA0+JQx+h0NgWyYexKVW4RaSLmbHm58ngpsnbfnR3
+	 Erb/sTy3XbNfAbA5gQzsjrBkZgTIDiOtKUSK7+qkGdSyxF71kv+Z3xwia2VpVlLCvG
+	 sHVznouwYKssgYFofqxmogJ4JYHg5WPCPWPrxuRFj2aF/UcO5oI3G7tRwps0B5YiwP
+	 rGqIFLAUDa7KA==
+From: Lee Jones <lee@kernel.org>
+To: Pavel Machek <pavel@ucw.cz>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
+Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+ Matthias Brugger <matthias.bgg@gmail.com>, linux-leds@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ linux-kernel@vger.kernel.org, 
+ =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>
+In-Reply-To: <20240223112223.1368-1-zajec5@gmail.com>
+References: <20240223112223.1368-1-zajec5@gmail.com>
+Subject: Re: (subset) [PATCH] dt-bindings: leds: Add
+ LED_FUNCTION_WAN_ONLINE for Internet access
+Message-Id: <170922710524.1611805.15418765168874516395.b4-ty@kernel.org>
+Date: Thu, 29 Feb 2024 17:18:25 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240228-net-v6-7-6d78d3d598c1@outlook.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.12.4
 
-On Wed, Feb 28, 2024 at 05:02:31PM +0800, Yang Xiwen via B4 Relay wrote:
-> From: Yang Xiwen <forbidden405@outlook.com>
+On Fri, 23 Feb 2024 12:22:23 +0100, Rafał Miłecki wrote:
+> It's common for routers to have LED indicating link on the WAN port.
 > 
-> The old property "phy-mode" should be replaced with the latest
-> "phy-connection-type".
+> Some devices however have an extra LED that's meant to be used if WAN
+> connection is actually "online" (there is Internet access available).
+> 
+> It was suggested to add #define for such use case.
+> 
+> [...]
 
-In practice, phy-mode is typically used, and phy-connection-type is
-not used much. All new user tend to be phy-mode.
+Applied, thanks!
 
-~/linux$ grep -r phy-mode arch/* | wc
-   1561    6258  113122
-~/linux$ grep -r phy-connection-type arch/* | wc
-    372    1489   28981
+[1/1] dt-bindings: leds: Add LED_FUNCTION_WAN_ONLINE for Internet access
+      commit: c0ef9799df8756968c236720658e492fbe636064
 
-Most of the phy-connection-type appear in PowerPC.
+--
+Lee Jones [李琼斯]
 
-~/linux$ grep -r phy-connection-type arch/powerpc/* | wc
-    247     990   18335
-
-It was the early adopter of DT, long before ARM. The DT standard of
-the time, which PowerPC followed, said to use
-phy-connection-type. When ARM started using DT, it did not follow the
-standard too well, and phy-mode got used a lot. Officially, phy-mode
-is deprecated because it is not part of the standard. But practice
-does not always follow the standard.
-
-So both are O.K, all the generic code accepts both, and there is no
-real reason to change.
-
-	Andrew
 
