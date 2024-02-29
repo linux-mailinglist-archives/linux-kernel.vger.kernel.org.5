@@ -1,295 +1,141 @@
-Return-Path: <linux-kernel+bounces-87616-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87617-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EA5986D68C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 23:05:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38A9886D693
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 23:08:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 727011C21D47
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:05:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 991B6284623
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:08:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8E0D6D536;
-	Thu, 29 Feb 2024 22:05:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F266B74BE1;
+	Thu, 29 Feb 2024 22:08:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=inwind.it header.i=@inwind.it header.b="mOa9X+RF"
-Received: from libero.it (smtp-16.italiaonline.it [213.209.10.16])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="ex91U2FX"
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 433D216FF21
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 22:05:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.209.10.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5775E2FC35;
+	Thu, 29 Feb 2024 22:08:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709244326; cv=none; b=spL0kvQLiH8ZOugpamYHnywMXn7vKS2uNk/vefvNLKqKO69P+fb5WQe2/tvG/dC/QQ2/pNVNpXpWkyFPZLB4Yvjz+Q4czEFTcseDgo+y761AEHvoCr2+yH8ckomOH/XqHc7tLAE52pWq3SQaXHFY4xoHKsvKYPsDe9OaLos5Yzs=
+	t=1709244488; cv=none; b=tAYc6sqJYKcrVDeRMQOfuwxT4jfR5jDeYqC0qwXNiJBcu6XiH38UKTiiofwIpK+5ePn0tKsMl/2F/XTmQI5CHnCYCTsOHDNjhL9943Nr3ahZ4ReWm5Q1btsIItkNCyCs4PzF5mle7qdSWzZGjuMhuZpG8Ix2Hy1XE7jvhPG9Pfo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709244326; c=relaxed/simple;
-	bh=WH9N2nGE9wF9zeEhcX5YQJXmxdCM+BrtfCHSzAb23pE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EYix4Xtt9HERIyCYpM9ErVEZg2ki4+gZT2DOQort+xKL2zzISOKxw/DCm7huaf8AJtjxPJVyi51ZPYyzxYkq1dSeFbcKNaH+VSI6dzgPKDW8b7Bf1ib/Xnd5ra5L1HLXxHKzp2lLmI5A7ZlvgtrZAdfNDXu4V6Wglaf0Muf28j8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=inwind.it; spf=pass smtp.mailfrom=inwind.it; dkim=pass (2048-bit key) header.d=inwind.it header.i=@inwind.it header.b=mOa9X+RF; arc=none smtp.client-ip=213.209.10.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=inwind.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inwind.it
-Received: from [192.168.1.27] ([84.220.171.3])
-	by smtp-16.iol.local with ESMTPA
-	id foWlrHHVGQc3jfoWlrPW3C; Thu, 29 Feb 2024 23:05:20 +0100
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
-	t=1709244320; bh=7JoWB01ufRE74I5GTXo+K0ciaCmPX3Y8/xI5JEkDWl0=;
-	h=From;
-	b=mOa9X+RFLOKx0GliWr4UvYNIcGBchwoV68Co3xehNjSdpX0e3kq0YGbGMckPbFy+6
-	 cerA4pN7npa8cUv6jUzL1HxXJp+zWzOxe4s19XnINdYHIZJxSpGmNboq8SoehDVhwH
-	 03SoujRY4gqsx3i2As7tULt3JGofyWotP1mOyPVFR3XeGiLUO6GT5pP3GlZ412kkHa
-	 9SOulFrLfOwrn/XgAgG/ZQH+TolQasovSc68dXVy2AgpZmzBUiDpmYTXfhVtFgclfa
-	 UPFwpQhzlnWqOxDf6GtcSpvvclQQrTs2SEM0JZ7kSewGRI9/zLE3gKvr9q7csNOl0p
-	 9Y20qj+0fWxGw==
-X-CNFS-Analysis: v=2.4 cv=eux8zZpX c=1 sm=1 tr=0 ts=65e0ffa0 cx=a_exe
- a=hciw9o01/L1eIHAASTHaSw==:117 a=hciw9o01/L1eIHAASTHaSw==:17
- a=IkcTkHD0fZMA:10 a=p0WdMEafAAAA:8 a=U-wgw_aUbNXxtflkicMA:9 a=3ZKOabzyN94A:10
- a=QEXdDO2ut3YA:10 a=CEsIH-8HjQcA:10 a=EFd53GHqFYiFSGm04UA1:22
-Message-ID: <a783e5ed-db56-4100-956a-353170b1b7ed@inwind.it>
-Date: Thu, 29 Feb 2024 23:05:19 +0100
+	s=arc-20240116; t=1709244488; c=relaxed/simple;
+	bh=uY0SdBM/VL4JmHHpdHpZrHSim56nTzaGwt5Kz9E62dI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=d4B/cIZ33EEngZHEqUytWpSjYzjDovT5jeRt2Fq4BjZw68KQ7or2AQV30DfEFeKPt43Nvg7OOLZsVA7NQVDIvXaWuA2HY2kJi5p7/fzwTvzqh3iTdhFnIikMXSQJNM25JkxlFpaX5vF+Hj0xS2Yx8mYw7S/SXTjpr2DzmLh0xhA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=ex91U2FX; arc=none smtp.client-ip=217.70.183.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 14D6B40003;
+	Thu, 29 Feb 2024 22:08:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709244483;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=lxqQl5JTSihBQCaBo7S//KD0ZOrQomn+RcL0KtFjsNA=;
+	b=ex91U2FX0jOv717asqGerNnjDv8U2tCTG4E+jk1iseh7/OnPOIckArxVkitEyHGy1vjeEw
+	QFwQfHjtjAvW1lOqt1m4Xf17gwNSGK+HUU7LsDjQ9g3WO9pBaC9+Sy5yZm9P4pYd1nCgKt
+	Blxnv6hlTUlvor3ff1S8aNawNJwMzL6r/V5w1AJMKHJCU30B/POs4672vC4vildRRtQoZ7
+	dtSkryTNdVn4oNnqUTjlPJWioBAI45kS8VQng1J/1a0vfw7GVA8yUjnasE9Kx9PZ9vQkeH
+	DDH76pcdRotIDH2JlrLEJfK8eUVzkIJ1sniuGyxToOalKv1h2lsIIuWMvdebrQ==
+Date: Thu, 29 Feb 2024 23:08:02 +0100
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+To: "A. Sverdlin" <alexander.sverdlin@siemens.com>
+Cc: linux-rtc@vger.kernel.org,
+	Lukas Stockmann <lukas.stockmann@siemens.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rtc: pcf85063: do a SW reset after rtc power fail
+Message-ID: <2024022922080217cbe165@mail.local>
+References: <20240227131436.3342807-1-alexander.sverdlin@siemens.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: kreijack@inwind.it
-Subject: Re: [REGRESSION] LVM-on-LVM: error while submitting device barriers
-Content-Language: en-US
-To: Patrick Plenefisch <simonpatp@gmail.com>
-Cc: stable@vger.kernel.org, linux-kernel@vger.kernel.org,
- Alasdair Kergon <agk@redhat.com>, Mike Snitzer <snitzer@kernel.org>,
- Mikulas Patocka <mpatocka@redhat.com>, Chris Mason <clm@fb.com>,
- Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
- regressions@lists.linux.dev, dm-devel@lists.linux.dev,
- linux-btrfs@vger.kernel.org
-References: <CAOCpoWc_HQy4UJzTi9pqtJdO740Wx5Yd702O-mwXBE6RVBX1Eg@mail.gmail.com>
- <CAOCpoWf3TSQkUUo-qsj0LVEOm-kY0hXdmttLE82Ytc0hjpTSPw@mail.gmail.com>
- <CAOCpoWeNYsMfzh8TSnFqwAG1BhAYnNt_J+AcUNqRLF7zmJGEFA@mail.gmail.com>
- <672e88f2-8ac3-45fe-a2e9-730800017f53@libero.it>
- <CAOCpoWexiuYLu0fpPr71+Uzxw_tw3q4HGF9tKgx5FM4xMx9fWA@mail.gmail.com>
- <a1e30dab-dfde-418e-a0dd-3e294838e839@inwind.it>
- <CAOCpoWeB=2j+n+5K5ytj2maZxdrV80cxJcM5CL=z1bZKgpXPWQ@mail.gmail.com>
-From: Goffredo Baroncelli <kreijack@inwind.it>
-In-Reply-To: <CAOCpoWeB=2j+n+5K5ytj2maZxdrV80cxJcM5CL=z1bZKgpXPWQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfNqcLHk+pE4wHu/qk8irv70ZVHY76ly3H5UQjYaPVPJgqhzk8jIBU9DmO3r299cZrbhVPhUc2nqgB84zm7RaGdzrWSbtKHVDCGitCX1Px4wCLfYfauvu
- VqxQ6mFzBt85iY2BCcb7CJgUhfXL7zIedQxaK480T4BpmdQbwKf/oRuDRr1epZFlYOamIDmrHPxZqBtg7uN1omKVoyq8rAXJuEjL79qsFZnYx3PRrwIceOPh
- n0SNS9NQsj9MZDASyCLZp+0bGfj61gI/C/8FW+bhBQgm9KYnpGQAr07ZAaDY/D74RFHCVuvA+3fDUJwFK1FJjzfKU4m4WZiwIbElkYAdId6YJe243pM9iwgC
- Dk0vT5yJz1oJLjqEVt9WIG4+DCgRKIYZSsmpb09EWkFDElg17FTTuRB71ZPlJAsXv3hW95q1eSALtMLDsINwhoh8ckac7xUkkkZEtndhYb0vZ77pzQYuzSn5
- DT0S+SBoQG40oAB/aOM1molcPnrLY1ujGymfGONKUvBouZzQktYtQxC/caVta5sw/m+vXwAFCtHJN6Zv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240227131436.3342807-1-alexander.sverdlin@siemens.com>
+X-GND-Sasl: alexandre.belloni@bootlin.com
 
-On 29/02/2024 21.22, Patrick Plenefisch wrote:
-> On Thu, Feb 29, 2024 at 2:56 PM Goffredo Baroncelli <kreijack@inwind.it> wrote:
->>
->>> Your understanding is correct. The only thing that comes to my mind to
->>> cause the problem is asymmetry of the SATA devices. I have one 8TB
->>> device, plus a 1.5TB, 3TB, and 3TB drives. Doing math on the actual
->>> extents, lowerVG/single spans (3TB+3TB), and
->>> lowerVG/lvmPool/lvm/brokenDisk spans (3TB+1.5TB). Both obviously have
->>> the other leg of raid1 on the 8TB drive, but my thought was that the
->>> jump across the 1.5+3TB drive gap was at least "interesting"
->>
->>
->> what about lowerVG/works ?
->>
+On 27/02/2024 14:14:32+0100, A. Sverdlin wrote:
+> From: Lukas Stockmann <lukas.stockmann@siemens.com>
 > 
-> That one is only on two disks, it doesn't span any gaps
+> From PCF85063A datasheet, section "Software reset":
+> 
+> "There is a low probability that some devices will have corruption of the
+> registers after the automatic power-on reset if the device is powered up
+> with a residual VDD level. It is required that the VDD starts at zero volts
+> at power up or upon power cycling to ensure that there is no corruption of
+> the registers. If this is not possible, a reset must be initiated after
+> power-up (i.e. when power is stable) with the software reset command"
+> 
+> Trigger SW reset if a power loss is detected.
+> 
+> Link: https://www.nxp.com/docs/en/data-sheet/PCF85063A.pdf
+> Signed-off-by: Lukas Stockmann <lukas.stockmann@siemens.com>
+> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@siemens.com>
+> ---
+>  drivers/rtc/rtc-pcf85063.c | 19 ++++++++++++++++++-
+>  1 file changed, 18 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/rtc/rtc-pcf85063.c b/drivers/rtc/rtc-pcf85063.c
+> index fdbc07f14036..edfd75d18e19 100644
+> --- a/drivers/rtc/rtc-pcf85063.c
+> +++ b/drivers/rtc/rtc-pcf85063.c
+> @@ -35,6 +35,7 @@
+>  #define PCF85063_REG_CTRL1_CAP_SEL	BIT(0)
+>  #define PCF85063_REG_CTRL1_STOP		BIT(5)
+>  #define PCF85063_REG_CTRL1_EXT_TEST	BIT(7)
+> +#define PCF85063_REG_CTRL1_SWR		0x58
+>  
+>  #define PCF85063_REG_CTRL2		0x01
+>  #define PCF85063_CTRL2_AF		BIT(6)
+> @@ -580,7 +581,7 @@ static int pcf85063_probe(struct i2c_client *client)
+>  
+>  	i2c_set_clientdata(client, pcf85063);
+>  
+> -	err = regmap_read(pcf85063->regmap, PCF85063_REG_CTRL1, &tmp);
+> +	err = regmap_read(pcf85063->regmap, PCF85063_REG_SC, &tmp);
+>  	if (err) {
+>  		dev_err(&client->dev, "RTC chip is not present\n");
+>  		return err;
+> @@ -590,6 +591,22 @@ static int pcf85063_probe(struct i2c_client *client)
+>  	if (IS_ERR(pcf85063->rtc))
+>  		return PTR_ERR(pcf85063->rtc);
+>  
+> +	/*
+> +	 * If a Power loss is detected, SW reset the device.
+> +	 * From PCF85063A datasheet:
+> +	 * There is a low probability that some devices will have corruption
+> +	 * of the registers after the automatic power-on reset...
+> +	 */
+> +	if (tmp & PCF85063_REG_SC_OS) {
+> +		dev_warn(&client->dev,
+> +			 "Power loss detected, send a SW reset to the device\n");
+> +		err = regmap_write(pcf85063->regmap, PCF85063_REG_CTRL1,
+> +				PCF85063_REG_CTRL1_SWR);
+> +		if (err < 0)
+> +			dev_err(&client->dev,
+> +				"SW reset failed, trying to continue\n");
+> +	}
 
-Sorry, but re-reading the original email I found something that I missed before:
+Doing this in probe is putting a band-aid on a wooden leg as you are not
+guaranteed you will have a probe to catch this case. This should be
+rather done in pcf85063_rtc_set_time but it comes with its own set of
+issues because this probably requires to reconfigure most of the chip
+which is conveniently done in probe. And then it will introduce varance
+in the time taken to set_time which is generally bad if you care about
+sub second precision.
 
-> BTRFS error (device dm-75): bdev /dev/mapper/lvm-brokenDisk errs: wr
-> 0, rd 0, flush 1, corrupt 0, gen 0
-> BTRFS warning (device dm-75): chunk 13631488 missing 1 devices, max
-                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> tolerance is 0 for writable mount
-> BTRFS: error (device dm-75) in write_all_supers:4379: errno=-5 IO
-> failure (errors while submitting device barriers.)
-
-Looking at the code, it seems that if a FLUSH commands fails, btrfs
-considers that the disk is missing. The it cannot mount RW the device.
-
-I would investigate with the LVM developers, if it properly passes
-the flush/barrier command through all the layers, when we have an
-lvm over lvm (raid1). The fact that the lvm is a raid1, is important because
-a flush command to be honored has to be honored by all the
-devices involved.
-
-
-> 
->> However yes, I agree that the pair of disks involved may be the answer
->> of the problem.
->>
->> Could you show us the output of
->>
->> $ sudo pvdisplay -m
->>
->>
-> 
-> I trimmed it, but kept the relevant bits (Free PE is thus not correct):
-> 
-> 
->    --- Physical volume ---
->    PV Name               /dev/lowerVG/lvmPool
->    VG Name               lvm
->    PV Size               <3.00 TiB / not usable 3.00 MiB
->    Allocatable           yes
->    PE Size               4.00 MiB
->    Total PE              786431
->    Free PE               82943
->    Allocated PE          703488
->    PV UUID               7p3LSU-EAHd-xUg0-r9vT-Gzkf-tYFV-mvlU1M
-> 
->    --- Physical Segments ---
->    Physical extent 0 to 159999:
->      Logical volume      /dev/lvm/brokenDisk
->      Logical extents     0 to 159999
->    Physical extent 160000 to 339199:
->      Logical volume      /dev/lvm/a
->      Logical extents     0 to 179199
->    Physical extent 339200 to 349439:
->      Logical volume      /dev/lvm/brokenDisk
->      Logical extents     160000 to 170239
->    Physical extent 349440 to 351999:
->      FREE
->    Physical extent 352000 to 460026:
->      Logical volume      /dev/lvm/brokenDisk
->      Logical extents     416261 to 524287
->    Physical extent 460027 to 540409:
->      FREE
->    Physical extent 540410 to 786430:
->      Logical volume      /dev/lvm/brokenDisk
->      Logical extents     170240 to 416260
-> 
-> 
->    --- Physical volume ---
->    PV Name               /dev/sda3
->    VG Name               lowerVG
->    PV Size               <2.70 TiB / not usable 3.00 MiB
->    Allocatable           yes
->    PE Size               4.00 MiB
->    Total PE              707154
->    Free PE               909
->    Allocated PE          706245
->    PV UUID               W8gJ0P-JuMs-1y3g-b5cO-4RuA-MoFs-3zgKBn
-> 
->    --- Physical Segments ---
->    Physical extent 0 to 52223:
->      Logical volume      /dev/lowerVG/single_corig_rimage_0_iorig
->      Logical extents     629330 to 681553
->    Physical extent 52224 to 628940:
->      Logical volume      /dev/lowerVG/single_corig_rimage_0_iorig
->      Logical extents     0 to 576716
->    Physical extent 628941 to 628941:
->      Logical volume      /dev/lowerVG/single_corig_rmeta_0
->      Logical extents     0 to 0
->    Physical extent 628942 to 628962:
->      Logical volume      /dev/lowerVG/single_corig_rimage_0_iorig
->      Logical extents     681554 to 681574
->    Physical extent 628963 to 634431:
->      Logical volume      /dev/lowerVG/single_corig_rimage_0_imeta
->      Logical extents     0 to 5468
->    Physical extent 634432 to 654540:
->      FREE
->    Physical extent 654541 to 707153:
->      Logical volume      /dev/lowerVG/single_corig_rimage_0_iorig
->      Logical extents     576717 to 629329
-> 
->    --- Physical volume ---
->    PV Name               /dev/sdf2
->    VG Name               lowerVG
->    PV Size               <7.28 TiB / not usable 4.00 MiB
->    Allocatable           yes
->    PE Size               4.00 MiB
->    Total PE              1907645
->    Free PE               414967
->    Allocated PE          1492678
->    PV UUID               my0zQM-832Z-HYPD-sNfW-68ms-nddg-lMyWJM
-> 
->    --- Physical Segments ---
->    Physical extent 0 to 0:
->      Logical volume      /dev/lowerVG/single_corig_rmeta_1
->      Logical extents     0 to 0
->    Physical extent 1 to 681575:
->      Logical volume      /dev/lowerVG/single_corig_rimage_1_iorig
->      Logical extents     0 to 681574
->    Physical extent 681576 to 687044:
->      Logical volume      /dev/lowerVG/single_corig_rimage_1_imeta
->      Logical extents     0 to 5468
->    Physical extent 687045 to 687045:
->      Logical volume      /dev/lowerVG/lvmPool_rmeta_0
->      Logical extents     0 to 0
->    Physical extent 687046 to 1049242:
->      Logical volume      /dev/lowerVG/lvmPool_rimage_0
->      Logical extents     0 to 362196
->    Physical extent 1049243 to 1056551:
->      FREE
->    Physical extent 1056552 to 1473477:
->      Logical volume      /dev/lowerVG/lvmPool_rimage_0
->      Logical extents     369506 to 786431
->    Physical extent 1473478 to 1480786:
->      Logical volume      /dev/lowerVG/lvmPool_rimage_0
->      Logical extents     362197 to 369505
->    Physical extent 1480787 to 1907644:
->      FREE
-> 
->    --- Physical volume ---
->    PV Name               /dev/sdb3
->    VG Name               lowerVG
->    PV Size               1.33 TiB / not usable 3.00 MiB
->    Allocatable           yes (but full)
->    PE Size               4.00 MiB
->    Total PE              349398
->    Free PE               0
->    Allocated PE          349398
->    PV UUID               Ncmgdw-ZOXS-qTYL-1jAz-w7zt-38V2-f53EpI
-> 
->    --- Physical Segments ---
->    Physical extent 0 to 0:
->      Logical volume      /dev/lowerVG/lvmPool_rmeta_1
->      Logical extents     0 to 0
->    Physical extent 1 to 349397:
->      Logical volume      /dev/lowerVG/lvmPool_rimage_1
->      Logical extents     0 to 349396
-> 
-> 
->    --- Physical volume ---
->    PV Name               /dev/sde2
->    VG Name               lowerVG
->    PV Size               2.71 TiB / not usable 3.00 MiB
->    Allocatable           yes
->    PE Size               4.00 MiB
->    Total PE              711346
->    Free PE               255111
->    Allocated PE          456235
->    PV UUID               xUG8TG-wvp0-roBo-GPo7-sbvn-aE7I-NAHU07
-> 
->    --- Physical Segments ---
->    Physical extent 0 to 416925:
->      Logical volume      /dev/lowerVG/lvmPool_rimage_1
->      Logical extents     369506 to 786431
->    Physical extent 416926 to 437034:
->      Logical volume      /dev/lowerVG/lvmPool_rimage_1
->      Logical extents     349397 to 369505
->    Physical extent 437035 to 711345:
->      FREE
-> 
-> 
-> Finally, I am not sure if it's relevant, but I did struggle to expand
-> the raid1 volumes across gaps when creating this setup. I did file a
-> bug about that, though I am not sure if it's relevant, as I removed
-> integrity and cache for brokenDisk & lvmPool:
-> https://gitlab.com/lvmteam/lvm2/-/issues/6
-> 
-> Patrick
-> 
 
 -- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
-
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
