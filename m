@@ -1,113 +1,137 @@
-Return-Path: <linux-kernel+bounces-86422-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86424-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 586A886C525
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:29:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C0E3186C52D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:29:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7BD9E1C23190
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:29:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C23731C239D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:29:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CF5D5BACB;
-	Thu, 29 Feb 2024 09:28:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TYuNkIPj"
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79CB95CDE5;
+	Thu, 29 Feb 2024 09:29:53 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 127E45B697
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 09:28:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C46C5B698
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 09:29:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709198938; cv=none; b=CKC6khdiv3hb4Vd9sQKJxglfg1mwVqMe0DEYfSmNxJXmnpFIvV0NALCPokY5d6mOcfy0Acaj27WN89pymq66p9/6T3n/mmA1kJY8osMpl8eZKR4sRn4DQ1azFANYFd2eiCRCawYuFkYgKqQH6imAY9ILb97+sa5mH6cuqKxj3qI=
+	t=1709198993; cv=none; b=cPFKw393IpCOAH3WyIFnZCWFkUn2YvBLn2B3WGBdaCTOwLCPhOMxbBRW5twHC/0+V+6jHWq0/Zd3LrqV5ZA8VciPWKB4Wz/4aHfW+SVXeA5M44a3q8ryewYiCgXN3Sz0ziXfmSodR5HGdx9Cce8n1QYdeUHDMeceE0NYXZHaEXM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709198938; c=relaxed/simple;
-	bh=il/+MTSUB+hJ9/Qk/zhTY8kE7bR8Rhe3rQiBlSatDYc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oKUgV+tX2olTaK30uKKqwJ8y4OSqwHy8i2Vx913OpDR2yFZQ3oosdmPGLa9IclUp2m2bV1KQv6pkuERGG4WydnRyHDdii8PN9eR9WXlREnCsJRxH8J6xjX74uziXI3lx0+zFhq3WdutAwjsuDwsl89+PkAqkp+jbaMxoASq34M4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=TYuNkIPj; arc=none smtp.client-ip=209.85.219.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so670779276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 01:28:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709198936; x=1709803736; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lpnwZXvO+GxSiHd0a/DytgyertWwHVGU4iyf7Q6jgRw=;
-        b=TYuNkIPjMwzDHQdknFcZap2VRp457jPMtJDlOKTrctAkBWLQi4bK2SGCP2BZEl1Rq+
-         E0gA3YYj58ti5Duzm8HbzOG4gRNfoCtzM16hKtF+9B2WPMJVjkepl0FSh7J62ze0SOmG
-         LaLgb4IWlYioWh4MATdLMcmwEKWO9VRCoRUGooefg45aWtBJH/Y3Ny58TDlunKSijXAH
-         v5lAuOy2zJL9QdgQpaPwR3geDDFbwQWlXt5+aDJR48UrUXJDpUnB4a3dNlkJPIpHELab
-         P0WizjuSJk9yuwQ12ykZnqHygcaW2sNnQC/ojEmDgp0kdwLsR5zs9c9MUUC25j79wlIk
-         MTaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709198936; x=1709803736;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lpnwZXvO+GxSiHd0a/DytgyertWwHVGU4iyf7Q6jgRw=;
-        b=HZHYRbDKl6HsFiTxjU49Zm8vJKhj83L13x53kzxUlTiQfIj2PlmakZw2RuseZxRCDD
-         MafPyAG+iQvbMZYLmPkVsWOF214zIdxeEfwk2+NdFn1YSBhtr4SDyBQonWg5bGTafrCt
-         UZ14LGHX30O9BCRAzv8aAHpBf9gdXf/SFNxsKoM16uGWxSWwy4NcQ8SVqp4hVDBzftkw
-         tcSkIH9YLEAcB9U3T+fWrM2NEp7gSzcroPLSBCbuY+Zx19DXjxM6s9FX6GE//3zgm0sn
-         OCH31DTBDuJ9ZD2cS66BUMRo4tk5lBWMyOTn5jGuLKvSXAtEN2wQgHSUokkV3QkayJdS
-         BVFA==
-X-Forwarded-Encrypted: i=1; AJvYcCWxHyLtQdKoOKpeMeoxqG0fcOIQEcrkkWv/z8uXCrPpOeaxb1FzP8Xf5bl9EdOY1pnIZ3vn+vxRmf/i/o/zs0TM24F5b4cflAgia13V
-X-Gm-Message-State: AOJu0Yz4uz9myJX2s9xDvIbAvNTApD9Jx0gcgHlZG6JXpoaDw20qKMMI
-	ue/bK2sljdcMaVLDiYx960DJqq4ZMpFmd91/TXbgL8GL4htsoiax9th35TZGXq3UYyoCs1cjs15
-	XrbCkRSPvrNjHMRFjO4gtX10GcXgE1NRB/UlloA==
-X-Google-Smtp-Source: AGHT+IGIbl2TgaNavrw5wNoqVGLPJWdWimW4CCp6UKDlUrz43Cqlv3DtmfGj5h6AXkXD7KdYMCvm+9wtqdkrh8HvPfQ=
-X-Received: by 2002:a5b:445:0:b0:dcb:bff0:72b with SMTP id s5-20020a5b0445000000b00dcbbff0072bmr1559369ybp.31.1709198936052;
- Thu, 29 Feb 2024 01:28:56 -0800 (PST)
+	s=arc-20240116; t=1709198993; c=relaxed/simple;
+	bh=/OH3YPYtC647ehj04e0so/bjPUXbp25AoYAGQn5WjcA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=IWytCgqCYza44vl06pAyEnZDbpi9ugyG2bJ41g3oSrXtrl4nJqbPtOw3zSQ0C0F2hyFOcz7K3JNbnqxxNgnxckE/P+hXAbSnOBWerocgCweEyaqzTyuy33JcVBEgovV87lHQ+jG+EMzCYDAqPbC7bL0+3wyqqdRRTr3iGgUXxXw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 24b017bdb2e34ae8b18dac649537834a-20240229
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:080b2373-30c8-484d-a9e2-158fffc50fff,IP:20,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:5
+X-CID-INFO: VERSION:1.1.37,REQID:080b2373-30c8-484d-a9e2-158fffc50fff,IP:20,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:5
+X-CID-META: VersionHash:6f543d0,CLOUDID:8dbe57ff-c16b-4159-a099-3b9d0558e447,B
+	ulkID:240229172943HMO26OBX,BulkQuantity:0,Recheck:0,SF:38|24|17|19|44|64|6
+	6|102,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil,
+	BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-UUID: 24b017bdb2e34ae8b18dac649537834a-20240229
+Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
+	(envelope-from <chentao@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 619597757; Thu, 29 Feb 2024 17:29:41 +0800
+Received: from mail.kylinos.cn (localhost [127.0.0.1])
+	by mail.kylinos.cn (NSMail) with SMTP id 66BB4E000EBC;
+	Thu, 29 Feb 2024 17:29:41 +0800 (CST)
+X-ns-mid: postfix-65E04E85-347519924
+Received: from [172.20.15.254] (unknown [172.20.15.254])
+	by mail.kylinos.cn (NSMail) with ESMTPA id 40885E000EBC;
+	Thu, 29 Feb 2024 17:28:54 +0800 (CST)
+Message-ID: <d0ac1160-13ae-4753-a4c8-4d78056e923e@kylinos.cn>
+Date: Thu, 29 Feb 2024 17:28:53 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240228-mbly-gpio-v2-0-3ba757474006@bootlin.com> <20240228-mbly-gpio-v2-13-3ba757474006@bootlin.com>
-In-Reply-To: <20240228-mbly-gpio-v2-13-3ba757474006@bootlin.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 29 Feb 2024 10:28:45 +0100
-Message-ID: <CACRpkdb6cLAaAkYa=2Sz1G4t2yBRQcwPWsoQShdQ2JMcg+VaRQ@mail.gmail.com>
-Subject: Re: [PATCH v2 13/30] pinctrl: nomadik: follow conditional kernel
- coding conventions
-To: =?UTF-8?B?VGjDqW8gTGVicnVu?= <theo.lebrun@bootlin.com>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Philipp Zabel <p.zabel@pengutronix.de>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-mips@vger.kernel.org, Gregory CLEMENT <gregory.clement@bootlin.com>, 
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] powerpc/mm: Code cleanup for __hash_page_thp
+To: Michael Ellerman <mpe@ellerman.id.au>,
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, npiggin@gmail.com,
+ christophe.leroy@csgroup.eu, naveen.n.rao@linux.ibm.com
+Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <20240125092624.537564-1-chentao@kylinos.cn>
+ <87h6hva4b0.fsf@mail.lhotse>
+ <f3b53f0e-58ce-4b2d-ba91-f347da73f9f3@kylinos.cn>
+ <87jzmq5tjr.fsf@mail.lhotse> <87bk80kjup.fsf@kernel.org>
+ <87wmqng5dz.fsf@mail.lhotse>
+Content-Language: en-US
+From: Kunwu Chan <chentao@kylinos.cn>
+In-Reply-To: <87wmqng5dz.fsf@mail.lhotse>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 28, 2024 at 12:28=E2=80=AFPM Th=C3=A9o Lebrun <theo.lebrun@boot=
-lin.com> wrote:
+Thanks all for the reply.
+On 2024/2/29 14:18, Michael Ellerman wrote:
+> Aneesh Kumar K.V <aneesh.kumar@kernel.org> writes:
+>> Michael Ellerman <mpe@ellerman.id.au> writes:
+>>> Kunwu Chan <chentao@kylinos.cn> writes:
+>>>> On 2024/2/26 18:49, Michael Ellerman wrote:
+>>>>> Kunwu Chan <chentao@kylinos.cn> writes:
+>>>>>> This part was commented from commit 6d492ecc6489
+>>>>>> ("powerpc/THP: Add code to handle HPTE faults for hugepages")
+>>>>>> in about 11 years before.
+>>>>>>
+>>>>>> If there are no plans to enable this part code in the future,
+>>>>>> we can remove this dead code.
+>>>>>
+>>>>> I agree the code can go. But I'd like it to be replaced with a comment
+>>>>> explaining what the dead code was trying to say.
+>>>
+>>>> Thanks, i'll update a new patch with the following comment:
+>>>>       /*
+>>>>       * No CPU has hugepages but lacks no execute, so we
+>>>>       * don't need to worry about cpu no CPU_FTR_COHERENT_ICACHE feature case
+>>>>       */
+>>>
+>>> Maybe wait until we can get some input from Aneesh. I'm not sure the
+>>> code/comment are really up to date.
+>>
+>> How about?
+>>
+>> modified   arch/powerpc/mm/book3s64/hash_hugepage.c
+>> @@ -58,17 +58,13 @@ int __hash_page_thp(unsigned long ea, unsigned long access, unsigned long vsid,
+>>   		return 0;
+>>   
+>>   	rflags = htab_convert_pte_flags(new_pmd, flags);
+>> +	/*
+>> +	 * THPs are only supported on platforms that can do mixed page size
+>> +	 * segments (MPSS) and all such platforms have coherent icache. Hence we
+>> +	 * don't need to do lazy icache flush (hash_page_do_lazy_icache()) on
+>> +	 * noexecute fault.
+>> +	 */
+> 
+I'll use this comment in v2 patch.
+And add two Suggested-by: label for you.
 
-> Fix strict checkpatch warnings relative to if-else blocks and bool
-> expressions. Message types addressed:
->
->    CHECK: Comparison to NULL could be written "!nmk_cfg_params[index].cho=
-ice"
->    CHECK: Unbalanced braces around else statement
->    CHECK: Using comparison to false is error prone
->    CHECK: Using comparison to true is error prone
->    CHECK: braces {} should be used on all arms of this statement
->
-> Before: 0 errors, 1 warnings, 16 checks.
-> After:  0 errors, 1 warnings,  7 checks.
->
-> Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+> Yeah thanks that looks good.
+> 
+> It could say "see eg. __hash_page_4K()", but that's probably unnecessary
+> as it mentions hash_page_do_lazy_icache(), and anyone interested is just
+> going to grep for that anyway.
+> 
+> cheers
+-- 
+Thanks,
+   Kunwu
 
-Patch applied!
-
-Yours,
-Linus Walleij
 
