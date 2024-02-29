@@ -1,122 +1,86 @@
-Return-Path: <linux-kernel+bounces-85863-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85864-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F13C86BC77
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:02:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACFAD86BC7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:03:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70A951C2391D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:02:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 664D62876A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:03:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5501D23D2;
-	Thu, 29 Feb 2024 00:02:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6964115CE;
+	Thu, 29 Feb 2024 00:03:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="iQAAjyIW"
-Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kz3x1Mf7"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FEA21106
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 00:02:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFEC0627
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 00:03:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709164968; cv=none; b=JxUvGVShpkOi0BZ4H4DeZPCytgLs0uC0e3+/jhkqRBlBGaN8Mr+CRGwFJF+GnYdvT4S5oKnsiAGNexU+//yd5WoWUTRV0EBsBOHvikEwGvcVqDoi4UyPmymbF6iZT0SeCf8RQoRcz1NKpEDBFLT92vY6vKPS1w/iMcof7wMJETA=
+	t=1709164991; cv=none; b=O3naF0KOqPZ7V5izzB5QxVGE6Kqb4vPRwsynhl6kjfe9uFHonNzAtd2LxctnS2qahV+MTMIrZbPTnwqCKlru8p0N6z55NQ+L6zBKVHbgRuWdSVXlvdeNmqP1KRWrdRDFKdh1M8uIhI9yqGAB5WWI4hhFk06y4xIfss3LjNwsS6g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709164968; c=relaxed/simple;
-	bh=tH8Do06WsHG8uh7bIC0z1/jOfTEgMGtUd5RXQ5jyXwY=;
+	s=arc-20240116; t=1709164991; c=relaxed/simple;
+	bh=2eNs+NXleXBM3q2RwiONecNdyT91kbmW24oSBEL3gjg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZqwWCVGALaYlv1F5EbU3VlGxTMQWvfj1a12DeSv5c30H526NgeJEPG06yviCsOcW69SBGrZTAsIz5i4vpsD8Kt5sQuTkTicU5wHnhi14tQskDLk0igZ59kqJXdokOIzXPwbP9YlE5uyLBFXIwN/1SUnbcvs3euR35HgW+EIGEMA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=iQAAjyIW; arc=none smtp.client-ip=209.85.210.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-6e478057f1aso144767a34.3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 16:02:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709164966; x=1709769766; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=dzYFHNFtHHHpRZc8edEq8bHU8oqWM7vjNzOC9ZZj3Zw=;
-        b=iQAAjyIWjHzlp0w0zAz8XfTortXy50gEPPvXUInJQNpwa2nzLMHuBnYqRILTEpwNbi
-         GJFm+FilgeG+XUGAHAtwkUM4M3sEMT87s0zsdaXbf3Vz/MGUO0LzDopdH4+CbDPkG6L9
-         MFTXQyqmObj1eNFTbtl8xAFTIGsl3UADpscxE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709164966; x=1709769766;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dzYFHNFtHHHpRZc8edEq8bHU8oqWM7vjNzOC9ZZj3Zw=;
-        b=XFBB8S4YyfeG+NjHwDRjiq/EHnMaX28+rbVEzLEnHxJRb9GAiXJvBq6wENElKVJ5cn
-         FCfbROm51KVmOHOwU4Y91XG2dY7zPlVusipBZpmhI4EDNmikINw3MqiOelH76dJnQlzW
-         S74MNEO/ukjrvmxcqQUdeAean6AHir42qHo8HXmrcj2oyrrZsgulrZ8e36e1w53hWX2g
-         8oOtDeKbOAs353y5ODIPxC10k1D/C3+C+VugCefbeXlrIdBPQhDygyrdFrDdgrNV/Gi/
-         aSfjIQH3ihMfuYfzWM5A/237HfCeHaBRKBAFcAq2Pw1xsP40kZEwjGvciBtvKax4njgL
-         v02g==
-X-Forwarded-Encrypted: i=1; AJvYcCWuH3dirRC3Y8s2AE3sOT5XJ476QUmRtCPeYcT3mdbxee5tFImtNRuOU+k04iORjugfiMRLZYEFU0z4f5sYgAUP5Ztn2wPU2EEeOoGq
-X-Gm-Message-State: AOJu0YxN8Mondd2tTLl63SKEEMiHSB3SeWuCoQzKxOti2U6BmeudzBNf
-	IZARJ/R3+ZQsXW1stZsYCvtukrPiUw6aa7QNChfuoQG0yS68MX+mGcx+3vCwGw==
-X-Google-Smtp-Source: AGHT+IHqJ/JwJcpPTP9TpL7Xpyx58Z+NNG0bN9Bpx1sjxaHowFIn1a95cgyKBfJKxJgwJgp15rh7Lw==
-X-Received: by 2002:a9d:7acd:0:b0:6e4:787a:9bc5 with SMTP id m13-20020a9d7acd000000b006e4787a9bc5mr461484otn.14.1709164966200;
-        Wed, 28 Feb 2024 16:02:46 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id k3-20020a63d843000000b005dcbb855530sm61436pgj.76.2024.02.28.16.02.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 16:02:45 -0800 (PST)
-Date: Wed, 28 Feb 2024 16:02:45 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Justin Stitt <justinstitt@google.com>
-Cc: Sathya Prakash Veerichetty <sathya.prakash@broadcom.com>,
-	Kashyap Desai <kashyap.desai@broadcom.com>,
-	Sumit Saxena <sumit.saxena@broadcom.com>,
-	Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-	"James E.J. Bottomley" <jejb@linux.ibm.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Suganath Prabu Subramani <suganath-prabu.subramani@broadcom.com>,
-	Ariel Elior <aelior@marvell.com>,
-	Manish Chopra <manishc@marvell.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Saurav Kashyap <skashyap@marvell.com>,
-	Javed Hasan <jhasan@marvell.com>,
-	GR-QLogic-Storage-Upstream@marvell.com,
-	Nilesh Javali <njavali@marvell.com>,
-	Manish Rangankar <mrangankar@marvell.com>,
-	Don Brace <don.brace@microchip.com>,
-	mpi3mr-linuxdrv.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-	MPT-FusionLinux.pdl@broadcom.com, netdev@vger.kernel.org,
-	storagedev@microchip.com
-Subject: Re: [PATCH v2 1/7] scsi: mpi3mr: replace deprecated strncpy with
- assignments
-Message-ID: <202402281602.2750B1F2@keescook>
-References: <20240228-strncpy-drivers-scsi-mpi3mr-mpi3mr_fw-c-v2-0-dacebd3fcfa0@google.com>
- <20240228-strncpy-drivers-scsi-mpi3mr-mpi3mr_fw-c-v2-1-dacebd3fcfa0@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=HAxkfH4qXv6VT1toLv+IRoZpwzWRAHMQ8KLBr98dSrCy7SSOMjIdkr4/FKWp8F4qP90F4VdZMUllZFv1yt1ika76h5y4+TIwx7AQfJZjQj4G4H6CPQZAGGUb4QYt0P0H9utQmTuSzQwLm6fhjVFGtMiM+8tuUwGYD/fPbHKdSZk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kz3x1Mf7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8FBBC433F1;
+	Thu, 29 Feb 2024 00:03:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709164991;
+	bh=2eNs+NXleXBM3q2RwiONecNdyT91kbmW24oSBEL3gjg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Kz3x1Mf7vZMBEzfdWop9nxw6gIhMT4qJ3ja8RuMVdoZXD5zP6R/dOV7YgYyYoGhZ3
+	 bsA0LD+hyV6DYLSyr01vxFx7hi8zVBP+zPibn40vMU2C8lL5JfQrSVFr41Z10oee6S
+	 DHT49ltyMaufEeOOwxV7NQ/tJ+JjWXryb3t6rZkasfxfLjBAQz6Ibt11lrlWZn6ea5
+	 k7AWv+k/ksa+/r7pXrg+2c7ILEdKXoDPJXg2pI8jCmn6ia4xIJ0eEYA0/VuP1ywWCx
+	 Ve0MeblfA6mSU5ioqs3cshNHqUQo2/ysuYbH0wE8VtwxNv/P7vUeqrf4AktWSAvTZ2
+	 uHBMva28Qy8mw==
+Date: Wed, 28 Feb 2024 16:03:09 -0800
+From: Josh Poimboeuf <jpoimboe@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
+	linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+	Vince Weaver <vincent.weaver@maine.edu>, Dave Jones <dsj@fb.com>,
+	Jann Horn <jannh@google.com>, Miroslav Benes <mbenes@suse.cz>,
+	Andy Lutomirski <luto@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Nilay Vaish <nilayvaish@google.com>
+Subject: Re: [PATCH v2 06/11] x86/unwind/orc: Convert global variables to
+ static
+Message-ID: <20240229000309.ibtuk7gr27d7cbxz@treble>
+References: <cover.1587808742.git.jpoimboe@redhat.com>
+ <43ae310bf7822b9862e571f36ae3474cfde8f301.1587808742.git.jpoimboe@redhat.com>
+ <20240228183507.78c5f130@gandalf.local.home>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240228-strncpy-drivers-scsi-mpi3mr-mpi3mr_fw-c-v2-1-dacebd3fcfa0@google.com>
+In-Reply-To: <20240228183507.78c5f130@gandalf.local.home>
 
-On Wed, Feb 28, 2024 at 10:59:01PM +0000, Justin Stitt wrote:
-> Really, there's no bug with the current code. Let's just ditch strncpy()
-> all together.
+On Wed, Feb 28, 2024 at 06:35:07PM -0500, Steven Rostedt wrote:
+> On Sat, 25 Apr 2020 05:03:05 -0500
+> Josh Poimboeuf <jpoimboe@redhat.com> wrote:
 > 
-> We can just copy the const strings instead of reserving room on the
-> stack.
+> > These variables aren't used outside of unwind_orc.c, make them static.
+> > 
+> > Also annotate some of them with '__ro_after_init', as applicable.
 > 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> So it appears that crash uses "lookup_num_blocks" to be able to do
+> back-traces with the ORC unwinder. But because it's now static, crash can no
+> longer do that.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Hm, but why?  Even a static variable has a known address.
 
 -- 
-Kees Cook
+Josh
 
