@@ -1,56 +1,61 @@
-Return-Path: <linux-kernel+bounces-87492-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87493-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C66C586D516
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:54:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5294486D519
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:55:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6E5D5B267C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:54:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D4531C227DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:55:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBF7C15F138;
-	Thu, 29 Feb 2024 20:40:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62CF51504E1;
+	Thu, 29 Feb 2024 20:40:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O8eXuqPW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RYC6qSoA"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 027BC15F124;
-	Thu, 29 Feb 2024 20:40:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 949D315F149;
+	Thu, 29 Feb 2024 20:40:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709239256; cv=none; b=gklcxtMzzZeSCkdmpMrbZfKU53vTDonySl+55ozt721uLgt1hp3/mzg9hJhGjUVBjWRRUhtasA2D+k/xxGU4JeNIgXmzyfMhnXTV+DdwZjAdrWpzTO4uWBGeWYFWM/4Qhx8AVZ/7GdaAVKhqzhPj/j4W7ifYNAsbcCJIi1rD7hc=
+	t=1709239257; cv=none; b=jEdRmgJpQ7O8uMZonTXTh+c2oCMS/YeKkrMfJwV8RaBZHmca66omG7V8xxmSXEnFCDM0Z3xtiH/eTkdrwcc5R/rbMES9GDGlYUIp1p1LAwvCZtUkTUynISS9vdrhUxMp4/zj5u6Mhi8CMyhMn1Dd4QoKw4pNWcVJDrNlLJBtP0Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709239256; c=relaxed/simple;
-	bh=vIYxEkfgTpOst8IRDB0xL9ewxCjd8NxYDv27uR59C3c=;
+	s=arc-20240116; t=1709239257; c=relaxed/simple;
+	bh=fCm23I8sefIMiHN4Ppc70lTcvGhr+Jve9juzMu0LdPM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OF9iGR3zU9QP3+79YRisb9mkxNAYRAP/hJOkpQO9w+i5cmoIST/7IZmmxLJTiCO9Ajx3ytUnzTdL5L8QVRjBiu+k7C7QGgdgBK5sJYbx6hwPSAgqxjx79RGMVh0GN17RiJelVq8mr0pIJILqAFcxx43YIQTyEyuJviZ+6VSRJfU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O8eXuqPW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F255C433C7;
-	Thu, 29 Feb 2024 20:40:54 +0000 (UTC)
+	 MIME-Version; b=nVyOBcHMXVnTLScA6EKoFWcMxvCpfX+0dEo/GH8wqjq5yjdjnyKmbRK4mERGy/nZ0BfPf9rJdIHm9GwaSe8ttTlr6zUOx/8FfIghhjbK/Eb+ewvipRbQkKMwVLPL/5wLYmypTfIR/OuvmSaoY0CHQMEu8DHATtIBRe0g8w4+eHo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RYC6qSoA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E27A5C43390;
+	Thu, 29 Feb 2024 20:40:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709239255;
-	bh=vIYxEkfgTpOst8IRDB0xL9ewxCjd8NxYDv27uR59C3c=;
+	s=k20201202; t=1709239257;
+	bh=fCm23I8sefIMiHN4Ppc70lTcvGhr+Jve9juzMu0LdPM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=O8eXuqPWU1sOuZYahrBx6hsNHCODbSZx9ZYeh5ly5/vR8dBFc0xSEYSvOCHYo0yKE
-	 AW8nHLHSogNx0cAmq2ABJupQfG7Enzi12zy8cTSIyu0VSyUpyroa3dZGgGbsxHGmTr
-	 exnNVxvlNOBk/xzeWPvRaLi4cUxaLOG5kQmQ0egxMB0pp32i3Bzj1JRLWcYk9vcnA0
-	 MVSAxBt5gO2QvUFSIKf3hiohsyrH8OPWe3q5dPGmnEhYY8nfqwseW1UFLgHkurbZN5
-	 etuAVJ8TahrJEGCqeMrGcm2iHXhYRaJgEXY3YduTB4JTnDcYeKPVgn1nph/BNKgUVp
-	 WsUODlPa7oG6g==
+	b=RYC6qSoACVgp1rwOf0YXU0IIXXxDy62bFztx7Nos22X+kbLlHn3L32O83/8fiomta
+	 +6JwLXtkgAOj3gQpmo2n1b9KWi9S+NlJBznFZHX5M3E6Orcfl6ZgMUtj1EqpqR9lIJ
+	 3Kh+NUa9XAfODDhxRv8rRxXhyGN7uhpUlTVWonh51ifD7K52sTn/9E95dAF79tzjeH
+	 KcvoxXP3xl68rs1djD9Wa2sNNKWwLRsHvy4eD3gY0ZVcMyTQ0VrzbbN6wj2Q89NJgh
+	 PNwXT2LD2JuYPc9dlZBjwLHDtUgCIAV/0ZvyDx5EvlQZ1QPZJRvRVjd/CiAhZp0ubs
+	 5zriKstLPD58Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Greg Joyce <gjoyce@linux.ibm.com>,
-	Jens Axboe <axboe@kernel.dk>,
+Cc: Kees Cook <keescook@chromium.org>,
+	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>,
-	jonathan.derrick@linux.dev,
-	linux-block@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 09/12] block: sed-opal: handle empty atoms when parsing response
-Date: Thu, 29 Feb 2024 15:40:31 -0500
-Message-ID: <20240229204039.2861519-9-sashal@kernel.org>
+	benve@cisco.com,
+	satishkh@cisco.com,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	netdev@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 10/12] enic: Avoid false positive under FORTIFY_SOURCE
+Date: Thu, 29 Feb 2024 15:40:32 -0500
+Message-ID: <20240229204039.2861519-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240229204039.2861519-1-sashal@kernel.org>
 References: <20240229204039.2861519-1-sashal@kernel.org>
@@ -65,63 +70,41 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.79
 Content-Transfer-Encoding: 8bit
 
-From: Greg Joyce <gjoyce@linux.ibm.com>
+From: Kees Cook <keescook@chromium.org>
 
-[ Upstream commit 5429c8de56f6b2bd8f537df3a1e04e67b9c04282 ]
+[ Upstream commit 40b9385dd8e6a0515e1c9cd06a277483556b7286 ]
 
-The SED Opal response parsing function response_parse() does not
-handle the case of an empty atom in the response. This causes
-the entry count to be too high and the response fails to be
-parsed. Recognizing, but ignoring, empty atoms allows response
-handling to succeed.
+FORTIFY_SOURCE has been ignoring 0-sized destinations while the kernel
+code base has been converted to flexible arrays. In order to enforce
+the 0-sized destinations (e.g. with __counted_by), the remaining 0-sized
+destinations need to be handled. Unfortunately, struct vic_provinfo
+resists full conversion, as it contains a flexible array of flexible
+arrays, which is only possible with the 0-sized fake flexible array.
 
-Signed-off-by: Greg Joyce <gjoyce@linux.ibm.com>
-Link: https://lore.kernel.org/r/20240216210417.3526064-2-gjoyce@linux.ibm.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Use unsafe_memcpy() to avoid future false positives under
+CONFIG_FORTIFY_SOURCE.
+
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/opal_proto.h | 1 +
- block/sed-opal.c   | 6 +++++-
- 2 files changed, 6 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/cisco/enic/vnic_vic.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/block/opal_proto.h b/block/opal_proto.h
-index 7152aa1f1a49e..7f306b08a0fe7 100644
---- a/block/opal_proto.h
-+++ b/block/opal_proto.h
-@@ -71,6 +71,7 @@ enum opal_response_token {
- #define SHORT_ATOM_BYTE  0xBF
- #define MEDIUM_ATOM_BYTE 0xDF
- #define LONG_ATOM_BYTE   0xE3
-+#define EMPTY_ATOM_BYTE  0xFF
+diff --git a/drivers/net/ethernet/cisco/enic/vnic_vic.c b/drivers/net/ethernet/cisco/enic/vnic_vic.c
+index 20fcb20b42ede..66b5778353389 100644
+--- a/drivers/net/ethernet/cisco/enic/vnic_vic.c
++++ b/drivers/net/ethernet/cisco/enic/vnic_vic.c
+@@ -49,7 +49,8 @@ int vic_provinfo_add_tlv(struct vic_provinfo *vp, u16 type, u16 length,
  
- #define OPAL_INVAL_PARAM 12
- #define OPAL_MANUFACTURED_INACTIVE 0x08
-diff --git a/block/sed-opal.c b/block/sed-opal.c
-index 9bdb833e5817d..25e4ce452c1d3 100644
---- a/block/sed-opal.c
-+++ b/block/sed-opal.c
-@@ -935,16 +935,20 @@ static int response_parse(const u8 *buf, size_t length,
- 			token_length = response_parse_medium(iter, pos);
- 		else if (pos[0] <= LONG_ATOM_BYTE) /* long atom */
- 			token_length = response_parse_long(iter, pos);
-+		else if (pos[0] == EMPTY_ATOM_BYTE) /* empty atom */
-+			token_length = 1;
- 		else /* TOKEN */
- 			token_length = response_parse_token(iter, pos);
+ 	tlv->type = htons(type);
+ 	tlv->length = htons(length);
+-	memcpy(tlv->value, value, length);
++	unsafe_memcpy(tlv->value, value, length,
++		      /* Flexible array of flexible arrays */);
  
- 		if (token_length < 0)
- 			return token_length;
- 
-+		if (pos[0] != EMPTY_ATOM_BYTE)
-+			num_entries++;
-+
- 		pos += token_length;
- 		total -= token_length;
- 		iter++;
--		num_entries++;
- 	}
- 
- 	resp->num = num_entries;
+ 	vp->num_tlvs = htonl(ntohl(vp->num_tlvs) + 1);
+ 	vp->length = htonl(ntohl(vp->length) +
 -- 
 2.43.0
 
