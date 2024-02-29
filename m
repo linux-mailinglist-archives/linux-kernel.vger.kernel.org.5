@@ -1,51 +1,72 @@
-Return-Path: <linux-kernel+bounces-86662-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86663-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94FF586C89B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:54:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF11886C89C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:54:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 20DD3B276ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:54:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 725411F230E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:54:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CF3E7CF13;
-	Thu, 29 Feb 2024 11:53:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 144BE7CF2F;
+	Thu, 29 Feb 2024 11:53:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gtucker.io header.i=@gtucker.io header.b="lvMq4XJf"
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="M80JQ2Ti"
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A45B7C0B0;
-	Thu, 29 Feb 2024 11:53:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BB9C7CF20
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 11:53:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709207627; cv=none; b=TVxFTZWNxqxuqsCt3aIZC3ywWgvajobHLvkdvRdYNa0nDhTAMkRTD85zuHCjAIsiLK60YsK5nKTyzzw0xnG1aUlN5pMvO2aqrWZI8NqpHzSgOfYHjGXj3giIfx+Cd8jNSwrAhFSMn5Ski3iaVVo6jj42A0p/lyqWkFXBnJQUB3c=
+	t=1709207637; cv=none; b=MyNgmnMDeq13B3cPtddTKX6ctg6bMSDBqju/jR2SMFKDHxUyoZn0GDi3/ydM/rBn0VUUKdWpFdfaTCOLbGkdXfdqSSiMgVOVCk1IX3CVEei0VUOEebD7keKrv9oZDCZ+UpQQwXStzMJ97Qi9peAFitDmgJMZrWxcCS1cY5Af2VI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709207627; c=relaxed/simple;
-	bh=5nYYs6dSF95dhDnBprwAw/RpexnL1f/GeFnPwzj6Swk=;
+	s=arc-20240116; t=1709207637; c=relaxed/simple;
+	bh=aPkZ1pZjNnJJI5Q/fiChvIDLNBuCtmd06jZTdL+Ggyc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=e/RTW4a2sMSw1hTNjR7++uG3pKfRYCja4yhsHMeChxqpUFVrQ/DMCpMZwlpqgNpnL2xllJMaJt/UbqnQNltTlnFmKS73vbuy/oNjYMT8/rLWv//7ywsmX+VowwhSbhReeNkit7HtuN5evqmbOGPNBepIL9uUP3gcXNb06mJFnUk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gtucker.io; spf=pass smtp.mailfrom=gtucker.io; dkim=pass (2048-bit key) header.d=gtucker.io header.i=@gtucker.io header.b=lvMq4XJf; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gtucker.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gtucker.io
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 66A0AFF802;
-	Thu, 29 Feb 2024 11:53:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gtucker.io; s=gm1;
-	t=1709207622;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BaToIPDzXPunSHPMARHyvDeuyEwDr1/ZO+a/4iNtt4U=;
-	b=lvMq4XJfkUm+hqYjnbZC8YybN52tAczd6MyvYXAmNWe1H+cCDijJ8iweHc9mMYwqRAp6pQ
-	cVpAJS4mvNq9CbaMQClD5F+VPienkcvhhOr68EsSyt+KDmeO5ZPxnkSur7yYCQP1aVRo8J
-	Hb5CtEBdDjHtmAJ9mMiY0X0ifSqaWRmnQl8ufw2zNFRSjGZ5INDE8810qo5lj1Jrb9Z2l2
-	2j7+nMAAAp91ewPsVQmsQPnjyl9KYun0eDa0XPPh6lM+BBGUBjZLTcQJBdMeVqZMyZVe6R
-	V7dFk74JbD1pcEUT1zA+IHVojyGc65UdG7/s7rJJ1/fHGE57DtHP/K64S9lr1A==
-Message-ID: <b3fb89aa-56b4-4b3c-88f6-c6320bf5c489@gtucker.io>
-Date: Thu, 29 Feb 2024 12:53:38 +0100
+	 In-Reply-To:Content-Type; b=FXyWLrVGpjZLVgHAMiSvArKblGdESA1Uqj6Eb8cm0dFDT7BX9UL80YmUnuVjWEcg6zPcZn0UP5ftEw7EUVdhws3l5uccTezDEpiUMspd5q9+9udZ3AaShN0CjxLiAGM9utKP0BnlawaEEr4/0S0g7qz0jMdOEhz9TNBTNcb7v0A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=M80JQ2Ti; arc=none smtp.client-ip=209.85.208.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d288bac3caso7276451fa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 03:53:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709207634; x=1709812434; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=sLTFaT7Nkx/eCJKDRCtLdc30QfXkBoGZ+x/B0puoFKM=;
+        b=M80JQ2TipHM6leEvcZR2f4CFW5hd2CsDU/ysmgY/4r/0Zqw1Xpoq+ALxNkoainj/4Y
+         SHhn9jeQ4dYemKDQQqS3DRp6uXTs0bCZo12G8RIqKvJdm7l5BiAPDwfhwl9sv+7qywhc
+         yVcXYHsi2KlmbXVgTGZei48uGGUAJAWvpggTwtk4iqgBO9RV9UpsLtJufyzmnsXkNcOd
+         dnuGr6WJEW9od+9zAzCcSCz3zIJ7LLceO074VF68DyFzi8yqnbLDP0kvpgy3cd0af8zm
+         jku722Gpl87onExcA1vTACxCgBAFC9gknOsuQrJw/FA0taUxtDHmTk3rFWJuqEA08bbi
+         iYDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709207634; x=1709812434;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sLTFaT7Nkx/eCJKDRCtLdc30QfXkBoGZ+x/B0puoFKM=;
+        b=l0ppDM8uyOl1+4R17bYTJaOnLOZoSpg5vy5yZdmBkAIFariEU77FB40y45xpp/Ckq8
+         NH/lBnNJtluCwD8WYEupApZ7LLHYAjBhq6oMc6FQWVwldDlOuyBX6KmTz6iUId8n1RhB
+         qD/X2XTnkdhpu9UPnSRe9U6DZCMv8OuK5cOEfYocH6sAWxkhX2qDp+C8ejfXLtg6fTXh
+         dFXLPJGWmf4xkCJXuLSRNmUKc4Ub2N8H4MHXcZ68C80rvUedyMfc63VstiRSGg7IslAF
+         OossAVv/BVBRmr6Eyg/6l1LbHsIoz6lKvQnk8EVwnlxJe9YUUcgCnIzuktkstlL3M1RR
+         O1yw==
+X-Gm-Message-State: AOJu0Yz2hCoExGSNNue2kNRUYJwrm1h506qV/HJ5cJSv+iKy8OcXJrAa
+	JaPMnJHxLRLr2yReQBbhmJo8trPOVTtFoDvfvRFk4ShAOb1jtiMNnQj7PAQ3lpU=
+X-Google-Smtp-Source: AGHT+IGP0/pA++rl3U7efvrQPpAwssqlcxwqZNQ6Tt9Nv8HtPUR9CpPCo6oXDAAXGe9esJJngWtvkQ==
+X-Received: by 2002:a05:651c:2105:b0:2d3:776:a8ab with SMTP id a5-20020a05651c210500b002d30776a8abmr967147ljq.45.1709207633804;
+        Thu, 29 Feb 2024 03:53:53 -0800 (PST)
+Received: from [172.30.204.118] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id b10-20020a2e894a000000b002d0d02e50fdsm201372ljk.78.2024.02.29.03.53.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Feb 2024 03:53:53 -0800 (PST)
+Message-ID: <2f6bf03f-b0c4-46d2-baad-4047c78663bc@linaro.org>
+Date: Thu, 29 Feb 2024 12:53:51 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,60 +74,31 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/3] kci-gitlab: Introducing GitLab-CI Pipeline for Kernel
- Testing
-To: Mark Brown <broonie@kernel.org>,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: Nikolai Kondrashov <spbnick@gmail.com>,
- Helen Koike <helen.koike@collabora.com>, linuxtv-ci@linuxtv.org,
- dave.pigott@collabora.com, mripard@kernel.org, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux-kselftest@vger.kernel.org,
- gustavo.padovan@collabora.com, pawiecz@collabora.com,
- tales.aparecida@gmail.com, workflows@vger.kernel.org,
- kernelci@lists.linux.dev, skhan@linuxfoundation.org,
- kunit-dev@googlegroups.com, nfraprado@collabora.com, davidgow@google.com,
- cocci@inria.fr, Julia.Lawall@inria.fr, laura.nao@collabora.com,
- ricardo.canuelo@collabora.com, kernel@collabora.com,
- torvalds@linuxfoundation.org, gregkh@linuxfoundation.org
-References: <20240228225527.1052240-1-helen.koike@collabora.com>
- <20240228230725.GF1659@pendragon.ideasonboard.com>
- <0a5bf7d1-0a7e-4071-877a-a3d312d80084@gmail.com>
- <20240229093402.GA30889@pendragon.ideasonboard.com>
- <655f89fa-6ccb-4b54-adcd-69024b4a1e28@gmail.com>
- <20240229111919.GF30889@pendragon.ideasonboard.com>
- <a4fc23e1-5689-4f86-beb7-5b63a0d13359@sirena.org.uk>
-Content-Language: en-GB
-From: Guillaume Tucker <gtucker@gtucker.io>
-Organization: gtucker.io
-In-Reply-To: <a4fc23e1-5689-4f86-beb7-5b63a0d13359@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH] arm64: dts: qcom: sc7180: Disable pmic pinctrl node on
+ Trogdor
+Content-Language: en-US
+To: Stephen Boyd <swboyd@chromium.org>, Bjorn Andersson <andersson@kernel.org>
+Cc: linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+ linux-arm-msm@vger.kernel.org, cros-qcom-dts-watchers@chromium.org
+References: <20240229012828.438020-1-swboyd@chromium.org>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20240229012828.438020-1-swboyd@chromium.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-GND-Sasl: gtucker@gtucker.io
 
-On 29/02/2024 12:41, Mark Brown wrote:
-> On Thu, Feb 29, 2024 at 01:19:19PM +0200, Laurent Pinchart wrote:
->> On Thu, Feb 29, 2024 at 01:10:16PM +0200, Nikolai Kondrashov wrote:
+
+
+On 2/29/24 02:28, Stephen Boyd wrote:
+> We don't use this pmic pinctrl node on any Trogdor devices. The
+> AP_SUSPEND pin is here, but this pinctrl device isn't a supplier to
+> anything in the devicetrees that include this file. Disable this device
+> node in the DTS so that we don't waste time or memory on this device.
 > 
->>> Of course. You're also welcome to join the #kernelci channel on libera.chat.
-> 
->> Isn't that a bit pointless if it's no the main IM channel ?
-> 
-> It *was* the original channel and still gets some usage (mostly started
-> by me admittedly since I've never joined slack for a bunch of reasons
-> that make it hassle), IIRC the Slack was started because there were some
-> interns who had trouble figuring out IRC and intermittent connectivity
-> but people seem to have migrated.
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> ---
 
-In fact it was initially created for the members of the Linux
-Foundation project only, which is why registration is moderated
-for emails that don't have a domain linked to a member (BTW not
-any Google account will just work e.g. @gmail.com is moderated,
-only @google.com for Google employees isn't).
+If you don't use this pmic, perhaps the pins should be explicitly
+"parked" instead?
 
-And yes IRC is the "least common denominator" chat platform.
-Maybe having a bridge between the main Slack channel and IRC
-would help.
-
-Guillaume
-
+Konrad
 
