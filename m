@@ -1,119 +1,127 @@
-Return-Path: <linux-kernel+bounces-87589-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87590-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A66686D63C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:33:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA9EC86D63E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:33:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EA385B256EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:33:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 87D051F260D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:33:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BC336D503;
-	Thu, 29 Feb 2024 21:32:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E152A6D50E;
+	Thu, 29 Feb 2024 21:33:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="I+9QetA6"
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z6ajt57F"
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AFEF16FF47
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 21:32:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D131D16FF47;
+	Thu, 29 Feb 2024 21:33:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709242376; cv=none; b=VSKLhm4YZEjYknYRHZOXLpRZFbmqxlkUP7N1L/UycqvTYgH5d5OZ63DNqd48oNDTJSfCMZ2CLqIGkmIPub8QL0iJaqtqPfJwhsn0zQuBTrfL/FURUbqGHLAyEyxzxLhh/BcTt5YQLQAPB4QruupiE1lRxo+27kHZvSxf6eFgaEE=
+	t=1709242413; cv=none; b=TpikuBKU2Y3IE7C3HjSLW/e6g7vHQeCYX/nvWvmBicjgvGsa3f2Q1or3PxDCRWm0ynF5E2KqmpJP34uguEcjEAi7Wc/g0HWFsLxbdSTOMHr96ikMCvpPH1tFHRlwgggTI8BgoW754v4JndnXszsZWu9uCwM2lfP52WguZum2+JM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709242376; c=relaxed/simple;
-	bh=M1OIAA0ItaLeA6OMZsMNhafiM0P2mVk8eYOUN2HrEfw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jnm/JaE5ZrTAUxPg06MOcNz5Nrc3RoRORi04zhh9y4V+taCWIfi7C1of6vsH+yQgYzzquPSAC+2edK8FjCLVFi+cEiNHY/jkA6vQVMf6qD03dLnvQA3rP2XQDaj+U5OtAKl9D9CIcK+qs9LibcBiyLUM15CKujVR9pGj/IfjLSs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=I+9QetA6; arc=none smtp.client-ip=209.85.216.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-299b818d63aso1140074a91.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 13:32:55 -0800 (PST)
+	s=arc-20240116; t=1709242413; c=relaxed/simple;
+	bh=BnJoVXU1CaeQbXBgRnIHjar/FV4NrO1c9oIQRiWiPpU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oRmnQ8rRwLuKPMGiRM5Lh174bp6kZOK5KPCETdzXSeGVK4wIHcRjNK2ti1YhAwYfLS8tsdTaokYOUzhSoHD2JA6+qJvhseMIV2pU6jOfjKB4NsWbzsvMRL43B8rp9DhklOQpM9fIEpstoC+DVTwSNka1xMb3visERnJU1AHHeT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z6ajt57F; arc=none smtp.client-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-299b92948a6so981103a91.3;
+        Thu, 29 Feb 2024 13:33:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709242374; x=1709847174; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=nZXiBnNhAhi4ZtO0SADmUcnGG7Y1r2RQ91McDK9U7hM=;
-        b=I+9QetA60AKN7+t5WCRGjyqQwKr9rI+ukig6Mf/i2z299vpTYLGtWS9tn9ZHxElQkt
-         dFio/wStFf14NLTi30iYq8N8D09+JygkatmXoIRG1z9YbJKvEnTi8GQHUGsOWiK/spJF
-         1zSwoSK5171OWb4jpi4BY+BLYI7PQ+0/a6jaE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709242374; x=1709847174;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1709242411; x=1709847211; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nZXiBnNhAhi4ZtO0SADmUcnGG7Y1r2RQ91McDK9U7hM=;
-        b=NkAXZZxEZyqmluRyWZ82Z/1vqul1EA68TK6rFPdoRsF/eTxEMR1EnE9x0PWkcs9BAs
-         5wRXkLXzmwTVfhvbhc/ZgQut8FHJtJ7D3EBwa2dqq/X+BnH4MCk8NQUUeN8MAql9QMvX
-         7EtiJcvwzYSQ0CBip7TT6361dviJFEYf9cVx5znUmagkO+zy6YbLU2DGPz8cCgf/5GtC
-         lqJvk5BntjdgR/P+nZLBEQ/6WrXBINneygTgIsl4VU/APCwC+i+oSyNEwSMMToPxfZzU
-         spioUhUquUq/7VompOEuWQohe/hwo6GFYILHCw6sNvdGEcU1GtQMFMBMy2EGNZt5yjWW
-         H7hw==
-X-Forwarded-Encrypted: i=1; AJvYcCUUH5tTtmCwGpsaeMo9/shUzxZBZIpVmLJBqSBBqRDiq9OA/pXPH6nRo9p/QHN+nIxVGHPWM8MOSHP/WaEAbNg9Pj55I9+3a0LEAfDz
-X-Gm-Message-State: AOJu0YxN6DJYXg9H5nWqPKuwF1RdlPRC9bhwt5PMjPSxYL183AulnSFZ
-	Lg6W5needsI5Aw3yiZ7nk/kCm6b/TuZZYOz33Fc6k5T69RVlpcbczSp7l8vtjg==
-X-Google-Smtp-Source: AGHT+IEvsn9DgpO+cW37vUplHd97MaD5TAZWQ0EdSVcQR53nFAD39hdF/sei1lWoc7NAH+n5Ef2cEw==
-X-Received: by 2002:a17:90a:4491:b0:299:3c2c:b680 with SMTP id t17-20020a17090a449100b002993c2cb680mr241994pjg.15.1709242374560;
-        Thu, 29 Feb 2024 13:32:54 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id c6-20020aa78806000000b006e53cc789c3sm1728164pfo.107.2024.02.29.13.32.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 13:32:54 -0800 (PST)
-Date: Thu, 29 Feb 2024 13:32:53 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Sam Ravnborg <sam@ravnborg.org>, Helge Deller <deller@gmx.de>,
-	Guo Ren <guoren@kernel.org>, sparclinux@vger.kernel.org,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] sparc: vdso: Disable UBSAN instrumentation
-Message-ID: <202402291332.2C89081A@keescook>
-References: <20240223165942.work.950-kees@kernel.org>
- <ZeDiZrrLuqkvxrIY@smile.fi.intel.com>
+        bh=BnJoVXU1CaeQbXBgRnIHjar/FV4NrO1c9oIQRiWiPpU=;
+        b=Z6ajt57F1WSceLYkGweS7MrRdWKj2xFqPlkvjMxKXtei3ZVqpmYHfdmuNceUMakYiT
+         Oaj39fT1B89truMMx8OU6v3bhb5L8T/fxMCUJ7ruu9GZ51UhuvYQNISZlUcmlitpP7MF
+         rAe029msPQjM3igUt7dzHkGIE6MWtXOlOF5Cy/2L9rXZEbL/vehHsLzjSVQK4qOtJl8o
+         bP9X4Y299SHxk0hB0doIc1xGg8iKMAMbVdh9rFmJTzGe9W/gGjVBUnCAMU9zjOooG3Pd
+         C661SSum/+00GjD5XAID6lb3mNOaVvKZrjishBCIZslCEKCzlcZ8LaVA4vlFyCICRaWg
+         sVoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709242411; x=1709847211;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BnJoVXU1CaeQbXBgRnIHjar/FV4NrO1c9oIQRiWiPpU=;
+        b=jRb4/c7kWid1rDDaSBPlqj4L+Yhnw5IxzgXtI7k0tAU3ipRFM9IlI81FTkWJu16AO0
+         BOVWY32r1QqHjeUlaaLTQF6kz7D3gYZO2O7dmnc/odonaNB75issuXSebO8ZSq5v+VnM
+         heA4Kp9pO8toUmJmq4Bekjdr99YOjrzGT0vsV9Sf1x+H1Yu+2mn09f1Ifae6G9Shsc3k
+         lBsOqetrOL2kjSAwGEz4EE3QpUXGAzrzYKQkHEszFAKubrkaFRuSXjj9JHWeIdRXobWq
+         v6wwplceezBugFNaAmhDqHflGFPL4vbG5PJndCA0Lxc4LVs1zBTVAbCGQa61/KyOc6Kn
+         nvwg==
+X-Forwarded-Encrypted: i=1; AJvYcCUhsXI5qScmtkOD90MrCo016Yzl9/fO0Z0q7Zva5vXXE8wiiiusnwOhFwiWIQOHxWSZ0J2DQduZeJXrgox9+iyF2+Qk4VIz298wv90mN5R2IJ2Rc/Pn3gu0s+imrcLP13dY8m3GJg7vjjYSdcqDLTCdFE4/qwBNSEiXoCCvtMMBLnIfdLf/Z1wUn1k=
+X-Gm-Message-State: AOJu0YwxVSmbxB22uIkHhz6ZaE17p6LWtcAYdmYl0Xb321ljv5CYc0Vb
+	ewaOgQs9FWEkSDzixSkiueCPV51qF8gEA/QepxCGIHXgOO5GDoUIc6iW9wZb1pxd1r3/PMNkXeL
+	5fQxYvdCKCCNlol2spJXNWePHers=
+X-Google-Smtp-Source: AGHT+IF7bVmqxeMhoRHyZpvokOgbCs4iWKcEFiGPNztP7CIoyae8cJUfmp8uTM3OBZKV4OvFKxKIP+IJE5Ov5jLH6Xw=
+X-Received: by 2002:a17:90b:104b:b0:29a:cbfb:5b28 with SMTP id
+ gq11-20020a17090b104b00b0029acbfb5b28mr300141pjb.13.1709242411118; Thu, 29
+ Feb 2024 13:33:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZeDiZrrLuqkvxrIY@smile.fi.intel.com>
+References: <20240217002638.57373-1-ojeda@kernel.org>
+In-Reply-To: <20240217002638.57373-1-ojeda@kernel.org>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Thu, 29 Feb 2024 22:33:18 +0100
+Message-ID: <CANiq72nPiVDV2WY_jCuONz_arWRVyMMiRT5iVb=2xqoXnZYW+g@mail.gmail.com>
+Subject: Re: [PATCH 1/2] kbuild: mark `rustc` (and others) invocations as recursive
+To: Miguel Ojeda <ojeda@kernel.org>
+Cc: Wedson Almeida Filho <wedsonaf@gmail.com>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Alice Ryhl <aliceryhl@google.com>, Masahiro Yamada <masahiroy@kernel.org>, 
+	linux-kbuild@vger.kernel.org, rust-for-linux@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, patches@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 29, 2024 at 10:00:38PM +0200, Andy Shevchenko wrote:
-> On Fri, Feb 23, 2024 at 08:59:45AM -0800, Kees Cook wrote:
-> > The UBSAN instrumentation cannot work in the vDSO since it is executing
-> > in userspace, so disable it in the Makefile. Fixes the build failures
-> > such as:
-> > 
-> > arch/sparc/vdso/vclock_gettime.c:217: undefined reference to `__ubsan_handle_shift_out_of_bounds'
-> > 
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > ---
-> > Cc: "David S. Miller" <davem@davemloft.net>
-> > Cc: Andreas Larsson <andreas@gaisler.com>
-> > Cc: Masahiro Yamada <masahiroy@kernel.org>
-> > Cc: Sam Ravnborg <sam@ravnborg.org>
-> > Cc: Helge Deller <deller@gmx.de>
-> > Cc: Guo Ren <guoren@kernel.org>
-> > Cc: sparclinux@vger.kernel.org
-> 
-> I dunno how you applied patches, but these Cc seems to appear in a few commits
-> in your hardening branch.
-> 
-> I formatted patch from 9fd54b08040669, checked out the new branch just before
-> this commit and run `git am 0001-...`. I don't see them.
+On Sat, Feb 17, 2024 at 1:26=E2=80=AFAM Miguel Ojeda <ojeda@kernel.org> wro=
+te:
+>
+> `rustc` (like Cargo) may take advantage of the jobserver at any time
+> (e.g. for backend parallelism, or eventually frontend too). In the kernel=
+,
+> we call `rustc` with `-Ccodegen-units=3D1` (and `-Zthreads` is 1 so far),
+> so we do not expect parallelism. However, in the upcoming Rust 1.76.0, a
+> warning is emitted by `rustc` when it cannot connect to the jobserver it
+> was passed (in many cases, but not all: compiling and `--print sysroot`
+> do, but `--version` does not). And given GNU Make always passes
+> the jobserver in the environment variable (even when a line is deemed
+> non-recursive), `rustc` will end up complaining about it (in particular
+> in Make 4.3 where there is only the simple pipe jobserver style).
+>
+> One solution is to remove the jobserver from `MAKEFLAGS`. However, we
+> can mark the lines with calls to `rustc` (and Cargo) as recursive, which
+> looks simpler. This is what is now documented and recommended by `rustc`
+> and allows us to be ready for the time we may use parallelism inside
+> `rustc` (potentially now, if a user passes `-Zthreads`). Thus do so.
+>
+> Similarly, do the same for `rustdoc` and `cargo` calls.
+>
+> Finally, there is one case that the solution does not cover, which is the
+> `$(shell ...)` call we have. Thus, for that one, set an empty `MAKEFLAGS`
+> environment variable.
+>
+> Link: https://github.com/rust-lang/rust/issues/120515
+> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
 
-Ah, hm, yes, I'll need to split up my trees a bit to get the right
-results. Thanks for pointing that out!
+Applied (i.e. including the upgrade to 1.76.0) to `rust-next` --
+thanks everyone!
 
--- 
-Kees Cook
+[ Reworded to add link to PR documenting the recommendation. ]
+
+Cheers,
+Miguel
 
