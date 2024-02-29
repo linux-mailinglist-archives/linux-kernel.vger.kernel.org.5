@@ -1,129 +1,140 @@
-Return-Path: <linux-kernel+bounces-86314-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86315-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32B4086C3D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:40:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB77186C3D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:40:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C64A3B2452A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:40:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A23CC281C85
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:40:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E142754BF9;
-	Thu, 29 Feb 2024 08:38:06 +0000 (UTC)
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDE2550255;
+	Thu, 29 Feb 2024 08:39:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="tXm03ix3"
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD77C24A19
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 08:38:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ABD74CDE5
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 08:39:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709195886; cv=none; b=l8+BZ2bcZi3GfXthBWpkklo4otnYmwX0h9Y5ezSkFjaspfaQdHR+MDcrf3G+lIt/nBfYoaYQdnX2ajZFkMH8p2FkzspY2eMHK9fbtp+YpBtEM1JtpvaApRbtL0UDCZCfMuRqpc4ZIu1/v9svdiAjJcypMsi6pj27V41bdr+0O64=
+	t=1709195946; cv=none; b=G66msMlLlNhwq0CFiSt0/6eJWbUVoR83+20nK0pZlbjE1+IN4gLNLUYV/fugvCZNAUQDBmpcJpvmAGL72Ky+5kcI/qBLbRJGqjbO0lQXk2qnhgT6pwAjqs0/06N6xPJYdBnlv4nYylU93f1+ll5T+9aoC/DqhOewLxwfke1cGgo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709195886; c=relaxed/simple;
-	bh=jWAacUaeYv+d+/EE4lwYbSgfGQ+fg43sEqeBomEF8Cs=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=gquwXbslRmNSEI066Jc7EPYpOaQqNnjWyu7LFSfKgi/k24ztjp+dTc0bXJwah2kplykALK8VfKjJIOy2zNZWOlGqFO05DSIFI/mFxakzNO0Txoqb+TG0Vf8KJje8BCJQcTckwk7z9X48tZOObVB03l4IKboq9gPgifgrhaVx0uU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.51])
-	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4TlkjZ4FW1zB0McF
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 16:22:26 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.27])
-	by mail.maildlp.com (Postfix) with ESMTP id C8031140496
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 16:37:52 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.48.130.4])
-	by APP2 (Coremail) with SMTP id GxC2BwCXgiZOQuBlIOpmAw--.42792S2;
-	Thu, 29 Feb 2024 09:37:52 +0100 (CET)
-From: Petr Tesarik <petrtesarik@huaweicloud.com>
-To: Andy Lutomirski <luto@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
-	"H. Peter Anvin" <hpa@zytor.com>,
-	linux-kernel@vger.kernel.org (open list:X86 ENTRY CODE)
-Cc: Roberto Sassu <roberto.sassu@huaweicloud.com>,
-	Petr Tesarik <petr.tesarik1@huawei-partners.com>
-Subject: [PATCH 1/1] x86/entry: Use one cmpq in NMI entry to check RIP for nested NMIs
-Date: Thu, 29 Feb 2024 09:37:11 +0100
-Message-Id: <20240229083711.721-1-petrtesarik@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1709195946; c=relaxed/simple;
+	bh=9tSHEvQMFBzRFfVEDs6bbwPzSHU8bneViUjVwImV6oo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RzA1+wBJl4d/DJiuJJ9XjpdAEUpQRO4IfXtP4ncvxadQQOABaFaYjERjX2+QofGSLF0S8IOatzBVB0YIgs68oWD3HnYkFk8I+tcXONSwOragtmMlSRH5758/7hxFjP5FNsYTMf4GuOdFm19P0NAsVvnVt6rk/DfEjhvPjMfZids=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=tXm03ix3; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a3e85a76fa8so81809366b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 00:39:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1709195942; x=1709800742; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Xj+4ZLkxm8U146iTfNW2/inDJv8KHlXL+ERpBTpUwsg=;
+        b=tXm03ix3TTLAh1+L9BUKBE6i3LetuN3Fmzn2n9S97LlsG4viHYYVmMlJXybe7C2mDD
+         yNxLSvD8Cs5on20V+hKTJKEzAwz6VLVoj2WQY3catzBoYSuq9K+jdryG0JvQyvz4P1pT
+         49EJqjYS38hXssuCJee/CbSlPcfvDSl/877fJVSFkOF6P8WYU5j9ZuYvVBc58RQIlqRH
+         3OeaJtmZKOCqcJ3Y0EI5cRi3CSvDgxcKnrjN3rDmABYH5KP4lNI+RDSv93LU7tCT1SvD
+         oBEHSPUaSj1+hJOqFze8QbiejePy67nkh7a2LfokQk5hYfDOHCeieDKY+N9ekm+aaVFn
+         nD3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709195942; x=1709800742;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Xj+4ZLkxm8U146iTfNW2/inDJv8KHlXL+ERpBTpUwsg=;
+        b=o13gnwHdkFqHpa9mA0nxRfGnS9uErSgHH0HkKeChkHexviDk45mpTWg3wR4rSM3cee
+         oV3pN42HmU7nmjpPJAbuyIS5RkmEvePqLnPADkwsQicv4HjhIgSeTRwWgKUAIYQgRTXR
+         QVwoRG9YyBtoSe+/ptTeV+4QRU1hYGESUP1j/ZbXORPlGGav/YkwWkyDcqYUVmzzUC/q
+         5qrbDQ0PVAo2SGMYwMwTGNoN24Gl7lWSyOlXZpFBxSK+w8+w/sqeoMA9+TFzS/dqe7Rc
+         t9vVdOFIMM2ccnn3uWEMzAgcf4Nm14JHnMmlyeQdM7qZdDUgw8hWkx5W1LzKBsJriy3E
+         gYGg==
+X-Gm-Message-State: AOJu0YxfI4GNOYnhbHoXDN304T/0a9dyLVGiF5UtXMuZggvrtHpd9zTJ
+	UV0XkEZlp3pUuWxVW16UjmPw2s7D+MEpxaPYIZNxJeETm2fyohLQazkFmnGsT7I=
+X-Google-Smtp-Source: AGHT+IE77Y4/4q7h17RymUYlINs7aUt8WUi8P3mNwbqmG+XQZeXHHrqU7cVZx2KXYQHHzn6Sj1n+pg==
+X-Received: by 2002:a17:906:d0d9:b0:a3f:b5d1:7174 with SMTP id bq25-20020a170906d0d900b00a3fb5d17174mr1019019ejb.3.1709195942469;
+        Thu, 29 Feb 2024 00:39:02 -0800 (PST)
+Received: from localhost ([86.61.181.4])
+        by smtp.gmail.com with ESMTPSA id vx12-20020a170907a78c00b00a4411a2c151sm438850ejc.122.2024.02.29.00.39.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Feb 2024 00:39:01 -0800 (PST)
+Date: Thu, 29 Feb 2024 09:39:00 +0100
+From: Jiri Pirko <jiri@resnulli.us>
+To: Lena Wang =?utf-8?B?KOeOi+WonCk=?= <Lena.Wang@mediatek.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"dsahern@kernel.org" <dsahern@kernel.org>,
+	"kuba@kernel.org" <kuba@kernel.org>,
+	Shiming Cheng =?utf-8?B?KOaIkOivl+aYjik=?= <Shiming.Cheng@mediatek.com>,
+	"pabeni@redhat.com" <pabeni@redhat.com>,
+	"edumazet@google.com" <edumazet@google.com>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"davem@davemloft.net" <davem@davemloft.net>
+Subject: Re: [PATCH net v3] ipv6:flush ipv6 route cache when rule is changed
+Message-ID: <ZeBCpOAiQ_-DKEKi@nanopsycho>
+References: <c9fe5b133393efd179c54f3d7bed78d16b14e4ab.camel@mediatek.com>
+ <Zd9WU1bpoOlR9de7@nanopsycho>
+ <5a422630db12a06a4e8d064d9dd2c7402a4bbe07.camel@mediatek.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:GxC2BwCXgiZOQuBlIOpmAw--.42792S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kw1DWF17JF4UWFykAr4DXFb_yoW8Gw4kpF
-	4fCw1kKF4ku34SqFn3K3WIqFW7uFsIgF45WFW2kr4YyayYg3yUKr1Ikr48G34rZr4SkFWr
-	tF40qrW8JF1UZa7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBS14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-	6F4UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4j6r
-	4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
-	n2kIc2xKxwCY1x0262kKe7AKxVW8ZVWrXwCY1x0264kExVAvwVAq07x20xyl42xK82IYc2
-	Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
-	6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0x
-	vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE
-	42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87
-	Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjTRWbyCUUUUU
-X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5a422630db12a06a4e8d064d9dd2c7402a4bbe07.camel@mediatek.com>
 
-From: Petr Tesarik <petr.tesarik1@huawei-partners.com>
+Thu, Feb 29, 2024 at 09:24:54AM CET, Lena.Wang@mediatek.com wrote:
+>On Wed, 2024-02-28 at 16:50 +0100, Jiri Pirko wrote:
+>>  	 
+>> External email : Please do not click links or open attachments until
+>> you have verified the sender or the content.
+>>  Wed, Feb 28, 2024 at 04:38:56PM CET, Lena.Wang@mediatek.com wrote:
+>> >From: Shiming Cheng <shiming.cheng@mediatek.com>
+>> >
+>> >When rule policy is changed, ipv6 socket cache is not refreshed.
+>> >The sock's skb still uses a outdated route cache and was sent to
+>> >a wrong interface.
+>> >
+>> >To avoid this error we should update fib node's version when
+>> >rule is changed. Then skb's route will be reroute checked as
+>> >route cache version is already different with fib node version.
+>> >The route cache is refreshed to match the latest rule.
+>> >
+>> >Signed-off-by: Shiming Cheng <shiming.cheng@mediatek.com>
+>> >Signed-off-by: Lena Wang <lena.wang@mediatek.com>
+>> 
+>> 1) You are still missing Fixes tags, I don't know what to say.
+>I am sorry for the confuse. My previous change log of fix tag is a
+>wrong description for "PATCH net v2".
+>
+>Current patch doesn't fix previous commit. It is more like missing
+>flush since the first commit 101367c2f8c4 of creating fib6_rules.c. Is
+>it OK to add this fix or omit fix tag?
 
-Optimize the check whether a nested NMI occurred between repeat_nmi and
-end_repeat_nmi. Although this is not a hot path, this is standard code to
-check whether a value is within a given range; it is slightly faster, takes
-up less bytes of code and saves one entry in the branch predictor.
+No, the "Fixes" tag needs to be present. In this case, it looks like:
+Fixes: 101367c2f8c4 ("[IPV6]: Policy Routing Rules")
+Is the appropriate one. Isn't it?
 
-This patch also removes the only relocation for end_repeat_nmi, removing
-the need for ANNOTATE_NOENDBR.
-
-Signed-off-by: Petr Tesarik <petr.tesarik1@huawei-partners.com>
----
- arch/x86/entry/entry_64.S | 13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
-
-diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index 9bb485977629..cae40076e109 100644
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -1251,13 +1251,10 @@ SYM_CODE_START(asm_exc_nmi)
- 	 * the outer NMI.
- 	 */
- 
--	movq	$repeat_nmi, %rdx
--	cmpq	8(%rsp), %rdx
--	ja	1f
--	movq	$end_repeat_nmi, %rdx
--	cmpq	8(%rsp), %rdx
--	ja	nested_nmi_out
--1:
-+	movq	8(%rsp), %rdx
-+	subq	$repeat_nmi, %rdx
-+	cmpq	$(end_repeat_nmi - repeat_nmi), %rdx
-+	jb	nested_nmi_out
- 
- 	/*
- 	 * Now check "NMI executing".  If it's set, then we're nested.
-@@ -1383,8 +1380,6 @@ repeat_nmi:
- 	.endr
- 	subq	$(5*8), %rsp
- end_repeat_nmi:
--	ANNOTATE_NOENDBR // this code
--
- 	/*
- 	 * Everything below this point can be preempted by a nested NMI.
- 	 * If this happens, then the inner NMI will change the "iret"
--- 
-2.34.1
-
+>
+>> 2) Re patch subject:
+>>    "ipv6:flush ipv6 route cache when rule is changed"
+>>    Could it be:
+>>    "ipv6: fib6_rules: flush route cache when rule is changed"
+>>    ? please.
+>Yes, I will update later in v4.
+>
+>> 3) Could you please honor the 24h hours resubmission rule:
+>> 
+>https://www.kernel.org/doc/html/v6.6/process/maintainer-netdev.html#tl-dr
+>> 
+>OK. I will follow the rule later.
+>
+>> pw-bot: cr
 
