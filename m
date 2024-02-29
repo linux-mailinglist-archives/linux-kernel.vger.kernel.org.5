@@ -1,74 +1,75 @@
-Return-Path: <linux-kernel+bounces-86886-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86887-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE12586CC42
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:59:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30BE486CC46
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:00:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F2231F237ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:59:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8A8BEB25B75
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:00:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD1E7137C41;
-	Thu, 29 Feb 2024 14:59:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C05E1384A4;
+	Thu, 29 Feb 2024 15:00:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="SNg+/umZ"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JJSnjjKl"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3407182860;
-	Thu, 29 Feb 2024 14:59:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E601137774
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 15:00:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709218785; cv=none; b=JdKVeEL85j+Ssey9AFaGFyFCduk0asXmZOeCRJfAAU4gqpqXZSBQAzql9ft65OokOd3fclFSWOHg1vshHZE22v20/geK3zXdreaXu3k2NRi/+c0tsIpVQgzEbzmHBT7ddc6B/5M1A50VKV3ev+CKxIEp3GNc0EqxLedyujsBF6M=
+	t=1709218810; cv=none; b=AwA9wfwpZ00Qadr/jVoopGwPFIQZikNoVeWgGolebEaveE0d8z+vSqoGjHG7F89pSJfkUky9DhmfkzNPtkONLfa6qr9CQaXAl7CLvzEL34apyhUv2xQGDHAVYwWPsWySa9tuyQ/9h3b7ReTSmIfauWjqsVpMWAftGWSoPb3buws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709218785; c=relaxed/simple;
-	bh=K+5tBSC4Xcoa5sB1xPKFfLn4Z11QAga8+1gmTV6Y9xA=;
+	s=arc-20240116; t=1709218810; c=relaxed/simple;
+	bh=bzsLAiCQthrVFAfhIeoz62wmMKFtw1xDTxQwvoxknAM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cToAlNEky/r/XgrkEC/w3lO4r9Io+xikhXnYbYLM2vUJBsk+l7q65owGHapbXOTM07dn/6diJmr08mVKVWf2Baj7j4A22pgWXnQM4MabHRXg24EgPoKw3FMb/d1DK9gHnWGlN/CpaGvv97h1K/Ywc+rrxXY4PMXJTdVsqJyBcjg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=SNg+/umZ; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=vBT+bWqpdoEnAANUaHRk4UvSWJZiuneIDAe2zHQnLmo=; b=SNg+/umZiNdf0R/XwdM/kEf0jq
-	LhpcrAla86DEKiFumE4Hx3NPldLipR42eH9p5CAa3SBeE9TuhvH96ctdeLI+DHrBeu6zUD4dnIWWW
-	rIVt9i/irqzU+4EycX0UKcGZz5+QAqWQxw7nZn6qUu2hBbmGVjyKBaBLPJFf1uwJmdEQ=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rfhsc-00936k-7A; Thu, 29 Feb 2024 15:59:26 +0100
-Date: Thu, 29 Feb 2024 15:59:26 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Lukasz Majewski <lukma@denx.de>
-Cc: Stephen Hemminger <stephen@networkplumber.org>,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
-	Eric Dumazet <edumazet@google.com>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-	Tristram.Ha@microchip.com,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Ravi Gunasekaran <r-gunasekaran@ti.com>,
-	Simon Horman <horms@kernel.org>,
-	Wojciech Drewek <wojciech.drewek@intel.com>,
-	Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
-	Murali Karicheri <m-karicheri2@ti.com>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	Ziyang Xuan <william.xuanziyang@huawei.com>,
-	Kristian Overskeid <koverskeid@gmail.com>,
-	Matthieu Baerts <matttbe@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [RFC] net: hsr: Provide RedBox support
-Message-ID: <399bf6c2-c9be-4f41-8df5-8d9655e34003@lunn.ch>
-References: <20240228150735.3647892-1-lukma@denx.de>
- <20240228083115.01d4c93e@hermes.local>
- <c3880444-3665-4a60-b6ec-f8ae8a9fbf8d@lunn.ch>
- <20240229102557.615c02f3@wsk>
+	 Content-Type:Content-Disposition:In-Reply-To; b=oDpyTFjVnchbqf3x7paZX7SIwLiVq+EmKgsHkBtYxm0xXodK2GCn9fT+YqLHTeA+XIFe2KoaYtHYCiwL+udiFhFyHxFKVIGTLjppGOSYum/j5RWlElQ2RTL97hEeA2u5V+qezuGf+BvLsIdOkLdjCKF442VPj7lsgf7NbCeyskw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JJSnjjKl; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709218807;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6egRvLYRkiVfRFj4cN+8vcXUmac/AnmcaQNAMGAMNAg=;
+	b=JJSnjjKlg4iyXtO29AjYhbmIDlzfqJMrbLy1HtEvX5/i4Zjz70Noxg1AO5WmRzae7OdkTu
+	acDCeuQ8UwsgAX8/NmQg2V+yJ9fC1hQYj6DWP4z3LiIv0oX5rir50QEH5bD2WxwcacQPBZ
+	kKDnTFbH0Psk9S7uBItpBnc//KV72YE=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-422-i8F5JyzwPvWRc0Tt_-tQzw-1; Thu,
+ 29 Feb 2024 10:00:04 -0500
+X-MC-Unique: i8F5JyzwPvWRc0Tt_-tQzw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C5BC33C14955;
+	Thu, 29 Feb 2024 15:00:03 +0000 (UTC)
+Received: from bfoster (unknown [10.22.32.137])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 76A79112132A;
+	Thu, 29 Feb 2024 15:00:01 +0000 (UTC)
+Date: Thu, 29 Feb 2024 10:01:43 -0500
+From: Brian Foster <bfoster@redhat.com>
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: linux-fsdevel@vger.kernel.org, Miklos Szeredi <miklos@szeredi.hu>,
+	Vivek Goyal <vgoyal@redhat.com>,
+	Stefan Hajnoczi <stefanha@redhat.com>,
+	Bernd Schubert <bernd.schubert@fastmail.fm>,
+	"Michael S . Tsirkin" <mst@redhat.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Benjamin Coddington <bcodding@redhat.com>,
+	linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
+	houtao1@huawei.com
+Subject: Re: [PATCH v2 4/6] virtiofs: support bounce buffer backed by
+ scattered pages
+Message-ID: <ZeCcV9Jo3mTRPsME@bfoster>
+References: <20240228144126.2864064-1-houtao@huaweicloud.com>
+ <20240228144126.2864064-5-houtao@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,73 +78,133 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240229102557.615c02f3@wsk>
+In-Reply-To: <20240228144126.2864064-5-houtao@huaweicloud.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-On Thu, Feb 29, 2024 at 10:25:57AM +0100, Lukasz Majewski wrote:
-> Hi Andrew,
+On Wed, Feb 28, 2024 at 10:41:24PM +0800, Hou Tao wrote:
+> From: Hou Tao <houtao1@huawei.com>
 > 
-> > On Wed, Feb 28, 2024 at 08:31:15AM -0800, Stephen Hemminger wrote:
-> > > On Wed, 28 Feb 2024 16:07:35 +0100
-> > > Lukasz Majewski <lukma@denx.de> wrote:
-> > >   
-> > > >  
-> > > > +/* hsr_proxy_node_table_show - Formats and prints proxy
-> > > > node_table entries */ +static int
-> > > > +hsr_proxy_node_table_show(struct seq_file *sfp, void *data)
-> > > > +{
-> > > > +	struct hsr_priv *priv = (struct hsr_priv *)sfp->private;
-> > > > +	struct hsr_node *node;
-> > > > +
-> > > > +	seq_printf(sfp, "Proxy Node Table entries for HSR
-> > > > device\n");
-> > > > +	seq_puts(sfp, "MAC-Address-SAN,        time_in\n");
-> > > > +	rcu_read_lock();
-> > > > +	list_for_each_entry_rcu(node, &priv->proxy_node_db,
-> > > > mac_list) {
-> > > > +		seq_printf(sfp, "%pM ", &node->macaddress_A[0]);
-> > > > +		seq_printf(sfp, "%10lx\n",
-> > > > node->time_in[HSR_PT_INTERLINK]);
-> > > > +	}
-> > > > +	rcu_read_unlock();
-> > > > +	return 0;
-> > > > +}
-> > > > +
-> > > >  DEFINE_SHOW_ATTRIBUTE(hsr_node_table);
-> > > > +DEFINE_SHOW_ATTRIBUTE(hsr_proxy_node_table);  
-> > > 
-> > > NAK
-> > > Do not abuse sysfs to be a debug proc style output.  
-> > 
-> > This is actually debugfs, not sysfs.
-> > 
-> > However, i agree, we want information like this exported via netlink
-> > as the primary interface to the end user. debugfs is not suitable for
-> > that.
+> When reading a file kept in virtiofs from kernel (e.g., insmod a kernel
+> module), if the cache of virtiofs is disabled, the read buffer will be
+> passed to virtiofs through out_args[0].value instead of pages. Because
+> virtiofs can't get the pages for the read buffer, virtio_fs_argbuf_new()
+> will create a bounce buffer for the read buffer by using kmalloc() and
+> copy the read buffer into bounce buffer. If the read buffer is large
+> (e.g., 1MB), the allocation will incur significant stress on the memory
+> subsystem.
 > 
-> Am I correct, that recommended approach would be to:
+> So instead of allocating bounce buffer by using kmalloc(), allocate a
+> bounce buffer which is backed by scattered pages. The original idea is
+> to use vmap(), but the use of GFP_ATOMIC is no possible for vmap(). To
+> simplify the copy operations in the bounce buffer, use a bio_vec flex
+> array to represent the argbuf. Also add an is_flat field in struct
+> virtio_fs_argbuf to distinguish between kmalloc-ed and scattered bounce
+> buffer.
 > 
-> 1. Modify iproute2 to support for example:
+> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> ---
+>  fs/fuse/virtio_fs.c | 163 ++++++++++++++++++++++++++++++++++++++++----
+>  1 file changed, 149 insertions(+), 14 deletions(-)
 > 
-> ip addr show dev hsr1 nodes {proxy} ?
+> diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
+> index f10fff7f23a0f..ffea684bd100d 100644
+> --- a/fs/fuse/virtio_fs.c
+> +++ b/fs/fuse/virtio_fs.c
+..
+> @@ -408,42 +425,143 @@ static void virtio_fs_request_dispatch_work(struct work_struct *work)
+>  	}
+>  }
+>  
+..  
+>  static void virtio_fs_argbuf_copy_from_in_arg(struct virtio_fs_argbuf *argbuf,
+>  					      unsigned int offset,
+>  					      const void *src, unsigned int len)
+>  {
+> -	memcpy(argbuf->buf + offset, src, len);
+> +	struct iov_iter iter;
+> +	unsigned int copied;
+> +
+> +	if (argbuf->is_flat) {
+> +		memcpy(argbuf->f.buf + offset, src, len);
+> +		return;
+> +	}
+> +
+> +	iov_iter_bvec(&iter, ITER_DEST, argbuf->s.bvec,
+> +		      argbuf->s.nr, argbuf->s.size);
+> +	iov_iter_advance(&iter, offset);
 
-Something like that. iproute2 is more than the ip command. There is
-also bridge, dcb, vdpa, etc. So you need to decide where it fits best.
-Maybe as part of bridge? Or even a command of its own.
+Hi Hou,
 
-> 2. Shall the currently exported:
+Just a random comment, but it seems a little inefficient to reinit and
+readvance the iter like this on every copy/call. It looks like offset is
+already incremented in the callers of the argbuf copy helpers. Perhaps
+iov_iter could be lifted into the callers and passed down, or even just
+include it in the argbuf structure and init it at alloc time?
+
+Brian
+
+> +
+> +	copied = _copy_to_iter(src, len, &iter);
+> +	WARN_ON_ONCE(copied != len);
+>  }
+>  
+>  static unsigned int
+> @@ -451,15 +569,32 @@ virtio_fs_argbuf_out_args_offset(struct virtio_fs_argbuf *argbuf,
+>  				 const struct fuse_args *args)
+>  {
+>  	unsigned int num_in = args->in_numargs - args->in_pages;
+> +	unsigned int offset = fuse_len_args(num_in,
+> +					    (struct fuse_arg *)args->in_args);
+>  
+> -	return fuse_len_args(num_in, (struct fuse_arg *)args->in_args);
+> +	if (argbuf->is_flat)
+> +		return offset;
+> +	return round_up(offset, PAGE_SIZE);
+>  }
+>  
+>  static void virtio_fs_argbuf_copy_to_out_arg(struct virtio_fs_argbuf *argbuf,
+>  					     unsigned int offset, void *dst,
+>  					     unsigned int len)
+>  {
+> -	memcpy(dst, argbuf->buf + offset, len);
+> +	struct iov_iter iter;
+> +	unsigned int copied;
+> +
+> +	if (argbuf->is_flat) {
+> +		memcpy(dst, argbuf->f.buf + offset, len);
+> +		return;
+> +	}
+> +
+> +	iov_iter_bvec(&iter, ITER_SOURCE, argbuf->s.bvec,
+> +		      argbuf->s.nr, argbuf->s.size);
+> +	iov_iter_advance(&iter, offset);
+> +
+> +	copied = _copy_from_iter(dst, len, &iter);
+> +	WARN_ON_ONCE(copied != len);
+>  }
+>  
+>  /*
+> @@ -1154,7 +1289,7 @@ static unsigned int sg_init_fuse_args(struct scatterlist *sg,
+>  	len = fuse_len_args(numargs - argpages, args);
+>  	if (len)
+>  		total_sgs += virtio_fs_argbuf_setup_sg(req->argbuf, *len_used,
+> -						       len, &sg[total_sgs]);
+> +						       &len, &sg[total_sgs]);
+>  
+>  	if (argpages)
+>  		total_sgs += sg_init_fuse_pages(&sg[total_sgs],
+> @@ -1199,7 +1334,7 @@ static int virtio_fs_enqueue_req(struct virtio_fs_vq *fsvq,
+>  	}
+>  
+>  	/* Use a bounce buffer since stack args cannot be mapped */
+> -	req->argbuf = virtio_fs_argbuf_new(args, GFP_ATOMIC);
+> +	req->argbuf = virtio_fs_argbuf_new(args, GFP_ATOMIC, true);
+>  	if (!req->argbuf) {
+>  		ret = -ENOMEM;
+>  		goto out;
+> -- 
+> 2.29.2
 > 
-> /sys/kernel/debug/hsr/hsrX/node_table be left as it is (for legacy
-> usage) or shall it be removed and replaced with netlink and iproute2 ?
+> 
 
-There is no legacy usage. debugfs is unstable, it is not KAPI. Nothing
-is expected to use it, because it could disappear at any time, its
-format can change, etc. For a long time, debugfs was not liked in
-networking, because it was abused and tools built on top of it, often
-vendor tools. We much prefer well defined interfaces such as
-netlink. But it seems like things are becoming a little bit more
-loose. If you have a well defined netlink API making debugfs
-pointless, you can probably keep the debugfs code :-) But you can also
-remove it.
-
-	   Andrew
 
