@@ -1,198 +1,115 @@
-Return-Path: <linux-kernel+bounces-87198-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87199-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E80E86D0FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:42:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 418CC86D0FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:43:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3EFD828D346
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:42:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AB08FB22587
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:42:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D9C0757F3;
-	Thu, 29 Feb 2024 17:42:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 977E070AF3;
+	Thu, 29 Feb 2024 17:42:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="O2ImKm7B"
-Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="LXfI4by3";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="v0coO4Cc"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8692770AF3
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 17:42:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6439C1EB42
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 17:42:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709228530; cv=none; b=B477oPep3aTiEdpwiwuxGl+W6JGnRnWYFVgYGqzTc7LH3g0NKtB/42KsHcQ4rcvZeS9wuvgD8wGXPhADwIJmIWSu29+5Jr90H/qqO5OCR0rYuuw4gDhvOnAMYq/T5l7C9A153kjV+miGq36mqy6iXS047/ee8wveZFwDbcHsFHI=
+	t=1709228570; cv=none; b=BZwGvpOlYPIEaTq7EyFANuzojdIM1Dl6xoiaO9kWDQ+QjF+zbzz50JqfJJjxrxjB3qv45TxwWxfrO+go+/5GuVnMWX+PIj/3fOzhE2VLixdWLIwjEDODVGubpjxcWxQ7D5Scwe0Y9mq9rgXKrWI3sG/+uZ2k8zHinIhzVODuR7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709228530; c=relaxed/simple;
-	bh=lI8Z0o/WbksD0Syi1oUjCSh1ZwManR98OCOJPvTowag=;
-	h=Content-Type:From:Mime-Version:Subject:Date:Message-Id:References:
-	 Cc:In-Reply-To:To; b=YCwzntLtX+QvGrcVixR0w4WYSILRnigtfC+I6xd8m23u6+2090X1wq47QJqd7OzVJOgLPluUOBkZzp/GxKyV/aafqnGGLL1fYZQSt8+sPJKD9bh9gpGdnonYVIT9tI+ZefsbCWRfBGlD4iIZjKd1MmgLduhPCjCT4wQl3vpKLuw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=O2ImKm7B; arc=none smtp.client-ip=209.85.219.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
-Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-68f5cdca7a3so17413656d6.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 09:42:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1709228527; x=1709833327; darn=vger.kernel.org;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HwUZzbGwWNKUk3Gmh7J0YXdK3z+y2JIeVXKnvWA5F3o=;
-        b=O2ImKm7B1+OHcs5iKm46YmZzhchGhOwFFC6Pt4ASm+epxmciNwIjjdneosuqTb5Aog
-         Blg880R0bqT6yIpO8r7WgsPMvh5Updf8P7fmrKQntnAU8aGexgl6XRZS3/5+tatVzCje
-         2VxyKYbcWx8bQcUo981uRCViN0FX71m1Bwb5I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709228527; x=1709833327;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HwUZzbGwWNKUk3Gmh7J0YXdK3z+y2JIeVXKnvWA5F3o=;
-        b=I56wZU+RuHaf8/q+D9egNvEMS9T3MbueAsRtlBTHuMhafK+E1mT64kViY9PqDv3wqF
-         87mtkcR5smhe+mRB3CGqasulB/UjrkdnRKyTTRZoB0+hwtc4b97bwJQhwKZjmry7a5Kj
-         JOBVySTp8StbHPpajwcwOSg0uE2MmdBjh7bafc0COVZbtaPe32Sa3vwHpTF10OR6nyiz
-         LA9DF5x+gY0yxclaAb3FRJ8szNgYEj4MzCBIwDWR1RJLvhOhGgRa5WUD5/5RM+kdrbH1
-         rzccHGznTYem83Ny7DWiYOdvhxAfHOu4Y14cXs94157uf4FgO5M3+xMrJ7FNzOsTm0wK
-         9Rog==
-X-Forwarded-Encrypted: i=1; AJvYcCUUz3EN8SGy0lPoWN8Ax1ZwBpkgoH9aw+esb3NHD2iAc7Xd0FHqBBr3cn1GZP5dScb0rLRvQXpXjyYvObsDasF4k9VQvViZv933T7DY
-X-Gm-Message-State: AOJu0Yw0Sxwdx6FWt33VxgjyE8iolNP/bpIsW7+PcFe/3HDdQr6rmCYK
-	52z4or9pqses0y14wbez62doGweKogQHT7S4lOV++KoDmkSkN7jCb+FhGW+LV38=
-X-Google-Smtp-Source: AGHT+IHYyHSNE7TBg6k1p5ActEtS8XwoP7+w6+E7w4xT/25SssyA6f41oyBxsiesr1O2mMmH10GKdQ==
-X-Received: by 2002:ad4:4b28:0:b0:690:4902:7f17 with SMTP id s8-20020ad44b28000000b0069049027f17mr3088723qvw.21.1709228527337;
-        Thu, 29 Feb 2024 09:42:07 -0800 (PST)
-Received: from smtpclient.apple ([192.145.116.187])
-        by smtp.gmail.com with ESMTPSA id em19-20020ad44f93000000b0068fdb03a3a3sm959077qvb.95.2024.02.29.09.42.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Feb 2024 09:42:06 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From: Joel Fernandes <joel@joelfernandes.org>
+	s=arc-20240116; t=1709228570; c=relaxed/simple;
+	bh=yeKcJOLy1njyemQ5Tl9jEyFRkzapZUSc5QRkXNW0P3I=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=rUKD7s+tXOH0m4eVYajneVvJ+9wEYNBABoxB6kbzCjFz5+awiE635d7I9IfYZz18YTDyhWrPy6MpR6v3vlIsRO0W6fUmQUmsA0KbiXi8rit4EVgBRNE/ywtlyrxi7/pYeXTefRh7+Vwu36ou0P6jBzll5l/z551XZLZmsEGOOIc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=LXfI4by3; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=v0coO4Cc; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1709228567;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ujeIxvSFSQUGbulyJ+o3KKiI0KcbSdZPdN9R9JucPJo=;
+	b=LXfI4by30DHBqfzWPbBiAOTLrjn2XTgU6pqj8wmm4Qf1dmlUozdjKI34FuYSya+ZWXu1Uc
+	CRZacPP+g3YZ1sJslQCYMjQgCdS4gGjFpR2tUlfXmmVrixdDIjMYW4e/fohyzeCeh4bNCe
+	4qJZn2473TiyibgeGTuTC1Igo7Sp75y5GuYwb7fnvWzFG51RnpwoJmY34CUu7fuptbuWDc
+	o4lh9HTMT6Zno/+dso6ay1ovVeOXI7TNYR7HYJHyJo0eIDocFiT3Eadypb2mGbNwdddhYc
+	SwXED+2nfQh/DzvxWAi4dp5yZGnuNRPUMRb7M0DE3x5SZOVobeBkCeykBubxHA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1709228567;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ujeIxvSFSQUGbulyJ+o3KKiI0KcbSdZPdN9R9JucPJo=;
+	b=v0coO4Cc6NRk9gFWT+XAuUQG1TWdaTk1UBdmykYs+bTYlc250kZVyU9/YPYCpAl8/U+X85
+	zf6tTBPrt96/pcCg==
+To: Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org
+Cc: peterz@infradead.org, mingo@redhat.com
+Subject: Re: [PATCH 1/2] sched/core: switch struct rq->nr_iowait to a normal
+ int
+In-Reply-To: <c3abe716-3d8f-47dc-9c7d-203b05b25393@kernel.dk>
+References: <20240228192355.290114-1-axboe@kernel.dk>
+ <20240228192355.290114-2-axboe@kernel.dk> <8734tb8b57.ffs@tglx>
+ <c3abe716-3d8f-47dc-9c7d-203b05b25393@kernel.dk>
+Date: Thu, 29 Feb 2024 18:42:47 +0100
+Message-ID: <87wmqn6uaw.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH] net: raise RCU qs after each threaded NAPI poll
-Date: Thu, 29 Feb 2024 12:41:55 -0500
-Message-Id: <10FC3F5F-AA33-4F81-9EB6-87EB2D41F3EE@joelfernandes.org>
-References: <55900c6a-f181-4c5c-8de2-bca640c4af3e@paulmck-laptop>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>, Yan Zhai <yan@cloudflare.com>,
- Eric Dumazet <edumazet@google.com>,
- Network Development <netdev@vger.kernel.org>,
- "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Jiri Pirko <jiri@resnulli.us>,
- Simon Horman <horms@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Lorenzo Bianconi <lorenzo@kernel.org>, Coco Li <lixiaoyan@google.com>,
- Wei Wang <weiwan@google.com>, Alexander Duyck <alexanderduyck@fb.com>,
- Hannes Frederic Sowa <hannes@stressinduktion.org>,
- LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
- bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@cloudflare.com>,
- Mark Rutland <mark.rutland@arm.com>
-In-Reply-To: <55900c6a-f181-4c5c-8de2-bca640c4af3e@paulmck-laptop>
-To: paulmck@kernel.org
-X-Mailer: iPhone Mail (21D61)
+MIME-Version: 1.0
+Content-Type: text/plain
+
+On Thu, Feb 29 2024 at 10:19, Jens Axboe wrote:
+> On 2/29/24 9:53 AM, Thomas Gleixner wrote:
+>> On Wed, Feb 28 2024 at 12:16, Jens Axboe wrote:
+>>> In 3 of the 4 spots where we modify rq->nr_iowait we already hold the
+>> 
+>> We modify something and hold locks? It's documented that changelogs
+>> should not impersonate code. It simply does not make any sense.
+>
+> Agree it doesn't read that well... It's meant to say that we already
+> hold the rq lock in 3 of the 4 spots, hence using atomic_inc/dec is
+> pointless for those cases.
+
+That and the 'we'. Write it neutral.
+
+The accounting of rq::nr_iowait is using an atomic_t but 3 out of 4
+places hold runqueue lock already. ....
+
+So but I just noticed that there is actually an issue with this:
+
+>  unsigned int nr_iowait_cpu(int cpu)
+>  {
+> -	return atomic_read(&cpu_rq(cpu)->nr_iowait);
+> +	struct rq *rq = cpu_rq(cpu);
+> +
+> +	return rq->nr_iowait - atomic_read(&rq->nr_iowait_remote);
+
+The access to rq->nr_iowait is not protected by the runqueue lock and
+therefore a data race when @cpu is not the current CPU.
+
+This needs to be properly annotated and explained why it does not
+matter.
+
+So s/Reviewed-by/Un-Reviewed-by/
+
+Though thinking about it some more. Is this split a real benefit over
+always using the atomic? Do you have numbers to show?
+
+Thanks,
+
+        tglx
 
 
 
-> On Feb 29, 2024, at 11:57=E2=80=AFAM, Paul E. McKenney <paulmck@kernel.org=
-> wrote:
->=20
-> =EF=BB=BFOn Thu, Feb 29, 2024 at 09:21:48AM -0500, Joel Fernandes wrote:
->>=20
->>=20
->>> On 2/28/2024 5:58 PM, Paul E. McKenney wrote:
->>> On Wed, Feb 28, 2024 at 02:48:44PM -0800, Alexei Starovoitov wrote:
->>>> On Wed, Feb 28, 2024 at 2:31=E2=80=AFPM Steven Rostedt <rostedt@goodmis=
-org> wrote:
->>>>>=20
->>>>> On Wed, 28 Feb 2024 14:19:11 -0800
->>>>> "Paul E. McKenney" <paulmck@kernel.org> wrote:
->>>>>=20
->>>>>>>>=20
->>>>>>>> Well, to your initial point, cond_resched() does eventually invoke
->>>>>>>> preempt_schedule_common(), so you are quite correct that as far as
->>>>>>>> Tasks RCU is concerned, cond_resched() is not a quiescent state.
->>>>>>>=20
->>>>>>> Thanks for confirming. :-)
->>>>>>=20
->>>>>> However, given that the current Tasks RCU use cases wait for trampoli=
-nes
->>>>>> to be evacuated, Tasks RCU could make the choice that cond_resched()
->>>>>> be a quiescent state, for example, by adjusting rcu_all_qs() and
->>>>>> .rcu_urgent_qs accordingly.
->>>>>>=20
->>>>>> But this seems less pressing given the chance that cond_resched() mig=
-ht
->>>>>> go away in favor of lazy preemption.
->>>>>=20
->>>>> Although cond_resched() is technically a "preemption point" and not tr=
-uly a
->>>>> voluntary schedule, I would be happy to state that it's not allowed to=
- be
->>>>> called from trampolines, or their callbacks. Now the question is, does=
- BPF
->>>>> programs ever call cond_resched()? I don't think they do.
->>>>>=20
->>>>> [ Added Alexei ]
->>>>=20
->>>> I'm a bit lost in this thread :)
->>>> Just answering the above question.
->>>> bpf progs never call cond_resched() directly.
->>>> But there are sleepable (aka faultable) bpf progs that
->>>> can call some helper or kfunc that may call cond_resched()
->>>> in some path.
->>>> sleepable bpf progs are protected by rcu_tasks_trace.
->>>> That's a very different one vs rcu_tasks.
->>>=20
->>> Suppose that the various cond_resched() invocations scattered throughout=
-
->>> the kernel acted as RCU Tasks quiescent states, so that as soon as a
->>> given task executed a cond_resched(), synchronize_rcu_tasks() might
->>> return or call_rcu_tasks() might invoke its callback.
->>>=20
->>> Would that cause BPF any trouble?
->>>=20
->>> My guess is "no", because it looks like BPF is using RCU Tasks (as you
->>> say, as opposed to RCU Tasks Trace) only to wait for execution to leave a=
-
->>> trampoline.  But I trust you much more than I trust myself on this topic=
-!
->>=20
->> But it uses RCU Tasks Trace as well (for sleepable bpf programs), not jus=
-t
->> Tasks? Looks like that's what Alexei said above as well, and I confirmed i=
-t in
->> bpf/trampoline.c
->>=20
->>        /* The trampoline without fexit and fmod_ret progs doesn't call or=
-iginal
->>         * function and doesn't use percpu_ref.
->>         * Use call_rcu_tasks_trace() to wait for sleepable progs to finis=
-h.
->>         * Then use call_rcu_tasks() to wait for the rest of trampoline as=
-m
->>         * and normal progs.
->>         */
->>        call_rcu_tasks_trace(&im->rcu, __bpf_tramp_image_put_rcu_tasks);
->>=20
->> The code comment says it uses both.
->=20
-> BPF does quite a few interesting things with these.
->=20
-> But would you like to look at the update-side uses of RCU Tasks Rude
-> to see if lazy preemption affects them?  I don't believe that there
-> are any problems here, but we do need to check.
-
-Sure I will be happy to. I am planning look at it in detail over the 3 day w=
-eekend. Too much fun! ;-)
-
-thanks,
-
-- Joel
-
-
-
->=20
->                            Thanx, Paul
 
