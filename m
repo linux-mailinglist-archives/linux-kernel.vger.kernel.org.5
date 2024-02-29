@@ -1,55 +1,56 @@
-Return-Path: <linux-kernel+bounces-87450-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87451-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B66386D48E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:42:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4894D86D491
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:43:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C242CB22A55
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:42:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E9626B23F74
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:43:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AEE3154454;
-	Thu, 29 Feb 2024 20:38:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EEC2154C04;
+	Thu, 29 Feb 2024 20:38:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vDwXGLX4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L9P2Lavh"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A44115443B;
-	Thu, 29 Feb 2024 20:38:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB846154BE5;
+	Thu, 29 Feb 2024 20:38:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709239085; cv=none; b=rvJ+xci9NV2HkmtYjxh+oCPBXkAJF2qsNBvwiQEPMCTW5rfB9/JPxHLZLEph06GK5Wh4KU2cmSJjuUKgqTXl7f3QZZt86zTvXZsPjBDHpywbeLWdKRkoJ54UV9ys5MvmV0CgNc3p1g6NX7QnvdEktklVOc2dX66HXwjvonyVrNk=
+	t=1709239086; cv=none; b=iK197F4K1KscOYvEE2F3lKL9q7kkhc07xT5d/OPNlgJXwnwFbsrwxWhdNKZFDaQPGSIQssh9AHPE3Cbj/+6eMKp70I5pY8W1ucwzFxyUzc+CQI+som+t0YXJfZvX58wB3KKi+zlJruAvSHRVbhcamxAQI4Rs834dXsRoBCUiNsM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709239085; c=relaxed/simple;
-	bh=hQUbd13s4ll9bhRZbwYb/6PahcuZYCN+X3yVUaUpNtA=;
+	s=arc-20240116; t=1709239086; c=relaxed/simple;
+	bh=kvxZTRzq6RWHp6uh5uC7CjlkZwvyFL2WKvxmXmYgUA0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nbNphqmZmwjc+j+9bKe1Aa0zZNq5XiouWVrWoiMurlcW/Xqr0Grt10nZGSsNMJBdeOhFhe+5kcPwF0x/z4YNGzXD+4GnFqV6ym4tBGuu5FoE4+1RrmRnvbjqV6CY+EEa3AfNEyeiw7Phqm6wBML+cX0Ecemo/yLylH2auWoRAvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vDwXGLX4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5A16C433F1;
-	Thu, 29 Feb 2024 20:38:03 +0000 (UTC)
+	 MIME-Version; b=eI/+KIE7ig9ZXC2BEjipCGkQJgOcrTJ7jJqqn9Ot25stsjyO5FMIdoky1w+IhkHc6Ai1rClt8TBRQfOhGE2OymUW670MEXpqlS/fZyj4SFxQXBapAaAhAYEn+kxdujU30HAMiMRKLeXpHzy1eEkSRyJwNboxfuotkf+KmgHFcYk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L9P2Lavh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4161CC43390;
+	Thu, 29 Feb 2024 20:38:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709239084;
-	bh=hQUbd13s4ll9bhRZbwYb/6PahcuZYCN+X3yVUaUpNtA=;
+	s=k20201202; t=1709239086;
+	bh=kvxZTRzq6RWHp6uh5uC7CjlkZwvyFL2WKvxmXmYgUA0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=vDwXGLX4uFiCOHcCl6S1Fv2jjJO0Ct6VH8iKT8Fr5LqaKBY0csUA3GN2WK/k94Dk1
-	 dhqHlwTUko6p7kfgM6AV/ZJq0YUfhNzAqURR9V9kLiphXz8kTQB3my74iL/k50cWNN
-	 0w5kzlObXNDRwKHoZ4hcuygko7BnSrKKYZd90JUVxfs+WhlwsBq18xZxAtBIZ8Th3r
-	 kmS9EZhu0xA0Qy/oQzdAGpZk+9EP70GIvJWQeH+ec1ooo2UUcx9aMe7JOoiEHG3Vhe
-	 dQ1vCLjMUmhqdfwhlwXF0TuVX/xsXdT3DdCGcSuJkI8XY/+U7luANhdvM3FEfjRaNX
-	 7V+SwznNH3jqQ==
+	b=L9P2Lavh5JlJgM1iZv9s81D2QHza7b6WEy8V9N7il+j9EoXqeP6Ea+vVjH997qEnU
+	 3J+f/wEqZQlQL30VEZbw/XAP4gfma0TrLrCqHySkX9JD5uQPdYPtYTKFcrq1NC3HC3
+	 Bu+ZCM1QS17NYNTlvrC4FoE3+l5oWmmPi3iTrN1v73OvwWv5oK5PTQ4CfA3z9ZtEEc
+	 uIa8ZefaOaq5NSXUWhtHyyIQg1JpNA2kRdleQ92yL+DE9zq75b498kdZwmhJURWhZS
+	 NywnWryjILxte127yQzA5la3s6Ab6ETOIuI6h61rLx/589oPO07uv72VQ+p0OEjMTN
+	 0girl12iDuQIw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Hans de Goede <hdegoede@redhat.com>,
+Cc: Mikulas Patocka <mpatocka@redhat.com>,
+	Mike Snitzer <snitzer@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	ilpo.jarvinen@linux.intel.com,
-	platform-driver-x86@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 17/24] platform/x86: x86-android-tablets: Fix acer_b1_750_goodix_gpios name
-Date: Thu, 29 Feb 2024 15:36:57 -0500
-Message-ID: <20240229203729.2860356-17-sashal@kernel.org>
+	agk@redhat.com,
+	dm-devel@lists.linux.dev
+Subject: [PATCH AUTOSEL 6.7 18/24] dm-verity, dm-crypt: align "struct bvec_iter" correctly
+Date: Thu, 29 Feb 2024 15:36:58 -0500
+Message-ID: <20240229203729.2860356-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240229203729.2860356-1-sashal@kernel.org>
 References: <20240229203729.2860356-1-sashal@kernel.org>
@@ -64,45 +65,69 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.6
 Content-Transfer-Encoding: 8bit
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Mikulas Patocka <mpatocka@redhat.com>
 
-[ Upstream commit 8215ca518164d35f10c0b5545c8bb80f538638b8 ]
+[ Upstream commit 787f1b2800464aa277236a66eb3c279535edd460 ]
 
-The Acer B1 750 tablet used a Novatek NVT-ts touchscreen,
-not a Goodix touchscreen.
+"struct bvec_iter" is defined with the __packed attribute, so it is
+aligned on a single byte. On X86 (and on other architectures that support
+unaligned addresses in hardware), "struct bvec_iter" is accessed using the
+8-byte and 4-byte memory instructions, however these instructions are less
+efficient if they operate on unaligned addresses.
 
-Rename acer_b1_750_goodix_gpios to acer_b1_750_nvt_ts_gpios
-to correctly reflect this.
+(on RISC machines that don't have unaligned access in hardware, GCC
+generates byte-by-byte accesses that are very inefficient - see [1])
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20240216201721.239791-5-hdegoede@redhat.com
+This commit reorders the entries in "struct dm_verity_io" and "struct
+convert_context", so that "struct bvec_iter" is aligned on 8 bytes.
+
+[1] https://lore.kernel.org/all/ZcLuWUNRZadJr0tQ@fedora/T/
+
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+Signed-off-by: Mike Snitzer <snitzer@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/x86-android-tablets/other.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/md/dm-crypt.c  | 4 ++--
+ drivers/md/dm-verity.h | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/platform/x86/x86-android-tablets/other.c b/drivers/platform/x86/x86-android-tablets/other.c
-index bc6bbf7ec6ea1..278402dcb808c 100644
---- a/drivers/platform/x86/x86-android-tablets/other.c
-+++ b/drivers/platform/x86/x86-android-tablets/other.c
-@@ -68,7 +68,7 @@ static const struct x86_i2c_client_info acer_b1_750_i2c_clients[] __initconst =
- 	},
- };
+diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
+index 08681f4265205..2c5c6c9ad7103 100644
+--- a/drivers/md/dm-crypt.c
++++ b/drivers/md/dm-crypt.c
+@@ -53,11 +53,11 @@
+ struct convert_context {
+ 	struct completion restart;
+ 	struct bio *bio_in;
+-	struct bio *bio_out;
+ 	struct bvec_iter iter_in;
++	struct bio *bio_out;
+ 	struct bvec_iter iter_out;
+-	u64 cc_sector;
+ 	atomic_t cc_pending;
++	u64 cc_sector;
+ 	union {
+ 		struct skcipher_request *req;
+ 		struct aead_request *req_aead;
+diff --git a/drivers/md/dm-verity.h b/drivers/md/dm-verity.h
+index f3f6070084196..5265b0d9ea37c 100644
+--- a/drivers/md/dm-verity.h
++++ b/drivers/md/dm-verity.h
+@@ -76,12 +76,12 @@ struct dm_verity_io {
+ 	/* original value of bio->bi_end_io */
+ 	bio_end_io_t *orig_bi_end_io;
  
--static struct gpiod_lookup_table acer_b1_750_goodix_gpios = {
-+static struct gpiod_lookup_table acer_b1_750_nvt_ts_gpios = {
- 	.dev_id = "i2c-NVT-ts",
- 	.table = {
- 		GPIO_LOOKUP("INT33FC:01", 26, "reset", GPIO_ACTIVE_LOW),
-@@ -77,7 +77,7 @@ static struct gpiod_lookup_table acer_b1_750_goodix_gpios = {
- };
++	struct bvec_iter iter;
++
+ 	sector_t block;
+ 	unsigned int n_blocks;
+ 	bool in_tasklet;
  
- static struct gpiod_lookup_table * const acer_b1_750_gpios[] = {
--	&acer_b1_750_goodix_gpios,
-+	&acer_b1_750_nvt_ts_gpios,
- 	&int3496_reference_gpios,
- 	NULL
- };
+-	struct bvec_iter iter;
+-
+ 	struct work_struct work;
+ 
+ 	/*
 -- 
 2.43.0
 
