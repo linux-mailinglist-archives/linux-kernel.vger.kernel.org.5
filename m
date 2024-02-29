@@ -1,137 +1,181 @@
-Return-Path: <linux-kernel+bounces-86162-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86164-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74DC986C09B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 07:21:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E7F8386C09F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 07:21:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 135FA1F24C3C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 06:21:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 59A731F23526
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 06:21:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 869403C482;
-	Thu, 29 Feb 2024 06:21:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B0B03CF4B;
+	Thu, 29 Feb 2024 06:21:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Q93PgiMu"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=de.bosch.com header.i=@de.bosch.com header.b="s6MWtBdM"
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2059.outbound.protection.outlook.com [40.107.22.59])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A9C136AE1
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 06:21:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709187664; cv=none; b=JxEmqH0Wr0reLBzqN7DmqiWkHBxR7ut9xvu6H4n5ww8euwYnwO3h43ZCldtonHfcSKU6dC+aqUb0wAgqMSY5iwK7oWoxZmRq8ewCCTbwbEYx0+IJaIso1j78XdCwss6ZnTOKUwgjJE52AVfJkZim8J3kZcLU0P6B4SX+kS0ERpo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709187664; c=relaxed/simple;
-	bh=rWfMlMwr/8u2RrDewjX8624dpgZQiC94SLvycpO6+Tk=;
-	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=odCwG8ayQc5zqiKwm/zUsZWaFPzLbDchJNsEhtYqvA1wurq25VpEpWw/mDnbAgenT+GRIfFLmb0sSPdlHiwrf8i91HFI57f2/9ahGJGiwatO7Q7uqLgpDZzyuv8wRzWtIzCs3sZUaG8rxfv8lkH8xQL4ek7f7T7QK5MT4KilN+0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Q93PgiMu; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dcc4563611cso1060677276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 22:21:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709187662; x=1709792462; darn=vger.kernel.org;
-        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=HP7FHTSIsiaJThzWBkYLUGihLpdmeLYVXFRi2ap+AOo=;
-        b=Q93PgiMuTNFHaFBMTT7q9IYkbqBn6uQBFPZFiRtHrLrnA3s4/gYDUZBLgjduFT37rP
-         NPWumPy5yNM+/K56ZIBF9ll3YYvsmm9zsX5q3+Fj67Z78eyewYvmWlA4gjNebUhOdRbz
-         BxwfYAxh/GocDQXt+oIsFPP5Eu1TbzBSFkKlIb7XAh0E2XZvPR+PgbAPXqn4uxpXVyAB
-         tVcEORGj0cEEtexjZTsWJnMmhG4GL2PGlq+bSSUEZ9MgRJwR3tkMnFliXSAMMu5jRhBu
-         b6rLBUQuZowiUqqik9g3H8nrYBSU6WBX/47YDnrFmrkEOQ3oin1abYzOJ9Ezp6UyTO9p
-         LLJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709187662; x=1709792462;
-        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HP7FHTSIsiaJThzWBkYLUGihLpdmeLYVXFRi2ap+AOo=;
-        b=n/vQPj76WOQW7aJU5obSS2w54WGnPH/PFlJj+MCeDFRrDV5PjIA1MaWsH75E97gUwR
-         GOUjlr6IFf8+RD25KZ3aUoQQyfxNajj1xBYWjz+2uzQbuFO72bNA0KIzhL7yPTxqlLSL
-         3y5PcGC+q9vklJTHQxXIKpVZjqntWPrUaeninZFEOfK5qeRNSHE9KyoIIJHv7Sje9rwL
-         BkJ0Y6g4ZDFMIY0JDvbjbZeDpACi7NT3KwMPkrLzUpngKgY++4hyC26lUjtbYHGqWXgB
-         TNLKSZHa8zsH5644ivtALcBI6KJPxSitpBY4NNxIU+eae0B6B5RoSN52Cnu/WYlQWkGC
-         ReUw==
-X-Forwarded-Encrypted: i=1; AJvYcCWItcyCMxBUmHLjnSd72kDrZQzN7KR+ye5GAQsThPrqLmNU5T5sHmzZRhP3w+l0ufLJnm2CF24LVb1B8yIoccNSzAw7OzxcvfjbOiVn
-X-Gm-Message-State: AOJu0Yy7ZckTAa8WlyPgNQ+ufWbi3M9Kp1fVUfPxdfXy8eNJl/5uHDPg
-	kbgLtD2Wj+3YDgAuKgFgk9ejIED8k1o5LMNX3PCTp4DjhROfuUZ+V+QKMEoqZXtQv5p0jdQsSn9
-	Axws1Xg==
-X-Google-Smtp-Source: AGHT+IHL4gLgrbuz5ENk/kFB22N+h9+KtteAwYmZer1Y12jokb3z8fSjA99h4Up660cDOw/41Kg4Qa2NBBBX
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:77dc:144c:334e:e2dd])
- (user=irogers job=sendgmr) by 2002:a05:6902:188d:b0:dcc:54d0:85e0 with SMTP
- id cj13-20020a056902188d00b00dcc54d085e0mr369155ybb.11.1709187662515; Wed, 28
- Feb 2024 22:21:02 -0800 (PST)
-Date: Wed, 28 Feb 2024 22:20:48 -0800
-Message-Id: <20240229062048.558799-1-irogers@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E1953C082;
+	Thu, 29 Feb 2024 06:21:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.22.59
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709187681; cv=fail; b=KJe/2bDR7nsBMfEv2s0/TAluk3KaPgilwS9C9eX+nA6KGj/J6NigW11gJymH+atNaayo21YYvruD/vih2VMedU16iuL5f2IhQNDb8DEiYULxNZIuQ2o9a5RcJYa2r5lWqGeeMhyLs8UI8O+x1k0TTBhAVbjEofpphRhfJDEFbgk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709187681; c=relaxed/simple;
+	bh=ctY//bObQWLoTnnmI6nEj0F3mggYqvr1fPOLW6wadKg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=O/sD4KsSb6n9YvUuat6aWH9l08EVi3wpD5CrCI57qcRWOK+jcGYtgHiusnnhwATNtj72W9MZBfyT7R5Mh6ch7gm3OnkotiQ7+ak8faHqYuc0QgvZvJtZjCnyvu+UjVcDgUgrgJrnHm3wundfDwiE0EJN4WwJnYEQ9Q+9VIHxO+g=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=de.bosch.com; spf=pass smtp.mailfrom=de.bosch.com; dkim=pass (2048-bit key) header.d=de.bosch.com header.i=@de.bosch.com header.b=s6MWtBdM; arc=fail smtp.client-ip=40.107.22.59
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=de.bosch.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=de.bosch.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QddHIJKA1GntAWvtfi7+lWZUy+sdmxtWYrt3zMS51jJ/6VNrx3603k3IlzNbzHksOXPqSF5VGUdNbZahJZHHEcE8fh2RqTm3Z3ytg5QiMCY1LDN43kgTZPhP5wpSRKcjdcDar9V4dJgESFcnlYM1FvzXozLUGJAZcHwL2We3kzADZOckvwNQqdFumraYTa3S9YnsFlpz9Eazo3DwFy3VyD8hD16ybE7Qek8hWgolj0CG2Zh7cb2bNPJ0G5SJcm9ql+eHwwmjzyqaajp6PRLRK8417ceuV8ZqP1akN6cVb/hGnMMJ73rVvrZztrfAqMVJvAq3S7efYEU438l+upodtw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=5XTEvQTEsjymUj0tk035YIpbk98YR/cFKyNzstRqmcc=;
+ b=S9+j77ZSEf2ZlZ+Zg2GdOsuG1/lx9JNgFEsFwW0A9Du/iVhX94N9o2a5oIKl5mOdq+p4KXdH2OgKPKdj8Ev9DehdvQJAxWPQCli+zYWDEXk9Z42q9E6SHrcLwuc8yJS9aempd8in2NVM3o+GpKonML87nokGbgsOYMYc9SBGFXoLancS5/mEq+SRGaAxcXFHf1C5ujPzjGD8lM+o9elaYfnp4hnkwyZUsA8ZBhtE18grdCbDKlyFuIuf6ox3snfqe56MOiNS77KZ8RX9RUJVCy2BX0LhWtQMwtLdmO0efqSZ8GMT4YeqQDaCv+5y5EQK21TfLEKx5yzfoHdvCMYhww==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 139.15.153.203) smtp.rcpttodomain=sang-engineering.com
+ smtp.mailfrom=de.bosch.com; dmarc=pass (p=reject sp=none pct=100) action=none
+ header.from=de.bosch.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=de.bosch.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5XTEvQTEsjymUj0tk035YIpbk98YR/cFKyNzstRqmcc=;
+ b=s6MWtBdM8Y4Rq+Xh1Gkx5WSlDAknMwRhSeolBdyiZMiOEWHaMZcJmzHYWKqcoW9HqQO5mnXlX2LkshoYa/ZLylqxhS9tMF249VF0+EznbLWmwau3hSWqhFlIORy6OtoQ94Ie8qbUBSFk7VkXqS6g29Jt/m8tMZJg1HzE+5cL7PJNQnAG72DTLu1QQsb6tMc/1T78m+rLGpFoaAijSsGz5xPqf3PpqSGod9rb3vnQyED0dxzXEDpxhgM3sBX4yRUBtohsMaiJN0BL3CsHRV07uym/NOTU5pcLhvZaCYJExGBEP1mkTbzaPOFXY/edGiTkYDA9eHRP/8BXokuK4mWyAg==
+Received: from DB7PR02CA0003.eurprd02.prod.outlook.com (2603:10a6:10:52::16)
+ by GV1PR10MB5985.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:5c::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.36; Thu, 29 Feb
+ 2024 06:21:12 +0000
+Received: from DU2PEPF00028D0B.eurprd03.prod.outlook.com
+ (2603:10a6:10:52:cafe::bb) by DB7PR02CA0003.outlook.office365.com
+ (2603:10a6:10:52::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.29 via Frontend
+ Transport; Thu, 29 Feb 2024 06:21:12 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 139.15.153.203)
+ smtp.mailfrom=de.bosch.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=de.bosch.com;
+Received-SPF: Pass (protection.outlook.com: domain of de.bosch.com designates
+ 139.15.153.203 as permitted sender) receiver=protection.outlook.com;
+ client-ip=139.15.153.203; helo=eop.bosch-org.com; pr=C
+Received: from eop.bosch-org.com (139.15.153.203) by
+ DU2PEPF00028D0B.mail.protection.outlook.com (10.167.242.171) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7292.25 via Frontend Transport; Thu, 29 Feb 2024 06:21:12 +0000
+Received: from FE-EXCAS2000.de.bosch.com (10.139.217.199) by eop.bosch-org.com
+ (139.15.153.203) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 29 Feb
+ 2024 07:21:15 +0100
+Received: from [10.34.222.178] (10.139.217.196) by FE-EXCAS2000.de.bosch.com
+ (10.139.217.199) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 29 Feb
+ 2024 07:21:09 +0100
+Message-ID: <331084d4-2802-4d1d-b978-6660f546ea2d@de.bosch.com>
+Date: Thu, 29 Feb 2024 07:21:02 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Subject: [PATCH v1] perf map: Fix map reference count issues
-From: Ian Rogers <irogers@google.com>
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFT] mmc: tmio: avoid concurrent runs of
+ mmc_request_done()
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	<linux-renesas-soc@vger.kernel.org>
+CC: Ulf Hansson <ulf.hansson@linaro.org>, <linux-mmc@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+References: <20240228100354.3285-2-wsa+renesas@sang-engineering.com>
+Content-Language: en-US
+From: Dirk Behme <dirk.behme@de.bosch.com>
+In-Reply-To: <20240228100354.3285-2-wsa+renesas@sang-engineering.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DU2PEPF00028D0B:EE_|GV1PR10MB5985:EE_
+X-MS-Office365-Filtering-Correlation-Id: 38bd4641-d60d-49a0-bbdb-08dc38eea086
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	HMuJhOaiTBwgOGsFpbOrhMDN+ha3CSsjuPZZtsSBAtdxh/9JbHGscJ1gadFZ1ExjwBsn5fZzxvgPURC7O66F82TAPlNDu1dNUuUpj5AqL9LozQlU5CibP7QyTxhQuGdsgxXImPlVY23U9OcbKqXYx1zwhDxEpIRweLxFpFJQa8OODS3A6fkavzbEnNg1DiH5ScO/nGg+xy1Q+TzQ14vlce1B853KMG6MoL0LG/sozCFKAAEpdfBMD87iX4pvuVYaUWQ7o+F0D2BK4EArt0tPFbtjZTA7fpHHV87cLUk/IsRBk666ov/mW+UL2bGuRE/MWiHh6q7lGHQlZpntZm6eUgruvGQsTPzOdyEB57M+QSiGGP+CLYv0G1YYxxz6I3CHYfLmeHPW2YjSPEknpACkB99uiXyROY0uGhxOr2/qZIAeX/Kh/Ph4eeHLC9ZnF6nNYq4EX+jK7dMVUs1bmFIGN1yHLPGoEk5WweA5aFgDUuHOmVG7WPl6hm0ZYnvEbEA5qBRHGJqa0SMuILntsXSVOJuX1AFD/Je2vCN9ElnEzDASU1qRQZDnWpSf0KSmemgD/a+DLdo34COdRA3DcsaA9+6Q9jDdLx190zeaf7gMFvdkEYuxcQby732SSaXpZtAyZdtGUIbLbAdcV2m58GH7S0ilD+EAfik4Qgpk0usmkmeTfl7oFUAp9Y+5ODroX5HDl3sivbRyZITv9Pn+6kijZtDdeUbGuF5rPku4+qo67P0=
+X-Forefront-Antispam-Report:
+	CIP:139.15.153.203;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:eop.bosch-org.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(82310400014)(36860700004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: de.bosch.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Feb 2024 06:21:12.5074
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 38bd4641-d60d-49a0-bbdb-08dc38eea086
+X-MS-Exchange-CrossTenant-Id: 0ae51e19-07c8-4e4b-bb6d-648ee58410f4
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=0ae51e19-07c8-4e4b-bb6d-648ee58410f4;Ip=[139.15.153.203];Helo=[eop.bosch-org.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	DU2PEPF00028D0B.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV1PR10MB5985
 
-The find will get the map, ensure puts are done on all paths.
+Hi Wolfram,
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/util/maps.c        | 14 +++++++-------
- tools/perf/util/probe-event.c |  4 +---
- 2 files changed, 8 insertions(+), 10 deletions(-)
+On 28.02.2024 11:03, Wolfram Sang wrote:
+> With the to-be-fixed commit, the reset_work handler cleared 'host->mrq'
+> outside of the spinlock protected critical section. That leaves a small
+> race window during execution of 'tmio_mmc_reset()' where the done_work
+> handler could grab a pointer to the now invalid 'host->mrq'. Both would
+> use it to call mmc_request_done() causing problems (see Link).
+> 
+> However, 'host->mrq' cannot simply be cleared earlier inside the
+> critical section. That would allow new mrqs to come in asynchronously
+> while the actual reset of the controller still needs to be done. So,
+> like 'tmio_mmc_set_ios()', an ERR_PTR is used to prevent new mrqs from
+> coming in but still avoiding concurrency between work handlers.
+> 
+> Reported-by: Dirk Behme <dirk.behme@de.bosch.com>
+> Closes: https://lore.kernel.org/all/20240220061356.3001761-1-dirk.behme@de.bosch.com/
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> Fixes: df3ef2d3c92c ("mmc: protect the tmio_mmc driver against a theoretical race")
 
-diff --git a/tools/perf/util/maps.c b/tools/perf/util/maps.c
-index 53aea6d2ef93..ce13145a9f8e 100644
---- a/tools/perf/util/maps.c
-+++ b/tools/perf/util/maps.c
-@@ -611,14 +611,14 @@ struct symbol *maps__find_symbol(struct maps *maps, u64 addr, struct map **mapp)
- 	struct symbol *result = NULL;
- 
- 	/* Ensure map is loaded before using map->map_ip */
--	if (map != NULL && map__load(map) >= 0) {
--		if (mapp)
--			*mapp = map;
--
-+	if (map != NULL && map__load(map) >= 0)
- 		result = map__find_symbol(map, map__map_ip(map, addr));
--		if (!mapp)
--			map__put(map);
--	}
-+
-+	if (mapp)
-+		*mapp = map;
-+	else
-+		map__put(map);
-+
- 	return result;
- }
- 
-diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
-index be71abe8b9b0..2a0ad9ecf0a2 100644
---- a/tools/perf/util/probe-event.c
-+++ b/tools/perf/util/probe-event.c
-@@ -2274,9 +2274,7 @@ static int find_perf_probe_point_from_map(struct probe_trace_point *tp,
- 	ret = pp->function ? 0 : -ENOMEM;
- 
- out:
--	if (map && !is_kprobe) {
--		map__put(map);
--	}
-+	map__put(map);
- 
- 	return ret;
- }
--- 
-2.44.0.278.ge034bb2e1d-goog
+Tested-by: Dirk Behme <dirk.behme@de.bosch.com>
+Reviewed-by: Dirk Behme <dirk.behme@de.bosch.com>
 
+> ---
+> 
+> Dirk: could you get this tested on your affected setups? I am somewhat
+> optimistic that this is already enough. For sure, it is a needed first
+> step.
+
+Testing looks good :) Many thanks!
+
+At least the issues we observed before are not seen any more. As we are 
+not exactly sure on the root cause, of course this is not a 100% proof. 
+But as the change looks good, looks like it won't break something and 
+the system behaves good with it I would say we are good to go.
+
+I think we could add anything like
+
+Cc: stable@vger.kernel.org # 3.0+
+
+?
+
+>   drivers/mmc/host/tmio_mmc_core.c | 2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/mmc/host/tmio_mmc_core.c b/drivers/mmc/host/tmio_mmc_core.c
+> index be7f18fd4836..c253d176db69 100644
+> --- a/drivers/mmc/host/tmio_mmc_core.c
+> +++ b/drivers/mmc/host/tmio_mmc_core.c
+> @@ -259,6 +259,8 @@ static void tmio_mmc_reset_work(struct work_struct *work)
+>   	else
+>   		mrq->cmd->error = -ETIMEDOUT;
+>   
+> +	/* No new calls yet, but disallow concurrent tmio_mmc_done_work() */
+> +	host->mrq = ERR_PTR(-EBUSY);
+>   	host->cmd = NULL;
+>   	host->data = NULL;
+Thanks again!
+
+Dirk
 
