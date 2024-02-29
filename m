@@ -1,139 +1,172 @@
-Return-Path: <linux-kernel+bounces-87157-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87159-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 084B286D066
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:20:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A533C86D06E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:22:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B3975B23F55
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:20:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5698528609F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:22:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A25196CC0E;
-	Thu, 29 Feb 2024 17:20:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E376770AD4;
+	Thu, 29 Feb 2024 17:22:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="CUnI60bg"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Rf9cgdX6"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40B5416065F;
-	Thu, 29 Feb 2024 17:20:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D9B66CC0A;
+	Thu, 29 Feb 2024 17:22:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709227223; cv=none; b=j7cTQUsIeQ3MdPB3TfEdBzjWEY+jU5ddivbFedRwPr9X9fh+3ECFoX3ixRwUmAnfALQCHs8qWnbGItsIhFbiA4uKYdK7EJgtujDIWVzmtHLib0EZrteIjW7VEyL9Zb4oshAxcSnQzbEK5pGihsC6r3lnOVoEorAc63qH0iLJkDA=
+	t=1709227334; cv=none; b=MuSRoJyGeiFHIWjONmS6zJtAwAMLzggqnX0BoDqLr7U7UMseHm8z50+9WFCJpUlF0Hba9r+2KXuFlylEIsfRE+UUSot+zTnWUoSynbQvTM06NgHBHF85hpQfRCvAwt67SZdFO4CDTYrXSk2gCC62SGipVUV72UzSB+bqzy6SdP8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709227223; c=relaxed/simple;
-	bh=J47JN2zuNOB1XU/wuoC0gP1HXwEli68V7Qws6Hwuei4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DNMfMPG9+EUI7ecjT3BpCHYGE65fXWT6/VpqRalv6gri7TSlwLdY/faMlm+pdQEGxmp94AkK9j0aTzMkI08urLvAncpVgrkwNdlmCY/4pPBC0vH/5ySX+J83oLV0ebPW2zFRJQqzU7rDI2PmyvV+Sd+Fok0I3fGagQUkVCZ2tzQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=CUnI60bg; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41TH7FeS008358;
-	Thu, 29 Feb 2024 17:20:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=IV5mhgJj7xbmsvQquxXg5BKgRYaJLGVppM18LS4QUV4=;
- b=CUnI60bgJJmq7b3KSui100LllhNOKjH3+z7o5BffpDHGukfpsGKGodc6T1Qnn2/+oJ9S
- 2RAeSKSZdA3Ef6JnVDwxu6tOW6cOJen9W4wGytPeMrPng2B2BhlxzupTNBDdiQuVenhn
- DBBsUz+z715spEO6LcwVWRQW3rAVN6IxP7WcD8+kcpdQfTLdJvFp86cALfpEzkSX8Vfy
- Fev4x/OgO4ssIJzLw7aRCWO5oRwneotrqw0MWRjLmYNGgEg1KOx6VMXLnNAuogpO/vI5
- xMcQg0sZwsg5Nr04iDwfNL6mo4daglWg6CJ26rzVJoj3dNnlZetTmAtG37YNhoVhUfiG EA== 
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wjx1t8exg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 29 Feb 2024 17:20:14 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41TFZ92V008211;
-	Thu, 29 Feb 2024 17:20:13 GMT
-Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3wfv9mps6g-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 29 Feb 2024 17:20:13 +0000
-Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
-	by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41THKBLd21234200
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 29 Feb 2024 17:20:13 GMT
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8924058071;
-	Thu, 29 Feb 2024 17:20:09 +0000 (GMT)
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id D20A15806F;
-	Thu, 29 Feb 2024 17:20:08 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-	by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Thu, 29 Feb 2024 17:20:08 +0000 (GMT)
-Message-ID: <88b7574d-c9eb-47c2-928b-e9e19ba7835d@linux.ibm.com>
-Date: Thu, 29 Feb 2024 12:20:08 -0500
+	s=arc-20240116; t=1709227334; c=relaxed/simple;
+	bh=5pMf8xNbpjSltvyx9wwNJBOk7UVz6y8Mo4zNiAMjkj4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=L+O2ejS9huAsRWJHbOO00lT347As6C5Rx33LYQwHr5KxzgGnVUv07nskEIpEAh6uHKxB9AmX5PzKgGOZ8LbWTeLY+h0FY8YAmVXaGdmjkwi/YGpKECuhQ0CDoJkjUeX0g8WHf4MdgwJnati3sKOETHh2xgXANy/kNbjeCv0vD1Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Rf9cgdX6; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709227332; x=1740763332;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=5pMf8xNbpjSltvyx9wwNJBOk7UVz6y8Mo4zNiAMjkj4=;
+  b=Rf9cgdX6vtSvuEl7IxTrx1WsYxFPAyCrA5vPIXoHjhP4+23g/PVXEgfs
+   Z58kecbaUYTRF9gb/+TbEEB8faN94QpVu7xvH18iXRy1QwMvZgAWMri8z
+   XhVbuGdP2gXVur49CugXlpch2JMnsRf1IlUPkepK86j3rGLtztvChgr01
+   nrpFVoN7Czwl/ZaAsnNxg3iGJKubsb0Nf0sFoj4ls4iqXfOzMbxG2bz0P
+   a63hHcGapyyXvu/WtCofuDgn1kyRpDiR7pebgPcuR6Kw9Pwv45eQNRSPs
+   F62CmoF1mCV4JF8Itj5bC4u3r+1AR/uRR9w3xfp8CE6E3Wi2m5jFuLjy8
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="15130393"
+X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
+   d="scan'208";a="15130393"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 09:21:07 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
+   d="scan'208";a="12585179"
+Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.105])
+  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 09:21:04 -0800
+Date: Thu, 29 Feb 2024 09:21:02 -0800
+From: Tony Luck <tony.luck@intel.com>
+To: Sohil Mehta <sohil.mehta@intel.com>
+Cc: Borislav Petkov <bp@alien8.de>, "Naik, Avadhut" <avadnaik@amd.com>,
+	"x86@kernel.org" <x86@kernel.org>,
+	"linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"yazen.ghannam@amd.com" <yazen.ghannam@amd.com>,
+	Avadhut Naik <avadhut.naik@amd.com>
+Subject: Re: [PATCH] x86/mce: Dynamically size space for machine check records
+Message-ID: <ZeC8_jzdFnkpPVPf@agluck-desk3>
+References: <20240212175408.GIZcpbQHVjEtwRKLS-@fat_crate.local>
+ <SJ1PR11MB60830AF35FA89C7869B8C11EFC482@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <20240212191401.GLZcpt-XHFqPg3cDw-@fat_crate.local>
+ <SJ1PR11MB6083C60D7584B02E9CAF19D5FC482@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <ZcqPhVO_DtD2x5N7@agluck-desk3>
+ <20240212220833.GQZcqW4WxKH34i-oBR@fat_crate.local>
+ <20240212221913.GRZcqZYRd6EPTTnN97@fat_crate.local>
+ <20240212224220.GSZcqezMhPojxvIcvO@fat_crate.local>
+ <Zd--PJp-NbXGrb39@agluck-desk3>
+ <015bf75e-bbe7-44ea-a176-9f1257f56b81@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 01/10] crypto: ecdsa - Convert byte arrays with key
- coordinates to digits
-Content-Language: en-US
-To: Lukas Wunner <lukas@wunner.de>
-Cc: keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        linux-kernel@vger.kernel.org, saulo.alessandre@tse.jus.br
-References: <20240223204149.4055630-1-stefanb@linux.ibm.com>
- <20240223204149.4055630-2-stefanb@linux.ibm.com>
- <20240229091105.GA29363@wunner.de>
- <aabeec7b-618c-4d15-b033-4162b6e54f6a@linux.ibm.com>
- <20240229164810.GA7144@wunner.de>
-From: Stefan Berger <stefanb@linux.ibm.com>
-In-Reply-To: <20240229164810.GA7144@wunner.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: lOMZ-E5THFawRCYSPAOOJE_ZezzTMpeI
-X-Proofpoint-ORIG-GUID: lOMZ-E5THFawRCYSPAOOJE_ZezzTMpeI
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-29_03,2024-02-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- suspectscore=0 impostorscore=0 adultscore=0 mlxlogscore=734 spamscore=0
- priorityscore=1501 bulkscore=0 phishscore=0 malwarescore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2402290134
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <015bf75e-bbe7-44ea-a176-9f1257f56b81@intel.com>
 
-
-
-On 2/29/24 11:48, Lukas Wunner wrote:
-> On Thu, Feb 29, 2024 at 09:57:30AM -0500, Stefan Berger wrote:
->> static inline void ecc_digits_from_bytes(const u8 *in, unsigned int nbytes,
->>                                           u64 *out, unsigned int ndigits)
->> {
->>          unsigned int o = nbytes & 7;
->>          u64 msd = 0;
->>          size_t i;
->>
->>          if (o == 0) {
->>                  ecc_swap_digits(in, out, ndigits);
->>          } else {
->>                  for (i = 0; i < o; i++)
->>                          msd = (msd << 8) | in[i];
->>                  out[ndigits - 1] = msd;
->>                  ecc_swap_digits(&in[o], out, ndigits - 1);
->>          }
->> }
+On Wed, Feb 28, 2024 at 05:56:26PM -0800, Sohil Mehta wrote:
+> A few other nits.
 > 
-> Might be beneficial to add a code comment explaining the else-branch
-> is for curves with key length not a multiple of 64 bits (such as NIST P521).
-
-Will do. I am also using this here now since it's safer: 
-ecc_swap_digits(&in[o], out, (nbytes - o) >> 3);
-
-    Stefan
-
+> On 2/28/2024 3:14 PM, Tony Luck wrote:
+> > diff --git a/arch/x86/kernel/cpu/mce/genpool.c b/arch/x86/kernel/cpu/mce/genpool.c
+> > index fbe8b61c3413..a1f0a8f29cf5 100644
+> > --- a/arch/x86/kernel/cpu/mce/genpool.c
+> > +++ b/arch/x86/kernel/cpu/mce/genpool.c
+> > @@ -16,14 +16,13 @@
+> >   * used to save error information organized in a lock-less list.
+> >   *
+> >   * This memory pool is only to be used to save MCE records in MCE context.
+> > - * MCE events are rare, so a fixed size memory pool should be enough. Use
+> > - * 2 pages to save MCE events for now (~80 MCE records at most).
+> > + * MCE events are rare, so a fixed size memory pool should be enough.
+> > + * Allocate on a sliding scale based on number of CPUs.
+> >   */
+> > -#define MCE_POOLSZ	(2 * PAGE_SIZE)
+> > +#define MCE_MIN_ENTRIES	80
+> >  
+> >  static struct gen_pool *mce_evt_pool;
+> >  static LLIST_HEAD(mce_event_llist);
+> > -static char gen_pool_buf[MCE_POOLSZ];
+> >  
+> >  /*
+> >   * Compare the record "t" with each of the records on list "l" to see if
+> > @@ -118,14 +117,25 @@ int mce_gen_pool_add(struct mce *mce)
+> >  
+> >  static int mce_gen_pool_create(void)
+> >  {
+> > +	int mce_numrecords, mce_poolsz;
 > 
-> Otherwise LGTM, thanks!
+> Should order be also declared in this line? That way we can have all the
+> uninitialized 'int's together.
+
+Sure. Even with the addition of "order" the line is still short enough.
+
+> >  	struct gen_pool *tmpp;
+> >  	int ret = -ENOMEM;
+> > +	void *mce_pool;
+> > +	int order;
+> >  
+> > -	tmpp = gen_pool_create(ilog2(sizeof(struct mce_evt_llist)), -1);
+> > +	order = ilog2(sizeof(struct mce_evt_llist)) + 1;
 > 
-> Lukas
+> I didn't exactly understand why a +1 is needed here. Do you have a
+> pointer to somewhere to help understand this?
+> 
+> Also, I think, a comment on top might be useful since this isn't obvious.
+
+gen_pool works in power-of-two blocks. The user must pick a specific
+size with the gen_pool_create() call. Internally the gen_pool code uses
+a bitmap to track which blocks in the pool are allocated/free.
+
+Looking at this specific case, sizeof(struct mce_evt_llist) is 136. So
+the original version of this code picks order 7 to allocate in 128 byte
+units. But this means that every allocation of a mce_evt_llist will take
+two 128-byte blocks.
+
+Net result is that the comment at the top of arch/x86/kernel/cpu/mce/genpool.c
+that two pages are enough for ~80 records was wrong when written. At
+that point struct mce_evt_llist was below 128, so order was 6, and each
+allocation took two blocks. So two pages = 8192 bytes divided by (2 * 64)
+results in 64 possible allocations.
+
+But over time Intel and AMD added to the structure. So the current math
+comes out at just 32 allocations before the pool is out of space.
+
+Yazen provided the right answer for this. Change to use order_base_2()
+
+> > +	tmpp = gen_pool_create(order, -1);
+> >  	if (!tmpp)
+> >  		goto out;
+> >  
+> > -	ret = gen_pool_add(tmpp, (unsigned long)gen_pool_buf, MCE_POOLSZ, -1);
+> > +	mce_numrecords = max(80, num_possible_cpus() * 4);
+> 
+> How about using MCE_MIN_ENTRIES here?
+
+Oops. I meant to do that when I added the #define!
+
+I've also added a "#define MCE_PER_CPU 4" instead of
+a raw "4" in that expression.
+
+-Tony
 
