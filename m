@@ -1,108 +1,151 @@
-Return-Path: <linux-kernel+bounces-86091-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86092-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18F7086BF73
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 04:25:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCA1786BF75
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 04:26:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A6251C2238C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 03:25:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72BDC28712E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 03:26:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A4693715E;
-	Thu, 29 Feb 2024 03:25:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AA98374DE;
+	Thu, 29 Feb 2024 03:26:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="RgV1BZkj"
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="S3mhBtTV"
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C77E636B17
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 03:25:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60CEE37169
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 03:26:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.113
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709177145; cv=none; b=tDt49x2nBlUC/6wAj5pzzoA8k4oG8sQsvg/WoEuyVs7LBPDhzIO+G9EegYq848tOX+uf0JwG3bIdtDHZ7dBNmmtMbk0XIeMhGgqm8+gi7nS+u5jSHKTNEtDjVL6gf2Ol+d3Ynsc7wKqukL3WmFozSYNjIADzM82riO82EJeF9H4=
+	t=1709177207; cv=none; b=lruMqMka/Xsi5aWi0QcdfkGpm27ApS9RbtJSlxZYtVHQawBIkQ+yA368mE6rjEEXifhDIV0l8U2YBl94zbbdilLO2nGvuIRx7plXekAvNjo4i4WCsjPPnR9JOWiWaxpsfCyeNNEIV5nAz0iFEPG5BzFVIxgcPFWlj9b69dA4JGc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709177145; c=relaxed/simple;
-	bh=URSVAvnamrUIMZvqYHj/KzfXDvU7CZtyXmsItvlHW/g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OQ8LW2NSzGoCe1oyMIRFl1C9t2LpMMLCHGizn4tVV2QjgigXa6Pq4IX7Bq8q74S+/9dbAvxTltrG5UPlAGpK5a12ZHVoQR6BBNy4F9rD6SRROpPW0GGPVwk0xQEZPoqtCka6EGwqZKQUZ7IbQ+1BMyyblTsWy/qt+c8apOhIciI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=RgV1BZkj; arc=none smtp.client-ip=209.85.167.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-51322d27fd2so337695e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 19:25:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709177142; x=1709781942; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=URSVAvnamrUIMZvqYHj/KzfXDvU7CZtyXmsItvlHW/g=;
-        b=RgV1BZkjLSya3ZJKK+77p4HKafeRWEtwo+V3gZInQ8ZvgpVBuuvoWNty8Vzisz5+EU
-         2Ag1uqxZg/w6EWpn2S9YvmKSdAxuu2Uaz0BvPJtEBQdIAQsehoMUUuv7nrI1HwEzzR/A
-         j9QSgm/Yfpt+YPTeTI6LGxnEjKO/IPhmSUvTk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709177142; x=1709781942;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=URSVAvnamrUIMZvqYHj/KzfXDvU7CZtyXmsItvlHW/g=;
-        b=K9tpoH3THTs6HkL+68p3XC6CQxC7KFsBDl4eTGwoQ2gK9haggjWBPaRIfuPosDGVn0
-         glHoW0SuCDwgc0YmtDnDNq2nqw4pHoYt1CmHxCbZfjW3Ejnoh1z0BHfNQl58ze6ejQ5m
-         EILzp/a4yPOyLitnYRG+XQiSyta+eYIH5+CBnnRKGp9dqETBy9kB4ygk/zSZKfsitJiv
-         zY+ipdAZ+j9/0w3kbvvjc3EkeNy9Zl+NdzZsQqtdDHqSjigJhd9rrpYHtWMrQCOjh1IV
-         CWtSBuxcvBcVmDxktbYSD55rS/M5SXsidynRkhPUjSZ7n/7LG5QUqGVHaUxMPC2BKwMn
-         PlHQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVyKQVgcxyv85+fqfhNxVR/klRlbKVixtDHTlFw/iiWj2H2ZtwJKC3UQuYdCAtZyuhI3WCaVGHSaAJKagd9jF22EpLakvGpVwRjlZ3I
-X-Gm-Message-State: AOJu0YyFilO2HWQCUMck4Ws922Bdyxua6hwBWVMYM9JLsgS0KnFwleRT
-	esnAcUb3AaH7E+rodp+eoIJP8zbjTX2FdveL831KkAVhaaanTSlg30PGLIdLJgM9XQXcODxzUgG
-	BziRAQrfPdn3Bh8RD2wgwSm71+cvuZ4itmZRl
-X-Google-Smtp-Source: AGHT+IF6HtrFqiF4ILXIhOeoglLnKyYMIt97o4GxwpCNIyH7ScABce8rbUiq2DMajV+r4BPBHpxVsoL7H4u3odSmJ9Q=
-X-Received: by 2002:ac2:597b:0:b0:512:ba41:51f with SMTP id
- h27-20020ac2597b000000b00512ba41051fmr425568lfp.50.1709177142115; Wed, 28 Feb
- 2024 19:25:42 -0800 (PST)
+	s=arc-20240116; t=1709177207; c=relaxed/simple;
+	bh=Nw6NLLnwA9HUVDQnXd3noo9BkuEledA01hC0D2Y5vNU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=B8+8+eezzrQabLmV1Fk6lCR1eetWZEo6s+yUWerAgbtVegRu/hSMyYJgsVNI5YnRnZJOUUXZtL3deSAZHfUK6WI/pD1DTyKap7+aAuDzgG1XKm88a9AQpHeuoXyGESN51LLvURv8t9eSEJx0WN7eqsV0UpPODxUlzYvjJ9edOQo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=S3mhBtTV; arc=none smtp.client-ip=115.124.30.113
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1709177197; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=xlpZ40fyxUbubbTrqSw9nnznE3ry+hnF/QQY7Ns4xkk=;
+	b=S3mhBtTVdn0z+wnOIVXE4sf5wSwu2nqW3dZr5mJVdowASbAYl+aSJwflbH9N0ypVsMohjj224Xm7P9C7AMSJahkWKbK1d/dNJ6ZIV6BstkWm65Y8iwYqZDsqD3N3yZKK6Qjr6cOJy2UyWtPMy4kfN8CTF1FqeEEYbapAa/piLCc=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0W1RUjY4_1709177194;
+Received: from 30.240.97.87(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0W1RUjY4_1709177194)
+          by smtp.aliyun-inc.com;
+          Thu, 29 Feb 2024 11:26:36 +0800
+Message-ID: <0e14358e-334c-4f7c-be36-7205ad2bb21d@linux.alibaba.com>
+Date: Thu, 29 Feb 2024 11:26:34 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240227120939.290143-1-angelogioacchino.delregno@collabora.com> <20240227120939.290143-3-angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20240227120939.290143-3-angelogioacchino.delregno@collabora.com>
-From: Chen-Yu Tsai <wenst@chromium.org>
-Date: Thu, 29 Feb 2024 11:25:31 +0800
-Message-ID: <CAGXv+5Hpv323oGAr_t6C=akNybypPUYO31ez2rFD2oCRs3O8GQ@mail.gmail.com>
-Subject: Re: [PATCH 02/22] ASoC: mediatek: mt8192-afe-pcm: Simplify with dev_err_probe()
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: broonie@kernel.org, lgirdwood@gmail.com, robh@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	matthias.bgg@gmail.com, perex@perex.cz, tiwai@suse.com, 
-	trevor.wu@mediatek.com, maso.huang@mediatek.com, 
-	xiazhengqiao@huaqin.corp-partner.google.com, arnd@arndb.de, 
-	kuninori.morimoto.gx@renesas.com, shraash@google.com, amergnat@baylibre.com, 
-	nicolas.ferre@microchip.com, u.kleine-koenig@pengutronix.de, 
-	dianders@chromium.org, frank.li@vivo.com, allen-kh.cheng@mediatek.com, 
-	eugen.hristev@collabora.com, claudiu.beznea@tuxon.dev, 
-	jarkko.nikula@bitmer.com, jiaxin.yu@mediatek.com, alpernebiyasak@gmail.com, 
-	ckeepax@opensource.cirrus.com, zhourui@huaqin.corp-partner.google.com, 
-	nfraprado@collabora.com, alsa-devel@alsa-project.org, 
-	shane.chien@mediatek.com, linux-sound@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
-	kernel@collabora.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 0/2] support NUMA emulation for genertic arch
+To: Pierre Gondois <pierre.gondois@arm.com>, Mike Rapoport <rppt@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, akpm@linux-foundation.org, gregkh@linuxfoundation.org,
+ rafael@kernel.org, mingo@redhat.com, dave.hansen@linux.intel.com,
+ luto@kernel.org, teng.ma@linux.alibaba.com
+References: <20231012024842.99703-1-rongwei.wang@linux.alibaba.com>
+ <20240220113602.6943-1-rongwei.wang@linux.alibaba.com>
+ <ZdWUPlqsxC_y3YFM@kernel.org> <6843f6b2-4c41-4649-9885-88fde7215e3f@arm.com>
+Content-Language: en-US
+From: Rongwei Wang <rongwei.wang@linux.alibaba.com>
+In-Reply-To: <6843f6b2-4c41-4649-9885-88fde7215e3f@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 27, 2024 at 8:10=E2=80=AFPM AngeloGioacchino Del Regno
-<angelogioacchino.delregno@collabora.com> wrote:
->
-> Simplify the probe function by switching error prints to return
-> dev_err_probe(), lowering the lines count; while at it, also
-> beautify some messages and change some others' level from warn
-> to error.
->
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@coll=
-abora.com>
 
-Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
+
+On 2/21/24 11:51 PM, Pierre Gondois wrote:
+>
+>
+> On 2/21/24 07:12, Mike Rapoport wrote:
+>> On Tue, Feb 20, 2024 at 07:36:00PM +0800, Rongwei Wang wrote:
+>>> A brief introduction
+>>> ====================
+>>>
+>>> The NUMA emulation can fake more node base on a single
+>>> node system, e.g.
+>>
+>> ...
+>>> Lastly, it seems not a good choice to realize x86 and other genertic
+>>> archs separately. But it can indeed avoid some architecture related
+>>> APIs adjustments and alleviate future maintenance.
+>>
+>> Why is it a good choice? Copying 1k lines from x86 to a new place and
+>> having to maintain two copies does not sound like a good choice to me.
+Hi Pierre
+> I agree it would be better to avoid duplication and extract the common
+> code from the original x86 implementation. The RFC seemed to go more
+> in this direction.
+> Also NITs:
+> - genertic -> generic
+Thanks, my fault, zhaoyu also found this (thanks).
+> - there is a 'ifdef CONFIG_X86' in drivers/base/numa_emulation.c,
+>   but the file should not be used by x86 as the arch doesn't set
+>   CONFIG_GENERIC_ARCH_NUMA
+>
+Actually, I have not think about how to ask the question. I'm also try 
+to original direction like RFC version, but found much APIs need to be 
+updated, and there are many APIs are similar but a little difference. 
+That seems much modification needed in more than one arch if go in 
+original direction.
+
+But if all think original method is right, I will continue it in RFC 
+version.
+
+Thanks for your time to review.
+> Regards,
+> Pierre
+>
+>>
+>>> The previous RFC link see [1].
+>>>
+>>> Any advice are welcome, Thanks!
+>>>
+>>> Change log
+>>> ==========
+>>>
+>>> RFC v1 -> v1
+>>> * add new CONFIG_NUMA_FAKE for genertic archs.
+>>> * keep x86 implementation, realize numa emulation in driver/base/ for
+>>>    genertic arch, e.g, arm64.
+>>>
+>>> [1] RFC v1: 
+>>> https://patchwork.kernel.org/project/linux-arm-kernel/cover/20231012024842.99703-1-rongwei.wang@linux.alibaba.com/
+>>>
+>>> Rongwei Wang (2):
+>>>    arch_numa: remove __init for early_cpu_to_node
+>>>    numa: introduce numa emulation for genertic arch
+>>>
+>>>   drivers/base/Kconfig          |   9 +
+>>>   drivers/base/Makefile         |   1 +
+>>>   drivers/base/arch_numa.c      |  32 +-
+>>>   drivers/base/numa_emulation.c | 909 
+>>> ++++++++++++++++++++++++++++++++++
+>>>   drivers/base/numa_emulation.h |  41 ++
+>>>   include/asm-generic/numa.h    |   2 +-
+>>>   6 files changed, 992 insertions(+), 2 deletions(-)
+>>>   create mode 100644 drivers/base/numa_emulation.c
+>>>   create mode 100644 drivers/base/numa_emulation.h
+>>>
+>>> -- 
+>>> 2.32.0.3.gf3a3e56d6
+>>>
+>>>
+>>
+
+-- 
+Thanks,
+-wrw
+
 
