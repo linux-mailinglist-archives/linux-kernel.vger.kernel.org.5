@@ -1,91 +1,90 @@
-Return-Path: <linux-kernel+bounces-86182-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86183-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA8B286C0C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 07:38:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CBD0D86C0CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 07:38:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5BADFB20CB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 06:38:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0D519B24A91
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 06:38:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 095BF44C8D;
-	Thu, 29 Feb 2024 06:38:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61A1E47794;
+	Thu, 29 Feb 2024 06:38:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="Arly37qj"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="EhT6p143"
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6645A44C60;
-	Thu, 29 Feb 2024 06:37:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E245745BFA
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 06:38:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709188682; cv=none; b=U4Le7Um+sc9Efda1RKmL7J9nQQ2wg1weQXkVfsftj3mwP70g9bW6rWqVEfkH4UE5EDKUcl6T7KJpu+4UYM/NemXC5BlGgmDwEUbujnaMbN2g0khKBacLiP2yjk2MyNoaMi+NDoVQs17iw1sqvGMm5MWdzno5b1tCW/uF2smi0xQ=
+	t=1709188694; cv=none; b=b61q/63Boaza/XfBT8bqYqD0z0FBv7GrT1mVEifS19sBG1Q1HmcwmBgMLaZGJ117cI9MordjC8BZHIVm7/5KhA/zk23oIGF6p26+/ilsyAmzAavGNZBsnLk142HoOFEUfcPVM2cuJdNvwIyzA1FadbKBMPG6jYG2vnNh6tdm2lo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709188682; c=relaxed/simple;
-	bh=TYRAVAH4IMfHLxfWypr9OolYo0gumgQZwdK+S3nsvvo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=t9w++9p0LMUKebGTfEzarCcnjQqfAp88uIztcqIYyUCbH11wM8W80ZIiFzbWGkKpsgRAjbYQJwNHms9ooydIKotq1o6qvHp6XENpDVev3aHI7Z/0nvbY0TboYnBF15ndZ3yN33KUfZ39/s8clB6pqBPVnO2mbwHPXHhRdt2500w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=Arly37qj; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-	s=201909; t=1709188677;
-	bh=8jp6tWwTFbOuHhqd3QihKvXNUZOM/iJjGERmYJI7sHk=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=Arly37qjNDRDE7QhxbFdyAL000Qjzjoq28bx+VH7Z6wIOdjVZ71anNzdtIiVkQKg5
-	 ZX2fM0qrQc9sDT3jR85bk4fSubV6lggkWPDNA9ZyRDuHHWaQ5k/WICwdTrUMB8XyCz
-	 ZNfzQF5lcttHCAlQs8lGTz23/CMHOAjYwYDAz3it386OpTELvrVukqRdhI6UUasuJE
-	 LuzRpZIBkwVYdBEMq0AQsiN6Nx0bawnrtCk1Y6MqbUZesV0tEh79E1CutcW1JRIJxQ
-	 eoVf+cEN/G+T51n1XPZ99AvBUf6peStnrS88s51bmvv7gGZU2jp/+FvQ4D4vaOlEmC
-	 97niIGWdGcvcQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TlhP12CMDz4wcH;
-	Thu, 29 Feb 2024 17:37:57 +1100 (AEDT)
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: Stephen Rothwell <sfr@canb.auug.org.au>, PowerPC
- <linuxppc-dev@lists.ozlabs.org>, Andrew Morton <akpm@linux-foundation.org>
-Cc: Christophe Leroy <christophe.leroy@csgroup.eu>, Linux Kernel Mailing
- List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the powerpc tree with the mm-stable
- tree
-In-Reply-To: <20240229101721.58569685@canb.auug.org.au>
-References: <20240229101721.58569685@canb.auug.org.au>
-Date: Thu, 29 Feb 2024 17:37:57 +1100
-Message-ID: <87ttlrg4hm.fsf@mail.lhotse>
+	s=arc-20240116; t=1709188694; c=relaxed/simple;
+	bh=f7Yna66xFG6vgioX6UL9PlBV2R7eM20PlgwlQJeASr0=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=GiMXBk8DWL6XNmxK4+hQ38YU4zd4hniJwSaeMBXYraSCLp5PiA0hy+JxFiESguM/TQx9CYY7AGRQwhduy9Q2Wa3tswIlmsPL7xEeuQLi+CC6psy2YvQOE3uN1rv6cQNL9AwK7nfaTO/3MGhn5K+c+Ca5K3Q+oiSLfqs7lFQUmFQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=EhT6p143; arc=none smtp.client-ip=91.218.175.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1709188691;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KleE8wCACo4AS2Lz1c1ZuEjwPGn5dN3YYkDl6gBcdAY=;
+	b=EhT6p1435Co6cQj+sn/gyZito+xuJPmXdzTGNsyshbFCooGKO3DwiR3EW9lhB2xvtquWC1
+	DyaLUSg1Fr6HHeLPzqxCUMsCxBPvp+rLqo7f7zuuKOgODHB/N/ec7zXuOjsAN/Ui2NkBDZ
+	5uwFGloIJBx1EWJFxv2zBFRAVl2KotY=
+From: Oliver Upton <oliver.upton@linux.dev>
+To: Raghavendra Rao Ananta <rananta@google.com>,
+	Marc Zyngier <maz@kernel.org>
+Cc: Oliver Upton <oliver.upton@linux.dev>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	linux-arm-kernel@lists.infradead.org,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Shaoqin Huang <shahuang@redhat.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	kvmarm@lists.linux.dev,
+	James Morse <james.morse@arm.com>,
+	kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: selftests: aarch64: Remove unused functions from vpmu test
+Date: Thu, 29 Feb 2024 06:37:58 +0000
+Message-ID: <170918867004.2623796.14243237544124867327.b4-ty@linux.dev>
+In-Reply-To: <20231122221526.2750966-1-rananta@google.com>
+References: <20231122221526.2750966-1-rananta@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Stephen Rothwell <sfr@canb.auug.org.au> writes:
-> Hi all,
->
-> Today's linux-next merge of the powerpc tree got a conflict in:
->
->   arch/powerpc/mm/pgtable_32.c
->
-> between commit:
->
->   a5e8131a0329 ("arm64, powerpc, riscv, s390, x86: ptdump: refactor CONFIG_DEBUG_WX")
->
-> from the mm-stable tree and commit:
->
->   8f17bd2f4196 ("powerpc: Handle error in mark_rodata_ro() and mark_initmem_nx()")
->
-> from the powerpc tree.
+On Wed, 22 Nov 2023 22:15:26 +0000, Raghavendra Rao Ananta wrote:
+> vpmu_counter_access's disable_counter() carries a bug that disables
+> all the counters that are enabled, instead of just the requested one.
+> Fortunately, it's not an issue as there are no callers of it. Hence,
+> instead of fixing it, remove the definition entirely.
+> 
+> Remove enable_counter() as it's unused as well.
+> 
+> [...]
 
-Thanks. That's a fairly ugly conflict.
+Applied to kvmarm/next, thanks!
 
-Maybe I'll drop that patch until the generic change has gone in.
+[1/1] KVM: selftests: aarch64: Remove unused functions from vpmu test
+      https://git.kernel.org/kvmarm/kvmarm/c/43b3bedb7cc4
 
-cheers
+--
+Best,
+Oliver
 
