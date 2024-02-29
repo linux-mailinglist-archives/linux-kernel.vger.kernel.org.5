@@ -1,140 +1,108 @@
-Return-Path: <linux-kernel+bounces-87509-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87515-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92C6286D54C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:59:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2647F86D560
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:01:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3DB0DB25CFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:59:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C6988B2826B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:01:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE81016A373;
-	Thu, 29 Feb 2024 20:41:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BCFE16B02B;
+	Thu, 29 Feb 2024 20:41:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MKawtjZc"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aoesQCew"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36A7216A342
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 20:41:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BB98151CE5;
+	Thu, 29 Feb 2024 20:41:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709239299; cv=none; b=Q1LO08ldYO1vgmhVT+h9/KdDC68mcgypc+MKSWQeNLDhkFPBGrILUsuM5+dzV+ONbjaWU1O15CgGKf7DvQT/nfLobNC05FL/vlfzDfj2C6Ukg5P/gF+MtFOEpKiOoIQEwmNylun7/CvPE4LCnNf55qaTxLlWwjZQctj8mYBg1SY=
+	t=1709239311; cv=none; b=E6qFdgZTSe+uEjCC94jkullMR78hp7c+7lUzAwFnBn9Gl6ZqunWyc1bGlLgbjjMLV1UcMJi3JUUpgKRQBaapne+l6nSJthH9GXmtQnEditpHaYi9ZnVloeyTWfmDu2vYOjkJdPbGeUtCFY0KfH557UfOidTFI/6//aU1XNPPkZ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709239299; c=relaxed/simple;
-	bh=l0Oq7AxbSJ3lXobf7o9ZXRUD7DUDozdY4OL4raAyp+U=;
-	h=From:To:cc:Subject:MIME-Version:Content-Type:Date:Message-ID; b=gvYBfl/ZSgkPf07KMlYPANHDadz4tYGdMBBUUA6Hns7Ic3o0GvFtG09RV0FzlisvrrNyEdevqJBz9tG/UD1G/n0LEWtw6NBV9onJBFTmzyOLRJPqj8ses2dlmhJ4f+fFcM9vXB/zGHUvVHo1Z8Hb0I7+RTpf4CLqbDJOw1vobS0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MKawtjZc; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709239295;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=CGBj0np1q/By//l0SwNKja6NHqrIAS9mqiRvEzZjjl8=;
-	b=MKawtjZc8cVkdeqrqB2aEB+kYTqfvL3UvR3lx/2tDDh4vnVUEQlsfrFivMHZ8J01zRyhLQ
-	bhzKM8ULiJRx+F3n8Q9uuG/VrJ1za2uD/6nEsxKN/3DUWq5sjF+ePhEWJBVDYwpxxHoN2H
-	iBOrM50R3qiRHQHBQzqfNs+nAOCQ5dY=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-115-LPrxkonAMx-LIKP55RDsAQ-1; Thu,
- 29 Feb 2024 15:41:34 -0500
-X-MC-Unique: LPrxkonAMx-LIKP55RDsAQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2CDDA1C0690F;
-	Thu, 29 Feb 2024 20:41:33 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.114])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 7AC2D1BDB1;
-	Thu, 29 Feb 2024 20:41:32 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-To: Marc Dionne <marc.dionne@auristor.com>
-cc: dhowells@redhat.com, linux-afs@lists.infradead.org,
-    linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] afs: Don't cache preferred address
+	s=arc-20240116; t=1709239311; c=relaxed/simple;
+	bh=q/zQI/aVAcj6DReUdBtfbzpmGks9RLFWREZi7JOicZU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SXb+ZuJYaBJhUrhGkMeL6OaR04PGE9vSmBRsp215yZRiAzZpbNAE2enTlBBaCPxqiamfdNa+vh4soRXLFFKAdnrZxKYqQJSBs+CWtf38snBAm5WZAU+EeHJSqrH/U3H8/YOwoGKBfeUGIU0jZT6DSjeUgJs5YXs1bsBV1IlT+QI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aoesQCew; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23E52C433C7;
+	Thu, 29 Feb 2024 20:41:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709239311;
+	bh=q/zQI/aVAcj6DReUdBtfbzpmGks9RLFWREZi7JOicZU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=aoesQCewSTX1XHY4tDQwo3Td0/tA5g9CcpGUg0DVep+iZ/51RHM2Fs267zn0A0KO1
+	 08dmTPEfmMsNMVAx6vrm+kCuq0CqRHW/fuuhizg0Ci1XWq1DBzW4qSnCvwqPdnkJu4
+	 1PnuPY6E5CgDSD1C/h5oqXcOeLAFqM5SwAzJqNwzJmg0HojyeHFt7EoY60gL+N2C8j
+	 x1vMtAvUxCxE/1Y/jvUwYsfCO0SJ8KkjeRGDzTvVxMjz1ZFeqSaQvV78CnjmMPELg0
+	 pAd+RryXtzuVQBuzt6Iahe7rgygtsc5qweaokguw6z0ZBMs3tkf+XpKrToZeiflcRO
+	 UXQkpZF/2QiuA==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Yishai Hadas <yishaih@nvidia.com>,
+	Tamar Mashiah <tmashiah@nvidia.com>,
+	Michael Guralnik <michaelgur@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Sasha Levin <sashal@kernel.org>,
+	linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 1/6] RDMA/mlx5: Relax DEVX access upon modify commands
+Date: Thu, 29 Feb 2024 15:41:41 -0500
+Message-ID: <20240229204150.2862196-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <159568.1709239291.1@warthog.procyon.org.uk>
-Date: Thu, 29 Feb 2024 20:41:31 +0000
-Message-ID: <159569.1709239291@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 5.4.269
+Content-Transfer-Encoding: 8bit
 
-In the AFS fileserver rotation algorithm, don't cache the preferred address
-for the server as that will override the explicit preference if a
-non-preferred address responds first.
+From: Yishai Hadas <yishaih@nvidia.com>
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Marc Dionne <marc.dionne@auristor.com>
-cc: linux-afs@lists.infradead.org
+[ Upstream commit be551ee1574280ef8afbf7c271212ac3e38933ef ]
+
+Relax DEVX access upon modify commands to be UVERBS_ACCESS_READ.
+
+The kernel doesn't need to protect what firmware protects, or what
+causes no damage to anyone but the user.
+
+As firmware needs to protect itself from parallel access to the same
+object, don't block parallel modify/query commands on the same object in
+the kernel side.
+
+This change will allow user space application to run parallel updates to
+different entries in the same bulk object.
+
+Tested-by: Tamar Mashiah <tmashiah@nvidia.com>
+Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
+Reviewed-by: Michael Guralnik <michaelgur@nvidia.com>
+Link: https://lore.kernel.org/r/7407d5ed35dc427c1097699e12b49c01e1073406.1706433934.git.leon@kernel.org
+Signed-off-by: Leon Romanovsky <leon@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/afs/rotate.c |   21 ++++-----------------
- 1 file changed, 4 insertions(+), 17 deletions(-)
+ drivers/infiniband/hw/mlx5/devx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/afs/rotate.c b/fs/afs/rotate.c
-index 700a27bc8c25..ed04bd1eeae8 100644
---- a/fs/afs/rotate.c
-+++ b/fs/afs/rotate.c
-@@ -602,6 +602,8 @@ bool afs_select_fileserver(struct afs_operation *op)
- 		goto wait_for_more_probe_results;
- 
- 	alist = op->estate->addresses;
-+	best_prio = -1;
-+	addr_index = 0;
- 	for (i = 0; i < alist->nr_addrs; i++) {
- 		if (alist->addrs[i].prio > best_prio) {
- 			addr_index = i;
-@@ -609,9 +611,7 @@ bool afs_select_fileserver(struct afs_operation *op)
- 		}
- 	}
- 
--	addr_index = READ_ONCE(alist->preferred);
--	if (!test_bit(addr_index, &set))
--		addr_index = __ffs(set);
-+	alist->preferred = addr_index;
- 
- 	op->addr_index = addr_index;
- 	set_bit(addr_index, &op->addr_tried);
-@@ -656,12 +656,6 @@ bool afs_select_fileserver(struct afs_operation *op)
- next_server:
- 	trace_afs_rotate(op, afs_rotate_trace_next_server, 0);
- 	_debug("next");
--	ASSERT(op->estate);
--	alist = op->estate->addresses;
--	if (op->call_responded &&
--	    op->addr_index != READ_ONCE(alist->preferred) &&
--	    test_bit(alist->preferred, &op->addr_tried))
--		WRITE_ONCE(alist->preferred, op->addr_index);
- 	op->estate = NULL;
- 	goto pick_server;
- 
-@@ -690,14 +684,7 @@ bool afs_select_fileserver(struct afs_operation *op)
- failed:
- 	trace_afs_rotate(op, afs_rotate_trace_failed, 0);
- 	op->flags |= AFS_OPERATION_STOP;
--	if (op->estate) {
--		alist = op->estate->addresses;
--		if (op->call_responded &&
--		    op->addr_index != READ_ONCE(alist->preferred) &&
--		    test_bit(alist->preferred, &op->addr_tried))
--			WRITE_ONCE(alist->preferred, op->addr_index);
--		op->estate = NULL;
--	}
-+	op->estate = NULL;
- 	_leave(" = f [failed %d]", afs_op_error(op));
- 	return false;
- }
+diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/hw/mlx5/devx.c
+index 26cc7bbcdfe6a..7a3b56c150799 100644
+--- a/drivers/infiniband/hw/mlx5/devx.c
++++ b/drivers/infiniband/hw/mlx5/devx.c
+@@ -2811,7 +2811,7 @@ DECLARE_UVERBS_NAMED_METHOD(
+ 	MLX5_IB_METHOD_DEVX_OBJ_MODIFY,
+ 	UVERBS_ATTR_IDR(MLX5_IB_ATTR_DEVX_OBJ_MODIFY_HANDLE,
+ 			UVERBS_IDR_ANY_OBJECT,
+-			UVERBS_ACCESS_WRITE,
++			UVERBS_ACCESS_READ,
+ 			UA_MANDATORY),
+ 	UVERBS_ATTR_PTR_IN(
+ 		MLX5_IB_ATTR_DEVX_OBJ_MODIFY_CMD_IN,
+-- 
+2.43.0
 
 
