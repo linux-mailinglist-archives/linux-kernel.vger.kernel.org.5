@@ -1,171 +1,108 @@
-Return-Path: <linux-kernel+bounces-87240-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87304-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE77F86D18B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:10:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7CEB86D278
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:40:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7D17285C55
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:10:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 023D51C2299B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:40:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 411E37A138;
-	Thu, 29 Feb 2024 18:09:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lR5uVimo"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DCA5134401;
+	Thu, 29 Feb 2024 18:40:33 +0000 (UTC)
+Received: from bues.ch (bues.ch [80.190.117.144])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E27678293;
-	Thu, 29 Feb 2024 18:08:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CF5A160629;
+	Thu, 29 Feb 2024 18:40:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.190.117.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709230139; cv=none; b=WY1cUSX7L/xxXE7TVkbc8AcYjXJVxRzb3Ve+w1hUoAssFAzavY6NE1JgVISlS7n+4PNg7+uo6CYCBK04YxEr96RVLqrhVuehy3m9ar8xxAUWXPSLN0dazUSBkjiWaE7WLI9CLV+IkAZZZE+GDps92K54ijmbXBwJctJ4jyLT1Qs=
+	t=1709232033; cv=none; b=lxUzGeLqQUIySs6IDnd4EChgPCKbZ2ViOsS93dVX1Snvu7rtYmzHtmkAyJHPXzY5872noTTccxmxADWZulnZLvRaR108R7/AhNzg439tjjUcRvPCx8ZbdJ5AJ0yfnwyK29cvg8JukIX1JedC7dFuLGLCn4JGgjOQgOgSm588M0E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709230139; c=relaxed/simple;
-	bh=nbZCCz5px6JjbfeYHv/GrHoTHGKZQxDjRcckuW8fpQw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XAcMmhb5aYeBhzAK5foetSlZs/0ad5z/laSksQVHGqk7CIdb09S41d0RWoQ0zebPvbz1q6oZRXFBdtHmzXuebpIMKAf+IhrcpVdSDDCKWE2IM+IVJtKjfvVI4W9AMn4M7/m6iYvzV1DB2hhm6SZglagLNtU7uq8vFmmyzIg1Rh0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lR5uVimo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59288C433F1;
-	Thu, 29 Feb 2024 18:08:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709230138;
-	bh=nbZCCz5px6JjbfeYHv/GrHoTHGKZQxDjRcckuW8fpQw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lR5uVimo391OfyuEVpj2RcpIVEXlBNj76gfYMLAl74R6gXtXEOxvPgArU7zYVEeAZ
-	 QiambT42WsLDIgidy8iBWQOIPHMtFlwgMucCPCrijo94Y7/lc5QCzOkkpwhHqdbzuX
-	 1GQJT7QIWJqVWO45VviJhXpDnh9oS7HB3r5MpUZXsNxZ3zpGWHSFisSLTIbAQZEQsn
-	 JOAxHrGRQrACScps7QyZha392ih++0i0qenVV1F5nS6lEiYZQ87BRVRmIMR7ja7vZv
-	 U/6Ylo+yUcn4Z2BWZd7UXljlPGukuJsTZb+LKoqKRp+c7gTjOX2CWZChUWih9P/7f5
-	 18S4C65Dbq1Ow==
-Date: Thu, 29 Feb 2024 18:08:54 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Frank Li <Frank.li@nxp.com>
-Cc: Rob Herring <robh@kernel.org>, imx@lists.linux.dev,
-	krzysztof.kozlowski+dt@linaro.org, kw@linux.com,
-	linux-kernel@vger.kernel.org, conor+dt@kernel.org,
-	linux-pci@vger.kernel.org, lpieralisi@kernel.org,
-	helgaas@kernel.org, bhelgaas@google.com, devicetree@vger.kernel.org
-Subject: Re: [PATCH v5 1/5] dt-bindings: pci: layerscape-pci: Convert to yaml
- format
-Message-ID: <20240229-strategic-premises-967eae1f6d9f@spud>
-References: <20240228190321.580846-1-Frank.Li@nxp.com>
- <20240228190321.580846-2-Frank.Li@nxp.com>
- <170915420970.759733.12998246565079147606.robh@kernel.org>
- <ZeDCQezI2zj8bWBP@lizhi-Precision-Tower-5810>
+	s=arc-20240116; t=1709232033; c=relaxed/simple;
+	bh=UW+TdciKB5gSR3r9g/ate3m4F5PvqE5YslCXW8lrDB0=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=NzqqzIREYIgV9z4AqVXaG2RJsHcYtT3gbQCNcFLXCU6L9V4OZScUr82D8CYpn8YqvbZcfPcUEAGjH0X6RmQ0mkKLwZxQjkQOG3IE1URZGTK+EbvxXnnQXVbQDUvgz1nbdgitJBXY0Gn6tzi9urdGJQu9EmSGmOT9AGBi3Nnsnlw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bues.ch; spf=pass smtp.mailfrom=bues.ch; arc=none smtp.client-ip=80.190.117.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bues.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bues.ch
+Received: by bues.ch with esmtpsa (Exim 4.96)
+	(envelope-from <m@bues.ch>)
+	id 1rfkqo-000F5s-3B;
+	Thu, 29 Feb 2024 19:09:46 +0100
+Date: Thu, 29 Feb 2024 19:08:54 +0100
+From: Michael =?UTF-8?B?QsO8c2No?= <m@bues.ch>
+To: Rand Deeb <rand.sec96@gmail.com>
+Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+ deeb.rand@confident.ru, lvc-project@linuxtesting.org,
+ voskresenski.stanislav@confident.ru
+Subject: Re: [PATCH] ssb: Fix potential NULL pointer dereference in
+ ssb_device_uevent
+Message-ID: <20240229190854.3717772c@barney>
+In-Reply-To: <20240229093756.129324-1-rand.sec96@gmail.com>
+References: <20240229093756.129324-1-rand.sec96@gmail.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Re0jwgYgtPOeuZKC"
-Content-Disposition: inline
-In-Reply-To: <ZeDCQezI2zj8bWBP@lizhi-Precision-Tower-5810>
+Content-Type: multipart/signed; boundary="Sig_/ob.XXZ=76OiP5u+w1/NKFuc";
+ protocol="application/pgp-signature"; micalg=pgp-sha512
 
-
---Re0jwgYgtPOeuZKC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--Sig_/ob.XXZ=76OiP5u+w1/NKFuc
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 29, 2024 at 12:43:29PM -0500, Frank Li wrote:
-> On Wed, Feb 28, 2024 at 03:03:31PM -0600, Rob Herring wrote:
-> >=20
-> > On Wed, 28 Feb 2024 14:03:17 -0500, Frank Li wrote:
-> > > Split layerscape-pci.txt into two yaml files: fsl,layerscape-pcie-ep.=
-yaml
-> > > and fsl,layerscape-pcie.yaml.
-> > > yaml files contain the same content as the original txt file.
-> > >=20
-> > > The subsequent commit will fix DTB_CHECK failure.
-> > >=20
-> > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > > ---
-> > >  .../bindings/pci/fsl,layerscape-pcie-ep.yaml  |  89 +++++++++++++
-> > >  .../bindings/pci/fsl,layerscape-pcie.yaml     | 123 ++++++++++++++++=
-++
-> > >  .../bindings/pci/layerscape-pci.txt           |  79 -----------
-> > >  3 files changed, 212 insertions(+), 79 deletions(-)
-> > >  create mode 100644 Documentation/devicetree/bindings/pci/fsl,layersc=
-ape-pcie-ep.yaml
-> > >  create mode 100644 Documentation/devicetree/bindings/pci/fsl,layersc=
-ape-pcie.yaml
-> > >  delete mode 100644 Documentation/devicetree/bindings/pci/layerscape-=
-pci.txt
-> > >=20
-> >=20
-> > My bot found errors running 'make DT_CHECKER_FLAGS=3D-m dt_binding_chec=
-k'
-> > on your patch (DT_CHECKER_FLAGS is new in v5.13):
->=20
-> Please omit these errors. Bjorn require create a identical version as
-> old txt file.
->=20
-> Origial txt will cause DTB_CHECK error. The problem will be fixed at next
-> patches.
+On Thu, 29 Feb 2024 12:37:56 +0300
+Rand Deeb <rand.sec96@gmail.com> wrote:
 
-One of these is a real error - caused by a typo. "dma-coherence" should
-be "dma-coherent".
+>  static int ssb_device_uevent(struct device *dev, struct kobj_uevent_env =
+*env)
+>  {
+> -	struct ssb_device *ssb_dev =3D dev_to_ssb_dev(dev);
+> +	struct ssb_device *ssb_dev;
+> =20
+>  	if (!dev)
+>  		return -ENODEV;
+> =20
+> +	ssb_dev =3D dev_to_ssb_dev(dev);
+> +
+>  	return add_uevent_var(env,
+>  			     "MODALIAS=3Dssb:v%04Xid%04Xrev%02X",
+>  			     ssb_dev->id.vendor, ssb_dev->id.coreid,
 
->=20
-> >=20
-> > yamllint warnings/errors:
-> >=20
-> > dtschema/dtc warnings/errors:
-> > /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings=
-/pci/fsl,layerscape-pcie.example.dtb: pcie@3400000: Unevaluated properties =
-are not allowed ('#address-cells', '#interrupt-cells', '#size-cells', 'bus-=
-range', 'device_type', 'interrupt-map', 'interrupt-map-mask', 'iommu-map', =
-'msi-parent', 'ranges', 'reg-names' were unexpected)
-> > 	from schema $id: http://devicetree.org/schemas/pci/fsl,layerscape-pcie=
-=2Eyaml#
-> > /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings=
-/pci/fsl,layerscape-pcie.example.dtb: pcie@3400000: 'fsl,pcie-scfg' is a re=
-quired property
-> > 	from schema $id: http://devicetree.org/schemas/pci/fsl,layerscape-pcie=
-=2Eyaml#
-> > /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings=
-/pci/fsl,layerscape-pcie.example.dtb: pcie@3400000: 'dma-coherence' is a re=
-quired property
-> > 	from schema $id: http://devicetree.org/schemas/pci/fsl,layerscape-pcie=
-=2Eyaml#
-> >=20
-> > doc reference errors (make refcheckdocs):
-> >=20
-> > See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/2024=
-0228190321.580846-2-Frank.Li@nxp.com
-> >=20
-> > The base for the series is generally the latest rc1. A different depend=
-ency
-> > should be noted in *this* patch.
-> >=20
-> > If you already ran 'make dt_binding_check' and didn't see the above
-> > error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> > date:
-> >=20
-> > pip3 install dtschema --upgrade
-> >=20
-> > Please check and re-submit after running the above command yourself. No=
-te
-> > that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-> > your schema. However, it must be unset to test all examples with your s=
-chema.
-> >=20
+Good catch.
+Acked-by: Michael B=C3=BCsch <m@bues.ch>
 
---Re0jwgYgtPOeuZKC
-Content-Type: application/pgp-signature; name="signature.asc"
+
+--=20
+Michael B=C3=BCsch
+https://bues.ch/
+
+--Sig_/ob.XXZ=76OiP5u+w1/NKFuc
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZeDINQAKCRB4tDGHoIJi
-0lRyAP9fEXfWNs46QnjOnUvH2S38xwB64vicfxsWzjSwnN6DzAD/Z/FNBFX2hAZ4
-3gNGGsWbqATFWZOMzrQPjVBaQcNQKAw=
-=Bh1c
+iQIzBAEBCgAdFiEEihRzkKVZOnT2ipsS9TK+HZCNiw4FAmXgyDcACgkQ9TK+HZCN
+iw6qKg//T18rCQhWWnilcYj4srdCKlazbrCftkkAQSu680rHZXaMTlgLWeNKxBve
+TUf2P0v7S2d6BDpoNiyixNkYiJX0VyhXPQRUvmqFMhP+cy9zuWMrvLLBxgGRzuh/
+XeKw9Gnwhp+KQNsuE9MlH1JC8T+tVQxvpBvyxNdHGL3UWi9+xRgNnRtRkc2nWTBO
+7x4hMpYNmE+NbyIwoj4ps2+wruvzTvAQnaMNtwcyImBKd/J7fE7FPRVqP57+xR+C
+bftMfFV4xn7rArpU+Pg+8wEryOUIhPJ9ZmO/CLejkjaE2qoy7PP4sZbdcCSeMxak
+w10uZ1x7veeNspxNEMSKTjuvRcKJgg0x2eFKFhLbTnJg9D60yeDVTK+9S/QVHpXa
+frndJ8VCxjMq2+bY2sdglOZelAtAh9PQzLgma3HlRvwe6zprWZdmexih06oFV+kW
+4vQNus9qhZxCl7Wpxap/OlFwdgINqU/J6VDAsnt0wyMd1kdGXJaZDXeKAfY/a6B8
+eM//hyWbJ+axLvtJxbnZOCUffy64yqGLJMYUQi9dfAriyDtIozRP7vGsqEDlhVTP
+xz4PlzWuoEyzCAF9DBQ3hYxihCgGuOE9bGXg8dG0MPTw8V1XjigKdqPJyWETi43o
+PJGNkPWysXXCE03+KAmvpz3VNYGBFRy7+YiRUC6bImGqMaszisM=
+=8bGs
 -----END PGP SIGNATURE-----
 
---Re0jwgYgtPOeuZKC--
+--Sig_/ob.XXZ=76OiP5u+w1/NKFuc--
 
