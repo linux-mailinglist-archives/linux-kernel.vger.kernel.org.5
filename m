@@ -1,152 +1,109 @@
-Return-Path: <linux-kernel+bounces-86749-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86750-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E559886CA2F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:24:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41FCF86CA33
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:24:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9FE8D287286
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:24:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 660491C2295E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:24:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1C7E7E572;
-	Thu, 29 Feb 2024 13:24:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A5F07E588;
+	Thu, 29 Feb 2024 13:24:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="U5ZsFTaU";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="U5ZsFTaU"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="diK6zDaI"
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 699A760EDC;
-	Thu, 29 Feb 2024 13:24:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F18957E11F
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 13:24:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709213048; cv=none; b=nwa1KVhcQTZLX/aFWoHehdxTEkxoRO1WqxeJFcIilTVj8OqfwXkmZ8FkTX9ZN+9MlqcqKTsaGanJ9bj5wsAy3NZFCfuzTp4zEK/lXkdnSdpc2NlyGgkFfb6xdm0O1I0pH0XspzcTc8t/CSzMfJzPHt48G2PvcszLfnVD7TJmpcE=
+	t=1709213070; cv=none; b=rVtQz+LEWu8EhI4fHbcGVt5sAEIu/yE50S+l7kD1nM/mukHfTYnc+WEiLjXw8PIQP5NXgAY1+UaslBQF2W1wkazE3qI1+wpnYNj1tIieFjKRWN6wmpnmSU4kTEYnIw1aDpPaILAvxqJJsHA+MIdcmrdFlxadIkFG1fPb1mEwyRA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709213048; c=relaxed/simple;
-	bh=Q9+orAmFLG17dvDtjMr//cybKCoz7oGiZrMvtW87CE4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ATg1lyg4wjVd5d6OeZlMqwhBvBho7fr0OihCgmcGK0gni1iETJJv13TJ/fD0zE3YPO0yH6yCzhSqiOdkfwfiWNOkyXuzFi/Fbxos2idK77w0uMFs+Eu9OwxRTuPHXMf9Jn7M3eg9q2ItgAayQnTnhGvhwfrq7y2GimLycYqNCo8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=U5ZsFTaU; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=U5ZsFTaU; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id AF79B1F7F1;
-	Thu, 29 Feb 2024 13:24:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1709213044; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=PNKmKlt9G8O0/nkgk81lSnxP1WfxcnRFC/vWBacHFgg=;
-	b=U5ZsFTaUUkjQPM+V78Id7jp+hYyXg3iyOmLojLP82ChhJZxlmZyhhZfxjawUofyId/qWtK
-	iGa/EWKILesOCT9de+6e9cgOHsm+OpbhQD9EDuMCSfMapaPL6Qo1U/A+PZbjCgMjkjRttu
-	67iDwDxQV0PR2jIo4HpyY1jaP+dMl/8=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1709213044; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=PNKmKlt9G8O0/nkgk81lSnxP1WfxcnRFC/vWBacHFgg=;
-	b=U5ZsFTaUUkjQPM+V78Id7jp+hYyXg3iyOmLojLP82ChhJZxlmZyhhZfxjawUofyId/qWtK
-	iGa/EWKILesOCT9de+6e9cgOHsm+OpbhQD9EDuMCSfMapaPL6Qo1U/A+PZbjCgMjkjRttu
-	67iDwDxQV0PR2jIo4HpyY1jaP+dMl/8=
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 5C25E13451;
-	Thu, 29 Feb 2024 13:24:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id nul8E3SF4GWxKgAAn2gu4w
-	(envelope-from <oneukum@suse.com>); Thu, 29 Feb 2024 13:24:04 +0000
-From: Oliver Neukum <oneukum@suse.com>
-To: gregkh@linuxfoundation.org,
-	linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	mika.westerberg@linux.intel.com
-Cc: Oliver Neukum <oneukum@suse.com>
-Subject: [PATCH] thunderbolt: no opencoding FIELD_GET
-Date: Thu, 29 Feb 2024 14:23:57 +0100
-Message-ID: <20240229132401.3270-1-oneukum@suse.com>
-X-Mailer: git-send-email 2.43.2
+	s=arc-20240116; t=1709213070; c=relaxed/simple;
+	bh=5shKJIq6joWiQf1OMpN/6d1kx+W0ECYnM+AdFjTkEVE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ndx7u67Mh7feY3oel7yn1ETaROl+aUmp1b1ok7iJCdAV7TNFpPtpQIRTN+grzRUsQidw9V9x2sDxG7s9ASPCEWF2vhJn/84Jk9cywc1AnUY0WSCtfVXrMWF3EWPAPWK8HshJi7n82sFcK2KV/uoZgC/3dcTdEQwsYs1Wc4qAHZw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=diK6zDaI; arc=none smtp.client-ip=209.85.219.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-db4364ecd6aso1041646276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 05:24:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709213067; x=1709817867; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5shKJIq6joWiQf1OMpN/6d1kx+W0ECYnM+AdFjTkEVE=;
+        b=diK6zDaIjPNE2V7pvNGH68rA+DFSWmGbIJiwzirYiWR6s6XrojlKdeAh2MvYubHcq2
+         ELCRE3qa9p6DAgXPLXPjwIMeo3B+zbmxkU2BXtewrUUwMrVs83B+SRC64o+sR6mtnFe+
+         rtsEu3jGXCe+dqGfMG7+ODcF6xeGshzwUIS1wuqZt1sSw6TSQ4AGZAFhy+13waEg2FWl
+         IE7zKEz8soWg/9BRJEw7qZNiX8QBPrBfJWv+oqja9pKLKEJ/KlQWJISPMjgc0gsZhMsV
+         0HpsPrNgUDE8XR8j5OVBtF63Z3xZIL9MfTci1Cka0PlCq4jUZRH+ZQ5+mN0tCbrf80Bh
+         fj+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709213067; x=1709817867;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5shKJIq6joWiQf1OMpN/6d1kx+W0ECYnM+AdFjTkEVE=;
+        b=YHmyts/RzPuajBXqaaP8KLpMugl4tKUqSrmjLqRWopgsVHOmmAma5F1g+RDWWXuZ24
+         M+Nch5+aoTq000X9WSPJRbbwSaJk+xNATTQntMjreLiJcLIhnVXcqp37ohlyDuLzJ8tl
+         QTC+6E7qiPH4E4NANd+sDCPbSSyrHwabYM73qAAhSRY+0z/Ze2JA+YvWn7o2lRugWOnJ
+         mVQ8GOliYUz/9pLEaLWeLDAa4XHgDU3zd0jisjTHgfqhRqpwAeyGy00aQ5O1UdVKxsIh
+         81PjO6A/NmBhO29bpM60GEoN4fbuRf9V7QjjRLmEsbuO/uN27X+TXH1pNA7aXoqGuAhq
+         u+QA==
+X-Gm-Message-State: AOJu0Yx5wVkk7210k31YlIJlumQInzW9rDwxGDZbEU0qNEM2hDcRUoWa
+	nHCCaP9qPtXseb9GUKMLGcC679BuO9KSO79lkTfwbsE1Ykx5+JS5SCmncztBT1ikxPTdtypXUPC
+	blLvpzUikTRkLFjbBozcVNXK4cYVwtbw5nAnaew==
+X-Google-Smtp-Source: AGHT+IHtxtxLc1PV2T7biqX/e3kKfkY0L5vzXx+f1q90xelaRpKnFCLjxEZPqxD5C352GVD5oDSCgXpz2Z6iKLkdUDI=
+X-Received: by 2002:a25:ad85:0:b0:dcd:30f9:eb6d with SMTP id
+ z5-20020a25ad85000000b00dcd30f9eb6dmr2299746ybi.57.1709213066996; Thu, 29 Feb
+ 2024 05:24:26 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [2.98 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 RCPT_COUNT_FIVE(0.00)[5];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-1.92)[94.55%]
-X-Spam-Level: **
-X-Spam-Score: 2.98
-X-Spam-Flag: NO
+References: <20240223093701.66034-1-bhargav.r@ltts.com> <20240223093701.66034-14-bhargav.r@ltts.com>
+In-Reply-To: <20240223093701.66034-14-bhargav.r@ltts.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Thu, 29 Feb 2024 14:24:16 +0100
+Message-ID: <CACRpkdZzTheR=+=in7RYTFM2dquEPmGDudB7n1zoiUU4B1UCVg@mail.gmail.com>
+Subject: Re: [PATCH v2 13/14] pinctrl: pinctrl-tps6594: Add TPS65224 PMIC
+ pinctrl and GPIO
+To: Bhargav Raviprakash <bhargav.r@ltts.com>
+Cc: linux-kernel@vger.kernel.org, m.nirmaladevi@ltts.com, lee@kernel.org, 
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	jpanis@baylibre.com, devicetree@vger.kernel.org, arnd@arndb.de, 
+	gregkh@linuxfoundation.org, lgirdwood@gmail.com, broonie@kernel.org, 
+	linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org, nm@ti.com, 
+	vigneshr@ti.com, kristo@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-We have a macro. It should be used.
+On Fri, Feb 23, 2024 at 10:37=E2=80=AFAM Bhargav Raviprakash <bhargav.r@ltt=
+s.com> wrote:
 
-Signed-off-by: Oliver Neukum <oneukum@suse.com>
----
- include/linux/usb/typec_tbt.h | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+> From: Nirmala Devi Mal Nadar <m.nirmaladevi@ltts.com>
+>
+> Add support for TPS65224 pinctrl and GPIOs to TPS6594 driver as they
+> have significant functional overlap.
+> TPS65224 PMIC has 6 GPIOS which can be configured as GPIO or other
+> dedicated device functions.
+>
+> Signed-off-by: Nirmala Devi Mal Nadar <m.nirmaladevi@ltts.com>
+> Signed-off-by: Bhargav Raviprakash <bhargav.r@ltts.com>
 
-diff --git a/include/linux/usb/typec_tbt.h b/include/linux/usb/typec_tbt.h
-index c7a2153bd6f5..fa97d7e00f5c 100644
---- a/include/linux/usb/typec_tbt.h
-+++ b/include/linux/usb/typec_tbt.h
-@@ -3,6 +3,7 @@
- #define __USB_TYPEC_TBT_H
- 
- #include <linux/usb/typec_altmode.h>
-+#include <linux/bitfield.h>
- 
- #define USB_TYPEC_VENDOR_INTEL		0x8087
- /* Alias for convenience */
-@@ -25,7 +26,7 @@ struct typec_thunderbolt_data {
- 
- /* TBT3 Device Discover Mode VDO bits */
- #define TBT_MODE			BIT(0)
--#define TBT_ADAPTER(_vdo_)		(((_vdo_) & BIT(16)) >> 16)
-+#define TBT_ADAPTER(_vdo_)		FIELD_GET(BIT(16), _vdo_)
- #define   TBT_ADAPTER_LEGACY		0
- #define   TBT_ADAPTER_TBT3		1
- #define TBT_INTEL_SPECIFIC_B0		BIT(26)
-@@ -35,12 +36,12 @@ struct typec_thunderbolt_data {
- #define TBT_SET_ADAPTER(a)		(((a) & 1) << 16)
- 
- /* TBT3 Cable Discover Mode VDO bits */
--#define TBT_CABLE_SPEED(_vdo_)		(((_vdo_) & GENMASK(18, 16)) >> 16)
-+#define TBT_CABLE_SPEED(_vdo_)		FIELD_GET(GENMASK(18, 16), _vdo_)
- #define   TBT_CABLE_USB3_GEN1		1
- #define   TBT_CABLE_USB3_PASSIVE	2
- #define   TBT_CABLE_10_AND_20GBPS	3
--#define TBT_CABLE_ROUNDED_SUPPORT(_vdo_) \
--					(((_vdo_) & GENMASK(20, 19)) >> 19)
-+#define TBT_CABLE_ROUNDED_SUPPORT(_vdo_) FIELD_GET(GENMASK(20, 19), _vdo_)
-+
- #define   TBT_GEN3_NON_ROUNDED                 0
- #define   TBT_GEN3_GEN4_ROUNDED_NON_ROUNDED    1
- #define TBT_CABLE_OPTICAL		BIT(21)
--- 
-2.43.2
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
+Is this something I can just merge to the pin control tree, or does it
+need to be applied in lockstep with the other patches?
+
+Yours,
+Linus Walleij
 
