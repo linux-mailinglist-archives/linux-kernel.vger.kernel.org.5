@@ -1,101 +1,108 @@
-Return-Path: <linux-kernel+bounces-86626-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86619-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9BC186C802
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:24:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE9D686C7E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:19:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F99EB23853
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:24:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF6D01C214A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:19:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FAA97B3E9;
-	Thu, 29 Feb 2024 11:24:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC3E47B3D2;
+	Thu, 29 Feb 2024 11:19:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="XunhVmMw"
-Received: from out203-205-221-233.mail.qq.com (out203-205-221-233.mail.qq.com [203.205.221.233])
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="DrPgchJl"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7712C7AE62
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 11:24:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC11B64A9B;
+	Thu, 29 Feb 2024 11:19:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709205842; cv=none; b=Jb3cCuJyBRo5aI7kPmVsIxc5dYY0gAdbU35WpN9yXrRJbwqSFE3copTPMFmDKQIiT4EwjbscvG8PeMbs5tjIUmkNnhMuc6frD6d/lZMVgD7HegCSLHE/xilUEABTaUSAn04OGjosToVtzncrl4Q0JuK354YoWYJwzjz6vWlP2ss=
+	t=1709205563; cv=none; b=GamjNvL0Cjyndl6qeG6fyOFBYFoZeGVikcY19ufldKReQIga7yBzGnA2JeIHySURHZDGHzRKySvdKZx0MKYimu2MANLb9cPRylxVibIPm9kpifDK0eDq2CjsDdIqZVvd9mahrU275C5QdWxyNvix8zG+Xsib29J3Zp0f4+nZXWo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709205842; c=relaxed/simple;
-	bh=Lw43WVRfx/Ig61s0twf8oAgY2tROhrU+dPuL5u7K74Q=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=RRg68zbNWyVSTqWwllycv5cbTCPQMdfeacfX7cE7n/hvT2Kzj5vtycXzc1QElvhmiRWrJc1EVRt1Kj6CCk+pFBNsYNNamtaU6oZWyVTCkB14iW8o4nyBDQlU4EP9u7eh7+Pewxub4DAOP+i5CZPM7F7RthWerSc7L2pdvS4wIys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=XunhVmMw; arc=none smtp.client-ip=203.205.221.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1709205531; bh=dDkhUtUenMCvjbf5QUmcPYlkJERal+L3GzpBUKTc2uk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=XunhVmMwf7eEPDUYangGh0LnZ8BqrOC3/5rIlnmCQUkqnfr4gcMUyLWk7YvZaraWs
-	 J3mcreyag9XVNwAECy3DMeGsMxpJfBW2UfMm4FM06LKj1O/RRNaAtkRjNlYUNHiB69
-	 Tpi1t0wp1gfadal4tCw60jt13XwR/TUPjn6FY8dk=
-Received: from pek-lxu-l1.wrs.com ([111.198.228.140])
-	by newxmesmtplogicsvrszc5-1.qq.com (NewEsmtp) with SMTP
-	id 4B123E98; Thu, 29 Feb 2024 19:18:49 +0800
-X-QQ-mid: xmsmtpt1709205529t8co6ro2f
-Message-ID: <tencent_66D84A6C740977ED66023CCD3716963E3709@qq.com>
-X-QQ-XMAILINFO: NhUkPfKlCtQwjfAHDpPnwVSIrfaeba6ENSnlwGC5Yxfl8HdhHBJHAUPff5hd51
-	 S3WsBEZb1c9z3+QyyNlIqTrciirIec3NWFiJDELpIhdqN1+2L6JxL9+kDzkRct8PUNyYEyvcU0+D
-	 wg1i9NzQSqYB+62H6x0+slN3X5yX4pfabf7PYGrSFGGbStQRyqzs8Q5zlfGLHng3+MZ43WdIVXtL
-	 SdXuppBRWaChyn0NUkbGEJOmO0xh4F+DocseT1AotRhumcKZ3nm80TWOvXWugGwYJ0KzM5YpgVQt
-	 Yu3ckFEdPGcbjx/HC3lKxaBRtvlJKFGDxeyBzeWdIy0+9KyhvhRigqJZe8wyvCeb6UVOxQFwS1gR
-	 YC7+UT2VYjuwDmXhWmXZTn2691C6ZGvJNS2yZj9wdny2vyfQE349lTGGWO2uLTIXatfKe8C+lPxJ
-	 WEz62+Uyt3YTgANkMB+l5COq3FJoSGp3VUDf7X3YfINcwWeF9NnNmy+UhZcajugvgQqldpqTLi+U
-	 oH9/Gdvy/GuscMGRhBRLk2jkLHdpf4KjfS15baahNXPN0KbuuoiEsBFPlG0L6f8Rt55LLmFivLBD
-	 FlUAERvph30mo0R1QDBcmb3PYjuUUOJ12HenGIsHbpaGL5qQImUcI7ZisZBLCZrdVW+cSTfODiJ9
-	 uJVqHjB7/nHrikq+N1qYaET+e8IU0GDyUou6o8QJpEJQWPdcUuOzOBm7izg5+CtYuVN4MSmUWof5
-	 CkCSmmV1+s6i20fYBvWNljlOP3HIKUVG5BhxLfnc3NC2TRE0UFTfnqa7qQC+tjNDsTwr3o1kMxPv
-	 ilnBHYNJW1QMDLTYJiW18IP3eELX5El78ejUxs73zFAHpxXs1dGmSi+z/cSdB7QV43q7RoBD4mv7
-	 xBahOuzdaimDO3TpIXIRrW6gpUeMX2ujGjPF9wL9ssQvz+0GZeyn5NRtdKYYw2b+altPacgAj5
-X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+2622b51b35f91a00ea18@syzkaller.appspotmail.com
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [media?] [usb?] INFO: task hung in vb2_video_unregister_device
-Date: Thu, 29 Feb 2024 19:18:50 +0800
-X-OQ-MSGID: <20240229111849.917736-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <0000000000008faf0a06126a0ffb@google.com>
-References: <0000000000008faf0a06126a0ffb@google.com>
+	s=arc-20240116; t=1709205563; c=relaxed/simple;
+	bh=7Eihvt86sWz7EP3y44dO8crLxvUcOmGXPcGktOO6u/c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FgEyE3JmedhwO6jJQCnN0lE52IctYui7+adox5GjW6FCxOKrgC4sfW7NvgoaateqHzXwwSlCKxVCSNmz29WVG/25tKUQwm50Jn1p5NYpRw8SMrB3fe0UK5Lo/X4FeER8AR6kQ//49484zBCS8djz07iW21kmnFVOzyTLkGkt0mE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=DrPgchJl; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from pendragon.ideasonboard.com (89-27-53-110.bb.dnainternet.fi [89.27.53.110])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 2CA8BC67;
+	Thu, 29 Feb 2024 12:19:04 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1709205544;
+	bh=7Eihvt86sWz7EP3y44dO8crLxvUcOmGXPcGktOO6u/c=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=DrPgchJl8eyBsuuIvu1KwAAxBvUE2LhSUIkFpyBTTNDzjdFgAe2QAKOs5GKt4FLC1
+	 Hu4OTxmiFybg7PokMEe+AuTDBS89RjdgLUEi8PP2idrIgn1lO9betXc1NcDq+3Y+8l
+	 Hbdh3a/hEQ2dpoICE8v7cXWXcj4nvPXvdidvztlQ=
+Date: Thu, 29 Feb 2024 13:19:19 +0200
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To: Nikolai Kondrashov <spbnick@gmail.com>
+Cc: Helen Koike <helen.koike@collabora.com>, linuxtv-ci@linuxtv.org,
+	dave.pigott@collabora.com, mripard@kernel.org,
+	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	linux-kselftest@vger.kernel.org, gustavo.padovan@collabora.com,
+	pawiecz@collabora.com, tales.aparecida@gmail.com,
+	workflows@vger.kernel.org, kernelci@lists.linux.dev,
+	skhan@linuxfoundation.org, kunit-dev@googlegroups.com,
+	nfraprado@collabora.com, davidgow@google.com, cocci@inria.fr,
+	Julia.Lawall@inria.fr, laura.nao@collabora.com,
+	ricardo.canuelo@collabora.com, kernel@collabora.com,
+	torvalds@linuxfoundation.org, gregkh@linuxfoundation.org
+Subject: Re: [PATCH 0/3] kci-gitlab: Introducing GitLab-CI Pipeline for
+ Kernel Testing
+Message-ID: <20240229111919.GF30889@pendragon.ideasonboard.com>
+References: <20240228225527.1052240-1-helen.koike@collabora.com>
+ <20240228230725.GF1659@pendragon.ideasonboard.com>
+ <0a5bf7d1-0a7e-4071-877a-a3d312d80084@gmail.com>
+ <20240229093402.GA30889@pendragon.ideasonboard.com>
+ <655f89fa-6ccb-4b54-adcd-69024b4a1e28@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <655f89fa-6ccb-4b54-adcd-69024b4a1e28@gmail.com>
 
-please test task hung in vb2_video_unregister_device
+On Thu, Feb 29, 2024 at 01:10:16PM +0200, Nikolai Kondrashov wrote:
+> On 2/29/24 11:34 AM, Laurent Pinchart wrote:
+> > On Thu, Feb 29, 2024 at 11:26:51AM +0200, Nikolai Kondrashov wrote:
+> >> On 2/29/24 01:07, Laurent Pinchart wrote:
+> >>> On Wed, Feb 28, 2024 at 07:55:24PM -0300, Helen Koike wrote:
+> >>>> **Join Our Slack Channel:**
+> >>>> We have a Slack channel, #gitlab-ci, on the KernelCI Slack instance https://kernelci.slack.com/ .
+> >>>> Feel free to join and contribute to the conversation. The KernelCI team has
+> >>>> weekly calls where we also discuss the GitLab-CI pipeline.
+> >>>
+> >>> Could we communicate using free software please ? Furthermore, it's not
+> >>> possible to create an account on that slack instance unless you have an
+> >>> e-mail address affiliated with a small number of companies
+> >>> (https://kernelci.slack.com/signup#/domain-signup). That's a big no-go
+> >>> for me.
+> >>
+> >> Yes, it's not ideal that we use closed-source software for communication, but
+> >> FWIW I'd be happy to invite you there. Perhaps if you try logging in e.g. with
+> >> a Google account, I'd be able to see and approve your attempt too.
+> > 
+> > I don't use Google accounts to authenticate to third-party services,
+> > sorry. And in any case, that won't make slack free software.
+> 
+> Of course. You're also welcome to join the #kernelci channel on libera.chat.
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+Isn't that a bit pointless if it's no the main IM channel ?
 
-diff --git a/drivers/media/usb/usbtv/usbtv-video.c b/drivers/media/usb/usbtv/usbtv-video.c
-index 62a583040cd4..b55f432b44d4 100644
---- a/drivers/media/usb/usbtv/usbtv-video.c
-+++ b/drivers/media/usb/usbtv/usbtv-video.c
-@@ -963,7 +963,6 @@ int usbtv_video_init(struct usbtv *usbtv)
- 
- void usbtv_video_free(struct usbtv *usbtv)
- {
--	mutex_lock(&usbtv->vb2q_lock);
- 	mutex_lock(&usbtv->v4l2_lock);
- 
- 	usbtv_stop(usbtv);
-@@ -971,7 +970,6 @@ void usbtv_video_free(struct usbtv *usbtv)
- 	v4l2_device_disconnect(&usbtv->v4l2_dev);
- 
- 	mutex_unlock(&usbtv->v4l2_lock);
--	mutex_unlock(&usbtv->vb2q_lock);
- 
- 	v4l2_device_put(&usbtv->v4l2_dev);
- }
+> It's much quieter there, though.
 
+-- 
+Regards,
+
+Laurent Pinchart
 
