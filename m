@@ -1,94 +1,133 @@
-Return-Path: <linux-kernel+bounces-86408-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86409-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 551D186C4FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:25:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81DB686C500
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:25:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1745F28D791
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:25:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C1FB7B26D34
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:25:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39FB15D492;
-	Thu, 29 Feb 2024 09:25:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E56EB5D741;
+	Thu, 29 Feb 2024 09:25:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="WYNyfzIi"
-Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PuIyx1oa"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60E8B5CDFE
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 09:25:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 206495D729;
+	Thu, 29 Feb 2024 09:25:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709198704; cv=none; b=l0qfKkBc4ekobxpEHlnjIZz4/CjrhoXCRteqX/SimlWomE+KLtxomX+FnQrqQPBxOs/gWAA16FHUB3M41NKgdhpkWFeS3CRyCqPB4NMet5AFsn9LMpYCIr0iaHkFeoKvPh5gVyhk9w1NfJN5M0RcWHvXUDUbn3Fyv/INuKS0CLs=
+	t=1709198707; cv=none; b=Ji9kqsUH89CPDl3JEq3FEmE9h4hN8KMvvTvnIDBIx1MZ4gCxPwmy4o2R9uLzwBMmM2qGC/Icrdm9vPd1SN5g6fy55NjQ+ALzzu3qQ3UfaVuVMVHtgPTnjZwdY0x059OvzozkalVt291iMUa8HqTUfwDGiCu5dsZHzXr/hzipDw4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709198704; c=relaxed/simple;
-	bh=ap434ylnovvGoNc9bOD0j+ivUkfSULpZe6TqskBZLug=;
-	h=Message-ID:Date:MIME-Version:In-Reply-To:To:Cc:From:Subject:
-	 Content-Type; b=oggqno17uOaPoZyCJAsZr34PGsZyflS2TQBmuNYVKeijqHyEZyhVa+FZxQdVElb1qovbBkyarEY/XTMmQBoi5zJf/0QIuoVsICi9DvM/kYrEgSJUrcLkjAdIyI4rTsxUdJg9tYTn38iaAEFrze7W6N1WrVIJeHXPlP+Jlo6QWZY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=WYNyfzIi; arc=none smtp.client-ip=115.124.30.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1709198700; h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type;
-	bh=qNgAuU6gKGgHxYrfvaLiJzr9i3yPJIyisWcGeQJQ9UI=;
-	b=WYNyfzIiMjfhHdaR22KulxUm/7Z6uKsLOTVWB+NY1mmdh8Hm6kPdFw4OD3N2SR3PsFswxoTR67MJbVeRXwWpYGcj/E8rVYskTU+GYakoTOepM6e+Q2P005AiHXjpF6MYVA+Xb6s0lpPqJjpIepw62ReHIh1lPGAZPLWEuAJtXbc=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=dtcccc@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0W1SXNeZ_1709198671;
-Received: from 30.97.48.162(mailfrom:dtcccc@linux.alibaba.com fp:SMTPD_---0W1SXNeZ_1709198671)
-          by smtp.aliyun-inc.com;
-          Thu, 29 Feb 2024 17:24:59 +0800
-Message-ID: <c2ceff07-e1b4-4dbc-b945-f91a9076375e@linux.alibaba.com>
-Date: Thu, 29 Feb 2024 17:24:58 +0800
+	s=arc-20240116; t=1709198707; c=relaxed/simple;
+	bh=6DWhAaMQWrHxTHYBefaDQZ7F3e0IjkJgpBP1vHTzp2A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TS8/xI0tN75RpQrMH3JXCe3D6qBHeUg+H3iQm1lS52m+ChXKzNW5n2/kN4fBsfCWc5ECzw7+DxkzWTSl34/mW0KsCElqQd/FggVrErkylfwNzF33Ol0pZgE0brJwg+tIi6bXcjcGSEWIKHD6As6s8yODapkC2X1vzyw2+nz7Y74=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PuIyx1oa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22588C433C7;
+	Thu, 29 Feb 2024 09:25:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709198706;
+	bh=6DWhAaMQWrHxTHYBefaDQZ7F3e0IjkJgpBP1vHTzp2A=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=PuIyx1oaoAMIHMr3YwxXBfmfNEjluW7YcKw+tA8JJi+BNGrbqTZadHOxSxyUf6UUa
+	 aWVCloGgRvkq0HxSZVV2FESTOwLB2x4jHRXhvzaKsqKzHpFtV2EQLDf9Z2YAk1IQHE
+	 e68mdJ7qOsxCQnRx/6O6rtmJZHfOKJlMg0xCYEUop2jOrtIPgE3FxrF2x/3tcQYyl2
+	 G/MHEUwIJYybFOt5Bv6NpDQKyoyYCq695iTm3jDorXlpiD03vRuramnKAgOVL4pIZJ
+	 vNpGKWdvPvJekSY8wD1oMK+EgrHJoOdYjeSkmC0CCDLrz5EF+IHvbDUMWrCeSj+Nst
+	 FjOw6WNW8WxjQ==
+Date: Thu, 29 Feb 2024 10:25:03 +0100
+From: Wolfram Sang <wsa@kernel.org>
+To: =?utf-8?B?VGjDqW8=?= Lebrun <theo.lebrun@bootlin.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	Gregory Clement <gregory.clement@bootlin.com>,
+	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+Subject: Re: [PATCH 09/13] i2c: nomadik: fetch timeout-usecs property from
+ devicetree
+Message-ID: <ZeBNbx6PDGk8xqGX@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+	=?utf-8?B?VGjDqW8=?= Lebrun <theo.lebrun@bootlin.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	Gregory Clement <gregory.clement@bootlin.com>,
+	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+References: <20240215-mbly-i2c-v1-0-19a336e91dca@bootlin.com>
+ <20240215-mbly-i2c-v1-9-19a336e91dca@bootlin.com>
+ <Zd3SJMBp23ybgdsJ@shikoro>
+ <CZFWIJE9978P.G3TZC2YIUST9@bootlin.com>
+ <Zd8PtLsUc0G8KR97@shikoro>
+ <CZGR61YHK1DJ.SVRE78BJ9WB4@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-In-Reply-To: <20231107090510.71322-2-wuyun.abel@bytedance.com>
-To: Abel Wu <wuyun.abel@bytedance.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Valentin Schneider <valentin.schneider@arm.com>,
- Barry Song <21cnbao@gmail.com>, Benjamin Segall <bsegall@google.com>,
- Chen Yu <yu.c.chen@intel.com>, Daniel Jordan <daniel.m.jordan@oracle.com>,
- "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
- Joel Fernandes <joel@joelfernandes.org>,
- K Prateek Nayak <kprateek.nayak@amd.com>, Mike Galbraith <efault@gmx.de>,
- Qais Yousef <qyousef@layalina.io>, Tim Chen <tim.c.chen@linux.intel.com>,
- Yicong Yang <yangyicong@huawei.com>,
- Youssef Esmat <youssefesmat@chromium.org>, linux-kernel@vger.kernel.org
-From: Tianchen Ding <dtcccc@linux.alibaba.com>
-Subject: Re: [PATCH 1/4] sched/eevdf: Fix vruntime adjustment on reweight
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="i3H+SuXuRpenTtPB"
+Content-Disposition: inline
+In-Reply-To: <CZGR61YHK1DJ.SVRE78BJ9WB4@bootlin.com>
 
-Hi Abel:
 
-I'm not so familiar with eevdf and still learning. Here I've some questions 
-about this patch.
+--i3H+SuXuRpenTtPB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-1. You did proof that V will not change during reweight (COROLLARY #2). However, 
-according to the original paper, the new V will be:
-V' = V + lag(j)/(W - w_j) - lag(j)/(W - w_j + w'_j)
-So the V' in paper will change (when lag is not zero).
-Is the V in Linux code slightly different from the paper?
 
-2. I print some log around reweight_entity(), mainly want to print V by calling 
-avg_vruntime(cfs_rq). I found your algorithm only keeps the V unchanged during 
-reweight_eevdf(), but not reweight_entity().
+> The alternative is that I keep going with a new revision of i2c-nomadik
+> that manually parses the prop. It'll be refactored if/when the I2C core
+> provides a better way to access the value. Is that OK?
 
-In detail:
-If curr is true (i.e., cfs_rq->curr == se), we will directly run 
-reweight_eevdf(), and the V is not changed.
-If curr is false, we will have __dequeue_entity() -> reweight_eevdf() -> 
-__enqueue_entity(). The V is finally changed due to dequeue and enqueue. So the 
-result of reweight_entity() will be impacted by "cfs_rq->curr == se", is this 
-expected?
+That wouldn't have helped because there is still no user in-kernel of
+that property, i.e. no DTS file with that property. But I just realized
+that I need to convert i2c-mpc to avoid a deprecated binding, so we have
+a user there. Lucky you ;)
 
-Thanks!
+I'll try to get the series done today.
+
+
+--i3H+SuXuRpenTtPB
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmXgTWsACgkQFA3kzBSg
+KbY+zxAArdvvBeUnsfR4WGLIcBrr1o8rbsQx4N7QGu/B8sbTcuVlxRTEihCElpiG
+sYAYMEA1d6BKJjXLWqBZiif88hd0qSghKwMz86zJFqCeXDBNcJHNMvWCFnLJNGxT
+0aCi9A+QgXS+WmNh9HenQjO57GxEN+NFKdHODXKe0gUFWjAGi0vHf2mvK+bBxmdF
+YdRF2P5ZHMCoFPBIiAsG50uwosgRySA0rqW9Mr+C8T5ovu+Iw62oI1F9g3re+WCM
+IUKkal/DnYGR4+ryHNGtbPAo9K9kWcFjZIpoMbMwMAoDWmtBm0moMTinYc3fLm4o
+mJbva5GOdK68J/WilYM/fZVkJ2VIK8Z3JiFUxM26BbMT1Y89fCoyhwyFzdi6req4
+pvfdpFwDAM9KCRAf6Yvx1jAqb/WTQ+h9TzATfbf3vKdnTyN/ylLndeAoxjZkG2nw
+4fPXfrygj2P6Thp82a0SvZlk7OKLFwt4l7nHXsRKs8zppva0JVld+g41kc3XHkOU
+Tnykz2AdrgAmdlBVrkz9XykWunIaF2tMNpTN0gU3KR2REAjxQSbM+bQEnW4WOI75
+4koX9rhW/gimTFIkGwurgNviTB0Ka35ef3TbTW9yms8jlaerB+Tqi4Yd+gw8kmW1
+qzG7GOXgRrdv/HY9hGMFS3p/HKJwXUNkKiVhrWPTWtGhZ0EYDgs=
+=SUiE
+-----END PGP SIGNATURE-----
+
+--i3H+SuXuRpenTtPB--
 
