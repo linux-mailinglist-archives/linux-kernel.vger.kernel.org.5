@@ -1,81 +1,82 @@
-Return-Path: <linux-kernel+bounces-86914-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86915-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B51EB86CCBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:19:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 581A386CCBD
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:21:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46602283EDF
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:19:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10D63284E8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:21:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92B6512F362;
-	Thu, 29 Feb 2024 15:19:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7A5813EFF6;
+	Thu, 29 Feb 2024 15:21:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="d7V7VvZQ"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AOQWrQkU"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DC1E86275
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 15:19:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6FB086275;
+	Thu, 29 Feb 2024 15:21:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709219955; cv=none; b=LGR2FCwiTw7BJXG0Df/OP3WC/LoFOFAJ1Ore0Ncwud2bjGfXGZoIr5bmRYi35j81eJiR6Vh1lQGvxsxjLuoqq94/87ck/2UTpPg7lRvj2DOkxXFeGT1whE2Iqp/I9VhL+JH6RQ21xPJePQ7kDyhAOkVbYhh6HcicrWObtDgPOts=
+	t=1709220070; cv=none; b=E7c3/N140WQh7eKsUZ2CrbG60BHruom+LnAx8cRi83SBBcgrwy0r6XajdVBQyCoGwIbABt07T6TEmGlOEC2enGvFLVq7w1hRV5lYHSx8htBUyYoeddm4Lbrlqt6Alt0izesxE3TcQNxZAgNIOfCwm1VSqI/01GACcBQI4GNi/9A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709219955; c=relaxed/simple;
-	bh=8BKUzajgfT6HNmS1xP/5Vd8mKo4cmsOxiX9rNgycjXM=;
+	s=arc-20240116; t=1709220070; c=relaxed/simple;
+	bh=mtw1Are5X4Bl/MyGWxpW8u5oJvyM4o2l4h/oPvehucM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fbCu0/plD7yvroUYomVM57Adhn5fGeXZ9vvaAESnYYfFSU309rOLsPeYTE4w3fZw9pXCjS/pSSKl3j5p/cFCU07+8sfqxmKxZzp9zwC1hfhS9DXtLfg9l1EdmQn3hbjsBE2NM0K3TCj7S3lsWT8nKHL1LgzUN9vCAJXhRtG6x+4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=d7V7VvZQ; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a446478b04bso45924866b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 07:19:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1709219952; x=1709824752; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Yn1zce3bQ2qXb3y/QswXWKJ5LaLDdAUGuIwkbuGCZvU=;
-        b=d7V7VvZQs3FB0yugiCm4ZBm4EEog4abnu082Bh4tJ98sPe0o5jdLzlnfjQ3gfsoVxz
-         yQeNU7VLxH2T9WR+BAI4cgRmlHGtHACd+/koYQmnUopXJMHQEFwPvZs+T8wo9o1naWBO
-         MdhR8KoFGP6xTNB2j0KqbfE3wQdE4+RP74PDsX2FmeJWvbJV0Ew5kUklKcHnsnxSn+/R
-         7P2DLwEsPx2jPfN82mJH2HU0WDvvmT9I8hFbu4FZB8u1mUtiQz1ESRV5eiWB+pr5IajH
-         tfsj9AY5OUgIU5PJ2kkMeb/6t7zou6nD/S1sJIqxgvfDspUWjh/Q7Ex7muk32oBEb+QO
-         tcSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709219952; x=1709824752;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Yn1zce3bQ2qXb3y/QswXWKJ5LaLDdAUGuIwkbuGCZvU=;
-        b=N7M2Ak3nulZBaCP7cTR4XaFVJCb2or7QkqKOf+H+znpglU7uWCEhSCJWWS8QfYlsYy
-         T4q3tMp/Mc1PM0xR7zHaQOFk7G9g+zN5nE1eJ9dfuSyuBmQWZzUVAX8NIEZ6Qk5AwsW+
-         +ADkd/5XnAeiZdIQ6RDN4KaBpwPEzXOJV/Im1ZMMdc7sjbWaKJI8P27NwYPUV3DE3N+8
-         A2kZvOLr9DUhvGBxZQW8ypmUgYqaHHVNHCbnPOXyvwmCIftMZ/8zyIEde6sgI9ePAR9j
-         //vIQ1mwvObMHbLjqyeizwuSkh4neiBvzMHYwJtBa0RKyL+Q5JgSY13c8Z0wZcoZXyHP
-         5MfA==
-X-Forwarded-Encrypted: i=1; AJvYcCWE5c/w69UQVG6HheJR+HKTrHh37DgTAaum8jSq7CU0yI2P1abzsnHFU9hW+jjcuzD/mTDU0gQpHpL2+Y8lLAGwYBWHpyxtpgHSLTxm
-X-Gm-Message-State: AOJu0YzeQEddfAmpmSmLugHlSiomuzoICPE+9DF2cP7GOS1ON7fm3Dbp
-	gsNjS3RP71jV1KYiCIOSVS00oT+gMqoNFzAKsON6I5ACHzJ075Se4hnqeru9W0E=
-X-Google-Smtp-Source: AGHT+IFrwNmwbJfrkgbJv1EeguIoo2X9D5Q/WjhOIHrpPrEivK2ywnhccAptttNke/Vdftzzg6Ltdw==
-X-Received: by 2002:a17:906:fb99:b0:a44:277c:1683 with SMTP id lr25-20020a170906fb9900b00a44277c1683mr1875406ejb.53.1709219951673;
-        Thu, 29 Feb 2024 07:19:11 -0800 (PST)
-Received: from alley ([176.114.240.50])
-        by smtp.gmail.com with ESMTPSA id tx18-20020a1709078e9200b00a431cc4bd3dsm769486ejc.182.2024.02.29.07.19.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 07:19:11 -0800 (PST)
-Date: Thu, 29 Feb 2024 16:19:09 +0100
-From: Petr Mladek <pmladek@suse.com>
-To: John Ogness <john.ogness@linutronix.de>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk v2 19/26] printk: Avoid console_lock dance if no
- legacy or boot consoles
-Message-ID: <ZeCgbRkIl2q3_9uh@alley>
-References: <20240218185726.1994771-1-john.ogness@linutronix.de>
- <20240218185726.1994771-20-john.ogness@linutronix.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=rjXZ1i6o7GVH3/+Z5yLbMX/70yFN4E54bb6fRTsQSwhECNOT5PTJPhbO39IeN1auHwUxcfwDJJeKn8dQpNC12YQZi9KAFStuEldRGXUqBEAWhzILh/4cu2pTBD6XywMZkOp0LW+vJRWijg/5J+0pDZrgIZOKUncE1Bhhk1ATyRU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AOQWrQkU; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709220068; x=1740756068;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=mtw1Are5X4Bl/MyGWxpW8u5oJvyM4o2l4h/oPvehucM=;
+  b=AOQWrQkUmDn2qo6scC606kMUiVfLcFkcnLj+VdBd2J3qQ07WEMWbpVJ6
+   +SIhy5QeiFIIrTO2umDPe6HBvcewBgyvcwFfTcxBF4FObl2nYCYYlKtcU
+   O/cmgDRA56ZkZxCr3fJsp8cMc6r7mJpoNYZFx9g1/8mZRsqNglscIXPYp
+   gt/hOLHhxIxGZ9hCh0LmjbtHS85SkRp+2OQFQObHfUc3TKk7r5zQrMcmu
+   YLBoNZkErhSPwHBut8ziEvv3pLpbHb5z2q96J7XlNk1GMHWUL3+iEDXws
+   Ku5fE09bKsn0H7eV+mDk5cmMnXYZCYRmwXySgykOz3snKHLjAQSDiOvZK
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="3574679"
+X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
+   d="scan'208";a="3574679"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 07:21:07 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="913984387"
+X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
+   d="scan'208";a="913984387"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 07:21:03 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rfiDT-00000008hgQ-3rit;
+	Thu, 29 Feb 2024 17:20:59 +0200
+Date: Thu, 29 Feb 2024 17:20:59 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Herve Codina <herve.codina@bootlin.com>
+Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Yury Norov <yury.norov@gmail.com>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, Andrew Lunn <andrew@lunn.ch>,
+	Mark Brown <broonie@kernel.org>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v5 4/5] net: wan: fsl_qmc_hdlc: Add runtime timeslots
+ changes support
+Message-ID: <ZeCg24Iv8qDmxNV9@smile.fi.intel.com>
+References: <20240229141554.836867-1-herve.codina@bootlin.com>
+ <20240229141554.836867-5-herve.codina@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,81 +85,49 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240218185726.1994771-20-john.ogness@linutronix.de>
+In-Reply-To: <20240229141554.836867-5-herve.codina@bootlin.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Sun 2024-02-18 20:03:19, John Ogness wrote:
-> Currently the console lock is used to attempt legacy-type
-> printing even if there are no legacy or boot consoles registered.
-> If no such consoles are registered, the console lock does not
-> need to be taken.
+On Thu, Feb 29, 2024 at 03:15:52PM +0100, Herve Codina wrote:
+> QMC channels support runtime timeslots changes but nothing is done at
+> the QMC HDLC driver to handle these changes.
 > 
-> Add tracking of legacy console registration and use it with
-> boot console tracking to avoid unnecessary code paths, i.e.
-> do not use the console lock if there are no boot consoles
-> and no legacy consoles.
-> 
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> @@ -3958,7 +3983,11 @@ void defer_console_output(void)
->  	 * New messages may have been added directly to the ringbuffer
->  	 * using vprintk_store(), so wake any waiters as well.
->  	 */
-> -	__wake_up_klogd(PRINTK_PENDING_WAKEUP | PRINTK_PENDING_OUTPUT);
-> +	int val = PRINTK_PENDING_WAKEUP;
+> Use existing IFACE ioctl in order to configure the timeslots to use.
+
+..
+
+> +	bitmap_scatter(ts_mask, map, ts_mask_avail, 64);
+
+Wondering if we may have returned value more useful and hence having something like
+
+	n = bitmap_scatter(...);
+
+> +	if (bitmap_weight(ts_mask, 64) != bitmap_weight(map, 64)) {
+
+	if (n != ...) {
+
+?
+
+> +		dev_err(qmc_hdlc->dev, "Cannot translate timeslots %64pb -> (%64pb, %64pb)\n",
+> +			map, ts_mask_avail, ts_mask);
+> +		return -EINVAL;
+> +	}
+
+..
+
+> +	bitmap_gather(map, ts_mask, ts_mask_avail, 64);
 > +
-> +	if (printing_via_unlock)
-> +		val |= PRINTK_PENDING_OUTPUT;
-> +	__wake_up_klogd(val);
+> +	if (bitmap_weight(ts_mask, 64) != bitmap_weight(map, 64)) {
+> +		dev_err(qmc_hdlc->dev, "Cannot translate timeslots (%64pb, %64pb) -> %64pb\n",
+> +			ts_mask_avail, ts_mask, map);
+> +		return -EINVAL;
+> +	}
 
-I was thinking about handling this in wake_up_klogd_work_func().
-But then I saw that __wake_up_klogd() already handled
-PRINTK_PENDING_WAKEUP a similar way. And it even did not
-queue the work when there was nothing to do.
+Ditto.
 
-It would be nice to handle both on the same place.
-It would even untangle the condition in __wake_up_klogd().
-Something like:
-
-static void __wake_up_klogd(int val)
-{
-	if (!printk_percpu_data_ready())
-		return;
-
-	preempt_disable();
-
-	/*
-	 * Guarantee any new records can be seen by tasks preparing to wait
-	 * before this context checks if the wait queue is empty.
-	 *
-	 * The full memory barrier within wq_has_sleeper() pairs with the full
-	 * memory barrier within set_current_state() of
-	 * prepare_to_wait_event(), which is called after ___wait_event() adds
-	 * the waiter but before it has checked the wait condition.
-	 *
-	 * This pairs with devkmsg_read:A and syslog_print:A.
-	 */
-	if (!wq_has_sleeper(&log_wait))		/* LMM(__wake_up_klogd:A) */
-		val &= ~PRINTK_PENDING_WAKEUP;
-
-	/*
-	 * Simple read is safe. register_console() would flush a newly
-	 * registered legacy console when writing the message about
-	 * that it has been enabled.
-	 */
-	if (!printing_via_unlock)
-		val &= ~PRINTK_PENDING_OUTPUT;
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-	if (val) {
-		this_cpu_or(printk_pending, val);
-		irq_work_queue(this_cpu_ptr(&wake_up_klogd_work));
-	}
-
-	preempt_enable();
-}
-
-Otherwise, it looks good.
-
-Best Regards,
-Petr
 
