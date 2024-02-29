@@ -1,239 +1,184 @@
-Return-Path: <linux-kernel+bounces-86219-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86220-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A03786C1C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:17:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D833386C1C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:19:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A4F01C20EFA
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 07:17:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8DA1728972F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 07:18:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D49B744C63;
-	Thu, 29 Feb 2024 07:17:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDFFD44C76;
+	Thu, 29 Feb 2024 07:18:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="UXKx++EX"
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="VhehkOns"
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2044.outbound.protection.outlook.com [40.107.93.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 318BB3C062
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 07:17:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709191069; cv=none; b=obbjAAuRxFYWRVU/T8sUaHtnE6mZl03L9BLeS2mt2KCiyt97gxnpsuUuIOdmbusiCuDJK+jW580BHJqJKxaSegtdq9SbbSQpp3+jhJiElJAOObIWVueFMFqmbuSnkqxV3acpvq6WX+m8O/5bjwrXmBAheHpyKmf6WKpvxE6QYbg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709191069; c=relaxed/simple;
-	bh=i3sCAHbhn/NndzqgR8OKGIz5/kxR595y9PkLDAV9H00=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QDxebct7RJqQh7yAO+iNRy9jCPXhA1cDUk1ndooY1sQU6rlFzEmpOBuYGBeO0IqBSJKkYT7nszezKdu+9BHK9rQwUMnLH10TZsA1XJr/9mgLhNh2Etz2R1QJz9r5Tuj5RMR34ifb6nYNc0eQ31fzdtFIHBxGHaaQ8KFeBZfDn+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=UXKx++EX; arc=none smtp.client-ip=209.85.208.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d28387db09so5792791fa.0
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 23:17:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709191065; x=1709795865; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7vsIc33sKeduHZUUC8l8uIRDY5GIY+lHtM3gIzAb8YQ=;
-        b=UXKx++EXaaCY6i6DVSR+AQXPOaDZsv2OPFa4jKzt0WL2nKpGoG3xmZ11NPPPDe8m01
-         EDa3XaBe6Pjl64lDsBqX/qFkjPorTI3TMd9wpiKy+2gOh3prpmqcbQx0T3fIQTSCz8bz
-         2LsoZojpvlFWmDkQ8t4exEwGUoqmoIJcX8EcY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709191065; x=1709795865;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7vsIc33sKeduHZUUC8l8uIRDY5GIY+lHtM3gIzAb8YQ=;
-        b=jDVESr/NtRhmpJXu6Qi4bIe5IghSYz/1M/ePNiC3Fhvgkv79VLJYHjj86+T46G2Ffn
-         o0clZ7MQo7rtO4S8X6MblUzy6iVogjCByWIdqS3a1ZUigTAS/8STnMkHOXmlQakqkBDA
-         C1WT8t4rKKfG5N528oF5qVV3neG4R+HLOOM4fgjVe3No6YGa01Nds5TsKHqN8P8u+uc2
-         phA2NL65WQPG6dBB8wyo92YGXk1GUpiys7YTtIr6wKVM87fvpTboOInLACXWwnYuXkpG
-         ULkO4F/y0WE9CRtbEZw0wiJy5aFhLWbOkBBq8UVkOsp49Fw3CLgCFDfhoi8uKRwh9ACo
-         qqcw==
-X-Forwarded-Encrypted: i=1; AJvYcCWlu7huaqeJNppQ1tiK/paPnFTHC+I6U6kGYnC7cKFKoD4qxjY5uPCeRRD44yRTYUzLY9M/uNvsI0er00/yqBojCzCVz3C9UypsYpXz
-X-Gm-Message-State: AOJu0Yz9ORP7yS+WR1t5ZaEs0z+XGOplX31nkPnITcmEa70tWqjlq0UM
-	Q7gJ/juBkjYGfj5BTTHTXSte6jmWPruYdJ84rWeH8C2HdhbmqgFjQCOAxGCW/DriAuY/iVz0lZi
-	ZIG4AWeOy2mDnhAqPLIy25eqNeV0mnu2ZFhjq
-X-Google-Smtp-Source: AGHT+IFGnhfqo9wpMLbUOWT9xaaCwa78RftbvQ4WT4QBDMgmaFEdTyD2WRaCG81GIICXSZk9azfqp0otmo8BfGfqq8w=
-X-Received: by 2002:a2e:98c6:0:b0:2d2:3b9e:dcff with SMTP id
- s6-20020a2e98c6000000b002d23b9edcffmr691931ljj.46.1709191065361; Wed, 28 Feb
- 2024 23:17:45 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 376C22E415;
+	Thu, 29 Feb 2024 07:18:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.44
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709191128; cv=fail; b=k45s62ctbzM+nAU+WyB2rLggSRDUSObCYE0d1VJjYLH7FS5I7muCq9RDKZBwfGZgnYNzrGUyXd1DNzgS12/Bp3iNFLsPpQegb1jTHNTw7eVvhANR3aa7Zlu/deBVc0+vL/bDW0aBQNB+tV8g7lhYz7zmjeMlNJ1S/HLok+8QNkA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709191128; c=relaxed/simple;
+	bh=DEPiiXQzd5LBvsRkjWFeeaDM+mIEv1TfILGKhwsbZCs=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=GlpUKnw0atkCyQySvjsMcMc0tjfKWW5hrX0FyULo1aDX6Fd3tDprSResYvQ7iDksB3ek/vH7wb+7KDJ+kytbQvlLLnqjS+Q/ZDOHJvnEH+9R9tLtq6+sGtO5DYizH9nDJng0XdMI1ScPI25I8NwplkotYXXppKYUzVFFvPE6Gb4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=VhehkOns; arc=fail smtp.client-ip=40.107.93.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=X8OicX6vBzYuvL3TKleh/sApWcwAbyOMt9RJI9cNZ341Rz30ViQQ1PRYR0GJFpcowq90Ey5GGC1bx21sif1j2qqtoR3ickGfHl0IkUuLwct245fIZI+qncjNyXSlvzRU6BBZADNWpGW+egput5bXbb8okJzI5JWXjLeTN70KV/uGONwz+hUsXYImX0KpwfZcMh5eBRLBbXFDHm3vv+1yAraVLmsAwYDRrBI5J3P5ui2laPS8MOUlz53lIhATdFSqtONFnIAK44WDHvL0K+L7Jt/akBqn3EhNMRCBRvqfXyRA0KWa4szVzKM4ZBdfzKU90aM0qOzEYZ3XV1mmTshGUQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DEPiiXQzd5LBvsRkjWFeeaDM+mIEv1TfILGKhwsbZCs=;
+ b=CpJToM+e224FbB+au/S4t57kVeEiP0VKiF8fY4Q+uU6LGInpeRPNWg0WzJuEHNXOw9M1ow7fRWihA7v3Mj9e+6c2nwUOGVCfr8HpIqgc9Ce24ww/xc5JUmPdLvDzLPwzCYVYie2wZw98cPGXpTQqBsxku7fKgAlhsIcYG7NkpbLl37TZI/7ILaDQollisT/n3lKeoaqfQs08QQ8bOmnPWXdi4S0r8u8JvHtWEu/HEILHqWbNlc/tYVi+m4EqV2E2FLnZO33CfBY7Be3Sb5g+OPZ9/YMd76PmIlGHFQvvM02kpzDVzqAah0r67MHE/At4JHlVXcp4KbF5PBFfM8Y0WQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DEPiiXQzd5LBvsRkjWFeeaDM+mIEv1TfILGKhwsbZCs=;
+ b=VhehkOnscseYCCAo+nh//5RQw+74YcsWdWES5NNMn5IxqjZJwwD+YZeK9ys9xYl9dnq+hyO5CLs2ew4xw+rbkJkpxvr7UjMDny07MaznxJsahWiW9CziAifEF4YcnWL4pvKfCO0zEXnCvncPthzLF7UcIL7JlVmMp0pYllAOYOC5OqJLoRwEwlSyoYMEJ1P33/cWnRTxWvs658F+oNqsQiyRTC33x1vwfeTsjt9WiyMhO4Xemsttt2s60KYUTS3mOxdIx7zSUnm5VY+N3AYpzhBSTQzMuMNcFGgtw9A8eY6sc6HlPJO9/CZRoODxgrB/PsImEBMwt3vrzzXCTcxYwg==
+Received: from DM4PR12MB5988.namprd12.prod.outlook.com (2603:10b6:8:6b::20) by
+ SN7PR12MB7881.namprd12.prod.outlook.com (2603:10b6:806:34a::9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7316.36; Thu, 29 Feb 2024 07:18:44 +0000
+Received: from DM4PR12MB5988.namprd12.prod.outlook.com
+ ([fe80::13c6:5879:b16d:858f]) by DM4PR12MB5988.namprd12.prod.outlook.com
+ ([fe80::13c6:5879:b16d:858f%4]) with mapi id 15.20.7316.039; Thu, 29 Feb 2024
+ 07:18:44 +0000
+From: HaoTien Hsu <haotienh@nvidia.com>
+To: "Christian A. Ehrhardt" <lk@c--e.de>
+CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Heikki
+ Krogerus <heikki.krogerus@linux.intel.com>, Andy Shevchenko
+	<andriy.shevchenko@linux.intel.com>, =?utf-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?=
+	<u.kleine-koenig@pengutronix.de>, Sing-Han Chen <singhanc@nvidia.com>,
+	Utkarsh Patel <utkarsh.h.patel@intel.com>, Jon Hunter <jonathanh@nvidia.com>,
+	Wayne Chang <waynec@nvidia.com>, WK Tsai <wtsai@nvidia.com>
+Subject: Re: [PATCH CFT] usb: ucsi_ccg: Fix command completion handling
+Thread-Topic: [PATCH CFT] usb: ucsi_ccg: Fix command completion handling
+Thread-Index: AQHaX/c/eIMwVv+p1k68YK3oJUul8LELPlsAgAAPkYCAFbEygA==
+Date: Thu, 29 Feb 2024 07:18:44 +0000
+Message-ID: <4c61b43c-1dd0-4f8a-b65f-48752b1cc439@nvidia.com>
+References: <20240215101024.764444-1-lk@c--e.de>
+ <2024021504-oven-worst-5c15@gregkh> <Zc39d88ikvCO+XVK@cae.in-ulm.de>
+In-Reply-To: <Zc39d88ikvCO+XVK@cae.in-ulm.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM4PR12MB5988:EE_|SN7PR12MB7881:EE_
+x-ms-office365-filtering-correlation-id: bfde5eb6-bcfc-408d-9ae3-08dc38f6a9d5
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ 4uhXbvXIWX/3WsjridJ1Vo0fHYOR3PfC8zUFqA/iWBr18yt5cKy3D7SjCKb/O/SuUa0rNae/nBdtRPflt+ZrewyjtPsTvEkWTDVlK8xw270e90KphIP0gBt2E/QLFqsxel51y5nMXAjhGLfivhmF4LzxGWa6eqmUayygoVtmtLW1bQ+YQoytDUn+0wG1fNVgnzC9bDkQW37ZKhE1K351I9GxFrjpK+SntK9I/OrPlUMzOhC1lDLa41c9H16Yh6nKkspoGNzERCVJ6AjpRXCY88+gznVHXZdKEHiy7amWGP6cmbI4mCoOooGA6f9S0EoD4xG4aHGu3yZ0NfYgs8YFqPyqqSu6G9YWCTG2WZP7YRV1SqWhxwSJPxvOcTCHJ4yIBGKxPTW48YyBihFiFiOkDBEzq74bEPcv7bhPeZzrA8KJqEeaL0B6ahcnBV9+wa5p/dNr02a2uzZGi0kxxQt54xN0Z3KvuQ+SOxy62+ujPyGMgRCtbFIZjhWrXAlouIQjgQBYWE3L0iKLrLxV/Rsxwd1IZPPQfji3TM3TujCLTgjr4p5FSQQH8YACZ+wZ+MqSZRh3T5O6dkN4fEf678ofXR8jqy4mAYCECJ2F+61NES6i2KkAo/9aUlYoscyJyrdpj34mQ8V8Zl9u2DbRQO4Y7B52kjIz/x0+NzG4pbP5EmqzVjba8Vj6ZzptdxhYTet0Wwlagepo+51MLRGifTfSC5OXeYEhHBgPczHE3WWKFEA=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5988.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?WCthT2Vrd2xGWG4ramNNQjAxM2hPdTR5MzNGa3o0NEFES0FZQ2YyUjZIVmNC?=
+ =?utf-8?B?Y2cwenF0TmRsU1Y3dGpBZ3ZGdzFSQkJzeGFSSUFkYWtvMzVuT1gzQ0JWcVVG?=
+ =?utf-8?B?cy9ieVhSOHc5eEVHNU52RkNkTFhJR253K0pYMTlxWjQvWElUUzRFRmFtenJN?=
+ =?utf-8?B?K1JRVHd6aVlSS2xYY0lvL1plZUI4T3JidTk5VWs0VEowQ2JPVmp5Z3pvVVhx?=
+ =?utf-8?B?bnRKL0JRcDhMZDlMMGtWRDU2ejJjWlZNV04rSkRxN1U3TkE3SjNVRHRMVGJL?=
+ =?utf-8?B?eWFHWjUvZFhPWWhOTjhseFFDUHN2QjFiSGdZWEl6UEtreUxZMVZmRjg1SFFV?=
+ =?utf-8?B?ZGExajV0cWZyTjNPMHBPMUExbFZuT2Rvb0VncTRoOGVmNEtTc1dxYWNVVTYr?=
+ =?utf-8?B?eXppM3EvMWRGMWhGM3VZNzJ3Q1FkUmFjTDlRRG95eWprcGJLOS9VOC9LcE1O?=
+ =?utf-8?B?STRaRXI5V1FTdWtQMm5VeEFWN2IxSkV4UENFcU1mdVpsMzJiMSswR3NOSldR?=
+ =?utf-8?B?bEZFQkM5ZExCenoyK2F4cTdCK05wOFBUUGNKcWtZWlQ2eWhSUzVmWGs5SGNT?=
+ =?utf-8?B?am9KaWtPdm00a2V6a0RXbXNUUWJGOFZuNFc0OE1UbXZNWHJUOG0xU2tjM1Q0?=
+ =?utf-8?B?MERmUldXUVNIR043U2w1M1ljdXRMRUZWaGxpODhlc0plSUtEV1JKWTNXNExp?=
+ =?utf-8?B?YVZKNjhodlBKUmhRQUQ2NlJmZjk4V0liY0NpYVlHL0ExdTFjWjR1VllrQjRy?=
+ =?utf-8?B?cURPNUkvK01oMys4SW9GU3doS1M4b1Z1N24wTUUxRnRxZ3RNbllVRkpGMFFH?=
+ =?utf-8?B?LzV0bkFJYkNHZTdFN0F3YkZrZ29LVjhHQmJQT1hQZnZnZGVPbVBEdC9jaDRG?=
+ =?utf-8?B?NTNtWm1NYXl5ZlVZRFRIc08vaUpEL0hhUnp0S09rclZHYzEvV21qUWNtb3Rk?=
+ =?utf-8?B?TDF0VzVUM0ZtenhPRDFEYzA2cnFDNXhUTU44ZHNqcjNKT01JVTkvYkxkT2xP?=
+ =?utf-8?B?REFGclRYWkVhUENMTTJuQ2hrc3l0SXMwNlliTVMzck5FRkxpRzRMT2V3Q1NM?=
+ =?utf-8?B?czd0LzNjOTJaOG40TXh1c21YYy95bEF6V1NieDk2ZEF6RWJWVWZYLzJEVG9s?=
+ =?utf-8?B?OWltWkEyKzVDQ2k2WkZZcG9tQ2tYdklPUmhpa0hydTRPZTBjd2tvNEZHSmNp?=
+ =?utf-8?B?NXZtRGs0UXBKMDQ0enlXNkczdmduLzdMYmh2bkZDZXhqZnc0UnhmYmJyeWlI?=
+ =?utf-8?B?TUJzZGNWZWIzQjRrLzFKN0ZqVkJZMThpdU1zc0tDemlWcy92Wmlrclo4NHRE?=
+ =?utf-8?B?aEZyb1RENzJaK3k4WGdZTGVaSWdUZ3Jpa0R1TmdhWHBOR2g1NW8vcmZTWVFh?=
+ =?utf-8?B?MFZnVTZ3aVpmUjNjQjBDdWtHQVhiaHdrZHcxbWJkMmF0SmREdXFDSms4L3dN?=
+ =?utf-8?B?c2lhbUtERmt6MGZWK3VBQ2hSUzlpQVN3SnpoRkQ2NzRYcTgzTXU1SUFCbHdH?=
+ =?utf-8?B?ckY3bFdIVlB0M3puZ29QYndNQjVtOE1pMzd3ejhFdzZEZE90SENDWmlJQTZi?=
+ =?utf-8?B?MHZwMzNtZk5mOXozMDNKQW5aUnNjWVZnOTJtREppaWVjUHowYXY3aEpLSW5u?=
+ =?utf-8?B?OUhXbkluNW00Q3hXR29NZnMrdVRHTkZuenJRY0hDbEkrU2EzamhLZWRYT3kr?=
+ =?utf-8?B?eVhYQkhYQWphUjY2Vk5YOU5HcWJJRUF1akFSQUNGYXF5WnZCcUltNTE4MXpI?=
+ =?utf-8?B?bHp0ZEI2RStwVHIwS3JHVVBtSXZ4RW01MUNlTlpTcU8wazNIaktUNU9QbUZE?=
+ =?utf-8?B?RXFWak4wbjVvQVV1V21aOWcxYjB2ZFJkd2RSNGR4dWJuUWphODQ2eEhPNjBz?=
+ =?utf-8?B?OEFhSHp5MlI2WnVrRHp6WXhxMmFjdHZCZHlScE1pdjNST2JSOU1IcmpGZFVB?=
+ =?utf-8?B?RGhwdUQ5UnZNY2pwTDdwTG1SRU5hWG5oU1I3ZjFIRmpid1dnWEVZeWo4Qmh1?=
+ =?utf-8?B?aU1kVDlDWHROUGxEMkdhVWxJSDFUeHJySDFZSnN5bUZFRmdoSmNNeVgxMjV4?=
+ =?utf-8?B?Wm1pY0NwV3A5eFpvUk1uUXA3Z1QrNTVjRHZhMVQvRVRIUEd3c1lHaU1nbTJt?=
+ =?utf-8?Q?tjdArNBimE1iqVqOy0V2csSp5?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <EAE37531430C994DB278A55362D81268@namprd12.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240108081834.408403-1-treapking@chromium.org>
- <CAGXv+5EnBt+7WrNb-QyziEaCihvjhFVf2tpzk=XyAoeELqucaw@mail.gmail.com> <e0e6febf-1045-49f8-a200-8bc095b0fa50@collabora.com>
-In-Reply-To: <e0e6febf-1045-49f8-a200-8bc095b0fa50@collabora.com>
-From: Chen-Yu Tsai <wenst@chromium.org>
-Date: Thu, 29 Feb 2024 15:17:34 +0800
-Message-ID: <CAGXv+5F5YFRKjaXu_XbXrUhqKL0NSRyt6tniQYfhRh+fsaxqmg@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] clk: mediatek: Introduce need_pm_runtime to mtk_clk_desc
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: Pin-yen Lin <treapking@chromium.org>, Michael Turquette <mturquette@baylibre.com>, 
-	Stephen Boyd <sboyd@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, 
-	Weiyi Lu <weiyi.lu@mediatek.com>, linux-kernel@vger.kernel.org, 
-	linux-clk@vger.kernel.org, linux-mediatek@lists.infradead.org, 
-	linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5988.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bfde5eb6-bcfc-408d-9ae3-08dc38f6a9d5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Feb 2024 07:18:44.2160
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: XSJLsqPHPPZlP8oFBviRpcFFQwiVTPY6QIPX51AXC4fUEq3afGr70YszLPNfl1qaB+iS8soB/Xi7RJKj3y2E7Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7881
 
-On Mon, Feb 26, 2024 at 7:16=E2=80=AFPM AngeloGioacchino Del Regno
-<angelogioacchino.delregno@collabora.com> wrote:
->
-> Il 23/02/24 05:27, Chen-Yu Tsai ha scritto:
-> > On Mon, Jan 8, 2024 at 4:18=E2=80=AFPM Pin-yen Lin <treapking@chromium.=
-org> wrote:
-> >>
-> >> Introduce a new need_pm_runtime variable to mtk_clk_desc to indicate
-> >> this clock controller needs runtime PM for its operations.
-> >> Also do a runtime PM get on the clock controller during the
-> >> probing stage to workaround a possible deadlock.
-> >>
-> >> Signed-off-by: Pin-yen Lin <treapking@chromium.org>
-> >
-> > Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
-> >
-> > The patch itself looks fine.
-> >
-> > Besides the MT8183 MFG clock issues, we do actually need this for the
-> > MT8192 ADSP clock. Its power domain is not enabled by default.
-> >
->
-> ...but on MT8195 the ADSP clock works - because the ADSP node exists.
-
-That's an indirect dependency that should not be relied on. Say the clock
-driver probed but the ADSP hasn't, and you try to read out the current
-status. What would happen?
-
-- Read out works fine, because the power domain is default on, and hasn't
-  been turned off by late cleanup
-- Read out is bogus (but you can't tell)
-- Read out hangs.
-
-The third is what happens on MT8192. There's still some issues on that
-front, as even after I applied the ADSP power domain patches from MediaTek,
-the readout was still hanging.
-
-> This poses a question: should we make clock controllers depend on power d=
-omains,
-> or should we keep everything powered off (hence clocks down - no power co=
-nsumption)
-> *unless* the user exists?
-
-That's a policy discussion separate from actual hardware dependencies.
-*If* the clock controller needs the power domain to be active for the
-registers to be accessed, the clock controller *must* have a direct
-dependency on the power domain.
-
-> For the second one, this means that the *device* gets the power domain (a=
-dsp), and
-> not the clock controller (which clocks are effectively useless if there's=
- no user).
-
-No. See my previous paragraph.
-
-ChenYu
-
-> Angelo
->
-> >> ---
-> >>
-> >> Changes in v3:
-> >> - Update the commit message and the comments before runtime PM call
-> >>
-> >> Changes in v2:
-> >> - Fix the order of error handling
-> >> - Update the commit message and add a comment before the runtime PM ca=
-ll
-> >>
-> >>   drivers/clk/mediatek/clk-mtk.c | 19 +++++++++++++++++++
-> >>   drivers/clk/mediatek/clk-mtk.h |  2 ++
-> >>   2 files changed, 21 insertions(+)
-> >>
-> >> diff --git a/drivers/clk/mediatek/clk-mtk.c b/drivers/clk/mediatek/clk=
--mtk.c
-> >> index 2e55368dc4d8..ba1d1c495bc2 100644
-> >> --- a/drivers/clk/mediatek/clk-mtk.c
-> >> +++ b/drivers/clk/mediatek/clk-mtk.c
-> >> @@ -13,6 +13,7 @@
-> >>   #include <linux/of.h>
-> >>   #include <linux/of_address.h>
-> >>   #include <linux/platform_device.h>
-> >> +#include <linux/pm_runtime.h>
-> >>   #include <linux/slab.h>
-> >>
-> >>   #include "clk-mtk.h"
-> >> @@ -494,6 +495,18 @@ static int __mtk_clk_simple_probe(struct platform=
-_device *pdev,
-> >>                          return IS_ERR(base) ? PTR_ERR(base) : -ENOMEM=
-;
-> >>          }
-> >>
-> >> +
-> >> +       if (mcd->need_runtime_pm) {
-> >> +               devm_pm_runtime_enable(&pdev->dev);
-> >> +               /*
-> >> +                * Do a pm_runtime_resume_and_get() to workaround a po=
-ssible
-> >> +                * deadlock between clk_register() and the genpd frame=
-work.
-> >> +                */
-> >> +               r =3D pm_runtime_resume_and_get(&pdev->dev);
-> >> +               if (r)
-> >> +                       return r;
-> >> +       }
-> >> +
-> >>          /* Calculate how many clk_hw_onecell_data entries to allocate=
- */
-> >>          num_clks =3D mcd->num_clks + mcd->num_composite_clks;
-> >>          num_clks +=3D mcd->num_fixed_clks + mcd->num_factor_clks;
-> >> @@ -574,6 +587,9 @@ static int __mtk_clk_simple_probe(struct platform_=
-device *pdev,
-> >>                          goto unregister_clks;
-> >>          }
-> >>
-> >> +       if (mcd->need_runtime_pm)
-> >> +               pm_runtime_put(&pdev->dev);
-> >> +
-> >>          return r;
-> >>
-> >>   unregister_clks:
-> >> @@ -604,6 +620,9 @@ static int __mtk_clk_simple_probe(struct platform_=
-device *pdev,
-> >>   free_base:
-> >>          if (mcd->shared_io && base)
-> >>                  iounmap(base);
-> >> +
-> >> +       if (mcd->need_runtime_pm)
-> >> +               pm_runtime_put(&pdev->dev);
-> >>          return r;
-> >>   }
-> >>
-> >> diff --git a/drivers/clk/mediatek/clk-mtk.h b/drivers/clk/mediatek/clk=
--mtk.h
-> >> index 22096501a60a..c17fe1c2d732 100644
-> >> --- a/drivers/clk/mediatek/clk-mtk.h
-> >> +++ b/drivers/clk/mediatek/clk-mtk.h
-> >> @@ -237,6 +237,8 @@ struct mtk_clk_desc {
-> >>
-> >>          int (*clk_notifier_func)(struct device *dev, struct clk *clk)=
-;
-> >>          unsigned int mfg_clk_idx;
-> >> +
-> >> +       bool need_runtime_pm;
-> >>   };
-> >>
-> >>   int mtk_clk_pdev_probe(struct platform_device *pdev);
-> >> --
-> >> 2.43.0.472.g3155946c3a-goog
-> >>
->
->
->
+T24gMi8xNS8yNCAyMDowMywgQ2hyaXN0aWFuIEEuIEVocmhhcmR0IHdyb3RlOg0KPiBFeHRlcm5h
+bCBlbWFpbDogVXNlIGNhdXRpb24gb3BlbmluZyBsaW5rcyBvciBhdHRhY2htZW50cw0KPiANCj4g
+DQo+IEhpIEdyZWcsDQo+IA0KPiBPbiBUaHUsIEZlYiAxNSwgMjAyNCBhdCAxMjowNzoyMFBNICsw
+MTAwLCBHcmVnIEtyb2FoLUhhcnRtYW4gd3JvdGU6DQo+PiBPbiBUaHUsIEZlYiAxNSwgMjAyNCBh
+dCAxMToxMDoyNEFNICswMTAwLCBDaHJpc3RpYW4gQS4gRWhyaGFyZHQgd3JvdGU6DQo+Pj4gSW4g
+Y2FzZSBvZiBhIHNwdXJpb3VzIG9yIG90aGVyd2lzZSBkZWxheWVkIGludGVycnVwdA0KPj4+IGl0
+IGlzIHBvc3NpYmxlIHRoYXQgQ0NJIHN0aWxsIHJlcG9ydHMgdGhlIHByZXZpb3VzIGNvbXBsZXRp
+b24uDQo+Pj4gRm9yIHRoaXMgcmVhc29uIHRoZSBVQ1NJIHNwZWMgcHJvdmlkZXMgZGlmZmVyZW50
+IGNvbXBsZXRpb24NCj4+PiBiaXRzIGZvciBub3JtYWwgY29tbWFuZHMgYW5kIGZvciBVQ1NJX0FD
+S19DQ19DSS4NCj4+Pg0KPj4+IE9ubHkgY29tcGxldGUgYSBzeW5jIGNvbW1hbmQgaWYgdGhlIGNv
+cnJlY3QgY29tcGxldGlvbiBiaXQNCj4+PiBpcyBzZXQuDQo+Pj4NCj4+PiBUaGlzIHNob3VsZCBh
+dm9pZCB0aGUgbmVlZCB0byBjbGVhciBvdXQgQ0NJIGJlZm9yZSBzdGFydGluZw0KPj4+IGEgY29t
+bWFuZC4gVGh1cyByZW1vdmUgdGhpcyBjb2RlLg0KPj4+DQo+Pj4gU2lnbmVkLW9mZi1ieTogQ2hy
+aXN0aWFuIEEuIEVocmhhcmR0IDxsa0BjLS1lLmRlPg0KPj4+IEZpeGVzOiBlMzJmZDk4OWFjMWMg
+KCJ1c2I6IHR5cGVjOiB1Y3NpOiBjY2c6IE1vdmUgdG8gdGhlIG5ldyBBUEkiKQ0KPj4NCj4+IFdo
+YXQgZG9lcyAiQ0ZUIiBpbiB5b3VyIHN1YmplY3QgbGluZSBtZWFuPw0KPiANCj4gSXQncyBzdXBw
+b3NlZCB0byBtZWFuICJDYWxsIEZvciBUZXN0ZXJzIi4gTW9yZSBpbmZvIGluIHRoZQ0KPiAiQWRk
+aXRpb25hbCBJbmZvcm1hdGlvbiIgc2VjdGlvbiBvZiB0aGUgb3JpZ2luYWwgbWFpbC4NCj4gDQo+
+IEkgdGhpbmsgdGhlIGNoYW5nZSBpcyBuZWNlc3NhcnkgYW5kIGdvb2QgYnV0IEkgZG8gbm90IGhh
+dmUgdGhlIEhXDQo+IHRvIHRlc3QgaXQuDQo+IA0KPiBJIGRpZCB0ZXN0IGEgc2ltaWxhciBjaGFu
+Z2UgZm9yIHVjc2lfYWNwaS5jIHRoYXQgZ290IG1lcmdlZCBhbmQgdGhpcw0KPiBpcyB0aGUgcGlu
+ZyBmb3IgdWNzaV9jY2cuYyBwZW9wbGUgdGhhdCB0aGV5IHByb2JhYmx5IG5lZWQgdGhpcywgdG9v
+Lg0KPiANCj4gICAgIHJlZ2FyZHMgICBDaHJpc3RpYW4NCj4gDQo+IA0KDQpIaSBDaHJpc3RpYW4s
+DQoNCklmIHdlIGRvbid0IGNsZWFuIHRoZSBDQ0kgY2FjaGUgaW4gdWNzaV9jY2dfYXN5bmNfd3Jp
+dGUoKSwgdGhlcmUgbWlnaHQgDQpiZSBhIHBvdGVudGlhbCBwcm9ibGVtIHdoZW4gdGhlIGRyaXZl
+ciBpcyBwb2xsaW5nIHRoZSByZXN1bHRzLg0KDQpJbiB1Y3NpX2luaXQoKSwgd2UgbWF5IGdldCBF
+UFJPQkVfREVGRVIgZnJvbSB1Y3NpX3JlZ2lzdGVyX3BvcnQoKS4NClRoZW4gaXQgZG9lcyB1Y3Np
+X3Jlc2V0X3BwbSgpIGJlZm9yZSByZXR1cm5pbmcgdGhlIGVycm9yIGNvZGUsIGFuZCB3ZSANCndp
+bGwgZ2V0ICBVQ1NJX0NDSV9SRVNFVF9DT01QTEVURSBhbmQgc3RvcmUgaXQgaW4gdGhlIENDSSBj
+YWNoZS4NCklmIHdlIGRvbid0IGNsZWFuIHRoZSBjYWNoZSwgd2hlbiB0aGUgVUNTSSBkcml2ZXIg
+Y2FsbHMgdWNzaV9pbml0KCkgDQphZ2FpbiwgdGhlbiBpbiB1Y3NpX3Jlc2V0X3BwbSgpLCBpdCB3
+aWxsIGdldCBVQ1NJX0NDSV9SRVNFVF9DT01QTEVURSANCmZyb20gdGhlIENDSSBjYWNoZSBpbnN0
+YW50bHkuDQpUaGVuIHRoZSBkcml2ZXIgd2lsbCBydW4gdGhlIG5leHQgVUNTSSBjb21tYW5kcyB3
+aGVuIHRoZSBIVyBpcyBub3QgDQpjb21wbGV0ZWx5IHJlc2V0Lg0KDQpSZWdhcmRzLA0KSGFvdGll
+bg0K
 
