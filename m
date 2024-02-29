@@ -1,154 +1,180 @@
-Return-Path: <linux-kernel+bounces-86239-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86240-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B964C86C2A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:33:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3946786C2A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:36:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EAECC1C22CB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 07:33:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B46E51F24F9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 07:36:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8244E45BE9;
-	Thu, 29 Feb 2024 07:33:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4975C45955;
+	Thu, 29 Feb 2024 07:36:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="h+v8C5k6"
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="aP5UV2zC"
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10olkn2054.outbound.protection.outlook.com [40.92.41.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAC344594B
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 07:33:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709192007; cv=none; b=Nr9DewiEDp5B4ms6Ey3BS/+NOlCaH7ttDN7NUJzCfVgUgZyTyCUdAGgsKHdrhvty6TA5MDk4yQSHofo4MOgbuV8sUb7a2Ck9p3Rqs3M0cDyNulwiTh92z/RRMj359nb3lhfffNS7HxZfSv/mGaug4T3a52GkJkIAL2UQGPzVGTg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709192007; c=relaxed/simple;
-	bh=MXMlJN6n572oFcdDsuVeCkTGLCDCZh4tRdRct4X1LNM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jN14yMJTczzdU0FXloAXw127mKGdli7QAlXKjMjn+qYTwUnVrnYHgMptkmfp4t8q4zTpS3f8ecuZfTU8GRfFaDHcsxNJEzW5l0Q791+BE8sZ3kKIbhtxivtxGYDARbDloOEH86oujuf/kkD+5RSHP2qRZCisIiFL5+XIy2dfLQk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=h+v8C5k6; arc=none smtp.client-ip=194.117.254.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	sang-engineering.com; h=date:from:to:cc:subject:message-id
-	:references:mime-version:content-type:in-reply-to; s=k1; bh=n9Fl
-	5xfpB997/ASvKk+rVPrNQztesazR12o5BkzzxIU=; b=h+v8C5k6ZI0JN2q2gIVe
-	w4bZmwOiluKFcplFOVoqhaw7xAdtYEPJIZ8aAIRAnRdZWY11AgTkEQkJCtAWWoxN
-	AdEURR6iuxWkBGaCgEp9bydl0zhrdx4PbN0g5n/PrUbykLTlSn8LmA0/dEN0gxiZ
-	hMcb7g5TKrBlClTztwNIA4Aed/Ko2zGLBh32uEmL8DKUepaSME0FRJ32gTWCwp2U
-	jC5UepkWQpEcc3NCWOkh32qux2AGFnSGIdST/QMDndRxVz829No12PN4njp/NX62
-	5f5ypq2U4kD42A+JkLUdfbCxgQgQ9BeLK8Tz28zd1W/IfrFjZoiO6U1FExklq8Cj
-	nQ==
-Received: (qmail 2212258 invoked from network); 29 Feb 2024 08:33:13 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 29 Feb 2024 08:33:13 +0100
-X-UD-Smtp-Session: l3s3148p1@0KWgRYAS0JcujnuA
-Date: Thu, 29 Feb 2024 08:33:13 +0100
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-To: Dirk Behme <dirk.behme@de.bosch.com>
-Cc: linux-renesas-soc@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
-	linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFT] mmc: tmio: avoid concurrent runs of
- mmc_request_done()
-Message-ID: <ZeAzOUN-8QEl4U2n@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	Dirk Behme <dirk.behme@de.bosch.com>,
-	linux-renesas-soc@vger.kernel.org,
-	Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-References: <20240228100354.3285-2-wsa+renesas@sang-engineering.com>
- <331084d4-2802-4d1d-b978-6660f546ea2d@de.bosch.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B142B44391
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 07:36:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.41.54
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709192171; cv=fail; b=Sl915QqiZpykxSnTK1Alp3O96D2uTveMhcb31xLzaJFR6VIaanK7B0MlYGzZn07FZRcKsobpLpwN+EYx8d5+0+eMRT+rIX8G/FjOk8fd3lEmLHW/Ttts85kXVLJRVzPYYJ0Kke8eWKeX6RaPgT2SzIst3SRTqVdzDFJQMH6wNoc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709192171; c=relaxed/simple;
+	bh=KS3y+96FU0MWaX4D9C7Fi3Bqsn+8Xpv+YubQvc0tCkM=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=Rc5HwYAvNdAS60cBpP/9sE6zN/KBRlWuArCIWKzqp5q77bKtJGV4HLB9F0DLunYBGJm8AVhPKcc7iSjvLbjPHhDDkGBOdFqgr+QqlQdBAmecx6bHgU78841IFCfkPNQBn+ahH6hPsyjkbQBpYNSq43n3Gy0rbSLAVC7LtTgc1OE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=aP5UV2zC; arc=fail smtp.client-ip=40.92.41.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UnPYAOGPa3pWqcdgpBesmwHi8fnIq5jgPBUIEQ10InCTFZZZj60we9GVsgL7wbJMIoRNP9Gl9d2U4AksUb1mgHmXXCD7qsJVIY5xCrC1mD+XFLCGyNLRqXRBdZ3BuR4LnFvRi6mDn8YeLW+waqpwPTNzTeuVWpT7C+Qb0IQTZX4SbwRQh+Ut5KybeGGCtA0Z/HpE+d+vcU/b0FIjbcOnVfucpRgIC1wj70ptNb+yR2Cknqwf7memjgbZbnO48DPmPR4cf5T3FXa2UMsB6bYEexSOJgWnQXl2coIC7aSlL2B9E1YK9t0z+0KuUihZ+hO38ZKMjxUICC9x8OaKW+JgKQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=iO4YTlOOjtAWTRt0Dbwct8P58rd4w2p8QseRByuYVZc=;
+ b=OeqMZ4ko2Vr4VDrnihXSsgkvn5Io+1M/RvBT5Lah8RTrhzstNBuaIqb5UYI+v5Cq+YammZCVm4ZXL9WTS51Bx+D2emDUEtyiHHgUblI0DDmYLKng5TEho0WmRhO2Bc9Ueffb12ghnwb1hga18UTWOSqhOFW71EZe932AKpbHPKvPiaZQFG22jf+eG/GLHj6SuTj5/cQ9nsRc9xsNrTZIkrQoq2OCG0NO/VcRZcex/e6n2A1UX+Ug+6nIKnHhOVipJ68pbHT5y14b2ZvJXiWds/jRdgr/0of3kUYnTB/tGTbFTsFGpcA0/SyoWyigk5KJUmqvK1OwQeEMz5ne2z4O6Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iO4YTlOOjtAWTRt0Dbwct8P58rd4w2p8QseRByuYVZc=;
+ b=aP5UV2zCEukPmgoYRlJGdWohIs+ir0uxlzSjD7ZGm6U2IAalicaESZOazeuOgO9pwanvH9zY2zo1/wW4E48RA8NQ6YmQGGwEKpNlLyJ+hzArZnAJW67cygei5Do+pty2T6nBo9aDq3cxKeT4HUmyM7RcU60ihq735Zpl8ChbiWNyBJYBc8r4D3GBZwuzvDx6hRumGYgBajQA9TBSXxsHoBM0zAoCAxZhtisn7nLcndXQPD7GM4jDx7Bj0ePV5aIDXzJUdDXjjbZaqAfA6yHkvvQnglBgCBw8CqGVOYQpp8M4PwzuCUIrcoEFxd5povbF4RngU4paRdTAPEO2Z8oWAA==
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
+ by DM8PR02MB8022.namprd02.prod.outlook.com (2603:10b6:8:17::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.39; Thu, 29 Feb
+ 2024 07:36:06 +0000
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::67a9:f3c0:f57b:86dd]) by SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::67a9:f3c0:f57b:86dd%5]) with mapi id 15.20.7316.037; Thu, 29 Feb 2024
+ 07:36:05 +0000
+From: Michael Kelley <mhklinux@outlook.com>
+To: Will Deacon <will@kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, Petr Tesarik
+	<petr.tesarik1@huawei-partners.com>
+CC: "kernel-team@android.com" <kernel-team@android.com>,
+	"iommu@lists.linux.dev" <iommu@lists.linux.dev>, Christoph Hellwig
+	<hch@lst.de>, Marek Szyprowski <m.szyprowski@samsung.com>, Robin Murphy
+	<robin.murphy@arm.com>, Petr Tesarik <petr.tesarik1@huawei-partners.com>,
+	Dexuan Cui <decui@microsoft.com>, Nicolin Chen <nicolinc@nvidia.com>
+Subject: RE: [PATCH v5 6/6] swiotlb: Remove pointless stride adjustment for
+ allocations >= PAGE_SIZE
+Thread-Topic: [PATCH v5 6/6] swiotlb: Remove pointless stride adjustment for
+ allocations >= PAGE_SIZE
+Thread-Index: AQHaakuep9s0mIf3eE+om+sQlmyZtbEg06/QgAAR1sA=
+Date: Thu, 29 Feb 2024 07:36:05 +0000
+Message-ID:
+ <SN6PR02MB41577D09E97B1D9645369D58D45F2@SN6PR02MB4157.namprd02.prod.outlook.com>
+References: <20240228133930.15400-1-will@kernel.org>
+ <20240228133930.15400-7-will@kernel.org>
+ <SN6PR02MB4157A62353559DA8DB8BC4ADD45F2@SN6PR02MB4157.namprd02.prod.outlook.com>
+In-Reply-To:
+ <SN6PR02MB4157A62353559DA8DB8BC4ADD45F2@SN6PR02MB4157.namprd02.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-tmn: [JjVH26CSkS77Hu1bhHR4k2X5/jjNX+H5]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|DM8PR02MB8022:EE_
+x-ms-office365-filtering-correlation-id: c51196c4-7580-4fa7-4db3-08dc38f91670
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ 5hTREnYf2Fm4YrNv5hzF7TYqXKbsqPjUjqdnU9PdlU33sO7qjpfnRQ0wlkAmrXa7qYuQydYIvSeVw9dIA/FQckPVNfoBPGaWvh7fnSxEtlvZQ0f2/CGVKhxYXLWLqfKiFPWTtGa97iS8pHNmh/pX/IS7xp4RlJMrTL2Zh+96YRrJCQYTo4QsGD8XYDIrP9G9WLXn2iFUQnlUtGf8AaCat5shE/kkmyHAxSzkAsLGORKGwEUowddBptGQ288hftccZWpBXzSuORm3zd31yfV1JO8mNJW16E7asgEhSo7DHSwU7n1AcMu+UecxYQMNYy8ECOEE5AlAlKYRTb4oI3R3TMB4bo/v5Jy2pdRsIEG59rSTkQzlj8pqOGQkSAj6utTiInKA8ukL+Z4J6enX16bye44VtdlQisULDySJnj+6JYnU9FhhHiUCEs49b55ELNWBuqZVXxZkUfYD354zFSNzSzSyrNxTeAe7xjquSSMYpmZvJi6pxpXIMPeUXauEBYluBjvypvV+bPLA5Xp6SsEJOPvrqs4PqZs2UfncYI+eP4mUsL35G5ov96kIiIVbb0J4
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?Wk5AEgXsaiOIzdsBB6bjKxrKdulyQOFErOCnkwIVy1fO8m+qLW9nm5d/+q49?=
+ =?us-ascii?Q?hgsGMigGP3Xh54+kNVbItUQo1yORp7cEZJX7ci40nmEEA4e2kIs71z8NIKPZ?=
+ =?us-ascii?Q?9oD7dZVK6dRi8T2T0aJ1UgqOZl2Zxbave6yU6At5DkHePgsDqrBuNJK5sC3F?=
+ =?us-ascii?Q?nrnDgFOH8qkDYrt7CDYa1tuTf6l4Np0iyolO2SQT+v2QPxZSujWTOv16KAhK?=
+ =?us-ascii?Q?CnB8Y0ryhzAzXNBb/FHx1cNJQ4LWsi60G1aqXks6RPI5Y6Zj3WSYNAcHXrtE?=
+ =?us-ascii?Q?rtA8GAMYaDtzLZBiJwdWfD++ZDJHnmB6RP/JRDxjQfH14i5JuUCZH7Q5AwhN?=
+ =?us-ascii?Q?28SJ2XuwELMXv8usHKGlNEQotbyycKf3/0I5d2zSu0Er7T9HbL2m3jsywY3R?=
+ =?us-ascii?Q?bn5pLgr6e5cLbTyQaiUluWL9zhUNByLXHmIeiNjfWaZ1ANFZU6WAX3/mOEHM?=
+ =?us-ascii?Q?lxyKHc2831obYJYRG7YjHo8U8CsG+zA9suAeeGDLSkHKinEiqCPHF35QPiP0?=
+ =?us-ascii?Q?j+FRXQvB9kqPe/p3lEB/dZtXu3wLDnTGaeSx4wFWEYQRGc5O8AKhYaVHThEm?=
+ =?us-ascii?Q?YT/b6FbYlx8G/oFWL5VDdmrG1DulS2sCMIHcTPj+JDdg4l+WXr1RELEtDVpa?=
+ =?us-ascii?Q?NkPDEtaJ+9dnY6QcjS30Hg1FX2iD8/1pgXqgtHsC6i4Ab5oWcy6iOKG0a9TZ?=
+ =?us-ascii?Q?99s4XijrIVooq4OAolm85/u4ngqCzZN1oME4AsUDf0neArVXwuEtrGXcDa0H?=
+ =?us-ascii?Q?qEcPXvsR7Vmvw9HHFGfqKzvpEBe/L/IBuBhvBeySCsjOPBza1V5oJdG+8xRB?=
+ =?us-ascii?Q?kMk/SecBmtohoNFRThEz2WYIxCUGyu+VwUjGXcpKWQpof4gfJXKTYXQSXxvw?=
+ =?us-ascii?Q?NPK1r99ux0J+5MfQRKAeZ69nJFPo6sAy1AB/3d/NH/Bq+v5L7lnA+jRBxZf2?=
+ =?us-ascii?Q?ljqWTYfKXsEzagbjmZR07/GCFCqqvXN1mxdaS297FTDhrTfPdF7LnxiH4ZyE?=
+ =?us-ascii?Q?LZM802id2iujW+3vQ7wUdjxWWjAsBNkBrgEskbzjWjHNDu+0jni8ezu0+BOx?=
+ =?us-ascii?Q?RTwSw1c6OLrp8l1o6hkyV43PboMW2vM38Ki+zKIIHFcmErIupOCq6I5ULjoG?=
+ =?us-ascii?Q?YMjerIXTcdEzrUWAHMC/ixMjtbK6ghB1LbiMWM+m6i35drhsonznvz7zMV/H?=
+ =?us-ascii?Q?dAkzJCOgPqF3odFnIPpBz05sXWf4eMRTrJWMKg=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="yXWwMvQMGXoOVewE"
-Content-Disposition: inline
-In-Reply-To: <331084d4-2802-4d1d-b978-6660f546ea2d@de.bosch.com>
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: c51196c4-7580-4fa7-4db3-08dc38f91670
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Feb 2024 07:36:05.3677
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR02MB8022
 
-
---yXWwMvQMGXoOVewE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi Dirk,
-
-> > With the to-be-fixed commit, the reset_work handler cleared 'host->mrq'
-> > outside of the spinlock protected critical section. That leaves a small
-> > race window during execution of 'tmio_mmc_reset()' where the done_work
-> > handler could grab a pointer to the now invalid 'host->mrq'. Both would
-> > use it to call mmc_request_done() causing problems (see Link).
-> >=20
-> > However, 'host->mrq' cannot simply be cleared earlier inside the
-> > critical section. That would allow new mrqs to come in asynchronously
-> > while the actual reset of the controller still needs to be done. So,
-> > like 'tmio_mmc_set_ios()', an ERR_PTR is used to prevent new mrqs from
-> > coming in but still avoiding concurrency between work handlers.
-> >=20
-> > Reported-by: Dirk Behme <dirk.behme@de.bosch.com>
-> > Closes: https://lore.kernel.org/all/20240220061356.3001761-1-dirk.behme=
-@de.bosch.com/
-> > Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> > Fixes: df3ef2d3c92c ("mmc: protect the tmio_mmc driver against a theore=
-tical race")
+> From: Will Deacon <will@kernel.org> Sent: Wednesday, February 28, 2024 5:=
+40 AM
+> >
+> > For swiotlb allocations >=3D PAGE_SIZE, the slab search historically
+> > adjusted the stride to avoid checking unaligned slots. However, this is
+> > no longer needed now that the code around it has evolved and the
+> > stride is calculated from the required alignment.
+> >
+> > Either 'alloc_align_mask' is used to specify the allocation alignment o=
+r
+> > the DMA 'min_align_mask' is used to align the allocation with 'orig_add=
+r'.
+> > At least one of these masks is always non-zero.
 >=20
-> Tested-by: Dirk Behme <dirk.behme@de.bosch.com>
-> Reviewed-by: Dirk Behme <dirk.behme@de.bosch.com>
-
-Awesome! Thanks for the super-fast tags!
-
-> At least the issues we observed before are not seen any more. As we are n=
-ot
-> exactly sure on the root cause, of course this is not a 100% proof. But as
-> the change looks good, looks like it won't break something and the system
-> behaves good with it I would say we are good to go.
-
-I agree. We don't know if it is all you need. But there definitely was a
-race window and closing it removes some observed anomalies. Let's hope
-all of them :) I looked many times at the code and, to the best of my
-knowledge, don't see side effects. 'host->mrq' stays non-NULL, so new
-mrqs won't be added like before. Changing it to an ERR_PTR will only
-affect the check in the done_work handler which is what we want. But, of
-course, more eyes are always welcome.
-
-> I think we could add anything like
+> I think the patch is correct, but this justification is not.  alloc_align=
+_mask
+> and the DMA min_align_mask are often both zero.  While the NVMe
+> PCI driver sets min_align_mask, SCSI disk drivers do not (except for the
+> Hyper-V synthetic SCSI driver).   When both are zero, presumably
+> there are no alignment requirements, so a stride of 1 is appropriate.
 >=20
-> Cc: stable@vger.kernel.org # 3.0+
 
-Yes, we should definitely have that. I would have added it once your
-testing got good results. This affects every Renesas SDHI or Uniphier SD
-instance since 3.0 (12 years). Wow! So, thanks a ton for your report and
-assistance in debugging it. Very much appreciated! And, phew, I am happy
-that this solution does not make the locking more complex \o/
+I did additional checking into the history of page alignment for alloc
+sizes of a page or greater. The swiotlb code probably made sense
+prior to commit 0eee5ae10256. This commit has this change:
 
-All the best,
+        slot_base =3D area_index * mem->area_nslabs;
+-       index =3D wrap_area_index(mem, ALIGN(area->index, stride));
++       index =3D area->index;
 
-   Wolfram
+        for (slots_checked =3D 0; slots_checked < mem->area_nslabs; ) {
+                slot_index =3D slot_base + index;
 
+In the old code, once the PAGE_SIZE was factored into the stride, the
+stride was used to align the starting index, so that the first slot checked
+would be page aligned. But commit 0eee5ae10256 drops that use
+of the stride and puts the page alignment in iotlb_align_mask, for
+reasons explained in the commit message. But in Will's Patch 1
+when the page alignment is no longer incorporated into
+iotlb_align_mask (for good reason), page aligning the stride then
+doesn't do anything useful, resulting in this patch.
 
---yXWwMvQMGXoOVewE
-Content-Type: application/pgp-signature; name="signature.asc"
+If there *is* a requirement for page alignment of page-size-or-greater
+requests, even when alloc_align_mask and min_align_mask are zero,
+we need to think about how to do that correctly, as that requirement
+is no longer met after Patch 1 of this series.
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmXgMzUACgkQFA3kzBSg
-KbbIwA/8C0nJicwAl4j00mETzzdiC36BY6uQzoqil257N2l/QOBBGo3PdjzdLW41
-KOggdi2aX+xRmGPuIIevXbKDYfu0GJUcTMwY3cqJ5Y+oQLC2s2e/ZSVUqc34vxv/
-sNbJYcLwJE+cTN2H0GMzYnUoZS96Nq0JSr1qhMCWUOWWQ9jAlBTw/7bK07i3YWO5
-6eP/6GaoxE2TJwnsrjgGflCIAtL0/VQV6VWjgGfWXMUSO3+LSBrbNITWUgUcCncj
-YwLgPKZEoweyIWJ13TrpODyxxXyTu7NZlj5zkIfDSrKnobO6oN2970NVeM0fTkS7
-eInBGie7rXRuADOxureLRkn+ElEZ6rlPyq4jDU5ycYbwEXNYW9+enAK7ns9ce9M6
-EqjuPS0okYZpoOpvDvwjxJ5Pc0CBFPP6iVq2yYtbZPbSZElKDKeh12lwmtdGaar/
-fTbt47paI8LMsKtroDeY/q5eBzh7l2Gu0SeOLHERBKN9wLfROglQ5X56qr73iaaC
-QuQ4DGr8bphvbiJpBbQ65e9uy0Ti8AqClb6JgkIiAbyYcFfmRL5T7d81yZtS1PHE
-27jtIjqJ2mCZavq2aAxNfTHNEpr8hSlJtLrLNoOgalww9gPbZMCNsJU+RGNgLo+y
-esVZRoTz70+es1cBmUAuvXc8yInLWope+JNK3GhIOSGK6rRmOy4=
-=4Qja
------END PGP SIGNATURE-----
-
---yXWwMvQMGXoOVewE--
+Michael
 
