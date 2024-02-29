@@ -1,413 +1,234 @@
-Return-Path: <linux-kernel+bounces-86360-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86362-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2658786C465
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:00:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EE8A86C469
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:01:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 61E78B233D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:00:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A7703B25019
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:01:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4A0B56B8B;
-	Thu, 29 Feb 2024 08:59:49 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA09656B80;
+	Thu, 29 Feb 2024 09:01:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="DMzK5rWr"
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C53705674B;
-	Thu, 29 Feb 2024 08:59:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E830A54FBB
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 09:01:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709197188; cv=none; b=V9GP2HaZWDVQ+9YEdsiHLblEa9Rsj46ZRZdcp7e3DLOxrJM1ah4cjBEi1SJm7Iam97HFjAdRQNsHfYyDnDofcm576Aw3opckfd3AJIpLPVRdIBPQ9EZqD/ibfAZPIzvVNgN9Gn3cVEHuyHsRvdnwA2q40H3jr7lbCslIC2GM0Qk=
+	t=1709197303; cv=none; b=gY8bMjYak2dk+v7JHVFzxzi2B8cVgZpMmY1QWxJ1imy+ZyDyyTcjJ41I7yFr1S9+kBN3XJd0uoSu/ajY6iyy4fjsMhkXsirHfYtPrDq1sXs2BeXonuhRIvYiVLT0ckZKQJz+S6MRTwICzJhyf3pdN3xx/mNqSbDp89Ww9BeEs+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709197188; c=relaxed/simple;
-	bh=G27e/cZk6SCpGUGSgkKDJkfrqLVdTK2xuXg/Z4zqBQQ=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=X1nTiJEQmvpDs2HnRzsZpEWjTEfOWcFpRhQycC1F7acAey/T1P6i9WulbLktqGth+JxEv719GBivIhfHMwcMPweJ5Tw9DqBCP9517hYOF4MX8U5c7Bwre8AV5AcnpqeZq4gSOUWQqbdWDAlVJy2BN6sNItoH4UMG+qaQ/913v6E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TllXK5Fzzz4f3mHS;
-	Thu, 29 Feb 2024 16:59:29 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 15ADB1A016E;
-	Thu, 29 Feb 2024 16:59:37 +0800 (CST)
-Received: from [10.174.176.34] (unknown [10.174.176.34])
-	by APP1 (Coremail) with SMTP id cCh0CgDHlxB2R+Bl8TYDFg--.4638S3;
-	Thu, 29 Feb 2024 16:59:36 +0800 (CST)
-Subject: Re: [RFC PATCH v3 07/26] iomap: don't increase i_size if it's not a
- write operation
-To: Dave Chinner <david@fromorbit.com>
-Cc: Christoph Hellwig <hch@infradead.org>, djwong@kernel.org,
- linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
- tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
- ritesh.list@gmail.com, willy@infradead.org, zokeefe@google.com,
- yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com,
- wangkefeng.wang@huawei.com
-References: <20240127015825.1608160-1-yi.zhang@huaweicloud.com>
- <20240127015825.1608160-8-yi.zhang@huaweicloud.com>
- <ZcsCP4h-ExNOcdD6@infradead.org>
- <9b0040ef-3d9d-6246-4bdd-82b9a8f55fa2@huaweicloud.com>
- <Zd+y2VP8HpbkDu41@dread.disaster.area>
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-Message-ID: <45c1607a-805d-e7a2-a5ca-3fd7e507a664@huaweicloud.com>
-Date: Thu, 29 Feb 2024 16:59:34 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+	s=arc-20240116; t=1709197303; c=relaxed/simple;
+	bh=hItLO7VanrN+m6xHMkLjQkLMEeRdSTJX+I7zjIOedNc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=uJBOWdNZ9Fz+fWiUH3NesCHkQ7yRMwpmvceE45dWJMJv/JvESXoIka9uQfywi5rvOnAJuZCO05VQAvPRYx5qBIdxleczd3RH/vLjGMxjuW9+fYAim0yAF7X90FHuSMjKaTeIqp8A1eYuMI6QBQnXi4/DhvS5OM2AJMpw5wTBlxU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=DMzK5rWr; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6e57ab846a1so417368b3a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 01:01:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1709197300; x=1709802100; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=an35NBp5Mp8TLZfvQl1bisU8Xz+LHk2m54lQFmMBW7M=;
+        b=DMzK5rWrKbxJ+Qh46csPH42MEENMj3ArUSbXNuWlVCNsSs1DDNGH9mEZiklKPHUhIh
+         ZY8rWAZlN8NsT9gzvElSQ5G1sxmvdaAVNtaDq64d/BQmoexUpYv81dbFHvMYNgE8c6Cf
+         n/kYDbo9A9Vh4Uuwg/7vrEGxFOiXIDKg/Ld72pYOUAsLfpD008ueMXFdLfZAiCqt3huU
+         2HRXDLlupiOuQ/AhpLYHuH3NVIMbwjpB0hEqQ4yfL6syrEJNurp8C5Wi1hQgBEz2J9jK
+         gWOqIWT78cXC92itNqYgOQNUXreBygsTuyocB5tyPIhUoRVvXWO+elVMemPRgeVJ/pyw
+         CWew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709197300; x=1709802100;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=an35NBp5Mp8TLZfvQl1bisU8Xz+LHk2m54lQFmMBW7M=;
+        b=KSKOzMqcnktYKfPs0RD/vpmVAWiFksuGIA6MGuERVOAvJSIfELLJPLjGQ6xtYkAxer
+         iJmlUfnhNrqMxBcWWZIS917pqr3pvVGeeZclD7ps4gyTd2PzJCUAXp5QvQ9YF3CGfCK9
+         nYi+QOX1EnwQiote9+l0e/MrkFRP/1X+6744Zfnst1Qum/WC4R1iC3LsDH/mAmucscpK
+         rpNSjn6utZOY6Wi7TJ9+OleWlnn2HmPMUJGkAB4UkbKlIXToptZJh48QpYNfWiqvgc31
+         tpCuO2qKklZHVI3SRglHxRa6R51duBbmBP7eE2/gIvTBQWHrsMYhTIq63Jc1X4jtvlww
+         w9TQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVmL0JHrz87TTsQAkcrk8mXyNeFJeI8DwwDuZWnEEgbl1FF4ZlDrxXUhtLRochI7Yr7qykkmBj+IVAJUiMrEwOFWqXCp/8PMm1zqIwQ
+X-Gm-Message-State: AOJu0Yx7EPiDL8DewltWmiOypd2mNi0Au9B09OeuaumOdeSkUrpDks+G
+	4E+LCNwCz9XwaKT7pyyEfyivUItcEyafqaf5YSKLq9skDo8/cBdKF9vufaX27Vo=
+X-Google-Smtp-Source: AGHT+IFY3AHg4m8nBMNVAFaa01zrNve+4dbHUktxFyT7dirxUCQtarrXYNSe+xM10W0RtgItMALuOw==
+X-Received: by 2002:a62:d44e:0:b0:6e4:f12c:c43e with SMTP id u14-20020a62d44e000000b006e4f12cc43emr1451475pfl.24.1709197300042;
+        Thu, 29 Feb 2024 01:01:40 -0800 (PST)
+Received: from [10.84.152.139] ([203.208.167.152])
+        by smtp.gmail.com with ESMTPSA id a15-20020aa78e8f000000b006e5808b472esm807258pfr.95.2024.02.29.01.01.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Feb 2024 01:01:39 -0800 (PST)
+Message-ID: <758ebf4e-ee84-414b-99ec-182537bcc168@bytedance.com>
+Date: Thu, 29 Feb 2024 17:00:18 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <Zd+y2VP8HpbkDu41@dread.disaster.area>
-Content-Type: text/plain; charset=utf-8
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH] sched/eevdf: Return leftmost entity in pick_eevdf()
+ if no eligible entity is found
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgDHlxB2R+Bl8TYDFg--.4638S3
-X-Coremail-Antispam: 1UD129KBjvJXoW3Zw4DXr1kJr13Xr4fAw15XFb_yoWkJFykpF
-	W0g3WUK34ktry7Arn7AFsFqa40k3yfJFW8WrW5tr9Fvrn8Cr1IgFn7GayY9FWDWrn7Ar10
-	qF48W34xCwn8ZFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
-	6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-	9x07UZ18PUUUUU=
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+To: Chen Yu <yu.c.chen@intel.com>, Peter Zijlstra <peterz@infradead.org>,
+ Ingo Molnar <mingo@redhat.com>, Vincent Guittot
+ <vincent.guittot@linaro.org>, Juri Lelli <juri.lelli@redhat.com>
+Cc: Tim Chen <tim.c.chen@intel.com>, Tiwei Bie <tiwei.btw@antgroup.com>,
+ Honglei Wang <wanghonglei@didichuxing.com>, Aaron Lu <aaron.lu@intel.com>,
+ Chen Yu <yu.chen.surf@gmail.com>, linux-kernel@vger.kernel.org,
+ kernel test robot <oliver.sang@intel.com>
+References: <20240226082349.302363-1-yu.c.chen@intel.com>
+From: Abel Wu <wuyun.abel@bytedance.com>
+In-Reply-To: <20240226082349.302363-1-yu.c.chen@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hello, Dave!
+Hi Chen, thanks for detailed analysis.
 
-On 2024/2/29 6:25, Dave Chinner wrote:
-> On Wed, Feb 28, 2024 at 04:53:32PM +0800, Zhang Yi wrote:
->> On 2024/2/13 13:46, Christoph Hellwig wrote:
->>> Wouldn't it make more sense to just move the size manipulation to the
->>> write-only code?  An untested version of that is below.  With this
->>> the naming of the status variable becomes even more confusing than
->>> it already is, maybe we need to do a cleanup of the *_write_end
->>> calling conventions as it always returns the passed in copied value
->>> or 0.
->>>
->>> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
->>> index 3dab060aed6d7b..8401a9ca702fc0 100644
->>> --- a/fs/iomap/buffered-io.c
->>> +++ b/fs/iomap/buffered-io.c
->>> @@ -876,34 +876,13 @@ static size_t iomap_write_end(struct iomap_iter *iter, loff_t pos, size_t len,
->>>  		size_t copied, struct folio *folio)
->>>  {
->>>  	const struct iomap *srcmap = iomap_iter_srcmap(iter);
->>> -	loff_t old_size = iter->inode->i_size;
->>> -	size_t ret;
->>> -
->>> -	if (srcmap->type == IOMAP_INLINE) {
->>> -		ret = iomap_write_end_inline(iter, folio, pos, copied);
->>> -	} else if (srcmap->flags & IOMAP_F_BUFFER_HEAD) {
->>> -		ret = block_write_end(NULL, iter->inode->i_mapping, pos, len,
->>> -				copied, &folio->page, NULL);
->>> -	} else {
->>> -		ret = __iomap_write_end(iter->inode, pos, len, copied, folio);
->>> -	}
->>> -
->>> -	/*
->>> -	 * Update the in-memory inode size after copying the data into the page
->>> -	 * cache.  It's up to the file system to write the updated size to disk,
->>> -	 * preferably after I/O completion so that no stale data is exposed.
->>> -	 */
->>> -	if (pos + ret > old_size) {
->>> -		i_size_write(iter->inode, pos + ret);
->>> -		iter->iomap.flags |= IOMAP_F_SIZE_CHANGED;
->>> -	}
->>
->> I've recently discovered that if we don't increase i_size in
->> iomap_zero_iter(), it would break fstests generic/476 on xfs. xfs
->> depends on iomap_zero_iter() to increase i_size in some cases.
->>
->>  generic/476 75s ... _check_xfs_filesystem: filesystem on /dev/pmem2 is inconsistent (r)
->>  (see /home/zhangyi/xfstests-dev/results//xfs/generic/476.full for details)
->>
->>  _check_xfs_filesystem: filesystem on /dev/pmem2 is inconsistent (r)
->>  *** xfs_repair -n output ***
->>  Phase 1 - find and verify superblock...
->>  Phase 2 - using internal log
->>          - zero log...
->>          - scan filesystem freespace and inode maps...
->>  sb_fdblocks 10916, counted 10923
->>          - found root inode chunk
->>  ...
->>
->> After debugging and analysis, I found the root cause of the problem is
->> related to the pre-allocations of xfs. xfs pre-allocates some blocks to
->> reduce fragmentation during buffer append writing, then if we write new
->> data or do file copy(reflink) after the end of the pre-allocating range,
->> xfs would zero-out and write back the pre-allocate space(e.g.
->> xfs_file_write_checks() -> xfs_zero_range()), so we have to update
->> i_size before writing back in iomap_zero_iter(), otherwise, it will
->> result in stale delayed extent.
-> 
-> Ok, so this is long because the example is lacking in clear details
-> so to try to understand it I've laid it out in detail to make sure
-> I've understood it correctly.
-> 
+The title of this patch sounds a little weird to me, since any
+non-empty cfs_rq should have at least one eligible entity. Besides,
+choosing the leftmost entity which could be non-eligible can be
+sub-optimal, anyway this is only a workaround..
 
-Thanks for the graph, the added detail makes things clear and easy to
-understand. To be honest, it's not exactly the same as the results I
-captured and described (the position A\B\C\D\E\F I described is
-increased one by one), but the root cause of the problem is the same,
-so it doesn't affect our understanding of the problem.
+On 2/26/24 4:23 PM, Chen Yu Wrote:
+> There is occasional report from lkp that the kernel hits the NULL pointer
+> exception:
+> 
+> [  512.079810][ T8305] BUG: kernel NULL pointer dereference, address: 0000002c
+> [  512.080897][ T8305] #PF: supervisor read access in kernel mode
+> [  512.081636][ T8305] #PF: error_code(0x0000) - not-present page
+> [  512.082337][ T8305] *pde = 00000000
+> [  512.082829][ T8305] Oops: 0000 [#1] PREEMPT SMP
+> [  512.083407][ T8305] CPU: 1 PID: 8305 Comm: watchdog Tainted: G        W
+> [  512.086203][ T8305] EIP: set_next_entity (fair.c:?)
+> 
+> This is caused by NULL candidate returned by pick_eevdf() as Abel analyzed.
+> After
+> commit 2227a957e1d5 ("sched/eevdf: Sort the rbtree by virtual deadline")
+> the NULL candidate would trigger the NULL pointer exception. While before
+> this commit, there would be warning.
+> 
+> This NULL entity issue was always there before above commit. With debug
+> patch to print the cfs_rq and all the entities in the tree, we have the
+> information when the issue was reproduced:
+> 
+> [  514.461242][ T8390] cfs_rq avg_vruntime:386638640128 avg_load:2048 min_vruntime:763383370431
+> [  514.535935][ T8390] current on_rq se 0xc5851400, deadline:18435852013562231446
+> 			min_vruntime:18437121115753667698 vruntime:18435852013561943404, load:629
+> [  514.536772][ T8390] Traverse rb-tree from left to right
+> [  514.537138][ T8390]  se 0xec1234e0 deadline:763384870431 min_vruntime:763383370431 vruntime:763383370431 non-eligible
+> [  514.537835][ T8390]  se 0xec4fcf20 deadline:763762447228 min_vruntime:763760947228 vruntime:763760947228 non-eligible
+> [  514.538539][ T8390] Traverse rb-tree from topdown
+> [  514.538877][ T8390]  middle se 0xec1234e0 deadline:763384870431 min_vruntime:763383370431 vruntime:763383370431 non-eligible
+> [  514.539605][ T8390]  middle se 0xec4fcf20 deadline:763762447228 min_vruntime:763760947228 vruntime:763760947228 non-eligible
+> [  514.540340][ T8390] Found best:0x0
+> [  514.540613][ T8390] BUG: kernel NULL pointer dereference, address: 00000074
+> 
+> We can see that non of the entities in the tree are eligible, neither is
+> the current entity on this cfs_rq. As a result, curr is set to NULL:
+> if (curr && (!curr->on_rq || !entity_eligible(cfs_rq, curr)))
+> 	curr = NULL;
+> 
+> and the best is set to NULL, which caused the problem:
+> if (!best || (curr && entity_before(curr, best)))
+> 	best = curr;
+> 
+> The cause is that, the curr is eligible, but vruntime_eligible()
+> returns false. And the false negative is due to the following
+> code in vruntime_eligible():
+> 
+> return avg >= (s64)(vruntime - cfs_rq->min_vruntime) * load;
+> 
+> According to the log, vruntime is 18435852013561943404, the
+> cfs_rq->min_vruntime is 763383370431, the load is 629 + 2048 = 2677,
+> thus:
+> s64 delta = (s64)(18435852013561943404 - 763383370431) = -10892823530978643
+>      delta * 2677 = 7733399554989275921
+> that is to say, the multiply result overflow the s64, which turns the
+> negative value into a positive value, thus eligible check fails.
 
->>
->> For more details, let's think about this case,
->> 1. Buffered write from range [A, B) of an empty file foo, and
->>    xfs_buffered_write_iomap_begin() prealloc blocks for it, then create
->>    a delayed extent from [A, D).
-> 
-> So we have a delayed allocation extent  and the file size is now B
-> like so:
-> 
-> 	A                      B                    D
-> 	+DDDDDDDDDDDDDDDDDDDDDD+dddddddddddddddddddd+
-> 	                      EOF
-> 			  (in memory)
-> 
-> where 'd' is a delalloc block with no data and 'D' is a delalloc
-> block with dirty folios over it.
-> 
-
-Yes
-
->> 2. Write back process map blocks but only convert above delayed extent
->>    from [A, C) since the lack of a contiguous physical blocks, now we
->>    have a left over delayed extent from [C, D), and the file size is B.
-> 
-> So this produces:
-> 
-> 	A          C           B                    D
-> 	+wwwwwwwwww+DDDDDDDDDDD+dddddddddddddddddddd+
-> 	          EOF         EOF
->                (on disk)  (in memory)
-> 
-> where 'w' contains allocated written data blocks.
-> 
-
-The results I captured is:
-
- 	A                      B         C          D
- 	+wwwwwwwwwwwwwwwwwwwwww+uuuuuuuuu+ddddddddddd+
- 	                      EOF
-                          (in memory)
-                           (on disk)
-
->> 3. Copy range from another file to range [E, F), then
->>    xfs_reflink_zero_posteof() would zero-out post eof range [B, E), it
->>    writes zero, dirty and write back [C, E).
-> 
-> I'm going to assume that [E,F) is located like this because you
-> are talking about post-eof zeroing from B to E:
-> 
-> 	A          C           B     E       F      D
-> 	+wwwwwwwwww+DDDDDDDDDDD+ddddd+rrrrrrr+dddddd+
-> 	          EOF         EOF
->                (on disk)  (in memory)
-> 
-> where 'r' is the clone destination over dellaloc blocks.
-> 
-> Did I get that right?
-> 
-
-The results I captured is:
-
- 	A                      B         C          D      E       F
- 	+wwwwwwwwwwwwwwwwwwwwww+uuuuuuuuu+dddddddddd+hhhhhh+rrrrrrr+
- 	                      EOF
-                          (in memory)
-                           (on disk)
-
-where 'h' contains a hole.
-
-> And so reflink wants to zero [B,E] before it updates the file size,
-> just like a truncate(E) would. iomap_zero_iter() will see a delalloc
-> extent (IOMAP_DELALLOC) for [B,E], so it will write zeros into cache
-> for it. We then have:
-> 
-> 	A          C           B     E       F      D
-> 	+wwwwwwwwww+DDDDDDDDDDD+ZZZZZ+rrrrrrr+dddddd+
-> 	          EOF         EOF
->                (on disk)  (in memory)
-> 
-> where 'Z' is delalloc blocks with zeroes in cache.
-> 
-
-The results I captured is:
-
- 	A                      B         C          D      E       F
- 	+wwwwwwwwwwwwwwwwwwwwww+uuuuuuuuu+ZZZZZZZZZZ+hhhhhh+rrrrrrr+
- 	                      EOF
-                          (in memory)
-                           (on disk)
-
-> Because the destination is post EOF, xfs_reflink_remap_prep() then
-> does:
-> 
->         /*
->          * If pos_out > EOF, we may have dirtied blocks between EOF and
->          * pos_out. In that case, we need to extend the flush and unmap to cover
->          * from EOF to the end of the copy length.
->          */
->         if (pos_out > XFS_ISIZE(dest)) {
->                 loff_t  flen = *len + (pos_out - XFS_ISIZE(dest));
->                 ret = xfs_flush_unmap_range(dest, XFS_ISIZE(dest), flen);
-> 	} ....
-> 
-> Which attempts to flush from the current in memory EOF up to the end
-> of the clone destination range. This should result in:
-> 
-> 	A          C           B     E       F      D
-> 	+wwwwwwwwww+DDDDDDDDDDD+zzzzz+rrrrrrr+dddddd+
-> 	          EOF         EOF
->                (on disk)  (in memory)
-> 
-> Where 'z' is zeroes on disk.
-> 
-> Have I understood this correctly?
-> 
-
-The results I captured is:
-
- 	A                      B         C          D      E       F
- 	+wwwwwwwwwwwwwwwwwwwwww+uuuuuuuuu+zzzzzzzzzz+hhhhhh+rrrrrrr+
- 	                      EOF
-                          (in memory)
-                           (on disk)
-
-Since we don't update i_size in iomap_zero_iter(), the zeroed C to D
-in cache would never write back to disk (iomap_writepage_handle_eof()
-would skip them since it's entirely ouside of i_size) and the
-'i_size & i_disksize' is still at B, after reflink, the i_size would
-be update to F, so the delayed C to D cannot be freed by
-xfs_free_eofblocks().
-
- 	A                      B         C          D      E       F
- 	+wwwwwwwwwwwwwwwwwwwwww+uuuuuuuuu+dddddddddd+hhhhhh+rrrrrrr+
- 	                                                          EOF
-                                                              (in memory)
-                                                               (on disk)
-
-Although the result is not exactly the same as your understanding,
-the situation you describe still triggers the problem.
-
-> However, if this did actually write zeroes to disk, this would end
-> up with:
-> 
-> 	A          C           B     E       F      D
-> 	+wwwwwwwwww+DDDDDDDDDDD+zzzzz+rrrrrrr+dddddd+
-> 	                      EOF   EOF
->                       (in memory)   (on disk)
-> 
-> Which is wrong - the file extension and zeros should not get exposed
-> to the user until the entire reflink completes. This would expose
-> zeros at the EOF and a file size that the user never asked for after
-> a crash. Experience tells me that they would report this as
-> "filesystem corrupting data on crash".
-> 
-> If we move where i_size gets updated by iomap_zero_iter(), we get:
-> 
-> 	A          C           B     E       F      D
-> 	+wwwwwwwwww+DDDDDDDDDDD+zzzzz+rrrrrrr+dddddd+
-> 	                            EOF
->                                 (in memory)
-> 		                 (on disk)
-> 
-> Which is also wrong, because now the user can see the size change
-> and read zeros in the middle of the clone operation, which is also
-> wrong.
-> 
-> IOWs, we do not want to move the in-memory or on-disk EOF as a
-> result of zeroing delalloc extents beyond EOF as it opens up
-> transient, non-atomic on-disk states in the event of a crash.
-> 
-> So, catch-22: we need to move the in-memory EOF to write back zeroes
-> beyond EOF, but that would move the on-disk EOF to E before the
-> clone operation starts. i.e. it makes clone non-atomic.
-
-Make sense. IIUC, I also notice that xfs_file_write_checks() zero
-out EOF blocks if the later write offset is beyond the size of the
-file. Think about if we replace the reflink operation to a buffer
-write E to F, although it doesn't call xfs_flush_unmap_range()
-directly, but if it could be raced by another background write
-back, and trigger the same problem (I've not try to reproduce it,
-so please correct me if I understand wrong).
+Indeed.
 
 > 
-> What should acutally result from the iomap_zero_range() call from
-> xfs_reflink_remap_prep() is a state like this:
-> 
-> 	A          C           B     E       F      D
-> 	+wwwwwwwwww+DDDDDDDDDDD+uuuuu+rrrrrrr+dddddd+
-> 	          EOF         EOF
->                (on disk)  (in memory)
-> 
-> where 'u' are unwritten extent blocks.
-> 
+> So where is this insane huge vruntime 18435852013561943404 coming from?
+> My guess is that, it is because the initial value of cfs_rq->min_vruntime
+> is set to (unsigned long)(-(1LL << 20)). If the task(watchdog in this case)
+> seldom scheduled in, its vruntime might not move forward too much and
+> remain its original value by previous place_entity().
 
-Yeah, this is a good solution.
+So why not just initialize to 0? The (unsigned long)(-(1LL << 20))
+thing is dangerous as it can easily blow up lots of calculations in
+lag, key, avg_vruntime and so on.
 
-In xfs_file_write_checks(), I don't fully understand why we need
-the xfs_zero_range(). Theoretically, iomap have already handled
-partial block zeroing for both buffered IO and DIO, so I guess
-the only reason we still need it is to handle pre-allocated blocks
-(no?). If so，would it be better to call xfs_free_eofblocks() to
-release all the preallocated extents in range? If not, maybe we
-could only zero out mapped partial blocks and also release
-preallocated extents?
+Say during this pre-life, which is about 1ms for 1024-weight entity,
+there is only one entity running in this cfs_rq. Now another entity
+with funny lag joins in, being placed somewhere at 0+ vruntime, so
+cfs_rq->min_vruntime needs to be adjusted accordingly which leads to
+the breakage of cfs_rq->curr's key as you showed above.
 
-In xfs_reflink_remap_prep(), I read the commit 410fdc72b05a ("xfs:
-zero posteof blocks when cloning above eof"), xfs used to release
-preallocations, the change log said it didn't work because of the
-PREALLOC flag, but the 'force' parameter is 'true' when calling
-xfs_can_free_eofblocks(), so I don't get the problem met. Could we
-fall back to use xfs_free_eofblocks() and make a state like this?
-
- 	A          C           B     E       F      D
- 	+wwwwwwwwww+DDDDDDDDDDD+hhhhh+rrrrrrr+dddddd+
- 	          EOF         EOF
-                (on disk)  (in memory)
-
-
-Thanks,
-Yi.
-
-> i.e. instead of writing zeroes through the page cache for
-> IOMAP_DELALLOC ranges beyond EOF, we should be converting those
-> ranges to unwritten and invalidating any cached data over that range
-> beyond EOF.
 > 
-> IOWs, it looks to me like the problem is that
-> xfs_buffered_write_iomap_begin() is doing the wrong thing for
-> IOMAP_ZERO operations for post-EOF regions spanned by speculative
-> delalloc. It should be converting the region to unwritten so it has
-> zeroes on disk, not relying on the page cache to be able to do
-> writeback beyond the current EOF....
-> 
->> 4. Since we don't update i_size in iomap_zero_iter()，the writeback
->>    doesn't write anything back, also doesn't convert the delayed extent.
->>    After copy range, the file size will update to F.
-> 
-> Yup, this is all, individually, correct behaviour. But when put
-> together, the wrong thing happens. I suspect xfs_zero_range() needs
-> to provide a custom set of iomap_begin/end callbacks rather than
-> overloading the normal buffered write mechanisms.
-> 
-> -Dave.
-> 
+> The proper fix should deal with the overflow of entity_key() * load, but
+> I don't have much clue on that, so propose this conservative method to
+> restore the previous behavior before the mentioned commit.
 
+Inspired by Xuewen's proposal, will it work if limit the key?
+
+Thanks & BR,
+	Abel
+
+> 
+> Fixes: 2227a957e1d5 ("sched/eevdf: Sort the rbtree by virtual deadline")
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Closes: https://lore.kernel.org/lkml/202401301012.2ed95df0-oliver.sang@intel.com/
+> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+> ---
+>   kernel/sched/fair.c | 13 ++++++++++++-
+>   1 file changed, 12 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 533547e3c90a..fb9202f464e2 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -880,7 +880,7 @@ static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
+>   	struct rb_node *node = cfs_rq->tasks_timeline.rb_root.rb_node;
+>   	struct sched_entity *se = __pick_first_entity(cfs_rq);
+>   	struct sched_entity *curr = cfs_rq->curr;
+> -	struct sched_entity *best = NULL;
+> +	struct sched_entity *best = NULL, *leftmost;
+>   
+>   	/*
+>   	 * We can safely skip eligibility check if there is only one entity
+> @@ -905,6 +905,8 @@ static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
+>   		goto found;
+>   	}
+>   
+> +	leftmost = se;
+> +
+>   	/* Heap search for the EEVD entity */
+>   	while (node) {
+>   		struct rb_node *left = node->rb_left;
+> @@ -937,6 +939,15 @@ static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
+>   	if (!best || (curr && entity_before(curr, best)))
+>   		best = curr;
+>   
+> +	/*
+> +	 * entity_eligible() could bring false negative due to
+> +	 * multiply overflow, which reports no eligible entity.
+> +	 * Return leftmost entity as a backup(it is guaranteed
+> +	 * the tree is not NULL.
+> +	 */
+> +	if (!best)
+> +		best = leftmost;
+> +
+>   	return best;
+>   }
+>   
 
