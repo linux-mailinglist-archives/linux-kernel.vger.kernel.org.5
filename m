@@ -1,225 +1,107 @@
-Return-Path: <linux-kernel+bounces-86787-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86788-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D50E86CAC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:56:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A41B86CACA
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:57:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 612FB1C21D20
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:56:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C1581C221D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:57:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C108512C554;
-	Thu, 29 Feb 2024 13:56:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 968397E0E7;
+	Thu, 29 Feb 2024 13:56:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="PLPdM5vk"
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="f+lwSG5j"
+Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC7877D417
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 13:56:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 662DD12A17A
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 13:56:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709215010; cv=none; b=SK7WwaVi0eZq6ijTsjPqTCQ3p1uyxG2iPIWvuniX9j/cM3tmecdBArHuapKaUTRTJbxLEe0AMrovfHZ62DJMJ8ZfGP7FUjPPylV2EP7mhj7XKDE+sk7QAJ9JFnppSvffPFkEKo8OiL0c04kNTbEwW1jvqGyMkeA9im9PcIMAc+w=
+	t=1709215017; cv=none; b=CJ54KLkSS31loIHrGWECXUxOmxRqrwRiBjA8WsJUbFoKuoog2+TOIj+TT4kM1rLH9Alrql0QykJPR+0LE5jYWPJvUu3U9cgLXKiQQp/jAvWj13dLyIrfWXwJHbSuCQPhfu1YXrqRukjYQWz+2Xs4MPOxZabcwfSgOof5JSZvFB0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709215010; c=relaxed/simple;
-	bh=G/VaUVncQgGlRa2pys1Vi1dIIn09HOy27QTrgTzIkyA=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Subject:From:To:Cc:
-	 References:In-Reply-To; b=bI6BzmoS0XLQG6oF0Ten7wK0v2NRWGhVbHsJPljoAgPsl97iAbDzY1i3FSeLbXv4Ie5zDg/iuFnpxA3caQfMvTZgKJl+YIfLjxog6cMuiTfcixYVXOgHLUs3nF3q52ft/jeuSqtfZRrui6MqoazzUClyA2fRsBv7v3/mQal9oTc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=PLPdM5vk; arc=none smtp.client-ip=209.85.160.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-42e5e16559cso5597041cf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 05:56:46 -0800 (PST)
+	s=arc-20240116; t=1709215017; c=relaxed/simple;
+	bh=Wws5urlY/pHKb5nO9L6+YF0fIvf4wojKA9CEm5jbQIw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=owsyvRWneqhzpe8oMzAf9Zpm5kjTcNguQq1jtuFbSa16WvX9qhD1Hno8TPfbsSFJuymuRah03kCH7LbMyK8qRGAHPp5/mcMriU9Ue/+6DWWINw9oMVBNdODElD/XhYyhUasZK205op9/X/35aguYHZTQf/A6M4ORInEYGp/HlPQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=f+lwSG5j; arc=none smtp.client-ip=209.85.219.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-dc6dcd9124bso965405276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 05:56:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1709215006; x=1709819806; darn=vger.kernel.org;
-        h=in-reply-to:references:cc:to:from:subject:message-id:date
-         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+        d=linaro.org; s=google; t=1709215015; x=1709819815; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UNhdXSdXkLjYVE0deMxEiGlQYDwDvXw88ZjC208fOao=;
-        b=PLPdM5vkMcjaYJEM/JBZ54lJoq+tLh4Zh/mhL3O6riIhSBMrpvccm0RnYQIClGmi0S
-         qEWM4syXXwXNOHz8L3iSVMcUfA4Gpn6c6gKlaIwN35GaDMeFYGhwf4+PUGkVumoYeyNq
-         GDNA3gnVCQse5zZqIFjqDlRsSjra7EFkpCIkDioMwzfdxib0SwVyMfSTkbVj6WobHwce
-         DfLsvBpmroJ26vOTAAEnWfgsQEc+/ZU+oPNdyp8jYEnkH9ncCiFbAJGl6vPj/HsBungq
-         x/ziYfKW0fjrhvnHzCRKsgxCHtyFYUVZoLrfQHaEFJqJvYbDQ3SiWhPIitmRpYvwLEoX
-         FsxQ==
+        bh=Wws5urlY/pHKb5nO9L6+YF0fIvf4wojKA9CEm5jbQIw=;
+        b=f+lwSG5jcLV6Jvh2VptIWbckKIq4g3bVLGsCTxwAmoB4r9wOm0qjHxsBW5YQHXD5Fq
+         8MeswxbOLPdHna7vbcMjOQRo6PSium9RcWJbQp/Y0M9FKZE92sK5AzeAwUrxsh+vWq5C
+         ejHf99vyHKL2EbnEfZoZnwyS3Jr9mbDFW0Fol20KdUfO6DXeN8sKENFGPsAq+JQsJV3e
+         D1QfAL2pGW0tQSzTvnuHeTNs9CzRo6+I937nDNiizWP1bXE0Jp2uGNwa1X+z2T0yQDtF
+         CwjAIJTFYiEgrQV+W2IV3DGoBqyBkxYMDkCollRyzlpuS744issI97QqwK64PAaagcqX
+         7U5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709215006; x=1709819806;
-        h=in-reply-to:references:cc:to:from:subject:message-id:date
-         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=UNhdXSdXkLjYVE0deMxEiGlQYDwDvXw88ZjC208fOao=;
-        b=ZF+b1afe90q+3WoIpFN+TnJiHfpZG9AjvFNlzl2x0uEfzGXpn8HO8Fil6TYmvBIX+G
-         lQASsCGIGD3tf2Q2IvDuCCnJ8WRoLPYkFn4TsTTWKA/NtwxiK7Y/s//sxKy9aJ0Yb48Z
-         vTi/tIqG46TXIH+pd54nOi1gwh7G21unbCWNIPs1Bf4u07b4LDtvJnUBCFCtCCTRPEdC
-         qmZdwOlBsw9Z2AhqUJOJh0Z5EQSQz7KMyeyP0CYESWc3bTZ81a8ATW159qTIQNUKkoCr
-         c23q4g8O57eMhv+z38NXH68IyPoT2uaH7dtDWhtAorCdphi5535OznBuB4qIZZpmWtmU
-         kQsg==
-X-Forwarded-Encrypted: i=1; AJvYcCUIFyQYRJOvlV0niXoxd1SZu5itURM/Q3XhhCQgvqPLvs9t9uY7uaMCL9AkeGw6hyiYuJCIA6M3QeUiLXWkS6wdFbsvDFYnmizfBJfa
-X-Gm-Message-State: AOJu0YzykDQ/aD/HpLQ3V5HtBDX9WqBRrd3Mvd5nHrIve2xai1zRslvs
-	v2uOVgVHNE7hIS144x5cHgKv0SqeMiJPjHK6tIh7oi7xR1RSObYZ6gvln4Cg3nc=
-X-Google-Smtp-Source: AGHT+IEBTojVUp8KOWJFuGjpZRNuTCVqmMqtQlVhuYYbIVXRAFqeFqc1mPKHL93Sf9q9YMhtXSG3EQ==
-X-Received: by 2002:ac8:7ca:0:b0:42e:b8d1:2b2a with SMTP id m10-20020ac807ca000000b0042eb8d12b2amr1769677qth.48.1709215005911;
-        Thu, 29 Feb 2024 05:56:45 -0800 (PST)
-Received: from localhost (alyon-651-1-22-137.w82-122.abo.wanadoo.fr. [82.122.123.137])
-        by smtp.gmail.com with ESMTPSA id wm18-20020a05620a581200b00787e1e94d00sm683328qkn.109.2024.02.29.05.56.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Feb 2024 05:56:45 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709215015; x=1709819815;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Wws5urlY/pHKb5nO9L6+YF0fIvf4wojKA9CEm5jbQIw=;
+        b=TPXDQLWnNdRsSOt7GH+kxBFcXtWrAvlxnLzeOcEwxdGIC/jgtEaQC+G/u9r9P+iHUS
+         UYISOfBCYSRRXOUa8izNS7A8/4oiFzYVcpZEBWhbztjQN0fGeZ0ecG1vzcA74XfK2n9k
+         RcIe1gRCgT8TUlQ9/h6LwGSq8ANbvQQMPQu/Fy/QsSKnlmeSctBW8GHZ7FTWgZaDWhoq
+         P0aag6dDDeUwg92StOYzLAIz9swejk8XVCpbD3QpknA4Qeuo/9M4AzO06T/rGveZLpQr
+         U0wCQQHPE3GWvrGcsZexhcHuJR51cr/m4oNZy3k5+W8vQDQ7UCzZdBXujqTiGMVmc3kf
+         eabA==
+X-Forwarded-Encrypted: i=1; AJvYcCXvBUbvzhwUvHHyITigWIg4k7es4F41XocPf9Kav6Bpf8HostQhfgLXuby/6EE0MV9tUnEWYd5ni1OYNgEWZLgk2hZc5/XwbzmfMS3b
+X-Gm-Message-State: AOJu0YyaiCvGVVoCCGATtq9YeHyarP2T9E4CH8Fvm2hWzvy/mfUhgujw
+	ruBsifNMD/tFXfnTh+9EaaLBuSn2ovng9/FwR6622c9U+U0HFiDL7X9hHbR+9jNPGAT2W9yynKu
+	9YufNblT6GCVG0WEvh574D92E9m0Vuz5oWOkujPFOft3QqXE3
+X-Google-Smtp-Source: AGHT+IGyYyjopk2S0BDW1Ghoa/7hBgl0rLX3ecHmVYFRGAMgeBOBqeibeDjXXuQsuPB0jGCrausTn0ucexpYoda4cP0=
+X-Received: by 2002:a25:8249:0:b0:dc6:bcb3:5d8e with SMTP id
+ d9-20020a258249000000b00dc6bcb35d8emr2335878ybn.20.1709215015418; Thu, 29 Feb
+ 2024 05:56:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
+MIME-Version: 1.0
+References: <20240227155308.18395-1-quic_mojha@quicinc.com> <20240227155308.18395-6-quic_mojha@quicinc.com>
+In-Reply-To: <20240227155308.18395-6-quic_mojha@quicinc.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Thu, 29 Feb 2024 14:56:44 +0100
+Message-ID: <CACRpkdaqf8niLVfT7i-x6gVda2nwy1A6akEEq+rYz+cEpg0DzQ@mail.gmail.com>
+Subject: Re: [PATCH v12 5/9] pinctrl: qcom: Use qcom_scm_io_rmw() function
+To: Mukesh Ojha <quic_mojha@quicinc.com>
+Cc: andersson@kernel.org, konrad.dybcio@linaro.org, 
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-gpio@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 29 Feb 2024 14:56:41 +0100
-Message-Id: <CZHM5FYHS6G0.295L6AYUNZCT@baylibre.com>
-Subject: Re: [PATCH v2 13/14] pinctrl: pinctrl-tps6594: Add TPS65224 PMIC
- pinctrl and GPIO
-From: "Esteban Blanc" <eblanc@baylibre.com>
-To: "Bhargav Raviprakash" <bhargav.r@ltts.com>,
- <linux-kernel@vger.kernel.org>
-Cc: <m.nirmaladevi@ltts.com>, <lee@kernel.org>, <robh+dt@kernel.org>,
- <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
- <jpanis@baylibre.com>, <devicetree@vger.kernel.org>, <arnd@arndb.de>,
- <gregkh@linuxfoundation.org>, <lgirdwood@gmail.com>, <broonie@kernel.org>,
- <linus.walleij@linaro.org>, <linux-gpio@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>, <nm@ti.com>, <vigneshr@ti.com>,
- <kristo@kernel.org>
-X-Mailer: aerc 0.17.0
-References: <20240223093701.66034-1-bhargav.r@ltts.com>
- <20240223093701.66034-14-bhargav.r@ltts.com>
-In-Reply-To: <20240223093701.66034-14-bhargav.r@ltts.com>
 
-On Fri Feb 23, 2024 at 10:37 AM CET, Bhargav Raviprakash wrote:
-> From: Nirmala Devi Mal Nadar <m.nirmaladevi@ltts.com>
+On Tue, Feb 27, 2024 at 4:53=E2=80=AFPM Mukesh Ojha <quic_mojha@quicinc.com=
+> wrote:
+
+> Use qcom_scm_io_rmw() exported function in pinctrl-msm
+> driver.
 >
-> Add support for TPS65224 pinctrl and GPIOs to TPS6594 driver as they
-> have significant functional overlap.
-> TPS65224 PMIC has 6 GPIOS which can be configured as GPIO or other
-> dedicated device functions.
->
-> Signed-off-by: Nirmala Devi Mal Nadar <m.nirmaladevi@ltts.com>
-> Signed-off-by: Bhargav Raviprakash <bhargav.r@ltts.com>
+> Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
 > ---
->  drivers/pinctrl/pinctrl-tps6594.c | 287 +++++++++++++++++++++++++-----
->  1 file changed, 246 insertions(+), 41 deletions(-)
+> @Linus.Walleij,
 >
-> diff --git a/drivers/pinctrl/pinctrl-tps6594.c b/drivers/pinctrl/pinctrl-=
-tps6594.c
-> index 66985e54b..5da21aa14 100644
-> --- a/drivers/pinctrl/pinctrl-tps6594.c
-> +++ b/drivers/pinctrl/pinctrl-tps6594.c
+> I have removed your Ack on this patch after your comment
+> on https://lore.kernel.org/lkml/CACRpkdbnj3W3k=3DsnTx3iadHWU+RNv9GY4B3O4K=
+0hu8TY+DrK=3DQ@mail.gmail.com/
+>
+> If you agree on the current solution, please ack this again.
 
-> @@ -201,7 +319,21 @@ static int tps6594_gpio_regmap_xlate(struct gpio_reg=
-map *gpio,
-> =20
->  static int tps6594_pmx_func_cnt(struct pinctrl_dev *pctldev)
->  {
-> -	return ARRAY_SIZE(pinctrl_functions);
-> +	struct tps6594_pinctrl *pinctrl =3D pinctrl_dev_get_drvdata(pctldev);
-> +	int func_cnt =3D 0;
-> +
-> +	switch (pinctrl->tps->chip_id) {
+It's fine, I trust you guys mostly :)
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
-See below.
-
-> @@ -229,10 +361,26 @@ static int tps6594_pmx_set(struct tps6594_pinctrl *=
-pinctrl, unsigned int pin,
->  			   u8 muxval)
->  {
->  	u8 mux_sel_val =3D muxval << TPS6594_OFFSET_GPIO_SEL;
-> +	u8 mux_sel_mask =3D 0;
-> +
-> +	switch (pinctrl->tps->chip_id) {
-
-See below.
-
-> @@ -240,16 +388,28 @@ static int tps6594_pmx_set_mux(struct pinctrl_dev *=
-pctldev,
->  {
->  	struct tps6594_pinctrl *pinctrl =3D pinctrl_dev_get_drvdata(pctldev);
->  	u8 muxval =3D pinctrl->funcs[function].muxval;
-> +	unsigned int remap_cnt =3D 0;
-> +	struct muxval_remap *remap;
-> =20
->  	/* Some pins don't have the same muxval for the same function... */
-> -	if (group =3D=3D 8) {
-> -		if (muxval =3D=3D TPS6594_PINCTRL_DISABLE_WDOG_FUNCTION)
-> -			muxval =3D TPS6594_PINCTRL_DISABLE_WDOG_FUNCTION_GPIO8;
-> -		else if (muxval =3D=3D TPS6594_PINCTRL_SYNCCLKOUT_FUNCTION)
-> -			muxval =3D TPS6594_PINCTRL_SYNCCLKOUT_FUNCTION_GPIO8;
-> -	} else if (group =3D=3D 9) {
-> -		if (muxval =3D=3D TPS6594_PINCTRL_CLK32KOUT_FUNCTION)
-> -			muxval =3D TPS6594_PINCTRL_CLK32KOUT_FUNCTION_GPIO9;
-> +	switch (pinctrl->tps->chip_id) {
-
-See below.
-
-> @@ -276,7 +436,21 @@ static const struct pinmux_ops tps6594_pmx_ops =3D {
-> =20
->  static int tps6594_groups_cnt(struct pinctrl_dev *pctldev)
->  {
-> -	return ARRAY_SIZE(tps6594_pins);
-> +	struct tps6594_pinctrl *pinctrl =3D pinctrl_dev_get_drvdata(pctldev);
-> +	int num_pins =3D 0;
-> +
-> +	switch (pinctrl->tps->chip_id) {
-
-See below.
-
-> @@ -320,8 +494,18 @@ static int tps6594_pinctrl_probe(struct platform_dev=
-ice *pdev)
->  		return -ENOMEM;
->  	pctrl_desc->name =3D dev_name(dev);
->  	pctrl_desc->owner =3D THIS_MODULE;
-> -	pctrl_desc->pins =3D tps6594_pins;
-> -	pctrl_desc->npins =3D ARRAY_SIZE(tps6594_pins);
-> +	switch (tps->chip_id) {
-
-See below.
-
-> @@ -329,8 +513,18 @@ static int tps6594_pinctrl_probe(struct platform_dev=
-ice *pdev)
->  	if (!pinctrl)
->  		return -ENOMEM;
->  	pinctrl->tps =3D dev_get_drvdata(dev->parent);
-> -	pinctrl->funcs =3D pinctrl_functions;
-> -	pinctrl->pins =3D tps6594_pins;
-> +	switch (pinctrl->tps->chip_id) {
-
-See below.
-
-> @@ -338,8 +532,18 @@ static int tps6594_pinctrl_probe(struct platform_dev=
-ice *pdev)
-> =20
->  	config.parent =3D tps->dev;
->  	config.regmap =3D tps->regmap;
-> -	config.ngpio =3D TPS6594_PINCTRL_PINS_NB;
-> -	config.ngpio_per_reg =3D 8;
-> +	switch (pinctrl->tps->chip_id) {
-
-Regarding all the switch case, I think you should try and put all the
-differences inside the `struct tps6594_pinctrl`. This way most of the
-functions (if not all of them) could be writen without the switch case,
-making them more readable and straight forward to understand.
-You already have some switch case in the probe, why not fill the `struct
-tps6594_pintcl` there and use these new fileds in the different
-function.
-
-It's not pretty today, imagine if in the future there is more supported
-chip, it would be quite unreadable IMAO.
-
-Other than that the changes looks fine to me. I will have to boot a
-board with TPS6594 to check that whole series did not break anything.
-
-Please add me to your Cc for the next round.
-
-Best regards,
-
---=20
-Esteban "Skallwar" Blanc
-BayLibre
+Yours,
+Linus Walleij
 
