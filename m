@@ -1,133 +1,140 @@
-Return-Path: <linux-kernel+bounces-87513-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87509-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E86BE86D55B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:00:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92C6286D54C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:59:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 824472869A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:00:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3DB0DB25CFB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:59:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 555131504FB;
-	Thu, 29 Feb 2024 20:41:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE81016A373;
+	Thu, 29 Feb 2024 20:41:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bHUeyqQw"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MKawtjZc"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97E7716B048;
-	Thu, 29 Feb 2024 20:41:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36A7216A342
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 20:41:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709239304; cv=none; b=PTbaefoSrZAvFsEBdMEOxRxVtihR9C3h9v7KkZaEkmHJ2WssX2b0nRR7qRmn6SV3aebszgNjAyiEXcj6t7Vd1wM/Pbfeg3dOEYpcOkYP1sWPcjvz4AZOinIgXXfvkL8QObJoOXycJESLlQod6GP+cJo+TWxFJTSiGGl3/bXrXFA=
+	t=1709239299; cv=none; b=Q1LO08ldYO1vgmhVT+h9/KdDC68mcgypc+MKSWQeNLDhkFPBGrILUsuM5+dzV+ONbjaWU1O15CgGKf7DvQT/nfLobNC05FL/vlfzDfj2C6Ukg5P/gF+MtFOEpKiOoIQEwmNylun7/CvPE4LCnNf55qaTxLlWwjZQctj8mYBg1SY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709239304; c=relaxed/simple;
-	bh=ZxIx9z3r2Fy0pXEj0UY8qczYhkBfaOAySFHgWRpmokM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jkRi3go6f2oelgxXt1jp4goYkUzFg1mtejCCJ1dyaILqW8GhodEtyeDQHJIzkQFFk6liDxmUUIjwhzbDHjJRRzVFluR2Tf7B0f/d6TGabXtu1NEQqr+Hzioo0zc5Wylh0wybL2E2rwW5hDkjf6AINDpGCn23YSNTIen6PiFFPrw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bHUeyqQw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8934FC433C7;
-	Thu, 29 Feb 2024 20:41:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709239304;
-	bh=ZxIx9z3r2Fy0pXEj0UY8qczYhkBfaOAySFHgWRpmokM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=bHUeyqQw3m+TB+h7Y//gUzemdleBCdrx0jnQ2yEoOS/+azD3WFpmAE210MRdbjGmX
-	 RvVXeCwnQ0nVoOxYEOWRGIRSF6ptwlomcVJW02cIaypZERqGd0e4NP+GmAyRn/3L74
-	 6vvaS0+lrpzsMcSSZNEp6rw8Hda5qvYss9pFYYo1QHucX3C94l3Aq1T9TpYHPuBElN
-	 mYOGCrwg+1AlfEMcF6y7X3fWJANRoRMyBh6VYgQ0iwQ3FnlCok5kSYnQzl1SD4hMFN
-	 2yymtQyRF1wSJo2cN5U0vbSb7dxY8KqWvSQ9D3TiyVOI67W2W+pgSlbtjkbG29wJS7
-	 H9Bq3ISQ/ydZw==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Mikulas Patocka <mpatocka@redhat.com>,
-	Mike Snitzer <snitzer@kernel.org>,
-	Sasha Levin <sashal@kernel.org>,
-	agk@redhat.com,
-	dm-devel@lists.linux.dev
-Subject: [PATCH AUTOSEL 5.10 8/8] dm-verity, dm-crypt: align "struct bvec_iter" correctly
-Date: Thu, 29 Feb 2024 15:41:25 -0500
-Message-ID: <20240229204127.2861980-8-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240229204127.2861980-1-sashal@kernel.org>
-References: <20240229204127.2861980-1-sashal@kernel.org>
+	s=arc-20240116; t=1709239299; c=relaxed/simple;
+	bh=l0Oq7AxbSJ3lXobf7o9ZXRUD7DUDozdY4OL4raAyp+U=;
+	h=From:To:cc:Subject:MIME-Version:Content-Type:Date:Message-ID; b=gvYBfl/ZSgkPf07KMlYPANHDadz4tYGdMBBUUA6Hns7Ic3o0GvFtG09RV0FzlisvrrNyEdevqJBz9tG/UD1G/n0LEWtw6NBV9onJBFTmzyOLRJPqj8ses2dlmhJ4f+fFcM9vXB/zGHUvVHo1Z8Hb0I7+RTpf4CLqbDJOw1vobS0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MKawtjZc; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709239295;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=CGBj0np1q/By//l0SwNKja6NHqrIAS9mqiRvEzZjjl8=;
+	b=MKawtjZc8cVkdeqrqB2aEB+kYTqfvL3UvR3lx/2tDDh4vnVUEQlsfrFivMHZ8J01zRyhLQ
+	bhzKM8ULiJRx+F3n8Q9uuG/VrJ1za2uD/6nEsxKN/3DUWq5sjF+ePhEWJBVDYwpxxHoN2H
+	iBOrM50R3qiRHQHBQzqfNs+nAOCQ5dY=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-115-LPrxkonAMx-LIKP55RDsAQ-1; Thu,
+ 29 Feb 2024 15:41:34 -0500
+X-MC-Unique: LPrxkonAMx-LIKP55RDsAQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2CDDA1C0690F;
+	Thu, 29 Feb 2024 20:41:33 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.114])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 7AC2D1BDB1;
+	Thu, 29 Feb 2024 20:41:32 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+To: Marc Dionne <marc.dionne@auristor.com>
+cc: dhowells@redhat.com, linux-afs@lists.infradead.org,
+    linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] afs: Don't cache preferred address
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.10.210
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <159568.1709239291.1@warthog.procyon.org.uk>
+Date: Thu, 29 Feb 2024 20:41:31 +0000
+Message-ID: <159569.1709239291@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-From: Mikulas Patocka <mpatocka@redhat.com>
+In the AFS fileserver rotation algorithm, don't cache the preferred address
+for the server as that will override the explicit preference if a
+non-preferred address responds first.
 
-[ Upstream commit 787f1b2800464aa277236a66eb3c279535edd460 ]
-
-"struct bvec_iter" is defined with the __packed attribute, so it is
-aligned on a single byte. On X86 (and on other architectures that support
-unaligned addresses in hardware), "struct bvec_iter" is accessed using the
-8-byte and 4-byte memory instructions, however these instructions are less
-efficient if they operate on unaligned addresses.
-
-(on RISC machines that don't have unaligned access in hardware, GCC
-generates byte-by-byte accesses that are very inefficient - see [1])
-
-This commit reorders the entries in "struct dm_verity_io" and "struct
-convert_context", so that "struct bvec_iter" is aligned on 8 bytes.
-
-[1] https://lore.kernel.org/all/ZcLuWUNRZadJr0tQ@fedora/T/
-
-Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-Signed-off-by: Mike Snitzer <snitzer@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Marc Dionne <marc.dionne@auristor.com>
+cc: linux-afs@lists.infradead.org
 ---
- drivers/md/dm-crypt.c  | 4 ++--
- drivers/md/dm-verity.h | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ fs/afs/rotate.c |   21 ++++-----------------
+ 1 file changed, 4 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
-index 5d772f322a245..bed685969ad49 100644
---- a/drivers/md/dm-crypt.c
-+++ b/drivers/md/dm-crypt.c
-@@ -48,11 +48,11 @@
- struct convert_context {
- 	struct completion restart;
- 	struct bio *bio_in;
--	struct bio *bio_out;
- 	struct bvec_iter iter_in;
-+	struct bio *bio_out;
- 	struct bvec_iter iter_out;
--	u64 cc_sector;
- 	atomic_t cc_pending;
-+	u64 cc_sector;
- 	union {
- 		struct skcipher_request *req;
- 		struct aead_request *req_aead;
-diff --git a/drivers/md/dm-verity.h b/drivers/md/dm-verity.h
-index 78d1e51195ada..f61c89c79cf5b 100644
---- a/drivers/md/dm-verity.h
-+++ b/drivers/md/dm-verity.h
-@@ -74,11 +74,11 @@ struct dm_verity_io {
- 	/* original value of bio->bi_end_io */
- 	bio_end_io_t *orig_bi_end_io;
+diff --git a/fs/afs/rotate.c b/fs/afs/rotate.c
+index 700a27bc8c25..ed04bd1eeae8 100644
+--- a/fs/afs/rotate.c
++++ b/fs/afs/rotate.c
+@@ -602,6 +602,8 @@ bool afs_select_fileserver(struct afs_operation *op)
+ 		goto wait_for_more_probe_results;
  
-+	struct bvec_iter iter;
-+
- 	sector_t block;
- 	unsigned n_blocks;
+ 	alist = op->estate->addresses;
++	best_prio = -1;
++	addr_index = 0;
+ 	for (i = 0; i < alist->nr_addrs; i++) {
+ 		if (alist->addrs[i].prio > best_prio) {
+ 			addr_index = i;
+@@ -609,9 +611,7 @@ bool afs_select_fileserver(struct afs_operation *op)
+ 		}
+ 	}
  
--	struct bvec_iter iter;
--
- 	struct work_struct work;
+-	addr_index = READ_ONCE(alist->preferred);
+-	if (!test_bit(addr_index, &set))
+-		addr_index = __ffs(set);
++	alist->preferred = addr_index;
  
- 	/*
--- 
-2.43.0
+ 	op->addr_index = addr_index;
+ 	set_bit(addr_index, &op->addr_tried);
+@@ -656,12 +656,6 @@ bool afs_select_fileserver(struct afs_operation *op)
+ next_server:
+ 	trace_afs_rotate(op, afs_rotate_trace_next_server, 0);
+ 	_debug("next");
+-	ASSERT(op->estate);
+-	alist = op->estate->addresses;
+-	if (op->call_responded &&
+-	    op->addr_index != READ_ONCE(alist->preferred) &&
+-	    test_bit(alist->preferred, &op->addr_tried))
+-		WRITE_ONCE(alist->preferred, op->addr_index);
+ 	op->estate = NULL;
+ 	goto pick_server;
+ 
+@@ -690,14 +684,7 @@ bool afs_select_fileserver(struct afs_operation *op)
+ failed:
+ 	trace_afs_rotate(op, afs_rotate_trace_failed, 0);
+ 	op->flags |= AFS_OPERATION_STOP;
+-	if (op->estate) {
+-		alist = op->estate->addresses;
+-		if (op->call_responded &&
+-		    op->addr_index != READ_ONCE(alist->preferred) &&
+-		    test_bit(alist->preferred, &op->addr_tried))
+-			WRITE_ONCE(alist->preferred, op->addr_index);
+-		op->estate = NULL;
+-	}
++	op->estate = NULL;
+ 	_leave(" = f [failed %d]", afs_op_error(op));
+ 	return false;
+ }
 
 
