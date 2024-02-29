@@ -1,137 +1,102 @@
-Return-Path: <linux-kernel+bounces-86424-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86423-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0E3186C52D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:29:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F52386C52C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:29:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C23731C239D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:29:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61EE91C238FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:29:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79CB95CDE5;
-	Thu, 29 Feb 2024 09:29:53 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25FBA5B699;
+	Thu, 29 Feb 2024 09:29:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="d5lfH0Z1"
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C46C5B698
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 09:29:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C0805B5D8
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 09:29:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709198993; cv=none; b=cPFKw393IpCOAH3WyIFnZCWFkUn2YvBLn2B3WGBdaCTOwLCPhOMxbBRW5twHC/0+V+6jHWq0/Zd3LrqV5ZA8VciPWKB4Wz/4aHfW+SVXeA5M44a3q8ryewYiCgXN3Sz0ziXfmSodR5HGdx9Cce8n1QYdeUHDMeceE0NYXZHaEXM=
+	t=1709198972; cv=none; b=MWgfbfqWeTI4OEBQFT53WR90Arw1iy1v2GKNvh2OGEQMkN5FYZybg6BaPAVYp7M1jDUdu7F/fSzbCuXXKOsGEVcWzDS6DmazAI93Q2WA2oXWjmcOHDSxpN1p0ajifyn75biQ+SgjeyaSUlLdW8Svw3BMQI3p2h0exhwXhrUrvTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709198993; c=relaxed/simple;
-	bh=/OH3YPYtC647ehj04e0so/bjPUXbp25AoYAGQn5WjcA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IWytCgqCYza44vl06pAyEnZDbpi9ugyG2bJ41g3oSrXtrl4nJqbPtOw3zSQ0C0F2hyFOcz7K3JNbnqxxNgnxckE/P+hXAbSnOBWerocgCweEyaqzTyuy33JcVBEgovV87lHQ+jG+EMzCYDAqPbC7bL0+3wyqqdRRTr3iGgUXxXw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 24b017bdb2e34ae8b18dac649537834a-20240229
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:080b2373-30c8-484d-a9e2-158fffc50fff,IP:20,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:5
-X-CID-INFO: VERSION:1.1.37,REQID:080b2373-30c8-484d-a9e2-158fffc50fff,IP:20,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:5
-X-CID-META: VersionHash:6f543d0,CLOUDID:8dbe57ff-c16b-4159-a099-3b9d0558e447,B
-	ulkID:240229172943HMO26OBX,BulkQuantity:0,Recheck:0,SF:38|24|17|19|44|64|6
-	6|102,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil,
-	BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: 24b017bdb2e34ae8b18dac649537834a-20240229
-Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
-	(envelope-from <chentao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 619597757; Thu, 29 Feb 2024 17:29:41 +0800
-Received: from mail.kylinos.cn (localhost [127.0.0.1])
-	by mail.kylinos.cn (NSMail) with SMTP id 66BB4E000EBC;
-	Thu, 29 Feb 2024 17:29:41 +0800 (CST)
-X-ns-mid: postfix-65E04E85-347519924
-Received: from [172.20.15.254] (unknown [172.20.15.254])
-	by mail.kylinos.cn (NSMail) with ESMTPA id 40885E000EBC;
-	Thu, 29 Feb 2024 17:28:54 +0800 (CST)
-Message-ID: <d0ac1160-13ae-4753-a4c8-4d78056e923e@kylinos.cn>
-Date: Thu, 29 Feb 2024 17:28:53 +0800
+	s=arc-20240116; t=1709198972; c=relaxed/simple;
+	bh=9xrun28hvTbwUNlBt/r1pmmvIKLwTUek4EH0OAQeY6g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VBfh6Ouifu3t115kl31712MayuhAw6SSEud7d9634qwAIBkuJI1mDxOUSr/rC1KEJNmUZad//l3ap1Rc8CT4lAzObuddssj82oV6aI8ZScbQMHk7lpzgReGKjL/OfFKuW2ssrvQ31DwDQrE0RQIVy1A6LrnXcqhnN0C2emVZM/Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=d5lfH0Z1; arc=none smtp.client-ip=209.85.219.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dcdb210cb6aso778571276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 01:29:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709198970; x=1709803770; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9xrun28hvTbwUNlBt/r1pmmvIKLwTUek4EH0OAQeY6g=;
+        b=d5lfH0Z1sSIgs50yYIeIQKbO474hjQu/EvDmwE49iQgsPOInNaUQDOSA+AF4CXIpmy
+         Xb1yPwzdhzClmaM4/Sk0iXEUpm+yQhSsgDzdlqlLeZvTwcW3dE3W01U7sSMPo0shu7Fc
+         DvniCqD9rNmEwOafYGPLQlfQwYPz5sQoI9To5ytwb51myDjMz8imulc5asSJHGygEuRW
+         niIiT0OyykV5slPLPb3X8XhzLIz8bSeMBjuBVD+hqMi3M/ZVN6reQuYyVcKeW7hgzrHU
+         GJh75fl0fgOWApwNO5tjbiM5lwSFeovt7YtrIQmbdYcRK4gc52P62cd5kaS1C6Oqf5xj
+         tbMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709198970; x=1709803770;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9xrun28hvTbwUNlBt/r1pmmvIKLwTUek4EH0OAQeY6g=;
+        b=KQxoXj0LL+ImpjL5F1x/mJ5iwAt3/jByTeo31GcslhXJpeYXucoXbNIFtDI2Dw/jAW
+         u8R1Ht9odad5S57t7T1U3NX4UnvvLxTADs7gcmgNU5hnIKoaIXdmWJmE8LEnsMW4pSaN
+         jreZxjyXLZ8qW1ThIwH2mlFd5xCZxPXVXTLez8Xi8pN2T49MLsI97A1Z9IMds7L7AIo/
+         m0DFWWSV5PjZALt87lUeYJ/7J7RalbzOHdnPUxXAstkZByHcUtPJ/fU5Jp333uSiHYsy
+         CGwCzm6YjJnCNLbSz7THA5j1cUJy9ShulG5Y2hv6n5HxXap+0DDW6ZJVWTSeiX08SilQ
+         wejA==
+X-Forwarded-Encrypted: i=1; AJvYcCVpRZLMT7VM7Rh0eYdPiTq3u31lRPNMKqYcqtXydV2M71Ci5k+POp80IDtpj/Pou3CEUbt83m/9XlyGQ4z+njAY4bWu6+OMtBIQA8Bx
+X-Gm-Message-State: AOJu0YyFzTmaIhMNDX+KuF5LkbqcYOYBm3n83N2XK3tpbeNFE8srCwU5
+	UebQQR2CN0+PrWmpriK1+Q0G09W54SV5hvYvKBs7twrX3tO9V8l+n2OdzcNnbwJLyUlNx2EsHZ2
+	OGyE53UAZ8vK+xGVxxmX88o/J0xKvAvr54Kz2Ww==
+X-Google-Smtp-Source: AGHT+IFcIq6rOa8YJF/37W++7S7G6OEFznJJRmbQw71XiyjH8oKuNU7jWDHU4uKxFfdpywX9lIfEjnnzQ3AuD36QOkg=
+X-Received: by 2002:a25:81cd:0:b0:dcc:8c5e:7c9b with SMTP id
+ n13-20020a2581cd000000b00dcc8c5e7c9bmr1795722ybm.57.1709198970093; Thu, 29
+ Feb 2024 01:29:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] powerpc/mm: Code cleanup for __hash_page_thp
-To: Michael Ellerman <mpe@ellerman.id.au>,
- "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, npiggin@gmail.com,
- christophe.leroy@csgroup.eu, naveen.n.rao@linux.ibm.com
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20240125092624.537564-1-chentao@kylinos.cn>
- <87h6hva4b0.fsf@mail.lhotse>
- <f3b53f0e-58ce-4b2d-ba91-f347da73f9f3@kylinos.cn>
- <87jzmq5tjr.fsf@mail.lhotse> <87bk80kjup.fsf@kernel.org>
- <87wmqng5dz.fsf@mail.lhotse>
-Content-Language: en-US
-From: Kunwu Chan <chentao@kylinos.cn>
-In-Reply-To: <87wmqng5dz.fsf@mail.lhotse>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240228-mbly-gpio-v2-0-3ba757474006@bootlin.com> <20240228-mbly-gpio-v2-14-3ba757474006@bootlin.com>
+In-Reply-To: <20240228-mbly-gpio-v2-14-3ba757474006@bootlin.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Thu, 29 Feb 2024 10:29:19 +0100
+Message-ID: <CACRpkdYavroWGW5HXLJATF0UuffQYnyoQYnO=aV364=XA7ARsg@mail.gmail.com>
+Subject: Re: [PATCH v2 14/30] gpio: nomadik: add #include <linux/slab.h>
+To: =?UTF-8?B?VGjDqW8gTGVicnVu?= <theo.lebrun@bootlin.com>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Philipp Zabel <p.zabel@pengutronix.de>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-mips@vger.kernel.org, Gregory CLEMENT <gregory.clement@bootlin.com>, 
+	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Thanks all for the reply.
-On 2024/2/29 14:18, Michael Ellerman wrote:
-> Aneesh Kumar K.V <aneesh.kumar@kernel.org> writes:
->> Michael Ellerman <mpe@ellerman.id.au> writes:
->>> Kunwu Chan <chentao@kylinos.cn> writes:
->>>> On 2024/2/26 18:49, Michael Ellerman wrote:
->>>>> Kunwu Chan <chentao@kylinos.cn> writes:
->>>>>> This part was commented from commit 6d492ecc6489
->>>>>> ("powerpc/THP: Add code to handle HPTE faults for hugepages")
->>>>>> in about 11 years before.
->>>>>>
->>>>>> If there are no plans to enable this part code in the future,
->>>>>> we can remove this dead code.
->>>>>
->>>>> I agree the code can go. But I'd like it to be replaced with a comment
->>>>> explaining what the dead code was trying to say.
->>>
->>>> Thanks, i'll update a new patch with the following comment:
->>>>       /*
->>>>       * No CPU has hugepages but lacks no execute, so we
->>>>       * don't need to worry about cpu no CPU_FTR_COHERENT_ICACHE feature case
->>>>       */
->>>
->>> Maybe wait until we can get some input from Aneesh. I'm not sure the
->>> code/comment are really up to date.
->>
->> How about?
->>
->> modified   arch/powerpc/mm/book3s64/hash_hugepage.c
->> @@ -58,17 +58,13 @@ int __hash_page_thp(unsigned long ea, unsigned long access, unsigned long vsid,
->>   		return 0;
->>   
->>   	rflags = htab_convert_pte_flags(new_pmd, flags);
->> +	/*
->> +	 * THPs are only supported on platforms that can do mixed page size
->> +	 * segments (MPSS) and all such platforms have coherent icache. Hence we
->> +	 * don't need to do lazy icache flush (hash_page_do_lazy_icache()) on
->> +	 * noexecute fault.
->> +	 */
-> 
-I'll use this comment in v2 patch.
-And add two Suggested-by: label for you.
+On Wed, Feb 28, 2024 at 12:28=E2=80=AFPM Th=C3=A9o Lebrun <theo.lebrun@boot=
+lin.com> wrote:
 
-> Yeah thanks that looks good.
-> 
-> It could say "see eg. __hash_page_4K()", but that's probably unnecessary
-> as it mentions hash_page_do_lazy_icache(), and anyone interested is just
-> going to grep for that anyway.
-> 
-> cheers
--- 
-Thanks,
-   Kunwu
+> Add linux/slab.h header include for GFP flags.
+>
+> Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
 
+Patch applied!
+
+Yours,
+Linus Walleij
 
