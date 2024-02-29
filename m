@@ -1,87 +1,174 @@
-Return-Path: <linux-kernel+bounces-86668-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86669-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED11186C8B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:03:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 333E786C8BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:03:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A467C2890D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:03:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC5621F22B04
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:03:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5EB07CF0E;
-	Thu, 29 Feb 2024 12:03:05 +0000 (UTC)
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 615FB7CF1E;
+	Thu, 29 Feb 2024 12:03:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s1ShDzzz"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BD467C6EB
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 12:03:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97EC07C6CD;
+	Thu, 29 Feb 2024 12:03:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709208185; cv=none; b=mbxh0MAvIH8zPatu4YnjJuzPksfDcSYP4js45RvKv07V9ukT85u3ijvoJnIUUjxXNkmzorQFycqIytAqAoq0sUqdzXthiR4dYpBxmZIKihuoKjTKg+GPQhxXBbLGMG8V3dQASaAkNz9dNUigkmEOwKCztDv3a18+aYsN0IatAAI=
+	t=1709208201; cv=none; b=ZQ6RQAhB/umnPleqq+MWYIuBxVZUa+tRCqKrvSIQ7tvow42XoWEM/sXEtgfxdW9Ncm5NFNsLsfxQW88XVKicB5AC6QyFFvaVpuA+jg2dlSFAA//rvCxqVUFqjZ1X30pyHWy9Fk1ZeyItXcka0TA+ALavNr3s0AIOQw2ygYxhbo0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709208185; c=relaxed/simple;
-	bh=lMPSVS+Ff+eSQW5IQ85mCqgKGlP+/oKX/d2gKRKPGHA=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=q80w3VlR2i9APdGoe8bTdoSGRAuTrZtytVw+07mR2m1I2MxfJ+W3yJuFsJfNFdxlbTMTbZrmD8hmxF8SQUZvDmwvkDWucsqQhuIK/bRsiYBnwgKM0psf+wBOA04WMZTxPf64UB27nnqqhi+2IRm1R9U8QDc4FDr8cMxn4mBU8W8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-36516d55c5fso9761005ab.2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 04:03:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709208183; x=1709812983;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=n5LoiwdUnw920DyCls+ciMkCvcCeek+KtrhUqleK0lc=;
-        b=JmP/W2mxNNO44zJL9+q9u5tenCQeo1mHP+4EFQj6uXLvk/QhOD+hqsNjxWxjEEnaTN
-         PCRXb9dQy4j8Cjb5l4glPha+fR7iwn38Xxgb3bF+x3IAAEYW332H+yoRCHlDgDHeM83b
-         tP7k8RcLdLvwaL/9+9i3VhB91zqLYojPsxnezpge9XugUiz3g61BUjIuisB+mBuKAGny
-         +rl3yIP14AGErHdf/stjD1xP36r2FuQ9HG9TjDoJDyUw/VBBI8y3qAH/udRNtyMhbSnE
-         5+j3sXPzpsLiFyDT+aSVfepyo3WGZiOhT6E6uuzZ5aKZVTX1vUWsxpOtOyDUoDB9JN4A
-         4NWA==
-X-Forwarded-Encrypted: i=1; AJvYcCWhr1ox6vGQ2U8DIeYJ31dQ4f0sTeOXPP0ozMq17qk0luFcEY5D8VWFjsJQ/CHGgekiNWCmkD0TDFzMO4C/FIug7gBsPa+JfnrwDaci
-X-Gm-Message-State: AOJu0YwcLc6Gvw6He0r/LmXIwzj1Biw5Yym/WqCTfXdIe/hbER+khRxK
-	iIgR2CSMOKqjhsrqW+NbywpcjgbZbAK967FwFpTDgooZTJy0dvYF0ZYT4ULb1abHy53p+q7vi8e
-	M+uLpFd0HGXldS8GfqBIvc0r+JjM677pfksVLoseJNsPd4PVC9IbHsqA=
-X-Google-Smtp-Source: AGHT+IGlMQBSji06sjVA7p1h0EG76dbjFPJxBDgSr8Ip/ElUl5cdzcJu1jbnps7xRJpnt3C9tbkzVkqfLrnkja0wM5yoYV+sKRwC
+	s=arc-20240116; t=1709208201; c=relaxed/simple;
+	bh=MO1I6BRIe1jdPOHgt6kCxCyKZVY5TplB/mzeOM1PvPU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SRozHjgLDA8RrMd1R+ilFR9RQWxR3nFchV+LnK+iVRcCwmdjQZTD+JoGNWYQnVaxXH8j3FKX/YImQslpYisVtDYezg80cYP4bGGqC6li/4seTrqbVtVEWmtZjWTpxq9/ZxlxZnJp6Ty8UyhQLnMtlqOoT5ZPlOTVysWRukMSJkQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s1ShDzzz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2952DC433F1;
+	Thu, 29 Feb 2024 12:03:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709208201;
+	bh=MO1I6BRIe1jdPOHgt6kCxCyKZVY5TplB/mzeOM1PvPU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=s1ShDzzzfN+xUuHbXC9aizECOmGkGJG/LFclCDl4pYN5UpX/yGUpfTlPMaImiUNKM
+	 oj9a92rO4VCDu9Hwd2aWTWsPo3RM3Hup0gfJycu+xaAmRLekbhAGg2H1YV17dvyDz3
+	 ZmK9g1u1qaSuidr3FZsOPHoURQO9EqfMf5ZGo9MYL8RbA6x/nLhKVY74k8f8GpzCvQ
+	 YX9s3hMbmmnuKHmTW3XMmtv3oOQFyVoTYzmIc6mWTZJRgnLb/YqMy2vQxZ3NJANPvj
+	 2vVQNDlONLU6lmHldLabcg9x/fNocjtwTV/fXkuY0+cdlSBUuQsigsfssfN1xt1YXk
+	 n6zxLUn+A880A==
+Date: Thu, 29 Feb 2024 13:03:14 +0100
+From: Niklas Cassel <cassel@kernel.org>
+To: Manivannan Sadhasivam <mani@kernel.org>
+Cc: Frank Li <Frank.li@nxp.com>, Niklas Cassel <Niklas.Cassel@wdc.com>,
+	"imx@lists.linux.dev" <imx@lists.linux.dev>,
+	Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Jon Mason <jdmason@kudzu.us>,
+	"open list:PCI DRIVER FOR SYNOPSYS DESIGNWARE" <linux-pci@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] PCI: dwc: Fix BAR0 wrong map to iATU6 after root
+ complex reinit endpoint
+Message-ID: <ZeBygq5FngE2vlL-@fedora>
+References: <20231219044844.1195294-1-Frank.Li@nxp.com>
+ <ZYFrUWM7JXdv7rtb@x1-carbon>
+ <ZYGmpaf18pJgM/qj@lizhi-Precision-Tower-5810>
+ <ZYGq6RdCfdhXFF/9@x1-carbon>
+ <ZZ1Pj3MvhQNMnP8M@x1-carbon>
+ <ZbFEafUmqmE0nrPx@lizhi-Precision-Tower-5810>
+ <20240130062938.GB32821@thinkpad>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d87:b0:365:2f19:e591 with SMTP id
- h7-20020a056e021d8700b003652f19e591mr151028ila.3.1709208183174; Thu, 29 Feb
- 2024 04:03:03 -0800 (PST)
-Date: Thu, 29 Feb 2024 04:03:03 -0800
-In-Reply-To: <tencent_66D84A6C740977ED66023CCD3716963E3709@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009afc6f0612840aab@google.com>
-Subject: Re: [syzbot] [media?] [usb?] INFO: task hung in vb2_video_unregister_device
-From: syzbot <syzbot+2622b51b35f91a00ea18@syzkaller.appspotmail.com>
-To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240130062938.GB32821@thinkpad>
 
-Hello,
+On Tue, Jan 30, 2024 at 11:59:38AM +0530, Manivannan Sadhasivam wrote:
+> On Wed, Jan 24, 2024 at 12:10:01PM -0500, Frank Li wrote:
+> > On Tue, Jan 09, 2024 at 01:52:15PM +0000, Niklas Cassel wrote:
+> > > Hello Frank,
+> > > 
+> > > On Tue, Dec 19, 2023 at 03:38:33PM +0100, Niklas Cassel wrote:
+> > > > On Tue, Dec 19, 2023 at 09:20:21AM -0500, Frank Li wrote:
+> > > > > On Tue, Dec 19, 2023 at 10:07:14AM +0000, Niklas Cassel wrote:
+> > > > > > On Mon, Dec 18, 2023 at 11:48:43PM -0500, Frank Li wrote:
+> > > > > > > dw_pcie_ep_inbound_atu()
+> > > > > > > {
+> > > > > > > 	...
+> > > > > > > 	if (!ep->bar_to_atu[bar])
+> > > > > > > 		free_win = find_first_zero_bit(ep->ib_window_map, pci->num_ib_windows);
+> > > > > > > 	else
+> > > > > > > 		free_win = ep->bar_to_atu[bar];
+> > > > > > > 	...
+> > > > > > > }
+> > > > > > > 
+> > > > > > > The atu index 0 is valid case for atu number. The find_first_zero_bit()
+> > > > > > > will return 6 when second time call into this function if atu is 0. Suppose
+> > > > > > > it should use branch 'free_win = ep->bar_to_atu[bar]'.
+> > > > > > > 
+> > > > > > > Change 'bar_to_atu' to s8. Initialize bar_to_atu as -1 to indicate it have
+> > > > > > > not allocate atu to the bar.
+> > > > > > > 
+> > > > > > > Reported-by: Niklas Cassel <Niklas.Cassel@wdc.com>
+> > > > > > > Close: https://lore.kernel.org/linux-pci/ZXt2A+Fusfz3luQV@x1-carbon/T/#u
+> > > > > > > Fixes: 4284c88fff0e ("PCI: designware-ep: Allow pci_epc_set_bar() update inbound map address")
+> > > > > > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > > > > > > ---
+> > > > > > > 
+> > > > > > > Notes:
+> > > > > > >     @Niklas:
+> > > > > > >     	I have not test your case. I should be equal to previous's fix in
+> > > > > > >     mail list.
+> > > > > > 
+> > > > > > Hello Frank,
+> > > > > > 
+> > > > > > Thank you for sending a proper fix for this!
+> > > > > > 
+> > > > > > Personally, I slightly prefer your fix that saves the iatu index + 1, and
+> > > > > > keeps 0 to mean unused. That way, you don't need the memset, and you don't
+> > > > > > need to change the type to signed, but either way is fine by me, so:
+> > > > > 
+> > > > > index + 1 don't match hardware iATU index. It will be confused because
+> > > > > other parts is 0 based.
+> > > > > 
+> > > > > So I choose "-1" as free iATU.
+> > > > 
+> > > > A s8 can hold a max value of 127.
+> > > > CX_ATU_NUM_OUTBOUND_REGIONS seems to be 0-255.
+> > > > 
+> > > > Since the DWC code can be synthesized with 256 iATUs,
+> > > > your code will not work on systems with 128 or more iATUs.
+> > > > 
+> > > > If we continue to use a u8, and offset the saved value by one,
+> > > > we will at least be able to support 255-1 == 254 iATUs.
+> > > 
+> > > Do you plan to send out a v2?
+> > 
+> > @mani:
+> > 	Do you have any comments about this fixes except u8's problem?
+> 
+> IMO, the core issue lies in the EPF driver. It calls set_bar() during init, but
+> it is not clearing the BARs with clear_bar() during LINK_DOWN.
+> 
+> If the BARs were cleared properly, then we would not see this issue.
+> 
+> I'm planning to do a cleanup of the behavior of EPF with core_init_notifier and
+> it should get addressed there.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Hello Mani, Frank,
 
-Reported-and-tested-by: syzbot+2622b51b35f91a00ea18@syzkaller.appspotmail.com
+Please reconsider respinning this.
 
-Tested on:
+I think that the invalid usage of find_first_zero_bit() is very bad,
+because other people might copy the find_first_zero_bit() usage here.
 
-commit:         805d849d Merge tag 'acpi-6.8-rc7' of git://git.kernel...
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=126f27f6180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e412105d06db24c2
-dashboard link: https://syzkaller.appspot.com/bug?extid=2622b51b35f91a00ea18
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=1429a7aa180000
 
-Note: testing is done by a robot and is best-effort only.
+find_first_zero_bit() can (and will) return 0, so this check is just bad:
+
+if (!ep->bar_to_atu[bar])
+        free_win = find_first_zero_bit(ep->ib_window_map, pci->num_ib_windows);
+
+..
+
+ep->bar_to_atu[bar] = free_win;
+set_bit(free_win, ep->ib_window_map);
+
+
+
+No matter which code Mani adds that cleans up the BARs, will not change that
+the logic is this function is just broken.
+
+
+Kind regards,
+Niklas
 
