@@ -1,75 +1,73 @@
-Return-Path: <linux-kernel+bounces-86904-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86905-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7475886CC99
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:14:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 98A3786CC9D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:14:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 16CEC1F2379B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:14:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 134791F2364C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:14:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ADC01419A9;
-	Thu, 29 Feb 2024 15:14:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A0381468E6;
+	Thu, 29 Feb 2024 15:14:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="RMR7OVga"
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="H0N4ncoG"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80EEC13958E
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 15:14:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 684C313B7A1
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 15:14:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709219656; cv=none; b=LUaGFWo6B4HXOl813CmarncXB3q7Gh0ukKwgrzKgnb6kr2hggqk0dsYwnDDX1IzsLkFxyYx+JcFhrzclxXKplhEUAD4WDZN/YDap5IZilrcKkLSMCYwVBx4S6AJHhtiPXKaB2Hpp8aZRMiEcXUJiEA11ThFD59Pw+6nao34AM2Q=
+	t=1709219658; cv=none; b=BHvSH+lSAbAL1LahNm5qs74RtU3B6NYRMiZzwe71OBKEIndzYdld0sX9l6sHeRxlyzb6eEG5lTPgztd+FP55jCd1rN/mbrEMmjajFoJBCp+nggo3wA1QMGXpbSIlWcEgccBsWa037zH9xQ7/7vKAd2G79ifnOkxlAZQf/kgaSCk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709219656; c=relaxed/simple;
-	bh=qCUSI7hzEBIgieQ+TKOpTD8trXzeXh6ezG4o/l5h41U=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=ay3LszPo3Giu4WeQf0JhJXqy8zq/9XjuqgE+9hdFeeCdhdsGrUOhF1r9raI5AWEFj1JeItEF+OITJ6sKkF3Qu6fA0pqu6lRws9PDcRS6HpCC3Ac+INVL8oMYZJH2QKQe7+Jn59ZBL6Ly/o0eeKmljMdzYgB1wY/haz/K824uj+4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=RMR7OVga; arc=none smtp.client-ip=209.85.128.51
+	s=arc-20240116; t=1709219658; c=relaxed/simple;
+	bh=J2+EJKa/LhsnFhhJ5fpe9V2hdGoZmNZtBd3gXOCIJf4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Cb9mi85NwJ64EnsPICPFSNrvz1+GcQ7ECdI3bJN4lDU6oonrx5pU/LGSBqjMOn5WwEPzIKNFM3Ht/wubuo6U1ozNlP5S19gL+JqQ0ss/LBsVvG3fXjE4dInsZkAkSNOy4k/71DKlppw6rnrU4z9NXFKQPl7mHsPc8GQ2/hTPmw4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=H0N4ncoG; arc=none smtp.client-ip=209.85.208.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-412c2c635bbso1733305e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 07:14:14 -0800 (PST)
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-564372fb762so1615600a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 07:14:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709219653; x=1709824453; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:references:cc:to:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BXEUZD7HIc5+BDhLp1eCYIkSCHTY2l0iyo8ZM3GFsdA=;
-        b=RMR7OVgahViloB+vMkQvVHYjiTfFAJt9iEfF0NJFuCYdrhmhE48CzzGBjZC93mCBKS
-         lAxD4bfGrRcK2HCh3tY9eVBJVqmvH7rAVuPvlhLsGbFhYtYyY0wXLGHIiZKrAX5NBBCg
-         coiY/LEEZvOLmIcE9CViawHiYr9hogoPD85i3QLgOza/I7eJRhbgFkts28edK1UWCCEB
-         vpiaaRVh2AKBZijpot467jZVrKVv5rwUwwFWf5/rv8zNlb3P/caKdChv1OAZgJ3sM4x/
-         1UKhwemSa8Tu8Z1gvOlM8QiBmmaqgGbK8eZh+eQvEZ8dZAHyh8zXDkXagDEBKAxkBRxy
-         eseA==
+        d=linaro.org; s=google; t=1709219655; x=1709824455; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=eo9zvdjqkFPJ83giW+vsMkDo3CeUO+iEpgJ3P4LShz4=;
+        b=H0N4ncoG1z8yCSyYQ0qvRpFmfa7ji06oJA4DJLsrnLORpDOwS4LqXBRSRWIGUXIPmG
+         eRO3eIHjqfupHnsn08A8dU+JLSJPDYxrgzsUWjawXETGcftlQF3j5lBnKnUctVYUEGqx
+         9cSrhcP2iTkkXHFQG88/CdSwXmGr2+tT2fBVLQX5HcL0ciaE5YN7Bh3So2ZvN47ZAtoA
+         OzINYbf1O1HSExZBkhGSV31UD+MVL04yUqfGR9yRkMvBzZHtIeeGW0oII9jZXFCfI+ZR
+         mTnRU8rZwC0roNlhpZ40saw10f+xAd8GL6em70yeDa2v15BCpXEFZAKF8EBK5CUSlFfd
+         PEvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709219653; x=1709824453;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:references:cc:to:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=BXEUZD7HIc5+BDhLp1eCYIkSCHTY2l0iyo8ZM3GFsdA=;
-        b=O66zxeUTorCnBONLgJWUTZhFrzNNpHNtnzlgyTKznXcPo37oTLvCOwZlqsTb2zENfU
-         hfTID3RKlh+KSNUkYl3KHw7rDj8NMFxWi1VIahvQ/rdPKG5YZKtsUdjykd2V9M6hooa3
-         8O2qPj8UcT8LRwTOXa5DOWvYYwM3/hMbpzI56+NTHnPrB5uVjEHHLVsD9DWutaDaR1/j
-         /kRS8ByncCdjd9eKGzq/fjZxaBwVynFmGPwE6mDwfq5FkMtaYuQkN1AVD54L8PdrTa1O
-         y2GTh/4rk8/rO00FPRz+86Eye0tNSeJzEeaAEt0AUjvm5B4ZaHNnQ1oToilWujTQ2baT
-         VqAA==
-X-Forwarded-Encrypted: i=1; AJvYcCWr0bOKNqyThhyvH/QU1AiphJdtwGQ39ZwgMmVjU6WxtamQKWqLUzYtiIy9Ej+JC/M0UT359/GRMrEUqsjWrcWFir2mmutMO3k/KFnw
-X-Gm-Message-State: AOJu0YwWJRSM4GV717GUK1nOTKdZt1KUd5UrWl/S5gXYBRHWeEogDB6f
-	dlkndjtgsg2fDqfKXzHHTgKThzRx1d34zXVhxGrNoU5zf7Oc/irTAdlahmmtmCo=
-X-Google-Smtp-Source: AGHT+IEiNaycCnI+8/fdk5xkL9CXSWuu/KBH0Xt6zhKFcDq5ZtgRezOd+aaT2eCbXnVsaGyxIl30yA==
-X-Received: by 2002:a05:600c:4ec7:b0:412:a206:ad3c with SMTP id g7-20020a05600c4ec700b00412a206ad3cmr2261718wmq.3.1709219652688;
-        Thu, 29 Feb 2024 07:14:12 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:982:cbb0:651:5318:b12c:be82? ([2a01:e0a:982:cbb0:651:5318:b12c:be82])
-        by smtp.gmail.com with ESMTPSA id h3-20020adfa4c3000000b0033dd2a7167fsm2010514wrb.29.2024.02.29.07.14.11
+        d=1e100.net; s=20230601; t=1709219655; x=1709824455;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eo9zvdjqkFPJ83giW+vsMkDo3CeUO+iEpgJ3P4LShz4=;
+        b=vTTjIy1N2zf+xlUdDjxfUplsimrutKtikJmM+rgoKaBgFvSb2/CgW0kp8IKZu1c10p
+         af8rzB8WZvtJRq/oO44rZu2FvrxYb4spa7GuZZPX68iuwXXdv4y1fyLMi2hGuaPGi+DF
+         vZAZNx4Oi7enDMhhVmeSkUbd7PsoVvp5yHQGQ0CLVLLM7Zz8nViVIzayo/MWrN5Hsj/Z
+         eNCI+DvuM0SfbTR5v77pnTD0RS6gJ7PqCO3rqZXDcrlOqxVTe1rrXyka2u27w4V2jvZe
+         Soz4rZbCVCC/lE+ogkNogqPMgHNNsDXqNlhuOFLZUSMUBcqhwkRR2iDRFdWRjK1tjylx
+         f95w==
+X-Forwarded-Encrypted: i=1; AJvYcCUclGZQneKqb5OlqI55Jq9nyRIIcp5sLOZTjESzxn1np86XglqRqfr7Z/hSiVbOySBVIDai/H+mWryE+uLU90nCoQP9hvwfOgrfxWHb
+X-Gm-Message-State: AOJu0Yzwb466753TWn1/XHoCLIpd4pw6FhsqTTOXWAKV49wqLOBS3hmt
+	6NLJxGlv4n+sJru4dwhqTHD/CChaosRu2EhWp7xr+CNOTuKN90QoiBbrErxH/3U=
+X-Google-Smtp-Source: AGHT+IEYwCMgFf43wkgwHaMsnM9DFNFOZq8zz4narcABzEQoPafYilUyOZTwQ1OgcjlI99Buw6FdWQ==
+X-Received: by 2002:a17:906:f1cc:b0:a3f:7d84:4d2e with SMTP id gx12-20020a170906f1cc00b00a3f7d844d2emr1664542ejb.30.1709219654865;
+        Thu, 29 Feb 2024 07:14:14 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id wb4-20020a170907d50400b00a3ee5c19ee5sm769010ejc.109.2024.02.29.07.14.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Feb 2024 07:14:12 -0800 (PST)
-Message-ID: <456a6aa7-60e0-4a56-9efa-731f717012ac@linaro.org>
-Date: Thu, 29 Feb 2024 16:14:10 +0100
+        Thu, 29 Feb 2024 07:14:14 -0800 (PST)
+Message-ID: <4a34f281-156f-4631-ad1b-40140180f76b@linaro.org>
+Date: Thu, 29 Feb 2024 16:14:13 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,167 +75,125 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-From: "neil.armstrong@linaro.org" <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v4 00/20] Support more Amlogic SoC families in crypto
- driver
-To: Alexey Romanov <avromanov@salutedevices.com>,
- Corentin Labbe <clabbe.montjoie@gmail.com>
-Cc: "clabbe@baylibre.com" <clabbe@baylibre.com>,
- "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
- "davem@davemloft.net" <davem@davemloft.net>,
- "robh+dt@kernel.org" <robh+dt@kernel.org>,
- "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
- "conor+dt@kernel.org" <conor+dt@kernel.org>,
- "khilman@baylibre.com" <khilman@baylibre.com>,
- "jbrunet@baylibre.com" <jbrunet@baylibre.com>,
- "martin.blumenstingl@googlemail.com" <martin.blumenstingl@googlemail.com>,
- "vadim.fedorenko@linux.dev" <vadim.fedorenko@linux.dev>,
- "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
- "linux-amlogic@lists.infradead.org" <linux-amlogic@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, kernel <kernel@sberdevices.ru>
-References: <20240212135108.549755-1-avromanov@salutedevices.com>
- <ZcsYaPIUrBSg8iXu@Red>
- <20240215104719.njq6ie2niisntcnv@cab-wsm-0029881.sigma.sbrf.ru>
- <ZdL713ae1swwTU_B@Red> <20240228133656.24bic6djmjvkill7@cab-wsm-0029881>
- <Zd-VVGXHoH2ikbmV@Red> <20240229025337.ftbvoaafmu5zvyha@cab-wsm-0029881>
-Content-Language: en-US, fr
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <20240229025337.ftbvoaafmu5zvyha@cab-wsm-0029881>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH v7 06/11] dt-bindings: usb: ci-hdrc-usb2-imx: add
+ compatible and clock-names restriction for imx93
+Content-Language: en-US
+To: Xu Yang <xu.yang_2@nxp.com>, gregkh@linuxfoundation.org,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, shawnguo@kernel.org,
+ conor+dt@kernel.org
+Cc: s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+ linux-imx@nxp.com, peter.chen@kernel.org, jun.li@nxp.com,
+ linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240228113004.918205-1-xu.yang_2@nxp.com>
+ <20240228113004.918205-6-xu.yang_2@nxp.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240228113004.918205-6-xu.yang_2@nxp.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 29/02/2024 14:05, Alexey Romanov wrote:
-> Hello!
+On 28/02/2024 12:29, Xu Yang wrote:
+> The i.MX93 needs a wakup clock to work properly. This will add compatible
+> and restriction for i.MX93 platform.
 > 
-> On Wed, Feb 28, 2024 at 09:19:32PM +0100, Corentin Labbe wrote:
->> Le Wed, Feb 28, 2024 at 01:37:02PM +0000, Alexey Romanov a 'ecrit :
->>> Hello,
->>>
->>> On Mon, Feb 19, 2024 at 07:57:27AM +0100, Corentin Labbe wrote:
->>>> Le Thu, Feb 15, 2024 at 10:47:24AM +0000, Alexey Romanov a 'ecrit :
->>>>> On Tue, Feb 13, 2024 at 08:21:12AM +0100, Corentin Labbe wrote:
->>>>>> Le Mon, Feb 12, 2024 at 04:50:48PM +0300, Alexey Romanov a 'ecrit :
->>>>>>> Hello!
->>>>>>>
->>>>>>> This patchset expand the funcionality of the Amlogic
->>>>>>> crypto driver by adding support for more SoC families:
->>>>>>> AXG, G12A, G12B, SM1, A1, S4.
->>>>>>>
->>>>>>> Also specify and enable crypto node in device tree
->>>>>>> for reference Amlogic devices.
->>>>>>>
->>>>>>> Tested on AXG, G12A/B, SM1, A1 and S4 devices via
->>>>>>> custom tests [1] and tcrypt module.
->>>>>>>
->>>>>>> ---
->>>>>>>
->>>>>>
->>>>>> added patchs up to  "drivers: crypto: meson: process more than MAXDESCS descriptors"
->>>>>
->>>>> Including this patch or not?
->>>>
->>>> The crash start with "drivers: crypto: meson: move algs definition and cipher API to cipher.c"
->>>
->>> Unfortunately I was unable to reproduce this. I use Khadas Vim1 board
->>> and my custom tests (https://gist.github.com/mRrvz/3fb8943a7487ab7b943ec140706995e7).
->>> Tried both build as module and built-in.
->>>
->>> Can you, please, give more information? Maybe your test cases?
->>
->> My test case is simple, simply load the driver.
->>
->> The problem is that you moved the algs[i].mc = mc after the register of algs (in drivers: crypto: meson: move algs definition and cipher API to cipher.c)
->> Test could happen as soon the register is done and so mc is deferenced.
+> Signed-off-by: Xu Yang <xu.yang_2@nxp.com>
 > 
-> Yeah, you are right. Will fix it. Thank you.
+> ---
+> Changes in v2:
+>  - no changes
+> Changes in v3:
+>  - add clocks restriction
+> Changes in v4:
+>  - use 'contains' rather 'items'
+> Changes in v5:
+>  - rename clock name
+> Changes in v6:
+>  - new patch based on ci-hdrc-usb2-imx.yaml
+> Changes in v7:
+>  - no changes
+> ---
+>  .../bindings/usb/ci-hdrc-usb2-imx.yaml        | 34 ++++++++++++++-----
+>  1 file changed, 26 insertions(+), 8 deletions(-)
 > 
->>
->> Since you didnt hit the case, I suspect you didnt test the driver as module.
-> 
-> No, I test the driver as module.
-> I think the problem is that on my system no one uses this crypto backend
-> outside of my tests module, unlike your system.
+> diff --git a/Documentation/devicetree/bindings/usb/ci-hdrc-usb2-imx.yaml b/Documentation/devicetree/bindings/usb/ci-hdrc-usb2-imx.yaml
+> index a4730a2393e6..a2932af2c09b 100644
+> --- a/Documentation/devicetree/bindings/usb/ci-hdrc-usb2-imx.yaml
+> +++ b/Documentation/devicetree/bindings/usb/ci-hdrc-usb2-imx.yaml
+> @@ -40,6 +40,7 @@ properties:
+>            - enum:
+>                - fsl,imx8mm-usb
+>                - fsl,imx8mn-usb
+> +              - fsl,imx93-usb
+>            - const: fsl,imx7d-usb
+>            - const: fsl,imx27-usb
+>        - items:
+> @@ -186,14 +187,31 @@ allOf:
+>                - const: ahb
+>                - const: per
+>        else:
+> -        # other imx Socs only need one clock
+> -        properties:
+> -          clocks:
+> -            minItems: 1
+> -            maxItems: 1
+> -          clock-names:
+> -            minItems: 1
+> -            maxItems: 1
 
-I reproduced the issue, testing each commit with enabled runtime cryto tests:
+Just make the list explicit in the first place. Don't add lines in one
+patch which is immediately fixed/dropped/replaced.
 
-I get the following when applying "drivers: crypto: meson: introduce hasher":
-[    4.514031] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
-[    4.517193] Mem abort info:
-[    4.519934]   ESR = 0x0000000086000004
-[    4.523641]   EC = 0x21: IABT (current EL), IL = 32 bits
-[    4.528903]   SET = 0, FnV = 0
-[    4.531920]   EA = 0, S1PTW = 0
-[    4.535025]   FSC = 0x04: level 0 translation fault
-[    4.539856] [0000000000000000] user address but active_mm is swapper
-[    4.546155] Internal error: Oops: 0000000086000004 [#1] PREEMPT SMP
-[    4.552359] Modules linked in:
-[    4.555376] CPU: 2 PID: 77 Comm: cryptomgr_test Not tainted 6.8.0-rc6-next-20240229-g2296d426c21a #105
-[    4.564608] Hardware name: Libre Computer AML-S905X-CC (DT)
-[    4.570125] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[    4.577025] pc : 0x0
-[    4.579178] lr : ahash_def_finup+0x12c/0x14c
-[    4.583406] sp : ffff8000825037a0
-[    4.586683] x29: ffff8000825037a0 x28: 0000000000000001 x27: ffff000007ab8060
-[    4.593758] x26: ffff800082503958 x25: 0000000000000400 x24: ffff800082503918
-[    4.600830] x23: 0000000000000820 x22: ffff0000048ec390 x21: ffff000003d9e200
-[    4.607903] x20: ffff0000048ee300 x19: ffff000003d9e400 x18: 0000000000000020
-[    4.614976] x17: 00000000b5f74d5b x16: ffff800081bbbc60 x15: ffffffffffffffff
-[    4.622048] x14: ffff0000049fb380 x13: 0000000000000000 x12: 0000000000000000
-[    4.629120] x11: ffff800082503778 x10: ffff800082503780 x9 : 0000000000001388
-[    4.636193] x8 : ffff800082503988 x7 : fefefefefefefefe x6 : 0101010101010101
-[    4.643265] x5 : ffff0000049fb300 x4 : ffff00007f2d5830 x3 : 0000000000000000
-[    4.650338] x2 : 0000000000000000 x1 : ffff0000048ee300 x0 : ffff000003d9e200
-[    4.657411] Call trace:
-[    4.659823]  0x0
-[    4.661633]  crypto_ahash_finup+0x38/0x44
-[    4.665602]  test_ahash_vec_cfg+0x680/0x7dc
-[    4.669742]  test_hash_vec+0xac/0x1ec
-[    4.673364]  __alg_test_hash+0x158/0x308
-[    4.677246]  alg_test_hash+0xfc/0x1a0
-[    4.680868]  alg_test.part.0+0x51c/0x524
-[    4.684750]  alg_test+0x20/0x64
-[    4.687854]  cryptomgr_test+0x24/0x44
-[    4.691477]  kthread+0x118/0x11c
-[    4.694668]  ret_from_fork+0x10/0x20
-[    4.698214] Code: ???????? ???????? ???????? ???????? (????????)
-[    4.704247] ---[ end trace 0000000000000000 ]---
+> +        # imx93 Soc needs two clocks
+> +        if:
 
-Please make sure every single commit builds without error and doesn't regress at runtime on existing platforms.
+No, no. No if:else:if:else:if:else. Unreadable and unmaintainable.
 
-Thanks,
-Neil
 
-> 
->>
->> Regards
-> 
+Best regards,
+Krzysztof
 
 
