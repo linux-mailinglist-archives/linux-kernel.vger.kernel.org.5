@@ -1,245 +1,118 @@
-Return-Path: <linux-kernel+bounces-86082-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86083-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7206D86BF55
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 04:09:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2648E86BF5A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 04:13:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 007351F23F2C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 03:09:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 162CEB2267B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 03:13:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B3A13984D;
-	Thu, 29 Feb 2024 03:08:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FB9936B16;
+	Thu, 29 Feb 2024 03:12:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q78TqmbO"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b="l5JxK9ba"
+Received: from mail-oa1-f49.google.com (mail-oa1-f49.google.com [209.85.160.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED2A3383A6;
-	Thu, 29 Feb 2024 03:08:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C48B2E851
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 03:12:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709176093; cv=none; b=siaOKr5FmKb8yGyLOoek4FgxE3xIuBt9vh0khR++bteAP3dHfAc5DrDbSMB5JKld4QwWmvh/OvW4EkMwq/lJuTNuVbjWAoqb0zqW3lqTQhc2dDPjoPGmQQ8Xvc8PwLuCKxRnOTRrw4CKSksdWgBA2c+ouhB1v7muHP2U3jLv2UI=
+	t=1709176375; cv=none; b=iqXqvaTU2oEtmr/wVebUeQgYFE58aIDM2zHdtQvRpgnNIaZaeKphinaQNjmkKEVdRUrmv4BMIQNFtqSIflAR5e+WGsYJCwuE1ynIbruwb9ki5vxyYEdo+HVNhhhlKdaAKm2Ct/IWPEcGT/QGKCrTbwX/4UyWwhoVq141Ofy4vrw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709176093; c=relaxed/simple;
-	bh=h8Fxr5NUFoLpC353g62oc1r7IAnypkRWof+Jd0EtDyM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KuHMLKHS4/+6f3N10eXvj3tbS1RJoua26rKiOglO5TizT5QO2LwW+W2aaxixdoXXu/HLID+BpnUHA+oWkTLiw9nUTRpNww5g+Wg5J85h6+/ugvjiuqKP6FB9fHU8cKB71DzFgr6m9Aa5jXdUv94AwE9nYDyICtsGNtXQ4RUDT6I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q78TqmbO; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-412ae15b06fso2847175e9.1;
-        Wed, 28 Feb 2024 19:08:11 -0800 (PST)
+	s=arc-20240116; t=1709176375; c=relaxed/simple;
+	bh=b21SZcrtxETP46BZ5OtDVSrmPOUozzVmmKoU49bk4no=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=o7Scqu1F4SyvMUlhsjytbkQf6YaaGnmhu5wd9mn/h33BkdBPrV7SYggazkpQvFXUg5v9E68HDqUcGK0TeWKwXX4W1kpWPSCtN1Exycb/LX2XEdlMQ/o0PSdFu99JQFYgkqt3wYRc7oUgIL4aJZpXsY//w/rQVG9+/cDVfzbsoWE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com; spf=pass smtp.mailfrom=shopee.com; dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b=l5JxK9ba; arc=none smtp.client-ip=209.85.160.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shopee.com
+Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-214ca209184so200806fac.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 19:12:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709176090; x=1709780890; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=shopee.com; s=shopee.com; t=1709176373; x=1709781173; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=w9qU0UCk8gIG4bcK7mpR2nYnDILfB/g3vlRutl/cxbE=;
-        b=Q78TqmbO127GL4gf2doJH0Oq+1t6AegEI6QYqXUkSEmKzCbn3zvexsB/tur/bWT1tf
-         N/oKXYyfVzHg0mviNWoAt9jXPpP+oihSS73jns/HQEgYvUhfc4jHRtyrxvW/VCQ+jRDv
-         2po8MFXumtl9bN4Sbc+0ST0ABCBsKY3u0n1715iB/qysUCSL1RKWJt/lY8vW5fvxnU+p
-         cqdVBIG6X5qq/xTVI9wLz0L3MZ8ve9Q8mLACzTJbvGUFPGCakaqqmvHh2zFgFCw2Cb8X
-         s7aq5J/Xc+D/CONYnjE7K0lfHCgtrmmWpvIfaSnxnyKntfw3lzCQIJI9WVyXtVjFZQD7
-         AGXw==
+        bh=oKTaJJvcz6ukUnHCjiAcv2W8DHAWX21S/CGeGiPRnVA=;
+        b=l5JxK9bana2mK5OM/6gdmgDxfXiNVa4hAgrBM477NE5tT4jAjOQYoAksIcGOAhDGzm
+         RfeiI5smxvPWhK6oTY4xkDFWiJ1V44UTz6gc9nPt4a7tGirHF/58gTovgY/M4A3SvWLe
+         JUVw3qhmhk/oHf6+RwUxb4dW4NpysJr7aaAfWvwR3eVnBonSBwhafAexquLqEtRjX+VY
+         P0L2VyjC2B9V5lYfIst+7Iv9e6A3gb+O1eHOes54QSGET/jInGLS3UlO7257l/34AeUY
+         /ZlTQKbhmLnHqhveHo7htlfo7scHT1pSWv/re5+dQ78T7DizLMMPp2s4zsnUZhd+qNO+
+         2NAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709176090; x=1709780890;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=w9qU0UCk8gIG4bcK7mpR2nYnDILfB/g3vlRutl/cxbE=;
-        b=SRa2rbdwOWv/uxoosCpPrNRLkpAZfntOP4DKYu7g/fPbUtH2Ss+YCoaD2342z/4RLS
-         8Ha3U8skNWnah4KiZt3afFNWVZSjx/mhVinBTCmX90dEFYRoMZqH1MubMr++la9kfjGH
-         dTohEYHPc8wYSjcWkeTnWzqJ9l9QGCPzXtmQNcooau9Dmf3tl2/cjpknXvqo8axBtaq0
-         45evEpQ2CeVJASoRunTtl1iB1/RlGxZTvHUruXgF6YCPPS1eRX0G74TYboyRx9PrKUfw
-         51K+nwgYBgIzLjQ78QejyqO5D8XXe0M1ZSicVBwwFcA+LjmP3cxMM0cf0E8FCWE/7BDc
-         8YPg==
-X-Forwarded-Encrypted: i=1; AJvYcCWQGmCEmrAOFJlBb45c5DSLi5Hwd+Fkgj/xQx7E6CKXoB8TkiQMeNR9r0Jp41z0YN5+9R5jYof/HrnxM2CqhOURnlrzjTJs9PFyxe0Ey4wQeVQCO76iSp2S3AeO44XcPxyjqVdJEOl7FECjG+pr/+feK72Jx6+A1772ZT2pWFZ4SwQG
-X-Gm-Message-State: AOJu0YxiQt1nxzLKz0Jk2f+SdvtJG2nE8l0GWZIrRlNZQwtnVgUnl5Vz
-	lw6hTlTBMafeNNDjXBXOzNxicj5YaAU7UOhaWDH8Jya5nZl/slsNJ43MHrBlScA=
-X-Google-Smtp-Source: AGHT+IHOgypU5Q+mTc/4l0GolZRObJHUKnu8LPW+QzhJhiPMpzHSzPSnBgqZkK4bqXnAWAduclIdGw==
-X-Received: by 2002:a5d:58fb:0:b0:33d:9c56:37f4 with SMTP id f27-20020a5d58fb000000b0033d9c5637f4mr443986wrd.46.1709176090184;
-        Wed, 28 Feb 2024 19:08:10 -0800 (PST)
-Received: from lola.. ([2a02:810d:7e40:14b0:d371:e319:5dd0:9b35])
-        by smtp.gmail.com with ESMTPSA id u1-20020adfb201000000b0033b1c321070sm417512wra.31.2024.02.28.19.08.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 19:08:10 -0800 (PST)
-From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To: Jonathan Corbet <corbet@lwn.net>,
-	Jani Nikula <jani.nikula@intel.com>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	workflows@vger.kernel.org,
-	linux-doc@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH v2 3/3] docs: submit-checklist: change to autonumbered lists
-Date: Thu, 29 Feb 2024 04:07:43 +0100
-Message-ID: <20240229030743.9125-4-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240229030743.9125-1-lukas.bulwahn@gmail.com>
-References: <20240229030743.9125-1-lukas.bulwahn@gmail.com>
+        d=1e100.net; s=20230601; t=1709176373; x=1709781173;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=oKTaJJvcz6ukUnHCjiAcv2W8DHAWX21S/CGeGiPRnVA=;
+        b=ODBWedNfX0KN5sv+eON7oG5LJ1Wb3OuLAEMFFFipe380Ftc4P02+J3GLQLnHkCbkyC
+         agcCoGfExclM7G1hJQJR/ejB7FEQSMnTqtsfwrLOQ4MExkQps9cdnccaS9IyRtYkQfSs
+         bVM37bqfOsmGiriskcLjd35WpOMVnhBTTeqH7z+VeKkIp2QlcsoCx6AhrE21yd430eRJ
+         e+xGcaRUpb2RgQqXNus27huWtr9QRxyPAw/X4aIP/tg5vA9In0Y0tAuHFO3JASNfmZm3
+         26RlB/gRqZ8EZPRvppy2OiX2TIdcR964FKczY9xctqHejdDgl19n6Lh0fhFyqOi8BXeo
+         zWzg==
+X-Forwarded-Encrypted: i=1; AJvYcCWg1kRUdly8V7NATrh3aQDcVQhx0hre7kV5tY2Yu1OnMVycy1ffRpUj10b8gYJ8jpJHJhK6H+7Pq+tLXALpZ+/nIZKnRqf4l61qNABu
+X-Gm-Message-State: AOJu0YzGyU9mxU20dTbDDEqs8dPmJsaarXIe7GW/CSpEANJ+otmSkTjf
+	dWM6nrm17eZQxyBXfBb1CGGZ8xr4jnrVN51Fb6MJLBbMf1DY0pDSxZjAFdE3r+g=
+X-Google-Smtp-Source: AGHT+IETuRoUdWOvCe1c/L0v8m7WmXHi+8fpOfvps0CIXM92NqmOzYhgqtTj3UK+qsI+4VVDxAbnnQ==
+X-Received: by 2002:a05:6870:4d13:b0:220:9327:2019 with SMTP id pn19-20020a0568704d1300b0022093272019mr373066oab.55.1709176373176;
+        Wed, 28 Feb 2024 19:12:53 -0800 (PST)
+Received: from [10.54.24.74] ([143.92.118.3])
+        by smtp.gmail.com with ESMTPSA id n13-20020aa7984d000000b006e560069a95sm171834pfq.174.2024.02.28.19.12.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Feb 2024 19:12:52 -0800 (PST)
+Message-ID: <d5b4d538-aee1-4dd1-970c-20f86cce2a81@shopee.com>
+Date: Thu, 29 Feb 2024 11:12:49 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] x86/resctrl: Rename pseudo_lock_event.h to trace.h
+To: Reinette Chatre <reinette.chatre@intel.com>
+Cc: fenghua.yu@intel.com, babu.moger@amd.com, peternewman@google.com,
+ x86@kernel.org, linux-kernel@vger.kernel.org
+References: <20240221092101.90740-1-haifeng.xu@shopee.com>
+ <20240221092101.90740-2-haifeng.xu@shopee.com>
+ <9055ee27-0860-4701-9ae9-801c25cf2aef@intel.com>
+From: Haifeng Xu <haifeng.xu@shopee.com>
+In-Reply-To: <9055ee27-0860-4701-9ae9-801c25cf2aef@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-During review (see Link), Jani Nikula suggested to use autonumbered
-lists instead of manually-maintained bullet numbering.
 
-Turn all lists into autonumbered lists.
 
-Link: https://lore.kernel.org/linux-doc/87o7c3mlwb.fsf@intel.com/
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
- Documentation/process/submit-checklist.rst | 48 +++++++++++-----------
- 1 file changed, 24 insertions(+), 24 deletions(-)
+On 2024/2/24 04:00, Reinette Chatre wrote:
+> Hi Haifeng,
+> 
+> On 2/21/2024 1:21 AM, Haifeng Xu wrote:
+>> Now only pseudo-lock part uses tracepoints to do event tracking, but
+>> other parts of resctrl may need new tracepoints. It is unnecessary to
+>> create separate header files and define CREATE_TRACE_POINTS in different
+>> c files which fragments the resctrl tracing.
+>>
+>> Therefore, the new tracepoints should be placed in the same header file,
+>> and the header file needs a more generic name.
+> 
+> Please do stick with imperative mood [1]. For example, something like:
+> "Give the resctrl tracepoint header file a generic name to support
+>  its use for tracepoints that are not specific to pseudo-locking."
+> 
+> (Please feel free to improve.)
 
-diff --git a/Documentation/process/submit-checklist.rst b/Documentation/process/submit-checklist.rst
-index e531dd504b6c..c984b747a755 100644
---- a/Documentation/process/submit-checklist.rst
-+++ b/Documentation/process/submit-checklist.rst
-@@ -14,62 +14,62 @@ and elsewhere regarding submitting Linux kernel patches.
- Review your code
- ================
- 
--1) If you use a facility then #include the file that defines/declares
-+#. If you use a facility then #include the file that defines/declares
-    that facility.  Don't depend on other header files pulling in ones
-    that you use.
- 
--2) Check your patch for general style as detailed in
-+#. Check your patch for general style as detailed in
-    :ref:`Documentation/process/coding-style.rst <codingstyle>`.
- 
--3) All memory barriers {e.g., ``barrier()``, ``rmb()``, ``wmb()``} need a
-+#. All memory barriers {e.g., ``barrier()``, ``rmb()``, ``wmb()``} need a
-    comment in the source code that explains the logic of what they are doing
-    and why.
- 
- Review Kconfig changes
- ======================
- 
--1) Any new or modified ``CONFIG`` options do not muck up the config menu and
-+#. Any new or modified ``CONFIG`` options do not muck up the config menu and
-    default to off unless they meet the exception criteria documented in
-    ``Documentation/kbuild/kconfig-language.rst`` Menu attributes: default value.
- 
--2) All new ``Kconfig`` options have help text.
-+#. All new ``Kconfig`` options have help text.
- 
--3) Has been carefully reviewed with respect to relevant ``Kconfig``
-+#. Has been carefully reviewed with respect to relevant ``Kconfig``
-    combinations.  This is very hard to get right with testing---brainpower
-    pays off here.
- 
- Provide documentation
- =====================
- 
--1) Include :ref:`kernel-doc <kernel_doc>` to document global kernel APIs.
-+#. Include :ref:`kernel-doc <kernel_doc>` to document global kernel APIs.
-    (Not required for static functions, but OK there also.)
- 
--2) All new ``/proc`` entries are documented under ``Documentation/``
-+#. All new ``/proc`` entries are documented under ``Documentation/``
- 
--3) All new kernel boot parameters are documented in
-+#. All new kernel boot parameters are documented in
-    ``Documentation/admin-guide/kernel-parameters.rst``.
- 
--4) All new module parameters are documented with ``MODULE_PARM_DESC()``
-+#. All new module parameters are documented with ``MODULE_PARM_DESC()``
- 
--5) All new userspace interfaces are documented in ``Documentation/ABI/``.
-+#. All new userspace interfaces are documented in ``Documentation/ABI/``.
-    See ``Documentation/ABI/README`` for more information.
-    Patches that change userspace interfaces should be CCed to
-    linux-api@vger.kernel.org.
- 
--6) If any ioctl's are added by the patch, then also update
-+#. If any ioctl's are added by the patch, then also update
-    ``Documentation/userspace-api/ioctl/ioctl-number.rst``.
- 
- Check your code with tools
- ==========================
- 
--1) Check for trivial violations with the patch style checker prior to
-+#. Check for trivial violations with the patch style checker prior to
-    submission (``scripts/checkpatch.pl``).
-    You should be able to justify all violations that remain in
-    your patch.
- 
--2) Check cleanly with sparse.
-+#. Check cleanly with sparse.
- 
--3) Use ``make checkstack`` and fix any problems that it finds.
-+#. Use ``make checkstack`` and fix any problems that it finds.
-    Note that ``checkstack`` does not point out problems explicitly,
-    but any one function that uses more than 512 bytes on the stack is a
-    candidate for change.
-@@ -77,7 +77,7 @@ Check your code with tools
- Build your code
- ===============
- 
--1) Builds cleanly:
-+#. Builds cleanly:
- 
-   a) with applicable or modified ``CONFIG`` options ``=y``, ``=m``, and
-      ``=n``.  No ``gcc`` warnings/errors, no linker warnings/errors.
-@@ -90,16 +90,16 @@ Build your code
-      Use ``make htmldocs`` or ``make pdfdocs`` to check the build and
-      fix any issues.
- 
--2) Builds on multiple CPU architectures by using local cross-compile tools
-+#. Builds on multiple CPU architectures by using local cross-compile tools
-    or some other build farm. Note that ppc64 is a good architecture for
-    cross-compilation checking because it tends to use ``unsigned long`` for
-    64-bit quantities.
- 
--3) Newly-added code has been compiled with ``gcc -W`` (use
-+#. Newly-added code has been compiled with ``gcc -W`` (use
-    ``make KCFLAGS=-W``).  This will generate lots of noise, but is good
-    for finding bugs like "warning: comparison between signed and unsigned".
- 
--4) If your modified source code depends on or uses any of the kernel
-+#. If your modified source code depends on or uses any of the kernel
-    APIs or features that are related to the following ``Kconfig`` symbols,
-    then test multiple builds with the related ``Kconfig`` symbols disabled
-    and/or ``=m`` (if that option is available) [not all of these at the
-@@ -112,22 +112,22 @@ Build your code
- Test your code
- ==============
- 
--1) Has been tested with ``CONFIG_PREEMPT``, ``CONFIG_DEBUG_PREEMPT``,
-+#. Has been tested with ``CONFIG_PREEMPT``, ``CONFIG_DEBUG_PREEMPT``,
-    ``CONFIG_SLUB_DEBUG``, ``CONFIG_DEBUG_PAGEALLOC``, ``CONFIG_DEBUG_MUTEXES``,
-    ``CONFIG_DEBUG_SPINLOCK``, ``CONFIG_DEBUG_ATOMIC_SLEEP``,
-    ``CONFIG_PROVE_RCU`` and ``CONFIG_DEBUG_OBJECTS_RCU_HEAD`` all
-    simultaneously enabled.
- 
--2) Has been build- and runtime tested with and without ``CONFIG_SMP`` and
-+#. Has been build- and runtime tested with and without ``CONFIG_SMP`` and
-    ``CONFIG_PREEMPT.``
- 
--3) All codepaths have been exercised with all lockdep features enabled.
-+#. All codepaths have been exercised with all lockdep features enabled.
- 
--4) Has been checked with injection of at least slab and page-allocation
-+#. Has been checked with injection of at least slab and page-allocation
-    failures.  See ``Documentation/fault-injection/``.
-    If the new code is substantial, addition of subsystem-specific fault
-    injection might be appropriate.
- 
--5) Tested with the most recent tag of linux-next to make sure that it still
-+#. Tested with the most recent tag of linux-next to make sure that it still
-    works with all of the other queued patches and various changes in the VM,
-    VFS, and other subsystems.
--- 
-2.43.2
 
+Thanks for you suggestion.
+
+> 
+> Reinette
+> 
+> [1] https://urldefense.proofpoint.com/v2/url?u=https-3A__www.kernel.org_doc_html_latest_process_maintainer-2Dtip.html-23changelog&d=DwICaQ&c=R1GFtfTqKXCFH-lgEPXWwic6stQkW4U7uVq33mt-crw&r=3uoFsejk1jN2oga47MZfph01lLGODc93n4Zqe7b0NRk&m=JoQ5pMB6FFBeGHFDWQYyFgKF2Y5VYhBeykX4853MHrTi-O0Jk3H_K9bh3NaxwLRx&s=482No-jEnFTObHttNwp2LTS-Dc3cP5jQOhL2cEj77MM&e= 
+> 
 
