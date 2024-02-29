@@ -1,143 +1,169 @@
-Return-Path: <linux-kernel+bounces-86472-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86477-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DCD986C5F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:47:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D623D86C609
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:50:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 138BDB28347
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:47:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87A5E282BD9
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:50:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3A80626CD;
-	Thu, 29 Feb 2024 09:47:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26F7862806;
+	Thu, 29 Feb 2024 09:50:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fXZS2Fr8"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hK+OtORs"
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F2E1626A1;
-	Thu, 29 Feb 2024 09:46:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC21662154
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 09:50:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709200021; cv=none; b=iyuMCC+XgHBZXKTqLphe2NXfk1qmkh6d9VR/RA5Fo5Z32trSH6c2U2UAgdCohHZoPj+4TFbEwXjwFMJjaGE2w8EAfStEkq6jtJf57SH03ctiy8w2IAeWBv8Nv/OytEbF57BsesE9Y9jrEE/fO8Wgkk6igss3LPhakwh6CyfFMjY=
+	t=1709200250; cv=none; b=op4YzFEGdftvl2mbBvhQITpntjeKBZHi645RJ7cUQkRWsAL120U/s+Hx7SWdT/zSXW94kVAZf1eafOaJpPPuWI2hDZuRI8Cv5rG9mf3GUQ/w34QRiA+ysoWNdML51/nzMXi8NkqeAfOq97MhTSyUEuS+mMDuYpIEavhUAn6c50s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709200021; c=relaxed/simple;
-	bh=ZKF6CGDxJo7aTCOVRYbPvZuJuMOfRD8zOUkDxs6+UMc=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=dJlWhsBDf5P3JfOwq4T+gsZ5KaPL5M+ljjACnpl8mBSyDecedOIjEAL+pWnx+Wa/3vo9XaP8Zj2YWC/ZCmMx1sXQ/O016fFjJj2GOgRia7Mxtvyl0fCApUB8YkvY8eeiJ+q301CuwNFNlKlVnzgXlVk05S50hScJvQrqrc7HZ5c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fXZS2Fr8; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5654f700705so1088941a12.1;
-        Thu, 29 Feb 2024 01:46:59 -0800 (PST)
+	s=arc-20240116; t=1709200250; c=relaxed/simple;
+	bh=ZLYKSYZ1kJqcEltCRr0rrWAJVn/FybxoTygQioDYNMk=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=XyoDo6Hq8iC/R5ubALW+9tpJqhA8y1MlWH9DSZsnX8zt0VBqJw4IxgvL8GT3xiBrvfMg9phydZh0d2As4J00zCuurrHHYVdSITNh4o5CJIP+3Elo2u4j6HNZhx/Cg7wqiNu+9FwSt609Qri07LPjGRCgVljj2pxgO6MyTHAbUr8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hK+OtORs; arc=none smtp.client-ip=209.85.208.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d208be133bso7708211fa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 01:50:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709200018; x=1709804818; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ZKF6CGDxJo7aTCOVRYbPvZuJuMOfRD8zOUkDxs6+UMc=;
-        b=fXZS2Fr8GU6zZmElBl0wcyJq/8r7yc3OkayucqHxD03QSf5zVizvf7p2VZzEishF0h
-         r9Vd/a2xrvIG7vHW7ckX3w0BlezkPiiPcLZLsW44EiAavGhbph/3iJk9SoJc6LVh2v/C
-         JYFXQCz1e424kQSRUf7psF1k5Zr3t6rnh+2KOQ1TtHwNmIdrts5fyyTq65Jb58hYRM5x
-         5VmT44hUg71Xz7/6D81uC5sAWR2dN8AYo/tJ/PfevNGGQ15JQvF4a6t/WEDaFhdGH2Uw
-         rNh/ARLm60AzI9aiSOHOoUs1wrx3T+OoeoNLB5w/wKpFzsjp83o0QiNqsQZuiRmXF+it
-         54Jw==
+        d=linaro.org; s=google; t=1709200247; x=1709805047; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :from:content-language:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=AIUhkXCTPpnQEOPCzj4c9i5kQdgIyIpQC3UDbaTUK7I=;
+        b=hK+OtORssZIyovJrAXKaLmRtzBsXe01XE0P8Xy+oh5tqwhTXtdmRTWLBc9OiLZFDty
+         SLnYipSHK+5GnTjDhhMmZmXkB8VmcQSlPe2h2J+XwNOffxvrwq4C+cdvIdx16x7cVBP7
+         gFl5htIAG/9tLfOTNfW0NUhide8f7wTrr+5ftdaItLszLpgCPpSn5kZnyAWxuaUoylbr
+         anUtknebNOYrnkTAUGpIsS1OjdZBjLIWdjDPQAuaqMg5cWtDsY7gQ42/O5498qYYD59o
+         0RuoyYq2PQfHk152V5CN6hT6Ok+0FpUBLBkyb5Mh+MJVBZ/qyImPK6w+ULqW59fhZW2s
+         SRFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709200018; x=1709804818;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZKF6CGDxJo7aTCOVRYbPvZuJuMOfRD8zOUkDxs6+UMc=;
-        b=Cm6TmziVUidAN8bSfn5Zwo+c/nOC07+YnzQwa3GopPUhn0qFYA0xgkrsxp2V3Sd8Jw
-         9yL2tyH6wKFcHpQZOKmvi97++19JwD8BoTDnLb3aFWKgEp5B3WJM212qqzAcHl6Tq+Ie
-         6pb2qZ4FI3dey7Z0a2PY/cUljk6M3SDIzuzAlCfpwqNhx6VuNSeEXUevR1Mg0qor7osK
-         bnqhJYEEiz2G5Puf3tfvpN+hz3NU1VK4CcGytoFzeoCronq1JRcgKwqERhNl1VoKerqA
-         mdNtUxq9FMpuhRO+1MFTUOuuMvgzQfReLRjYLwtIEh2mxrVY7eEpFBIDtEHXjPMidIpW
-         6YnA==
-X-Forwarded-Encrypted: i=1; AJvYcCXLcsJ3IRrDBRXfZ0TQKmkG+/rDsfkZ47+7uMRKvqlWpQIwFvoC/dZ+uWoNlr7xHhCrm+oA4FkMRPcVeMKIG0EcsSVr9RP8Yg37QqGIiwvmJbS4JAhGMtiM7uthaduEVlnLT3L9Qc2fkG5q4sXf3UStiDybo+9S6pXaE7tbJFG7qQ==
-X-Gm-Message-State: AOJu0YyNi3vsXlUMBiNg5j3F7twhnt/MnvvhHjR8oufkBaVYSZv0arIG
-	0lbza+NQuhA1vUFZgxqFXOJxvHuJE2R0yIE7nF5ai6jy5+j9F0Tm
-X-Google-Smtp-Source: AGHT+IGYn6hgKhooP5suk6LbV9V/eMI1wmp/BB2frmjgHS/QPCx3g8SNZ5X3gedy+bkNYy/MkSi2qQ==
-X-Received: by 2002:a05:6402:26d3:b0:566:6e4e:cb8c with SMTP id x19-20020a05640226d300b005666e4ecb8cmr1379117edd.38.1709200017706;
-        Thu, 29 Feb 2024 01:46:57 -0800 (PST)
-Received: from ?IPv6:2003:f6:ef1b:2000:15d4:fc17:481e:8afe? (p200300f6ef1b200015d4fc17481e8afe.dip0.t-ipconnect.de. [2003:f6:ef1b:2000:15d4:fc17:481e:8afe])
-        by smtp.gmail.com with ESMTPSA id d19-20020a05640208d300b0056650cd0156sm446013edz.66.2024.02.29.01.46.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 01:46:57 -0800 (PST)
-Message-ID: <c2b830bb4a4cf76dec8783f38b2477120edb1a15.camel@gmail.com>
-Subject: Re: [PATCH v2 2/2] of: overlay: Synchronize of_overlay_remove()
- with the devlink removals
-From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To: Herve Codina <herve.codina@bootlin.com>, Greg Kroah-Hartman
-	 <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, Rob
-	Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>
-Cc: Lizhi Hou <lizhi.hou@amd.com>, Max Zhen <max.zhen@amd.com>, Sonal Santan
- <sonal.santan@amd.com>, Stefano Stabellini <stefano.stabellini@xilinx.com>,
-  Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Allan Nielsen
- <allan.nielsen@microchip.com>, Horatiu Vultur
- <horatiu.vultur@microchip.com>, Steen Hegelund
- <steen.hegelund@microchip.com>, Luca Ceresoli <luca.ceresoli@bootlin.com>,
- Nuno Sa <nuno.sa@analog.com>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>,  stable@vger.kernel.org
-Date: Thu, 29 Feb 2024 10:50:21 +0100
-In-Reply-To: <20240229083953.607569-3-herve.codina@bootlin.com>
-References: <20240229083953.607569-1-herve.codina@bootlin.com>
-	 <20240229083953.607569-3-herve.codina@bootlin.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 
+        d=1e100.net; s=20230601; t=1709200247; x=1709805047;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :from:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AIUhkXCTPpnQEOPCzj4c9i5kQdgIyIpQC3UDbaTUK7I=;
+        b=snFh2qDEMJNXOAOMMAjl6UPG5erLiBQIrAPQDqB8mkIwPaCOVsKgOJAFKyFkKTz/AQ
+         /RrA8+lNGFecqCIhP+XaScFnj4vNbhzALtVykjYlVhGy9oApXSBPYUBZ2t6EfpZ8b380
+         rswDZhPWymKDJoWLJNofxzBouSzftFyUkxTZpUvbBjUTUjUyUicOgC47FQE8MKNjYA4s
+         JgRAW2wczPmuwNRapJLuJUD+ltwNrPerlEwYBmPgTDZzl6I1bXEduohq1u12FRUuCCzL
+         YsVZkw3NrBHTNPy8eQJyCf+1DF7HosVBK22oUErx3ixCTSW/qNyhxkhlWASgrcHrkNam
+         4vCg==
+X-Forwarded-Encrypted: i=1; AJvYcCWamKZ6sVGDNAeYxQCDy+jpByH720s7FmDRKP0L5mmIFoLLow+03JHGA8GM812VXAJ+7TflvhHvFZKWD3TtenGpfKmpvfkD29CeMRcP
+X-Gm-Message-State: AOJu0Yy6NVPpu8mWVVqwsJwzycgz3UNYGoLMwiCjbqtfV7z62xUwK4cj
+	Ihx29fR8fehU2YTNEyA8o5cEiYZ7+q1feIcSZ1XqPhY07OzjoDGbWKvxh2Fb9xE=
+X-Google-Smtp-Source: AGHT+IHvh3itER27jPG9fApHuFSp7b//RYpouW6I4ApoDPBLpaa8ZbJuzoz7nJ3Ps5hDMsqrrV8S8g==
+X-Received: by 2002:a05:651c:c1:b0:2d2:c98b:fe6e with SMTP id 1-20020a05651c00c100b002d2c98bfe6emr1108648ljr.33.1709200247115;
+        Thu, 29 Feb 2024 01:50:47 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id x18-20020a2e9dd2000000b002d11d0e37b5sm159862ljj.130.2024.02.29.01.50.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Feb 2024 01:50:46 -0800 (PST)
+Message-ID: <680cee5f-57c2-4056-8150-e1bfbac2619d@linaro.org>
+Date: Thu, 29 Feb 2024 10:50:39 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1] dt-bindings: interrupt-controller: fsl,intmux: add
+ power-domains
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Frank Li <Frank.Li@nxp.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+ Linux Team <linux-imx@nxp.com>,
+ "open list:IRQCHIP DRIVERS" <linux-kernel@vger.kernel.org>,
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>
+Cc: imx@lists.linux.dev
+References: <20240228213808.632603-1-Frank.Li@nxp.com>
+ <7c167fac-46c0-4d7f-b56f-ff1922736aa5@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <7c167fac-46c0-4d7f-b56f-ff1922736aa5@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, 2024-02-29 at 09:39 +0100, Herve Codina wrote:
-> In the following sequence:
-> =C2=A0 1) of_platform_depopulate()
-> =C2=A0 2) of_overlay_remove()
->=20
-> During the step 1, devices are destroyed and devlinks are removed.
-> During the step 2, OF nodes are destroyed but
-> __of_changeset_entry_destroy() can raise warnings related to missing
-> of_node_put():
-> =C2=A0 ERROR: memory leak, expected refcount 1 instead of 2 ...
->=20
-> Indeed, during the devlink removals performed at step 1, the removal
-> itself releasing the device (and the attached of_node) is done by a job
-> queued in a workqueue and so, it is done asynchronously with respect to
-> function calls.
-> When the warning is present, of_node_put() will be called but wrongly
-> too late from the workqueue job.
->=20
-> In order to be sure that any ongoing devlink removals are done before
-> the of_node destruction, synchronize the of_overlay_remove() with the
-> devlink removals.
->=20
-> Fixes: 80dd33cf72d1 ("drivers: base: Fix device link removal")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-> ---
-> =C2=A0drivers/of/overlay.c | 9 ++++++++-
-> =C2=A01 file changed, 8 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/of/overlay.c b/drivers/of/overlay.c
-> index 2ae7e9d24a64..99659ae9fb28 100644
-> --- a/drivers/of/overlay.c
-> +++ b/drivers/of/overlay.c
+On 29/02/2024 09:33, Krzysztof Kozlowski wrote:
+> On 28/02/2024 22:38, Frank Li wrote:
+>> Allow power-domains property for fsl,intmux node.
+>>
+>> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+>> ---
+>>  .../devicetree/bindings/interrupt-controller/fsl,intmux.yaml    | 2 ++
+>>  1 file changed, 2 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/interrupt-controller/fsl,intmux.yaml b/Documentation/devicetree/bindings/interrupt-controller/fsl,intmux.yaml
+>> index 985bfa4f6fda1..d73d9a6c50a69 100644
+>> --- a/Documentation/devicetree/bindings/interrupt-controller/fsl,intmux.yaml
+>> +++ b/Documentation/devicetree/bindings/interrupt-controller/fsl,intmux.yaml
+>> @@ -37,6 +37,8 @@ properties:
+>>    clock-names:
+>>      const: ipg
+>>  
+>> +  power-domains: true
+> 
+> You need maxItems
+> 
 
-In the cover, you mention device.h inclusion but I'm not seeing it? This is
-clearly up to the DT maintainers to decide but, IMHO, I would very much pre=
-fer
-to see fwnode.h included in here rather than directly device.h (so yeah,
-renaming the function to fwnode_*). But yeah, I might be biased by own seri=
-es :)
+And explain why. Most of your commits lack that basic information.
 
-- Nuno S=C3=A1
-
+Best regards,
+Krzysztof
 
 
