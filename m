@@ -1,122 +1,189 @@
-Return-Path: <linux-kernel+bounces-87566-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87567-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50B4386D5FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:15:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6BFF86D5FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:16:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8237B1C23F1B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:15:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 32294B218BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:16:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48F3316FF40;
-	Thu, 29 Feb 2024 21:15:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A7DF16FF46;
+	Thu, 29 Feb 2024 21:16:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="w7POS9lx"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JxnxiymL"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9310116FF31;
+	Thu, 29 Feb 2024 21:15:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709241359; cv=none; b=d+2QyKKMV4m8riG3SCPZ+c80c4ZGh89bot8WivgkXwMrt6aLyL2UozbQWdnbBBYsJgU3zPi8UNPWakkJKdvRk8qP/jx618pWI3nBXAjZBHjMbuWYtWWA8SxI7ngiT3/VVmdsk3U8UZ8ZdCY9ZmsonwzEILswwcisQ3jh8A962CQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709241359; c=relaxed/simple;
+	bh=xOxDegQasEklfMTwb0uGHJaYs+H/kBKUxdhMsGU3IZ8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=EbkRhaPic9U5kUwCA3xrx5duHUzYiQ0yE6R5cZxspYvdbHew4M1eny4pC0kCgoIC8hBE+yIntmORlpRwXATTxJgAc6RV7z3K0/s2h6eaHQmRnFsC5Ul+ENQthOGG0vQmdJKzu7rNh+mnDKWTUaGWs4yXze+PnLvC0/M75d1wK4M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JxnxiymL; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709241358; x=1740777358;
+  h=message-id:date:mime-version:subject:to:references:from:
+   in-reply-to:content-transfer-encoding;
+  bh=xOxDegQasEklfMTwb0uGHJaYs+H/kBKUxdhMsGU3IZ8=;
+  b=JxnxiymLfJowhP2WLR+xVw+9vy39ULxCWEEOPhjS2GjHzyWwob/qvrPF
+   Evg7WbzZBsZiQmxRL78M0FuDlGk52kxLcssBxcwFEklCb5QOCs7GtL562
+   a35MsBMig504/BeyBuO11gInMYlUUWOM0xV3rhcnxrA+eZo2uy+hO9UAX
+   sS8s3QthXPD1m9upCqt9PoEugmtUe37JEL5xOjxxlSPOI9v64PrngkPec
+   LuPwcZ7peiO7BoFrHlv9Gw2Z9Cd6BSX9fPMR/BJh/ac9EXvW1CwoY2gLx
+   yJX6oL9Pqbugrisp/YGizNyw2vUWU7jRXq0JXmwAKdWC+bbSd3ibyUqEI
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="3634344"
+X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
+   d="scan'208";a="3634344"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 13:15:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
+   d="scan'208";a="38803997"
+Received: from linux.intel.com ([10.54.29.200])
+  by orviesa002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 13:15:56 -0800
+Received: from [10.212.85.217] (kliang2-mobl1.ccr.corp.intel.com [10.212.85.217])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10FAE16FF31
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 21:15:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709241303; cv=none; b=T76NG7TUxVYpesy02IedhVVlcnv8Ex3LKSAxqAvOmxZJSaLKZ9s2PYk8lM2l6ZmjTpfrmh1A7uF24Ndo7kYghYPgkV/Q2v6fhO6OYKuqqoKx0pmX7FXcraZwfWdH+4l9hvY25f5wrDhIyStFop36r08oAotjaQXe01dABdZJdmk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709241303; c=relaxed/simple;
-	bh=X5fnAUTNVB5E1nS/HE+h4eWD5PRl4JvDW+rjzkoREhU=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=VYNggKf9SXXk7BoW9tTeb91IXz1hh4AvOF53DUNs3FJnc1MQ0lzFLLjDcDJ2uL5gPHC+NOsEFrBHoHJiQZq/tltGL2g1eCmKcmlMs4pZfycxwmYHMdT3dGYhVVrwZXYA3myrQPcigBM14WBmsgjEfqpToRSK2GIxh/G4vQyoknI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=w7POS9lx; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a3d484a58f6so231284966b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 13:15:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1709241300; x=1709846100; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=X5fnAUTNVB5E1nS/HE+h4eWD5PRl4JvDW+rjzkoREhU=;
-        b=w7POS9lxcR7lOEtxqCepB0Qx/npBzbYs+roIXsRqn4t2BYtKJZ/wpFHxNhKlQ5pBk9
-         Xq8t5ennb11yzPwinVyl1eagOqglCn+o+j2JcGc12mcMznKB0XKvmhKfQtbnOwGxi+G3
-         aKUt334ifu/qban7UihCjbRuW1+heC3nU8vdD7suOkYcwBfNk3OhOKB2YgxBusNzEFdA
-         ZFFfQUhD8cSI4amHCfkx2KuDuvwKI7HBtA8kW04719LlOe1CyzOurpqMgXtE9hhoMSF/
-         LT60HPXm+DwCldwIYvYZds5HcfbycyB1BXUucHFhBtCFCejAVhf3ITy9aeCVdzFAjblF
-         +W0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709241300; x=1709846100;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=X5fnAUTNVB5E1nS/HE+h4eWD5PRl4JvDW+rjzkoREhU=;
-        b=Z8ioXMt0BmE2yTNWvR/ONeYCvZ9WvgWOWpqBvg33XDsCEKuqqo2NiaH+jz2g3ePR3i
-         +54WR31m81nnJyAAI9MyL6CwvwvikLPl/p/rVvym0DUK4kUUOe/zslCCg4KHbR/B/zyM
-         L84f8n/3PeXi4DRs92RlNZOfFNf6yl9BFN6CndsCfsD39XUhcKJjgoHCQg9jI9jtA/uY
-         i+RrBDSStTbWHIHpyHDrQbsIkRHBaBkMwnWvpp+fNwI67naKBFPz9tN3691xU1+78tDQ
-         Fn/TN0FA/UWbayn6xt9HB8vE0upp91+wXBOWHziaTeBSgnjTgiMyifrQ1pfjOgg+EF4h
-         m61Q==
-X-Forwarded-Encrypted: i=1; AJvYcCW/j3o6YJ5ibOsjkJ4mjbkE1lgqnKdzvS8J1P3EBWFeOTrq/yKdRo9VQtZ+/L9zZra873tn8YV4zHzRZgn28sEpLSmyCxWRiYP8/Dzc
-X-Gm-Message-State: AOJu0YziqHza42WulOSt1LGv5FdJGJaek6LfEbBIn4NfREvFQu6O6ARE
-	hzAxIs2pnz4tJq0MAblN4vRYMC5ROcvmAEZFzSmJ15xZ2NEgSicCDhXWwqj/r6a0mtmzBqjS7nz
-	4
-X-Google-Smtp-Source: AGHT+IHbRqbb3QQhTbSEnTrcrs34FIveCIS4tXNzk2mvYxkOuYflsMH8fhz9wWnJlAbyijS6zEK1JA==
-X-Received: by 2002:a17:906:c2d7:b0:a3f:3c26:b250 with SMTP id ch23-20020a170906c2d700b00a3f3c26b250mr92460ejb.40.1709241300274;
-        Thu, 29 Feb 2024 13:15:00 -0800 (PST)
-Received: from smtpclient.apple ([2001:a61:1069:f701:6c1a:d05d:ad7c:b80d])
-        by smtp.gmail.com with ESMTPSA id jg29-20020a170907971d00b00a4412406741sm1032579ejc.131.2024.02.29.13.14.59
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 29 Feb 2024 13:15:00 -0800 (PST)
-Content-Type: text/plain;
-	charset=us-ascii
+	by linux.intel.com (Postfix) with ESMTPS id 46342580D37;
+	Thu, 29 Feb 2024 13:15:53 -0800 (PST)
+Message-ID: <7aa2d2a2-b8f9-478f-9699-7b717d38a8ab@linux.intel.com>
+Date: Thu, 29 Feb 2024 16:15:51 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.400.31\))
-Subject: Re: [PATCH] nilfs2: Use div64_ul() instead of do_div()
-From: Thorsten Blum <thorsten.blum@toblux.com>
-In-Reply-To: <BFEA2A31-3147-49EF-A9BE-592C90E783DD@toblux.com>
-Date: Thu, 29 Feb 2024 22:14:48 +0100
-Cc: linux-nilfs@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <215C3176-D6E5-47CF-BC48-7A75CF75CE3F@toblux.com>
-References: <20240229121650.33983-1-thorsten.blum@toblux.com>
- <CAKFNMomtp7ZwB0gmxoemp_ums4rqOSbfF2BMS6kX+LwtKYtvCg@mail.gmail.com>
- <19910196-DFF3-4F94-B6D3-B9BF722DF8B8@toblux.com>
- <BFEA2A31-3147-49EF-A9BE-592C90E783DD@toblux.com>
-To: Ryusuke Konishi <konishi.ryusuke@gmail.com>
-X-Mailer: Apple Mail (2.3774.400.31)
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 04/20] perf jevents: Add tsx metric group for Intel
+ models
+Content-Language: en-US
+To: Ian Rogers <irogers@google.com>, Perry Taylor <perry.taylor@intel.com>,
+ Samantha Alt <samantha.alt@intel.com>,
+ Caleb Biggers <caleb.biggers@intel.com>, Weilin Wang
+ <weilin.wang@intel.com>, Edward Baker <edward.baker@intel.com>,
+ Andi Kleen <ak@linux.intel.com>, Peter Zijlstra <peterz@infradead.org>,
+ Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>,
+ John Garry <john.g.garry@oracle.com>, Jing Zhang
+ <renyu.zj@linux.alibaba.com>, Thomas Richter <tmricht@linux.ibm.com>,
+ James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org,
+ linux-perf-users@vger.kernel.org, Stephane Eranian <eranian@google.com>
+References: <20240229001806.4158429-1-irogers@google.com>
+ <20240229001806.4158429-5-irogers@google.com>
+From: "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <20240229001806.4158429-5-irogers@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
 
-> On Feb 29, 2024, at 21:40, Thorsten Blum <thorsten.blum@toblux.com> =
-wrote:
->=20
->> On Feb 29, 2024, at 20:41, Thorsten Blum <thorsten.blum@toblux.com> =
-wrote:
->>=20
->>> On Feb 29, 2024, at 19:45, Ryusuke Konishi =
-<konishi.ryusuke@gmail.com> wrote:
->>>=20
->>> All of the fixes in this patch seem to be correct, but this doesn't
->>> cover nilfs_resize_fs(), nilfs_max_segment_count(), and
->>> nilfs_sb2_bad_offset(), which also have do_div() that doesn't use =
-the
->>> return value.
->>=20
->> For nilfs_sb2_bad_offset(), where the dividend is u64 and the divisor =
-is u32, we
->> would need a dedicated function like div64_u32() that doesn't =
-calculate the
->> remainder, which doesn't seem to exist. What do you think?
->=20
-> Never mind, there is div_u64(u64, u32). I'll submit a v2 shortly.
 
-I left nilfs_sb2_bad_offset() unchanged in v2 because div_u64() still =
-calculates
-the remainder.
+On 2024-02-28 7:17 p.m., Ian Rogers wrote:
+> Allow duplicated metric to be dropped from json files.
+> 
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/pmu-events/intel_metrics.py | 51 ++++++++++++++++++++++++++
+>  1 file changed, 51 insertions(+)
+> 
+> diff --git a/tools/perf/pmu-events/intel_metrics.py b/tools/perf/pmu-events/intel_metrics.py
+> index 20c25d142f24..1096accea2aa 100755
+> --- a/tools/perf/pmu-events/intel_metrics.py
+> +++ b/tools/perf/pmu-events/intel_metrics.py
+> @@ -7,6 +7,7 @@ import argparse
+>  import json
+>  import math
+>  import os
+> +from typing import Optional
+>  
+>  parser = argparse.ArgumentParser(description="Intel perf json generator")
+>  parser.add_argument("-metricgroups", help="Generate metricgroups data", action='store_true')
+> @@ -77,10 +78,60 @@ def Smi() -> MetricGroup:
+>      ])
+>  
+>  
+> +def Tsx() -> Optional[MetricGroup]:
+> +    if args.model not in [
+> +        'alderlake',
+> +        'cascadelakex',
+> +        'icelake',
+> +        'icelakex',
+> +        'rocketlake',
+> +        'sapphirerapids',
+> +        'skylake',
+> +        'skylakex',
+> +        'tigerlake',> +    ]:
 
-Thorsten=
+Can we get ride of the model list? Otherwise, we have to keep updating
+the list.
+
+> +        return None
+> +> +    pmu = "cpu_core" if args.model == "alderlake" else "cpu"
+
+Is it possible to change the check to the existence of the "cpu" PMU
+here? has_pmu("cpu") ? "cpu" : "cpu_core"
+
+> +    cycles = Event('cycles')
+> +    cycles_in_tx = Event(f'{pmu}/cycles\-t/')
+> +    transaction_start = Event(f'{pmu}/tx\-start/')
+> +    cycles_in_tx_cp = Event(f'{pmu}/cycles\-ct/')
+> +    metrics = [
+> +        Metric('tsx_transactional_cycles',
+> +                      'Percentage of cycles within a transaction region.',
+> +                      Select(cycles_in_tx / cycles, has_event(cycles_in_tx), 0),
+> +                      '100%'),
+> +        Metric('tsx_aborted_cycles', 'Percentage of cycles in aborted transactions.',
+> +                      Select(max(cycles_in_tx - cycles_in_tx_cp, 0) / cycles,
+> +                                    has_event(cycles_in_tx),
+> +                                    0),
+> +                      '100%'),
+> +        Metric('tsx_cycles_per_transaction',
+> +                      'Number of cycles within a transaction divided by the number of transactions.',
+> +                      Select(cycles_in_tx / transaction_start,
+> +                                    has_event(cycles_in_tx),
+> +                                    0),
+> +                      "cycles / transaction"),
+> +    ]
+> +    if args.model != 'sapphirerapids':
+
+Add the "tsx_cycles_per_elision" metric only if
+has_event(f'{pmu}/el\-start/')?
+
+Thanks,
+Kan
+
+> +        elision_start = Event(f'{pmu}/el\-start/')
+> +        metrics += [
+> +            Metric('tsx_cycles_per_elision',
+> +                          'Number of cycles within a transaction divided by the number of elisions.',
+> +                          Select(cycles_in_tx / elision_start,
+> +                                        has_event(elision_start),
+> +                                        0),
+> +                          "cycles / elision"),
+> +        ]
+> +    return MetricGroup('transaction', metrics)
+> +
+> +
+>  all_metrics = MetricGroup("", [
+>      Idle(),
+>      Rapl(),
+>      Smi(),
+> +    Tsx(),
+>  ])
+>  
+>  if args.metricgroups:
 
