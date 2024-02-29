@@ -1,148 +1,120 @@
-Return-Path: <linux-kernel+bounces-87610-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87611-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9305A86D673
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:59:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5223086D675
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:59:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 218BB284862
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:59:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D35FA2846C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:59:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4517F6D53E;
-	Thu, 29 Feb 2024 21:59:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RqIhjWur"
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13CF76D539;
+	Thu, 29 Feb 2024 21:59:12 +0000 (UTC)
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECA3E6D521;
-	Thu, 29 Feb 2024 21:58:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D831574C0B
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 21:59:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.85.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709243939; cv=none; b=YiPskSYI3OcnkRPUcV9hFhJ9oHwcFvHPI6BRHXqiEcQxqEidDr+q2wTjyGDAnM/HSy9TSHgLM+cuP+qu9F5g6vNfbWaUZS93K5bAy/4bTDT6qHHoizQyPoixQ3vXKQ5WdEzWJ0ejNDrMMQLgkdsPLX+4xONLHhBUx2N9BIDC8+Q=
+	t=1709243951; cv=none; b=RcZspNhM1ADdIm4yV3Eu/dfcmG0XRh74Mpk6ZKqoVUFghNrMJztSB8YBT++aAR52iT+1Q2DXgW+UydgrYf7ddzUuWLKh6elm9h+esrDfdu9DZxRKgsPyGAIthK6XF/VJFg4JBqnU4ayOyLWimdrLTi9bNxIsLsHzfL1+/DmlMh8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709243939; c=relaxed/simple;
-	bh=u7emfAwG3izXFa50N+MC/c19/H8pMfUWBq0jlVhc5kc=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MAmn2/IrAU/QhX5CsRkCs0Cp3qsjYYPgAei0UcG8ENL8O3zvrkZmDeRpMSwje4/MeS5tB8Ga7mGZOzstOuDz8l7X3nyY2QBlqrLJuVsz/9OqR7HSuq3YfzwHGM05uZML9tgeCmwkQVBWZLSo9GmSZ45v/3aF8cb90YNxxw5kgVE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RqIhjWur; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a26ed1e05c7so265822266b.2;
-        Thu, 29 Feb 2024 13:58:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709243936; x=1709848736; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=YLB+AEOoGVHORFz2CPSFygKm0JXbti6HkSl+J6gRIxA=;
-        b=RqIhjWurkRxbaRi4Yd7F9VZsarPBQsSLs/BmStXTXf0YhrSiXBR2KUBOX/55xOG52o
-         0sS8ifaJQ/xUw/G62GldgMY6Fay8pcsIsyeQcRCHA6KYgqOzEKgZ8VquVVYOn5ru19zc
-         s4U9XgUUdWJicLU1eVhekKR9pn7nq3y3G/i4wgRlFbf5/1zQr3wRBiIfNu3d7v0HqcEq
-         JvBg71qsIEf0ZeXjjiuGKaNxg6bd+oKa+Ogdc03u3v97O8qTio1eUHvHhl4kEvoIOb4t
-         XzDLWQ90vEA+EEcciv+7SvYKl61S26b+x2oQVpwExZ/YvUluABgiI1UiPgDcovn6u3vP
-         dp1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709243936; x=1709848736;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YLB+AEOoGVHORFz2CPSFygKm0JXbti6HkSl+J6gRIxA=;
-        b=V99pb5bkLxKq1jMauA8c7l6dTcgckA0gSDTsc+6It3a9POzmCYJjoi/etdWppxOlX2
-         LT+MapE9cKie/LLwy1LM8IaAehh/plJbnqpHMzhC2e34MNRk3S2SqrFaKTTGrgeO8sTT
-         u4uDD8d5Ofv9iww2eYYlhJ5VGcwnxC2RTobqBoLtrMvxT4cxrVj6uACyHY6GFlnSTuby
-         RBSP6MOUq/admwq0TM7enCz8hghIc6bX4RnGqvtbWnbyXP5JvpykCHixokBrvFuA0H2U
-         byzB4+a+pqYPf7repcZ4QGOogrb0fZuEcj45Sx+a6Fov4ItQP9W8qCLjlZC1IVo6vQ3O
-         qTpg==
-X-Forwarded-Encrypted: i=1; AJvYcCX0GBbiysMMkbfuo4sFw+StjoH8eCsnUaIExRVmUQfbQ0S+806r72kOwpVSizflsm9hqLJUs4L8Veb3y3P4fMq77rX8x9gIx8NG9ANClc6kUnGhIa0YoP3pVrCNsIcJ/cwOZndtm2wkVfwGxOWs+9Kv
-X-Gm-Message-State: AOJu0Yy1q7bNfziQ94Lgdnq0fhnnhsCXYKcX2jhNtR0X68Sy0xSfekGP
-	yrpDfbTJLJU3RPaRezF/xA+/ByiO5jEs/88GUZGvFkCGPNePfyHsH3qmoNwu
-X-Google-Smtp-Source: AGHT+IGYvPEPGx1GzuuMu3WIOb3s2/UGCtmhtiTQFmVB3GgBAz8SOjLpVIUdUFdzdb47NctxLQy4Iw==
-X-Received: by 2002:a17:906:1689:b0:a3d:e2e9:a7f7 with SMTP id s9-20020a170906168900b00a3de2e9a7f7mr118482ejd.27.1709243935911;
-        Thu, 29 Feb 2024 13:58:55 -0800 (PST)
-Received: from krava ([83.240.61.14])
-        by smtp.gmail.com with ESMTPSA id ty8-20020a170907c70800b00a3ed975968esm1072293ejc.28.2024.02.29.13.58.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 13:58:55 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 29 Feb 2024 22:58:54 +0100
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>,
-	linux-trace-kernel@vger.kernel.org, Jiri Olsa <olsajiri@gmail.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fprobe: Fix to allocate entry_data_size buffer with
- rethook instances
-Message-ID: <ZeD-HkC7bsAn_YgK@krava>
-References: <170920576727.107552.638161246679734051.stgit@devnote2>
+	s=arc-20240116; t=1709243951; c=relaxed/simple;
+	bh=uWXPeF56vr/v339KwbfxnISPdQpiF1+3ZeqWCZRFH/k=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=g8vXyD/q0EIZ7ExiHmFgjEdU3fKtyykScs0K4tSxept04/ipTusYpp5gs+2t778VwYO7heEB8FVulh/JoOo2hpSIhf0mXOU9kz0IDhGIqnJzz1j0TeUN1SzJvNpT8RohCo3SVTUQGQ4bJrJfZWQKnYBq98KiaXP+n8IPTDVh8GA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.85.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-180-NmCmjom7Nua_ep9rNF_b0w-1; Thu, 29 Feb 2024 21:59:07 +0000
+X-MC-Unique: NmCmjom7Nua_ep9rNF_b0w-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 29 Feb
+ 2024 21:59:05 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Thu, 29 Feb 2024 21:59:05 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Ian Rogers' <irogers@google.com>, Namhyung Kim <namhyung@kernel.org>
+CC: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland
+	<mark.rutland@arm.com>, Alexander Shishkin
+	<alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, "Adrian
+ Hunter" <adrian.hunter@intel.com>, Oliver Upton <oliver.upton@linux.dev>,
+	"Yang Jihong" <yangjihong1@huawei.com>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-perf-users@vger.kernel.org"
+	<linux-perf-users@vger.kernel.org>, "bpf@vger.kernel.org"
+	<bpf@vger.kernel.org>
+Subject: RE: [PATCH v1 4/6] perf threads: Move threads to its own files
+Thread-Topic: [PATCH v1 4/6] perf threads: Move threads to its own files
+Thread-Index: AQHaaU4SKMfy+yjiXUyp7JFHrIJbDLEh4dlA
+Date: Thu, 29 Feb 2024 21:59:05 +0000
+Message-ID: <b60c7731b8a84e01a77fea55c31a77b9@AcuMS.aculab.com>
+References: <20240214063708.972376-1-irogers@google.com>
+ <20240214063708.972376-5-irogers@google.com>
+ <CAM9d7cjuv2VAVfGM6qQEMYO--WvgPvAvmnF73QrS_PzGzCF32w@mail.gmail.com>
+ <CAP-5=fUUSpHUUAc3jvJkPAUuuJAiSAO4mjCxa9qUppnqk76wWg@mail.gmail.com>
+In-Reply-To: <CAP-5=fUUSpHUUAc3jvJkPAUuuJAiSAO4mjCxa9qUppnqk76wWg@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <170920576727.107552.638161246679734051.stgit@devnote2>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 
-On Thu, Feb 29, 2024 at 08:22:47PM +0900, Masami Hiramatsu (Google) wrote:
-> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> 
-> Fix to allocate fprobe::entry_data_size buffer with rethook instances.
-> If fprobe doesn't allocate entry_data_size buffer for each rethook instance,
-> fprobe entry handler can cause a buffer overrun when storing entry data in
-> entry handler.
-> 
-> Reported-by: Jiri Olsa <olsajiri@gmail.com>
+RnJvbTogSWFuIFJvZ2Vycw0KPiBTZW50OiAyNyBGZWJydWFyeSAyMDI0IDA3OjI0DQo+IA0KPiBP
+biBNb24sIEZlYiAyNiwgMjAyNCBhdCAxMTowN+KAr1BNIE5hbWh5dW5nIEtpbSA8bmFtaHl1bmdA
+a2VybmVsLm9yZz4gd3JvdGU6DQo+ID4NCj4gPiBPbiBUdWUsIEZlYiAxMywgMjAyNCBhdCAxMDoz
+N+KAr1BNIElhbiBSb2dlcnMgPGlyb2dlcnNAZ29vZ2xlLmNvbT4gd3JvdGU6DQo+ID4gPg0KPiA+
+ID4gTW92ZSB0aHJlYWRzIG91dCBvZiBtYWNoaW5lIGFuZCBtb3ZlIHRocmVhZF9yYl9ub2RlIGlu
+dG8gdGhlIEMNCj4gPiA+IGZpbGUuIFRoaXMgaGlkZXMgdGhlIGltcGxlbWVudGF0aW9uIG9mIHRo
+cmVhZHMgZnJvbSB0aGUgcmVzdCBvZiB0aGUNCj4gPiA+IGNvZGUgYWxsb3dpbmcgZm9yIGl0IHRv
+IGJlIHJlZmFjdG9yZWQuDQo+ID4gPg0KPiA+ID4gTG9ja2luZyBkaXNjaXBsaW5lIGlzIHRpZ2h0
+ZW5lZCB1cCBpbiB0aGlzIGNoYW5nZS4NCj4gPg0KPiA+IERvZXNuJ3QgbG9vayBsaWtlIGEgc2lt
+cGxlIGNvZGUgbW92ZS4gIENhbiB3ZSBzcGxpdCB0aGUgbG9ja2luZw0KPiA+IGNoYW5nZSBmcm9t
+IHRoZSBtb3ZlIHRvIG1ha2UgdGhlIHJldmlld2VyJ3MgbGlmZSBhIGJpdCBlYXNpZXI/IDopDQo+
+IA0KPiBOb3Qgc3VyZSBJIGZvbGxvdy4gVGFrZSB0aHJlYWRzX25yIGFzIGFuIGV4YW1wbGUuDQo+
+IA0KPiBUaGUgb2xkIGNvZGUgaXMgaW4gbWFjaGluZS5jLCBzbzoNCj4gLXN0YXRpYyBzaXplX3Qg
+bWFjaGluZV9fdGhyZWFkc19ucihjb25zdCBzdHJ1Y3QgbWFjaGluZSAqbWFjaGluZSkNCj4gLXsN
+Cj4gLSAgICAgICBzaXplX3QgbnIgPSAwOw0KPiAtDQo+IC0gICAgICAgZm9yIChpbnQgaSA9IDA7
+IGkgPCBUSFJFQURTX19UQUJMRV9TSVpFOyBpKyspDQo+IC0gICAgICAgICAgICAgICBuciArPSBt
+YWNoaW5lLT50aHJlYWRzW2ldLm5yOw0KPiAtDQo+IC0gICAgICAgcmV0dXJuIG5yOw0KPiAtfQ0K
+PiANCj4gVGhlIG5ldyBjb2RlIGlzIGluIHRocmVhZHMuYzoNCj4gK3NpemVfdCB0aHJlYWRzX19u
+cihzdHJ1Y3QgdGhyZWFkcyAqdGhyZWFkcykNCj4gK3sNCj4gKyAgICAgICBzaXplX3QgbnIgPSAw
+Ow0KPiArDQo+ICsgICAgICAgZm9yIChpbnQgaSA9IDA7IGkgPCBUSFJFQURTX19UQUJMRV9TSVpF
+OyBpKyspIHsNCj4gKyAgICAgICAgICAgICAgIHN0cnVjdCB0aHJlYWRzX3RhYmxlX2VudHJ5ICp0
+YWJsZSA9ICZ0aHJlYWRzLT50YWJsZVtpXTsNCj4gKw0KPiArICAgICAgICAgICAgICAgZG93bl9y
+ZWFkKCZ0YWJsZS0+bG9jayk7DQo+ICsgICAgICAgICAgICAgICBuciArPSB0YWJsZS0+bnI7DQo+
+ICsgICAgICAgICAgICAgICB1cF9yZWFkKCZ0YWJsZS0+bG9jayk7DQo+ICsgICAgICAgfQ0KPiAr
+ICAgICAgIHJldHVybiBucjsNCj4gK30NCj4gDQo+IFNvIGl0IGlzIGEgY29weSBwYXN0ZSBmcm9t
+IG9uZSBmaWxlIHRvIHRoZSBvdGhlci4gVGhlIG9ubHkgZGlmZmVyZW5jZQ0KPiBpcyB0aGF0IHRo
+ZSBvbGQgY29kZSBmYWlsZWQgdG8gdGFrZSBhIGxvY2sgd2hlbiByZWFkaW5nICJuciIgc28gdGhl
+DQo+IGxvY2tpbmcgaXMgYWRkZWQuIEkgd2FudGVkIHRvIG1ha2Ugc3VyZSBhbGwgdGhlIGZ1bmN0
+aW9ucyBpbiB0aHJlYWRzLmMNCj4gd2VyZSBwcm9wZXJseSBjb3JyZWN0IHdydCBsb2NraW5nLCBz
+ZW1hcGhvcmUgY3JlYXRpb24gYW5kIGRlc3RydWN0aW9uLA0KPiBldGMuICBXZSBjb3VsZCBoYXZl
+IGEgYnJva2VuIHRocmVhZHMuYyBhbmQgZml4IGl0IGluIHRoZSBuZXh0IGNoYW5nZSwNCj4gYnV0
+IGdpdmVuIHRoYXQncyBhIGJ1ZyBpdCBjb3VsZCBtYWtlIGJpc2VjdGlvbiBtb3JlIGRpZmZpY3Vs
+dC4NCj4gVWx0aW1hdGVseSBJIHRob3VnaHQgdGhlIGxvY2tpbmcgY2hhbmdlcyB3ZXJlIHNtYWxs
+IGVub3VnaCB0byBub3QNCj4gd2FycmFudCBiZWluZyBvbiB0aGVpciBvd24gY29tcGFyZWQgdG8g
+dGhlIGFkdmFudGFnZXMgb2YgaGF2aW5nIGEgc2FuZQ0KPiB0aHJlYWRzIGFic3RyYWN0aW9uLg0K
+DQpUaGUgbG9jayBpcyBwcmV0dHkgbXVjaCBlbnRpcmVseSBwb2ludGxlc3MuDQpBbGwgaXQgcmVh
+bGx5IGRvZXMgaXMgc2xvdyB0aGUgY29kZSBkb3duLg0KVGhlIG1vc3QgeW91IGNvdWxkIHdhbnQg
+aXM6DQoJbnIgKz0gUkVBRF9PTkNFKHRhYmxlLT5ucik7DQp0byBhdm9pZCBhbnkgaHlwb3RoZXRp
+Y2FsIGRhdGEgdGVhcmluZy4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtl
+c2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBV
+Sw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
-Tested-by: Jiri Olsa <olsajiri@gmail.com>
-
-thanks,
-jirka
-
-> Fixes: 4bbd93455659 ("kprobes: kretprobe scalability improvement")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> ---
->  kernel/trace/fprobe.c |   14 ++++++--------
->  1 file changed, 6 insertions(+), 8 deletions(-)
-> 
-> diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
-> index 6cd2a4e3afb8..9ff018245840 100644
-> --- a/kernel/trace/fprobe.c
-> +++ b/kernel/trace/fprobe.c
-> @@ -189,9 +189,6 @@ static int fprobe_init_rethook(struct fprobe *fp, int num)
->  {
->  	int size;
->  
-> -	if (num <= 0)
-> -		return -EINVAL;
-> -
->  	if (!fp->exit_handler) {
->  		fp->rethook = NULL;
->  		return 0;
-> @@ -199,15 +196,16 @@ static int fprobe_init_rethook(struct fprobe *fp, int num)
->  
->  	/* Initialize rethook if needed */
->  	if (fp->nr_maxactive)
-> -		size = fp->nr_maxactive;
-> +		num = fp->nr_maxactive;
->  	else
-> -		size = num * num_possible_cpus() * 2;
-> -	if (size <= 0)
-> +		num *= num_possible_cpus() * 2;
-> +	if (num <= 0)
->  		return -EINVAL;
->  
-> +	size = sizeof(struct fprobe_rethook_node) + fp->entry_data_size;
-> +
->  	/* Initialize rethook */
-> -	fp->rethook = rethook_alloc((void *)fp, fprobe_exit_handler,
-> -				sizeof(struct fprobe_rethook_node), size);
-> +	fp->rethook = rethook_alloc((void *)fp, fprobe_exit_handler, size, num);
->  	if (IS_ERR(fp->rethook))
->  		return PTR_ERR(fp->rethook);
->  
-> 
 
