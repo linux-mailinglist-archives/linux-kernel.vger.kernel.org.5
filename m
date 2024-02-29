@@ -1,60 +1,61 @@
-Return-Path: <linux-kernel+bounces-86949-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86950-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0A3A86CD6A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:49:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A74686CD6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:49:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 571BBB21767
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:49:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA7C1287666
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:49:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E70914D42E;
-	Thu, 29 Feb 2024 15:48:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D51914F9D8;
+	Thu, 29 Feb 2024 15:48:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KvyEpUAD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m3E1Be57"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD39D14AD2B;
-	Thu, 29 Feb 2024 15:48:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB59014E2D5;
+	Thu, 29 Feb 2024 15:48:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709221735; cv=none; b=HFCu6ic2V/lZAVGIbfWAvmUwprULAjDIqVFCFDG0q/lS1BcRdytCbof6hM9omkg9v41XMjH8vhPHFiEDjS2fgrHZmrpFBzEGmSSI9iQ9yGLuZmuUpJdNWR3/ds18S0YDNwR7sLGmfTfy7YJRvoLk81SNg7dU2yR7Y13VTAac37A=
+	t=1709221737; cv=none; b=Xee2+uQb712IF9sddQ8k2Rz6ntFur0+6TP5GQ3o+AdZmyNUO9CaRLwSu26W0fLgnnwxJmXf1ARmmIPwpMQuyDZdDzbBnIxy/mu12f58VLHdzIvWCi32ks/dmKCx/VrU/UK7XORKiPSPNbp1ke08z9i1UCjtD2FWPYrFAyRX+XzY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709221735; c=relaxed/simple;
-	bh=G78L1tou1cSU+q6VxHI+foG7pc7rJWJylN4hyYR0c6U=;
+	s=arc-20240116; t=1709221737; c=relaxed/simple;
+	bh=+fv1LPuaO3JTr5Lszuh69m3jbmo7lu1K9f9DlffKTl0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Q4t3gCIjmn/sNPlLrruV+QngJ8QMburCpiowFT0GqbQYTXShjRPYys1dKl/8/7ot56T5WQZQunItzE/ntmvwhQJHzcq4bV9Y5OPBb5FAeRBtQryRFRj9/jbT+A+r9tco04SPnfyb0F3qJBGFbVPHpkHc0CeMpl8jMTZXJWgueW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KvyEpUAD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE44BC43394;
-	Thu, 29 Feb 2024 15:48:53 +0000 (UTC)
+	 MIME-Version; b=DRVBbGl9FyvV5+LLzZrBwWbiEI7wYovreIYh76cdKiGhurA78q/Tj005Bky/4wfhWvABh6lVz/R4PoYokLLKUZMIncggpASW50UgHvXC8uYdHeqXr/VtBzCMUMgG3Y1fyvjgx+QadyR0piAj4eOURg1tTukNOE5tBU8euTT2t7o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m3E1Be57; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8368C433C7;
+	Thu, 29 Feb 2024 15:48:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709221735;
-	bh=G78L1tou1cSU+q6VxHI+foG7pc7rJWJylN4hyYR0c6U=;
+	s=k20201202; t=1709221737;
+	bh=+fv1LPuaO3JTr5Lszuh69m3jbmo7lu1K9f9DlffKTl0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=KvyEpUADWEiU0fo1pk4xzrRuD6JfCCpnxVDuA06gZ5/xne7xNbSE122ppZKrHwvgm
-	 y8N5D888RCKGneBmV3z7vLb0+Y42rm+P+p6x+RcgaZFC/ibmTB6cZjxx/abrffG14t
-	 ft+GmbdEVR2VdRo3iPo1NSdBy6MCaiNWRPIuAGk7RMDkg7ZXqTosSab4YQ15pF1gky
-	 6FCce7YXDdW0O2GGEa7hVF5BjIS26tMyMIQhEh3eoP8eEyQBI/uqcvq9oYxtSGjCdJ
-	 cTzxsT0NtG+YYKhijiKFcHvI5Twrr8m7Ypk1NyjbqIMqRIkNQNEqTgHep2HV0H0rVg
-	 tH06k7Ci0F6+g==
+	b=m3E1Be57eLLRArCxNRg61A/O//oceVyBUTHRtMBl63v4OnH/U3v8HO0duTaaOyofh
+	 rWyoombPTuixp8pYtLgk0WFvYBCNkX5oPDCl7UdCXzLwpBItvNg2ejg66lPwlcoFhE
+	 N56rs45yWd+E5RJ57GRoYkl4ny534R928bggwV+eIefzq4MUegzuGsyHHxBDpkQJnb
+	 8qXKcd60pQDTen0cVhvWdRI2LnkwpbsX3c8IypEUCk88U0bkEkvytpfLJ7kvXH1x1f
+	 bj/58TugtMOV2kAflpybcQx5cIES8Gfed9+zXKt2yrEqk3/XIoK7zrkjGoOzb7p+4F
+	 18A02WvHIa6hQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
+Cc: Rob Clark <robdclark@chromium.org>,
 	Sasha Levin <sashal@kernel.org>,
-	dafna@fastmail.com,
-	heiko@sntech.de,
-	linux-media@vger.kernel.org,
-	linux-rockchip@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.7 02/26] media: rkisp1: Fix IRQ handling due to shared interrupts
-Date: Thu, 29 Feb 2024 10:48:21 -0500
-Message-ID: <20240229154851.2849367-2-sashal@kernel.org>
+	robdclark@gmail.com,
+	quic_abhinavk@quicinc.com,
+	dmitry.baryshkov@linaro.org,
+	airlied@gmail.com,
+	daniel@ffwll.ch,
+	linux-arm-msm@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	freedreno@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 6.7 03/26] Revert "drm/msm/gpu: Push gpu lock down past runpm"
+Date: Thu, 29 Feb 2024 10:48:22 -0500
+Message-ID: <20240229154851.2849367-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240229154851.2849367-1-sashal@kernel.org>
 References: <20240229154851.2849367-1-sashal@kernel.org>
@@ -69,138 +70,88 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.6
 Content-Transfer-Encoding: 8bit
 
-From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+From: Rob Clark <robdclark@chromium.org>
 
-[ Upstream commit ffb635bb398fc07cb38f8a7b4a82cbe5f412f08e ]
+[ Upstream commit 917e9b7c2350e3e53162fcf5035e5f2d68e2cbed ]
 
-The driver requests the interrupts as IRQF_SHARED, so the interrupt
-handlers can be called at any time. If such a call happens while the ISP
-is powered down, the SoC will hang as the driver tries to access the
-ISP registers.
+This reverts commit abe2023b4cea192ab266b351fd38dc9dbd846df0.
 
-This can be reproduced even without the platform sharing the IRQ line:
-Enable CONFIG_DEBUG_SHIRQ and unload the driver, and the board will
-hang.
+Changing the locking order means that scheduler/msm_job_run() can race
+with the recovery kthread worker, with the result that the GPU gets an
+extra runpm get when we are trying to power it off.  Leaving the GPU in
+an unrecovered state.
 
-Fix this by adding a new field, 'irqs_enabled', which is used to bail
-out from the interrupt handler when the ISP is not operational.
+I'll need to come up with a different scheme for appeasing lockdep.
 
-Link: https://lore.kernel.org/r/20231218-rkisp-shirq-fix-v1-2-173007628248@ideasonboard.com
-
-Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+Patchwork: https://patchwork.freedesktop.org/patch/573835/
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../platform/rockchip/rkisp1/rkisp1-capture.c |  3 +++
- .../platform/rockchip/rkisp1/rkisp1-common.h  |  2 ++
- .../platform/rockchip/rkisp1/rkisp1-csi.c     |  3 +++
- .../platform/rockchip/rkisp1/rkisp1-dev.c     | 22 +++++++++++++++++++
- .../platform/rockchip/rkisp1/rkisp1-isp.c     |  3 +++
- 5 files changed, 33 insertions(+)
+ drivers/gpu/drm/msm/msm_gpu.c        | 11 +++++------
+ drivers/gpu/drm/msm/msm_ringbuffer.c |  7 +++++--
+ 2 files changed, 10 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
-index c6d7e01c89494..3752b702e270b 100644
---- a/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
-+++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
-@@ -725,6 +725,9 @@ irqreturn_t rkisp1_capture_isr(int irq, void *ctx)
- 	unsigned int i;
- 	u32 status;
+diff --git a/drivers/gpu/drm/msm/msm_gpu.c b/drivers/gpu/drm/msm/msm_gpu.c
+index 7f64c66673002..5c10b559a5957 100644
+--- a/drivers/gpu/drm/msm/msm_gpu.c
++++ b/drivers/gpu/drm/msm/msm_gpu.c
+@@ -749,12 +749,14 @@ void msm_gpu_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
+ 	struct msm_ringbuffer *ring = submit->ring;
+ 	unsigned long flags;
  
-+	if (!rkisp1->irqs_enabled)
-+		return IRQ_NONE;
+-	pm_runtime_get_sync(&gpu->pdev->dev);
++	WARN_ON(!mutex_is_locked(&gpu->lock));
+ 
+-	mutex_lock(&gpu->lock);
++	pm_runtime_get_sync(&gpu->pdev->dev);
+ 
+ 	msm_gpu_hw_init(gpu);
+ 
++	submit->seqno = submit->hw_fence->seqno;
 +
- 	status = rkisp1_read(rkisp1, RKISP1_CIF_MI_MIS);
- 	if (!status)
- 		return IRQ_NONE;
-diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h b/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
-index 2d7f06281c390..a4e272adc1ad0 100644
---- a/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
-+++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
-@@ -449,6 +449,7 @@ struct rkisp1_debug {
-  * @debug:	   debug params to be exposed on debugfs
-  * @info:	   version-specific ISP information
-  * @irqs:          IRQ line numbers
-+ * @irqs_enabled:  the hardware is enabled and can cause interrupts
-  */
- struct rkisp1_device {
- 	void __iomem *base_addr;
-@@ -470,6 +471,7 @@ struct rkisp1_device {
- 	struct rkisp1_debug debug;
- 	const struct rkisp1_info *info;
- 	int irqs[RKISP1_NUM_IRQS];
-+	bool irqs_enabled;
- };
+ 	update_sw_cntrs(gpu);
+ 
+ 	/*
+@@ -779,11 +781,8 @@ void msm_gpu_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
+ 	gpu->funcs->submit(gpu, submit);
+ 	gpu->cur_ctx_seqno = submit->queue->ctx->seqno;
+ 
+-	hangcheck_timer_reset(gpu);
+-
+-	mutex_unlock(&gpu->lock);
+-
+ 	pm_runtime_put(&gpu->pdev->dev);
++	hangcheck_timer_reset(gpu);
+ }
  
  /*
-diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c
-index 702adee83322b..7320c1c72e688 100644
---- a/drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c
-+++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c
-@@ -196,6 +196,9 @@ irqreturn_t rkisp1_csi_isr(int irq, void *ctx)
- 	struct rkisp1_device *rkisp1 = dev_get_drvdata(dev);
- 	u32 val, status;
+diff --git a/drivers/gpu/drm/msm/msm_ringbuffer.c b/drivers/gpu/drm/msm/msm_ringbuffer.c
+index 95257ab0185dc..a7e152f659a2c 100644
+--- a/drivers/gpu/drm/msm/msm_ringbuffer.c
++++ b/drivers/gpu/drm/msm/msm_ringbuffer.c
+@@ -21,8 +21,6 @@ static struct dma_fence *msm_job_run(struct drm_sched_job *job)
  
-+	if (!rkisp1->irqs_enabled)
-+		return IRQ_NONE;
-+
- 	status = rkisp1_read(rkisp1, RKISP1_CIF_MIPI_MIS);
- 	if (!status)
- 		return IRQ_NONE;
-diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
-index acc559652d6eb..73cf08a740118 100644
---- a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
-+++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
-@@ -305,6 +305,24 @@ static int __maybe_unused rkisp1_runtime_suspend(struct device *dev)
- {
- 	struct rkisp1_device *rkisp1 = dev_get_drvdata(dev);
+ 	msm_fence_init(submit->hw_fence, fctx);
  
-+	rkisp1->irqs_enabled = false;
-+	/* Make sure the IRQ handler will see the above */
-+	mb();
-+
-+	/*
-+	 * Wait until any running IRQ handler has returned. The IRQ handler
-+	 * may get called even after this (as it's a shared interrupt line)
-+	 * but the 'irqs_enabled' flag will make the handler return immediately.
-+	 */
-+	for (unsigned int il = 0; il < ARRAY_SIZE(rkisp1->irqs); ++il) {
-+		if (rkisp1->irqs[il] == -1)
-+			continue;
-+
-+		/* Skip if the irq line is the same as previous */
-+		if (il == 0 || rkisp1->irqs[il - 1] != rkisp1->irqs[il])
-+			synchronize_irq(rkisp1->irqs[il]);
-+	}
-+
- 	clk_bulk_disable_unprepare(rkisp1->clk_size, rkisp1->clks);
- 	return pinctrl_pm_select_sleep_state(dev);
- }
-@@ -321,6 +339,10 @@ static int __maybe_unused rkisp1_runtime_resume(struct device *dev)
- 	if (ret)
- 		return ret;
+-	submit->seqno = submit->hw_fence->seqno;
+-
+ 	mutex_lock(&priv->lru.lock);
  
-+	rkisp1->irqs_enabled = true;
-+	/* Make sure the IRQ handler will see the above */
-+	mb();
+ 	for (i = 0; i < submit->nr_bos; i++) {
+@@ -34,8 +32,13 @@ static struct dma_fence *msm_job_run(struct drm_sched_job *job)
+ 
+ 	mutex_unlock(&priv->lru.lock);
+ 
++	/* TODO move submit path over to using a per-ring lock.. */
++	mutex_lock(&gpu->lock);
 +
- 	return 0;
+ 	msm_gpu_submit(gpu, submit);
+ 
++	mutex_unlock(&gpu->lock);
++
+ 	return dma_fence_get(submit->hw_fence);
  }
  
-diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c
-index 5fbc47bda6831..caffea6a46186 100644
---- a/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c
-+++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c
-@@ -971,6 +971,9 @@ irqreturn_t rkisp1_isp_isr(int irq, void *ctx)
- 	struct rkisp1_device *rkisp1 = dev_get_drvdata(dev);
- 	u32 status, isp_err;
- 
-+	if (!rkisp1->irqs_enabled)
-+		return IRQ_NONE;
-+
- 	status = rkisp1_read(rkisp1, RKISP1_CIF_ISP_MIS);
- 	if (!status)
- 		return IRQ_NONE;
 -- 
 2.43.0
 
