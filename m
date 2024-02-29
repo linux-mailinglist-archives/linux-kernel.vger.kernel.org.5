@@ -1,103 +1,123 @@
-Return-Path: <linux-kernel+bounces-86764-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86765-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99A6B86CA6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:38:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7187986CA6F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:39:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B9021F21AA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:38:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2740E1F220B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:39:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 959FE86266;
-	Thu, 29 Feb 2024 13:38:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE0AB4B5DA;
+	Thu, 29 Feb 2024 13:39:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Z9Kqqr9S"
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IxNXyYjs"
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74C987E572
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 13:38:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBA1A15D2
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 13:39:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709213924; cv=none; b=XurqZBsHqf68eU/Vk3W9PqEl22Ye/fkM+ixVb2qqC24gsnsYsXN+ipUsUnM4dtgMtFnd6vx1q/CAOKYPWVLEVHc3CUFHsrKw+dqyzoVkWnkB9AwQ74gKs0r6AJNgi5K+sonQjR4PGarj/NNjgllSMRO3wMhZwscQEu5s0tZlGW8=
+	t=1709213973; cv=none; b=ppyj+g2Jzy23eRLwUmhHTLvskjy9w/6RR7e2HNqcxGgz7voJnvo7ysxMem6pUBjM5nTd5bHpZ7moG5+VK4ik2D95MNRpMs24AqZDRyYTpnLcXNNDeJP+lmXFK171xRT0QT1CeUdv6MizxjTpN4pY6clsw+mLTGiOZzHBi7n84To=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709213924; c=relaxed/simple;
-	bh=IgTG61UP+6FyhLCLuzFpVqoxtaeq7U//LN38utfZLxY=;
+	s=arc-20240116; t=1709213973; c=relaxed/simple;
+	bh=VZ5Y9Ei+MIJf3FL0eONlszgY8Ic/ozZTLuYGdsjIyaQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pKOu4mY0uVYpt/49EKQ3+d79Boujt6+K1KppUfIqx9Y6NuMFh6fFYlRVs9a/2EsIELbTOwH7Ol3j9F7N/02fOYxrAFvUlB75f/Y3QWO4kTYOLqZPw/CFHb8ueNod3RGGLfrhcvFHQZZ3LXkLn5RA6XzMFqxy7fq+wuTdLDI6tCY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Z9Kqqr9S; arc=none smtp.client-ip=209.85.219.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dcc80d6006aso1003717276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 05:38:43 -0800 (PST)
+	 To:Cc:Content-Type; b=gJSLPSMeyKxi7yjD1Wzcz7IhYBxQKc3kWix1sfTF/VzWcSUioKuvkRIqxDSfKz7KFtWuP7FkX2hS5d7V9nrpi3bbAD8/jv/3+mKMRaqbE8YaXyAtzZrEBZCiWX58+PcxjTpq87KzNCdMjqpzekH9sNz2w/BDL+0nm4odyzXgLKk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IxNXyYjs; arc=none smtp.client-ip=209.85.215.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5e42b4bbfa4so602337a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 05:39:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709213922; x=1709818722; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1709213971; x=1709818771; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IgTG61UP+6FyhLCLuzFpVqoxtaeq7U//LN38utfZLxY=;
-        b=Z9Kqqr9S/du3pt1DwFfxkty40yun2kbpGuXsls5dArBUx/N5nf0Re8a20KcqiT6fKW
-         lJPnCUJNTM8zXDByFbLsjX/fYGj+/ppiHliocmsw3DrOf1iJeMYH6JfrH8O6VQBFRRRF
-         exkm7IL+683UWpHoESs3jDULwNysjpRgaD3bF7CZk3KKLx+1eQ3JZI8DG5UjpomFTuAH
-         04v38upX79vjFkOi4+uR/k4BkT6PT87/39Wqel3+MxKxbWArEG4Wtu3p8yh8mIu841Z1
-         hx7EdqH/FJJLtS/vKp0nWNlIRQpvD58AmGICvJEcpHAhH4MO/KCZtaJYvfUjcv/D3U//
-         JIqQ==
+        bh=VZ5Y9Ei+MIJf3FL0eONlszgY8Ic/ozZTLuYGdsjIyaQ=;
+        b=IxNXyYjsZ9Mvczk/tAOCsSjLqDceccj/CfzkxtPEFM+gMywsTuOX+uuDOTtiSsYWYX
+         zZ7zWsC3fB7/ALsODcnEO0r5H9/zIKx9E3rpdQ+ehlHAkjkSAakdtF6eAZyOp/zZr0CQ
+         P/pUt8HwSyZFXmz4fAkC0OKO6svBZXfIhsS7I+cGKWMqs6SiuvR1DCB0cd5+pVC9GkWe
+         TEPmu/tVKTK8ZeIE8QSisKmNOww6/fqXW5ssbXv0LKUEI4VtXP8tCVTEJcf43HQUSq21
+         MpQ5HfAkrhlV2RpViDvFSklWRUUUaCzYy85MMyKVBZOadzf0+O5l+o+pQNtbBPeTgQUF
+         Dl+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709213922; x=1709818722;
+        d=1e100.net; s=20230601; t=1709213971; x=1709818771;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=IgTG61UP+6FyhLCLuzFpVqoxtaeq7U//LN38utfZLxY=;
-        b=xPVjyD7eSgQZxf8DRN18zIg+Keldhr62gIxlEXnk1RDaOCHAve6lJ9+jK51jefbH2w
-         iO2o2d2MjE9LLOtg3UtVK1lxcCVHcxmOPW6q/m3kW3kasvkTI13bf/yMHl7Qge/ZoY8r
-         VCS2Pp4ALWlE77YzbWWVz3JheZZn/WCLYEMT7YYjPv7mkmTnf7zul0G+Ji/ZJbYDWo2J
-         KHsm9Za+rgHLnS+VP72Ec5Ye20upLMnUYVJBND6B5L0Nh6aWfHxm+AtcgvP5jSOTR37+
-         7sEkEUOL4lp+smvACgrm68DS6fVFjvViYqd0kVN0w9OsT2rsDCcVu6NwaQKlxEYJxS+U
-         ZQLA==
-X-Forwarded-Encrypted: i=1; AJvYcCWinuZO7hs3cMMCKOX5L0r7S3hd3eRL1/9rakhPlwahJ4OA6xVSgecJ8kftqw5nIw8mh06kLwdNbe7WVg4V6fEdt5vbZARVX/7B+Vl4
-X-Gm-Message-State: AOJu0YyR37zceAfG7r6ZgcowLBN5PouFfCLCCpY/3nCMz0eeD8kv4jmE
-	SD5+WIC/E8uOqsUVem3Pu5bKSJoPWYYSaAbFGp9WtdsCWf5KLgCdAdtCbp3hw9aRsN7b7wsn6vs
-	0rQzLHqY6uvtoEylC8JadUWNhlhLRZoCaFRK52g==
-X-Google-Smtp-Source: AGHT+IHM+r25TrBY9AX9ipefyLXUMLaheRjIdWYWuABgl1FVp0VyIn45HlK3V83H/L/hgt8QY0zg7MnvQFGOqbohVwM=
-X-Received: by 2002:a05:6902:2193:b0:dc7:4b0a:589 with SMTP id
- dl19-20020a056902219300b00dc74b0a0589mr2680154ybb.55.1709213922539; Thu, 29
- Feb 2024 05:38:42 -0800 (PST)
+        bh=VZ5Y9Ei+MIJf3FL0eONlszgY8Ic/ozZTLuYGdsjIyaQ=;
+        b=Q+wT8FI1jAIrbD/5VGrI6P8mo81uxsOtrrzYDssvP7hDxn+JAYshMFp9h4D5FNzOOR
+         d/E0Eo0q0ipfJDeS7ZtPDptybcWVfovrDz9t5ffNWMG/AM2SN2/ASg1nyhyBVXBJuBlF
+         WJw/VppCR373meckHdTDEKIbgsiQOrce+oJgWNEt/3MDxIi6E+0lzMJgthFVF02Md5DL
+         bdD9uLrJaRgmqZ4aYsvBibWjgt1tLi/RmnC4rEfRMFgfP6PQ5U5sLvSk9YDRtXARNGIw
+         PaRCzuXTtL4rmJoF/rm5zY6aWSHqamY4TS+EfWzqP5TOZ6xzfqRSnUN7fr2onotkocDn
+         gr8A==
+X-Forwarded-Encrypted: i=1; AJvYcCUrJb02S7h1DVETUhyrlkr1Ofp5NnpgIPV0xaIdCUZYNW2jLMBHJioak0XhrKzSDQ28hDJw7mKhJb5yGXon5WcQIxsfLTss1y0AH+Eh
+X-Gm-Message-State: AOJu0Yw460IcTAzV5xDKJBNbEHyuA66G8RZgYGWUeYfbLMc84yYIW4CP
+	kzuUfQaFS/5wBt/ms1vUBk93Jx9shNOuJetX3i/0LF7ZBK2BGwN0U/m51xJKlWuzNhAJ3mams3c
+	/qz/foGNqsnjF+6cVDrsQiX0wew8=
+X-Google-Smtp-Source: AGHT+IGelv6RxKf9aqGK7A90j222h96pKeHWfIAlFdNLY2T7ujbgu4wSQ5mit0xxWvEu2nYQoMTFCnN12WUrXbkeIks=
+X-Received: by 2002:a17:90b:3a8e:b0:29a:6436:ed59 with SMTP id
+ om14-20020a17090b3a8e00b0029a6436ed59mr2134966pjb.2.1709213971151; Thu, 29
+ Feb 2024 05:39:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240223162850.3914349-1-colin.i.king@gmail.com>
-In-Reply-To: <20240223162850.3914349-1-colin.i.king@gmail.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 29 Feb 2024 14:38:31 +0100
-Message-ID: <CACRpkdaPxGX249Uu5GsP79+ga2=k40u2+oeGUYpEaXAnh4+F0g@mail.gmail.com>
-Subject: Re: [PATCH][next] pinctrl: ocelot: remove redundant assignment to
- variable ret
-To: Colin Ian King <colin.i.king@gmail.com>
-Cc: linux-gpio@vger.kernel.org, kernel-janitors@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+References: <20240208002841.GA2601476@dev-arch.thelio-3990X>
+ <CANiq72=G--5LW-9sg2PscTL863mFVNdnX7LUQX2Xj02qZs4crA@mail.gmail.com>
+ <20240212234850.GB3221859@dev-arch.thelio-3990X> <20240213025303.GA4006766@dev-arch.thelio-3990X>
+ <CANiq72npYCD-zKqcXPNOAxnKiUCCXGbFQaGo-8=0-171ni+ncQ@mail.gmail.com>
+ <CANiq72kcQUuxcno00+QWrstrcfwC+2_Bvh+8dr5kgVkEtrWOEA@mail.gmail.com>
+ <20240227153728.GA819789@dev-arch.thelio-3990X> <CANiq72mmDquTeoEVErwXH7bVhP0+UifCrK0n=-HD97noWLqryA@mail.gmail.com>
+ <20240227215605.GA1422986@dev-arch.thelio-3990X> <20240228184358.GA139944@dev-arch.thelio-3990X>
+In-Reply-To: <20240228184358.GA139944@dev-arch.thelio-3990X>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Thu, 29 Feb 2024 14:39:18 +0100
+Message-ID: <CANiq72myA+BGb44XfCqyjLDUmG8gbqQF9z-_sk1=q2KPiJtNRg@mail.gmail.com>
+Subject: Re: Prebuilt LLVM 18.1.0-rc2 uploaded
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: llvm@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	Conor Dooley <conor@kernel.org>, Conor Dooley <Conor.Dooley@microchip.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 23, 2024 at 5:28=E2=80=AFPM Colin Ian King <colin.i.king@gmail.=
-com> wrote:
-
-> The variable ret is being assigned a value that is never read, it
-> is being re-assigned a value in every case statement in the following
-> switch statement. The assignment is redundant and can be removed.
+On Wed, Feb 28, 2024 at 7:44=E2=80=AFPM Nathan Chancellor <nathan@kernel.or=
+g> wrote:
 >
-> Cleans up clang scan build warning:
-> drivers/pinctrl/pinctrl-ocelot.c:1404:3: warning: Value stored to 'ret'
-> is never read [deadcode.DeadStores]
+> O Tue, Feb 27, 2024 at 02:56:05PM -0700, Nathan Chancellor wrote:
+> >
+> > 15 through 17 is a reasonable rebuild request, I've added it to the
+> > queue along with 18.1.0-rc4, which was just released. I'll message you
+> > when I have them uploaded.
 >
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+> This is now done, please let me know if there are any issues!
 
-Patch applied!
+Thanks a ton Nathan! That was very fast.
 
-Yours,
-Linus Walleij
+I gave them all (15, 16, 17, 18.1.0-rc4) a test (but only x86_64), and
+they worked fine -- I could boot-test in QEMU (x86_64) a Rust-enabled
+kernel and load the sample modules:
+
+CONFIG_CC_VERSION_TEXT=3D"ClangBuiltLinux clang version 15.0.7
+(https://github.com/llvm/llvm-project.git
+8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)"
+CONFIG_CC_VERSION_TEXT=3D"ClangBuiltLinux clang version 16.0.6
+(https://github.com/llvm/llvm-project.git
+7cbf1a2591520c2491aa35339f227775f4d3adf6)"
+CONFIG_CC_VERSION_TEXT=3D"ClangBuiltLinux clang version 17.0.6
+(https://github.com/llvm/llvm-project.git
+6009708b4367171ccdbf4b5905cb6a803753fe18)"
+CONFIG_CC_VERSION_TEXT=3D"ClangBuiltLinux clang version 18.1.0rc
+(https://github.com/llvm/llvm-project.git
+461274b81d8641eab64d494accddc81d7db8a09e)"
+
+Cheers,
+Miguel
 
