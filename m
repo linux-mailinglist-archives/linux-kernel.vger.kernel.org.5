@@ -1,60 +1,62 @@
-Return-Path: <linux-kernel+bounces-87152-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87153-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FA5086D04F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:16:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BBCD86D051
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:16:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 248071F22B34
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:16:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 50C241F22281
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:16:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E7FA6CBED;
-	Thu, 29 Feb 2024 17:15:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AAE56CBF4;
+	Thu, 29 Feb 2024 17:16:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kUctBZkh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mfToqY1U"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8260838DEA;
-	Thu, 29 Feb 2024 17:15:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D8656CBF3;
+	Thu, 29 Feb 2024 17:16:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709226951; cv=none; b=CY/tbINA5hwVzVLEM294Os5aIAydOZEduZ71GhUq/iaiwZ9X+i8uxYf+41LtSudLEtJBPioj+jeji/WeqHmhntxCnxdMxafizR/8HG2MqSJ/NkW3nEqlqKSaJ4p6AB0YdJQ58NBcHwMc8RRUGjjPo/zoW9G8zA0V5EgDWdqgv58=
+	t=1709227007; cv=none; b=r2KvZIfwwPX0H8WcoHfrqCBcJcvvbczzyYDXqHeGZ1a/O/BBxCIe9/IIhvaBsTAZDYAgD17Hl3znBssHHmQGKzcvRMSe2iqqyrTjbjBx4JXir3wnhg2gj85H7XONfG2CdUiWyVa1XJuW38Qy8tfnIaouVVIqGLxUB37nlYcP0O4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709226951; c=relaxed/simple;
-	bh=UI4jw++HlohXMHIBnRWkHueqa0Yr6Rngz8KiocAyWx8=;
+	s=arc-20240116; t=1709227007; c=relaxed/simple;
+	bh=sO1V/9+1+1pxQKgovU9SQDqskwQ8QcDLkagOKz3zDZ0=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=XpwHsqgVTbt3RF7HCiE2WUQbyxWt52aXVHEpqeYx4rkUzHNKrQ+BANHzH0YpAjSo5JkFycG4HWQ1M/S72/WfW7fGxe7UtGPBvnmV7Bvb0RMta2E41zRF1KO3X2ht0aCHOy10ykKxA1Sc4lLyOYsxfUALYjaFK+HS1YGoBIa3Cso=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kUctBZkh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A7B7C433F1;
-	Thu, 29 Feb 2024 17:15:49 +0000 (UTC)
+	 MIME-Version:Content-Type; b=nzZYrh6upu+pVRf7j4ZRq8+8tEKg2IO+gfX6+eCdoev3VPsbceng375WW2TAtYrPii15zLhjHft1y/dhi2IH8z+NFr3U+gzOMkAKeJ3oj5hzK+WF7xRCQjZbBp+sl7QCTT15ZnnKEm1AmG0Pw5lebzCILS3oVnyxCHXwv/vqlWo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mfToqY1U; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1824CC433C7;
+	Thu, 29 Feb 2024 17:16:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709226951;
-	bh=UI4jw++HlohXMHIBnRWkHueqa0Yr6Rngz8KiocAyWx8=;
+	s=k20201202; t=1709227006;
+	bh=sO1V/9+1+1pxQKgovU9SQDqskwQ8QcDLkagOKz3zDZ0=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=kUctBZkhC8D/OOpRfrC+Nt7tidVip0E2X+VOqp/uzWLVpziV5YQ2TNJuizjA1mYqG
-	 No/p82ee6K4Ud3mt4RCv5m+oSND1TRZIJtiq37ZfZMKQf6GP/RavqEze3wepRX5nte
-	 fB7zURhL+k9rQyhUx8Nfma+ld3KDKw5R1g4oPYrgHIj+0f/ZeiFBOyN8WsCuVKHYcU
-	 1vHsd8BZ528jTgFb7juNd7VtNwtdYeODHfvQ/JRXSTE9jA+4aaWqOKk3nrUKDDSh2f
-	 6fZfmC+5wwQB+9aerpSHyQzpRoe4ToWJTuYtK32+mFJ1BJGSBN9Nt3Ahza8ugCL8aJ
-	 yP8MjJW/SSVYw==
+	b=mfToqY1UgqQ+hOSLiBwz5q1cVaoYgKNvmupbOIIYnauOFK0aKp92jB6ZmhbylaFeY
+	 8r1F4/C3a/qPC19E63rOohIBGLpGSCl6j6AM4f3cqoiD/+9zKRNuWCw2ZQqfB0c8I0
+	 r9qSGfwE2kzt7oAfOLU+OrnNo4UnjgqcQNyVYgWUnUeWEjw7C/KEtkEpdUP+b12pP2
+	 UGVn81mjeg3vt9JnfV3jkn5O33wDyeHynm9zXszN08fTUR6I6dHVP1v4V5CCY6Lvvx
+	 a/RDIRsfMEd1o/ja99bO2sus/5QmQKyqPEktgo2/km7KLbNReQu/GNcd5vbsq5q3I4
+	 RiWHgCLEWgH4w==
 From: Lee Jones <lee@kernel.org>
-To: Support Opensource <support.opensource@diasemi.com>, 
- Rob Herring <robh@kernel.org>, 
+To: Rob Herring <robh+dt@kernel.org>, 
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Steve Twiss <stwiss.opensource@diasemi.com>, 
- Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Conor Dooley <conor.dooley@microchip.com>
-In-Reply-To: <f512045738d2102c771a171a514ed7cf612c6d6f.1708944455.git.geert+renesas@glider.be>
-References: <f512045738d2102c771a171a514ed7cf612c6d6f.1708944455.git.geert+renesas@glider.be>
-Subject: Re: (subset) [PATCH v2] dt-bindings: mfd: dlg,da9063: Make
- #interrupt-cells required
-Message-Id: <170922694896.1610001.17817812880165232655.b4-ty@kernel.org>
-Date: Thu, 29 Feb 2024 17:15:48 +0000
+ Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>, 
+ Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>, 
+ Roger Quadros <rogerq@kernel.org>
+Cc: Andrew Davis <afd@ti.com>, b-liu@ti.com, srk@ti.com, 
+ r-gunasekaran@ti.com, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ Rob Herring <robh@kernel.org>
+In-Reply-To: <20240226-b4-for-v6-5-am62-usb-typec-dt-v6-1-acf77fff4344@kernel.org>
+References: <20240226-b4-for-v6-5-am62-usb-typec-dt-v6-0-acf77fff4344@kernel.org>
+ <20240226-b4-for-v6-5-am62-usb-typec-dt-v6-1-acf77fff4344@kernel.org>
+Subject: Re: (subset) [PATCH v6 1/4] dt-bindings: mfd: syscon: Add
+ ti,am62-usb-phy-ctrl compatible
+Message-Id: <170922700382.1610849.6482403854629206955.b4-ty@kernel.org>
+Date: Thu, 29 Feb 2024 17:16:43 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,20 +67,20 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.12.4
 
-On Mon, 26 Feb 2024 11:50:02 +0100, Geert Uytterhoeven wrote:
-> '#interrupt-cells' is a required provided for interrupt providers,
-> hence make it required.
+On Mon, 26 Feb 2024 14:03:07 +0200, Roger Quadros wrote:
+> Add the compatible for TI AM62 USB PHY Control register. This
+> register is found in the TI AM62 WKUP_CTRL_MMR0 space [1]. It
+> is used to indicate the USB PHY PLL reference clock rate and
+> core voltage level to the USB controller.
 > 
-> While at it, move '#interrupt-cells' in the example to match common sort
-> order.
-> 
+> [1] - https://www.ti.com/lit/pdf/spruiv7
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] dt-bindings: mfd: dlg,da9063: Make #interrupt-cells required
-      commit: d3dc362b3a3d20d64208426cc86146eb241d7c7f
+[1/4] dt-bindings: mfd: syscon: Add ti,am62-usb-phy-ctrl compatible
+      commit: e9f06bd428d3f07c8d26506ed35d9f8bb836950b
 
 --
 Lee Jones [李琼斯]
