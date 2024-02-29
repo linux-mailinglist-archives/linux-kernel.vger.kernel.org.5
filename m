@@ -1,113 +1,172 @@
-Return-Path: <linux-kernel+bounces-86892-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86891-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26AD386CC57
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:06:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1706786CC56
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:06:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9AA01F21518
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:06:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B4B171F23757
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:06:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A37811384A8;
-	Thu, 29 Feb 2024 15:06:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C80801384A4;
+	Thu, 29 Feb 2024 15:06:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="KsB3fYdG"
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="HmkNoC/0"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59536137758
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 15:06:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BFC4137750;
+	Thu, 29 Feb 2024 15:06:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709219203; cv=none; b=Iphm/XMAr68Yo5rQX/Xs7b849IrNnYcVDw5sqRtGk+/fFH8XKDoOkXN6cniU2whLvB/kZVVEbIo15mua68vWdYKudHre42ZAE0JJO4tahfHR7B1HiITv5lVpG0bf1CKBrW4mnt2nMt9IQ9C/MjTqq9hWHykP13mB3fxHtpfkmW8=
+	t=1709219169; cv=none; b=qzeYeQKRvCxoptgB6GvHfIDjDfa+l34QJqAzw2wN0VtP/MdrLJTPyyuff6xF5W2rg5sp4eOf5Talr+fD0YqaC64B8yNVlIWS+0N9tYMSPx3bhei0fvlwYRsRFQ+8zBQpedd1BlmYoPT4u+vW+zaq1ZcnJAIi7wyq1vTQ7rkKBB4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709219203; c=relaxed/simple;
-	bh=PQ/k0j/+e1mnfwmxiUbzUWJRrlV0ylYhakUhgNYyuQ0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oFyp1VLsV1Hs+QvvvB1wNwwLJ861Qo3Nuk0VtwLcSM35v7E0f7YKBF/Q5W66LZRfL4Obj8Y8rXM20pI88DA3bU/kcBJZBFh6jPdn1kHnPzqAHkcYuL3NKkpnlkdHAxTC8RCb6rdyvQB8B7BFk8Gzn4gFJ9rOKzzCVntsAYc29s0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=KsB3fYdG; arc=none smtp.client-ip=209.85.219.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so977821276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 07:06:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709219201; x=1709824001; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=26MU8kHY9/G5Vo/Dcv5Tts/6jAZMZIquioYpJYzi0xE=;
-        b=KsB3fYdGhLGct4kjtdL0Q713IKX2Aa3fWKkRV1Cugx3CStkNQnyhtXWvrxEu2zM1PB
-         CmyHRZjvPIwkbbWqODjHxitkWyI2i5teoFgr+5Cw0hEnik93Zp7oFuKFgiyzca7mMp9i
-         4gyrWSQRqQd7vkFP2+1eV/6fsyE+Qbr4euV6ZhcwI8w578yQGpC+xgRMTL0c/fU5fEYH
-         ydnSBuWlEqz+XLZjv/tWYWjopwXn9PLU1/bs7EZrF7TBbjKMzRZ6ucgjImr5r+ltgMao
-         ypFc+AW/e2HLgfQkMN0FyyymgkyTnlEXAesawPoerSHazj0Y4WOcW6+T7+t/RlBYJXu9
-         U3hQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709219201; x=1709824001;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=26MU8kHY9/G5Vo/Dcv5Tts/6jAZMZIquioYpJYzi0xE=;
-        b=XwS9SzMXKVUni3lRf1G6rX7k0+ueDh1VObg9XpHPVJNBwK/QealYdIqw5K69JkxdIl
-         Rl8fmUzlFb7eMhIEk2Jb+tZDAKKPr4sWpb9H7zlMgiEuxwSTiXxDg1EQHl4FW33WjAPf
-         gYwm6AihpvP++TuQ51keL3cmF0cLwKSc/31ndu8eYFuQ21kYMy84evfgsxgyUXI5PBdF
-         nr/SvjgsdgYWgSYGLsApmr0kbiNW02PIraR9m8GyAjfQC8IuNneamRQbQsbIVYnmQTMZ
-         bVtKygOqlu5MQv0jCB7ez+qLVuaEnax9xJPpuHv9eYIqniCHyZ/mv4KowupjVHQy42r4
-         B72w==
-X-Forwarded-Encrypted: i=1; AJvYcCUnLh5mU2rS+MHrrUZuX3blXJJ/tPPU2BBkNYpYCXlXBErgqjJT+r2CHbgZ6KlQdb1YRPG4igs+wbNqPpHaCrhASynLXz7YLJL3VSLD
-X-Gm-Message-State: AOJu0YyfnBloPDTiRYRe0OROXoTm2Npm0eZT1sx85pSjPe5tLyCvwRF+
-	B0+v9Y//8w7FiV85Xwsw+DRWXN4zJ4PIlpNia/iUbz2GzXrTC1QIU82TSG0ZXn2QQBzsWeIs/Ct
-	VWCHffN+9LELyNplY53bCcavA64UP9+b12/EKTw==
-X-Google-Smtp-Source: AGHT+IGyVzxlO9P2N2/Nle4urv89zandwAhtRJZVVvNItIuQ0pBbBhYt18T7OWc2iTv2p8Tw14IEUrXNp6FevFF8nO0=
-X-Received: by 2002:a25:e812:0:b0:dcd:a28e:e5e0 with SMTP id
- k18-20020a25e812000000b00dcda28ee5e0mr2521252ybd.25.1709219201044; Thu, 29
- Feb 2024 07:06:41 -0800 (PST)
+	s=arc-20240116; t=1709219169; c=relaxed/simple;
+	bh=6h4hJKdMJ/mUzFPTHkW+CQwyfVnMV3EorukJNOsAz3g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dgtmirgkLBOAFCXjEHQbvPM/+cyC+revkQ29Dh6lYM4r2hjksVhXOudURHrF3qIB663X7tarJSOtMHQ+OMEq/FV+NfoaKNp3TqDpI/B7EpWHJwwc/BQVPehxtRDiCWZsI6HYrZUnTabXmvwEJzqBp8SZqNbHKPN9+wHUtZduNQo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=HmkNoC/0; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
+	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
+	In-Reply-To:References; bh=vkq1cSPFx4ixNxWnCzVtyGnhzokMMdq2KSDQeGVzjh4=; b=Hm
+	kNoC/0tf2wu5Kum9eNsJqARb6GTT3hVSccJw2ov4WPtd/sPqx53htebi6yrbp4xHVTco/26xuE8CL
+	Fdpn1jMc8Kg3r9irWKZdBMKXXbg2oDJcxpnKHsdPP5W5W+dMRGLnMjZkEBs35zNmDaK6wLm0UBqaQ
+	ptHuFuxaLD0LyD4=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rfhzL-009397-J9; Thu, 29 Feb 2024 16:06:23 +0100
+Date: Thu, 29 Feb 2024 16:06:23 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Raju.Lakkaraju@microchip.com
+Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+	linux-kernel@vger.kernel.org, Bryan.Whitehead@microchip.com,
+	richardcochran@gmail.com, UNGLinuxDriver@microchip.com
+Subject: Re: [PATCH net 3/3] net: lan743x: Address problems with wake option
+ flags configuration sequences
+Message-ID: <e038ec4e-c54d-4628-8997-90510c0d96ab@lunn.ch>
+References: <20240226080934.46003-1-Raju.Lakkaraju@microchip.com>
+ <20240226080934.46003-4-Raju.Lakkaraju@microchip.com>
+ <b83b74b7-3221-4747-8b71-17738c18c042@lunn.ch>
+ <LV8PR11MB8700C2F9461F4200431446D49F5F2@LV8PR11MB8700.namprd11.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240223181439.1099750-1-aaro.koskinen@iki.fi>
-In-Reply-To: <20240223181439.1099750-1-aaro.koskinen@iki.fi>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Thu, 29 Feb 2024 16:06:04 +0100
-Message-ID: <CAPDyKFq-KuoMNE56zjc329OTfF-O8Qm5pDxtkNotZWi2aTBd2Q@mail.gmail.com>
-Subject: Re: [PATCH 0/5] Fix MMC/GPIO regression on Nokia N8x0
-To: Aaro Koskinen <aaro.koskinen@iki.fi>
-Cc: Tony Lindgren <tony@atomide.com>, Linus Walleij <linus.walleij@linaro.org>, 
-	linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <LV8PR11MB8700C2F9461F4200431446D49F5F2@LV8PR11MB8700.namprd11.prod.outlook.com>
 
-On Fri, 23 Feb 2024 at 19:15, Aaro Koskinen <aaro.koskinen@iki.fi> wrote:
->
-> Hi,
->
-> Nokia N8x0 MMC has been pretty much broken starting from v6.3. These
-> patches restore the functionality. Tested on N810 with eMMC and external
-> miniSD card, and on N800 with SD card in the inner slot.
->
-> A.
->
-> Aaro Koskinen (5):
->   ARM: OMAP: fix bogus MMC GPIO labels on Nokia N8x0
->   ARM: OMAP: fix N810 MMC gpiod table
->   MMC: OMAP: fix broken slot switch lookup
->   MMC: OMAP: fix deferred probe
->   MMC: OMAP: restore original power up/down steps
->
->  arch/arm/mach-omap2/board-n8x0.c | 17 ++++++-----
->  drivers/mmc/host/omap.c          | 48 +++++++++++++++++++++-----------
->  2 files changed, 39 insertions(+), 26 deletions(-)
->
+On Thu, Feb 29, 2024 at 08:59:20AM +0000, Raju.Lakkaraju@microchip.com wrote:
+> Hi Andrew,
+> 
+> Thank you for review comments.
+> 
+> > -----Original Message-----
+> > From: Andrew Lunn <andrew@lunn.ch>
+> > Sent: Tuesday, February 27, 2024 7:28 AM
+> > To: Raju Lakkaraju - I30499 <Raju.Lakkaraju@microchip.com>
+> > Cc: netdev@vger.kernel.org; davem@davemloft.net; kuba@kernel.org; linux-
+> > kernel@vger.kernel.org; Bryan Whitehead - C21958
+> > <Bryan.Whitehead@microchip.com>; richardcochran@gmail.com;
+> > UNGLinuxDriver <UNGLinuxDriver@microchip.com>
+> > Subject: Re: [PATCH net 3/3] net: lan743x: Address problems with wake option
+> > flags configuration sequences
+> > 
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the
+> > content is safe
+> > 
+> > On Mon, Feb 26, 2024 at 01:39:34PM +0530, Raju Lakkaraju wrote:
+> > > Wake options handling has been reworked as follows:
+> > > a. We only enable secure on magic packet when both secure and magic wol
+> > >    options are requested together.
+> > > b. If secure-on magic packet had been previously enabled, and a
+> > subsequent
+> > >    command does not include it, we add it. This was done to workaround a
+> > >    problem with the 'pm-suspend' application which is unaware of secure-on
+> > >    magic packet being enabled and can unintentionally disable it prior to
+> > >    putting the system into suspend.
+> > 
+> > This seems to be in a bit of a grey area. But ethtool says:
+> > 
+> >            wol p|u|m|b|a|g|s|f|d...
+> >                   Sets  Wake-on-LAN  options.   Not  all devices support this.
+> >                   The argument to this option is a string of characters speci‐
+> >                   fying which options to enable.
+> >                   p   Wake on PHY activity
+> >                   u   Wake on unicast messages
+> >                   m   Wake on multicast messages
+> >                   b   Wake on broadcast messages
+> >                   a   Wake on ARP
+> >                   g   Wake on MagicPacket™
+> >                   s   Enable SecureOn™ password for MagicPacket™
+> >                   f   Wake on filter(s)
+> >                   d   Disable (wake on  nothing).   This  option
+> >                       clears all previous options.
+> > 
+> > d clears everything. All other things enable one option. There does not
+> > appear to be a way to disable a single option, and i would say, adding options
+> > is incremental.
+> > 
+> 
+> Yes. "d" clears everything.
+> But, if we enable "g" then enable "a", "g" option overwritten by "a"
 
-Acked-by: Ulf Hansson <ulf.hansson@linaro.org>
+This is where i say it is a bit of a grey area. For me, they are
+incremental. You can enable a and then later enable g, and you should
+have both enabled.
 
-Nitpick: Tony, while applying I think it would be nice to change the
-prefixes of the commit message headers for the mmc patches to "mmc:
-omap:".
+> Please find the attached log information 
+> > So:
+> > 
+> > > a. We only enable secure on magic packet when both secure and magic wol
+> > >    options are requested together.
+> > 
+> > I don't think they need to be requested together. I think you can first enable
+> > Wake on MagicPacket and then in a second call to ethtool Enable SecureOn
+> > password for MagicPacket. I also don't think it would unreasonable to accept
+> > Enable SecureOn password for MagicPacket and have that imply Wake on
+> > MagicPacket.
+> > 
+> 
+> If we need to enable any 2 options, we have to provide both options together.
+> i.e.
+> sudo ethtool -s enp9s0 wol ga
 
-Kind regards
-Uffe
+which i think is wrong. A driver should allow incremental adding WoL
+options.
+
+> 
+> > And:
+> > 
+> > > b. If secure-on magic packet had been previously enabled, and a
+> > subsequent
+> > >    command does not include it, we add it.
+> > 
+> > If there has not been a d, secure-on magic packet should remain enabled until
+> > there is a d.
+> > 
+> 
+> This is not happened with existing "Ethtool".
+> Please find the log information in an attachment file.
+
+That could just be a driver bug.
+
+Take a step back. Is there any clear documentation about how ethtool
+-s wol should really work? Any comments in the code? Any man page
+documentation.
+
+Lets first understand how it is expected to work. Then we can decided
+if the driver is implementing it correctly.
+
+   Andrew
 
