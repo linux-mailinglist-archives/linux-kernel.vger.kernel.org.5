@@ -1,181 +1,205 @@
-Return-Path: <linux-kernel+bounces-87038-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87039-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F75186CE85
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:16:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D60D86CE87
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:16:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D8971F25FF9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:16:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A03331C22105
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:16:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 380B86CC05;
-	Thu, 29 Feb 2024 15:56:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCD5170ACD;
+	Thu, 29 Feb 2024 15:56:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="eb8czAnm"
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EKV8+0K7"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2CCE6CBE6;
-	Thu, 29 Feb 2024 15:56:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51EC16CC17
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 15:56:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709222202; cv=none; b=Cyu3YbUS847Pz1kwdDQ2LFd9Ptup2hCpcD4CSfcSAeSuAsAckER4YeTikl86cxF/E06uMTMNH/9+QcNVFihq8SySicjAp85FkIgfZk1N/4gsQzlNQl/eC43aR62HHCt907gHXPJtK51LS2cpKJ2awQw5dmTmYyafP5oE/wlPW2k=
+	t=1709222207; cv=none; b=MYe40ybXIo961n3TNR1Gc6lSIVbODrlvuJ27ifb3EqFJ08s5YWYr9HeWB31h/Mrpnc+kmXE8PPYB01WgR5vvSsFrwI/yvtWg1QPE/PtcPvlo6zu/4yi93C+TOh2j4jTX/f92P3VqRwskg5lFFhkcycWwNPI036m4ne/LkLAGroc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709222202; c=relaxed/simple;
-	bh=iOmQTVDs9UpkKV8z9c2K0lKOA26i1Ri15LvtFNJTn8A=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=M+LQ5iORK+jk+4Yi5hvQe5AhwZP/Egi/liAGZtRpmdSazjBZciYWDDaBMra6DbSEQ3bbg4m+cejeyaLdloIiTIt9ZR07c2Y3afHD2exRO/19EUH0B9hbq7zb+HKSwDDXZ2Apr8ZZaVm1ZK9vJd4IBD3nH00SFMF4/R98XjqOn30=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=eb8czAnm; arc=none smtp.client-ip=67.231.149.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41TFednF032401;
-	Thu, 29 Feb 2024 09:56:32 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=PODMain02222019; bh=i
-	ZMbhk8sFajOWu5eQuTJqb2j6jAdfI9Sm0TUstq/FPc=; b=eb8czAnmLUIYEq3Mp
-	itKwz2CGsCUniyiiZjmJr43zii6sIXHyx0pUN0Wd3WooIZySTNb3KtVSfixxW8GU
-	8luTD+olhfECHYXyeot2ZoaQxsacq+2/jgKBQ09TnFrhRGdKhwU5ajsRPf2I2s4w
-	oZc4wsFKLGLSJk4A8n8tmKpGBC2K4xTrC5cxYlYi2X+Lgeb3doExlS82RxOVAbI3
-	193Pi8NW1A8PqWgLvpH6bffIMGtOOZMaDOVjtbeZgpEfcjSk5Es8tQ1U+ECySmW3
-	8N+Ip0sPds4ff3Do0iWZk4vBOIn1/7mrer45GnvmYT5UXKKEKhOPd/x6v5ZEbaZT
-	LF+/g==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3wfer2xgnp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 29 Feb 2024 09:56:31 -0600 (CST)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 29 Feb
- 2024 15:56:29 +0000
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40 via Frontend Transport; Thu, 29 Feb 2024 15:56:29 +0000
-Received: from fedora.ad.cirrus.com (unknown [198.90.251.53])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id A6A8C820241;
-	Thu, 29 Feb 2024 15:56:29 +0000 (UTC)
-From: Maciej Strozek <mstrozek@opensource.cirrus.com>
-To: Lee Jones <lee@kernel.org>
-CC: <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
-        <linux-kernel@vger.kernel.org>, <linux-sound@vger.kernel.org>,
-        Maciej Strozek
-	<mstrozek@opensource.cirrus.com>
-Subject: [PATCH] mfd: cs42l43: Fix wrong register defaults
-Date: Thu, 29 Feb 2024 15:56:14 +0000
-Message-ID: <20240229155616.118457-1-mstrozek@opensource.cirrus.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1709222207; c=relaxed/simple;
+	bh=P2TMqG7h7dnUJpKrrocNNNzpbY0+qjivekQDfKhl2bM=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=tTm7NVpdq4Xc+aAK1XdNB79AjU0W/l5hl8eEy29bwADJSQr9bdW6EeBe3rYxbrMs8RnxwamuMr0D8IK6Pbyo6P50EBfJkGXv9CppDJfDpGrfJ6r1cMbt1dfF9uDI/HdOPOXeNFOO5hTbGkfxGrAelK+URZ/gz7uxaeDaiNG8gUM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EKV8+0K7; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709222204;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NK1oIanmqTW8WZH0kLEYVDI/xueTaYHkdWqNEI0DyFk=;
+	b=EKV8+0K7UILiYBQNvid7MmFlmaaXK5H1RuaQ4i2cv7jAi5ibqyg0WFDLuHr3lkiNCYDZv/
+	ReqcfsE+A3a8WifpBvUuyalMXtmuB1Y9tx0v2QEhqdAjGIV9h1QnGxzYqUV5zsvmUUbLpQ
+	tbcimpMvaJ+VP8CFIiS6n6eCCP83K+Y=
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com
+ [209.85.166.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-679-goY0b5IJOrOGENJsI6eQGw-1; Thu, 29 Feb 2024 10:56:42 -0500
+X-MC-Unique: goY0b5IJOrOGENJsI6eQGw-1
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7c79b0aaa86so112779439f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 07:56:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709222201; x=1709827001;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NK1oIanmqTW8WZH0kLEYVDI/xueTaYHkdWqNEI0DyFk=;
+        b=S8A4xHAM0wD1j3sD6vsGhE28Mm5DR231xtqb3tXoAaDHeA4B0qepy5B49cYlYwW6qX
+         1fm1885+xWRoPuOxJhEBmtGTui3mrTVcidWFn9BnbwimMVOH9IPuh9Qcf5eYIsDKl+qH
+         kQNfsZSdn8d6DPJKOkjVncsoJIbojNh1psQOvC28K/nN/lIvbHBYwIXUNTuhzg4V02Kq
+         7YH7tGEZv/pGJ73txQtfRqsfGv1nCqO+f0Yi8pziDePZy8ecLJJuiGGI0/qcXAtrciIo
+         bZ3wYqQx9XNxVJ9oPvGU08ZK631g2CyI7k3YPIi5rYdp9DSxeH9e2NzmI0M7YZr+woUA
+         B0Fw==
+X-Forwarded-Encrypted: i=1; AJvYcCWxE1iQq7pweXe1Snu/D3Ke6zISaoPjMDDEksaxMMAURrNNXYZ4xhWfC7So5pAClSKn37Ur+NznChm95HOXX5V4jLv+r3wo/RHcKNyA
+X-Gm-Message-State: AOJu0YxYtjPWF9UluMKX9b9WhYKcA4uqX4D0R1o7AtJDgzWPvAZcnlvP
+	FsQGMHZEZwXXpshNmc2OKlNbWaHjXc7cnT4M9zfbwEycHSM/+2hho7h4v7JbHrMSnKLYLnhDaRl
+	B3pfMqTaUnF+iZzRNV3pf1JGUZjN5rTlon/Xzu+zeWzp2bNGRFiUeL0hB0d53vw==
+X-Received: by 2002:a05:6602:641d:b0:7c7:d3c6:e195 with SMTP id gn29-20020a056602641d00b007c7d3c6e195mr3443311iob.1.1709222201494;
+        Thu, 29 Feb 2024 07:56:41 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFS3pyDQfw+9kwU2WI8G5o84elkM6/6Ot566Bp3UBg2or4p9T85U4IZrIMXeiAPk8508EZT7Q==
+X-Received: by 2002:a05:6602:641d:b0:7c7:d3c6:e195 with SMTP id gn29-20020a056602641d00b007c7d3c6e195mr3443292iob.1.1709222201221;
+        Thu, 29 Feb 2024 07:56:41 -0800 (PST)
+Received: from redhat.com ([38.15.36.11])
+        by smtp.gmail.com with ESMTPSA id j13-20020a02a68d000000b00474420a484esm364815jam.98.2024.02.29.07.56.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Feb 2024 07:56:40 -0800 (PST)
+Date: Thu, 29 Feb 2024 08:56:39 -0700
+From: Alex Williamson <alex.williamson@redhat.com>
+To: <ankita@nvidia.com>
+Cc: <jgg@nvidia.com>, <yishaih@nvidia.com>,
+ <shameerali.kolothum.thodi@huawei.com>, <kevin.tian@intel.com>,
+ <aniketa@nvidia.com>, <cjia@nvidia.com>, <kwankhede@nvidia.com>,
+ <targupta@nvidia.com>, <vsethi@nvidia.com>, <acurrid@nvidia.com>,
+ <apopple@nvidia.com>, <jhubbard@nvidia.com>, <danw@nvidia.com>,
+ <rrameshbabu@nvidia.com>, <zhiw@nvidia.com>, <anuaggarwal@nvidia.com>,
+ <mochs@nvidia.com>, <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 1/1] vfio/nvgrace-gpu: Convey kvm that the device is
+ wc safe
+Message-ID: <20240229085639.484b920c.alex.williamson@redhat.com>
+In-Reply-To: <20240228194801.2299-1-ankita@nvidia.com>
+References: <20240228194801.2299-1-ankita@nvidia.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: CC-fgD8xa4r1UDu6RkNYlS7WZ_JrIDta
-X-Proofpoint-ORIG-GUID: CC-fgD8xa4r1UDu6RkNYlS7WZ_JrIDta
-X-Proofpoint-Spam-Reason: safe
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-A few regs have unnecessary values in defaults, change them to match the
-datasheet
+On Wed, 28 Feb 2024 19:48:01 +0000
+<ankita@nvidia.com> wrote:
 
-Fixes: ace6d1448138 ("mfd: cs42l43: Add support for cs42l43 core driver")
+> From: Ankit Agrawal <ankita@nvidia.com>
+> 
+> The NVIDIA Grace Hopper GPUs have device memory that is supposed to be
+> used as a regular RAM. It is accessible through CPU-GPU chip-to-chip
+> cache coherent interconnect and is present in the system physical
+> address space. The device memory is split into two regions - termed
+> as usemem and resmem - in the system physical address space,
+> with each region mapped and exposed to the VM as a separate fake
+> device BAR [1].
+> 
+> Owing to a hardware defect for Multi-Instance GPU (MIG) feature [2],
+> there is a requirement - as a workaround - for the resmem BAR to
+> display uncached memory characteristics. Based on [3], on system with
+> FWB enabled such as Grace Hopper, the requisite properties
+> (uncached, unaligned access) can be achieved through a VM mapping (S1)
+> of NORMAL_NC and host mapping (S2) of MT_S2_FWB_NORMAL_NC.
+> 
+> KVM currently maps the MMIO region in S2 as MT_S2_FWB_DEVICE_nGnRE by
+> default. The fake device BARs thus displays DEVICE_nGnRE behavior in the
+> VM.
+> 
+> The following table summarizes the behavior for the various S1 and S2
+> mapping combinations for systems with FWB enabled [3].
+> S1           |  S2           | Result
+> NORMAL_WB    |  NORMAL_NC    | NORMAL_NC
+> NORMAL_WT    |  NORMAL_NC    | NORMAL_NC
+> NORMAL_NC    |  NORMAL_NC    | NORMAL_NC
+> NORMAL_WB    |  DEVICE_nGnRE | DEVICE_nGnRE
+> NORMAL_WT    |  DEVICE_nGnRE | DEVICE_nGnRE
+> NORMAL_NC    |  DEVICE_nGnRE | DEVICE_nGnRE
+> 
+> Recently a change was added that modifies this default behavior and
+> make KVM map MMIO as MT_S2_FWB_NORMAL_NC when a VMA flag
+> VM_ALLOW_ANY_UNCACHED is set. Setting S2 as MT_S2_FWB_NORMAL_NC
+> provides the desired behavior (uncached, unaligned access) for resmem.
+> 
+> Such setting is extended to the usemem as a middle-of-the-road
+> setting to take it closer to the desired final system memory
+> characteristics (cached, unaligned). This will eventually be
+> fixed with the ongoing proposal [4].
+> 
+> To use VM_ALLOW_ANY_UNCACHED flag, the platform must guarantee that
+> no action taken on the MMIO mapping can trigger an uncontained
+> failure. The Grace Hopper satisfies this requirement. So set
+> the VM_ALLOW_ANY_UNCACHED flag in the VMA.
+> 
+> Applied over next-20240227.
+> base-commit: 22ba90670a51
+> 
+> Link: https://lore.kernel.org/all/20240220115055.23546-4-ankita@nvidia.com/ [1]
+> Link: https://www.nvidia.com/en-in/technologies/multi-instance-gpu/ [2]
+> Link: https://developer.arm.com/documentation/ddi0487/latest/ section D8.5.5 [3]
+> Link: https://lore.kernel.org/all/20230907181459.18145-2-ankita@nvidia.com/ [4]
+> 
+> Cc: Alex Williamson <alex.williamson@redhat.com>
+> Cc: Kevin Tian <kevin.tian@intel.com>
+> Cc: Jason Gunthorpe <jgg@nvidia.com>
+> Cc: Vikram Sethi <vsethi@nvidia.com>
+> Cc: Zhi Wang <zhiw@nvidia.com>
+> Signed-off-by: Ankit Agrawal <ankita@nvidia.com>
+> ---
+>  drivers/vfio/pci/nvgrace-gpu/main.c | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+> 
+> diff --git a/drivers/vfio/pci/nvgrace-gpu/main.c b/drivers/vfio/pci/nvgrace-gpu/main.c
+> index 25814006352d..5539c9057212 100644
+> --- a/drivers/vfio/pci/nvgrace-gpu/main.c
+> +++ b/drivers/vfio/pci/nvgrace-gpu/main.c
+> @@ -181,6 +181,24 @@ static int nvgrace_gpu_mmap(struct vfio_device *core_vdev,
+>  
+>  	vma->vm_pgoff = start_pfn;
+>  
+> +	/*
+> +	 * The VM_ALLOW_ANY_UNCACHED VMA flag is implemented for ARM64,
+> +	 * allowing KVM stage 2 device mapping attributes to use Normal-NC
+> +	 * rather than DEVICE_nGnRE, which allows guest mappings
+> +	 * supporting write-combining attributes (WC). This also
+> +	 * unlocks memory-like operations such as unaligned accesses.
+> +	 * This setting suits the fake BARs as they are expected to
+> +	 * demonstrate such properties within the guest.
+> +	 *
+> +	 * ARM does not architecturally guarantee this is safe, and indeed
+> +	 * some MMIO regions like the GICv2 VCPU interface can trigger
+> +	 * uncontained faults if Normal-NC is used. The nvgrace-gpu
+> +	 * however is safe in that the platform guarantees that no
+> +	 * action taken on the MMIO mapping can trigger an uncontained
+> +	 * failure. Hence VM_ALLOW_ANY_UNCACHED is set in the VMA flags.
+> +	 */
+> +	vm_flags_set(vma, VM_ALLOW_ANY_UNCACHED);
+> +
+>  	return 0;
+>  }
+>  
 
-Signed-off-by: Maciej Strozek <mstrozek@opensource.cirrus.com>
----
- drivers/mfd/cs42l43.c | 68 +++++++++++++++++++++----------------------
- 1 file changed, 34 insertions(+), 34 deletions(-)
+The commit log sort of covers it, but this comment doesn't seem to
+cover why we're setting an uncached attribute to the usemem region
+which we're specifically mapping as coherent... did we end up giving
+this flag a really poor name if it's being used here to allow unaligned
+access?  Thanks,
 
-diff --git a/drivers/mfd/cs42l43.c b/drivers/mfd/cs42l43.c
-index 7b6d07cbe6fc..73c88ee6a866 100644
---- a/drivers/mfd/cs42l43.c
-+++ b/drivers/mfd/cs42l43.c
-@@ -131,38 +131,38 @@ const struct reg_default cs42l43_reg_default[CS42L43_N_DEFAULTS] = {
- 	{ CS42L43_ASP_TX_CH4_CTRL,			0x00170091 },
- 	{ CS42L43_ASP_TX_CH5_CTRL,			0x001700C1 },
- 	{ CS42L43_ASP_TX_CH6_CTRL,			0x001700F1 },
--	{ CS42L43_ASPTX1_INPUT,				0x00800000 },
--	{ CS42L43_ASPTX2_INPUT,				0x00800000 },
--	{ CS42L43_ASPTX3_INPUT,				0x00800000 },
--	{ CS42L43_ASPTX4_INPUT,				0x00800000 },
--	{ CS42L43_ASPTX5_INPUT,				0x00800000 },
--	{ CS42L43_ASPTX6_INPUT,				0x00800000 },
--	{ CS42L43_SWIRE_DP1_CH1_INPUT,			0x00800000 },
--	{ CS42L43_SWIRE_DP1_CH2_INPUT,			0x00800000 },
--	{ CS42L43_SWIRE_DP1_CH3_INPUT,			0x00800000 },
--	{ CS42L43_SWIRE_DP1_CH4_INPUT,			0x00800000 },
--	{ CS42L43_SWIRE_DP2_CH1_INPUT,			0x00800000 },
--	{ CS42L43_SWIRE_DP2_CH2_INPUT,			0x00800000 },
--	{ CS42L43_SWIRE_DP3_CH1_INPUT,			0x00800000 },
--	{ CS42L43_SWIRE_DP3_CH2_INPUT,			0x00800000 },
--	{ CS42L43_SWIRE_DP4_CH1_INPUT,			0x00800000 },
--	{ CS42L43_SWIRE_DP4_CH2_INPUT,			0x00800000 },
--	{ CS42L43_ASRC_INT1_INPUT1,			0x00800000 },
--	{ CS42L43_ASRC_INT2_INPUT1,			0x00800000 },
--	{ CS42L43_ASRC_INT3_INPUT1,			0x00800000 },
--	{ CS42L43_ASRC_INT4_INPUT1,			0x00800000 },
--	{ CS42L43_ASRC_DEC1_INPUT1,			0x00800000 },
--	{ CS42L43_ASRC_DEC2_INPUT1,			0x00800000 },
--	{ CS42L43_ASRC_DEC3_INPUT1,			0x00800000 },
--	{ CS42L43_ASRC_DEC4_INPUT1,			0x00800000 },
--	{ CS42L43_ISRC1INT1_INPUT1,			0x00800000 },
--	{ CS42L43_ISRC1INT2_INPUT1,			0x00800000 },
--	{ CS42L43_ISRC1DEC1_INPUT1,			0x00800000 },
--	{ CS42L43_ISRC1DEC2_INPUT1,			0x00800000 },
--	{ CS42L43_ISRC2INT1_INPUT1,			0x00800000 },
--	{ CS42L43_ISRC2INT2_INPUT1,			0x00800000 },
--	{ CS42L43_ISRC2DEC1_INPUT1,			0x00800000 },
--	{ CS42L43_ISRC2DEC2_INPUT1,			0x00800000 },
-+	{ CS42L43_ASPTX1_INPUT,				0x00000000 },
-+	{ CS42L43_ASPTX2_INPUT,				0x00000000 },
-+	{ CS42L43_ASPTX3_INPUT,				0x00000000 },
-+	{ CS42L43_ASPTX4_INPUT,				0x00000000 },
-+	{ CS42L43_ASPTX5_INPUT,				0x00000000 },
-+	{ CS42L43_ASPTX6_INPUT,				0x00000000 },
-+	{ CS42L43_SWIRE_DP1_CH1_INPUT,			0x00000000 },
-+	{ CS42L43_SWIRE_DP1_CH2_INPUT,			0x00000000 },
-+	{ CS42L43_SWIRE_DP1_CH3_INPUT,			0x00000000 },
-+	{ CS42L43_SWIRE_DP1_CH4_INPUT,			0x00000000 },
-+	{ CS42L43_SWIRE_DP2_CH1_INPUT,			0x00000000 },
-+	{ CS42L43_SWIRE_DP2_CH2_INPUT,			0x00000000 },
-+	{ CS42L43_SWIRE_DP3_CH1_INPUT,			0x00000000 },
-+	{ CS42L43_SWIRE_DP3_CH2_INPUT,			0x00000000 },
-+	{ CS42L43_SWIRE_DP4_CH1_INPUT,			0x00000000 },
-+	{ CS42L43_SWIRE_DP4_CH2_INPUT,			0x00000000 },
-+	{ CS42L43_ASRC_INT1_INPUT1,			0x00000000 },
-+	{ CS42L43_ASRC_INT2_INPUT1,			0x00000000 },
-+	{ CS42L43_ASRC_INT3_INPUT1,			0x00000000 },
-+	{ CS42L43_ASRC_INT4_INPUT1,			0x00000000 },
-+	{ CS42L43_ASRC_DEC1_INPUT1,			0x00000000 },
-+	{ CS42L43_ASRC_DEC2_INPUT1,			0x00000000 },
-+	{ CS42L43_ASRC_DEC3_INPUT1,			0x00000000 },
-+	{ CS42L43_ASRC_DEC4_INPUT1,			0x00000000 },
-+	{ CS42L43_ISRC1INT1_INPUT1,			0x00000000 },
-+	{ CS42L43_ISRC1INT2_INPUT1,			0x00000000 },
-+	{ CS42L43_ISRC1DEC1_INPUT1,			0x00000000 },
-+	{ CS42L43_ISRC1DEC2_INPUT1,			0x00000000 },
-+	{ CS42L43_ISRC2INT1_INPUT1,			0x00000000 },
-+	{ CS42L43_ISRC2INT2_INPUT1,			0x00000000 },
-+	{ CS42L43_ISRC2DEC1_INPUT1,			0x00000000 },
-+	{ CS42L43_ISRC2DEC2_INPUT1,			0x00000000 },
- 	{ CS42L43_EQ1MIX_INPUT1,			0x00800000 },
- 	{ CS42L43_EQ1MIX_INPUT2,			0x00800000 },
- 	{ CS42L43_EQ1MIX_INPUT3,			0x00800000 },
-@@ -171,8 +171,8 @@ const struct reg_default cs42l43_reg_default[CS42L43_N_DEFAULTS] = {
- 	{ CS42L43_EQ2MIX_INPUT2,			0x00800000 },
- 	{ CS42L43_EQ2MIX_INPUT3,			0x00800000 },
- 	{ CS42L43_EQ2MIX_INPUT4,			0x00800000 },
--	{ CS42L43_SPDIF1_INPUT1,			0x00800000 },
--	{ CS42L43_SPDIF2_INPUT1,			0x00800000 },
-+	{ CS42L43_SPDIF1_INPUT1,			0x00000000 },
-+	{ CS42L43_SPDIF2_INPUT1,			0x00000000 },
- 	{ CS42L43_AMP1MIX_INPUT1,			0x00800000 },
- 	{ CS42L43_AMP1MIX_INPUT2,			0x00800000 },
- 	{ CS42L43_AMP1MIX_INPUT3,			0x00800000 },
---
-2.30.2
+Alex
 
 
