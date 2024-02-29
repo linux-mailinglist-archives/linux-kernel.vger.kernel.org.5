@@ -1,141 +1,120 @@
-Return-Path: <linux-kernel+bounces-86011-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86012-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D71FD86BE75
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 02:49:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 352C586BE89
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 02:51:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91A4F285757
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:49:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E29B4286521
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:51:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC1FF36124;
-	Thu, 29 Feb 2024 01:49:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5043A381B0;
+	Thu, 29 Feb 2024 01:51:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fZ7/Asn9"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="iqoWSzGh"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B2B023D2;
-	Thu, 29 Feb 2024 01:49:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F21ED376EB
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 01:51:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709171374; cv=none; b=RPe5Ly9kNNpiK0q3YbMHDxQCn1PWsFRJ+3WIK2XM3BDNZ/1ZmraxXtrfaYNxTbGbrz+aOvBWya7OpRdn8wDfiLont4U79b5cIbTWyca2vrM/1RJhaNQN6Ijx9GF0WFhnz8WIK5Le20mLlwp/74KYbUqr0kZ/5PEhO4gyn+laR5M=
+	t=1709171483; cv=none; b=EQP13LAQFt7sGuae6ZqWgtMGLD6AghfauIJs1tXwGBg36lsojL0xRWs2qCQ9WKrdsqcuHTbWYTaaN+f6kZWwmfTiwZnM42R3w9OPvh1g+LhoAgUGGrV5X0Y4H5j78joQ/ulrZMN5/X7MQEyv6onE1RMyG7d3Jfp/WZKXhkJiuzI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709171374; c=relaxed/simple;
-	bh=Z9+ZItlUKOOugftEXhTeLovJnwPdw0FTe0BJHEfOUvc=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Kc/akJRDDPFJLhevAgxDz8AIRHLKKxWdYaclvWcHsSKXgUqZMJuTlbBEM/6RJmqr7djsnrOxb1PN9jFIyARW2fU890GnKB9dmqqe9Ra0G8sSGdPKvOI6J2v+EJSs7UJT4XaETX4YWoFG4Rx4gRzPKChz5eeBOitITFtuYGrGrOk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fZ7/Asn9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 180F9C433C7;
-	Thu, 29 Feb 2024 01:49:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709171373;
-	bh=Z9+ZItlUKOOugftEXhTeLovJnwPdw0FTe0BJHEfOUvc=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=fZ7/Asn9fee487a/DT2NBXMTgVevreMAjByrP3R1pgFm9XrySx0/QyxylioN5kg5Q
-	 TlwAvaCqHNJ9nApguOtuNYt7xw99FnQL2zA5atAfdE6+UIzSd/S8iG5oGfg9hT5Sni
-	 vw9NPfzwVYHt1SRGTKCzA67NNWSWIuteEwRPt/nVU03sLVxK+ghXoP4K11IT9AsGnS
-	 VH5PacwR99K0WLfN/ev/9lfrooz9Lmsvl6njq1qH5uC9VegOL2nv6XEaXatKfVJ1AS
-	 iuWH0zSNCCzfHZUIlT8U2rH8EnHyL3u7oLpUn4WEa/ZhD5t5LtZZZ6JkUyVw1zLNST
-	 ka3MCb83MttpA==
-Date: Wed, 28 Feb 2024 17:49:32 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= via B4 Relay
- <devnull+arinc.unal.arinc9.com@kernel.org>
-Cc: <arinc.unal@arinc9.com>, Daniel Golle <daniel@makrotopia.org>, DENG
- Qingfang <dqfext@gmail.com>, Sean Wang <sean.wang@mediatek.com>, Andrew
- Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>, Vladimir
- Oltean <olteanv@gmail.com>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Matthias
- Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
- <angelogioacchino.delregno@collabora.com>, Russell King
- <linux@armlinux.org.uk>, mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
- Bartel Eerdekens <bartel.eerdekens@constell8.be>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH net-next v2 8/8] net: dsa: mt7530: simplify link
- operations and force link down on all ports
-Message-ID: <20240228174932.2500653d@kernel.org>
-In-Reply-To: <20240216-for-netnext-mt7530-improvements-3-v2-8-094cae3ff23b@arinc9.com>
-References: <20240216-for-netnext-mt7530-improvements-3-v2-0-094cae3ff23b@arinc9.com>
-	<20240216-for-netnext-mt7530-improvements-3-v2-8-094cae3ff23b@arinc9.com>
+	s=arc-20240116; t=1709171483; c=relaxed/simple;
+	bh=dyNQOsNqoX691z3lmsUE0UqeK3j+5UYGTMnTcRHjwiQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kEKBnd9SWXrEd048XksLTnXsrxBVh/lpEdtwoLXwQoosm0tYBHEw3lBzIXr+VUspAS2HQzVCjiI0eFjTC2+/Ls8z05Ay2XLWNwTifgUSJcC5GC/nzNUnSeY36jJVU9r2ZYdgbffqggwz7ZUk4V4DeLdQgHrKfUvnUFyDjSW5g9o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=iqoWSzGh; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5649c25369aso574328a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 17:51:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1709171480; x=1709776280; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BA3HNtaKQLlopR5HvEpA7g8ezYuwOK+W5LJ79NFDZrw=;
+        b=iqoWSzGh37cQSmXOYe5wmZu9QoaiQGkBjr6jBUzcKfGzc9S90/QTsySvUfDK2c53YS
+         hpwThV4OwwmfPf44zeBYZe0jRcUn4Ik2wai+UzklEIVZ97QVBd+++MThL/7IvcnQIQvc
+         aVrE8CWYPqoXrumISVWKrqx1G1VLEbytEGi5Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709171480; x=1709776280;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BA3HNtaKQLlopR5HvEpA7g8ezYuwOK+W5LJ79NFDZrw=;
+        b=EDE7BnIEHr39l7Eqa6SAg4E5urw/PgWPiqIQ9Qgy5zbsei0yYsPvpf28M+BmWiiUHv
+         TqG5VkhvrLR0pZYb9WhHcoZaUjkzZwRt07ojKZDypbE8dX+NtXjha0OQdtygPdH+8seN
+         x7O7wzYACW/x2HREdceihRdpCzmM5cnrwv1GlGN7DThj7QDIB8OAS3ToAcm9QFNSiaUP
+         GZhEpuO5GvOdt5abGRxeBHe9zhNZLGrKl6oVrrHPYYc7twGQWXDL+MFdN/1zQi1Os19j
+         wTafcqCIG2sv/Elf+VIoNaz4wGYInfArrhfyHlr6nBNyedbg6pfEqeTfnguxuZDCX6n4
+         ORZA==
+X-Forwarded-Encrypted: i=1; AJvYcCU+wgkO57ma7mQ6PV/9Iguh1hu0S1RZuyQml1YHHogfIbVDHQGWRw6sAbQu2a693hvTfNbRuxUE6N7qXB7V3Gay6WY5h/DiFV4hw84c
+X-Gm-Message-State: AOJu0Yw7ur525E6cHbYL5u7cm6Di/Nm/kwQC859rmpmGvUaziV/c7C8X
+	SKWMxg9LJYiRtsPajeDy2YqSMf/s5MZW3Uh+WTTvpT1oZW3VPoOpR9MsCuWaWKfLgxPjDp6s6vf
+	metKC
+X-Google-Smtp-Source: AGHT+IFViGrZR9LZU0ifXA0Kyw41xZJ4Q983O2T3YbyjhD2YbKKzpscuMvp4jHN2fjPGh/BFG2Pu0w==
+X-Received: by 2002:a05:6402:214e:b0:565:6f27:9dcf with SMTP id bq14-20020a056402214e00b005656f279dcfmr470537edb.34.1709171479847;
+        Wed, 28 Feb 2024 17:51:19 -0800 (PST)
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com. [209.85.128.49])
+        by smtp.gmail.com with ESMTPSA id c8-20020aa7d608000000b0056470bf320asm120742edr.43.2024.02.28.17.50.59
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Feb 2024 17:50:59 -0800 (PST)
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-412a2c2ce88so19485e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 17:50:59 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXgTBOzZ7wkXZXicd3dE0oL5j5hfxQewV/buijOKehqQf1V8QqPb3XJn3MqwfCcgroUO8fN1KqK2hqwmBqZtKihNmugzB3WNo1u/pAI
+X-Received: by 2002:a05:600c:a384:b0:412:ba22:fe90 with SMTP id
+ hn4-20020a05600ca38400b00412ba22fe90mr11378wmb.7.1709171458829; Wed, 28 Feb
+ 2024 17:50:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20240229013503.483651-1-swboyd@chromium.org>
+In-Reply-To: <20240229013503.483651-1-swboyd@chromium.org>
+From: Doug Anderson <dianders@chromium.org>
+Date: Wed, 28 Feb 2024 17:50:44 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=Xba76ZER=rqWm8H6dQTgkTRM38Edi81Y8-QXETvsmDCw@mail.gmail.com>
+Message-ID: <CAD=FV=Xba76ZER=rqWm8H6dQTgkTRM38Edi81Y8-QXETvsmDCw@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: qcom: sc7180: Disable DCC node by default
+To: Stephen Boyd <swboyd@chromium.org>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, Bjorn Andersson <andersson@kernel.org>, 
+	linux-kernel@vger.kernel.org, patches@lists.linux.dev, 
+	linux-arm-msm@vger.kernel.org, cros-qcom-dts-watchers@chromium.org, 
+	Souradeep Chowdhury <quic_schowdhu@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 16 Feb 2024 14:05:36 +0300 Ar=C4=B1n=C3=A7 =C3=9CNAL via B4 Relay w=
-rote:
-> From: Ar=C4=B1n=C3=A7 =C3=9CNAL <arinc.unal@arinc9.com>
->=20
-> Currently, the link operations for switch MACs are scattered across
-> port_enable, port_disable, phylink_mac_config, phylink_mac_link_up, and
-> phylink_mac_link_down.
->=20
-> port_enable and port_disable clears the link settings. Move that to
-> mt7530_setup() and mt7531_setup_common() which set up the switches. This
-> way, the link settings are cleared on all ports at setup, and then only
-> once with phylink_mac_link_down() when a link goes down.
->=20
-> Enable force mode at setup to apply the force part of the link settings.
-> This ensures that only active ports will have their link up.
+Hi,
 
-I don't know phylink so some basic questions..
+On Wed, Feb 28, 2024 at 5:35=E2=80=AFPM Stephen Boyd <swboyd@chromium.org> =
+wrote:
+>
+> We don't use this device on Trogdor boards. If we did, it would be
+> enabled in the sc7180-trogdor.dtsi file. Let's disable this here so that
+> boards with t he sc7180 SoC can decide to enable or disable this device.
 
-What's "mode" in this case?
+s/t he/the/
 
-> Now that the bit for setting the port on force mode is done on
-> mt7530_setup() and mt7531_setup_common(), get rid of PMCR_FORCE_MODE_ID()
-> which helped determine which bit to use for the switch model.
 
-MT7531_FORCE_MODE also includes MT7531_FORCE_LNK, doesn't that mean=20
-the link will be up?
+> Cc: Souradeep Chowdhury <quic_schowdhu@quicinc.com>
+> Fixes: add74cad7c9d ("arm64: dts: qcom: sc7180: Add Data Capture and Comp=
+are(DCC) support node")
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> ---
+>  arch/arm64/boot/dts/qcom/sc7180.dtsi | 1 +
+>  1 file changed, 1 insertion(+)
 
-> The "MT7621 Giga Switch Programming Guide v0.3", "MT7531 Reference Manual
-> for Development Board v1.0", and "MT7988A Wi-Fi 7 Generation Router
-> Platform: Datasheet (Open Version) v0.1" documents show that these bits a=
-re
-> enabled at reset:
->=20
-> PMCR_IFG_XMIT(1) (not part of PMCR_LINK_SETTINGS_MASK)
-> PMCR_MAC_MODE (not part of PMCR_LINK_SETTINGS_MASK)
-> PMCR_TX_EN
-> PMCR_RX_EN
-> PMCR_BACKOFF_EN (not part of PMCR_LINK_SETTINGS_MASK)
-> PMCR_BACKPR_EN (not part of PMCR_LINK_SETTINGS_MASK)
-> PMCR_TX_FC_EN
-> PMCR_RX_FC_EN
->=20
-> These bits also don't exist on the MT7530_PMCR_P(6) register of the switch
-> on the MT7988 SoC:
->=20
-> PMCR_IFG_XMIT()
-> PMCR_MAC_MODE
-> PMCR_BACKOFF_EN
-> PMCR_BACKPR_EN
->=20
-> Remove the setting of the bits not part of PMCR_LINK_SETTINGS_MASK on
-> phylink_mac_config as they're already set.
+Seems fine to me. I guess the driver never landed, but if/when it
+lands then it makes sense to just enable the device it for boards that
+need it.
 
-This should be a separate change.
-
-> Suggested-by: Vladimir Oltean <olteanv@gmail.com>
-> Signed-off-by: Ar=C4=B1n=C3=A7 =C3=9CNAL <arinc.unal@arinc9.com>
-
-> @@ -2257,6 +2255,12 @@ mt7530_setup(struct dsa_switch *ds)
->  	mt7530_mib_reset(ds);
-> =20
->  	for (i =3D 0; i < MT7530_NUM_PORTS; i++) {
-> +		/* Clear link settings and enable force mode to force link down
-
-"Clear link settings to force link down" makes sense.
-Since I don't know what the mode is, the "and enable force mode"
-sounds possibly out of place. If you're only combining this
-for the convenience of RMW, keep the reasoning separate.
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
