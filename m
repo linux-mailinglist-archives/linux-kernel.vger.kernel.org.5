@@ -1,228 +1,162 @@
-Return-Path: <linux-kernel+bounces-86515-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86517-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA5A486C66D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:09:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8C7286C671
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:09:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 005B71C22B7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:09:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7AC4F1F22C2A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:09:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE74064A9A;
-	Thu, 29 Feb 2024 10:09:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 513756351B;
+	Thu, 29 Feb 2024 10:09:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="GYPJkjo7"
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="rSkbaSN0"
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B42B634FC;
-	Thu, 29 Feb 2024 10:09:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF59A62A06
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 10:09:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709201347; cv=none; b=qfkdeZIkRsADxlEMvAlnYJrgAFa2+xbMt2xnp/SP+2qpY/zRKEVCEo3e/mbZrg07GQ4n6JIpx1Rd7oFH+SYl00AtR8qNIEzKvVAJKHlL98I49A/wCfEcsrMxd0tAm7Wc9seqcryRqb7Iisdn/hglDugUJcYylwTvU15si2zc3RE=
+	t=1709201363; cv=none; b=jBW1/HkCVjy9rPwEKJIDkJoyjbiS/+gqCe1+zqbPHG5tSQDL9sMCi+8FhL89BDOuab4XcLXPN76gur9MRdta/rbcjuHspEuMYAAnDFk+UPgtVavJwItAX/d1M/6/cTH9FE4bQHLclTtxRr58bVKU96MkM3KWNvzEDveawm46+OM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709201347; c=relaxed/simple;
-	bh=to0pqzDR7LrhVm0qSi41jiJVSNT18v1OXQ6F3rRfJmw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=c07PRwhCxzLtHtGrjAgxemkSaDh53WkbsZUuqLxCduoGP7b06xDvhw3o7HK3ro6kANV/VLWmVwep2nXKtuJbtxQ7AgKfVagSkak72WevZpxwMLFTIL+TMwxj5F/rhtrlQkAcaxpVaoNPbom106Y2er78UHL2ET2p/G2mSh+AMHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=GYPJkjo7; arc=none smtp.client-ip=93.104.207.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
+	s=arc-20240116; t=1709201363; c=relaxed/simple;
+	bh=GA3hOk2+V3le+4muvMPKWEzM4CFPwWUnDODB09RfE4U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jRk2rXr4KK4DDd8oZ5akK/Cz1H84qBadTzYTKkLXGr5gMWmU+cCyFCdKFGY4hax5LF8RpnZeErLWfini/BOlwEVHOYNiF8lkKFUTCYWvn+174zT97ZVmBYxuDY4w+mUD8fpnwgw2o2suNYppObYUpProXhZChcxb40im06iO5x0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rSkbaSN0; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5654ef0c61fso10148a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 02:09:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1709201344; x=1740737344;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=mXMDKKpauy1Jui0sKkU8gCrmH7275RH1plO5L2PIEX0=;
-  b=GYPJkjo7+SSJyUOvi1pmMSK8/SWKsqx6Xa34wkz5MxbRVGKJsAY2wEiT
-   MiTudKz5zwvaVZD2f2TYeI4aKsnNdLKQ+cPxJFSyPiuTjGtsLH8CM8Z2G
-   zjlP6uptj6328XC+de7SERFZVZbuEyWipTbNY8WPGJ66Mv03OwDnDLbQx
-   B/uGUky8gbE1e+YME4XJ9z6i1ZgBQ5Q6l1wh0RmnyROh78dxVEhLGHAkQ
-   6n4hudSfUizl2wHdmDIGLM801QeqLyxO/j2k0cegSf3YnuZ6MEnxO/u+a
-   H93yhupF7DkU+3XfHOaAJDN3/wz7sAcRwjuiLHnsqw5Yp4GOKYbib50LQ
-   g==;
-X-IronPort-AV: E=Sophos;i="6.06,194,1705359600"; 
-   d="scan'208";a="35660989"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 29 Feb 2024 11:08:56 +0100
-Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.25])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id C6BDA280071;
-	Thu, 29 Feb 2024 11:08:55 +0100 (CET)
-From: Alexander Stein <alexander.stein@ew.tq-group.com>
-To: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
-Cc: devicetree@vger.kernel.org, imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Frank Li <Frank.Li@nxp.com>, Dong Aisheng <aisheng.dong@nxp.com>, Frank Li <Frank.Li@nxp.com>
-Subject: Re: [PATCH 1/4] arm64: dts: imx8: add cm40 subsystem dtsi
-Date: Thu, 29 Feb 2024 11:08:55 +0100
-Message-ID: <8387443.NyiUUSuA9g@steina-w>
-Organization: TQ-Systems GmbH
-In-Reply-To: <20240228-m4_lpuart-v1-1-9e6947be15e7@nxp.com>
-References: <20240228-m4_lpuart-v1-0-9e6947be15e7@nxp.com> <20240228-m4_lpuart-v1-1-9e6947be15e7@nxp.com>
+        d=google.com; s=20230601; t=1709201360; x=1709806160; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=t/Go3YqIu09UH/h/HOYTGKZUGAGfZufH1m+hGfleaeo=;
+        b=rSkbaSN0te7psnftf8RVCKwTkY/RIDX6i5cjqo/wDTV3qvx8Pmbvd65epK2qKkIjRV
+         69Gx5DoTlzMfuDHTe1DwsokSBe2J1BeA0Sev107ppxJnKf2GqMEJvYKiGEvgj3w3/1xp
+         0cSqEiCcyJozHyiqrX1k6zzDo4gdzQrp5FnEhetcSXTnAZ7xntuBjADi2MyjCgZTKKrC
+         JGBHsdq+iN83J8TInKH/zKF+9VLCGTgNam/fCCTT6H/L8LxttAO9Ii+TAtsWWWxF85s+
+         FRKK4yKL80KyOS5OgxUqxIBARzbGBMUOWmc/e/KBFJbu8Qi13FqYphgBy9/vFuRsP1c2
+         2xhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709201360; x=1709806160;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=t/Go3YqIu09UH/h/HOYTGKZUGAGfZufH1m+hGfleaeo=;
+        b=ux69MU/bJR7FzQPxl0ha/wfTh+pc4U8w9lMEmEVbqeSLEN7A51mhzUI8JKSBtXZeLs
+         mSTfA1Hi7UWXxS3QpITa6hxTAEpOwXBDh09JKJcaDt3y/XrIHm5P77QjLejj4f/ykiC6
+         xD5HeVl3xcTLCCbu652Q+0ahCZO6Bg3Fe2rWUgXuH4Wd7MPwxma554MtY3JM81+p7oso
+         IziuD+CSO0TPuCwRGI/C3PMvtCdWDPafK9MLwkLyvMa7kOB7V1pV89Qc9JGEm0aOchJb
+         20OYXXjtz2fUZPLodaVusYehNhnB2lrrlNSaj2RaTbWc4Gn+o6lF5HjHvjAtqQqk16dq
+         j68A==
+X-Forwarded-Encrypted: i=1; AJvYcCWR1PTWgKyKIvzgBlkBvPLsc3REw4a2ziPQFeQaJ3Lc7v7NfGwB+4IpnPajmlLEMK3bu4IQNFs3MQqlISWx8MqCWvXpCO6uow5NcjXu
+X-Gm-Message-State: AOJu0YzDPRlgLC63KWehMj1WSyop4zJA/K3fvoXcUkRCC9bj4Cy1Rb5Y
+	8JqwgAe6U1ISXBInhpqb6mhcBrDgIFgZZ0bLbPwbxOXMJQhHVCVWWb+hMd4X9dpJjCUPA+G5Og3
+	RP3/Zt+4fWVeSNNGpQT+WSXlAXHsH5Zv3ePJt
+X-Google-Smtp-Source: AGHT+IGqgX6DpEN74CADxukO7H9XFj6A5L3gDfzgaZwl7aLZqmrIaLPyqEGhwFwYnJ0bEzVfW3daN07CbHbZHFQiHXk=
+X-Received: by 2002:aa7:dcc5:0:b0:563:f48a:aa03 with SMTP id
+ w5-20020aa7dcc5000000b00563f48aaa03mr103397edu.2.1709201360039; Thu, 29 Feb
+ 2024 02:09:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240223143833.1509961-1-guanyulin@google.com>
+ <CAJZ5v0gM=0rU6a1A6Bh2Ed=4=1AtQ3p5aDJVCOioA6qxGv1jtQ@mail.gmail.com>
+ <CAOuDEK1NdFSZgy8_ebO_zSxbU-gLJHsCzjd6JSr2cckQAFgaTg@mail.gmail.com> <CAJZ5v0g0WgYWyOfMaq8PhOkCmBFuDRb3XbCxPpcbpJuJza0+cA@mail.gmail.com>
+In-Reply-To: <CAJZ5v0g0WgYWyOfMaq8PhOkCmBFuDRb3XbCxPpcbpJuJza0+cA@mail.gmail.com>
+From: Guan-Yu Lin <guanyulin@google.com>
+Date: Thu, 29 Feb 2024 18:09:00 +0800
+Message-ID: <CAOuDEK04r+1j-R7EmMEu91OGwmjY8AaViyQgVK4uShouTLZFiw@mail.gmail.com>
+Subject: Re: [PATCH v3] PM / core: conditionally skip system pm in
+ device/driver model
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: pavel@ucw.cz, len.brown@intel.com, gregkh@linuxfoundation.org, 
+	andriy.shevchenko@linux.intel.com, rdunlap@infradead.org, james@equiv.tech, 
+	broonie@kernel.org, james.clark@arm.com, masahiroy@kernel.org, 
+	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
 
-Hi Frank,
+On Tue, Feb 27, 2024 at 7:28=E2=80=AFPM Rafael J. Wysocki <rafael@kernel.or=
+g> wrote:
+>
+> On Mon, Feb 26, 2024 at 10:45=E2=80=AFAM Guan-Yu Lin <guanyulin@google.co=
+m> wrote:
+> >
+> > On Sat, Feb 24, 2024 at 1:44=E2=80=AFAM Rafael J. Wysocki <rafael@kerne=
+l.org> wrote:
+> > >
+> > > On Fri, Feb 23, 2024 at 3:38=E2=80=AFPM Guan-Yu Lin <guanyulin@google=
+com> wrote:
+> > > >
+> > > > In systems with a main processor and a co-processor, asynchronous
+> > > > controller management can lead to conflicts.  One example is the ma=
+in
+> > > > processor attempting to suspend a device while the co-processor is
+> > > > actively using it. To address this, we introduce a new sysfs entry
+> > > > called "conditional_skip". This entry allows the system to selectiv=
+ely
+> > > > skip certain device power management state transitions. To use this
+> > > > feature, set the value in "conditional_skip" to indicate the type o=
+f
+> > > > state transition you want to avoid.  Please review /Documentation/A=
+BI/
+> > > > testing/sysfs-devices-power for more detailed information.
+> > > >
+> > > > Signed-off-by: Guan-Yu Lin <guanyulin@google.com>
+> > >
+> > > Please explain how this is intended to work.  That is, what exactly
+> > > you expect to happen when the new attribute is set.
+> >
+> > The sysfs entry 'conditional_skip' for a device indicates which power
+> > transitions (e.g. PM_EVENT_SUSPEND) are omitted within the system
+> > power management flow. During the processing of an identified power
+> > transition, the device's power.entry will not be added to the
+> > dpm_prepared_list, preventing the device from undergoing that
+> > transition. As 'conditional_skip' is modifiable at runtime, a device's
+> > participation in system power management can be dynamically enabled or
+> > disabled.
+>
+> So this idea is completely misguided AFAICS.
+>
+> First off, why would a device be skipped in system-wide suspend and
+> not in hibernation?  Or the other way around?  Or why would it be
+> skipped in one phase of hibernation and not in the other?
+>
 
-thanks for the patch.
+The motto is to set less constraints and let users configure them
+properly by themselves. But, we could redesign it to better match with
+existing conventions/regulations.
 
-Am Mittwoch, 28. Februar 2024, 20:54:57 CET schrieb Frank Li:
-> From: Dong Aisheng <aisheng.dong@nxp.com>
->=20
-> Add cm40 subsystem dtsi.
->=20
-> Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
->  arch/arm64/boot/dts/freescale/imx8-ss-cm40.dtsi | 67 +++++++++++++++++++=
-++++++
->  arch/arm64/boot/dts/freescale/imx8dxl.dtsi      |  2 +
->  arch/arm64/boot/dts/freescale/imx8qxp.dtsi      |  1 +
->  3 files changed, 70 insertions(+)
->=20
-> diff --git a/arch/arm64/boot/dts/freescale/imx8-ss-cm40.dtsi b/arch/arm64=
-/boot/dts/freescale/imx8-ss-cm40.dtsi
-> new file mode 100644
-> index 0000000000000..b1d626862ddf8
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/freescale/imx8-ss-cm40.dtsi
-> @@ -0,0 +1,67 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * Copyright 2019 NXP
-> + *	Dong Aisheng <aisheng.dong@nxp.com>
-> + */
-> +
-> +#include <dt-bindings/firmware/imx/rsrc.h>
-> +
-> +cm40_subsys: bus@34000000 {
-> +	compatible =3D "simple-bus";
-> +	#address-cells =3D <1>;
-> +	#size-cells =3D <1>;
-> +	ranges =3D <0x34000000 0x0 0x34000000 0x4000000>;
+> Second, but not less important, why is skipping a device in
+> system-wide transitions a good idea at all?  What about dependencies
+> between that device and the other devices in the system?
+>
 
-You should set interrupt-parent =3D <&cm40_intmux> here already.
-So you can skip it for all subsequent nodes, but the cm40_intmux itself.
+If a device is also used by another operating system kernel, then
+Linux kernel shouldn't always do the system power transition on that
+device to avoid affecting another operating system kernel.
 
-> +
-> +	cm40_ipg_clk: clock-cm40-ipg {
-> +		compatible =3D "fixed-clock";
-> +		#clock-cells =3D <0>;
-> +		clock-frequency =3D <132000000>;
-> +		clock-output-names =3D "cm40_ipg_clk";
-> +	};
-> +
-> +	cm40_i2c: i2c@37230000 {
-> +		compatible =3D "fsl,imx8qxp-lpi2c", "fsl,imx7ulp-lpi2c";
-> +		reg =3D <0x37230000 0x1000>;
-> +		interrupts =3D <9 IRQ_TYPE_LEVEL_HIGH>;
-> +		interrupt-parent =3D <&cm40_intmux>;
+Since device dependencies can be highly system-specific, maybe we
+should let users handle it as users are the only ones who understand
+their system's unique configuration.
 
-I personally prefer the parent to be stated first.
+> Generally speaking, system-wide PM is designed to cover the entire
+> system and there are good reasons for that.  If you don't want it to
+> cover the entire system, you cannot use it at all.
 
-> +		clocks =3D <&cm40_i2c_lpcg 0>,
-> +			 <&cm40_i2c_lpcg 1>;
-> +		clock-names =3D "per", "ipg";
-> +		assigned-clocks =3D <&clk IMX_SC_R_M4_0_I2C IMX_SC_PM_CLK_PER>;
-> +		assigned-clock-rates =3D <24000000>;
-> +		power-domains =3D <&pd IMX_SC_R_M4_0_I2C>;
-> +		status =3D "disabled";
-> +	};
-> +
-> +	cm40_i2c_lpcg: clock-controller@37630000 {
-
-Please sort the nodes by bus address.
-
-> +		compatible =3D "fsl,imx8qxp-lpcg";
-> +		reg =3D <0x37630000 0x1000>;
-> +		#clock-cells =3D <1>;
-> +		clocks =3D <&clk IMX_SC_R_M4_0_I2C IMX_SC_PM_CLK_PER>,
-> +			 <&cm40_ipg_clk>;
-> +		clock-indices =3D <IMX_LPCG_CLK_0>, <IMX_LPCG_CLK_4>;
-> +		clock-output-names =3D "cm40_lpcg_i2c_clk",
-> +				     "cm40_lpcg_i2c_ipg_clk";
-> +		power-domains =3D <&pd IMX_SC_R_M4_0_I2C>;
-> +	};
-> +
-> +	cm40_intmux: intmux@37400000 {
-> +		compatible =3D "fsl,imx-intmux";
-> +		reg =3D <0x37400000 0x1000>;
-> +		interrupts =3D <GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>,
-> +			     <GIC_SPI 17 IRQ_TYPE_LEVEL_HIGH>,
-> +			     <GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH>,
-> +			     <GIC_SPI 19 IRQ_TYPE_LEVEL_HIGH>,
-> +			     <GIC_SPI 20 IRQ_TYPE_LEVEL_HIGH>,
-> +			     <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>,
-> +			     <GIC_SPI 22 IRQ_TYPE_LEVEL_HIGH>,
-> +			     <GIC_SPI 23 IRQ_TYPE_LEVEL_HIGH>;
-> +		interrupt-controller;
-> +		interrupt-parent =3D <&gic>;
-> +		#interrupt-cells =3D <2>;
-> +		clocks =3D <&cm40_ipg_clk>;
-> +		clock-names =3D "ipg";
-> +		power-domains =3D <&pd IMX_SC_R_M4_0_INTMUX>;
-> +		status =3D "disabled";
-> +	};
-> +};
-> diff --git a/arch/arm64/boot/dts/freescale/imx8dxl.dtsi b/arch/arm64/boot=
-/dts/freescale/imx8dxl.dtsi
-> index a0674c5c55766..9d49c75a26222 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8dxl.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8dxl.dtsi
-> @@ -5,6 +5,7 @@
-> =20
->  #include <dt-bindings/clock/imx8-clock.h>
->  #include <dt-bindings/dma/fsl-edma.h>
-> +#include <dt-bindings/clock/imx8-lpcg.h>
->  #include <dt-bindings/firmware/imx/rsrc.h>
->  #include <dt-bindings/gpio/gpio.h>
->  #include <dt-bindings/interrupt-controller/arm-gic.h>
-> @@ -231,6 +232,7 @@ xtal24m: clock-xtal24m {
->  	};
-> =20
->  	/* sorted in register address */
-> +	#include "imx8-ss-cm40.dtsi"
->  	#include "imx8-ss-adma.dtsi"
->  	#include "imx8-ss-conn.dtsi"
->  	#include "imx8-ss-ddr.dtsi"
-> diff --git a/arch/arm64/boot/dts/freescale/imx8qxp.dtsi b/arch/arm64/boot=
-/dts/freescale/imx8qxp.dtsi
-> index 10e16d84c0c3b..c49fb1282ae65 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
-> @@ -316,6 +316,7 @@ map0 {
-> =20
->  	/* sorted in register address */
->  	#include "imx8-ss-img.dtsi"
-> +	#include "imx8-ss-cm40.dtsi"
-
-cm40 subsystem is bus@34000000, so IMHO it should go below vpu subsystem,
-which is vpu@2c000000.
-
-Best regards,
-Alexander
-
->  	#include "imx8-ss-vpu.dtsi"
->  	#include "imx8-ss-gpu0.dtsi"
->  	#include "imx8-ss-adma.dtsi"
->=20
->=20
-
-
-=2D-=20
-TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
-Amtsgericht M=FCnchen, HRB 105018
-Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
-http://www.tq-group.com/
-
-
+We discovered a use case that the existing system-wide PM may not
+fully support: devices shared by multiple operating system kernels. I
+think supporting this case would be beneficial to the system-wide PM,
+as it would increase its compatibility.
 
