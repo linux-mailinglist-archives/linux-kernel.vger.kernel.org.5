@@ -1,77 +1,67 @@
-Return-Path: <linux-kernel+bounces-86889-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86890-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50D4A86CC4D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:03:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0A2D86CC51
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:03:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D4B94B224FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:03:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E89771C21997
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 15:03:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5D41137C3F;
-	Thu, 29 Feb 2024 15:03:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDB781384A4;
+	Thu, 29 Feb 2024 15:03:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HGzoHtFK"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VOpNTBTn"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 879A27D419;
-	Thu, 29 Feb 2024 15:03:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0603C7E564;
+	Thu, 29 Feb 2024 15:03:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709219001; cv=none; b=S5f4uSzR4HX+WuJMIy/wBiyWw0gMYu997lz8Pp2PFrKl7QUK/V4AGaz8CeWKOuuP/rixejPbQ8hMupZlpI1SmNzSi+viBettGiJywm89d1ifv1Vn26hZFNgayg9fJljy0kQK28JmeefSaEIeLK5XGWsgAmpFniZr3t893l7tNFM=
+	t=1709219021; cv=none; b=oVvDPzXq1aQIJrnJsqMOVQZR1nAbBD5XObup6ZEwIJM+zFJVOpJL7XfclOr1aaGiDJPL7dXSflA3tNXWdxdi4zKvl4sial5+CwaBZK7oi0VbxTieUVecT+Ned2GqrrS6ytSB4Yq24ZVEkPSnhrrbtKg+ATPyX9uYCO9bBv3INh0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709219001; c=relaxed/simple;
-	bh=B3j6dMfEFF9rdkpHUi9+vQzEugFC8IlTQWqn9S39dXg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=N/XAila3jpM6hi4SSSNHERDAMaF1Y2fwigBFYYblctYevaYT+zLrCDJDsRxtOfX3tA8NA4/pZ4x7MaUAcIv5O1dJjau4F122bMjgjYW0MK9wMS0ZF2zrciU9vC4NELOvWGJF5VoXmZCj2rOcd8akMGp89e3IBSgolsajSTp8ykQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HGzoHtFK; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709219000; x=1740755000;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=B3j6dMfEFF9rdkpHUi9+vQzEugFC8IlTQWqn9S39dXg=;
-  b=HGzoHtFKH08DyvlxChM4Tvd9JPPpxynJu5NOCsU2XPNrz5X/3bHXp2a6
-   I26j9UDxol+3Ac6U/eP+aEcnHZhylCbel/lmD5iZ8T72yFywt57Y8eThe
-   fS5bDkXdbFS2MH5MagZoI1c8QQAwxyP6bJOxdd/rJmKGtM1nPVfyMAErV
-   OfRnCm1pMpxyiQqYqlf6o/wjfR1At8IVBc00uvKHqcxwzl9E7HUoi+xmK
-   ZocHYssr2LDxbNsk9I97/UOwK4bJ46zIrrg147exu2Gc78OsSz8yB3eC3
-   bomwNZ0d+Ro9pq9ODUmlhwVCmLNVXxhoSReScJWa37NwOpzbBFrApSUhR
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="3571423"
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="3571423"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 07:03:03 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="913984045"
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="913984045"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 07:03:00 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rfhw2-00000008hTr-0HOK;
-	Thu, 29 Feb 2024 17:02:58 +0200
-Date: Thu, 29 Feb 2024 17:02:57 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-	linux-gpio@vger.kernel.org, linux-acpi@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Mika Westerberg <mika.westerberg@linux.intel.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-Subject: Re: [PATCH v2 1/2] gpiolib-of: Make of_gpio_get_count() take
- firmware node as a parameter
-Message-ID: <ZeCcoYb8gTRGQTku@smile.fi.intel.com>
-References: <20240229145303.3801332-1-andriy.shevchenko@linux.intel.com>
- <20240229145303.3801332-2-andriy.shevchenko@linux.intel.com>
+	s=arc-20240116; t=1709219021; c=relaxed/simple;
+	bh=LZyjh65EolwbZ2yy1NV5Vd1hxzz8NX2wmok/ryDrasw=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=I1MBJK4WE7dJJBkigFYbSAudNjzwHzB663fFAzZMjZkQc6Teu8emHBQybzy50imNCf6ygQaAa+Hs1+Y2rGK/cyFgZ25ZrV8q1PSS4sRrx+T0ru8qPlBj1iqAoF/5y19BiEYqGqHX4VG30TZbGp+m2yWCdKhHXKMb1MAl42lifdY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VOpNTBTn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FDDEC43399;
+	Thu, 29 Feb 2024 15:03:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709219020;
+	bh=LZyjh65EolwbZ2yy1NV5Vd1hxzz8NX2wmok/ryDrasw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=VOpNTBTnUOMsO0iiVZcMcn0pkYsuEGgP7ncm8HJmdoLrYLsvFBw6HuPeLXms4TuPx
+	 O1WzqRJiDlmKuB7Ib8OZ8RS2aFeJJ+K18/Uoi5sW7PXLZUoQemT8JUfg2xzrF3pRpg
+	 81JITgMKQhmKprGUx88Tw0HfnqQqoYl34rthxijgxI+gQq31xaZR4J+4XLXvWK4srA
+	 lnUDdznBlOE3VrUZa0r55K+tA26q7RIg15ewbXS5fdeYlGgSzT6f2G52WnURg/0Wn6
+	 AZuvqSJGntiMqKrB2zhhq57yTIBg+YT+EQ6TddaAI+ItUsNylym2TFCiee8SLIH1o0
+	 PwGtyrVyavwnw==
+Date: Thu, 29 Feb 2024 09:03:38 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Sai Krishna Gajula <saikrishnag@marvell.com>
+Cc: "bhelgaas@google.com" <bhelgaas@google.com>,
+	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+	"richardcochran@gmail.com" <richardcochran@gmail.com>,
+	"horms@kernel.org" <horms@kernel.org>,
+	"vinicius.gomes@intel.com" <vinicius.gomes@intel.com>,
+	"vadim.fedorenko@linux.dev" <vadim.fedorenko@linux.dev>,
+	"davem@davemloft.net" <davem@davemloft.net>,
+	"kuba@kernel.org" <kuba@kernel.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+	Geethasowjanya Akula <gakula@marvell.com>,
+	Linu Cherian <lcherian@marvell.com>,
+	Hariprasad Kelam <hkelam@marvell.com>,
+	Subbaraya Sundeep Bhatta <sbhatta@marvell.com>,
+	Naveen Mamindlapalli <naveenm@marvell.com>
+Subject: Re: [net-next PATCH v2] octeontx2: Add PTP clock driver for Octeon
+ PTM clock.
+Message-ID: <20240229150338.GA342557@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -80,32 +70,105 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240229145303.3801332-2-andriy.shevchenko@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <BY3PR18MB4707E7764D59DF25C57CCB58A05F2@BY3PR18MB4707.namprd18.prod.outlook.com>
 
-On Thu, Feb 29, 2024 at 04:51:38PM +0200, Andy Shevchenko wrote:
-> Make of_gpio_get_count() take firmware node as a parameter in order
-> to be aligned with other functions and decouple from unused device
-> pointer. The latter helps to create a common fwnode_gpio_count()
-> in the future.
+On Thu, Feb 29, 2024 at 04:57:26AM +0000, Sai Krishna Gajula wrote:
+> > -----Original Message-----
+> > From: Bjorn Helgaas <helgaas@kernel.org>
+> > Sent: Wednesday, February 28, 2024 9:39 PM
+> > To: Sai Krishna Gajula <saikrishnag@marvell.com>
+> > Cc: bhelgaas@google.com; linux-pci@vger.kernel.org;
+> > richardcochran@gmail.com; horms@kernel.org; vinicius.gomes@intel.com;
+> > vadim.fedorenko@linux.dev; davem@davemloft.net; kuba@kernel.org;
+> > netdev@vger.kernel.org; linux-kernel@vger.kernel.org; Sunil Kovvuri
+> > Goutham <sgoutham@marvell.com>; Geethasowjanya Akula
+> > <gakula@marvell.com>; Linu Cherian <lcherian@marvell.com>; Hariprasad
+> > Kelam <hkelam@marvell.com>; Subbaraya Sundeep Bhatta
+> > <sbhatta@marvell.com>; Naveen Mamindlapalli <naveenm@marvell.com>
+> > Subject: Re: [net-next PATCH v2] octeontx2: Add PTP clock driver for
+> > Octeon PTM clock.
+> > 
+> > On Wed, Feb 28, 2024 at 12:37:02PM +0000, Sai Krishna Gajula wrote:
+> > > > -----Original Message-----
+> > > > From: Bjorn Helgaas <helgaas@kernel.org>
+> > > > Sent: Monday, February 26, 2024 10:31 PM
+> > > ...
+> > > > On Mon, Feb 26, 2024 at 03:40:25PM +0000, Sai Krishna Gajula wrote:
+> > > > > > -----Original Message-----
+> > > > > > From: Bjorn Helgaas <helgaas@kernel.org>
+> > > > > > Sent: Wednesday, February 14, 2024 10:59 PM ...
+> > > > > > On Wed, Feb 14, 2024 at 06:38:53PM +0530, Sai Krishna wrote:
+> > > > > > > The PCIe PTM(Precision time measurement) protocol provides
+> > > > > > > precise coordination of events across multiple components like
+> > > > > > > PCIe host clock, PCIe EP PHC local clocks of PCIe devices.
+> > > > > > > This patch adds support for ptp clock based PTM clock. We can
+> > > > > > > use this PTP device to sync the PTM time with CLOCK_REALTIME
+> > > > > > > or other PTP PHC devices using phc2sys.
+> > 
+> > > > > > > +static int __init ptp_oct_ptm_init(void) {
+> > > > > > > +	struct pci_dev *pdev = NULL;
+> > > > > > > +
+> > > > > > > +	pdev = pci_get_device(PCI_VENDOR_ID_CAVIUM,
+> > > > > > > +			      PCI_DEVID_OCTEONTX2_PTP, pdev);
+> > > > > >
+> > > > > > pci_get_device() is a sub-optimal method for a driver to claim a
+> > device.
+> > > > > > pci_register_driver() is the preferred method.  If you can't use
+> > > > > > that, a comment here explaining why not would be helpful.
+> > > > >
+> > > > > We just want to check the PTP device availability in the system as
+> > > > > one of the use case is to sync PTM time to PTP.
+> > > >
+> > > > This doesn't explain why you can't use pci_register_driver().  Can
+> > > > you clarify that?
+> > >
+> > > This is not a PCI endpoint driver.  This piece of code is used to
+> > > identify the silicon version.  We will update the code by reading the
+> > > silicon version from Endpoint internal BAR register offsets.
+> > 
+> > > > I assume the PCI_DEVID_OCTEONTX2_PTP device is a PCIe Endpoint, and
+> > > > this driver runs on the host?  I.e., this driver does not run as
+> > > > firmware on the Endpoint itself?  So if you run lspci on the host,
+> > > > you would see this device as one of the PCI devices?
+> > > >
+> > > > If that's the case, a driver would normally operate the device via
+> > > > MMIO accesses to regions described by PCI BARs.  "lspci -v" would
+> > > > show those addresses.
+> > >
+> > > This driver don't run on Host but runs on the EP firmware itself.
+> > 
+> > The "endpoint driver" terminology is a bit confusing here.  See
+> > Documentation/PCI/endpoint/pci-endpoint.rst for details.
+> > 
+> > If this driver actually runs as part of the Endpoint firmware, it would not
+> > normally see a hierarchy of pci_devs, and I don't think
+> > pci_get_device() would work.
+> > 
+> > So I suspect this driver actually runs on the host, and it looks like it wants to
+> > use the same device (0x177d:0xa00c) as these two drivers:
+> > 
+> >   drivers/net/ethernet/cavium/common/cavium_ptp.c:#define
+> > PCI_DEVICE_ID_CAVIUM_PTP        0xA00C
+> >   drivers/net/ethernet/marvell/octeontx2/af/ptp.c:#define
+> > PCI_DEVID_OCTEONTX2_PTP                 0xA00C
+> > 
+> > It seems like maybe it should be integrated into them?  Otherwise you have
+> > multiple drivers thinking they are controlling a single device.
 > 
-> While at it, rename to be of_gpio_count() to be aligned with the others.
+> Though this device does not appear as a PCI device on EP firmware,
+> but there are some other internal PCI devices that will be
+> enumerated. 
+>
+> We will remove the dependency of reading the PTP device to check the
+> SoC versions, instead we will read the config space of this PCI
+> device itself.
+>
+> I hope this clears your doubt whether this driver is running on Host
+> or EP device.
 
-..
+It does not.  But I don't maintain this area and I'm not making any
+progress on understanding how this works, so I don't think I can
+give any useful advice here.
 
->  struct device;
-> +struct fwnode_handle;
-
-I just realized that this should be replacement, not addition.
-
- -struct device;
- +struct fwnode_handle;
-
-Bart, tell me if you can update, or should I send a v3?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Bjorn
 
