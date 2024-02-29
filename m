@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-87108-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87109-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B274E86CFBC
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:54:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEE2E86CFBE
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 17:54:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E2DF01C20A5D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:54:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 652862859BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 16:54:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71CD370AC3;
-	Thu, 29 Feb 2024 16:53:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5911770AE5;
+	Thu, 29 Feb 2024 16:53:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gcPaGFY8"
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="StaxK95a"
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2EAF3839D;
-	Thu, 29 Feb 2024 16:53:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03C6D6CBED;
+	Thu, 29 Feb 2024 16:53:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709225633; cv=none; b=DWK5k+DN1ehjL4xv54Pzetk6qvx/DNQVfXjIGjNVxoy8koUTyVgEbLMoBtsDxXhoYZwTZx2LUEZrpHRg5DXeyp4s8+aacZ+vnslUCFnw/iwn4OSl0vJWutGKVjTvz5C4sUCq36bQOp5j9GSCGDeIv78MPoekDsS1PEuHDaETjF0=
+	t=1709225634; cv=none; b=Nho3mHW6v8x8rX7xuZ6JpySxyxUu0LgbGb1EfSpBdm1ShzQV1kWO9gb1No3zqaYmmjJXHRnsEhK8UQWXbS0Meo9TF/9399XUk5XMLrWHslpY7MdFkqKJlZcn8XKLxMqEtmZeMwyu3iHR6NbCVfVW7h9UdTyvyP47Y907hO4Yjoo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709225633; c=relaxed/simple;
-	bh=j+5NIEvfEP01ISHJtm0jL77SI9sa3eRsj8mG3FtpjjU=;
+	s=arc-20240116; t=1709225634; c=relaxed/simple;
+	bh=j606ZlD8gl05cV2S9Sv71dKFd6GOqrmr3w9wbDSb3Lg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CYEh3FZ35MayCrTFSdSWs1Qvt35IppSU3v+PV8u7ITFSJ7naRIkC7TPzZlQpdTOBpaSxNXWAPkghc7JJo5lGHaYvy7DZYA+AfAXMBrAA24OAZJ8VvkxJA96xxY7aqNsuXCbrOka7qGcgYgjSJG4Un14vqiR458KSdufv5+SaW5I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gcPaGFY8; arc=none smtp.client-ip=209.85.208.180
+	 MIME-Version; b=Pn2uwRcnT+K4/vqCX/nuqnQnu9CPbwFEbYAx6IIAKtf3LzFP/O7BLaFVPGVGk5/mGvIrwwNdgTvM28R9Zvi06Xd8GKXlLMWS/RRCydi0DKydojhLIwoiz+tZ9CKeyGWvJhdjQxD2fK546XpJhNwwRpdZVP+/yzW/x1OHBJWFXAc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=StaxK95a; arc=none smtp.client-ip=209.85.167.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2d240d8baf6so13223291fa.3;
-        Thu, 29 Feb 2024 08:53:51 -0800 (PST)
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-5132181d54bso1252677e87.3;
+        Thu, 29 Feb 2024 08:53:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709225629; x=1709830429; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1709225630; x=1709830430; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TnpFbPWiqT+OxvexmGOJHCE54uMlgYM+q9V2u9d1aOc=;
-        b=gcPaGFY8I6jSSGlLZ9cTf8FWYiDUbwTllXSi5qBWemag/RJRIWDTfJ5TjCS84P9+Cf
-         /I2/nRdIxNBQxtUo+CpOfBz1JxxsDcWkt9eBQ4Y1NdgrWVhvIOjeVEpdRz5AYOwrIa4/
-         Moxu6Vwk0ajcKZdIeCEOSLGgCwfEXRcX6Z7VPBlsTFAoxJfFVy6/ir3Mj9czayjJp2Al
-         PoDzsrdR+R9G18bjdh/AvG1d5XSqIS0a4h4vKJNDXsTjZjKfDFXyeQjK6L1uSmCNynLd
-         VVHxokSm8coPopWhaPKmWL8iW6FPkyr2dT2pqkqoCON7mdj3nT08SHrfEa8nljuOm0vz
-         /OjA==
+        bh=p5ZvgJwue3pMCGuTCyOPC8+J9NNnO47EiCt5EDIclk4=;
+        b=StaxK95a9gy9AnUdHRO10ggwCGVEf2lWTF72SU2ZCYl9Bg0WjlXv5Wt3sE98j6gVTh
+         17C2COwTdcBpnIUaSdniAOx6oPgQj/mEVrI7s6GZeQk/++NdAgrkPNCKoCtCMiwbrzl8
+         bqEi9xy4VGFsQzV/IumY+gpzXzuHWf9i7yqw3cfLzZJ1hBtYhLSqKXWRL9kzvq2b4xm4
+         CINpaMT25i7bdLic/7PF7twzquv7NTFwXGbliiSB3y3qf3mChQhPGrywHT/d6iryWzwa
+         lje9hmBbaoADkRw/Qk0BFT7SGrP2L2o4Kx0JC7wOzsI/UlIHJM/t7A5TY6xgmU8LzgT3
+         Rv7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709225629; x=1709830429;
+        d=1e100.net; s=20230601; t=1709225631; x=1709830431;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=TnpFbPWiqT+OxvexmGOJHCE54uMlgYM+q9V2u9d1aOc=;
-        b=UM6fPYUxu2PbNEBpyUjnD8mUh09QHdvsqCrwVYGUX/yIzA+g6A5GSq36zyfqk5trGO
-         gYZOQyIJdGVRQ6XslUa15p5VKt7zWhfyYonCSBby+GkFhKsh5gV5lqqgJp0Uacik4SZr
-         0kkDN5EifbB/KFNAdNj19XrWNP9sFt75+hcIsk5H3M77dWOYC4/ahgUgihFg5ziu7J6e
-         SkIpcn9yqni7AEuVBdjyX5S5FVOk4FrqDYufXOFjkxL1kEwbw9fK+3pK9PibvVaCAS9J
-         ySMEb5X4ltlIQLMgaXdiaa+8kuEPmFSjK7LiYuOx0lTEafxWk+b1Q0hfQ9MjSJXuPPEb
-         WgcA==
-X-Forwarded-Encrypted: i=1; AJvYcCVvkIHfoxD9C8aTazpVV0XA8GWhFvCJkIW6ioCebFXD9Jy4fCl4/FalExbT8hmYGUQ769tv3in4pprR1rg1nRrUdFMtXBJPYwryoYWX
-X-Gm-Message-State: AOJu0Ywee1kF8cVmNBuenm6kU/wEjg6X5gckjrQvrqhfKg2HeL1vownv
-	sabZKITeRJqQpII4f+Hnxc0wV3b5VpX/i3dAuNtraBqkUolHonvaDPLiAxSIbqQ=
-X-Google-Smtp-Source: AGHT+IEht79WtOAZjamDNriTIW5A1q8EutVCuO4inc1EIpvWDUFQOqiWIbZBnrlqvhQxwrgjY11N8w==
-X-Received: by 2002:a05:6512:3b10:b0:513:1b56:d46c with SMTP id f16-20020a0565123b1000b005131b56d46cmr2392229lfv.45.1709225629338;
-        Thu, 29 Feb 2024 08:53:49 -0800 (PST)
+        bh=p5ZvgJwue3pMCGuTCyOPC8+J9NNnO47EiCt5EDIclk4=;
+        b=C4IhcOFbJtff+Pj22ptoy7OOpYATo1REBPHs3N52PsLG/MTe9BRwT2NPFNON/eNV2n
+         nIOUWTafwHwJoiPfWLxqNXBD28i4HaHKB0q7XgYlnRZvBxKlpl5tI62zShwWV11gJZsZ
+         PJWKorcRIvOExrjdrbeVnElMLwrFwtFz4KIc/d/bd2Zb2Yo9ukG1A1lDKrWTMU2cETZj
+         fS7Jk5L5TSEdrF2KlKQTWNvjT9xSMKMmath/Xg/KzUuudjuWPVVOcBu0rwTfyZr98QbU
+         4TsbFrukspmxTbgBntVzjW9zsNwjwb/2rhi5iCtwSkW9K9FR/wXQN7V1Ccf7uIT+jqRk
+         M5OA==
+X-Forwarded-Encrypted: i=1; AJvYcCUMnBYQwnyBYN1eQqbnuZdqF/5eCiNJY4NyYWsWPUZlTy4KgXLFVIGVfd/6WiZIDXYADW43Qz1I/VkwpHFtj7vFnizXtk4XiNhMWS2j
+X-Gm-Message-State: AOJu0Ywjgh7ecim/q4nFu9KO6+/57Exfo/GxvlaQGYeVWiQixc4insx3
+	UJxALc5vZ7uGUMVmprSm9oJEfyLpvRh/YwkvFhm9fGB4+i2Cq0OOeci3pH1D8js=
+X-Google-Smtp-Source: AGHT+IFFopAHgABNiCnnmrTCDHTh1+/5AFtlUuuSwlj/1f+1Xupf4e2mMvy74apZVcCeHoLHYjf62w==
+X-Received: by 2002:a05:6512:3049:b0:512:fccc:f289 with SMTP id b9-20020a056512304900b00512fcccf289mr2202630lfb.6.1709225630635;
+        Thu, 29 Feb 2024 08:53:50 -0800 (PST)
 Received: from localhost ([83.149.246.185])
-        by smtp.gmail.com with ESMTPSA id f14-20020a19380e000000b00513156a7601sm315668lfa.49.2024.02.29.08.53.48
+        by smtp.gmail.com with ESMTPSA id m20-20020a195214000000b0051322d314e9sm305373lfb.137.2024.02.29.08.53.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 08:53:48 -0800 (PST)
+        Thu, 29 Feb 2024 08:53:50 -0800 (PST)
 From: Mikhail Rudenko <mike.rudenko@gmail.com>
 To: linux-media@vger.kernel.org,
 	linux-kernel@vger.kernel.org
@@ -77,9 +77,9 @@ Cc: Sakari Ailus <sakari.ailus@linux.intel.com>,
 	Dave Stevenson <dave.stevenson@raspberrypi.com>,
 	Mauro Carvalho Chehab <mchehab@kernel.org>,
 	Mikhail Rudenko <mike.rudenko@gmail.com>
-Subject: [PATCH v3 02/20] media: i2c: ov4689: Sort register definitions by address
-Date: Thu, 29 Feb 2024 19:53:15 +0300
-Message-ID: <20240229165333.227484-3-mike.rudenko@gmail.com>
+Subject: [PATCH v3 03/20] media: i2c: ov4689: Fix typo in a comment
+Date: Thu, 29 Feb 2024 19:53:16 +0300
+Message-ID: <20240229165333.227484-4-mike.rudenko@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240229165333.227484-1-mike.rudenko@gmail.com>
 References: <20240229165333.227484-1-mike.rudenko@gmail.com>
@@ -91,53 +91,27 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Put register defininitions in the order of increasing register
-address.
+Fix a spelling error in a comment.
 
 Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
 Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 ---
- drivers/media/i2c/ov4689.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/media/i2c/ov4689.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/media/i2c/ov4689.c b/drivers/media/i2c/ov4689.c
-index 5a509e908e3c..a6c101044eb3 100644
+index a6c101044eb3..f2614a0b1340 100644
 --- a/drivers/media/i2c/ov4689.c
 +++ b/drivers/media/i2c/ov4689.c
-@@ -19,15 +19,15 @@
- #include <media/v4l2-subdev.h>
- #include <media/v4l2-fwnode.h>
+@@ -692,7 +692,7 @@ static int ov4689_set_ctrl(struct v4l2_ctrl *ctrl)
  
--#define CHIP_ID				0x004688
--#define OV4689_REG_CHIP_ID		0x300a
--
- #define OV4689_XVCLK_FREQ		24000000
- 
- #define OV4689_REG_CTRL_MODE		0x0100
- #define OV4689_MODE_SW_STANDBY		0x0
- #define OV4689_MODE_STREAMING		BIT(0)
- 
-+#define OV4689_REG_CHIP_ID		0x300a
-+#define CHIP_ID				0x004688
-+
- #define OV4689_REG_EXPOSURE		0x3500
- #define OV4689_EXPOSURE_MIN		4
- #define OV4689_EXPOSURE_STEP		1
-@@ -41,12 +41,12 @@
- #define OV4689_GAIN_STEP		1
- #define OV4689_GAIN_DEFAULT		0x80
- 
-+#define OV4689_REG_VTS			0x380e
-+
- #define OV4689_REG_TEST_PATTERN		0x5040
- #define OV4689_TEST_PATTERN_ENABLE	0x80
- #define OV4689_TEST_PATTERN_DISABLE	0x0
- 
--#define OV4689_REG_VTS			0x380e
--
- #define REG_NULL			0xFFFF
- 
- #define OV4689_REG_VALUE_08BIT		1
+ 	switch (ctrl->id) {
+ 	case V4L2_CID_EXPOSURE:
+-		/* 4 least significant bits of expsoure are fractional part */
++		/* 4 least significant bits of exposure are fractional part */
+ 		ret = ov4689_write_reg(ov4689->client, OV4689_REG_EXPOSURE,
+ 				       OV4689_REG_VALUE_24BIT, ctrl->val << 4);
+ 		break;
 -- 
 2.43.0
 
