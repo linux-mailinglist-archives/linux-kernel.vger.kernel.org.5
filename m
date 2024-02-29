@@ -1,106 +1,93 @@
-Return-Path: <linux-kernel+bounces-86790-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86791-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41C9D86CAD3
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:59:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D27F86CADA
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 14:59:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE1531F22FC9
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:59:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1D9FFB217B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:59:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE7A812E1E3;
-	Thu, 29 Feb 2024 13:59:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L2lS3IkQ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E98917E11C;
-	Thu, 29 Feb 2024 13:59:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1677412E1E3;
+	Thu, 29 Feb 2024 13:59:45 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2F087E11C;
+	Thu, 29 Feb 2024 13:59:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709215141; cv=none; b=UwaVLCLAIVNMxm3NU55vn+m/DKRCvMX7GjaK7kCWJ7VZXYlvXpofIqIRNAfgjJVQeLJ9yjUYKZubaYuZ2pgmD1Vk3i/30gktrcvVm6Qf0mJC4gJzF5AFG+clOQ1Sgd5kf6xuCXNgyxGmyW8sLgyZKZYH/EaeFLoZz1vnDve4amY=
+	t=1709215184; cv=none; b=XRlT8Sb5An3SnBGV1Cd4490rTKe3tXIBgmeVQbGqnwNUAgLKhu0nNqSz/h8JdQgcwFV21hiPFuxO3H6sX0KZvj/ZfFFICVcTMLPFyHVzhSc0Z8hj6HoakQSlUUhCshq4/rD+tVbHSgvZJwQKk9KeP/l2piXTkB81oo6nbWxPHyk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709215141; c=relaxed/simple;
-	bh=y6Om+g4533gCnaxmZsAwvyvAgGaQiv7qn3mP98aqyVA=;
+	s=arc-20240116; t=1709215184; c=relaxed/simple;
+	bh=3n0JXgw9bpvzM7OgerM4GPLCp4fim2HgfxG1++56jIc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RfItHkKooX4NAyAgno9geVJCpQAsaTuWhPY6168cPTZoWFM9YKn8yRbMgqe+rx0AtvAyb6EYsMWF5dBihU5rlRBUMEVibHGp+mK7N09qSqznaeEfJEzBo+ePtSahuqiTcOEHrj543/osHO+8QEVuv9BJzZK0D9Ap5RMucD9ruVI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L2lS3IkQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06F4CC433F1;
-	Thu, 29 Feb 2024 13:58:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709215140;
-	bh=y6Om+g4533gCnaxmZsAwvyvAgGaQiv7qn3mP98aqyVA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=L2lS3IkQpptUuxQKmrfty95vZrENoSWX5EcBp3AGDq2Bg+CkySfMjujGs0H786luH
-	 swEd5iLahGPwng66drncSl8qgJfQiCs5qHkfQ4K/L80KJNsLFCczwGCcwYEdP/RIUz
-	 xNE7T2NOrVBdMtmj7WwZ0NiOe+TRJ7v0JM8yk955oEANWlDxqBpxzuuTns5tmRmtXU
-	 7NS3TBciZAYHyLYANHkkkui8zF+qVr4esl44+7b34YEs3/1u37pc30QNft3W7ItQgD
-	 W/vMM/vVTXzLz8mYLmQp7/qAvsKbtydlqctTx0fLw/NvAtdnRtSNR1COfUwQxRc2Lx
-	 HuahsHHQbFu4w==
-Date: Thu, 29 Feb 2024 13:58:54 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Bhargav Raviprakash <bhargav.r@ltts.com>
-Cc: linux-kernel@vger.kernel.org, m.nirmaladevi@ltts.com, lee@kernel.org,
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, jpanis@baylibre.com,
-	devicetree@vger.kernel.org, arnd@arndb.de,
-	gregkh@linuxfoundation.org, lgirdwood@gmail.com,
-	linus.walleij@linaro.org, linux-gpio@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, nm@ti.com, vigneshr@ti.com,
-	kristo@kernel.org
-Subject: Re: [PATCH v2 12/14] regulator: tps6594-regulator: Add TI TPS65224
- PMIC regulators
-Message-ID: <a71bda52-524d-4493-aede-786aae7ff468@sirena.org.uk>
-References: <20240223093701.66034-1-bhargav.r@ltts.com>
- <20240223093701.66034-13-bhargav.r@ltts.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=RsJfihy4AKsynVsX/NYyqD7fwTjyY63Zc7vJkHh/ZUmXLe4L4mOc1K0tKMl9D96evHIPzRcb7Y6HLIAJiQuPu2fdKjvTtnFOv0RNfucuX8SbnPXK04aqdk0TDhlMZ66JPcXx0s3CInr4pKUUv62pxn0nKfh1COlETe3L8Tk2oe0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B7F9D1FB;
+	Thu, 29 Feb 2024 06:00:19 -0800 (PST)
+Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 69C9D3F6C4;
+	Thu, 29 Feb 2024 05:59:39 -0800 (PST)
+Date: Thu, 29 Feb 2024 13:59:36 +0000
+From: Sudeep Holla <sudeep.holla@arm.com>
+To: Peng Fan <peng.fan@nxp.com>
+Cc: Cristian Marussi <cristian.marussi@arm.com>,
+	"Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	"robh@kernel.org" <robh@kernel.org>,
+	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+	"conor+dt@kernel.org" <conor+dt@kernel.org>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] dt-bindings: firmware: arm,scmi: support system power
+ protocol
+Message-ID: <ZeCNyLxQOIazc07h@bogus>
+References: <20240226130243.3820915-1-peng.fan@oss.nxp.com>
+ <ZdyR_MWeqOWga8iQ@pluto>
+ <ZdyoAsYGXK9GjHVx@pluto>
+ <DU0PR04MB941710FB1400D0A17F99B6ED88592@DU0PR04MB9417.eurprd04.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="IdImxeBF2jIMpiDu"
-Content-Disposition: inline
-In-Reply-To: <20240223093701.66034-13-bhargav.r@ltts.com>
-X-Cookie: Marriage is the sole cause of divorce.
-
-
---IdImxeBF2jIMpiDu
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <DU0PR04MB941710FB1400D0A17F99B6ED88592@DU0PR04MB9417.eurprd04.prod.outlook.com>
 
-On Fri, Feb 23, 2024 at 03:06:59PM +0530, Bhargav Raviprakash wrote:
+On Tue, Feb 27, 2024 at 01:01:41AM +0000, Peng Fan wrote:
+> > Subject: Re: [PATCH] dt-bindings: firmware: arm,scmi: support system power
+> > protocol
+> >
+> > On Mon, Feb 26, 2024 at 01:28:31PM +0000, Cristian Marussi wrote:
+> > > On Mon, Feb 26, 2024 at 09:02:43PM +0800, Peng Fan (OSS) wrote:
+> > > > From: Peng Fan <peng.fan@nxp.com>
+> > > >
+> > > > Add SCMI System Power Protocol bindings, and the protocol id is 0x12.
+> > > >
+> > > Hi,
+> > >
+> > > yes this is something I spotted in the past it was missing and I
+> > > posted a similar patch but I was told that a protocol node without any
+> > > specific additional properties is already being described by the
+> > > general protocol node described above.
+> 
+> Without this patch, there is dtbs_check warning.
+> 
+> scmi: 'protocol@12' does not match any of the regexes: 'pinctrl-[0-9]+'
+> from schema $id: http://devicetree.org/schemas/firmware/arm,scmi.yaml#
+> 
 
-> +static struct tps6594_regulator_irq_type tps65224_ext_regulator_irq_types[] = {
-> +	{ TPS65224_IRQ_NAME_VCCA_UVOV, "VCCA", "voltage out of range",
-> +	  REGULATOR_EVENT_OVER_VOLTAGE_WARN },
-> +	{ TPS65224_IRQ_NAME_VMON1_UVOV, "VMON1", "voltage out of range",
-> +	  REGULATOR_EVENT_OVER_VOLTAGE_WARN },
-> +	{ TPS65224_IRQ_NAME_VMON2_UVOV, "VMON2", "voltage out of range",
-> +	  REGULATOR_EVENT_OVER_VOLTAGE_WARN },
-> +};
+Why are you adding protocol@12 to the device tree ? Does it have a
+dedicated channel ? If not, you shouldn't need to add it.
 
-These should be REGULATOR_EVENT_REGULATION_OUT I think - they look like
-they could be warning on either under or over voltage.
-
---IdImxeBF2jIMpiDu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXgjZ0ACgkQJNaLcl1U
-h9AZpQgAgDQxpopqbu9eOrm5DijPH7ZT6wXrVVYNezNC+Eo52wB2uNqWIvL6rbuW
-BE+mbJjmilSzxKjZkLEKfsNbw74icUaCCACGQqrRU130tlKusqpMRkyTneWA4EK0
-9/tADo8fW6nwb1DhPt36Q+2VZDPX6pi+wV/7/aiZDYg8tbAx6jJodg0/aP8BPdwz
-HyaWu31XqjZgGJiJ8UcmXym3roLM9B+9UNlTYp7UCQnW1j3lglsf79sFK88zIv2C
-DKEWRIMqPJcKMaoCciRNrM5kq5+XJZxi+jEOiJvAltB9INy+j+DfoZRTn2cAuCXo
-CaCBx2UtVmnGkvyv8s1fYpBUE9XdWg==
-=6Vo6
------END PGP SIGNATURE-----
-
---IdImxeBF2jIMpiDu--
+-- 
+Regards,
+Sudeep
 
