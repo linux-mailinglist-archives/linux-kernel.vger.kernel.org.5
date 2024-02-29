@@ -1,159 +1,111 @@
-Return-Path: <linux-kernel+bounces-87665-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87666-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C3F786D789
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 00:08:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7ADA486D791
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 00:14:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 098FB1C21468
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 23:08:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 242CB1F22BB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 23:14:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D59047A158;
-	Thu, 29 Feb 2024 23:08:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFAB35B1E4;
+	Thu, 29 Feb 2024 23:14:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="E0KGTJ8T"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C62816FF21
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 23:08:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="OoT6pFub"
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.2])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 610FC1DFCF
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 23:14:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.2
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709248083; cv=none; b=YFMCWq1Z4if6WguKN3NE1+uG89dK1SrxYyFwzL1O0MvaGo0RjejqzM64QP0JePLxftBelJwpCEcl0BNeWeoJ6tR1pga7TseLiYX2f6EVJPtnlXfS6aKzKvBtcHBJ93dd5mF+jjkTpEAXWhVbrQJhdVg2SGh6cBC/dNFV/8M93Lk=
+	t=1709248467; cv=none; b=Qc90/dFBRNgK9fQJ9COAWjfaoVQ7jsiE6T3c/73WTNbLJUBYrQOT6i5P+EU7XxZaMfxsEDwPPaUSuk2bdpkANg3Xhi71z5nMY73Yp79fgLUiPnc4Fg9ilgqMsghupD3INdlywHiJop6FpR9Z1HNup8jlU3LL758lmn1979aXq6w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709248083; c=relaxed/simple;
-	bh=zJhWfx7GK1YysklElLdHCde42C/JNXRPYOyOMcUqrT4=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Avwc1outHExQ7NnCnfMeVRlcKrj/ckIu7//JH9OlhWWPmpfRrSkZbF8ILdNoXpg7uzbk8j8xc214EQ8qI3JIAYrztCs0uXmGTrSN/+1ZJ65sMWWuubr/IDB0iMIkeTnSoMbgcmXySTWZtZ9Oetl6j89MQMFy9QqjKPuJR5x87mo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=E0KGTJ8T; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60942936e31so25903527b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 15:08:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709248080; x=1709852880; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=tONzLipD7XoMDHe1nP9IUEdoxrUsyW7/+yWAsS/QFWs=;
-        b=E0KGTJ8TDUeJP1LUkVFUr2hHL1ecIukLv10FwScQBF1h8v+vP7uUwOQgGMT8Qd+Z9B
-         z4prci/rHGC52jogvSK+CSZBTks/5/YDUKpjupifNURLdRID6aKMRwi3fYD8kvZfBTjX
-         oyHD5h7oRY/oFkLF1T+8XtMfrgDKSGjO8dcMaFa4u93c867n/e48RgCQ7pT1FvKsTyCB
-         +8c2Fc9va1/lPI/2KTj0oIaV/9L7w+aRvGrmMYW0vZq9NK4QWS/NLOX9SR6bXh60Khdq
-         MbgZv3590P+l/dhylFDiMjihBsFoLpZoaePRoyuZ/w96vN3xx3sEgkMMHNYtCAcmYOB4
-         DbwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709248080; x=1709852880;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tONzLipD7XoMDHe1nP9IUEdoxrUsyW7/+yWAsS/QFWs=;
-        b=pnaosgj1uQrq9edrjxf7ry0dY92N1cyj8sYAS+HijQ4RQzf6RRlwOViq+LYTb8lOjS
-         awwnj6VTHwEMArejoddj2hz20ODNyZPBDBxHSu2/ox1NbUr+c7nkaOEtRCvC4yBHCV2u
-         8mcOcbXTHnKWb8vy6Ds25JzF78oLqk0YjZX1gIYTlQEdOuRzNegh2GxVt2Jk6nxSp6C/
-         raKzEqW++hSnUAWc+R7b5g7vwUrTDu7WKkDx47mVCT5DcmVZR8f6pznDx1prUkEI0eDq
-         A1K6dB6XNDTEWL9aso5KxjHV1JSO0NUXSyBQY1ullJ+QwZuPeaySu+MqjxfU0/x9WxcY
-         ZTtQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXlfivcI0UZO1RMzNnD8jIv9LezeIDdZG2TbeSDHWs4ORTFa3MKxtGF0YcXKR5SSmMZv+7xkZoZ6c1xdxVYeI3Zobh5sMujpczo5z4t
-X-Gm-Message-State: AOJu0Ywd+ocu0EXR4yYaWLqgJ5F6Z4fqbR08XXyDdH5Lxf7uzP1A8e+m
-	SJTLyYo8M4UauQkZa4HcgvO4FitfuqAICHfKKfhYwffqN1DvDd/BRVf9yJgr0qOmj2Z1M1WVstr
-	ApQ==
-X-Google-Smtp-Source: AGHT+IF8uRtPMSJ8u7aHFCiJdwuPHLXyrqDLlrx/6yzTWtQtBrDoMWtMR9KRBcYb2IP716mjTPkcTB4vWsQ=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:98cf:0:b0:609:2031:1e09 with SMTP id
- p198-20020a8198cf000000b0060920311e09mr124141ywg.6.1709248080639; Thu, 29 Feb
- 2024 15:08:00 -0800 (PST)
-Date: Thu, 29 Feb 2024 15:07:59 -0800
-In-Reply-To: <3779953f-4d07-41d7-b450-bbc2afffaa43@intel.com>
+	s=arc-20240116; t=1709248467; c=relaxed/simple;
+	bh=mBOVl+zJ7BDiUMnGvvMRSX38gRn0i/b1iJBtbhHajKc=;
+	h=Content-Type:From:Mime-Version:Subject:Date:Message-Id:References:
+	 Cc:In-Reply-To:To; b=tRvmItUy1li7oFojKLqKe/EFwyK1cQVhQ3/38LjpWy10+GBRQrf3DcYNwwxbsdfMSIXzLVLcmrlge79t/w3/MXkSzzzO/dEs7wJG3NVXgMiQddRcnmT4C54OCBBQLKr6I06gHZZo9AsY16pJQNq8qEO5CQf48QAIf2xWuq3PzUA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=OoT6pFub; arc=none smtp.client-ip=220.197.31.2
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=Content-Type:From:Mime-Version:Subject:Date:
+	Message-Id; bh=4EP8nnjo7NvEGFoileT5wdDJOy5gOk88KTfQtjsr7Dg=; b=O
+	oT6pFubR/cy/DLbkLMJSDhYyA4JScDaZwP1IZIWebmO0grkJMJ2dTkKydjLBwFQX
+	QM36F7ZqRwa2ccG3ubL2bvoRN2rrHNMbR85n9hto7P+uA9NHEgxEevdxlNmUn6be
+	uvMLLuBaMU0rUCYn7WiC9lovOl0CBnJeYK5LFt0ZMg=
+Received: from smtpclient.apple (unknown [43.245.196.50])
+	by gzga-smtp-mta-g1-1 (Coremail) with SMTP id _____wDnj4S6D+FlgpNtDg--.51423S2;
+	Fri, 01 Mar 2024 07:14:03 +0800 (CST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From: Hao Ge <gehao618@163.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240228024147.41573-1-seanjc@google.com> <20240228024147.41573-7-seanjc@google.com>
- <3779953f-4d07-41d7-b450-bbc2afffaa43@intel.com>
-Message-ID: <ZeEOTxUTSkYnP9Y0@google.com>
-Subject: Re: [PATCH 06/16] KVM: x86/mmu: WARN if upper 32 bits of legacy #PF
- error code are non-zero
-From: Sean Christopherson <seanjc@google.com>
-To: Kai Huang <kai.huang@intel.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Yan Zhao <yan.y.zhao@intel.com>, Isaku Yamahata <isaku.yamahata@intel.com>, 
-	Michael Roth <michael.roth@amd.com>, Yu Zhang <yu.c.zhang@linux.intel.com>, 
-	Chao Peng <chao.p.peng@linux.intel.com>, Fuad Tabba <tabba@google.com>, 
-	David Matlack <dmatlack@google.com>
-Content-Type: text/plain; charset="us-ascii"
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH v2] mm/vmstat: Add order's information for extfrag_index and unusable_index
+Date: Fri, 1 Mar 2024 07:13:51 +0800
+Message-Id: <F38EE8B9-3C29-43DC-A471-3DF6242B9804@163.com>
+References: <20240229104013.5ed8c1ca9c2dbd0bd5fb571f@linux-foundation.org>
+Cc: Hao Ge <gehao@kylinos.cn>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240229104013.5ed8c1ca9c2dbd0bd5fb571f@linux-foundation.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+X-Mailer: iPhone Mail (21D61)
+X-CM-TRANSID:_____wDnj4S6D+FlgpNtDg--.51423S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7uw1xZFyrWFW5XFyrurWDtwb_yoW8Xw4Up3
+	yUKF18trs8Ary7Aws29F4rJr12y34DGF1UJFZ8Zr1UGr15AF15tF1ktryFvFsFqr4DG340
+	yr1FqryUKryDAFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zi_cTdUUUUU=
+X-CM-SenderInfo: 5jhkt0qwryqiywtou0bp/1tbiyQOTFmV4ICdtBgAAs+
 
-On Fri, Mar 01, 2024, Kai Huang wrote:
-> 
-> 
-> On 28/02/2024 3:41 pm, Sean Christopherson wrote:
-> > WARN if bits 63:32 are non-zero when handling an intercepted legacy #PF,
-> 
-> I found "legacy #PF" is a little bit confusing but I couldn't figure out a
-> better name either :-)
-> 
-> > as the error code for #PF is limited to 32 bits (and in practice, 16 bits
-> > on Intel CPUS).  This behavior is architectural, is part of KVM's ABI
-> > (see kvm_vcpu_events.error_code), and is explicitly documented as being
-> > preserved for intecerpted #PF in both the APM:
-> > 
-> >    The error code saved in EXITINFO1 is the same as would be pushed onto
-> >    the stack by a non-intercepted #PF exception in protected mode.
-> > 
-> > and even more explicitly in the SDM as VMCS.VM_EXIT_INTR_ERROR_CODE is a
-> > 32-bit field.
-> > 
-> > Simply drop the upper bits of hardware provides garbage, as spurious
-> 
-> "of" -> "if" ?
-> 
-> > information should do no harm (though in all likelihood hardware is buggy
-> > and the kernel is doomed).
-> > 
-> > Handling all upper 32 bits in the #PF path will allow moving the sanity
-> > check on synthetic checks from kvm_mmu_page_fault() to npf_interception(),
-> > which in turn will allow deriving PFERR_PRIVATE_ACCESS from AMD's
-> > PFERR_GUEST_ENC_MASK without running afoul of the sanity check.
-> > 
-> > Note, this also why Intel uses bit 15 for SGX (highest bit on Intel CPUs)
-> 
-> "this" -> "this is" ?
-> 
-> > and AMD uses bit 31 for RMP (highest bit on AMD CPUs); using the highest
-> > bit minimizes the probability of a collision with the "other" vendor,
-> > without needing to plumb more bits through microcode.
-> > 
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > ---
-> >   arch/x86/kvm/mmu/mmu.c | 7 +++++++
-> >   1 file changed, 7 insertions(+)
-> > 
-> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > index 7807bdcd87e8..5d892bd59c97 100644
-> > --- a/arch/x86/kvm/mmu/mmu.c
-> > +++ b/arch/x86/kvm/mmu/mmu.c
-> > @@ -4553,6 +4553,13 @@ int kvm_handle_page_fault(struct kvm_vcpu *vcpu, u64 error_code,
-> >   	if (WARN_ON_ONCE(fault_address >> 32))
-> >   		return -EFAULT;
-> >   #endif
-> > +	/*
-> > +	 * Legacy #PF exception only have a 32-bit error code.  Simply drop the
-> 
-> "have" -> "has" ?
 
-This one I'll fix by making "exception" plural.
+> On Mar 1, 2024, at 02:40, Andrew Morton <akpm@linux-foundation.org> wrote:=
 
-Thanks much for the reviews!
+>=20
+> =EF=BB=BFOn Thu, 29 Feb 2024 22:14:43 +0800 Hao Ge <gehao@kylinos.cn> wrot=
+e:
+>=20
+>> Current cat /sys/kernel/debug/extfrag/extfrag_index and
+>> /sys/kernel/debug/extfrag/unusable_index is not friendly to userspace.
+>>=20
+>> We should add order's information so that users can clearly understand
+>> the situation of each order at a glance like pagetypeinfo.
+>>=20
+>> before:
+>> cat /sys/kernel/debug/extfrag/extfrag_index:
+>> Node 0, zone    DMA32  ...... ...... ...... ......
+>> Node 0, zone   Normal  ...... ...... ...... ......
+>>=20
+>> cat /sys/kernel/debug/extfrag/unusable_index:
+>> Node 0, zone    DMA32 ..... ..... ..... .....
+>> Node 0, zone   Normal ..... ..... ..... .....
+>>=20
+>> after:
+>> cat /sys/kernel/debug/extfrag/extfrag_index:
+>> Extfrag index at order:       0      1      2      3
+>> Node 0, zone        DMA  ...... ...... ...... ......
+>> Node 0, zone     Normal  ...... ...... ...... ......
+>>=20
+>> cat /sys/kernel/debug/extfrag/unusable_index:
+>> Unusable index at order:     0     1     2     3
+>> Node 0, zone         DMA ..... ..... ..... .....
+>> Node 0, zone      Normal ..... ..... ..... .....
+>>=20
+>=20
+> This may break existing parsers of this file.
+>=20
+> And that would be allowed if these files were under debugfs.  But
+> they're under sysfs/debug, where the rules are less clear.
+>=20
+> Still, it's unclear to me that the benefit is worth this risk.  What do
+> others think?
 
-> 
-> > +	 * upper bits as KVM doesn't use them for #PF (because they are never
-> > +	 * set), and to ensure there are no collisions with KVM-defined bits.
-> > +	 */
-> > +	if (WARN_ON_ONCE(error_code >> 32))
-> > +		error_code = lower_32_bits(error_code);
-> >   	vcpu->arch.l1tf_flush_l1d = true;
-> >   	if (!flags) {
-> Reviewed-by: Kai Huang <kai.huang@intel.com>
+Thank you for your reply. This is something I didn't expect. I think it's be=
+tter to keep it in its original condition to avoid compatibility issues with=
+ some tools.=
+
 
