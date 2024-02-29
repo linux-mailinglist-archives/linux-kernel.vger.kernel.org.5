@@ -1,126 +1,143 @@
-Return-Path: <linux-kernel+bounces-87534-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87535-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7EFD86D59C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:06:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E58D86D59F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:06:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9EDF71F25889
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:06:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BFA3D1C23242
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:06:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65FB1144043;
-	Thu, 29 Feb 2024 20:55:06 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 398A7142917;
+	Thu, 29 Feb 2024 20:56:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="floC//zT"
+Received: from mail-il1-f172.google.com (mail-il1-f172.google.com [209.85.166.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6798B6D50A;
-	Thu, 29 Feb 2024 20:55:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC659142905
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 20:56:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709240105; cv=none; b=bIeMuZhjAgUBLtw9NVGokzHs71DhK6hlpeFEC8ZmD82M6/agbtoTiRU8mMJqRzhUmVXPUtjWmd1iAF8X4Wb9pqd7De/LIrh4AHEFlKde7EZLqTXr2havIdGM6q8R8iw4sJg5Nk1UvccYiURLUQz+QnGL+Kp7KZigpdX3l6OYKOg=
+	t=1709240163; cv=none; b=cFCN5NID6Q/gwEi0WdqfSh1zTG7qQKHmM7SzZwJGSacwEnCkLkJjMR3fPS/eZrkpnAD6yk6VLWEAZwM6CdAeYx7FevnV+lOZlUra1dAehCDD1lB4ALeBrnbArE1V/yQq4pWAP3lpZzU/tFGwM+xLlhvrZH7Zf7GnsLXxGY16TiQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709240105; c=relaxed/simple;
-	bh=GWMJIephgFCkyB7gv9JQpivlnHOMsUi+KcICdET6vg0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aCJXW9OcBhQ/xq8iYd/GDVL6flabKaLP1yQtgllp4wWrS6UuVP5M9RHNtPCdyz3DRcf0A8IonCqmraTbns99C/j5N/dlQqdS5h2LFbPbzYPy+D/dK1a879XVh391Wwzg63/3VsG9QiLRE4KJUNLYPIra0D5hkV0/cFuCuytUkx0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
-X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="26211658"
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="26211658"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 12:55:03 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="913992414"
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="913992414"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 12:54:47 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andy.shevchenko@gmail.com>)
-	id 1rfnQO-00000008nBm-1H3p;
-	Thu, 29 Feb 2024 22:54:40 +0200
-Date: Thu, 29 Feb 2024 22:54:40 +0200
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
-	mhocko@suse.com, vbabka@suse.cz, hannes@cmpxchg.org,
-	roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
-	willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net,
-	void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com,
-	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
-	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
-	x86@kernel.org, peterx@redhat.com, david@redhat.com,
-	axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
-	nathan@kernel.org, dennis@kernel.org, tj@kernel.org,
-	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
-	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com,
-	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com,
-	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com,
-	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
-	vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
-	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
-	elver@google.com, dvyukov@google.com, shakeelb@google.com,
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	iommu@lists.linux.dev, linux-arch@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
-	cgroups@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	Paul Mackerras <paulus@samba.org>,
-	"Michael S. Tsirkin" <mst@redhat.com>,
-	Jason Wang <jasowang@redhat.com>,
-	Noralf =?iso-8859-1?Q?Tr=F8nnes?= <noralf@tronnes.org>
-Subject: Re: [PATCH v3 01/35] lib/string_helpers: Add flags param to
- string_get_size()
-Message-ID: <ZeDvEKtlB73mnOYy@smile.fi.intel.com>
-References: <20240212213922.783301-1-surenb@google.com>
- <20240212213922.783301-2-surenb@google.com>
- <CAHp75Vek3DEYLHnpUDBo_bYSd-ksN_66=LQ5s0Z+EhnNvhybpw@mail.gmail.com>
- <bicga3cv554ey4lby2twq3jw4tkkzx7mreakicf22sna63ye4x@x5di6km5x7fn>
+	s=arc-20240116; t=1709240163; c=relaxed/simple;
+	bh=CkoPh+10iHxKZkJwRU1etR8ewLdQSrZpBt//3BLiDzg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=K/hGDJt7woLFTcsZzfWynB4dfD5zSPEPTQ9SYTdqhe68Ja3qVt4P0+qvIawpyYUIVj4Lgvp86IZPhTD0I+XTz8TcsQDoN3ed8yPmiEfVfrQsU+yEeQGMSmUQBuIaSC+PW/ght9bqRUyC6rfLaGbzQepL5c1fHBHEcD15Dina7fc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=floC//zT; arc=none smtp.client-ip=209.85.166.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-il1-f172.google.com with SMTP id e9e14a558f8ab-36524116e30so5755895ab.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 12:56:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709240160; x=1709844960; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=oXClQocKFU332MGv51HiVp3gBqp0PjGOnlHuqmYRRz8=;
+        b=floC//zTAZLTBCKflTu7/hlDyrLS+d7K9VP895M9QkjkQ4OS+7uBKi+sn9o2+Fgs2c
+         03TMN6Z65gm7ctHosI9mChf6Mdlu7syY55eeNH6SQoQkcHeR85mng387f+ZqxSoKdt/G
+         6YrOapPRwrEs15LacMGxO7Njh/DHekDvA5GTY2P3PJHhw4Fd0wZEKL3OBTMirY1+i4Y5
+         FRC865nqEnZhwA1yVlnFAhfr6qOu+QA5kfEe9C3GCjKPpoH3qoOgbCsPMsNRkIjuTect
+         C1z4cRpgPv1jokZyvmhYR63jvOtU/kDrMGSOBnOT88fT1utfvbooloySjwrdIVqNooni
+         NapQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709240160; x=1709844960;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oXClQocKFU332MGv51HiVp3gBqp0PjGOnlHuqmYRRz8=;
+        b=uUWy366rt/AcJ8+dx/KQnDMU6whjkKKRcM3op0vYqqR7x2A1+nL1dOoFn72GCjVvJg
+         OiGurq0KV25AbO66eNcrwRBivzaUuLpTfLVJIBe8KjKX0t0DEPpqY/ZWHBy41uG8OXkw
+         oocZEP237iKNLeLm84QjpEh4E18t9oM3P5IjTIFZc0kBsRUt7FQv7mMQvjZZlpR8fqc3
+         cK+Wmu7olqjNNzRpu6DCMzWGYNb69XyQsbThLTDz49qbN81P83yN+sV7PCZtFUZTQUyS
+         2Xcb1EuUoamTH9okv9t4YS5LP5uVlOlnkS52C8IYx7w7fcVZ5TapOTO4uYoGPPqqYMH0
+         RqIA==
+X-Forwarded-Encrypted: i=1; AJvYcCW3aFqvs9h6DXBLlonPTqTT4i3k55TdXizF9NSJkwXaqH6HHu/N9yVlyRktvmaIzLMuPPKq53BVf6wFfh8mJN9k68TfXBOfg1LnAzgo
+X-Gm-Message-State: AOJu0Yzqt1ODju3vAXpHMmpn4Htb/QTUU5S60xvRAeQLZ+T63nQ4SmAr
+	PrSfY/hy+OzAvbg9amDCGACTdIoYyYp8VagZDN/zFuqUL6/WaY2SWdCc669ehTQ=
+X-Google-Smtp-Source: AGHT+IGr8j7A4eJzdeDg1YbAuq05IYAeaK4iw27H6JuOSJwWBdiiJusM0wiRHF/FGAh/MsrObspcww==
+X-Received: by 2002:a05:6e02:b43:b0:365:23fe:12fb with SMTP id f3-20020a056e020b4300b0036523fe12fbmr258132ilu.11.1709240160006;
+        Thu, 29 Feb 2024 12:56:00 -0800 (PST)
+Received: from localhost.localdomain (c-73-228-159-35.hsd1.mn.comcast.net. [73.228.159.35])
+        by smtp.gmail.com with ESMTPSA id h14-20020a056e020d4e00b003658fbcf55dsm521551ilj.72.2024.02.29.12.55.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Feb 2024 12:55:59 -0800 (PST)
+From: Alex Elder <elder@linaro.org>
+To: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com
+Cc: mka@chromium.org,
+	andersson@kernel.org,
+	quic_cpratapa@quicinc.com,
+	quic_avuyyuru@quicinc.com,
+	quic_jponduru@quicinc.com,
+	quic_subashab@quicinc.com,
+	elder@kernel.org,
+	netdev@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 0/7] net: ipa: simplify device pointer access
+Date: Thu, 29 Feb 2024 14:55:47 -0600
+Message-Id: <20240229205554.86762-1-elder@linaro.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <bicga3cv554ey4lby2twq3jw4tkkzx7mreakicf22sna63ye4x@x5di6km5x7fn>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Tue, Feb 13, 2024 at 05:06:24PM -0500, Kent Overstreet wrote:
-> On Tue, Feb 13, 2024 at 10:26:48AM +0200, Andy Shevchenko wrote:
-> > On Mon, Feb 12, 2024 at 11:39 PM Suren Baghdasaryan <surenb@google.com> wrote:
+Outside of initialization, all uses of the platform device pointer
+stored in the IPA structure determine the address of device
+structure embedded within the platform device structure.
 
-> > It seems most of my points from the previous review were refused...
-> 
-> Look, Andy, this is a pretty tiny part of the patchset, yet it's been
-> eating up a pretty disproprortionate amount of time and your review
-> feedback has been pretty unhelpful - asking for things to be broken up
-> in ways that would not be bisectable, or (as here) re-asking the same
-> things that I've already answered and that should've been obvious.
-> 
-> The code works. If you wish to complain about anything being broken, or
-> if you can come up with anything more actionable than what you've got
-> here, I will absolutely respond to that, but otherwise I'm just going to
-> leave things where they sit.
+By changing some of the initialization functions to take a platform
+device as argument we can simplify getting at the device structure
+address by storing it (instead of the platform device pointer) in
+the IPA structure.
 
-I do not understand why I should do *your* job.
-Nevertheless, I have just sent my version of this change.
-Enjoy!
+The first two patches split the interrupt initialization code into
+two parts--one done earlier than before.  The next four patches
+update some initialization functions to take a platform device
+pointer as argument.  And the last patch replaces the platform
+device pointer with a device pointer, and converts all remaining
+references to the &ipa->pdev->dev to use ipa->dev.
+
+					-Alex
+
+Alex Elder (7):
+  net: ipa: change ipa_interrupt_config() prototype
+  net: ipa: introduce ipa_interrupt_init()
+  net: ipa: pass a platform device to ipa_reg_init()
+  net: ipa: pass a platform device to ipa_mem_init()
+  net: ipa: pass a platform device to ipa_smp2p_irq_init()
+  net: ipa: pass a platform device to ipa_smp2p_init()
+  net: ipa: don't save the platform device
+
+ drivers/net/ipa/ipa.h           |  5 ++-
+ drivers/net/ipa/ipa_cmd.c       |  6 ++--
+ drivers/net/ipa/ipa_endpoint.c  | 29 ++++++++-------
+ drivers/net/ipa/ipa_interrupt.c | 64 +++++++++++++++++++++------------
+ drivers/net/ipa/ipa_interrupt.h | 22 +++++++++---
+ drivers/net/ipa/ipa_main.c      | 60 +++++++++++++++++++------------
+ drivers/net/ipa/ipa_mem.c       | 37 ++++++++++---------
+ drivers/net/ipa/ipa_mem.h       |  5 ++-
+ drivers/net/ipa/ipa_modem.c     | 14 ++++----
+ drivers/net/ipa/ipa_power.c     |  4 +--
+ drivers/net/ipa/ipa_qmi.c       | 10 +++---
+ drivers/net/ipa/ipa_reg.c       |  8 ++---
+ drivers/net/ipa/ipa_reg.h       |  4 ++-
+ drivers/net/ipa/ipa_smp2p.c     | 33 ++++++++---------
+ drivers/net/ipa/ipa_smp2p.h     |  7 ++--
+ drivers/net/ipa/ipa_table.c     | 18 +++++-----
+ drivers/net/ipa/ipa_uc.c        |  9 +++--
+ 17 files changed, 193 insertions(+), 142 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.40.1
 
 
