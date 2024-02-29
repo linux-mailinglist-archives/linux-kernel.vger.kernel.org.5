@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-87503-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87504-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4795486D53B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:58:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74CA486D53E
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:58:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC274281533
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:58:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A552B1C222AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:58:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A8831683BF;
-	Thu, 29 Feb 2024 20:41:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80BA01690BB;
+	Thu, 29 Feb 2024 20:41:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M7OdlOST"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="loHF5EoD"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B9811683AB;
-	Thu, 29 Feb 2024 20:41:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6F561690A1;
+	Thu, 29 Feb 2024 20:41:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709239282; cv=none; b=rKInTouxHGDPmAjD1WDhAV2YdHOoBsdnJhn9mwaWFVzqx70frVdPLQLIP163Ve5BXfgMB7qXVZvEuqBLdtjP/Un8xph5oyyOVqISovvNYNt2AgSAbGz20nuvN5uawC11W9PYo10m4J+uK7OdJ9a0IdFalvdJao99jOrCdS6JtXQ=
+	t=1709239283; cv=none; b=uTA56ZdOEZVVWGcQeZduxKzOkl4NlT68ApRukDnIGZZc89fcQWnSyx0SYtzFJ4NEV2pg3Zv9lmIkGVM3MjA3xc9ElEU0ndJEc1hxONSC3t2C074nB/QCcpAyy92HqVeWTYzXPDdL8gDPley81TQy3sTwL1wbdsvED7knBhEmLlQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709239282; c=relaxed/simple;
-	bh=/asW2tftmwjIBrAfKoCxa3oRNne3RxOit1L2BaOZ8Jg=;
+	s=arc-20240116; t=1709239283; c=relaxed/simple;
+	bh=HgQFFOvD9t8faJspiAQnniBSfen1VpgZbB5fk8QC1SU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TWEuhePjPl3sfHv188ejh6zyTen4nWDXTGWejzD/h2nSkBwrBYHStM2VrEo8+raPUpNTc3dKNZDM9lcZ3FtzIXz9P2UcH9iLkzPlbRG16MbW0nJynCVv6FeNeht/ZsMNIPl5H/RpV38a3B5BHis2ZWDQflVUy+wHLJBE+XbmOQg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M7OdlOST; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44594C433F1;
-	Thu, 29 Feb 2024 20:41:21 +0000 (UTC)
+	 MIME-Version; b=LZAWxAWQF+PmQ6r9vTF7rsU0gPV4TGKl2OZMd06eDemSFnjsPpWbej2QvIUBHYWDdk5V29HEynNXS3xxZqXEVhX3dAblJ3f1YeodCNEr/I417jz1uwiRXLSOPewKpL69/DcxKvgfDV/EFoAdqwoieF+KcwxzCL1T0XxO0QE1I6o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=loHF5EoD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0835C433C7;
+	Thu, 29 Feb 2024 20:41:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709239282;
-	bh=/asW2tftmwjIBrAfKoCxa3oRNne3RxOit1L2BaOZ8Jg=;
+	s=k20201202; t=1709239283;
+	bh=HgQFFOvD9t8faJspiAQnniBSfen1VpgZbB5fk8QC1SU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=M7OdlOSTdq9HghYwO3xN5HZ6nTPUHFXVJ7J+dznHc6pGvojLnwJI7L0BDtR9Yr+tq
-	 uM/Y1Jd9bND/0IiI9QN92fsvB/o7vZTVMn7pBst8OqpGNBbsnYbkShCY6h9G9WOjiZ
-	 hLsToGIsruW8AnmzZ2U+RTINluoTwd9McEGj3bzC9Aw5TqGJJvh+UeBlKjCSMJO/Fb
-	 l8Nf43ZvDoBn6ESbFheYXV14hAPana5wEOFZzs+Ys9lHg/JZTp6U8WTtDm6s4Tg/7A
-	 Af20lGGvdMmiylObQZYDgT3MnAL7orun292lUPgk2u1POD+7TWWB0m/USTrEqaIIgx
-	 bXi2H8Wf3s9Ng==
+	b=loHF5EoDaIXAyYzmohrUeGMbfpS2DCH0ODtWbS5bAurrJlp7Re2+weKy5WmXVLUoX
+	 sSI0MuEDZd325096tMum7utDdnH9a3ebObSnw7auBBANrgXM0KLtWLirJ5yfEwXshx
+	 r15ACfMks6dZaLZUZaR7OLKFYL1JIjUnkRvwDppHSaQii5mGBlrJ3t2x/TrNdfkx1Z
+	 agO6enq0Bxm1uzK6BttVBFglE1RDzOM+gK8VJn+d1G3yUrMiuVVluWArK/gnyYeXOl
+	 /pEPI7rZvQl0Iyf19YV2KsD9eEoHZgNklxjU7I8wjWdiqVqg/21ehPTOeGvGyswAzV
+	 67ajeROpmcZfA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Greg Joyce <gjoyce@linux.ibm.com>,
-	Jens Axboe <axboe@kernel.dk>,
+Cc: Mikulas Patocka <mpatocka@redhat.com>,
+	Mike Snitzer <snitzer@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	jonathan.derrick@linux.dev,
-	linux-block@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 8/9] block: sed-opal: handle empty atoms when parsing response
-Date: Thu, 29 Feb 2024 15:41:04 -0500
-Message-ID: <20240229204107.2861780-8-sashal@kernel.org>
+	agk@redhat.com,
+	dm-devel@lists.linux.dev
+Subject: [PATCH AUTOSEL 5.15 9/9] dm-verity, dm-crypt: align "struct bvec_iter" correctly
+Date: Thu, 29 Feb 2024 15:41:05 -0500
+Message-ID: <20240229204107.2861780-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240229204107.2861780-1-sashal@kernel.org>
 References: <20240229204107.2861780-1-sashal@kernel.org>
@@ -65,63 +65,68 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.149
 Content-Transfer-Encoding: 8bit
 
-From: Greg Joyce <gjoyce@linux.ibm.com>
+From: Mikulas Patocka <mpatocka@redhat.com>
 
-[ Upstream commit 5429c8de56f6b2bd8f537df3a1e04e67b9c04282 ]
+[ Upstream commit 787f1b2800464aa277236a66eb3c279535edd460 ]
 
-The SED Opal response parsing function response_parse() does not
-handle the case of an empty atom in the response. This causes
-the entry count to be too high and the response fails to be
-parsed. Recognizing, but ignoring, empty atoms allows response
-handling to succeed.
+"struct bvec_iter" is defined with the __packed attribute, so it is
+aligned on a single byte. On X86 (and on other architectures that support
+unaligned addresses in hardware), "struct bvec_iter" is accessed using the
+8-byte and 4-byte memory instructions, however these instructions are less
+efficient if they operate on unaligned addresses.
 
-Signed-off-by: Greg Joyce <gjoyce@linux.ibm.com>
-Link: https://lore.kernel.org/r/20240216210417.3526064-2-gjoyce@linux.ibm.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+(on RISC machines that don't have unaligned access in hardware, GCC
+generates byte-by-byte accesses that are very inefficient - see [1])
+
+This commit reorders the entries in "struct dm_verity_io" and "struct
+convert_context", so that "struct bvec_iter" is aligned on 8 bytes.
+
+[1] https://lore.kernel.org/all/ZcLuWUNRZadJr0tQ@fedora/T/
+
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+Signed-off-by: Mike Snitzer <snitzer@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/opal_proto.h | 1 +
- block/sed-opal.c   | 6 +++++-
- 2 files changed, 6 insertions(+), 1 deletion(-)
+ drivers/md/dm-crypt.c  | 4 ++--
+ drivers/md/dm-verity.h | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/block/opal_proto.h b/block/opal_proto.h
-index b486b3ec7dc41..a50191bddbc26 100644
---- a/block/opal_proto.h
-+++ b/block/opal_proto.h
-@@ -66,6 +66,7 @@ enum opal_response_token {
- #define SHORT_ATOM_BYTE  0xBF
- #define MEDIUM_ATOM_BYTE 0xDF
- #define LONG_ATOM_BYTE   0xE3
-+#define EMPTY_ATOM_BYTE  0xFF
+diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
+index a428770102a37..edb70cacd805d 100644
+--- a/drivers/md/dm-crypt.c
++++ b/drivers/md/dm-crypt.c
+@@ -49,11 +49,11 @@
+ struct convert_context {
+ 	struct completion restart;
+ 	struct bio *bio_in;
+-	struct bio *bio_out;
+ 	struct bvec_iter iter_in;
++	struct bio *bio_out;
+ 	struct bvec_iter iter_out;
+-	u64 cc_sector;
+ 	atomic_t cc_pending;
++	u64 cc_sector;
+ 	union {
+ 		struct skcipher_request *req;
+ 		struct aead_request *req_aead;
+diff --git a/drivers/md/dm-verity.h b/drivers/md/dm-verity.h
+index 78d1e51195ada..f61c89c79cf5b 100644
+--- a/drivers/md/dm-verity.h
++++ b/drivers/md/dm-verity.h
+@@ -74,11 +74,11 @@ struct dm_verity_io {
+ 	/* original value of bio->bi_end_io */
+ 	bio_end_io_t *orig_bi_end_io;
  
- #define OPAL_INVAL_PARAM 12
- #define OPAL_MANUFACTURED_INACTIVE 0x08
-diff --git a/block/sed-opal.c b/block/sed-opal.c
-index 0ac5a4f3f2261..00e4d23ac49e7 100644
---- a/block/sed-opal.c
-+++ b/block/sed-opal.c
-@@ -895,16 +895,20 @@ static int response_parse(const u8 *buf, size_t length,
- 			token_length = response_parse_medium(iter, pos);
- 		else if (pos[0] <= LONG_ATOM_BYTE) /* long atom */
- 			token_length = response_parse_long(iter, pos);
-+		else if (pos[0] == EMPTY_ATOM_BYTE) /* empty atom */
-+			token_length = 1;
- 		else /* TOKEN */
- 			token_length = response_parse_token(iter, pos);
- 
- 		if (token_length < 0)
- 			return token_length;
- 
-+		if (pos[0] != EMPTY_ATOM_BYTE)
-+			num_entries++;
++	struct bvec_iter iter;
 +
- 		pos += token_length;
- 		total -= token_length;
- 		iter++;
--		num_entries++;
- 	}
+ 	sector_t block;
+ 	unsigned n_blocks;
  
- 	resp->num = num_entries;
+-	struct bvec_iter iter;
+-
+ 	struct work_struct work;
+ 
+ 	/*
 -- 
 2.43.0
 
