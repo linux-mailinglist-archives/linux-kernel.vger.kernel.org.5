@@ -1,75 +1,75 @@
-Return-Path: <linux-kernel+bounces-87237-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87238-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 509BD86D181
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:09:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B3BA86D184
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:09:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 73F8E1C22731
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:09:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BFFF21F2629D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 18:09:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5A60134434;
-	Thu, 29 Feb 2024 18:08:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C9CF1350F1;
+	Thu, 29 Feb 2024 18:08:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kO/Ks9Xc"
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bZK4+MAd"
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED0917D3F2;
-	Thu, 29 Feb 2024 18:08:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48ED37827B;
+	Thu, 29 Feb 2024 18:08:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709230110; cv=none; b=lTvPwdoR3RbD2F9Pz/R2mhi0R0WbIymugm8YVe0gFfxdEXsqdvP1mfByELdaXYZZsVqBOWvaI7oSc0lur9jmpCxDUSB3cwqhrv8T8yWFH4NUTgMJUcBNH6ZbUl2+d8dTxGeSP/m4IVvZ9Ti9c+0bbqSU0ohqtclgbtVcWbTv6bs=
+	t=1709230111; cv=none; b=rrGJ2rot1hDdAIfWn2NIwUttVk0fYlZT/z4ai1uMTpTF3LmSBYaahAJYQPkldmb7QhhI5GrBw5KSgBvw2IOF0kPOTOT/uXibjjOBPaDHzit93AFspRwd5g0z8JRSEuicgM6jNssLmEhAz7qUwKetpNt16F6HLLgRcnWxCnzavBU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709230110; c=relaxed/simple;
-	bh=4qATgv2NIkBbPJ4MXwBLLL2AM9zlNCrH2AkubYOzo2Y=;
+	s=arc-20240116; t=1709230111; c=relaxed/simple;
+	bh=n9HZ8WlG3tVYyfs4qDWScus2Mw1QcHzAyJ6G8lMbDUI=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Yh9dy62Ly4vfIhzOJ9cUfFP7nexMPsvMav7NMagjQQTCQldWI/eX1vbBZo5yTZnEXxnfZCpPIIyb1G3Wn+/pMlk24QQrUme3S0e0lLAUCW3HpP6m1T/liH/3tM/fllvff3c5JlH5V/xpVQcfF1nCbfnVACGQC7uK9PsR3DevWc4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kO/Ks9Xc; arc=none smtp.client-ip=209.85.128.47
+	 In-Reply-To:To:Cc; b=SK2OlgKQEtqxz/BUCpXif0oHX84U4uMfRwEfeBeiBKto6eByKfo2VMROOMXBC0u/Qk7yAStEfa0atmor34l8q/eBCWoQ6AaMA4S7ElTka9xaB9lSyjONfZqzfo/A3yk+1zWGxY7XsvLCsMWSfvHkeHe5B8r5avuWEcySOhz1Jac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bZK4+MAd; arc=none smtp.client-ip=209.85.128.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-412bcb76703so7088605e9.2;
-        Thu, 29 Feb 2024 10:08:28 -0800 (PST)
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-412b83cfb44so8094225e9.3;
+        Thu, 29 Feb 2024 10:08:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709230107; x=1709834907; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1709230109; x=1709834909; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=lJ1CttY3QePOBroynm6EQeC99boR7JdlBwjlYres+fA=;
-        b=kO/Ks9XcBNsUGoJv51QX4IFV59AeoFSAb2VtsmFvW0JwjphBJl+Ux0r6YVOw3OVqlG
-         uj6DePXtj09clEU7jlYWY51fKUIFjVKWWxhmMX7UzSiyGevtq2lKY6ueJVVsQhMkEg7u
-         ohSAqaPuPrSTadS++Qlx9RhyH44vE7XHFkptB8Bcf6rUtqsOQ5GewoxqyJHFm/vxNj62
-         NLNA0iqEcnM2Si2c+lbcgQBrwcHt0LAW4Mke/oGRkwgA6+jnPBIOmqCc3Zp9RoZGDakq
-         Nr3f548aovElkfWbNoxCRYAuHW/MVN23fELISau43v7zKg6GGzHGm3swYd9UaVa1ldk+
-         PxMA==
+        bh=NHEkZ7LkAYiQY4fORY2GQCirviKcqtGOy+eYZIPtn30=;
+        b=bZK4+MAd80pbQLPvrSbWzaixZiFbocFIRuvSUVeIwUpo5pWEGFpyHEnw/YzhNEie3f
+         DWbxoQX7Sq6Gcrynyv/q6KH5YMaSERYglgu2abcmNEPoN5RZlkKkoaooLikPvijG0nkY
+         HLrWRR8F8gKXbIl5rOe7+yV3Pl+0z9l4NIPXzkeXslvO8BvWwMqSOOzIOXQcQGETwbjy
+         221xCM/YubmvUSydW/u3BHVOyShrueQS1eEXeTgQIJN3c8q95lmsvrNaHjpVd535isZv
+         AwUxyMfF8T2vsbeDdo6puoDAphjuPZnMbI2DceEouA5OYix2rlKAhvdGkRwucDF3X9ye
+         a7FA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709230107; x=1709834907;
+        d=1e100.net; s=20230601; t=1709230109; x=1709834909;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=lJ1CttY3QePOBroynm6EQeC99boR7JdlBwjlYres+fA=;
-        b=hG95hUoXi2wSre810hbkRjtMQIpsfRy7lcn/5Cd72CRelT6G91eXsxJuYzaS4ZDQ1D
-         Oj9VoruCBZuEaiKVntMJ0odyiQYoEFjNQPavvlTRGyrUm6GkWcFh/fjg+vQuBI3shWTU
-         VrG5KfTAQwworQ6GJAYaxCGNbt+KxNRqtTi1IFskArJU0sAR0rFapx6wx38/Z/ydP3Mi
-         tX1q205OzbFrIfotYVbBZ/nhxeT09d5THZz5Rl4Jewg5w45MehpYA0sMzYreG+YcJUbL
-         UN97ca3+SaSgYaw5pSCPbQYPGaPPlVQ19HvajDy/fIRG8TtNxq7ABf9/iF4cejLGY1C5
-         uh4A==
-X-Forwarded-Encrypted: i=1; AJvYcCW+X8Hp90tpp/euHxaWrhIwBROdEvGthVubI7W6tKil/NgykvYBMIkmHzJd77ldJC/OJ8e1ZXSH3W5qrThv5vJiwyig7muKC52qsUOfV4m68hkm7aOn2/884H5cC2kldPLH5atYb+DQ
-X-Gm-Message-State: AOJu0YwbT9oUk5joRRh9k0zuBqk/dfWccQsj9AWhiapLeQdBxGSh+NJU
-	yZlJ0GaEfb36J0b36Kh5lax2y7OFzKenRsRRO+9tSbBJInNKKyGy
-X-Google-Smtp-Source: AGHT+IFx8WHJYEtjEx85k/mCC4sEK18kSet4ygICvSqzOaSFu6VLczg+zdsVwoiA/Df4hawc6NCUFQ==
-X-Received: by 2002:a05:600c:4f86:b0:412:bafe:613f with SMTP id n6-20020a05600c4f8600b00412bafe613fmr2586709wmq.22.1709230107391;
-        Thu, 29 Feb 2024 10:08:27 -0800 (PST)
+        bh=NHEkZ7LkAYiQY4fORY2GQCirviKcqtGOy+eYZIPtn30=;
+        b=YGQz7zHti5xjlQaaMgCmmz7uzm9lSfucP63T4W12zqdQ9gHH6NTsxVIwVo8IVXS9Hm
+         6ezUDZDlSk9w0gw3fY4VM4cLwoxbHM8te3NCduPDkpqIqFtkN2F3R4j3gKMKe+gYjQv6
+         V31zbuVHKKY4Os/sLkjREycA8/QxCkkU0jT/QVkCHbcV0n50yO+MTRxUzP75ogNZiwMz
+         fbQfc6b2YCUrQVzM5tboPMTOe/Nh9w1EfAd5UxxlwMkixlZs4CwTNSevEAbXGvCDdsZY
+         2g6H6ki9nCJOU0eUU35slUMPTiI9vVySEuDlXIkHF90VUvJawv060DIKUAu47aurLc76
+         0CpA==
+X-Forwarded-Encrypted: i=1; AJvYcCVlw5hpgBtejzqXr9W1gqprNc5AzpuijPWVxBIRR4VAzcUpHKxrXK4qB9xnf9krf6lU93Sd/M7ZYrYsqCktpKfcV4gLwMu0FsTNXzBXUqGoSyreSVyrzsocKQMhZrCUFnlOxvwjNj6h
+X-Gm-Message-State: AOJu0Yyt4wRQxo06U2YyaoX/LSMZ44DUbFCkAP529ByVfduwNAqfGRxG
+	3rMw40e9Lp1dqV2QbBgf18Q1ydCXSCNDp46GMLQ7vNfsK536u0rS
+X-Google-Smtp-Source: AGHT+IGfIk70CGd9jgpNki5T5kP9imwifMA1iTr+PJNC4QqaZd9DdaXiXHXzkUKKvajEwDWD1pzChA==
+X-Received: by 2002:a05:600c:4d26:b0:412:b6b8:b5f1 with SMTP id u38-20020a05600c4d2600b00412b6b8b5f1mr2464527wmp.18.1709230108724;
+        Thu, 29 Feb 2024 10:08:28 -0800 (PST)
 Received: from [192.168.20.102] (57657817.catv.pool.telekom.hu. [87.101.120.23])
-        by smtp.googlemail.com with ESMTPSA id z11-20020a1c4c0b000000b00412ba5cda16sm3100620wmf.33.2024.02.29.10.08.26
+        by smtp.googlemail.com with ESMTPSA id z11-20020a1c4c0b000000b00412ba5cda16sm3100620wmf.33.2024.02.29.10.08.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 10:08:27 -0800 (PST)
+        Thu, 29 Feb 2024 10:08:28 -0800 (PST)
 From: Gabor Juhos <j4g8y7@gmail.com>
-Date: Thu, 29 Feb 2024 19:07:50 +0100
-Subject: [PATCH 5/7] clk: qcom: camcc-sc8280xp: fix terminating of
- frequency table arrays
+Date: Thu, 29 Feb 2024 19:07:51 +0100
+Subject: [PATCH 6/7] clk: qcom: mmcc-apq8084: fix terminating of frequency
+ table arrays
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,7 +78,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240229-freq-table-terminator-v1-5-074334f0905c@gmail.com>
+Message-Id: <20240229-freq-table-terminator-v1-6-074334f0905c@gmail.com>
 References: <20240229-freq-table-terminator-v1-0-074334f0905c@gmail.com>
 In-Reply-To: <20240229-freq-table-terminator-v1-0-074334f0905c@gmail.com>
 To: Bjorn Andersson <andersson@kernel.org>, 
@@ -104,184 +104,32 @@ qcom_find_freq_floor().
 
 Only compile tested.
 
-Fixes: ff93872a9c61 ("clk: qcom: camcc-sc8280xp: Add sc8280xp CAMCC")
+Fixes: 2b46cd23a5a2 ("clk: qcom: Add APQ8084 Multimedia Clock Controller (MMCC) support")
 Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
 ---
- drivers/clk/qcom/camcc-sc8280xp.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+ drivers/clk/qcom/mmcc-apq8084.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/clk/qcom/camcc-sc8280xp.c b/drivers/clk/qcom/camcc-sc8280xp.c
-index 3dcd79b015151..7f0ae9a5f28b2 100644
---- a/drivers/clk/qcom/camcc-sc8280xp.c
-+++ b/drivers/clk/qcom/camcc-sc8280xp.c
-@@ -630,6 +630,7 @@ static const struct freq_tbl ftbl_camcc_bps_clk_src[] = {
- 	F(480000000, P_CAMCC_PLL7_OUT_EVEN, 1, 0, 0),
- 	F(600000000, P_CAMCC_PLL0_OUT_MAIN, 2, 0, 0),
- 	F(760000000, P_CAMCC_PLL3_OUT_EVEN, 1, 0, 0),
+diff --git a/drivers/clk/qcom/mmcc-apq8084.c b/drivers/clk/qcom/mmcc-apq8084.c
+index 02fc21208dd14..c89700ab93f9c 100644
+--- a/drivers/clk/qcom/mmcc-apq8084.c
++++ b/drivers/clk/qcom/mmcc-apq8084.c
+@@ -348,6 +348,7 @@ static struct freq_tbl ftbl_mmss_axi_clk[] = {
+ 	F(333430000, P_MMPLL1, 3.5, 0, 0),
+ 	F(400000000, P_MMPLL0, 2, 0, 0),
+ 	F(466800000, P_MMPLL1, 2.5, 0, 0),
 +	{ }
  };
  
- static struct clk_rcg2 camcc_bps_clk_src = {
-@@ -654,6 +655,7 @@ static const struct freq_tbl ftbl_camcc_camnoc_axi_clk_src[] = {
- 	F(320000000, P_CAMCC_PLL7_OUT_ODD, 1, 0, 0),
- 	F(400000000, P_CAMCC_PLL0_OUT_ODD, 1, 0, 0),
- 	F(480000000, P_CAMCC_PLL7_OUT_EVEN, 1, 0, 0),
+ static struct clk_rcg2 mmss_axi_clk_src = {
+@@ -372,6 +373,7 @@ static struct freq_tbl ftbl_ocmemnoc_clk[] = {
+ 	F(150000000, P_GPLL0, 4, 0, 0),
+ 	F(228570000, P_MMPLL0, 3.5, 0, 0),
+ 	F(320000000, P_MMPLL0, 2.5, 0, 0),
 +	{ }
  };
  
- static struct clk_rcg2 camcc_camnoc_axi_clk_src = {
-@@ -673,6 +675,7 @@ static struct clk_rcg2 camcc_camnoc_axi_clk_src = {
- static const struct freq_tbl ftbl_camcc_cci_0_clk_src[] = {
- 	F(19200000, P_BI_TCXO, 1, 0, 0),
- 	F(37500000, P_CAMCC_PLL0_OUT_EVEN, 16, 0, 0),
-+	{ }
- };
- 
- static struct clk_rcg2 camcc_cci_0_clk_src = {
-@@ -735,6 +738,7 @@ static const struct freq_tbl ftbl_camcc_cphy_rx_clk_src[] = {
- 	F(19200000, P_BI_TCXO, 1, 0, 0),
- 	F(240000000, P_CAMCC_PLL0_OUT_EVEN, 2.5, 0, 0),
- 	F(400000000, P_CAMCC_PLL0_OUT_ODD, 1, 0, 0),
-+	{ }
- };
- 
- static struct clk_rcg2 camcc_cphy_rx_clk_src = {
-@@ -754,6 +758,7 @@ static struct clk_rcg2 camcc_cphy_rx_clk_src = {
- static const struct freq_tbl ftbl_camcc_csi0phytimer_clk_src[] = {
- 	F(19200000, P_BI_TCXO, 1, 0, 0),
- 	F(300000000, P_CAMCC_PLL0_OUT_EVEN, 2, 0, 0),
-+	{ }
- };
- 
- static struct clk_rcg2 camcc_csi0phytimer_clk_src = {
-@@ -818,6 +823,7 @@ static const struct freq_tbl ftbl_camcc_fast_ahb_clk_src[] = {
- 	F(200000000, P_CAMCC_PLL0_OUT_EVEN, 3, 0, 0),
- 	F(300000000, P_CAMCC_PLL0_OUT_MAIN, 4, 0, 0),
- 	F(400000000, P_CAMCC_PLL0_OUT_MAIN, 3, 0, 0),
-+	{ }
- };
- 
- static struct clk_rcg2 camcc_fast_ahb_clk_src = {
-@@ -838,6 +844,7 @@ static const struct freq_tbl ftbl_camcc_icp_clk_src[] = {
- 	F(19200000, P_BI_TCXO, 1, 0, 0),
- 	F(400000000, P_CAMCC_PLL0_OUT_ODD, 1, 0, 0),
- 	F(600000000, P_CAMCC_PLL0_OUT_MAIN, 2, 0, 0),
-+	{ }
- };
- 
- static struct clk_rcg2 camcc_icp_clk_src = {
-@@ -860,6 +867,7 @@ static const struct freq_tbl ftbl_camcc_ife_0_clk_src[] = {
- 	F(558000000, P_CAMCC_PLL3_OUT_EVEN, 1, 0, 0),
- 	F(637000000, P_CAMCC_PLL3_OUT_EVEN, 1, 0, 0),
- 	F(760000000, P_CAMCC_PLL3_OUT_EVEN, 1, 0, 0),
-+	{ }
- };
- 
- static struct clk_rcg2 camcc_ife_0_clk_src = {
-@@ -883,6 +891,7 @@ static const struct freq_tbl ftbl_camcc_ife_0_csid_clk_src[] = {
- 	F(400000000, P_CAMCC_PLL0_OUT_ODD, 1, 0, 0),
- 	F(480000000, P_CAMCC_PLL7_OUT_EVEN, 1, 0, 0),
- 	F(600000000, P_CAMCC_PLL0_OUT_MAIN, 2, 0, 0),
-+	{ }
- };
- 
- static struct clk_rcg2 camcc_ife_0_csid_clk_src = {
-@@ -905,6 +914,7 @@ static const struct freq_tbl ftbl_camcc_ife_1_clk_src[] = {
- 	F(558000000, P_CAMCC_PLL4_OUT_EVEN, 1, 0, 0),
- 	F(637000000, P_CAMCC_PLL4_OUT_EVEN, 1, 0, 0),
- 	F(760000000, P_CAMCC_PLL4_OUT_EVEN, 1, 0, 0),
-+	{ }
- };
- 
- static struct clk_rcg2 camcc_ife_1_clk_src = {
-@@ -941,6 +951,7 @@ static const struct freq_tbl ftbl_camcc_ife_2_clk_src[] = {
- 	F(558000000, P_CAMCC_PLL5_OUT_EVEN, 1, 0, 0),
- 	F(637000000, P_CAMCC_PLL5_OUT_EVEN, 1, 0, 0),
- 	F(760000000, P_CAMCC_PLL5_OUT_EVEN, 1, 0, 0),
-+	{ }
- };
- 
- static struct clk_rcg2 camcc_ife_2_clk_src = {
-@@ -962,6 +973,7 @@ static const struct freq_tbl ftbl_camcc_ife_2_csid_clk_src[] = {
- 	F(400000000, P_CAMCC_PLL0_OUT_ODD, 1, 0, 0),
- 	F(480000000, P_CAMCC_PLL7_OUT_EVEN, 1, 0, 0),
- 	F(600000000, P_CAMCC_PLL0_OUT_MAIN, 2, 0, 0),
-+	{ }
- };
- 
- static struct clk_rcg2 camcc_ife_2_csid_clk_src = {
-@@ -984,6 +996,7 @@ static const struct freq_tbl ftbl_camcc_ife_3_clk_src[] = {
- 	F(558000000, P_CAMCC_PLL6_OUT_EVEN, 1, 0, 0),
- 	F(637000000, P_CAMCC_PLL6_OUT_EVEN, 1, 0, 0),
- 	F(760000000, P_CAMCC_PLL6_OUT_EVEN, 1, 0, 0),
-+	{ }
- };
- 
- static struct clk_rcg2 camcc_ife_3_clk_src = {
-@@ -1020,6 +1033,7 @@ static const struct freq_tbl ftbl_camcc_ife_lite_0_clk_src[] = {
- 	F(400000000, P_CAMCC_PLL0_OUT_ODD, 1, 0, 0),
- 	F(480000000, P_CAMCC_PLL7_OUT_EVEN, 1, 0, 0),
- 	F(600000000, P_CAMCC_PLL0_OUT_MAIN, 2, 0, 0),
-+	{ }
- };
- 
- static struct clk_rcg2 camcc_ife_lite_0_clk_src = {
-@@ -1140,6 +1154,7 @@ static const struct freq_tbl ftbl_camcc_ipe_0_clk_src[] = {
- 	F(475000000, P_CAMCC_PLL1_OUT_EVEN, 1, 0, 0),
- 	F(520000000, P_CAMCC_PLL1_OUT_EVEN, 1, 0, 0),
- 	F(600000000, P_CAMCC_PLL1_OUT_EVEN, 1, 0, 0),
-+	{ }
- };
- 
- static struct clk_rcg2 camcc_ipe_0_clk_src = {
-@@ -1163,6 +1178,7 @@ static const struct freq_tbl ftbl_camcc_jpeg_clk_src[] = {
- 	F(400000000, P_CAMCC_PLL0_OUT_ODD, 1, 0, 0),
- 	F(480000000, P_CAMCC_PLL7_OUT_EVEN, 1, 0, 0),
- 	F(600000000, P_CAMCC_PLL0_OUT_MAIN, 2, 0, 0),
-+	{ }
- };
- 
- static struct clk_rcg2 camcc_jpeg_clk_src = {
-@@ -1184,6 +1200,7 @@ static const struct freq_tbl ftbl_camcc_lrme_clk_src[] = {
- 	F(300000000, P_CAMCC_PLL0_OUT_EVEN, 2, 0, 0),
- 	F(320000000, P_CAMCC_PLL7_OUT_ODD, 1, 0, 0),
- 	F(400000000, P_CAMCC_PLL0_OUT_MAIN, 3, 0, 0),
-+	{ }
- };
- 
- static struct clk_rcg2 camcc_lrme_clk_src = {
-@@ -1204,6 +1221,7 @@ static const struct freq_tbl ftbl_camcc_mclk0_clk_src[] = {
- 	F(19200000, P_BI_TCXO, 1, 0, 0),
- 	F(24000000, P_CAMCC_PLL2_OUT_EARLY, 10, 1, 4),
- 	F(64000000, P_CAMCC_PLL2_OUT_EARLY, 15, 0, 0),
-+	{ }
- };
- 
- static struct clk_rcg2 camcc_mclk0_clk_src = {
-@@ -1320,6 +1338,7 @@ static struct clk_rcg2 camcc_mclk7_clk_src = {
- 
- static const struct freq_tbl ftbl_camcc_sleep_clk_src[] = {
- 	F(32000, P_SLEEP_CLK, 1, 0, 0),
-+	{ }
- };
- 
- static struct clk_rcg2 camcc_sleep_clk_src = {
-@@ -1339,6 +1358,7 @@ static struct clk_rcg2 camcc_sleep_clk_src = {
- static const struct freq_tbl ftbl_camcc_slow_ahb_clk_src[] = {
- 	F(19200000, P_BI_TCXO, 1, 0, 0),
- 	F(80000000, P_CAMCC_PLL7_OUT_EVEN, 6, 0, 0),
-+	{ }
- };
- 
- static struct clk_rcg2 camcc_slow_ahb_clk_src = {
-@@ -1357,6 +1377,7 @@ static struct clk_rcg2 camcc_slow_ahb_clk_src = {
- 
- static const struct freq_tbl ftbl_camcc_xo_clk_src[] = {
- 	F(19200000, P_BI_TCXO, 1, 0, 0),
-+	{ }
- };
- 
- static struct clk_rcg2 camcc_xo_clk_src = {
+ static struct clk_rcg2 ocmemnoc_clk_src = {
 
 -- 
 2.44.0
