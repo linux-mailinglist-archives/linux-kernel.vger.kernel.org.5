@@ -1,165 +1,138 @@
-Return-Path: <linux-kernel+bounces-86137-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86138-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2068786C03F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 06:32:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9017A86C046
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 06:39:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72E9DB24F9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 05:32:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B459F1C2129F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 05:39:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E06203A267;
-	Thu, 29 Feb 2024 05:32:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0847C3B190;
+	Thu, 29 Feb 2024 05:39:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Qsc9mKaA"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="n5bv9s8A"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 246A23A1BF
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 05:32:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A74873A1BF;
+	Thu, 29 Feb 2024 05:39:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709184727; cv=none; b=o70QSXQPqSlfhBWlNnYjiOvNYVnCQm4N/lxbIZIw7K6KRYsoOpaHOzAEdcQKz9SpUsmHLFHt7x2Kf3/QR2PC3ctaYU7uw5M6eDS8Hgs494TNADBpJCoKWmZLxdMSptwbKOzp6wUBFmtr/0LDM0m+Bc+9S9zFL01xo9W7yaZNtFk=
+	t=1709185181; cv=none; b=DNZom48TieXWl5vTus+Ms3y6N1gBcGv8pfbG4Ldf+wwXeqfiG/XSzGC4rLziThCfMIH1K1rdGwn/Hc0k/1A9zEsvW6eslAqlDtwHZds6I1b0wsM85z/1Vks/4rXAh4edFQdhDtgM4J2b+m+k2teu5t/KFRnXaU5nON+hbDjVwT8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709184727; c=relaxed/simple;
-	bh=Gz6cyj5IxxyD9H9LT1YWjsonRagDA8CrCUTcK3stBxk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NenKMEPnBx+1ZLc/ONkZDTtIFl9WnOKmEPFCm/onQbcMlc2HhpztF8LRgHAHxHj5QAUNUyAKlUG7zENr3gJ0U0D3bxqQ1LGgTeHghs5r6io/7TEojYJvgzC5mByEya984+oVicNbaZ9aELjvABAzSw/6I+u7io25F6nBb777N4M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Qsc9mKaA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D2F4C433C7;
-	Thu, 29 Feb 2024 05:32:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1709184726;
-	bh=Gz6cyj5IxxyD9H9LT1YWjsonRagDA8CrCUTcK3stBxk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Qsc9mKaAxJayIK4XM6LUY4Ns4dVOP8NjdPtFZK/qNdmUG85RxJ+7QkeCiswx7g3Df
-	 iv5b6a5zZbT74yP10LL9XsJQ1OX3S0o3A891T2/WMlYdasifpE0OCmy7FpLHvr1F6v
-	 tltGV/emaRYLxQ4oH7tkQ3IjXxCsgQVS8xKNQUw8=
-Date: Thu, 29 Feb 2024 06:32:03 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-	cve@kernel.org, Jiri Kosina <jkosina@suse.cz>
-Subject: Re: CVE-2023-52437: Revert "md/raid5: Wait for MD_SB_CHANGE_PENDING
- in raid5d"
-Message-ID: <2024022949-uncapped-crushing-e5f9@gregkh>
-References: <ZdX2LcAWR6wyvYC5@sashalap>
- <bec7c1db-c13e-4b00-a968-4ae69539d7ac@redhat.com>
- <ZdYKSkqRckOc5aRO@sashalap>
- <a9652aa2-e79b-4144-b3b7-746587af9eca@redhat.com>
- <ZdYSmdUKzQAYpprc@sashalap>
- <3ebbc121-8cb8-4b8d-ad5d-fb5c576e5171@redhat.com>
- <2024022129-expiring-resurface-146c@gregkh>
- <288132ea-87cf-4b56-908e-2263b6c6b67f@redhat.com>
- <2024022236-stock-wielder-fcbc@gregkh>
- <7be9ad00-1432-4a19-a954-32fa0f24fecd@redhat.com>
+	s=arc-20240116; t=1709185181; c=relaxed/simple;
+	bh=DB6LgLjnrJ7phIYd9/PpD0EwgxadninTd4QwfLnvfig=;
+	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type:To:CC; b=YayhynwOsMrKzyyrZRNVQj1oq2pNO/E3ixsj3NuZl48HKMm/Wi+wB4t6uihcnxUsMZC2iHDp9tuUc59FJS4tq8LxeDG20E3xgwGnaCmJxeSJpKlI3OfqAdMXr/VxFuVE7vWA75U+JIGrqNIlZ0wKDEEh95KKlZdKOx0bdU0fNrc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=n5bv9s8A; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41T484eB018478;
+	Thu, 29 Feb 2024 05:39:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:subject:date:message-id:mime-version:content-type
+	:content-transfer-encoding:to:cc; s=qcppdkim1; bh=5A8Rs87XUubM0I
+	4u7oQxcWAIxYITrEgsH9L4xfy44Sk=; b=n5bv9s8AaIBTYD7DExhxMTnsI7UADf
+	Q8gOZJDZpyDmYcHIjOqVKSyk2lEONSS//moICG66770Op56MxRFdHhChDay4yAjx
+	XStdM1v7mz7qsJh4VgAdfGtkYlJ9BlzCrMUt/0quBtp14RqdBCeKNJwBdQmIa94A
+	/R8Zk1PQjo5h063aQ7Rk1EwssL5sxtU8A1JDQf3h2Bpr7hRf9ftTZTsqzxAKDfAE
+	V4kfa1cKpiLm/NwJBZBGjhIFGOEa3IDGOweammoFXqJBceUgcCgz0uQtGTrq4CmI
+	uHDi6xBURlCh6jH8rsTutNWTRxpiiufXsveT2XRNbXDfMMEaiw8wxSwA==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wj1r1tq2n-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 29 Feb 2024 05:39:07 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41T5d6Xx024175
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 29 Feb 2024 05:39:06 GMT
+Received: from hu-skakitap-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 28 Feb 2024 21:39:01 -0800
+From: Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
+Subject: [PATCH 0/5] clk: qcom: sm8150: Add camera clock controller support
+ for SM8150
+Date: Thu, 29 Feb 2024 11:08:53 +0530
+Message-ID: <20240229-camcc-support-sm8150-v1-0-8c28c6c87990@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7be9ad00-1432-4a19-a954-32fa0f24fecd@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAG0Y4GUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDIyNL3eTE3ORk3eLSgoL8ohLd4lwLQ1MD3RTjNHOjRJNEw0SjJCWg1oK
+ i1LTMCrCx0bG1tQBEP6h7ZgAAAA==
+To: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Abhishek Sahu <absahu@codeaurora.org>,
+        "Rob
+ Herring" <robh@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC: Stephen Boyd <sboyd@codeaurora.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, Ajit Pandey <quic_ajipan@quicinc.com>,
+        "Imran
+ Shaik" <quic_imrashai@quicinc.com>,
+        Taniya Das <quic_tdas@quicinc.com>,
+        Jagadeesh Kona <quic_jkona@quicinc.com>,
+        Satya Priya Kakitapalli
+	<quic_skakitap@quicinc.com>
+X-Mailer: b4 0.12.4
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: ZgaToXXud25X70w4dqqTjzKVey0wxvpe
+X-Proofpoint-GUID: ZgaToXXud25X70w4dqqTjzKVey0wxvpe
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-28_08,2024-02-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
+ suspectscore=0 phishscore=0 priorityscore=1501 lowpriorityscore=0
+ mlxscore=0 malwarescore=0 clxscore=1011 spamscore=0 adultscore=0
+ mlxlogscore=862 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2402290042
 
-Sorry for the delay in response, been a busy week...
+Add camcc support and Regera PLL ops. Also, fix the pll post div mask.
 
-On Thu, Feb 22, 2024 at 02:31:06PM +0100, Paolo Bonzini wrote:
-> > > Perhaps since there's no archive for cve@kernel.org, there should be a
-> > > public discussion mailing list (e.g. linux-cve@vger) that maintainers can
-> > > reply to?  The private cve@kernel.org alias would then be just for the
-> > > request of embargoed CVEs.
-> > 
-> > What's wrong with lkml for discussion?  I'll add a "reply-to" to point
-> > there as well so that it will properly redirect if you respond to a
-> > message sent to the -announce list.
-> 
-> Well, LKML is not the most searchable archive and subscribing to it puts
-> measurable stress on the kernel.org servers (mostly due to gmail
-> shenanigans, but still).
+Signed-off-by: Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
+---
+Satya Priya Kakitapalli (4):
+      clk: qcom: alpha-pll: Fix the pll post div mask
+      dt-bindings: clock: qcom: Add SM8150 camera clock controller
+      clk: qcom: Add camera clock controller driver for SM8150
+      arm64: dts: qcom: Add camera clock controller for sm8150
 
-lore is a great search tool for lkml, and you can subscribe to feeds
-from it very easily.
+Taniya Das (1):
+      clk: qcom: clk-alpha-pll: Add support for Regera PLL ops
 
-> Plus (relatively) fine grained mailing lists are really cheap to subscribe
-> to lore/NNTP.
+ .../bindings/clock/qcom,sm8150-camcc.yaml          |   77 +
+ arch/arm64/boot/dts/qcom/sa8155p.dtsi              |    4 +
+ arch/arm64/boot/dts/qcom/sm8150.dtsi               |   12 +
+ drivers/clk/qcom/Kconfig                           |    9 +
+ drivers/clk/qcom/Makefile                          |    1 +
+ drivers/clk/qcom/camcc-sm8150.c                    | 2159 ++++++++++++++++++++
+ drivers/clk/qcom/clk-alpha-pll.c                   |  154 +-
+ drivers/clk/qcom/clk-alpha-pll.h                   |    5 +
+ include/dt-bindings/clock/qcom,sm8150-camcc.h      |  135 ++
+ 9 files changed, 2554 insertions(+), 2 deletions(-)
+---
+base-commit: 20af1ca418d2c0b11bc2a1fe8c0c88f67bcc2a7e
+change-id: 20240229-camcc-support-sm8150-d3f72a4a1a2b
 
-Lore picks out stuff from lkml just as easily.
+Best regards,
+-- 
+Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
 
-> So if the reply-to points to LKML + the subsystem mailing
-> list for the maintainers + a new ML for the security folks (and these three
-> are also CC'd on the announcements, at least the last two), that would be
-> nice to have.  I can work on patches to vulns.git, for example to integrate
-> with get_maintainer.pl, if you ack the idea.
-
-That might be a bit noisy, for some commits, but sure, I can see the
-value in being notified about a CVE for my subsystem.  If you have a
-specific 'get_maintainer.pl' command line invocation you think would be
-good, I can easily add it to the scripts.
-
-> The linux-cve@ mailing list would also be a natural place to send patches to
-> vulns.git.
-
-Proliferation of mailing lists are a pain, I'd like to resist that for
-now if possible.  Just use lkml and cc: cve@kernel.org if you want to
-send us patches.
-
-> > > * is there a limit on embargo length similar to security@kernel.org
-> > 
-> > We have no embargos here, you should NOT be emailing this alias about
-> > any unfixed security things, the document explicitly states this.
-> 
-> Wait that's not what the docs say:
-> 
-> +If anyone wishes to
-> +have a CVE assigned before an issue is resolved with a commit, please
-> +contact the kernel CVE assignment team at <cve@kernel.org> to get an
-> +identifier assigned from their batch of reserved identifiers.
-
-The document also says:
-	If you feel you have found an unfixed security issue, please
-	follow the :doc:`normal Linux kernel security bug reporting
-	process<../process/security-bugs>`.
-
-So _IFF_ you have an unfixed security issue that security@k.o knows
-about, and you MUST have a CVE id at this point in time (i.e. because it
-needs to be referenced somewhere), then you can email cve@k.o to get
-one, but the number of times I forsee that being the case based on the
-security@k.o workload is going to be very small.
-
-So we can take those on a case-by-case basis please, that's not going to
-be a normal occurrence.
-
-> So it's just that it's a lot of new work.  So far the only thing for which I
-> can say "this sucks" is having one CVE per commit in a multi-patch fix.
-> That's somewhat ingrained in the operation of the bippy script, but not
-> unfixable (and BTW I wouldn't mind rewriting bippy in Python, but that's a
-> different story).
-
-Yes, the "multi-patch" issue is going to be real, and we will handle it
-when it happens.  The current scripts don't handle that well, but they
-DO allow us to hand-write entries, which is probably what is going to
-happen for those types of rare issues.
-
-And yes, bippy in Python would be nice, but my python skills are bad
-(and you didn't want me writing it in perl), so I went with what I could
-do in the amount of time I had to get it up and running.
-
-> > I've already had soo many threads from the "Red Hat product security
-> > team" including flow charts and other fun things to last me quite a
-> > while already, and that's just in the past few days.
-> 
-> Lol yeah I've seen some of those too (but only this morning---I'm not
-> writing on their behalf, in case that was unclear).
-
-I met with someone from Red Hat earlier this week and hopefully most of
-this will be resolved soon, I'm waiting to hear back from them for the
-issues we discussed.
-
-thanks,
-
-greg k-h
 
