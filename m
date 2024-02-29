@@ -1,176 +1,162 @@
-Return-Path: <linux-kernel+bounces-86034-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86038-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0A3286BECA
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 03:14:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A50AD86BED5
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 03:15:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2BB8D1F261E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 02:14:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C75F288B19
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 02:15:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1A9D36B01;
-	Thu, 29 Feb 2024 02:14:21 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD7D9374C4;
+	Thu, 29 Feb 2024 02:15:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="24ZP7AFU"
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A60E622612;
-	Thu, 29 Feb 2024 02:14:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E899B36AF2
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 02:15:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709172861; cv=none; b=qR5/ku/YQe+2f/jScHmTE0rF6IjeT/NabzkhaDZ8DuCRDRkbSQYFGu9q8CHQOl64L4xVPenCgFPJL4VSy3fOzvBd3RjU4TQrRB5dtirjR6YXoDCImdtfikyckuCuS18nNiTXMXGnBIxpbQ7vhkznf+z/+YIBvWAHONGD79mthYU=
+	t=1709172929; cv=none; b=CpiE43b0TADGz1CjVF9YYK/pE198YTSFkYBuW7/o09FYL0cAfweuaiOCjMW1EKJNDAFS5qta2l9uUK11+BVTzevBQxyEMxvJURF0EEwiO6S7jzmqV1AppDU+EC5EoKLIh01orDk2JWfbZOWM+6CDnJEy39LnzjttV9l3ORmaIpA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709172861; c=relaxed/simple;
-	bh=YTYbyy3+UTYewtVzLjaJat1vjlG10V1fAJH99Lsa9Pk=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=VKMruX7/l8FwwhU6zB5V8+djss6NndPgK0nBPrxPJq3c5qRKtAW8wX1spE7IEBUYa6zNmdLyDFlc5gmBqIXh1g4f+9C0YE0kbmlMGqkDhBoCccVuEA5aFL1DJRht10mTL4yL6ZrP35qHwiylLRgDzY3qLCrxPd8UcR83xu1BYcY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TlZXc4X4Fz4f3mJM;
-	Thu, 29 Feb 2024 10:14:08 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id F317D1A0B5D;
-	Thu, 29 Feb 2024 10:14:15 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP1 (Coremail) with SMTP id cCh0CgAn9g526N9ld_rlFQ--.55635S3;
-	Thu, 29 Feb 2024 10:14:15 +0800 (CST)
-Subject: Re: [PATCH v5 05/14] md: don't suspend the array for interrupted
- reshape
-To: Xiao Ni <xni@redhat.com>, Yu Kuai <yukuai1@huaweicloud.com>,
- mpatocka@redhat.com, heinzm@redhat.com, blazej.kucman@linux.intel.com,
- agk@redhat.com, snitzer@kernel.org, dm-devel@lists.linux.dev,
- song@kernel.org, jbrassow@f14.redhat.com, neilb@suse.de, shli@fb.com,
- akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
- yi.zhang@huawei.com, yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-References: <20240201092559.910982-1-yukuai1@huaweicloud.com>
- <20240201092559.910982-6-yukuai1@huaweicloud.com>
- <60d75867-8fb7-4c67-96f7-3e5ba65bdbd9@redhat.com>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <0f768b3d-d0a2-92ff-e854-74acc9d0ad7a@huaweicloud.com>
-Date: Thu, 29 Feb 2024 10:14:14 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+	s=arc-20240116; t=1709172929; c=relaxed/simple;
+	bh=gbK/8SPPoX50lcAPF/cWQzwwqAl+Hw5BLMUVJqzZZxU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AQNlADhtHaeT4Gk0d2IpcEioCq9BLwaUzVVmzxTAhABlxICb0T64cZy3c99Gib7iSJ1UxvOxLUy5xg9qW7++ZQPVP23LZAwcR9L9UHssBOV7q8ErKMPmkBn9plIKPEsV2JGEyAJ/vfG26In9ARTI5mOLuZg42hisMsjuahSFf3I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=24ZP7AFU; arc=none smtp.client-ip=209.85.215.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-5d8b887bb0cso310301a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 18:15:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1709172927; x=1709777727; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=k82qC/YmHMBHWFt7RMlbhQ42CGo9M2erm3qHEzqFqxc=;
+        b=24ZP7AFUsGm90iTvAeh7kX7tO9QmyfmmTxt3PdS+tZHHmbYyw/Y6Z7BkmbALwmCggO
+         WGjhZSqDSGUp8QMU1Utfowr5wZayAnFwJNDPV1tW/BRGLs360ohFMR17/ixmjdljd174
+         nqAdGrdT66S/tlM8Dbk5UNRr7igAzRd/tzzJ7k/CKK7SLP43Uz5fNkLM4FzU6ZiA1EMJ
+         mGdegBAlG7fnOqRFDIRItIVgI+BkH4hGUeXKHNbPS8cF9zw+X/bm3hiSYIQZVNdOSogp
+         dmNxaHrQ6iQHm9kssQF+RRuC6hg4VG4ysZdx8IuP4lOeWnCnCu8apDtEfHnHSbAVb44u
+         5rfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709172927; x=1709777727;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=k82qC/YmHMBHWFt7RMlbhQ42CGo9M2erm3qHEzqFqxc=;
+        b=J4PxSnqL/RKmwU5KGwbm04XKnqJUT14VT6cI6/qc1PBPuK0qY6LRSVZZyzK+Opc1+9
+         7Sz1di2DgJfS3bUggh4S3/HoZXLqzHbGbVyPcZfpuLSXZFVKgs67xWZpO+cu4RkyxUFB
+         xmLjfrGtOjo10qbDnY9IY6SThCBPomx2GCgf9rva643obvEkiZ7cKqVI896jSGkv4gxV
+         CI4sBApBPR1IY+Zr8j0QPhXGHgOVIcnvGzlub6r0cDZI1yCfK/5LmClT44GlVF66NDqo
+         g1i6t7BogH9C65R5q86lmT+fYw/lLpEp+xbAeqW1LCbCJQzrTgNh10p3EfDqnYm+khKJ
+         /E1w==
+X-Forwarded-Encrypted: i=1; AJvYcCV2P7knsrbvgaQS2RO/rB38n3N8BR1052WJmT5s5hh7frgYDuGtXrGBFNHKWO0Ya1afxiOnzFCICW0mKGldeNbIaz6a2SaoaKAwoBz8
+X-Gm-Message-State: AOJu0Yyy3NU338q1HKZrKdsHkmAawv1R3CA5SJGjwCEmNIL0fuNG0Lvf
+	fb0MchpY6mV+K6YgTK5sOHsexVjzWwJtdVnWlQYH/plCJG1V1v40wLygvTY2e/0=
+X-Google-Smtp-Source: AGHT+IHlcUbGYgKkh9AJe9B6cyxTd0bn96C+Tels4WsobRn2K0DWuGc5NbJJ2I2uCc8hPOOH897Pnw==
+X-Received: by 2002:a05:6a21:1789:b0:1a1:2094:960b with SMTP id nx9-20020a056a21178900b001a12094960bmr1024668pzb.43.1709172927291;
+        Wed, 28 Feb 2024 18:15:27 -0800 (PST)
+Received: from dread.disaster.area (pa49-181-247-196.pa.nsw.optusnet.com.au. [49.181.247.196])
+        by smtp.gmail.com with ESMTPSA id w16-20020a1709026f1000b001dc90b62393sm141163plk.216.2024.02.28.18.15.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Feb 2024 18:15:26 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1rfVxE-00Cupu-1S;
+	Thu, 29 Feb 2024 13:15:24 +1100
+Date: Thu, 29 Feb 2024 13:15:24 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: John Groves <John@groves.net>
+Cc: Luis Chamberlain <mcgrof@kernel.org>, John Groves <jgroves@micron.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	Dave Jiang <dave.jiang@intel.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	Matthew Wilcox <willy@infradead.org>, linux-cxl@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev,
+	john@jagalactic.com, Christoph Hellwig <hch@infradead.org>,
+	dave.hansen@linux.intel.com, gregory.price@memverge.com
+Subject: Re: [RFC PATCH 00/20] Introduce the famfs shared-memory file system
+Message-ID: <Zd/ovHqO/16PsUsp@dread.disaster.area>
+References: <cover.1708709155.git.john@groves.net>
+ <ZdkzJM6sze-p3EWP@bombadil.infradead.org>
+ <cc2pabb3szzpm5jxxeku276csqu5vwqgzitkwevfluagx7akiv@h45faer5zpru>
+ <Zdy0CGL6e0ri8LiC@bombadil.infradead.org>
+ <w5cqtmdgqtjvbnrg5okdgmxe45vjg5evaxh6gg3gs6kwfqmn5p@wgakpqcumrbt>
+ <CAB=NE6UvHSvTJJCq-YuBEZNo8F5Kg25aK+2im=V7DgEsTJ8wPg@mail.gmail.com>
+ <mw4yhbmza4idassgbqeiti4ue7jq377ezxfrqrcbsbzsrmfiln@kn7qmqljvswl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <60d75867-8fb7-4c67-96f7-3e5ba65bdbd9@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgAn9g526N9ld_rlFQ--.55635S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxZr4DXr4kAw4rKr4rCryUZFb_yoW5AF45pa
-	97ta45CrWDA3s3tw4jqry8KFyYkrZ5t398A3s7Ja4UAr13Jr1FgrW3WrWq9F1j9rWxtw4D
-	tr1Yq3s3uF1q9aDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-	67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWU
-	JwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
-	nIWIevJa73UjIFyTuYvjfUF0eHDUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+In-Reply-To: <mw4yhbmza4idassgbqeiti4ue7jq377ezxfrqrcbsbzsrmfiln@kn7qmqljvswl>
 
-Hi,
+On Mon, Feb 26, 2024 at 08:05:58PM -0600, John Groves wrote:
+> On 24/02/26 04:58PM, Luis Chamberlain wrote:
+> > On Mon, Feb 26, 2024 at 1:16 PM John Groves <John@groves.net> wrote:
+> > >
+> > > On 24/02/26 07:53AM, Luis Chamberlain wrote:
+> > > > On Mon, Feb 26, 2024 at 07:27:18AM -0600, John Groves wrote:
+> > > > > Run status group 0 (all jobs):
+> > > > >   WRITE: bw=29.6GiB/s (31.8GB/s), 29.6GiB/s-29.6GiB/s (31.8GB/s-31.8GB/s), io=44.7GiB (48.0GB), run=1511-1511msec
+> > > >
+> > > > > This is run on an xfs file system on a SATA ssd.
+> > > >
+> > > > To compare more closer apples to apples, wouldn't it make more sense
+> > > > to try this with XFS on pmem (with fio -direct=1)?
+> > > >
+> > > >   Luis
+> > >
+> > > Makes sense. Here is the same command line I used with xfs before, but
+> > > now it's on /dev/pmem0 (the same 128G, but converted from devdax to pmem
+> > > because xfs requires that.
+> > >
+> > > fio -name=ten-256m-per-thread --nrfiles=10 -bs=2M --group_reporting=1 --alloc-size=1048576 --filesize=256MiB --readwrite=write --fallocate=none --numjobs=48 --create_on_open=0 --ioengine=io_uring --direct=1 --directory=/mnt/xfs
+> > 
+> > Could you try with mkfs.xfs -d agcount=1024
 
-在 2024/02/29 10:10, Xiao Ni 写道:
-> 
-> 在 2024/2/1 下午5:25, Yu Kuai 写道:
->> From: Yu Kuai <yukuai3@huawei.com>
->>
->> md_start_sync() will suspend the array if there are spares that can be
->> added or removed from conf, however, if reshape is still in progress,
-> 
-> 
-> Hi Kuai
-> 
-> Why md_start_sync can run when reshape is still in progress? 
-> md_check_recovery should return without queue sync_work, right?
-> 
->> this won't happen at all or data will be corrupted(remove_and_add_spares
->> won't be called from md_choose_sync_action for reshape), hence there is
->> no need to suspend the array if reshape is not done yet.
->>
->> Meanwhile, there is a potential deadlock for raid456:
->>
->> 1) reshape is interrupted;
->>
->> 2) set one of the disk WantReplacement, and add a new disk to the array,
->>     however, recovery won't start until the reshape is finished;
->>
->> 3) then issue an IO across reshpae position, this IO will wait for
->>     reshape to make progress;
->>
->> 4) continue to reshape, then md_start_sync() found there is a spare disk
->>     that can be added to conf, mddev_suspend() is called;
-> 
-> 
-> I c. The answer for my above question is reshape is interrupted and then 
-> it continues the reshape, right?
-> 
+Won't change anything for the better, may make things worse.
 
-Yes, reshape is interrupted and sync_thread is unregister, then
-sync_thread can be registered again to continue reshape.
+>    bw (  MiB/s): min= 5085, max=27367, per=100.00%, avg=14361.95, stdev=165.61, samples=719
+>    iops        : min= 2516, max=13670, avg=7160.17, stdev=82.88, samples=719
+>   lat (usec)   : 4=0.05%, 10=0.72%, 20=2.23%, 50=2.48%, 100=3.02%
+>   lat (usec)   : 250=1.54%, 500=2.37%, 750=1.34%, 1000=0.75%
+>   lat (msec)   : 2=3.20%, 4=43.10%, 10=23.05%, 20=14.81%, 50=1.25%
 
-Thanks,
-Kuai
+Most of the IO latencies are up round the 4-20ms marks. That seems
+kinda high for a 2MB IO. With a memcpy speed of 10GB/s, the 2MB
+should only take a couple of hundred microseconds. For Famfs, the
+latencies appear to be around 1-4ms.
 
-> 
-> Best Regards
-> 
-> Xiao
-> 
->>
->> Step 4 and step 3 is waiting for each other, deadlock triggered. Noted
->> this problem is found by code review, and it's not reporduced yet.
->>
->> Fix this porblem by don't suspend the array for interrupted reshape,
->> this is safe because conf won't be changed until reshape is done.
->>
->> Fixes: bc08041b32ab ("md: suspend array in md_start_sync() if array 
->> need reconfiguration")
->> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
->> ---
->>   drivers/md/md.c | 13 +++++++++----
->>   1 file changed, 9 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/md/md.c b/drivers/md/md.c
->> index 6c5d0a372927..85fde05c37dd 100644
->> --- a/drivers/md/md.c
->> +++ b/drivers/md/md.c
->> @@ -9374,12 +9374,17 @@ static void md_start_sync(struct work_struct *ws)
->>       bool suspend = false;
->>       char *name;
->> -    if (md_spares_need_change(mddev))
->> +    /*
->> +     * If reshape is still in progress, spares won't be added or removed
->> +     * from conf until reshape is done.
->> +     */
->> +    if (mddev->reshape_position == MaxSector &&
->> +        md_spares_need_change(mddev)) {
->>           suspend = true;
->> +        mddev_suspend(mddev, false);
->> +    }
->> -    suspend ? mddev_suspend_and_lock_nointr(mddev) :
->> -          mddev_lock_nointr(mddev);
->> -
->> +    mddev_lock_nointr(mddev);
->>       if (!md_is_rdwr(mddev)) {
->>           /*
->>            * On a read-only array we can:
-> 
-> .
-> 
+So where's all that extra time coming from?
 
+
+>   lat (msec)   : 100=0.08%
+>   cpu          : usr=10.18%, sys=0.79%, ctx=67227, majf=0, minf=38511
+
+And why is system time reporting at almost zero instead of almost
+all the remaining cpu time (i.e. up at 80-90%)?
+
+Can you run call-graph kernel profiles for XFS and famfs whilst
+running this workload so we have some insight into what is behaving
+differently here?
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
 
