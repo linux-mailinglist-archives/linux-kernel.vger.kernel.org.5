@@ -1,189 +1,178 @@
-Return-Path: <linux-kernel+bounces-87567-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87568-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6BFF86D5FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:16:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7400C86D5FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:16:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 32294B218BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:16:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70A4F1C22034
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:16:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A7DF16FF46;
-	Thu, 29 Feb 2024 21:16:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C23C16FF46;
+	Thu, 29 Feb 2024 21:16:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JxnxiymL"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CQrBuw1y"
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9310116FF31;
-	Thu, 29 Feb 2024 21:15:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF91516FF3D
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 21:16:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709241359; cv=none; b=d+2QyKKMV4m8riG3SCPZ+c80c4ZGh89bot8WivgkXwMrt6aLyL2UozbQWdnbBBYsJgU3zPi8UNPWakkJKdvRk8qP/jx618pWI3nBXAjZBHjMbuWYtWWA8SxI7ngiT3/VVmdsk3U8UZ8ZdCY9ZmsonwzEILswwcisQ3jh8A962CQ=
+	t=1709241369; cv=none; b=OH1VqSRCFwez5Z8iHrkXla2D5XP6jHrXFKvQqeeG/5KVCwCiGJ75uvaNQzPvF7BxynXQ/EaUUvQgNarEV/mrr3H+yWfE9CyOgFUMJpH4WVLjNrgd7jArK0pY8lJuO2RYVHjCWRnuhNEvAO1ii4UO/PxxNnN9UW0pB5+siqcz86w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709241359; c=relaxed/simple;
-	bh=xOxDegQasEklfMTwb0uGHJaYs+H/kBKUxdhMsGU3IZ8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=EbkRhaPic9U5kUwCA3xrx5duHUzYiQ0yE6R5cZxspYvdbHew4M1eny4pC0kCgoIC8hBE+yIntmORlpRwXATTxJgAc6RV7z3K0/s2h6eaHQmRnFsC5Ul+ENQthOGG0vQmdJKzu7rNh+mnDKWTUaGWs4yXze+PnLvC0/M75d1wK4M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JxnxiymL; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709241358; x=1740777358;
-  h=message-id:date:mime-version:subject:to:references:from:
-   in-reply-to:content-transfer-encoding;
-  bh=xOxDegQasEklfMTwb0uGHJaYs+H/kBKUxdhMsGU3IZ8=;
-  b=JxnxiymLfJowhP2WLR+xVw+9vy39ULxCWEEOPhjS2GjHzyWwob/qvrPF
-   Evg7WbzZBsZiQmxRL78M0FuDlGk52kxLcssBxcwFEklCb5QOCs7GtL562
-   a35MsBMig504/BeyBuO11gInMYlUUWOM0xV3rhcnxrA+eZo2uy+hO9UAX
-   sS8s3QthXPD1m9upCqt9PoEugmtUe37JEL5xOjxxlSPOI9v64PrngkPec
-   LuPwcZ7peiO7BoFrHlv9Gw2Z9Cd6BSX9fPMR/BJh/ac9EXvW1CwoY2gLx
-   yJX6oL9Pqbugrisp/YGizNyw2vUWU7jRXq0JXmwAKdWC+bbSd3ibyUqEI
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="3634344"
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="3634344"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 13:15:56 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="38803997"
-Received: from linux.intel.com ([10.54.29.200])
-  by orviesa002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 13:15:56 -0800
-Received: from [10.212.85.217] (kliang2-mobl1.ccr.corp.intel.com [10.212.85.217])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by linux.intel.com (Postfix) with ESMTPS id 46342580D37;
-	Thu, 29 Feb 2024 13:15:53 -0800 (PST)
-Message-ID: <7aa2d2a2-b8f9-478f-9699-7b717d38a8ab@linux.intel.com>
-Date: Thu, 29 Feb 2024 16:15:51 -0500
+	s=arc-20240116; t=1709241369; c=relaxed/simple;
+	bh=GbSiUCEsK5WKIrBs1f7wwnYnNZ8OBJjeOhbGTnZjLGk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YGqtx8nIKluwpcxaOd4zYL06xcP1lUimJv5UDCdb/UmL9nMqNacDFBwfhcwugaS57uKY82WdWZkKorkJMB3a+25ttVR7YMM2l0b2VJ7NIX+KOa80NZ3gcd04W4mOfN0w9DtDpCT3zCXtxHs/+ukmFkoahOLjIUiT2AQndVp6NnY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CQrBuw1y; arc=none smtp.client-ip=95.215.58.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 29 Feb 2024 16:16:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1709241364;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mcv3ho/sqU8JudPS9XpPlyVW0HXTQfq0tXs90e5OpOk=;
+	b=CQrBuw1yxGM5VUD2OZqSKSeN/o204capQxWlH7pwhMhtHpNTFbO9UGoKcjN2OWMXizWOFw
+	+K7SAtG+yaELwKzps+BfaM39nYIsMQfN7sJucS1W2TStgYU9ztNt9B9QH3/PVA9JLIvmB2
+	dQr6l8mZvIWSBdEZspG0Y//hfThfXAE=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Brian Foster <bfoster@redhat.com>
+Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	djwong@kernel.org
+Subject: Re: [PATCH 04/21] bcachefs: Disk space accounting rewrite
+Message-ID: <nywd7rix6qapogaqg5kxny3k272ptpzi4qv5q2dqts42bqbxrw@te5enoxvdhti>
+References: <20240225023826.2413565-1-kent.overstreet@linux.dev>
+ <20240225023826.2413565-5-kent.overstreet@linux.dev>
+ <Zd4F1qE1IFCz0/ML@bfoster>
+ <3dug3vvjmlkhu42glwhkm5ozgkp4tzqvekxdabbgv4dv4yhxig@r5bw746uaxym>
+ <ZeDQi3mRwJc7wqX/@bfoster>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 04/20] perf jevents: Add tsx metric group for Intel
- models
-Content-Language: en-US
-To: Ian Rogers <irogers@google.com>, Perry Taylor <perry.taylor@intel.com>,
- Samantha Alt <samantha.alt@intel.com>,
- Caleb Biggers <caleb.biggers@intel.com>, Weilin Wang
- <weilin.wang@intel.com>, Edward Baker <edward.baker@intel.com>,
- Andi Kleen <ak@linux.intel.com>, Peter Zijlstra <peterz@infradead.org>,
- Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>,
- John Garry <john.g.garry@oracle.com>, Jing Zhang
- <renyu.zj@linux.alibaba.com>, Thomas Richter <tmricht@linux.ibm.com>,
- James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org,
- linux-perf-users@vger.kernel.org, Stephane Eranian <eranian@google.com>
-References: <20240229001806.4158429-1-irogers@google.com>
- <20240229001806.4158429-5-irogers@google.com>
-From: "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <20240229001806.4158429-5-irogers@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZeDQi3mRwJc7wqX/@bfoster>
+X-Migadu-Flow: FLOW_OUT
 
-
-
-On 2024-02-28 7:17 p.m., Ian Rogers wrote:
-> Allow duplicated metric to be dropped from json files.
+On Thu, Feb 29, 2024 at 01:44:27PM -0500, Brian Foster wrote:
+> On Wed, Feb 28, 2024 at 11:10:12PM -0500, Kent Overstreet wrote:
+> > I think it ended up not needing to be moved, and I just forgot to drop
+> > it - originally I disallowed accounting entries that referenced
+> > nonexistent devices, but that wasn't workable so now it's only nonzero
+> > accounting keys that aren't allowed to reference nonexistent devices.
+> > 
+> > I'll see if I can delete it.
+> > 
 > 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/pmu-events/intel_metrics.py | 51 ++++++++++++++++++++++++++
->  1 file changed, 51 insertions(+)
+> Do you mean to delete the change that moves the call, or the flush call
+> entirely?
+
+Delte the change, I think there's further cleanup (& probably bugs to
+fix) possible with that flush call but I'm not going to get into it
+right now.
+
+> > +/*
+> > + * Notes on disk accounting:
+> > + *
+> > + * We have two parallel sets of counters to be concerned with, and both must be
+> > + * kept in sync.
+> > + *
+> > + *  - Persistent/on disk accounting, stored in the accounting btree and updated
+> > + *    via btree write buffer updates that treat new accounting keys as deltas to
+> > + *    apply to existing values. But reading from a write buffer btree is
+> > + *    expensive, so we also have
+> > + *
 > 
-> diff --git a/tools/perf/pmu-events/intel_metrics.py b/tools/perf/pmu-events/intel_metrics.py
-> index 20c25d142f24..1096accea2aa 100755
-> --- a/tools/perf/pmu-events/intel_metrics.py
-> +++ b/tools/perf/pmu-events/intel_metrics.py
-> @@ -7,6 +7,7 @@ import argparse
->  import json
->  import math
->  import os
-> +from typing import Optional
->  
->  parser = argparse.ArgumentParser(description="Intel perf json generator")
->  parser.add_argument("-metricgroups", help="Generate metricgroups data", action='store_true')
-> @@ -77,10 +78,60 @@ def Smi() -> MetricGroup:
->      ])
->  
->  
-> +def Tsx() -> Optional[MetricGroup]:
-> +    if args.model not in [
-> +        'alderlake',
-> +        'cascadelakex',
-> +        'icelake',
-> +        'icelakex',
-> +        'rocketlake',
-> +        'sapphirerapids',
-> +        'skylake',
-> +        'skylakex',
-> +        'tigerlake',> +    ]:
+> I find the wording a little odd here, and I also think it would be
+> helpful to explain how/from where the deltas originate. For example,
+> something along the lines of:
+> 
+> "Persistent/on disk accounting, stored in the accounting btree and
+> updated via btree write buffer updates. Accounting updates are
+> represented as deltas that originate from <somewhere? trans triggers?>.
+> Accounting keys represent these deltas through commit into the write
+> buffer. The accounting/delta keys in the write buffer are then
+> accumulated into the appropriate accounting btree key at write buffer
+> flush time."
 
-Can we get ride of the model list? Otherwise, we have to keep updating
-the list.
+yeah, that's worth including.
 
-> +        return None
-> +> +    pmu = "cpu_core" if args.model == "alderlake" else "cpu"
+There's an interesting point that you're touching on; btree write buffer
+are always dependent state changes from some other (non write buffer)
+btree; we never look at a write buffer btree and generate an update
+there - we can't, reading from a write buffer btree doesn't get you
+anything consistent or up to date.
 
-Is it possible to change the check to the existence of the "cpu" PMU
-here? has_pmu("cpu") ? "cpu" : "cpu_core"
+So in normal operation it really only makes sense to do write buffer
+updates from a transactional trigger - that's the only way to use them
+and have them be consistent with the resst of the filesystem.
 
-> +    cycles = Event('cycles')
-> +    cycles_in_tx = Event(f'{pmu}/cycles\-t/')
-> +    transaction_start = Event(f'{pmu}/tx\-start/')
-> +    cycles_in_tx_cp = Event(f'{pmu}/cycles\-ct/')
-> +    metrics = [
-> +        Metric('tsx_transactional_cycles',
-> +                      'Percentage of cycles within a transaction region.',
-> +                      Select(cycles_in_tx / cycles, has_event(cycles_in_tx), 0),
-> +                      '100%'),
-> +        Metric('tsx_aborted_cycles', 'Percentage of cycles in aborted transactions.',
-> +                      Select(max(cycles_in_tx - cycles_in_tx_cp, 0) / cycles,
-> +                                    has_event(cycles_in_tx),
-> +                                    0),
-> +                      '100%'),
-> +        Metric('tsx_cycles_per_transaction',
-> +                      'Number of cycles within a transaction divided by the number of transactions.',
-> +                      Select(cycles_in_tx / transaction_start,
-> +                                    has_event(cycles_in_tx),
-> +                                    0),
-> +                      "cycles / transaction"),
-> +    ]
-> +    if args.model != 'sapphirerapids':
+And since triggers work by comparing old and new, they naturally
+generate updates that are deltas.
 
-Add the "tsx_cycles_per_elision" metric only if
-has_event(f'{pmu}/el\-start/')?
+> > + *  - In memory accounting, where accounting is stored as an array of percpu
+> > + *    counters, indexed by an eytzinger array of disk acounting keys/bpos (which
+> > + *    are the same thing, excepting byte swabbing on big endian).
+> > + *
+> 
+> Not really sure about the keys vs. bpos thing, kind of related to my
+> comments on the earlier patch. It might be more clear to just elide the
+> implementation details here, i.e.:
+> 
+> "In memory accounting, where accounting is stored as an array of percpu
+> counters that are cheap to read, but not persistent. Updates to in
+> memory accounting are propagated from the transaction commit path."
+> 
+> ... but NBD, and feel free to reword, drop and/or correct any of that
+> text.
 
-Thanks,
-Kan
+It's there because bch2_accounting_mem_read() takes a bpos when it
+should be a disk_accounting_key. I'll fix that if I can...
 
-> +        elision_start = Event(f'{pmu}/el\-start/')
-> +        metrics += [
-> +            Metric('tsx_cycles_per_elision',
-> +                          'Number of cycles within a transaction divided by the number of elisions.',
-> +                          Select(cycles_in_tx / elision_start,
-> +                                        has_event(elision_start),
-> +                                        0),
-> +                          "cycles / elision"),
-> +        ]
-> +    return MetricGroup('transaction', metrics)
-> +
-> +
->  all_metrics = MetricGroup("", [
->      Idle(),
->      Rapl(),
->      Smi(),
-> +    Tsx(),
->  ])
->  
->  if args.metricgroups:
+> > + *    Cheap to read, but non persistent.
+> > + *
+> > + * To do a disk accounting update:
+> > + * - initialize a disk_accounting_key, to specify which counter is being update
+> > + * - initialize counter deltas, as an array of 1-3 s64s
+> > + * - call bch2_disk_accounting_mod()
+> > + *
+> > + * This queues up the accounting update to be done at transaction commit time.
+> > + * Underneath, it's a normal btree write buffer update.
+> > + *
+> > + * The transaction commit path is responsible for propagating updates to the in
+> > + * memory counters, with bch2_accounting_mem_mod().
+> > + *
+> > + * The commit path also assigns every disk accounting update a unique version
+> > + * number, based on the journal sequence number and offset within that journal
+> > + * buffer; this is used by journal replay to determine which updates have been
+> > + * done.
+> > + *
+> > + * The transaction commit path also ensures that replicas entry accounting
+> > + * updates are properly marked in the superblock (so that we know whether we can
+> > + * mount without data being unavailable); it will update the superblock if
+> > + * bch2_accounting_mem_mod() tells it to.
+> 
+> I'm not really sure what this last paragraph is telling me, but granted
+> I've not got that far into the code yet either.
+
+yeah that's for a whole different subsystem that happens to be slaved to
+the accounting - replicas.c, which also used to help out quite a bit
+with the accounting but now it's pretty much just for managing the
+superblock replicas section.
+
+The superblock replicas section is just a list of entries, where each
+entry is a list of devices - "there is replicated data present on this
+set of devices". We also have full counters of how much data is present
+replicated across each set of devices, so the superblock section is just
+a truncated version of the accounting - "data exists on these devices",
+instead of saying how much.
 
