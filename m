@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-87340-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87341-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EBC686D308
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:24:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E4CF286D30D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 20:25:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D1FAD1F24E71
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:24:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D8191F24D47
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 19:25:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A90613C9C5;
-	Thu, 29 Feb 2024 19:24:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E02313C9C8;
+	Thu, 29 Feb 2024 19:25:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BOQ7Qzdn"
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EdaI3Bdg"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1A1A2E3E1
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 19:24:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F544137775
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 19:25:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709234672; cv=none; b=goA2RovqWnXXTlT/pcn7+8YOsvtNg0Nzt3V6icX4Jev5PbVYszzQQYRvp4BetCvYD2gOIdlJVx8gXJBFT9RSVYCGyYnWq21OHAuP/KKrJwstkcH+2k00XCDgdbYUSF1Z7xoc7qn0Y3NP5apRdm/hyeQJ1KE4K8bdcpbXXgZxvAY=
+	t=1709234721; cv=none; b=lGLPULZ3F6EL7F5BG2WkzDZWZDMlQ++r0NGpKj/1Y8oh9WDoEHUu5ksBx9WlGnhPhpOnq7dvcM0ZCeuuiEuwv5Oq//hMkHepJbfl45K71lvcsbEaPVSYDz9jNDwpMhKZAH/qIfXl/8w9ehoRaS8VfPfMLOuQTcwYiH5tsZpBK3o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709234672; c=relaxed/simple;
-	bh=lqXzcwWog9fW9amZAs1zCfbvtvnyQ4BKqz32KvmrieE=;
+	s=arc-20240116; t=1709234721; c=relaxed/simple;
+	bh=2wFq3OYTA6U6J1BeLC4QunXdz1BIm9lUoQeR4AyvCkE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=b2n8CJUn1+DGchpG2NWvB3sbjDt9lZHmhOb3UNGpIOxJxdj5NJ5WivF88MKNVoWjkn+SNwFPHihXiFo3CNhlHgJVllU6Sqq6mwXzZIh/YzTiEEjURq38z+Zg/1H4WM6jNvroAEvN57e/D3Jzvo9tFHvokUvB/6IzmUT93j1WI4M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BOQ7Qzdn; arc=none smtp.client-ip=209.85.218.51
+	 In-Reply-To:Content-Type; b=nUrkD7hNHMpIwyf3KjfrHpxZ13Kwx+WVrr5Q5vi/u5z92/7V9lIPQ9ZNDVr3MRDCMBk9IEuSK4nNNX/54NqAghKgSIRPuVbnNRo6BS0WGNC4n7L1corkTBgxvu4wgDCHC7mtexMKGWu7tjFn4QXFzyE6X394xGgMwmYWv8zEp7A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=EdaI3Bdg; arc=none smtp.client-ip=209.85.218.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a3d484a58f6so217088966b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 11:24:30 -0800 (PST)
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a3e550ef31cso195626566b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 11:25:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709234669; x=1709839469; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1709234718; x=1709839518; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=nW2IIhgumRiwl3Jm0zHrXkZ9T9y+cNBlEY+kEvypUdk=;
-        b=BOQ7Qzdnye/F/C/7iejabPrVfIBmsKyhgtuujrZ0D1hZ+1l8QBGswHD/1UaEPjf7sP
-         t6YbC26bND9HkraP/vJeWIirQQwU38PkH9PUfSZqfAbIzLmpxhaY1Xb8esBoFigV4H9C
-         QImU0j7btS4XxjkEyiFQeg0OnSEJKb+8KPJWj4bhvCiprAqGu5MBTjDMWk57i5e/+ti/
-         CSCwXBqs+irZLaPgHt4aMjvwVxWlWlP2IUXSnx1AD7CeejC5FZZv5hFcvpMv63/Upgio
-         14XlDAVw6hXAxXVuXkKFeuaxvEWjsxd6pryGh0srAPky/oAWBJGjVpDk7ZMz0EJMkAi0
-         zY4w==
+        bh=yVheQiu/ucCzasoiCl3nqUsiXAhATGKQ0A8KRYiFMfI=;
+        b=EdaI3Bdg7if/Yc4MTJPmCDNBDmHtoHWMSpaPJa+SgO1fTwcyJOdD8qvDK8OM/mzaym
+         Eiqv0vLsUOMWZSQnqpAwMoJiar7XtWlDITq6LU9NyZOCQaWgIx/aFOGrwesUSmJOvwPP
+         ucpN4mUgpukX8ocRgc2Ma9h9Zmr6u+PrMBXb9b3d/PflvD6AzDipd1BbkUysGAPRCOC0
+         i9xts/2nWfrhM83fNAhrD3Z4wOxFl+4zNDBhmmvfvJAi4L134zTHxRFRV+ZVp9BNeHGP
+         Um5Pu8zXMY9poVsCoinUYERsXEDAMq/YLiHmv9/Da53ZwWakg2bU9M0qQFbwsdr8+WAj
+         iK/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709234669; x=1709839469;
+        d=1e100.net; s=20230601; t=1709234718; x=1709839518;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nW2IIhgumRiwl3Jm0zHrXkZ9T9y+cNBlEY+kEvypUdk=;
-        b=pYCNb2w8SWWepS9eroEqoi5H6c1fRlnkYPTxxcaB3+f0S0JEx85n9+5hFEWKbjAaO2
-         8k5S8GXdRvabyLif2Yt5Z4mwfGa98wAZkog3hIWQd1wD6tBv6CJPwgQ4dolGryJ2B9LW
-         Vwi+QL9yoN+dCyxLbLougy1nN664nwXf6GtKOVPMX2XJrBWwGBEiSy7L+qVjMU/8djVg
-         U87R2+iE7TpCel/R34kpoLzLF9wLJxjx+sfybefz/L9aRkmgwyTN4JhKaJ29xvww8n8D
-         OUPRZpDTW65Oma03CZ+IB7QNyg4fYE/bRtdo9Y5wzPChtNlXEptwSeIRK9YUws6sK/Ov
-         i6jw==
-X-Forwarded-Encrypted: i=1; AJvYcCUxDmc3mBXBN/By3++Sne98MZZJBk/pX/TuzY7h0Eh0iJgnPcDqjpxQ342sJqbBq0DISGNt4ysDsrEBaV9jPez8iniDJ3FMWnETgRZw
-X-Gm-Message-State: AOJu0YwBSZaGYMxhMhtUkjVmM0Q1CbnvYxDJsOAlhx3l3HD3XwEgUAL6
-	Cd3vSRgOkBvX68i4mAjvvBJYeXr/F/X96OkJm+eX4KtyKeDweRlpChH6B0QPbW0=
-X-Google-Smtp-Source: AGHT+IHRTsBOM6LiS8U7nA39YO6FJZXAIu2BkZS9BOCdtxkXM9lNAVmRU+9OF4HSAUYPxfOHjBsrVg==
-X-Received: by 2002:a17:906:75a:b0:a44:3db:6649 with SMTP id z26-20020a170906075a00b00a4403db6649mr2135096ejb.58.1709234669492;
-        Thu, 29 Feb 2024 11:24:29 -0800 (PST)
+        bh=yVheQiu/ucCzasoiCl3nqUsiXAhATGKQ0A8KRYiFMfI=;
+        b=Tfiajago4JkRgSKYZ0pIQuVDYfZHo3QdHkLhq1ICwTwFdC0Tnku+0/uXg57v9TymNa
+         wUpK45m8fpMyIXAx9iweQrIGdCQr0xw9+LqN9SAu7DOjT0n2IGuby+off6I+BMri3O2A
+         58Ci3onV3BuTMkeRPhF/vWJDzVf9gpAeCY7GQcGE6SnrlWs4DQRoitHuLfSE1zypElBS
+         Pw6LBGRlTOWQztQpL2d1xZkdi8urZoHelZa4ValQq/6sK5aJt0ekpXQtIsxqnAPns9h6
+         CalIV1hWYQFLcenJtgjHVmMEjyW6UD17XIMHU9wpB1IcumZPt65aP4huz9eptrx9LHid
+         vvjw==
+X-Forwarded-Encrypted: i=1; AJvYcCVxvohmenYvtL2Rvve8vbTooMlQnwX58nCF6vridCkoghorvLjG836Uyoqjl6duwVR4N8Aiq46bYK7ZkJZ+VZNa1BiQ3m2A302LoeGW
+X-Gm-Message-State: AOJu0YyP1yfp9uV82HUzFChgqzRZG88XrfqUNfqVwNQn+1a+UR+zr2wq
+	7l78+0k4qLvOYVsmEjTKtobV5yhpb+Acm+ue4SzzGfGr2NNE6sHMQAtjX0kS2+Y=
+X-Google-Smtp-Source: AGHT+IHZwg4HrXxutavHDaUmKmTh/5wgvO1pEizaCMApKGLlZbDDJDlwcJ6wCjp+t7JEz9HdK9Xqdg==
+X-Received: by 2002:a17:906:3502:b0:a3d:bb68:be30 with SMTP id r2-20020a170906350200b00a3dbb68be30mr2199557eja.6.1709234718023;
+        Thu, 29 Feb 2024 11:25:18 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id bq20-20020a170906d0d400b00a3cfe376116sm960541ejb.57.2024.02.29.11.24.28
+        by smtp.gmail.com with ESMTPSA id bq20-20020a170906d0d400b00a3cfe376116sm960541ejb.57.2024.02.29.11.25.16
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Feb 2024 11:24:29 -0800 (PST)
-Message-ID: <1b94002c-45f8-420c-979c-657001e83d9f@linaro.org>
-Date: Thu, 29 Feb 2024 20:24:28 +0100
+        Thu, 29 Feb 2024 11:25:17 -0800 (PST)
+Message-ID: <1b5eed8f-1262-42f4-b332-6690a7e7f096@linaro.org>
+Date: Thu, 29 Feb 2024 20:25:16 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,21 +75,25 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/5] media: dt-bindings: sony,imx290: Allow props from
- video-interface-devices
+Subject: Re: [PATCH v3 4/4] dt-bindings: display: simple: allow panel-common
+ properties
 Content-Language: en-US
-To: Alexander Stein <alexander.stein@ew.tq-group.com>,
- Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>, Rob Herring <robh@kernel.org>,
+To: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>,
+ Rob Herring <robh+dt@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: linux-media@vger.kernel.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240223144746.2583749-1-alexander.stein@ew.tq-group.com>
+ Conor Dooley <conor+dt@kernel.org>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
+Cc: devicetree@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org
+References: <20240223-ltdc_mp13-v3-0-7f92a59ca11f@foss.st.com>
+ <20240223-ltdc_mp13-v3-4-7f92a59ca11f@foss.st.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -135,20 +139,23 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240223144746.2583749-1-alexander.stein@ew.tq-group.com>
+In-Reply-To: <20240223-ltdc_mp13-v3-4-7f92a59ca11f@foss.st.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 23/02/2024 15:47, Alexander Stein wrote:
-> Allow properties from video-interface-devices. This aligns the bindings
-> to sony,imx415.yaml. Changes inspired by commit e2e73ed46c395 ("media:
-> dt-bindings: sony,imx415: Allow props from video-interface-devices")
+On 23/02/2024 13:36, Raphael Gallais-Pou wrote:
+> This device inherits properties from panel-common. Those should be allowed
+> to use, instead of specifying properties to true for each specific use.
 > 
-> Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
+> Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
 > ---
-> Changes in v2:
-> * Use absolute path to other schemas
+> Changes in v3:
+>   - Allow every properties instead of adding each properties to true as
+>     Rob suggested
+>   - Rewrite commit log to match changes
 > 
+> Changes in v2:
+
 
 Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
