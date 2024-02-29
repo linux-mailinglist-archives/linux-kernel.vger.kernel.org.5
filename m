@@ -1,95 +1,93 @@
-Return-Path: <linux-kernel+bounces-86317-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86323-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D758686C3D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:40:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DB4D86C3EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:42:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1294F1C2345B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:40:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F9F71C22329
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:42:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6037050A63;
-	Thu, 29 Feb 2024 08:40:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 546085337B;
+	Thu, 29 Feb 2024 08:41:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Zjqu12Tg"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D12B3FBB2
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 08:40:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="gQXMnted"
+Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FA7D50A63;
+	Thu, 29 Feb 2024 08:41:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.254.50.219
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709196011; cv=none; b=kGX8NK62P9GfKirDbEMxGfSrMfI9JeDT2Tg9XhnQCRXw37inRyvY/EfAfHWltiRFtnUmIuJsNlT+DjjGh6LUv4/sq8ejPxnM398tET74GjIQcXb3ibayhpsTvrntDUWooy7HDTQpqUCdmjhe5i++CZvyjVjC65FpMivPSnpzL9g=
+	t=1709196083; cv=none; b=ijjhR7wqG4ke6DmZbRm2hWTL3WtC6SJyf9jaTimldipDJa2NNIPcBRrYLU4DUbQ6SszXQHLi6WtLOW0o6u0/atO3ztdHiAoiY73rdC0k7JzqEKBoDdVD/IqTol7Z4kmxwpNQat0+EDRpQQ7OI0joNaH3qAuhrkEN6P3AysDwg14=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709196011; c=relaxed/simple;
-	bh=+HuT2LRY6QwU0cFT8GjgE0l/dgH7Rq+kEDW4d7JHmzQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Zb3RjtiznHeUA9dEcDJVHWbD6idkbUWnXBUm3UAFpEFXbyvOCIF5Lk6t7244SAs+Se7L8dJelDJNqd/JZcKcBggjXABChQYW8+qQN38hXHmt8lQOR6wRrDCkfXy7sluXXwh8Si3w5pdhQC6VJhuAkQTKFpj84JSQEQ/p+s7Kx6k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Zjqu12Tg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 031D0C43390;
-	Thu, 29 Feb 2024 08:40:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1709196011;
-	bh=+HuT2LRY6QwU0cFT8GjgE0l/dgH7Rq+kEDW4d7JHmzQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Zjqu12Tgv7MhcUKMrnHEhL9FoCus8S5+XdK1p6W4JUyGxmEKXebtfVj70CvGdKmml
-	 3KpHt0GZRah5Tb1ZNO+r4/tceSO9I6EwfhMNRdY5owerPwZfEJvxlwAFIcy1Z6GU1W
-	 7sDlKlREHzh32BRMKsZDgb+JjSdYEQDqlKiV1h5U=
-Date: Thu, 29 Feb 2024 09:40:08 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Michal Hocko <mhocko@suse.com>
-Cc: cve@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: CVE-2021-46966: ACPI: custom_method: fix potential
- use-after-free issue
-Message-ID: <2024022951-worst-relatable-f4bb@gregkh>
-References: <2024022720-CVE-2021-46966-1469@gregkh>
- <Zd9b3qpu3uLFP-eN@tiehlicka>
- <2024022902-prancing-judgingly-c9ee@gregkh>
- <ZeBAlGNuNZNuCsE5@tiehlicka>
+	s=arc-20240116; t=1709196083; c=relaxed/simple;
+	bh=03KT88bs5CPFUzGWiSf0JoK4aabPHEcPRG/J8ct3YMs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UoSXKS7WiStDvQreBKx7yXhbaUIjvyU0L+AT6svNTzb2/NCaAmm2eGLIaphbvCfViauj9YXJziS2xynvQ7rpfffhGcgThcEwvova5VFFvVyR2KaZvOkgNP7NM5KlpkLzQorFvUtOIWuSBwG8apBPbDkQ77PIZAu8PMWt4GIvDuY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=gQXMnted; arc=none smtp.client-ip=45.254.50.219
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=hyAxN
+	nJEjaEeWu++V1hIX4/hQ1ibrMzym3D/Hwm9ZGQ=; b=gQXMntedUhlzrlxQ4uEv6
+	zKmC6QNXfalg9kKuLxySTnTzIws33S1WybuoCtsfhXs348FFRWVuoVzqZKNsMYd0
+	qiRt7N23hA4nB/Qprz6wF1C0HHgwGh5/DsMJFhZ6UlhZMocoNO4j5+W1YUxlSpSL
+	vOWw3irxW37MRHfIg31r1I=
+Received: from WH-D-007635B.QUECTEL.COM (unknown [223.76.229.213])
+	by gzga-smtp-mta-g0-4 (Coremail) with SMTP id _____wD33oYhQ+BloLRsGg--.37440S2;
+	Thu, 29 Feb 2024 16:41:07 +0800 (CST)
+From: clancy_shang@163.com
+To: marcel@holtmann.org,
+	johan.hedberg@gmail.com,
+	luiz.dentz@gmail.com
+Cc: linux-bluetooth@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	zhongjun.yu@quectel.com,
+	Clancy Shang <clancy.shang@quectel.com>
+Subject: [PATCH] Bluetooth: mgmt: Fix wrong param be used
+Date: Thu, 29 Feb 2024 16:40:59 +0800
+Message-Id: <20240229084059.895730-1-clancy_shang@163.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZeBAlGNuNZNuCsE5@tiehlicka>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wD33oYhQ+BloLRsGg--.37440S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrKrW7WF4rWw1UWF1rXFWUArb_yoWDZFXEgF
+	409ay7uF4UXryvyF4Y93WrWr1Sya4a9Fs7Xr9xKrWxAr98Gr1UuFn7AF9xJFn3uanxZrn7
+	Zr4DXF4F9w409jkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU01q2tUUUUU==
+X-CM-SenderInfo: xfod0ux1bvxtlqj6il2tof0z/1tbisAiLuGV4H-ePSAABs4
 
-On Thu, Feb 29, 2024 at 09:30:12AM +0100, Michal Hocko wrote:
-> On Thu 29-02-24 06:22:34, Greg KH wrote:
-> > On Wed, Feb 28, 2024 at 05:14:22PM +0100, Michal Hocko wrote:
-> > > Hi,
-> > > this seems like another example of a reasonable fix with a very dubious
-> > > CVE IMHO. Allowing access to /sys/kernel/debug/acpi/custom_method to
-> > > anybody but trusted actor is a huge security problem on its own. I
-> > > really fail to see any value marking this clear bug fix as security
-> > > related.
-> > 
-> > It was picked because it was a use-after-free fix, AND it is part of the
-> > "import the GSD database into the CVE database" that the CVE project
-> > asked us to do.
-> 
-> OK I see. So now, does it make any sense to consider a bug fix in a
-> security sensitive interface (that is even locked down) a security fix?
+From: Clancy Shang <clancy.shang@quectel.com>
 
-Yes, I would think so!  If you see any that we have not marked for a
-CVE, please let us know and we will be glad to assign them.
+if the BlueZ library calls the API interface "adapter_set_device_flags",
+which sends the "MGMT_OP_SET_DEVICE_FLAGS" opcode to the kernel, but
+does not receive the callback message "MGMT_EV_DEVICE_FLAGS_CHANGED"
+from the kernel. it fixs this bug.
 
-Again, we do not always know if things are "locked down" or not, as
-everyone uses our codebase in different ways (we don't have the benefit
-of a *BSD which does dictate the use cases in ways we can not).
+Signed-off-by: Clancy Shang <clancy.shang@quectel.com>
+---
+ net/bluetooth/mgmt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-If your systems "lock this down" and prevent access to anyone you do not
-trust, then wonderful, you aren't vulnerable to this specific issue at
-all and you can just ignore it!
+diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
+index 9dd815b6603f..c74abdf3618f 100644
+--- a/net/bluetooth/mgmt.c
++++ b/net/bluetooth/mgmt.c
+@@ -5177,7 +5177,7 @@ static int set_device_flags(struct sock *sk, struct hci_dev *hdev, void *data,
+ 
+ done:
+ 	if (status == MGMT_STATUS_SUCCESS)
+-		device_flags_changed(sk, hdev, &cp->addr.bdaddr, cp->addr.type,
++		device_flags_changed(NULL, hdev, &cp->addr.bdaddr, cp->addr.type,
+ 				     supported_flags, current_flags);
+ 
+ 	return mgmt_cmd_complete(sk, hdev->id, MGMT_OP_SET_DEVICE_FLAGS, status,
+-- 
+2.25.1
 
-But for other systems that DO allow access to debugfs, this might be a
-good idea to address.
-
-thanks,
-
-greg k-h
 
