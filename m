@@ -1,154 +1,112 @@
-Return-Path: <linux-kernel+bounces-87573-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87578-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A01686D610
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:23:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3627A86D61C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:25:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DED641F23D88
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:23:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 58C7F1C2335C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:25:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6642516FF56;
-	Thu, 29 Feb 2024 21:23:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D68916FF58;
+	Thu, 29 Feb 2024 21:24:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="Dj8QYvH1"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dEe/F6Cp"
+Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BAA016FF29;
-	Thu, 29 Feb 2024 21:23:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A283216FF2B
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 21:24:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709241804; cv=none; b=F97uurudg30h4ZVWfEh4yTp6bHI8XgGO8atKbH/p8oLqGf1FPZnuLJLDOkGYMKZt8WqONZj60MO2oNdvOxX1NuTPTdXTYvP6KYNMIfeIBurv3fEHIvrCdfPPazY+VPmTviStSyjr8pk7LoTQSnzz0ftWmlyGjUZvLSkAmAvpffY=
+	t=1709241883; cv=none; b=fh16QwIst4nOVOXhFx74GgQS/P5MrZhSxmKO72RCAa/lqhaE0y1IMSyDXtN9F7J42i/AxAGATR4ur8Gghbvxni2aOAsfft2jp22trRnIrJqgw9xDsdHjiC4f02pPzUR7D1cZ5xIsDfO8ArWLrCbKj5ok6OtGq3sDe/mN0pABz14=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709241804; c=relaxed/simple;
-	bh=dr2CETLPDzvOjfQ+4hzjizFIOCRZWKH7BMDF5xNDmVU=;
+	s=arc-20240116; t=1709241883; c=relaxed/simple;
+	bh=Jv57XkdEOb5lCcmwhvsrgcTRHKKlbAL+X8QUWiBeHm0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=t4jEtRJFgpMh3AK1mPN9FWazMoiUuODpTmrd7KhsSyBwlmkR2AcWI7GuNeHjKom9RG5qYh7O0dt/Fq19/kIGeECfZVllomqCiXkGleX+qbArTYOi4BMT2PXbgCFNSVYLDX4uN4yfLe+CbS3c+pEaK3U+hk/xmBXOtI/bGMhI9uo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=Dj8QYvH1; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
-	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
-	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
-	In-Reply-To:References; bh=WV/j6Y5N6otWN1tEplJm/8ekXe3vxnN6/ZPGGpf+w6U=; b=Dj
-	8QYvH1CsV06IW27X93TYnqspsw8At9LX7YmY9g02ojJYhZ/sAkNZIeV+PLXzWsijdZLjujg45/JAa
-	l46mK7WWfEvLzGG+J3rBMyelnG3levKWyzWgilnVHaSo2jI18G3Dru47kP9brEN94JpD4VNrfEqnc
-	Ce0PcYvCybZ6IrA=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rfnsH-0095Hf-8S; Thu, 29 Feb 2024 22:23:29 +0100
-Date: Thu, 29 Feb 2024 22:23:29 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: =?iso-8859-1?Q?J=E9r=E9mie?= Dautheribes <jeremie.dautheribes@bootlin.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>, Andrew Davis <afd@ti.com>,
-	netdev@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	=?iso-8859-1?Q?Miqu=E8l?= Raynal <miquel.raynal@bootlin.com>,
-	Yen-Mei Goh <yen-mei.goh@keysight.com>,
-	Maxime Chevallier <maxime.chevallier@bootlin.com>
-Subject: Re: [PATCH net-next 1/3] dt-bindings: net: dp83822: support
- configuring RMII master/slave mode
-Message-ID: <68112ecb-532f-4799-912d-16d6ceb9a6f3@lunn.ch>
-References: <20240222103117.526955-1-jeremie.dautheribes@bootlin.com>
- <20240222103117.526955-2-jeremie.dautheribes@bootlin.com>
- <d14ba685-dc7e-4f99-a21e-bae9f3e6bc79@lunn.ch>
- <860648fa-11f5-4e0d-ac4e-e81ea111ef31@bootlin.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=iYuJAtzEg4ki3TsVpn8omXffvkfPmapT542ScIU7ltcipjedUe42PxPOFyRsl0T86Fryc1E+h4hmZadH2ZKam1iq4E1npozjTilnc55DWYSxZ2q4u6XhkyO5urniQkzl8RwrtGfC26IILxqx5Y0gdIR7vJ/d8+mJo2EeXqM07Ao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dEe/F6Cp; arc=none smtp.client-ip=91.218.175.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 29 Feb 2024 16:24:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1709241879;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Jv57XkdEOb5lCcmwhvsrgcTRHKKlbAL+X8QUWiBeHm0=;
+	b=dEe/F6Cpa/brZBrjcWn/DWZZekUEpH/qX6WBbE+JZND6SmPso1PcIBIYezVUQHo+OrQ4Gq
+	sebiBHtZe5Yqj6NE+8c1QgumE18RpWc/el5cK0/UWnrIyn6BnEcz55686sgS0N7myIErKs
+	Kjcz/Ieltatda8+p5hHhM8AXrTgVtt8=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Brian Foster <bfoster@redhat.com>
+Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	djwong@kernel.org
+Subject: Re: [PATCH 01/21] bcachefs: KEY_TYPE_accounting
+Message-ID: <r2ieuj2kvitrrg7sqhuossm3wn4zzlkhygfqx7bxorzbaylnw2@kpgfn4e42iuw>
+References: <20240225023826.2413565-1-kent.overstreet@linux.dev>
+ <20240225023826.2413565-2-kent.overstreet@linux.dev>
+ <Zd4Ef49kHX3g69VT@bfoster>
+ <t6cc6gqgla2csyvrsv2znel5lg76vx7t2zna772qpw7zd6pnft@rxdakxza5cab>
+ <ZeDQQ8cyMTgYaY6D@bfoster>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <860648fa-11f5-4e0d-ac4e-e81ea111ef31@bootlin.com>
+In-Reply-To: <ZeDQQ8cyMTgYaY6D@bfoster>
+X-Migadu-Flow: FLOW_OUT
 
-> > > --- a/Documentation/devicetree/bindings/net/ti,dp83822.yaml
-> > > +++ b/Documentation/devicetree/bindings/net/ti,dp83822.yaml
-> > > @@ -80,6 +80,22 @@ properties:
-> > >              10625, 11250, 11875, 12500, 13125, 13750, 14375, 15000]
-> > >       default: 10000
-> > > +  ti,rmii-mode:
-> > > +    description: |
-> > > +       If present, select the RMII operation mode. Two modes are
-> > > +       available:
-> > > +         - RMII master, where the PHY operates from a 25MHz clock reference,
-> > > +         provided by a crystal or a CMOS-level oscillator
-> > > +         - RMII slave, where the PHY operates from a 50MHz clock reference,
-> > > +         provided by a CMOS-level oscillator
-> > 
-> > What has master and slave got to do with this?
-> > 
-> > Sometimes, the MAC provides a clock to the PHY, and all data transfer
-> > over the RMII bus is timed by that.
-> > 
-> > Sometimes, the PHY provides a clock to the MAC, and all data transfer
-> > over the RMII bus is timed by that.
-> > 
-> > Here there is a clear master/slave relationship, who is providing the
-> > clock, who is consuming the clock. However, what you describe does not
-> > fit that. Maybe look at other PHY bindings, and copy what they do for
-> > clocks.
-> 
-> In fact, I hesitated a lot before choosing this master/slave designation
-> because of the same reasoning as you. But the TI DP83826 datasheet [1] uses
-> this name for two orthogonal yet connected meanings, here's a copy of the
-> corresponding § (in section 9.3.10):
-> 
-> "The DP83826 offers two types of RMII operations: RMII Slave and RMII
-> Master. In RMII Master operation, the DP83826 operates from either a 25-MHz
-> CMOS-level oscillator connected to XI pin, a 25-MHz crystal connected across
-> XI and XO pins. A 50-MHz output clock referenced from DP83826 can be
-> connected to the MAC. In RMII Slave operation, the DP83826 operates from a
-> 50-MHz CMOS-level oscillator connected to the XI pin and shares the same
-> clock as the MAC. Alternatively, in RMII slave mode, the PHY can operate
-> from a 50-MHz clock provided by the Host MAC."
-> 
-> So it seems that in some cases this also fits the master/slave relationship
-> you describe.
+On Thu, Feb 29, 2024 at 01:43:15PM -0500, Brian Foster wrote:
+> Hmm.. I think the connection I missed on first look is basically
+> disk_accounting_key_to_bpos(). I think what is confusing is that calling
+> this a key makes me think of bkey, which I understand to contain a bpos,
+> so then overlaying it with a bpos didn't really make a lot of sense to
+> me conceptually.
+>
+> So when I look at disk_accounting_key_to_bpos(), I see we are actually
+> using the bpos _pad field, and this structure basically _is_ the bpos
+> for a disk accounting btree bkey. So that kind of makes me wonder why
+> this isn't called something like disk_accounting_pos instead of _key,
+> but maybe that is wrong for other reasons.
 
-We are normally interested in this 50Mhz reference clock. So i would
-drop all references to 25Mhz. It is not relevant to the binding, since
-it is nothing to do with connecting the PHY to the MAC, and it has a
-fixed value.
+hmm, I didn't consider calling it disk_accounting_pos. I'll let that
+roll around in my brain.
 
-So you can simplify this down to:
+'key' is more standard terminology to me outside bcachefs, but 'pos'
+does make more sense within bcachefs.
 
-RMII Master: Outputs a 50Mhz Reference clock which can be connected to the MAC.
+> Either way, what I'm trying to get at is that I think this documentation
+> would be better if it explained conceptually how disk_accounting_key
+> relates to bkey/bpos, and why it exists separately from bkey vs. other
+> key types, rather than (or at least before) getting into the lower level
+> side effects of a union with bpos.
 
-RMII Slave: Expects a 50MHz Reference clock input, shared with the
-MAC.
+Well, that gets into some fun territory - ideally bpos would not be a
+fixed thing that every btree was forced to use, we'd be able to define
+different types per btree.
 
-> That said, would you like me to include this description (or some parts) in
-> the binding in addition to what I've already written? Or would you prefer me
-> to use a more meaningful property name?
+And we're actually going to need to be able to do that in order to do
+configurationless autotiering - i.e. tracking how hot/cold data is on an
+inode:offset basis, because LRU btree backreferences need to go in the
+key (bpos), not the value, in order to avoid collisions, and bpos isn't
+big enough for that.
 
-We don't really have any vendor agnostic consistent naming. dp83867
-and dp83869 seems to call this ti,clk-output-sel. Since this is
-another dp83xxx device, it would be nice if there was consistency
-between all these TI devices. So could you check if the concept is the
-same, and if so, change dp83826 to follow what other TI devices do.
+disk_accounting_(key|pos) is an even trickier situation, because of
+endianness issues. The trick we do with bpos of defining the field order
+differently based on endianness so that byte order matches word order -
+that really wouldn't work here, so there is at present no practical way
+that I know of to avoid the byte swabbing when going back and forth
+between bpos and disk_accounting_pos on big endian.
 
-> BTW, this series has already been merged into the net-next tree, I'm not
-> sure what procedure to follow in such cases.
-
-KAPI don't become fixed until published as a release kernel. We can
-rework bindings until then. So just submit patches on top of what is
-already in net-next.
-
-	Andrew
+But gcc does have an attribute now that lets you specify that an integer
+struct member is big or little endian... I if we could get them to go
+one step further and give us an attribute to control whether members are
+laid out in ascending or descending order...
 
