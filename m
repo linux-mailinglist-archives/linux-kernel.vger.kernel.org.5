@@ -1,441 +1,413 @@
-Return-Path: <linux-kernel+bounces-86359-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86360-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BCF886C460
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:59:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2658786C465
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:00:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 83186B2176F
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:59:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 61E78B233D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:00:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 163E05676F;
-	Thu, 29 Feb 2024 08:59:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="op3Stqk1";
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="vTv6j1Wo"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4A0B56B8B;
+	Thu, 29 Feb 2024 08:59:49 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A10654747;
-	Thu, 29 Feb 2024 08:59:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.153.233
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709197179; cv=fail; b=UT97waBMaaW2bA4v4bzghenjAbppA76bP7RkFL5PFDoCsbLLZjW40JBuZfQsFSDckhILO5bvIH0dK6tVMKZvi7PkkHu8bTX4H2d7AGcETibCS/37hdO0yXEzuFCULTEctzGs3HGCc+BjoH1J4m/TfvhoePA6Z4n9MjurGUflPTU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709197179; c=relaxed/simple;
-	bh=PTvS+nMwc/J52SbonQk0ohLdYIyFaxdEILz/YDgRgOs=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=eKnRhXdx2kwN9/5yZqP/AOU2aJNz/61rlzSjaqqXKFQms+WvrFR0cHrvFfg95U4sjq0ZdwRngJJ1GsghQ7ZiE6u4SgTexDxhxUkwYml7TxtR9xgfP2TWJ9EhZBMFTmSRX1SM2KMOHVYc6mleItlWAKsWxTdVeMdZ1OU+eYmqHZQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=op3Stqk1; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=vTv6j1Wo; arc=fail smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1709197176; x=1740733176;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:mime-version;
-  bh=PTvS+nMwc/J52SbonQk0ohLdYIyFaxdEILz/YDgRgOs=;
-  b=op3Stqk1RtHHvSGqE4jeT6iTmnU1/JbQkoQh2T8Ol8ZFq3esqd+GH7kB
-   Zer/Aiy5y17F5lXwuga0TMjN6j/Bj+6YH2HcVq614EPurFcYREyw2nDDU
-   RrgfiHOdtHDMc5y3iX2IX1DF2rOnSfoJ/MksOtE7/ajuCiZsGdX3rLf7k
-   ECGPdUlK1RVYGcQUgPokbu8HEQ9Sc//3STjR02mTaQsBtpnPzRLFZnYcj
-   dXoN7QW+ruQTsOMWqSFxdBspEfrla4KStPgHa1udNn2JQvdqVML0RuNW8
-   NEXMy9W2WFcItAgILn5I749BES2S3pL+26Kq/IjmeM/VwWB/nwZ3/VfQN
-   w==;
-X-CSE-ConnectionGUID: 7BymQayLQsCEyMfd9DR6uA==
-X-CSE-MsgGUID: Ag7gyTzYSuan1vJ/tkoMtg==
-X-IronPort-AV: E=Sophos;i="6.06,192,1705388400"; 
-   d="txt'?scan'208";a="18594263"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 29 Feb 2024 01:59:35 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 29 Feb 2024 01:59:22 -0700
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (10.10.215.250)
- by email.microchip.com (10.10.87.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 29 Feb 2024 01:59:22 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VNxwdcOpEDyEIZBO28NGb78kZFBFIEPX7OeABlnJWgVp5reJJtGX7b8lE4xiFhxW1ovbJCcyuxs7Xzr/zTaz8ZCvEvngAm8760xj3jZS2y6HVrpvx3YSaP+/wDe0fP/N3A9lwSHscODCET9xjBnAP2tsawcywzQNuvTrCAbby2W53blDUOyg17JAIcB4jRuUcVJ1hVCR8NoCDTYfJSiVUZ+mZD2vdeaqfdcEIuWHjHwNADFD/p4dl6l4yYqKkrBoXrG2DBZm/t82VZMQgeLcskHuDy7kVI6M+5LM1rGqnhbTuJCjoniVdXtx+S4Ic+ZKSXOcu1TIShn3MIIkTLuQOg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DKnCqTlHZKZk+lSrr6n/I70a3Ln0jsxqM8oj0MjU5Sw=;
- b=SBDvYBSXKcQgz2JEOfFJE36nDDyS3Zpd5idHzxS9T6uIYoAWo4yrof5wnkwTIA3myflWCtAphRUeCO14ODSHuktW5dyX4biQ8hV4PfTZ0KHilBV+2c9tWhxd2OQHRmQv5HWhccroUdThB8Ld2YdPx7r5AhkCRNIRLzaa2L5xkOi2+sLl97b1Tx1DxH4S8c7kt8SlyYxkA22Voiqo1Cb3Q9BLd7D8U8VEpS8rNwnX5skFfD5kjJnvo3Ufol0XwNnqa6G8MTiDez/OVaGfYlduJScMjsjmzUzg4MKdkuV0N31+4I6bZpGgqDD2wrktywvaEGdDP/g8INhWGngikVv8kA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microchip.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DKnCqTlHZKZk+lSrr6n/I70a3Ln0jsxqM8oj0MjU5Sw=;
- b=vTv6j1WoTMXGwgtbU6GQ7ORGz2kVmQd326muIGNE53qkThQOLBM3ztEP3eAcVHAThu57WdAw/VosjHmJ+PJBTwotj+PwYFbCksylT06tq6UPEskQntcZlZcZpBMm9RqGRHtfRnF7uzeW0JulQrdxmLfZxMlOXtMVcIt8+afTFMoCrsJXz3iWbbLFEJaHFoQAZhgyI98xj0wqzF4YDTqjytukY4sLPDATccXITzkJrYd7LVyvXEsnCS8lfd7qpZu711fugAzCWmwd9adSypxM26aA3RcAfT4N9dpH0Tow44grkbo8AOzeRttCDX+lEvcRT46jjWjxYyyJ5wXPBOLBXg==
-Received: from LV8PR11MB8700.namprd11.prod.outlook.com (2603:10b6:408:201::22)
- by SA2PR11MB4939.namprd11.prod.outlook.com (2603:10b6:806:115::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.26; Thu, 29 Feb
- 2024 08:59:20 +0000
-Received: from LV8PR11MB8700.namprd11.prod.outlook.com
- ([fe80::bef5:e3b9:4214:8eda]) by LV8PR11MB8700.namprd11.prod.outlook.com
- ([fe80::bef5:e3b9:4214:8eda%6]) with mapi id 15.20.7339.009; Thu, 29 Feb 2024
- 08:59:20 +0000
-From: <Raju.Lakkaraju@microchip.com>
-To: <andrew@lunn.ch>
-CC: <netdev@vger.kernel.org>, <davem@davemloft.net>, <kuba@kernel.org>,
-	<linux-kernel@vger.kernel.org>, <Bryan.Whitehead@microchip.com>,
-	<richardcochran@gmail.com>, <UNGLinuxDriver@microchip.com>
-Subject: RE: [PATCH net 3/3] net: lan743x: Address problems with wake option
- flags configuration sequences
-Thread-Topic: [PATCH net 3/3] net: lan743x: Address problems with wake option
- flags configuration sequences
-Thread-Index: AQHaaIt96K5hsZSvW06kwmptrB0k3LEdb70AgAOX2pA=
-Date: Thu, 29 Feb 2024 08:59:20 +0000
-Message-ID: <LV8PR11MB8700C2F9461F4200431446D49F5F2@LV8PR11MB8700.namprd11.prod.outlook.com>
-References: <20240226080934.46003-1-Raju.Lakkaraju@microchip.com>
- <20240226080934.46003-4-Raju.Lakkaraju@microchip.com>
- <b83b74b7-3221-4747-8b71-17738c18c042@lunn.ch>
-In-Reply-To: <b83b74b7-3221-4747-8b71-17738c18c042@lunn.ch>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: yes
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microchip.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: LV8PR11MB8700:EE_|SA2PR11MB4939:EE_
-x-ms-office365-filtering-correlation-id: d2767358-d07e-4ab5-1a27-08dc3904b794
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: WjDX4cVYPbvRZdioWma7RwNsTSIOZvuQHE3s2jc74ZhrsLmQdtWyJBq1SACAI7ngcCnP9IjWETBpUwQ0zImsq9FOkOuyRCw/P4yyEeVyxOObt4jVnuWLxud5H/q2N4fJHdzr7V62wm7PdzcBdEv2T2LBp4MLoEyYm/++JWUtg3qgPBVorgrIEfx9kqMy2GeivZnUg/Ej3DJE/Q+IuYitVlGi3zn5oxlWFye4TE03N+zLkDYTfSVsIMRzKeA63Xf4/R8x6TpcrPwlQeJpbSUL7JY8FH1r3d3k4WnbZpIUbCMR1+2h4q3ZLCcjrNQ3zh0KgPDYICk13p+5QMG/NtTQtHAtLgGxh80Zg4hwP6ZExUcaDRhK9d8hKV7kFR2APA2uVs28LWQL3AqBJp2vMDt4EPy9nBMz36qhtZmR7MMBoz4djZA4ply+6Z1lWzICWtQ/71OeAlfCDF3scvTu8JAyuOrketY0qCz4kLskoVe/rf97nlB80SFGQNGp2VX48YJtlAhxVbt7PD/sx/aLkGYQD1KDm0/qU5a30Q7Bioe1hkv48PmN1kQj1JBhBGs0QIs0MnqghNnAupGt3XOOSpqnt4hFQUCXZEfRWcG3JGX95Ug+XP0EOnLDI3alCxB8iL2xUzLWcum6fNuM/tByPQ24IOKoQG79GiwFcENuR9XW8N+puXW/TnA+9FFHNiU5gLcJiEDfRWAukuFfiGLibLXXHAdNUe2oNToAmeLsz7WPY6U=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV8PR11MB8700.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?U1pxcnNPT1g3a2JnM1EvdUt2RUhnbG05VG9pY2dlUy9UVG9TZW1FNTY3WmJJ?=
- =?utf-8?B?c0g2L3BCc2JxRUVROEhSZTZUTk56RjFPY0pCcHdCWTk3VnJvY1NNbUZiaSt6?=
- =?utf-8?B?c3BqVlNHMjREM0dVaVJjcHdxcDNXK0JXL2RtVm1DL3pEeEJVSVJIYWtFam9D?=
- =?utf-8?B?MjAwNk13dHczalV0UE1IdFZnT2JRY0k4cnJOVWNiNUtTZGxRbmlReFJIaFRo?=
- =?utf-8?B?SjRJdFpxMTg4RlUvUXRaTXVCVUtqekQybERnWWpIbytIeVF6NlRPbmZFTW9T?=
- =?utf-8?B?Y1RoWDQvNU0vaEwrcktzV2d1MkU2a2ZSRjA3ZDVkUVZHWUJmOTFRcXlSaTBO?=
- =?utf-8?B?TTVVODZKSUxrSytkRWt0djFJNE5DTkNiY3hzWUxJSTgvUlJlNHBQbjh0MzE5?=
- =?utf-8?B?NXduMElISndBcFFaYXBRa3JmemJCSDNkNXo0QVlCTXd0NGhBak9ac1pxNUpu?=
- =?utf-8?B?VWh2L3lTaXBJVmJRSWNtWkZVMWJSUmYyS0I0bEtmM3Y4dnF1UkNRYm96bkFX?=
- =?utf-8?B?NjJjN0JmVVZuOXJVQUVsK3hMaXhLNXdCeXNBckpKVTJSVjBGY0FyZEJNODJD?=
- =?utf-8?B?UFlhWURxSkhRZTIreGtHdUcycEpLNXNOdnNySDZPQSt5a3FoblVPUFMrQlZk?=
- =?utf-8?B?OEkydGJWRW1tN2xpait4MUFlUFhqQ3M4bmdOaStrMjB4dXgxeXhRaGRwTGxr?=
- =?utf-8?B?cHpEbVNXaGIwZ0hQMWlxaVFwSlUzNjJzMWRjUitiZjViRWZ5MU1iSEVjeWZq?=
- =?utf-8?B?V1oxZTdUWmRZank0N3NjU0NTamNBN1A5aEZrMEpyeTBPUzUrM2VveFhvcEtx?=
- =?utf-8?B?SXB5Z1BhbDNzNWxUM2ZFK3VOeEJsQ1dKSGhQOTZHUFhYSTB5aTBPUlM1VGFi?=
- =?utf-8?B?QnJ6aXBMMjd2QXM0Y2kxV1g3am9PWStMcXE1SVFWOVErano0ZVhleE9ON1dD?=
- =?utf-8?B?WFRFN0tlRFNGekxMcExKNDZRdXl0aUdtTnpPQjJPNUhqcVFRTGdBZmpmWDA5?=
- =?utf-8?B?NHRuWDBNVGRRc0VZZ0ZJV3lVMnRsYS8rMnJvSlVkRk04NEVhZStRYVRoUk1F?=
- =?utf-8?B?dzFzRjBsckh4dTRlUkRrYTVBRHZQK1YvTnEreXBDYUFUYTRiRDV2aUZ3VjZz?=
- =?utf-8?B?WEwyVGZSaUFDcnFobWhuQWEzeTduakg4cGJSdWdUaWlKclI4NW1mdkFYd2Nr?=
- =?utf-8?B?dzMxNWVMT0pLY0QxdXlTUWFLeXA4S2JDNGVubGx3UUlkZ0lEVWM5eWVWdmRZ?=
- =?utf-8?B?UVFFNlE5SmNvRGZSckxVYXNrV01oNU1wcmdTaXdyWkd3YWZCbnZ5d01yTGlw?=
- =?utf-8?B?NndCSjRXSlk4eFU1aVZGaWVhTHBRV3g4dWkwVUswemUyc1lNN1EzVHplUFRV?=
- =?utf-8?B?dVlRbzUxN3V1eHZScEFIY1J0Y0VMWlc5ejI5UkpBa1Ziem1FK3dtQ1lsd2c4?=
- =?utf-8?B?ZXpjRnN1RkNRYkhDNnF3aktybm9OaGxHVk05WmJOTFJrbFB6MWdJcnFWcFRB?=
- =?utf-8?B?K0lCVk4zQm9qd2RYK0YzUjRVdytzdGsxVlF0YmxHY0IzVDZDd1hqbEx1Uk1U?=
- =?utf-8?B?cGtQY29rbURUVXZsK0F2QVdLc05wMTNGaXpzNGZKVmtLY3V2dTl4VytrQXJT?=
- =?utf-8?B?ZWlSTktQTmljbXcxemRKQmNrM0ZsYlhadHZCOUpGcHMreGN1N09Eald6cUZ0?=
- =?utf-8?B?d2Y1THdrT244K0JpTWxJckpXVTYxb0tWZi9ldUFDdE1qcGhLdVNwb01hYSt4?=
- =?utf-8?B?TFBsQ0dXbTczN09GcjVQOFk5WE5aVU1jcE1uYkZxamcrNWdDTnI2RnBNMjla?=
- =?utf-8?B?NzdxREhMZFMzaC9TT28yU1ZSMndFSTZESkFrWFJBMlZMTFJ2RC9RM3RpdXRN?=
- =?utf-8?B?U0g2OUdQb054MU8rYXVrNzMrcWVWWDNkUmJQcElRKzdUaDArR2tqMWV6d09i?=
- =?utf-8?B?Q2NyV0NyL0xtV0dVTFo3ZDRIelpwUUE3UzE0VW1hMEN6NFdpMWtiakdaamtZ?=
- =?utf-8?B?cHcxR1M0WDlPTTdPTytkY2ZDc2F5TDM4UDJIQkFNY3U1cXFxdjIvMElNM09s?=
- =?utf-8?B?cjZWYWJaRUFkeHJDZnJwSDJmZFp1b3RkTHFhdjVtOUxCZ2lsdEhVQ2xLY2N3?=
- =?utf-8?B?aFpUclowUWNvWjcya3psKzREOHByYlFLMWVUcTlZa2Y0T1JaekNZMlUzN2d6?=
- =?utf-8?B?UXc9PQ==?=
-Content-Type: multipart/mixed;
-	boundary="_002_LV8PR11MB8700C2F9461F4200431446D49F5F2LV8PR11MB8700namp_"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C53705674B;
+	Thu, 29 Feb 2024 08:59:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709197188; cv=none; b=V9GP2HaZWDVQ+9YEdsiHLblEa9Rsj46ZRZdcp7e3DLOxrJM1ah4cjBEi1SJm7Iam97HFjAdRQNsHfYyDnDofcm576Aw3opckfd3AJIpLPVRdIBPQ9EZqD/ibfAZPIzvVNgN9Gn3cVEHuyHsRvdnwA2q40H3jr7lbCslIC2GM0Qk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709197188; c=relaxed/simple;
+	bh=G27e/cZk6SCpGUGSgkKDJkfrqLVdTK2xuXg/Z4zqBQQ=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=X1nTiJEQmvpDs2HnRzsZpEWjTEfOWcFpRhQycC1F7acAey/T1P6i9WulbLktqGth+JxEv719GBivIhfHMwcMPweJ5Tw9DqBCP9517hYOF4MX8U5c7Bwre8AV5AcnpqeZq4gSOUWQqbdWDAlVJy2BN6sNItoH4UMG+qaQ/913v6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TllXK5Fzzz4f3mHS;
+	Thu, 29 Feb 2024 16:59:29 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 15ADB1A016E;
+	Thu, 29 Feb 2024 16:59:37 +0800 (CST)
+Received: from [10.174.176.34] (unknown [10.174.176.34])
+	by APP1 (Coremail) with SMTP id cCh0CgDHlxB2R+Bl8TYDFg--.4638S3;
+	Thu, 29 Feb 2024 16:59:36 +0800 (CST)
+Subject: Re: [RFC PATCH v3 07/26] iomap: don't increase i_size if it's not a
+ write operation
+To: Dave Chinner <david@fromorbit.com>
+Cc: Christoph Hellwig <hch@infradead.org>, djwong@kernel.org,
+ linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+ tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
+ ritesh.list@gmail.com, willy@infradead.org, zokeefe@google.com,
+ yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com,
+ wangkefeng.wang@huawei.com
+References: <20240127015825.1608160-1-yi.zhang@huaweicloud.com>
+ <20240127015825.1608160-8-yi.zhang@huaweicloud.com>
+ <ZcsCP4h-ExNOcdD6@infradead.org>
+ <9b0040ef-3d9d-6246-4bdd-82b9a8f55fa2@huaweicloud.com>
+ <Zd+y2VP8HpbkDu41@dread.disaster.area>
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+Message-ID: <45c1607a-805d-e7a2-a5ca-3fd7e507a664@huaweicloud.com>
+Date: Thu, 29 Feb 2024 16:59:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: LV8PR11MB8700.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d2767358-d07e-4ab5-1a27-08dc3904b794
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Feb 2024 08:59:20.2015
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: mAAfmbgsOhwae25KwOtYzVNM3fAhYBG2YD8NzJAIWpbH1DlVFszXsJXu0aGyS2erEZMH5n/yUCPh4eg3tAmLwzHz+ylujLl0TUtz5fqFQek=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB4939
+In-Reply-To: <Zd+y2VP8HpbkDu41@dread.disaster.area>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgDHlxB2R+Bl8TYDFg--.4638S3
+X-Coremail-Antispam: 1UD129KBjvJXoW3Zw4DXr1kJr13Xr4fAw15XFb_yoWkJFykpF
+	W0g3WUK34ktry7Arn7AFsFqa40k3yfJFW8WrW5tr9Fvrn8Cr1IgFn7GayY9FWDWrn7Ar10
+	qF48W34xCwn8ZFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
+	6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+	9x07UZ18PUUUUU=
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
---_002_LV8PR11MB8700C2F9461F4200431446D49F5F2LV8PR11MB8700namp_
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Hello, Dave!
 
-SGkgQW5kcmV3LA0KDQpUaGFuayB5b3UgZm9yIHJldmlldyBjb21tZW50cy4NCg0KPiAtLS0tLU9y
-aWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBBbmRyZXcgTHVubiA8YW5kcmV3QGx1bm4uY2g+
-DQo+IFNlbnQ6IFR1ZXNkYXksIEZlYnJ1YXJ5IDI3LCAyMDI0IDc6MjggQU0NCj4gVG86IFJhanUg
-TGFra2FyYWp1IC0gSTMwNDk5IDxSYWp1Lkxha2thcmFqdUBtaWNyb2NoaXAuY29tPg0KPiBDYzog
-bmV0ZGV2QHZnZXIua2VybmVsLm9yZzsgZGF2ZW1AZGF2ZW1sb2Z0Lm5ldDsga3ViYUBrZXJuZWwu
-b3JnOyBsaW51eC0NCj4ga2VybmVsQHZnZXIua2VybmVsLm9yZzsgQnJ5YW4gV2hpdGVoZWFkIC0g
-QzIxOTU4DQo+IDxCcnlhbi5XaGl0ZWhlYWRAbWljcm9jaGlwLmNvbT47IHJpY2hhcmRjb2NocmFu
-QGdtYWlsLmNvbTsNCj4gVU5HTGludXhEcml2ZXIgPFVOR0xpbnV4RHJpdmVyQG1pY3JvY2hpcC5j
-b20+DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggbmV0IDMvM10gbmV0OiBsYW43NDN4OiBBZGRyZXNz
-IHByb2JsZW1zIHdpdGggd2FrZSBvcHRpb24NCj4gZmxhZ3MgY29uZmlndXJhdGlvbiBzZXF1ZW5j
-ZXMNCj4gDQo+IEVYVEVSTkFMIEVNQUlMOiBEbyBub3QgY2xpY2sgbGlua3Mgb3Igb3BlbiBhdHRh
-Y2htZW50cyB1bmxlc3MgeW91IGtub3cgdGhlDQo+IGNvbnRlbnQgaXMgc2FmZQ0KPiANCj4gT24g
-TW9uLCBGZWIgMjYsIDIwMjQgYXQgMDE6Mzk6MzRQTSArMDUzMCwgUmFqdSBMYWtrYXJhanUgd3Jv
-dGU6DQo+ID4gV2FrZSBvcHRpb25zIGhhbmRsaW5nIGhhcyBiZWVuIHJld29ya2VkIGFzIGZvbGxv
-d3M6DQo+ID4gYS4gV2Ugb25seSBlbmFibGUgc2VjdXJlIG9uIG1hZ2ljIHBhY2tldCB3aGVuIGJv
-dGggc2VjdXJlIGFuZCBtYWdpYyB3b2wNCj4gPiAgICBvcHRpb25zIGFyZSByZXF1ZXN0ZWQgdG9n
-ZXRoZXIuDQo+ID4gYi4gSWYgc2VjdXJlLW9uIG1hZ2ljIHBhY2tldCBoYWQgYmVlbiBwcmV2aW91
-c2x5IGVuYWJsZWQsIGFuZCBhDQo+IHN1YnNlcXVlbnQNCj4gPiAgICBjb21tYW5kIGRvZXMgbm90
-IGluY2x1ZGUgaXQsIHdlIGFkZCBpdC4gVGhpcyB3YXMgZG9uZSB0byB3b3JrYXJvdW5kIGENCj4g
-PiAgICBwcm9ibGVtIHdpdGggdGhlICdwbS1zdXNwZW5kJyBhcHBsaWNhdGlvbiB3aGljaCBpcyB1
-bmF3YXJlIG9mIHNlY3VyZS1vbg0KPiA+ICAgIG1hZ2ljIHBhY2tldCBiZWluZyBlbmFibGVkIGFu
-ZCBjYW4gdW5pbnRlbnRpb25hbGx5IGRpc2FibGUgaXQgcHJpb3IgdG8NCj4gPiAgICBwdXR0aW5n
-IHRoZSBzeXN0ZW0gaW50byBzdXNwZW5kLg0KPiANCj4gVGhpcyBzZWVtcyB0byBiZSBpbiBhIGJp
-dCBvZiBhIGdyZXkgYXJlYS4gQnV0IGV0aHRvb2wgc2F5czoNCj4gDQo+ICAgICAgICAgICAgd29s
-IHB8dXxtfGJ8YXxnfHN8ZnxkLi4uDQo+ICAgICAgICAgICAgICAgICAgIFNldHMgIFdha2Utb24t
-TEFOICBvcHRpb25zLiAgIE5vdCAgYWxsIGRldmljZXMgc3VwcG9ydCB0aGlzLg0KPiAgICAgICAg
-ICAgICAgICAgICBUaGUgYXJndW1lbnQgdG8gdGhpcyBvcHRpb24gaXMgYSBzdHJpbmcgb2YgY2hh
-cmFjdGVycyBzcGVjaeKAkA0KPiAgICAgICAgICAgICAgICAgICBmeWluZyB3aGljaCBvcHRpb25z
-IHRvIGVuYWJsZS4NCj4gICAgICAgICAgICAgICAgICAgcCAgIFdha2Ugb24gUEhZIGFjdGl2aXR5
-DQo+ICAgICAgICAgICAgICAgICAgIHUgICBXYWtlIG9uIHVuaWNhc3QgbWVzc2FnZXMNCj4gICAg
-ICAgICAgICAgICAgICAgbSAgIFdha2Ugb24gbXVsdGljYXN0IG1lc3NhZ2VzDQo+ICAgICAgICAg
-ICAgICAgICAgIGIgICBXYWtlIG9uIGJyb2FkY2FzdCBtZXNzYWdlcw0KPiAgICAgICAgICAgICAg
-ICAgICBhICAgV2FrZSBvbiBBUlANCj4gICAgICAgICAgICAgICAgICAgZyAgIFdha2Ugb24gTWFn
-aWNQYWNrZXTihKINCj4gICAgICAgICAgICAgICAgICAgcyAgIEVuYWJsZSBTZWN1cmVPbuKEoiBw
-YXNzd29yZCBmb3IgTWFnaWNQYWNrZXTihKINCj4gICAgICAgICAgICAgICAgICAgZiAgIFdha2Ug
-b24gZmlsdGVyKHMpDQo+ICAgICAgICAgICAgICAgICAgIGQgICBEaXNhYmxlICh3YWtlIG9uICBu
-b3RoaW5nKS4gICBUaGlzICBvcHRpb24NCj4gICAgICAgICAgICAgICAgICAgICAgIGNsZWFycyBh
-bGwgcHJldmlvdXMgb3B0aW9ucy4NCj4gDQo+IGQgY2xlYXJzIGV2ZXJ5dGhpbmcuIEFsbCBvdGhl
-ciB0aGluZ3MgZW5hYmxlIG9uZSBvcHRpb24uIFRoZXJlIGRvZXMgbm90DQo+IGFwcGVhciB0byBi
-ZSBhIHdheSB0byBkaXNhYmxlIGEgc2luZ2xlIG9wdGlvbiwgYW5kIGkgd291bGQgc2F5LCBhZGRp
-bmcgb3B0aW9ucw0KPiBpcyBpbmNyZW1lbnRhbC4NCj4gDQoNClllcy4gImQiIGNsZWFycyBldmVy
-eXRoaW5nLg0KQnV0LCBpZiB3ZSBlbmFibGUgImciIHRoZW4gZW5hYmxlICJhIiwgImciIG9wdGlv
-biBvdmVyd3JpdHRlbiBieSAiYSINClBsZWFzZSBmaW5kIHRoZSBhdHRhY2hlZCBsb2cgaW5mb3Jt
-YXRpb24gDQo+IFNvOg0KPiANCj4gPiBhLiBXZSBvbmx5IGVuYWJsZSBzZWN1cmUgb24gbWFnaWMg
-cGFja2V0IHdoZW4gYm90aCBzZWN1cmUgYW5kIG1hZ2ljIHdvbA0KPiA+ICAgIG9wdGlvbnMgYXJl
-IHJlcXVlc3RlZCB0b2dldGhlci4NCj4gDQo+IEkgZG9uJ3QgdGhpbmsgdGhleSBuZWVkIHRvIGJl
-IHJlcXVlc3RlZCB0b2dldGhlci4gSSB0aGluayB5b3UgY2FuIGZpcnN0IGVuYWJsZQ0KPiBXYWtl
-IG9uIE1hZ2ljUGFja2V0IGFuZCB0aGVuIGluIGEgc2Vjb25kIGNhbGwgdG8gZXRodG9vbCBFbmFi
-bGUgU2VjdXJlT24NCj4gcGFzc3dvcmQgZm9yIE1hZ2ljUGFja2V0LiBJIGFsc28gZG9uJ3QgdGhp
-bmsgaXQgd291bGQgdW5yZWFzb25hYmxlIHRvIGFjY2VwdA0KPiBFbmFibGUgU2VjdXJlT24gcGFz
-c3dvcmQgZm9yIE1hZ2ljUGFja2V0IGFuZCBoYXZlIHRoYXQgaW1wbHkgV2FrZSBvbg0KPiBNYWdp
-Y1BhY2tldC4NCj4gDQoNCklmIHdlIG5lZWQgdG8gZW5hYmxlIGFueSAyIG9wdGlvbnMsIHdlIGhh
-dmUgdG8gcHJvdmlkZSBib3RoIG9wdGlvbnMgdG9nZXRoZXIuDQppLmUuDQpzdWRvIGV0aHRvb2wg
-LXMgZW5wOXMwIHdvbCBnYQ0KDQo+IEFuZDoNCj4gDQo+ID4gYi4gSWYgc2VjdXJlLW9uIG1hZ2lj
-IHBhY2tldCBoYWQgYmVlbiBwcmV2aW91c2x5IGVuYWJsZWQsIGFuZCBhDQo+IHN1YnNlcXVlbnQN
-Cj4gPiAgICBjb21tYW5kIGRvZXMgbm90IGluY2x1ZGUgaXQsIHdlIGFkZCBpdC4NCj4gDQo+IElm
-IHRoZXJlIGhhcyBub3QgYmVlbiBhIGQsIHNlY3VyZS1vbiBtYWdpYyBwYWNrZXQgc2hvdWxkIHJl
-bWFpbiBlbmFibGVkIHVudGlsDQo+IHRoZXJlIGlzIGEgZC4NCj4gDQoNClRoaXMgaXMgbm90IGhh
-cHBlbmVkIHdpdGggZXhpc3RpbmcgIkV0aHRvb2wiLg0KUGxlYXNlIGZpbmQgdGhlIGxvZyBpbmZv
-cm1hdGlvbiBpbiBhbiBhdHRhY2htZW50IGZpbGUuDQoNCj4gICAgICAgICBBbmRyZXcNCg0KVGhh
-bmtzLA0KUmFqdQ0K
+On 2024/2/29 6:25, Dave Chinner wrote:
+> On Wed, Feb 28, 2024 at 04:53:32PM +0800, Zhang Yi wrote:
+>> On 2024/2/13 13:46, Christoph Hellwig wrote:
+>>> Wouldn't it make more sense to just move the size manipulation to the
+>>> write-only code?  An untested version of that is below.  With this
+>>> the naming of the status variable becomes even more confusing than
+>>> it already is, maybe we need to do a cleanup of the *_write_end
+>>> calling conventions as it always returns the passed in copied value
+>>> or 0.
+>>>
+>>> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+>>> index 3dab060aed6d7b..8401a9ca702fc0 100644
+>>> --- a/fs/iomap/buffered-io.c
+>>> +++ b/fs/iomap/buffered-io.c
+>>> @@ -876,34 +876,13 @@ static size_t iomap_write_end(struct iomap_iter *iter, loff_t pos, size_t len,
+>>>  		size_t copied, struct folio *folio)
+>>>  {
+>>>  	const struct iomap *srcmap = iomap_iter_srcmap(iter);
+>>> -	loff_t old_size = iter->inode->i_size;
+>>> -	size_t ret;
+>>> -
+>>> -	if (srcmap->type == IOMAP_INLINE) {
+>>> -		ret = iomap_write_end_inline(iter, folio, pos, copied);
+>>> -	} else if (srcmap->flags & IOMAP_F_BUFFER_HEAD) {
+>>> -		ret = block_write_end(NULL, iter->inode->i_mapping, pos, len,
+>>> -				copied, &folio->page, NULL);
+>>> -	} else {
+>>> -		ret = __iomap_write_end(iter->inode, pos, len, copied, folio);
+>>> -	}
+>>> -
+>>> -	/*
+>>> -	 * Update the in-memory inode size after copying the data into the page
+>>> -	 * cache.  It's up to the file system to write the updated size to disk,
+>>> -	 * preferably after I/O completion so that no stale data is exposed.
+>>> -	 */
+>>> -	if (pos + ret > old_size) {
+>>> -		i_size_write(iter->inode, pos + ret);
+>>> -		iter->iomap.flags |= IOMAP_F_SIZE_CHANGED;
+>>> -	}
+>>
+>> I've recently discovered that if we don't increase i_size in
+>> iomap_zero_iter(), it would break fstests generic/476 on xfs. xfs
+>> depends on iomap_zero_iter() to increase i_size in some cases.
+>>
+>>  generic/476 75s ... _check_xfs_filesystem: filesystem on /dev/pmem2 is inconsistent (r)
+>>  (see /home/zhangyi/xfstests-dev/results//xfs/generic/476.full for details)
+>>
+>>  _check_xfs_filesystem: filesystem on /dev/pmem2 is inconsistent (r)
+>>  *** xfs_repair -n output ***
+>>  Phase 1 - find and verify superblock...
+>>  Phase 2 - using internal log
+>>          - zero log...
+>>          - scan filesystem freespace and inode maps...
+>>  sb_fdblocks 10916, counted 10923
+>>          - found root inode chunk
+>>  ...
+>>
+>> After debugging and analysis, I found the root cause of the problem is
+>> related to the pre-allocations of xfs. xfs pre-allocates some blocks to
+>> reduce fragmentation during buffer append writing, then if we write new
+>> data or do file copy(reflink) after the end of the pre-allocating range,
+>> xfs would zero-out and write back the pre-allocate space(e.g.
+>> xfs_file_write_checks() -> xfs_zero_range()), so we have to update
+>> i_size before writing back in iomap_zero_iter(), otherwise, it will
+>> result in stale delayed extent.
+> 
+> Ok, so this is long because the example is lacking in clear details
+> so to try to understand it I've laid it out in detail to make sure
+> I've understood it correctly.
+> 
 
---_002_LV8PR11MB8700C2F9461F4200431446D49F5F2LV8PR11MB8700namp_
-Content-Type: text/plain; name="ethtool_wol_op_log.txt"
-Content-Description: ethtool_wol_op_log.txt
-Content-Disposition: attachment; filename="ethtool_wol_op_log.txt";
-	size=10834; creation-date="Thu, 29 Feb 2024 08:42:10 GMT";
-	modification-date="Thu, 29 Feb 2024 08:59:19 GMT"
-Content-Transfer-Encoding: base64
+Thanks for the graph, the added detail makes things clear and easy to
+understand. To be honest, it's not exactly the same as the results I
+captured and described (the position A\B\C\D\E\F I described is
+increased one by one), but the root cause of the problem is the same,
+so it doesn't affect our understanding of the problem.
 
-JCBzdWRvIGV0aHRvb2wgLXMgZW5wOXMwDQpTZXR0aW5ncyBmb3IgZW5wOXMwOg0KCVN1cHBvcnRl
-ZCBwb3J0czogWyAgXQ0KCVN1cHBvcnRlZCBsaW5rIG1vZGVzOiAgIDEwYmFzZVQvSGFsZiAxMGJh
-c2VUL0Z1bGwNCgkgICAgICAgICAgICAgICAgICAgICAgICAxMDBiYXNlVC9IYWxmIDEwMGJhc2VU
-L0Z1bGwNCgkgICAgICAgICAgICAgICAgICAgICAgICAxMDAwYmFzZVQvRnVsbA0KCSAgICAgICAg
-ICAgICAgICAgICAgICAgIDI1MDBiYXNlVC9GdWxsDQoJU3VwcG9ydGVkIHBhdXNlIGZyYW1lIHVz
-ZTogU3ltbWV0cmljIFJlY2VpdmUtb25seQ0KCVN1cHBvcnRzIGF1dG8tbmVnb3RpYXRpb246IFll
-cw0KCVN1cHBvcnRlZCBGRUMgbW9kZXM6IE5vdCByZXBvcnRlZA0KCUFkdmVydGlzZWQgbGluayBt
-b2RlczogIDEwYmFzZVQvSGFsZiAxMGJhc2VUL0Z1bGwNCgkgICAgICAgICAgICAgICAgICAgICAg
-ICAxMDBiYXNlVC9IYWxmIDEwMGJhc2VUL0Z1bGwNCgkgICAgICAgICAgICAgICAgICAgICAgICAx
-MDAwYmFzZVQvRnVsbA0KCSAgICAgICAgICAgICAgICAgICAgICAgIDI1MDBiYXNlVC9GdWxsDQoJ
-QWR2ZXJ0aXNlZCBwYXVzZSBmcmFtZSB1c2U6IFN5bW1ldHJpYyBSZWNlaXZlLW9ubHkNCglBZHZl
-cnRpc2VkIGF1dG8tbmVnb3RpYXRpb246IFllcw0KCUFkdmVydGlzZWQgRkVDIG1vZGVzOiBOb3Qg
-cmVwb3J0ZWQNCglMaW5rIHBhcnRuZXIgYWR2ZXJ0aXNlZCBsaW5rIG1vZGVzOiAgMTBiYXNlVC9I
-YWxmIDEwYmFzZVQvRnVsbA0KCSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAx
-MDBiYXNlVC9IYWxmIDEwMGJhc2VUL0Z1bGwNCgkgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgMTAwMGJhc2VUL0Z1bGwNCgkgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgMjUwMGJhc2VUL0Z1bGwNCglMaW5rIHBhcnRuZXIgYWR2ZXJ0aXNlZCBwYXVzZSBmcmFt
-ZSB1c2U6IFN5bW1ldHJpYyBSZWNlaXZlLW9ubHkNCglMaW5rIHBhcnRuZXIgYWR2ZXJ0aXNlZCBh
-dXRvLW5lZ290aWF0aW9uOiBObw0KCUxpbmsgcGFydG5lciBhZHZlcnRpc2VkIEZFQyBtb2Rlczog
-Tm90IHJlcG9ydGVkDQoJU3BlZWQ6IDI1MDBNYi9zDQoJRHVwbGV4OiBGdWxsDQoJQXV0by1uZWdv
-dGlhdGlvbjogb24NCgltYXN0ZXItc2xhdmUgY2ZnOiBwcmVmZXJyZWQgc2xhdmUNCgltYXN0ZXIt
-c2xhdmUgc3RhdHVzOiBtYXN0ZXINCglQb3J0OiBUd2lzdGVkIFBhaXINCglQSFlBRDogMQ0KCVRy
-YW5zY2VpdmVyOiBleHRlcm5hbA0KCU1ESS1YOiBvbiAoYXV0bykNCglTdXBwb3J0cyBXYWtlLW9u
-OiBwdW1iYWdzDQoJV2FrZS1vbjogZA0KICAgICAgICBTZWN1cmVPbiBwYXNzd29yZDogMDA6MDA6
-MDA6MDA6MDA6MDANCiAgICAgICAgQ3VycmVudCBtZXNzYWdlIGxldmVsOiAweDAwMDAwMTM3ICgz
-MTEpDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZHJ2IHByb2JlIGxpbmsgaWZkb3du
-IGlmdXAgdHhfcXVldWVkDQoJTGluayBkZXRlY3RlZDogeWVzDQoNCiQgc3VkbyBldGh0b29sIC1z
-IGVucDlzMCB3b2wgZw0KJCBzdWRvIGV0aHRvb2wgZW5wOXMwDQpTZXR0aW5ncyBmb3IgZW5wOXMw
-Og0KCVN1cHBvcnRlZCBwb3J0czogWyAgXQ0KCVN1cHBvcnRlZCBsaW5rIG1vZGVzOiAgIDEwYmFz
-ZVQvSGFsZiAxMGJhc2VUL0Z1bGwNCgkgICAgICAgICAgICAgICAgICAgICAgICAxMDBiYXNlVC9I
-YWxmIDEwMGJhc2VUL0Z1bGwNCgkgICAgICAgICAgICAgICAgICAgICAgICAxMDAwYmFzZVQvRnVs
-bA0KCSAgICAgICAgICAgICAgICAgICAgICAgIDI1MDBiYXNlVC9GdWxsDQoJU3VwcG9ydGVkIHBh
-dXNlIGZyYW1lIHVzZTogU3ltbWV0cmljIFJlY2VpdmUtb25seQ0KCVN1cHBvcnRzIGF1dG8tbmVn
-b3RpYXRpb246IFllcw0KCVN1cHBvcnRlZCBGRUMgbW9kZXM6IE5vdCByZXBvcnRlZA0KCUFkdmVy
-dGlzZWQgbGluayBtb2RlczogIDEwYmFzZVQvSGFsZiAxMGJhc2VUL0Z1bGwNCgkgICAgICAgICAg
-ICAgICAgICAgICAgICAxMDBiYXNlVC9IYWxmIDEwMGJhc2VUL0Z1bGwNCgkgICAgICAgICAgICAg
-ICAgICAgICAgICAxMDAwYmFzZVQvRnVsbA0KCSAgICAgICAgICAgICAgICAgICAgICAgIDI1MDBi
-YXNlVC9GdWxsDQoJQWR2ZXJ0aXNlZCBwYXVzZSBmcmFtZSB1c2U6IFN5bW1ldHJpYyBSZWNlaXZl
-LW9ubHkNCglBZHZlcnRpc2VkIGF1dG8tbmVnb3RpYXRpb246IFllcw0KCUFkdmVydGlzZWQgRkVD
-IG1vZGVzOiBOb3QgcmVwb3J0ZWQNCglMaW5rIHBhcnRuZXIgYWR2ZXJ0aXNlZCBsaW5rIG1vZGVz
-OiAgMTBiYXNlVC9IYWxmIDEwYmFzZVQvRnVsbA0KCSAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAxMDBiYXNlVC9IYWxmIDEwMGJhc2VUL0Z1bGwNCgkgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgMTAwMGJhc2VUL0Z1bGwNCgkgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgMjUwMGJhc2VUL0Z1bGwNCglMaW5rIHBhcnRuZXIgYWR2ZXJ0aXNl
-ZCBwYXVzZSBmcmFtZSB1c2U6IFN5bW1ldHJpYyBSZWNlaXZlLW9ubHkNCglMaW5rIHBhcnRuZXIg
-YWR2ZXJ0aXNlZCBhdXRvLW5lZ290aWF0aW9uOiBObw0KCUxpbmsgcGFydG5lciBhZHZlcnRpc2Vk
-IEZFQyBtb2RlczogTm90IHJlcG9ydGVkDQoJU3BlZWQ6IDI1MDBNYi9zDQoJRHVwbGV4OiBGdWxs
-DQoJQXV0by1uZWdvdGlhdGlvbjogb24NCgltYXN0ZXItc2xhdmUgY2ZnOiBwcmVmZXJyZWQgc2xh
-dmUNCgltYXN0ZXItc2xhdmUgc3RhdHVzOiBtYXN0ZXINCglQb3J0OiBUd2lzdGVkIFBhaXINCglQ
-SFlBRDogMQ0KCVRyYW5zY2VpdmVyOiBleHRlcm5hbA0KCU1ESS1YOiBvbiAoYXV0bykNCglTdXBw
-b3J0cyBXYWtlLW9uOiBwdW1iYWdzDQoJV2FrZS1vbjogZw0KICAgICAgICBTZWN1cmVPbiBwYXNz
-d29yZDogMDA6MDA6MDA6MDA6MDA6MDANCiAgICAgICAgQ3VycmVudCBtZXNzYWdlIGxldmVsOiAw
-eDAwMDAwMTM3ICgzMTEpDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZHJ2IHByb2Jl
-IGxpbmsgaWZkb3duIGlmdXAgdHhfcXVldWVkDQoJTGluayBkZXRlY3RlZDogeWVzDQoNCiQgc3Vk
-byBldGh0b29sIC1zIGVucDlzMCB3b2wgYQ0KJCBzdWRvIGV0aHRvb2wgZW5wOXMwDQpTZXR0aW5n
-cyBmb3IgZW5wOXMwOg0KCVN1cHBvcnRlZCBwb3J0czogWyAgXQ0KCVN1cHBvcnRlZCBsaW5rIG1v
-ZGVzOiAgIDEwYmFzZVQvSGFsZiAxMGJhc2VUL0Z1bGwNCgkgICAgICAgICAgICAgICAgICAgICAg
-ICAxMDBiYXNlVC9IYWxmIDEwMGJhc2VUL0Z1bGwNCgkgICAgICAgICAgICAgICAgICAgICAgICAx
-MDAwYmFzZVQvRnVsbA0KCSAgICAgICAgICAgICAgICAgICAgICAgIDI1MDBiYXNlVC9GdWxsDQoJ
-U3VwcG9ydGVkIHBhdXNlIGZyYW1lIHVzZTogU3ltbWV0cmljIFJlY2VpdmUtb25seQ0KCVN1cHBv
-cnRzIGF1dG8tbmVnb3RpYXRpb246IFllcw0KCVN1cHBvcnRlZCBGRUMgbW9kZXM6IE5vdCByZXBv
-cnRlZA0KCUFkdmVydGlzZWQgbGluayBtb2RlczogIDEwYmFzZVQvSGFsZiAxMGJhc2VUL0Z1bGwN
-CgkgICAgICAgICAgICAgICAgICAgICAgICAxMDBiYXNlVC9IYWxmIDEwMGJhc2VUL0Z1bGwNCgkg
-ICAgICAgICAgICAgICAgICAgICAgICAxMDAwYmFzZVQvRnVsbA0KCSAgICAgICAgICAgICAgICAg
-ICAgICAgIDI1MDBiYXNlVC9GdWxsDQoJQWR2ZXJ0aXNlZCBwYXVzZSBmcmFtZSB1c2U6IFN5bW1l
-dHJpYyBSZWNlaXZlLW9ubHkNCglBZHZlcnRpc2VkIGF1dG8tbmVnb3RpYXRpb246IFllcw0KCUFk
-dmVydGlzZWQgRkVDIG1vZGVzOiBOb3QgcmVwb3J0ZWQNCglMaW5rIHBhcnRuZXIgYWR2ZXJ0aXNl
-ZCBsaW5rIG1vZGVzOiAgMTBiYXNlVC9IYWxmIDEwYmFzZVQvRnVsbA0KCSAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAxMDBiYXNlVC9IYWxmIDEwMGJhc2VUL0Z1bGwNCgkgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgMTAwMGJhc2VUL0Z1bGwNCgkgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgMjUwMGJhc2VUL0Z1bGwNCglMaW5rIHBhcnRu
-ZXIgYWR2ZXJ0aXNlZCBwYXVzZSBmcmFtZSB1c2U6IFN5bW1ldHJpYyBSZWNlaXZlLW9ubHkNCglM
-aW5rIHBhcnRuZXIgYWR2ZXJ0aXNlZCBhdXRvLW5lZ290aWF0aW9uOiBObw0KCUxpbmsgcGFydG5l
-ciBhZHZlcnRpc2VkIEZFQyBtb2RlczogTm90IHJlcG9ydGVkDQoJU3BlZWQ6IDI1MDBNYi9zDQoJ
-RHVwbGV4OiBGdWxsDQoJQXV0by1uZWdvdGlhdGlvbjogb24NCgltYXN0ZXItc2xhdmUgY2ZnOiBw
-cmVmZXJyZWQgc2xhdmUNCgltYXN0ZXItc2xhdmUgc3RhdHVzOiBtYXN0ZXINCglQb3J0OiBUd2lz
-dGVkIFBhaXINCglQSFlBRDogMQ0KCVRyYW5zY2VpdmVyOiBleHRlcm5hbA0KCU1ESS1YOiBvbiAo
-YXV0bykNCglTdXBwb3J0cyBXYWtlLW9uOiBwdW1iYWdzDQoJV2FrZS1vbjogYQ0KICAgICAgICBT
-ZWN1cmVPbiBwYXNzd29yZDogMDA6MDA6MDA6MDA6MDA6MDANCiAgICAgICAgQ3VycmVudCBtZXNz
-YWdlIGxldmVsOiAweDAwMDAwMTM3ICgzMTEpDQogICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgZHJ2IHByb2JlIGxpbmsgaWZkb3duIGlmdXAgdHhfcXVldWVkDQoJTGluayBkZXRlY3RlZDog
-eWVzDQoNCiQgc3VkbyBldGh0b29sIC1zIGVucDlzMCB3b2wgZ2ENCiQgc3VkbyBldGh0b29sIGVu
-cDlzMA0KU2V0dGluZ3MgZm9yIGVucDlzMDoNCglTdXBwb3J0ZWQgcG9ydHM6IFsgIF0NCglTdXBw
-b3J0ZWQgbGluayBtb2RlczogICAxMGJhc2VUL0hhbGYgMTBiYXNlVC9GdWxsDQoJICAgICAgICAg
-ICAgICAgICAgICAgICAgMTAwYmFzZVQvSGFsZiAxMDBiYXNlVC9GdWxsDQoJICAgICAgICAgICAg
-ICAgICAgICAgICAgMTAwMGJhc2VUL0Z1bGwNCgkgICAgICAgICAgICAgICAgICAgICAgICAyNTAw
-YmFzZVQvRnVsbA0KCVN1cHBvcnRlZCBwYXVzZSBmcmFtZSB1c2U6IFN5bW1ldHJpYyBSZWNlaXZl
-LW9ubHkNCglTdXBwb3J0cyBhdXRvLW5lZ290aWF0aW9uOiBZZXMNCglTdXBwb3J0ZWQgRkVDIG1v
-ZGVzOiBOb3QgcmVwb3J0ZWQNCglBZHZlcnRpc2VkIGxpbmsgbW9kZXM6ICAxMGJhc2VUL0hhbGYg
-MTBiYXNlVC9GdWxsDQoJICAgICAgICAgICAgICAgICAgICAgICAgMTAwYmFzZVQvSGFsZiAxMDBi
-YXNlVC9GdWxsDQoJICAgICAgICAgICAgICAgICAgICAgICAgMTAwMGJhc2VUL0Z1bGwNCgkgICAg
-ICAgICAgICAgICAgICAgICAgICAyNTAwYmFzZVQvRnVsbA0KCUFkdmVydGlzZWQgcGF1c2UgZnJh
-bWUgdXNlOiBTeW1tZXRyaWMgUmVjZWl2ZS1vbmx5DQoJQWR2ZXJ0aXNlZCBhdXRvLW5lZ290aWF0
-aW9uOiBZZXMNCglBZHZlcnRpc2VkIEZFQyBtb2RlczogTm90IHJlcG9ydGVkDQoJTGluayBwYXJ0
-bmVyIGFkdmVydGlzZWQgbGluayBtb2RlczogIDEwYmFzZVQvSGFsZiAxMGJhc2VUL0Z1bGwNCgkg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgMTAwYmFzZVQvSGFsZiAxMDBiYXNl
-VC9GdWxsDQoJICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDEwMDBiYXNlVC9G
-dWxsDQoJICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDI1MDBiYXNlVC9GdWxs
-DQoJTGluayBwYXJ0bmVyIGFkdmVydGlzZWQgcGF1c2UgZnJhbWUgdXNlOiBTeW1tZXRyaWMgUmVj
-ZWl2ZS1vbmx5DQoJTGluayBwYXJ0bmVyIGFkdmVydGlzZWQgYXV0by1uZWdvdGlhdGlvbjogTm8N
-CglMaW5rIHBhcnRuZXIgYWR2ZXJ0aXNlZCBGRUMgbW9kZXM6IE5vdCByZXBvcnRlZA0KCVNwZWVk
-OiAyNTAwTWIvcw0KCUR1cGxleDogRnVsbA0KCUF1dG8tbmVnb3RpYXRpb246IG9uDQoJbWFzdGVy
-LXNsYXZlIGNmZzogcHJlZmVycmVkIHNsYXZlDQoJbWFzdGVyLXNsYXZlIHN0YXR1czogbWFzdGVy
-DQoJUG9ydDogVHdpc3RlZCBQYWlyDQoJUEhZQUQ6IDENCglUcmFuc2NlaXZlcjogZXh0ZXJuYWwN
-CglNREktWDogb24gKGF1dG8pDQoJU3VwcG9ydHMgV2FrZS1vbjogcHVtYmFncw0KCVdha2Utb246
-IGFnDQogICAgICAgIFNlY3VyZU9uIHBhc3N3b3JkOiAwMDowMDowMDowMDowMDowMA0KICAgICAg
-ICBDdXJyZW50IG1lc3NhZ2UgbGV2ZWw6IDB4MDAwMDAxMzcgKDMxMSkNCiAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICBkcnYgcHJvYmUgbGluayBpZmRvd24gaWZ1cCB0eF9xdWV1ZWQNCglM
-aW5rIGRldGVjdGVkOiB5ZXMNCg0KcmFqdS1wcm9qZWN0LXBjQCB+JCBzdWRvIGV0aHRvb2wgLXMg
-ZW5wOXMwIHdvbCBiDQpyYWp1LXByb2plY3QtcGNAIH4kIHN1ZG8gZXRodG9vbCBlbnA5czANClNl
-dHRpbmdzIGZvciBlbnA5czA6DQoJU3VwcG9ydGVkIHBvcnRzOiBbICBdDQoJU3VwcG9ydGVkIGxp
-bmsgbW9kZXM6ICAgMTBiYXNlVC9IYWxmIDEwYmFzZVQvRnVsbA0KCSAgICAgICAgICAgICAgICAg
-ICAgICAgIDEwMGJhc2VUL0hhbGYgMTAwYmFzZVQvRnVsbA0KCSAgICAgICAgICAgICAgICAgICAg
-ICAgIDEwMDBiYXNlVC9GdWxsDQoJICAgICAgICAgICAgICAgICAgICAgICAgMjUwMGJhc2VUL0Z1
-bGwNCglTdXBwb3J0ZWQgcGF1c2UgZnJhbWUgdXNlOiBTeW1tZXRyaWMgUmVjZWl2ZS1vbmx5DQoJ
-U3VwcG9ydHMgYXV0by1uZWdvdGlhdGlvbjogWWVzDQoJU3VwcG9ydGVkIEZFQyBtb2RlczogTm90
-IHJlcG9ydGVkDQoJQWR2ZXJ0aXNlZCBsaW5rIG1vZGVzOiAgMTBiYXNlVC9IYWxmIDEwYmFzZVQv
-RnVsbA0KCSAgICAgICAgICAgICAgICAgICAgICAgIDEwMGJhc2VUL0hhbGYgMTAwYmFzZVQvRnVs
-bA0KCSAgICAgICAgICAgICAgICAgICAgICAgIDEwMDBiYXNlVC9GdWxsDQoJICAgICAgICAgICAg
-ICAgICAgICAgICAgMjUwMGJhc2VUL0Z1bGwNCglBZHZlcnRpc2VkIHBhdXNlIGZyYW1lIHVzZTog
-U3ltbWV0cmljIFJlY2VpdmUtb25seQ0KCUFkdmVydGlzZWQgYXV0by1uZWdvdGlhdGlvbjogWWVz
-DQoJQWR2ZXJ0aXNlZCBGRUMgbW9kZXM6IE5vdCByZXBvcnRlZA0KCUxpbmsgcGFydG5lciBhZHZl
-cnRpc2VkIGxpbmsgbW9kZXM6ICAxMGJhc2VUL0hhbGYgMTBiYXNlVC9GdWxsDQoJICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgIDEwMGJhc2VUL0hhbGYgMTAwYmFzZVQvRnVsbA0K
-CSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAxMDAwYmFzZVQvRnVsbA0KCSAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAyNTAwYmFzZVQvRnVsbA0KCUxpbmsg
-cGFydG5lciBhZHZlcnRpc2VkIHBhdXNlIGZyYW1lIHVzZTogU3ltbWV0cmljIFJlY2VpdmUtb25s
-eQ0KCUxpbmsgcGFydG5lciBhZHZlcnRpc2VkIGF1dG8tbmVnb3RpYXRpb246IE5vDQoJTGluayBw
-YXJ0bmVyIGFkdmVydGlzZWQgRkVDIG1vZGVzOiBOb3QgcmVwb3J0ZWQNCglTcGVlZDogMjUwME1i
-L3MNCglEdXBsZXg6IEZ1bGwNCglBdXRvLW5lZ290aWF0aW9uOiBvbg0KCW1hc3Rlci1zbGF2ZSBj
-Zmc6IHByZWZlcnJlZCBzbGF2ZQ0KCW1hc3Rlci1zbGF2ZSBzdGF0dXM6IG1hc3Rlcg0KCVBvcnQ6
-IFR3aXN0ZWQgUGFpcg0KCVBIWUFEOiAxDQoJVHJhbnNjZWl2ZXI6IGV4dGVybmFsDQoJTURJLVg6
-IG9uIChhdXRvKQ0KCVN1cHBvcnRzIFdha2Utb246IHB1bWJhZ3MNCglXYWtlLW9uOiBiDQogICAg
-ICAgIFNlY3VyZU9uIHBhc3N3b3JkOiAwMDowMDowMDowMDowMDowMA0KICAgICAgICBDdXJyZW50
-IG1lc3NhZ2UgbGV2ZWw6IDB4MDAwMDAxMzcgKDMxMSkNCiAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICBkcnYgcHJvYmUgbGluayBpZmRvd24gaWZ1cCB0eF9xdWV1ZWQNCglMaW5rIGRldGVj
-dGVkOiB5ZXMNCg0KJCBzdWRvIGV0aHRvb2wgZW5wOXMwDQpTZXR0aW5ncyBmb3IgZW5wOXMwOg0K
-CVN1cHBvcnRlZCBwb3J0czogWyAgXQ0KCVN1cHBvcnRlZCBsaW5rIG1vZGVzOiAgIDEwYmFzZVQv
-SGFsZiAxMGJhc2VUL0Z1bGwNCgkgICAgICAgICAgICAgICAgICAgICAgICAxMDBiYXNlVC9IYWxm
-IDEwMGJhc2VUL0Z1bGwNCgkgICAgICAgICAgICAgICAgICAgICAgICAxMDAwYmFzZVQvRnVsbA0K
-CSAgICAgICAgICAgICAgICAgICAgICAgIDI1MDBiYXNlVC9GdWxsDQoJU3VwcG9ydGVkIHBhdXNl
-IGZyYW1lIHVzZTogU3ltbWV0cmljIFJlY2VpdmUtb25seQ0KCVN1cHBvcnRzIGF1dG8tbmVnb3Rp
-YXRpb246IFllcw0KCVN1cHBvcnRlZCBGRUMgbW9kZXM6IE5vdCByZXBvcnRlZA0KCUFkdmVydGlz
-ZWQgbGluayBtb2RlczogIDEwYmFzZVQvSGFsZiAxMGJhc2VUL0Z1bGwNCgkgICAgICAgICAgICAg
-ICAgICAgICAgICAxMDBiYXNlVC9IYWxmIDEwMGJhc2VUL0Z1bGwNCgkgICAgICAgICAgICAgICAg
-ICAgICAgICAxMDAwYmFzZVQvRnVsbA0KCSAgICAgICAgICAgICAgICAgICAgICAgIDI1MDBiYXNl
-VC9GdWxsDQoJQWR2ZXJ0aXNlZCBwYXVzZSBmcmFtZSB1c2U6IFN5bW1ldHJpYyBSZWNlaXZlLW9u
-bHkNCglBZHZlcnRpc2VkIGF1dG8tbmVnb3RpYXRpb246IFllcw0KCUFkdmVydGlzZWQgRkVDIG1v
-ZGVzOiBOb3QgcmVwb3J0ZWQNCglMaW5rIHBhcnRuZXIgYWR2ZXJ0aXNlZCBsaW5rIG1vZGVzOiAg
-MTBiYXNlVC9IYWxmIDEwYmFzZVQvRnVsbA0KCSAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAxMDBiYXNlVC9IYWxmIDEwMGJhc2VUL0Z1bGwNCgkgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgMTAwMGJhc2VUL0Z1bGwNCgkgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgMjUwMGJhc2VUL0Z1bGwNCglMaW5rIHBhcnRuZXIgYWR2ZXJ0aXNlZCBw
-YXVzZSBmcmFtZSB1c2U6IFN5bW1ldHJpYyBSZWNlaXZlLW9ubHkNCglMaW5rIHBhcnRuZXIgYWR2
-ZXJ0aXNlZCBhdXRvLW5lZ290aWF0aW9uOiBObw0KCUxpbmsgcGFydG5lciBhZHZlcnRpc2VkIEZF
-QyBtb2RlczogTm90IHJlcG9ydGVkDQoJU3BlZWQ6IDI1MDBNYi9zDQoJRHVwbGV4OiBGdWxsDQoJ
-QXV0by1uZWdvdGlhdGlvbjogb24NCgltYXN0ZXItc2xhdmUgY2ZnOiBwcmVmZXJyZWQgc2xhdmUN
-CgltYXN0ZXItc2xhdmUgc3RhdHVzOiBtYXN0ZXINCglQb3J0OiBUd2lzdGVkIFBhaXINCglQSFlB
-RDogMQ0KCVRyYW5zY2VpdmVyOiBleHRlcm5hbA0KCU1ESS1YOiBvbiAoYXV0bykNCglTdXBwb3J0
-cyBXYWtlLW9uOiBwdW1iYWdzDQoJV2FrZS1vbjogZw0KICAgICAgICBTZWN1cmVPbiBwYXNzd29y
-ZDogMDA6MDA6MDA6MDA6MDA6MDANCiAgICAgICAgQ3VycmVudCBtZXNzYWdlIGxldmVsOiAweDAw
-MDAwMTM3ICgzMTEpDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZHJ2IHByb2JlIGxp
-bmsgaWZkb3duIGlmdXAgdHhfcXVldWVkDQoJTGluayBkZXRlY3RlZDogeWVzDQoNCiQgc3VkbyBl
-dGh0b29sIC1zIGVucDlzMCB3b2wgcw0KJCBzdWRvIGV0aHRvb2wgZW5wOXMwDQpTZXR0aW5ncyBm
-b3IgZW5wOXMwOg0KCVN1cHBvcnRlZCBwb3J0czogWyAgXQ0KCVN1cHBvcnRlZCBsaW5rIG1vZGVz
-OiAgIDEwYmFzZVQvSGFsZiAxMGJhc2VUL0Z1bGwNCgkgICAgICAgICAgICAgICAgICAgICAgICAx
-MDBiYXNlVC9IYWxmIDEwMGJhc2VUL0Z1bGwNCgkgICAgICAgICAgICAgICAgICAgICAgICAxMDAw
-YmFzZVQvRnVsbA0KCSAgICAgICAgICAgICAgICAgICAgICAgIDI1MDBiYXNlVC9GdWxsDQoJU3Vw
-cG9ydGVkIHBhdXNlIGZyYW1lIHVzZTogU3ltbWV0cmljIFJlY2VpdmUtb25seQ0KCVN1cHBvcnRz
-IGF1dG8tbmVnb3RpYXRpb246IFllcw0KCVN1cHBvcnRlZCBGRUMgbW9kZXM6IE5vdCByZXBvcnRl
-ZA0KCUFkdmVydGlzZWQgbGluayBtb2RlczogIDEwYmFzZVQvSGFsZiAxMGJhc2VUL0Z1bGwNCgkg
-ICAgICAgICAgICAgICAgICAgICAgICAxMDBiYXNlVC9IYWxmIDEwMGJhc2VUL0Z1bGwNCgkgICAg
-ICAgICAgICAgICAgICAgICAgICAxMDAwYmFzZVQvRnVsbA0KCSAgICAgICAgICAgICAgICAgICAg
-ICAgIDI1MDBiYXNlVC9GdWxsDQoJQWR2ZXJ0aXNlZCBwYXVzZSBmcmFtZSB1c2U6IFN5bW1ldHJp
-YyBSZWNlaXZlLW9ubHkNCglBZHZlcnRpc2VkIGF1dG8tbmVnb3RpYXRpb246IFllcw0KCUFkdmVy
-dGlzZWQgRkVDIG1vZGVzOiBOb3QgcmVwb3J0ZWQNCglMaW5rIHBhcnRuZXIgYWR2ZXJ0aXNlZCBs
-aW5rIG1vZGVzOiAgMTBiYXNlVC9IYWxmIDEwYmFzZVQvRnVsbA0KCSAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAxMDBiYXNlVC9IYWxmIDEwMGJhc2VUL0Z1bGwNCgkgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgMTAwMGJhc2VUL0Z1bGwNCgkgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgMjUwMGJhc2VUL0Z1bGwNCglMaW5rIHBhcnRuZXIg
-YWR2ZXJ0aXNlZCBwYXVzZSBmcmFtZSB1c2U6IFN5bW1ldHJpYyBSZWNlaXZlLW9ubHkNCglMaW5r
-IHBhcnRuZXIgYWR2ZXJ0aXNlZCBhdXRvLW5lZ290aWF0aW9uOiBObw0KCUxpbmsgcGFydG5lciBh
-ZHZlcnRpc2VkIEZFQyBtb2RlczogTm90IHJlcG9ydGVkDQoJU3BlZWQ6IDI1MDBNYi9zDQoJRHVw
-bGV4OiBGdWxsDQoJQXV0by1uZWdvdGlhdGlvbjogb24NCgltYXN0ZXItc2xhdmUgY2ZnOiBwcmVm
-ZXJyZWQgc2xhdmUNCgltYXN0ZXItc2xhdmUgc3RhdHVzOiBtYXN0ZXINCglQb3J0OiBUd2lzdGVk
-IFBhaXINCglQSFlBRDogMQ0KCVRyYW5zY2VpdmVyOiBleHRlcm5hbA0KCU1ESS1YOiBvbiAoYXV0
-bykNCglTdXBwb3J0cyBXYWtlLW9uOiBwdW1iYWdzDQoJV2FrZS1vbjogZA0KICAgICAgICBTZWN1
-cmVPbiBwYXNzd29yZDogMDA6MDA6MDA6MDA6MDA6MDANCiAgICAgICAgQ3VycmVudCBtZXNzYWdl
-IGxldmVsOiAweDAwMDAwMTM3ICgzMTEpDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ZHJ2IHByb2JlIGxpbmsgaWZkb3duIGlmdXAgdHhfcXVldWVkDQoJTGluayBkZXRlY3RlZDogeWVz
-DQoNCg==
+>>
+>> For more details, let's think about this case,
+>> 1. Buffered write from range [A, B) of an empty file foo, and
+>>    xfs_buffered_write_iomap_begin() prealloc blocks for it, then create
+>>    a delayed extent from [A, D).
+> 
+> So we have a delayed allocation extent  and the file size is now B
+> like so:
+> 
+> 	A                      B                    D
+> 	+DDDDDDDDDDDDDDDDDDDDDD+dddddddddddddddddddd+
+> 	                      EOF
+> 			  (in memory)
+> 
+> where 'd' is a delalloc block with no data and 'D' is a delalloc
+> block with dirty folios over it.
+> 
 
---_002_LV8PR11MB8700C2F9461F4200431446D49F5F2LV8PR11MB8700namp_--
+Yes
+
+>> 2. Write back process map blocks but only convert above delayed extent
+>>    from [A, C) since the lack of a contiguous physical blocks, now we
+>>    have a left over delayed extent from [C, D), and the file size is B.
+> 
+> So this produces:
+> 
+> 	A          C           B                    D
+> 	+wwwwwwwwww+DDDDDDDDDDD+dddddddddddddddddddd+
+> 	          EOF         EOF
+>                (on disk)  (in memory)
+> 
+> where 'w' contains allocated written data blocks.
+> 
+
+The results I captured is:
+
+ 	A                      B         C          D
+ 	+wwwwwwwwwwwwwwwwwwwwww+uuuuuuuuu+ddddddddddd+
+ 	                      EOF
+                          (in memory)
+                           (on disk)
+
+>> 3. Copy range from another file to range [E, F), then
+>>    xfs_reflink_zero_posteof() would zero-out post eof range [B, E), it
+>>    writes zero, dirty and write back [C, E).
+> 
+> I'm going to assume that [E,F) is located like this because you
+> are talking about post-eof zeroing from B to E:
+> 
+> 	A          C           B     E       F      D
+> 	+wwwwwwwwww+DDDDDDDDDDD+ddddd+rrrrrrr+dddddd+
+> 	          EOF         EOF
+>                (on disk)  (in memory)
+> 
+> where 'r' is the clone destination over dellaloc blocks.
+> 
+> Did I get that right?
+> 
+
+The results I captured is:
+
+ 	A                      B         C          D      E       F
+ 	+wwwwwwwwwwwwwwwwwwwwww+uuuuuuuuu+dddddddddd+hhhhhh+rrrrrrr+
+ 	                      EOF
+                          (in memory)
+                           (on disk)
+
+where 'h' contains a hole.
+
+> And so reflink wants to zero [B,E] before it updates the file size,
+> just like a truncate(E) would. iomap_zero_iter() will see a delalloc
+> extent (IOMAP_DELALLOC) for [B,E], so it will write zeros into cache
+> for it. We then have:
+> 
+> 	A          C           B     E       F      D
+> 	+wwwwwwwwww+DDDDDDDDDDD+ZZZZZ+rrrrrrr+dddddd+
+> 	          EOF         EOF
+>                (on disk)  (in memory)
+> 
+> where 'Z' is delalloc blocks with zeroes in cache.
+> 
+
+The results I captured is:
+
+ 	A                      B         C          D      E       F
+ 	+wwwwwwwwwwwwwwwwwwwwww+uuuuuuuuu+ZZZZZZZZZZ+hhhhhh+rrrrrrr+
+ 	                      EOF
+                          (in memory)
+                           (on disk)
+
+> Because the destination is post EOF, xfs_reflink_remap_prep() then
+> does:
+> 
+>         /*
+>          * If pos_out > EOF, we may have dirtied blocks between EOF and
+>          * pos_out. In that case, we need to extend the flush and unmap to cover
+>          * from EOF to the end of the copy length.
+>          */
+>         if (pos_out > XFS_ISIZE(dest)) {
+>                 loff_t  flen = *len + (pos_out - XFS_ISIZE(dest));
+>                 ret = xfs_flush_unmap_range(dest, XFS_ISIZE(dest), flen);
+> 	} ....
+> 
+> Which attempts to flush from the current in memory EOF up to the end
+> of the clone destination range. This should result in:
+> 
+> 	A          C           B     E       F      D
+> 	+wwwwwwwwww+DDDDDDDDDDD+zzzzz+rrrrrrr+dddddd+
+> 	          EOF         EOF
+>                (on disk)  (in memory)
+> 
+> Where 'z' is zeroes on disk.
+> 
+> Have I understood this correctly?
+> 
+
+The results I captured is:
+
+ 	A                      B         C          D      E       F
+ 	+wwwwwwwwwwwwwwwwwwwwww+uuuuuuuuu+zzzzzzzzzz+hhhhhh+rrrrrrr+
+ 	                      EOF
+                          (in memory)
+                           (on disk)
+
+Since we don't update i_size in iomap_zero_iter(), the zeroed C to D
+in cache would never write back to disk (iomap_writepage_handle_eof()
+would skip them since it's entirely ouside of i_size) and the
+'i_size & i_disksize' is still at B, after reflink, the i_size would
+be update to F, so the delayed C to D cannot be freed by
+xfs_free_eofblocks().
+
+ 	A                      B         C          D      E       F
+ 	+wwwwwwwwwwwwwwwwwwwwww+uuuuuuuuu+dddddddddd+hhhhhh+rrrrrrr+
+ 	                                                          EOF
+                                                              (in memory)
+                                                               (on disk)
+
+Although the result is not exactly the same as your understanding,
+the situation you describe still triggers the problem.
+
+> However, if this did actually write zeroes to disk, this would end
+> up with:
+> 
+> 	A          C           B     E       F      D
+> 	+wwwwwwwwww+DDDDDDDDDDD+zzzzz+rrrrrrr+dddddd+
+> 	                      EOF   EOF
+>                       (in memory)   (on disk)
+> 
+> Which is wrong - the file extension and zeros should not get exposed
+> to the user until the entire reflink completes. This would expose
+> zeros at the EOF and a file size that the user never asked for after
+> a crash. Experience tells me that they would report this as
+> "filesystem corrupting data on crash".
+> 
+> If we move where i_size gets updated by iomap_zero_iter(), we get:
+> 
+> 	A          C           B     E       F      D
+> 	+wwwwwwwwww+DDDDDDDDDDD+zzzzz+rrrrrrr+dddddd+
+> 	                            EOF
+>                                 (in memory)
+> 		                 (on disk)
+> 
+> Which is also wrong, because now the user can see the size change
+> and read zeros in the middle of the clone operation, which is also
+> wrong.
+> 
+> IOWs, we do not want to move the in-memory or on-disk EOF as a
+> result of zeroing delalloc extents beyond EOF as it opens up
+> transient, non-atomic on-disk states in the event of a crash.
+> 
+> So, catch-22: we need to move the in-memory EOF to write back zeroes
+> beyond EOF, but that would move the on-disk EOF to E before the
+> clone operation starts. i.e. it makes clone non-atomic.
+
+Make sense. IIUC, I also notice that xfs_file_write_checks() zero
+out EOF blocks if the later write offset is beyond the size of the
+file. Think about if we replace the reflink operation to a buffer
+write E to F, although it doesn't call xfs_flush_unmap_range()
+directly, but if it could be raced by another background write
+back, and trigger the same problem (I've not try to reproduce it,
+so please correct me if I understand wrong).
+
+> 
+> What should acutally result from the iomap_zero_range() call from
+> xfs_reflink_remap_prep() is a state like this:
+> 
+> 	A          C           B     E       F      D
+> 	+wwwwwwwwww+DDDDDDDDDDD+uuuuu+rrrrrrr+dddddd+
+> 	          EOF         EOF
+>                (on disk)  (in memory)
+> 
+> where 'u' are unwritten extent blocks.
+> 
+
+Yeah, this is a good solution.
+
+In xfs_file_write_checks(), I don't fully understand why we need
+the xfs_zero_range(). Theoretically, iomap have already handled
+partial block zeroing for both buffered IO and DIO, so I guess
+the only reason we still need it is to handle pre-allocated blocks
+(no?). If so，would it be better to call xfs_free_eofblocks() to
+release all the preallocated extents in range? If not, maybe we
+could only zero out mapped partial blocks and also release
+preallocated extents?
+
+In xfs_reflink_remap_prep(), I read the commit 410fdc72b05a ("xfs:
+zero posteof blocks when cloning above eof"), xfs used to release
+preallocations, the change log said it didn't work because of the
+PREALLOC flag, but the 'force' parameter is 'true' when calling
+xfs_can_free_eofblocks(), so I don't get the problem met. Could we
+fall back to use xfs_free_eofblocks() and make a state like this?
+
+ 	A          C           B     E       F      D
+ 	+wwwwwwwwww+DDDDDDDDDDD+hhhhh+rrrrrrr+dddddd+
+ 	          EOF         EOF
+                (on disk)  (in memory)
+
+
+Thanks,
+Yi.
+
+> i.e. instead of writing zeroes through the page cache for
+> IOMAP_DELALLOC ranges beyond EOF, we should be converting those
+> ranges to unwritten and invalidating any cached data over that range
+> beyond EOF.
+> 
+> IOWs, it looks to me like the problem is that
+> xfs_buffered_write_iomap_begin() is doing the wrong thing for
+> IOMAP_ZERO operations for post-EOF regions spanned by speculative
+> delalloc. It should be converting the region to unwritten so it has
+> zeroes on disk, not relying on the page cache to be able to do
+> writeback beyond the current EOF....
+> 
+>> 4. Since we don't update i_size in iomap_zero_iter()，the writeback
+>>    doesn't write anything back, also doesn't convert the delayed extent.
+>>    After copy range, the file size will update to F.
+> 
+> Yup, this is all, individually, correct behaviour. But when put
+> together, the wrong thing happens. I suspect xfs_zero_range() needs
+> to provide a custom set of iomap_begin/end callbacks rather than
+> overloading the normal buffered write mechanisms.
+> 
+> -Dave.
+> 
+
 
