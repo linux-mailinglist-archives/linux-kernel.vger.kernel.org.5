@@ -1,120 +1,116 @@
-Return-Path: <linux-kernel+bounces-87570-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87571-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 130C486D601
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:18:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E7F586D603
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:20:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF801289D91
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:18:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BAA3FB221D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:20:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 885D516FF4B;
-	Thu, 29 Feb 2024 21:18:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F140F16FF50;
+	Thu, 29 Feb 2024 21:19:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="es7kiwcP"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="z5Pa4drf"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8230016FF34;
-	Thu, 29 Feb 2024 21:18:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81BB516FF3B;
+	Thu, 29 Feb 2024 21:19:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709241508; cv=none; b=O3TyHyEe1Z7NXub+WGiJfvKew0S1DDoQBzF6DkWarmXV0pSHGQKfdZZT09bFED2kecKWtKfIfPPF3Ai3j7ljqpX4HohZ4jklSbNWq6zaM1slE/DAC/to18RN7+C6BDmJ7w+L8U8hGCJYakcWC4gki4C0sUCmLgqNkiBp+vMt+rc=
+	t=1709241598; cv=none; b=csp3hhZc1/qllOBI2thYYcCODNvni4jSiRiVdcxDMQti72NgyAU1xDl1DVvHZPZkGG6LLQD/Fn/5o/J8N+PCE2cs1IQh4tChuXa42s96QhE/SYs79ikA1aRVFyG3GH+5ceLAnv32RokI5+YeY6y6hV7JDJ9uAlTvRmBArK13snE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709241508; c=relaxed/simple;
-	bh=59iOag6GB72bkNMijk1auQJkojkJz2SZvr7evBnMPuA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=o/mXICPnr9lQVTxX1548QiRevU+neoILlocnaswysmLqlHrdqLISHUH4IUj1bVWm5nS+kELqQ+iaaL1/YWRThCjY8paE6vH4iIFQZaysNGPkV7wQynhN2aBa/kt66mf0aTvSrvut+chred5tSLpyUoUOcYQ5wtb8LamhrktPbj8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=es7kiwcP; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709241508; x=1740777508;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=59iOag6GB72bkNMijk1auQJkojkJz2SZvr7evBnMPuA=;
-  b=es7kiwcPWTXsaCbdh3Klix22/HClX3Zf1HqzG6XZ4c4HBxV+tzkTxoD2
-   mQzEl37GtgQ452KzqEbOhMwFTFI8G16wcSuHoQ29WfcuGaML3Za04M/ko
-   DjNXHx4BOB9jG0sLwhA8X+UsKmVWhEYtz53Fu2xmDpHWO5v9OeCf1Mc9h
-   mZ3Duadk0n8aE3KPJ5UWuBnIGRT5g9d9hdiUFNKCF2EKzmhbG3yqSpFEJ
-   CDZ4SZIUqayjunCM8z7X8dtTnssZGWM1lglddFQ1UhpGB/Es8SwJHvySA
-   JgooW6Ucl/8uWrGfS1aIcfJje3w485bhs2dDkh6EvYLGLu02o8GMH2Z9/
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="7572755"
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="7572755"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 13:18:27 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="45509481"
-Received: from gditter-mobl1.amr.corp.intel.com (HELO [10.209.51.74]) ([10.209.51.74])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 13:18:27 -0800
-Message-ID: <0f335f76-1a76-4964-9dd4-0491fe4bcf91@linux.intel.com>
-Date: Thu, 29 Feb 2024 13:18:26 -0800
+	s=arc-20240116; t=1709241598; c=relaxed/simple;
+	bh=u3ijsbwwWVJZZGFrjEW1ukuiYsJN0bV+9R2jacwvjH4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uC4qCwNo78l8rZQxnEOkKgT5j4YDzj+hEdM6iRu7lVuNrQ8eI0PupilDUtztbbgcKS0QQVYQo4WowYclD1ImrEwIFkRXeRr+klaOht5vcWYYNdIdTEZXqP2EREsnC4fKvRV49h5RBjXvzSk4kTiQWei2cSXcuEoPJ5mxOqpUoRc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=z5Pa4drf; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=Kpe+BD9QqvU8mxo+1QWrY9BtJ/AXIEAAzW2g70pFWD0=; b=z5Pa4drfS/hdkyfz1vhMyqJeRh
+	1ohaIJ0HH4hAhkci2wtEEIAJCYZfCEKUgi/467nAcM6EGzBUkBwLbL79iuiS90dpP9jJG7Ow8w13e
+	NERyPTxRxyt02vi4+ymA2TKvuQIc7weuwEIfFmOR2vrdJzFT59KKNnQPjEpEl9rxxOwEiWZCAi81k
+	iQR4CSCjNOmU3lmeljn4X1fjLtYQfLG6aB7xsYtnx0gZYuwAYAW2BqO64wWPWOxG2HUjmXyPBMXpO
+	yPvwPC4wAHJ/AIW4w4spaaY6AyzmxFADdVbn9h3MeC59/NupDAccPDAsZq2MNW7ba17y6YYhkGb9n
+	gWxX5RaA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:35576)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rfnoY-0000pd-2p;
+	Thu, 29 Feb 2024 21:19:38 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rfnoU-000189-Nk; Thu, 29 Feb 2024 21:19:34 +0000
+Date: Thu, 29 Feb 2024 21:19:34 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Oleksij Rempel <o.rempel@pengutronix.de>
+Cc: Wei Fang <wei.fang@nxp.com>, "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org, Shenwei Wang <shenwei.wang@nxp.com>,
+	Clark Wang <xiaoning.wang@nxp.com>,
+	NXP Linux Team <linux-imx@nxp.com>
+Subject: Re: [PATCH net-next v7 5/8] net: phy: Immediately call adjust_link
+ if only tx_lpi_enabled changes
+Message-ID: <ZeD05pY1RdKNtrDZ@shell.armlinux.org.uk>
+References: <20240229140800.3420180-1-o.rempel@pengutronix.de>
+ <20240229140800.3420180-6-o.rempel@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] platform/x86: ISST: Allow reading core-power state on HWP
- disabled systems
-Content-Language: en-US
-To: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
- hdegoede@redhat.com, markgross@kernel.org, ilpo.jarvinen@linux.intel.com,
- andriy.shevchenko@linux.intel.com
-Cc: platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240229002659.1416623-1-srinivas.pandruvada@linux.intel.com>
-From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <20240229002659.1416623-1-srinivas.pandruvada@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240229140800.3420180-6-o.rempel@pengutronix.de>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
+On Thu, Feb 29, 2024 at 03:07:57PM +0100, Oleksij Rempel wrote:
+> +static void phy_ethtool_set_eee_noneg(struct phy_device *phydev,
+> +				      struct ethtool_keee *data)
+> +{
+> +	if (phydev->eee_cfg.tx_lpi_enabled != data->tx_lpi_enabled ||
+> +	    phydev->eee_cfg.tx_lpi_timer != data->tx_lpi_timer) {
+> +		eee_to_eeecfg(data, &phydev->eee_cfg);
+> +		phydev->enable_tx_lpi = eeecfg_mac_can_tx_lpi(&phydev->eee_cfg);
+> +		if (phydev->link) {
+> +			phy_link_down(phydev);
+> +			phy_link_up(phydev);
 
-On 2/28/24 4:26 PM, Srinivas Pandruvada wrote:
-> When HWP (Hardware P-states) is disabled, dynamic SST features are
-> disabled. But user should still be able to read the current core-power
-> state, with legacy P-states. This will allow users to read current
-> configuration with static SST enabled from BIOS.
->
-> To address this, do not call disable_dynamic_sst_features() when the
-> request is for reading the state.
->
-> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> ---
+Unfortunately, this isn't sufficient in all cases. Phylink will be fine
+with this though.
 
-Looks good to me.
+If we take a look at fec_enet_adjust_link(), then we can see it tests
+phydev->link directly (which it has to, because there's nothing else
+to determine whether the link is up or down. FEC will cope with its
+fec_enet_adjust_link() being called with no changes however.
 
-Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+In order to properly resolve this, I think we need:
 
->  drivers/platform/x86/intel/speed_select_if/isst_tpmi_core.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/platform/x86/intel/speed_select_if/isst_tpmi_core.c b/drivers/platform/x86/intel/speed_select_if/isst_tpmi_core.c
-> index 2662fbbddf0c..1d918000d72b 100644
-> --- a/drivers/platform/x86/intel/speed_select_if/isst_tpmi_core.c
-> +++ b/drivers/platform/x86/intel/speed_select_if/isst_tpmi_core.c
-> @@ -462,10 +462,10 @@ static long isst_if_core_power_state(void __user *argp)
->  	struct tpmi_per_power_domain_info *power_domain_info;
->  	struct isst_core_power core_power;
->  
-> -	if (disable_dynamic_sst_features())
-> +	if (copy_from_user(&core_power, argp, sizeof(core_power)))
->  		return -EFAULT;
->  
-> -	if (copy_from_user(&core_power, argp, sizeof(core_power)))
-> +	if (core_power.get_set && disable_dynamic_sst_features())
->  		return -EFAULT;
->  
->  	power_domain_info = get_instance(core_power.socket_id, core_power.power_domain_id);
+		if (phydev->link) {
+			phydev->link = false;
+			phy_link_down(phydev);
+			phydev->link = true;
+			phy_link_up(phydev);
+
+to properly avoid the issue I've referred to.
 
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
