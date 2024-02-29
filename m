@@ -1,91 +1,148 @@
-Return-Path: <linux-kernel+bounces-86227-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86228-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F0D586C26D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:27:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8956E86C26F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:27:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 445F61F26643
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 07:27:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB9221C22B81
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 07:27:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1802C482C7;
-	Thu, 29 Feb 2024 07:22:16 +0000 (UTC)
-Received: from isilmar-4.linta.de (isilmar-4.linta.de [136.243.71.142])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F26684D9E0;
+	Thu, 29 Feb 2024 07:22:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GwlJRQP4"
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9209644C73;
-	Thu, 29 Feb 2024 07:22:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=136.243.71.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 392C34CE00
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 07:22:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709191335; cv=none; b=MYv+v4k35H2Glz4xcOxgqdwV8Aq7huLelsNb3bHiP0vh0hW/ipj6U5adleWIKaY37ehSwWnM3C75RKYh5bxh49BjufBtv85mmVlgwmFjT/0oTLHXPQ5U+BZaGWeGQVLxQfSe49/4YACrg2uUPNP5dbQ7oWnwaaIIKe8kbPhHnGY=
+	t=1709191351; cv=none; b=Zb6D0yivOs4exNMGNKzMyoyUmz6b4vvoSYuuAGUiOjSG1EibLm3l9s/4Rdfrqox6N56WOjypjyO9yCbNtbNBLaT2rTFSi2cLh4ufIFD3vd4/+x0V+jhP1kJUHmhTrmrm5hkp0WgcaoXZtaRdfVQNvd0WmCbySaiTt66V9qWeaxc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709191335; c=relaxed/simple;
-	bh=diX3pIRqz7sozTYyyoVHZaQ3JZoXmk83szRqqasw29o=;
+	s=arc-20240116; t=1709191351; c=relaxed/simple;
+	bh=B2rMDekt5HtMATAH5NbOO/N+gagM+7TOQatckzXA2CI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hoo9zcR9J13YKaCtAN6s7cxLs1TskdX8K7tRoHfJkRnrDsaYSEMlu9Wi6ASyWTRfgzB0gPFS1huRElYXglU3l1ijeZb8+qX+RMM2mdVc7XKzGJ8eigALHvu23b4F+v2mG/Ze48Oq0mTGCSizbf20QytEq0ZRbVaDThm9ySSvOFo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dominikbrodowski.net; spf=pass smtp.mailfrom=dominikbrodowski.net; arc=none smtp.client-ip=136.243.71.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dominikbrodowski.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dominikbrodowski.net
-Received: from shine.dominikbrodowski.net (shine.brodo.linta [10.2.0.112])
-	by isilmar-4.linta.de (Postfix) with ESMTPSA id 078582002B9;
-	Thu, 29 Feb 2024 07:22:08 +0000 (UTC)
-Received: by shine.dominikbrodowski.net (Postfix, from userid 1000)
-	id D4A3EA0091; Thu, 29 Feb 2024 08:21:42 +0100 (CET)
-Date: Thu, 29 Feb 2024 08:21:42 +0100
-From: Dominik Brodowski <linux@dominikbrodowski.net>
-To: Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc: tomas.winkler@intel.com, mchehab@kernel.org, wentong.wu@intel.com,
-	hverkuil-cisco@xs4all.nl, linux-media@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: v6.8.0-rc6: mei_ace_probe / mei_vsc_probe: do not call blocking
- ops when !TASK_RUNNING
-Message-ID: <ZeAwhhW7DSEazs0F@shine.dominikbrodowski.net>
-References: <Zd9wUv1zSJ59WS8i@shine.dominikbrodowski.net>
- <Zd-BVmoFOiCxA632@kekkonen.localdomain>
+	 Content-Type:Content-Disposition:In-Reply-To; b=JP4GD6+mfruPw7RUAJf8ECN5g8LP/eSDAr4E58yYT0axsKuaBIraSEBUWrSTmMJkUqZXokVHhMnPtb2kqcYRzmKbgMCmSwiylWXJLBtA6LwYftS0cgo6ZT6Ny7SEyGABx71iChmmJ3vHCDxyjATrwYSHx/2F2BhLYxLeM1ZbLWg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=GwlJRQP4; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-412a3371133so4118095e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 23:22:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709191347; x=1709796147; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=qSpkmdwZczDb3MWqwWIfoboagQrVL6Y3FYyvphJz1kY=;
+        b=GwlJRQP4QjgGr3M8YAHEpOfftnGhTv5zK2HTol5P1NTIM2q2tFp7GJH/uMor+cJPcL
+         GiAYVKhD/t104gC2Ai4431Pxs2C1erhGkDGwsXmfcGYUcZURLrK9SvVn8I6n4aJNEYy0
+         HihMgELy4oo8fQyJMBz16TrNBaYf/edEh0QAKZ2HxqicFQsqvU7l2z2U4D2Phw8baBaO
+         FtfTbfeLHNGe5ecQmLu8LMhLiYBElkesjqRA3JKpbfMpsm1scXDVqs1xt/mrZMcW+srz
+         5JafF6GTazkxrNf3goXIfE4CK6VOaK5bylvjv9Y5Nh9zUYpa4fJHw1iueDMCyYdRDDcM
+         Lm3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709191347; x=1709796147;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qSpkmdwZczDb3MWqwWIfoboagQrVL6Y3FYyvphJz1kY=;
+        b=GLaCK425cu/Zu6L9270QN5jpTD+ejAT95IFBaUMsM0ED/QEonoQmxSvtEbNC0A3svc
+         yNgjQcnDBUNCIN9OwBKTH5+31WslsmNUFgzB45Q4W9z+U7Sv6jP2tsh0eVhvuwqJ4TlF
+         67yIPbJ7mVZGw4r0EZeuzNgvwjrYmy1iNbAzNhNYu8WqkqBKxBvKwTNLi1UkQLJMyFaE
+         qS+S8PSV2iy7x7YJrUI3OGhtMte8f17Evk2A1GFlVlOaS7ZysKfnBZIiOsmtTAbP+ZQ1
+         Ln6NY35dxtZsT28iyB2+rQ5ZMOiLpwAnwKNRsaUe8idSpAVE3vZtXakOcvxhLtN7lLkm
+         mxnA==
+X-Forwarded-Encrypted: i=1; AJvYcCV5vV4GjSw7U3WWI2VQfJKESdjUYYF6EPK1qnzqmLYArotERRvMWT5988yT3jQiUoFnkPKTw4atmrtPpvyFGcYwnNk1KXnzZ9/vWD+t
+X-Gm-Message-State: AOJu0YwayDgqhj9wTvcLkiSJWcTnpLISzTIlPudzjuTynNYnWYkOddMD
+	TasZADdZcavDubn01EKc9lRO3suta0hxXIe5WImceCl7IRi7gmJlZbgnhsukzVo=
+X-Google-Smtp-Source: AGHT+IFd5PRO4Rm9BiSKL65Z1o+8jKo2we3uU/kJCWedakJEnZxvvBIupcRo7apFrUM69zhmpKKPKg==
+X-Received: by 2002:a05:600c:a4c:b0:412:afed:5cfb with SMTP id c12-20020a05600c0a4c00b00412afed5cfbmr1161716wmq.15.1709191347593;
+        Wed, 28 Feb 2024 23:22:27 -0800 (PST)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id b11-20020a5d634b000000b0033d6fe3f6absm908274wrw.62.2024.02.28.23.22.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Feb 2024 23:22:27 -0800 (PST)
+Date: Thu, 29 Feb 2024 10:22:23 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Alexander Potapenko <glider@google.com>,
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+	Marco Elver <elver@google.com>
+Subject: Re: [PATCH] lib/stackdepot: off by one in depot_fetch_stack()
+Message-ID: <5d74dbd9-99e4-4ebe-a9a0-bd8f571d0f56@moroto.mountain>
+References: <361ac881-60b7-471f-91e5-5bf8fe8042b2@moroto.mountain>
+ <CA+fCnZd_eNHes56x3edzcYWeDKW2WRJYqrz_FyCks5wxtLdFdQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <Zd-BVmoFOiCxA632@kekkonen.localdomain>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+fCnZd_eNHes56x3edzcYWeDKW2WRJYqrz_FyCks5wxtLdFdQ@mail.gmail.com>
 
-Hi Sakari,
+On Wed, Feb 28, 2024 at 06:10:31PM +0100, Andrey Konovalov wrote:
+> On Fri, Feb 23, 2024 at 3:20 PM Dan Carpenter <dan.carpenter@linaro.org> wrote:
+> >
+> > The stack_pools[] array has DEPOT_MAX_POOLS.  The "pools_num" tracks the
+> > number of pools which are initialized.  See depot_init_pool() for more
+> > details.
+> >
+> > If pool_index == pools_num_cached, this will read one element beyond what
+> > we want.  If not all the pools are initialized, then the pool will be
+> > NULL, triggering a WARN(), and if they are all initialized it will read
+> > one element beyond the end of the array.
+> >
+> > Fixes: b29d31885814 ("lib/stackdepot: store free stack records in a freelist")
+> > Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+> > ---
+> > From static analysis.  What seems to have happened is that originally
+> > we stored the highest index instead of the number of elements and when
+> > we changed the > to >= comparison was overlooked.
+> >
+> >  lib/stackdepot.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/lib/stackdepot.c b/lib/stackdepot.c
+> > index 8c795bb20afb..af6cc19a2003 100644
+> > --- a/lib/stackdepot.c
+> > +++ b/lib/stackdepot.c
+> > @@ -447,7 +447,7 @@ static struct stack_record *depot_fetch_stack(depot_stack_handle_t handle)
+> >
+> >         lockdep_assert_not_held(&pool_lock);
+> >
+> > -       if (pool_index > pools_num_cached) {
+> > +       if (pool_index >= pools_num_cached) {
+> >                 WARN(1, "pool index %d out of bounds (%d) for stack id %08x\n",
+> >                      pool_index, pools_num_cached, handle);
+> >                 return NULL;
+> > --
+> > 2.43.0
+> >
+> 
+> Hi Dan,
+> 
+> This patch needs to be rebased onto "lib/stackdepot: Fix first entry
+> having a 0-handle", which is now in mm-stable.
 
-many thanks, this patch helps. Another issue persists, though:
+I wrote it on top of that patch...  Backports will need to be adjusted
+to handle it, I guess.  The "lib/stackdepot: fix first entry having a
+0-handle" commit has this note:
 
+    This bug has been lurking since the very beginning of stackdepot, but no
+    one really cared as it seems.  Because of that I am not adding a Fixes
+    tag.
 
-$ dmesg | cut -c16- | grep -E "(mei|vsc)"
-mei_me 0000:00:16.0: enabling device (0000 -> 0002)
-mei_hdcp 0000:00:16.0-b638ab7e-94e2-4ea2-a552-d1c54b627f04: bound 0000:00:02.0 (ops i915_hdcp_ops)
-mei_pxp 0000:00:16.0-fbf6fcf1-96cf-4e2e-a6a6-1bab8cbe36b1: bound 0000:00:02.0 (ops i915_pxp_tee_component_ops)
-intel_vsc intel_vsc: silicon stepping version is 0:2
-mei intel_vsc-92335fcf-3203-4472-af93-7b4453ac29da: deferred probe pending: (reason unknown)
-mei intel_vsc-5db76cf6-0a68-4ed6-9b78-0361635e2447: deferred probe pending: (reason unknown)
+I don't really know the code very well so I can't respond to that.
 
+regards,
+dan carpenter
 
-During suspend entry (s2idle), the following messages are emitted:
-
-ACPI Warning: \_SB.PC00.SPI1.SPFD.CVFD.SID: Insufficient arguments - Caller passed 0, method requires 1 (20230628/nsarguments-232)
-intel_vsc intel_vsc: silicon stepping version is 0:2
-PM: Some devices failed to suspend, or early wake event detected
-ACPI Warning: \_SB.PC00.SPI1.SPFD.CVFD.SID: Insufficient arguments - Caller passed 0, method requires 1 (20230628/nsarguments-232)
-intel_vsc intel_vsc: silicon stepping version is 0:2
-vsc-tp spi-INTC1094:00: wakeup firmware failed ret: -110
-vsc-tp spi-INTC1094:00: wakeup firmware failed ret: -110
-intel_vsc intel_vsc: wait fw ready failed: -110
-intel_vsc intel_vsc: hw_start failed ret = -110 fw status = 
-intel_vsc intel_vsc: unexpected reset: dev_state = RESETTING fw status = 
-ACPI Warning: \_SB.PC00.SPI1.SPFD.CVFD.SID: Insufficient arguments - Caller passed 0, method requires 1 (20230628/nsarguments-232)
-intel_vsc intel_vsc: silicon stepping version is 0:2
-
-
-Any ideas?
-
-Thanks,
-	Dominik
 
