@@ -1,139 +1,113 @@
-Return-Path: <linux-kernel+bounces-87612-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87613-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 500BD86D678
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 23:00:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 097D586D67D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 23:00:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3D47284749
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:00:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1AFC284978
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:00:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C44756D53A;
-	Thu, 29 Feb 2024 22:00:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9D9574BF1;
+	Thu, 29 Feb 2024 22:00:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F6zGX4Fu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bnLss1W+"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F3F96D527;
-	Thu, 29 Feb 2024 22:00:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8FA66D528;
+	Thu, 29 Feb 2024 22:00:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709244010; cv=none; b=YamjfDCIGt8GJLoeq8qep2QDmOiIJIeLnT//J93xRx4sOYv3XcjcqodjqIX4wiq0XeEUQMOQrro1BFWiJVGFIm9HuX3TmCUIdyGiI2HeGvV0c2XCPnRZuvVDfRU6tKayMmxE0yfEe7AczHm1msqtK4GCkwKwh069MqrVEzntCRo=
+	t=1709244035; cv=none; b=ZLM/WinsGVOxdHw/lumS5LvNhvwvTaQZV1p8BFz/Aw2vivCpR/xnomOgUZA9IaJMx/DspZwJkjIaOClir+iRtbhJdEnKaiJo706M0fEn/0crggX6heo3J7YmgR1MtPofRWo+SHXs3XLfV3SKYDK1gN1Msal1cREBY4G+IasBaEw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709244010; c=relaxed/simple;
-	bh=JuLKuv9vi1UpgjQb6iZ/s5tKM7G8kvJpQug1R9JQik4=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=PTW/IhK24RiFlfn8pwfotQmsc1I2exi0hSlSKM/FiY18DGD1Zl09sWn3hmgRjH+/sKSClBFhjuVHTjWyiJJOzr6bj27aJ2/d9YuHuYSomrK0pDLkGEYxuCjp7bw2rai0GdjZSeU9J9aYsQXGSFnFUdias1dX5aobeUGSC0CNGGI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F6zGX4Fu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C9B5C433C7;
-	Thu, 29 Feb 2024 22:00:09 +0000 (UTC)
+	s=arc-20240116; t=1709244035; c=relaxed/simple;
+	bh=DKB2o2S+feMPyuNFbB3ii6e3+RACDzpX5U78cW6QHLg=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=oKz4unf03JftsvKwqoofLKDuD34trVi5SowwxDHcpPOZfI5tbLoWEIGdzMVmdPvmmTgCzFjdzpZ0q0TxhJe2hE+ifLPgq7N/yObYDpPCmpSEbn1SitOjycwoouM+GapTWC3b7FLiqFOOP46d9EHLcxMm+MBiK05pGyfu6SjcznM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bnLss1W+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5E039C43399;
+	Thu, 29 Feb 2024 22:00:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709244009;
-	bh=JuLKuv9vi1UpgjQb6iZ/s5tKM7G8kvJpQug1R9JQik4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=F6zGX4Fub1daiAOFxkzZN2JFUabRk6yUdYtB5+B5zBu/nT3JD5Hw3rwjsoaMu+6je
-	 ClInbM1yPNjmIK52UWeM401vCcBXqaWjNRah6umLHUC0M29dYJDCM7CBiHGpJIAf+a
-	 /CqazZmnPRVpCMWLwaHfqzkgEHdMUOGEsSCFV9QV3Ilivq8fe+epr22ob6GBkPNw05
-	 tqN2L4fIr32EJ+Cx9veSeV8TQmtXDJNDzU7ZkvFPR/aKlt0Q6G/I5LiOpYGtpK3z5A
-	 EVGk31enEnfhiikeNzk9tof79tL+TqL3ltxbAxS+RLlm51cLqevxeye6uEZ5oqJQNU
-	 puZW2DKayaNcw==
-Date: Thu, 29 Feb 2024 16:00:08 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Raag Jadav <raag.jadav@intel.com>
-Cc: bhelgaas@google.com, jarkko.nikula@linux.intel.com,
-	mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com,
-	stanislaw.gruszka@linux.intel.com, lukas@wunner.de,
-	rafael@kernel.org, ilpo.jarvinen@linux.intel.com,
-	linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-	sashal@kernel.org
-Subject: Re: [PATCH v2] PCI / PM: Really allow runtime PM without callback
- functions
-Message-ID: <20240229220008.GA364904@bhelgaas>
+	s=k20201202; t=1709244034;
+	bh=DKB2o2S+feMPyuNFbB3ii6e3+RACDzpX5U78cW6QHLg=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=bnLss1W+2l/1sqZokR2ESJQoKdRvn/Bsqg1lCQJuJJ7OjMjITbQtqMUE33okDC5Um
+	 DhlusOnGWg+gyKrv+ptLGC7uBUpaWggzJrY5a1RC+vujCYwb9l+4/33MuyRXE5o22Z
+	 klYcqmYTroM2wlRmGqE8YmbFd8XCFB6JhZCCAMPS3NYP46TTm8vyqJpGbIKuhdIKlB
+	 tFQb+7QzYz0Eea/ACrmXGkRi5Csr5/BTmt0k2dTVWZK3eBkIqjXZ6fVgbXRoxUhOML
+	 NsjrQ1J8OYj+hWnQ3AO3m9Xyqt765an9OSZ3j+f4jFuqBvf2G6YZzokyY2lxYa6yW7
+	 ZiDguuIfHIVaA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3EBE5C595D1;
+	Thu, 29 Feb 2024 22:00:34 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240227062648.16579-1-raag.jadav@intel.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v6] bpf: Replace bpf_lpm_trie_key 0-length array with flexible
+ array
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170924403425.8275.6534761971040087521.git-patchwork-notify@kernel.org>
+Date: Thu, 29 Feb 2024 22:00:34 +0000
+References: <20240222155612.it.533-kees@kernel.org>
+In-Reply-To: <20240222155612.it.533-kees@kernel.org>
+To: Kees Cook <keescook@chromium.org>
+Cc: daniel@iogearbox.net, mark.rutland@arm.com, gustavoars@kernel.org,
+ ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+ yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+ haoluo@google.com, jolsa@kernel.org, mykolal@fb.com, shuah@kernel.org,
+ baihaowen@meizu.com, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ yonghong.song@linux.dev, corbet@lwn.net, davem@davemloft.net,
+ kuba@kernel.org, hawk@kernel.org, joannelkoong@gmail.com,
+ laoar.shao@gmail.com, kuifeng@meta.com, aspsk@isovalent.com,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ netdev@vger.kernel.org, linux-hardening@vger.kernel.org
 
-On Tue, Feb 27, 2024 at 11:56:48AM +0530, Raag Jadav wrote:
-> Commit c5eb1190074c ("PCI / PM: Allow runtime PM without callback
-> functions") tried to eliminate the need for runtime PM callbacks by
-> modifying pci_pm_runtime_suspend() and pci_pm_runtime_resume(), but
-> didn't modify pci_pm_runtime_idle() with relevant changes, which still
-> returns -ENOSYS if the driver supplies no runtime PM callbacks.
+Hello:
+
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
+
+On Thu, 22 Feb 2024 07:56:15 -0800 you wrote:
+> Replace deprecated 0-length array in struct bpf_lpm_trie_key with
+> flexible array. Found with GCC 13:
 > 
-> Modify pci_pm_runtime_idle() such that it allows PCI device power state
-> transitions without runtime PM callbacks and complete the original
-> intention of commit c5eb1190074c ("PCI / PM: Allow runtime PM without
-> callback functions").
+> ../kernel/bpf/lpm_trie.c:207:51: warning: array subscript i is outside array bounds of 'const __u8[0]' {aka 'const unsigned char[]'} [-Warray-bounds=]
+>   207 |                                        *(__be16 *)&key->data[i]);
+>       |                                                   ^~~~~~~~~~~~~
+> ../include/uapi/linux/swab.h:102:54: note: in definition of macro '__swab16'
+>   102 | #define __swab16(x) (__u16)__builtin_bswap16((__u16)(x))
+>       |                                                      ^
+> ../include/linux/byteorder/generic.h:97:21: note: in expansion of macro '__be16_to_cpu'
+>    97 | #define be16_to_cpu __be16_to_cpu
+>       |                     ^~~~~~~~~~~~~
+> ../kernel/bpf/lpm_trie.c:206:28: note: in expansion of macro 'be16_to_cpu'
+>   206 |                 u16 diff = be16_to_cpu(*(__be16 *)&node->data[i]
+> ^
+>       |                            ^~~~~~~~~~~
+> In file included from ../include/linux/bpf.h:7:
+> ../include/uapi/linux/bpf.h:82:17: note: while referencing 'data'
+>    82 |         __u8    data[0];        /* Arbitrary size */
+>       |                 ^~~~
 > 
-> Signed-off-by: Raag Jadav <raag.jadav@intel.com>
-> Acked-by: Rafael J. Wysocki <rafael@kernel.org>
-> Tested-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Reviewed-by: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+> [...]
 
-Applied to pci/pm for v6.9, thanks!
+Here is the summary with links:
+  - [v6] bpf: Replace bpf_lpm_trie_key 0-length array with flexible array
+    https://git.kernel.org/bpf/bpf-next/c/896880ff3086
 
-I updated the commit log to try to clarify which drivers would be
-affected.  Now that I worked through those details, I see that it was
-all there from the beginning and it just took a long time to sink into
-my head:
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-    PCI/PM: Allow runtime PM with no PM callbacks at all
 
-    Commit c5eb1190074c ("PCI / PM: Allow runtime PM without callback
-    functions") eliminated the need for PM callbacks in
-    pci_pm_runtime_suspend() and pci_pm_runtime_resume(), but
-    didn't do the same for pci_pm_runtime_idle().
-
-    Therefore, runtime suspend worked as long as the driver implemented at
-    least one PM callback.  But if the driver doesn't implement any PM
-    callbacks at all (driver->pm is NULL), pci_pm_runtime_idle() returned
-    -ENOSYS, which prevented runtime suspend.
-
-    Modify pci_pm_runtime_idle() to allow PCI device power state transitions
-    without runtime PM callbacks and complete the original intention of commit
-    c5eb1190074c ("PCI / PM: Allow runtime PM without callback functions").
-
-Bjorn
-
-> ---
-> 
-> This is not marked for linux-stable for the need of extensive testing
-> and can be backported after a few releases if no issues are reported.
-> 
-> Changes since v1:
-> - Update commit message and tags
-> 
->  drivers/pci/pci-driver.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
-> 
-> diff --git a/drivers/pci/pci-driver.c b/drivers/pci/pci-driver.c
-> index 51ec9e7e784f..bb7f6775b350 100644
-> --- a/drivers/pci/pci-driver.c
-> +++ b/drivers/pci/pci-driver.c
-> @@ -1382,10 +1382,7 @@ static int pci_pm_runtime_idle(struct device *dev)
->  	if (!pci_dev->driver)
->  		return 0;
->  
-> -	if (!pm)
-> -		return -ENOSYS;
-> -
-> -	if (pm->runtime_idle)
-> +	if (pm && pm->runtime_idle)
->  		return pm->runtime_idle(dev);
->  
->  	return 0;
-> -- 
-> 2.35.3
-> 
 
