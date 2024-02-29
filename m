@@ -1,154 +1,323 @@
-Return-Path: <linux-kernel+bounces-87669-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87670-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE4CA86D797
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 00:16:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32B1F86D79C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 00:19:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D9201F22CF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 23:16:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB7BB284DD4
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 23:19:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EECC774BFE;
-	Thu, 29 Feb 2024 23:16:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 703497827E;
+	Thu, 29 Feb 2024 23:19:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PxZTJH0Q"
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="AOB2YHap"
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6382945957
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 23:16:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7519216FF4D
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 23:19:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709248611; cv=none; b=URq6ha3ygs7uSWnmTUotxRHuotmcUNt2fEhcH7DBcy9eDOYO5Dx6TUHuqoZEBrqcRWjcpUBNg2yrvxt7uz+pvZMVx3kDQpjj26L0tAT3K3Nm6Lthz5Y5GdHkofP1lpkcR6zTwmTRqsVUtD18H5H8ZMlMIn5uaKHLhZQTEA8UW1o=
+	t=1709248777; cv=none; b=MexPH5cGwNX3xabYzIY9T5d/n9aijPul8e4tl4ZXIouzl6sPW09QLarnsplam1hmpV1Fb4tKjya3EXBeWz1NICa1ZQFMKvhprrGztZq93cD0PfjaKEgU1Wi/KYS5fAtHaUM0s/zHbNWVuXh+CLPuYIpYVGjpVfXX5fJNBNQ0pmw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709248611; c=relaxed/simple;
-	bh=kko1wRbcDQvt3W65DRy9btpMD1yYIdX2oPSHln6jwMQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=KOrqsnciot3koltJASAIHNg6Aq6tgPX5d8UzyVaIMEWRa/+y8COzl/E/fGXWfUHj2ilUjGsv3P9rYq2nS4IbjKuxDTgYZOsfn6QI0WuNIdRCx+NryzYYZM9Li149RfG/KGWsyOCnUbFeLDJx1IcbKo636Rtjov2RRJcDGbTIXic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PxZTJH0Q; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-412ae15b06fso9920205e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 15:16:49 -0800 (PST)
+	s=arc-20240116; t=1709248777; c=relaxed/simple;
+	bh=2kotFClL0JGImFY2aTTcMd9xMgn5EvihRb8H2+B4YgY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Y/5xEkKySDFG56B4QGuQfGtcwbgpgUGktt2fYpb4S/G2NaTXzqRswAoSzaV+F7TAieoNZ2vaZoS5rVk7/oz/vGmFc5WbdAC3/lj7B+j8xRfuAaGOw48mymNPIhhycsorgPWwdtBsBZMbkk/EfIUBFayHl09YRoOFRlQh3gxKf9o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=AOB2YHap; arc=none smtp.client-ip=209.85.215.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so1148691a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 15:19:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709248608; x=1709853408; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=67SNOCAdR0s4Rh4ZptML72F1P1c4wCYZ2HszSt1XfEo=;
-        b=PxZTJH0QpvrpwuxR0eAsRqbsE1hxxi2aOleLjuyUgs4dJHnarfOdl94pfLch+ds0Kl
-         e3N5WSmCcWkeulNzfubup+SLWjsCzbkgc0s8gc+iCMHUYTv0ofBnSdY5xsIv80wAwj3N
-         +eXJ3ZEzxuOSETZL/g+pf/dCuSHqbhyB/BQKtNuEfoPSFMGfn//8By2eeOmctVHSW+7Y
-         3i3VYPA3Z1KaSdRNxq/X+wYwV4iMNoR6wClXx1n3ypXki9djpKW+UgPK86QeYuCoTQo9
-         GtCzTkKO58ZXIaQjcjicqcGOcXD1SlzlTFIdPMtbTVaLwdr1d3zLKOQzt0UN7fcglwuo
-         u7lQ==
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1709248775; x=1709853575; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=LzB2DcfYOR7VovBPih0jTdeK49M04fl9RE9G+2FG9Wo=;
+        b=AOB2YHapVsMh1EVFpChLVO2gGb6fHNeaYiivJx/Mkc69IYrtxsT7Yhk81bkB7Vfa0c
+         k0KqO/t53HIjAmEzjxYEfPdXoPg2XUyvfcIZH6YHf45Rk4pNs3hDBGVdHcj6aSkGvPna
+         X7DR6fmkpT1go+4lyUcWIB7Xpska3IZW/LSPocgqnSqiT1/N0LztPT/Q+wlEcE6IRuGa
+         QFj0bzHZ7qvHra9Q84iogI5qqP67F0eMEJJci6VzwmfQqYhPFzGeblmvb0fU5vAc+4UZ
+         AJmQQ7rUUiH0bQPwgEVV3gnuOygVTIwqBk1M/ff24vlaxN72mW/2OKEof9IwKv7i6E/7
+         uXew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709248608; x=1709853408;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=67SNOCAdR0s4Rh4ZptML72F1P1c4wCYZ2HszSt1XfEo=;
-        b=cTePe1PBwBPrJDTSPnahCDVKZx0x2QmKgewpz5TyhagdANs2m+VCEvBanVcsLyGejc
-         196h0MyH9bUacXDfwzFT0GM23hMeBB/187YqfgJCxv4hiff0UFqYyAiutfOPhcyu+Dp+
-         iZOWxpKsc/FXxapZKyHJKq+mOtfPVIJXqZgMjRXQs+J8HZu5iRmUXmK/ruwCIsZnoM0p
-         vClEFzysDTAIHCTC7BZ5jWz4Tn5lM9ZNSN4V7pJcl1uXYOAZXqCOv9wXrC/SeOFZ+t51
-         KimGhkYprFLKp1lHei1Dv97cDtZ6rdNv/6OY0LjHnK2Jzs7TwCx4MufRfn/UFyhHcmm4
-         dmIQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX4ZHtaaO+GSiRnERB30psI60Fib54+HvXw9F04+eQI8xLKzYlFKFbvKjJExzDwEUuqN3zD967qGzC/7ibPiXTeP+Jok+hLqRfkheM8
-X-Gm-Message-State: AOJu0YyAVYNkcS6DDiAmw1JuajgXPHGmxBk7zodU9mBj4/jpdBqGSvj4
-	bGfB+rAfSfTYmXR5pLxxQF8gQstLJQOLV7aj9tCwy6qCw9D9wegQ
-X-Google-Smtp-Source: AGHT+IE45Yvom/A/j4RSMfDYF1CUEdZTkwIkyVR4ezwPFfY1flUHd2kbPJ5xKXEOW1rOccNE4mu7Qg==
-X-Received: by 2002:a05:600c:c8b:b0:412:85c2:db12 with SMTP id fj11-20020a05600c0c8b00b0041285c2db12mr75679wmb.2.1709248607440;
-        Thu, 29 Feb 2024 15:16:47 -0800 (PST)
-Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
-        by smtp.gmail.com with ESMTPSA id m17-20020a05600c4f5100b00412b7456ef7sm3506412wmq.5.2024.02.29.15.16.46
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 29 Feb 2024 15:16:46 -0800 (PST)
-From: Puranjay Mohan <puranjay12@gmail.com>
-To: catalin.marinas@arm.com,
-	will@kernel.org,
-	nathan@kernel.org,
-	mark.rutland@arm.com,
-	broonie@kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev
-Cc: puranjay12@gmail.com
-Subject: [PATCH] arm64: prohibit probing on arch_kunwind_consume_entry()
-Date: Thu, 29 Feb 2024 23:16:20 +0000
-Message-Id: <20240229231620.24846-1-puranjay12@gmail.com>
-X-Mailer: git-send-email 2.40.1
+        d=1e100.net; s=20230601; t=1709248775; x=1709853575;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LzB2DcfYOR7VovBPih0jTdeK49M04fl9RE9G+2FG9Wo=;
+        b=BrD08GGAktIx06NnTbm48lEA2ZUNa1GY+nq28z90W1jP4gSNX2wIfCRbJwzZyL/Ofs
+         +kRrqvdMCA8iHiMeKIHJA2cUBeVnIxZvcqIQa0MxwigJ3V8DrsLFLQ7V421Xc/w/jujS
+         ngvT4arXx8y6n420YUfGxLFZPi1uYG+KKBZ588PQXan8onJYWepWI+4xfufDoeb1WpT7
+         hsMi7ufeH4aN3BDXjb4Yl/6OHQ5Nojq3UGdZBiPmvUEi/Aan/371bgvFaTgznXgxn92g
+         NqVulb+RBgBzou/CHs3/6M3/UWvavGewfHbSnAn4EeJlA7Z8BwpWvlmnsBiFXCcvWN4f
+         BBqA==
+X-Forwarded-Encrypted: i=1; AJvYcCULNRE4md57zj0w3U1KvZvZq0RdPpgEhfJbkB6wZ4pG4k+iKyHalZEWgcWEHnu/tEmCR5BI9VKfSncuOpblOjjbAuGiIUUFE5q1OlC5
+X-Gm-Message-State: AOJu0Yxw3Y7UADYjk6Mqo4Vtm4pCvOsyEIZT3+CJjPvE8SiaRTiWBcF6
+	mrmSWc6mnrI9aU/bdj+/sOLLvgPtPdWgjl1nImzmPgWWMJGmKL127EGluAV9alM=
+X-Google-Smtp-Source: AGHT+IG84xb6+RPgA/S6whpydeQjGZWhjkSRY0cJM2NPzuyxJYlQl4nrAkOGJffUmhItKUU/uGO2fQ==
+X-Received: by 2002:a17:90a:3004:b0:299:6389:2961 with SMTP id g4-20020a17090a300400b0029963892961mr88532pjb.13.1709248774686;
+        Thu, 29 Feb 2024 15:19:34 -0800 (PST)
+Received: from dread.disaster.area (pa49-181-247-196.pa.nsw.optusnet.com.au. [49.181.247.196])
+        by smtp.gmail.com with ESMTPSA id x6-20020a170902a38600b001db86c48221sm2096693pla.22.2024.02.29.15.19.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Feb 2024 15:19:34 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1rfpgY-00DJED-2Z;
+	Fri, 01 Mar 2024 10:19:30 +1100
+Date: Fri, 1 Mar 2024 10:19:30 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: Christoph Hellwig <hch@infradead.org>, djwong@kernel.org,
+	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	linux-xfs@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+	jack@suse.cz, ritesh.list@gmail.com, willy@infradead.org,
+	zokeefe@google.com, yi.zhang@huawei.com, chengzhihao1@huawei.com,
+	yukuai3@huawei.com, wangkefeng.wang@huawei.com
+Subject: Re: [RFC PATCH v3 07/26] iomap: don't increase i_size if it's not a
+ write operation
+Message-ID: <ZeERAob9Imwh01bG@dread.disaster.area>
+References: <20240127015825.1608160-1-yi.zhang@huaweicloud.com>
+ <20240127015825.1608160-8-yi.zhang@huaweicloud.com>
+ <ZcsCP4h-ExNOcdD6@infradead.org>
+ <9b0040ef-3d9d-6246-4bdd-82b9a8f55fa2@huaweicloud.com>
+ <Zd+y2VP8HpbkDu41@dread.disaster.area>
+ <45c1607a-805d-e7a2-a5ca-3fd7e507a664@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <45c1607a-805d-e7a2-a5ca-3fd7e507a664@huaweicloud.com>
 
-Make arch_kunwind_consume_entry() as __always_inline otherwise the
-compiler might not inline it and allow attaching probes to it.
+On Thu, Feb 29, 2024 at 04:59:34PM +0800, Zhang Yi wrote:
+> Hello, Dave!
+> 
+> On 2024/2/29 6:25, Dave Chinner wrote:
+> > On Wed, Feb 28, 2024 at 04:53:32PM +0800, Zhang Yi wrote:
+> >> On 2024/2/13 13:46, Christoph Hellwig wrote:
+> >>> Wouldn't it make more sense to just move the size manipulation to the
+> >>> write-only code?  An untested version of that is below.  With this
+> >>> the naming of the status variable becomes even more confusing than
+> >>> it already is, maybe we need to do a cleanup of the *_write_end
+> >>> calling conventions as it always returns the passed in copied value
+> >>> or 0.
+> >>>
+> >>> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> >>> index 3dab060aed6d7b..8401a9ca702fc0 100644
+> >>> --- a/fs/iomap/buffered-io.c
+> >>> +++ b/fs/iomap/buffered-io.c
+> >>> @@ -876,34 +876,13 @@ static size_t iomap_write_end(struct iomap_iter *iter, loff_t pos, size_t len,
+> >>>  		size_t copied, struct folio *folio)
+> >>>  {
+> >>>  	const struct iomap *srcmap = iomap_iter_srcmap(iter);
+> >>> -	loff_t old_size = iter->inode->i_size;
+> >>> -	size_t ret;
+> >>> -
+> >>> -	if (srcmap->type == IOMAP_INLINE) {
+> >>> -		ret = iomap_write_end_inline(iter, folio, pos, copied);
+> >>> -	} else if (srcmap->flags & IOMAP_F_BUFFER_HEAD) {
+> >>> -		ret = block_write_end(NULL, iter->inode->i_mapping, pos, len,
+> >>> -				copied, &folio->page, NULL);
+> >>> -	} else {
+> >>> -		ret = __iomap_write_end(iter->inode, pos, len, copied, folio);
+> >>> -	}
+> >>> -
+> >>> -	/*
+> >>> -	 * Update the in-memory inode size after copying the data into the page
+> >>> -	 * cache.  It's up to the file system to write the updated size to disk,
+> >>> -	 * preferably after I/O completion so that no stale data is exposed.
+> >>> -	 */
+> >>> -	if (pos + ret > old_size) {
+> >>> -		i_size_write(iter->inode, pos + ret);
+> >>> -		iter->iomap.flags |= IOMAP_F_SIZE_CHANGED;
+> >>> -	}
+> >>
+> >> I've recently discovered that if we don't increase i_size in
+> >> iomap_zero_iter(), it would break fstests generic/476 on xfs. xfs
+> >> depends on iomap_zero_iter() to increase i_size in some cases.
+> >>
+> >>  generic/476 75s ... _check_xfs_filesystem: filesystem on /dev/pmem2 is inconsistent (r)
+> >>  (see /home/zhangyi/xfstests-dev/results//xfs/generic/476.full for details)
+> >>
+> >>  _check_xfs_filesystem: filesystem on /dev/pmem2 is inconsistent (r)
+> >>  *** xfs_repair -n output ***
+> >>  Phase 1 - find and verify superblock...
+> >>  Phase 2 - using internal log
+> >>          - zero log...
+> >>          - scan filesystem freespace and inode maps...
+> >>  sb_fdblocks 10916, counted 10923
+> >>          - found root inode chunk
+> >>  ...
+> >>
+> >> After debugging and analysis, I found the root cause of the problem is
+> >> related to the pre-allocations of xfs. xfs pre-allocates some blocks to
+> >> reduce fragmentation during buffer append writing, then if we write new
+> >> data or do file copy(reflink) after the end of the pre-allocating range,
+> >> xfs would zero-out and write back the pre-allocate space(e.g.
+> >> xfs_file_write_checks() -> xfs_zero_range()), so we have to update
+> >> i_size before writing back in iomap_zero_iter(), otherwise, it will
+> >> result in stale delayed extent.
+> > 
+> > Ok, so this is long because the example is lacking in clear details
+> > so to try to understand it I've laid it out in detail to make sure
+> > I've understood it correctly.
+> > 
+> 
+> Thanks for the graph, the added detail makes things clear and easy to
+> understand. To be honest, it's not exactly the same as the results I
+> captured and described (the position A\B\C\D\E\F I described is
+> increased one by one), but the root cause of the problem is the same,
+> so it doesn't affect our understanding of the problem.
 
-Without this, just probing arch_kunwind_consume_entry() via
-<tracefs>/kprobe_events will crash the kernel on arm64.
+OK, good :)
 
-The crash can be reproduced using the following compiler and kernel
-combination:
-clang version 19.0.0git (https://github.com/llvm/llvm-project.git d68d29516102252f6bf6dc23fb22cef144ca1cb3)
-commit 87adedeba51a ("Merge tag 'net-6.8-rc7' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net")
+....
 
- [root@localhost ~]# echo 'p arch_kunwind_consume_entry' > /sys/kernel/debug/tracing/kprobe_events
- [root@localhost ~]# echo 1 > /sys/kernel/debug/tracing/events/kprobes/enable
+> > However, if this did actually write zeroes to disk, this would end
+> > up with:
+> > 
+> > 	A          C           B     E       F      D
+> > 	+wwwwwwwwww+DDDDDDDDDDD+zzzzz+rrrrrrr+dddddd+
+> > 	                      EOF   EOF
+> >                       (in memory)   (on disk)
+> > 
+> > Which is wrong - the file extension and zeros should not get exposed
+> > to the user until the entire reflink completes. This would expose
+> > zeros at the EOF and a file size that the user never asked for after
+> > a crash. Experience tells me that they would report this as
+> > "filesystem corrupting data on crash".
+> > 
+> > If we move where i_size gets updated by iomap_zero_iter(), we get:
+> > 
+> > 	A          C           B     E       F      D
+> > 	+wwwwwwwwww+DDDDDDDDDDD+zzzzz+rrrrrrr+dddddd+
+> > 	                            EOF
+> >                                 (in memory)
+> > 		                 (on disk)
+> > 
+> > Which is also wrong, because now the user can see the size change
+> > and read zeros in the middle of the clone operation, which is also
+> > wrong.
+> > 
+> > IOWs, we do not want to move the in-memory or on-disk EOF as a
+> > result of zeroing delalloc extents beyond EOF as it opens up
+> > transient, non-atomic on-disk states in the event of a crash.
+> > 
+> > So, catch-22: we need to move the in-memory EOF to write back zeroes
+> > beyond EOF, but that would move the on-disk EOF to E before the
+> > clone operation starts. i.e. it makes clone non-atomic.
+> 
+> Make sense. IIUC, I also notice that xfs_file_write_checks() zero
+> out EOF blocks if the later write offset is beyond the size of the
+> file.  Think about if we replace the reflink operation to a buffer
+> write E to F, although it doesn't call xfs_flush_unmap_range()
+> directly, but if it could be raced by another background write
+> back, and trigger the same problem (I've not try to reproduce it,
+> so please correct me if I understand wrong).
 
- Modules linked in: aes_ce_blk aes_ce_cipher ghash_ce sha2_ce virtio_net sha256_arm64 sha1_ce arm_smccc_trng net_failover failover virtio_mmio uio_pdrv_genirq uio sch_fq_codel dm_mod dax configfs
- CPU: 3 PID: 1405 Comm: bash Not tainted 6.8.0-rc6+ #14
- Hardware name: linux,dummy-virt (DT)
- pstate: 604003c5 (nZCv DAIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
- pc : kprobe_breakpoint_handler+0x17c/0x258
- lr : kprobe_breakpoint_handler+0x17c/0x258
- sp : ffff800085d6ab60
- x29: ffff800085d6ab60 x28: ffff0000066f0040 x27: ffff0000066f0b20
- x26: ffff800081fa7b0c x25: 0000000000000002 x24: ffff00000b29bd18
- x23: ffff00007904c590 x22: ffff800081fa6590 x21: ffff800081fa6588
- x20: ffff00000b29bd18 x19: ffff800085d6ac40 x18: 0000000000000079
- x17: 0000000000000001 x16: ffffffffffffffff x15: 0000000000000004
- x14: ffff80008277a940 x13: 0000000000000003 x12: 0000000000000003
- x11: 00000000fffeffff x10: c0000000fffeffff x9 : aa95616fdf80cc00
- x8 : aa95616fdf80cc00 x7 : 205d343137373231 x6 : ffff800080fb48ec
- x5 : 0000000000000000 x4 : 0000000000000001 x3 : 0000000000000000
- x2 : 0000000000000000 x1 : ffff800085d6a910 x0 : 0000000000000079
- Call trace:
- kprobes: Failed to recover from reentered kprobes.
- kprobes: Dump kprobe:
- .symbol_name = arch_kunwind_consume_entry, .offset = 0, .addr = arch_kunwind_consume_entry+0x0/0x40
- ------------[ cut here ]------------
- kernel BUG at arch/arm64/kernel/probes/kprobes.c:241!
- kprobes: Failed to recover from reentered kprobes.
- kprobes: Dump kprobe:
- .symbol_name = arch_kunwind_consume_entry, .offset = 0, .addr = arch_kunwind_consume_entry+0x0/0x40
+Correct, but the write is about to extend the file size when it
+writes into the cache beyond the zeroed region. There is no cache
+invalidate possible in this path, so the write of data moves the
+in-memory EOF past the zeroes in cache and everything works just
+fine.
 
-Fixes: 1aba06e7b2b49 ("arm64: stacktrace: factor out kunwind_stack_walk()")
-Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
----
- arch/arm64/kernel/stacktrace.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+If it races with concurrent background writeback, the writeback will
+skip the zeroed range beyond EOF until they are exposed by the first
+data write beyond the zeroed post-eof region which moves the
+in-memory EOF.
 
-diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
-index 7f88028a00c0..b2a60e0bcfd2 100644
---- a/arch/arm64/kernel/stacktrace.c
-+++ b/arch/arm64/kernel/stacktrace.c
-@@ -247,7 +247,7 @@ struct kunwind_consume_entry_data {
- 	void *cookie;
- };
- 
--static bool
-+static __always_inline bool
- arch_kunwind_consume_entry(const struct kunwind_state *state, void *cookie)
- {
- 	struct kunwind_consume_entry_data *data = cookie;
+truncate(to a larger size) also does this same zeroing - the page
+cache is zeroed before we move the EOF in memory, and so the
+writeback will only occur once the in-memory EOF is moved. i.e. it
+effectively does:
 
-base-commit: 87adedeba51a822533649b143232418b9e26d08b
+	xfs_zero_range(oldsize to newsize)
+	truncate_setsize(newsize)
+	filemap_write_and_wait_range(old size to new size)
+
+> > What should acutally result from the iomap_zero_range() call from
+> > xfs_reflink_remap_prep() is a state like this:
+> > 
+> > 	A          C           B     E       F      D
+> > 	+wwwwwwwwww+DDDDDDDDDDD+uuuuu+rrrrrrr+dddddd+
+> > 	          EOF         EOF
+> >                (on disk)  (in memory)
+> > 
+> > where 'u' are unwritten extent blocks.
+> > 
+> 
+> Yeah, this is a good solution.
+> 
+> In xfs_file_write_checks(), I don't fully understand why we need
+> the xfs_zero_range().
+
+The EOF block may only be partially written. Hence on extension, we
+have to guarantee the part of that block beyond the current EOF is
+zero if the write leaves a hole between the current EOF and the
+start of the new extending write.
+
+> Theoretically, iomap have already handled
+> partial block zeroing for both buffered IO and DIO, so I guess
+> the only reason we still need it is to handle pre-allocated blocks
+> (no?).
+
+Historically speaking, Linux is able to leak data beyond EOF on
+writeback of partial EOF blocks (e.g. mmap() can write to the EOF
+page beyond EOF without failing. We try to mitigate these cases
+where we can, but we have to consider that at any time the data in
+the cache beyond EOF can be non-zero thanks to mmap() and so any
+file extension *must* zero any region beyond EOF cached in the page
+cache.
+
+> If so，would it be better to call xfs_free_eofblocks() to
+> release all the preallocated extents in range? If not, maybe we
+> could only zero out mapped partial blocks and also release
+> preallocated extents?
+
+No, that will cause all sorts of other performance problems,
+especially for reflinked files that triggering COW
+operations...
+
+> 
+> In xfs_reflink_remap_prep(), I read the commit 410fdc72b05a ("xfs:
+> zero posteof blocks when cloning above eof"), xfs used to release
+> preallocations, the change log said it didn't work because of the
+> PREALLOC flag, but the 'force' parameter is 'true' when calling
+> xfs_can_free_eofblocks(), so I don't get the problem met. Could we
+> fall back to use xfs_free_eofblocks() and make a state like this?
+> 
+>  	A          C           B     E       F      D
+>  	+wwwwwwwwww+DDDDDDDDDDD+hhhhh+rrrrrrr+dddddd+
+>  	          EOF         EOF
+>                 (on disk)  (in memory)
+
+It could, but that then requires every place that may call
+xfs_zero_range() to be aware of this need to trim EOF blocks to do
+the right thing in all cases. We don't want to remove speculative
+delalloc in the write() path nor in the truncate(up) case, and so it
+doesn't fix the general problem of zeroing specualtive delalloc
+beyond EOF requiring writeback to push page caceh pages to disk
+before the inode size has been updated.
+
+The general solution is to have zeroing of speculative prealloc
+extents beyond EOF simply convert the range to unwritten and then
+invalidate any cached pages over that range. At this point, we are
+guaranteed to have zeroes across that range, all without needing to
+do any IO at all...
+
+-Dave.
 -- 
-2.40.1
-
+Dave Chinner
+david@fromorbit.com
 
