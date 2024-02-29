@@ -1,325 +1,180 @@
-Return-Path: <linux-kernel+bounces-86288-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86289-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B41586C36A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:26:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3EF686C36F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:27:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E98B2893B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:26:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 221531C2146D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:27:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA9774EB24;
-	Thu, 29 Feb 2024 08:26:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15B844EB23;
+	Thu, 29 Feb 2024 08:27:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nY9/lmKt"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yg1MzOsu"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AC6E4CE00
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 08:26:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BF784EB38
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 08:27:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709195198; cv=none; b=lORfLT9SnR+lIfBP9fW0xQCzfdNvD3Wp7cNxu4NyFJ16lLmbdYbqd4JMlh1TPo1kGvGKEDXl7va56eXQknlECmC7iApSKI9+he4R7Gefol44j0/rlSRBUsSfT1PJGvPYoFwV+VvlXLSYLl2xD8IvZPghc08md9OAbFWkuIJA3yI=
+	t=1709195246; cv=none; b=VZDeUitDEulbOb/rYAlbWJx/jn5FILMrCHX1pIoqBnnmdsqtIBYsiZJWcPWBCK/SlpS0Y6n+E4AUOqahO04UyTzae7ySfDUVPSbCDMdY3b5Ipwuc2tWWHErVMrjF/hcbBSrStyDvHiX/CqApLfGeiZmmnm0hxiDLFYsXa4ZVsog=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709195198; c=relaxed/simple;
-	bh=juUcc4UcKK/NL61XUnA4t+5ff677KqidZ2CHwPWtVYc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hvWK4bytIVJy/KsJk3zLAYQtQQt14bIusYcGdMyMeDWcCAxMNIiobHtFvWUMuLFSxKjtSweTx7GP315Nm20vgxh1iQTfYMr3ZqsybdYJPkOUnnY9a8X1EPacKT9KiALsNCwOI6H+r592LfFasX7NKVwZMx4r4QJsYVdKwOd35a4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nY9/lmKt; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709195196; x=1740731196;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=juUcc4UcKK/NL61XUnA4t+5ff677KqidZ2CHwPWtVYc=;
-  b=nY9/lmKtN2mJm7OUgW9B5felRxxM+kkRVMH18cOxWdWkmQW2roldibY7
-   iZq59vTmq3ZejqR8/JbN2Njvv81ZgfkN7P0esAMIFBqKI5BlYgLZ9Q9KK
-   hrp0dqzd8WmGZrF2J3BcWb5BByM6isVKXNYDLJXcHECurQM7grrbi6CVz
-   m/ZQDceRrCEJqiPh/KkFbQSL7kHLjHwlBs43T/iNdQPD7gyh8PJELWwOh
-   CLxgjFmf7QqRan/9MaQ1cxcVlN9QnWgdC/9w4EwpuUXyjfivK01KZ4RGI
-   NRDmvWdVrPZOkpxDJcgGVKXyKVMbrSy+ZRi9l6npDlnQJ4obj30Ks9/2f
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="29082088"
-X-IronPort-AV: E=Sophos;i="6.06,192,1705392000"; 
-   d="scan'208";a="29082088"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 00:26:34 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,192,1705392000"; 
-   d="scan'208";a="12360365"
-Received: from a4bf01946c30.jf.intel.com ([10.165.116.30])
-  by fmviesa004.fm.intel.com with ESMTP; 29 Feb 2024 00:26:33 -0800
-From: rulinhuang <rulin.huang@intel.com>
-To: urezki@gmail.com,
-	bhe@redhat.com
-Cc: akpm@linux-foundation.org,
-	colin.king@intel.com,
-	hch@infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	lstoakes@gmail.com,
-	rulin.huang@intel.com,
-	tianyou.li@intel.com,
-	tim.c.chen@intel.com,
-	wangyang.guo@intel.com,
-	zhiguo.zhou@intel.com
-Subject: [PATCH v6] mm/vmalloc: lock contention optimization under multi-threading
-Date: Thu, 29 Feb 2024 00:26:11 -0800
-Message-ID: <20240229082611.4104839-1-rulin.huang@intel.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1709195246; c=relaxed/simple;
+	bh=5A4KpH6bhYaq8PY2+FKOq/3hR98qtbP1GMAnSnIC3yI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=SpIF1NkglGFigwS+0NyNTLGLoAT6pzla9niy+QvOe2TApipEMJTuvMH03zEl7KWSYkxIo97EhgQqSyvb5TrKYJ3c9j+jE0DaKyq8WpOumXw+/0wlfC6LB44IOSG57FrR57XZm7BpUdXfxiqfWwSr+/nwnvHBz7O2OpgLh6rPsE4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=yg1MzOsu; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-566adfeced4so121755a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 00:27:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709195243; x=1709800043; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+jC9NU+Sr0rM0Ox02DOM4ORkqse489i4dWP/gSCDCTs=;
+        b=yg1MzOsurAJGFHmhGBRclio1onafu031QC3gjrde37bsg4N7qF3YR1oj3YjSa979Lv
+         nPguYLAaq49ax7+o0utdoVmbo2bUe40jj5y5OmoA1lj6yPBLZ/+SfjHs06o+nTHiWP2a
+         U9xTkgS55cbaNq4pjSl3h71zukWPbMDjq4kG7TLF0KPzB+I+e4M4fRZ2MFbIsZh3/mk+
+         LhjWy66sjcY9IVUxH++3V2jVm2V6gdYnonqv0y6GBfV+BlQAzapGWfQavPCOriCRUv7C
+         P8LjIeD2Ddymm/29doeO3ku5jrNRg1cM2dDiJPIZ27Rzksg24vGTnKEbLsowOBXia8vq
+         pE0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709195243; x=1709800043;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+jC9NU+Sr0rM0Ox02DOM4ORkqse489i4dWP/gSCDCTs=;
+        b=KlmNm71h0LPykejR0xPUs4BTBB/QDY0I4eCMmrWXBZpfQHhYmO+xCA4Kw35Rpix7wv
+         Oj2RgvrsrCbkfModIxrRsFsS+DmIVIeeXPxdHSJfM5Bw9rgwf3QyqlmjgWDQ/q/nTIe0
+         VP28/vo/cNi3Z8oN6hWGycZ/2PK6AUFWd2zp7Nq9OCYQ800dhT9GecjSB0AoyOczIj7t
+         1109rAwF8X7bIxHX2BzoWcQG9drfH54UM6XQJ5C1l7sMp6Wh8ln1PnOMnyOfIWmWYum/
+         l93Ij2+RFRew4T2wDew1/uT2LIFpJCuwUwFCWcI82TQOc1GdsgGG9V8rNakyNaangP4d
+         I8Og==
+X-Forwarded-Encrypted: i=1; AJvYcCWgy7IU/3nR+2kSXXUxR5FCrARjA9VpIsWfMEvgZulaPjyel8nkhQfbSZPHgwFfn0zdQJ08XXZVxu/2zHyvk3ixYeiY1P6NXiRlaMr+
+X-Gm-Message-State: AOJu0YwDshG5ZWYbxKK8oLLCsQSivi+bZzYM9PJwShsow7v3MuoEKQMP
+	4tZ8ol5VUBU9sNRkg6M7Et5n9lo4rUWmmk++LQn/QE3kYWHMOY7JTtlLcqmIb7wGqC1jRPQuKJT
+	O
+X-Google-Smtp-Source: AGHT+IHtFnTGokxus4yJA0VW8KJfoHKca5tzjEOBUp5rScvISxrFcHYTgLMG8YRVsaFj8MwttJR4fQ==
+X-Received: by 2002:a17:906:dd4:b0:a44:f88:323b with SMTP id p20-20020a1709060dd400b00a440f88323bmr967443eji.54.1709195242806;
+        Thu, 29 Feb 2024 00:27:22 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id vg9-20020a170907d30900b00a4439b7756bsm434508ejc.6.2024.02.29.00.27.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Feb 2024 00:27:22 -0800 (PST)
+Message-ID: <23a99e13-fe45-4cb7-8e1c-f6c85d70becc@linaro.org>
+Date: Thu, 29 Feb 2024 09:27:20 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] dt-bindings: display: mediatek: gamma: Add support
+ for MT8188
+Content-Language: en-US
+To: "Jason-JH.Lin" <jason-jh.lin@mediatek.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
+ <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
+ linaro-mm-sig@lists.linaro.org, Jason-ch Chen <jason-ch.chen@mediatek.com>,
+ Johnson Wang <johnson.wang@mediatek.com>,
+ Singo Chang <singo.chang@mediatek.com>, Nancy Lin <nancy.lin@mediatek.com>,
+ Shawn Sung <shawn.sung@mediatek.com>,
+ Project_Global_Chrome_Upstream_Group@mediatek.com,
+ Fei Shao <fshao@chromium.org>
+References: <20240229023522.15870-1-jason-jh.lin@mediatek.com>
+ <20240229023522.15870-3-jason-jh.lin@mediatek.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240229023522.15870-3-jason-jh.lin@mediatek.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-When allocating a new memory area where the mapping address range is
-known, it is observed that the vmap_node->busy.lock is acquired twice.
+On 29/02/2024 03:35, Jason-JH.Lin wrote:
+> The gamma LUT setting of MT8188 and MT8195 are the same, so we create
+> a one of items for MT8188 to reuse the driver data settings of MT8195.
+> 
+> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
+> ---
+>  .../devicetree/bindings/display/mediatek/mediatek,gamma.yaml  | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,gamma.yaml b/Documentation/devicetree/bindings/display/mediatek/mediatek,gamma.yaml
+> index 3e6cb8f48bcc..90c454eea06f 100644
+> --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,gamma.yaml
+> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,gamma.yaml
+> @@ -29,6 +29,10 @@ properties:
+>            - enum:
+>                - mediatek,mt6795-disp-gamma
+>            - const: mediatek,mt8173-disp-gamma
+> +      - items:
+> +          - enum:
+> +              - mediatek,mt8188-disp-gamma
+> +          - const: mediatek,mt8195-disp-gamma
+>        - items:
+>            - enum:
+>                - mediatek,mt8186-disp-gamma
 
-The first acquisition occurs in the alloc_vmap_area() function when
-inserting the vm area into the vm mapping red-black tree. The second
-acquisition occurs in the setup_vmalloc_vm() function when updating the
-properties of the vm, such as flags and address, etc.
+Please keep this ordered by fallback compatible, so your list with 8195
+fallback should go below the list here.
 
-Combine these two operations together in alloc_vmap_area(), which
-improves scalability when the vmap_node->busy.lock is contended.
-By doing so, the need to acquire the lock twice can also be eliminated
- to once.
-
-With the above change, tested on intel sapphire rapids
-platform(224 vcpu), a 4% performance improvement is
-gained on stress-ng/pthread(https://github.com/ColinIanKing/stress-ng),
-which is the stress test of thread creations.
-
-Reviewed-by: Uladzislau Rezki <urezki@gmail.com>
-Reviewed-by: Baoquan He <bhe@redhat.com>
-Reviewed-by: "Chen, Tim C" <tim.c.chen@intel.com>
-Reviewed-by: "King, Colin" <colin.king@intel.com>
-Signed-off-by: rulinhuang <rulin.huang@intel.com>
----
-V1 -> V2: Avoided the partial initialization issue of vm and
-separated insert_vmap_area() from alloc_vmap_area()
-V2 -> V3: Rebased on 6.8-rc5
-V3 -> V4: Rebased on mm-unstable branch
-V4 -> V5: cancel the split of alloc_vmap_area()
-and keep insert_vmap_area()
-V5 -> V6: add bug_on
----
- mm/vmalloc.c | 132 +++++++++++++++++++++++++--------------------------
- 1 file changed, 64 insertions(+), 68 deletions(-)
-
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index 25a8df497255..5ae028b0d58d 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -1841,15 +1841,66 @@ node_alloc(unsigned long size, unsigned long align,
- 	return va;
- }
- 
-+/*** Per cpu kva allocator ***/
-+
-+/*
-+ * vmap space is limited especially on 32 bit architectures. Ensure there is
-+ * room for at least 16 percpu vmap blocks per CPU.
-+ */
-+/*
-+ * If we had a constant VMALLOC_START and VMALLOC_END, we'd like to be able
-+ * to #define VMALLOC_SPACE		(VMALLOC_END-VMALLOC_START). Guess
-+ * instead (we just need a rough idea)
-+ */
-+#if BITS_PER_LONG == 32
-+#define VMALLOC_SPACE		(128UL*1024*1024)
-+#else
-+#define VMALLOC_SPACE		(128UL*1024*1024*1024)
-+#endif
-+
-+#define VMALLOC_PAGES		(VMALLOC_SPACE / PAGE_SIZE)
-+#define VMAP_MAX_ALLOC		BITS_PER_LONG	/* 256K with 4K pages */
-+#define VMAP_BBMAP_BITS_MAX	1024	/* 4MB with 4K pages */
-+#define VMAP_BBMAP_BITS_MIN	(VMAP_MAX_ALLOC*2)
-+#define VMAP_MIN(x, y)		((x) < (y) ? (x) : (y)) /* can't use min() */
-+#define VMAP_MAX(x, y)		((x) > (y) ? (x) : (y)) /* can't use max() */
-+#define VMAP_BBMAP_BITS		\
-+		VMAP_MIN(VMAP_BBMAP_BITS_MAX,	\
-+		VMAP_MAX(VMAP_BBMAP_BITS_MIN,	\
-+			VMALLOC_PAGES / roundup_pow_of_two(NR_CPUS) / 16))
-+
-+#define VMAP_BLOCK_SIZE		(VMAP_BBMAP_BITS * PAGE_SIZE)
-+
-+/*
-+ * Purge threshold to prevent overeager purging of fragmented blocks for
-+ * regular operations: Purge if vb->free is less than 1/4 of the capacity.
-+ */
-+#define VMAP_PURGE_THRESHOLD	(VMAP_BBMAP_BITS / 4)
-+
-+#define VMAP_RAM		0x1 /* indicates vm_map_ram area*/
-+#define VMAP_BLOCK		0x2 /* mark out the vmap_block sub-type*/
-+#define VMAP_FLAGS_MASK		0x3
-+
-+static inline void setup_vmalloc_vm(struct vm_struct *vm,
-+	struct vmap_area *va, unsigned long flags, const void *caller)
-+{
-+	vm->flags = flags;
-+	vm->addr = (void *)va->va_start;
-+	vm->size = va->va_end - va->va_start;
-+	vm->caller = caller;
-+	va->vm = vm;
-+}
-+
- /*
-  * Allocate a region of KVA of the specified size and alignment, within the
-- * vstart and vend.
-+ * vstart and vend. If vm is passed in, the two will also be bound.
-  */
- static struct vmap_area *alloc_vmap_area(unsigned long size,
- 				unsigned long align,
- 				unsigned long vstart, unsigned long vend,
- 				int node, gfp_t gfp_mask,
--				unsigned long va_flags)
-+				unsigned long va_flags, struct vm_struct *vm,
-+				unsigned long flags, const void *caller)
- {
- 	struct vmap_node *vn;
- 	struct vmap_area *va;
-@@ -1912,6 +1963,11 @@ static struct vmap_area *alloc_vmap_area(unsigned long size,
- 	va->vm = NULL;
- 	va->flags = (va_flags | vn_id);
- 
-+	if (vm) {
-+		BUG_ON(va_flags & VMAP_RAM);
-+		setup_vmalloc_vm(vm, va, flags, caller);
-+	}
-+
- 	vn = addr_to_node(va->va_start);
- 
- 	spin_lock(&vn->busy.lock);
-@@ -2325,46 +2381,6 @@ static struct vmap_area *find_unlink_vmap_area(unsigned long addr)
- 	return NULL;
- }
- 
--/*** Per cpu kva allocator ***/
--
--/*
-- * vmap space is limited especially on 32 bit architectures. Ensure there is
-- * room for at least 16 percpu vmap blocks per CPU.
-- */
--/*
-- * If we had a constant VMALLOC_START and VMALLOC_END, we'd like to be able
-- * to #define VMALLOC_SPACE		(VMALLOC_END-VMALLOC_START). Guess
-- * instead (we just need a rough idea)
-- */
--#if BITS_PER_LONG == 32
--#define VMALLOC_SPACE		(128UL*1024*1024)
--#else
--#define VMALLOC_SPACE		(128UL*1024*1024*1024)
--#endif
--
--#define VMALLOC_PAGES		(VMALLOC_SPACE / PAGE_SIZE)
--#define VMAP_MAX_ALLOC		BITS_PER_LONG	/* 256K with 4K pages */
--#define VMAP_BBMAP_BITS_MAX	1024	/* 4MB with 4K pages */
--#define VMAP_BBMAP_BITS_MIN	(VMAP_MAX_ALLOC*2)
--#define VMAP_MIN(x, y)		((x) < (y) ? (x) : (y)) /* can't use min() */
--#define VMAP_MAX(x, y)		((x) > (y) ? (x) : (y)) /* can't use max() */
--#define VMAP_BBMAP_BITS		\
--		VMAP_MIN(VMAP_BBMAP_BITS_MAX,	\
--		VMAP_MAX(VMAP_BBMAP_BITS_MIN,	\
--			VMALLOC_PAGES / roundup_pow_of_two(NR_CPUS) / 16))
--
--#define VMAP_BLOCK_SIZE		(VMAP_BBMAP_BITS * PAGE_SIZE)
--
--/*
-- * Purge threshold to prevent overeager purging of fragmented blocks for
-- * regular operations: Purge if vb->free is less than 1/4 of the capacity.
-- */
--#define VMAP_PURGE_THRESHOLD	(VMAP_BBMAP_BITS / 4)
--
--#define VMAP_RAM		0x1 /* indicates vm_map_ram area*/
--#define VMAP_BLOCK		0x2 /* mark out the vmap_block sub-type*/
--#define VMAP_FLAGS_MASK		0x3
--
- struct vmap_block_queue {
- 	spinlock_t lock;
- 	struct list_head free;
-@@ -2486,7 +2502,8 @@ static void *new_vmap_block(unsigned int order, gfp_t gfp_mask)
- 	va = alloc_vmap_area(VMAP_BLOCK_SIZE, VMAP_BLOCK_SIZE,
- 					VMALLOC_START, VMALLOC_END,
- 					node, gfp_mask,
--					VMAP_RAM|VMAP_BLOCK);
-+					VMAP_RAM|VMAP_BLOCK, NULL,
-+					0, NULL);
- 	if (IS_ERR(va)) {
- 		kfree(vb);
- 		return ERR_CAST(va);
-@@ -2843,7 +2860,8 @@ void *vm_map_ram(struct page **pages, unsigned int count, int node)
- 		struct vmap_area *va;
- 		va = alloc_vmap_area(size, PAGE_SIZE,
- 				VMALLOC_START, VMALLOC_END,
--				node, GFP_KERNEL, VMAP_RAM);
-+				node, GFP_KERNEL, VMAP_RAM,
-+				NULL, 0, NULL);
- 		if (IS_ERR(va))
- 			return NULL;
- 
-@@ -2946,26 +2964,6 @@ void __init vm_area_register_early(struct vm_struct *vm, size_t align)
- 	kasan_populate_early_vm_area_shadow(vm->addr, vm->size);
- }
- 
--static inline void setup_vmalloc_vm_locked(struct vm_struct *vm,
--	struct vmap_area *va, unsigned long flags, const void *caller)
--{
--	vm->flags = flags;
--	vm->addr = (void *)va->va_start;
--	vm->size = va->va_end - va->va_start;
--	vm->caller = caller;
--	va->vm = vm;
--}
--
--static void setup_vmalloc_vm(struct vm_struct *vm, struct vmap_area *va,
--			      unsigned long flags, const void *caller)
--{
--	struct vmap_node *vn = addr_to_node(va->va_start);
--
--	spin_lock(&vn->busy.lock);
--	setup_vmalloc_vm_locked(vm, va, flags, caller);
--	spin_unlock(&vn->busy.lock);
--}
--
- static void clear_vm_uninitialized_flag(struct vm_struct *vm)
- {
- 	/*
-@@ -3002,14 +3000,12 @@ static struct vm_struct *__get_vm_area_node(unsigned long size,
- 	if (!(flags & VM_NO_GUARD))
- 		size += PAGE_SIZE;
- 
--	va = alloc_vmap_area(size, align, start, end, node, gfp_mask, 0);
-+	va = alloc_vmap_area(size, align, start, end, node, gfp_mask, 0, area, flags, caller);
- 	if (IS_ERR(va)) {
- 		kfree(area);
- 		return NULL;
- 	}
- 
--	setup_vmalloc_vm(area, va, flags, caller);
--
- 	/*
- 	 * Mark pages for non-VM_ALLOC mappings as accessible. Do it now as a
- 	 * best-effort approach, as they can be mapped outside of vmalloc code.
-@@ -4584,7 +4580,7 @@ struct vm_struct **pcpu_get_vm_areas(const unsigned long *offsets,
- 
- 		spin_lock(&vn->busy.lock);
- 		insert_vmap_area(vas[area], &vn->busy.root, &vn->busy.head);
--		setup_vmalloc_vm_locked(vms[area], vas[area], VM_ALLOC,
-+		setup_vmalloc_vm(vms[area], vas[area], VM_ALLOC,
- 				 pcpu_get_vm_areas);
- 		spin_unlock(&vn->busy.lock);
- 	}
-
-base-commit: 7e6ae2db7f319bf9613ec6db8fa3c9bc1de1b346
--- 
-2.43.0
+Best regards,
+Krzysztof
 
 
