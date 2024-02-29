@@ -1,135 +1,74 @@
-Return-Path: <linux-kernel+bounces-86625-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86627-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E97286C801
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:23:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D5AB86C805
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:26:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D9831B22986
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:23:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A23AC1F23493
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:26:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2CB77BB16;
-	Thu, 29 Feb 2024 11:23:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A91B37BAEA;
+	Thu, 29 Feb 2024 11:26:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AEE4knre"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cu-phil.org header.i=@cu-phil.org header.b="VdY0hEny"
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [194.63.252.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7087651BC;
-	Thu, 29 Feb 2024 11:23:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4E4E7AE63
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 11:26:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.63.252.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709205807; cv=none; b=VsGWQe5nVle6g8jMqyxlzVawpZO5b0WSWK55tGt+QpfySLU0IoVsML7OydOnpBRdMy2gi/+KG0qjRYdHioAx5ARo3FnVRxdv1pPU6+jfjeWR2suTYKwABqp71rAOi4QFwZn810ZjRMjdxJQDDl8L/WR+9KPzXBUr5VAKX9lClK0=
+	t=1709205994; cv=none; b=GAIEJm8LMefz4RNuZ+ahkXQC7LOjzc+zW3V/+Fb3y5rIaDAwebEL13K0qv+wVgZ8Cn/0PflQQ0lw7tJYw+8zedCF6S4PQv1WhibM8yVBxvWDRA5yv6hiFFgecyLuBBG0NqFALw5WNNoBzcJG0Mkc9geX93nbi7Vn9xuv1gZlYKA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709205807; c=relaxed/simple;
-	bh=WqUPAXlssCmtqdLpcCv+8iCzvErdAxK/S/ZBo23Kh1M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TtqJFMaiB086lHnEy0m2ineCuzQAG7uTSwS1lb+yVCO1shjOF+5nhUrbzGBPqRe63I+8abov72tc9XtV3w9ktNRJPtDfOwpfKl/5lGnBGpcws0pKu6XBxG9Ac7wSIt2v2RfjqQOH/wrEgmhnGiCXS39YfT34zDi1b4k3k55nw3E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AEE4knre; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD8DEC43390;
-	Thu, 29 Feb 2024 11:23:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709205807;
-	bh=WqUPAXlssCmtqdLpcCv+8iCzvErdAxK/S/ZBo23Kh1M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=AEE4knre18WNc+Z4ry/juSz4W7aDGP/Ez0hsT9XjtMow88AXfe7DMzTDAEdv4e9ax
-	 m/VW/hBb8BKj8zGUvRBLGk4ycN0JQcBurj6JMEkdIoWbtZvxyDrGy0WCIEXqfpOgOC
-	 mpH8LrNg4+WGaFQcu+AvriL8JoEiud/KdVdY2oruqydWUJyoZn9zzThq7jwdhNlLbM
-	 hixtNQfLpwIhQu6r1cpguRalL6F/i1qeuTclO+Wz2ItlZeq9pVR9cXvCQ1PxrVmuzB
-	 TCMC200o6tcmHtL8/ts6p8bYyjsdSegQ6Rvb4RGIPIkFR3g4IUX4/55AQa2eSVdadO
-	 TtawRjDGmx5NQ==
-Date: Thu, 29 Feb 2024 12:23:16 +0100
-From: Niklas Cassel <cassel@kernel.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Marek Vasut <marek.vasut+renesas@gmail.com>,
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Kishon Vijay Abraham I <kishon@ti.com>,
-	Vidya Sagar <vidyas@nvidia.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Minghuan Lian <minghuan.Lian@nxp.com>,
-	Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v8 07/10] PCI: dwc: ep: Remove "core_init_notifier" flag
-Message-ID: <ZeBpJL1K_vAdmr2M@fedora>
-References: <20240224-pci-dbi-rework-v8-0-64c7fd0cfe64@linaro.org>
- <20240224-pci-dbi-rework-v8-7-64c7fd0cfe64@linaro.org>
+	s=arc-20240116; t=1709205994; c=relaxed/simple;
+	bh=QbPev4NpA+UyASPR8c76fWnkTWj3dRHCaIXhZPy9ViM=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=YIcPSQnwCYl+lji5lVFQWIJWgDIYaxkrGhjtUeHvAF+6z1mbB/4WREq/n0z4eMlsNMjTXuNl/zUMaBlXRFIVuEpwaVm4/j+ASLRYkqEl5C8U8KU/5eX26pBk8yYb0Xg3STNwUBmQ1i2RiVjBbphRx1xK7ghZaw096fVUQiXuRgo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cu-phil.org; spf=pass smtp.mailfrom=cu-phil.org; dkim=pass (2048-bit key) header.d=cu-phil.org header.i=@cu-phil.org header.b=VdY0hEny; arc=none smtp.client-ip=194.63.252.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cu-phil.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cu-phil.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=cu-phil.org
+	; s=ds202401; h=Content-Transfer-Encoding:Content-Type:Subject:From:To:
+	MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=/Kjhg7goXYzXyeeiaq1mJdQilZuUsIWAWV41uRXY/qM=; b=VdY0hEnyyP128lkpCFuS4i4rnl
+	FVVoL8S1Z2rzqi+YnGoDYsUoVFRh5n6yLe2pNSnC191S96H2n6oLjYTwgf2sGNKV7nBpo32v53GZg
+	avt5UG14P3Bc6rQ9/rDmPPez6/WSw/ylBokHM7p3MBvv+MeGO4MdoSTS4SeglIJJtUj/DyRNdeP6d
+	7HPWvYVAd6u+iXT94FHFprcfrZoF2Ezm5SMHqUIX+TG1YulntxmMx4ZLg0E2aBGYQeQjMIevPyJ3x
+	f3PCUgt2nMj2YNDatTp8GezkIDFLGnmx1kqfPfsmEUPEQSEraK9STnlpIBeB7l5QV+0s1yL4gjiWZ
+	ccSDP3Mw==;
+Received: from [2a02:fe1:7001:f100:9560:66c3:aa0:e529] (port=54906)
+	by smtp.domeneshop.no with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <Ywe_Caerlyn@cu-phil.org>)
+	id 1rfeYY-007s3s-OL
+	for linux-kernel@vger.kernel.org;
+	Thu, 29 Feb 2024 12:26:30 +0100
+Message-ID: <6c633677-bdad-431b-8203-d723e468743f@cu-phil.org>
+Date: Thu, 29 Feb 2024 12:26:26 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240224-pci-dbi-rework-v8-7-64c7fd0cfe64@linaro.org>
+User-Agent: Mozilla Thunderbird
+To: linux-kernel@vger.kernel.org
+From: Ywe Caerlyn <Ywe_Caerlyn@cu-phil.org>
+Subject: Philosophy Update: We X (Was San OS, Fair Source, Low Jitter)
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hello Mani,
+We in this context actually is the same as San.
 
-On Sat, Feb 24, 2024 at 12:24:13PM +0530, Manivannan Sadhasivam wrote:
-> "core_init_notifier" flag is set by the glue drivers requiring refclk from
-> the host to complete the DWC core initialization. Also, those drivers will
-> send a notification to the EPF drivers once the initialization is fully
-> completed using the pci_epc_init_notify() API. Only then, the EPF drivers
-> will start functioning.
-> 
-> For the rest of the drivers generating refclk locally, EPF drivers will
-> start functioning post binding with them. EPF drivers rely on the
-> 'core_init_notifier' flag to differentiate between the drivers.
-> Unfortunately, this creates two different flows for the EPF drivers.
-> 
-> So to avoid that, let's get rid of the "core_init_notifier" flag and follow
-> a single initialization flow for the EPF drivers. This is done by calling
-> the dw_pcie_ep_init_notify() from all glue drivers after the completion of
-> dw_pcie_ep_init_registers() API. This will allow all the glue drivers to
-> send the notification to the EPF drivers once the initialization is fully
-> completed.
-> 
-> Only difference here is that, the drivers requiring refclk from host will
-> send the notification once refclk is received, while others will send it
-> during probe time itself.
-> 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  drivers/pci/controller/dwc/pci-dra7xx.c           |  2 ++
->  drivers/pci/controller/dwc/pci-imx6.c             |  2 ++
->  drivers/pci/controller/dwc/pci-keystone.c         |  2 ++
->  drivers/pci/controller/dwc/pci-layerscape-ep.c    |  2 ++
->  drivers/pci/controller/dwc/pcie-designware-plat.c |  2 ++
->  drivers/pci/controller/dwc/pcie-qcom-ep.c         |  1 -
->  drivers/pci/controller/dwc/pcie-rcar-gen4.c       |  2 ++
->  drivers/pci/controller/dwc/pcie-tegra194.c        |  1 -
->  drivers/pci/controller/dwc/pcie-uniphier-ep.c     |  2 ++
->  drivers/pci/endpoint/functions/pci-epf-test.c     | 18 +++++-------------
->  include/linux/pci-epc.h                           |  3 ---
+Updating to We X, which is the network everybody wanted here, with full 
+Fair Source basis in The Kuran.
 
-pcie-artpec6.c:static const struct dw_pcie_ep_ops pcie_ep_ops = {
-pcie-keembay.c:static const struct dw_pcie_ep_ops keembay_pcie_ep_ops = {
+Serenity,
+Ywe Cærlyn AKA Saint Bit.
 
-Where is the love for these drivers? ;)
-
-
-Kind regards,
-Niklas
 
