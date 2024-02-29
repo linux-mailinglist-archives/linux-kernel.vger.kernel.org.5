@@ -1,109 +1,130 @@
-Return-Path: <linux-kernel+bounces-85995-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85996-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40C9F86BE41
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 02:28:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43DF986BE43
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 02:29:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D31AF1F268D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:28:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6788A1C213D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 01:29:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93CD32D61B;
-	Thu, 29 Feb 2024 01:28:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C8122E62C;
+	Thu, 29 Feb 2024 01:29:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="XHx697qe"
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Aau/WyFf"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8533E2D046
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 01:28:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8B052D046
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 01:29:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709170112; cv=none; b=oRhEY0053KNMAHionSeNzGAV790LhgFLFsm4CspBoD+WFmNMXQVGPXHpGCGDLQD5XsbIBWMMLVgNZBZVIMFz6LcnymsqC85gNi5++MVgHNC+/STrsDrvEXb6U32iW1qtL/KyYdXKnInmZAzrs/tXWWzcJrXKgdoBBmTX8Zt7eSo=
+	t=1709170180; cv=none; b=uEbJuxpEOPCtF7OM9xEB5IeTV+e3W6/VTnfh12oTdCNcPSnp6+J3wsiGKOWXBmxeqlI6rkPABf+JchVJG6aGg8DmY9SbhtX38acLSoqr7jnb1ZMQTq1RyI8KaEDyDiZ0khLU7pDG/ccGDWnA8M9lEvzGVk+JpmD2qLJD+lW5cyU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709170112; c=relaxed/simple;
-	bh=jh68udILcKxaKugT7b2cDM3HVtsQku3plCWj0K+LaSE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AzXdxOhxw/Gwnl3X4dg9wEUriZuaR/lR5gU3ePiptzHGzjzEuy6gXKvnHE58TfE4NnqPTRgnkEQt0UC7oYAc+ALHoK+750NTq4/jbBf7AhTu926NSXNvzpkxFhWV6Nga9QjoNYHD3poj0z0NEA5FyRsG5gDEtxtu4fI+JN92o8c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=XHx697qe; arc=none smtp.client-ip=209.85.216.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-299b92948a6so217447a91.3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 17:28:30 -0800 (PST)
+	s=arc-20240116; t=1709170180; c=relaxed/simple;
+	bh=llgycK0vel+ByZjq2S4bsIYLpr53VlV1dYeH2+0LRo8=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=MRXnBJ1h/ZOwWdCsychvIIIhBPwbQjZnHCBmpbndrRdby+T8aNXiTaptkSQ0/b5xYq7uTfo7i0wNEFdQxvfMwGTeJAP+0nVL9z229PwJHH+HJoi/hXD2GCBQm3ylGZulFquvhCPhhA5Du1bI3mq0UJ2SQOXSQvrRsYqtqm6MTg0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jthies.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Aau/WyFf; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jthies.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-607e613a1baso7435097b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 17:29:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709170110; x=1709774910; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+Jq4TUlWX3GIYiIoQ+zpQ3OQeTgAG70ET6DGeOsDe4E=;
-        b=XHx697qe9z3HwXLUSsTt9Mhd/6bxPVTuBe6U6tUDm8aJNDxWkjG8i5/pfiDd76AR0k
-         G3JRD8k0+iJXMWKuem9K5kSiLtHqGtv2RK9dexnZgh6EOtrW663izFVwaxJfgMCbfDFP
-         W+ThHSZT+ChgizjkpXFavXMssKO0KxM66eYb4=
+        d=google.com; s=20230601; t=1709170178; x=1709774978; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=HO7sM+79J6T6oYs6iAIAH4cbr3Ct/U7/pkBJr2RsBIQ=;
+        b=Aau/WyFfgTze7Ys0WKXUOHDcaw+D/kRiQW9u5mna5u1/omAtu2Key38j21vQN/hJkv
+         yfnjaLCHnhdTlcNwE1y+dZRGn87XjNbep++yN3LFFTjjn5P1BxM0c8YdolYMEv6qkkOR
+         ko+LTVY/LT/qIBypg9202D4dPyoxf/Rl0vBZi4plvcEVLqJpluL5ynnFlX35WHKIA8Ej
+         1Tw9JODBfsaOdQhDa53TPb21cXpgNppbDXuRN+abLJxh3J/OduDP+G9KIaj7/9MyLkjK
+         YHfPCnvRQIFgYxqojOj17KOKKES2LEO7QNHI2+i75o8rKFsrga5PinS0rYLIGZqRErWp
+         WkSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709170110; x=1709774910;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+Jq4TUlWX3GIYiIoQ+zpQ3OQeTgAG70ET6DGeOsDe4E=;
-        b=sDiXBTbR05WiRjRoeuHCiQ28tXjz9G9cGqbs0ip8rgbwj2+4H2Svo5wrEEHk5vroik
-         5IKa6Zq1RASK1jnHTKvc1eRk5nFRBa0MM+RqhAswv6JL7wbQwR8h17tGrFGNFwTTEvAQ
-         516SUEdLHs+xYhZDwa/yGNY9h5gSjUaLWLn0bT3T2m7fFFID2PtXzZm+Xmpouxt+3jej
-         xkIo7NMcTtKiXWyBWaemG8LLTO7b8Z7+zAyX51kwjn4bJ5lEyGBGrshvDtH+OA8qqxFS
-         4Y0OSKjKDtVwK6GmWm6pE/LOgKLJhJcWGYYYPALaZjLKMZ9ubgvFGp7AWxF+cKg/WVS+
-         x8wg==
-X-Gm-Message-State: AOJu0YzcYxIFNkg7R5prMM7ryjm9Lq4OtEWe4RWH3g/U2JUl8s4+Al4Z
-	U0EH92QJvbtbkpiDnQirKE9HwwTiLCGzJex5MVYqT4nRGjb8cDAhPq4qOgjjDA==
-X-Google-Smtp-Source: AGHT+IEYN2In2MRJucUTR7e0wGoAIi/LK1pWKTCPgEITDs7weQjpJtIRVTB+q8iM3JfA2fuLcWiVug==
-X-Received: by 2002:a17:90a:734a:b0:29a:6cf0:57a3 with SMTP id j10-20020a17090a734a00b0029a6cf057a3mr864753pjs.8.1709170110507;
-        Wed, 28 Feb 2024 17:28:30 -0800 (PST)
-Received: from localhost (217.108.125.34.bc.googleusercontent.com. [34.125.108.217])
-        by smtp.gmail.com with UTF8SMTPSA id mf12-20020a17090b184c00b002904cba0ffbsm2187303pjb.32.2024.02.28.17.28.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Feb 2024 17:28:30 -0800 (PST)
-From: Stephen Boyd <swboyd@chromium.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Bjorn Andersson <andersson@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	patches@lists.linux.dev,
-	linux-arm-msm@vger.kernel.org,
-	cros-qcom-dts-watchers@chromium.org
-Subject: [PATCH] arm64: dts: qcom: sc7180: Disable pmic pinctrl node on Trogdor
-Date: Wed, 28 Feb 2024 17:28:26 -0800
-Message-ID: <20240229012828.438020-1-swboyd@chromium.org>
-X-Mailer: git-send-email 2.44.0.rc1.240.g4c46232300-goog
+        d=1e100.net; s=20230601; t=1709170178; x=1709774978;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=HO7sM+79J6T6oYs6iAIAH4cbr3Ct/U7/pkBJr2RsBIQ=;
+        b=Z2ebnTRySCFLvooA7CIGG10ekUUPt4adUjcac2xjsl28lsvCwS+xWHo16gwav8uZuu
+         Z5eB/myfK2scQIQqpWYPJkBTVTA6/WOjJ+6YNBIwH1MzhUIlMUX7PNOTbvJjl6/Q9OP4
+         O8SxR0f+8q58rNVKZJWMHVF+f5uTRb/X2ACOgLCt0zbSvpWQnvaTLjuMSQjZBF9hIdy9
+         0deAi4MyB8MqjOaqao/JlrZqlhErEDD4A5tgEAnx07duzGRPF9k0oPIWNHmEYsYHnTj3
+         Jxhbj1DW2E7UvhNsmfZs33nccPS0i91JLTVL9Y1h1lO2Q4lZNY/NjLbWmr8p2EvjQ0iK
+         iC9g==
+X-Forwarded-Encrypted: i=1; AJvYcCWuiV4Dr9ls4X7EI8VGEJNLTUtW3KIbSIvwg7Ev/oTfPV5/jTn9Svo4r6Fm6+OB1jDePd4bPFfF1TW8vKgzy49OMwq9nzKDmIgkWQxy
+X-Gm-Message-State: AOJu0Yy2t++dPBSevQMTihSdLHWcjBSg3mJsTBZPcVj5Z9kRwUwJMejh
+	HCmz4RqdFK0VJyBKT+gCKH0LPJ4qcUwmNJt9WVoi2ZwfALbDATJRA99WG5RzMoyxLrg3mizxx6p
+	TgA==
+X-Google-Smtp-Source: AGHT+IHAW0GcwvXl7ty+h3b4veLMGBLsR+JYhHrZjaoUwLnx5kWFpxkZrOKkIVQntygOusU16/Q3kY2Eds4=
+X-Received: from jthies.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:23db])
+ (user=jthies job=sendgmr) by 2002:a05:690c:c0d:b0:609:3834:e0f4 with SMTP id
+ cl13-20020a05690c0c0d00b006093834e0f4mr192674ywb.7.1709170178031; Wed, 28 Feb
+ 2024 17:29:38 -0800 (PST)
+Date: Thu, 29 Feb 2024 01:28:54 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.rc1.240.g4c46232300-goog
+Message-ID: <20240229012858.3663833-1-jthies@google.com>
+Subject: [PATCH v3 0/4] usb: typec: ucsi: Expand SOP/SOP' Discovery
+From: Jameson Thies <jthies@google.com>
+To: heikki.krogerus@linux.intel.com, linux-usb@vger.kernel.org
+Cc: jthies@google.com, pmalani@chromium.org, bleung@google.com, 
+	abhishekpandit@chromium.org, andersson@kernel.org, 
+	dmitry.baryshkov@linaro.org, fabrice.gasnier@foss.st.com, 
+	gregkh@linuxfoundation.org, hdegoede@redhat.com, neil.armstrong@linaro.org, 
+	rajaram.regupathy@intel.com, saranya.gopal@intel.com, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-We don't use this pmic pinctrl node on any Trogdor devices. The
-AP_SUSPEND pin is here, but this pinctrl device isn't a supplier to
-anything in the devicetrees that include this file. Disable this device
-node in the DTS so that we don't waste time or memory on this device.
+Hi Heikki,
 
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
----
- arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+This patch series expands support for partner and cable discover in the
+UCSI driver. There are a few pieces here.
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-index 46aaeba28604..774c0647ea19 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-@@ -1164,6 +1164,7 @@ &pm6150_gpios {
- };
- 
- &pm6150l_gpios {
-+	status = "disabled"; /* No GPIOs are consumed or configured */
- 	gpio-line-names = "AP_SUSPEND",
- 			  "",
- 			  "",
+1. Some cleanup of the GET_CABLE_PROP definitions in ucsi.h.
+2. Cable discovery and registration with the USB Type-C connector class.
+3. Partner/Cable identity registration with the USB Type-C connector
+class.
+4. SOP' alternate mode registration with the USB-C connector class using
+a cable plug.
 
-base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+These have been tested on a the usb-testing branch merged with a
+chromeOS 6.8-rc2 kernel. Let me know if you have any questions.
+
+Thanks,
+Jameson
+
+Changes in v3:
+- Fixed CC stable.
+
+Changes in v2:
+- Re-ordered memset call and null assignment when unregistering partners
+and cables.
+- Supports registering partner and cable identity with UCSI versions
+before v2.0.
+- Shortened lines to within 80 characters with the exception of two
+error log lines with three indentations.
+- Tested on usb-testing branch merged with chromeOS 6.8-rc2 kernel.
+
+Jameson Thies (4):
+  usb: typec: ucsi: Clean up UCSI_CABLE_PROP macros
+  usb: typec: ucsi: Register cables based on GET_CABLE_PROPERTY
+  usb: typec: ucsi: Register SOP/SOP' Discover Identity Responses
+  usb: typec: ucsi: Register SOP' alternate modes with cable plug
+
+ drivers/usb/typec/ucsi/ucsi.c | 258 ++++++++++++++++++++++++++++++++++
+ drivers/usb/typec/ucsi/ucsi.h |  40 +++++-
+ 2 files changed, 296 insertions(+), 2 deletions(-)
+
+
+base-commit: a560a5672826fc1e057068bda93b3d4c98d037a2
 -- 
-https://chromeos.dev
+2.44.0.rc1.240.g4c46232300-goog
 
 
