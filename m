@@ -1,162 +1,119 @@
-Return-Path: <linux-kernel+bounces-86517-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86516-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8C7286C671
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:09:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C56C086C66F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:09:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7AC4F1F22C2A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:09:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69BDC1F220A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:09:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 513756351B;
-	Thu, 29 Feb 2024 10:09:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="rSkbaSN0"
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF59A62A06
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 10:09:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8DD96350D;
+	Thu, 29 Feb 2024 10:09:18 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89F5C63408;
+	Thu, 29 Feb 2024 10:09:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709201363; cv=none; b=jBW1/HkCVjy9rPwEKJIDkJoyjbiS/+gqCe1+zqbPHG5tSQDL9sMCi+8FhL89BDOuab4XcLXPN76gur9MRdta/rbcjuHspEuMYAAnDFk+UPgtVavJwItAX/d1M/6/cTH9FE4bQHLclTtxRr58bVKU96MkM3KWNvzEDveawm46+OM=
+	t=1709201358; cv=none; b=Im48sKjodaL6V2AwHS1zM5o63cNfaLH/uLD0v43BxqMJo+RDf7Fy4Xjj5GE+nGCyu7qssWOa9aM1aCsAT5TsiRzRIyKtIpkMJewLFacubbAU/k4XlCEQhhr2UhMzwXYoo0QUcFDoWWvZXOAeDox7jTsJa1I43iPY1+Y3FhNTgBU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709201363; c=relaxed/simple;
-	bh=GA3hOk2+V3le+4muvMPKWEzM4CFPwWUnDODB09RfE4U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jRk2rXr4KK4DDd8oZ5akK/Cz1H84qBadTzYTKkLXGr5gMWmU+cCyFCdKFGY4hax5LF8RpnZeErLWfini/BOlwEVHOYNiF8lkKFUTCYWvn+174zT97ZVmBYxuDY4w+mUD8fpnwgw2o2suNYppObYUpProXhZChcxb40im06iO5x0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rSkbaSN0; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5654ef0c61fso10148a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 02:09:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709201360; x=1709806160; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=t/Go3YqIu09UH/h/HOYTGKZUGAGfZufH1m+hGfleaeo=;
-        b=rSkbaSN0te7psnftf8RVCKwTkY/RIDX6i5cjqo/wDTV3qvx8Pmbvd65epK2qKkIjRV
-         69Gx5DoTlzMfuDHTe1DwsokSBe2J1BeA0Sev107ppxJnKf2GqMEJvYKiGEvgj3w3/1xp
-         0cSqEiCcyJozHyiqrX1k6zzDo4gdzQrp5FnEhetcSXTnAZ7xntuBjADi2MyjCgZTKKrC
-         JGBHsdq+iN83J8TInKH/zKF+9VLCGTgNam/fCCTT6H/L8LxttAO9Ii+TAtsWWWxF85s+
-         FRKK4yKL80KyOS5OgxUqxIBARzbGBMUOWmc/e/KBFJbu8Qi13FqYphgBy9/vFuRsP1c2
-         2xhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709201360; x=1709806160;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=t/Go3YqIu09UH/h/HOYTGKZUGAGfZufH1m+hGfleaeo=;
-        b=ux69MU/bJR7FzQPxl0ha/wfTh+pc4U8w9lMEmEVbqeSLEN7A51mhzUI8JKSBtXZeLs
-         mSTfA1Hi7UWXxS3QpITa6hxTAEpOwXBDh09JKJcaDt3y/XrIHm5P77QjLejj4f/ykiC6
-         xD5HeVl3xcTLCCbu652Q+0ahCZO6Bg3Fe2rWUgXuH4Wd7MPwxma554MtY3JM81+p7oso
-         IziuD+CSO0TPuCwRGI/C3PMvtCdWDPafK9MLwkLyvMa7kOB7V1pV89Qc9JGEm0aOchJb
-         20OYXXjtz2fUZPLodaVusYehNhnB2lrrlNSaj2RaTbWc4Gn+o6lF5HjHvjAtqQqk16dq
-         j68A==
-X-Forwarded-Encrypted: i=1; AJvYcCWR1PTWgKyKIvzgBlkBvPLsc3REw4a2ziPQFeQaJ3Lc7v7NfGwB+4IpnPajmlLEMK3bu4IQNFs3MQqlISWx8MqCWvXpCO6uow5NcjXu
-X-Gm-Message-State: AOJu0YzDPRlgLC63KWehMj1WSyop4zJA/K3fvoXcUkRCC9bj4Cy1Rb5Y
-	8JqwgAe6U1ISXBInhpqb6mhcBrDgIFgZZ0bLbPwbxOXMJQhHVCVWWb+hMd4X9dpJjCUPA+G5Og3
-	RP3/Zt+4fWVeSNNGpQT+WSXlAXHsH5Zv3ePJt
-X-Google-Smtp-Source: AGHT+IGqgX6DpEN74CADxukO7H9XFj6A5L3gDfzgaZwl7aLZqmrIaLPyqEGhwFwYnJ0bEzVfW3daN07CbHbZHFQiHXk=
-X-Received: by 2002:aa7:dcc5:0:b0:563:f48a:aa03 with SMTP id
- w5-20020aa7dcc5000000b00563f48aaa03mr103397edu.2.1709201360039; Thu, 29 Feb
- 2024 02:09:20 -0800 (PST)
+	s=arc-20240116; t=1709201358; c=relaxed/simple;
+	bh=8bR6PwZBq4qbVJA3nu9uxIqMtWjtSXCP92eEOytRYyw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eTWGWuy8glQWK24AoNQM28JA8FXgBNbditrvBGhSaraBVSeEmiHdKrJVXtRVWMfWv4pKPAQXfNwGrdTariEG8HsSGH+/+6bDlauyAh8x5ZlRfRp33KCJT2XmXbbwJ7UORXcjtAIU7e+fPnQsa4OL0KmKegvpv8Ae3OWrmdC9No8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9978D1FB;
+	Thu, 29 Feb 2024 02:09:53 -0800 (PST)
+Received: from pluto (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F29D73F762;
+	Thu, 29 Feb 2024 02:09:12 -0800 (PST)
+Date: Thu, 29 Feb 2024 10:09:10 +0000
+From: Cristian Marussi <cristian.marussi@arm.com>
+To: Stephen Boyd <sboyd@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	sudeep.holla@arm.com, james.quinlan@broadcom.com,
+	f.fainelli@gmail.com, vincent.guittot@linaro.org,
+	peng.fan@oss.nxp.com, michal.simek@amd.com, quic_sibis@quicinc.com,
+	quic_nkela@quicinc.com, souvik.chakravarty@arm.com,
+	Michael Turquette <mturquette@baylibre.com>,
+	linux-clk@vger.kernel.org
+Subject: Re: [PATCH 6/7] clk: scmi: Allocate CLK operations dynamically
+Message-ID: <ZeBXxjKiDMT2YPtP@pluto>
+References: <20240214183006.3403207-1-cristian.marussi@arm.com>
+ <20240214183006.3403207-7-cristian.marussi@arm.com>
+ <500e265eb7c6a03a40e0067c8806e059.sboyd@kernel.org>
+ <ZdcFuV0KQDXTH8L8@pluto>
+ <1d0baf6dbaa1c2ca6594f9a2bcade2c4.sboyd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240223143833.1509961-1-guanyulin@google.com>
- <CAJZ5v0gM=0rU6a1A6Bh2Ed=4=1AtQ3p5aDJVCOioA6qxGv1jtQ@mail.gmail.com>
- <CAOuDEK1NdFSZgy8_ebO_zSxbU-gLJHsCzjd6JSr2cckQAFgaTg@mail.gmail.com> <CAJZ5v0g0WgYWyOfMaq8PhOkCmBFuDRb3XbCxPpcbpJuJza0+cA@mail.gmail.com>
-In-Reply-To: <CAJZ5v0g0WgYWyOfMaq8PhOkCmBFuDRb3XbCxPpcbpJuJza0+cA@mail.gmail.com>
-From: Guan-Yu Lin <guanyulin@google.com>
-Date: Thu, 29 Feb 2024 18:09:00 +0800
-Message-ID: <CAOuDEK04r+1j-R7EmMEu91OGwmjY8AaViyQgVK4uShouTLZFiw@mail.gmail.com>
-Subject: Re: [PATCH v3] PM / core: conditionally skip system pm in
- device/driver model
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: pavel@ucw.cz, len.brown@intel.com, gregkh@linuxfoundation.org, 
-	andriy.shevchenko@linux.intel.com, rdunlap@infradead.org, james@equiv.tech, 
-	broonie@kernel.org, james.clark@arm.com, masahiroy@kernel.org, 
-	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1d0baf6dbaa1c2ca6594f9a2bcade2c4.sboyd@kernel.org>
 
-On Tue, Feb 27, 2024 at 7:28=E2=80=AFPM Rafael J. Wysocki <rafael@kernel.or=
-g> wrote:
->
-> On Mon, Feb 26, 2024 at 10:45=E2=80=AFAM Guan-Yu Lin <guanyulin@google.co=
-m> wrote:
-> >
-> > On Sat, Feb 24, 2024 at 1:44=E2=80=AFAM Rafael J. Wysocki <rafael@kerne=
-l.org> wrote:
-> > >
-> > > On Fri, Feb 23, 2024 at 3:38=E2=80=AFPM Guan-Yu Lin <guanyulin@google=
-com> wrote:
-> > > >
-> > > > In systems with a main processor and a co-processor, asynchronous
-> > > > controller management can lead to conflicts.  One example is the ma=
-in
-> > > > processor attempting to suspend a device while the co-processor is
-> > > > actively using it. To address this, we introduce a new sysfs entry
-> > > > called "conditional_skip". This entry allows the system to selectiv=
-ely
-> > > > skip certain device power management state transitions. To use this
-> > > > feature, set the value in "conditional_skip" to indicate the type o=
-f
-> > > > state transition you want to avoid.  Please review /Documentation/A=
-BI/
-> > > > testing/sysfs-devices-power for more detailed information.
-> > > >
-> > > > Signed-off-by: Guan-Yu Lin <guanyulin@google.com>
-> > >
-> > > Please explain how this is intended to work.  That is, what exactly
-> > > you expect to happen when the new attribute is set.
-> >
-> > The sysfs entry 'conditional_skip' for a device indicates which power
-> > transitions (e.g. PM_EVENT_SUSPEND) are omitted within the system
-> > power management flow. During the processing of an identified power
-> > transition, the device's power.entry will not be added to the
-> > dpm_prepared_list, preventing the device from undergoing that
-> > transition. As 'conditional_skip' is modifiable at runtime, a device's
-> > participation in system power management can be dynamically enabled or
-> > disabled.
->
-> So this idea is completely misguided AFAICS.
->
-> First off, why would a device be skipped in system-wide suspend and
-> not in hibernation?  Or the other way around?  Or why would it be
-> skipped in one phase of hibernation and not in the other?
->
+On Wed, Feb 28, 2024 at 06:20:34PM -0800, Stephen Boyd wrote:
+> Quoting Cristian Marussi (2024-02-22 00:28:41)
+> > On Wed, Feb 21, 2024 at 09:44:14PM -0800, Stephen Boyd wrote:
+> > > 
+> > > It's not great to move these function pointer structs out of RO memory
+> > > to RW. I'm also not convinced that it's any better to construct them at
+> > > runtime. Isn't there a constant set of possible clk configurations? Or
+> > > why can't we simply add some failures to the clk_ops functions instead?
+> > 
+> > Well, the real clock devices managed by the SCMI server can be a of
+> 
+> SCMI is a server!? :)
+> 
 
-The motto is to set less constraints and let users configure them
-properly by themselves. But, we could redesign it to better match with
-existing conventions/regulations.
+..well the platform fw act as a server in the client-server SCMI
+model...so...I know these days it's cooler to be "serverless" but..hey...
+..at least is not a BO2k server :P
 
-> Second, but not less important, why is skipping a device in
-> system-wide transitions a good idea at all?  What about dependencies
-> between that device and the other devices in the system?
->
+> > varying nature and so the minimum set of possible clk configurations
+> > to cover will amount to all the possible combinations of supported ops
+> > regarding the specific clock properties (i.e. .set_parent / .set_rate /
+> > .enable / .get/set_duty_cycle / atomic_capability ... for now)...we
+> > simply cannot know in advance what the backend SCMI server is handling.
+> > 
+> > These seemed to me too much in number (and growing) to be pre-allocated
+> > in all possible combinations. (and mostly wasted since you dont really
+> > probably use all combinations all the time)
+> > 
+> > Moreover, SCMI latest spec now exposes some clock properties (or not) to
+> > be able avoid even sending an actual SCMI message that we know will be
+> > denied all the time; one option is that we return an error,, as you said,
+> > but what is the point (I thought) to provide at all a clk-callback that
+> > we know upfront will fail to be executed every time ? (and some consumer
+> > drivers have been reported by partners not to be happy with these errors)
+> > 
+> > What I think could be optimized here instead, and I will try in the next
+> > respin, it is that now I am allocating one set of custom ops for each clock
+> > at the end, even if exactly the same ops are provided since the clock
+> > capabilities are the same; I could instead allocate dynamically and fill only
+> > one single set of ops for each distinct set of combinations, so as to avoid
+> > useless duplication and use only the miminum strict amount of RW memory
+> > needed.
+> > 
+> 
+> Yes please don't allocate a clk_op per clk. And, please add these
+> answers to the commit text so that we know why it's not possible to know
+> all combinations or fail clk_ops calls.
 
-If a device is also used by another operating system kernel, then
-Linux kernel shouldn't always do the system power transition on that
-device to avoid affecting another operating system kernel.
+Sure I posted this series a couple of days ago about this rework:
 
-Since device dependencies can be highly system-specific, maybe we
-should let users handle it as users are the only ones who understand
-their system's unique configuration.
+	https://lore.kernel.org/linux-arm-kernel/20240227194812.1209532-1-cristian.marussi@arm.com/
 
-> Generally speaking, system-wide PM is designed to cover the entire
-> system and there are good reasons for that.  If you don't want it to
-> cover the entire system, you cannot use it at all.
+with a bit of context in the cover-letter and in the commit...but I can
+add more commenting of course if needed.
 
-We discovered a use case that the existing system-wide PM may not
-fully support: devices shared by multiple operating system kernels. I
-think supporting this case would be beneficial to the system-wide PM,
-as it would increase its compatibility.
+Thanks for the review,
+Cristian
 
