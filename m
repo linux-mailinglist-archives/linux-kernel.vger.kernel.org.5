@@ -1,84 +1,135 @@
-Return-Path: <linux-kernel+bounces-86268-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86269-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E0BD86C31C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:08:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7566E86C31D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:09:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 20DDBB26396
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:08:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C1841F22E42
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 08:09:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E64C4D9E0;
-	Thu, 29 Feb 2024 08:08:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA99E482E4;
+	Thu, 29 Feb 2024 08:08:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u0m3krLQ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZIuDEOyy"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 768C0481DF;
-	Thu, 29 Feb 2024 08:08:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6591547F42
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 08:08:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709194093; cv=none; b=BOkIFZWivb+qUpPKOuq0Hr3JqRhBuuKPiDSr1ozTC2Uj+F+rwM22L5TxHNXcqLzQJF7zlQ6P0E7EFqq74hxkiC7WFI0/T7gSEzn+UzHujpLltk7JwuNEaOLXAhgYBn8/pLbBvjlns5xm8/A8pRn0d0fOIJlxBMv+7m4dkHUMDHc=
+	t=1709194131; cv=none; b=jSA9DiQguvbNwGHlWh/BoPpqYW9Uaxmb/jztZbXzvjK5B1NG2f3Kn09BCqDwW9x0+x+ai+IUrJeO+lQwEpCIAIiaKcXikHB7JcDfSyb8SL3BDqI0v681J9a4IeoMupWANiX8MuSKbyqZcshTjYVfSkJVmd7l8JQMIijoNAVSTWc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709194093; c=relaxed/simple;
-	bh=/UXXFqYle1FvcWueLqKYM/ySMplJRb44Qq0V1oGp/jw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LTZ92hvfdgVYrajGSGNAo1ybB2d0432ZrXuFTFEl2NazFFiGw2UyPtwJpAjx/3tVUE+DRrsXfq3h1JmXUU2tlvPtfogJsr7mlcga4tawsvSmeBiqlWqNSmgOE90RsspBbM36Uxu0Ak0PT4Qys3Ds4koSVac9QeMSzZycsFsjX54=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u0m3krLQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 006CBC433C7;
-	Thu, 29 Feb 2024 08:08:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709194093;
-	bh=/UXXFqYle1FvcWueLqKYM/ySMplJRb44Qq0V1oGp/jw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=u0m3krLQ2X0tassVGfTrEkYEbwrz+UXrcWqWYd8mf+75aMEucMwh1ETfzp5RLTXMs
-	 bJMUu7/8zPg6rbEiZFU9XNc/ijUSVd09z2aq3MfKZGUhZO3IUmC+gTXOv9EXfl3CdQ
-	 1nHHG2Q9a0u9UZlJJJMKFToCb4qMDN6SptoBTXAUE6PUBaGIP1FnEJKnrjEnn9AgVe
-	 ZQzqhlJZYLrzZcr6pOf6AaDOuc6HhmKKE8wkMeZB518VPa0GBis5vB3IaWFhQczyaX
-	 go4mHJniPv5vsGWo+IJLi2iCP4f0XWIbE/o7VhH+SjEfXQ8Ri08UZ8Xt9nrGZAfHb2
-	 4WR4gMP51VBow==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rfbSn-000000000OV-1qEx;
-	Thu, 29 Feb 2024 09:08:21 +0100
-Date: Thu, 29 Feb 2024 09:08:21 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Vamshi Gajjela <vamshigajjela@google.com>
-Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Caleb Connolly <caleb.connolly@linaro.org>,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] spmi: hisi-spmi-controller: Do not override device
- identifier
-Message-ID: <ZeA7dVBmm1yuf6F9@hovoldconsulting.com>
-References: <20240228185116.1269-1-vamshigajjela@google.com>
+	s=arc-20240116; t=1709194131; c=relaxed/simple;
+	bh=p2AucDcjwJAc5f/us8nHZQzK0FZ0x5K7PfiLkMlk26c=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=npKCIJ1wEpe5AreMBhhJVqY1s8OlKkmDxQmvDSST6vabUf6JdqhW6nhBvF4WMumNS59TK5BEfHGpeqRickLLIR42H/YsQEy9T/wTg/3I35ATa7N4c7FPeLqxHI9Ys4qvpy8a3iBFAajzAprf3e+ayU0N1rDd9ZCN8q7Zv+rRKCY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZIuDEOyy; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709194128;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=15w6wj3J35usSWdRwfld/vYX5aTLUZWqSCkNcgI5sDA=;
+	b=ZIuDEOyyKZxH2YzGwtOtE2uLkZ/D8LaKZBGiuwXelZkx6ilMsT7/DKL+A+JzSJG87T1I/v
+	UIE/5arE23z6XAyeSgI6IbEbbPLjmE+rp5Nzgxf/szQGEwtPjP00aW92ZTzj3kypclUvn0
+	GyZZPnJLQbbko1K0f2nmfbC9LmSFCTc=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-19-iONjQSVFPqivyx301iEVsg-1; Thu, 29 Feb 2024 03:08:46 -0500
+X-MC-Unique: iONjQSVFPqivyx301iEVsg-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a3bdd99a243so66803366b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 00:08:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709194125; x=1709798925;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=15w6wj3J35usSWdRwfld/vYX5aTLUZWqSCkNcgI5sDA=;
+        b=nYlKIz/fktZlMttN4JukzXtMPY8uIE/236OKgGwQ0JJgYcnJQOZrsa3RTtA4rnq1sa
+         2PV35v1CnZe91jCXX6za9Si8mHDSm+mSbTpXkx8R5tH3Q6WvUZ70V3SBuOBmP4d+QKuE
+         n745UuYEwMdPkFIC0JjAYY/oK9BaTBOYNIi1n/Q555POgA1cLneObwD6owPgf33FqOPP
+         g5iaIkLegmdGdPOllhgZefvAphQHp7Ynzt9GbhC+6JyxUrcnDj1bCHS6+tgGI2DFr8jY
+         8YHWgtYRUN/2azXSsqO85G3QJS7yacR7mQAetHbYvVx38j9z9O777z5CTSn44qrB5bs7
+         WvPg==
+X-Forwarded-Encrypted: i=1; AJvYcCVUALBLY+JntrOZntNu2PWWt9j8SvRvry1IJdDtP3zvTLS+n+xiDrczfUT7vwDnWqdeBic/LGczCueVHk0/SyF7rE7GWMJh2hIBMLzR
+X-Gm-Message-State: AOJu0YwyZbAYuE6+yQS/wROdNKhdUMTc2X0CwsixVS64UMbc0Mgj9Xch
+	80xyocGaWriy+XmYbDJK/75IVkyq3bpENOOjyxdaqRReCJ9Oa/4pZhMSxw0roA8OYBu2lHpmu9z
+	wWSKEvwrMQR9DLWjEofDH/mbqouhEQYsYpWfRjoGpZIxMR3yQBTClkmVbgLbHsA==
+X-Received: by 2002:a17:907:1deb:b0:a44:3dd:1a70 with SMTP id og43-20020a1709071deb00b00a4403dd1a70mr823110ejc.11.1709194125603;
+        Thu, 29 Feb 2024 00:08:45 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHRmHLabCtfkOep1wbFTP3rLm0qXOdCtirtmFfOtY9v2jAX1oaNJwrNSFqOP0TRw9SJDaT04g==
+X-Received: by 2002:a17:907:1deb:b0:a44:3dd:1a70 with SMTP id og43-20020a1709071deb00b00a4403dd1a70mr823096ejc.11.1709194125225;
+        Thu, 29 Feb 2024 00:08:45 -0800 (PST)
+Received: from fedora (g2.ign.cz. [91.219.240.8])
+        by smtp.gmail.com with ESMTPSA id js9-20020a17090797c900b00a3d0a094574sm419645ejc.66.2024.02.29.00.08.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Feb 2024 00:08:43 -0800 (PST)
+From: Vitaly Kuznetsov <vkuznets@redhat.com>
+To: Greg KH <gregkh@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>
+Cc: cve@kernel.org, linux-kernel@vger.kernel.org, KVM list
+ <kvm@vger.kernel.org>
+Subject: Re: CVE-2021-46978: KVM: nVMX: Always make an attempt to map eVMCS
+ after migration
+In-Reply-To: <2024022905-barrette-lividly-c312@gregkh>
+References: <2024022822-CVE-2021-46978-3516@gregkh>
+ <54595439-1dbf-4c3c-b007-428576506928@redhat.com>
+ <2024022905-barrette-lividly-c312@gregkh>
+Date: Thu, 29 Feb 2024 09:08:42 +0100
+Message-ID: <87jzmnn14l.fsf@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240228185116.1269-1-vamshigajjela@google.com>
+Content-Type: text/plain
 
-On Thu, Feb 29, 2024 at 12:21:16AM +0530, Vamshi Gajjela wrote:
-> 'nr' member of struct spmi_controller, which serves as an identifier
-> for the controller/bus. This value is a dynamic ID assigned in
-> spmi_controller_alloc, and overriding it from the driver results in an
-> ida_free error "ida_free called for id=xx which is not allocated".
-> 
-> Signed-off-by: Vamshi Gajjela <vamshigajjela@google.com>
-> Fixes: 70f59c90c819 ("staging: spmi: add Hikey 970 SPMI controller driver")
-> Cc: stable@vger.kernel.org
-> ---
+Greg KH <gregkh@kernel.org> writes:
 
-This is v2, which should be indicated in the patch subject and with a
-short changelog here (e.g. mentioning the split and rebase on 6.8-rc).
+> On Wed, Feb 28, 2024 at 11:09:50PM +0100, Paolo Bonzini wrote:
+>> On 2/28/24 09:14, Greg Kroah-Hartman wrote:
+>> > From: gregkh@kernel.org
+>> > 
+>> > Description
+>> > ===========
+>> > 
+>> > In the Linux kernel, the following vulnerability has been resolved:
+>> > 
+>> > KVM: nVMX: Always make an attempt to map eVMCS after migration
+>> 
+>> How does this break the confidentiality, integrity or availability of the
+>> host kernel?  It's a fix for a failure to restart the guest after migration.
+>> Vitaly can confirm.
+>
+> It's a fix for the availability of the guest kernel, which now can not
+> boot properly, right?  That's why this was selected.  If this is not
+> correct, I will be glad to revoke this.
+>
 
-Johan
+To be precise, this issue is about guest's behavior post-migration and
+not booting. Also, it should be noted that "Enlightened VMCS" feature is
+normally not used for Linux guests on KVM so the "guest kernel" is
+actually Windows kernel (or Hyper-V) :-)
+
+Personally, I don't see how this particular issue differs from other KVM
+hypervisor bugs. I.e. when hypervisor misbehaves, the guest will likely
+suffer and in many cases "suffer" means crash. What *is* important is
+who can trigger hypervisor's misbehavior. In case it is guest triggered
+(and especially if triggered from CPL!=0), security implications are
+possible. In the even worse case when such guest's actions can cause
+issues in the host's kernel, the presence of a vulnerability is almost
+certain.
+
+Migration is (normally) not guest triggered, it's a deliberate action on
+the host.
+
+-- 
+Vitaly
+
 
