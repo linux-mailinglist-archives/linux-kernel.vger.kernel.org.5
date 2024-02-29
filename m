@@ -1,62 +1,51 @@
-Return-Path: <linux-kernel+bounces-86661-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86662-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6BDC86C898
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:53:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94FF586C89B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:54:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6CCA32892AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:53:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 20DD3B276ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:54:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 235A97CF23;
-	Thu, 29 Feb 2024 11:53:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CF3E7CF13;
+	Thu, 29 Feb 2024 11:53:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="plda7Xki"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=gtucker.io header.i=@gtucker.io header.b="lvMq4XJf"
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B0917C0B4;
-	Thu, 29 Feb 2024 11:53:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A45B7C0B0;
+	Thu, 29 Feb 2024 11:53:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709207611; cv=none; b=KZnHaI2qkCaUC8/BtMiI7t7nMVJvLdyBqPp5jwmsRu95XpsKGsFAc8cN/7PYq7hd3ISmFy6iLlkWoefr67A1tPrcQZoFJYnOeXVg+KGC3Q2Q4junG4vSZ6XZ9cR3Au9oclD9tNQkJwMsje/CWAxRv5NOgk5yI4gRC/jB2qfW+xk=
+	t=1709207627; cv=none; b=TVxFTZWNxqxuqsCt3aIZC3ywWgvajobHLvkdvRdYNa0nDhTAMkRTD85zuHCjAIsiLK60YsK5nKTyzzw0xnG1aUlN5pMvO2aqrWZI8NqpHzSgOfYHjGXj3giIfx+Cd8jNSwrAhFSMn5Ski3iaVVo6jj42A0p/lyqWkFXBnJQUB3c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709207611; c=relaxed/simple;
-	bh=GvWVWLTquV50VeGS8lcdohSK4d8IPez41WUK4HwClnA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=aht4R8VCfxq6cm1+KorNXwpUtzp8iEevA7bKo9WC0+xiFyinjA4SFdKuiVrMRoj7DsSdxFWb0oXiVkeL2GdRIgZPjl4+n9hslW+Lt0/r1xDdOJfqBAy1Ssj8X+n/Yqu8zef/y0Ew771EyNS4sbhTJYufNxDAGup4mRAEzXJPRHU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=plda7Xki; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41T69mov007217;
-	Thu, 29 Feb 2024 11:53:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=5RofTZ6zZ5MPKdedsQVpM61DlKgL5LvLKNbxwtcXWmQ=; b=pl
-	da7XkiSTb2aJ15oLzSoQemL33PMc2Uph7Ka9cbjcp07CLJGqwonICm/PQk7xqh3n
-	IvypvqPd7fwHWSx6YkVJiqAZoBNEmYkmwvADNB9vCp0AjGZ+MMxmA5KEBNP6P7FL
-	W9mHSiXjJw19ffhBaxXWPJ+kr0J1iDtB/0KM/BG2qPwkrAXsMi1x/76LG0vBagJf
-	+q0i4whXIb2wwIB+lm9bNeT1gMnFfdG+5Rj3yT+6DPGsZQZaJYgKDzUNuBLpLgnF
-	1+wG3CSlvcCIj/cdbp0HyYNZn1/xaBSWkTpYlTtAROdnKDc0Kbo6h3YQPIwGI7fO
-	KqZ5yU+Ews2MzsTnCIAA==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wjmcx0x38-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 29 Feb 2024 11:53:20 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41TBrIoA031022
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 29 Feb 2024 11:53:19 GMT
-Received: from [10.216.13.176] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 29 Feb
- 2024 03:53:13 -0800
-Message-ID: <c4607aa4-7af7-443f-8ccc-aa4fe3ede3cc@quicinc.com>
-Date: Thu, 29 Feb 2024 17:23:08 +0530
+	s=arc-20240116; t=1709207627; c=relaxed/simple;
+	bh=5nYYs6dSF95dhDnBprwAw/RpexnL1f/GeFnPwzj6Swk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=e/RTW4a2sMSw1hTNjR7++uG3pKfRYCja4yhsHMeChxqpUFVrQ/DMCpMZwlpqgNpnL2xllJMaJt/UbqnQNltTlnFmKS73vbuy/oNjYMT8/rLWv//7ywsmX+VowwhSbhReeNkit7HtuN5evqmbOGPNBepIL9uUP3gcXNb06mJFnUk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gtucker.io; spf=pass smtp.mailfrom=gtucker.io; dkim=pass (2048-bit key) header.d=gtucker.io header.i=@gtucker.io header.b=lvMq4XJf; arc=none smtp.client-ip=217.70.183.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gtucker.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gtucker.io
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 66A0AFF802;
+	Thu, 29 Feb 2024 11:53:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gtucker.io; s=gm1;
+	t=1709207622;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BaToIPDzXPunSHPMARHyvDeuyEwDr1/ZO+a/4iNtt4U=;
+	b=lvMq4XJfkUm+hqYjnbZC8YybN52tAczd6MyvYXAmNWe1H+cCDijJ8iweHc9mMYwqRAp6pQ
+	cVpAJS4mvNq9CbaMQClD5F+VPienkcvhhOr68EsSyt+KDmeO5ZPxnkSur7yYCQP1aVRo8J
+	Hb5CtEBdDjHtmAJ9mMiY0X0ifSqaWRmnQl8ufw2zNFRSjGZ5INDE8810qo5lj1Jrb9Z2l2
+	2j7+nMAAAp91ewPsVQmsQPnjyl9KYun0eDa0XPPh6lM+BBGUBjZLTcQJBdMeVqZMyZVe6R
+	V7dFk74JbD1pcEUT1zA+IHVojyGc65UdG7/s7rJJ1/fHGE57DtHP/K64S9lr1A==
+Message-ID: <b3fb89aa-56b4-4b3c-88f6-c6320bf5c489@gtucker.io>
+Date: Thu, 29 Feb 2024 12:53:38 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,163 +53,60 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v15 2/9] usb: dwc3: core: Access XHCI address space
- temporarily to read port info
-To: Johan Hovold <johan@kernel.org>
-CC: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring
-	<robh+dt@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Wesley Cheng
-	<quic_wcheng@quicinc.com>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "Greg
- Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Felipe Balbi
-	<balbi@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_ppratap@quicinc.com>,
-        <quic_jackp@quicinc.com>
-References: <20240216005756.762712-1-quic_kriskura@quicinc.com>
- <20240216005756.762712-3-quic_kriskura@quicinc.com>
- <ZeBSp0EWnHo8Wbsv@hovoldconsulting.com>
-Content-Language: en-US
-From: Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-In-Reply-To: <ZeBSp0EWnHo8Wbsv@hovoldconsulting.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Subject: Re: [PATCH 0/3] kci-gitlab: Introducing GitLab-CI Pipeline for Kernel
+ Testing
+To: Mark Brown <broonie@kernel.org>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: Nikolai Kondrashov <spbnick@gmail.com>,
+ Helen Koike <helen.koike@collabora.com>, linuxtv-ci@linuxtv.org,
+ dave.pigott@collabora.com, mripard@kernel.org, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-kselftest@vger.kernel.org,
+ gustavo.padovan@collabora.com, pawiecz@collabora.com,
+ tales.aparecida@gmail.com, workflows@vger.kernel.org,
+ kernelci@lists.linux.dev, skhan@linuxfoundation.org,
+ kunit-dev@googlegroups.com, nfraprado@collabora.com, davidgow@google.com,
+ cocci@inria.fr, Julia.Lawall@inria.fr, laura.nao@collabora.com,
+ ricardo.canuelo@collabora.com, kernel@collabora.com,
+ torvalds@linuxfoundation.org, gregkh@linuxfoundation.org
+References: <20240228225527.1052240-1-helen.koike@collabora.com>
+ <20240228230725.GF1659@pendragon.ideasonboard.com>
+ <0a5bf7d1-0a7e-4071-877a-a3d312d80084@gmail.com>
+ <20240229093402.GA30889@pendragon.ideasonboard.com>
+ <655f89fa-6ccb-4b54-adcd-69024b4a1e28@gmail.com>
+ <20240229111919.GF30889@pendragon.ideasonboard.com>
+ <a4fc23e1-5689-4f86-beb7-5b63a0d13359@sirena.org.uk>
+Content-Language: en-GB
+From: Guillaume Tucker <gtucker@gtucker.io>
+Organization: gtucker.io
+In-Reply-To: <a4fc23e1-5689-4f86-beb7-5b63a0d13359@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 8QmluQy7FslCBKekTlrJnCYfQ13XBYC1
-X-Proofpoint-GUID: 8QmluQy7FslCBKekTlrJnCYfQ13XBYC1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-29_02,2024-02-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- lowpriorityscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0 phishscore=0
- clxscore=1015 suspectscore=0 impostorscore=0 spamscore=0 adultscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2402290091
+X-GND-Sasl: gtucker@gtucker.io
 
-
-
-On 2/29/2024 3:17 PM, Johan Hovold wrote:
-> On Fri, Feb 16, 2024 at 06:27:49AM +0530, Krishna Kurapati wrote:
->> Currently Multiport DWC3 controllers are host-only capable.
+On 29/02/2024 12:41, Mark Brown wrote:
+> On Thu, Feb 29, 2024 at 01:19:19PM +0200, Laurent Pinchart wrote:
+>> On Thu, Feb 29, 2024 at 01:10:16PM +0200, Nikolai Kondrashov wrote:
 > 
-> I already asked you to rephrase this so that it becomes clear that you
-> are describing a property of the current hardware (and similar
-> throughout the series):
+>>> Of course. You're also welcome to join the #kernelci channel on libera.chat.
 > 
-> 	https://lore.kernel.org/all/ZTI7AtCJWgAnACSh@hovoldconsulting.com/
-
-Hi Johan. Thanks for the review.
-
-IMO, the statement is describing a property unique to current hardware, 
-that "If it is a multiport controller, it is then host-only capable"
-
-I used the word "Currently" to indicate that "Today, the multiport 
-devices present...". Let me know if there is any ambiguity in the sentence.
-
-In v13, I wrote:
-"Currently host-only capable DWC3 controllers support Multiport."
-You were right. It was ambiguous as it might refer to even single port 
-controllers.
-
-So I changed it saying all the DWC3 multiport controllers are host only 
-capable.
-
-How about:
-
-"All the DWC3 Multi Port controllers that exist today only support host 
-mode"
-
+>> Isn't that a bit pointless if it's no the main IM channel ?
 > 
->> +static int dwc3_read_port_info(struct dwc3 *dwc)
->> +{
->> +	void __iomem *base;
->> +	u8 major_revision;
->> +	u32 offset;
->> +	u32 val;
->> +
->> +	/*
->> +	 * Remap xHCI address space to access XHCI ext cap regs since it is
->> +	 * needed to get information on number of ports present.
->> +	 */
->> +	base = ioremap(dwc->xhci_resources[0].start,
->> +		       resource_size(&dwc->xhci_resources[0]));
->> +	if (IS_ERR(base))
->> +		return PTR_ERR(base);
->> +
->> +	offset = 0;
->> +	do {
->> +		offset = xhci_find_next_ext_cap(base, offset,
->> +						XHCI_EXT_CAPS_PROTOCOL);
->> +		if (!offset)
->> +			break;
->> +
->> +		val = readl(base + offset);
->> +		major_revision = XHCI_EXT_PORT_MAJOR(val);
->> +
->> +		val = readl(base + offset + 0x08);
->> +		if (major_revision == 0x03) {
->> +			dwc->num_usb3_ports += XHCI_EXT_PORT_COUNT(val);
->> +		} else if (major_revision <= 0x02) {
->> +			dwc->num_usb2_ports += XHCI_EXT_PORT_COUNT(val);
->> +		} else {
->> +			dev_warn(dwc->dev,
->> +				 "unrecognized port major revision %d\n",
-> 
-> I still think you should merge this with the previous line even if you
-> end up with 83 chars.
-> 
->> +							major_revision);
->> +		}
->> +	} while (1);
->   
->> +	/*
->> +	 * Currently only DWC3 controllers that are host-only capable
->> +	 * support Multiport.
->> +	 */
-> 
-> So again, also here, rephrase the comment so that it is clear that you
-> are referring to a property of the current hardware.
+> It *was* the original channel and still gets some usage (mostly started
+> by me admittedly since I've never joined slack for a bunch of reasons
+> that make it hassle), IIRC the Slack was started because there were some
+> interns who had trouble figuring out IRC and intermittent connectivity
+> but people seem to have migrated.
 
-I put the comment this way to indicate that we don't want to check for 
-existence of multiple ports if the controller is not "host-only" 
-capable. We should only check for multport support only if we are 
-host-only capable. I think the statement clearly tells that "check for 
-host-only" configuration before proceeding to check for xhci register reads.
+In fact it was initially created for the members of the Linux
+Foundation project only, which is why registration is moderated
+for emails that don't have a domain linked to a member (BTW not
+any Google account will just work e.g. @gmail.com is moderated,
+only @google.com for Google employees isn't).
 
-I replied the same on:
-https://lore.kernel.org/all/279a54f2-7260-4270-83c7-d6f5c5ba0873@quicinc.com/
+And yes IRC is the "least common denominator" chat platform.
+Maybe having a bridge between the main Slack channel and IRC
+would help.
 
-And since you didn't mention anything else at this part of code in your 
-return reply in:
-https://lore.kernel.org/all/ZTYyXhyZN3jBXEfm@hovoldconsulting.com/
+Guillaume
 
-I thought this statement was fine to go.
-
-> 
->> +	hw_mode = DWC3_GHWPARAMS0_MODE(dwc->hwparams.hwparams0);
->> +	if (hw_mode == DWC3_GHWPARAMS0_MODE_HOST) {
->> +		ret = dwc3_read_port_info(dwc);
->> +		if (ret)
->> +			goto err_disable_clks;
->> +	} else {
->> +		dwc->num_usb2_ports = 1;
->> +		dwc->num_usb3_ports = 1;
->> +	}
-> 
-
-Thanks for the review. Can you help let me know your review on the other 
-patches as well.
-
-Regards,
-Krishna,
 
