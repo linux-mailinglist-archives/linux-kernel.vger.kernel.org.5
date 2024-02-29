@@ -1,276 +1,161 @@
-Return-Path: <linux-kernel+bounces-86481-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86471-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E20B86C610
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:52:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 63A9286C5F2
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 10:47:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7370285B66
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:52:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 167DD284E37
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 09:47:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 099F162801;
-	Thu, 29 Feb 2024 09:52:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88CA062158;
+	Thu, 29 Feb 2024 09:46:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TJMoyXAj"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NOAnXi8H"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 847766281E
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 09:52:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1CE96215C
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 09:46:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709200342; cv=none; b=AYFwk+IHX/yO4SaOdGqZqn+IBajip1KPffx+V5IgYCXmCZGRy7z0QtUAN8oNf9l64GQTYGz1OLupzhRJiZjbhnV0S8nt1n7Yeq2Ai5rOL8LViaB/sfJrSbmb/KdpTQ7rLzkPjyNHhdpdTEw1PxfTkIbob8zWajKJk52MTQgf4fs=
+	t=1709200017; cv=none; b=JEH6Pfh3fgMAa8H7py+8nN/hM1onf6O04+byOhwmPCG13eLTAAlV7lHFaVx0moAd3GuMQiiULZdkTW5ZGgYt14ODBzoYIQitB3lFN+t+DZkqNAUafVHtmh23B2GUxycbQtH7Nmhw+0gzSJAwemIl2SZ1K5WuQ8i5Yp6/6tKJ/jk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709200342; c=relaxed/simple;
-	bh=lKzo68tQ2/euX957y2t0ouNXm48fmjaBIyuo8kUBY4I=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=t0o4E14zosOSfQDwYmbdvZRBGZJLFLmMTQ/d9gHSAxlPyLaBVTDxJz1XtlabZHg+3zKDaRZY+AnvXYJVN30bvWf6R6qRLoPBQBvfFKt9I2tumTJ7LjrNeWha+2gIIFXJh2Lxzj5fcIJs+AeXvR2Hvip7zx31bOoGGQlDWL9e5Qk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TJMoyXAj; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709200340; x=1740736340;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=lKzo68tQ2/euX957y2t0ouNXm48fmjaBIyuo8kUBY4I=;
-  b=TJMoyXAjNVvmZcCJ75BAr0bqcobLu4D7JWO63zrSSqMoQRh9vsbtZ3j6
-   H84JgMoHL+KKWdfwlObweU1MsEmw6YvorBqolMukqeqIYaIr/2Zu7HUdR
-   veumDIGofq5WOFydaoHoJF/027VTcnmpE6a6wD3zfPvWdNXf6ea0YJnBm
-   JLp8L4uvNvoGhaYkL/c95ZJnjG42p6FRk9ajTiIV2Ea9gPn6Nt14rpYgE
-   oscgwJtq65WdtrJUJVA4R6Q+T7EjW4ZHeaJEdlxOzelSiL1m8xXwWAgK+
-   BpnMrNyGxVpBqWjYFAumg8I2tmZ/5cBMrohWo6UAWfxLrMWOClnhSvMZy
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="14366693"
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="14366693"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 01:52:19 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="38811022"
-Received: from allen-box.sh.intel.com ([10.239.159.127])
-  by fmviesa001.fm.intel.com with ESMTP; 29 Feb 2024 01:52:18 -0800
-From: Lu Baolu <baolu.lu@linux.intel.com>
-To: Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Eric Badger <ebadger@purestorage.com>
-Cc: iommu@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH v2 2/2] iommu/vt-d: Fix NULL domain on device release
-Date: Thu, 29 Feb 2024 17:46:13 +0800
-Message-Id: <20240229094613.121575-3-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240229094613.121575-1-baolu.lu@linux.intel.com>
-References: <20240229094613.121575-1-baolu.lu@linux.intel.com>
+	s=arc-20240116; t=1709200017; c=relaxed/simple;
+	bh=4zH9C/dh4VdmSyxV/m5XlzDwF4IzkWrKleVHIhuzXWQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OmQBeq7RiEhwA/oKI+r9dvlRWk6A+4oJYnROxbGkfi49KeA+gvrOEPZPmmKqJTaj6u4UWW+gDvUAsCfvx/n/6SrEL85Qi+SlJe3QCASfFJ+zWc5IUoG4cZZAbvW2lIty2ZTttM9pcKZNAXFN6LcO0cQNKsxwfpRWYtNDl9NbHTk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=NOAnXi8H; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-56682b85220so1231405a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 01:46:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709200013; x=1709804813; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9+hYCX3torNsXyaqwug19LZ2jZs7RJKtMjbl9CWfQq8=;
+        b=NOAnXi8H9R7WYifd5Nm+BM/Qg6q5FVpOtzJy7HmdDN7aO46XgQ3vGZUh6Ud0wqqNLi
+         zz3Nl4qtNcYsEo8AbIriXWdyu24OH0gEFkzgnR3w4qu2L0WYOlTFLMFy/vDUE7lRBZIR
+         63WOEpxtLl6I1DScMfYMqYFjErlg/M1ZjN4At0+09jCebQzJzoadKKYMJqQjPPuGNJkO
+         xbrXyN7A8h96VtkdzDUdQnFeExOUXfvTd4Umog3GcpRMLXmtemmuLtqSMuiI5VpyGFJW
+         4kWoQxsfv+1FRxrAweLu5WFbJA+651btTtonekz6T0P6FRmOKhTJYpWpPNmAgADNA5Z4
+         P9Dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709200013; x=1709804813;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9+hYCX3torNsXyaqwug19LZ2jZs7RJKtMjbl9CWfQq8=;
+        b=XIoGWtdqoD5E/XxRRcQ+jsynzHSil8tRaIFuRCci+pxRAIRStjR1F8DlO3VOQPJqN+
+         FQpcj/+2Tctc1zohK1p3ReIDLo4e/mSFQLyTKcZ+HBXt7eWUZC759ICdIGGbqhgDqvIs
+         we+RDTv1d7BBJeSQaO6rNRt93V9u8FSUqOhT+TJnfmLBScRk/mM0dzEyLUF0ONvLfAC3
+         4buWIot4DxNP2B/Gzcyq2haGr4RMhUDAHQn3Ypb9FpHWkX1o+a3FukAHbsLIYA94a7FO
+         fwQi3y1FBPuSl0LdFWUWYI1Mw+Ivw0D3WqxkldHobYp0KdPtVQsiGs5X7Kn+IiI7p2Z3
+         gxDQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWLm/h7yfKXz69PtBLfiQ/mR7zAwVV59fEmftVXpTbxRPZz7wWF0y9cbQd+aw22cKOq+YOsTnHKbBgd+94KFAtKKeCb7Zjk42oGY0dJ
+X-Gm-Message-State: AOJu0YyGx6LRKgbwuhRMwW5KFr3MAM9gxmtbVVba9bkXUgGBHQllommL
+	75YvX9wm0OymmEgqUIRDLowHBiBZBQQUNAE3EmTRVwbvLGkeH3hJm7UsWl7xjhY=
+X-Google-Smtp-Source: AGHT+IHGJ0GTnOsuEWYL2EDugHnlHOvlmuCMytlM2mHCsu87oEHGMBnsAVzam8apsk9mo1zAfDi+bg==
+X-Received: by 2002:a50:8d8d:0:b0:564:7bff:8472 with SMTP id r13-20020a508d8d000000b005647bff8472mr1193367edh.2.1709200013161;
+        Thu, 29 Feb 2024 01:46:53 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id ef9-20020a05640228c900b0056624b47971sm442445edb.97.2024.02.29.01.46.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Feb 2024 01:46:52 -0800 (PST)
+Message-ID: <1251bf21-c65e-4749-ad14-78ddf5cae7ab@linaro.org>
+Date: Thu, 29 Feb 2024 10:46:38 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 3/4] ASoC: dt-bindings: fsl-sai: allow only one
+ dma-names
+Content-Language: en-US
+To: Frank Li <Frank.Li@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>, Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc: linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+ imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20240228-asrc_8qxp-v3-0-d4d5935fd3aa@nxp.com>
+ <20240228-asrc_8qxp-v3-3-d4d5935fd3aa@nxp.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240228-asrc_8qxp-v3-3-d4d5935fd3aa@nxp.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-In the kdump kernel, the IOMMU operates in deferred_attach mode. In this
-mode, info->domain may not yet be assigned by the time the release_device
-function is called. It leads to the following crash in the crash kernel:
+On 28/02/2024 20:14, Frank Li wrote:
+> Some sai only connect one direction. So allow only "rx" or "tx" for
+> dma-names.
 
-    BUG: kernel NULL pointer dereference, address: 000000000000003c
-    ...
-    RIP: 0010:do_raw_spin_lock+0xa/0xa0
-    ...
-    _raw_spin_lock_irqsave+0x1b/0x30
-    intel_iommu_release_device+0x96/0x170
-    iommu_deinit_device+0x39/0xf0
-    __iommu_group_remove_device+0xa0/0xd0
-    iommu_bus_notifier+0x55/0xb0
-    notifier_call_chain+0x5a/0xd0
-    blocking_notifier_call_chain+0x41/0x60
-    bus_notify+0x34/0x50
-    device_del+0x269/0x3d0
-    pci_remove_bus_device+0x77/0x100
-    p2sb_bar+0xae/0x1d0
-    ...
-    i801_probe+0x423/0x740
+"one direction" was already allowed. Explain really what is the
+different, e.g. you expect only TX?
 
-Use the release_domain mechanism to fix it. The scalable mode context
-entry which is not part of release_domain should be cleared in
-release_device().
+This applies to all your recent patches - they all have insufficient
+explanation. Often they explain what you are doing, but not why.
 
-Fixes: 586081d3f6b1 ("iommu/vt-d: Remove DEFER_DEVICE_DOMAIN_INFO")
-Reported-by: Eric Badger <ebadger@purestorage.com>
-Closes: https://lore.kernel.org/r/20240113181713.1817855-1-ebadger@purestorage.com
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
----
- drivers/iommu/intel/pasid.h |  1 +
- drivers/iommu/intel/iommu.c | 31 +++-----------
- drivers/iommu/intel/pasid.c | 83 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 90 insertions(+), 25 deletions(-)
+> 
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
 
-diff --git a/drivers/iommu/intel/pasid.h b/drivers/iommu/intel/pasid.h
-index 487ede039bdd..42fda97fd851 100644
---- a/drivers/iommu/intel/pasid.h
-+++ b/drivers/iommu/intel/pasid.h
-@@ -318,4 +318,5 @@ void intel_pasid_tear_down_entry(struct intel_iommu *iommu,
- 				 bool fault_ignore);
- void intel_pasid_setup_page_snoop_control(struct intel_iommu *iommu,
- 					  struct device *dev, u32 pasid);
-+void intel_pasid_teardown_sm_context(struct device *dev);
- #endif /* __INTEL_PASID_H */
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index cc3994efd362..f74d42d3258f 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -3869,30 +3869,6 @@ static void domain_context_clear(struct device_domain_info *info)
- 			       &domain_context_clear_one_cb, info);
- }
- 
--static void dmar_remove_one_dev_info(struct device *dev)
--{
--	struct device_domain_info *info = dev_iommu_priv_get(dev);
--	struct dmar_domain *domain = info->domain;
--	struct intel_iommu *iommu = info->iommu;
--	unsigned long flags;
--
--	if (!dev_is_real_dma_subdevice(info->dev)) {
--		if (dev_is_pci(info->dev) && sm_supported(iommu))
--			intel_pasid_tear_down_entry(iommu, info->dev,
--					IOMMU_NO_PASID, false);
--
--		iommu_disable_pci_caps(info);
--		domain_context_clear(info);
--	}
--
--	spin_lock_irqsave(&domain->lock, flags);
--	list_del(&info->link);
--	spin_unlock_irqrestore(&domain->lock, flags);
--
--	domain_detach_iommu(domain, iommu);
--	info->domain = NULL;
--}
--
- /*
-  * Clear the page table pointer in context or pasid table entries so that
-  * all DMA requests without PASID from the device are blocked. If the page
-@@ -4431,7 +4407,11 @@ static void intel_iommu_release_device(struct device *dev)
- 	mutex_lock(&iommu->iopf_lock);
- 	device_rbtree_remove(info);
- 	mutex_unlock(&iommu->iopf_lock);
--	dmar_remove_one_dev_info(dev);
-+
-+	if (sm_supported(iommu) && !dev_is_real_dma_subdevice(dev) &&
-+	    !context_copied(iommu, info->bus, info->devfn))
-+		intel_pasid_teardown_sm_context(dev);
-+
- 	intel_pasid_free_table(dev);
- 	intel_iommu_debugfs_remove_dev(info);
- 	kfree(info);
-@@ -4922,6 +4902,7 @@ static const struct iommu_dirty_ops intel_dirty_ops = {
- 
- const struct iommu_ops intel_iommu_ops = {
- 	.blocked_domain		= &blocking_domain,
-+	.release_domain		= &blocking_domain,
- 	.capable		= intel_iommu_capable,
- 	.hw_info		= intel_iommu_hw_info,
- 	.domain_alloc		= intel_iommu_domain_alloc,
-diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
-index 108158e2b907..52068cf52fe2 100644
---- a/drivers/iommu/intel/pasid.c
-+++ b/drivers/iommu/intel/pasid.c
-@@ -667,3 +667,86 @@ int intel_pasid_setup_nested(struct intel_iommu *iommu, struct device *dev,
- 
- 	return 0;
- }
-+
-+/*
-+ * Interfaces to setup or teardown a pasid table to the scalable-mode
-+ * context table entry:
-+ */
-+
-+/*
-+ * Cache invalidation for changes to a scalable-mode context table
-+ * entry.
-+ *
-+ * Section 6.5.3.3 of the VT-d spec:
-+ * - Device-selective context-cache invalidation;
-+ * - Domain-selective PASID-cache invalidation to affected domains
-+ *   (can be skipped if all PASID entries were not-present);
-+ * - Domain-selective IOTLB invalidation to affected domains;
-+ * - Global Device-TLB invalidation to affected functions.
-+ *
-+ * Note that RWBF (Required Write-Buffer Flushing) capability has
-+ * been deprecated for scable mode. Section 11.4.2 of the VT-d spec:
-+ *
-+ * HRWBF: Hardware implementations reporting Scalable Mode Translation
-+ * Support (SMTS) as Set also report this field as Clear.
-+ */
-+static void sm_context_flush_caches(struct device *dev)
-+{
-+	struct device_domain_info *info = dev_iommu_priv_get(dev);
-+	struct intel_iommu *iommu = info->iommu;
-+
-+	iommu->flush.flush_context(iommu, 0, PCI_DEVID(info->bus, info->devfn),
-+				   DMA_CCMD_MASK_NOBIT, DMA_CCMD_DEVICE_INVL);
-+	qi_flush_pasid_cache(iommu, 0, QI_PC_GLOBAL, 0);
-+	iommu->flush.flush_iotlb(iommu, 0, 0, 0, DMA_TLB_GLOBAL_FLUSH);
-+	devtlb_invalidation_with_pasid(iommu, dev, IOMMU_NO_PASID);
-+}
-+
-+static void context_entry_teardown_pasid_table(struct intel_iommu *iommu,
-+					       struct context_entry *context)
-+{
-+	context_clear_entry(context);
-+	if (!ecap_coherent(iommu->ecap))
-+		clflush_cache_range(context, sizeof(*context));
-+}
-+
-+static void device_pasid_table_teardown(struct device *dev, u8 bus, u8 devfn)
-+{
-+	struct device_domain_info *info = dev_iommu_priv_get(dev);
-+	struct intel_iommu *iommu = info->iommu;
-+	struct context_entry *context;
-+
-+	spin_lock(&iommu->lock);
-+	context = iommu_context_addr(iommu, bus, devfn, false);
-+	if (!context) {
-+		spin_unlock(&iommu->lock);
-+		return;
-+	}
-+
-+	context_entry_teardown_pasid_table(iommu, context);
-+	spin_unlock(&iommu->lock);
-+
-+	sm_context_flush_caches(dev);
-+}
-+
-+static int pci_pasid_table_teardown(struct pci_dev *pdev, u16 alias, void *data)
-+{
-+	struct device *dev = data;
-+
-+	if (dev == &pdev->dev)
-+		device_pasid_table_teardown(dev, PCI_BUS_NUM(alias), alias & 0xff);
-+
-+	return 0;
-+}
-+
-+void intel_pasid_teardown_sm_context(struct device *dev)
-+{
-+	struct device_domain_info *info = dev_iommu_priv_get(dev);
-+
-+	if (!dev_is_pci(dev)) {
-+		device_pasid_table_teardown(dev, info->bus, info->devfn);
-+		return;
-+	}
-+
-+	pci_for_each_dma_alias(to_pci_dev(dev), pci_pasid_table_teardown, dev);
-+}
--- 
-2.34.1
+
+
+
+Best regards,
+Krzysztof
 
 
