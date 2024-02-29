@@ -1,162 +1,110 @@
-Return-Path: <linux-kernel+bounces-86632-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86634-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6205886C816
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:33:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50EFE86C81D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:35:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CBFCFB22C38
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:33:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 120101F2556F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 11:35:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E91D97C0A2;
-	Thu, 29 Feb 2024 11:33:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="K55/xU47"
-Received: from mail-io1-f44.google.com (mail-io1-f44.google.com [209.85.166.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3C7D7AE52
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 11:33:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20DC77C0A1;
+	Thu, 29 Feb 2024 11:35:26 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 778487AE41
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 11:35:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709206419; cv=none; b=mP2EK6Y7bZP2qZV7AP6OCkpU4Mp/anhaRbQWf5uy3h2v6Uu+NNgb+MtTi662Qc9wyyzS/HKYOdx9aErWrSXXtiNC7mb159MaLxVbULmv7SeV4HZRh0ds+kr/qYDLa9t2WvjP90Q6TpcLaGLQC7CUWAS+0G4SCg5YsIzFzylWpb4=
+	t=1709206525; cv=none; b=gQu1/uVZplbd4rZPsscfEEJVgKo2SEMZH4wo1gVmPjKess7tlAaw2bMEwj5aV+oRBkvPVTKTH6etS4hXZuQLm/LeXsEpPOsQFJbP/Kfytu0jXPbUP9/kU3bgcxN/f/ismGJgOGZbMEMEfjSFKnDvQFdKRI9apu6mce8yppdckTc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709206419; c=relaxed/simple;
-	bh=OdwXQtCzfRxqJt2/JOnHMtt1+ULlsFGxa5d4NtRnE9o=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SLw55y6+b0Ckp6MJLxvFA2DcEbSplnZcF7A3qXuErr0IBCb8nRKRg0FmDt1elzZvx1DEOES0aq8R2UaDUha4dyTXt0Qy4noHMCrZhDno/ctBQfo88eKLG1D4+Rqx82UiaZT3FLtXEHrgz7VhAyGNAAzVXfZ9fBNBQExQiMBvrHI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=K55/xU47; arc=none smtp.client-ip=209.85.166.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-io1-f44.google.com with SMTP id ca18e2360f4ac-7c40863de70so39895539f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 03:33:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709206416; x=1709811216; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OdwXQtCzfRxqJt2/JOnHMtt1+ULlsFGxa5d4NtRnE9o=;
-        b=K55/xU47T4Fp6vR8BLaP79sd/JQLiFuyzD2QFh8xIZsTbEiZrlRvGYtHVlSoLOc+n4
-         JdpcYXhe2UySjUYJKNaGL4MJpnVUmzSmwKqA671PMEdih7fTIsLC/4r82Ffpp2ElY2NB
-         ZIHLH0UtZO9rr3sUE7LJbLTbRCf9aYjDQgUQnVtE2WlDLloAWY0Z86o/qiIOd3W7BDLt
-         nDd18+O2URicNUJ0FJC8X/AVg+0GYvmdRcam8zvQxPgwaUjGUlPT3+5+DzbLLQ46b7VG
-         QRw3iemzVnI5vJMDeU8CKKzK88xG9Hlm4iS6U1aZg2F3cLEUvdNe5/IN/jqx6sI5puQi
-         cIDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709206416; x=1709811216;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OdwXQtCzfRxqJt2/JOnHMtt1+ULlsFGxa5d4NtRnE9o=;
-        b=ocx0ZJsMWy93GEeDDgJ16uNEPjMp+bnOP5D6vUh56ii4B+UU8CTxSaCsLvFrGo5ZfJ
-         mZde31EoLA8yJU74WlryVlihMk+nXRJ6mnRMgHvQ6fejy08irICKu8SG8TFrE0nz9KNH
-         xKHO+HXLM2JHffXht42cNI7a1lEcRdc91H9hQRPqHW+74x8mexqNs86xEEA6rElE01Ea
-         i93sHHEKP7HDFEf3bgyiP2gmnU40pVw8YFt/uLRK3T29xGTRaKN1leL+qB6DQbNeIBI/
-         y9pjoU0O5NuUUTt1RBC6avWPCW4pOpX/55EDugZlUdGvxVjgDh+4SC614vLQPoCHbl3E
-         YvHg==
-X-Forwarded-Encrypted: i=1; AJvYcCWKv1RBNVUH1Qoke3TaIApn4Q6QxT4prg5HCQd4TFuf4XhktMvD6h6Jv25Y2W/OU6ZdNrKPya6M51pHQblQmbbormF8stC1l6iQg61r
-X-Gm-Message-State: AOJu0YyU1WcHnhlHM7l/ZnW3RtT+0Np1+NxWVJnlyH+HLhGmvFNKoa4J
-	74QKQhlTZwTN7XMWNxQciqrGpSRMvYfl5Rhj3YDIVq+6QuUaFq4LOe9hF/sqKqqXVgBATI0Tes3
-	MTQL6ha2eLH/ra9tP40r5QoB4nUIN3MYStuJS
-X-Google-Smtp-Source: AGHT+IEyR1QF0mvxlymN3UNZ9/6PJpld7SFPaZT8wcg31g8q4y/VVJDwXOdOLXwJcDBtzynOXQAaauZ5TcxpJAykKUM=
-X-Received: by 2002:a6b:c98d:0:b0:7c4:9cb9:da3 with SMTP id
- z135-20020a6bc98d000000b007c49cb90da3mr1901383iof.1.1709206415733; Thu, 29
- Feb 2024 03:33:35 -0800 (PST)
+	s=arc-20240116; t=1709206525; c=relaxed/simple;
+	bh=Tcv85mJuRG7F5HJeDHob15mnxzEcXiChVN1WZIyv8vQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=d28nRl76nfI0CGU4w4uDFzED099y1VvGRSTYheAyfdBJHHEiX+dG5AxPr6ujC3Mi9CUMkQSxDPSw8ysDoJsRCDix/34Zt4byvrM4duUngSoxXlIiAaAbQHBybYcmUSqkvckaPAa7QgHCyM23YvuJj59XPAB12BmHQVOYJZLBiNI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9159B1FB;
+	Thu, 29 Feb 2024 03:36:01 -0800 (PST)
+Received: from [10.57.68.58] (unknown [10.57.68.58])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8A3C43F762;
+	Thu, 29 Feb 2024 03:35:21 -0800 (PST)
+Message-ID: <ce00f9b2-f73f-4ae8-864e-ef2b9a62dbf5@arm.com>
+Date: Thu, 29 Feb 2024 11:35:18 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221160215.484151-1-panikiel@google.com> <20240221160215.484151-2-panikiel@google.com>
- <ce262cda-84ba-4d8f-a916-76488c94066d@xs4all.nl> <CAM5zL5qrMNfyiXMOJHUzLySm_U2U8kbD=D_Cyn0WjkvpikiYpQ@mail.gmail.com>
- <03f65fbc-9cf8-4347-8277-e53cb01b00a5@xs4all.nl>
-In-Reply-To: <03f65fbc-9cf8-4347-8277-e53cb01b00a5@xs4all.nl>
-From: =?UTF-8?Q?Pawe=C5=82_Anikiel?= <panikiel@google.com>
-Date: Thu, 29 Feb 2024 12:33:24 +0100
-Message-ID: <CAM5zL5r5JtA2HojaYZkSfUvoMTSNWALQM8HVuuXq-Znu7+TvGw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/9] media: v4l2-subdev: Add a pad variant of .query_dv_timings()
-To: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc: airlied@gmail.com, akpm@linux-foundation.org, conor+dt@kernel.org, 
-	daniel@ffwll.ch, dinguyen@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
-	maarten.lankhorst@linux.intel.com, mchehab@kernel.org, mripard@kernel.org, 
-	robh+dt@kernel.org, tzimmermann@suse.de, devicetree@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
-	linux-media@vger.kernel.org, chromeos-krk-upstreaming@google.com, 
-	ribalda@chromium.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mm/memory.c: do_numa_page(): remove a redundant page
+ table read
+Content-Language: en-GB
+To: John Hubbard <jhubbard@nvidia.com>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+ David Hildenbrand <david@redhat.com>
+References: <20240228034151.459370-1-jhubbard@nvidia.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20240228034151.459370-1-jhubbard@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Feb 29, 2024 at 9:02=E2=80=AFAM Hans Verkuil <hverkuil-cisco@xs4all=
-nl> wrote:
->
-> On 28/02/2024 16:34, Pawe=C5=82 Anikiel wrote:
-> > On Wed, Feb 28, 2024 at 12:25=E2=80=AFPM Hans Verkuil <hverkuil-cisco@x=
-s4all.nl> wrote:
-> >>
-> >> Hi Pawe=C5=82,
-> >>
-> >> On 21/02/2024 17:02, Pawe=C5=82 Anikiel wrote:
-> >>> Currently, .query_dv_timings() is defined as a video callback without
-> >>> a pad argument. This is a problem if the subdevice can have different
-> >>> dv timings for each pad (e.g. a DisplayPort receiver with multiple
-> >>> virtual channels).
-> >>>
-> >>> To solve this, add a pad variant of this callback which includes
-> >>> the pad number as an argument.
-> >>
-> >> So now we have two query_dv_timings ops: one for video ops, and one
-> >> for pad ops. That's not very maintainable. I would suggest switching
-> >> all current users of the video op over to the pad op.
-> >
-> > I agree it would be better if there was only one. However, I have some =
-concerns:
-> > 1. Isn't there a problem with backwards compatibility? For example, an
-> > out-of-tree driver is likely to use this callback, which would break.
-> > I'm asking because I'm not familiar with how such API changes are
-> > handled.
->
-> It's out of tree, so they will just have to adapt. That's how life is if
-> you are not part of the mainline kernel.
->
-> > 2. If I do switch all current users to the pad op, I can't test those
-> > changes. Isn't that a problem?
->
-> I can test one or two drivers, but in general I don't expect this to be
-> a problem.
->
-> > 3. Would I need to get ACK from all the driver maintainers?
->
-> CC the patches to the maintainers. Generally you will get back Acks from
-> some but not all maintainers, but that's OK. For changes affecting multip=
-le
-> drivers you never reach 100% on that. I can review the remainder. The DV
-> Timings API is my expert area, so that shouldn't be a problem.
->
-> A quick grep gives me these subdev drivers that implement it:
->
-> adv748x, adv7604, adv7842, tc358743, tda1997x, tvp7002, gs1662.
->
-> And these bridge drivers that call the subdevs:
->
-> cobalt, rcar-vin, vpif_capture.
->
-> The bridge drivers can use the following pad when calling query_dv_timing=
-s:
->
-> cobalt: ADV76XX_PAD_HDMI_PORT_A
-> rcar_vin: vin->parallel.sink_pad
-> vpif_capture: 0
->
-> The converted subdev drivers should check if the pad is an input pad.
-> Ideally it should check if the pad is equal to the current input pad
-> since most devices can only query the timings for the currently selected
-> input pad. But some older drivers predate the pad concept and they
-> ignore the pad value.
+On 28/02/2024 03:41, John Hubbard wrote:
+> do_numa_page() is reading from the same page table entry, twice, while
+> holding the page table lock: once while checking that the pte hasn't
+> changed, and again in order to modify the pte.
+> 
+> Instead, just read the pte once, and save it in the same old_pte
+> variable that already exists. This has no effect on behavior, other than
+> to provide a tiny potential improvement to performance, by avoiding the
+> redundant memory read (which the compiler cannot elide, due to
+> READ_ONCE()).
+> 
+> Also improve the associated comments nearby.
+> 
+> Cc: Ryan Roberts <ryan.roberts@arm.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
 
-Thank you for the helpful info. I will switch all these drivers to the
-pad op, then. Would you like me to prepare a separate patchset, or
-should I include the changes in this one?
+Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
+
+> ---
+>  mm/memory.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 0bfc8b007c01..df0711982901 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -4928,18 +4928,18 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
+>  	int flags = 0;
+>  
+>  	/*
+> -	 * The "pte" at this point cannot be used safely without
+> -	 * validation through pte_unmap_same(). It's of NUMA type but
+> -	 * the pfn may be screwed if the read is non atomic.
+> +	 * The pte cannot be used safely until we verify, while holding the page
+> +	 * table lock, that its contents have not changed during fault handling.
+>  	 */
+>  	spin_lock(vmf->ptl);
+> -	if (unlikely(!pte_same(ptep_get(vmf->pte), vmf->orig_pte))) {
+> +	/* Read the live PTE from the page tables: */
+> +	old_pte = ptep_get(vmf->pte);
+> +
+> +	if (unlikely(!pte_same(old_pte, vmf->orig_pte))) {
+>  		pte_unmap_unlock(vmf->pte, vmf->ptl);
+>  		goto out;
+>  	}
+>  
+> -	/* Get the normal PTE  */
+> -	old_pte = ptep_get(vmf->pte);
+>  	pte = pte_modify(old_pte, vma->vm_page_prot);
+>  
+>  	/*
+
 
