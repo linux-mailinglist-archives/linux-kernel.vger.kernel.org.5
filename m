@@ -1,118 +1,95 @@
-Return-Path: <linux-kernel+bounces-86179-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86180-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E73A86C0BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 07:35:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6CA286C0BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 07:35:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45C8C28729D
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 06:35:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B2EE1F23215
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 06:35:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3742847F79;
-	Thu, 29 Feb 2024 06:33:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02EB04439F;
+	Thu, 29 Feb 2024 06:35:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YKbaYtCx"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WAcKx9BD"
+Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0693746449
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 06:33:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7B6638388
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 06:35:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709188399; cv=none; b=ufs/UaIZj7IprPZjp0xxMnzL8h+NLteUVGRFcVjxRk0AmWo3pjY80tEQtIJU3pW5WuUn/qyw088S8/bqbkmDWeXWxUhX5DAfZKsOexL5iuRA9QuJ2AHVsqBxBgquP/V+qD8ni3oMSahLN2vMF9VdrBxMbVhkRQYI3ZHrIzQ2Wlk=
+	t=1709188503; cv=none; b=YCv0pycM791Be4f9Jm85tyyAvD3wRXRBUYIHPaLIvGZ21P2/zLs6WpObThTVy0SXJ6yjZr5uaSk4l5VdBVvbpRppvkhbz8qgU0o/kSv9/9c7ddhiz8vQ/dYfr1p6asvKTK3K84E1W2FtIXRplJnw6gT0tSe4sqmhJeIuku7KEzo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709188399; c=relaxed/simple;
-	bh=GIegngHqtLjHARUsBjYE1nUvvYzurvCdwBU55T25Zws=;
-	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Content-Type; b=mCLt+WujZvI6pqg/VQtzzLVaTGHB7Eu4ugPFMV654YGc2ccgLpiewQGxv7BVrTO8Rweq1FgMDT3fh8firQOQYDxDc2BeUBphO/spWNVmOrkicRp0HujIKjUC1U/HjSrcwCX5oDmFGsXYxoggxRwLBG1Bmf34iUPArhhhYT2Lo+o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YKbaYtCx; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dccc49ef73eso1053299276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 22:33:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709188397; x=1709793197; darn=vger.kernel.org;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=h3EeOnj2LJFuh4Gzgf1odB7yRFHxb61zXSqdlmTf/sY=;
-        b=YKbaYtCx+lHpwSTy4H1SVfzQA5K2rjaMGXeA/TxUBTq1htoEcqrrpgSqp+fAB89tIT
-         sdUQQ7d4XFL7McpnXfYUIGJCUobTTlIk+gjU4W2fd7MKXpplEq3S9U84oWDaOlaRB04f
-         CNh2DvhmC1PhzMghrFAe6BiDnh66URMhK5bquNuUhfFvipHm1Z6Pf7VHEYqa/EQHq7Kp
-         UqS9iUlPcL5LJf0SndhQdg1WWWGZ4uZed5oOHSVrN6AiEPywH5uEC1DN05uqwWbV7s4W
-         Ysda8asjM9a4AunDitegMEgWKXwrvtuGYezoRW6+qOckXeRE+5B1g92RIe7Zq4HbLXO9
-         Ulpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709188397; x=1709793197;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=h3EeOnj2LJFuh4Gzgf1odB7yRFHxb61zXSqdlmTf/sY=;
-        b=IAsXIRr9gxPYF6PKeq1LNuOR9AjRoBu+A/akxpRDOftaGU3fWq6IXf9q50MumyG6hq
-         qX6AMm60OcboGLwBLKVZ53kUJBcNBZVq8sPwybeSVc/LNZjKw1Xs0FkZCKsHMd/CSZuo
-         X1sPJCc5hNUuVQyO+D9WrfMeDzeVpeO96TOxnp1ub5Fyfx3+Q5RRpI1M78odA8KD5GvN
-         ZWxMa0HIS9dxr+yuS3bpL+Nm6Uk4GRSHTn6Mh1wzKIxRKRDt0YqHCjFRa10sZ86wZO1O
-         lTXy5fN4zyuSva9j9iSturpNbidof41v9f/BSTd1WuJHRcO6QcEqinWjhC8+H3bO8Ik8
-         nMDA==
-X-Forwarded-Encrypted: i=1; AJvYcCWzJQd/yOsBc+JmQhQBvWP1OryeRaEJ5Ev9Xl7MSuDnuqeqn2wbAsz3kDil2DXJWki/YZtIAEtyU5Y7S8LtrF6FJkRCoIHL564QSq1t
-X-Gm-Message-State: AOJu0YxPckFFz2sIo+klElvn9Vfty151Ku4hM+mkQx7NgpD3MCAJ/O/F
-	qe5i+rlUdjraD18K/JUgar1m/ZT+OdAGInk+Wl4hFIHQjm4Sjc0EPXjBFNiRkgD8FeKMeW5u9eW
-	x1I7FuQ==
-X-Google-Smtp-Source: AGHT+IF1kuz73GlgS3MiChLOB/xw2yrSO/PfkIU+An5t2EXD/vbXFmUQaqlQkviDAcTiq0LYyCZJ3K+8ILZs
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:77dc:144c:334e:e2dd])
- (user=irogers job=sendgmr) by 2002:a05:6902:150d:b0:dc6:d890:1a97 with SMTP
- id q13-20020a056902150d00b00dc6d8901a97mr59458ybu.9.1709188396983; Wed, 28
- Feb 2024 22:33:16 -0800 (PST)
-Date: Wed, 28 Feb 2024 22:32:53 -0800
-In-Reply-To: <20240229063253.561838-1-irogers@google.com>
-Message-Id: <20240229063253.561838-8-irogers@google.com>
+	s=arc-20240116; t=1709188503; c=relaxed/simple;
+	bh=swc6S+6Yo6A0fPMSHvrIlHvikCcbyQH5FEQv0jRzSdQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RiOPJPutoPKoBWnEeg63+xjaUS9gntZaNd4sa/rCD8CrB+1F+DAoXPwuIljUznwRKzqxjohMLyOkpOAbB/UmgOvOk0aSxdJpMacj/cX0P0pUSq3ZxwrAyIchs5JR0ht7b3NpaXnZwedWgghLNxUiVYld2p+tA7UnQ9Kyd/J3DyE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=WAcKx9BD; arc=none smtp.client-ip=91.218.175.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 29 Feb 2024 06:34:55 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1709188499;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TTjPglRVl0w4hyzMuzLiZwXuKasvFFVk+iNhHkjufl4=;
+	b=WAcKx9BDUlNys6P6xwDTTnNX85oOId7KD1Mp6WYwv3ie1zNnkbYXqlhh+/PlOw8KJpr7S7
+	tyKniqORvtv2F5hUQBbtBFRvvi5nLW+NUUUIIOh/NBdIZ2+l+QSFfFZjAmmb46lRX4BCcB
+	MBzSPAV4YqFUIUnakHFZP6j/pkbZlHY=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Oliver Upton <oliver.upton@linux.dev>
+To: Raghavendra Rao Ananta <rananta@google.com>
+Cc: Sean Christopherson <seanjc@google.com>,
+	Mark Brown <broonie@kernel.org>, Thomas Huth <thuth@redhat.com>,
+	kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+	Andrew Jones <ajones@ventanamicro.com>,
+	Marc Zyngier <maz@kernel.org>,
+	Aishwarya TCV <aishwarya.tcv@arm.com>,
+	Shaoqin Huang <shahuang@redhat.com>
+Subject: Re: [PATCH v3 3/8] KVM: selftests: Move setting a vCPU's entry point
+ to a dedicated API
+Message-ID: <ZeAlj14TCnpR-G15@linux.dev>
+References: <20240208204844.119326-1-thuth@redhat.com>
+ <20240208204844.119326-4-thuth@redhat.com>
+ <501ac94d-11ab-4765-a25d-75013c021be6@sirena.org.uk>
+ <Zd-JjBNCpFG5iDul@google.com>
+ <Zd-jdAtI_C_d_fp4@google.com>
+ <Zd-lzwQb0APsBFjM@linux.dev>
+ <CAJHc60xqbrH5cgSm5URhxF1j-+X7PVD1WkqEBRKENo-GeQnsnQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240229063253.561838-1-irogers@google.com>
-X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Subject: [PATCH v3 7/7] perf threads: Reduce table size from 256 to 8
-From: Ian Rogers <irogers@google.com>
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Oliver Upton <oliver.upton@linux.dev>, Yang Jihong <yangjihong1@huawei.com>, 
-	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJHc60xqbrH5cgSm5URhxF1j-+X7PVD1WkqEBRKENo-GeQnsnQ@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-The threads data structure is an array of hashmaps, previously
-rbtrees. The two levels allows for a fixed outer array where access is
-guarded by rw_semaphores. Commit 91e467bc568f ("perf machine: Use
-hashtable for machine threads") sized the outer table at 256 entries
-to avoid future scalability problems, however, this means the threads
-struct is sized at 30,720 bytes. As the hashmaps allow O(1) access for
-the common find/insert/remove operations, lower the number of entries
-to 8. This reduces the size overhead to 960 bytes.
+On Wed, Feb 28, 2024 at 03:00:03PM -0800, Raghavendra Rao Ananta wrote:
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/util/threads.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+[...]
 
-diff --git a/tools/perf/util/threads.h b/tools/perf/util/threads.h
-index d03bd91a7769..da68d2223f18 100644
---- a/tools/perf/util/threads.h
-+++ b/tools/perf/util/threads.h
-@@ -7,7 +7,7 @@
- 
- struct thread;
- 
--#define THREADS__TABLE_BITS	8
-+#define THREADS__TABLE_BITS	3
- #define THREADS__TABLE_SIZE	(1 << THREADS__TABLE_BITS)
- 
- struct threads_table_entry {
+> I sent out a patch in the past to get rid of them [1], but Shaoqin is
+> currently making an effort to (fix and) use them in their tests [2].
+> While we are still reviewing the series, we can apply [1] to unblock
+> enabling -Werror and Shaqoqin can re-introduce the functions as
+> needed. But, it's your call.
+
+Thanks for the brief, now I remember :) Agreed, let's just delete these
+upstream. These accessors are simple anyway, and easy to re-review in
+Shaoqin's tests.
+
+Sean -- I'm going to pick up [1] and throw it on the branch with your
+cleanup.
+
 -- 
-2.44.0.278.ge034bb2e1d-goog
-
+Thanks,
+Oliver
 
