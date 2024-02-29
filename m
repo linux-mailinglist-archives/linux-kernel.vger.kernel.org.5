@@ -1,150 +1,307 @@
-Return-Path: <linux-kernel+bounces-87595-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87594-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0ADB86D64F
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 325B486D64E
 	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:46:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86F81281106
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DB9C281D93
 	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:46:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF61B6D52F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAECD6D52E;
 	Thu, 29 Feb 2024 21:45:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b9/CjJ8M"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="OYviilRO"
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1EEE6D50C;
-	Thu, 29 Feb 2024 21:45:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B3B616FF2B
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 21:45:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709243150; cv=none; b=GG3N9TkZuspsS6yj6GPowgp5bLliBiRJnSNdI45+WsA1j3bJ2NZsIJSokOioOnGkY5ySclmXcfYVraoilJ/1nA541SEvR7Bxw/5yPfEAURxFZpQZJs01PXDprFQIuTLiKDVM+dUa0J9l8IVobdoUKUZiLTrlK+eUsEhZe3j0klQ=
+	t=1709243149; cv=none; b=cHGb78383iGtPL2bzkXQCriAvk0xYJnz4rUrHH9qS2XKRf6ez8v/UGuu3R0oKiwapr0N5SK+KghqC8TZLCkklpjzsq4TneGemybIGTCi1spxmDS1r9KRRBc/Y0gIJLsnfxwzRSx5fqg6VwTz9u1N64AqVuYON3L7JON1/BJjhaw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709243150; c=relaxed/simple;
-	bh=G4EYkzPzFZ97EhbBfqtvrgTbhgg2qWPt+odKPoorlmM=;
+	s=arc-20240116; t=1709243149; c=relaxed/simple;
+	bh=S9qmQJQHpV9xIh/ueBb59oZ2Q3ShwYdLcu4/9qIjFrc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NqJlyBlLG3CE2ppbNiv1FSi1Ek/N/GdEcO8H49ZzhAR9SSajsSTRxKZqHy1t/BBDI61Aih9H9gNV2xQPMbSUvG2TtrwZrLljcqwWgWCCD0gKwUG9Md0yTsHPfV2J1pNo1/eAf3wm68Z+H88ieCpEFLqdbGLuO8B9S2krbi5c75E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b9/CjJ8M; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9021C433C7;
-	Thu, 29 Feb 2024 21:45:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709243149;
-	bh=G4EYkzPzFZ97EhbBfqtvrgTbhgg2qWPt+odKPoorlmM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=b9/CjJ8MOWWmJ77VMYivZMauQoKvUZky6TY1nilZ/ZH+J4l+3gH4vhVrEjDUmgAP6
-	 iTyd+A2kT0zdOhpzMbCpeKuawtG1hXwkF1OmrfbDy8bWOuauKzcnU4EDtBTWYK9njK
-	 rXp9msPg34jWdRG61D8CFJhzoWUmuN/823DH7FEhm9kePll/FcPWSlm+9q1lV2NV9S
-	 eojbqeNA6LFj4wleY/5QkiYVW9FItDzWhabFF86uEdJAqtkjVER2a5ZBOriDDJ2t4G
-	 9UqXiZTiMf9DBU0eiSIZ+/uwHTcL7ODurX4VIUJc7fvquTvcD55TuVqfWW/EO371it
-	 2irBvLnw8Y3WQ==
-Date: Thu, 29 Feb 2024 21:45:40 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Thiago Jung Bauermann <thiago.bauermann@linaro.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Marc Zyngier <maz@kernel.org>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
-	Eric Biederman <ebiederm@xmission.com>,
-	Kees Cook <keescook@chromium.org>, Shuah Khan <shuah@kernel.org>,
-	"Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-	Deepak Gupta <debug@rivosinc.com>, Ard Biesheuvel <ardb@kernel.org>,
-	Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-	"H.J. Lu" <hjl.tools@gmail.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Florian Weimer <fweimer@redhat.com>,
-	Christian Brauner <brauner@kernel.org>,
-	linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-	kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-mm@kvack.org,
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v8 33/38] kselftest/arm64: Add a GCS test program built
- with the system libc
-Message-ID: <c710a6b1-cf58-4e32-ada0-c0b256a62b2c@sirena.org.uk>
-References: <20240203-arm64-gcs-v8-0-c9fec77673ef@kernel.org>
- <20240203-arm64-gcs-v8-33-c9fec77673ef@kernel.org>
- <87sf1n7uea.fsf@linaro.org>
- <9b899b4e-7410-4c3b-967b-7794dac742e4@sirena.org.uk>
- <87ttlzsyro.fsf@linaro.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=daWt9HahgWSNoHVxmkKWj4lu+2sWXuIVpOWQDddefdx48zly407m+d/xENmB8U6Je7qzN6UWNFhgmeEYAjEKF1PzmT++dCIZdpiWnWmsNHsjgtQRXYaRsRd2g28UosqoNhOQ57W8NN58DrhT1WzrD+L5vMf1lWAXEMQEXkkAHzw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=OYviilRO; arc=none smtp.client-ip=91.218.175.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 29 Feb 2024 16:45:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1709243144;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zZDxmk1B+ofxrDQ7dG4j+k5Pazi1ITkGCjFdRirB4k4=;
+	b=OYviilRODIKEHnO2GBwq7PwFGIKF+VgLGRKmPbARgomthjlz0JDA48BxJB5Me4FE8jszNj
+	HZdXjsD+4nLEiQIza5b7GwVg7nh9tN+KFjjQgt3BafihBaca5l6Mu5Md+ZIWjvlILQZL7Y
+	V3mPZYy6i71Pbt14yTzF0sflmPNwSl4=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Kees Cook <keescook@chromium.org>, linux-hardening@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Andy Shevchenko <andy@kernel.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, Suren Baghdasaryan <surenb@google.com>
+Subject: Re: [PATCH v1 1/1] lib/string_helpers: Add flags param to
+ string_get_size()
+Message-ID: <gpuskwq7kwwf52abwrh6my462cnlhorpohpk6a5wzya4qdyvdb@gqibcr57zkv3>
+References: <20240229205345.93902-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="+ic7W6qvciabkElL"
-Content-Disposition: inline
-In-Reply-To: <87ttlzsyro.fsf@linaro.org>
-X-Cookie: Marriage is the sole cause of divorce.
-
-
---+ic7W6qvciabkElL
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240229205345.93902-1-andriy.shevchenko@linux.intel.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Feb 22, 2024 at 11:24:59PM -0300, Thiago Jung Bauermann wrote:
-> Mark Brown <broonie@kernel.org> writes:
+On Thu, Feb 29, 2024 at 10:52:30PM +0200, Andy Shevchenko wrote:
+> From: Kent Overstreet <kent.overstreet@linux.dev>
+> 
+> The new flags parameter allows controlling
+>  - Whether or not the units suffix is separated by a space, for
+>    compatibility with sort -h
+>  - Whether or not to append a B suffix - we're not always printing
+>    bytes.
+> 
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-> > I believe based on prior discussions that you're running this using
-> > shrinkwrap - can you confirm exactly how please, including things like
-> > which firmware configuration you're using?  I'm using current git with
-> >
-> >   shrinkwrap run \
-> >         --rtvar KERNEL=3Darch/arm64/boot/Image \
-> >         --rtvar ROOTFS=3D${ROOTFS} \
-> >         --rtvar CMDLINE=3D"${CMDLINE}" \
-> >         --overlay=3Darch/v9.4.yaml ns-edk2.yaml
-> >
-> > and a locally built yocto and everything seems perfectly happy.
->=20
-> Yes, this is how I'm running it:
->=20
->   CMDLINE=3D"Image dtb=3Dfdt.dtb console=3DttyAMA0 earlycon=3Dpl011,0x1c0=
-90000 root=3D/dev/vda2 ip=3Ddhcp maxcpus=3D1"
->=20
->   shrinkwrap run \
->       --rtvar=3DKERNEL=3DImage-gcs-v8-v6.7-rc4-14743-ga551a7d7af93 \
+You shouldn't have included my SOB after making your own changes - this
+all looks fine, though.
 
-I guess that's bitrotted?
+Reviewed-by: Kent Overstreet <kent.overstreet@linux.dev>
 
-> My rootfs is Ubuntu 22.04.3. In case it's useful, my kernel config is
-> here:
+Also, does this mean you're picking this patch up? We're actually
+dropping it from our patchset, but I'd still like to get it in, it's
+just a patch routing question now. I'd use it for other stuff, so I can
+add it to another pull request if you prefer.
 
-=2E..
-
-> https://people.linaro.org/~thiago.bauermann/gcs/config-v6.8.0-rc2
-
-Thanks, it seems to be something in your config that's making a
-difference - I can see issues with that.  Hopefully that'll help me get
-to the bottom of this quickly.  I spent a bunch of time fighting with
-Ubuntu images to get them running but once I did they didn't seem to
-make much difference.
-
---+ic7W6qvciabkElL
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXg+wQACgkQJNaLcl1U
-h9DZxgf/UlqOshXqv9IbI4UXiot4QEsHhZ0uPw/+cIwJW0LPVndUMhKWjgagc3yv
-HwCf2QQxjkRQTOAeO7dsMdW9WhMBi4cPzta19y3Z9rkAn8XuQM7LXg97WIQDNp7O
-3ommNUjVAxq47zUvZhrQC18uzEb8WggdwNqJhcgn4mo/2GwN9uZp2xEZt1CRjZuk
-9BOCuvR8dqbQvTXBik+7OZ45roOoTCLl8XUrmPk6VAlcK+DcBoDFt9jm9tgdG6zb
-1Ua3jh2YvNe6s/qM5auYh/qB/V6wlz4n5yT0zvnhbC5XXzhaHkjV1/We3jerpisD
-2teyFuaDxTwqX+5D8D871wwBTD3IPg==
-=WDVJ
------END PGP SIGNATURE-----
-
---+ic7W6qvciabkElL--
+> ---
+> 
+> My vesrion of https://lore.kernel.org/r/20240212213922.783301-2-surenb@google.com
+> Enjoy!
+> 
+>  include/linux/string_helpers.h | 10 ++++--
+>  lib/string_helpers.c           | 29 ++++++++-------
+>  lib/test-string_helpers.c      | 65 ++++++++++++++++++++++++++++------
+>  3 files changed, 78 insertions(+), 26 deletions(-)
+> 
+> diff --git a/include/linux/string_helpers.h b/include/linux/string_helpers.h
+> index 58fb1f90eda5..e93fbb5b0c01 100644
+> --- a/include/linux/string_helpers.h
+> +++ b/include/linux/string_helpers.h
+> @@ -17,14 +17,18 @@ static inline bool string_is_terminated(const char *s, int len)
+>  	return memchr(s, '\0', len) ? true : false;
+>  }
+>  
+> -/* Descriptions of the types of units to
+> - * print in */
+> +/* Descriptions of the types of units to print in */
+>  enum string_size_units {
+>  	STRING_UNITS_10,	/* use powers of 10^3 (standard SI) */
+>  	STRING_UNITS_2,		/* use binary powers of 2^10 */
+> +	STRING_UNITS_MASK	= BIT(0),
+> +
+> +	/* Modifiers */
+> +	STRING_UNITS_NO_SPACE	= BIT(30),
+> +	STRING_UNITS_NO_BYTES	= BIT(31),
+>  };
+>  
+> -int string_get_size(u64 size, u64 blk_size, enum string_size_units units,
+> +int string_get_size(u64 size, u64 blk_size, const enum string_size_units units,
+>  		    char *buf, int len);
+>  
+>  int parse_int_array_user(const char __user *from, size_t count, int **array);
+> diff --git a/lib/string_helpers.c b/lib/string_helpers.c
+> index 6bbafd6a10d9..69ba49b853c7 100644
+> --- a/lib/string_helpers.c
+> +++ b/lib/string_helpers.c
+> @@ -25,7 +25,7 @@
+>   * string_get_size - get the size in the specified units
+>   * @size:	The size to be converted in blocks
+>   * @blk_size:	Size of the block (use 1 for size in bytes)
+> - * @units:	units to use (powers of 1000 or 1024)
+> + * @units:	Units to use (powers of 1000 or 1024), whether to include space separator
+>   * @buf:	buffer to format to
+>   * @len:	length of buffer
+>   *
+> @@ -39,11 +39,12 @@
+>  int string_get_size(u64 size, u64 blk_size, const enum string_size_units units,
+>  		    char *buf, int len)
+>  {
+> +	enum string_size_units units_base = units & STRING_UNITS_MASK;
+>  	static const char *const units_10[] = {
+> -		"B", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"
+> +		"", "k", "M", "G", "T", "P", "E", "Z", "Y",
+>  	};
+>  	static const char *const units_2[] = {
+> -		"B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"
+> +		"", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi", "Yi",
+>  	};
+>  	static const char *const *const units_str[] = {
+>  		[STRING_UNITS_10] = units_10,
+> @@ -68,7 +69,7 @@ int string_get_size(u64 size, u64 blk_size, const enum string_size_units units,
+>  
+>  	/* This is Napier's algorithm.  Reduce the original block size to
+>  	 *
+> -	 * coefficient * divisor[units]^i
+> +	 * coefficient * divisor[units_base]^i
+>  	 *
+>  	 * we do the reduction so both coefficients are just under 32 bits so
+>  	 * that multiplying them together won't overflow 64 bits and we keep
+> @@ -78,12 +79,12 @@ int string_get_size(u64 size, u64 blk_size, const enum string_size_units units,
+>  	 * precision is in the coefficients.
+>  	 */
+>  	while (blk_size >> 32) {
+> -		do_div(blk_size, divisor[units]);
+> +		do_div(blk_size, divisor[units_base]);
+>  		i++;
+>  	}
+>  
+>  	while (size >> 32) {
+> -		do_div(size, divisor[units]);
+> +		do_div(size, divisor[units_base]);
+>  		i++;
+>  	}
+>  
+> @@ -92,8 +93,8 @@ int string_get_size(u64 size, u64 blk_size, const enum string_size_units units,
+>  	size *= blk_size;
+>  
+>  	/* and logarithmically reduce it until it's just under the divisor */
+> -	while (size >= divisor[units]) {
+> -		remainder = do_div(size, divisor[units]);
+> +	while (size >= divisor[units_base]) {
+> +		remainder = do_div(size, divisor[units_base]);
+>  		i++;
+>  	}
+>  
+> @@ -103,10 +104,10 @@ int string_get_size(u64 size, u64 blk_size, const enum string_size_units units,
+>  	for (j = 0; sf_cap*10 < 1000; j++)
+>  		sf_cap *= 10;
+>  
+> -	if (units == STRING_UNITS_2) {
+> +	if (units_base == STRING_UNITS_2) {
+>  		/* express the remainder as a decimal.  It's currently the
+>  		 * numerator of a fraction whose denominator is
+> -		 * divisor[units], which is 1 << 10 for STRING_UNITS_2 */
+> +		 * divisor[units_base], which is 1 << 10 for STRING_UNITS_2 */
+>  		remainder *= 1000;
+>  		remainder >>= 10;
+>  	}
+> @@ -128,10 +129,12 @@ int string_get_size(u64 size, u64 blk_size, const enum string_size_units units,
+>  	if (i >= ARRAY_SIZE(units_2))
+>  		unit = "UNK";
+>  	else
+> -		unit = units_str[units][i];
+> +		unit = units_str[units_base][i];
+>  
+> -	return snprintf(buf, len, "%u%s %s", (u32)size,
+> -			tmp, unit);
+> +	return snprintf(buf, len, "%u%s%s%s%s", (u32)size, tmp,
+> +			(units & STRING_UNITS_NO_SPACE) ? "" : " ",
+> +			unit,
+> +			(units & STRING_UNITS_NO_BYTES) ? "" : "B");
+>  }
+>  EXPORT_SYMBOL(string_get_size);
+>  
+> diff --git a/lib/test-string_helpers.c b/lib/test-string_helpers.c
+> index 9a68849a5d55..dce67698297b 100644
+> --- a/lib/test-string_helpers.c
+> +++ b/lib/test-string_helpers.c
+> @@ -3,6 +3,7 @@
+>   */
+>  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+>  
+> +#include <linux/array_size.h>
+>  #include <linux/init.h>
+>  #include <linux/kernel.h>
+>  #include <linux/slab.h>
+> @@ -500,21 +501,65 @@ static __init void test_string_get_size_check(const char *units,
+>  	pr_warn("expected: '%s', got '%s'\n", exp, res);
+>  }
+>  
+> +static __init void __strchrcut(char *dst, const char *src, const char *cut)
+> +{
+> +	const char *from = src;
+> +	size_t len;
+> +
+> +	do {
+> +		len = strcspn(from, cut);
+> +		memcpy(dst, from, len);
+> +		dst += len;
+> +		from += len;
+> +	} while (*from++);
+> +	*dst = '\0';
+> +}
+> +
+> +static __init void __test_string_get_size_one(const u64 size, const u64 blk_size,
+> +					      const char *exp_result10,
+> +					      const char *exp_result2,
+> +					      enum string_size_units units,
+> +					      const char *cut)
+> +{
+> +	char buf10[string_get_size_maxbuf];
+> +	char buf2[string_get_size_maxbuf];
+> +	char exp10[string_get_size_maxbuf];
+> +	char exp2[string_get_size_maxbuf];
+> +	char prefix10[64];
+> +	char prefix2[64];
+> +
+> +	sprintf(prefix10, "STRING_UNITS_10 [%s]", cut);
+> +	sprintf(prefix2, "STRING_UNITS_2 [%s]", cut);
+> +
+> +	__strchrcut(exp10, exp_result10, cut);
+> +	__strchrcut(exp2, exp_result2, cut);
+> +
+> +	string_get_size(size, blk_size, STRING_UNITS_10 | units, buf10, sizeof(buf10));
+> +	string_get_size(size, blk_size, STRING_UNITS_2 | units, buf2, sizeof(buf2));
+> +
+> +	test_string_get_size_check(prefix10, exp10, buf10, size, blk_size);
+> +	test_string_get_size_check(prefix2, exp2, buf2, size, blk_size);
+> +}
+> +
+>  static __init void __test_string_get_size(const u64 size, const u64 blk_size,
+>  					  const char *exp_result10,
+>  					  const char *exp_result2)
+>  {
+> -	char buf10[string_get_size_maxbuf];
+> -	char buf2[string_get_size_maxbuf];
+> +	struct {
+> +		enum string_size_units units;
+> +		const char *cut;
+> +	} get_size_test_cases[] = {
+> +		{ 0, "" },
+> +		{ STRING_UNITS_NO_SPACE, " " },
+> +		{ STRING_UNITS_NO_SPACE | STRING_UNITS_NO_BYTES, " B" },
+> +		{ STRING_UNITS_NO_BYTES, "B" },
+> +	};
+> +	int i;
+>  
+> -	string_get_size(size, blk_size, STRING_UNITS_10, buf10, sizeof(buf10));
+> -	string_get_size(size, blk_size, STRING_UNITS_2, buf2, sizeof(buf2));
+> -
+> -	test_string_get_size_check("STRING_UNITS_10", exp_result10, buf10,
+> -				   size, blk_size);
+> -
+> -	test_string_get_size_check("STRING_UNITS_2", exp_result2, buf2,
+> -				   size, blk_size);
+> +	for (i = 0; i < ARRAY_SIZE(get_size_test_cases); i++)
+> +		__test_string_get_size_one(size, blk_size, exp_result10, exp_result2,
+> +					   get_size_test_cases[i].units,
+> +					   get_size_test_cases[i].cut);
+>  }
+>  
+>  static __init void test_string_get_size(void)
+> -- 
+> 2.43.0.rc1.1.gbec44491f096
+> 
 
