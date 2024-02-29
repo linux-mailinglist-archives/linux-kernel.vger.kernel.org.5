@@ -1,157 +1,118 @@
-Return-Path: <linux-kernel+bounces-87587-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87588-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3DAA86D634
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:31:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 65ABA86D639
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 22:31:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F21D28AAE2
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:30:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5F6E2841FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 21:31:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F12EB6D503;
-	Thu, 29 Feb 2024 21:30:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 838866D512;
+	Thu, 29 Feb 2024 21:31:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="PZR67QWI"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Otdgupdr"
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A645516FF50;
-	Thu, 29 Feb 2024 21:30:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7054916FF43
+	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 21:31:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709242241; cv=none; b=jo4ek6Jhr2AaDfLJZyZxpLj5eJfINUfm1aGa6ce99BeRUQiWjQUlLjkFCqwpE8O+aN1gp5rv6yPDDvT3fX2A2i2YYaeFNdmwd+wu7OMqEqn+RYvQftdjcZyAi4GaPDQTEANPibWn5vhACEPmOaiFDoKeHjxGD6XoHn84Jay7rUM=
+	t=1709242306; cv=none; b=cj4cLng/KmiFvY4LqJtW7EIXXtBIjZRnTo983GYpohLf2CVPzZjkNHBua3FmtIwcWlnb5SBr5gohy5XAsXBIWOe/p29iVA7+9/awXwVQbSKqCfjfVGtUJL4+8N3nvgDSyBH0+vzMcTyF/jEj59DnPMLz8oaPMA3Ko8BsnivEARU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709242241; c=relaxed/simple;
-	bh=5a3jWBJA2+rxYnjqEPcx2eUyCjZ+0C+TmvvBVMeapK0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=uiMPgutwrPcM7ZuafDHawpHDhibahXtaTIcA04aVaDMGKyUgXZlhs7mjXyU9arsI0zm0m4R3zU/5buSfp9samQynNic3QS6B5Q+EN+O58TprIXYXHDnEUXGEhocPx35L5RiDj4VIrWujhS0BiVIpSLZrX72ioxWKMU5+fMP+lIo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=PZR67QWI; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41T60xOw011993;
-	Thu, 29 Feb 2024 21:30:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=2XAL70ahopTl3Ft92hpHa/oa4WdjMZaAss/IdzUZWzA=; b=PZ
-	R67QWIUSP2bcOFnJ0JhXAWP6tpzjGwyWi33htZHjEWIReK6NcbiQ3t7j7kSm/EUA
-	+s5csKXAgar4t3UJeT8O135LLTOzRXf8aQWqx5P4WmwyekYmz2LMyPu/z67tplDZ
-	nnMLN5jb/9oixLY2KzIOlocOde+u54vcizaq1p+rSere50ha9SFZm2Ao5nhMSBCr
-	n7AX0yArZdAAq6orjd5mhE1zFp6wRePYKRNunV9vzXgGNwAtaWVgTnSmnKF3ulR8
-	rtDuCc3t02fmJ1wHgrlhM08uYwsICLYWS+VY2Ekw6QF2hc6xBcoAIZlCDb4boTyx
-	3l9BI8TMpbfDPnQqtExw==
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wjm9mjk7u-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 29 Feb 2024 21:30:25 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41TLUOJC025968
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 29 Feb 2024 21:30:24 GMT
-Received: from [10.71.111.207] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 29 Feb
- 2024 13:30:23 -0800
-Message-ID: <aea154d3-e272-48e1-9e91-890c9ae3fa0f@quicinc.com>
-Date: Thu, 29 Feb 2024 13:30:22 -0800
+	s=arc-20240116; t=1709242306; c=relaxed/simple;
+	bh=QzZTm6RzwKOCXz1s1DDgA6t36vWxFMgXU9qMOsdvjRM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hLVAldLQEn6ZYYkcKIGxhvrJyQlVSwDqYCtI0OLRSpW00UlNvUqb42YEK3gO9vmAmjYJ2Cx44qApyvslKt9Tt8QLyc2dDfb1ZHebSYKd9ocFnjrJY1TGQiMQ2o8UwMuxV0byDdOQBMh37WUavSlDfFTre+rKyL6efw4mzGywJ2k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Otdgupdr; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1dc0e5b223eso13742465ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 13:31:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1709242305; x=1709847105; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=fi9gJh0JIT3rydMe7Re3YRcK5pxmffs/i/bQwJvpoAc=;
+        b=OtdgupdrMqUU6v6YG5ItdSUVYWtggtW7CLi08MPwU/tGTaozH8afksz/j9WnraUdkZ
+         gQO7+saJw0TruPFKJJShHIMwzH14EPnGlOS+T/kEWAOEPVR4l6UaIrHpoabCCEf3XPtP
+         BuKQeG2cQ0ZPa/TIhRpwB3WIcITiVw6Bv0O6A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709242305; x=1709847105;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fi9gJh0JIT3rydMe7Re3YRcK5pxmffs/i/bQwJvpoAc=;
+        b=gOTEw+Uk8OYMIGEmTy/7+lZ8EGhH+PP52MhoHIhUkXLcj57ihEo23GVOcBxEg/rJ33
+         7qo63aIrOS0tDUOrOU3MvDVP0H14EMDCZXq+J1iTV3QUUO/UErfwynO0AQAnFvwADMLI
+         veVd4BjVzvslKedt6Fk4vr2cvbTebWYS0QEhvdeMsDa8Djs7b0r1ym1MDHZxrBKoojHi
+         v6/r2nIL4MEx0CRuAfqL5zNk9kwj9n3X3tOaIbac+C/IsB2xU8LsoHPlgz8m0BNh1tIp
+         Z7OCA5/dSDN95T+xnLmKoE8AbvAw+llDHL2NNXqc/wQaTdY1p1oXUviJtj8H+OPHjl6w
+         p8ow==
+X-Forwarded-Encrypted: i=1; AJvYcCUduAWpyP9kJKUwIRoruGiXhKnQErdsMbfS48TTy3LyBmO/4aXrOgn0DjNKGnNGZrbhR1U16eQeLx9qo0jm9sJD7XQV71zIRroKZrG1
+X-Gm-Message-State: AOJu0YwH1ODkGGxoGfvrZhLaS+uxxn4ODf+TpztGVSiwf3HnLc85Qcqa
+	HFsFYnJjPKGOw5GQmLF4CHe3WeiftnAfmFtkbXu4CqSwqmVzzBBL3mQuQIT2ng==
+X-Google-Smtp-Source: AGHT+IE+DUv8Qdh0LZ32jo8m9iF3a01wivEsDDN/MHriPt719iWzbKIbR1Qbd56MoYjYqe7Ub9Claw==
+X-Received: by 2002:a17:902:654a:b0:1dc:ca72:8318 with SMTP id d10-20020a170902654a00b001dcca728318mr2807886pln.37.1709242304905;
+        Thu, 29 Feb 2024 13:31:44 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id y9-20020a1709027c8900b001db717d2dbbsm1954387pll.210.2024.02.29.13.31.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Feb 2024 13:31:44 -0800 (PST)
+Date: Thu, 29 Feb 2024 13:31:43 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Vinod Koul <vkoul@kernel.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Mark Brown <broonie@kernel.org>,
+	linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+	linux-spi@vger.kernel.org, netdev@vger.kernel.org,
+	linux-hardening@vger.kernel.org,
+	Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: Re: [PATCH v4 7/8] net-device: Use new helpers from overflow.h in
+ netdevice APIs
+Message-ID: <202402291330.0510946B67@keescook>
+References: <20240228204919.3680786-1-andriy.shevchenko@linux.intel.com>
+ <20240228204919.3680786-8-andriy.shevchenko@linux.intel.com>
+ <202402281341.AC67EB6E35@keescook>
+ <20240228144148.5c227487@kernel.org>
+ <202402281554.C1CEEF744@keescook>
+ <20240228165609.06f5254a@kernel.org>
+ <202402291059.491B5E03@keescook>
+ <20240229113706.42c877a1@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] drm: panel: st7701: Add Hardkernel ODROID-GO Ultra
- panel support
-Content-Language: en-US
-To: Adam Green <greena88@gmail.com>, Jagan Teki <jagan@amarulasolutions.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard
-	<mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie
-	<airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring
-	<robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240221194528.1855714-1-greena88@gmail.com>
- <20240222164332.3864716-1-greena88@gmail.com>
- <20240222164332.3864716-2-greena88@gmail.com>
- <f9446923-acd3-41cf-92d4-676b946280c4@quicinc.com>
- <79a4b60e-24f3-47fd-b3b3-7d207cec1470@gmail.com>
- <a13eeb01-7df9-4577-975f-34b3aed8400f@quicinc.com>
- <8bbb2957-9452-424a-8e9f-4ddbd4f24722@gmail.com>
-From: Jessica Zhang <quic_jesszhan@quicinc.com>
-In-Reply-To: <8bbb2957-9452-424a-8e9f-4ddbd4f24722@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 3uUMOATMM-pFSjbRxSaYOWXO5EAknyy8
-X-Proofpoint-ORIG-GUID: 3uUMOATMM-pFSjbRxSaYOWXO5EAknyy8
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-29_06,2024-02-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
- lowpriorityscore=0 impostorscore=0 malwarescore=0 clxscore=1015
- adultscore=0 bulkscore=0 priorityscore=1501 mlxlogscore=999 suspectscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2402290167
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240229113706.42c877a1@kernel.org>
 
-
-
-On 2/29/2024 9:23 AM, Adam Green wrote:
-> On 26/02/2024 21:29, Jessica Zhang wrote:
->  > Got it. Was the shorter sleep time breaking the display and is it
->  > required for the new panel to work?
->  >
->  > Thanks,
->  >
->  > Jessica Zhang
+On Thu, Feb 29, 2024 at 11:37:06AM -0800, Jakub Kicinski wrote:
+> On Thu, 29 Feb 2024 11:08:58 -0800 Kees Cook wrote:
+> > > And some seem to be cargo-culted from out-of-tree code and are unused :S  
+> > 
+> > Ah, which can I remove?
 > 
-> Hi Jessica,
-> 
-> I will be submitting a v3 shortly, the change to the sleep time was not 
-> necessary for the new panel
-> to work.
+> The one in igc.h does not seem to be referenced by anything in the igc
+> directory. Pretty sure it's unused.
 
-Hi Adam,
+I'll double check. After trying to do a few conversions I really hit
+stuff I didn't like, so I took a slightly different approach in the
+patch I sent.
 
-Got it. If the panel isn't affected by the 20ms sleep time, I'd prefer 
-to keep it since 100ms is a pretty big increase.
-
-> 
-> I have been able to re-use the gip sequence from the kd50t048a panel 
-> used in the Hardkernel Odroid
-> Go Super as I have been led to believe it is the same elida panel, 
-> unfortunately the same modes
-> used by that device do not work for the Odroid Go Ultra and so its still 
-> necessary to have the
-> patchset,
-Got it. FWIW, I do see the Odroid Go Ultra being described as having the 
-kd50t048a panel [1] [2]. Looking forward to seeing the v3 changes.
-
-Thanks,
-
-Jessica Zhang
-
-[1] https://gitlab.com/amlogic-foss/mainline-linux-issues-tracker/-/issues/7
-
-[2] 441e129cbf81 ("dt-bindings: display: panel: sitronix,st7701: Add 
-Elida KD50T048A Panel")
-
-> 
-> Best regards,
-> 
-> Adam
+-- 
+Kees Cook
 
