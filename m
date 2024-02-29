@@ -1,130 +1,255 @@
-Return-Path: <linux-kernel+bounces-86717-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-86718-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A64F586C990
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:56:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA5B586C992
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 13:56:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 480DA1F23C3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:56:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 09F381C21A6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 12:56:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 864F57E107;
-	Thu, 29 Feb 2024 12:56:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D1487E562;
+	Thu, 29 Feb 2024 12:56:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C+K5ELdx"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ElfHR17R"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A149D62808;
-	Thu, 29 Feb 2024 12:56:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02F1C7D416;
+	Thu, 29 Feb 2024 12:56:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709211394; cv=none; b=aPys5y0JIwsr6uyN2EJtcXjDnIYAy4PDBw1Vst1q16WTzlUrhiaABHux6EIIHnPP8//dpK8EQ/KxIomjLjYfgiEQau+5+yEtac5LF2L39z1LA00oQjntVjrACgQY8Dxte0xDLQJBUMWdgVG31ZAw1ThY0vq+62TDHduyVeR0Pz8=
+	t=1709211395; cv=none; b=XVQNaF0RtgnqJcreOOdy+BDTJc2Yx/D3Uk/uFfWmfTPKa3g5K/DHvfaK+fopUW15iBfGeh2hI5On5IIXtYLXYTdB0VkoXSYmp0k3AwTpfzZTITh/eYg7qnlHTkXtO4/Yt5thyUw0f7pxer0VZmfo0kHIwqMsCNjMUO2jWXB2tQw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709211394; c=relaxed/simple;
-	bh=FH+JdudMBgehU68hfBDKn6/fbrAreS/wl1YC0HPz/Tg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lHG9k/8XBiemfEHwn7EUgFgZxLw9pc1+9bX8jKDCObuWlu0vpEPAAA3ZjMqBMkSigOZM8VKT222kizpjh/88V23wZtUHPLs1KwfhojR/HHnj19Xup87EdmcUHFaGycz6VF/SgnFpV9yeUKnkamQIuDgoON2p7Cq3wz8UZrqAxEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C+K5ELdx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4621EC433F1;
-	Thu, 29 Feb 2024 12:56:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709211393;
-	bh=FH+JdudMBgehU68hfBDKn6/fbrAreS/wl1YC0HPz/Tg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=C+K5ELdxqti6l+X3XyprWkioDJDWESK1Q8aUt7ODmuCvs+B1SkleCGS2eEqKuvXhc
-	 QexaZ6oN8rwRdtzMCWk5hwhKaAp7YhoymoN8DvRIanJgaj90GMn1Ca3MbwYy2CygBW
-	 odHLaxPs6AoXzDLZTk8XNgsv5e9HzgUV6/jt7F0kU0NSKDa7TcHHUS2XzwcsPssFbY
-	 yyTfzN2vjbzjAV/RY4utg2ANfWB2XcDg7jBIBgwr3ZVoXrfOvihwUylOGhb0xI4tIh
-	 joL7P9t4siWvMU3aFWlo9KSxQEMDCpcIs+vCy7QH9HFbq0VPuv2Gx4sqzIN8C8ym1q
-	 +gtgrcmRWnWFw==
-Date: Thu, 29 Feb 2024 13:56:23 +0100
-From: Niklas Cassel <cassel@kernel.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Marek Vasut <marek.vasut+renesas@gmail.com>,
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Kishon Vijay Abraham I <kishon@ti.com>,
-	Vidya Sagar <vidyas@nvidia.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Minghuan Lian <minghuan.Lian@nxp.com>,
-	Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v8 10/10] PCI: dwc: ep: Add Kernel-doc comments for APIs
-Message-ID: <ZeB-93jiX31cLJyP@fedora>
-References: <20240224-pci-dbi-rework-v8-0-64c7fd0cfe64@linaro.org>
- <20240224-pci-dbi-rework-v8-10-64c7fd0cfe64@linaro.org>
+	s=arc-20240116; t=1709211395; c=relaxed/simple;
+	bh=pgsvPNUAxL+aM5+vr4VnC2UxbIowObaRoVXvXN5548o=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=Xbpm0aunLuIaDQakEovoEu4EyfLabb0gBxHFQdnMO8B2LoNLfnSUuIZiPr8r7kgRwdFCTD0GMo8JQRbAsiMNjoWPNlZhHOXKGY+UsJkoiqNVAyyRPIzmyNg6j2gQ4zm3hri13QVGmU3HLycuFtZncgCsnCTF6k7J85j8Xd813po=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ElfHR17R; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709211394; x=1740747394;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=pgsvPNUAxL+aM5+vr4VnC2UxbIowObaRoVXvXN5548o=;
+  b=ElfHR17RW4GRvUyv9lQmAf0EN6ERyF2n9wigKPZhdCz6o8xmgo3ZNB/n
+   kFGAiVEwkiXTtopXtJWC8EJiHI4qmPMkgTp5I+VpkBasRAZIkXHIaoJw/
+   1y3KPG8s4dBqvP/PgCkrxJRS2dlC8bm4KkAaS5XcUc3AIzJCwVEoXv/CL
+   QE+rGjnELre7W5jx1YsJcyRvmI5lIh81ucwPeWiOlefSmkXn1uKmAjR/6
+   bqUx5SNjJeCfEUb4bcIjmhHi0M/ymq7oII16tWx4GMxozlEWK+CJB/wPf
+   p5UVHHC4E9LFTjvlK6TXcszZKw46fX2eBEWZ2yvp/m2P/CR/hul3+UnPx
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="4258242"
+X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
+   d="scan'208";a="4258242"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 04:56:33 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
+   d="scan'208";a="38851967"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.51.250])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 04:56:31 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Thu, 29 Feb 2024 14:56:26 +0200 (EET)
+To: Ai Chao <aichao@kylinos.cn>
+cc: Hans de Goede <hdegoede@redhat.com>, LKML <linux-kernel@vger.kernel.org>, 
+    platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH] platform/x86: add lenovo generic wmi driver
+In-Reply-To: <20240229051621.12341-1-aichao@kylinos.cn>
+Message-ID: <5ec35cea-ae5f-de50-41ce-08276f053a51@linux.intel.com>
+References: <20240229051621.12341-1-aichao@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240224-pci-dbi-rework-v8-10-64c7fd0cfe64@linaro.org>
+Content-Type: text/plain; charset=US-ASCII
 
-Hello Mani,
+On Thu, 29 Feb 2024, Ai Chao wrote:
 
-On Sat, Feb 24, 2024 at 12:24:16PM +0530, Manivannan Sadhasivam wrote:
-> All of the APIs are missing the Kernel-doc comments. Hence, add them.
+> Add lenovo generic wmi driver to support camera button.
 > 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> Signed-off-by: Ai Chao <aichao@kylinos.cn>
 > ---
->  drivers/pci/controller/dwc/pcie-designware-ep.c | 92 +++++++++++++++++++++++++
->  1 file changed, 92 insertions(+)
+>  drivers/platform/x86/Kconfig      |  10 +++
+>  drivers/platform/x86/Makefile     |   1 +
+>  drivers/platform/x86/lenovo-wmi.c | 121 ++++++++++++++++++++++++++++++
+>  3 files changed, 132 insertions(+)
+>  create mode 100644 drivers/platform/x86/lenovo-wmi.c
 > 
-> diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
-> index fed4c2936c78..cdcb33a279db 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware-ep.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
-
-(snip)
-
-> @@ -556,6 +606,12 @@ int dw_pcie_ep_raise_msix_irq(struct dw_pcie_ep *ep, u8 func_no,
->  	return 0;
->  }
+> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+> index bdd302274b9a..fbbb8fb843d7 100644
+> --- a/drivers/platform/x86/Kconfig
+> +++ b/drivers/platform/x86/Kconfig
+> @@ -1001,6 +1001,16 @@ config INSPUR_PLATFORM_PROFILE
+>  	To compile this driver as a module, choose M here: the module
+>  	will be called inspur-platform-profile.
 >  
-> +/**
-> + * dw_pcie_ep_cleanup - Cleanup DWC EP resources
-> + * @ep: DWC EP device
+> +config LENOVO_WMI
+> +	tristate "Lenovo Geneirc WMI driver"
+> +	depends on ACPI_WMI
+> +	depends on INPUT
+> +	help
+> +	This driver provides support for Lenovo WMI driver.
+> +
+> +	To compile this driver as a module, choose M here: the module
+> +	will be called lenovo-wmi.
+> +
+>  source "drivers/platform/x86/x86-android-tablets/Kconfig"
+>  
+>  config FW_ATTR_CLASS
+> diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
+> index 1de432e8861e..d51086552192 100644
+> --- a/drivers/platform/x86/Makefile
+> +++ b/drivers/platform/x86/Makefile
+> @@ -66,6 +66,7 @@ obj-$(CONFIG_SENSORS_HDAPS)	+= hdaps.o
+>  obj-$(CONFIG_THINKPAD_ACPI)	+= thinkpad_acpi.o
+>  obj-$(CONFIG_THINKPAD_LMI)	+= think-lmi.o
+>  obj-$(CONFIG_YOGABOOK)		+= lenovo-yogabook.o
+> +obj-$(CONFIG_LENOVO_WMI)	+= lenovo-wmi.o
+>  
+>  # Intel
+>  obj-y				+= intel/
+> diff --git a/drivers/platform/x86/lenovo-wmi.c b/drivers/platform/x86/lenovo-wmi.c
+> new file mode 100644
+> index 000000000000..e8b1c401b53e
+> --- /dev/null
+> +++ b/drivers/platform/x86/lenovo-wmi.c
+> @@ -0,0 +1,121 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + *  Lenovo Generic WMI Driver
 > + *
-> + * Cleans up the DWC EP specific resources like eDMA etc...
-
-I think that you should mention that this is only for glue drivers that
-use PERST# handling, so that other glue drivers do no start using it :)
-
-
+> + *  Copyright (C) 2018	      Ai Chao <aichao@kylinos.cn>
 > + */
->  void dw_pcie_ep_cleanup(struct dw_pcie_ep *ep)
->  {
->  	struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
-> @@ -564,6 +620,13 @@ void dw_pcie_ep_cleanup(struct dw_pcie_ep *ep)
->  }
->  EXPORT_SYMBOL_GPL(dw_pcie_ep_cleanup);
+> +
+> +#include <linux/acpi.h>
+> +#include <linux/device.h>
+> +#include <linux/input.h>
+> +#include <linux/module.h>
+> +#include <linux/wmi.h>
+> +
+> +#define WMI_LENOVO_CAMERABUTTON_EVENT_GUID "50C76F1F-D8E4-D895-0A3D-62F4EA400013"
+> +
+> +static u8 camera_mode;
+> +
+> +struct lenovo_wmi_priv {
+> +	struct input_dev *idev;
+> +};
+> +
+> +static ssize_t camerabutton_show(struct device *dev,
+> +				 struct device_attribute *attr, char *buf)
+> +{
+> +	return sprintf(buf, "%u\n", camera_mode);
 
+sysfs_emit()
 
-Kind regards,
-Niklas
+> +}
+> +
+> +DEVICE_ATTR_RO(camerabutton);
+> +
+> +static struct attribute *lenovo_wmi_attrs[] = {
+> +	&dev_attr_camerabutton.attr,
+> +	NULL,
+> +};
+> +
+> +static const struct attribute_group lenovo_wmi_group = {
+> +	.attrs = lenovo_wmi_attrs,
+> +};
+> +
+> +const struct attribute_group *lenovo_wmi_groups[] = {
+> +	&lenovo_wmi_group,
+> +	NULL,
+> +};
+> +
+> +static void lenovo_wmi_notify(struct wmi_device *wdev, union acpi_object *obj)
+> +{
+> +	struct lenovo_wmi_priv *priv = dev_get_drvdata(&wdev->dev);
+> +
+> +	if (obj->type == ACPI_TYPE_BUFFER) {
+> +		camera_mode = obj->buffer.pointer[0];
+> +		input_report_key(priv->idev, KEY_CAMERA, 1);
+> +		input_sync(priv->idev);
+> +		input_report_key(priv->idev, KEY_CAMERA, 0);
+> +		input_sync(priv->idev);
+> +	} else {
+> +		dev_info(&wdev->dev, "Bad response type %d\n", obj->type);
+> +	}
+> +}
+> +
+> +static int lenovo_wmi_input_setup(struct wmi_device *wdev)
+> +{
+> +	struct lenovo_wmi_priv *priv = dev_get_drvdata(&wdev->dev);
+> +
+> +	priv->idev = devm_input_allocate_device(&wdev->dev);
+> +	if (!priv->idev)
+> +		return -ENOMEM;
+> +
+> +	priv->idev->name = "Lenovo WMI Camera Button";
+> +	priv->idev->phys = "wmi/input0";
+> +	priv->idev->id.bustype = BUS_HOST;
+> +	priv->idev->dev.parent = &wdev->dev;
+> +	priv->idev->evbit[0] = BIT_MASK(EV_KEY);
+> +	priv->idev->keybit[BIT_WORD(KEY_CAMERA)] = BIT_MASK(KEY_CAMERA);
+> +
+> +	return input_register_device(priv->idev);
+> +}
+> +
+> +static int lenovo_wmi_probe(struct wmi_device *wdev, const void *context)
+> +{
+> +	struct lenovo_wmi_priv *priv;
+> +	int err;
+> +
+> +	priv = devm_kzalloc(&wdev->dev, sizeof(struct lenovo_wmi_priv),
+> +			    GFP_KERNEL);
+> +	if (!priv)
+> +		return -ENOMEM;
+> +
+> +	dev_set_drvdata(&wdev->dev, priv);
+> +
+> +	err = lenovo_wmi_input_setup(wdev);
+> +	return err;
+> +}
+> +
+> +static void lenovo_wmi_remove(struct wmi_device *wdev)
+> +{
+> +	struct lenovo_wmi_priv *priv = dev_get_drvdata(&wdev->dev);
+> +
+> +	input_unregister_device(priv->idev);
+> +}
+> +
+> +static const struct wmi_device_id lenovo_wmi_id_table[] = {
+> +	{ .guid_string = WMI_LENOVO_CAMERABUTTON_EVENT_GUID },
+> +	{  }
+> +};
+> +
+> +static struct wmi_driver lenovo_wmi_driver = {
+> +	.driver = {
+> +		.name = "lenovo-wmi",
+> +		.dev_groups = lenovo_wmi_groups,
+> +	},
+> +	.id_table = lenovo_wmi_id_table,
+> +	.probe = lenovo_wmi_probe,
+> +	.notify = lenovo_wmi_notify,
+> +	.remove = lenovo_wmi_remove,
+> +};
+> +
+> +module_wmi_driver(lenovo_wmi_driver);
+> +
+> +MODULE_DEVICE_TABLE(wmi, lenovo_wmi_id_table);
+> +MODULE_AUTHOR("Ai Chao <aichao@kylinos.cn>");
+> +MODULE_DESCRIPTION("Lenovo Generic WMI Driver");
+> +MODULE_LICENSE("GPL v2");
+
+"GPL" is enough for MODULE_LICENSE, more specific information is given 
+only within the SPDX header.
+
+-- 
+ i.
+
 
