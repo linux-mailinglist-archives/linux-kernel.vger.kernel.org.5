@@ -1,256 +1,122 @@
-Return-Path: <linux-kernel+bounces-88392-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88393-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BBA886E0FA
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:23:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98B7E86E0FC
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:23:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A6597B21E37
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:23:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 232251F257F1
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:23:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE27D6E61C;
-	Fri,  1 Mar 2024 12:22:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C569A6E60B;
+	Fri,  1 Mar 2024 12:23:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aqtMsfNA"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=axis.com header.i=@axis.com header.b="CVlhy3gc"
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2046.outbound.protection.outlook.com [40.107.22.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11FA26E5E3;
-	Fri,  1 Mar 2024 12:22:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709295769; cv=none; b=nzoJ+22PDZ5wkuPvCTs9grt4bho6iA6TNpFhdIy58U7dAOyjXOQCD9GNjIDWBbcWlkrJnUY3xFP9NXfNGOYmzYetju73/oZQM0o724BOilTZFV9sIzifCeNoXFgu6WuW7kEq2eB9Sz5kTQRS+sF4ShIlOSB6NvZkL3N1r9mkH9g=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709295769; c=relaxed/simple;
-	bh=CRnowRjLCq+kORKKl47Vuo6OyiXmlws02WybHbJRUtY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oAml5Ac0dcXRDYR5E7LcJTaB+Pzhrcss4fXrznWDR/lX40yNOiqplrZOxWisWWRJamxHvxqcm1SCusPifzQQC/slEWBeeghNrdTvrASdNMSnbBiMbxcpmbPR1v5orF2JLmDJKD/+SAptLMYb5ZZ+5gL+GSGt6UvxWR74Xz9cer0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aqtMsfNA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 418F1C433C7;
-	Fri,  1 Mar 2024 12:22:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709295768;
-	bh=CRnowRjLCq+kORKKl47Vuo6OyiXmlws02WybHbJRUtY=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=aqtMsfNAR2OO6tIf5w0VRZoJVrzX3aqu9nDKPy/fQofWPzDN+jOA9/9O3QYIHx5fM
-	 sR4xldaBJb+JkXylQffa4od2bwQlbZ2jqyyrE5oIpepMdLkr745POXouywD/2p6bDJ
-	 ICjmx33b2GDko/jaK9PjXi1gRxUv1H8JmZ4alqPqacM1VOunD422KE9k+Cyi8+cPYE
-	 11uEe1QAhwA/W9BdfpmZHeRUOHRD8zDDGLS3rblgQN2DEwMnce3O+D7bApEaxew78v
-	 XmtjxTBNYohLRm5wk1g6D4RKH6irJE2tGlRbeAMWNGbWsg3Mm96tdR9SlQ0fNDUgAA
-	 7eqikxGlZ4BQg==
-Message-ID: <85c669ac-8592-46c7-9716-1e76f5aae220@kernel.org>
-Date: Fri, 1 Mar 2024 04:22:47 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 214EA69E1C;
+	Fri,  1 Mar 2024 12:23:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.22.46
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709295817; cv=fail; b=DtlHvORPqc9EeIW+phTKnKKzMOLrJHHRy5Xn4WNqL+L0U8k3snuLl56HqIa/wrOn52ulVoocP8n9RoNwG4nC8coxzJcB2VOyncOivkDjRzP9c0dA5ur9kGhWJsldAfXoRNGwknDyhbKjgjEA9NykivyA7OvSo8AxY4gMLAbyuuI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709295817; c=relaxed/simple;
+	bh=/j2y7NTbr2oIcY+etchdDMNbaS0b+W8KnlzTPmvL/34=;
+	h=From:To:CC:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=bF4cUE2hxQKp7non945yQojWuhpyWIRKk1glOjmTvOyGcYwpA3e4+e5cWCaSuBkTmacmhWZnJALLyFPnu2Mr5sSjxvAFJ7yBs0xcT1pqOhYA6YX4EhPS/Sedc74eF8I9AZam2WscWy0RU7FOPt0qCB5k0q68XTRs/BK72NvqbUo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=axis.com; spf=pass smtp.mailfrom=axis.com; dkim=pass (1024-bit key) header.d=axis.com header.i=@axis.com header.b=CVlhy3gc; arc=fail smtp.client-ip=40.107.22.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=axis.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=axis.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Eur5O/g/GJ74judM4EToozCtBhqy656a1nk/ku22IzzfZM8UVsrB4NhoL2hC5VPyE45hW88mAFSc0z0wNbT23oW9eFS/0xdJvdrp1MhuamjWwT4CuBeoJlE0srFLoPYWveTDuCYTyBBBaRXjkuGQug/tLhOAVPpyeqoGPDWcok1lPxJmuZCsbP4MXCWFmByMfWneRdeRfRT+RhJ11xxq4iJrCqnidYq4sZdKi6Peul3IpC4Ez44IU0umGUihblYy+dETOO7v8VqlZiGdm0Tyu7awscHORZL7255xqf/uPBrCSu+/Xbc/W46f4uFCmS7UOYVEN98iMpZdyCy2Eqx2xw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/j2y7NTbr2oIcY+etchdDMNbaS0b+W8KnlzTPmvL/34=;
+ b=F4j+d5uDCVYNFuGlXkqe56XbWzenuxxIG0X5XjN4N0BiSa8FIHMdAV3kOcFRIOV0xmFygzdc6DK9l89HCL4pcuz34fNYpHOaj5vmG7dUkLY4yIwtiOaaXsLNTEXd4YOeAszB+sezmRxEYbirdMremyDDkHXChWxOUrRhcirereeiXGrtpU5DtKbiYdrsj5iUCrSXawe7UDG8xHlwdA3NNyHRf1J2s/k3CBSB+i0WjXDfRmUYSEL98U3iL25PVvMU7Nl7qfvidIREijU3uleS2qRBgxv6f3adnKceMVQ+XZbjRzE6C1Llkw67L/HIgSqljJqa5qlR+2HHjGyFOOtkGw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
+ 195.60.68.100) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=axis.com;
+ dmarc=fail (p=none sp=none pct=100) action=none header.from=axis.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axis.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/j2y7NTbr2oIcY+etchdDMNbaS0b+W8KnlzTPmvL/34=;
+ b=CVlhy3gcwszsbmB9XrmNOsRp0cdGuVisa4MUG4S2oXWnzf6u7QoS6xjuUtxm6gtYiSa2WNkDK4M4g3mHd6Zo7CaGMHmIxaAYWHuSgZgUc87DmAETL563qt4Fgyir/o/wHprA2JKo/la0cLKsTuSX0HaFvkxWhm29NgZdVjIKaFs=
+Received: from AM0PR02CA0152.eurprd02.prod.outlook.com (2603:10a6:20b:28d::19)
+ by DU0PR02MB9540.eurprd02.prod.outlook.com (2603:10a6:10:420::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.41; Fri, 1 Mar
+ 2024 12:23:31 +0000
+Received: from AM4PEPF00025F98.EURPRD83.prod.outlook.com
+ (2603:10a6:20b:28d:cafe::c7) by AM0PR02CA0152.outlook.office365.com
+ (2603:10a6:20b:28d::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.32 via Frontend
+ Transport; Fri, 1 Mar 2024 12:23:31 +0000
+X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 195.60.68.100)
+ smtp.mailfrom=axis.com; dkim=none (message not signed)
+ header.d=none;dmarc=fail action=none header.from=axis.com;
+Received-SPF: Fail (protection.outlook.com: domain of axis.com does not
+ designate 195.60.68.100 as permitted sender) receiver=protection.outlook.com;
+ client-ip=195.60.68.100; helo=mail.axis.com;
+Received: from mail.axis.com (195.60.68.100) by
+ AM4PEPF00025F98.mail.protection.outlook.com (10.167.16.7) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7339.0 via Frontend Transport; Fri, 1 Mar 2024 12:23:31 +0000
+Received: from pc52311-2249 (10.0.5.60) by se-mail01w.axis.com (10.20.40.7)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Fri, 1 Mar
+ 2024 13:23:31 +0100
+From: Waqar Hameed <waqar.hameed@axis.com>
+To: Alexandre Belloni <alexandre.belloni@bootlin.com>
+CC: Alessandro Zummo <a.zummo@towertech.it>, <linux-rtc@vger.kernel.org>,
+	<kernel@axis.com>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 2/2] rtc: Add driver for Epson RX8111
+In-Reply-To: <0c3e1b03f276da47b26ac50f5d0ddf5c67aabe5c.1700491765.git.waqar.hameed@axis.com>
+	(Waqar Hameed's message of "Mon, 20 Nov 2023 15:49:25 +0100")
+References: <cover.1700491765.git.waqar.hameed@axis.com>
+	<0c3e1b03f276da47b26ac50f5d0ddf5c67aabe5c.1700491765.git.waqar.hameed@axis.com>
+User-Agent: a.out
+Date: Fri, 1 Mar 2024 13:23:30 +0100
+Message-ID: <pndcysep2d9.fsf@axis.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] scsi: libsas: Define NCQ Priority sysfs attributes
- for SATA devices
-Content-Language: en-US
-To: John Garry <john.g.garry@oracle.com>, Igor Pylypiv <ipylypiv@google.com>,
- Niklas Cassel <cassel@kernel.org>, Jason Yan <yanaijie@huawei.com>,
- "James E.J. Bottomley" <jejb@linux.ibm.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- Jack Wang <jinpu.wang@cloud.ionos.com>, Hannes Reinecke <hare@suse.de>
-Cc: linux-ide@vger.kernel.org, linux-scsi@vger.kernel.org,
- linux-kernel@vger.kernel.org, TJ Adams <tadamsjr@google.com>
-References: <20240301013759.516817-1-ipylypiv@google.com>
- <20240301013759.516817-3-ipylypiv@google.com>
- <b10df0c1-5d8a-4c4d-b8bd-c0dbb53ea0d1@oracle.com>
-From: Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <b10df0c1-5d8a-4c4d-b8bd-c0dbb53ea0d1@oracle.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-ClientProxiedBy: se-mail02w.axis.com (10.20.40.8) To se-mail01w.axis.com
+ (10.20.40.7)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM4PEPF00025F98:EE_|DU0PR02MB9540:EE_
+X-MS-Office365-Filtering-Correlation-Id: 39804dc3-e8af-4fc3-66c9-08dc39ea685e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	nB+GsdYY+2o5TJkEj/FtA7GmEvDR6uDhXbbwvBl4DJB4+uB/aYS++O9c6nxr0kz+gBz+sugv84k8NLACKGEJhLSUX6Ap550UnBfFKwlSPtP62SZBpLnIZj/xFCaKlcp4Gq+haQ8CT+LmAWgm4oqWLjqe+6t08dH8+zV72nIAlpbGRWC3dHU1haIHcXxKbnA1qHaymZt7NnT+TB+UfYkHjw5/akCaBikAWESH6RB1j0wXrg3HrOclv7d/C6VfCUeF+bfnq/xR/m7sh4hMeyrVslYsCpDwlMZrQlK7bU95hAbBsM0CIw0ovKkEdJmQGG3ae4KGqObJOqST2ShH0xdpxRKDlDnPyqQknQ7KPrvjC9sCwjXCCWmmvAKHWRvwwvfhAYe4y0mbdkdZTzc/ljvyyLeAuFTbU2ruUBoQfTCLx9Eo0FyA5JWtJaWL2hSEo5mXP8uLN/iqSztneuhFl4PzMvlaxrg/ncVORVoDuJ5S41BTp6Sf2kLY3JMT8Wc8Bml94GL1fzG9kwvPid4Elzw2Hlr2JvnVtgzkSfWmSBYSbpDkUDrs/jbm24CfJwf9MnMaSutQM7sHS27ofbj+/qurDpu3Eb5kK5Xg+Y2ehT+kgp8WgI+6jKsE3n8aOXqt+s2S0850bOAIZ++olbb3NDyATMD/tS6W+/jvKoR1t15M+JFWyjq5J4b5zgUyF9k4TJXK8zq0eyDSYkK3TA4bZYkuCjFZvxen+lIzU/tFdaa0dhqcdJZpdtbiOhgu6TcDOw4p
+X-Forefront-Antispam-Report:
+	CIP:195.60.68.100;CTRY:SE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.axis.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(82310400014);DIR:OUT;SFP:1101;
+X-OriginatorOrg: axis.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Mar 2024 12:23:31.4821
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 39804dc3-e8af-4fc3-66c9-08dc39ea685e
+X-MS-Exchange-CrossTenant-Id: 78703d3c-b907-432f-b066-88f7af9ca3af
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=78703d3c-b907-432f-b066-88f7af9ca3af;Ip=[195.60.68.100];Helo=[mail.axis.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	AM4PEPF00025F98.EURPRD83.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR02MB9540
 
-On 2024/03/01 3:57, John Garry wrote:
-> On 01/03/2024 01:37, Igor Pylypiv wrote:
->> Libata sysfs attributes cannot be used for libsas managed SATA devices
->> because the ata_port location is different for libsas.
->>
->> Defined sysfs attributes (visible for SATA devices only):
->> - /sys/block/*/device/sas_ncq_prio_enable
->> - /sys/block/*/device/sas_ncq_prio_supported
+On Mon, Nov 20, 2023 at 15:49 +0100 Waqar Hameed <waqar.hameed@axis.com> wrote:
 
-Please no ! I know that the Broadcom mpt3sas driver has this attribute named
-sas_ncq_prio_*, but I really think that it was a very unfortunate choice as that
-makes it different from the attribute for libata, which does not have the sas_
-prefix. That means that an attribute controlling a *device* feature has 2
-different name depending on the hba used for the device. That is super annoying
-to deal with in user space... So please, let's name this ncq_prio_*, same as for
-AHCI. SAS does have a concept of priority, but that is for data frames and has
-nothing to do with the actual command being transported. So mixing up sas and
-ncq in the same name is only confusing...
+> Epson RX8111 is an RTC with alarm, timer and timestamp functionality.
+> Add a basic driver with support for only reading/writing time (for now).
 
-For the Broadcom mpt3sas driver, we can define a link to have that same name for
-the attributes to have everything consistent.
-
-> 
-> it would be good to show the full path
-> 
->>
->> The newly defined attributes will pass the correct ata_port to libata
->> helper functions.
->>
->> Signed-off-by: Igor Pylypiv <ipylypiv@google.com>
->> Reviewed-by: TJ Adams <tadamsjr@google.com>
->> ---
->>   drivers/scsi/libsas/sas_ata.c | 87 +++++++++++++++++++++++++++++++++++
->>   include/scsi/sas_ata.h        |  6 +++
->>   2 files changed, 93 insertions(+)
->>
->> diff --git a/drivers/scsi/libsas/sas_ata.c b/drivers/scsi/libsas/sas_ata.c
->> index 12e2653846e3..e0b19eee09b5 100644
->> --- a/drivers/scsi/libsas/sas_ata.c
->> +++ b/drivers/scsi/libsas/sas_ata.c
->> @@ -964,3 +964,90 @@ int sas_execute_ata_cmd(struct domain_device *device, u8 *fis, int force_phy_id)
->>   			       force_phy_id, &tmf_task);
->>   }
->>   EXPORT_SYMBOL_GPL(sas_execute_ata_cmd);
->> +
->> +static ssize_t sas_ncq_prio_supported_show(struct device *device,
->> +					   struct device_attribute *attr,
->> +					   char *buf)
->> +{
->> +	struct scsi_device *sdev = to_scsi_device(device);
->> +	struct domain_device *ddev = sdev_to_domain_dev(sdev);
->> +	int res;
->> +
->> +	// This attribute shall be visible for SATA devices only
-> 
-> Please don't use c99 comment style
-> 
->> +	if (WARN_ON(!dev_is_sata(ddev)))
->> +		return -EINVAL;
->> +
->> +	res = ata_ncq_prio_supported(ddev->sata_dev.ap, sdev);
->> +	if (res < 0)
->> +		return res;
->> +
->> +	return sysfs_emit(buf, "%u\n", res);
->> +}
->> +static DEVICE_ATTR_RO(sas_ncq_prio_supported);
->> +
->> +static ssize_t sas_ncq_prio_enable_show(struct device *device,
->> +					struct device_attribute *attr,
->> +					char *buf)
->> +{
->> +	struct scsi_device *sdev = to_scsi_device(device);
->> +	struct domain_device *ddev = sdev_to_domain_dev(sdev);
->> +	int res;
->> +
->> +	// This attribute shall be visible for SATA devices only
->> +	if (WARN_ON(!dev_is_sata(ddev)))
->> +		return -EINVAL;
->> +
->> +	res = ata_ncq_prio_enabled(ddev->sata_dev.ap, sdev);
->> +	if (res < 0)
->> +		return res;
->> +
->> +	return sysfs_emit(buf, "%u\n", res);
->> +}
->> +
->> +static ssize_t sas_ncq_prio_enable_store(struct device *device,
->> +					 struct device_attribute *attr,
->> +					 const char *buf, size_t len)
->> +{
->> +	struct scsi_device *sdev = to_scsi_device(device);
->> +	struct domain_device *ddev = sdev_to_domain_dev(sdev);
->> +	long input;
->> +	int res;
->> +
->> +	// This attribute shall be visible for SATA devices only
->> +	if (WARN_ON(!dev_is_sata(ddev)))
->> +		return -EINVAL;
->> +
->> +	res = kstrtol(buf, 10, &input);
-> 
-> I think that kstrtobool_from_user() could be used. But 
-> kstrtobool_from_user() handles more than 0/1, so that would be a 
-> different behaviour, so maybe better not to use.
-> 
-> I would also suggest factor out some of ata_ncq_prio_enable_store() with 
-> this, but a public API which accepts char * would be a bit odd.
-
-kstrtobool() is I think the standard way of parsing bool sysfs attributes.
-
-> 
-> 
->> +	if (res)
->> +		return res;
->> +	if ((input < 0) || (input > 1))
->> +		return -EINVAL;
->> +
->> +	return ata_ncq_prio_enable(ddev->sata_dev.ap, sdev, input) ? : len;
-> 
-> Please don't use ternary operator like this. This seems more 
-> straightforfward:
-> 
-> res = ata_ncq_prio_enable();
-> if (res)
-> 	return res;
-> return len;
-> 
->> +}
->> +static DEVICE_ATTR_RW(sas_ncq_prio_enable);
->> +
->> +static struct attribute *sas_ata_sdev_attrs[] = {
->> +	&dev_attr_sas_ncq_prio_supported.attr,
->> +	&dev_attr_sas_ncq_prio_enable.attr,
->> +	NULL
->> +};
->> +
->> +static umode_t sas_ata_attr_is_visible(struct kobject *kobj,
->> +				       struct attribute *attr, int i)
->> +{
->> +	struct device *dev = kobj_to_dev(kobj);
->> +	struct scsi_device *sdev = to_scsi_device(dev);
->> +	struct domain_device *ddev = sdev_to_domain_dev(sdev);
->> +
->> +	if (!dev_is_sata(ddev))
->> +		return 0;
->> +
->> +	return attr->mode;
->> +}
->> +
->> +const struct attribute_group sas_ata_sdev_attr_group = {
->> +	.attrs = sas_ata_sdev_attrs,
->> +	.is_visible = sas_ata_attr_is_visible,
->> +};
->> +EXPORT_SYMBOL_GPL(sas_ata_sdev_attr_group);
->> diff --git a/include/scsi/sas_ata.h b/include/scsi/sas_ata.h
->> index 2f8c719840a6..cded782fdf33 100644
->> --- a/include/scsi/sas_ata.h
->> +++ b/include/scsi/sas_ata.h
->> @@ -39,6 +39,8 @@ int smp_ata_check_ready_type(struct ata_link *link);
->>   int sas_discover_sata(struct domain_device *dev);
->>   int sas_ata_add_dev(struct domain_device *parent, struct ex_phy *phy,
->>   		    struct domain_device *child, int phy_id);
->> +
->> +extern const struct attribute_group sas_ata_sdev_attr_group;
->>   #else
->>   
->>   static inline void sas_ata_disabled_notice(void)
->> @@ -123,6 +125,10 @@ static inline int sas_ata_add_dev(struct domain_device *parent, struct ex_phy *p
->>   	sas_ata_disabled_notice();
->>   	return -ENODEV;
->>   }
->> +
->> +static const struct attribute_group sas_ata_sdev_attr_group = {
->> +	.attrs = NULL,
->> +};
->>   #endif
->>   
->>   #endif /* _SAS_ATA_H_ */
-> 
-
--- 
-Damien Le Moal
-Western Digital Research
-
+Friendly ping incoming!
 
