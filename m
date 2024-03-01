@@ -1,220 +1,215 @@
-Return-Path: <linux-kernel+bounces-88697-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88698-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 600B586E585
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:27:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4478986E587
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:28:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF0E0282879
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:27:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8F0828272C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:28:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCB9E72936;
-	Fri,  1 Mar 2024 16:26:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tOSDSIIb"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DC3B71ED5;
-	Fri,  1 Mar 2024 16:26:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 440F070CD6;
+	Fri,  1 Mar 2024 16:27:43 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB0BA1C33
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 16:27:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709310398; cv=none; b=BKhxK1ilH8YfaP2UhVQ8jexbpgFxygY3ZLSW+Rj0kT9ErKlbIMlTb5KW6S22eYsdGpK45jRJ3oHYbjhfXHYZvS2hsJQU9a0X2GvbMjSns4blDVFfrPk77tAARlHqaKwVB7ERlTAq57x+jY7V/G0n6/y9GG1XNLwXz1YG6/wNCpA=
+	t=1709310462; cv=none; b=XB/PKe580VFSQ6Q89qgMVaMvKPlE4RswBbJACStcBkQSphV8XDmn8KuAAzuhbCpzwmWft0En+JHXdgaMzObESMwVjNKNmCe70cg0c/z5sIu5Vmdso23A71fhNHh9rsS0ZT05zEquzT/Sp5xoUePXjlQvcvbQKT0/LNrmS5gKLAc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709310398; c=relaxed/simple;
-	bh=VcBbt1X8/pmwh+TkEynp3quxlUoSQQK1gtHMDoY69T0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KtPGjX6pJzTc6jK28WEBpPdNaEkMrkWFgut5KP0gIv9idTPTlwfh8CS+9UjizCdJYptJqXd3J1+7yyRhXP32fw+qH/8FqgRskdxEcedzjcdJdiYrsDsHLjWXKPWMxBpZuKNhwMk8b/+ZwAILiXPof5X/qi0pxWNjBqGdD731IG4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tOSDSIIb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF2D4C433F1;
-	Fri,  1 Mar 2024 16:26:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709310398;
-	bh=VcBbt1X8/pmwh+TkEynp3quxlUoSQQK1gtHMDoY69T0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=tOSDSIIbb5L1CFwO/8HxTyN6v4fsCPbtHUZZAhaNMXhPYtUXoUYIOgdC8E7wwbX5O
-	 PYQvYDXqF4ToTR5df+ut4bLkyZCZob0F6tATywbItCVYGNHqKTvFWBryYG7BqLGukI
-	 EE7GTqdiLlH82IgoYBoA3KxjBVcqkAzQjYqInnY1hacYrmW8CuP2+eyG05W3yrI4RY
-	 NEM29optYiOwjzU7Sxnhr0YuwvZqktbVSe7JvS6k2aa8z2ovrltB98QnCk1u929KA6
-	 UTzTfrCUj+DfcSnnzr4sgP+NWVs1rDO3J21j/evq2lovrLehs3UBr1An0jV10d2kwZ
-	 RUSZXgvt95OKQ==
-Date: Fri, 1 Mar 2024 10:26:35 -0600
-From: Rob Herring <robh@kernel.org>
-To: =?utf-8?B?UGF3ZcWC?= Anikiel <panikiel@google.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, airlied@gmail.com,
-	akpm@linux-foundation.org, conor+dt@kernel.org, daniel@ffwll.ch,
-	dinguyen@kernel.org, hverkuil-cisco@xs4all.nl,
-	krzysztof.kozlowski+dt@linaro.org,
-	maarten.lankhorst@linux.intel.com, mchehab@kernel.org,
-	mripard@kernel.org, tzimmermann@suse.de, devicetree@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-	linux-media@vger.kernel.org, chromeos-krk-upstreaming@google.com,
-	ribalda@chromium.org
-Subject: Re: [PATCH v2 8/9] media: dt-bindings: Add Intel Displayport RX IP
-Message-ID: <20240301162635.GA2261739-robh@kernel.org>
-References: <20240221160215.484151-1-panikiel@google.com>
- <20240221160215.484151-9-panikiel@google.com>
- <13aeb2ff-72f4-49d9-b65e-ddc31569a936@linaro.org>
- <CAM5zL5q0oKoTMR0jSwYVAChCOJ9iKYPRFiU1vH4qDqhHALKz4w@mail.gmail.com>
- <20240227142911.GB3863852-robh@kernel.org>
- <CAM5zL5pXu5sbzCHY_BrCJ7eZj-p9n0tCo6CmuTqUpvniTrqWJg@mail.gmail.com>
- <324f7b6e-c72c-40aa-afe6-779345c2eade@linaro.org>
- <CAM5zL5oJSHxJK4QWsr2X23g-cN6G54VhGfuwHhMJ9rNu6+gZ=w@mail.gmail.com>
- <20240228180950.GA392372-robh@kernel.org>
- <CAM5zL5qen2Zcg3yecH3jXJ3hiLq88p81n9hmUXQ5E0CXV6w61w@mail.gmail.com>
+	s=arc-20240116; t=1709310462; c=relaxed/simple;
+	bh=jxsdDdqvTdJPGgiXXNsppAPPDpV1z+PHZJz8iNpOySk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=nKW8gu1wX6Pu0acKMUL8J4xSSyyvkf1OdyrR1ZKg3ICVnFltklMCUE5xLUYDY8b5Y5rivsrkb97RkhhQ7b78oS2+MSF0CGQCjQ58BR4LcEU2s+jYvGEGI8BSQFumjFUTf5C0UGLyxQy+MtA1WUYb97rf3UVtzZDvh8jqJ6ugP5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 04DCF1FB;
+	Fri,  1 Mar 2024 08:28:15 -0800 (PST)
+Received: from [10.57.68.58] (unknown [10.57.68.58])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E37143F73F;
+	Fri,  1 Mar 2024 08:27:34 -0800 (PST)
+Message-ID: <5ebac77a-5c61-481f-8ac1-03bc4f4e2b1d@arm.com>
+Date: Fri, 1 Mar 2024 16:27:32 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/4] mm: swap: Remove CLUSTER_FLAG_HUGE from
+ swap_cluster_info:flags
+Content-Language: en-GB
+To: David Hildenbrand <david@redhat.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>, Huang Ying <ying.huang@intel.com>,
+ Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
+ Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20231025144546.577640-1-ryan.roberts@arm.com>
+ <20231025144546.577640-2-ryan.roberts@arm.com>
+ <d108bd79-086b-4564-838b-d41afa055137@redhat.com>
+ <6541e29b-f25a-48b8-a553-fd8febe85e5a@redhat.com>
+ <ee760679-7e3c-4a35-ad53-ca98b598ead5@arm.com>
+ <ba9101ae-a618-4afc-9515-a61f25376390@arm.com>
+ <2934125a-f2e2-417c-a9f9-3cb1e074a44f@redhat.com>
+ <049818ca-e656-44e4-b336-934992c16028@arm.com>
+ <d2fbfdd0-ad61-4fe2-a976-4dac7427bfc9@redhat.com>
+ <4a73b16e-9317-477a-ac23-8033004b0637@arm.com>
+ <1195531c-d985-47e2-b7a2-8895fbb49129@redhat.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <1195531c-d985-47e2-b7a2-8895fbb49129@redhat.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAM5zL5qen2Zcg3yecH3jXJ3hiLq88p81n9hmUXQ5E0CXV6w61w@mail.gmail.com>
 
-On Thu, Feb 29, 2024 at 11:25:41AM +0100, Paweł Anikiel wrote:
-> On Wed, Feb 28, 2024 at 7:10 PM Rob Herring <robh@kernel.org> wrote:
-> >
-> > On Wed, Feb 28, 2024 at 02:09:33PM +0100, Paweł Anikiel wrote:
-> > > On Wed, Feb 28, 2024 at 1:18 PM Krzysztof Kozlowski
-> > > <krzysztof.kozlowski@linaro.org> wrote:
-> > > >
-> > > > On 28/02/2024 12:05, Paweł Anikiel wrote:
-> > > > > On Tue, Feb 27, 2024 at 3:29 PM Rob Herring <robh@kernel.org> wrote:
-> > > > >>
-> > > > >> On Mon, Feb 26, 2024 at 11:59:42AM +0100, Paweł Anikiel wrote:
-> > > > >>> On Mon, Feb 26, 2024 at 10:13 AM Krzysztof Kozlowski
-> > > > >>> <krzysztof.kozlowski@linaro.org> wrote:
-> > > > >>>>
-> > > > >>>> On 21/02/2024 17:02, Paweł Anikiel wrote:
-> > > > >>>>> The Intel Displayport RX IP is a part of the DisplayPort Intel FPGA IP
-> > > > >>>>> Core. It implements a DisplayPort 1.4 receiver capable of HBR3 video
-> > > > >>>>> capture and Multi-Stream Transport. The user guide can be found here:
-> > > > >>>>>
-> > > > >>>>> https://www.intel.com/programmable/technical-pdfs/683273.pdf
-> > > > >>>>>
-> > > > >>>>> Signed-off-by: Paweł Anikiel <panikiel@google.com>
-> > > > >>>>> ---
-> > > > >>>>>  .../devicetree/bindings/media/intel,dprx.yaml | 160 ++++++++++++++++++
-> > > > >>>>>  1 file changed, 160 insertions(+)
-> > > > >>>>>  create mode 100644 Documentation/devicetree/bindings/media/intel,dprx.yaml
-> > > > >>>>>
-> > > > >>>>> diff --git a/Documentation/devicetree/bindings/media/intel,dprx.yaml b/Documentation/devicetree/bindings/media/intel,dprx.yaml
-> > > > >>>>> new file mode 100644
-> > > > >>>>> index 000000000000..31025f2d5dcd
-> > > > >>>>> --- /dev/null
-> > > > >>>>> +++ b/Documentation/devicetree/bindings/media/intel,dprx.yaml
-> > > > >>>>> @@ -0,0 +1,160 @@
-> > > > >>>>> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> > > > >>>>> +%YAML 1.2
-> > > > >>>>> +---
-> > > > >>>>> +$id: http://devicetree.org/schemas/media/intel,dprx.yaml#
-> > > > >>>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > >>>>> +
-> > > > >>>>> +title: Intel DisplayPort RX IP
-> > > > >>>>> +
-> > > > >>>>> +maintainers:
-> > > > >>>>> +  - Paweł Anikiel <panikiel@google.com>
-> > > > >>>>> +
-> > > > >>>>> +description: |
-> > > > >>>>> +  The Intel Displayport RX IP is a part of the DisplayPort Intel FPGA IP
-> > > > >>>>> +  Core. It implements a DisplayPort 1.4 receiver capable of HBR3 video
-> > > > >>>>> +  capture and Multi-Stream Transport.
-> > > > >>>>> +
-> > > > >>>>> +  The IP features a large number of configuration parameters, found at:
-> > > > >>>>> +  https://www.intel.com/content/www/us/en/docs/programmable/683273/23-3-20-0-1/sink-parameters.html
-> > > > >>>>> +
-> > > > >>>>> +  The following parameters have to be enabled:
-> > > > >>>>> +    - Support DisplayPort sink
-> > > > >>>>> +    - Enable GPU control
-> > > > >>>>> +  The following parameters' values have to be set in the devicetree:
-> > > > >>>>> +    - RX maximum link rate
-> > > > >>>>> +    - Maximum lane count
-> > > > >>>>> +    - Support MST
-> > > > >>>>> +    - Max stream count (only if Support MST is enabled)
-> > > > >>>>> +
-> > > > >>>>> +properties:
-> > > > >>>>> +  compatible:
-> > > > >>>>> +    const: intel,dprx-20.0.1
-> > > > >>>>> +
-> > > > >>>>> +  reg:
-> > > > >>>>> +    maxItems: 1
-> > > > >>>>> +
-> > > > >>>>> +  interrupts:
-> > > > >>>>> +    maxItems: 1
-> > > > >>>>> +
-> > > > >>>>> +  intel,max-link-rate:
-> > > > >>>>> +    $ref: /schemas/types.yaml#/definitions/uint32
-> > > > >>>>> +    description: Max link rate configuration parameter
-> > > > >>>>
-> > > > >>>> Please do not duplicate property name in description. It's useless.
-> > > > >>>> Instead explain what is this responsible for.
-> > > > >>>>
-> > > > >>>> Why max-link-rate would differ for the same dprx-20.0.1? And why
-> > > > >>>> standard properties cannot be used?
-> > > > >>>>
-> > > > >>>> Same for all questions below.
-> > > > >>>
-> > > > >>> These four properties are the IP configuration parameters mentioned in
-> > > > >>> the device description. When generating the IP core you can set these
-> > > > >>> parameters, which could make them differ for the same dprx-20.0.1.
-> > > > >>> They are documented in the user guide, for which I also put a link in
-> > > > >>> the description. Is that enough? Or should I also document these
-> > > > >>> parameters here?
-> > > > >>
-> > > > >> Use the standard properties: link-frequencies and data-lanes. Those go
-> > > > >> under the port(s) because they are inheritly per logical link.
-> > > > >
-> > > > > The DP receiver has one input interface (a deserialized DP stream),
-> > > > > and up to four output interfaces (the decoded video streams). The "max
-> > > > > link rate" and "max lane count" parameters only describe the input
-> > > > > interface to the receiver. However, the port(s) I am using here are
-> > > > > for the output streams. They are not affected by those parameters, so
-> > > > > I don't think these properties should go under the output port(s).
-> > > > >
-> > > > > The receiver doesn't have an input port in the DT, because there isn't
-> > > > > any controllable entity on the other side - the deserializer doesn't
-> > > > > have any software interface. Since these standard properties
-> > > > > (link-frequencies and data-lanes) are only defined in
-> > > > > video-interfaces.yaml (which IIUC describes a graph endpoint), I can't
-> > > > > use them directly in the device node.
-> > > >
-> > > > DT describes the hardware, so where does the input come? From something,
-> > > > right? Regardless if you have a driver or not. There is dp-connector
-> > > > binding, if this is physical port.
-> > >
-> > > Yes, it is a physical port. I agree adding a DT node for the physical
-> > > DP input connector would let us add link-frequencies to the input port
-> > > of the receiver.
-> > >
-> > > However, dp-connector seems to be a binding for an output port - it's
-> > > under schemas/display/connector, and DP_PWR can be a power supply only
-> > > for an output port (looking at the dp-pwr-supply property). Also, the
-> > > driver for this binding is a DRM bridge driver (display-connector.c)
-> > > which would not be compatible with a v4l2 (sub)device.
-> >
-> > So then we should add 'dp-input-connector' because they are different.
-> > When we haven't defined connectors, properties of the connector have
-> > been shoved in whatever node is associated with a connector like you
-> > have done. That works for a while, but then becomes unmanageable. DP on
-> > USB-C connectors for example.
-> >
-> > OTOH, maybe your use here is niche enough to not be worth the trouble.
-> > Depends if we see the need for video input connectors in general.
+On 28/02/2024 15:12, David Hildenbrand wrote:
+> On 28.02.24 15:57, Ryan Roberts wrote:
+>> On 28/02/2024 12:12, David Hildenbrand wrote:
+>>>>> How relevant is it? Relevant enough that someone decided to put that
+>>>>> optimization in? I don't know :)
+>>>>
+>>>> I'll have one last go at convincing you: Huang Ying (original author) commented
+>>>> "I believe this should be OK.  Better to compare the performance too." at [1].
+>>>> That implies to me that perhaps the optimization wasn't in response to a
+>>>> specific problem after all. Do you have any thoughts, Huang?
+>>>
+>>> Might make sense to include that in the patch description!
+>>>
+>>>> OK so if we really do need to keep this optimization, here are some ideas:
+>>>>
+>>>> Fundamentally, we would like to be able to figure out the size of the swap slot
+>>>> from the swap entry. Today swap supports 2 sizes; PAGE_SIZE and PMD_SIZE. For
+>>>> PMD_SIZE, it always uses a full cluster, so can easily add a flag to the
+>>>> cluster
+>>>> to mark it as PMD_SIZE.
+>>>>
+>>>> Going forwards, we want to support all sizes (power-of-2). Most of the time, a
+>>>> cluster will contain only one size of THPs, but this is not the case when a THP
+>>>> in the swapcache gets split or when an order-0 slot gets stolen. We expect
+>>>> these
+>>>> cases to be rare.
+>>>>
+>>>> 1) Keep the size of the smallest swap entry in the cluster header. Most of the
+>>>> time it will be the full size of the swap entry, but sometimes it will cover
+>>>> only a portion. In the latter case you may see a false negative for
+>>>> swap_page_trans_huge_swapped() meaning we take the slow path, but that is rare.
+>>>> There is one wrinkle: currently the HUGE flag is cleared in
+>>>> put_swap_folio(). We
+>>>> wouldn't want to do the equivalent in the new scheme (i.e. set the whole
+>>>> cluster
+>>>> to order-0). I think that is safe, but haven't completely convinced myself yet.
+>>>>
+>>>> 2) allocate 4 bits per (small) swap slot to hold the order. This will give
+>>>> precise information and is conceptually simpler to understand, but will cost
+>>>> more memory (half as much as the initial swap_map[] again).
+>>>>
+>>>> I still prefer to avoid this at all if we can (and would like to hear Huang's
+>>>> thoughts). But if its a choice between 1 and 2, I prefer 1 - I'll do some
+>>>> prototyping.
+>>>
+>>> Taking a step back: what about we simply batch unmapping of swap entries?
+>>>
+>>> That is, if we're unmapping a PTE range, we'll collect swap entries (under PT
+>>> lock) that reference consecutive swap offsets in the same swap file.
+>>
+>> Yes in principle, but there are 4 places where free_swap_and_cache() is called,
+>> and only 2 of those are really amenable to batching (zap_pte_range() and
+>> madvise_free_pte_range()). So the other two users will still take the "slow"
+>> path. Maybe those 2 callsites are the only ones that really matter? I can
+>> certainly have a stab at this approach.
 > 
-> My use case is a dedicated hardware that runs DP tests of an external
-> DUT. I can't think of another scenario where we'd need an input DP
-> port. IMO this is pretty niche, but I'll leave the decision to you
+> We can ignore the s390x one. That s390x code should only apply to KVM guest
+> memory where ordinary THP are not even supported. (and nobody uses mTHP there yet).
+> 
+> Long story short: the VM can hint that some memory pages are now unused and the
+> hypervisor can reclaim them. That's what that callback does (zap guest-provided
+> guest memory). No need to worry about any batching for now.
+> 
+> Then, there is the shmem one in shmem_free_swap(). I really don't know how shmem
+> handles THP+swapout.
+> 
+> But looking at shmem_writepage(), we split any large folios before moving them
+> to the swapcache, so likely we don't care at all, because THP don't apply.
+> 
+>>
+>>>
+>>> There, we can then first decrement all the swap counts, and then try minimizing
+>>> how often we actually have to try reclaiming swap space (lookup folio, see it's
+>>> a large folio that we cannot reclaim or could reclaim, ...).
+>>>
+>>> Might need some fine-tuning in swap code to "advance" to the next entry to try
+>>> freeing up, but we certainly can do better than what we would do right now.
+>>
+>> I'm not sure I've understood this. Isn't advancing just a matter of:
+>>
+>> entry = swp_entry(swp_type(entry), swp_offset(entry) + 1);
+> 
+> I was talking about the advancing swapslot processing after decrementing the
+> swapcounts.
+> 
+> Assume you decremented 512 swapcounts and some of them went to 0. AFAIU, you'd
+> have to start with the first swapslot that has now a swapcount=0 one and try to
+> reclaim swap.
+> 
+> Assume you get a small folio, then you'll have to proceed with the next swap
+> slot and try to reclaim swap.
+> 
+> Assume you get a large folio, then you can skip more swapslots (depending on
+> offset into the folio etc).
+> 
+> If you get what I mean. :)
+> 
 
-Your device is niche, but a video capture/in device is not that niche. 
-After all, Smart TVs run Linux. They have video in connectors. Maybe not 
-DP though. It's conceivable someone could make a "Smart Monitor" I 
-suppose.
+I've implemented the batching as David suggested, and I'm pretty confident it's
+correct. The only problem is that during testing I can't provoke the code to
+take the path. I've been pouring through the code but struggling to figure out
+under what situation you would expect the swap entry passed to
+free_swap_and_cache() to still have a cached folio? Does anyone have any idea?
 
-Rob
+This is the original (unbatched) function, after my change, which caused David's
+concern that we would end up calling __try_to_reclaim_swap() far too much:
 
+int free_swap_and_cache(swp_entry_t entry)
+{
+	struct swap_info_struct *p;
+	unsigned char count;
+
+	if (non_swap_entry(entry))
+		return 1;
+
+	p = _swap_info_get(entry);
+	if (p) {
+		count = __swap_entry_free(p, entry);
+		if (count == SWAP_HAS_CACHE)
+			__try_to_reclaim_swap(p, swp_offset(entry),
+					      TTRS_UNMAPPED | TTRS_FULL);
+	}
+	return p != NULL;
+}
+
+The trouble is, whenever its called, count is always 0, so
+__try_to_reclaim_swap() never gets called.
+
+My test case is allocating 1G anon memory, then doing madvise(MADV_PAGEOUT) over
+it. Then doing either a munmap() or madvise(MADV_FREE), both of which cause this
+function to be called for every PTE, but count is always 0 after
+__swap_entry_free() so __try_to_reclaim_swap() is never called. I've tried for
+order-0 as well as PTE- and PMD-mapped 2M THP.
+
+I'm guessing the swapcache was already reclaimed as part of MADV_PAGEOUT? I'm
+using a block ram device as my backing store - I think this does synchronous IO
+so perhaps if I have a real block device with async IO I might have more luck?
+Just a guess...
+
+Or perhaps this code path is a corner case? In which case, perhaps its not worth
+adding the batching optimization after all?
+
+Thanks,
+Ryan
 
 
