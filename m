@@ -1,196 +1,138 @@
-Return-Path: <linux-kernel+bounces-88241-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88243-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BB5486DF0E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:14:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68C8E86DF11
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:14:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3B4DFB20D3E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:14:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 085C61F25794
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:14:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BD216BB22;
-	Fri,  1 Mar 2024 10:14:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C03246BB44;
+	Fri,  1 Mar 2024 10:14:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gRLkuSIR"
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Yt7OxJe4"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9CEA1E886
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 10:13:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CD3F6BB23
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 10:14:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709288039; cv=none; b=rLZgiOlsJYQGPkht56MZmYkpJL92rd4fCieDx3cy3ITYYWRKyrlVIbtDfDMBKZK/FuGeUEcOH3sFjz+Q3Mgtj4k+CZjDuKxZAaETKT/m4NFlUlKI4GWwvr5yJO5p90dFj7VriKSiJg1wW8diSbb9LKRHxX+Yxwws+VIgIsulvZM=
+	t=1709288060; cv=none; b=GeJ2JoF6IJk5J+6jhcAHECdmSecdPADg6FD5wYw2V3it/CL6Kah7mRgJVRK4TkU44WLkfk/5f+Ou4C7570k6jwZ3mnSJeZoqMhlVGSuf2fK6mL6/gDGTNtmRetpm6u/cLUA391pjg1qQPoXYI71PF1v5HVzdSx9ldiU11mJW15Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709288039; c=relaxed/simple;
-	bh=F3tVHDQ4yCFl+nmy9ofTwMigtZD2wn3lVGrcIEaO8FE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=X5pMIave+5rlDSoKTARcDuY8P2/waKpdAiOEoYhOaz+pwyR1tSZhJ8eGEcn22YM453nQzVEKlhUCg4mdA6HlmObTKnqPvteHbeF5VVihErmg5As5VSYvjjomCtUSafte8I4wuXqpn+uepIV6MAM3N3uaQnz3PhaLVl3j2UNZXhA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gRLkuSIR; arc=none smtp.client-ip=209.85.208.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-56698eb5e1dso2559221a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 02:13:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709288036; x=1709892836; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ykXza2pzmOZHpzudtWcagjuhFwlGGt23s/8vuFNnCss=;
-        b=gRLkuSIRQq00LqXBMCJ1BJ63AtV0SKnjnVSP9BQGI75qvvcoYuagMQMY4DQ1MBo2bv
-         Ch+8XUx7igz3sLrFjRmhHWfRRozURii2E2FynbKlCnPApVuEHUXv9tDOxi1yKRdbe3JR
-         9yhJONqdmwEdXT7ewM5d8yLLewAKmEpdReDLeI86MugB/Mpkw4jcUUT6pfM8oYaDbVFN
-         NNJrWQ+jz9FWGocsx1qi/Z7hrx9HGDW8gHR8BY05kechOIyHDE5yaChBRyf5nNtBEtw6
-         cJMyhy1Zrd8FkqtXlNHjcqhbe2R/2iwo/5hShD3y4X6wvB02XDLGh+EZq6LC7SLEe7pr
-         ciDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709288036; x=1709892836;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ykXza2pzmOZHpzudtWcagjuhFwlGGt23s/8vuFNnCss=;
-        b=uneOAbzTcG8vC+Mw0AsWUpaqCeGKRqJ/m6skRSBGOEEB/cLF+ndfz0ljW+/RYlYw4X
-         RpMjMsEVMMq6u0MS1v0OkDyurtvbhvCIwAaY4b2fUgXv5E86vhQKG7PZJgOmf7JjquFH
-         aA1oouVcyP4yVBn0L//MR5ZGR3t8rTNMAd+PCggsSwBQkqoHERQseQUbvibepcIpjkdA
-         TtJCxeM68R4P5z5OcSy7i8aJrCLEqjRF4a8VX9kK5RwHd1gxlKwNXh0Uj6zYxf48nn9A
-         bbLqwh7DmvNDT+3sK5vnbL0rC8t1I+bzMiTTzgBOfhMolrm5ZhqfCgvBckrwjW3bXEPQ
-         YIEg==
-X-Forwarded-Encrypted: i=1; AJvYcCU1MiWHGD/fkaTdIa17RAsweua1i2I3U2fy/2uVue44lurApGc9KoHl476bUonUDAsiMOcyozn0SfglMS6L85d4PGaD1Q0SKn8Pf6RA
-X-Gm-Message-State: AOJu0Yw8WLbUXYWAEoN1ma3rKAHhlN01xGidOgQA8/v2l0WgNfQ4YJ/6
-	NXr9UBYD+BIrk28kYiAOWQl3vehY2pC/WahD9IPxG/zPThiFugPdrBEXB+wTOoM=
-X-Google-Smtp-Source: AGHT+IHVoZwr3ydbKwgzzPJHfpo8PG76Mo8+L0PZLPMTnudzW3e3Ex7FZduNXCPw/uNmEEK4MJ1f0w==
-X-Received: by 2002:a05:6402:1053:b0:564:d715:1d67 with SMTP id e19-20020a056402105300b00564d7151d67mr915559edu.17.1709288036091;
-        Fri, 01 Mar 2024 02:13:56 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id er8-20020a056402448800b00566d7e27dccsm307948edb.0.2024.03.01.02.13.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Mar 2024 02:13:55 -0800 (PST)
-Message-ID: <f802a1e0-cedd-488a-a6fb-df793718d94b@linaro.org>
-Date: Fri, 1 Mar 2024 11:13:52 +0100
+	s=arc-20240116; t=1709288060; c=relaxed/simple;
+	bh=uWxgVAOGbOSnxDWiId7krxLynUZio8/ykxEd9RkbEQI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=I0yUzbPTuSCxJtSvjmrleyXFzd/vyBTYvZpU2WxcNL/eC9BuoJkQmWtV1KHCgiKFT5dc271ue7bPhRjkg0GS/QI5ln72YaIlWmCPNdMxtr7wqywGhwLyZW0NEL+NiGZNfsyWCcmcbAiY8zUYr/btaq1mnX1/7kH1txY67gGy8JQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Yt7OxJe4; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709288057;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EQfnpdN6UNMUhl10QWdlY0XPgUMsy+RQDz3+hBDJ3Y0=;
+	b=Yt7OxJe4BEgxKF3604ciNL18KJNVNQwvLGiraoco6KcKOlckEgGiq2PcKO7meP+BeQkMeh
+	SR8mJTZMzX1Ay7YsSyjZL02dgpvz5JCmCqxVVWDWR3LexJNaOFmM2BBix/3s2gYL+Sayci
+	1NzmwFsohj7u6SIPYQzzy3fxpsHUFEs=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-534--BHjQmXgMBqh-ay5ggpBlw-1; Fri,
+ 01 Mar 2024 05:14:14 -0500
+X-MC-Unique: -BHjQmXgMBqh-ay5ggpBlw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8FDC638062C0;
+	Fri,  1 Mar 2024 10:14:13 +0000 (UTC)
+Received: from sirius.home.kraxel.org (unknown [10.39.192.121])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id DD32763A69;
+	Fri,  1 Mar 2024 10:14:11 +0000 (UTC)
+Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
+	id AE62C180148E; Fri,  1 Mar 2024 11:14:10 +0100 (CET)
+From: Gerd Hoffmann <kraxel@redhat.com>
+To: kvm@vger.kernel.org
+Cc: Gerd Hoffmann <kraxel@redhat.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
+	"H. Peter Anvin" <hpa@zytor.com>,
+	linux-kernel@vger.kernel.org (open list:X86 ARCHITECTURE (32-BIT AND 64-BIT))
+Subject: [PATCH 1/3] kvm: wire up KVM_CAP_VM_GPA_BITS for x86
+Date: Fri,  1 Mar 2024 11:14:07 +0100
+Message-ID: <20240301101410.356007-2-kraxel@redhat.com>
+In-Reply-To: <20240301101410.356007-1-kraxel@redhat.com>
+References: <20240301101410.356007-1-kraxel@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 02/11] dt-bindings: hwmon: lm75: use common hwmon
- schema
-Content-Language: en-US
-To: =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
- Guenter Roeck <linux@roeck-us.net>, Linus Walleij
- <linus.walleij@linaro.org>, Andi Shyti <andi.shyti@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mips@vger.kernel.org, Gregory Clement <gregory.clement@bootlin.com>,
- Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Tawfik Bayouk <tawfik.bayouk@mobileye.com>, Jean Delvare
- <jdelvare@suse.com>, linux-hwmon@vger.kernel.org
-References: <20240229-mbly-i2c-v2-0-b32ed18c098c@bootlin.com>
- <20240229-mbly-i2c-v2-2-b32ed18c098c@bootlin.com>
- <6749c8df-c545-4aca-bc18-4dfe9c9f15b0@linaro.org>
- <d78fd3ca-ed0b-40e5-8f8f-21db152a7402@roeck-us.net>
- <CZIBCBQ2IB0E.2N3HAVO0P2SHT@bootlin.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CZIBCBQ2IB0E.2N3HAVO0P2SHT@bootlin.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-On 01/03/2024 10:41, Théo Lebrun wrote:
-> Hello,
-> 
-> On Fri Mar 1, 2024 at 7:53 AM CET, Guenter Roeck wrote:
->> On 2/29/24 22:37, Krzysztof Kozlowski wrote:
->>> On 29/02/2024 19:10, Théo Lebrun wrote:
->>>> Reference common hwmon schema which has the generic "label" property,
->>>> parsed by Linux hwmon subsystem.
->>>>
->>>
->>> Please do not mix independent patchsets. You create unneeded
->>> dependencies blocking this patch. This patch depends on hwmon work, so
->>> it cannot go through different tree.
-> 
-> I had to pick between this or dtbs_check failing on my DTS that uses a
-> label on temperature-sensor@48.
+Add new guest_phys_bits field to kvm_caps, return the value to
+userspace when asked for KVM_CAP_VM_GPA_BITS capability.
 
-I don't see how is that relevant. You can organize your branches as you
-wish, e.g. base one b4 branch on another and you will not have any warnings.
+Initialize guest_phys_bits with boot_cpu_data.x86_phys_bits.
+Vendor modules (i.e. vmx and svm) can adjust this field in case
+additional restrictions apply, for example in case EPT has no
+support for 5-level paging.
 
-> 
->>> If you insist to combine independent patches, then at least clearly
->>> express merging strategy or dependency in patch changelog --- .
-> 
-> I do not know how such indirect conflicts are usually resolved. Hwmon
-> can take it but MIPS might want to also take it to have valid DTS.
-> 
-> Any advice?
+Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
+---
+ arch/x86/kvm/x86.h | 2 ++
+ arch/x86/kvm/x86.c | 5 +++++
+ 2 files changed, 7 insertions(+)
 
-I don't see any conflict.
-
-
-> 
->> For my part I have to say that I don't know what to do with it.
->> Rob's robot reported errors, so I won't apply it, and I don't
->> feel comfortable giving it an ack either because of those errors.
-> 
-> Can reproduce the error when patch "dt-bindings: hwmon: add common
-> properties" is not applied. Cannot reproduce when patch is applied.
-> Commit d590900b62f0 on hwmon-next. Cannot reproduce with hwmon-next as
-> parent.
-
-Yeah, but we see the error reported and it means something is missing.
-
-Best regards,
-Krzysztof
+diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
+index 2f7e19166658..e03aec3527f8 100644
+--- a/arch/x86/kvm/x86.h
++++ b/arch/x86/kvm/x86.h
+@@ -24,6 +24,8 @@ struct kvm_caps {
+ 	bool has_bus_lock_exit;
+ 	/* notify VM exit supported? */
+ 	bool has_notify_vmexit;
++	/* usable guest phys bits */
++	u32  guest_phys_bits;
+ 
+ 	u64 supported_mce_cap;
+ 	u64 supported_xcr0;
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 48a61d283406..e270b9b708d1 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -4784,6 +4784,9 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+ 		if (kvm_is_vm_type_supported(KVM_X86_SW_PROTECTED_VM))
+ 			r |= BIT(KVM_X86_SW_PROTECTED_VM);
+ 		break;
++	case KVM_CAP_VM_GPA_BITS:
++		r = kvm_caps.guest_phys_bits;
++		break;
+ 	default:
+ 		break;
+ 	}
+@@ -9706,6 +9709,8 @@ static int __kvm_x86_vendor_init(struct kvm_x86_init_ops *ops)
+ 	if (boot_cpu_has(X86_FEATURE_ARCH_CAPABILITIES))
+ 		rdmsrl(MSR_IA32_ARCH_CAPABILITIES, host_arch_capabilities);
+ 
++	kvm_caps.guest_phys_bits = boot_cpu_data.x86_phys_bits;
++
+ 	r = ops->hardware_setup();
+ 	if (r != 0)
+ 		goto out_mmu_exit;
+-- 
+2.44.0
 
 
