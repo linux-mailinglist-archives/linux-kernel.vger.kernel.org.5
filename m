@@ -1,192 +1,221 @@
-Return-Path: <linux-kernel+bounces-87749-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87748-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCE1D86D882
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 02:02:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 813EB86D881
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 02:01:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48DEC28491A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:02:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F394B21F0B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:01:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5604329D11;
-	Fri,  1 Mar 2024 01:02:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58A0629409;
+	Fri,  1 Mar 2024 01:01:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JFyZzQWb"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="GEeQCGDz"
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60BD22FB6
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 01:02:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11DB7286AE
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 01:01:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709254929; cv=none; b=fVterg6h7fNc3+HF2uRag/g8go1xfhkQ+FnoCpO9voUcSz/yh5/DkFa+FkNqq6Kn4LDAIebnwUNoNpUeOnhsluhBom5gkqDyPHLahE7KGjqQUdbXBswSaaMZPSafPRxFr5m+X6NFq5KAShi/YWoKoMSC/PVUgDs7toQVgLHi470=
+	t=1709254907; cv=none; b=tA//YyfuWOzTD/yeMdfDQoypeAzf2BGBJP7R9SnzXANArQDzVy2d2ewQro76nwNSa2DICJWE2z79wAnCEml3GzO7GfwU3P6/EJFwDWOH5vLUPISijL7LmoL/MQdYt5j8cUorCeHRUxm037vYLFGkziYw0qEKTF02P08QyKrM6Gc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709254929; c=relaxed/simple;
-	bh=rCjcOu/4hm1LXhiywe6K84Rd4gAOaOfOyVzhv2ma4ak=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=N9uJPoh5agU9EM+g7z7OyNM5FYUxy1N2yxrTZaXxgYPXmM00rn/u+gcmqDX0jzJAU/7FJ4FLrhKx9ssgxeOVUIoUq894ochaehiAXkneKEM3q4zmhnNbMr4bmmMAZ6/LUsCOr/lScX9rvbgHrUjawqq7FAWv0NHEOUEWcva57fk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JFyZzQWb; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709254927; x=1740790927;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=rCjcOu/4hm1LXhiywe6K84Rd4gAOaOfOyVzhv2ma4ak=;
-  b=JFyZzQWb1CbYZ6oJBK+wdYa73aUYryPhe4gvSsyBD8DeHtbd/HUIM0jq
-   YuGqozqzW5/9Lpiv+Q4HbnsOap9LCDamzAGMSRivP1gpOGrPOsG573BNm
-   c4Za/CRzKovhsYoI59Nk6h5f2RaTCfKuAMwT/u1+TKzQpjoKHGJ5eiSoY
-   m5qblSmSKY7dnHKYFEubLBL5pWMEkXIg+l3hVuMO+T/yz/dEmKFiR2otu
-   S4BYcDTHfuH2s1USl72KsXxvgo7xB1+SttpCEVoePb0QB9rHah8gQc6te
-   sWcVHfRltNXJh3n9iNR0SNOzCWL76yCGTV7xpDEvy7Kv3vBayCqUV6KUU
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="14340383"
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="14340383"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 17:02:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="7941869"
-Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by fmviesa009.fm.intel.com with ESMTP; 29 Feb 2024 17:02:01 -0800
-Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rfrH7-000DPX-0Z;
-	Fri, 01 Mar 2024 01:01:35 +0000
-Date: Fri, 1 Mar 2024 08:57:56 +0800
-From: kernel test robot <lkp@intel.com>
-To: Florian Westphal <fw@strlen.de>
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>
-Subject: net/netfilter/nf_bpf_link.c:186:33: warning: bitwise operation
- between different enumeration types ('enum bpf_reg_type' and 'enum
- bpf_type_flag')
-Message-ID: <202403010842.hhJY5TFK-lkp@intel.com>
+	s=arc-20240116; t=1709254907; c=relaxed/simple;
+	bh=h6CIhB4J9OkofWTtNse/4xKrB3Lc5Lud0M5YwGBjoJY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tfcDoDm9YvsgzKDCvxiI5s0EaY15MvpkgZ4vTarNO89MOwWsRHnjTi41uNGNn6rR5cmlauPtI7XDDjpFOFryP7hhoY61XweD3bxaJN+yDlHAhYgwVfhXiWBBh+DHjgExFsoYyxU8p04zl87xOaQP7AyL8k0pKrNgSPcdqNWGdP8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=GEeQCGDz; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1dc744f54d0so89255ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 17:01:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709254905; x=1709859705; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GAvWq2MgCPw1OiVm8yWhLOauOZunwMIWrFFzUSM0h+g=;
+        b=GEeQCGDzEZ/6f7oQC4NvdFlF+1GOAjLgoAXxUoE3gYcyexGGDthLIQgtPWEc+qIeBS
+         qTbKkrR8aEZiiuRmjA0/35PT9Cirz4qut0t7+0nwJOn9rutkVgvnz9SewDE6vP8jch8i
+         3qsemuoO/qJ1hEn3g0PINzcwVYs89Ifuzz2DUZfOh3gjfi3X9mQpPwQpfn5ToOm+PUtD
+         v1osHgWt0yYdZeW3Qc9L1jln5kxFsrt8K+1v6+j4ijMiETeXBnOgQk+DLXhqsenTmY6Q
+         EZU6KBozbHNcZfCXcbYoUSyngn6/UOwb2FDpOoDplq5lEDxPionalwhGKS9DLhG0w6Xo
+         OpAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709254905; x=1709859705;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GAvWq2MgCPw1OiVm8yWhLOauOZunwMIWrFFzUSM0h+g=;
+        b=lm14Gs7qV6j+49Pd+FoNyNTr1yQWxnbrjlPDnvLwEnXP7S2DDuVWr0gf76i3aBecG6
+         bQxKX7FTqGv50w0aYERgIC0I3f2wB55EF2wZy6S0jexBcCxDU2GX/J7pFPFYX7IgK8q0
+         2dNEutqQ1VFN/WDLizw6ruC231+Jy4l+4c/UMyTMzzKZSMVwRCljYivSwb3y6rxw/Zq6
+         1EvWfjWpgNCGK2lgAx8hbDJT5HyxabNuwekzjj2CPBNP657IKx7Z0ZrsObpUG7hYFEvC
+         CHngUQvElShaetoIw8WzRSyoNl38K3GrJhko+z/8c73pBT6BdO5+UOi4hWA0C06VsUEd
+         gM+w==
+X-Forwarded-Encrypted: i=1; AJvYcCUX73gAAKV1lXq8U9+lQLSixeYkX1xTKMyXem0NS9PB1mpfqT0Lz0iCM20r+V5PaarbcTwziyjhAsSn6CvoQq9/93Oz02wcSAEBp9Fx
+X-Gm-Message-State: AOJu0YyZxrr+NeVz7DA79IQmdRVpe18ypkTqFm3XVurFk6gBPEqNs5Wi
+	wyHnbxKeWTeqoe+OTTN8mHvdajtzdrcE52HX8jA7NzYLDGB4SaZwy3zz9Lv4zID8+ymuLAdRFja
+	ppGR27UadMLKKr6mtGQGNiVj2IwBrNhMT7OmZ
+X-Google-Smtp-Source: AGHT+IFuovX+mPlo8GuYumhX5KhN8lmMUKMildylEVjPA9GQCg+diuk0IrgLOJCnPmSt0jj8WcLgKXB1VMpgtF4Vdcc=
+X-Received: by 2002:a17:903:22c4:b0:1dc:a82e:23b4 with SMTP id
+ y4-20020a17090322c400b001dca82e23b4mr89703plg.8.1709254905137; Thu, 29 Feb
+ 2024 17:01:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240229001806.4158429-1-irogers@google.com> <20240229001806.4158429-5-irogers@google.com>
+ <7aa2d2a2-b8f9-478f-9699-7b717d38a8ab@linux.intel.com>
+In-Reply-To: <7aa2d2a2-b8f9-478f-9699-7b717d38a8ab@linux.intel.com>
+From: Ian Rogers <irogers@google.com>
+Date: Thu, 29 Feb 2024 17:01:34 -0800
+Message-ID: <CAP-5=fWSidi1zjwn8Zr93dAQvRBtngKrkVwDxorTMmVSVc9FWg@mail.gmail.com>
+Subject: Re: [PATCH v1 04/20] perf jevents: Add tsx metric group for Intel models
+To: "Liang, Kan" <kan.liang@linux.intel.com>
+Cc: Perry Taylor <perry.taylor@intel.com>, Samantha Alt <samantha.alt@intel.com>, 
+	Caleb Biggers <caleb.biggers@intel.com>, Weilin Wang <weilin.wang@intel.com>, 
+	Edward Baker <edward.baker@intel.com>, Andi Kleen <ak@linux.intel.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, John Garry <john.g.garry@oracle.com>, 
+	Jing Zhang <renyu.zj@linux.alibaba.com>, Thomas Richter <tmricht@linux.ibm.com>, 
+	James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   87adedeba51a822533649b143232418b9e26d08b
-commit: fd9c663b9ad67dedfc9a3fd3429ddd3e83782b4d bpf: minimal support for programs hooked into netfilter framework
-date:   10 months ago
-config: riscv-defconfig (https://download.01.org/0day-ci/archive/20240301/202403010842.hhJY5TFK-lkp@intel.com/config)
-compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project edd4aee4dd9b5b98b2576a6f783e4086173d902a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240301/202403010842.hhJY5TFK-lkp@intel.com/reproduce)
+On Thu, Feb 29, 2024 at 1:15=E2=80=AFPM Liang, Kan <kan.liang@linux.intel.c=
+om> wrote:
+>
+>
+>
+> On 2024-02-28 7:17 p.m., Ian Rogers wrote:
+> > Allow duplicated metric to be dropped from json files.
+> >
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> >  tools/perf/pmu-events/intel_metrics.py | 51 ++++++++++++++++++++++++++
+> >  1 file changed, 51 insertions(+)
+> >
+> > diff --git a/tools/perf/pmu-events/intel_metrics.py b/tools/perf/pmu-ev=
+ents/intel_metrics.py
+> > index 20c25d142f24..1096accea2aa 100755
+> > --- a/tools/perf/pmu-events/intel_metrics.py
+> > +++ b/tools/perf/pmu-events/intel_metrics.py
+> > @@ -7,6 +7,7 @@ import argparse
+> >  import json
+> >  import math
+> >  import os
+> > +from typing import Optional
+> >
+> >  parser =3D argparse.ArgumentParser(description=3D"Intel perf json gene=
+rator")
+> >  parser.add_argument("-metricgroups", help=3D"Generate metricgroups dat=
+a", action=3D'store_true')
+> > @@ -77,10 +78,60 @@ def Smi() -> MetricGroup:
+> >      ])
+> >
+> >
+> > +def Tsx() -> Optional[MetricGroup]:
+> > +    if args.model not in [
+> > +        'alderlake',
+> > +        'cascadelakex',
+> > +        'icelake',
+> > +        'icelakex',
+> > +        'rocketlake',
+> > +        'sapphirerapids',
+> > +        'skylake',
+> > +        'skylakex',
+> > +        'tigerlake',> +    ]:
+>
+> Can we get ride of the model list? Otherwise, we have to keep updating
+> the list.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403010842.hhJY5TFK-lkp@intel.com/
+Do we expect the list to update? :-) The issue is the events are in
+sysfs and not the json. If we added the tsx events to json then this
+list wouldn't be necessary, but it also would mean the events would be
+present in "perf list" even when TSX is disabled.
 
-All warnings (new ones prefixed by >>):
+> > +        return None
+> > +> +    pmu =3D "cpu_core" if args.model =3D=3D "alderlake" else "cpu"
+>
+> Is it possible to change the check to the existence of the "cpu" PMU
+> here? has_pmu("cpu") ? "cpu" : "cpu_core"
 
-   In file included from net/netfilter/nf_bpf_link.c:2:
-   In file included from include/linux/bpf.h:21:
-   In file included from include/linux/kallsyms.h:13:
-   In file included from include/linux/mm.h:1970:
-   include/linux/vmstat.h:516:36: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
-     516 |         return node_stat_name(NR_LRU_BASE + lru) + 3; // skip "nr_"
-         |                               ~~~~~~~~~~~ ^ ~~~
-   In file included from net/netfilter/nf_bpf_link.c:2:
-   include/linux/bpf.h:706:48: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
-     706 |         ARG_PTR_TO_MAP_VALUE_OR_NULL    = PTR_MAYBE_NULL | ARG_PTR_TO_MAP_VALUE,
-         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~
-   include/linux/bpf.h:707:43: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
-     707 |         ARG_PTR_TO_MEM_OR_NULL          = PTR_MAYBE_NULL | ARG_PTR_TO_MEM,
-         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
-   include/linux/bpf.h:708:43: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
-     708 |         ARG_PTR_TO_CTX_OR_NULL          = PTR_MAYBE_NULL | ARG_PTR_TO_CTX,
-         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
-   include/linux/bpf.h:709:45: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
-     709 |         ARG_PTR_TO_SOCKET_OR_NULL       = PTR_MAYBE_NULL | ARG_PTR_TO_SOCKET,
-         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~
-   include/linux/bpf.h:710:44: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
-     710 |         ARG_PTR_TO_STACK_OR_NULL        = PTR_MAYBE_NULL | ARG_PTR_TO_STACK,
-         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~
-   include/linux/bpf.h:711:45: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
-     711 |         ARG_PTR_TO_BTF_ID_OR_NULL       = PTR_MAYBE_NULL | ARG_PTR_TO_BTF_ID,
-         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~
-   include/linux/bpf.h:715:38: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
-     715 |         ARG_PTR_TO_UNINIT_MEM           = MEM_UNINIT | ARG_PTR_TO_MEM,
-         |                                           ~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
-   include/linux/bpf.h:717:45: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
-     717 |         ARG_PTR_TO_FIXED_SIZE_MEM       = MEM_FIXED_SIZE | ARG_PTR_TO_MEM,
-         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
-   include/linux/bpf.h:740:48: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
-     740 |         RET_PTR_TO_MAP_VALUE_OR_NULL    = PTR_MAYBE_NULL | RET_PTR_TO_MAP_VALUE,
-         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~
-   include/linux/bpf.h:741:45: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
-     741 |         RET_PTR_TO_SOCKET_OR_NULL       = PTR_MAYBE_NULL | RET_PTR_TO_SOCKET,
-         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~
-   include/linux/bpf.h:742:47: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
-     742 |         RET_PTR_TO_TCP_SOCK_OR_NULL     = PTR_MAYBE_NULL | RET_PTR_TO_TCP_SOCK,
-         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~
-   include/linux/bpf.h:743:50: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
-     743 |         RET_PTR_TO_SOCK_COMMON_OR_NULL  = PTR_MAYBE_NULL | RET_PTR_TO_SOCK_COMMON,
-         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/bpf.h:745:49: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
-     745 |         RET_PTR_TO_DYNPTR_MEM_OR_NULL   = PTR_MAYBE_NULL | RET_PTR_TO_MEM,
-         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
-   include/linux/bpf.h:746:45: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
-     746 |         RET_PTR_TO_BTF_ID_OR_NULL       = PTR_MAYBE_NULL | RET_PTR_TO_BTF_ID,
-         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~
-   include/linux/bpf.h:747:43: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
-     747 |         RET_PTR_TO_BTF_ID_TRUSTED       = PTR_TRUSTED    | RET_PTR_TO_BTF_ID,
-         |                                           ~~~~~~~~~~~    ^ ~~~~~~~~~~~~~~~~~
-   include/linux/bpf.h:858:44: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_reg_type') [-Wenum-enum-conversion]
-     858 |         PTR_TO_MAP_VALUE_OR_NULL        = PTR_MAYBE_NULL | PTR_TO_MAP_VALUE,
-         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~
-   include/linux/bpf.h:859:42: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_reg_type') [-Wenum-enum-conversion]
-     859 |         PTR_TO_SOCKET_OR_NULL           = PTR_MAYBE_NULL | PTR_TO_SOCKET,
-         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~
-   include/linux/bpf.h:860:46: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_reg_type') [-Wenum-enum-conversion]
-     860 |         PTR_TO_SOCK_COMMON_OR_NULL      = PTR_MAYBE_NULL | PTR_TO_SOCK_COMMON,
-         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~
-   include/linux/bpf.h:861:44: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_reg_type') [-Wenum-enum-conversion]
-     861 |         PTR_TO_TCP_SOCK_OR_NULL         = PTR_MAYBE_NULL | PTR_TO_TCP_SOCK,
-         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~
-   include/linux/bpf.h:862:42: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_reg_type') [-Wenum-enum-conversion]
-     862 |         PTR_TO_BTF_ID_OR_NULL           = PTR_MAYBE_NULL | PTR_TO_BTF_ID,
-         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~
->> net/netfilter/nf_bpf_link.c:186:33: warning: bitwise operation between different enumeration types ('enum bpf_reg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
-     186 |         info->reg_type = PTR_TO_BTF_ID | PTR_TRUSTED;
-         |                          ~~~~~~~~~~~~~ ^ ~~~~~~~~~~~
-   22 warnings generated.
+The "Unit" on "cpu" events in json always just blank. On hybrid it is
+either "cpu_core" or "cpu_atom", so I can make this something like:
+
+pmu =3D "cpu_core" if metrics.HasPmu("cpu_core") else "cpu"
+
+which would be a build time test.
 
 
-vim +186 net/netfilter/nf_bpf_link.c
+> > +    cycles =3D Event('cycles')
+> > +    cycles_in_tx =3D Event(f'{pmu}/cycles\-t/')
+> > +    transaction_start =3D Event(f'{pmu}/tx\-start/')
+> > +    cycles_in_tx_cp =3D Event(f'{pmu}/cycles\-ct/')
+> > +    metrics =3D [
+> > +        Metric('tsx_transactional_cycles',
+> > +                      'Percentage of cycles within a transaction regio=
+n.',
+> > +                      Select(cycles_in_tx / cycles, has_event(cycles_i=
+n_tx), 0),
+> > +                      '100%'),
+> > +        Metric('tsx_aborted_cycles', 'Percentage of cycles in aborted =
+transactions.',
+> > +                      Select(max(cycles_in_tx - cycles_in_tx_cp, 0) / =
+cycles,
+> > +                                    has_event(cycles_in_tx),
+> > +                                    0),
+> > +                      '100%'),
+> > +        Metric('tsx_cycles_per_transaction',
+> > +                      'Number of cycles within a transaction divided b=
+y the number of transactions.',
+> > +                      Select(cycles_in_tx / transaction_start,
+> > +                                    has_event(cycles_in_tx),
+> > +                                    0),
+> > +                      "cycles / transaction"),
+> > +    ]
+> > +    if args.model !=3D 'sapphirerapids':
+>
+> Add the "tsx_cycles_per_elision" metric only if
+> has_event(f'{pmu}/el\-start/')?
 
-   170	
-   171	static bool nf_ptr_to_btf_id(struct bpf_insn_access_aux *info, const char *name)
-   172	{
-   173		struct btf *btf;
-   174		s32 type_id;
-   175	
-   176		btf = bpf_get_btf_vmlinux();
-   177		if (IS_ERR_OR_NULL(btf))
-   178			return false;
-   179	
-   180		type_id = btf_find_by_name_kind(btf, name, BTF_KIND_STRUCT);
-   181		if (WARN_ON_ONCE(type_id < 0))
-   182			return false;
-   183	
-   184		info->btf = btf;
-   185		info->btf_id = type_id;
- > 186		info->reg_type = PTR_TO_BTF_ID | PTR_TRUSTED;
-   187		return true;
-   188	}
-   189	
+It's a sysfs event, so this wouldn't work :-(
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks,
+Ian
+
+> Thanks,
+> Kan
+>
+> > +        elision_start =3D Event(f'{pmu}/el\-start/')
+> > +        metrics +=3D [
+> > +            Metric('tsx_cycles_per_elision',
+> > +                          'Number of cycles within a transaction divid=
+ed by the number of elisions.',
+> > +                          Select(cycles_in_tx / elision_start,
+> > +                                        has_event(elision_start),
+> > +                                        0),
+> > +                          "cycles / elision"),
+> > +        ]
+> > +    return MetricGroup('transaction', metrics)
+> > +
+> > +
+> >  all_metrics =3D MetricGroup("", [
+> >      Idle(),
+> >      Rapl(),
+> >      Smi(),
+> > +    Tsx(),
+> >  ])
+> >
+> >  if args.metricgroups:
 
