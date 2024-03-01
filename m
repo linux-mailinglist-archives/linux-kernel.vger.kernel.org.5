@@ -1,110 +1,117 @@
-Return-Path: <linux-kernel+bounces-88413-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88414-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F76186E145
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:46:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C97586E146
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:46:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 90B801C20862
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:46:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6503287E53
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:46:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67C1C433D0;
-	Fri,  1 Mar 2024 12:46:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7609040872;
+	Fri,  1 Mar 2024 12:46:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pqic8d6M"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kE8kJxhE"
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC97A7E1;
-	Fri,  1 Mar 2024 12:46:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79DF77E1
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 12:46:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709297171; cv=none; b=LthreOaA3RdyfiUpQvGI8ovoo43e3L61RSrDIEIndA1tTROrrrRqfnso33Oy8FL7l+ohesgNYSaxgvLh262w99JE0ouobWJibIb0Amae1qmCu8XxWxl+t2g6Ceud5SEKYvx8xvmw6vONOuLFx97Kq0Ab8UwZRsRJK/AaI/h7Kkc=
+	t=1709297176; cv=none; b=PMwTDpBIlgAkVxXsZHnkJjlEaybATLzDDtLdW/wUspTIC8xTassg3uKzab6JHAqKkjXOhWNHYTJIBjWAek0a+oGR0MS/ccxIzc7Zb6Ew/nqZNqpoAiwAWonQJ30njxtYRgA5OmIfgIAkJGW2/iUxzmCNtTvLo4P83cPaRRVP8sw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709297171; c=relaxed/simple;
-	bh=mDOnIxNEWflmiuOfz/DFh9I5k8F0L7yGn2YjnEuogmQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Og0wV7WD08JfaVuTCL32RevF3GNFOkhIUYKT1ndlhvn/yJ+U/8pl21jIZKciYV6/1R5yE0unj4eoD/6g09DZ+1XXreeZdaMD1aPCfMd7PTkuiaGzFa6S++xMzO2x4yDWuyADpwYmpxon5877owlvoHnRXOtE21cocJMXBv59PwQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pqic8d6M; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D4FCC433F1;
-	Fri,  1 Mar 2024 12:46:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709297171;
-	bh=mDOnIxNEWflmiuOfz/DFh9I5k8F0L7yGn2YjnEuogmQ=;
-	h=From:To:Cc:Subject:Date:From;
-	b=pqic8d6MRcsg/m/Vh4QoY2+o6POUOPIrSoNTgCg3Cimf2JAwWTTatBn8PmypGPuwU
-	 xWgUYF37CScVOJrsaoZYYhiXmRPGYJMJRLx8R9ns3yLOD/sLZnmZjAKAmByTuX4hr7
-	 Klf3lAvY8kxHHALBeVFCSMaGl7+COYMHXQOjWwTEKj6Oa5+HVGmyO+Lvgj7w7yjoss
-	 wFcP7SLaAST86xUm0FFC6V4CaKl9Iy2IGIYA17MQJdVtpfkk9LbM3vMIlqsQc74HLz
-	 ObWa/I3mUWM07W4HMYJiqC8YGjQaA4yVZbnqQ6CvkC5HQ9Uf4ja+ztDBxLhe++kHXy
-	 dCFmT0UyGDDnA==
-From: Christian Brauner <brauner@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Christian Brauner <brauner@kernel.org>,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] vfs fixes
-Date: Fri,  1 Mar 2024 13:45:45 +0100
-Message-ID: <20240301-vfs-fixes-1ca0ae9e33be@brauner>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1709297176; c=relaxed/simple;
+	bh=AZR+noD3l0LO4X6LkzgkiZes2MssLiK0uXwj8oDVL8I=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=AnNr0CyYEqB2pCCIu4W0XqBx8SaFh6gOgFj0bl2QNCrmMeKGMhX+knmqnHs8SpHUK0Hf10cKQd3k3QMg8BVrrJJFVkiL+N+AJQ2gjlSR/Sc19Jp9O+JyHjZv2rabKVrFskR8vqDsJqRIZNVAZkneT7URWd0oAxBFJQtt5GeDIkE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kE8kJxhE; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e5d7f1f15bso28158b3a.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 04:46:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709297174; x=1709901974; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=M2eeFzJsafgYjz1aTeqb4t74nvXWY+dyBVmhOrpXIj0=;
+        b=kE8kJxhE+ghRjEca9RTo6vSMAPqY/+yRygLi7vkCFyhIAD1u5G3Pi1RCpXEbAniXjt
+         /lVnjBUiCTOH/SJwWWBQvkB9tKKk6wgo3ZbjOLQ0dSllE0Y0JgsnU63cmFHN+42bKRuW
+         fyA63kn6bZDFb/iO9sTfr2DqRQC+JbhuYOVobEH5q61u2mmPkyAmxWC3l5A1e3ojDHsP
+         1+8RN+26NoOCt6EIGTF5n1TQW9kyw4uViUdRiaF/QxhlE5jP736kWTxb7YZ8ISahpTkT
+         okwBue04+geXUwnIT/WuiXutklfzDf5Oa8rvJ1qxtmVpNxloXMOI6YKKHUvJb43Mt+Ik
+         3uOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709297174; x=1709901974;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=M2eeFzJsafgYjz1aTeqb4t74nvXWY+dyBVmhOrpXIj0=;
+        b=b4QR8kZdHaATtihtOmsPZ4r8aykmxMCh5JVq5ALJlV6ANyxdpb1Yvma+L31uF3cOcY
+         oBS3swyGUpaTrSM8hGzWLv2Py4Qt8lw/1j8Z7GVRqMZd5ieZFZmlqQ/0glIZO9XDd8nF
+         enSDujrc7avtckXsOw5UoMv0JKduNjzUwvFI4yfp1USEaRC5qwO6Vy0FevMtwz0+nuLN
+         U7orXh8Hjn5/CFsTg0Yo/9l06K27tpEuG3QoIBkLLNLxQtZ/Ne49tEykpCeGvpdsKZ5d
+         PSeLCdOJ+YzuHLfoCrUZf8hGbr5eA0siPftnu0ZJqE22hnM1m4zrBCRjJ10l+9I3wEIi
+         u98Q==
+X-Gm-Message-State: AOJu0Yz4jnn3TSxrcwnv4KHESvy4DelY7AsGXhx1I1g2zjtStJ9mBdNz
+	0A+H3OgiCZmEZTxStpUROBHS5DMVfn11FL2WU5dpoqTCq2UV658omsW3xuVme9Q=
+X-Google-Smtp-Source: AGHT+IFJvVDCGYql4DB6oEsPDW/k9KaYZLbUkBNYVRLbF5p/6BFljMicHj4CXssZ0wjwshqrD4gQsg==
+X-Received: by 2002:a05:6a00:b48:b0:6e5:af58:20ac with SMTP id p8-20020a056a000b4800b006e5af5820acmr1656806pfo.13.1709297174476;
+        Fri, 01 Mar 2024 04:46:14 -0800 (PST)
+Received: from bala-mariner.. ([167.220.238.143])
+        by smtp.gmail.com with ESMTPSA id w7-20020aa79a07000000b006e5ac1b3c13sm1703751pfj.138.2024.03.01.04.46.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Mar 2024 04:46:14 -0800 (PST)
+From: bala <kumaran.4353@gmail.com>
+To: linux-kernel@vger.kernel.org
+Cc: mingo@redhat.com,
+	peterz@infradead.org,
+	Bala <kumaran.4353@gmail.com>
+Subject: [PATCH] Check whether the wakeup task is eligible first
+Date: Fri,  1 Mar 2024 12:45:56 +0000
+Message-Id: <20240301124556.248820-1-kumaran.4353@gmail.com>
+X-Mailer: git-send-email 2.33.8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1615; i=brauner@kernel.org; h=from:subject:message-id; bh=mDOnIxNEWflmiuOfz/DFh9I5k8F0L7yGn2YjnEuogmQ=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaQ+PMeZpamaUbxr39s3LrnMK/hfHptSuurk/kff72mdO VvozzY3r6OUhUGMi0FWTJHFod0kXG45T8Vmo0wNmDmsTCBDGLg4BWAiPlsZGbb1XLJ5t+hM4RYB NtMbKTcC8p0Ocgs3Hnedm2LHsD+Z/QrD/wD30j6+7NRrP121tPcXrPi8+M8ZRfNpT44VN0ycuGh RIScA
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
 
-Hey Linus,
+From: Bala <kumaran.4353@gmail.com>
 
-/* Summary */
-This contains two small fixes:
+check_prempt_wakeup_fair is checking whether the current task has to be
+preempted by the newly wake-up task. To avoid multiple swaps the logic
+is decided as if the wake-up task is the best task then only preempt the
+current task.
 
-* Fix an endless loop during afs directory iteration caused by not skipping
-  silly-rename files correctly.
+In CFS time, getting the best task was as simple as piking the left-most
+node. But in EEVDF non-fast path, the entire tree has to be traversed in
+a worst case scenario.
 
-* Fix reporting of completion events for aio causing leaks in userspace.
-  This is based on the fix last week as it's now possible to recognize
-  aio events submitted through the old aio interface.
+So, IMHO let's first check the newly wake-up task is eligible before
+searching for the best task. At least until the comment becomes
+effective to preempt the curr irrespective of the waking task.
+---
+ kernel/sched/fair.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-/* Testing */
-clang: Debian clang version 16.0.6 (19)
-gcc: (Debian 13.2.0-7) 13.2.0
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 533547e3c90a..8d810d6a2cb7 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -8334,7 +8334,7 @@ static void check_preempt_wakeup_fair(struct rq *rq, struct task_struct *p, int
+ 	/*
+ 	 * XXX pick_eevdf(cfs_rq) != se ?
+ 	 */
+-	if (pick_eevdf(cfs_rq) == pse)
++	if (entity_eligible(cfs_rq, pse) && (pick_eevdf(cfs_rq) == pse))
+ 		goto preempt;
+ 
+ 	return;
+-- 
+2.33.8
 
-All patches are based on v6.8-rc6 and have been sitting in linux-next.
-No build failures or warnings were observed.
-
-/* Conflicts */
-At the time of creating this PR no merge conflicts were reported from
-linux-next and no merge conflicts showed up doing a test-merge with
-current mainline.
-
-The following changes since commit d206a76d7d2726f3b096037f2079ce0bd3ba329b:
-
-  Linux 6.8-rc6 (2024-02-25 15:46:06 -0800)
-
-are available in the Git repository at:
-
-  git@gitolite.kernel.org:pub/scm/linux/kernel/git/vfs/vfs tags/vfs-6.8-rc7.fixes
-
-for you to fetch changes up to 54cbc058d86beca3515c994039b5c0f0a34f53dd:
-
-  fs/aio: Make io_cancel() generate completions again (2024-02-27 11:20:44 +0100)
-
-----------------------------------------------------------------
-vfs-6.8-rc7.fixes
-
-----------------------------------------------------------------
-Bart Van Assche (1):
-      fs/aio: Make io_cancel() generate completions again
-
-David Howells (1):
-      afs: Fix endless loop in directory parsing
-
- fs/afs/dir.c |  4 +++-
- fs/aio.c     | 27 +++++++++++----------------
- 2 files changed, 14 insertions(+), 17 deletions(-)
 
