@@ -1,140 +1,116 @@
-Return-Path: <linux-kernel+bounces-88213-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88214-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C33986DEB8
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:01:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 004DC86DEB9
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:01:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC4031F21A19
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:01:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9422F1F23CDE
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:01:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2082D6A8CE;
-	Fri,  1 Mar 2024 10:01:17 +0000 (UTC)
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A67E6A8CB;
+	Fri,  1 Mar 2024 10:01:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NFKxcvA2"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A45A1E4BD
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 10:01:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A17F01E4BD
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 10:01:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709287276; cv=none; b=QiMk07dYiJEd0icfPiJ65OqJASoILyKs+FXx36FS6YBV1+Dygd7PesnOBKLGRAry6CVwpuWKlrIDFg6O7/1nkQFl3pKoZZxGEaJLDgreBMA6K3yEJKbTalbZT5NRr8mJG9t73/FE/CvS/RHTZv6bHDmzl6AGltH7rQkbVw2CGsM=
+	t=1709287307; cv=none; b=s+R1bGwIr/MeSl4icWnfaEFG4FfnryNhQtrOW03PcnxVPoBCUwbovkJ/n1g5Fkha0sfNTUNFlYYBjP6PH8ZzMdH8jhikguaQzEHlIaCzSghc42/EzmY55NpQDq1vz3YjHMwCd01GOxjavhAcU/5YqZastc4StFAKKIyX+LMdIPE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709287276; c=relaxed/simple;
-	bh=6mAd+E7jEFzGhcEWC7no6EMaTPorIbMs6sgr/QAqZXM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=JLDDwh/PXPXZPu9Ulm2cMW1O1jFT6mBuQW7nBEP0G5FMqAfGXyn0B+iPD9p9SlnXgLHrQOniV8GYyLklr433MfszMpHZWH1EYg3NdaInPxxdN5V7/GN3N9AEK4nrV/L1If4K+Ra/bLJKRm576Z3YViKoMrvxH+6cONnrTeN0CCg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4TmNrK3VJ1z1vvmn;
-	Fri,  1 Mar 2024 18:00:33 +0800 (CST)
-Received: from dggpemm100001.china.huawei.com (unknown [7.185.36.93])
-	by mail.maildlp.com (Postfix) with ESMTPS id 86637140158;
-	Fri,  1 Mar 2024 18:01:11 +0800 (CST)
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 1 Mar 2024 18:01:11 +0800
-Message-ID: <a262ed14-b2a4-4a15-91b5-9c88979a8338@huawei.com>
-Date: Fri, 1 Mar 2024 18:01:10 +0800
+	s=arc-20240116; t=1709287307; c=relaxed/simple;
+	bh=4fXJidtJ1viRWoLejQDAlo2yu6HUvAkBioeflUHtadY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Zb26HLQ1+3DrmIMDAw1VW7pwCPVWHerMQhpOmxPUQwP5cL5e+oL1cslLrBAdNlolnsfORTx0pC0/h4BtdPMK+bZvehMotauFMxiiOMq8UZu6RPX27NedlmnOmSnAobbcj38wjfXxsGkl9EG+6lPajdzOCn4w/gNnsob3vW7x7bc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NFKxcvA2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23575C433F1
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 10:01:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709287307;
+	bh=4fXJidtJ1viRWoLejQDAlo2yu6HUvAkBioeflUHtadY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=NFKxcvA2kUGAKEa9DifNiPR6f+oqD2LxH+75c+UHCD23crQ2KwA/kXLyP7qukrxDO
+	 uxap0Wbxrbf/CHqc1E9g35WmxflGc0ofE/3OBtYMVIQyJarqovYvYFSz1HiP/HAlFJ
+	 sxQPVAt6B+PoPWQr+U9PhkKn1blUrDXJHry9BnIo48J53/d10LHXZKGtAE2EpX0JxQ
+	 PCz/4pgelp0IPgedMe5XHqLOsQAtwXvQ/iXEQLqFHQK/RnSuZiUDk2brIvMFCYEggb
+	 uTv7Yc2Fl9FlaJ9uULXSQPBJbj0zeItmpvdoWaWFJZJue9v5qot6k3QTAyBRqHoFCp
+	 YEqTmeomoHUcg==
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d208be133bso22014191fa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 02:01:47 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXQJIq8UrNABXgKostvrnDXvoDS0Drt8rwdqCMVkRhGErbWVGwtqMKgaQ1+JABq4irJXWmJzTOEc96y68mj4vLHfmLGgxYGAet/sxhh
+X-Gm-Message-State: AOJu0YxD0vmPxUkd4eIgzm6QxzLX71u4GaQXWqayHH9Ppj5ZUtSsVYdo
+	3CKBDU51EN5KSEWowkVVce/hMZpgWtrj/oCxJeLQL9DU7mXni83/BBDn5hbwGCpwrQJ1M/w790p
+	BusvDqpzOrU4LnClbSfYTe3Pnzhc=
+X-Google-Smtp-Source: AGHT+IEsBk8htxOcNqJsInE7tNCxlgQwMT4i5o2BSdWpOD1AtPH5FaWENSZOXCfpTufUffsL1eq+dBmE3r23bH3bQzA=
+X-Received: by 2002:a2e:a365:0:b0:2d2:39b2:90e2 with SMTP id
+ i5-20020a2ea365000000b002d239b290e2mr800907ljn.14.1709287305357; Fri, 01 Mar
+ 2024 02:01:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Linux Kernel Bug] UBSAN: shift-out-of-bounds in
- fault_around_bytes_set
-Content-Language: en-US
-To: Sam Sun <samsun1006219@gmail.com>, <linux-kernel@vger.kernel.org>,
-	<linux-mm@kvack.org>, <akpm@linux-foundation.org>
-CC: <syzkaller@googlegroups.com>
-References: <CAEkJfYOvjjoTWMs6ozxF0P4_U050i8_YmvmhWO7YmhLmOBQWWw@mail.gmail.com>
-From: Kefeng Wang <wangkefeng.wang@huawei.com>
-In-Reply-To: <CAEkJfYOvjjoTWMs6ozxF0P4_U050i8_YmvmhWO7YmhLmOBQWWw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm100001.china.huawei.com (7.185.36.93)
+References: <20240227151907.387873-11-ardb+git@google.com> <20240227151907.387873-13-ardb+git@google.com>
+ <20240228205540.GIZd-dzFYIBbtfIAo3@fat_crate.local>
+In-Reply-To: <20240228205540.GIZd-dzFYIBbtfIAo3@fat_crate.local>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Fri, 1 Mar 2024 11:01:33 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXGhZU+FE2gE262Q8_vZEFHicsRtVPzXT-dhhCvBuiMjUA@mail.gmail.com>
+Message-ID: <CAMj1kXGhZU+FE2gE262Q8_vZEFHicsRtVPzXT-dhhCvBuiMjUA@mail.gmail.com>
+Subject: Re: [PATCH v7 2/9] x86/startup_64: Defer assignment of 5-level paging
+ global variables
+To: Borislav Petkov <bp@alien8.de>
+Cc: Ard Biesheuvel <ardb+git@google.com>, linux-kernel@vger.kernel.org, 
+	Kevin Loughlin <kevinloughlin@google.com>, Tom Lendacky <thomas.lendacky@amd.com>, 
+	Dionna Glaze <dionnaglaze@google.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	Andy Lutomirski <luto@kernel.org>, Brian Gerst <brgerst@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 
+On Wed, 28 Feb 2024 at 21:56, Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Tue, Feb 27, 2024 at 04:19:10PM +0100, Ard Biesheuvel wrote:
+> > From: Ard Biesheuvel <ardb@kernel.org>
+> >
+> > Assigning the 5-level paging related global variables from the earliest
+> > C code using explicit references that use the 1:1 translation of memory
+> > is unnecessary, as the startup code itself does not rely on them to
+> > create the initial page tables, and this is all it should be doing. So
+> > defer these assignments to the primary C entry code that executes via
+> > the ordinary kernel virtual mapping.
+> >
+> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> > ---
+> >  arch/x86/include/asm/pgtable_64_types.h |  2 +-
+> >  arch/x86/kernel/head64.c                | 44 +++++++-------------
+> >  2 files changed, 15 insertions(+), 31 deletions(-)
+>
+> Reviewed-by: Borislav Petkov (AMD) <bp@alien8.de>
+>
+> Those should probably be tested on a 5level machine, just in case.
+>
 
+I have tested this myself on QEMU with -cpu qemu64,+la57 and -cpu host+kvm using
+- EFI boot (OVMF)
+- legacy BIOS boot (SeaBIOS)
+- with and without no5lvl on the command line
+- with and without CONFIG_X86_5LEVEL
 
-On 2024/3/1 15:42, Sam Sun wrote:
-> Dear developers and maintainers,
-> 
-> We found a shift-out-of-bounds bug in mm/memory.c. Kernel commit is b401b621758.
-> Kernel config and C repro are attached to this email.
-> UBSAN report is listed below.
-> ```
-> UBSAN: shift-out-of-bounds in /home/sy/linux-original/include/linux/log2.h:67:13
-> shift exponent 4294967295 is too large for 64-bit type 'long unsigned int'
-> CPU: 0 PID: 8091 Comm: syz-executor371 Not tainted 6.7.0-rc7 #1
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
-> Call Trace:
->   <TASK>
->   __dump_stack lib/dump_stack.c:88 [inline]
->   dump_stack_lvl+0x136/0x150 lib/dump_stack.c:106
->   ubsan_epilogue lib/ubsan.c:217 [inline]
->   __ubsan_handle_shift_out_of_bounds+0x24b/0x430 lib/ubsan.c:387
->   __rounddown_pow_of_two include/linux/log2.h:67 [inline]
->   fault_around_bytes_set.cold+0x19/0x1e mm/memory.c:4527
->   simple_attr_write_xsigned.constprop.0.isra.0+0x1ed/0x2d0 fs/libfs.c:1301
->   debugfs_attr_write_xsigned fs/debugfs/file.c:485 [inline]
->   debugfs_attr_write+0x74/0xa0 fs/debugfs/file.c:493
->   vfs_write+0x2a9/0xd80 fs/read_write.c:582
->   ksys_write+0x122/0x250 fs/read_write.c:637
->   do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->   do_syscall_64+0x40/0x110 arch/x86/entry/common.c:83
->   entry_SYSCALL_64_after_hwframe+0x63/0x6b
-> RIP: 0033:0x7fa30d5d7fcd
-> Code: 28 c3 e8 46 1e 00 00 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
-> 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-> 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007ffc8b7ee1b8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-> RAX: ffffffffffffffda RBX: 00007ffc8b7ee3b8 RCX: 00007fa30d5d7fcd
-> RDX: 0000000000000002 RSI: 0000000020000040 RDI: 0000000000000003
-> RBP: 0000000000000001 R08: 0000000000000000 R09: 00007ffc8b7ee3b8
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
-> R13: 00007ffc8b7ee3a8 R14: 00007fa30d655530 R15: 0000000000000001
->   </TASK>
-> ================================================================================
-> ```
-> In function simple_attr_write_xsigned, a user controlled string "buf"
-> is copied and
-> turned to long type by function "kstrtoll". If buf is "0", val passed
-> to function
-> fault_around_bytes_set is 0, which would trigger shift-out-of-bound bug.
+The scenario that I have not managed to test is entering from EFI with
+5 levels of paging enabled, and switching back to 4 levels (which
+should work regardless of CONFIG_X86_5LEVEL). However, no firmware in
+existence actually supports that today, and I am pretty sure that this
+code has never been tested under those conditions to begin with. (OVMF
+patches are under review atm to allow 5-level paging to be enabled in
+the firmware)
 
-Look like commit 53d36a56d8c4 ("mm: prefer fault_around_pages to 
-fault_around_bytes") introduces the issue, please try the following change,
-
-diff --git a/mm/memory.c b/mm/memory.c
-index abd4f33d62c9..e17669d4f72f 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -4776,7 +4776,8 @@ static int fault_around_bytes_set(void *data, u64 val)
-          * The minimum value is 1 page, however this results in no 
-fault-around
-          * at all. See should_fault_around().
-          */
--       fault_around_pages = max(rounddown_pow_of_two(val) >> 
-PAGE_SHIFT, 1UL);
-+       val = max(val, PAGE_SIZE);
-+       fault_around_pages = rounddown_pow_of_two(val) >> PAGE_SHIFT;
-
-         return 0;
-  }
-
-
-
-> 
-> If you have any questions, please contact us.
-> Reported by Yue Sun <samsun1006219@gmail.com>
-> 
-> Best Regards,
-> Yue
+I currently don't have access to real hardware with LA57 support so
+any additional coverage there is highly appreciated (same for the last
+patch in this series)
 
