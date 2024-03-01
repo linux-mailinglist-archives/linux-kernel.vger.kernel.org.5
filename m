@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-88151-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88152-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9C0586DDEC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:14:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3034586DDEE
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:15:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 597591F247BE
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:14:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 634171C22D4B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:15:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BDC16A8B8;
-	Fri,  1 Mar 2024 09:14:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49B846A8B2;
+	Fri,  1 Mar 2024 09:14:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="lzSP4O1m";
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b="oXtxSOiJ"
+	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="Y7X6e/4b";
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b="NmnHWLkn"
 Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66DD56A8B2;
-	Fri,  1 Mar 2024 09:14:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CA7A6A8B9;
+	Fri,  1 Mar 2024 09:14:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709284476; cv=none; b=cJTjpmCnFkVQAHANnwkolI99q21lUtNYPMd3Mpxe5U2xilj0Cv3tNxCSVfyPmfEe+PnqK5LvIxIOaP/P7jE5dFUAd/6v4uPfOn1bbwOVH4UMX5r88ZsNKwGWYW8/noiMdZ8iG2H8cRzx7eIOt4KkxN9ope49sjYqiE2tG4ZqldI=
+	t=1709284479; cv=none; b=tgnz9Dz4gyae5F2qoxY6f7fG7kr8lSS0GfsOaausgbAV+P61TktgKLULv/WV0PgeL4MQZnJkxN/93BQKZOQ8Xx1IW2BCaQ3bEUXKR9KCax/rN5Q2a+KUSq5CM0AP2CEfElOYaVnqKDHvmSOAxJkNDBYz3h42Kxx3XBahIm/pMms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709284476; c=relaxed/simple;
-	bh=FrwHZ9w9xTTtYLHM0eJYuip9mto9w9P9KtfcdJQDA8k=;
+	s=arc-20240116; t=1709284479; c=relaxed/simple;
+	bh=aL5CQ+G5H5XzR83P/AruggKM2ubSymJpW7MKuPTBGKM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=JWcPsHc/Dm5AdlonCPoCN9JwJPmLQLeJAjbpF5kteD2/fsC/QrF3NkX+1yWw7t+y0O9/JiQOi2DggKCVXHgzBcKy85LaKcnrgM2pkOxh0KzLRzl2JJnV+EEF153DiN8DKm5R4Vn+fB45Akn8jXXKC3TOrAnYw5UrOui9e3M9kT0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=lzSP4O1m; dkim=fail (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b=oXtxSOiJ reason="key not found in DNS"; arc=none smtp.client-ip=93.104.207.81
+	 MIME-Version; b=g10Z/AKXsMBBvX6BGEAN5CYe6BHsRLtqbFywl/+Cvv9LXnIYccgkdu/edDDR7XGuCLFWCod7wJz2B38IjSZpvhZu18CTScY6P7EKOc1pnyXyDlrNS6rmwESTQadH4ObUyBa+SiHgqL7jGO/MaGzBR9wfh3OD54vuX5R3/F6lB0c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=Y7X6e/4b; dkim=fail (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b=NmnHWLkn reason="key not found in DNS"; arc=none smtp.client-ip=93.104.207.81
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1709284474; x=1740820474;
+  t=1709284477; x=1740820477;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=cE70ciaNhFvA6Vb21y4hOf+k8Cex8gPGVr4Ivb9Yb0w=;
-  b=lzSP4O1ms1mwiLmTx8dYsAuMP3fkmEeRkv4iaN2BuhKQKhywJ9U479Cz
-   +WTRiuHgloI7oqpWWcA5PIY/36PYfL8HMn2yf0PgaGSg7CTioOjMl2gqc
-   vz8ZwYY0y8R7y9tqE+dVxdHve2lEG3SslPHYKYzsy/jrsJbq5fgMOLZAq
-   m3h2vKnRKl7ixsVDhSkLyXwpCuaAbdawYNVszrjH11Ng2r3Txxm9AHAmM
-   yHRqX7ugljbBKuxm+cHn/UO4ywbJ+R8hivTJIwEzwT/jL3EW3eJkubzX0
-   ECS/qRuEBCCWATPHPM1k/nNY0dujj4RrgOcccoXKN2Nt5E/WqFbrg3zYF
+  bh=3nkX6Fj4AoyKyoMjYF6lXx9IwApyCGGhrQ0iU4llyPg=;
+  b=Y7X6e/4b2vvMdmoZK22PVWsrYeoFnyU1vmkD4X921ZPdYwV7hgKyB8rG
+   07ZYDPN/33htEvSAVx2NVBnGPaM6YFqPhKxVQ4TeyrwbrcKKXDrk5Ukp2
+   OXK09gaj2ejU0vS90W62apno6iSCVZ1PwPbuC2ldyhd3I3xcEc4+wGWZP
+   Cb9aLl9Lqifrrml9ORXO+BJrzV1y+nTWdmAt0TjeuWzXJi4+82P7yc7BC
+   gjN69h6Kr/ipmQ9iqXuPbpO/hlYNSxbeAOdd9UD7iPNsVGIPAUclfx9N5
+   5d/rm1nlTBTgAP/c1V2B8pLpOg7eQpyOwW/3hBfscVBrIXa9lkeSLRLLa
    A==;
 X-IronPort-AV: E=Sophos;i="6.06,195,1705359600"; 
-   d="scan'208";a="35682438"
+   d="scan'208";a="35682456"
 Received: from vmailcow01.tq-net.de ([10.150.86.48])
-  by mx1.tq-group.com with ESMTP; 01 Mar 2024 10:14:31 +0100
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 6AAD717351F;
-	Fri,  1 Mar 2024 10:14:27 +0100 (CET)
+  by mx1.tq-group.com with ESMTP; 01 Mar 2024 10:14:37 +0100
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 622DE173575;
+	Fri,  1 Mar 2024 10:14:32 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ew.tq-group.com;
-	s=dkim; t=1709284467; h=from:subject:date:message-id:to:cc:mime-version:
+	s=dkim; t=1709284472; h=from:subject:date:message-id:to:cc:mime-version:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=cE70ciaNhFvA6Vb21y4hOf+k8Cex8gPGVr4Ivb9Yb0w=;
-	b=oXtxSOiJoNpjQf//aROsg9t0Ti1Qr5QnpjiDkY2keH2SNMqvQVdA22VXKscdLZ3czIoYVe
-	9q0FxYIIWkbuUBmofcXu2S2AqT969dPUHtFyagRoIf7Gjah8yhKW9qjVsM1VoD6v40+FJn
-	DWzbcsgZjqw4qXYttvpcSHR5hgNyQAlvy65E4iuj3pWpQe+lf+ert65fygW4dWNa1lTNv/
-	WYcK/1mMUSk68+s/JqX3oMVqGDsDN/20CaQiJojETV9tJi4qI8N+gGpmhV+tcIU1qohEwo
-	hZuvSQGfG477763yM/Z1uxIgNtcLFiyqCnwxrEanNX3ZkW47Op7EtxDhWMOMXA==
+	bh=3nkX6Fj4AoyKyoMjYF6lXx9IwApyCGGhrQ0iU4llyPg=;
+	b=NmnHWLknJLEtsz4Ao2II/7+Dmoy3Txa++ufr5UIozKrWmueb9AE7ZtmoEqObI+MTLCtz7g
+	FmkAvqRgYiFZyDLffA8OaueQ4RqR2QbVNqUxyDx/yyHpyXxLcLXPbV1Q4EbtPC+gB+Z4D5
+	55KifRyYqQu/JC53q8d1Hd2ckhgGGrcDNRIjAbxkGGrU3JXS6Lcs2AQ1H4/HXHaYT6ryzZ
+	JmPIHQ8MfS6fkl0B3mzjaDsPnkNoT8yNX8wytp9W81dQ61Y529/C5WG72HIm043yrI1TqX
+	49LJVDVfxQUQghlqk28pH0+hbpCZg4S5OOtMDhOyoTE2ndZtyLvLiJOx2zQWTg==
 From: Alexander Stein <alexander.stein@ew.tq-group.com>
 To: Rob Herring <robh@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -73,9 +73,9 @@ Cc: Alexander Stein <alexander.stein@ew.tq-group.com>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	linux@ew.tq-group.com
-Subject: [PATCH 2/5] arm64: dts: imx8mn: Add empty DSI output endpoint
-Date: Fri,  1 Mar 2024 10:14:10 +0100
-Message-Id: <20240301091413.3050689-3-alexander.stein@ew.tq-group.com>
+Subject: [PATCH 3/5] arm64: dts: imx8mq: Add empty DSI output endpoint
+Date: Fri,  1 Mar 2024 10:14:11 +0100
+Message-Id: <20240301091413.3050689-4-alexander.stein@ew.tq-group.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240301091413.3050689-1-alexander.stein@ew.tq-group.com>
 References: <20240301091413.3050689-1-alexander.stein@ew.tq-group.com>
@@ -92,15 +92,15 @@ Also add a corresponding label so overlays can reference that node.
 
 Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
 ---
- arch/arm64/boot/dts/freescale/imx8mn.dtsi | 7 +++++++
+ arch/arm64/boot/dts/freescale/imx8mq.dtsi | 7 +++++++
  1 file changed, 7 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-index 619cedd8407c4..81ba70d7880b5 100644
---- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-@@ -1104,6 +1104,13 @@ dsim_from_lcdif: endpoint {
- 							remote-endpoint = <&lcdif_to_dsim>;
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+index 74523fa69a5e7..5e906428d5e70 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+@@ -1290,6 +1290,13 @@ mipi_dsi_lcdif_in: endpoint@0 {
+ 							remote-endpoint = <&lcdif_mipi_dsi>;
  						};
  					};
 +
