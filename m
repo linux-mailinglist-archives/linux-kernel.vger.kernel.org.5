@@ -1,189 +1,171 @@
-Return-Path: <linux-kernel+bounces-88361-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88363-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9837D86E07A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:36:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA96F86E081
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:37:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE169B2489E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:36:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F9451F22140
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:37:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33C436D1B4;
-	Fri,  1 Mar 2024 11:35:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02D1B6E5FB;
+	Fri,  1 Mar 2024 11:36:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="kEDK5XO4"
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Gly2++nY"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A986E6CDB8
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 11:35:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D7AD6E5FA;
+	Fri,  1 Mar 2024 11:36:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709292942; cv=none; b=MnZ5PKWdsoGmL79rHON7Wl1xh60t+rs1OkzRoMW2HhH8PhROMjTt0AvYAIuAAYQ4Yt395p9cJtwh9+aoV6tBf79GmYiyMfiaEDVgp5B26FczMuXt+hH39IwBAIIWyHoRAb65wpdXoeqKySNUOYHJc887R2CvwvpPh9wVjIWZPxc=
+	t=1709292973; cv=none; b=Pb0qFFtBs61Ej1RkIkJc1D4nwn/7ROtH1w5a3PGyWL/AlHDYej2JwJnvv7F3sUzPE8SfGe/k+X37VAILjm+sw5QYBNSEu8PASHSl9YoOVH6fzK4HB91/RrGX+panEJ6kFE68h9ZPt0DdQ6pev313ot4fvp49kOa9sklQcsiLEaw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709292942; c=relaxed/simple;
-	bh=Mq+Q9Adq1UGxH2yunIt9BT4VeceQKVpjb2ydeYEdbr8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NEP5/LLQMscyGaqadqLTrkwAuxucH5hwvq7GgAAA8pdeOCDug7bpGUiTXzs7Duvk58Zg+vLhjHZhqKFwtCt4f+URVBsYhCVhqwA0rib/5ZEjyXWa/tQtDbjldwGRk++vHsiPdR63clJiyNyJhtIbXkrrLIXKoqXLS+znwUEAPO8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=kEDK5XO4; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a34c5ca2537so322396466b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 03:35:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709292939; x=1709897739; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=eeJgU4KmvSf6bjy208HJ3rTyj2nuIaNorX/BOPhaaAM=;
-        b=kEDK5XO4sci3vOixDUCJcS9BtO+PVT7xILBfXes7obdR+gP5pD/nlHmS2T3DbPWrKA
-         thAJxqhpdB/snvWtuKL9ZRc7ppauZVZ/GvDDvR5Xevyk2SUIWQcJsV8Iodq8LVrCuxks
-         HfBumBo+RQSFng9fvolXnHwhdt9ZKQD9TpmHbV/mkFUJ7mdkYUM3AAXnV6nowXAJxwz7
-         tl0B/jNDF6+RhRnYPADF7cA4Wb1xNppG0SezVN9aHZWFVKTtRnLaXuGxrMQkZKD6mja/
-         imGvOt2T6wpSwAAvC3FWI3RHkmlwVTUdjoi2J9qUvfKscHt1ieRvbwGNEVZQgexK1ZLv
-         NVXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709292939; x=1709897739;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eeJgU4KmvSf6bjy208HJ3rTyj2nuIaNorX/BOPhaaAM=;
-        b=ZisLeEz2Gzg/GLuhG+NY22tZ6poFnyCxGnTjUUVmYKEx+0SaQoxFg4gtIHXWyfmbWv
-         c4/Vu2LD4IVAreWsaWf8HtTUt05UNrFUI04RECbvZCLMhq/0TfYHzIRz/K53uvm/Drsf
-         qh0s3Z3SWuYRxT4OgdP0tdFN8VnPuHnOeBZz2ZJ9wCFa9HtGPCVkVROuJ1GmhPViWs1J
-         n2fp5h5TTAgjfATtzOA5yuBKclEQUQzAvYAdMob8HnM6E8zmoGdEyqqjeJtbhKuvipBx
-         XXsrw5zxp5XdCh9pXrlI+BglHF2e1Po1rhG1wBlWxTuRZZVEM+EIrs4EEWVWD9ZtPwg1
-         appQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUDf7fplRkdQizCT+EGM+8E71G3goG6KxcJIFlA2eDFUfyQ+EELd/3E6nSu7NF47KdUXy0T+K68xzfhxcSzLC4ph10lvqeterVF03r5
-X-Gm-Message-State: AOJu0YxnL6v6Y0MD5NyxJ0Ho7mgPhIs4xyx35MiKj9+OjnB3M/9bZJO0
-	saMkkE6LJxTCXo37pJUc6Mpm8E9a0ZHfw3Gy4EKRcQ/3k3gAMwMuS7HQzfqxddQ4ZBC5Nvz7f4S
-	O
-X-Google-Smtp-Source: AGHT+IG4F1QwH++yXynaopX4llABAsvLgK3+WSHBwr90l8GZmx4pYjMhfgR4F/0TOGTZ/xFBLDpBfA==
-X-Received: by 2002:a17:907:7677:b0:a3e:b439:6c8d with SMTP id kk23-20020a170907767700b00a3eb4396c8dmr1037349ejc.25.1709292939112;
-        Fri, 01 Mar 2024 03:35:39 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id i27-20020a170906265b00b00a441c8c56d0sm1606968ejc.218.2024.03.01.03.35.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Mar 2024 03:35:38 -0800 (PST)
-Message-ID: <d0826186-ac2a-4229-abd2-1be33fc177d6@linaro.org>
-Date: Fri, 1 Mar 2024 12:35:36 +0100
+	s=arc-20240116; t=1709292973; c=relaxed/simple;
+	bh=IUevqR1A07cWHkVggjDSo4XmHuRv9F+Y/1PfArld/rQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lrSwQ4yEw3DA5fB7t5pZ48UndF9jHueEFCz/jYCe3ny0lVzvwuqpuTNkjY68GbnFdFUT0OefOtgjYakWH++8GZu0gKK8YsoGE5FQTcgJiI3Lt5lNi9tkvuO8bDRbRgn143BfVgexBXTCSavuTVNNSGw78vZnVw7zNPliWxcHbWY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Gly2++nY; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709292971; x=1740828971;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=IUevqR1A07cWHkVggjDSo4XmHuRv9F+Y/1PfArld/rQ=;
+  b=Gly2++nYshSQB1wQElOTCOaXfcs9xo79ISBFaqOUH+1alCpWTGxuIanc
+   FVPsLrmRjBMDou37D0eEtjbamt51YGKEzCGwV+ltiVykrt4MrM0mIq2+x
+   mrmxLEz6EZHmsx85YOL1E6PWPNTvYiT9kJEe4pyUAoUJoy5SJ5uojc4Rt
+   2OaLVzjM8QNtzgLnKUFSd/1YYu6unfV0vKeLD1f9abKv1WUzoW9UgxDfe
+   rFtX2nFUAGiLb8+/lNh05V/CPEzy9feZlZMyAFTk41bWwrPp+TrwOwnOj
+   RA6vibmJnBoqyA929dqLsZA3SIPZRLGiSJulhYJOfVaLPncKHsI5eDl85
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="14466310"
+X-IronPort-AV: E=Sophos;i="6.06,196,1705392000"; 
+   d="scan'208";a="14466310"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 03:36:10 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,196,1705392000"; 
+   d="scan'208";a="12880627"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by orviesa005.jf.intel.com with ESMTP; 01 Mar 2024 03:36:06 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rg1BL-000Dp8-0s;
+	Fri, 01 Mar 2024 11:36:03 +0000
+Date: Fri, 1 Mar 2024 19:35:51 +0800
+From: kernel test robot <lkp@intel.com>
+To: Pawel Dembicki <paweldembicki@gmail.com>, netdev@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, linus.walleij@linaro.org,
+	Pawel Dembicki <paweldembicki@gmail.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Claudiu Manoil <claudiu.manoil@nxp.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	UNGLinuxDriver@microchip.com, Russell King <linux@armlinux.org.uk>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v5 06/16] net: dsa: vsc73xx: add
+ port_stp_state_set function
+Message-ID: <202403011918.VO71zUCH-lkp@intel.com>
+References: <20240223210049.3197486-7-paweldembicki@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 02/11] dt-bindings: hwmon: lm75: use common hwmon
- schema
-To: =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
- Guenter Roeck <linux@roeck-us.net>, Linus Walleij
- <linus.walleij@linaro.org>, Andi Shyti <andi.shyti@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mips@vger.kernel.org, Gregory Clement <gregory.clement@bootlin.com>,
- Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Tawfik Bayouk <tawfik.bayouk@mobileye.com>, Jean Delvare
- <jdelvare@suse.com>, linux-hwmon@vger.kernel.org
-References: <20240229-mbly-i2c-v2-0-b32ed18c098c@bootlin.com>
- <20240229-mbly-i2c-v2-2-b32ed18c098c@bootlin.com>
- <6749c8df-c545-4aca-bc18-4dfe9c9f15b0@linaro.org>
- <d78fd3ca-ed0b-40e5-8f8f-21db152a7402@roeck-us.net>
- <CZIBCBQ2IB0E.2N3HAVO0P2SHT@bootlin.com>
- <f802a1e0-cedd-488a-a6fb-df793718d94b@linaro.org>
- <CZICOX6DR0SA.O876YRG8P03C@bootlin.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CZICOX6DR0SA.O876YRG8P03C@bootlin.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240223210049.3197486-7-paweldembicki@gmail.com>
 
-On 01/03/2024 11:44, Théo Lebrun wrote:
-> Hello,
-> 
-> On Fri Mar 1, 2024 at 11:13 AM CET, Krzysztof Kozlowski wrote:
->> On 01/03/2024 10:41, Théo Lebrun wrote:
->>> Hello,
->>>
->>> On Fri Mar 1, 2024 at 7:53 AM CET, Guenter Roeck wrote:
->>>> On 2/29/24 22:37, Krzysztof Kozlowski wrote:
->>>>> On 29/02/2024 19:10, Théo Lebrun wrote:
->>>>>> Reference common hwmon schema which has the generic "label" property,
->>>>>> parsed by Linux hwmon subsystem.
->>>>>>
->>>>>
->>>>> Please do not mix independent patchsets. You create unneeded
->>>>> dependencies blocking this patch. This patch depends on hwmon work, so
->>>>> it cannot go through different tree.
->>>
->>> I had to pick between this or dtbs_check failing on my DTS that uses a
->>> label on temperature-sensor@48.
->>
->> I don't see how is that relevant. You can organize your branches as you
->> wish, e.g. base one b4 branch on another and you will not have any warnings.
-> 
-> That is what I do, I however do not want mips-next to have errors when
-> running dtbs_check. Having dtbs_check return errors is not an issue?
+Hi Pawel,
 
-You should ask your maintainer, but I don't understand how this is
-achievable anyway. Subsystem bindings *should not* go via MIPS-next, so
-how are you going to solve this?
+kernel test robot noticed the following build warnings:
 
-And why MIPS shall be different than all other ARM/RISC-V SoCs?
+[auto build test WARNING on net-next/main]
 
-Best regards,
-Krzysztof
+url:    https://github.com/intel-lab-lkp/linux/commits/Pawel-Dembicki/net-dsa-vsc73xx-use-read_poll_timeout-instead-delay-loop/20240224-050950
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/20240223210049.3197486-7-paweldembicki%40gmail.com
+patch subject: [PATCH net-next v5 06/16] net: dsa: vsc73xx: add port_stp_state_set function
+config: x86_64-randconfig-161-20240301 (https://download.01.org/0day-ci/archive/20240301/202403011918.VO71zUCH-lkp@intel.com/config)
+compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403011918.VO71zUCH-lkp@intel.com/
+
+smatch warnings:
+drivers/net/dsa/vitesse-vsc73xx-core.c:1054 vsc73xx_refresh_fwd_map() warn: inconsistent indenting
+
+vim +1054 drivers/net/dsa/vitesse-vsc73xx-core.c
+
+  1031	
+  1032	static void vsc73xx_refresh_fwd_map(struct dsa_switch *ds, int port, u8 state)
+  1033	{
+  1034		struct dsa_port *other_dp, *dp = dsa_to_port(ds, port);
+  1035		struct vsc73xx *vsc = ds->priv;
+  1036		u16 mask;
+  1037	
+  1038		if (state != BR_STATE_FORWARDING) {
+  1039			/* Ports that aren't in the forwarding state must not
+  1040			 * forward packets anywhere.
+  1041			 */
+  1042			vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
+  1043					    VSC73XX_SRCMASKS + port,
+  1044					    VSC73XX_SRCMASKS_PORTS_MASK, 0);
+  1045	
+  1046			dsa_switch_for_each_available_port(other_dp, ds) {
+  1047				if (other_dp == dp)
+  1048					continue;
+  1049				vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
+  1050						    VSC73XX_SRCMASKS + other_dp->index,
+  1051						    BIT(port), 0);
+  1052			}
+  1053	
+> 1054		return;
+  1055		}
+  1056	
+  1057		/* Forwarding ports must forward to the CPU and to other ports
+  1058		 * in the same bridge
+  1059		 */
+  1060		vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
+  1061				    VSC73XX_SRCMASKS + CPU_PORT, BIT(port), BIT(port));
+  1062	
+  1063		mask = BIT(CPU_PORT);
+  1064	
+  1065		if (dp->bridge) {
+  1066			dsa_switch_for_each_user_port(other_dp, ds) {
+  1067				if (other_dp->bridge == dp->bridge &&
+  1068				    other_dp->index != port &&
+  1069				    other_dp->stp_state == BR_STATE_FORWARDING) {
+  1070					int other_port = other_dp->index;
+  1071	
+  1072					mask |= BIT(other_port);
+  1073					vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER,
+  1074							    0,
+  1075							    VSC73XX_SRCMASKS +
+  1076							    other_port,
+  1077							    BIT(port), BIT(port));
+  1078				}
+  1079			}
+  1080		}
+  1081	
+  1082		vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
+  1083				    VSC73XX_SRCMASKS + port,
+  1084				    VSC73XX_SRCMASKS_PORTS_MASK, mask);
+  1085	}
+  1086	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
