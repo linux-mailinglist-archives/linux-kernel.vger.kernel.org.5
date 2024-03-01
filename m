@@ -1,162 +1,70 @@
-Return-Path: <linux-kernel+bounces-88433-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88432-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45E7B86E189
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:06:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 214F686E187
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:05:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 741F91C214A0
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:06:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC65328422F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:05:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F7326CDCD;
-	Fri,  1 Mar 2024 13:05:56 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E51FC69E1C;
-	Fri,  1 Mar 2024 13:05:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43D4D42AB5;
+	Fri,  1 Mar 2024 13:05:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=8bytes.org header.i=@8bytes.org header.b="PwyaIrZM"
+Received: from mail.8bytes.org (mail.8bytes.org [85.214.250.239])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB75D5F84C
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 13:05:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.250.239
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709298355; cv=none; b=KwnA41mGiuOf/Fo5xY+u5Kcg3tyBhAcToH93zhB/pypZiczG0s1C5A8bk6L94e//bShkLd6CR5m3fF+xIeeObGExPj0S2EGa4VtasQxTEAROEvqKk9DlyRwdcrkhu5tK4PE4+X50gurfuQW6rSuQusx2moEEYtTguDNdTjRxWJc=
+	t=1709298335; cv=none; b=sCG2BVlOwMY0i9B/sMrZqG9OW3se/4GQqZYrO48zjpJmXR9Va/NDTF5OpKycA3TSL/dmaG2bVlFnZGYyiHF5qb7L7EtVu98sjkSviRA2U2Qe7GsJKo5nTd28PonDG+bdQxB98Beld8DKIKmus/CUXYIijS/SzTRfG/gGOtU4NRY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709298355; c=relaxed/simple;
-	bh=IiKch8zeWz42IEmKp8mhTIm+LF6IgS04Jf5vRlLvZpM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HcgR6ZkZcgxvZXHjVZ58T5vvXRjHPDr/+ntDY7Loy/xPcAZFn1iMqt/KAGmsr4zW9goCrN5LopJYOY3D8O78OIfvnQ/K7buPUH0gsTd0f8al3McU8bHtQMRuGdNogrf1XpDmDZv8vz2jBO41HiT2kMPbk1AcZBAU8OBqO/TIZhk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4072BC433C7;
-	Fri,  1 Mar 2024 13:05:52 +0000 (UTC)
-From: Huacai Chen <chenhuacai@loongson.cn>
-To: Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Will Deacon <will@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>
-Cc: Huacai Chen <chenhuacai@kernel.org>,
-	Waiman Long <longman@redhat.com>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Guo Ren <guoren@kernel.org>,
-	Rui Wang <wangrui@loongson.cn>,
-	WANG Xuerui <kernel@xen0n.name>,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	linux-arch@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Huacai Chen <chenhuacai@loongson.cn>
-Subject: [PATCH 1/2] mmiowb: Rename mmiowb_spin_{lock, unlock}() to mmiowb_in_{lock, unlock}()
-Date: Fri,  1 Mar 2024 21:05:31 +0800
-Message-ID: <20240301130532.3953167-1-chenhuacai@loongson.cn>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1709298335; c=relaxed/simple;
+	bh=h87fasa27cwtoBBQjvXIjHlGyU3m9Dzkdm2Y9DRzkWM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZgetzLLr8hsci70xkmd66iN/DXJZURg+XXQvPJWmio6cxaF7cKPRxLt12yCB0AygNMY0NpZfx5pV69kSNfQrlH0VQ2CcLrHJzbhqR792qrxLSiBrZNv9Hnj3DAWgOcQ/9+MHi1vdEH4QfEG0XyMDKpsBfyKk7s65Y59e2Mfl07M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org; spf=pass smtp.mailfrom=8bytes.org; dkim=pass (2048-bit key) header.d=8bytes.org header.i=@8bytes.org header.b=PwyaIrZM; arc=none smtp.client-ip=85.214.250.239
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=8bytes.org
+Received: from 8bytes.org (p4ffe0c3c.dip0.t-ipconnect.de [79.254.12.60])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.8bytes.org (Postfix) with ESMTPSA id 9CD761C3319;
+	Fri,  1 Mar 2024 14:05:32 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=8bytes.org;
+	s=default; t=1709298332;
+	bh=h87fasa27cwtoBBQjvXIjHlGyU3m9Dzkdm2Y9DRzkWM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=PwyaIrZMvEDiRkn1w3RRVKwKcLH7gVN9YmfA+1JNlxPxgpZTZUY1YPqVIgS74FANV
+	 Hy7wtBA/WK8VBIjymPcAYzMRwU9v7zzF63jZqA/uAkinrHN0orLvI6y1HQWZojtZ86
+	 6g+pBykzn9Kz+t4+kOwJDYSYCtFTj5KXAW2n8TblH1c+ta5UFJndIdiw1sNHhBJUYQ
+	 lDsKyOITVAsQ6VPBT2Dknges2eIg2twE9ec/u9zJar/4oxMoYitY9lOxuMg7xKtE5B
+	 CAMm1fiPUxobr/x4R05ne8ZC+YMxtplxxmxYDOTK1xBgRPdQhL9k6eY+PYOTrFrZS7
+	 JVHEp5kAE2l3Q==
+Date: Fri, 1 Mar 2024 14:05:31 +0100
+From: Joerg Roedel <joro@8bytes.org>
+To: Will Deacon <will@kernel.org>
+Cc: iommu@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, robin.murphy@arm.com,
+	kernel-team@android.com
+Subject: Re: [GIT PULL] iommu/arm-smmu: Updates for 6.9
+Message-ID: <ZeHSm1vSj7sfDeNB@8bytes.org>
+References: <20240229181533.GA16854@willie-the-truck>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240229181533.GA16854@willie-the-truck>
 
-We are extending mmiowb tracking system from spinlock to mutex, so
-rename mmiowb_spin_{lock, unlock}() to mmiowb_in_{lock, unlock}() to
-reflect the fact. No functional changes.
+On Thu, Feb 29, 2024 at 06:15:33PM +0000, Will Deacon wrote:
+>   git://git.kernel.org/pub/scm/linux/kernel/git/will/linux.git tags/arm-smmu-updates
 
-Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
----
- include/asm-generic/mmiowb.h    | 8 ++++----
- include/linux/spinlock.h        | 6 +++---
- kernel/locking/spinlock_debug.c | 6 +++---
- 3 files changed, 10 insertions(+), 10 deletions(-)
-
-diff --git a/include/asm-generic/mmiowb.h b/include/asm-generic/mmiowb.h
-index 5698fca3bf56..eb2335f9f35e 100644
---- a/include/asm-generic/mmiowb.h
-+++ b/include/asm-generic/mmiowb.h
-@@ -40,13 +40,13 @@ static inline void mmiowb_set_pending(void)
- 		ms->mmiowb_pending = ms->nesting_count;
- }
- 
--static inline void mmiowb_spin_lock(void)
-+static inline void mmiowb_in_lock(void)
- {
- 	struct mmiowb_state *ms = __mmiowb_state();
- 	ms->nesting_count++;
- }
- 
--static inline void mmiowb_spin_unlock(void)
-+static inline void mmiowb_in_unlock(void)
- {
- 	struct mmiowb_state *ms = __mmiowb_state();
- 
-@@ -59,7 +59,7 @@ static inline void mmiowb_spin_unlock(void)
- }
- #else
- #define mmiowb_set_pending()		do { } while (0)
--#define mmiowb_spin_lock()		do { } while (0)
--#define mmiowb_spin_unlock()		do { } while (0)
-+#define mmiowb_in_lock()		do { } while (0)
-+#define mmiowb_in_unlock()		do { } while (0)
- #endif	/* CONFIG_MMIOWB */
- #endif	/* __ASM_GENERIC_MMIOWB_H */
-diff --git a/include/linux/spinlock.h b/include/linux/spinlock.h
-index 3fcd20de6ca8..60eda70cddd0 100644
---- a/include/linux/spinlock.h
-+++ b/include/linux/spinlock.h
-@@ -185,7 +185,7 @@ static inline void do_raw_spin_lock(raw_spinlock_t *lock) __acquires(lock)
- {
- 	__acquire(lock);
- 	arch_spin_lock(&lock->raw_lock);
--	mmiowb_spin_lock();
-+	mmiowb_in_lock();
- }
- 
- static inline int do_raw_spin_trylock(raw_spinlock_t *lock)
-@@ -193,14 +193,14 @@ static inline int do_raw_spin_trylock(raw_spinlock_t *lock)
- 	int ret = arch_spin_trylock(&(lock)->raw_lock);
- 
- 	if (ret)
--		mmiowb_spin_lock();
-+		mmiowb_in_lock();
- 
- 	return ret;
- }
- 
- static inline void do_raw_spin_unlock(raw_spinlock_t *lock) __releases(lock)
- {
--	mmiowb_spin_unlock();
-+	mmiowb_in_unlock();
- 	arch_spin_unlock(&lock->raw_lock);
- 	__release(lock);
- }
-diff --git a/kernel/locking/spinlock_debug.c b/kernel/locking/spinlock_debug.c
-index 87b03d2e41db..632a88322433 100644
---- a/kernel/locking/spinlock_debug.c
-+++ b/kernel/locking/spinlock_debug.c
-@@ -114,7 +114,7 @@ void do_raw_spin_lock(raw_spinlock_t *lock)
- {
- 	debug_spin_lock_before(lock);
- 	arch_spin_lock(&lock->raw_lock);
--	mmiowb_spin_lock();
-+	mmiowb_in_lock();
- 	debug_spin_lock_after(lock);
- }
- 
-@@ -123,7 +123,7 @@ int do_raw_spin_trylock(raw_spinlock_t *lock)
- 	int ret = arch_spin_trylock(&lock->raw_lock);
- 
- 	if (ret) {
--		mmiowb_spin_lock();
-+		mmiowb_in_lock();
- 		debug_spin_lock_after(lock);
- 	}
- #ifndef CONFIG_SMP
-@@ -137,7 +137,7 @@ int do_raw_spin_trylock(raw_spinlock_t *lock)
- 
- void do_raw_spin_unlock(raw_spinlock_t *lock)
- {
--	mmiowb_spin_unlock();
-+	mmiowb_in_unlock();
- 	debug_spin_unlock(lock);
- 	arch_spin_unlock(&lock->raw_lock);
- }
--- 
-2.43.0
-
+Pulled, thanks Will.
 
