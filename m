@@ -1,174 +1,144 @@
-Return-Path: <linux-kernel+bounces-88202-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88203-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8003686DE97
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:51:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E097586DE9B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:52:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF6FA282C30
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:51:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D43B2282C68
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:52:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C97A6A8CE;
-	Fri,  1 Mar 2024 09:51:27 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1FDA6995C;
-	Fri,  1 Mar 2024 09:51:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 011B46A8CE;
+	Fri,  1 Mar 2024 09:52:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="QlpjN5Nc"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A73446995C;
+	Fri,  1 Mar 2024 09:52:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709286686; cv=none; b=kLz9yNTPmjS7bsUORvbu0yNAu/mEsmfXoiJUTqTexh8srPmeA3hrgG3vQrJa0ipmiE5e20Vigs1grmjtFbEpu+ls/ZyNZxaSUNKlUDpTWbv54BDCQwIdwAkiWvSqpxGSmCQL/JvGe43Y/BMRQIXZwE69tYhx4FyGq3sWiBbSkL8=
+	t=1709286742; cv=none; b=HTd1UXeqxoy/xxeeq6S+vCJkkn8RujlbybltHWW7J1cUsLINLjjo2d38VTxWUWcBoNykGaeQAxYSTQHcIUqsVYxXs+AVzKHHHwfG5vhuU1jPVKLeDF76DGEe6JBXLA8OctfNu5iKtXwDojajaDEQZQ4QeAnOHAB1xFdJgIiPdaw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709286686; c=relaxed/simple;
-	bh=IXPS1YTOuSXz2bhI7nEjXLQQJhT3X+YyX8FgPiHLd2Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UvsW3yISRazAi5bfZo5JkODacgjBb5P9Z1YdZpoJG4cynJfxQhV8N2JG0XMLR5fhy1xA9lSlvsmuGqs8huDudQ9iAZjmyS2Eh2q9wdjkpRmuwYpEyJlyW/QnbWHud5WaZQer9Kp7359QlxLIbyyU1X/+m1Mpx5caN1d+96oBPMs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7515F1FB;
-	Fri,  1 Mar 2024 01:52:02 -0800 (PST)
-Received: from [10.57.10.152] (unknown [10.57.10.152])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 474DD3F762;
-	Fri,  1 Mar 2024 01:51:21 -0800 (PST)
-Message-ID: <082e48c8-71b7-4937-a5da-7a37b4be16ba@arm.com>
-Date: Fri, 1 Mar 2024 09:51:19 +0000
+	s=arc-20240116; t=1709286742; c=relaxed/simple;
+	bh=0eEAsDUiGlym1jRBLErLtOHPYKonoraS/Q/lwYdLL6c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=umiwyrmIKcrGdeV+FDewlvy7nZbWk8eYlMk5732kPxWE7uKtCbi0ngTrsmB9LLzqnps4OXoWJLUiZSjNxZlKm1W2v1ZureQIs1KnE7qDfp9PNQcF4KzbGjdoqAYjldaF00PQQZE3DKmXixI0tQS/w7h9dhKCLveg/LCjmc5/dGQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=QlpjN5Nc; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709286738;
+	bh=0eEAsDUiGlym1jRBLErLtOHPYKonoraS/Q/lwYdLL6c=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=QlpjN5NcAeEwbGqu8RBj8FauZX1FwPsgaeROmXHEoWtABFUvUWIUbaBKxyeneagj+
+	 1UMyEDl4P6erEOnJi3aTI2uM1hCwNRyrngSEcUGRVU0ADqgSHnhjKGJ2wkL0tIej5y
+	 Leu0Qqm0fJ+NA7PsAPAlPG4hCRWAToti342lVzo/jtY3F07QE5naDvn17ZiHnKo0wv
+	 tDob4iV+b+hgvM8LtksTiyL5m1Wt3SY6YUGeB/L3g0Q4UEHOa/KEUeKwliFIMsJ2vJ
+	 ubUxB9KvFGIfD7PLvjj4SPMfjJN1ut8Doyf29CMphkVvKLctsGmaGV61XRH55wxG5k
+	 093TghaWTwZKQ==
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: sebastianfricke)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id B50A037820C2;
+	Fri,  1 Mar 2024 09:52:18 +0000 (UTC)
+Date: Fri, 1 Mar 2024 10:52:17 +0100
+From: Sebastian Fricke <sebastian.fricke@collabora.com>
+To: Yunfei Dong <yunfei.dong@mediatek.com>
+Cc: =?utf-8?B?TsOtY29sYXMgRiAuIFIgLiBBIC4=?= Prado <nfraprado@collabora.com>,
+	Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+	Nathan Hebert <nhebert@chromium.org>,
+	Hsin-Yi Wang <hsinyi@chromium.org>,
+	Fritz Koenig <frkoenig@chromium.org>,
+	Daniel Vetter <daniel@ffwll.ch>, Steve Cho <stevecho@chromium.org>,
+	linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org,
+	Project_Global_Chrome_Upstream_Group@mediatek.com
+Subject: Re: [PATCH] media: mediatek: vcodec: support 36bit physical address
+Message-ID: <20240301095217.bmsnizobpb736fgg@basti-XPS-13-9310>
+References: <20240301020126.11539-1-yunfei.dong@mediatek.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 8/8] mm: huge_memory: enable debugfs to split huge
- pages to any order.
-To: Zi Yan <ziy@nvidia.com>, "Pankaj Raghav (Samsung)"
- <kernel@pankajraghav.com>, linux-mm@kvack.org
-Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- David Hildenbrand <david@redhat.com>, Yang Shi <shy828301@gmail.com>,
- Yu Zhao <yuzhao@google.com>,
- "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
- Ryan Roberts <ryan.roberts@arm.com>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>, Roman Gushchin <roman.gushchin@linux.dev>,
- Zach O'Keefe <zokeefe@google.com>, Hugh Dickins <hughd@google.com>,
- Luis Chamberlain <mcgrof@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Mark Brown <broonie@kernel.org>
-References: <20240226205534.1603748-1-zi.yan@sent.com>
- <20240226205534.1603748-9-zi.yan@sent.com>
-Content-Language: en-US
-From: Aishwarya TCV <aishwarya.tcv@arm.com>
-In-Reply-To: <20240226205534.1603748-9-zi.yan@sent.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20240301020126.11539-1-yunfei.dong@mediatek.com>
 
+Hey Yunfei,
 
+On 01.03.2024 10:01, Yunfei Dong wrote:
+>The physical address is beyond 32bit for mt8188 platform, need
+>to change the type from unsigned int to unsigned long in case of
+>the high bit missing.
 
-On 26/02/2024 20:55, Zi Yan wrote:
-> From: Zi Yan <ziy@nvidia.com>
-> 
-> It is used to test split_huge_page_to_list_to_order for pagecache THPs.
-> Also add test cases for split_huge_page_to_list_to_order via both
-> debugfs.
-> 
-> Signed-off-by: Zi Yan <ziy@nvidia.com>
-> ---
->  mm/huge_memory.c                              |  34 ++++--
->  .../selftests/mm/split_huge_page_test.c       | 115 +++++++++++++++++-
->  2 files changed, 131 insertions(+), 18 deletions(-)
-> 
+I would reword this a bit, the address is not beyond 32 bit, which would
+could be interpret as if the address starts after 32nd bit, instead it
+is larger than 32bits. Secondly, we don't change the type in case the
+high bit is missing, we change the type unconditionally, we do change
+the type so that the high bit isn't missing.
 
-Hi Zi,
+My suggestion:
 
-When booting the kernel against next-master(20240228)with Arm64 on
-Marvell Thunder X2 (TX2), the kselftest-mm test 'split_huge_page_test'
-is failing in our CI (with rootfs over NFS). I can send the full logs if
-required.
+The physical address on the MT8188 platform is larger than 32 bits,
+change the type from unsigned int to unsigned long to be able to access
+the high bits of the address.
 
-A bisect (full log below) identified this patch as introducing the
-failure. Bisected it on the tag "next-20240228" at repo
-"https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git".
+One more question below...
 
-This works fine on  Linux version 6.8.0-rc6
+>
+>Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
+>---
+> .../mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c        | 4 ++--
+> 1 file changed, 2 insertions(+), 2 deletions(-)
+>
+>diff --git a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c
+>index cf48d09b78d7..85df3e7c2983 100644
+>--- a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c
+>+++ b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c
+>@@ -1074,7 +1074,7 @@ static int vdec_vp9_slice_setup_tile_buffer(struct vdec_vp9_slice_instance *inst
+> 	unsigned int mi_row;
+> 	unsigned int mi_col;
+> 	unsigned int offset;
+>-	unsigned int pa;
+>+	unsigned long pa;
+> 	unsigned int size;
+> 	struct vdec_vp9_slice_tiles *tiles;
+> 	unsigned char *pos;
+>@@ -1109,7 +1109,7 @@ static int vdec_vp9_slice_setup_tile_buffer(struct vdec_vp9_slice_instance *inst
+> 	pos = va + offset;
+> 	end = va + bs->size;
+> 	/* truncated */
+>-	pa = (unsigned int)bs->dma_addr + offset;
+>+	pa = (unsigned long)bs->dma_addr + offset;
 
+I can see in other parts of the driver that bs->dma_addr is converted to
+u64 or uint64_t. Is unsigned long always 64-bit on the different
+Mediatek platforms? If so, why do you prefer unsigned long over u64?
+(Which describes the type more precisely)
 
-Sample log from failure against run on TX2:
-------
-07:17:34.056125  # # ------------------------------
-07:17:34.056543  # # running ./split_huge_page_test
-07:17:34.056839  # # ------------------------------
-07:17:34.057114  # # TAP version 13
-07:17:34.058564  # # 1..12
-07:17:34.156822  # # ok 1 Split huge pages successful
-07:17:34.214074  # # ok 2 Split PTE-mapped huge pages successful
-07:17:34.215630  # # # Please enable pr_debug in
-split_huge_pages_in_file() for more info.
-07:17:34.225503  # # # Please check dmesg for more information
-07:17:34.225862  # # ok 3 File-backed THP split test done
-07:17:34.236944  # # Bail out! Failed to create a file at /mnt/thp_fs#
-Planned tests != run tests (12 != 3)
-07:17:34.237307  # # # Totals: pass:3 fail:0 xfail:0 xpass:0 skip:0 error:0
-07:17:34.237620  # # [FAIL]
-07:17:34.246430  # not ok 51 split_huge_page_test # exit=1
+(Same applies for:
+drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp8_if.c:452)
 
+Greetings,
+Sebastian
 
-Bisect log:
-------
-git bisect start
-# good: [d206a76d7d2726f3b096037f2079ce0bd3ba329b] Linux 6.8-rc6
-git bisect good d206a76d7d2726f3b096037f2079ce0bd3ba329b
-# bad: [20af1ca418d2c0b11bc2a1fe8c0c88f67bcc2a7e] Add linux-next
-specific files for 20240228
-git bisect bad 20af1ca418d2c0b11bc2a1fe8c0c88f67bcc2a7e
-# bad: [1322f1801e59dddce10591d602d246c1bf49990c] Merge branch 'main' of
-git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git
-git bisect bad 1322f1801e59dddce10591d602d246c1bf49990c
-# bad: [a82f70041487790b7b09fe4bb45436e1b57021d3] Merge branch 'dev' of
-git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git
-git bisect bad a82f70041487790b7b09fe4bb45436e1b57021d3
-# bad: [ce90480b9352ba2bebe8946dad9223e3f24c6e9a] Merge branch
-'for-next' of
-git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap.git
-git bisect bad ce90480b9352ba2bebe8946dad9223e3f24c6e9a
-# bad: [5daac92ed3881fd0c656478a301a4e1d124100ee] Merge branch
-'mm-everything' of git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm
-git bisect bad 5daac92ed3881fd0c656478a301a4e1d124100ee
-# good: [acc2643d9e988c63dd4629a9af380ad9ac69c54a] Merge branch
-'mm-stable' into mm-unstable
-git bisect good acc2643d9e988c63dd4629a9af380ad9ac69c54a
-# good: [0294de8fe7d7c1a7eddc979cbf4c1886406e36b7] Merge branch 'fixes'
-of git://git.kernel.org/pub/scm/linux/kernel/git/sre/linux-power-supply.git
-git bisect good 0294de8fe7d7c1a7eddc979cbf4c1886406e36b7
-# good: [83e0c8f0e777a1ef0977b2f8189101765703b32d] Merge branch
-'mm-nonmm-stable' of git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm
-git bisect good 83e0c8f0e777a1ef0977b2f8189101765703b32d
-# good: [a739cbe236e0dd3b6ff26a01fa1d31c73d4fac93] mm: memcg: make memcg
-huge page split support any order split
-git bisect good a739cbe236e0dd3b6ff26a01fa1d31c73d4fac93
-# bad: [efb520aa333b2f11daaaaa13f4a598b5ae4ae823] mm: allow non-hugetlb
-large folios to be batch processed
-git bisect bad efb520aa333b2f11daaaaa13f4a598b5ae4ae823
-# bad: [2258bdebb55e3ad3d30fd3849ddb955ff36825de] mm/zsmalloc: don't
-hold locks of all pages when free_zspage()
-git bisect bad 2258bdebb55e3ad3d30fd3849ddb955ff36825de
-# bad: [7fc0be45acf2878cbacc4dba56923c34c3fd8b1e] mm: remove
-total_mapcount()
-git bisect bad 7fc0be45acf2878cbacc4dba56923c34c3fd8b1e
-# good: [d55fac55da2f87ad5a99178e107df09770bbc411] mm: thp: split huge
-page to any lower order pages
-git bisect good d55fac55da2f87ad5a99178e107df09770bbc411
-# bad: [4050d591c1aaf9336c08511fa5984827186e9ad1] mm/memfd: refactor
-memfd_tag_pins() and memfd_wait_for_pins()
-git bisect bad 4050d591c1aaf9336c08511fa5984827186e9ad1
-# bad: [c0ba89c29ef559c95273feb481b049f622c43c17] mm: huge_memory:
-enable debugfs to split huge pages to any order
-git bisect bad c0ba89c29ef559c95273feb481b049f622c43c17
-# first bad commit: [c0ba89c29ef559c95273feb481b049f622c43c17] mm:
-huge_memory: enable debugfs to split huge pages to any order
-
-
-Thanks,
-Aishwarya
+> 	tb = instance->tile.va;
+> 	for (i = 0; i < rows; i++) {
+> 		for (j = 0; j < cols; j++) {
+>-- 
+>2.18.0
+>
+>
 
