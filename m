@@ -1,269 +1,187 @@
-Return-Path: <linux-kernel+bounces-88951-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88954-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4DDF86E8BC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:51:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3814486E8C4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:52:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D85D1F25422
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:51:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA97928AFE4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:52:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25D093BB31;
-	Fri,  1 Mar 2024 18:49:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD40E3D0B9;
+	Fri,  1 Mar 2024 18:50:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="H883z8KS"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="dFLQ0zl/"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75EEA39FF2
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 18:49:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 192F41E88A;
+	Fri,  1 Mar 2024 18:50:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709318994; cv=none; b=FpnovMOKxIpuZg6e9XMHu1Ta4Q427M1mti8VzVzJVJZuu4xUnSrxgriuk3kuWEzKM7rhujxO7Zq68M68pfdH0Tf3aLczbAp5aJi/TiKxGKokX5AUrDMkd/mi3LKj69MEDuFyiEUVzqGlEr8zqs+0AE3IHlBP1GS8HTlir65VZsQ=
+	t=1709319020; cv=none; b=MS3/xHvgcReGHgz7j9/LOztMh8rQPr111+H832U+rO9mieUxjqRM2BJzbGbX66UUuhDMXLkUzNx6l0PZui7FoxkVOxVpvKFB+KzDnQQpUwRPsQBWwCn7Qn8NWOxww4+P+uSA9qAR1e7zjDOHWxpeLw75DIYovZS0gIfdYOUXZ8U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709318994; c=relaxed/simple;
-	bh=2ERunsHO0HMaUms4KBACjWVsThU416l3Oxd77ww5Cx0=;
-	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Content-Type; b=vA45kMBLS1OfZuWT4egX3ekyzPGMI4ovEhbtr0fIfD4AkSNr3EwB3vp/cFdckFLmalkKRtroqmz113omVUaixB5dvhlwnc16sAY/WSAnGR2WjJxnnqy4bjKiwNBQk8J9rE0NEpMMGjClmf0JnbTywLwyj9PTMNSl/pGplSlVpBY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=H883z8KS; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dbe9e13775aso4104028276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 10:49:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709318991; x=1709923791; darn=vger.kernel.org;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3EjZ0ceRnqQlXX4BCEd3HoI0KPye9/6m0/wti2JUYDk=;
-        b=H883z8KSjBtADZXfpgQDGDjqDrm9FWmkhCdwRh69XyFob3Fn24la13XUOOkvfyXt+a
-         NzvWA5X3e2mX1uRaoutDDKuLHm/gkWdJwefITQyHuLEllhxJZ7qN5v+3dYH3ZtrXCm+o
-         sgkQSQNtUSakJQ9+tC7ETDD4QbtOe3fkT42mD1jD8aUuFDBmT9XMN7taRDJUuOmGaXjX
-         jHuT1AzVMsJ44K79jkPM/nbM0Z3HvyvIN1jid6Cbzvu92yzKv6X94FpyNnwT705zhRvh
-         X6PAQigUmNehM/ypCwR8ZyqzOcUyHzwqttAXQUz9F5QgoXRRhyKUU3pMxr02k9RIipvq
-         HnXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709318991; x=1709923791;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3EjZ0ceRnqQlXX4BCEd3HoI0KPye9/6m0/wti2JUYDk=;
-        b=u8kMli0VluNghKCl7Pkfa5LfoBIbaNbeZzQiIbZ0NctqXKbsVNgxhwm848kcZaLNTu
-         Gtj9dBm8F1Vgwt/aFxINfT8RUl4R77JSIg0OefWm7EVDgvWsYx6G6PtSI9ceT1cuLHmo
-         I2b2DJOsE3uSr+67HLgOmpIHfuLhSRItEC0mG9tgUKK3IT2VBbupXYE1zpTuLJ29AIjY
-         K2SY6uw+L02F5ifP3kQ03cd68BqoqqA4B31b9Swjns0ppBa2/cwUhPHpwSbQ0hEieyD3
-         7SCG/3BrYhXc6SwCtAm4eXbPvduEa9L+ltR7ucnHFEk0S8Fzdh6IbKxkEMaKKX2eASG4
-         N2+w==
-X-Forwarded-Encrypted: i=1; AJvYcCV/S6RwK3Oa4VB4BKgf438f6FTl/tOB4Jm86dGn/LMhMiRhTCIBlUdWGx8PmNZJ1U6HN3Nhs3CVhRSQ2UuqYfE14el0AKAjiG3pTYuu
-X-Gm-Message-State: AOJu0YzSzm5LtmiClzbYepqhCOJmPeHHu3L06wfqr0O63IICBt9xgSQT
-	GLGv+ChkkVI1jpjeRrS6zjaEGraXKeUyVl5SKD1Ib3+Wf6wBsCL491kzD6qVYmM0baeO+afKHCW
-	bLdQHGA==
-X-Google-Smtp-Source: AGHT+IG8JEXFF9978LatunnwkVIhj6OAPjqRyRG+w+is3ik30NBpeC3dfmCO6JKqk09Redgj4J1Sef6X7IH6
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:af4b:7fc1:b7be:fcb7])
- (user=irogers job=sendgmr) by 2002:a25:df54:0:b0:dc6:53c3:bcbd with SMTP id
- w81-20020a25df54000000b00dc653c3bcbdmr538678ybg.7.1709318991586; Fri, 01 Mar
- 2024 10:49:51 -0800 (PST)
-Date: Fri,  1 Mar 2024 10:49:41 -0800
-In-Reply-To: <20240301184942.2660478-1-irogers@google.com>
-Message-Id: <20240301184942.2660478-2-irogers@google.com>
+	s=arc-20240116; t=1709319020; c=relaxed/simple;
+	bh=xQB4TikMejf8HYKCd2nqTboBbc2W/l5k/UsuZ1nnvBE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=IxNjRNKNUkfaTxg9kd2cOnM5nFsW9/ZExjlxkmQWosS/RAhSZ2kk5e6+A8EnBBcnHqXKvX5EMQLivbsGeDQ45TAIjFAqfkuqtTwAlA4X4RewEHTiejdf0I8lkW0Q1IDSrS0xBSwDgvoZEammTuBR0wkycTGSGc69ooi6mMqa8MI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=dFLQ0zl/; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 421GuNc1008586;
+	Fri, 1 Mar 2024 18:50:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=lk1W+lVN+n6/SoaQkVD5BF3cUTG8UJWo7u5+NF+HJwQ=; b=dF
+	LQ0zl/DzGyDy70kkvdA+gNF9yKY4689P8EYCKzK081w53ZnNJk0eTUhs8f3M3jSL
+	xB77Ic5n9ABMgDEuUaE5JwVbaF9iChp5MTlUndYXhQ52snuqi6mbUqaD+CZm2grt
+	ph19Nhl8V9XZ+JfsXjS0K1gM6CThK/E/POQsur6c7p25BtFxH0eoZlV9BCZBvUFz
+	wtAkrXg18xHZ4DNYbEM31utKtsaLTdobYM/a6vSOs6qvCQ35x1RnSCrtv5DcWcdo
+	pCCPDgNRhQO3be8vsUGzCUWqkT3XKCNnnkGCMFtnCLMm3lgr7y7SxUNfUyzPWq6b
+	9/oz130Bmy9q/s3FiPdQ==
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wk7cg9xkx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 01 Mar 2024 18:50:01 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 421Io00L014051
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 1 Mar 2024 18:50:00 GMT
+Received: from [10.110.82.174] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 1 Mar
+ 2024 10:49:57 -0800
+Message-ID: <6a3e3071-f8cd-66b4-99a0-427f7e11177a@quicinc.com>
+Date: Fri, 1 Mar 2024 10:49:57 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240301184942.2660478-1-irogers@google.com>
-X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Subject: [PATCH v2 1/2] perf jevents: Add collection of topdown like metrics
- for arm64
-From: Ian Rogers <irogers@google.com>
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	John Garry <john.g.garry@oracle.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	Jing Zhang <renyu.zj@linux.alibaba.com>, Thomas Richter <tmricht@linux.ibm.com>, 
-	James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v7 11/12] firmware: qcom: scm: clarify the comment in
+ qcom_scm_pas_init_image()
+To: Bjorn Andersson <andersson@kernel.org>,
+        Bartosz Golaszewski
+	<brgl@bgdev.pl>
+CC: Andy Gross <agross@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Elliot Berman <quic_eberman@quicinc.com>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski@linaro.org>,
+        Guru Das Srinagesh
+	<quic_gurus@quicinc.com>,
+        Andrew Halaney <ahalaney@redhat.com>,
+        "Maximilian
+ Luz" <luzmaximilian@gmail.com>,
+        Alex Elder <elder@linaro.org>,
+        "Srini
+ Kandagatla" <srinivas.kandagatla@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <kernel@quicinc.com>,
+        "Bartosz
+ Golaszewski" <bartosz.golaszewski@linaro.org>,
+        Deepti Jaggi
+	<quic_djaggi@quicinc.com>
+References: <20240205182810.58382-1-brgl@bgdev.pl>
+ <20240205182810.58382-12-brgl@bgdev.pl>
+ <ihz4jczbhn3gdcs6nkgnzpyv3577ebd73qbkynw6jz7ciy4fu3@kxqu7olrrely>
+Content-Language: en-US
+From: Prasad Sodagudi <quic_psodagud@quicinc.com>
+In-Reply-To: <ihz4jczbhn3gdcs6nkgnzpyv3577ebd73qbkynw6jz7ciy4fu3@kxqu7olrrely>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: zJU114Lht-Ax-EGW8-ctMDqs437U1DQF
+X-Proofpoint-GUID: zJU114Lht-Ax-EGW8-ctMDqs437U1DQF
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-01_20,2024-03-01_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
+ bulkscore=0 priorityscore=1501 spamscore=0 suspectscore=0 mlxscore=0
+ mlxlogscore=999 lowpriorityscore=0 malwarescore=0 phishscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403010153
 
-Metrics are created using legacy, common and recommended events. As
-events may be missing a TryEvent function will give None if an event
-is missing. To workaround missing JSON events for cortex-a53, sysfs
-encodings are used.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/pmu-events/arm64_metrics.py | 145 ++++++++++++++++++++++++-
- 1 file changed, 142 insertions(+), 3 deletions(-)
+On 2/17/2024 7:50 PM, Bjorn Andersson wrote:
+> On Mon, Feb 05, 2024 at 07:28:09PM +0100, Bartosz Golaszewski wrote:
+>> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>>
+>> The "memory protection" mechanism mentioned in the comment is the SHM
+>> Bridge. This is also the reason why we do not convert this call to using
+>> the TZ memory allocator.
+>>
+> No, this mechanism predates shmbridge.
+Yes. PIL calls are there for very long time and shm bridge concept is 
+introduced later.
+>
+>> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>> Tested-by: Andrew Halaney <ahalaney@redhat.com> # sc8280xp-lenovo-thinkpad-x13s
+>> Tested-by: Deepti Jaggi <quic_djaggi@quicinc.com> #sa8775p-ride
+>> Reviewed-by: Elliot Berman <quic_eberman@quicinc.com>
+>> ---
+>>   drivers/firmware/qcom/qcom_scm.c | 10 +++++++---
+>>   1 file changed, 7 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
+>> index 839773270a21..7ba5cff6e4e7 100644
+>> --- a/drivers/firmware/qcom/qcom_scm.c
+>> +++ b/drivers/firmware/qcom/qcom_scm.c
+>> @@ -563,9 +563,13 @@ int qcom_scm_pas_init_image(u32 peripheral, const void *metadata, size_t size,
+>>   	struct qcom_scm_res res;
+>>   
+>>   	/*
+>> -	 * During the scm call memory protection will be enabled for the meta
+>> -	 * data blob, so make sure it's physically contiguous, 4K aligned and
+>> -	 * non-cachable to avoid XPU violations.
+> What this is saying is that the memory will be made unaccessible to
+> Linux, so it needs to be contiguous and aligned.
 
-diff --git a/tools/perf/pmu-events/arm64_metrics.py b/tools/perf/pmu-events/arm64_metrics.py
-index 7cd0ebc0bd80..0dcf5236ea1f 100755
---- a/tools/perf/pmu-events/arm64_metrics.py
-+++ b/tools/perf/pmu-events/arm64_metrics.py
-@@ -1,10 +1,11 @@
- #!/usr/bin/env python3
- # SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
--from metric import (JsonEncodeMetric, JsonEncodeMetricGroupDescriptions, LoadEvents,
--                    MetricGroup)
-+from metric import (d_ratio, Event, JsonEncodeMetric, JsonEncodeMetricGroupDescriptions,
-+                    LoadEvents, Metric, MetricGroup)
- import argparse
- import json
- import os
-+from typing import Optional
- 
- parser = argparse.ArgumentParser(description="ARM perf json generator")
- parser.add_argument("-metricgroups", help="Generate metricgroups data", action='store_true')
-@@ -15,7 +16,145 @@ args = parser.parse_args()
- directory = f"{os.path.dirname(os.path.realpath(__file__))}/arch/arm64/{args.vendor}/{args.model}/"
- LoadEvents(directory)
- 
--all_metrics = MetricGroup("",[])
-+def Arm64Topdown() -> MetricGroup:
-+  """Returns a MetricGroup representing ARM64 topdown like metrics."""
-+  def TryEvent(name: str) -> Optional[Event]:
-+    # Skip an event if not in the json files.
-+    try:
-+      return Event(name)
-+    except:
-+      return None
-+  # ARM models like a53 lack JSON for INST_RETIRED but have the
-+  # architetural standard event in sysfs. Use the PMU name to identify
-+  # the sysfs event.
-+  pmu_name = f'armv8_{args.model.replace("-", "_")}'
-+  ins = Event("instructions")
-+  ins_ret = Event("INST_RETIRED", f"{pmu_name}/inst_retired/")
-+  cycles = Event("cycles")
-+  stall_fe = TryEvent("STALL_FRONTEND")
-+  stall_be = TryEvent("STALL_BACKEND")
-+  br_ret = TryEvent("BR_RETIRED")
-+  br_mp_ret = TryEvent("BR_MIS_PRED_RETIRED")
-+  dtlb_walk = TryEvent("DTLB_WALK")
-+  itlb_walk = TryEvent("ITLB_WALK")
-+  l1d_tlb = TryEvent("L1D_TLB")
-+  l1i_tlb = TryEvent("L1I_TLB")
-+  l1d_refill = Event("L1D_CACHE_REFILL", f"{pmu_name}/l1d_cache_refill/")
-+  l2d_refill = Event("L2D_CACHE_REFILL", f"{pmu_name}/l2d_cache_refill/")
-+  l1i_refill = Event("L1I_CACHE_REFILL", f"{pmu_name}/l1i_cache_refill/")
-+  l1d_access = Event("L1D_CACHE", f"{pmu_name}/l1d_cache/")
-+  l2d_access = Event("L2D_CACHE", f"{pmu_name}/l2d_cache/")
-+  llc_access = TryEvent("LL_CACHE_RD")
-+  l1i_access = Event("L1I_CACHE", f"{pmu_name}/l1i_cache/")
-+  llc_miss_rd = TryEvent("LL_CACHE_MISS_RD")
-+  ase_spec = TryEvent("ASE_SPEC")
-+  ld_spec = TryEvent("LD_SPEC")
-+  st_spec = TryEvent("ST_SPEC")
-+  vfp_spec = TryEvent("VFP_SPEC")
-+  dp_spec = TryEvent("DP_SPEC")
-+  br_immed_spec = TryEvent("BR_IMMED_SPEC")
-+  br_indirect_spec = TryEvent("BR_INDIRECT_SPEC")
-+  br_ret_spec = TryEvent("BR_RETURN_SPEC")
-+  crypto_spec = TryEvent("CRYPTO_SPEC")
-+  inst_spec = TryEvent("INST_SPEC")
-+
-+  return MetricGroup("topdown", [
-+      MetricGroup("topdown_tl", [
-+          Metric("topdown_tl_ipc", "Instructions per cycle", d_ratio(
-+              ins, cycles), "insn/cycle"),
-+          Metric("topdown_tl_stall_fe_rate", "Frontend stalls to all cycles",
-+                 d_ratio(stall_fe, cycles), "100%") if stall_fe else None,
-+          Metric("topdown_tl_stall_be_rate", "Backend stalls to all cycles",
-+                 d_ratio(stall_be, cycles), "100%") if stall_be else None,
-+      ]),
-+      MetricGroup("topdown_fe_bound", [
-+          MetricGroup("topdown_fe_br", [
-+              Metric("topdown_fe_br_mp_per_insn",
-+                     "Branch mispredicts per instruction retired",
-+                     d_ratio(br_mp_ret, ins_ret), "br/insn") if br_mp_ret else None,
-+              Metric("topdown_fe_br_ins_rate",
-+                     "Branches per instruction retired", d_ratio(
-+                         br_ret, ins_ret), "100%") if br_ret else None,
-+              Metric("topdown_fe_br_mispredict",
-+                     "Branch mispredicts per branch instruction",
-+                     d_ratio(br_mp_ret, br_ret), "100%") if br_mp_ret else None,
-+          ]),
-+          MetricGroup("topdown_fe_itlb", [
-+              Metric("topdown_fe_itlb_walks", "Itlb walks per insn",
-+                     d_ratio(itlb_walk, ins_ret), "walk/insn"),
-+              Metric("topdown_fe_itlb_walk_rate", "Itlb walks per l1i access",
-+                     d_ratio(itlb_walk, l1i_tlb), "100%"),
-+          ]) if itlb_walk else None,
-+          MetricGroup("topdown_fe_icache", [
-+              Metric("topdown_fe_icache_l1i_per_insn",
-+                     "L1I cache refills per instruction",
-+                     d_ratio(l1i_refill, ins_ret), "l1i/insn"),
-+              Metric("topdown_fe_icache_l1i_miss_rate",
-+                     "L1I cache refills per L1I cache access",
-+                     d_ratio(l1i_refill, l1i_access), "100%"),
-+          ]),
-+      ]),
-+      MetricGroup("topdown_be_bound", [
-+          MetricGroup("topdown_be_dtlb", [
-+              Metric("topdown_be_dtlb_walks", "Dtlb walks per instruction",
-+                     d_ratio(dtlb_walk, ins_ret), "walk/insn"),
-+              Metric("topdown_be_dtlb_walk_rate", "Dtlb walks per l1d access",
-+                     d_ratio(dtlb_walk, l1d_tlb), "100%"),
-+          ]) if dtlb_walk else None,
-+          MetricGroup("topdown_be_mix", [
-+              Metric("topdown_be_mix_ld", "Percentage of load instructions",
-+                     d_ratio(ld_spec, inst_spec), "100%") if ld_spec else None,
-+              Metric("topdown_be_mix_st", "Percentage of store instructions",
-+                     d_ratio(st_spec, inst_spec), "100%") if st_spec else None,
-+              Metric("topdown_be_mix_simd", "Percentage of SIMD instructions",
-+                     d_ratio(ase_spec, inst_spec), "100%") if ase_spec else None,
-+              Metric("topdown_be_mix_fp",
-+                     "Percentage of floating point instructions",
-+                     d_ratio(vfp_spec, inst_spec), "100%") if vfp_spec else None,
-+              Metric("topdown_be_mix_dp",
-+                     "Percentage of data processing instructions",
-+                     d_ratio(dp_spec, inst_spec), "100%") if dp_spec else None,
-+              Metric("topdown_be_mix_crypto",
-+                     "Percentage of data processing instructions",
-+                     d_ratio(crypto_spec, inst_spec), "100%") if crypto_spec else None,
-+              Metric(
-+                  "topdown_be_mix_br", "Percentage of branch instructions",
-+                  d_ratio(br_immed_spec + br_indirect_spec + br_ret_spec,
-+                          inst_spec), "100%") if br_immed_spec and br_indirect_spec and br_ret_spec else None,
-+          ]) if inst_spec else None,
-+          MetricGroup("topdown_be_dcache", [
-+              MetricGroup("topdown_be_dcache_l1", [
-+                  Metric("topdown_be_dcache_l1_per_insn",
-+                         "L1D cache refills per instruction",
-+                         d_ratio(l1d_refill, ins_ret), "refills/insn"),
-+                  Metric("topdown_be_dcache_l1_miss_rate",
-+                         "L1D cache refills per L1D cache access",
-+                         d_ratio(l1d_refill, l1d_access), "100%")
-+              ]),
-+              MetricGroup("topdown_be_dcache_l2", [
-+                  Metric("topdown_be_dcache_l2_per_insn",
-+                         "L2D cache refills per instruction",
-+                         d_ratio(l2d_refill, ins_ret), "refills/insn"),
-+                  Metric("topdown_be_dcache_l2_miss_rate",
-+                         "L2D cache refills per L2D cache access",
-+                         d_ratio(l2d_refill, l2d_access), "100%")
-+              ]),
-+              MetricGroup("topdown_be_dcache_llc", [
-+                  Metric("topdown_be_dcache_llc_per_insn",
-+                         "Last level cache misses per instruction",
-+                         d_ratio(llc_miss_rd, ins_ret), "miss/insn"),
-+                  Metric("topdown_be_dcache_llc_miss_rate",
-+                         "Last level cache misses per L2D cache access",
-+                         d_ratio(llc_miss_rd, llc_access), "100%")
-+              ]) if llc_miss_rd and llc_access else None,
-+          ]),
-+      ]),
-+  ])
-+
-+
-+all_metrics = MetricGroup("",[
-+    Arm64Topdown(),
-+])
- 
- if args.metricgroups:
-   print(JsonEncodeMetricGroupDescriptions(all_metrics))
--- 
-2.44.0.278.ge034bb2e1d-goog
+Based on my understanding,  this buffer has to be  physically 
+contiguous, 4K aligned and non-cachable to avoid XPU violations.
 
+We should keep this comment
+
+>
+>> +	 * During the SCM call the hypervisor will make the buffer containing
+>> +	 * the program data into an SHM Bridge.
+> Are you saying that the hypervisor will convert this memory to a
+> shmbridge, and then pass it to TrustZone?
+Yes.  Specifically for PIL calls hyp is creating shm bridge for 
+buffers/regions on behalf of Linux/NS-EL1.
+>
+>> This is why we exceptionally
+>> +	 * must not use the TrustZone memory allocator here as - depending on
+>> +	 * Kconfig - it may already use the SHM Bridge mechanism internally.
+>> +	 *
+> "it may already"? You describe above that we shouldn't pass shmbridge
+> memory, and the other case never deals with shmbridges. So, I think you
+> can omit this part.
+>
+>> +	 * If we pass a buffer that is already part of an SHM Bridge to this
+>> +	 * call, it will fail.
+> Could this be because the consumer of this buffer operates in EL2, and
+> not TZ?
+These buffers are consumed by TZ only and not by EL2.  hyp creating the 
+required bridges for pil buffers.
+>
+> Regards,
+> Bjorn
+>
+>>   	 */
+>>   	mdata_buf = dma_alloc_coherent(__scm->dev, size, &mdata_phys,
+>>   				       GFP_KERNEL);
+>> -- 
+>> 2.40.1
+>>
 
