@@ -1,140 +1,270 @@
-Return-Path: <linux-kernel+bounces-88128-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88129-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62A2286DDB0
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:56:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF24986DDB2
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:58:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B79E1C21471
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:56:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A424FB27795
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:58:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E213B69E19;
-	Fri,  1 Mar 2024 08:56:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="Y1zaEErm"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F9AA6A034;
+	Fri,  1 Mar 2024 08:58:29 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 850A248CDC
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 08:56:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75DF36A026
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 08:58:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709283387; cv=none; b=XpKrUxWCOFULWtkWKnScezCxBx4P3t7qOJsm5FbpT/2xQCR95FxNqziAhfmoWa2SClcRJfXkIgFWdZJyhNSf1gUtom10CAMCL3eq0ophkSyDaUkEkzB4SXGYgy4E6naiECEZVbhS8T9FOkZlAThSY9xMHphX4O/csDBUh70s8zI=
+	t=1709283509; cv=none; b=J3koSZYdSe0CNtNd3j8nSW623OttTx3FgH+T85rI5nti6FJJ/sz8NG3cz+BEmBuGUMmTXJcm/ZjhgWoqkiRAteRZjmnvYShaa4FtUxuO1BpI54pLlUe83mxEnGmJfTKsfxpLS1cTXs7sNCLeqt6GhIHOfT6k/fnnaCpoKk0pows=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709283387; c=relaxed/simple;
-	bh=oSSbSpGB1xGIeGf4XwN8CfSvxw/vvGIdP+EG9LG6jng=;
+	s=arc-20240116; t=1709283509; c=relaxed/simple;
+	bh=Y2ooKxwu0DvEAlAO3yUTV8/LjvCmLJjEEzzi6omP6EE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iVLHn71eq2lm0zrTLLLuXkKJZFJB/RYiQNsSdblDeSep2usJO6DQ9N+eqF2k2D+QygOOfnpWES2pGsCz6sNU81KWNg24xLh6QItotlDLiaHjuT6hhzT9z0DvjFHAvRukuX8KhzID5vBnnBRn3mC+eXO47++R8+e4G2cn03Q2VsE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=Y1zaEErm; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (89-27-53-110.bb.dnainternet.fi [89.27.53.110])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id E7D5E899;
-	Fri,  1 Mar 2024 09:56:07 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1709283368;
-	bh=oSSbSpGB1xGIeGf4XwN8CfSvxw/vvGIdP+EG9LG6jng=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Y1zaEErmORD6wTqO2hNh9AYi/oh6ybgGBjMz5svTlX8FG6Uqp5LcKLyFAhp2Gfl8B
-	 /Xv2yw8m2+WmKkzTzheOZndhF+KnEbKj7u83YZc+SqWtYA9/btpamz94HY4zmcLSAa
-	 HLACKk3Z3tWWzCvk2JwSx1txs0ZvBlmLJ7G32i7k=
-Date: Fri, 1 Mar 2024 10:56:24 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado <nfraprado@collabora.com>,
-	Andrzej Hajda <andrzej.hajda@intel.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Robert Foss <rfoss@kernel.org>, Jonas Karlman <jonas@kwiboo.se>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	owen <qwt9588@gmail.com>, Jagan Teki <jagan@amarulasolutions.com>,
-	Marek Vasut <marex@denx.de>,
-	Adrien Grassein <adrien.grassein@gmail.com>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Sam Ravnborg <sam@ravnborg.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Vinod Koul <vkoul@kernel.org>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Vinay Simha BN <simhavcs@gmail.com>,
-	Christopher Vollo <chris@renewoutreach.org>,
-	Jessica Zhang <quic_jesszhan@quicinc.com>,
-	Marijn Suijten <marijn.suijten@somainline.org>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>,
-	kernel@collabora.com, dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 9/9] drm/panel: truly-nt35597: Don't log an error when
- DSI host can't be found
-Message-ID: <20240301085624.GC30104@pendragon.ideasonboard.com>
-References: <20240229-anx7625-defer-log-no-dsi-host-v2-0-00506941049a@collabora.com>
- <20240229-anx7625-defer-log-no-dsi-host-v2-9-00506941049a@collabora.com>
- <20240301063020.GL30889@pendragon.ideasonboard.com>
- <fc12dbc9-5c0b-4bff-8754-5b9a5f7b0e12@collabora.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=rbuzXiGAESp0MLhqcFt7RpVJq3GplcRaQ0V5ZDtvVgW9nIbCEzgKVoFpAH7VhYmeSPWNjzvXzL1CyO4dnB7LMCV7UVVcAgvjlfUfoer9th1lxie8Cz/ibLrnpbHgq+Zwl+dy6VbDvz7UcHyJkFDTvxQja8H29J2RiuISxiMFbro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mfe@pengutronix.de>)
+	id 1rfyif-0003jY-UI; Fri, 01 Mar 2024 09:58:17 +0100
+Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <mfe@pengutronix.de>)
+	id 1rfyie-003kKQ-Tg; Fri, 01 Mar 2024 09:58:16 +0100
+Received: from mfe by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <mfe@pengutronix.de>)
+	id 1rfyie-00F28a-2f;
+	Fri, 01 Mar 2024 09:58:16 +0100
+Date: Fri, 1 Mar 2024 09:58:16 +0100
+From: Marco Felsch <m.felsch@pengutronix.de>
+To: Adam Ford <aford173@gmail.com>
+Cc: linux-arm-kernel@lists.infradead.org, Rob Herring <robh@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Fabio Estevam <festevam@gmail.com>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	devicetree@vger.kernel.org, Sascha Hauer <s.hauer@pengutronix.de>,
+	aford@beaconembedded.com, linux-kernel@vger.kernel.org,
+	imx@lists.linux.dev,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Shawn Guo <shawnguo@kernel.org>
+Subject: Re: [PATCH 2/2] arm64: dts: imx8mp-beacon: Enable LVDS-1
+Message-ID: <20240301085816.bam4ph43w7tikhea@pengutronix.de>
+References: <20240229233556.116944-1-aford173@gmail.com>
+ <20240229233556.116944-2-aford173@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <fc12dbc9-5c0b-4bff-8754-5b9a5f7b0e12@collabora.com>
+In-Reply-To: <20240229233556.116944-2-aford173@gmail.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mfe@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Fri, Mar 01, 2024 at 09:44:36AM +0100, AngeloGioacchino Del Regno wrote:
-> Il 01/03/24 07:30, Laurent Pinchart ha scritto:
-> > On Thu, Feb 29, 2024 at 07:12:15PM -0500, Nícolas F. R. A. Prado wrote:
-> >> Given that failing to find a DSI host causes the driver to defer probe,
-> >> make use of dev_err_probe() to log the reason. This makes the defer
-> >> probe reason available and avoids alerting userspace about something
-> >> that is not necessarily an error.
-> >>
-> >> Suggested-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> >> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
-> >> ---
-> >>   drivers/gpu/drm/panel/panel-truly-nt35597.c | 6 ++----
-> >>   1 file changed, 2 insertions(+), 4 deletions(-)
-> >>
-> >> diff --git a/drivers/gpu/drm/panel/panel-truly-nt35597.c b/drivers/gpu/drm/panel/panel-truly-nt35597.c
-> >> index b73448cf349d..d447db912a61 100644
-> >> --- a/drivers/gpu/drm/panel/panel-truly-nt35597.c
-> >> +++ b/drivers/gpu/drm/panel/panel-truly-nt35597.c
-> >> @@ -550,10 +550,8 @@ static int truly_nt35597_probe(struct mipi_dsi_device *dsi)
-> >>   
-> >>   	dsi1_host = of_find_mipi_dsi_host_by_node(dsi1);
-> >>   	of_node_put(dsi1);
-> >> -	if (!dsi1_host) {
-> >> -		dev_err(dev, "failed to find dsi host\n");
-> >> -		return -EPROBE_DEFER;
-> >> -	}
-> >> +	if (!dsi1_host)
-> >> +		return dev_err_probe(dev, -EPROBE_DEFER, "failed to find dsi host\n");
-> > 
-> > 		return dev_err_probe(dev, -EPROBE_DEFER,
-> > 				     "failed to find dsi host\n");
-> > 
-> > With this addressed,
+Hi Adam,
+
+On 24-02-29, Adam Ford wrote:
+> Beacon has an LVDS display that can connect to one of the
+> LVDS ports on the baseboard.  The display requires a 30MHz
+> clock to display properly, and the LDB needs to run at 7x that.
+> With the audio CODEC now moved to the AUDIO_PLL1, the AUDIO_PLL2
+> is now available to source the LDB at 210MHz and the DISP_PIX2.
 > 
-> I disagree. That's 87 columns, and the 80-col rule is long gone.
-
-It's still a maintainer's preference. I soft-enforce it in drivers I
-maintain. In this case I'll let Neil decide, as he's listed as the
-maintainer for drivers/gpu/drm/panel/.
-
-> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> Signed-off-by: Adam Ford <aford173@gmail.com>
 > 
-> > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> > 
-> >>   
-> >>   	/* register the second DSI device */
-> >>   	dsi1_device = mipi_dsi_device_register_full(dsi1_host, &info);
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mp-beacon-kit.dts b/arch/arm64/boot/dts/freescale/imx8mp-beacon-kit.dts
+> index 1f827ef38e36..731ee2667060 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mp-beacon-kit.dts
+> +++ b/arch/arm64/boot/dts/freescale/imx8mp-beacon-kit.dts
+> @@ -19,6 +19,26 @@ aliases {
+>  		ethernet1 = &fec;
+>  	};
+>  
+> +	backlight: backlight {
+> +		compatible = "pwm-backlight";
+> +		pwms = <&pwm2 0 100000 0>;
+> +		power-supply = <&reg_lcd1_reset>;
+> +		status = "okay";
 
--- 
+status is not required here.
+
+> +
+> +		brightness-levels = < 0  1  2  3  4  5  6  7  8  9
+> +				     10 11 12 13 14 15 16 17 18 19
+> +				     20 21 22 23 24 25 26 27 28 29
+> +				     30 31 32 33 34 35 36 37 38 39
+> +				     40 41 42 43 44 45 46 47 48 49
+> +				     50 51 52 53 54 55 56 57 58 59
+> +				     60 61 62 63 64 65 66 67 68 69
+> +				     70 71 72 73 74 75 76 77 78 79
+> +				     80 81 82 83 84 85 86 87 88 89
+> +				     90 91 92 93 94 95 96 97 98 99
+> +				    100>;
+
+Are you aware of: 'num-interpolated-steps' to avoid such arrays?
+
+> +		default-brightness-level = <80>;
+> +	};
+> +
+>  	chosen {
+>  		stdout-path = &uart2;
+>  	};
+> @@ -135,6 +155,38 @@ led-3 {
+>  		};
+>  	};
+>  
+> +	lvds-1 {
+> +		compatible = "panel-lvds";
+> +		power-supply = <&reg_lcd1>;
+> +		width-mm = <223>;
+> +		height-mm = <125>;
+> +		backlight = <&backlight>;
+> +		data-mapping = "vesa-24";
+> +
+> +		panel-timing {
+> +			/* 800x480@60Hz */
+> +			clock-frequency = <30000000>;
+> +			hactive = <800>;
+> +			vactive = <480>;
+> +			hsync-len = <48>;
+> +			hfront-porch = <40>;
+> +			hback-porch = <40>;
+> +			vfront-porch = <13>;
+> +			vback-porch = <29>;
+> +			vsync-len = <1>;
+> +			hsync-active = <1>;
+> +			vsync-active = <3>;
+> +			de-active = <1>;
+> +			pixelclk-active = <0>;
+> +		};
+
+I would like to have a proper panel-simple.c entry but that's just my
+POV of adding panels.
+
+> +
+> +		port {
+> +			panel1_in: endpoint {
+> +				remote-endpoint = <&ldb_lvds_ch1>;
+> +			};
+> +		};
+> +	};
+> +
+>  	reg_audio: regulator-wm8962 {
+>  		compatible = "regulator-fixed";
+>  		regulator-name = "3v3_aud";
+> @@ -144,6 +196,25 @@ reg_audio: regulator-wm8962 {
+>  		enable-active-high;
+>  	};
+>  
+> +	reg_lcd1_reset: regulator-lcd1-reset {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "LVDS-1 reset";
+> +		regulator-min-microvolt = <3300000>;
+> +		regulator-max-microvolt = <3300000>;
+> +		gpio = <&pca6416_3 13 GPIO_ACTIVE_HIGH>;
+> +		enable-active-high;
+> +		vin-supply = <&reg_lcd1>;
+> +	};
+
+This reset "regulator" seems more like a workaround, why don't you use
+the reset-gpios property from "panel-lvds"?
+
 Regards,
+  Marco
 
-Laurent Pinchart
+> +
+> +	reg_lcd1: regulator-lcd1 {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "lvds-1 power";
+> +		regulator-min-microvolt = <3300000>;
+> +		regulator-max-microvolt = <3300000>;
+> +		gpio = <&pca6416_3 14 GPIO_ACTIVE_HIGH>;
+> +		enable-active-high;
+> +	};
+> +
+>  	reg_usdhc2_vmmc: regulator-usdhc2 {
+>  		compatible = "regulator-fixed";
+>  		regulator-name = "VSD_3V3";
+> @@ -457,6 +528,38 @@ &lcdif1 {
+>  	status = "okay";
+>  };
+>  
+> +&lcdif2 {
+> +	status = "okay";
+> +};
+> +
+> +&lvds_bridge {
+> +	assigned-clocks = <&clk IMX8MP_CLK_MEDIA_LDB>, <&clk IMX8MP_AUDIO_PLL2_OUT>;
+> +	assigned-clock-parents = <&clk IMX8MP_AUDIO_PLL2_OUT>;
+> +	assigned-clock-rates = <210000000>, <210000000>;
+> +	status = "okay";
+> +
+> +	ports {
+> +		port@2 {
+> +			ldb_lvds_ch1: endpoint {
+> +				remote-endpoint = <&panel1_in>;
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&media_blk_ctrl {
+> +	assigned-clocks = <&clk IMX8MP_CLK_MEDIA_AXI>,
+> +			  <&clk IMX8MP_CLK_MEDIA_APB>,
+> +			  <&clk IMX8MP_CLK_MEDIA_DISP1_PIX>,
+> +			  <&clk IMX8MP_CLK_MEDIA_DISP2_PIX>,
+> +			  <&clk IMX8MP_VIDEO_PLL1>;
+> +	assigned-clock-parents = <&clk IMX8MP_SYS_PLL2_1000M>,
+> +				 <&clk IMX8MP_SYS_PLL1_800M>,
+> +				 <&clk IMX8MP_VIDEO_PLL1_OUT>,
+> +				 <&clk IMX8MP_AUDIO_PLL2_OUT>;
+> +	assigned-clock-rates = <500000000>, <200000000>, <0>, <0>, <1039500000>;
+> +};
+> +
+>  &micfil {
+>  	pinctrl-names = "default";
+>  	pinctrl-0 = <&pinctrl_pdm>;
+> @@ -496,6 +599,12 @@ &pcie_phy {
+>  	status = "okay";
+>  };
+>  
+> +&pwm2 {
+> +	status = "okay";
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_pwm2>;
+> +};
+> +
+>  &sai3 {
+>  	pinctrl-names = "default";
+>  	pinctrl-0 = <&pinctrl_sai3>;
+> @@ -596,6 +705,13 @@ &usdhc2 {
+>  };
+>  
+>  &iomuxc {
+> +
+> +	pinctrl_pwm2: pwm2grp {
+> +		fsl,pins = <
+> +			MX8MP_IOMUXC_GPIO1_IO09__PWM2_OUT	0x116
+> +		>;
+> +	};
+> +
+>  	pinctrl_ecspi2: ecspi2grp {
+>  		fsl,pins = <
+>  			MX8MP_IOMUXC_ECSPI2_SCLK__ECSPI2_SCLK	0x82
+> -- 
+> 2.43.0
+> 
+> 
+> 
 
