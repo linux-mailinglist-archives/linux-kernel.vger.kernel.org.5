@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-88891-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88893-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E6E586E80E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:17:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AD3E686E816
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:17:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1FDD01C2206B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:17:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B5D8E1C21AEE
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:17:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B101028383;
-	Fri,  1 Mar 2024 18:17:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B40739AE7;
+	Fri,  1 Mar 2024 18:17:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="IhcizhTi"
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2074.outbound.protection.outlook.com [40.107.212.74])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="v7NUJBcW"
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2069.outbound.protection.outlook.com [40.107.94.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2DA58825;
-	Fri,  1 Mar 2024 18:17:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.212.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 664BFC2C7;
+	Fri,  1 Mar 2024 18:17:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.69
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709317033; cv=fail; b=UlCAmmSQ+6wONAaMomm/rV4shOEJxtdynjUA/59bRXldxYT4sNB47swROL5WCvgmNnX/tqnSd9HkU+bsV2XqGj3MRg7898+aJUgTZ74qNHx/PdASgr6HfAqsg60Pv/0Pee5qIAnlGbI/NXtCpwYvduuAnQBD0waW2IHqTdRvYog=
+	t=1709317035; cv=fail; b=tGQtKU8+96ESbWIqKL2yHamhszFxtCcavETiYK19LWHvuG1jrobRlT+KflLNChMERKm7BAIZLgDDrA+R9cY9Gyz4cE+fp7NKLUpwWfPb7l3efN57NVAm77GpjF+ru5vQyPDAKTx+IaET2L4/VWi+uehy6yvQqcuUBWf9CtQcA7w=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709317033; c=relaxed/simple;
-	bh=qDErJv3mMHu7GxRPmcX9r96ekS2YDAPnGo0SzEayMbk=;
+	s=arc-20240116; t=1709317035; c=relaxed/simple;
+	bh=khKv74DYQmIxxkHDNBn/tD9EKqIjHRpGz9WIhVVYj9w=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=LbtkcCK2qc5bNfpAwwfDTA3S9nEoxMxv66mE2Nu+cpPc1u62URuULL9xegcDdFrq5HjMdEW8wGGaq+uLk95VxKhQRu0nN2R51LjTQpvhZu8a/pB4D6CVCS0tp/94B9qxU3J6wQVApC6CNe1s/XZletJZ8udYA3+UtpzC4QiPKjk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=IhcizhTi; arc=fail smtp.client-ip=40.107.212.74
+	 MIME-Version:Content-Type; b=j6OjII6j6IXK49Vj9qEpK/03QjXrv6gw0xMaMHfdl7gXOW+i4EH4FJvKJHZfwZBLdugIf8ub4IfKnErm/IS5xN8xg67mEYag5bpzQpM5MYNuPqQRg8fXa5knmyoYjgJY4f2x9zG+yTddJsKsy3f6e9aXfPRQx0HgV/8Q8AzpvRQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=v7NUJBcW; arc=fail smtp.client-ip=40.107.94.69
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WD5XObqMrQC3poeuL4tNEbnkdA8+uQ1bkwJqLV3ajwWOxyouhRyQAPhxyMqSkJFm/k5rMaotG5TdQgrrNV39/HqX9v/Mz5tChgC8Rm3idsYJ4yGxcljot8uVHOG4FU1zg+kdsTAACnETu4Obh4KP4ko8v5DRMw8MJbjc3IgxIhCOUdqGqqD4yTMl97zzOfXo5cNCYZIO0SW0S5VpVoE82LZW4CJ/420YlDpoUOYODnYlauQcsk1CN4GKNBo/Ny1ScP3SK2r0P2psFmKP6tcZIq6wrm2C1aeUXfMINmWwS5F18K1FpA9Z9aGh+KMbLK1f772oLdG+6c2SoWe7FVyZWA==
+ b=ShvH/ksv9e+l/FGd7/tOtoKetF/wubgMEPFQmtwp13KuAASLi5A49cMRjqmDE+xkiZl2d9eAGBj2j1SR0fsZei379sXlS0I/clBmKp8tJybikTeeMq2lBLTLcgOuJAJGCqpXzxvLIBurQ4eJ4lK6lkDFUQsIxk2TLf/Zmi72Tn0syJoBu5wxouq+Ba9QAFMkUJGl83AbHnNJoE57LjbulrJYfPNdGPYhqR51vzRK9tfHVQuM2KVzLP4MgRaEkJZkrK353/FBu40xjQUbYgu7oOo+8qmlsdsEApYytHfElgOwn9Ts1k8lXQR9UIDO+OBmhzVwHGsEPtu6rhoBq8xfIQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lM9DTxTghBBdcVUVEjO5JQZu4wlEdGOqat/qzIryIUE=;
- b=M/MTJ4bIPWnLJCIne5pdDRQBZ9YFKS+6I4GxVDh+5C9SjeZW1e1179gZtyw/3VJVM06NF2CvtnIKEfbdxP2IKke5kU8hd+taI5akkJOa6TBSDYhyN+A2LlPPXrV7QrEtUa+Vnp9wXcvaaE3pqgAsuq5DqbopwAsak9Jh+WjoSn5y2oUiZbx28G8sdTiOOwz4jNaXwx0EScOAl5vGyy2VbB8SUwS+zkmRZF3wGZi1fj1NcH69UeMHbYmEb95mLB/3CB9IPPwXBpSJnEvl0HOITjxGxrxRd9rxjEIGEJYmepETNkhoQX8oQ53G3r2YhKRbEPHqIq6UYsL/MqMLjnoWPA==
+ bh=5QvdQz2M2/fLMvKSQ570m2pRkl/Vtg8xNlpHK6pkgLY=;
+ b=GAJ9833o2pQavqbVeXaN2qj0hXg3TwrNqSti3csDtqgln1bVzfxT/kGSk0d3HtNREU6tPv15Okq0pZdNm8G77lCS7KV8PVIDdfFKRptp4TSPLQ8IFWZsLTt/304uH8RP5Q9Q+LlDNvlmmdRx0OLJKq3XgyounCxT5lp5k1rV9NDQ/ZSE+VPulXu3LiLT1gAAE9icQeQ+nNm62t8y2SP05l/rF3hEKQ5oJMPZdeqQl6YX/RopdwfxCtIYhS8IFrTw9CJ2a/qMvXeUeew7J4q6hW+hucxiGjfUobCnEpRLlXMEOEZMwwK11wLkIZZ4f9GC/ZpPTuhwoiO36t3toeKzdA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
  (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lM9DTxTghBBdcVUVEjO5JQZu4wlEdGOqat/qzIryIUE=;
- b=IhcizhTiC8wqlMqADJuqpsOJjXCy8OD3GEQYiz17KnmsyyI3qE8751FdKorcdrVlEZj1V27Db9VY67bXp5HWJKWgtlhRy/pe05UG6WrSFciVJAHXNUrgrX6nCD/IUxhSLbG2XT7PyVCDQTvsZ55uRMAhJj9050/6LpmOcQvogvw=
-Received: from BN9PR03CA0672.namprd03.prod.outlook.com (2603:10b6:408:10e::17)
- by PH7PR12MB5973.namprd12.prod.outlook.com (2603:10b6:510:1d8::12) with
+ bh=5QvdQz2M2/fLMvKSQ570m2pRkl/Vtg8xNlpHK6pkgLY=;
+ b=v7NUJBcWvxjEeNnbMSnsLskD8OMPGufRNWzb2G+NMMFFHqsg1TnkkmPU2rit+J8nXJYhjHXKjE8rX2IpAMu+AlI6bo0gstZYSyEguvqN+14DK2VfaVdFebO5SFNKJy5SDaYTOSr1GKKVixT7lHA7iR+6zCaFSH47YpyX/Pt4bEc=
+Received: from BN9PR03CA0666.namprd03.prod.outlook.com (2603:10b6:408:10e::11)
+ by SN7PR12MB8603.namprd12.prod.outlook.com (2603:10b6:806:260::15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.47; Fri, 1 Mar
- 2024 18:17:08 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.32; Fri, 1 Mar
+ 2024 18:17:09 +0000
 Received: from BN3PEPF0000B06B.namprd21.prod.outlook.com
- (2603:10b6:408:10e:cafe::28) by BN9PR03CA0672.outlook.office365.com
- (2603:10b6:408:10e::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.33 via Frontend
- Transport; Fri, 1 Mar 2024 18:17:08 +0000
+ (2603:10b6:408:10e:cafe::27) by BN9PR03CA0666.outlook.office365.com
+ (2603:10b6:408:10e::11) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.34 via Frontend
+ Transport; Fri, 1 Mar 2024 18:17:09 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -64,24 +64,29 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
 Received: from SATLEXMB03.amd.com (165.204.84.17) by
  BN3PEPF0000B06B.mail.protection.outlook.com (10.167.243.70) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7362.0 via Frontend Transport; Fri, 1 Mar 2024 18:17:07 +0000
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB03.amd.com
+ 15.20.7362.0 via Frontend Transport; Fri, 1 Mar 2024 18:17:09 +0000
+Received: from SATLEXMB05.amd.com (10.181.40.146) by SATLEXMB03.amd.com
  (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 1 Mar
- 2024 12:17:07 -0600
+ 2024 12:17:08 -0600
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB05.amd.com
+ (10.181.40.146) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 1 Mar
+ 2024 12:17:08 -0600
 Received: from xsjtanmays50.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
- Transport; Fri, 1 Mar 2024 12:17:06 -0600
+ Transport; Fri, 1 Mar 2024 12:17:07 -0600
 From: Tanmay Shah <tanmay.shah@amd.com>
 To: <andersson@kernel.org>, <mathieu.poirier@linaro.org>,
 	<robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
 	<conor+dt@kernel.org>, <michal.simek@amd.com>, <ben.levinsky@amd.com>,
 	<tanmay.shah@amd.com>
 CC: <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v12 1/4] remoteproc: zynqmp: fix lockstep mode memory region
-Date: Fri, 1 Mar 2024 10:16:35 -0800
-Message-ID: <20240301181638.814215-2-tanmay.shah@amd.com>
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+Subject: [PATCH v12 2/4] dt-bindings: remoteproc: add Tightly Coupled Memory (TCM) bindings
+Date: Fri, 1 Mar 2024 10:16:36 -0800
+Message-ID: <20240301181638.814215-3-tanmay.shah@amd.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240301181638.814215-1-tanmay.shah@amd.com>
 References: <20240301181638.814215-1-tanmay.shah@amd.com>
@@ -93,260 +98,300 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-Received-SPF: None (SATLEXMB03.amd.com: tanmay.shah@amd.com does not designate
+Received-SPF: None (SATLEXMB05.amd.com: tanmay.shah@amd.com does not designate
  permitted sender hosts)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN3PEPF0000B06B:EE_|PH7PR12MB5973:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6e591d18-3236-4dcb-6ec6-08dc3a1bce69
+X-MS-TrafficTypeDiagnostic: BN3PEPF0000B06B:EE_|SN7PR12MB8603:EE_
+X-MS-Office365-Filtering-Correlation-Id: d8e33428-863f-46b1-2b19-08dc3a1bcf28
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	ln7N5IgKf9DYCbOOxLX3f7XhVqLmPYLS66X8237OLb1FTHj+rvtichwn4cgg/JgHf5rmqA5HTEah9lOyjmM5EWxKsNIOW75FriLdxf77cr4wIy6TMugQJXWu//8NeMQPZovIXBNgvNnlM1Gfvm5+I7Q2c7zymBeynz81Y03tZk8svkYBhu3ilajYG+51ZnZ7g04xWDaGa/xgYuCd3hb90s3n82kPLG8J9ydJSsRn1Qpw8q3FMdyUiOhq7WTxB8N3e8wzwdhDSXb7L83v6ldphoPM64sOnYVlCwxbeKkk6CtmT1Wzp2zVio4zYvCV0o4102VRNqhdIvhWs0pCiuqdbBhH50MMgtQe5cBQkwpoGzA9LJGSjTbd+qpJDOPGKATaJIfIm3S37GsPo9TSzLCPLz8sVSA/Lxa4T3rfGKqXlncYYe/AXVKxWKZZeM9ujucBee+cGBiOqve4/JNvJWClQDCvkxgy9zPAPreZCaa8BKQO6khZboS7AHFBwE9qxFJngA3h3votv6YhHB/UUZg/dn9WSMl7Rzm0VvuIsD09qeBnrbx1UDe/9mdptMZA9kcErl1z3UK/H2BEOQhGSUXZZTtd+Z593Hb/wiOlp9c54f76X5PrsZ+J5M0GbUnO3iWdBthuU2I6DwgZzQ5vKzfz64K2T7skS0AdtHKbxxX0i4qXUvnithwo5gEXUmK+16OBOKkJI564i1EG7+xbUP/nDPWH/SyMpI0MijeuRhiJw51Im4anQMS/AFjL4ECBodzc
+	f0Zil+mV5KbWj7HO230ErDD7Ww+3c+Ij6H+CMZ/VebL3rqNnI0nU0gUoxH/jptn5wdzsHQI731tohrXY83LvyPb/tIA6bGCpRJH+EKNADE1DptSpRFiJU0u8bE2HE6ntwkWUIO2KVlZ36fKgJXf4sutaRmu+NrQrYA2zwBHRQKpijz4+478V0fWvap5Rll3TKmwKB7GND1Lt3JWQgoedqDUSEUgBA2iSGGLFmYOvpD7/40sps5nFjzbKI3Aw1ens7bShjxqnF5ONsco4vMHnWX0fv61Zgl4FRWDNFCvglf/pUsZjYOwyzg+BxTX/qSfei7LZZF4T8As6fqgeFUrinJb5Z/ZolV5Jmg1joqh5L+KJ32FV7DkRkStBwpfMKfL9IO8sDqGgPEkTuWjaGpBBGCJ+4Wp4cU3qPrCsFzLxnA8lEmkqpQ0F9ZqCekFc/7F3jMhdDdIrKwjKgOCBg/QlEqShSKmKalBf7qzKP9B9CkZ3KM3mr0kaRRCcW3T6BwoBK2qZ1KLvL6X9xEqJygpLMt4rjqsC1z4OKivAAiBJCXl17Klk32rPWlc3VZmT2TLSTn0XH0OIJeGh8hPBScDDpZF2s5ZHKr8dfwXflBjLWnRjkPBF37T+BBDkdXfhqlKWG6ins8TgHtlZcVYJ/G4cUMlD/+E/6dD/U52pPkzfJj+bxrJzaCGIqzlZHFygWnWSacxu6amCQUPMa6Pr14h/gdKd6Wcv8h45UJ+GmhZQ6uf2344J5q+9UP+rNARBOgsr
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(82310400014);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(82310400014)(36860700004);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Mar 2024 18:17:07.9905
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Mar 2024 18:17:09.2562
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6e591d18-3236-4dcb-6ec6-08dc3a1bce69
+X-MS-Exchange-CrossTenant-Network-Message-Id: d8e33428-863f-46b1-2b19-08dc3a1bcf28
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
 	BN3PEPF0000B06B.namprd21.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5973
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB8603
 
-In lockstep mode, r5 core0 uses TCM of R5 core1. Following is lockstep
-mode memory region as per hardware reference manual.
+From: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
 
-    |      *TCM*         |   *R5 View* | *Linux view* |
-    | R5_0 ATCM (128 KB) | 0x0000_0000 | 0xFFE0_0000  |
-    | R5_0 BTCM (128 KB) | 0x0002_0000 | 0xFFE2_0000  |
+Introduce bindings for TCM memory address space on AMD-xilinx Zynq
+UltraScale+ platform. It will help in defining TCM in device-tree
+and make it's access platform agnostic and data-driven.
 
-However, driver shouldn't model it as above because R5 core0 TCM and core1
-TCM has different power-domains mapped to it.
-Hence, TCM address space in lockstep mode should be modeled as 64KB
-regions only where each region has its own power-domain as following:
+Tightly-coupled memories(TCMs) are low-latency memory that provides
+predictable instruction execution and predictable data load/store
+timing. Each Cortex-R5F processor contains two 64-bit wide 64 KB memory
+banks on the ATCM and BTCM ports, for a total of 128 KB of memory.
 
-    |      *TCM*         |   *R5 View* | *Linux view* |
-    | R5_0 ATCM0 (64 KB) | 0x0000_0000 | 0xFFE0_0000  |
-    | R5_0 BTCM0 (64 KB) | 0x0002_0000 | 0xFFE2_0000  |
-    | R5_0 ATCM1 (64 KB) | 0x0001_0000 | 0xFFE1_0000  |
-    | R5_0 BTCM1 (64 KB) | 0x0003_0000 | 0xFFE3_0000  |
+The TCM resources(reg, reg-names and power-domain) are documented for
+each TCM in the R5 node. The reg and reg-names are made as required
+properties as we don't want to hardcode TCM addresses for future
+platforms and for zu+ legacy implementation will ensure that the
+old dts w/o reg/reg-names works and stable ABI is maintained.
 
-This makes driver maintanance easy and makes design robust for future
-platorms as well.
+It also extends the examples for TCM split and lockstep modes.
 
+Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
 Signed-off-by: Tanmay Shah <tanmay.shah@amd.com>
 ---
 
 Changes in v12:
-  - None
+  - add "reg", "reg-names" and "power-domains" in pattern properties
+  - add "reg" and "reg-names" in required list
+  - keep "power-domains" in required list as it was before the change
 
- drivers/remoteproc/xlnx_r5_remoteproc.c | 145 ++----------------------
- 1 file changed, 12 insertions(+), 133 deletions(-)
+Changes in v11:
+  - Fix yamllint warning and reduce indentation as needed
 
-diff --git a/drivers/remoteproc/xlnx_r5_remoteproc.c b/drivers/remoteproc/xlnx_r5_remoteproc.c
-index 4395edea9a64..42b0384d34f2 100644
---- a/drivers/remoteproc/xlnx_r5_remoteproc.c
-+++ b/drivers/remoteproc/xlnx_r5_remoteproc.c
-@@ -84,12 +84,12 @@ static const struct mem_bank_data zynqmp_tcm_banks_split[] = {
- 	{0xffeb0000UL, 0x20000, 0x10000UL, PD_R5_1_BTCM, "btcm1"},
- };
+ .../remoteproc/xlnx,zynqmp-r5fss.yaml         | 188 ++++++++++++++++--
+ 1 file changed, 168 insertions(+), 20 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/remoteproc/xlnx,zynqmp-r5fss.yaml b/Documentation/devicetree/bindings/remoteproc/xlnx,zynqmp-r5fss.yaml
+index 78aac69f1060..dc6ce308688f 100644
+--- a/Documentation/devicetree/bindings/remoteproc/xlnx,zynqmp-r5fss.yaml
++++ b/Documentation/devicetree/bindings/remoteproc/xlnx,zynqmp-r5fss.yaml
+@@ -20,9 +20,21 @@ properties:
+   compatible:
+     const: xlnx,zynqmp-r5fss
  
--/* In lockstep mode cluster combines each 64KB TCM and makes 128KB TCM */
-+/* In lockstep mode cluster uses each 64KB TCM from second core as well */
- static const struct mem_bank_data zynqmp_tcm_banks_lockstep[] = {
--	{0xffe00000UL, 0x0, 0x20000UL, PD_R5_0_ATCM, "atcm0"}, /* TCM 128KB each */
--	{0xffe20000UL, 0x20000, 0x20000UL, PD_R5_0_BTCM, "btcm0"},
--	{0, 0, 0, PD_R5_1_ATCM, ""},
--	{0, 0, 0, PD_R5_1_BTCM, ""},
-+	{0xffe00000UL, 0x0, 0x10000UL, PD_R5_0_ATCM, "atcm0"}, /* TCM 64KB each */
-+	{0xffe20000UL, 0x20000, 0x10000UL, PD_R5_0_BTCM, "btcm0"},
-+	{0xffe10000UL, 0x10000, 0x10000UL, PD_R5_1_ATCM, "atcm1"},
-+	{0xffe30000UL, 0x30000, 0x10000UL, PD_R5_1_BTCM, "btcm1"},
- };
++  "#address-cells":
++    const: 2
++
++  "#size-cells":
++    const: 2
++
++  ranges:
++    description: |
++      Standard ranges definition providing address translations for
++      local R5F TCM address spaces to bus addresses.
++
+   xlnx,cluster-mode:
+     $ref: /schemas/types.yaml#/definitions/uint32
+     enum: [0, 1, 2]
++    default: 1
+     description: |
+       The RPU MPCore can operate in split mode (Dual-processor performance), Safety
+       lock-step mode(Both RPU cores execute the same code in lock-step,
+@@ -37,7 +49,7 @@ properties:
+       2: single cpu mode
  
- /**
-@@ -540,14 +540,14 @@ static int tcm_mem_map(struct rproc *rproc,
- }
+ patternProperties:
+-  "^r5f-[a-f0-9]+$":
++  "^r5f@[0-9a-f]+$":
+     type: object
+     description: |
+       The RPU is located in the Low Power Domain of the Processor Subsystem.
+@@ -54,8 +66,17 @@ patternProperties:
+       compatible:
+         const: xlnx,zynqmp-r5f
  
- /*
-- * add_tcm_carveout_split_mode()
-+ * add_tcm_banks()
-  * @rproc: single R5 core's corresponding rproc instance
-  *
-- * allocate and add remoteproc carveout for TCM memory in split mode
-+ * allocate and add remoteproc carveout for TCM memory
-  *
-  * return 0 on success, otherwise non-zero value on failure
-  */
--static int add_tcm_carveout_split_mode(struct rproc *rproc)
-+static int add_tcm_banks(struct rproc *rproc)
- {
- 	struct rproc_mem_entry *rproc_mem;
- 	struct zynqmp_r5_core *r5_core;
-@@ -580,10 +580,10 @@ static int add_tcm_carveout_split_mode(struct rproc *rproc)
- 					     ZYNQMP_PM_REQUEST_ACK_BLOCKING);
- 		if (ret < 0) {
- 			dev_err(dev, "failed to turn on TCM 0x%x", pm_domain_id);
--			goto release_tcm_split;
-+			goto release_tcm;
- 		}
++      reg:
++        minItems: 1
++        maxItems: 4
++
++      reg-names:
++        minItems: 1
++        maxItems: 4
++
+       power-domains:
+-        maxItems: 1
++        minItems: 2
++        maxItems: 5
  
--		dev_dbg(dev, "TCM carveout split mode %s addr=%llx, da=0x%x, size=0x%lx",
-+		dev_dbg(dev, "TCM carveout %s addr=%llx, da=0x%x, size=0x%lx",
- 			bank_name, bank_addr, da, bank_size);
+       mboxes:
+         minItems: 1
+@@ -101,35 +122,162 @@ patternProperties:
  
- 		rproc_mem = rproc_mem_entry_init(dev, NULL, bank_addr,
-@@ -593,7 +593,7 @@ static int add_tcm_carveout_split_mode(struct rproc *rproc)
- 		if (!rproc_mem) {
- 			ret = -ENOMEM;
- 			zynqmp_pm_release_node(pm_domain_id);
--			goto release_tcm_split;
-+			goto release_tcm;
- 		}
+     required:
+       - compatible
++      - reg
++      - reg-names
+       - power-domains
  
- 		rproc_add_carveout(rproc, rproc_mem);
-@@ -601,7 +601,7 @@ static int add_tcm_carveout_split_mode(struct rproc *rproc)
+-    unevaluatedProperties: false
+-
+ required:
+   - compatible
++  - "#address-cells"
++  - "#size-cells"
++  - ranges
++
++allOf:
++  - if:
++      properties:
++        xlnx,cluster-mode:
++          enum:
++            - 1
++    then:
++      patternProperties:
++        "^r5f@[0-9a-f]+$":
++          type: object
++
++          properties:
++            reg:
++              minItems: 1
++              items:
++                - description: ATCM internal memory
++                - description: BTCM internal memory
++                - description: extra ATCM memory in lockstep mode
++                - description: extra BTCM memory in lockstep mode
++
++            reg-names:
++              minItems: 1
++              items:
++                - const: atcm0
++                - const: btcm0
++                - const: atcm1
++                - const: btcm1
++
++    else:
++      patternProperties:
++        "^r5f@[0-9a-f]+$":
++          type: object
++
++          properties:
++            reg:
++              minItems: 1
++              items:
++                - description: ATCM internal memory
++                - description: BTCM internal memory
++
++            reg-names:
++              minItems: 1
++              items:
++                - const: atcm0
++                - const: btcm0
++
++            power-domains:
++              maxItems: 3
  
- 	return 0;
+ additionalProperties: false
  
--release_tcm_split:
-+release_tcm:
- 	/* If failed, Turn off all TCM banks turned on before */
- 	for (i--; i >= 0; i--) {
- 		pm_domain_id = r5_core->tcm_banks[i]->pm_domain_id;
-@@ -610,127 +610,6 @@ static int add_tcm_carveout_split_mode(struct rproc *rproc)
- 	return ret;
- }
+ examples:
+   - |
+-    remoteproc {
+-        compatible = "xlnx,zynqmp-r5fss";
+-        xlnx,cluster-mode = <1>;
+-
+-        r5f-0 {
+-            compatible = "xlnx,zynqmp-r5f";
+-            power-domains = <&zynqmp_firmware 0x7>;
+-            memory-region = <&rproc_0_fw_image>, <&rpu0vdev0buffer>, <&rpu0vdev0vring0>, <&rpu0vdev0vring1>;
+-            mboxes = <&ipi_mailbox_rpu0 0>, <&ipi_mailbox_rpu0 1>;
+-            mbox-names = "tx", "rx";
++    #include <dt-bindings/power/xlnx-zynqmp-power.h>
++
++    // Split mode configuration
++    soc {
++        #address-cells = <2>;
++        #size-cells = <2>;
++
++        remoteproc@ffe00000 {
++            compatible = "xlnx,zynqmp-r5fss";
++            xlnx,cluster-mode = <0>;
++
++            #address-cells = <2>;
++            #size-cells = <2>;
++            ranges = <0x0 0x0 0x0 0xffe00000 0x0 0x10000>,
++                     <0x0 0x20000 0x0 0xffe20000 0x0 0x10000>,
++                     <0x1 0x0 0x0 0xffe90000 0x0 0x10000>,
++                     <0x1 0x20000 0x0 0xffeb0000 0x0 0x10000>;
++
++            r5f@0 {
++                compatible = "xlnx,zynqmp-r5f";
++                reg = <0x0 0x0 0x0 0x10000>, <0x0 0x20000 0x0 0x10000>;
++                reg-names = "atcm0", "btcm0";
++                power-domains = <&zynqmp_firmware PD_RPU_0>,
++                                <&zynqmp_firmware PD_R5_0_ATCM>,
++                                <&zynqmp_firmware PD_R5_0_BTCM>;
++                memory-region = <&rproc_0_fw_image>, <&rpu0vdev0buffer>,
++                                <&rpu0vdev0vring0>, <&rpu0vdev0vring1>;
++                mboxes = <&ipi_mailbox_rpu0 0>, <&ipi_mailbox_rpu0 1>;
++                mbox-names = "tx", "rx";
++            };
++
++            r5f@1 {
++                compatible = "xlnx,zynqmp-r5f";
++                reg = <0x1 0x0 0x0 0x10000>, <0x1 0x20000 0x0 0x10000>;
++                reg-names = "atcm0", "btcm0";
++                power-domains = <&zynqmp_firmware PD_RPU_1>,
++                                <&zynqmp_firmware PD_R5_1_ATCM>,
++                                <&zynqmp_firmware PD_R5_1_BTCM>;
++                memory-region = <&rproc_1_fw_image>, <&rpu1vdev0buffer>,
++                                <&rpu1vdev0vring0>, <&rpu1vdev0vring1>;
++                mboxes = <&ipi_mailbox_rpu1 0>, <&ipi_mailbox_rpu1 1>;
++                mbox-names = "tx", "rx";
++            };
+         };
++    };
++
++  - |
++    //Lockstep configuration
++    soc {
++        #address-cells = <2>;
++        #size-cells = <2>;
++
++        remoteproc@ffe00000 {
++            compatible = "xlnx,zynqmp-r5fss";
++            xlnx,cluster-mode = <1>;
++
++            #address-cells = <2>;
++            #size-cells = <2>;
++            ranges = <0x0 0x0 0x0 0xffe00000 0x0 0x10000>,
++                     <0x0 0x20000 0x0 0xffe20000 0x0 0x10000>,
++                     <0x0 0x10000 0x0 0xffe10000 0x0 0x10000>,
++                     <0x0 0x30000 0x0 0xffe30000 0x0 0x10000>;
++
++            r5f@0 {
++                compatible = "xlnx,zynqmp-r5f";
++                reg = <0x0 0x0 0x0 0x10000>,
++                      <0x0 0x20000 0x0 0x10000>,
++                      <0x0 0x10000 0x0 0x10000>,
++                      <0x0 0x30000 0x0 0x10000>;
++                reg-names = "atcm0", "btcm0", "atcm1", "btcm1";
++                power-domains = <&zynqmp_firmware PD_RPU_0>,
++                                <&zynqmp_firmware PD_R5_0_ATCM>,
++                                <&zynqmp_firmware PD_R5_0_BTCM>,
++                                <&zynqmp_firmware PD_R5_1_ATCM>,
++                                <&zynqmp_firmware PD_R5_1_BTCM>;
++                memory-region = <&rproc_0_fw_image>, <&rpu0vdev0buffer>,
++                                <&rpu0vdev0vring0>, <&rpu0vdev0vring1>;
++                mboxes = <&ipi_mailbox_rpu0 0>, <&ipi_mailbox_rpu0 1>;
++                mbox-names = "tx", "rx";
++            };
  
--/*
-- * add_tcm_carveout_lockstep_mode()
-- * @rproc: single R5 core's corresponding rproc instance
-- *
-- * allocate and add remoteproc carveout for TCM memory in lockstep mode
-- *
-- * return 0 on success, otherwise non-zero value on failure
-- */
--static int add_tcm_carveout_lockstep_mode(struct rproc *rproc)
--{
--	struct rproc_mem_entry *rproc_mem;
--	struct zynqmp_r5_core *r5_core;
--	int i, num_banks, ret;
--	phys_addr_t bank_addr;
--	size_t bank_size = 0;
--	struct device *dev;
--	u32 pm_domain_id;
--	char *bank_name;
--	u32 da;
--
--	r5_core = rproc->priv;
--	dev = r5_core->dev;
--
--	/* Go through zynqmp banks for r5 node */
--	num_banks = r5_core->tcm_bank_count;
--
--	/*
--	 * In lockstep mode, TCM is contiguous memory block
--	 * However, each TCM block still needs to be enabled individually.
--	 * So, Enable each TCM block individually.
--	 * Although ATCM and BTCM is contiguous memory block, add two separate
--	 * carveouts for both.
--	 */
--	for (i = 0; i < num_banks; i++) {
--		pm_domain_id = r5_core->tcm_banks[i]->pm_domain_id;
--
--		/* Turn on each TCM bank individually */
--		ret = zynqmp_pm_request_node(pm_domain_id,
--					     ZYNQMP_PM_CAPABILITY_ACCESS, 0,
--					     ZYNQMP_PM_REQUEST_ACK_BLOCKING);
--		if (ret < 0) {
--			dev_err(dev, "failed to turn on TCM 0x%x", pm_domain_id);
--			goto release_tcm_lockstep;
--		}
--
--		bank_size = r5_core->tcm_banks[i]->size;
--		if (bank_size == 0)
--			continue;
--
--		bank_addr = r5_core->tcm_banks[i]->addr;
--		da = r5_core->tcm_banks[i]->da;
--		bank_name = r5_core->tcm_banks[i]->bank_name;
--
--		/* Register TCM address range, TCM map and unmap functions */
--		rproc_mem = rproc_mem_entry_init(dev, NULL, bank_addr,
--						 bank_size, da,
--						 tcm_mem_map, tcm_mem_unmap,
--						 bank_name);
--		if (!rproc_mem) {
--			ret = -ENOMEM;
--			zynqmp_pm_release_node(pm_domain_id);
--			goto release_tcm_lockstep;
--		}
--
--		/* If registration is success, add carveouts */
--		rproc_add_carveout(rproc, rproc_mem);
--
--		dev_dbg(dev, "TCM carveout lockstep mode %s addr=0x%llx, da=0x%x, size=0x%lx",
--			bank_name, bank_addr, da, bank_size);
--	}
--
--	return 0;
--
--release_tcm_lockstep:
--	/* If failed, Turn off all TCM banks turned on before */
--	for (i--; i >= 0; i--) {
--		pm_domain_id = r5_core->tcm_banks[i]->pm_domain_id;
--		zynqmp_pm_release_node(pm_domain_id);
--	}
--	return ret;
--}
--
--/*
-- * add_tcm_banks()
-- * @rproc: single R5 core's corresponding rproc instance
-- *
-- * allocate and add remoteproc carveouts for TCM memory based on cluster mode
-- *
-- * return 0 on success, otherwise non-zero value on failure
-- */
--static int add_tcm_banks(struct rproc *rproc)
--{
--	struct zynqmp_r5_cluster *cluster;
--	struct zynqmp_r5_core *r5_core;
--	struct device *dev;
--
--	r5_core = rproc->priv;
--	if (!r5_core)
--		return -EINVAL;
--
--	dev = r5_core->dev;
--
--	cluster = dev_get_drvdata(dev->parent);
--	if (!cluster) {
--		dev_err(dev->parent, "Invalid driver data\n");
--		return -EINVAL;
--	}
--
--	/*
--	 * In lockstep mode TCM banks are one contiguous memory region of 256Kb
--	 * In split mode, each TCM bank is 64Kb and not contiguous.
--	 * We add memory carveouts accordingly.
--	 */
--	if (cluster->mode == SPLIT_MODE)
--		return add_tcm_carveout_split_mode(rproc);
--	else if (cluster->mode == LOCKSTEP_MODE)
--		return add_tcm_carveout_lockstep_mode(rproc);
--
--	return -EINVAL;
--}
--
- /*
-  * zynqmp_r5_parse_fw()
-  * @rproc: single R5 core's corresponding rproc instance
+-        r5f-1 {
+-            compatible = "xlnx,zynqmp-r5f";
+-            power-domains = <&zynqmp_firmware 0x8>;
+-            memory-region = <&rproc_1_fw_image>, <&rpu1vdev0buffer>, <&rpu1vdev0vring0>, <&rpu1vdev0vring1>;
+-            mboxes = <&ipi_mailbox_rpu1 0>, <&ipi_mailbox_rpu1 1>;
+-            mbox-names = "tx", "rx";
++            r5f@1 {
++                compatible = "xlnx,zynqmp-r5f";
++                reg = <0x1 0x0 0x0 0x10000>, <0x1 0x20000 0x0 0x10000>;
++                reg-names = "atcm0", "btcm0";
++                power-domains = <&zynqmp_firmware PD_RPU_1>,
++                                <&zynqmp_firmware PD_R5_1_ATCM>,
++                                <&zynqmp_firmware PD_R5_1_BTCM>;
++                memory-region = <&rproc_1_fw_image>, <&rpu1vdev0buffer>,
++                                <&rpu1vdev0vring0>, <&rpu1vdev0vring1>;
++                mboxes = <&ipi_mailbox_rpu1 0>, <&ipi_mailbox_rpu1 1>;
++                mbox-names = "tx", "rx";
++            };
+         };
+     };
+ ...
 -- 
 2.25.1
 
