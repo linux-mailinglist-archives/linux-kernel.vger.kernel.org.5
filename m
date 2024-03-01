@@ -1,212 +1,156 @@
-Return-Path: <linux-kernel+bounces-87779-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87780-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 834C386D8EE
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 02:36:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD70D86D8EF
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 02:36:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 129D0283672
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:36:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 192D8B2110B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:36:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 588492E415;
-	Fri,  1 Mar 2024 01:36:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="c7UFXKtO"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11144374D9;
+	Fri,  1 Mar 2024 01:36:19 +0000 (UTC)
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34024A92E;
-	Fri,  1 Mar 2024 01:36:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A80BA92E;
+	Fri,  1 Mar 2024 01:36:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709256971; cv=none; b=m7zhoKgNuzGvjOJiz3O8bVlS5HGu4SKxJ+c7funvTe7ISWC7fcfMd8x0X5L791hyp2yh5v2bPrQMYPgaBQ8exialYJJnMzHJ8LP9RfyLK2V5axJj1s158uTyJ4jasxy3vZnd1n9sIjPgoVPJj4rWnrAXqjdaEjMAT0ZO9LEQRA8=
+	t=1709256978; cv=none; b=EuSuP4jOgH/iDKKjXd8cnPLCk0QBSiQh8iQkw+DSBgQEi98fxlq070uSIRwWXJsoFX/CWD5RIihFzjCZgOJ2DVwIp4NtlrGcOJJ06WB+r4yS4j9MsYy7na19xcl+woAzN1wpzc4EBsZS9UHw4z90qNWuT1wiLxVYL8qC3fnf8yM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709256971; c=relaxed/simple;
-	bh=lnWUWgTACekg7SxM68wQvGPTavjyMmJFPT+m1gI3OdU=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a02xOODT9+5U+m7GA2UzzVvh8y2oztkN+M5f8amz1YkMUfOj+hVR8H0BM7omdDIA3xgNxefZmznP2xaLKmDIlqEvWRSMNK8FsLn71uRAtE5cTIK3FGWlICJ/fIQP4G+VDrcrwyqXMwyv5lfQUNxsQ30qDKh21bZxnR4v9tnXx7g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=c7UFXKtO; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41TEQpkM006786;
-	Fri, 1 Mar 2024 01:35:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=qcppdkim1; bh=TtHNnTfGoMKg5efEVBnGq
-	6NLMyaY4z6AKIS0EWb8b0s=; b=c7UFXKtONcJtN6LV0x+OL5V7yrZXGu59BzQKX
-	LWMwCrvJmYd/hSonLiwG7dDdZ+M0V+TCrJYW3aUJ5qKNXpsTUB6xptdTVglYKVjr
-	Ej2UHzevU5p0RNcumlKmSujtgrm46wxF518KGPvKCt67SwXuBL9B9LfECWpPwU4j
-	InVfdIT0OzttKH2+fWcXrECDDzwsy+/4kh7qqp8fLy/Jkhv5OHBm7pg4zXnqwr2P
-	QRW9LLuE+3v/QAJubXyk7Qn/KdO/JbHpU1SKRdoEn1nNTc4ae3kyxVzSErRxkxaw
-	PV7dpP/YdiSVP3+a2l8RVY4IZZNP4O8I/dT34XmEYQTlNPomQ==
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wjupp1sgu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 01 Mar 2024 01:35:47 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4211ZkLN012568
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 1 Mar 2024 01:35:46 GMT
-Received: from hu-eberman-lv.qualcomm.com (10.49.16.6) by
- nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 29 Feb 2024 17:35:45 -0800
-Date: Thu, 29 Feb 2024 17:35:45 -0800
-From: Elliot Berman <quic_eberman@quicinc.com>
-To: David Hildenbrand <david@redhat.com>
-CC: Christoph Hellwig <hch@infradead.org>, Will Deacon <will@kernel.org>,
-        Quentin Perret <qperret@google.com>,
-        Chris Goldsworthy
-	<quic_cgoldswo@quicinc.com>,
-        Android KVM <android-kvm@google.com>,
-        "Patrick
- Daly" <quic_pdaly@quicinc.com>,
-        Alex Elder <elder@linaro.org>,
-        "Srinivas
- Kandagatla" <srinivas.kandagatla@linaro.org>,
-        Murali Nalajal
-	<quic_mnalajal@quicinc.com>,
-        Trilok Soni <quic_tsoni@quicinc.com>,
-        "Srivatsa
- Vaddagiri" <quic_svaddagi@quicinc.com>,
-        Carl van Schaik
-	<quic_cvanscha@quicinc.com>,
-        Philip Derrin <quic_pderrin@quicinc.com>,
-        Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>,
-        Jonathan Corbet
-	<corbet@lwn.net>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        "Dmitry
- Baryshkov" <dmitry.baryshkov@linaro.org>,
-        Fuad Tabba <tabba@google.com>,
-        "Sean Christopherson" <seanjc@google.com>,
-        Andrew Morton
-	<akpm@linux-foundation.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-mm@kvack.org>
-Subject: Re: Re: [PATCH v17 19/35] arch/mm: Export direct {un,}map functions
-Message-ID: <20240229170329275-0800.eberman@hu-eberman-lv.qualcomm.com>
-Mail-Followup-To: David Hildenbrand <david@redhat.com>, 
-	Christoph Hellwig <hch@infradead.org>, Will Deacon <will@kernel.org>, 
-	Quentin Perret <qperret@google.com>, Chris Goldsworthy <quic_cgoldswo@quicinc.com>, 
-	Android KVM <android-kvm@google.com>, Patrick Daly <quic_pdaly@quicinc.com>, 
-	Alex Elder <elder@linaro.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, 
-	Murali Nalajal <quic_mnalajal@quicinc.com>, Trilok Soni <quic_tsoni@quicinc.com>, 
-	Srivatsa Vaddagiri <quic_svaddagi@quicinc.com>, Carl van Schaik <quic_cvanscha@quicinc.com>, 
-	Philip Derrin <quic_pderrin@quicinc.com>, Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Bjorn Andersson <andersson@kernel.org>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
-	Fuad Tabba <tabba@google.com>, Sean Christopherson <seanjc@google.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, linux-arm-msm@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-mm@kvack.org
-References: <20240222-gunyah-v17-0-1e9da6763d38@quicinc.com>
- <20240222-gunyah-v17-19-1e9da6763d38@quicinc.com>
- <ZdhEtH7xzbzdhS2j@infradead.org>
- <20240223071006483-0800.eberman@hu-eberman-lv.qualcomm.com>
- <Zdxwo0abvklfam-Z@infradead.org>
- <2f4c44ad-b309-4baa-ac21-2ae19efd31fb@redhat.com>
- <20240226092020370-0800.eberman@hu-eberman-lv.qualcomm.com>
- <49d14780-56f4-478d-9f5f-0857e788c667@redhat.com>
+	s=arc-20240116; t=1709256978; c=relaxed/simple;
+	bh=wVXrnBTi3TycX+Jfqc1qPh0gqtHz5YmTj8yDDOMQ//w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mMpNR10qFaNimHzJSfeyuzSZYJahZK5HqiiJ1Dg0WPUYxFdGA941mBTG0KhTFHbSPA1QR5ijTw5Z0CyGCP0PcFFla0382yBGWg/qPoeaQdPEQ3Fyb8p0B19Cv4TS5ehxCKTYQ9Q3egjVuAjkhv1xQTnCpqGeIh9LkLtQx2e991A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5ce2aada130so1419726a12.1;
+        Thu, 29 Feb 2024 17:36:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709256976; x=1709861776;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XOjQrfFkf1F9ouFasWOllB0AHilUi/DGdhN7vfozvZA=;
+        b=FsIEuyZLHqt4rG6WF/tm1uNZBu9OgFxklg7+xa8yIZO1zuKbHflLlzasemgFfAlmRJ
+         93S20SOaWMCsNcTpX3kHB/W7E5w65x65NQjGiNDpi0Y1qNL8njZQXwpuZxy9wCBro0rg
+         s8OoxByFKMJ4dcVSfhUh1sXBDekUhvTheD/lNcO6MLUJHFzo+n2kBsiijzeBXGyQ5G50
+         JowW1c9zDgiY1VqlnVlHKFX1aRzwzq27wlBv529T/2gpQrfYy08K9O4mz4Amk+0bjc7e
+         +4Cs3ZWriC+y+xb1R5g1yjOsDhnuscbHmvePc5MJDwoq6f4MQEm2fuDjY2OpPhFAz4O1
+         Cz0Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVs7g5uibY5svYtxUWIYbUms9Ku5SNfUCQoOLuboKQG95wOAfVqytCEyFikX2yqpXROYdkU9JApQoTx6SPsvXc6RyvZaaB+KCv9btN2HQYkUFUo9rfe1t1plFCUCaOTKOE5C32CSO60ON4V1Zp2Cw==
+X-Gm-Message-State: AOJu0Yzpa8Sc8NnQrS+lNVIql2BXOLWQI42onuME/VBcLdW9mrSj/qs/
+	GgDlcouqdJ0rRa5ugz8tlVZybb56ETEaEM0Ydz6q7ogtzthDxTs2vDxARvpx8vSiCQnhwVqFZwe
+	JE5Ns1gBJz2myaWCwEhWVR5MS6SI=
+X-Google-Smtp-Source: AGHT+IFByFlqkYbgdcSEC43hr30l9SEgoYoZtmISoKUtUyRMzY4GKGULeaZm555ANW9kO8fJtvQQAQXg06Ctl1Ml7UU=
+X-Received: by 2002:a05:6a20:aea8:b0:1a1:34dd:7d92 with SMTP id
+ do40-20020a056a20aea800b001a134dd7d92mr106040pzb.59.1709256976409; Thu, 29
+ Feb 2024 17:36:16 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <49d14780-56f4-478d-9f5f-0857e788c667@redhat.com>
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: OYxMkhK68XESzq23hFsSJIpyHes2RpDe
-X-Proofpoint-GUID: OYxMkhK68XESzq23hFsSJIpyHes2RpDe
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-29_08,2024-02-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 spamscore=0
- lowpriorityscore=0 impostorscore=0 bulkscore=0 phishscore=0 suspectscore=0
- mlxlogscore=999 mlxscore=0 malwarescore=0 adultscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2402120000
- definitions=main-2403010011
+References: <20240229063253.561838-1-irogers@google.com> <20240229063253.561838-5-irogers@google.com>
+In-Reply-To: <20240229063253.561838-5-irogers@google.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Thu, 29 Feb 2024 17:36:05 -0800
+Message-ID: <CAM9d7cj9CgxmvSMLvDa=RM8zPRJpRbKqMkU7_B68HwEX7qo=hg@mail.gmail.com>
+Subject: Re: [PATCH v3 4/7] perf machine: Move machine's threads into its own abstraction
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Oliver Upton <oliver.upton@linux.dev>, 
+	Yang Jihong <yangjihong1@huawei.com>, linux-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 27, 2024 at 10:49:32AM +0100, David Hildenbrand wrote:
-> On 26.02.24 18:27, Elliot Berman wrote:
-> > On Mon, Feb 26, 2024 at 12:53:48PM +0100, David Hildenbrand wrote:
-> > > On 26.02.24 12:06, Christoph Hellwig wrote:
-> > > > The point is that we can't we just allow modules to unmap data from
-> > > > the kernel mapping, no matter how noble your intentions are.
-> > > 
-> > > I absolutely agree.
-> > > 
-> > 
-> > Hi David and Chirstoph,
-> > 
-> > Are your preferences that we should make Gunyah builtin only or should add
-> > fixing up S2 PTW errors (or something else)?
-> 
-> Having that built into the kernel certainly does sound better than exposing
-> that functionality to arbitrary OOT modules. But still, this feels like it
-> is using a "too-low-level" interface.
-> 
+On Wed, Feb 28, 2024 at 10:33=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
+ote:
+>
+> Move thread_rb_node into the machine.c file. This hides the
+> implementation of threads from the rest of the code allowing for it to
+> be refactored.
+>
+> Locking discipline is tightened up in this change. As the lock is now
+> encapsulated in threads, the findnew function requires holding it (as
+> it already did in machine). Rather than do conditionals with locks
+> based on whether the thread should be created (which could potentially
+> be error prone with a read lock match with a write unlock), have a
+> separate threads__find that won't create the thread and only holds the
+> read lock. This effectively duplicates the findnew logic, with the
+> existing findnew logic only operating under a write lock assuming
+> creation is necessary as a previous find failed. The creation may
+> still fail with the write lock due to another thread. The duplication
+> is removed in a later next patch that delegates the implementation to
+> hashtable.
+>
+> Signed-off-by: Ian Rogers <irogers@google.com>
 
-What are your thoughts about fixing up the stage-2 fault instead? I
-think this gives mmu-based isolation a slight speed boost because we
-avoid modifying kernel mapping. The hypervisor driver (KVM or Gunyah)
-knows that the page isn't mapped. Whether we get S2 or S1 fault, the
-kernel is likely going to crash, except in the rare case where we want
-to fix the exception. In that case, we can modify the S2 fault handler
-to call fixup_exception() when appropriate.
+Thanks for doing this!  A nit below..
 
-> > 
-> > Also, do you extend that preference to modifying S2 mappings? This would
-> > require any hypervisor driver that supports confidential compute
-> > usecases to only ever be builtin.
-> > 
-> > Is your concern about unmapping data from kernel mapping, then module
-> > being unloaded, and then having no way to recover the mapping? Would a
-> > permanent module be better? The primary reason we were wanting to have
-> > it as module was to avoid having driver in memory if you're not a Gunyah
-> > guest.
-> 
-> What I didn't grasp from this patch description: is the area where a driver
-> would unmap/remap that memory somehow known ahead of time and limited?
-> 
-> How would the driver obtain that memory it would try to unmap/remap the
-> direct map of? Simply allocate some pages and then unmap the direct map?
+> ---
+[SNIP]
+> @@ -3228,27 +3258,31 @@ int thread__resolve_callchain(struct thread *thre=
+ad,
+>         return ret;
+>  }
+>
+> -int machine__for_each_thread(struct machine *machine,
+> -                            int (*fn)(struct thread *thread, void *p),
+> -                            void *priv)
+> +int threads__for_each_thread(struct threads *threads,
+> +                            int (*fn)(struct thread *thread, void *data)=
+,
+> +                            void *data)
+>  {
+> -       struct threads *threads;
+> -       struct rb_node *nd;
+> -       int rc =3D 0;
+> -       int i;
+> +       for (int i =3D 0; i < THREADS__TABLE_SIZE; i++) {
+> +               struct threads_table_entry *table =3D &threads->table[i];
+> +               struct rb_node *nd;
+>
+> -       for (i =3D 0; i < THREADS__TABLE_SIZE; i++) {
+> -               threads =3D &machine->threads[i];
+> -               for (nd =3D rb_first_cached(&threads->entries); nd;
+> -                    nd =3D rb_next(nd)) {
+> +               for (nd =3D rb_first_cached(&table->entries); nd; nd =3D =
+rb_next(nd)) {
+>                         struct thread_rb_node *trb =3D rb_entry(nd, struc=
+t thread_rb_node, rb_node);
+> +                       int rc =3D fn(trb->thread, data);
+>
+> -                       rc =3D fn(trb->thread, priv);
+>                         if (rc !=3D 0)
+>                                 return rc;
+>                 }
+>         }
+> -       return rc;
+> +       return 0;
 
-That's correct.
+Don't we need locking in this function?
 
-> 
-> For example, we do have mm/secretmem.c, where we unmap the directmap on
-> allocation and remap when freeing a page. A nice abstraction on alloc/free,
-> so one cannot really do a lot of harm.
-> 
-> Further, we enlightened the remainder of the system about secretmem, such
-> that we can detect that the directmap is no longer there. As one example,
-> see the secretmem_active() check in kernel/power/hibernate.c.
-> 
+Thanks,
+Namhyung
 
-I'll take a look at this. guest_memfd might be able to use PM notifiers here
-instead, but I'll dig in the archives to see why secretmem isn't using that.
 
-> A similar abstraction would make sense (I remember a discussion about having
-> secretmem functionality in guest_memfd, would that help?), but the question
-> is "which" memory you want to unmap the direct map of, and how the driver
-> became "owner" of that memory such that it would really be allowed to mess
-> with the directmap.
+> +
+> +}
+> +
+> +int machine__for_each_thread(struct machine *machine,
+> +                            int (*fn)(struct thread *thread, void *p),
+> +                            void *priv)
+> +{
+> +       return threads__for_each_thread(&machine->threads, fn, priv);
+>  }
+>
 
