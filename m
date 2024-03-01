@@ -1,139 +1,129 @@
-Return-Path: <linux-kernel+bounces-88082-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88083-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6C3086DD1D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:30:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E98AA86DD20
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:31:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D48C1B25999
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:30:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77C4B281F03
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:31:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6268969DE4;
-	Fri,  1 Mar 2024 08:30:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFAA569E1C;
+	Fri,  1 Mar 2024 08:30:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XHAwqsJM"
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="rGXprctB"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2C6569E19;
-	Fri,  1 Mar 2024 08:30:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F2D569D0E
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 08:30:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709281828; cv=none; b=LKm0zcFYX/mkEVVJ6KOpwl0vtYPqCEIxAWr7Vz8HJ0q6oWMdLC4LIdBuQaU2e1V9aN6sspsfeUPrj/D/+Wl8lWNZXJZlWpBL7b6jBdvQ7/8pKGrjJnWf9pRRln2NQPWDLeXvggceQmXrK6QJwsD8w7pqwIZfmniATYor34ey7W4=
+	t=1709281847; cv=none; b=kWrflwR5pd5vJaR6nCA6jlWfc4x7vRsSMoi6XddjFgWQSuZAD1VhMS5MeMcUqxYaW1mzi3MQ7bgP18jwRQ/hXRQE4BHy+EI5G4hMiuIRhD45Z/1wviZ9RxUvu1nOdhQmq5weQN7mhKBChOJeKmBn5TMLbwEqjn+m7pKC6DFjTC0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709281828; c=relaxed/simple;
-	bh=BBhgeRx4yOLdW6NNuh+M5S/wHVDDwGe+mJfSD+9oj4c=;
+	s=arc-20240116; t=1709281847; c=relaxed/simple;
+	bh=kmXMD5wxosP4C0HytvGYV8f6rRp1M0hxu3/wjfE2CJ8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hiXKUBpLb/fI1CNFwv4sqJv5wVeESqoqBqNSVUsc3v8hj43bB1miem/2L/CSv0pgjJeQVYwLHjbAHSuX5GET9/c3R2iuPXyJGuSrKkO5hPo6QoOW0m+4XWeKz/G3267sKOjd5w0M3K1R/KGHW+CxxPlHeEBaZz82u6n3lqv1J10=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XHAwqsJM; arc=none smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a26fa294e56so342364666b.0;
-        Fri, 01 Mar 2024 00:30:26 -0800 (PST)
+	 To:Cc:Content-Type; b=LQf3E7iEZu0UmnCqBAAwBAffHF6WHxBvRARPP5UUwfMVmaKA3lwi/uzSV5pTujjYsA0QRUU5rEasSSL2I7XRf3NE+Ltn0KPA6SPzVKtiMxq8X2xzpXEf4ICrFY7Y8LbgkSytIInWg1mClfUC5Zr+qdV81r9052fv3MvB0MZjYgQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rGXprctB; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5654ef0c61fso8663a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 00:30:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709281825; x=1709886625; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1709281843; x=1709886643; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qV7g20c61SLdcO3hJdJz8nvxom42Edf9pzms73nygYQ=;
-        b=XHAwqsJMxScnnPgoOLY87hRy722D+DJG9l6B+JENMK/3hVyFFKcLqfHRIXmqgkfu3U
-         KeDYPLB//2O50vFnprOnoNOPxpCbdtTEBqQoOUZUP+4y+umYnYKAbecWZZD5f6e7Hlxx
-         B0HCrCwPvYTxwXNeOWjKaOhwcrbWS//JHA92rxIHFDCHRYsVcMbMB5pO/7g22oOgtlBA
-         EwNJ2/9MdJAYlTDuz/HEu5W0Dyvs3+bmAPrx/LDDgEgZG9/4/TCwqABVrqGNiFPQHZkl
-         zOuiNOs57xm0RqDPAkGb/bt1Hq/AgI+D3U34eji1ycxd23CMJjt5tuyLz3+pFaBYHrbh
-         nWpw==
+        bh=kmXMD5wxosP4C0HytvGYV8f6rRp1M0hxu3/wjfE2CJ8=;
+        b=rGXprctBDcRXELGRZjuJjUglDPm4/EGZQqkhXTQ/CVqpVjQ1vO9ClIB8VJjDsvvzP1
+         tHuX1uKzcss99uesUQNo9NHEU9IyAb9Shd9sh/E2QYacSWlO6ZzpeUxa4+7s2f3lkUv6
+         uQr7OSexv1DfIFUVmSmu95u9vPNExqqW55M57ibHkpn1sLBhaT62BIm+Rrm3mM9IVCwh
+         bKpWGSSKogKIJo+g+yM20PUXg8Qmx0NQvWzXdFNTQUdvETtkym/AJrv12ylTlsF2IinR
+         S5kIL44DHvqujGfOKlT0HHV7EH7j3nYIASHUxNMZ2a6DIV/G6WJarQI/8oo18olAoMni
+         MALA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709281825; x=1709886625;
+        d=1e100.net; s=20230601; t=1709281843; x=1709886643;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qV7g20c61SLdcO3hJdJz8nvxom42Edf9pzms73nygYQ=;
-        b=qi6WFHDME76X11qKkuZ46C8qXoVRF5mGxXgRTm+7dphZ9G7A6GnAgrnrYz9I1mC3eY
-         2fosmnilUl0fGEgMzVZhF/OtXsJnImxKBQ5IjgPnzI45qskKVQDGfG/3Erj3n4cSt9tM
-         53K0ymST1lTTgceSyCyJqkB7JLiWESbhrW2ElxGSX10/u2ViCe+Awb7mVBqDk9IV7EXg
-         8Q+ZW6hAiLwUAYzanqmVv5iWbHBE7mnLh3O5sNy95Yty5AgkL6/p7FRNHnpBbUpSQ+0N
-         4h9CUR3yjGlA0v/8D+dRGn4TgIzXg0Bw4+TX5dpTRRDw3b9NNihp8yc9z+t1dxpUHtAt
-         ZA9g==
-X-Forwarded-Encrypted: i=1; AJvYcCVk+dgaZo0y6hVDG3WIfeTWAhwsNGqOFWpikJQ3h4MS2opm8n3x0PMNufwRaKq2tCgOKrqXmyd4h4muXWq6Hp2Cpy4aSuV4I0OK3d/DfQ1Qs10p1r8R/cc844AUdu0WvxmxXZrLH2EAUw==
-X-Gm-Message-State: AOJu0YzAyZRqF3UZSorF1vSggPNBplJ/SV4kyrDySRXKvslRmK/5X9Jh
-	xcXDonHQMYLeL7YAX3BHq1Lk9+OBPjfqA8eT26UG5MfjTFVTXx4IA5vl6ViQeQG2MPmGZ9GwMmv
-	k0Nm626UtvRsl0JgTUkw00Jj9aUY=
-X-Google-Smtp-Source: AGHT+IE+14OaOL2S1nEWF9pejEJNM+Y86qN34hhKNmuQ+PcOJOR+7Ftc71QqTn1J1VkQogD0UG7NN6abk3ewaAcfTsw=
-X-Received: by 2002:a17:906:5ad0:b0:a43:900a:31c5 with SMTP id
- x16-20020a1709065ad000b00a43900a31c5mr756052ejs.4.1709281825127; Fri, 01 Mar
- 2024 00:30:25 -0800 (PST)
+        bh=kmXMD5wxosP4C0HytvGYV8f6rRp1M0hxu3/wjfE2CJ8=;
+        b=U/o8txAINQhLvNf6X8xdBgwjCjGoP3/CaMTNw49u0DrrloOEu/UquppP0jLiNqD3sR
+         12teBOkyIgE8rDp9EECkZFyagmeiEXScOTpJSMHhM+S27KKKFDbTjgxbeSz08zfhu2Hn
+         r0G/ypffjWHkXsXmFmIsecMl6AuN0vWKeWykbs0PZPMMXfdhuhSFgpzhcisffBpgomls
+         pb3uNGnLvkz0FE1m/64N2P8A6XWRhve/7zOZpXCX/Y8+Zrd7xzdv6k0UrMZ6vwzS2ul3
+         d/42MjuQVXPbt4ji+4K+zu7COPXaSmlVpAodSv/vl0Ugq9u3Rao7ARnZ1WuQe0IQnWUS
+         JNHg==
+X-Forwarded-Encrypted: i=1; AJvYcCVi9mU1pZRSezmVFo/cfC8Ra+hpDfieSOoaYGpxUPt+amd8wEBuaJzKFxeWeiFitc44cptaYn5AmRDLRsaQj2yyC41i+i3wBmModoJL
+X-Gm-Message-State: AOJu0YxqRvWPJnqZDf3WBklaLLmeqYRBPzCW4O1rWGZMc8RwXEQiqEhV
+	NprPsetX/KblG4s0pCdQ7zDaKS+SYTwbnEqxC9dQ2S22lrVeoSft87Yoml2zqfqAUAB/YKwTJCo
+	VsISgUZxICGgtD4Rs/+gYTHPNDggCHaJon1KN
+X-Google-Smtp-Source: AGHT+IEwf1M0NlR4bQMpE6O2swlKwBptVLThyMgoIRxdaxLQgX35Cs6YnZnFaBd9av2rZ/03Z91FM2azqVxy5Ou4Vt8=
+X-Received: by 2002:a05:6402:b10:b0:565:ad42:b97d with SMTP id
+ bm16-20020a0564020b1000b00565ad42b97dmr90989edb.0.1709281843426; Fri, 01 Mar
+ 2024 00:30:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240229-rk-dts-additions-v3-0-6afe8473a631@gmail.com>
- <20240229-rk-dts-additions-v3-2-6afe8473a631@gmail.com> <823379825559bb76088c31f44f998dd3@manjaro.org>
- <CABjd4YybaQnKm+VpU_xVrCb=pxQ7oQXPHGZzn_u1w_h3yn7gwg@mail.gmail.com>
- <a8ebe39b28a34c3544481a4e43e61d2b@manjaro.org> <b16f1d40549554598a3658679ceba9bf@manjaro.org>
-In-Reply-To: <b16f1d40549554598a3658679ceba9bf@manjaro.org>
-From: Alexey Charkov <alchark@gmail.com>
-Date: Fri, 1 Mar 2024 12:30:14 +0400
-Message-ID: <CABjd4YwAq28C6gKTJKJdZQ_Fw1oEjR475oTS96xEXRj=XQ5_pg@mail.gmail.com>
-Subject: Re: [PATCH v3 2/5] arm64: dts: rockchip: enable automatic active
- cooling on Rock 5B
-To: Dragan Simic <dsimic@manjaro.org>
-Cc: Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Heiko Stuebner <heiko@sntech.de>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
-	Viresh Kumar <viresh.kumar@linaro.org>, Chen-Yu Tsai <wens@kernel.org>, devicetree@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, 
-	linux-kernel@vger.kernel.org
+References: <ZeFPz4D121TgvCje@debian.debian> <CAO3-PboqKqjqrAScqzu6aB8d+fOq97_Wuz8b7d5uoMKT-+-WvQ@mail.gmail.com>
+In-Reply-To: <CAO3-PboqKqjqrAScqzu6aB8d+fOq97_Wuz8b7d5uoMKT-+-WvQ@mail.gmail.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Fri, 1 Mar 2024 09:30:32 +0100
+Message-ID: <CANn89iLCv0f3vBYt8W+_ZDuNeOY1jDLDBfMbOj7Hzi8s0xQCZA@mail.gmail.com>
+Subject: Re: [PATCH v2] net: raise RCU qs after each threaded NAPI poll
+To: Yan Zhai <yan@cloudflare.com>
+Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Jiri Pirko <jiri@resnulli.us>, 
+	Simon Horman <horms@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Lorenzo Bianconi <lorenzo@kernel.org>, Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>, 
+	Alexander Duyck <alexanderduyck@fb.com>, Hannes Frederic Sowa <hannes@stressinduktion.org>, 
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org, bpf@vger.kernel.org, 
+	kernel-team@cloudflare.com, Joel Fernandes <joel@joelfernandes.org>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, mark.rutland@arm.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 1, 2024 at 12:25=E2=80=AFPM Dragan Simic <dsimic@manjaro.org> w=
-rote:
+On Fri, Mar 1, 2024 at 4:50=E2=80=AFAM Yan Zhai <yan@cloudflare.com> wrote:
 >
-> On 2024-03-01 07:17, Dragan Simic wrote:
-> > On 2024-03-01 06:21, Alexey Charkov wrote:
-> >> On Fri, Mar 1, 2024 at 1:25=E2=80=AFAM Dragan Simic <dsimic@manjaro.or=
-g>
-> >> wrote:
-> >>> On 2024-02-29 20:26, Alexey Charkov wrote:
-> >>> > This links the PWM fan on Radxa Rock 5B as an active cooling device
-> >>> > managed automatically by the thermal subsystem, with a target SoC
-> >>> > temperature of 65C and a minimum-spin interval from 55C to 65C to
-> >>> > ensure airflow when the system gets warm
-> >>>
-> >>> I'd suggest that you replace "automatic active cooling" with "active
-> >>> cooling" in the patch subject.  I know, it may seem like more of the
-> >>> unnecessary nitpicking, :) but I hope you'll agree that "automatic"
-> >>> is actually redundant there.  It would also make the patch subject
-> >>> a bit shorter.
-> >>>
-> >>> Another option would be to replace "automatic active cooling" with
-> >>> "automatic fan control", which may actually be a better choice.
-> >>> I'd be happy with whichever one you prefer. :)
-> >>
-> >> Sounds good to me, thanks!
+> On Thu, Feb 29, 2024 at 9:47=E2=80=AFPM Yan Zhai <yan@cloudflare.com> wro=
+te:
 > >
-> > I'm glad that you like it. :)
+> > We noticed task RCUs being blocked when threaded NAPIs are very busy at
+> > workloads: detaching any BPF tracing programs, i.e. removing a ftrace
+> > trampoline, will simply block for very long in rcu_tasks_wait_gp. This
+> > ranges from hundreds of seconds to even an hour, severely harming any
+..
 > >
-> >>> Otherwise, please feel free to add:
-> >>>
-> >>> Reviewed-by: Dragan Simic <dsimic@manjaro.org>
-> >>
-> >> Thank you Dragan, much appreciated!
+> > Fixes: 29863d41bb6e ("net: implement threaded-able napi poll loop suppo=
+rt")
+> > Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+> > Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > Signed-off-by: Yan Zhai <yan@cloudflare.com>
+> > ---
+> > v1->v2: moved rcu_softirq_qs out from bh critical section, and only
+> > raise it after a second of repolling. Added some brief perf test result=
+.
 > >
-> > Thank you for putting up with my nitpicking. :)
+> Link to v1: https://lore.kernel.org/netdev/Zd4DXTyCf17lcTfq@debian.debian=
+/T/#u
+> And I apparently forgot to rename the subject since it's not raising
+> after every poll (let me know if it is prefered to send a V3 to fix
+> it)
 >
-> Perhaps the following tag would also be deserved for this patch:
->
-> Helped-by: Dragan Simic <dsimic@manjaro.org>
->
-> I hope you agree. :)
 
-Definitely! Thanks again for your feedback and contribution!
+I could not see the reason for 1sec (HZ) delays.
 
-Best regards,
-Alexey
+Would calling rcu_softirq_qs() every ~10ms instead be a serious issue ?
+
+In anycase, if this all about rcu_tasks, I would prefer using a macro
+defined in kernel/rcu/tasks.h
+instead of having a hidden constant in a networking core function.
+
+Thanks.
 
