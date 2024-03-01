@@ -1,499 +1,371 @@
-Return-Path: <linux-kernel+bounces-88568-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88569-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E24586E38C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:41:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44C8086E394
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:42:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6BF72B2366E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:41:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C44F21F24FD0
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:42:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAC6739863;
-	Fri,  1 Mar 2024 14:40:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="CvsaHZ1P"
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A84238DC3;
+	Fri,  1 Mar 2024 14:42:02 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38B6C23AD
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 14:40:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFDBE23DE;
+	Fri,  1 Mar 2024 14:41:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709304048; cv=none; b=XObfdSbpiPJeRV5IFc4XXjmumxMMU9UBC4g0WEMuiQEpIjN/kGa41S3igcScS4PdF+ZtgA53h3rlJqNwSmjTweIVfxUnG3Kg4yjZL2IZsZYO931HSnKXSJ07e2rgMjnfC1PfoGN1HZYPT5jTCaJIbFzAyDQkUbxD1ATrqHFywqI=
+	t=1709304121; cv=none; b=AF37UPLV1+Re4r8Gx5ffd4e4ioihwCXO5h4KeCJBqodtl5CzVO4HV7r2tMQI44gRSA7P+98hTdp4sBbvs69JEyfCUyROMGMjmnXZLSWLxrM9GVb/ldDuuK2hRecQxNfTWpKKh25rOpHfC5kihipK5VZANmvoVUPvKGMPPLv8bd4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709304048; c=relaxed/simple;
-	bh=WMSw5cE6yzpZ/oWRNSEpaFg92NKoKbCJGdB3z7DqFZ0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u3n/AsTF8blIev4PMpJWFbWfyRexu0bwzVKHvYB4YLgT2oXDKKhSve3qRI1IULLnSgCxSxNiNUbIyJvOaGF87PcemQSt3/bgsQqjGC4qbz165+q1pXKLTFrpp3hwK6pqb+Dg7XIR0O70AH4pcOykgxkuWAZn9ye7D/9Z+NWagQY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=CvsaHZ1P; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3392b12dd21so1334496f8f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 06:40:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1709304044; x=1709908844; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/fH9e4Y+5VSjP/Y4cR8MCnV8KGx8N82MLsMiROFh7zo=;
-        b=CvsaHZ1PdE3b02RO7Ftl9n1EuxN+/jq1XS4KjJpeLJmPQVbVUI/2RGl0CbgAYvwzMN
-         +0HfgJ2jEQtkGSn9rhwxyVgQ2tNVYif44Kk77KWNorfvWcBwWGEq+cxCDd0JmPqOWRAG
-         9mPFFIheBxAAuOf2VmhoSe7GI8kRz6PyY1At3LkPoRYNJbs4sdqv1ndw2S8KWagzWmbi
-         fx6OeA0B+hR93mcGGoNb+Rx2mKHgRra4/vK9Ba3rCc55qVoZ4G/eRcaENC1Yv2weaeOC
-         brCINGBfqahpjot8IppGAmZ9NMS8B4er9+DMsohjREDMj1crSOGuUVgzZ0MdFWdqe6f9
-         J5Bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709304044; x=1709908844;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/fH9e4Y+5VSjP/Y4cR8MCnV8KGx8N82MLsMiROFh7zo=;
-        b=T03h0z7Gcl71ynHBxeTBrxsiF4c/gaEH9OaNWp+Vw1ljdu5s4DSqVJc7xqUdjJRryM
-         xBJgLSgi61CsmhQcUl2mSl7YRAXOW1XtBo4VH2VmQtHtP9X9tmOsdvgFsDAqzLLheO+A
-         hqR7TEbwyb9mLcw1YL2uENfmLYaxUqP7omSiJrdnS9U3+wc1wV1TSTRJu+7hXZL5w8+o
-         7wqKfmoov1Bnrg8MaP8IrlzZ2pz8+S7qhNuZqG+YpCR5EqA2BorBDQUuVFeiw5W+CVLK
-         GP1Q9H/JIR4g/LfH58heltx+C6nDeT4abCNVK2vB2k7fABJoyb6upw4Cl71XAkkkPI5k
-         7Jrg==
-X-Gm-Message-State: AOJu0YxJJUeap/SeM52qE0MjZEn2waSsDFUZbo1elq3schVC4JWTzEEO
-	UvDr7yT54a6iSEYkzA4FwmLUrXJZjUBiaDaIPFLbFYeGfSjP/vi6QE7jo+/HIY0=
-X-Google-Smtp-Source: AGHT+IFYJjdmIlrg4fK3WoCRNzoK5W1dEpib8k88k8LxEH9B8Q+MpB4/nMVejEIsAdEv356F0HcTVw==
-X-Received: by 2002:a5d:550c:0:b0:33e:cc6:e6b5 with SMTP id b12-20020a5d550c000000b0033e0cc6e6b5mr1492380wrv.23.1709304044512;
-        Fri, 01 Mar 2024 06:40:44 -0800 (PST)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id co24-20020a0560000a1800b0033da4b06632sm4870668wrb.6.2024.03.01.06.40.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 06:40:44 -0800 (PST)
-Date: Fri, 1 Mar 2024 15:40:43 +0100
-From: Andrew Jones <ajones@ventanamicro.com>
-To: Atish Patra <atishp@rivosinc.com>
-Cc: linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>, 
-	Anup Patel <anup@brainfault.org>, Conor Dooley <conor.dooley@microchip.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alexghiti@rivosinc.com>, 
-	Atish Patra <atishp@atishpatra.org>, Guo Ren <guoren@kernel.org>, Icenowy Zheng <uwu@icenowy.me>, 
-	kvm-riscv@lists.infradead.org, kvm@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, Mark Rutland <mark.rutland@arm.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Shuah Khan <shuah@kernel.org>, Will Deacon <will@kernel.org>
-Subject: Re: [PATCH v4 05/15] drivers/perf: riscv: Implement SBI PMU snapshot
- function
-Message-ID: <20240301-9587f1bcaa6b25b1dcc7062e@orel>
-References: <20240229010130.1380926-1-atishp@rivosinc.com>
- <20240229010130.1380926-6-atishp@rivosinc.com>
+	s=arc-20240116; t=1709304121; c=relaxed/simple;
+	bh=I06CBHd0H62wr/ulGLh0iMZkxB0t3HLpZQz58Xo2Io4=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=pm3BRYdUrfJbGtYtwcYomORMGEPgnUfMZ7QWfwsUCZM1Iepg0QX+cbG8zyHoQGBxptcfjBumbmygiEqxs4skJ31lYyAVXHq/WNcckRBb0QogrENJmUb1gRFpJu6YFBjdRDmLfUYk+fId0P4Bjc85N59uim+YAzNzon5ycB6dyxA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TmVzT3M5kz6J9St;
+	Fri,  1 Mar 2024 22:37:09 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id B54051409F9;
+	Fri,  1 Mar 2024 22:41:54 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Fri, 1 Mar
+ 2024 14:41:53 +0000
+Date: Fri, 1 Mar 2024 14:41:53 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Dan Williams <dan.j.williams@intel.com>
+CC: Shiju Jose <shiju.jose@huawei.com>, "linux-cxl@vger.kernel.org"
+	<linux-cxl@vger.kernel.org>, "linux-acpi@vger.kernel.org"
+	<linux-acpi@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"dave@stgolabs.net" <dave@stgolabs.net>, "dave.jiang@intel.com"
+	<dave.jiang@intel.com>, "alison.schofield@intel.com"
+	<alison.schofield@intel.com>, "vishal.l.verma@intel.com"
+	<vishal.l.verma@intel.com>, "ira.weiny@intel.com" <ira.weiny@intel.com>,
+	"linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"david@redhat.com" <david@redhat.com>, "Vilas.Sridharan@amd.com"
+	<Vilas.Sridharan@amd.com>, "leo.duran@amd.com" <leo.duran@amd.com>,
+	"Yazen.Ghannam@amd.com" <Yazen.Ghannam@amd.com>, "rientjes@google.com"
+	<rientjes@google.com>, "jiaqiyan@google.com" <jiaqiyan@google.com>,
+	"tony.luck@intel.com" <tony.luck@intel.com>, "Jon.Grimm@amd.com"
+	<Jon.Grimm@amd.com>, "dave.hansen@linux.intel.com"
+	<dave.hansen@linux.intel.com>, "rafael@kernel.org" <rafael@kernel.org>,
+	"lenb@kernel.org" <lenb@kernel.org>, "naoya.horiguchi@nec.com"
+	<naoya.horiguchi@nec.com>, "james.morse@arm.com" <james.morse@arm.com>,
+	"jthoughton@google.com" <jthoughton@google.com>, "somasundaram.a@hpe.com"
+	<somasundaram.a@hpe.com>, "erdemaktas@google.com" <erdemaktas@google.com>,
+	"pgonda@google.com" <pgonda@google.com>, "duenwen@google.com"
+	<duenwen@google.com>, "mike.malvestuto@intel.com"
+	<mike.malvestuto@intel.com>, "gthelen@google.com" <gthelen@google.com>,
+	"wschwartz@amperecomputing.com" <wschwartz@amperecomputing.com>,
+	"dferguson@amperecomputing.com" <dferguson@amperecomputing.com>, tanxiaofei
+	<tanxiaofei@huawei.com>, "Zengtao (B)" <prime.zeng@hisilicon.com>,
+	"kangkang.shen@futurewei.com" <kangkang.shen@futurewei.com>, wanghuiqiang
+	<wanghuiqiang@huawei.com>, Linuxarm <linuxarm@huawei.com>, Vikram Sethi
+	<vsethi@nvidia.com>
+Subject: Re: [RFC PATCH v6 00/12] cxl: Add support for CXL feature commands,
+ CXL device patrol scrub control and DDR5 ECS control features
+Message-ID: <20240301144153.0000133b@Huawei.com>
+In-Reply-To: <65e0e046a165e_ca001294bc@dwillia2-xfh.jf.intel.com.notmuch>
+References: <20240215111455.1462-1-shiju.jose@huawei.com>
+	<65d6936952764_1138c7294e@dwillia2-xfh.jf.intel.com.notmuch>
+	<54c55412e9374e4e9cacf8410a5a98cb@huawei.com>
+	<65d8f5201f8cc_2509b29467@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+	<20240226102944.000070a3@Huawei.com>
+	<65e0e046a165e_ca001294bc@dwillia2-xfh.jf.intel.com.notmuch>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240229010130.1380926-6-atishp@rivosinc.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500005.china.huawei.com (7.191.163.240) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Wed, Feb 28, 2024 at 05:01:20PM -0800, Atish Patra wrote:
-> SBI v2.0 SBI introduced PMU snapshot feature which adds the following
-> features.
+
 > 
-> 1. Read counter values directly from the shared memory instead of
-> csr read.
-> 2. Start multiple counters with initial values with one SBI call.
+> > > > Regarding RASF patrol scrub no one cared about it as it's useless and
+> > > > any new implementation should be RAS2.    
+> > > 
+> > > The assertion that "RASF patrol scrub no one cared about it as it's
+> > > useless and any new implementation should be RAS2" needs evidence.
+> > > 
+> > > For example, what platforms are going to ship with RAS2 support, what
+> > > are the implications of Linux not having RAS2 scrub support in a month,
+> > > or in year? There are parts of the ACPI spec that have never been
+> > > implemented what is the evidence that RAS2 is not going to suffer the
+> > > same fate as RASF?   
+> > 
+> > From discussions with various firmware folk we have a chicken and egg
+> > situation on RAS2. They will stick to their custom solutions unless there is
+> > plausible support in Linux for it - so right now it's a question mark
+> > on roadmaps. Trying to get rid of that question mark is why Shiju and I
+> > started looking at this in the first place. To get rid of that question
+> > mark we don't necessarily need to have it upstream, but we do need
+> > to be able to make the argument that there will be a solution ready
+> > soon after they release the BIOS image.  (Some distros will take years
+> > to catch up though).
+> > 
+> > If anyone else an speak up on this point please do. Discussions and
+> > feedback communicated to Shiju and I off list aren't going to
+> > convince people :(
+> > Negatives perhaps easier to give than positives given this is seen as
+> > a potential feature for future platforms so may be confidential.  
 > 
-> These functionalities optimizes the number of traps to the higher
-> privilege mode. If the kernel is in VS mode while the hypervisor
-> deploy trap & emulate method, this would minimize all the hpmcounter
-> CSR read traps. If the kernel is running in S-mode, the benefits
-> reduced to CSR latency vs DRAM/cache latency as there is no trap
-> involved while accessing the hpmcounter CSRs.
+> So one of the observations from efforts like RAS API [1] is that CXL is
+> definining mechanisms that others are using for non-CXL use cases. I.e.
+> a CXL-like mailbox that supports events is a generic transport that can
+> be used for many RAS scenarios not just CXL endpoints. It supplants
+> building new ACPI interfaces for these things because the expectation is
+> that an OS just repurposes its CXL Type-3 infrastructure to also drive
+> event collection for RAS API compliant devices in the topology.
 > 
-> In both modes, it does saves the number of ecalls while starting
-> multiple counter together with an initial values. This is a likely
-> scenario if multiple counters overflow at the same time.
+> [1]: https://www.opencompute.org/w/index.php?title=RAS_API_Workstream
 > 
-> Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
-> Reviewed-by: Anup Patel <anup@brainfault.org>
-> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-> Signed-off-by: Atish Patra <atishp@rivosinc.com>
-> ---
->  drivers/perf/riscv_pmu.c       |   1 +
->  drivers/perf/riscv_pmu_sbi.c   | 209 +++++++++++++++++++++++++++++++--
->  include/linux/perf/riscv_pmu.h |   6 +
->  3 files changed, 204 insertions(+), 12 deletions(-)
+> So when considering whether Linux should build support for ACPI RASF,
+> ACPI RAS2, and / or Open Compute RAS API it is worthwile to ask if one
+> of those can supplant the others.
+
+RAS API is certainly interesting but the bit of the discussion
+that matters here will equally apply to CXL RAS controls as of today
+(will ship before OCP) and Open Compute's RAS API (sometime in the future).
+
+The subsystem presented here was to address the "show us your code" that
+was inevitable feedback if we'd gone for a discussion Doc style RFC.
+
+What really matters here is whether a common ABI is necessary and what
+it looks like.
+Not even the infrastructure, just whether it's sysfs and what the controls)
+Sure there is less code if it all looks like that CXL get feature,
+but not that much less.  + I'm hoping we'll also end up sharing with
+the various embedded device solutions out there today.
+
+I notice a few familiar names in the meeting recordings. Anyone want
+to provide a summary of overlap etc and likely end result?
+I scan read the docs and caught up with some meetings at high speed,
+but that's not the same as day to day involvement in the spec development. 
+Maybe the lesson to take away from this is a more general interface is
+needed incorporating scrub control (which at this stage is probably
+just a name change!)
+
+I see that patrol scrub is on the RAS actions list which is great.
+
 > 
-> diff --git a/drivers/perf/riscv_pmu.c b/drivers/perf/riscv_pmu.c
-> index 0dda70e1ef90..5b57acb770d3 100644
-> --- a/drivers/perf/riscv_pmu.c
-> +++ b/drivers/perf/riscv_pmu.c
-> @@ -412,6 +412,7 @@ struct riscv_pmu *riscv_pmu_alloc(void)
->  		cpuc->n_events = 0;
->  		for (i = 0; i < RISCV_MAX_COUNTERS; i++)
->  			cpuc->events[i] = NULL;
-> +		cpuc->snapshot_addr = NULL;
->  	}
->  	pmu->pmu = (struct pmu) {
->  		.event_init	= riscv_pmu_event_init,
-> diff --git a/drivers/perf/riscv_pmu_sbi.c b/drivers/perf/riscv_pmu_sbi.c
-> index ea0fdb589f0d..8de5721e8019 100644
-> --- a/drivers/perf/riscv_pmu_sbi.c
-> +++ b/drivers/perf/riscv_pmu_sbi.c
-> @@ -36,6 +36,9 @@ PMU_FORMAT_ATTR(event, "config:0-47");
->  PMU_FORMAT_ATTR(firmware, "config:63");
->  
->  static bool sbi_v2_available;
-> +static DEFINE_STATIC_KEY_FALSE(sbi_pmu_snapshot_available);
-> +#define sbi_pmu_snapshot_available() \
-> +	static_branch_unlikely(&sbi_pmu_snapshot_available)
->  
->  static struct attribute *riscv_arch_formats_attr[] = {
->  	&format_attr_event.attr,
-> @@ -485,14 +488,100 @@ static int pmu_sbi_event_map(struct perf_event *event, u64 *econfig)
->  	return ret;
->  }
->  
-> +static void pmu_sbi_snapshot_free(struct riscv_pmu *pmu)
-> +{
-> +	int cpu;
-> +
-> +	for_each_possible_cpu(cpu) {
-> +		struct cpu_hw_events *cpu_hw_evt = per_cpu_ptr(pmu->hw_events, cpu);
-> +
-> +		if (!cpu_hw_evt->snapshot_addr)
-> +			continue;
-> +
-> +		free_page((unsigned long)cpu_hw_evt->snapshot_addr);
-> +		cpu_hw_evt->snapshot_addr = NULL;
-> +		cpu_hw_evt->snapshot_addr_phys = 0;
-> +	}
-> +}
-> +
-> +static int pmu_sbi_snapshot_alloc(struct riscv_pmu *pmu)
-> +{
-> +	int cpu;
-> +	struct page *snapshot_page;
-> +
-> +	for_each_possible_cpu(cpu) {
-> +		struct cpu_hw_events *cpu_hw_evt = per_cpu_ptr(pmu->hw_events, cpu);
-> +
-> +		if (cpu_hw_evt->snapshot_addr)
-> +			continue;
-> +
-> +		snapshot_page = alloc_page(GFP_ATOMIC | __GFP_ZERO);
-> +		if (!snapshot_page) {
-> +			pmu_sbi_snapshot_free(pmu);
-> +			return -ENOMEM;
-> +		}
-> +		cpu_hw_evt->snapshot_addr = page_to_virt(snapshot_page);
-> +		cpu_hw_evt->snapshot_addr_phys = page_to_phys(snapshot_page);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static void pmu_sbi_snapshot_disable(void)
-> +{
-> +	sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_SNAPSHOT_SET_SHMEM, -1,
-> +		  -1, 0, 0, 0, 0);
-> +}
-> +
-> +static int pmu_sbi_snapshot_setup(struct riscv_pmu *pmu, int cpu)
-> +{
-> +	struct cpu_hw_events *cpu_hw_evt;
-> +	struct sbiret ret = {0};
-> +
-> +	cpu_hw_evt = per_cpu_ptr(pmu->hw_events, cpu);
-> +	if (!cpu_hw_evt->snapshot_addr_phys)
-> +		return -EINVAL;
-> +
-> +	if (cpu_hw_evt->snapshot_set_done)
-> +		return 0;
-> +
-> +	if (IS_ENABLED(CONFIG_32BIT))
-> +		ret = sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_SNAPSHOT_SET_SHMEM,
-> +				cpu_hw_evt->snapshot_addr_phys,
-> +				(u64)(cpu_hw_evt->snapshot_addr_phys) >> 32, 0, 0, 0, 0);
-> +	else
-> +		ret = sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_SNAPSHOT_SET_SHMEM,
-> +				cpu_hw_evt->snapshot_addr_phys, 0, 0, 0, 0, 0);
-> +
-> +	/* Free up the snapshot area memory and fall back to SBI PMU calls without snapshot */
-> +	if (ret.error) {
-> +		if (ret.error != SBI_ERR_NOT_SUPPORTED)
-> +			pr_warn("pmu snapshot setup failed with error %ld\n", ret.error);
-> +		return sbi_err_map_linux_errno(ret.error);
-> +	}
-> +
-> +	cpu_hw_evt->snapshot_set_done = true;
-> +
-> +	return 0;
-> +}
-> +
->  static u64 pmu_sbi_ctr_read(struct perf_event *event)
->  {
->  	struct hw_perf_event *hwc = &event->hw;
->  	int idx = hwc->idx;
->  	struct sbiret ret;
->  	u64 val = 0;
-> +	struct riscv_pmu *pmu = to_riscv_pmu(event->pmu);
-> +	struct cpu_hw_events *cpu_hw_evt = this_cpu_ptr(pmu->hw_events);
-> +	struct riscv_pmu_snapshot_data *sdata = cpu_hw_evt->snapshot_addr;
->  	union sbi_pmu_ctr_info info = pmu_ctr_list[idx];
->  
-> +	/* Read the value from the shared memory directly */
-> +	if (sbi_pmu_snapshot_available()) {
-> +		val = sdata->ctr_values[idx];
-> +		return val;
-> +	}
-> +
->  	if (pmu_sbi_is_fw_event(event)) {
->  		ret = sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_COUNTER_FW_READ,
->  				hwc->idx, 0, 0, 0, 0, 0);
-> @@ -539,6 +628,7 @@ static void pmu_sbi_ctr_start(struct perf_event *event, u64 ival)
->  	struct hw_perf_event *hwc = &event->hw;
->  	unsigned long flag = SBI_PMU_START_FLAG_SET_INIT_VALUE;
->  
-> +	/* There is no benefit setting SNAPSHOT FLAG for a single counter */
->  #if defined(CONFIG_32BIT)
->  	ret = sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_COUNTER_START, hwc->idx,
->  			1, flag, ival, ival >> 32, 0);
-> @@ -559,16 +649,36 @@ static void pmu_sbi_ctr_stop(struct perf_event *event, unsigned long flag)
->  {
->  	struct sbiret ret;
->  	struct hw_perf_event *hwc = &event->hw;
-> +	struct riscv_pmu *pmu = to_riscv_pmu(event->pmu);
-> +	struct cpu_hw_events *cpu_hw_evt = this_cpu_ptr(pmu->hw_events);
-> +	struct riscv_pmu_snapshot_data *sdata = cpu_hw_evt->snapshot_addr;
->  
->  	if ((hwc->flags & PERF_EVENT_FLAG_USER_ACCESS) &&
->  	    (hwc->flags & PERF_EVENT_FLAG_USER_READ_CNT))
->  		pmu_sbi_reset_scounteren((void *)event);
->  
-> +	if (sbi_pmu_snapshot_available())
-> +		flag |= SBI_PMU_STOP_FLAG_TAKE_SNAPSHOT;
-> +
->  	ret = sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_COUNTER_STOP, hwc->idx, 1, flag, 0, 0, 0);
-> -	if (ret.error && (ret.error != SBI_ERR_ALREADY_STOPPED) &&
-> -		flag != SBI_PMU_STOP_FLAG_RESET)
-> +	if (!ret.error && sbi_pmu_snapshot_available()) {
-> +		/*
-> +		 * The counter snapshot is based on the index base specified by hwc->idx.
-> +		 * The actual counter value is updated in shared memory at index 0 when counter
-> +		 * mask is 0x01. To ensure accurate counter values, it's necessary to transfer
-> +		 * the counter value to shared memory. However, if hwc->idx is zero, the counter
-> +		 * value is already correctly updated in shared memory, requiring no further
-> +		 * adjustment.
-> +		 */
-> +		if (hwc->idx > 0) {
-> +			sdata->ctr_values[hwc->idx] = sdata->ctr_values[0];
-> +			sdata->ctr_values[0] = 0;
-> +		}
-> +	} else if (ret.error && (ret.error != SBI_ERR_ALREADY_STOPPED) &&
-> +		flag != SBI_PMU_STOP_FLAG_RESET) {
->  		pr_err("Stopping counter idx %d failed with error %d\n",
->  			hwc->idx, sbi_err_map_linux_errno(ret.error));
-> +	}
->  }
->  
->  static int pmu_sbi_find_num_ctrs(void)
-> @@ -626,10 +736,14 @@ static inline void pmu_sbi_stop_all(struct riscv_pmu *pmu)
->  static inline void pmu_sbi_stop_hw_ctrs(struct riscv_pmu *pmu)
->  {
->  	struct cpu_hw_events *cpu_hw_evt = this_cpu_ptr(pmu->hw_events);
-> +	unsigned long flag = 0;
-> +
-> +	if (sbi_pmu_snapshot_available())
-> +		flag = SBI_PMU_STOP_FLAG_TAKE_SNAPSHOT;
->  
->  	/* No need to check the error here as we can't do anything about the error */
->  	sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_COUNTER_STOP, 0,
-> -		  cpu_hw_evt->used_hw_ctrs[0], 0, 0, 0, 0);
-> +		  cpu_hw_evt->used_hw_ctrs[0], flag, 0, 0, 0);
->  }
->  
->  /*
-> @@ -638,11 +752,10 @@ static inline void pmu_sbi_stop_hw_ctrs(struct riscv_pmu *pmu)
->   * while the overflowed counters need to be started with updated initialization
->   * value.
->   */
-> -static inline void pmu_sbi_start_overflow_mask(struct riscv_pmu *pmu,
-> -					       unsigned long ctr_ovf_mask)
-> +static noinline void pmu_sbi_start_ovf_ctrs_sbi(struct cpu_hw_events *cpu_hw_evt,
-> +						unsigned long ctr_ovf_mask)
->  {
->  	int idx = 0;
-> -	struct cpu_hw_events *cpu_hw_evt = this_cpu_ptr(pmu->hw_events);
->  	struct perf_event *event;
->  	unsigned long flag = SBI_PMU_START_FLAG_SET_INIT_VALUE;
->  	unsigned long ctr_start_mask = 0;
-> @@ -677,6 +790,49 @@ static inline void pmu_sbi_start_overflow_mask(struct riscv_pmu *pmu,
->  	}
->  }
->  
-> +static noinline void pmu_sbi_start_ovf_ctrs_snapshot(struct cpu_hw_events *cpu_hw_evt,
-> +						     unsigned long ctr_ovf_mask)
-> +{
-> +	int idx = 0;
-> +	struct perf_event *event;
-> +	unsigned long flag = SBI_PMU_START_FLAG_INIT_FROM_SNAPSHOT;
-> +	u64 max_period, init_val = 0;
-> +	struct hw_perf_event *hwc;
-> +	unsigned long ctr_start_mask = 0;
-> +	struct riscv_pmu_snapshot_data *sdata = cpu_hw_evt->snapshot_addr;
-> +
-> +	for_each_set_bit(idx, cpu_hw_evt->used_hw_ctrs, RISCV_MAX_COUNTERS) {
-> +		if (ctr_ovf_mask & (1 << idx)) {
+> Speaking only for myself with my Linux kernel maintainer hat on, I am
+> much more attracted to proposals like RAS API where native drivers can
+> be deployed vs ACPI which brings ACPI static definition baggage and a
+> 3rd component to manage. RAS API is kernel driver + device-firmware
+> while I assume ACPI RAS* is kernel ACPI driver + BIOS firmware +
+> device-firmware.
 
-nit: BIT(idx)
+Not really. The only thing needed from BIOS firmware is a static table
+ to OS to describe where to find the hardware (RAS2 is a header and (1+)
+pointers to the PCCT table entry that tells you where the mailbox(s)
+(PCC Channel) are and their interrupts etc.  It's all of 48 bytes of
+static data to parse.
 
-> +			event = cpu_hw_evt->events[idx];
-> +			hwc = &event->hw;
-> +			max_period = riscv_pmu_ctr_get_width_mask(event);
-> +			init_val = local64_read(&hwc->prev_count) & max_period;
-> +			sdata->ctr_values[idx] = init_val;
-> +		}
-> +		/*
-> +		 * We donot need to update the non-overflow counters the previous
+Could have been done that in DSDT (where you will find other PCC channels
+as many methods can use them under the hood to chat to firmware + there
+are some other users where they are the only option) but my guess is
+assumption is RAS might be needed pre AML interpreter so it's a static table.
 
-do not
+A PCC channel is the ACPI spec standard mailbox design (well several
+options for how to do it, but given the code is upstream and in use
+for other purposes, no new maintenance burden for us :)
+PCC channels can be shared resources handling multiple protocols.
+They are used for various other things where the OS needs
+to talk to firmware and have been upstream for a while.
 
-> +		 * value should have been there already.
-> +		 */
-> +	}
-> +
-> +	ctr_start_mask = cpu_hw_evt->used_hw_ctrs[0];
-> +
-> +	/* Start all the counters in a single shot */
-> +	sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_COUNTER_START, 0, ctr_start_mask,
-> +		  flag, 0, 0, 0);
 
-I think we should always loop over all words of used_hw_ctrs[] since it'll
-have more than one for riscv32. Hmm, it seems like there are several
-places where we don't expect riscv32's second word to be used...
+ACPI driver --------<PCC Mailbox>---> Device Firmware
+vs
+RAS API Driver-----<CXL Mailbox>----> Device Firmware
+or
+CXL Driver --------<CXL Mailbox>----> Device Firmware
 
-> +}
-> +
-> +static void pmu_sbi_start_overflow_mask(struct riscv_pmu *pmu,
-> +					unsigned long ctr_ovf_mask)
-> +{
-> +	struct cpu_hw_events *cpu_hw_evt = this_cpu_ptr(pmu->hw_events);
-> +
-> +	if (sbi_pmu_snapshot_available())
-> +		pmu_sbi_start_ovf_ctrs_snapshot(cpu_hw_evt, ctr_ovf_mask);
-> +	else
-> +		pmu_sbi_start_ovf_ctrs_sbi(cpu_hw_evt, ctr_ovf_mask);
-> +}
-> +
->  static irqreturn_t pmu_sbi_ovf_handler(int irq, void *dev)
->  {
->  	struct perf_sample_data data;
-> @@ -690,6 +846,7 @@ static irqreturn_t pmu_sbi_ovf_handler(int irq, void *dev)
->  	unsigned long overflowed_ctrs = 0;
->  	struct cpu_hw_events *cpu_hw_evt = dev;
->  	u64 start_clock = sched_clock();
-> +	struct riscv_pmu_snapshot_data *sdata = cpu_hw_evt->snapshot_addr;
->  
->  	if (WARN_ON_ONCE(!cpu_hw_evt))
->  		return IRQ_NONE;
-> @@ -711,8 +868,10 @@ static irqreturn_t pmu_sbi_ovf_handler(int irq, void *dev)
->  	pmu_sbi_stop_hw_ctrs(pmu);
->  
->  	/* Overflow status register should only be read after counter are stopped */
-> -	ALT_SBI_PMU_OVERFLOW(overflow);
-> -
-> +	if (sbi_pmu_snapshot_available())
-> +		overflow = sdata->ctr_overflow_mask;
-> +	else
-> +		ALT_SBI_PMU_OVERFLOW(overflow);
->  	/*
->  	 * Overflow interrupt pending bit should only be cleared after stopping
->  	 * all the counters to avoid any race condition.
-> @@ -794,6 +953,9 @@ static int pmu_sbi_starting_cpu(unsigned int cpu, struct hlist_node *node)
->  		enable_percpu_irq(riscv_pmu_irq, IRQ_TYPE_NONE);
->  	}
->  
-> +	if (sbi_pmu_snapshot_available())
-> +		return pmu_sbi_snapshot_setup(pmu, cpu);
-> +
->  	return 0;
->  }
->  
-> @@ -807,6 +969,9 @@ static int pmu_sbi_dying_cpu(unsigned int cpu, struct hlist_node *node)
->  	/* Disable all counters access for user mode now */
->  	csr_write(CSR_SCOUNTEREN, 0x0);
->  
-> +	if (sbi_pmu_snapshot_available())
-> +		pmu_sbi_snapshot_disable();
-> +
->  	return 0;
->  }
->  
-> @@ -1076,10 +1241,6 @@ static int pmu_sbi_device_probe(struct platform_device *pdev)
->  	pmu->event_unmapped = pmu_sbi_event_unmapped;
->  	pmu->csr_index = pmu_sbi_csr_index;
->  
-> -	ret = cpuhp_state_add_instance(CPUHP_AP_PERF_RISCV_STARTING, &pmu->node);
-> -	if (ret)
-> -		return ret;
-> -
->  	ret = riscv_pm_pmu_register(pmu);
->  	if (ret)
->  		goto out_unregister;
-> @@ -1088,8 +1249,32 @@ static int pmu_sbi_device_probe(struct platform_device *pdev)
->  	if (ret)
->  		goto out_unregister;
->  
-> +	/* SBI PMU Snapsphot is only available in SBI v2.0 */
-> +	if (sbi_v2_available) {
-> +		ret = pmu_sbi_snapshot_alloc(pmu);
-> +		if (ret)
-> +			goto out_unregister;
-> +
-> +		ret = pmu_sbi_snapshot_setup(pmu, smp_processor_id());
-> +		if (!ret) {
-> +			pr_info("SBI PMU snapshot detected\n");
-> +			/*
-> +			 * We enable it once here for the boot cpu. If snapshot shmem setup
-> +			 * fails during cpu hotplug process, it will fail to start the cpu
-> +			 * as we can not handle hetergenous PMUs with different snapshot
-> +			 * capability.
-> +			 */
-> +			static_branch_enable(&sbi_pmu_snapshot_available);
-> +		}
-> +		/* Snapshot is an optional feature. Continue if not available */
-> +	}
-> +
->  	register_sysctl("kernel", sbi_pmu_sysctl_table);
->  
-> +	ret = cpuhp_state_add_instance(CPUHP_AP_PERF_RISCV_STARTING, &pmu->node);
-> +	if (ret)
-> +		return ret;
-> +
->  	return 0;
->  
->  out_unregister:
-> diff --git a/include/linux/perf/riscv_pmu.h b/include/linux/perf/riscv_pmu.h
-> index 43282e22ebe1..c3fa90970042 100644
-> --- a/include/linux/perf/riscv_pmu.h
-> +++ b/include/linux/perf/riscv_pmu.h
-> @@ -39,6 +39,12 @@ struct cpu_hw_events {
->  	DECLARE_BITMAP(used_hw_ctrs, RISCV_MAX_COUNTERS);
->  	/* currently enabled firmware counters */
->  	DECLARE_BITMAP(used_fw_ctrs, RISCV_MAX_COUNTERS);
-> +	/* The virtual address of the shared memory where counter snapshot will be taken */
-> +	void *snapshot_addr;
-> +	/* The physical address of the shared memory where counter snapshot will be taken */
-> +	phys_addr_t snapshot_addr_phys;
-> +	/* Boolean flag to indicate setup is already done */
-> +	bool snapshot_set_done;
+The new complexity (much like the CXL solution) lies in the
+control protocol sent over the mailbox (which is pretty simple!)
 
-Instead of the 'snapshot_set_done' boolean, we can just use
-snapshot_addr, which can't be NULL after setup.
+Some of the complexity in the driver is left over from earlier
+version doing RASF and RAS2 so we'll flatten that layering out
+and it'll be even simpler in next RFC and perhaps not hint at
+false complexity or maintenance burden.
 
->  };
->  
->  struct riscv_pmu {
-> -- 
-> 2.34.1
+The only significant burden I really see form incorporating RAS2
+is the need for an interface that works for both (very similar)
+configuration control sets.  Once that is defined we need to support
+the ABI for ever anyway so may be sysfs attribute of extra ABI to
+support in current design?
+
+
 > 
+> In other words, this patch proposal enables both CXL memscrub and ACPI
+> RAS2 memscrub. It asserts that nobody cares about ACPI RASF memscrub,
+> and your clarification asserts that RAS2 is basically dead until Linux
+> adopts it. So then the question becomes why should Linux breath air into
+> the ACPI RAS2 memscrub proposal when initiatives like RAS API exist?
 
-Thanks,
-drew
+A fair question and one where I'm looking for inputs from others.
+
+However I think you may be assuming a lot more than is actually
+involved in the RAS2 approach - see below.
+
+> 
+> The RAS API example seems to indicate that one way to get scrub support
+> for non-CXL memory controllers would be to reuse CXL memscrub
+> infrastructure. In a world where there is kernel mechanism to understand
+> CXL-like scrub mechanisms, why not nudge the industry in that direction
+> instead of continuing to build new and different ACPI mechanisms?
+
+There may be some shared elements of course (and it seems the RAS API
+stuff has severak sets of proposals for interfacing approaches), but ultimately
+a RAS API element still hangs off something that isn't a CXL device, so
+still demands some common infrastructure (e.g. a class or similar) or
+we are going to find the RAS tools buried under a bunch of different individual
+drivers.
+1) Maybe shared for system components (maybe not from some of the diagrams!)
+   But likely 1 interface per socket. Probably PCI, but maybe platform devices
+   (I'd not be surprised to see a PCC channel type added for this mailbox)
+   /sys/bus/pci/devices/pcixxx/rasstuff/etc
+2) CXL devices say /sys/bus/cxl/devices/mem0/rasstuff/etc.
+3) Other system components such as random PCI drivers.
+
+Like other cases of common infrastructure, I'd argue for a nice class with
+the devices parentage linking back to the underlying EP driver.
+/sys/class/ras/ras0 parent ->   /sys/bus/cxl/devices/mem0/
+/sys/class/ras/ras1 parent ->   /sys/bus/pci/device/pcixxx/ RAS API device.
+etc
+
+Same as if we had a bunch of devices that happened to have an LED on them
+and wanted common userspace controls so registered with /sys/class/led
+
+So to me RAS API looks like another user of this proposal that indeed
+shares a bunch of common code with the CXL driver stack (hopefully they'll
+move to PCI MMPT from current definition based on CXL 2.0 mailbox so the
+discoverability isn't CXL spec based. (I may not have latest version of course!)
+
+> 
+> > > There are parts of the CXL specification that have
+> > > never been implemented in mass market products.  
+> > 
+> > Obviously can't talk about who was involved in this feature
+> > in it's definition, but I have strong confidence it will get implemented
+> > for reasons I can point at on a public list. 
+> > a) There will be scrubbing on devices.
+> > b) It will need control (evidence for this is the BIOS controls mentioned below
+> >    for equivalent main memory).
+> > c) Hotplug means that control must be done by OS driver (or via very fiddly
+> >    pre hotplug hacks that I think we can all agree should not be necessary
+> >    and aren't even an option on all platforms)
+> > d) No one likes custom solutions.
+> > This isn't a fancy feature with a high level of complexity which helps.  
+> 
+> That does help, it would help even more if the maintenance burden of CXL
+> scrub precludes needing to carry the burden of other implementations.
+
+I think we disagree on whether the burden is significant - sure
+we can spin interfaces differently to make it easier for CXL and we can
+just stick it on the individual endpoints for now.
+
+Key here is ABI, I don't really care about whether we wrap it up in a subsystem
+(mostly we do that to enforce compliance with the ABI design as easier than
+ reviewing against a document!)
+
+I want to see userspace ABI that is general enough to extend to other
+devices and doesn't require a horrible hydra of a userspace program on top
+of incompatible controls because everyone wanted to do it slightly
+differently.  The exercise of including RAS2 (and earlier RASF which
+we dropped) was about establishing commonality and I think that was very
+useful.
+
+I'm reluctant to say it will never be necessary to support RAS2 (because
+I want to see solutions well before anyone will have built OCPs proposal
+and RAS2 works on many of today's systems with a small amount of firmware
+work, many have existing PCC channels to appropriate management controllers
+and as I understand it non standard interfaces to control the scrubbing
+engines).
+
+So I think not considering an ABI that is designed to be general is just
+storing up pain for us in the future.
+
+I'm not sure the design we have here is the right one which is why it
+was an RFC :)
+
+> 
+> [..]
+> > >   
+> > > > Previous discussions in the community about RASF and scrub could be find here.
+> > > > https://lore.kernel.org/lkml/20230915172818.761-1-shiju.jose@huawei.com/#r
+> > > > and some old ones,
+> > > > https://patchwork.kernel.org/project/linux-arm-kernel/patch/CS1PR84MB0038718F49DBC0FF03919E1184390@CS1PR84MB0038.NAMPRD84.PROD.OUTLOOK.COM/
+> > > >     
+> > > 
+> > > Do not make people hunt for old discussions, if there are useful points
+> > > in that discussion that make the case for the patch set include those in
+> > > the next submission, don't make people hunt for the latest state of the
+> > > story.  
+> > 
+> > Sure, more of an essay needed along with links given we are talking
+> > about the views of others.
+> > 
+> > Quick summary from a reread of the linked threads.
+> > AMD not implemented RASF/RAS2 yet - looking at it last year, but worried
+> > about inflexibility of RAS2 spec today. They were looking at some spec
+> > changes to improve this + other functions to be added to RAS2.
+> > I agree with it being limited, but think extending with backwards
+> > compatibility isn't a problem (and ACPI spec rules in theory guarantee
+> > it won't break).  I'm keen on working with current version
+> > so that we can ensure the ABI design for CXL encompasses it.
+> > 
+> > Intel folk were cc'd but not said anything on that thread, but Tony Luck
+> > did comment in Jiaqi Yan's software scrubbing discussion linked below.
+> > He observed that a hardware implementation can be complex if doing range
+> > based scrubbing due to interleave etc. RAS2 and CXL both side step this
+> > somewhat by making it someone elses problem. In RAS2 the firmware gets
+> > to program multiple scrubbers to cover the range requested. In CXL
+> > for now this leaves the problem for userspace, but we can definitely
+> > consider a region interface if it makes sense.
+> > 
+> > I'd also like to see inputs from a wider range of systems folk + other
+> > CPU companies.  How easy this is to implement is heavily dependent on
+> > what entity in your system is responsible for this sort of runtime
+> > service and that varies a lot.  
+> 
+> This answers my main question of whether RAS2 is a done deal with
+> shipping platforms making it awkward for Linux to *not* support RAS2, or
+> if this is the start of an industry conversation that wants some Linux
+> ecosystem feedback. It sounds more like the latter.
+
+I'll let others speak up on this as I was presenting on my current outlook
+and understand others are much further down the path.
+
+> 
+> > > > https://lore.kernel.org/all/20221103155029.2451105-1-jiaqiyan@google.com/    
+> > > 
+> > > Yes, now that is a useful changelog, thank you for highlighting it,
+> > > please follow its example.  
+> > 
+> > It's not a changelog as such but a RFC in text only form.
+> > However indeed lots of good info in there.
+> > 
+> > Jonathan  
+> 
+> Thanks again for taking the time Jonathan.
+> 
+You are welcome and thanks for all the questions / pointers.
+
+Jonathan
+
+
 
