@@ -1,109 +1,159 @@
-Return-Path: <linux-kernel+bounces-87959-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87961-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA16086DB7F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 07:33:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AFEE86DB84
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 07:34:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 79BD91F225FF
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 06:33:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DE9EFB21BAB
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 06:34:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F4B267E67;
-	Fri,  1 Mar 2024 06:33:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C0F067E63;
+	Fri,  1 Mar 2024 06:34:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ZNA2R66r"
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="pac3JJdo"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E62C433DA
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 06:33:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4D7D67C4D
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 06:34:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709274796; cv=none; b=Nqor3heiw24wi9DOMFC3wKt2WbQJFlJBOkxAk0gaaWjjNlb7maRGsHgw4PfftjT8BQuW3xmEYdHSoYeiljS4Dip0beHbwE7TKZMOLUs7SS1pz8BNU8ETZ8+ThNXg8niZ2Czw9IVNVVH02FnoRNekyJYUqcjqr1l7QWqJD/OOQy0=
+	t=1709274872; cv=none; b=HT9NFWMfSB5sL2NZUiikewL8Y315DQonvr9BQ3iUj6VlX5LJYAZFOcN8qYEU2FVtQRs+zU5fYZZvB7Y1R3ACQj2M5uFNdlQUT6U9oIzhx6eNHmmlNH2vT6ni6uR8qDynbwsEgN8p99TdUe1U0GvcHp5EVCoLn0ygUXhRYZO8dx0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709274796; c=relaxed/simple;
-	bh=1A49pWCrKxjDV0YLcbE2h1uhtFbcqlO7mDjyc4a8aDM=;
+	s=arc-20240116; t=1709274872; c=relaxed/simple;
+	bh=SmdKxeIixIsAU0Agzo28Zt1EVfMxmohDwoG9rgI9Tf8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qyr71FXH51Jh6LFrOdQql6uR9vQ3Cb4SRz4M40hlICdKGEaUfG6IvJgYCCEB5jnCObLFYyK0feCdii+XpbmkpSWoe82/fz9u4GBpFPVit1U9x6BPpkFp02OrD+PLC9a2jD0J2DbygVTbJJBKHbxyv9Qcgr0ux7VXEZ8UHUPROPM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=ZNA2R66r; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1dcd6a3da83so12980405ad.3
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 22:33:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709274795; x=1709879595; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=gQwQz/QJ5mWY5tSctsi2zwWFgf7B4XFbDdy0fTpAkBg=;
-        b=ZNA2R66rg1PSPPyatqHeNgwengHmb1SNAUSvJ2T6tssnC5dVkx4cqmrkyGFaImbMIz
-         YeUB3sVjtiZuvVWakl/UAzLV7ElgAAj1naxrgG+UPMMvC08FJVbMokDA4I2J/0VPxl+X
-         bUsTfXjedbdJxxUbcH0XSFbjJSlsMWKJrY49E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709274795; x=1709879595;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gQwQz/QJ5mWY5tSctsi2zwWFgf7B4XFbDdy0fTpAkBg=;
-        b=uL3RbIY4lhmqMXL2nLhzCTm6kkCGOvNtU2D+zppDCIZ365yUbZs5SRDZ+p4eplnxIV
-         hx7B4BMPUriBc1lwIK6Wu0RK/YaiMgG110rmVEQTbx1rUiqhTIcRZIwYq1mHT7P/wBiU
-         lRqrA8ZZCv4XInSuxcdvL6tUr6TXgVQI2kU8s/IU5DHPNP3PIJrAhfn7OO33WkXaCLbK
-         qg6YMvBFLTyYo/4WG9nBLdmnN2v3RCWAkbCvq/cvYzXQGunjqRHQzwcPFZalaaQjK0P6
-         Gup9aS0DCeTqblnn7hZ25483HHY1koZdkLfL5erEpU9L5SrPbewQnKtJ8r7mdM0Evc46
-         Hxhg==
-X-Forwarded-Encrypted: i=1; AJvYcCVSCKoa9RpAKkADhvjd1RozLMChYNrWvhVLN79CqLOnuqjPg+SUe7u0K68BaALD5EavQ/+rx3lGFBXcQF211v9Llmc7psBMDzGezyGU
-X-Gm-Message-State: AOJu0YxNTPYTMStD5R+9zFWoODQyA7Op5O2vUEYgr+BSPOS1FXPllSCU
-	DYhnvS1r5V+b+BzXBHTh+jLfinw/UBBXpZ7vHLd1wmIZ0qSJQhTCED25X1fytA==
-X-Google-Smtp-Source: AGHT+IGtxhru9efUicC8Zpnox8H1x+W+BNgnhPRPfG5fxB3Z5iWoADp4ruD8eC+7D+TUCAYpeIHX5A==
-X-Received: by 2002:a17:902:c412:b0:1dc:3c3f:c64b with SMTP id k18-20020a170902c41200b001dc3c3fc64bmr1019191plk.24.1709274794801;
-        Thu, 29 Feb 2024 22:33:14 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id p1-20020a170902e74100b001d9ef7f4bfdsm2586276plf.164.2024.02.29.22.33.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 22:33:14 -0800 (PST)
-Date: Thu, 29 Feb 2024 22:33:13 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Josh Poimboeuf <jpoimboe@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, oe-kbuild-all@lists.linux.dev,
-	kernel test robot <lkp@intel.com>,
-	Alexander Lobakin <aleksander.lobakin@intel.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] objtool: Fix UNWIND_HINT_{SAVE,RESTORE} across basic
- blocks
-Message-ID: <202402292232.2D9E913F@keescook>
-References: <202402240702.zJFNmahW-lkp@intel.com>
- <202402231632.D90831AE51@keescook>
- <20240227073527.avcm5naavbv3cj5s@treble>
+	 Content-Type:Content-Disposition:In-Reply-To; b=W+OAEBbpMZjLz2hTHRi8wGzFsRKxOwVzR+BejpYA/L4UWDPLHFIZhb31OAuh6vz6A3tQnCq2Bb56YgyI4FOtZJPrP3Ti87PH7ewg3B+84VzWELBngJoetmeFLkNLqX9C+P9QwKflehWhYs3s/4G1g215arN2Sz9MGF/ZgvL5y1I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=pac3JJdo; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from pendragon.ideasonboard.com (89-27-53-110.bb.dnainternet.fi [89.27.53.110])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7CD8D899;
+	Fri,  1 Mar 2024 07:34:14 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1709274854;
+	bh=SmdKxeIixIsAU0Agzo28Zt1EVfMxmohDwoG9rgI9Tf8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=pac3JJdoVeVMXCMqjgYq+cC4iQ50HdypMFlLzAlmNCG5D6fdnKMBMkkO0Tfs6LfHx
+	 7kmQjPrOxANvmFFCdcZqHetxKvt9rCWvWdpvJaXptcZmRhL73spTZwRaceDqP3XOPY
+	 hTDFj4MG0ONIdOkReqUW7IRlAG23dMyEj4DutZtc=
+Date: Fri, 1 Mar 2024 08:34:31 +0200
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To: =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado <nfraprado@collabora.com>
+Cc: Andrzej Hajda <andrzej.hajda@intel.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Robert Foss <rfoss@kernel.org>, Jonas Karlman <jonas@kwiboo.se>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	owen <qwt9588@gmail.com>, Jagan Teki <jagan@amarulasolutions.com>,
+	Marek Vasut <marex@denx.de>,
+	Adrien Grassein <adrien.grassein@gmail.com>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Vinod Koul <vkoul@kernel.org>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	Vinay Simha BN <simhavcs@gmail.com>,
+	Christopher Vollo <chris@renewoutreach.org>,
+	Jessica Zhang <quic_jesszhan@quicinc.com>,
+	Marijn Suijten <marijn.suijten@somainline.org>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>,
+	kernel@collabora.com, dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Subject: Re: [PATCH v2 0/9] drm: Switch from dev_err to dev_err_probe for
+ missing DSI host error path
+Message-ID: <20240301063431.GM30889@pendragon.ideasonboard.com>
+References: <20240229-anx7625-defer-log-no-dsi-host-v2-0-00506941049a@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240227073527.avcm5naavbv3cj5s@treble>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240229-anx7625-defer-log-no-dsi-host-v2-0-00506941049a@collabora.com>
 
-On Mon, Feb 26, 2024 at 11:35:27PM -0800, Josh Poimboeuf wrote:
-> On Fri, Feb 23, 2024 at 04:45:22PM -0800, Kees Cook wrote:
-> > Josh, Peter, can you give a clue about what's happened here? For
-> > added context, the referenced commit is changing a noreturn function
-> > prototype[1], which I know gets some special objtool handling, but it's
-> > converting a pointer arg to a u8... I can't imagine what has gone weird
-> > here. :P
+Hi Nícolas,
+
+On Thu, Feb 29, 2024 at 07:12:06PM -0500, Nícolas F. R. A. Prado wrote:
+> This series changes every occurence of the following pattern: 
 > 
-> I think this convinced GCC to reshuffle some basic blocks, which
-> uncovered an objtool bug.  Or, objtool just wasn't smart enough, as the
-> warning says ;-)
+> 	dsi_host = of_find_mipi_dsi_host_by_node(dsi);
+> 	if (!dsi_host) {
+> 		dev_err(dev, "failed to find dsi host\n");
+> 		return -EPROBE_DEFER;
+> 	}
 > 
-> This should fix it, absent any more warnings.  Kees, feel free to take
-> it in your branch if that helps.
+> into
+> 
+> 	dsi_host = of_find_mipi_dsi_host_by_node(dsi);
+> 	if (!dsi_host)
+> 		return dev_err_probe(dev, -EPROBE_DEFER, "failed to find dsi host\n");
+> 
+> This registers the defer probe reason (so it can later be printed by the
+> driver core or checked on demand through the devices_deferred file in
+> debugfs) and prevents errors to be spammed in the kernel log every time
+> the driver retries to probe, unnecessarily alerting userspace about
+> something that is a normal part of the boot process.
 
-Thanks very much! I'll carry it in my tree.
+The idea is good, but I have a small issue with patches 1/9 to 7/9. They
+all patch a function that is called by the probe function. Calling
+dev_err_probe() in such functions is error-prone. I had to manually
+check when reviewing the patches that those functions were indeed called
+at probe time, and not through other code paths, and I also had to check
+that no callers were using dev_err_probe() in the error handling path,
+as that would have overridden the error message.
 
--Kees
+Would there be a way to move the dev_err_probe() to the top-level ? I
+understand it's not always possible or convenient, but if it was doable
+in at least some of the drivers, I think it would be better. I'll let
+you be the judge.
+
+> I have omitted a Fixes: tag in the last patch, for the truly-nt35597
+> panel, because it predates the dev_err_probe() helper.
+> 
+> Changes in v2:
+> - Added patches 2 onwards to fix all occurences of this pattern instead
+>   of just for the anx7625 driver
+> - Link to v1: https://lore.kernel.org/r/20240226-anx7625-defer-log-no-dsi-host-v1-1-242b1af31884@collabora.com
+> 
+> ---
+> Nícolas F. R. A. Prado (9):
+>       drm/bridge: anx7625: Don't log an error when DSI host can't be found
+>       drm/bridge: icn6211: Don't log an error when DSI host can't be found
+>       drm/bridge: lt8912b: Don't log an error when DSI host can't be found
+>       drm/bridge: lt9611: Don't log an error when DSI host can't be found
+>       drm/bridge: lt9611uxc: Don't log an error when DSI host can't be found
+>       drm/bridge: tc358775: Don't log an error when DSI host can't be found
+>       drm/bridge: dpc3433: Don't log an error when DSI host can't be found
+>       drm/panel: novatek-nt35950: Don't log an error when DSI host can't be found
+>       drm/panel: truly-nt35597: Don't log an error when DSI host can't be found
+> 
+>  drivers/gpu/drm/bridge/analogix/anx7625.c     |  6 ++----
+>  drivers/gpu/drm/bridge/chipone-icn6211.c      |  6 ++----
+>  drivers/gpu/drm/bridge/lontium-lt8912b.c      |  6 ++----
+>  drivers/gpu/drm/bridge/lontium-lt9611.c       |  6 ++----
+>  drivers/gpu/drm/bridge/lontium-lt9611uxc.c    |  6 ++----
+>  drivers/gpu/drm/bridge/tc358775.c             |  6 ++----
+>  drivers/gpu/drm/bridge/ti-dlpc3433.c          | 17 +++++++++--------
+>  drivers/gpu/drm/panel/panel-novatek-nt35950.c |  6 ++----
+>  drivers/gpu/drm/panel/panel-truly-nt35597.c   |  6 ++----
+>  9 files changed, 25 insertions(+), 40 deletions(-)
+> ---
+> base-commit: 2ae0a045e6814c8c1d676d6153c605a65746aa29
+> change-id: 20240226-anx7625-defer-log-no-dsi-host-c3f9ccbcb287
 
 -- 
-Kees Cook
+Regards,
+
+Laurent Pinchart
 
