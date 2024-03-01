@@ -1,111 +1,150 @@
-Return-Path: <linux-kernel+bounces-89052-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89054-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B318386E9FC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:59:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3D8886EA04
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:00:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 64FEB1F257E3
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:59:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3C311C246BB
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:00:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 574E03BB25;
-	Fri,  1 Mar 2024 19:59:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 939E83BB3C;
+	Fri,  1 Mar 2024 20:00:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="alhEwi3X";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Vp36FRU2"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I4dmb6uL"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41F703AC34
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 19:59:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBADE3B796;
+	Fri,  1 Mar 2024 20:00:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709323166; cv=none; b=oQXd3aLD0DcTu+yvN8pAtKcucoiMft7e9KcPLiBcuYWGq07+ZGYxv9OeTtEFtEW1MRDZvlHEm1aK5A+DvMUP3wVOmEk6fRT3qHktzv2Q0B65/UsB04rFb13ngWipN9H+baGBpGe6jb2p1HZcobtg2IduaE9ViuuKwxQCf9XvmIQ=
+	t=1709323243; cv=none; b=SpHHSfkTLUSjaaD+pVOsWVJN80xIX4nv4TxIQvb1Nn3kUbNIKgS5GdvxpK8wWJ/2Qce3q3KmwObOWGk/n6EL8/9NERSsellEZRSgZyMEQo9kSkVeH58LjlV/1DJQPN6vc5iirno5Ry7hxxJA/BsriUtGLwdtyKhUND6ZvPPvKUg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709323166; c=relaxed/simple;
-	bh=vEw8hKXCZ7Q5pqWVw83KkjUoR47z/R3Z0Zqq9PA2VM8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=BSymK+SB/iZMlMUrppt+6UtS/zNwFmQcxwa59Tefyzj2r6yDVq2kpTeiNW4odpHGEBd2qkEnGqkHKZpGCcQAZNyk3q/QdQXQHTHe992Ecwl17RIwgUvPUwul8ptg8NIGi4vu9tGxpoIn3VdHREHs3FLWCP5KXTd81YEVC5hEfdU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=alhEwi3X; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Vp36FRU2; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1709323163;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PfFPGWCK+GSDiSmRj2uN72ko5lEX5jt2xXFl55bKfn4=;
-	b=alhEwi3XGV0RCP4AGdMXeUdQqlR/iZDCbIaF93tSJe/gCqqH3SEY2MjHkTjX6Xj1upVyIi
-	rkDbyCEoDDnIE/gt3xatWfGmA7E854npJzX9W5BOLihCK+GVGVQ/14g8Qok9X9xz2iGxmm
-	eeSiLXYtg4Vwo3LZLp3QwoRCv/eVlsPpYYjue+Kj+U2cx52ZtYfCyIjeEOrgCiVBar3cOj
-	4bR2/hDXYKZJx+RHOzzcgTyPsrqiIbV6nSNaLRCt7j6V/JsaeANqoWJow2o6pUGvaPx2yP
-	pn3bSCAYLELeq0nnCde+BTnHjCKUk4SUMkg1zzH+fTipr3GfkEkb7k2Oe7OQ9A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1709323163;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PfFPGWCK+GSDiSmRj2uN72ko5lEX5jt2xXFl55bKfn4=;
-	b=Vp36FRU2Xs3ultveYfGUTxgAlIEr9vbpLjThGBBl/hAXtk+WbJb7AoJfe9d1I/5Y13uzWf
-	goXB4PKql1Ma2jDw==
-To: Jacob Pan <jacob.jun.pan@linux.intel.com>
-Cc: Dimitri Sivanich <sivanich@hpe.com>, David Woodhouse
- <dwmw2@infradead.org>, Lu Baolu <baolu.lu@linux.intel.com>, Joerg Roedel
- <joro@8bytes.org>, Will Deacon <will@kernel.org>, Robin Murphy
- <robin.murphy@arm.com>, iommu@lists.linux.dev,
- linux-kernel@vger.kernel.org, Steve Wahl <steve.wahl@hpe.com>, Russ
- Anderson <russ.anderson@hpe.com>, jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH] Allocate DMAR fault interrupts locally
-In-Reply-To: <20240301115000.4ba2e411@jacob-builder>
-References: <ZeDj/LK56borSxO4@hpe.com> <87plwe7w3m.ffs@tglx>
- <20240301115000.4ba2e411@jacob-builder>
-Date: Fri, 01 Mar 2024 20:59:22 +0100
-Message-ID: <87msrhwwo5.ffs@tglx>
+	s=arc-20240116; t=1709323243; c=relaxed/simple;
+	bh=tkPfYz4dqfaAlFLOY/DLcTiVqpMCMMgd9r4KzTAlmo0=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=Ju9urPOwECkGNrCgMaYOWFWj1mxd+GJjatqb5+Z+uQtV7yY/sH//m7qnD+cMIMwp+SvVfpClL6O6R36lJIxpI80t3ZQE+pf/lpFg4salUEC4DyErKw7boBg6j9iFSiy0fRiqT1wL40I0hiSg5/MljNd2UmDshk69Ycm4EiULPhA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I4dmb6uL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 138E7C433F1;
+	Fri,  1 Mar 2024 20:00:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709323243;
+	bh=tkPfYz4dqfaAlFLOY/DLcTiVqpMCMMgd9r4KzTAlmo0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=I4dmb6uL5oZ7jN5mVc1lq2HaCe04G/zhlwTmclLdpOcN8cYliO3vVRcj1ci4De4vh
+	 cnfqZ8PGmi/vMmMGmT5JvOUyQSifd/XWEtQIiu1cK69e1RYXYx0Tc6yQe76T6dCKVF
+	 Mgn8jw/v7wHnIxm0tyC8FihmR6nL9Uc8qkiPCbWNO0gQD4xgjPsMViyWjQ05pgyCgL
+	 J315K5PD4QJ4yTzxaTX7SenZsAdGQxrHIxKIePUCXhuRKsqaV0aujLpco2QvUnT4zt
+	 7JukBPFCqJbOLh4l5vcyfHrgtK0lw00n89MZQUFqQWhH2C7+B0OZ+72VzgOYCeQZY+
+	 C74oyXFyNNoVg==
+Date: Fri, 1 Mar 2024 14:00:41 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Shashank Babu Chinta Venkata <quic_schintav@quicinc.com>
+Cc: agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+	mani@kernel.org, quic_msarkar@quicinc.com,
+	quic_kraravin@quicinc.com,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Serge Semin <fancer.lancer@gmail.com>,
+	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v1 2/3] PCI: dwc: add equalization settings for gen4
+Message-ID: <20240301200041.GA405674@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240301051220.20917-3-quic_schintav@quicinc.com>
 
-Jacob!
+On Thu, Feb 29, 2024 at 09:11:35PM -0800, Shashank Babu Chinta Venkata wrote:
+> GEN3_RELATED_OFFSET is being used as shadow register for generation4 and
+> generation5 data rates based on rate select mask settings on this register.
+> Select relevant mask and equalization settings for generation4 operation.
 
-On Fri, Mar 01 2024 at 11:50, Jacob Pan wrote:
-> On Thu, 29 Feb 2024 23:18:37 +0100, Thomas Gleixner <tglx@linutronix.de>
-> wrote:
->> On Thu, Feb 29 2024 at 14:07, Dimitri Sivanich wrote:
->> The real problems are:
->> 
->>  1) This approach only works when _ALL_ APs have been brought up during
->>     boot. With 'maxcpus=N' on the command line this will fail to enable
->>     fault handling when the APs which have not been brought up initially
->>     are onlined later on.
->> 
->>     This might be working in practice because intel_iommu_init() will
->>     enable the interrupts later on via init_dmars() unconditionally, but
->>     that's far from correct because IRQ_REMAP does not depend on
->>     INTEL_IOMMU.
-> The dmar fault interrupt is VT-d's own interrupt, not subject to IRQ_REMAP.
-> So this set up has nothing to do with IR, right?
+Please capitalize subject lines to match history ("PCI: qcom: Add ...")
 
-Both interrupt remap and the IOMMU use DMAR and both set the DMAR's
-fault interrupt up, whatever comes first. If IR is enabled then IR does
-it, if not then the IOMMU init handles it.
+s/GEN3_RELATED_OFFSET/GEN3_RELATED_OFF/ (I think?)
 
-But yes, the interrupt is part of DMAR.
+I wish these "GEN3_RELATED" things were named with the data rate
+instead of "GEN3".  The PCIe spec defines these things based on the
+data rate (8GT/s, 16GT/s, etc), not the revision of the spec they
+appeared in (gen3/gen4/etc).
 
-> Maybe we should not call it irq_remap_work, call it dmar_fault_irq_work
-> instead?
+Using "GEN3" means we have to first look up the "gen -> rate" mapping
+before finding the relevant spec info.
 
-This work thing does not work at all as I explained in detail. No matter
-how you name it. The only sane way to do that is with a hotplug state.
+Applies to the subject line, commit log, #defines, function names,
+etc.
 
-Thanks,
+> +void qcom_pcie_cmn_set_gen4_eq_settings(struct dw_pcie *pci)
+> +{
+> +	u32 reg;
+> +
+> +	reg = dw_pcie_readl_dbi(pci, GEN3_RELATED_OFF);
 
-        tglx
+Warrants a one-line comment about using "GEN3_..." in a function named
+"..._gen4_..."  (But ideally both would be renamed based on the data
+rate instead.)
 
+> +++ b/drivers/pci/controller/dwc/pcie-qcom-cmn.h
+> @@ -9,10 +9,29 @@
+>  #include "../../pci.h"
+>  #include "pcie-designware.h"
+>  
+> +#define GEN3_EQ_CONTROL_OFF			0x8a8
+> +#define GEN3_EQ_CONTROL_OFF_FB_MODE_MASK        GENMASK(3, 0)
+> +#define GEN3_EQ_CONTROL_OFF_PHASE23_EXIT_MODE   BIT(4)
+> +#define GEN3_EQ_CONTROL_OFF_PSET_REQ_VEC_MASK	GENMASK(23, 8)
+> +#define GEN3_EQ_CONTROL_OFF_FOM_INC_INITIAL_EVAL	BIT(24)
+
+Are these qcom-specific registers, or should they be added alongside
+GEN3_RELATED_OFF in pcie-designware.h?
+
+> +#define GEN3_EQ_FB_MODE_DIR_CHANGE_OFF          0x8ac
+> +#define GEN3_EQ_FMDC_MAX_PRE_CUSROR_DELTA_VAL   0x5
+> +#define GEN3_EQ_FMDC_MAX_POST_CUSROR_DELTA_VAL  0x5
+> +#define GEN3_EQ_FMDC_N_EVALS_VAL          0xD
+> +#define GEN3_EQ_FMDC_T_MIN_PHASE23_MASK         GENMASK(4, 0)
+> +#define GEN3_EQ_FMDC_N_EVALS_MASK               GENMASK(9, 5)
+> +#define GEN3_EQ_FMDC_MAX_PRE_CUSROR_DELTA_MASK  GENMASK(13, 10)
+> +#define GEN3_EQ_FMDC_MAX_POST_CUSROR_DELTA_MASK	GENMASK(17, 14)
+> +#define GEN3_EQ_FMDC_N_EVALS_SHIFT			5
+> +#define GEN3_EQ_FMDC_MAX_PRE_CUSROR_DELTA_SHIFT		10
+> +#define GEN3_EQ_FMDC_MAX_POST_CUSROR_DELTA_SHIFT	14
+
+> +++ b/drivers/pci/controller/dwc/pcie-qcom-ep.c
+> @@ -438,6 +438,10 @@ static int qcom_pcie_perst_deassert(struct dw_pcie *pci)
+>  		goto err_disable_resources;
+>  	}
+>  
+> +	/* set Gen4 equalization settings */
+
+Pointless comment.
+
+> +	if (pci->link_gen == 4)
+> +		qcom_pcie_cmn_set_gen4_eq_settings(pci);
+
+> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> @@ -263,6 +263,10 @@ static int qcom_pcie_start_link(struct dw_pcie *pci)
+>  {
+>  	struct qcom_pcie *pcie = to_qcom_pcie(pci);
+>  
+> +	/* set Gen4 equalization settings */
+
+Pointless comment.
+
+> +	if (pci->link_gen == 4)
+> +		qcom_pcie_cmn_set_gen4_eq_settings(pci);
 
