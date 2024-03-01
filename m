@@ -1,97 +1,83 @@
-Return-Path: <linux-kernel+bounces-88845-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88846-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B30EF86E768
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:36:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4BA686E77D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:42:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66D3F2908A0
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:36:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B8121B29996
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:37:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DF0B12B72;
-	Fri,  1 Mar 2024 17:34:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9BFA200AE;
+	Fri,  1 Mar 2024 17:35:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oNfkltCr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WkaA+sqq"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D0B2883B;
-	Fri,  1 Mar 2024 17:34:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0440B36120;
+	Fri,  1 Mar 2024 17:35:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709314495; cv=none; b=Gl6qmi20LlPz82Mvbpknwh0XmeiOMXwXC3x/9p/hnybXbGCmOiVWks7naQmFE/YhjSzycf4TkzcSnuoIQljm5X9eWslqoTFQQTyl9uF7WFhdHNKxHNIxyEYyLWkHFXMGG/+nouKqxtl+EBG9+MquEBRdk/7wCfeDlhwqxHM9Ue4=
+	t=1709314519; cv=none; b=kvehxK6uKTKDwi4DdZuHFtFggwplhphCjofMfuoBQ5nwnNO5LKkAsvDItG0s0vbjuAplnOFeaNZHCmdsQhMOA0CHqq76eJWCS6CqvAAi2jbtRp2edSnPKz75PK7ei4ld8GPtMkyfVwxbAUl0OPknGFaAk+u9Ia4rcoOTNNwIDos=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709314495; c=relaxed/simple;
-	bh=hiJmLSjYgLPzRYhdIqgBms40kwe1TTYlDeb6XDjkXH8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CnHBmb+yIDs03jaZ2n5EoPDTPPjsEp4MfyOtvoB2PehXjoJPCp6JLmk+thgU2CX3hYYDntl0X9YoKRQgTUq1y44avaC5v0V/1h9T/tjwiJ6Koz4hzK3M2O2nn/e9wgdvZf/ORhMwuDKt2m2zRhhqAK2lF5imc6qiDhdK5CfU2zo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oNfkltCr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7B36C433F1;
-	Fri,  1 Mar 2024 17:34:54 +0000 (UTC)
+	s=arc-20240116; t=1709314519; c=relaxed/simple;
+	bh=EIj/hPN+ik4qmCHTNuVgjY4pQTRSkTwciabO+oM1s/E=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=CYuzTJ34sX42gmHxchW+1S2tu6VywUBbprr7flxEqXoNZLgwleUPaFrXSKq1dGd2YffE9pq5knit4x8Bt5zP4DNZh200PvVZvN8Nvr5oIhm+KOw2y8om+4nl4jrCxx8QpA3AsAJOUg1tcmpvK5MYu1C0cfd4woWLCE0XzhE9cfs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WkaA+sqq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DFFEC433F1;
+	Fri,  1 Mar 2024 17:35:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709314495;
-	bh=hiJmLSjYgLPzRYhdIqgBms40kwe1TTYlDeb6XDjkXH8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=oNfkltCrGIcZDICm8gP9A0SD3vVdubgrx1kxgoGBbM6uQZRMPwj0/1KEt1+GXLCJM
-	 95ZSvcgYxqmib8pv6/UQK+9H1J2L1Qc4wYVd3kbeJIBBC0h+kO3D2GF1TfYOO7OIOj
-	 vrmR0kJonej3RrYRH4pxLNPx1L2Nv3TYTv3d9pRGCzD+rqlM72kmoyKSjYnWvlNxRD
-	 A8WEtC9zgtdmApp/BljY7Atrawk8favrPMdfJnuaoXC91s1eOBq1PtZAPmEngZR+T5
-	 sqM+lYI5CmT0RAPNrBYIPl/8V/OYoRVDhmR3jbyGMW5qC/kOKcaDpTsLoNU1fzSuWd
-	 35YxBF8dxnKkw==
-Date: Fri, 1 Mar 2024 11:34:52 -0600
-From: Rob Herring <robh@kernel.org>
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Abel Vesa <abel.vesa@linaro.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Rob Clark <robdclark@gmail.com>,
-	Abhinav Kumar <quic_abhinavk@quicinc.com>,
-	Sean Paul <sean@poorly.run>,
-	Marijn Suijten <marijn.suijten@somainline.org>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Kuogee Hsieh <quic_khsieh@quicinc.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Johan Hovold <johan@kernel.org>, linux-arm-msm@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] dt-bindings: display: msm: dp-controller:
- document X1E80100 compatible
-Message-ID: <20240301173452.GA2438612-robh@kernel.org>
-References: <20240222-x1e80100-display-refactor-connector-v2-0-bd4197dfceab@linaro.org>
- <20240222-x1e80100-display-refactor-connector-v2-1-bd4197dfceab@linaro.org>
- <CAA8EJppOBHhaZpS_Z34fmFmGr4aRe0-k8w=5ScquNhCrnzRDgw@mail.gmail.com>
+	s=k20201202; t=1709314518;
+	bh=EIj/hPN+ik4qmCHTNuVgjY4pQTRSkTwciabO+oM1s/E=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=WkaA+sqqt5Aprf/+ou7cadfG7bxUeTKvsb5UJe29yaHjEOEn6Xl888m3O2bwtLr6m
+	 kBnYkXlU4+7VoH2QtqxJ2DRwKn4HrRYX/16b57ztkG+ZAN5A7ICLi58/9rswLl8Rti
+	 Qya+bELvvD8OVl4sCXqtzQPB9dso+1CAesx2eAHVWtsvAi9GaHYbTxtlvVIJpoiDA4
+	 HGxm3AyZ6Y6hdoDZTywToy6Jb+RstK9GbEzAfhoKabwFkPa/JSDS1rDfY+xGrfXWMR
+	 bbS/FfN63kTeEybMi4gMbgSLSzIloMpSLLJwly7c9dmfhbFWPlDNskqEs2w7TbRgra
+	 bOOWtop18STRw==
+Date: Fri, 1 Mar 2024 09:35:17 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc: Eric Dumazet <edumazet@google.com>, Kees Cook <keescook@chromium.org>,
+ "David S. Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>, "Gustavo A. R. Silva"
+ <gustavoars@kernel.org>, <netdev@vger.kernel.org>,
+ <linux-hardening@vger.kernel.org>, Simon Horman <horms@kernel.org>, "Jiri
+ Pirko" <jiri@resnulli.us>, Daniel Borkmann <daniel@iogearbox.net>, Coco Li
+ <lixiaoyan@google.com>, Amritha Nambiar <amritha.nambiar@intel.com>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] netdev: Use flexible array for trailing private bytes
+Message-ID: <20240301093517.428e5b5d@kernel.org>
+In-Reply-To: <77d3f074-8cb6-466b-ab31-a7b0bac659d0@intel.com>
+References: <20240229213018.work.556-kees@kernel.org>
+	<20240229225910.79e224cf@kernel.org>
+	<CANn89iKeJGvhY0K=kLhhR39NVbaizP2UBk0Vk0r_XCe2XMBZHg@mail.gmail.com>
+	<9050bdec-b34a-4133-8ba5-021dfd4b1c75@intel.com>
+	<CANn89iLSLPn5PyXNQcA2HO0e5jGYvHKhTh_9_EMmfbTJKZPfbg@mail.gmail.com>
+	<77d3f074-8cb6-466b-ab31-a7b0bac659d0@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAA8EJppOBHhaZpS_Z34fmFmGr4aRe0-k8w=5ScquNhCrnzRDgw@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Sun, Feb 25, 2024 at 12:34:34AM +0200, Dmitry Baryshkov wrote:
-> On Thu, 22 Feb 2024 at 17:55, Abel Vesa <abel.vesa@linaro.org> wrote:
-> >
-> > Add the X1E80100 to the list of compatibles and document the is-edp
-> > flag. The controllers are expected to operate in DP mode by default,
-> > and this flag can be used to select eDP mode.
-> >
-> > Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-> 
-> Rob, Krzysztof, Connor, gracious ping for the review. It would be
-> really nice to merge this patchset during the next cycle. It also
-> unbreaks several other patches.
+On Fri, 1 Mar 2024 15:30:03 +0100 Alexander Lobakin wrote:
+> I like the idea of declaring priv explicitly rather than doing size +
+> ptr magic. But maybe we could just add this flex array to struct
+> net_device and avoid introducing a new structure.
 
-The only thing that speeds up my review is reviewing whatever is ahead 
-of this patch in the queue[1].
-
-Rob
-
-[1] https://patchwork.ozlabs.org/project/devicetree-bindings/list/
+100% I should have linked to the thread that led to Kees's work.
+Adding directly to net_device would be way better but there's
+a handful of drivers which embed the struct.
+If we can switch them to dynamic allocation, that'd be great.
+And, as you may be alluding to, it removes the need for the WARN_ON()
+entirely as well.
 
