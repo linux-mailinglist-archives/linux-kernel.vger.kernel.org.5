@@ -1,144 +1,180 @@
-Return-Path: <linux-kernel+bounces-88601-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88600-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAC2686E404
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:05:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EF9486E402
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:05:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1416D1C2085A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:05:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4536B1F232C4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:05:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39FBF7002F;
-	Fri,  1 Mar 2024 15:04:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="kB0AcZcq"
-Received: from mout.web.de (mout.web.de [212.227.15.3])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A95941C6E;
+	Fri,  1 Mar 2024 15:04:45 +0000 (UTC)
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08FEF3A8E3;
-	Fri,  1 Mar 2024 15:04:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E7EC3A8E3;
+	Fri,  1 Mar 2024 15:04:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709305492; cv=none; b=boStXpE3+EqKnevvRjjAeE1bGa9AlKBY4oEuey2tIzomjndNNC/CtsWjwQD2acxiWxdz+6D0YgXEzxkFwQErvMwxLyPN66fLR8qbT7WJbFeS3wCmjh+IJWpUtIhJJja7CwYBtNywI4XlG1F9qYjkpIBbQBudsoU49bJk8QEawMo=
+	t=1709305484; cv=none; b=BLoij6TMLFgbmqEKDy9aK0Dz47jqORXmLxmTpoFab/73Jh3Ei6FJmsEqRkQtPQlGbYtxpHxtLyPjyXfU0TEJXGRHCnwTgUSIzzBaSIl05+AeMNbKCdYON/p03XC3VJ2OOHD7kt1vP82zdlun9ouAu1+yU2RPiNwtF3PP28F7daw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709305492; c=relaxed/simple;
-	bh=AfZgX4PFBnRALIWRND3UH5sbBTC68YgJey8bmNSd1Gs=;
-	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=Vg6Y4oWloRv/uNM3fq/RhVnpLiO0eZ6TX6SZQw6slBpjQseFhrZDNCtLrif4A5x5cos0H5elRK9J6hHesalgfAw6jlEVCjTofNxjp1UZHP9bfirOFYfucA0q/FICUqIPqUj15nrbIpsDPi6iPFyeem/8d8hf1bN09MfDRW3IYI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=kB0AcZcq; arc=none smtp.client-ip=212.227.15.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1709305453; x=1709910253; i=markus.elfring@web.de;
-	bh=AfZgX4PFBnRALIWRND3UH5sbBTC68YgJey8bmNSd1Gs=;
-	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
-	b=kB0AcZcqRZbdRoRrzDoJeHiCdbwVp3/Vk4xRpQz1btthq8uEUSqqq8vpKxmc4eOx
-	 gQ6IMkGjXILh/SgPG/Num9rPpd1+31wAsJ/FLzEY8V8Y1vyEMiIjpjtZ/BrLawcFT
-	 ma3Z0dBCr/rVJe4h7Gwou8YFKhCQc1MEHTFW5m5uGV9JxNh3ROp2fwvWlxEKHn0O5
-	 OYqMqJVsZOvULV5VxESoaylgu3xeFOSXlHJXw1i0c553QLsT095qa6FqHqz5eMn/h
-	 Fw1lbq7u+PF2IxlaxshFKovge8CvTPMDiMcOzEd+ZwJ/mhhdUS6rPKfDzTPwzamtl
-	 4Zg5ctsHIaLzOKaTzQ==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.86.95]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1N2SL5-1qjnKk1Y1n-013yV0; Fri, 01
- Mar 2024 16:04:13 +0100
-Message-ID: <9a2e5053-07ec-4a11-bef4-7a8b0f80f740@web.de>
-Date: Fri, 1 Mar 2024 16:04:07 +0100
+	s=arc-20240116; t=1709305484; c=relaxed/simple;
+	bh=CLfHGgV8g9ikDXr41EpApqiaZGI0K8iTSgXJt1K3S6Q=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=PIaPpuxN0nniTwyZEFoAaLJeGZXT5GUdAzRcE5cxQdMb9LUVtExx3OdN1wxuTQtD5yj6imY9/fazALaszKzmGRGnJJk9z3GTi8u+EuV+Whl90u3nSOULXPm/1FpdSUrFTLI+HJMJwg4dtCykAMWomrLCtgKQ5Hle6FjTYgTjYA0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.29])
+	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4TmWF93hfZz9y4Sq;
+	Fri,  1 Mar 2024 22:49:01 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.27])
+	by mail.maildlp.com (Postfix) with ESMTP id B87D4140D09;
+	Fri,  1 Mar 2024 23:04:31 +0800 (CST)
+Received: from [127.0.0.1] (unknown [10.204.63.22])
+	by APP2 (Coremail) with SMTP id GxC2BwAH9Cdu7uFlW217Aw--.47273S2;
+	Fri, 01 Mar 2024 16:04:31 +0100 (CET)
+Message-ID: <f1b1b5a46fb07cd64e095bb4a224adbf2e6baab6.camel@huaweicloud.com>
+Subject: Re: [PATCH v2 14/25] evm: add support for fscaps security hooks
+From: Roberto Sassu <roberto.sassu@huaweicloud.com>
+To: "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
+Cc: Christian Brauner <brauner@kernel.org>, Serge Hallyn <serge@hallyn.com>,
+  Paul Moore <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>, James
+ Morris <jmorris@namei.org>,  Alexander Viro <viro@zeniv.linux.org.uk>, Jan
+ Kara <jack@suse.cz>, Stephen Smalley <stephen.smalley.work@gmail.com>,
+ Ondrej Mosnacek <omosnace@redhat.com>,  Casey Schaufler
+ <casey@schaufler-ca.com>, Mimi Zohar <zohar@linux.ibm.com>, Roberto Sassu
+ <roberto.sassu@huawei.com>,  Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+ Eric Snowberg <eric.snowberg@oracle.com>, "Matthew Wilcox (Oracle)"
+ <willy@infradead.org>, Jonathan Corbet <corbet@lwn.net>, Miklos Szeredi
+ <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, 
+ linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+ linux-security-module@vger.kernel.org, audit@vger.kernel.org, 
+ selinux@vger.kernel.org, linux-integrity@vger.kernel.org, 
+ linux-doc@vger.kernel.org, linux-unionfs@vger.kernel.org
+Date: Fri, 01 Mar 2024 16:04:11 +0100
+In-Reply-To: <ZeHotBrI0aYd2HeA@do-x1extreme>
+References: <20240221-idmap-fscap-refactor-v2-0-3039364623bd@kernel.org>
+	 <20240221-idmap-fscap-refactor-v2-14-3039364623bd@kernel.org>
+	 <15a69385b49c4f8626f082bc9b957132388414fb.camel@huaweicloud.com>
+	 <ZeHotBrI0aYd2HeA@do-x1extreme>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Jijie Shao <shaojijie@huawei.com>,
- Paolo Abeni <pabeni@redhat.com>, Salil Mehta <salil.mehta@huawei.com>,
- Wojciech Drewek <wojciech.drewek@intel.com>,
- Yisen Zhuang <yisen.zhuang@huawei.com>, Yonglong Liu <liuyonglong@huawei.com>
-Content-Language: en-GB
-Cc: LKML <linux-kernel@vger.kernel.org>
-From: Markus Elfring <Markus.Elfring@web.de>
-Subject: [PATCH] net: hns: Use common error handling code in hns_mac_init()
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:g/zMKCWXPxqqIkYYxVNWWZBfee+4OeC3/qmzN2FMrL1NfKaGZqe
- KY8HnAlhIcoVZSvmAK1KFTZJN8S8cQXau9bTbnjlHnQCSSbBz/mwT3M0roMmr0dlVnWUaVu
- UCI3sGgoykx072KGYcOGYAXVgqZaDtzzffG94L3CK++C65Fo31Td19w+aEmzL4Pogdgi9pb
- VRJ8OvwC4EoKWR9bSYmOg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:TE01qw5ckh4=;A0WHE5wXuRiOqFiUs6hqO50bKta
- 8f9mN9shdG5P4elUuXaLtvwSRKFv4UNq3Ylyx2yJXlJBdWeRknqHyMMN2H6xM+SdlgcUkjw6W
- qc9XHEE3VM6b5I+4orgzEvn2Vr1wsX9mVvkpDCphCMd7GtB3NAVGxqwMkSRmEebcUoUyTsfnU
- DygQ13QK+xSZi1a7BRsP730efadTXmqd5zXRaXlCBrYIOSJ3tSBfMt3RaftBDBwS+QOFjVq1J
- GKCSOhs4NwRzpVnz+5/WJkkfgCsVNPU6br9QdSjI3KrXEW6wT6RNUdz0GswDJ9LBRAxKbZV9G
- l2zGqtd+L7gqvKdSY3lLQE9bHTH5cHwKxJpHdJ3IFZ1aquTzs3kUDrIXbEFbjnqKbnqIOLhr0
- r3NSazBpvw+PU2pDu/EBrKMsTqciBL97IgJlD4gfXTtcRcaFSC9qwr16CWZC88siCTGK2GZr6
- VNYkBeIy/rGKH3L7MX+bp762higr/y/cqjvpSVt1SrmHkQw05A4m2v0uq2te698arC0RgDcZ6
- ZxWcHKdhpB/p3pRY7sIr/YqY8Si2nrl6ioCAMnzgra/BEDELqp3l/+gXvM6n4TAmjOmLzHhYR
- oFEcyWEzYGTUiDY7Kge7h99faS3P4+lEmJGX1xK2Vkq81eQNqDp3CigyO7Mv1X/po1s6dr/nh
- uL+dB2UBWmggr/GCAe4xbaDeGjKVoFqGMKkTEFBQSaWmpwi3xxVkV+jQFtnGfC30W1QMRllJb
- 1iQoCSpJ07x8qBLB7j9eHFJHC6yEmjtCrPNoSpYImHB8zRlBbXz2VbhzNUB3JhNtI5J3N3z7v
- l/IWRf+7yls15iRGg39lBVSbqcDFL9JT9Bepiu1bmCmAg=
+X-CM-TRANSID:GxC2BwAH9Cdu7uFlW217Aw--.47273S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxZF18ZFykGFyDJw4rXr17Awb_yoW5uF1xpF
+	WfC3ZYkrn5Jry3Jr97A3yDX3WF93yrJrW7Kr95X34kua4DCF1fCrWxKFW5uFs3ZwnxGr1q
+	qw47tr1DGFsIv3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
+	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE
+	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
+	xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+	c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAkuxUUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAJBF1jj5bh2gABsS
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Fri, 1 Mar 2024 15:48:25 +0100
+On Fri, 2024-03-01 at 08:39 -0600, Seth Forshee (DigitalOcean) wrote:
+> On Fri, Mar 01, 2024 at 10:19:13AM +0100, Roberto Sassu wrote:
+> > On Wed, 2024-02-21 at 15:24 -0600, Seth Forshee (DigitalOcean) wrote:
+> > > Support the new fscaps security hooks by converting the vfs_caps to r=
+aw
+> > > xattr data and then handling them the same as other xattrs.
+> >=20
+> > Hi Seth
+> >=20
+> > I started looking at this patch set.
+> >=20
+> > The first question I have is if you are also going to update libcap
+> > (and also tar, I guess), since both deal with the raw xattr.
+>=20
+> There are no changes needed for userspace; it will still deal with raw
+> xattrs. As I mentioned in the cover letter, capabilities tests from
+> libcap2, libcap-ng, ltp, and xfstests all pass against this sereies.
+> That's with no modifications to userspace.
 
-Add a jump target so that a bit of exception handling can be better reused
-at the end of this function implementation.
+Yes, figured it out after applying the patch set. Then yes, IMA/EVM
+tests should work too.
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-=2D--
- drivers/net/ethernet/hisilicon/hns/hns_dsaf_mac.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+> > From IMA/EVM perspective (Mimi will add on that), I guess it is
+> > important that files with a signature/HMAC continue to be accessible
+> > after applying this patch set.
+> >=20
+> > Looking at the code, it seems the case (if I understood correctly,
+> > vfs_getxattr_alloc() is still allowed).
+>=20
+> So this is something that would change based on Christian's request to
+> stop using the xattr handlers entirely for fscaps as was done for acls.
+> I see how this would impact EVM, but we should be able to deal with it.
+>=20
+> I am a little curious now about this code in evm_calc_hmac_or_hash():
+>=20
+> 		size =3D vfs_getxattr_alloc(&nop_mnt_idmap, dentry, xattr->name,
+> 					  &xattr_value, xattr_size, GFP_NOFS);
+> 		if (size =3D=3D -ENOMEM) {
+> 			error =3D -ENOMEM;
+> 			goto out;
+> 		}
+> 		if (size < 0)
+> 			continue;
+>=20
+> 		user_space_size =3D vfs_getxattr(&nop_mnt_idmap, dentry,
+> 					       xattr->name, NULL, 0);
+> 		if (user_space_size !=3D size)
+> 			pr_debug("file %s: xattr %s size mismatch (kernel: %d, user: %d)\n",
+> 				 dentry->d_name.name, xattr->name, size,
+> 				 user_space_size);
+>=20
+> Because with the current fscaps code you actually could end up getting
+> different sizes from these two interfaces, as vfs_getxattr_alloc() reads
+> the xattr directly from disk but vfs_getxattr() goes through
+> cap_inode_getsecurity(), which may do conversion between v2 and v3
+> formats which are different sizes.
 
-diff --git a/drivers/net/ethernet/hisilicon/hns/hns_dsaf_mac.c b/drivers/n=
-et/ethernet/hisilicon/hns/hns_dsaf_mac.c
-index f75668c47935..a4919aad45b6 100644
-=2D-- a/drivers/net/ethernet/hisilicon/hns/hns_dsaf_mac.c
-+++ b/drivers/net/ethernet/hisilicon/hns/hns_dsaf_mac.c
-@@ -1094,22 +1094,21 @@ int hns_mac_init(struct dsaf_device *dsaf_dev)
- 	device_for_each_child_node(dsaf_dev->dev, child) {
- 		ret =3D fwnode_property_read_u32(child, "reg", &port_id);
- 		if (ret) {
--			fwnode_handle_put(child);
- 			dev_err(dsaf_dev->dev,
- 				"get reg fail, ret=3D%d!\n", ret);
--			return ret;
-+			goto put_fwnode;
- 		}
- 		if (port_id >=3D max_port_num) {
--			fwnode_handle_put(child);
- 			dev_err(dsaf_dev->dev,
- 				"reg(%u) out of range!\n", port_id);
--			return -EINVAL;
-+			ret =3D -EINVAL;
-+			goto put_fwnode;
- 		}
- 		mac_cb =3D devm_kzalloc(dsaf_dev->dev, sizeof(*mac_cb),
- 				      GFP_KERNEL);
- 		if (!mac_cb) {
--			fwnode_handle_put(child);
--			return -ENOMEM;
-+			ret =3D -ENOMEM;
-+			goto put_fwnode;
- 		}
- 		mac_cb->fw_port =3D child;
- 		mac_cb->mac_id =3D (u8)port_id;
-@@ -1148,6 +1147,10 @@ int hns_mac_init(struct dsaf_device *dsaf_dev)
- 	}
+Yes, that was another source of confusion. It happened that
+security.selinux in the disk was without '\0', and the one from
+vfs_getxattr() had it (of course the HMAC wouldn't match).
 
- 	return 0;
-+
-+put_fwnode:
-+	fwnode_handle_put(child);
-+	return ret;
- }
+So, basically, you set something in user space and you get something
+different.
 
- void hns_mac_uninit(struct dsaf_device *dsaf_dev)
-=2D-
-2.44.0
+Example:
+
+# setfattr -n security.selinux -v "unconfined_u:object_r:admin_home_t:s0" t=
+est-file
+
+SELinux active:
+# getfattr -m - -d -e hex test-file
+security.selinux=3D0x756e636f6e66696e65645f753a6f626a6563745f723a61646d696e=
+5f686f6d655f743a733000
+
+Smack active:
+# getfattr -m - -d -e hex test-file
+security.selinux=3D0x756e636f6e66696e65645f753a6f626a6563745f723a61646d696e=
+5f686f6d655f743a7330
+
+
+evmctl (will) allow to provide a hex xattr value for fscaps. That
+should be the one to be used (and vfs_getxattr_alloc() does that).
+However, I guess if the conversion happens, evmctl cannot correctly
+verify anymore the file, unless the same string is specified for
+verification (otherwise it reads the xattr through vfs_getxattr(),
+which would be different).
+
+Roberto
 
 
