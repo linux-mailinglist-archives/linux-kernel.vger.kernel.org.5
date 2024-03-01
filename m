@@ -1,111 +1,166 @@
-Return-Path: <linux-kernel+bounces-88374-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88375-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8502286E0AD
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:50:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB27186E0AF
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:50:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 71F091C212FC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:50:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 686621F2521C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:50:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6A196D1A7;
-	Fri,  1 Mar 2024 11:50:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UTOQlnpw"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C4706CDD6;
+	Fri,  1 Mar 2024 11:50:47 +0000 (UTC)
+Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A54E16D1B9
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 11:50:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 323186CDD0;
+	Fri,  1 Mar 2024 11:50:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709293815; cv=none; b=u3ym4xklfVycDtIOSxDU8aceROfYNnecikxE5FCHSaUSCwsdHNoxNwzSK+tznYRrSwvBAJAlRgrc0cObJ/1n147fiTEKhIYvhw/lGFRq88HOY/JEY6pzAjRlLerh/DxEY3uJ7zEXZ7Vv6gUEWZay8EWt5oRMzVlLfoLUbnXsP/M=
+	t=1709293847; cv=none; b=GYDoQI/XZLllZUFqjk1aaEwIlh8LdDPqAAK7Q6QVhgUfSWQMkiI+Ulk/GFzIhK2fAt/DwYX/7oBSQfmtG0s7zLsqqZAgWpIA8yUrjLBEnFXtZ9ygzEcih9OBArhth6jdllMuFklWQ7oea/LoLTgzzj5N4vqq4NgB3lPy+98NeMw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709293815; c=relaxed/simple;
-	bh=v8Q6Jl37N2zGR/HpoxxGmiaWTFVZujCX5ASqmiZFrbA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IQ3lwP9gsyL+uHK4VW32KobZJp+0KZ5ErozjndW/8BElM58klW8tdYUcNc4p13oH9CFr8qvcRXYydB0V5hcAb5KFzfVAxHFryYWNFaRXz+hgHQOsf1tASSM3nDjAe7/+1+6s4hddV0/cNhw1B9afHtx5KrRxZ/N06OU77usGK1g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UTOQlnpw; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709293812;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FfXTaDiZwo/oZl8lj7bR+2VUdXCLhRKEwJk47+amUD4=;
-	b=UTOQlnpwGej5R/GRVj30k1LJhUw4zbbMmB/uL5YL3TsASdGL/PnzGnP1W+vWSIzOmNGkqs
-	rDF5UlukU7apPcaUvtRiphXHmqnSmUI2+q50hpJpzqia1c1IwWLlqIJD3RykjmtQG2FF9T
-	heZnv3Cd4z7oNbIes2+28UdELqjlOqo=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-219-YGujJ0KJNnGkBm0XpuaVAg-1; Fri, 01 Mar 2024 06:50:11 -0500
-X-MC-Unique: YGujJ0KJNnGkBm0XpuaVAg-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a44508b6b22so110947266b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 03:50:11 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709293810; x=1709898610;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FfXTaDiZwo/oZl8lj7bR+2VUdXCLhRKEwJk47+amUD4=;
-        b=la46OvIW0/0FBGIvsnhta350bCZED83cCB2yELuRy8dLZr/RO34PJBl2ncaUBBTXtK
-         lmI7cTM40j76LEWpk1o0Hh7W1UkZvLRY47ydHaFSCcDGDYL3SSyGBjY4vtP+PowOoMae
-         o6lpknPHDp30yFnjkIC62hOoYufVUxjE6SUTE4v4+rIDYExll6nYD+/K2e0Sj4bDSB1w
-         WSx3uyJzbXoLjtGn9BB8DigansEat7qB/Rx4YcmpCWN4SW82fe+12xWgyZDUYeGcvghd
-         lvB/T7qrokIbzSW8thCmzAVjFuxooL+pEZQr7b1PBUgBl9Cfe/3wcINRoxBkN+tqi5i+
-         kcsg==
-X-Forwarded-Encrypted: i=1; AJvYcCV0qrCwuidyHEqZp3l9xt5jVVjnT/obKfOKWKK/vo80ynif8fYYd6T/fg47MwENu//MTQIt5BFB20g3j7YZ5IhpFusXLILCr78qCKuC
-X-Gm-Message-State: AOJu0YxD506wV7aNjRmTmmC1AmPlubGBDVl/iMX+/3wZXu7IzI3UpXbB
-	TDI6hol1Brz72g3i8fCrPUvKdTuti2F/wxWjFMWglSc4OutP24z+65aVLJikjmxc59m878aEeJy
-	LCA7+0nYvGATKRLk2YA69s2B1SWr3nuOj/KcwkvsIa/lOEdDDHwH3absUgyAlO+HgTk8PtQ==
-X-Received: by 2002:a17:906:6889:b0:a43:f825:ef52 with SMTP id n9-20020a170906688900b00a43f825ef52mr1165086ejr.28.1709293809864;
-        Fri, 01 Mar 2024 03:50:09 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGgSzULUZjY1B+qQ1X+GwdMQFa+cNtdHXqiMvqiMYETfuq7yL9oj929clF85P2IkH9peSUsVw==
-X-Received: by 2002:a17:906:6889:b0:a43:f825:ef52 with SMTP id n9-20020a170906688900b00a43f825ef52mr1165062ejr.28.1709293809432;
-        Fri, 01 Mar 2024 03:50:09 -0800 (PST)
-Received: from redhat.com ([2.52.158.48])
-        by smtp.gmail.com with ESMTPSA id cb17-20020a170906a45100b00a43f1feac16sm1627108ejb.88.2024.03.01.03.50.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 03:50:08 -0800 (PST)
-Date: Fri, 1 Mar 2024 06:50:05 -0500
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Robin Murphy <robin.murphy@arm.com>
-Cc: Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-kernel@vger.kernel.org,
-	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-	Christoph Hellwig <hch@lst.de>,
-	Marek Szyprowski <m.szyprowski@samsung.com>, iommu@lists.linux.dev,
-	Zelin Deng <zelin.deng@linux.alibaba.com>
-Subject: Re: [RFC] dma-mapping: introduce dma_can_skip_unmap()
-Message-ID: <20240301064632-mutt-send-email-mst@kernel.org>
-References: <20240301071918.64631-1-xuanzhuo@linux.alibaba.com>
- <64be2e23-c526-45d3-bb7b-29e31241bbef@arm.com>
+	s=arc-20240116; t=1709293847; c=relaxed/simple;
+	bh=ZyOdMMu8KP6WhIKw+knptD9Cm6F09MQ4QMVz6tu/0BQ=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=FQcdei8ivH66QN/dmb4z07hZkdl+EBzhMwgwL4+mjWgNA/KxLB6itDtzUWm0dcS58o+3vE6xpfUWBdcPCXppIYO61jfCB+Jkpa2xAy8nLfOyhUchMUa5Vg6NAzaowNArh0s0yZC+8EAP1ISN5mUx9xOvybR+t8FsEgM/TLHc8Wc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
+Received: from [141.14.220.34] (g34.guest.molgen.mpg.de [141.14.220.34])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pmenzel)
+	by mx.molgen.mpg.de (Postfix) with ESMTPSA id 097B161E5FE01;
+	Fri,  1 Mar 2024 12:50:08 +0100 (CET)
+Message-ID: <38c07228-639f-4082-b09a-ffe62fe14b71@molgen.mpg.de>
+Date: Fri, 1 Mar 2024 12:50:07 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <64be2e23-c526-45d3-bb7b-29e31241bbef@arm.com>
+User-Agent: Mozilla Thunderbird
+From: Paul Menzel <pmenzel@molgen.mpg.de>
+Subject: Re: [PATCH regression fix] misc: lis3lv02d_i2c: Fix regulators
+ getting en-/dis-abled twice on suspend/resume
+To: Hans de Goede <hdegoede@redhat.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Arnd Bergmann <arnd@arndb.de>, Eric Piel <eric.piel@tremplin-utc.net>,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+ regressions@lists.linux.dev
+References: <20240220190035.53402-1-hdegoede@redhat.com>
+Content-Language: en-US
+In-Reply-To: <20240220190035.53402-1-hdegoede@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, Mar 01, 2024 at 11:38:25AM +0000, Robin Murphy wrote:
-> Not only is this idea not viable, the entire premise seems flawed - the
-> reasons for virtio needing to use the DMA API at all are highly likely to be
-> the same reasons for it needing to use the DMA API *properly* anyway.
+Dear Hans,
 
-The idea has nothing to do with virtio per se - we are likely not the
-only driver that wastes a lot of memory (hot in cache, too) keeping DMA
-addresses around for the sole purpose of calling DMA unmap.  On a bunch
-of systems unmap is always a nop and we could save some memory if there
-was a way to find out. What is proposed is an API extension allowing
-that for anyone - not just virtio.
 
--- 
-MST
+Thank you for the patch.
 
+Am 20.02.24 um 20:00 schrieb Hans de Goede:
+> When not configured for wakeup lis3lv02d_i2c_suspend() will call
+> lis3lv02d_poweroff() even if the device has already been turned off
+> by the runtime-suspend handler and if configured for wakeup and
+> the device is runtime-suspended at this point then it is not turned
+> back on to serve as a wakeup source.
+> 
+> Before commit b1b9f7a49440 ("misc: lis3lv02d_i2c: Add missing setting
+> of the reg_ctrl callback"), lis3lv02d_poweroff() failed to disable
+> the regulators which as a side effect made calling poweroff() twice ok.
+> 
+> Now that poweroff() correctly disables the regulators, doing this twice
+> triggers a WARN() in the regulator core:
+> 
+> unbalanced disables for regulator-dummy
+> WARNING: CPU: 1 PID: 92 at drivers/regulator/core.c:2999 _regulator_disable
+> ...
+> 
+> Fix lis3lv02d_i2c_suspend() to not call poweroff() a second time if
+> already runtime-suspended and add a poweron() call when necessary to
+> make wakeup work.
+> 
+> lis3lv02d_i2c_resume() has similar issues, with an added weirness that
+> it always powers on the device if it is runtime suspended, after which
+> the first runtime-resume will call poweron() again, causing the enabled
+> count for the regulator to increase by 1 every suspend/resume. These
+> unbalanced regulator_enable() calls cause the regulator to never
+> be turned off and trigger the following WARN() on driver unbind:
+> 
+> WARNING: CPU: 1 PID: 1724 at drivers/regulator/core.c:2396 _regulator_put
+> 
+> Fix this by making lis3lv02d_i2c_resume() mirror the new suspend().
+> 
+> Fixes: b1b9f7a49440 ("misc: lis3lv02d_i2c: Add missing setting of the reg_ctrl callback")
+> Reported-by: Paul Menzel <pmenzel@molgen.mpg.de>
+> Closes: https://lore.kernel.org/regressions/5fc6da74-af0a-4aac-b4d5-a000b39a63a5@molgen.mpg.de/
+> Cc: stable@vger.kernel.org
+> Cc: regressions@lists.linux.dev
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> ---
+>   drivers/misc/lis3lv02d/lis3lv02d_i2c.c | 21 +++++++++++++--------
+>   1 file changed, 13 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/misc/lis3lv02d/lis3lv02d_i2c.c b/drivers/misc/lis3lv02d/lis3lv02d_i2c.c
+> index c6eb27d46cb0..15119584473c 100644
+> --- a/drivers/misc/lis3lv02d/lis3lv02d_i2c.c
+> +++ b/drivers/misc/lis3lv02d/lis3lv02d_i2c.c
+> @@ -198,8 +198,14 @@ static int lis3lv02d_i2c_suspend(struct device *dev)
+>   	struct i2c_client *client = to_i2c_client(dev);
+>   	struct lis3lv02d *lis3 = i2c_get_clientdata(client);
+>   
+> -	if (!lis3->pdata || !lis3->pdata->wakeup_flags)
+> +	/* Turn on for wakeup if turned off by runtime suspend */
+> +	if (lis3->pdata && lis3->pdata->wakeup_flags) {
+> +		if (pm_runtime_suspended(dev))
+> +			lis3lv02d_poweron(lis3);
+> +	/* For non wakeup turn off if not already turned off by runtime suspend */
+> +	} else if (!pm_runtime_suspended(dev))
+>   		lis3lv02d_poweroff(lis3);
+> +
+>   	return 0;
+>   }
+>   
+> @@ -208,13 +214,12 @@ static int lis3lv02d_i2c_resume(struct device *dev)
+>   	struct i2c_client *client = to_i2c_client(dev);
+>   	struct lis3lv02d *lis3 = i2c_get_clientdata(client);
+>   
+> -	/*
+> -	 * pm_runtime documentation says that devices should always
+> -	 * be powered on at resume. Pm_runtime turns them off after system
+> -	 * wide resume is complete.
+> -	 */
+> -	if (!lis3->pdata || !lis3->pdata->wakeup_flags ||
+> -		pm_runtime_suspended(dev))
+> +	/* Turn back off if turned on for wakeup and runtime suspended*/
+> +	if (lis3->pdata && lis3->pdata->wakeup_flags) {
+> +		if (pm_runtime_suspended(dev))
+> +			lis3lv02d_poweroff(lis3);
+> +	/* For non wakeup turn back on if not runtime suspended */
+> +	} else if (!pm_runtime_suspended(dev))
+>   		lis3lv02d_poweron(lis3);
+>   
+>   	return 0;
+
+I applied this commit on top of Linus’ master branch, and successfully 
+tested with S0ix and ACPI S3, that the warning is gone.
+
+Tested-by: Paul Menzel <pmenzel@molgen.mpg.de> # Dell XPS 15 7590
+
+Looking at the diff, this also looks good. Thank you for writing the 
+helpful commit message.
+
+Reviewed-by: Paul Menzel <pmenzel@molgen.mpg.de>
+
+Thank you for addressing this so quickly, and sorry for the late reply.
+
+
+Kind regards,
+
+Paul
 
