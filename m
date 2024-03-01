@@ -1,95 +1,192 @@
-Return-Path: <linux-kernel+bounces-88658-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88659-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9FB886E4EA
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:03:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 170C886E4EC
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:04:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4ADA8B23EE6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:03:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6824283E42
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:04:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E17F70CBB;
-	Fri,  1 Mar 2024 16:03:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6791A70AF5;
+	Fri,  1 Mar 2024 16:04:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="YuZsyiyx"
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="UIgSXCo/";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jMkoRH2D";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="UIgSXCo/";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jMkoRH2D"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3780B70CB8;
-	Fri,  1 Mar 2024 16:03:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE6EF38DC3
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 16:04:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709309001; cv=none; b=AoyZUJN6efgkEWktF8m5ebnPmQ7+ioyCBgpowhjMC2Hc+4a0UnheClDndq78X2jewiiDbqvLk7UnbbwVXKbwy661vZ40L0IgwFvEe6P81tNCmN2rJIce/cm+n19tv8sOJ38o1G/ZT3iSbOzQnFMWzyIh6jwfCEmhiaPwqepGq5M=
+	t=1709309042; cv=none; b=cYGC2KevkE3i1qZeCkc912wmBrKdDRaxTZPMwRYLFElLg8N3umDuQMuVIsDx0Nno1LaUbKCksK6oRmZg4wHI5C63ovyICqcdSTx4e/9lc6UaSzURNY25+tT4TTWPtcu7Nyy7Iitaj7pcSzXIuQWXvu2NmV+EsdTiS+UuZSEK7zA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709309001; c=relaxed/simple;
-	bh=i9d0LaW7EoAnPFmI2AbKKlcUQ50fbZsyhqoiAmp4vZk=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mnW9QGoxLvkq8ivJDz96CxIzRKrl8FfxpLY38uwGBs0svgilwMj5Fneb8RNWul5NfR7OlKmi50tbS98kP0d7EvuQGfM/o2mYcml41CWGT1G9L1QZXy3WLS/4k831yj6KuZYcHHkBVCQbrJiR+0a/XTDcmNpAAqSB9Xt6icFxDxo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=YuZsyiyx; arc=none smtp.client-ip=67.231.149.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 421Ewl9U003471;
-	Fri, 1 Mar 2024 10:03:08 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=PODMain02222019; bh=uEcBiDAd0hStY3/
-	Xc8YS/I7Yuem8HRIl7L9QOtD3Px0=; b=YuZsyiyx7a6dedT2hVO228gfatJ5WAP
-	rzUyThGVKHj0uTARvlw+4Djzu/tVm/0IYfcCQ33nBMcIZ/gSi6DSrpT04uX7Iqce
-	iuA9O2Ac7YHeL3Eb6+jKIqOjDA8lKL+/y2uf11ZDC64+6FtTLMHz8KsCtjWheiOF
-	LTgkhaVeRFk3an46ZYdWcZwvRYJlhk0MPT2NxWRB0EdMFUJTM/1FnImKI0Qgf4V3
-	ncCM4Jk3VCp8XuoFwJ8Fx0vdxBbY3wolB1AxEa/rV1GLBPNgCwec/6CD2MOMEDBv
-	v5xsqto/K4jRvNtyzooHfgt7/exyUu+qQb83uJ6MUVep965JxhaOPwQ==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3wkh8r02ph-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 01 Mar 2024 10:03:07 -0600 (CST)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 1 Mar
- 2024 16:03:05 +0000
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.40 via Frontend Transport; Fri, 1 Mar 2024 16:03:05 +0000
-Received: from ediswmail9.ad.cirrus.com (ediswmail9.ad.cirrus.com [198.61.86.93])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTPS id CD73382024B;
-	Fri,  1 Mar 2024 16:03:05 +0000 (UTC)
-Date: Fri, 1 Mar 2024 16:03:04 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Maciej Strozek <mstrozek@opensource.cirrus.com>
-CC: Lee Jones <lee@kernel.org>, <alsa-devel@alsa-project.org>,
-        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>,
-        <linux-sound@vger.kernel.org>
-Subject: Re: [PATCH] mfd: cs42l43: Fix wrong GPIO_FN_SEL and SPI_CLK_CONFIG1
- defaults
-Message-ID: <ZeH8OJnhuu2yWP6x@ediswmail9.ad.cirrus.com>
-References: <20240301101547.2136948-1-mstrozek@opensource.cirrus.com>
+	s=arc-20240116; t=1709309042; c=relaxed/simple;
+	bh=HZCnirsXZ9rn1IThWaKHVxVS5cA3jDCKr5aryDmWi2o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kAQxSKPBW/uv4w3eQXKPW/I2ElBCr929Kk3f1gcyElfLIRHEHPJJHV3V7dPvQrZQtxjTODLeu3uwyiX/LGeHPp9x9GiJS2ObJWA4wnHz8J3CQ1ewHBf+FP0SEBckWLM0QeOwHgV4SOTupruWOvs2QbNeJ79+F9TaQjTf48K8gA4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=UIgSXCo/; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=jMkoRH2D; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=UIgSXCo/; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=jMkoRH2D; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id AA267206D7;
+	Fri,  1 Mar 2024 16:03:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1709309038; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WjR6OvQiPcuCw93mAUfU7kJQwKpvjY1JrTdttou/ro4=;
+	b=UIgSXCo/2RInJegpmI12RiPD+Dls2VU4xtaUVNW2fZsRGE3A/qfxp7qD5m5thox+LDrosy
+	8FKwMuk3qW3EPQXHALZ+EjVJSaYXk3ylMnvGc2ROhlWJmgTCMckdq49tYQYEGnF/JOdoLH
+	FvhK3XkSStfgltINgYQ2K/+P0UjHp2U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1709309038;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WjR6OvQiPcuCw93mAUfU7kJQwKpvjY1JrTdttou/ro4=;
+	b=jMkoRH2DN4FqIMQK3IJs1gDBY4dp8UkaCBaCtSGh7ojUuw3M/rRruKv3lnKVVXXbF5VgyF
+	kwrWH+8HuqeLwBAQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1709309038; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WjR6OvQiPcuCw93mAUfU7kJQwKpvjY1JrTdttou/ro4=;
+	b=UIgSXCo/2RInJegpmI12RiPD+Dls2VU4xtaUVNW2fZsRGE3A/qfxp7qD5m5thox+LDrosy
+	8FKwMuk3qW3EPQXHALZ+EjVJSaYXk3ylMnvGc2ROhlWJmgTCMckdq49tYQYEGnF/JOdoLH
+	FvhK3XkSStfgltINgYQ2K/+P0UjHp2U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1709309038;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WjR6OvQiPcuCw93mAUfU7kJQwKpvjY1JrTdttou/ro4=;
+	b=jMkoRH2DN4FqIMQK3IJs1gDBY4dp8UkaCBaCtSGh7ojUuw3M/rRruKv3lnKVVXXbF5VgyF
+	kwrWH+8HuqeLwBAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8D94E13A80;
+	Fri,  1 Mar 2024 16:03:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id jgCPIW784WXQCAAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Fri, 01 Mar 2024 16:03:58 +0000
+Message-ID: <6594a42c-0f53-4124-9177-d1c631d9764f@suse.cz>
+Date: Fri, 1 Mar 2024 17:03:58 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240301101547.2136948-1-mstrozek@opensource.cirrus.com>
-X-Proofpoint-ORIG-GUID: Czjj9oyb3DfnqPmAnsuaCm3dTfRzzCTg
-X-Proofpoint-GUID: Czjj9oyb3DfnqPmAnsuaCm3dTfRzzCTg
-X-Proofpoint-Spam-Reason: safe
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mm, slab: remove the corner case of inc_slabs_node()
+Content-Language: en-US
+To: chengming.zhou@linux.dev, cl@linux.com
+Cc: penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+ akpm@linux-foundation.org, roman.gushchin@linux.dev, 42.hyeyoo@gmail.com,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240222130233.2880176-1-chengming.zhou@linux.dev>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20240222130233.2880176-1-chengming.zhou@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="UIgSXCo/";
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=jMkoRH2D
+X-Spamd-Result: default: False [1.20 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 TO_DN_NONE(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[10];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[kernel.org,google.com,lge.com,linux-foundation.org,linux.dev,gmail.com,kvack.org,vger.kernel.org];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[];
+	 BAYES_HAM(-0.00)[39.38%]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: 1.20
+X-Rspamd-Queue-Id: AA267206D7
+X-Spam-Level: *
+X-Spam-Flag: NO
+X-Spamd-Bar: +
 
-On Fri, Mar 01, 2024 at 10:15:47AM +0000, Maciej Strozek wrote:
-> Two regs have wrong values in existing fields, change them to match
-> the datasheet.
+On 2/22/24 14:02, chengming.zhou@linux.dev wrote:
+> From: Chengming Zhou <chengming.zhou@linux.dev>
 > 
-> Fixes: ace6d1448138 ("mfd: cs42l43: Add support for cs42l43 core driver")
+> We already have the inc_slabs_node() after kmem_cache_node->node[node]
+> initialized in early_kmem_cache_node_alloc(), this special case of
+> inc_slabs_node() can be removed. Then we don't need to consider the
+> existence of kmem_cache_node in inc_slabs_node() anymore.
 > 
-> Signed-off-by: Maciej Strozek <mstrozek@opensource.cirrus.com>
+> Signed-off-by: Chengming Zhou <chengming.zhou@linux.dev>
+
+Well spotted, thank. Added to slab/for-next.
+
 > ---
+>  mm/slub.c | 13 ++-----------
+>  1 file changed, 2 insertions(+), 11 deletions(-)
+> 
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 284b751b3b64..3f413e5e1415 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -1500,16 +1500,8 @@ static inline void inc_slabs_node(struct kmem_cache *s, int node, int objects)
+>  {
+>  	struct kmem_cache_node *n = get_node(s, node);
+>  
+> -	/*
+> -	 * May be called early in order to allocate a slab for the
+> -	 * kmem_cache_node structure. Solve the chicken-egg
+> -	 * dilemma by deferring the increment of the count during
+> -	 * bootstrap (see early_kmem_cache_node_alloc).
+> -	 */
+> -	if (likely(n)) {
+> -		atomic_long_inc(&n->nr_slabs);
+> -		atomic_long_add(objects, &n->total_objects);
+> -	}
+> +	atomic_long_inc(&n->nr_slabs);
+> +	atomic_long_add(objects, &n->total_objects);
+>  }
+>  static inline void dec_slabs_node(struct kmem_cache *s, int node, int objects)
+>  {
+> @@ -4877,7 +4869,6 @@ static void early_kmem_cache_node_alloc(int node)
+>  	slab = new_slab(kmem_cache_node, GFP_NOWAIT, node);
+>  
+>  	BUG_ON(!slab);
+> -	inc_slabs_node(kmem_cache_node, slab_nid(slab), slab->objects);
+>  	if (slab_nid(slab) != node) {
+>  		pr_err("SLUB: Unable to allocate memory from node %d\n", node);
+>  		pr_err("SLUB: Allocating a useless per node structure in order to be able to continue\n");
 
-Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-
-Thanks,
-Charles
 
