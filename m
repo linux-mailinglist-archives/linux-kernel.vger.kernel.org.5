@@ -1,168 +1,192 @@
-Return-Path: <linux-kernel+bounces-87747-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87749-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0156C86D87C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:54:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCE1D86D882
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 02:02:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 80F251F22145
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 00:54:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48DEC28491A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:02:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93E921118E;
-	Fri,  1 Mar 2024 00:54:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5604329D11;
+	Fri,  1 Mar 2024 01:02:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VgBYQMSY"
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JFyZzQWb"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A3502FB6
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 00:54:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60BD22FB6
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 01:02:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709254460; cv=none; b=kU8DV9+r2cchw9eLr0aMuzVKfJJ4uNQAeTAZvWEgTsuvsslCjwx6QGkTcjn3pzxNZlO7oUWIzRCKmyepKEKMkYOoDTXrqW2fKK5uQZDeSf4VtZyWmZ9bvxCI/miXKFGwjnPt6ZlqMwQS1TNGDk1sy10iNE2Man0VhECDpqQ3T4o=
+	t=1709254929; cv=none; b=fVterg6h7fNc3+HF2uRag/g8go1xfhkQ+FnoCpO9voUcSz/yh5/DkFa+FkNqq6Kn4LDAIebnwUNoNpUeOnhsluhBom5gkqDyPHLahE7KGjqQUdbXBswSaaMZPSafPRxFr5m+X6NFq5KAShi/YWoKoMSC/PVUgDs7toQVgLHi470=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709254460; c=relaxed/simple;
-	bh=+upbwOwPoo8Bow3xcmEk27AbSn6dIIFXUaLfgqKiY/4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mJoatFvgMpVT7hyKql8d9KJd1iI7kH/gF87zZyMjIYNIr1ugIWLIacOOo0bLMxXy2UXRaJ+RQ/SVhU4D2g/A6kEKQyCDWzv8Ct38aALPzf3QgRo/IKNdXbu2GNyU5J5Yhg4+H5pDgL5AWH04uagh78OGT4/fw/qJ8a8Qokk0uDA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=VgBYQMSY; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1dcd07252d9so30155ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 16:54:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709254459; x=1709859259; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tftcmnntcbV6/bHuFB1XAMaQpSPTXIzs4LXNnedmduY=;
-        b=VgBYQMSY5Iy0x/UJxcFmOIayQwdMGQlkDwa3jW4S+USEWN4VPpWwfK9hja0HifFyza
-         S9sguXdTMVubsynec15nZTUEMpW6IdLBx+nfeh90QN2O1KAQ9BPTLlKTKq5qjQi1ukDw
-         MKd+hzSGM2jcMZTX69jCqui8Zrp3leUrM2u4K54ZgEyYiJPL7eShnRL1knrHklddQRLR
-         V9CjqzFQN1swu9PDMn0BQp01JbtIzDoPwmBsiXNJqZFjovKkM4pdPCRwJ9LksB2ENDhT
-         ErMPRzfmLmBxSvqP0KZNcpbN/US87jDIoOd9cwIjqNu16I3WycZ6FryvxmAAeplWlW/o
-         mS3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709254459; x=1709859259;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tftcmnntcbV6/bHuFB1XAMaQpSPTXIzs4LXNnedmduY=;
-        b=mXO5x6YpXbnd1FKehkl76mLVGvpd6dtWBOOyaxaIQayDD0sYuXOPRa1adjw6ZhVd7b
-         16nVPSZTMUb+QzC3K4+DARsXEFUJ6PK1Vlw5YPuEGyDmiPcw7i2laklkTf3qmoiJ9Kau
-         pjclULKpnMOw0Dh2QV3TbAtaOQXV6BFdZHyjz1RvXiKdX9RwlJKbsM29S4Jw4VXzdfzD
-         ONr4t8Xf2ylkZS0L+wJBta4FnUp96l58oSn+tIzUll0+Dvr2yDo0/DCdJEoGzxRDEuxP
-         MQuyALFJFqIU+wL3ByhcRZJUMSs89MlvUKNM21VrJYJr3KDcX9aIacko5uQFNpcPPWqy
-         YSQA==
-X-Forwarded-Encrypted: i=1; AJvYcCXkzlUAljg/RMGBb+3X59VDKxiA1MIKJOolXsUq8LIT7n63IOnAQ5aqFsG+nJ2WsROmt7AhMgw3Dg37oHEg2CO3aqBcnXpgicLD3hkL
-X-Gm-Message-State: AOJu0YzEF0Y7/M1xgrjUpwryzdlMNLMVfjE4VCuRWw42KfVIvdtBifn3
-	n+TOHn/GDGespdmeNNqRv6W/4BKzMvlRoYmeGSH9S8Mdsg+0Cz0UnPOd3sP8voFj7z+VObij3wt
-	u5HHEjjwki663lSG4cf5X5rWMr+vjykYZb1we
-X-Google-Smtp-Source: AGHT+IECU1x2BlbA5ofq5tnUe2Wmr0p7lJq3QWNqZvPo8O/3HTA97WarwKjKD2N0k3teyJKqYgROeT781/NiT3MJLiY=
-X-Received: by 2002:a17:902:e74a:b0:1dc:2f51:b120 with SMTP id
- p10-20020a170902e74a00b001dc2f51b120mr87629plf.14.1709254458494; Thu, 29 Feb
- 2024 16:54:18 -0800 (PST)
+	s=arc-20240116; t=1709254929; c=relaxed/simple;
+	bh=rCjcOu/4hm1LXhiywe6K84Rd4gAOaOfOyVzhv2ma4ak=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=N9uJPoh5agU9EM+g7z7OyNM5FYUxy1N2yxrTZaXxgYPXmM00rn/u+gcmqDX0jzJAU/7FJ4FLrhKx9ssgxeOVUIoUq894ochaehiAXkneKEM3q4zmhnNbMr4bmmMAZ6/LUsCOr/lScX9rvbgHrUjawqq7FAWv0NHEOUEWcva57fk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JFyZzQWb; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709254927; x=1740790927;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=rCjcOu/4hm1LXhiywe6K84Rd4gAOaOfOyVzhv2ma4ak=;
+  b=JFyZzQWb1CbYZ6oJBK+wdYa73aUYryPhe4gvSsyBD8DeHtbd/HUIM0jq
+   YuGqozqzW5/9Lpiv+Q4HbnsOap9LCDamzAGMSRivP1gpOGrPOsG573BNm
+   c4Za/CRzKovhsYoI59Nk6h5f2RaTCfKuAMwT/u1+TKzQpjoKHGJ5eiSoY
+   m5qblSmSKY7dnHKYFEubLBL5pWMEkXIg+l3hVuMO+T/yz/dEmKFiR2otu
+   S4BYcDTHfuH2s1USl72KsXxvgo7xB1+SttpCEVoePb0QB9rHah8gQc6te
+   sWcVHfRltNXJh3n9iNR0SNOzCWL76yCGTV7xpDEvy7Kv3vBayCqUV6KUU
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="14340383"
+X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
+   d="scan'208";a="14340383"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 17:02:06 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
+   d="scan'208";a="7941869"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by fmviesa009.fm.intel.com with ESMTP; 29 Feb 2024 17:02:01 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rfrH7-000DPX-0Z;
+	Fri, 01 Mar 2024 01:01:35 +0000
+Date: Fri, 1 Mar 2024 08:57:56 +0800
+From: kernel test robot <lkp@intel.com>
+To: Florian Westphal <fw@strlen.de>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>
+Subject: net/netfilter/nf_bpf_link.c:186:33: warning: bitwise operation
+ between different enumeration types ('enum bpf_reg_type' and 'enum
+ bpf_type_flag')
+Message-ID: <202403010842.hhJY5TFK-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240229001806.4158429-1-irogers@google.com> <20240229001806.4158429-4-irogers@google.com>
- <f2e34072-542a-4055-b8fd-20171e6783a1@linux.intel.com>
-In-Reply-To: <f2e34072-542a-4055-b8fd-20171e6783a1@linux.intel.com>
-From: Ian Rogers <irogers@google.com>
-Date: Thu, 29 Feb 2024 16:54:07 -0800
-Message-ID: <CAP-5=fVzb4rnS1Ckx96wE=K-69_cosxqsbU2BBX0AXShs1iqYA@mail.gmail.com>
-Subject: Re: [PATCH v1 03/20] perf jevents: Add smi metric group for Intel models
-To: "Liang, Kan" <kan.liang@linux.intel.com>
-Cc: Perry Taylor <perry.taylor@intel.com>, Samantha Alt <samantha.alt@intel.com>, 
-	Caleb Biggers <caleb.biggers@intel.com>, Weilin Wang <weilin.wang@intel.com>, 
-	Edward Baker <edward.baker@intel.com>, Andi Kleen <ak@linux.intel.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, John Garry <john.g.garry@oracle.com>, 
-	Jing Zhang <renyu.zj@linux.alibaba.com>, Thomas Richter <tmricht@linux.ibm.com>, 
-	James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Thu, Feb 29, 2024 at 1:09=E2=80=AFPM Liang, Kan <kan.liang@linux.intel.c=
-om> wrote:
->
->
->
-> On 2024-02-28 7:17 p.m., Ian Rogers wrote:
-> > Allow duplicated metric to be dropped from json files.
-> >
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > ---
-> >  tools/perf/pmu-events/intel_metrics.py | 18 +++++++++++++++++-
-> >  1 file changed, 17 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/tools/perf/pmu-events/intel_metrics.py b/tools/perf/pmu-ev=
-ents/intel_metrics.py
-> > index 46866a25b166..20c25d142f24 100755
-> > --- a/tools/perf/pmu-events/intel_metrics.py
-> > +++ b/tools/perf/pmu-events/intel_metrics.py
-> > @@ -2,7 +2,7 @@
-> >  # SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
-> >  from metric import (d_ratio, has_event, max, Event, JsonEncodeMetric,
-> >                      JsonEncodeMetricGroupDescriptions, LoadEvents, Met=
-ric,
-> > -                    MetricGroup, Select)
-> > +                    MetricGroup, MetricRef, Select)
-> >  import argparse
-> >  import json
-> >  import math
-> > @@ -62,9 +62,25 @@ def Rapl() -> MetricGroup:
-> >                       description=3D"Processor socket power consumption=
- estimates")
-> >
-> >
-> > +def Smi() -> MetricGroup:
-> > +    aperf =3D Event('msr/aperf/')
->
-> There are CPUID enumeration for the aperf and mperf. I believe they
-> should be always available for a newer bare metal. But they may not be
-> enumerated in an virtualization env. Should we add a has_event() check
-> before using it?
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   87adedeba51a822533649b143232418b9e26d08b
+commit: fd9c663b9ad67dedfc9a3fd3429ddd3e83782b4d bpf: minimal support for programs hooked into netfilter framework
+date:   10 months ago
+config: riscv-defconfig (https://download.01.org/0day-ci/archive/20240301/202403010842.hhJY5TFK-lkp@intel.com/config)
+compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project edd4aee4dd9b5b98b2576a6f783e4086173d902a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240301/202403010842.hhJY5TFK-lkp@intel.com/reproduce)
 
-It would make sense to have the has_event so that the metric doesn't
-fail in perf test. I'll add it.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403010842.hhJY5TFK-lkp@intel.com/
 
-Thanks,
-Ian
+All warnings (new ones prefixed by >>):
 
-> Thanks,
-> Kan
->
-> > +    cycles =3D Event('cycles')
-> > +    smi_num =3D Event('msr/smi/')
-> > +    smi_cycles =3D Select((aperf - cycles) / aperf, smi_num > 0, 0)
-> > +    return MetricGroup('smi', [
-> > +        Metric('smi_num', 'Number of SMI interrupts.',
-> > +               smi_num, 'SMI#'),
-> > +        # Note, the smi_cycles "Event" is really a reference to the me=
-tric.
-> > +        Metric('smi_cycles',
-> > +               'Percentage of cycles spent in System Management Interr=
-upts.',
-> > +               smi_cycles, '100%', threshold=3D(MetricRef('smi_cycles'=
-) > 0.10))
-> > +    ])
-> > +
-> > +
-> >  all_metrics =3D MetricGroup("", [
-> >      Idle(),
-> >      Rapl(),
-> > +    Smi(),
-> >  ])
-> >
-> >  if args.metricgroups:
+   In file included from net/netfilter/nf_bpf_link.c:2:
+   In file included from include/linux/bpf.h:21:
+   In file included from include/linux/kallsyms.h:13:
+   In file included from include/linux/mm.h:1970:
+   include/linux/vmstat.h:516:36: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
+     516 |         return node_stat_name(NR_LRU_BASE + lru) + 3; // skip "nr_"
+         |                               ~~~~~~~~~~~ ^ ~~~
+   In file included from net/netfilter/nf_bpf_link.c:2:
+   include/linux/bpf.h:706:48: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     706 |         ARG_PTR_TO_MAP_VALUE_OR_NULL    = PTR_MAYBE_NULL | ARG_PTR_TO_MAP_VALUE,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:707:43: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     707 |         ARG_PTR_TO_MEM_OR_NULL          = PTR_MAYBE_NULL | ARG_PTR_TO_MEM,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
+   include/linux/bpf.h:708:43: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     708 |         ARG_PTR_TO_CTX_OR_NULL          = PTR_MAYBE_NULL | ARG_PTR_TO_CTX,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
+   include/linux/bpf.h:709:45: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     709 |         ARG_PTR_TO_SOCKET_OR_NULL       = PTR_MAYBE_NULL | ARG_PTR_TO_SOCKET,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:710:44: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     710 |         ARG_PTR_TO_STACK_OR_NULL        = PTR_MAYBE_NULL | ARG_PTR_TO_STACK,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:711:45: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     711 |         ARG_PTR_TO_BTF_ID_OR_NULL       = PTR_MAYBE_NULL | ARG_PTR_TO_BTF_ID,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:715:38: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     715 |         ARG_PTR_TO_UNINIT_MEM           = MEM_UNINIT | ARG_PTR_TO_MEM,
+         |                                           ~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
+   include/linux/bpf.h:717:45: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     717 |         ARG_PTR_TO_FIXED_SIZE_MEM       = MEM_FIXED_SIZE | ARG_PTR_TO_MEM,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
+   include/linux/bpf.h:740:48: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
+     740 |         RET_PTR_TO_MAP_VALUE_OR_NULL    = PTR_MAYBE_NULL | RET_PTR_TO_MAP_VALUE,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:741:45: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
+     741 |         RET_PTR_TO_SOCKET_OR_NULL       = PTR_MAYBE_NULL | RET_PTR_TO_SOCKET,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:742:47: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
+     742 |         RET_PTR_TO_TCP_SOCK_OR_NULL     = PTR_MAYBE_NULL | RET_PTR_TO_TCP_SOCK,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:743:50: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
+     743 |         RET_PTR_TO_SOCK_COMMON_OR_NULL  = PTR_MAYBE_NULL | RET_PTR_TO_SOCK_COMMON,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:745:49: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
+     745 |         RET_PTR_TO_DYNPTR_MEM_OR_NULL   = PTR_MAYBE_NULL | RET_PTR_TO_MEM,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
+   include/linux/bpf.h:746:45: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
+     746 |         RET_PTR_TO_BTF_ID_OR_NULL       = PTR_MAYBE_NULL | RET_PTR_TO_BTF_ID,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:747:43: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
+     747 |         RET_PTR_TO_BTF_ID_TRUSTED       = PTR_TRUSTED    | RET_PTR_TO_BTF_ID,
+         |                                           ~~~~~~~~~~~    ^ ~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:858:44: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_reg_type') [-Wenum-enum-conversion]
+     858 |         PTR_TO_MAP_VALUE_OR_NULL        = PTR_MAYBE_NULL | PTR_TO_MAP_VALUE,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:859:42: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_reg_type') [-Wenum-enum-conversion]
+     859 |         PTR_TO_SOCKET_OR_NULL           = PTR_MAYBE_NULL | PTR_TO_SOCKET,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~
+   include/linux/bpf.h:860:46: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_reg_type') [-Wenum-enum-conversion]
+     860 |         PTR_TO_SOCK_COMMON_OR_NULL      = PTR_MAYBE_NULL | PTR_TO_SOCK_COMMON,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:861:44: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_reg_type') [-Wenum-enum-conversion]
+     861 |         PTR_TO_TCP_SOCK_OR_NULL         = PTR_MAYBE_NULL | PTR_TO_TCP_SOCK,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~
+   include/linux/bpf.h:862:42: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_reg_type') [-Wenum-enum-conversion]
+     862 |         PTR_TO_BTF_ID_OR_NULL           = PTR_MAYBE_NULL | PTR_TO_BTF_ID,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~
+>> net/netfilter/nf_bpf_link.c:186:33: warning: bitwise operation between different enumeration types ('enum bpf_reg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
+     186 |         info->reg_type = PTR_TO_BTF_ID | PTR_TRUSTED;
+         |                          ~~~~~~~~~~~~~ ^ ~~~~~~~~~~~
+   22 warnings generated.
+
+
+vim +186 net/netfilter/nf_bpf_link.c
+
+   170	
+   171	static bool nf_ptr_to_btf_id(struct bpf_insn_access_aux *info, const char *name)
+   172	{
+   173		struct btf *btf;
+   174		s32 type_id;
+   175	
+   176		btf = bpf_get_btf_vmlinux();
+   177		if (IS_ERR_OR_NULL(btf))
+   178			return false;
+   179	
+   180		type_id = btf_find_by_name_kind(btf, name, BTF_KIND_STRUCT);
+   181		if (WARN_ON_ONCE(type_id < 0))
+   182			return false;
+   183	
+   184		info->btf = btf;
+   185		info->btf_id = type_id;
+ > 186		info->reg_type = PTR_TO_BTF_ID | PTR_TRUSTED;
+   187		return true;
+   188	}
+   189	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
