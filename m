@@ -1,244 +1,94 @@
-Return-Path: <linux-kernel+bounces-88956-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88957-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BC7786E8D0
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:54:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B55FD86E8D1
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:55:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 99D9E1C22F8B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:54:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E94F28236C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:55:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 617F33A268;
-	Fri,  1 Mar 2024 18:53:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78C6911C88;
+	Fri,  1 Mar 2024 18:55:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PYoSTGjC"
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kMXuiEgp"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 171E03A1D7;
-	Fri,  1 Mar 2024 18:53:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC1A62575F;
+	Fri,  1 Mar 2024 18:55:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709319236; cv=none; b=IAvbPCh9a4r6l5Yq/g10lYFmzTfAwoANZKXIDTdbXEL0llslj7u+SJ72BjB2TEuXezH1LHAnezjDO/eBaf0H08q4rrULwoz7h2Evtb2hw80jyMVxSKKCt0BiK4ywvOOAk+lQZ9jlLnVNMnQdJ4VA21MPUD/Ggsdf1a1i4w+C6Dw=
+	t=1709319307; cv=none; b=TWXxamb8lIElFn/BS0NeICGcHDeTJv2/ifu0PebP3nqMlRNTsifmmMLrsUc7kNVr0nyFPPNaL5EYwBwfRN5ja4/mqsqDbKujTNf0q4LFo4QMody4tTS4EybqTyFQOXgKE3te01nMJAzozg8ekeQ9eMnsh20PBxwLW4bbBRnCuyc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709319236; c=relaxed/simple;
-	bh=/ot686WqIfX6GoXRHFsDogaovQzE7mhfzlRa4JUb7I0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=It5n07fXkdNxjvFHat4IG4FQ58T0tvJ7nRjPDeEvJO7alognGf4Atqxd+a4f+qfApw8mj9ZIIJAjsod1bpE3S6adqwPqD407qX6cNttH5aAlpoxcaagw7Z2EeiMHO2XA9UcRUvsFrhFhGtz0+6NYSjK9VoVhCqZ3oJvJIIAopaY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PYoSTGjC; arc=none smtp.client-ip=209.85.216.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-29954bb87b4so1826886a91.2;
-        Fri, 01 Mar 2024 10:53:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709319234; x=1709924034; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=yIYqiiV52DrCvcmUn0qPP1S4nB6cxKqcd4qPrzkso9I=;
-        b=PYoSTGjCQjEWF92FiQtAa4fE2+ppQQvf2C4QD3p2v8B1z0syw2WkWc8iocGHW2WGGE
-         zVkrVRDOaL9LvpR52P8Z15jfzbL8y7/OFhTYsIf8pdq/CKz09l65EijJPA181zFwBtj6
-         lNazWHYkuDChepjodAP5Jgyo01FVgXjIpSp9hJuEhJstIkmpW+H/OdrEO2olZAl6bz7+
-         5G1YFnP+El+gwlTIvuecir4k7Q+LM66hvI/acABi6G4eUbwxJRThKsUYg0VJeLuUQ/B5
-         /OdF6PmH0B6d4cUMxh8jEITz87lpJQ3EqkGjxT0id8qhSeJi3WWiRO7O3ioNAw9qM1x0
-         ICIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709319234; x=1709924034;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yIYqiiV52DrCvcmUn0qPP1S4nB6cxKqcd4qPrzkso9I=;
-        b=uvnX5Wl5/mUvDr+sqx6qksIxSGfYhKoKj1XYZpT1tyB2txV212r9us87TAPXZuawwW
-         yfnM3Ch8v6xZFRuSIX5o87NDCtpamnMyOn3ngZmJvOhSLQYsIKD17esF/CJxXgaekB5X
-         YnCZVWKEEgbezNwjDnLk4UqExV2GT/KNr2Ce4OvTYYW3ouTpWeyfO7KXRudHf/IQPl1U
-         8a3cz1AH+7phyJWIaapxvfckqYBTdSNndWwe8iqTTLXW9RyLSPJSA9ABlj2BiXDQJJmk
-         EJU+SmTST2/VJhDMSxSRzvutCVmAtwPUZTEfFg5CnzvCgNaEA/JPzlLDR7XQzx7vUCCg
-         hIgQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWSqZEO4LgE6UvykqqYS7t/C7pIrwG5skYo5CvKEuToAlO4FPMgDsSTPvQ6PaFZG2kcGB8KkuZQ4Uf/PSGjQAuilCcmujurf4Fmms2G
-X-Gm-Message-State: AOJu0Yz7iNX32iHZtZj8mq1nznh31obKJtoiW1YOECc7vJqy0UTwurKU
-	6lxgiuugtCWcXfCemH/7UPaGJI9z06Xi+Wy5CLQx0DmsietzOIAc
-X-Google-Smtp-Source: AGHT+IFBLkTRqvmopJ44TtJLDd19SqEGIN2btaMvXJlxKW3m/Decir/GU7WF6Ioh8FWOIXcT9G9s9A==
-X-Received: by 2002:a17:90a:bf01:b0:29a:a1c7:fc28 with SMTP id c1-20020a17090abf0100b0029aa1c7fc28mr2436127pjs.10.1709319234277;
-        Fri, 01 Mar 2024 10:53:54 -0800 (PST)
-Received: from localhost ([2601:1c0:5000:d5c:ae1c:de46:682a:206])
-        by smtp.gmail.com with ESMTPSA id sl6-20020a17090b2e0600b0029aaabcb82asm5706114pjb.10.2024.03.01.10.53.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 10:53:53 -0800 (PST)
-From: Rob Clark <robdclark@gmail.com>
-To: dri-devel@lists.freedesktop.org
-Cc: linux-arm-msm@vger.kernel.org,
-	freedreno@lists.freedesktop.org,
-	Tvrtko Ursulin <tursulin@ursulin.net>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Rob Clark <robdclark@chromium.org>,
-	Rob Clark <robdclark@gmail.com>,
-	Abhinav Kumar <quic_abhinavk@quicinc.com>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Sean Paul <sean@poorly.run>,
-	Marijn Suijten <marijn.suijten@somainline.org>,
-	David Airlie <airlied@gmail.com>,
-	linux-kernel@vger.kernel.org (open list)
-Subject: [RFC] drm/msm: Add GPU memory traces
-Date: Fri,  1 Mar 2024 10:53:45 -0800
-Message-ID: <20240301185346.10412-1-robdclark@gmail.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1709319307; c=relaxed/simple;
+	bh=XCC6vlXOFksp/35D+aqHfXii8v2d5MABVGmpsgCqCPA=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=d0ZV6lpeD0zzDDx9kT4qgWFaEfdN9pPtf1DdzHtaGaoRT3K0AbHZfiPJOgjt7VIk5T1OeoQUl+4rA+hLOHM7No1BZBJGXqGiaKKpkRh+jHstcAiCotVt6PpejQdh/hQncKQ4MMKtMhi3KfeZlHNsKVrvOZy8SzCD52AB/4zGyh8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kMXuiEgp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D029C433C7;
+	Fri,  1 Mar 2024 18:55:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709319307;
+	bh=XCC6vlXOFksp/35D+aqHfXii8v2d5MABVGmpsgCqCPA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=kMXuiEgpD8QUmcXSUBOXo/tUAwIsKBI0y33mLcsQwglyFEbYYrjVADOogllAfQnHq
+	 yIPEH6AgFeZWPiisnhtNqkPPG+mw14uXg/Rp/VlkUvur+xZoTJciFCan29fht6276F
+	 yKeL0UBtWJ6Q+KGlG3EoT040/UBT8cW+snCkJpCSZfrKdVMwxj7qy4g9bCevJTHLdj
+	 KEUtjfDaGz8FSYzLXB7HapVuZwsw2UX/wdfnt0y5m8ms3SSBb4tGEkAF/z4NP83gyB
+	 pLvjXHY7ZibXkwuelzk/c3iMo7J3UHauRS6KSJDUibHJzDZL88FnjU59c0f/LNqQDo
+	 kUCbhfcgThnuA==
+Date: Fri, 1 Mar 2024 10:55:05 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Matthieu Baerts <matttbe@kernel.org>
+Cc: Mat Martineau <martineau@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ mptcp@lists.linux.dev, Geliang Tang <geliang@kernel.org>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Florian Westphal
+ <fw@strlen.de>, Kishen Maloor <kishen.maloor@intel.com>, Shuah Khan
+ <shuah@kernel.org>, Peter Krystad <peter.krystad@linux.intel.com>,
+ Christoph Paasch <cpaasch@apple.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH net 10/10] selftests: mptcp: explicitly trigger the
+ listener diag code-path
+Message-ID: <20240301105505.7909a451@kernel.org>
+In-Reply-To: <52f0cd4c-9306-43af-87a7-3f5c47646059@kernel.org>
+References: <20240223-upstream-net-20240223-misc-fixes-v1-0-162e87e48497@kernel.org>
+	<20240223-upstream-net-20240223-misc-fixes-v1-10-162e87e48497@kernel.org>
+	<20240301063754.2ecefecf@kernel.org>
+	<09046dcc-a388-4703-83bb-9fa0c36af861@kernel.org>
+	<52f0cd4c-9306-43af-87a7-3f5c47646059@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-From: Rob Clark <robdclark@chromium.org>
+On Fri, 1 Mar 2024 19:24:53 +0100 Matthieu Baerts wrote:
+> > Thank you for this message!
+> > 
+> > I didn't have this error on my side, even without '-d SLUB_DEBUG_ON' we
+> > do on top of the debug kconfig, but I see I can reproduce it on slower
+> > environments. Indeed, it looks like it can be caused by that
+> > modification. I will send a fix ASAP!  
+> 
+> The following patch fixes the issue on my side (when using 'renice 20'
+> and stress-ng in parallel :) ):
+> 
+> https://lore.kernel.org/netdev/20240301-upstream-net-20240301-selftests-mptcp-diag-exit-timeout-v1-2-07cb2fa15c06@kernel.org/T/
 
-Perfetto can use these traces to track global and per-process GPU memory
-usage.
+Nice! Note only a fix but also lowers runtime, if I'm reading right!
 
-Signed-off-by: Rob Clark <robdclark@chromium.org>
----
-I realized the tracepoint that perfetto uses to show GPU memory usage
-globally and per-process was already upstream, but with no users.
+> I queued it for -net, but the issue should only be visible in net-next
+> due to the reduction of the timeout, as you suggested. This patch can
+> also be applied in net-next if preferred, it will not cause any
+> conflicts between net and net-next.
 
-This overlaps a bit with fdinfo, but ftrace is a lighter weight
-mechanism and fits better with perfetto (plus is already supported in
-trace_processor and perfetto UI, whereas something fdinfo based would
-require new code to be added in perfetto.
+No strong preference, net sounds good.
 
-We could probably do this more globally (ie. drm_gem_get/put_pages() and
-drm_gem_handle_create_tail()/drm_gem_object_release_handle() if folks
-prefer.  Not sure where that leaves the TTM drivers.
-
- drivers/gpu/drm/msm/Kconfig   |  1 +
- drivers/gpu/drm/msm/msm_drv.h |  5 +++++
- drivers/gpu/drm/msm/msm_gem.c | 37 +++++++++++++++++++++++++++++++++++
- drivers/gpu/drm/msm/msm_gpu.h |  8 ++++++++
- 4 files changed, 51 insertions(+)
-
-diff --git a/drivers/gpu/drm/msm/Kconfig b/drivers/gpu/drm/msm/Kconfig
-index f202f26adab2..e4c912fcaf22 100644
---- a/drivers/gpu/drm/msm/Kconfig
-+++ b/drivers/gpu/drm/msm/Kconfig
-@@ -33,6 +33,7 @@ config DRM_MSM
- 	select PM_OPP
- 	select NVMEM
- 	select PM_GENERIC_DOMAINS
-+	select TRACE_GPU_MEM
- 	help
- 	  DRM/KMS driver for MSM/snapdragon.
- 
-diff --git a/drivers/gpu/drm/msm/msm_drv.h b/drivers/gpu/drm/msm/msm_drv.h
-index 16a7cbc0b7dd..cb8f7e804b5b 100644
---- a/drivers/gpu/drm/msm/msm_drv.h
-+++ b/drivers/gpu/drm/msm/msm_drv.h
-@@ -137,6 +137,11 @@ struct msm_drm_private {
- 	struct msm_rd_state *hangrd;   /* debugfs to dump hanging submits */
- 	struct msm_perf_state *perf;
- 
-+	/**
-+	 * total_mem: Total/global amount of memory backing GEM objects.
-+	 */
-+	atomic64_t total_mem;
-+
- 	/**
- 	 * List of all GEM objects (mainly for debugfs, protected by obj_lock
- 	 * (acquire before per GEM object lock)
-diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
-index 175ee4ab8a6f..e04c4af5d154 100644
---- a/drivers/gpu/drm/msm/msm_gem.c
-+++ b/drivers/gpu/drm/msm/msm_gem.c
-@@ -12,6 +12,9 @@
- #include <linux/pfn_t.h>
- 
- #include <drm/drm_prime.h>
-+#include <drm/drm_file.h>
-+
-+#include <trace/events/gpu_mem.h>
- 
- #include "msm_drv.h"
- #include "msm_fence.h"
-@@ -33,6 +36,34 @@ static bool use_pages(struct drm_gem_object *obj)
- 	return !msm_obj->vram_node;
- }
- 
-+static void update_device_mem(struct msm_drm_private *priv, ssize_t size)
-+{
-+	uint64_t total_mem = atomic64_add_return(size, &priv->total_mem);
-+	trace_gpu_mem_total(0, 0, total_mem);
-+}
-+
-+static void update_ctx_mem(struct drm_file *file, ssize_t size)
-+{
-+	struct msm_file_private *ctx = file->driver_priv;
-+	uint64_t ctx_mem = atomic64_add_return(size, &ctx->ctx_mem);
-+
-+	rcu_read_lock(); /* Locks file->pid! */
-+	trace_gpu_mem_total(0, pid_nr(file->pid), ctx_mem);
-+	rcu_read_unlock();
-+
-+}
-+
-+static int msm_gem_open(struct drm_gem_object *obj, struct drm_file *file)
-+{
-+	update_ctx_mem(file, obj->size);
-+	return 0;
-+}
-+
-+static void msm_gem_close(struct drm_gem_object *obj, struct drm_file *file)
-+{
-+	update_ctx_mem(file, -obj->size);
-+}
-+
- /*
-  * Cache sync.. this is a bit over-complicated, to fit dma-mapping
-  * API.  Really GPU cache is out of scope here (handled on cmdstream)
-@@ -156,6 +187,8 @@ static struct page **get_pages(struct drm_gem_object *obj)
- 			return p;
- 		}
- 
-+		update_device_mem(dev->dev_private, obj->size);
-+
- 		msm_obj->pages = p;
- 
- 		msm_obj->sgt = drm_prime_pages_to_sg(obj->dev, p, npages);
-@@ -209,6 +242,8 @@ static void put_pages(struct drm_gem_object *obj)
- 			msm_obj->sgt = NULL;
- 		}
- 
-+		update_device_mem(obj->dev->dev_private, -obj->size);
-+
- 		if (use_pages(obj))
- 			drm_gem_put_pages(obj, msm_obj->pages, true, false);
- 		else
-@@ -1118,6 +1153,8 @@ static const struct vm_operations_struct vm_ops = {
- 
- static const struct drm_gem_object_funcs msm_gem_object_funcs = {
- 	.free = msm_gem_free_object,
-+	.open = msm_gem_open,
-+	.close = msm_gem_close,
- 	.pin = msm_gem_prime_pin,
- 	.unpin = msm_gem_prime_unpin,
- 	.get_sg_table = msm_gem_prime_get_sg_table,
-diff --git a/drivers/gpu/drm/msm/msm_gpu.h b/drivers/gpu/drm/msm/msm_gpu.h
-index 2bfcb222e353..f7d2a7d6f8cc 100644
---- a/drivers/gpu/drm/msm/msm_gpu.h
-+++ b/drivers/gpu/drm/msm/msm_gpu.h
-@@ -428,6 +428,14 @@ struct msm_file_private {
- 	 * level.
- 	 */
- 	struct drm_sched_entity *entities[NR_SCHED_PRIORITIES * MSM_GPU_MAX_RINGS];
-+
-+	/**
-+	 * ctx_mem:
-+	 *
-+	 * Total amount of memory of GEM buffers with handles attached for
-+	 * this context.
-+	 */
-+	atomic64_t ctx_mem;
- };
- 
- /**
--- 
-2.44.0
-
+Thanks for a quick turnaround!
 
