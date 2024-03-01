@@ -1,105 +1,208 @@
-Return-Path: <linux-kernel+bounces-87948-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87949-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A44A886DB62
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 07:17:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A245B86DB65
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 07:18:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 451491F2570C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 06:17:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 175651F257C4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 06:18:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25FFA5F56B;
-	Fri,  1 Mar 2024 06:17:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 280255F84C;
+	Fri,  1 Mar 2024 06:18:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="uzREwIOw"
-Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="JGDbc42F"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9826D2AEEE;
-	Fri,  1 Mar 2024 06:17:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A05F2AEEE;
+	Fri,  1 Mar 2024 06:18:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709273865; cv=none; b=BHP7dhkVU6edjnR7mi486OpTAeb5XkWTBd103o2Vm0Sdm8zJNJ6LeeW+rAn3u/9K6clkBeKriTfhYvTZuQzXtpwwn4Xo+U5vkiNaf3qoxqs51pxxS5+E0VegmsTPrTvI7RKLc57wRp1NDNyFaU8M1RQp0/hMnHKuNvmPYUor1Dc=
+	t=1709273918; cv=none; b=nMF7NsUpq47YGrRzN5Bs980QwXyufPdlLaAdBda1VR0s0hRY+5/0JnQCMYoWuCiV2WTI0Z5rFp+vusMJnoAznfH0fcrj3lZ9Lvb3X43pvTbZ+DoI3T00xQBt9vK2Igrvxm2lMup7yZRNLH7I23LqeGlHin0OiFbMw7veEvzfHKc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709273865; c=relaxed/simple;
-	bh=KDiNK9ricjIdH+Zaz3zhKZaXBNTwDcNlfRac4jYt/mo=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=RrCENulCU0U/ZKh6B48X+58PM3LAXW4RLPzcL/lQbyf3ERdapulJd3vk1+GLGX/lem0WPBQGMzpjIwCNjNjYFY3wU8qit0zbRAifVI3fDczzq8s4uF2h1UvLXZBQsnVKM2lILPuvSsI3Si0DfeSfbQpTHvH3ACzJzna3TfB7jWs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=uzREwIOw; arc=none smtp.client-ip=116.203.91.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
+	s=arc-20240116; t=1709273918; c=relaxed/simple;
+	bh=9CfH8/yUzS+Jiv3d7W0cC2LNTETeND1FrcCNlL5PePY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kQaaQFoMg+OvCauDp048aF20T+61nElT01+LWoN/G27/M+09IA79YSzFlmPf2yGZPE9Tkfs33J9t6KSSpY/NZRBnRhAA6zWGxaogYVy/fdxhKDUtGoYSQ9cquehb/UNQrn2kieU8l11/0tAIvQMwm7Uc7bIPvHHbp1xW3gMo7zk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=JGDbc42F; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C197C433F1;
+	Fri,  1 Mar 2024 06:18:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1709273917;
+	bh=9CfH8/yUzS+Jiv3d7W0cC2LNTETeND1FrcCNlL5PePY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JGDbc42FoWlRnZ3Tg/zkYtWmX+DQDkPv0RT4+SFsUrurtNAcZTvYlQuH79rymvRl2
+	 OcZzBqEKa0grASr8itj2oIvb/qpA182QhXwbzF2AfDT2Pm5hd/+mJClLYCuSBDNT3y
+	 b+v3hQlIrvPbSRYeFcJrILX2orPKrqCm0vJI7QpU=
+Date: Fri, 1 Mar 2024 07:18:34 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Elbert Mai <code@elbertmai.com>
+Cc: linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH] usb: Export BOS descriptor to sysfs
+Message-ID: <2024030142-gloater-stem-fe94@gregkh>
+References: <20240229235905.569705-1-code@elbertmai.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
-	t=1709273861;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nsTeKM3b8pZiKwqdo+adsEaeHoiS6ettDlA19pqJem4=;
-	b=uzREwIOwtJxK3R9slO4dYFrLEHEgUdVJiB/FnCVs9/Ff1+sd7br+LKBWocMPESjrC0s2A2
-	jq+THKQYYQIMZMYYEovcr8kxY7tpwkbEHtYppYZdTniBh24k0aguUxvcGcX3uEu2ru811x
-	XclzRAslMNARSFa5gWkUxqGWiDQraNtBokuUrmWiA309By/tqkVbdv7s4+wNJ8i5WJCviv
-	7R61uhUJ83tGndfYT7mMGpgyyfx3qBCd7dDhsZJnaMD/2PnB4cD9UwhVblwk0cTK0GV91a
-	FEjiUJkK1cj2WD5uPjiRdNvP4qcTXnvl+6dhe4kWbWzkuVybNRKfoqDp0llDrg==
-Date: Fri, 01 Mar 2024 07:17:41 +0100
-From: Dragan Simic <dsimic@manjaro.org>
-To: Alexey Charkov <alchark@gmail.com>
-Cc: Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Heiko Stuebner <heiko@sntech.de>, Daniel Lezcano
- <daniel.lezcano@linaro.org>, Viresh Kumar <viresh.kumar@linaro.org>, Chen-Yu
- Tsai <wens@kernel.org>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/5] arm64: dts: rockchip: enable automatic active
- cooling on Rock 5B
-In-Reply-To: <CABjd4YybaQnKm+VpU_xVrCb=pxQ7oQXPHGZzn_u1w_h3yn7gwg@mail.gmail.com>
-References: <20240229-rk-dts-additions-v3-0-6afe8473a631@gmail.com>
- <20240229-rk-dts-additions-v3-2-6afe8473a631@gmail.com>
- <823379825559bb76088c31f44f998dd3@manjaro.org>
- <CABjd4YybaQnKm+VpU_xVrCb=pxQ7oQXPHGZzn_u1w_h3yn7gwg@mail.gmail.com>
-Message-ID: <a8ebe39b28a34c3544481a4e43e61d2b@manjaro.org>
-X-Sender: dsimic@manjaro.org
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240229235905.569705-1-code@elbertmai.com>
 
-On 2024-03-01 06:21, Alexey Charkov wrote:
-> On Fri, Mar 1, 2024 at 1:25 AM Dragan Simic <dsimic@manjaro.org> wrote:
->> On 2024-02-29 20:26, Alexey Charkov wrote:
->> > This links the PWM fan on Radxa Rock 5B as an active cooling device
->> > managed automatically by the thermal subsystem, with a target SoC
->> > temperature of 65C and a minimum-spin interval from 55C to 65C to
->> > ensure airflow when the system gets warm
->> 
->> I'd suggest that you replace "automatic active cooling" with "active
->> cooling" in the patch subject.  I know, it may seem like more of the
->> unnecessary nitpicking, :) but I hope you'll agree that "automatic"
->> is actually redundant there.  It would also make the patch subject
->> a bit shorter.
->> 
->> Another option would be to replace "automatic active cooling" with
->> "automatic fan control", which may actually be a better choice.
->> I'd be happy with whichever one you prefer. :)
+On Thu, Feb 29, 2024 at 03:59:05PM -0800, Elbert Mai wrote:
+> Motivation
+> ----------
 > 
-> Sounds good to me, thanks!
-
-I'm glad that you like it. :)
-
->> Otherwise, please feel free to add:
->> 
->> Reviewed-by: Dragan Simic <dsimic@manjaro.org>
+> The kernel already retrieves and caches the binary device object store
+> (BOS) descriptor from USB devices it enumerates. Export this descriptor to
+> userspace via sysfs, so users do not need to open the USB device with the
+> correct permissions and requesting the descriptor themselves.
 > 
-> Thank you Dragan, much appreciated!
+> A BOS descriptor contains a set of device capability descriptors. One that
+> is of interest to users is the platform descriptor. This contains a 128-bit
+> UUID and arbitrary data. The descriptor allows parties outside of USB-IF to
+> add additional metadata about a device in a standards-compliant manner.
+> 
+> Notable examples include the WebUSB and Microsoft OS 2.0 descriptors. Of
+> course, there could be more. By exporting the entire BOS descriptor we can
+> handle these and all future device capabilities. In addition, tools like
+> udev can match rules on device capabilities in the BOS without requiring
+> additional I/O with the USB device.
 
-Thank you for putting up with my nitpicking. :)
+But this requires that userspace parse the raw descriptor, right?  Why
+not also export the descriptor information in simpler form through
+different sysfs files as well so that scripts can read this information
+easily?
+
+That's not to say we don't also want this binary file, just maybe add
+more?
+
+> Implementation
+> --------------
+> 
+> Add bos_descriptor file to sysfs. This is a binary file and it works the
+> same way as the existing descriptors file. The file exists even if a device
+> does not have a BOS descriptor (the file will be empty in this case). This
+> allows users to detect if the kernel supports reading the BOS via sysfs and
+> fall back to direct USB I/O if needed.
+
+This is nice, but can you only create the file if it actually is
+present?  Use the is_visible callback to determine this, having an
+"empty" binary sysfs file isn't that nice.
+
+Other tiny review comments below:
+
+> Signed-off-by: Elbert Mai <code@elbertmai.com>
+> ---
+>  Documentation/ABI/testing/sysfs-bus-usb |  9 +++++++
+>  drivers/usb/core/sysfs.c                | 35 ++++++++++++++++++++++++-
+>  2 files changed, 43 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-bus-usb b/Documentation/ABI/testing/sysfs-bus-usb
+> index 614d216dff1d..bfffaa752a13 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-usb
+> +++ b/Documentation/ABI/testing/sysfs-bus-usb
+> @@ -293,3 +293,12 @@ Description:
+>  		USB 3.2 adds Dual-lane support, 2 rx and 2 tx -lanes over Type-C.
+>  		Inter-Chip SSIC devices support asymmetric lanes up to 4 lanes per
+>  		direction. Devices before USB 3.2 are single lane (tx_lanes = 1)
+> +
+> +What:		/sys/bus/usb/devices/.../bos_descriptor
+> +Date:		March 2024
+> +Contact:	Elbert Mai <code@elbertmai.com>
+> +Description:
+> +		Binary file containing the cached binary device object store (BOS)
+> +		descriptor of the device. This file is empty if the BOS descriptor
+> +		is not present. The kernel will not request a BOS descriptor from
+> +		the device if its bcdUSB value is less than 0x0201.
+> diff --git a/drivers/usb/core/sysfs.c b/drivers/usb/core/sysfs.c
+> index a2ca38e25e0c..208d2f8cde2d 100644
+> --- a/drivers/usb/core/sysfs.c
+> +++ b/drivers/usb/core/sysfs.c
+> @@ -901,7 +901,7 @@ read_descriptors(struct file *filp, struct kobject *kobj,
+>  			srclen = sizeof(struct usb_device_descriptor);
+>  		} else {
+>  			src = udev->rawdescriptors[cfgno];
+> -			srclen = __le16_to_cpu(udev->config[cfgno].desc.
+> +			srclen = le16_to_cpu(udev->config[cfgno].desc.
+
+Why is this line changed?
+
+>  					wTotalLength);
+>  		}
+>  		if (off < srclen) {
+> @@ -923,6 +923,34 @@ static struct bin_attribute dev_bin_attr_descriptors = {
+>  	.size = 18 + 65535,	/* dev descr + max-size raw descriptor */
+>  };
+>  
+> +static ssize_t
+> +read_bos_descriptor(struct file *filp, struct kobject *kobj,
+> +		struct bin_attribute *attr,
+> +		char *buf, loff_t off, size_t count)
+> +{
+> +	struct device *dev = kobj_to_dev(kobj);
+> +	struct usb_device *udev = to_usb_device(dev);
+> +	struct usb_host_bos *bos = udev->bos;
+> +	struct usb_bos_descriptor *desc;
+> +	size_t desclen, n = 0;
+> +
+> +	if (bos) {
+> +		desc = bos->desc;
+> +		desclen = le16_to_cpu(desc->wTotalLength);
+> +		if (off < desclen) {
+> +			n = min(count, desclen - (size_t) off);
+> +			memcpy(buf, (void *) desc + off, n);
+> +		}
+> +	}
+> +	return n;
+
+If bos is not present an error should return, not 0, right?
+
+> +}
+> +
+> +static struct bin_attribute dev_bin_attr_bos_descriptor = {
+> +	.attr = {.name = "bos_descriptor", .mode = 0444},
+> +	.read = read_bos_descriptor,
+
+Isn't there a mscro for all of this?
+
+> +	.size = 65535,	/* max-size BOS descriptor */
+
+Do we know the size of the descriptor at runtime?  Ideally we would set
+it to be that, not an unknown size that way userspace knows what needs
+to be read.  But that's not really a big deal, if it's not possible, as
+the other USB binary descriptor does much the same.
+
+> +};
+
+This should go into an attribute group with the other descriptor, making
+the rest of the patch not needed and simpler.
+
+> +
+>  /*
+>   * Show & store the current value of authorized_default
+>   */
+> @@ -1042,6 +1070,10 @@ int usb_create_sysfs_dev_files(struct usb_device *udev)
+>  	if (retval)
+>  		goto error;
+>  
+> +	retval = device_create_bin_file(dev, &dev_bin_attr_bos_descriptor);
+> +	if (retval)
+> +		goto error;
+> +
+
+long-term I'd like to get rid of the individual "add and remove" sysfs
+files in this function, and just use the default groups instead so the
+driver core handles it.  It's not an issue here for this change, but if
+you can find a way to work on that as part of a patch series here, I
+think that would be really good (if possible, not a requirement.)
+
+thanks!
+
+greg k-h
 
