@@ -1,114 +1,127 @@
-Return-Path: <linux-kernel+bounces-88396-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88397-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B1A686E109
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:27:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B1EE86E10A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:28:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 638681C22C7F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:27:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F3FF1C22C71
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:28:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7CD36E611;
-	Fri,  1 Mar 2024 12:26:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A263E6E60B;
+	Fri,  1 Mar 2024 12:28:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rosalinux.ru header.i=@rosalinux.ru header.b="PdctvGqO"
-Received: from mail.rosalinux.ru (mail.rosalinux.ru [195.19.76.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="eo44/2CT"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B63CA2AEFF
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 12:26:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.19.76.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C0A12AEFF
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 12:28:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709296018; cv=none; b=HJSPPd7/3ZruXlqETO6KUkX/ZtB4dx9/ohZjQeRTbnVSkylUoqXAOK6zgQEA78AeK3XlUzwLwNPy77u7smqxd03vX30vzNmkThKHzY8d0GEZUPpv1nd5QRxAitsQf10diE+J/PAht7luFG9WPKGZyHfLx7b9M0GYNGI1sPkbxaQ=
+	t=1709296095; cv=none; b=KaZA8yuEyu/MFUlPcNAqADyPM0K9zCyVa38arbgl/SbonxBfiYkHj9HrLbY5O0ucW62Hg2PJjE3KuzTgKUKA++NMTHROESuyxlb3Tvrby2gN5xBvqxVSxWqWWzFOFwbC2uycAHyINg29xd4mDNfscyn/PF1jvFAxvbNtA3t/P10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709296018; c=relaxed/simple;
-	bh=j5D9U6KjNVFx9zJvU329TCD0lS74yEhf5AvcIdP3EC4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=YLZw6321WVigM+3Xb8jZbtSmGsG6Kv4k3jTfh544/OrOg6z0PlaMM6+LO+yFXSx5pOfyMqrY7G3r1oVl1qHmWFU5mLVlAgaFw0w4VdfkJk7Pu/nomixV1Fp5AG4rXjJswMAVJxjfF7oF62l/nPqH5qrYtHqDLQLQfV9QxYwvSoU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=rosalinux.ru; spf=pass smtp.mailfrom=rosalinux.ru; dkim=pass (2048-bit key) header.d=rosalinux.ru header.i=@rosalinux.ru header.b=PdctvGqO; arc=none smtp.client-ip=195.19.76.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=rosalinux.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rosalinux.ru
-Received: from localhost (localhost [127.0.0.1])
-	by mail.rosalinux.ru (Postfix) with ESMTP id AE28ECFF46BCC;
-	Fri,  1 Mar 2024 15:26:42 +0300 (MSK)
-Received: from mail.rosalinux.ru ([127.0.0.1])
-	by localhost (mail.rosalinux.ru [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id fqAs-W5z0ecx; Fri,  1 Mar 2024 15:26:42 +0300 (MSK)
-Received: from localhost (localhost [127.0.0.1])
-	by mail.rosalinux.ru (Postfix) with ESMTP id 84DBFCFF46BD3;
-	Fri,  1 Mar 2024 15:26:42 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.rosalinux.ru 84DBFCFF46BD3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rosalinux.ru;
-	s=1D4BB666-A0F1-11EB-A1A2-F53579C7F503; t=1709296002;
-	bh=GPmQWvjQuc1pVJSK54+GnJ6cGFBHUxKlE2p3TVblCUs=;
-	h=From:To:Date:Message-Id:MIME-Version;
-	b=PdctvGqOjq3p2Zi7u3eZmpT/nGJf2zXfxbj9ZZS/6BvPa9WdbccuaQU/a1buAlzaC
-	 lVQ12ZpwmWjDVedZ0smgilBF8Z9Pe6XTnpIJ6krCG8aId80PRbrOGaVlptqYNZB+Yr
-	 wSAiQLLqn61BPdFa6L2VO57xPNZseHWfXUpCL19ZXoz4/zXVNFK7qBaSHTzKgPkFoy
-	 4wwsxFNmCIXStxhnrXXpp3Vh9fwJDbH6AgIYKG8bDv7Mhw/uP6sQ5KgvDZZJyCZkqW
-	 farm3lc+/N43U0R7OhXA7dtka1vlBlx1I68xZq6QYF8bhRJ69UMWEhvPE3fOR9L9Wv
-	 fmVWP3Fdhrk7w==
-X-Virus-Scanned: amavisd-new at rosalinux.ru
-Received: from mail.rosalinux.ru ([127.0.0.1])
-	by localhost (mail.rosalinux.ru [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id IDqMVs1C3EXX; Fri,  1 Mar 2024 15:26:42 +0300 (MSK)
-Received: from ubuntu.localdomain (unknown [144.206.93.23])
-	by mail.rosalinux.ru (Postfix) with ESMTPSA id 48574CFF46BCC;
-	Fri,  1 Mar 2024 15:26:42 +0300 (MSK)
-From: Aleksandr Burakov <a.burakov@rosalinux.ru>
-To: Dave Airlie <airlied@redhat.com>,
-	Gerd Hoffmann <kraxel@redhat.com>
-Cc: Aleksandr Burakov <a.burakov@rosalinux.ru>,
-	virtualization@lists.linux-foundation.org,
-	spice-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	lvc-project@linuxtesting.org
-Subject: [PATCH v2] drm/qxl: fix NULL dereference in qxl_add_mode
-Date: Fri,  1 Mar 2024 15:26:35 +0300
-Message-Id: <20240301122635.25058-1-a.burakov@rosalinux.ru>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <oprbqmdpjzhjwuqypqfdnirl44drvrhlaiounos44ywdbiustm@myk6llv5chlv>
-References: 
+	s=arc-20240116; t=1709296095; c=relaxed/simple;
+	bh=04vMMo6bccK56zwp5r5ELDKqpn4WVBvY558bJjYKRPE=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=tQi+tIHMyI5GRodxMj8RvQ2vN/nyvKfGHcy6Q6dXXgxRSusJSkudkwEjisMDTKPbDLjX0hl1tEkAQkmHkCtoGFIQnVFXrbKt9K/7Q1G9mc1ayzwrW2zL/6Cmg8Qb9/nFJ/R2HjiwOrjiQHDhNiUvboC2eAf2+sFm/cv+uxkmjXI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=eo44/2CT; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a3f893ad5f4so320905666b.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 04:28:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1709296092; x=1709900892; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=04vMMo6bccK56zwp5r5ELDKqpn4WVBvY558bJjYKRPE=;
+        b=eo44/2CTBgk7D20/GmsUsEDSaGEYi2NC+JlRPM8gmdSu6lbkrXHlxxSUOtDWoOi1/M
+         E/Ajur4lPfs9cok+vNtq33N/SUm79b22BKlTBCcb+xhlElRA+EeJbMQFfbUEnzHiuixS
+         n3lhynJw1BOTtqGY0XKGMB5QE+FeUTHS8ptoKiloev+fs+pPDBjYCCbfvu9a4KExXdue
+         YBHVQIWpxvZj565UnQ13LssmKBHDdusCCNpihk0r0Ua246Oqud1XwcRQZU72hW+Oksd8
+         lbau3CT4/rro0CINR9hDbkJpyqvlo6f9qxz1kUEx4z08eprtMjGoJ/8DNVdC2I5j69v7
+         wO2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709296092; x=1709900892;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=04vMMo6bccK56zwp5r5ELDKqpn4WVBvY558bJjYKRPE=;
+        b=OQFCGffSx0rl3wdlTEKaGDp+4XxH735h2n+/EdlDKJeVeOgd0Vvs68A1TYNb60jyOC
+         T1GuC6IVQOAHPTuKohy2Etz4Nfru298s9rM1WDfZ7cA5jqVBHStYv/463e+EjdN6TtzC
+         kFOhLTXrn4W7XXELCEVMv7fUMtteubdO2uwlJt9OsryAycB161Sm0j7dipNOF4JRBKA7
+         CUM0QJv3OZPirdCTN1YeGB0HRlXBMdrxxKqA2n0V0gaLUKFHE9gr1M8RSgsrP+IUYLjW
+         TGxKMgabJ/wk2+agIvYu5GwLPMCbeEhyDy+6ok+lOx6ts17MhhQWB9YggvHJNwTp+dwv
+         Fjzg==
+X-Forwarded-Encrypted: i=1; AJvYcCWcWfUorrpwWxW8ikQuEy9ADbSee5bEtUCknV7GVGVqzlHiQ4GGWxjNqmEKT205+9h4TU579Gu3BEG3dBr6tEcCzzEZOpu9MmiVGxAj
+X-Gm-Message-State: AOJu0Yx9UG7W8Uyp+eVJKbSDBcIcHJVje1TE7Kw7ElCHKLXQax6H0f+f
+	S2ZWJJhQXlpKuja251Ef5qKtTy7c56wEIVHtgatiVwyPkv1lzq2ZsKZAykf+3dY=
+X-Google-Smtp-Source: AGHT+IHzpOG5EeatqynQN5wVE5IJFA6LTUSu+kmhFT2QlI2R+7IfwwHn0YnseiZJ9thFC6gF11TS3w==
+X-Received: by 2002:a17:906:d92f:b0:a43:af0b:ec31 with SMTP id rn15-20020a170906d92f00b00a43af0bec31mr1242565ejb.53.1709296092465;
+        Fri, 01 Mar 2024 04:28:12 -0800 (PST)
+Received: from smtpclient.apple ([2001:a61:1069:f701:6c1a:d05d:ad7c:b80d])
+        by smtp.gmail.com with ESMTPSA id mf24-20020a170906cb9800b00a3e1b4575dfsm1658200ejb.2.2024.03.01.04.28.11
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 01 Mar 2024 04:28:12 -0800 (PST)
+Content-Type: text/plain;
+	charset=us-ascii
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.400.31\))
+Subject: Re: [PATCH] x86/apic: Use div64_ul() instead of do_div()
+From: Thorsten Blum <thorsten.blum@toblux.com>
+In-Reply-To: <7e46123775e64898bd7c467328125ee0@AcuMS.aculab.com>
+Date: Fri, 1 Mar 2024 13:28:00 +0100
+Cc: Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>,
+ Dave Hansen <dave.hansen@linux.intel.com>,
+ "x86@kernel.org" <x86@kernel.org>,
+ "H. Peter Anvin" <hpa@zytor.com>,
+ "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+ Wei Liu <wei.liu@kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Transfer-Encoding: quoted-printable
+Message-Id: <8ECEC999-A742-488F-99B2-A076EF9CA2B2@toblux.com>
+References: <20240227114333.1718-2-thorsten.blum@toblux.com>
+ <7e46123775e64898bd7c467328125ee0@AcuMS.aculab.com>
+To: David Laight <David.Laight@ACULAB.COM>
+X-Mailer: Apple Mail (2.3774.400.31)
 
-Return value of a function 'drm_cvt_mode' is dereferenced without
-checking for NULL but drm_mode_create() in drm_cvt_mode() may
-return NULL value in case of memory allocation error.
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> On Feb 29, 2024, at 23:13, David Laight <David.Laight@ACULAB.COM> =
+wrote:
+>=20
+> do_div() does a 64 by 32 divide that gives a 32bit quotient.
+> div64_ul() does a much more expensive 64 by 64 divide that
+> can generate a 64bit quotient.
 
-Fixes: 1b043677d4be ("drm/qxl: add qxl_add_mode helper function")
-Signed-off-by: Aleksandr Burakov <a.burakov@rosalinux.ru>
----
-v2: case with false value of 'preferred' is now taken into account
- drivers/gpu/drm/qxl/qxl_display.c | 3 +++
- 1 file changed, 3 insertions(+)
+Since the dividend and the divisor could (according to the types at =
+least) both
+be 64-bit values and do_div() does a 64-by-32 division, the quotient =
+could
+potentially be wrong.
 
-diff --git a/drivers/gpu/drm/qxl/qxl_display.c b/drivers/gpu/drm/qxl/qxl_=
-display.c
-index a152a7c6db21..d6dece7a0ed2 100644
---- a/drivers/gpu/drm/qxl/qxl_display.c
-+++ b/drivers/gpu/drm/qxl/qxl_display.c
-@@ -236,6 +236,9 @@ static int qxl_add_mode(struct drm_connector *connect=
-or,
- 		return 0;
-=20
- 	mode =3D drm_cvt_mode(dev, width, height, 60, false, false, false);
-+	if (!mode)
-+		return 0;
-+
- 	if (preferred)
- 		mode->type |=3D DRM_MODE_TYPE_PREFERRED;
- 	mode->hdisplay =3D width;
---=20
-2.25.1
+However, if the values don't require a 64-by-64 division (not even on a =
+64-bit
+system) and the divisor (deltapm) is guaranteed to fit into 32 bits, =
+wouldn't it
+make sense to change its type from long to int?
 
+Given that acpi_pm_read_early() returns a u32 and is then assigned to =
+unsigned
+long pm, this might be the source of the issue. Changing pm and deltapm =
+from
+long to u32 and keeping do_div() as is, would improve the types and =
+remove the
+Coccinelle warnings...but maybe I'm missing something?
+
+Thanks,
+Thorsten=
 
