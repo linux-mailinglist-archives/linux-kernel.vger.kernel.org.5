@@ -1,253 +1,392 @@
-Return-Path: <linux-kernel+bounces-87910-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87907-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59CBD86DAF8
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 06:13:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E81086DAEF
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 06:13:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 111D82843ED
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 05:13:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8041C1C233F8
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 05:13:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76C2A53387;
-	Fri,  1 Mar 2024 05:13:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2025850271;
+	Fri,  1 Mar 2024 05:13:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="I0M9VDz1"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mD+X0RV+"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F173C50271;
-	Fri,  1 Mar 2024 05:13:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D55C03FE23;
+	Fri,  1 Mar 2024 05:12:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709269998; cv=none; b=sv8zFDLNYvDau4zY3GR8CUFdtcXav6rhVPxz4eEomfy7d7HHDiehD5PRw915UaL5J6FjuqBvDXXJlgfw+YBvWzT8GBHCk6sVBE0g8HvGTcC18nMYU/G5YInVHcazh5fJ1ML3GKmioNHRxlDGnKZR8Av8YkRnFRI111baHZLpB6A=
+	t=1709269981; cv=none; b=RaamxUZq+RsbGJtB0DekP0UIUqFswhhG+aD/hME9pv9qvU63/JksKUIST7grYF1Ar/CLe5SsdpTaj9qdef06gW9ZR1jAYiuCgmZs+ynFhA7BfjUh2dsaL4AW7tZilNvGj8Z+nyMWIjdjNPMWum1DTpK2uMHv/HE+iHTGm0DLU5o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709269998; c=relaxed/simple;
-	bh=M7UTzvr+YTB7bIeNJj1wK2uB4KOdvKq7tRzGheqxNw0=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bAvIW2MoRhKo7b/sG8lJm/st7pE/rvR0cEvy1Zh2qhWBPGDk8qKJG0XPbQia6oGcNM6mtijomdEshTWpNvFen94BfWQD3T7GVDg4OmiZMlVsqw6RUvb+5YXnwRvzNKeMKVAWAXZUVA/CXykG3nSOl8HTMC72l6FnjWX2mC+VbiQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=I0M9VDz1; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4214ds0r004295;
-	Fri, 1 Mar 2024 05:13:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=GUBqkgDDi5arvjC/nxRao/2Qgxh7DZtpdRsG1DlND4E=; b=I0
-	M9VDz1+GWKAwGiUR/6uObg6YNLZgQwy14G1YVtSZ3aaoFeOBoNSuCaBZCvjbeq/1
-	WUIE9C7j9yl+9IHU0xQKx3zugcwnVPhbEaERAl7zy6zlmjsPaaWyXK+0g6o88hGN
-	8H7NhiHwfuj12ZU+DMJ4RGu22t+uA6AhRUyAcBJttgEunVP1N9eOUG96hmEWG4Eq
-	3VlRjwbeSo+JFxFg3GYVYiN+qmRh17DgB3kA9V03ICrPrgI4Zv4uPg4ZaEuhSQjy
-	33DAx/WXV5mqRINpqNxHZXvzGoTdTnDkHUFT904BWXguOf93OruCekU2l/x0TCvx
-	A5+XVw63bPqxOPXFMPAA==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wk4rvrgpj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 01 Mar 2024 05:13:05 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4215D3Qn013663
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 1 Mar 2024 05:13:03 GMT
-Received: from adas-linux5.qualcomm.com (10.80.80.8) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 29 Feb 2024 21:13:03 -0800
-From: Shashank Babu Chinta Venkata <quic_schintav@quicinc.com>
-To: <agross@kernel.org>, <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <mani@kernel.org>
-CC: <quic_msarkar@quicinc.com>, <quic_kraravin@quicinc.com>,
-        Lorenzo Pieralisi
-	<lpieralisi@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?=
-	<kw@linux.com>,
-        Rob Herring <robh@kernel.org>, Bjorn Helgaas
-	<bhelgaas@google.com>,
-        Manivannan Sadhasivam
-	<manivannan.sadhasivam@linaro.org>,
-        Yoshihiro Shimoda
-	<yoshihiro.shimoda.uh@renesas.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Josh Triplett
-	<josh@joshtriplett.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pci@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>
-Subject: [PATCH v1 3/3] PCI: dwc: add rx margining settings for gen4
-Date: Thu, 29 Feb 2024 21:11:36 -0800
-Message-ID: <20240301051220.20917-4-quic_schintav@quicinc.com>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240301051220.20917-1-quic_schintav@quicinc.com>
-References: <20240301051220.20917-1-quic_schintav@quicinc.com>
+	s=arc-20240116; t=1709269981; c=relaxed/simple;
+	bh=qD/IA5tub8dvGI0ruKEbe8uuRvgVF69TMrFYrEmMNjA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cxq5ba8yCxslg/Nt8OW3KjqOxrtMNDpBQQujoP0zn/0osMLSLoVauXbjFgE38nnSni08E8I5AuQdUjfZPEcf6H+egvczM8gZ0794P5pNsMPeTpWnQec2kz61dDXPYzyGczaW794HCC2pljtQcA3lkXUB/dxjAnyXm6uMkKCmIL0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mD+X0RV+; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a3d484a58f6so272577366b.3;
+        Thu, 29 Feb 2024 21:12:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709269978; x=1709874778; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WpSMaxLHOZBLhzSSp7ZYNdckYQGJqypZw8rFLh1tAiM=;
+        b=mD+X0RV+vBuUMWK1T3MmPPxEGwPNmo35JiUMU3T+sfYRu+c/A9qaZ8ZovVlQMWzsab
+         QiZDeFrcGP3jh9QYyuBbGIABCgeFCLWC3+miWdajPALsw9AfziGe9mBYF5PeqNJHs9mQ
+         ry2aWC5Ago9yiAcryfMAZi2nbgWCkKCfpGth7tjFps/lKx6bbqNVNS010BJlNtCCO3AN
+         NJMiZmtevhvw9k07mBX4G1ycgXquV71tbWUlODTP7iErXlAg0QidThSkp/v2FvbETLHj
+         7Phke9MBMJrb8b93aRX4FEdbxBdX8xXV8p6TGLhWfWlq3APl/NLHu2g6gZroiWMWbtxo
+         c2Mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709269978; x=1709874778;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WpSMaxLHOZBLhzSSp7ZYNdckYQGJqypZw8rFLh1tAiM=;
+        b=AXzggckzrFdy1bVEzxtBnvXboNS80Kvo5RlH78Q/LPaBQzDst6z/lr9VLWQvjy3A3v
+         adxORRoHgsDAd5/MnutwA2FuqnfVb55DFL+jxZC/EjpE04Z0u8u7R7V/BbzfLCE3gj0c
+         YII1GD14YSR/ioqkFAlVEV/yYyM8Ibir6hhu89iGok1jn250cPxuHPqLA8JLqjYEIhQQ
+         I/lTPMATM0MQFSP7CfaD0vCCqmerUy0CD6WkMh6NxQmJSv0wL46kwMHrAFhm9fX3Qm9N
+         uyyN8imFWW/fGr87I/si7G/QiUL7V+iYn5dx9QHwdsxUjMhQgPUPE8JANQ0uH4Sr7SjE
+         mRXg==
+X-Forwarded-Encrypted: i=1; AJvYcCWMovCmaOKitJrtSWAXTS5yDAhK0CWi06FhCijlN3R6e2Z/qS47rvyfhv7Xr2Wzm0CjEB1qQlau1DpwxpAbZYa32NIM+cVi3EGNx/gT26kREeHnz7FQ9YhgbW8QCogTyXcBSZ4VDvKDmw==
+X-Gm-Message-State: AOJu0YzQS7RaCtyUWcQrkQOMCFZeSPc7oshA4+F0MIfXO8PcpDosN/+/
+	0HWV5g+6sScPaysxWbmMyxZOcgbqJYTqpm1d2gK5dRRlBgBfo8/IGYAhZS+lyIzPVx3X/eY6qlG
+	mWhnKdq0/zjkVn3IPwVtJEYVBW98iQhWblrQCmFyo
+X-Google-Smtp-Source: AGHT+IHYWOS3Z3rIeyJhR53EO9xdVKH4kb0vhRlRutjWAUXPsNmoNiwk8ZAeve8zdBGwAytJJLrgA202MBvW0ygn1Xg=
+X-Received: by 2002:a17:906:c31a:b0:a44:7209:4c67 with SMTP id
+ s26-20020a170906c31a00b00a4472094c67mr379475ejz.45.1709269977903; Thu, 29 Feb
+ 2024 21:12:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: kwweDpJRImdrkpmNyXo7Lzp9AGuMaPl9
-X-Proofpoint-GUID: kwweDpJRImdrkpmNyXo7Lzp9AGuMaPl9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-01_02,2024-02-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=774 clxscore=1015
- phishscore=0 adultscore=0 impostorscore=0 suspectscore=0
- lowpriorityscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2402120000 definitions=main-2403010042
+References: <20240229-rk-dts-additions-v3-0-6afe8473a631@gmail.com>
+ <20240229-rk-dts-additions-v3-1-6afe8473a631@gmail.com> <a370efd768021ce1afd6ea5ce841acbb@manjaro.org>
+In-Reply-To: <a370efd768021ce1afd6ea5ce841acbb@manjaro.org>
+From: Alexey Charkov <alchark@gmail.com>
+Date: Fri, 1 Mar 2024 09:12:46 +0400
+Message-ID: <CABjd4YxM3HY20BbLZ2bJbEFuf6Uv9P_=v4NdHuvN2M-pxh652Q@mail.gmail.com>
+Subject: Re: [PATCH v3 1/5] arm64: dts: rockchip: enable built-in thermal
+ monitoring on RK3588
+To: Dragan Simic <dsimic@manjaro.org>
+Cc: Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Heiko Stuebner <heiko@sntech.de>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
+	Viresh Kumar <viresh.kumar@linaro.org>, Chen-Yu Tsai <wens@kernel.org>, devicetree@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add rx margining settings for gen4 operation.
+Hi Dragan,
 
-Signed-off-by: Shashank Babu Chinta Venkata <quic_schintav@quicinc.com>
----
- drivers/pci/controller/dwc/pcie-qcom-cmn.c | 36 ++++++++++++++++++++++
- drivers/pci/controller/dwc/pcie-qcom-cmn.h | 34 ++++++++++++++++++++
- drivers/pci/controller/dwc/pcie-qcom-ep.c  |  4 ++-
- drivers/pci/controller/dwc/pcie-qcom.c     |  4 ++-
- 4 files changed, 76 insertions(+), 2 deletions(-)
+On Fri, Mar 1, 2024 at 12:21=E2=80=AFAM Dragan Simic <dsimic@manjaro.org> w=
+rote:
+>
+> Hello Alexey,
+>
+> On 2024-02-29 20:26, Alexey Charkov wrote:
+> > Include thermal zones information in device tree for RK3588 variants.
+> >
+> > This also enables the TSADC controller unconditionally on all boards
+> > to ensure that thermal protections are in place via throttling and
+> > emergency reset, once OPPs are added to enable CPU DVFS.
+> >
+> > The default settings (using CRU as the emergency reset mechanism)
+> > should work on all boards regardless of their wiring, as CRU resets
+> > do not depend on any external components. Boards that have the TSHUT
+> > signal wired to the reset line of the PMIC may opt to switch to GPIO
+> > tshut mode instead (rockchip,hw-tshut-mode =3D <1>;)
+>
+> Quite frankly, I'm still not sure that enabling this on the SoC level
+> is the way to go.  As I already described in detail, [4] according to
+> the RK3588 Hardware Design Guide v1.0 and the Rock 5B schematic, we
+> should actually use GPIO-based handling for the thermal runaways on
+> the Rock 5B.  Other boards should also be investigated individually,
+> and the TSADC should be enabled on a board-to-board basis.
 
-diff --git a/drivers/pci/controller/dwc/pcie-qcom-cmn.c b/drivers/pci/controller/dwc/pcie-qcom-cmn.c
-index cfdc04eef78c..abba4de32005 100644
---- a/drivers/pci/controller/dwc/pcie-qcom-cmn.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom-cmn.c
-@@ -50,6 +50,42 @@ void qcom_pcie_cmn_set_gen4_eq_settings(struct dw_pcie *pci)
- }
- EXPORT_SYMBOL_GPL(qcom_pcie_cmn_set_gen4_eq_settings);
- 
-+void qcom_pcie_cmn_set_gen4_rx_margining_settings(struct dw_pcie *pci)
-+{
-+	u32 reg;
-+
-+	reg = dw_pcie_readl_dbi(pci, GEN4_LANE_MARGINING_1_OFF);
-+	reg &= ~MARGINING_MAX_VOLTAGE_OFFSET_MASK;
-+	reg |= (MARGINING_MAX_VOLTAGE_OFFSET_VAL <<
-+		MARGINING_MAX_VOLTAGE_OFFSET_SHIFT);
-+	reg &= ~MARGINING_NUM_VOLTAGE_STEPS_MASK;
-+	reg |= (MARGINING_NUM_VOLTAGE_STEPS_VAL <<
-+		MARGINING_NUM_VOLTAGE_STEPS_SHIFT);
-+	reg &= ~MARGINING_MAX_TIMING_OFFSET_MASK;
-+	reg |= (MARGINING_MAX_TIMING_OFFSET_VAL <<
-+		MARGINING_MAX_TIMING_OFFSET_SHIFT);
-+	reg &= ~MARGINING_NUM_TIMING_STEPS_MASK;
-+	reg |= MARGINING_NUM_TIMING_STEPS_VAL;
-+	dw_pcie_writel_dbi(pci, GEN4_LANE_MARGINING_1_OFF, reg);
-+
-+
-+	reg = dw_pcie_readl_dbi(pci, GEN4_LANE_MARGINING_2_OFF);
-+	reg |= MARGINING_IND_ERROR_SAMPLER;
-+	reg |= MARGINING_SAMPLE_REPORTING_METHOD;
-+	reg |= MARGINING_IND_LEFT_RIGHT_TIMING;
-+	reg |= MARGINING_VOLTAGE_SUPPORTED;
-+	reg &= ~MARGINING_IND_UP_DOWN_VOLTAGE;
-+	reg &= ~MARGINING_MAXLANES_MASK;
-+	reg |= (pci->num_lanes <<
-+		MARGINING_MAXLANES_SHIFT);
-+	reg &= ~MARGINING_SAMPLE_RATE_TIMING_MASK;
-+	reg |= (MARGINING_SAMPLE_RATE_TIMING_VAL <<
-+		MARGINING_SAMPLE_RATE_TIMING_SHIFT);
-+	reg |= MARGINING_SAMPLE_RATE_VOLTAGE_VAL;
-+	dw_pcie_writel_dbi(pci, GEN4_LANE_MARGINING_2_OFF, reg);
-+}
-+EXPORT_SYMBOL_GPL(qcom_pcie_cmn_set_gen4_rx_margining_settings);
-+
- int qcom_pcie_cmn_icc_get_resource(struct dw_pcie *pci, struct icc_path *icc_mem)
- {
- 	int ret = 0;
-diff --git a/drivers/pci/controller/dwc/pcie-qcom-cmn.h b/drivers/pci/controller/dwc/pcie-qcom-cmn.h
-index 08e1bd179207..b145743a7558 100644
---- a/drivers/pci/controller/dwc/pcie-qcom-cmn.h
-+++ b/drivers/pci/controller/dwc/pcie-qcom-cmn.h
-@@ -27,11 +27,40 @@
- #define GEN3_EQ_FMDC_MAX_PRE_CUSROR_DELTA_SHIFT		10
- #define GEN3_EQ_FMDC_MAX_POST_CUSROR_DELTA_SHIFT	14
- 
-+#define GEN4_LANE_MARGINING_1_OFF		0xb80
-+#define GEN4_LANE_MARGINING_2_OFF		0xb84
-+
-+#define MARGINING_MAX_VOLTAGE_OFFSET_MASK	GENMASK(29, 24)
-+#define MARGINING_NUM_VOLTAGE_STEPS_MASK	GENMASK(22, 16)
-+#define MARGINING_MAX_TIMING_OFFSET_MASK	GENMASK(13, 8)
-+#define MARGINING_NUM_TIMING_STEPS_MASK		GENMASK(5, 0)
-+#define MARGINING_MAX_VOLTAGE_OFFSET_SHIFT	24
-+#define MARGINING_NUM_VOLTAGE_STEPS_SHIFT	16
-+#define MARGINING_MAX_TIMING_OFFSET_SHIFT	8
-+#define MARGINING_MAX_VOLTAGE_OFFSET_VAL	0x24
-+#define MARGINING_NUM_VOLTAGE_STEPS_VAL		0x78
-+#define MARGINING_MAX_TIMING_OFFSET_VAL		0x32
-+#define MARGINING_NUM_TIMING_STEPS_VAL		0x10
-+
-+#define MARGINING_IND_ERROR_SAMPLER		BIT(28)
-+#define MARGINING_SAMPLE_REPORTING_METHOD	BIT(27)
-+#define MARGINING_IND_LEFT_RIGHT_TIMING		BIT(26)
-+#define MARGINING_IND_UP_DOWN_VOLTAGE		BIT(25)
-+#define MARGINING_VOLTAGE_SUPPORTED		BIT(24)
-+#define MARGINING_MAXLANES_MASK			GENMASK(20, 16)
-+#define MARGINING_SAMPLE_RATE_TIMING_MASK	GENMASK(13, 8)
-+#define MARGINING_SAMPLE_RATE_VOLTAGE_MASK	GENMASK(5, 0)
-+#define MARGINING_MAXLANES_SHIFT		16
-+#define MARGINING_SAMPLE_RATE_TIMING_SHIFT	8
-+#define MARGINING_SAMPLE_RATE_TIMING_VAL	0x3f
-+#define MARGINING_SAMPLE_RATE_VOLTAGE_VAL	0x3f
-+
- #ifdef CONFIG_PCIE_QCOM_CMN
- int qcom_pcie_cmn_icc_get_resource(struct dw_pcie *pci, struct icc_path *icc_mem);
- int qcom_pcie_cmn_icc_init(struct dw_pcie *pci, struct icc_path *icc_mem);
- void qcom_pcie_cmn_icc_update(struct dw_pcie *pci, struct icc_path *icc_mem);
- void qcom_pcie_cmn_set_gen4_eq_settings(struct dw_pcie *pci);
-+void qcom_pcie_cmn_set_gen4_rx_margining_settings(struct dw_pcie *pci);
- #else
- static inline int qcom_pcie_cmn_icc_get_resource(struct dw_pcie *pci, struct icc_path *icc_mem)
- {
-@@ -50,4 +79,9 @@ static inline void qcom_pcie_cmn_icc_update(struct dw_pcie *pci, struct icc_path
- static inline void qcom_pcie_cmn_set_gen4_eq_settings(struct dw_pcie *pci)
- {
- }
-+
-+static inline void qcom_pcie_cmn_set_gen4_rx_margining_settings(struct dw_pcie *pci)
-+{
-+}
-+
- #endif
-diff --git a/drivers/pci/controller/dwc/pcie-qcom-ep.c b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-index 0b169bcd081d..5422fa970d9d 100644
---- a/drivers/pci/controller/dwc/pcie-qcom-ep.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-@@ -439,8 +439,10 @@ static int qcom_pcie_perst_deassert(struct dw_pcie *pci)
- 	}
- 
- 	/* set Gen4 equalization settings */
--	if (pci->link_gen == 4)
-+	if (pci->link_gen == 4) {
- 		qcom_pcie_cmn_set_gen4_eq_settings(pci);
-+		qcom_pcie_cmn_set_gen4_rx_margining_settings(pci);
-+	}
- 
- 	/*
- 	 * The physical address of the MMIO region which is exposed as the BAR
-diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-index ad0cd55da777..3ada1e9fdd11 100644
---- a/drivers/pci/controller/dwc/pcie-qcom.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom.c
-@@ -264,8 +264,10 @@ static int qcom_pcie_start_link(struct dw_pcie *pci)
- 	struct qcom_pcie *pcie = to_qcom_pcie(pci);
- 
- 	/* set Gen4 equalization settings */
--	if (pci->link_gen == 4)
-+	if (pci->link_gen == 4) {
- 		qcom_pcie_cmn_set_gen4_eq_settings(pci);
-+		qcom_pcie_cmn_set_gen4_rx_margining_settings(pci);
-+	}
- 
- 	/* Enable Link Training state machine */
- 	if (pcie->cfg->ops->ltssm_enable)
--- 
-2.43.2
+With all due respect, I disagree, here is why:
+ - Neither the schematic nor the hardware design guide, on which the
+schematic seems to be based, prescribes a particular way to handle
+thermal runaways. They only provide the possibility of GPIO based
+resets, along with the CRU based one
+ - My strong belief is that defaults (regardless of context) should be
+safe and reasonable, and should also minimize the need to override
+them
+ - In context of dts/dtsi, as far as I understand the general logic
+behind the split, the SoC .dtsi should contain all the things that are
+fully contained within the SoC and do not depend on the wiring of a
+particular board or its target use case. Boards then
+add/remove/override settings to match their wiring and use case more
+closely
 
+In the light of the last two points, I believe that enabling TSADC by
+default is the more safe and reasonable choice, because it provides
+crucial thermal protection logic for the SoC, and it can do so in a
+board-agnostic way (if the CRU based reset is selected, which is the
+current default).
+
+Furthermore, TSADC and CRU are fully contained within the SoC, and I
+cannot think of a use case where a board might be somehow
+disadvantaged by TSADC being enabled, and thus need to disable it
+altogether (maybe I'm missing something). The only thing that the
+board might be adjusting is the thermal reset handling, and even then
+it's rather a matter of choice/preference to switch away from CRU to
+GPIO resets where the wiring permits it, rather than an existential
+need. I presume that a PMIC-assisted reset causes deeper power cycling
+of the SoC and might therefore help in some rare cases where the CRU
+reset alone is not enough, but that would be niche.
+
+All summed up, I believe that the default of "fry my board if I have
+no heatsink and forget to include &tsadc {status =3D <okay>;}; in my
+dts" is substantially inferior to the default of "my board could do a
+deep power-cycle in this weird corner-case thermal-runaway situation
+that somehow didn't get handled by active cooling, then by passive
+cooling, then by a CRU reset, but I didn't include
+rockchip,hw-tshut-mode =3D <1>; so poor luck for me".
+
+Would be great to hear other perspectives from people on the list.
+
+Best regards,
+Alexey
+
+> [4]
+> https://lore.kernel.org/linux-rockchip/4e7c2b5a938bd7c919b852699c951701@m=
+anjaro.org/
+>
+> > It seems though that downstream kernels don't use that, even for
+> > those boards where the wiring allows for GPIO based tshut, such as
+> > Radxa Rock 5B [1], [2], [3]
+> >
+> > [1]
+> > https://github.com/radxa/kernel/blob/stable-5.10-rock5/arch/arm64/boot/=
+dts/rockchip/rk3588-rock-5b.dts#L540
+> > [2]
+> > https://github.com/radxa/kernel/blob/stable-5.10-rock5/arch/arm64/boot/=
+dts/rockchip/rk3588s.dtsi#L5433
+> > [3] https://dl.radxa.com/rock5/5b/docs/hw/radxa_rock_5b_v1423_sch.pdf
+> > page 11 (TSADC_SHUT_H)
+> >
+> > Signed-off-by: Alexey Charkov <alchark@gmail.com>
+> > ---
+> >  arch/arm64/boot/dts/rockchip/rk3588s.dtsi | 176
+> > +++++++++++++++++++++++++++++-
+> >  1 file changed, 175 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> > b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> > index 36b1b7acfe6a..9bf197358642 100644
+> > --- a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> > +++ b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> > @@ -10,6 +10,7 @@
+> >  #include <dt-bindings/reset/rockchip,rk3588-cru.h>
+> >  #include <dt-bindings/phy/phy.h>
+> >  #include <dt-bindings/ata/ahci.h>
+> > +#include <dt-bindings/thermal/thermal.h>
+> >
+> >  / {
+> >       compatible =3D "rockchip,rk3588";
+> > @@ -2225,7 +2226,180 @@ tsadc: tsadc@fec00000 {
+> >               pinctrl-1 =3D <&tsadc_shut>;
+> >               pinctrl-names =3D "gpio", "otpout";
+> >               #thermal-sensor-cells =3D <1>;
+> > -             status =3D "disabled";
+> > +             status =3D "okay";
+> > +     };
+> > +
+> > +     thermal_zones: thermal-zones {
+> > +             /* sensor near the center of the SoC */
+> > +             package_thermal: package-thermal {
+> > +                     polling-delay-passive =3D <0>;
+> > +                     polling-delay =3D <0>;
+> > +                     thermal-sensors =3D <&tsadc 0>;
+> > +
+> > +                     trips {
+> > +                             package_crit: package-crit {
+> > +                                     temperature =3D <115000>;
+> > +                                     hysteresis =3D <0>;
+> > +                                     type =3D "critical";
+> > +                             };
+> > +                     };
+> > +             };
+> > +
+> > +             /* sensor between A76 cores 0 and 1 */
+> > +             bigcore0_thermal: bigcore0-thermal {
+> > +                     polling-delay-passive =3D <100>;
+> > +                     polling-delay =3D <0>;
+> > +                     thermal-sensors =3D <&tsadc 1>;
+> > +
+> > +                     trips {
+> > +                             /* threshold to start collecting temperat=
+ure
+> > +                              * statistics e.g. with the IPA governor
+> > +                              */
+> > +                             bigcore0_alert0: bigcore0-alert0 {
+> > +                                     temperature =3D <75000>;
+> > +                                     hysteresis =3D <2000>;
+> > +                                     type =3D "passive";
+> > +                             };
+> > +                             /* actual control temperature */
+> > +                             bigcore0_alert1: bigcore0-alert1 {
+> > +                                     temperature =3D <85000>;
+> > +                                     hysteresis =3D <2000>;
+> > +                                     type =3D "passive";
+> > +                             };
+> > +                             bigcore0_crit: bigcore0-crit {
+> > +                                     temperature =3D <115000>;
+> > +                                     hysteresis =3D <0>;
+> > +                                     type =3D "critical";
+> > +                             };
+> > +                     };
+> > +                     cooling-maps {
+> > +                             map0 {
+> > +                                     trip =3D <&bigcore0_alert1>;
+> > +                                     cooling-device =3D
+> > +                                             <&cpu_b0 THERMAL_NO_LIMIT=
+ THERMAL_NO_LIMIT>,
+> > +                                             <&cpu_b1 THERMAL_NO_LIMIT=
+ THERMAL_NO_LIMIT>;
+> > +                             };
+> > +                     };
+> > +             };
+> > +
+> > +             /* sensor between A76 cores 2 and 3 */
+> > +             bigcore2_thermal: bigcore2-thermal {
+> > +                     polling-delay-passive =3D <100>;
+> > +                     polling-delay =3D <0>;
+> > +                     thermal-sensors =3D <&tsadc 2>;
+> > +
+> > +                     trips {
+> > +                             /* threshold to start collecting temperat=
+ure
+> > +                              * statistics e.g. with the IPA governor
+> > +                              */
+> > +                             bigcore2_alert0: bigcore2-alert0 {
+> > +                                     temperature =3D <75000>;
+> > +                                     hysteresis =3D <2000>;
+> > +                                     type =3D "passive";
+> > +                             };
+> > +                             /* actual control temperature */
+> > +                             bigcore2_alert1: bigcore2-alert1 {
+> > +                                     temperature =3D <85000>;
+> > +                                     hysteresis =3D <2000>;
+> > +                                     type =3D "passive";
+> > +                             };
+> > +                             bigcore2_crit: bigcore2-crit {
+> > +                                     temperature =3D <115000>;
+> > +                                     hysteresis =3D <0>;
+> > +                                     type =3D "critical";
+> > +                             };
+> > +                     };
+> > +                     cooling-maps {
+> > +                             map0 {
+> > +                                     trip =3D <&bigcore2_alert1>;
+> > +                                     cooling-device =3D
+> > +                                             <&cpu_b2 THERMAL_NO_LIMIT=
+ THERMAL_NO_LIMIT>,
+> > +                                             <&cpu_b3 THERMAL_NO_LIMIT=
+ THERMAL_NO_LIMIT>;
+> > +                             };
+> > +                     };
+> > +             };
+> > +
+> > +             /* sensor between the four A55 cores */
+> > +             little_core_thermal: littlecore-thermal {
+> > +                     polling-delay-passive =3D <100>;
+> > +                     polling-delay =3D <0>;
+> > +                     thermal-sensors =3D <&tsadc 3>;
+> > +
+> > +                     trips {
+> > +                             /* threshold to start collecting temperat=
+ure
+> > +                              * statistics e.g. with the IPA governor
+> > +                              */
+> > +                             littlecore_alert0: littlecore-alert0 {
+> > +                                     temperature =3D <75000>;
+> > +                                     hysteresis =3D <2000>;
+> > +                                     type =3D "passive";
+> > +                             };
+> > +                             /* actual control temperature */
+> > +                             littlecore_alert1: littlecore-alert1 {
+> > +                                     temperature =3D <85000>;
+> > +                                     hysteresis =3D <2000>;
+> > +                                     type =3D "passive";
+> > +                             };
+> > +                             littlecore_crit: littlecore-crit {
+> > +                                     temperature =3D <115000>;
+> > +                                     hysteresis =3D <0>;
+> > +                                     type =3D "critical";
+> > +                             };
+> > +                     };
+> > +                     cooling-maps {
+> > +                             map0 {
+> > +                                     trip =3D <&littlecore_alert1>;
+> > +                                     cooling-device =3D
+> > +                                             <&cpu_l0 THERMAL_NO_LIMIT=
+ THERMAL_NO_LIMIT>,
+> > +                                             <&cpu_l1 THERMAL_NO_LIMIT=
+ THERMAL_NO_LIMIT>,
+> > +                                             <&cpu_l2 THERMAL_NO_LIMIT=
+ THERMAL_NO_LIMIT>,
+> > +                                             <&cpu_l3 THERMAL_NO_LIMIT=
+ THERMAL_NO_LIMIT>;
+> > +                             };
+> > +                     };
+> > +             };
+> > +
+> > +             /* sensor near the PD_CENTER power domain */
+> > +             center_thermal: center-thermal {
+> > +                     polling-delay-passive =3D <0>;
+> > +                     polling-delay =3D <0>;
+> > +                     thermal-sensors =3D <&tsadc 4>;
+> > +
+> > +                     trips {
+> > +                             center_crit: center-crit {
+> > +                                     temperature =3D <115000>;
+> > +                                     hysteresis =3D <0>;
+> > +                                     type =3D "critical";
+> > +                             };
+> > +                     };
+> > +             };
+> > +
+> > +             gpu_thermal: gpu-thermal {
+> > +                     polling-delay-passive =3D <0>;
+> > +                     polling-delay =3D <0>;
+> > +                     thermal-sensors =3D <&tsadc 5>;
+> > +
+> > +                     trips {
+> > +                             gpu_crit: gpu-crit {
+> > +                                     temperature =3D <115000>;
+> > +                                     hysteresis =3D <0>;
+> > +                                     type =3D "critical";
+> > +                             };
+> > +                     };
+> > +             };
+> > +
+> > +             npu_thermal: npu-thermal {
+> > +                     polling-delay-passive =3D <0>;
+> > +                     polling-delay =3D <0>;
+> > +                     thermal-sensors =3D <&tsadc 6>;
+> > +
+> > +                     trips {
+> > +                             npu_crit: npu-crit {
+> > +                                     temperature =3D <115000>;
+> > +                                     hysteresis =3D <0>;
+> > +                                     type =3D "critical";
+> > +                             };
+> > +                     };
+> > +             };
+> >       };
+> >
+> >       saradc: adc@fec10000 {
 
