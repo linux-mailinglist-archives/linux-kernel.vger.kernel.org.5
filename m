@@ -1,93 +1,134 @@
-Return-Path: <linux-kernel+bounces-89197-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89198-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A43086EBD6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 23:29:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6475186EBD9
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 23:29:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F25D728AB93
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 22:29:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9801028AC1C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 22:29:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DE4759174;
-	Fri,  1 Mar 2024 22:29:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCACC59B60;
+	Fri,  1 Mar 2024 22:29:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KNhmOfoQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZyKTYPwx"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 624E054273;
-	Fri,  1 Mar 2024 22:29:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D71C3BB33;
+	Fri,  1 Mar 2024 22:29:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709332144; cv=none; b=qMxIyV4eyLjTEPO+dVRmOZdjFZ7xCz39jLSrvRqXUdh4LkTUMqMWWWzbLfvsqzKhZSpcit6cdAknJF5uDttvsHnINcMaPwGCZYsvZ/NKiBZ51NmdoFjhiqildudE7tQNmMTNHnuZgf7pmjCYbBTYMwiegjTTLR8AHi8XHXNheJE=
+	t=1709332165; cv=none; b=t1ONf4TQukZ4fIZGzWadO9Zos2+UrWIbQM2P5QCCvPLwFe58tXnaG4echmR6NHu988MxyPUhDoPpmhxdhaAc0Ue9WBEP/9sqwrmIuSKVrn9QTijA6z9/c1HaYy4w1v30ws3OmBiwxSiMrNSzv30obf8lFgOWyeRqwXJhxnpO3q4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709332144; c=relaxed/simple;
-	bh=BT6iEoXRpRZ20lKNVwZa2tRgMc1sknRgERA5/FsoaO4=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=NuYUOR+6DCeGQEIIDszdMZUSIaQip7UxhBUaE0qnpv+Fx2d+5L82HqkGJVli03F2jCxLOuUFw9FcoIb2gV3Tx+iPXVnO2wvSQanI87aPYTW3RT/JkVnzKH5Q0e4pGFf9KgXvpNWR4+B6YE8eKr53yoAhj5DZeMfglqWLKkzUz3U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KNhmOfoQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19443C433F1;
-	Fri,  1 Mar 2024 22:29:04 +0000 (UTC)
+	s=arc-20240116; t=1709332165; c=relaxed/simple;
+	bh=5Xj1ur1qN0aF23NjoAtLbU1HDSoN1Q1krN4IozUzHS8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tkTn8UjOwT3VKhOUSUPugmpmDb6iv5nGWNPc5/bhj8+IidKhIdA4JjVANuAnpjmx9rhnd3+TiwGW6YdAHZih9Xfbn7L8+c4r9upb0hj5yEJu5J+Y1BEL+tBh/qJLEU3uNjdqLy/bNrzrZ376CsCBIrc8v9NWx+FZbZvC7itrgnw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZyKTYPwx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96062C433C7;
+	Fri,  1 Mar 2024 22:29:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709332144;
-	bh=BT6iEoXRpRZ20lKNVwZa2tRgMc1sknRgERA5/FsoaO4=;
-	h=Date:From:To:Cc:Subject:From;
-	b=KNhmOfoQ4K1NIsmA1yvL14s0F5t9hlfXZ3OBQXlTRw31ljsFW+P+z/x6+8GqdcAzO
-	 z3sVmGLOp8cLakhIHV5R+Svyo46S+J0fG6h11VMkcN3n1o73Pl6eVbeiZ0xuPEX+qK
-	 mEZN93vkqmTF/jBV9MwMCQDNmxLBTAo+V0/3tVgs8Wd2DJP8UZJUhD4mW7BRUOZDym
-	 AkNrTFm3yvEid1p3SDZaUyS7K6+hgkkDFL0vthGXoqzmefnD8XSaiA6Z4J4aoczuTU
-	 qYI+YALzYedYUCtwNSxSHpcQyu7oPkEYvSXfGvnyClBIeczRV+erlz1KUkJDaq1ijC
-	 M2mN++ujQsrSA==
-Date: Fri, 1 Mar 2024 16:29:02 -0600
-From: Rob Herring <robh@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Saravana Kannan <saravanak@google.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org
-Subject: [GIT PULL] Devicetree fixes for v6.8, take 2
-Message-ID: <20240301222902.GA3168830-robh@kernel.org>
+	s=k20201202; t=1709332164;
+	bh=5Xj1ur1qN0aF23NjoAtLbU1HDSoN1Q1krN4IozUzHS8=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=ZyKTYPwxbK8Wo4eDEQ4y1DTJrke0mAEg32I1SIdrsksERipv9lSZGApGvsRLPh/DG
+	 RY4vXU1etymGhG88U97Lnl1v5N1Z+MAVrvcOGrxh8DaOxsDDDSQjRR0hbDUntXNqg9
+	 cPibmPieh7K5sJW3jMHndyT0EkYCBC3t6BAyGdZUDtb6hL6rpyf7kkN9ZUVKtdUlAN
+	 eCTdhMJoemcPGfDWc8PbRXfiAFTbe/S6AvIV0TYF8h78CyjtBYjAX8MZyon9sCBJUI
+	 TID3yvumGoT79UVsrpmoXELbPTu2q8Pxnwjgl+m+BZm3zg7Q6SwmvEaj4WY81uIpOC
+	 xhLSx1/hnZPCQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 2B6AFCE140C; Fri,  1 Mar 2024 14:29:19 -0800 (PST)
+Date: Fri, 1 Mar 2024 14:29:19 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Yan Zhai <yan@cloudflare.com>
+Cc: Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>,
+	Alexander Duyck <alexanderduyck@fb.com>,
+	Hannes Frederic Sowa <hannes@stressinduktion.org>,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+	bpf@vger.kernel.org, kernel-team@cloudflare.com,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>, mark.rutland@arm.com
+Subject: Re: [PATCH v2] net: raise RCU qs after each threaded NAPI poll
+Message-ID: <ed57b5fa-8b44-48de-904e-fe8da1939292@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <ZeFPz4D121TgvCje@debian.debian>
+ <CAO3-PboqKqjqrAScqzu6aB8d+fOq97_Wuz8b7d5uoMKT-+-WvQ@mail.gmail.com>
+ <CANn89iLCv0f3vBYt8W+_ZDuNeOY1jDLDBfMbOj7Hzi8s0xQCZA@mail.gmail.com>
+ <CAO3-PboZwTiSmVxVFFfAm94o+LgK=rnm1vbJvMhzSGep+RYzaQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAO3-PboZwTiSmVxVFFfAm94o+LgK=rnm1vbJvMhzSGep+RYzaQ@mail.gmail.com>
 
-Linus,
+On Fri, Mar 01, 2024 at 11:30:29AM -0600, Yan Zhai wrote:
+> Hi Eric,
+> 
+> On Fri, Mar 1, 2024 at 2:30 AM Eric Dumazet <edumazet@google.com> wrote:
+> >
+> > I could not see the reason for 1sec (HZ) delays.
+> >
+> > Would calling rcu_softirq_qs() every ~10ms instead be a serious issue ?
+> >
+> The trouble scenarios are often when we need to detach an ad-hoc BPF
+> tracing program, or restart a monitoring service. It is fine as long
+> as they do not block for 10+ seconds or even completely stall under
+> heavy traffic. Raising a QS every few ms or HZ both work in such
+> cases.
+> 
+> > In anycase, if this all about rcu_tasks, I would prefer using a macro
+> > defined in kernel/rcu/tasks.h
+> > instead of having a hidden constant in a networking core function.
+> 
+> Paul E. McKenney was suggesting either current form or
+> 
+>          local_bh_enable();
+>          if (!IS_ENABLED(CONFIG_PREEMPT_RT))
+>                  rcu_softirq_qs_enable(local_bh_enable());
+>          else
+>                  local_bh_enable();
+> 
+> With an interval it might have to be
+> "rcu_softirq_qs_enable(local_bh_enable(), &next_qs);" to avoid an
+> unnecessary extern/static var. Will it make more sense to you?
 
-Please pull this 1 commit.
+I was thinking in terms of something like this (untested):
 
-Rob
+	#define rcu_softirq_qs_enable(enable_stmt, oldj) \
+	do { \
+		if (!IS_ENABLED(CONFIG_PREEMPT_RT) && \
+		    time_after(oldj + HZ / 10, jiffies) { \
+			rcu_softirq_qs(); \
+			(oldj) = jiffies; \
+		} \
+		do  { enable_stmt; } while (0) \
+	} while (0)
 
+Then the call could be "rcu_softirq_qs_enable(local_bh_enable(), last_qs)",
+where last_qs is initialized by the caller to jiffies.
 
-The following changes since commit 4e06ec0774f5bebf10e27bc7a5ace4b48ae0fa56:
+The reason for putting "enable_stmt;" into anothor do-while loop is
+in case someone typos an "else" as the first part of the "enable_stmt"
+argument.
 
-  dt-bindings: ufs: samsung,exynos-ufs: Add size constraints on "samsung,sysreg" (2024-02-13 10:32:13 -0600)
+Would that work?
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git tags/devicetree-fixes-for-6.8-2
-
-for you to fetch changes up to 7cb50f6c9fbaa1c0b80100b8971bf13db5d75d06:
-
-  of: property: fw_devlink: Fix stupid bug in remote-endpoint parsing (2024-03-01 15:28:17 -0600)
-
-----------------------------------------------------------------
-Devicetree fix for v6.8, part 2:
-
-One fix for a bug in fw_devlink handling of OF graph. This doesn't
-completely fix the reported problems, but it's with users adding out of
-tree code.
-
-----------------------------------------------------------------
-Saravana Kannan (1):
-      of: property: fw_devlink: Fix stupid bug in remote-endpoint parsing
-
- drivers/of/property.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+							Thanx, Paul
 
