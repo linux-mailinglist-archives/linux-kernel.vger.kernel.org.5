@@ -1,245 +1,189 @@
-Return-Path: <linux-kernel+bounces-88056-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88057-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25BA286DCCD
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:13:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44BC086DCD0
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:14:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7FD2CB24C79
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:13:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F333B288AE7
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:14:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0A6169D20;
-	Fri,  1 Mar 2024 08:13:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDEE569D1A;
+	Fri,  1 Mar 2024 08:14:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="hdfnM5bg"
-Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="reiKqrSc";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="/AiQxsPe"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E7036995D;
-	Fri,  1 Mar 2024 08:13:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0896969968
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 08:14:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709280820; cv=none; b=m2aA1r6nWum+lHjuBL4YOPobFhi1gkc+0ZyKvJjDMuOUoZLW1WLixZpQ5xcg6G/+ERp9ycDSWYjswlXP1sauPfSW8AP/xkSCgtSbPupGop2D1VRXFh+l2LfG58DQCs1lxIzmu4GLUQf4ye/vZQLXnyMv/HiObOtuemDfBbilAE8=
+	t=1709280856; cv=none; b=YI4m9T0fTLJqaT98zW54qWOpc5ngCkLUfqpJ5XvUkxBRpG4k9UGg5jlNABPlfIfVRlQcLUkelSoIeXHCrRa/CRMldfpRZ9hPWol/RCt02VQ2cQji8CBq39zUDj+56WMZIxuYkXq+Y08BC19BzTpf2tN6rzYhwSMnP9miAQ2eRU8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709280820; c=relaxed/simple;
-	bh=dIBc7HjV1Jitsja9ViMJ47634yFWwSSxGW6Tq58Pth4=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=fKJ73IY2QgQAZQTY1idJHX4fqA6JLpfYcwb49WUny+1YjJr0xEc7Lt6sX3KTpq1DlqIX5peFnCzq75qsRNY+YM9EREgxHCc43rCjedWlGhd3KN33r3Q0YOi7BurWj2FOGQad5ldsK9KKoVnfb6LSNwjvsu/vJKcXmo8z+8vONfA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=hdfnM5bg; arc=none smtp.client-ip=116.203.91.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
+	s=arc-20240116; t=1709280856; c=relaxed/simple;
+	bh=jaP5tyZRYYfMcaJ7grKsHD19hayDCXPmT0t3bv6/8bY=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=MBBcq+TIIZO9kuuTessy5MjfXMEhxRkvL6SDPwjp4Wa255NbbSgHxfMF6TAw1wjxqTYq3ZNhYgHW40TPYTrH9XcFanIXMoUc02oAOUD6XKtMIaSStVOYpJX4hugC6Sx65LbLQijM02KtmCrEnIZtwYyx3qXHOBd9tMBldpmd87g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=reiKqrSc; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=/AiQxsPe; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1709280852;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XUXcVZzlTt019jlXW5vVIeqdQ7GFrCPz8tzw8VHsJvc=;
+	b=reiKqrScZQuDrP55pZfFXab9Y1omzvIjkor1bG7gh7QnekkTD/xJFJkqBRaEA6qn9fTmwl
+	oLZKRLpGil5H1f8K17BjaSHLQNzFMnIyIIH9lT+oKSkkd5khFF28d0hsKTjteGUMKQq//z
+	TTMY9aoH66EhJ++ClqY39L1haWplsmUb5eg3mlpeYDwaA1w5SThZW/kJ1w5mWtUkBiKmcH
+	+NC6O4TJNMW0u460D3rZVcvh7Csi+E2sz05MI4U3iALOWZY6/cm+D+T7dISKfcMToFdRmU
+	B3WrrcKKN0G/LdsA4I1mIfbHoMsEhEoAvIZqzRmdZ59PWF3q9IeV6w3TQHfGuw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1709280852;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XUXcVZzlTt019jlXW5vVIeqdQ7GFrCPz8tzw8VHsJvc=;
+	b=/AiQxsPeY9WI5tmRqkD1+p6T/kT+YtfPLxS/AssP7CS/4ev4cnOT8BVBJqM7fkIE6ndhTR
+	0jjGFF/PG6Er0FCA==
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: x86@kernel.org, Steven Rostedt <rostedt@goodmis.org>, "Paul E. McKenney"
+ <paulmck@kernel.org>
+Subject: Re: [patch 6/6] x86/idle: Select idle routine only once
+In-Reply-To: <20240229142248.582321500@linutronix.de>
+References: <20240229141407.283316443@linutronix.de>
+ <20240229142248.582321500@linutronix.de>
+Date: Fri, 01 Mar 2024 09:14:11 +0100
+Message-ID: <87h6hq74j0.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
-	t=1709280815;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2ERX/sFnvQOPRQmjacsPInt4AlnqdKFHst8ABmqjoTY=;
-	b=hdfnM5bgbjvJIwpYUw2STixSsJuPQE86CfBtC2K6cIeP8wxJnjEaSVtUUk3opxjhCe7SlE
-	K9y2fZ0ISF5aajNWYUQZE7DNgX785YEYnn3VaZVuk5NUdGkzOUJ9YVY9/hlZHyHsIkXJ5z
-	RpS1cniJO4VNCDq4iJ7PkRagCeWPq4cZM2OYbzcoXT5U5/k0tpLbzrRhDIYowphhwRGvQn
-	bOPe+PLoVHPCBO6dEBzVD3Qw2CP1leOYVH+/D0BmOhg9nLiGeOFH5KsL/zCbxPqES4CVP4
-	7JGiYkqmsc5g9o7WnJHBH0Hy3kuRODL1jgPmBAPbGG4OFeIUsEE4J1inn6bUPw==
-Date: Fri, 01 Mar 2024 09:13:34 +0100
-From: Dragan Simic <dsimic@manjaro.org>
-To: Alexey Charkov <alchark@gmail.com>
-Cc: Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Heiko Stuebner <heiko@sntech.de>, Daniel Lezcano
- <daniel.lezcano@linaro.org>, Viresh Kumar <viresh.kumar@linaro.org>, Chen-Yu
- Tsai <wens@kernel.org>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/5] arm64: dts: rockchip: Add CPU/memory regulator
- coupling for RK3588
-In-Reply-To: <20240229-rk-dts-additions-v3-3-6afe8473a631@gmail.com>
-References: <20240229-rk-dts-additions-v3-0-6afe8473a631@gmail.com>
- <20240229-rk-dts-additions-v3-3-6afe8473a631@gmail.com>
-Message-ID: <7e4379931dc6e35ca79a0ec7d27cf590@manjaro.org>
-X-Sender: dsimic@manjaro.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
+Content-Type: text/plain
 
-On 2024-02-29 20:26, Alexey Charkov wrote:
-> RK3588 chips allow for their CPU cores to be powered by a different
-> supply vs. their corresponding memory interfaces, and two of the
-> boards currently upstream do that (EVB1 and QuartzPro64).
+On Thu, Feb 29 2024 at 15:23, Thomas Gleixner wrote:
+>  
+> -	if (x86_idle_set())
+> -		return;
+> -
 
-The only reasonable explanation, based on the Cortex-A55 and Cortex-A76
-technical reference manuals (TRMs), and some other documents, including
-the RK3588 hardware design guide (HDG), is that the VDD_CPU_BIG0_MEM_S0,
-VDD_CPU_BIG1_MEM_S0 and VDD_CPU_LIT_MEM_S0 voltages are internally
-used as the supplies for the SRAM used for the A76's and A55's L1 and
-L2 caches, which are both per-core and private in the DynamIQ SoC layout
-that the RK3588 is based on.
+Bah. With XEN=n this results in a defined but not used warning.
+Updated version below.
 
-Sure, using "MEM" there is confusing, but actually, the Cortex-A55 and
-Cortex-A76 refer to the L1 and L2 caches as "memory" in multiple places.
-I'd say that's the reason for "MEM" (and "memory", in the RK3588 HDG) to
-be used in the board schematics (and in the RK3588 HDG).
+---
+Subject: x86/idle: Select idle routine only once
+From: Thomas Gleixner <tglx@linutronix.de>
+Date: Wed, 28 Feb 2024 23:20:32 +0100
 
-The RK3588 HDG specifically allows what the Rock 5B does there, i.e. to
-basically short the RK3588's individual *_MEM_S0 power inputs to the
-respective CPU core power supplies, which avoids the need to use 
-separate
-voltage regulators for the RK3588's *_MEM_S0 power inputs.
+The idle routine selection is done on every CPU bringup operation and has a
+guard in place which is effective after the first invocation, which is a
+pointless exercise.
 
-However, I'd really, _really_ love to know why did Rockchip opt to make
-the power supply voltages separate for the RK3588's L1 and L2 caches,
-which are, BTW, rated for up to 100 mA for each *_MEM_S0 input, meaning
-that they present no large loads?  All that under the assumption that
-my analysis is correct, of course.
+Invoke it once on the boot CPU and mark the related functions __init.
 
-> The voltage of the memory interface though has to match that of the
-> CPU cores that use it, which downstream kernels achieve by the means
-> of a custom cpufreq driver which adjusts both at the same time.
-> 
-> It seems that regulator coupling is a more appropriate generic
-> interface for it, so this patch introduces coupling to affected
-> device trees to ensure that memory interface voltage is also updated
-> whenever cpufreq switches between CPU OPPs.
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+V1a: Move x86_idle_set() into the only usage site (0day)
+---
+ arch/x86/include/asm/processor.h |    2 +-
+ arch/x86/kernel/cpu/common.c     |    4 ++--
+ arch/x86/kernel/process.c        |   18 +++++-------------
+ 3 files changed, 8 insertions(+), 16 deletions(-)
 
-I'll verify this a bit later and provide a separate response.
-
-> Note that other boards, such as Radxa Rock 5B, define both the CPU
-> and memory interface regulators as aliases to the same DT node, so
-> this doesn't apply there.
-
-Yup, they're actually shorted on the Rock 5B, as I described above.
-
-> Signed-off-by: Alexey Charkov <alchark@gmail.com>
-> ---
->  arch/arm64/boot/dts/rockchip/rk3588-evb1-v10.dts    | 12 ++++++++++++
->  arch/arm64/boot/dts/rockchip/rk3588-quartzpro64.dts | 12 ++++++++++++
->  2 files changed, 24 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3588-evb1-v10.dts
-> b/arch/arm64/boot/dts/rockchip/rk3588-evb1-v10.dts
-> index de30c2632b8e..dfae67f1e9c7 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3588-evb1-v10.dts
-> +++ b/arch/arm64/boot/dts/rockchip/rk3588-evb1-v10.dts
-> @@ -788,6 +788,8 @@ regulators {
->  			vdd_cpu_big1_s0: dcdc-reg1 {
->  				regulator-always-on;
->  				regulator-boot-on;
-> +				regulator-coupled-with = <&vdd_cpu_big1_mem_s0>;
-> +				regulator-coupled-max-spread = <10000>;
->  				regulator-min-microvolt = <550000>;
->  				regulator-max-microvolt = <1050000>;
->  				regulator-ramp-delay = <12500>;
-> @@ -800,6 +802,8 @@ regulator-state-mem {
->  			vdd_cpu_big0_s0: dcdc-reg2 {
->  				regulator-always-on;
->  				regulator-boot-on;
-> +				regulator-coupled-with = <&vdd_cpu_big0_mem_s0>;
-> +				regulator-coupled-max-spread = <10000>;
->  				regulator-min-microvolt = <550000>;
->  				regulator-max-microvolt = <1050000>;
->  				regulator-ramp-delay = <12500>;
-> @@ -812,6 +816,8 @@ regulator-state-mem {
->  			vdd_cpu_lit_s0: dcdc-reg3 {
->  				regulator-always-on;
->  				regulator-boot-on;
-> +				regulator-coupled-with = <&vdd_cpu_lit_mem_s0>;
-> +				regulator-coupled-max-spread = <10000>;
->  				regulator-min-microvolt = <550000>;
->  				regulator-max-microvolt = <950000>;
->  				regulator-ramp-delay = <12500>;
-> @@ -836,6 +842,8 @@ regulator-state-mem {
->  			vdd_cpu_big1_mem_s0: dcdc-reg5 {
->  				regulator-always-on;
->  				regulator-boot-on;
-> +				regulator-coupled-with = <&vdd_cpu_big1_s0>;
-> +				regulator-coupled-max-spread = <10000>;
->  				regulator-min-microvolt = <675000>;
->  				regulator-max-microvolt = <1050000>;
->  				regulator-ramp-delay = <12500>;
-> @@ -849,6 +857,8 @@ regulator-state-mem {
->  			vdd_cpu_big0_mem_s0: dcdc-reg6 {
->  				regulator-always-on;
->  				regulator-boot-on;
-> +				regulator-coupled-with = <&vdd_cpu_big0_s0>;
-> +				regulator-coupled-max-spread = <10000>;
->  				regulator-min-microvolt = <675000>;
->  				regulator-max-microvolt = <1050000>;
->  				regulator-ramp-delay = <12500>;
-> @@ -873,6 +883,8 @@ regulator-state-mem {
->  			vdd_cpu_lit_mem_s0: dcdc-reg8 {
->  				regulator-always-on;
->  				regulator-boot-on;
-> +				regulator-coupled-with = <&vdd_cpu_lit_s0>;
-> +				regulator-coupled-max-spread = <10000>;
->  				regulator-min-microvolt = <675000>;
->  				regulator-max-microvolt = <950000>;
->  				regulator-ramp-delay = <12500>;
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3588-quartzpro64.dts
-> b/arch/arm64/boot/dts/rockchip/rk3588-quartzpro64.dts
-> index 87a0abf95f7d..9c038450cd7c 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3588-quartzpro64.dts
-> +++ b/arch/arm64/boot/dts/rockchip/rk3588-quartzpro64.dts
-> @@ -818,6 +818,8 @@ vdd_cpu_big1_s0: dcdc-reg1 {
->  				regulator-name = "vdd_cpu_big1_s0";
->  				regulator-always-on;
->  				regulator-boot-on;
-> +				regulator-coupled-with = <&vdd_cpu_big1_mem_s0>;
-> +				regulator-coupled-max-spread = <10000>;
->  				regulator-min-microvolt = <550000>;
->  				regulator-max-microvolt = <1050000>;
->  				regulator-ramp-delay = <12500>;
-> @@ -831,6 +833,8 @@ vdd_cpu_big0_s0: dcdc-reg2 {
->  				regulator-name = "vdd_cpu_big0_s0";
->  				regulator-always-on;
->  				regulator-boot-on;
-> +				regulator-coupled-with = <&vdd_cpu_big0_mem_s0>;
-> +				regulator-coupled-max-spread = <10000>;
->  				regulator-min-microvolt = <550000>;
->  				regulator-max-microvolt = <1050000>;
->  				regulator-ramp-delay = <12500>;
-> @@ -844,6 +848,8 @@ vdd_cpu_lit_s0: dcdc-reg3 {
->  				regulator-name = "vdd_cpu_lit_s0";
->  				regulator-always-on;
->  				regulator-boot-on;
-> +				regulator-coupled-with = <&vdd_cpu_lit_mem_s0>;
-> +				regulator-coupled-max-spread = <10000>;
->  				regulator-min-microvolt = <550000>;
->  				regulator-max-microvolt = <950000>;
->  				regulator-ramp-delay = <12500>;
-> @@ -870,6 +876,8 @@ vdd_cpu_big1_mem_s0: dcdc-reg5 {
->  				regulator-name = "vdd_cpu_big1_mem_s0";
->  				regulator-always-on;
->  				regulator-boot-on;
-> +				regulator-coupled-with = <&vdd_cpu_big1_s0>;
-> +				regulator-coupled-max-spread = <10000>;
->  				regulator-min-microvolt = <675000>;
->  				regulator-max-microvolt = <1050000>;
->  				regulator-ramp-delay = <12500>;
-> @@ -884,6 +892,8 @@ vdd_cpu_big0_mem_s0: dcdc-reg6 {
->  				regulator-name = "vdd_cpu_big0_mem_s0";
->  				regulator-always-on;
->  				regulator-boot-on;
-> +				regulator-coupled-with = <&vdd_cpu_big0_s0>;
-> +				regulator-coupled-max-spread = <10000>;
->  				regulator-min-microvolt = <675000>;
->  				regulator-max-microvolt = <1050000>;
->  				regulator-ramp-delay = <12500>;
-> @@ -910,6 +920,8 @@ vdd_cpu_lit_mem_s0: dcdc-reg8 {
->  				regulator-name = "vdd_cpu_lit_mem_s0";
->  				regulator-always-on;
->  				regulator-boot-on;
-> +				regulator-coupled-with = <&vdd_cpu_lit_s0>;
-> +				regulator-coupled-max-spread = <10000>;
->  				regulator-min-microvolt = <675000>;
->  				regulator-max-microvolt = <950000>;
->  				regulator-ramp-delay = <12500>;
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -555,7 +555,7 @@ static inline void load_sp0(unsigned lon
+ 
+ unsigned long __get_wchan(struct task_struct *p);
+ 
+-extern void select_idle_routine(const struct cpuinfo_x86 *c);
++extern void select_idle_routine(void);
+ extern void amd_e400_c1e_apic_setup(void);
+ 
+ extern unsigned long		boot_option_idle_override;
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -1938,8 +1938,6 @@ static void identify_cpu(struct cpuinfo_
+ 	/* Init Machine Check Exception if available. */
+ 	mcheck_cpu_init(c);
+ 
+-	select_idle_routine(c);
+-
+ #ifdef CONFIG_NUMA
+ 	numa_add_cpu(smp_processor_id());
+ #endif
+@@ -2343,6 +2341,8 @@ void __init arch_cpu_finalize_init(void)
+ {
+ 	identify_boot_cpu();
+ 
++	select_idle_routine();
++
+ 	/*
+ 	 * identify_boot_cpu() initialized SMT support information, let the
+ 	 * core code know.
+--- a/arch/x86/kernel/process.c
++++ b/arch/x86/kernel/process.c
+@@ -748,11 +748,6 @@ EXPORT_SYMBOL(default_idle);
+ 
+ DEFINE_STATIC_CALL_NULL(x86_idle, default_idle);
+ 
+-static bool x86_idle_set(void)
+-{
+-	return !!static_call_query(x86_idle);
+-}
+-
+ #ifndef CONFIG_SMP
+ static inline void __noreturn play_dead(void)
+ {
+@@ -783,10 +778,9 @@ EXPORT_SYMBOL_GPL(arch_cpu_idle);
+ #ifdef CONFIG_XEN
+ bool xen_set_default_idle(void)
+ {
+-	bool ret = x86_idle_set();
++	bool ret = !!static_call_query(x86_idle);
+ 
+ 	static_call_update(x86_idle, default_idle);
+-
+ 	return ret;
+ }
+ #endif
+@@ -853,8 +847,9 @@ void __noreturn stop_this_cpu(void *dumm
+  * Do not prefer MWAIT if MONITOR instruction has a bug or idle=nomwait
+  * is passed to kernel commandline parameter.
+  */
+-static bool prefer_mwait_c1_over_halt(const struct cpuinfo_x86 *c)
++static __init bool prefer_mwait_c1_over_halt(void)
+ {
++	const struct cpuinfo_x86 *c = &boot_cpu_data;
+ 	u32 eax, ebx, ecx, edx;
+ 
+ 	/* If override is enforced on the command line, fall back to HALT. */
+@@ -908,7 +903,7 @@ static __cpuidle void mwait_idle(void)
+ 	__current_clr_polling();
+ }
+ 
+-void select_idle_routine(const struct cpuinfo_x86 *c)
++void __init select_idle_routine(void)
+ {
+ 	if (boot_option_idle_override == IDLE_POLL) {
+ 		if (IS_ENABLED(CONFIG_SMP) && smp_num_siblings > 1)
+@@ -916,10 +911,7 @@ void select_idle_routine(const struct cp
+ 		return;
+ 	}
+ 
+-	if (x86_idle_set())
+-		return;
+-
+-	if (prefer_mwait_c1_over_halt(c)) {
++	if (prefer_mwait_c1_over_halt()) {
+ 		pr_info("using mwait in idle threads\n");
+ 		static_call_update(x86_idle, mwait_idle);
+ 	} else if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST)) {
 
