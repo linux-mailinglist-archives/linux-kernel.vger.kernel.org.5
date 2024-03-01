@@ -1,117 +1,146 @@
-Return-Path: <linux-kernel+bounces-88021-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88022-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 184A686DC48
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:47:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D27986DC4A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:47:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C458528B43E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 07:47:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D75DC28B9BF
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 07:47:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E862469971;
-	Fri,  1 Mar 2024 07:46:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82D966996C;
+	Fri,  1 Mar 2024 07:47:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="vEWh/wuj"
-Received: from mout.web.de (mout.web.de [212.227.15.3])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="X5CuGzuE"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE302405DB;
-	Fri,  1 Mar 2024 07:46:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B2CC69964
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 07:47:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709279212; cv=none; b=DX9q3YT17fIBif5ZvPGfU6C+FK0X3M5TOESgT15z2b61jR07dRWyYekvoI+w+istQe3hfl8J/uCrGv3NvhPcP2AdEPCqq149n0XgIlXqpN6Jh6AQ6f8/OcOMfEBeT0PR8E/+n+k3AdgOyCTtDSUk3EcnjVGuRaM+tiLiyAZcmGA=
+	t=1709279223; cv=none; b=FpHZ+BAvw1FDJujgzkb6gUACUpSr7g+xVY/mLvzrFHsFEnmEVBO/1/uIxMdr5RtxNwKfY3k6mtncUcf6l4aQVC+nEoL6LpGBnRAuAgzgddaF/Swk5S7uqxcWMPWrUngkr0txRCnyUUVLWYgZvJiZkZ5b4Za/nRyPvG9/l2Khl9k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709279212; c=relaxed/simple;
-	bh=PtVj2Cs/5utkaUVwbD5AXLYA8GHmi80b51Oqj9vJ8HQ=;
-	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=OVdWBBVUFc4Z3aMPvPJnojWueH3JtSeowaG37lMqRXEsgqL+LlZhtHczykNMNkymyo+znHieSnVpNHEsWgCiOajnSikGLmG4vu8mAx6ThErSSm4KT6UN25jIluDzuaDRQUx2uMhYsJIO0CLprX6FrOIus6xDfhT+paolF4/Wf0c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=vEWh/wuj; arc=none smtp.client-ip=212.227.15.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1709279197; x=1709883997; i=markus.elfring@web.de;
-	bh=PtVj2Cs/5utkaUVwbD5AXLYA8GHmi80b51Oqj9vJ8HQ=;
-	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
-	b=vEWh/wujuPkr5ZgUKGrC7CR17ajTtwB8K0+7BUgACfosZ+YkVCxOkokrpBZ0MHPL
-	 yKIjqDGCfxtom0sTR+kmTUpuj/Ok4KAHTlO0RzySVvafbhY11Ga9PMd5zSS4PyfQk
-	 VAX3ElI3F02jdmh7X9DeJJqt3yfJlOnzxr462cjXEc2apqKpTvBXySiaALaGBBoMX
-	 I6Hs/BbvcvpBhoCBMaHFPQsQzG05yzM24gN8r+XBlIYbCaArZsEpXpM31FFpOEHOW
-	 7nq8J8PkDaZMkyJ5Fs9eQfpsP6ak3+rXIOvj5AjCv9Rt1xeAiLgmrhFKbnRcpHObg
-	 1uWF8XPffY4vRwqsmg==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.86.95]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MA4fW-1rZx3v2OaY-00Baxt; Fri, 01
- Mar 2024 08:46:37 +0100
-Message-ID: <79fa4854-976d-4aad-86ac-c156b0c4937e@web.de>
-Date: Fri, 1 Mar 2024 08:46:25 +0100
+	s=arc-20240116; t=1709279223; c=relaxed/simple;
+	bh=/sx6SEtFquJtDyl4dFJaKZNITaLfCxUGF+8rTsmsL5I=;
+	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=ljC8C0hDMH7qS+04AwGWcnHRR8RwfthSriNqZU9dOC1CpLo1pIT8spwU7wM72d0HaI4PEScZtLgwB0SROAEfj87cQevehBYmAGRlfAiUNhKj4bkHxBJgN1SKbOg9ry4bQmjsq7LyuorMKaCVR55KZy3dgk6YSpYul7Wg7ZhXkO0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=X5CuGzuE; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dcd1779adbeso3403162276.3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 23:47:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709279221; x=1709884021; darn=vger.kernel.org;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=2vDtF8jsZ47KJFPdTHlyCCCvC1lX3V2rNBLzzEwdQPY=;
+        b=X5CuGzuEbpnd08seUNciEd2ZFar+I8pfG77yKvaboqu0k1oqz2VsNIAGgeHsJtXoVc
+         Djc/WfsRTbCtqb9JEQO1R7EwaBXSYTMCRaM7GSHBjGoS6tFDvhaK7FvAcnsoQEmS3Iiu
+         L/C5d98BhT42uyeHopNw5oXln845w5RwNqhhPypS2E0rvwymrcYExdx+Q6xH++Y+JBC6
+         KQ1L7nrIUCMsPzi3nxupvoP9zFNCrlJ4tuXia3/pqna0ndAfYXv9RS7hdxmxTAM2VZoh
+         JjB1eIlDSBVvDN4wWys8X+9kRBGr5KRau0lFnb4NUi2LXPM5lM80KNmqshwhU+2SECWF
+         cVww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709279221; x=1709884021;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2vDtF8jsZ47KJFPdTHlyCCCvC1lX3V2rNBLzzEwdQPY=;
+        b=VgNFofExQWN9hTeIRQdA+OIgr4pd+fI2sZaKQ9edtA5A1APMX6AS62X8WBKltaOCJ6
+         vhMFysEV//JwOM+1U1KLi3pU3wNJKRmPXWS93vAOVxOJ/buZKLAT1PLAL+NzLfrJwq74
+         imTrYtLG+NZoUUxeAmiytZHXQjZmKWBwezcQvRTTHvsyV/CiQrxnYiHTU/2tr7O3IzFJ
+         zyo3umabBaVBI1QFhhjb+cgmF9p/ORlJnZlr7ljqE17DL+CcgC8ZzNJNhxIj8npqQj3c
+         ZkO126eqTK/074cKgP6HVBkD3g2rw03/p1cIXhPUPsjaF0fiP4rtGj748SCLXAHNvGzj
+         Yzwg==
+X-Forwarded-Encrypted: i=1; AJvYcCXgf5j22lB/PQ6YAj4gNoB4W1BBJYfSk65iLmq4GLhoR3faxsBmQDXNUJdW7C3eLW9aa4+emif/1MWMdEczqEsvaKSdI74uVuByR3Ai
+X-Gm-Message-State: AOJu0YzMZpL3jvE3swdHhB8OFIuIdbd+5kZ+UgFey8dLCY+P+YwgCduQ
+	pG5pDZEaFN2tx242J0666lgZW5LGrVSOGa0m5psCZjm6W2t74FTc5KIaV+t8IV3gF+eXX4xIVQI
+	C0r518w==
+X-Google-Smtp-Source: AGHT+IHrBfzUxQP1oIvterNW8El5bqvNoQh6OVy17grQnyfwObnPYeXNFK/EoKiNIoBpOKL59O1t8A9qZGIg
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:af4b:7fc1:b7be:fcb7])
+ (user=irogers job=sendgmr) by 2002:a5b:f05:0:b0:dca:33b8:38d7 with SMTP id
+ x5-20020a5b0f05000000b00dca33b838d7mr193989ybr.11.1709279221335; Thu, 29 Feb
+ 2024 23:47:01 -0800 (PST)
+Date: Thu, 29 Feb 2024 23:46:36 -0800
+Message-Id: <20240301074639.2260708-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: linux-media@vger.kernel.org, kernel-janitors@vger.kernel.org,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Sakari Ailus <sakari.ailus@linux.intel.com>,
- Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Content-Language: en-GB
-Cc: LKML <linux-kernel@vger.kernel.org>
-From: Markus Elfring <Markus.Elfring@web.de>
-Subject: [PATCH] media: i2c: ds90ub960: Delete duplicate source code in
- ub960_parse_dt_rxports()
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:NG6uo48tDikPs/0i4tEmGu816A1pQ83tsl2OXdg3u6hJ5bwtoyO
- BjRU6fcWGkrgTk6joa1FlnF7RBUozfSJH9fqxJz0A/9TmzxZpXJTDatt1LM6B3NsqdN5T26
- H853kokKn63cWdDZhBzT1ojYkPPy/rDan4daCVEou18V1+O5cXYY3P5ds0+ijVcTx9+xs+7
- SXRSO+1JjmgDt/TNkOLDg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:Z/ukpIoRDls=;0SinomGpMNGuyZ7CuXAkKrUBS69
- o5VCs//WXLxsJQAdvYJT6ILPRcp+zspbC2T8zbwkUYBbMK7VQH3YrN1nXJQ7lz+VP7qB5HCQ7
- n0/2lrwFfPwLCLSAx2nobiKHpwod+w+dPsLaqJzvpckXRLU5x/WZHQw8HfqkC//80zFd4fxv4
- XMlFzDr5n5CC5os48AgQIe2jg3wPcH7gho1UcMg5RHfDD4Z/MvyJFkNbjYDXbbXsrBUH1jkiH
- Gvyptdpm1ftYOsc7TuH29vWpSWTqFGQ4n3NjkcP4U/OvWq3nDC1bdDLPUxj+yHN4uEYniMw36
- mCf0odVkbJ7ubKuBmdM5ZymzMNYfVlmvEhsYDOnLRL8Z0LYWwUX1Imd82WWD/fTVVKBsAtGQ+
- rT+tnd3um6Eag2RfK72cIPA4hzeD+14/ErRAMKAEgkJ9DaoHdCN664tBqak+n880rt8zZa4Xj
- X1HJb56WmFXbVpuBjcX+Fv/NfPHefUHFK4wyeYYwCO01I+8qYdOBKHpo8VWzAxpJuzqTBdtJD
- 8ZMn7OihOAHohXt1H9rzkeX0ezhzA50MA85RQSCycfQWd670621IiHhqprNTZy3VheNbNId6K
- 5d5Kzl9TpRWKAFFUE1bADesH6ffb5BGJCL4QUeltuGPotcTwUJN+8ubtHccdSHRegVDgsLMjG
- s7I8lfaJh900ZealoffrLoTp7e/d86mNk1KU+MSaeaDgpEy+lZKUaXeZrTd4zR5ztMeBQYdYA
- RcV5FisSS9OjRwARJpVix0Gw3k6Stevs/69UqHG9kOqsiTpD+3yuopk1UjOG46JfjaFDJvehl
- xxs6FmrjLYbbqpC7/0WYXaGaboDF5hmko5g4g/ePy0tCw=
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
+Subject: [PATCH v1 1/4] perf record: Delete session after stopping sideband thread
+From: Ian Rogers <irogers@google.com>
+To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Christian Brauner <brauner@kernel.org>, James Clark <james.clark@arm.com>, 
+	Kan Liang <kan.liang@linux.intel.com>, Tim Chen <tim.c.chen@linux.intel.com>, 
+	Athira Rajeev <atrajeev@linux.vnet.ibm.com>, Yicong Yang <yangyicong@hisilicon.com>, 
+	Kajol Jain <kjain@linux.ibm.com>, Disha Goel <disgoel@linux.ibm.com>, 
+	K Prateek Nayak <kprateek.nayak@amd.com>, Song Liu <songliubraving@fb.com>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Fri, 1 Mar 2024 08:23:24 +0100
+The session has a header in it which contains a perf env with
+bpf_progs. The bpf_progs are accessed by the sideband thread and so
+the sideband thread must be stopped before the session is deleted, to
+avoid a use after free.  This error was detected by AddressSanitizer
+in the following:
 
-Avoid the specification of a duplicate fwnode_handle_put() call
-in this function implementation.
+```
+==2054673==ERROR: AddressSanitizer: heap-use-after-free on address 0x61d000161e00 at pc 0x55769289de54 bp 0x7f9df36d4ab0 sp 0x7f9df36d4aa8
+READ of size 8 at 0x61d000161e00 thread T1
+    #0 0x55769289de53 in __perf_env__insert_bpf_prog_info util/env.c:42
+    #1 0x55769289dbb1 in perf_env__insert_bpf_prog_info util/env.c:29
+    #2 0x557692bbae29 in perf_env__add_bpf_info util/bpf-event.c:483
+    #3 0x557692bbb01a in bpf_event__sb_cb util/bpf-event.c:512
+    #4 0x5576928b75f4 in perf_evlist__poll_thread util/sideband_evlist.c:68
+    #5 0x7f9df96a63eb in start_thread nptl/pthread_create.c:444
+    #6 0x7f9df9726a4b in clone3 ../sysdeps/unix/sysv/linux/x86_64/clone3.S:81
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-=2D--
- drivers/media/i2c/ds90ub960.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+0x61d000161e00 is located 384 bytes inside of 2136-byte region [0x61d000161c80,0x61d0001624d8)
+freed by thread T0 here:
+    #0 0x7f9dfa6d7288 in __interceptor_free libsanitizer/asan/asan_malloc_linux.cpp:52
+    #1 0x557692978d50 in perf_session__delete util/session.c:319
+    #2 0x557692673959 in __cmd_record tools/perf/builtin-record.c:2884
+    #3 0x55769267a9f0 in cmd_record tools/perf/builtin-record.c:4259
+    #4 0x55769286710c in run_builtin tools/perf/perf.c:349
+    #5 0x557692867678 in handle_internal_command tools/perf/perf.c:402
+    #6 0x557692867a40 in run_argv tools/perf/perf.c:446
+    #7 0x557692867fae in main tools/perf/perf.c:562
+    #8 0x7f9df96456c9 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:58
+```
 
-diff --git a/drivers/media/i2c/ds90ub960.c b/drivers/media/i2c/ds90ub960.c
-index ffe5f25f8647..eb708ed7b56e 100644
-=2D-- a/drivers/media/i2c/ds90ub960.c
-+++ b/drivers/media/i2c/ds90ub960.c
-@@ -3486,10 +3486,7 @@ static int ub960_parse_dt_rxports(struct ub960_data=
- *priv)
- 		}
+Fixes: 657ee5531903 ("perf evlist: Introduce side band thread")
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/builtin-record.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+index 92ccca9574ca..32df34dda9cd 100644
+--- a/tools/perf/builtin-record.c
++++ b/tools/perf/builtin-record.c
+@@ -2881,10 +2881,10 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
  	}
-
--	fwnode_handle_put(links_fwnode);
+ #endif
+ 	zstd_fini(&session->zstd_data);
+-	perf_session__delete(session);
 -
--	return 0;
--
-+	ret =3D 0;
- err_put_links:
- 	fwnode_handle_put(links_fwnode);
-
-=2D-
-2.44.0
+ 	if (!opts->no_bpf_event)
+ 		evlist__stop_sb_thread(rec->sb_evlist);
++
++	perf_session__delete(session);
+ 	return status;
+ }
+ 
+-- 
+2.44.0.278.ge034bb2e1d-goog
 
 
