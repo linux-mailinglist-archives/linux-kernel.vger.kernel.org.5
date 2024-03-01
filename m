@@ -1,150 +1,184 @@
-Return-Path: <linux-kernel+bounces-89012-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89013-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05B9386E971
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:24:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9293286E974
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:24:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AFC91288FBA
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:24:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B41FC1C20A09
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:24:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC96B3A8ED;
-	Fri,  1 Mar 2024 19:24:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE4393B787;
+	Fri,  1 Mar 2024 19:24:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2oQl1kTH"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="T93xnxux"
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F90525623
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 153CD39AF4
 	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 19:24:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709321071; cv=none; b=kdgdCXx9XHVy7ywsFhR68nmLKxZb1VZNop+haO0c4tKtvhMWrbjWL5RgBUK8CM1ZPU7RuvojXixdurEtOIukyxCjezzHc9stP95Xr9QKk52JW+s1JpQlAkZIfqvqXNSVgDkaKkyBa+9Cr4DVvjKFftO2qpBJbMtCFqItEx0ONHw=
+	t=1709321071; cv=none; b=A3sI2mLXo9Z5QARPlyUVdJHpl6UXlYmYRV5wSoWRsCDWm74mabqlOa5elk4wvYHU1Tm/a3ePVMu/ZJsqEquahAnFf7WppCMOzo8mwTLsbsVTM8f7WRb+37zXrjncuTHQSBP5BYU2ta2JoIkv8UwI0QsO7fe8gRjEo6dM0KHYeJo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1709321071; c=relaxed/simple;
-	bh=umgf9/Xh2fiEs38aP0Wij2OiHd8/uhV+11hOzUYf1uQ=;
+	bh=kJlvN6Ptew1iiph8Qm6reiLs2KrQnpMeI6G2YMVRg7M=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=B0DqMG6scDndvdwLoZBTMsbJEiUZpTfxBfp5MnkD8O/yS/Hj3fKmDMJMjresaI+K5VaerHR1qV1E9mTk6evCsZGVoZ/OQ5yY7/AWTo3+V75FWKLfC15+3AO67wuCT2V0HvDX5gBFXdYXNn2+nJwCwr0jSGW8C9rnB4bOeoL4TA4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2oQl1kTH; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5654ef0c61fso14410a12.0
+	 To:Cc:Content-Type; b=BRXdR96nUV9txE5YO9pWpxEK1IXT0kJGK9J0WkbR3UCCRipXDFtxOSdKYodJp1Ei8IzA/2FFKTwTXX7ST9F5r+NjWFsAPyP3q9Fx3UhxIsERo5xW/4IMjv5zlNlQdMSLest2p8MwvhI9P+edKaf4mwLQJeljy5cdoElsM+LBAf4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com; spf=none smtp.mailfrom=mojatatu.com; dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b=T93xnxux; arc=none smtp.client-ip=209.85.128.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mojatatu.com
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-6096ab005c0so21520177b3.1
         for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 11:24:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709321068; x=1709925868; darn=vger.kernel.org;
+        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1709321069; x=1709925869; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LDuPeEH5wsG8B80wWhr2QXdeB+S1bWAHLXQ9jR96lHc=;
-        b=2oQl1kTHnCt60tj71ozCMPfS+yM3Wbr8xdZeAUfE0y6A0ZX7HBCYCzOJ8N8+RKTlB/
-         1/08cldk/tKUK8DgdoaYMjhicN+NmZlhH2UWb7hbc2fZ463qxoaxmb+pOIPTxX23YP/i
-         9gmFYt5R+8QskTXjRLdWi2gFqDJjColg+HhlYbyzSkFZYICPbKBuP/BoF+opCBvRwa0j
-         u1WiOcD1hTzuz6dgq4F8D5qf2hxeqIHCvxOv63xTL/OItvB2UXViDTlMjPPrX3IzahEQ
-         m6pTnKpFSYOGWEoJ3cQjcTQhXCf+01KOFPtDOEGWHj0SGv85mwyDVFKkCK6e5AXEXARk
-         rNbQ==
+        bh=cbjX/lnoZ761OJUfB0gSxwfgwU0H+FScW9p4DrYodFU=;
+        b=T93xnxux4j8v3ho6iRNiIJcJy6lbRzzKtZBk/PajXkEWJX7PZoyWV6v8yyzZIn218M
+         B+r/gRigM/MDYkuFmrZN6QELlv2BCeOylESroLozqHT6S1LbgLozhQhgL3iqQsX/76ny
+         1lffUxVtQ4ZE0Hhr9XZjHkuU5rgKApvNjl0GEhkG1rcYOGsrg6JRWHIVzC9qkrKFfDrS
+         hLASVjH6CzJs2yYftsU6vyZYWnyv94raJUG6/yCTW8nZ5J88EjRTOULupvf89Z29nJEO
+         QRceZKlTJq7aAsb6WWGLURPL2AZ296Yv0WzMcgIx38tfhSKZJINX8YCUS4QdeCQJZ8Ot
+         yX/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709321068; x=1709925868;
+        d=1e100.net; s=20230601; t=1709321069; x=1709925869;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=LDuPeEH5wsG8B80wWhr2QXdeB+S1bWAHLXQ9jR96lHc=;
-        b=i2mNrz9/j1Nel7/GGIo0Doa4DhKORbDktS1XZQZDj+AywxRoPnumqzjbcN4/Omv9xb
-         7bZ7/xbQB74aEAbZsdRPwyuWAy/lvq+jas0BI5GcMJhxTGkhJ8hZKf7zei1AMoNrBwLe
-         AJPA1gFcwt09iV039ixLyroAwLMFMx24KRVzxcg6E39MTlZ/u0AdjhbWu4PiKmW2B1nX
-         q6KgdDKw1xZIbxAXFWs7dJdHnIs/WAa6GrZSMZv+nmuFq37kMKoTHuLEkZEM6j7jjnEI
-         AZjJtqHUd3d9F3fulPVPM3i8nHYMdhXnkAq4iGkS3KbjUrDhGnlE8SvX/MvilMSUEY8I
-         hq4w==
-X-Forwarded-Encrypted: i=1; AJvYcCVmxDxw9sE+0DCqgcLrNXUglzvKe6c9ca1s1aV7eV/5GOiIS+KI/iNbVvTTGfF43hC6M5w9Jczhuz8LtGd9eQVMWinnVSg1vWoJUWkb
-X-Gm-Message-State: AOJu0YxzGM9irLJF+1JAy6vX4gmiCuf5ma9oNe06EPsqCOkgwnynH3/a
-	lReQBnYKWgkAJrl4BW6by5GG31/PAiTRFCul5FZ486tTq1/Nd+A6yK9odFYP2gKRwshiHVk6npa
-	7YZI4Vucm4tErqqns0dU/rxMJ8xkNnzo1SWJu
-X-Google-Smtp-Source: AGHT+IFQ0gnP6qnKKDdSZv1A5AwEYM2+CsTYjoZPo8yzDomIX1ZoElk/kzrghH7WVuOGDi2oFtU7dFMuwrTDybDo3xo=
-X-Received: by 2002:a05:6402:5215:b0:566:f626:229b with SMTP id
- s21-20020a056402521500b00566f626229bmr28826edd.7.1709321067574; Fri, 01 Mar
- 2024 11:24:27 -0800 (PST)
+        bh=cbjX/lnoZ761OJUfB0gSxwfgwU0H+FScW9p4DrYodFU=;
+        b=bA6WHAYcgt7xeOw7qRClnCT8hHaQtzGE8Gmdq6dFOVZnB/wkih4OVb6j0CcxWRK0kE
+         9rBqgRxz90VMW0vA/M3zdKw4WTIQdaEgPwOU8PMmCvkHoU6/AGoVG/Ejt9R2HWywDx3E
+         NtajualJugfUa3teAr0Hva4AdfnDsQKv2WtK6sEVwWTu/bZXu3TrR6Qkn1cVY8eb4M3u
+         vdYORLJMItpiXFYz/2BZr44nxAybpQwvqtBZmFpsEhkXKPMytXtqoycmxm+ZvllMLyIk
+         Gz+dMoehoJHblW+36PH/uuu42rJXqazOPjXTTOll9YmM+wDOkhMEaycYsw80TPoWPRl5
+         pQKQ==
+X-Gm-Message-State: AOJu0YzAiCQGCf6VLGzfwu/yFSYLh5c/GbHKKBVIFRjL8Zp0phBiFyGV
+	ckD/6khEoHOT34gaJVEfqO9yV3EM9FKBcVdBQCBffTw1yn1Bh8LVTwOqbgFGDqEgYACMpwdw49/
+	rBJcZr4htH20XYXqr5WNkaZ4Jz8DewqSG6EpZ
+X-Google-Smtp-Source: AGHT+IFk5LvZyT1QJXgQCQi1lM8yjR9zyoN0HP30pvgo9Srn6tm/B4BynnFxbrnXJqBgueHu2i6BDMh9YqhTh/FwT5Q=
+X-Received: by 2002:a81:4f89:0:b0:608:3782:4e1f with SMTP id
+ d131-20020a814f89000000b0060837824e1fmr2869844ywb.34.1709321069065; Fri, 01
+ Mar 2024 11:24:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240301074423.643779-1-sandipan.das@amd.com>
-In-Reply-To: <20240301074423.643779-1-sandipan.das@amd.com>
-From: Jim Mattson <jmattson@google.com>
-Date: Fri, 1 Mar 2024 11:24:11 -0800
-Message-ID: <CALMp9eRbOQpVsKkZ9N1VYTyOrKPWCmvi0B5WZCFXAPsSkShmEA@mail.gmail.com>
-Subject: Re: [PATCH] KVM: x86: Do not mask LVTPC when handling a PMI on AMD platforms
-To: Sandipan Das <sandipan.das@amd.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, seanjc@google.com, 
-	pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
-	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
-	mlevitsk@redhat.com, vkuznets@redhat.com, mizhang@google.com, 
-	tao1.su@linux.intel.com, andriy.shevchenko@linux.intel.com, 
-	ravi.bangoria@amd.com, ananth.narayan@amd.com, nikunj.dadhania@amd.com, 
-	santosh.shukla@amd.com, manali.shukla@amd.com
+References: <20240229143432.273b4871@gandalf.local.home>
+In-Reply-To: <20240229143432.273b4871@gandalf.local.home>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Date: Fri, 1 Mar 2024 14:24:17 -0500
+Message-ID: <CAM0EoMkOgTezVLnN7f1GoXTURQ73LmXjHnBjQBSBRPnv58K-VQ@mail.gmail.com>
+Subject: Re: [PATCH] tracing/net_sched: Fix tracepoints that save qdisc_dev()
+ as a string
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Cong Wang <xiyou.wangcong@gmail.com>, vaclav.zindulka@tlapnet.cz, 
+	Jiri Pirko <jiri@resnulli.us>, "David S. Miller" <davem@davemloft.net>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 29, 2024 at 11:44=E2=80=AFPM Sandipan Das <sandipan.das@amd.com=
+On Thu, Feb 29, 2024 at 2:32=E2=80=AFPM Steven Rostedt <rostedt@goodmis.org=
 > wrote:
 >
-> On AMD and Hygon platforms, the local APIC does not automatically set
-> the mask bit of the LVTPC register when handling a PMI and there is
-> no need to clear it in the kernel's PMI handler.
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+>
+> I'm updating __assign_str() and will be removing the second parameter. To
+> make sure that it does not break anything, I make sure that it matches th=
+e
+> __string() field, as that is where the string is actually going to be
+> saved in. To make sure there's nothing that breaks, I added a WARN_ON() t=
+o
+> make sure that what was used in __string() is the same that is used in
+> __assign_str().
+>
+> In doing this change, an error was triggered as __assign_str() now expect=
+s
+> the string passed in to be a char * value. I instead had the following
+> warning:
+>
+> include/trace/events/qdisc.h: In function =E2=80=98trace_event_raw_event_=
+qdisc_reset=E2=80=99:
+> include/trace/events/qdisc.h:91:35: error: passing argument 1 of 'strcmp'=
+ from incompatible pointer type [-Werror=3Dincompatible-pointer-types]
+>    91 |                 __assign_str(dev, qdisc_dev(q));
+>
+> That's because the qdisc_enqueue() and qdisc_reset() pass in qdisc_dev(q)
+> to __assign_str() and to __string(). But that function returns a pointer
+> to struct net_device and not a string.
+>
+> It appears that these events are just saving the pointer as a string and
+> then reading it as a string as well.
+>
+> Use qdisc_dev(q)->name to save the device instead.
+>
+> Fixes: a34dac0b90552 ("net_sched: add tracepoints for qdisc_reset() and q=
+disc_destroy()")
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 
-I don't know why it didn't occur to me that different x86 vendors
-wouldn't agree on this specification. :)
+Should this be targeting the net tree?
+Otherwise, LGTM. Just wondering - this worked before because "name"
+was the first field?
 
-> For guests, the mask bit is currently set by kvm_apic_local_deliver()
-> and unless it is cleared by the guest kernel's PMI handler, PMIs stop
-> arriving and break use-cases like sampling with perf record.
->
-> This does not affect non-PerfMonV2 guests because PMIs are handled in
-> the guest kernel by x86_pmu_handle_irq() which always clears the LVTPC
-> mask bit irrespective of the vendor.
->
-> Before:
->
->   $ perf record -e cycles:u true
->   [ perf record: Woken up 1 times to write data ]
->   [ perf record: Captured and wrote 0.001 MB perf.data (1 samples) ]
->
-> After:
->
->   $ perf record -e cycles:u true
->   [ perf record: Woken up 1 times to write data ]
->   [ perf record: Captured and wrote 0.002 MB perf.data (19 samples) ]
->
-> Fixes: a16eb25b09c0 ("KVM: x86: Mask LVTPC when handling a PMI")
-> Signed-off-by: Sandipan Das <sandipan.das@amd.com>
+Reviewed-by: Jamal Hadi Salim <jhs@mojatatu.com>
+
+cheers,
+jamal
 > ---
->  arch/x86/kvm/lapic.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  include/trace/events/qdisc.h | 20 ++++++++++----------
+>  1 file changed, 10 insertions(+), 10 deletions(-)
 >
-> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-> index 3242f3da2457..0959a887c306 100644
-> --- a/arch/x86/kvm/lapic.c
-> +++ b/arch/x86/kvm/lapic.c
-> @@ -2768,7 +2768,7 @@ int kvm_apic_local_deliver(struct kvm_lapic *apic, =
-int lvt_type)
->                 trig_mode =3D reg & APIC_LVT_LEVEL_TRIGGER;
+> diff --git a/include/trace/events/qdisc.h b/include/trace/events/qdisc.h
+> index a3995925cb05..1f4258308b96 100644
+> --- a/include/trace/events/qdisc.h
+> +++ b/include/trace/events/qdisc.h
+> @@ -81,14 +81,14 @@ TRACE_EVENT(qdisc_reset,
+>         TP_ARGS(q),
 >
->                 r =3D __apic_accept_irq(apic, mode, vector, 1, trig_mode,=
- NULL);
-> -               if (r && lvt_type =3D=3D APIC_LVTPC)
-> +               if (r && lvt_type =3D=3D APIC_LVTPC && !guest_cpuid_is_am=
-d_or_hygon(apic->vcpu))
-
-Perhaps we could use a positive predicate instead:
-guest_cpuid_is_intel(apic->vcpu)?
-
->                         kvm_lapic_set_reg(apic, APIC_LVTPC, reg | APIC_LV=
-T_MASKED);
->                 return r;
->         }
+>         TP_STRUCT__entry(
+> -               __string(       dev,            qdisc_dev(q)    )
+> -               __string(       kind,           q->ops->id      )
+> -               __field(        u32,            parent          )
+> -               __field(        u32,            handle          )
+> +               __string(       dev,            qdisc_dev(q)->name      )
+> +               __string(       kind,           q->ops->id              )
+> +               __field(        u32,            parent                  )
+> +               __field(        u32,            handle                  )
+>         ),
+>
+>         TP_fast_assign(
+> -               __assign_str(dev, qdisc_dev(q));
+> +               __assign_str(dev, qdisc_dev(q)->name);
+>                 __assign_str(kind, q->ops->id);
+>                 __entry->parent =3D q->parent;
+>                 __entry->handle =3D q->handle;
+> @@ -106,14 +106,14 @@ TRACE_EVENT(qdisc_destroy,
+>         TP_ARGS(q),
+>
+>         TP_STRUCT__entry(
+> -               __string(       dev,            qdisc_dev(q)    )
+> -               __string(       kind,           q->ops->id      )
+> -               __field(        u32,            parent          )
+> -               __field(        u32,            handle          )
+> +               __string(       dev,            qdisc_dev(q)->name      )
+> +               __string(       kind,           q->ops->id              )
+> +               __field(        u32,            parent                  )
+> +               __field(        u32,            handle                  )
+>         ),
+>
+>         TP_fast_assign(
+> -               __assign_str(dev, qdisc_dev(q));
+> +               __assign_str(dev, qdisc_dev(q)->name);
+>                 __assign_str(kind, q->ops->id);
+>                 __entry->parent =3D q->parent;
+>                 __entry->handle =3D q->handle;
 > --
-> 2.34.1
-Reviewed-by: Jim Mattson <jmattson@google.com>
+> 2.43.0
+>
 
