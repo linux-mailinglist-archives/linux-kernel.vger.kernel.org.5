@@ -1,115 +1,148 @@
-Return-Path: <linux-kernel+bounces-88278-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88279-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B9D386DF8A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:45:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FC3F86DF8F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:46:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53250285524
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:45:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1DCD283DEE
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:46:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DABE6BFA4;
-	Fri,  1 Mar 2024 10:44:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E5AE6BFD4;
+	Fri,  1 Mar 2024 10:44:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="MPJrHvWj"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="isAJPYxi"
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A762C67E74;
-	Fri,  1 Mar 2024 10:44:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B7526A352;
+	Fri,  1 Mar 2024 10:44:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709289849; cv=none; b=UDxmLRXcoCZIgx5+NKiCVu3dJ49oZzS658PpDfz7CQTKcJmD6wIGshk1QzBuxiTgmFgmY6yMugrW3n2UmLeb2vARZfqLGJgTsCmA4n2iXNZAfAqCkXy3AeG/Cym8cN4tvMaepbMKzpD1dc3t++354xMiCnIt2OCgmNn5k9P1etc=
+	t=1709289882; cv=none; b=uO0NLROmmpC3SctYWMR4MgtjAAuaTf2AR2yqvzkV6Ts+9XBqBh63txW+fdqlQeBbbNEdWDxlhxfrFC3zIByXyhMxrQQFuSvmg2mmq7asFWTP33AWds6d3bnAA4MAefa7Qga+iOPSJO3wHTwIQArl36nktKj1pB6aJfuFNZ13R8c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709289849; c=relaxed/simple;
-	bh=MUAaVbY8hAyvVomzkTkUV8mACB46mqqy2aCXtcMPy5k=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PaRXWd6F/dKEHnUOV2d+IgO80KEUjBNC79S+Ey9kzj8L8FnP3+C1ls7U72F1R9Pv9NT/m9AodKmSnQHoBuA3JbLDwm3iv+ruIy9d4LLdpYA/0QiXeBYDiB4sO0ovHjNxIpqSpizDIx2z+SwSus744tEy6Fw2BEIxJVV4ItCaD2c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=MPJrHvWj; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1709289841;
-	bh=MUAaVbY8hAyvVomzkTkUV8mACB46mqqy2aCXtcMPy5k=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=MPJrHvWj27FyYmFtlNzCAC9IF1vERym2/2E4qPc/ctFzuw/IF9LDbsFJBVYKgtMBh
-	 EidQ6WxQrMcY67kP7Oq2pUSHSzgh+avv+jTPbzbUMYeML6jyMtcWj9e/Ub54kD3j+8
-	 Zgvde3WCYXV7+qFpCJfJYneuLc/X/XjrJO4VIqAu6AmUL0ZWO9/DOc3Y2Ifx9kyqeg
-	 yRFlHrjqXoqBHxxODj6cSWmmnT8Db5HR7q9tJJHOI5QgSLiMXAu+59KvuAK9mSsW5q
-	 hBi3uA9cQ1ZAdEgNpa+QcKFIYrUx1HcbaiH/gDutgOcbJZvUUDaKdtdUTmZ7Rh9lAk
-	 Uu5h/zAnI2Ziw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TmPpS1gQQz4wc6;
-	Fri,  1 Mar 2024 21:44:00 +1100 (AEDT)
-Date: Fri, 1 Mar 2024 21:43:58 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: David Gow <davidgow@google.com>
-Cc: Shuah Khan <skhan@linuxfoundation.org>, Brendan Higgins
- <brendanhiggins@google.com>, Daniel Vetter <daniel.vetter@ffwll.ch>, Intel
- Graphics <intel-gfx@lists.freedesktop.org>, DRI
- <dri-devel@lists.freedesktop.org>, Christian =?UTF-8?B?S8O2bmln?=
- <christian.koenig@amd.com>, Matthew Auld <matthew.auld@intel.com>, Linux
- Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the kunit-next tree
-Message-ID: <20240301214358.7fdecd66@canb.auug.org.au>
-In-Reply-To: <CABVgOSmAmkOcY8hFnpPSgz5WZXFkez_BDGhKjBepbWFpKykfUg@mail.gmail.com>
-References: <20240229152653.09ecf771@canb.auug.org.au>
-	<be2e812c-3898-4be8-8a9d-e221acb837c3@linuxfoundation.org>
-	<CABVgOSmAmkOcY8hFnpPSgz5WZXFkez_BDGhKjBepbWFpKykfUg@mail.gmail.com>
+	s=arc-20240116; t=1709289882; c=relaxed/simple;
+	bh=M60DamTk+REH8J6SvrzI6jskDDkauIzqreNeeM+j2TI=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Subject:Cc:To:From:
+	 References:In-Reply-To; b=I3OLVW5M8oxJ5U4pL2ftcSHManAfT2OF8z6D8Q/qrcdP4DaGdgmy76db/3gYNDjpvOF4rTf4I+wrZiYLqK0TiO+EP9zgjqZepVMAGVxjRYH6aUdfHAaSMWSfnHCw3GwNYpiIJnKPnQbyKT3gMR2AmTTZOH9/OMIFA9A3PY4H7vw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=isAJPYxi; arc=none smtp.client-ip=217.70.183.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 5981360006;
+	Fri,  1 Mar 2024 10:44:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709289878;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=M60DamTk+REH8J6SvrzI6jskDDkauIzqreNeeM+j2TI=;
+	b=isAJPYxi2GQpNJRl0t1C8hv/6w84b2gIIcunVelFVD1+C7mfM17zyo9k9/BZNodzOV0qGg
+	00wgxj8fvPMtzHVihsXGXGiUI22E7DmSH7oXpoH6edAcbK1eYIwPWg283AZd6NAVeB2l2A
+	+PoXuw1veDy9+wSiggnJg46DZ9clJF5nxj3Ky+7PWRqexrVWevozcY2NK+Q5mH8U/AnvEN
+	lhRJdESM0HwBsvjCyJvp/DU/Uff7N44QBSPhK6RJBwgp8vsa2IFfWUr5ZYc+kfvHRBqO/e
+	MKb5LzbWbdX3QJ64m02rl57Rw3jVbBXchV4Ks13cKCoBgTicwUkFb2E5pcVsEg==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/+X+ZUG0wlkgfO96g6gv/m6o";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-
---Sig_/+X+ZUG0wlkgfO96g6gv/m6o
-Content-Type: text/plain; charset=US-ASCII
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Fri, 01 Mar 2024 11:44:37 +0100
+Message-Id: <CZICOX6DR0SA.O876YRG8P03C@bootlin.com>
+Subject: Re: [PATCH v2 02/11] dt-bindings: hwmon: lm75: use common hwmon
+ schema
+Cc: <linux-arm-kernel@lists.infradead.org>, <linux-i2c@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <linux-mips@vger.kernel.org>, "Gregory Clement"
+ <gregory.clement@bootlin.com>, "Vladimir Kondratiev"
+ <vladimir.kondratiev@mobileye.com>, "Thomas Petazzoni"
+ <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
+ <tawfik.bayouk@mobileye.com>, "Jean Delvare" <jdelvare@suse.com>,
+ <linux-hwmon@vger.kernel.org>
+To: "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>, "Guenter Roeck"
+ <linux@roeck-us.net>, "Linus Walleij" <linus.walleij@linaro.org>, "Andi
+ Shyti" <andi.shyti@kernel.org>, "Rob Herring" <robh+dt@kernel.org>,
+ "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley"
+ <conor+dt@kernel.org>, "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+X-Mailer: aerc 0.15.2
+References: <20240229-mbly-i2c-v2-0-b32ed18c098c@bootlin.com>
+ <20240229-mbly-i2c-v2-2-b32ed18c098c@bootlin.com>
+ <6749c8df-c545-4aca-bc18-4dfe9c9f15b0@linaro.org>
+ <d78fd3ca-ed0b-40e5-8f8f-21db152a7402@roeck-us.net>
+ <CZIBCBQ2IB0E.2N3HAVO0P2SHT@bootlin.com>
+ <f802a1e0-cedd-488a-a6fb-df793718d94b@linaro.org>
+In-Reply-To: <f802a1e0-cedd-488a-a6fb-df793718d94b@linaro.org>
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-Hi all,
+Hello,
 
-On Fri, 1 Mar 2024 15:15:02 +0800 David Gow <davidgow@google.com> wrote:
+On Fri Mar 1, 2024 at 11:13 AM CET, Krzysztof Kozlowski wrote:
+> On 01/03/2024 10:41, Th=C3=A9o Lebrun wrote:
+> > Hello,
+> >=20
+> > On Fri Mar 1, 2024 at 7:53 AM CET, Guenter Roeck wrote:
+> >> On 2/29/24 22:37, Krzysztof Kozlowski wrote:
+> >>> On 29/02/2024 19:10, Th=C3=A9o Lebrun wrote:
+> >>>> Reference common hwmon schema which has the generic "label" property=
+,
+> >>>> parsed by Linux hwmon subsystem.
+> >>>>
+> >>>
+> >>> Please do not mix independent patchsets. You create unneeded
+> >>> dependencies blocking this patch. This patch depends on hwmon work, s=
+o
+> >>> it cannot go through different tree.
+> >=20
+> > I had to pick between this or dtbs_check failing on my DTS that uses a
+> > label on temperature-sensor@48.
 >
-> On Thu, 29 Feb 2024 at 23:07, Shuah Khan <skhan@linuxfoundation.org> wrot=
-e:
-> >
-> > I can carry the fix through kselftest kunit if it works
-> > for all. =20
->=20
-> I'm happy for this to go in with the KUnit changes if that's the best
-> way to keep all of the printk formatting fixes together.
+> I don't see how is that relevant. You can organize your branches as you
+> wish, e.g. base one b4 branch on another and you will not have any warnin=
+gs.
 
-I am pretty sure that the proper fix has been applied to the drm-fixes
-tree today (in the merge of the drm-misc-fixes tree).
+That is what I do, I however do not want mips-next to have errors when
+running dtbs_check. Having dtbs_check return errors is not an issue?
 
---=20
-Cheers,
-Stephen Rothwell
+> >>> If you insist to combine independent patches, then at least clearly
+> >>> express merging strategy or dependency in patch changelog --- .
+> >=20
+> > I do not know how such indirect conflicts are usually resolved. Hwmon
+> > can take it but MIPS might want to also take it to have valid DTS.
+> >=20
+> > Any advice?
+>
+> I don't see any conflict.
 
---Sig_/+X+ZUG0wlkgfO96g6gv/m6o
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+I shouldn't have called that a conflict, more like a dependency.
 
------BEGIN PGP SIGNATURE-----
+> >> For my part I have to say that I don't know what to do with it.
+> >> Rob's robot reported errors, so I won't apply it, and I don't
+> >> feel comfortable giving it an ack either because of those errors.
+> >=20
+> > Can reproduce the error when patch "dt-bindings: hwmon: add common
+> > properties" is not applied. Cannot reproduce when patch is applied.
+> > Commit d590900b62f0 on hwmon-next. Cannot reproduce with hwmon-next as
+> > parent.
+>
+> Yeah, but we see the error reported and it means something is missing.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXhsW4ACgkQAVBC80lX
-0Gz+Bwf/X7n+m/wDZxSYLCDkltJK1RqNF4UBMU+iiqKNsABv/hmcAecGfGZlCunX
-9ASSYnaS1Mor0rsVyFmPxZwaGGcTIFhjc4NU97YDUh83F5U/CX5Sr8d4o3eHDWws
-y/4xmpH/1eEmvqdUJWu4xb9srmcZg1obZCQ6ZtlwMfgvTt03sTBDmp8PZk2rpKOy
-hnSJ1PSatQX+ABzWA5wWhDHtId3NYgZ5eLwyeCWx8DAQ+sTREXNvToHz18+ZEA9c
-EIemv6cZivH8WiauOLqmh8ED1MKApeQUenHf46aLzxBGK6EwNFZXaxIMrHDC07nN
-l41OgA40LcOAR0Kve6FwmRoeSXwKyQ==
-=jdxI
------END PGP SIGNATURE-----
+Yes, this series depends on "dt-bindings: hwmon: add common properties"
+which the bot doesn't know it needs to apply.
 
---Sig_/+X+ZUG0wlkgfO96g6gv/m6o--
+Should I submit this patch independently and have my DTS be broken wrt
+dtbs_check?
+
+Have a nice day,
+
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
+
 
