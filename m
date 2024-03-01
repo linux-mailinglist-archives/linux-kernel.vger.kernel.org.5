@@ -1,174 +1,107 @@
-Return-Path: <linux-kernel+bounces-88355-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88356-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BADFB86E068
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:33:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BA8B86E06D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:35:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71BC128B4A2
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:33:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DF2C1C20D57
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:35:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFEE16BFDB;
-	Fri,  1 Mar 2024 11:33:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E3FD6CDA8;
+	Fri,  1 Mar 2024 11:35:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="tHhkWxji";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="11jtywQ/"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DIaZK7QE"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C4314438E
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 11:33:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C54236BFC9;
+	Fri,  1 Mar 2024 11:35:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709292818; cv=none; b=WG03bUO8eN7r32xRcmFsY1ZpYsDstPhlbZTgp7Zr9whdCpPgBn9irUoZoHmn/yWv/rEMSCM0zyAk9tAe9sQJgFuS+T4toMO7ANdqr8Hbtkg8C0lKksrbz0uISMiltwUN8e61vwXqoUC/btX7Bjbq01RK4k6eqc7VCifonsyNFWY=
+	t=1709292917; cv=none; b=nA/kfIY1S/qngJZrnuYVx19rwf/bZpflN7FyPhQgoA10zLQPRD7Q2usFaNs5yR75fvtTqleJ1kJawp/Vj6Mqgr60ZEvY7CNz8CMJy6crK84r6Xv/Nhb0QG7/jf0dhmuxRCg5LMLGTlm9Ow3UJyy96sU/EMhqIRoeNwr8AVXSylc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709292818; c=relaxed/simple;
-	bh=FQMGv7PmATC7VR1MwAuQvuUYpMVWZ8wkTcljl9/Xkqc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=A9VMfYjpv74Z1/Mu3g1PsmnsBnGkbzeftGwQjjmN37F5VVw3Nucg2ogxItEPQ8furu1wuqM+t2iOrkDR6sJvl2szBOGBXJ5PgHXlgE2j4xlLDAj0nJBNh3CDvjfNRIJ3hX7I6B0IHd3wPlhbKfFjleFBTjPR9thq7SOYcztNWsE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=tHhkWxji; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=11jtywQ/; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1709292814;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KaJW+PGzJMPU08LMdd6ra/36/s+8KlMVMHUHupu24Eg=;
-	b=tHhkWxjiL3c61ImcYSTznqHlgWNCQnTKobQr4ISvWMHLSdKyqIGYptR9XmejVhx+mO4clg
-	BsUEj1z/J/2pt5d2b3c/qj1a50ycqlnXcNtoYAzOKw/RvITpPZZwz8Loips0sNQU/8vJOD
-	SzpOOQEdUMW2tgDuvQxGpd01+43FphTnHPQR2LsOaFyuMiaL0kDUVv0plu9Ep0mFnNeAta
-	Eh7rVfhNipqbkuSSCnVZwgaAVM42iFWvWzV4QE5Y2t9jK6TLI8Vm9RDaTelyO5ymjMsatX
-	PpO0QK1FNbkrWlZEB0bLnwIM/5UI9gFms2MxG9h6QxEtN4dm7dC/FxGoMw85kw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1709292814;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KaJW+PGzJMPU08LMdd6ra/36/s+8KlMVMHUHupu24Eg=;
-	b=11jtywQ/wCzJUZQ+4YoHyF3vDjw1g6gaP3O+1SjMhUUl1Zp5GVwZUPFSophNsbooZx9I3E
-	dw+zegdZptEPzpDA==
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: x86@kernel.org, Steven Rostedt <rostedt@goodmis.org>, "Paul E. McKenney"
- <paulmck@kernel.org>
-Subject: Re: [patch 6/6] x86/idle: Select idle routine only once
-In-Reply-To: <87h6hq74j0.ffs@tglx>
-References: <20240229141407.283316443@linutronix.de>
- <20240229142248.582321500@linutronix.de> <87h6hq74j0.ffs@tglx>
-Date: Fri, 01 Mar 2024 12:33:33 +0100
-Message-ID: <87edcu6vaq.ffs@tglx>
+	s=arc-20240116; t=1709292917; c=relaxed/simple;
+	bh=eweBH8MXC7Oa2tU49s9FyefEcitZv3hyVqnOB4hbgAE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=kfPoXmt7/SbwlAh+PLF4RH4XbYuV1RVxV+0womS9js+H+LCbImKxDKOj5FW1IR5mlX17aSFVs7Hh3l3+wcqBABmnl7EcYKx3d/jyeAOa/g+5Ot/edshN96iE7Q2Xe5lG2c+xtyFx8Y7g1Yo77BCb+xL48UTGeJlinxR2gr+aPwY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DIaZK7QE; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a444205f764so252566466b.2;
+        Fri, 01 Mar 2024 03:35:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709292914; x=1709897714; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=QvBHCXAWkp+ub17HVIW8VAtvFSItSjV35+r++B1AoCM=;
+        b=DIaZK7QE/smWMVRijVasCuiZ+95fwvJHsmylJL5mUnJiFPQYtUaY/bmW5VzgK5I9HB
+         F2AIYvtbGMUSSR8qw7mErJP7DaDwN+8CPmdhEcsBPO09HDB4YOC0y1gkJEyRs5OnSSZT
+         f4hDbZBOVJNn4jwhybGu/BCfwPZoLX+HpRSBEBJQ5REsZH1/WokgBGlM4O76I+w8Ffww
+         +LgK4BHnIVuPkunt2kUDwxhesRQ5gT5rWe9JQDmraBeBT1Y6DUV7ltbhzXyAOl4yi7wN
+         pydfHTcNEYYqu1c6wG8EOMPyJZNXCbonmkm2N397LShPp7nAbuvYMVRJ64i1KnSPH96g
+         CdfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709292914; x=1709897714;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QvBHCXAWkp+ub17HVIW8VAtvFSItSjV35+r++B1AoCM=;
+        b=Tr9bNIV6Um5mXNlKx6aYyTJ+iCae2uE0JlIbnBQR/TxNJ/y75/JXhmd2bgDB5bg4fr
+         WTiirgJqddcZv9Nd+264HzB7LPA/rjMZCtSuXB3viEmAL+ZPEyfB8XFfAkLQ+LHEdCZW
+         /2DQHwXgcjFIyHZaZk0N5Pw2vdg5fScIkv6eWAPR/WYP0eUVeKT8I60foKDw9pnc59qC
+         UO5LcZie5UoGOKLGgIkyUksP+mjB/bfU2YE/8R3djDb7Tmv+HXplM1cLjVizOnvgauK/
+         2ET+Ar+/6BZ0JylfdlJ2EqABOkzi2ycGYBwO/R/EjjpXAECnZZPw9bqili7xITy6GN+S
+         4nXg==
+X-Forwarded-Encrypted: i=1; AJvYcCVBevxp8kc4itdp3rTYSwbNuwSHG7XgLL2dzbCRpMQMTueJUoGB5MLHZ3XXdyhSIWVEcN+QZfA4Q9P6nRLDideBIRS4JYh3o2Oc0WSu
+X-Gm-Message-State: AOJu0YzvN0rz0mbLiq9NO9fOSd5H/NEUeELycg0QwJsapSfyfBki0lHp
+	puA24DctLsUmoP0GYfYc5IhZwpLZoVzajeQDO9HQNYmfir2fVEaJ
+X-Google-Smtp-Source: AGHT+IGzLP7Sb0dwHUDkT3mh64fsZ9V0JvdBga7KakkhfMJd9QAeJRQfc5C47i6a6XnRNwidqmjWow==
+X-Received: by 2002:a17:906:e211:b0:a43:fd9e:2d44 with SMTP id gf17-20020a170906e21100b00a43fd9e2d44mr1151665ejb.42.1709292913942;
+        Fri, 01 Mar 2024 03:35:13 -0800 (PST)
+Received: from localhost.lan (031011218106.poznan.vectranet.pl. [31.11.218.106])
+        by smtp.gmail.com with ESMTPSA id st11-20020a170907c08b00b00a3f5c39bf2asm1618457ejc.0.2024.03.01.03.35.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Mar 2024 03:35:13 -0800 (PST)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Cc: devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
+Subject: [PATCH 0/4] arm64: dts: mediatek: mt7622: fix some validation errors
+Date: Fri,  1 Mar 2024 12:35:02 +0100
+Message-Id: <20240301113506.22944-1-zajec5@gmail.com>
+X-Mailer: git-send-email 2.35.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, Mar 01 2024 at 09:14, Thomas Gleixner wrote:
-> On Thu, Feb 29 2024 at 15:23, Thomas Gleixner wrote:
->>  
->> -	if (x86_idle_set())
->> -		return;
->> -
->
-> Bah. With XEN=n this results in a defined but not used warning.
-> Updated version below.
+From: Rafał Miłecki <rafal@milecki.pl>
 
-I'm a moron. xen_set_default_idle() is invoked very early on, so
-select_idle_routine() has to keep the check. Sigh.
+One more step in cleaning up DTS for "make dtbs_check".
 
-Fixed it and added an comment to that effect.
+Rafał Miłecki (4):
+  arm64: dts: mediatek: mt7622: fix clock controllers
+  arm64: dts: mediatek: mt7622: fix IR nodename
+  arm64: dts: mediatek: mt7622: fix ethernet controller "compatible"
+  arm64: dts: mediatek: mt7622: drop "reset-names" from thermal block
 
----
-Subject: x86/idle: Select idle routine only once
-From: Thomas Gleixner <tglx@linutronix.de>
-Date: Wed, 28 Feb 2024 23:20:32 +0100
+ arch/arm64/boot/dts/mediatek/mt7622.dtsi | 34 ++++++++++--------------
+ 1 file changed, 14 insertions(+), 20 deletions(-)
 
-The idle routine selection is done on every CPU bringup operation and has a
-guard in place which is effective after the first invocation, which is a
-pointless exercise.
+-- 
+2.35.3
 
-Invoke it once on the boot CPU and mark the related functions __init.
-The guard check has to stay as xen_set_default_idle() runs early.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
-V1b: Keep the x86_idle_set() check so XEN keeps working
-V1a: Move x86_idle_set() into the only usage site (0day)
----
- arch/x86/include/asm/processor.h |    2 +-
- arch/x86/kernel/cpu/common.c     |    4 ++--
- arch/x86/kernel/process.c        |    8 +++++---
- 3 files changed, 8 insertions(+), 6 deletions(-)
-
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -555,7 +555,7 @@ static inline void load_sp0(unsigned lon
- 
- unsigned long __get_wchan(struct task_struct *p);
- 
--extern void select_idle_routine(const struct cpuinfo_x86 *c);
-+extern void select_idle_routine(void);
- extern void amd_e400_c1e_apic_setup(void);
- 
- extern unsigned long		boot_option_idle_override;
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -1938,8 +1938,6 @@ static void identify_cpu(struct cpuinfo_
- 	/* Init Machine Check Exception if available. */
- 	mcheck_cpu_init(c);
- 
--	select_idle_routine(c);
--
- #ifdef CONFIG_NUMA
- 	numa_add_cpu(smp_processor_id());
- #endif
-@@ -2343,6 +2341,8 @@ void __init arch_cpu_finalize_init(void)
- {
- 	identify_boot_cpu();
- 
-+	select_idle_routine();
-+
- 	/*
- 	 * identify_boot_cpu() initialized SMT support information, let the
- 	 * core code know.
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -853,8 +853,9 @@ void __noreturn stop_this_cpu(void *dumm
-  * Do not prefer MWAIT if MONITOR instruction has a bug or idle=nomwait
-  * is passed to kernel commandline parameter.
-  */
--static bool prefer_mwait_c1_over_halt(const struct cpuinfo_x86 *c)
-+static __init bool prefer_mwait_c1_over_halt(void)
- {
-+	const struct cpuinfo_x86 *c = &boot_cpu_data;
- 	u32 eax, ebx, ecx, edx;
- 
- 	/* If override is enforced on the command line, fall back to HALT. */
-@@ -908,7 +909,7 @@ static __cpuidle void mwait_idle(void)
- 	__current_clr_polling();
- }
- 
--void select_idle_routine(const struct cpuinfo_x86 *c)
-+void __init select_idle_routine(void)
- {
- 	if (boot_option_idle_override == IDLE_POLL) {
- 		if (IS_ENABLED(CONFIG_SMP) && smp_num_siblings > 1)
-@@ -916,10 +917,11 @@ void select_idle_routine(const struct cp
- 		return;
- 	}
- 
-+	/* Required to guard against xen_set_default_idle() */
- 	if (x86_idle_set())
- 		return;
- 
--	if (prefer_mwait_c1_over_halt(c)) {
-+	if (prefer_mwait_c1_over_halt()) {
- 		pr_info("using mwait in idle threads\n");
- 		static_call_update(x86_idle, mwait_idle);
- 	} else if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST)) {
 
