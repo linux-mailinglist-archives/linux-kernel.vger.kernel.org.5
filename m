@@ -1,132 +1,130 @@
-Return-Path: <linux-kernel+bounces-88146-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88309-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A94A286DDDC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:07:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6254D86DFE7
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:12:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DECA7B299E9
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:07:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BD6F285969
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:12:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E17956A8C6;
-	Fri,  1 Mar 2024 09:07:23 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50E0E6CDC3;
+	Fri,  1 Mar 2024 11:10:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=avm.de header.i=@avm.de header.b="OYt9+PHK"
+Received: from mail.avm.de (mail.avm.de [212.42.244.94])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8827D6A8B9;
-	Fri,  1 Mar 2024 09:07:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADFBC6F51A;
+	Fri,  1 Mar 2024 11:10:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.42.244.94
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709284043; cv=none; b=cfr7muJXF9vha8OolqXWISqd0eqgQapkdmyriCdizc5FS4Lfsm01sLOO1iDYF1sl/XSWEr29vuQp0CHNzCLIT8g6MC/bZ2umz3Z15HvhPrLR1rEtRJLtuXY24H4Yk7029b9oxbasdoCViFFBTY20fEL8gUdg1gMzIS9/jzVA0Yk=
+	t=1709291423; cv=none; b=XiHu1hiT1Hzs98CnhtAYqQVfle+RVey6NmDtdETgpCSO4YcqKU1CP+Mir5EuBELOTytyNp/o1b/ss1JH2tVTug/073ktpzQTup0nTq+coqDBrpFEu0lJcvlWtI9heV+pxmDdsa+u/2NYUtdAVCpIcMqzkALjESvK7q/+kqJZ4I8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709284043; c=relaxed/simple;
-	bh=yBGwseHJpUaIWf/NvwlUJOgYsmzRd4X4BVb6nuPf2VQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=RQODiToNbRNjtb3HQZ2ADti2j16e3qjIPnQDiSRFKKO6+dl+JXuvsYRUkKKmEOwl/4s1WYQ2cTtHZJ3IT2wz1jfa5TYCc6zJxN73UDXcbc3c36uQSgzbcVnfMeJF8oJpWu/fz1xoowPtP/W0jIoOL3YM4LQs+DJVjNV122CtJRU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TmMfm0wtcz4f3mJc;
-	Fri,  1 Mar 2024 17:07:12 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 699A41A0D52;
-	Fri,  1 Mar 2024 17:07:17 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.101.6])
-	by APP1 (Coremail) with SMTP id cCh0CgC31A2umuFl63FqFg--.2523S4;
-	Fri, 01 Mar 2024 17:07:12 +0800 (CST)
-From: Kemeng Shi <shikemeng@huaweicloud.com>
-To: tytso@mit.edu,
-	adilger.kernel@dilger.ca
-Cc: linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	naresh.kamboju@linaro.org,
-	daniel.diaz@linaro.org,
-	linux@roeck-us.net,
-	brauner@kernel.org
-Subject: [PATCH v2 2/2] ext4: hold group lock in ext4 kunit test
-Date: Sat,  2 Mar 2024 02:03:42 +0800
-Message-Id: <20240301180342.6232-3-shikemeng@huaweicloud.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20240301180342.6232-1-shikemeng@huaweicloud.com>
-References: <20240301180342.6232-1-shikemeng@huaweicloud.com>
+	s=arc-20240116; t=1709291423; c=relaxed/simple;
+	bh=e51zttODIbyBxyNN35mjWWt+KgFVjTSgZK3n2T+b+wA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=R1DZdtpBrvgIph4L8I4Z+guafltAM/7N8I1pEZ3YaaKo5AcPLSpXNiWOI00JTvmtb0zGjK2MvpXcVfLPWdQFxMCDI0ZjIq5k+GUu0Tl7he3ykDy7jMignxlTiOdxfxZQ7stxzCqHmbAcMXvDP4O8pPsm3ewu+P8ZwnWuQLU8WF0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=avm.de; spf=pass smtp.mailfrom=avm.de; dkim=pass (1024-bit key) header.d=avm.de header.i=@avm.de header.b=OYt9+PHK; arc=none smtp.client-ip=212.42.244.94
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=avm.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=avm.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=avm.de; s=mail;
+	t=1709291069; bh=e51zttODIbyBxyNN35mjWWt+KgFVjTSgZK3n2T+b+wA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OYt9+PHKFGKyVmiw2Fu9C7UcOW5wT3FzEZ/vWjYUpxiWfoxQhPxe16pyMOZ1ur80b
+	 vbPCGtdskDaris+wLpPUCg6CjTEhwz7GNYFgp69zBmGfTeypJokCTCH0zCWCudmsgG
+	 kWhfadgrV4lfaX/AabDRTdJ+1RNWWHtrA03vRyv0=
+Received: from mail-auth.avm.de (dovecot-mx-01.avm.de [212.42.244.71])
+	by mail.avm.de (Postfix) with ESMTPS;
+	Fri,  1 Mar 2024 12:04:29 +0100 (CET)
+Received: from buildd.core.avm.de (buildd-sv-01.avm.de [172.16.0.225])
+	by mail-auth.avm.de (Postfix) with ESMTPA id 809C680152;
+	Fri,  1 Mar 2024 12:04:29 +0100 (CET)
+Received: by buildd.core.avm.de (Postfix, from userid 1000)
+	id 744511812F7; Fri,  1 Mar 2024 12:04:29 +0100 (CET)
+Date: Fri, 1 Mar 2024 12:04:29 +0100
+From: Nicolas Schier <n.schier@avm.de>
+To: Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc: Masahiro Yamada <masahiroy@kernel.org>, linux-kbuild@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv2] kconfig: add some Kconfig env variables to make help
+Message-ID: <ZeG2PRYmdO0r44kS@buildd.core.avm.de>
+Mail-Followup-To: Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240222032559.496127-1-senozhatsky@chromium.org>
+ <CAK7LNARo4L6qxoqRU-0dgABarukJKAaZpCRtfA3MyUHhSuDQxQ@mail.gmail.com>
+ <20240222051621.GH11472@google.com>
+ <20240228045652.GH11972@google.com>
+ <CAK7LNAQ8OyNMeGzVoTRg-sHDZ4YK0EKY_eEWNepekaibO_ZKwg@mail.gmail.com>
+ <20240229021010.GM11972@google.com>
+ <CAK7LNASujf8m4PpMyoCC1cTN_YGeG1HVaOR+3pZx5=3OJp=85A@mail.gmail.com>
+ <20240229034739.GN11972@google.com>
+ <CAK7LNAS-mOxY884pLEMwWaX+wgzXdc6+=vqN=wfHBekuKL5ryA@mail.gmail.com>
+ <20240301043316.GO11972@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgC31A2umuFl63FqFg--.2523S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7tw1UuFyUArWrur17KFyUJrb_yoW8ArW8pa
-	nrCrn0kFs8Wr1kuw47G3y0q3Z7K3ykuw1UGrWfCa45ArWfJr97CF98KrnFgF4ktFs7XF45
-	Z3Z0vry3Cr4xuaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUB0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M2
-	8IrcIa0xkI8VA2jI8067AKxVWUXwA2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK
-	0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4
-	x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l
-	84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I
-	8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AK
-	xVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64
-	vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-	jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
-	x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
-	8VAvwI8IcIk0rVWUCVW8JwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
-	0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU3lApDUUUU
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240301043316.GO11972@google.com>
+Organization: AVM GmbH
+X-purgate-ID: 149429::1709291069-3ED8F9CD-E71215DF/0/0
+X-purgate-type: clean
+X-purgate-size: 1915
+X-purgate-Ad: Categorized by eleven eXpurgate (R) http://www.eleven.de
+X-purgate: This mail is considered clean (visit http://www.eleven.de for further information)
+X-purgate: clean
 
-Although there is no concurrent block allocation/free in unit test,
-internal functions mb_mark_used and mb_free_blocks assert group
-lock is always held. Acquire group before calling mb_mark_used and
-mb_free_blocks in unit test to avoid the assertion.
+On Fri, Mar 01, 2024 at 01:33:16PM +0900, Sergey Senozhatsky wrote:
+> On (24/03/01 00:35), Masahiro Yamada wrote:
+> > > >   "I am interested only in these. I do not care about the rest,
+> > >
+> > > It's "I *do NOT know* what the rest do".  I cannot document something
+> > > that I have no knowledge of, can I?  So as a reasonable start I added
+> > > only those that I'm familiar with (and I have explicitly stated that
+> > > in previous emails), and I disagree with the "bad attitude" label.
+> > 
+> > 
+> > You were aware of:
+> > 
+> >  - several env variables are listed in the document
+> >  - your patch would introduce a new "inconsistency"
+> >  - somebody else would need to make efforts to solve it
+> 
+> OK.
+> 
+> > > So the rational for that was that people run "make help" and find
+> > > out about new build targets, for instance, but there is no way for
+> > > people to find out about new Kconfig features (and yes, we are talking
+> > > "new features" here) that are controlled by env variables.  We need
+> > > to do something about it, don't you agree?
+> > 
+> > Disagree.
+> > 
+> > I maintain the entire Kconfig, not like you only caring about
+> > a particular feature.
+> > 
+> > If you add only two in help, I have no idea about
+> > what it will look like in the end.
+> > I am not convinced that it will be in good shape.
+> > So, it is reasonable for me to reject it.
+> 
+> Yes, OK.  I wasn't talking about this patch in particular at that
+> point, I was more curious whether you agreed that we need to document
+> in some way those vars in `make help` or not.  If you see value in
+> documenting them then I can sit down and try to come up with v3 that
+> will (in one way or another) give a simple "help" description for
+> each of Kconfig's vars.
 
-Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-Reported-by: Guenter Roeck <linux@roeck-us.net>
----
- fs/ext4/mballoc-test.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+Perhaps it might be a compromise to let 'make help' point to the
+kbuild/kconfig documentation?
 
-diff --git a/fs/ext4/mballoc-test.c b/fs/ext4/mballoc-test.c
-index 0821dc51b81d..fa298579fb9b 100644
---- a/fs/ext4/mballoc-test.c
-+++ b/fs/ext4/mballoc-test.c
-@@ -699,7 +699,10 @@ test_mb_mark_used_range(struct kunit *test, struct ext4_buddy *e4b,
- 	ex.fe_start = start;
- 	ex.fe_len = len;
- 	ex.fe_group = TEST_GOAL_GROUP;
-+
-+	ext4_lock_group(sb, TEST_GOAL_GROUP);
- 	mb_mark_used(e4b, &ex);
-+	ext4_unlock_group(sb, TEST_GOAL_GROUP);
- 
- 	mb_set_bits(bitmap, start, len);
- 	/* bypass bb_free validatoin in ext4_mb_generate_buddy */
-@@ -759,7 +762,9 @@ test_mb_free_blocks_range(struct kunit *test, struct ext4_buddy *e4b,
- 	if (len == 0)
- 		return;
- 
-+	ext4_lock_group(sb, e4b->bd_group);
- 	mb_free_blocks(NULL, e4b, start, len);
-+	ext4_unlock_group(sb, e4b->bd_group);
- 
- 	mb_clear_bits(bitmap, start, len);
- 	/* bypass bb_free validatoin in ext4_mb_generate_buddy */
-@@ -803,7 +808,11 @@ static void test_mb_free_blocks(struct kunit *test)
- 	ex.fe_start = 0;
- 	ex.fe_len = EXT4_CLUSTERS_PER_GROUP(sb);
- 	ex.fe_group = TEST_GOAL_GROUP;
-+
-+	ext4_lock_group(sb, TEST_GOAL_GROUP);
- 	mb_mark_used(&e4b, &ex);
-+	ext4_unlock_group(sb, TEST_GOAL_GROUP);
-+
- 	grp->bb_free = 0;
- 	memset(bitmap, 0xff, sb->s_blocksize);
- 
--- 
-2.30.0
-
+Kind regards,
+Nicolas
 
