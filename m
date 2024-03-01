@@ -1,137 +1,108 @@
-Return-Path: <linux-kernel+bounces-88661-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88663-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47AD786E4F5
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:05:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0ED3C86E4F9
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:06:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1E03284A80
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:05:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 83EECB2442B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:06:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09F5C70CB1;
-	Fri,  1 Mar 2024 16:05:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QK6yF6U2"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40AC338DC3;
-	Fri,  1 Mar 2024 16:05:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAC8071720;
+	Fri,  1 Mar 2024 16:06:09 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A8FB3A8DE;
+	Fri,  1 Mar 2024 16:06:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709309131; cv=none; b=Tt+0qk+/7TKO55mQ48Qevh8bK3nPYHdyrcEggpqJZGhDhYcipn1MRiWuFn0dXBG7pm6LT1sTfDZ60VeNrGkszN72rvEkdaNEO47HdmV2W2CDNktPA//OIaPGwJmxasIAe+CzAqzxvOpOaKOXdTAwLQj8eZUC8K+Y6i7lR9NJjWw=
+	t=1709309169; cv=none; b=VLO0aNPUFtECG2KkVm9Vif6SwtHSMyjozd3PBMA7Ygbnn5l9aXLPiLzo9jZoIP635I5Gb1PvZHUe/LT2VfZSkAIr7NzEUlkCR1kXQByi2CIWCwvGUzUNjcokltDSMkSeTQulsEyQNaA9C3NV2SNs0R0PPgxT3FFlU/lERPNKw/E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709309131; c=relaxed/simple;
-	bh=rVW9AEO5L6z97bsCb2BGNYw/xLkhAfUG8wSYzGdCvpI=;
+	s=arc-20240116; t=1709309169; c=relaxed/simple;
+	bh=+I5q0INsRXMPfcHW7TQCG058hRSgznIpYTjriNmFjAk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dibLd5t1C3dt2hJnlH95khW3F4qFSiEw+Vi+qCMwik+yWhSXtbA6/d/1cJetOf9c7snJk+yiN4ZJ+0T0wH2jOwbQsECcUJ3cOuSbp6E3bEDinvEuaPk7y2Z94wtadl9qOZ2UWAja9TeTORJnmsqGCDgsT6mQkrEg7iH23gqIMD4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QK6yF6U2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A74EC433C7;
-	Fri,  1 Mar 2024 16:05:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709309130;
-	bh=rVW9AEO5L6z97bsCb2BGNYw/xLkhAfUG8wSYzGdCvpI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=QK6yF6U22HPa80VMPZAdA7clsYc9ldvaMPHwnU5+38ck6ghTDFZTooOQEeB8XCJZs
-	 kW7HIAMXb1aBdpmlDNYlNpXMaHrXb8WGYbRDCkEZ4P2VCIL66n2Mc/0WQxWdwepQZo
-	 1SMRFqzIMYdySBoKVlUAckwRDxejhqFJFfvf0ErfsO2cB6eepTJPRKNW2v3sJABQDb
-	 EV6un8ZY706NeKCMb+Zk/xnbcqLyAbWNApVzoI1ub9muV9nHm7m6fnRtv2w9xSeOwk
-	 o7rTs79dzwurOW1hSiSAmcJGfEmZo+/JGuNOGMAZrZFAY6kgMXY4cHi+FYDXEgwaDM
-	 1/+LzEuz/alOg==
-Date: Fri, 1 Mar 2024 16:05:25 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Frank Li <Frank.li@nxp.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	Shengjiu Wang <shengjiu.wang@nxp.com>, linux-sound@vger.kernel.org,
-	devicetree@vger.kernel.org, imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/4] ASoC: dt-bindings: fsl-sai: allow only one
- dma-names
-Message-ID: <20240301-crudeness-resale-3c0a1228850d@spud>
-References: <20240227-asrc_8qxp-v2-0-521bcc7eb1c0@nxp.com>
- <20240227-asrc_8qxp-v2-3-521bcc7eb1c0@nxp.com>
- <20240229-husband-penalty-8c1ab0f57f55@spud>
- <20240229-rundown-isotope-954ba9ea4c57@spud>
- <ZeDdMJlxBL4SGkws@lizhi-Precision-Tower-5810>
+	 Content-Type:Content-Disposition:In-Reply-To; b=kevFHJRcx08rvKNd6F51ovrzhzL1tDpPaYzL1uyp9eo+YvjFoExpavCHCdv0NJhKoeWbQYxQNlCtf1pBRqhu3YqB9OPLFmASv4Zu9OF8Xp83/HwC+vcJGevx/mDLDAVzwFvhEJC3QB179JSaXpdXjJ/puGSixLk79speiX2+GZ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 193491FB;
+	Fri,  1 Mar 2024 08:06:43 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.66.115])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BAD6A3F73F;
+	Fri,  1 Mar 2024 08:06:01 -0800 (PST)
+Date: Fri, 1 Mar 2024 16:05:52 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Doug Anderson <dianders@chromium.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+	Misono Tomohiro <misono.tomohiro@fujitsu.com>,
+	Chen-Yu Tsai <wens@csie.org>, Stephen Boyd <swboyd@chromium.org>,
+	Daniel Thompson <daniel.thompson@linaro.org>,
+	Sumit Garg <sumit.garg@linaro.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	"Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Kees Cook <keescook@chromium.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Tony Luck <tony.luck@intel.com>,
+	Valentin Schneider <vschneid@redhat.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: smp: smp_send_stop() and crash_smp_send_stop()
+ should try non-NMI first
+Message-ID: <ZeH81_k6TFk7W4tm@FVFF77S0Q05N>
+References: <20231207170251.1.Id4817adef610302554b8aa42b090d57270dc119c@changeid>
+ <CAD=FV=WtJCkdSY=HYDmBjn3hc4TYT7j0bMxGCV-=B3o3bm-kpQ@mail.gmail.com>
+ <CAD=FV=XMkrWmA1D6UjdTs8oZiXxKc1xiUoRqtNqAE-7GoPk8mA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="zZCgftqPN9gmkuL1"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZeDdMJlxBL4SGkws@lizhi-Precision-Tower-5810>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAD=FV=XMkrWmA1D6UjdTs8oZiXxKc1xiUoRqtNqAE-7GoPk8mA@mail.gmail.com>
 
+Hi Doug,
 
---zZCgftqPN9gmkuL1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Tue, Feb 27, 2024 at 04:57:31PM -0800, Doug Anderson wrote:
+> On Mon, Jan 8, 2024 at 4:54 PM Doug Anderson <dianders@chromium.org> wrote:
+> > On Thu, Dec 7, 2023 at 5:03 PM Douglas Anderson <dianders@chromium.org> wrote:
 
-On Thu, Feb 29, 2024 at 02:38:24PM -0500, Frank Li wrote:
-> On Thu, Feb 29, 2024 at 06:57:29PM +0000, Conor Dooley wrote:
-> > On Thu, Feb 29, 2024 at 06:55:58PM +0000, Conor Dooley wrote:
-> > > On Tue, Feb 27, 2024 at 03:54:11PM -0500, Frank Li wrote:
-> > > > Some sai only connect one direction. So allow only "rx" or "tx" for
-> > > > dma-names.
-> > >=20
-> > > Which sai? Can you restrict this per compatible please, so that someo=
-ne
-> > > cannot add 2 dmas for ones where only the tx is supported.
-> > >=20
-> > > |  dmas:
-> > > |    minItems: 1
-> > > |    items:
-> > > |      - description: DMA controller phandle and request line for RX
-> > > |      - description: DMA controller phandle and request line for TX
-> > >=20
-> > > The binding already allows only one, but it documents that the first =
-dma
-> > > is always the RX dma, and that doesn't change with this patch..
-> >=20
-> > I said "doesn't change" - but I don't think you can change this
-> > trivially, as something could rely on the first dma being the rx one.
-> > You'd have to check that there is nothing using these using indices
-> > rather than names before making any changes here.
->=20
-> Linux driver and dts with tx only work well. Only issue is dtb_check will
-> report error. I want to eliminate these DTB_CHECK warning.
+> > The sound of crickets is overwhelming. ;-) Does anyone have any
+> > comments here? Is this a terrible idea? Is this the best idea you've
+> > heard all year (it's only been 8 days, so maybe)? Is this great but
+> > the implementation is lacking (at best)? Do you hate that this waits
+> > for 1 second and wish it waited for 1 ms? 10 ms? 100 ms? 8192 ms?
+> >
+> > Aside from the weirdness of a processor being killed while holding the
+> > console lock, it does seem beneficial to give IRQs at least a little
+> > time to finish before killing a processor. I don't have any other
+> > explicit examples, but I could just imagine that things might be a
+> > little more orderly in such a case...
+> 
+> I'm still hoping to get some sort of feedback here. If people think
+> this is a terrible idea then I'll shut up now and leave well enough
+> alone, but it would be nice to actively decide and get the patch out
+> of limbo.
+> 
+> FWIW the serial console dumping issue that originally inspired me to
+> track this down has been worked around at least well enough to not
+> spew garbage in my console. See commit 9e957a155005 ("serial:
+> qcom-geni: Don't cancel/abort if we can't get the port lock"). It's
+> still a little awkward because we'll be running fully lockless during
+> panic time, but it seems to work...
 
-Linux is not the only user of these bindings, citing linux as your
-evidence here is only sufficient if no other users exist. Do they?
+This is on my list of things to look into, but I haven't had the chance to go
+through it in detail.
 
-> And it also reasonable, only rx or tx for a special SAI.
->=20
-> Can we remove 'description'? dmas should already descripted at common pla=
-ce
-> and 'RX' and 'TX' are listed at 'dma-names'
+From a high level, I think this sounds reasonable; I just want to make sure
+this doesn't lead to any new surprises...
 
-Removing the description has the same problem. The existing binding has
-set a fixed order that you now want to make flexible.
-
-Thanks,
-Conor.
-
---zZCgftqPN9gmkuL1
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZeH8xQAKCRB4tDGHoIJi
-0jzLAQDD7qaiVIh5k+1icra1khOuagWcwolMz38Pf4nuzJIXjwEAnnqTFIXEW5NP
-EVc5LseIyIToZ1a+TcVfIdL4iMIvTwA=
-=0N5o
------END PGP SIGNATURE-----
-
---zZCgftqPN9gmkuL1--
+Mark.
 
