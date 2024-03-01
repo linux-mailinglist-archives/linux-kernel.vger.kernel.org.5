@@ -1,114 +1,118 @@
-Return-Path: <linux-kernel+bounces-89205-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89206-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16CEC86EBF6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 23:39:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 777F986EC02
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 23:41:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 405751C21928
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 22:39:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2BC3628744F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 22:41:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 695D55EE6A;
-	Fri,  1 Mar 2024 22:39:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gUcXrBeu"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 120BC5EE68;
+	Fri,  1 Mar 2024 22:41:47 +0000 (UTC)
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3BAC59153;
-	Fri,  1 Mar 2024 22:39:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24C9059B6F
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 22:41:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709332784; cv=none; b=s1h1peWt3JvPoHzmfs07NqLtLo19i1m/49L7mdP1B3Sw//7QMVnoQYx2clcQRWITJznDcomvJgKLXANSVWQcqQCb3Zv5ma3F4Ggja8HblqvhoR427ANrd+bfvBr79K8lDpKfLgBJEUCPz5mfHOUDhsAwQR3w6Wsdnu2/Vcqtdzk=
+	t=1709332906; cv=none; b=LPgS1UWtKoxCHQPPLm9y1/Z2MIHsEb2RU2sVwXUyDrE4ziUENN5VEeXhsw0n/qGqSqhTGVwjbls1g2DikWoK73DnephC5naXO1sGCk4Wj/GS7HNZ/3x8gqtECAimPlIaxCFSWV2VkRtCtSWuPdgH8s8FFiSLdXKfRk7Ka5Bcbvg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709332784; c=relaxed/simple;
-	bh=gd1f0JmgW2lhfJwMqf/zdowmXxcjdaYyBE2I6GBLjTc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jGvxCYKXFzXrOiU6XfvvSG9xhoXLHoLSLg6YAB+nfvOj0YvtRxGet4cZOG19Ie1hmMp7QFB/3F2zO3eeAmzW8IL0KiGiEF5nC+2CPK0zkiBDhT65axxUh/bexTavdHwNKXqTTT3FR84ObrizGVQgsd01GMu7OPp62H7cjX6Z834=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gUcXrBeu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A9D3C433F1;
-	Fri,  1 Mar 2024 22:39:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709332784;
-	bh=gd1f0JmgW2lhfJwMqf/zdowmXxcjdaYyBE2I6GBLjTc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=gUcXrBeuXb+gSba1MISbY8ZI9Asv/8gfB7IcJzmjThNAC3bu9EX8B8M4DHXxm5CmL
-	 EhSPkuG5X2QPns555r6RcdyhCXjmI6L7oIsQwDuDb2FcYsaN5KuIimzBCrtfHA8wHH
-	 GGju4TZ9bd2Dqwl0Wluz2TVtuVLhL11VEVSyO80M2YJJGifaP0WeGsolwZyY8iO70X
-	 YDpUpbnyY3NJopbypb68FKpb0M3NFxD7nGNl7qoOjibLeTPbkhrJtmBhpIAIG8nlv/
-	 4bpRDHVfSH3DZoI3e7SOqGeHpVCZsg0/dRKxW4DJ+b473x06C/rKXshhzYzVyamPIx
-	 g8XUsaomD19SA==
-Date: Fri, 1 Mar 2024 16:39:42 -0600
-From: Rob Herring <robh@kernel.org>
-To: Jonathan Cameron <jic23@kernel.org>
-Cc: devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
-	Frank Rowand <frowand.list@gmail.com>, linux-kernel@vger.kernel.org,
-	Julia Lawall <Julia.Lawall@inria.fr>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	marek.vasut@gmail.com,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: Re: [RESEND PATCH v2 0/4] of: automate of_node_put() - new approach
- to loops.
-Message-ID: <20240301223942.GA3179769-robh@kernel.org>
-References: <20240225142714.286440-1-jic23@kernel.org>
+	s=arc-20240116; t=1709332906; c=relaxed/simple;
+	bh=y05OlHIzADcP3OrGVS6Hx+8JB8tEpPHFBEbcYJFqEzA=;
+	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=V09dFfV6SaJrU1MYEnkPnaxc83kDO63csBrWa2NgovKg5ELHoIiBe8tSidHYOanzsd8YQfIJk0ErYrDBQ4eFb1iiPXxMez3EGIl4WVmEJmgVcpQ9yFvx6RRfwIyBUYJsIUqCDLOApg7PWvYNIlPp2pZ8xP0jiZY0lJpq/+VcuB0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
+Received: from fsav313.sakura.ne.jp (fsav313.sakura.ne.jp [153.120.85.144])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 421Mf9oZ091718;
+	Sat, 2 Mar 2024 07:41:09 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav313.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav313.sakura.ne.jp);
+ Sat, 02 Mar 2024 07:41:09 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav313.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 421Mf8l1091714
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+	Sat, 2 Mar 2024 07:41:08 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <1a817eb5-7cd8-44d6-b409-b3bc3f377cb9@I-love.SAKURA.ne.jp>
+Date: Sat, 2 Mar 2024 07:41:09 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240225142714.286440-1-jic23@kernel.org>
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: LKML <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Subject: [PATCH v3] x86: disable non-instrumented version of copy_page when
+ KMSAN is enabled
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sun, Feb 25, 2024 at 02:27:10PM +0000, Jonathan Cameron wrote:
-> From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> 
-> Some discussion occured on previous posting.
-> https://lore.kernel.org/linux-iio/20240223124432.26443-1-Jonathan.Cameron@huawei.com/
-> 
-> Summary:
-> * fwnode conversions should be considered when applying this
->   infrastructure to a driver. Perhaps better to move directly to
->   the generic FW property handling rather than improve existing
->   of specific code.
-> * There are lots of potential places to use this based on detections
->   from Julia's coccinelle scripts linked below.
-> 
-> The equivalent device_for_each_child_node_scoped() series for
-> fwnode will be queued up in IIO for the merge window shortly as
-> it has gathered sufficient tags. Hopefully the precdent set there
-> for the approach will reassure people that instantiating the
-> child variable inside the macro definition is the best approach.
-> https://lore.kernel.org/linux-iio/20240217164249.921878-1-jic23@kernel.org/
-> 
-> v2: Andy suggested most of the original converted set should move to
->     generic fwnode / property.h handling.  Within IIO that was
->     a reasonable observation given we've been trying to move away from
->     firmware specific handling for some time. Patches making that change
->     to appropriate drivers posted.
->     As we discussed there are cases which are not suitable for such
->     conversion and this infrastructure still provides clear benefits
->     for them.
-> 
-> Ideally it would be good if this introductory series adding the
-> infrastructure makes the 6.9 merge window. There are no dependencies
-> on work queued in the IIO tree, so this can go via devicetree
-> if the maintainers would prefer. I've had some off list messages
-> asking when this would be merged, as there is interest in building
-> on it next cycle for other parts of the kernel (where conversion to
-> fwnode handling may be less appropriate).
+Commit afb2d666d025 ("zsmalloc: use copy_page for full page copy") caused
+a false-positive KMSAN warning. Implement copy_page() using memcpy() when
+KMSAN is enabled.
 
-I'll let you take it. For the series:
+  BUG: KMSAN: use-after-free in obj_malloc+0x6cc/0x7b0
+  Uninit was stored to memory at:
+   obj_malloc+0x70a/0x7b0
+  Uninit was created at:
+   free_unref_page_prepare+0x130/0xfc0
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+---
+Changes in v3:
+  Update description/comment and use include file, suggested by
+  Thomas Gleixner.
+  
+ arch/x86/include/asm/page_64.h | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-I've got some drivers/of/ conversions too, but they are probably next 
-cycle at this point.
-
-Rob
+diff --git a/arch/x86/include/asm/page_64.h b/arch/x86/include/asm/page_64.h
+index cc6b8e087192..98a71727dbac 100644
+--- a/arch/x86/include/asm/page_64.h
++++ b/arch/x86/include/asm/page_64.h
+@@ -9,6 +9,7 @@
+ #include <asm/alternative.h>
+ 
+ #include <linux/kmsan-checks.h>
++#include <linux/string.h>
+ 
+ /* duplicated to the one in bootmem.h */
+ extern unsigned long max_pfn;
+@@ -58,7 +59,18 @@ static inline void clear_page(void *page)
+ 			   : "cc", "memory", "rax", "rcx");
+ }
+ 
++#ifdef CONFIG_KMSAN
++/*
++ * The assembly version of copy_page() is not instrumented and
++ * therefore breaks KMSAN. Fall back to memcpy.
++ */
++static inline void copy_page(void *to, void *from)
++{
++	memcpy(to, from, PAGE_SIZE);
++}
++#else
+ void copy_page(void *to, void *from);
++#endif
+ 
+ #ifdef CONFIG_X86_5LEVEL
+ /*
+-- 
+2.34.1
 
