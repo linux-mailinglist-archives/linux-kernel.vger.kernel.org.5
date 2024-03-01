@@ -1,73 +1,74 @@
-Return-Path: <linux-kernel+bounces-89141-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89142-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E750786EB14
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 22:22:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 15CC886EB18
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 22:24:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9524C282442
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:22:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ADB4A284DF5
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:24:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F10A057336;
-	Fri,  1 Mar 2024 21:21:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1236F57892;
+	Fri,  1 Mar 2024 21:24:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="o3EQfbtt"
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="ddf9XgjT"
+Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6D9C3A1D1
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 21:21:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C332057872
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 21:24:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709328116; cv=none; b=bLHOf1c/xLu3CPPBIWT9GGsg98b0utMqDg8860cUj0o7XNOE54PWSmWS7/cdqTU9m8ML7X257PSBFy7VC2xIHpuMj0zP2tz1nrdwvtfNVft+TJlK+Jbok21Bc3Di/q0F1C83GOc3gKVr8vDGbdz9fd7PQ4RHH/ftZP6wkv6wM+4=
+	t=1709328250; cv=none; b=LAhMFpW+p5nDwhXjvTP4Un9NcZRUFPF0gEhxhytrzWlGr8QNzsN9PyKT9tBSDWujJ0LCsYOj6a44muh2fXY+wsO1ns7775I0XyJeR/M15w1uoFDGC+9A7++cQxfgEtY4Er3S9ZC1va5R1NdcXAikqyOkvSRMVWqHxTm1eZM9hoY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709328116; c=relaxed/simple;
-	bh=eMX9lL1CM4JCPZjgVhFpZok2LOHX9u+EYOu3IYUUZ2E=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=Dii6bZLmHQkUe/c40sR3K0sjQVgCoSk1iB75AcZV2MKQMqjrFHmbYb+8D6a+pghkF3MuQfuqV1Rhv11FTM8u0edgJcjWhk+t07MilxbZBvcvg/OtdYIPu1jp2A5J90po+SmaXGB5qXb2Sy7BwoMcOxdq/ExLOVamzJBLDFQqAnI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=o3EQfbtt; arc=none smtp.client-ip=209.85.210.171
+	s=arc-20240116; t=1709328250; c=relaxed/simple;
+	bh=HPEx7q9YeqPD8Fs26Mm2XVZAJVX8dLxSFoyKT+0rhQs=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=QBklFPHY+A4m782c00023rlNDME5NaLTIjbNAj3zoBs6Qb9FIHGjdrdCwgn+mWbRyEXLW9jhRqoEbk3O/LxP5AoLXGBEr7wBLquqYvb4pLRkdM7Q0vz1NvI+JeIkeOX1bdhUnR4bCCOO5lugeKGNYbjPa7MUGrIT4OxKhgazy3E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=ddf9XgjT; arc=none smtp.client-ip=209.85.167.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6e571666829so1669277b3a.3
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 13:21:54 -0800 (PST)
+Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-3bb9d54575cso1736101b6e.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 13:24:08 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709328114; x=1709932914;
+        d=1e100.net; s=20230601; t=1709328248; x=1709933048;
         h=cc:to:message-id:content-transfer-encoding:mime-version:subject
          :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=EdabNmDOuU81oGyUuyFWNojMT76Q7ijYDGABFFrEAaU=;
-        b=HUXgRAkbYT6THGYkgIa1nJJrUuy0LVDNerX48M67ejn3bM2rB/dgrtvYV3lsd18OwC
-         sT6xy0mBgaUq/hlER0vAcczbad+U2MkvnXL2oSWp9XpJUddPxqLGCv7pQe7YBc+RwP72
-         7nF56DdQRhHl7zXBi8IPCnLYV/gSgQEWNPoWJDk+zGFica+3H+dTV+prs05+QeT/Ttzi
-         gQIcsCLudinF+mETX47DTEXYKHk5xdSCekyMojzaXxLIcB2xW16QliUWJQdjmmtGMWyI
-         F6MxEm4WhqcU69qpZN6J7dN1MyDBiNziADwcJgT25HZ+DlLuu/auUFTji9RMi45ZijmL
-         Lvdw==
-X-Gm-Message-State: AOJu0YwveNmPgmfNMvL6A9TwPH1dnX6zsmLqGO/IZvGDjw8dbQo7YOzS
-	hXHCCLCmmmiEr1AKYxF58FEQohN4ZvfoRGP5UKyufVfBcEQqa0efxydZuk7i01asNw==
-X-Google-Smtp-Source: AGHT+IFMK0yHzagDC5JRLkoD8uRQcBY2Ugjk03AIaQq+3LzkEOuFnK+5lkkazQpmnLuRqeKpfwjnyg==
-X-Received: by 2002:a05:6a00:23c2:b0:6e1:3d21:bacf with SMTP id g2-20020a056a0023c200b006e13d21bacfmr3353359pfc.19.1709328113977;
-        Fri, 01 Mar 2024 13:21:53 -0800 (PST)
+        bh=fp0fkz4lNEmpnn/7oL43O7kf2DDQQSr2VJ+P1LkrmLA=;
+        b=AyIlCjdv8CXO4rBEXtgUEIqfxo9zWrOZEEglxugzmbdgvbMJ5a9TBjn5famTva0ao0
+         PsaMulWrrU2LhEEYcfZVcuV/DTcQzYeWh1v/Abscs1kTLF5efypoLH23l8k3am8ncrGs
+         9vot+AxpX1nGPG1K/7i8SAMyS8VFs10U+7IGASrdU+YY/wecbpK37v1gggjtQbJ2pDB0
+         fVVqsAusPfZEu/P74onho8+putSY1gBTXVDmZozaZeur3TN+d/lh6e1oPYcHUv3FSmGz
+         bdIOYzwxi0iAyuu6OT/771nFfhN1+r7kq9CCnahcu90Ef68lux1nZCD2f1NsiabVj/mV
+         a46g==
+X-Forwarded-Encrypted: i=1; AJvYcCWTgSkj8MGFRryCrA6unxEoSEg15rHUbYONKcvz3csBElqi2ffDw6f+rABQ/zOT13WPDBodOMX7sxxyjCFEPWzhVOXblAOppYhwsuT7
+X-Gm-Message-State: AOJu0YznjvqWoYh0/SlVrdiiJ8EaCdR/uEXr0PhIpAJhYtuyju+P+wiW
+	Yr3Is909HygcnYbh5pzMrr39OS0dFgDjNle8wQ0/dtcgT/wJnFWt
+X-Google-Smtp-Source: AGHT+IHMLcEFsGXrsEV8hHzEvoTbVKOBW7WQxQCgzKXVcKSwflcW1ovfYW7ITo/cNU3FL6G3nAUZZw==
+X-Received: by 2002:aca:1e14:0:b0:3c1:d5f8:7495 with SMTP id m20-20020aca1e14000000b003c1d5f87495mr2100068oic.8.1709328247910;
+        Fri, 01 Mar 2024 13:24:07 -0800 (PST)
 Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id n21-20020a63f815000000b005dbd0facb4dsm3446526pgh.61.2024.03.01.13.21.53
+        by smtp.gmail.com with ESMTPSA id m1-20020a635801000000b005dc120fa3b2sm3082951pgb.18.2024.03.01.13.24.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 13:21:53 -0800 (PST)
+        Fri, 01 Mar 2024 13:24:07 -0800 (PST)
 From: "Ricardo B. Marliere" <ricardo@marliere.net>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1709328112;
+	s=2024; t=1709328246;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding;
-	bh=EdabNmDOuU81oGyUuyFWNojMT76Q7ijYDGABFFrEAaU=;
-	b=o3EQfbttqXWbjb+v8hNsKqymFZ2jF6iga7n+CkQlHxWPQT8zvHKdFydGg8JtUWOcnJXVu9
-	m59BuDMAFq9crYV/vKFIu/N5hKd/D+RVrG2dr3TlLMij5JOvAJWMHyPspyipRfq1lbmhtY
-	J8i8yb48cBWu2KDQGvLFZoxifYR2pBWDNUkLQBl7Rjxze9jp2hZfu57LlQ9wNwxLnAklrD
-	KTuf6ghjp4FCqwNl+HJkyRV+638C/U2j8mzk7UhK3OwWY8GKemE5mkBFZsl5JMLVJ9IAhW
-	fN/uxZuk3DM6C+mLYZrmgkzfr4PXE69bjteMFBHO2wI8rl2qdtIcmODRGOMCWA==
+	bh=fp0fkz4lNEmpnn/7oL43O7kf2DDQQSr2VJ+P1LkrmLA=;
+	b=ddf9XgjTRm0aI6jiBSBCB7DQ1tvQYIj/CW8X4HaPXm68mq0GeD8D4Se30Gs24cgQb6T8g2
+	C3VdtYt9yfC+k82dvCQw2EJf1TJTOYrHATkgld8q/zXfif5f8045PahCgT40zYfcLqHsc4
+	Ex0wfmmD1/ob1QGn9mNbV5rg4Ke/9f5hWgRi8qnpvSDfIED5FIuwi5sCfCOnl6RHkvDufC
+	ofsym8qG3FHlEZNCLyzuqPT+MeR29WWwc1URq8wUVyAIf+mcczh3Yo4F5zWHZzUeHTglXQ
+	nsXATwkvj9IoEhm2eC2MiG6nDBKJEnVtfJkUDLYlxXOpN2ifU9K7QyvPY6hCug==
 Authentication-Results: ORIGINATING;
 	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Date: Fri, 01 Mar 2024 18:21:38 -0300
-Subject: [PATCH] tifm: make tifm_adapter_class constant
+Date: Fri, 01 Mar 2024 18:24:05 -0300
+Subject: [PATCH] staging: fieldbus: make fieldbus_class constant
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,61 +77,61 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240301-class_cleanup-char-misc-v1-1-4e2a41bef8cc@marliere.net>
-X-B4-Tracking: v=1; b=H4sIAOFG4mUC/x2M0QpAQBAAf0X7bOscRX5F0tlbbHF0Gyn5d5fHq
- Zl5QDkKK7TZA5EvUdlDgiLPgBYXZkbxicEaW5nSFEirUx1oZRfOA5MTcRMldJYt+7HxNNWQ6iP
- yJPd/7vr3/QCjXH/OaQAAAA==
-To: Alex Dubov <oakad@yahoo.com>, Arnd Bergmann <arnd@arndb.de>, 
+Message-Id: <20240301-class_cleanup-staging-v1-1-34db2a5b0eb0@marliere.net>
+X-B4-Tracking: v=1; b=H4sIAHRH4mUC/x3MQQqAIBBA0avErBPMAqGrRMRoow2EhVMRRHdPW
+ r7F/w8IZSaBvnog08XCWypo6gr8gimS4rkYjDadbnWj/Ioik18J07krOTByiso650KwBq13UNo
+ 9U+D7/w7j+35E6EBEZwAAAA==
+To: Sven Van Asbroeck <TheSven73@gmail.com>, 
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-kernel@vger.kernel.org, 
+Cc: linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org, 
  "Ricardo B. Marliere" <ricardo@marliere.net>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1190; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=eMX9lL1CM4JCPZjgVhFpZok2LOHX9u+EYOu3IYUUZ2E=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl4kbvbuy+IQ9eVAAi07Y7CGsga/QLUxpS/E6dr
- D93JAhvuFaJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZeJG7wAKCRDJC4p8Y4ZY
- piezEACOMGLe4aQGPj6BbGlTYMfS+rvB13/BNcwU6gUP99SJoOxUCEXNSeyowkuUHG0Rhjlxdpu
- Wrb+yU7rESBUQEUFxiSg1fgPHJ3ss2PGzl0vryKbH7kTqG9y1DKY7OBTBZTqsqeaGhWoxK+sNwn
- U6uy+04wxe/Jo2myjHz8tbUdpkj7q2DBOpkGaX3S+6xnD/rb8byAVJsKwQH5oSFGorxtn64MHUg
- ENdpcjupsmc8GZNSVIGd9aT+kdsIK/+Ay6v9psAwjVIsgYLtOxe2hPQcKhocmrCsF4aZCmoor16
- fCph0Ykqm9ZGmNiZzovRTAa2CPbZbAc5pbWKs8W+elH/gfcNgGv8SItvKnrU3TXe/ZTK5MWjaEe
- +2ap0zMpvNSDx06LMi/Y2kpRUQUHrbMJLr7+AAp6iaQ0NXFU53PAyugU9EyI28RIAV5e8Aa31b6
- khe2S5fUdu2DK4VvM8Jx21u9ap4VOxQiyXzzOfnQL2qbeK11ZJ/zy4vKBO5ADzslVBhi71AT5cs
- +iai4DRWTp8r0//LimCYdJ3tL9ngllpXniD+eLXSLXR+S2Zj2o2uZ9eMtc32GynmX6vnVneNLxO
- M1XMpjsV1Wx4uwsxEjJmbwxNXFikMouRG/MejuLZbRY0XIrF0eZw5kmeTTXnLZlfJ4ceTtnrcX9
- VZOeTmLPkZNHATw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1267; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=HPEx7q9YeqPD8Fs26Mm2XVZAJVX8dLxSFoyKT+0rhQs=;
+ b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl4kd1M2/TUzwwsygSCeViq+l9scKnwpgWEsF4z
+ CLO6jB1xWCJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZeJHdQAKCRDJC4p8Y4ZY
+ poXdD/4rXO99mzM+kxKDpe/b20gB2llrr3wMpzcIR3wySpVddytK4PuA4CvAVNET6GFB9RU3kRu
+ 9YN4YCixluImgDKzAqWTSjTYOMwkxUPT9v8ZyT9WH+FUBpduJ6OhOlsJKShNYtNa/kQ+xOcp4y0
+ 0awTVmq2kM4EsWTh0Uol0XfMHKwR4xYvvy77KmKDayfEkn1a6eEX9x4Y5UF+u0RhO9nARLVh1EH
+ so+qm8Axxq4YepWI/UXUKVFvfWbQMMInmuros2tF50llu+K9nypdxfyL+zEM34hPof5eBKbGx08
+ klfBlAqUJE6G/lGA+/6jVoVfV28TlDIlwwyjHT+MXplQcT71L0dHKzXy4qF4UX83s49VVNKTwcC
+ A0FL640sjro7fNgLWdehKGF9dXkLmUGaRI+V9VzkZ1Yd/Vhv5ChqGoefeE6lQT8Brrqlv4nfh89
+ 0DTetcEnDpSZQeFEmzIagB6in/TavHuIqxOu1hAphwYy1H1ak+186vQCKNI6+Bp2mmPmhtlH9wE
+ n+7ujZKkpRIkZPBcfVE5f56N88p4wwcr72EfTVmLMVYD6z7ss7MWc2C8w9cO7Yw3VtNOuNx7DkU
+ mv5eGR8QqlOjJBYKiOh0mO3V06RLm5+wr3ioOAX/95f5j1a6qSiSf9OyJXSSl0PzylcbP9xXAPb
+ ZDBvPcbOviATQxQ==
 X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
  fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
 Since commit 43a7206b0963 ("driver core: class: make class_register() take
 a const *"), the driver core allows for struct class to be in read-only
-memory, so move the tifm_adapter_class structure to be declared at build
-time placing it into read-only memory, instead of having to be dynamically
+memory, so move the fieldbus_class structure to be declared at build time
+placing it into read-only memory, instead of having to be dynamically
 allocated at boot time.
 
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
 ---
- drivers/misc/tifm_core.c | 2 +-
+ drivers/staging/fieldbus/dev_core.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/misc/tifm_core.c b/drivers/misc/tifm_core.c
-index eee9b6581604..d2eb31f39aa7 100644
---- a/drivers/misc/tifm_core.c
-+++ b/drivers/misc/tifm_core.c
-@@ -166,7 +166,7 @@ static void tifm_free(struct device *dev)
- 	kfree(fm);
- }
+diff --git a/drivers/staging/fieldbus/dev_core.c b/drivers/staging/fieldbus/dev_core.c
+index 370a229443a1..0053ebd91442 100644
+--- a/drivers/staging/fieldbus/dev_core.c
++++ b/drivers/staging/fieldbus/dev_core.c
+@@ -152,7 +152,7 @@ static const struct attribute_group fieldbus_group = {
+ };
+ __ATTRIBUTE_GROUPS(fieldbus);
  
--static struct class tifm_adapter_class = {
-+static const struct class tifm_adapter_class = {
- 	.name    = "tifm_adapter",
- 	.dev_release = tifm_free
+-static struct class fieldbus_class = {
++static const struct class fieldbus_class = {
+ 	.name =		"fieldbus_dev",
+ 	.dev_groups =	fieldbus_groups,
  };
 
 ---
-base-commit: d4551c189d6e6a3fcf7f625bd4b273e770fad35a
-change-id: 20240301-class_cleanup-char-misc-a2e2edb8dcf7
+base-commit: 455c5e12a3b7d08c2ab47b7dd54944901c69cdcd
+change-id: 20240301-class_cleanup-staging-7bbbff72a7cb
 
 Best regards,
 -- 
