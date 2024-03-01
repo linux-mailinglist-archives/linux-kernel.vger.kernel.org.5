@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-88688-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88689-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96BEF86E560
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:24:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9409C86E561
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:24:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4CB5D1F25C2F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:24:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 566121C22E23
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:24:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 844177581F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB3A97602A;
 	Fri,  1 Mar 2024 16:22:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="ip/Kh/hX"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="p4Nw1dwx"
 Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B2F373191;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B32973194;
 	Fri,  1 Mar 2024 16:22:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709310149; cv=none; b=A9blGHymSi5fbZaCdk+gxPmP3gE48O2f6GenVLndjZ2YzAMuRZQHauxrkW8yB7jLBY5emZQ3aMhwsVX1dcBVf7Weia1ge1oMlpOOoIioroix5cVqFEsgunvyyqLDZnuM7cI8uGQVVbhPzc3MzhlE7IDwT7jKRvYCSjU0jYJt0hk=
+	t=1709310149; cv=none; b=hcf+QBQz1Dy8pA7PwGeqiIRUWcxK1Zln3hwFjPBKhPQhZSBBrBetqMKL8LElasmOuhFJfW6oa8LhrZV+j+XsiFlIEu8xA6kjxF2TvREj7nzwKagcgK0z8CaHKfsWs9hye+IZ6KCBpjxubIxDOTXrS7LuAFwLs9HHGhiCDLczNV4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1709310149; c=relaxed/simple;
-	bh=Q1vQNvApTuVLdHGNKf+3ksoWjYkeKzGyOW6P0xmAFi4=;
+	bh=AAJTdXRM0Re+DCVXVGJxubzVOx467C+c5nb+jYksNi8=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=aTT0TpbCFnrl2rjEtAOXQyCz4Fz0DfIGIkE+et8AQ8sWwHH3MZBdI/ZphUfsjz+H/y3PPWwj1y6o7SKeStgHLeQZRZIG6wyLadzP26kD7vJdRf45dcGUEOJcIbR5ZkK6TzeuKWEgBaeB4KEcjPLRbLThweh4pUCqkKYDJOWIYZc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=ip/Kh/hX; arc=none smtp.client-ip=217.70.183.198
+	 In-Reply-To:To:Cc; b=ficdRmrzqANMzLvG6TiH2xQaLflsgR1JTXTO4lgJfQCNHLfkcsWzCNL/mDLOwEp4zKJ+adtM6aS40biG/dnIuKTv7l1J/BqIVlAZIsF7WI32Wk2e5Q5EhfQ15DC5ZJmwl4xLqaGoqcfibKio/XeLsWTMAt9Oac8J75u+8tNgguw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=p4Nw1dwx; arc=none smtp.client-ip=217.70.183.198
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 2A056C0004;
+Received: by mail.gandi.net (Postfix) with ESMTPSA id F2160C0003;
 	Fri,  1 Mar 2024 16:22:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709310144;
+	t=1709310145;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=RkkcturGDH6iyLvdo+o7gBVlQfQ+pKB/Y+IIwDxn5RM=;
-	b=ip/Kh/hXjeY72FVe0TeYzjJ2O2LSj1I69GBRNbGEi+RtCiBv/ik8jiaRd1d6C6lMR+f8It
-	kEM5Ht2+cyU0iUyzq3IuF8lfwnbrIL7KF4SXYNpmPIG797Vi24wWQxpRQK68JjKvP+ynf3
-	MyCakcFuFs7pr97ToVkdgBts+Yoj5+7i0NY6JxFdkn/oUwRhnHw5EUTbQogJns2QJStlpy
-	xkfLjLEnW1fyL7ejgZEWnmcXv7SAnazwIB0nHX4gOZAivoR3att3Gp++AlMXCMBx7hF4cN
-	UiqTMIop7wvnRtCYyPM4BFQsaVZh7B6IDz8I/8tFBTcWVxAs4uZYW2nzYN4wQA==
+	bh=aqd7RNSKgF1eQYnYzns3slAE3h9undBdrUHi47AKr1g=;
+	b=p4Nw1dwx23jlXzuZVNDHLnva4yWkgtDcYdTPeU0/3rHKCFnYFPqJn58/Ds1SyDAP6TGe8c
+	jZ1lZ7YX4LIrQ2HGGkXEy90vbfOV9qE0hMv6WM/OVYkQFnyfzHYQtORxOFuUOC281mf/tW
+	UQqfPauPpxdSFb2Y8GGr2PVS921W7MV0qtVymwN8ZiJZvQidy/IuARUun2gGmpD7M3bDPy
+	8nEQq0V0WalT4xSNJBzHTNvwxnQGTjZpzC4bDL8si2wqGIsLO78po3k0NBMiqp/KkTBO00
+	oxGJsy7ZYZDjsjedCjohjn/UGolU60gaeiYBvGn7+jKwag+ieWFBhlc2ksL2qw==
 From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Date: Fri, 01 Mar 2024 17:22:21 +0100
-Subject: [PATCH v9 8/9] MIPS: mobileye: eyeq5: add OLB reset controller
- node
+Date: Fri, 01 Mar 2024 17:22:22 +0100
+Subject: [PATCH v9 9/9] MIPS: mobileye: eyeq5: add pinctrl node & pinmux
+ function nodes
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,7 +56,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240301-mbly-clk-v9-8-cbf06eb88708@bootlin.com>
+Message-Id: <20240301-mbly-clk-v9-9-cbf06eb88708@bootlin.com>
 References: <20240301-mbly-clk-v9-0-cbf06eb88708@bootlin.com>
 In-Reply-To: <20240301-mbly-clk-v9-0-cbf06eb88708@bootlin.com>
 To: Gregory CLEMENT <gregory.clement@bootlin.com>, 
@@ -77,59 +77,199 @@ Cc: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
 X-Mailer: b4 0.13.0
 X-GND-Sasl: theo.lebrun@bootlin.com
 
-Add the devicetree node for the reset controller on the Mobileye EyeQ5
-platform. It appears as a subnode to the OLB syscon as its registers
-are located in this shared register region.
+Pins on this platform have two functions: GPIO or something-else. We
+create function nodes for each something-else based on functions.
 
-Add reset phandles to UART nodes.
+UART nodes are present in the platform devicetree. Add pinctrl to them
+now that the pin controller is supported.
 
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
 ---
- arch/mips/boot/dts/mobileye/eyeq5.dtsi | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ arch/mips/boot/dts/mobileye/eyeq5-pins.dtsi | 125 ++++++++++++++++++++++++++++
+ arch/mips/boot/dts/mobileye/eyeq5.dtsi      |  13 +++
+ 2 files changed, 138 insertions(+)
 
+diff --git a/arch/mips/boot/dts/mobileye/eyeq5-pins.dtsi b/arch/mips/boot/dts/mobileye/eyeq5-pins.dtsi
+new file mode 100644
+index 000000000000..42acda13e57a
+--- /dev/null
++++ b/arch/mips/boot/dts/mobileye/eyeq5-pins.dtsi
+@@ -0,0 +1,125 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++
++/*
++ * Default pin configuration for Mobileye EyeQ5 boards. We mostly create one
++ * pin configuration node per function.
++ */
++
++&pinctrl {
++	timer0_pins: timer0-pins {
++		function = "timer0";
++		pins = "PA0", "PA1";
++	};
++	timer1_pins: timer1-pins {
++		function = "timer1";
++		pins = "PA2", "PA3";
++	};
++	timer2_pins: timer2-pins {
++		function = "timer2";
++		pins = "PA4", "PA5";
++	};
++	pps0_pins: pps0-pin {
++		function = "timer2";
++		pins = "PA4";
++	};
++	pps1_pins: pps1-pin {
++		function = "timer2";
++		pins = "PA5";
++	};
++	timer5_ext_pins: timer5-ext-pins {
++		function = "timer5";
++		pins = "PA6", "PA7", "PA8", "PA9";
++	};
++	timer5_ext_input_pins: timer5-ext-input-pins {
++		function = "timer5";
++		pins = "PA6", "PA7";
++	};
++	timer5_ext_incap_a_pins: timer5-ext-incap-a-pin {
++		function = "timer5";
++		pins = "PA6";
++	};
++	timer5_ext_incap_b_pins: timer5-ext-incap-b-pin {
++		function = "timer5";
++		pins = "PA7";
++	};
++	can0_pins: can0-pins {
++		function = "can0";
++		pins = "PA14", "PA15";
++	};
++	can1_pins: can1-pins {
++		function = "can1";
++		pins = "PA16", "PA17";
++	};
++	uart0_pins: uart0-pins {
++		function = "uart0";
++		pins = "PA10", "PA11";
++	};
++	uart1_pins: uart1-pins {
++		function = "uart1";
++		pins = "PA12", "PA13";
++	};
++	spi0_pins: spi0-pins {
++		function = "spi0";
++		pins = "PA18", "PA19", "PA20", "PA21", "PA22";
++	};
++	spi1_pins: spi1-pins {
++		function = "spi1";
++		pins = "PA23", "PA24", "PA25", "PA26", "PA27";
++	};
++	spi1_slave_pins: spi1-slave-pins {
++		function = "spi1";
++		pins = "PA24", "PA25", "PA26";
++	};
++	refclk0_pins: refclk0-pin {
++		function = "refclk0";
++		pins = "PA28";
++	};
++	timer3_pins: timer3-pins {
++		function = "timer3";
++		pins = "PB0", "PB1";
++	};
++	timer4_pins: timer4-pins {
++		function = "timer4";
++		pins = "PB2", "PB3";
++	};
++	timer6_ext_pins: timer6-ext-pins {
++		function = "timer6";
++		pins = "PB4", "PB5", "PB6", "PB7";
++	};
++	timer6_ext_input_pins: timer6-ext-input-pins {
++		function = "timer6";
++		pins = "PB4", "PB5";
++	};
++	timer6_ext_incap_a_pins: timer6-ext-incap-a-pin {
++		function = "timer6";
++		pins = "PB4";
++	};
++	timer6_ext_incap_b_pins: timer6-ext-incap-b-pin {
++		function = "timer6";
++		pins = "PB5";
++	};
++	can2_pins: can2-pins {
++		function = "can2";
++		pins = "PB10", "PB11";
++	};
++	uart2_pins: uart2-pins {
++		function = "uart2";
++		pins = "PB8", "PB9";
++	};
++	spi2_pins: spi2-pins {
++		function = "spi2";
++		pins = "PB12", "PB13", "PB14", "PB15", "PB16";
++	};
++	spi3_pins: spi3-pins {
++		function = "spi3";
++		pins = "PB17", "PB18", "PB19", "PB20", "PB21";
++	};
++	spi3_slave_pins: spi3-slave-pins {
++		function = "spi3";
++		pins = "PB18", "PB19", "PB20";
++	};
++	mclk0_pins: mclk0-pin {
++		function = "mclk0";
++		pins = "PB22";
++	};
++};
 diff --git a/arch/mips/boot/dts/mobileye/eyeq5.dtsi b/arch/mips/boot/dts/mobileye/eyeq5.dtsi
-index 1a65b43e13b1..76935f237ab5 100644
+index 76935f237ab5..8d4f65ec912d 100644
 --- a/arch/mips/boot/dts/mobileye/eyeq5.dtsi
 +++ b/arch/mips/boot/dts/mobileye/eyeq5.dtsi
-@@ -78,6 +78,7 @@ uart0: serial@800000 {
- 			interrupts = <GIC_SHARED 6 IRQ_TYPE_LEVEL_HIGH>;
+@@ -79,6 +79,8 @@ uart0: serial@800000 {
  			clocks  = <&uart_clk>, <&occ_periph>;
  			clock-names = "uartclk", "apb_pclk";
-+			resets = <&reset 0 10>;
+ 			resets = <&reset 0 10>;
++			pinctrl-names = "default";
++			pinctrl-0 = <&uart0_pins>;
  		};
  
  		uart1: serial@900000 {
-@@ -88,6 +89,7 @@ uart1: serial@900000 {
- 			interrupts = <GIC_SHARED 6 IRQ_TYPE_LEVEL_HIGH>;
+@@ -90,6 +92,8 @@ uart1: serial@900000 {
  			clocks  = <&uart_clk>, <&occ_periph>;
  			clock-names = "uartclk", "apb_pclk";
-+			resets = <&reset 0 11>;
+ 			resets = <&reset 0 11>;
++			pinctrl-names = "default";
++			pinctrl-0 = <&uart1_pins>;
  		};
  
  		uart2: serial@a00000 {
-@@ -98,6 +100,7 @@ uart2: serial@a00000 {
- 			interrupts = <GIC_SHARED 6 IRQ_TYPE_LEVEL_HIGH>;
+@@ -101,6 +105,8 @@ uart2: serial@a00000 {
  			clocks  = <&uart_clk>, <&occ_periph>;
  			clock-names = "uartclk", "apb_pclk";
-+			resets = <&reset 0 12>;
+ 			resets = <&reset 0 12>;
++			pinctrl-names = "default";
++			pinctrl-0 = <&uart2_pins>;
  		};
  
  		olb: system-controller@e00000 {
-@@ -107,6 +110,13 @@ olb: system-controller@e00000 {
- 			#address-cells = <1>;
- 			#size-cells = <1>;
- 
-+			reset: reset-controller@e00000 {
-+				compatible = "mobileye,eyeq5-reset";
-+				reg = <0x000 0x0c>, <0x200 0x34>, <0x120 0x04>;
-+				reg-names = "d0", "d1", "d2";
-+				#reset-cells = <2>;
-+			};
+@@ -125,6 +131,11 @@ clocks: clock-controller@e0002c {
+ 				clocks = <&xtal>;
+ 				clock-names = "ref";
+ 			};
 +
- 			clocks: clock-controller@e0002c {
- 				compatible = "mobileye,eyeq5-clk";
- 				reg = <0x02c 0x50>, <0x11c 0x04>;
++			pinctrl: pinctrl@e000b0 {
++				compatible = "mobileye,eyeq5-pinctrl";
++				reg = <0x0b0 0x30>;
++			};
+ 		};
+ 
+ 		gic: interrupt-controller@140000 {
+@@ -149,3 +160,5 @@ timer {
+ 		};
+ 	};
+ };
++
++#include "eyeq5-pins.dtsi"
 
 -- 
 2.44.0
