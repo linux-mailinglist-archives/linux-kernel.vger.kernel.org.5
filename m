@@ -1,186 +1,175 @@
-Return-Path: <linux-kernel+bounces-88001-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88002-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC2D586DBFD
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:17:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50FB786DBFF
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:18:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3750E1F2299A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 07:17:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9682B26589
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 07:18:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FCD66994C;
-	Fri,  1 Mar 2024 07:17:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE55E6930F;
+	Fri,  1 Mar 2024 07:18:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b="A/MzIoev"
-Received: from FRA01-MR2-obe.outbound.protection.outlook.com (mail-mr2fra01on2139.outbound.protection.outlook.com [40.107.9.139])
+	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="QbgeyEDU"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E8E66930F;
-	Fri,  1 Mar 2024 07:17:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.9.139
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709277463; cv=fail; b=uOoqa6Nl3Q4Kf7H9sIbt6dKdyUEzX4cfoMRmW3mFzjrTrUj0L3PW2RoUb944Z+GVz//3PwZrkoFHcxATljShJgnfP0H3YjWn3BfdpPMT5m36+5MUe8M99kz+0idLAp1lQrGEEZUepr/Qiy96ZDsvMuT2QAijCERuf2mZ61R0I2U=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709277463; c=relaxed/simple;
-	bh=Q7YloBPmXXBoVNNpWXooP1uWjIpxNfbBB9wRaih7XhA=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=g7qi9gY6WTrCebBGGq6tOMCDoYiNAUmUntBkRbyPGsm+Op0GPmu0bmxN3hI/A2aS4zzzhUojeAnvmYyNo2xgvk6J9Kee9xO0WD34I5ZTAVHjd7KxyEXoFBiaUFul+eH2UEYZwZSvPiPzGzBsUzGYIAeZq1GeQd6Gx3zQSiZkBHc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b=A/MzIoev; arc=fail smtp.client-ip=40.107.9.139
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EOEetsty0kM7OWjKNLcDjBE5sRaNVi8gXYU+C0d3ym/0bPr9EuTFK/O9i583xF42n7lYwq16Ms7T5dVYHShOojdlykbKvN7P/h39tmjuGonISM3Aj3VlmUoHFzoz5E1ECDSKYgDT8k6+baQ3YxekIdd3NyWiukLQXH/54H1aoNgNdjniYvN/U4jit6El40mEs/j/4JASf1tyZwlhaq+7MAxWaczFu8cIwXVqFU/+PVa4xjaaFpVzJV1qQS0vaSaZGpx2bp9XfNucBZdvADXYsCTIvt9jGL2CwpPzg9qreKWt1/wej/nt5wVLQKrqM+wMmY932AvRWKo8Ov4l2ie1BQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Q7YloBPmXXBoVNNpWXooP1uWjIpxNfbBB9wRaih7XhA=;
- b=ZyfDrA/CfY7rhFSQXc87fNfADhWM3THnV9HHhEmkLFFlJO44n0TX6BqQrNKRilkzBTqvTDo1GjFwgyyEFlXEA3BAl3WCNVwVaF9UFieD9QGpXPQ/6D6kHWj7g7UDQEH2gqH/uNqohUKQ8y9SHsN3AM3CUF/zfNjpG2WSYNNx06QFthiA2jiO62pb+T+4u4Ba9NABZ7Tn97Z++PG8ZnNdvJBH2rZftNc8ANfJGZj+51rJJPNPmyfIUxKOj3dL/3z5ajDt1iT0Z8QZzzh9+X6ciYJJb//am7ipbqhmamsoupHP4fxkGhnVnH7rIGJE/C+xKKBHXjqZIJ5FtnQ9oXC4Tw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Q7YloBPmXXBoVNNpWXooP1uWjIpxNfbBB9wRaih7XhA=;
- b=A/MzIoev62waZC/3yvdSqM3yzocFZP88RDCivDVyQlHPtvkrk3mzmaxW399in96Pa9wyNDoTAqujHtifdBhYpD961xiFJ1U48VJeQEkq84KJTZLJwE5Z5NM/LndmnpnmfpzlwWIG0w/9AAyMmreLP/6s9HXvV4GOFhKCfAaHbDKqVBmGF3dDz9BbYyH7/DBKixQhhqPKOaFo+ybwMtik/2sFh5Z8cPh9eKvoQszxWOVcu6JT+u7eZ/kZ/QJwHRPWU5B1/jb773i5560S52a8erkR0nbZ2PySh2QEcp7CfFDB8ezZvYnOt7FIcvU9tlK5ogbDpxeS99IDXG+S67Ge2Q==
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
- by PAYP264MB3437.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:125::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.36; Fri, 1 Mar
- 2024 07:17:38 +0000
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::c192:d40f:1c33:1f4e]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::c192:d40f:1c33:1f4e%6]) with mapi id 15.20.7316.039; Fri, 1 Mar 2024
- 07:17:38 +0000
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-To: Charlie Jenkins <charlie@rivosinc.com>, Guenter Roeck
-	<linux@roeck-us.net>, David Laight <David.Laight@aculab.com>, Palmer Dabbelt
-	<palmer@dabbelt.com>, Andrew Morton <akpm@linux-foundation.org>, Helge Deller
-	<deller@gmx.de>, "James E.J. Bottomley"
-	<James.Bottomley@hansenpartnership.com>, Parisc List
-	<linux-parisc@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>, Geert
- Uytterhoeven <geert@linux-m68k.org>, Russell King <linux@armlinux.org.uk>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Palmer
- Dabbelt <palmer@rivosinc.com>, Linux ARM
-	<linux-arm-kernel@lists.infradead.org>, "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>
-Subject: Re: [PATCH v11] lib: checksum: Use aligned accesses for ip_fast_csum
- and csum_ipv6_magic tests
-Thread-Topic: [PATCH v11] lib: checksum: Use aligned accesses for ip_fast_csum
- and csum_ipv6_magic tests
-Thread-Index: AQHaa2FN/UPATTv23UaTwsptpp4BsbEiek8A
-Date: Fri, 1 Mar 2024 07:17:38 +0000
-Message-ID: <41a5d1e8-6f30-4907-ba63-8a7526e71e04@csgroup.eu>
-References:
- <20240229-fix_sparse_errors_checksum_tests-v11-1-f608d9ec7574@rivosinc.com>
-In-Reply-To:
- <20240229-fix_sparse_errors_checksum_tests-v11-1-f608d9ec7574@rivosinc.com>
-Accept-Language: fr-FR, en-US
-Content-Language: fr-FR
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=csgroup.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MRZP264MB2988:EE_|PAYP264MB3437:EE_
-x-ms-office365-filtering-correlation-id: dd18d9a5-e93a-4082-50a7-08dc39bfacfc
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- gOS25O9ulV2kloinNp0e0GZyobkXhnIVR/TfBoqQmYVRM3Ju5Tc9mPgbzBiJwskB9RUZxgtYmkB7eFq6KBiD6yIshb0nyaWLQMjmvY9OXUOKpZDMTqIkKLOY1rxNdPTepQxlG9TcqVvOENsXMz94q5tYKJsKAKqtCaEN7sQNhDQQipfSYn9iNNKfifZXdBoiVTCXl8oyBzOuyOoA/IeHaonJNnx2lOUuwRlZGRmo9NKteFqK4NXyCZQ8OQwn6zBrZftrJn01uQRkpJ9hn0r9bwur0haLtp2tjmsBUmvtRp8OeZD/fe+aldoJiF+ImC3y24d37ktoINiW7yyRREokrSDcaFCuY1zPILi3CyZepPx8yVVDtlPYU3mhBX8OSQYsYrWYG8AREbX0A1R0BWCUGRafklU+yeP2cnINsO+4mBBapeH5s48cTD5UOy46mT6kMMUmV+EF4K2aPcuyttruLCKEDA5uBQDiH+hw/uTCB5VclCwTdy5m2dQHmPxNt2LnBwKKxn/1Q4wlIiyrxrHFjd5Tl5XasYUmgfGi8N2j0K1mTjniiN8IMfGO8h8d0Iifs3Aspi3OdHfGn/zE5GseaVGk6iUs62rr2Nwc1U+BXqNumaFRLkc4OwWpPouDfdHzAWjKqpVAaMsjRn9N1xDCmSWO2KhnfvwTbvX7yCYJ8talmO7Vzqjrx5YUuzin6LqNUEt1R8qq5r6IVC2ESgX4oPnU6TNhKQzHpKnXteRLWQk=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(38070700009)(921011);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?TTJSYm1ZZEZoKy9TSy9YaVk0Qy9Ca0JacU5sZ29vdUVzcDdpN2c5RnYxQ003?=
- =?utf-8?B?RGJpbTFaR0xNUGtmQU5PN2hsdGhhRDBzZXJiOExIQmZ2Uy9yZ0hOOTk5Nk5Z?=
- =?utf-8?B?SW9QZmMzWTViSlJuMlFiRmQyVGJLQlIvTGlkdWN6VStrV0gwMkgvZzU4bnJp?=
- =?utf-8?B?VklOUnF5aWl4V1BzTkJwRHA5RUJKN1ZjL1BQMDMrQzV0U0xIL2NRUkxncEZ0?=
- =?utf-8?B?ZE5SMjRLUDl4S09RQ1NOUGs1V3NHTW1Ibi9qZ2JPcW9YMVRkcHV1MS8vWkVr?=
- =?utf-8?B?T2lLUytyaGx1SmxwNWM1M21NZUs0SWE4Y1gxVnphak5LNVpuRUQ0N1NmMHlI?=
- =?utf-8?B?VUliQnIwMGsrTTh3YTYrdlpKTGFmdTg2QW9DUTZyUnBrajZLdS8zYWZkbU1o?=
- =?utf-8?B?V3FFVHcxV012aDdvM3FEdCt6dGNXRHVaSTBycERpSDhsYWZhOWdFUDdoNzJh?=
- =?utf-8?B?KzdnczF6RVBOTEQ4b1JtTXpBWkNWVXpUU0czY0c1Tk9SVWdQUkZrMXcvQmVH?=
- =?utf-8?B?WFRXeXl2bEM0R2RIejNYMWwvQ1M0UDlxNzNTOFFYeHlUcGF4RnhtNG56bkRr?=
- =?utf-8?B?SjhhUjF5Q0k0dUloR2RtdzAzNXJ0VmFKcjJpMmJwZGw1MFRuZDNRZHQrOEZ0?=
- =?utf-8?B?bTloZFRZOEtGVVlWdml6ZG1xVndOVUlkSUdxeTNGd0syRXdpSWtHQmdVU1BB?=
- =?utf-8?B?RzRyV2ZXSnhZMEc2QXBEbmlpdzk1aUF3QUVNczZCdnBud3RsZDNRU2ZSSkc2?=
- =?utf-8?B?UXFSUmt4blU2Y3dESVdQTFRxMkpadGZZRlIxUHVxS2Y0RWxuUFd4MXZRM1VE?=
- =?utf-8?B?a3IyWURqTytoazVyMUVoaDdaY1hjM0RTV3djaFd2VENXNjMwZWRMNmEwSlpw?=
- =?utf-8?B?UXBiaXVhelRnSTBjSEtBblRVUDc2OTNUengvb3pVaEFJdWNNQ3BBZCtOZkU3?=
- =?utf-8?B?UEtuUC9pdEdybXJKVC9iTTBQTzNtR0RKb3hGTHQ5QWhzLzlVSWowR0cxeDQw?=
- =?utf-8?B?bW9paVFXSXZFMVRxUTZTUkIzNlFRaE1uWURwZ0gyVFh2UlY5UzNtZXQ3OTll?=
- =?utf-8?B?SXhHZVBSUkh0OGg2cFA2MlNkNGNDTUNMS0tRdUdHK0I0NVVuVlEwMzFtWER1?=
- =?utf-8?B?bkhncnkvYkY3UWdxNFJRZTFQbENHeG4yUTZkZlVMTnh5RHFsaS8zYUhXbDhx?=
- =?utf-8?B?WmtJZjVzWURoM3p6NnBua2tacmlUeFVpWi81bDFtM1FpYVZuN0h6RUhMb2Zw?=
- =?utf-8?B?Y3pTVzlJSzdFaDc0a3Jza0xYOWFVM3NWQkR4MlNuUmxvbW9va29ROCtyVGFM?=
- =?utf-8?B?VTFIYWRwdm5jWFl2V0kxRk9QeEl0M3lHRGt4cWdSekRad3M5Y3M5WStrVkhW?=
- =?utf-8?B?ZGhDdGtQNmVKcTJrTXlzblFjZkE1OUhTWngrSkd3U0V5cklqOU5yazlTb2hD?=
- =?utf-8?B?T1IwSWRyelZHeDRoRVJPd3FoR1c2ZlV6TzRDQ29laWUrUjhtenZTUkFoNVBU?=
- =?utf-8?B?eVhaV3JXOXk5QVhGUHF3YnMxMVVlekd6U2JxMnpNb3VlaEVFUEdOZFFLQXN2?=
- =?utf-8?B?cHpzUThOWXA1V3BXaldyR1pXT1lqSkxUQWJmMmlJSmVQN2h3c1B1eDRhZ3NQ?=
- =?utf-8?B?dXhlbG9yWGlpN2JtKzB1bzlZcjQ1UVhiNzdOdHZjaU9YeVR0c2NkT0kwbUVi?=
- =?utf-8?B?OXB0Q21Ra0pDNFZVQVZ2dTc1R3FKTk1USG5WcldOSDVXRHc1bHVkbCtibEwx?=
- =?utf-8?B?UFNqaDA2Z0tpVk9uUVRTZnZwS2N2ZTB6TW9ZalVBakUyb3RReDQ0OWRWR1Ar?=
- =?utf-8?B?SW1ja0xDRmNSbW5Ic0I3SG5vcWw5Y1BzT0hQcEhlRDhsWXFmMDBBVXVnOVZl?=
- =?utf-8?B?WGlobGpVV0dDU3pLSS9DbzBsTm53OVpTSG53N0RiRllGRmJSK0xicEh1Zklv?=
- =?utf-8?B?RlUvc2VBVXp3eEpsSjFHNGg5bWpyMkgzU2RQYWtVa3pqR21wV1dEaVVyMmFQ?=
- =?utf-8?B?czgvWDRwV0hJbzR5RGprcW5jVzlLNlpZQ0J6anFWOVIwK0dqQnRtZUsxcmwz?=
- =?utf-8?B?S0diTzFFMEJsSGFDa1MwaDI5WnVlZXc5L0pQcENiakNlN05iTkNXWXB3QUhv?=
- =?utf-8?B?ek52UmwyYytOY05iZ1ZQZkwvUU5JSlI2VGZXcjJIK1pGRFFJN3ZBaVM1RzRn?=
- =?utf-8?B?UlE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <3637626EFEFE5D4F9AE8EDDB58C79DB7@FRAP264.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1793169940;
+	Fri,  1 Mar 2024 07:18:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709277488; cv=none; b=EEr+WAF3pQc2hAePFvk1AiBPWgsquEO+63DRT4JWvga37+7MqvNxZw7O2OA6XLs1aaeGLsbu1Cci/2XIzdVbOLBogyKPedVhmsPl3ZJboNFGWJqNFKfURLEaHwK0gC7Wp5Qyzlgo3koi1IuPsZZshRWnKpvsNunmCCAYlfy8lAQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709277488; c=relaxed/simple;
+	bh=GbVSxdxOcXrMNMtwoCnXVKLHEXl3QoXDvb9SPjJL/Go=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rXJsRijSqsBAbf05quOwh4OHdSe/tmJ0Y4y0CQR2YeizkxWg96flcETtcwNmvpYzfgmPJttqmgusHEWU9RS2D6t4fByJiJSk2C2awQNcrzydYCkccmWDAUrxUZvo1toorTXpkXgBdaKxT199xHIjxtOpOfNK4a02VP72WM7yG4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=QbgeyEDU; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 1C9E21C0006;
+	Fri,  1 Mar 2024 07:17:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+	t=1709277478;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=lrWsSClDpsgyGzHOaL8tpqRTFE2Qs26x3Fav87hKIS4=;
+	b=QbgeyEDUeUMQOAPAbUNPlZUfudRBI8YM9TORjlY7M2cJeot2oDtllAcd0MjXUEnr5ZIZX1
+	p7KyYE+yeIDFTQ8yQPM/ufRM8qE/cq+c2eNJ85dh0mpaStnBthX56nTPnApoRI0AihsDkF
+	2/9EUpOLnnYTX/kKXISnEy6CzgF93YcJS+IzWLbfHW3wbZdVCVMkFOY9DGnPRrcWHktCq+
+	pnHg5rPZD9FjXi0nAkhUqTYBfKx3j0DXH1Rhl+1pCFfYQkJSE8jq3RrkdY+VYmv+1rcD3M
+	zlFgosSPF0xqqFX/CJ9MPl/p7Oqr645ldbp9SG2lOxBi/QZUBeIm20G6rHL0zA==
+Message-ID: <ac5feb1c-602d-4562-9aed-d949670dd0f0@arinc9.com>
+Date: Fri, 1 Mar 2024 09:17:52 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: dd18d9a5-e93a-4082-50a7-08dc39bfacfc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Mar 2024 07:17:38.3393
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: hD6BJzFRu6P14ObApDc1rqrAvHfKsg8WbaPSOpk8UWFNIcepClajTR1pK97AB/UFQXrzW2OSQFn6DnvB7R6IyqDJEw13+k/qy+f+PpBBHkM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAYP264MB3437
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v2 8/8] net: dsa: mt7530: simplify link
+ operations and force link down on all ports
+To: Jakub Kicinski <kuba@kernel.org>,
+ =?UTF-8?B?QXLEsW7DpyDDnE5BTCB2aWEgQjQgUmVsYXk=?=
+ <devnull+arinc.unal.arinc9.com@kernel.org>
+Cc: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>,
+ Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
+ Florian Fainelli <f.fainelli@gmail.com>, Vladimir Oltean
+ <olteanv@gmail.com>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Russell King <linux@armlinux.org.uk>, mithat.guner@xeront.com,
+ erkin.bozoglu@xeront.com, Bartel Eerdekens <bartel.eerdekens@constell8.be>,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+References: <20240216-for-netnext-mt7530-improvements-3-v2-0-094cae3ff23b@arinc9.com>
+ <20240216-for-netnext-mt7530-improvements-3-v2-8-094cae3ff23b@arinc9.com>
+ <20240228174932.2500653d@kernel.org>
+Content-Language: en-US
+From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+In-Reply-To: <20240228174932.2500653d@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: arinc.unal@arinc9.com
 
-K0NDIG5ldGRldiBBUk0gUnVzc2VsbA0KDQpMZSAyOS8wMi8yMDI0IMOgIDIzOjQ2LCBDaGFybGll
-IEplbmtpbnMgYSDDqWNyaXTCoDoNCj4gVGhlIHRlc3QgY2FzZXMgZm9yIGlwX2Zhc3RfY3N1bSBh
-bmQgY3N1bV9pcHY2X21hZ2ljIHdlcmUgbm90IHByb3Blcmx5DQo+IGFsaWduaW5nIHRoZSBJUCBo
-ZWFkZXIsIHdoaWNoIHdlcmUgY2F1c2luZyBmYWlsdXJlcyBvbiBhcmNoaXRlY3R1cmVzDQo+IHRo
-YXQgZG8gbm90IHN1cHBvcnQgbWlzYWxpZ25lZCBhY2Nlc3NlcyBsaWtlIHNvbWUgQVJNIHBsYXRm
-b3Jtcy4gVG8NCj4gc29sdmUgdGhpcywgYWxpZ24gdGhlIGRhdGEgYWxvbmcgKDE0ICsgTkVUX0lQ
-X0FMSUdOKSBieXRlcyB3aGljaCBpcyB0aGUNCj4gc3RhbmRhcmQgYWxpZ25tZW50IG9mIGFuIElQ
-IGhlYWRlciBhbmQgbXVzdCBiZSBzdXBwb3J0ZWQgYnkgdGhlDQo+IGFyY2hpdGVjdHVyZS4NCg0K
-SW4geW91ciBkZXNjcmlwdGlvbiwgcGxlYXNlIHByb3ZpZGUgbW9yZSBkZXRhaWxzIG9uIHBsYXRm
-b3JtcyB0aGF0IGhhdmUgDQphIHByb2JsZW0sIHdoYXQgdGhlIHByb2JsZW0gaXMgZXhhY3RseSAo
-RmFpbGVkIGNhbGN1bGF0aW9uLCBzbG93bGluZXNzLCANCmtlcm5lbCBPb3BzLCBwYW5pYywgLi4u
-Likgb24gZWFjaCBwbGF0Zm9ybS4NCg0KQW5kIHBsZWFzZSBjb3B5IG1haW50YWluZXJzIGFuZCBs
-aXN0cyBvZiBwbGF0Zm9ybXMgeW91ciBhcmUgc3BlY2lmaWNhbGx5IA0KYWRkcmVzc2luZyB3aXRo
-IHRoaXMgY2hhbmdlLiBBbmQgYXMgdGhpcyBpcyBuZXR3b3JrIHJlbGF0ZWQsIG5ldGRldiBsaXN0
-IA0Kc2hvdWxkIGhhdmUgYmVlbiBjb3BpZWQgYXMgd2VsbC4NCg0KSSBzdGlsbCB0aGluayB0aGF0
-IHlvdXIgcGF0Y2ggaXMgbm90IHRoZSBnb29kIGFwcHJvYWNoLCBpdCBsb29rcyBsaWtlIA0KeW91
-IGFyZSBpZ25vcmluZyBhbGwgdGhlIGRpc2N1c3Npb24uIEJlbG93IGlzIGEgcXVvdGUgb2Ygd2hh
-dCBHZWVydCBzYWlkIA0KYW5kIEkgZnVsbHkgYWdyZWUgd2l0aCB0aGF0Og0KDQoJSU1ITyB0aGUg
-dGVzdHMgc2hvdWxkIHZhbGlkYXRlIHRoZSBleHBlY3RlZCBmdW5jdGlvbmFsaXR5LiAgSWYgYSB0
-ZXN0DQoJZmFpbHMsIGVpdGhlciBmdW5jdGlvbmFsaXR5IGlzIG1pc3Npbmcgb3IgYmVoYXZlcyB3
-cm9uZywgb3IgdGhlIHRlc3QNCglpcyB3cm9uZy4NCg0KCVdoYXQgaXMgdGhlIHBvaW50IG9mIHdy
-aXRpbmcgdGVzdHMgZm9yIGEgY29yZSBmdW5jdGlvbmFsaXR5IGxpa2UgbmV0d29yaw0KCWNoZWNr
-c3VtbWluZyB0aGF0IGRvIG5vdCBtYXRjaCB0aGUgZXhwZWN0ZWQgZnVuY3Rpb25hbGl0eT8NCg0K
-DQpTbyB3ZSBhbGwgYWdyZWUgdGhhdCB0aGVyZSBpcyBzb21ldGhpbmcgdG8gZml4LCBiZWNhdXNl
-IHRvZGF5J3MgdGVzdCANCmRvZXMgb2RkLWFkZHJlc3MgYWNjZXNzZXMgd2hpY2ggaXMgdW5leHBl
-Y3RlZCBmb3IgdGhvc2UgZnVuY3Rpb25zLCBidXQgDQoyLWJ5dGUgYWxpZ25tZW50cyBzaG91bGQg
-YmUgc3VwcG9ydGVkIGhlbmNlIHRlc3RlZCBieSB0aGUgdGVzdC4gTGltaXRpbmcgDQp0aGUgdGVz
-dCB0byBhIDE2LWJ5dGVzIGFsaWdubWVudCBkZWVwbHkgcmVkdWNlcyB0aGUgdXNlZnVsbG5lc3Mg
-b2YgdGhlIHRlc3QuDQoNCkNocmlzdG9waGUNCg==
+Thanks for looking over this patch series Jakub!
+
+On 29/02/2024 03:49, Jakub Kicinski wrote:
+> On Fri, 16 Feb 2024 14:05:36 +0300 Arınç ÜNAL via B4 Relay wrote:
+>> From: Arınç ÜNAL <arinc.unal@arinc9.com>
+>>
+>> Currently, the link operations for switch MACs are scattered across
+>> port_enable, port_disable, phylink_mac_config, phylink_mac_link_up, and
+>> phylink_mac_link_down.
+>>
+>> port_enable and port_disable clears the link settings. Move that to
+>> mt7530_setup() and mt7531_setup_common() which set up the switches. This
+>> way, the link settings are cleared on all ports at setup, and then only
+>> once with phylink_mac_link_down() when a link goes down.
+>>
+>> Enable force mode at setup to apply the force part of the link settings.
+>> This ensures that only active ports will have their link up.
+> 
+> I don't know phylink so some basic questions..
+> 
+> What's "mode" in this case?
+
+The mode here represents whether we will configure properties of the link
+manually (force mode), or by polling the PHY. The driver is supposed to
+configure the properties so we enable force mode on the port MAC registers.
+
+MT7530 has a single bit for this, PMCR_FORCE_MODE. MT7531 has multiple
+bits, MT7531_FORCE_MODE, each of them enabling the force mode for a certain
+property of the link.
+
+> 
+>> Now that the bit for setting the port on force mode is done on
+>> mt7530_setup() and mt7531_setup_common(), get rid of PMCR_FORCE_MODE_ID()
+>> which helped determine which bit to use for the switch model.
+> 
+> MT7531_FORCE_MODE also includes MT7531_FORCE_LNK, doesn't that mean
+> the link will be up?
+
+No, that one enables force mode for the link status property. The bit for
+setting the link status is PMCR_FORCE_LNK.
+
+I know the current naming of the bits is confusing. I have patch for this
+on my next patch series to improve it.
+
+> 
+>> The "MT7621 Giga Switch Programming Guide v0.3", "MT7531 Reference Manual
+>> for Development Board v1.0", and "MT7988A Wi-Fi 7 Generation Router
+>> Platform: Datasheet (Open Version) v0.1" documents show that these bits are
+>> enabled at reset:
+>>
+>> PMCR_IFG_XMIT(1) (not part of PMCR_LINK_SETTINGS_MASK)
+>> PMCR_MAC_MODE (not part of PMCR_LINK_SETTINGS_MASK)
+>> PMCR_TX_EN
+>> PMCR_RX_EN
+>> PMCR_BACKOFF_EN (not part of PMCR_LINK_SETTINGS_MASK)
+>> PMCR_BACKPR_EN (not part of PMCR_LINK_SETTINGS_MASK)
+>> PMCR_TX_FC_EN
+>> PMCR_RX_FC_EN
+>>
+>> These bits also don't exist on the MT7530_PMCR_P(6) register of the switch
+>> on the MT7988 SoC:
+>>
+>> PMCR_IFG_XMIT()
+>> PMCR_MAC_MODE
+>> PMCR_BACKOFF_EN
+>> PMCR_BACKPR_EN
+>>
+>> Remove the setting of the bits not part of PMCR_LINK_SETTINGS_MASK on
+>> phylink_mac_config as they're already set.
+> 
+> This should be a separate change.
+
+Sure, will do.
+
+> 
+>> Suggested-by: Vladimir Oltean <olteanv@gmail.com>
+>> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+> 
+>> @@ -2257,6 +2255,12 @@ mt7530_setup(struct dsa_switch *ds)
+>>   	mt7530_mib_reset(ds);
+>>   
+>>   	for (i = 0; i < MT7530_NUM_PORTS; i++) {
+>> +		/* Clear link settings and enable force mode to force link down
+> 
+> "Clear link settings to force link down" makes sense.
+> Since I don't know what the mode is, the "and enable force mode"
+> sounds possibly out of place. If you're only combining this
+> for the convenience of RMW, keep the reasoning separate.
+
+No. Force mode must be enabled so that we can manually set the link state.
+Then, clearing the link settings achieves setting the link status to down.
+
+Arınç
 
