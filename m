@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-88851-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88852-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 683E486E786
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:44:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E9D086E788
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:44:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2151C287D8A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:44:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B61402871F7
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:44:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCCDB11C88;
-	Fri,  1 Mar 2024 17:44:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B0F425610;
+	Fri,  1 Mar 2024 17:44:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fbKApwk9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AJHcs2kG"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17D618BFE;
-	Fri,  1 Mar 2024 17:44:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C59B1B7FD;
+	Fri,  1 Mar 2024 17:44:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709315048; cv=none; b=dYwqgbL5V1U7pKptV2mtMLruVPDa7gt/iIMXmqprvJBQszoRiVP73JSSnOeIcvuSPwSirGo9qBeGSKx7RheJ/owjlGDMbtQVYafSa9+D04xQRmUDo1M13DWSzdKatqBlMoiwgUz6ie6GNBevzVTI8jQ82Atax0XR1PSMhee/bq0=
+	t=1709315050; cv=none; b=RmA0M6ttFBUbm1PbD7uB+HmBOjBcFv+ciDg0lm2xoRb6EyR6XKeWgRH1QgXUnnl1/oDZDMFtUowtkiMFA4IJ6sVU90lnTADutgvA+57H+q1faMGjdxxxmBLRPklnCDWt6q+KSEeHTteals/+Bs2RBvvnh8CFMW2hy/vfonB/CLw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709315048; c=relaxed/simple;
-	bh=RgiwHjq99te3mxoQlvDzBcgnm4t11h4M4CZ6qM0UMzg=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=gKANyEK3PGTyxCf94l+MwQIRNmMgpe+GTyKPsLK/sqWPV4uhznZ5VytSLpsNsxxqBYufbaJexq2QMARkhkj+N8RE/AmeN9kkNigxddPAaOY5Qtpp1lp4ALZy3Jr6dZAFdVVYhZ4Pzn4pfnpc0XILSC0jibfBmPNIyqwWAHAPqmw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fbKApwk9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4B79C43390;
-	Fri,  1 Mar 2024 17:44:05 +0000 (UTC)
+	s=arc-20240116; t=1709315050; c=relaxed/simple;
+	bh=qWKkPNajfUVsea21RCifCjJMui1+CQjLYDkjVsEM5Tw=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=npIUcyeO5Mqu/FyOa5NUATEfw3VxTcodro9hUGOeM3TWtn+wGzSx7uawEODSi6sSHbJVHSZg7dQB4wcBfCF7IAPc04N6P7r5Fv/StKkI6GyXLtDPro7NfQ4QziScf/jm6PYW/h8ChFbwyF4PHsoLG2Xi9a7onIbmaAg/WyqmmGc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AJHcs2kG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C8B3C43601;
+	Fri,  1 Mar 2024 17:44:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709315047;
-	bh=RgiwHjq99te3mxoQlvDzBcgnm4t11h4M4CZ6qM0UMzg=;
-	h=From:Subject:Date:To:Cc:From;
-	b=fbKApwk9uFBe2y7QbpIvRChKVGAA1yHjFD0pB7CGsh/ocmoxGxIxBQBpq2k8jx983
-	 hcg7QeLO8nFd0FrKiI/gg0BVRgKLmEfMOqJvni43dp0PubaGYQeJlc22FofQ3EVR2J
-	 fN6tU3yLu2S87QViIxorsvmz+klN227O79S728Eci4RIrnSTTuBHGNA/uJWH569j+G
-	 VHgtNHOSy9Zp+sjNxOlu6EP0db8TNXSeIGCfXgxYyDie0hvXknzCbfhifS//fQek74
-	 hdj5XTkAnmgsL3JO2vXlIDHLDq6LkEznxHfJoDICOGbO5ZpNPp0h8y6ffVi5dPIb6/
-	 WslRENe+3dXqQ==
+	s=k20201202; t=1709315050;
+	bh=qWKkPNajfUVsea21RCifCjJMui1+CQjLYDkjVsEM5Tw=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+	b=AJHcs2kGBucd9FOxyzi6CAEHp5/R8Qxhdp5GWFeo2fushkL8CTNe/7FTyCB6zXgNX
+	 jJU87Ge1bkClZRbvqde8IA0iW7WvM6XeVd+TBwK98lwMGIgkTR9ytfyFmexhuvVF9x
+	 XQr0DJBKmRIgy48txqvNZlKtmX8KgDsmRGGFPybPgnd4/L9LcRTJ/hR/wZQ/Rn8ftv
+	 PUWJPAy2uyw3I3EHzHSxbcjfmcmtTLD/vWYk4M1dcQ8FgfvJ0G/EbEE8r37FpbctOP
+	 2vPKFP7nE8sh8JYOJ8k0yaEs/sTIOOea/uRpGb9XtdcWHmR+qapLEVjmqnlr8QWEur
+	 L5SGiGv4geMcQ==
 From: "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
-Subject: [PATCH net-next 0/4] mptcp: add TCP_NOTSENT_LOWAT sockopt support
-Date: Fri, 01 Mar 2024 18:43:43 +0100
-Message-Id: <20240301-upstream-net-next-20240301-mptcp-tcp_notsent_lowat-v1-0-415f0e8ed0e1@kernel.org>
+Date: Fri, 01 Mar 2024 18:43:44 +0100
+Subject: [PATCH net-next 1/4] mptcp: cleanup writer wake-up
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,9 +51,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAM8T4mUC/z2NQQrCMBBFr1Jm7UCaVIpeRaSk6agDNgnJVAuld
- 3cQdPEWjw/vb1CpMFU4NxsUenHlFFXaQwPh4eOdkCd1sMZ2xpkWl1ylkJ8xkiir4H+as4SMyhC
- TVIoyPNPbC/a9CX48uckeHWg4F7rx+j29wC8D133/AGaUTxOOAAAA
+Message-Id: <20240301-upstream-net-next-20240301-mptcp-tcp_notsent_lowat-v1-1-415f0e8ed0e1@kernel.org>
+References: <20240301-upstream-net-next-20240301-mptcp-tcp_notsent_lowat-v1-0-415f0e8ed0e1@kernel.org>
+In-Reply-To: <20240301-upstream-net-next-20240301-mptcp-tcp_notsent_lowat-v1-0-415f0e8ed0e1@kernel.org>
 To: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>, 
  Geliang Tang <geliang@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
  Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
@@ -61,63 +61,116 @@ To: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>,
 Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
  "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1913; i=matttbe@kernel.org;
- h=from:subject:message-id; bh=RgiwHjq99te3mxoQlvDzBcgnm4t11h4M4CZ6qM0UMzg=;
- b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBl4hPgrxAKiEvYIdh99Bb9o9cPkISVwJlwcQbPS
- SyVSTC3hfGJAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZeIT4AAKCRD2t4JPQmmg
- c1rmEADlqVg8qBM6qIczmltAqyTRPHTnLk+3iDAgupkCS1dPQzoBqhokX7GxmrRCjET/U5jc5RQ
- QxzGHwO/qBjXckl+XIt1Ui9zC661kOi6WXOU/Rf/FnHOjkAiTbVb2D4iRzr7kj+WmFxEbQQTazb
- nmbYxdB2Q76mx/ZrcBhcnwAeRStsMzOl6DRRhZCm4M7X0q8MK0u5Nszy4MCD9WjaBYCXcTVRjr1
- Z0HWzVQ8pgp3zRxSkaoBJILX7yEqQVXR8IwIcSwL59OiR5NadnzGfuv13O9hWDUGVYOzeotnrz7
- d7GoKqpO2uAw0H0VTPijIzx0JDunlPiDC88FeuhmV2Ay084XaopFUvu1rn0/U+zDJ87sVnszTJP
- xJH9mDNJF6skfiF/GqTrU5Ki7OEkqG4+hg10Q0aa6h7jVyC3E6pPN/o6hrrIlIgey9PfiSrjesB
- 2aME0EtxuKBRFyyGRPp6HSWogxYPBXAyEaJr/rdvzT/+GDc/pRzmr5egDD16ATiWP7prB+V4i6/
- 1bz+NyUGCxiEiun3o6iE7d6y/zMLkT1jQJS0Tw92Parq7Zlndb00mYunFdjPGr4TcRUTPFbVDJE
- lYHfWSggOlKnSOC/IJRs5Fe1qeM967D8oBfuTBZq/8ywMFvhpWttFwRwmwkr4TFI7PVfTKPTtnc
- 7eHm+u7QGHoE48A==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3037; i=matttbe@kernel.org;
+ h=from:subject:message-id; bh=QqGEqOJP/LnJu/Zld7Jkp0utf6EsUkW4CSldq5xKHBk=;
+ b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBl4hPlDtIoxjQZIKgof6OZ1T4DqpNhnK6w+HQHC
+ f4aEcIGgbaJAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZeIT5QAKCRD2t4JPQmmg
+ c51EEADPqtNb0PTe6S2cEYvynnC0p5AHi5D6EBeQIqgMkaInJyEvhSof7Spdqzhv4vJlgw+M/P5
+ OLZTgZ4G9WOprnKT3h/bwEXkfx9l0s/HcLond6cLdHdhnWRAnCvUZocYT1yNFbxXF2dDVWrAqRE
+ lK/UmIsU1PO9fg3xf59vyKa+Uwn/prbO7QpBnFYpO0D+hduXP+U78+r8jTxKHHoUjZf1G04Hd9b
+ wZMyx6jLIX45gH9I4Gvq0nln8OMGIfIhuQGBHDNB7+uYQ1FPdb4Qc7LK6A35fb5h2DzgrZnYESx
+ eULfofIQ3mlYVVNbcqkDgcTNojGhfJmdPH9GWPQgOXOALuH+Ei8v3ga0TSA/IlQl3/IJk0WavOI
+ XvsYp+bjjgtIe4Fza4trZM8GCQK8ecuAEY964dZTuNjCBOaUuXxCEWYDXEWkGUdQ0+nfvwbxDOC
+ oq/CNSUwO6+7bPjLzN3S1z+YRWP1PMEICvoTpM/gPqyp9HXuwQmvrqyEISden6VhWgZJA8m8tjo
+ ybDdgxrxtREzVpmWQ2qCQbCPBQmRf0uUsgs0HKSA+RmaEpu33ox3W1N6vsy4QBcZCUvr1/HC448
+ uiWu2cN+21A2hsByxz/6w7LX8BcgrDDeW+lGtL9QweadNUU6HeZSH90xhBYGdueksDnIrhLyqnL
+ v0PRx8oXNjhrr6g==
 X-Developer-Key: i=matttbe@kernel.org; a=openpgp;
  fpr=E8CB85F76877057A6E27F77AF6B7824F4269A073
 
-Patch 3 does the magic of adding TCP_NOTSENT_LOWAT support, all the
-other ones are minor cleanup seen along when working on the new feature.
+From: Paolo Abeni <pabeni@redhat.com>
 
-Note that this feature relies on the existing accounting for snd_nxt.
-Such accounting is not 110% accurate as it tracks the most recent
-sequence number queued to any subflow, and not the actual sequence
-number sent on the wire. Paolo experimented a lot, trying to implement
-the latter, and in the end it proved to be both "too complex" and "not
-necessary".
+After commit 5cf92bbadc58 ("mptcp: re-enable sndbuf autotune"), the
+MPTCP_NOSPACE bit is redundant: it is always set and cleared together with
+SOCK_NOSPACE.
 
-The complexity raises from the need for additional lock and a lot of
-refactoring to introduce such protections without adding significant
-overhead. Additionally, snd_nxt is currently used and exposed with the
-current semantic by the internal packet scheduling. Introducing a
-different tracking will still require us to keep the old one.
+Let's drop the first and always relay on the latter, dropping a bunch
+of useless code.
 
-More interestingly, a more accurate tracking could be not strictly
-necessary: as the MPTCP socket enqueues data to the subflows only up to
-the available send window, any enqueue data is sent on the wire
-instantly, without any blocking operation short or a drop in the tx path
-at the nft or TC layer.
-
+Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+Reviewed-by: Mat Martineau <martineau@kernel.org>
 Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
 ---
-Paolo Abeni (4):
-      mptcp: cleanup writer wake-up
-      mptcp: avoid some duplicate code in socket option handling
-      mptcp: implement TCP_NOTSENT_LOWAT support
-      mptcp: cleanup SOL_TCP handling
+ net/mptcp/protocol.c | 15 +++------------
+ net/mptcp/protocol.h | 16 ++++++----------
+ 2 files changed, 9 insertions(+), 22 deletions(-)
 
- net/mptcp/protocol.c | 54 ++++++++++++++++++++++++++-------------
- net/mptcp/protocol.h | 42 +++++++++++++++++++++++--------
- net/mptcp/sockopt.c  | 71 +++++++++++++++++++++++-----------------------------
- 3 files changed, 101 insertions(+), 66 deletions(-)
----
-base-commit: e960825709330cb199d209740326cec37e8c419d
-change-id: 20240301-upstream-net-next-20240301-mptcp-tcp_notsent_lowat-770cab93d253
+diff --git a/net/mptcp/protocol.c b/net/mptcp/protocol.c
+index 76c8861a852b..a3d79e9d0694 100644
+--- a/net/mptcp/protocol.c
++++ b/net/mptcp/protocol.c
+@@ -1692,15 +1692,6 @@ static void __mptcp_subflow_push_pending(struct sock *sk, struct sock *ssk, bool
+ 	}
+ }
+ 
+-static void mptcp_set_nospace(struct sock *sk)
+-{
+-	/* enable autotune */
+-	set_bit(SOCK_NOSPACE, &sk->sk_socket->flags);
+-
+-	/* will be cleared on avail space */
+-	set_bit(MPTCP_NOSPACE, &mptcp_sk(sk)->flags);
+-}
+-
+ static int mptcp_disconnect(struct sock *sk, int flags);
+ 
+ static int mptcp_sendmsg_fastopen(struct sock *sk, struct msghdr *msg,
+@@ -1874,7 +1865,7 @@ static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
+ 		continue;
+ 
+ wait_for_memory:
+-		mptcp_set_nospace(sk);
++		set_bit(SOCK_NOSPACE, &sk->sk_socket->flags);
+ 		__mptcp_push_pending(sk, msg->msg_flags);
+ 		ret = sk_stream_wait_memory(sk, &timeo);
+ 		if (ret)
+@@ -3945,8 +3936,8 @@ static __poll_t mptcp_check_writeable(struct mptcp_sock *msk)
+ 	if (sk_stream_is_writeable(sk))
+ 		return EPOLLOUT | EPOLLWRNORM;
+ 
+-	mptcp_set_nospace(sk);
+-	smp_mb__after_atomic(); /* msk->flags is changed by write_space cb */
++	set_bit(SOCK_NOSPACE, &sk->sk_socket->flags);
++	smp_mb__after_atomic(); /* NOSPACE is changed by mptcp_write_space() */
+ 	if (sk_stream_is_writeable(sk))
+ 		return EPOLLOUT | EPOLLWRNORM;
+ 
+diff --git a/net/mptcp/protocol.h b/net/mptcp/protocol.h
+index d0a7955b96c4..f0c634e843e6 100644
+--- a/net/mptcp/protocol.h
++++ b/net/mptcp/protocol.h
+@@ -113,10 +113,9 @@
+ #define MPTCP_RST_TRANSIENT	BIT(0)
+ 
+ /* MPTCP socket atomic flags */
+-#define MPTCP_NOSPACE		1
+-#define MPTCP_WORK_RTX		2
+-#define MPTCP_FALLBACK_DONE	4
+-#define MPTCP_WORK_CLOSE_SUBFLOW 5
++#define MPTCP_WORK_RTX		1
++#define MPTCP_FALLBACK_DONE	2
++#define MPTCP_WORK_CLOSE_SUBFLOW 3
+ 
+ /* MPTCP socket release cb flags */
+ #define MPTCP_PUSH_PENDING	1
+@@ -810,12 +809,9 @@ static inline bool mptcp_data_fin_enabled(const struct mptcp_sock *msk)
+ 
+ static inline void mptcp_write_space(struct sock *sk)
+ {
+-	if (sk_stream_is_writeable(sk)) {
+-		/* pairs with memory barrier in mptcp_poll */
+-		smp_mb();
+-		if (test_and_clear_bit(MPTCP_NOSPACE, &mptcp_sk(sk)->flags))
+-			sk_stream_write_space(sk);
+-	}
++	/* pairs with memory barrier in mptcp_poll */
++	smp_mb();
++	sk_stream_write_space(sk);
+ }
+ 
+ static inline void __mptcp_sync_sndbuf(struct sock *sk)
 
-Best regards,
 -- 
-Matthieu Baerts (NGI0) <matttbe@kernel.org>
+2.43.0
 
 
