@@ -1,72 +1,75 @@
-Return-Path: <linux-kernel+bounces-88046-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88048-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DAAA86DCAC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:06:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D7E3086DCB1
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:07:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ECEF1283B15
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:06:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 941EF283A38
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:07:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0DDE69D14;
-	Fri,  1 Mar 2024 08:06:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEB2569D12;
+	Fri,  1 Mar 2024 08:07:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="mZSWsqbI"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YPkDYd2X"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFE996930E;
-	Fri,  1 Mar 2024 08:06:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6498A69970
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 08:07:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709280379; cv=none; b=fDRcopBhw7rBkJfKFvOXNZZz8RHgEyeSDIG0/0MX05iuRhgHXP8nhSaeam4a9c1ylEX1o+ZPPCAr0mCoL0xTk7H5P1FdfKnvOB9oiyefn474tDu06D0qvmooWNjYDcaXLGYkogBuWnLEB7CZmpMD/CpdOb9g0DBZD3jV01JuWMA=
+	t=1709280467; cv=none; b=Lvj07yGuhg8WUu61ADuB2VbNIgCwBC0vZ5xapG8VwdJOGPuwbCDWhjrbxFqEt1MkEpTWqlInRkUdDlDDT9tynXUJn9aIA6QV2whwxDtC/jwExgUFGG1jwyqyj8pSiyTdTPosXJHGa/qHMbJealc4suZz6U5gUWHMqFdYmIbxB2o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709280379; c=relaxed/simple;
-	bh=yI37i87UqneOzVmTClYz+I31zKh2W/A+wihChWmk0Kk=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ddGvE1SkM8WztxgUmaREEPAj+kGUmY4reYNkLThiTJSSClM1BI6/64iU9/3z0c+sl2WA/PHQ61FqjhQJQblyolf2SYIU3ZUueJh+woecBSMLQ4skrXNsE3T2pjQtTfJmjU0M5rEfPLvpfXTNpauTNb14rX+bZaZKpoaZgSeqJ0o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=mZSWsqbI; arc=none smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+	s=arc-20240116; t=1709280467; c=relaxed/simple;
+	bh=vtBsxDUN0mZSlkutEWcnxc6lRCMfEsZZFVzveFyo3e0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=NlAu0dIqUDNhay3wWY5BPHIloY/nSB1OkFASKa0oa47i1HZ86RtkA5iSeHN2YPx8vvv5oXYFh11XkKp85w1lS/MLhQEDJ9cmZWxhfL2aHneS8C+/LfGP1EF9dgj9Jjalug8JH3OZnntgpLqmPqLCOkGm4QpkQEJy9HViueb7YGE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YPkDYd2X; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1709280377; x=1740816377;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709280466; x=1740816466;
   h=from:to:cc:subject:date:message-id:mime-version:
    content-transfer-encoding;
-  bh=yI37i87UqneOzVmTClYz+I31zKh2W/A+wihChWmk0Kk=;
-  b=mZSWsqbI/Upxee9fzIGcrL2jQO5mBjMhO4ItNufEUUXs/7Z6zvLMiPAf
-   3pZpWg37+MBXeJWB3TFXDfRyZkDqpe60gTGTr3RQ8oXCuKtz+YIdg+ei6
-   ALdy9qVtaaow9T/G/uT/KGglu/XPx+WR6I43X8xg7fbdrcjGEpjIG7lo1
-   JAGnyaw72B/u5oj+MoEJq2RFMq6dFq4/XACfDcvBEFhL+3u5/2s2EytC2
-   j75b3eCMVT7TVlSsmXBChOpmg7/x+qnaUHIOB3dV3MC4y2hULOt2uBuSk
-   RFsbBn8CbDGt9lCIxeCVeLozTqpvxlVE7qsJzDou2pErWaxlt7xrT3tQ3
+  bh=vtBsxDUN0mZSlkutEWcnxc6lRCMfEsZZFVzveFyo3e0=;
+  b=YPkDYd2XgIlW4wzSomwfjhR3Sj2fSuV0ARCOCmQq4sk4DuWhfT9uZ/RE
+   OwXw4CTQKKktycHystDryk9/GOlsKQK27o1shNgOZj153RnQkge8SR7Vp
+   rdacUoiqzPDEt1qzEV34cZGUz5kFYgatmSkslQnzkXR9U+FLkhpyD/h1B
+   bDc6AOhE/gjTDSO7opE5tbpvihAe6YNvbEw+RrR4lWMGdGNBgpW1UMQcw
+   YlgTFWvhg2dMBHyconjhijWujYT9OvU1qJtPVPj0Mc7aD+9F7pdKFBQaP
+   jHTnOotQBubLrftJKeuDDq935pqQwB1HbdC+70wDetVKwZW5vX8Ht0KSu
    w==;
-X-CSE-ConnectionGUID: KhfOYgZRQh2P8hw7PiCldA==
-X-CSE-MsgGUID: 1AUvhw2rQpqUKBk3Czq4Hg==
-X-IronPort-AV: E=Sophos;i="6.06,195,1705388400"; 
-   d="scan'208";a="18668063"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 01 Mar 2024 01:06:15 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 1 Mar 2024 01:06:14 -0700
-Received: from DEN-DL-M31836.microsemi.net (10.10.85.11) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Fri, 1 Mar 2024 01:06:12 -0700
-From: Horatiu Vultur <horatiu.vultur@microchip.com>
-To: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-	<pabeni@redhat.com>, <lars.povlsen@microchip.com>,
-	<Steen.Hegelund@microchip.com>, <daniel.machon@microchip.com>,
-	<UNGLinuxDriver@microchip.com>, <bjarni.jonasson@microchip.com>
-CC: <netdev@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, Horatiu Vultur <horatiu.vultur@microchip.com>
-Subject: [PATCH net] net: sparx5: Fix use after free inside sparx5_del_mact_entry
-Date: Fri, 1 Mar 2024 09:06:08 +0100
-Message-ID: <20240301080608.3053468-1-horatiu.vultur@microchip.com>
-X-Mailer: git-send-email 2.34.1
+X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="15240393"
+X-IronPort-AV: E=Sophos;i="6.06,195,1705392000"; 
+   d="scan'208";a="15240393"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 00:07:45 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,195,1705392000"; 
+   d="scan'208";a="8187457"
+Received: from unknown (HELO ply01-vm-store.amr.corp.intel.com) ([10.238.153.201])
+  by orviesa009.jf.intel.com with ESMTP; 01 Mar 2024 00:07:40 -0800
+From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+To: baolu.lu@linux.intel.com,
+	bhelgaas@google.com,
+	robin.murphy@arm.com,
+	jgg@ziepe.ca
+Cc: kevin.tian@intel.com,
+	dwmw2@infradead.org,
+	will@kernel.org,
+	lukas@wunner.de,
+	yi.l.liu@intel.com,
+	dan.carpenter@linaro.org,
+	iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	Ethan Zhao <haifeng.zhao@linux.intel.com>
+Subject: [PATCH v14 0/3] fix vt-d hard lockup when hotplug ATS capable device
+Date: Fri,  1 Mar 2024 03:07:24 -0500
+Message-Id: <20240301080727.3529832-1-haifeng.zhao@linux.intel.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,39 +77,113 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
 
-Based on the static analyzis of the code it looks like when an entry
-from the MAC table was removed, the entry was still used after being
-freed. More precise the vid of the mac_entry was used after calling
-devm_kfree on the mac_entry.
-The fix consists in first using the vid of the mac_entry to delete the
-entry from the HW and after that to free it.
+This patchset is used to fix vt-d hard lockup reported when surprise
+unplug ATS capable endpoint device connects to system via PCIe switch
+as following topology.
 
-Fixes: b37a1bae742f ("net: sparx5: add mactable support")
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
----
- drivers/net/ethernet/microchip/sparx5/sparx5_mactable.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+     +-[0000:15]-+-00.0  Intel Corporation Ice Lake Memory Map/VT-d
+     |           +-00.1  Intel Corporation Ice Lake Mesh 2 PCIe
+     |           +-00.2  Intel Corporation Ice Lake RAS
+     |           +-00.4  Intel Corporation Device 0b23
+     |           \-01.0-[16-1b]----00.0-[17-1b]--+-00.0-[18]----00.0
+                                           NVIDIA Corporation Device 2324
+     |                                           +-01.0-[19]----00.0
+                          Mellanox Technologies MT2910 Family [ConnectX-7]
 
-diff --git a/drivers/net/ethernet/microchip/sparx5/sparx5_mactable.c b/drivers/net/ethernet/microchip/sparx5/sparx5_mactable.c
-index 4af285918ea2a..75868b3f548ec 100644
---- a/drivers/net/ethernet/microchip/sparx5/sparx5_mactable.c
-+++ b/drivers/net/ethernet/microchip/sparx5/sparx5_mactable.c
-@@ -347,10 +347,10 @@ int sparx5_del_mact_entry(struct sparx5 *sparx5,
- 				 list) {
- 		if ((vid == 0 || mact_entry->vid == vid) &&
- 		    ether_addr_equal(addr, mact_entry->mac)) {
-+			sparx5_mact_forget(sparx5, addr, mact_entry->vid);
-+
- 			list_del(&mact_entry->list);
- 			devm_kfree(sparx5->dev, mact_entry);
--
--			sparx5_mact_forget(sparx5, addr, mact_entry->vid);
- 		}
- 	}
- 	mutex_unlock(&sparx5->mact_lock);
+User brought endpoint device 19:00.0's link down by flapping it's hotplug
+capable slot 17:01.0 link control register, as sequence DLLSC response,
+pciehp_ist() will unload device driver and power it off, durning device
+driver is unloading an iommu device-TLB invalidation (Intel VT-d spec, or
+'ATS Invalidation' in PCIe spec) request issued to that link down device,
+thus a long time completion/timeout waiting in interrupt context causes
+continuous hard lockup warnning and system hang.
+
+Other detail, see every patch commit log.
+
+patch [1&2] were tested by yehaorong@bytedance.com on stable v6.7-rc4.
+patch [1-3] passed compiling on stable v6.8-rc4 (Baolu's rbtree branch).
+
+This patch set is based on Baolu's device rbtree patchset
+https://lore.kernel.org/lkml/20240221153437.GB13491@ziepe.ca/t/
+
+change log:
+v14: 
+- made some adjustment to patch[3/3] per comment from Baolu, Dan, Bjorn.
+- add fixes tag to patch[3/3] per Dan's sugguestion.
+- add ack tag from Bjorn to patch[1/3]
+- add review tag from Dan.
+v13:
+- rebased on Baolu's rbtree patchset.
+- removed refactor patches [3/5][4/5] in v12.
+- amend commit description of patch[3/3].
+- https://lore.kernel.org/lkml/2d1788da-521c-4531-a159-81d2fb801d6c@
+linux.intel.com/T/
+v12:
+- use base-commit tag to format patch.
+- fix building issue on v6.8-rc2 repported by lkp@intel.com.
+- https://lkml.org/lkml/2024/1/28/535
+v11:
+- update per latest comment and suggestion from Baolu and YiLiu.
+- split refactoring patch into two patches, [3/5] for simplify parameters
+  and [4/5] for pdev parameter passing.
+- re-order patches.
+- fold target device presence check into qi_check_fault().
+- combine patch[2][5] in v10 into one patch[5].
+- some commit description correctness.
+- add fixes tag to patch[2/5].
+- rebased on 6.8rc1
+- https://lkml.org/lkml/2024/1/25/1314
+v10:
+- refactor qi_submit_sync() and its callers to get pci_dev instance, as
+  Kevin pointed out add target_flush_dev to iommu is not right.
+v9:
+- unify all spelling of ATS Invalidation adhere to PCIe spec per Bjorn's
+  suggestion.
+v8:
+- add a patch to break the loop for timeout device-TLB invalidation, as
+  Bjorn said there is possibility device just no response but not gone.
+v7:
+- reorder patches and revise commit log per Bjorn's guide.
+- other code and commit log revise per Lukas' suggestion.
+- rebased to stable v6.7-rc6.
+v6:
+- add two patches to break out device-TLB invalidation if device is gone.
+v5:
+- add a patch try to fix the rare case (surprise remove a device in
+  safe removal process). not work because surprise removal handling can't
+  re-enter when another safe removal is in process.
+v4:
+- move the PCI device state checking after ATS per Baolu's suggestion.
+v3:
+- fix commit description typo.
+v2:
+- revise commit[1] description part according to Lukas' suggestion.
+- revise commit[2] description to clarify the issue's impact.
+v1:
+- https://lore.kernel.org/lkml/20231213034637.2603013-1-haifeng.zhao@
+linux.intel.com/T/
+
+
+Thanks,
+Ethan
+
+
+Ethan Zhao (3):
+  PCI: make pci_dev_is_disconnected() helper public for other drivers
+  iommu/vt-d: don't issue ATS Invalidation request when device is
+    disconnected
+  iommu/vt-d: improve ITE fault handling if target device isn't present
+
+ drivers/iommu/intel/dmar.c  | 22 ++++++++++++++++++++++
+ drivers/iommu/intel/pasid.c |  3 +++
+ drivers/pci/pci.h           |  5 -----
+ include/linux/pci.h         |  5 +++++
+ 4 files changed, 30 insertions(+), 5 deletions(-)
+
+
+base-commit: e60bf5aa1a74c0652cd12d0cdc02f5c2b5fe5c74
 -- 
-2.34.1
+2.31.1
 
 
