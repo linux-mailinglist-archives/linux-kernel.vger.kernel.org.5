@@ -1,131 +1,162 @@
-Return-Path: <linux-kernel+bounces-88431-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88433-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C693A86E186
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:05:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45E7B86E189
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:06:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B1F71F220C5
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:05:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 741F91C214A0
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:06:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BE3C6A8B9;
-	Fri,  1 Mar 2024 13:05:28 +0000 (UTC)
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F7326CDCD;
+	Fri,  1 Mar 2024 13:05:56 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 586C73C6BF;
-	Fri,  1 Mar 2024 13:05:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E51FC69E1C;
+	Fri,  1 Mar 2024 13:05:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709298327; cv=none; b=MjuJjN+0xuWQtVlKajp4GAkFVP/UH9rqe0bM+pFC61OUi0eCwzu9kt/bufe3XT8ev+nVZshNjTU+VSRE3pvDdbMERjcaVq0UWfGmmtpR/+Pkqb8BoRfSYN8ldKGj8yk/EUhtV/PA6dIYW6HWucJby4S29RNM24+BPhkw0Y/3atY=
+	t=1709298355; cv=none; b=KwnA41mGiuOf/Fo5xY+u5Kcg3tyBhAcToH93zhB/pypZiczG0s1C5A8bk6L94e//bShkLd6CR5m3fF+xIeeObGExPj0S2EGa4VtasQxTEAROEvqKk9DlyRwdcrkhu5tK4PE4+X50gurfuQW6rSuQusx2moEEYtTguDNdTjRxWJc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709298327; c=relaxed/simple;
-	bh=0bVCzrJS9x+1yZMoEFxLm9bnbbJleSpuIb0C3VF53qQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=S0knYbSeUwoDkR4v8AsBqnOmiZbWixycnemnunMexYd4dfo9WBmXR2DaNg3eCO6v/yHpUfGji0n9T5KBInV/Flqqf5e2HfL6E7ArMs0SZ14inSA6hYsoYNxVamDtndYeOiuUi9lKXn/Fdfv5bitk/jREYdJbCyGydJZhaxrPZyA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-6098bf69909so68857b3.1;
-        Fri, 01 Mar 2024 05:05:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709298324; x=1709903124;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oQI2EbWiD61r+f+mvhd3WkVdayuolmx0uiT5UHC3aVk=;
-        b=OW0LAvkK8gFJ6A3yRPRHxkaFFcAV22erxlSeyKVKtWtkv6wirTvPIOAtZQKzunfY1K
-         flmTqR83JSz1b+yZULgYS4744fTs9kO+94fCsD1m5onn9Sj7snIP1x4PJjAsLjTDoFAp
-         2FS2E5nWaVDbKD/0neZNn9l/sRpQGnorZzvxGT+s7acY4jkf+nskGxpUVXRTd/Y4F5X6
-         xRIaUg9H2g0OW3aKwrhrmNdndwAh6+FE0nHlX3URHlBlIFckCy7qQzSdcR9kTOL4t3mW
-         +3hbA5+Q0HghSIMC+iwPnTnsoqMJ/sD6IuCuLxtXW/4jEI7K+oMpeS6oqQq1AQ8x20JM
-         DzfQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVZO1Q26ivPGgTGyQeYsVBAIr2/4OYUDlarXwUI4OuraRB47Plp7BSuSNranMx+vaT8wIRZswSneaW8yRcxqE+N8YjMPalfn0fOyw9YaRbCFFp9jSjyvLKwW4oN4j8Vl/f8zqVov24qzWRp5X4Zus/rbmEpvlJ+mtfdPfuNABWUCSaloJMl3v7AVjE=
-X-Gm-Message-State: AOJu0Yw/hF1XcLjt/fJ3HAvUVQL65PhsMZe6zQENSJQoBHmkSq3NsBEt
-	BDTst6n06dpecjar/D1NfB/7DUciPu+u8ZsK8Z4x4JU9bl4qZZBDhVMZxEkCrVQ=
-X-Google-Smtp-Source: AGHT+IG+Lq9JYtWOeBMPrYoQz7PR0vpZ9fQTaDnPvsBie0GaRSqwNucZkabNJehPhiPyv923Zgaoug==
-X-Received: by 2002:a81:8414:0:b0:609:892e:b944 with SMTP id u20-20020a818414000000b00609892eb944mr429804ywf.4.1709298323984;
-        Fri, 01 Mar 2024 05:05:23 -0800 (PST)
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com. [209.85.219.173])
-        by smtp.gmail.com with ESMTPSA id o1-20020a81ef01000000b00607ad76d855sm909733ywm.67.2024.03.01.05.05.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Mar 2024 05:05:23 -0800 (PST)
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dc6cbe1ac75so1624817276.1;
-        Fri, 01 Mar 2024 05:05:23 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWhOKClxVr6fkz1Y8KyAOaBWsSDPcPcZhqdLLAXj2qw2G5a7YcRAOfCcf2lk4ny/MMBeDMIHXgAx7ukbVGFNtdk4TBUV4Aa6WbXe1KGjdPOP+9tdcDoQptEv/h02QK2k4t675Pp+wvpsKO6K8ULuYJKC3mIuzVBrz1RfvhoXHy24P3tPtbHQKqveNQ=
-X-Received: by 2002:a05:6902:2310:b0:dc6:daa4:e808 with SMTP id
- do16-20020a056902231000b00dc6daa4e808mr4576821ybb.12.1709298322979; Fri, 01
- Mar 2024 05:05:22 -0800 (PST)
+	s=arc-20240116; t=1709298355; c=relaxed/simple;
+	bh=IiKch8zeWz42IEmKp8mhTIm+LF6IgS04Jf5vRlLvZpM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HcgR6ZkZcgxvZXHjVZ58T5vvXRjHPDr/+ntDY7Loy/xPcAZFn1iMqt/KAGmsr4zW9goCrN5LopJYOY3D8O78OIfvnQ/K7buPUH0gsTd0f8al3McU8bHtQMRuGdNogrf1XpDmDZv8vz2jBO41HiT2kMPbk1AcZBAU8OBqO/TIZhk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4072BC433C7;
+	Fri,  1 Mar 2024 13:05:52 +0000 (UTC)
+From: Huacai Chen <chenhuacai@loongson.cn>
+To: Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Will Deacon <will@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>
+Cc: Huacai Chen <chenhuacai@kernel.org>,
+	Waiman Long <longman@redhat.com>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Guo Ren <guoren@kernel.org>,
+	Rui Wang <wangrui@loongson.cn>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	linux-arch@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Huacai Chen <chenhuacai@loongson.cn>
+Subject: [PATCH 1/2] mmiowb: Rename mmiowb_spin_{lock, unlock}() to mmiowb_in_{lock, unlock}()
+Date: Fri,  1 Mar 2024 21:05:31 +0800
+Message-ID: <20240301130532.3953167-1-chenhuacai@loongson.cn>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <8b4203dc-bc0a-4c00-8862-e2d0ed6e346b@web.de>
-In-Reply-To: <8b4203dc-bc0a-4c00-8862-e2d0ed6e346b@web.de>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Fri, 1 Mar 2024 14:05:10 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWwegdks3eEviEsBJE3AvUVKbZqHduYdhuwz=8xTMDs5g@mail.gmail.com>
-Message-ID: <CAMuHMdWwegdks3eEviEsBJE3AvUVKbZqHduYdhuwz=8xTMDs5g@mail.gmail.com>
-Subject: Re: [PATCH] media: rcar-csi2: Use common error handling code in rcsi2_parse_dt()
-To: Markus Elfring <Markus.Elfring@web.de>
-Cc: linux-renesas-soc@vger.kernel.org, linux-media@vger.kernel.org, 
-	kernel-janitors@vger.kernel.org, Mauro Carvalho Chehab <mchehab@kernel.org>, 
-	=?UTF-8?Q?Niklas_S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>, 
-	LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi Markus,
+We are extending mmiowb tracking system from spinlock to mutex, so
+rename mmiowb_spin_{lock, unlock}() to mmiowb_in_{lock, unlock}() to
+reflect the fact. No functional changes.
 
-On Fri, Mar 1, 2024 at 1:10=E2=80=AFPM Markus Elfring <Markus.Elfring@web.d=
-e> wrote:
-> From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Fri, 1 Mar 2024 13:02:18 +0100
->
-> Add a label so that a bit of exception handling can be better reused
-> in an if branch of this function implementation.
->
-> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+---
+ include/asm-generic/mmiowb.h    | 8 ++++----
+ include/linux/spinlock.h        | 6 +++---
+ kernel/locking/spinlock_debug.c | 6 +++---
+ 3 files changed, 10 insertions(+), 10 deletions(-)
 
-Thanks for your patch!
+diff --git a/include/asm-generic/mmiowb.h b/include/asm-generic/mmiowb.h
+index 5698fca3bf56..eb2335f9f35e 100644
+--- a/include/asm-generic/mmiowb.h
++++ b/include/asm-generic/mmiowb.h
+@@ -40,13 +40,13 @@ static inline void mmiowb_set_pending(void)
+ 		ms->mmiowb_pending = ms->nesting_count;
+ }
+ 
+-static inline void mmiowb_spin_lock(void)
++static inline void mmiowb_in_lock(void)
+ {
+ 	struct mmiowb_state *ms = __mmiowb_state();
+ 	ms->nesting_count++;
+ }
+ 
+-static inline void mmiowb_spin_unlock(void)
++static inline void mmiowb_in_unlock(void)
+ {
+ 	struct mmiowb_state *ms = __mmiowb_state();
+ 
+@@ -59,7 +59,7 @@ static inline void mmiowb_spin_unlock(void)
+ }
+ #else
+ #define mmiowb_set_pending()		do { } while (0)
+-#define mmiowb_spin_lock()		do { } while (0)
+-#define mmiowb_spin_unlock()		do { } while (0)
++#define mmiowb_in_lock()		do { } while (0)
++#define mmiowb_in_unlock()		do { } while (0)
+ #endif	/* CONFIG_MMIOWB */
+ #endif	/* __ASM_GENERIC_MMIOWB_H */
+diff --git a/include/linux/spinlock.h b/include/linux/spinlock.h
+index 3fcd20de6ca8..60eda70cddd0 100644
+--- a/include/linux/spinlock.h
++++ b/include/linux/spinlock.h
+@@ -185,7 +185,7 @@ static inline void do_raw_spin_lock(raw_spinlock_t *lock) __acquires(lock)
+ {
+ 	__acquire(lock);
+ 	arch_spin_lock(&lock->raw_lock);
+-	mmiowb_spin_lock();
++	mmiowb_in_lock();
+ }
+ 
+ static inline int do_raw_spin_trylock(raw_spinlock_t *lock)
+@@ -193,14 +193,14 @@ static inline int do_raw_spin_trylock(raw_spinlock_t *lock)
+ 	int ret = arch_spin_trylock(&(lock)->raw_lock);
+ 
+ 	if (ret)
+-		mmiowb_spin_lock();
++		mmiowb_in_lock();
+ 
+ 	return ret;
+ }
+ 
+ static inline void do_raw_spin_unlock(raw_spinlock_t *lock) __releases(lock)
+ {
+-	mmiowb_spin_unlock();
++	mmiowb_in_unlock();
+ 	arch_spin_unlock(&lock->raw_lock);
+ 	__release(lock);
+ }
+diff --git a/kernel/locking/spinlock_debug.c b/kernel/locking/spinlock_debug.c
+index 87b03d2e41db..632a88322433 100644
+--- a/kernel/locking/spinlock_debug.c
++++ b/kernel/locking/spinlock_debug.c
+@@ -114,7 +114,7 @@ void do_raw_spin_lock(raw_spinlock_t *lock)
+ {
+ 	debug_spin_lock_before(lock);
+ 	arch_spin_lock(&lock->raw_lock);
+-	mmiowb_spin_lock();
++	mmiowb_in_lock();
+ 	debug_spin_lock_after(lock);
+ }
+ 
+@@ -123,7 +123,7 @@ int do_raw_spin_trylock(raw_spinlock_t *lock)
+ 	int ret = arch_spin_trylock(&lock->raw_lock);
+ 
+ 	if (ret) {
+-		mmiowb_spin_lock();
++		mmiowb_in_lock();
+ 		debug_spin_lock_after(lock);
+ 	}
+ #ifndef CONFIG_SMP
+@@ -137,7 +137,7 @@ int do_raw_spin_trylock(raw_spinlock_t *lock)
+ 
+ void do_raw_spin_unlock(raw_spinlock_t *lock)
+ {
+-	mmiowb_spin_unlock();
++	mmiowb_in_unlock();
+ 	debug_spin_unlock(lock);
+ 	arch_spin_unlock(&lock->raw_lock);
+ }
+-- 
+2.43.0
 
-> --- a/drivers/media/platform/renesas/rcar-csi2.c
-> +++ b/drivers/media/platform/renesas/rcar-csi2.c
-> @@ -1388,12 +1388,13 @@ static int rcsi2_parse_dt(struct rcar_csi2 *priv)
->         ret =3D v4l2_fwnode_endpoint_parse(ep, &v4l2_ep);
->         if (ret) {
->                 dev_err(priv->dev, "Could not parse v4l2 endpoint\n");
-> -               fwnode_handle_put(ep);
-> -               return -EINVAL;
-> +               ret =3D -EINVAL;
-> +               goto put_fwnode_ep;
->         }
->
->         ret =3D rcsi2_parse_v4l2(priv, &v4l2_ep);
->         if (ret) {
-> +put_fwnode_ep:
->                 fwnode_handle_put(ep);
->                 return ret;
->         }
-
-Please do not use goto to jump to random positions buried deep inside
-a function,as this makes the code harder to read.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
 
