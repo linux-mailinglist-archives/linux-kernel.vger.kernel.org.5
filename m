@@ -1,145 +1,158 @@
-Return-Path: <linux-kernel+bounces-89122-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89123-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E0A586EAB8
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:51:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 737DF86EABB
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:52:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 58CBF1C243CF
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:51:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 80E981C221EF
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:52:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02F72535BF;
-	Fri,  1 Mar 2024 20:51:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E61556479;
+	Fri,  1 Mar 2024 20:52:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tF8wNf/N"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fcwgQEOI"
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42D8D3EA6F;
-	Fri,  1 Mar 2024 20:51:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8260256452
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 20:52:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709326310; cv=none; b=A6Jq9OXEJg8NO7zqHQC9IeRcZVCKpQABeQE+GFWPIl2gFzm9tJm/4mpG+2AUc/nnOgR8GxE6z8Rzil9YOCyX9m7M1OZ+qct8QpppwV0ZQWuHrMDV+3TzdqFI1dp7RgUXKBXMjSSPnDxWLYir1QEWXAjEP4ZqL8AmLKkN31VkXaU=
+	t=1709326332; cv=none; b=gBYkLiB+xHm50bzIa6R//ROek1UweL0i10g6ZCnQx6+jYZnd+IB6vuCKRMRcM4CGnGBQyqUEVLvlSYCJoT/9ktdm1IE/HouPqEAshPNb3Pw5QNuxbhkecgxnoCi44618GrdMc0OxQQqfsm4IZsL9K5/yG0XejAB5jgNEBehfS+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709326310; c=relaxed/simple;
-	bh=RyKbIk0JE7QfAMCfTxvDAqDPe+m3yOaykMCthkWixPk=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=aYGk9xSYJWeHA/JwRBgfdOmmeA2PCQSD+BYfKE9JSBVXiuamykUYlh5ux+SzWTzXSe/TrrelNpi96uw/BkMe3SVHDAyiUD5qKNPrSuTP0gUHp4XRbLPxWQvS6838oclZ99/r0uIG+dGWDYlmfT1lJU2HHW04bhdVMt3vMG3PcxA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tF8wNf/N; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CF67C433F1;
-	Fri,  1 Mar 2024 20:51:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709326309;
-	bh=RyKbIk0JE7QfAMCfTxvDAqDPe+m3yOaykMCthkWixPk=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=tF8wNf/NHE0qBGR+8IHd+punLUB3yypPnoB5y8g7jC77sI+92WpezqEALQicQJqAi
-	 GqUppFJDAErCSGz94vd66bhBQo9XLTNGfhHqMQiCdux7VocrGIbwLwpilpZIM1tsuZ
-	 EfOoIEfbazI3W0evlz/GY1KzoEAnh0w+ZqA6TrtdmvqVoawsiHZNYXCSbME/0MR1X4
-	 pEKe4khAGdOkN1Fz+NVqB+c3CuTOZcXX8dBPmOk+5KFt9qXmlubK6Ks4G0JSkHkfPS
-	 DiFP8UtmSbaTxlkBStyXBok8DjTHs+czX0vRln5tUXUgKylq311o/9VHVeG+AWEyQC
-	 mgi8/3rwlt7CQ==
+	s=arc-20240116; t=1709326332; c=relaxed/simple;
+	bh=aEdgxQYtBECo/5FRriOw1jSVW6tpqxhibPMpXP1GT9k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ed7qRvDXQzc6R2JIc7GfwoVzXhx112Li52Vll9cK9CrRB4TAdqFzg0m3EXdibscwIUu+j5P8aoS63aejBdRxrXsitixh8m8HtVXLsR2Gl92yHZ2Rb7wctFFT+q8zJZNAiv88HK+FQfz348fbGJ13BALTffjY+9yf04feUXEWxAw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=fcwgQEOI; arc=none smtp.client-ip=209.85.219.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dc6d9a8815fso2708565276.3
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 12:52:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709326329; x=1709931129; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=61skMyHPOZ+2FJBmqHM8+KKn8chujQjCus3XXKYLc+k=;
+        b=fcwgQEOILpm5dIp0/t1/e284ZlNEbC+ebsko5qv/ewBgQcZKw7o/UlZvba7KddupfI
+         UTmh0uWFtBZsyGO5jEtG8Mh8lLR5EGwjkgQZd7RhHi/mT8E4alz9ee2hk2sNwB+g0Ich
+         kfeWcyY7iGyMiWZ8MG81LlGBP5Ymz5yzhj5egH9NyTFic1p/tuSrxF0rfTeQtmF5mV4E
+         m5otgAQGNatMURUFC6hSOebQSTbSTN+MFCJspVkOO5vaBgwFewEsk5JMa5yJDTXISWvj
+         XFUQE+zBPJnzA/zTRMNuijiDpIBzfmrYbdEOEuiKdPvTYNJlX/qkn5rn7xYTSwWDNSDK
+         IBNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709326329; x=1709931129;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=61skMyHPOZ+2FJBmqHM8+KKn8chujQjCus3XXKYLc+k=;
+        b=MYjroU4RFU9HrB2uw8aTtObEQb/ZhY/MKoxLOT5h9WtijX8mgBCZCVTJm7XxnAVriR
+         4j/QIArXFZk9rZYmQ0W/+SyjVS6GT0VxxhSEjb12CZ+BOlrTt9qTtgq0dhDemAM4ZP0q
+         x7qZpwImgBng0KxcsF/BrST0wtCWM2oz/muW/3W0O6oMdrhqDrVi6/+3sD8uw96bluAN
+         d9oi+13FtkAP7JjE3qbqn27dqh8AE/vodi7Xnlkvur8okc38ZrVO84MBuU+7cEGe/0Rn
+         X1/zixzvhZyzvExCRD6yj5mXXbcM6EKqRLSbQevoADTTX6P0xO2cTmaOtzJVJNm5qd2h
+         ZCMA==
+X-Forwarded-Encrypted: i=1; AJvYcCXBeNjITGbhz4ulstN5RfnxtfzETRaDY812+a2Ry9kDF6XyBjoysOy98c+a37TfpsOpgHHuB5oeLoMTxR55RA3ADAeFDMTTEPFH0R0e
+X-Gm-Message-State: AOJu0YzVJs7Odt52NskEBLe2+KidJiAyUCHe8WZlU0SP3RTcSAS39Qqv
+	Uw3lQa0HVC7p0RJBermXHF85RJI2yhjtKSK06tJHR7thosblDa4WiVcS8108hEkgMUfySyT+F8n
+	C/DzZeDjD8Noev7IqCRNRhyZ14J9VoSbRg9b/1A==
+X-Google-Smtp-Source: AGHT+IEJTrol9zpTGrc65cEHl5GfDLndKMTd/iMOdDyW2qvdivH31lFCc5dyvWFqQHJfgehgMGewbuCG5BCBavmuIns=
+X-Received: by 2002:a25:f30f:0:b0:dcd:6dea:5d34 with SMTP id
+ c15-20020a25f30f000000b00dcd6dea5d34mr2859321ybs.36.1709326329380; Fri, 01
+ Mar 2024 12:52:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
+MIME-Version: 1.0
+References: <CA+G9fYtddf2Fd3be+YShHP6CmSDNcn0ptW8qg+stUKW+Cn0rjQ@mail.gmail.com>
+ <d5c07950-6f42-4ac9-b0d8-776d444252ae@app.fastmail.com>
+In-Reply-To: <d5c07950-6f42-4ac9-b0d8-776d444252ae@app.fastmail.com>
+From: Sam Protsenko <semen.protsenko@linaro.org>
+Date: Fri, 1 Mar 2024 14:51:58 -0600
+Message-ID: <CAPLW+4=T1eGrWQcEJWvOcHgq9tnRhfi=AH_=qj1022k2WHmEhA@mail.gmail.com>
+Subject: Re: WinLink E850-96: WARNING: at block/blk-settings.c:204 blk_validate_limits
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Naresh Kamboju <naresh.kamboju@linaro.org>, linux-block <linux-block@vger.kernel.org>, 
+	lkft-triage@lists.linaro.org, open list <linux-kernel@vger.kernel.org>, 
+	Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>, Christian Brauner <brauner@kernel.org>, 
+	Ulf Hansson <ulf.hansson@linaro.org>, Dan Carpenter <dan.carpenter@linaro.org>, 
+	Anders Roxell <anders.roxell@linaro.org>, Jaehoon Chung <jh80.chung@samsung.com>, 
+	linux-mmc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Fri, 01 Mar 2024 22:51:46 +0200
-Message-Id: <CZIPLSJ3HA9K.LUY0REGO0GAH@suppilovahvero>
-Cc: <keyrings@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
- <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
- <linux-kernel@vger.kernel.org>, <saulo.alessandre@tse.jus.br>
-Subject: Re: [PATCH v3 01/10] crypto: ecdsa - Convert byte arrays with key
- coordinates to digits
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Stefan Berger" <stefanb@linux.ibm.com>, "Lukas Wunner"
- <lukas@wunner.de>
-X-Mailer: aerc 0.15.2
-References: <20240223204149.4055630-1-stefanb@linux.ibm.com>
- <20240223204149.4055630-2-stefanb@linux.ibm.com>
- <20240229091105.GA29363@wunner.de>
- <aabeec7b-618c-4d15-b033-4162b6e54f6a@linux.ibm.com>
- <CZIOY02QS2QC.LV0A0HNT7VKM@suppilovahvero>
- <8d33a745-ac77-4965-8d1d-35061b027f33@linux.ibm.com>
-In-Reply-To: <8d33a745-ac77-4965-8d1d-35061b027f33@linux.ibm.com>
 
-On Fri Mar 1, 2024 at 10:48 PM EET, Stefan Berger wrote:
+On Thu, Feb 29, 2024 at 8:56=E2=80=AFAM Arnd Bergmann <arnd@arndb.de> wrote=
+:
+>
+> On Thu, Feb 29, 2024, at 15:14, Naresh Kamboju wrote:
+> > The arm64 WinLink E850-96 Board boot failed with 16K and 64K page size =
+builds
+> > Please find the below warning log on Linux next-20240229.
+> > First noticed on the next-20240220 tag.
+> >
+> > This issue arises only when one of these Kconfig options is enabled.
+> >   CONFIG_ARM64_16K_PAGES=3Dy
+> >   CONFIG_ARM64_64K_PAGES=3Dy
+> >
+> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> >
+> > Warning log:
+> > -------
+> > [    2.231008] mmc_host mmc0: Bus speed (slot 0) =3D 49968750Hz (slot
+> > req 52000000Hz, actual 49968750HZ div =3D 0)
+> > [    2.231714] mmc_host mmc0: Bus speed (slot 0) =3D 399750000Hz (slot
+> > req 200000000Hz, actual 199875000HZ div =3D 1)
+> > [    2.241961] mmc0: new HS400 Enhanced strobe MMC card at address 0001
+> > [    2.249182] ------------[ cut here ]------------
+> > [    2.252371] WARNING: CPU: 3 PID: 90 at block/blk-settings.c:204
+> > blk_validate_limits (block/blk-settings.c:204 (discriminator 1))
 >
 >
-> On 3/1/24 15:26, Jarkko Sakkinen wrote:
-> > On Thu Feb 29, 2024 at 4:57 PM EET, Stefan Berger wrote:
-> >>
-> >>
-> >> On 2/29/24 04:11, Lukas Wunner wrote:
-> >>> On Fri, Feb 23, 2024 at 03:41:40PM -0500, Stefan Berger wrote:
-> >>>> +static inline void ecc_digits_from_bytes(const u8 *in, unsigned int=
- nbytes,
-> >>>> +					 u64 *out, unsigned int ndigits)
-> >>>> +{
-> >>>> +	unsigned int sz =3D ndigits << ECC_DIGITS_TO_BYTES_SHIFT;
-> >>>> +	u8 tmp[ECC_MAX_DIGITS << ECC_DIGITS_TO_BYTES_SHIFT];
-> >>>> +	unsigned int o =3D sz - nbytes;
-> >>>> +
-> >>>> +	memset(tmp, 0, o);
-> >>>> +	memcpy(&tmp[o], in, nbytes);
-> >>>> +	ecc_swap_digits(tmp, out, ndigits);
-> >>>> +}
-> >>>
-> >>> Copying the whole key into tmp seems inefficient.  You only need
-> >>> special handling for the first few bytes of "in" (6 bytes in the
-> >>> P521 case) and could use ecc_swap_digits() to convert the rest
-> >>> of "in" directly to "out" without using tmp.
-> >>>
-> >>> So it would be sufficient to allocate the first digit on the stack,
-> >>> memset + memcpy, then convert that to native byte order into "in[0]"
-> >>> and use ecc_swap_digits() for the rest.
-> >>>
-> >>> And the special handling would be conditional on "!o", so is skipped
-> >>> for existing curves.
-> >>
-> >> Thanks. It looks like this now:
-> >>
-> >> static inline void ecc_digits_from_bytes(const u8 *in, unsigned int nb=
-ytes,
-> >>                                            u64 *out, unsigned int ndig=
-its)
-> >> {
-> >>           unsigned int o =3D nbytes & 7;
-> >>           u64 msd =3D 0;
-> >>           size_t i;
-> >>
-> >>           if (o =3D=3D 0) {
-> >>                   ecc_swap_digits(in, out, ndigits);
-> >>           } else {
-> >>                   for (i =3D 0; i < o; i++)
-> >>                           msd =3D (msd << 8) | in[i];
-> >>                   out[ndigits - 1] =3D msd;
-> >>                   ecc_swap_digits(&in[o], out, ndigits - 1);
-> >=20
-> > This would be more stream-lined IMHO:
-> >=20
-> >          unsigned int o =3D nbytes & 7;
-> > 	unsigned int n =3D ndigits;
-> >          u64 msd =3D 0;
-> >          size_t i;
-> >=20
-> >          if (o !=3D 0) {
-> >                  for (i =3D 0; i < o; i++)
-> >                          msd =3D (msd << 8) | in[i];
-> >=20
-> >                  out[--n] =3D msd;
-> >          }
-> >=20
-> >          ecc_swap_digits(in, out, n);
+> The warning was added with commit d690cb8ae14b ("block: add
+> an API to atomically update queue limits")
 >
-> You forgot to advance 'in'.
+> +               if (!lim->max_segment_size)
+> +                       lim->max_segment_size =3D BLK_MAX_SEGMENT_SIZE;
+> +               if (WARN_ON_ONCE(lim->max_segment_size < PAGE_SIZE))
+> +                       return -EINVAL;
+>
+> Whereas mmc_alloc_disk sets the limit as
+>
+>         /*
+>          * Setting a virt_boundary implicity sets a max_segment_size, so =
+try
+>          * to set the hardware one here.
+>          */
+>         if (host->can_dma_map_merge) {
+>                 lim.virt_boundary_mask =3D dma_get_merge_boundary(mmc_dev=
+(host));
+>                 lim.max_segments =3D MMC_DMA_MAP_MERGE_SEGMENTS;
+>         } else {
+>                 lim.max_segment_size =3D
+>                         round_down(host->max_seg_size, lim.logical_block_=
+size);
+>                 lim.max_segments =3D host->max_segs;
+>         }
+>
+> and max_seg_size gets initialized to either one less
+> than 64k, or to exactly 4k in the dwmmc driver here:
+>
+>         /* Useful defaults if platform data is unset. */
+>         if (host->use_dma =3D=3D TRANS_MODE_IDMAC) {
+>                 mmc->max_segs =3D host->ring_size;
+>                 mmc->max_blk_size =3D 65535;
 
-yeah, pointing out that two call sites is unnecessary complexity, that's
-all
+Changing this value here to PAGE_SIZE (instead of 65535) makes E850-96
+functional again (tested with CONFIG_ARM64_16K_PAGES=3Dy). I'm sure this
+is just a quick hack, but maybe it can be helpful in further analysis.
+If anybody wants me to run some tests on E850-96 -- please let me
+know.
 
-BR, Jarkko
+[snip]
 
