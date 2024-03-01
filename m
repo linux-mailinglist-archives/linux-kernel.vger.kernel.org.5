@@ -1,75 +1,80 @@
-Return-Path: <linux-kernel+bounces-88289-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88290-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DD1386DFB7
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:54:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 701FC86DFBA
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:57:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0618B24579
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:54:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 946D61C223DC
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:57:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F34D6CBE1;
-	Fri,  1 Mar 2024 10:54:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A21266BFCB;
+	Fri,  1 Mar 2024 10:57:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cix4wL3c"
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IjJspZR6"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E8916BFCD
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 10:54:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA3305811C
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 10:57:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709290487; cv=none; b=GhucVYzysufRZwc6F/IGY7LDTB6zjP7d05h4Imx80wmYLjaiRVp7UWnrCc7JTekVIffV1lTDN5PXBMoh5mzomEuKnfsAdWf4tNozo5FkNUKLafGpd8UGN1T0LgjkRVzNZjueNeLrGD5D6t1N15fNB4YY/AskY52L63V/LTdawQg=
+	t=1709290644; cv=none; b=RR2pBLoMdywEmXwsOlnnguT5Kb904eHC3MXNLy52x8CK8sHOfns04T4x8KvNOSFSmFtt6ZLPm6hYb7QsHDMcwZ8YDpEO8Gy5TC6H+P5hIvAXpSnRceixfHbBWyAX6HupYFiBxv+pFhJaDisw+hZzQuv0GZg9tort0GKfxczzXtA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709290487; c=relaxed/simple;
-	bh=tDFvi21dKzSYBfpUMY9QvZIm3b44eoXgp0W0nNOW5ZM=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=HT2DUqo6QvMEx0CDOq9wOVwWeO7Ms6dtLXRpzQRns5GGqd8hDAlIU6/2In1HWrRnY3mijKg+lESxfl/ShwwiMZM5f8zGpHXQISvYf9ddo2/MQ+FVkr4eOEgSnuFdTo4Q0kvCdCk1M3aGMTdZAGZYLBOcbX+Qeap1kNDKZgdjNj4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=cix4wL3c; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-412a14299a4so14434785e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 02:54:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709290483; x=1709895283; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:references:cc:to:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=h14Xm3TezU8c75lO7pwHUJZjglnS6YlgEv6//zfNa+w=;
-        b=cix4wL3c72h6336IorHSs7pglOENbn/cftCEt5DDznioYTu63/tQ28uf3DJ3aaCsCj
-         tMlQHCi8nkWAOudAHHgXXqH4pCToPtA7DmRKg+vwGvDd3lxRSbbx3YilWzb7x6f8LUk9
-         izlw4JrHxsQgvwhqQYqGPzE9Pg/29ZLT3kMh+wFv6gpPA9IROY2uX5mqT7MP5zC4uv4t
-         iOcr/0zjAgDh1u7Dz1uelRjMKZHvCuhXzCWffXNpHRn8TvvjG1egdiEmkmdQnpT/fInU
-         +VIyj39bgLcUqmvsR8tJh9pI2+JMvuInoikpeW9/7WMuOgs71ZeGnAo8+EKyK8tmz9wF
-         Ae1g==
+	s=arc-20240116; t=1709290644; c=relaxed/simple;
+	bh=rRd8uWwX/b7Jpv8ssx2B4Vqm0Ikga5riTA/kuvfXqt8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=o7e2YAXvUGKXbsIpl+EZ99eydO4AHrKztBo0VYBNJkyQLKPUO1eq9rVXX/sV8s451KdB5W1InKkPiyn6mLx+YYtRqhJym3cX3TjTm5F2vs2w6I94+omSY2eY/DGvFz0vi7eJHPe57LvonRbKHZ3GJ/J1jl8lYW3wFCcRf/+oj/Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IjJspZR6; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709290641;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=dP5AIMOMk0h8z/W7wIEWvlucRYlBl59bb3JXCokMLMI=;
+	b=IjJspZR6oEt46EybH9488vxZqKtU56PaIcbPhPY6TilRJ5tSmNx0bsfiDMt76CxKS8pA4X
+	xjeX8bOpNJfoBuYTtkWF4MxEo4YsN2CVD1PAIMbVoAZPb6uzXjPjUfoZmYLrKPSEyRF4tt
+	nVeH10JSKLia7Nw5Jwf3nd8jxb/yyfg=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-423-LDVm2MBTOcm1QvN267MrIw-1; Fri, 01 Mar 2024 05:57:20 -0500
+X-MC-Unique: LDVm2MBTOcm1QvN267MrIw-1
+Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2d32d9a312eso4298901fa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 02:57:20 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709290483; x=1709895283;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:references:cc:to:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=h14Xm3TezU8c75lO7pwHUJZjglnS6YlgEv6//zfNa+w=;
-        b=r86Xu2ND9LXB95PH52vGw+2aytRQ5rRdAu+AT2AfMiBcE34e6tVfD0n++pTE3q4eMi
-         KAyllt52WFsufmI/Q88+JRJBRyMcpz/uCUK4ihkfqcdFSptqzKFb7apOKYAS3smtAtjE
-         Bbt+P3k2NHFpji2fxvPjPL0Pirqzo3rDev8TeublFlyBoXDXY1+FBMcks2PoUPNcqmVB
-         1AKTXQPcYCFme07MuQcs/l1jpydJEqdFOMWezFg7M0IpZA+9LMatFucDmKkgIdRMHczr
-         EGZID6c1/R5JzRF3N/H9LMKxm43v6MjqqraiTKKYFJtcdmbDxkj22UgyyJn2kklwyhpL
-         E43Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUsJjczY2ldrYnuqhdsjOBEyOK2Y4n8E7/a8A5TlmmiOiQt/WskzC+Ei4D/mZIKSCA4gdWhykur1Z5bbRWwgGEWz9YRqEehHdvzZBvN
-X-Gm-Message-State: AOJu0YxWIveMuIucbLmiR8BNd00X9ZuKqTH2MqLKPscKTYQmXsHwPV/g
-	Nh87CKMyHcUrkh5LcmGOyW2p1ION7sld82xpfUN4U58YggY6rQymhEGo008B73w=
-X-Google-Smtp-Source: AGHT+IGhMHXpAqi5+IVL4bNRROXCyT6HHdikK0xk5w+TzFebmWT7U4TDkmi2gbFJ9VzxjGd/4p2dOA==
-X-Received: by 2002:a05:6000:1041:b0:33e:1284:487d with SMTP id c1-20020a056000104100b0033e1284487dmr1056407wrx.31.1709290483298;
-        Fri, 01 Mar 2024 02:54:43 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:982:cbb0:8beb:89b5:61ff:3fd8? ([2a01:e0a:982:cbb0:8beb:89b5:61ff:3fd8])
-        by smtp.gmail.com with ESMTPSA id v13-20020adfd04d000000b0033d202abf01sm4237067wrh.28.2024.03.01.02.54.42
+        d=1e100.net; s=20230601; t=1709290639; x=1709895439;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dP5AIMOMk0h8z/W7wIEWvlucRYlBl59bb3JXCokMLMI=;
+        b=MAS3/LauQIL0ejko1qIJ9C9mCkfBv7QnTtVIaVtLbaDeYi0jhT+M/UGsycfu6pZ64z
+         6Py9/d6sHWIYcTADqaDME3Acp4ig2D5VYDeP+M6kdq0hfEPzj4gHei/JLzkJb+OMeD4t
+         lYelClCXuNoTch+5LKrDrgXOC9KoSf5/v70jL+hVrAlLyt97MZo29uOjidQESGIXJZ5L
+         SAM9WDSPmXmEMiQDCycM0hsHqItuClS6m6/Y7Wz/I95CvT+YWGAZDyPj792P6UzP4gTd
+         H32cM/mDiJE6RzOxy0xy0sM7PcV7XjVlOTGBPtfQaIw8CbXUepOAJH/BGoWT/KkzhjVQ
+         rQdw==
+X-Forwarded-Encrypted: i=1; AJvYcCUIigxENepzvhALIs+kInoNIc7zOzwjAq8og9ElD/lXNC6j7VWt3FwOSqBaQDnUPjDzbkjCObqqKt/TddT1XPtRQr8RKQjVXr6q3eAJ
+X-Gm-Message-State: AOJu0YzG8wzV0HNqaPWphCw/4vojXrgCGWuXw8BFi5F5d7XT425YujLd
+	vNf1F+9dSd9A3K1qxvFYDkmnIKY82fHxJCXqw7qM95EtalBXUTHFCX3vfWzO7gP2IZg0RmwyZtS
+	Ozs0cGzhQZZ+yOW2he6OqAhzXzkrK9zmwQeZeorHYAStIweFeFd7qDbPpDN4DkQ==
+X-Received: by 2002:a05:651c:3c2:b0:2d2:eb57:3ac8 with SMTP id f2-20020a05651c03c200b002d2eb573ac8mr749882ljp.34.1709290638920;
+        Fri, 01 Mar 2024 02:57:18 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEzT0D2jIJHklDubgIiJtWZUt6TSaFZFaFsjIhHJHFwapKmha9BlJFym0nzngluJJehFQUG6Q==
+X-Received: by 2002:a05:651c:3c2:b0:2d2:eb57:3ac8 with SMTP id f2-20020a05651c03c200b002d2eb573ac8mr749868ljp.34.1709290638433;
+        Fri, 01 Mar 2024 02:57:18 -0800 (PST)
+Received: from ?IPV6:2003:cb:c713:3200:77d:8652:169f:b5f7? (p200300cbc7133200077d8652169fb5f7.dip0.t-ipconnect.de. [2003:cb:c713:3200:77d:8652:169f:b5f7])
+        by smtp.gmail.com with ESMTPSA id v12-20020a05600c444c00b00412b9e4af05sm5160814wmn.0.2024.03.01.02.57.17
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Mar 2024 02:54:42 -0800 (PST)
-Message-ID: <33ce8317-0e8c-4fc1-a351-bf76115d89b3@linaro.org>
-Date: Fri, 1 Mar 2024 11:54:41 +0100
+        Fri, 01 Mar 2024 02:57:17 -0800 (PST)
+Message-ID: <97d53a8b-1b8c-47a7-977f-4fc4977ef236@redhat.com>
+Date: Fri, 1 Mar 2024 11:57:16 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,128 +82,203 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-From: Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v2 9/9] drm/panel: truly-nt35597: Don't log an error when
- DSI host can't be found
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>,
- Andrzej Hajda <andrzej.hajda@intel.com>, Robert Foss <rfoss@kernel.org>,
- Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- owen <qwt9588@gmail.com>, Jagan Teki <jagan@amarulasolutions.com>,
- Marek Vasut <marex@denx.de>, Adrien Grassein <adrien.grassein@gmail.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Sam Ravnborg <sam@ravnborg.org>, Bjorn Andersson <andersson@kernel.org>,
- Vinod Koul <vkoul@kernel.org>, Dmitry Baryshkov
- <dmitry.baryshkov@linaro.org>, Vinay Simha BN <simhavcs@gmail.com>,
- Christopher Vollo <chris@renewoutreach.org>,
- Jessica Zhang <quic_jesszhan@quicinc.com>,
- Marijn Suijten <marijn.suijten@somainline.org>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>,
- kernel@collabora.com, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-References: <20240229-anx7625-defer-log-no-dsi-host-v2-0-00506941049a@collabora.com>
- <20240229-anx7625-defer-log-no-dsi-host-v2-9-00506941049a@collabora.com>
- <20240301063020.GL30889@pendragon.ideasonboard.com>
- <fc12dbc9-5c0b-4bff-8754-5b9a5f7b0e12@collabora.com>
- <20240301085624.GC30104@pendragon.ideasonboard.com>
- <ceee318c-1d57-4b3d-9754-1a9ee53fc4e2@collabora.com>
-Content-Language: en-US, fr
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <ceee318c-1d57-4b3d-9754-1a9ee53fc4e2@collabora.com>
+Subject: Re: [PATCH] vfio/type1: unpin PageReserved page
+Content-Language: en-US
+To: Alex Williamson <alex.williamson@redhat.com>
+Cc: Yisheng Xie <ethan.xys@linux.alibaba.com>, akpm@linux-foundation.org,
+ kvm@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20240226160106.24222-1-ethan.xys@linux.alibaba.com>
+ <20240226091438.1fc37957.alex.williamson@redhat.com>
+ <e10ace3f-78d3-4843-8028-a0e1cd107c15@linux.alibaba.com>
+ <20240226103238.75ad4b24.alex.williamson@redhat.com>
+ <abb00aef-378c-481a-a885-327a99aa7b09@redhat.com>
+ <20240227132556.17e87767.alex.williamson@redhat.com>
+ <20240229150406.4d41db01.alex.williamson@redhat.com>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240229150406.4d41db01.alex.williamson@redhat.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On 01/03/2024 10:37, AngeloGioacchino Del Regno wrote:
-> Il 01/03/24 09:56, Laurent Pinchart ha scritto:
->> On Fri, Mar 01, 2024 at 09:44:36AM +0100, AngeloGioacchino Del Regno wrote:
->>> Il 01/03/24 07:30, Laurent Pinchart ha scritto:
->>>> On Thu, Feb 29, 2024 at 07:12:15PM -0500, Nícolas F. R. A. Prado wrote:
->>>>> Given that failing to find a DSI host causes the driver to defer probe,
->>>>> make use of dev_err_probe() to log the reason. This makes the defer
->>>>> probe reason available and avoids alerting userspace about something
->>>>> that is not necessarily an error.
+On 29.02.24 23:04, Alex Williamson wrote:
+> On Tue, 27 Feb 2024 13:25:56 -0700
+> Alex Williamson <alex.williamson@redhat.com> wrote:
+> 
+>> On Tue, 27 Feb 2024 11:27:08 +0100
+>> David Hildenbrand <david@redhat.com> wrote:
+>>
+>>> On 26.02.24 18:32, Alex Williamson wrote:
+>>>> On Tue, 27 Feb 2024 01:14:54 +0800
+>>>> Yisheng Xie <ethan.xys@linux.alibaba.com> wrote:
+>>>>      
+>>>>> 在 2024/2/27 00:14, Alex Williamson 写道:
+>>>>>> On Tue, 27 Feb 2024 00:01:06 +0800
+>>>>>> Yisheng Xie<ethan.xys@linux.alibaba.com>  wrote:
+>>>>>>        
+>>>>>>> We meet a warning as following:
+>>>>>>>     WARNING: CPU: 99 PID: 1766859 at mm/gup.c:209 try_grab_page.part.0+0xe8/0x1b0
+>>>>>>>     CPU: 99 PID: 1766859 Comm: qemu-kvm Kdump: loaded Tainted: GOE  5.10.134-008.2.x86_64 #1
+>>>>>>                                                                       ^^^^^^^^
+>>>>>>
+>>>>>> Does this issue reproduce on mainline?  Thanks,
 >>>>>
->>>>> Suggested-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
->>>>> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
->>>>> ---
->>>>>    drivers/gpu/drm/panel/panel-truly-nt35597.c | 6 ++----
->>>>>    1 file changed, 2 insertions(+), 4 deletions(-)
+>>>>> I have check the code of mainline, the logical seems the same as my
+>>>>> version.
 >>>>>
->>>>> diff --git a/drivers/gpu/drm/panel/panel-truly-nt35597.c b/drivers/gpu/drm/panel/panel-truly-nt35597.c
->>>>> index b73448cf349d..d447db912a61 100644
->>>>> --- a/drivers/gpu/drm/panel/panel-truly-nt35597.c
->>>>> +++ b/drivers/gpu/drm/panel/panel-truly-nt35597.c
->>>>> @@ -550,10 +550,8 @@ static int truly_nt35597_probe(struct mipi_dsi_device *dsi)
->>>>>        dsi1_host = of_find_mipi_dsi_host_by_node(dsi1);
->>>>>        of_node_put(dsi1);
->>>>> -    if (!dsi1_host) {
->>>>> -        dev_err(dev, "failed to find dsi host\n");
->>>>> -        return -EPROBE_DEFER;
->>>>> -    }
->>>>> +    if (!dsi1_host)
->>>>> +        return dev_err_probe(dev, -EPROBE_DEFER, "failed to find dsi host\n");
+>>>>> so I think it can reproduce if i understand correctly.
 >>>>
->>>>         return dev_err_probe(dev, -EPROBE_DEFER,
->>>>                      "failed to find dsi host\n");
->>>>
->>>> With this addressed,
+>>>> I obviously can't speak to what's in your 5.10.134-008.2 kernel, but I
+>>>> do know there's a very similar issue resolved in v6.0 mainline and
+>>>> included in v5.10.146 of the stable tree.  Please test.  Thanks,
 >>>
->>> I disagree. That's 87 columns, and the 80-col rule is long gone.
->>
->> It's still a maintainer's preference. I soft-enforce it in drivers I
->> maintain. In this case I'll let Neil decide, as he's listed as the
->> maintainer for drivers/gpu/drm/panel/.
->>
-> 
-> Yes, that's right. Comes down to personal opinion.
-
-There always was an exception for strings to go over the 80col, and I like it better as an one-liner.
-So I'm in favor with the initial proposal.
-
-Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
-
-
-Neil
-
-> 
-> Cheers
-> 
->>> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+>>> This commit, to be precise:
 >>>
->>>> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
->>>>
->>>>>        /* register the second DSI device */
->>>>>        dsi1_device = mipi_dsi_device_register_full(dsi1_host, &info);
+>>> commit 873aefb376bbc0ed1dd2381ea1d6ec88106fdbd4
+>>> Author: Alex Williamson <alex.williamson@redhat.com>
+>>> Date:   Mon Aug 29 21:05:40 2022 -0600
+>>>
+>>>       vfio/type1: Unpin zero pages
+>>>       
+>>>       There's currently a reference count leak on the zero page.  We increment
+>>>       the reference via pin_user_pages_remote(), but the page is later handled
+>>>       as an invalid/reserved page, therefore it's not accounted against the
+>>>       user and not unpinned by our put_pfn().
+>>>       
+>>>       Introducing special zero page handling in put_pfn() would resolve the
+>>>       leak, but without accounting of the zero page, a single user could
+>>>       still create enough mappings to generate a reference count overflow.
+>>>       
+>>>       The zero page is always resident, so for our purposes there's no reason
+>>>       to keep it pinned.  Therefore, add a loop to walk pages returned from
+>>>       pin_user_pages_remote() and unpin any zero pages.
+>>>
+>>>
+>>> BUT
+>>>
+>>> in the meantime, we also have
+>>>
+>>> commit c8070b78751955e59b42457b974bea4a4fe00187
+>>> Author: David Howells <dhowells@redhat.com>
+>>> Date:   Fri May 26 22:41:40 2023 +0100
+>>>
+>>>       mm: Don't pin ZERO_PAGE in pin_user_pages()
+>>>       
+>>>       Make pin_user_pages*() leave a ZERO_PAGE unpinned if it extracts a pointer
+>>>       to it from the page tables and make unpin_user_page*() correspondingly
+>>>       ignore a ZERO_PAGE when unpinning.  We don't want to risk overrunning a
+>>>       zero page's refcount as we're only allowed ~2 million pins on it -
+>>>       something that userspace can conceivably trigger.
+>>>       
+>>>       Add a pair of functions to test whether a page or a folio is a ZERO_PAGE.
+>>>
+>>>
+>>> So the unpin_user_page_* won't do anything with the shared zeropage.
+>>>
+>>> (likely, we could revert 873aefb376bbc0ed1dd2381ea1d6ec88106fdbd4)
 >>
+>>
+>> Yes, according to the commit log it seems like the unpin is now just
+>> wasted work since v6.5.  Thanks!
 > 
+> I dusted off an old unit test for mapping the zeropage through vfio and
+> started working on posting a revert for 873aefb376bb but I actually
+> found that this appears to be resolved even before c8070b787519.  I
+> bisected it to:
+> 
+> commit 84209e87c6963f928194a890399e24e8ad299db1
+> Author: David Hildenbrand <david@redhat.com>
+> Date:   Wed Nov 16 11:26:48 2022 +0100
+> 
+>      mm/gup: reliable R/O long-term pinning in COW mappings
+>      
+>      We already support reliable R/O pinning of anonymous memory.
+>      However, assume we end up pinning (R/O long-term) a pagecache page
+>      or the shared zeropage inside a writable private ("COW") mapping.
+>      The next write access will trigger a write-fault and replace the
+>      pinned page by an exclusive anonymous page in the process page
+>      tables to break COW: the pinned page no longer corresponds to the
+>      page mapped into the process' page table.
+>      Now that FAULT_FLAG_UNSHARE can break COW on anything mapped into a
+>      COW mapping, let's properly break COW first before R/O long-term
+>      pinning something that's not an exclusive anon page inside a COW
+>      mapping. FAULT_FLAG_UNSHARE will break COW and map an exclusive
+>      anon page instead that can get pinned safely.
+>      
+>      With this change, we can stop using FOLL_FORCE|FOLL_WRITE for
+>      reliable R/O long-term pinning in COW mappings.
+> 
+> [...]
+> 
+>      Note 3: For users that use FOLL_LONGTERM right now without
+>      FOLL_WRITE, such as VFIO, we'd now no longer pin the shared
+>      zeropage. Instead, we'd populate exclusive anon pages that we can
+>      pin. There was a concern that this could affect the memlock limit
+>      of existing setups.
+> 
+>      For example, a VM running with VFIO could run into the memlock
+>      limit and fail to run. However, we essentially had the same
+>      behavior already in commit 17839856fd58 ("gup: document and work
+>      around "COW can break either way" issue") which got merged into
+>      some enterprise distros, and there were not any such complaints. So
+>      most probably, we're fine.
+> 
+
+Oh, I almost forgot about that one :)
+
+Indeed, 84209e87c696 was v6.2 and c8070b787519 was v6.5.
+
+.. and c8070b787519 was primarily concerned about !FOLL_LONGTERM usage, 
+so that makes sense that they would still run into zeropages.
+
+For vfio, 84209e87c696 did the trick.
+
+-- 
+Cheers,
+
+David / dhildenb
 
 
