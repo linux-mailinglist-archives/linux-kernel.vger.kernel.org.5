@@ -1,73 +1,46 @@
-Return-Path: <linux-kernel+bounces-87965-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87966-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 650AF86DB92
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 07:38:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC13186DB96
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 07:42:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 518F51C22C63
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 06:38:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7BDDF1F22B48
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 06:42:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62A6067E81;
-	Fri,  1 Mar 2024 06:38:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0F0867E8E;
+	Fri,  1 Mar 2024 06:42:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pljycmGi"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="jizRiZ7O"
+Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD45067C6E
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 06:38:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AE3851C59
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 06:42:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.118
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709275104; cv=none; b=OJPBzLJ+ZEirtqexsOshxn6aLD3uB9/mY5H4Ld2+otPl0K0PXNg4252bmZJ0plLCIzW4Stiu9ND9lHhoaDJPDaQYuvvWo0GIgAYjxCIJRP7bJ6jRcaIxleLOWTkHwYFPZ7cAMdDCbUmdwNm7D5DFYEIYaPwaGV+6US/FJRHa5xg=
+	t=1709275332; cv=none; b=FOSKEVHqogZFvPz0gEGfBU5sYuBvzmAd7FugqZMtKSdxAawNoN81X8Q8rMFPVaIZ4T9BTZ12pugJfWaTbkeWg1J/4LH1ewPQ/avGoj4DNzhUXBYM/vqqdngqKn1VPZVLiy2g99LD6G5JnQBaot4ThYwPfGmHpeeskTSwuQJVEcw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709275104; c=relaxed/simple;
-	bh=iVCkm2XXuF1I213Ilxq0tiLLzJPWN89vdcerFp/PbRw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=U5GL4Nc1vtR7KgY05e/pm57OOWMEMKMcbBFOOt31tdx0bKi5OwBThlyonCBFiE7JEppGfOaWuyPI6eyJ5uJiC4bnPIeXC0kjCjQC/QdvIVI+4o+HKGnpKcnBaz1tx+bFybdB4OO3cAxR830678doS/3OSYzmySVQ9uwkj4q4IBY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=pljycmGi; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a44888b123dso54339766b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 22:38:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709275101; x=1709879901; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lJ2KofQHBphIxkjltTf4vzstE4LpxBVEAUIZ1CqKfMc=;
-        b=pljycmGi8AWkoztgzoHdN+7hTKKclr/dkWDv8YS63nBUKZufrLSxkZwK9jdCJ9bf39
-         5hwcFVxwyKYmtj2XdekxKq1nPzti6yQ5/bU3reun6BXYdQjNO6woo7+RpETPKZhbb9vS
-         WJtJuSzSxltkDv5c+BV+ZX7PaXnOe4/UMRViY1mqjGZ55Bts6SXDdt2si5ngR0yTFo26
-         CxKkyBo+flReiWDi+gC+oVLackkmnLjWtnKhmTp41hp4/l0882CuG7J52ZGNwp1va4rG
-         17wtFPCf3PEBi0OQUeOSKqvEmzIFBjeaL7Re5bKJgWeL9aKiMPxcQ2IYV3PnO452dMn+
-         EElQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709275101; x=1709879901;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lJ2KofQHBphIxkjltTf4vzstE4LpxBVEAUIZ1CqKfMc=;
-        b=WTlRMQaj1lskMcSJd+ze346dW9ZRIFIS86i+9rzJOIdcaJ35uTJY+ee2xStt+/c6jn
-         uEJ8ZdhDx1IMP9LXzQ+sBjeFL/gjJIj0MmVOVe/TmA+Vtwtk9cRmYx2UBf6x91L00PrC
-         Gy2a8Lt3rurcOWS6w2NW19rM1AKCi+NFQlY7bH0EF9EOeeklt3uT8lSme4SoN3SQuLru
-         Rz6ZoofcTQKPK3nWPWruDXPTe7OFWQ3IXxWH8v1P122PPDECY5jkOPefnxAWxWxaSvQN
-         Ft5jv45bFjFCDeWQCjr4cwDg2WCMQCSel9uj08w3SbmQo+iBEipUO3D9hgHrebC9xh++
-         YsOw==
-X-Forwarded-Encrypted: i=1; AJvYcCVNCri4e4cjLLoHp+3Yi6Uwayy1pD9tWNPxURLo0Ek2oOfQ8aIvV+wo3l7xv/qcQr3prlhSvJ2Z3o179z/rCvm6NaycdSpJi7VZi+ca
-X-Gm-Message-State: AOJu0YwkVMwzSe68nwPw4qBv3gkTi8WsSGpZ71RhUcPQr7W8cmKQJoQu
-	V8xbwbxLKWS06hJw1N/jV+WVaXNYT90D0kL6nE6RjXniCK2te1C9lK0fEI/c564=
-X-Google-Smtp-Source: AGHT+IEAmFk0JipYSYsM5JUTYrXS7UPg+xpxTkZm1AGcYlsV/I6qtm3daHM+q1NdwpmYOvzXWKbRqg==
-X-Received: by 2002:a17:906:ad8e:b0:a44:690:86de with SMTP id la14-20020a170906ad8e00b00a44069086demr593677ejb.0.1709275101406;
-        Thu, 29 Feb 2024 22:38:21 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id k3-20020a1709061c0300b00a3e0b7e7217sm1396572ejg.48.2024.02.29.22.38.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Feb 2024 22:38:20 -0800 (PST)
-Message-ID: <a0e486d6-711d-414a-a391-97da12cdb531@linaro.org>
-Date: Fri, 1 Mar 2024 07:38:19 +0100
+	s=arc-20240116; t=1709275332; c=relaxed/simple;
+	bh=sOsR+rEMTVlJlwecWhbnALo6XtUp3alMHAtj892IZCc=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=pFJMf7ojIH/mAzzrJALaHU1bXNfJlUvtF+YZVVtMrVEEDl22lFfDrfL9UexeXZnEBaDuJbLzs1sdk7BSHoNlLNLOVuigSBZQTbNGa3LPZ1+iozWh/TTx4lnuSzGUaze5hUYVsX2BB6gT5WjgKE6qMb9YvEORVE1TrFcR9xPflco=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=jizRiZ7O; arc=none smtp.client-ip=115.124.30.118
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1709275320; h=Message-ID:Date:MIME-Version:From:Subject:To:Content-Type;
+	bh=sqwdvmtygLAFL1CWoSfkJRZvmTqRa73rEJVDg9NqqtI=;
+	b=jizRiZ7OOMEaJyBbrNd5GL07K2bTmq+6gVC0YfCGcuKqT7IVmVh6IZGUXhKwLF3/b9LpmCb66CEJOo+NNIeryvSdrYVVO5Vl7crJp6xaea57fgMHS9z4UkGIZEnCtbPXM+smSQFp3X++RDNRMbME8M1sTqsURUThFBEaT7edItc=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=dtcccc@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0W1Y8i9M_1709275316;
+Received: from 30.97.48.218(mailfrom:dtcccc@linux.alibaba.com fp:SMTPD_---0W1Y8i9M_1709275316)
+          by smtp.aliyun-inc.com;
+          Fri, 01 Mar 2024 14:41:58 +0800
+Message-ID: <9b58ef1d-0d45-4fbb-b154-abcbb10211c9@linux.alibaba.com>
+Date: Fri, 1 Mar 2024 14:41:56 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,80 +48,190 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/1] dt-bindings: interrupt-controller: fsl,intmux:
- Include power-domains support
+From: Tianchen Ding <dtcccc@linux.alibaba.com>
+Subject: Re: [PATCH 1/4] sched/eevdf: Fix vruntime adjustment on reweight
+To: Abel Wu <wuyun.abel@bytedance.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Valentin Schneider <valentin.schneider@arm.com>,
+ Barry Song <21cnbao@gmail.com>, Benjamin Segall <bsegall@google.com>,
+ Chen Yu <yu.c.chen@intel.com>, Daniel Jordan <daniel.m.jordan@oracle.com>,
+ "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+ Joel Fernandes <joel@joelfernandes.org>,
+ K Prateek Nayak <kprateek.nayak@amd.com>, Mike Galbraith <efault@gmx.de>,
+ Qais Yousef <qyousef@layalina.io>, Tim Chen <tim.c.chen@linux.intel.com>,
+ Yicong Yang <yangyicong@huawei.com>,
+ Youssef Esmat <youssefesmat@chromium.org>, linux-kernel@vger.kernel.org
+References: <c2ceff07-e1b4-4dbc-b945-f91a9076375e@linux.alibaba.com>
+ <59585184-d13d-46e0-8d68-42838e97a702@bytedance.com>
 Content-Language: en-US
-To: Frank Li <Frank.Li@nxp.com>, Thomas Gleixner <tglx@linutronix.de>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
- Linux Team <linux-imx@nxp.com>,
- "open list:IRQCHIP DRIVERS" <linux-kernel@vger.kernel.org>,
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>
-Cc: imx@lists.linux.dev
-References: <20240229200911.712572-1-Frank.Li@nxp.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240229200911.712572-1-Frank.Li@nxp.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <59585184-d13d-46e0-8d68-42838e97a702@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 29/02/2024 21:09, Frank Li wrote:
-> Enable the power-domains property for the fsl,intmux node. This addition
-> accommodates i.MX8QXP, i.MX8QM, and i.MX8DXL, which utilize the
-> power-domains property. Incorporating this eliminates DTB_CHECK errors in
-> relevant device tree source files.
+On 2024/2/29 22:25, Abel Wu wrote:
+> Good catch. And to the best of my knowledge, the answer is YES. The
+> above Equation in the paper, which is Eq. (20), is based on the
+> assumption that:
 > 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
+>      "once client 3 leaves, the remaining two clients will
+>       proportionally support the eventual loss or gain in the
+>       service time"  -- Page 10
+> 
+>      "by updating the virtual time according to Eq. (18,19) we
+>       ensure that the sum over the lags of all active clients
+>       is always zero"  -- Page 11
+> 
+> But in Peter's implementation, it is the competitors in the new group
+> that client 3 later joins in who actually support the effect. So when
+> client 3 leaves competition with !0-lag in Linux, the rq's sum(lag_i)
+> is no longer zero.
+> 
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+I've different opinions. According to the comments above avg_vruntime_add(), V
+is calculated exactly to satisfy sum(lag_i)=0. This is guaranteed by math.
 
-Best regards,
-Krzysztof
+Actually I print some logs in enqueue_entity() and dequeue_entity() to verify this:
 
+[  293.261236] before dequeue: V=2525278131 W=3072 v=2526243139 w=1024 lag_sum=0
+[  293.261237] after dequeue: V=2524795627 W=2048 v=2526243139 w=1024 lag_sum=0
+[  293.262286] before enqueue: V=2525319064 W=2048 v=2526766576 w=1024 lag_sum=0
+[  293.262287] after enqueue: V=2525801568 W=3072 v=2526766576 w=1024 lag_sum=0
+
+For the first 2 lines, we have 2524795627 = 2525278131 + (2525278131 - 2526243139) * 1024 / 2048.
+Which is Eq. (18)
+
+For the last 2 lines, we have 2525801568 = 2525319064 - (2525319064 - 2526766576) * 1024 / 3072.
+Which is Eq. (19)
+
+So whatever client 3 leave or join competition with !0-lag in Linux, V is handled properly.
+
+> Good catch again! It smells like a bug. Since this @se is still on_rq,
+> it should be taken into consideration when calculating avg_runtime(),
+> but in fact it isn't because __dequeue_entity() will remove its share.
+> 
+> And I seem to spot another bug, although not relate to this problem,
+> that we actually need to call update_curr() unconditionally if curr is
+> available, because we need to commit curr's outstanding runtime to
+> ensure the result of avg_runtime() is up to date.
+> 
+
+I've tried to record avg_vruntime before __dequeue_entity() and pass it to
+reweight_eevdf(). Then the issue is fixed. The V keeps the same during the whole
+reweight_entity().
+
+I could send these two bugfix patches (one for this bug and one you sugguested
+about update_curr). But before doing so, I still want to dig out the answer of
+my first question.
+
+Hi Peter, would you please provide any information?
+
+Thanks.
+
+
+
+My rough logging code:
+(Note: lag_sum may output a minus value, with its absolute value less than W.
+This is ok because my lag_sum calculate is not so accurate due to the sign flips
+in avg_vruntime())
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 533547e3c90a..9306c1bbd472 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -5260,6 +5260,62 @@ static inline int cfs_rq_throttled(struct cfs_rq *cfs_rq);
+  
+  static inline bool cfs_bandwidth_used(void);
+  
++static int rbtree_all(const void *key, const struct rb_node *node)
++{
++	return 0;
++}
++
++static s64 get_lag_sum(struct cfs_rq *cfs_rq)
++{
++	u64 avruntime = avg_vruntime(cfs_rq);
++	struct sched_entity *curr = cfs_rq->curr;
++	struct rb_node *node;
++	s64 lag_sum = 0;
++
++	rb_for_each(node, 0, &cfs_rq->tasks_timeline.rb_root, rbtree_all) {
++		struct sched_entity *se = __node_2_se(node);
++
++		if (se->on_rq)
++			lag_sum += (avruntime - se->vruntime) * scale_load_down(se->load.weight);
++	}
++
++	if (curr && curr->on_rq) {
++		lag_sum += (avruntime - curr->vruntime) * scale_load_down(curr->load.weight);
++	}
++
++	return lag_sum;
++}
++
++static void print_eevdf(struct cfs_rq *cfs_rq, struct sched_entity *se, bool before, bool enqueue)
++{
++	if (cpu_of(rq_of(cfs_rq)))
++		return; // avoid too many printings.
++
++	long load = cfs_rq->avg_load;
++	struct sched_entity *curr = cfs_rq->curr;
++	unsigned long weight = scale_load_down(se->load.weight);
++	s64 lag_sum = get_lag_sum(cfs_rq);
++	u64 avruntime = avg_vruntime(cfs_rq);
++
++	if (curr && curr->on_rq) {
++		unsigned long curr_weight = scale_load_down(curr->load.weight);
++		load += curr_weight;
++	}
++
++	if (before) {
++		if (enqueue)
++			printk("before enqueue: V=%llu W=%ld v=%llu w=%lu lag_sum=%lld\n", avruntime, load, se->vruntime, weight, lag_sum);
++		else
++			printk("before dequeue: V=%llu W=%ld v=%llu w=%lu lag_sum=%lld\n", avruntime, load, se->vruntime, weight, lag_sum);
++	}
++	else {
++		if (enqueue)
++			printk("after enqueue: V=%llu W=%ld v=%llu w=%lu lag_sum=%lld\n", avruntime, load, se->vruntime, weight, lag_sum);
++		else
++			printk("after dequeue: V=%llu W=%ld v=%llu w=%lu lag_sum=%lld\n", avruntime, load, se->vruntime, weight, lag_sum);
++	}
++}
++
+  static void
+  enqueue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
+  {
+@@ -5307,9 +5363,11 @@ enqueue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
+  
+  	check_schedstat_required();
+  	update_stats_enqueue_fair(cfs_rq, se, flags);
++	print_eevdf(cfs_rq, se, true, true);
+  	if (!curr)
+  		__enqueue_entity(cfs_rq, se);
+  	se->on_rq = 1;
++	print_eevdf(cfs_rq, se, false, true);
+  
+  	if (cfs_rq->nr_running == 1) {
+  		check_enqueue_throttle(cfs_rq);
+@@ -5347,6 +5405,7 @@ static void clear_buddies(struct cfs_rq *cfs_rq, struct sched_entity *se)
+  
+  static __always_inline void return_cfs_rq_runtime(struct cfs_rq *cfs_rq);
+  
++
+  static void
+  dequeue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
+  {
+@@ -5377,9 +5436,11 @@ dequeue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
+  	clear_buddies(cfs_rq, se);
+  
+  	update_entity_lag(cfs_rq, se);
++	print_eevdf(cfs_rq, se, true, false);
+  	if (se != cfs_rq->curr)
+  		__dequeue_entity(cfs_rq, se);
+  	se->on_rq = 0;
++	print_eevdf(cfs_rq, se, false, false);
+  	account_entity_dequeue(cfs_rq, se);
+  
+  	/* return excess runtime on last dequeue */
 
