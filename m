@@ -1,330 +1,182 @@
-Return-Path: <linux-kernel+bounces-87903-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87904-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD7ED86DAE3
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 05:53:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EC9986DAE8
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 06:03:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 520E21F250FF
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 04:53:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86B75287889
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 05:03:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E421451C5E;
-	Fri,  1 Mar 2024 04:53:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DE155026C;
+	Fri,  1 Mar 2024 05:03:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b="fgvO7kpX"
-Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jvJqmOA+"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BCF350275
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 04:53:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A2F7405FE
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 05:03:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709268814; cv=none; b=BCC1xTXiNeL6BvQGnf5gUJRRrh3zUEdv1MALT0TBVxQnxw1urRrJFLM9oe3swZIsVbOdt8pgCBNDQH3sTPFFD/TJEqmyNGTaMPdlHMLw7edEJDIVENey0MW41FKCH35v1Tgo3gm8SgnFYNyH4mPaq6ltRkHapEh2PFmmcPOMVQ0=
+	t=1709269382; cv=none; b=JCgIFWgX9u7FrmZunO0CnFIAIPY73QlkOWfsSzc8cbUlopLLhxYSu6KnPcgELifXD41Fm0xAZ1TNDp9NfOyh0ZAULTB/S7JUqQpSVN9wyYDRBJxzgVIitSucxMzth9VNrqe0SDmk4iD2eyiJG+Z/JxJAjPZnGgdkUsXKWKkzoZs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709268814; c=relaxed/simple;
-	bh=8ZH9AyJ+xU1bmbATL4Qv8AX1fQNbVKSedUNCsAKNXLU=;
+	s=arc-20240116; t=1709269382; c=relaxed/simple;
+	bh=yUvFzWM+HJXyLOAC7y66wSXyf4xTtJ7HUVaTx3YpCFU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WpU50knkYTR8OMDrSjZXrjqyQrQGlCPowZYsbTTKXPxNu4EeMe4NjIOsL6uG/AZ/gnVGVyGkfv2D36l0GsOeOn0F3Y5HsID/PPp9V+He65PHf07tWbSLOt+nQ1VRd/aUnP8WX1x9YhvmJepOLygfkIuq3V00+0kpa5pqCWHYYGU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org; spf=none smtp.mailfrom=brainfault.org; dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b=fgvO7kpX; arc=none smtp.client-ip=209.85.166.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=brainfault.org
-Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-7c78b520bc3so64247439f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 20:53:32 -0800 (PST)
+	 To:Cc:Content-Type; b=h62zgL2pZpbfgqimtSE8P8jRkfHo15N6pwT6xCtgyYyWa73Sgoaa+SbBThKO9AuDN1i5QY9xm0poSaLN3C7b1vyX2XkRZzQpTYSds17WCMG4huJ6wv0w9xfb8NIcyU019QBdjv9MQcdUN5xrc1t/1/9DvnqhGEDNeypUydyErEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=jvJqmOA+; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1dcd07252d9so55525ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 21:03:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1709268811; x=1709873611; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1709269380; x=1709874180; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NHf6nfkVPD7L9IoFJ6h/nCUsLd5vKy2G9YCRH63MbH0=;
-        b=fgvO7kpXPUA7WuYawVZ83QLgPqEG28qCQEkrJBvWaMRxq5iDuCw2NmUYJbb0EO5ML1
-         yuazSMrVYd29+J0JPxShoLEK+SaoFiNGA1GI6pK1LfsVt4f7PXKY2IUlqyIMFkqtMMCt
-         R1/spF/p8vfyZzNDcITZ0jMNUOJoZw4ibMXBHoRCHG9SricpWNWICTWuTjSis7w4wN8o
-         1s7fVh3YYDj9SwCqqMF/0L1Un6gRV+RsHyhiMETX2JaiGF8LK6NlbQkqUtbOgJX8O/m/
-         jVXKnanGilAXZ1+15qoazrQjdhVkYVnVJFyQZsMG4PDlT1McB8zuiBPUsTdWl+b8dUr2
-         UtuQ==
+        bh=KJCI+26zIfGoqoxPqGF/3KXwVzFCjuGI+FsZrZUdpyE=;
+        b=jvJqmOA+NjvShZqj4OFXPcoaR4NljMuAzZRJI4qU1skcDbPuJasJEM6dNfUb5qVFu5
+         kBGkiFEGgN2DW3Odc9EkoQ5VzhWnWRLZZ8BatjqzBFA7kSnf2VN8SzJ7PJTvn7hbZDuI
+         pnXBDTVUH0Tvh4CaY0LlfMPJwasvLl0O9fk1LTxgfXNBm2wguZwx0I1O8NtERe90Blk+
+         v7Lc+8yx0I2zP/hBEEpsORkHVdEVMRO2/LGmtb0JlorgZlpD8gQf/omxDSszEM5Q918k
+         nwFUrCOMdRKoNeXSu2Y0hm+PCVCuQMFsb+uG3LWWtx8rgXUFQvDOgvCjR98CrfRBjbx/
+         O+5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709268811; x=1709873611;
+        d=1e100.net; s=20230601; t=1709269380; x=1709874180;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NHf6nfkVPD7L9IoFJ6h/nCUsLd5vKy2G9YCRH63MbH0=;
-        b=K+tNd9+UebRsQqR0HvDZG7li7wDDLHzSGaorQ3Aow2WVAvGoIoKhL9vTfM7R4/cuOp
-         DIDimvJ96h8rGsrApQvddp/dnRnhFawiM04EfMlRziNQjA8Q3LqXw6E3ZBzHuHeMj+ys
-         544P7FJwJvoram2Xe7wdwYoyZJGpTmYn+hfSrcWlctbH5cjTAuB7Pgu8rv8V6rh65hBb
-         TEL5sKEmGTSYqSbs0Laxae+qgQJlN/xTo0hBfb/Y9Hfsf/z3n4j12gi9MvFqekwgEfTh
-         TFmLJUJseobChnNS3z7uZuEL60bqWaJnUNUaaT63jDsHivhp3c6S6tDT8SEa2cUzMGg0
-         sP4w==
-X-Gm-Message-State: AOJu0YwNFnSCNNntp+8GMywHn5JnKw9OBJB3LCtkwi8eYzOtt4ISrl5t
-	IoPdZFJJG0+v9vip5aAIbmP7cxwmMx8sROYWuNb59B6dGcBxYs1Q739B28u8M7mEqNYl0b7Al7V
-	BHpIydHvL+anFlnJnoPgHdX2JSL9ISaO/uqvwZw==
-X-Google-Smtp-Source: AGHT+IE14lajb9MhqXWHjx3BllnF/9ijrqfTyvGTyWw00VqyQL0Pulbq0RlNOnjkeJCiq/rNZT9G8Z7BRuMG+B0VW4c=
-X-Received: by 2002:a05:6e02:1e0b:b0:363:ad01:f052 with SMTP id
- g11-20020a056e021e0b00b00363ad01f052mr1054974ila.24.1709268811574; Thu, 29
- Feb 2024 20:53:31 -0800 (PST)
+        bh=KJCI+26zIfGoqoxPqGF/3KXwVzFCjuGI+FsZrZUdpyE=;
+        b=r5IUZBImP4R0PBsaoIkFaf5w8rEnifD1VcPxUT4D309uHBeB47BATBu4pxDC/a3hgl
+         f8KiKnVslhAgHJcT3u8Ov9ek2Z7zmfMS4EM5/5LFkYVGiHmOGU+VCBXu1E6tQumV59wm
+         Q5qlNueOcPXUqEtqE5WogLgU5eXNdheG39BQSE5vc7SCBDyRu1fCgFnlDCJ8mO79TyOG
+         2HcLnNiCHOnfGuMaXBtLk6tHlW2107b9hLH4UevbbCRhHMqNwHBH4wdYR8f65W/9lkKm
+         tXqB2dtV1Cg4ptjrnNm/yar7ekzeXtdwo33EyDQoC6RrCxXbf8g1CY3lHTGq3mWRkpC7
+         j/YQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVH0mYeJ1xsRbRWAw66SBHX+o5w8xFDjtJINyoA7Ajz27apABIHOr9DRcJrmE05bQo2IxBx3OqirVVSqKmqkxHVYkjn8KtakE2wUiOo
+X-Gm-Message-State: AOJu0Yw+zA2zfqBAKgQjMJyW/ZXZrx9OpUNQbY6YCf8NRvQWZt6pw0RL
+	5BEM78g7dzUhn4Xi1OIORxXafIZvk4RGmxwRTY9ROuWYj0+i1ngzhqzsG6N1yjJb1LB+4Q+nM1g
+	pbktJLyqU3b/iO71u8tbp2tjYaK9l4hMhCUAf
+X-Google-Smtp-Source: AGHT+IGFzadOowQIy/Sa/Ec/9HPST0VW1lGI8Jdl7GpPOSJ1uOTsiucmWmZG0Hnnb7JHLQowSSUfftsvaCzY+Bw+fQc=
+X-Received: by 2002:a17:902:ced0:b0:1dc:c779:5537 with SMTP id
+ d16-20020a170902ced000b001dcc7795537mr122788plg.4.1709269380271; Thu, 29 Feb
+ 2024 21:03:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240229010130.1380926-1-atishp@rivosinc.com> <20240229010130.1380926-16-atishp@rivosinc.com>
-In-Reply-To: <20240229010130.1380926-16-atishp@rivosinc.com>
-From: Anup Patel <anup@brainfault.org>
-Date: Fri, 1 Mar 2024 10:23:21 +0530
-Message-ID: <CAAhSdy3OpFTKh2AZxXiBJi6674yaBRcMPSOXi5o3YRy0pHatuA@mail.gmail.com>
-Subject: Re: [PATCH v4 15/15] KVM: riscv: selftests: Add a test for counter overflow
-To: Atish Patra <atishp@rivosinc.com>
-Cc: linux-kernel@vger.kernel.org, Albert Ou <aou@eecs.berkeley.edu>, 
-	Alexandre Ghiti <alexghiti@rivosinc.com>, Andrew Jones <ajones@ventanamicro.com>, 
-	Atish Patra <atishp@atishpatra.org>, Conor Dooley <conor.dooley@microchip.com>, 
-	Guo Ren <guoren@kernel.org>, Icenowy Zheng <uwu@icenowy.me>, kvm-riscv@lists.infradead.org, 
-	kvm@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, Mark Rutland <mark.rutland@arm.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Shuah Khan <shuah@kernel.org>, 
-	Will Deacon <will@kernel.org>
+References: <20240229063253.561838-1-irogers@google.com> <20240229063253.561838-5-irogers@google.com>
+ <CAM9d7cj9CgxmvSMLvDa=RM8zPRJpRbKqMkU7_B68HwEX7qo=hg@mail.gmail.com>
+In-Reply-To: <CAM9d7cj9CgxmvSMLvDa=RM8zPRJpRbKqMkU7_B68HwEX7qo=hg@mail.gmail.com>
+From: Ian Rogers <irogers@google.com>
+Date: Thu, 29 Feb 2024 21:02:45 -0800
+Message-ID: <CAP-5=fWpnrLAo3yB6SAxDHjzWNMYcAPdq0RHgs_C11Y5dY6ZeQ@mail.gmail.com>
+Subject: Re: [PATCH v3 4/7] perf machine: Move machine's threads into its own abstraction
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Oliver Upton <oliver.upton@linux.dev>, 
+	Yang Jihong <yangjihong1@huawei.com>, linux-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 29, 2024 at 6:32=E2=80=AFAM Atish Patra <atishp@rivosinc.com> w=
-rote:
+On Thu, Feb 29, 2024 at 5:36=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
+wrote:
 >
-> Add a test for verifying overflow interrupt. Currently, it relies on
-> overflow support on cycle/instret events. This test works for cycle/
-> instret events which support sampling via hpmcounters on the platform.
-> There are no ISA extensions to detect if a platform supports that. Thus,
-> this test will fail on platform with virtualization but doesn't
-> support overflow on these two events.
+> On Wed, Feb 28, 2024 at 10:33=E2=80=AFPM Ian Rogers <irogers@google.com> =
+wrote:
+> >
+> > Move thread_rb_node into the machine.c file. This hides the
+> > implementation of threads from the rest of the code allowing for it to
+> > be refactored.
+> >
+> > Locking discipline is tightened up in this change. As the lock is now
+> > encapsulated in threads, the findnew function requires holding it (as
+> > it already did in machine). Rather than do conditionals with locks
+> > based on whether the thread should be created (which could potentially
+> > be error prone with a read lock match with a write unlock), have a
+> > separate threads__find that won't create the thread and only holds the
+> > read lock. This effectively duplicates the findnew logic, with the
+> > existing findnew logic only operating under a write lock assuming
+> > creation is necessary as a previous find failed. The creation may
+> > still fail with the write lock due to another thread. The duplication
+> > is removed in a later next patch that delegates the implementation to
+> > hashtable.
+> >
+> > Signed-off-by: Ian Rogers <irogers@google.com>
 >
-> Signed-off-by: Atish Patra <atishp@rivosinc.com>
+> Thanks for doing this!  A nit below..
+>
+> > ---
+> [SNIP]
+> > @@ -3228,27 +3258,31 @@ int thread__resolve_callchain(struct thread *th=
+read,
+> >         return ret;
+> >  }
+> >
+> > -int machine__for_each_thread(struct machine *machine,
+> > -                            int (*fn)(struct thread *thread, void *p),
+> > -                            void *priv)
+> > +int threads__for_each_thread(struct threads *threads,
+> > +                            int (*fn)(struct thread *thread, void *dat=
+a),
+> > +                            void *data)
+> >  {
+> > -       struct threads *threads;
+> > -       struct rb_node *nd;
+> > -       int rc =3D 0;
+> > -       int i;
+> > +       for (int i =3D 0; i < THREADS__TABLE_SIZE; i++) {
+> > +               struct threads_table_entry *table =3D &threads->table[i=
+];
+> > +               struct rb_node *nd;
+> >
+> > -       for (i =3D 0; i < THREADS__TABLE_SIZE; i++) {
+> > -               threads =3D &machine->threads[i];
+> > -               for (nd =3D rb_first_cached(&threads->entries); nd;
+> > -                    nd =3D rb_next(nd)) {
+> > +               for (nd =3D rb_first_cached(&table->entries); nd; nd =
+=3D rb_next(nd)) {
+> >                         struct thread_rb_node *trb =3D rb_entry(nd, str=
+uct thread_rb_node, rb_node);
+> > +                       int rc =3D fn(trb->thread, data);
+> >
+> > -                       rc =3D fn(trb->thread, priv);
+> >                         if (rc !=3D 0)
+> >                                 return rc;
+> >                 }
+> >         }
+> > -       return rc;
+> > +       return 0;
+>
+> Don't we need locking in this function?
 
-LGTM.
+I thought there was a deadlock, but I was either mistaken or now it is
+resolved. I'll add in the read lock as you say.
 
-Reviewed-by: Anup Patel <anup@brainfault.org>
+Thanks,
+Ian
 
-Regards,
-Anup
 
-> ---
->  tools/testing/selftests/kvm/riscv/sbi_pmu.c | 126 +++++++++++++++++++-
->  1 file changed, 125 insertions(+), 1 deletion(-)
+> Thanks,
+> Namhyung
 >
-> diff --git a/tools/testing/selftests/kvm/riscv/sbi_pmu.c b/tools/testing/=
-selftests/kvm/riscv/sbi_pmu.c
-> index 8ea2a6db6610..c0264c636054 100644
-> --- a/tools/testing/selftests/kvm/riscv/sbi_pmu.c
-> +++ b/tools/testing/selftests/kvm/riscv/sbi_pmu.c
-> @@ -8,6 +8,7 @@
->   * Copyright (c) 2024, Rivos Inc.
->   */
 >
-> +#include "asm/csr.h"
->  #include <stdio.h>
->  #include <stdlib.h>
->  #include <string.h>
-> @@ -16,6 +17,7 @@
->  #include "kvm_util.h"
->  #include "test_util.h"
->  #include "processor.h"
-> +#include "arch_timer.h"
->
->  /* Maximum counters (firmware + hardware)*/
->  #define RISCV_MAX_PMU_COUNTERS 64
-> @@ -26,6 +28,11 @@ union sbi_pmu_ctr_info ctrinfo_arr[RISCV_MAX_PMU_COUNT=
-ERS];
->  static void *snapshot_gva;
->  static vm_paddr_t snapshot_gpa;
->
-> +static int pmu_irq =3D IRQ_PMU_OVF;
-> +
-> +static int vcpu_shared_irq_count;
-> +static int counter_in_use;
-> +
->  /* Cache the available counters in a bitmask */
->  static unsigned long counter_mask_available;
->
-> @@ -69,7 +76,9 @@ unsigned long pmu_csr_read_num(int csr_num)
->  #undef switchcase_csr_read
->  }
->
-> -static inline void dummy_func_loop(int iter)
-> +static void stop_counter(unsigned long counter, unsigned long stop_flags=
-);
-> +
-> +static inline void dummy_func_loop(uint64_t iter)
->  {
->         int i =3D 0;
->
-> @@ -88,6 +97,26 @@ static void guest_illegal_exception_handler(struct ex_=
-regs *regs)
->         regs->epc +=3D 4;
->  }
->
-> +static void guest_irq_handler(struct ex_regs *regs)
-> +{
-> +       unsigned int irq_num =3D regs->cause & ~CAUSE_IRQ_FLAG;
-> +       struct riscv_pmu_snapshot_data *snapshot_data =3D snapshot_gva;
-> +       unsigned long overflown_mask;
-> +
-> +       /* Stop all counters first to avoid further interrupts */
-> +       sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_COUNTER_STOP, 0, 1UL << counte=
-r_in_use,
-> +                 SBI_PMU_STOP_FLAG_TAKE_SNAPSHOT, 0, 0, 0);
-> +
-> +       csr_clear(CSR_SIP, BIT(pmu_irq));
-> +
-> +       overflown_mask =3D READ_ONCE(snapshot_data->ctr_overflow_mask);
-> +       GUEST_ASSERT(overflown_mask & (1UL << counter_in_use));
-> +
-> +       /* Validate that we are in the correct irq handler */
-> +       GUEST_ASSERT_EQ(irq_num, pmu_irq);
-> +       WRITE_ONCE(vcpu_shared_irq_count, vcpu_shared_irq_count+1);
-> +}
-> +
->  static unsigned long get_counter_index(unsigned long cbase, unsigned lon=
-g cmask,
->                                        unsigned long cflags,
->                                        unsigned long event)
-> @@ -263,6 +292,32 @@ static void test_pmu_event_snapshot(unsigned long ev=
-ent)
->         stop_counter(counter, SBI_PMU_STOP_FLAG_RESET);
->  }
->
-> +static void test_pmu_event_overflow(unsigned long event)
-> +{
-> +       unsigned long counter;
-> +       unsigned long counter_value_post;
-> +       unsigned long counter_init_value =3D ULONG_MAX - 10000;
-> +       struct riscv_pmu_snapshot_data *snapshot_data =3D snapshot_gva;
-> +
-> +       counter =3D get_counter_index(0, counter_mask_available, 0, event=
-);
-> +       counter_in_use =3D counter;
-> +
-> +       /* The counter value is updated w.r.t relative index of cbase pas=
-sed to start/stop */
-> +       WRITE_ONCE(snapshot_data->ctr_values[0], counter_init_value);
-> +       start_counter(counter, SBI_PMU_START_FLAG_INIT_FROM_SNAPSHOT, 0);
-> +       dummy_func_loop(10000);
-> +       udelay(msecs_to_usecs(2000));
-> +       /* irq handler should have stopped the counter */
-> +
-> +       counter_value_post =3D READ_ONCE(snapshot_data->ctr_values[counte=
-r_in_use]);
-> +       /* The counter value after stopping should be less the init value=
- due to overflow */
-> +       __GUEST_ASSERT(counter_value_post < counter_init_value,
-> +                      "counter_value_post %lx counter_init_value %lx for=
- counter\n",
-> +                      counter_value_post, counter_init_value);
-> +
-> +       stop_counter(counter, SBI_PMU_STOP_FLAG_RESET);
-> +}
-> +
->  static void test_invalid_event(void)
->  {
->         struct sbiret ret;
-> @@ -361,6 +416,43 @@ static void test_pmu_events_snaphost(int cpu)
->         GUEST_DONE();
->  }
->
-> +static void test_pmu_events_overflow(int cpu)
-> +{
-> +       long out_val =3D 0;
-> +       bool probe;
-> +       int num_counters =3D 0;
-> +       unsigned long sbi_impl_version;
-> +
-> +       probe =3D guest_sbi_probe_extension(SBI_EXT_PMU, &out_val);
-> +       GUEST_ASSERT(probe && out_val =3D=3D 1);
-> +
-> +       sbi_impl_version =3D get_host_sbi_impl_version();
-> +       if (sbi_impl_version >=3D sbi_mk_version(2, 0))
-> +               __GUEST_ASSERT(0, "SBI implementation version doesn't sup=
-port PMU Snapshot");
-> +
-> +       snapshot_set_shmem(snapshot_gpa, 0);
-> +       csr_set(CSR_IE, BIT(pmu_irq));
-> +       local_irq_enable();
-> +
-> +       /* Get the counter details */
-> +       num_counters =3D get_num_counters();
-> +       update_counter_info(num_counters);
-> +
-> +       /*
-> +        * Qemu supports overflow for cycle/instruction.
-> +        * This test may fail on any platform that do not support overflo=
-w for these two events.
-> +        */
-> +       test_pmu_event_overflow(SBI_PMU_HW_CPU_CYCLES);
-> +       GUEST_ASSERT_EQ(vcpu_shared_irq_count, 1);
-> +
-> +       /* Renable the interrupt again for another event */
-> +       csr_set(CSR_IE, BIT(pmu_irq));
-> +       test_pmu_event_overflow(SBI_PMU_HW_INSTRUCTIONS);
-> +       GUEST_ASSERT_EQ(vcpu_shared_irq_count, 2);
-> +
-> +       GUEST_DONE();
-> +}
-> +
->  static void run_vcpu(struct kvm_vcpu *vcpu)
->  {
->         struct ucall uc;
-> @@ -449,6 +541,35 @@ static void test_vm_events_snapshot_test(void *guest=
-_code)
->         test_vm_destroy(vm);
->  }
->
-> +static void test_vm_events_overflow(void *guest_code)
-> +{
-> +       struct kvm_vm *vm =3D NULL;
-> +       struct kvm_vcpu *vcpu =3D NULL;
-> +
-> +       vm =3D vm_create_with_one_vcpu(&vcpu, guest_code);
-> +       __TEST_REQUIRE(__vcpu_has_ext(vcpu, RISCV_SBI_EXT_REG(KVM_RISCV_S=
-BI_EXT_PMU)),
-> +                                  "SBI PMU not available, skipping test"=
-);
-> +
-> +       __TEST_REQUIRE(__vcpu_has_ext(vcpu, RISCV_ISA_EXT_REG(KVM_RISCV_I=
-SA_EXT_SSCOFPMF)),
-> +                                  "Sscofpmf is not available, skipping o=
-verflow test");
-> +
-> +
-> +       test_vm_setup_snapshot_mem(vm, vcpu);
-> +       vm_init_vector_tables(vm);
-> +       vm_install_interrupt_handler(vm, guest_irq_handler);
-> +
-> +       vcpu_init_vector_tables(vcpu);
-> +       /* Initialize guest timer frequency. */
-> +       vcpu_get_reg(vcpu, RISCV_TIMER_REG(frequency), &timer_freq);
-> +       sync_global_to_guest(vm, timer_freq);
-> +
-> +       vcpu_args_set(vcpu, 1, 0);
-> +
-> +       run_vcpu(vcpu);
-> +
-> +       test_vm_destroy(vm);
-> +}
-> +
->  int main(void)
->  {
->         test_vm_basic_test(test_pmu_basic_sanity);
-> @@ -460,5 +581,8 @@ int main(void)
->         test_vm_events_snapshot_test(test_pmu_events_snaphost);
->         pr_info("SBI PMU event verification with snapshot test : PASS\n")=
-;
->
-> +       test_vm_events_overflow(test_pmu_events_overflow);
-> +       pr_info("SBI PMU event verification with overflow test : PASS\n")=
-;
-> +
->         return 0;
->  }
-> --
-> 2.34.1
->
+> > +
+> > +}
+> > +
+> > +int machine__for_each_thread(struct machine *machine,
+> > +                            int (*fn)(struct thread *thread, void *p),
+> > +                            void *priv)
+> > +{
+> > +       return threads__for_each_thread(&machine->threads, fn, priv);
+> >  }
+> >
 
