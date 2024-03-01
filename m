@@ -1,147 +1,116 @@
-Return-Path: <linux-kernel+bounces-87803-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87804-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C7D586D93D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 02:55:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 572F086D940
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 02:55:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D785C283D8F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:55:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E68E91F21F58
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:55:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D26836137;
-	Fri,  1 Mar 2024 01:55:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gY/nZbu3"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17D6638F9A;
+	Fri,  1 Mar 2024 01:55:39 +0000 (UTC)
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54DA72BAF0
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 01:55:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D76F538DC3;
+	Fri,  1 Mar 2024 01:55:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709258123; cv=none; b=KLzHd7VGh0YNsHbmOYNWWzqElZPlhHzZIpu8Y+ldMfg1J++CBdQA+cG1AYX75BzMTUl8HAUQvIMqk1ChcLUoe+Lx5UvokLeXG4AVKfgFPg20AJ0m5bbtyZqIuR/M54r+dMx1y+xlh4dve6Dk5Y7v8AqbgxavCYwPv4tdwrhddxc=
+	t=1709258138; cv=none; b=TiCiakTg3jiEo+SQp1oW9N+VpUEuJc1HiKqRCxx+IuQ7134KYq3yAlxm4Dfd7KLePeP0JPOuIOwLP2bnCGAenBeZ9gEJVaj6aPWx9zgDFCHnHj3YUfsT90nDozPRszhgiQbwgsRbT4BFC1dS2CQDzowq9NFWm2fTaE+Wz8sQnMU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709258123; c=relaxed/simple;
-	bh=cbqoixCcz2zE8+F9Pz2JkEG1qy/+t8gYH7RfdkUJYUw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=B5ABLYWXNbb1ae0OaYUUrjQKXsPIr1eibaxcgH9OZS0OTEg00/YIlSEsEY0A3WdHZ1eZKCE4un54v68Z1fdmw2YOQIMo93KeQAuYB0YnJxD1Vd34u4U5lH+59qJNfXAXJj2kHKSmW7c5RK+yuucFemlPHgwz61bxvfcsKsOVGMs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gY/nZbu3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDC31C433C7;
-	Fri,  1 Mar 2024 01:55:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709258122;
-	bh=cbqoixCcz2zE8+F9Pz2JkEG1qy/+t8gYH7RfdkUJYUw=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=gY/nZbu3L7l92Zt1PCeX1GhBMup6uD9QPIRva9ZiDGX97+d0l1EYQJofw1vcRB/1H
-	 y9YkGZt5rxsFIbyVDuSiWwW36SDZf1wSiPIHG3H7mXbVJbDo6cfCRumFVZS56qANjF
-	 UpO5U9w0NDrEMSRedjunrhhkfRHljnZu1Cf1aPSsKjBp9+7uTfST23NDCzbxjqPWj1
-	 JVhyN5JackZIzxecSMsGRUVFUqTgGE4FpMaK6uVi+srfHD1E0W6R7EFGZzVMWgb/ts
-	 OOyJOSMg8rElxld5nLthF613+gRap9DLo7rXD6LXOSDNz7Ca8DnNVv+7UNqayhX9nB
-	 A3sqpI/zI1XJQ==
-Message-ID: <3325fdb0-1f21-4ba9-919a-09fa0206f7c5@kernel.org>
-Date: Fri, 1 Mar 2024 09:55:14 +0800
+	s=arc-20240116; t=1709258138; c=relaxed/simple;
+	bh=oqWoH8VhvOjQFKWrC83og1gw9x5C8cR+JCMt9m9J5hM=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=O+RlPo1KOIMltdUESKz51ro/ZqGtLyWmDD6N0q9U/bfpDNZuzNUNeIrSa2oR83qgWGlWva6EZxOx3J4WRfzP33fJUtfDvUEiHYBQOrNQQsPJu0TS/ScqFhLsZ0CWimwtE4g0EqnoOu93zd4rHzWk/qFmyueLNOleOCwXu5Rwgis=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4TmB2T0nQ4z1Q96j;
+	Fri,  1 Mar 2024 09:53:37 +0800 (CST)
+Received: from canpemm100001.china.huawei.com (unknown [7.192.105.122])
+	by mail.maildlp.com (Postfix) with ESMTPS id C68C914037F;
+	Fri,  1 Mar 2024 09:55:27 +0800 (CST)
+Received: from canpemm500004.china.huawei.com (7.192.104.92) by
+ canpemm100001.china.huawei.com (7.192.105.122) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 1 Mar 2024 09:55:27 +0800
+Received: from [10.174.179.14] (10.174.179.14) by
+ canpemm500004.china.huawei.com (7.192.104.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 1 Mar 2024 09:55:26 +0800
+Subject: Re: [PATCH] scsi: libsas: Fix disk not being scanned in after being
+ removed
+To: John Garry <john.g.garry@oracle.com>, Xingui Yang <yangxingui@huawei.com>,
+	<jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+	<damien.lemoal@opensource.wdc.com>
+CC: <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linuxarm@huawei.com>, <prime.zeng@hisilicon.com>,
+	<chenxiang66@hisilicon.com>, <kangfenglong@huawei.com>
+References: <20240221073159.29408-1-yangxingui@huawei.com>
+ <f095aa1c-f233-40f9-ad0f-fcd8fe69a80d@oracle.com>
+From: Jason Yan <yanaijie@huawei.com>
+Message-ID: <e2a725ee-98b3-fd57-6ee4-af031ffbd6bc@huawei.com>
+Date: Fri, 1 Mar 2024 09:55:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [f2fs-dev] [PATCH 1/4] f2fs: fix blkofs_end correctly in
- f2fs_migrate_blocks()
+In-Reply-To: <f095aa1c-f233-40f9-ad0f-fcd8fe69a80d@oracle.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-To: Daeho Jeong <daeho43@gmail.com>
-Cc: jaegeuk@kernel.org, Daeho Jeong <daehojeong@google.com>,
- linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
-References: <20240226013208.2389246-1-chao@kernel.org>
- <2b81aa6f-db51-4a7c-97ab-2af2c2fea056@kernel.org>
- <CACOAw_yn4m+nEGMEX8RL1xFEaZpzXvjUhUdSoo9d2EeGfzPrAA@mail.gmail.com>
-From: Chao Yu <chao@kernel.org>
-In-Reply-To: <CACOAw_yn4m+nEGMEX8RL1xFEaZpzXvjUhUdSoo9d2EeGfzPrAA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ canpemm500004.china.huawei.com (7.192.104.92)
 
-On 2024/3/1 1:41, Daeho Jeong wrote:
-> On Thu, Feb 29, 2024 at 2:11 AM Chao Yu <chao@kernel.org> wrote:
+On 2024/2/29 2:13, John Garry wrote:
+> On 21/02/2024 07:31, Xingui Yang wrote:
+>> As of commit d8649fc1c5e4 ("scsi: libsas: Do discovery on empty PHY to
+>> update PHY info"), do discovery will send a new SMP_DISCOVER and update
+>> phy->phy_change_count. We found that if the disk is reconnected and phy
+>> change_count changes at this time, the disk scanning process will not be
+>> triggered.
 >>
->> Jaegeuk, Daeho,
+>> So update the PHY info with the last query results.
 >>
->> Any comments on this serials?
+>> Fixes: d8649fc1c5e4 ("scsi: libsas: Do discovery on empty PHY to 
+>> update PHY info")
+>> Signed-off-by: Xingui Yang <yangxingui@huawei.com>
+>> ---
+>>   drivers/scsi/libsas/sas_expander.c | 9 ++++-----
+>>   1 file changed, 4 insertions(+), 5 deletions(-)
 >>
->> Thanks,
+>> diff --git a/drivers/scsi/libsas/sas_expander.c 
+>> b/drivers/scsi/libsas/sas_expander.c
+>> index a2204674b680..9563f5589948 100644
+>> --- a/drivers/scsi/libsas/sas_expander.c
+>> +++ b/drivers/scsi/libsas/sas_expander.c
+>> @@ -1681,6 +1681,10 @@ int sas_get_phy_attached_dev(struct 
+>> domain_device *dev, int phy_id,
+>>           if (*type == 0)
+>>               memset(sas_addr, 0, SAS_ADDR_SIZE);
+>>       }
+>> +
+>> +    if ((SAS_ADDR(sas_addr) == 0) || (res == -ECOMM))
 > 
-> No functional difference here, since start_blk is always aligned with
-> the section address.
+> It's odd to call sas_set_ex_phy() if we got res == -ECOMM. I mean, in 
+> this this case disc_resp is not filled in as the command did not 
+> execute, right? I know that is what the current code does, but it is 
+> strange.
 
-You're right.
+The current code actually re-send the SMP command and update the PHY 
+status only when the the SMP command is responded correctly.
 
-> However, this is more clear in itself.
-
-Thanks for the review!
-
-One more thing is, I found that fallocate() on pinned file will preallocate
-aligned w/ section-size which is about several hundred megabyte for ZUFS case,
-since commit e1175f022911 ("f2fs: fix to align to section for fallocate() on
-pinned file").
-
-It looks not make sense, especially for logcat case which actually want to
-preallocate 2MB space, so, what about reverting commit e1175f022911 and
-looking for other solution to avoid GCing on fragmented pinned file.
-
-What do you think?
+Xinggui, can you please fix this and send v3?
 
 Thanks,
+Jason
 
-> 
-> Reviewed-by: Daeho Jeong <daehojeong@google.com>
-> 
-> Thanks,
-> 
->>
->> On 2024/2/26 9:32, Chao Yu wrote:
->>> In f2fs_migrate_blocks(), when traversing blocks in last section,
->>> blkofs_end should be (start_blk + blkcnt - 1) % blk_per_sec, fix it.
->>>
->>> Signed-off-by: Chao Yu <chao@kernel.org>
->>> ---
->>>    fs/f2fs/data.c | 5 +++--
->>>    1 file changed, 3 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
->>> index c21b92f18463..0c728e82d936 100644
->>> --- a/fs/f2fs/data.c
->>> +++ b/fs/f2fs/data.c
->>> @@ -3841,13 +3841,14 @@ static int f2fs_migrate_blocks(struct inode *inode, block_t start_blk,
->>>        struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
->>>        unsigned int blkofs;
->>>        unsigned int blk_per_sec = BLKS_PER_SEC(sbi);
->>> +     unsigned int end_blk = start_blk + blkcnt - 1;
->>>        unsigned int secidx = start_blk / blk_per_sec;
->>>        unsigned int end_sec;
->>>        int ret = 0;
->>>
->>>        if (!blkcnt)
->>>                return 0;
->>> -     end_sec = secidx + (blkcnt - 1) / blk_per_sec;
->>> +     end_sec = end_blk / blk_per_sec;
->>>
->>>        f2fs_down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
->>>        filemap_invalidate_lock(inode->i_mapping);
->>> @@ -3857,7 +3858,7 @@ static int f2fs_migrate_blocks(struct inode *inode, block_t start_blk,
->>>
->>>        for (; secidx <= end_sec; secidx++) {
->>>                unsigned int blkofs_end = secidx == end_sec ?
->>> -                     (blkcnt - 1) % blk_per_sec : blk_per_sec - 1;
->>> +                             end_blk % blk_per_sec : blk_per_sec - 1;
->>>
->>>                f2fs_down_write(&sbi->pin_sem);
->>>
->>
->>
->> _______________________________________________
->> Linux-f2fs-devel mailing list
->> Linux-f2fs-devel@lists.sourceforge.net
->> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
 
