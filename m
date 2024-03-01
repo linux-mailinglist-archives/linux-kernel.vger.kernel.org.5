@@ -1,174 +1,108 @@
-Return-Path: <linux-kernel+bounces-88803-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88810-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C06A786E6D2
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:09:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5516786E6EC
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:12:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 780D028DF39
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:09:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 310D5B2B263
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:11:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 241E4882D;
-	Fri,  1 Mar 2024 17:08:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44E83882E;
+	Fri,  1 Mar 2024 17:10:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="MBK5sIsS";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="vwK5ViTl";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="MBK5sIsS";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="vwK5ViTl"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=rosalinux.ru header.i=@rosalinux.ru header.b="WZJOx2BE"
+Received: from mail.rosalinux.ru (mail.rosalinux.ru [195.19.76.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A07A47468;
-	Fri,  1 Mar 2024 17:08:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ED37F503;
+	Fri,  1 Mar 2024 17:10:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.19.76.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709312891; cv=none; b=nVGkXCj//yqK9KiLG3kE8Qh1b8Nrv6WiiY4YRPOfncJVZVbgvnM+IMB4AEmTXwv1TT26Oej3SXwb6WGp/E+Vwd/6DDNcqvPgnZYkT/9Ug5kbw6AiSFgNVw3EIroVfyo75V8Tfgvx9wgeWXHJthZg8mV59QS8liKWBdI7u3DJkcg=
+	t=1709313045; cv=none; b=QfvR308ofjPc91HwYwSMN3PFOPSw8S57qvDSxEvuUUdKA4rjD/qLk0YuAHKzjCklXNtIPF/wZBpSfRabnk3wkQW270nrIxjWqCZFUkbtqd6aDzqOopnFiQ2Cq0eg8/4Tl5NIO2baeOQZsGiWyfWWBCWylmv1F2nu44D3mMhpw/U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709312891; c=relaxed/simple;
-	bh=w0uFf7UE97zt2wdqPoLkH+UX7mNIxYfpHO1pyRyDbyw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BdsK0A2YXREGL1nPVDV8nBew8VFVD6Zv3ruU4g+PBu2rTeH2KJJ8kudOjnNszoggRQv3CskzhhkmLDqwWfq5+XdhUt7SYRibK9CW5lmOQUuXfHMHUF8ykaEjzqKw0whqWccS266L7/qY7ji8jqtaVM2lJlO3j1Qxd1E0AqnLbso=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=MBK5sIsS; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=vwK5ViTl; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=MBK5sIsS; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=vwK5ViTl; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id C041133D2E;
-	Fri,  1 Mar 2024 17:08:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1709312887; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RqJGuSNtEKivYtKHzuQHc54bH1ErddF8H5FukziJrvY=;
-	b=MBK5sIsSId/tyrKP+kU3ieWRHT/L04VfkV/+b/kW3+75gNUaXMlbZnG9aflnFcOdGi/hFB
-	s2zEv0uZgHLZVGM5NcskABpjAo3Jq0fL4SSBSWqfeap6xhee/z2erhzJo8n6dPa25bWs3P
-	01tmrt/7Da0hD2BV1556vS3lz4gK37A=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1709312887;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RqJGuSNtEKivYtKHzuQHc54bH1ErddF8H5FukziJrvY=;
-	b=vwK5ViTlttLYWkeoRlfCISz9XtLVUYHzTzXugQbfvnv4s0dbCU8plBXOftlTpm1Pht7gRe
-	l1CIDNn7krPIJYBA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1709312887; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RqJGuSNtEKivYtKHzuQHc54bH1ErddF8H5FukziJrvY=;
-	b=MBK5sIsSId/tyrKP+kU3ieWRHT/L04VfkV/+b/kW3+75gNUaXMlbZnG9aflnFcOdGi/hFB
-	s2zEv0uZgHLZVGM5NcskABpjAo3Jq0fL4SSBSWqfeap6xhee/z2erhzJo8n6dPa25bWs3P
-	01tmrt/7Da0hD2BV1556vS3lz4gK37A=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1709312887;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RqJGuSNtEKivYtKHzuQHc54bH1ErddF8H5FukziJrvY=;
-	b=vwK5ViTlttLYWkeoRlfCISz9XtLVUYHzTzXugQbfvnv4s0dbCU8plBXOftlTpm1Pht7gRe
-	l1CIDNn7krPIJYBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A285613A59;
-	Fri,  1 Mar 2024 17:08:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id g35fI3YL4mVwGQAAD6G6ig
-	(envelope-from <hare@suse.de>); Fri, 01 Mar 2024 17:08:06 +0000
-Message-ID: <1e789901-82a2-40db-b818-cc1c5b6e9ea5@suse.de>
-Date: Fri, 1 Mar 2024 18:08:05 +0100
+	s=arc-20240116; t=1709313045; c=relaxed/simple;
+	bh=1f3lWg+pkiYMDBEYhxFCMSCS17hH2ui9obrcK7tKVE8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=m4BHJV8ECaAS5cBzBk2LuUBv6PZPwpSF2vNsnW+pnAdlw6JT6Yv3/Ap2x25l/lPjJn6A6Ouv9IsQxCmKf7/IVeP5Ietup7S2SLLGc/RNVOIiQV5y2pJClYoe4/cNwKRpTmdodkOUgteqoSwMzdWfe8shtOAwlHDOylqqan1L+Sk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=rosalinux.ru; spf=pass smtp.mailfrom=rosalinux.ru; dkim=pass (2048-bit key) header.d=rosalinux.ru header.i=@rosalinux.ru header.b=WZJOx2BE; arc=none smtp.client-ip=195.19.76.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=rosalinux.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rosalinux.ru
+Received: from localhost (localhost [127.0.0.1])
+	by mail.rosalinux.ru (Postfix) with ESMTP id B0641DD7B446E;
+	Fri,  1 Mar 2024 20:10:29 +0300 (MSK)
+Received: from mail.rosalinux.ru ([127.0.0.1])
+	by localhost (mail.rosalinux.ru [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id 9K59O71FHrtq; Fri,  1 Mar 2024 20:10:29 +0300 (MSK)
+Received: from localhost (localhost [127.0.0.1])
+	by mail.rosalinux.ru (Postfix) with ESMTP id 7CD77DD7B4472;
+	Fri,  1 Mar 2024 20:10:29 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.rosalinux.ru 7CD77DD7B4472
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rosalinux.ru;
+	s=1D4BB666-A0F1-11EB-A1A2-F53579C7F503; t=1709313029;
+	bh=a6DlMHYD50bgw5c8dbRDQuJSmrsCV4dJRNHYFXyLCp8=;
+	h=From:To:Date:Message-ID:MIME-Version;
+	b=WZJOx2BE56ZBTHhYS4Gdw6s8fbuKRWxiG9rvR0s32OSNIiJ8FmqPE0Z9GFqpMBTxV
+	 C6OPEUJacpxpp2sgO/cCck0BPtzeX1pc/yh86Tg0Pz7tNk3/JRMwkZtnRGJU90J+iH
+	 Pyo4cdUx+fFgUYBVWbEcoFSaCuHDyyXGuxwFZmtI00G0VtefyqpImFc8sZrMyMBkbE
+	 dLsnyiXdbhVvH4fBANj+L5AzSJIkulOi5gTXysXVZ83PRsvYqGHggmQuKGibMkdGrO
+	 Bh/1VU9M9rac7U5h2ti8+QotSQOkh0LmEW30NuwEx0fuTUf9UEkHc6Lz2R6c7buGqU
+	 9x+noiYVLTn0w==
+X-Virus-Scanned: amavisd-new at rosalinux.ru
+Received: from mail.rosalinux.ru ([127.0.0.1])
+	by localhost (mail.rosalinux.ru [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 6DYsYvXOHtQm; Fri,  1 Mar 2024 20:10:29 +0300 (MSK)
+Received: from localhost.localdomain (unknown [62.217.186.174])
+	by mail.rosalinux.ru (Postfix) with ESMTPSA id 4C10ADD7B446E;
+	Fri,  1 Mar 2024 20:10:29 +0300 (MSK)
+From: Mikhail Lobanov <m.lobanov@rosalinux.ru>
+To: Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: Mikhail Lobanov <m.lobanov@rosalinux.ru>,
+	linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] media: v4l2-tpg: Fix division by zero error in color_to_hsv
+Date: Fri,  1 Mar 2024 12:08:36 -0500
+Message-ID: <20240301170838.57421-1-m.lobanov@rosalinux.ru>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 01/13] mm: Support order-1 folios in the page cache
-Content-Language: en-US
-To: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>,
- linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org
-Cc: djwong@kernel.org, mcgrof@kernel.org, linux-mm@kvack.org,
- david@fromorbit.com, akpm@linux-foundation.org, gost.dev@samsung.com,
- linux-kernel@vger.kernel.org, chandan.babu@oracle.com, willy@infradead.org
-References: <20240301164444.3799288-1-kernel@pankajraghav.com>
- <20240301164444.3799288-2-kernel@pankajraghav.com>
-From: Hannes Reinecke <hare@suse.de>
-In-Reply-To: <20240301164444.3799288-2-kernel@pankajraghav.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=MBK5sIsS;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=vwK5ViTl
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-1.54 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 BAYES_HAM(-0.04)[59.09%];
-	 MIME_GOOD(-0.10)[text/plain];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DWL_DNSWL_BLOCKED(0.00)[suse.de:dkim];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_TWELVE(0.00)[12];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCVD_TLS_ALL(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Score: -1.54
-X-Rspamd-Queue-Id: C041133D2E
-X-Spam-Flag: NO
+Content-Transfer-Encoding: quoted-printable
 
-On 3/1/24 17:44, Pankaj Raghav (Samsung) wrote:
-> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-> 
-> Folios of order 1 have no space to store the deferred list.  This is
-> not a problem for the page cache as file-backed folios are never
-> placed on the deferred list.  All we need to do is prevent the core
-> MM from touching the deferred list for order 1 folios and remove the
-> code which prevented us from allocating order 1 folios.
-> 
-> Link: https://lore.kernel.org/linux-mm/90344ea7-4eec-47ee-5996-0c22f42d6a6a@google.com/
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->   include/linux/huge_mm.h |  7 +++++--
->   mm/filemap.c            |  2 --
->   mm/huge_memory.c        | 23 ++++++++++++++++++-----
->   mm/internal.h           |  4 +---
->   mm/readahead.c          |  3 ---
->   5 files changed, 24 insertions(+), 15 deletions(-)
-> 
-Reviewed-by: Hannes Reinecke <hare@suse.de>
+In the color_to_hsv function, division by zero is possible due to
+attributes r,g,b are equal so diff_rgb =3D 0.
 
-Cheers,
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-Hannes
--- 
-Dr. Hannes Reinecke                  Kernel Storage Architect
-hare@suse.de                                +49 911 74053 688
-SUSE Software Solutions GmbH, Frankenstr. 146, 90461 Nürnberg
-HRB 36809 (AG Nürnberg), GF: I. Totev, A. McDonald, W. Knoblich
+Fixes: 54fb15348385 ("[media] vivid: Add support for HSV formats")
+Signed-off-by: Mikhail Lobanov <m.lobanov@rosalinux.ru>
+---
+ drivers/media/common/v4l2-tpg/v4l2-tpg-core.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c b/drivers/medi=
+a/common/v4l2-tpg/v4l2-tpg-core.c
+index a366566f22c3..943aab3ad97c 100644
+--- a/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c
++++ b/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c
+@@ -597,6 +597,11 @@ static void color_to_hsv(struct tpg_data *tpg, int r=
+, int g, int b,
+ 		third =3D third_size * 2;
+ 	}
+=20
++	if (!diff_rgb) {
++		*s =3D 0;
++		return;
++	}
++
+ 	aux *=3D third_size / 2;
+ 	aux +=3D diff_rgb / 2;
+ 	aux /=3D diff_rgb;
+--=20
+2.39.2
 
 
