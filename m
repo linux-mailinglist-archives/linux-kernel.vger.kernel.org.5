@@ -1,205 +1,304 @@
-Return-Path: <linux-kernel+bounces-88376-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88377-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E99D86E0B7
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:53:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7C3886E0BB
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:53:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE563283EA4
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:53:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E79A01C2274F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:53:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8F756CDC8;
-	Fri,  1 Mar 2024 11:53:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0F7A6D1B0;
+	Fri,  1 Mar 2024 11:53:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QF12nm7S"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="0GjbimLT"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC62D6A8AE
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 11:53:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E676120315
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 11:53:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709293997; cv=none; b=XjU5kInlwFLBLoFPsXg8HUlXh6X86gI/NcFQms4rKE8AtT5NZAZ1ETllxWrUSJ1clkjn4c62tTjfRzyyd+2LZ2JpQ7qRCvpbcZsPqIYXy9sSWYdbXLpSEqVwIExB9xapceq2FpgBvGSWd57X1otFqNmM24TtrDqx9/YI9VIRfrA=
+	t=1709294020; cv=none; b=V7DGTBUitoJl8pPaR5Z5Dl23McVdHzo3Nvp2mzP8dd6KYixPq2b6qbd0nGCpiak+on0RpGLWJ2rjvEeMs+ooos5lhJHQ6pV6u8z0i/sXEDjtjaFJLPRRVRiIP9Re9ZZIC1vRaL6qFjNsyRToIi9E25EazIjcFOwNk/QCipANDnI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709293997; c=relaxed/simple;
-	bh=WpidZeAtZ+YgQaVLdxWuklMA1DRtSXB3dUMvzxcxpvM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hTvG4COz2O/5xL9W/Akpj3vBaN3EfMdUloW+jCTfs6YIIj5SCkPnQQOl8vytTie6M+3aKFaJiVzpI9CXH5rOv29TNJyfycEibmyPkrSbjEgxKHwmuGDPZjto23X2TO25iONTVRqRCXhHKqSGX3JgQwrzvHSLAevicnDxa08hPkY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QF12nm7S; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709293993;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sXYuCfdTj1urbCJSi5THRKssGZntXNDUJ+IF7YDUqaY=;
-	b=QF12nm7S/cKwqW20/nXJE60YJXzcXAAho4dTRwOaN7KZfLwYh0rtusqAnwZENQ8B1Wkl95
-	pR6KqGSt9e/tAW4E4SoH3orJNkLnyqtcJtSnscyPIQoBTab6LA0TtXwd9lhMm7ci273uuS
-	d+mrVg3c8pgBozX1PeWKvA/lRkoN88Y=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-474-oTT08ykgO5e9_0NBCyc9hQ-1; Fri, 01 Mar 2024 06:53:12 -0500
-X-MC-Unique: oTT08ykgO5e9_0NBCyc9hQ-1
-Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-558aafe9bf2so2317779a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 03:53:11 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709293991; x=1709898791;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sXYuCfdTj1urbCJSi5THRKssGZntXNDUJ+IF7YDUqaY=;
-        b=R7nLeHBAI7rqWdXuU+05zWS8xbArVOm6kW3OH9D6Sr9HL9d+YhvVCVQkK1TpyDuOgA
-         HQ076p96nSwmxzH3/OIPj7C9qQu8jLIQznIE7GUHoMiB64AU86ZwwCjJbPXZxo5LGE2c
-         Z81u6XiC5plCtp29D3TNmIOGeIxW6WU3rjjSOJ4HJm7htMa2qig2PrMnuOMEg1ijYX8q
-         VfHfNG/KpCyTcow5Psn9Td3DB/Qn0u9EnwpgYCMt/3iJlNNOp35mihzX7M1DcHQmf06D
-         BLeOUfpOShf6qGYY6Z5ZBqFyameUZmphXjNbS8l95tQd9Ll+U0J1vSu8i+mkTYHn2lLL
-         dhOg==
-X-Forwarded-Encrypted: i=1; AJvYcCUhthGW+U0QzdhEdKNx7ftGdAw+/ogWrOvnk1A+cBD9iLO3D87NgLCxDc7F3tvvgmbizhif2L56MvMwOzveldxEYgdXOg7ZPxEYB25G
-X-Gm-Message-State: AOJu0Yzqyu49LEoYDUz7XH+ELxnQdRZ/HX4y7JCcHvrfAcoHz3V0hHwU
-	vTYofcgZZVjzcyX+rbvLXzdnVVDqhv00tbJFjKdEBsNqPENRdwDCAYbw/KuYvGH1Q+TwiBgf2uo
-	qH2MPeK92kKtTWWziZ0NvE3NecOdDlHjgsi+IB/Wktfo2kfNKKbNSAfG4pR8fOA==
-X-Received: by 2002:a50:a411:0:b0:566:47ee:b8b4 with SMTP id u17-20020a50a411000000b0056647eeb8b4mr1225108edb.17.1709293990834;
-        Fri, 01 Mar 2024 03:53:10 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IE1vmpvGelrIAwSR9YtmqYMH53YWKi9ocFIRHHKWtTOAKDOP50IotWgGwt5cBRTSNWEE/hvcg==
-X-Received: by 2002:a50:a411:0:b0:566:47ee:b8b4 with SMTP id u17-20020a50a411000000b0056647eeb8b4mr1225097edb.17.1709293990541;
-        Fri, 01 Mar 2024 03:53:10 -0800 (PST)
-Received: from redhat.com ([2.52.158.48])
-        by smtp.gmail.com with ESMTPSA id d18-20020a056402001200b00566d43ed4dasm439183edu.68.2024.03.01.03.53.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 03:53:09 -0800 (PST)
-Date: Fri, 1 Mar 2024 06:53:05 -0500
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: wangyunjian <wangyunjian@huawei.com>
-Cc: Paolo Abeni <pabeni@redhat.com>,
-	"willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>,
-	"jasowang@redhat.com" <jasowang@redhat.com>,
-	"kuba@kernel.org" <kuba@kernel.org>,
-	"bjorn@kernel.org" <bjorn@kernel.org>,
-	"magnus.karlsson@intel.com" <magnus.karlsson@intel.com>,
-	"maciej.fijalkowski@intel.com" <maciej.fijalkowski@intel.com>,
-	"jonathan.lemon@gmail.com" <jonathan.lemon@gmail.com>,
-	"davem@davemloft.net" <davem@davemloft.net>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"virtualization@lists.linux.dev" <virtualization@lists.linux.dev>,
-	xudingke <xudingke@huawei.com>, "liwei (DT)" <liwei395@huawei.com>
-Subject: Re: [PATCH net-next v2 3/3] tun: AF_XDP Tx zero-copy support
-Message-ID: <20240301065141-mutt-send-email-mst@kernel.org>
-References: <1709118356-133960-1-git-send-email-wangyunjian@huawei.com>
- <7d478cb842e28094f4d6102e593e3de25ab27dfe.camel@redhat.com>
- <223aeca6435342ec8a4d57c959c23303@huawei.com>
+	s=arc-20240116; t=1709294020; c=relaxed/simple;
+	bh=YGZRh0bKcxFHGTj3E5dUozhFR4re8DBslvJLFXS2cWE=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=dCtdcc31lVU71J+7b+2lc44Z3MhOUqDVeLWs2iMu5SJjSuDJ87KLXSU7LFAQvbAiCmR2dcW3OgutTBFfoFJotzbO1Y2I+1GfkL6af8zoOiO+CVY5sjdd/ipyiKTM8BIBymWeTEvMZGuavrl87xYFFN3H3IWlVAbCLM+G4qFwxcs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=0GjbimLT; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709294016;
+	bh=YGZRh0bKcxFHGTj3E5dUozhFR4re8DBslvJLFXS2cWE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=0GjbimLTrUE6ObJ9MaK+mkDWwoSFdVETlM6hmgNoLczGp7+GUKyALKc3Bs95ExN2K
+	 T1wOmpL9m1rcRX7GoEb4FWbsZ25I0K2180jJc2RtOTgOTTaNnLeQdoFPn2kMoHgk14
+	 wPvRJmIVgWKCU9rIb8UZyEY2B9jjEhxVXaw/pgNSDOSwrb2xy36TjY25sXLV9wAHbC
+	 DDHZLQZEYAZ2A4GTzzz34nOy///N375hYBv6xAfdpoCCUWUTocc9KfUzGoI4b2K1HC
+	 1Zj2JlY3sJJ5jY5xOBwg1nYatB1qy74xZ5EfJawoJP55LEznRm3wFypwOXZyF8YdwO
+	 Mkcjjpgx6vL8w==
+Received: from eldfell (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pq)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id E90B43780EC6;
+	Fri,  1 Mar 2024 11:53:35 +0000 (UTC)
+Date: Fri, 1 Mar 2024 13:53:27 +0200
+From: Pekka Paalanen <pekka.paalanen@collabora.com>
+To: Arthur Grillo <arthurgrillo@riseup.net>
+Cc: Louis Chauvet <louis.chauvet@bootlin.com>, Rodrigo Siqueira
+ <rodrigosiqueiramelo@gmail.com>, Melissa Wen <melissa.srw@gmail.com>,
+ =?UTF-8?B?TWHDrXJh?= Canal <mairacanal@riseup.net>, Haneen Mohammed
+ <hamohammed.sa@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Maarten
+ Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
+ <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie
+ <airlied@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
+ thomas.petazzoni@bootlin.com
+Subject: Re: [PATCH v2 6/9] drm/vkms: Add YUV support
+Message-ID: <20240301135327.22efe0dd.pekka.paalanen@collabora.com>
+In-Reply-To: <5a45e133-d554-4252-a223-dadced383443@riseup.net>
+References: <20240223-yuv-v2-0-aa6be2827bb7@bootlin.com>
+	<20240223-yuv-v2-6-aa6be2827bb7@bootlin.com>
+	<20240226141916.1627bbbd.pekka.paalanen@collabora.com>
+	<Zd35c_CJbhY46TjQ@localhost.localdomain>
+	<b23da076-0bfb-48b2-9386-383a6dec1868@riseup.net>
+	<8fc07f0f-f14d-4878-9884-2bc4b4c6f426@riseup.net>
+	<20240229141238.51891cad.pekka.paalanen@collabora.com>
+	<5a45e133-d554-4252-a223-dadced383443@riseup.net>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <223aeca6435342ec8a4d57c959c23303@huawei.com>
+Content-Type: multipart/signed; boundary="Sig_/TYmDnefL1VGq17Xl+XSGL7s";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On Fri, Mar 01, 2024 at 11:45:52AM +0000, wangyunjian wrote:
-> > -----Original Message-----
-> > From: Paolo Abeni [mailto:pabeni@redhat.com]
-> > Sent: Thursday, February 29, 2024 7:13 PM
-> > To: wangyunjian <wangyunjian@huawei.com>; mst@redhat.com;
-> > willemdebruijn.kernel@gmail.com; jasowang@redhat.com; kuba@kernel.org;
-> > bjorn@kernel.org; magnus.karlsson@intel.com; maciej.fijalkowski@intel.com;
-> > jonathan.lemon@gmail.com; davem@davemloft.net
-> > Cc: bpf@vger.kernel.org; netdev@vger.kernel.org;
-> > linux-kernel@vger.kernel.org; kvm@vger.kernel.org;
-> > virtualization@lists.linux.dev; xudingke <xudingke@huawei.com>; liwei (DT)
-> > <liwei395@huawei.com>
-> > Subject: Re: [PATCH net-next v2 3/3] tun: AF_XDP Tx zero-copy support
-> > 
-> > On Wed, 2024-02-28 at 19:05 +0800, Yunjian Wang wrote:
-> > > @@ -2661,6 +2776,54 @@ static int tun_ptr_peek_len(void *ptr)
-> > >  	}
-> > >  }
-> > >
-> > > +static void tun_peek_xsk(struct tun_file *tfile) {
-> > > +	struct xsk_buff_pool *pool;
-> > > +	u32 i, batch, budget;
-> > > +	void *frame;
-> > > +
-> > > +	if (!ptr_ring_empty(&tfile->tx_ring))
-> > > +		return;
-> > > +
-> > > +	spin_lock(&tfile->pool_lock);
-> > > +	pool = tfile->xsk_pool;
-> > > +	if (!pool) {
-> > > +		spin_unlock(&tfile->pool_lock);
-> > > +		return;
-> > > +	}
-> > > +
-> > > +	if (tfile->nb_descs) {
-> > > +		xsk_tx_completed(pool, tfile->nb_descs);
-> > > +		if (xsk_uses_need_wakeup(pool))
-> > > +			xsk_set_tx_need_wakeup(pool);
-> > > +	}
-> > > +
-> > > +	spin_lock(&tfile->tx_ring.producer_lock);
-> > > +	budget = min_t(u32, tfile->tx_ring.size, TUN_XDP_BATCH);
-> > > +
-> > > +	batch = xsk_tx_peek_release_desc_batch(pool, budget);
-> > > +	if (!batch) {
-> > 
-> > This branch looks like an unneeded "optimization". The generic loop below
-> > should have the same effect with no measurable perf delta - and smaller code.
-> > Just remove this.
-> > 
-> > > +		tfile->nb_descs = 0;
-> > > +		spin_unlock(&tfile->tx_ring.producer_lock);
-> > > +		spin_unlock(&tfile->pool_lock);
-> > > +		return;
-> > > +	}
-> > > +
-> > > +	tfile->nb_descs = batch;
-> > > +	for (i = 0; i < batch; i++) {
-> > > +		/* Encode the XDP DESC flag into lowest bit for consumer to differ
-> > > +		 * XDP desc from XDP buffer and sk_buff.
-> > > +		 */
-> > > +		frame = tun_xdp_desc_to_ptr(&pool->tx_descs[i]);
-> > > +		/* The budget must be less than or equal to tx_ring.size,
-> > > +		 * so enqueuing will not fail.
-> > > +		 */
-> > > +		__ptr_ring_produce(&tfile->tx_ring, frame);
-> > > +	}
-> > > +	spin_unlock(&tfile->tx_ring.producer_lock);
-> > > +	spin_unlock(&tfile->pool_lock);
-> > 
-> > More related to the general design: it looks wrong. What if
-> > get_rx_bufs() will fail (ENOBUF) after successful peeking? With no more
-> > incoming packets, later peek will return 0 and it looks like that the
-> > half-processed packets will stay in the ring forever???
-> > 
-> > I think the 'ring produce' part should be moved into tun_do_read().
-> 
-> Currently, the vhost-net obtains a batch descriptors/sk_buffs from the
-> ptr_ring and enqueue the batch descriptors/sk_buffs to the virtqueue'queue,
-> and then consumes the descriptors/sk_buffs from the virtqueue'queue in
-> sequence. As a result, TUN does not know whether the batch descriptors have
-> been used up, and thus does not know when to return the batch descriptors.
-> 
-> So, I think it's reasonable that when vhost-net checks ptr_ring is empty,
-> it calls peek_len to get new xsk's descs and return the descriptors.
-> 
-> Thanks
+--Sig_/TYmDnefL1VGq17Xl+XSGL7s
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-What you need to think about is that if you peek, another call
-in parallel can get the same value at the same time.
+On Thu, 29 Feb 2024 14:57:06 -0300
+Arthur Grillo <arthurgrillo@riseup.net> wrote:
+
+> On 29/02/24 09:12, Pekka Paalanen wrote:
+> > On Wed, 28 Feb 2024 22:52:09 -0300
+> > Arthur Grillo <arthurgrillo@riseup.net> wrote:
+> >  =20
+> >> On 27/02/24 17:01, Arthur Grillo wrote: =20
+> >>>
+> >>>
+> >>> On 27/02/24 12:02, Louis Chauvet wrote:   =20
+> >>>> Hi Pekka,
+> >>>>
+> >>>> For all the comment related to the conversion part, maybe Arthur hav=
+e an=20
+> >>>> opinion on it, I took his patch as a "black box" (I did not want to=
+=20
+> >>>> break (and debug) it).
+> >>>>
+> >>>> Le 26/02/24 - 14:19, Pekka Paalanen a =C3=A9crit :   =20
+> >>>>> On Fri, 23 Feb 2024 12:37:26 +0100
+> >>>>> Louis Chauvet <louis.chauvet@bootlin.com> wrote:
+> >>>>>   =20
+> >>>>>> From: Arthur Grillo <arthurgrillo@riseup.net>
+> >>>>>>
+> >>>>>> Add support to the YUV formats bellow:
+> >>>>>>
+> >>>>>> - NV12
+> >>>>>> - NV16
+> >>>>>> - NV24
+> >>>>>> - NV21
+> >>>>>> - NV61
+> >>>>>> - NV42
+> >>>>>> - YUV420
+> >>>>>> - YUV422
+> >>>>>> - YUV444
+> >>>>>> - YVU420
+> >>>>>> - YVU422
+> >>>>>> - YVU444
+> >>>>>>
+> >>>>>> The conversion matrices of each encoding and range were obtained by
+> >>>>>> rounding the values of the original conversion matrices multiplied=
+ by
+> >>>>>> 2^8. This is done to avoid the use of fixed point operations.
+> >>>>>>
+> >>>>>> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
+> >>>>>> [Louis Chauvet: Adapted Arthur's work and implemented the read_lin=
+e_t
+> >>>>>> callbacks for yuv formats]
+> >>>>>> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
+> >>>>>> ---
+> >>>>>>  drivers/gpu/drm/vkms/vkms_composer.c |   2 +-
+> >>>>>>  drivers/gpu/drm/vkms/vkms_drv.h      |   6 +-
+> >>>>>>  drivers/gpu/drm/vkms/vkms_formats.c  | 289 ++++++++++++++++++++++=
++++++++++++--
+> >>>>>>  drivers/gpu/drm/vkms/vkms_formats.h  |   4 +
+> >>>>>>  drivers/gpu/drm/vkms/vkms_plane.c    |  14 +-
+> >>>>>>  5 files changed, 295 insertions(+), 20 deletions(-)
+
+..
+
+> >> diff --git a/drivers/gpu/drm/vkms/tests/vkms_format_test.c b/drivers/g=
+pu/drm/vkms/tests/vkms_format_test.c
+> >> index f66584549827..4cee3c2d8d84 100644
+> >> --- a/drivers/gpu/drm/vkms/tests/vkms_format_test.c
+> >> +++ b/drivers/gpu/drm/vkms/tests/vkms_format_test.c
+> >> @@ -59,7 +59,7 @@ static struct yuv_u8_to_argb_u16_case yuv_u8_to_argb=
+_u16_cases[] =3D {
+> >>  			{"white", {0xff, 0x80, 0x80}, {0x0000, 0xffff, 0xffff, 0xffff}},
+> >>  			{"gray",  {0x80, 0x80, 0x80}, {0x0000, 0x8000, 0x8000, 0x8000}},
+> >>  			{"black", {0x00, 0x80, 0x80}, {0x0000, 0x0000, 0x0000, 0x0000}},
+> >> -			{"red",   {0x35, 0x63, 0xff}, {0x0000, 0xffff, 0x0000, 0x0000}},
+> >> +			{"red",   {0x36, 0x63, 0xff}, {0x0000, 0xffff, 0x0000, 0x0000}},
+> >>  			{"green", {0xb6, 0x1e, 0x0c}, {0x0000, 0x0000, 0xffff, 0x0000}},
+> >>  			{"blue",  {0x12, 0xff, 0x74}, {0x0000, 0x0000, 0x0000, 0xffff}},
+> >>  		},
+> >> diff --git a/drivers/gpu/drm/vkms/vkms_formats.c b/drivers/gpu/drm/vkm=
+s/vkms_formats.c
+> >> index e06bbd7c0a67..043f23dbf80d 100644
+> >> --- a/drivers/gpu/drm/vkms/vkms_formats.c
+> >> +++ b/drivers/gpu/drm/vkms/vkms_formats.c
+> >> @@ -121,10 +121,12 @@ static void RGB565_to_argb_u16(u8 **src_pixels, =
+struct pixel_argb_u16 *out_pixel
+> >>  	out_pixel->b =3D drm_fixp2int_round(drm_fixp_mul(fp_b, fp_rb_ratio));
+> >>  }
+> >> =20
+> >> -static void ycbcr2rgb(const s16 m[3][3], u8 y, u8 cb, u8 cr, u8 y_off=
+set, u8 *r, u8 *g, u8 *b)
+> >> +#define BIT_DEPTH 32
+> >> +
+> >> +static void ycbcr2rgb(const s64 m[3][3], u8 y, u8 cb, u8 cr, u8 y_off=
+set, u8 *r, u8 *g, u8 *b)
+> >>  {
+> >> -	s32 y_16, cb_16, cr_16;
+> >> -	s32 r_16, g_16, b_16;
+> >> +	s64 y_16, cb_16, cr_16;
+> >> +	s64 r_16, g_16, b_16;
+> >> =20
+> >>  	y_16 =3D  y - y_offset;
+> >>  	cb_16 =3D cb - 128;
+> >> @@ -134,9 +136,18 @@ static void ycbcr2rgb(const s16 m[3][3], u8 y, u8=
+ cb, u8 cr, u8 y_offset, u8 *r,
+> >>  	g_16 =3D m[1][0] * y_16 + m[1][1] * cb_16 + m[1][2] * cr_16;
+> >>  	b_16 =3D m[2][0] * y_16 + m[2][1] * cb_16 + m[2][2] * cr_16;
+> >> =20
+> >> -	*r =3D clamp(r_16, 0, 0xffff) >> 8;
+> >> -	*g =3D clamp(g_16, 0, 0xffff) >> 8;
+> >> -	*b =3D clamp(b_16, 0, 0xffff) >> 8;
+> >> +	// rounding the values
+> >> +	r_16 =3D r_16 + (1LL << (BIT_DEPTH - 4));
+> >> +	g_16 =3D g_16 + (1LL << (BIT_DEPTH - 4));
+> >> +	b_16 =3D b_16 + (1LL << (BIT_DEPTH - 4));
+> >> +
+> >> +	r_16 =3D clamp(r_16, 0, (1LL << (BIT_DEPTH + 8)) - 1);
+> >> +	g_16 =3D clamp(g_16, 0, (1LL << (BIT_DEPTH + 8)) - 1);
+> >> +	b_16 =3D clamp(b_16, 0, (1LL << (BIT_DEPTH + 8)) - 1); =20
+> >=20
+> > Where do the BIT_DEPTH - 4 and BIT_DEPTH + 8 come from? =20
+>=20
+> Basically, the numbers are in this form in hex:
+>=20
+> 0xsspppppppp
+>=20
+> In the end, we only want the 's' bits.
+>=20
+> The matrix multiplication is not giving us perfect results, making some
+> of KUnit test not pass, This is because the values end up a little bit
+> off. KUnit expects 0xfe, but this functions is returning 0xfd.
+>=20
+> I noticed that before shifting the values to get the 's' bytes the
+> values were a lot close to what is expected, something like:
+>=20
+> 0xfdfe287312
+>     ^
+> So the rounding part adds 1 to this marked 'f' to round a bit the values
+> (drm_fixed.h does something similar on drm_fixp2int_round).
+> Like that:
+>=20
+>    0xfdfe287312
+> +  0x0010000000
+>    ------------
+>    0xfe0e287312
+>=20
+> That's why the BIT_DEPTH - 4.
+
+I have a hard time deciphering this. There is some sort of strange
+combination of UNORM and fixed-point going on here, where you process
+the range 0.0 - 255.0 including 32-bit fraction. All variables being
+named "_16" does not help, I've no idea what that refers to.
+
+Usually when you have unsigned pixel format type, it's UNORM, that is
+an unsigned integer representation that maps to [0.0, 1.0]. When
+converting UNORM properly to e.g. fixed-point, you don't have to
+consider the UNORM bit depth when computing in fixed-point.
+
+There is a catch: since 0xff maps to 1.0, the divisor is 0xff, and not
+a bit shift by 8. This must be taken into account when converting
+between different depths of UNORM, or between UNORM and fixed-point.
+Converting between different depths of fixed-point does not have this
+problem.
+
+If you want to proper rounding, meaning that 0.5 rounds up to 1.0 and
+0.4999 rounds down to 0.0 when rounding to integers, you have to add
+0.5 before truncating.
+
+So in this case you need to add 0x0100_0000 / 2 =3D 0x0080_0000, not
+0x0010_0000.
+
+I don't understand what drm_fixp2int_round() is even doing. The offset
+is not 0.5, it's 0.0000076.
+
+> After that, the values need to be clamped to not get wrong results when
+> shifting this s64 and casting it to u8. We clamp it to the minimum
+> allowed value: 0, and to the maximum allowed value, which in this case
+> is all the (BIT_DEPTH + 8) bits set to 1, The '+ 8' is to account for
+> the size of the 's' bits.
+
+Ok. You could also shift with >> BIT_DEPTH first, and then clamp to 0,
+255.
 
 
-> > 
-> > Cheers,
-> > 
-> > Paolo
-> 
+Thanks,
+pq
 
+> After writing this, I think that maybe it would be good to add this
+> explanation as a comment on the code.
+>=20
+> >  =20
+> >> +
+> >> +	*r =3D r_16 >> BIT_DEPTH;
+> >> +	*g =3D g_16 >> BIT_DEPTH;
+> >> +	*b =3D b_16 >> BIT_DEPTH;
+> >>  } =20
+
+--Sig_/TYmDnefL1VGq17Xl+XSGL7s
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmXhwbcACgkQI1/ltBGq
+qqfZ7g/7BHqsw5Opqc38QlT5EIkXLQwAE4Eb8Qz/IrYYudbXNrRC56YbNnybka8F
+lZ/LGog21Q94WL4RUL1bqn4w8LAKmBdt0fz1GCisIXkxaZWs3FYIsL6HTw6jnbBA
+0rySHBx5rx531jd22slJ4QuclfAK1+FDAaRENEtalrzzgby2tzoaCBT9gQA0n0UQ
+q1pmNIHCLchiXuBjXKdGtaCQBoKZAL/htH82T4Df8hqn2gHCZdmQROz7NIOdibyx
+04XsG2dv4E6ZlPohlmFxE9yVistWFgvwGx0+92JNTwPb1XA5hix74GhTgHKP6nae
+OztE3kzJ6NNiVvIfLY7OpMVEatDOHPPu0F+jeLf4TZ0Peo0qV1HXLb2y2AOfXqWf
+SwgKF9hu9//Pflx7kKO48kzZUAur8GrnvKKOuUIhG64kMFh9k1dSVwVo7wzLzSzT
+02FS6sgB2Kfg4TIoFQY9U4FogR5KQKclCp4e3Tz0ISv6mkcAAmSjEc/d3lo1QuPm
+7C3TLRBz6LRaznSVM8tEuIUf6IVOv/Qrxrxe3eA+TN+WT9TFe9Yl+1WWVweG7pbp
+j1uWyZXMOrEl8OHxghgTWO283h2d6fW4Aapw7Z65R7oP7MkafkLmq09H+JjGLEpF
+DYZhsRett0X4elOxDxHip6c3fa6z1K7Bk2HDop9FMDaRvpmwm18=
+=QcSD
+-----END PGP SIGNATURE-----
+
+--Sig_/TYmDnefL1VGq17Xl+XSGL7s--
 
