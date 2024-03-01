@@ -1,155 +1,146 @@
-Return-Path: <linux-kernel+bounces-88649-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88648-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BFB986E4CF
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:56:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9497786E4CB
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:56:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B2AC1C22A07
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:56:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C835B23F83
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:56:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3816970CBC;
-	Fri,  1 Mar 2024 15:55:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B37271B30;
+	Fri,  1 Mar 2024 15:55:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xkXU8XM2"
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HOg7D5lQ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4E5171B45
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 15:55:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E7B97173D;
+	Fri,  1 Mar 2024 15:55:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709308548; cv=none; b=Vm25XBJjQ+sPdkm+737sVtJ+yqGjOU+K4Ym9BNwvdwzoMdHNRBCXDDtkorsRTIK7b6BhrCSLSwjz1QPCnkFhncC/oFPuH1B1+C3scPLnWmqpoe3WK4La5q1L+ew+QNSdmagnvqFCHdNKtmV7aG1NLO4UHG+fTnJTaVcA8NKWxjo=
+	t=1709308541; cv=none; b=so/MYAkpK+UuXqBsVWkCzMrxR8KtLHJoCnZDFba/65qUrw25rpxxjp1/Bzq7k3HMGywbJBTi12GVkfI3/7W/ul8DXMTQWvu4rKEYbCh/yGJQJxvvA6wanD0+gAfoWEBGk5cSoZY69AI11Ju+HbMALpY2vpAuQA8Sq/eprz8ko2s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709308548; c=relaxed/simple;
-	bh=xU2424lQTKxKZg6MHne9qfkBy5cOcIamXDnnHV78UpA=;
+	s=arc-20240116; t=1709308541; c=relaxed/simple;
+	bh=+x3DnyLQr0FGuE3K5s58Ij+vb1+Fn/o9c7ysNtVLivo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mbgf+CbP1m2k1EZllRgjfPMOMr+dqknavpSMpWUO8PyzUAd63bMm5oivAwwnMOunmW4C1bEwQmzapixB5/YWGAD7JJ4MLj4SIxjEOLHbQ/bJQ+AmTgFEWXByY6nfRXMgj2PFEQ27lAWiYY3T0seeM5pOFhzS8JwEEMpbhG3VTXA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xkXU8XM2; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-412b83cfac4so16166305e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 07:55:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709308545; x=1709913345; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=dEf+rbXNQvLvB9iPkH1P+r9uBHTvmiiyJwMOWWoELNo=;
-        b=xkXU8XM2AlxDhUXHrsOonXihIuEhwmsT5WezvjUChW+s1A+sL8Zhn1MO1KqJLS5NJD
-         u4sZ40IaW4+wPfwvPk2hccRo+oYy7OYkTUBPVbikI3qOLGrvOiksdKhrWNuEjcsnVN1P
-         7HvJNGsoMvpHcedZ0GIS8JLUKxdSBYiHbZqOEznrlRtAeTUN0VscVdDVWs9ApTjA9ayr
-         MOSHXS1f93Hfp9sG7FRy1ADa0/K01/GwhEuVtq/ylytNzCDjC9LIDZotA8DLIPqBQlwW
-         JUGtRW1rSafFww+/qVZC6wJAv8GY0Mbp5xczCdcH/qcAbDTTTkUjDl4OXerzes1zqQnW
-         Noqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709308545; x=1709913345;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dEf+rbXNQvLvB9iPkH1P+r9uBHTvmiiyJwMOWWoELNo=;
-        b=s/T+wMtI8Pa+rdZpjg7r8cHnWRbvIqUGNwGd0DGxeLq+rh224gZvoAu2BQbSqVb/Dl
-         0JelQ9jNvsZWZ95O5qlsbu6FL63Q4APuMcFWvfJW1DPH3lChwRfCEDGRjRPPCcv561EI
-         iqXXtUvx86ImJtQSISL2yXlRvM+2/1AFhk1JOk7KGkb0Qf3lnDnoHnTfKJzinTvkrIk7
-         qmWmSklsbrgYqW/jT+a71j7nLnEZeQ6llgYhKL21t7tSdhMm449prRXKyhFvC68dT42V
-         sI1sUayKJHSJ/OoXsQ1SW/U42fwqYVWG71IT8hETS6a0pUshyV7AnUhtmVDMPrTpgzya
-         OD6A==
-X-Forwarded-Encrypted: i=1; AJvYcCVE1TCAfQF37XukpbUcuc6CH2Idhng9HJJaMnCzfWQNbBi4NIZ+OkIPQQI78qIXZuo8/qJiTxHWAQunEYVWi1gnpMqMw/rMsthL/SNJ
-X-Gm-Message-State: AOJu0Ywr8kAS26ZBzYKPOOR5OgkBvt5f4mwgakMmAjWGHJ65Gmi40Gbg
-	Sfarj7UAIBluwMlfWdcBQpY+E2FoTprELQjd4FsEPZyIZ2XDXKJkfHX11wWfOFmt51kooAbEQg2
-	F
-X-Google-Smtp-Source: AGHT+IHXfsf1QVNUUheaEgcb1fKDrYSnpwanX1F3NHauzqf3xzyG0GvJEj7Pf7CKoluJk/kSHAeU6Q==
-X-Received: by 2002:a05:600c:1986:b0:412:8fe7:4e06 with SMTP id t6-20020a05600c198600b004128fe74e06mr1813507wmq.38.1709308545005;
-        Fri, 01 Mar 2024 07:55:45 -0800 (PST)
-Received: from ishi ([185.243.57.254])
-        by smtp.gmail.com with ESMTPSA id u21-20020a7bc055000000b004129a1097e7sm8774972wmc.12.2024.03.01.07.55.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 07:55:44 -0800 (PST)
-Date: Fri, 1 Mar 2024 10:55:39 -0500
-From: William Breathitt Gray <william.gray@linaro.org>
-To: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Cc: syednwaris@gmail.com, vigneshr@ti.com, jpanis@baylibre.com,
-	alexandre.torgue@foss.st.com, linux-iio@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5] counter: Introduce the COUNTER_COMP_FREQUENCY() macro
-Message-ID: <ZeH6e02zzfAjw-sd@ishi>
-References: <20240301102505.591918-1-fabrice.gasnier@foss.st.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=kDGmZmc1KaZqNwwP5+sS6V7rdl7edVzwmVi7t2bBGmJ/Jdbl8QMahtSVuLF4XglDUFdiK/enVa4QkzadlQh7akDZSeo2jVFq4wTIsqlTVO3cuuUEjCZuY47pvmZuLwLdCqRpq0/9abPIdVRr6zMOIxNZFHhjR0Al3rVSQuxacOA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HOg7D5lQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D874C433F1;
+	Fri,  1 Mar 2024 15:55:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709308541;
+	bh=+x3DnyLQr0FGuE3K5s58Ij+vb1+Fn/o9c7ysNtVLivo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=HOg7D5lQtK68Db2OuM3YK/C3ykhtKtUFLUe33QAxfMi1eCPf0ZJw4UE+cF9GhsYr/
+	 CSR0U0jJoxSPapzKr5jm5RAQovcbfQZRvY6Rh2d3hvrJjgQ3fTIdPdHLZ4MuazGt5O
+	 IBnx8PrAJWFWoE0NJVDFXHQk3A4n5uRbJmQK+qTWKYhv0UU4r8mvv4AWMZIt10f43i
+	 SGF+JXtpYRj80aJikeWMN2VX0mTnZQ2A7qCJHb11YXKjNFCcr4hG+legnrY4bUVp/p
+	 KWDw30kWpWfFnXdUZHgu1oCstpMnwtSYbXmwo6EfB0VtZTmY/3E35WCjxbtT4BAwdu
+	 yrXRgD0J1Y0CQ==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rg5Em-000000001l7-2rSd;
+	Fri, 01 Mar 2024 16:55:53 +0100
+Date: Fri, 1 Mar 2024 16:55:52 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Krishna Kurapati <quic_kriskura@quicinc.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Wesley Cheng <quic_wcheng@quicinc.com>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+	Felipe Balbi <balbi@kernel.org>, devicetree@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org, quic_ppratap@quicinc.com,
+	quic_jackp@quicinc.com
+Subject: Re: [PATCH v15 9/9] usb: dwc3: qcom: Add multiport suspend/resume
+ support for wrapper
+Message-ID: <ZeH6iHdOie0_UYwZ@hovoldconsulting.com>
+References: <20240216005756.762712-1-quic_kriskura@quicinc.com>
+ <20240216005756.762712-10-quic_kriskura@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="NVfMO94wBSa46KPR"
-Content-Disposition: inline
-In-Reply-To: <20240301102505.591918-1-fabrice.gasnier@foss.st.com>
-
-
---NVfMO94wBSa46KPR
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240216005756.762712-10-quic_kriskura@quicinc.com>
 
-On Fri, Mar 01, 2024 at 11:25:05AM +0100, Fabrice Gasnier wrote:
-> Now that there are two users for the "frequency" extension, introduce a
-> new COUNTER_COMP_FREQUENCY() macro.
-> This extension is intended to be a read-only signal attribute.
->=20
-> Suggested-by: William Breathitt Gray <william.gray@linaro.org>
-> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+On Fri, Feb 16, 2024 at 06:27:56AM +0530, Krishna Kurapati wrote:
+> Power event IRQ stat registers are present for each port
+> connected to controller. Add support for modifying all power event
+> irq stat registers present in wrapper.
+
+Could you please say about what the power-event irqs are used for here
+in the commit message as I asked you before?
+ 
+> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+> Reviewed-by: Bjorn Andersson <andersson@kernel.org>
+> Acked-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
 > ---
-> Changes in v5
-> - "frequency" extension is read-only, so there's no need to provide
->   a write parameter.
-> - patch sent separately from "counter: Add stm32 timer events support" [1]
-> [1] https://lore.kernel.org/lkml/20240227173803.53906-2-fabrice.gasnier@f=
-oss.st.com/
-> ---
->  include/linux/counter.h | 7 +++++++
->  1 file changed, 7 insertions(+)
->=20
-> diff --git a/include/linux/counter.h b/include/linux/counter.h
-> index 702e9108bbb4..0ac36f815b7d 100644
-> --- a/include/linux/counter.h
-> +++ b/include/linux/counter.h
-> @@ -602,6 +602,13 @@ struct counter_array {
->  #define COUNTER_COMP_FLOOR(_read, _write) \
->  	COUNTER_COMP_COUNT_U64("floor", _read, _write)
-> =20
-> +#define COUNTER_COMP_FREQUENCY(_read) \
-> +{ \
-> +	.type =3D COUNTER_COMP_U64, \
-> +	.name =3D "frequency", \
-> +	.signal_u64_read =3D (_read), \
-> +}
+>  drivers/usb/dwc3/dwc3-qcom.c | 30 +++++++++++++++++++++++-------
+>  1 file changed, 23 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
+> index 572dc3fdae12..e789745a9468 100644
+> --- a/drivers/usb/dwc3/dwc3-qcom.c
+> +++ b/drivers/usb/dwc3/dwc3-qcom.c
+> @@ -37,7 +37,11 @@
+>  #define PIPE3_PHYSTATUS_SW			BIT(3)
+>  #define PIPE_UTMI_CLK_DIS			BIT(8)
+>  
+> -#define PWR_EVNT_IRQ_STAT_REG			0x58
+> +#define PWR_EVNT_IRQ1_STAT_REG			0x58
+> +#define PWR_EVNT_IRQ2_STAT_REG			0x1dc
+> +#define PWR_EVNT_IRQ3_STAT_REG			0x228
+> +#define PWR_EVNT_IRQ4_STAT_REG			0x238
+
+Again, not sure it makes any defines too keep these defines when you
+only access them through the array.
+
 > +
->  #define COUNTER_COMP_POLARITY(_read, _write, _available) \
->  { \
->  	.type =3D COUNTER_COMP_SIGNAL_POLARITY, \
-> --=20
-> 2.25.1
+>  #define PWR_EVNT_LPM_IN_L2_MASK			BIT(4)
+>  #define PWR_EVNT_LPM_OUT_L2_MASK		BIT(5)
+>  
+> @@ -109,6 +113,13 @@ struct dwc3_qcom {
+>  	u8			num_ports;
+>  };
+>  
+> +static const u32 pwr_evnt_irq_stat_reg_offset[DWC3_MAX_PORTS] = {
 
-Hi Fabrice,
+Seems "_offset" is redundant here, 'pwr_evnt_irq_stat_reg' should be
+enough.
 
-Setting the structure members directly works, but why not use
-COUNTER_COMP_SIGNAL_U64("frequency", _read, NULL) instead to keep the
-code more succinct?
+> +	PWR_EVNT_IRQ1_STAT_REG,
+> +	PWR_EVNT_IRQ2_STAT_REG,
+> +	PWR_EVNT_IRQ3_STAT_REG,
+> +	PWR_EVNT_IRQ4_STAT_REG,
+> +};
+> +
+>  static inline void dwc3_qcom_setbits(void __iomem *base, u32 offset, u32 val)
+>  {
+>  	u32 reg;
+> @@ -444,9 +455,11 @@ static int dwc3_qcom_suspend(struct dwc3_qcom *qcom, bool wakeup)
+>  	if (qcom->is_suspended)
+>  		return 0;
+>  
+> -	val = readl(qcom->qscratch_base + PWR_EVNT_IRQ_STAT_REG);
+> -	if (!(val & PWR_EVNT_LPM_IN_L2_MASK))
+> -		dev_err(qcom->dev, "HS-PHY not in L2\n");
+> +	for (i = 0; i < qcom->num_ports; i++) {
+> +		val = readl(qcom->qscratch_base + pwr_evnt_irq_stat_reg_offset[i]);
+> +		if (!(val & PWR_EVNT_LPM_IN_L2_MASK))
+> +			dev_err(qcom->dev, "Port-%d HS-PHY not in L2\n", i + 1);
 
-William Breathitt Gray
+Please use lower case "port-%d" for consistency.
 
---NVfMO94wBSa46KPR
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQSNN83d4NIlKPjon7a1SFbKvhIjKwUCZeH6ewAKCRC1SFbKvhIj
-K217AP9hJmpnlwQnUsdqaZn6twmR5QyJBT3lfeSMtz4eusnWowEA7uP/8rZ0WZLf
-TDqIuD3w+89Mcs0vrikcijgkauAOigs=
-=Zn8v
------END PGP SIGNATURE-----
-
---NVfMO94wBSa46KPR--
+Johan
 
