@@ -1,72 +1,73 @@
-Return-Path: <linux-kernel+bounces-88262-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88266-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FCCE86DF5A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:39:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C48EC86DF66
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:40:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D0C61F2701B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:39:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F9201F26288
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:40:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D32786BFC6;
-	Fri,  1 Mar 2024 10:39:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB1B46BFC9;
+	Fri,  1 Mar 2024 10:39:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="ZlzipUpq"
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="o2GnK3de"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1E796BB54;
-	Fri,  1 Mar 2024 10:39:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D4C720B29;
+	Fri,  1 Mar 2024 10:39:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709289560; cv=none; b=YcPbGgF2+y41hWR7wDofbPh9A4ckD3J3iGxaU9IB/5zUQlZNi3CYI6JBTnmk/vXHvp1VpTNDE0U1INo4iUpmW6g5qpBKq996KFdVpj3MreIAABrpycaenLuabgNJcTKgaufVY7xSTzjnVJoktOQZM7Bf8Evj2manA3lchBW8d88=
+	t=1709289597; cv=none; b=iY3lpGTUgPir46CR26LuGAnxXsATsdta3q3MnyDdCb4A2t1j414M8/+cAn5doqSpTqE11nfjKsWSR8XkFDqRNPNZpju9DdGe1NWWqGBVgzrz2lAZRF/CdU753/DGkqIJGvpBXBXTH1BB08dTbNbIyBPaznJMXOksdFPLU3QkxTk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709289560; c=relaxed/simple;
-	bh=gC34nzrRZvNcXLOfYAxx74k9PwImvzd9qVnd+tZVCB0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TE009HCjUbyfI5Wl2v6Fo5ocmHZ6OdodWh/GNCzkkze2KKtmVAR52WQeQ8ftdZv19u7m4omWt4o+JnWsOT+80GzlsQwD8l5PplwF3C8HeVtB3e/+UhZaBFx2lmla3m8oE2RH6LuMRTm3/8vjLlSUMQEGvN3AwCEd/tvahHLtQ6s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=ZlzipUpq; arc=none smtp.client-ip=217.70.183.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 9D8C420003;
-	Fri,  1 Mar 2024 10:39:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709289555;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rifK/LKflz9YSr4kjpk4wojOZucbL5akbAPSCa+HaZM=;
-	b=ZlzipUpqWOuECRUpyAt1iNPKGqz8GoCvn4xidRf5UlwILfphvk2qcd5kTpWCRfyJPKa1cz
-	UDbBT1qfZ35IXDj6+0Tm0dk4xdbzjiQa2faDc6yj23o5n46LvZzvg4p447J2cE9NNiAZfL
-	AS3wWRKMkToYScDvQQ5YUPkWOwoJWEB7+Wk1/IW9oVh0gyes2A7TVzAc6GASYn7cBt4Fj6
-	wbHaLkj6u6gudrRy2yhY5ghC/6ST8YEo6z+QojTkz8o5dl6mJpr9mKk7eMpfgAxHIl6xdK
-	cJ2kdGtnvbHDurXck3YcHy0UmE7uDYUBi3TaXCv7TyL5vye3YLQv6kqgFM/Gcw==
-From: Kamel Bouhara <kamel.bouhara@bootlin.com>
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Henrik Rydberg <rydberg@bitmath.org>,
-	linux-input@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	Marco Felsch <m.felsch@pengutronix.de>,
-	Jeff LaBundy <jeff@labundy.com>
-Cc: catalin.popescu@leica-geosystems.com,
-	mark.satterthwaite@touchnetix.com,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Gregory Clement <gregory.clement@bootlin.com>,
-	bsp-development.geo@leica-geosystems.com,
-	Kamel Bouhara <kamel.bouhara@bootlin.com>
-Subject: [PATCH v9 3/3] Input: Add TouchNetix axiom i2c touchscreen driver
-Date: Fri,  1 Mar 2024 11:39:08 +0100
-Message-ID: <20240301103909.167923-4-kamel.bouhara@bootlin.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240301103909.167923-1-kamel.bouhara@bootlin.com>
-References: <20240301103909.167923-1-kamel.bouhara@bootlin.com>
+	s=arc-20240116; t=1709289597; c=relaxed/simple;
+	bh=1d1ZvGblli4ejBpqkSYA3E379j6tuFyMjMWaH6nOo1M=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=pnrdI8IoZshZYAbXOf4ymn6AiOo64d4ZGYUgWvGrv7o3KVFRGbTItxo6qo10MiMIgy7BJiw/HgkVGO+sbuZ3z0ncefJmhOz6fZOLA1uGWmrspTkhEvm3Rqlx8DXoI/fC8pzvT3vC0DijcI9d6h2wWR1VR0zRpRcXJn1sbu7d/Cw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=o2GnK3de; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4216Hw40008672;
+	Fri, 1 Mar 2024 10:39:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=Gf2jiZa
+	M41XJWysC4Na3KChwzGch6IX72uYVhD0lBes=; b=o2GnK3defd0KhzK/+/bEbGo
+	wEkKhjsE5zH/0L668kWMB1q05zvEERSi0B3kprqcM9ndD5dZklBa0Cdj8GLVhCtM
+	3KSHonh6s5AM+RbbYFBdhgGjXGtSLX+rJ//WL+jTDH95oKKkR5+1VQ6APAn/5u4R
+	yIXdjft2hBrd5l1B2F3OJAxGov66yVJsBKiRCje90Iusf0+NUO3T5qoUlLKHDYxA
+	Y4ccp+tHGuyMn654n4lDcujIbDeCyh5PSJyY7KdOUCzO6aswr90LxzEn5QZk6nEo
+	q6Ng/KzE0lJZTW9eVfFqQ79bYxZ4EQfendGSLZo/2aWQA/tTr0DxssgUubpvONQ=
+	=
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wk9mf0mxd-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 01 Mar 2024 10:39:36 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 421AdZaX030072
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 1 Mar 2024 10:39:35 GMT
+Received: from hyiwei-gv.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Fri, 1 Mar 2024 02:39:27 -0800
+From: Huang Yiwei <quic_hyiwei@quicinc.com>
+To: <rostedt@goodmis.org>, <mhiramat@kernel.org>, <mark.rutland@arm.com>,
+        <mcgrof@kernel.org>, <keescook@chromium.org>, <j.granados@samsung.com>,
+        <mathieu.desnoyers@efficios.com>, <corbet@lwn.net>
+CC: <linux-kernel@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <quic_bjorande@quicinc.com>, <quic_tsoni@quicinc.com>,
+        <quic_satyap@quicinc.com>, <quic_aiquny@quicinc.com>,
+        <kernel@quicinc.com>, Huang Yiwei <quic_hyiwei@quicinc.com>,
+        Ross Zwisler <zwisler@google.com>
+Subject: [PATCH v7] tracing: Support to dump instance traces by ftrace_dump_on_oops
+Date: Fri, 1 Mar 2024 18:39:13 +0800
+Message-ID: <20240301103913.934946-1-quic_hyiwei@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,743 +75,451 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: kamel.bouhara@bootlin.com
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: -pwZeVY_Cp1axpB7UroUIun2V-hv-TdH
+X-Proofpoint-GUID: -pwZeVY_Cp1axpB7UroUIun2V-hv-TdH
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-01_08,2024-03-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ spamscore=0 clxscore=1015 priorityscore=1501 adultscore=0 impostorscore=0
+ mlxscore=0 mlxlogscore=999 lowpriorityscore=0 bulkscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2402120000
+ definitions=main-2403010090
 
-Add a new driver for the TouchNetix's axiom family of
-touchscreen controllers. This driver only supports i2c
-and can be later adapted for SPI and USB support.
+Currently ftrace only dumps the global trace buffer on an OOPs. For
+debugging a production usecase, instance trace will be helpful to
+check specific problems since global trace buffer may be used for
+other purposes.
 
-Signed-off-by: Kamel Bouhara <kamel.bouhara@bootlin.com>
+This patch extend the ftrace_dump_on_oops parameter to dump a specific
+or multiple trace instances:
+
+  - ftrace_dump_on_oops=0: as before -- don't dump
+  - ftrace_dump_on_oops[=1]: as before -- dump the global trace buffer
+  on all CPUs
+  - ftrace_dump_on_oops=2 or =orig_cpu: as before -- dump the global
+  trace buffer on CPU that triggered the oops
+  - ftrace_dump_on_oops=<instance_name>: new behavior -- dump the
+  tracing instance matching <instance_name>
+  - ftrace_dump_on_oops[=[<0|1|2|orig_cpu>,][<instance_name>[=<1|2|
+  orig_cpu>][,...]]]: new behavior -- dump the global trace buffer
+  and/or multiple instance buffer on all CPUs, or only dump on CPU
+  that triggered the oops if =2 or =orig_cpu is given
+
+Also, the sysctl node can handle the input accordingly.
+
+Cc: Ross Zwisler <zwisler@google.com>
+Signed-off-by: Huang Yiwei <quic_hyiwei@quicinc.com>
 ---
- MAINTAINERS                                  |   1 +
- drivers/input/touchscreen/Kconfig            |  12 +
- drivers/input/touchscreen/Makefile           |   1 +
- drivers/input/touchscreen/touchnetix_axiom.c | 669 +++++++++++++++++++
- 4 files changed, 683 insertions(+)
- create mode 100644 drivers/input/touchscreen/touchnetix_axiom.c
+ .../admin-guide/kernel-parameters.txt         |  26 ++-
+ Documentation/admin-guide/sysctl/kernel.rst   |  30 +++-
+ include/linux/ftrace.h                        |   4 +-
+ include/linux/kernel.h                        |   1 +
+ kernel/sysctl.c                               |   4 +-
+ kernel/trace/trace.c                          | 156 +++++++++++++-----
+ kernel/trace/trace_selftest.c                 |   2 +-
+ 7 files changed, 168 insertions(+), 55 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 4b3ed2f22b89..de5fad8f317a 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -22262,6 +22262,7 @@ M:	Kamel Bouhara <kamel.bouhara@bootlin.com>
- L:	linux-input@vger.kernel.org
- S:	Maintained
- F:	Documentation/devicetree/bindings/input/touchscreen/touchnetix,ax54a.yaml
-+F:	drivers/input/touchscreen/touchnetix_axiom.c
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 31b3a25680d0..15298de387be 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -1561,12 +1561,28 @@
+ 			The above will cause the "foo" tracing instance to trigger
+ 			a snapshot at the end of boot up.
  
- TPM DEVICE DRIVER
- M:	Peter Huewe <peterhuewe@gmx.de>
-diff --git a/drivers/input/touchscreen/Kconfig b/drivers/input/touchscreen/Kconfig
-index e3e2324547b9..f36bee8d8696 100644
---- a/drivers/input/touchscreen/Kconfig
-+++ b/drivers/input/touchscreen/Kconfig
-@@ -803,6 +803,18 @@ config TOUCHSCREEN_MIGOR
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called migor_ts.
+-	ftrace_dump_on_oops[=orig_cpu]
++	ftrace_dump_on_oops[=[<0|1|2|orig_cpu>,][<instance_name>[=<1|2|orig_cpu>]
++			  [,...]]]
+ 			[FTRACE] will dump the trace buffers on oops.
+-			If no parameter is passed, ftrace will dump
+-			buffers of all CPUs, but if you pass orig_cpu, it will
+-			dump only the buffer of the CPU that triggered the
+-			oops.
++			If no parameter is passed, ftrace will dump global
++			buffers of all CPUs, if you pass 2 or orig_cpu, it
++			will dump only the buffer of the CPU that triggered
++			the oops, or the specific instance will be dumped if
++			its name is passed. Multiple instance dump is also
++			supported, and instances are separated by commas. Each
++			instance supports only dump on CPU that triggered the
++			oops by passing 2 or orig_cpu to it.
++
++			ftrace_dump_on_oops=foo=orig_cpu
++
++			The above will dump only the buffer of "foo" instance
++			on CPU that triggered the oops.
++
++			ftrace_dump_on_oops,foo,bar=orig_cpu
++
++			The above will dump global buffer on all CPUs, the
++			buffer of "foo" instance on all CPUs and the buffer
++			of "bar" instance on CPU that triggered the oops.
  
-+config TOUCHSCREEN_TOUCHNETIX_AXIOM
-+	tristate "TouchNetix AXIOM based touchscreen controllers"
-+	depends on I2C
-+	help
-+	  Say Y here if you have a axiom touchscreen connected to
-+	  your system.
+ 	ftrace_filter=[function-list]
+ 			[FTRACE] Limit the functions traced by the function
+diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
+index 6584a1f9bfe3..ea8e5f152edc 100644
+--- a/Documentation/admin-guide/sysctl/kernel.rst
++++ b/Documentation/admin-guide/sysctl/kernel.rst
+@@ -296,12 +296,30 @@ kernel panic). This will output the contents of the ftrace buffers to
+ the console.  This is very useful for capturing traces that lead to
+ crashes and outputting them to a serial console.
+ 
+-= ===================================================
+-0 Disabled (default).
+-1 Dump buffers of all CPUs.
+-2 Dump the buffer of the CPU that triggered the oops.
+-= ===================================================
+-
++======================= ===========================================
++0                       Disabled (default).
++1                       Dump buffers of all CPUs.
++2(orig_cpu)             Dump the buffer of the CPU that triggered the
++                        oops.
++<instance>              Dump the specific instance buffer on all CPUs.
++<instance>=2(orig_cpu)  Dump the specific instance buffer on the CPU
++                        that triggered the oops.
++======================= ===========================================
 +
-+	  If unsure, say N.
++Multiple instance dump is also supported, and instances are separated
++by commas. If global buffer also needs to be dumped, please specify
++the dump mode (1/2/orig_cpu) first for global buffer.
 +
-+	  To compile this driver as a module, choose M here: the
-+	  module will be called axiom.
++So for example to dump "foo" and "bar" instance buffer on all CPUs,
++user can::
 +
- config TOUCHSCREEN_TOUCHRIGHT
- 	tristate "Touchright serial touchscreen"
- 	select SERIO
-diff --git a/drivers/input/touchscreen/Makefile b/drivers/input/touchscreen/Makefile
-index 62bd24f3ac8e..8e32a2df5e18 100644
---- a/drivers/input/touchscreen/Makefile
-+++ b/drivers/input/touchscreen/Makefile
-@@ -88,6 +88,7 @@ obj-$(CONFIG_TOUCHSCREEN_SUR40)		+= sur40.o
- obj-$(CONFIG_TOUCHSCREEN_SURFACE3_SPI)	+= surface3_spi.o
- obj-$(CONFIG_TOUCHSCREEN_TI_AM335X_TSC)	+= ti_am335x_tsc.o
- obj-$(CONFIG_TOUCHSCREEN_TOUCHIT213)	+= touchit213.o
-+obj-$(CONFIG_TOUCHSCREEN_TOUCHNETIX_AXIOM)	+= touchnetix_axiom.o
- obj-$(CONFIG_TOUCHSCREEN_TOUCHRIGHT)	+= touchright.o
- obj-$(CONFIG_TOUCHSCREEN_TOUCHWIN)	+= touchwin.o
- obj-$(CONFIG_TOUCHSCREEN_TS4800)	+= ts4800-ts.o
-diff --git a/drivers/input/touchscreen/touchnetix_axiom.c b/drivers/input/touchscreen/touchnetix_axiom.c
-new file mode 100644
-index 000000000000..e7abba41eed0
---- /dev/null
-+++ b/drivers/input/touchscreen/touchnetix_axiom.c
-@@ -0,0 +1,669 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * TouchNetix axiom Touchscreen Driver
-+ *
-+ * Copyright (C) 2020-2023 TouchNetix Ltd.
-+ *
-+ * Author(s): Bart Prescott <bartp@baasheep.co.uk>
-+ *            Pedro Torruella <pedro.torruella@touchnetix.com>
-+ *            Mark Satterthwaite <mark.satterthwaite@touchnetix.com>
-+ *            Hannah Rossiter <hannah.rossiter@touchnetix.com>
-+ *            Kamel Bouhara <kamel.bouhara@bootlin.com>
-+ *
-+ */
-+#include <linux/bitfield.h>
-+#include <linux/crc16.h>
-+#include <linux/delay.h>
-+#include <linux/device.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/i2c.h>
-+#include <linux/input.h>
-+#include <linux/input/mt.h>
-+#include <linux/input/touchscreen.h>
-+#include <linux/interrupt.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/regmap.h>
++  echo "foo,bar" > /proc/sys/kernel/ftrace_dump_on_oops
 +
-+#include <asm/unaligned.h>
-+#define AXIOM_PROX_LEVEL		-128
-+#define AXIOM_DMA_OPS_DELAY_USEC	250
-+#define AXIOM_STARTUP_TIME_MS		110
-+/*
-+ * Register group u31 has 2 pages for usage table entries.
-+ */
-+#define AXIOM_U31_MAX_USAGES		0xff
-+#define AXIOM_U31_BYTES_PER_USAGE	6
-+#define AXIOM_U31_PAGE0_LENGTH		0x0C
-+#define AXIOM_U31_BOOTMODE_MASK		BIT(7)
-+#define AXIOM_U31_DEVID_MASK		GENMASK(14, 0)
++To dump global buffer and "foo" instance buffer on all
++CPUs along with the "bar" instance buffer on CPU that triggered the
++oops, user can::
 +
-+#define AXIOM_MAX_REPORT_LEN		0x7f
-+
-+#define AXIOM_CMD_HEADER_READ_MASK	BIT(15)
-+#define AXIOM_U41_MAX_TARGETS		10
-+
-+#define AXIOM_U46_AUX_CHANNELS		4
-+#define AXIOM_U46_AUX_MASK		GENMASK(11, 0)
-+
-+#define AXIOM_COMMS_MAX_USAGE_PAGES	3
-+#define AXIOM_COMMS_PAGE_SIZE		256
-+#define AXIOM_COMMS_REPORT_LEN_MASK	GENMASK(6, 0)
-+
-+#define AXIOM_REPORT_USAGE_ID		0x34
-+#define AXIOM_DEVINFO_USAGE_ID		0x31
-+#define AXIOM_USAGE_2HB_REPORT_ID	0x01
-+#define AXIOM_USAGE_2AUX_REPORT_ID	0x46
-+#define AXIOM_USAGE_2DCTS_REPORT_ID	0x41
-+
-+#define AXIOM_PAGE_OFFSET_MASK		GENMASK(6, 0)
-+
-+struct axiom_devinfo {
-+	__le16 device_id;
-+	u8 fw_minor;
-+	u8 fw_major;
-+	u8 fw_info_extra;
-+	u8 tcp_revision;
-+	u8 bootloader_fw_minor;
-+	u8 bootloader_fw_major;
-+	__le16 jedec_id;
-+	u8 num_usages;
-+} __packed;
-+
-+/*
-+ * Describes parameters of a specific usage, essentially a single element of
-+ * the "Usage Table"
-+ */
-+struct axiom_usage_entry {
-+	u8 id;
-+	u8 is_report;
-+	u8 start_page;
-+	u8 num_pages;
-+};
-+
-+/*
-+ * Represents state of a touch or target when detected prior to a touch (eg.
-+ * hover or proximity events).
-+ */
-+enum axiom_target_state {
-+	AXIOM_TARGET_STATE_NOT_PRESENT = 0,
-+	AXIOM_TARGET_STATE_PROX = 1,
-+	AXIOM_TARGET_STATE_HOVER = 2,
-+	AXIOM_TARGET_STATE_TOUCHING = 3,
-+};
-+
-+struct axiom_u41_target {
-+	enum axiom_target_state state;
-+	u16 x;
-+	u16 y;
-+	s8 z;
-+	bool insert;
-+	bool touch;
-+};
-+
-+struct axiom_target_report {
-+	u8 index;
-+	u8 present;
-+	u16 x;
-+	u16 y;
-+	s8 z;
-+};
-+
-+struct axiom_cmd_header {
-+	__le16 target_address;
-+	__le16 length;
-+} __packed;
-+
-+struct axiom_data {
-+	struct axiom_devinfo devinfo;
-+	struct device *dev;
-+	struct gpio_desc *reset_gpio;
-+	struct i2c_client *client;
-+	struct input_dev *input_dev;
-+	u32 max_report_len;
-+	u8 rx_buf[AXIOM_COMMS_MAX_USAGE_PAGES * AXIOM_COMMS_PAGE_SIZE];
-+	struct axiom_u41_target targets[AXIOM_U41_MAX_TARGETS];
-+	struct axiom_usage_entry usage_table[AXIOM_U31_MAX_USAGES];
-+	bool usage_table_populated;
-+	struct regulator *vdda;
-+	struct regulator *vddi;
-+	struct regmap *regmap;
-+	struct touchscreen_properties	prop;
-+};
-+
-+static const struct regmap_config axiom_i2c_regmap_config = {
-+	.reg_bits = 32,
-+	.reg_format_endian = REGMAP_ENDIAN_LITTLE,
-+	.val_bits = 8,
-+	.val_format_endian = REGMAP_ENDIAN_LITTLE,
-+};
-+
-+/*
-+ * axiom devices are typically configured to report touches at a rate
-+ * of 100Hz (10ms) for systems that require polling for reports.
-+ * When reports are polled, it will be expected to occasionally
-+ * observe the overflow bit being set in the reports.
-+ * This indicates that reports are not being read fast enough.
-+ */
-+#define POLL_INTERVAL_DEFAULT_MS 10
-+
-+/* Translate usage/page/offset triplet into physical address. */
-+static u16 axiom_usage_to_target_address(struct axiom_data *ts, u8 usage, u8 page,
-+					 char offset)
++  echo "1,foo,bar=2" > /proc/sys/kernel/ftrace_dump_on_oops
+ 
+ ftrace_enabled, stack_tracer_enabled
+ ====================================
+diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+index e8921871ef9a..54d53f345d14 100644
+--- a/include/linux/ftrace.h
++++ b/include/linux/ftrace.h
+@@ -1151,7 +1151,9 @@ static inline void unpause_graph_tracing(void) { }
+ #ifdef CONFIG_TRACING
+ enum ftrace_dump_mode;
+ 
+-extern enum ftrace_dump_mode ftrace_dump_on_oops;
++#define MAX_TRACER_SIZE		100
++extern char ftrace_dump_on_oops[];
++extern int ftrace_dump_on_oops_enabled(void);
+ extern int tracepoint_printk;
+ 
+ extern void disable_trace_on_warning(void);
+diff --git a/include/linux/kernel.h b/include/linux/kernel.h
+index d9ad21058eed..b142a4f41d34 100644
+--- a/include/linux/kernel.h
++++ b/include/linux/kernel.h
+@@ -255,6 +255,7 @@ enum ftrace_dump_mode {
+ 	DUMP_NONE,
+ 	DUMP_ALL,
+ 	DUMP_ORIG,
++	DUMP_PARAM,
+ };
+ 
+ #ifdef CONFIG_TRACING
+diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+index 157f7ce2942d..81cc974913bb 100644
+--- a/kernel/sysctl.c
++++ b/kernel/sysctl.c
+@@ -1710,9 +1710,9 @@ static struct ctl_table kern_table[] = {
+ 	{
+ 		.procname	= "ftrace_dump_on_oops",
+ 		.data		= &ftrace_dump_on_oops,
+-		.maxlen		= sizeof(int),
++		.maxlen		= MAX_TRACER_SIZE,
+ 		.mode		= 0644,
+-		.proc_handler	= proc_dointvec,
++		.proc_handler	= proc_dostring,
+ 	},
+ 	{
+ 		.procname	= "traceoff_on_warning",
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 8198bfc54b58..71e420514b99 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -131,9 +131,12 @@ cpumask_var_t __read_mostly	tracing_buffer_mask;
+  * /proc/sys/kernel/ftrace_dump_on_oops
+  * Set 1 if you want to dump buffers of all CPUs
+  * Set 2 if you want to dump the buffer of the CPU that triggered oops
++ * Set instance name if you want to dump the specific trace instance
++ * Multiple instance dump is also supported, and instances are seperated
++ * by commas.
+  */
+-
+-enum ftrace_dump_mode ftrace_dump_on_oops;
++/* Set to string format zero to disable by default */
++char ftrace_dump_on_oops[MAX_TRACER_SIZE] = "0";
+ 
+ /* When set, tracing will stop when a WARN*() is hit */
+ int __disable_trace_on_warning;
+@@ -179,7 +182,6 @@ static void ftrace_trace_userstack(struct trace_array *tr,
+ 				   struct trace_buffer *buffer,
+ 				   unsigned int trace_ctx);
+ 
+-#define MAX_TRACER_SIZE		100
+ static char bootup_tracer_buf[MAX_TRACER_SIZE] __initdata;
+ static char *default_bootup_tracer;
+ 
+@@ -202,19 +204,33 @@ static int __init set_cmdline_ftrace(char *str)
+ }
+ __setup("ftrace=", set_cmdline_ftrace);
+ 
++int ftrace_dump_on_oops_enabled(void)
 +{
-+	/* At the moment the convention is that u31 is always at physical address 0x0 */
-+	if (!ts->usage_table_populated) {
-+		if (usage == AXIOM_DEVINFO_USAGE_ID)
-+			return ((page << 8) + offset);
-+		else
-+			return 0xffff;
-+	}
-+
-+	if (page >= ts->usage_table[usage].num_pages) {
-+		dev_err(ts->dev, "Invalid usage table! usage: u%02x, page: %02x, offset: %02x\n",
-+			usage, page, offset);
-+		return 0xffff;
-+	}
-+
-+	return ((ts->usage_table[usage].start_page + page) << 8) + offset;
++	if (!strcmp("0", ftrace_dump_on_oops))
++		return 0;
++	else
++		return 1;
 +}
 +
-+static int axiom_read(struct axiom_data *ts, u8 usage, u8 page, void *buf, u16 len)
-+{
-+	struct axiom_cmd_header cmd_header;
-+	u32 preamble;
-+	int ret;
-+
-+	cmd_header.target_address = cpu_to_le16(axiom_usage_to_target_address(ts, usage, page, 0));
-+	cmd_header.length = cpu_to_le16(len | AXIOM_CMD_HEADER_READ_MASK);
-+
-+	preamble = get_unaligned_le32(&cmd_header);
-+
-+	ret = regmap_write(ts->regmap, preamble, 0);
-+	if (ret) {
-+		dev_err(ts->dev, "failed to write preamble, error %d\n", ret);
-+		return ret;
+ static int __init set_ftrace_dump_on_oops(char *str)
+ {
+-	if (*str++ != '=' || !*str || !strcmp("1", str)) {
+-		ftrace_dump_on_oops = DUMP_ALL;
++	if (!*str) {
++		strscpy(ftrace_dump_on_oops, "1", MAX_TRACER_SIZE);
+ 		return 1;
+ 	}
+ 
+-	if (!strcmp("orig_cpu", str) || !strcmp("2", str)) {
+-		ftrace_dump_on_oops = DUMP_ORIG;
+-                return 1;
+-        }
++	if (*str == ',') {
++		strscpy(ftrace_dump_on_oops, "1", MAX_TRACER_SIZE);
++		strscpy(ftrace_dump_on_oops + 1, str, MAX_TRACER_SIZE - 1);
++		return 1;
 +	}
 +
-+	ret = regmap_raw_read(ts->regmap, 0, buf, len);
-+	if (ret) {
-+		dev_err(ts->dev, "failed to read target address %04x, error %d\n",
-+			cmd_header.target_address, ret);
-+		return ret;
++	if (*str++ == '=') {
++		strscpy(ftrace_dump_on_oops, str, MAX_TRACER_SIZE);
++		return 1;
 +	}
-+
-+	/* Wait device's DMA operations */
-+	usleep_range(AXIOM_DMA_OPS_DELAY_USEC, AXIOM_DMA_OPS_DELAY_USEC + 50);
-+
+ 
+-        return 0;
 +	return 0;
+ }
+ __setup("ftrace_dump_on_oops", set_ftrace_dump_on_oops);
+ 
+@@ -10245,14 +10261,14 @@ static struct notifier_block trace_die_notifier = {
+ static int trace_die_panic_handler(struct notifier_block *self,
+ 				unsigned long ev, void *unused)
+ {
+-	if (!ftrace_dump_on_oops)
++	if (!ftrace_dump_on_oops_enabled())
+ 		return NOTIFY_DONE;
+ 
+ 	/* The die notifier requires DIE_OOPS to trigger */
+ 	if (self == &trace_die_notifier && ev != DIE_OOPS)
+ 		return NOTIFY_DONE;
+ 
+-	ftrace_dump(ftrace_dump_on_oops);
++	ftrace_dump(DUMP_PARAM);
+ 
+ 	return NOTIFY_DONE;
+ }
+@@ -10293,12 +10309,12 @@ trace_printk_seq(struct trace_seq *s)
+ 	trace_seq_init(s);
+ }
+ 
+-void trace_init_global_iter(struct trace_iterator *iter)
++static void trace_init_iter(struct trace_iterator *iter, struct trace_array *tr)
+ {
+-	iter->tr = &global_trace;
++	iter->tr = tr;
+ 	iter->trace = iter->tr->current_trace;
+ 	iter->cpu_file = RING_BUFFER_ALL_CPUS;
+-	iter->array_buffer = &global_trace.array_buffer;
++	iter->array_buffer = &tr->array_buffer;
+ 
+ 	if (iter->trace && iter->trace->open)
+ 		iter->trace->open(iter);
+@@ -10318,22 +10334,19 @@ void trace_init_global_iter(struct trace_iterator *iter)
+ 	iter->fmt_size = STATIC_FMT_BUF_SIZE;
+ }
+ 
+-void ftrace_dump(enum ftrace_dump_mode oops_dump_mode)
++void trace_init_global_iter(struct trace_iterator *iter)
++{
++	trace_init_iter(iter, &global_trace);
 +}
 +
-+/*
-+ * One of the main purposes for reading the usage table is to identify
-+ * which usages reside at which target address.
-+ * When performing subsequent reads or writes to AXIOM, the target address
-+ * is used to specify which usage is being accessed.
-+ * Consider the following discovery code which will build up the usage table.
-+ */
-+static u32 axiom_populate_usage_table(struct axiom_data *ts)
++static void ftrace_dump_one(struct trace_array *tr, enum ftrace_dump_mode dump_mode)
+ {
+ 	/* use static because iter can be a bit big for the stack */
+ 	static struct trace_iterator iter;
+-	static atomic_t dump_running;
+-	struct trace_array *tr = &global_trace;
+ 	unsigned int old_userobj;
+ 	unsigned long flags;
+ 	int cnt = 0, cpu;
+ 
+-	/* Only allow one dump user at a time. */
+-	if (atomic_inc_return(&dump_running) != 1) {
+-		atomic_dec(&dump_running);
+-		return;
+-	}
+-
+ 	/*
+ 	 * Always turn off tracing when we dump.
+ 	 * We don't need to show trace output of what happens
+@@ -10342,12 +10355,12 @@ void ftrace_dump(enum ftrace_dump_mode oops_dump_mode)
+ 	 * If the user does a sysrq-z, then they can re-enable
+ 	 * tracing with echo 1 > tracing_on.
+ 	 */
+-	tracing_off();
++	tracer_tracing_off(tr);
+ 
+ 	local_irq_save(flags);
+ 
+ 	/* Simulate the iterator */
+-	trace_init_global_iter(&iter);
++	trace_init_iter(&iter, tr);
+ 
+ 	for_each_tracing_cpu(cpu) {
+ 		atomic_inc(&per_cpu_ptr(iter.array_buffer->data, cpu)->disabled);
+@@ -10358,21 +10371,15 @@ void ftrace_dump(enum ftrace_dump_mode oops_dump_mode)
+ 	/* don't look at user memory in panic mode */
+ 	tr->trace_flags &= ~TRACE_ITER_SYM_USEROBJ;
+ 
+-	switch (oops_dump_mode) {
+-	case DUMP_ALL:
+-		iter.cpu_file = RING_BUFFER_ALL_CPUS;
+-		break;
+-	case DUMP_ORIG:
++	if (dump_mode == DUMP_ORIG)
+ 		iter.cpu_file = raw_smp_processor_id();
+-		break;
+-	case DUMP_NONE:
+-		goto out_enable;
+-	default:
+-		printk(KERN_TRACE "Bad dumping mode, switching to all CPUs dump\n");
++	else
+ 		iter.cpu_file = RING_BUFFER_ALL_CPUS;
+-	}
+ 
+-	printk(KERN_TRACE "Dumping ftrace buffer:\n");
++	if (tr == &global_trace)
++		printk(KERN_TRACE "Dumping ftrace buffer:\n");
++	else
++		printk(KERN_TRACE "Dumping ftrace instance %s buffer:\n", tr->name);
+ 
+ 	/* Did function tracer already get disabled? */
+ 	if (ftrace_is_dead()) {
+@@ -10414,15 +10421,84 @@ void ftrace_dump(enum ftrace_dump_mode oops_dump_mode)
+ 	else
+ 		printk(KERN_TRACE "---------------------------------\n");
+ 
+- out_enable:
+ 	tr->trace_flags |= old_userobj;
+ 
+ 	for_each_tracing_cpu(cpu) {
+ 		atomic_dec(&per_cpu_ptr(iter.array_buffer->data, cpu)->disabled);
+ 	}
+-	atomic_dec(&dump_running);
+ 	local_irq_restore(flags);
+ }
++
++static void ftrace_dump_by_param(void)
 +{
-+	struct axiom_usage_entry *usage_table;
-+	u8 *rx_data = ts->rx_buf;
-+	u32 max_report_len = 0;
-+	u32 usage_id;
-+	int error;
++	bool first_param = true;
++	char dump_param[MAX_TRACER_SIZE];
++	char *buf, *token, *inst_name;
++	struct trace_array *tr;
 +
-+	usage_table = ts->usage_table;
++	strscpy(dump_param, ftrace_dump_on_oops, MAX_TRACER_SIZE);
++	buf = dump_param;
 +
-+	/* Read the second page of usage u31 to get the usage table */
-+	error = axiom_read(ts, AXIOM_DEVINFO_USAGE_ID, 1, rx_data,
-+			   (AXIOM_U31_BYTES_PER_USAGE * ts->devinfo.num_usages));
-+
-+	if (error)
-+		return error;
-+
-+	for (usage_id = 0; usage_id < ts->devinfo.num_usages; usage_id++) {
-+		u16 offset = (usage_id * AXIOM_U31_BYTES_PER_USAGE);
-+		u8 id = rx_data[offset + 0];
-+		u8 start_page = rx_data[offset + 1];
-+		u8 num_pages = rx_data[offset + 2];
-+		u32 max_offset = ((rx_data[offset + 3] & AXIOM_PAGE_OFFSET_MASK) + 1) * 2;
-+
-+		usage_table[id].is_report = !num_pages;
-+
-+		/* Store the entry into the usage table */
-+		usage_table[id].id = id;
-+		usage_table[id].start_page = start_page;
-+		usage_table[id].num_pages = num_pages;
-+
-+		dev_dbg(ts->dev, "Usage u%02x Info: %*ph\n", id, AXIOM_U31_BYTES_PER_USAGE,
-+			&rx_data[offset]);
-+
-+		/* Identify the max report length the module will receive */
-+		if (usage_table[id].is_report && max_offset > max_report_len)
-+			max_report_len = max_offset;
-+	}
-+
-+	ts->usage_table_populated = true;
-+
-+	return max_report_len;
-+}
-+
-+static int axiom_discover(struct axiom_data *ts)
-+{
-+	int error;
-+
-+	/*
-+	 * Fetch the first page of usage u31 to get the
-+	 * device information and the number of usages
-+	 */
-+	error = axiom_read(ts, AXIOM_DEVINFO_USAGE_ID, 0, &ts->devinfo, AXIOM_U31_PAGE0_LENGTH);
-+	if (error)
-+		return error;
-+
-+	dev_dbg(ts->dev, "  Boot Mode      : %s\n",
-+		FIELD_GET(AXIOM_U31_BOOTMODE_MASK,
-+			  le16_to_cpu(ts->devinfo.device_id)) ? "BLP" : "TCP");
-+	dev_dbg(ts->dev, "  Device ID      : %04lx\n",
-+		FIELD_GET(AXIOM_U31_DEVID_MASK, le16_to_cpu(ts->devinfo.device_id)));
-+	dev_dbg(ts->dev, "  Firmware Rev   : %02x.%02x\n", ts->devinfo.fw_major,
-+		ts->devinfo.fw_minor);
-+	dev_dbg(ts->dev, "  Bootloader Rev : %02x.%02x\n", ts->devinfo.bootloader_fw_major,
-+		ts->devinfo.bootloader_fw_minor);
-+	dev_dbg(ts->dev, "  FW Extra Info  : %04x\n", ts->devinfo.fw_info_extra);
-+	dev_dbg(ts->dev, "  Silicon        : %04x\n", le16_to_cpu(ts->devinfo.jedec_id));
-+	dev_dbg(ts->dev, "  Number usages        : %04x\n", ts->devinfo.num_usages);
-+
-+	ts->max_report_len = axiom_populate_usage_table(ts);
-+	if (!ts->max_report_len || !ts->devinfo.num_usages ||
-+	    ts->max_report_len > AXIOM_MAX_REPORT_LEN) {
-+		dev_err(ts->dev, "Invalid report length or usages number");
-+		return -EINVAL;
-+	}
-+
-+	dev_dbg(ts->dev, "Max Report Length: %u\n", ts->max_report_len);
-+
-+	return 0;
-+}
-+
-+/*
-+ * Support function to axiom_process_u41_report.
-+ * Generates input-subsystem events for every target.
-+ * After calling this function the caller shall issue
-+ * a Sync to the input sub-system.
-+ */
-+static bool axiom_process_u41_report_target(struct axiom_data *ts,
-+					    struct axiom_target_report *target)
-+{
-+	struct input_dev *input_dev = ts->input_dev;
-+	struct axiom_u41_target *target_prev_state;
-+	enum axiom_target_state current_state;
-+	int id;
-+
-+	/* Verify the target index */
-+	if (target->index >= AXIOM_U41_MAX_TARGETS) {
-+		dev_err(ts->dev, "Invalid target index! %u\n", target->index);
-+		return false;
-+	}
-+
-+	target_prev_state = &ts->targets[target->index];
-+
-+	current_state = AXIOM_TARGET_STATE_NOT_PRESENT;
-+
-+	if (target->present) {
-+		if (target->z >= 0)
-+			current_state = AXIOM_TARGET_STATE_TOUCHING;
-+		else if (target->z > AXIOM_PROX_LEVEL && target->z < 0)
-+			current_state = AXIOM_TARGET_STATE_HOVER;
-+		else if (target->z == AXIOM_PROX_LEVEL)
-+			current_state = AXIOM_TARGET_STATE_PROX;
-+	}
-+
-+	if (target_prev_state->state == current_state &&
-+	    target_prev_state->x == target->x &&
-+	    target_prev_state->y == target->y &&
-+	    target_prev_state->z == target->z)
-+		return false;
-+
-+	id = target->index;
-+
-+	dev_dbg(ts->dev, "U41 Target T%u, present:%u, x:%u, y:%u, z:%d\n",
-+		target->index, target->present,
-+		target->x, target->y, target->z);
-+
-+	switch (current_state) {
-+	case AXIOM_TARGET_STATE_NOT_PRESENT:
-+	case AXIOM_TARGET_STATE_PROX:
-+		if (!target_prev_state->insert)
-+			break;
-+		target_prev_state->insert = false;
-+
-+		if (!id)
-+			input_report_key(input_dev, BTN_TOUCH, 0);
-+
-+		input_mt_report_slot_inactive(input_dev);
-+		/*
-+		 * make sure the previous coordinates are
-+		 * all off screen when the finger comes back
-+		 */
-+		target->x = 65535;
-+		target->y = 65535;
-+		target->z = AXIOM_PROX_LEVEL;
-+		break;
-+	case AXIOM_TARGET_STATE_HOVER:
-+	case AXIOM_TARGET_STATE_TOUCHING:
-+		target_prev_state->insert = true;
-+		input_report_abs(input_dev, ABS_MT_TRACKING_ID, id);
-+		input_report_abs(input_dev, ABS_MT_POSITION_X, target->x);
-+		input_report_abs(input_dev, ABS_MT_POSITION_Y, target->y);
-+
-+		if (current_state == AXIOM_TARGET_STATE_TOUCHING) {
-+			input_report_abs(input_dev, ABS_MT_DISTANCE, 0);
-+			input_report_abs(input_dev, ABS_DISTANCE, 0);
-+			input_report_abs(input_dev, ABS_MT_PRESSURE, target->z);
-+			input_report_abs(input_dev, ABS_PRESSURE, target->z);
-+		} else {
-+			input_report_abs(input_dev, ABS_MT_DISTANCE, -target->z);
-+			input_report_abs(input_dev, ABS_DISTANCE, -target->z);
-+			input_report_abs(input_dev, ABS_MT_PRESSURE, 0);
-+			input_report_abs(input_dev, ABS_PRESSURE, 0);
++	while ((token = strsep(&buf, ",")) != NULL) {
++		if (first_param) {
++			first_param = false;
++			if (!strcmp("0", token))
++				continue;
++			else if (!strcmp("1", token)) {
++				ftrace_dump_one(&global_trace, DUMP_ALL);
++				continue;
++			}
++			else if (!strcmp("2", token) ||
++			  !strcmp("orig_cpu", token)) {
++				ftrace_dump_one(&global_trace, DUMP_ORIG);
++				continue;
++			}
 +		}
 +
-+		if (!id)
-+			input_report_key(input_dev, BTN_TOUCH, (current_state ==
-+					 AXIOM_TARGET_STATE_TOUCHING));
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	target_prev_state->state = current_state;
-+	target_prev_state->x = target->x;
-+	target_prev_state->y = target->y;
-+	target_prev_state->z = target->z;
-+
-+	return true;
-+}
-+
-+/*
-+ * U41 is the output report of the 2D CTS and contains the status of targets
-+ * (including contacts and pre-contacts) along with their X,Y,Z values.
-+ * When a target has been removed (no longer detected),
-+ * the corresponding X,Y,Z values will be zeroed.
-+ */
-+static bool axiom_process_u41_report(struct axiom_data *ts, u8 *rx_buf)
-+{
-+	struct axiom_target_report target;
-+	bool update_done = false;
-+	u16 target_status;
-+	int i;
-+
-+	target_status = get_unaligned_le16(rx_buf + 1);
-+
-+	for (i = 0; i < AXIOM_U41_MAX_TARGETS; i++) {
-+		u8 *target_step = &rx_buf[i * 4];
-+
-+		target.index = i;
-+		input_mt_slot(ts->input_dev, i);
-+		input_mt_report_slot_state(ts->input_dev, MT_TOOL_FINGER, true);
-+		target.present = ((target_status & (1 << i)) != 0) ? 1 : 0;
-+		target.x = get_unaligned_le16(target_step + 3);
-+		target.y = get_unaligned_le16(target_step + 5);
-+		target.z = (s8)(rx_buf[i + 43]);
-+		touchscreen_report_pos(ts->input_dev, &ts->prop, target.x, target.y, true);
-+		update_done |= axiom_process_u41_report_target(ts, &target);
-+	}
-+
-+	return update_done;
-+}
-+
-+/*
-+ * U46 report contains a low level measurement data generated by the capacitive
-+ * displacement sensor (CDS) algorithms from the auxiliary channels.
-+ * This information is useful when tuning multi-press to assess mechanical
-+ * consistency in the unit's construction.
-+ */
-+static void axiom_process_u46_report(struct axiom_data *ts, u8 *rx_buf)
-+{
-+	struct input_dev *input_dev = ts->input_dev;
-+	u32 event_value;
-+	u16 aux_value;
-+	int i;
-+
-+	for (i = 0; i < AXIOM_U46_AUX_CHANNELS; i++) {
-+		u8 *target_step = &rx_buf[i * 2];
-+
-+		input_mt_slot(input_dev, i);
-+		input_mt_report_slot_state(input_dev, MT_TOOL_FINGER, true);
-+		aux_value = get_unaligned_le16(target_step + 1) & AXIOM_U46_AUX_MASK;
-+		event_value = (i << 16) | (aux_value);
-+		input_event(input_dev, EV_MSC, MSC_RAW, event_value);
-+	}
-+}
-+
-+/*
-+ * Validates the crc and demultiplexes the axiom reports to the appropriate
-+ * report handler
-+ */
-+static int axiom_handle_events(struct axiom_data *ts)
-+{
-+	struct input_dev *input_dev = ts->input_dev;
-+	u8 *report_data = ts->rx_buf;
-+	struct device *dev = ts->dev;
-+	u16 crc_report;
-+	u8 *crc_bytes;
-+	u16 crc_calc;
-+	int error;
-+	u8 len;
-+
-+	error = axiom_read(ts, AXIOM_REPORT_USAGE_ID, 0, report_data, ts->max_report_len);
-+	if (error)
-+		return error;
-+
-+	len = (report_data[0] & AXIOM_COMMS_REPORT_LEN_MASK) << 1;
-+	if (len <= 2) {
-+		dev_err(dev, "Zero length report discarded.\n");
-+		return -ENODATA;
-+	}
-+
-+	/* Validate the report CRC */
-+	crc_bytes = &report_data[len];
-+
-+	crc_report = get_unaligned_le16(crc_bytes - 2);
-+	/* Length is in 16 bit words and remove the size of the CRC16 itself */
-+	crc_calc = crc16(0, report_data, (len - 2));
-+
-+	if (crc_calc != crc_report) {
-+		dev_err(dev,
-+			"CRC mismatch! Expected: %#x, Calculated CRC: %#x.\n",
-+			crc_report, crc_calc);
-+		return -EINVAL;
-+	}
-+
-+	switch (report_data[1]) {
-+	case AXIOM_USAGE_2DCTS_REPORT_ID:
-+		if (axiom_process_u41_report(ts, &report_data[1])) {
-+			input_mt_sync_frame(input_dev);
-+			input_sync(input_dev);
++		inst_name = strsep(&token, "=");
++		tr = trace_array_find(inst_name);
++		if (!tr) {
++			printk(KERN_TRACE "Instance %s not found\n", inst_name);
++			continue;
 +		}
-+		break;
 +
-+	case AXIOM_USAGE_2AUX_REPORT_ID:
-+		/* This is an aux report (force) */
-+		axiom_process_u46_report(ts, &report_data[1]);
-+		input_mt_sync(input_dev);
-+		input_sync(input_dev);
-+		break;
++		if (token && (!strcmp("2", token) ||
++			  !strcmp("orig_cpu", token)))
++			ftrace_dump_one(tr, DUMP_ORIG);
++		else
++			ftrace_dump_one(tr, DUMP_ALL);
++	}
++}
 +
-+	case AXIOM_USAGE_2HB_REPORT_ID:
-+		/* This is a heartbeat report */
++void ftrace_dump(enum ftrace_dump_mode oops_dump_mode)
++{
++	static atomic_t dump_running;
++
++	/* Only allow one dump user at a time. */
++	if (atomic_inc_return(&dump_running) != 1) {
++		atomic_dec(&dump_running);
++		return;
++	}
++
++	switch (oops_dump_mode) {
++	case DUMP_ALL:
++		ftrace_dump_one(&global_trace, DUMP_ALL);
++		break;
++	case DUMP_ORIG:
++		ftrace_dump_one(&global_trace, DUMP_ORIG);
++		break;
++	case DUMP_PARAM:
++		ftrace_dump_by_param();
++		break;
++	case DUMP_NONE:
 +		break;
 +	default:
-+		return -EINVAL;
++		printk(KERN_TRACE "Bad dumping mode, switching to all CPUs dump\n");
++		ftrace_dump_one(&global_trace, DUMP_ALL);
 +	}
 +
-+	return 0;
++	atomic_dec(&dump_running);
 +}
-+
-+static void axiom_i2c_poll(struct input_dev *input_dev)
-+{
-+	struct axiom_data *ts = input_get_drvdata(input_dev);
-+
-+	axiom_handle_events(ts);
-+}
-+
-+static irqreturn_t axiom_irq(int irq, void *dev_id)
-+{
-+	struct axiom_data *ts = dev_id;
-+
-+	axiom_handle_events(ts);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static void axiom_reset(struct gpio_desc *reset_gpio)
-+{
-+	gpiod_set_value_cansleep(reset_gpio, 1);
-+	usleep_range(1000, 2000);
-+	gpiod_set_value_cansleep(reset_gpio, 0);
-+	msleep(AXIOM_STARTUP_TIME_MS);
-+}
-+
-+static int axiom_i2c_probe(struct i2c_client *client)
-+{
-+	struct device *dev = &client->dev;
-+	struct input_dev *input_dev;
-+	struct axiom_data *ts;
-+	u32 poll_interval;
-+	int target;
-+	int error;
-+
-+	ts = devm_kzalloc(dev, sizeof(*ts), GFP_KERNEL);
-+	if (!ts)
-+		return -ENOMEM;
-+
-+	i2c_set_clientdata(client, ts);
-+	ts->client = client;
-+	ts->dev = dev;
-+
-+	ts->regmap = devm_regmap_init_i2c(client, &axiom_i2c_regmap_config);
-+	error = PTR_ERR_OR_ZERO(ts->regmap);
-+	if (error) {
-+		dev_err(dev, "Failed to initialize regmap: %d\n", error);
-+		return error;
-+	}
-+
-+	ts->reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
-+	if (IS_ERR(ts->reset_gpio))
-+		return dev_err_probe(dev, PTR_ERR(ts->reset_gpio), "failed to get reset GPIO\n");
-+
-+	if (ts->reset_gpio)
-+		axiom_reset(ts->reset_gpio);
-+
-+	ts->vddi = devm_regulator_get_optional(dev, "vddi");
-+	if (!IS_ERR(ts->vddi)) {
-+		error = devm_regulator_get_enable(dev, "vddi");
-+		if (error)
-+			return dev_err_probe(&client->dev, error,
-+					     "Failed to enable vddi regulator\n");
-+	}
-+
-+	ts->vdda = devm_regulator_get_optional(dev, "vdda");
-+	if (!IS_ERR(ts->vdda)) {
-+		error = devm_regulator_get_enable(dev, "vdda");
-+		if (error)
-+			return dev_err_probe(&client->dev, error,
-+					     "Failed to enable vdda regulator\n");
-+		msleep(AXIOM_STARTUP_TIME_MS);
-+	}
-+
-+	error = axiom_discover(ts);
-+	if (error)
-+		return dev_err_probe(dev, error, "Failed touchscreen discover\n");
-+
-+	input_dev = devm_input_allocate_device(ts->dev);
-+	if (!input_dev)
-+		return -ENOMEM;
-+
-+	input_dev->name = "TouchNetix axiom Touchscreen";
-+	input_dev->phys = "input/axiom_ts";
-+
-+	input_set_abs_params(input_dev, ABS_MT_POSITION_X, 0, 65535, 0, 0);
-+	input_set_abs_params(input_dev, ABS_MT_POSITION_Y, 0, 65535, 0, 0);
-+	input_set_abs_params(input_dev, ABS_MT_TOOL_TYPE, 0, MT_TOOL_MAX, 0, 0);
-+	input_set_abs_params(input_dev, ABS_MT_DISTANCE, 0, 127, 0, 0);
-+	input_set_abs_params(input_dev, ABS_MT_PRESSURE, 0, 127, 0, 0);
-+
-+	touchscreen_parse_properties(input_dev, true, &ts->prop);
-+
-+	/* Registers the axiom device as a touchscreen instead of a mouse pointer */
-+	error = input_mt_init_slots(input_dev, AXIOM_U41_MAX_TARGETS, INPUT_MT_DIRECT);
-+	if (error)
-+		return error;
-+
-+	/* Enables the raw data for up to 4 force channels to be sent to the input subsystem */
-+	set_bit(EV_REL, input_dev->evbit);
-+	set_bit(EV_MSC, input_dev->evbit);
-+	/* Declare that we support "RAW" Miscellaneous events */
-+	set_bit(MSC_RAW, input_dev->mscbit);
-+
-+	ts->input_dev = input_dev;
-+	input_set_drvdata(ts->input_dev, ts);
-+
-+	/* Ensure that all reports are initialised to not be present. */
-+	for (target = 0; target < AXIOM_U41_MAX_TARGETS; target++)
-+		ts->targets[target].state = AXIOM_TARGET_STATE_NOT_PRESENT;
-+
-+	error = devm_request_threaded_irq(dev, client->irq, NULL,
-+					  axiom_irq, IRQF_ONESHOT, dev_name(dev), ts);
-+	if (error) {
-+		dev_info(dev, "Request irq failed, falling back to polling mode");
-+
-+		error = input_setup_polling(input_dev, axiom_i2c_poll);
-+		if (error)
-+			return dev_err_probe(ts->dev, error, "Unable to set up polling mode\n");
-+
-+		if (!device_property_read_u32(ts->dev, "poll-interval", &poll_interval))
-+			input_set_poll_interval(input_dev, poll_interval);
-+		else
-+			input_set_poll_interval(input_dev, POLL_INTERVAL_DEFAULT_MS);
-+	}
-+
-+	error = input_register_device(input_dev);
-+	if (error)
-+		return dev_err_probe(ts->dev, error,
-+				     "Could not register with Input Sub-system.\n");
-+
-+	return 0;
-+}
-+
-+static const struct i2c_device_id axiom_i2c_id_table[] = {
-+	{ "ax54a" },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(i2c, axiom_i2c_id_table);
-+
-+static const struct of_device_id axiom_i2c_of_match[] = {
-+	{ .compatible = "touchnetix,ax54a", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, axiom_i2c_of_match);
-+
-+static struct i2c_driver axiom_i2c_driver = {
-+	.driver = {
-+		   .name = "axiom",
-+		   .of_match_table = axiom_i2c_of_match,
-+	},
-+	.id_table = axiom_i2c_id_table,
-+	.probe = axiom_i2c_probe,
-+};
-+module_i2c_driver(axiom_i2c_driver);
-+
-+MODULE_AUTHOR("Bart Prescott <bartp@baasheep.co.uk>");
-+MODULE_AUTHOR("Pedro Torruella <pedro.torruella@touchnetix.com>");
-+MODULE_AUTHOR("Mark Satterthwaite <mark.satterthwaite@touchnetix.com>");
-+MODULE_AUTHOR("Hannah Rossiter <hannah.rossiter@touchnetix.com>");
-+MODULE_AUTHOR("Kamel Bouhara <kamel.bouhara@bootlin.com>");
-+MODULE_DESCRIPTION("TouchNetix axiom touchscreen I2C bus driver");
-+MODULE_LICENSE("GPL");
+ EXPORT_SYMBOL_GPL(ftrace_dump);
+ 
+ #define WRITE_BUFSIZE  4096
+diff --git a/kernel/trace/trace_selftest.c b/kernel/trace/trace_selftest.c
+index 529590499b1f..e9c5058a8efd 100644
+--- a/kernel/trace/trace_selftest.c
++++ b/kernel/trace/trace_selftest.c
+@@ -768,7 +768,7 @@ static int trace_graph_entry_watchdog(struct ftrace_graph_ent *trace)
+ 	if (unlikely(++graph_hang_thresh > GRAPH_MAX_FUNC_TEST)) {
+ 		ftrace_graph_stop();
+ 		printk(KERN_WARNING "BUG: Function graph tracer hang!\n");
+-		if (ftrace_dump_on_oops) {
++		if (ftrace_dump_on_oops_enabled()) {
+ 			ftrace_dump(DUMP_ALL);
+ 			/* ftrace_dump() disables tracing */
+ 			tracing_on();
 -- 
 2.25.1
 
