@@ -1,270 +1,132 @@
-Return-Path: <linux-kernel+bounces-88129-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88130-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF24986DDB2
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:58:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8342986DDB3
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:58:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A424FB27795
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:58:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B23451C2165E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:58:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F9AA6A034;
-	Fri,  1 Mar 2024 08:58:29 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78D866A031;
+	Fri,  1 Mar 2024 08:58:51 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75DF36A026
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 08:58:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7632A6A034
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 08:58:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709283509; cv=none; b=J3koSZYdSe0CNtNd3j8nSW623OttTx3FgH+T85rI5nti6FJJ/sz8NG3cz+BEmBuGUMmTXJcm/ZjhgWoqkiRAteRZjmnvYShaa4FtUxuO1BpI54pLlUe83mxEnGmJfTKsfxpLS1cTXs7sNCLeqt6GhIHOfT6k/fnnaCpoKk0pows=
+	t=1709283531; cv=none; b=PSQ2X/tO+1UoEyKSuacDDFgkaflA2vES/LypX6NZALgMAUkQ9uYRCZG/noNr3mF2NG1WUJmUVSfi8HaOFByQvjQGUD7BvCLJM/u5Doc8Cyi5BI97vhrTAzw1OrISr1HsJcK97BGmKrt6JEcNIrheV2qYfS0l6ovMhBV8xUfMHTk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709283509; c=relaxed/simple;
-	bh=Y2ooKxwu0DvEAlAO3yUTV8/LjvCmLJjEEzzi6omP6EE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rbuzXiGAESp0MLhqcFt7RpVJq3GplcRaQ0V5ZDtvVgW9nIbCEzgKVoFpAH7VhYmeSPWNjzvXzL1CyO4dnB7LMCV7UVVcAgvjlfUfoer9th1lxie8Cz/ibLrnpbHgq+Zwl+dy6VbDvz7UcHyJkFDTvxQja8H29J2RiuISxiMFbro=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mfe@pengutronix.de>)
-	id 1rfyif-0003jY-UI; Fri, 01 Mar 2024 09:58:17 +0100
-Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <mfe@pengutronix.de>)
-	id 1rfyie-003kKQ-Tg; Fri, 01 Mar 2024 09:58:16 +0100
-Received: from mfe by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <mfe@pengutronix.de>)
-	id 1rfyie-00F28a-2f;
-	Fri, 01 Mar 2024 09:58:16 +0100
-Date: Fri, 1 Mar 2024 09:58:16 +0100
-From: Marco Felsch <m.felsch@pengutronix.de>
-To: Adam Ford <aford173@gmail.com>
-Cc: linux-arm-kernel@lists.infradead.org, Rob Herring <robh@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Fabio Estevam <festevam@gmail.com>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	devicetree@vger.kernel.org, Sascha Hauer <s.hauer@pengutronix.de>,
-	aford@beaconembedded.com, linux-kernel@vger.kernel.org,
-	imx@lists.linux.dev,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Shawn Guo <shawnguo@kernel.org>
-Subject: Re: [PATCH 2/2] arm64: dts: imx8mp-beacon: Enable LVDS-1
-Message-ID: <20240301085816.bam4ph43w7tikhea@pengutronix.de>
-References: <20240229233556.116944-1-aford173@gmail.com>
- <20240229233556.116944-2-aford173@gmail.com>
+	s=arc-20240116; t=1709283531; c=relaxed/simple;
+	bh=OtSnKgTUNbArv5oNDRQme9b+jn40ryx23wK4YVQpvWw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=F9WF0glawJgKf9L206WAmiwGgbxjctYkH4YxSl08GvTWZH2J14M/3WXmI3F4FW/XM1t2TvpdE95Qb2UMv1oN6vBCdWxb4uLJNhmiCkYRVIe45eebXmxmhs1YDTo5orxbEy1RjwP2v4q4/GfksWJWFq9FumjtZG7UN1iKEszyHg0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 6fcd9518fad74e9e8e1119d24725da21-20240301
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:6b25d915-c005-4fd9-995e-80141905d565,IP:10,
+	URL:0,TC:0,Content:-25,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,AC
+	TION:release,TS:-30
+X-CID-INFO: VERSION:1.1.37,REQID:6b25d915-c005-4fd9-995e-80141905d565,IP:10,UR
+	L:0,TC:0,Content:-25,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:-30
+X-CID-META: VersionHash:6f543d0,CLOUDID:53bafe80-4f93-4875-95e7-8c66ea833d57,B
+	ulkID:240301165841JSPWFF9D,BulkQuantity:0,Recheck:0,SF:66|38|24|17|19|44|1
+	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC
+	:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,
+	TF_CID_SPAM_ULS
+X-UUID: 6fcd9518fad74e9e8e1119d24725da21-20240301
+Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
+	(envelope-from <chentao@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 1125709206; Fri, 01 Mar 2024 16:58:40 +0800
+Received: from mail.kylinos.cn (localhost [127.0.0.1])
+	by mail.kylinos.cn (NSMail) with SMTP id 8AD6CE000EBC;
+	Fri,  1 Mar 2024 16:58:39 +0800 (CST)
+X-ns-mid: postfix-65E198BF-298440663
+Received: from kernel.. (unknown [172.20.15.254])
+	by mail.kylinos.cn (NSMail) with ESMTPA id C6123E000EBC;
+	Fri,  1 Mar 2024 16:58:36 +0800 (CST)
+From: Kunwu Chan <chentao@kylinos.cn>
+To: mpe@ellerman.id.au,
+	npiggin@gmail.com,
+	christophe.leroy@csgroup.eu,
+	aneesh.kumar@kernel.org,
+	naveen.n.rao@linux.ibm.com
+Cc: linuxppc-dev@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org,
+	Kunwu Chan <chentao@kylinos.cn>
+Subject: [PATCH v2] powerpc/mm: Code cleanup for __hash_page_thp
+Date: Fri,  1 Mar 2024 16:58:34 +0800
+Message-Id: <20240301085834.1512921-1-chentao@kylinos.cn>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240229233556.116944-2-aford173@gmail.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mfe@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
 
-Hi Adam,
+This part was commented from commit 6d492ecc6489
+("powerpc/THP: Add code to handle HPTE faults for hugepages")
+in about 11 years before.
 
-On 24-02-29, Adam Ford wrote:
-> Beacon has an LVDS display that can connect to one of the
-> LVDS ports on the baseboard.  The display requires a 30MHz
-> clock to display properly, and the LDB needs to run at 7x that.
-> With the audio CODEC now moved to the AUDIO_PLL1, the AUDIO_PLL2
-> is now available to source the LDB at 210MHz and the DISP_PIX2.
-> 
-> Signed-off-by: Adam Ford <aford173@gmail.com>
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mp-beacon-kit.dts b/arch/arm64/boot/dts/freescale/imx8mp-beacon-kit.dts
-> index 1f827ef38e36..731ee2667060 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mp-beacon-kit.dts
-> +++ b/arch/arm64/boot/dts/freescale/imx8mp-beacon-kit.dts
-> @@ -19,6 +19,26 @@ aliases {
->  		ethernet1 = &fec;
->  	};
->  
-> +	backlight: backlight {
-> +		compatible = "pwm-backlight";
-> +		pwms = <&pwm2 0 100000 0>;
-> +		power-supply = <&reg_lcd1_reset>;
-> +		status = "okay";
+If there are no plans to enable this part code in the future,
+we can remove this dead code and replace with a comment
+explaining what the dead code was trying to say.
 
-status is not required here.
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+Suggested-by: Michael Ellerman <mpe@ellerman.id.au>
+Suggested-by: Aneesh Kumar K.V <aneesh.kumar@kernel.org>
+---
+Changes to v2:
+    - Replace dead code with a comment as Michael Ellerman said in https:=
+//lore.kernel.org/all/87h6hva4b0.fsf@mail.lhotse/#R
+    - Improve commit msg
+---
+ arch/powerpc/mm/book3s64/hash_hugepage.c | 15 ++++++---------
+ 1 file changed, 6 insertions(+), 9 deletions(-)
 
-> +
-> +		brightness-levels = < 0  1  2  3  4  5  6  7  8  9
-> +				     10 11 12 13 14 15 16 17 18 19
-> +				     20 21 22 23 24 25 26 27 28 29
-> +				     30 31 32 33 34 35 36 37 38 39
-> +				     40 41 42 43 44 45 46 47 48 49
-> +				     50 51 52 53 54 55 56 57 58 59
-> +				     60 61 62 63 64 65 66 67 68 69
-> +				     70 71 72 73 74 75 76 77 78 79
-> +				     80 81 82 83 84 85 86 87 88 89
-> +				     90 91 92 93 94 95 96 97 98 99
-> +				    100>;
+diff --git a/arch/powerpc/mm/book3s64/hash_hugepage.c b/arch/powerpc/mm/b=
+ook3s64/hash_hugepage.c
+index c0fabe6c5a12..15d6f3ea7178 100644
+--- a/arch/powerpc/mm/book3s64/hash_hugepage.c
++++ b/arch/powerpc/mm/book3s64/hash_hugepage.c
+@@ -59,16 +59,13 @@ int __hash_page_thp(unsigned long ea, unsigned long a=
+ccess, unsigned long vsid,
+=20
+ 	rflags =3D htab_convert_pte_flags(new_pmd, flags);
+=20
+-#if 0
+-	if (!cpu_has_feature(CPU_FTR_COHERENT_ICACHE)) {
++	/*
++	 * THPs are only supported on platforms that can do mixed page size
++	 * segments (MPSS) and all such platforms have coherent icache. Hence w=
+e
++	 * don't need to do lazy icache flush (hash_page_do_lazy_icache()) on
++	 * noexecute fault.
++	 */
+=20
+-		/*
+-		 * No CPU has hugepages but lacks no execute, so we
+-		 * don't need to worry about that case
+-		 */
+-		rflags =3D hash_page_do_lazy_icache(rflags, __pte(old_pte), trap);
+-	}
+-#endif
+ 	/*
+ 	 * Find the slot index details for this ea, using base page size.
+ 	 */
+--=20
+2.39.2
 
-Are you aware of: 'num-interpolated-steps' to avoid such arrays?
-
-> +		default-brightness-level = <80>;
-> +	};
-> +
->  	chosen {
->  		stdout-path = &uart2;
->  	};
-> @@ -135,6 +155,38 @@ led-3 {
->  		};
->  	};
->  
-> +	lvds-1 {
-> +		compatible = "panel-lvds";
-> +		power-supply = <&reg_lcd1>;
-> +		width-mm = <223>;
-> +		height-mm = <125>;
-> +		backlight = <&backlight>;
-> +		data-mapping = "vesa-24";
-> +
-> +		panel-timing {
-> +			/* 800x480@60Hz */
-> +			clock-frequency = <30000000>;
-> +			hactive = <800>;
-> +			vactive = <480>;
-> +			hsync-len = <48>;
-> +			hfront-porch = <40>;
-> +			hback-porch = <40>;
-> +			vfront-porch = <13>;
-> +			vback-porch = <29>;
-> +			vsync-len = <1>;
-> +			hsync-active = <1>;
-> +			vsync-active = <3>;
-> +			de-active = <1>;
-> +			pixelclk-active = <0>;
-> +		};
-
-I would like to have a proper panel-simple.c entry but that's just my
-POV of adding panels.
-
-> +
-> +		port {
-> +			panel1_in: endpoint {
-> +				remote-endpoint = <&ldb_lvds_ch1>;
-> +			};
-> +		};
-> +	};
-> +
->  	reg_audio: regulator-wm8962 {
->  		compatible = "regulator-fixed";
->  		regulator-name = "3v3_aud";
-> @@ -144,6 +196,25 @@ reg_audio: regulator-wm8962 {
->  		enable-active-high;
->  	};
->  
-> +	reg_lcd1_reset: regulator-lcd1-reset {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "LVDS-1 reset";
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +		gpio = <&pca6416_3 13 GPIO_ACTIVE_HIGH>;
-> +		enable-active-high;
-> +		vin-supply = <&reg_lcd1>;
-> +	};
-
-This reset "regulator" seems more like a workaround, why don't you use
-the reset-gpios property from "panel-lvds"?
-
-Regards,
-  Marco
-
-> +
-> +	reg_lcd1: regulator-lcd1 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "lvds-1 power";
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +		gpio = <&pca6416_3 14 GPIO_ACTIVE_HIGH>;
-> +		enable-active-high;
-> +	};
-> +
->  	reg_usdhc2_vmmc: regulator-usdhc2 {
->  		compatible = "regulator-fixed";
->  		regulator-name = "VSD_3V3";
-> @@ -457,6 +528,38 @@ &lcdif1 {
->  	status = "okay";
->  };
->  
-> +&lcdif2 {
-> +	status = "okay";
-> +};
-> +
-> +&lvds_bridge {
-> +	assigned-clocks = <&clk IMX8MP_CLK_MEDIA_LDB>, <&clk IMX8MP_AUDIO_PLL2_OUT>;
-> +	assigned-clock-parents = <&clk IMX8MP_AUDIO_PLL2_OUT>;
-> +	assigned-clock-rates = <210000000>, <210000000>;
-> +	status = "okay";
-> +
-> +	ports {
-> +		port@2 {
-> +			ldb_lvds_ch1: endpoint {
-> +				remote-endpoint = <&panel1_in>;
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&media_blk_ctrl {
-> +	assigned-clocks = <&clk IMX8MP_CLK_MEDIA_AXI>,
-> +			  <&clk IMX8MP_CLK_MEDIA_APB>,
-> +			  <&clk IMX8MP_CLK_MEDIA_DISP1_PIX>,
-> +			  <&clk IMX8MP_CLK_MEDIA_DISP2_PIX>,
-> +			  <&clk IMX8MP_VIDEO_PLL1>;
-> +	assigned-clock-parents = <&clk IMX8MP_SYS_PLL2_1000M>,
-> +				 <&clk IMX8MP_SYS_PLL1_800M>,
-> +				 <&clk IMX8MP_VIDEO_PLL1_OUT>,
-> +				 <&clk IMX8MP_AUDIO_PLL2_OUT>;
-> +	assigned-clock-rates = <500000000>, <200000000>, <0>, <0>, <1039500000>;
-> +};
-> +
->  &micfil {
->  	pinctrl-names = "default";
->  	pinctrl-0 = <&pinctrl_pdm>;
-> @@ -496,6 +599,12 @@ &pcie_phy {
->  	status = "okay";
->  };
->  
-> +&pwm2 {
-> +	status = "okay";
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_pwm2>;
-> +};
-> +
->  &sai3 {
->  	pinctrl-names = "default";
->  	pinctrl-0 = <&pinctrl_sai3>;
-> @@ -596,6 +705,13 @@ &usdhc2 {
->  };
->  
->  &iomuxc {
-> +
-> +	pinctrl_pwm2: pwm2grp {
-> +		fsl,pins = <
-> +			MX8MP_IOMUXC_GPIO1_IO09__PWM2_OUT	0x116
-> +		>;
-> +	};
-> +
->  	pinctrl_ecspi2: ecspi2grp {
->  		fsl,pins = <
->  			MX8MP_IOMUXC_ECSPI2_SCLK__ECSPI2_SCLK	0x82
-> -- 
-> 2.43.0
-> 
-> 
-> 
 
