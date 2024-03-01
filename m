@@ -1,108 +1,102 @@
-Return-Path: <linux-kernel+bounces-88088-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88089-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DADEE86DD37
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:38:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F0F086DD3A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:40:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6806C289B3A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:38:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4291A1F26521
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:40:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40DF869DFC;
-	Fri,  1 Mar 2024 08:38:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="uXYrv/7Z"
-Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A362269E02;
+	Fri,  1 Mar 2024 08:39:54 +0000 (UTC)
+Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB56B6997D
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 08:38:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D71F569DE0;
+	Fri,  1 Mar 2024 08:39:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709282331; cv=none; b=MjLcTkEzMF0VQ8/jKCopQ5Jn0nBZtIGybYOLoXY7V39Tth7Smszecag1yuql7yF5up0mdZJMLmC4bSwVjk2bhbmVoa4c2Ce5wPghSv92nYbL8Kqx+E9jVylojROk0X4JInv7tZSrCo4DHfQJrICO+gWaRpeAXXUDHgO1TDx/HfY=
+	t=1709282394; cv=none; b=CYoTyLWku/mtXDM1AW7xHEiBcPcRqizobJWDqa8dL/QP8hnhJDJzHnx0ef/FLy0Ij9IOc8m7EMMnAjPWmuCoYjBjHTmNOMbBlr62/hYhH+ZjentxswI6ZJZLlVqDPX/lCWAcljfZWBinkjnEFG9nIUbjNP+lde9IfIx9jx3fFBs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709282331; c=relaxed/simple;
-	bh=vuG8csCkwvbPWQAQ1iQPW5EjQIodYKZO0NB6u/TNuN8=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=LE/7NmzFyzE7w8JIGDAap0IbX2NxHD0p62LzQuIu8mBTAo3Zn7X30zEMTi3EmJe4eZofE4l7A+g13UgAozagDBF8TJc0IlnWeizqzT1b10EfH3xsT9V5V0d10XnCvjfEn5N+ab6XS3URM1P9gWeKeVz7yyH3mPUhrK+OPywxq+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=uXYrv/7Z; arc=none smtp.client-ip=168.119.38.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=vuG8csCkwvbPWQAQ1iQPW5EjQIodYKZO0NB6u/TNuN8=;
-	t=1709282325; x=1710491925; b=uXYrv/7ZiAiw/TLc8KaMycRFgrsO/fj3X6JqATETgsU8hex
-	TXK27O+AtvAlc6prdsObtGxGfmErbwSxb+thDQGMP4yp9WjuvL0dxHOlqCML1DpHjhnOPiCfs/g1u
-	QmRwyg7kIoE9wQ11v8x3lTj3XjyRfNjO0167wCrrA93iSHx0/8As2BWZeXJHM1SBWJbwPk5xBoPHw
-	p+7yTDNn5uXObgT2u8J9oS339HD4AG6LGDltFofsEzf1L+QOP9JauDcOk0E3Kj23TlyDDCMwF/RT6
-	3Jmve4svC0dgxkCtzlRk1IzgoNvGzU7kqaxhrqbIgnwyPDqWzo+tEdy7Il8VjXTA==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.97)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1rfyPh-0000000EqAR-03E2;
-	Fri, 01 Mar 2024 09:38:41 +0100
-Message-ID: <0f4244ea6866f451f3f8a5b5e2db8be53de1f0c2.camel@sipsolutions.net>
-Subject: Re: [PATCH v2 2/4] devcoredump: Add dev_coredumpm_timeout()
-From: Johannes Berg <johannes@sipsolutions.net>
-To: "Souza, Jose" <jose.souza@intel.com>, "intel-xe@lists.freedesktop.org"
-	 <intel-xe@lists.freedesktop.org>, "linux-kernel@vger.kernel.org"
-	 <linux-kernel@vger.kernel.org>
-Cc: "Vivi, Rodrigo" <rodrigo.vivi@intel.com>, "quic_mojha@quicinc.com"
-	 <quic_mojha@quicinc.com>, "Cavitt, Jonathan" <jonathan.cavitt@intel.com>
-Date: Fri, 01 Mar 2024 09:38:39 +0100
-In-Reply-To: <a27ac0d3bc52c2181852a25641b7020f50a50648.camel@intel.com>
-References: <20240228165709.82089-1-jose.souza@intel.com>
-	 <20240228165709.82089-2-jose.souza@intel.com>
-	 <84e4f0d70c5552dd7fa350c61c28de9637628ee6.camel@sipsolutions.net>
-	 <a27ac0d3bc52c2181852a25641b7020f50a50648.camel@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1709282394; c=relaxed/simple;
+	bh=o0mlrNXeLKOpkc5Xjuqq7wNq4TjeIijIe4pbZVR9UB4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dRUkEghcXhy29Q2WIUTZHqYoDngeD5ZCE6IBkn31hGvUNyzh/M0RhEx7PgiqGdDo9m+xTtxZQ5UotJETyHABL7SAtsQIa2DBs3asxPKSchn8zUtsGYXx4kQ2YAhXqyOn6DYmn7iZg+plgzFZ61MscKiBt32tknnDB4mNSxVeI0k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-6e4c62b6406so473642a34.0;
+        Fri, 01 Mar 2024 00:39:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709282392; x=1709887192;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VJYmWKa4DfX6feFb+uTaeKbjx8TkMSnN/NwQNFvZbRE=;
+        b=UTfW5kaTkHXxPepUX1q6eIDrRu7Tx1ldkRb6lOfOiJRMry4b//woTwZAspdCWXVQcA
+         ezQ13emxwUJqSaNH54nqSu8FHMq57pZtOhBA+mcs67LS7bMC6sirgkeWWGuk0JDMjTtY
+         THUbx8kQnqWFLTM6JYRaFOi7odz5AeOd0OdXkl6AfMHQq5kMASujDnmPkPdjdhp7VDRk
+         85V+CGJP8JBvfYhqKj1ZnfXJOgJwOgqGKat3rvLNF6FlFEPknfYGx0jb3MBSTXr0D9Um
+         oGvDiSzBCnGDd8V2AVtgFoCdgq1x4GoBOVWUWp+aV7ayjvv5B2z2GFfrj9+3fVVn2fSZ
+         BaCw==
+X-Forwarded-Encrypted: i=1; AJvYcCVhpgTYH8UBZhymW8wIjBTfJh3J2q3/+zYHd13wSSeHDqd8Bi0HTaO9hSjrXFq+y5gPjxrgOBPDKm8GrQY7HgSptD7yMQrSj4jVI2NsRxFOcSIWZGVldKe3L/SqiTmK5gj7E2nIQGkc7kXE
+X-Gm-Message-State: AOJu0Yx/hnnqpmA3kGPnS4a7RacfgNgnKeaIJf4N7P3/GVrMl/LtMOjw
+	sWhAf9xYNAl9qqdKJ01x+T+9a7LK7vBKE3dVgw2mGP4P1M3/PVVZdUlbyso4
+X-Google-Smtp-Source: AGHT+IE5akTd9PJKp7qEJgSOfCMSCAq8FM2gEFm3FAbolB2GR96gZj879xNsPav7pljI7fDl+ub2FA==
+X-Received: by 2002:a9d:66cd:0:b0:6e4:c18f:5602 with SMTP id t13-20020a9d66cd000000b006e4c18f5602mr1332871otm.26.1709282392063;
+        Fri, 01 Mar 2024 00:39:52 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
+        by smtp.gmail.com with ESMTPSA id 11-20020a63104b000000b005d8e30897e4sm2467590pgq.69.2024.03.01.00.39.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Mar 2024 00:39:51 -0800 (PST)
+Date: Fri, 1 Mar 2024 08:39:50 +0000
+From: Wei Liu <wei.liu@kernel.org>
+To: "Ricardo B. Marliere" <ricardo@marliere.net>
+Cc: Michael Kelley <mhklinux@outlook.com>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] hv: vmbus: make hv_bus const
+Message-ID: <ZeGUVmJzqLQD0myp@liuwe-devbox-debian-v2>
+References: <20240204-bus_cleanup-hv-v1-1-521bd4140673@marliere.net>
+ <SN6PR02MB4157130171E614FED60FDC1ED4472@SN6PR02MB4157.namprd02.prod.outlook.com>
+ <vjfokbfk23ck6ndcxyb6gnbqn7qtdg4ynenvnyhlgt7kwvlwvm@3gvq5sttegj7>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <vjfokbfk23ck6ndcxyb6gnbqn7qtdg4ynenvnyhlgt7kwvlwvm@3gvq5sttegj7>
 
-On Wed, 2024-02-28 at 17:56 +0000, Souza, Jose wrote:
->=20
-> In my opinion, the timeout should depend on the type of device driver.
->=20
-> In the case of server-class Ethernet cards, where corporate users automat=
-e most tasks, five minutes might even be considered excessive.
->=20
-> For our case, GPUs, users might experience minor glitches and only search=
- for what happened after finishing their current task (writing an email,
-> ending a gaming match, watching a YouTube video, etc.).
-> If they land on https://drm.pages.freedesktop.org/intel-docs/how-to-file-=
-i915-bugs.html or the future Xe version of that page, following the
-> instructions alone may take inexperienced Linux users more than five minu=
-tes.
+On Mon, Feb 05, 2024 at 02:34:12PM -0300, Ricardo B. Marliere wrote:
+> Hi Michael,
+> 
+> On  5 Feb 16:40, Michael Kelley wrote:
+> > From: Ricardo B. Marliere <ricardo@marliere.net> Sent: Sunday, February 4, 2024 8:38 AM
+> > > 
+> > 
+> > NIT:  For consistency, we try to use "Drivers: hv: vmbus:" as the prefix on the
+> > Subject line for patches to vmbus_drv.c.
+> 
+> Thanks for the feedback, I'll keep that in mind in the future. I looked
+> into a few commits using `git blame` and 'hv: ' seemed to be sufficient.
+> 
 
-That's all not wrong, but I don't see why you wouldn't automate this
-even on end user machines? I feel you're boxing the problem in by
-wanting to solve it entirely in the kernel?
+No worries. I fixed the title for you and applied the patch.
 
-> I have set the timeout to one hour in the Xe driver, but this could incre=
-ase if we start receiving user complaints.
+Thank you for the patch.
 
-At an hour now, people will probably start arguing that "indefinitely"
-is about right? But at that point you're probably back to persisting
-them on disk anyway? Or maybe glitches happen during logout/shutdown ...
+Wei.
 
-Anyway, I don't want to block this because I just don't care enough
-about how you do things, but I think the kernel is the wrong place to
-solve this problem... The intent here was to give some userspace time to
-grab it (and yes for that 5 minutes is already way too long), not the
-users. That's also part of the reason we only hold on to a single
-instance, since I didn't want it to keep consuming more and more memory
-for it if happens repeatedly.
-
-johannes
+> All the best,
+> -	Ricardo.
 
