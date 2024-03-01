@@ -1,156 +1,139 @@
-Return-Path: <linux-kernel+bounces-88678-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88679-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7581386E526
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:19:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3146786E52B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:21:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 16AD11F25B28
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:19:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF24E1F25B9E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:21:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E53EC70CB6;
-	Fri,  1 Mar 2024 16:19:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B5A870CD6;
+	Fri,  1 Mar 2024 16:21:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="pCICPBF/"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JB/c1HKS"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 885136F523
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 16:19:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FD5F6F514;
+	Fri,  1 Mar 2024 16:21:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709309981; cv=none; b=B0LkDI2jtqnzWOa8oZJRoG78CC7AV5xmJYTA7fK/tBbxsV0jpprZWgGSnmzMBDsZCc9NY1p+N+bh/TDUkydZSSRXZA64vSzDVQyZpmJnwm7WD3yxpKsqgVwASRzBaS3UZ/rUR+6PkzTEvA86NHNLXuNe11GQDGnAR+G4aca18wk=
+	t=1709310096; cv=none; b=HvmqEeCC5DZzcoPuScmNhIf/1xSzdTahQg5Hi6U+tdV8JS7tbDpkdXfyiOgzN5zVu1Vk+6ASSS/Snr+eazWoK3GYBvEmOOwyctxefSmqP2SJrLffxGb5pKcgv9ziz0Aj2WgILPNbXdW3OHQLwQDV3VfznsQTCVcQ2twNKka9AGg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709309981; c=relaxed/simple;
-	bh=kqHrLNm7gDmwTCEs36YV2jdsUTVUUwpuDbx4vMGSjBY=;
+	s=arc-20240116; t=1709310096; c=relaxed/simple;
+	bh=avyjyGyF/VeFKLhHlTrCk38bYjiWeXUn6I458pAdN64=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UsuApNnGPmyXQVZabGyisSq/z21MtO7HYsP7pk6iXaOSt+yAwTBtIgSV3oEgZbB6TOYi1uYJm0AvCTp8LVZkUkogcg5Vo7UICnjb6vbgbLTujwicI5ENkO55Grx1utg01B9xeDTgAJX9hnAjpS7Naq/L5tqkl+77Mf2bM5DlI8w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=pCICPBF/; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709309975;
-	bh=kqHrLNm7gDmwTCEs36YV2jdsUTVUUwpuDbx4vMGSjBY=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=URgevWDybu0VVXiV+PZOEus2i48qLkYO0Ig+WH34GY5DkHdWwPz5qbGphAFx9d7/umfs6/99+Lsqs57oXO1N3MaJ54lqriCF/pLcGnWvtMwWzEwaXHL7usPA4p/tbh+OzcW6goHJOFSkPxJ+vq4B51qm326WU3rkGIxPQznl180=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JB/c1HKS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BA49C433C7;
+	Fri,  1 Mar 2024 16:21:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709310096;
+	bh=avyjyGyF/VeFKLhHlTrCk38bYjiWeXUn6I458pAdN64=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pCICPBF/U+f0qA9JBho7Cn4BcnOMh7J9a6GJRnJM70+TKdPZJvA+UQgKeB/ZN7x5r
-	 iuKY1AdEjmvtKAMlNcFQ7QOMltgsxDhIh+uNNp0MsMSCe5mNno0MKtJhrFzwP4VJvg
-	 mqDaI9sG7ThZOwLhWmRg6kzQC8I+7bm3rZ/Ww9kvEAwB5oRscDHmaj7RccIYmIZam1
-	 gOfryn3fu76cTmnnZxaDzvexSd7t5P7agslSTbFJ7GaUErw0Hjlamht4WGtUqEy93e
-	 Dfl7EoZvCoYTwUrDnc9c7XENiKzBQi1fvTeqFGY+aEifREVWG9GO2pIVxmdE5RfKzF
-	 7RKGyUXyfoKiA==
-Received: from notapiano (zone.collabora.co.uk [167.235.23.81])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: nfraprado)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 9CC7F37813F2;
-	Fri,  1 Mar 2024 16:19:29 +0000 (UTC)
-Date: Fri, 1 Mar 2024 11:19:27 -0500
-From: =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado <nfraprado@collabora.com>
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: Andrzej Hajda <andrzej.hajda@intel.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Robert Foss <rfoss@kernel.org>, Jonas Karlman <jonas@kwiboo.se>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	owen <qwt9588@gmail.com>, Jagan Teki <jagan@amarulasolutions.com>,
-	Marek Vasut <marex@denx.de>,
-	Adrien Grassein <adrien.grassein@gmail.com>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Sam Ravnborg <sam@ravnborg.org>,
+	b=JB/c1HKSJpQhaCL6td7M5tCKAtrfU9k213yUhsowltVubPh5SDfNbSm12TZVEylC9
+	 FfK/EvWG1ZBCWGDzcadJxn8e/wqxbhpjZSWEcMlKQVmxReYzJlWzSj+r/yupr77wBc
+	 D6qSP8tpHeh2REjLyFM9sHXiU/OEuMBLtZGM+I5ycanqw1eSPW2yJOfTMnsRzE+dGz
+	 AmxynpDelSO3pq7gTYOtudIgHw/CWbLmEi0VyMsMa+XjjpVq+WzODTd4YBqxtpIDNO
+	 axL7RZSL0RP0asrE1wfQudeKh8qoP7VxAxcl4deDrFDGGX43+nEutCHZDADvfAOi7c
+	 fHvYwr8MIsevg==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rg5dr-000000002kJ-2SpG;
+	Fri, 01 Mar 2024 17:21:48 +0100
+Date: Fri, 1 Mar 2024 17:21:47 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Krishna Kurapati <quic_kriskura@quicinc.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
 	Bjorn Andersson <andersson@kernel.org>,
-	Vinod Koul <vkoul@kernel.org>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Vinay Simha BN <simhavcs@gmail.com>,
-	Christopher Vollo <chris@renewoutreach.org>,
-	Jessica Zhang <quic_jesszhan@quicinc.com>,
-	Marijn Suijten <marijn.suijten@somainline.org>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>,
-	kernel@collabora.com, dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Subject: Re: [PATCH v2 0/9] drm: Switch from dev_err to dev_err_probe for
- missing DSI host error path
-Message-ID: <33209063-de58-4d53-a6e0-2d9f74052358@notapiano>
-References: <20240229-anx7625-defer-log-no-dsi-host-v2-0-00506941049a@collabora.com>
- <20240301063431.GM30889@pendragon.ideasonboard.com>
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+	quic_ppratap@quicinc.com, quic_jackp@quicinc.com
+Subject: Re: [PATCH v2 1/2] arm64: dts: qcom: sc8280xp: Add multiport
+ controller node for SC8280
+Message-ID: <ZeIAm74PplfLVis3@hovoldconsulting.com>
+References: <20240213082724.1789096-1-quic_kriskura@quicinc.com>
+ <20240213082724.1789096-2-quic_kriskura@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240301063431.GM30889@pendragon.ideasonboard.com>
+In-Reply-To: <20240213082724.1789096-2-quic_kriskura@quicinc.com>
 
-On Fri, Mar 01, 2024 at 08:34:31AM +0200, Laurent Pinchart wrote:
-> Hi Nícolas,
+On Tue, Feb 13, 2024 at 01:57:23PM +0530, Krishna Kurapati wrote:
+> Add USB and DWC3 node for tertiary port of SC8280 along with multiport
+> IRQ's and phy's. This will be used as a base for SA8295P and SA8295-Ride
+
+"interrupts" and "PHYs"
+
+> platforms.
+
+But I suggest you just reword this along the lines of
+
+	Add USB DWC3 multiport controller.
+
+as it's assumed that you'll describe resources like interrupts and PHYs.
+
+Perhaps no need to mention SA8295p either as this change is needed (and
+correct) also for sc8280xp proper.
+
+> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+> ---
+>  arch/arm64/boot/dts/qcom/sc8280xp.dtsi | 82 ++++++++++++++++++++++++++
+>  1 file changed, 82 insertions(+)
 > 
-> On Thu, Feb 29, 2024 at 07:12:06PM -0500, Nícolas F. R. A. Prado wrote:
-> > This series changes every occurence of the following pattern: 
-> > 
-> > 	dsi_host = of_find_mipi_dsi_host_by_node(dsi);
-> > 	if (!dsi_host) {
-> > 		dev_err(dev, "failed to find dsi host\n");
-> > 		return -EPROBE_DEFER;
-> > 	}
-> > 
-> > into
-> > 
-> > 	dsi_host = of_find_mipi_dsi_host_by_node(dsi);
-> > 	if (!dsi_host)
-> > 		return dev_err_probe(dev, -EPROBE_DEFER, "failed to find dsi host\n");
-> > 
-> > This registers the defer probe reason (so it can later be printed by the
-> > driver core or checked on demand through the devices_deferred file in
-> > debugfs) and prevents errors to be spammed in the kernel log every time
-> > the driver retries to probe, unnecessarily alerting userspace about
-> > something that is a normal part of the boot process.
-> 
-> The idea is good, but I have a small issue with patches 1/9 to 7/9. They
-> all patch a function that is called by the probe function. Calling
-> dev_err_probe() in such functions is error-prone. I had to manually
-> check when reviewing the patches that those functions were indeed called
-> at probe time, and not through other code paths, and I also had to check
-> that no callers were using dev_err_probe() in the error handling path,
-> as that would have overridden the error message.
-> 
-> Would there be a way to move the dev_err_probe() to the top-level ? I
-> understand it's not always possible or convenient, but if it was doable
-> in at least some of the drivers, I think it would be better. I'll let
-> you be the judge.
+> diff --git a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
+> index febf28356ff8..29dbf2a9cdba 100644
+> --- a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
+> @@ -3331,6 +3331,88 @@ system-cache-controller@9200000 {
+>  			interrupts = <GIC_SPI 582 IRQ_TYPE_LEVEL_HIGH>;
+>  		};
+>  
+> +		usb_2: usb@a4f8800 {
 
-Hey Laurent, thanks for the review.
+> +			interrupts-extended = <&intc GIC_SPI 130 IRQ_TYPE_LEVEL_HIGH>,
+> +					      <&intc GIC_SPI 135 IRQ_TYPE_LEVEL_HIGH>,
+> +					      <&intc GIC_SPI 857 IRQ_TYPE_LEVEL_HIGH>,
+> +					      <&intc GIC_SPI 856 IRQ_TYPE_LEVEL_HIGH>,
+> +					      <&intc GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>,
+> +					      <&intc GIC_SPI 136 IRQ_TYPE_LEVEL_HIGH>,
+> +					      <&intc GIC_SPI 860 IRQ_TYPE_LEVEL_HIGH>,
+> +					      <&intc GIC_SPI 859 IRQ_TYPE_LEVEL_HIGH>,
 
-I get where you're coming from, as I checked those things myself while writing
-the patch. That said, I don't think moving dev_err_probe() to the top-level is a
-good move for a few reasons:
-* Keeping the log message as close to the source of the error makes it more
-  specific, and consequently, more useful.
-* The original code already returned -EPROBE_DEFER, implying the function is
-  expected to be called only from the probe function.
+> +					      <&pdc 127 IRQ_TYPE_EDGE_RISING>,
+> +					      <&pdc 126 IRQ_TYPE_EDGE_RISING>,
+> +					      <&pdc 129 IRQ_TYPE_EDGE_RISING>,
+> +					      <&pdc 128 IRQ_TYPE_EDGE_RISING>,
+> +					      <&pdc 131 IRQ_TYPE_EDGE_RISING>,
+> +					      <&pdc 130 IRQ_TYPE_EDGE_RISING>,
+> +					      <&pdc 133 IRQ_TYPE_EDGE_RISING>,
+> +					      <&pdc 132 IRQ_TYPE_EDGE_RISING>,
 
-With those points in mind, the only way I see to guarantee
-dev_err_probe(...,-EPROBE_DEFER...) would only be called by probe, and that the
-reason wouldn't be overriden, would be to move the entire code path of that
-function that calls into dev_err_probe() up into the probe function. But if we
-adopt this pattern consistently across the drivers in the tree, I think it would
-drastically worsen readability and cancel out the benefits.
+These should all be IRQ_TYPE_EDGE_BOTH as DP/DM interrupts may need to
+trigger also on falling edges.
 
-IMO the way forward with the API we have, is to make use of warnings and static
-checkers to catch cases where dev_err_probe() is overriding a defer probe
-reason, and where it's called outside of the probe function scope.
+> +					      <&pdc 16 IRQ_TYPE_LEVEL_HIGH>,
+> +					      <&pdc 17 IRQ_TYPE_LEVEL_HIGH>;
+> +
+> +			interrupt-names = "pwr_event_1", "pwr_event_2",
+> +					  "pwr_event_3", "pwr_event_4",
+> +					  "hs_phy_1",	 "hs_phy_2",
+> +					  "hs_phy_3",	 "hs_phy_4",
+> +					  "dp_hs_phy_1", "dm_hs_phy_1",
+> +					  "dp_hs_phy_2", "dm_hs_phy_2",
+> +					  "dp_hs_phy_3", "dm_hs_phy_3",
+> +					  "dp_hs_phy_4", "dm_hs_phy_4",
+> +					  "ss_phy_1",	 "ss_phy_2";
 
-So I'm inclined to leave the patches as they are, but am happy to discuss this
-further or other ideas.
-
-Thanks,
-Nícolas
+Johan
 
