@@ -1,126 +1,156 @@
-Return-Path: <linux-kernel+bounces-88546-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88547-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C99686E33A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:23:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E77286E33E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:23:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 165AAB21EB2
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:23:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BBFD828468E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:23:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 485566F08A;
-	Fri,  1 Mar 2024 14:23:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SCCoIZdE"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19CCA6EEEB;
-	Fri,  1 Mar 2024 14:23:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0FA46F514;
+	Fri,  1 Mar 2024 14:23:29 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F7266F074;
+	Fri,  1 Mar 2024 14:23:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709302990; cv=none; b=oAHYGuvAkGQ8qm6iADFnKkUwal9J04wiYdAzruhmjVhNiK+oHaavJEuuDIIxE7qGHavg3oLoK9HdBQgbA7lPrtDXiP05fnnBEjLwDIipCrk1l7uKg4AUq+dx/xls3DuBOSsA2QTYRtK+k5TlCZZ6jfFbKuG7O6UZ92d9iTjb7XA=
+	t=1709303009; cv=none; b=POBmKRVAJuhPcm9Rkd+cHhfboccoPf8s1V4f60cVgFUt7JPemwjvzgY8bEhFQmD0uhtxf7uytxg3omcLAUVvbi/E7a8DgmI3i4H+/dMO925UE5IHOnrYUuUo9YxeVgZ0UlLW0aW5XvbeIgnaNITvHVheW9PmYj81mSOrum/otCA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709302990; c=relaxed/simple;
-	bh=HZCxlrgGljidyTarDfuqfAysxjyvcHG4UHNCNIebsrA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ubry8Lry6yNzvu8C41lW8eRY5Ex2e87wMOu5DqMRiVlTzVwHV49zEfMo6z14wvV99NsipZ9iv9bAKqzOpnz4h8rXLlaz1wvW1pdiU+ttyHFrha+NLCROwByxmn2uxrrKokYh85a8Q6uuXcTGRMxETTInklSR5PtV5JNjjtRNsmw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SCCoIZdE; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-566df43a1f8so802142a12.0;
-        Fri, 01 Mar 2024 06:23:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709302987; x=1709907787; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Bda4kfIFTgemCk1Wz0NaLukSggxZd32xgBKtfHKR0eg=;
-        b=SCCoIZdEm17nU0m8jxLXgvG1JJGCSxNX6HDCB4DIKZV3aAxUi2JDNVffWOaKIiOXS5
-         y3rCjFuM6zgMfdfCF733GzQIMCjuQCw7EzcjQJy1Fm8MBWKgNKuYbRtt+0S3N8tgLVhv
-         KXzXNtzYGDNiYC8DXWI7+VCowu6aMhPL1/gSwTB0o2vKHkJyHNx5yHO1wZ67gMQxUbj4
-         g8/3cre2sVGCmctRWDXgFpuWJRg71SmworPSly2vD1ntRRUZBuIVRAr4EKXbzP+2Jo2Z
-         7ahy1+gN1pRLn3YhZIVe1TRix46pQdRppyg+qY8QX3W5BhI4FpVISGaNtYvoic2EyWhS
-         XLSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709302987; x=1709907787;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Bda4kfIFTgemCk1Wz0NaLukSggxZd32xgBKtfHKR0eg=;
-        b=F+U/Iod1H+aQpa4WqtULElvX09SyoowQbIwSNopAwppA7twdmXhsFau+bQQa6mkLsQ
-         B7h16ZE51dRt+rO3vFtQSBLJZudXNeOe6JV+MZNCl3OOxHZM58FWcHLYQbiCcFzI/qbm
-         pa3bpoNSDw8FxibFEX6UVVOGrUuSjZzfq136+4hxF1DmgsB+fjyb7GvRViJ14WqdkeQn
-         bEpdUfUhy8idd6p0l5V/uZIuWhsvms76AO8Q0ECvxSfAhmqXzLzt6A3tFh5VGo5zTPfx
-         Uje0OrXcNQ35f8anVFhkuX+mqpIfMjKJv2tdwcOf/6YLf5sfWqGRS22S8r/ecos4mQo4
-         uLHQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX8J16+H88V+buNUIamMcKiO64D5n9GMkfaOatjZP+dvlSC2/BshhDCioHj3YvSxKVwhHc7ZEvJstDRgWaeBzm7yeeiyanOYftquM5xeKxSH2nECEQJ/lT5CtuqroFrmcuV9YrCb5uw
-X-Gm-Message-State: AOJu0YyhjOerBUTzNW4qwGy6wlm7DIkzcm0o/5292bW2GQPKfk5UA0O1
-	Cxrae2FuVD/25W8IG7VPXlxZ95/QzRQdp6WflDQBpV2W9/KNNCvM3jGTkFjR2fVX5VCVXPz4qhU
-	jAaSq6JYg7uyy3ih7uC1S4QQxDbU=
-X-Google-Smtp-Source: AGHT+IEwdB8lfu9PxIvgbBfvGBG0oALBdsAnOzy3HWx7e/FKDGO9udHXaNGUJcmenJrpKZRPZ/63J90jNo3z/ay2LuY=
-X-Received: by 2002:a17:906:bc48:b0:a44:958:c3a4 with SMTP id
- s8-20020a170906bc4800b00a440958c3a4mr1345109ejv.32.1709302987239; Fri, 01 Mar
- 2024 06:23:07 -0800 (PST)
+	s=arc-20240116; t=1709303009; c=relaxed/simple;
+	bh=YeW9orSlRtIML5TQ1wHKvJlrXnf90wDa5Uj1qZDj71M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jG4/2BzxhuZI5L0gnV84xdM02k/OieOEAF1zcT+RDYhzV48nvuhEPIAICRt/fcSEMmnW4R71yOf+CrBN63It4YvjTvGhop2YljibMia7IP8KrQLokP+odiOrmQ4jHnFed2X7WBdH6rAw24yHBShHcSlaNaAVN4VOFPtSgC4/9RY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A7E271FB;
+	Fri,  1 Mar 2024 06:24:03 -0800 (PST)
+Received: from [10.57.68.58] (unknown [10.57.68.58])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5DA013F73F;
+	Fri,  1 Mar 2024 06:23:22 -0800 (PST)
+Message-ID: <6645287e-d069-4c37-823b-d1b814ec0efe@arm.com>
+Date: Fri, 1 Mar 2024 14:23:20 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240227131410.35269-1-lukas.bulwahn@gmail.com> <e6441dc1-6821-4514-b285-ebc24114aece@oracle.com>
-In-Reply-To: <e6441dc1-6821-4514-b285-ebc24114aece@oracle.com>
-From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date: Fri, 1 Mar 2024 15:22:56 +0100
-Message-ID: <CAKXUXMwGekn7++3TmKhe20s0bebM=hjSU82PhuWV9=0Cc9wfkw@mail.gmail.com>
-Subject: Re: [PATCH] docs: drop the version constraints for sphinx and dependencies
-To: Vegard Nossum <vegard.nossum@oracle.com>, Jonathan Corbet <corbet@lwn.net>
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>, Akira Yokosawa <akiyks@gmail.com>, 
-	Jani Nikula <jani.nikula@linux.intel.com>, Randy Dunlap <rdunlap@infradead.org>, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 8/8] mm: huge_memory: enable debugfs to split huge
+ pages to any order.
+Content-Language: en-GB
+To: Zi Yan <ziy@nvidia.com>, Aishwarya TCV <aishwarya.tcv@arm.com>
+Cc: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>, linux-mm@kvack.org,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ David Hildenbrand <david@redhat.com>, Yang Shi <shy828301@gmail.com>,
+ Yu Zhao <yuzhao@google.com>,
+ "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+ =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>, Zach O'Keefe
+ <zokeefe@google.com>, Hugh Dickins <hughd@google.com>,
+ Luis Chamberlain <mcgrof@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, Mark Brown <broonie@kernel.org>
+References: <20240226205534.1603748-1-zi.yan@sent.com>
+ <20240226205534.1603748-9-zi.yan@sent.com>
+ <082e48c8-71b7-4937-a5da-7a37b4be16ba@arm.com>
+ <2ED5C25C-FDB2-490F-B740-E413E8186C12@nvidia.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <2ED5C25C-FDB2-490F-B740-E413E8186C12@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 29, 2024 at 3:39=E2=80=AFPM Vegard Nossum <vegard.nossum@oracle=
-com> wrote:
->
->
-> On 27/02/2024 14:14, Lukas Bulwahn wrote:
-> > As discussed (see Links), there is some inertia to move to the recent
-> > Sphinx versions for the doc build environment.
->
-> [...]
->
-> > diff --git a/Documentation/sphinx/requirements.txt b/Documentation/sphi=
-nx/requirements.txt
-> > index 5d47ed443949..1f3b98eee2c9 100644
-> > --- a/Documentation/sphinx/requirements.txt
-> > +++ b/Documentation/sphinx/requirements.txt
-> > @@ -1,6 +1,4 @@
-> > -# jinja2>=3D3.1 is not compatible with Sphinx<4.0
-> > -jinja2<3.1
-> > -# alabaster>=3D0.7.14 is not compatible with Sphinx<=3D3.3
-> > -alabaster<0.7.14
-> > -Sphinx=3D=3D2.4.4
-> > +jinja2
-> > +alabaster
-> > +Sphinx
-> >   pyyaml
->
-> I know you wrote this as well, but just for the record I tried dropping
-> jinja2 from this list and it still pulled it in automatically:
+On 01/03/2024 14:00, Zi Yan wrote:
+> On 1 Mar 2024, at 4:51, Aishwarya TCV wrote:
+> 
+>> On 26/02/2024 20:55, Zi Yan wrote:
+>>> From: Zi Yan <ziy@nvidia.com>
+>>>
+>>> It is used to test split_huge_page_to_list_to_order for pagecache THPs.
+>>> Also add test cases for split_huge_page_to_list_to_order via both
+>>> debugfs.
+>>>
+>>> Signed-off-by: Zi Yan <ziy@nvidia.com>
+>>> ---
+>>>  mm/huge_memory.c                              |  34 ++++--
+>>>  .../selftests/mm/split_huge_page_test.c       | 115 +++++++++++++++++-
+>>>  2 files changed, 131 insertions(+), 18 deletions(-)
+>>>
+>>
+>> Hi Zi,
+>>
+>> When booting the kernel against next-master(20240228)with Arm64 on
+>> Marvell Thunder X2 (TX2), the kselftest-mm test 'split_huge_page_test'
+>> is failing in our CI (with rootfs over NFS). I can send the full logs if
+>> required.
+>>
+>> A bisect (full log below) identified this patch as introducing the
+>> failure. Bisected it on the tag "next-20240228" at repo
+>> "https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git".
+>>
+>> This works fine on  Linux version 6.8.0-rc6
+> 
+> Hi Aishwarya,
+> 
+> I am trying to fix the issue. When I am compiling selftests/mm, I encountered
+> the error below when I run make under the folder. Am I missing any configuration?
+> Since you are able to run the test, I assume you know what is happening. Thanks.
 
-Vegard, I took your suggestion and removed jinja2 from the
-requirements.txt in my patch v2:
+for what its worth, I usually compile from the top level directory with:
 
-https://lore.kernel.org/linux-doc/20240301141800.30218-1-lukas.bulwahn@gmai=
-l.com/
+# make headers_install
+# make -C tools/testing/selftests TARGETS=mm install INSTALL_PATH=~/kself
 
-So, there is no need for any further future one-line deletion patch.
+Perhaps the below is due to the headers not being exported properly. Bad things definitely happen if you omit the headers_install step.
 
-Jonathan, please pick the patch v2.
+> 
+> vm_util.c: In function ‘__pagemap_scan_get_categories’:
+> vm_util.c:34:28: error: storage size of ‘arg’ isn’t known
+>    34 |         struct pm_scan_arg arg;
+>       |                            ^~~
+> vm_util.c:41:27: error: invalid application of ‘sizeof’ to incomplete type ‘struct pm_scan_arg’
+>    41 |         arg.size = sizeof(struct pm_scan_arg);
+>       |                           ^~~~~~
+> vm_util.c:45:35: error: ‘PAGE_IS_WPALLOWED’ undeclared (first use in this function)
+>    45 |         arg.category_anyof_mask = PAGE_IS_WPALLOWED | PAGE_IS_WRITTEN | PAGE_IS_FILE |
+>       |                                   ^~~~~~~~~~~~~~~~~
+> vm_util.c:45:35: note: each undeclared identifier is reported only once for each function it appears in
+> vm_util.c:45:55: error: ‘PAGE_IS_WRITTEN’ undeclared (first use in this function)
+>    45 |         arg.category_anyof_mask = PAGE_IS_WPALLOWED | PAGE_IS_WRITTEN | PAGE_IS_FILE |
+>       |                                                       ^~~~~~~~~~~~~~~
+> vm_util.c:45:73: error: ‘PAGE_IS_FILE’ undeclared (first use in this function)
+>    45 |         arg.category_anyof_mask = PAGE_IS_WPALLOWED | PAGE_IS_WRITTEN | PAGE_IS_FILE |
+>       |                                                                         ^~~~~~~~~~~~
+> vm_util.c:46:35: error: ‘PAGE_IS_PRESENT’ undeclared (first use in this function); did you mean ‘PAGEMAP_PRESENT’?
+>    46 |                                   PAGE_IS_PRESENT | PAGE_IS_SWAPPED | PAGE_IS_PFNZERO |
+>       |                                   ^~~~~~~~~~~~~~~
+>       |                                   PAGEMAP_PRESENT
+> vm_util.c:46:53: error: ‘PAGE_IS_SWAPPED’ undeclared (first use in this function)
+>    46 |                                   PAGE_IS_PRESENT | PAGE_IS_SWAPPED | PAGE_IS_PFNZERO |
+>       |                                                     ^~~~~~~~~~~~~~~
+> vm_util.c:46:71: error: ‘PAGE_IS_PFNZERO’ undeclared (first use in this function)
+>    46 |                                   PAGE_IS_PRESENT | PAGE_IS_SWAPPED | PAGE_IS_PFNZERO |
+>       |                                                                       ^~~~~~~~~~~~~~~
+> vm_util.c:47:35: error: ‘PAGE_IS_HUGE’ undeclared (first use in this function)
+>    47 |                                   PAGE_IS_HUGE | PAGE_IS_SOFT_DIRTY;
+>       |                                   ^~~~~~~~~~~~
+> vm_util.c:47:50: error: ‘PAGE_IS_SOFT_DIRTY’ undeclared (first use in this function); did you mean ‘PM_SOFT_DIRTY’?
+>    47 |                                   PAGE_IS_HUGE | PAGE_IS_SOFT_DIRTY;
+>       |                                                  ^~~~~~~~~~~~~~~~~~
+>       |                                                  PM_SOFT_DIRTY
+> vm_util.c:50:26: error: ‘PAGEMAP_SCAN’ undeclared (first use in this function); did you mean ‘PAGEMAP_PFN’?
+>    50 |         return ioctl(fd, PAGEMAP_SCAN, &arg);
+>       |                          ^~~~~~~~~~~~
+>       |                          PAGEMAP_PFN
+> 
+> --
+> Best Regards,
+> Yan, Zi
 
-Lukas
 
