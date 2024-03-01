@@ -1,92 +1,123 @@
-Return-Path: <linux-kernel+bounces-88850-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88851-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B3AA86E779
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:39:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 683E486E786
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:44:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 265821C2522E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:39:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2151C287D8A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:44:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 772F31171C;
-	Fri,  1 Mar 2024 17:39:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCCDB11C88;
+	Fri,  1 Mar 2024 17:44:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="GWR6kZ6s"
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fbKApwk9"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBF828BED;
-	Fri,  1 Mar 2024 17:39:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17D618BFE;
+	Fri,  1 Mar 2024 17:44:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709314786; cv=none; b=d91UVd5syLU1lUC5Tcy9Imf3sGatNGnp/q6bKpzrHqvlisheEEqyasjC+Bz0INPAPdUqXujud6pjbW4HpvU99qYJve++7/+X7TDIJcuKKIRFjKY3eVORprKkMhWA0uR5YU16mW/nE0+fLytwXFqS1lmJUiTy0IfZ8P2qTLHb5N4=
+	t=1709315048; cv=none; b=dYwqgbL5V1U7pKptV2mtMLruVPDa7gt/iIMXmqprvJBQszoRiVP73JSSnOeIcvuSPwSirGo9qBeGSKx7RheJ/owjlGDMbtQVYafSa9+D04xQRmUDo1M13DWSzdKatqBlMoiwgUz6ie6GNBevzVTI8jQ82Atax0XR1PSMhee/bq0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709314786; c=relaxed/simple;
-	bh=VE2uSRmbnrUTIwI0MsFFp9dkOgavVaKfIAsVt33kwLE=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=QViCiqY10P9rHlKvTxmM1eecHO1+jVUYQ3LCxE2QW4KHDW2xaNYktllspb73CYazu9tk45kAUujq1mdKd7L99PbeCuOpECBAtMAM52D8ZfE4yNwS6+7CKA8zInn//CHXpK8ZzFf6GavqX3oh9Kj43gtamZdkV5FchD9Y0qu+XqA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=GWR6kZ6s; arc=none smtp.client-ip=217.70.183.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 1B7F1240003;
-	Fri,  1 Mar 2024 17:39:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709314782;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HPOP82Swf39Z+Oml/HNNIoo3JMbE10x1ALBHxRiVIp4=;
-	b=GWR6kZ6sqnLHbD99ZA24rS7vAWtep94ya9NrWpvjdjoRU666FY23absUBejh5k+F1ZnjqS
-	vmTZ6iMMzqD49O7v2Yh+QIbMT1KE1zy+Tdi98zGRiKtU26wJSIs9TWcWZA+VQsfiRxYzwE
-	BAFH32DSCmJkBOMpqeHx96/SKusM3TlsbbTs3zo5dlNrr2aMoCdNhllZoYe3+wc2zFuogv
-	4QpwqK264eg2jGDAYH5JEdEo+ONGAJVGkwb72LSQ13MtxNVWRAupfGJIZytBJ0s+FVm0a0
-	MJYwRN0pi6J13FmpW2SUSbbHvHTLw+BO6oOD9USIHJPS9bsMOgtBWHmj+ml05Q==
-Date: Fri, 1 Mar 2024 18:39:36 +0100
-From: Luca Ceresoli <luca.ceresoli@bootlin.com>
-To: Markus Elfring <Markus.Elfring@web.de>
-Cc: linux-staging@lists.linux.dev, linux-tegra@vger.kernel.org,
- linux-media@vger.kernel.org, kernel-janitors@vger.kernel.org, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>, Jonathan Hunter
- <jonathanh@nvidia.com>, Mauro Carvalho Chehab <mchehab@kernel.org>,
- Sowjanya Komatineni <skomatineni@nvidia.com>, Thierry Reding
- <thierry.reding@gmail.com>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] staging: media: tegra-video: Use common error handling
- code in tegra_vi_graph_parse_one()
-Message-ID: <20240301183936.505fcc72@booty>
-In-Reply-To: <dbebaea7-289c-47d9-ba06-cd58a10ea662@web.de>
-References: <dbebaea7-289c-47d9-ba06-cd58a10ea662@web.de>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1709315048; c=relaxed/simple;
+	bh=RgiwHjq99te3mxoQlvDzBcgnm4t11h4M4CZ6qM0UMzg=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=gKANyEK3PGTyxCf94l+MwQIRNmMgpe+GTyKPsLK/sqWPV4uhznZ5VytSLpsNsxxqBYufbaJexq2QMARkhkj+N8RE/AmeN9kkNigxddPAaOY5Qtpp1lp4ALZy3Jr6dZAFdVVYhZ4Pzn4pfnpc0XILSC0jibfBmPNIyqwWAHAPqmw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fbKApwk9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4B79C43390;
+	Fri,  1 Mar 2024 17:44:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709315047;
+	bh=RgiwHjq99te3mxoQlvDzBcgnm4t11h4M4CZ6qM0UMzg=;
+	h=From:Subject:Date:To:Cc:From;
+	b=fbKApwk9uFBe2y7QbpIvRChKVGAA1yHjFD0pB7CGsh/ocmoxGxIxBQBpq2k8jx983
+	 hcg7QeLO8nFd0FrKiI/gg0BVRgKLmEfMOqJvni43dp0PubaGYQeJlc22FofQ3EVR2J
+	 fN6tU3yLu2S87QViIxorsvmz+klN227O79S728Eci4RIrnSTTuBHGNA/uJWH569j+G
+	 VHgtNHOSy9Zp+sjNxOlu6EP0db8TNXSeIGCfXgxYyDie0hvXknzCbfhifS//fQek74
+	 hdj5XTkAnmgsL3JO2vXlIDHLDq6LkEznxHfJoDICOGbO5ZpNPp0h8y6ffVi5dPIb6/
+	 WslRENe+3dXqQ==
+From: "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
+Subject: [PATCH net-next 0/4] mptcp: add TCP_NOTSENT_LOWAT sockopt support
+Date: Fri, 01 Mar 2024 18:43:43 +0100
+Message-Id: <20240301-upstream-net-next-20240301-mptcp-tcp_notsent_lowat-v1-0-415f0e8ed0e1@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-GND-Sasl: luca.ceresoli@bootlin.com
+X-B4-Tracking: v=1; b=H4sIAM8T4mUC/z2NQQrCMBBFr1Jm7UCaVIpeRaSk6agDNgnJVAuld
+ 3cQdPEWjw/vb1CpMFU4NxsUenHlFFXaQwPh4eOdkCd1sMZ2xpkWl1ylkJ8xkiir4H+as4SMyhC
+ TVIoyPNPbC/a9CX48uckeHWg4F7rx+j29wC8D133/AGaUTxOOAAAA
+To: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>, 
+ Geliang Tang <geliang@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1913; i=matttbe@kernel.org;
+ h=from:subject:message-id; bh=RgiwHjq99te3mxoQlvDzBcgnm4t11h4M4CZ6qM0UMzg=;
+ b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBl4hPgrxAKiEvYIdh99Bb9o9cPkISVwJlwcQbPS
+ SyVSTC3hfGJAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZeIT4AAKCRD2t4JPQmmg
+ c1rmEADlqVg8qBM6qIczmltAqyTRPHTnLk+3iDAgupkCS1dPQzoBqhokX7GxmrRCjET/U5jc5RQ
+ QxzGHwO/qBjXckl+XIt1Ui9zC661kOi6WXOU/Rf/FnHOjkAiTbVb2D4iRzr7kj+WmFxEbQQTazb
+ nmbYxdB2Q76mx/ZrcBhcnwAeRStsMzOl6DRRhZCm4M7X0q8MK0u5Nszy4MCD9WjaBYCXcTVRjr1
+ Z0HWzVQ8pgp3zRxSkaoBJILX7yEqQVXR8IwIcSwL59OiR5NadnzGfuv13O9hWDUGVYOzeotnrz7
+ d7GoKqpO2uAw0H0VTPijIzx0JDunlPiDC88FeuhmV2Ay084XaopFUvu1rn0/U+zDJ87sVnszTJP
+ xJH9mDNJF6skfiF/GqTrU5Ki7OEkqG4+hg10Q0aa6h7jVyC3E6pPN/o6hrrIlIgey9PfiSrjesB
+ 2aME0EtxuKBRFyyGRPp6HSWogxYPBXAyEaJr/rdvzT/+GDc/pRzmr5egDD16ATiWP7prB+V4i6/
+ 1bz+NyUGCxiEiun3o6iE7d6y/zMLkT1jQJS0Tw92Parq7Zlndb00mYunFdjPGr4TcRUTPFbVDJE
+ lYHfWSggOlKnSOC/IJRs5Fe1qeM967D8oBfuTBZq/8ywMFvhpWttFwRwmwkr4TFI7PVfTKPTtnc
+ 7eHm+u7QGHoE48A==
+X-Developer-Key: i=matttbe@kernel.org; a=openpgp;
+ fpr=E8CB85F76877057A6E27F77AF6B7824F4269A073
 
-Hello Markus,
+Patch 3 does the magic of adding TCP_NOTSENT_LOWAT support, all the
+other ones are minor cleanup seen along when working on the new feature.
 
-On Thu, 29 Feb 2024 19:55:46 +0100
-Markus Elfring <Markus.Elfring@web.de> wrote:
+Note that this feature relies on the existing accounting for snd_nxt.
+Such accounting is not 110% accurate as it tracks the most recent
+sequence number queued to any subflow, and not the actual sequence
+number sent on the wire. Paolo experimented a lot, trying to implement
+the latter, and in the end it proved to be both "too complex" and "not
+necessary".
 
-> From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Thu, 29 Feb 2024 19:44:36 +0100
-> 
-> Add a jump target so that a bit of exception handling can be better reused
-> at the end of this function implementation.
-> 
-> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+The complexity raises from the need for additional lock and a lot of
+refactoring to introduce such protections without adding significant
+overhead. Additionally, snd_nxt is currently used and exposed with the
+current semantic by the internal packet scheduling. Introducing a
+different tracking will still require us to keep the old one.
 
-Reviewed-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
+More interestingly, a more accurate tracking could be not strictly
+necessary: as the MPTCP socket enqueues data to the subflows only up to
+the available send window, any enqueue data is sent on the wire
+instantly, without any blocking operation short or a drop in the tx path
+at the nft or TC layer.
 
+Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
+---
+Paolo Abeni (4):
+      mptcp: cleanup writer wake-up
+      mptcp: avoid some duplicate code in socket option handling
+      mptcp: implement TCP_NOTSENT_LOWAT support
+      mptcp: cleanup SOL_TCP handling
+
+ net/mptcp/protocol.c | 54 ++++++++++++++++++++++++++-------------
+ net/mptcp/protocol.h | 42 +++++++++++++++++++++++--------
+ net/mptcp/sockopt.c  | 71 +++++++++++++++++++++++-----------------------------
+ 3 files changed, 101 insertions(+), 66 deletions(-)
+---
+base-commit: e960825709330cb199d209740326cec37e8c419d
+change-id: 20240301-upstream-net-next-20240301-mptcp-tcp_notsent_lowat-770cab93d253
+
+Best regards,
 -- 
-Luca Ceresoli, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Matthieu Baerts (NGI0) <matttbe@kernel.org>
+
 
