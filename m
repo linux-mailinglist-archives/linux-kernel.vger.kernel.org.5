@@ -1,129 +1,112 @@
-Return-Path: <linux-kernel+bounces-88083-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88084-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E98AA86DD20
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:31:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7573786DD22
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:31:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77C4B281F03
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:31:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0636BB26989
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:31:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFAA569E1C;
-	Fri,  1 Mar 2024 08:30:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B766769E04;
+	Fri,  1 Mar 2024 08:31:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="rGXprctB"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="p5D8AtBE"
+Received: from mail-vk1-f169.google.com (mail-vk1-f169.google.com [209.85.221.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F2D569D0E
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 08:30:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB3CD47F6A
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 08:31:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709281847; cv=none; b=kWrflwR5pd5vJaR6nCA6jlWfc4x7vRsSMoi6XddjFgWQSuZAD1VhMS5MeMcUqxYaW1mzi3MQ7bgP18jwRQ/hXRQE4BHy+EI5G4hMiuIRhD45Z/1wviZ9RxUvu1nOdhQmq5weQN7mhKBChOJeKmBn5TMLbwEqjn+m7pKC6DFjTC0=
+	t=1709281867; cv=none; b=WY+3s3Vf8QKbnvQ4uS7iJ2xPvdDPAmP9mJLgPtcT2Y6PEYex63GTHlFwkUVt9LvHSb5BX7R/9kxqlmMw/kypf9e5RPwY/Il2Iavl/YChQlS1gNcmuu5blnmCRMjZUeW1jYdH06wfwDObLzoEOxG8iNoCY2v9f23kMSepPeiDtfM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709281847; c=relaxed/simple;
-	bh=kmXMD5wxosP4C0HytvGYV8f6rRp1M0hxu3/wjfE2CJ8=;
+	s=arc-20240116; t=1709281867; c=relaxed/simple;
+	bh=YXBA+GcFuwZgsjp8m2PtmBFhx/is8VEvcplYegn/n/8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LQf3E7iEZu0UmnCqBAAwBAffHF6WHxBvRARPP5UUwfMVmaKA3lwi/uzSV5pTujjYsA0QRUU5rEasSSL2I7XRf3NE+Ltn0KPA6SPzVKtiMxq8X2xzpXEf4ICrFY7Y8LbgkSytIInWg1mClfUC5Zr+qdV81r9052fv3MvB0MZjYgQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rGXprctB; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5654ef0c61fso8663a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 00:30:45 -0800 (PST)
+	 To:Cc:Content-Type; b=gzIgogqJILRIAWNY1kBvatz4B1fvtMnsXUsTV9+QU7vh8lARFErs54v5WlcTj5rsLt3BXcPMo9mzMD6PLji45HXSTWdIAf9j1FiRNhTH4IHSGuvQ5HNDxR2mSC9eOkr/ctJonRDS4owBcwFRqLx4RE1H6SJA9SM+vvGm3bQ7EAo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=p5D8AtBE; arc=none smtp.client-ip=209.85.221.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-vk1-f169.google.com with SMTP id 71dfb90a1353d-4d35d69f525so136321e0c.3
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 00:31:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709281843; x=1709886643; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1709281863; x=1709886663; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kmXMD5wxosP4C0HytvGYV8f6rRp1M0hxu3/wjfE2CJ8=;
-        b=rGXprctBDcRXELGRZjuJjUglDPm4/EGZQqkhXTQ/CVqpVjQ1vO9ClIB8VJjDsvvzP1
-         tHuX1uKzcss99uesUQNo9NHEU9IyAb9Shd9sh/E2QYacSWlO6ZzpeUxa4+7s2f3lkUv6
-         uQr7OSexv1DfIFUVmSmu95u9vPNExqqW55M57ibHkpn1sLBhaT62BIm+Rrm3mM9IVCwh
-         bKpWGSSKogKIJo+g+yM20PUXg8Qmx0NQvWzXdFNTQUdvETtkym/AJrv12ylTlsF2IinR
-         S5kIL44DHvqujGfOKlT0HHV7EH7j3nYIASHUxNMZ2a6DIV/G6WJarQI/8oo18olAoMni
-         MALA==
+        bh=lELYH8h+hxL/iuJtoVrms/GoKsq2XvHNLfFd3ns5F+c=;
+        b=p5D8AtBESMzYbNA+xHQ703g2/BUTLgZgX8vDX0IMbS48QFny88uYBxcZLS8Xc95SKi
+         Rt1ub2FRO4s4SwDIVss/yqtt38Pztu/5wMvCCLGAr4e0n1O8UZlffJUWQ0NtBq1IzQaB
+         Z0+YiVH5HRN9zXyEDPoLEHK3zytfox5gfgmENeTPV2Ng9WXXnRt5mLg3+EFpS9oazVLJ
+         2BU1capY8RAsRFmVuV420ZOu3tTOBlbtMfeTm3rNactfmmqdjJjpEc3YQHIIDEAmfeSC
+         iAbAcX3ClM1QnotnHXt8tygn7SngzsDdO7dpW0FxTceYgVe8V+qbRfCAIzkrmzvZhQV+
+         W65g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709281843; x=1709886643;
+        d=1e100.net; s=20230601; t=1709281863; x=1709886663;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kmXMD5wxosP4C0HytvGYV8f6rRp1M0hxu3/wjfE2CJ8=;
-        b=U/o8txAINQhLvNf6X8xdBgwjCjGoP3/CaMTNw49u0DrrloOEu/UquppP0jLiNqD3sR
-         12teBOkyIgE8rDp9EECkZFyagmeiEXScOTpJSMHhM+S27KKKFDbTjgxbeSz08zfhu2Hn
-         r0G/ypffjWHkXsXmFmIsecMl6AuN0vWKeWykbs0PZPMMXfdhuhSFgpzhcisffBpgomls
-         pb3uNGnLvkz0FE1m/64N2P8A6XWRhve/7zOZpXCX/Y8+Zrd7xzdv6k0UrMZ6vwzS2ul3
-         d/42MjuQVXPbt4ji+4K+zu7COPXaSmlVpAodSv/vl0Ugq9u3Rao7ARnZ1WuQe0IQnWUS
-         JNHg==
-X-Forwarded-Encrypted: i=1; AJvYcCVi9mU1pZRSezmVFo/cfC8Ra+hpDfieSOoaYGpxUPt+amd8wEBuaJzKFxeWeiFitc44cptaYn5AmRDLRsaQj2yyC41i+i3wBmModoJL
-X-Gm-Message-State: AOJu0YxqRvWPJnqZDf3WBklaLLmeqYRBPzCW4O1rWGZMc8RwXEQiqEhV
-	NprPsetX/KblG4s0pCdQ7zDaKS+SYTwbnEqxC9dQ2S22lrVeoSft87Yoml2zqfqAUAB/YKwTJCo
-	VsISgUZxICGgtD4Rs/+gYTHPNDggCHaJon1KN
-X-Google-Smtp-Source: AGHT+IEwf1M0NlR4bQMpE6O2swlKwBptVLThyMgoIRxdaxLQgX35Cs6YnZnFaBd9av2rZ/03Z91FM2azqVxy5Ou4Vt8=
-X-Received: by 2002:a05:6402:b10:b0:565:ad42:b97d with SMTP id
- bm16-20020a0564020b1000b00565ad42b97dmr90989edb.0.1709281843426; Fri, 01 Mar
- 2024 00:30:43 -0800 (PST)
+        bh=lELYH8h+hxL/iuJtoVrms/GoKsq2XvHNLfFd3ns5F+c=;
+        b=jL3cRrVsvfy79ZUIH9/9GZK8D6Q22LJLIh6zJzOawRmR+9vLp/TdPdkIYgIxGlXYGd
+         lOYfqsWH+Z//pH/bcuG2RMBy1BN+6f4ToVcebVlheOf+FgaAV6hhnGB6q0FxM4bdI0RY
+         1NXZChOUZJLTCH1pAlA5yCrSuTiVx60ktNoZXctvyWP9hkMFO9to77l4HNnDFTPw76O6
+         kUGj3zxynqJoi0Eu3MozprR8i0BKMD2W5Xjp7g/mJcBjLHxiLO5Ch416xufBOzwkc02C
+         XKaTGnRjdqysHgZRFkZnAm7QxwNrFGL31YLhxhtwLI8EQaPXX027nvxv6cO+iwvNQUJa
+         Ddsw==
+X-Forwarded-Encrypted: i=1; AJvYcCXPUNcP/QHO5n3jAvrLbpNpPcU9oBvIYIk04cV2oUXwg7xXcwE0mjcDR/3KvJYG6ofoiuCrlNLmvtjN98/z5sNkmyWZSNnh4n3l6NMg
+X-Gm-Message-State: AOJu0Yzs6gbZhDnUH3BXqram9pNMo21f0NjrcnWxP96tHzLCjYYQQA0f
+	7qdWdjJ/FIpXACjp4Lg1XfQSIA/cQJ+u4foJVfjfeVrnwwYIq1XscLpWhOR7/P28Iw+XAqj5PG7
+	oDm6OM6J/gwt1CpPMbXu6HB1GIAKn+HtEju8VyA==
+X-Google-Smtp-Source: AGHT+IFRDY3BPCDQD5iWo1yphcqOO9zcOl6psQ3cmTnKIEq8pACvPundsi04NcilWPzsEwn2Eg6zK2739v7iQYQFJi0=
+X-Received: by 2002:ac5:ca86:0:b0:4d3:45a2:ae53 with SMTP id
+ u6-20020ac5ca86000000b004d345a2ae53mr601563vkk.16.1709281863663; Fri, 01 Mar
+ 2024 00:31:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZeFPz4D121TgvCje@debian.debian> <CAO3-PboqKqjqrAScqzu6aB8d+fOq97_Wuz8b7d5uoMKT-+-WvQ@mail.gmail.com>
-In-Reply-To: <CAO3-PboqKqjqrAScqzu6aB8d+fOq97_Wuz8b7d5uoMKT-+-WvQ@mail.gmail.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Fri, 1 Mar 2024 09:30:32 +0100
-Message-ID: <CANn89iLCv0f3vBYt8W+_ZDuNeOY1jDLDBfMbOj7Hzi8s0xQCZA@mail.gmail.com>
-Subject: Re: [PATCH v2] net: raise RCU qs after each threaded NAPI poll
-To: Yan Zhai <yan@cloudflare.com>
-Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Jiri Pirko <jiri@resnulli.us>, 
-	Simon Horman <horms@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Lorenzo Bianconi <lorenzo@kernel.org>, Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>, 
-	Alexander Duyck <alexanderduyck@fb.com>, Hannes Frederic Sowa <hannes@stressinduktion.org>, 
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org, bpf@vger.kernel.org, 
-	kernel-team@cloudflare.com, Joel Fernandes <joel@joelfernandes.org>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, mark.rutland@arm.com
+References: <20240229172549.444227-1-brgl@bgdev.pl> <ZeGQk82bOZA7H5kS@hovoldconsulting.com>
+In-Reply-To: <ZeGQk82bOZA7H5kS@hovoldconsulting.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Fri, 1 Mar 2024 09:30:52 +0100
+Message-ID: <CAMRc=MdVzbb1ZxYprwFRDnCz0M=FQgZ1Osq-2nTxo5_AvKwqZQ@mail.gmail.com>
+Subject: Re: [PATCH] gpio: fix resource unwinding order in error path
+To: Johan Hovold <johan@kernel.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 1, 2024 at 4:50=E2=80=AFAM Yan Zhai <yan@cloudflare.com> wrote:
+On Fri, Mar 1, 2024 at 9:23=E2=80=AFAM Johan Hovold <johan@kernel.org> wrot=
+e:
 >
-> On Thu, Feb 29, 2024 at 9:47=E2=80=AFPM Yan Zhai <yan@cloudflare.com> wro=
-te:
+> On Thu, Feb 29, 2024 at 06:25:49PM +0100, Bartosz Golaszewski wrote:
+> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > >
-> > We noticed task RCUs being blocked when threaded NAPIs are very busy at
-> > workloads: detaching any BPF tracing programs, i.e. removing a ftrace
-> > trampoline, will simply block for very long in rcu_tasks_wait_gp. This
-> > ranges from hundreds of seconds to even an hour, severely harming any
-..
-> >
-> > Fixes: 29863d41bb6e ("net: implement threaded-able napi poll loop suppo=
-rt")
-> > Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-> > Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > Signed-off-by: Yan Zhai <yan@cloudflare.com>
-> > ---
-> > v1->v2: moved rcu_softirq_qs out from bh critical section, and only
-> > raise it after a second of repolling. Added some brief perf test result=
+> > Hogs are added *after* ACPI so should be removed *before* in error path=
 .
 > >
-> Link to v1: https://lore.kernel.org/netdev/Zd4DXTyCf17lcTfq@debian.debian=
-/T/#u
-> And I apparently forgot to rename the subject since it's not raising
-> after every poll (let me know if it is prefered to send a V3 to fix
-> it)
+> > Fixes: 6d86750ce623 ("gpio: fix gpio leak in gpiochip_add error path")
 >
+> This Fixes tag is not correct. Back then hogs were only implemented by
+> OF so you need to find another commit to blame here.
+>
+>         git grep -pW '^int gpiochip_add(' 6d86750ce62391f5a0a7985d5c050c2=
+e3c823ab9
+>
+> Johan
 
-I could not see the reason for 1sec (HZ) delays.
+Ah, indeed, looks like it's me who really borked with commit
+a411e81e61df ("gpiolib: add hogs support for machine code").
 
-Would calling rcu_softirq_qs() every ~10ms instead be a serious issue ?
+Let me fix that right up.
 
-In anycase, if this all about rcu_tasks, I would prefer using a macro
-defined in kernel/rcu/tasks.h
-instead of having a hidden constant in a networking core function.
-
-Thanks.
+Bart
 
