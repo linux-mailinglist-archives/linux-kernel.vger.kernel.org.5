@@ -1,352 +1,121 @@
-Return-Path: <linux-kernel+bounces-88551-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88552-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13C9D86E34C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:26:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6003086E350
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:27:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D7CDD1C22059
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:26:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F16561F23D41
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:27:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18F766F515;
-	Fri,  1 Mar 2024 14:26:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 579A76F523;
+	Fri,  1 Mar 2024 14:27:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="uAXwPk0s"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F5tAPOpJ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FD896F061;
-	Fri,  1 Mar 2024 14:26:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 924DB6EB6A;
+	Fri,  1 Mar 2024 14:27:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709303191; cv=none; b=JsBHhQAAG5/4adLGso/GvCY9C6enxVQ+90J8XUIEWqyHoIE1jG6OyERz+2onY0C+He1Eo3akQLsThRuwCHhQLVmP+Ur368NWX4xfsphudLaLZeLW2gi4IdHCM+plFUNikXNxnjrHY7B+2pTugF7+eJbKIcS1wiY2tzj0wVpeVUM=
+	t=1709303250; cv=none; b=RaQdwGiaRiZOG0KisOMjTx9oTKq/BuJsT+78vFXhDeusmpnCosFJz8pUFRjYX7vPQGuMay6GamIWsy+Ol8U+tKQI1ZkDl4G/JujDgsDLF4/mB/D53izjj+uDLpCxhH4kbU7wLFRcdYOhdRtveOgFkFcXqTR50OGoqnOMyUM9+MA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709303191; c=relaxed/simple;
-	bh=xLLbFCitdEhU1RvTDI817HAwsCfV863rjSvWqc1GrrE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Tjw0MJXf3QzX1YMsO1pHpKoHuCSeW1nsNJ3wQa7l57POMVBrIRrxj9CYMhSBj9N2p+WVlxuMpCcLolysYEjuJMKeseAI0DMpbbCsMZK4dPvxl/TWMOjoJMEwlnx//v5CQovuDOPOUWLGNTufAXi+ocF9hi/vzBY8MU5QN/Ou1zs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=uAXwPk0s; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709303186;
-	bh=xLLbFCitdEhU1RvTDI817HAwsCfV863rjSvWqc1GrrE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=uAXwPk0saTLazKJAQuPEkQzPgl1s3PhwwVTT5ddGZAev8koH47hMrAPhPdSxuaqig
-	 MNgfj54ywMgabYr+bxWA82k8m+YZiegNgvbOXmEA7LyEg4wpzAtlmSV4HXPhfPL9ur
-	 UovwRsOV8WEBSBzTn5W7dhl5hOc0xsUktzPLVI5nh7NBx8+b7D+dgte4CdZdvh3H3B
-	 b3zCpcVaOnqUEgqdLS6qa77R9BdsZKbx9g73i0xmjpOQq/ljsmkmBwdVQjiXItog9p
-	 90KfHsbPe+v4kS4GEeE0EosemQNZHA16178Vlr73hg27RJ7EIN5gtp59X7ndChTjrw
-	 dbXmiVrAJWGoA==
-Received: from [100.95.196.182] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: andrzej.p)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 094ED37803EE;
-	Fri,  1 Mar 2024 14:26:25 +0000 (UTC)
-Message-ID: <0d2fc837-a7b4-4d6f-9359-f2b64fe16f92@collabora.com>
-Date: Fri, 1 Mar 2024 15:26:24 +0100
+	s=arc-20240116; t=1709303250; c=relaxed/simple;
+	bh=sc89POi212PZePf8zzE7T9FFfzy+HFO2YO3kSU1uARI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=muAz4c2nu+g3pP35yOK1ovrxFkzb40tt2SxIKG4h/tgvKnrTHgJ3E52HmgrcEd67o380xq4GbyoP1SMZED/QeIThet/ooBkX7XqPqfE5d9i7mPuWBUb2zin5OJ9C4e459Cac8F3zoW4yAls6+KbKhbC3JWBhpAcTsLSEr41boWo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F5tAPOpJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46A58C433F1;
+	Fri,  1 Mar 2024 14:27:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709303250;
+	bh=sc89POi212PZePf8zzE7T9FFfzy+HFO2YO3kSU1uARI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=F5tAPOpJm1jBDvbI7aixTRJtVuNlC7TpO+r+jnig6hOk+Om6cenqjJq9Hq2EIHkv1
+	 cOvjS2jQ3U5Ba7ZqekNxUeLR5X+mJsviETbR4uyhxyWiwRTHsqRIVJAwVnQRmSZ8gT
+	 hGMyOuf6GWzGvK9ZllFk/obpMBVoNY5dr7/FO2OWfvH33gshcOTbz789fTPu81Hg8t
+	 WvgaT3SooanyV9tp9ZjX7OhwneN0wyXcBOu4gNYabeUbCKxuyYcBYxfe8cRp5EWQvX
+	 OcBygi9jeVPFjovIJ7GXQcxEvtfy/sDGgkwduQKf8BW9yZGFZzfvs9EcJu4WhWYqX7
+	 yQE7QQH56Sk5g==
+Date: Fri, 1 Mar 2024 14:27:23 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Zi Yan <ziy@nvidia.com>, Aishwarya TCV <aishwarya.tcv@arm.com>,
+	"Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>,
+	linux-mm@kvack.org, "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	David Hildenbrand <david@redhat.com>,
+	Yang Shi <shy828301@gmail.com>, Yu Zhao <yuzhao@google.com>,
+	"Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Zach O'Keefe <zokeefe@google.com>, Hugh Dickins <hughd@google.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v5 8/8] mm: huge_memory: enable debugfs to split huge
+ pages to any order.
+Message-ID: <dda99ee0-87a2-482d-bf28-bd5e5a97b46e@sirena.org.uk>
+References: <20240226205534.1603748-1-zi.yan@sent.com>
+ <20240226205534.1603748-9-zi.yan@sent.com>
+ <082e48c8-71b7-4937-a5da-7a37b4be16ba@arm.com>
+ <0dab0c69-2eac-4e65-9efe-e0b037499abc@arm.com>
+ <08703C70-DD6E-446A-9ABC-BC2C8E33B8CD@nvidia.com>
+ <f7a3d07d-290b-46d6-884e-fa288901c3c6@arm.com>
+ <3D5A5D18-0A20-4BB3-B667-0CB5799BA665@nvidia.com>
+ <6003865f-2c85-4dd4-9803-6204f9018f50@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 4/4] tools: usb: p9_fwd: add usb gadget packet
- forwarder script
-Content-Language: en-US
-To: Michael Grzeschik <m.grzeschik@pengutronix.de>,
- Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov
- <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>,
- Christian Schoenebeck <linux_oss@crudebyte.com>,
- Jonathan Corbet <corbet@lwn.net>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: v9fs@lists.linux.dev, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
- kernel@pengutronix.de
-References: <20240116-ml-topic-u9p-v2-0-b46cbf592962@pengutronix.de>
- <20240116-ml-topic-u9p-v2-4-b46cbf592962@pengutronix.de>
-From: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-In-Reply-To: <20240116-ml-topic-u9p-v2-4-b46cbf592962@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="aDClwSPU2dBmedls"
+Content-Disposition: inline
+In-Reply-To: <6003865f-2c85-4dd4-9803-6204f9018f50@arm.com>
+X-Cookie: Schizophrenia beats being alone.
 
-Hi Michael,
 
-W dniu 2.02.2024 o 01:05, Michael Grzeschik pisze:
-> This patch is adding an small python tool to forward 9pfs requests
-> from the USB gadget to an existing 9pfs TCP server. Since currently all
-> 9pfs servers lack support for the usb transport this tool is an useful
-> helper to get started.
-> 
-> Refer the Documentation section "USBG Example" in
-> Documentation/filesystems/9p.rst on how to use it.
-> 
-> Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
-> 
-> ---
-> v1 -> v2:
->    - added usbg 9pfs detailed instructions to 9p.rst doc
-> ---
->   Documentation/filesystems/9p.rst |  32 +++++++
->   tools/usb/p9_fwd.py              | 194 +++++++++++++++++++++++++++++++++++++++
->   2 files changed, 226 insertions(+)
-> 
-> diff --git a/Documentation/filesystems/9p.rst b/Documentation/filesystems/9p.rst
-> index 64439068a8fc5..264265c72ba67 100644
-> --- a/Documentation/filesystems/9p.rst
-> +++ b/Documentation/filesystems/9p.rst
-> @@ -67,6 +67,38 @@ To mount a 9p FS on a USB Host accessible via the gadget as root filesystem::
->   where mount_tag is the tag associated by the usb gadget transport. The
->   pattern is usb9pfs0, usb9pfs1, ...
->   
-> +USBG Example
-> +============
-> +
-> +The USB host exports a filesystem, while the gadget on the USB device
-> +side makes it mountable.
-> +
-> +Diod (9pfs server) and the forwarder are on the development host, where
-> +the root filesystem is actually stored. The gadget is initialized during
-> +boot (or later) on the embedded board. Then the forwarder will find it
-> +on the USB bus and start forwarding requests.
-> +
-> +In this case the 9p requests come from the device and are handled by the
-> +host. The reason is that USB device ports are normally not available on
-> +PCs, so a connection in the other direction would not work.
-> +
-> +When using the usbg transport, for now there is no native usb host
-> +service capable to handle the requests from the gadget driver. For
-> +this we have to use the extra python tool p9_fwd.py from tools/usb.
-> +
-> +Just start the 9pfs capable network server like diod/nfs-ganesha e.g.:
-> +
-> +	$ diod -f -n -d 0 -S -l 0.0.0.0:9999 -e $PWD
-> +
-> +Then start the python transport:
-> +
-> +	$ python $kernel_dir/tools/usb/p9_fwd.py -p 9999
-> +
-> +After that the gadget driver can be used as described above.
+--aDClwSPU2dBmedls
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Hmm... The "described above" portion refers to <mount_tag>. How do I get my
-<mount_tag> if I run diod combined with p9_fwd.py?
+On Fri, Mar 01, 2024 at 02:18:16PM +0000, Ryan Roberts wrote:
 
-Regards,
+> Although I agree it might be a tall order create and mount an XFS fs in
+> run_vmtests.sh. Perhaps it might be good enough to add an optional param =
+to the
+> test to pass a path when running the test manually, and if that's not pro=
+vided,
+> just try to create a temp file in the current dir and skip if its not the=
+ right
+> sort of fs?
 
-Andrzej
+Yeah, if it needs to be a specific kind of on disk filesystem then that
+needs a lot more integration with CI systems (a lot of them run entirely
+=66rom nfsroot by default!).  Being able to specify the location via an
+environment variable would also be good, it could fall back to the
+current directory if one isn't set up.
 
-> +
-> +One use-case is to use it as an alternative to NFS root booting during
-> +the development of embedded Linux devices.
-> +
->   Options
->   =======
->   
-> diff --git a/tools/usb/p9_fwd.py b/tools/usb/p9_fwd.py
-> new file mode 100755
-> index 0000000000000..95208df11abef
-> --- /dev/null
-> +++ b/tools/usb/p9_fwd.py
-> @@ -0,0 +1,194 @@
-> +#!/usr/bin/env python3
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +import argparse
-> +import errno
-> +import logging
-> +import socket
-> +import struct
-> +import sys
-> +import time
-> +
-> +import usb.core
-> +import usb.util
-> +
-> +
-> +class Forwarder:
-> +    HEXDUMP_FILTER = (
-> +        "".join(chr(x).isprintable() and chr(x) or "." for x in range(128)) + "." * 128
-> +    )
-> +
-> +    @staticmethod
-> +    def _log_hexdump(data):
-> +        if not logging.root.isEnabledFor(logging.TRACE):
-> +            return
-> +        L = 16
-> +        for c in range(0, len(data), L):
-> +            chars = data[c : c + L]
-> +            dump = " ".join(f"{x:02x}" for x in chars)
-> +            printable = "".join(HEXDUMP_FILTER[x] for x in chars)
-> +            line = f"{c:08x}  {dump:{L*3}s} |{printable:{L}s}|"
-> +            logging.root.log(logging.TRACE, "%s", line)
-> +
-> +    def __init__(self, server):
-> +        self.stats = {
-> +            "c2s packets": 0,
-> +            "c2s bytes": 0,
-> +            "s2c packets": 0,
-> +            "s2c bytes": 0,
-> +        }
-> +        self.stats_logged = time.monotonic()
-> +
-> +        dev = usb.core.find(idVendor=0x1D6B, idProduct=0x0109)
-> +        if dev is None:
-> +            raise ValueError("Device not found")
-> +
-> +        logging.info(f"found device: {dev.bus}/{dev.address}")
-> +
-> +        # dev.set_configuration() is not necessary since g_multi has only one
-> +        usb9pfs = None
-> +        # g_multi adds 9pfs as last interface
-> +        cfg = dev.get_active_configuration()
-> +        for intf in cfg:
-> +            # we have to detach the usb-storage driver from multi gadget since
-> +            # stall option could be set, which will lead to spontaneous port
-> +            # resets and our transfers will run dead
-> +            if intf.bInterfaceClass == 0x08:
-> +                if dev.is_kernel_driver_active(intf.bInterfaceNumber):
-> +                    dev.detach_kernel_driver(intf.bInterfaceNumber)
-> +
-> +            if (
-> +                intf.bInterfaceClass == 0xFF
-> +                and intf.bInterfaceSubClass == 0xFF
-> +                and intf.bInterfaceProtocol == 0x09
-> +            ):
-> +                usb9pfs = intf
-> +        if usb9pfs is None:
-> +            raise ValueError("Interface not found")
-> +
-> +        logging.info(f"claiming interface:\n{usb9pfs}")
-> +        usb.util.claim_interface(dev, usb9pfs.bInterfaceNumber)
-> +        ep_out = usb.util.find_descriptor(
-> +            usb9pfs,
-> +            custom_match=lambda e: usb.util.endpoint_direction(e.bEndpointAddress)
-> +            == usb.util.ENDPOINT_OUT,
-> +        )
-> +        assert ep_out is not None
-> +        ep_in = usb.util.find_descriptor(
-> +            usb9pfs,
-> +            custom_match=lambda e: usb.util.endpoint_direction(e.bEndpointAddress)
-> +            == usb.util.ENDPOINT_IN,
-> +        )
-> +        assert ep_in is not None
-> +        logging.info(f"interface claimed")
-> +
-> +        self.ep_out = ep_out
-> +        self.ep_in = ep_in
-> +        self.dev = dev
-> +
-> +        # create and connect socket
-> +        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-> +        self.s.connect(server)
-> +
-> +        logging.info(f"connected to server")
-> +
-> +    def c2s(self):
-> +        """forward a request from the USB client to the TCP server"""
-> +        data = None
-> +        while data is None:
-> +            try:
-> +                logging.log(logging.TRACE, "c2s: reading")
-> +                data = self.ep_in.read(self.ep_in.wMaxPacketSize)
-> +            except usb.core.USBTimeoutError:
-> +                logging.log(logging.TRACE, "c2s: reading timed out")
-> +                continue
-> +            except usb.core.USBError as e:
-> +                if e.errno == errno.EIO:
-> +                    logging.debug("c2s: reading failed with %s, retrying", repr(e))
-> +                    time.sleep(0.5)
-> +                    continue
-> +                else:
-> +                    logging.error("c2s: reading failed with %s, aborting", repr(e))
-> +                    raise
-> +        size = struct.unpack("<I", data[:4])[0]
-> +        while len(data) < size:
-> +            data += self.ep_in.read(size - len(data))
-> +        logging.log(logging.TRACE, "c2s: writing")
-> +        self._log_hexdump(data)
-> +        self.s.send(data)
-> +        logging.debug("c2s: forwarded %i bytes", size)
-> +        self.stats["c2s packets"] += 1
-> +        self.stats["c2s bytes"] += size
-> +
-> +    def s2c(self):
-> +        """forward a response from the TCP server to the USB client"""
-> +        logging.log(logging.TRACE, "s2c: reading")
-> +        data = self.s.recv(4)
-> +        size = struct.unpack("<I", data[:4])[0]
-> +        while len(data) < size:
-> +            data += self.s.recv(size - len(data))
-> +        logging.log(logging.TRACE, "s2c: writing")
-> +        self._log_hexdump(data)
-> +        while data:
-> +            written = self.ep_out.write(data)
-> +            assert written > 0
-> +            data = data[written:]
-> +        if size % self.ep_out.wMaxPacketSize == 0:
-> +            logging.log(logging.TRACE, "sending zero length packet")
-> +            self.ep_out.write(b"")
-> +        logging.debug("s2c: forwarded %i bytes", size)
-> +        self.stats["s2c packets"] += 1
-> +        self.stats["s2c bytes"] += size
-> +
-> +    def log_stats(self):
-> +        logging.info("statistics:")
-> +        for k, v in self.stats.items():
-> +            logging.info(f"  {k+':':14s} {v}")
-> +
-> +    def log_stats_interval(self, interval=5):
-> +        if (time.monotonic() - self.stats_logged) < interval:
-> +            return
-> +
-> +        self.log_stats()
-> +        self.stats_logged = time.monotonic()
-> +
-> +
-> +def main():
-> +    parser = argparse.ArgumentParser(
-> +        description="Forward 9PFS requests from USB to TCP",
-> +    )
-> +
-> +    parser.add_argument(
-> +        "-s", "--server", type=str, default="127.0.0.1", help="server hostname"
-> +    )
-> +    parser.add_argument("-p", "--port", type=int, default=564, help="server port")
-> +    parser.add_argument("-v", "--verbose", action="count", default=0)
-> +
-> +    args = parser.parse_args()
-> +
-> +    logging.TRACE = logging.DEBUG - 5
-> +    logging.addLevelName(logging.TRACE, "TRACE")
-> +
-> +    if args.verbose >= 2:
-> +        level = logging.TRACE
-> +    elif args.verbose:
-> +        level = logging.DEBUG
-> +    else:
-> +        level = logging.INFO
-> +    logging.basicConfig(
-> +        level=level, format="%(asctime)-15s %(levelname)-8s %(message)s"
-> +    )
-> +
-> +    f = Forwarder(server=(args.server, args.port))
-> +
-> +    try:
-> +        while True:
-> +            f.c2s()
-> +            f.s2c()
-> +            f.log_stats_interval()
-> +    finally:
-> +        f.log_stats()
-> +
-> +
-> +if __name__ == "__main__":
-> +    main()
-> 
+--aDClwSPU2dBmedls
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXh5coACgkQJNaLcl1U
+h9Cthgf/exhZvamNaMdDUbiaQJt1suzTxtR0iwMIkyoGG+QcsGZHPhG2OGAVrqfK
+T+xYRWrqxRQWqc+NZqTGq08iAoFkQZCKv6VUn2jlxL7o8PNPLkYRA69XyYXCYnwN
+UzQU2I9lSef/UbFmAIv/BaceerTOO3XD7GfGPn1H852j7jA4t9VlRO2jPbfG++7I
+0j4cl9L2Xvhun+JDcykwIwazFQpBQxZShf2rPKfxZz3cg/UozNjpTSIUAoNZdKUP
+YSFL0/fzXxsRdri8Ud3P3xWsSxPNrVWAxMUgkzCL4uqerD+kikdiAGgpq4QsmMF3
+cHoBcF80Yg+Ft1V0ZSk4f15ZgvxbYw==
+=UD/W
+-----END PGP SIGNATURE-----
+
+--aDClwSPU2dBmedls--
 
