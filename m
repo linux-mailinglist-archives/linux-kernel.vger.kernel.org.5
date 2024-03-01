@@ -1,75 +1,73 @@
-Return-Path: <linux-kernel+bounces-89111-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89112-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 062F286EA98
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:47:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1F2D86EA9C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:48:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97C6C28FC5D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:47:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 711291F2235E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:48:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67F425646F;
-	Fri,  1 Mar 2024 20:47:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70C4A535DF;
+	Fri,  1 Mar 2024 20:48:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GZqBWuLU"
-Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="f8GfjmKk"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A5D055E6E;
-	Fri,  1 Mar 2024 20:47:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D13925337B;
+	Fri,  1 Mar 2024 20:48:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709326045; cv=none; b=KZR9IpwVaa46AWCNVQxMyK5X24h6vfmrKsq5CHk9QkqS4VEJG87j9EALYAXG+z52y1tvd8AG7qbMGZqWoZaXuvVuHeyyexjcgE1arJEgrT4XW6dnesHQgk9+KSii0dWn52ELnw5owv1iqGLWWSSVqDHdAwDqmJNRhaTfGm0OS/E=
+	t=1709326084; cv=none; b=mPwe+06YGa7Sm61jBm53LH0zID6DvIuAKqtYV0Sssat4sPW53xsYZtxaCBfuutJZ7TFDFmHumJe6/YKYt0OaKGi9QCnqrDjHgFPTdSZR3CUoP48gUPx5I0Lx5xnIznDOrx7CUMbGUfLftCzwE5CyQEYN45ZrMGJWFGyNx2YgiZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709326045; c=relaxed/simple;
-	bh=bpOXBl/+vEKKGfVApj2A/xz6pEaxLe47MBrtl3tKaVM=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=NzWAFsb9xEeQuUAm+QCQaN9v1vUXJ9aQUJ0oY73NSImeK68XSP/vq5bBFXKhZ/DDtCT53NexbWquMc75ehFKFAnUZroTYoZ5JIZ0+0a/fV1j43ajwpGPp/2tKRQ08ifUYpG5uAw4hZvxgl0nPc2T0hTkhubo7qX6GDTgdGmJlxk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GZqBWuLU; arc=none smtp.client-ip=209.85.166.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7c7770fd687so135666039f.3;
-        Fri, 01 Mar 2024 12:47:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709326042; x=1709930842; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=fi955ff2Km/XHk+EvfWGRWtcjoumqDRLFwVbG3a05Tg=;
-        b=GZqBWuLUb5eIWzp1ouZgchIhdpSdAS7G0iDLUiOqehfY3/mh2YI1mHnlWGGA7WaiIp
-         iD3LdYKzVN0273l/okziuxmhpavjLjWwlvPbqEJVdVTDwT3oIQFog6PBIncXyyG6BDbX
-         h/1w3Rdkq/v77hVsZepiEzmk/M4Aika6CazOF34YEh9AHjjBV8gEQUmOpLOIGrm7dzmU
-         zQU0eQs0YVyVEcXIb+uKtzLlH0mx5vLKfBFGsc1szL5UPLiWnalR6btZajxj+on8ooej
-         c6LoSULRMk/ShZha9NCJVgUZZoX2RrcKZ7ZTOp1EXBwTu8d515R7R5quB7edL+BuvriO
-         3PoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709326042; x=1709930842;
-        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:sender:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fi955ff2Km/XHk+EvfWGRWtcjoumqDRLFwVbG3a05Tg=;
-        b=aNOWavH66hHrRb8HeghJ6kmDRSnU+IvGYWEiq6zhECQZST34Wil8Pvllhuwla1wZGH
-         kiNiVLBVLgCGwsST1aOy+2l0Ojniv4zzCRmqCVtvAmh6EYPNETwWDDzry1cFOL9ftXO2
-         YQg4b6OgwhwnpmYtWINvm3lmUzXYabjXSZ+tFM7LgC2NPDUhmwx8f0xRlp3aox0yn9TS
-         tSXzoS96y4DT4zue1y9VWoYkQBHZ5UQMwz4t+R0W3iF/oUFchF78D8fygOfyoDQfZPew
-         IOel4Yknp9d7sgRsK6Bz0BJI3VISXjPOHmzSNXtalkT096uv2ba88L8XDJGhhRNaSUz/
-         tkPA==
-X-Forwarded-Encrypted: i=1; AJvYcCXWWF2gnY9GU4vO85U2F/Sqp7MjL8VwpgPSr/j80Q0Vd4K/oHEdka2nK5O7B9myUqRd26+Ulkp3o8W1ardHb6THUWWeYLydVWEdg0VR
-X-Gm-Message-State: AOJu0YzPK+dxNzcV/k1Xr80mrr0qWlcCrMs/nhnfe5E4VYVPwCPdsJ7Q
-	y/VTTI21+HgQAa50uuVdM1MvO+IaxNxCaA9igM3kPrv+ms1x2vOc
-X-Google-Smtp-Source: AGHT+IHvRK24WEsiT8fjQkwND2Hqe/5FobaIm4G8wuFzhMcOhkwURcbue0xCgId9LbAALwCBakKLxQ==
-X-Received: by 2002:a5e:a711:0:b0:7c8:de3:2ab1 with SMTP id b17-20020a5ea711000000b007c80de32ab1mr3162526iod.10.1709326042301;
-        Fri, 01 Mar 2024 12:47:22 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id ay6-20020a056638410600b00474d08a6fc4sm377115jab.7.2024.03.01.12.47.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Mar 2024 12:47:21 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <11842961-91c2-40bf-9134-7528d30137f3@roeck-us.net>
-Date: Fri, 1 Mar 2024 12:47:18 -0800
+	s=arc-20240116; t=1709326084; c=relaxed/simple;
+	bh=0zFVcEjk+27xkc5GBVoirXHgXxsrBhjDjU1abj7QdQk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZmNyNSPQPXQjhgxWKL5KuJSR4XSvF9gUosj4T5bdu8u+ZwGB9VGuf88+qp2Kg2vOZ4+cm0+9roiVvtl+VJh2WxVIY1ppfLQHdrIBX6AOVwpYXf3Z+8heTAGLeEdZLVCPlxIpl7PAuAGtdnWS2xVizhi3WkIQEtjnRMYKLq00Kc4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=f8GfjmKk; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 421KlgJX020547;
+	Fri, 1 Mar 2024 20:47:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=JPvfuBq/HES7muDrxOUTmHJeUceWOeG0wuRzK2EHDkA=;
+ b=f8GfjmKkC4+wwpOBNhrXgCgRy+LW5quhsJngJb+e0E6uX4r20qv0h93LxYAqmDZMytpo
+ qnM3DsrWPC9FtpQkCJxK2j3ntJwSfhO8Q9oPLWuduoGXGwsor/K820XFhPmFyV/kyNm2
+ h4zX1palcWbrbFOyRF/AI3mgT2j+mtSJj58FDRz34roaogzBNjH0JNdeduAH6MmUlQgJ
+ tr9cd6mHx0NCbAiUSG7TALPFzOnjlKqKTBqK4DvE0qddUGSV8ZgAPKKGDz0p9I8C8Urh
+ b1WBKspDQjhRz+sNcHQ8OOvNix35aajQb2otLpPAtjPe33Dg6KVUWS5LvWGi7GpJ9K7A 4A== 
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wkpcag011-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 01 Mar 2024 20:47:51 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 421Jwit1021291;
+	Fri, 1 Mar 2024 20:47:50 GMT
+Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3wfusppx5h-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 01 Mar 2024 20:47:50 +0000
+Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
+	by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 421Kll2g27263264
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 1 Mar 2024 20:47:49 GMT
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id C939158067;
+	Fri,  1 Mar 2024 20:47:45 +0000 (GMT)
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id D69F158066;
+	Fri,  1 Mar 2024 20:47:44 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+	by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Fri,  1 Mar 2024 20:47:44 +0000 (GMT)
+Message-ID: <90606a3c-1384-407b-8270-dd76dccc700b@linux.ibm.com>
+Date: Fri, 1 Mar 2024 15:47:44 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,174 +75,77 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v10] lib: checksum: Use aligned accesses for ip_fast_csum
- and csum_ipv6_magic tests
+Subject: Re: [PATCH v4 09/12] crypto: ecdsa - Rename keylen to bufsize where
+ necessary
 Content-Language: en-US
-From: Guenter Roeck <linux@roeck-us.net>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>,
- Charlie Jenkins <charlie@rivosinc.com>,
- David Laight <David.Laight@aculab.com>, Palmer Dabbelt <palmer@dabbelt.com>,
- Andrew Morton <akpm@linux-foundation.org>, Helge Deller <deller@gmx.de>,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
- Parisc List <linux-parisc@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Palmer Dabbelt <palmer@rivosinc.com>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>,
- Russell King <linux@armlinux.org.uk>
-References: <20240223-fix_sparse_errors_checksum_tests-v10-1-b6a45914b7d8@rivosinc.com>
- <7ae930a7-3b10-4470-94ee-89cb650b3349@csgroup.eu>
- <e11fea7a-e99e-4539-a489-0aa145ee65f0@roeck-us.net>
- <0bd79258-b8c4-45f9-9201-4d7ddf02dfea@csgroup.eu>
- <0b4a7a9c-dd94-47bd-b9df-4da58be11342@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <0b4a7a9c-dd94-47bd-b9df-4da58be11342@roeck-us.net>
+To: Jarkko Sakkinen <jarkko@kernel.org>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, herbert@gondor.apana.org.au,
+        davem@davemloft.net
+Cc: linux-kernel@vger.kernel.org, saulo.alessandre@tse.jus.br, lukas@wunner.de
+References: <20240301022007.344948-1-stefanb@linux.ibm.com>
+ <20240301022007.344948-10-stefanb@linux.ibm.com>
+ <CZIPDP0W9TOP.3CCT8QUB0R4L3@suppilovahvero>
+From: Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <CZIPDP0W9TOP.3CCT8QUB0R4L3@suppilovahvero>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: nKpA8_xvRTAPcycJWnB3CnFJM8VR0dRm
+X-Proofpoint-ORIG-GUID: nKpA8_xvRTAPcycJWnB3CnFJM8VR0dRm
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-01_21,2024-03-01_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 suspectscore=0 phishscore=0 adultscore=0 spamscore=0
+ clxscore=1015 bulkscore=0 mlxscore=0 mlxlogscore=999 impostorscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2403010173
 
-On 3/1/24 08:24, Guenter Roeck wrote:
-> On 2/29/24 22:46, Christophe Leroy wrote:
->>
->>
->> Le 26/02/2024 à 17:44, Guenter Roeck a écrit :
->>> On 2/26/24 03:34, Christophe Leroy wrote:
->>>>
->>>>
->>>> Le 23/02/2024 à 23:11, Charlie Jenkins a écrit :
->>>>> The test cases for ip_fast_csum and csum_ipv6_magic were not properly
->>>>> aligning the IP header, which were causing failures on architectures
->>>>> that do not support misaligned accesses like some ARM platforms. To
->>>>> solve this, align the data along (14 + NET_IP_ALIGN) bytes which is the
->>>>> standard alignment of an IP header and must be supported by the
->>>>> architecture.
->>>>
->>>> I'm still wondering what we are really trying to fix here.
->>>>
->>>> All other tests are explicitely testing that it works with any alignment.
->>>>
->>>> Shouldn't ip_fast_csum() and csum_ipv6_magic() work for any alignment as
->>>> well ? I would expect it, I see no comment in arm code which explicits
->>>> that assumption around those functions.
->>>>
->>>> Isn't the problem only the following line, because csum_offset is
->>>> unaligned ?
->>>>
->>>> csum = *(__wsum *)(random_buf + i + csum_offset);
->>>>
->>>> Otherwise, if there really is an alignment issue for the IPv6 source or
->>>> destination address, isn't it enough to perform a 32 bits alignment ?
->>>>
->>>
->>> It isn't just arm.
->>>
->>> Question should be what alignments the functions are supposed to be able
->>> to handle, not what they are optimized for. If byte and/or half word
->>> alignments
->>> are expected to be supported, there is still architecture code which would
->>> have to be fixed. Unaligned accesses are known to fail on hppa64/parisc64
->>> and on sh4, for example. If unaligned accesses are expected to be handled,
->>> it would probably make sense to add a separate test case, though, to
->>> clarify
->>> that the test fails due to alignment issues, not due to input parameters.
->>>
->>
->> When you say "Unaligned accesses are known to fail on hppa64/parisc64
->> and on sh4", do you mean unaligned accesses in general or do you mean
->> ip_fast_csum() with unaligned ip header and csum_ipv6_magic() with
->> unaligned source and dest addresses ?
->>
->> Because later in this thread it is said that only ARM and NIOS2
->> potentially have an issue.
->>
->> And when you say "unaligned", to what level is that ? Is it 4-bytes
->> alignment or more or less ?
->>
-> 
-> This e-mail chain is getting too long. Here is an attempt of a quick summary.
-> 
-> - Someone else suggested that unaligned accesses with nios2 should fail.
->    I since then tested and found that they pass at least for the checksum tests,
->    while dumping "unaligned access" messages into the kernel log. Other tests
->    (specifically gso) cause crashes, but that is unrelated.
-> 
-> - checksum tests on sh4 fail for unaligned data because of a bug introduced
->    to the architecture's checksum core with commit cadc4e1a2b4d ("sh: Handle
->    calling csum_partial with misaligned data"). The tests pass after reverting
->    that patch. I reported this, but that revert (or a fix of the problem it
->    introduced) has not been applied to linux-next.
-> 
-> - Checksum tests on unaligned data fail on parisc in mainline due to a number
->    of bugs in checksum assembler code (and with upstream qemu due to a bug in
->    qemu's hppa64 emulation). All those issues should by now be fixed in linux-next.
->    For reference, the following patches (SHAs from next-20240301) are needed to fix
->    the known problems:
->      0568b6f0d863 parisc: Strip upper 32 bit of sum in csum_ipv6_magic for 64-bit builds
->      4b75b12d7050 parisc: Fix csum_ipv6_magic on 64-bit systems
->      4408ba75e4ba parisc: Fix csum_ipv6_magic on 32-bit systems
->      a2abae8f0b63 parisc: Fix ip_fast_csum
->    qemu (v8.2 and later) needs
->      https://lore.kernel.org/all/20240217015811.1975411-1-linux@roeck-us.net/T/
->    for the hppa64/parisc64 tests to work with qemu.
-> 
-> - Checksum tests on unaligned data cause a crash on arm systems with "thumb"
->    instruction set enabled (such as mps2_defconfig and an385). I didn't bother
->    checking if the crash is with 1-byte or 2-byte alignment.
-> 
-> - There used to be a crash with checksum tests on m68k because of word alignment
->    which the implementation of the unit tests for csum_ipv6_magic() did not take
->    into account (this is fixed by the padding in struct csum_ipv6_magic_data).
->    I don't know if this patch is needed to fix that problem or if it was since
->    fixed differently.
-> 
-> I hope that covers everything. As I said above, the chain is getting long
-> and I may have missed something.
-> 
 
-I knew I missed something. I forgot to mention upstream commit d55347bfe4e6
-("MIPS: Add 'memory' clobber to csum_ipv6_magic() inline assembler") witch
-fixed problems with csum_ipv6_magic() for mips.
 
-Guenter
+On 3/1/24 15:41, Jarkko Sakkinen wrote:
+> On Fri Mar 1, 2024 at 4:20 AM EET, Stefan Berger wrote:
+>> In some cases the name keylen does not reflect the purpose of the variable
+>> anymore once NIST P521 is used but it is the size of the buffer. There-
+>> for, rename keylen to bufsize where appropriate.
+>>
+>> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+>> ---
+>>   crypto/ecdsa.c | 12 ++++++------
+>>   1 file changed, 6 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/crypto/ecdsa.c b/crypto/ecdsa.c
+>> index 4daefb40c37a..4e847b59622a 100644
+>> --- a/crypto/ecdsa.c
+>> +++ b/crypto/ecdsa.c
+>> @@ -35,8 +35,8 @@ struct ecdsa_signature_ctx {
+>>   static int ecdsa_get_signature_rs(u64 *dest, size_t hdrlen, unsigned char tag,
+>>   				  const void *value, size_t vlen, unsigned int ndigits)
+>>   {
+>> -	size_t keylen = ndigits * sizeof(u64);
+>> -	ssize_t diff = vlen - keylen;
+>> +	size_t bufsize = ndigits * sizeof(u64);
+> 
+> why not just "* 8"? using sizeof here makes this function only unreadable.
 
+'unreadable' is a 'strong' word ...
+
+# grep -r -E "ndigits \*" crypto/ | grep sizeof
+crypto/ecrdsa.c:            req->dst_len != ctx->curve->g.ndigits * 
+sizeof(u64) ||
+crypto/ecrdsa.c:        vli_from_be64(r, sig + ndigits * sizeof(u64), 
+ndigits);
+crypto/ecrdsa.c:            ctx->curve->g.ndigits * sizeof(u64) != 
+ctx->digest_len)
+crypto/ecrdsa.c:            ctx->key_len != ctx->curve->g.ndigits * 
+sizeof(u64) * 2)
+crypto/ecrdsa.c:        vli_from_le64(ctx->pub_key.y, ctx->key + ndigits 
+* sizeof(u64),
+crypto/ecrdsa.c:        return ctx->pub_key.ndigits * sizeof(u64);
+crypto/ecc.c:   size_t len = ndigits * sizeof(u64);
+crypto/ecc.c:   num_bits = sizeof(u64) * ndigits * 8 + 1;
+crypto/ecdsa.c: size_t keylen = ndigits * sizeof(u64);
+crypto/ecdsa.c: size_t keylen = ctx->curve->g.ndigits * sizeof(u64);
+
+    Stefan
 
