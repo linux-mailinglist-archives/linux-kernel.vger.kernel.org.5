@@ -1,122 +1,148 @@
-Return-Path: <linux-kernel+bounces-88786-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88787-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2185F86E696
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:01:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E894086E69A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:03:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8AD351F23FF8
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:01:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75AD62871AE
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:03:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55A2F46B7;
-	Fri,  1 Mar 2024 17:01:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D39D6FC3;
+	Fri,  1 Mar 2024 17:02:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="x4McovRZ"
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DtaHTXd2"
+Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 028524417
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 17:01:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65F392900
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 17:02:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709312503; cv=none; b=pBUz17YV4/zCoWZvdsgJ7HRdPqdOnZ/IP+C2KFmxD27Jl/2fYfkOUTfQfyvFKCtXW30/GFa2o3wYuGMNPK2YjTQlOondctrrLcJJX4tQhvpnOzNEWG7nh7TsJ+sO/AS5TFrDXHy8/Sm3yuTUkdmIgd3B+Uc3nUvXHEW0JxIjnVo=
+	t=1709312569; cv=none; b=ptI38QnX0RbVMsW5Rkj9wDNdxDWpR09U+HbLFnAAhV82ky64DnhGVZdRiAb7oU2Dom2iAktYf5tFUc7reEEImvsex+byxNSb72anYZ5r39MCmBXPmDToE4Dao/jk6h+h5sYEkhKIkpfZuEzk5Jal3JQrCWWn8aLZcaXHsLIDZJU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709312503; c=relaxed/simple;
-	bh=4n8ceEv6Q5ediHfdFs5AkThnNMy3m/KB032Gll00g78=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=W1M/CcbXsfPFki/aB9Q8n6/kA4/OWFCpaJSmzTD0o3aI+5dpEW/2io/GWSobKY0dMmGEllTpxP8YUlJeHFRQ+U07SEA5/mcmOhdnIChQjIfNhxIngeEmglcbyLA/l/4d3by2E/Q+oqYAm/4CDr+VQ0ArX5ZpPh3pRa8gIKGJKFY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=x4McovRZ; arc=none smtp.client-ip=209.85.218.41
+	s=arc-20240116; t=1709312569; c=relaxed/simple;
+	bh=Bkj0I0SUh29zp8LIZC5qKKF3Hbd577+hfaSUf1YEdc8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=XkCrhe2PAaYNqfbWJVdDAa2znuNWbTfjO9e7GPVouNq0+sXg7xwg1/F7+0K/OQspp8ZWBSi0OD01rP+HOB5f1aT9XDeUDtYUWKBJToGJQ6gUr7tMtjitkUlW++v2fH6uhSM59xNukYed3DDvwdE4G2jqZdbMrEmn9pfqLw9Q3VQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=DtaHTXd2; arc=none smtp.client-ip=209.85.166.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a449c5411e1so106949266b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 09:01:41 -0800 (PST)
+Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-365a681e949so8559995ab.3
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 09:02:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709312500; x=1709917300; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=yXl+fhGWmqpXUkYfoGJfgxrC/Y54D2lC6NLr66whDt4=;
-        b=x4McovRZ1YgPqBq+Xg+Uy8IN19QebV34fUrnyPR/x8BofSbhWWD9ZXelAWtO6bplKf
-         6esODOpseYFFhbtklasHCUII8E1mzh+dDSDF5kUhDr9WcGmSuZSMfAHVerrC6BGefFlb
-         bkYB/LZ8z62x86LpgQ7ehZCoD0fZhMTYkh9FzRcojn4MuI0sTrK9Ut0JMhldDD6JYFKC
-         OA5TvXhweH0ZguQGJrdGo/b+iG5qOq0lq3ftSrRH1b6j3qqZMa0fMUjpKedRbrn6ReDS
-         tYL13Mxrz20NabsVeNz3v2KABt0naiQo4Mm3l9e9vu6koL/Fnt+GA28Ax5Zk8EXsF2jx
-         oxuA==
+        d=linaro.org; s=google; t=1709312566; x=1709917366; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vFD7+EeXbLhZQK9aauwPh9/7nmAnd7U/WxWooQh3Jh0=;
+        b=DtaHTXd2GGQrUM2fIBU2Cync4GeeHq8NpEN67Jd0xrEVD0eFFWB5oquPzjMoRDAMF8
+         q3zFbqytcXPq//4/XEGIEChla8MLdL0LDiSxRp4745ExZFtq2o3lM9rSKAjxR0wIPqZH
+         Baet6OabZI7YQVdNCNHUETkMsbabkMPieSlIvBAjPEhtKHMqYqeqy4j9jitl1pJICqgr
+         KFymXH+C1vSj0Qvs8fe+wFa7lorZ2hMhnGp4XNPwL9sCvIdhShkfuJ+n3Mk7/asmi1Vo
+         ZS0PLHWLwoB8s9jbn739DUXOtAjapMZK0V87qCkLB16B0GACXLf6eqG3iWgb59nHQUho
+         ZJBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709312500; x=1709917300;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yXl+fhGWmqpXUkYfoGJfgxrC/Y54D2lC6NLr66whDt4=;
-        b=Jid63H+B86JQJCt1a2gfd0umecuAuEIunDwBrNYu5IdPmsy0L32ZKNzSEqCa1NyN4d
-         5u/59cGtAyk+DrFdkFulVwp/Ie9EXQWnXJ0OyL98fnqTWyIqwLVpq1klR2H4DL63DYli
-         Sfk+x+0ckkZX4Lw1UAztZ+J0UqIFHHICZqV0hsMhRCwSsAta7YRBcqZyByhqfPee0E5h
-         vuMCfGILnzteOg7ENEvUFCciSUWow7x8F6q+UilFZSKFijl9pY6dMuhSReffDb2VsQMa
-         pfSTshgHQxgphfnD6gTFlN30Qmjq+0vK0gIxdsayFUI5KocTHD6+jB3bVQ8B7VPAcQQi
-         e1kg==
-X-Forwarded-Encrypted: i=1; AJvYcCX02XNDX/9xRF25MQe0pqQMXmE1aRvflszK38/Eog4bTxr4QRCmc8OMw37QyAQNv/v4Ze3Lj+jy4X+JzbiNQwJ6qBUCuRjgmbU7kBap
-X-Gm-Message-State: AOJu0YzG/sJyYB3x07nEZrdvYYy6HjkzutNsCBbyIytt0pdRb0W9ibX0
-	+gWmOcY3Yl2YNz/uBFPCArdFmjLXX+Q6vjZNWYvZnjkleUa8fuBqEBQEDyhmMW4=
-X-Google-Smtp-Source: AGHT+IFGat9UXgkHbrn1IFjTtMxIE8O4RGfV+O/IUsZ8Ep40Xr1elDiVdFGMlUy74J4zM3dAirtmhQ==
-X-Received: by 2002:a17:906:f355:b0:a3e:c738:afa2 with SMTP id hg21-20020a170906f35500b00a3ec738afa2mr1843445ejb.76.1709312500414;
-        Fri, 01 Mar 2024 09:01:40 -0800 (PST)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id q12-20020a1709066acc00b00a440846650bsm1856780ejs.184.2024.03.01.09.01.39
+        d=1e100.net; s=20230601; t=1709312566; x=1709917366;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vFD7+EeXbLhZQK9aauwPh9/7nmAnd7U/WxWooQh3Jh0=;
+        b=NphY8XdimyzZw+46tHcpRoS0753BFtal5893iZrne/E1eGr9kDeQicsKWHcmyHXEDl
+         jACSM9vK18NzlsUt/+INgvzcnf3JkJkIXBlcNbtUS3/yhRw5ZU6ZAJZsuvI9DtENOQNN
+         okPD2coIFCrcPzVvcxmJcOOUEMmRZm+VqWrwfHf7ECfp8Ujl+OgwmPh3IDs5SPc0iOmf
+         ajXwcvnqUIjpypevl/tA0K7Qn7DCnUhElrDUGmX0F5zeem0vtdYYffpck6/qZp0hQM2E
+         wbDMlF5ShGp1erw8ACdu725dHeVuBOJr35TXieBBLxS14rJ8hVCvx6Od6wl4sGBKXvER
+         9AFQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXf+zEyRaObdbHN/Sl0jCu1+gGdsEKgkIAEWNqmqpQicuzUjC6HTBu1RKege/coNYX4mvU03wenHp/J3iQNGUWgm/HyPW5du0Pb5SlR
+X-Gm-Message-State: AOJu0Yx3o0S1M+zhUZTKdmCndFmeIDxlAbVRaPyR2JLOy2DhxqeQ6otY
+	BXKn673/WZG6yxK/gf3XBJi2OCL+mf721OpXhVI97BUDxHyefWK2JsnrLBCLh7U=
+X-Google-Smtp-Source: AGHT+IHeHUzCtWeB4wOCTxMMiaIKCpRduUo3dp5evXrqwq4J05sRXrRhKHYPTJR2WbAJYdAIWnaYWQ==
+X-Received: by 2002:a92:cc11:0:b0:365:1737:d78 with SMTP id s17-20020a92cc11000000b0036517370d78mr2232767ilp.17.1709312566559;
+        Fri, 01 Mar 2024 09:02:46 -0800 (PST)
+Received: from localhost.localdomain (c-73-228-159-35.hsd1.mn.comcast.net. [73.228.159.35])
+        by smtp.gmail.com with ESMTPSA id o2-20020a92dac2000000b0036581060910sm991430ilq.6.2024.03.01.09.02.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 09:01:40 -0800 (PST)
-Date: Fri, 1 Mar 2024 20:01:36 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <mwalle@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>,
-	kernel@collabora.com, kernel-janitors@vger.kernel.org,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: spi-nor: core: correct type of i to be signed
-Message-ID: <c7db3fa0-d5a2-43aa-8038-0a722f2b8f26@moroto.mountain>
-References: <20240301144517.2811370-1-usama.anjum@collabora.com>
+        Fri, 01 Mar 2024 09:02:45 -0800 (PST)
+From: Alex Elder <elder@linaro.org>
+To: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com
+Cc: horms@kernel.org,
+	mka@chromium.org,
+	andersson@kernel.org,
+	quic_cpratapa@quicinc.com,
+	quic_avuyyuru@quicinc.com,
+	quic_jponduru@quicinc.com,
+	quic_subashab@quicinc.com,
+	elder@kernel.org,
+	netdev@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v2 0/7] net: ipa: simplify device pointer access
+Date: Fri,  1 Mar 2024 11:02:35 -0600
+Message-Id: <20240301170242.243703-1-elder@linaro.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240301144517.2811370-1-usama.anjum@collabora.com>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Mar 01, 2024 at 07:45:16PM +0500, Muhammad Usama Anjum wrote:
-> The i should be signed to find out the end of the loop. Otherwise,
-> i >= 0 is always true and loop becomes infinite.
-> 
-> Fixes: 6a9eda34418f ("mtd: spi-nor: core: set mtd->eraseregions for non-uniform erase map")
-> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-> ---
->  drivers/mtd/spi-nor/core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 65b32ea59afc6..46bc45b80883f 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -3373,7 +3373,7 @@ static u32
->  spi_nor_get_region_erasesize(const struct spi_nor_erase_region *region,
->  			     const struct spi_nor_erase_type *erase_type)
->  {
-> -	u8 i;
-> +	s8 i;
+This version of this patch series fixes the bugs in the first patch
+(which were fixed in the second), where ipa_interrupt_config() had
+two remaining spots that returned a pointer rather than an integer.
 
-I have a patch in my output which also addresses this bug but you beat
-me to the punch.  Declaring iterators as "u8 i;" is a canonical bug.
+Outside of initialization, all uses of the platform device pointer
+stored in the IPA structure determine the address of device
+structure embedded within the platform device structure.
 
-https://staticthinking.wordpress.com/2022/06/01/unsigned-int-i-is-stupid/
+By changing some of the initialization functions to take a platform
+device as argument we can simplify getting at the device structure
+address by storing it (instead of the platform device pointer) in
+the IPA structure.
 
-regards,
-dan carpenter
+The first two patches split the interrupt initialization code into
+two parts--one done earlier than before.  The next four patches
+update some initialization functions to take a platform device
+pointer as argument.  And the last patch replaces the platform
+device pointer with a device pointer, and converts all remaining
+references to the &ipa->pdev->dev to use ipa->dev.
+
+					-Alex
+
+Alex Elder (7):
+  net: ipa: change ipa_interrupt_config() prototype
+  net: ipa: introduce ipa_interrupt_init()
+  net: ipa: pass a platform device to ipa_reg_init()
+  net: ipa: pass a platform device to ipa_mem_init()
+  net: ipa: pass a platform device to ipa_smp2p_irq_init()
+  net: ipa: pass a platform device to ipa_smp2p_init()
+  net: ipa: don't save the platform device
+
+ drivers/net/ipa/ipa.h           |  5 +--
+ drivers/net/ipa/ipa_cmd.c       |  6 +--
+ drivers/net/ipa/ipa_endpoint.c  | 29 +++++++-------
+ drivers/net/ipa/ipa_interrupt.c | 69 +++++++++++++++++++++------------
+ drivers/net/ipa/ipa_interrupt.h | 22 +++++++++--
+ drivers/net/ipa/ipa_main.c      | 60 +++++++++++++++++-----------
+ drivers/net/ipa/ipa_mem.c       | 37 +++++++++---------
+ drivers/net/ipa/ipa_mem.h       |  5 ++-
+ drivers/net/ipa/ipa_modem.c     | 14 +++----
+ drivers/net/ipa/ipa_power.c     |  4 +-
+ drivers/net/ipa/ipa_qmi.c       | 10 ++---
+ drivers/net/ipa/ipa_reg.c       |  8 ++--
+ drivers/net/ipa/ipa_reg.h       |  4 +-
+ drivers/net/ipa/ipa_smp2p.c     | 33 ++++++++--------
+ drivers/net/ipa/ipa_smp2p.h     |  7 +++-
+ drivers/net/ipa/ipa_table.c     | 18 ++++-----
+ drivers/net/ipa/ipa_uc.c        |  9 ++---
+ 17 files changed, 197 insertions(+), 143 deletions(-)
+
+-- 
+2.40.1
 
 
