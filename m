@@ -1,116 +1,364 @@
-Return-Path: <linux-kernel+bounces-87804-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87805-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 572F086D940
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 02:55:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EAE586D943
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 02:57:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E68E91F21F58
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:55:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BEC381C226E3
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:57:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17D6638F9A;
-	Fri,  1 Mar 2024 01:55:39 +0000 (UTC)
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 974F838DE0;
+	Fri,  1 Mar 2024 01:57:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YzskfJSH"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D76F538DC3;
-	Fri,  1 Mar 2024 01:55:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F94C2E632
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 01:57:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709258138; cv=none; b=TiCiakTg3jiEo+SQp1oW9N+VpUEuJc1HiKqRCxx+IuQ7134KYq3yAlxm4Dfd7KLePeP0JPOuIOwLP2bnCGAenBeZ9gEJVaj6aPWx9zgDFCHnHj3YUfsT90nDozPRszhgiQbwgsRbT4BFC1dS2CQDzowq9NFWm2fTaE+Wz8sQnMU=
+	t=1709258245; cv=none; b=Eiq2cMU9FbHHVvdN9dShIqKpKTiAfOLhNRwvbkMwGHq4k2lY1Rn5Pc6Hj25YGrsbDX8GeFxl3yNjX7DD49FSPsQrBLcKIxo7E5tMyCEFha9LCprLq5N97u95KrZyG1B3M6/1e1GUnb8/oDLxbrk3NLqJae5gdi71+8tkwpg/UuY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709258138; c=relaxed/simple;
-	bh=oqWoH8VhvOjQFKWrC83og1gw9x5C8cR+JCMt9m9J5hM=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=O+RlPo1KOIMltdUESKz51ro/ZqGtLyWmDD6N0q9U/bfpDNZuzNUNeIrSa2oR83qgWGlWva6EZxOx3J4WRfzP33fJUtfDvUEiHYBQOrNQQsPJu0TS/ScqFhLsZ0CWimwtE4g0EqnoOu93zd4rHzWk/qFmyueLNOleOCwXu5Rwgis=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4TmB2T0nQ4z1Q96j;
-	Fri,  1 Mar 2024 09:53:37 +0800 (CST)
-Received: from canpemm100001.china.huawei.com (unknown [7.192.105.122])
-	by mail.maildlp.com (Postfix) with ESMTPS id C68C914037F;
-	Fri,  1 Mar 2024 09:55:27 +0800 (CST)
-Received: from canpemm500004.china.huawei.com (7.192.104.92) by
- canpemm100001.china.huawei.com (7.192.105.122) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 1 Mar 2024 09:55:27 +0800
-Received: from [10.174.179.14] (10.174.179.14) by
- canpemm500004.china.huawei.com (7.192.104.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 1 Mar 2024 09:55:26 +0800
-Subject: Re: [PATCH] scsi: libsas: Fix disk not being scanned in after being
- removed
-To: John Garry <john.g.garry@oracle.com>, Xingui Yang <yangxingui@huawei.com>,
-	<jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-	<damien.lemoal@opensource.wdc.com>
-CC: <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linuxarm@huawei.com>, <prime.zeng@hisilicon.com>,
-	<chenxiang66@hisilicon.com>, <kangfenglong@huawei.com>
-References: <20240221073159.29408-1-yangxingui@huawei.com>
- <f095aa1c-f233-40f9-ad0f-fcd8fe69a80d@oracle.com>
-From: Jason Yan <yanaijie@huawei.com>
-Message-ID: <e2a725ee-98b3-fd57-6ee4-af031ffbd6bc@huawei.com>
-Date: Fri, 1 Mar 2024 09:55:26 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+	s=arc-20240116; t=1709258245; c=relaxed/simple;
+	bh=ZlpPToH2QRdMiJO4pVHeDRAcwxkw4sWsV22SDFNAvWY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PeCyUHsmLfdDu17cQQhQI3MYb3ppvLCHQ5Ctmk9pTtdQWL3YrVf6wqDnMm4YecZhelOClEQQFKINVqld0YP4jXRmItZ2ahTYoRUpxRyjAPiATB+J9afY3lPxbFxdfih+Jz8cVWos78iADOB8BIOcXi/ShL1CAp49b4s9NhtAtBo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YzskfJSH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8724C433F1;
+	Fri,  1 Mar 2024 01:57:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709258245;
+	bh=ZlpPToH2QRdMiJO4pVHeDRAcwxkw4sWsV22SDFNAvWY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=YzskfJSHYu0BAwo2cq9Viol23nrW68PwMo4tqjRuqGOqa7EEn+5SjggVdy1zfhlmr
+	 9YPFrOInZLVcWmQ3Sv3omSBMEJAnG4KTMq9OR7Qf/RBgxs+CopdlTQGpPnK12vX/8D
+	 7m1gMRRLHPCOuVYymYdzdYnJcqQVlXHJ5tSwfrDk0PXjgq0pvO5IUIoCJQsGTRGN0L
+	 kORgLSDjEtjQntvTd8IF5fVotvcoN2tMRYjVZL8BRl9Mww7MOoxfQxhiN4Gm5ZrG0S
+	 rGouMXqNMOdH3mkoqDD+TfevbfbQUCAhapCM12Eq/O42jUGzIfw8OLPQjqOHLlpGzF
+	 rX5YMv6WPBIaQ==
+Date: Thu, 29 Feb 2024 17:57:23 -0800
+From: Jaegeuk Kim <jaegeuk@kernel.org>
+To: Chao Yu <chao@kernel.org>
+Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] f2fs: introduce SEGS_TO_BLKS/BLKS_TO_SEGS for cleanup
+Message-ID: <ZeE2A1DYl-efulfg@google.com>
+References: <20240221092040.403629-1-chao@kernel.org>
+ <Zd4gNUyZkxemSMIS@google.com>
+ <229db22f-9e46-4132-88be-39b0336902c4@kernel.org>
+ <ZeCyPanBuxblg9Dl@google.com>
+ <2f93a1f0-520f-474e-a992-9737b69fede8@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <f095aa1c-f233-40f9-ad0f-fcd8fe69a80d@oracle.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- canpemm500004.china.huawei.com (7.192.104.92)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2f93a1f0-520f-474e-a992-9737b69fede8@kernel.org>
 
-On 2024/2/29 2:13, John Garry wrote:
-> On 21/02/2024 07:31, Xingui Yang wrote:
->> As of commit d8649fc1c5e4 ("scsi: libsas: Do discovery on empty PHY to
->> update PHY info"), do discovery will send a new SMP_DISCOVER and update
->> phy->phy_change_count. We found that if the disk is reconnected and phy
->> change_count changes at this time, the disk scanning process will not be
->> triggered.
->>
->> So update the PHY info with the last query results.
->>
->> Fixes: d8649fc1c5e4 ("scsi: libsas: Do discovery on empty PHY to 
->> update PHY info")
->> Signed-off-by: Xingui Yang <yangxingui@huawei.com>
->> ---
->>   drivers/scsi/libsas/sas_expander.c | 9 ++++-----
->>   1 file changed, 4 insertions(+), 5 deletions(-)
->>
->> diff --git a/drivers/scsi/libsas/sas_expander.c 
->> b/drivers/scsi/libsas/sas_expander.c
->> index a2204674b680..9563f5589948 100644
->> --- a/drivers/scsi/libsas/sas_expander.c
->> +++ b/drivers/scsi/libsas/sas_expander.c
->> @@ -1681,6 +1681,10 @@ int sas_get_phy_attached_dev(struct 
->> domain_device *dev, int phy_id,
->>           if (*type == 0)
->>               memset(sas_addr, 0, SAS_ADDR_SIZE);
->>       }
->> +
->> +    if ((SAS_ADDR(sas_addr) == 0) || (res == -ECOMM))
+On 03/01, Chao Yu wrote:
+> On 2024/3/1 0:35, Jaegeuk Kim wrote:
+> > On 02/29, Chao Yu wrote:
+> > > On 2024/2/28 1:47, Jaegeuk Kim wrote:
+> > > > On 02/21, Chao Yu wrote:
+> > > > > Just cleanup, no functional change.
+> > > > > 
+> > > > > Signed-off-by: Chao Yu <chao@kernel.org>
+> > > > > ---
+> > > > >    fs/f2fs/debug.c   |  7 +++----
+> > > > >    fs/f2fs/f2fs.h    | 14 ++++++++------
+> > > > >    fs/f2fs/gc.c      | 10 +++++-----
+> > > > >    fs/f2fs/gc.h      |  4 ++--
+> > > > >    fs/f2fs/segment.c | 12 ++++++------
+> > > > >    fs/f2fs/segment.h |  8 ++++----
+> > > > >    fs/f2fs/super.c   | 16 ++++++++--------
+> > > > >    fs/f2fs/sysfs.c   |  4 ++--
+> > > > >    8 files changed, 38 insertions(+), 37 deletions(-)
+> > > > > 
+> > > > > diff --git a/fs/f2fs/debug.c b/fs/f2fs/debug.c
+> > > > > index 6617195bd27e..12893477f2e4 100644
+> > > > > --- a/fs/f2fs/debug.c
+> > > > > +++ b/fs/f2fs/debug.c
+> > > > > @@ -134,7 +134,7 @@ static void update_general_status(struct f2fs_sb_info *sbi)
+> > > > >    	si->cur_ckpt_time = sbi->cprc_info.cur_time;
+> > > > >    	si->peak_ckpt_time = sbi->cprc_info.peak_time;
+> > > > >    	spin_unlock(&sbi->cprc_info.stat_lock);
+> > > > > -	si->total_count = (int)sbi->user_block_count / BLKS_PER_SEG(sbi);
+> > > > > +	si->total_count = BLKS_TO_SEGS(sbi, (int)sbi->user_block_count);
+> > > > >    	si->rsvd_segs = reserved_segments(sbi);
+> > > > >    	si->overp_segs = overprovision_segments(sbi);
+> > > > >    	si->valid_count = valid_user_blocks(sbi);
+> > > > > @@ -175,11 +175,10 @@ static void update_general_status(struct f2fs_sb_info *sbi)
+> > > > >    	si->alloc_nids = NM_I(sbi)->nid_cnt[PREALLOC_NID];
+> > > > >    	si->io_skip_bggc = sbi->io_skip_bggc;
+> > > > >    	si->other_skip_bggc = sbi->other_skip_bggc;
+> > > > > -	si->util_free = (int)(free_user_blocks(sbi) >> sbi->log_blocks_per_seg)
+> > > > > +	si->util_free = (int)(BLKS_TO_SEGS(sbi, free_user_blocks(sbi)))
+> > > > >    		* 100 / (int)(sbi->user_block_count >> sbi->log_blocks_per_seg)
+> > > > >    		/ 2;
+> > > > > -	si->util_valid = (int)(written_block_count(sbi) >>
+> > > > > -						sbi->log_blocks_per_seg)
+> > > > > +	si->util_valid = (int)(BLKS_TO_SEGS(sbi, written_block_count(sbi)))
+> > > > >    		* 100 / (int)(sbi->user_block_count >> sbi->log_blocks_per_seg)
+> > > > >    		/ 2;
+> > > > >    	si->util_invalid = 50 - si->util_free - si->util_valid;
+> > > > > diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> > > > > index dad2774ca72f..8a6fd4352a0e 100644
+> > > > > --- a/fs/f2fs/f2fs.h
+> > > > > +++ b/fs/f2fs/f2fs.h
+> > > > > @@ -1813,12 +1813,14 @@ struct f2fs_sb_info {
+> > > > >    };
+> > > > >    /* Definitions to access f2fs_sb_info */
+> > > > > -#define BLKS_PER_SEG(sbi)					\
+> > > > > -	((sbi)->blocks_per_seg)
+> > > > > -#define BLKS_PER_SEC(sbi)					\
+> > > > > -	((sbi)->segs_per_sec << (sbi)->log_blocks_per_seg)
+> > > > > -#define SEGS_PER_SEC(sbi)					\
+> > > > > -	((sbi)->segs_per_sec)
+> > > > > +#define SEGS_TO_BLKS(sbi, segs)					\
+> > > > > +		((segs) << (sbi)->log_blocks_per_seg)
+> > > > 
+> > > > 
+> > > > I also applied this.
+> > > > 
+> > > >    /* Definitions to access f2fs_sb_info */
+> > > >    #define SEGS_TO_BLKS(sbi, segs)                                        \
+> > > > -               ((segs) << (sbi)->log_blocks_per_seg)
+> > > > +               (((long long)segs) << (sbi)->log_blocks_per_seg)
+> > > 
+> > > Jaegeuk,
+> > > 
+> > > This may cause compile failure reported as below, can we revert this?
+> > > 
+> > > https://lore.kernel.org/linux-f2fs-devel/CAMuHMdXRuiV8PEe6azKYLp+z_Sa8CbL8849bzu59J1_XXtyk1g@mail.gmail.com/T/#t
+> > 
+> > Yeah, it seems so. I removed it in -dev.
 > 
-> It's odd to call sas_set_ex_phy() if we got res == -ECOMM. I mean, in 
-> this this case disc_resp is not filled in as the command did not 
-> execute, right? I know that is what the current code does, but it is 
-> strange.
+> Oh, I meant reverting (((long long)segs) << (sbi)->log_blocks_per_seg),
+> this line can bring 64bits data into division statement, result in
+> compile failure.
 
-The current code actually re-send the SMP command and update the PHY 
-status only when the the SMP command is responded correctly.
+Time to resend the patch to address previous casting issue as well? :)
 
-Xinggui, can you please fix this and send v3?
-
-Thanks,
-Jason
-
+> 
+> Thanks,
+> 
+> > 
+> > > 
+> > > Thanks,
+> > > 
+> > > >    #define BLKS_TO_SEGS(sbi, blks)                                        \
+> > > >                   ((blks) >> (sbi)->log_blocks_per_seg)
+> > > > 
+> > > > > +#define BLKS_TO_SEGS(sbi, blks)					\
+> > > > > +		((blks) >> (sbi)->log_blocks_per_seg)
+> > > > > +
+> > > > > +#define BLKS_PER_SEG(sbi)	((sbi)->blocks_per_seg)
+> > > > > +#define BLKS_PER_SEC(sbi)	(SEGS_TO_BLKS(sbi, (sbi)->segs_per_sec))
+> > > > > +#define SEGS_PER_SEC(sbi)	((sbi)->segs_per_sec)
+> > > > >    __printf(3, 4)
+> > > > >    void f2fs_printk(struct f2fs_sb_info *sbi, bool limit_rate, const char *fmt, ...);
+> > > > > diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
+> > > > > index 3ff126316d42..6d160d50e14e 100644
+> > > > > --- a/fs/f2fs/gc.c
+> > > > > +++ b/fs/f2fs/gc.c
+> > > > > @@ -301,7 +301,7 @@ static unsigned int get_max_cost(struct f2fs_sb_info *sbi,
+> > > > >    	/* LFS */
+> > > > >    	if (p->gc_mode == GC_GREEDY)
+> > > > > -		return 2 * BLKS_PER_SEG(sbi) * p->ofs_unit;
+> > > > > +		return SEGS_TO_BLKS(sbi, 2 * p->ofs_unit);
+> > > > >    	else if (p->gc_mode == GC_CB)
+> > > > >    		return UINT_MAX;
+> > > > >    	else if (p->gc_mode == GC_AT)
+> > > > > @@ -347,7 +347,7 @@ static unsigned int get_cb_cost(struct f2fs_sb_info *sbi, unsigned int segno)
+> > > > >    	mtime = div_u64(mtime, SEGS_PER_SEC(sbi));
+> > > > >    	vblocks = div_u64(vblocks, SEGS_PER_SEC(sbi));
+> > > > > -	u = (vblocks * 100) >> sbi->log_blocks_per_seg;
+> > > > > +	u = BLKS_TO_SEGS(sbi, vblocks * 100);
+> > > > >    	/* Handle if the system time has changed by the user */
+> > > > >    	if (mtime < sit_i->min_mtime)
+> > > > > @@ -2060,7 +2060,7 @@ static void update_sb_metadata(struct f2fs_sb_info *sbi, int secs)
+> > > > >    	raw_sb->segment_count = cpu_to_le32(segment_count + segs);
+> > > > >    	raw_sb->segment_count_main = cpu_to_le32(segment_count_main + segs);
+> > > > >    	raw_sb->block_count = cpu_to_le64(block_count +
+> > > > > -			(long long)(segs << sbi->log_blocks_per_seg));
+> > > > > +			(long long)SEGS_TO_BLKS(sbi, segs));
+> > > > >    	if (f2fs_is_multi_device(sbi)) {
+> > > > >    		int last_dev = sbi->s_ndevs - 1;
+> > > > >    		int dev_segs =
+> > > > > @@ -2076,7 +2076,7 @@ static void update_sb_metadata(struct f2fs_sb_info *sbi, int secs)
+> > > > >    static void update_fs_metadata(struct f2fs_sb_info *sbi, int secs)
+> > > > >    {
+> > > > >    	int segs = secs * SEGS_PER_SEC(sbi);
+> > > > > -	long long blks = (long long)(segs << sbi->log_blocks_per_seg);
+> > > > > +	long long blks = (long long)SEGS_TO_BLKS(sbi, segs);
+> > > > >    	long long user_block_count =
+> > > > >    				le64_to_cpu(F2FS_CKPT(sbi)->user_block_count);
+> > > > > @@ -2118,7 +2118,7 @@ int f2fs_resize_fs(struct file *filp, __u64 block_count)
+> > > > >    		int last_dev = sbi->s_ndevs - 1;
+> > > > >    		__u64 last_segs = FDEV(last_dev).total_segments;
+> > > > > -		if (block_count + (last_segs << sbi->log_blocks_per_seg) <=
+> > > > > +		if (block_count + SEGS_TO_BLKS(sbi, last_segs) <=
+> > > > >    								old_block_count)
+> > > > >    			return -EINVAL;
+> > > > >    	}
+> > > > > diff --git a/fs/f2fs/gc.h b/fs/f2fs/gc.h
+> > > > > index e4a75aa4160f..6a2419ddc7c6 100644
+> > > > > --- a/fs/f2fs/gc.h
+> > > > > +++ b/fs/f2fs/gc.h
+> > > > > @@ -70,7 +70,7 @@ struct victim_entry {
+> > > > >    static inline block_t free_segs_blk_count(struct f2fs_sb_info *sbi)
+> > > > >    {
+> > > > > -	return free_segments(sbi) << sbi->log_blocks_per_seg;
+> > > > > +	return SEGS_TO_BLKS(sbi, free_segments(sbi));
+> > > > >    }
+> > > > >    static inline block_t free_user_blocks(struct f2fs_sb_info *sbi)
+> > > > > @@ -78,7 +78,7 @@ static inline block_t free_user_blocks(struct f2fs_sb_info *sbi)
+> > > > >    	block_t free_blks, ovp_blks;
+> > > > >    	free_blks = free_segs_blk_count(sbi);
+> > > > > -	ovp_blks = overprovision_segments(sbi) << sbi->log_blocks_per_seg;
+> > > > > +	ovp_blks = SEGS_TO_BLKS(sbi, overprovision_segments(sbi));
+> > > > >    	if (free_blks < ovp_blks)
+> > > > >    		return 0;
+> > > > > diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+> > > > > index 56927b097e30..d0209ea77dd2 100644
+> > > > > --- a/fs/f2fs/segment.c
+> > > > > +++ b/fs/f2fs/segment.c
+> > > > > @@ -448,8 +448,8 @@ static inline bool excess_dirty_threshold(struct f2fs_sb_info *sbi)
+> > > > >    	unsigned int nodes = get_pages(sbi, F2FS_DIRTY_NODES);
+> > > > >    	unsigned int meta = get_pages(sbi, F2FS_DIRTY_META);
+> > > > >    	unsigned int imeta = get_pages(sbi, F2FS_DIRTY_IMETA);
+> > > > > -	unsigned int threshold = (factor * DEFAULT_DIRTY_THRESHOLD) <<
+> > > > > -				sbi->log_blocks_per_seg;
+> > > > > +	unsigned int threshold =
+> > > > > +		SEGS_TO_BLKS(sbi, (factor * DEFAULT_DIRTY_THRESHOLD));
+> > > > >    	unsigned int global_threshold = threshold * 3 / 2;
+> > > > >    	if (dents >= threshold || qdata >= threshold ||
+> > > > > @@ -870,7 +870,7 @@ block_t f2fs_get_unusable_blocks(struct f2fs_sb_info *sbi)
+> > > > >    {
+> > > > >    	int ovp_hole_segs =
+> > > > >    		(overprovision_segments(sbi) - reserved_segments(sbi));
+> > > > > -	block_t ovp_holes = ovp_hole_segs << sbi->log_blocks_per_seg;
+> > > > > +	block_t ovp_holes = SEGS_TO_BLKS(sbi, ovp_hole_segs);
+> > > > >    	struct dirty_seglist_info *dirty_i = DIRTY_I(sbi);
+> > > > >    	block_t holes[2] = {0, 0};	/* DATA and NODE */
+> > > > >    	block_t unusable;
+> > > > > @@ -2178,7 +2178,7 @@ void f2fs_clear_prefree_segments(struct f2fs_sb_info *sbi,
+> > > > >    		if (!f2fs_sb_has_blkzoned(sbi) &&
+> > > > >    		    (!f2fs_lfs_mode(sbi) || !__is_large_section(sbi))) {
+> > > > >    			f2fs_issue_discard(sbi, START_BLOCK(sbi, start),
+> > > > > -				(end - start) << sbi->log_blocks_per_seg);
+> > > > > +				SEGS_TO_BLKS(sbi, end - start));
+> > > > >    			continue;
+> > > > >    		}
+> > > > >    next:
+> > > > > @@ -2289,7 +2289,7 @@ static int create_discard_cmd_control(struct f2fs_sb_info *sbi)
+> > > > >    	atomic_set(&dcc->queued_discard, 0);
+> > > > >    	atomic_set(&dcc->discard_cmd_cnt, 0);
+> > > > >    	dcc->nr_discards = 0;
+> > > > > -	dcc->max_discards = MAIN_SEGS(sbi) << sbi->log_blocks_per_seg;
+> > > > > +	dcc->max_discards = SEGS_TO_BLKS(sbi, MAIN_SEGS(sbi));
+> > > > >    	dcc->max_discard_request = DEF_MAX_DISCARD_REQUEST;
+> > > > >    	dcc->min_discard_issue_time = DEF_MIN_DISCARD_ISSUE_TIME;
+> > > > >    	dcc->mid_discard_issue_time = DEF_MID_DISCARD_ISSUE_TIME;
+> > > > > @@ -4469,7 +4469,7 @@ static int build_sit_info(struct f2fs_sb_info *sbi)
+> > > > >    #endif
+> > > > >    	sit_i->sit_base_addr = le32_to_cpu(raw_super->sit_blkaddr);
+> > > > > -	sit_i->sit_blocks = sit_segs << sbi->log_blocks_per_seg;
+> > > > > +	sit_i->sit_blocks = SEGS_TO_BLKS(sbi, sit_segs);
+> > > > >    	sit_i->written_valid_blocks = 0;
+> > > > >    	sit_i->bitmap_size = sit_bitmap_size;
+> > > > >    	sit_i->dirty_sentries = 0;
+> > > > > diff --git a/fs/f2fs/segment.h b/fs/f2fs/segment.h
+> > > > > index 9fe5ec619456..e72b02b67087 100644
+> > > > > --- a/fs/f2fs/segment.h
+> > > > > +++ b/fs/f2fs/segment.h
+> > > > > @@ -77,21 +77,21 @@ static inline void sanity_check_seg_type(struct f2fs_sb_info *sbi,
+> > > > >    #define TOTAL_SEGS(sbi)							\
+> > > > >    	(SM_I(sbi) ? SM_I(sbi)->segment_count : 				\
+> > > > >    		le32_to_cpu(F2FS_RAW_SUPER(sbi)->segment_count))
+> > > > > -#define TOTAL_BLKS(sbi)	(TOTAL_SEGS(sbi) << (sbi)->log_blocks_per_seg)
+> > > > > +#define TOTAL_BLKS(sbi)	(SEGS_TO_BLKS(sbi, TOTAL_SEGS(sbi)))
+> > > > >    #define MAX_BLKADDR(sbi)	(SEG0_BLKADDR(sbi) + TOTAL_BLKS(sbi))
+> > > > >    #define SEGMENT_SIZE(sbi)	(1ULL << ((sbi)->log_blocksize +	\
+> > > > >    					(sbi)->log_blocks_per_seg))
+> > > > >    #define START_BLOCK(sbi, segno)	(SEG0_BLKADDR(sbi) +			\
+> > > > > -	 (GET_R2L_SEGNO(FREE_I(sbi), segno) << (sbi)->log_blocks_per_seg))
+> > > > > +	 (SEGS_TO_BLKS(sbi, GET_R2L_SEGNO(FREE_I(sbi), segno))))
+> > > > >    #define NEXT_FREE_BLKADDR(sbi, curseg)					\
+> > > > >    	(START_BLOCK(sbi, (curseg)->segno) + (curseg)->next_blkoff)
+> > > > >    #define GET_SEGOFF_FROM_SEG0(sbi, blk_addr)	((blk_addr) - SEG0_BLKADDR(sbi))
+> > > > >    #define GET_SEGNO_FROM_SEG0(sbi, blk_addr)				\
+> > > > > -	(GET_SEGOFF_FROM_SEG0(sbi, blk_addr) >> (sbi)->log_blocks_per_seg)
+> > > > > +	(BLKS_TO_SEGS(sbi, GET_SEGOFF_FROM_SEG0(sbi, blk_addr)))
+> > > > >    #define GET_BLKOFF_FROM_SEG0(sbi, blk_addr)				\
+> > > > >    	(GET_SEGOFF_FROM_SEG0(sbi, blk_addr) & (BLKS_PER_SEG(sbi) - 1))
+> > > > > @@ -891,7 +891,7 @@ static inline int nr_pages_to_skip(struct f2fs_sb_info *sbi, int type)
+> > > > >    	if (type == DATA)
+> > > > >    		return BLKS_PER_SEG(sbi);
+> > > > >    	else if (type == NODE)
+> > > > > -		return 8 * BLKS_PER_SEG(sbi);
+> > > > > +		return SEGS_TO_BLKS(sbi, 8);
+> > > > >    	else if (type == META)
+> > > > >    		return 8 * BIO_MAX_VECS;
+> > > > >    	else
+> > > > > diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+> > > > > index 9976f2b0393c..bb056700b459 100644
+> > > > > --- a/fs/f2fs/super.c
+> > > > > +++ b/fs/f2fs/super.c
+> > > > > @@ -3763,9 +3763,9 @@ static void init_sb_info(struct f2fs_sb_info *sbi)
+> > > > >    	sbi->segs_per_sec = le32_to_cpu(raw_super->segs_per_sec);
+> > > > >    	sbi->secs_per_zone = le32_to_cpu(raw_super->secs_per_zone);
+> > > > >    	sbi->total_sections = le32_to_cpu(raw_super->section_count);
+> > > > > -	sbi->total_node_count =
+> > > > > -		((le32_to_cpu(raw_super->segment_count_nat) / 2) *
+> > > > > -		NAT_ENTRY_PER_BLOCK) << sbi->log_blocks_per_seg;
+> > > > > +	sbi->total_node_count = SEGS_TO_BLKS(sbi,
+> > > > > +			((le32_to_cpu(raw_super->segment_count_nat) / 2) *
+> > > > > +			NAT_ENTRY_PER_BLOCK));
+> > > > >    	F2FS_ROOT_INO(sbi) = le32_to_cpu(raw_super->root_ino);
+> > > > >    	F2FS_NODE_INO(sbi) = le32_to_cpu(raw_super->node_ino);
+> > > > >    	F2FS_META_INO(sbi) = le32_to_cpu(raw_super->meta_ino);
+> > > > > @@ -4199,14 +4199,14 @@ static int f2fs_scan_devices(struct f2fs_sb_info *sbi)
+> > > > >    			if (i == 0) {
+> > > > >    				FDEV(i).start_blk = 0;
+> > > > >    				FDEV(i).end_blk = FDEV(i).start_blk +
+> > > > > -				    (FDEV(i).total_segments <<
+> > > > > -				    sbi->log_blocks_per_seg) - 1 +
+> > > > > -				    le32_to_cpu(raw_super->segment0_blkaddr);
+> > > > > +					SEGS_TO_BLKS(sbi,
+> > > > > +					FDEV(i).total_segments) - 1 +
+> > > > > +					le32_to_cpu(raw_super->segment0_blkaddr);
+> > > > >    			} else {
+> > > > >    				FDEV(i).start_blk = FDEV(i - 1).end_blk + 1;
+> > > > >    				FDEV(i).end_blk = FDEV(i).start_blk +
+> > > > > -					(FDEV(i).total_segments <<
+> > > > > -					sbi->log_blocks_per_seg) - 1;
+> > > > > +						SEGS_TO_BLKS(sbi,
+> > > > > +						FDEV(i).total_segments) - 1;
+> > > > >    				FDEV(i).bdev_handle = bdev_open_by_path(
+> > > > >    					FDEV(i).path, mode, sbi->sb, NULL);
+> > > > >    			}
+> > > > > diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+> > > > > index 2689cc9c3bf8..ceac3bfc5e2c 100644
+> > > > > --- a/fs/f2fs/sysfs.c
+> > > > > +++ b/fs/f2fs/sysfs.c
+> > > > > @@ -493,8 +493,8 @@ static ssize_t __sbi_store(struct f2fs_attr *a,
+> > > > >    		spin_lock(&sbi->stat_lock);
+> > > > >    		if (t > (unsigned long)(sbi->user_block_count -
+> > > > >    				F2FS_OPTION(sbi).root_reserved_blocks -
+> > > > > -				(SM_I(sbi)->additional_reserved_segments <<
+> > > > > -					sbi->log_blocks_per_seg))) {
+> > > > > +				SEGS_TO_BLKS(sbi,
+> > > > > +				SM_I(sbi)->additional_reserved_segments))) {
+> > > > >    			spin_unlock(&sbi->stat_lock);
+> > > > >    			return -EINVAL;
+> > > > >    		}
+> > > > > -- 
+> > > > > 2.40.1
 
