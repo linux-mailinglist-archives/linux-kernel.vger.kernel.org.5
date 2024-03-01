@@ -1,221 +1,162 @@
-Return-Path: <linux-kernel+bounces-88839-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88842-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CC7286E770
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:37:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DD2686E762
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:35:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1BBBFB29AB6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:34:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 79E811C24DD9
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:35:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 700F91947E;
-	Fri,  1 Mar 2024 17:33:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE00725610;
+	Fri,  1 Mar 2024 17:33:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="q8/zY7Ut"
-Received: from bee.tesarici.cz (unknown [77.93.223.253])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="ay3h0ZBm"
+Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com [209.85.161.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 497E0F9FF
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 17:33:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.93.223.253
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95A0227451
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 17:33:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709314410; cv=none; b=QbvaG/9+8tCYCY8C1uFXTf45gBnFqXS7OTJRjfbKmgJZoIfTYdIwMTvFj1mb/DRLBUdi6HR9rHewhF+gjsAbO/DJuNxaGx/6DKevZeToEbqGvXv8SO0wlUVJUK+nBryY4akjO/Z0k1/p1iKqvERwVaPR1jKRyOsi1oxQ8pBvvsY=
+	t=1709314432; cv=none; b=W/r4VkJ1nEBs9H+RijoFiAfChU5O5YUlH1LdRz4v957GNfIT3Jv4VCUMPytSL5JpIJhNL2Ddf+0XMd6gk7HC3WWqjECH2ZUSB3kwHORg1dZ7Q56Ay8L1mx4lQ/p6KrCFnufk1uG1GtPaMdphjd4OkKyqS7GzMi790uqOB2LrCMg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709314410; c=relaxed/simple;
-	bh=kqFNymNhulpq3C9J15L9aRCKq+ZlvGBWEINffETSl9Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bEdGVXq5X6wTRdRfaRPRBAvFbzn7/JS0Kei+JCh/DAVNEL4SLX8jGlTV7L21miQs/IqgnZiTnHuekhzkvmh4Jrhaj1QzX1B8kHDTdwBfpl2Q866WZ6wAkzc7A477P2GbkYoLdfRsS+n7MfQAR3t0gW5On+5Z46eKY6z3VCBim8c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=q8/zY7Ut; arc=none smtp.client-ip=77.93.223.253
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
-Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by bee.tesarici.cz (Postfix) with ESMTPSA id C6EDC1C163E;
-	Fri,  1 Mar 2024 18:33:25 +0100 (CET)
-Authentication-Results: mail.tesarici.cz; dmarc=fail (p=quarantine dis=none) header.from=tesarici.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tesarici.cz; s=mail;
-	t=1709314406; bh=y5F9nq6Ty0/dF9UJva7lXz28jL0DsAwabnPmvR0UHIE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=q8/zY7UtxCWkrAUnWSom6lRc1oWwIcjPkd1EABwXDjtLeNLlAm/gioZB9DVWI32Q4
-	 cqFsBTSoCbjJ5rAO7SE2TdjtDKLcJwFX7LQMFzMRm7/1ya2TeqZT11eqJcByM5werx
-	 sipjchVa0oxNkwVdcEgIrHJ3dAa5ndy0VSYqptc4a+C6IbL6ZEDO7ZyL+IzGDACu5L
-	 R2MafJFrtLRiCWSHezTBXeh8DNklH+cT6GrRYL5r+bL/HO5/C6lE7L0PliCOzE1wtk
-	 dAuI5QfzE2I4F+kTmEf2TZX8iGr4QYKBJ5SXpdN75JJ0t6JQv1uC3HxGUknYq3vP+e
-	 BPjRubOeuEDpg==
-Date: Fri, 1 Mar 2024 18:33:24 +0100
-From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-To: Robin Murphy <robin.murphy@arm.com>
-Cc: Christoph Hellwig <hch@lst.de>, Michael Kelley <mhklinux@outlook.com>,
- Will Deacon <will@kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, Petr Tesarik
- <petr.tesarik1@huawei-partners.com>, "kernel-team@android.com"
- <kernel-team@android.com>, "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
- Marek Szyprowski <m.szyprowski@samsung.com>, Dexuan Cui
- <decui@microsoft.com>, Nicolin Chen <nicolinc@nvidia.com>
-Subject: Re: [PATCH v5 6/6] swiotlb: Remove pointless stride adjustment for
- allocations >= PAGE_SIZE
-Message-ID: <20240301183324.11e76df2@meshulam.tesarici.cz>
-In-Reply-To: <4fbcdd49-cd93-4af8-83e2-f1cef0ea2eeb@arm.com>
-References: <20240228133930.15400-1-will@kernel.org>
-	<20240228133930.15400-7-will@kernel.org>
-	<SN6PR02MB4157A62353559DA8DB8BC4ADD45F2@SN6PR02MB4157.namprd02.prod.outlook.com>
-	<SN6PR02MB41577D09E97B1D9645369D58D45F2@SN6PR02MB4157.namprd02.prod.outlook.com>
-	<20240229133346.GA7177@lst.de>
-	<SN6PR02MB4157314F142D05E279B7991ED45F2@SN6PR02MB4157.namprd02.prod.outlook.com>
-	<20240229154756.GA10137@lst.de>
-	<20240301163927.18358ee2@meshulam.tesarici.cz>
-	<4fbcdd49-cd93-4af8-83e2-f1cef0ea2eeb@arm.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-suse-linux-gnu)
+	s=arc-20240116; t=1709314432; c=relaxed/simple;
+	bh=TCSXMg81EsOE/fbyZwViVsT5K6QOfN37XAWM9EXzavc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FEN4ay6I1wOisg7bkUi5SDV2HP9qaDJmnqGR+T2Bx0Vb34o/15DkexTjisP9d1Ls3asoFZbmK1+yMY1QBMAilVmkMmg6VA7XzKhtVjVOaNt/yX3nmv5AKmPycvtfdn3Fd2D33VXz8kbY3logz3Pp1QsAYwD00EZ2KT8kaRfvVTg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=ay3h0ZBm; arc=none smtp.client-ip=209.85.161.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-5a0deaf21efso1300661eaf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 09:33:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1709314427; x=1709919227; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xImxJWc7Iog9OBF/0ks2T7kTvBm8QFAslDMxg3rdGPY=;
+        b=ay3h0ZBmVuRkGAoh2VyfAUd0ZhymQ7vgPYPcUM5Lhl/88nCG7pGWEDu5idilOve55f
+         PrHsq2VrVdklHKaNu4IQrwOGmxVmrVToejea8/bYe5Wp7Ij+njH2xscsEpOEfrQWp+by
+         AzRI3YLBBfKzv8TelPmIYbIZQB/XY0TVCS59up2quYyRE/r68Pp+W105zK74+Ex+grvH
+         6LZ5JIEVQuJ+rNZ8o5dxnbNTAjmuui683ZaXEYKM6vqyEGdqrqdU4JQNbl8RMcjel0kK
+         sZ7GDocVOi4s2jWVS2BPTGWJ41g4l3V7HPZRtybklizUDaXaMuG++kMcCQK418di92OI
+         uqkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709314427; x=1709919227;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xImxJWc7Iog9OBF/0ks2T7kTvBm8QFAslDMxg3rdGPY=;
+        b=XKxVGYUmYNJilPFVlEwubzAI07kb5aNj9vb3inOpZLiSV8+ioAyQVCz1xwP26MUwjt
+         athvk+LzaPOlUFqLmGHoBrM4guzYvPMVuS4GT/MpBcbqtlSslzK8wda2s15jtZBZQ+76
+         i5Ic6KAtZdutTLbsJLmCF+YKGpiueZmh7b9xMAv3HqRr6t88hDfe7tpuPjhXPwtQYTya
+         R1b0eUva763Cgp45CNdLXi3Ycx1pPy2r7i/koRXUbqFdcDqSHLZjDEgkmIZE3azhPmAA
+         ErWXOm4I5swV3RaX0xmM/bPmqfUmkOO3X4HWwor2PW0A0ZD3G7QZoKZJPya0fizTMHuV
+         5Vmw==
+X-Gm-Message-State: AOJu0YxNsNVW4urC3X/PtZDAOEbRxmlI6Vu08Aa1pZnzJYuduTROvjAI
+	j9lefPNz4CMLrTii1e3jJLr9jLHHvYxF5h9nVQb0GHWvhAisIMlQa1fsP9gAj7w=
+X-Google-Smtp-Source: AGHT+IEaS7QiqN3fYN6eqlEpEHexB1BrGI/DGifcbsfq0aYXNTMbYdF9ufVL3gHeLbRiAI+Dvz03rA==
+X-Received: by 2002:a05:6358:7e99:b0:17b:7738:de5a with SMTP id o25-20020a0563587e9900b0017b7738de5amr2678947rwn.2.1709314427513;
+        Fri, 01 Mar 2024 09:33:47 -0800 (PST)
+Received: from workbox.oryx-coho.ts.net (d24-150-219-207.home.cgocable.net. [24.150.219.207])
+        by smtp.gmail.com with ESMTPSA id t14-20020ac86a0e000000b0042e6b901ebesm1885433qtr.40.2024.03.01.09.33.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Mar 2024 09:33:47 -0800 (PST)
+From: Trevor Gamblin <tgamblin@baylibre.com>
+To: linux-pwm@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	u.kleine-koenig@pengutronix.de,
+	michael.hennerich@analog.com,
+	nuno.sa@analog.com,
+	devicetree@vger.kernel.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	tgamblin@baylibre.com,
+	dlechner@baylibre.com
+Subject: [PATCH 0/2 v4] pwm: add axi-pwm-gen driver
+Date: Fri,  1 Mar 2024 12:33:40 -0500
+Message-ID: <20240301173343.1086332-1-tgamblin@baylibre.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, 1 Mar 2024 16:38:33 +0000
-Robin Murphy <robin.murphy@arm.com> wrote:
+This series adds support for the AXI PWM GEN subsystem found on FPGA IP
+cores. It can be used to generate configurable PWM outputs, and includes
+options for external synchronization and clock signals.  The work is
+being done on behalf of, and therefore lists maintainers from Analog
+Devices, Inc.
 
-> On 2024-03-01 3:39 pm, Petr Tesa=C5=99=C3=ADk wrote:
-> > On Thu, 29 Feb 2024 16:47:56 +0100
-> > Christoph Hellwig <hch@lst.de> wrote:
-> >  =20
-> >> On Thu, Feb 29, 2024 at 03:44:11PM +0000, Michael Kelley wrote: =20
-> >>> Any thoughts on how that historical behavior should apply if
-> >>> the DMA min_align_mask is non-zero, or the alloc_align_mask
-> >>> parameter to swiotbl_tbl_map_single() is non-zero? As currently
-> >>> used, alloc_align_mask is page aligned if the IOMMU granule is =20
-> >>>> =3D PAGE_SIZE. But a non-zero min_align_mask could mandate =20
-> >>> returning a buffer that is not page aligned. Perhaps do the
-> >>> historical behavior only if alloc_align_mask and min_align_mask
-> >>> are both zero? =20
-> >>
-> >> I think the driver setting min_align_mask is a clear indicator
-> >> that the driver requested a specific alignment and the defaults
-> >> don't apply.  For swiotbl_tbl_map_single as used by dma-iommu
-> >> I'd have to tak a closer look at how it is used. =20
-> >=20
-> > I'm not sure it helps in this discussion, but let me dive into a bit
-> > of ancient history to understand how we ended up here.
-> >=20
-> > IIRC this behaviour was originally motivated by limitations of PC AT
-> > hardware. Intel 8237 is a 16-bit DMA controller. To make it somehow
-> > usable with addresses up to 16MB (yeah, the infamous DMA zone), IBM
-> > added a page register, but it was on a separate chip and it did not
-> > increment when the 8237 address rolled over back to zero. Effectively,
-> > the page register selected a 64K-aligned window of 64K buffers.
-> > Consequently, DMA buffers could not cross a 64K physical boundary.
-> >=20
-> > Thanks to how the buddy allocator works, the 64K-boundary constraint
-> > was satisfied by allocation size, and drivers took advantage of it when
-> > allocating device buffers. IMO software bounce buffers simply followed
-> > the same logic that worked for buffers allocated by the buddy allocator.
-> >=20
-> > OTOH min_align_mask was motivated by NVME which prescribes the value of
-> > a certain number of low bits in the DMA address (for simplicity assumed
-> > to be identical with the same bits in the physical address).
-> >=20
-> > The only pre-existing user of alloc_align_mask is x86 IOMMU code, and
-> > IIUC it is used to guarantee that unaligned transactions do not share
-> > the IOMMU granule with another device. This whole thing is weird,
-> > because swiotlb_tbl_map_single() is called like this:
-> >=20
-> >                  aligned_size =3D iova_align(iovad, size);
-> >                  phys =3D swiotlb_tbl_map_single(dev, phys, size, align=
-ed_size,
-> >                                                iova_mask(iovad), dir, a=
-ttrs);
-> >=20
-> > Here:
-> >=20
-> > * alloc_size =3D iova_align(iovad, size)
-> > * alloc_align_mask =3D iova_mask(iovad)
-> >=20
-> > Now, iova_align() rounds up its argument to a multiple of iova granule
-> > and iova_mask() is simply "granule - 1". This works, because granule
-> > size must be a power of 2, and I assume it must also be >=3D PAGE_SIZE.=
- =20
->=20
-> Not quite, the granule must *not* be larger than PAGE_SIZE (but can be=20
-> smaller).
+The series has been tested on actual hardware using an EVAL-AD7985FMCZ
+evaluation board. An oscilloscope was used to validate that the
+generated PWM signal matched the requested one.
 
-OK... I must rethink what is achieved with the alignment then.
+---
+v4 changes:
+* Address feedback for driver in v3:
+  * Update to use devm_pwmchip_alloc() function
+  * Simplify use of dev symbol in axi_pwmgen_probe
+  * Remove unnecessary axi_pwmgen_from_chip function and use
+    pwmchip_get_drvdata directly
 
-> > In that case, the alloc_align_mask argument is not even needed if you
-> > adjust the code to match documentation---the resulting buffer will be
-> > aligned to a granule boundary by virtue of having a size that is a
-> > multiple of the granule size. =20
->=20
-> I think we've conflated two different notions of "allocation" here. The=20
-> page-alignment which Christoph quoted applies for dma_alloc_coherent(),=20
-> which nowadays *should* only be relevant to SWIOTLB code in the=20
-> swiotlb_alloc() path for stealing coherent pages out of restricted DMA=20
-> pools. Historically there was never any official alignment requirement=20
-> for the DMA addresses returned by dma_map_{page,sg}(), until=20
-> min_align_mask was introduced.
->=20
-> > To sum it up:
-> >=20
-> > 1. min_align_mask is by far the most important constraint. Devices will
-> >     simply stop working if it is not met.
-> > 2. Alignment to the smallest PAGE_SIZE order which is greater than or
-> >     equal to the requested size has been documented, and some drivers
-> >     may rely on it. =20
->=20
-> Strictly it stopped being necessary since fafadcd16595 when the=20
-> historical swiotlb_alloc() was removed, but 602d9858f07c implies that=20
-> indeed the assumption of it for streaming mappings had already set in.=20
-> Of course NVMe is now using min_align_mask, but I'm not sure if it's=20
-> worth taking the risk to find out who else should also be.
->=20
-> > 3. alloc_align_mask is a misguided fix for a bug in the above. =20
->=20
-> No, alloc_align_mask is about describing the explicit requirement rather=
-=20
-> than relying on any implicit behaviour, and thus being able to do the=20
-> optimal thing for, say, a 9KB mapping given a 4KB IOVA granule and 64KB=20
-> PAGE_SIZE.
+Link to v3: https://lore.kernel.org/linux-pwm/20240131214042.1335251-1-tgamblin@baylibre.com/
 
-It's getting confusing. Can we stay with the IOMMU use case for a
-moment? Since you don't use IO_TLB_SIZE or IO_TLB_SHIFT, I assume the
-code should work with any SWIOTLB slot size.
+v3 changes:
+* Address feedback for driver in v2:
+  * Remove unnecessary blank line in axi_pwmgen_apply
+  * Use macros already defined in <linux/fpga/adi-axi-common.h> for
+    version checking
 
-For granule sizes up to SWIOTLB slot size, you always get a buffer that
-is not shared with any other granule.
+Link to v2: https://lore.kernel.org/linux-pwm/20240123220515.279439-1-tgamblin@baylibre.com/
 
-For granule sizes between SWIOTLB slot size and page size, you want to
-get as many slots as needed to cover the whole granule. Indeed, that
-would not be achieved with size alone.
+v2 changes:
+* Address feedback for driver and device tree in v1:
+  * Use more reasonable Kconfig approach
+  * Use common prefixes for all functions
+  * Rename axi_pwmgen struct to axi_pwmgen_ddata
+  * Change use of "pwm" to "ddata"
+  * Set and check state->polarity
+  * Multiply safely with mul_u64_u64_div_u64()
+  * Improve handling of max and zero periods
+  * Error if clk_rate_hz > NSEC_PER_SEC
+  * Add "Limitations" section at top of pwm-axi-pwmgen.c
+  * Don't disable outputs by default
+  * Remove unnecessary macros for period, duty, offset
+  * Fix axi_pwmgen_ddata alignment
+  * Don't artificially limit npwm to four
+  * Use clk_rate_exclusive_get(), balance with clk_rate_exclusive_put()
+  * Cache clk rate in axi_pwmgen_ddata
+  * Don't assign pwm->chip.base, do assign pwm->chip.atomic
+  * Relocate "unevaluatedProperties" in device tree binding
+* Remove redundant calls to clk_get_rate
+* Test contents of AXI_PWMGEN_REG_CORE_MAGIC instead of
+  arbitrary AXI_PWMGEN_TEST_DATA in AXI_PWMGEN_REG_SCRATCHPAD
+* Remove redundant clk struct from axi_pwmgen_ddata
+* Add self as module author
+* Add major version check for IP core
 
-What if we change the size-based alignment constraint to:
+Link to v1: https://lore.kernel.org/linux-pwm/20240115201222.1423626-1-tgamblin@baylibre.com/
 
-   Aligned to the smallest IO_TLB_SIZE order which is greater than or
-   equal to the requested size.
+Drew Fustini (2):
+  dt-bindings: pwm: Add AXI PWM generator
+  pwm: Add driver for AXI PWM generator
 
-AFAICS this is stricter, i.e. it covers the already documented
-PAGE_SIZE alignment, but it would also cover IOMMU needs.
+ .../bindings/pwm/adi,axi-pwmgen.yaml          |  48 ++++
+ MAINTAINERS                                   |   9 +
+ drivers/pwm/Kconfig                           |  13 +
+ drivers/pwm/Makefile                          |   1 +
+ drivers/pwm/pwm-axi-pwmgen.c                  | 244 ++++++++++++++++++
+ 5 files changed, 315 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pwm/adi,axi-pwmgen.yaml
+ create mode 100644 drivers/pwm/pwm-axi-pwmgen.c
 
-I have the feeling that the slot search has too many parameters. This
-alloc_align_mask has only one in-tree user, so it's a logical candidate
-for reduction.
-
-Petr T
-
->=20
-> Thanks,
-> Robin.
->=20
-> >=20
-> > Correct me if anything of the above is wrong.
-> >=20
-> > HTH
-> > Petr T =20
->=20
+-- 
+2.43.2
 
 
