@@ -1,103 +1,100 @@
-Return-Path: <linux-kernel+bounces-87715-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87717-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D56FB86D81A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:02:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6573986D821
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:09:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF4491C21003
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 00:02:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 401F61C20E8D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 00:09:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0DD81851;
-	Fri,  1 Mar 2024 00:02:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Sl2K9FRu";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="UcJ+hhU2"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7083964F;
+	Fri,  1 Mar 2024 00:09:18 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A583F7EC
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 00:02:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3364193
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 00:09:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709251348; cv=none; b=pXPmtywafu+fYaYFmjdezNjMHcQLJDDkFyUblqi+4/IjEoo+67YPsyVCrsfgXJG+nrrawZa6kIegi/ZhdndHVUcZ52QEttIbz51CPfnOYG90T/C+ts7+C/HzO7dCQLIk43hn+67hcUY07h13DfwIJ5aOZPD+Y/stVHl4YxXJIKA=
+	t=1709251758; cv=none; b=mbXDIs1cHPO/MB0/Ix4dTXWv1rgib33cmfVd+r3JEPdlm98tMJLcNQy0TJEvDWABhjBfQlpBL7zk5lOsF+prFSyG5nIVkC6pfQ2alHapD+58SuyqGaBJve40/l1ZqDo3bIhRngWuU9lGmeKVosyycsBzwvxLlDrNyo07lRBLnrE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709251348; c=relaxed/simple;
-	bh=oUJiaf0TY3gDkbZPcr6f6p1dgQYPYkH6NvKCqsgj1dk=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=cEEO6mjJ+Lfu9J70UPXWaqbvKOAYQFf3KQkGReL2BSvbbTNhNCFOACjYyzECUBI4XnPxcYVW3qhFOzibS7z1VXLh4Gu/dy/lnbvfNYsKs/fK+0gkuoXUkpDcIZsvQzfHU20d625JCv/ONdDlsQIjriXFxQY1JzHjbYL/nDrbAmI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Sl2K9FRu; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=UcJ+hhU2; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1709251343;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SNLxnwnRr0Lnru2BqChvcZ/4Fhlb3GVJp1r6JvXa0JY=;
-	b=Sl2K9FRuLPWlgdM1XhIQXkH4ku/NSnMTZaIVaJ584hSHJ4hov86MiSvUZuCZepIUVR1cAx
-	oIAd19FIiFpZhPHCMUytfz736D85uQuykrl1uiXXBGU+ehS0tIR5i6Og713rtfA4Vb3thb
-	2MYEb04nw1jZ0UZbBMj+WDKy0/TT6nIgqd1FYRfe5qhT95dSEyKVrkioPYQTEJfR70tBMI
-	av5wCrc8Ha2AZQfzPfAXK+btFjrbeNVb8EJFZgZonhyLldweWhvrA/VoI8CpvtXRTzsGmy
-	4w8r/0MEaWbhCmuU0X9wAgisrnK4Ab4CPdYU22KqF6zJkMuwXqFyKqQfCiIE6Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1709251343;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SNLxnwnRr0Lnru2BqChvcZ/4Fhlb3GVJp1r6JvXa0JY=;
-	b=UcJ+hhU2wQDuzErMMuwb1abPj6Fwm77imjQaAgGeflRvwfr7OUJZxk2PWYmAx8HPt83+vl
-	EzRkidiP60XJfEAQ==
-To: Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org
-Cc: peterz@infradead.org, mingo@kernel.org
-Subject: Re: [PATCH 1/2] sched/core: switch struct rq->nr_iowait to a normal
- int
-In-Reply-To: <f1fc564c-528a-47d0-8b68-d596d6681eb5@kernel.dk>
-References: <20240228192355.290114-1-axboe@kernel.dk>
- <20240228192355.290114-2-axboe@kernel.dk> <8734tb8b57.ffs@tglx>
- <c3abe716-3d8f-47dc-9c7d-203b05b25393@kernel.dk> <87wmqn6uaw.ffs@tglx>
- <edd520ab-b95f-4a60-a35a-2490a6d5057f@kernel.dk> <87sf1b6o9w.ffs@tglx>
- <f1fc564c-528a-47d0-8b68-d596d6681eb5@kernel.dk>
-Date: Fri, 01 Mar 2024 01:02:22 +0100
-Message-ID: <87jzmm7rap.ffs@tglx>
+	s=arc-20240116; t=1709251758; c=relaxed/simple;
+	bh=CPKlspD/ZSfWixUM8SglUnOrdGxitKBWwWP9lEY6reA=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=OEEDTIK6Jc23QYP6Ihk6IZAp82bI2rNMdEZU9g+jybGTSt/JyvMgJ7s4vmWLbujBjesltvaVjHa9JeQctbIQHOJ43PNnGbfkTmMAgXwofU91pDyY6o9IVMPUVE+oYGJ5RrEUBi8hv+nkxm09sOp2KN14rZhpYpkOiGC//JCJRiM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7c79b35a7d9so154904739f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 16:09:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709251756; x=1709856556;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CPKlspD/ZSfWixUM8SglUnOrdGxitKBWwWP9lEY6reA=;
+        b=eL9EbFsANvZTLGSD9/JEc0kMcreRhnMIeAJHYd+8qR/fJ9tmvTN164Fn/Pc66uM+W+
+         HUCQVvR4W2fVEJI62mB7lLiOI6D8654hXe69mHBUtmiAn6+Ch+FRd8GIqzj+cQdFlzfL
+         OCyJivlJTnGDyOq2i5eA33zINQykk5e+o5e2G9eMCYnMDuzKotrqETX9VkYh+Wx2RN84
+         gXAo3jfWEM2DsLrdIfBSpilxg/kWBmqhPHrYj8Q05u7tS0CQ4a2ZPDbRHykJD8ecAYSl
+         ug8vE666bzUI24ltuDuZvcoj7MYzM2MSAJAiYWb9eKSLe+KehEGv9yrZEEtL6DAY1l76
+         IAyA==
+X-Forwarded-Encrypted: i=1; AJvYcCXI8bL4lf4llCMN7unsgDhTs6ioIbpKG+7ks/uUdvPqsHx1Vjbxo5lfcL91epgL9/SJYvgOnk4Ct6GAzYKRYfrzbyUKSZBqvza+3iuc
+X-Gm-Message-State: AOJu0Yy0iVW4Wavj0wTru0woJpp5UiNXql5uRxs3DPs3BtC88dqHC0jO
+	yEzG13Rkewqg1QkZIPFJQfu4WRW12L8OmN1kvjMezlrUXxlS51JAxwS/jqNACIpPJB9BevCRq4P
+	sXdjwXVtHNsL2joRKkdDydnDRNJEBdkktRgD/H0SdLz9sgmGCHYoislk=
+X-Google-Smtp-Source: AGHT+IF1nnI/87DSuYVyJHyFMx3cgCkTnpwj/TZE+2xMgjsyUFkCxBPx3hKByELUpmmAXvAvuDSZjzuY42lMZuW35NVDWyAj9IiT
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-Received: by 2002:a05:6638:378b:b0:474:b754:3544 with SMTP id
+ w11-20020a056638378b00b00474b7543544mr17329jal.0.1709251755808; Thu, 29 Feb
+ 2024 16:09:15 -0800 (PST)
+Date: Thu, 29 Feb 2024 16:09:15 -0800
+In-Reply-To: <0000000000006fd14305f00bdc84@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000bc9e2d06128e2f0f@google.com>
+Subject: Re: [syzbot] kernel BUG in ext4_do_writepages
+From: syzbot <syzbot+d1da16f03614058fdc48@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Feb 29 2024 at 15:30, Jens Axboe wrote:
-> On 2/29/24 12:52 PM, Thomas Gleixner wrote:
->>         return atomic_read(&cpu_rq(cpu)->nr_iowait) & ((1 << 16) - 1);
->> 
->> Obviously written with proper inline wrappers and defines, but you get
->> the idea.
->
-> I'll play with this a bit, but do we want to switch to an atomic_long_t
-> for this? 2^16 in iowait seems extreme, but it definitely seems possible
-> to overflow it.
+This bug is marked as fixed by commit:
+ext4: fix race condition between buffer write and page_mkwrite
 
-Indeed. 32bit has PID_MAX_LIMIT == 0x8000 which obviously fits into 16
-bits, while 64bit lifts that limit and relies on memory exhaustion to
-limit the number of concurrent threads on the machine, but that
-obviously can exceed 16bits.
+But I can't find it in the tested trees[1] for more than 90 days.
+Is it a correct commit? Please update it by replying:
 
-Whether more than 2^16 sit in iowait concurrently on a single CPU that's
-a different question and probably more academic. :)
+#syz fix: exact-commit-title
 
-Though as this will touch all nr_iowait places anyway changing it to
-atomic_long_t in a preparatory patch first makes a lot of sense.
+Until then the bug is still considered open and new crashes with
+the same signature are ignored.
 
-Thanks,
+Kernel: Linux
+Dashboard link: https://syzkaller.appspot.com/bug?extid=d1da16f03614058fdc48
 
-        tglx
+---
+[1] I expect the commit to be present in:
 
+1. for-kernelci branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
 
+2. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
 
+3. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
 
+4. main branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
+
+The full list of 9 trees can be found at
+https://syzkaller.appspot.com/upstream/repos
 
