@@ -1,311 +1,251 @@
-Return-Path: <linux-kernel+bounces-88285-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88287-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D95186DFA1
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:53:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E89B486DFB1
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:54:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A266B28590D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:53:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5DAA71F241C6
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:54:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC5846BFB5;
-	Fri,  1 Mar 2024 10:53:08 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D88F6CDD2;
+	Fri,  1 Mar 2024 10:53:31 +0000 (UTC)
+Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B0E16A8D4;
-	Fri,  1 Mar 2024 10:53:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 261246BFA4;
+	Fri,  1 Mar 2024 10:53:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709290388; cv=none; b=BYCBKy3IZ3Hv4Va2p3t9KFLdVFnZ+WMJGvIb4YikJEkeWpon1WLHOHmFSRZPK9HcJydwAfJqfmjueiYNzpzU7g2kqk4l0evz2eHc/HZR/agj3dFoGeVietRpvRQxYmapBVKmLEHq23/iWP9aoIe2arSw7FxyZ4uEo8IeEuTR1Ig=
+	t=1709290410; cv=none; b=KjyFmVZfTyuQb0Z1cRiEC7k9nrSGrFIsMPODHhVudvpmv1a5cAR+UVQn0oGE8RK+/S78cNtszJqfDh3BxQlgHTkzEQnYaBubGiDvkwKPz9edoJcYHyTfnyX57T1ioFRGCht3bOKej8VsoJHVmjZ/jlurh0pmhi2SRLiNhp7GBWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709290388; c=relaxed/simple;
-	bh=iseJShyNV63nWHzyvAXGeGsH4cHKLBG1iHU/wK0hPmI=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=SWZBH8BO/YlPpsSgu0z+mc9YG0GqvgFlW/6mkLUGYjiYKVuP+SkIEsxs2jO9XGnnnzQ8gOoWU5Ah3SfSjdYJQNKczgDzQB48eRoATI32i3ecR8+fpXyh9G9SCrVC1qwwsXQAdW1kA9C47JtOMW/E8X0I5RfZpoyGbVeVg0dVd4Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TmPyz1Hnrz1xpr2;
-	Fri,  1 Mar 2024 18:51:23 +0800 (CST)
-Received: from kwepemi500006.china.huawei.com (unknown [7.221.188.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 7745E14037B;
-	Fri,  1 Mar 2024 18:52:55 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.2) by
- kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 1 Mar 2024 18:52:54 +0800
-From: Junxian Huang <huangjunxian6@hisilicon.com>
-To: <jgg@ziepe.ca>, <leon@kernel.org>
-CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-	<linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
-Subject: [PATCH v2 for-next] RDMA/hns: Support userspace configuring congestion control algorithm with QP granularity
-Date: Fri, 1 Mar 2024 18:48:45 +0800
-Message-ID: <20240301104845.1141083-1-huangjunxian6@hisilicon.com>
-X-Mailer: git-send-email 2.30.0
+	s=arc-20240116; t=1709290410; c=relaxed/simple;
+	bh=t4ccu+GWe684aqIDSKF9bD//mn+pVsNSlItyqSKCQgM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ThG9ajKwQuEM+6aiQJ6J1MrUBPD6GEoxaZRIvott21tk4R3d5oEEEZTMtlaZ2aPM5Y5luzQtV2wMga8FNnUMVnqDG3GMn8Ukc+W8/U0TRbE7vlYIEnJhRJFI4V2ddO8bzNVjwsemeyX/PjNJyhVKME/Vj3sZsoAyhVcEKa4DFXY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+	id 1rg0UC-002Hbb-4N; Fri, 01 Mar 2024 18:51:29 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 01 Mar 2024 18:51:43 +0800
+Date: Fri, 1 Mar 2024 18:51:43 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: Varshini Rajendran <varshini.rajendran@microchip.com>
+Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, nicolas.ferre@microchip.com,
+	alexandre.belloni@bootlin.com, claudiu.beznea@tuxon.dev,
+	mturquette@baylibre.com, sboyd@kernel.org, davem@davemloft.net,
+	andi.shyti@kernel.org, tglx@linutronix.de, tudor.ambarus@linaro.org,
+	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	linus.walleij@linaro.org, sre@kernel.org,
+	u.kleine-koenig@pengutronix.de, p.zabel@pengutronix.de,
+	olivia@selenic.com, radu_nicolae.pirea@upb.ro,
+	richard.genoud@gmail.com, gregkh@linuxfoundation.org,
+	jirislaby@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
+	wim@linux-watchdog.org, linux@roeck-us.net, linux@armlinux.org.uk,
+	andrei.simion@microchip.com, mihai.sain@microchip.com,
+	andre.przywara@arm.com, neil.armstrong@linaro.org, tony@atomide.com,
+	durai.manickamkr@microchip.com, geert+renesas@glider.be,
+	arnd@arndb.de, Jason@zx2c4.com, rdunlap@infradead.org,
+	rientjes@google.com, vbabka@suse.cz, mripard@kernel.org,
+	codrin.ciubotariu@microchip.com, eugen.hristev@collabora.com,
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+	linux-crypto@vger.kernel.org, linux-i2c@vger.kernel.org,
+	linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
+	linux-gpio@vger.kernel.org, linux-pm@vger.kernel.org,
+	linux-pwm@vger.kernel.org, linux-rtc@vger.kernel.org,
+	linux-spi@vger.kernel.org, linux-serial@vger.kernel.org,
+	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+	linux-watchdog@vger.kernel.org
+Subject: Re: [PATCH v4 00/39] Add support for sam9x7 SoC family
+Message-ID: <ZeGzPwdslHIj5IWt@gondor.apana.org.au>
+References: <20240223171342.669133-1-varshini.rajendran@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemi500006.china.huawei.com (7.221.188.68)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240223171342.669133-1-varshini.rajendran@microchip.com>
 
-Currently, congestion control algorithm is statically configured in
-FW, and all QPs use the same algorithm(except UD which has a fixed
-configuration of DCQCN). This is not flexible enough.
+On Fri, Feb 23, 2024 at 10:43:42PM +0530, Varshini Rajendran wrote:
+> This patch series adds support for the new SoC family - sam9x7.
+>  - The device tree, configs and drivers are added
+>  - Clock driver for sam9x7 is added
+>  - Support for basic peripherals is added
+>  - Target board SAM9X75 Curiosity is added
+> 
+>  Changes in v4:
+>  --------------
+> 
+>  - Addressed all the review comments in the patches
+>  - Picked up all Acked-by and Reviewed-by tags
+>  - Dropped applied patches from the series
+>  - Added pwm node and related dt binding documentation
+>  - Added support for exporting some clocks to DT
+>  - Dropped USB related patches and changes. See NOTE.
+>  - All the specific changes are captured in the corresponding patches
+> 
+>  NOTE: Owing to the discussion here
+>  https://lore.kernel.org/linux-devicetree/CAL_JsqJ9PrX6fj-EbffeJce09MXs=B7t+KS_kOinxaRx38=WxA@mail.gmail.com/
+>  the USB related changes are dropped from this series in order to enable
+>  us to work on the mentioned issues before adding new compatibles as
+>  said. The issues/warnings will be addressed in subsequent patches.
+>  After which the USB related support for sam9x7 SoCs will be added. Hope
+>  this works out fine.
+> 
+>  Changes in v3:
+>  --------------
+> 
+>  - Fixed the DT documentation errors pointed out in v2.
+>  - Dropped Acked-by tag in tcb DT doc patch as it had to be adapted
+>    according to sam9x7 correctly.
+>  - Picked by the previously missed tags.
+>  - Dropped this patch "dt-bindings: usb: generic-ehci: Document clock-names
+>    property" as the warning was not found while validating DT-schema for
+>    at91-sam9x75_curiosity.dtb.
+>  - Dropped redundant words in the commit message.
+>  - Fixed the CHECK_DTBS warnings validated against
+>    at91-sam9x75_curiosity.dtb.
+>  - Renamed dt nodes according to naming convention.
+>  - Dropped unwanted status property in dts.
+>  - Removed nodes that are not in use from the board dts.
+>  - Removed spi DT doc patch from the series as it was already applied
+>    and a fix patch was applied subsequently. Added a patch to remove the
+>    compatible to adapt sam9x7.
+>  - Added sam9x7 compatibles in usb dt documentation.
+> 
+> 
+>  Changes in v2:
+>  --------------
+> 
+>  - Added sam9x7 specific compatibles in DT with fallbacks
+>  - Documented all the newly added DT compatible strings
+>  - Added device tree for the target board sam9x75 curiosity and
+>    documented the same in the DT bindings documentation
+>  - Removed the dt nodes that are not supported at the moment
+>  - Removed the configs added by previous version that are not supported
+>    at the moment
+>  - Fixed all the corrections in the commit message
+>  - Changed all the instances of copyright year to 2023
+>  - Added sam9x7 flag in PIT64B configuration
+>  - Moved macro definitions to header file
+>  - Added another divider in mck characteristics in the pmc driver
+>  - Fixed the memory leak in the pmc driver
+>  - Dropped patches that are no longer needed
+>  - Picked up Acked-by and Reviewed-by tags
+> 
+> 
+> Varshini Rajendran (39):
+>   dt-bindings: net: cdns,macb: add sam9x7 ethernet interface
+>   dt-bindings: atmel-sysreg: add sam9x7
+>   dt-bindings: crypto: add sam9x7 in Atmel AES
+>   dt-bindings: crypto: add sam9x7 in Atmel SHA
+>   dt-bindings: crypto: add sam9x7 in Atmel TDES
+>   dt-bindings: i2c: at91: Add sam9x7 compatible string
+>   dt-bindings: atmel-ssc: add microchip,sam9x7-ssc
+>   dt-bindings: atmel-nand: add microchip,sam9x7-pmecc
+>   dt-bindings: pinctrl: at91: add sam9x7
+>   dt-bindings: rng: atmel,at91-trng: add sam9x7 TRNG
+>   dt-bindings: rtt: at91rm9260: add sam9x7 compatible
+>   dt-bindings: serial: atmel,at91-usart: add compatible for sam9x7.
+>   ASoC: dt-bindings: atmel-classd: add sam9x7 compatible
+>   dt-bindings: pwm: at91: Add sam9x7 compatible strings list
+>   dt-bindings: watchdog: sama5d4-wdt: add compatible for sam9x7-wdt
+>   spi: dt-bindings: atmel,at91rm9200-spi: remove 9x60 compatible from
+>     list
+>   ASoC: dt-bindings: microchip: add sam9x7
+>   ARM: at91: pm: add support for sam9x7 SoC family
+>   ARM: at91: pm: add sam9x7 SoC init config
+>   ARM: at91: add support in SoC driver for new sam9x7
+>   dt-bindings: clk: at91: add sam9x7
+>   dt-bindings: clk: at91: add sam9x7 clock controller
+>   clk: at91: clk-sam9x60-pll: re-factor to support individual core freq
+>     outputs
+>   clk: at91: sam9x7: add support for HW PLL freq dividers
+>   clk: at91: sama7g5: move mux table macros to header file
+>   dt-bindings: clock: at91: Allow PLLs to be exported and referenced in
+>     DT
+>   clk: at91: sam9x7: add sam9x7 pmc driver
+>   dt-bindings: irqchip/atmel-aic5: Add support for sam9x7 aic
+>   irqchip/atmel-aic5: Add support to get nirqs from DT for sam9x60 &
+>     sam9x7
+>   power: reset: at91-poweroff: lookup for proper pmc dt node for sam9x7
+>   power: reset: at91-reset: add reset support for sam9x7 SoC
+>   power: reset: at91-reset: add sdhwc support for sam9x7 SoC
+>   dt-bindings: reset: atmel,at91sam9260-reset: add sam9x7
+>   dt-bindings: power: reset: atmel,sama5d2-shdwc: add sam9x7
+>   ARM: at91: Kconfig: add config flag for SAM9X7 SoC
+>   ARM: configs: at91: enable config flags for sam9x7 SoC family
+>   ARM: dts: at91: sam9x7: add device tree for SoC
+>   dt-bindings: arm: add sam9x75 curiosity board
+>   ARM: dts: at91: sam9x75_curiosity: add sam9x75 curiosity board
+> 
+>  .../devicetree/bindings/arm/atmel-at91.yaml   |    6 +
+>  .../devicetree/bindings/arm/atmel-sysregs.txt |    7 +-
+>  .../bindings/clock/atmel,at91rm9200-pmc.yaml  |    2 +
+>  .../bindings/clock/atmel,at91sam9x5-sckc.yaml |    4 +-
+>  .../crypto/atmel,at91sam9g46-aes.yaml         |    6 +-
+>  .../crypto/atmel,at91sam9g46-sha.yaml         |    6 +-
+>  .../crypto/atmel,at91sam9g46-tdes.yaml        |    6 +-
+>  .../bindings/i2c/atmel,at91sam-i2c.yaml       |    4 +-
+>  .../interrupt-controller/atmel,aic.txt        |    2 +-
+>  .../devicetree/bindings/misc/atmel-ssc.txt    |    1 +
+>  .../devicetree/bindings/mtd/atmel-nand.txt    |    1 +
+>  .../devicetree/bindings/net/cdns,macb.yaml    |    5 +
+>  .../bindings/pinctrl/atmel,at91-pinctrl.txt   |    2 +
+>  .../power/reset/atmel,sama5d2-shdwc.yaml      |    3 +
+>  .../bindings/pwm/atmel,at91sam-pwm.yaml       |    3 +
+>  .../reset/atmel,at91sam9260-reset.yaml        |    4 +
+>  .../bindings/rng/atmel,at91-trng.yaml         |    4 +
+>  .../bindings/rtc/atmel,at91sam9260-rtt.yaml   |    4 +-
+>  .../bindings/serial/atmel,at91-usart.yaml     |   12 +-
+>  .../bindings/sound/atmel,sama5d2-classd.yaml  |    7 +-
+>  .../sound/microchip,sama7g5-i2smcc.yaml       |   11 +-
+>  .../bindings/spi/atmel,at91rm9200-spi.yaml    |    1 -
+>  .../bindings/watchdog/atmel,sama5d4-wdt.yaml  |   12 +-
+>  arch/arm/boot/dts/microchip/Makefile          |    3 +
+>  .../dts/microchip/at91-sam9x75_curiosity.dts  |  309 +++++
+>  arch/arm/boot/dts/microchip/sam9x60.dtsi      |    1 +
+>  arch/arm/boot/dts/microchip/sam9x7.dtsi       | 1214 +++++++++++++++++
+>  arch/arm/configs/at91_dt_defconfig            |    1 +
+>  arch/arm/mach-at91/Kconfig                    |   23 +-
+>  arch/arm/mach-at91/Makefile                   |    1 +
+>  arch/arm/mach-at91/generic.h                  |    2 +
+>  arch/arm/mach-at91/pm.c                       |   35 +
+>  arch/arm/mach-at91/sam9x7.c                   |   34 +
+>  drivers/clk/at91/Makefile                     |    1 +
+>  drivers/clk/at91/clk-sam9x60-pll.c            |   50 +-
+>  drivers/clk/at91/pmc.h                        |   18 +
+>  drivers/clk/at91/sam9x60.c                    |    7 +
+>  drivers/clk/at91/sam9x7.c                     |  946 +++++++++++++
+>  drivers/clk/at91/sama7g5.c                    |   42 +-
+>  drivers/irqchip/irq-atmel-aic5.c              |   12 +-
+>  drivers/power/reset/Kconfig                   |    4 +-
+>  drivers/power/reset/at91-sama5d2_shdwc.c      |    1 +
+>  drivers/soc/atmel/soc.c                       |   23 +
+>  drivers/soc/atmel/soc.h                       |    9 +
+>  include/dt-bindings/clock/at91.h              |    4 +
+>  45 files changed, 2788 insertions(+), 65 deletions(-)
+>  create mode 100644 arch/arm/boot/dts/microchip/at91-sam9x75_curiosity.dts
+>  create mode 100644 arch/arm/boot/dts/microchip/sam9x7.dtsi
+>  create mode 100644 arch/arm/mach-at91/sam9x7.c
+>  create mode 100644 drivers/clk/at91/sam9x7.c
+> 
+> -- 
+> 2.25.1
 
-Support userspace configuring congestion control algorithm with QP
-granularity while creating QPs. If the algorithm is not specified in
-userspace, use the default one.
-
-Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
----
-v1 -> v2:
-
-* Remove the printings triggered by bad userspace input.
-
-* Remove unnecessary bit flags in enum hns_roce_congest_type_flags and
-  enum hns_roce_cong_type.
-
-* Move enum hns_roce_congest_type_flags and hns_roce_create_qp_comp_mask
-  above struct hns_roce_ib_create_qp.
-
-* Change HNS_ROCE_CREATE_QP_MASK_CONGEST_TYPE in enum
-  hns_roce_create_qp_comp_mask from 1 << 1 to 1 << 0.
-
-* Remove unused reserved0 in struct hns_roce_ib_alloc_ucontext_resp.
----
- drivers/infiniband/hw/hns/hns_roce_device.h |  3 +-
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 12 +----
- drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  3 +-
- drivers/infiniband/hw/hns/hns_roce_main.c   |  3 ++
- drivers/infiniband/hw/hns/hns_roce_qp.c     | 60 +++++++++++++++++++++
- include/uapi/rdma/hns-abi.h                 | 16 ++++++
- 6 files changed, 85 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index 1d062c522d69..bc015901a7d3 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -845,7 +845,8 @@ struct hns_roce_caps {
- 	u16		default_aeq_period;
- 	u16		default_aeq_arm_st;
- 	u16		default_ceq_arm_st;
--	enum hns_roce_cong_type cong_type;
-+	u8		cong_cap;
-+	enum hns_roce_cong_type default_cong_type;
- };
- 
- enum hns_roce_device_state {
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 42e28586cefa..38e426f4afb5 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -2209,11 +2209,12 @@ static int hns_roce_query_caps(struct hns_roce_dev *hr_dev)
- 	caps->max_wqes = 1 << le16_to_cpu(resp_c->sq_depth);
- 
- 	caps->num_srqs = 1 << hr_reg_read(resp_d, PF_CAPS_D_NUM_SRQS);
--	caps->cong_type = hr_reg_read(resp_d, PF_CAPS_D_CONG_TYPE);
-+	caps->cong_cap = hr_reg_read(resp_d, PF_CAPS_D_CONG_CAP);
- 	caps->max_srq_wrs = 1 << le16_to_cpu(resp_d->srq_depth);
- 	caps->ceqe_depth = 1 << hr_reg_read(resp_d, PF_CAPS_D_CEQ_DEPTH);
- 	caps->num_comp_vectors = hr_reg_read(resp_d, PF_CAPS_D_NUM_CEQS);
- 	caps->aeqe_depth = 1 << hr_reg_read(resp_d, PF_CAPS_D_AEQ_DEPTH);
-+	caps->default_cong_type = hr_reg_read(resp_d, PF_CAPS_D_DEFAULT_ALG);
- 	caps->reserved_pds = hr_reg_read(resp_d, PF_CAPS_D_RSV_PDS);
- 	caps->num_uars = 1 << hr_reg_read(resp_d, PF_CAPS_D_NUM_UARS);
- 	caps->reserved_qps = hr_reg_read(resp_d, PF_CAPS_D_RSV_QPS);
-@@ -4737,14 +4738,8 @@ enum {
- static int check_cong_type(struct ib_qp *ibqp,
- 			   struct hns_roce_congestion_algorithm *cong_alg)
- {
--	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
- 	struct hns_roce_qp *hr_qp = to_hr_qp(ibqp);
- 
--	if (ibqp->qp_type == IB_QPT_UD || ibqp->qp_type == IB_QPT_GSI)
--		hr_qp->cong_type = CONG_TYPE_DCQCN;
--	else
--		hr_qp->cong_type = hr_dev->caps.cong_type;
--
- 	/* different congestion types match different configurations */
- 	switch (hr_qp->cong_type) {
- 	case CONG_TYPE_DCQCN:
-@@ -4772,9 +4767,6 @@ static int check_cong_type(struct ib_qp *ibqp,
- 		cong_alg->wnd_mode_sel = WND_LIMIT;
- 		break;
- 	default:
--		ibdev_warn(&hr_dev->ib_dev,
--			   "invalid type(%u) for congestion selection.\n",
--			   hr_qp->cong_type);
- 		hr_qp->cong_type = CONG_TYPE_DCQCN;
- 		cong_alg->alg_sel = CONG_DCQCN;
- 		cong_alg->alg_sub_sel = UNSUPPORT_CONG_LEVEL;
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-index cd97cbee682a..359a74672ba1 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-@@ -1214,12 +1214,13 @@ struct hns_roce_query_pf_caps_d {
- #define PF_CAPS_D_RQWQE_HOP_NUM PF_CAPS_D_FIELD_LOC(21, 20)
- #define PF_CAPS_D_EX_SGE_HOP_NUM PF_CAPS_D_FIELD_LOC(23, 22)
- #define PF_CAPS_D_SQWQE_HOP_NUM PF_CAPS_D_FIELD_LOC(25, 24)
--#define PF_CAPS_D_CONG_TYPE PF_CAPS_D_FIELD_LOC(29, 26)
-+#define PF_CAPS_D_CONG_CAP PF_CAPS_D_FIELD_LOC(29, 26)
- #define PF_CAPS_D_CEQ_DEPTH PF_CAPS_D_FIELD_LOC(85, 64)
- #define PF_CAPS_D_NUM_CEQS PF_CAPS_D_FIELD_LOC(95, 86)
- #define PF_CAPS_D_AEQ_DEPTH PF_CAPS_D_FIELD_LOC(117, 96)
- #define PF_CAPS_D_AEQ_ARM_ST PF_CAPS_D_FIELD_LOC(119, 118)
- #define PF_CAPS_D_CEQ_ARM_ST PF_CAPS_D_FIELD_LOC(121, 120)
-+#define PF_CAPS_D_DEFAULT_ALG PF_CAPS_D_FIELD_LOC(127, 122)
- #define PF_CAPS_D_RSV_PDS PF_CAPS_D_FIELD_LOC(147, 128)
- #define PF_CAPS_D_NUM_UARS PF_CAPS_D_FIELD_LOC(155, 148)
- #define PF_CAPS_D_RSV_QPS PF_CAPS_D_FIELD_LOC(179, 160)
-diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
-index b55fe6911f9f..1dc60c2b2b7a 100644
---- a/drivers/infiniband/hw/hns/hns_roce_main.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_main.c
-@@ -394,6 +394,9 @@ static int hns_roce_alloc_ucontext(struct ib_ucontext *uctx,
- 			resp.config |= HNS_ROCE_RSP_CQE_INLINE_FLAGS;
- 	}
- 
-+	if (hr_dev->pci_dev->revision >= PCI_REVISION_ID_HIP09)
-+		resp.congest_type = hr_dev->caps.cong_cap;
-+
- 	ret = hns_roce_uar_alloc(hr_dev, &context->uar);
- 	if (ret)
- 		goto error_out;
-diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index 31b147210688..f35a66325d9a 100644
---- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -1004,6 +1004,60 @@ static void free_kernel_wrid(struct hns_roce_qp *hr_qp)
- 	kfree(hr_qp->sq.wrid);
- }
- 
-+static void default_congest_type(struct hns_roce_dev *hr_dev,
-+				 struct hns_roce_qp *hr_qp)
-+{
-+	if (hr_qp->ibqp.qp_type == IB_QPT_UD ||
-+	    hr_qp->ibqp.qp_type == IB_QPT_GSI)
-+		hr_qp->cong_type = CONG_TYPE_DCQCN;
-+	else
-+		hr_qp->cong_type = hr_dev->caps.default_cong_type;
-+}
-+
-+static int set_congest_type(struct hns_roce_qp *hr_qp,
-+			    struct hns_roce_ib_create_qp *ucmd)
-+{
-+	struct hns_roce_dev *hr_dev = to_hr_dev(hr_qp->ibqp.device);
-+
-+	switch (ucmd->cong_type_flags) {
-+	case HNS_ROCE_CREATE_QP_FLAGS_DCQCN:
-+		hr_qp->cong_type = CONG_TYPE_DCQCN;
-+		break;
-+	case HNS_ROCE_CREATE_QP_FLAGS_LDCP:
-+		hr_qp->cong_type = CONG_TYPE_LDCP;
-+		break;
-+	case HNS_ROCE_CREATE_QP_FLAGS_HC3:
-+		hr_qp->cong_type = CONG_TYPE_HC3;
-+		break;
-+	case HNS_ROCE_CREATE_QP_FLAGS_DIP:
-+		hr_qp->cong_type = CONG_TYPE_DIP;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	if (!test_bit(hr_qp->cong_type, (unsigned long *)&hr_dev->caps.cong_cap))
-+		return -EOPNOTSUPP;
-+
-+	if (hr_qp->ibqp.qp_type == IB_QPT_UD &&
-+	    hr_qp->cong_type != CONG_TYPE_DCQCN)
-+		return -EOPNOTSUPP;
-+
-+	return 0;
-+}
-+
-+static int set_congest_param(struct hns_roce_dev *hr_dev,
-+			     struct hns_roce_qp *hr_qp,
-+			     struct hns_roce_ib_create_qp *ucmd)
-+{
-+	if (ucmd->comp_mask & HNS_ROCE_CREATE_QP_MASK_CONGEST_TYPE)
-+		return set_congest_type(hr_qp, ucmd);
-+
-+	default_congest_type(hr_dev, hr_qp);
-+
-+	return 0;
-+}
-+
- static int set_qp_param(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
- 			struct ib_qp_init_attr *init_attr,
- 			struct ib_udata *udata,
-@@ -1043,6 +1097,10 @@ static int set_qp_param(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
- 			ibdev_err(ibdev,
- 				  "failed to set user SQ size, ret = %d.\n",
- 				  ret);
-+
-+		ret = set_congest_param(hr_dev, hr_qp, ucmd);
-+		if (ret)
-+			return ret;
- 	} else {
- 		if (hr_dev->pci_dev->revision >= PCI_REVISION_ID_HIP09)
- 			hr_qp->config = HNS_ROCE_EXSGE_FLAGS;
-@@ -1051,6 +1109,8 @@ static int set_qp_param(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
- 			ibdev_err(ibdev,
- 				  "failed to set kernel SQ size, ret = %d.\n",
- 				  ret);
-+
-+		default_congest_type(hr_dev, hr_qp);
- 	}
- 
- 	return ret;
-diff --git a/include/uapi/rdma/hns-abi.h b/include/uapi/rdma/hns-abi.h
-index c996e151081e..158670da2b2a 100644
---- a/include/uapi/rdma/hns-abi.h
-+++ b/include/uapi/rdma/hns-abi.h
-@@ -73,6 +73,17 @@ struct hns_roce_ib_create_srq_resp {
- 	__u32	cap_flags; /* Use enum hns_roce_srq_cap_flags */
- };
- 
-+enum hns_roce_congest_type_flags {
-+	HNS_ROCE_CREATE_QP_FLAGS_DCQCN,
-+	HNS_ROCE_CREATE_QP_FLAGS_LDCP,
-+	HNS_ROCE_CREATE_QP_FLAGS_HC3,
-+	HNS_ROCE_CREATE_QP_FLAGS_DIP,
-+};
-+
-+enum hns_roce_create_qp_comp_mask {
-+	HNS_ROCE_CREATE_QP_MASK_CONGEST_TYPE = 1 << 0,
-+};
-+
- struct hns_roce_ib_create_qp {
- 	__aligned_u64 buf_addr;
- 	__aligned_u64 db_addr;
-@@ -81,6 +92,9 @@ struct hns_roce_ib_create_qp {
- 	__u8    sq_no_prefetch;
- 	__u8    reserved[5];
- 	__aligned_u64 sdb_addr;
-+	__aligned_u64 comp_mask; /* Use enum hns_roce_create_qp_comp_mask */
-+	__aligned_u64 create_flags;
-+	__aligned_u64 cong_type_flags;
- };
- 
- enum hns_roce_qp_cap_flags {
-@@ -114,6 +128,8 @@ struct hns_roce_ib_alloc_ucontext_resp {
- 	__u32	reserved;
- 	__u32	config;
- 	__u32	max_inline_data;
-+	__u8	congest_type;
-+	__u8	reserved0[7];
- };
- 
- struct hns_roce_ib_alloc_ucontext {
+Patches 3-5 and 10 applied.  Thanks.
 -- 
-2.30.0
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
