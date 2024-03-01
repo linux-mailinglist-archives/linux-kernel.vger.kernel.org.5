@@ -1,112 +1,132 @@
-Return-Path: <linux-kernel+bounces-89104-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89106-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84B5B86EA7F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:42:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E7F0386EA85
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:44:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3DE4A28D1F2
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:42:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7723528E639
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:44:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9898A3D568;
-	Fri,  1 Mar 2024 20:42:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29B893D98E;
+	Fri,  1 Mar 2024 20:43:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JanC+Tna"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="J7sdiITJ"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2B4C16FF2A;
-	Fri,  1 Mar 2024 20:42:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F271C7E1;
+	Fri,  1 Mar 2024 20:43:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709325766; cv=none; b=cLHrMAsmZUGdUDqB229oeZ1W9g33xsV3k+D5eCd0toc2PP/7hknmLlQcR1qdWoNWo1ZrPCQtHG9s9zbbK6ONnWds1xWYMfJVxqaiSaHEKDbQI7RpGIRsiNUnvRj8IzyThpKf164x5iKNIBcQdJVeC9f/ep/8L+ydqkBnV4/zbNE=
+	t=1709325833; cv=none; b=Rbeof/Mu+72jo/slQ8qrLYjzimE8XJKaeMvLncdGI+50WG6fKvg2NnOpBBf4IYeWYhHdOeIygI3v2bto2zE8FU9QFuEoDPmK6lSOu+IPMt8naa6y0+5EIcnCFdICDWJb7xxULjYxL1aoK7uGbhhKK8Fka+WF7eFgoy11iJwxC+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709325766; c=relaxed/simple;
-	bh=73uTaA7d9xcbo8r4tapptpkNEAf8G2KEmjwaiwApfsQ=;
+	s=arc-20240116; t=1709325833; c=relaxed/simple;
+	bh=kUyMdHkVkpeJxiyTY9gwfrRpGuWeFO/2yLcwV4ze4PY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uvBPER14lpadq2IOKGnKiYO32kBMkq90NY+D50+E6RLSQzhiElbyQEFjC37ZM+0Uf3FwYfdU1ZKWHI8o2sDMz+B/3ZIkoHp8+EfN1c6LhoFkYELU3zQcmYOA+CHoSpYGPm704rknRdnjtFADe00icKBlelPadlOqOMfHCjR+e3Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JanC+Tna; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5C19C433F1;
-	Fri,  1 Mar 2024 20:42:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709325765;
-	bh=73uTaA7d9xcbo8r4tapptpkNEAf8G2KEmjwaiwApfsQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JanC+TnaakLG12kECCD3MmA8tdR4b9z77LSK1XXJKokE5aR4fG5xvf3pvpZTZ2TbW
-	 dG9zZ61DShqUUMwRcvb8vdvWCjkOjgyqOhCPBGZJJaAMcewtTEiDYGs/GheEmHQy5u
-	 QLDvjiqkxCPFRa/D3vsdqL9UAfEXDnwzLvRmOuspK26WLrQW/kYFNIOL4sJAd0v688
-	 cTBCE0prLNZXXPKHY/GlnjqrYIifbQegMlSptNZfAiHT663h5dzCNkDc6eWaJhdeZl
-	 4E4yREyPc9WhOO1eeCVt9IND4QpDZyWnCd+YQN1F8JXYKO7liSw189d9M5WHcAqNkV
-	 86a2b4XH+xPPw==
-Date: Fri, 1 Mar 2024 20:42:39 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Sam Protsenko <semen.protsenko@linaro.org>
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>, andi.shyti@kernel.org,
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, linux-spi@vger.kernel.org,
-	linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, andre.draszik@linaro.org,
-	peter.griffin@linaro.org, willmcvicker@google.com,
-	kernel-team@android.com
-Subject: Re: [PATCH] spi: dt-bindings: samsung: make dma properties not
- required
-Message-ID: <cb426fb0-2f27-4c9b-89f5-7139354ea425@sirena.org.uk>
-References: <20240301115546.2266676-1-tudor.ambarus@linaro.org>
- <CAPLW+4=6oYcs0NPXo4ffLiCvtNQ-tY1s_isaxTX8dcPkV56xMw@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=eJRpnTlhHr0/POhRK6S128M0PD4l1vnUCVb3a+jkjufx2wCkOfYTLlwqQarJr5piEUVN36gskxrH1KLtR6aS1WKOqFOrId2J1zRiW0JBnv2zMkF+k96aHS43hYOkELuuPiI+KzirBdcTk2TbtfrQx6u16W7I0pC9v2PO4Io01CQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=J7sdiITJ; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709325832; x=1740861832;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=kUyMdHkVkpeJxiyTY9gwfrRpGuWeFO/2yLcwV4ze4PY=;
+  b=J7sdiITJ1kAZr8sgz50mVhoWucZdfvkoFsu+OXac+ZYGYPkQFX5OPufN
+   GYcmyMdCwuJePDNkldKBwQ6Phco2fJwTUK2a/EYPGiSOa6dTn5qX5w9/w
+   CROt2hwL/xvur3IU3TOkt5EJb7dPdWtOr06eQ3UiXhTGSTMmZ6lUzvNpT
+   D+4P4zIm2il4OlYlml1+oBehYmh+3/dx5FXGBN/UfMgwIx+r9AaOG4YTA
+   jSKPPtaCV5JYuqmCgCIxKjCPVLwsnronNpJzofoZ/sbagtThIMm4oXZ+O
+   JCuLQ7HKbUTVjG3yx+nnYsf8kbPkClwW+teTUG1nqvpO7nCvbuGsZxFXc
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11000"; a="3808094"
+X-IronPort-AV: E=Sophos;i="6.06,197,1705392000"; 
+   d="scan'208";a="3808094"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 12:43:51 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,197,1705392000"; 
+   d="scan'208";a="8374083"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by orviesa009.jf.intel.com with ESMTP; 01 Mar 2024 12:43:42 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rg9j3-000E5D-2e;
+	Fri, 01 Mar 2024 20:43:32 +0000
+Date: Sat, 2 Mar 2024 04:42:59 +0800
+From: kernel test robot <lkp@intel.com>
+To: =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
+	Brendan Higgins <brendanhiggins@google.com>,
+	David Gow <davidgow@google.com>, Kees Cook <keescook@chromium.org>,
+	Rae Moar <rmoar@google.com>, Shuah Khan <skhan@linuxfoundation.org>
+Cc: oe-kbuild-all@lists.linux.dev,
+	=?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+	James Morris <jamorris@linux.microsoft.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	"Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>,
+	Marco Pagani <marpagan@redhat.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Thara Gopinath <tgopinath@microsoft.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Vitaly Kuznetsov <vkuznets@redhat.com>,
+	Wanpeng Li <wanpengli@tencent.com>,
+	Zahra Tarkhani <ztarkhani@microsoft.com>, kvm@vger.kernel.org,
+	linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org,
+	linux-um@lists.infradead.org, x86@kernel.org
+Subject: Re: [PATCH v1 8/8] kunit: Add tests for faults
+Message-ID: <202403020418.NnNnFElm-lkp@intel.com>
+References: <20240229170409.365386-9-mic@digikod.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="MemfwNmSGq/zcA3d"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CAPLW+4=6oYcs0NPXo4ffLiCvtNQ-tY1s_isaxTX8dcPkV56xMw@mail.gmail.com>
-X-Cookie: Schizophrenia beats being alone.
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240229170409.365386-9-mic@digikod.net>
 
+Hi Mickaël,
 
---MemfwNmSGq/zcA3d
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+kernel test robot noticed the following build warnings:
 
-On Fri, Mar 01, 2024 at 01:28:35PM -0600, Sam Protsenko wrote:
-> On Fri, Mar 1, 2024 at 5:55=E2=80=AFAM Tudor Ambarus <tudor.ambarus@linar=
-o.org> wrote:
+[auto build test WARNING on d206a76d7d2726f3b096037f2079ce0bd3ba329b]
 
-> > Since the addition of the driver in 2009, the driver selects between DMA
-> > and polling mode depending on the transfer length - DMA mode for
-> > transfers bigger than the FIFO depth, polling mode otherwise. All
-> > versions of the IP support polling mode, make the dma properties not
-> > required.
+url:    https://github.com/intel-lab-lkp/linux/commits/Micka-l-Sala-n/kunit-Run-tests-when-the-kernel-is-fully-setup/20240301-011020
+base:   d206a76d7d2726f3b096037f2079ce0bd3ba329b
+patch link:    https://lore.kernel.org/r/20240229170409.365386-9-mic%40digikod.net
+patch subject: [PATCH v1 8/8] kunit: Add tests for faults
+config: x86_64-randconfig-122-20240301 (https://download.01.org/0day-ci/archive/20240302/202403020418.NnNnFElm-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240302/202403020418.NnNnFElm-lkp@intel.com/reproduce)
 
-> AFAIU, the device tree has nothing to do with drivers, it's about
-> hardware description. Does making DMA properties not required here
-> mean that there are some HW out there which doesn't integrate DMA in
-> SPI blocks? Even if this change is ok (I'm not sure), the
-> argumentation doesn't look sound to me.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403020418.NnNnFElm-lkp@intel.com/
 
-I do remember there being some SoC which shipped a SPI controller in
-that configuration for some reason.  Possibly one of the OEM ones rather
-than one in a Samsung SoC?
+sparse warnings: (new ones prefixed by >>)
+>> lib/kunit/kunit-test.c:142:11: sparse: sparse: symbol 'test_const' was not declared. Should it be static?
 
---MemfwNmSGq/zcA3d
-Content-Type: application/pgp-signature; name="signature.asc"
+vim +/test_const +142 lib/kunit/kunit-test.c
 
------BEGIN PGP SIGNATURE-----
+   141	
+ > 142	const int test_const = 1;
+   143	
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXiPb4ACgkQJNaLcl1U
-h9Ap3gf/eN7JFZQiBhvsOUiRAENty3XADwJD6Dy7jlfgRduqmhzKOdfa7IlHM/wl
-FNIUAWf+T27AgQJjSXEXbkmON0RkeJVpWCbZoXJV9Rr2z3Xhns2wasphCMBDmtdE
-oMVIohHuCe61P/svZ4zJ7//pdXxFGVvMe44Dwz1uJvbtu1SiUv2GQQ5CV5U4fUhy
-Tav2FbYNzSZoy/zqsve97SBxVm6Fme8BCiTMnPvyrSbuA+UJ7/s2A243HgCM1VHA
-bFpNa5zVoSbiHkI4d+s6Fo/RlOV2fpwgXTW/s4BhHYjhkgTb+Qvd/jGN1ZmPC++F
-NLsnijQPfxAvIWgh4QAwhvhm2NkQTA==
-=aEUe
------END PGP SIGNATURE-----
-
---MemfwNmSGq/zcA3d--
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
