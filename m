@@ -1,74 +1,73 @@
-Return-Path: <linux-kernel+bounces-89239-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89240-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FE8486ED20
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 00:59:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D22086ED24
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 00:59:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 370D02871F9
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 23:59:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE23FB202F4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 23:59:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C09605F47B;
-	Fri,  1 Mar 2024 23:59:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 801485F46A;
+	Fri,  1 Mar 2024 23:59:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IbgGIMwN"
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yCTbI/4t"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47E365EE9F
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 23:59:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 376A95EE9D
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 23:59:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709337543; cv=none; b=QDwzxzVSpH783+pxdp59g9+CfpmlwOfRnDvlpK1ki2jw3YKKzFA/kvS7lMN0mUx8ECXtEU/fQh4DdmSHn+0KgWeng4YtHasDFTwipapEqBiJl/zwqyETA2YUF7ceCXbY8LsiTDukHWnC9oF5bYRyoYFmfIa/x0LUmckhv5JE4pw=
+	t=1709337563; cv=none; b=AINmV4DFtCsiQw2KcKWMxdbJP9PKbAPYXCzSHcWQj3AVMgDnl9SYhaBQ2lWOE7EDCnEcqfu3R7jpZu3YXFMnBr+sHaIv0PgxKnkstD+GqeMxEzp4UOT8A9guHg8/q3Ev6R35PDQBmC7zXeXrMyXVRUZdBjViRdt3TYk+oHEGWZk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709337543; c=relaxed/simple;
-	bh=ETU0ZgkCoYAe6Z7VTDx08sZijKjkIDe8qT9lyHO3Dps=;
+	s=arc-20240116; t=1709337563; c=relaxed/simple;
+	bh=+pVQKpKPrqAv1GP6rBXK5MuOCZSMFVYXcDPhbON6UHE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mEPKTfRdga+7Z9G3LZOhA333QhTMjs3WyQjQaKXiYj3sH07RSYN9z65WSMRLfnZTLldRRqJA8qxiRaK1XjGz0+OblTT2OqrcGtq0ImwsQOVf83gHHhpXn1ZTFODy4r6C+55xPDUdIFC7iLhtcox9oU0B3+eXVFONlPm+H0NkFU0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=IbgGIMwN; arc=none smtp.client-ip=209.85.218.50
+	 In-Reply-To:Content-Type; b=ACSVScEDfPPGyAAREv1Pabcff5xhh5EPPH1+2IHmsQ33nLJoesmGOV2/EpLRqlkfmdfC8J8JmGRqyCfzzyVVtw0vlh06jXP7mXwC0pdFkvSU4vw+SNGnIC3YqcdlZr2EBxSRkLctcqO36iKl5UyJTKR5LZe0WSQ6Jhm5dcGp8EE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=yCTbI/4t; arc=none smtp.client-ip=209.85.218.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a444205f764so359604866b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 15:59:01 -0800 (PST)
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a3f893ad5f4so428325266b.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 15:59:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709337540; x=1709942340; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1709337561; x=1709942361; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=YA1O7kLB3C42ZIvzHJ983LhvtPhH5S4z7eGI8/yXF6Y=;
-        b=IbgGIMwNcfgw0Lpo/e5WIMtirGrC9J1p/5aPwI3PheLI52g9v17NjgFtxDuYR5ot3H
-         W6QPhcbm0eAb13IGZ/bnDIaIN/sdWHJk7LtFGe0AZHkgRt5vUgBRX1lYXTh+CNS4rCPx
-         G+ZA2VKPNRzfRh6LIjPdnEfUYy9cfoLdHOSn0A1VRrrHIeSyeA0epWPHuVbdfLczDMY5
-         BfhWuqWVCpWCMdTXgzPN48GbVhq6TOmtptQNeSzmdl6VdFnFOzjiTU//pDf5NrG4O1va
-         XhVe4H53VTZgHYfGz40yDcwJHQfmM0Y1vZOZRijqH7tVMba45/KLvyC2JSzNVzx+M1SJ
-         E+yQ==
+        bh=JnkM+qWloaT6h+HbNrSbJxQgGHFp+PPEbJG0sz3nNTE=;
+        b=yCTbI/4tr+NBlDukNmiytOgt+JrBUbRHdyDlc5DvuUiW09FAlESp+HvX+uL/J96a7O
+         Qn02bqca4XrBOoJX+Gw0bABwGBGvaTe9FX773tY2qd2gzP/8NJKKntGHVihHuVKhFvn6
+         YzHPtUkrAOlW2LIlmnSvkBL57sizyDgLsm07+MVBIFr2V8VnvfDEKgQsOzsjxlP7hzY7
+         dVgXc6o+c6ZoclqCVCxnsRH++8vloo4gKEjXHedaEMLFqsRHHo7BwEpx8xS4p1HvtB4g
+         TWOwt7hICZM/e8KiQbA6Yc9yB3MH6FCQLVFSBPcM/pDMT9gJ6e39bZXWdNXxo4jrqIRh
+         xPlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709337540; x=1709942340;
+        d=1e100.net; s=20230601; t=1709337561; x=1709942361;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YA1O7kLB3C42ZIvzHJ983LhvtPhH5S4z7eGI8/yXF6Y=;
-        b=xQKqE2HnLLZHSCr+GKKO24gcZvVWdLVq6rB3J2pO+SN3ozdcKx95cnNPntOWCvozxr
-         8DGcJjiOmlrV7WqqhEUCGPtLDcR+gqslYCGQk8yDeIdHMpK2NRcclEp022BlDAYhOTtD
-         RB16o8RGL/AAPOO/sTtFYxj8JdAAwmUR6ZetoU33ttcq6JwIGIFCrkIike4OX7IyAefs
-         2NvrVDUWF0T3jfwVyxK0Z0wmgkanXaUP8TclfAcTNj+cW1GytMW+9Ek2kWW/3BnYpDSG
-         FvbMNWbHRTqfr/dzn03lL+1AytPoiUcEKq15S7rgC2qBLa7mcyQONRKsCBFagmMGCLA6
-         LEuw==
-X-Forwarded-Encrypted: i=1; AJvYcCVN/EfVdoV6Ie11e0rD+5EV+oOglKcbpi1GRBtj1guZJnDPkdsSXHrSxgPKW4Kql/zRw7S2V59HDzwA33N5RyI1HHX25le7s9FN4hQS
-X-Gm-Message-State: AOJu0YxB+4lxVKmCrEJUA0zFWbSarQ+kplC2ab5z3PoXCJVNKzM3eh8D
-	SDPsCvnB5Gyavtex38AB8QxPOoSW9TP1fyIBZlKDXihqefk0IeHHl1M4rY+oKQokEHJgLBExMzT
-	f6tA=
-X-Google-Smtp-Source: AGHT+IHwnfAnGr5O8kASzxqPfzRoY7ABHUTooFv/fIASs/MHqBMyWJpUwEDEXapcV/UhGZL43xXDXQ==
-X-Received: by 2002:a17:906:f194:b0:a3e:9231:fe7e with SMTP id gs20-20020a170906f19400b00a3e9231fe7emr2440937ejb.71.1709337539658;
-        Fri, 01 Mar 2024 15:58:59 -0800 (PST)
+        bh=JnkM+qWloaT6h+HbNrSbJxQgGHFp+PPEbJG0sz3nNTE=;
+        b=XBMMZ7J4tCuVzrXzbtiqYKeZmC8Nw1h9LKEzU+v0Sz2YOMbPpEwks8lpSJ9dL2OFRm
+         x9BnWKtGHkbY98FFAx66YHY7biWXGuaR74IrtQRv8sZP3wbUdYe6vTJO2gqEfEBmDCS+
+         yyGM2W2TdkEUQHh6v/WB5jwGSuoD8uMFCqDYhcJJR1KJ9Ky5XzjJl7AqP9OL64IOrgTR
+         QYubgkTktNpLdW2EUuEfo/JUVCbZKdCIyq4awC9kGk7hc9HhkCKUg4r77ychqKUVVVKf
+         jKWXCrAMXx8W5EnimbG8WLsOZ6KX/GH1vMvSonLAZCHfY+RIq1pjG+ipYSSQ++msda46
+         nZgw==
+X-Forwarded-Encrypted: i=1; AJvYcCXXIalXgKnp9/cLZx0gwTM6Ufk8PUwMgwgR0vorctzjCJyPbhMpQSdOey0oPT43yBnDSR0T0x5wt0OF8YpzQ0Py2hfZCumYESSa2sku
+X-Gm-Message-State: AOJu0YyhhNYhirJopPQWyLIg0ahmPfanVi0xhFklbrnFP0tXt5DrIbCd
+	po8mjCFy492eIfYqbwZHZraSeDuKnGPpc14fePpAmG/Ma/+jFNR+FkOeb2WHFeQ=
+X-Google-Smtp-Source: AGHT+IF2D8iZOfj7+XRauSE4C10V4NeJF+9wAK/LHVS9yazjecLdeBBToJJlc6+QGbf3QkVtRE4VQg==
+X-Received: by 2002:a17:906:791:b0:a44:93de:f4bb with SMTP id l17-20020a170906079100b00a4493def4bbmr2344139ejc.28.1709337560753;
+        Fri, 01 Mar 2024 15:59:20 -0800 (PST)
 Received: from [192.168.216.32] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id w23-20020a170906131700b00a432f3bc3a5sm2157029ejb.76.2024.03.01.15.58.58
+        by smtp.gmail.com with ESMTPSA id w23-20020a170906131700b00a432f3bc3a5sm2157029ejb.76.2024.03.01.15.59.19
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Mar 2024 15:58:59 -0800 (PST)
-Message-ID: <2f6a5c83-69a4-480b-a235-c0d51feac31e@linaro.org>
-Date: Sat, 2 Mar 2024 00:58:57 +0100
+        Fri, 01 Mar 2024 15:59:20 -0800 (PST)
+Message-ID: <ab208a2c-ebc3-46f4-94f7-a0bc736e0b89@linaro.org>
+Date: Sat, 2 Mar 2024 00:59:19 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,8 +75,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: qcom: sm8250-xiaomi-elish: add usb pd
- negotiation support
+Subject: Re: [PATCH] arm64: dts: qcom: sm8250-xiaomi-elish: set rotation
 Content-Language: en-US
 To: Jianhua Lu <lujianhua000@gmail.com>,
  Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh@kernel.org>,
@@ -85,7 +83,7 @@ To: Jianhua Lu <lujianhua000@gmail.com>,
  Conor Dooley <conor+dt@kernel.org>
 Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org
-References: <20240227124529.12926-1-lujianhua000@gmail.com>
+References: <20240227121744.10918-1-lujianhua000@gmail.com>
 From: Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -122,53 +120,18 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20240227124529.12926-1-lujianhua000@gmail.com>
+In-Reply-To: <20240227121744.10918-1-lujianhua000@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 27.02.2024 13:45, Jianhua Lu wrote:
-> Add usb pd negotiation, but charging is controlled by pm8150b pmic,
-> so it can only charge battery with 5W,
+On 27.02.2024 13:17, Jianhua Lu wrote:
+> Xiaomi Pad 5 Pro has a 2560x1600 portrait screen, set RIGHT_UP rotation
+> to make it look like a landscape screen.
 > 
 > Signed-off-by: Jianhua Lu <lujianhua000@gmail.com>
 > ---
->  arch/arm64/boot/dts/qcom/sm8250-xiaomi-elish-common.dtsi | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sm8250-xiaomi-elish-common.dtsi b/arch/arm64/boot/dts/qcom/sm8250-xiaomi-elish-common.dtsi
-> index 6f54f50a70b0..ed103b90f4e6 100644
-> --- a/arch/arm64/boot/dts/qcom/sm8250-xiaomi-elish-common.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sm8250-xiaomi-elish-common.dtsi
-> @@ -636,7 +636,8 @@ &pm8150b_typec {
->  	connector {
->  		compatible = "usb-c-connector";
->  
-> -		power-role = "source";
-> +		op-sink-microwatt = <10000000>;
 
-Is 10W really the minimum value for this tablet to function as a sink?
-
-Is that what the downstream kernel sets?
-
-> +		power-role = "dual";
->  		data-role = "dual";
->  		self-powered;
->  
-> @@ -645,6 +646,12 @@ PDO_FIXED_DUAL_ROLE |
->  					 PDO_FIXED_USB_COMM |
->  					 PDO_FIXED_DATA_SWAP)>;
->  
-> +		sink-pdos = <PDO_FIXED(5000, 3000,
-> +					 PDO_FIXED_DUAL_ROLE |
-
-Please align the PDO_.. against the open brace
-
-> +					 PDO_FIXED_USB_COMM |
-> +					 PDO_FIXED_DATA_SWAP)
-> +					 PDO_VAR(5000, 12000, 5000)>;
-
-60W max? This is not unheard of, but I'm just making sure you know..
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
 Konrad
-
 
