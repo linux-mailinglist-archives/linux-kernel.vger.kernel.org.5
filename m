@@ -1,130 +1,283 @@
-Return-Path: <linux-kernel+bounces-88309-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88296-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6254D86DFE7
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:12:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1026286DFD1
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:07:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BD6F285969
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:12:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5AFD2B22A0A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:07:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50E0E6CDC3;
-	Fri,  1 Mar 2024 11:10:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 673226CBF4;
+	Fri,  1 Mar 2024 11:07:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=avm.de header.i=@avm.de header.b="OYt9+PHK"
-Received: from mail.avm.de (mail.avm.de [212.42.244.94])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="xems7rTN"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADFBC6F51A;
-	Fri,  1 Mar 2024 11:10:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.42.244.94
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 697D023BD;
+	Fri,  1 Mar 2024 11:07:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709291423; cv=none; b=XiHu1hiT1Hzs98CnhtAYqQVfle+RVey6NmDtdETgpCSO4YcqKU1CP+Mir5EuBELOTytyNp/o1b/ss1JH2tVTug/073ktpzQTup0nTq+coqDBrpFEu0lJcvlWtI9heV+pxmDdsa+u/2NYUtdAVCpIcMqzkALjESvK7q/+kqJZ4I8=
+	t=1709291227; cv=none; b=uUKQSFK59b4Rh14Kxpd8bFLBbZ9Xlw6kWuW7V5wZZ8hW9rOSbgDR1Y9W2CeeXOwYG5yzsA7OOoO/uPxS/nrp5WkL8MWQXzaX8d+/sNFwlolMqpHxfEGnMk8rIcA12g4bX+iNq2zYUYtDg8Ms/5gOm8EDLQDpb1lRcRUukU/pzfA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709291423; c=relaxed/simple;
-	bh=e51zttODIbyBxyNN35mjWWt+KgFVjTSgZK3n2T+b+wA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R1DZdtpBrvgIph4L8I4Z+guafltAM/7N8I1pEZ3YaaKo5AcPLSpXNiWOI00JTvmtb0zGjK2MvpXcVfLPWdQFxMCDI0ZjIq5k+GUu0Tl7he3ykDy7jMignxlTiOdxfxZQ7stxzCqHmbAcMXvDP4O8pPsm3ewu+P8ZwnWuQLU8WF0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=avm.de; spf=pass smtp.mailfrom=avm.de; dkim=pass (1024-bit key) header.d=avm.de header.i=@avm.de header.b=OYt9+PHK; arc=none smtp.client-ip=212.42.244.94
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=avm.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=avm.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=avm.de; s=mail;
-	t=1709291069; bh=e51zttODIbyBxyNN35mjWWt+KgFVjTSgZK3n2T+b+wA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OYt9+PHKFGKyVmiw2Fu9C7UcOW5wT3FzEZ/vWjYUpxiWfoxQhPxe16pyMOZ1ur80b
-	 vbPCGtdskDaris+wLpPUCg6CjTEhwz7GNYFgp69zBmGfTeypJokCTCH0zCWCudmsgG
-	 kWhfadgrV4lfaX/AabDRTdJ+1RNWWHtrA03vRyv0=
-Received: from mail-auth.avm.de (dovecot-mx-01.avm.de [212.42.244.71])
-	by mail.avm.de (Postfix) with ESMTPS;
-	Fri,  1 Mar 2024 12:04:29 +0100 (CET)
-Received: from buildd.core.avm.de (buildd-sv-01.avm.de [172.16.0.225])
-	by mail-auth.avm.de (Postfix) with ESMTPA id 809C680152;
-	Fri,  1 Mar 2024 12:04:29 +0100 (CET)
-Received: by buildd.core.avm.de (Postfix, from userid 1000)
-	id 744511812F7; Fri,  1 Mar 2024 12:04:29 +0100 (CET)
-Date: Fri, 1 Mar 2024 12:04:29 +0100
-From: Nicolas Schier <n.schier@avm.de>
-To: Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc: Masahiro Yamada <masahiroy@kernel.org>, linux-kbuild@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv2] kconfig: add some Kconfig env variables to make help
-Message-ID: <ZeG2PRYmdO0r44kS@buildd.core.avm.de>
-Mail-Followup-To: Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240222032559.496127-1-senozhatsky@chromium.org>
- <CAK7LNARo4L6qxoqRU-0dgABarukJKAaZpCRtfA3MyUHhSuDQxQ@mail.gmail.com>
- <20240222051621.GH11472@google.com>
- <20240228045652.GH11972@google.com>
- <CAK7LNAQ8OyNMeGzVoTRg-sHDZ4YK0EKY_eEWNepekaibO_ZKwg@mail.gmail.com>
- <20240229021010.GM11972@google.com>
- <CAK7LNASujf8m4PpMyoCC1cTN_YGeG1HVaOR+3pZx5=3OJp=85A@mail.gmail.com>
- <20240229034739.GN11972@google.com>
- <CAK7LNAS-mOxY884pLEMwWaX+wgzXdc6+=vqN=wfHBekuKL5ryA@mail.gmail.com>
- <20240301043316.GO11972@google.com>
+	s=arc-20240116; t=1709291227; c=relaxed/simple;
+	bh=5bFpmhJNutqaRHya9G5up6sRV/+gFMoxq43MQp2WWm4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=dw4C8HrjurwooTglxi5EdnY4fuEyHalJBbsH+fTjoZ0Fs2wc9tNi9VKG0lOc690OTryNRc6gkfOGcrCVYQvYcU8wq74CqnTLMukxTHvON8udTVYQePK6+VwObLZx0vSh+LyqCMzNt5o62LRfOt+gUtMsrwmldW3+MTGBcPt03m4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=xems7rTN; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 421B6tKh118925;
+	Fri, 1 Mar 2024 05:06:55 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1709291215;
+	bh=K0ubzdlroUOBglVY3S/rVyrZxp/5zoLq78kaG6y7qwk=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=xems7rTNX/wBUTAhgzrViEwtkw/6X8Pc4dYyzjkvDq7CNycNe7f/sqWyknT5BSCPW
+	 21brxT62jDi7MQKOWJKlbT2ednsZbaty36Fnw0AHUro8hyGpK+0FSxwIu/W1FcX7Hy
+	 p8wa6VuUP79r9vRi1dheXW6gtkl2q2vf02Flc84w=
+Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 421B6t0b105933
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Fri, 1 Mar 2024 05:06:55 -0600
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 1
+ Mar 2024 05:06:54 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 1 Mar 2024 05:06:54 -0600
+Received: from [172.24.227.220] (chintan-thinkstation-p360-tower.dhcp.ti.com [172.24.227.220])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 421B6oD0085832;
+	Fri, 1 Mar 2024 05:06:51 -0600
+Message-ID: <750369ae-71ef-4c07-8c61-14c0cd06ef4b@ti.com>
+Date: Fri, 1 Mar 2024 16:36:50 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240301043316.GO11972@google.com>
-Organization: AVM GmbH
-X-purgate-ID: 149429::1709291069-3ED8F9CD-E71215DF/0/0
-X-purgate-type: clean
-X-purgate-size: 1915
-X-purgate-Ad: Categorized by eleven eXpurgate (R) http://www.eleven.de
-X-purgate: This mail is considered clean (visit http://www.eleven.de for further information)
-X-purgate: clean
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 1/2] net: ethernet: ti: am65-cpts: Enable PTP RX
+ HW timestamp using CPTS FIFO
+Content-Language: en-US
+To: Roger Quadros <rogerq@kernel.org>,
+        Dan Carpenter
+	<dan.carpenter@linaro.org>,
+        Siddharth Vadapalli <s-vadapalli@ti.com>,
+        Richard
+ Cochran <richardcochran@gmail.com>,
+        Paolo Abeni <pabeni@redhat.com>, Jakub
+ Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S.
+ Miller" <davem@davemloft.net>
+CC: <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+References: <20240215110953.3225099-1-c-vankar@ti.com>
+ <52ff5e18-3616-478a-ab40-8f9a6f7f3e37@kernel.org>
+ <3713e01e-1e48-489b-8ec2-e98471ca22f0@ti.com>
+ <0f62faa4-608f-4e8e-98e5-7e6e50e20308@kernel.org>
+From: Chintan Vankar <c-vankar@ti.com>
+In-Reply-To: <0f62faa4-608f-4e8e-98e5-7e6e50e20308@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Fri, Mar 01, 2024 at 01:33:16PM +0900, Sergey Senozhatsky wrote:
-> On (24/03/01 00:35), Masahiro Yamada wrote:
-> > > >   "I am interested only in these. I do not care about the rest,
-> > >
-> > > It's "I *do NOT know* what the rest do".  I cannot document something
-> > > that I have no knowledge of, can I?  So as a reasonable start I added
-> > > only those that I'm familiar with (and I have explicitly stated that
-> > > in previous emails), and I disagree with the "bad attitude" label.
-> > 
-> > 
-> > You were aware of:
-> > 
-> >  - several env variables are listed in the document
-> >  - your patch would introduce a new "inconsistency"
-> >  - somebody else would need to make efforts to solve it
-> 
-> OK.
-> 
-> > > So the rational for that was that people run "make help" and find
-> > > out about new build targets, for instance, but there is no way for
-> > > people to find out about new Kconfig features (and yes, we are talking
-> > > "new features" here) that are controlled by env variables.  We need
-> > > to do something about it, don't you agree?
-> > 
-> > Disagree.
-> > 
-> > I maintain the entire Kconfig, not like you only caring about
-> > a particular feature.
-> > 
-> > If you add only two in help, I have no idea about
-> > what it will look like in the end.
-> > I am not convinced that it will be in good shape.
-> > So, it is reasonable for me to reject it.
-> 
-> Yes, OK.  I wasn't talking about this patch in particular at that
-> point, I was more curious whether you agreed that we need to document
-> in some way those vars in `make help` or not.  If you see value in
-> documenting them then I can sit down and try to come up with v3 that
-> will (in one way or another) give a simple "help" description for
-> each of Kconfig's vars.
 
-Perhaps it might be a compromise to let 'make help' point to the
-kbuild/kconfig documentation?
 
-Kind regards,
-Nicolas
+On 26/02/24 18:19, Roger Quadros wrote:
+> 
+> 
+> On 26/02/2024 11:08, Chintan Vankar wrote:
+>>
+>> On 19/02/24 16:54, Roger Quadros wrote:
+>>>
+>>> On 15/02/2024 13:09, Chintan Vankar wrote:
+>>>> CPTS module supports capturing timestamp for every packet it receives,
+>>>> add a new function named "am65_cpts_rx_find_ts()" to get the timestamp
+>>>> of received packets from CPTS FIFO.
+>>>>
+>>>> Add another function named "am65_cpts_rx_timestamp()" which internally
+>>>> calls "am65_cpts_rx_find_ts()" function and timestamps the received
+>>>> PTP packets.
+>>>>
+>>>> Signed-off-by: Chintan Vankar <c-vankar@ti.com>
+>>>> ---
+>>>>    drivers/net/ethernet/ti/am65-cpts.c | 84 +++++++++++++++++++++--------
+>>>>    drivers/net/ethernet/ti/am65-cpts.h | 11 ++--
+>>>>    2 files changed, 67 insertions(+), 28 deletions(-)
+>>>>
+>>>> diff --git a/drivers/net/ethernet/ti/am65-cpts.c b/drivers/net/ethernet/ti/am65-cpts.c
+>>>> index c66618d91c28..92a3b40e60d6 100644
+>>>> --- a/drivers/net/ethernet/ti/am65-cpts.c
+>>>> +++ b/drivers/net/ethernet/ti/am65-cpts.c
+>>>> @@ -859,29 +859,6 @@ static long am65_cpts_ts_work(struct ptp_clock_info *ptp)
+>>>>        return delay;
+>>>>    }
+>>>>    -/**
+>>>> - * am65_cpts_rx_enable - enable rx timestamping
+>>>> - * @cpts: cpts handle
+>>>> - * @en: enable
+>>>> - *
+>>>> - * This functions enables rx packets timestamping. The CPTS can timestamp all
+>>>> - * rx packets.
+>>>> - */
+>>>> -void am65_cpts_rx_enable(struct am65_cpts *cpts, bool en)
+>>>> -{
+>>>> -    u32 val;
+>>>> -
+>>>> -    mutex_lock(&cpts->ptp_clk_lock);
+>>>> -    val = am65_cpts_read32(cpts, control);
+>>>> -    if (en)
+>>>> -        val |= AM65_CPTS_CONTROL_TSTAMP_EN;
+>>>> -    else
+>>>> -        val &= ~AM65_CPTS_CONTROL_TSTAMP_EN;
+>>>> -    am65_cpts_write32(cpts, val, control);
+>>>> -    mutex_unlock(&cpts->ptp_clk_lock);
+>>>> -}
+>>>> -EXPORT_SYMBOL_GPL(am65_cpts_rx_enable);
+>>>> -
+>>>>    static int am65_skb_get_mtype_seqid(struct sk_buff *skb, u32 *mtype_seqid)
+>>>>    {
+>>>>        unsigned int ptp_class = ptp_classify_raw(skb);
+>>>> @@ -906,6 +883,67 @@ static int am65_skb_get_mtype_seqid(struct sk_buff *skb, u32 *mtype_seqid)
+>>>>        return 1;
+>>>>    }
+>>>>    +static u64 am65_cpts_find_rx_ts(struct am65_cpts *cpts, struct sk_buff *skb,
+>>>> +                int ev_type, u32 skb_mtype_seqid)
+>>>> +{
+>>>> +    struct list_head *this, *next;
+>>>> +    struct am65_cpts_event *event;
+>>>> +    unsigned long flags;
+>>>> +    u32 mtype_seqid;
+>>>> +    u64 ns = 0;
+>>>> +
+>>>> +    am65_cpts_fifo_read(cpts);
+>>> am65_cpts_fifo_read() is called from the CPTS interrupt handler and the
+>>> event is popped out of the FIFO and pushed into an event list.
+>>>
+>>> Doesn't this race with that interrupt handler?
+>> Could you clarify why there be a race condition ?
+> 
+> I'm not sure so was asking. The question is, do you have to call
+> am65_cpts_fifo_read() here? If yes, could you please add a comment why.
+
+Yes. We need to call "am65_cpts_fifo_read()" here. If we don't call it
+here then there will be a race condition for the event to be added to
+the list before "am65_cpts_get_rx_ts()" function is called.
+
+If we have to implement it without invoking "am65_cpts_fifo_read()",
+then there has to be a check to ensure that the interrupt associated
+with the RX Event has successfully added that event to the list.
+Otherwise, due to the nature of "spin_lock_irqsave", when the interrupt
+has acquired the lock on one CPU, the "am65_cpts_get_rx_ts()" function
+running on another CPU might acquire the lock from the interrupt and
+search for the RX Event which the "am65_cpts_fifo_read()" invoked by
+the interrupt was supposed to add in the event list. This is racy due
+to which it is possible that the event is not yet added when
+"am65_cpts_get_rx_ts()" is invoked. Therefore, to ensure that the
+event is surely present, invoking "am65_cpts_fifo_read()" is
+required.
+
+> 
+>>> Can't you use that event list instead of reading cpts_fifo directly?
+>>>
+>>> Something like am65_cpts_match_tx_ts()?
+>>>
+>>>> +    spin_lock_irqsave(&cpts->lock, flags);
+>>>> +    list_for_each_safe(this, next, &cpts->events) {
+>>>> +        event = list_entry(this, struct am65_cpts_event, list);
+>>>> +        if (time_after(jiffies, event->tmo)) {
+>>>> +            list_del_init(&event->list);
+>>>> +            list_add(&event->list, &cpts->pool);
+>>>> +            continue;
+>>>> +        }
+>>>> +
+>>>> +        mtype_seqid = event->event1 &
+>>>> +                  (AM65_CPTS_EVENT_1_MESSAGE_TYPE_MASK |
+>>>> +                   AM65_CPTS_EVENT_1_SEQUENCE_ID_MASK |
+>>>> +                   AM65_CPTS_EVENT_1_EVENT_TYPE_MASK);
+>>>> +
+>>>> +        if (mtype_seqid == skb_mtype_seqid) {
+>>>> +            ns = event->timestamp;
+>>>> +            list_del_init(&event->list);
+>>>> +            list_add(&event->list, &cpts->pool);
+>>>> +            break;
+>>>> +        }
+>>>> +    }
+>>>> +    spin_unlock_irqrestore(&cpts->lock, flags);
+>>>> +
+>>>> +    return ns;
+>>>> +}
+>>>> +
+>>>> +void am65_cpts_rx_timestamp(struct am65_cpts *cpts, struct sk_buff *skb)
+>>>> +{
+>>>> +    struct am65_cpts_skb_cb_data *skb_cb = (struct am65_cpts_skb_cb_data *)skb->cb;
+>>>> +    struct skb_shared_hwtstamps *ssh;
+>>>> +    int ret;
+>>>> +    u64 ns;
+>>>> +
+>>>> +    ret = am65_skb_get_mtype_seqid(skb, &skb_cb->skb_mtype_seqid);
+>>>> +    if (!ret)
+>>>> +        return; /* if not PTP class packet */
+>>>> +
+>>>> +    skb_cb->skb_mtype_seqid |= (AM65_CPTS_EV_RX << AM65_CPTS_EVENT_1_EVENT_TYPE_SHIFT);
+>>>> +
+>>>> +    dev_dbg(cpts->dev, "%s mtype seqid %08x\n", __func__, skb_cb->skb_mtype_seqid);
+>>>> +
+>>>> +    ns = am65_cpts_find_rx_ts(cpts, skb, AM65_CPTS_EV_RX, skb_cb->skb_mtype_seqid);
+>>>> +    if (!ns)
+>>>> +        return;
+>>>> +
+>>>> +    ssh = skb_hwtstamps(skb);
+>>>> +    memset(ssh, 0, sizeof(*ssh));
+>>>> +    ssh->hwtstamp = ns_to_ktime(ns);
+>>>> +}
+>>>> +EXPORT_SYMBOL_GPL(am65_cpts_rx_timestamp);
+>>>> +
+>>>>    /**
+>>>>     * am65_cpts_tx_timestamp - save tx packet for timestamping
+>>>>     * @cpts: cpts handle
+>>>> diff --git a/drivers/net/ethernet/ti/am65-cpts.h b/drivers/net/ethernet/ti/am65-cpts.h
+>>>> index 6e14df0be113..6099d772799d 100644
+>>>> --- a/drivers/net/ethernet/ti/am65-cpts.h
+>>>> +++ b/drivers/net/ethernet/ti/am65-cpts.h
+>>>> @@ -22,9 +22,9 @@ void am65_cpts_release(struct am65_cpts *cpts);
+>>>>    struct am65_cpts *am65_cpts_create(struct device *dev, void __iomem *regs,
+>>>>                       struct device_node *node);
+>>>>    int am65_cpts_phc_index(struct am65_cpts *cpts);
+>>>> +void am65_cpts_rx_timestamp(struct am65_cpts *cpts, struct sk_buff *skb);
+>>>>    void am65_cpts_tx_timestamp(struct am65_cpts *cpts, struct sk_buff *skb);
+>>>>    void am65_cpts_prep_tx_timestamp(struct am65_cpts *cpts, struct sk_buff *skb);
+>>>> -void am65_cpts_rx_enable(struct am65_cpts *cpts, bool en);
+>>>>    u64 am65_cpts_ns_gettime(struct am65_cpts *cpts);
+>>>>    int am65_cpts_estf_enable(struct am65_cpts *cpts, int idx,
+>>>>                  struct am65_cpts_estf_cfg *cfg);
+>>>> @@ -48,17 +48,18 @@ static inline int am65_cpts_phc_index(struct am65_cpts *cpts)
+>>>>        return -1;
+>>>>    }
+>>>>    -static inline void am65_cpts_tx_timestamp(struct am65_cpts *cpts,
+>>>> +static inline void am65_cpts_rx_timestamp(struct am65_cpts *cpts,
+>>>>                          struct sk_buff *skb)
+>>>>    {
+>>>>    }
+>>>>    -static inline void am65_cpts_prep_tx_timestamp(struct am65_cpts *cpts,
+>>>> -                           struct sk_buff *skb)
+>>>> +static inline void am65_cpts_tx_timestamp(struct am65_cpts *cpts,
+>>>> +                      struct sk_buff *skb)
+>>>>    {
+>>>>    }
+>>>>    -static inline void am65_cpts_rx_enable(struct am65_cpts *cpts, bool en)
+>>>> +static inline void am65_cpts_prep_tx_timestamp(struct am65_cpts *cpts,
+>>>> +                           struct sk_buff *skb)
+>>>>    {
+>>>>    }
+>>>>    
+> 
 
