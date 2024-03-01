@@ -1,218 +1,196 @@
-Return-Path: <linux-kernel+bounces-88896-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88895-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A0A386E81A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:18:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FD0C86E818
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:18:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ECC291F2296D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:18:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AD02C1F23809
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:18:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDBD63B2A4;
-	Fri,  1 Mar 2024 18:17:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B17527701;
+	Fri,  1 Mar 2024 18:17:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RoWvtFU5"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="E+whfIv5"
+Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E49F25622;
-	Fri,  1 Mar 2024 18:17:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.19
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709317043; cv=fail; b=BvADTYa6TIkplbCbfVBEwINmZ+h3B7t6Zclfddts6Ir0PLDqHuS5Rau/QgQlOIWgA77Kdb6M37cld7nw4fbFFuZhzXzTuPUPdVGMW/D5KVSU+zITHjXbYnaJM+LR3FiRcMBrFoe+wFESFa6i5WbnXOXxNBcxWSN1JAWh4SXxJCQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709317043; c=relaxed/simple;
-	bh=ngkg4YS4miiLyQXchZn35d4wfaRc0c1wpwYgxlTI038=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=eVrKdEuSQDVeTK+gIejuJ2pkf3a2HaDIETQm2J9OlKnV5lPAZYJ7xoNWxFdYD7KQ3w0EjZ7SE2SitbH5rLjxQ54YGKpcN38u8ST3prVOKhhVo7clch1sJkmlucTT53nWt7scSKlfcJMOJgheDgf+Yfc1avD8UOm26JiNmmt3QGQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RoWvtFU5; arc=fail smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709317041; x=1740853041;
-  h=date:from:to:cc:subject:message-id:references:
-   content-transfer-encoding:in-reply-to:mime-version;
-  bh=ngkg4YS4miiLyQXchZn35d4wfaRc0c1wpwYgxlTI038=;
-  b=RoWvtFU5dv2ME3rcU/XpvjYbvQPrs0d4dhlWJi0DYPROYJY4wEivVGC4
-   2GYcZTwtnL35qfCrk0RLX5c/7f+oe90YKmBtebpJG5F+9s/dpVpn8+i4m
-   Ff53cQDpNGc6Uvs3bN7AIPqKCKpyRTNmYiDjXOoQKh3Y2nycGusaBMU3Z
-   eSFqtYlBpvfNPAYiBNixfXbnJHVuSAYV2mtXJbyxikIip1Sok55gACBz+
-   ldyU5XuKkgpeQHdFKyERKi/2vAowLFtSk35LqUv9+BU3RG/RVhX4Lvcz4
-   efkBdnJ1bjjBRJwwYvmHsswae0BPMtrRQ8wq0T6SHYn8/xUxKXha7MZYz
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11000"; a="3720353"
-X-IronPort-AV: E=Sophos;i="6.06,196,1705392000"; 
-   d="scan'208";a="3720353"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 10:17:13 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,196,1705392000"; 
-   d="scan'208";a="8176804"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmviesa007.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 01 Mar 2024 10:17:13 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 1 Mar 2024 10:17:12 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Fri, 1 Mar 2024 10:17:12 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 1 Mar 2024 10:17:06 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YMpyeOBemPy/lLlb/ye4GZXpU4sH4nTxAM2oNLAfYQ3K9OEzp/zerlyZbP3ZVfQdABzCHBOpXev6eFYIEV077IRFWOWmkcaUfATlruAHEN2xngSIOtsdQM4+lGMn1szubM87PSYQy48us0Rdoa7sO68CMV86fgZvZVwzs30a8Bq+F4A53BIaRpyp+ovASrJFh18Hme8aFWbouiuAOg4cTCXyPGRFe2tmhrGmSenChVoxxvCowD29VL5A/k6ydElV1d9D9o4TFZbl+273dcypdAqiorY2bAuWFheTggfDPOs8Fh7dYAL5bm/kYW05fRou6mkVUzWz+WnEhLdka/ow/g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ipozm0tFpDxdvIqeoOX1ifAJ0PJ2ks78jrzXodSzcMw=;
- b=ZlmdxV6hUdZRYihlEXr+nEYdxEqsiRiwrGIiDBUNX3ADvy67GaNWG8I4/eCtjr8er8NbmSmo6t98F4Cs4E3EzkJhjHCiQstMyW6vx5AHbpsCVu5BTwmPutqegI3KmJVHbRerpEUN4xGI/+OGHJa3MAWQCKXytLZ5YR/PWOTTcvI5+IRjns2wyWFr+Dc77oMix1BeKzWwRiVaTfPzEvDAOoRDGlQM5rbG9Ozj1xkWVKI3YjKd7deqOeJG4Dnspvi/VMofXfsKNGLJh0UPWsouPkEVd3RKmGYxie/Q2LNPUGQ/TEyw1L8r6jIGRH1pG+M1bJmKcCZkp7j7LxUFoZsJjw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CY5PR11MB6139.namprd11.prod.outlook.com (2603:10b6:930:29::17)
- by PH7PR11MB6523.namprd11.prod.outlook.com (2603:10b6:510:211::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.32; Fri, 1 Mar
- 2024 18:17:04 +0000
-Received: from CY5PR11MB6139.namprd11.prod.outlook.com
- ([fe80::e9dd:320:976f:e257]) by CY5PR11MB6139.namprd11.prod.outlook.com
- ([fe80::e9dd:320:976f:e257%4]) with mapi id 15.20.7362.017; Fri, 1 Mar 2024
- 18:17:04 +0000
-Date: Fri, 1 Mar 2024 12:17:01 -0600
-From: Lucas De Marchi <lucas.demarchi@intel.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-CC: Stephen Rothwell <sfr@canb.auug.org.au>, Oded Gabbay <ogabbay@kernel.org>,
-	Thomas =?utf-8?Q?Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>, "DRM XE
- List" <intel-xe@lists.freedesktop.org>, KVM <kvm@vger.kernel.org>, "Linux
- Kernel Mailing List" <linux-kernel@vger.kernel.org>, Linux Next Mailing List
-	<linux-next@vger.kernel.org>, Yury Norov <yury.norov@gmail.com>
-Subject: Re: linux-next: manual merge of the kvm tree with the drm-xe tree
-Message-ID: <55pdgbv7ltrwnewhxz7ivugowczzomlm6yvco2nxfanxm4ffco@olkrf4wr65so>
-References: <20240222145842.1714b195@canb.auug.org.au>
- <CABgObfaDQMxj9CZBzea+=1fcFQXEemAJoH5Jvc9+tfiC7NAvrQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABgObfaDQMxj9CZBzea+=1fcFQXEemAJoH5Jvc9+tfiC7NAvrQ@mail.gmail.com>
-X-ClientProxiedBy: BY3PR05CA0007.namprd05.prod.outlook.com
- (2603:10b6:a03:254::12) To CY5PR11MB6139.namprd11.prod.outlook.com
- (2603:10b6:930:29::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBA883A1C5
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 18:17:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.176
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709317040; cv=none; b=PhXbVaeFmHnv5rBHpMRBCvYYXjbR1Ar0qDOvihwOV0shIdBpOHvM4w+63pUisnsIx51IUNGNUQkhjyiaItkCL77HWpHXuwi0bsFoEe9/sd0/AUToUU1O+rN91hHqZ8S00kwxBEhFihy43nJKk83+ZZERUOIcOiJIt6KjtwAJXRg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709317040; c=relaxed/simple;
+	bh=ORNRTXO5tve5Nbc9/dvCua1upVjXHlRaDwslfC29pOY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SOQGkfbT7Nj92GP7hOtHxrAvcfJ0ARYOOqqt7UB0q5rZ8YmFAK2RKtjKeO8t5k2XWj4yS+/dvrSfOfQm3s3Rz4qTFWlqt9DRZI30lqpJ02MN1Cz8k9YtcFBWxw8ZDsFYb/1dfbgqMQUJkbAzazw4x+KfmXUKC16d0sLOjemR1Cw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=E+whfIv5; arc=none smtp.client-ip=209.85.160.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-428405a0205so343411cf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 10:17:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709317038; x=1709921838; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7/XpCAVrNR7f3usUyCsnp/6VufeVu2JOUWJrzYbrmGQ=;
+        b=E+whfIv5HtsOENwRwBFdE0T2vskCsJAZtnt8OHrddv5xurWapjck55iYJm+LcLeJyW
+         /sNWfZtPsOHODuNej02qgvEHpf9/cs655CX7b2yWHNJVgia8JZEk1ZGRAlauRoJXJCrx
+         dxH/6paFv+z3N/w6SvS5BCPOGgFnlB03t0X8PEGQm3y7Zy7Z3b1dtjNmWMM5LhI3+9uZ
+         9s8WrmfnpIg4PtBtTl9/ZA5xVdFalB9OKpTqT33a5oiE6D+KG0euUxj/rpsRSxyulWTm
+         CVJkZY5md48Htfrwpfqqr/M4t870M/DeZDJT3c/su4vSJjTLBf+IwJDKgaEZUUsP9Rlg
+         Rtxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709317038; x=1709921838;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7/XpCAVrNR7f3usUyCsnp/6VufeVu2JOUWJrzYbrmGQ=;
+        b=shXs7tciGMUolKrl7bCHzDyfAvkVR5PFS6rep47oExkRMYrmyMdy9kmiKCrCDfYikV
+         l+UqfhnO4wx8786DsQhNRS5zvi5b1g4CMYeS0usk6HXVbpBCX/7kzzK7VUsfFdCoe4fw
+         Is3i8En8B7lr7C4Qv/yNGSfLhxXNVw2Nh0lE/B7B7jQBJ7HIFiX/iRf6tDUH8IAY20MV
+         l0iiK19VK5Us8AdwIQsFzOXN0Q8xAzI725BZBAEzkabYom+y4aqnWb3bm0iv2Ls3erEf
+         bxXuWLQSj4AWj0qSzDsFDS1t1yzEV25AfdyELof8zm5KkOzltFNOk2T4fBJdpt73tTNG
+         IbeQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWGIqn2PfAxMRCPN3NDsbYPkfJyyWB3pk9mDvz4mDVdxC++1SC7DFrV6HMzBoKi2+lePWlP6jdpH1dbSxY1cui7WnfBh9ZqjRYPxqdm
+X-Gm-Message-State: AOJu0YxVEzVV0fD4jnRtZWR8Rm8tSxTC18Pbq2u2nVb8FW5NIVcusPV7
+	A6M3BmMnSpo1OPp2yuJxFgK3FvS8aTd6Lybb663eanldc/z0U0wxLTdHmDDgL4QXJSPugS5RbWF
+	CTLZQO/U3thaLaRUCSCEYqtcepd3y1yXq4YpZ
+X-Google-Smtp-Source: AGHT+IH64w3XM2tu4oMulQS5R0gtlaWwhUlwTSJvlTxAqKqMt8U0FgeFMcjORD/zd3TbgUq/mHHUYeh6xc3tPY4Rnnc=
+X-Received: by 2002:a05:622a:170b:b0:42e:d51e:c718 with SMTP id
+ h11-20020a05622a170b00b0042ed51ec718mr46389qtk.9.1709317037508; Fri, 01 Mar
+ 2024 10:17:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY5PR11MB6139:EE_|PH7PR11MB6523:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3470142f-99ab-40d6-448a-08dc3a1bcc01
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: X4fW9aBtb4QSEr21DPuVrq4DPOPwv5/xc6gl5eMDoveCfN/zxzS22jCH597USxXCq/Akp7LM1MYOEq7zNU968LH+S4pNp3CCVlDgstHQm8Y81/muZZpyo0nhMV6glLbwmjlzNgPRUu23ZtYKxWiRc/BXASi5auxh6+wx2tPnI8n8Ar0/K1TzsuvIqak6Kc7duP8oqSg+f8B/tcqt4mxhs/9DJM5FxMhDo6Qj0TwdyAZYB2oVCBOBe/KT/gC6Wa+gm1g/Fw5K/4CyoMqnoVIsDrqDcz0oFIZkQQbfOsMUWkYQSnaAEEPR4KgVR+YYMvV3uCcxIy8A1K7uf2UpF4oLr5KiIrUBKtWHxL42sJwOzovikn6c6kFJ84sOvURwZHWcukMwz/uPfd230mdFbmXkgEB0Qb5SPnjEkgRgGEUFa83eh+tdTffcFdOXcuc6oPvUOvXNdLKG/KYaPI6QrmIIZQ/Fyy8feo3gwOOJr4GJ9zWhUStA2ICzCwZkFh3J2+JO2mBB/zN+r0/ZqrR9zNLvGDPsXyafU7j0f5nqos7pP8mLcrz7sYadB0hmDvHMwQ39HthBiUYz+9Xw7POqLrO+wg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6139.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?b1lRUzVLaUxSVGdKZU91R0NPVVhTczN4UVZBaUd6dFc1b0U4MzVYb2NQVkJM?=
- =?utf-8?B?YUhlUGgwaUVyMVdoeDgzN1VBVW5EeFBERHFmZS92Z1hQcFV1eklQdlFVSklR?=
- =?utf-8?B?RUt4Yzh3ZzFlVzJ5dFg2RkN5RkllTGJCNFhwWjY4NVlCQ3VieVJpUEpIOVdr?=
- =?utf-8?B?QnlqWkN6c2hqZytFcUx5VkNDd1NzS3FtNnNnNjUwczVocklvRmNaRHNFbisy?=
- =?utf-8?B?WVlJNHIxWXRnajZuaXJzNGhkRHNLYVJ6dUp5MDUxczR2WlZxYWE1cFV3eE1R?=
- =?utf-8?B?OTltKzVNbnRPa3BKSHlOQXF6MmhieDRrY203YWQ5WjJCMjlxRHdkL0NhZEhh?=
- =?utf-8?B?WjRjRlVGaHVLWTg5cWtjRmpIdzB3OFg1bTlVK2lYUS9pOXJrRmdqZUhIOGtV?=
- =?utf-8?B?eG9XY1ZNdTk5OTRWSFpjZDNINForWkNobzhvbzIvZ2pzUmFiOFFsL3VGaDEr?=
- =?utf-8?B?Ulk3cTU1VXpVaHRlZi9iZEVtSzdNVXBEbDc2OEE3SzB6TmZTZGl0c1daZDBP?=
- =?utf-8?B?WGs5QnZsc2FxUllNL0xGeHBZWndPVHhwU0lwY1JDN0ErdHdmR1QzV2cwYWxo?=
- =?utf-8?B?aVdHNktLaGxzSmdyNzJmbjEwYWtVS2lpWng1d20xVFozNG9lVE02ZnJ6TzlB?=
- =?utf-8?B?R0h2SVVWMkRETE9aQlB0MERhQTkwMXN3eTkwOGc1cThGdk01bE5RZ1RjbnZh?=
- =?utf-8?B?RE84OGJGMk45NVRYV2VIVVlmU285Qk45alU5N2NNM0g3NndLeWVJSkZxY1ZU?=
- =?utf-8?B?ZG01aVYrN1NXZ2lFTEdET0gzdzZKWnZ6ajdKVzVmalBXaDNJblFuNy9SNklP?=
- =?utf-8?B?OVBMWVc2SXc3ajBJZjRmeEk4a1NFbE9ZQmdXbnhYMFJXYjRKV2NwUGZnd3Zv?=
- =?utf-8?B?Mk50ZklnY2FIODQrVVZ1MlozUEYvakt0Q2xZSmQ0RE1UZkJjMnNpM1MyTysz?=
- =?utf-8?B?dnJvQktrV1BablJaV0xoZ1VkMGtXRHlNbXVQeVVWUzhIWTAyNmJiaFlmcFAz?=
- =?utf-8?B?RGZ6RzFmSmtQaGkzcnN5THNNd2RYUUlJUitOUW90SDAzQjk3eHRzVHl6N2tz?=
- =?utf-8?B?a0ZmMERvdGVnYzJUVDFvaG5CY0RIdFZJTHF6c1IwUjhSNTY4dXJ6NDRSUzJC?=
- =?utf-8?B?MkRIWHpxMlhUNzF0amJtdEJTY0t3WkN1RVFwczNEL0VJTGlvMnUwOHFUT0Ur?=
- =?utf-8?B?WWIvbmJhMHpCRjZmeGhpMkNvWWQ5VDdjQklRVE9SR2lhR1hpNnU2SXN2R1gx?=
- =?utf-8?B?OENRRmtENlpBN3VwQ0tCb2pZQytjRnh2VjV4ZlJ2TUFXWkhDU3NBenBqZkRU?=
- =?utf-8?B?Z1Znb3ZvVkJFbnU5WS95OFRQVXRJSHYwM3lTaWM3UmRlb1g5dW9PSmVsRlRX?=
- =?utf-8?B?UHNCaitCckxHazFuT2tjWEZSeVJ5YmtTWno4V3haQlpQRFhrMXREVFVVcVZv?=
- =?utf-8?B?ZGdCU0dYYmdGYXJzdUNNeXBUYnFxa1hSWk9ET0ZDUVA4RnlpWW95SUhMdVJr?=
- =?utf-8?B?bHg1VkRnZkxVaUxTeXN3ZXp1aHo1dmd5eFJvUWdqZ0RiOWJmS0pCSUU3MkZT?=
- =?utf-8?B?M25VL2UvVDRLbGZmN2ZQMUtSWUdQUGgvdXhVOFB6ZitZZU85b0RhRWwwaFFn?=
- =?utf-8?B?YzE3U2IvOXNDNDNta3lEYmJmd2Yzbmw1SGU0RHFtaXZKdml5ck80SHJhWjgz?=
- =?utf-8?B?VmRDOWdLaGlvN21HanVXci9VV1ByQ2haeFlLRHJ0bWwxMmlDbStYNitwR0Vn?=
- =?utf-8?B?NEJ1VTVwak5QQ3FNUHVlN2xTcnhuOVNJQ1BrVjZRQmJjakNuNzhuUW1IQmJx?=
- =?utf-8?B?d2ttMitLM3J0ay9VQndMVURkSTg3cjhnbUNiTFZIYzFJZngrcDlOUWJKYVRy?=
- =?utf-8?B?YjRZRmdYbFNnUHVnVFI1U3dnMGVRcTd3TkhsVGhnLzNpQXlsWjBsYUE1TUps?=
- =?utf-8?B?VVpXVG9haXUvK2tHTnVUMzdLZWhOeTZhTnlIYVRmNko2aXJ0RElVelp3QWph?=
- =?utf-8?B?UXUrRHhUYmdqcC9XQzh6bU5ERGlqTmlxMG9HVTJYTG81elNTRGlPSjhDMHhQ?=
- =?utf-8?B?aDBjeE1NVFRSTjlDL1dmNnQwMjVYeVFLVnl5SkZQcXo1Tm5zM1FNekp2U3V2?=
- =?utf-8?B?eEY1Wmp6SHE0V2xTTk9EWVlhdnduT2FobEd4ZEZMTGFtWDRDdytSbktqazNs?=
- =?utf-8?B?aWc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3470142f-99ab-40d6-448a-08dc3a1bcc01
-X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6139.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Mar 2024 18:17:04.2709
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jjrPqbrSi5gQBfPMqaY4W1UobTHPXLfRYJqgnd5eJFyEgF2p4X0pBFOLIF9GrUNMHs0aP40gNmW2Gow4n4jeJzbiSnyqhS883wnAxyXjgsI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB6523
-X-OriginatorOrg: intel.com
+References: <20240229001806.4158429-1-irogers@google.com> <20240229001806.4158429-3-irogers@google.com>
+ <ZeIVQhfDMP7_bSJ8@tassilo>
+In-Reply-To: <ZeIVQhfDMP7_bSJ8@tassilo>
+From: Ian Rogers <irogers@google.com>
+Date: Fri, 1 Mar 2024 10:17:03 -0800
+Message-ID: <CAP-5=fWpXHXd8Dd39o_KEcVaBkQKk=aXjYSVTWCitaY6Xm-T4A@mail.gmail.com>
+Subject: Re: [PATCH v1 02/20] perf jevents: Add idle metric for Intel models
+To: Andi Kleen <ak@linux.intel.com>
+Cc: Perry Taylor <perry.taylor@intel.com>, Samantha Alt <samantha.alt@intel.com>, 
+	Caleb Biggers <caleb.biggers@intel.com>, Weilin Wang <weilin.wang@intel.com>, 
+	Edward Baker <edward.baker@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, John Garry <john.g.garry@oracle.com>, 
+	Kan Liang <kan.liang@linux.intel.com>, Jing Zhang <renyu.zj@linux.alibaba.com>, 
+	Thomas Richter <tmricht@linux.ibm.com>, James Clark <james.clark@arm.com>, 
+	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 22, 2024 at 11:42:01AM +0100, Paolo Bonzini wrote:
->On Thu, Feb 22, 2024 at 4:58 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->>
->> Hi all,
->>
->> Today's linux-next merge of the kvm tree got a conflict in:
->>
->>   include/linux/bits.h
->>
->> between commits:
->>
->>   b77cb9640f1f ("bits: introduce fixed-type genmasks")
->>   34b80df456ca ("bits: Introduce fixed-type BIT")
->>
->> from the drm-xe tree and commit:
->>
->>   3c7a8e190bc5 ("uapi: introduce uapi-friendly macros for GENMASK")
->>
->> from the kvm tree.
->>
->> I fixed it up (see below) and can carry the fix as necessary. This
->> is now fixed as far as linux-next is concerned, but any non trivial
->> conflicts should be mentioned to your upstream maintainer when your tree
->> is submitted for merging.  You may also want to consider cooperating
->> with the maintainer of the conflicting tree to minimise any particularly
->> complex conflicts.
+On Fri, Mar 1, 2024 at 9:49=E2=80=AFAM Andi Kleen <ak@linux.intel.com> wrot=
+e:
 >
->Lucas, Oded, Thomas,
+> > +def Idle() -> Metric:
+> > +  cyc =3D Event("msr/mperf/")
+> > +  tsc =3D Event("msr/tsc/")
+> > +  low =3D max(tsc - cyc, 0)
+> > +  return Metric(
+> > +      "idle",
+> > +      "Percentage of total wallclock cycles where CPUs are in low powe=
+r state (C1 or deeper sleep state)",
+> > +      d_ratio(low, tsc), "100%")
 >
->do you have a topic branch that I can merge?
+> TBH I fail to see the advantage over the JSON. That's much more verbose
+> and we don't expect to have really complex metrics anyways.
 
-Yury set up a new tree and the patch we had in drm-xe-next will
-(eventually) go through that tree.  We also had some issues with those
-patches, so they are currently on the back burner. Current discussion
-going on at https://lore.kernel.org/intel-xe/20240208074521.577076-1-lucas.demarchi@intel.com/T/#mc0d83438c5b6164eabea85bb3b5eef7503dade84
+Are you saying this is more verbose or the json? Here is an example of
+a json metric:
 
-I'm surprised to see 3c7a8e190bc5 ("uapi: introduce uapi-friendly macros
-for GENMASK") with no acks from maintainer though. Btw, aren't you
-missing some includes in include/uapi/linux/bits.h?
+https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tr=
+ee/tools/perf/pmu-events/arch/x86/skylakex/skx-metrics.json?h=3Dperf-tools-=
+next#n652
+```
+    {
+        "BriefDescription": "Probability of Core Bound bottleneck
+hidden by SMT-profiling artifacts",
+        "MetricExpr": "(100 * (1 - tma_core_bound /
+(((EXE_ACTIVITY.EXE_BOUND_0_PORTS + tma_core_bound *
+RS_EVENTS.EMPTY_CYCLES) / CPU_CLK_UNHALTED.THREAD *
+(CYCLE_ACTIVITY.STALLS_TOTAL - CYCLE_ACTIVITY.STALLS_MEM_ANY) /
+CPU_CLK_UNHALTED.THREAD * CPU_CLK_UNHALTED.THREAD +
+(EXE_ACTIVITY.1_PORTS_UTIL + tma_retiring *
+EXE_ACTIVITY.2_PORTS_UTIL)) / CPU_CLK_UNHALTED.THREAD if
+ARITH.DIVIDER_ACTIVE < CYCLE_ACTIVITY.STALLS_TOTAL -
+CYCLE_ACTIVITY.STALLS_MEM_ANY else (EXE_ACTIVITY.1_PORTS_UTIL +
+tma_retiring * EXE_ACTIVITY.2_PORTS_UTIL) / CPU_CLK_UNHALTED.THREAD)
+if tma_core_bound < (((EXE_ACTIVITY.EXE_BOUND_0_PORTS + tma_core_bound
+* RS_EVENTS.EMPTY_CYCLES) / CPU_CLK_UNHALTED.THREAD *
+(CYCLE_ACTIVITY.STALLS_TOTAL - CYCLE_ACTIVITY.STALLS_MEM_ANY) /
+CPU_CLK_UNHALTED.THREAD * CPU_CLK_UNHALTED.THREAD +
+(EXE_ACTIVITY.1_PORTS_UTIL + tma_retiring *
+EXE_ACTIVITY.2_PORTS_UTIL)) / CPU_CLK_UNHALTED.THREAD if
+ARITH.DIVIDER_ACTIVE < CYCLE_ACTIVITY.STALLS_TOTAL -
+CYCLE_ACTIVITY.STALLS_MEM_ANY else (EXE_ACTIVITY.1_PORTS_UTIL +
+tma_retiring * EXE_ACTIVITY.2_PORTS_UTIL) / CPU_CLK_UNHALTED.THREAD)
+else 1) if tma_info_system_smt_2t_utilization > 0.5 else 0)",
+        "MetricGroup": "Cor;SMT;TopdownL1;tma_L1_group",
+        "MetricName": "tma_info_botlnk_core_bound_likely",
+        "MetricgroupNoGroup": "TopdownL1"
+    },
+```
 
-thanks
-Lucas De Marchi
+Even with common metrics like tma_core_bound, tma_retiring and
+tma_info_system_smt_2t_utilization replacing sections of the metric, I
+think anyone has to admit the expression is pretty unintelligible
+because of its size/verbosity. To understand the metric would at a
+first step involve adding newlines. Comments would be nice, etc.
 
->
->Paolo
->
+> And then we have a gigantic patch kit for what gain?
+
+I see some of the gains as:
+ - metrics that are human intelligible,
+ - metrics for models that are no longer being updated,
+ - removing copy-paste of metrics like tsx and smi across each model's
+metric json (less lines-of-code),
+ - validation of events in a metric expression being in the event json
+for a model,
+ - removal of forward porting metrics to a new model if the event
+names of the new model line up with those of previous,
+ - in this patch kit there are metrics added that don't currently
+exist (more metrics should be better for users - yes there can always
+be bugs).
+
+I also hope the metric grouping is clearer, etc, etc.
+
+> The motivation was the lack of comments in JSON? We could just add some
+> to the parser (e.g. with /* */ ).  And we could allow an JSON array for t=
+he
+> expression to get multiple lines.
+
+Imo, a non-json variant of json would just be taking on a tech debt
+burden for something that is inferior to this approach and a wasted
+effort. We already generate the json from other more intelligible
+sources using python - so I don't find the approach controversial:
+https://github.com/intel/perfmon/blob/main/scripts/create_perf_json.py
+
+The goal here has been to make a bunch of inhouse metrics public. It
+also gives a foundation for vendors and other concerned people to add
+metrics in a concise, with documentation and safe (broken events cause
+compile time failures) way. There are some similar things like common
+events/metrics on ARM:
+https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tr=
+ee/tools/perf/pmu-events/arch/arm64/arm/cmn/sys?h=3Dperf-tools-next
+but this lacks the structure, validation, documentation, etc. that's
+present here so my preference would be for more of the common things
+to be done in the python way started here.
+
+Thanks,
+Ian
+
+> -Andi
 
