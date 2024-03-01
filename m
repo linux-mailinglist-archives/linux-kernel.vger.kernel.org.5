@@ -1,69 +1,71 @@
-Return-Path: <linux-kernel+bounces-88356-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88357-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BA8B86E06D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:35:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6A1186E06F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:35:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DF2C1C20D57
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:35:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C18E1F22B96
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:35:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E3FD6CDA8;
-	Fri,  1 Mar 2024 11:35:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67FD66BFC4;
+	Fri,  1 Mar 2024 11:35:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DIaZK7QE"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cffAmzlw"
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C54236BFC9;
-	Fri,  1 Mar 2024 11:35:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F7916995C;
+	Fri,  1 Mar 2024 11:35:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709292917; cv=none; b=nA/kfIY1S/qngJZrnuYVx19rwf/bZpflN7FyPhQgoA10zLQPRD7Q2usFaNs5yR75fvtTqleJ1kJawp/Vj6Mqgr60ZEvY7CNz8CMJy6crK84r6Xv/Nhb0QG7/jf0dhmuxRCg5LMLGTlm9Ow3UJyy96sU/EMhqIRoeNwr8AVXSylc=
+	t=1709292918; cv=none; b=gb3/pW64fnkTpXN4W6mJ420pltobS0UHfKaWrxTdrY8bLPJWT5La+HBE952/l44d42/9irCeiURt/NF+U3kxjC+Wh4Ns+uREfhUh2LfcMr2vYckXcYZrYeQzLRuzZ8GAyWiBxzyt6IO7BVDFiSkcYTlcUe5gQ3/9gMdJkeIoWgA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709292917; c=relaxed/simple;
-	bh=eweBH8MXC7Oa2tU49s9FyefEcitZv3hyVqnOB4hbgAE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=kfPoXmt7/SbwlAh+PLF4RH4XbYuV1RVxV+0womS9js+H+LCbImKxDKOj5FW1IR5mlX17aSFVs7Hh3l3+wcqBABmnl7EcYKx3d/jyeAOa/g+5Ot/edshN96iE7Q2Xe5lG2c+xtyFx8Y7g1Yo77BCb+xL48UTGeJlinxR2gr+aPwY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DIaZK7QE; arc=none smtp.client-ip=209.85.218.48
+	s=arc-20240116; t=1709292918; c=relaxed/simple;
+	bh=8ACh0WaXC/d3smqhFcqHXaO1dAIcR5R+liOdl58ylc0=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=LKIVaoaB/RmyfQjo/LWDKaOncOMs95VhSWrUJL+59/8eXrrQTORj6MkfxlGNvKnqDG9hz8ZJkdIAH95XmnPJrnFqnPLSh9/Nm5UpUxUj0MvgW4IHhIjHNx0sR28INJDWR2dZc7tCnoMEH+DsXmAnF5CAIkhRdrQL44XO05CrX3s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cffAmzlw; arc=none smtp.client-ip=209.85.218.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a444205f764so252566466b.2;
-        Fri, 01 Mar 2024 03:35:15 -0800 (PST)
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a3f893ad5f4so312008166b.2;
+        Fri, 01 Mar 2024 03:35:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709292914; x=1709897714; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=QvBHCXAWkp+ub17HVIW8VAtvFSItSjV35+r++B1AoCM=;
-        b=DIaZK7QE/smWMVRijVasCuiZ+95fwvJHsmylJL5mUnJiFPQYtUaY/bmW5VzgK5I9HB
-         F2AIYvtbGMUSSR8qw7mErJP7DaDwN+8CPmdhEcsBPO09HDB4YOC0y1gkJEyRs5OnSSZT
-         f4hDbZBOVJNn4jwhybGu/BCfwPZoLX+HpRSBEBJQ5REsZH1/WokgBGlM4O76I+w8Ffww
-         +LgK4BHnIVuPkunt2kUDwxhesRQ5gT5rWe9JQDmraBeBT1Y6DUV7ltbhzXyAOl4yi7wN
-         pydfHTcNEYYqu1c6wG8EOMPyJZNXCbonmkm2N397LShPp7nAbuvYMVRJ64i1KnSPH96g
-         CdfQ==
+        d=gmail.com; s=20230601; t=1709292915; x=1709897715; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=czM8DBayHVyqm7eWnmJUx8XTvSwkYnsGOgEg/DJr9R4=;
+        b=cffAmzlwJipWWEk4mvFBnoovk1CrLhVZMN04cjq0VrUcqXV/Tb0kOXU1uFu3eX4vO7
+         EMvk5z82chvE6Z2og1/FqjrMv3/NP8DhAxxCLPRHi0XMf4aiWtiiLYL0Kczay/czaEB7
+         1TNwsCeUgO6ktQK5OcwxBa0BtpOZPZrcGpISyUD3kpB19jaXmmaaKmX5aG4d37U91Y5/
+         IBL9f+/cIMXHGFhzmRyURsU/oeztjUBZj1G2sU3P34Th36wEqnrL2MlRJBw7cXO3p904
+         54MWgqFFvqALu30FNjYoCFlwPDlT5IApRr0m0f7neZLGWCbQQNvgoxAULdbaiiBtriwA
+         +5rQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709292914; x=1709897714;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=QvBHCXAWkp+ub17HVIW8VAtvFSItSjV35+r++B1AoCM=;
-        b=Tr9bNIV6Um5mXNlKx6aYyTJ+iCae2uE0JlIbnBQR/TxNJ/y75/JXhmd2bgDB5bg4fr
-         WTiirgJqddcZv9Nd+264HzB7LPA/rjMZCtSuXB3viEmAL+ZPEyfB8XFfAkLQ+LHEdCZW
-         /2DQHwXgcjFIyHZaZk0N5Pw2vdg5fScIkv6eWAPR/WYP0eUVeKT8I60foKDw9pnc59qC
-         UO5LcZie5UoGOKLGgIkyUksP+mjB/bfU2YE/8R3djDb7Tmv+HXplM1cLjVizOnvgauK/
-         2ET+Ar+/6BZ0JylfdlJ2EqABOkzi2ycGYBwO/R/EjjpXAECnZZPw9bqili7xITy6GN+S
-         4nXg==
-X-Forwarded-Encrypted: i=1; AJvYcCVBevxp8kc4itdp3rTYSwbNuwSHG7XgLL2dzbCRpMQMTueJUoGB5MLHZ3XXdyhSIWVEcN+QZfA4Q9P6nRLDideBIRS4JYh3o2Oc0WSu
-X-Gm-Message-State: AOJu0YzvN0rz0mbLiq9NO9fOSd5H/NEUeELycg0QwJsapSfyfBki0lHp
-	puA24DctLsUmoP0GYfYc5IhZwpLZoVzajeQDO9HQNYmfir2fVEaJ
-X-Google-Smtp-Source: AGHT+IGzLP7Sb0dwHUDkT3mh64fsZ9V0JvdBga7KakkhfMJd9QAeJRQfc5C47i6a6XnRNwidqmjWow==
-X-Received: by 2002:a17:906:e211:b0:a43:fd9e:2d44 with SMTP id gf17-20020a170906e21100b00a43fd9e2d44mr1151665ejb.42.1709292913942;
-        Fri, 01 Mar 2024 03:35:13 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709292915; x=1709897715;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=czM8DBayHVyqm7eWnmJUx8XTvSwkYnsGOgEg/DJr9R4=;
+        b=bg+o9KNZdEOqKAvHnTayZTncFe9tAd8/04yYMu591WVEvH4qO1ApogV5hlBdbBHqVK
+         8miJzYaL0YJpZibJzpSn4GJKqwfgQA9R1LvtE2zhSY8OgZO0FB/iU6VLGWOe0CsRHVRb
+         roh7PBl2EN/5kLbYu1LpLBglUcfzx3myqjgNI0KTwM3C6M58xRgXCQSy5IIkihIRl4V9
+         YWcDrHdW8t/rCJNk8AJZRWoF2+73gb2EwROrnlw9YyrSdaSPBDpMGxh86QMD0DTDa/Fx
+         DUz2p86R+CJdF4xXgkloU26K1atO5+coOZHrWddT3jR54jJ9UoN/g6XLdQ8snye1zoOD
+         WAkQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUtRtGTrZal0qBx95yg7vq7RRNSbCnAKKshYS05muoszjgYbV//kV/UUFEogl4oO3HQrphAV+XUe+zzQUV8ftA3iJz7ItPjXjLoMJ9b
+X-Gm-Message-State: AOJu0YzbMl765qlTMo6xkb5RZadQtviXuw4KYZynwXtfmNwYpR3wYmcL
+	XRiGr/OKu3tXiw7vGqivcXx31mAIMUHW8YC6QS2gQVlgSgvJmExf
+X-Google-Smtp-Source: AGHT+IH+/9e4RSmsSeOscUfNHVqMBJcw/1QGsSy+l6pIBhMbP5jqUqbpEIzG0EOtFN44mEcEe34NMQ==
+X-Received: by 2002:a17:906:11ce:b0:a44:1fcf:9b9c with SMTP id o14-20020a17090611ce00b00a441fcf9b9cmr1045704eja.51.1709292915494;
+        Fri, 01 Mar 2024 03:35:15 -0800 (PST)
 Received: from localhost.lan (031011218106.poznan.vectranet.pl. [31.11.218.106])
-        by smtp.gmail.com with ESMTPSA id st11-20020a170907c08b00b00a3f5c39bf2asm1618457ejc.0.2024.03.01.03.35.13
+        by smtp.gmail.com with ESMTPSA id st11-20020a170907c08b00b00a3f5c39bf2asm1618457ejc.0.2024.03.01.03.35.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 03:35:13 -0800 (PST)
+        Fri, 01 Mar 2024 03:35:15 -0800 (PST)
 From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 To: Matthias Brugger <matthias.bgg@gmail.com>,
 	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
@@ -75,10 +77,12 @@ Cc: devicetree@vger.kernel.org,
 	linux-mediatek@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH 0/4] arm64: dts: mediatek: mt7622: fix some validation errors
-Date: Fri,  1 Mar 2024 12:35:02 +0100
-Message-Id: <20240301113506.22944-1-zajec5@gmail.com>
+Subject: [PATCH 1/4] arm64: dts: mediatek: mt7622: fix clock controllers
+Date: Fri,  1 Mar 2024 12:35:03 +0100
+Message-Id: <20240301113506.22944-2-zajec5@gmail.com>
 X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20240301113506.22944-1-zajec5@gmail.com>
+References: <20240301113506.22944-1-zajec5@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -90,17 +94,81 @@ Content-Transfer-Encoding: 8bit
 
 From: Rafał Miłecki <rafal@milecki.pl>
 
-One more step in cleaning up DTS for "make dtbs_check".
+1. Drop unneeded "syscon"s (bindings were updated recently)
+2. Use "clock-controller" in nodenames
+3. Add missing "#clock-cells"
 
-Rafał Miłecki (4):
-  arm64: dts: mediatek: mt7622: fix clock controllers
-  arm64: dts: mediatek: mt7622: fix IR nodename
-  arm64: dts: mediatek: mt7622: fix ethernet controller "compatible"
-  arm64: dts: mediatek: mt7622: drop "reset-names" from thermal block
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+---
+ arch/arm64/boot/dts/mediatek/mt7622.dtsi | 27 +++++++++++-------------
+ 1 file changed, 12 insertions(+), 15 deletions(-)
 
- arch/arm64/boot/dts/mediatek/mt7622.dtsi | 34 ++++++++++--------------
- 1 file changed, 14 insertions(+), 20 deletions(-)
-
+diff --git a/arch/arm64/boot/dts/mediatek/mt7622.dtsi b/arch/arm64/boot/dts/mediatek/mt7622.dtsi
+index 3ee9266fa8e9..283fdf7d2d8b 100644
+--- a/arch/arm64/boot/dts/mediatek/mt7622.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt7622.dtsi
+@@ -283,16 +283,14 @@ thermal_calibration: calib@198 {
+ 		};
+ 	};
+ 
+-	apmixedsys: apmixedsys@10209000 {
+-		compatible = "mediatek,mt7622-apmixedsys",
+-			     "syscon";
++	apmixedsys: clock-controller@10209000 {
++		compatible = "mediatek,mt7622-apmixedsys";
+ 		reg = <0 0x10209000 0 0x1000>;
+ 		#clock-cells = <1>;
+ 	};
+ 
+-	topckgen: topckgen@10210000 {
+-		compatible = "mediatek,mt7622-topckgen",
+-			     "syscon";
++	topckgen: clock-controller@10210000 {
++		compatible = "mediatek,mt7622-topckgen";
+ 		reg = <0 0x10210000 0 0x1000>;
+ 		#clock-cells = <1>;
+ 	};
+@@ -734,9 +732,8 @@ wmac: wmac@18000000 {
+ 		power-domains = <&scpsys MT7622_POWER_DOMAIN_WB>;
+ 	};
+ 
+-	ssusbsys: ssusbsys@1a000000 {
+-		compatible = "mediatek,mt7622-ssusbsys",
+-			     "syscon";
++	ssusbsys: clock-controller@1a000000 {
++		compatible = "mediatek,mt7622-ssusbsys";
+ 		reg = <0 0x1a000000 0 0x1000>;
+ 		#clock-cells = <1>;
+ 		#reset-cells = <1>;
+@@ -793,9 +790,8 @@ u2port1: usb-phy@1a0c5000 {
+ 		};
+ 	};
+ 
+-	pciesys: pciesys@1a100800 {
+-		compatible = "mediatek,mt7622-pciesys",
+-			     "syscon";
++	pciesys: clock-controller@1a100800 {
++		compatible = "mediatek,mt7622-pciesys";
+ 		reg = <0 0x1a100800 0 0x1000>;
+ 		#clock-cells = <1>;
+ 		#reset-cells = <1>;
+@@ -921,12 +917,13 @@ sata_port: sata-phy@1a243000 {
+ 		};
+ 	};
+ 
+-	hifsys: syscon@1af00000 {
+-		compatible = "mediatek,mt7622-hifsys", "syscon";
++	hifsys: clock-controller@1af00000 {
++		compatible = "mediatek,mt7622-hifsys";
+ 		reg = <0 0x1af00000 0 0x70>;
++		#clock-cells = <1>;
+ 	};
+ 
+-	ethsys: syscon@1b000000 {
++	ethsys: clock-controller@1b000000 {
+ 		compatible = "mediatek,mt7622-ethsys",
+ 			     "syscon";
+ 		reg = <0 0x1b000000 0 0x1000>;
 -- 
 2.35.3
 
