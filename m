@@ -1,165 +1,117 @@
-Return-Path: <linux-kernel+bounces-88322-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88323-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BE0A86E007
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:18:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E94386E00A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:21:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1342A1F237D0
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:18:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8AE1B1C2110F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:21:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B6286BFD4;
-	Fri,  1 Mar 2024 11:17:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A952E6BFDB;
+	Fri,  1 Mar 2024 11:20:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FckhzRTP"
-Received: from mail-vs1-f54.google.com (mail-vs1-f54.google.com [209.85.217.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UlK8xsP0"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4342820E6;
-	Fri,  1 Mar 2024 11:17:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17AF820E6;
+	Fri,  1 Mar 2024 11:20:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709291876; cv=none; b=baQMZuOrPBwW43LCA6i4uTld2CRlHszgW1JjzU3NtS4wbMS3n6F04Ia4TQX+uJXsuRbhMcXupYVXawUCJHiJzR8eQzs3Yu2Uo3N6f6PxqVBi6BKg6o2MK0zupBcAV4uYjb7P24uBbCK/c6lAx2UZVbrUN561D2z43GA/2i0U4UM=
+	t=1709292056; cv=none; b=ThVxE5dhrXLQW5hvD7PsJB4BUDpsG1g7anIBV0tJVHbmw5FDrX5IfbqiJ//Xbq5H71O/GMdZ4A9mKJFcCx7kCmNqL1tvW/jt7hSd2dJcfRqrfmlenMaPKv45+I5/3P+DgIE369zj7jtyFyhXGRfjgTPvl9FH6Z3CtABqRDXeDUg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709291876; c=relaxed/simple;
-	bh=D4Yzpe7+BaiWIZI79CoBEFuH6u33sbHObSSwGbqQXoM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Eiw2ECyPmKy3zdt2Ndocw5RoV3iHAwTV0ga/hXz8bkuqjYCIzkCZP0D+b5UuvhscE0SxoUkmdtJdCfGRFNSwjPUFkU79AulSU+L1D9l9NHkCmJ0QOjWppXOvEJR/r7ntpJrdn2svjsXYDo7e3iAaIW5hXhVVRAWELBKmRfwQWwQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FckhzRTP; arc=none smtp.client-ip=209.85.217.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f54.google.com with SMTP id ada2fe7eead31-47265631782so444049137.0;
-        Fri, 01 Mar 2024 03:17:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709291874; x=1709896674; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4PIzBFt3045Qodp8Tc294RcaDOpUCULciO01suUMZ2Y=;
-        b=FckhzRTPYbWyFXi9YY/sEKAy+XOj6ov05hbjcmLGM68HWsQ5jZs+s4CcF4O/d7Hz5z
-         oT9TzAH4NWnBOATDnOsBsrvG+kXO6Arqk7qLxvPL17rs4WzzM8gbnpR8poKla+kPlhUu
-         EQEzonpCDWC2TWipoxd1/7k6wwqKk5wNKLSehPkOW3lV96DSO2ALyznauTBDEnudkqgD
-         qFFvjYTzAzkadBaQsWdZm2Gs7UOCGdy5YiL8qG1s0INwZZF/ces7NLgpgXa/Opzz+Ghb
-         mWNurQqkkakAKixewxTn4nPiXqgTkPbzGnWRdeoASlWbrMH+utScjbCe+zxDzSew2aJm
-         Kk7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709291874; x=1709896674;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4PIzBFt3045Qodp8Tc294RcaDOpUCULciO01suUMZ2Y=;
-        b=RP7249RX6wzSILBsJ+9TGU5YlJe9jv1qVJN5ntkdLKV5/5NbllgaTcG3gDU8Es1LGG
-         Fx/U20VYV8Z6ZgrnwdmMCfNWuoXxM40U6Vi2UMYlKuy3c42xaf6qvICgLwiwpQhZliiU
-         cXl4/gTmN0Boz+6crZ5vkLBq6liGOSKahTOi4GSpOuD/p3OAM2uQMFdDdxGJzgvvuubz
-         xJBACs8j1QJtfvQR8hNlMzC4AWl4SypNj+4h23v+Tt/n3ZYlGtdD2gPkQtTWX5v3rLTt
-         +eji3nsVamfUUxeVwnsyiGzbp7N81D8+3jKwpfH4FhYqIYWw1x22uz+xuHtpFKaUONcd
-         QoEg==
-X-Forwarded-Encrypted: i=1; AJvYcCXuwpEwCeABbt7nrpzUOQEGLPzo4N2fnJFcCFENFZraNuYb9M1hG4D5rJdkVTWHm9O7/lBuEy/QGKdDmqK+QIZf9wdXcv1GTsIVTGisyb/dOG4UQP9tKIjP+dNfjl+43sKSjeQsG+7dCd2j
-X-Gm-Message-State: AOJu0Yx+ZeuiX1uzZP5I2PJ5+GKHyO1dBCujMbKkPbJpU1iOr+QHCYxf
-	bnXqKBzt+E57LgTRQqVioJy4XQrknSnRTIskiQ9kPtX0P8B9xuD2Tnr4MZiahnkOTm1OphKjJKj
-	EQNDHc/hju1Mj3DaIC3EYGTYbs0w=
-X-Google-Smtp-Source: AGHT+IEVUu5WnCqYzCDVF/JN8zQh7b9mKD8dIEo85xmhV+/TubfvNX658CQmk3ZrNVANuGIUx+iSoSocNWzV57UojK8=
-X-Received: by 2002:a05:6102:134f:b0:470:3ade:7b99 with SMTP id
- j15-20020a056102134f00b004703ade7b99mr1036570vsl.23.1709291874194; Fri, 01
- Mar 2024 03:17:54 -0800 (PST)
+	s=arc-20240116; t=1709292056; c=relaxed/simple;
+	bh=pgn5iVULKfWhEYNxsAf1VZCApM0QiVchZHcnD1k0Avs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=aJi2iHdtwCKSB5RJlyWjZQcxeY+mG60c0xqxfhtpxdnhuA4LuW1M1wsU6e2HqwVVW4oxvriDVTrhWKEZsHg7eJrBnLMUL9XfaLVdl2GiraqGgixNiX8kldb5UcwiNp0ptWcfBeNO4x5o0Q3XDKUEpWUBNHtdLzZEZ/BUZEaZ0Ow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UlK8xsP0; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709292054; x=1740828054;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=pgn5iVULKfWhEYNxsAf1VZCApM0QiVchZHcnD1k0Avs=;
+  b=UlK8xsP0olN2rdNy5rjYDxOaic1sJkpsR+tnKRs+QMN6g2+ATGdZ03Ha
+   oHF9zDTYP4Yvul/bKT81Tzqw+4xtmuB5j6MDCr7JiV5Mwre3RJ21ftG0Q
+   o5dn0Rxw4xfKV0VL+wcasOjbfKI/nIKTD8B0ylf5ns7dW1OkNiVgJp0Bn
+   FXMiz6NLjcYQzn12gjA2GYCr5CmAjY2JhXPbu1nT8upOFLajjeAfLWbbJ
+   ZzlcvRYBJVJSYITv04AZCsDs2rnbqAufytrytU4jJpEytp2ZvoTh9Xm4E
+   ZNj8zLxEq5aUaE0iRdatqGXgC5OpIGy1P+JrDNAqLi0jN3kW9ig7RbByY
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="14465006"
+X-IronPort-AV: E=Sophos;i="6.06,196,1705392000"; 
+   d="scan'208";a="14465006"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 03:20:52 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,196,1705392000"; 
+   d="scan'208";a="31350664"
+Received: from rcaudill-mobl3.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.209.48.180])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 03:20:48 -0800
+From: Kai Huang <kai.huang@intel.com>
+To: linux-kernel@vger.kernel.org,
+	kvm@vger.kernel.org
+Cc: x86@kernel.org,
+	dave.hansen@intel.com,
+	kirill.shutemov@linux.intel.com,
+	peterz@infradead.org,
+	tglx@linutronix.de,
+	bp@alien8.de,
+	mingo@redhat.com,
+	hpa@zytor.com,
+	seanjc@google.com,
+	pbonzini@redhat.com,
+	isaku.yamahata@intel.com,
+	jgross@suse.com,
+	kai.huang@intel.com
+Subject: [PATCH 0/5] TDX host: Provide TDX module metadata reading APIs
+Date: Sat,  2 Mar 2024 00:20:32 +1300
+Message-ID: <cover.1709288433.git.kai.huang@intel.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240222020617.31041-1-21cnbao@gmail.com> <ZeGtrvm9WGv5cxQV@gondor.apana.org.au>
-In-Reply-To: <ZeGtrvm9WGv5cxQV@gondor.apana.org.au>
-From: Barry Song <21cnbao@gmail.com>
-Date: Sat, 2 Mar 2024 00:17:42 +1300
-Message-ID: <CAGsJ_4wPeXMZTAQpXsqN0Q3E5_vvF83UzeoVqL01qjnDZACJzQ@mail.gmail.com>
-Subject: Re: [PATCH v6] crypto: scompress: remove memcpy if sg_nents is 1 and
- pages are lowmem
-To: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: David Miller <davem@davemloft.net>, linux-crypto@vger.kernel.org, 
-	Andrew Morton <akpm@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Chris Li <chriscli@google.com>, Chris Li <chrisl@kernel.org>, 
-	Seth Jennings <sjenning@redhat.com>, Vitaly Wool <vitaly.wool@konsulko.com>, 
-	Barry Song <v-songbaohua@oppo.com>, Nhat Pham <nphamcs@gmail.com>, 
-	Yosry Ahmed <yosryahmed@google.com>, Chengming Zhou <zhouchengming@bytedance.com>, 
-	Matthew Wilcox <willy@infradead.org>, Kent Overstreet <kent.overstreet@linux.dev>, 
-	"Darrick J. Wong" <djwong@kernel.org>, Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Mar 1, 2024 at 11:28=E2=80=AFPM Herbert Xu <herbert@gondor.apana.or=
-g.au> wrote:
->
-> On Thu, Feb 22, 2024 at 03:06:17PM +1300, Barry Song wrote:
-> >
-> > -     scatterwalk_map_and_copy(scratch->src, req->src, 0, req->slen, 0)=
-;
-> > +     if (sg_nents(req->src) =3D=3D 1 && !PageHighMem(sg_page(req->src)=
-)) {
-> > +             src =3D page_to_virt(sg_page(req->src)) + req->src->offse=
-t;
->
-> Incidentally this made me look at other uses of PageHighMem in
-> the kernel.
->
-> The one in copy_page_from_iter_atomic looks buggy because it assumes
-> that the kmap never maps a page if PageHighMem is false, which is not
-> the case for CONFIG_DEBUG_KMAP_LOCAL_FORCE_MAP.
+KVM will need to read bunch of TDX module metadata fields to create and
+run TDX guests.  In the long term, other in-kernel TDX users, e.g., VT-d
+also likely will need to read metadata.  This series provides common APIs
+in the TDX host code so that KVM can use.
 
-You are right. This needs to be fixed.
+This series has been sent out together with the v19 KVM TDX patchset, and
+actually received one minor comment from Juergen [1](thanks!), which I
+fixed in this series.
 
->
-> > @@ -152,8 +165,12 @@ static int scomp_acomp_comp_decomp(struct acomp_re=
-q *req, int dir)
-> >                       ret =3D -ENOSPC;
-> >                       goto out;
-> >               }
-> > -             scatterwalk_map_and_copy(scratch->dst, req->dst, 0, req->=
-dlen,
-> > -                                      1);
-> > +             if (dst =3D=3D scratch->dst) {
-> > +                     scatterwalk_map_and_copy(scratch->dst, req->dst, =
-0,
-> > +                                              req->dlen, 1);
-> > +             } else {
-> > +                     flush_dcache_page(sg_page(req->dst));
->
-> I think this is still wrong for the > PAGE_SIZE case.  The existing
-> code flushes each page sequentially  but the new code only flushes the
-> first page.
+Now I am sending out this series separately to reduce the size of the KVM
+TDX patchset.  Paolo and Sean are doing similar things [2][3].
 
-right, can it be fixed like the below?
+[1]: https://lore.kernel.org/kvm/cover.1708933498.git.isaku.yamahata@intel.com/T/#mbe96ac2b6560897083afdbe1db446a75a724e4e9
+[2]: https://lore.kernel.org/kvm/20240227232100.478238-21-pbonzini@redhat.com/T/
+[3]: https://lore.kernel.org/kvm/20240228024147.41573-16-seanjc@google.com/T/
 
-diff --git a/crypto/scompress.c b/crypto/scompress.c
-index 185d2359f28b..d85f0318f273 100644
---- a/crypto/scompress.c
-+++ b/crypto/scompress.c
-@@ -169,7 +169,11 @@ static int scomp_acomp_comp_decomp(struct
-acomp_req *req, int dir)
-                        scatterwalk_map_and_copy(scratch->dst, req->dst, 0,
-                                                 req->dlen, 1);
-                } else {
--                       flush_dcache_page(sg_page(req->dst));
-+                       int nr_pages =3D DIV_ROUND_UP(req->dst->offset +
-req->dlen, PAGE_SIZE);
-+                       int i;
-+
-+                       for (i =3D 0; i < nr_pages; i++)
-+                               flush_dcache_page(sg_page(req->dst) + i);
-                }
-        }
- out:
+Kai Huang (5):
+  x86/virt/tdx: Rename _offset to _member for TD_SYSINFO_MAP() macro
+  x86/virt/tdx: Move TDMR metadata fields map table to local variable
+  x86/virt/tdx: Unbind global metadata read with 'struct
+    tdx_tdmr_sysinfo'
+  x86/virt/tdx: Support global metadata read for all element sizes
+  x86/virt/tdx: Export global metadata read infrastructure
 
->
-> Thanks,
-> --
-> Email: Herbert Xu <herbert@gondor.apana.org.au>
-> Home Page: http://gondor.apana.org.au/~herbert/
-> PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
->
+ arch/x86/include/asm/tdx.h  | 22 ++++++++++
+ arch/x86/virt/vmx/tdx/tdx.c | 84 +++++++++++++++++++++----------------
+ arch/x86/virt/vmx/tdx/tdx.h |  2 -
+ 3 files changed, 71 insertions(+), 37 deletions(-)
 
-Thanks
-Barry
+
+base-commit: 5bdd181821b2c65b074cfad07d7c7d5d3cfe20bf
+-- 
+2.43.2
+
 
