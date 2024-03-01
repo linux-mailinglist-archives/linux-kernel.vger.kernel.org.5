@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-88944-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88945-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08D4E86E8B3
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:49:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F7F886E8B4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:49:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B051D287AB2
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:49:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4317D288368
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:49:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6C2C3C49B;
-	Fri,  1 Mar 2024 18:48:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E1F63CF75;
+	Fri,  1 Mar 2024 18:48:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wQWq69kw"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SqCkYMSe"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82C9E3C097
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 18:48:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B39613C49A
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 18:48:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709318885; cv=none; b=VOfQt1YzKYYPIOZgIIKEVFjMHReJKlGdxBJbXZh4oQKr8iNqNKuwr1RDVAgahtFQDmURDTBChc02K/ILixav8yvsX5/CNluZ+xsCVGijuIiNEYqrPSB4trOwZXbIau7Cb5IhBnoGb65qeYCY45N+O21Ch629TS0WGtIi3Gm38XQ=
+	t=1709318887; cv=none; b=Gl9NkBJxYXFzpa/6FM9+4D0rHg20h54xvvcMmVQaHcsBdDRKus0pETLN+2HfG+iIvj3anf7/rFne2CdxwV66BEth0HS+Ad4nMG9jjAh3HXKrpDmp3b7w1MS4nOukNuOxhrP0nwUFXTWOKBwSVLg9TxrS8yR0xvJOyP9I05BbJ+Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709318885; c=relaxed/simple;
-	bh=Ttu1a53AKHn6jERMdPOWyCk47DSzrYVS6BszAMd1Sa0=;
+	s=arc-20240116; t=1709318887; c=relaxed/simple;
+	bh=XBT9PFw4GJEI1QEQOFY5V3VQlW/6wsuXkDB+REWJty8=;
 	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Content-Type; b=QumkMjTJJBC0BHoFW12StUI4TDoQ/NdXKBE0zImk2+PPCV/G+RPESqh6t7XoHngpywkCOWaMsdHQ2RziOcyK8FIknHzQGiz1UUeO6FXICjE4pPT/R/l/ETdTGd4G/AIJL+G7/y2DiLeASRsPk2YoTBBRx4qTG3jZUxdy9rKzRYE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wQWq69kw; arc=none smtp.client-ip=209.85.219.202
+	 To:Content-Type; b=GWZ6yWnJPkxUe1vE1ey6XTHSVTxN/ZSM6z/yfffMFP6ys0gJVKZue0JOO1bvMmUJlTBWttaUP+QmeLSB1SNGDz2PueMCmQ5+f9Fl07l8k6ncb7lfAArw/fONJiB92rYfgv6BCMW6fAczDunMTuzAQoUxsI8m8EjjnXpEwyV7nB8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=SqCkYMSe; arc=none smtp.client-ip=209.85.128.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dcbfe1a42a4so4654337276.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 10:48:03 -0800 (PST)
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-607838c0800so38912087b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 10:48:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709318882; x=1709923682; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1709318885; x=1709923685; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=3qpQTOjMlbYqRHWOkfWf3rXeImb6hJen/IuHxVmpGuM=;
-        b=wQWq69kwH3Rxc5XR4IZg6z7sSYSQ+gwrT9+lWcLDFtaT3J0HFpU5lOzMQiRyOGrNWr
-         SijFzn+D5oWQOnr/MzG2YI6/vJ5H9zuKV0/8Ktxbpc7bCznfq53NydHiQbdcJgOkgvHC
-         Bk1pDH7aqDRvrGNFt7pnC17sTbxbQ684n4NSQ4E1ZjpK4e36Z2Q/MyEDgB0L2UlsIU1a
-         PnY6hAl00clcfh0D1J65ckUo5VaIeamURn6IkdZPy4DD6LZOIUm9PjXHtW7YzYPYNyCl
-         TfI600VoxtXz2UlSYsTfNrqed9rB1nAYIYpN4vU+sZn/EVUrffNu2yLY6mX8HBeraMpT
-         P16A==
+        bh=QW5aXCnWYkSdBtfKb1tyFWz2NLyYuSqZgMPUtXRmNrc=;
+        b=SqCkYMSegblOi7eJ1yNAYlydT0U/Jp1fbEVwXiQDqcgaCJD8BYfycN8NcFkjnDgAWd
+         BBjJbY6VzCjKJeY9rHQZoI0HtR9xo97YAkjmeyr762x3BCH4KuyaI6ncy2zeEW6Io4Vc
+         /1xCUF2EN7pwGXbRVjShjdmF2RmyQYshBqvmtwdRG9/yypINhWFT27jVN9+YujoDU3DW
+         9w784GQVT2hsSfB/vGQ5MmiCMWF9rl6A2dp+cJz9GFtrfJLGl10O/C3E2G9xhfZGJ716
+         LfugjHv04cf4qG2WSxRmKfC1yLcUjFs4xH1ORvuxBYmKxKDkyEhL+OKEK0IWUiHYOHjs
+         XZhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709318882; x=1709923682;
+        d=1e100.net; s=20230601; t=1709318885; x=1709923685;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3qpQTOjMlbYqRHWOkfWf3rXeImb6hJen/IuHxVmpGuM=;
-        b=kvmaSN9a136mWxiPBHTrLERu8KL+USugcHR5xWb/qu079w1MHp62zKKcea9Hve1ErR
-         QmdEt4ERteDBB+4c+Xe8tKgAP786QsZzB8/aNsp1uegYgfeZgdth4yhRZFtuyp7xOGhb
-         MjlJQVC6Y+bPa36SGrCPP2YvnujnyGA6Ws9hKXLyuQ64gLcIjrVxBLYKT1zKnvTQx5UD
-         Lf0+MamG+mbCeRwC8IVYebaNGBLKPRh7DBFkwyQhTtuLIqfwSAG+jHmQudINRCL414Yn
-         OZ8HPYYUinDWudNpIELe4ZO8doXjg55LDLJwgOqTTiclyVHhO0owDN0VJVgaesOtcoHc
-         y9nQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUb9AJ9NPqkZiUgtsMP5Xk4qfOh5cXqeWx1T6fhHrikMvECNZaLdJ0L9RzHoU1euFwMesFbjuCHUgd9Bfnlp78p8WGnicl+A9BoqtFg
-X-Gm-Message-State: AOJu0YyucXpylPu/3cLp3HH5WL26Vl8lN46WbDFSEg4He83xDKBXIz4X
-	Cuz9Qc6jYUqmRRvP7SdCThmtznYwxl6tndIRJd4vS029FGMx53YGPECJ3xwpq0KxdEZnPt0Qapy
-	eW1/dWQ==
-X-Google-Smtp-Source: AGHT+IHyhUpYurt4vD+rrB/joKVLTsWMuBKF3q9/HAOBpTvjJTE86OHEg3O7FWiNyP92JukvKjLFOJ2CMZAZ
+        bh=QW5aXCnWYkSdBtfKb1tyFWz2NLyYuSqZgMPUtXRmNrc=;
+        b=LhXaJAAovpp8B53JisJDSxyi7W5Dxdq6XbVq175TAX/YIjIfthoDxXiDQLCVsXGjjL
+         sHNQ618jy3RC4SMlvZj5UHD7VdlovwBqPtn0vi4x9WLOCBvBWBN+pkH1L0gmnah1u19z
+         9V3Bo7fRof6f/BlJBK8fbE88thmNY5UHPibihcZM0bux7yr2KDw6xlhgKg0YkhiMmOVF
+         KNipsaOO7h9uPTKHL432dfy7D1pGyXNRYw3X0JDMlwYirYr8lUHnycNa1qUk5Db34zDh
+         1zni3ojvZI839G7Z4gVzq+fV+MLgcsnk4Ap/lEGTuFXBY/2maWwtKkpW9S50BF1hf08s
+         Kcvg==
+X-Forwarded-Encrypted: i=1; AJvYcCUP4B8zX75NyLYT8H+TVbUmaTENY/XiL0rkb6QQvs1MlCadRDBsxxhcD5wBmk4+Nj+eBS6amVYSF/VVEhUxjNHXRHe51PRXHJ7G8FZz
+X-Gm-Message-State: AOJu0Yw8X63nVEb3Fpl7pGuWtuvWUaJKt8CbmQnXXDAam0brCWdAzPEr
+	NVtT8U7yXe3/U/29NlaLUB10MxjCMopc38WX/XsIOeuEc+8ftN6aZYa8hn1LAv3/UZgqcHPPAFc
+	sA4Sz3Q==
+X-Google-Smtp-Source: AGHT+IHi8ll8T6N/4FKRHr3jgBpE9kBtsY0MxYnyl87W0DLqijXID3ZgAZT5SDy9eMsuZjtJbkhonmVvY8a2
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:af4b:7fc1:b7be:fcb7])
- (user=irogers job=sendgmr) by 2002:a05:6902:f0b:b0:dc9:5ef8:2b2d with SMTP id
- et11-20020a0569020f0b00b00dc95ef82b2dmr530873ybb.4.1709318882598; Fri, 01 Mar
- 2024 10:48:02 -0800 (PST)
-Date: Fri,  1 Mar 2024 10:47:32 -0800
+ (user=irogers job=sendgmr) by 2002:a05:6902:110d:b0:dc6:e884:2342 with SMTP
+ id o13-20020a056902110d00b00dc6e8842342mr710276ybu.5.1709318884811; Fri, 01
+ Mar 2024 10:48:04 -0800 (PST)
+Date: Fri,  1 Mar 2024 10:47:33 -0800
 In-Reply-To: <20240301184737.2660108-1-irogers@google.com>
-Message-Id: <20240301184737.2660108-8-irogers@google.com>
+Message-Id: <20240301184737.2660108-9-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,7 +74,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240301184737.2660108-1-irogers@google.com>
 X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Subject: [PATCH v2 07/12] perf jevents: Add itlb metric group for AMD
+Subject: [PATCH v2 08/12] perf jevents: Add dtlb metric group for AMD
 From: Ian Rogers <irogers@google.com>
 To: Sandipan Das <sandipan.das@amd.com>, Ravi Bangoria <ravi.bangoria@amd.com>, 
 	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
@@ -88,79 +88,140 @@ To: Sandipan Das <sandipan.das@amd.com>, Ravi Bangoria <ravi.bangoria@amd.com>,
 	linux-perf-users@vger.kernel.org, Stephane Eranian <eranian@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Add metrics that give an overview and details of the l1 itlb (zen1,
-zen2, zen3) and l2 itlb (all zens).
+Add metrics that give an overview and details of the dtlb (zen1, zen2,
+zen3).
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/pmu-events/amd_metrics.py | 47 ++++++++++++++++++++++++++++
- 1 file changed, 47 insertions(+)
+ tools/perf/pmu-events/amd_metrics.py | 108 +++++++++++++++++++++++++++
+ 1 file changed, 108 insertions(+)
 
 diff --git a/tools/perf/pmu-events/amd_metrics.py b/tools/perf/pmu-events/amd_metrics.py
-index dda904998269..82aab39c2a50 100755
+index 82aab39c2a50..be10acb40762 100755
 --- a/tools/perf/pmu-events/amd_metrics.py
 +++ b/tools/perf/pmu-events/amd_metrics.py
-@@ -125,6 +125,52 @@ def AmdBr():
+@@ -125,6 +125,113 @@ def AmdBr():
                       description="breakdown of retired branch instructions")
  
  
-+def AmdItlb():
-+  l2h = Event("bp_l1_tlb_miss_l2_tlb_hit", "bp_l1_tlb_miss_l2_hit")
-+  l2m = Event("l2_itlb_misses")
-+  l2r = l2h + l2m
++def AmdDtlb() -> Optional[MetricGroup]:
++  if zen_model >= 4:
++      return None
 +
-+  itlb_l1_mg = None
-+  l1m = l2r
-+  if zen_model <= 3:
-+    l1r = Event("ic_fw32")
-+    l1h = max(l1r - l1m, 0)
-+    itlb_l1_mg = MetricGroup("itlb_l1", [
-+        Metric("itlb_l1_hits",
-+               "L1 ITLB hits as a perecentage of L1 ITLB accesses.",
-+               d_ratio(l1h, l1h + l1m), "100%"),
-+        Metric("itlb_l1_miss",
-+               "L1 ITLB misses as a perecentage of L1 ITLB accesses.",
-+               d_ratio(l1m, l1h + l1m), "100%"),
-+        Metric("itlb_l1_reqs",
-+               "The number of 32B fetch windows transferred from IC pipe to DE "
-+               "instruction decoder per second.", d_ratio(l1r, interval_sec),
-+               "windows/sec"),
-+    ])
++  d_dat = Event("ls_dc_accesses") if zen_model <= 3 else None
++  d_h4k = Event("ls_l1_d_tlb_miss.tlb_reload_4k_l2_hit")
++  d_hcoal = Event("ls_l1_d_tlb_miss.tlb_reload_coalesced_page_hit") if zen_model >= 2 else 0
++  d_h2m = Event("ls_l1_d_tlb_miss.tlb_reload_2m_l2_hit")
++  d_h1g = Event("ls_l1_d_tlb_miss.tlb_reload_1g_l2_hit")
 +
-+  return MetricGroup("itlb", [
-+      MetricGroup("itlb_ov", [
-+          Metric("itlb_ov_insn_bt_l1_miss",
-+                 "Number of instructions between l1 misses", d_ratio(
-+                     ins, l1m), "insns"),
-+          Metric("itlb_ov_insn_bt_l2_miss",
-+                 "Number of instructions between l2 misses", d_ratio(
-+                     ins, l2m), "insns"),
++  d_m4k = Event("ls_l1_d_tlb_miss.tlb_reload_4k_l2_miss")
++  d_mcoal = Event("ls_l1_d_tlb_miss.tlb_reload_coalesced_page_miss") if zen_model >= 2 else 0
++  d_m2m = Event("ls_l1_d_tlb_miss.tlb_reload_2m_l2_miss")
++  d_m1g = Event("ls_l1_d_tlb_miss.tlb_reload_1g_l2_miss")
++
++  d_w0 = Event("ls_tablewalker.dc_type0") if zen_model <= 3 else None
++  d_w1 = Event("ls_tablewalker.dc_type1") if zen_model <= 3 else None
++  walks = d_w0 + d_w1
++  walks_r = d_ratio(walks, interval_sec)
++  ins_w = d_ratio(ins, walks)
++  l1 = d_dat
++  l1_r = d_ratio(l1, interval_sec)
++  l2_hits = d_h4k + d_hcoal + d_h2m + d_h1g
++  l2_miss = d_m4k + d_mcoal + d_m2m + d_m1g
++  l2_r = d_ratio(l2_hits + l2_miss, interval_sec)
++  l1_miss = l2_hits + l2_miss + walks
++  l1_hits = max(l1 - l1_miss, 0)
++  ins_l = d_ratio(ins, l1_miss)
++
++  return MetricGroup("dtlb", [
++      MetricGroup("dtlb_ov", [
++          Metric("dtlb_ov_insn_bt_l1_miss",
++                 "DTLB overview: instructions between l1 misses.", ins_l,
++                 "insns"),
++          Metric("dtlb_ov_insn_bt_walks",
++                 "DTLB overview: instructions between dtlb page table walks.",
++                 ins_w, "insns"),
 +      ]),
-+      itlb_l1_mg,
-+      MetricGroup("itlb_l2", [
-+          Metric("itlb_l2_hits",
-+                 "L2 ITLB hits as a percentage of all L2 ITLB accesses.",
-+                 d_ratio(l2h, l2r), "100%"),
-+          Metric("itlb_l2_miss",
-+                 "L2 ITLB misses as a percentage of all L2 ITLB accesses.",
-+                 d_ratio(l2m, l2r), "100%"),
-+          Metric("itlb_l2_reqs", "ITLB accesses per second.",
-+                 d_ratio(l2r, interval_sec), "accesses/sec"),
++      MetricGroup("dtlb_l1", [
++          Metric("dtlb_l1_hits",
++                 "DTLB L1 hits as percentage of all DTLB L1 accesses.",
++                 d_ratio(l1_hits, l1), "100%"),
++          Metric("dtlb_l1_miss",
++                 "DTLB L1 misses as percentage of all DTLB L1 accesses.",
++                 d_ratio(l1_miss, l1), "100%"),
++          Metric("dtlb_l1_reqs", "DTLB L1 accesses per second.", l1_r,
++                 "insns/s"),
 +      ]),
-+  ], description="Instruction TLB breakdown")
++      MetricGroup("dtlb_l2", [
++          Metric("dtlb_l2_hits",
++                 "DTLB L2 hits as percentage of all DTLB L2 accesses.",
++                 d_ratio(l2_hits, l2_hits + l2_miss), "100%"),
++          Metric("dtlb_l2_miss",
++                 "DTLB L2 misses as percentage of all DTLB L2 accesses.",
++                 d_ratio(l2_miss, l2_hits + l2_miss), "100%"),
++          Metric("dtlb_l2_reqs", "DTLB L2 accesses per second.", l2_r,
++                 "insns/s"),
++          MetricGroup("dtlb_l2_4kb", [
++              Metric(
++                  "dtlb_l2_4kb_hits",
++                  "DTLB L2 4kb page size hits as percentage of all DTLB L2 4kb "
++                  "accesses.", d_ratio(d_h4k, d_h4k + d_m4k), "100%"),
++              Metric(
++                  "dtlb_l2_4kb_miss",
++                  "DTLB L2 4kb page size misses as percentage of all DTLB L2 4kb"
++                  "accesses.", d_ratio(d_m4k, d_h4k + d_m4k), "100%")
++          ]),
++          MetricGroup("dtlb_l2_coalesced", [
++              Metric(
++                  "dtlb_l2_coal_hits",
++                  "DTLB L2 coalesced page (16kb) hits as percentage of all DTLB "
++                  "L2 coalesced accesses.", d_ratio(d_hcoal,
++                                                    d_hcoal + d_mcoal), "100%"),
++              Metric(
++                  "dtlb_l2_coal_miss",
++                  "DTLB L2 coalesced page (16kb) misses as percentage of all "
++                  "DTLB L2 coalesced accesses.",
++                  d_ratio(d_mcoal, d_hcoal + d_mcoal), "100%")
++          ]),
++          MetricGroup("dtlb_l2_2mb", [
++              Metric(
++                  "dtlb_l2_2mb_hits",
++                  "DTLB L2 2mb page size hits as percentage of all DTLB L2 2mb "
++                  "accesses.", d_ratio(d_h2m, d_h2m + d_m2m), "100%"),
++              Metric(
++                  "dtlb_l2_2mb_miss",
++                  "DTLB L2 2mb page size misses as percentage of all DTLB L2 "
++                  "accesses.", d_ratio(d_m2m, d_h2m + d_m2m), "100%")
++          ]),
++          MetricGroup("dtlb_l2_1g", [
++              Metric(
++                  "dtlb_l2_1g_hits",
++                  "DTLB L2 1gb page size hits as percentage of all DTLB L2 1gb "
++                  "accesses.", d_ratio(d_h1g, d_h1g + d_m1g), "100%"),
++              Metric(
++                  "dtlb_l2_1g_miss",
++                  "DTLB L2 1gb page size misses as percentage of all DTLB L2 "
++                  "1gb accesses.", d_ratio(d_m1g, d_h1g + d_m1g), "100%")
++          ]),
++      ]),
++      MetricGroup("dtlb_walks", [
++          Metric("dtlb_walks_reqs", "DTLB page table walks per second.",
++                 walks_r, "walks/s"),
++      ]),
++  ], description="Data TLB metrics")
 +
 +
- def AmdHwpf():
-   """Returns a MetricGroup representing AMD hardware prefetch metrics."""
-   if zen_model <= 1:
-@@ -316,6 +362,7 @@ def Rapl() -> MetricGroup:
+ def AmdItlb():
+   l2h = Event("bp_l1_tlb_miss_l2_tlb_hit", "bp_l1_tlb_miss_l2_hit")
+   l2m = Event("l2_itlb_misses")
+@@ -362,6 +469,7 @@ def Rapl() -> MetricGroup:
  
  all_metrics = MetricGroup("", [
      AmdBr(),
-+    AmdItlb(),
++    AmdDtlb(),
+     AmdItlb(),
      AmdHwpf(),
      AmdSwpf(),
-     AmdUpc(),
 -- 
 2.44.0.278.ge034bb2e1d-goog
 
