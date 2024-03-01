@@ -1,147 +1,143 @@
-Return-Path: <linux-kernel+bounces-88813-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88814-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 945E786E6ED
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:12:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8D2586E70A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:20:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDFC81C22C36
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:12:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6C1E5B2BCD1
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:14:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A9BB13AC0;
-	Fri,  1 Mar 2024 17:11:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B5o9F9wY"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F10F1171C;
-	Fri,  1 Mar 2024 17:11:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23ABB522C;
+	Fri,  1 Mar 2024 17:14:07 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE62846B7
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 17:14:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709313106; cv=none; b=pKyVTcyz4PkbhuMjEJkf6T/CNz9eLsD2AqJlWZMvNSptX0VQJv0HEKjhJ4RRSC1pvJBSyljIFOuPyRfeoLkITjYlpZiAMMQp48DFRY74zQ5CnFm7/MrPBvO+P0m+aKRw3XvPgq2YOIWgaXA1wZ4XYrAGNUVhWN/h+Sdwcfcjx8k=
+	t=1709313246; cv=none; b=UfLMZOT6GrTOofRt7iKjnyef0KdH+DTfvZj5KhNKAGJEkW82NvJ9hK99GXuWCcpstluhvIEK1qIYHaPoIT0W/1gnTIx86YtoHHMID1nyVf/OsJ1bbLidyzA11Ij76R0LFcTim7Zc7KuQt0TGS5XuozruE95OYnUaX49pWHji8iQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709313106; c=relaxed/simple;
-	bh=TYMbucVCGX52xP3B1SjEwNL2B5fZQZEvkiPYO/LBu7A=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=FH0ioAwd4TBXm/Fzb/o58nfOPjIBgfdoL93VRoaIL8jtDyYCptYEfZH+p1NJyUlEyLlbt9hAddNLZRreK+pcLRlmMMGh9z7M3ZZmhdD/7HWOyxj85JMVmn2VyulgUtZrmU0W4Gb01FZuasjwAamkkTE3F9tq4fZRDficr4ukXH0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B5o9F9wY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3596C433C7;
-	Fri,  1 Mar 2024 17:11:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709313105;
-	bh=TYMbucVCGX52xP3B1SjEwNL2B5fZQZEvkiPYO/LBu7A=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=B5o9F9wY5gXIPN70vGN2/n2dnlYQs2R2vV3E8tqYWv20i3CygoDyiJU7P845iA7YY
-	 Qz7YiZzJG6inUKnHcY//EFgB/7EG4B4+j8AGvqa2am4adW47H5EvatXVdcuDsSS5iE
-	 HzHGuf6OGDK+3w1Lg8bB+XMkWttWMRwRZ7y4YO2IRz9ERbDPGBpQ5IU2dmIIR4MAyv
-	 +lTxqEK3uGn+sGgnUh/E165Ox5fMQ4ZLwSXmod+8pzAMhrRdmWw59R7GkLRmy97EKk
-	 4QwIc+IyphhziYCInMJt6mVgSPw07dHfbhQzbcL+IzcG3SFmKa4iciQvs0shPREXO9
-	 dRfKh30qmfqNg==
-From: "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
-Date: Fri, 01 Mar 2024 18:11:23 +0100
-Subject: [PATCH net 2/2] selftests: mptcp: diag: avoid extra waiting
+	s=arc-20240116; t=1709313246; c=relaxed/simple;
+	bh=zExfEQ8bBJzVchpv1wp510MY8pIHJpEaXvN8wwNzGsQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bHNQFZAJztsVvlYdoEHsSSB+AfY30gBY2GvvvnmTM4PuUvu7a//2/ZOzh/DF84FKDWRX3DC391j0AcntTMjpv3Steg8TdoRIbcjlRoZgWc00xqSsx9n+i8LANRfEuc8WzGb7RJbnJuIC+x1Bws30kb5y/Q4z0aiBNUpZ7jEq4YY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 663691FB;
+	Fri,  1 Mar 2024 09:14:42 -0800 (PST)
+Received: from [10.57.68.58] (unknown [10.57.68.58])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3D3B73F6C4;
+	Fri,  1 Mar 2024 09:14:02 -0800 (PST)
+Message-ID: <7774edad-a194-4259-a95f-88bcef846f90@arm.com>
+Date: Fri, 1 Mar 2024 17:14:00 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240301-upstream-net-20240301-selftests-mptcp-diag-exit-timeout-v1-2-07cb2fa15c06@kernel.org>
-References: <20240301-upstream-net-20240301-selftests-mptcp-diag-exit-timeout-v1-0-07cb2fa15c06@kernel.org>
-In-Reply-To: <20240301-upstream-net-20240301-selftests-mptcp-diag-exit-timeout-v1-0-07cb2fa15c06@kernel.org>
-To: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>, 
- Geliang Tang <geliang@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>, 
- Simon Horman <horms@kernel.org>
-Cc: netdev@vger.kernel.org, linux-kselftest@vger.kernel.org, 
- linux-kernel@vger.kernel.org, "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2709; i=matttbe@kernel.org;
- h=from:subject:message-id; bh=TYMbucVCGX52xP3B1SjEwNL2B5fZQZEvkiPYO/LBu7A=;
- b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBl4gxHXCjU1Jl6jisj/C6HFQNF9VEy9OpMzve5F
- TK0RwpGdDSJAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZeIMRwAKCRD2t4JPQmmg
- c8BoD/9of/bA/QyJ/2rwrFsnFNyRrPjWwFrZQKVct6zYWSd0yExoa5R98j7+C2O7PDv7SE/GZXy
- tPxPeY5q9SoWo5UIE4Mb6bzwYsOHi1d8tSeEcofwOWIgNrNm0KeU+sTrd27Mb5GzkEb/YG6Fh4o
- ZAMEKB2ZyRVQoRMDOKH/YJuDtgUNL112cpKMN9jJNK5qEj1ZcJg2VkvOpbahRzkiYSHj0heU1E7
- VifrYE6AnmBdIcM4DWW3+OVSiQt6vzSg8rzvDDKnhJnbuPSlca/uwG7015Tm1cFaO5oMrkUQBGo
- iss9MCHm8vxhIqQKcc+eySBloubvD/bVK/dP0Oyk65NnDzQTIvMgvRah0fmqM/43ONhlLNv9Mvh
- dsv+41HY52lUmo2x1yaE9LJSy9GZC0jypbFinV3fdU3w7PsIqB0UhEf1wWBFi+4E56S13CHeF8F
- 9VPWUIdd1sD6SroL/xYSXRlhRlJnepvgCf3SBZ2g3v1s+Uu2JM3FYOP5Sl8V+paBemehPQG/m86
- 6Hh8066Zc5Bc+ZNlLYMOA80WXZcYcKT8bcPmG0vHdyzHweQXs6+0cLpM9E1KgKZ9imkZU1RVBvw
- e2FMpYDFN1ycBlkkduOgBTTr5qlhSVO7Aqm9E5UE5b7Vluw3cmHi/i20p+nDZQwGuU9SkSCb1HO
- ZFW3HlW068ufy+g==
-X-Developer-Key: i=matttbe@kernel.org; a=openpgp;
- fpr=E8CB85F76877057A6E27F77AF6B7824F4269A073
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/4] mm: swap: Remove CLUSTER_FLAG_HUGE from
+ swap_cluster_info:flags
+Content-Language: en-GB
+To: David Hildenbrand <david@redhat.com>, Matthew Wilcox <willy@infradead.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ Huang Ying <ying.huang@intel.com>, Gao Xiang <xiang@kernel.org>,
+ Yu Zhao <yuzhao@google.com>, Yang Shi <shy828301@gmail.com>,
+ Michal Hocko <mhocko@suse.com>, Kefeng Wang <wangkefeng.wang@huawei.com>,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <d108bd79-086b-4564-838b-d41afa055137@redhat.com>
+ <6541e29b-f25a-48b8-a553-fd8febe85e5a@redhat.com>
+ <ee760679-7e3c-4a35-ad53-ca98b598ead5@arm.com>
+ <ba9101ae-a618-4afc-9515-a61f25376390@arm.com>
+ <2934125a-f2e2-417c-a9f9-3cb1e074a44f@redhat.com>
+ <049818ca-e656-44e4-b336-934992c16028@arm.com>
+ <d2fbfdd0-ad61-4fe2-a976-4dac7427bfc9@redhat.com>
+ <4a73b16e-9317-477a-ac23-8033004b0637@arm.com>
+ <1195531c-d985-47e2-b7a2-8895fbb49129@redhat.com>
+ <5ebac77a-5c61-481f-8ac1-03bc4f4e2b1d@arm.com>
+ <ZeIC0Bn7N0JlP4TY@casper.infradead.org>
+ <e56fbf5e-8051-4285-875b-1de529dc6809@arm.com>
+ <c12fbea5-0d5d-4c06-b063-dab3dd00e704@redhat.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <c12fbea5-0d5d-4c06-b063-dab3dd00e704@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-When creating a lot of listener sockets, it is enough to wait only for
-the last one, like we are doing before in diag.sh for other subtests.
+On 01/03/2024 17:00, David Hildenbrand wrote:
+> On 01.03.24 17:44, Ryan Roberts wrote:
+>> On 01/03/2024 16:31, Matthew Wilcox wrote:
+>>> On Fri, Mar 01, 2024 at 04:27:32PM +0000, Ryan Roberts wrote:
+>>>> I've implemented the batching as David suggested, and I'm pretty confident it's
+>>>> correct. The only problem is that during testing I can't provoke the code to
+>>>> take the path. I've been pouring through the code but struggling to figure out
+>>>> under what situation you would expect the swap entry passed to
+>>>> free_swap_and_cache() to still have a cached folio? Does anyone have any idea?
+>>>>
+>>>> This is the original (unbatched) function, after my change, which caused
+>>>> David's
+>>>> concern that we would end up calling __try_to_reclaim_swap() far too much:
+>>>>
+>>>> int free_swap_and_cache(swp_entry_t entry)
+>>>> {
+>>>>     struct swap_info_struct *p;
+>>>>     unsigned char count;
+>>>>
+>>>>     if (non_swap_entry(entry))
+>>>>         return 1;
+>>>>
+>>>>     p = _swap_info_get(entry);
+>>>>     if (p) {
+>>>>         count = __swap_entry_free(p, entry);
+>>>>         if (count == SWAP_HAS_CACHE)
+>>>>             __try_to_reclaim_swap(p, swp_offset(entry),
+>>>>                           TTRS_UNMAPPED | TTRS_FULL);
+>>>>     }
+>>>>     return p != NULL;
+>>>> }
+>>>>
+>>>> The trouble is, whenever its called, count is always 0, so
+>>>> __try_to_reclaim_swap() never gets called.
+>>>>
+>>>> My test case is allocating 1G anon memory, then doing madvise(MADV_PAGEOUT)
+>>>> over
+>>>> it. Then doing either a munmap() or madvise(MADV_FREE), both of which cause
+>>>> this
+>>>> function to be called for every PTE, but count is always 0 after
+>>>> __swap_entry_free() so __try_to_reclaim_swap() is never called. I've tried for
+>>>> order-0 as well as PTE- and PMD-mapped 2M THP.
+>>>
+>>> I think you have to page it back in again, then it will have an entry in
+>>> the swap cache.  Maybe.  I know little about anon memory ;-)
+>>
+>> Ahh, I was under the impression that the original folio is put into the swap
+>> cache at swap out, then (I guess) its removed once the IO is complete? I'm sure
+>> I'm miles out... what exactly is the lifecycle of a folio going through swap out?
+> 
+> I thought with most (disk) backends you will add it to the swapcache and leave
+> it there until there is actual memory pressure. Only then, under memory
+> pressure, you'd actually reclaim the folio.
 
-If we do a check for each listener sockets, each time listing all
-available sockets, it can take a very long time in very slow
-environments, at the point we can reach some timeout.
+OK, my problem is that I'm using a VM, whose disk shows up as rotating media, so
+the swap subsystem refuses to swap out THPs to that and they get split. To solve
+that, (and to speed up testing) I moved to the block ram disk, which convinces
+swap to swap-out THPs. But that causes the folios to be removed from the swap
+cache (I assumed because its syncrhonous, but maybe there is a flag somewhere to
+affect that behavior?) And I can't convince QEMU to emulate an SSD to the guest
+under macos. Perhaps the easiest thing is to hack it to ignore the rotating
+media flag.
 
-When using the debug kconfig, the waiting time switches from more than
-8 sec to 0.1 sec on my side. In slow/busy environments, and with a poll
-timeout set to 30 ms, the waiting time could go up to ~100 sec because
-the listener socket would timeout and stop, while the script would still
-be checking one by one if all sockets are ready. The result is that
-after having waited for everything to be ready, all sockets have been
-stopped due to a timeout, and it is too late for the script to check how
-many there were.
-
-While at it, also removed ss options we don't need: we only need the
-filtering options, to count how many listener sockets have been created.
-We don't need to ask ss to display internal TCP information, and the
-memory if the output is dropped by the 'wc -l' command anyway.
-
-Fixes: b4b51d36bbaa ("selftests: mptcp: explicitly trigger the listener diag code-path")
-Reported-by: Jakub Kicinski <kuba@kernel.org>
-Closes: https://lore.kernel.org/r/20240301063754.2ecefecf@kernel.org
-Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
----
-Notes:
- - The 'Fixes' commit was will be in the future 6.8-rc6, but not marked
-   to be backported. Because of that, the stable ML has not been added
-   in Cc.
----
- tools/testing/selftests/net/mptcp/diag.sh | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
-
-diff --git a/tools/testing/selftests/net/mptcp/diag.sh b/tools/testing/selftests/net/mptcp/diag.sh
-index 18d37d4695c1..75fc95675e2d 100755
---- a/tools/testing/selftests/net/mptcp/diag.sh
-+++ b/tools/testing/selftests/net/mptcp/diag.sh
-@@ -96,8 +96,8 @@ chk_listener_nr()
- 	local expected=$1
- 	local msg="$2"
- 
--	__chk_nr "ss -inmlHMON $ns | wc -l" "$expected" "$msg - mptcp" 0
--	__chk_nr "ss -inmlHtON $ns | wc -l" "$expected" "$msg - subflows"
-+	__chk_nr "ss -nlHMON $ns | wc -l" "$expected" "$msg - mptcp" 0
-+	__chk_nr "ss -nlHtON $ns | wc -l" "$expected" "$msg - subflows"
- }
- 
- wait_msk_nr()
-@@ -304,10 +304,7 @@ for I in $(seq 1 $NR_SERVERS); do
- 	ip netns exec $ns ./mptcp_connect -p $((I + 20001)) \
- 		-t ${timeout_poll} -l 0.0.0.0 >/dev/null 2>&1 &
- done
--
--for I in $(seq 1 $NR_SERVERS); do
--	mptcp_lib_wait_local_port_listen $ns $((I + 20001))
--done
-+mptcp_lib_wait_local_port_listen $ns $((NR_SERVERS + 20001))
- 
- chk_listener_nr $NR_SERVERS "many listener sockets"
- 
-
--- 
-2.43.0
+> 
+> You can fault it back in from the swapcache without having to go to disk.
+> 
+> That's how you can today end up with a THP in the swapcache: during swapin from
+> disk (after the folio was reclaimed) you'd currently only get order-0 folios.
+> 
+> At least that was my assumption with my MADV_PAGEOUT testing so far :)
+> 
 
 
