@@ -1,116 +1,144 @@
-Return-Path: <linux-kernel+bounces-87988-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87987-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B912486DBD5
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:04:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48B8086DBD4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:04:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F00ABB22AE3
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 07:04:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C93A3B224C4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 07:04:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81CFC69943;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 015F96931A;
 	Fri,  1 Mar 2024 07:04:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=smartx-com.20230601.gappssmtp.com header.i=@smartx-com.20230601.gappssmtp.com header.b="0Ak2i4vO"
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lPJTjZC/"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 219FB69311
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D41C169304
 	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 07:04:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709276683; cv=none; b=ItnuFGDNWnBwum5TQsInVdEMpnT56PDftFxv9dnlDUiHbr0FA1rVg8TyYOpUDZS7k4s+QJ9/BjPTW3vs+jCoNEPYbnWdo5KjCjUVfBAV9n7NNC7v1Wrd8+ebvDlxBegsVZ1+ym2ZsCa+OC4MLOwLc+9fNO6WlhlHqdEUDwkiTos=
+	t=1709276683; cv=none; b=SLfQKAz21FLtqAKk4H5XoLFP+IZXg2ITnRiwMNd1mpxg0hkDUnaZIYfKdaMa3XcyDQaHtL5vlg3/ReWQZnFmiiDmVhCyljHPRv9C5DbJbVm2KvglB49dxboo/znjetjAo1Jv5CSurItlzlD2d79gm2L/VxCPUM7dr1QHApaJC8M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1709276683; c=relaxed/simple;
-	bh=o9pz1fk2aOp4FTnpNEe6vcQsleQQatyQgwaGbA6imWw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=j3XOahn9mmcrLTFJNVIYg1Gop4DmpjCkCkehpAILwKQI8/nUMvH1ydxcfRSqZStjtyYVwY1DzZN/MuqSp7bVVgEUOtB12YGTXE7RGciQAQJYvnQK1LIr5/FxJP2w1EwWcFV6ICvld/0zpTNaLip5nE26ysOCcJXCrLPK4T7AlhM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=smartx.com; spf=none smtp.mailfrom=smartx.com; dkim=pass (2048-bit key) header.d=smartx-com.20230601.gappssmtp.com header.i=@smartx-com.20230601.gappssmtp.com header.b=0Ak2i4vO; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=smartx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=smartx.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1dcad814986so15772945ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 23:04:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=smartx-com.20230601.gappssmtp.com; s=20230601; t=1709276681; x=1709881481; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=6I9y5UTmAvN64WBQDc3/nGiscexf4NuEbldIfBdk9l8=;
-        b=0Ak2i4vOzdAv0MP8yo+m3lZ7xbl3HfICbqJKOeS9d9HIBLn+UphKWhJ5gCaMHGBUEu
-         QSE9i7OOcyu9dYkl9oxjSAxOlRirf7CZM4sTDmCah1/aIz8tNh4kRAS5YnAP1N3lfKPz
-         mckq/T64wArfSq61QNUPOh+EK56Em/vn+2UhvOZJdqSCB6wRBP4Zkgdk633I9iuTs109
-         x5omRlk/ZrsXK+ZDjDectUijBwwmqXbFpp0BCrZEjhYt8ylxu84vW/ucHqQ/KC1Rld4t
-         F0euM8eZM+xYN8vzpY+pvktScKJ3eDiEbqN9h3UKXbncxGHxVeIUqyLOwUaTQ+Cq/L8/
-         SNkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709276681; x=1709881481;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6I9y5UTmAvN64WBQDc3/nGiscexf4NuEbldIfBdk9l8=;
-        b=OQXhodPT7ae+QqMLWUlfkGt/uvFPXUQa3cXKUJt6ntulmVjNIyfSvyC/fjHhmiA7iT
-         fjBJ3H6LQpu13K/4dAK7S16QdQOpq8vxCEUNADJ/QRSFja/rAWZFsR6qvna9ytMeqjKX
-         5GA6XmyhupSxIi+HfAoLHjC8aKr5hV3Eyba3eGEQJfZKM8mTy3p8p73dO6+3c2R54t1M
-         mBv0pXiQxUIMsuu1SYjZ1/g0Q6xWBATBWslh0qlwsqzWlrs/VFHHZ8b6UbnI6JuW5nAU
-         ksnnnXKIeq1M/TICrMxRerayTEZwH7f7KwyCy5rn2dLWc8plJ/jCOO8Vqt6qimJJWArC
-         KziQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVJ1Pgy5bkTNrsR2p0V4NLrp4fsUSDY6xBtuFb6ADt2GH5fN/t9FTyCV33bxAkeNncOAKwSUA3qAZN6K2nbOi37VxC4PTLwZ3A9by4R
-X-Gm-Message-State: AOJu0Yw/pAGr/jRcdR6fLrCqOlnFUMXlji5TfPunQqQ5KKrTxqAVsWKk
-	jP7+4tm6STE+Mi2mZ/dvqkqN32VMfdjuovqxRneY/kKHWm31V4bWQ5tQLQI7bxs=
-X-Google-Smtp-Source: AGHT+IG1evhX78/me7PET0oAJgA3nxqOzq5iUYRGdsuy0iEq8MCjfjuExh8MPjsu4Icqji+9or42Vw==
-X-Received: by 2002:a17:902:c947:b0:1dc:3e49:677d with SMTP id i7-20020a170902c94700b001dc3e49677dmr1048143pla.26.1709276681293;
-        Thu, 29 Feb 2024 23:04:41 -0800 (PST)
-Received: from localhost.localdomain ([8.210.91.195])
-        by smtp.googlemail.com with ESMTPSA id e5-20020a170902784500b001dcdf24e32csm1999601pln.111.2024.02.29.23.04.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 23:04:41 -0800 (PST)
-From: Lei Chen <lei.chen@smartx.com>
-To: Kashyap Desai <kashyap.desai@broadcom.com>,
-	Sumit Saxena <sumit.saxena@broadcom.com>,
-	Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
-	Chandrakanth patil <chandrakanth.patil@broadcom.com>,
-	"James E.J. Bottomley" <jejb@linux.ibm.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: Lei Chen <lei.chen@smartx.com>,
-	megaraidlinux.pdl@broadcom.com,
-	linux-scsi@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] scsi: megaraid_sas: make module parameter scmd_timeout writable
-Date: Fri,  1 Mar 2024 02:04:21 -0500
-Message-ID: <20240301070422.1739020-1-lei.chen@smartx.com>
-X-Mailer: git-send-email 2.43.0
+	bh=+fpJTr6RmOM7/oEcyjl781MXmUjhyZhONR28zM0E3+0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AOyWpLK9hyD/s1jOH5pt4zP+bV2zFV86UN5NB4KuK9gXLo0d/EbENyazIVxnbGVGJd64cmsOpeGGtOxodpy+V2GlAX+4mkc4h19oPpwfj2Tg6YERZPexjLcFWR5yBJYq6k25A6q/E10lGJWQJYM2s6AqXQVE9SH2dtOlTLnjvnc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lPJTjZC/; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709276681; x=1740812681;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=+fpJTr6RmOM7/oEcyjl781MXmUjhyZhONR28zM0E3+0=;
+  b=lPJTjZC/so23iah9ws4NmOc2Q7Ww9/+QBVLa3Q19r2BWqDPgXujuB3PI
+   jz+gu6axbMmg0JGaIboz0RTyLvGEq+T5ncStlJgxIE85fixmopGwlO7nO
+   Vli3QkEg54nC6fzSSZ5bdlwQrB/ktBzr1y83NOoqZfLn+KuiqkrehOfjx
+   YEHtJBtWV5Q5FeTP8oF7CjSJV3S4gkIsaHZmNSbHoECPddPpGO79r5I6K
+   UDcSEPxqyyfizXzk8HDuvdWOFytkS/ZFVpCfZ0H+AVKPOBC0qYNcrf9X6
+   jpa6mmme4EpfvEp5d8OIuwxRPpThrejO7L1wG9PlFSbDmwbSvIGKkN2u6
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="29226484"
+X-IronPort-AV: E=Sophos;i="6.06,195,1705392000"; 
+   d="scan'208";a="29226484"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 23:04:41 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,195,1705392000"; 
+   d="scan'208";a="12649055"
+Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.124.229.115]) ([10.124.229.115])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 23:04:38 -0800
+Message-ID: <69cf00a3-4b37-4e33-8b36-9a8c3e071ecd@linux.intel.com>
+Date: Fri, 1 Mar 2024 15:04:35 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] iommu/vt-d: avoid sending explicit ATS invalidation
+ request to released device
+To: baolu.lu@linux.intel.com, bhelgaas@google.com, robin.murphy@arm.com,
+ jgg@ziepe.ca
+Cc: kevin.tian@intel.com, dwmw2@infradead.org, will@kernel.org,
+ lukas@wunner.de, yi.l.liu@intel.com, dan.carpenter@linaro.org,
+ iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20240229033138.3379560-1-haifeng.zhao@linux.intel.com>
+From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+In-Reply-To: <20240229033138.3379560-1-haifeng.zhao@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-When an scmd times out, block layer calls megasas_reset_timer to
-make further decisions. scmd_timeout indicates when an scmd is really
-timed-out. If we want to make this process more fast, we can decrease
-this value. This patch allows users to change this value in run-time.
 
-Signed-off-by: Lei Chen <lei.chen@smartx.com>
----
- drivers/scsi/megaraid/megaraid_sas_base.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 2/29/2024 11:31 AM, Ethan Zhao wrote:
+> The introduction of per iommu device rbtree also defines the lifetime of
+> interoperation between iommu and devices, if the device has been released
+> from device rbtree, no need to send ATS invalidation request to it anymore,
+> thus avoid the possibility of later ITE fault to be triggered.
+>
+> This is part of the followup of prior proposed patchset
+>
+> https://do-db2.lkml.org/lkml/2024/2/22/350
+>
+> To make sure all the devTLB entries to be invalidated in the device release
+> path, do implict invalidation by fapping the E bit of ATS control register.
+> see PCIe spec v6.2, sec 10.3.7 implicit invalidation events.
+>
+> Fixes: 6f7db75e1c46 ("iommu/vt-d: Add second level page table interface")
+> Signed-off-by: Ethan Zhao <haifeng.zhao@linux.intel.com>
+> ---
+>   drivers/iommu/intel/iommu.c | 6 ++++++
+>   drivers/iommu/intel/pasid.c | 7 +++++++
+>   2 files changed, 13 insertions(+)
+>
+> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+> index 6743fe6c7a36..b85d88ccb4b0 100644
+> --- a/drivers/iommu/intel/iommu.c
+> +++ b/drivers/iommu/intel/iommu.c
+> @@ -1368,6 +1368,12 @@ static void iommu_disable_pci_caps(struct device_domain_info *info)
+>   	pdev = to_pci_dev(info->dev);
+>   
+>   	if (info->ats_enabled) {
+> +		pci_disable_ats(pdev);
+> +		/*
+> +		 * flap the E bit of ATS control register to do implicit
+> +		 * ATS invlidation, see PCIe spec v6.2, sec 10.3.7
+> +		 */
+> +		pci_enable_ats(pdev, VTD_PAGE_SHIFT);
+>   		pci_disable_ats(pdev);
+>   		info->ats_enabled = 0;
+>   		domain_update_iotlb(info->domain);
+> diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
+> index 108158e2b907..5f13e017a12c 100644
+> --- a/drivers/iommu/intel/pasid.c
+> +++ b/drivers/iommu/intel/pasid.c
+> @@ -215,6 +215,13 @@ devtlb_invalidation_with_pasid(struct intel_iommu *iommu,
+>   		return;
+>   
+>   	sid = info->bus << 8 | info->devfn;
+> +	/*
+> +	 * If device has been released from rbtree, no need to send ATS
+> +	 * Invalidation	request anymore, that could cause ITE fault.
+> +	 */
+> +	if (!device_rbtree_find(iommu, sid))
+> +		return;
+> +
+>   	qdep = info->ats_qdep;
+>   	pfsid = info->pfsid;
+>   
 
-diff --git a/drivers/scsi/megaraid/megaraid_sas_base.c b/drivers/scsi/megaraid/megaraid_sas_base.c
-index 3d4f13da1ae8..2a165e5dc7a3 100644
---- a/drivers/scsi/megaraid/megaraid_sas_base.c
-+++ b/drivers/scsi/megaraid/megaraid_sas_base.c
-@@ -91,7 +91,7 @@ module_param(dual_qdepth_disable, int, 0444);
- MODULE_PARM_DESC(dual_qdepth_disable, "Disable dual queue depth feature. Default: 0");
- 
- static unsigned int scmd_timeout = MEGASAS_DEFAULT_CMD_TIMEOUT;
--module_param(scmd_timeout, int, 0444);
-+module_param(scmd_timeout, int, 0644);
- MODULE_PARM_DESC(scmd_timeout, "scsi command timeout (10-90s), default 90s. See megasas_reset_timer.");
- 
- int perf_mode = -1;
--- 
-2.43.0
+Given maintainer is going to pick up patchset
+https://lore.kernel.org/lkml/2d1788da-521c-4531-a159-81d2fb801d6c@linux.intel.com/T/
+and this one is mutually exclusive with it, suspend.
+
+
+Thanks,
+Ethan
 
 
