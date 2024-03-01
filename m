@@ -1,114 +1,149 @@
-Return-Path: <linux-kernel+bounces-87735-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87736-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A82586D856
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:31:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E049386D858
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:31:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD1701C20D79
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 00:31:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E5B31C20D16
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 00:31:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 962522568;
-	Fri,  1 Mar 2024 00:30:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0735F443E;
+	Fri,  1 Mar 2024 00:31:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chrisdown.name header.i=@chrisdown.name header.b="VPkA6xFT"
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="g1cWBos1"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2040423A7
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 00:30:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D490D3FE0
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 00:31:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709253057; cv=none; b=ZcyVkTZ6Fy6IQP0/4rDk5kiwho2lbenNnYxWcKj1q8kx12XRvF8aojH/KW+cwkr0LNzaeCi+9uOuQlyKFd5jZgQqS2VTqzvuw09RFIIt6ZCDktJFbdZEK97DL1S9I6DBnm7yF0H6HyvKWia5ILbINcoVqetkh9vhW2xiw7N/08g=
+	t=1709253100; cv=none; b=JV/Gz/rycPWEE8pB0lSSd7iAeIe6D9xxq2R1JPPpJJVpa7Dy48kP6W9SzPxdHitNIg9XHQAmMSvsMp1hSwT/C8AcF0RU+6ZAbz+8yptP9VzVj4Hst5ItHB28uXmKR96BWnDakYAIDg0aidS/2OL9iTztJdR8uJEKV7A61mGe9tY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709253057; c=relaxed/simple;
-	bh=NXsqQ2Sgdkn+a9Uci3zRdC9SMnBC4lhphpNxOxge9VA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ahh7vHDV53zd6+BEp0oDDGK0nH0KizhFP5kcdJR121orOctB1f/aIgvkG0/HY6lraoqBprEqBfenJI/Nf4dMlzh2wLckK5YFiWolrsSvCfWDrvSyKq6WemoTTQ11/d4idRFnhtXKA6CaTFBfJyZsrfCXmEIXjIX6m6gCwsYfVbs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=chrisdown.name; spf=pass smtp.mailfrom=chrisdown.name; dkim=pass (1024-bit key) header.d=chrisdown.name header.i=@chrisdown.name header.b=VPkA6xFT; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=chrisdown.name
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chrisdown.name
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-412c780464dso633135e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 16:30:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google; t=1709253054; x=1709857854; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/6TCxBl7DrW+C2Xnhe2LFnZv9gvBSqtviEifvQbUuYg=;
-        b=VPkA6xFTZWj5HUU6zA3oO/dFBMKFPK+yWpT0+5tYNBboneGpeB7G6qDWbLTx2BMTfF
-         IPc6XPG4M8HmmmuTlPofAfMVPsf7h4XrJ9kgscz7NLQy4yRy0fcl1afjmY4PsEYJVJfo
-         lk897CmhX/8a9icN80pQSchcGa+Sdz1+MZzRo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709253054; x=1709857854;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/6TCxBl7DrW+C2Xnhe2LFnZv9gvBSqtviEifvQbUuYg=;
-        b=XJZ3xmSRWj/DsZGIEc7jua5HcpPDWcYnmyZh/jQUVR2NW5bStPBBdwG2J17EggV7H4
-         ICRNhkYYMq6FcGGIrGzYL8g1KF8c8lWt6Ymrk3HxpSAim6L+FnfU36b6lLnpPWHmAqGX
-         xmHE1CFru1IHYoVFCtQgqsYpRJFXM3cjuOfjPYrOPMOYAGEXz0I3d1it8U8uKPfOx06n
-         2+cAQPWbzfZe8+HO62XgxUPrwOop+umLBWyTywWyaxgTcdMuI/EhKgOyS1wiSE0iNGtf
-         UDHiaBQJnrqaFvYonn3jwvyeRn+JrNs37QwaRhoEF1v0B4IDBdLHJSjPvoAuG9OsX787
-         jFZw==
-X-Forwarded-Encrypted: i=1; AJvYcCWX0icSGGDyHwKiZbUQtCFaw6DSNCVUzlBoFn6IPRleDDwdwLzwiqkWuCj2gSzrRdfYfPaYi3G1LHkeFuGpZ4eRF7cCRlpHnE2ekKww
-X-Gm-Message-State: AOJu0YznNLsECgkoXiD+dKAvKfuqrPXhDNy277LElzP45Q6Uf1aTKbO4
-	jzE4jz98uBjs0B8x+1jwcp1gnkMh75OpJDlxvOal8Szl9kewRM8FTbS0wAz0UcvuOaSG9NVom/i
-	mZIE=
-X-Google-Smtp-Source: AGHT+IEv1uPho1CWNYAKQSRLMXcGe87GuCLOXmnROkVz7nCRqDB0yheMv+Ev9X+OmGA3atwHmJZhPA==
-X-Received: by 2002:a5d:6a08:0:b0:33e:fd3:8f4c with SMTP id m8-20020a5d6a08000000b0033e0fd38f4cmr101442wru.1.1709253054310;
-        Thu, 29 Feb 2024 16:30:54 -0800 (PST)
-Received: from localhost ([93.115.193.42])
-        by smtp.gmail.com with ESMTPSA id n3-20020a5d4203000000b0033e12a67fb3sm2331728wrq.50.2024.02.29.16.30.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 16:30:53 -0800 (PST)
-Date: Fri, 1 Mar 2024 00:30:53 +0000
-From: Chris Down <chris@chrisdown.name>
-To: Axel Rasmussen <axelrasmussen@google.com>
-Cc: cgroups@vger.kernel.org, hannes@cmpxchg.org, kernel-team@fb.com,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, yuzhao@google.com
-Subject: Re: MGLRU premature memcg OOM on slow writes
-Message-ID: <ZeEhvV15IWllPKvM@chrisdown.name>
-References: <ZcWOh9u3uqZjNFMa@chrisdown.name>
- <20240229235134.2447718-1-axelrasmussen@google.com>
+	s=arc-20240116; t=1709253100; c=relaxed/simple;
+	bh=XqGP3N4S81KjyIuGyBqMnZsaMdH0L01+F4RiutGx70s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=T4xyHN5LW2n456e4domrSyMi4uNiDT3v3eZMv/Vi2EcVGsWZZn/Px94UNQfHY6HLfG6GNm44oNyoolvYVvT2F9n/EgcQ4EnVqilgQHSTbZ+N/p5TKKCwPhW2Rxa7Y2yE4gLYlOKm6t+Whaf1Dl+kbaa13LS0NEpxHnsfXHQKReg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=g1cWBos1; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41TNhi70001324;
+	Fri, 1 Mar 2024 00:31:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=yqlbLy0YUnYJdLp+bH3E1Uw77dnQJkGWU9TfZrIfoUY=; b=g1
+	cWBos1JZ5wvgGfzhRmwMTUf1a7/lfGDB6mTS8QOklWz2ILTJ2BXaphh8V/3isPxW
+	QyJi0gplvJysTbOqMFc7iE7XBJZSHdKMwGmxHpqzXqhYBEjLeAePzfEXt9jmv7Rb
+	OuhkyutyQFdkaR0VyouWDb36DeYC+eKnJpIwA4hEmMNhbvitK2UTjWLTV5dp95RE
+	wTea5spozQa4aJoAXVnvukldE5a22BKUI8wMv6sPvKY1D34vm4w1TX4RBPIfct68
+	bUtMSG/Yl5RVmgweQh77gbB9Fbt4nmkjzd3BQYNsGtj452b1Vg7H87zS2E1bYj4C
+	PCpIwwGB+3BLACe5aFtw==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wjupp1n5s-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 01 Mar 2024 00:31:06 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4210V3BP019415
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 1 Mar 2024 00:31:03 GMT
+Received: from [10.71.109.81] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 29 Feb
+ 2024 16:31:01 -0800
+Message-ID: <c882a1da-e3a3-0ee1-9782-8c1e1caefcc1@quicinc.com>
+Date: Thu, 29 Feb 2024 16:31:01 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20240229235134.2447718-1-axelrasmussen@google.com>
-User-Agent: Mutt/2.2.12 (2023-09-09)
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v2 9/9] drm/panel: truly-nt35597: Don't log an error when
+ DSI host can't be found
+Content-Language: en-US
+To: =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong
+	<neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart
+	<Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        "Jernej
+ Skrabec" <jernej.skrabec@gmail.com>,
+        Maarten Lankhorst
+	<maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        owen <qwt9588@gmail.com>, Jagan Teki
+	<jagan@amarulasolutions.com>,
+        Marek Vasut <marex@denx.de>,
+        Adrien Grassein
+	<adrien.grassein@gmail.com>,
+        Srinivas Kandagatla
+	<srinivas.kandagatla@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        "Bjorn
+ Andersson" <andersson@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        "Dmitry
+ Baryshkov" <dmitry.baryshkov@linaro.org>,
+        Vinay Simha BN
+	<simhavcs@gmail.com>,
+        Christopher Vollo <chris@renewoutreach.org>,
+        Jessica
+ Zhang <quic_jesszhan@quicinc.com>,
+        Marijn Suijten
+	<marijn.suijten@somainline.org>,
+        AngeloGioacchino Del Regno
+	<angelogioacchino.delregno@somainline.org>
+CC: <kernel@collabora.com>, <dri-devel@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>,
+        AngeloGioacchino Del Regno
+	<angelogioacchino.delregno@collabora.com>
+References: <20240229-anx7625-defer-log-no-dsi-host-v2-0-00506941049a@collabora.com>
+ <20240229-anx7625-defer-log-no-dsi-host-v2-9-00506941049a@collabora.com>
+From: Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <20240229-anx7625-defer-log-no-dsi-host-v2-9-00506941049a@collabora.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: y8pjSHe4I20K9_5qUELFXFufedqYesAg
+X-Proofpoint-GUID: y8pjSHe4I20K9_5qUELFXFufedqYesAg
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-29_07,2024-02-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 spamscore=0
+ lowpriorityscore=0 impostorscore=0 bulkscore=0 phishscore=0 suspectscore=0
+ mlxlogscore=999 mlxscore=0 malwarescore=0 adultscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2402120000
+ definitions=main-2403010002
 
-Axel Rasmussen writes:
->A couple of dumb questions. In your test, do you have any of the following
->configured / enabled?
->
->/proc/sys/vm/laptop_mode
->memory.low
->memory.min
 
-None of these are enabled. The issue is trivially reproducible by writing to 
-any slow device with memory.max enabled, but from the code it looks like MGLRU 
-is also susceptible to this on global reclaim (although it's less likely due to 
-page diversity).
 
->Besides that, it looks like the place non-MGLRU reclaim wakes up the
->flushers is in shrink_inactive_list() (which calls wakeup_flusher_threads()).
->Since MGLRU calls shrink_folio_list() directly (from evict_folios()), I agree it
->looks like it simply will not do this.
->
->Yosry pointed out [1], where MGLRU used to call this but stopped doing that. It
->makes sense to me at least that doing writeback every time we age is too
->aggressive, but doing it in evict_folios() makes some sense to me, basically to
->copy the behavior the non-MGLRU path (shrink_inactive_list()) has.
+On 2/29/2024 4:12 PM, Nícolas F. R. A. Prado wrote:
+> Given that failing to find a DSI host causes the driver to defer probe,
+> make use of dev_err_probe() to log the reason. This makes the defer
+> probe reason available and avoids alerting userspace about something
+> that is not necessarily an error.
+> 
+> Suggested-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+> ---
+>   drivers/gpu/drm/panel/panel-truly-nt35597.c | 6 ++----
+>   1 file changed, 2 insertions(+), 4 deletions(-)
+> 
 
-Thanks! We may also need reclaim_throttle(), depending on how you implement it.  
-Current non-MGLRU behaviour on slow storage is also highly suspect in terms of 
-(lack of) throttling after moving away from VMSCAN_THROTTLE_WRITEBACK, but one 
-thing at a time :-)
+Reviewed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
 
