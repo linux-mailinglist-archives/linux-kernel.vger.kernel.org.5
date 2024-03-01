@@ -1,120 +1,85 @@
-Return-Path: <linux-kernel+bounces-88060-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88092-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A405186DCE3
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:18:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D64C86DD43
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:41:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35E672896C6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:18:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA2E8281B92
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:41:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5284869D24;
-	Fri,  1 Mar 2024 08:18:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D95D46A348;
+	Fri,  1 Mar 2024 08:40:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="pYcN9v2M"
-Received: from mail-vk1-f180.google.com (mail-vk1-f180.google.com [209.85.221.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="HTEBLvZM"
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 438B669D0B
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 08:18:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 025346997D;
+	Fri,  1 Mar 2024 08:40:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.113
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709281094; cv=none; b=Qq/PCYO+OO1tkKHZ/zXqxtgw3zXnElL4G0otyVvL6tCNBiQPPJG2QYCGitW6jE53ThNzjPFHxKRu0/mFLg4OWVSr49IJleGdfh3tAoj7kvcuRVulGYHpWYgbZJSQELCzG/a8TVGkVQ9DufOdgYNi00U70EYvtn8JVq66JFMx7xA=
+	t=1709282430; cv=none; b=Pq9gpSVT5X7n5OFxElQOQRI4mMbenS4gaZrqMCFKuhHXeS3jebG0FOP+MRyuI07vTzkOpaptAqHMUhFQFL7SnYtiYeec4gDOTf0BiYFER88ZJxwnlzxkQTgfozagsDecjMMhn7pjNfgsF2/pQ4wgs+XWH42BD901hwwg1ad2pd0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709281094; c=relaxed/simple;
-	bh=yp68DEdZUIp6DbHm5jT7o9JF91i5ZA3+8zf7cCaGH40=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qCJc/vctkyt55IjW0rLNoOyH6+ndkRSCU13avneR9FGocMKV20fetmQ6EfI/GrXGMefWlBeuVbNHM7PU/T+8tgtdiisstSHtkeyV2jkqLDML2X9/ExemSODuVNcHtbl0YBO/YeGE/DOhguxQdw1ri/ah8yz0BhvSl5l36WpkJB8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=pYcN9v2M; arc=none smtp.client-ip=209.85.221.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-vk1-f180.google.com with SMTP id 71dfb90a1353d-4d331ba6078so424263e0c.3
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 00:18:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1709281092; x=1709885892; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yp68DEdZUIp6DbHm5jT7o9JF91i5ZA3+8zf7cCaGH40=;
-        b=pYcN9v2MFnr+htNsmgg76MVJkUTQPC8qdovJrex9a8fus63Lm4KwlesmZH+WqfGoJZ
-         E9c4HbZqv7hE9TtpuaiTVQkjLee5P3eH9bI+W364kdjl+144FclYhvtex6NGt7XDxIja
-         qA0LcRsjeuElviSQt2y/1/4WSbjnbLKbPTAXjh0lJr8SFtqEAaxD6O8WAMDQUgFs1nGO
-         N0BUEU97MlrfPW9aI6CIeBeaub3YyGQfXyVWxRORDi/hpeqlTVrF0i8Fh5QaOfqgXZj5
-         TW7AKGtdo6nAoEgxL4lSz5b2VxV0i/qMygbk+WTuFMzOHFRTdJTfYaq6E2Gpn3YpHdA0
-         yeQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709281092; x=1709885892;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yp68DEdZUIp6DbHm5jT7o9JF91i5ZA3+8zf7cCaGH40=;
-        b=MsXl5L2KdFbzPlO1yblg5MGGG3bZh8o2g+aJ7tW+16aSEnQqrR19RMuUji27iPEROF
-         zYQkonh0vn1py0A4XvrZBgtQZp2w7rRdb5DGiztYksAliLMoVS8CXdEyoHbslwKlKUW2
-         UAzcXjcLiAyoW9dFtiMcTzPKXFKgRKxYHqOdw7/bYSg/fUE/ie41jFg7r0FXsQRyZcCd
-         o1HclJit6X/VrhylDjzdfcycvv0AQs2xLm9utwSNttxF48eAj9Q9lukcJFSA8vxfaTO9
-         Lidh+QX+MQT9lEsH6s+umsvrujI/XDekflikcEA3wCO2fw0Y8+MaesKSTOFGbCvgj80l
-         FIdw==
-X-Forwarded-Encrypted: i=1; AJvYcCWXPEdI498ALnm2dg9Ema6BwI64PHXzH5tDvIIP3IBUN1l1yd5ypYmZeL8IcZZMGSvq5Vf1YK4TYg8fIotwsZ1stsN8GqBUJqXpK176
-X-Gm-Message-State: AOJu0YztKoywVh/VarBvgmOyNb20/R85DUObTZEpupDbY6OdTeI72JmP
-	vLGujFn4RaRc988g2a1fTwTXoGwQhsTscBJxIwN3asNz1yZSP3wxdcKq9jqSmN17A5fOTm/6+oQ
-	hQlQnHKVV8383aoCLnXNgqvo/OlNgWgl80E4ljg==
-X-Google-Smtp-Source: AGHT+IEhwqISmIJ5HCe1Nfu0Bnq1Pv29jU9DH3Pp2yv9SKTj1rghbwGyjrDqQbRbf0cdwpde2nH0FRgUZpSk6SGKDXU=
-X-Received: by 2002:a05:6122:1aad:b0:4cd:b55a:bb0d with SMTP id
- dz13-20020a0561221aad00b004cdb55abb0dmr704388vkb.2.1709281092151; Fri, 01 Mar
- 2024 00:18:12 -0800 (PST)
+	s=arc-20240116; t=1709282430; c=relaxed/simple;
+	bh=JpANkCjtetYRdF5bevCopBm1xT0VWZ4TSa3drrOENZo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=nEGjxr5ImZlJexoKT+CVzA3jZNyP7A39K53Z1CKgDDMc6LI4ddAr7491SYly0dS8QST/TgGySzWFvqgVxzgTBqhU2c3qVzWtRJboz++zQ7MJINrXGBnMyO7DAXAgvmljsImvg95h3wD6zeKhMjAMe8kRp9gsirJg00YDkGCmshw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=HTEBLvZM; arc=none smtp.client-ip=115.124.30.113
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1709282419; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=/fhMqxBCkmmn8CH6FRiUPSq20rCPOyTNVQl0VCwCg98=;
+	b=HTEBLvZMpm15fEpSEOj7Iez298xUmJH8SlSBwNfdgmz9VdNsz8AMCVRqBn3/W4q9g0cDxkOrLcvWrnAg8vYg40JU6O3VL2JUqk0zz7MeeHBIKtpYKQES71TxVrz9qlObMPI3NJUw0BsyAR+WSay0WnvPHslgJ67azXwAvEfsb+A=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0W1a.nJe_1709282417;
+Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0W1a.nJe_1709282417)
+          by smtp.aliyun-inc.com;
+          Fri, 01 Mar 2024 16:40:18 +0800
+From: Yang Li <yang.lee@linux.alibaba.com>
+To: daniel.lezcano@kernel.org,
+	rafael@kernel.org
+Cc: linux-pm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH -next] powercap: dtpm: Fix kernel-doc for dtpm_create_hierarchy function
+Date: Fri,  1 Mar 2024 16:18:02 +0800
+Message-Id: <20240301081802.114308-1-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240228003043.1167394-1-andrew@codeconstruct.com.au>
- <c2060450-4b76-4740-afe4-d14717245f01@linaro.org> <16ddd99007176da3f84462de217cb76c8fa4e1bd.camel@codeconstruct.com.au>
- <CAMRc=MeEyo7y-G1saydxtTRedNtHPaEeLANuzXt6KsiDU2jOWw@mail.gmail.com> <e55aa1321ccac8e6391ab65a5a439b49d265bfce.camel@codeconstruct.com.au>
-In-Reply-To: <e55aa1321ccac8e6391ab65a5a439b49d265bfce.camel@codeconstruct.com.au>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Fri, 1 Mar 2024 09:18:01 +0100
-Message-ID: <CAMRc=Mfa1uUhkPNpLdcMsGC4=G+_MGzaxXRL7UVdfKJD_zF0+w@mail.gmail.com>
-Subject: Re: [PATCH v6] dt-bindings: gpio: aspeed,ast2400-gpio: Convert to DT schema
-To: Andrew Jeffery <andrew@codeconstruct.com.au>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, linus.walleij@linaro.org, 
-	krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org, conor+dt@kernel.org, 
-	joel@jms.id.au, linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Mar 1, 2024 at 12:23=E2=80=AFAM Andrew Jeffery
-<andrew@codeconstruct.com.au> wrote:
->
-> On Thu, 2024-02-29 at 09:52 +0100, Bartosz Golaszewski wrote:
-> > On Thu, Feb 29, 2024 at 4:21=E2=80=AFAM Andrew Jeffery
-> > <andrew@codeconstruct.com.au> wrote:
-> > >
-> > > On Wed, 2024-02-28 at 08:47 +0100, Krzysztof Kozlowski wrote:
-> > > >
-> > > > You still have way too many examples. One is enough, two is still o=
-kay.
-> > > > We really do not want more of examples with minor differences.
-> > >
-> > > Noted, I'll keep them to a minimum in the future.
-> > >
-> >
-> > As in: I'll still send a v7? I can trim the examples when applying,
-> > just tell me which ones to drop.
->
-> Ah, thanks. I wasn't planning to send a v7 given the R-b tag from
-> Krzysztof for v6. I intended for "in the future" to mean for patches
-> converting other bindings to DT schema. But if you're keen to trim some
-> examples out I'd drop the aspeed,ast2400-gpio and aspeed,ast2500-gpio
-> nodes, keeping just the aspeed,ast2600-gpio example.
->
-> Andrew
+The existing comment block above the dtpm_create_hierarchy function
+does not conform to the kernel-doc standard. This patch fixes the
+documentation to match the expected kernel-doc format, which includes
+a structured documentation header with param and return value.
 
-It's ok, I applied it as is.
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ drivers/powercap/dtpm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Bart
+diff --git a/drivers/powercap/dtpm.c b/drivers/powercap/dtpm.c
+index ce920f17f45f..f390665743c4 100644
+--- a/drivers/powercap/dtpm.c
++++ b/drivers/powercap/dtpm.c
+@@ -522,7 +522,7 @@ static int dtpm_for_each_child(const struct dtpm_node *hierarchy,
+ 
+ /**
+  * dtpm_create_hierarchy - Create the dtpm hierarchy
+- * @hierarchy: An array of struct dtpm_node describing the hierarchy
++ * @dtpm_match_table: Pointer to the array of device ID structures
+  *
+  * The function is called by the platform specific code with the
+  * description of the different node in the hierarchy. It creates the
+-- 
+2.20.1.7.g153144c
+
 
