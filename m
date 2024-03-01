@@ -1,156 +1,131 @@
-Return-Path: <linux-kernel+bounces-88370-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88371-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAE5486E08F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:40:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4755686E091
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:42:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68A2B28D586
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:40:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02D6328335D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:42:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BE386CDAE;
-	Fri,  1 Mar 2024 11:40:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B12E36CDCD;
+	Fri,  1 Mar 2024 11:41:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mz5VWRuw"
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Gk5wWgCH"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE2CF20315
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 11:40:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF07C6A8AD;
+	Fri,  1 Mar 2024 11:41:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709293242; cv=none; b=mxmZRhtIWjYak5ueJs6t+08RMD5N4ktFyigiexUSE8/qN+hEl+hFviI0LDomzJzpuBv+jOzUxZVy1kSb0vHib8KIgkWcQtAH7L3F32eKbHYwgNToafwK5UL8rE7Tuw7jmJ5/C1YzlDKW+AVi/zKYViizS0Vji0W75utNSMjm0bg=
+	t=1709293316; cv=none; b=FtN6xE5Xrww0Q2nqCSrA4H4Nle14MaftEWr5tFuvU2hpUKzPwoXdEX5R3Wq/+7n5yQkl/tM0WJUCXpBAy8bYXbLdnomLyes4cLkCjbMTWoWS6dhz6ak1oe6AVYGkOJAGU4cfDijhEGOeTJf8Roig3oANvXhVSYqkqMBzmCuB8sE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709293242; c=relaxed/simple;
-	bh=Qu6ZmDK96GNsbatrkbOH93BBpWFhFEFCALMrdL1eHqU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=ng0muzr6+UK5Xh4sqeIP9QafVoRs9BC+wIl+h3fVCYaJS/XQE143v02ZtURy5K18W996Cohok4nFFphoQOqowiG1LQWtbaPRcguoGHgQ4TIWfFYgXZSo8KspQMM/N40Xk6A1fAvPBrvhEDKSJ294DB0PrgK/uPP9zUzaJe+Ufjc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=mz5VWRuw; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-565a2c4cc1aso3020158a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 03:40:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709293239; x=1709898039; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=R4DA34/5Kvb1127d2yWJOOqxpTefiacI79ML95b5u5E=;
-        b=mz5VWRuwiEoHExzvrdWPW521V3y/LqZL6r4/H0xzqKD7zYYKUinqvjpBa8I6tNCe1l
-         2OQ5eFweYgdaN5X31yvJQqmqpOZmmw+lyO0qSHdBl31j7jKDSkLnNKMW+nHRRLie764G
-         4QV2ARJEof7yqaVJ9AuYx3fbwFo5bVogAMoNSSB1exYFPZQJB7KRiaDSG3DfHyCCtySd
-         isRWiYXgzSwa7dLBMeclVvOmvecOA8wnEC8AiGftri9bJtBSYVWxkOLDFDgw9hyHgpLr
-         Ql4SBTBdnJDs5Qgn1m3x8Vw+DfTeUHhPd7TU1CD4wWRmKcFswUGVeNe/I4q97Z5ty5Dr
-         ZOZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709293239; x=1709898039;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=R4DA34/5Kvb1127d2yWJOOqxpTefiacI79ML95b5u5E=;
-        b=PKMnHq4A7pX/Z6BH3i09dI4zUkylGmgZJzOxlKy7lPbLxd3Oq//ziquwVi58PDQrZg
-         m3eLu+cp8snxSOU7wyvdb+ae5p2Ia3Qmuub5vS/jYR8crkB+cYLT4Nn5skN8u0y6wzkY
-         nhce9VfSz8C4nBGoYX4fNUJ1uG/hMb5gzHSI+canlUElEF2Q+mCeHDL8Kl4E/teyX9LS
-         gfZ3T0XtAWcHutaqEOw/9dEdQImmotkc3SaPmE8tD4Qthw3Wx4WstaeJZKon2ciIq/+O
-         ZubO/FQgo7OlwwUOGXhYpqkMvV+u0ShWm18FFSHXU+IWVl+vwYMPPYwpHWC+uimXDS+l
-         Decg==
-X-Forwarded-Encrypted: i=1; AJvYcCW94wKgYSJveSYe1+S5uyyRBCF1NodLJChk9fHdDv5YD4XWl7pdOEevQptLpIp8Nfg+CUfO3kDmC6/meJmRIbgFo2EYJmrszWzC+CKW
-X-Gm-Message-State: AOJu0YzwJ33AX0jd5EbzgMf91gjVGBkwA1Wo6x4mqCbcTYBs5NvbENTY
-	BecNzJXJeFs4GKJUoPUTwUOpgO159PyN2IgI2uUI6tSl7JhYXj0XCByTGk+kGI8=
-X-Google-Smtp-Source: AGHT+IGHBRcpk1bAIkNMDcmZk1V9eM3Osu4/pZELwwmSrBOeY8UgCvTPnKefM8atiCfFTZiBIQz15w==
-X-Received: by 2002:a05:6402:1d18:b0:566:4dc1:522c with SMTP id dg24-20020a0564021d1800b005664dc1522cmr1129700edb.15.1709293239065;
-        Fri, 01 Mar 2024 03:40:39 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id el8-20020a056402360800b00566d6e30f1fsm395050edb.31.2024.03.01.03.40.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Mar 2024 03:40:38 -0800 (PST)
-Message-ID: <cfec2fee-ebd8-4865-b307-b64e1bbfa335@linaro.org>
-Date: Fri, 1 Mar 2024 12:40:36 +0100
+	s=arc-20240116; t=1709293316; c=relaxed/simple;
+	bh=EYQzIq2XsHbxPP8KNQSmIBCmBUS5ay1BMmtHwbbusNM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hP1uR7wkR7oOCpfHeHMM4+xTvWwlV4Gf7dH0Y82ury6w691dZgO2Xdtzf+B6DWA7FY33nKO7RyCofAvl0KgRFv1gSqUj8Go9houKsGdtbZzJevdtq+AfJzhLp35NzBe4u3k/lljb2Kt86OCwxAzFsBK65fVQBGPF9fbUSUr5fII=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Gk5wWgCH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1844C433F1;
+	Fri,  1 Mar 2024 11:41:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1709293315;
+	bh=EYQzIq2XsHbxPP8KNQSmIBCmBUS5ay1BMmtHwbbusNM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Gk5wWgCH0TPmRkvJzdQpj9C5HIOw9GHZ+3Xpk/EcNAXBRZVJ5Fw3FxLONXKuj5lkB
+	 6CIO+Dwed/IhqsJjXS98AEknok9SQGO616enLsGTrYrv8yJtKNq+xtS7xnpBPemYdQ
+	 /MLyValKXQBsFurOwXvc+NUHaSUu9MhYEFH7l1Os=
+Date: Fri, 1 Mar 2024 12:41:52 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	netdev@vger.kernel.org, linux-hardening@vger.kernel.org,
+	Simon Horman <horms@kernel.org>, Jiri Pirko <jiri@resnulli.us>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Coco Li <lixiaoyan@google.com>,
+	Amritha Nambiar <amritha.nambiar@intel.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] netdev: Use flexible array for trailing private bytes
+Message-ID: <2024030121-starring-party-7e34@gregkh>
+References: <20240229213018.work.556-kees@kernel.org>
+ <20240229225910.79e224cf@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] memory: omap-gpmc: fixup wrongly hierarchy of the
- sub-devices
-Content-Language: en-US
-To: "Brock.Zheng" <yzheng@techyauld.com>, Roger Quadros <rogerq@kernel.org>,
- Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <6fftq2zlkpaf7xptyff6ky63cinr76ziyvdbm5jhj2apubr5vf@l4gvbdax3l2e>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <6fftq2zlkpaf7xptyff6ky63cinr76ziyvdbm5jhj2apubr5vf@l4gvbdax3l2e>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240229225910.79e224cf@kernel.org>
 
-On 01/03/2024 00:52, Brock.Zheng wrote:
-> On TI-AM335x，my FPGA under GPMC local-bus can not work on 6.x kernel.
+On Thu, Feb 29, 2024 at 10:59:10PM -0800, Jakub Kicinski wrote:
+> On Thu, 29 Feb 2024 13:30:22 -0800 Kees Cook wrote:
+> > Introduce a new struct net_device_priv that contains struct net_device
+> > but also accounts for the commonly trailing bytes through the "size" and
+> > "data" members.
 > 
-> GPMC <--> FPGA  <--> sub-devices....
+> I'm a bit unclear on the benefit. Perhaps I'm unaccustomed to "safe C".
 > 
-> I found that the platform sub-devices is in wrongly organized
-> hierarchy.  The grandchildren are now under the GPMC device
-> directly, not under it's father(FPGA).
+> > As many dummy struct net_device instances exist still,
+> > it is non-trivial to but this flexible array inside struct net_device
 > 
-> Signed-off-by: Brock.Zheng <yzheng@techyauld.com>
+> put
+> 
+> Non-trivial, meaning what's the challenge?
+> We also do somewhat silly things with netdev lifetime, because we can't
+> assume netdev gets freed by netdev_free(). Cleaning up the "embedders"
+> would be beneficial for multiple reasons.
+> 
+> > itself. But we can add a sanity check in netdev_priv() to catch any
+> > attempts to access the private data of a dummy struct.
+> > 
+> > Adjust allocation logic to use the new full structure.
+> > 
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> 
+> > diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> > index 118c40258d07..b476809d0bae 100644
+> > --- a/include/linux/netdevice.h
+> > +++ b/include/linux/netdevice.h
+> > @@ -1815,6 +1815,8 @@ enum netdev_stat_type {
+> >  	NETDEV_PCPU_STAT_DSTATS, /* struct pcpu_dstats */
+> >  };
+> >  
+> > +#define	NETDEV_ALIGN		32
+> 
+> Unless someone knows what this is for it should go.
+> Align priv to cacheline size.
+> 
+> >  /**
+> >   *	struct net_device - The DEVICE structure.
+> >   *
+> 
+> > @@ -2665,7 +2673,14 @@ void dev_net_set(struct net_device *dev, struct net *net)
+> >   */
+> >  static inline void *netdev_priv(const struct net_device *dev)
+> >  {
+> > -	return (char *)dev + ALIGN(sizeof(struct net_device), NETDEV_ALIGN);
+> > +	struct net_device_priv *priv;
+> > +
+> > +	/* Dummy struct net_device have no trailing data. */
+> > +	if (WARN_ON_ONCE(dev->reg_state == NETREG_DUMMY))
+> > +		return NULL;
+> 
+> This is a static inline with roughly 11,000 call sites, according to 
+> a quick grep. Aren't WARN_ONCE() in static inlines creating a "once"
+> object in every compilation unit where they get used?
 
-The dot '.' does not look like part of the name. Are you sure you
-transliterated/translated your name correctly?
+It also, if this every trips, will reboot the box for those that run
+with panic-on-warn set, is that something that you all really want?
 
-Also, please provide Fixes tag (see submitting patches document).
+thanks,
 
-Your patch confused my mailer. It looks like HTML, but it seems it is
-not. Maybe because of Content-Disposition: inline? Why do you have it?
-
-Best regards,
-Krzysztof
-
+greg k-h
 
