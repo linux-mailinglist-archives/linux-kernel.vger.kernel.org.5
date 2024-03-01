@@ -1,164 +1,103 @@
-Return-Path: <linux-kernel+bounces-88913-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88914-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CECF86E84E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:24:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC77A86E876
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:32:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F6F0288F33
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:24:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 038D2B2A7E7
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:24:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDFED71737;
-	Fri,  1 Mar 2024 18:19:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4B2D38F9D;
+	Fri,  1 Mar 2024 18:20:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PhKTFL77"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QlVbQotp"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32645374DE;
-	Fri,  1 Mar 2024 18:19:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A2918825;
+	Fri,  1 Mar 2024 18:20:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709317158; cv=none; b=QNwSy7AQwxxhfSBNnlSCvL8Dk7QYMpAq05kToTVyL770+2aabMRTidlk9gqqIDfNphRxpvo9/5VRHsUF1f1NmqAdUO6pou2pHqq0Ztko/AvgdPSmKXo1ueLad9e7i7xGw4K206ylHIGyyV/5o6u6+bBX/oe7C9tOEIos4G6OeYk=
+	t=1709317228; cv=none; b=Zltt2YzKcWvRl86I7zww/Dt2URm+j1U2xbGBp9iA6WPjqy/uI+z9j+A59nExXCT6QlvcDybEgp4UBtevyQIT8zgQJ3G6wroy27jN5joJleq0o+Dv/MVhfx3c4mE95i5bysiRt4vWY9pTUw4bYlt7FChYAa6s4K/gRIeOEYmElWY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709317158; c=relaxed/simple;
-	bh=+pDePtaqyPSYmYXRLXh31mTRlvMwA70fqaLVjgNNISs=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=FhKU35j+aAuUAYfTHmFErUOkOb6SHgV9Pd2fjf3RJFJTTrrhqzo9PyDJ835d9MKLWSaL/I7YriBVJu2sAiLE9zU5TIcEaLhCL7XA9gQuowj2XjcL1azrTL/h6l7qKfcAd/nledeXOOoU3IY9/0Gag+Ex5GCjMZKjHl2dbwsk5S4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PhKTFL77; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34BECC433C7;
-	Fri,  1 Mar 2024 18:19:15 +0000 (UTC)
+	s=arc-20240116; t=1709317228; c=relaxed/simple;
+	bh=iBux+NpSO0fGXlkPWfWMWmpfroby+67VeWoReJWiqBA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VBYSgTs9kk8O1q6ZTlwPqNpMUFrftgTiSHzeLBVciOCZ9KaICo+tGCSYLK5HRRsJ0e/QorT1C8PjZxqsNVWvD7JFAVpSbZ3L+74dU6mpvXeCjT6soo+XA1mJP33+uqNXiKaqy4oTc/VGu60vvPiGKcggddRxQ6Hod9IsKbbzKQA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QlVbQotp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC126C433F1;
+	Fri,  1 Mar 2024 18:20:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709317157;
-	bh=+pDePtaqyPSYmYXRLXh31mTRlvMwA70fqaLVjgNNISs=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=PhKTFL779Bn7mIEWdDk7sEaRkvo6OREWcxIY63SSo13+70eq/KbXwUTYrAm7d/3bZ
-	 wZoAisdFmhBdAh11LbJ8gU9jQ7QQtj/7p3X37FPli9gNewWBl+dUlYqgnFDMD7lz/I
-	 yAEF3Fsbwmx12RdKjDaTxyy/8nh4CuAIj/Vi7zOEjgy3a8IS+SdYAtIEAgv4m20327
-	 0+69ubs/sPazslCEYQhoU5e3SgAqFz053rxCnFaCc8YflhjGP3pS6n9QT7vPexR3uz
-	 RNOnx0JFNeMwF6W38uv9ePg4zgVkUHzBPhzNA9nCuARKvvy4QEtSZAZEQx7/cBGsll
-	 gKfBQYq25w5cw==
-From: "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
-Date: Fri, 01 Mar 2024 19:18:39 +0100
-Subject: [PATCH net-next 15/15] selftests: mptcp: userspace pm get addr
- tests
+	s=k20201202; t=1709317227;
+	bh=iBux+NpSO0fGXlkPWfWMWmpfroby+67VeWoReJWiqBA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=QlVbQotpgNtrIyzQarTw7Rzu6RIQM6y2IiXS+g2Jc8uNSz3Q0Lf15+Ul7OJdb9C80
+	 8YuBXNQGyKumcj24pke5+rUL9cQ4wbU75dHiC81CokGtmo3pLc5Fy70NsxgoD+6hQ9
+	 I5tJmJ5xGFj5JFTdze3Jf2Cd9Ub27f3cUtt15kuFRhD2Vtf3hCo+c/JMm42c69ZoEq
+	 huR9RYeY9sKwcN2EA81VGLMsI0HBdGmnuCvPyoXOoFTv7mL8ILVjOtbGFe6DNit4Ow
+	 6Zs+ZxNVUDIz/pP7G/5O8+8ExXTBsrEQsZI1ZE+WfiP/z7gr3340BKYBMZXHbXwg5X
+	 BiFWj6Ih6am0w==
+Date: Fri, 1 Mar 2024 19:20:22 +0100
+From: Andi Shyti <andi.shyti@kernel.org>
+To: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
+Cc: konrad.dybcio@linaro.org, bjorn.andersson@linaro.org, vkoul@kernel.org, 
+	wsa@kernel.org, linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org, quic_vdadhani@quicinc.com
+Subject: Re: [SPAM] [PATCH v1] i2c: i2c-qcom-geni: Parse Error correctly in
+ i2c GSI mode
+Message-ID: <zpkc4hxxkalw2cqhp5fbhdge4vhfrthi2ezhkpecninqvdcn6n@oddo2j6tabce>
+References: <20240301112638.990045-1-quic_msavaliy@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240301-upstream-net-next-20240301-mptcp-userspace-pm-dump-addr-v1-15-dc30a420b3a0@kernel.org>
-References: <20240301-upstream-net-next-20240301-mptcp-userspace-pm-dump-addr-v1-0-dc30a420b3a0@kernel.org>
-In-Reply-To: <20240301-upstream-net-next-20240301-mptcp-userspace-pm-dump-addr-v1-0-dc30a420b3a0@kernel.org>
-To: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>, 
- Geliang Tang <geliang@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>
-Cc: Geliang Tang <tanggeliang@kylinos.cn>, netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
- "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2462; i=matttbe@kernel.org;
- h=from:subject:message-id; bh=Uhj+aOKv+ybe2ZbgME5KF3r9u5aVSPj73T6p8b8Xs1A=;
- b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBl4hv19aV6XjWIlYJ/0F0CCJ+Ls1W4mwW7X7/wn
- 3yn/7sEK3OJAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZeIb9QAKCRD2t4JPQmmg
- c6mfEADTCCxrJQVDiE19OVgNtcbK8ZWAtF87D0kxuaE4RUDo4GlCx71csx2vxwdr9mAPEHfSXqC
- Z+aVSPLohzdJZHBDVUd7UE/znABjQJTvx/pCy9o6vTmOTQb5Cewx+0xehXHZsISmo6am9PszHNG
- Xbf18CyEGUPvi/s23gF5P+UUkokSAd5bORywT/akRMI26RRNKDRQ++BMBPypJzwE5e/vYvZLLlx
- aqEfihKFIZIH80evCHeE4Df5LEAU1P2Qx5KjB+f6GACFVR9VXnljGOL/UEYCVnjdSeVB4sROiD2
- x5s2Kh9k1IyvniN8ZuUiXjXrAx+wWF8dpPJQvGBuhjnWZc12I3G2XOABuULefrFwIGJMP13lX5u
- jTQCH9Gw6jYH35JrlDpSMlJGuBxFAmEIQAcB/HxLXG4xJpoPveHMghGGrCNQ3v/5icGNsB0x5pA
- gelkkthBgvQJWAzDxcI29rh734dpjemDgm8oE77z4ug5G53iDJr7rVfRVl4kmZ3dxE1qAxJ4ehi
- 3JIgoN9RP1kJS9nwldJ8nc9hiB2eOm5Y5bH1pg0PRETkxvdRItvoHUFXYJfC9xWOlr6C3tO/z13
- I75W+WAcjddkSxDHoTt8kglGLgO5whSBNiERmWkAGfAtv+5EnhtUoKm+6b6RNttMTvVfQb75bxp
- XDuyts/BjE9tHQA==
-X-Developer-Key: i=matttbe@kernel.org; a=openpgp;
- fpr=E8CB85F76877057A6E27F77AF6B7824F4269A073
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240301112638.990045-1-quic_msavaliy@quicinc.com>
 
-From: Geliang Tang <tanggeliang@kylinos.cn>
+Hi Mukesh,
 
-This patch adds a new helper userspace_pm_get_addr() in mptcp_join.sh.
-In it, parse the token value from the output of 'pm_nl_ctl events', then
-pass it to pm_nl_ctl get_addr command. Use this helper in userspace pm
-dump tests.
+On Fri, Mar 01, 2024 at 04:56:38PM +0530, Mukesh Kumar Savaliya wrote:
+> we are seeing protocol errors like NACK as transfer failure but
 
-Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
-Reviewed-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
-Reviewed-by: Mat Martineau <martineau@kernel.org>
-Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
----
- tools/testing/selftests/net/mptcp/mptcp_join.sh | 30 +++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+/we/We/
 
-diff --git a/tools/testing/selftests/net/mptcp/mptcp_join.sh b/tools/testing/selftests/net/mptcp/mptcp_join.sh
-index 8b6430642706..955ee651dcd5 100755
---- a/tools/testing/selftests/net/mptcp/mptcp_join.sh
-+++ b/tools/testing/selftests/net/mptcp/mptcp_join.sh
-@@ -3388,6 +3388,18 @@ userspace_pm_dump()
- 	ip netns exec $1 ./pm_nl_ctl dump token $tk
- }
- 
-+# $1: ns ; $2: id
-+userspace_pm_get_addr()
-+{
-+	local evts=$evts_ns1
-+	local tk
-+
-+	[ "$1" == "$ns2" ] && evts=$evts_ns2
-+	tk=$(mptcp_lib_evts_get_info token "$evts")
-+
-+	ip netns exec $1 ./pm_nl_ctl get $2 token $tk
-+}
-+
- userspace_pm_chk_dump_addr()
- {
- 	local ns="${1}"
-@@ -3403,6 +3415,21 @@ userspace_pm_chk_dump_addr()
- 	fi
- }
- 
-+userspace_pm_chk_get_addr()
-+{
-+	local ns="${1}"
-+	local id="${2}"
-+	local exp="${3}"
-+
-+	print_check "get id ${id} addr"
-+
-+	if mptcp_lib_kallsyms_has "mptcp_userspace_pm_get_addr$"; then
-+		check_output "userspace_pm_get_addr ${ns} ${id}" "${exp}"
-+	else
-+		print_skip
-+	fi
-+}
-+
- userspace_tests()
- {
- 	# userspace pm type prevents add_addr
-@@ -3497,6 +3524,8 @@ userspace_tests()
- 		userspace_pm_chk_dump_addr "${ns1}" \
- 			$'id 10 flags signal 10.0.2.1\nid 20 flags signal 10.0.3.1' \
- 			"signal"
-+		userspace_pm_chk_get_addr "${ns1}" "10" "id 10 flags signal 10.0.2.1"
-+		userspace_pm_chk_get_addr "${ns1}" "20" "id 20 flags signal 10.0.3.1"
- 		userspace_pm_rm_addr $ns1 10
- 		userspace_pm_rm_sf $ns1 "::ffff:10.0.2.1" $SUB_ESTABLISHED
- 		userspace_pm_chk_dump_addr "${ns1}" \
-@@ -3527,6 +3556,7 @@ userspace_tests()
- 		userspace_pm_chk_dump_addr "${ns2}" \
- 			"id 20 flags subflow 10.0.3.2" \
- 			"subflow"
-+		userspace_pm_chk_get_addr "${ns2}" "20" "id 20 flags subflow 10.0.3.2"
- 		userspace_pm_rm_addr $ns2 20
- 		userspace_pm_rm_sf $ns2 10.0.3.2 $SUB_ESTABLISHED
- 		userspace_pm_chk_dump_addr "${ns2}" \
+> ideally it should report exact error like NACK, BUS_PROTO or ARB_LOST.
+> 
+> Hence we are adding such error support in GSI mode and reporting it
+> accordingly by adding respective error logs.
+> 
+> geni_i2c_gpi_xfer() needed to allocate heap based memory instead of
 
--- 
-2.43.0
+Please use the imperative form.
 
+> stack memory to handle and store the geni_i2c_dev handle.
+> 
+> Copy event status from GSI driver to the i2c device status and parse
+> error when callback comes from gsi driver to the i2c driver. In the
+> gpi.c, we need to store callback param into i2c config data structure
+> so that inside the i2c driver, we can check what exactly the error is
+> and parse it accordingly.
+> 
+> Fixes: d8703554f4de ("i2c: qcom-geni: Add support for GPI DMA")
+
+What bug are you fixing here? The description doesn't talk about
+fixes rather than support added.
+
+..
+
+> -	config.peripheral_config = &peripheral;
+> -	config.peripheral_size = sizeof(peripheral);
+> +	peripheral = devm_kzalloc(gi2c->se.dev, sizeof(*peripheral), GFP_KERNEL);
+
+This is a massive leak. Why are you deciding to make the
+allocation dynamic?
+
+Thanks,
+Andi
 
