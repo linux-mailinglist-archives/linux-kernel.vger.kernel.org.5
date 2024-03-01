@@ -1,119 +1,88 @@
-Return-Path: <linux-kernel+bounces-88996-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88995-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2785986E939
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:10:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C6A2D86E937
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:09:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 938021F22D16
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:10:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 64EE71F22EE9
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:09:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0787930FA4;
-	Fri,  1 Mar 2024 19:09:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6E573A1A8;
+	Fri,  1 Mar 2024 19:09:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="dnzKh2OB"
-Received: from smtp-8faa.mail.infomaniak.ch (smtp-8faa.mail.infomaniak.ch [83.166.143.170])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VNPV1sby"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6124F39AF6
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 19:09:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.166.143.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 256E8848E;
+	Fri,  1 Mar 2024 19:09:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709320190; cv=none; b=hDu4WM4ny4MsanmU0mhc/9Szd2woVhtUnrOxlF4fv3INpqhbdyv/eoUwFFFOnN+RlOLnVAD1N15PdcB4UqEffh7qbr5RUIp1sG8C1bkdgpDSFI1z5FNlxz0Al6UUsJJkniC8BGlcJIgKJqkbqveCkONSLRUAbAgEkeAjj5C5ZtM=
+	t=1709320174; cv=none; b=apMJC5OsD68+icEX0VuBZibGQL8hzwOnKHgDVdQ/TiVfZG0X9TeddgRzgszXsNj3WB72em3J32WgWrx9nXIHh/1vIMZe6BWvd3BYJYYCVX1r9URGUWdA8he3aoHJVvksIGxVjV1/Lm2gfhD8pf9MQf91/Qev5JIYxF3x8u/IPvI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709320190; c=relaxed/simple;
-	bh=rjofMt5czWAZ/8UdgmbuNLIMUbqVfuBuDdVqP8nEB2w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iaotNkRSQ6e2nWQwckGmljR6L67XP75AAIoQFc3KtvlBrNbd+yb1PqqpdSPlfMEc705nYwTnpSUt6v0xICsVdJ+Ln1Y5R3jFj9w8hQh/ubbKdpRfiB2740kh2sRb4hfA1sksLuYSQyFh7YkQ90VGH0kCN54VT7+w7F5TviBWdh4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=dnzKh2OB; arc=none smtp.client-ip=83.166.143.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
-Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
-	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4Tmd1t6YX5zMyYJT;
-	Fri,  1 Mar 2024 20:09:38 +0100 (CET)
-Received: from unknown by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4Tmd1s45G5zMpnPg;
-	Fri,  1 Mar 2024 20:09:37 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
-	s=20191114; t=1709320178;
-	bh=rjofMt5czWAZ/8UdgmbuNLIMUbqVfuBuDdVqP8nEB2w=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dnzKh2OBS0YkrIYpEspkpvDAydMZFIZk4Nh0+Gbx0+8Lk3b671LXi4kdNjVmCBsTZ
-	 Rm7K2WbZWudBEHrEPsAMJOJB+6kHAUx0XE/0mQzOmvZ1EZHpPA5fTAcSzByG999MpW
-	 RTwlsi3ZWspSksJZHRaVH8PWKdKF1bQBjNrpiNAw=
-Date: Fri, 1 Mar 2024 20:09:27 +0100
-From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-To: Kees Cook <keescook@chromium.org>
-Cc: Brendan Higgins <brendanhiggins@google.com>, 
-	David Gow <davidgow@google.com>, Rae Moar <rmoar@google.com>, 
-	Shuah Khan <skhan@linuxfoundation.org>, Alan Maguire <alan.maguire@oracle.com>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	"H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, 
-	James Morris <jamorris@linux.microsoft.com>, Luis Chamberlain <mcgrof@kernel.org>, 
-	"Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>, Marco Pagani <marpagan@redhat.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Sean Christopherson <seanjc@google.com>, 
-	Stephen Boyd <sboyd@kernel.org>, Thara Gopinath <tgopinath@microsoft.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Vitaly Kuznetsov <vkuznets@redhat.com>, 
-	Wanpeng Li <wanpengli@tencent.com>, Zahra Tarkhani <ztarkhani@microsoft.com>, kvm@vger.kernel.org, 
-	linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org
-Subject: Re: [PATCH v1 5/8] kunit: Handle test faults
-Message-ID: <20240301.EeyeePa2lien@digikod.net>
-References: <20240229170409.365386-1-mic@digikod.net>
- <20240229170409.365386-6-mic@digikod.net>
- <202402291023.071AA58E3@keescook>
+	s=arc-20240116; t=1709320174; c=relaxed/simple;
+	bh=baHSsvEGjsVt+7v/liOi4Y7CvASDhD35gdGFuKH30K0=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=Lrufhd67QF2S4JKk3pnui4FqxOQ6SuC4sH+iwpmm0UBsGNMDdWNYPBHzKIVCci1TG81dfe5nv8vbHBEsRpQk4WQwImzHQByYJTxemFey6gnBp5hoLsKJ5NLAr0R5jhELNeGrzr03VTs1r1bk3TTrmzh4bngE3q4RvX24XsayOXk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VNPV1sby; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4757FC433C7;
+	Fri,  1 Mar 2024 19:09:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709320173;
+	bh=baHSsvEGjsVt+7v/liOi4Y7CvASDhD35gdGFuKH30K0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=VNPV1sbyzb+ixQL1A9VSdpxDFMaC+8Xv3GJsfotzFBOC/p5jdgyYIkHNomT2PmQqT
+	 6IgpMsQTIoSKD/PBZdBwmYn4TlP/Q4ivCd/llN8QGG40huQDMEZ6Mi7RotZdh1Lbom
+	 Ix1ANFbLTQ43PG7M8aC9prTFKg5XR0/zNyxU8gkKw194cpektuFP4t5oYiefKRGqaH
+	 M9tNsRpE5zrbjIt1pu94bq5Fm3mSnu5HP8soVK4mTz608m81/NXC7o9I0z9qS5sk5U
+	 eyLCycUwMMwk8WRLjiXx1oRbZWgnnTmchPJXq9dLkXoUgsUACq4HmZh3H5jHyDC2JC
+	 lZlFSM6rIZn/w==
+Date: Fri, 1 Mar 2024 13:09:31 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: lpieralisi@kernel.org, bhelgaas@google.com, conor+dt@kernel.org,
+	devicetree@vger.kernel.org, festevam@gmail.com,
+	hongxing.zhu@nxp.com, imx@lists.linux.dev, kernel@pengutronix.de,
+	krzysztof.kozlowski+dt@linaro.org, krzysztof.kozlowski@linaro.org,
+	kw@linux.com, l.stach@pengutronix.de,
+	linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+	manivannan.sadhasivam@linaro.org, robh@kernel.org,
+	s.hauer@pengutronix.de, shawnguo@kernel.org,
+	Nathan Chancellor <nathan@kernel.org>
+Subject: Re: [PATCH v10 03/14] PCI: imx6: Simplify reset handling by using by
+ using *_FLAG_HAS_*_RESET
+Message-ID: <20240301190931.GA403500@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <202402291023.071AA58E3@keescook>
-X-Infomaniak-Routing: alpha
+In-Reply-To: <20240205173335.1120469-4-Frank.Li@nxp.com>
 
-On Thu, Feb 29, 2024 at 10:24:19AM -0800, Kees Cook wrote:
-> On Thu, Feb 29, 2024 at 06:04:06PM +0100, Mickaël Salaün wrote:
-> > Previously, when a kernel test thread crashed (e.g. NULL pointer
-> > dereference, general protection fault), the KUnit test hanged for 30
-> > seconds and exited with a timeout error.
-> > 
-> > Fix this issue by waiting on task_struct->vfork_done instead of the
-> > custom kunit_try_catch.try_completion, and track the execution state by
-> > initially setting try_result with -EFAULT and only setting it to 0 if
-> > the test passed.
-> > 
-> > Fix kunit_generic_run_threadfn_adapter() signature by returning 0
-> > instead of calling kthread_complete_and_exit().  Because thread's exit
-> > code is never checked, always set it to 0 to make it clear.
-> > 
-> > Fix the -EINTR error message, which couldn't be reached until now.
-> > 
-> > This is tested with a following patch.
-> > 
-> > Cc: Brendan Higgins <brendanhiggins@google.com>
-> > Cc: David Gow <davidgow@google.com>
-> > Cc: Rae Moar <rmoar@google.com>
-> > Cc: Shuah Khan <skhan@linuxfoundation.org>
-> > Signed-off-by: Mickaël Salaün <mic@digikod.net>
-> 
-> I assume we can start checking for "intentional" faults now?
+[+cc Nathan]
 
-Yes, but adding dedicated exception handling for such faults would
-probably be cleaner.
+On Mon, Feb 05, 2024 at 12:33:24PM -0500, Frank Li wrote:
+> Refactors the reset handling logic in the imx6 PCI driver by adding
+> IMX6_PCIE_FLAG_HAS_*_RESET bitmask define for drvdata::flags.
+> 
+> The drvdata::flags and a bitmask ensures a cleaner and more scalable
+> switch-case structure for handling reset.
+> 
+> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
 
-At least we can now easily write tests as I did with the last patch. The
-only potential issue is that the kernel will still print the related
-warning in logs, but I think it's OK for tests (and maybe something we'd
-like to test too by the way).
+Lorenzo, would you mind squashing in Nathan's fix from
+https://lore.kernel.org/r/20240301-pci-imx6-fix-clang-implicit-fallthrough-v1-1-db78c7cbb384@kernel.org?
 
-> 
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> 
-> -- 
-> Kees Cook
-> 
+Also, the subject line has a repeated "by using by using".
+
+Bjorn
 
