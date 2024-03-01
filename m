@@ -1,170 +1,256 @@
-Return-Path: <linux-kernel+bounces-88391-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88392-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A08B286E0F6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:19:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BBA886E0FA
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:23:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9AF1CB21A11
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:19:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A6597B21E37
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:23:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10D316E60C;
-	Fri,  1 Mar 2024 12:19:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE27D6E61C;
+	Fri,  1 Mar 2024 12:22:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="S6lYDqXJ"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aqtMsfNA"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C760A4F1E5;
-	Fri,  1 Mar 2024 12:19:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11FA26E5E3;
+	Fri,  1 Mar 2024 12:22:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709295546; cv=none; b=L1euk9MF4AvAqI3VSlBlzT0RTA5JYKt0zucetBPCrlhE61CS6tzYpt2S7yIFpBFO/1B97rTyde1zFe1vD+XFGpm96sCy8/6NXmUk3AmhhUFKaWucF2LJ5eVZOHjfR0gK9fEv2ZUg2+gvTNRGe5sfiqm+3ia07O2voH+PDSRRDVw=
+	t=1709295769; cv=none; b=nzoJ+22PDZ5wkuPvCTs9grt4bho6iA6TNpFhdIy58U7dAOyjXOQCD9GNjIDWBbcWlkrJnUY3xFP9NXfNGOYmzYetju73/oZQM0o724BOilTZFV9sIzifCeNoXFgu6WuW7kEq2eB9Sz5kTQRS+sF4ShIlOSB6NvZkL3N1r9mkH9g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709295546; c=relaxed/simple;
-	bh=/JuogARoTSkexC999JDvQiVZli/6nhMtXRKfthwm9cw=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Pu4gonOE1H+bJ4u9TwwYeG78OXd1hQx96KUGfXN2X56OCuk5JjiqoCNFmlt4PBhc6H7413zyhX5zS8+xgz1zDRwSgdjAtbU2+KdhHTBbn136MIPlaPzA0N39QZ7X54KSrpitxQgHXthsxqJ14xM4rYUn8iJTHB8jo5jmNRlNFhE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=S6lYDqXJ; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709295542;
-	bh=/JuogARoTSkexC999JDvQiVZli/6nhMtXRKfthwm9cw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=S6lYDqXJrWXUDzPO1wTmvcUBucoziKYFzSnZOSZUEAB1QwwGMnwSj9RquoSAOkPJ/
-	 ++HwlGFBlVjPES5nwc555SgdlGFrPN8PVYChSzRSTD7xQaR0O3JCCC1lIb2mLJtM31
-	 kCyDlCATlHHcYdwBa3hsXYzOM8N8+FE3uUD0XkYXid7DYVxuw+Vpx628DAilTvjnk/
-	 NcBvlpGOPQOxm8Hr2E+M0wtCChqfHXo/YJqFuJLjwaMF71knauhnn6nqVjoWOonb8K
-	 voWsn5IaQ7Cwlz4cnNjiGwOCUAVGjNT86uhYLgezNrfqseQxjy5zgS8lUHt8h3tkad
-	 1uVuziX/wL+7w==
-Received: from eldfell (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pq)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id BEAED378000E;
-	Fri,  1 Mar 2024 12:19:01 +0000 (UTC)
-Date: Fri, 1 Mar 2024 14:19:00 +0200
-From: Pekka Paalanen <pekka.paalanen@collabora.com>
-To: Maxime Ripard <mripard@kernel.org>
-Cc: Sebastian Wick <sebastian.wick@redhat.com>, Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann
- <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter
- <daniel@ffwll.ch>, Jonathan Corbet <corbet@lwn.net>, Sandy Huang
- <hjc@rock-chips.com>, Heiko =?UTF-8?B?U3TDvGJuZXI=?= <heiko@sntech.de>,
- Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>,
- Samuel Holland <samuel@sholland.org>, Hans Verkuil <hverkuil@xs4all.nl>,
- Ville =?UTF-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
- dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
- linux-sunxi@lists.linux.dev, Dave Stevenson
- <dave.stevenson@raspberrypi.com>
-Subject: Re: [PATCH v7 21/36] drm/connector: hdmi: Add Broadcast RGB
- property
-Message-ID: <20240301141900.1ee1e2ef.pekka.paalanen@collabora.com>
-In-Reply-To: <20240301-loyal-cornflower-oxpecker-83ed59@houat>
-References: <20240222-kms-hdmi-connector-state-v7-0-8f4af575fce2@kernel.org>
-	<20240222-kms-hdmi-connector-state-v7-21-8f4af575fce2@kernel.org>
-	<20240229194726.GB166694@toolbox>
-	<20240301-light-impressive-grasshopper-adabeb@houat>
-	<20240301112941.GE166694@toolbox>
-	<20240301-loyal-cornflower-oxpecker-83ed59@houat>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1709295769; c=relaxed/simple;
+	bh=CRnowRjLCq+kORKKl47Vuo6OyiXmlws02WybHbJRUtY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=oAml5Ac0dcXRDYR5E7LcJTaB+Pzhrcss4fXrznWDR/lX40yNOiqplrZOxWisWWRJamxHvxqcm1SCusPifzQQC/slEWBeeghNrdTvrASdNMSnbBiMbxcpmbPR1v5orF2JLmDJKD/+SAptLMYb5ZZ+5gL+GSGt6UvxWR74Xz9cer0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aqtMsfNA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 418F1C433C7;
+	Fri,  1 Mar 2024 12:22:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709295768;
+	bh=CRnowRjLCq+kORKKl47Vuo6OyiXmlws02WybHbJRUtY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=aqtMsfNAR2OO6tIf5w0VRZoJVrzX3aqu9nDKPy/fQofWPzDN+jOA9/9O3QYIHx5fM
+	 sR4xldaBJb+JkXylQffa4od2bwQlbZ2jqyyrE5oIpepMdLkr745POXouywD/2p6bDJ
+	 ICjmx33b2GDko/jaK9PjXi1gRxUv1H8JmZ4alqPqacM1VOunD422KE9k+Cyi8+cPYE
+	 11uEe1QAhwA/W9BdfpmZHeRUOHRD8zDDGLS3rblgQN2DEwMnce3O+D7bApEaxew78v
+	 XmtjxTBNYohLRm5wk1g6D4RKH6irJE2tGlRbeAMWNGbWsg3Mm96tdR9SlQ0fNDUgAA
+	 7eqikxGlZ4BQg==
+Message-ID: <85c669ac-8592-46c7-9716-1e76f5aae220@kernel.org>
+Date: Fri, 1 Mar 2024 04:22:47 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/yomWKOIfqdy35zj6dRjUbn_";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] scsi: libsas: Define NCQ Priority sysfs attributes
+ for SATA devices
+Content-Language: en-US
+To: John Garry <john.g.garry@oracle.com>, Igor Pylypiv <ipylypiv@google.com>,
+ Niklas Cassel <cassel@kernel.org>, Jason Yan <yanaijie@huawei.com>,
+ "James E.J. Bottomley" <jejb@linux.ibm.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Jack Wang <jinpu.wang@cloud.ionos.com>, Hannes Reinecke <hare@suse.de>
+Cc: linux-ide@vger.kernel.org, linux-scsi@vger.kernel.org,
+ linux-kernel@vger.kernel.org, TJ Adams <tadamsjr@google.com>
+References: <20240301013759.516817-1-ipylypiv@google.com>
+ <20240301013759.516817-3-ipylypiv@google.com>
+ <b10df0c1-5d8a-4c4d-b8bd-c0dbb53ea0d1@oracle.com>
+From: Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <b10df0c1-5d8a-4c4d-b8bd-c0dbb53ea0d1@oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
---Sig_/yomWKOIfqdy35zj6dRjUbn_
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 2024/03/01 3:57, John Garry wrote:
+> On 01/03/2024 01:37, Igor Pylypiv wrote:
+>> Libata sysfs attributes cannot be used for libsas managed SATA devices
+>> because the ata_port location is different for libsas.
+>>
+>> Defined sysfs attributes (visible for SATA devices only):
+>> - /sys/block/*/device/sas_ncq_prio_enable
+>> - /sys/block/*/device/sas_ncq_prio_supported
 
-On Fri, 1 Mar 2024 13:12:02 +0100
-Maxime Ripard <mripard@kernel.org> wrote:
+Please no ! I know that the Broadcom mpt3sas driver has this attribute named
+sas_ncq_prio_*, but I really think that it was a very unfortunate choice as that
+makes it different from the attribute for libata, which does not have the sas_
+prefix. That means that an attribute controlling a *device* feature has 2
+different name depending on the hba used for the device. That is super annoying
+to deal with in user space... So please, let's name this ncq_prio_*, same as for
+AHCI. SAS does have a concept of priority, but that is for data frames and has
+nothing to do with the actual command being transported. So mixing up sas and
+ncq in the same name is only confusing...
 
-> On Fri, Mar 01, 2024 at 12:29:41PM +0100, Sebastian Wick wrote:
-> > On Fri, Mar 01, 2024 at 11:30:56AM +0100, Maxime Ripard wrote: =20
-> > > On Thu, Feb 29, 2024 at 08:47:26PM +0100, Sebastian Wick wrote: =20
-> > > > > @@ -1708,6 +1731,39 @@ EXPORT_SYMBOL(drm_connector_attach_dp_subc=
-onnector_property);
-> > > > >  /**
-> > > > >   * DOC: HDMI connector properties
-> > > > >   *
-> > > > > + * Broadcast RGB (HDMI specific)
-> > > > > + *      Indicates the Quantization Range (Full vs Limited) used.=
- The color
-> > > > > + *      processing pipeline will be adjusted to match the value =
-of the
-> > > > > + *      property, and the Infoframes will be generated and sent =
-accordingly.
-> > > > > + *
-> > > > > + *      This property is only relevant if the HDMI output format=
- is RGB. If
-> > > > > + *      it's one of the YCbCr variant, it will be ignored and th=
-e output will
-> > > > > + *      use a limited quantization range. =20
-> > > >=20
-> > > > Uh, maybe just say that the quantization range is selected automati=
-cally
-> > > > in case a YCbCr output format is in use. I'm not sure every YCbCr
-> > > > variant requires limited and even if it does, new formats could cha=
-nge
-> > > > this. =20
-> > >=20
-> > > I documented what i915 is doing:
-> > > https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/i915/d=
-isplay/intel_hdmi.c#L2143 =20
-> >=20
-> > Sure, this is one valid strategy for the automatic behavior of YCbCr.
-> > Drivers could also always send an InfoFrame to ensure full range where
-> > possible. The point here is that this property shall not affect YCbCr
-> > output formats!
-> >=20
-> > Maybe it's even better to say "driver specific" instead of "automatic".=
- =20
->=20
-> Honestly, I'm not sure what you want from me here. Ville and you
-> insisted on the previous version to document what i915 is doing and to
-> follow whatever the behaviour was, and that we shouldn't spend time
-> improving the property. Fine, I did that.
->=20
-> But now, you want me to ... improve the property?
+For the Broadcom mpt3sas driver, we can define a link to have that same name for
+the attributes to have everything consistent.
 
-Just drop the "and the output will use a limited quantization range"
-part.
+> 
+> it would be good to show the full path
+> 
+>>
+>> The newly defined attributes will pass the correct ata_port to libata
+>> helper functions.
+>>
+>> Signed-off-by: Igor Pylypiv <ipylypiv@google.com>
+>> Reviewed-by: TJ Adams <tadamsjr@google.com>
+>> ---
+>>   drivers/scsi/libsas/sas_ata.c | 87 +++++++++++++++++++++++++++++++++++
+>>   include/scsi/sas_ata.h        |  6 +++
+>>   2 files changed, 93 insertions(+)
+>>
+>> diff --git a/drivers/scsi/libsas/sas_ata.c b/drivers/scsi/libsas/sas_ata.c
+>> index 12e2653846e3..e0b19eee09b5 100644
+>> --- a/drivers/scsi/libsas/sas_ata.c
+>> +++ b/drivers/scsi/libsas/sas_ata.c
+>> @@ -964,3 +964,90 @@ int sas_execute_ata_cmd(struct domain_device *device, u8 *fis, int force_phy_id)
+>>   			       force_phy_id, &tmf_task);
+>>   }
+>>   EXPORT_SYMBOL_GPL(sas_execute_ata_cmd);
+>> +
+>> +static ssize_t sas_ncq_prio_supported_show(struct device *device,
+>> +					   struct device_attribute *attr,
+>> +					   char *buf)
+>> +{
+>> +	struct scsi_device *sdev = to_scsi_device(device);
+>> +	struct domain_device *ddev = sdev_to_domain_dev(sdev);
+>> +	int res;
+>> +
+>> +	// This attribute shall be visible for SATA devices only
+> 
+> Please don't use c99 comment style
+> 
+>> +	if (WARN_ON(!dev_is_sata(ddev)))
+>> +		return -EINVAL;
+>> +
+>> +	res = ata_ncq_prio_supported(ddev->sata_dev.ap, sdev);
+>> +	if (res < 0)
+>> +		return res;
+>> +
+>> +	return sysfs_emit(buf, "%u\n", res);
+>> +}
+>> +static DEVICE_ATTR_RO(sas_ncq_prio_supported);
+>> +
+>> +static ssize_t sas_ncq_prio_enable_show(struct device *device,
+>> +					struct device_attribute *attr,
+>> +					char *buf)
+>> +{
+>> +	struct scsi_device *sdev = to_scsi_device(device);
+>> +	struct domain_device *ddev = sdev_to_domain_dev(sdev);
+>> +	int res;
+>> +
+>> +	// This attribute shall be visible for SATA devices only
+>> +	if (WARN_ON(!dev_is_sata(ddev)))
+>> +		return -EINVAL;
+>> +
+>> +	res = ata_ncq_prio_enabled(ddev->sata_dev.ap, sdev);
+>> +	if (res < 0)
+>> +		return res;
+>> +
+>> +	return sysfs_emit(buf, "%u\n", res);
+>> +}
+>> +
+>> +static ssize_t sas_ncq_prio_enable_store(struct device *device,
+>> +					 struct device_attribute *attr,
+>> +					 const char *buf, size_t len)
+>> +{
+>> +	struct scsi_device *sdev = to_scsi_device(device);
+>> +	struct domain_device *ddev = sdev_to_domain_dev(sdev);
+>> +	long input;
+>> +	int res;
+>> +
+>> +	// This attribute shall be visible for SATA devices only
+>> +	if (WARN_ON(!dev_is_sata(ddev)))
+>> +		return -EINVAL;
+>> +
+>> +	res = kstrtol(buf, 10, &input);
+> 
+> I think that kstrtobool_from_user() could be used. But 
+> kstrtobool_from_user() handles more than 0/1, so that would be a 
+> different behaviour, so maybe better not to use.
+> 
+> I would also suggest factor out some of ata_ncq_prio_enable_store() with 
+> this, but a public API which accepts char * would be a bit odd.
 
+kstrtobool() is I think the standard way of parsing bool sysfs attributes.
 
-Thanks,
-pq
+> 
+> 
+>> +	if (res)
+>> +		return res;
+>> +	if ((input < 0) || (input > 1))
+>> +		return -EINVAL;
+>> +
+>> +	return ata_ncq_prio_enable(ddev->sata_dev.ap, sdev, input) ? : len;
+> 
+> Please don't use ternary operator like this. This seems more 
+> straightforfward:
+> 
+> res = ata_ncq_prio_enable();
+> if (res)
+> 	return res;
+> return len;
+> 
+>> +}
+>> +static DEVICE_ATTR_RW(sas_ncq_prio_enable);
+>> +
+>> +static struct attribute *sas_ata_sdev_attrs[] = {
+>> +	&dev_attr_sas_ncq_prio_supported.attr,
+>> +	&dev_attr_sas_ncq_prio_enable.attr,
+>> +	NULL
+>> +};
+>> +
+>> +static umode_t sas_ata_attr_is_visible(struct kobject *kobj,
+>> +				       struct attribute *attr, int i)
+>> +{
+>> +	struct device *dev = kobj_to_dev(kobj);
+>> +	struct scsi_device *sdev = to_scsi_device(dev);
+>> +	struct domain_device *ddev = sdev_to_domain_dev(sdev);
+>> +
+>> +	if (!dev_is_sata(ddev))
+>> +		return 0;
+>> +
+>> +	return attr->mode;
+>> +}
+>> +
+>> +const struct attribute_group sas_ata_sdev_attr_group = {
+>> +	.attrs = sas_ata_sdev_attrs,
+>> +	.is_visible = sas_ata_attr_is_visible,
+>> +};
+>> +EXPORT_SYMBOL_GPL(sas_ata_sdev_attr_group);
+>> diff --git a/include/scsi/sas_ata.h b/include/scsi/sas_ata.h
+>> index 2f8c719840a6..cded782fdf33 100644
+>> --- a/include/scsi/sas_ata.h
+>> +++ b/include/scsi/sas_ata.h
+>> @@ -39,6 +39,8 @@ int smp_ata_check_ready_type(struct ata_link *link);
+>>   int sas_discover_sata(struct domain_device *dev);
+>>   int sas_ata_add_dev(struct domain_device *parent, struct ex_phy *phy,
+>>   		    struct domain_device *child, int phy_id);
+>> +
+>> +extern const struct attribute_group sas_ata_sdev_attr_group;
+>>   #else
+>>   
+>>   static inline void sas_ata_disabled_notice(void)
+>> @@ -123,6 +125,10 @@ static inline int sas_ata_add_dev(struct domain_device *parent, struct ex_phy *p
+>>   	sas_ata_disabled_notice();
+>>   	return -ENODEV;
+>>   }
+>> +
+>> +static const struct attribute_group sas_ata_sdev_attr_group = {
+>> +	.attrs = NULL,
+>> +};
+>>   #endif
+>>   
+>>   #endif /* _SAS_ATA_H_ */
+> 
 
---Sig_/yomWKOIfqdy35zj6dRjUbn_
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+-- 
+Damien Le Moal
+Western Digital Research
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmXhx7QACgkQI1/ltBGq
-qqcFMhAApnw120yGkMTU78b9MLRYnIpCL8IVDkC74fOg134teNF3ZHRveBy91rEy
-yGr5TiB5iXahBTUIM8oSttIEu0IpqTauZISYsBOnVXqukbO2MktR8Nbec4YioVb0
-HFLYbyzewiyTOkuF5Ud9C7icE2g65xEt/RxserG73jUAj6CTnhWRl8zbZQOo5ze7
-1P8E2uWGehaZh8YRzbwIjXJYxj8gEUfj5vZy7HX+YmPYfls/lanw0XWU2ON+rs1f
-xFM2u6nDeQ30pGSG7I0ccD6oXFw4yesbSusecHexpByjwIyDMlz0uP5HkLuqeI9I
-mBZmvX4YEfyjQgq3H0Rnsm1OJIU3SC2pGQ9YLJxpmA/dSf3PZ2ktHsz3WQjRxbhr
-aJq1d8DroMft41SRdindTDUwg2lssg1MNWu3GRLee8vWxc8Paf/4eNEhbolfTFHB
-dXagpKniLK0Fk8BCpKv0M2TuKyiv5Hc5jCiwHtHX3ESIvhBC952k7UP4aHRPif5U
-Df9nQwfRKgOb9CYXPKZK+Ug6u9Ayxb1m47e2Z3K0duRyi4I7yMz9M8FAEguvMNsH
-YoghGtR4geDcBruuLIOI2yeORwOYorHRww9U+J9spCN1zEcbO+9aCxZ+EmEKABtw
-XXN/e3yaSp0gEqGOQfIFopUV3gYq7M1YcNFP4hMRzIro6qVwqUQ=
-=+Rkf
------END PGP SIGNATURE-----
-
---Sig_/yomWKOIfqdy35zj6dRjUbn_--
 
