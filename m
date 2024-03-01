@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-89080-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89081-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DACF86EA46
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:26:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E23E986EA48
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:26:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 98CB4B26610
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:26:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 71155B26DB0
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:26:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BDCF3D0B6;
-	Fri,  1 Mar 2024 20:25:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 547703D3BD;
+	Fri,  1 Mar 2024 20:25:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="RDfXWhiN"
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="i6GOcPL8"
+Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B9B83C48C
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 20:25:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 044593C689
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 20:25:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709324752; cv=none; b=Cnr7Cc+CfIdxhFk79qgMqtkRKanZvRrOFjZBcYVkw2N1seejdGqyaH8xHTcP9vYKlEDqdocN+S2vLKJp0Utpu9YqGKByKZihxI5/z/Lz5Au8SXg1DEMXWyvGe5aCJvuhIr6s/suvoi93tIyhL0O3HnvSylRrCJ2e9CIqB9qAGNE=
+	t=1709324753; cv=none; b=Q6F4jVhxQSLk/CuAAZ4STSEMDD9/9svTtaOCNgYpY5OKWr+WzHunnUD3uSkMdSg3KlMSArBpxe0erxx+yZ4jNGJPMDj9mIWH103cFYc02W7gdGE7yZUrW7Rk7tTVdNu4eE/J5ldwgomBIeBXpA7W4V6VhA2gJ/Cgx959x6A68uw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709324752; c=relaxed/simple;
-	bh=Nwtado1oao3+/dr6Ja7f0D8y63CaM4wWirvmaJDankQ=;
+	s=arc-20240116; t=1709324753; c=relaxed/simple;
+	bh=r0GlreGLsYtbA/Nea/FJMUIpPOXUZxD98Y/U+q/kZ/k=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=i9GuvVjxN0aSzw++yI3J433/TQ/Jpni81kbTCTRcO8+7jxkfDizElRbFM/0NCm68WZAS4uRbUjNktm62OyzIg1vyLnqOT/1xwz0KiwvrC0j8fPFjKZ1PRCf6KqfC5HdTP2LfK+zS+gpStfVNbO3+mIVsy+AtPFh8ybTnTO7SCX8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=RDfXWhiN; arc=none smtp.client-ip=209.85.210.54
+	 MIME-Version:Content-Type; b=C8DE90rJw6J4LJsXx+0vvScxRYcC8Sf9Qoxzoj+zWiIFvbxjdXRLPPKlwOL0j19go7EUDCNpgBluk6g3xD4lpxUvd0fci+fgRBTo+9MrubAvHsetEmRoOxOdpb7Umv8cwc1IjpGY01dXYRKqZstUr24Tmh3tSM8+JVXHm1+vdsg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=i6GOcPL8; arc=none smtp.client-ip=209.85.210.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6e47a9f4b70so1358035a34.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 12:25:50 -0800 (PST)
+Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-6e45ef83c54so1660742a34.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 12:25:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1709324750; x=1709929550; darn=vger.kernel.org;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1709324751; x=1709929551; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=N53sN/U1+xpmw3mnYyTxppc9z7x+jOYBw1SYOpnydHk=;
-        b=RDfXWhiNKyfc+QRNMmfesLFDocNny9FbkTUtO7mNG3PQ1YF5IqSYMN56pwe0J7s3l7
-         Zp2zf3QEmYmM/T6IgzuPuB3fc9aVrWj7bUCZPyh2Uamq0BbeE45kHSoMZF2TE5DMer59
-         AFXoJ3TeDcQNlLrjbc+ZOa96RxX4fNC28ZFCm73hUp9E6lUz0AcMQV+K6+OeU+MOeVlv
-         JZn12Byl4ovcBf/+opEoqWdUw6w9y8SVOJxoj2vnTJi39ip/cuGAKoxaBlOckXVnKyhl
-         RWVNR/9NN8nomqrMpg4ZKYXcMn4fik1B2ggHCi/jTkidN8EHH519sx4AcAGeYf0X6yIS
-         b7Aw==
+        bh=r4uxZbt0qin0Wn8Pr+rE6EDCFD41pXx3sQye6WwUWzw=;
+        b=i6GOcPL8AT1LAVXkhE7YUVgaLtFy2ynvq0/1YkUBJArcYTcaZkv6pMXSXoHiagensk
+         G7h0+i4TW0z6uNSqwrp4tX9krzlD9+3ppTYXmQR/1JpwqCD12PfGhwNaUdutGJN4pgzl
+         oHC062+S1jK8DA2IZkB7H4dyLthluYAr/0PeoJAXJ2Be+HfbQ8DIw75OiqUsjPSp/g3x
+         VerqdUwMuORqDfOwFkzqDZEcb475OVihaVC7rlNkaewqViRLEhR7z4CnljE4t7A+FEsJ
+         wx4grYg7cNZwWKhhdjmcf0pNG5MiMWDuw88f5zbt1wMcDGtzxxAsByD8KEXwuX60Edmq
+         z21Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709324750; x=1709929550;
+        d=1e100.net; s=20230601; t=1709324751; x=1709929551;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=N53sN/U1+xpmw3mnYyTxppc9z7x+jOYBw1SYOpnydHk=;
-        b=Ub/5sqqV15r0whg/5sRGZa+9cljCuWnDPvdq692BRoqBtQ1shnkgHzI548cNj3qnPR
-         qPvaeVa4jJwF1zAne4rfd4fr6nv3tu3xlcy2yfFHQxh20pc7+GE+Vh3AGrTi+d1BFz1P
-         QBVKdmfMXZyu7L/86EkNAQUj6U3JaKlZoWdXw8F7T2X3qmDAgH5e/vNs4CCC/5XOKcMn
-         ovKTcnbicwm7rGSIVZSv2q/WPP98A484xiqGrtKruFpPDhbBBygVtAW6X3/zGa4uoKXs
-         o4jBI00TGCZfHt088BJYZPdLLltRsAoSf/o0l2cuTJ6w+ZrDJsHmymGQC5wwv0sODeJR
-         fDKg==
-X-Forwarded-Encrypted: i=1; AJvYcCWyZOs9EvqWyytlqG44E2aCGOEv86R1IueeTMWCA+KBwuO+NA1wZ9LYDREmuSD8t8Y0El5i5FLHUc5OFZQybEWtU3IqsxYYcI8dAZ0D
-X-Gm-Message-State: AOJu0YzFNJO3mmyJdwpL+4TNIpCWXLADHyUTKMX21CYsoz9+HpI12cHc
-	ipKvn1RfAMXsMFENI2aRgkmSTnjNdJeaLtCLmL1GLq7cXgWQHTL8pilbAuwYgxo=
-X-Google-Smtp-Source: AGHT+IGk9Oam5NAqD4qbTMwFeQNceja2+ofM48cakPFOdGJ3lIgV2fOupeQb0XQ09SKibb1/IWoN/w==
-X-Received: by 2002:a05:6830:39da:b0:6e4:d195:ce91 with SMTP id bt26-20020a05683039da00b006e4d195ce91mr1043577otb.19.1709324750356;
-        Fri, 01 Mar 2024 12:25:50 -0800 (PST)
+        bh=r4uxZbt0qin0Wn8Pr+rE6EDCFD41pXx3sQye6WwUWzw=;
+        b=BaflZagflUkTAHQiM8PHfOhAC1Xiu/HSU6guP+h5Icie0cIkN5XJroDN+oSx2Xrigd
+         4lsiXHSMhy3GhInKzJxHv2Wr/0t1fUEyFlNdrSQqup4Imb0fPz+WOaRfxjtkNclCWLQD
+         I1o6WB03Lb0/8Ws05W+1KXgxTxd+qCVfOAm9pFvpxMEFT2BaNfgcziCqxgGk1YN1pKbQ
+         7CU32mHm5XQv1dXwkGOg7XdnsQdxqmRoGGqpxwdCQt1z0WGRoSNKSedJK8UXei+WyYgV
+         ilUmu921U3dl5tGwJYL+dHAe4rbY3VCrjDM7uDzBZYDDlpNcmwK2CliHBQQI2w7lYiFO
+         dqzg==
+X-Forwarded-Encrypted: i=1; AJvYcCUpU0sc5/OtT7QoKC2ezo2pv5PqzX3HlFFQNwyc3HwdFAc3s9+mVFhV0/A0clUEmHvK0LA6LzNskIqQiG5l+v3ickvVNMAh+oy1HwMD
+X-Gm-Message-State: AOJu0YxpzRWNHEFuj4hDBdgLYEUhRQi64zDUhDWitWNR0N478EaeuJsR
+	0RK9xlLutNdnX4wtuonEHCx+2H7BJPXsnRlsYRVTRs1jf7LEzytskRns2TcqVy8=
+X-Google-Smtp-Source: AGHT+IGOIf9N2e0j0sOh4gWwieqF/orAK7lWNJdnsL4VsiGKxZBiUNq+AipTLP8PSCm9ay/w98JPVg==
+X-Received: by 2002:a9d:6215:0:b0:6e2:baa2:42c8 with SMTP id g21-20020a9d6215000000b006e2baa242c8mr2925611otj.28.1709324751180;
+        Fri, 01 Mar 2024 12:25:51 -0800 (PST)
 Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
-        by smtp.gmail.com with ESMTPSA id f10-20020a9d6c0a000000b006e454aa54d1sm806213otq.56.2024.03.01.12.25.49
+        by smtp.gmail.com with ESMTPSA id f10-20020a9d6c0a000000b006e454aa54d1sm806213otq.56.2024.03.01.12.25.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 12:25:49 -0800 (PST)
+        Fri, 01 Mar 2024 12:25:50 -0800 (PST)
 From: David Lechner <dlechner@baylibre.com>
 To: Mark Brown <broonie@kernel.org>
 Cc: David Lechner <dlechner@baylibre.com>,
@@ -75,10 +75,11 @@ Cc: David Lechner <dlechner@baylibre.com>,
 	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
 	linux-spi@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH 2/3] spi: axi-spi-engine: use __counted_by() attribute
-Date: Fri,  1 Mar 2024 14:25:19 -0600
-Message-ID: <20240301-mainline-axi-spi-engine-small-cleanups-v1-2-241dfd2a79f7@baylibre.com>
+	linux-hardening@vger.kernel.org,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH 3/3] spi: axi-spi-engine: use struct_size() macro
+Date: Fri,  1 Mar 2024 14:25:20 -0600
+Message-ID: <20240301-mainline-axi-spi-engine-small-cleanups-v1-3-241dfd2a79f7@baylibre.com>
 X-Mailer: git-send-email 2.43.2
 In-Reply-To: <20240301-mainline-axi-spi-engine-small-cleanups-v1-0-241dfd2a79f7@baylibre.com>
 References: <20240301-mainline-axi-spi-engine-small-cleanups-v1-0-241dfd2a79f7@baylibre.com>
@@ -92,28 +93,44 @@ Content-Type: text/plain; charset="utf-8"
 X-Mailer: b4 0.12.4
 Content-Transfer-Encoding: 8bit
 
-This adds the __counted_by() attribute to the flex array at the end of
-struct spi_engine_program in the AXI SPI Engine controller driver.
+This makes use of the struct_size() macro to calculate the size of the
+struct axi_spi_engine when allocating it.
 
-Suggested-by: Nuno Sá <nuno.sa@analog.com>
+Suggested-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 Signed-off-by: David Lechner <dlechner@baylibre.com>
 ---
- drivers/spi/spi-axi-spi-engine.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/spi/spi-axi-spi-engine.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/spi/spi-axi-spi-engine.c b/drivers/spi/spi-axi-spi-engine.c
-index d89f75170c9e..e801eed820df 100644
+index e801eed820df..9646764b0042 100644
 --- a/drivers/spi/spi-axi-spi-engine.c
 +++ b/drivers/spi/spi-axi-spi-engine.c
-@@ -75,7 +75,7 @@
+@@ -12,6 +12,7 @@
+ #include <linux/io.h>
+ #include <linux/of.h>
+ #include <linux/module.h>
++#include <linux/overflow.h>
+ #include <linux/platform_device.h>
+ #include <linux/spi/spi.h>
  
- struct spi_engine_program {
- 	unsigned int length;
--	uint16_t instructions[];
-+	uint16_t instructions[] __counted_by(length);
- };
+@@ -501,15 +502,13 @@ static irqreturn_t spi_engine_irq(int irq, void *devid)
+ static int spi_engine_optimize_message(struct spi_message *msg)
+ {
+ 	struct spi_engine_program p_dry, *p;
+-	size_t size;
  
- /**
+ 	spi_engine_precompile_message(msg);
+ 
+ 	p_dry.length = 0;
+ 	spi_engine_compile_message(msg, true, &p_dry);
+ 
+-	size = sizeof(*p->instructions) * (p_dry.length + 1);
+-	p = kzalloc(sizeof(*p) + size, GFP_KERNEL);
++	p = kzalloc(struct_size(p, instructions, p_dry.length + 1), GFP_KERNEL);
+ 	if (!p)
+ 		return -ENOMEM;
+ 
 
 -- 
 2.43.2
