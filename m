@@ -1,256 +1,124 @@
-Return-Path: <linux-kernel+bounces-88208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88210-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D56F686DEAC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:56:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B598686DEB0
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:56:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DDF8E1C225EB
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:56:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71D3D2881C4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:56:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E96BE6A8CB;
-	Fri,  1 Mar 2024 09:56:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC3146A8B9;
+	Fri,  1 Mar 2024 09:56:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b="md+BSHWV"
-Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="esHeHjXV"
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46E4E69D28;
-	Fri,  1 Mar 2024 09:55:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.62.61
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 615256A352
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 09:56:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709286962; cv=none; b=UcXKFpW2UbgrAfg6zNlnN0tv16edHSq03AHyJxLH0SoT/i9Laiu3IEj93K94NuCxDeRZudkLcibLR+rYqLygi7fndqsJEOOPmvL2Jh1OmSzls90Jb/EToxDu9t2DdutQZZJLPAQHlSMO97TfppKQIuoxvGhd8Ut7O4LICHvMJSA=
+	t=1709286989; cv=none; b=h9UhKOyUd5WosDwguMOmJBcRAaVhSMAzlnEjEamKo2Pz2Jw+M+QleTws5h1Xt3z+LYXQ9PVbh2HA3fSwkeg9SQMy4hhJHRce5qPhiBB8/8//GmpCWg6SnPyd3p1dbitFylRmS6iuORT/GOkXwSI5UHivx1spMODQJTqZ1oSF0+Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709286962; c=relaxed/simple;
-	bh=nB4RoPzo73ug6c/YARrBpRfTTCLpVLkR1rpzscqqvgM=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=k4g2TJyw8wpU6EEjlOvqgvl6/6drJrK6D79Pw4qWGwHTElb5LoOCXIsuyTgITnA2TDBs2+X+GKFzGuxXBmoqKcJCt+JW0I+gwiknZPpxFvbODYXd2BZlPjT+qEcjqFz6viTCFzs3unhhSK9dLCD70FmFqMd/wwsL72ydSJ2mBfs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de; spf=pass smtp.mailfrom=denx.de; dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b=md+BSHWV; arc=none smtp.client-ip=85.214.62.61
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=denx.de
-Received: from wsk (85-222-111-42.dynamic.chello.pl [85.222.111.42])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-	(No client certificate requested)
-	(Authenticated sender: lukma@denx.de)
-	by phobos.denx.de (Postfix) with ESMTPSA id 9342088129;
-	Fri,  1 Mar 2024 10:55:56 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-	s=phobos-20191101; t=1709286957;
-	bh=ehYEHbfNMu0NChRHIbLyuBBhUQ+KLNUH2S3I+Evt6mw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=md+BSHWVhlHlIUcLhpNsX8Sen20evAEtzBgResu8ktPoVX0nOA/ZD6V4avVaikqdv
-	 xiQMPoRWzT5oOKpLcXsyt4G2K1F9h24gRZ6moGOBx+zNfNXDlGB5ww0qf0k9hLU+Vm
-	 0o5CZs/fC4N7hXugfc4TU39IFY+CcVduudBeRTWXpWATOYF/quBPjAAXbbx6aqB2eH
-	 1YSePGlanb5PAwZ1WsCzmIfSMgXV3208O+fSUwp8962OThkN5rxtWXVH/BjvTOIjQq
-	 lzxsIkWoFSdRsMZ/qpBc05/K5wpumvlu/MTV0mYgRPLkrUgQCrsvusPW4BTFURv+B/
-	 MapNhPolb6Ccg==
-Date: Fri, 1 Mar 2024 10:55:50 +0100
-From: Lukasz Majewski <lukma@denx.de>
-To: "Ziyang Xuan (William)" <william.xuanziyang@huawei.com>
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>, Andrew Lunn <andrew@lunn.ch>,
- Eric Dumazet <edumazet@google.com>, "Florian Fainelli"
- <f.fainelli@gmail.com>, Vladimir Oltean <olteanv@gmail.com>, "David S.
- Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- <netdev@vger.kernel.org>, <Tristram.Ha@microchip.com>, "Sebastian Andrzej
- Siewior" <bigeasy@linutronix.de>, Paolo Abeni <pabeni@redhat.com>, "Ravi
- Gunasekaran" <r-gunasekaran@ti.com>, Simon Horman <horms@kernel.org>,
- "Wojciech Drewek" <wojciech.drewek@intel.com>, Nikita Zhandarovich
- <n.zhandarovich@fintech.ru>, Murali Karicheri <m-karicheri2@ti.com>, "Dan
- Carpenter" <dan.carpenter@linaro.org>, Kristian Overskeid
- <koverskeid@gmail.com>, Matthieu Baerts <matttbe@kernel.org>,
- <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC] net: hsr: Provide RedBox support
-Message-ID: <20240301105550.26de5271@wsk>
-In-Reply-To: <64ddec9f-42a8-089a-fb4a-a49a2e80337c@huawei.com>
-References: <20240228150735.3647892-1-lukma@denx.de>
-	<64ddec9f-42a8-089a-fb4a-a49a2e80337c@huawei.com>
-Organization: denx.de
-X-Mailer: Claws Mail 3.19.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1709286989; c=relaxed/simple;
+	bh=18S77KXqW9B4dMKuNYPGTI7+MDToDmytBAg7uEmV2FU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=k+BBlZd9TFAkE8c5LwCUZCQMlW1oOH3n0tVPSJ96MXq+/O69yvSqDGTWrn/YYTWQ20eYTp6aw1j2H2ita778Zk3QwbSggoiNRXChkQraaI28YGp/rwQHnWH4VZr/ADx992SokW1MNGvLS84KQoW4m+6lE4WdLhfnVef5MpRaqgY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=esHeHjXV; arc=none smtp.client-ip=209.85.208.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d2305589a2so24249191fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 01:56:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709286985; x=1709891785; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=VkH3dZexrgeoLVbHTxNag0IKuqLj3ZDSeXVaWdmYMB4=;
+        b=esHeHjXVLkxuYULK8vcdvXvxv2F7/hzg5RBmX1JLSxBVcAmA2Cl1OPbmI4CHuHPtyr
+         lPAA7z6ovWbw9ny8umQidO3VKizxq5pL9GfcJDPZr2NcATOThAEI0V1GZ1N+9sToom65
+         SdFR0bKoVVnNKxxBS/k0csn7MNnrn0eRkJsEUApNAL/bivCxpM0bn6lSeCZWUt8SsZG4
+         142ST2RwUzbh0HKcmKJA7pEiKfEJaUXwJWDPmmMei0bwoVxf/CsXvzgEn39x4tZA5tuJ
+         jeyLXgIX+RNlftDkQe+PzLR+8qkWLQSydMcpibOnrtv9fENuFxsMgV3z566tCTePPavL
+         rk1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709286985; x=1709891785;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VkH3dZexrgeoLVbHTxNag0IKuqLj3ZDSeXVaWdmYMB4=;
+        b=TA1M3WlD9UFrO+qDDjN2gFX0yo/yv/42us/1v9AC/x6InmpSJQHYXY5rTcq8QYQJ4M
+         u2nFEEOd7iNYPpnVf4E5orpfUK4r86OnG5Tb/p1MwTXtbn7oyItHIE5W6+obPAdZrh02
+         qz3kYnbK9P/dIMwziPdtP6xwoUIBuv5JI0+ZIUqe3I9k+XRIhAx2WyouQi0vydPxu3ro
+         z4kxeHiViyB79pBBjXK5PU85at1iLNVI7ENTrXKNVLpkeJuftAKF1yNeOd+8xRJipwQb
+         HvDdI1uOWzZaj0RBvV2V9ZrXZy35mHtgUx9N6VCgkCoF0YhQWjl23Z9pneKfpw7YfcZN
+         cxXQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVS+SoHBuoLk0sQO+uu9R1muduGW1OrvPcCW5jKtmDVs2ElomW+WjwbmY9QCzypryA0oLSlC9C57sljXh9NXcPRKGhLMU/4dUnxwTy1
+X-Gm-Message-State: AOJu0YzrxQ0m61X6dFWmRubgAFZnIyniSlN+k8CLu00F14fkzJaldv/q
+	ZGKCkvU2qJqpf/zzVrIJwPBsSLcT25Vhvi1FG7fFxprf+3Uj9fd0UInUE2LQvoLRJwd977Av2AH
+	t
+X-Google-Smtp-Source: AGHT+IF5nLUsEK/GcU+i4clsC9SpRItPO0y27bMdAQSTFmJjQXi6Pjl+T6nj+mStxcIQL7zVO61Bzw==
+X-Received: by 2002:a2e:808d:0:b0:2d2:a8b3:a20e with SMTP id i13-20020a2e808d000000b002d2a8b3a20emr765752ljg.53.1709286985354;
+        Fri, 01 Mar 2024 01:56:25 -0800 (PST)
+Received: from uffe-tuxpro14.. (h-178-174-189-39.A498.priv.bahnhof.se. [178.174.189.39])
+        by smtp.gmail.com with ESMTPSA id b22-20020a2e9896000000b002d2607e6d29sm530333ljj.70.2024.03.01.01.56.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Mar 2024 01:56:24 -0800 (PST)
+From: Ulf Hansson <ulf.hansson@linaro.org>
+To: Linus <torvalds@linux-foundation.org>,
+	linux-pm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Ulf Hansson <ulf.hansson@linaro.org>,
+	linux-arm-kernel@lists.infradead.org
+Subject: [GIT PULL] pmdomain fixes for v6.8-rc7
+Date: Fri,  1 Mar 2024 10:56:23 +0100
+Message-Id: <20240301095623.3659989-1-ulf.hansson@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/FQHjZg_Cf39XqB1x9daHbJ/";
- protocol="application/pgp-signature"; micalg=pgp-sha512
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
+Content-Transfer-Encoding: 8bit
 
---Sig_/FQHjZg_Cf39XqB1x9daHbJ/
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Linus,
 
-Hi William,
+Here's a PR with a couple of pmdomain fixes intended for v6.8-rc7. Details about
+the highlights are as usual found in the signed tag.
 
-> Give opinions only from the code level.
->=20
-> > =20
-> >  void hsr_debugfs_rename(struct net_device *dev)
-> >  {
-> > @@ -95,6 +114,19 @@ void hsr_debugfs_init(struct hsr_priv *priv,
-> > struct net_device *hsr_dev) priv->node_tbl_root =3D NULL;
-> >  		return;
-> >  	}
-> > +
-> > +	if (!priv->redbox)
-> > +		return;
-> > +
-> > +	de =3D debugfs_create_file("proxy_node_table", S_IFREG |
-> > 0444,
-> > +				 priv->node_tbl_root, priv,
-> > +				 &hsr_proxy_node_table_fops);
-> > +	if (IS_ERR(de)) {
-> > +		pr_err("Cannot create hsr proxy node_table
-> > file\n");
-> > +		debugfs_remove(priv->node_tbl_root);
-> > +		priv->node_tbl_root =3D NULL;
-> > +		return;
-> > +	} =20
-> I think we can use "goto label" to reduce duplicate codes for error
-> handling.
+Please pull this in!
 
-This code is already NAK'ed from network maintainers, as debugfs is not
-acceptable to give any "API like" information.
+Kind regards
+Ulf Hansson
 
-Instead the "netlink" API shall be used to provide this information.
 
->=20
-> >  }
-> > =20
-> > @@ -296,6 +298,7 @@ static void send_hsr_supervision_frame(struct
-> > hsr_port *master, struct hsr_priv *hsr =3D master->hsr;
-> >  	__u8 type =3D HSR_TLV_LIFE_CHECK;
-> >  	struct hsr_sup_payload *hsr_sp;
-> > +	struct hsr_sup_tlv *hsr_stlv;
-> >  	struct hsr_sup_tag *hsr_stag;
-> >  	struct sk_buff *skb;
-> > =20
-> > @@ -335,6 +338,16 @@ static void send_hsr_supervision_frame(struct
-> > hsr_port *master, hsr_sp =3D skb_put(skb, sizeof(struct
-> > hsr_sup_payload)); ether_addr_copy(hsr_sp->macaddress_A,
-> > master->dev->dev_addr);=20
-> > +	if (hsr->redbox) {
-> > +		hsr_stlv =3D skb_put(skb, sizeof(struct
-> > hsr_sup_tlv));
-> > +		hsr_stlv->HSR_TLV_type =3D PRP_TLV_REDBOX_MAC;
-> > +		hsr_stlv->HSR_TLV_length =3D sizeof(struct
-> > hsr_sup_payload); +
-> > +		/* Payload: MacAddressRedBox */
-> > +		hsr_sp =3D skb_put(skb, sizeof(struct
-> > hsr_sup_payload));
-> > +		ether_addr_copy(hsr_sp->macaddress_A,
-> > hsr->macaddress_redbox);
-> > +	} =20
-> If hsr->redbox is true, hsr_sp->macaddress_A will be covered. Do
-> ether_addr_copy() twice. Is it better like this:
->=20
-> hsr_sp =3D skb_put(skb, sizeof(struct hsr_sup_payload));
->=20
-> if (hsr->redbox) {
-> 	...
-> 	ether_addr_copy(hsr_sp->macaddress_A, hsr->macaddress_redbox);
-> } else {
-> 	ether_addr_copy(hsr_sp->macaddress_A, master->dev->dev_addr);
-> }
+The following changes since commit 841c35169323cd833294798e58b9bf63fa4fa1de:
 
-It may be a bit misleading, as the hsr_sp is the payload for TLV fields
-in HSR supervisory frames.
+  Linux 6.8-rc4 (2024-02-11 12:18:13 -0800)
 
-It shall be done as in the code as:
+are available in the Git repository at:
 
-1. First you need to send this HSR "node" MAC address (the
-ether_addr_copy(hsr_sp->macaddress_A, master->dev->dev_addr))
+  git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/linux-pm.git tags/pmdomain-v6.8-rc4
 
-2. If the box is a RedBox, then this supervisory frame shall have
-_appended_ another TLV with RedBox mac address (it can be the same
-as the HSR node in the special case).
+for you to fetch changes up to 2a93c6cbd5a703d44c414a3c3945a87ce11430ba:
 
-The hsr_sp->macaddress_A holds the address to the V (value) field of
-the TLV.
+  pmdomain: qcom: rpmhpd: Fix enabled_corner aggregation (2024-02-28 16:31:45 +0100)
 
->=20
-> > +
-> >  	if (skb_put_padto(skb, ETH_ZLEN)) {
-> >  		spin_unlock_bh(&hsr->seqnr_lock);
-> >  		return; =20
->=20
-> > =20
-> > @@ -448,13 +455,14 @@ static void hsr_forward_do(struct
-> > hsr_frame_info *frame) }
-> > =20
-> >  		/* Check if frame is to be dropped. Eg. for PRP no
-> > forward
-> > -		 * between ports.
-> > +		 * between ports, or sending HSR supervision to
-> > RedBox. */
-> >  		if (hsr->proto_ops->drop_frame &&
-> >  		    hsr->proto_ops->drop_frame(frame, port))
-> >  			continue;
-> > =20
-> > -		if (port->type !=3D HSR_PT_MASTER)
-> > +		if (port->type =3D=3D HSR_PT_SLAVE_A ||
-> > +		    port->type =3D=3D HSR_PT_SLAVE_B) =20
->=20
-> (port->type !=3D HSR_PT_MASTER) is not equivalent to (port->type =3D=3D
-> HSR_PT_SLAVE_A || port->type =3D=3D HSR_PT_SLAVE_B). port->type may be
-> HSR_PT_INTERLINK or others. Or here is a bugfix? Please check.
+----------------------------------------------------------------
+Providers:
+ - qcom: Fix enabled_corner aggregation for rpmhpd
+ - arm: Fix NULL dereference on scmi_perf_domain removal
 
-Without Redbox support you don't use HSR_PT_INTERLINK. This port shall
-behave in similar way to HSR_PT_MASTER - e.g. it will send/receive HSR
-untagged frames. That is why the condition has been altered to only
-prepare HSR tagged frames for HSR ring port A/B.
+----------------------------------------------------------------
+Bjorn Andersson (1):
+      pmdomain: qcom: rpmhpd: Fix enabled_corner aggregation
 
->=20
-> >  			skb =3D
-> > hsr->proto_ops->create_tagged_frame(frame, port); else
-> >  			skb =3D
-> > hsr->proto_ops->get_untagged_frame(frame, port); @@ -469,7 +477,9
-> > @@ static void hsr_forward_do(struct hsr_frame_info *frame)
-> > hsr_deliver_master(skb, port->dev, frame->node_src); } else {
-> >  			if (!hsr_xmit(skb, port, frame))
-> > -				sent =3D true;
-> > +				if (port->type =3D=3D HSR_PT_SLAVE_A ||
-> > +				    port->type =3D=3D HSR_PT_SLAVE_B)
-> > +					sent =3D true;
-> >  		}
-> >  	}
-> >  } =20
->=20
-> If my opinions be accepted, Can you add "Reviewed-by: Ziyang Xuan
-> <william.xuanziyang@huawei.com>" at next version of patch?
+Cristian Marussi (1):
+      pmdomain: arm: Fix NULL dereference on scmi_perf_domain removal
 
-I will add your Reviewed-by: tag, no problem.
-
-Thanks for the input :-)
-
-Best regards,
-
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
-
---Sig_/FQHjZg_Cf39XqB1x9daHbJ/
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmXhpiYACgkQAR8vZIA0
-zr3S1gf/WjpsxibQboT9bZVmYqBI42CusZQPAtv+BKCCQPIAKeU+uxZJYFNdY9X1
-1RvPcYudaPtPYdz7MXbVOjFojxHh46PltWoUM3SH+B7NvHFTdFHibnjE//GvDxP1
-zEJ3yf2Yk24L9U/F6gc0l4aXAbIlIwF3ptTxUFZBaEEC51XEvPpU+f6PEeABHiK6
-seqRQGq6nlU6YUAFpPpvmSTjIx8RYNem/nMApysdVynQeY5J5WyAFNb2Rh2bN6KY
-m9wFDWUzXH81aj+nyZ65h11QqIkh5XLhv10AcSFjHpswgbUNZCV5G/zQ8N37mLRX
-yxUR5tYuntWOhUG6A6QzcyDp0CNkfw==
-=xyoM
------END PGP SIGNATURE-----
-
---Sig_/FQHjZg_Cf39XqB1x9daHbJ/--
+ drivers/pmdomain/arm/scmi_perf_domain.c | 3 +++
+ drivers/pmdomain/qcom/rpmhpd.c          | 7 +++++--
+ 2 files changed, 8 insertions(+), 2 deletions(-)
 
