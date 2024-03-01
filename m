@@ -1,125 +1,150 @@
-Return-Path: <linux-kernel+bounces-89098-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89107-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5793486EA6A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:38:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3667286EA89
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:44:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 84BBF1C253D9
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:38:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B796F28F425
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:44:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2255D3C6A3;
-	Fri,  1 Mar 2024 20:37:44 +0000 (UTC)
-Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com [209.85.161.50])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88AD03D572;
+	Fri,  1 Mar 2024 20:44:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="qoOjG5/j"
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E4343C067;
-	Fri,  1 Mar 2024 20:37:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F76F3D55D
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 20:44:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709325463; cv=none; b=PxsnyEntvO/SS5x41vtY93CNH++PdlWEQYJkQtQoVCc5p5TJpEkvr0VKTfaZZFtbJMSSxLs8oEICxD/K5BS6qw6mGqIZ6hE05B6E+0HQBkAbFdVya4Nvx6VfAqH3Xh75V2oeb3dReJAUVwHJ/Oe44LKkIGzwq+oz9hWefXn1Tx0=
+	t=1709325842; cv=none; b=XH3MHdRhwA7Wru4SJUlHJb2e4M7li3YFDxBXv34t3ZRUUQkbRVT4AhWcFhKihP9sv0ABQJVHofuLdHig+c7osf/JuXHym0R/MYi7aL3D/62DczazEQwKKp94p4rFn60140mj1Xp5gwa7gp2UtTerRl4LQmgmFRbQ2uL1m+HRMBo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709325463; c=relaxed/simple;
-	bh=jDk+Rr+D+yrxNBXemNzJit3fk+TeM+fn/xgB37dy9Y0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=md6owclgUSJDxqHd2HFFJqzAvaezks+lj9IfV/qzJq1eGgal5PVhmcH4V/bXJjgp2ohognkDUO7ICsYAL9berkbqmpsZn7ZVvxNh5YN+8D1GflpwpZp1HSVU4i+Seka+S1EUwNx+p7j2m6jjcMkO1efvnZVwy9Q+4Ggtqe8ZMZc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-5a10f19d4a0so35679eaf.0;
-        Fri, 01 Mar 2024 12:37:41 -0800 (PST)
+	s=arc-20240116; t=1709325842; c=relaxed/simple;
+	bh=sUfNkHPoo9V2T9fMcmHeyl/JS8OZvn4x9zPyEVooEi4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=AC2s00hCMjq5A10hEF3hJIgLo5e8WzglGOb2AXV8MRCa/7UsdAuN2XNH3LdUrnj5yJnltN6Nn4nfelSGjWQjMpeTR12XL7OQC4mzFLkI9QI9q7EuN3EtBHm1iYW8oyskIOjbzxSw3nr4B7cxk4G3FKcaWXlwrwq32BAZumQ8Tzw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=qoOjG5/j; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a44b0b2c7cdso110098966b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 12:44:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1709325839; x=1709930639; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5HnyW+esM+BKf2jxrZdh8XqknpO03iR3YuY63S1e4b0=;
+        b=qoOjG5/jfIB30hsbW5XXzj7dxMkd6wE2MshnIu/K7hTMNtDee0cTrGenGNb9WLMsDE
+         oQbMpfQw+GL0pjZ5djoTnvh+7ahmJd5BF+I0G8tyuqnotkHflQDGo5YZkdeGNYmzPImG
+         oZbSHnSGB64yNeYxh0IzJekIu/AScKoFzeCLSq/alRQIbhXFrUyXXu+64VLuxVfm8GWQ
+         Vsd7BV5CpksDQUQrqhJ6vmLr1YkB/+mZhMO+wdtR9iOA4H08P73dVvSBMFTH8WYy2MoP
+         WQnKZm2uSJpXilHJR0G8k92DElJTGNfDjOjdEor5K1Ywb1fUo2YS6D5FY1VZg9WvZbc0
+         YcdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709325461; x=1709930261;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1709325839; x=1709930639;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=aA81n8gjpnioNNFqryBLhwwan57m+hU0QtyE/pL0sz4=;
-        b=gk8a1OE0suE5Yldljp6UM3PlNcgz/17ejrjzNM1Af8EfUGkIaN3trtby/7qWqqrFl7
-         sq857NssLt9sPgax3EQuFVduZs1vsge1Wnb0sffj7hOu9vZxHaDnQw+Z1W6jjulUvfjP
-         p0bDHNnZTwjl7flJOOVFW4+TqkczIaVpSwIjplDkPamMehLkBjrxjPK/F5dJ/vF+Cil3
-         cMCJk7Pu6Jg2p1cUkfSS0A3fsmjf7tEE38bMXTN8dA/eil749B3IWIfXB6fSzRLZj5j9
-         7UnalioZIBQFWvdzrAgi+nJ7TsSO/knS0yppMJgMqLSu+o427oQ8IW+QQyfHoXO2TstM
-         CYjA==
-X-Forwarded-Encrypted: i=1; AJvYcCV2FYsro2a9/ehU2DQgIGe3PkNDsws84ehMkTEsmdarEGKoNIQOp29idtJmmyuVWqHb2DVRJdu3usE9roThaT4AzT3q7ZyAqsnTpjd0
-X-Gm-Message-State: AOJu0YzyPgPOot07KHKhBoSxe+CC8OligpKto6+Dw1boLDIor7h0l/JM
-	bS5kM8alBmKSPD6MAmen+8kim44zVUFctIccpoD4+t7p617Yw6kiLo5elqmg0RinyMfSSyggbOY
-	oRxcVhhqcYwEPhzevGUBFqMpSjFI=
-X-Google-Smtp-Source: AGHT+IFlqnj2ZRoupaw1r/5HvSXa4w4tESFY9IgyT5VAxYYLwMgAPyX72tAGxz6v1xyl82sXmux6gvTDEE5oSheHqMU=
-X-Received: by 2002:a05:6870:332c:b0:21f:cd7d:9904 with SMTP id
- x44-20020a056870332c00b0021fcd7d9904mr2777170oae.4.1709325461366; Fri, 01 Mar
- 2024 12:37:41 -0800 (PST)
+        bh=5HnyW+esM+BKf2jxrZdh8XqknpO03iR3YuY63S1e4b0=;
+        b=bch13A8SORMY00UjG9T9SW1Rfbzpcx3qWDMKq3fW048zksQ7R4Gol/dvlGMTVdvLzT
+         PVGua5Zi2B6Ay19NTwDjiHyvdERqWkvBzIo1q28qW2ksX+Sj+0quFfOXHDhQbhVISK5l
+         +97H6dgjY4JF4uKuhSLk4cUd74BdWHI/P88RxaFG1dcBujFbg14Wxh9vtJavEaLtKWDN
+         c1s1lgFCqsGH/5w7eNmkcOeqbWOh1tSzomEi+7z7YKWWOyGXSiyTDVqIlXqFl0TGNdYg
+         SiM0T6yHVOSA13vsJa+QbzW8NY/hmbVVpTCTO+uTLbnyFSXZe2oIeZftXIrgybNHXALW
+         0jnw==
+X-Forwarded-Encrypted: i=1; AJvYcCVOAG/j2i0I0ZTiOom59ER6/a2KouruRcAeoo3t/fCNcfX4FJBo5LmN6jcqCUfvMmS+QID4wTBrVYUJ8vmxzmSxMAuqzYYBivQK9wnI
+X-Gm-Message-State: AOJu0YxwM7YAS7nEHeexoSWXG7tCnkH4aLjzOMBKPGzdZplh0ChnDnRs
+	2McwAFg53KELatdQDdDacsX9R74Y7rwP3KxAleQoAiaO6BjV8GExKypmtWY0G/8=
+X-Google-Smtp-Source: AGHT+IE7p2FuGWmCkIvX2UxIH/G/OwPt64X3vwqabXyM+0Gf/SqpN76b9W+UCjYPRBkAVsroaNq2GQ==
+X-Received: by 2002:a17:906:ae4e:b0:a41:30be:4a82 with SMTP id lf14-20020a170906ae4e00b00a4130be4a82mr2127487ejb.61.1709325839106;
+        Fri, 01 Mar 2024 12:43:59 -0800 (PST)
+Received: from fedora.fritz.box (aftr-82-135-80-35.dynamic.mnet-online.de. [82.135.80.35])
+        by smtp.gmail.com with ESMTPSA id cm29-20020a170906f59d00b00a3ce60b003asm2065880ejd.176.2024.03.01.12.43.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Mar 2024 12:43:58 -0800 (PST)
+From: Thorsten Blum <thorsten.blum@toblux.com>
+To: thorsten.blum@toblux.com
+Cc: David.Laight@ACULAB.COM,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	hpa@zytor.com,
+	linux-kernel@vger.kernel.org,
+	mingo@redhat.com,
+	peterz@infradead.org,
+	tglx@linutronix.de,
+	wei.liu@kernel.org,
+	x86@kernel.org
+Subject: [PATCH v2] x86/apic: Use u32 instead of unsigned long
+Date: Fri,  1 Mar 2024 21:39:03 +0100
+Message-ID: <20240301203901.150465-3-thorsten.blum@toblux.com>
+X-Mailer: git-send-email 2.44.0
+In-Reply-To: <8ECEC999-A742-488F-99B2-A076EF9CA2B2@toblux.com>
+References: <8ECEC999-A742-488F-99B2-A076EF9CA2B2@toblux.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1333a397b93e0e15cb7cb358e21a289bc7d71a63.1709193295.git.viresh.kumar@linaro.org>
- <20240301055042.p4jaa4v3tshlbwnb@dhruva>
-In-Reply-To: <20240301055042.p4jaa4v3tshlbwnb@dhruva>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Fri, 1 Mar 2024 21:37:29 +0100
-Message-ID: <CAJZ5v0hHTuEXmQA=0D90eR_KUsOsfcxYbTS=zQYDTXuY6o_K_Q@mail.gmail.com>
-Subject: Re: [PATCH] cpufreq: Don't unregister cpufreq cooling on CPU hotplug
-To: Dhruva Gole <d-gole@ti.com>, Viresh Kumar <viresh.kumar@linaro.org>
-Cc: linux-pm@vger.kernel.org, Vincent Guittot <vincent.guittot@linaro.org>, 
-	Daniel Lezcano <daniel.lezcano@linaro.org>, 
-	Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>, Roman Stratiienko <r.stratiienko@gmail.com>, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Mar 1, 2024 at 6:50=E2=80=AFAM Dhruva Gole <d-gole@ti.com> wrote:
->
-> Hi,
->
-> On Feb 29, 2024 at 13:42:07 +0530, Viresh Kumar wrote:
-> > Offlining a CPU and bringing it back online is a common operation and i=
-t
-> > happens frequently during system suspend/resume, where the non-boot CPU=
-s
-> > are hotplugged out during suspend and brought back at resume.
-> >
-> > The cpufreq core already tries to make this path as fast as possible as
-> > the changes are only temporary in nature and full cleanup of resources
-> > isn't required in this case. For example the drivers can implement
-> > online()/offline() callbacks to avoid a lot of tear down of resources.
-> >
-> > On similar lines, there is no need to unregister the cpufreq cooling
-> > device during suspend / resume, but only while the policy is getting
-> > removed.
-> >
-> > Moreover, unregistering the cpufreq cooling device is resulting in an
-> > unwanted outcome, where the system suspend is eventually aborted in the
-> > process.  Currently, during system suspend the cpufreq core unregisters
-> > the cooling device, which in turn removes a kobject using device_del()
-> > and that generates a notification to the userspace via uevent broadcast=
-.
-> > This causes system suspend to abort in some setups.
-> >
-> > This was also earlier reported (indirectly) by Roman [1]. Maybe there i=
-s
-> > another way around to fixing that problem properly, but this change
-> > makes sense anyways.
-> >
-> > Move the registering and unregistering of the cooling device to policy
-> > creation and removal times onlyy.
-> >
-> > Reported-by: Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>
-> > Reported-by: Roman Stratiienko <r.stratiienko@gmail.com>
-> > Link: https://patchwork.kernel.org/project/linux-pm/patch/2022071016402=
-6.541466-1-r.stratiienko@gmail.com/ [1]
-> > Tested-by: Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>
-> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> > ---
->
-> Makes sense to me,
->
-> Reviewed-by: Dhruva Gole <d-gole@ti.com>
+Use u32 to fix Coccinelle/coccicheck warnings reported by do_div.cocci.
 
-Applied (for 6.9), added a Closes: tag as suggested by Daniel.
+Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
+---
+Changes in v2:
+- Revert changing do_div() to div64_ul() after feedback from David Laight
+- Use u32 instead of unsigned long to fix Coccinelle warnings
+- Update patch title and description
+---
+ arch/x86/kernel/apic/apic.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Thanks!
+diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
+index 4667bc4b00ab..184e1843620d 100644
+--- a/arch/x86/kernel/apic/apic.c
++++ b/arch/x86/kernel/apic/apic.c
+@@ -664,7 +664,7 @@ void lapic_update_tsc_freq(void)
+ static __initdata int lapic_cal_loops = -1;
+ static __initdata long lapic_cal_t1, lapic_cal_t2;
+ static __initdata unsigned long long lapic_cal_tsc1, lapic_cal_tsc2;
+-static __initdata unsigned long lapic_cal_pm1, lapic_cal_pm2;
++static __initdata u32 lapic_cal_pm1, lapic_cal_pm2;
+ static __initdata unsigned long lapic_cal_j1, lapic_cal_j2;
+ 
+ /*
+@@ -674,7 +674,7 @@ static void __init lapic_cal_handler(struct clock_event_device *dev)
+ {
+ 	unsigned long long tsc = 0;
+ 	long tapic = apic_read(APIC_TMCCT);
+-	unsigned long pm = acpi_pm_read_early();
++	u32 pm = acpi_pm_read_early();
+ 
+ 	if (boot_cpu_has(X86_FEATURE_TSC))
+ 		tsc = rdtsc();
+@@ -699,7 +699,7 @@ static void __init lapic_cal_handler(struct clock_event_device *dev)
+ }
+ 
+ static int __init
+-calibrate_by_pmtimer(long deltapm, long *delta, long *deltatsc)
++calibrate_by_pmtimer(u32 deltapm, long *delta, long *deltatsc)
+ {
+ 	const long pm_100ms = PMTMR_TICKS_PER_SEC / 10;
+ 	const long pm_thresh = pm_100ms / 100;
+@@ -710,7 +710,7 @@ calibrate_by_pmtimer(long deltapm, long *delta, long *deltatsc)
+ 	return -1;
+ #endif
+ 
+-	apic_printk(APIC_VERBOSE, "... PM-Timer delta = %ld\n", deltapm);
++	apic_printk(APIC_VERBOSE, "... PM-Timer delta = %u\n", deltapm);
+ 
+ 	/* Check, if the PM timer is available */
+ 	if (!deltapm)
+-- 
+2.44.0
+
 
