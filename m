@@ -1,82 +1,94 @@
-Return-Path: <linux-kernel+bounces-88570-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88571-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3156286E398
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:42:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1376D86E39A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:43:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A6389B22EB8
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:42:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFEC4285AEB
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:43:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 908BB39AC7;
-	Fri,  1 Mar 2024 14:42:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D643439AC1;
+	Fri,  1 Mar 2024 14:43:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dwt/JV20"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="tnjThimi"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B461A2B9D5;
-	Fri,  1 Mar 2024 14:42:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B688423DE;
+	Fri,  1 Mar 2024 14:43:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709304145; cv=none; b=vD/d1Qkz4OgV2Wt7lU+6Kc77CdXsAF9tYs5WqfMGm+m0Pw4KmtvjRY0dc9V7hqbzvUyjEmqtAmHojbGqPGCoe3CSbiXxhitcfV9HN1PVb6HEnUfUcIHtl0W9u5jC6JteFqwzNpmdZb7Wi4CpS+KpMRdUpR3Vy9xeubM63j3oPjw=
+	t=1709304213; cv=none; b=c4gBPdTucYUP/iDlx13lTGrpWHQexG8hqu/XqgQB0rO50p/j3ugwrnca0pRNxF9J6kopFXgB9FWb3FiVyPvRSEq3/2UxhQj/nFizPAYVw133uFfnkeBvg3lud8n+j80ecqokOp78K38HaNPr4xiDZOAaQcGiEEYZOrV+O2JZ9g8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709304145; c=relaxed/simple;
-	bh=KACukKEnJXFukkXmjTQgXX49As3BIWd4peTBZp//0+g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dawNzIQS4RU2K5We8S5sOGMvfxb1Lwk1/+Bjt1vMfbVd4Jl0lfpxTtLrwzRSCFuXpkDRmBfR0860hL1Qhrkf3pupG+/5/d395tOyZRvCKnAZf2rdP48Guw8/PBlFn7xYJx8E2Fj2AfV5860totF/3IxWlnAL7cHx0DVokefbUh8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dwt/JV20; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE57AC43394;
-	Fri,  1 Mar 2024 14:42:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709304145;
-	bh=KACukKEnJXFukkXmjTQgXX49As3BIWd4peTBZp//0+g=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dwt/JV20KkXI8J8VpICUQOxmVPe6+NHLfVYlc86oQ9FPfArN6MtXomfjwSVPFszDH
-	 Ipu6JRvPLOml/w5gvOrbOBnU7WxI3EhmAiDbDNNTX4cGB0l6FO48YoByHfLCbNYD1H
-	 O0X4beCpos/ilRve896KhZub+JYKhhwq4g+m59H5b2itWyVx0yutBZnp/A9Go8zyPh
-	 fw/hdy0sSu2gpgvCyL/8A/kLmzJxT/1uVhypWoYPAAjGuiGYlrlbE1rf4ioJ03lMnZ
-	 YjNVpEDyWPn6IyMMLpxDzlm+BB4JLdKBWkALkximtSU9EgoQzLztKhJ5ydgOFIW4F3
-	 K78ScNPXaX9Gg==
-Date: Fri, 1 Mar 2024 08:42:22 -0600
-From: Rob Herring <robh@kernel.org>
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc: devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-	linux-renesas-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
-	Chris Packham <chris.packham@alliedtelesis.co.nz>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Andi Shyti <andi.shyti@kernel.org>, linux-kernel@vger.kernel.org,
-	Conor Dooley <conor+dt@kernel.org>
-Subject: Re: [PATCH RFT 1/3] dt-bindings: i2c: mpc: use proper binding for
- transfer timeouts
-Message-ID: <170930414189.2106142.4220146551084193594.robh@kernel.org>
-References: <20240229105810.29220-5-wsa+renesas@sang-engineering.com>
- <20240229105810.29220-6-wsa+renesas@sang-engineering.com>
+	s=arc-20240116; t=1709304213; c=relaxed/simple;
+	bh=OnTKFgas6IdFh92/KQpHTR95vTLrd8aWhLoDrIWhXy8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Bds4z7t3DDUlZpZTpQ5zH7B6k+ZzIqZhDJYoPoV0umRx3gtICvoDA6Dxdbb3PqaOUREfpPx40oNrIHnCmgpxDRQ9/XtkjDMMZ3D7QVOzqdEYrj9IQJuknpMcBEX9ikXv/Rzeu8CFLUB0V3pG3uJVi6i8eLoO+e15EU7wx1UQCQY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=tnjThimi; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709304210;
+	bh=OnTKFgas6IdFh92/KQpHTR95vTLrd8aWhLoDrIWhXy8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=tnjThimieXpRL4nOo0zsMGwlIFay9Xm5OlmUmjLNGWcSHgokdjjc9caUXHWIDGrG7
+	 ngSyAK1rY1EyjDaFXXusw+/PuGXNUTPPO6Q5EU29IrKxq1K/EvrUKeEO+pH/ckes//
+	 +eFUPxkQxC2qkeMF6n97lN2+vGQ/olRAhQzUaZH7QTIeiLbJLvpsw9mvDJXuYiyOEZ
+	 IPVdzMhnqYlJ3I3t/DjqaV8n326Yuj4LmRU500cnLWJlcPcxxrK1RG14k7Qq8vGOus
+	 h27yHz2YzQ0dol8nQxGXdAaKcj5+wGafWPDcilgO1MEzveyLWkz67pQq9wClDgSzD5
+	 C1/vAcmct4GPA==
+Received: from localhost.localdomain (broslavsky.collaboradmins.com [68.183.210.73])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id B331A37803EE;
+	Fri,  1 Mar 2024 14:43:27 +0000 (UTC)
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+To: Jens Axboe <axboe@kernel.dk>,
+	Pavel Begunkov <asml.silence@gmail.com>
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+	kernel@collabora.com,
+	kernel-janitors@vger.kernel.org,
+	io-uring@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH io_uring/net: correct the type of variable
+Date: Fri,  1 Mar 2024 19:43:48 +0500
+Message-Id: <20240301144349.2807544-1-usama.anjum@collabora.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240229105810.29220-6-wsa+renesas@sang-engineering.com>
+Content-Transfer-Encoding: 8bit
 
+The namelen is of type int. It shouldn't be made size_t which is
+unsigned. The signed number is needed for error checking before use.
 
-On Thu, 29 Feb 2024 11:58:11 +0100, Wolfram Sang wrote:
-> "i2c-scl-clk-low-timeout-us" has flaws in itself and the usage here is
-> all wrong. The driver doesn't use it as a maximum time for clock
-> stretching but the maximum time for a total transfer. We already have
-> a binding for the latter. Convert the wrong binding from examples.
-> 
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> ---
->  Documentation/devicetree/bindings/i2c/i2c-mpc.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
+Fixes: c55978024d12 ("io_uring/net: move receive multishot out of the generic msghdr path")
+Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+---
+ io_uring/net.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Acked-by: Rob Herring <robh@kernel.org>
+diff --git a/io_uring/net.c b/io_uring/net.c
+index 926d1fb0335de..b4ca803d85e23 100644
+--- a/io_uring/net.c
++++ b/io_uring/net.c
+@@ -551,7 +551,7 @@ int io_send(struct io_kiocb *req, unsigned int issue_flags)
+ 
+ static int io_recvmsg_mshot_prep(struct io_kiocb *req,
+ 				 struct io_async_msghdr *iomsg,
+-				 size_t namelen, size_t controllen)
++				 int namelen, size_t controllen)
+ {
+ 	if ((req->flags & (REQ_F_APOLL_MULTISHOT|REQ_F_BUFFER_SELECT)) ==
+ 			  (REQ_F_APOLL_MULTISHOT|REQ_F_BUFFER_SELECT)) {
+-- 
+2.39.2
 
 
