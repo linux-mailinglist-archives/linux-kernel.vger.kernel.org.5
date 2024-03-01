@@ -1,141 +1,162 @@
-Return-Path: <linux-kernel+bounces-88902-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88911-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94B6386E82B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:20:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29D0C86E848
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:23:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE41F1C24896
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:20:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E57D1C24624
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:23:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEB2A3C46B;
-	Fri,  1 Mar 2024 18:18:47 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA18C5A114;
+	Fri,  1 Mar 2024 18:19:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Mb6KLFwz"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBC823BB4E;
-	Fri,  1 Mar 2024 18:18:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 275EB4AEE3;
+	Fri,  1 Mar 2024 18:19:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709317127; cv=none; b=hfQvhmSVvTIuW2a5ZWgUdG1ajjuHywuYj9bp8gMlyZf1Ceb31akImaGNqVZe6dIi0s9ImOmHt8vDbm3S1pZS5M85bZl7FAd78rTH0RsPapk2I8KJvfGeRdJAROrcp9PKVSwg4Xb6hZ2e29sCZlejshTRcYoXNcZCZAZrgGAn7MQ=
+	t=1709317152; cv=none; b=ZQjz1YaVihHjOCPmZ1iW2NeF4x3YVIDzorCSCSUvID/1l4BbC/zsPfdy2SvoWP4VcjiR+fTFHzo/LIAW5oMjH3EePStf6kjEvKc8LoTxNYlaF89GzDLaPcNf8FwNr7/pP1MPqI5YHbPj2s0TooDBsAsRn/gT84S/IEJPsfSniVw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709317127; c=relaxed/simple;
-	bh=q/ftgULoZU14gjYyOUW8zk8XyZYRKnHrhnJsjauO4KA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hnH55WU1GteO1+2xrhkc3RhWSsFi+wVcUChit9jVfILIPPWH0iv8wIOefutlhugMRWkNJrY1kNT7sIsmsbzi/ilplrrN1HTFzLbAmAsPQgwjm3qCaey6IS+bLoADV2dvGS8rcYZwlHLNGlHrBPK9115cN7CnDBEqwYfIQmFk/6U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=fail smtp.mailfrom=kernel.org; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=kernel.org
-X-IronPort-AV: E=McAfee;i="6600,9927,11000"; a="14571913"
-X-IronPort-AV: E=Sophos;i="6.06,196,1705392000"; 
-   d="scan'208";a="14571913"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 10:18:45 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11000"; a="914022095"
-X-IronPort-AV: E=Sophos;i="6.06,196,1705392000"; 
-   d="scan'208";a="914022095"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 10:18:41 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andy@kernel.org>)
-	id 1rg7Sw-000000091jN-07sS;
-	Fri, 01 Mar 2024 20:18:38 +0200
-Date: Fri, 1 Mar 2024 20:18:37 +0200
-From: Andy Shevchenko <andy@kernel.org>
-To: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc: geert@linux-m68k.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	andrew@lunn.ch, gregory.clement@bootlin.com,
-	sebastian.hesselbarth@gmail.com, pavel@ucw.cz, lee@kernel.org,
-	linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 1/4] auxdisplay: Add 7-segment LED display driver
-Message-ID: <ZeIb_TaKK1DE6l6U@smile.fi.intel.com>
-References: <20240301014203.2033844-1-chris.packham@alliedtelesis.co.nz>
- <20240301014203.2033844-2-chris.packham@alliedtelesis.co.nz>
+	s=arc-20240116; t=1709317152; c=relaxed/simple;
+	bh=ftxWlvSkyud4JIR0kHVv+D1eaBJrq53jEN4m1t5wNmg=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=sPdgjcUsXNew2IZ/HYw6FUvO5bib3L7QFuPOyRg2qJ+0iw/xpha3MffVPCHdtyHzy/9S2TTcJoiVbQL12C3d2u26yZDgBvUiqZGvAFuUw/LwtOTB563kDsiFCNUtte0+vwPgRAymP0dwalRpG+HW+jXvjq/NL5yMuSHYVfNk7sw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Mb6KLFwz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 277E9C433F1;
+	Fri,  1 Mar 2024 18:19:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709317151;
+	bh=ftxWlvSkyud4JIR0kHVv+D1eaBJrq53jEN4m1t5wNmg=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+	b=Mb6KLFwzppaCk202Z4xfKBuoC6NfaivMwcKdi1p3avxGd7G2Y2Z2/B5OGYsMFf2Ej
+	 /A5JiNvdKXfgqTsQ/S1wQCeNjuKWEVntw5scRK6UpDe3FsJk+j7dIX5ai3k+RshQgx
+	 JUU/qXmQLd52J0cULQ+5vSTaApPlAgXMQTJQxBmNSop7lKgTl6onYkL0X4+d46cRqr
+	 i06ee2kzEXKCYB2H0aAYOIsQgdeikxTABbWyJqNtKOAii0Uo7MKDLs09X8tMdaxD/8
+	 2hWd/iGzpWURgKozflsVGDyj5GedLgO2948kdBVhvLm5+8ZJIibq3Y6eWu/uK2V3T2
+	 V4F4nm7rJ/0Nw==
+From: "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
+Date: Fri, 01 Mar 2024 19:18:37 +0100
+Subject: [PATCH net-next 13/15] mptcp: get addr in userspace pm list
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240301014203.2033844-2-chris.packham@alliedtelesis.co.nz>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240301-upstream-net-next-20240301-mptcp-userspace-pm-dump-addr-v1-13-dc30a420b3a0@kernel.org>
+References: <20240301-upstream-net-next-20240301-mptcp-userspace-pm-dump-addr-v1-0-dc30a420b3a0@kernel.org>
+In-Reply-To: <20240301-upstream-net-next-20240301-mptcp-userspace-pm-dump-addr-v1-0-dc30a420b3a0@kernel.org>
+To: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>, 
+ Geliang Tang <geliang@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>
+Cc: Geliang Tang <tanggeliang@kylinos.cn>, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2919; i=matttbe@kernel.org;
+ h=from:subject:message-id; bh=kWrNtSIvcuktz5WQJgULwtb+VPOtTG0YHa/xJdB0O+E=;
+ b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBl4hv1HEblhPOiq8/DzZwl5AJz9GirvRxq3Ajkv
+ IFLOmauDk6JAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZeIb9QAKCRD2t4JPQmmg
+ cxeDD/98ij393Txa86ah0ySNUhx1S1MCisDTw8MC6dA6Aww4ElVxTDCH6xtIq12foeWKibFHoKn
+ G0BCLgbDyCS8slPnw/oSvfq/1tKx7OJTYWq0R9IbSb11/E8HjJ3qOe81pO1SMZ3NXwJy30pZNe0
+ HE+1E9+nY5TaPZAZ8KKjyiHMLkueEZZpDBF5ryV92kyU4Mdz+GZyzYM+1ph3bjINxSVB4mcVZLN
+ Bjl2MU0oYvYVEOWpBssxZ+j1Fdw1a10E3lHGZPjmhZs5ztfBbamVfJC4JloiO5ktuLYqIYsAilP
+ E7mq+xs/pNIzUBz3hKEDzvBMxdWoza74HiHVTtxF/QJthPKofaxe0uoJAMf7LCmvQDuR+vDpuXD
+ 8SJ7qf6g6MI/CtxzF41ngRy3neAE7mgzN1hdG2G2gYyQIDu1KHg7cMv6ivHeBIebJTjMTSn/8Y+
+ f7FbtNlB0WYMqpoBBLGQh7Xznzhd5kFVtF6YwO58jW6INsZNstVrIq0GZ8pr50WyCWJRYQp6iXN
+ K5cAv2EGHwoU1hdsYrEgBTJNgs1RYtPnOF7cx+fMAh7taQvz8W50lOsGK6dxzoWA10NUVyJND5M
+ K64kAksDd43UDaCLABF3BI5txGTN7Ydlgr1pDi9Es9FgTXa5g4ybSDZyZKGSpBeR2J4139QC5EW
+ iOCFZHVjGp8lBZw==
+X-Developer-Key: i=matttbe@kernel.org; a=openpgp;
+ fpr=E8CB85F76877057A6E27F77AF6B7824F4269A073
 
-On Fri, Mar 01, 2024 at 02:42:00PM +1300, Chris Packham wrote:
-> Add a driver for a 7-segment LED display. At the moment only one
-> character is supported but it should be possible to expand this to
-> support more characters and/or 14-segment displays in the future.
+From: Geliang Tang <tanggeliang@kylinos.cn>
 
-..
+This patch renames mptcp_pm_nl_get_addr_doit() as a dedicated in-kernel
+netlink PM get addr function mptcp_pm_nl_get_addr(). and invoke a new
+wrapper mptcp_pm_get_addr() in mptcp_pm_nl_get_addr_doit.
 
-> + * Driver for a 7 segment LED display
+If a token is gotten in the wrapper, that means a userspace PM is used.
+So invoke mptcp_userspace_pm_get_addr() to get addr in userspace PM list.
+Otherwise, invoke mptcp_pm_nl_get_addr().
 
-7-segment
+Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
+Reviewed-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
+Reviewed-by: Mat Martineau <martineau@kernel.org>
+Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
+---
+ net/mptcp/pm.c         | 7 +++++++
+ net/mptcp/pm_netlink.c | 7 ++++++-
+ net/mptcp/protocol.h   | 2 ++
+ 3 files changed, 15 insertions(+), 1 deletion(-)
 
-..
-
-> + * The GPIOs are wired to the 7 segments in a clockwise fashion starting from
-> + * the top.
-
-Not exactly. They can wire them as they wish, we just need to agree on the
-sequence of the segments in DT to be mapped to the 7-segment diagram.
-
-..
-
-> + *      -a-
-> + *     |   |
-> + *     f   b
-> + *     |   |
-> + *      -g-
-> + *     |   |
-> + *     e   c
-> + *     |   |
-> + *      -d-
-
-I would drop this as it's available in UAPI header...
-
-..
-
-> +#include <linux/bitmap.h>
-> +#include <linux/container_of.h>
-> +#include <linux/errno.h>
-> +#include <linux/gpio/consumer.h>
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/types.h>
-> +#include <linux/workqueue.h>
-
-..which you forgot to include here.
-
-..
-
-> +static void seg_led_update(struct work_struct *work)
-> +{
-> +	struct seg_led_priv *priv = container_of(work, struct seg_led_priv, work.work);
-> +	struct linedisp *linedisp = &priv->linedisp;
-> +	struct linedisp_map *map = linedisp->map;
-> +	DECLARE_BITMAP(values, 8);
-
-> +	bitmap_zero(values, 8);
-
-Why do you need this zeroing?
-
-> +	bitmap_set_value8(values, map_to_seg7(&map->map.seg7, linedisp->buf[0]), 0);
-> +
-> +	gpiod_set_array_value_cansleep(priv->segment_gpios->ndescs, priv->segment_gpios->desc,
-> +				       priv->segment_gpios->info, values);
-> +}
+diff --git a/net/mptcp/pm.c b/net/mptcp/pm.c
+index 193198cec74a..b4bdd92a5648 100644
+--- a/net/mptcp/pm.c
++++ b/net/mptcp/pm.c
+@@ -441,6 +441,13 @@ int mptcp_pm_get_flags_and_ifindex_by_id(struct mptcp_sock *msk, unsigned int id
+ 	return mptcp_pm_nl_get_flags_and_ifindex_by_id(msk, id, flags, ifindex);
+ }
+ 
++int mptcp_pm_get_addr(struct sk_buff *skb, struct genl_info *info)
++{
++	if (info->attrs[MPTCP_PM_ATTR_TOKEN])
++		return mptcp_userspace_pm_get_addr(skb, info);
++	return mptcp_pm_nl_get_addr(skb, info);
++}
++
+ int mptcp_pm_dump_addr(struct sk_buff *msg, struct netlink_callback *cb)
+ {
+ 	const struct genl_info *info = genl_info_dump(cb);
+diff --git a/net/mptcp/pm_netlink.c b/net/mptcp/pm_netlink.c
+index 5fae35b6b305..16f8bd47f4b8 100644
+--- a/net/mptcp/pm_netlink.c
++++ b/net/mptcp/pm_netlink.c
+@@ -1672,7 +1672,7 @@ int mptcp_nl_fill_addr(struct sk_buff *skb,
+ 	return -EMSGSIZE;
+ }
+ 
+-int mptcp_pm_nl_get_addr_doit(struct sk_buff *skb, struct genl_info *info)
++int mptcp_pm_nl_get_addr(struct sk_buff *skb, struct genl_info *info)
+ {
+ 	struct nlattr *attr = info->attrs[MPTCP_PM_ENDPOINT_ADDR];
+ 	struct pm_nl_pernet *pernet = genl_info_pm_nl(info);
+@@ -1722,6 +1722,11 @@ int mptcp_pm_nl_get_addr_doit(struct sk_buff *skb, struct genl_info *info)
+ 	return ret;
+ }
+ 
++int mptcp_pm_nl_get_addr_doit(struct sk_buff *skb, struct genl_info *info)
++{
++	return mptcp_pm_get_addr(skb, info);
++}
++
+ int mptcp_pm_nl_dump_addr(struct sk_buff *msg,
+ 			  struct netlink_callback *cb)
+ {
+diff --git a/net/mptcp/protocol.h b/net/mptcp/protocol.h
+index bf708ddbef5f..264b73a8b48a 100644
+--- a/net/mptcp/protocol.h
++++ b/net/mptcp/protocol.h
+@@ -1047,6 +1047,8 @@ int mptcp_pm_nl_dump_addr(struct sk_buff *msg,
+ 			  struct netlink_callback *cb);
+ int mptcp_userspace_pm_dump_addr(struct sk_buff *msg,
+ 				 struct netlink_callback *cb);
++int mptcp_pm_get_addr(struct sk_buff *skb, struct genl_info *info);
++int mptcp_pm_nl_get_addr(struct sk_buff *skb, struct genl_info *info);
+ int mptcp_userspace_pm_get_addr(struct sk_buff *skb,
+ 				struct genl_info *info);
+ 
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.43.0
 
 
