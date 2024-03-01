@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-89229-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89230-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37F2686ECFB
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 00:39:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9306D86ECFE
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 00:40:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8849CB22F4B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 23:39:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47D38284E2C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 23:40:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C38365EE97;
-	Fri,  1 Mar 2024 23:39:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A63315F46A;
+	Fri,  1 Mar 2024 23:40:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZUiVvp9b"
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Rh1PgTdc"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A9815EE91
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 23:39:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 311E25EE91
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 23:40:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709336376; cv=none; b=mtmGB4W1+ugsOqHCC7Mw80m02TnkUpVGpys9TIi7kByc7XoXBKITzsY6TqWRIxzdcQpDDyEMgLJ+1X3Buk+zmtpB8ZLtR4zWkXaU4N4zwfV1sE3/7Fg/pj8vM7BUn+SwTd0wfH6OQZMyMIwQ4AFAICpQFp/nu4LvES/LtrbObdw=
+	t=1709336418; cv=none; b=fZI77LeHZrs1b99bcERSHpVAmHLDCDibsEW+WbM39My8RyitqucGX+CcKJaQGgZqnpZoi1CcF+4AZZQ60Q4MXlZhnQCB12+ifb/q9yRr3cuFlv/yULZRpQjmlbs0enWYQBTXo2AYYU6nUptaRmYzH/iV0v59xyCJf7829d9LwBc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709336376; c=relaxed/simple;
-	bh=+3ZyH2gNlIIhNS8WA0Ai83YZJC3WVXzM7YGqvJwqanw=;
+	s=arc-20240116; t=1709336418; c=relaxed/simple;
+	bh=idSvzfAS4ep3/WE+9lUziOUNo3twTGxnZ4JFyu2J8f4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=K+ZWSKS4dOCayucVilniJlGVOG5RIcg2CJmgm/34cKabFnmErceWiDnHF2XXRCOfTfMHQ4ykm9oHYgByaJTnJ3RxrSLdkxmwVhCc5mfC8TId/O8t4QdnVu8ac/nFL9U+K7XVYMLG7o87EN434YIvh9ja922iLvGnWq7Swy4Jjn0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ZUiVvp9b; arc=none smtp.client-ip=209.85.218.52
+	 In-Reply-To:Content-Type; b=ejNt453X2yu1pj1MSn8Nh7TM/YPzKb96RlqsIl3+ov1f1wTfgIDCt/kbfBU0v7e/CcOm8ih2mCuFcztCRM/33aijCeDL8bD7DCORLllzOHHEn9kzuHO/gJXhVgKueLtIo1HXoHmNhx4YeGgIpE8v8KnOJfM0qbGA9u1RNzV7Kco=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Rh1PgTdc; arc=none smtp.client-ip=209.85.218.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a26fa294e56so497244066b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 15:39:34 -0800 (PST)
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a44cf608a39so19805366b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 15:40:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709336373; x=1709941173; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1709336415; x=1709941215; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=rZpbtAHaDLOh7hkUppnoKAJWYa12PIQsO1N/wH+8xTA=;
-        b=ZUiVvp9bzhE5YMVnvfFTccMdUKpeUB8Y+wpi4nMw63MB9NvBnyYxWblhqOkPxakgbc
-         dXoYIik0HUlmJbLUn0ET8DtXK121adrD14mpJJsh5RiOr04yPnIzBs0SHkqB8jTsOkCo
-         N4FW33hRvhT52JeSEBKrKe9BJDN2/bZjG7B/GEnic8VHAMggNh60HZK0qs9Y9jwSlJwp
-         2HtHRUogfCmdvyB4sel04DPHevjT3erHJ+jYuya7BWqrc+OeGX5Pb4pukIfrVCb8UZES
-         0OEB8/IDnnTHacTA5u9H3u/HncPZssvILFSCPcmSzwm87Fe7Gh1o8XVq3kbXY2eNepZR
-         NRsw==
+        bh=y7ZVdM89+KtkZz6SVTLDCKcLFf8vd3lmFqhwuPTodL0=;
+        b=Rh1PgTdcy5urH/YN81ATlMgCAoEJtdIj38TXRCalo1NRouC84TZlJJ4rPNG3hsaDhN
+         Nl7VFTMtBy25SeoJgcRd23mtSlJ8KJZ95eEufYqk6G3lZn5WmK0XO/p4PbZquNoJXfU2
+         /bbByKmkrIlE7W8AknXWjukW3AQwWml3BR5igiV4w47yqKyRd6mOl3nN+7UzuN1ltLN6
+         fdZ3F/OZk2eeJbxzFziNpXRmIrAB74s+nZklyqj9gNMATUHOn48HDkyO6Me/77VSkDuN
+         RlvmhyYjzAco6cu5GeYQ6DLjRlXF5ca6UaAx6lgk9cigHQnDuj5mG6OonWO6/S21g+7g
+         aA+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709336373; x=1709941173;
+        d=1e100.net; s=20230601; t=1709336415; x=1709941215;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rZpbtAHaDLOh7hkUppnoKAJWYa12PIQsO1N/wH+8xTA=;
-        b=vlM4ry/GcFlj5m2KWOI42EeB/j8kQl+tbwx4FyCIJEz1xJ9ItzuQC3Eb2Rjb/VLWng
-         0KbPwJasKYg/oOcPonzA9JRSiPFEvm4Pdmcho2v9IUijCRr86fli8s8NoybIOOMIIVY6
-         2Q04UhRZmOBgVqEFKjYK2aWW5DRqyKmzyXCdpNwjsfQscVOnvbAWZNn5BNMRLsA2aUWH
-         8alzRnZPYFV9VE5amRrHjzmKqlvo72PqZSSYeO4O5jHTi45Q3mc2bgY1zY0XAEQLgwqy
-         EnIEOw2e8USIic9VO7DJoyUebpV7VfRVgg/QofCNC76jX+fYR9tCzjLl4JXYcpMQMfki
-         YtYA==
-X-Forwarded-Encrypted: i=1; AJvYcCUhcqLvOZZkJEg5USC9Qhz3EvmicISRVA+Ysj62GopDx6algs0YOr+DvWvyn+4OQwsrVeMst1byYS757vz3thkDwSRdJiWLav/y92FI
-X-Gm-Message-State: AOJu0YyS0bAQs7S2wnsvbmCAxEzLs2DeE8MWQcmAx04bvp+kt8kPl4U3
-	4IPh6GBpTzNeoFpkXNXFxnJyzBhZISWPGnlR2SkzesFT7CFcAWod8CPC8FnZC7Q=
-X-Google-Smtp-Source: AGHT+IFBlx5ZPPFAOiT2+m50QKRQT/6ZGBpwckrxNMAuWgE8JrZI96yfdL5F9xSnXxTxjfxhlj2gWQ==
-X-Received: by 2002:a17:906:ca4a:b0:a3f:5c5c:33ac with SMTP id jx10-20020a170906ca4a00b00a3f5c5c33acmr2452296ejb.62.1709336373496;
-        Fri, 01 Mar 2024 15:39:33 -0800 (PST)
+        bh=y7ZVdM89+KtkZz6SVTLDCKcLFf8vd3lmFqhwuPTodL0=;
+        b=bosnzZFlRKZM8EeJxK+aTga5D9CXX+mMx33byrfOcdvn3zK1bKx1+BVG3HOkyyO1UE
+         Wx5FYU3wWU/8z+K85rya12ItJOxMyxrT6fGJlCYpT26Yp6SlPbIwopYFpcy+X6q+lFjQ
+         +DfSJx4unauDfBKqAHVb3szoAQ0pl0n+k53QigS+n9m4sRpVuc3g7ivyn5sjOQ1VTnsU
+         y5KRmCxnEXp4+m2fNOg7IbusuF605sK4KCF2oF63WcdRW2t6t77ZNLH57yKIGZ8JpRnH
+         Nvd4S70SoCvWUBXnqI9mO2I9/kjkn489Cg9SCvrgjObYsMWcXNcr1rM0jJE77naiABql
+         VqIA==
+X-Forwarded-Encrypted: i=1; AJvYcCXzF+iY6gCdhUMCMWIABjUA4CgCGV3/m8iNmDMQn6bLZesHSONUheAkjUXazHrejK5tDEmUCwC8BvkKt0jxd2GptpFJThCQk7V8fFux
+X-Gm-Message-State: AOJu0YyQWr6HFH15i9KWRaL/oq8xEWuG+mrCk0ooYwmb8N5kFx8E2xfb
+	MZL6KIz0Q2sHey2PpzDAl98cEaZ5mjIrRQ8LSwt8AssINZFWxGmNvowNoZNysyI=
+X-Google-Smtp-Source: AGHT+IFgo3kAwgbN2l4OD+lpkiPFejUrDFmsu36KW1graCljGsBHhE8Q52BUSYKY20I4WVUJicZAig==
+X-Received: by 2002:a17:906:5f9a:b0:a44:5a3d:7877 with SMTP id a26-20020a1709065f9a00b00a445a3d7877mr2253044eju.56.1709336415205;
+        Fri, 01 Mar 2024 15:40:15 -0800 (PST)
 Received: from [192.168.216.32] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id a13-20020a1709066d4d00b00a44256373afsm2122841ejt.200.2024.03.01.15.39.32
+        by smtp.gmail.com with ESMTPSA id a13-20020a1709066d4d00b00a44256373afsm2122841ejt.200.2024.03.01.15.40.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Mar 2024 15:39:33 -0800 (PST)
-Message-ID: <7ac26eb7-2442-4578-9fa8-e1bb59756e6e@linaro.org>
-Date: Sat, 2 Mar 2024 00:39:31 +0100
+        Fri, 01 Mar 2024 15:40:14 -0800 (PST)
+Message-ID: <b5635fd2-9a06-49f0-9d4f-1088f52d5af5@linaro.org>
+Date: Sat, 2 Mar 2024 00:40:13 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,16 +75,15 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] arm64: dts: qcom: qcm6490-idp: enable PMIC Volume and
- Power buttons
+Subject: Re: [PATCH v2 2/2] interconnect: qcom: Add SM7150 driver support
 Content-Language: en-US
-To: quic_huliu@quicinc.com, Bjorn Andersson <andersson@kernel.org>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240301-gpio-keys-v3-1-ca664de8775c@quicinc.com>
+To: Danila Tikhonov <danila@jiaxyga.com>, andersson@kernel.org,
+ djakov@kernel.org, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org
+Cc: linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240222174250.80493-1-danila@jiaxyga.com>
+ <20240222174250.80493-3-danila@jiaxyga.com>
 From: Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -121,74 +120,20 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20240301-gpio-keys-v3-1-ca664de8775c@quicinc.com>
+In-Reply-To: <20240222174250.80493-3-danila@jiaxyga.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 1.03.2024 08:16, Hui Liu via B4 Relay wrote:
-> From: Hui Liu <quic_huliu@quicinc.com>
+On 22.02.2024 18:42, Danila Tikhonov wrote:
+> Add a driver that handles the different NoCs found on SM7150, based on the
+> downstream dtb.
 > 
-> The Volume Down & Power buttons are controlled by the PMIC via
-> the PON hardware, and the Volume Up is connected to a PMIC gpio.
-> 
-> Enable the necessary hardware and setup the GPIO state for the
-> Volume Up gpio key.
-> 
-> Signed-off-by: Hui Liu <quic_huliu@quicinc.com>
+> Signed-off-by: Danila Tikhonov <danila@jiaxyga.com>
 > ---
-> Changes in v3:
-> - Update the commit more concise and explicit.
-> - remove "power-source" property and update the numeric value to defined
-> name for "qcom,drive-strength".
-> - Link to v2: https://lore.kernel.org/r/20240223-gpio-keys-v2-1-19f48b3d8762@quicinc.com
-> 
-> Changes in v2:
-> - Update the commit description.
-> - Link to v1: https://lore.kernel.org/r/20240206-gpio-keys-v1-1-7683799daf8d@quicinc.com
-> ---
->  arch/arm64/boot/dts/qcom/qcm6490-idp.dts | 43 ++++++++++++++++++++++++++++++++
->  1 file changed, 43 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-> index acf145d1d97c..cf8f6d48bfc2 100644
-> --- a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-> +++ b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-> @@ -9,7 +9,9 @@
->  #define PM7250B_SID 8
->  #define PM7250B_SID1 9
->  
-> +#include <dt-bindings/input/linux-event-codes.h>
->  #include <dt-bindings/leds/common.h>
-> +#include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
->  #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
->  #include "sc7280.dtsi"
->  #include "pm7250b.dtsi"
-> @@ -39,6 +41,24 @@ chosen {
->  		stdout-path = "serial0:115200n8";
->  	};
->  
-> +	gpio-keys {
-> +		compatible = "gpio-keys";
-> +		label = "gpio-keys";
-> +
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&key_vol_up_default>;
 
-These are backwards
+Thanks
 
-> +
-> +		key-volume-up {
-> +			label = "volume_up";
-
-"Volume Up"?
-
-> +			gpios = <&pm7325_gpios 6 GPIO_ACTIVE_LOW>;
-> +			linux,input-type = <1>;
-
-
-Documentation/devicetree/bindings/input/gpio-keys.yaml:
-linux,input-type:
-        default: 1  # EV_KEY
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
 Konrad
 
