@@ -1,117 +1,114 @@
-Return-Path: <linux-kernel+bounces-88584-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88583-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C5D686E3BD
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:50:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B7A186E3BB
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:49:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA0DB1F254FE
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:50:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1167C1F24FC4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:49:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 412013A1DD;
-	Fri,  1 Mar 2024 14:50:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="tUADbGwv"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4201139AC4;
+	Fri,  1 Mar 2024 14:49:52 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFAF63987D;
-	Fri,  1 Mar 2024 14:50:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0EAE257A
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 14:49:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709304604; cv=none; b=iVc/ytKW9p5rTr2wXrEsRBhF5C1KtmWXXHUTvWmPJ/V3IzUxoxYMnym/zNaFFX4TB/bHO4IoMHX2P8T5lHC9j7+fmjhBmDuQJd4ggn1gzanYSrvuQ2XKiq15a2MnklBTFRH0XS68twIyDKkzNT6xzlxIm9ZktzfKsGZ4djrYNhE=
+	t=1709304591; cv=none; b=n8GEZbExCnBFyfdfNMBHu++NouXSFZJMd62hbqZGmH+3RxYuk9IlK+RwwzzuWRwX72hitm4/HQom2kMCrON901hRgqmhb7Ojkf44ldix6XUl9g2/KZCMWWqDVtWY6yUj+u41b38TytKzx+BETFCv/yRAGwF/rL5k1mwsSL0dXio=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709304604; c=relaxed/simple;
-	bh=PDHQCj4dKUL8VGBu7R8FZ4rplBEM7DCMytyrNrWGZ6E=;
+	s=arc-20240116; t=1709304591; c=relaxed/simple;
+	bh=Dl3AlUfjo/I+0JM0QbC8JfNyVl7VSlKqagBWJbQ+S4o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hLRvMxKTviw1P/+9mz9E8Bb197crJhihjS53rW1ry+etNeWzIb51quy7bcyfVau2rrkzQlDFih1nM8heNo9WfeXxx5t7S6cKUkiFr6Tj96OwwO5AWGEJHpjSQzgqcOSChU7wk+grGCyj9Chotpr9G3vfh22LaFravvcZBw2g17E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=tUADbGwv; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=yYU2P/XionBukymtyfAivEvDMyJYX93BV07iZlCfOYE=; b=tUADbGwvT+bsqxHHRHjijlFIck
-	/MxOPOG46qCY9h2+BenQw2uzIhrLdYBDgLxjbu8yWYH7flCOABA55iFsEg9N7dxj1gxDw59UDU9r8
-	tpqrWyKZV+yEY4ka3CG07cwSmMkGzDPsTgzkpHKtgWR+Y8lFiTbSGPB0p7OpjA9uwLcjTIUElDlks
-	ja7yEhTbbw+CbXM14OppCextPo810gFu2NaEQ4z/wCi/q2sXlu6fcoA+6HJjhcx78eVS5akivlXgA
-	zxJ8PntBaP2UA2YMn5sWKulvyHNYylCYIl7lcOiwUkvMT+PrbAOxz2jt8n+ke4U0TaQWDMmgriaer
-	3WJOsdqA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:49086)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rg4Cj-0001iq-1A;
-	Fri, 01 Mar 2024 14:49:41 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rg4Cc-0001p9-1m; Fri, 01 Mar 2024 14:49:34 +0000
-Date: Fri, 1 Mar 2024 14:49:33 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: arinc.unal@arinc9.com
-Cc: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>,
-	Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
-	Bartel Eerdekens <bartel.eerdekens@constell8.be>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH net-next v3 1/9] net: dsa: mt7530: remove
- .mac_port_config for MT7988 and make it optional
-Message-ID: <ZeHq/ZoVqMD9BojD@shell.armlinux.org.uk>
-References: <20240301-for-netnext-mt7530-improvements-3-v3-0-449f4f166454@arinc9.com>
- <20240301-for-netnext-mt7530-improvements-3-v3-1-449f4f166454@arinc9.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=L3SCRXFh4S7PJuWS/m9ic7s02eGUVkzePMizinonnVk3oWh2pVdnIXeI0rkQmya1JxPFCpZKM7pscR+O0kbZz6UAqhXO/7vr99GyPu+HgIYNmmtH2vfwrKmTdPjJA7AVqN9QyT16AZOGm8U9GAOW4MNymCjmFz3ExStS+d+0fAI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12348C433F1;
+	Fri,  1 Mar 2024 14:49:49 +0000 (UTC)
+Date: Fri, 1 Mar 2024 14:49:47 +0000
+From: Catalin Marinas <catalin.marinas@arm.com>
+To: Waiman Long <longman@redhat.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, Audra Mitchell <aubaker@redhat.com>
+Subject: Re: [PATCH] mm/kmemleak: Don't hold kmemleak_lock when calling
+ printk()
+Message-ID: <ZeHrC56llcicOjLP@arm.com>
+References: <20240228191444.481048-1-longman@redhat.com>
+ <ZeCh30o8i-wJVT7N@arm.com>
+ <c5b07970-0523-420b-97ad-c08b50c69db2@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240301-for-netnext-mt7530-improvements-3-v3-1-449f4f166454@arinc9.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <c5b07970-0523-420b-97ad-c08b50c69db2@redhat.com>
 
-On Fri, Mar 01, 2024 at 12:42:57PM +0200, Arınç ÜNAL via B4 Relay wrote:
-> From: Arınç ÜNAL <arinc.unal@arinc9.com>
+On Thu, Feb 29, 2024 at 10:55:38AM -0500, Waiman Long wrote:
+> On 2/29/24 10:25, Catalin Marinas wrote:
+> > On Wed, Feb 28, 2024 at 02:14:44PM -0500, Waiman Long wrote:
+> > > When some error conditions happen (like OOM), some kmemleak functions
+> > > call printk() to dump out some useful debugging information while holding
+> > > the kmemleak_lock. This may cause deadlock as the printk() function
+> > > may need to allocate additional memory leading to a create_object()
+> > > call acquiring kmemleak_lock again.
+> > > 
+> > > Fix this deadlock issue by making sure that printk() is only called
+> > > after releasing the kmemleak_lock.
+> > I can't say I'm familiar with the printk() code but I always thought it
+> > uses some ring buffers as it can be called from all kind of contexts and
+> > allocation is not guaranteed.
+> > 
+> > If printk() ends up taking kmemleak_lock through the slab allocator, I
+> > wonder whether we have bigger problems. The lock order is always
+> > kmemleak_lock -> object->lock but if printk() triggers a callback into
+> > kmemleak, we can also get object->lock -> kmemleak_lock ordering, so
+> > another potential deadlock.
 > 
-> For the switch on the MT7988 SoC, the mac_port_config member for ID_MT7988
-> in mt753x_table is not needed as the interfaces of all MACs are already
-> handled on mt7988_mac_port_get_caps().
-> 
-> Therefore, remove the mac_port_config member from ID_MT7988 in
-> mt753x_table. Before calling priv->info->mac_port_config(), if there's no
-> mac_port_config member in mt753x_table, exit mt753x_mac_config()
-> successfully.
-> 
-> Remove calling priv->info->mac_port_config() from the sanity check as the
-> sanity check requires a pointer to a mac_port_config function to be
-> non-NULL. This will fail for MT7988 as mac_port_config won't be a member of
-> its info table.
-> 
-> Co-developed-by: Daniel Golle <daniel@makrotopia.org>
-> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
-> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
-> Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+> object->lock is per object whereas kmemleak_lock is global. When taking
+> object->lock and doing a data dump leading to a call that takes the
+> kmemlock, it is highly unlikely the it will need to take that particular
+> object->lock again. I do agree that lockdep may still warn about it if that
+> happens as all the object->lock's are likely to be treated to be in the same
+> class.
 
-Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Yeah, it's unlikely. I think it can only happen if there's a bug in
+kmemleak (or slab) and the insertion fails because of the same object we
+try to dump. But I suspect lockdep will complain either way.
 
-Thanks!
+> I should probably clarify in the change log that the lockdep splat is
+> actually,
+> 
+> [ 3991.452558] Chain exists of: [ 3991.452559] console_owner -> &port->lock
+> --> kmemleak_lock
+> 
+> So if kmemleak calls printk() acquiring either console_owner or port->lock.
+> It may cause deadlock.
+
+Could you please share the whole lockdep warning? IIUC, it's not the
+printk() code allocating memory but somewhere down the line in the tty
+layer.
+
+Anyway, I had a look again at the kmemleak locking (I've been meaning to
+simplify it for some time, drop the object->lock altogether). The only
+time we nest object->lock within kmemleak_lock is during scan_block().
+If we are unlucky to get some error on another CPU and dump that exact
+object with printk(), it could lead to deadlock.
+
+There's the dump_str_object_info() case as well triggered by a sysfs
+write but luckily this takes the scan_mutex (same as during
+scan_block()), so it solves the nesting problem.
+
+I think in those error cases we can even ignore the object->lock when
+dumping the info. Yeah, it can race, maybe not showing exactly the
+precise data in some rare cases, but in those OOM scenarios it's
+probably the least of our problem.
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Catalin
 
