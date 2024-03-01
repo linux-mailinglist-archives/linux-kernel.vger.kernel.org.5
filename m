@@ -1,130 +1,245 @@
-Return-Path: <linux-kernel+bounces-87820-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87821-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66CE486D970
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 03:13:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 810E686D973
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 03:14:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A290286C2B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 02:13:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EAAE41F2289C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 02:14:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB36D3A8D0;
-	Fri,  1 Mar 2024 02:13:41 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDAFC3A292;
+	Fri,  1 Mar 2024 02:14:26 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D903B2AF0D;
-	Fri,  1 Mar 2024 02:13:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDC1A3A1D8;
+	Fri,  1 Mar 2024 02:14:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709259221; cv=none; b=q+y9ccWTEWCyQtdx80k8ss7310sKU3NVfw1mLfrRou0LQcVCHBRELwGh3hkqmF95sbhJilJzwreHpBX7F7UmX5uvl2lxksJpuiu2uOJ0DtwRULDifIVifuPKr2TawwIxLCuNld1l9SpZnHXh5rrySqmmx4/eETLflgEQl6KqpiU=
+	t=1709259266; cv=none; b=L3HT/iA6IrvSNHro4O2oJltsRQQJj7ge4iuZ6qjfEOdcAL5lW+fnGrNJEAVmz4F5FwgA8AUZ6akrYxKKhi2VDT6Qr/cSp4bxSLfen569fInioJtOtFN5YYPjoPQlWATg8Gx4wBc4MImaUYpN0l3cgL0KX3IfOFCaSrcKoUbepC4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709259221; c=relaxed/simple;
-	bh=NPD/17SvfvonoQ1qrXhKNqN7Pwo5QKQggEW33QEBWeY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=qfD0dyWxVn+SPVk1ebxteC5GsrBUqwysHXMd3MbH7JtV27pGD7vOfgnbfcVJbknQb3aZQIe2v2/9yebX/GJxLYKpZIYhVcJu4mcFInp8eyOBjPxbeO3mYXmS744bksf/iHp0yJDEMlEzImmECECN/PhmCkI7oKJCXiTLf15qZjA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TmBQn5z23z1h142;
-	Fri,  1 Mar 2024 10:11:13 +0800 (CST)
-Received: from kwepemm600017.china.huawei.com (unknown [7.193.23.234])
-	by mail.maildlp.com (Postfix) with ESMTPS id 15F1D1A016B;
-	Fri,  1 Mar 2024 10:13:30 +0800 (CST)
-Received: from [10.174.179.234] (10.174.179.234) by
- kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 1 Mar 2024 10:13:28 +0800
-Message-ID: <8d49ad72-4d51-27b9-1c0e-0948942f8027@huawei.com>
-Date: Fri, 1 Mar 2024 10:13:28 +0800
+	s=arc-20240116; t=1709259266; c=relaxed/simple;
+	bh=pwtn6drrCTLarjhItrpPDsaQT/sX3CSPpeXmy+SfazA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=dKliP7/DSLeiC980e+SX0UDYgVMqHeQbT4uekggLfPojSQWVna6C5jTV8iqJ2AAT/VokXNeE3dTIhgGzPUWoZmVSQowRYZqzxFWBPzoRNP/likevcR2XSId4wCtU09VRf9RQuwQMXeadLt1Ddhh4t5x0V1Z+sH+ujWLdJLEpiM4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 7eb3967e552f48198514005549a2b80d-20240301
+X-CID-O-RULE: Release_Ham
+X-CID-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:1a160b1c-8999-43c4-916f-d2930842a42c,IP:10,
+	URL:0,TC:0,Content:-5,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACT
+	ION:release,TS:-10
+X-CID-INFO: VERSION:1.1.37,REQID:1a160b1c-8999-43c4-916f-d2930842a42c,IP:10,UR
+	L:0,TC:0,Content:-5,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:-10
+X-CID-META: VersionHash:6f543d0,CLOUDID:28fae08f-e2c0-40b0-a8fe-7c7e47299109,B
+	ulkID:2403011014152ZTT6R8T,BulkQuantity:0,Recheck:0,SF:19|44|66|38|24|17|1
+	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC
+	:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-UUID: 7eb3967e552f48198514005549a2b80d-20240301
+X-User: aichao@kylinos.cn
+Received: from localhost.localdomain [(112.64.161.44)] by mailgw
+	(envelope-from <aichao@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 935004404; Fri, 01 Mar 2024 10:14:14 +0800
+From: Ai Chao <aichao@kylinos.cn>
+To: hdegoede@redhat.com,
+	ilpo.jarvinen@linux.intel.com,
+	linux-kernel@vger.kernel.org,
+	platform-driver-x86@vger.kernel.org
+Cc: Ai Chao <aichao@kylinos.cn>
+Subject: [PATCH v2] platform/x86: add lenovo generic wmi driver
+Date: Fri,  1 Mar 2024 10:14:12 +0800
+Message-Id: <20240301021412.59604-1-aichao@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [bug report] dead loop in generic_perform_write() //Re: [PATCH v7
- 07/12] iov_iter: Convert iterate*() to inline funcs
-To: Linus Torvalds <torvalds@linux-foundation.org>, Al Viro <viro@kernel.org>
-CC: David Howells <dhowells@redhat.com>, Jens Axboe <axboe@kernel.dk>,
-	Christoph Hellwig <hch@lst.de>, Christian Brauner <christian@brauner.io>,
-	David Laight <David.Laight@aculab.com>, Matthew Wilcox <willy@infradead.org>,
-	Jeff Layton <jlayton@kernel.org>, <linux-fsdevel@vger.kernel.org>,
-	<linux-block@vger.kernel.org>, <linux-mm@kvack.org>,
-	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Kefeng Wang
-	<wangkefeng.wang@huawei.com>
-References: <20230925120309.1731676-1-dhowells@redhat.com>
- <20230925120309.1731676-8-dhowells@redhat.com>
- <4e80924d-9c85-f13a-722a-6a5d2b1c225a@huawei.com>
- <CAHk-=whG+4ag+QLU9RJn_y47f1DBaK6b0qYq_6_eLkO=J=Mkmw@mail.gmail.com>
- <CAHk-=wjSjuDrS9gc191PTEDDow7vHy6Kd3DKDaG+KVH0NQ3v=w@mail.gmail.com>
- <e985429e-5fc4-a175-0564-5bb4ca8f662c@huawei.com>
- <CAHk-=wh06M-1c9h7wZzZ=1KqooAmazy_qESh2oCcv7vg-sY6NQ@mail.gmail.com>
-From: Tong Tiangen <tongtiangen@huawei.com>
-In-Reply-To: <CAHk-=wh06M-1c9h7wZzZ=1KqooAmazy_qESh2oCcv7vg-sY6NQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm600017.china.huawei.com (7.193.23.234)
 
+Add lenovo generic wmi driver to support camera button.
 
+Signed-off-by: Ai Chao <aichao@kylinos.cn>
+---
+v2: Adjust GPL v2 to GPL, adjust sprintf to sysfs_emit.
 
-在 2024/3/1 1:32, Linus Torvalds 写道:
-> On Thu, 29 Feb 2024 at 00:13, Tong Tiangen <tongtiangen@huawei.com> wrote:
->>
->> See the logic before this patch, always success (((void)(K),0)) is
->> returned for three types: ITER_BVEC, ITER_KVEC and ITER_XARRAY.
-> 
-> No, look closer.
-> 
-> Yes, the iterate_and_advance() macro does that "((void)(K),0)" to make
-> the compiler generate better code for those cases (because then the
-> compiler can see that the return value is a compile-time zero), but
-> notice how _copy_mc_to_iter() didn't use that macro back then. It used
-> the unvarnished __iterate_and_advance() exactly so that the MC copy
-> case would *not* get that "always return zero" behavior.
-> 
-> That goes back to (in a different form) at least commit 1b4fb5ffd79b
-> ("iov_iter: teach iterate_{bvec,xarray}() about possible short
-> copies").
-> 
-> But hardly anybody ever tests this machine-check special case code, so
-> who knows when it broke again.
-> 
-> I'm just looking at the source code, and with all the macro games it's
-> *really* hard to follow, so I may well be missing something.
-> 
->> Maybe we're all gonna fix it back? as follows：
-> 
-> No. We could do it for the kvec and xarray case, just to get better
-> code generation again (not that I looked at it, so who knows), but the
-> one case that actually uses memcpy_from_iter_mc() needs to react to a
-> short write.
-> 
-> One option might be to make a failed memcpy_from_iter_mc() set another
-> flag in the iter, and then make fault_in_iov_iter_readable() test that
-> flag and return 'len' if that flag is set.
-> 
-> Something like that (wild handwaving) should get the right error handling.
-> 
-> The simpler alternative is maybe something like the attached.
-> COMPLETELY UNTESTED. Maybe I've confused myself with all the different
-> indiraction mazes in the iov_iter code.
-> 
->                       Linus
+ drivers/platform/x86/Kconfig      |  10 +++
+ drivers/platform/x86/Makefile     |   1 +
+ drivers/platform/x86/lenovo-wmi.c | 121 ++++++++++++++++++++++++++++++
+ 3 files changed, 132 insertions(+)
+ create mode 100644 drivers/platform/x86/lenovo-wmi.c
 
-Hi Linus:
+diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+index bdd302274b9a..fbbb8fb843d7 100644
+--- a/drivers/platform/x86/Kconfig
++++ b/drivers/platform/x86/Kconfig
+@@ -1001,6 +1001,16 @@ config INSPUR_PLATFORM_PROFILE
+ 	To compile this driver as a module, choose M here: the module
+ 	will be called inspur-platform-profile.
+ 
++config LENOVO_WMI
++	tristate "Lenovo Geneirc WMI driver"
++	depends on ACPI_WMI
++	depends on INPUT
++	help
++	This driver provides support for Lenovo WMI driver.
++
++	To compile this driver as a module, choose M here: the module
++	will be called lenovo-wmi.
++
+ source "drivers/platform/x86/x86-android-tablets/Kconfig"
+ 
+ config FW_ATTR_CLASS
+diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
+index 1de432e8861e..d51086552192 100644
+--- a/drivers/platform/x86/Makefile
++++ b/drivers/platform/x86/Makefile
+@@ -66,6 +66,7 @@ obj-$(CONFIG_SENSORS_HDAPS)	+= hdaps.o
+ obj-$(CONFIG_THINKPAD_ACPI)	+= thinkpad_acpi.o
+ obj-$(CONFIG_THINKPAD_LMI)	+= think-lmi.o
+ obj-$(CONFIG_YOGABOOK)		+= lenovo-yogabook.o
++obj-$(CONFIG_LENOVO_WMI)	+= lenovo-wmi.o
+ 
+ # Intel
+ obj-y				+= intel/
+diff --git a/drivers/platform/x86/lenovo-wmi.c b/drivers/platform/x86/lenovo-wmi.c
+new file mode 100644
+index 000000000000..aa7519d64d9b
+--- /dev/null
++++ b/drivers/platform/x86/lenovo-wmi.c
+@@ -0,0 +1,121 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ *  Lenovo Generic WMI Driver
++ *
++ *  Copyright (C) 2018	      Ai Chao <aichao@kylinos.cn>
++ */
++
++#include <linux/acpi.h>
++#include <linux/device.h>
++#include <linux/input.h>
++#include <linux/module.h>
++#include <linux/wmi.h>
++
++#define WMI_LENOVO_CAMERABUTTON_EVENT_GUID "50C76F1F-D8E4-D895-0A3D-62F4EA400013"
++
++static u8 camera_mode;
++
++struct lenovo_wmi_priv {
++	struct input_dev *idev;
++};
++
++static ssize_t camerabutton_show(struct device *dev,
++				 struct device_attribute *attr, char *buf)
++{
++	return sysfs_emit(buf, "%u\n", camera_mode);
++}
++
++DEVICE_ATTR_RO(camerabutton);
++
++static struct attribute *lenovo_wmi_attrs[] = {
++	&dev_attr_camerabutton.attr,
++	NULL,
++};
++
++static const struct attribute_group lenovo_wmi_group = {
++	.attrs = lenovo_wmi_attrs,
++};
++
++const struct attribute_group *lenovo_wmi_groups[] = {
++	&lenovo_wmi_group,
++	NULL,
++};
++
++static void lenovo_wmi_notify(struct wmi_device *wdev, union acpi_object *obj)
++{
++	struct lenovo_wmi_priv *priv = dev_get_drvdata(&wdev->dev);
++
++	if (obj->type == ACPI_TYPE_BUFFER) {
++		camera_mode = obj->buffer.pointer[0];
++		input_report_key(priv->idev, KEY_CAMERA, 1);
++		input_sync(priv->idev);
++		input_report_key(priv->idev, KEY_CAMERA, 0);
++		input_sync(priv->idev);
++	} else {
++		dev_info(&wdev->dev, "Bad response type %d\n", obj->type);
++	}
++}
++
++static int lenovo_wmi_input_setup(struct wmi_device *wdev)
++{
++	struct lenovo_wmi_priv *priv = dev_get_drvdata(&wdev->dev);
++
++	priv->idev = devm_input_allocate_device(&wdev->dev);
++	if (!priv->idev)
++		return -ENOMEM;
++
++	priv->idev->name = "Lenovo WMI Camera Button";
++	priv->idev->phys = "wmi/input0";
++	priv->idev->id.bustype = BUS_HOST;
++	priv->idev->dev.parent = &wdev->dev;
++	priv->idev->evbit[0] = BIT_MASK(EV_KEY);
++	priv->idev->keybit[BIT_WORD(KEY_CAMERA)] = BIT_MASK(KEY_CAMERA);
++
++	return input_register_device(priv->idev);
++}
++
++static int lenovo_wmi_probe(struct wmi_device *wdev, const void *context)
++{
++	struct lenovo_wmi_priv *priv;
++	int err;
++
++	priv = devm_kzalloc(&wdev->dev, sizeof(struct lenovo_wmi_priv),
++			    GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	dev_set_drvdata(&wdev->dev, priv);
++
++	err = lenovo_wmi_input_setup(wdev);
++	return err;
++}
++
++static void lenovo_wmi_remove(struct wmi_device *wdev)
++{
++	struct lenovo_wmi_priv *priv = dev_get_drvdata(&wdev->dev);
++
++	input_unregister_device(priv->idev);
++}
++
++static const struct wmi_device_id lenovo_wmi_id_table[] = {
++	{ .guid_string = WMI_LENOVO_CAMERABUTTON_EVENT_GUID },
++	{  }
++};
++
++static struct wmi_driver lenovo_wmi_driver = {
++	.driver = {
++		.name = "lenovo-wmi",
++		.dev_groups = lenovo_wmi_groups,
++	},
++	.id_table = lenovo_wmi_id_table,
++	.probe = lenovo_wmi_probe,
++	.notify = lenovo_wmi_notify,
++	.remove = lenovo_wmi_remove,
++};
++
++module_wmi_driver(lenovo_wmi_driver);
++
++MODULE_DEVICE_TABLE(wmi, lenovo_wmi_id_table);
++MODULE_AUTHOR("Ai Chao <aichao@kylinos.cn>");
++MODULE_DESCRIPTION("Lenovo Generic WMI Driver");
++MODULE_LICENSE("GPL");
+-- 
+2.25.1
 
-The method in the attachment i have tested before is feasible and can
-solve this deadloop problem. I also have some confusion about the
-iov_iter code. Let's take a look at manitainer's comments to see whether
-there are more comprehensive considerations.
-
-Thanks,
-Tong.
 
