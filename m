@@ -1,174 +1,121 @@
-Return-Path: <linux-kernel+bounces-87730-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87731-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1227586D849
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:19:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BA8F86D84C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:27:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 363581C2095A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 00:19:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 456F5B22491
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 00:27:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 918D780B;
-	Fri,  1 Mar 2024 00:19:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F16BE7E1;
+	Fri,  1 Mar 2024 00:26:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="NEAjVP/3"
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="dH292u/1"
+Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71C0717E
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 00:19:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF1F3368
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 00:26:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709252368; cv=none; b=Poat7WbTKJGR/JH1JHP2rqam+VP5JuP0ijld/59uhlJFEPFjv4b47K+BuvEfE/iGbywf+r/nQGdRswDDt31ZLtwY9tMaCr4BdsPC+qB/jgSEn2u4eyhX/Fmp9fkZxOqqNlTsF5dOmQgsFhDRdVSQqd8v2Mu8nFRWb92YdX/nAtA=
+	t=1709252814; cv=none; b=aJf1pnwYEi84IHVEuH1gs/MYTw3t8CGjr/uOWZ6pbrBB6i+oqbgO5sjpionG1+q+RqNKDAMbsqauw0zFiYPKeCX2SXgD974BG/zvZTdtC7lQcbV2SNCknFNTzTzPpnBDQxAoCnhy8F1IfbKFu73DRrUuSZyDamCMPVOIfyN9CzE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709252368; c=relaxed/simple;
-	bh=7oaRx7txOLY5lh/ghksCzjvbdA7i/vJfUT0jQTEBt2E=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=I5KDdr3PX7wwUV1ysDKpImXsVYGp7whdjnSfjUxZwWr9m4x//GmcIIVni5Au7zeS06N9yfKuSn2bk+2izcf9Q+01aSsh8z/Kv/fAG8t/1nkXfOHgax5pvv+hiuWINY7BRzZtqEeTjNCaiZ2quEvFJRIPYZ9MTGR3F8onfNqE3+0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=NEAjVP/3; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1dbe7e51f91so24005ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 16:19:27 -0800 (PST)
+	s=arc-20240116; t=1709252814; c=relaxed/simple;
+	bh=moYrqqxo2UDnuGHZWzH0ODEv4jfFfQLJ2rNJTkxWGDg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=eYQEwg1jTIpoBdKP4xwq0PBFe6VGFctlBEbGOLEuDdyds0rzrnW+EeQ/GGtFt5mBkdqKSU3OSYbUdehFBmTM5HcQnm2hFdN7EfA8Gh2KL3bpfH98WgJ+WbCKFD/Cjq5FXiN6dsxDjNlCFPRCO54hZpWEQkMzwQpYC6AvEonvZq0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=dH292u/1; arc=none smtp.client-ip=209.85.167.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3c1a2f7e1d2so829717b6e.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 16:26:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709252367; x=1709857167; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0UWpBAgUjQGEcDfT6+E949LPPMhHm1UHzIqySFkY11k=;
-        b=NEAjVP/3lxBxNeGI51nhHxu7G41cEIy8va/gHYs61xSjqwHrWSxhthvcLYrWniZrqc
-         ATRet53Ni8hZ/O8CZKXaM6yfYFFV+ungVLGxVXn4vRo43uynlS59P+bmQxcxCt86llvl
-         kAmQq9OdEyMIS2+++6X7aWvljiWKuOj9bRI+3FPuLcsaN0TSKOrUs90OFU6m09OgqSe/
-         wipTBNL6vfrm2iAyYNSt34I4cMPOLxf1Fi7YAyPHXatC7Ibaomtv1daJun9odZSRIpas
-         wmj9QXKQCW/ypOiHyKPaROgPbdYiP3uVsZmrhP/MiR2lEHGSS8y0MGfwJzn/4XnqI/7e
-         2njg==
+        d=chromium.org; s=google; t=1709252812; x=1709857612; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=QrA5UyLICMttuHo47AmdIq8RaxySGVb6p80fwiVlvuQ=;
+        b=dH292u/1WWBJblIgtYZoIn6cRYLmh7BgnOEtQ+4MdItsmgDL1RXoCsQpGKvvz0L6vH
+         qneVxIe1+N1ra1os89nGS+j0iZZrC+CFcV63s1r4IR2p6Q/LfkksTIJjveC6mkz+naf5
+         sQTSfWAXVdQWy8LN3eXqBfHLyF7TqgwQ8X2/A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709252367; x=1709857167;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0UWpBAgUjQGEcDfT6+E949LPPMhHm1UHzIqySFkY11k=;
-        b=WPqfP5BDJ72yOxlfI9ecGR21HrdLSe+O51/CI5Hs9H4Sh1v1M5fH5ao1iR2UbqFZXz
-         XED49d9AhViKFlZhuuUUXERyCr1ddMxuR72HiHNvJFOvi8dbuhCLINKZjWUFWhAT3fnY
-         ITSHe+vPqPAG6e8cdJycXhdKDtmQeRvJTO1jf5Vr+Y+6sGXBKxDWEEIJAK9y8LYWSGHF
-         ETrgSG+KEan46rhAGirA7LVE1V0Y80O0dubtz/wPtyXLJbga4rS5amkbrmxskKXqMiEg
-         frpCL4mZgmKyoKup27LXdnFGS3J6v1BiEQ0uxN9x/ONuG+WemE8SNF5NQwrFxSHgb6rj
-         TR5g==
-X-Forwarded-Encrypted: i=1; AJvYcCVQBDwtI29Zu4gZYgX/ml0Cfn8yRrTjoCLzqj35LBv4U3JXjdNDU5SYB8ZCkfsbBQTK8UkM+SMkxzlCY9zFiOrwIaxgM+z2Ay/eWN8S
-X-Gm-Message-State: AOJu0YxeCLos2M5VRUOdrSL5OsayWaM4/taDtXJ1SgkcH/KSX9ND5zWq
-	A60/RfSo87c8OZ+5X19tC/s9+zyzJwenlMzpalEtERZHq17MbAivFaFn8QorI9BwO0v0nSjDE9M
-	6MdoST2HsiPtOQ6JjQzgexOtmY6jgEMgBAAZl
-X-Google-Smtp-Source: AGHT+IG+krEZg1W4lxxNiq3BuiCY53h8CWBR5bxCp6JLwaMIKWJDGBm2DvjENztc4Nf5wogg1bUBirKz0SR/4ekNyeo=
-X-Received: by 2002:a17:902:db0d:b0:1dc:6cf4:5908 with SMTP id
- m13-20020a170902db0d00b001dc6cf45908mr80892plx.6.1709252366428; Thu, 29 Feb
- 2024 16:19:26 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709252812; x=1709857612;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QrA5UyLICMttuHo47AmdIq8RaxySGVb6p80fwiVlvuQ=;
+        b=VuuuFsbDauV80fOlk7NqZofSLmEqIUXv1pVeOoOla+V7LPlitB8lpvQTsz3TE2AUc4
+         H+iUmmCPH3+7S3vGMkAIJRYNxn5G0ZJhcUZWtJtuHHL3oD7Zbzdc5kGLfJAzb0tCzbTA
+         Kw7f8gngIls8fugsidkXY2Y1PQZFWDoPPsTqzp/Kj3FqCKTvmJDBwYQXbp1YMzOdjeb4
+         /V8AHMqdFj8GG5eh0hONmS3sUbEKASKqpGn69iLKRTrP78z3nR/zhy3jBKuoqvrUUK1z
+         2Km0LKe6cZuz8QUzDnR5tmp2Z0VcLhLYOIy25OupPW7es8sgdMlUKQaq+EVSDI9Quybr
+         XLLg==
+X-Forwarded-Encrypted: i=1; AJvYcCV6hsMDy5v5cAiIG1GCozc/ZKDmxz/2d7+U61hB/5Ee2AHWYhyjp0XO6ZJVPf627+Ic4l8HYt6VNH/5VRnlFrW0JZ3L6PJMGYic5qI6
+X-Gm-Message-State: AOJu0YyUKUit3NjpRA5O9HKv+/ZLkAFnh8TzHeSgZ/SPf6AnNTbuF/k/
+	L3ng4FZ+AxpgTfropcIBuXlT6IJxVbDdq4JoI4CVEXXPrTUMP2hU0E6XhK5DDg==
+X-Google-Smtp-Source: AGHT+IFTbmLNW/f53D7zdSesRBbXGfMhl15+6/jTYpyEzlfT0bpba3gTpNhwOVwa/Sy78AMal1HEnQ==
+X-Received: by 2002:a05:6808:3c93:b0:3c1:41fc:d012 with SMTP id gs19-20020a0568083c9300b003c141fcd012mr247384oib.34.1709252811946;
+        Thu, 29 Feb 2024 16:26:51 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id d4-20020aa78684000000b006e4ecc3e394sm1841748pfo.79.2024.02.29.16.26.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Feb 2024 16:26:50 -0800 (PST)
+From: Kees Cook <keescook@chromium.org>
+To: Andy Shevchenko <andy@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>,
+	linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH v2 0/2] string: Convert selftests to KUnit
+Date: Thu, 29 Feb 2024 16:26:46 -0800
+Message-Id: <20240301002416.it.092-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240214063708.972376-1-irogers@google.com> <20240214063708.972376-5-irogers@google.com>
- <CAM9d7cjuv2VAVfGM6qQEMYO--WvgPvAvmnF73QrS_PzGzCF32w@mail.gmail.com>
- <CAP-5=fUUSpHUUAc3jvJkPAUuuJAiSAO4mjCxa9qUppnqk76wWg@mail.gmail.com> <b60c7731b8a84e01a77fea55c31a77b9@AcuMS.aculab.com>
-In-Reply-To: <b60c7731b8a84e01a77fea55c31a77b9@AcuMS.aculab.com>
-From: Ian Rogers <irogers@google.com>
-Date: Thu, 29 Feb 2024 16:19:11 -0800
-Message-ID: <CAP-5=fUGTZXQv28+v-t1mhFyWb9BuxRzCD+N4WTU0=hTqv+xLA@mail.gmail.com>
-Subject: Re: [PATCH v1 4/6] perf threads: Move threads to its own files
-To: David Laight <David.Laight@aculab.com>
-Cc: Namhyung Kim <namhyung@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Oliver Upton <oliver.upton@linux.dev>, 
-	Yang Jihong <yangjihong1@huawei.com>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>, 
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Developer-Signature: v=1; a=openpgp-sha256; l=893; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=moYrqqxo2UDnuGHZWzH0ODEv4jfFfQLJ2rNJTkxWGDg=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBl4SDIx+1hzENuYl6hlOaohCcjbErtMu6nYDGpe
+ tlKDFUKztOJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZeEgyAAKCRCJcvTf3G3A
+ Jj8YD/9tmTSBz1IaC0rs2X8jkqHkNcS3dAM5KC6mzlItIbkMb2ZHf9M465ykfWmEP+2Q1wihYN5
+ ptkoLrHxVV3arN+ciF1A/vkdxajkFcKlp8PSEQHzgT+COw2fgNBbTfZgRPl1s/u7x/K9MkEy5zg
+ 2tRLQ2dwT0g/OSw7naV/4f2+JlpCmhPslQzluJZoO5/hsuIUEhuqdSAEWTqPO52a6KdXXOKh9dl
+ XM4glyth1t1Zu2ASU7rcBjYzq06bnBtLZHQJw44eA3eZAtH/MXlN7/de+DLcRTnaE4/GZiMfgzf
+ hykOx05svh8WhAlwl0YjWMS2awUhhuhjQm7aIIhqzMomIldvNN+MxQBMC+KMDvjjOYhE54hmXKz
+ tdezZPI0n7Vs2jSfPGZdOgccwILJefwZu6Ft1H5jlgLCE1qwPwgksrpf68+AqSX+57KxOGmbSSk
+ 7TWjRcr19DJIHp2ZO9Ck+U04XW5wuuRptge/eO6ztTAxsiCaE4d2qmlRCm9X42UKBG6JegT/ef0
+ S8Nwsbs/rI90TkUFvhZfnZwh3dpl3f4/Q/Y/NffZtnuoC5GZvGU5n29zsdea7OeqjUwFE+++VNe
+ TzAwT6XQth1oHb6iNeuOMxINtdY5JYTidKMFTy0CvYyy6HeZt9VnnGV9/hOZrvT1aAqtLIMJZx5
+ knHIZ5A6 Q8Jq0Eg==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 29, 2024 at 1:59=E2=80=AFPM David Laight <David.Laight@aculab.c=
-om> wrote:
->
-> From: Ian Rogers
-> > Sent: 27 February 2024 07:24
-> >
-> > On Mon, Feb 26, 2024 at 11:07=E2=80=AFPM Namhyung Kim <namhyung@kernel.=
-org> wrote:
-> > >
-> > > On Tue, Feb 13, 2024 at 10:37=E2=80=AFPM Ian Rogers <irogers@google.c=
-om> wrote:
-> > > >
-> > > > Move threads out of machine and move thread_rb_node into the C
-> > > > file. This hides the implementation of threads from the rest of the
-> > > > code allowing for it to be refactored.
-> > > >
-> > > > Locking discipline is tightened up in this change.
-> > >
-> > > Doesn't look like a simple code move.  Can we split the locking
-> > > change from the move to make the reviewer's life a bit easier? :)
-> >
-> > Not sure I follow. Take threads_nr as an example.
-> >
-> > The old code is in machine.c, so:
-> > -static size_t machine__threads_nr(const struct machine *machine)
-> > -{
-> > -       size_t nr =3D 0;
-> > -
-> > -       for (int i =3D 0; i < THREADS__TABLE_SIZE; i++)
-> > -               nr +=3D machine->threads[i].nr;
-> > -
-> > -       return nr;
-> > -}
-> >
-> > The new code is in threads.c:
-> > +size_t threads__nr(struct threads *threads)
-> > +{
-> > +       size_t nr =3D 0;
-> > +
-> > +       for (int i =3D 0; i < THREADS__TABLE_SIZE; i++) {
-> > +               struct threads_table_entry *table =3D &threads->table[i=
-];
-> > +
-> > +               down_read(&table->lock);
-> > +               nr +=3D table->nr;
-> > +               up_read(&table->lock);
-> > +       }
-> > +       return nr;
-> > +}
-> >
-> > So it is a copy paste from one file to the other. The only difference
-> > is that the old code failed to take a lock when reading "nr" so the
-> > locking is added. I wanted to make sure all the functions in threads.c
-> > were properly correct wrt locking, semaphore creation and destruction,
-> > etc.  We could have a broken threads.c and fix it in the next change,
-> > but given that's a bug it could make bisection more difficult.
-> > Ultimately I thought the locking changes were small enough to not
-> > warrant being on their own compared to the advantages of having a sane
-> > threads abstraction.
->
-> The lock is pretty much entirely pointless.
-> All it really does is slow the code down.
-> The most you could want is:
->         nr +=3D READ_ONCE(table->nr);
-> to avoid any hypothetical data tearing.
+Hi,
 
-Completely agreed, but as this is user space code I'm unclear on
-thread sanitizer support for READ_ONCE. The code is also only called
-in debug statements. The migration to a hashmap in the later patches
-means the complexity of taking the lock is more justified, although
-we're using libbpf's hashmap that has a size variable.
+I realized the string selftests hadn't been converted to KUnit yet. Do that.
 
-Thanks,
-Ian
+-Kees
 
->         David
->
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1=
- 1PT, UK
-> Registration No: 1397386 (Wales)
+ v2: rebase onto https://lore.kernel.org/r/20240229205345.93902-1-andriy.shevchenko@linux.intel.com
+ v1: https://lore.kernel.org/linux-hardening/20240229233432.work.675-kees@kernel.org/
+
+Kees Cook (2):
+  string: Convert selftest to KUnit
+  string: Convert helpers selftest to KUnit
+
+ MAINTAINERS                                   |   4 +-
+ lib/Kconfig.debug                             |  12 +-
+ lib/Makefile                                  |   4 +-
+ ...tring_helpers.c => string_helpers_kunit.c} | 177 ++++++++++--------
+ lib/{test_string.c => string_kunit.c}         | 166 ++++++----------
+ 5 files changed, 164 insertions(+), 199 deletions(-)
+ rename lib/{test-string_helpers.c => string_helpers_kunit.c} (78%)
+ rename lib/{test_string.c => string_kunit.c} (54%)
+
+-- 
+2.34.1
+
 
