@@ -1,42 +1,42 @@
-Return-Path: <linux-kernel+bounces-87773-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87774-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C3E986D8D7
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 02:33:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 784FD86D8DA
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 02:34:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8ED811C2112E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:33:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7BC481C210FE
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:34:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DF1D2C68F;
-	Fri,  1 Mar 2024 01:33:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A08A39AE8;
+	Fri,  1 Mar 2024 01:33:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="KXTKZuBI"
-Received: from m16.mail.126.com (m16.mail.126.com [117.135.210.7])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D953F3984A;
-	Fri,  1 Mar 2024 01:33:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.7
+	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="YrvIPpMC"
+Received: from m16.mail.126.com (m16.mail.126.com [117.135.210.8])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 271CB38F84;
+	Fri,  1 Mar 2024 01:33:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709256787; cv=none; b=S56VLnaNeIiu1oijXwKSZX+NmR8AUOaR+2+Fbmzm6qbDh6DjiKCVtc48neIf2z0BLKu68SMT+0cC7+pTpbXKaWne4lML+/HN9dBDMOAtrJmMkNuPeFNv61/hdXnGN7Yrc3DbCZxtw1k3TkixekhqOkRyhXc45h9OG9qrwFgg8X8=
+	t=1709256789; cv=none; b=FtwhFgzOa0ZOEzKtN9dh5JRZN4sZQERC0engnlKpP2M5KUrq9ak0dEQHlNX9arlAAY+n4HYPorHjPeyxaJMfTQW9HW1c8EtewcVJB8RYbOkPgGmRW3c/aCcZU+eDoo3EVtJyWHWsysWianKs3sw/FwLBcpOKPn3JhpCqvR+7z2s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709256787; c=relaxed/simple;
-	bh=xLeQQdqrm7Aq4hmh/vp/0FElKtBEhB5LlHFCYph3wdY=;
+	s=arc-20240116; t=1709256789; c=relaxed/simple;
+	bh=JjZ7W3t4/yI9ATJXoIRSdNMeNL4PQtI7LA+8bo2tGz0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=QffO0zFnirgv0MbLvd4TJlshtlCBQP09O9uqi0GSQEjlEadtD8Xcy7DmJfGhFsIDYyqpBZTSTclXjKhcp4ef6i1jyLZoCgcAuVOuNRpfvYUi5iRMsRf3t9RL3x1aaZb9+LMMNwsSefJuU6AU5gy/8hK8NhXZxgU+WrR8HPG5uMw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com; spf=pass smtp.mailfrom=126.com; dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b=KXTKZuBI; arc=none smtp.client-ip=117.135.210.7
+	 MIME-Version; b=JIW5YympEiy4WxVbh88V3XjjWM97kYPEUKsNxswFBoaRVolMUfxLrRvEtbs2T4ZGoDcnsS6T5It8wAXHlGj+k/Ia4JMmJVEoHd/1ZauNx1AAhSotHwyq7WyUAZxc105Uq0gabaE1gilDDFscRQto/lLJjbzW6wiAY9o4+Y01kVg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com; spf=pass smtp.mailfrom=126.com; dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b=YrvIPpMC; arc=none smtp.client-ip=117.135.210.8
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=126.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=dcrWG
-	GH+E6Je/BEs6GtPRlXPUQyROv4t+ihp6LPlmU4=; b=KXTKZuBIgKG9unmmvJeI1
-	2wCEszZcamQ5OQgZxrcqQ+ON+CXdSAp2dk+2gE3lDflVo7z3+dbE+IO9IRKJ3RMj
-	rxITFLhc3yl1Lp2fO9kYPEv5rN4R2/eTgq6ApHRv57VQbGEUf4znVnRtWFH/5xNk
-	8si+uE+ZXvMMbybPqS2eOI=
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=k22cU
+	pbPjJDJz3jqCUUmugzbccutXgTxXfhtlbr5D/8=; b=YrvIPpMC8oi+gEuig4XaK
+	/qIVNyKK/o+OkA43Cg9FWq6xJ5QbdgPGsRLLPjrOF2EyDEFGndXpB5BGk4cU8myQ
+	PaCDddbU201LAll9nzWsN3W45wOTNmQgV9t1PjEGksTBySt3JT/T8mhH1k6lmahJ
+	5AjEaN22uR0FpsJUQjWmkM=
 Received: from localhost.localdomain (unknown [116.128.244.171])
-	by gzga-smtp-mta-g1-0 (Coremail) with SMTP id _____wDn7+APMOFlZSfbBA--.18054S8;
-	Fri, 01 Mar 2024 09:32:39 +0800 (CST)
+	by gzga-smtp-mta-g1-0 (Coremail) with SMTP id _____wDn7+APMOFlZSfbBA--.18054S9;
+	Fri, 01 Mar 2024 09:32:40 +0800 (CST)
 From: Genjian <zhanggenjian@126.com>
 To: stable@vger.kernel.org
 Cc: axboe@kernel.dk,
@@ -47,9 +47,9 @@ Cc: axboe@kernel.dk,
 	Martijn Coenen <maco@android.com>,
 	Christoph Hellwig <hch@lst.de>,
 	Genjian Zhang <zhanggenjian@kylinos.cn>
-Subject: [PATCH 4.19.y 4/9] loop: Factor out setting loop device size
-Date: Fri,  1 Mar 2024 09:30:23 +0800
-Message-Id: <20240301013028.2293831-5-zhanggenjian@126.com>
+Subject: [PATCH 4.19.y 5/9] loop: Refactor loop_set_status() size calculation
+Date: Fri,  1 Mar 2024 09:30:24 +0800
+Message-Id: <20240301013028.2293831-6-zhanggenjian@126.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240301013028.2293831-1-zhanggenjian@126.com>
 References: <20240301013028.2293831-1-zhanggenjian@126.com>
@@ -60,85 +60,119 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wDn7+APMOFlZSfbBA--.18054S8
-X-Coremail-Antispam: 1Uf129KBjvJXoWxZF47GrW5Xw1kZFWfWr4kZwb_yoW5Jw17pF
-	13Wa43G3yFvFy7WFsIqr1kZrW5Ka1kW347ury3C34Y9a1YyrnagF4rAry8WrWkJrWkWF1Y
-	qa98Ar109r1UGw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UHCJQUUUUU=
-X-CM-SenderInfo: x2kd0wxjhqyxldq6ij2wof0z/1tbiHhmUfmV2z7wVDwAAsX
+X-CM-TRANSID:_____wDn7+APMOFlZSfbBA--.18054S9
+X-Coremail-Antispam: 1Uf129KBjvJXoWxCr1rWw13XryDAr43GrWUCFg_yoWrXw1kpF
+	nFga4Yy3yFqFW8WFsFqr4kuFW5G3WDC3y3Ary7J34jyr1jqr9aqrW2kryrW397Jr95ZayY
+	qan8tr1kuw1Uur7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UdUUbUUUUU=
+X-CM-SenderInfo: x2kd0wxjhqyxldq6ij2wof0z/1tbiyBqUfmWWf0mcQwABsj
 
 From: Martijn Coenen <maco@android.com>
 
-[ Upstream commit 5795b6f5607f7e4db62ddea144727780cb351a9b ]
+[ Upstream commit b0bd158dd630bd47640e0e418c062cda1e0da5ad ]
 
-This code is used repeatedly.
+figure_loop_size() calculates the loop size based on the passed in
+parameters, but at the same time it updates the offset and sizelimit
+parameters in the loop device configuration. That is a somewhat
+unexpected side effect of a function with this name, and it is only only
+needed by one of the two callers of this function - loop_set_status().
+
+Move the lo_offset and lo_sizelimit assignment back into loop_set_status(),
+and use the newly factored out functions to validate and apply the newly
+calculated size. This allows us to get rid of figure_loop_size() in a
+follow-up commit.
 
 Signed-off-by: Martijn Coenen <maco@android.com>
 Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Genjian Zhang <zhanggenjian@kylinos.cn>
 ---
- drivers/block/loop.c | 30 +++++++++++++++++++++---------
- 1 file changed, 21 insertions(+), 9 deletions(-)
+ drivers/block/loop.c | 37 +++++++++++++++++++------------------
+ 1 file changed, 19 insertions(+), 18 deletions(-)
 
 diff --git a/drivers/block/loop.c b/drivers/block/loop.c
-index 281aefba2a6f..6bd07fa3a1fc 100644
+index 6bd07fa3a1fc..1a6805642ed2 100644
 --- a/drivers/block/loop.c
 +++ b/drivers/block/loop.c
-@@ -225,20 +225,35 @@ static void __loop_update_dio(struct loop_device *lo, bool dio)
- 	blk_mq_unfreeze_queue(lo->lo_queue);
- }
- 
-+/**
-+ * loop_set_size() - sets device size and notifies userspace
-+ * @lo: struct loop_device to set the size for
-+ * @size: new size of the loop device
-+ *
-+ * Callers must validate that the size passed into this function fits into
-+ * a sector_t, eg using loop_validate_size()
-+ */
-+static void loop_set_size(struct loop_device *lo, loff_t size)
-+{
-+	struct block_device *bdev = lo->lo_device;
-+
-+	set_capacity(lo->lo_disk, size);
-+	bd_set_size(bdev, size << SECTOR_SHIFT);
-+	/* let user-space know about the new size */
-+	kobject_uevent(&disk_to_dev(bdev->bd_disk)->kobj, KOBJ_CHANGE);
-+}
-+
- static void
- figure_loop_size(struct loop_device *lo, loff_t offset, loff_t sizelimit)
+@@ -248,11 +248,6 @@ figure_loop_size(struct loop_device *lo, loff_t offset, loff_t sizelimit)
  {
  	loff_t size = get_size(offset, sizelimit, lo->lo_backing_file);
--	struct block_device *bdev = lo->lo_device;
  
- 	if (lo->lo_offset != offset)
- 		lo->lo_offset = offset;
- 	if (lo->lo_sizelimit != sizelimit)
- 		lo->lo_sizelimit = sizelimit;
--	set_capacity(lo->lo_disk, size);
--	bd_set_size(bdev, (loff_t)get_capacity(bdev->bd_disk) << 9);
--	/* let user-space know about the new size */
--	kobject_uevent(&disk_to_dev(bdev->bd_disk)->kobj, KOBJ_CHANGE);
-+
-+	loop_set_size(lo, size);
+-	if (lo->lo_offset != offset)
+-		lo->lo_offset = offset;
+-	if (lo->lo_sizelimit != sizelimit)
+-		lo->lo_sizelimit = sizelimit;
+-
+ 	loop_set_size(lo, size);
  }
  
- static inline int
-@@ -992,11 +1007,8 @@ static int loop_set_fd(struct loop_device *lo, fmode_t mode,
- 		blk_queue_write_cache(lo->lo_queue, true, false);
+@@ -1225,6 +1220,7 @@ loop_set_status(struct loop_device *lo, const struct loop_info64 *info)
+ 	kuid_t uid = current_uid();
+ 	struct block_device *bdev;
+ 	bool partscan = false;
++	bool size_changed = false;
  
- 	loop_update_dio(lo);
--	set_capacity(lo->lo_disk, size);
--	bd_set_size(bdev, size << 9);
- 	loop_sysfs_init(lo);
--	/* let user-space know about the new size */
--	kobject_uevent(&disk_to_dev(bdev->bd_disk)->kobj, KOBJ_CHANGE);
-+	loop_set_size(lo, size);
+ 	err = mutex_lock_killable(&loop_ctl_mutex);
+ 	if (err)
+@@ -1246,6 +1242,7 @@ loop_set_status(struct loop_device *lo, const struct loop_info64 *info)
  
- 	set_blocksize(bdev, S_ISBLK(inode->i_mode) ?
- 		      block_size(inode->i_bdev) : PAGE_SIZE);
+ 	if (lo->lo_offset != info->lo_offset ||
+ 	    lo->lo_sizelimit != info->lo_sizelimit) {
++		size_changed = true;
+ 		sync_blockdev(lo->lo_device);
+ 		invalidate_bdev(lo->lo_device);
+ 	}
+@@ -1253,6 +1250,15 @@ loop_set_status(struct loop_device *lo, const struct loop_info64 *info)
+ 	/* I/O need to be drained during transfer transition */
+ 	blk_mq_freeze_queue(lo->lo_queue);
+ 
++	if (size_changed && lo->lo_device->bd_inode->i_mapping->nrpages) {
++		/* If any pages were dirtied after invalidate_bdev(), try again */
++		err = -EAGAIN;
++		pr_warn("%s: loop%d (%s) has still dirty pages (nrpages=%lu)\n",
++			__func__, lo->lo_number, lo->lo_file_name,
++			lo->lo_device->bd_inode->i_mapping->nrpages);
++		goto out_unfreeze;
++	}
++
+ 	err = loop_release_xfer(lo);
+ 	if (err)
+ 		goto out_unfreeze;
+@@ -1276,19 +1282,8 @@ loop_set_status(struct loop_device *lo, const struct loop_info64 *info)
+ 	if (err)
+ 		goto out_unfreeze;
+ 
+-	if (lo->lo_offset != info->lo_offset ||
+-	    lo->lo_sizelimit != info->lo_sizelimit) {
+-		/* kill_bdev should have truncated all the pages */
+-		if (lo->lo_device->bd_inode->i_mapping->nrpages) {
+-			err = -EAGAIN;
+-			pr_warn("%s: loop%d (%s) has still dirty pages (nrpages=%lu)\n",
+-				__func__, lo->lo_number, lo->lo_file_name,
+-				lo->lo_device->bd_inode->i_mapping->nrpages);
+-			goto out_unfreeze;
+-		}
+-		figure_loop_size(lo, info->lo_offset, info->lo_sizelimit);
+-	}
+-
++	lo->lo_offset = info->lo_offset;
++	lo->lo_sizelimit = info->lo_sizelimit;
+ 	memcpy(lo->lo_file_name, info->lo_file_name, LO_NAME_SIZE);
+ 	memcpy(lo->lo_crypt_name, info->lo_crypt_name, LO_NAME_SIZE);
+ 	lo->lo_file_name[LO_NAME_SIZE-1] = 0;
+@@ -1312,6 +1307,12 @@ loop_set_status(struct loop_device *lo, const struct loop_info64 *info)
+ 		lo->lo_key_owner = uid;
+ 	}
+ 
++	if (size_changed) {
++		loff_t new_size = get_size(lo->lo_offset, lo->lo_sizelimit,
++					   lo->lo_backing_file);
++		loop_set_size(lo, new_size);
++	}
++
+ 	loop_config_discard(lo);
+ 
+ 	/* update dio if lo_offset or transfer is changed */
 -- 
 2.25.1
 
