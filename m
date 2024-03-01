@@ -1,245 +1,161 @@
-Return-Path: <linux-kernel+bounces-88086-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88087-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D2B186DD32
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:37:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB82886DD33
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:37:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2FD5C1C212A2
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:36:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6AE531F257E6
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:37:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF19769E10;
-	Fri,  1 Mar 2024 08:36:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 404E069E05;
+	Fri,  1 Mar 2024 08:37:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=wolfvision.net header.i=@wolfvision.net header.b="jYXSeCCM"
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2119.outbound.protection.outlook.com [40.107.8.119])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dBClkucG"
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA5601E4BD;
-	Fri,  1 Mar 2024 08:36:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.8.119
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709282205; cv=fail; b=djBYQ54wvFRB/wR29OE+sPZwO3o9mLtTKpz75DX6SgyYY77lZx89WNiyz45z8sZC0aFtY7ezmiEGsQNOq/vz0UleqZfWjM4SsukIfFV+yd5eg0YAmaayDychk6v/u3omk+a58xngqF3izoCMG6navimC4qNmChXktTDJRzAyXjs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709282205; c=relaxed/simple;
-	bh=mDymJ2P6ZrCkW+RZtRaK12NONG/D+Z3Pj5uaoZNzXp4=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=h3SiZz+2ENCpqP9al9rVmPqdS9EKv/bS72VouBPA/jLDJgOuk/dDLfk131Oh8EWI7WXUchN6y560xjLO6PzveymLIZ7ji0qgHNn8g0v2/bcy8THbmzfXlfFk6DWv1EWQ8FVZ8iYTISSjsTpXIFwWsIPMIu12x3cRI16kJ7SShBw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wolfvision.net; spf=pass smtp.mailfrom=wolfvision.net; dkim=pass (1024-bit key) header.d=wolfvision.net header.i=@wolfvision.net header.b=jYXSeCCM; arc=fail smtp.client-ip=40.107.8.119
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wolfvision.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wolfvision.net
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Wp9X+CXl7mCHzpXH37dkqVvrX/nMg4bcMXhyA1JLa8lI6sSS8vWwPym2sTuwolPKYpMHAiLnTWMKWzvvWYJHjOz9czomrAtU7DZ0R17poYQkRJ5El3uf29JZWB2WAVXDUfVfe99C4Oyxl3i9XmwVuchAA7Z3G7GtAisKpd9ubvbyVFZBM3guj/dyis8RFMB0MligyymJzGiH1DgRE+9n4BE4rX3ordh6+q8TUkXmLe91MwSrzk3qYdEJrfNkdy8250j/xt9E6BkvUzJUL1QPvLLFMFS6EakMnqYG/AaiS43FUWfC+Y96XCaWEHL9EVLrLfasxZgwAWWzll5W/UUY+Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AeELHccgS+d2UEnIjXMBfHR14N8yFGOSX9u7CpJvMrI=;
- b=igw8VLuTMITqbYpvuJh5ibE6wHdu4WASPyWGIQKybpZSfk3qXl9/pE7EYlNsGhnlTxYqw8cW+zuwL/S2YFKSyK164vHkmZn5NczW3cVZw6VhKzX4eHXbPwB4JaWNQxBbh9dAAuYHMV+Np9OghIJ8pXJT6BriXsCu8HXvS6qLStuLzBlaKvkznKypLfc1jsf9pGo4N9+v2ERnKi2eT5SLLdqItY2AwmHmL7d/2XumsD1REN1QcEn/2Hfs5cnmVWNPQ1q3fZa+wUNobVcITcz5Smt3r9GGCXV6ACSgEANExgTj8xIsM10ouoCjlXkEAtn0RQKWscQukjhDis9TgEIAEQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wolfvision.net; dmarc=pass action=none
- header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AeELHccgS+d2UEnIjXMBfHR14N8yFGOSX9u7CpJvMrI=;
- b=jYXSeCCMRWeM+cZV8DoOPvp9RqkzdnN4+eklZGXS6/86KDPvoMHtAghl6yuH6RXMc5vR33VF4BdubhpDyZ2jDnGA/vxBkumiHC3gWyO3SXO6AloHaxOr4L/lGHl6Q6EZEVJ9x2DjAFl4ayp5krqjfj+hSDxqexvZqeo6dxtgvTo=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wolfvision.net;
-Received: from VE1PR08MB4974.eurprd08.prod.outlook.com (2603:10a6:803:111::15)
- by AS8PR08MB6344.eurprd08.prod.outlook.com (2603:10a6:20b:319::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.41; Fri, 1 Mar
- 2024 08:36:40 +0000
-Received: from VE1PR08MB4974.eurprd08.prod.outlook.com
- ([fe80::9e35:6de9:e4fc:843f]) by VE1PR08MB4974.eurprd08.prod.outlook.com
- ([fe80::9e35:6de9:e4fc:843f%6]) with mapi id 15.20.7316.035; Fri, 1 Mar 2024
- 08:36:39 +0000
-Message-ID: <80e5800e-366d-4f29-80a5-8445ab692e5e@wolfvision.net>
-Date: Fri, 1 Mar 2024 09:36:37 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 7/9] usb: misc: onboard_dev: add support for non-hub
- devices
-To: Matthias Kaehlcke <mka@chromium.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Helen Koike <helen.koike@collabora.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Russell King <linux@armlinux.org.uk>, linux-sound@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-usb@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-arm-kernel@lists.infradead.org
-References: <20240229-onboard_xvf3500-v6-0-a0aff2947040@wolfvision.net>
- <20240229-onboard_xvf3500-v6-7-a0aff2947040@wolfvision.net>
- <ZeDgfIojODIbhs6N@google.com>
-Content-Language: en-US
-From: Javier Carrasco <javier.carrasco@wolfvision.net>
-In-Reply-To: <ZeDgfIojODIbhs6N@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR3P281CA0137.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:95::11) To VE1PR08MB4974.eurprd08.prod.outlook.com
- (2603:10a6:803:111::15)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BA5569D0F;
+	Fri,  1 Mar 2024 08:37:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709282248; cv=none; b=iUTF0wjxLMN9HRIPoEY4BkAEt5vx24nzMNTq9l2VfojSgVaeu7Y56ve5kXaCfrcKqcqx3iPvFqIcEIgNr2u8P+eMklWWUcO2G2aUbc1Vn20pq0v5bxBu/6+0W1MKQwvMS/ON5DdiICB0K+631qpGDmNpbbcmkN3PaRjc43CZpZc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709282248; c=relaxed/simple;
+	bh=O/xcTjzqimRfgoome/Wsnc5JDospAjX/DhL+CZ4+z7E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ak9+8ZhOSeSyitxu9vAfFnLdwc8jTEn27sC0mLsZ7yLbFKDZsd2b0f+sOWagQwh+PH5tz//D9CkbAq5XJadbmcxJl0L8gGkVPQs33p5zwH/XqbKdL7wNWDts8xynOP4JOKm8wXxRlx62hXuCD8odoK/nuh490BxjJWpIwcbRTtQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dBClkucG; arc=none smtp.client-ip=209.85.216.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-299ea1f1989so1356014a91.0;
+        Fri, 01 Mar 2024 00:37:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709282246; x=1709887046; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1KP1OIsCMvJGez96bNApKJ4GpsDICD3OZeSUcfZwjEc=;
+        b=dBClkucGCNQG6VpUvd8UWVJPW500FjQnkWKP3U7h2qsmwr+Ke/uF98gNHQ2ko/rlsF
+         vY9BwX3ZUBzFHDXrArfA2jXzVCTgC7+TN0jcE06j6nh5d21q40XsnuPKXNZSVbK5bijM
+         MD65zuPubBoI0V5GmyZprrjFoWVgxaYGrmPngxxdv0OU+z6br3GTT6MC8eSvZ00i8q7Y
+         aWf1sVdGQHMZiTUubN9HPTTPnDkIl/emlQaUY3dYzGDM5cxqo9dAaOdRPqvefBheYpEt
+         hpo3LcpqRx6No9YcV56/eUq9OHC0FpFK5kI2lYeL0qe3s2hcisf/VfZh4RON0IuCx9Kq
+         BsRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709282246; x=1709887046;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1KP1OIsCMvJGez96bNApKJ4GpsDICD3OZeSUcfZwjEc=;
+        b=kWr5Oa+OpQMOeTfNQXKqzDKITSLifq/S7Hb11sKJv275KR+YHWNmTCA8Z6Z9seRYmf
+         2Kg1sVxKDoIulgONvVZq8V2ZSlc4J7gtAXLy0kr8cUFzdDdfApSl32wTEEvfHn0dfNd3
+         u6Uibo6wEDRIWBblFF/Oox04NLVhi7zDVnhU/8Nj8Fyh9PiJPD3J53MEQhkDmnIjdU/o
+         N/16rx7GZtWqSJE87OhoTCZQQA7mC3slss8TlIUnhZk+qbZLE5BBuDyH0aABUGMZ/pa+
+         tl62bpZ7f9j7/KZFF7hKNE4XRNfnwjOMdVezJRWy6rqXvlbsBOzKrutg800YJT4iSE/U
+         zH2Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXNbfiJzI14onxQ4WOtol0sWTOCzOzVLhOM+lrMycFPcilmcL+dPU3m+j5DVw8VAZ0CEDEU0hqJtcoqFSjPpp9aO/6hzANAbR/Qf6jnEmOI3fbpli8CQ7rYu/jXP1niSj31
+X-Gm-Message-State: AOJu0Yz1QCdGwf9ch/yrb9oms38kqn9FYwCcsZxOyS2Bu1tNkFj9irgd
+	epxgZNXn7Lz7TElC95/ZfI9LISIStpFocVeuGPpLSpgPjWrXP0/O
+X-Google-Smtp-Source: AGHT+IF6CJdU3IVs+5kG8Yi4Ol3M1o4Vi/U3gm2EL4hHhkVGhHKBRvvSuZZMH9oBYmRD/sFnfzUocA==
+X-Received: by 2002:a17:90a:a8f:b0:299:7b37:9221 with SMTP id 15-20020a17090a0a8f00b002997b379221mr924936pjw.12.1709282246357;
+        Fri, 01 Mar 2024 00:37:26 -0800 (PST)
+Received: from [192.168.255.10] ([43.132.141.20])
+        by smtp.gmail.com with ESMTPSA id c13-20020a17090ae10d00b0029a8a599584sm2712200pjz.13.2024.03.01.00.37.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Mar 2024 00:37:25 -0800 (PST)
+Message-ID: <06061a28-88c0-404b-98a6-83cc6cc8c796@gmail.com>
+Date: Fri, 1 Mar 2024 16:37:20 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VE1PR08MB4974:EE_|AS8PR08MB6344:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9b779804-9090-42a6-b520-08dc39cab6d9
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	XfYXka8SBp/49XZNVQJQxd/+xy6Dr2+UAv5iKaHDZFdUJ5RFI45eZlI3V/msc9W9qRQtucGX2fOiyGyeirUFJY14CDedE9DuTkaW+qOqJTt5+GKUJn+vEEt73Uap18fwgy72p82xYgMp2TmC4FfRsvxZqftObzKFthLi9PNlG0BPWrML3hrq4into/kC7OAY/6Zf8zBI4DZZ7uuojZhraye5DjJhyAYZyOQ8j72Xrm671X8s5QsllpyRoqpx4oD5WisCDlcK0Mn5x65UB51MWt7tW17JWeGEfViT/i0nDJPX/EcXdu6xeifDXE7Kwysb506BB2ZfsoWOcFohBBfyplU+Agwb7nzLTtKgFc7lDYffTYBPnzSgbnRaSOsKRO1rk5mJgjEgFVExz6Jsu0uLZZEIstTEPQkoAPH84C9l4UTmbfDxP+cfHtX3MYhoyqGRRljtZef6FjPTmNnw7LhK0UZ1Sj18sasD02QMWXuASiH7koW08w8Z+yMSyYPodAY7uHLgvSfuI/ZGDCnV4MVR9lrtfxmuZBznxFI2Uh377NDS0fQW4ONaHjZXcZGyjY1Ul++uSqR9M/VhlpWX2ogCAX5DUXJmxfAzC0lowoSVrgG5dxgYtNQoVJ4c/tpy8XhIlxsZM3oT4Cjr+kvIYqK6IQ==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR08MB4974.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?K3ZwbE1qZHUxVGdET2xBaEdZaXBGZ25kcHdNMjUwSzZWdjcwcGs5YU80aVhh?=
- =?utf-8?B?c0p1N1dZd1hGcXNDOVE1OFZPR0ZtTUdTM0VHenVXSmlGK1c2cjE0S29pSk82?=
- =?utf-8?B?cmcvWTNBSzZzbFlnMXVEcDRXVC9OY0ZqMWZvYkp0MXgvK2J6dWtZYXQyUVA5?=
- =?utf-8?B?ZUhIMDhaUEh4emU2ZDhKZWo1QmZSNkpGT1dEQUV6N3hiL3hRU29RUjI2aTY3?=
- =?utf-8?B?MTFyQWFqOGFpOGorWE9udjcvVm0yR3BDQUtOaG96Tk5Vd3NGWGxNVGlMeWRX?=
- =?utf-8?B?R1pDb0FDUVc5TDdYdi80bjVqaXpvN2lPd2hKQUk4VlgzcGRHVy9oeld6ZDV0?=
- =?utf-8?B?YmcvRHFTbXk2YStiRVY4dHNVaGJWZkxJWldVd1pxSmdER3JOMDBPNyttWGFW?=
- =?utf-8?B?T0tPWFFiVDR0ZnErTGQ3ekFONTVoVTA2L2EvNkxkVmV2SWVFOGpHNklzN3NB?=
- =?utf-8?B?dFBocVZ4S1BPRElYY2pFTkRSeDR2SExnZWxaRmF6U2s2ckVxYWJQUmJia2tz?=
- =?utf-8?B?akRRSTNENjY1by9DdEswbFYwaUQ5SUpOc1pzVnZ0N0NIaHdKamNyZk9vQXVk?=
- =?utf-8?B?MmpQTFJJd0ZLSUdqaUF2RUU1VDNTbk1RbjRtekNGQVNzTW5PQld5UEN6cVk2?=
- =?utf-8?B?TjRXcEZ2cTJ5cW81UHN2cFFLVWttZ3NCR1ZNV05BSUZsbjVmWVFwZnYyd3pK?=
- =?utf-8?B?N0NucWVaeXhIN1lxV2o3RUd2REY4aTJlNDNnM0V2ZGJ3QVNFTGIrRGtjYXoy?=
- =?utf-8?B?bTBuZ0Y0YzdQSG5rQ2NxazRGWkJnRXk2dmVlSTJoNWN4Y3ZKakhLckdvYjNB?=
- =?utf-8?B?cHRjZjVid3VRVGw4VktyMGJ1ME02dFdENEliNHpGN0tZYUVnZjNzcStzTEVp?=
- =?utf-8?B?OElGUGUwM1RPeU51T2o5d3N5Qy83YjdZRWlmaTdsbm1yUnNZTUY4WnRqSHNB?=
- =?utf-8?B?SUZjSHJNdnBWSWRVbTJrME1yTHdOc1Zlck03bThCd29CWmFVM0pJcnR1YVIz?=
- =?utf-8?B?QUZwZHJaTis2SG5tM0l1eVVJcHdJN3JXNWVDeU1RcXdQb0ZleEdnZSt5QkRX?=
- =?utf-8?B?RVRGTGpJeUpVQjFGSlhLWW9GYkhveFlBUkkvTHp6QjNEUHNrVEsxa21sbmpZ?=
- =?utf-8?B?aXNiTGZUdE9YbVJzWlNpQWhidzQydTdjRW5laWZnV3ZEQ3FCVGRvT0FFRmpB?=
- =?utf-8?B?SVN0aVMvalVYTWhyd0xXRndzL1ZBSGhSclZBYlN6bWFNeGdVUXprVHBjbHgz?=
- =?utf-8?B?SmdzT1ZYVnpNd0xwSnZYNVExdUdobnA3VGgxOVEwUjBDMGIxOVc2WExEWWdL?=
- =?utf-8?B?M0lVWFM1RFQ5L0s0QmpxNEluU1lKUEN6TktydE85cHF5elh2WlllVTNvWkJj?=
- =?utf-8?B?Y2YvUUthZVRWMytmeHRKbHROTThCOEJXR0hOSEluSnZraytDYWNTM1RScFRE?=
- =?utf-8?B?SkwxekJVZHlFM2Q4Mk9kbWUwOElJclV1eU9kbnUwd0k3aDVnMS91cXdZdVkw?=
- =?utf-8?B?YVJpSUpiR1M3MEkwdEwydTQrdmhrd24vTUFSdC9VRVBGSTlxekkxNTlJZllq?=
- =?utf-8?B?clpGN1NZVlh4THcxYXdkRkdOeE5vUlh4YzVRSW5xTVdnemIzdzZFY3IxYlFl?=
- =?utf-8?B?YkVwU0ZJdis5Y1RsalpFWmtub3FibGRRYW5wakZvWUdkcTRJN2lrL1NWUDBn?=
- =?utf-8?B?VW5aU1JkY0VybENtWU9xZStzcWJoN2dsaU1rTDBNY1pQUjV4dmhONmVIVi9j?=
- =?utf-8?B?R2F5OC8zdThnaC82TDNicmRXY3JBVGJ4RVJEQnBpcUE1cS9CSFo5c3hsbnV5?=
- =?utf-8?B?MmJURStOQmg2U00vbVVyRC9BK2lpUGxtVmxYYW5CZkp2THU4Tnc5MWJXdEQ5?=
- =?utf-8?B?ZURwdThZTDFtSmRMNi96SmR0RWVJeHZxVitONkt2ZVN5dHY4RGw1c0lTRE1s?=
- =?utf-8?B?RmRaTEdCT3hxN3JjR0NTQ0R2MGNsZ0RMY3dZcU1sRU1DWUNyNk5TcXVCNThQ?=
- =?utf-8?B?b3dhaHZ6TGh6NW95bnJDREJrYW9qUi8wSXQwdFpuUy90MUwvTlRwcjR2eTQy?=
- =?utf-8?B?MlBzWlVCVmxYQ29xWHRITDkwdXBLbmhsOXFZaHdyY0xTckpUMWtRQ2Q5elBG?=
- =?utf-8?B?VjNON1BjUlU1S0FxMDY3TGZYc2d4RExVS3I1YnIxVjRXKy9mVjdPY29tUk1E?=
- =?utf-8?B?elE9PQ==?=
-X-OriginatorOrg: wolfvision.net
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9b779804-9090-42a6-b520-08dc39cab6d9
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR08MB4974.eurprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Mar 2024 08:36:39.5578
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: i6rX8HC/LhZeG0aYO3+zUjRjppuyDq+5aCIFx0hlfx4TDkAzcvrFlafV8962l5Lno+CWouLRiQL2x3qeMX8bXZT73ezHlKVqtEdhKDUk6ls=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR08MB6344
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] KVM: x86/svm/pmu: Set PerfMonV2 global control bits
+ correctly
+Content-Language: en-US
+To: Sandipan Das <sandipan.das@amd.com>
+Cc: seanjc@google.com, pbonzini@redhat.com, dapeng1.mi@linux.intel.com,
+ mizhang@google.com, jmattson@google.com, ravi.bangoria@amd.com,
+ nikunj.dadhania@amd.com, santosh.shukla@amd.com, manali.shukla@amd.com,
+ babu.moger@amd.com, kvm list <kvm@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20240301075007.644152-1-sandipan.das@amd.com>
+From: Like Xu <like.xu.linux@gmail.com>
+In-Reply-To: <20240301075007.644152-1-sandipan.das@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 29.02.24 20:52, Matthias Kaehlcke wrote:
-> On Thu, Feb 29, 2024 at 09:34:50AM +0100, Javier Carrasco wrote:
->> Most of the functionality this driver provides can be used by non-hub
->> devices as well.
->>
->> To account for the hub-specific code, add a flag to the device data
->> structure and check its value for hub-specific code.
->>
->> The 'always_powered_in_supend' attribute is only available for hub
->> devices, keeping the driver's default behavior for non-hub devices (keep
->> on in suspend).
->>
->> Signed-off-by: Javier Carrasco <javier.carrasco@wolfvision.net>
->> ---
->>  drivers/usb/misc/onboard_usb_dev.c | 25 ++++++++++++++++++++++++-
->>  drivers/usb/misc/onboard_usb_dev.h | 10 ++++++++++
->>  2 files changed, 34 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/usb/misc/onboard_usb_dev.c b/drivers/usb/misc/onboard_usb_dev.c
->> index 4ae580445408..f1b174503c44 100644
->> --- a/drivers/usb/misc/onboard_usb_dev.c
->> +++ b/drivers/usb/misc/onboard_usb_dev.c
->> @@ -261,7 +261,27 @@ static struct attribute *onboard_dev_attrs[] = {
->>  	&dev_attr_always_powered_in_suspend.attr,
->>  	NULL,
->>  };
->> -ATTRIBUTE_GROUPS(onboard_dev);
->> +
->> +static umode_t onboard_dev_attrs_are_visible(struct kobject *kobj,
->> +					     struct attribute *attr,
->> +					     int n)
->> +{
->> +	struct device *dev = kobj_to_dev(kobj);
->> +	struct onboard_dev *onboard_dev = dev_get_drvdata(dev);
->> +
->> +	if (attr == &dev_attr_always_powered_in_suspend.attr &&
->> +	    !onboard_dev->pdata->is_hub)
->> +		return 0;
->> +
->> +	return attr->mode;
->> +}
->> +
->> +static const struct attribute_group onboard_dev_group = {
->> +	.is_visible = onboard_dev_attrs_are_visible,
->> +	.attrs = onboard_dev_attrs,
->> +};
->> +__ATTRIBUTE_GROUPS(onboard_dev);
->> +
+On 1/3/2024 3:50 pm, Sandipan Das wrote:
+> With PerfMonV2, a performance monitoring counter will start operating
+> only when both the PERF_CTLx enable bit as well as the corresponding
+> PerfCntrGlobalCtl enable bit are set.
 > 
-> nit: remove one empty line
+> When the PerfMonV2 CPUID feature bit (leaf 0x80000022 EAX bit 0) is set
+> for a guest but the guest kernel does not support PerfMonV2 (such as
+> kernels older than v5.19), the guest counters do not count since the
+> PerfCntrGlobalCtl MSR is initialized to zero and the guest kernel never
+> writes to it.
+
+If the vcpu has the PerfMonV2 feature, it should not work the way legacy
+PMU does. Users need to use the new driver to operate the new hardware,
+don't they ? One practical approach is that the hypervisor should not set
+the PerfMonV2 bit for this unpatched 'v5.19' guest.
+
 > 
->>  
->>  static void onboard_dev_attach_usb_driver(struct work_struct *work)
->>  {
->> @@ -286,6 +306,9 @@ static int onboard_dev_probe(struct platform_device *pdev)
->>  	if (!onboard_dev->pdata)
->>  		return -EINVAL;
->>  
->> +	if (!onboard_dev->pdata->is_hub)
->> +		onboard_dev->always_powered_in_suspend = true;
->> +
->>  	onboard_dev->dev = dev;
->>  
->>  	err = onboard_dev_get_regulators(onboard_dev);
->> diff --git a/drivers/usb/misc/onboard_usb_dev.h b/drivers/usb/misc/onboard_usb_dev.h
->> index 4da9f3b7f9e9..58cf8c81b2cf 100644
->> --- a/drivers/usb/misc/onboard_usb_dev.h
->> +++ b/drivers/usb/misc/onboard_usb_dev.h
->> @@ -12,60 +12,70 @@ struct onboard_dev_pdata {
->>  	unsigned long reset_us;		/* reset pulse width in us */
->>  	unsigned int num_supplies;	/* number of supplies */
->>  	const char * const supply_names[MAX_SUPPLIES];
->> +	bool is_hub;			/* true if the device is a HUB */
+> This is not observed on bare-metal as the default value of the
+> PerfCntrGlobalCtl MSR after a reset is 0x3f (assuming there are six
+> counters) and the counters can still be operated by using the enable
+> bit in the PERF_CTLx MSRs. Replicate the same behaviour in guests for
+> compatibility with older kernels.
 > 
-> nit: either drop the comment (the variable name is pretty self explaining),
-> or s/HUB/hub/ ('hub' isn't an acronym).
+> Before:
 > 
-> Acked-by: Matthias Kaehlcke <mka@chromium.org>
-
-To be honest, I added the description to follow the same pattern used
-for the previous fields:
-
-unsigned long reset_us;		/* reset pulse width in us */
-unsigned int num_supplies;	/* number of supplies */
-
-Best regards,
-Javier Carrasco
-
+>    $ perf stat -e cycles:u true
+> 
+>     Performance counter stats for 'true':
+> 
+>                     0      cycles:u
+> 
+>           0.001074773 seconds time elapsed
+> 
+>           0.001169000 seconds user
+>           0.000000000 seconds sys
+> 
+> After:
+> 
+>    $ perf stat -e cycles:u true
+> 
+>     Performance counter stats for 'true':
+> 
+>               227,850      cycles:u
+> 
+>           0.037770758 seconds time elapsed
+> 
+>           0.000000000 seconds user
+>           0.037886000 seconds sys
+> 
+> Reported-by: Babu Moger <babu.moger@amd.com>
+> Fixes: 4a2771895ca6 ("KVM: x86/svm/pmu: Add AMD PerfMonV2 support")
+> Signed-off-by: Sandipan Das <sandipan.das@amd.com>
+> ---
+>   arch/x86/kvm/svm/pmu.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/x86/kvm/svm/pmu.c b/arch/x86/kvm/svm/pmu.c
+> index b6a7ad4d6914..14709c564d6a 100644
+> --- a/arch/x86/kvm/svm/pmu.c
+> +++ b/arch/x86/kvm/svm/pmu.c
+> @@ -205,6 +205,7 @@ static void amd_pmu_refresh(struct kvm_vcpu *vcpu)
+>   	if (pmu->version > 1) {
+>   		pmu->global_ctrl_mask = ~((1ull << pmu->nr_arch_gp_counters) - 1);
+>   		pmu->global_status_mask = pmu->global_ctrl_mask;
+> +		pmu->global_ctrl = ~pmu->global_ctrl_mask;
+>   	}
+>   
+>   	pmu->counter_bitmask[KVM_PMC_GP] = ((u64)1 << 48) - 1;
 
