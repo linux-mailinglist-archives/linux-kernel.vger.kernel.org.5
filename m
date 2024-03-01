@@ -1,62 +1,60 @@
-Return-Path: <linux-kernel+bounces-87811-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87812-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6F5E86D954
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 03:03:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FE7F86D956
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 03:04:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 483D5B22264
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 02:03:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C6091F22AFC
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 02:04:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 997DA38F9A;
-	Fri,  1 Mar 2024 02:03:09 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8B9238F9D;
+	Fri,  1 Mar 2024 02:03:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GOVRdKUp"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D86E3224;
-	Fri,  1 Mar 2024 02:03:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E4302B9A8;
+	Fri,  1 Mar 2024 02:03:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709258589; cv=none; b=RECYbSxZZqUVsgDulGwNIUu0KU3YzOYxLyGwRHcB3tZT0qNFqqNFrUIHhezLLIXi9F8EXu9QGFxcUht1TzY1BXYrJx+1PPR7tm3bvgaCmyIQ7OCUZEi0vSaGzcAGvD9gcJ9+C5j5lz8WUfiKKO2jhwz+kWvLdx5HLxGVNRrFWuo=
+	t=1709258638; cv=none; b=c3RRvqpri+OWH/Qe0+9SSGLo36FJw4OlRSK+aUa1hAt+tGDuzJLFWmKVXQRnz/dpPmNRIQQGak8Uq9Toh9T7PUU+fkBQaj+XbehtT3m7/R1ZRWGF6qP8gx2oOG0xCkAXG33kIN/3Dj/uKuh+YC7xs8rx5xDO0GkLgWOw7rItiFc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709258589; c=relaxed/simple;
-	bh=9Js/BcMOoQToMxLCHwtKbZX9jOWiO8pycTukIl3M724=;
+	s=arc-20240116; t=1709258638; c=relaxed/simple;
+	bh=D0UYIJU+Wae4fIkSE6J7PCAdA+0TfZGkj99JFM0PZIw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uHXjI9KRx5xGyo06eoX1bsRzLAD3PBeE/QpF/DYakjxfTR8xn9DSU/4LnStfL7lX8Va1N7qj1KAYoHcquQGkktYhK/wftY956q/d+lz3tv7NSAN0kdr9CB8gCI/ieODZk8mHdkNMdaL6FgfMMhvenRIPrs3EtLf9O7iwBAEr0Pg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: d26e09735bf44176b9060d3fc684d0aa-20240301
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:3258d14c-7d03-4d48-a8f2-f0347c4a35d0,IP:10,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:-5
-X-CID-INFO: VERSION:1.1.37,REQID:3258d14c-7d03-4d48-a8f2-f0347c4a35d0,IP:10,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:-5
-X-CID-META: VersionHash:6f543d0,CLOUDID:cdf07984-8d4f-477b-89d2-1e3bdbef96d1,B
-	ulkID:240301000056BMI5A10U,BulkQuantity:8,Recheck:0,SF:64|66|38|24|17|19|4
-	4|102,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:40,QS:nil,B
-	EC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: d26e09735bf44176b9060d3fc684d0aa-20240301
-Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
-	(envelope-from <chentao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 625754827; Fri, 01 Mar 2024 10:02:57 +0800
-Received: from mail.kylinos.cn (localhost [127.0.0.1])
-	by mail.kylinos.cn (NSMail) with SMTP id 57FFCE000EBC;
-	Fri,  1 Mar 2024 10:02:57 +0800 (CST)
-X-ns-mid: postfix-65E13751-261948242
-Received: from [172.20.15.254] (unknown [172.20.15.254])
-	by mail.kylinos.cn (NSMail) with ESMTPA id C6881E000EBC;
-	Fri,  1 Mar 2024 10:02:55 +0800 (CST)
-Message-ID: <e7c115a1-a4cd-4fbd-ac54-2bd60a42dc87@kylinos.cn>
-Date: Fri, 1 Mar 2024 10:02:54 +0800
+	 In-Reply-To:Content-Type; b=r01j5HiNOEHVSZ4JiZ2I1WsyTXUFx5xfUETg8OhPUQKvd+Djf3Qk+FuGZ/gqkS9QUzrpkmklbEX2cy3qa7PiPI8Ha5VExjj4wNrmdGETnGZkHydNwPvgzv8RdQP4ell/rxnTBcmQjplvcxYHLXr4JDKz5SYyIshPPjBEbjidgj0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GOVRdKUp; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709258637; x=1740794637;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=D0UYIJU+Wae4fIkSE6J7PCAdA+0TfZGkj99JFM0PZIw=;
+  b=GOVRdKUpiFM4i5eZDjEj5RekeGPW6XH/s739W0XwKz0Jfjddx1jNHfgp
+   Cxyo4arTkF0UE9FYb3NTmNJVp+oD0M22h+svx2N3AUBW0MxZDk384qTD4
+   tYcmxJMTy6nvDSx/XVe8vhA/LvdZg2Q5bKuWl/aAeC5Ydp1vzrH/EBFR/
+   jB52DLT9lZDabw5xau5Ph/Ha7lyc5RnvXMA2K+bxPDCbgCybg7SsaI1I3
+   aWLK2l3I8wCx1gXZC/3JK1j0WwtOHHX2QDmi8vd2HhLYwnRr7lNdMyjMT
+   sCrPmi4qhyF1elxgv9im33q81CnVGORjym3Wa7Tm8SIlpXSAIWOMV3T/V
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="14925480"
+X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
+   d="scan'208";a="14925480"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 18:03:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
+   d="scan'208";a="12579781"
+Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.124.229.115]) ([10.124.229.115])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 18:03:51 -0800
+Message-ID: <5a137fa9-c18d-44e1-b486-1256b677c678@linux.intel.com>
+Date: Fri, 1 Mar 2024 10:03:49 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,71 +62,110 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] xfs: use KMEM_CACHE() to create xfs_defer_pending cache
-Content-Language: en-US
-To: Dave Chinner <david@fromorbit.com>, kunwu.chan@linux.dev
-Cc: chandan.babu@oracle.com, djwong@kernel.org, linux-xfs@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240229083342.1128686-1-kunwu.chan@linux.dev>
- <ZeEStFZwMu068YTc@dread.disaster.area>
-From: Kunwu Chan <chentao@kylinos.cn>
-In-Reply-To: <ZeEStFZwMu068YTc@dread.disaster.area>
+Subject: Re: [PATCH v13 1/3] PCI: make pci_dev_is_disconnected() helper public
+ for other drivers
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: Baolu Lu <baolu.lu@linux.intel.com>, bhelgaas@google.com,
+ robin.murphy@arm.com, jgg@ziepe.ca, kevin.tian@intel.com,
+ dwmw2@infradead.org, will@kernel.org, lukas@wunner.de, yi.l.liu@intel.com,
+ dan.carpenter@linaro.org, iommu@lists.linux.dev,
+ linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+ Haorong Ye <yehaorong@bytedance.com>
+References: <20240229223302.GA363505@bhelgaas>
+From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+In-Reply-To: <20240229223302.GA363505@bhelgaas>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 2024/3/1 07:26, Dave Chinner wrote:
-> On Thu, Feb 29, 2024 at 04:33:42PM +0800, kunwu.chan@linux.dev wrote:
->> From: Kunwu Chan <chentao@kylinos.cn>
+On 3/1/2024 6:33 AM, Bjorn Helgaas wrote:
+> On Thu, Feb 29, 2024 at 09:58:43AM +0800, Ethan Zhao wrote:
+>> On 2/27/2024 7:05 AM, Bjorn Helgaas wrote:
+>>> On Thu, Feb 22, 2024 at 08:54:54PM +0800, Baolu Lu wrote:
+>>>> On 2024/2/22 17:02, Ethan Zhao wrote:
+>>>>> Make pci_dev_is_disconnected() public so that it can be called from
+>>>>> Intel VT-d driver to quickly fix/workaround the surprise removal
+>>>>> unplug hang issue for those ATS capable devices on PCIe switch downstream
+>>>>> hotplug capable ports.
+>>>>>
+>>>>> Beside pci_device_is_present() function, this one has no config space
+>>>>> space access, so is light enough to optimize the normal pure surprise
+>>>>> removal and safe removal flow.
+>>>>>
+>>>>> Tested-by: Haorong Ye<yehaorong@bytedance.com>
+>>>>> Signed-off-by: Ethan Zhao<haifeng.zhao@linux.intel.com>
+>>>>> ---
+>>>>>     drivers/pci/pci.h   | 5 -----
+>>>>>     include/linux/pci.h | 5 +++++
+>>>>>     2 files changed, 5 insertions(+), 5 deletions(-)
+>>>> Hi PCI subsystem maintainers,
+>>>>
+>>>> The iommu drivers (including, but not limited to, the Intel VT-d driver)
+>>>> require a helper to check the physical presence of a PCI device in two
+>>>> scenarios:
+>>>>
+>>>> - During the iommu_release_device() path: This ensures the device is
+>>>>     physically present before sending device TLB invalidation to device.
+>>> This wording is fundamentally wrong.  Testing
+>>> pci_dev_is_disconnected() can never ensure the device will still be
+>>> present by the time a TLB invalidation is sent.
+>> The logic of testing pci_dev_is_disconnected() in patch [2/3] works
+>> in the opposite:
 >>
->> Use the KMEM_CACHE() macro instead of kmem_cache_create() to simplify
->> the creation of SLAB caches when the default values are used.
+>> 1. if pci_dev_is_disconnected() return true, means the device is in
+>>     the process of surprise removal handling, adapter already been
+>>     removed from the slot.
 >>
->> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
->> ---
->>   fs/xfs/libxfs/xfs_defer.c | 4 +---
->>   1 file changed, 1 insertion(+), 3 deletions(-)
+>> 2. for removed device, no need to send ATS invalidation request to it.
+>>     removed device lost power, its devTLB wouldn't be valid anymore.
 >>
->> diff --git a/fs/xfs/libxfs/xfs_defer.c b/fs/xfs/libxfs/xfs_defer.c
->> index 66a17910d021..6d957fcc17f2 100644
->> --- a/fs/xfs/libxfs/xfs_defer.c
->> +++ b/fs/xfs/libxfs/xfs_defer.c
->> @@ -1143,9 +1143,7 @@ xfs_defer_resources_rele(
->>   static inline int __init
->>   xfs_defer_init_cache(void)
->>   {
->> -	xfs_defer_pending_cache = kmem_cache_create("xfs_defer_pending",
->> -			sizeof(struct xfs_defer_pending),
->> -			0, 0, NULL);
->> +	xfs_defer_pending_cache = KMEM_CACHE(xfs_defer_pending, 0);
->>   
->>   	return xfs_defer_pending_cache != NULL ? 0 : -ENOMEM;
->>   }
-> 
-> Please stop wasting our time by trying to make changes that have
-> already been rejected. I gave you good reasons last time for why we
-> aren't going to make this change in XFS, and now you've forced
-> Darrick to waste time repeating all those same reasons. You did not
-> respond to my review comments last time, and now you are posting
-> more patches that make the same rejected change.
-> 
-Sorry for the bother. It's my bad.That reply email was probably 
-quarantined because of my mailbox server, and I just found it on the 
-quarantine list.
+>> 3. if pci_dev_is_disconnected() return false, the device is *likely*
+>>     to be removed at any momoment after this function called.
+>>     such case will be treated in the iommu ITE fault handling, not to
+>>     retry the timeout request if device isn't present (patch [3/3]).
+>>
+>>> The device may be removed after the pci_dev_is_disconnected() test and
+>>> before a TLB invalidate is sent.
+>> even in the process while TLB is invalidating.
+>>
+>>> This is why I hesitate to expose pci_dev_is_disconnected() (and
+>>> pci_device_is_present(), which we already export) outside
+>>> drivers/pci/.  They both lead to terrible mistakes like relying on the
+>>> false assumption that the result will remain valid after the functions
+>>> return, without any recognition that we MUST be able to deal with the
+>>> cases where that assumption is broken.
+>> Yup, your concern is worthy ,but isn't happening within this patchset.
+> OK, I acked the patch.
 
-I'll stop from doing this. Apologies again for my interruption.
+Great !
 
-> PLease listen to the feedback you are given. Indeed, please respond
-> and acknowledge that you have read and understood the feedback you
-> have been given, otherwise I'll consider anything from this email
-> address as "just another annoying bot" and killfile it.
-Thank you very much for your detailed reply and explanation, I just saw 
-it, this patch is my problem, I forgot to check the previous mailing 
-list at the time.
-Sorry again for the bad mood I have caused you.
-> 
-> -Dave.
--- 
+>
+> I guess my complaint is really with pci_device_is_present() because
+> that's even harder to use correctly.
+>
+> pci_device_is_present():
+>    slow (may do config access to device)
+>    true  => device *was* present in the recent past, may not be now
+>    false => device is not accessible
+
+so the 'false' result is reliable for post-calling code, then give up
+more attempt of the same request. the usage in patch[3/3]
+
+>
+> pci_dev_is_disconnected():
+>    fast (doesn't touch device)
+>    true  => device is not accessible
+
+also we are relying on the 'true' result returned, used in  patch[2/3].
+
+>    false => basically means nothing
+>
+> I guess they're both hard ;)
+
+seems I didn't mess them up. :)
+
 Thanks,
-   Kunwu
+Ethan
 
+>
+> Bjorn
 
