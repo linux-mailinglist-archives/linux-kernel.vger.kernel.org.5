@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-88966-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88968-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABA5586E8DE
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:58:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDE6886E8E2
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:58:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 540ED283DD9
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:58:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF47E1C23C7F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:58:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD4943D0C4;
-	Fri,  1 Mar 2024 18:56:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A07F23D564;
+	Fri,  1 Mar 2024 18:56:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="u6kwWqdY"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="nQVHdeWd"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76F253CF72
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 18:56:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D895039AF3
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 18:56:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709319395; cv=none; b=ol4jY+ARRFoj7u/TLznzvJM6W4/C+zCIZqQSZEq2GEB8IJNU2QLcJf3xUhQhMVaMnNXuNlvcxP6v44FulAAD55e3ZSSPBYBsEMiSEHJyeWH/XVPtwUx/ub1LjFp5utvOv2iYajCwWhk/THHWNXWQ307s+v/P63HwDb2AfEaprIw=
+	t=1709319397; cv=none; b=uu3DuKlLrdiucMQtu1PUE+wzZ/hgo4YcQnTz+rHdDfy4H/gVGnVGOZgurEnriovycADDSxbEpJIPp3EhBHI82BT8DkETlSDihQ3h9do7LVxUxW2rtyPW38+x6jHR/wwVeL3Z/ayHE9ahGiGnZV1mzjNFDJJqg43M+X49FLe1kX4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709319395; c=relaxed/simple;
-	bh=r4ihq+erhDIJ96eTIi6uun2xGpgFyBqf/JqZ/4nXlRw=;
+	s=arc-20240116; t=1709319397; c=relaxed/simple;
+	bh=d6bcfgsUUelfZrIFFKTwcyB2obYk56t03Qv/7R3k+U4=;
 	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Content-Type; b=pzYvgJtKfL+j/DIBvX7UBrqQTYwngtG4i+4yXo4pN94T72tYXn496RAYTnycDTHtKdPZJkUZUh8ThoJkMlsJkTweEMnURvWcpvab+A/ZgsBRKuwkXn0wlg//6/tvfD4CRS7ukp2WRyf7hAvg19smSJwJUNutAhiXsChCPv1J2qo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=u6kwWqdY; arc=none smtp.client-ip=209.85.219.202
+	 To:Content-Type; b=U54oqjYh9RRXpXx0YNvGG0lCxEqTWab33yCnrtczDrypIdA1CjS41oYASXUGZkc+3sB7g7gkJarPskDc6ylKv0L9RZ7NwNnrHwN2BXjj9IlHL/ZXrtXvvCcpeZA4OJurUNkvaNB9fkEmQijprGgtzNGdSQwdrrahRra9Dd8WRts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=nQVHdeWd; arc=none smtp.client-ip=209.85.128.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6b269686aso3612614276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 10:56:33 -0800 (PST)
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-6047fed0132so40017987b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 10:56:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709319392; x=1709924192; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1709319395; x=1709924195; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=G7yzNIE0K5lHOvKYMdHiv1H80sWzgzKkY1SnsP+lPB0=;
-        b=u6kwWqdYUqf5ggYScGevoedifLvbkx3oW50/pWIIElME6tZ/SNYxTL0fQ4EsufPWqB
-         MfBNXd8KpBg72OSx/Mbzy71b/frPpli2FO02pSdH27A305tTgbMCS5qwS9HphZKF+SWA
-         IeB5domtpNlFof9dKUIM1gqsyMePmlYWI3AEkvu1fzba9vOd4wVeSRpfU9CXy25wFWgX
-         qk6nyjoPKqsvHHZlLgBCnUh8Tkt0aCrDjj+ErcNUVxklBFqbESmIm6h62viLNxzKpZKp
-         eaRkRzDyJofvOd6+tyAmVlFHqHcMoqGmNEiiHR6NReBfT0ThJZ/u7IVErKW5BiLRwjPo
-         uXQA==
+        bh=Ud2dHcNufn6h+i9hsSTaCNWNbOlP8ttf+JMwAMlMIZ4=;
+        b=nQVHdeWdSVkcnIUSAD2sP2M2Xcjse6dKZY8AV56Li8fwbx1P0JmnOPVQYCjc1stAW/
+         +5Zy7yiIeAM70eET/IeDhw+pAkvQEIydEyEStsZsF/8uN5bNFYpTnpFliFkPNX6iiC+d
+         9vlynXLn9SpeQzikkuHYtbE7G1NlqlkqL6+nd+AFPZ5wOrFPe4A7ocebM8Y0NXqc0TSN
+         Lp654envDzBKVsEwJFQ9MGnpiCwvvDOusfHsxZZy3zjwZyD0wrELkI+0cY2PCKQ7oYDL
+         b9LYuW6LzQAanSPqvJOKUfntI6yUtfognyI9K74XGD6W3HVSDu1McD7ZoYGgWhXq+nhv
+         3G9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709319392; x=1709924192;
+        d=1e100.net; s=20230601; t=1709319395; x=1709924195;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=G7yzNIE0K5lHOvKYMdHiv1H80sWzgzKkY1SnsP+lPB0=;
-        b=lQqdKv9WAVCDuysNrJLzDnzABtvEehW5cjKcHHjZ7h85yeq8cO7s3skzv/GznfqyC2
-         WwHTw7WLfO2UXCtd4NRrsQ45+zJmdf4Endhj+oC2Jcxnpi9ownYDk59oYUyKtUy9Qulh
-         5OvvdMX6YQdKtwFdA4Za7f4ojso7VzNQhjvkTXTATrm9yaqtEPoYDZfHQZR2c2mPG24i
-         hZ/fVvyFxAEXuBQ4j/QnWMFfpcIZUGExdjub9w209/vI3MqKPXeoT2BAa2U2C39MTU/M
-         49cPr5Orl0wjxHtWtxTN7SCIUDx7yJhKRslzhjHRvIGhZAoebiNt0qT/my6MQ2veUpTo
-         vZeg==
-X-Forwarded-Encrypted: i=1; AJvYcCUwMG+0EGGJcveN/F798PFTOcIZfyhELoYib+8yQGw1U6XGKt46+AUY7els4475AZCAZwq3M5fs1b0PCuCNk3SPAEfodxTYLE6RSRzj
-X-Gm-Message-State: AOJu0YwSPe3tvgSE6uUBmPfED3J2ANf9JfpocQqKEuyKs1c0KGIJj+mn
-	IXcIvuZHkdGYYcDWwgPUMY2x4Rfyl5DX2AATwfCPGoDgnws+OPmlMwKWpbg8LrAzr/K9pQcF05y
-	VTHiejA==
-X-Google-Smtp-Source: AGHT+IG6ceWekcjgL/fYnf/VMGmCO/lnutsaDenvRqQ0JanWjuvoPrnbXWTWwuJKIYrMXYcveSJoPdoWUUGi
+        bh=Ud2dHcNufn6h+i9hsSTaCNWNbOlP8ttf+JMwAMlMIZ4=;
+        b=qS77V8gYCiul+rDMJPwXCa58L7fspaxFTWJWK2LgV7/mnynazeIB5juEEn/E2j9WNr
+         izKA/YmiVA7At5gxgBblhpgSuKQ371zKQIK8lfMU8RYgesMIqqeA4ftPRoeGjKG2Hvvc
+         28d9UbhfF9UdXU8RPlHeUyKIBbzoJsER8T35rh2o24VEujwh97OgZGqt/ItKM5i7OuEr
+         p6o4OmN5RxxRCorMj649ud3S48qjPTY8RWQL3k/GtfgoWCSEwQQOHuPJOSB+aKEWGhjW
+         KjihQ/Y2nfgXwaDM8DnfhwJM4s6kMjEij8tUBMTBLznFhZiwANDzZ/zzJB+dpoSjhtp9
+         bz7Q==
+X-Forwarded-Encrypted: i=1; AJvYcCU/aExCygAMZYj8JH8qaoqF/nhwPq8DXl6E+k7k2CRfGQZrH17j64XmfqnCIk0lml6+A0FlplEiglsVt5u9PsWeLPJc8HfLwLvP/Huf
+X-Gm-Message-State: AOJu0YwwiC1kq9ybFSerFVtRz+3E7r2DqDhzUkVHzW+3GB9gczQCZI8o
+	f9eW6hlzdIPktcuMZCRQbqSc9Wa0hSSxra4P7dadO+W4bDErEiT9mgNoLo9IgSQgoaceituZT9p
+	Kqp4mnw==
+X-Google-Smtp-Source: AGHT+IH/nnxqCGI7cy6WA5lXcgTbClOkwbOWXEp0A7wJJPXXcW9x2Y6Xra57UckGpU7kZigcNOJsZlakY2/f
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:af4b:7fc1:b7be:fcb7])
- (user=irogers job=sendgmr) by 2002:a05:6902:2206:b0:dc2:26f6:fbc8 with SMTP
- id dm6-20020a056902220600b00dc226f6fbc8mr101587ybb.7.1709319392696; Fri, 01
- Mar 2024 10:56:32 -0800 (PST)
-Date: Fri,  1 Mar 2024 10:55:47 -0800
+ (user=irogers job=sendgmr) by 2002:a81:57d8:0:b0:609:51a3:b409 with SMTP id
+ l207-20020a8157d8000000b0060951a3b409mr454389ywb.0.1709319395034; Fri, 01 Mar
+ 2024 10:56:35 -0800 (PST)
+Date: Fri,  1 Mar 2024 10:55:48 -0800
 In-Reply-To: <20240301185559.2661241-1-irogers@google.com>
-Message-Id: <20240301185559.2661241-9-irogers@google.com>
+Message-Id: <20240301185559.2661241-10-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,8 +74,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240301185559.2661241-1-irogers@google.com>
 X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Subject: [PATCH v2 08/20] perf jevents: Add ports metric group giving
- utilization on Intel
+Subject: [PATCH v2 09/20] perf jevents: Add L2 metrics for Intel
 From: Ian Rogers <irogers@google.com>
 To: Perry Taylor <perry.taylor@intel.com>, Samantha Alt <samantha.alt@intel.com>, 
 	Caleb Biggers <caleb.biggers@intel.com>, Weilin Wang <weilin.wang@intel.com>, 
@@ -89,84 +88,190 @@ To: Perry Taylor <perry.taylor@intel.com>, Samantha Alt <samantha.alt@intel.com>
 	Stephane Eranian <eranian@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-The ports metric group contains a metric for each port giving its
-utilization as a ratio of cycles. The metrics are created by looking
-for UOPS_DISPATCHED.PORT events.
+Give a breakdown of various L2 counters as metrics, including totals,
+reads, hardware prefetcher, RFO, code and evictions.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/pmu-events/intel_metrics.py | 33 ++++++++++++++++++++++++--
- 1 file changed, 31 insertions(+), 2 deletions(-)
+ tools/perf/pmu-events/intel_metrics.py | 158 +++++++++++++++++++++++++
+ 1 file changed, 158 insertions(+)
 
 diff --git a/tools/perf/pmu-events/intel_metrics.py b/tools/perf/pmu-events/intel_metrics.py
-index 6c42c8947652..49b83bc28891 100755
+index 49b83bc28891..9f42b489a81e 100755
 --- a/tools/perf/pmu-events/intel_metrics.py
 +++ b/tools/perf/pmu-events/intel_metrics.py
-@@ -1,12 +1,13 @@
- #!/usr/bin/env python3
- # SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
- from metric import (d_ratio, has_event, max, CheckPmu, Event, JsonEncodeMetric,
--                    JsonEncodeMetricGroupDescriptions, LoadEvents, Metric,
--                    MetricGroup, MetricRef, Select)
-+                    JsonEncodeMetricGroupDescriptions, Literal, LoadEvents,
-+                    Metric, MetricGroup, MetricRef, Select)
- import argparse
- import json
- import math
- import os
-+import re
- from typing import Optional
- 
- parser = argparse.ArgumentParser(description="Intel perf json generator")
-@@ -18,6 +19,11 @@ directory = f"{os.path.dirname(os.path.realpath(__file__))}/arch/x86/{args.model
- LoadEvents(directory)
- 
- interval_sec = Event("duration_time")
-+core_cycles = Event("CPU_CLK_UNHALTED.THREAD_P_ANY",
-+                    "CPU_CLK_UNHALTED.DISTRIBUTED",
-+                    "cycles")
-+# Number of CPU cycles scaled for SMT.
-+smt_cycles = Select(core_cycles / 2, Literal("#smt_on"), core_cycles)
- 
- def Idle() -> Metric:
-   cyc = Event("msr/mperf/")
-@@ -266,6 +272,28 @@ def IntelBr():
+@@ -272,6 +272,163 @@ def IntelBr():
                       description="breakdown of retired branch instructions")
  
  
-+def IntelPorts() -> Optional[MetricGroup]:
-+  pipeline_events = json.load(open(f"{os.path.dirname(os.path.realpath(__file__))}"
-+                                   f"/arch/x86/{args.model}/pipeline.json"))
-+
-+  metrics = []
-+  for x in pipeline_events:
-+    if "EventName" in x and re.search("^UOPS_DISPATCHED.PORT", x["EventName"]):
-+      name = x["EventName"]
-+      port = re.search(r"(PORT_[0-9].*)", name).group(0).lower()
-+      if name.endswith("_CORE"):
-+        cyc = core_cycles
-+      else:
-+        cyc = smt_cycles
-+      metrics.append(Metric(port, f"{port} utilization (higher is better)",
-+                            d_ratio(Event(name), cyc), "100%"))
-+  if len(metrics) == 0:
++def IntelL2() -> Optional[MetricGroup]:
++  try:
++    DC_HIT = Event("L2_RQSTS.DEMAND_DATA_RD_HIT")
++  except:
 +    return None
++  try:
++    DC_MISS = Event("L2_RQSTS.DEMAND_DATA_RD_MISS")
++    l2_dmnd_miss = DC_MISS
++    l2_dmnd_rd_all = DC_MISS + DC_HIT
++  except:
++    DC_ALL = Event("L2_RQSTS.ALL_DEMAND_DATA_RD")
++    l2_dmnd_miss = DC_ALL - DC_HIT
++    l2_dmnd_rd_all = DC_ALL
++  l2_dmnd_mrate = d_ratio(l2_dmnd_miss, interval_sec)
++  l2_dmnd_rrate = d_ratio(l2_dmnd_rd_all, interval_sec)
 +
-+  return MetricGroup("ports", metrics, "functional unit (port) utilization -- "
-+                     "fraction of cycles each port is utilized (higher is better)")
++  DC_PFH = None
++  DC_PFM = None
++  l2_pf_all = None
++  l2_pf_mrate = None
++  l2_pf_rrate = None
++  try:
++    DC_PFH = Event("L2_RQSTS.PF_HIT")
++    DC_PFM = Event("L2_RQSTS.PF_MISS")
++    l2_pf_all = DC_PFH + DC_PFM
++    l2_pf_mrate = d_ratio(DC_PFM, interval_sec)
++    l2_pf_rrate = d_ratio(l2_pf_all, interval_sec)
++  except:
++    pass
++
++  DC_RFOH = Event("L2_RQSTS.RFO_HIT")
++  DC_RFOM = Event("L2_RQSTS.RFO_MISS")
++  l2_rfo_all = DC_RFOH + DC_RFOM
++  l2_rfo_mrate  = d_ratio(DC_RFOM, interval_sec)
++  l2_rfo_rrate  = d_ratio(l2_rfo_all, interval_sec)
++
++  DC_CH = Event("L2_RQSTS.CODE_RD_HIT")
++  DC_CM = Event("L2_RQSTS.CODE_RD_MISS")
++  DC_IN = Event("L2_LINES_IN.ALL")
++  DC_OUT_NS = None
++  DC_OUT_S = None
++  l2_lines_out = None
++  l2_out_rate = None
++  wbn = None
++  isd = None
++  try:
++    DC_OUT_NS = Event("L2_LINES_OUT.NON_SILENT",
++                      "L2_LINES_OUT.DEMAND_DIRTY",
++                      "L2_LINES_IN.S")
++    DC_OUT_S = Event("L2_LINES_OUT.SILENT",
++                     "L2_LINES_OUT.DEMAND_CLEAN",
++                     "L2_LINES_IN.I")
++    if DC_OUT_S.name == "L2_LINES_OUT.SILENT" and (
++        args.model.startswith("skylake") or
++        args.model == "cascadelakex"):
++      DC_OUT_S.name = "L2_LINES_OUT.SILENT/any/"
++    # bring is back to per-CPU
++    l2_s  = Select(DC_OUT_S / 2, Literal("#smt_on"), DC_OUT_S)
++    l2_ns = DC_OUT_NS
++    l2_lines_out = l2_s + l2_ns;
++    l2_out_rate = d_ratio(l2_lines_out, interval_sec);
++    nlr = max(l2_ns - DC_WB_U - DC_WB_D, 0)
++    wbn = d_ratio(nlr, interval_sec)
++    isd = d_ratio(l2_s, interval_sec)
++  except:
++    pass
++  DC_OUT_U = None
++  l2_pf_useless = None
++  l2_useless_rate = None
++  try:
++    DC_OUT_U = Event("L2_LINES_OUT.USELESS_HWPF")
++    l2_pf_useless = DC_OUT_U
++    l2_useless_rate = d_ratio(l2_pf_useless, interval_sec)
++  except:
++    pass
++  DC_WB_U = None
++  DC_WB_D = None
++  wbu = None
++  wbd = None
++  try:
++    DC_WB_U = Event("IDI_MISC.WB_UPGRADE")
++    DC_WB_D = Event("IDI_MISC.WB_DOWNGRADE")
++    wbu = d_ratio(DC_WB_U, interval_sec)
++    wbd = d_ratio(DC_WB_D, interval_sec)
++  except:
++    pass
++
++  l2_lines_in = DC_IN
++  l2_code_all = DC_CH + DC_CM
++  l2_code_rate = d_ratio(l2_code_all, interval_sec)
++  l2_code_miss_rate = d_ratio(DC_CM, interval_sec)
++  l2_in_rate = d_ratio(l2_lines_in, interval_sec)
++
++  return MetricGroup("l2", [
++    MetricGroup("l2_totals", [
++      Metric("l2_totals_in", "L2 cache total in per second",
++             l2_in_rate, "In/s"),
++      Metric("l2_totals_out", "L2 cache total out per second",
++             l2_out_rate, "Out/s") if l2_out_rate else None,
++    ]),
++    MetricGroup("l2_rd", [
++      Metric("l2_rd_hits", "L2 cache data read hits",
++             d_ratio(DC_HIT, l2_dmnd_rd_all), "100%"),
++      Metric("l2_rd_hits", "L2 cache data read hits",
++             d_ratio(l2_dmnd_miss, l2_dmnd_rd_all), "100%"),
++      Metric("l2_rd_requests", "L2 cache data read requests per second",
++             l2_dmnd_rrate, "requests/s"),
++      Metric("l2_rd_misses", "L2 cache data read misses per second",
++             l2_dmnd_mrate, "misses/s"),
++    ]),
++    MetricGroup("l2_hwpf", [
++      Metric("l2_hwpf_hits", "L2 cache hardware prefetcher hits",
++             d_ratio(DC_PFH, l2_pf_all), "100%"),
++      Metric("l2_hwpf_misses", "L2 cache hardware prefetcher misses",
++             d_ratio(DC_PFM, l2_pf_all), "100%"),
++      Metric("l2_hwpf_useless", "L2 cache hardware prefetcher useless prefetches per second",
++             l2_useless_rate, "100%") if l2_useless_rate else None,
++      Metric("l2_hwpf_requests", "L2 cache hardware prefetcher requests per second",
++             l2_pf_rrate, "100%"),
++      Metric("l2_hwpf_misses", "L2 cache hardware prefetcher misses per second",
++             l2_pf_mrate, "100%"),
++    ]) if DC_PFH else None,
++    MetricGroup("l2_rfo", [
++      Metric("l2_rfo_hits", "L2 cache request for ownership (RFO) hits",
++             d_ratio(DC_RFOH, l2_rfo_all), "100%"),
++      Metric("l2_rfo_misses", "L2 cache request for ownership (RFO) misses",
++             d_ratio(DC_RFOM, l2_rfo_all), "100%"),
++      Metric("l2_rfo_requests", "L2 cache request for ownership (RFO) requests per second",
++             l2_rfo_rrate, "requests/s"),
++      Metric("l2_rfo_misses", "L2 cache request for ownership (RFO) misses per second",
++             l2_rfo_mrate, "misses/s"),
++    ]),
++    MetricGroup("l2_code", [
++      Metric("l2_code_hits", "L2 cache code hits",
++             d_ratio(DC_CH, l2_code_all), "100%"),
++      Metric("l2_code_misses", "L2 cache code misses",
++             d_ratio(DC_CM, l2_code_all), "100%"),
++      Metric("l2_code_requests", "L2 cache code requests per second",
++             l2_code_rate, "requests/s"),
++      Metric("l2_code_misses", "L2 cache code misses per second",
++             l2_code_miss_rate, "misses/s"),
++    ]),
++    MetricGroup("l2_evict", [
++      MetricGroup("l2_evict_mef_lines", [
++        Metric("l2_evict_mef_lines_l3_hot_lru", "L2 evictions M/E/F lines L3 hot LRU per second",
++               wbu, "HotLRU/s") if wbu else None,
++        Metric("l2_evict_mef_lines_l3_norm_lru", "L2 evictions M/E/F lines L3 normal LRU per second",
++               wbn, "NormLRU/s") if wbn else None,
++        Metric("l2_evict_mef_lines_dropped", "L2 evictions M/E/F lines dropped per second",
++               wbd, "dropped/s") if wbd else None,
++        Metric("l2_evict_is_lines_dropped", "L2 evictions I/S lines dropped per second",
++               isd, "dropped/s") if isd else None,
++      ]),
++    ]),
++  ], description = "L2 data cache analysis")
 +
 +
- def IntelSwpf() -> Optional[MetricGroup]:
-   ins = Event("instructions")
-   try:
-@@ -336,6 +364,7 @@ all_metrics = MetricGroup("", [
+ def IntelPorts() -> Optional[MetricGroup]:
+   pipeline_events = json.load(open(f"{os.path.dirname(os.path.realpath(__file__))}"
+                                    f"/arch/x86/{args.model}/pipeline.json"))
+@@ -364,6 +521,7 @@ all_metrics = MetricGroup("", [
      Smi(),
      Tsx(),
      IntelBr(),
-+    IntelPorts(),
++    IntelL2(),
+     IntelPorts(),
      IntelSwpf(),
  ])
- 
 -- 
 2.44.0.278.ge034bb2e1d-goog
 
