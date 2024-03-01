@@ -1,121 +1,103 @@
-Return-Path: <linux-kernel+bounces-88552-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88553-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6003086E350
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:27:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B6D686E352
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:28:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F16561F23D41
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:27:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C45B41F2620D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:28:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 579A76F523;
-	Fri,  1 Mar 2024 14:27:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01D576F08A;
+	Fri,  1 Mar 2024 14:28:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F5tAPOpJ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="RB1JJcdn"
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 924DB6EB6A;
-	Fri,  1 Mar 2024 14:27:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E52006F07F
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 14:28:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709303250; cv=none; b=RaQdwGiaRiZOG0KisOMjTx9oTKq/BuJsT+78vFXhDeusmpnCosFJz8pUFRjYX7vPQGuMay6GamIWsy+Ol8U+tKQI1ZkDl4G/JujDgsDLF4/mB/D53izjj+uDLpCxhH4kbU7wLFRcdYOhdRtveOgFkFcXqTR50OGoqnOMyUM9+MA=
+	t=1709303330; cv=none; b=gRwFQ8/Id5l+2/7HP3E+ZjB4202JMxjH1eAz2ql6AwcSiZXypGMBOzvHiuX+II+P5c+lWFcqMrMQ6AoSIgVnAPSdzOZhIpWlebPTtmXp1Eb37xaFbbFtC4orL6ga3f1D1V2qHzFKoQGpqaSO4UEJUnLdE15zgfSpvFGKeE0XKJ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709303250; c=relaxed/simple;
-	bh=sc89POi212PZePf8zzE7T9FFfzy+HFO2YO3kSU1uARI=;
+	s=arc-20240116; t=1709303330; c=relaxed/simple;
+	bh=ZVq45iwqsG17CN1iAMkyO96jiCcKXjjAeEZengwDKsI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=muAz4c2nu+g3pP35yOK1ovrxFkzb40tt2SxIKG4h/tgvKnrTHgJ3E52HmgrcEd67o380xq4GbyoP1SMZED/QeIThet/ooBkX7XqPqfE5d9i7mPuWBUb2zin5OJ9C4e459Cac8F3zoW4yAls6+KbKhbC3JWBhpAcTsLSEr41boWo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F5tAPOpJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46A58C433F1;
-	Fri,  1 Mar 2024 14:27:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709303250;
-	bh=sc89POi212PZePf8zzE7T9FFfzy+HFO2YO3kSU1uARI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=F5tAPOpJm1jBDvbI7aixTRJtVuNlC7TpO+r+jnig6hOk+Om6cenqjJq9Hq2EIHkv1
-	 cOvjS2jQ3U5Ba7ZqekNxUeLR5X+mJsviETbR4uyhxyWiwRTHsqRIVJAwVnQRmSZ8gT
-	 hGMyOuf6GWzGvK9ZllFk/obpMBVoNY5dr7/FO2OWfvH33gshcOTbz789fTPu81Hg8t
-	 WvgaT3SooanyV9tp9ZjX7OhwneN0wyXcBOu4gNYabeUbCKxuyYcBYxfe8cRp5EWQvX
-	 OcBygi9jeVPFjovIJ7GXQcxEvtfy/sDGgkwduQKf8BW9yZGFZzfvs9EcJu4WhWYqX7
-	 yQE7QQH56Sk5g==
-Date: Fri, 1 Mar 2024 14:27:23 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: Zi Yan <ziy@nvidia.com>, Aishwarya TCV <aishwarya.tcv@arm.com>,
-	"Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>,
-	linux-mm@kvack.org, "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	David Hildenbrand <david@redhat.com>,
-	Yang Shi <shy828301@gmail.com>, Yu Zhao <yuzhao@google.com>,
-	"Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Zach O'Keefe <zokeefe@google.com>, Hugh Dickins <hughd@google.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v5 8/8] mm: huge_memory: enable debugfs to split huge
- pages to any order.
-Message-ID: <dda99ee0-87a2-482d-bf28-bd5e5a97b46e@sirena.org.uk>
-References: <20240226205534.1603748-1-zi.yan@sent.com>
- <20240226205534.1603748-9-zi.yan@sent.com>
- <082e48c8-71b7-4937-a5da-7a37b4be16ba@arm.com>
- <0dab0c69-2eac-4e65-9efe-e0b037499abc@arm.com>
- <08703C70-DD6E-446A-9ABC-BC2C8E33B8CD@nvidia.com>
- <f7a3d07d-290b-46d6-884e-fa288901c3c6@arm.com>
- <3D5A5D18-0A20-4BB3-B667-0CB5799BA665@nvidia.com>
- <6003865f-2c85-4dd4-9803-6204f9018f50@arm.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=WLxYQRTekM+O1XfWxiX3VGFx7ACxrEVCwUULNUHrJxynL02UDmMXGgIhJp75nHUq38zSDCFw4w/ZRQCLfaFJ3YojaBa2TJxCqZ2l3n3go5bEHdDjQJCGdawryWXAiza0ASMdaIhcxGN+1szQoJ/5uiT5gHGsO87vT5BTUOwKg/E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=RB1JJcdn; arc=none smtp.client-ip=209.85.216.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-29a6dcfdd30so1697975a91.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 06:28:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1709303328; x=1709908128; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YMwRXwe+WE4PmWyg7QcOgH8u3JqX1lp4xE3bFVh73Lo=;
+        b=RB1JJcdnRHiZPjeQmqe0b14Qdi5hXYFV1RoJl5rOYUrqP+RB9GWHWl5YCDac0BmTjI
+         P4JR91gQZ4xNutAoBynVD15XCobb9LmNI324E1hYw5B/lXzUUJryFsG4iY71PeodU+um
+         yrBvm+iq1HXqT+k7/MPGfCdUvMmhWEgaA16HA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709303328; x=1709908128;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YMwRXwe+WE4PmWyg7QcOgH8u3JqX1lp4xE3bFVh73Lo=;
+        b=hHLwxxha6eq7pHdWwRnJ9IWNXVqc/8pJANu6qCSLQDaH3Mnt92F8tDbuQ7pOL5u/sU
+         3Gk9JXGZZ1LwXIeAhCnlCOFl0GMwatfVs7fCZ7VxDfJK3FDWq0FSAoB3KjaG0Nozyoz4
+         /iNYUpiPmGHTkCuQJZjYQyZvh4qkaPDmw3QOM0ECOPTOV982AP38QCRZRum+eQimSzM8
+         hlWYdYHplzVmPIBqEviq//mCMCO2iSIIdFwwHJK3jtSewohD+CPxtRsfrZj1knT21lmY
+         3fM+miENmh4eWVfFhJ9HQQ4UFBAHBElJOdZSt/pOf8u+6t5VGc4t+9AiWG3oLq9eiMPV
+         fPbA==
+X-Forwarded-Encrypted: i=1; AJvYcCWf53qUp6GHiIFpmOfafLkmFgMZyguh77NwaeOLNapVOYY7u0vC38R/CwpDcmP1zRvwa4Z4vqvfqvL0+5gcO788fL+BlHZNXWPBNrqt
+X-Gm-Message-State: AOJu0YzZwKy1lA3xiCNIXrm5o6gStyteLi/ujyLwOsxj13HiSvuZnTEJ
+	t5jb8skLtDz0UdFNeZ0P5F99++YQaQ6/BpgTSF5CEtGZufLBR+nP8SZ/J347Pg==
+X-Google-Smtp-Source: AGHT+IF3JYaaA2kDPKfjoPvxAteo5f9it2zlkoKChQrKKyJaqyC0VWGe0qug0CkXYW6VQPFMzExkPQ==
+X-Received: by 2002:a17:90a:bc06:b0:29b:2d64:68e5 with SMTP id w6-20020a17090abc0600b0029b2d6468e5mr612640pjr.31.1709303328305;
+        Fri, 01 Mar 2024 06:28:48 -0800 (PST)
+Received: from google.com ([2401:fa00:8f:203:cf6e:4396:e942:479d])
+        by smtp.gmail.com with ESMTPSA id sz3-20020a17090b2d4300b002961a383303sm5429288pjb.14.2024.03.01.06.28.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Mar 2024 06:28:47 -0800 (PST)
+Date: Fri, 1 Mar 2024 23:28:44 +0900
+From: Sergey Senozhatsky <senozhatsky@chromium.org>
+To: Nicolas Schier <n.schier@avm.de>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv2] kconfig: add some Kconfig env variables to make help
+Message-ID: <20240301142844.GP11972@google.com>
+References: <CAK7LNARo4L6qxoqRU-0dgABarukJKAaZpCRtfA3MyUHhSuDQxQ@mail.gmail.com>
+ <20240222051621.GH11472@google.com>
+ <20240228045652.GH11972@google.com>
+ <CAK7LNAQ8OyNMeGzVoTRg-sHDZ4YK0EKY_eEWNepekaibO_ZKwg@mail.gmail.com>
+ <20240229021010.GM11972@google.com>
+ <CAK7LNASujf8m4PpMyoCC1cTN_YGeG1HVaOR+3pZx5=3OJp=85A@mail.gmail.com>
+ <20240229034739.GN11972@google.com>
+ <CAK7LNAS-mOxY884pLEMwWaX+wgzXdc6+=vqN=wfHBekuKL5ryA@mail.gmail.com>
+ <20240301043316.GO11972@google.com>
+ <ZeG2PRYmdO0r44kS@buildd.core.avm.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="aDClwSPU2dBmedls"
-Content-Disposition: inline
-In-Reply-To: <6003865f-2c85-4dd4-9803-6204f9018f50@arm.com>
-X-Cookie: Schizophrenia beats being alone.
-
-
---aDClwSPU2dBmedls
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <ZeG2PRYmdO0r44kS@buildd.core.avm.de>
 
-On Fri, Mar 01, 2024 at 02:18:16PM +0000, Ryan Roberts wrote:
+On (24/03/01 12:04), Nicolas Schier wrote:
+> Perhaps it might be a compromise to let 'make help' point to the
+> kbuild/kconfig documentation?
 
-> Although I agree it might be a tall order create and mount an XFS fs in
-> run_vmtests.sh. Perhaps it might be good enough to add an optional param =
-to the
-> test to pass a path when running the test manually, and if that's not pro=
-vided,
-> just try to create a temp file in the current dir and skip if its not the=
- right
-> sort of fs?
+Yes, I was thinking the same. A one-liner description per-env var
+and point to documentation if one-liner is not enough
 
-Yeah, if it needs to be a specific kind of on disk filesystem then that
-needs a lot more integration with CI systems (a lot of them run entirely
-=66rom nfsroot by default!).  Being able to specify the location via an
-environment variable would also be good, it could fall back to the
-current directory if one isn't set up.
-
---aDClwSPU2dBmedls
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXh5coACgkQJNaLcl1U
-h9Cthgf/exhZvamNaMdDUbiaQJt1suzTxtR0iwMIkyoGG+QcsGZHPhG2OGAVrqfK
-T+xYRWrqxRQWqc+NZqTGq08iAoFkQZCKv6VUn2jlxL7o8PNPLkYRA69XyYXCYnwN
-UzQU2I9lSef/UbFmAIv/BaceerTOO3XD7GfGPn1H852j7jA4t9VlRO2jPbfG++7I
-0j4cl9L2Xvhun+JDcykwIwazFQpBQxZShf2rPKfxZz3cg/UozNjpTSIUAoNZdKUP
-YSFL0/fzXxsRdri8Ud3P3xWsSxPNrVWAxMUgkzCL4uqerD+kikdiAGgpq4QsmMF3
-cHoBcF80Yg+Ft1V0ZSk4f15ZgvxbYw==
-=UD/W
------END PGP SIGNATURE-----
-
---aDClwSPU2dBmedls--
+	KCONFIG_BARREL_ROLL	- kconfig does a barrel roll
+	KCONFIG_FOO_BAR		- kconfig does foo and then bar (see
+	documentation for details)
 
