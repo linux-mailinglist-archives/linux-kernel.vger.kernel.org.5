@@ -1,102 +1,129 @@
-Return-Path: <linux-kernel+bounces-89057-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89058-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82B5886EA0D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:05:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6034F86EA13
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:11:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27BE728904F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:05:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CFEF128219E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:11:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BFCC3C494;
-	Fri,  1 Mar 2024 20:04:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2548E3C06A;
+	Fri,  1 Mar 2024 20:10:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="A3CNMZt8"
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="JbhQTC98"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A7E23BB51
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 20:04:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 642523BB52
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 20:10:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709323482; cv=none; b=fntGbDFNCmIHOuORz9FdMbLftALFxZCSxtNqcWImo7GSKzB9q4HgAYHB7LHgofqHSc7lyVJE1D4uYK1HD1r81VqsERiraOn/sIDxURs4m2V+Lw1TTFQSDG796rdAooMJSWlTzCniTomeN3VSec2eN1bX5TKy0Wz82lbRHeoscv8=
+	t=1709323857; cv=none; b=kFV2603ZwIG7fN1M1ssC8ChXCCOFNaTycVqRDGEqLnC7AtR8T/yBjrzKVNuS1mPogdMG5frZJzDYFwHYU0gDzgmoBpm88FGN8M8h+X48UxLsJCyYeYxZmPoEyFjRvQSThievuFJNnZoJxCAitNLqiyAAvFxUsBO0M00GnaIbUcA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709323482; c=relaxed/simple;
-	bh=f14nCfAkRhWaq3IBXlAwLE7i8TCJBeF4+IGty/g53bQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KlFPn71WTBLWcmXtrAEm41YdTLKpTp/5hAysk3YhK013ZYXViUsxExWSumIchQMclu/N847KNMgFTNrSzIFi8tO3pvEijodf9ADhZlaQH32OSo0TR9Dxy/tKTZSHXWzjLIAh2jsx8aC7SmBqTLid7Ezn3MLPJFUo5eykiQBCWvM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=A3CNMZt8; arc=none smtp.client-ip=95.215.58.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Fri, 1 Mar 2024 15:04:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1709323478;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ul6pAsiH3Cf2VNyIM/Eaw82KrFx/wNv6iML+Aou3/Pg=;
-	b=A3CNMZt8ut4JztwS+Y5BGVeJ949fLchBZBLX+LjjOB9qhCB37l3Kv4Ia1etW8FyEJCLtbY
-	FJSRMeGGOUTJ7Aicne+l2al3woE36zN1vkYYx6T/1gep55J7tlVJOzBCBgCtnG9kQWE6CI
-	d6DCw1va/+qdTPCdgDZyZryyqthecmE=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>, 
-	linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org, djwong@kernel.org, mcgrof@kernel.org, 
-	linux-mm@kvack.org, hare@suse.de, david@fromorbit.com, akpm@linux-foundation.org, 
-	gost.dev@samsung.com, linux-kernel@vger.kernel.org, chandan.babu@oracle.com, 
-	Pankaj Raghav <p.raghav@samsung.com>
-Subject: Re: [PATCH v2 03/13] filemap: align the index to mapping_min_order
- in the page cache
-Message-ID: <c5rw63nyg2tdkgeuvriu74jjv2vszy2luorhmv3gb4uz2z4msz@2ktshazjwc2n>
-References: <20240301164444.3799288-1-kernel@pankajraghav.com>
- <20240301164444.3799288-4-kernel@pankajraghav.com>
- <ZeIr_2fiEpWLgmsv@casper.infradead.org>
+	s=arc-20240116; t=1709323857; c=relaxed/simple;
+	bh=eIlmeeWJ+q21jvedK7al42fEAfG42vJONf3MXPx/cRg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Vxl7T4Emi3CmhYrkMoQGIi+GxuOpJUQ3wmbsFIKoBdh4fCXbxwncAfWNDMR8s6Ygb8+g+M/Uw4gEVvNqP0/Cu9hH9cfpEDhIK085P+Yph0yWTBwDksWY44iKNoEbz6ggP017DaHts9AwFat6GTBADOXvKUMwKgjbfeQ1BZJ7nng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=JbhQTC98; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a26ed1e05c7so459806566b.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 12:10:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1709323853; x=1709928653; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=GjHlLe8ifOuwGHIPhGu9Px14t+AYIlwm+A28Gp3fNW8=;
+        b=JbhQTC98JdHfGNFyO4r5pc4+JyvgS0jT/zfZ2tHv8dMGxTKBWofqfG0sIlp9FVjyym
+         YkPbFern0AxJT78q08PcRbeXB4TVeLLNHa42/QAJNyIcvN3gPH3UMLRHe8ltEiyVzvTr
+         YhW8i9epCHCzcb62oIk8PlyBXhC7DFtYGNwfI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709323853; x=1709928653;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GjHlLe8ifOuwGHIPhGu9Px14t+AYIlwm+A28Gp3fNW8=;
+        b=cBdHmoD3jxi1lfVvOjTIaHfmLMunC9Dn1neACAZk8gk0kfX/UoapllI9pIGmFc5fca
+         rxs3vquaS76tM6Fblyu9ePPI77zq59Bo0bRXUsfq4+YQi7t86OGSbMTzXquXu6ukUVfK
+         99J6+SIjsWin5qJxtI7rGRN1fngadSGL/6mYGPbn/k9lCGm52xpvlBITQBR86mmQpmWV
+         I6j7dyXp0iDiilhmXkAPKvjYwfSqGopQogQ2nrHapEZI9dXRWwZI8ZQeR13B8Ro0d2GS
+         IPDICc/xrXSebAfZFGt0oZZ3b4sv7MokSXtLGYlgbejSpY4rcPXzy2ACyRhkQzcLfpTf
+         5CMw==
+X-Forwarded-Encrypted: i=1; AJvYcCVxZfpsesxLVBVcbVUYtldURBh9SDr0STv6Xs7VsCzaww9iPedcE0HJEQXMeWKy8AaqHx/hs7sHMX7E0cYCcYx2Ut5EvS8mQWK+JlYI
+X-Gm-Message-State: AOJu0Yy0EWMJ1IiOEIDFHOkOz5LTzYcCvQHgsrdHtyWY6Fa2/jvm9sP3
+	60g9LCun8xhWdzcb1P7AUEQEWhzDd5ui2f1Mt5NGBJsLw3k9T+aixdc719BD+HBg3l4ORGrPIaY
+	Jya60FQ==
+X-Google-Smtp-Source: AGHT+IFkglEHRXmwFw5poY/bev1oCscuuPULiQOtJhKY8HaEi1Ofp/F6I2SixbuLrOlPzuWuiZkyuQ==
+X-Received: by 2002:a17:906:ecea:b0:a44:6c90:fe80 with SMTP id qt10-20020a170906ecea00b00a446c90fe80mr2028903ejb.68.1709323853748;
+        Fri, 01 Mar 2024 12:10:53 -0800 (PST)
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com. [209.85.218.54])
+        by smtp.gmail.com with ESMTPSA id ss11-20020a170907c00b00b00a446498b96fsm1405766ejc.191.2024.03.01.12.10.52
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Mar 2024 12:10:52 -0800 (PST)
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a26ed1e05c7so459803566b.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 12:10:52 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWd84XRGVHqMYj8BKvFT7GOHOoWHLOMKT4nRPTo8+yVmjmoITnh/sqRJNTB+HE4lucp5g7TJ+GN5R039vfVkcn1wJbNRnZv7nfmwa2Y
+X-Received: by 2002:a17:906:e08d:b0:a44:731c:bace with SMTP id
+ gh13-20020a170906e08d00b00a44731cbacemr2324717ejb.35.1709323852310; Fri, 01
+ Mar 2024 12:10:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZeIr_2fiEpWLgmsv@casper.infradead.org>
-X-Migadu-Flow: FLOW_OUT
+References: <20240228225527.1052240-1-helen.koike@collabora.com>
+ <20240228225527.1052240-2-helen.koike@collabora.com> <20240229-dancing-laughing-groundhog-d85161@houat>
+ <5d7ed81b-37f9-48e9-ab7e-484b74ca886c@gmail.com> <CAHk-=wixVy3WYvjbt43ZSrCqPDsS76QJQSkXFbbPsAOs1MCSAQ@mail.gmail.com>
+ <44ae0339-daf1-4bb9-a12d-e3d2e79b889e@gmail.com>
+In-Reply-To: <44ae0339-daf1-4bb9-a12d-e3d2e79b889e@gmail.com>
+From: Linus Torvalds <torvalds@linuxfoundation.org>
+Date: Fri, 1 Mar 2024 12:10:35 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wiccniE=iZDC_e7T+J8iPVQbh1Wi5BaVee9COfy+ZaYKg@mail.gmail.com>
+Message-ID: <CAHk-=wiccniE=iZDC_e7T+J8iPVQbh1Wi5BaVee9COfy+ZaYKg@mail.gmail.com>
+Subject: Re: [PATCH 1/3] kci-gitlab: Introducing GitLab-CI Pipeline for Kernel Testing
+To: Nikolai Kondrashov <spbnick@gmail.com>
+Cc: Maxime Ripard <mripard@kernel.org>, Helen Koike <helen.koike@collabora.com>, 
+	linuxtv-ci@linuxtv.org, dave.pigott@collabora.com, 
+	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	linux-kselftest@vger.kernel.org, gustavo.padovan@collabora.com, 
+	pawiecz@collabora.com, tales.aparecida@gmail.com, workflows@vger.kernel.org, 
+	kernelci@lists.linux.dev, skhan@linuxfoundation.org, 
+	kunit-dev@googlegroups.com, nfraprado@collabora.com, davidgow@google.com, 
+	cocci@inria.fr, Julia.Lawall@inria.fr, laura.nao@collabora.com, 
+	ricardo.canuelo@collabora.com, kernel@collabora.com, 
+	gregkh@linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Mar 01, 2024 at 07:26:55PM +0000, Matthew Wilcox wrote:
-> On Fri, Mar 01, 2024 at 05:44:34PM +0100, Pankaj Raghav (Samsung) wrote:
-> > +#define DEFINE_READAHEAD_ALIGNED(ractl, f, r, m, i)			\
-> > +	struct readahead_control ractl = {				\
-> > +		.file = f,						\
-> > +		.mapping = m,						\
-> > +		.ra = r,						\
-> > +		._index = mapping_align_start_index(m, i),		\
-> > +	}
-> 
-> My point was that you didn't need to do any of this.
-> 
-> Look, I've tried to give constructive review, but I feel like I'm going
-> to have to be blunt.  There is no evidence of design or understanding
-> in these patches or their commit messages.  You don't have a coherent
-> message about "These things have to be aligned; these things can be at
-> arbitrary alignment".  If you have thought about it, it doesn't show.
+On Fri, 1 Mar 2024 at 02:27, Nikolai Kondrashov <spbnick@gmail.com> wrote:
+>
+> I agree, it's hard to imagine even a simple majority agreeing on how GitLab CI
+> should be done. Still, we would like to help people, who are interested in
+> this kind of thing, to set it up. How about we reframe this contribution as a
+> sort of template, or a reference for people to start their setup with,
+> assuming that most maintainers would want to tweak it? We would also be glad
+> to stand by for questions and help, as people try to use it.
 
-Don't you think you might be going off a bit much? I looked over these
-patches after we talked privately, and they looked pretty sensible to
-me...
+Ack. I think seeing it as a library for various gitlab CI models would
+be a lot more palatable. Particularly if you can then show that yes,
+it is also relevant to our currently existing drm case.
 
-Yes, we _always_ want more thorough commit messages that properly
-explain the motivations for changes, but in my experience that's the
-thing that takes the longest to learn how to do well as an engineer...
-ease up abit.
+So I'm not objecting to having (for example) some kind of CI helper
+templates - I think a logical place would be in tools/ci/ which is
+kind of alongside our tools/testing subdirectory.
 
-> So, let's start off: Is the index in ractl aligned or not, and why do
-> you believe that's the right approach?  And review each of the patches
-> in this series with the answer to that question in mind because you are
-> currently inconsistent.
+(And then perhaps have a 'gitlab' directory under that. I'm not sure
+whether - and how much - commonality there might be between the
+different CI models of different hosts).
 
-^ this is a real point though, DEFINE_READAHEAD_ALIGNED() feels off to
-me.
+Just to clarify: when I say "a logical place", I very much want to
+emphasize the "a" - maybe there are better places, and I'm not saying
+that is the only possible place. But it sounds more logical to me than
+some.
+
+            Linus
 
