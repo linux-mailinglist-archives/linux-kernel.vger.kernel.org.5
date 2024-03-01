@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-88974-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88976-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0593986E8EC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:00:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B60F186E8EF
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:00:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC854285284
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:00:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2CFEF285C14
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:00:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27DBF41206;
-	Fri,  1 Mar 2024 18:56:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB0914AEF9;
+	Fri,  1 Mar 2024 18:56:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="UZUY4lAb"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="05HGQoF1"
 Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAE883FB0C
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 18:56:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CFE345018
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 18:56:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709319407; cv=none; b=rSVG9Zi9f7Samh03g3Ce3qy7XJSbKhhmqZRzBElciEB3DZki+g9dzgJEWk7dzXFlhPO8cXGKU/mD4CIn1605+BfZLEa/hy3dwtUCIxeiEuDezwegwAA0PEUvyedDw7MgkeOTWD1TlKsVeGOSlR/Mp1nSnmZ0KxdCu2yNgUMJ9jk=
+	t=1709319412; cv=none; b=Zu55y0KLuoUBFCpDxYfivm7Bt2kviAaReikLMJ+6cwUOqfmtrRkqDBIfCD4XE7Ug6eCli/5cQ+0eaGAIgI9BujvUp4CyWuY2dzv7Rfypu5I91cHaWOHC1uMLgCi/JAF2QjgQIRiT2QK0cTpcCuCDkrj4rQ2pCuIeK0XZg6pqW6w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709319407; c=relaxed/simple;
-	bh=Vef9VTUxJdFoMoInyvsFelDJcm09RH8PY/vrqOgBuqE=;
+	s=arc-20240116; t=1709319412; c=relaxed/simple;
+	bh=panIrCvcM8hwmTL6w73OOIwaBmO4XEVl+dEJoBh+wK8=;
 	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Content-Type; b=T114+TgD1c2ISIfcEL58WdIoEuqsiu99U65vZemTdwvzpA0Kw1jlIFPOF6b1EK3l9LmA1MBPRXQaJrP4UbKJGmGcnuhhcsA78UFhVtBoNt7v+cC+HnMsFhcFSX8MLDk4jAVZa1HzQUd3mv0nIzsZTJhkoV5pwBOKPY146IqDYqg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=UZUY4lAb; arc=none smtp.client-ip=209.85.128.202
+	 To:Content-Type; b=jT5MeZULZhb/jI2/bvzX3uSj2HB+KaO/qZ9gHT4poHvPKERR0UjuN2tBFiIEqhParhVrGNL3A/xmQPRgf7xRbsssjc+vk/ac3LNPu0VFMXLJM1sNgmCBeyShFg1FvRd9j5HcII6tx1wtak8ZtaGMRW138gn4Ow2ksNNeGyQSxsQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=05HGQoF1; arc=none smtp.client-ip=209.85.128.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60832a48684so34387507b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 10:56:45 -0800 (PST)
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-608ac8c5781so43335857b3.3
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 10:56:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709319405; x=1709924205; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1709319410; x=1709924210; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=SYoE2D4a3KJQc8bbU4jnrR8QgBUsbfSWcnqtOE2sI50=;
-        b=UZUY4lAbOdiuH5DcbT5xYaI8mxFj5jur2LLLwdgfor2whpDAC3bvCzW7Pp3pZutOfT
-         fD5Mf44OdOgoeWt2MnZvRWy7Z81npk8aFuBDm5B1RusCjt7CZ2IX33LrIEWU7W1BV7TR
-         6cs0nefNogpZfHHLhrUQW1GADDQK6it4cZPYpr476HmkQttsXGdWZTY3x+WhzViiBWmc
-         8RLFxBd7WKxBNODyBxPW4y9pzwqJoEip9fqgYX18p8YjO1016gnA+HOtWEcPvopKietw
-         oR3eSVdehORBpDUWJT+Gejp16wRPXKmgsrN6Nmw4hCE9qNpCDEFxTuhI8C6oDXLdXuGB
-         E9UA==
+        bh=K9VN6M4iHhNGfXDgUsA95lPgDC+51/4VBbMVT4/EKng=;
+        b=05HGQoF1lQ+Rph0uRkJXdPfSSIX43pdvwKamXL16jErTuwF0wTiu5xSjQV1VLdiDBG
+         u/W2kw1B3MoLa7XDrKC1dVQoYxFcgQhURbqVcn40wBzDuBV6eeGqndPxmaRA4Mfkgx6J
+         yoCiWp+DlM5SEYhpjAD7lUyUNrY3ioliFtGhWs0Ka6PCI4Pji6OLeaXo+9vCJxEADgoc
+         vPF0ybl3XqmLUBtOJaf/rneqVl4xTNEb3eEHYIjHfIGfZULfuMdq7iwYCh27F7Ne5rt4
+         1/2Z+mZ+8JgMww/1zhZzP5OLa+y007lTDu9XAHfijFMslBEt3L8Iegr+16/pCbzIDSgF
+         MJ7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709319405; x=1709924205;
+        d=1e100.net; s=20230601; t=1709319410; x=1709924210;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SYoE2D4a3KJQc8bbU4jnrR8QgBUsbfSWcnqtOE2sI50=;
-        b=GpmpmUArT1V/55RuotBIxiZwIUZUNSVITrf6RhaamS8Ge6mvf2gP4WmOP76cMrim6K
-         SA2wPTE3zi18lSRyXaG7C2hsuPYgEDp7adBgOkcV6C1iJy3QcUffUjh5vsiNuGqJ+Qlt
-         QF6Yi2B3Y7omK6ojqk+u87idWB1cnL6kw1RFtSCtC+S++yWZYvtiL6p2vocoyhuRuI5i
-         PAukTLKrQyPpThOuYsfGLOWDWDp8FVVEjoGDGIVTE3XlIuNyPoD7zpa6RcH00w5nIjjY
-         kVww5Ycr5ia+rT4jvpJiVVGxNeA+fulL3+a5vDaWkNMl2D05JIx3j2Iz6V9AR8s/oHlN
-         KF5Q==
-X-Forwarded-Encrypted: i=1; AJvYcCU0hWFPNAyv9TDKf2CcVFoT0e4YHRumHzjW6qxlirtc+IdPlh6LqDwIGDjZCrJdA2C/6JdW9gERnwamuXe/+cNfgDZp+61nM4Qb1aJE
-X-Gm-Message-State: AOJu0Yxg8htWX/7H7XkgYRCkd6aVEkP33OZcJr8xHMBII0DHuedUDlXL
-	fsHNNx7XOYeUKgU0qnTrQcQVTyrVYxlIHVwqPUhr1zaa3QEAFsAyZBMffDtFJ4cZILcQ2N8QSNC
-	v+8nbQw==
-X-Google-Smtp-Source: AGHT+IF0SWVVshOg7HdsBIR86ZUbzjXMuc6wwH4zn+FDddCl5MH4vJhOjvctNYIFJLl28qP8v4N/OmgNrEKs
+        bh=K9VN6M4iHhNGfXDgUsA95lPgDC+51/4VBbMVT4/EKng=;
+        b=a8tHpfpBxr/dVxtx1Up1/2zCUz+yPffUw1s1fIT5DqD1ShtqH5dIK/DidHa0fdDJbN
+         DVT6ESjOu5aHjJ84/4iB4uv0Q7X65HA5vDa3i2blRQy+hcL4VLFITqUN63UoQUjmTHVP
+         UaWqfQ+CTQrftIVvxfB+/DgKvVpANcbBWz9i0yCXksC2Xcckc5V/s6JGjoTRo0SbFRCZ
+         eEEpU8VaKtsNSH3lRRlUOjj5Vj2xPHRv2VH1AuiKmkx44tpx5gDjmWnkcx5/Xr7YV3mE
+         jGMApPr/kY+MD/X3UkqGKc5QiNb81jfepWP6w4CV891n4jjf3h9a9LyNR82ZqdlO7YTY
+         6M/g==
+X-Forwarded-Encrypted: i=1; AJvYcCVHI7z+mqJ+n+6PDf0tJWnRm5UUBwHBxfKSUvTpOW/fDb3IQR10Zt+ijUaQTRP2YhPMgqs9OdDIZh+CepAq/Rq95NfahUCA6p0O4rlj
+X-Gm-Message-State: AOJu0YznDy7R7MsF/4t/qTchwwOAw6+zZuUNgulIu4MnxsYZGxSMXwDL
+	Bj6JQk2AhZlvDD6AE/MbIMIIYR3tvLrJI/Ldfy+vfLama2T9sy2bXE+bYfxT4iIQCV5xYt0eRFr
+	07OO7Fw==
+X-Google-Smtp-Source: AGHT+IHukrvXXf9dKyNrHu0Wr/egMKoGJpe2Mj9fmA3/yh9TWJLZGgHyZc7wGu29UBH6pQdCHemj+zr16pX3
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:af4b:7fc1:b7be:fcb7])
- (user=irogers job=sendgmr) by 2002:a05:690c:ecc:b0:608:ecf3:ef8 with SMTP id
- cs12-20020a05690c0ecc00b00608ecf30ef8mr483741ywb.0.1709319404865; Fri, 01 Mar
- 2024 10:56:44 -0800 (PST)
-Date: Fri,  1 Mar 2024 10:55:52 -0800
+ (user=irogers job=sendgmr) by 2002:a05:690c:85:b0:609:3cdf:c737 with SMTP id
+ be5-20020a05690c008500b006093cdfc737mr528497ywb.10.1709319410636; Fri, 01 Mar
+ 2024 10:56:50 -0800 (PST)
+Date: Fri,  1 Mar 2024 10:55:54 -0800
 In-Reply-To: <20240301185559.2661241-1-irogers@google.com>
-Message-Id: <20240301185559.2661241-14-irogers@google.com>
+Message-Id: <20240301185559.2661241-16-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,7 +74,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240301185559.2661241-1-irogers@google.com>
 X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Subject: [PATCH v2 13/20] perf jevents: Add FPU metrics for Intel
+Subject: [PATCH v2 15/20] perf jevents: Add mem_bw metric for Intel
 From: Ian Rogers <irogers@google.com>
 To: Perry Taylor <perry.taylor@intel.com>, Samantha Alt <samantha.alt@intel.com>, 
 	Caleb Biggers <caleb.biggers@intel.com>, Weilin Wang <weilin.wang@intel.com>, 
@@ -88,121 +88,97 @@ To: Perry Taylor <perry.taylor@intel.com>, Samantha Alt <samantha.alt@intel.com>
 	Stephane Eranian <eranian@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Metrics break down of floating point operations.
+Break down memory bandwidth using uncore counters. For many models
+this matches the memory_bandwidth_* metrics, but these metrics aren't
+made available on all models. Add support for free running counters.
+Query the event json when determining which what events/counters are
+available.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/pmu-events/intel_metrics.py | 90 ++++++++++++++++++++++++++
- 1 file changed, 90 insertions(+)
+ tools/perf/pmu-events/intel_metrics.py | 62 ++++++++++++++++++++++++++
+ 1 file changed, 62 insertions(+)
 
 diff --git a/tools/perf/pmu-events/intel_metrics.py b/tools/perf/pmu-events/intel_metrics.py
-index 49e51c33c0f7..6f18d5fd9f95 100755
+index 2cd30c557a59..a5d68b7deab3 100755
 --- a/tools/perf/pmu-events/intel_metrics.py
 +++ b/tools/perf/pmu-events/intel_metrics.py
-@@ -326,6 +326,95 @@ def IntelCtxSw() -> MetricGroup:
-                                     "retired & core cycles between context switches"))
+@@ -784,6 +784,67 @@ def IntelLdSt() -> Optional[MetricGroup]:
+   ], description = "Breakdown of load/store instructions")
  
  
-+def IntelFpu() -> Optional[MetricGroup]:
-+  cyc = Event("cycles")
++def UncoreMemBw() -> Optional[MetricGroup]:
++  mem_events = []
 +  try:
-+    s_64 = Event("FP_ARITH_INST_RETIRED.SCALAR_SINGLE",
-+                 "SIMD_INST_RETIRED.SCALAR_SINGLE")
-+  except:
-+    return None
-+  d_64 = Event("FP_ARITH_INST_RETIRED.SCALAR_DOUBLE",
-+               "SIMD_INST_RETIRED.SCALAR_DOUBLE")
-+  s_128 = Event("FP_ARITH_INST_RETIRED.128B_PACKED_SINGLE",
-+                "SIMD_INST_RETIRED.PACKED_SINGLE")
-+
-+  flop = s_64 + d_64 + 4 * s_128
-+
-+  d_128 = None
-+  s_256 = None
-+  d_256 = None
-+  s_512 = None
-+  d_512 = None
-+  try:
-+    d_128 = Event("FP_ARITH_INST_RETIRED.128B_PACKED_DOUBLE")
-+    flop += 2 * d_128
-+    s_256 = Event("FP_ARITH_INST_RETIRED.256B_PACKED_SINGLE")
-+    flop += 8 * s_256
-+    d_256 = Event("FP_ARITH_INST_RETIRED.256B_PACKED_DOUBLE")
-+    flop += 4 * d_256
-+    s_512 = Event("FP_ARITH_INST_RETIRED.512B_PACKED_SINGLE")
-+    flop += 16 * s_512
-+    d_512 = Event("FP_ARITH_INST_RETIRED.512B_PACKED_DOUBLE")
-+    flop += 8 * d_512
++    mem_events = json.load(open(f"{os.path.dirname(os.path.realpath(__file__))}"
++                                f"/arch/x86/{args.model}/uncore-memory.json"))
 +  except:
 +    pass
 +
-+  f_assist = Event("ASSISTS.FP", "FP_ASSIST.ANY", "FP_ASSIST.S")
-+  if f_assist in [
-+      "ASSISTS.FP",
-+      "FP_ASSIST.S",
-+  ]:
-+    f_assist += "/cmask=1/"
++  ddr_rds = 0
++  ddr_wrs = 0
++  ddr_total = 0
++  for x in mem_events:
++    if "EventName" in x:
++      name = x["EventName"]
++      if re.search("^UNC_MC[0-9]+_RDCAS_COUNT_FREERUN", name):
++        ddr_rds += Event(name)
++      elif re.search("^UNC_MC[0-9]+_WRCAS_COUNT_FREERUN", name):
++        ddr_wrs += Event(name)
++      #elif re.search("^UNC_MC[0-9]+_TOTAL_REQCOUNT_FREERUN", name):
++      #  ddr_total += Event(name)
 +
-+  flop_r = d_ratio(flop, interval_sec)
-+  flop_c = d_ratio(flop, cyc)
-+  nmi_constraint = MetricConstraint.GROUPED_EVENTS
-+  if f_assist.name == "ASSISTS.FP": # Icelake+
-+    nmi_constraint = MetricConstraint.NO_GROUP_EVENTS_NMI
-+  def FpuMetrics(group: str, fl: Optional[Event], mult: int, desc: str) -> Optional[MetricGroup]:
-+    if not fl:
++  if ddr_rds == 0:
++    try:
++      ddr_rds = Event("UNC_M_CAS_COUNT.RD")
++      ddr_wrs = Event("UNC_M_CAS_COUNT.WR")
++    except:
 +      return None
 +
-+    f = fl * mult
-+    fl_r = d_ratio(f, interval_sec)
-+    r_s = d_ratio(fl, interval_sec)
-+    return MetricGroup(group, [
-+        Metric(f"{group}_of_total", desc + " floating point operations per second",
-+               d_ratio(f, flop), "100%"),
-+        Metric(f"{group}_flops", desc + " floating point operations per second",
-+               fl_r, "flops/s"),
-+        Metric(f"{group}_ops", desc + " operations per second",
-+               r_s, "ops/s"),
-+    ])
++  ddr_total = ddr_rds + ddr_wrs
 +
-+  return MetricGroup("fpu", [
-+      MetricGroup("fpu_total", [
-+          Metric("fpu_total_flops", "Floating point operations per second",
-+                 flop_r, "flops/s"),
-+          Metric("fpu_total_flopc", "Floating point operations per cycle",
-+                 flop_c, "flops/cycle", constraint=nmi_constraint),
-+      ]),
-+      MetricGroup("fpu_64", [
-+          FpuMetrics("fpu_64_single", s_64, 1, "64-bit single"),
-+          FpuMetrics("fpu_64_double", d_64, 1, "64-bit double"),
-+      ]),
-+      MetricGroup("fpu_128", [
-+          FpuMetrics("fpu_128_single", s_128, 4, "128-bit packed single"),
-+          FpuMetrics("fpu_128_double", d_128, 2, "128-bit packed double"),
-+      ]),
-+      MetricGroup("fpu_256", [
-+          FpuMetrics("fpu_256_single", s_256, 8, "128-bit packed single"),
-+          FpuMetrics("fpu_256_double", d_256, 4, "128-bit packed double"),
-+      ]),
-+      MetricGroup("fpu_512", [
-+          FpuMetrics("fpu_512_single", s_512, 16, "128-bit packed single"),
-+          FpuMetrics("fpu_512_double", d_512, 8, "128-bit packed double"),
-+      ]),
-+      Metric("fpu_assists", "FP assists as a percentage of cycles",
-+             d_ratio(f_assist, cyc), "100%"),
-+  ])
++  pmm_rds = 0
++  pmm_wrs = 0
++  try:
++    pmm_rds = Event("UNC_M_PMM_RPQ_INSERTS")
++    pmm_wrs = Event("UNC_M_PMM_WPQ_INSERTS")
++  except:
++    pass
++
++  pmm_total = pmm_rds + pmm_wrs
++
++  scale = 64 / 1_000_000
++  return MetricGroup("mem_bw", [
++      MetricGroup("mem_bw_ddr", [
++          Metric("mem_bw_ddr_read", "DDR memory read bandwidth",
++                 d_ratio(ddr_rds, interval_sec), f"{scale}MB/s"),
++          Metric("mem_bw_ddr_write", "DDR memory write bandwidth",
++                 d_ratio(ddr_wrs, interval_sec), f"{scale}MB/s"),
++          Metric("mem_bw_ddr_total", "DDR memory write bandwidth",
++                 d_ratio(ddr_total, interval_sec), f"{scale}MB/s"),
++      ], description = "DDR Memory Bandwidth"),
++      MetricGroup("mem_bw_pmm", [
++          Metric("mem_bw_pmm_read", "PMM memory read bandwidth",
++                 d_ratio(pmm_rds, interval_sec), f"{scale}MB/s"),
++          Metric("mem_bw_pmm_write", "PMM memory write bandwidth",
++                 d_ratio(pmm_wrs, interval_sec), f"{scale}MB/s"),
++          Metric("mem_bw_pmm_total", "PMM memory write bandwidth",
++                 d_ratio(pmm_total, interval_sec), f"{scale}MB/s"),
++      ], description = "PMM Memory Bandwidth") if pmm_rds != 0 else None,
++  ], description = "Memory Bandwidth")
 +
 +
- def IntelIlp() -> MetricGroup:
-     tsc = Event("msr/tsc/")
-     c0 = Event("msr/mperf/")
-@@ -688,6 +777,7 @@ all_metrics = MetricGroup("", [
-     Tsx(),
-     IntelBr(),
-     IntelCtxSw(),
-+    IntelFpu(),
-     IntelIlp(),
-     IntelL2(),
-     IntelLdSt(),
+ all_metrics = MetricGroup("", [
+     Idle(),
+     Rapl(),
+@@ -798,6 +859,7 @@ all_metrics = MetricGroup("", [
+     IntelMlp(),
+     IntelPorts(),
+     IntelSwpf(),
++    UncoreMemBw(),
+ ])
+ 
+ if args.metricgroups:
 -- 
 2.44.0.278.ge034bb2e1d-goog
 
