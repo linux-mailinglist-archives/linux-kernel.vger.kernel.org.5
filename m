@@ -1,213 +1,95 @@
-Return-Path: <linux-kernel+bounces-88991-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88992-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AC1686E91B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:04:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAB8E86E91F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:05:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4512288993
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:04:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B2131F29026
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:05:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3AE03FE44;
-	Fri,  1 Mar 2024 19:01:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2F0A3A1BB;
+	Fri,  1 Mar 2024 19:03:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="e2uHwiS9"
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12olkn2091.outbound.protection.outlook.com [40.92.22.91])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X0oWY/3C"
+Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 510BD3B289;
-	Fri,  1 Mar 2024 19:01:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.22.91
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709319687; cv=fail; b=O8r3xlGIPqOx2RKdZoJjghiYK0rF+hQa65VqE3J6x8XGYRQD8qD2hnVnNQnDdDT+7nKn8V6wFDdibqA+K5EsKwju9/Yt0zmdnyozuYxdsKtxDBH8NMHImb2J/0fnxfiBDcYrITcZdo3Hjghno3foPJqXwC273QrnFlllxuBJBbA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709319687; c=relaxed/simple;
-	bh=szgzdxaenommhi880KnJX54BhWQ/in16mT53b5BURN8=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=A/5NVNTM4pe4pxEA6to260KrWGBLS/iVyWnneaImR1zCvwoN4wYQa4PdUCRZ95DKNWYMHZnaIH+ek3a1qCuCVYYo2xcZhWtEGBnywSntIO/z2Cv1R9BqCfFINi01DlYi2NVR6cVcBSqhsUMRJ7wmTLsEfkMw/UxkIvGXnq7bBhc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=e2uHwiS9; arc=fail smtp.client-ip=40.92.22.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iP8bjFSGFqHNOt3Lpc+C2vCABSaTLFrlrtq9lT690uFLuLkECYg/PT3CHDK//gAFqu4oIiKWHirHGV8R+4oNtfcdoAZB3f8Go9OfedKXa/TEKKJCs+ssgdAhqznE39fTAPnowXTmYMYxhU2r7wvhg8wAMk9LNh22IIKwenUpVJzNpMe5Rlk89OuDxG1WZlWmx8vIN3x2V04LlD0JmK0boJABXWpaFFflMxkpUQRKHajqVhHhjezSzGsDAGeX76hNbxkfBO9lePI8t9GAFLMNPZkvWunQQfgWKxgIhz1aBWikRL17jtGX3f7Ci5rvPzL+U1KKJMcgAx4mW2WZm9i6Bw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dDDroaFsOxjF/Ql1TU5s/Z/CTnO28YFIxdNmj/YhTKY=;
- b=QSAN45jdyb9Q5bZUlmWeXF2SejvULHHh5XHIlhBa/8IyATErqnSnVVrn45etZZPb674ZtWgSROCq8jf+z9DRTy1jcOU6xRhnTJVOK+R24pNZF0UYLtaR8EbfJOU/ipI+kyFZ1a6U3GtnTsbOVctG9lQOvoJZNe/j/cJVtMzgO/S0vkSmUbPfezDVV0CqGqPwVOq5CsdycfZKbI7dySfPws4eP0arAmO8QROa1uROTd5BwC5uLJ/35qIeO39AlbJUJDdA06QuzlcxU7xSABlHBL8MTn+kPT4OgadW7AvwY4DyEv6H0dV7PbtAHrpxSB8fjIyLDUljN15Ubo3ILe+1WQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dDDroaFsOxjF/Ql1TU5s/Z/CTnO28YFIxdNmj/YhTKY=;
- b=e2uHwiS92qjQOIoLK8xhtPLG924uS5dpmgdNIvPtFl2/05jHz8Djj5noEAPjeYUcgPFKg0JOZcqIKcH7JXHj7/r0yiVw8Bu7gw7HENmQ8XC3ZF+bCph6q7HkDC4o4UjwDDZJONoC1zhLCsTev/+HUUJp/zhtqt+R8p5DFCe2pbnNkSjeTISnjdAdXCoy8EDmoba4XAGt105scWem2BpUUoP0tf26/FxrSo/fnlzoDtzPtKK75SM/osUjrEmpgTFF2SRDbE+f18dlYzss/9aB2dVwcvybPon5PjLUjcZhsL8W7sYfHLIryrmfwShvl9WOKtyiIP4wGrPP8jmC3ni5oA==
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
- by CY5PR02MB8941.namprd02.prod.outlook.com (2603:10b6:930:3a::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.34; Fri, 1 Mar
- 2024 19:01:23 +0000
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::67a9:f3c0:f57b:86dd]) by SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::67a9:f3c0:f57b:86dd%5]) with mapi id 15.20.7339.031; Fri, 1 Mar 2024
- 19:01:22 +0000
-From: Michael Kelley <mhklinux@outlook.com>
-To: Rick Edgecombe <rick.p.edgecombe@intel.com>, "kys@microsoft.com"
-	<kys@microsoft.com>, "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
-	"wei.liu@kernel.org" <wei.liu@kernel.org>, "decui@microsoft.com"
-	<decui@microsoft.com>, "linux-hyperv@vger.kernel.org"
-	<linux-hyperv@vger.kernel.org>, "gregkh@linuxfoundation.org"
-	<gregkh@linuxfoundation.org>, "davem@davemloft.net" <davem@davemloft.net>,
-	"edumazet@google.com" <edumazet@google.com>, "kuba@kernel.org"
-	<kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-	"linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC: "sathyanarayanan.kuppuswamy@linux.intel.com"
-	<sathyanarayanan.kuppuswamy@linux.intel.com>, "elena.reshetova@intel.com"
-	<elena.reshetova@intel.com>
-Subject: RE: [RFC RFT PATCH 4/4] uio_hv_generic: Don't free decrypted memory
-Thread-Topic: [RFC RFT PATCH 4/4] uio_hv_generic: Don't free decrypted memory
-Thread-Index: AQHaZTRZ+J40st6LSE20mDImXtxcVbEjRXAw
-Date: Fri, 1 Mar 2024 19:01:22 +0000
-Message-ID:
- <SN6PR02MB4157F9E6E2464B09A839F4F9D45E2@SN6PR02MB4157.namprd02.prod.outlook.com>
-References: <20240222021006.2279329-1-rick.p.edgecombe@intel.com>
- <20240222021006.2279329-5-rick.p.edgecombe@intel.com>
-In-Reply-To: <20240222021006.2279329-5-rick.p.edgecombe@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-tmn: [wlha+3nr38lm2PNtkKIMunnq7T2VKM2u]
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|CY5PR02MB8941:EE_
-x-ms-office365-filtering-correlation-id: ef11614d-aa21-4f4f-f710-08dc3a21fcb8
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- 0yDObYohAhYR3GFJdZuCAVo0KoEDBHU5mGr4OBNvRFprSWQ70xgnqBlDBMWup5Wbeh0EHtrsbOgclQkh//ocrlkiLlnO9d/qfKQmpSd+KuGuHyUV7nBMaKxgJU9msZYjECscoz24aD9PQhTkJM2xfeX1asgPsy6tMR5QxshBD7vX1FUGz4vEA64RBKPuHzPDrbcU6hbDVo81av8GElYD59+uZ2zPiDWVxqryokTbgNcJS97zkL/Yba20trIi7KUzG06lmDE8M75wy2FG41TTZqMf+MqzD4+opjXCAqXUv5pL6cSG/XCzBdJIrNP4DvU45z6rRl1hPD5TPGdol582GUYDfflnL6RiSzIa4NwkQy3NFOADjco5+1OKzKzKrqM8Ns+wde+YtagbPn7/A97ITuIVX3j+eGUS6sz5GHUph9QXFhRsrsU4j/ezRInFb5C311Ds7q1bf5mvOBsqW9lzSGsgGSNS831UT2gtmEH4+344FA42my96L1m3KdPAoVrQkPMS+jScK1A4t6DCIWcRQEAj4pR3ErgADsrbRqcfTosEPbQ5lLMWxm+nZOgBY+ay
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?OAZfUWdLF3ift40dY69gsEGsx62a0NM/Pz5JhvxVrBZ3px61vWcQB/DI/kXa?=
- =?us-ascii?Q?z4daItyToR7S/bsiki95i0lcO1ycUn+2ivSJ1lnAiNzyeF1Uw/BcxN8KYFkg?=
- =?us-ascii?Q?zE8ktGee/jIWMdVO6lKK3TSeT0jHlZX+6m5x3E0JAbAG2UoLi+Z6Orxlpv7K?=
- =?us-ascii?Q?ncVX6J5nWvQWOwLMbQRzSZykEe/G8uMWUVg4SPw7bm/q3TXNQ/epzAmKWi5f?=
- =?us-ascii?Q?ZmycM2xupDjExWFWc0LTFlmV3rZsfIk3e3kBUN3ytLHpEjSDzk87qlVAIWro?=
- =?us-ascii?Q?gst2vreno9L6n9B558QiFIei4HXJIYfzScSENo71bbAbDeHfH+4thEp+3SDA?=
- =?us-ascii?Q?scG1OwY/v/EYCJtfhKPbJIgZQpumyGuhd9xP7yI2cyEsHmTFnOPgjzzqFEY5?=
- =?us-ascii?Q?29sMUgYF/nRtbQ2VJNQG2IEZH/JpVce6ioJgjmFDkR8ImOZ1OpJ+PcT8usde?=
- =?us-ascii?Q?+46Eqf3cRNc8UNpqxsOUDebz6E1PPzvx4tFqfk5/9T5GqRnWLJkbb7oJpeW2?=
- =?us-ascii?Q?48EKRMpzlu7w9WPjVd69h5z0RHI2v4lVK4bq5Y2j4YZkBLarY0Ag+0Y5FXw3?=
- =?us-ascii?Q?CZ/mVHNfMZCz2iOaKlCl+V6mc7jZFMeSks6Q/eqFtrKN3qw/Maly+ulOm4hc?=
- =?us-ascii?Q?iGYF7XElUZOjhxjzZqfIh4XxvcRGDMmC54wa5jqpSFLGl02Bwo22cxPvRHTj?=
- =?us-ascii?Q?hLuCNGhRrGKBSq4jSqJpZpG8BJrDx7Ra+Hpg1NLG6WfkT9et8bNc1QXV+Yht?=
- =?us-ascii?Q?uNa0h1I4YS0Guo7FeUuUJ+xwVXdSjlAQfLdPgcVE9byx63zJfDnXhHv3ZgI2?=
- =?us-ascii?Q?pp4Iij71EjFkMtmeTaPGg75ZbOwM5Ly3ve9yzFId+DebD036QWfjSyRplINY?=
- =?us-ascii?Q?zIhxl11lYtWqz/aOzyptIUmfrvflLkK/Wc7PkvHq5W7fl0E/nPXZZw6rPUyJ?=
- =?us-ascii?Q?uWpa+fFjWkJB+GTPsDA7sGQIspBKv76z8WP3N/TIYaxCYpg1DGoIbU+HBDG2?=
- =?us-ascii?Q?oe9l5xAa37VIFidAnHMgPiot9CbIiOztQsGXvRzHG/QYzyXUDAm/kiCtm7ez?=
- =?us-ascii?Q?+M3YSyGesONC0ZzHZFNGTQAYS4JVo/S0CPXeEezjSalUPpfCyMqjQsd2Xm3I?=
- =?us-ascii?Q?xwfEaT3RoWFNGWu5MTWVVNUwkjW1B+MTH3XMAWJgI098fj0Vb8dJ5PMhJ9Ef?=
- =?us-ascii?Q?ju+S3o/ZLYQD9xsqqtuKoAPRh5q5X1m5gQ66fg=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBE7D39AF3;
+	Fri,  1 Mar 2024 19:03:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.48
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709319788; cv=none; b=gjDhoudo/XOCAU4qT2Tt5UvzezllSl5TyMqEUNtMz2ladWfkZmVqqOrKnNgRGl1E4uami6ITxkjBTuSoy4gjz0eXnX4GbLG4bLgbm5jjYzcyDbqVQoTo26NabtXulOU3wbhS3FPOaBYDAjFeA3Nk2+o/0cT3sa0A1cgUulKgJrI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709319788; c=relaxed/simple;
+	bh=51tp/Bjz8IURQUYarrI2wOwDWIoS+kIinrfe1M6PZJE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ebhgi7Mv5n94Ghgd5ToSGD5Mq+IAhJeUWf+EC9MfV1D7IMOqpY2o7R0a7P7ME729tpgGpM+gsPDE8Z7p5JuJ9wM30AdQPt8vjVdQEBQg9EYV5jiQWscYVbYxxWlEjn8AQdkbCUaHYW0vVY6LrPZRzEpq/8z9Sv7QF/rOTmJKYjg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X0oWY/3C; arc=none smtp.client-ip=209.85.161.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-5a10f19d4a0so18432eaf.0;
+        Fri, 01 Mar 2024 11:03:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709319786; x=1709924586; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=SE40B9hgoMxl2rpx1CQNiiNwATV4tS/ycE89d3SLnCQ=;
+        b=X0oWY/3CkECWwnOG0ccbPGnVVloa5vNvNGi8Fe6n8e18tYFVunjMP0dIMUyBH/9Jb9
+         w4yPp3Gx9oj3tEV7IDQgK7uMsry9A1PbZqNjQDezTiLA3o1xCyp9B4G3t05YFQsMjO9+
+         5jFcRwpig34SoiJwVaqm2sqYDCPfUlkogiXhfMsQfmdNKDddaVkYFDx+lprYSufbDknF
+         2b+gz6wf0cV+4Beeh6ImITJrjBe4EJ3x2ziH4U8Tnq4SxFsSFkOogH33TQPI+BTMKRqp
+         Hj3M9DMOlnFZikMJJk6hpyMlSzEK39S3qaVq86tDRUkSJmjVjtOdYSuhKHRZXZiuVFXS
+         OogA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709319786; x=1709924586;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SE40B9hgoMxl2rpx1CQNiiNwATV4tS/ycE89d3SLnCQ=;
+        b=MnEAecrv5FyKNvUWKZ9vTW6M870pmCm1f39lAMbZmtkmEXTbHAFhtBBubolyAtmB96
+         IiSH12kgAsEQr+sPbtP/xWcrcZEpdu+qmQkqHKfE8vKI0Q8tl4UJ96qy6oEcWkBubuxw
+         s3L1RUZ9aNyq4Q8S1YS/iah14LacPujFKTS6noa8eiBLG+5vvRHkvNoPI8iTR58nRkjW
+         ymI0I96goYkga4kipFtKwZXwa2nd8OYjA/mpcM2OW/060ZXpmKh0T6tvNUqONn6xKATV
+         WI1nPgZF571AGDn5kBXY0xj2fXQodLaHIy1jxDOfjl0DrKkKazEWDWR+NcGjvnwiJKzS
+         0lmA==
+X-Forwarded-Encrypted: i=1; AJvYcCVQ393JaTNaJWLqcjuQJaJrX1nlSqsRhV4N0lzazY27RXld0GqW+/xGfM3FC3putXcec7R2/pWRVPz25rf2hbSHq3U0GrVEh4vKd8v29S/y7IySoB1yvC6BquVfJU55u3THXQKXoiyx/JCXe0m0JJYUI4t8o5gDkQ4WnoTMbWRIyKL1s5zWihXPFA==
+X-Gm-Message-State: AOJu0YxKmdsEq6ufCAFr1qBHj+7yETaYMa+vwASDVunsPKFyDyiIOzAG
+	/dGCLuOeyLM816rqapGZXw6dJWocIZEYolig2UbShjTHroh/ykHji5aitk5+GaJqpB+TPwfEw5C
+	7hvZYPZE74k1qyzc3l+0hZhRe9L4=
+X-Google-Smtp-Source: AGHT+IGbx4/tIW7yuZmPHNA1HEkqzlBB14mzmokKtAQVuFrKDPObAQs6vzZFYqB/ou13sLvxvFCgpeCY1I3OTb6wNS0=
+X-Received: by 2002:a05:6358:88f:b0:17b:6b42:8d9e with SMTP id
+ m15-20020a056358088f00b0017b6b428d9emr3158417rwj.0.1709319785941; Fri, 01 Mar
+ 2024 11:03:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: ef11614d-aa21-4f4f-f710-08dc3a21fcb8
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Mar 2024 19:01:22.7571
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR02MB8941
+References: <20240301144458.2810597-1-usama.anjum@collabora.com>
+In-Reply-To: <20240301144458.2810597-1-usama.anjum@collabora.com>
+From: Justin Tee <justintee8345@gmail.com>
+Date: Fri, 1 Mar 2024 11:02:55 -0800
+Message-ID: <CABPRKS-0v0bdsAp6aK80AQn80WRSGpF3SP9HtwH2wMPXoByJQw@mail.gmail.com>
+Subject: Re: [PATCH] scsi: lpfc: correct size for wqe for memset
+To: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc: James Smart <james.smart@broadcom.com>, Dick Kennedy <dick.kennedy@broadcom.com>, 
+	Justin Tee <justin.tee@broadcom.com>, "James E.J. Bottomley" <jejb@linux.ibm.com>, 
+	"Martin K. Petersen" <martin.petersen@oracle.com>, Hannes Reinecke <hare@suse.com>, kernel@collabora.com, 
+	kernel-janitors@vger.kernel.org, James Smart <jsmart2021@gmail.com>, 
+	linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-From: Rick Edgecombe <rick.p.edgecombe@intel.com> Sent: Wednesday, February=
- 21, 2024 6:10 PM
->=20
-> On TDX it is possible for the untrusted host to cause
+Hi Muhammad,
 
-Same comment about TDX vs. CoCo VM.
+> -               memset(wqe, 0, sizeof(union lpfc_wqe));
+> +               memset(wqe, 0, sizeof(union lpfc_wqe128));
 
-> set_memory_encrypted() or set_memory_decrypted() to fail such that an
-> error is returned and the resulting memory is shared. Callers need to tak=
-e
-> care to handle these errors to avoid returning decrypted (shared) memory =
-to
-> the page allocator, which could lead to functional or security issues.
->=20
-> uio_hv_generic could free decrypted/shared pages if
-> set_memory_decrypted() fails.
->=20
-> Check the decrypted field in the gpadl before freeing in order to not
-> leak the memory.
->=20
-> Only compile tested.
->=20
-> Cc: "K. Y. Srinivasan" <kys@microsoft.com>
-> Cc: Haiyang Zhang <haiyangz@microsoft.com>
-> Cc: Wei Liu <wei.liu@kernel.org>
-> Cc: Dexuan Cui <decui@microsoft.com>
-> Cc: linux-hyperv@vger.kernel.org
-> Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
-> ---
->  drivers/uio/uio_hv_generic.c | 12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
->=20
-> diff --git a/drivers/uio/uio_hv_generic.c b/drivers/uio/uio_hv_generic.c
-> index 20d9762331bd..6be3462b109f 100644
-> --- a/drivers/uio/uio_hv_generic.c
-> +++ b/drivers/uio/uio_hv_generic.c
-> @@ -181,12 +181,14 @@ hv_uio_cleanup(struct hv_device *dev, struct
-> hv_uio_private_data *pdata)
->  {
->  	if (pdata->send_gpadl.gpadl_handle) {
->  		vmbus_teardown_gpadl(dev->channel, &pdata->send_gpadl);
-> -		vfree(pdata->send_buf);
-> +		if (!pdata->send_gpadl.decrypted)
-> +			vfree(pdata->send_buf);
->  	}
->=20
->  	if (pdata->recv_gpadl.gpadl_handle) {
->  		vmbus_teardown_gpadl(dev->channel, &pdata->recv_gpadl);
-> -		vfree(pdata->recv_buf);
-> +		if (!pdata->recv_gpadl.decrypted)
-> +			vfree(pdata->recv_buf);
->  	}
->  }
->=20
-> @@ -295,7 +297,8 @@ hv_uio_probe(struct hv_device *dev,
->  	ret =3D vmbus_establish_gpadl(channel, pdata->recv_buf,
->  				    RECV_BUFFER_SIZE, &pdata->recv_gpadl);
->  	if (ret) {
-> -		vfree(pdata->recv_buf);
-> +		if (!pdata->recv_gpadl.decrypted)
-> +			vfree(pdata->recv_buf);
->  		goto fail_close;
->  	}
->=20
-> @@ -317,7 +320,8 @@ hv_uio_probe(struct hv_device *dev,
->  	ret =3D vmbus_establish_gpadl(channel, pdata->send_buf,
->  				    SEND_BUFFER_SIZE, &pdata->send_gpadl);
->  	if (ret) {
-> -		vfree(pdata->send_buf);
-> +		if (!pdata->send_gpadl.decrypted)
-> +			vfree(pdata->send_buf);
->  		goto fail_close;
->  	}
->=20
-> --
-> 2.34.1
+How about instead memset(wqe, 0, sizeof(*wqe));
 
+Thanks,
+Justin
 
