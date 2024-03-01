@@ -1,90 +1,111 @@
-Return-Path: <linux-kernel+bounces-88672-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88674-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD16286E510
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:14:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F49686E51B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:17:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04F611C2125C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:14:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E90A287DA8
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:17:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6636670CBB;
-	Fri,  1 Mar 2024 16:14:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DAF570CD2;
+	Fri,  1 Mar 2024 16:17:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TEOzgbzV"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="NLbWSuG0"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6B64368;
-	Fri,  1 Mar 2024 16:14:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D9F970CC8
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 16:17:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709309650; cv=none; b=HbIbgNg+wuRrLkIm2n4tQLTFbMTihHcWi9Mtywm9XypdyGxL4MNYOJzGFQH3erqTsNPP7brA8AvzDj5/BgBeqgUx3cfmbDamyFG92LVB1yPvkjCe+lHGVa4y9MqaxYV0obhU/qRnUZ19WWfKqZHPo6hhlQ5rocYzhGvmR4BleP0=
+	t=1709309829; cv=none; b=b8bfn20XCtIbOD2Tqb+N0L8PN6Dzu9TSy9LwUDTaQNiyydKDI1XeubWGSyQ9ewTzoUzr9MY7HoBFHDUMctCnkIh7XrJvq2LbAKsyKYL9I2TJzmQ4b6f2QX2qF6izQqnmixr1xoQoeqrK81I2A/I+4hQSrguIhBvqKATX/FmbJLA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709309650; c=relaxed/simple;
-	bh=BikzDK1QW0K2bWi7muKUljDgu1skoyyFPZELijkX52k=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Dirbx7EbcL3vTgfHH/Zk8+hpKhEs1Oe2UVoOz8ozw6Bue1IXRVWi2CQKNoWaysrLitsI/XHY3riv3GAMIBKe6SnluU8eCWtPDyYahqi0KEesfr3JGFMGifu9ifTdLzZaS1jksOr0ju9lq1ArcKd6wWr33bvyrAQJD4N5mqNGSsk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TEOzgbzV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B3EEC433C7;
-	Fri,  1 Mar 2024 16:14:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709309650;
-	bh=BikzDK1QW0K2bWi7muKUljDgu1skoyyFPZELijkX52k=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=TEOzgbzVFsLomQFvAfuSVAfDEuhsD4VvQdASJ6LjNj10+td2wi0MCxU4FIP3pi0V7
-	 a1TdcPajbG1NfAVladYc6nqtbsgm3GdUE8uSqAUN76NLm1P3oOASJQ4NOcT87a7FzR
-	 a6Zk/13yRchQIQ8WyZpiIKujV3KCDpKc44CQgFzPorDsheHjwjGq4M6uDjEkuMLGuv
-	 x8Fkbl1iqCWIZsmUnn511pkATzZudzJ7jsOqi3iuhNBT6HV6r2eTimTDV9+4RhQZxM
-	 PZjiakJ1gh/Tjya4WNczaoQIZ7roUSxYyfZEpOHv4dc8uTxI0L6Y5Azs4Tgl0QTplD
-	 MbhZGTNc1pykA==
-From: Conor Dooley <conor@kernel.org>
-To: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Emil Renner Berthing <kernel@esmil.dk>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Changhuang Liang <changhuang.liang@starfivetech.com>
-Cc: conor@kernel.org,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Jack Zhu <jack.zhu@starfivetech.com>,
-	linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	devicetree@vger.kernel.org
-Subject: Re: [v3] riscv: dts: starfive: jh7110: Add camera subsystem nodes
-Date: Fri,  1 Mar 2024 16:14:00 +0000
-Message-ID: <20240301-wildfire-glue-983d58132599@spud>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240219032741.18387-1-changhuang.liang@starfivetech.com>
-References: <20240219032741.18387-1-changhuang.liang@starfivetech.com>
+	s=arc-20240116; t=1709309829; c=relaxed/simple;
+	bh=/A5CBIENfHWW4XPPPw13wG+4toE2KUEZawUP9+3ggxw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XhFXXZUNqcSlvSL9DC51jV7kIh72IrIlgFRwcdkpWAppKE2g1LLj4K/M5nQi9JX1asPt9/YHkTGi4//Kc3AZ81ElHl/CFaUElxpRNRFH535OfJx80Eba+vaje0U22YTmt3u88pFkKYJXRwI1kphLZAAI+/HXlO95n25jpYCPiXY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=NLbWSuG0; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id A2DB440E00B2;
+	Fri,  1 Mar 2024 16:16:56 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 4BQDK0X13Mgf; Fri,  1 Mar 2024 16:16:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1709309813; bh=4fLdrLhcEFJ7jjCD39pp4ErP50LzIorbrqySsHobOKY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=NLbWSuG0gxZCI/jwJTCl1d5SwMIrFBHt5FTtENBhC6re0hQNCxkUWzw1Pzyxzoo5x
+	 hz6t4dU/DhLdw1KR4+CcaihCVF4/3fX8Udz5H4THEWLC6Mi1r3dKIVy+tMrxtf69a1
+	 4VOofTaHsREpLHCrWktsoavM3r9Awfcz0Jib2+bb1y4rqNfCZRPgWQOkuj4afCPlBA
+	 vwLvMixf/jSWdeJabXdgCMoaTCl+HOr9h9T0JtQcKN6Ppr7IU2/vK/eQ6MCHVBhhTJ
+	 BIM/NS6Cw84aj9l5SDjqMiZa9VoHfYoOu0AXCW8dwFiobmtMoYb+LGG5F7H2u2n/k2
+	 UjnwCKmKlB5F6zVtzJxou/k3CLxLZQUm/xGhjvFdk5DMISqecIOy7CBUeJsOKt3ZLL
+	 Zpha01F2SOQ/OLfI8mnHqE6YYFIrMaH3bNI2lhqxA0pqdVBYOh6zqq+qaJ0U7woZin
+	 8brx0KU6GbwNrNHiWWMckR9eUycjugn6bPHoRaZ0B+xuA8t9Y9WlZpvowF0KUQ6lBk
+	 13UiEwA/apUTFNXJuiu6thnHsCT1DbOj+dKjV0AJvbsj7UI9S16boBxFntwIFKzhSM
+	 1xrpz/3PbkM5l/DYbgCavQlEFj1uXL7Y5ehuO5Nucu+8w82KeOXXAgbFZPZxkCr4cq
+	 XXdmQ2TcQG8zE5Q8qIdeX+Bs=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 76F9940E0028;
+	Fri,  1 Mar 2024 16:16:42 +0000 (UTC)
+Date: Fri, 1 Mar 2024 17:16:41 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Ard Biesheuvel <ardb+git@google.com>
+Cc: linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+	Kevin Loughlin <kevinloughlin@google.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Dionna Glaze <dionnaglaze@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Andy Lutomirski <luto@kernel.org>, Brian Gerst <brgerst@gmail.com>
+Subject: Re: [PATCH v7 5/9] efi/libstub: Add generic support for parsing
+ mem_encrypt=
+Message-ID: <20240301161641.GMZeH_aUvBvKZjBIpl@fat_crate.local>
+References: <20240227151907.387873-11-ardb+git@google.com>
+ <20240227151907.387873-16-ardb+git@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=355; i=conor.dooley@microchip.com; h=from:subject:message-id; bh=caay3mRU/JhC/YsFIkNMgzQjqWb0CeveGJRpWt2VyHA=; b=owGbwMvMwCFWscWwfUFT0iXG02pJDKkP/x03ZRMI+/XnQ7JJfsT3mQumPClRPfv3XWH47x9vh TuVZ3D96ShlYRDjYJAVU2RJvN3XIrX+j8sO5563MHNYmUCGMHBxCsBENixl+CuzbQHLC3uW2w1f 791QF1ryMNCNP8f9iIV7BsvOAh/9kr2MDH3cs4Rz1yz8W+G18e7FDdkWKlNPz9ixe+2WSf3P8rc cZWYHAA==
-X-Developer-Key: i=conor.dooley@microchip.com; a=openpgp; fpr=F9ECA03CF54F12CD01F1655722E2C55B37CF380C
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240227151907.387873-16-ardb+git@google.com>
 
-From: Conor Dooley <conor.dooley@microchip.com>
-
-On Sun, 18 Feb 2024 19:27:41 -0800, Changhuang Liang wrote:
-> Add camera subsystem nodes for the StarFive JH7110 SoC. They contain the
-> dphy-rx, csi2rx, camss nodes.
+On Tue, Feb 27, 2024 at 04:19:13PM +0100, Ard Biesheuvel wrote:
+> From: Ard Biesheuvel <ardb@kernel.org>
 > 
+> Parse the mem_encrypt= command line parameter from the EFI stub if
+> CONFIG_ARCH_HAS_MEM_ENCRYPT=y, so that it can be passed to the early
+> boot code by the arch code in the stub.
 > 
+> This avoids the need for the core kernel to do any string parsing very
+> early in the boot.
+> 
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> ---
+>  drivers/firmware/efi/libstub/efi-stub-helper.c | 8 ++++++++
+>  drivers/firmware/efi/libstub/efistub.h         | 2 +-
+>  2 files changed, 9 insertions(+), 1 deletion(-)
 
-Applied to riscv-dt-for-next, thanks!
+Reviewed-by: Borislav Petkov (AMD) <bp@alien8.de>
 
-[1/1] riscv: dts: starfive: jh7110: Add camera subsystem nodes
-      https://git.kernel.org/conor/c/28ecaaa5af19
+-- 
+Regards/Gruss,
+    Boris.
 
-Thanks,
-Conor.
+https://people.kernel.org/tglx/notes-about-netiquette
 
