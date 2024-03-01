@@ -1,145 +1,127 @@
-Return-Path: <linux-kernel+bounces-87839-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87838-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB5DB86D9CA
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 03:33:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 06D1886D9C9
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 03:33:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 732BE284E8F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 02:33:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 858BE284F0B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 02:33:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B60D405FE;
-	Fri,  1 Mar 2024 02:33:25 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8D7E3FE52;
+	Fri,  1 Mar 2024 02:33:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LsPJi7Nd"
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97AE73FE23
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 02:33:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC6933FE24;
+	Fri,  1 Mar 2024 02:33:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709260405; cv=none; b=W8IrC0yTOwiXn8FjE/ATWp8s0HtY7Dq8+btb/oGKSUG4dtWaxWPUJLjAZNP4BD86N5JYk9sscqhOOwZ2vXPjgh6EN3NhHsWoIP+gYhzUZ1z7jYugYgTgomYsnL6rcrrsZFPik2oaOAkUvBeDBywerrqVO4Due9D4kr++FD3AZiQ=
+	t=1709260404; cv=none; b=q73kSpXzC6EoBbdzuaom5jLS+2nY5PdpskljqMyu06Pv8Zr6+28GI8tGeciIr3k6F6fnpdhZpG/0uF7cRCgUdVJmdvblQDKmm8VULxwZh7lycIrtabg3qGBmVkG5dQDvq5rbarz3XTDmwIQhFVlp6MipG+S9hPHj0AkNq44pEsc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709260405; c=relaxed/simple;
-	bh=iZ+aQa0XNT8LUz/3ls5SxUXbAIgi8tHpYdadT1LDUtU=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=qGqxUL4gFVHD6Tavdz+xsxdZlPFMcQhG1NZOahss6AXOeWHRMHPMCiIxPqtXv1tb/KJOOqCaho9dcq5xD7+gLCsi0vP1YeHuLEpLbPVnp1V7E93nr/tRwlPSDmBa/mNJPzIvUarKXTpdh7/ZfIvMfzWLbAkPQ4RGza9FqGG47uk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4TmBsk1yYCzvWCX;
-	Fri,  1 Mar 2024 10:31:06 +0800 (CST)
-Received: from canpemm500006.china.huawei.com (unknown [7.192.105.130])
-	by mail.maildlp.com (Postfix) with ESMTPS id 06DCD140258;
-	Fri,  1 Mar 2024 10:33:18 +0800 (CST)
-Received: from huawei.com (10.67.174.116) by canpemm500006.china.huawei.com
- (7.192.105.130) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Fri, 1 Mar
- 2024 10:33:17 +0800
-From: Zheng Zucheng <zhengzucheng@huawei.com>
-To: <mingo@redhat.com>, <peterz@infradead.org>, <juri.lelli@redhat.com>,
-	<vincent.guittot@linaro.org>, <dietmar.eggemann@arm.com>,
-	<rostedt@goodmis.org>, <bsegall@google.com>, <mgorman@suse.de>,
-	<bristot@redhat.com>, <vschneid@redhat.com>, <wuyun.abel@bytedance.com>,
-	<joshdon@google.com>
-CC: <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] sched/fair: Fix task migrated to isolated cpus
-Date: Fri, 1 Mar 2024 02:31:09 +0000
-Message-ID: <20240301023109.336707-1-zhengzucheng@huawei.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1709260404; c=relaxed/simple;
+	bh=yZZp+0BpYaUOsBZPJaH080lTaejacCV5/Ei7kqR3es0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ggBBQKSlI+Blw9+etYSsBdMwe5ptt5Xt9IhRl1fZqu0b8UQe8lFvt+uNdS8KWEm6MjDC5uYSvkTGwVRH9H2725HgbmV+3g9xdb9XAyZqyJ+aWfjsb3TZGFDSe1oYNLVpP0I6SFhfpmVOagRftszFTETb0ZID2I6NA08jsLQVI58=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LsPJi7Nd; arc=none smtp.client-ip=209.85.215.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5ce07cf1e5dso1477249a12.2;
+        Thu, 29 Feb 2024 18:33:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709260402; x=1709865202; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=V/uM30sjNa+4vpqQtvZNxYTbK+VqRmciTbx7e14tIgs=;
+        b=LsPJi7Ndt/tC/6f8kQpWsqoWjcmdaDdFE1JZ8NmC4FfJnrk+4mYih/7fZK+khk+OTQ
+         NWbL6OjgisifubdoX6C2xA07nD6XsQdd7+g8XyyWcrvW+ejU5ydwFYzUbyWkz3Yt6ul9
+         lKioNRPr9xicKpgLLewidesb4+98tCf2RzjF7qm1vcqMd/getUF5olM2cCtT1bVJNlTq
+         aC6st0fLBFGAutmND4XAazRpGJJCS9MwJLwZAqX1ftfrcRKc2xoYnOakjylzLzVIIWFC
+         6vF12mVmuJ71f1LeUV0V6K1kiZ3FhtGv/fxtafslNLbDH2im/jTnDWJVAuK6xeeWm8ht
+         VWvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709260402; x=1709865202;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=V/uM30sjNa+4vpqQtvZNxYTbK+VqRmciTbx7e14tIgs=;
+        b=aQAvupL3m8wdF96umqwCc4lZbEzs0iJO0OVLj4eO4JXwUdaPpfHohvDnpa9WIQ9s9N
+         cDsH/hKEUYItSPyz9kfZ0AspD6axD8oN+yqfKmsPCsfic4Xtt4LGUkmRR2G6l1WeEbtA
+         eUorFtkeopX6uuoPPY0raGkUz8qTBOyRjkaIj/ooCauI5Q9bOOe8664FccTbeGKRbTZP
+         /9BxTOI8kCRqN9RUrStYHXJO8d1LpwnKyNj5wnIyQhUcVZe4mseP5Y3kUfLbChAMlp8V
+         GVHCYvaW6g1v1CpBgUUu+GLPFc9+Ozn1e3mCn2aJgaN0EQQd/zBMgbFINy7vEkFoP7vt
+         Odsg==
+X-Forwarded-Encrypted: i=1; AJvYcCWt3QgPSf1srQbqJF8vt3k5Wln+1EYc5oMVobzCWf3r7q921TgOzEUDGhBVhMmb6zF0xuacAtWK+AZQZW3fqCIXv97bFa+bUGS3
+X-Gm-Message-State: AOJu0YwWc3cBL5y0dqsFR4lL+Hl3yjTem8oTFCiveYCibOjFv5ami44I
+	XJCQXwV0IJE78qCXxznNx7mkb2IRy18aNXcM2uoMG2k3bQWAWb94
+X-Google-Smtp-Source: AGHT+IFkRGslidnYnWet6U/TEjA6aXDimgR6M3die+6UNX1Y1gdMccWz+UdMlN6YKgFP0f+63FFZJQ==
+X-Received: by 2002:a17:90a:db0a:b0:29a:bd5b:380e with SMTP id g10-20020a17090adb0a00b0029abd5b380emr435890pjv.4.1709260402066;
+        Thu, 29 Feb 2024 18:33:22 -0800 (PST)
+Received: from [10.0.2.15] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id m2-20020a17090a858200b002997a5eea5bsm2141366pjn.31.2024.02.29.18.33.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Feb 2024 18:33:21 -0800 (PST)
+Message-ID: <fc6563ac-e705-48ff-9581-ac4154a064ac@gmail.com>
+Date: Fri, 1 Mar 2024 11:33:19 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm500006.china.huawei.com (7.192.105.130)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] docs: drop the version constraints for sphinx and
+ dependencies
+To: Vegard Nossum <vegard.nossum@oracle.com>,
+ Lukas Bulwahn <lukas.bulwahn@gmail.com>, Jonathan Corbet <corbet@lwn.net>
+Cc: linux-kernel@vger.kernel.org, Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Jani Nikula <jani.nikula@linux.intel.com>,
+ Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
+ Akira Yokosawa <akiyks@gmail.com>
+References: <20240227131410.35269-1-lukas.bulwahn@gmail.com>
+ <e6441dc1-6821-4514-b285-ebc24114aece@oracle.com>
+Content-Language: en-US
+From: Akira Yokosawa <akiyks@gmail.com>
+In-Reply-To: <e6441dc1-6821-4514-b285-ebc24114aece@oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On the wakeup path with hyperthreading, select cpu only looks at
-task->cpus_ptr to see if the task can run on the target cpu. If isolcpus
-kernel parameter is set, and isolated cpus will be part of mask
-task->cpus_ptr, tasks were migrated to our isolated cpus.
+On Thu, 29 Feb 2024 15:39:31 +0100, Vegard Nossum wrote:
+> [...]
+> 
+> $ scripts/sphinx-pre-install
+> Detected OS: Ubuntu 22.04.3 LTS.
+> Sphinx version: 4.3.2
+> 
+> 
+> All optional dependencies are met.
+> Needed package dependencies are met.
+> 
+> 
+> One remark I have is that it didn't encourage me to upgrade to 7.2.6 in
+> the last one (using the system Sphinx 4.3.2) although it did for the
+> 2.4.4 virtualenv. Maybe that's expected. I didn't look into it. Anyway,
 
-Steps to reproduce on my 32-CPU hyperthreads machine:
-1. with boot parameter: "isolcpus=0,1"
-   (thread lists: 0,16 and 1,17)
-2. cgcreate -g cpuset:test
-   echo 0-31 > /sys/fs/cgroup/cpuset/test/cpuset.cpus
-   echo 0 > /sys/fs/cgroup/cpuset/test/cpuset.mems
-   cgexec -g cpuset:test "test_threads"
-3. some threads will be migrated to the isolated cpu0/1.
+Yes, it's expected.
 
-Fix it by checking the valid domain mask in select_idle_smt() and
-select_idle_core()
+Sphinx 3.4.3 provided as distro packages of Debian 11 (bullseye),
+RHEL 9, and so on is good enough for kernel documentation.
+Suggesting upgrade to a latest release would be noisy.
 
-Fixes: 9fe1f127b913 ("sched/fair: Merge select_idle_core/cpu()")
-Fixes: 3e6efe87cd5c ("sched/fair: Remove redundant check in select_idle_smt()")
-Cc: stable@vger.kernel.org # v5.12+
-Signed-off-by: Zheng Zucheng <zhengzucheng@huawei.com>
----
- kernel/sched/fair.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+The version is assigned to $rec_version in sphinx-pre-install.
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 533547e3c90a..e6552c77e0f1 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -7289,7 +7289,7 @@ static int select_idle_core(struct task_struct *p, int core, struct cpumask *cpu
- 		if (!available_idle_cpu(cpu)) {
- 			idle = false;
- 			if (*idle_cpu == -1) {
--				if (sched_idle_cpu(cpu) && cpumask_test_cpu(cpu, p->cpus_ptr)) {
-+				if (sched_idle_cpu(cpu) && cpumask_test_cpu(cpu, cpus)) {
- 					*idle_cpu = cpu;
- 					break;
- 				}
-@@ -7297,7 +7297,7 @@ static int select_idle_core(struct task_struct *p, int core, struct cpumask *cpu
- 			}
- 			break;
- 		}
--		if (*idle_cpu == -1 && cpumask_test_cpu(cpu, p->cpus_ptr))
-+		if (*idle_cpu == -1 && cpumask_test_cpu(cpu, cpus))
- 			*idle_cpu = cpu;
- 	}
- 
-@@ -7311,12 +7311,12 @@ static int select_idle_core(struct task_struct *p, int core, struct cpumask *cpu
- /*
-  * Scan the local SMT mask for idle CPUs.
-  */
--static int select_idle_smt(struct task_struct *p, int target)
-+static int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int target)
- {
- 	int cpu;
- 
- 	for_each_cpu_and(cpu, cpu_smt_mask(target), p->cpus_ptr) {
--		if (cpu == target)
-+		if (cpu == target || !cpumask_test_cpu(cpu, sched_domain_span(sd)))
- 			continue;
- 		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
- 			return cpu;
-@@ -7341,7 +7341,7 @@ static inline int select_idle_core(struct task_struct *p, int core, struct cpuma
- 	return __select_idle_cpu(core, p);
- }
- 
--static inline int select_idle_smt(struct task_struct *p, int target)
-+static inline int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int target)
- {
- 	return -1;
- }
-@@ -7591,7 +7591,7 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- 		has_idle_core = test_idle_cores(target);
- 
- 		if (!has_idle_core && cpus_share_cache(prev, target)) {
--			i = select_idle_smt(p, prev);
-+			i = select_idle_smt(p, sd, prev);
- 			if ((unsigned int)i < nr_cpumask_bits)
- 				return i;
- 		}
--- 
-2.34.1
+As a fix to requirements.txt for v6.8, this looks to me like a nice
+minimal change.
+
+Lukas, many thanks for doing this.
+
+Reviewed-by: Akira Yokosawa <akiyks@gmail.com>
+
+    Thanks, Akira
 
 
