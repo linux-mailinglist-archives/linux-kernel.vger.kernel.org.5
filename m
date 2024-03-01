@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-87921-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87922-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 869F986DB14
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 06:27:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B219186DB16
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 06:27:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42747282359
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 05:27:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67A442820B5
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 05:27:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E522F54737;
-	Fri,  1 Mar 2024 05:27:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F0DA55E44;
+	Fri,  1 Mar 2024 05:27:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="Ri5DnnJg"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="Cz4n9VV3"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF1A853E0D
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 05:27:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF9E554FA7
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 05:27:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709270825; cv=none; b=UpgL72djq51PxY6vE2BTClqwyV2pKARQbgYLs+HM6e2tRn7akClg90zVCRiQTZxyumAU1H9qy0nAkNxo6FoIAlAi8QG5ZxDrQNX+hmuIe2OQDB+LaGFcugjtD3UvcCPqNT3Me4TQJigddmo2wFgZ7XbaeTL1atOjWEUbezVe2/s=
+	t=1709270829; cv=none; b=qEly8Zfg+95EGy7+wPTmTCRshn3cUhIm0n79r0o1C8NO8X7xqwKssTa1pkEGSFzYLBy9V6V3ZMFSlJLXNeaw1apGDRvIhH8H6fjH/noVOKlqWfRBLzmQaBMHM+/gNIOcuM3SAffkV55VnfiZ+lARpnwwEDZs7UfQWIXhK8/Tnbs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709270825; c=relaxed/simple;
-	bh=sGj2r3BTZtlTZdhXJyW5ZMuKV0lCaO7NB6RlNOiv/9M=;
+	s=arc-20240116; t=1709270829; c=relaxed/simple;
+	bh=IhGPBUWg3qceaIkkK5kwlbLjnbUs6jBuPNESxu+YQ7w=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=SD0CrXTk8UKlcU3FqtuZuqcM2vJ/4CrA9EFpYeMuXiAJ8Y7gZo/Lkj8O50od9wm1fP5W2j3Cn11QjMdT0PDZnyaiXuUnurG0dBgLm7rWH0oiC+vDM29Mx1EEAD1yoksTvkNrAzeffFv5pxN9VPE7YAKgEHLW1Jl+CuJAVNmU+K4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=Ri5DnnJg; arc=none smtp.client-ip=68.232.153.233
+	 MIME-Version:Content-Type; b=XQoXBdnURlXEVj9Oqnv/xjb5Qsd9hgVXlYQI1dZrCQ727rFUnFLXm4d6MJw4QR8QfOoXP1x98FupBH1nUCui7ZqAebCm3+uXP4naq3R18s0Wf9taLf3MPRT0RSNpJq6IfaFioZ09CTifLbP3U5yhGbE1OQIBP2CqPI7zzR/EhI4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=Cz4n9VV3; arc=none smtp.client-ip=68.232.154.123
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1709270823; x=1740806823;
+  t=1709270828; x=1740806828;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=sGj2r3BTZtlTZdhXJyW5ZMuKV0lCaO7NB6RlNOiv/9M=;
-  b=Ri5DnnJgUK0rpcfZYew5MncRiN440LfMw8is0mqHAtW02IhPfuKeII23
-   3swFQronjy6yInh8+RrqzsnqGHANmxYWb4sA+ct8K0GHkZqAILpxBs8g6
-   lMHDG10owwXWg6mxv1txFXDu9d32kA+p0LLvQ/Hebki2V+tgAvV3vF+08
-   MLACr4tKnXq/6y/8L0Y51FVNqdvwuMYQ/NwwExffryfeaRArTAq1MVohZ
-   t9lwsu2DGzrZQpoduSuUen3HMIWoTyJ/R8QY6bah13FOop8/UKm15rfP1
-   /sP2tbg4ALdmmOuA/EXVbtP6MldyMZQ7ceFDLqU5IePwf530LMAkuJQ/j
-   Q==;
-X-CSE-ConnectionGUID: 6cUC41M7S5CRl+XUlEKwVg==
-X-CSE-MsgGUID: trh9EL9ARQab2pj+Ip0jJA==
+  bh=IhGPBUWg3qceaIkkK5kwlbLjnbUs6jBuPNESxu+YQ7w=;
+  b=Cz4n9VV3uMkY9Ig/Ei7+ROqkM24TrHFXoPbXyJ0gZ6LHa8ywcfdmaBnD
+   r8AaxZ/U/QelsSnJuI14s6pXZGlK5OAzxagZUHr8CjiLQ4E71gt5oQFul
+   XQtl+8aIf533NuVipv52/kexkGIV5dZ2Ed3zl5Jawh0YpLFwlrV16fqui
+   jE2b07P2PwVnh5eXt4ruHtEKuvmw+5C3awtDq+wyKNjW96VVHtH9AnxYj
+   6i8baU/YcGIsJsbb6vRaMzk7yFbUjTGQ3ltN0sLdN/KKOpRwj1zkaxwt7
+   0thJxVdRwdrizdCzvPh2u6dVtLJVGEs06mPfZleu7pUVK3pNKRS73/9Nd
+   A==;
+X-CSE-ConnectionGUID: RVqRYtjHQXSOPFAZiw5ImA==
+X-CSE-MsgGUID: 2hUX5WdHQgSqvISYQXzmsA==
 X-IronPort-AV: E=Sophos;i="6.06,195,1705388400"; 
-   d="scan'208";a="18663418"
+   d="scan'208";a="17588057"
 X-Amp-Result: SKIPPED(no attachment in message)
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 29 Feb 2024 22:27:00 -0700
+  by esa2.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 29 Feb 2024 22:27:06 -0700
 Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 29 Feb 2024 22:26:46 -0700
+ 15.1.2507.35; Thu, 29 Feb 2024 22:26:55 -0700
 Received: from che-lt-i67131.microchip.com (10.10.85.11) by
  chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Thu, 29 Feb 2024 22:26:38 -0700
+ 15.1.2507.35 via Frontend Transport; Thu, 29 Feb 2024 22:26:46 -0700
 From: Manikandan Muralidharan <manikandan.m@microchip.com>
 To: <sam@ravnborg.org>, <bbrezillon@kernel.org>,
 	<maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
@@ -69,10 +69,11 @@ CC: <Hari.PrasathGE@microchip.com>, <Balamanikandan.Gunasundar@microchip.com>,
 	<Durai.ManickamKR@microchip.com>, <Nayabbasha.Sayed@microchip.com>,
 	<Dharma.B@microchip.com>, <Varshini.Rajendran@microchip.com>,
 	<Balakrishnan.S@microchip.com>, <Charan.Pedumuru@microchip.com>, "Manikandan
- Muralidharan" <manikandan.m@microchip.com>
-Subject: [PATCH v9 6/8] drm: atmel-hlcdc: add vertical and horizontal scaling support for XLCDC
-Date: Fri, 1 Mar 2024 10:55:32 +0530
-Message-ID: <20240301052534.38651-7-manikandan.m@microchip.com>
+ Muralidharan" <manikandan.m@microchip.com>, Durai Manickam KR
+	<durai.manickamkr@microchip.com>
+Subject: [PATCH v9 7/8] drm: atmel-hlcdc: add support for DSI output formats
+Date: Fri, 1 Mar 2024 10:55:33 +0530
+Message-ID: <20240301052534.38651-8-manikandan.m@microchip.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240301052534.38651-1-manikandan.m@microchip.com>
 References: <20240301052534.38651-1-manikandan.m@microchip.com>
@@ -85,69 +86,124 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 
-Update the vertical and horizontal scaler registers of XLCDC IP
-with Bilinear and Bicubic co-efficients taps for Chroma and
-Luma componenets of the Pixel.
+Add support for the following DPI mode if the encoder type
+is DSI as per the XLCDC IP datasheet:
+- 16BPPCFG1
+- 16BPPCFG2
+- 16BPPCFG3
+- 18BPPCFG1
+- 18BPPCFG2
+- 24BPP
 
 Signed-off-by: Manikandan Muralidharan <manikandan.m@microchip.com>
+[durai.manickamkr@microchip.com: update output format using is_xlcdc flag]
+Signed-off-by: Durai Manickam KR <durai.manickamkr@microchip.com>
 ---
- drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.h  |  4 ++++
- .../gpu/drm/atmel-hlcdc/atmel_hlcdc_plane.c   | 20 +++++++++++++++++++
- 2 files changed, 24 insertions(+)
+ .../gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c    | 70 +++++++++++++++++--
+ 1 file changed, 64 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.h b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.h
-index 1153d402f810..e1a0bb24b511 100644
---- a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.h
-+++ b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.h
-@@ -198,6 +198,8 @@
-  * @disc_pos: discard area position register
-  * @disc_size: discard area size register
-  * @csc: color space conversion register
-+ * @vxs_config: vertical scalar filter taps control register
-+ * @hxs_config: horizontal scalar filter taps control register
-  */
- struct atmel_hlcdc_layer_cfg_layout {
- 	int xstride[ATMEL_HLCDC_LAYER_MAX_PLANES];
-@@ -217,6 +219,8 @@ struct atmel_hlcdc_layer_cfg_layout {
- 	int disc_pos;
- 	int disc_size;
- 	int csc;
-+	int vxs_config;
-+	int hxs_config;
- };
+diff --git a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c
+index fdd3a6bc0f79..0f7ffb3ced20 100644
+--- a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c
++++ b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_crtc.c
+@@ -301,11 +301,60 @@ static void atmel_hlcdc_crtc_atomic_enable(struct drm_crtc *c,
  
- /**
-diff --git a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_plane.c b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_plane.c
-index 8a5419ccc343..55ce4b2fcb88 100644
---- a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_plane.c
-+++ b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_plane.c
-@@ -966,6 +966,26 @@ static void atmel_xlcdc_csc_init(struct atmel_hlcdc_plane *plane,
- 					    desc->layout.csc + i,
- 					    xlcdc_csc_coeffs[i]);
- 	}
-+
-+	if (desc->layout.vxs_config && desc->layout.hxs_config) {
-+		/*
-+		 * Updating vxs.config and hxs.config fixes the
-+		 * Green Color Issue in SAM9X7 EGT Video Player App
-+		 */
-+		atmel_hlcdc_layer_write_cfg(&plane->layer,
-+					    desc->layout.vxs_config,
-+					    ATMEL_XLCDC_LAYER_VXSYCFG_ONE |
-+					    ATMEL_XLCDC_LAYER_VXSYTAP2_ENABLE |
-+					    ATMEL_XLCDC_LAYER_VXSCCFG_ONE |
-+					    ATMEL_XLCDC_LAYER_VXSCTAP2_ENABLE);
-+
-+		atmel_hlcdc_layer_write_cfg(&plane->layer,
-+					    desc->layout.hxs_config,
-+					    ATMEL_XLCDC_LAYER_HXSYCFG_ONE |
-+					    ATMEL_XLCDC_LAYER_HXSYTAP2_ENABLE |
-+					    ATMEL_XLCDC_LAYER_HXSCCFG_ONE |
-+					    ATMEL_XLCDC_LAYER_HXSCTAP2_ENABLE);
-+	}
  }
  
- static int atmel_hlcdc_plane_init_properties(struct atmel_hlcdc_plane *plane)
+-#define ATMEL_HLCDC_RGB444_OUTPUT	BIT(0)
+-#define ATMEL_HLCDC_RGB565_OUTPUT	BIT(1)
+-#define ATMEL_HLCDC_RGB666_OUTPUT	BIT(2)
+-#define ATMEL_HLCDC_RGB888_OUTPUT	BIT(3)
+-#define ATMEL_HLCDC_OUTPUT_MODE_MASK	GENMASK(3, 0)
++#define ATMEL_HLCDC_RGB444_OUTPUT		BIT(0)
++#define ATMEL_HLCDC_RGB565_OUTPUT		BIT(1)
++#define ATMEL_HLCDC_RGB666_OUTPUT		BIT(2)
++#define ATMEL_HLCDC_RGB888_OUTPUT		BIT(3)
++#define ATMEL_HLCDC_DPI_RGB565C1_OUTPUT		BIT(4)
++#define ATMEL_HLCDC_DPI_RGB565C2_OUTPUT		BIT(5)
++#define ATMEL_HLCDC_DPI_RGB565C3_OUTPUT		BIT(6)
++#define ATMEL_HLCDC_DPI_RGB666C1_OUTPUT		BIT(7)
++#define ATMEL_HLCDC_DPI_RGB666C2_OUTPUT		BIT(8)
++#define ATMEL_HLCDC_DPI_RGB888_OUTPUT		BIT(9)
++#define ATMEL_HLCDC_OUTPUT_MODE_MASK		GENMASK(3, 0)
++#define ATMEL_XLCDC_OUTPUT_MODE_MASK		GENMASK(9, 0)
++
++static int atmel_xlcdc_connector_output_dsi(struct drm_encoder *encoder,
++					    struct drm_display_info *info)
++{
++	int j;
++	unsigned int supported_fmts = 0;
++
++	switch (atmel_hlcdc_encoder_get_bus_fmt(encoder)) {
++	case 0:
++		break;
++	case MEDIA_BUS_FMT_RGB565_1X16:
++		return ATMEL_HLCDC_DPI_RGB565C1_OUTPUT;
++	case MEDIA_BUS_FMT_RGB666_1X18:
++		return ATMEL_HLCDC_DPI_RGB666C1_OUTPUT;
++	case MEDIA_BUS_FMT_RGB666_1X24_CPADHI:
++		return ATMEL_HLCDC_DPI_RGB666C2_OUTPUT;
++	case MEDIA_BUS_FMT_RGB888_1X24:
++		return ATMEL_HLCDC_DPI_RGB888_OUTPUT;
++	default:
++		return -EINVAL;
++	}
++
++	for (j = 0; j < info->num_bus_formats; j++) {
++		switch (info->bus_formats[j]) {
++		case MEDIA_BUS_FMT_RGB565_1X16:
++			supported_fmts |= ATMEL_HLCDC_DPI_RGB565C1_OUTPUT;
++			break;
++		case MEDIA_BUS_FMT_RGB666_1X18:
++			supported_fmts |= ATMEL_HLCDC_DPI_RGB666C1_OUTPUT;
++			break;
++		case MEDIA_BUS_FMT_RGB666_1X24_CPADHI:
++			supported_fmts |= ATMEL_HLCDC_DPI_RGB666C2_OUTPUT;
++			break;
++		case MEDIA_BUS_FMT_RGB888_1X24:
++			supported_fmts |= ATMEL_HLCDC_DPI_RGB888_OUTPUT;
++			break;
++		default:
++			break;
++		}
++	}
++	return supported_fmts;
++}
+ 
+ static int atmel_hlcdc_connector_output_mode(struct drm_connector_state *state)
+ {
+@@ -318,6 +367,13 @@ static int atmel_hlcdc_connector_output_mode(struct drm_connector_state *state)
+ 	encoder = state->best_encoder;
+ 	if (!encoder)
+ 		encoder = connector->encoder;
++	/*
++	 * atmel-hlcdc to support DSI formats with DSI video pipeline
++	 * when DRM_MODE_ENCODER_DSI type is set by
++	 * connector driver component.
++	 */
++	if (encoder->encoder_type == DRM_MODE_ENCODER_DSI)
++		return atmel_xlcdc_connector_output_dsi(encoder, info);
+ 
+ 	switch (atmel_hlcdc_encoder_get_bus_fmt(encoder)) {
+ 	case 0:
+@@ -358,7 +414,7 @@ static int atmel_hlcdc_connector_output_mode(struct drm_connector_state *state)
+ 
+ static int atmel_hlcdc_crtc_select_output_mode(struct drm_crtc_state *state)
+ {
+-	unsigned int output_fmts = ATMEL_HLCDC_OUTPUT_MODE_MASK;
++	unsigned int output_fmts;
+ 	struct atmel_hlcdc_crtc_state *hstate;
+ 	struct drm_connector_state *cstate;
+ 	struct drm_connector *connector;
+@@ -366,6 +422,8 @@ static int atmel_hlcdc_crtc_select_output_mode(struct drm_crtc_state *state)
+ 	int i;
+ 
+ 	crtc = drm_crtc_to_atmel_hlcdc_crtc(state->crtc);
++	output_fmts = crtc->dc->desc->is_xlcdc ? ATMEL_XLCDC_OUTPUT_MODE_MASK :
++		      ATMEL_HLCDC_OUTPUT_MODE_MASK;
+ 
+ 	for_each_new_connector_in_state(state->state, connector, cstate, i) {
+ 		unsigned int supported_fmts = 0;
 -- 
 2.25.1
 
