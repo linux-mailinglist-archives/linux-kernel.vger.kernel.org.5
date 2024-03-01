@@ -1,182 +1,195 @@
-Return-Path: <linux-kernel+bounces-88459-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88460-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E1C486E1E6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:20:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C98986E1E9
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:20:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF3681F23685
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:20:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D66551F213DD
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:20:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D78E46EB69;
-	Fri,  1 Mar 2024 13:19:38 +0000 (UTC)
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ED636CDD6;
+	Fri,  1 Mar 2024 13:19:42 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8867E5F483;
-	Fri,  1 Mar 2024 13:19:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39D2B10E9;
+	Fri,  1 Mar 2024 13:19:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709299178; cv=none; b=iqx66ydRkqEKhPGhqzq4ObCeQ6MEa++wyLmFu93Bocwgo3q0QAfoX9m1zkAx7ipocwMPYTiBWHpsr10vHQy85vnx2seTTG67QOfsT1wlrUQnCZ7cMEtJbilOcIFUwj2Srfs8yVatPii0u47k2h0VqMvgd4KYHWaMMli1V6AeWG4=
+	t=1709299181; cv=none; b=OHECKY5GnCyV0HhrMy5LP5HBioaIVeZh5xYb7K2qWWyW7sPuPblxGzV/5mqb12b6smUScCgbAVZdnUseQ1LRTzP1NcKzMqSROW0EMxH1TawXGZ758T97sFGr5ly2F1bZahSQ/lUop0ZB5pknOSj9CdI76jGulV7XATSYJoLLlpI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709299178; c=relaxed/simple;
-	bh=xRLjt2ZtMD2Q1XzlAIEVwSLp295JjvW6H5VxtRoWhCs=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=VVz/xu4/nMnhNsDnOFsMpXaoaixfFY9kG67aroeQ+ZoUsWr3H+wi3V8zcu9fHAaL2IC29akD7I5FKrZUygj8oyjvWqFvAUu8n9iovs2jlUYf6F7R0IFYX307NUpJENygt7bbCk5Xy9wHcJZYx7SPpS/6X4ll8RkfiHFBcqvwrww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.51])
-	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4TmSvw53b9z9y0Nw;
-	Fri,  1 Mar 2024 21:03:56 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.27])
-	by mail.maildlp.com (Postfix) with ESMTP id 279D01400D2;
-	Fri,  1 Mar 2024 21:19:32 +0800 (CST)
-Received: from [127.0.0.1] (unknown [10.204.63.22])
-	by APP2 (Coremail) with SMTP id GxC2BwDHACXT1eFlyDx6Aw--.60471S2;
-	Fri, 01 Mar 2024 14:19:31 +0100 (CET)
-Message-ID: <e6f263b25061651e948a881d36bfdff17cfaf1b0.camel@huaweicloud.com>
-Subject: Re: [PATCH v2 14/25] evm: add support for fscaps security hooks
-From: Roberto Sassu <roberto.sassu@huaweicloud.com>
-To: Christian Brauner <brauner@kernel.org>
-Cc: "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>, Serge Hallyn
- <serge@hallyn.com>, Paul Moore <paul@paul-moore.com>, Eric Paris
- <eparis@redhat.com>, James Morris <jmorris@namei.org>, Alexander Viro
- <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, Stephen Smalley
- <stephen.smalley.work@gmail.com>, Ondrej Mosnacek <omosnace@redhat.com>, 
- Casey Schaufler <casey@schaufler-ca.com>, Mimi Zohar <zohar@linux.ibm.com>,
- Roberto Sassu <roberto.sassu@huawei.com>,  Dmitry Kasatkin
- <dmitry.kasatkin@gmail.com>, Eric Snowberg <eric.snowberg@oracle.com>,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>, Jonathan Corbet
- <corbet@lwn.net>, Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein
- <amir73il@gmail.com>,  linux-kernel@vger.kernel.org,
- linux-fsdevel@vger.kernel.org,  linux-security-module@vger.kernel.org,
- audit@vger.kernel.org,  selinux@vger.kernel.org,
- linux-integrity@vger.kernel.org,  linux-doc@vger.kernel.org,
- linux-unionfs@vger.kernel.org
-Date: Fri, 01 Mar 2024 14:19:11 +0100
-In-Reply-To: <20240301-zucht-umfeld-9a923a7d070a@brauner>
-References: <20240221-idmap-fscap-refactor-v2-0-3039364623bd@kernel.org>
-	 <20240221-idmap-fscap-refactor-v2-14-3039364623bd@kernel.org>
-	 <15a69385b49c4f8626f082bc9b957132388414fb.camel@huaweicloud.com>
-	 <20240301-zucht-umfeld-9a923a7d070a@brauner>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1709299181; c=relaxed/simple;
+	bh=HGAOZ9rzwRj4KaggpswQDdIDQnkCzfQ+ozJfEoUzsGo=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=K+CUGb3kbwNzlMx06J5JGKOfS3RKUBjVDdCVgk9j0ngx/v5Ydsoe7PrTprpznE0l3McPgwgJbEVOC7tGgyP6QmV5pLgdVmU6xa4wBi79pvQU54H1MTrCKsS0nbwp5seN4B41+wugdEk4fDrg4grgtCmhNlD30tM1Q3ewOmxZvJM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TmT8S1fYbz6JB7j;
+	Fri,  1 Mar 2024 21:14:48 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 482BB140B73;
+	Fri,  1 Mar 2024 21:19:33 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Fri, 1 Mar
+ 2024 13:19:32 +0000
+Date: Fri, 1 Mar 2024 13:19:31 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Tony Luck <tony.luck@intel.com>
+CC: Dan Williams <dan.j.williams@intel.com>, Shiju Jose
+	<shiju.jose@huawei.com>, "linux-cxl@vger.kernel.org"
+	<linux-cxl@vger.kernel.org>, "linux-acpi@vger.kernel.org"
+	<linux-acpi@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"dave@stgolabs.net" <dave@stgolabs.net>, "dave.jiang@intel.com"
+	<dave.jiang@intel.com>, "alison.schofield@intel.com"
+	<alison.schofield@intel.com>, "vishal.l.verma@intel.com"
+	<vishal.l.verma@intel.com>, "ira.weiny@intel.com" <ira.weiny@intel.com>,
+	"linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"david@redhat.com" <david@redhat.com>, "Vilas.Sridharan@amd.com"
+	<Vilas.Sridharan@amd.com>, "leo.duran@amd.com" <leo.duran@amd.com>,
+	"Yazen.Ghannam@amd.com" <Yazen.Ghannam@amd.com>, "rientjes@google.com"
+	<rientjes@google.com>, "jiaqiyan@google.com" <jiaqiyan@google.com>,
+	"Jon.Grimm@amd.com" <Jon.Grimm@amd.com>, "dave.hansen@linux.intel.com"
+	<dave.hansen@linux.intel.com>, "rafael@kernel.org" <rafael@kernel.org>,
+	"lenb@kernel.org" <lenb@kernel.org>, "naoya.horiguchi@nec.com"
+	<naoya.horiguchi@nec.com>, "james.morse@arm.com" <james.morse@arm.com>,
+	"jthoughton@google.com" <jthoughton@google.com>, "somasundaram.a@hpe.com"
+	<somasundaram.a@hpe.com>, "erdemaktas@google.com" <erdemaktas@google.com>,
+	"pgonda@google.com" <pgonda@google.com>, "duenwen@google.com"
+	<duenwen@google.com>, "mike.malvestuto@intel.com"
+	<mike.malvestuto@intel.com>, "gthelen@google.com" <gthelen@google.com>,
+	"wschwartz@amperecomputing.com" <wschwartz@amperecomputing.com>,
+	"dferguson@amperecomputing.com" <dferguson@amperecomputing.com>, tanxiaofei
+	<tanxiaofei@huawei.com>, "Zengtao (B)" <prime.zeng@hisilicon.com>,
+	"kangkang.shen@futurewei.com" <kangkang.shen@futurewei.com>, wanghuiqiang
+	<wanghuiqiang@huawei.com>, Linuxarm <linuxarm@huawei.com>, John Groves
+	<John@Groves.net>
+Subject: Re: [RFC PATCH v6 00/12] cxl: Add support for CXL feature commands,
+ CXL device patrol scrub control and DDR5 ECS control features
+Message-ID: <20240301131931.000070c7@Huawei.com>
+In-Reply-To: <ZeDsESXK5pMeialz@agluck-desk3>
+References: <20240215111455.1462-1-shiju.jose@huawei.com>
+	<65d6936952764_1138c7294e@dwillia2-xfh.jf.intel.com.notmuch>
+	<54c55412e9374e4e9cacf8410a5a98cb@huawei.com>
+	<65d8f5201f8cc_2509b29467@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+	<20240226102944.000070a3@Huawei.com>
+	<ZeDsESXK5pMeialz@agluck-desk3>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-CM-TRANSID:GxC2BwDHACXT1eFlyDx6Aw--.60471S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxXFWxtFWkCry7XFW5WF1DGFg_yoW5uw18pa
-	y5Ka4SkF4ktF17Jr92yw4qqw40k3yfJay5Grn5J3y8Zwn8JF1fGrWSk3y3ZF9a9rs3G34a
-	vr4Iya47Zwn8ZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkmb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-	AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
-	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYY7kG6xAYrwCIc40Y0x0E
-	wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JV
-	WxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI
-	42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUguHqUUUUU
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAJBF1jj5rgNgACsz
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500004.china.huawei.com (7.191.163.9) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Fri, 2024-03-01 at 13:54 +0100, Christian Brauner wrote:
-> On Fri, Mar 01, 2024 at 10:19:13AM +0100, Roberto Sassu wrote:
-> > On Wed, 2024-02-21 at 15:24 -0600, Seth Forshee (DigitalOcean) wrote:
-> > > Support the new fscaps security hooks by converting the vfs_caps to r=
-aw
-> > > xattr data and then handling them the same as other xattrs.
-> >=20
-> > Hi Seth
-> >=20
-> > I started looking at this patch set.
-> >=20
-> > The first question I have is if you are also going to update libcap
-> > (and also tar, I guess), since both deal with the raw xattr.
-> >=20
-> > From IMA/EVM perspective (Mimi will add on that), I guess it is
-> > important that files with a signature/HMAC continue to be accessible
-> > after applying this patch set.
-> >=20
-> > Looking at the code, it seems the case (if I understood correctly,
-> > vfs_getxattr_alloc() is still allowed).
-> >=20
-> > To be sure that everything works, it would be really nice if you could
-> > also extend our test suite:
-> >=20
-> > https://github.com/mimizohar/ima-evm-utils/blob/next-testing/tests/port=
-able_signatures.test
-> >=20
-> > and
-> >=20
-> > https://github.com/mimizohar/ima-evm-utils/blob/next-testing/tests/evm_=
-hmac.test
-> >=20
-> >=20
-> > The first test we would need to extend is check_cp_preserve_xattrs,
-> > which basically does a cp -a. We would need to set fscaps in the
-> > origin, copy to the destination, and see if the latter is accessible.
-> >=20
-> > I would also extend:
-> >=20
-> > check_tar_extract_xattrs_different_owner
-> > check_tar_extract_xattrs_same_owner
-> > check_metadata_change
-> > check_evm_revalidate
-> > check_evm_portable_sig_ima_appraisal
-> > check_evm_portable_sig_ima_measurement_list
-> >=20
-> > It should not be too complicated. The purpose would be to exercise your
-> > code below.
-> >=20
-> >=20
-> > Regarding the second test, we would need to extend just check_evm_hmac.
-> >=20
-> >=20
-> > Just realized, before extending the tests, it would be necessary to
-> > modify also evmctl.c, to retrieve fscaps through the new interfaces,
-> > and to let users provide custom fscaps the HMAC or portable signature
-> > is calculated on.
->=20
-> While request for tests are obviously fine they should be added by the
-> respective experts for IMA/EVM in this case. I don't think it's
-> appropriate to expect Seth to do that especially because you seem to
-> imply that you currently don't have any tests for fscaps at all. We're
-> always happy to test things and if that'd be adding new IMA/EVM specific
-> features than it would be something to discuss but really we're
-> refactoring so the fact that you don't have tests we can run is not the
-> fault of this patchset and IMA/EVM is just a small portion of it.=20
+On Thu, 29 Feb 2024 12:41:53 -0800
+Tony Luck <tony.luck@intel.com> wrote:
 
-Hi Christian
+> > Obviously can't talk about who was involved in this feature
+> > in it's definition, but I have strong confidence it will get implemented
+> > for reasons I can point at on a public list. 
+> > a) There will be scrubbing on devices.
+> > b) It will need control (evidence for this is the BIOS controls mentioned below
+> >    for equivalent main memory).
+> > c) Hotplug means that control must be done by OS driver (or via very fiddly
+> >    pre hotplug hacks that I think we can all agree should not be necessary
+> >    and aren't even an option on all platforms)
+> > d) No one likes custom solutions.
+> > This isn't a fancy feature with a high level of complexity which helps.  
 
-I have seen this policy of adding tests in other subsystems (eBPF),
-which in my opinion makes sense, since you want anyway to check that
-you didn't break existing code.
+Hi Tony,
+> 
+> But how will users know what are appropriate scrubbing
+> parameters for these devices?
+> 
+> Car analogy: Fuel injection systems on internal combustion engines
+> have tweakable controls. But no auto manufacturer wires them up to
+> a user accessible dashboad control.
 
-And yes, I agree that we should have better tests, and a better
-workflow (we are working on improving it).
+Good analogy - I believe performance tuning 3rd parties will change
+them for you. So the controls are used - be it not by every user.
 
-In this particular case, I was not asking to write a test from scratch,
-that should not be difficult per se, but adding additional commands.
+> 
+> Back to computers:
+> 
+> I'd expect the OEMs that produce memory devices to set appropriate
+> scrubbing rates based on their internal knowledge of the components
+> used in construction.
 
-If I got it correctly, even if current tests for fscaps would have
-existed, they would not work anyway, since they would have been based
-on getting/setting the raw xattrs (as far as I know, at least for tar).
+Absolutely agree that they will set a default / baseline value,
+but reality is that 'everyone' (for the first few OEMs I googled)
+exposes tuning controls in their shipping BIOS menus to configure
+this because there are users who want to change it.  I'd expect
+them to clamp the minimum scrub frequency to something that avoids
+them getting hardware returned on mass for reliability and the
+maximum at whatever ensures the perf is good enough that they sell
+hardware in the first place.  I'd also expect a bios menu to
+allow cloud hosts etc to turn off exposing RAS2 or similar.
 
-Happy to try adding the tests, would appreciate your help to review if
-the tests are done in the correct way.
+> 
+> What is the use case where some user would need to override these
+> parameters and scrub and a faster/slower rate than that set by the
+> manufacturer?
 
-Thanks
+Its a performance vs reliability trade off.  If your larger scale
+architecture (many servers) requires a few nodes to be super stable you
+will pay pretty much any cost to keep them running. If a single node
+failure makes little or no difference, you'll happily crank this down
+(same with refresh) in order to save some power / get a small
+performance lift.  Or if you care about latency tails, more than
+reliability you'll turn this off.
 
-Roberto
+For comedy value, some BIOS guides point out that leaving scrub on may
+affect performance benchmarking. Obviously not a good data point, but
+a hint at the sort of market that cares.  Same market that buy cheaper
+RAM knowing they are going to have more system crashes.
+
+There is probably a description gap. That might be a paperwork
+question as part of system specification.
+What is relationship between scrub rate and error rate under particular
+styles of workload (because you get a free scrub whenever you access
+the memory)?  The RAM dimms themselves could in theory provide inputs
+but the workload dependence makes this hard. Probably fallback on a
+a test and tune loop over very long runs.  Single bit error rates
+used to detect when getting below a level people are happy with for
+instance.
+
+With the fancier units that can be supported, you can play more reliable
+memory games by scanning subsets of the memory more frequently.
+
+Though it was about a kernel daemon doing scrub, Jiaqi's RFC document here
+https://lore.kernel.org/all/20221103155029.2451105-1-jiaqiyan@google.com/
+provided justification for on demand scrub - some interesting stuff in the
+bit on hardware patrol scrubbing.  I see you commented on the thread
+and complexity of hardware solutions.
+
+- Cheap memory makes this all more important.
+- Need for configuration of how fast and when depending on system state.
+- Lack of flexibility of what is scanned (RAS2 provides some by association
+  with NUMA node + option to request particular ranges, CXL provides per
+  end point controls).
+
+There are some gaps on hardware scrubbers, but offloading this problem
+definitely attractive.
+
+So my understanding is there is demand to tune this but it won't be exposed
+on every system.
+
+Jonathan
+
+ 
+> 
+> -Tony
 
 
