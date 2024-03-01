@@ -1,185 +1,193 @@
-Return-Path: <linux-kernel+bounces-87997-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87998-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1CD986DBEE
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:15:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9211186DBF1
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:16:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 21A0A1C21233
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 07:15:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B71491C2082E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 07:16:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5828269949;
-	Fri,  1 Mar 2024 07:15:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE81F69954;
+	Fri,  1 Mar 2024 07:15:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wVRZykKy"
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="UjfEihbh"
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D1D26997A
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 07:15:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E37EA69D0A
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 07:15:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709277317; cv=none; b=SfXN9F1l1hKHn7ufw0swe1aBk8lzzWtLdat368edBH90sdSzoagXIOsCbKkAnggBJmWT1eBsobH9RLNVxo8Ktu0/Kz1EYGfiVgvYDkCb8MNq/ON2Xnpu/mq7qvTajxuKmLuEYdIdTfzDBhxQD8so8h3Rf1PNDn4ejRfLACD+8io=
+	t=1709277322; cv=none; b=eh6Rj+G1G/oVwjWcR25ZA/mP9YAj8ZoWSq0kEfEEjUiG1f5e+/mIfcqfq/Ewt4fcMxeYfGyOyaNmG7OEUl2VdeELIKyDsw0l6XF13mJjtLn7v6wc9EE6R07/kw3WDRd7vr1m/4nxMclwNeShhxs1rBMN6RZgrJqI7QgSHZVvHEI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709277317; c=relaxed/simple;
-	bh=xcReQExyTmPJgCk0y34IR1GBJKdphJaTWdBBPtruBiY=;
+	s=arc-20240116; t=1709277322; c=relaxed/simple;
+	bh=9U71HqPH1fgVFztYiP3PKEYam6owJpPfjsSrO3xa+eM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=B+2LAGHP6Y5mH5u52i/14u6F+1wXhqoibC3IhpYn9o5RWOl2sXhw0VGAL81U4qG+D0Dh8psn/WZ8As9DjEnGHOIvlbWD5IpWmfm05ltxlbAtWrtBJPVomCVpbvP3h5vY09grt8/6649Mux8mum0SDYjAyRXCdzvazgxm8Hh5KM4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wVRZykKy; arc=none smtp.client-ip=209.85.208.47
+	 To:Cc:Content-Type; b=Y+VGI1fJ2jfjZS62RNLn7CglMbGRy/QCtHW7PvR+UkznZMTeeVh9NZvzLlSdaSyKe75cEJNNAPve/C5qox+P3snkH+9SZWf3oz3tCQQYx+bnrdSVgi6wTlMhO6CatRN0j64IZRFaskEjs1nxq/T2jyt12JbtydYEcGmQyCRsjI0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=UjfEihbh; arc=none smtp.client-ip=209.85.208.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5654ef0c61fso8292a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 23:15:15 -0800 (PST)
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-565223fd7d9so3677a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 23:15:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709277314; x=1709882114; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1709277319; x=1709882119; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=mR32FfqcEx4F2juIhMTvP17MthtfviYKjFNO5mnqbkA=;
-        b=wVRZykKyglpK3F3duFetGKIppWT4EUUMrUi0ZC2LWsPiOiT/7skHQrKeXbjng++bXM
-         pZaCatyKAlmpsCSaGlsE1mFvgXRzUcGRKMfDNxZipy+yn0/Bf1CYoWIdl+hoRj0tT6Yk
-         o+Hs/uxWNAB2Pi6gkeNxIeC1JC5lEpN8aVmP/uYKM1zq4YFG7znhBRJBYU/VMm6340xh
-         BUxy1cJOk4axn2bZ7tVi0ySk5k1Ji/VVO279ttGs8bW1TZ/QtssXHdR2hq5ok55YyFj2
-         1ApGrA8PiJ9JclWpmlH5ZkXfpjMRgDzzyIeV3yM+qnMOrvOoY5W4HxxEtWJ637Pu+moK
-         vVFw==
+        bh=P4IKa1pHQSd+G5uN4QqjBCR2QsQVFy/XcG09ogH1wM4=;
+        b=UjfEihbh4W9NiALgU40fxgfmer9HR/BsSLnGK314KH93DaSxs+C9KkQ931rHW5jl5B
+         Xpx7q3zRTWY5kQy9KtmboMjlKZBQOldJLKITQYLaB+T/kiEttw5qMVgcr8fc250vXNlF
+         ymGZu6vTSO/at/40nsMRuFpqYLwWHxlXmUs33++32/f0/utFtK+sJ8U/54FZcqbiCqPb
+         FepHbc+5g/BFm/8mJC/kd/Ky1T5hqeZuKp4tNso9dfg7OZiieD4o5FHpEwCq/qKwUguT
+         puxXHqW0PsLy1dMLDdbx6aSNO9EoIqK7Vp7nyWv/2NwN+N5/Fq/Egj2udYIbzhZb9I2u
+         poiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709277314; x=1709882114;
+        d=1e100.net; s=20230601; t=1709277319; x=1709882119;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=mR32FfqcEx4F2juIhMTvP17MthtfviYKjFNO5mnqbkA=;
-        b=jEA7f30e3dfj97jJh9BoBKRQ4ZW+TdzvQO7KS/pKctPUw1NuoH1ZT9Pb2NS3Aqj1dR
-         a9MZfmbPumGT1IvK5BlQ7PoeOedGJuGN4uE7a/TTaJJb/l2Tob3XYocoOvyXkMVvJ6VI
-         M4XgxEykukIwLLFn4PcnUQJ16vgErpycxdErzELkU5dA/6XvWrjrQr8wn7YxwPsQPfun
-         CUAM55PxqUnFehA9T2teye2+Rl9VREgvezo7tBASs1lsOzjK+1uA+cX2S7usoOvhbcYL
-         POlTMnRRzMUBPjJv2U2oDDX+I0NSAWcICsIAW4C7aW/m0yycaty/70cEtDBUguufaXCh
-         2e8g==
-X-Forwarded-Encrypted: i=1; AJvYcCUsVqFueDTCwP4GulEN0wtAv9WbPDHVi7/dGQNrM5UCFVjc+UeuaLMykt6N/ayibMI92uoDoNIiDyfkMJbfLpf2+2lKqDzi8lj8gOYv
-X-Gm-Message-State: AOJu0YxgzXylYlMWvSxJn5pTGc05Bba+FeKmSijRiHRwOXZJMOnJIfvT
-	dN3WTo/un02rPex8ytplrY4ktBlTwwdhU6pN/r0aNEnV53tIwcaz0NJhLlpx5J8FPaFztUdbATi
-	HysiDxmhU2cHt/FwNXt+Bi4wKPWOalYQkEY9n
-X-Google-Smtp-Source: AGHT+IGE2zEUbsEm+nc83ovvVoQ/70AldYILVAMhtedeufq5I1LUfH3K5s3/0m96lnE4cASKnATQHo79s0pinqrS6vQ=
-X-Received: by 2002:aa7:cfce:0:b0:566:6e9f:e9d8 with SMTP id
- r14-20020aa7cfce000000b005666e9fe9d8mr49389edy.1.1709277313877; Thu, 29 Feb
- 2024 23:15:13 -0800 (PST)
+        bh=P4IKa1pHQSd+G5uN4QqjBCR2QsQVFy/XcG09ogH1wM4=;
+        b=SFYrQiMq80Z5YdQPwSwvbNKh71mVv2whRFfwZo6zlRQNmaAEHP4ZPm7U6tJrHg5MuX
+         rKwb1PSqvd+00DNE0E3evQFkFco2roRXFrQr4jPy5ISk0Mw6IZmDCKw5k3rMXUx70EiR
+         PLp11XuBpdHuyNG2u8iEnX6SvdUe0xsW4aUAov3HFS19znGiaJrqqyaLxLWijI/s5XMu
+         GFl6vx6AN5xECREwxhhUrzeQlSEQbzoJGkFE7ju42HnMvTVgaLNy9i+6K+MUc11XvKqR
+         7m1vTRL3N2oXnIvCD7neiahqjNgAsnZGPxRBdmvNpO/cmZjSPUAJEmlUb2/qLHCh6Diy
+         q3bw==
+X-Forwarded-Encrypted: i=1; AJvYcCUYfdOE4uLwA3g2jjapv1lZx9DltnlNADFT+Pr9JxObd2uS9X0YbSSedAjm4HC90ldKhn887SUawrruONps8OebL5R7McOhW/D936Af
+X-Gm-Message-State: AOJu0YxFAWcV7u/6RkvAEBBr+SVBLa2ppKVRHfLDyH8lCDiNSMS/hHUX
+	IJdyqmwuMqWnxKtT4QXErc22ktgYIsOyPaXNgQOybSlmGYo5/QQ5hjGOgYLq9rCUYxiLwkacjIt
+	RTYAJ+A2/KupBiBX/S5V0XpKwmeh5AnhPwVs1
+X-Google-Smtp-Source: AGHT+IFQxFfkyBjFBIwuIIcURoj5pdw1Ead9KkqLXdFHWhP+/s8dFRPImaYuijs2JPADg8di8llv1t1viqbksnAhQtU=
+X-Received: by 2002:a05:6402:5244:b0:565:4f70:6ed with SMTP id
+ t4-20020a056402524400b005654f7006edmr106314edd.6.1709277319291; Thu, 29 Feb
+ 2024 23:15:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240229152653.09ecf771@canb.auug.org.au> <be2e812c-3898-4be8-8a9d-e221acb837c3@linuxfoundation.org>
-In-Reply-To: <be2e812c-3898-4be8-8a9d-e221acb837c3@linuxfoundation.org>
+References: <20240229170409.365386-1-mic@digikod.net>
+In-Reply-To: <20240229170409.365386-1-mic@digikod.net>
 From: David Gow <davidgow@google.com>
-Date: Fri, 1 Mar 2024 15:15:02 +0800
-Message-ID: <CABVgOSmAmkOcY8hFnpPSgz5WZXFkez_BDGhKjBepbWFpKykfUg@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the kunit-next tree
-To: Shuah Khan <skhan@linuxfoundation.org>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Brendan Higgins <brendanhiggins@google.com>, 
-	Daniel Vetter <daniel.vetter@ffwll.ch>, Intel Graphics <intel-gfx@lists.freedesktop.org>, 
-	DRI <dri-devel@lists.freedesktop.org>, 
-	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Matthew Auld <matthew.auld@intel.com>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	Linux Next Mailing List <linux-next@vger.kernel.org>
+Date: Fri, 1 Mar 2024 15:15:08 +0800
+Message-ID: <CABVgOSnTfUBWcX4o68ZoZC+vZSEzUp=UikQM5M70ECyS44GfNQ@mail.gmail.com>
+Subject: Re: [PATCH v1 0/8] Run KUnit tests late and handle faults
+To: =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
+Cc: Brendan Higgins <brendanhiggins@google.com>, Kees Cook <keescook@chromium.org>, 
+	Rae Moar <rmoar@google.com>, Shuah Khan <skhan@linuxfoundation.org>, 
+	Alan Maguire <alan.maguire@oracle.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, 
+	Ingo Molnar <mingo@redhat.com>, James Morris <jamorris@linux.microsoft.com>, 
+	Luis Chamberlain <mcgrof@kernel.org>, 
+	"Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>, Marco Pagani <marpagan@redhat.com>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Sean Christopherson <seanjc@google.com>, Stephen Boyd <sboyd@kernel.org>, 
+	Thara Gopinath <tgopinath@microsoft.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	Vitaly Kuznetsov <vkuznets@redhat.com>, Wanpeng Li <wanpengli@tencent.com>, 
+	Zahra Tarkhani <ztarkhani@microsoft.com>, kvm@vger.kernel.org, 
+	linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	linux-um@lists.infradead.org, x86@kernel.org
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000235bb40612942310"
+	boundary="000000000000762b4d0612942397"
 
---000000000000235bb40612942310
+--000000000000762b4d0612942397
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 29 Feb 2024 at 23:07, Shuah Khan <skhan@linuxfoundation.org> wrote:
+On Fri, 1 Mar 2024 at 01:04, Micka=C3=ABl Sala=C3=BCn <mic@digikod.net> wro=
+te:
 >
-> Hi Stephen,
+> Hi,
 >
-> On 2/28/24 21:26, Stephen Rothwell wrote:
-> > Hi all,
-> >
-> > After merging the kunit-next tree, today's linux-next build (x86_64
-> > allmodconfig) failed like this:
-> >
-> > In file included from drivers/gpu/drm/tests/drm_buddy_test.c:7:
-> > drivers/gpu/drm/tests/drm_buddy_test.c: In function 'drm_test_buddy_alloc_range_bias':
-> > drivers/gpu/drm/tests/drm_buddy_test.c:191:40: error: format '%u' expects a matching 'unsigned int' argument [-Werror=format=]
-> >    191 |                                        "buddy_alloc failed with bias(%x-%x), size=%u, ps=%u\n",
-> >        |                                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > include/kunit/test.h:597:37: note: in definition of macro '_KUNIT_FAILED'
-> >    597 |                                     fmt,                                       \
-> >        |                                     ^~~
-> > include/kunit/test.h:662:9: note: in expansion of macro 'KUNIT_UNARY_ASSERTION'
-> >    662 |         KUNIT_UNARY_ASSERTION(test,                                            \
-> >        |         ^~~~~~~~~~~~~~~~~~~~~
-> > include/kunit/test.h:1233:9: note: in expansion of macro 'KUNIT_FALSE_MSG_ASSERTION'
-> >   1233 |         KUNIT_FALSE_MSG_ASSERTION(test,                                        \
-> >        |         ^~~~~~~~~~~~~~~~~~~~~~~~~
-> > drivers/gpu/drm/tests/drm_buddy_test.c:186:17: note: in expansion of macro 'KUNIT_ASSERT_FALSE_MSG'
-> >    186 |                 KUNIT_ASSERT_FALSE_MSG(test,
-> >        |                 ^~~~~~~~~~~~~~~~~~~~~~
-> > drivers/gpu/drm/tests/drm_buddy_test.c:191:91: note: format string is defined here
-> >    191 |                                        "buddy_alloc failed with bias(%x-%x), size=%u, ps=%u\n",
-> >        |                                                                                          ~^
-> >        |                                                                                           |
-> >        |                                                                                           unsigned int
-> > cc1: all warnings being treated as errors
-> >
-> > Caused by commit
-> >
-> >    806cb2270237 ("kunit: Annotate _MSG assertion variants with gnu printf specifiers")
-> >
->
-> Thank you. I did allmodconfig build on kselftest kunit branch to make
-> sure all is well, before I pushed the commits.
->
-> > interacting with commit
-> >
-> >    c70703320e55 ("drm/tests/drm_buddy: add alloc_range_bias test")
->   >
-> > from the drm-misc-fixes tree.
-> >
-> > I have applied the following patch for today (this should probably
-> > actually be fixed in the drm-misc-fixes tree).
-> >
->
-> Danial, David,
->
-> I can carry the fix through kselftest kunit if it works
-> for all.
 
-I'm happy for this to go in with the KUnit changes if that's the best
-way to keep all of the printk formatting fixes together.
+Thanks very much. I think there's a lot going on in this series, and
+it'd probably be easier to address if it were broken up a bit more.
 
+To take things one at a time:
 
+> This patch series moves KUnit test execution at the very end of kernel
+> initialization, just before launching the init process.  This opens the
+> way to test any kernel code in its normal state (i.e. fully
+> initialized).
+
+I like the general idea here, but there are a few things to keep in mind:
+- We can already do this with tests built as modules.
+- We have explicit support for testing __init code, so if we want to
+keep that (and I think we do), we'll need to make sure that there
+remains a way to run tests before __init.
+- Behaviour changes here will need to be documented and tested well
+across all tests and architectures, so it's not something I'd want to
+land quickly.
+- The requirement to have a root filesystem set up is another thing
+we'll want to handle carefully.
+- As-is, the patch seems to break arm64.
+
+>
+> This patch series also teaches KUnit to handle kthread faults as errors,
+> and it brings a few related fixes and improvements.
+
+These seem very good overall. I want to look at the last location
+stuff in a bit more detail, but otherwise this is okay.
+
+Personally, I'd like to see this split out into a separate series,
+partly because I don't want to delay it while we sort the other parts
+of this series out, and partly because I have some other changes to
+the thread context stuff I think we need to make.
+
+>
+> New tests check NULL pointer dereference and read-only memory, which
+> wasn't possible before.
+
+These look interesting, but I don't like that they are listed as x86-specif=
+ic.
+
+>
+> This is useful to test current kernel self-protection mechanisms or
+> future ones such as Heki: https://github.com/heki-linux
+>
+> Regards,
+
+Thanks again. I'll do a more detailed review of the individual patches
+next week, but I'm excited to see this overall.
+
+Cheers,
 -- David
 
->
-> > From: Stephen Rothwell <sfr@canb.auug.org.au>
-> > Date: Thu, 29 Feb 2024 15:18:36 +1100
-> > Subject: [PATCH] fix up for "drm/tests/drm_buddy: add alloc_range_bias test"
-> >
-> > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> > ---
-> >   drivers/gpu/drm/tests/drm_buddy_test.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/gpu/drm/tests/drm_buddy_test.c b/drivers/gpu/drm/tests/drm_buddy_test.c
-> > index 1e73e3f0d278..369edf587b44 100644
-> > --- a/drivers/gpu/drm/tests/drm_buddy_test.c
-> > +++ b/drivers/gpu/drm/tests/drm_buddy_test.c
-> > @@ -188,7 +188,7 @@ static void drm_test_buddy_alloc_range_bias(struct kunit *test)
-> >                                                             bias_end, size, ps,
-> >                                                             &allocated,
-> >                                                             DRM_BUDDY_RANGE_ALLOCATION),
-> > -                                    "buddy_alloc failed with bias(%x-%x), size=%u, ps=%u\n",
-> > +                                    "buddy_alloc failed with bias(%x-%x), size=%u\n",
-> >                                      bias_start, bias_end, size);
-> >               bias_rem -= size;
-> >
->
-> thanks,
-> -- Shuah
 
---000000000000235bb40612942310
+>
+> Micka=C3=ABl Sala=C3=BCn (8):
+>   kunit: Run tests when the kernel is fully setup
+>   kunit: Handle thread creation error
+>   kunit: Fix kthread reference
+>   kunit: Fix timeout message
+>   kunit: Handle test faults
+>   kunit: Fix KUNIT_SUCCESS() calls in iov_iter tests
+>   kunit: Print last test location on fault
+>   kunit: Add tests for faults
+>
+>  include/kunit/test.h                |  24 +++++-
+>  include/kunit/try-catch.h           |   3 -
+>  init/main.c                         |   4 +-
+>  lib/bitfield_kunit.c                |   8 +-
+>  lib/checksum_kunit.c                |   2 +-
+>  lib/kunit/executor.c                |  81 ++++++++++++++------
+>  lib/kunit/kunit-example-test.c      |   6 +-
+>  lib/kunit/kunit-test.c              | 115 +++++++++++++++++++++++++++-
+>  lib/kunit/try-catch.c               |  33 +++++---
+>  lib/kunit_iov_iter.c                |  70 ++++++++---------
+>  tools/testing/kunit/kunit_kernel.py |   6 +-
+>  11 files changed, 261 insertions(+), 91 deletions(-)
+>
+>
+> base-commit: d206a76d7d2726f3b096037f2079ce0bd3ba329b
+> --
+> 2.44.0
+>
+
+--000000000000762b4d0612942397
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -247,14 +255,14 @@ wlDp+1p6RAqlDpHifQJW16h5jWIIwYisvm5QyfxQEVc+XH1lt+taSzCfiBT0ZLgjB9Sg+zAo8ys6
 ITv8ZEy6ByumbU23nkHTMOzzQSxczHkT+0q10/MxggJqMIICZgIBATBoMFQxCzAJBgNVBAYTAkJF
 MRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFzIFIz
 IFNNSU1FIENBIDIwMjACEAHS+TgZvH/tCq5FcDC0n9IwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZI
-hvcNAQkEMSIEIB1vGBERpY4amejbW6EK7xRRKXbDOU5xNdsAoZLb4lWWMBgGCSqGSIb3DQEJAzEL
-BgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MDMwMTA3MTUxNFowaQYJKoZIhvcNAQkPMVww
+hvcNAQkEMSIEIGSexU9CBLPq9DV5GlLruMl5f6OWP9Np4R5A91eTaG/AMBgGCSqGSIb3DQEJAzEL
+BgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MDMwMTA3MTUxOVowaQYJKoZIhvcNAQkPMVww
 WjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkq
-hkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDDz17v
-YIE7T7xw0wJHXZmJ7lXF0MCtGvkfO0Eja51hq2XbDOLZ4st+XGZyRu98QqNIGuAoFXeQpd40hhqY
-PtFmfIPUGDENUnuYy8v2o9rhjz/0pr6R3IpTXXjJ5Mlc8GFWPx3OCVhOuGyVd6oEWdvNCgwebPdK
-7EUlChKzuJO4Dsx9jXNyqiTJufS/xaNesJvgKG/AenDpnO6iEsSJePQm+7asOPRh9xXnl3rvlKxt
-NURSX5OXWsREt+lmMd/uy52LBa3Fk9uZkXbQlKfm1af9L/6xaCIo/60jIWdlR8l67KfKftnxlDpB
-CjqyGaQ8DbcgA6au29cdX1fW5c8exdN+
---000000000000235bb40612942310--
+hkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAtVqbG
+lHBOpfU+NmzsAAOBnHOoc4fGnI9Mg5qKrCB+VBMJaKDIhITAlgSQ69lWlzWjj5mGbnyJA/3Lwigp
++zTNHabaZFe1VbwlJRB8SlxuG9ODnlUXmLQayidJ/dz13AgLsNbTmxm/OtwUp53+hsHv71FcpAbS
+ceyu1+AMtncikEcXypW60mauLWY40S60oh3OUtRwaJZXnLIXmmL/H7CXYd1r3enoM3L274qrPLjQ
+TJd1eQqEm0UnI/26ycrkYe57yjW40F14sMMB8NkoYkIRQbgSSLzKjb5p4NflQVkTqkAkI9c6pKqh
+fsQ6/6c76hHn9wCk9e5Gr1LDCBuS8+HH
+--000000000000762b4d0612942397--
 
