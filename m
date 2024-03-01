@@ -1,426 +1,241 @@
-Return-Path: <linux-kernel+bounces-89032-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89033-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B81186E9B1
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:37:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA85786E9B5
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:38:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0FAF2862F3
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:37:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E7C71F254D1
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:38:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52C723B788;
-	Fri,  1 Mar 2024 19:37:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 435DC3BBCF;
+	Fri,  1 Mar 2024 19:37:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="B3hBGGBo"
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2071.outbound.protection.outlook.com [40.107.244.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Wrh1aiWz"
+Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C84A15C4;
-	Fri,  1 Mar 2024 19:37:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.71
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709321852; cv=fail; b=aATrSNnAtz/yLBfCbGBvrem5AitWMWvZZzabaay1NtvCewqnohatBXnKWWuirbW5UFk2d2Azu16GuHc4YtQGE91JO11MzomKlFzVIxOTbsSTfVWmauT3/HVZeennHjnESZ68IOOUVVj63MbDFy8bkgm4C5jego1yz9H5QWgMShs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709321852; c=relaxed/simple;
-	bh=lG6dfqM8HiD8IozFCBNIg8DgVsLtzQmgJAnUttlWnkU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=HI4KHQ3qZiiLpTT3/uaubeBkEpSXTvYTyL/j1rML9/mU4oMeMrtaKr8J3nWiFhtoNc8aHwaOV7T5XXujuWGO6LeLEHab96u470C0Bm7EYkishHvmOgO7nu8MJ8Jfz8bukOnrAzxeJJdVufidKVG6A/GK7E7DmA1V7bSeZhGPaMY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=B3hBGGBo; arc=fail smtp.client-ip=40.107.244.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LfCBTeZhyANyMkCNj9F8dJq8OlxaNQkY7dsD0ZHtvcS/Jg3If71nsWLCOh3y/9IILS+ZBqAMJHp1ikkXxe4LuXPmq5/SynknSTbw9KOYI6hIvwbXSw6/l0d3E/4DX/1/kT2l7ixRnyeohEvVg+HZMjMSXAGdUxNSVQvdDsf6l+OCzHMKITscaksqeqIGqhyUr39HirLKSY8sUKDD7afjH7Mdac9i+qT/1YFMtv9rtmmRtqfQpuvpkm/2uh9uKHcS806tI03ho1+SfFbfV0Bp4SZ2flvmbdZOy595AKGQw/uFsbnzn8b4j1qsep9ITBZgSK5X3XNuWcDhj7fPZDKlkg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8tI66F1uK0z5XsMAj/YSaN5DwKCxnC7vCFiEVaB76d8=;
- b=nvBvzEsslcAKYkWWVtTTMz/2A1XpDlOWLR++C+F0K3YIiERmO3WmhUNXr8aLmh0tQP/DDbNo1xeK6RXci30FOo9fYTqGrhXz5ghdJvjCdVGAygzA8dUYUWasM1vYoR3wNftr3TIDRXf+3iUUs8ph6tn1VyjenwoVqUxx1czkBHrfVmiXEdFGPhJyph+0csT5KcqXwO/fqpsm+81DNiDrUIbOzzPvLQUu3kgNfjJxnBgzCDIamr/pMAYsDQzuHCvLWMj0rxFshpSpqkFk2q1cpCgSbiJUNfAieEmwnq7kfXoKI6CymjWU0yFLIXjmykEtez6h2FE4K8x+tHUZZVIJTQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8tI66F1uK0z5XsMAj/YSaN5DwKCxnC7vCFiEVaB76d8=;
- b=B3hBGGBoT1mKGasT1y9x7Rb7N2xBCbpBSABz/TahOcgKPXY7eu4ZvHJwmXLVBxl7iRfZlKagnGW68w+TC34HRgYwz0OtwVJQc9CizU0I2Z/hfXjEam2rgZdD1L2qSjkahNVtHEII/dZJvbIIL9HZ08KugvaAOcZhCYQmqdntnB5KkAOZb4fIWsbKF45VB/aCyfFhIn+j1Qc2lWU7IXa1zHtx4exjOuwRiDpiAkVuGuZG+clZNHFjdiXBerSkv71svJzth37dOFg9YJGxTCb14VeMXK44bko2zrF813skP7stSNS6+1W9wDjDWsrBnymiQTh9CZhjMMJorEsJDxEJmA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DS7PR12MB5744.namprd12.prod.outlook.com (2603:10b6:8:73::18) by
- SJ0PR12MB6685.namprd12.prod.outlook.com (2603:10b6:a03:478::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.41; Fri, 1 Mar
- 2024 19:37:26 +0000
-Received: from DS7PR12MB5744.namprd12.prod.outlook.com
- ([fe80::dc5c:2cf1:d5f5:9753]) by DS7PR12MB5744.namprd12.prod.outlook.com
- ([fe80::dc5c:2cf1:d5f5:9753%6]) with mapi id 15.20.7339.033; Fri, 1 Mar 2024
- 19:37:26 +0000
-From: Zi Yan <ziy@nvidia.com>
-To: Aishwarya TCV <aishwarya.tcv@arm.com>
-Cc: "\"Pankaj Raghav (Samsung)\"" <kernel@pankajraghav.com>,
- linux-mm@kvack.org, "\"Matthew Wilcox (Oracle)\"" <willy@infradead.org>,
- David Hildenbrand <david@redhat.com>, Yang Shi <shy828301@gmail.com>,
- Yu Zhao <yuzhao@google.com>,
- "\"Kirill A . Shutemov\"" <kirill.shutemov@linux.intel.com>,
- Ryan Roberts <ryan.roberts@arm.com>,
- =?utf-8?q?=22Michal_Koutn=C3=BD=22?= <mkoutny@suse.com>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- "\"Zach O'Keefe\"" <zokeefe@google.com>, Hugh Dickins <hughd@google.com>,
- Luis Chamberlain <mcgrof@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v5 8/8] mm: huge_memory: enable debugfs to split huge
- pages to any order.
-Date: Fri, 01 Mar 2024 14:37:22 -0500
-X-Mailer: MailMate (1.14r6018)
-Message-ID: <A111EB95-0AF5-4715-82A4-70B8AD900A93@nvidia.com>
-In-Reply-To: <082e48c8-71b7-4937-a5da-7a37b4be16ba@arm.com>
-References: <20240226205534.1603748-1-zi.yan@sent.com>
- <20240226205534.1603748-9-zi.yan@sent.com>
- <082e48c8-71b7-4937-a5da-7a37b4be16ba@arm.com>
-Content-Type: multipart/signed;
- boundary="=_MailMate_B792ACDD-B8D3-4F56-8802-07C7D4F781BE_=";
- micalg=pgp-sha512; protocol="application/pgp-signature"
-X-ClientProxiedBy: BL1P222CA0023.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:208:2c7::28) To DS7PR12MB5744.namprd12.prod.outlook.com
- (2603:10b6:8:73::18)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94DED3B789
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 19:37:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.48
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709321871; cv=none; b=QBQYFCTC6QhJmvMzS+/zAaUTNa0J+5354RX3mH2WTxJ0v297aR4gpQD2s35GzelgTVz5SE1LOn0Qf8PgAOuLNMq1qKC7SJXazaaSHmNbMNw/3DBxtaS9tN+vDlwhUgroSYupdCmqr64lk+QGNkNNSvVifE9y93RYy9VxHPPpg9Y=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709321871; c=relaxed/simple;
+	bh=jKrG6QS9qQWHcoFkHR26CKL4wC+kkLGosTa//iiHXm0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JqM1HExfjJbl7jcJqw8OcKal+qHXybib7fon6afFWexwRuwrUjHFhsZpggr2K5JaIfh8LdZiX36wXC+nUWKpsJswsaIKErOb9XVcuKGOku7nKg2cjE/mPrHBH2RAx2qrocFXDWbJPfJI9spUJQxCY1Jp9VQplpoBrJW1n0iLyU8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Wrh1aiWz; arc=none smtp.client-ip=209.85.219.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-6903ffc4bc6so9166806d6.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 11:37:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1709321868; x=1709926668; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CGkeNRdG2FczCV6rPVYPMJDiNjYVnLlJt0xSA7ew594=;
+        b=Wrh1aiWzy0flhM6unY8+oMzHUQ04G9/VlLWcsMviZ3NU5wt6562z/v/4A75Yn7VROV
+         TVfp884V/7ulafkLTry+NCweIHozpM+9iwS6yT5gHj5A4/9TjfIWx/w89i+bxY2rXr7y
+         ijEydEEXSHZ5Jzy2+qw+Akf2Roelz3R2Gu4Tw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709321868; x=1709926668;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CGkeNRdG2FczCV6rPVYPMJDiNjYVnLlJt0xSA7ew594=;
+        b=u5bNIi3zv0AE+nLp1wr8t8b3XfqoLLdi+J3z65tBSC1i7Buo2YOVc/0q3fkuEKP8bH
+         sjt7BSIlR1rsn4hJUfEkQiHQpae51K1exPbWHj2pZcTZZXl7XpZHjP1AKgMUcW+tAo+J
+         8rK9suDZvra70e3jNtbWVSWft8mixaPutXmMkkVH87XFtZbEjqzSx9lmldqAOuLmpvfw
+         mqxvACMCtwGi2oyuXuUS7y6H5Q0y0TGay4ocPDBVrTqSCoaC5SxV/GiYD0OEFpWag6xI
+         W+3rOWaYsTA2B842OHIpXA0oLUKNgbz0bJuzPHs5HY+Cem4PSY87d1wiyuvLQkWFv8Q5
+         +iHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUxDvVfYAc0ZH2N5q8XetUNWulqeDMzDaljXguKenhrwPol3D5jg5CN2TIwLj+XyO8QZgV51gZ6h9ONNSu6nJ1s2LtLk/Y+LXKLiole
+X-Gm-Message-State: AOJu0Yw1bvGce8Q0RQ1HMmqT4POIcXHs83dPg996K1F9mzwTa5OC18Mw
+	wGXa9LmVh3T5VPCMgrxdXy2d9uEhJlQ3v8gj8RLWLUFJ73AqQJzEBU8gIlD2I2F4Iu2GdVo35MP
+	PsudBT42MFJJ/XsuF+f29rA65LPRoNiNVNf07
+X-Google-Smtp-Source: AGHT+IHi1hjTt1ARy97BXMT6VU6Qb4Dz7SjLHKe0bYzv6iRPppZu6eRnfb1sb9m2IyWlA5swq9IJNVUtpDsf8IdzdwM=
+X-Received: by 2002:a0c:fa8e:0:b0:68f:4645:8cad with SMTP id
+ o14-20020a0cfa8e000000b0068f46458cadmr2723328qvn.57.1709321868606; Fri, 01
+ Mar 2024 11:37:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR12MB5744:EE_|SJ0PR12MB6685:EE_
-X-MS-Office365-Filtering-Correlation-Id: e53814d4-14e6-42fa-f3cf-08dc3a270618
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	oCjQ0k/hZh2PjHZsjwozGMLQ8kYotRIog01nH8jEp06mNxO3YMgU0nkar4VSoH5wvliVIMejW4vjiGVxQ8F/znOTEgItEU2fkdC34uNvjPP0xEfx1Jzajt0A0ZG+RxTkIQgsv3pUUanZ0Lq/C9BoNGsnrX82ZNaEOGANe1925eEqxc+0DYQc348Z5yEK+6jYPO5JQsEStN2Svu6TelDkDfk8ev/UoYZNNPtuyk7FMwXw63J/2RT5NQq+Jq6/ev73zv9tcdXeyClfW324TPMWCuqvRiUOuWPwXkbFEaeVfURLLXugpvifv870VBIqJev1qJD9b82XX5s+rqNAdVKAQL0Xr0gTW1mbFcv+JKnI7S7nQ/WuNIFK9dVXltvJ9epEeFYk1+X1EtvSY8rviFesULMN6vH6MxpLMc5ZezyzZWe/ueB3XzQAMYZ9lpzDMdMn49Mpy/fuI9sqs/MH/adYs1omwtWEtpDXd94OjXIO2W5njIPpCzfGQr2b/XpnZYMWVUairn9OawF55sKt8oiveVu/h8bC7e2iBG4QhPOzfqlpheC9IU3X7YfcGpom4iPWe1O9bOA3Rf2Rek30xzVo+ZlfT0m4XZYqKaSfzPYJZSXbmrWIbtVy6oJ+xkTRq/NUdB2S9UDX+8Bvkpyf/HKRRg==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB5744.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?57mpKOK/Fi+YVt5eDi11eYNWsbUZnWItbceAqo/YQ5232al93FrP72CIT37Z?=
- =?us-ascii?Q?rkA6sn5e982CeIoZVZbgWeTNLGTmBqYMjGDKnOJsxdM0wyjH0nBnizqFW61N?=
- =?us-ascii?Q?kjodxW6Z8lO3yoUYMMPT085XSK/EekNSPxYqLMpC59wgshqsRZLDf+rBlV6N?=
- =?us-ascii?Q?HpCQmFXH8yMxtEk5YZqdwM8YtUkuVbw1NjXL8KX2hyjZApvbKAxTrZiWyxWF?=
- =?us-ascii?Q?/bbC+OCylVV5BeUwDN0CcSySb2ZTMPepp59DGEpoO1TY/5XTlhsnUFC6Mvt7?=
- =?us-ascii?Q?mH+13wz1vXWBA/oW3T1HT+KcvKTGKZHDa61DkamMvWg01mQff/0aieOI114m?=
- =?us-ascii?Q?JggN5bzLs+b/yffRn7NIog1ZcbCxGGhrJtm9Jg7tkCjWwPRfC/TxSZ0Hw4b+?=
- =?us-ascii?Q?SUBDsC4L0Krix58T6vo1agqABTRN+b+Rs8h2t/h7WRYel+9x7HfzSriZ0njv?=
- =?us-ascii?Q?v6DwmbzuQkscgoXlzHQZqP3+x62CMsS9qm9ciHxyAPffY1re+qAF4isoFvCW?=
- =?us-ascii?Q?67TorxsRRaz9tehLiW3DW52O7RIkkXa2XE7tVSanrcu+vh1VDIj/Dh72rFCi?=
- =?us-ascii?Q?5QW8lSN9r+CW9Km81DoaeiZsEc5bbwW5X9SJFTVn41NwRWjWml2odfqKWyBC?=
- =?us-ascii?Q?hrI5KDuMDkksuK8JUV9zgXWNg3x+S4oJ5sfTmPy3rXUTV1MAN12CdfPyt9rH?=
- =?us-ascii?Q?zMFVpbrjf3Cs9X0r2Lp8cn/4BSRLIUCO/9KNxvjtQ/8C2iqmzUjA7Q6kKNdt?=
- =?us-ascii?Q?3SSGhnfTNlViibfd7+6m9u7TkbAlzWld52xGwdhIQR36ubs1VcfQrOKJEy16?=
- =?us-ascii?Q?dtg4IZYu6lvm7gV+BK2wFITIjfykRrmRE1/sGv3pis7bxvDI9l7p5h9/2fqv?=
- =?us-ascii?Q?YJPVXqEGk6g4JhS7L50FjBXM4Emm/Z551Mj/hqzV2rQTmXboVzqil1O4swFv?=
- =?us-ascii?Q?c+XQKwNs0HyoYaBBaceU75lqIuCrHROiB1utn0+AhUJddkf1NlZF7sK8vyx+?=
- =?us-ascii?Q?jp26NBeL3VxD6Tg6NSjSryYudBKhEcJVIDLXBoRut+4rb3LssQTe+Uxw54eh?=
- =?us-ascii?Q?JIaZdJexDn7c9kM9KuDAwHZ2ZUby29WMG1nhyvTk15JIiiBf33TBsCmISMNE?=
- =?us-ascii?Q?tIzxJ7NTpu78D1JccZ9JsLvYargqOf21kAkWwIdiNIUw0GviI/su1lZELGBl?=
- =?us-ascii?Q?glx1BXUid3J62TWE/sGalOHY5H5kOD7Kr47KKCOgSyIvwVW9O7c/pWSzH01e?=
- =?us-ascii?Q?Y4CZGqHOcCo/r60GQ6WTbvteXHfgzv4ruBlhNWdnGLOc2m9B66rOwFfVnQH9?=
- =?us-ascii?Q?WZVh5f4rDtPatuSmSnYPw9bns4MlxW4LafKNZ4sF2cgWGAH1SpUJ1bTAbVgh?=
- =?us-ascii?Q?wpXtLQI3/yH5F0zw9w5d/2RXK9qiZo22nrdhndLWoZA/8B9JR/IwADihyQCr?=
- =?us-ascii?Q?OkTs6Ik5EaG85zDEvDVCthoI4hZj3FX2E5PbuSFf3Ff9xKZXU6+3/m3JTweq?=
- =?us-ascii?Q?scqNA0v2nGYYAStxCkPZd+8PPo0zvagueaW/TQwohOAbYjizUP2F+VGYAqlj?=
- =?us-ascii?Q?IbZKUoUI5b1Ttfi7a+k=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e53814d4-14e6-42fa-f3cf-08dc3a270618
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB5744.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Mar 2024 19:37:26.2141
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xulL2ejy+CZTjygeAS+RRCFYxsqULnFBMwjixiNV1lqrBzAbb7dDVqQAuZsVOPIU
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB6685
-
---=_MailMate_B792ACDD-B8D3-4F56-8802-07C7D4F781BE_=
-Content-Type: multipart/mixed;
- boundary="=_MailMate_D15C6184-A7F8-48F1-93AC-CC0C520A5D2F_="
-
-
---=_MailMate_D15C6184-A7F8-48F1-93AC-CC0C520A5D2F_=
-Content-Type: text/plain
-
-On 1 Mar 2024, at 4:51, Aishwarya TCV wrote:
-
-> On 26/02/2024 20:55, Zi Yan wrote:
->> From: Zi Yan <ziy@nvidia.com>
->>
->> It is used to test split_huge_page_to_list_to_order for pagecache THPs.
->> Also add test cases for split_huge_page_to_list_to_order via both
->> debugfs.
->>
->> Signed-off-by: Zi Yan <ziy@nvidia.com>
->> ---
->>  mm/huge_memory.c                              |  34 ++++--
->>  .../selftests/mm/split_huge_page_test.c       | 115 +++++++++++++++++-
->>  2 files changed, 131 insertions(+), 18 deletions(-)
->>
->
-> Hi Zi,
->
-> When booting the kernel against next-master(20240228)with Arm64 on
-> Marvell Thunder X2 (TX2), the kselftest-mm test 'split_huge_page_test'
-> is failing in our CI (with rootfs over NFS). I can send the full logs if
-> required.
->
-> A bisect (full log below) identified this patch as introducing the
-> failure. Bisected it on the tag "next-20240228" at repo
-> "https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git".
->
-> This works fine on  Linux version 6.8.0-rc6
-
-Hi Aishwarya,
-
-Can you try the attached patch and see if it fixes the failure? I changed
-the test to accept XFS dev as input, mount XFS on a temp folder under /tmp,
-and skip if no XFS is mounted.
-
-Thanks.
-
---
-Best Regards,
-Yan, Zi
-
---=_MailMate_D15C6184-A7F8-48F1-93AC-CC0C520A5D2F_=
-Content-Disposition: attachment; filename=selftest.patch
-Content-ID: <D2E4B376-0928-40A3-8112-77F9B4B399AD@nvidia.com>
-Content-Type: text/plain; name=selftest.patch
+References: <20240229232625.3944115-1-jthies@google.com> <20240229232625.3944115-4-jthies@google.com>
+In-Reply-To: <20240229232625.3944115-4-jthies@google.com>
+From: Prashant Malani <pmalani@chromium.org>
+Date: Fri, 1 Mar 2024 11:37:37 -0800
+Message-ID: <CACeCKaeSdAwS5NJd0UtwZKvfvWMJmrJAg73e8SB+ToM5exOVUg@mail.gmail.com>
+Subject: Re: [PATCH v3 3/4] usb: typec: ucsi: Register SOP/SOP' Discover
+ Identity Responses
+To: Jameson Thies <jthies@google.com>
+Cc: heikki.krogerus@linux.intel.com, linux-usb@vger.kernel.org, 
+	bleung@google.com, abhishekpandit@chromium.org, andersson@kernel.org, 
+	dmitry.baryshkov@linaro.org, fabrice.gasnier@foss.st.com, 
+	gregkh@linuxfoundation.org, hdegoede@redhat.com, neil.armstrong@linaro.org, 
+	rajaram.regupathy@intel.com, saranya.gopal@intel.com, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-diff --git a/tools/testing/selftests/mm/split_huge_page_test.c b/tools/te=
-sting/selftests/mm/split_huge_page_test.c
-index cf09fdc9ef22..047883473b84 100644
---- a/tools/testing/selftests/mm/split_huge_page_test.c
-+++ b/tools/testing/selftests/mm/split_huge_page_test.c
-@@ -26,7 +26,6 @@ uint64_t pmd_pagesize;
- =
+On Thu, Feb 29, 2024 at 3:28=E2=80=AFPM Jameson Thies <jthies@google.com> w=
+rote:
+> diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucsi.=
+c
+> index 7c84687b5d1a3..4088422b33c74 100644
+> --- a/drivers/usb/typec/ucsi/ucsi.c
+> +++ b/drivers/usb/typec/ucsi/ucsi.c
+> @@ -646,6 +646,121 @@ static int ucsi_get_src_pdos(struct ucsi_connector =
+*con)
+>         return ret;
+>  }
+>
+> +static int ucsi_read_identity(struct ucsi_connector *con, u8 recipient,
+> +                             struct usb_pd_identity *id)
+> +{
+> +       struct ucsi *ucsi =3D con->ucsi;
+> +       struct ucsi_pd_message_disc_id resp =3D {};
+> +       u64 command;
+> +       int ret;
+> +
+> +       if (ucsi->version < UCSI_VERSION_2_0) {
+> +               /*
+> +                * Before UCSI v2.0, MESSAGE_IN is 16 bytes which cannot =
+fit
+> +                * the 28 byte identity response including the VDM header=
+.
+> +                * First request the VDM header, ID Header VDO, Cert Stat=
+ VDO
+> +                * and Product VDO.
+> +                */
+> +               command =3D UCSI_COMMAND(UCSI_GET_PD_MESSAGE) |
+> +                   UCSI_CONNECTOR_NUMBER(con->num);
+> +               command |=3D UCSI_GET_PD_MESSAGE_RECIPIENT(recipient);
+> +               command |=3D UCSI_GET_PD_MESSAGE_OFFSET(0);
+> +               command |=3D UCSI_GET_PD_MESSAGE_BYTES(0x10);
+> +               command |=3D UCSI_GET_PD_MESSAGE_TYPE(
+> +                   UCSI_GET_PD_MESSAGE_TYPE_IDENTITY);
+> +
+> +               ret =3D ucsi_send_command(ucsi, command, &resp, 0x10);
+> +               if (ret < 0) {
+> +                       dev_err(ucsi->dev,
+> +                               "UCSI_GET_PD_MESSAGE v1.2 failed first re=
+quest (%d)\n",
+> +                               ret);
+> +                       return ret;
+> +               }
+> +
+> +               /* Then request Product Type VDO1 through Product Type VD=
+O3. */
+> +               command =3D UCSI_COMMAND(UCSI_GET_PD_MESSAGE) |
+> +                   UCSI_CONNECTOR_NUMBER(con->num);
+> +               command |=3D UCSI_GET_PD_MESSAGE_RECIPIENT(recipient);
+> +               command |=3D UCSI_GET_PD_MESSAGE_OFFSET(0x10);
+> +               command |=3D UCSI_GET_PD_MESSAGE_BYTES(0xc);
+> +               command |=3D UCSI_GET_PD_MESSAGE_TYPE(
+> +                   UCSI_GET_PD_MESSAGE_TYPE_IDENTITY);
+> +
+> +               ret =3D ucsi_send_command(ucsi, command, &resp.vdo[0], 0x=
+c);
+> +               if (ret < 0) {
+> +                       dev_err(ucsi->dev,
+> +                               "UCSI_GET_PD_MESSAGE v1.2 failed second r=
+equest (%d)\n",
+> +                               ret);
+> +                       return ret;
+> +               }
+> +       } else {
+> +               /*
+> +                * In UCSI v2.0 and after, MESSAGE_IN is large enough to =
+request
+> +                * the large enough to request the full Discover Identity
+> +                * response at once.
+> +                */
+> +               command =3D UCSI_COMMAND(UCSI_GET_PD_MESSAGE) |
+> +                   UCSI_CONNECTOR_NUMBER(con->num);
+> +               command |=3D UCSI_GET_PD_MESSAGE_RECIPIENT(recipient);
+> +               /* VDM Header + 6 VDOs (0x1c bytes) without an offset */
+> +               command |=3D UCSI_GET_PD_MESSAGE_OFFSET(0);
+> +               command |=3D UCSI_GET_PD_MESSAGE_BYTES(0x1c);
+> +               command |=3D UCSI_GET_PD_MESSAGE_TYPE(
+> +                   UCSI_GET_PD_MESSAGE_TYPE_IDENTITY);
+> +
+> +               ret =3D ucsi_send_command(ucsi, command, &resp, sizeof(re=
+sp));
+> +               if (ret < 0) {
+> +                       dev_err(ucsi->dev, "UCSI_GET_PD_MESSAGE failed (%=
+d)\n",
+> +                               ret);
+> +                       return ret;
+> +               }
+> +       }
+> +
+> +       id->id_header =3D resp.id_header;
+> +       id->cert_stat =3D resp.cert_stat;
+> +       id->product =3D resp.product;
+> +       id->vdo[0] =3D resp.vdo[0];
+> +       id->vdo[1] =3D resp.vdo[1];
+> +       id->vdo[2] =3D resp.vdo[2];
+> +       return 0;
+> +}
 
- #define SPLIT_DEBUGFS "/sys/kernel/debug/split_huge_pages"
- #define SMAP_PATH "/proc/self/smaps"
--#define THP_FS_PATH "/mnt/thp_fs"
- #define INPUT_MAX 80
- =
+There is some repetition here, both with the "if" block and the
+UCSI command itself. You can factor out the command setup code into a separ=
+ate
+function (it can take offset and size as arguments). Then, factor out
+common parts in the "if" block. For example:
 
- #define PID_FMT "%d,0x%lx,0x%lx,%d"
-@@ -268,7 +267,45 @@ void split_file_backed_thp(void)
- 	ksft_exit_fail_msg("Error occurred\n");
- }
- =
+int ucsi_pd_message_get_identity(struct *ucsi, u8 offset, u8 size, u8 recip=
+ient,
+                                                              void *data) {
+        u64 command =3D UCSI_COMMAND(UCSI_GET_PD_MESSAGE) |
+UCSI_CONNECTOR_NUMBER(ucsi->con->num) |
+                      UCSI_GET_PD_MESSAGE_RECIPIENT(recipient) |
+                      UCSI_GET_PD_MESSAGE_OFFSET(offset) |
+UCSI_GET_PD_MESSAGE_BYTES(size) |
 
--void create_pagecache_thp_and_fd(const char *testfile, size_t fd_size, i=
-nt *fd, char **addr)
-+bool prepare_thp_fs(const char *xfs_dev_loc, char *thp_fs_template,
-+		const char **thp_fs_loc)
-+{
-+	bool mounted =3D false;
-+
-+	*thp_fs_loc =3D mkdtemp(thp_fs_template);
-+
-+	if (!*thp_fs_loc)
-+		ksft_exit_fail_msg("cannot create temp folder\n");
-+
-+	if (xfs_dev_loc) {
-+		int status =3D mount(xfs_dev_loc, *thp_fs_loc, "xfs", 0, NULL);
-+
-+		if (status)
-+			ksft_exit_fail_msg("Unable to mount xfs for testing\n");
-+		mounted =3D true;
-+	}
-+	return mounted;
-+}
-+
-+void cleanup_thp_fs(const char *thp_fs_loc, bool mounted)
-+{
-+	int status;
-+
-+	if (mounted) {
-+		status =3D umount(thp_fs_loc);
-+		if (status)
-+			ksft_exit_fail_msg("Unable to umount %s\n",
-+					   thp_fs_loc);
-+	}
-+
-+	status =3D rmdir(thp_fs_loc);
-+	if (status)
-+		ksft_exit_fail_msg("cannot remove tmp dir: %s\n",
-+				   strerror(errno));
-+}
-+
-+int create_pagecache_thp_and_fd(const char *testfile, size_t fd_size, in=
-t *fd,
-+		char **addr)
- {
- 	size_t i;
- 	int dummy;
-@@ -277,7 +314,7 @@ void create_pagecache_thp_and_fd(const char *testfile=
-, size_t fd_size, int *fd,
- =
+UCSI_GET_PD_MESSAGE_TYPE(UCSI_GET_PD_MESSAGE_TYPE_IDENTITY);
 
- 	*fd =3D open(testfile, O_CREAT | O_RDWR, 0664);
- 	if (*fd =3D=3D -1)
--		ksft_exit_fail_msg("Failed to create a file at "THP_FS_PATH);
-+		ksft_exit_fail_msg("Failed to create a file at %s\n", testfile);
- =
+        return ucsi_send_command(ucsi, command, data, size);
+}
 
- 	for (i =3D 0; i < fd_size; i++) {
- 		unsigned char byte =3D (unsigned char)i;
-@@ -299,7 +336,7 @@ void create_pagecache_thp_and_fd(const char *testfile=
-, size_t fd_size, int *fd,
- =
+Then in the ucsi_read_identity() :
+        u8 offset =3D 0;
+        u8 size;
 
- 	*fd =3D open(testfile, O_RDWR);
- 	if (*fd =3D=3D -1) {
--		ksft_perror("Failed to open a file at "THP_FS_PATH);
-+		ksft_perror("Failed to open testfile\n");
- 		goto err_out_unlink;
- 	}
- =
+        /*
+         * In UCSI v2.0 and after, MESSAGE_IN is large enough to request
+         * the large enough to request the full Discover Identity
+         * response at once.
+         */
+        if (ucsi->version >=3D UCSI_VERSION_2_0) {
+                size =3D 0x1c;
+        else
+                size =3D 0x10;
 
-@@ -314,26 +351,37 @@ void create_pagecache_thp_and_fd(const char *testfi=
-le, size_t fd_size, int *fd,
- 		dummy +=3D *(*addr + i);
- =
+        ret =3D ucsi_pd_message_get_identity(ucsi, offset, size, &resp);
+        if (ret < 0) {
+                /* Handle error */
+        }
 
- 	if (!check_huge_file(*addr, fd_size / pmd_pagesize, pmd_pagesize)) {
--		ksft_print_msg("No large pagecache folio generated, please mount a fil=
-esystem supporting large folio at "THP_FS_PATH"\n");
--		goto err_out_close;
-+		ksft_print_msg("No large pagecache folio generated, please provide a f=
-ilesystem supporting large folio\n");
-+		unlink(testfile);
-+		ksft_test_result_skip("Pagecache folio split skipped\n");
-+		return -2;
- 	}
--	return;
-+	return 0;
- err_out_close:
- 	close(*fd);
- err_out_unlink:
- 	unlink(testfile);
- 	ksft_exit_fail_msg("Failed to create large pagecache folios\n");
-+	return -1;
- }
- =
+        /* Request Product Type VDO1 through Product Type VDO3. */
+        if (ucsi->version < UCSI_VERSION_2_0) {
+                offset =3D 0x10;
+                size =3D 0xC;
+                ret =3D ucsi_pd_message_get_identity(ucsi, offset, size,
+&resp.vdo[0]);
+                if (ret < 0) {
+                /* Handle error */
+                }
+        }
 
--void split_thp_in_pagecache_to_order(size_t fd_size, int order)
-+void split_thp_in_pagecache_to_order(size_t fd_size, int order, const ch=
-ar *fs_loc)
- {
- 	int fd;
- 	char *addr;
- 	size_t i;
--	const char testfile[] =3D THP_FS_PATH "/test";
-+	char testfile[INPUT_MAX];
- 	int err =3D 0;
- =
+BR,
 
--	create_pagecache_thp_and_fd(testfile, fd_size, &fd, &addr);
-+	err =3D snprintf(testfile, INPUT_MAX, "%s/test", fs_loc);
-+
-+	if (err < 0)
-+		ksft_exit_fail_msg("cannot generate right test file name\n");
-+
-+	err =3D create_pagecache_thp_and_fd(testfile, fd_size, &fd, &addr);
-+	if (err)
-+		return;
-+	err =3D 0;
- =
-
- 	write_debugfs(PID_FMT, getpid(), (uint64_t)addr, (uint64_t)addr + fd_si=
-ze, order);
- =
-
-@@ -351,6 +399,7 @@ void split_thp_in_pagecache_to_order(size_t fd_size, =
-int order)
- 	}
- =
-
- out:
-+	munmap(addr, fd_size);
- 	close(fd);
- 	unlink(testfile);
- 	if (err)
-@@ -360,8 +409,11 @@ void split_thp_in_pagecache_to_order(size_t fd_size,=
- int order)
- =
-
- int main(int argc, char **argv)
- {
--	int i;
-+	int i, mounted;
- 	size_t fd_size;
-+	char *optional_xfs_dev_loc =3D NULL;
-+	char fs_loc_template[] =3D "/tmp/thp_fs_XXXXXX";
-+	const char *fs_loc;
- =
-
- 	ksft_print_header();
- =
-
-@@ -370,6 +422,9 @@ int main(int argc, char **argv)
- 		ksft_finished();
- 	}
- =
-
-+	if (argc > 1)
-+		optional_xfs_dev_loc =3D argv[1];
-+
- 	ksft_set_plan(3+9);
- =
-
- 	pagesize =3D getpagesize();
-@@ -384,8 +439,11 @@ int main(int argc, char **argv)
- 	split_pte_mapped_thp();
- 	split_file_backed_thp();
- =
-
-+	mounted =3D prepare_thp_fs(optional_xfs_dev_loc, fs_loc_template,
-+				 &fs_loc);
- 	for (i =3D 8; i >=3D 0; i--)
--		split_thp_in_pagecache_to_order(fd_size, i);
-+		split_thp_in_pagecache_to_order(fd_size, i, fs_loc);
-+	cleanup_thp_fs(fs_loc, mounted);
- =
-
- 	ksft_finished();
- =
-
-
---=_MailMate_D15C6184-A7F8-48F1-93AC-CC0C520A5D2F_=--
-
---=_MailMate_B792ACDD-B8D3-4F56-8802-07C7D4F781BE_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename=signature.asc
-Content-Type: application/pgp-signature; name=signature.asc
-
------BEGIN PGP SIGNATURE-----
-
-iQJDBAEBCgAtFiEE6rR4j8RuQ2XmaZol4n+egRQHKFQFAmXiLnIPHHppeUBudmlk
-aWEuY29tAAoJEOJ/noEUByhU6C0P/1AqSUq74Yp4r4mQc/3AZd09ei0KPLx6iK9y
-c5eGkIZOsHiLk9FnqczsZTaxQsjXa5jkJeEmXhG1Tz4cRbhAulbkuOuEjRN2/NyB
-whQyjDSMQeNMh05doTx8z2Q6+A5kbHKGBeiRLYQcOaCSBIv0d2eAvWjhtcl5uoWi
-M5SK3EYeFSWb91skfsllhjkiGIGmNYbkjoxxUPR4Rlp14CEvCAJk72l2G5itO8cx
-nmOmmVMcJtvDGoZgU0bg2G9xdEFnZe0rZxM9X0bwSKn8siRU1eg2nq0PLBMdRl/F
-PVVT6ie26CkKJFSpho77jkUZfjTkvxyo/pVFtkYbt8CBjcIBMmazpx4GPoSu0Wb6
-8rdMf3L057PnDl+Bvp4pR6SDitLvyz4n5j+nb3yUUgT7jghoigdjrlYgfVIc5JlH
-i07fE+4tzJyye9WxWwmguWuNF5sLshrerkCi7Ac3ykrz4OfWsMyMGlIrwOkl4U+k
-RPtHwqaleH4cHAYHvhN7r51l/YAJzDPCFXbBbB208xUwsqcvUV+FW9cZf8b1d54Y
-vQsY+wjiSPxCqC67z9a70U3ZiBWFx+ytAqe5p1voE6pNY0rQrEs6RSQvWAKr0KEg
-YwdTmkryI8agZ1paqiiu2FQSkT1JT4DS/X5sKGznO9tLHhge6qDyDCWEHWN4bgVB
-aUd+rZQR
-=qh3Y
------END PGP SIGNATURE-----
-
---=_MailMate_B792ACDD-B8D3-4F56-8802-07C7D4F781BE_=--
+-Prashant
 
