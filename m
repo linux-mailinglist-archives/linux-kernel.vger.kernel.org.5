@@ -1,135 +1,146 @@
-Return-Path: <linux-kernel+bounces-88076-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88074-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90A7486DD0D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:27:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0A6F86DD09
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:26:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 31B5BB27809
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:27:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53AAC28A3C7
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:26:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4915D69E01;
-	Fri,  1 Mar 2024 08:27:02 +0000 (UTC)
-Received: from SHSQR01.spreadtrum.com (mx1.unisoc.com [222.66.158.135])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8776269E0D;
+	Fri,  1 Mar 2024 08:26:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="nGoccN7C"
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C25A169D14
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 08:26:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=222.66.158.135
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFB5469DE4
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 08:26:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709281621; cv=none; b=lQzzcGB732AVG986g+lCLZOjPtdFeOuCPT0BiSeIEW3DiBfflBZ73M9eL/jr0hlFlC39JxPMpf3Yob0AOsKgZ8NgK9M5oXeBUl52h4jOX+bkUxtBbX5dnopNMAd1M/JAFCSHoeFYgsV8GWAjSKzDIg3uw6KKdfb+s6SxIwjluf0=
+	t=1709281577; cv=none; b=RzviC2g/4M+RPkeDCy4PUYzi5yejzKSDPn3yDpLwLflee49UFePuH9iVIUdJcTQ93hUPOebVmoZCfIFGTiiU+UyjEdry4ehJcu3R1tqnXT7avx2FS0dN0O+HespmkUxEQRCwsSF/2zJkbnbsolv+aj8SbPVNn8m/KjqPEQhjYw4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709281621; c=relaxed/simple;
-	bh=Qkm28q9qiqVdNpBzw+D1ZzW6MaJgVHb4vj9bN4B0IrM=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=HSsBt9EgtuUsiO6TSmOr63pqUVdVGdE2NomrnLIzVJk2rmIO2Qwz5zBehPkASWU4KG+imU8b5dKT5Tq6Sg/s8WazmTcxhvHaM9znm7Ec20GKLKBXnzusYgVg7pzIRUV4E3WzOVq+TXcN4EoRNQWgz0o4u7EBoV+xhpAm+ELIIqA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com; spf=pass smtp.mailfrom=unisoc.com; arc=none smtp.client-ip=222.66.158.135
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
-Received: from dlp.unisoc.com ([10.29.3.86])
-	by SHSQR01.spreadtrum.com with ESMTP id 4218QCKa055787;
-	Fri, 1 Mar 2024 16:26:12 +0800 (+08)
-	(envelope-from Zhiguo.Niu@unisoc.com)
-Received: from SHDLP.spreadtrum.com (bjmbx02.spreadtrum.com [10.0.64.8])
-	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4TmLkR6XLSz2KQsFF;
-	Fri,  1 Mar 2024 16:25:19 +0800 (CST)
-Received: from bj08434pcu.spreadtrum.com (10.0.73.87) by
- BJMBX02.spreadtrum.com (10.0.64.8) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Fri, 1 Mar 2024 16:26:09 +0800
-From: Zhiguo Niu <zhiguo.niu@unisoc.com>
-To: <jaegeuk@kernel.org>, <chao@kernel.org>
-CC: <linux-f2fs-devel@lists.sourceforge.net>, <linux-kernel@vger.kernel.org>,
-        <niuzhiguo84@gmail.com>, <zhiguo.niu@unisoc.com>, <ke.wang@unisoc.com>,
-        <hongyu.jin@unisoc.com>
-Subject: [PATCH 2/2] f2fs: fix to check return value of f2fs_gc_range
-Date: Fri, 1 Mar 2024 16:25:55 +0800
-Message-ID: <1709281555-11373-2-git-send-email-zhiguo.niu@unisoc.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1709281555-11373-1-git-send-email-zhiguo.niu@unisoc.com>
-References: <1709281555-11373-1-git-send-email-zhiguo.niu@unisoc.com>
+	s=arc-20240116; t=1709281577; c=relaxed/simple;
+	bh=rGugC4CtKyBNC9wfpMo8MLd50utveTzcgNmmqGOwzrE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LZ4zHM2CbMFN+jsSpbPS3h8LZfNKpy3o3SNCWm4PXsf6I+JZYkSDrQOTP8/9V2UHhE5z86EzSM2Vr4oaVH9VAzEbWzNHvum6WrQAV+4HJQjZ4S8fNYl7dU/9D77d/srn3GL+kQT5n9ZRCg6nK9lC6yuQVIPRtiwbtKx8t+vhYkw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=nGoccN7C; arc=none smtp.client-ip=209.85.210.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6e447c39525so414637a34.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 00:26:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1709281574; x=1709886374; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=f0O2fV0WbAx46xM1Y6qPjUuO/OeNoTHA0KPqbfE4bGA=;
+        b=nGoccN7CErqYXvwaklzhOj1brNmcnCXh6XJTx1evZ0OXdE0dfsLfrfIWF4ePNNeWrQ
+         uZGTmeMbk/Ki+Wg6lixyv5BEvX5fztrVHXFWbuixWVd7cSR7ydQXt42AlUFi0hiEt0Le
+         7D234beEwEK28uNPVwXrw0naedz9oGOOgj6zRdFSTJMMDJX4dtWVZmEbdJcqNiA2IZMS
+         Z77JDQaCtMXe+b+RoCJg6Kp0JevfWqqzjBHudfQ9OZySX9q8XAt9GFbSMbwrcL6ijUkE
+         uOnkBTr5JJgcxtoBiASdYb2494Vqox2awB3QQlRZVM0L3D7tQj0GVAb+W7mff84fFqyu
+         G/hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709281574; x=1709886374;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=f0O2fV0WbAx46xM1Y6qPjUuO/OeNoTHA0KPqbfE4bGA=;
+        b=sfVfMnmG79LiBSDilo7Q8d78560LL7mWrjN3R/zbL/t5ROaC/mIz8ZxR4I2p7b+zmC
+         dqO4uYJXW/sbm27itoCWLJRVzwNatv+WVQVmZnLlJxgKhee2uCfvTpnmnlxk3mLx+71i
+         taaaM0qKjYG2xdbBCdsX7kMHQ8s56eMSOFKAlnEdholp43QRpB/KCedWC3AJCfuwBiqD
+         OXVgMdXA8oNIXvOWQ6ZzNfxncMJ2tNlf1F7kCXZoapj0/T7hd2jA6Cq+l2w1gU7Q/+wV
+         yVIIzWX3CorsyDNF4zyLWCQ+RbWABclZaijwLzK0U6+qMBHyr991SF7Fh3quhvDphun8
+         tICQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW6hAOnd0fHYIpCK/I1KHAF1oE96pROcu3nrpBcrJmV+5ke6xlRPcpzKGBHG/9aWXnrrA0m70+eqEo4jg4ioZxsDAUwXfxfkB0ARcK+
+X-Gm-Message-State: AOJu0YwMnwrfNE8NotY1f34acdhLlMbGAek7ypDCYIT+0WHw3rdEsfcC
+	+LkB8mz8luOP3NmyNWQpuCEXW3iv9BscTe5ZWX/hwBngE+1oDA6Gw6Jzh2cc7is=
+X-Google-Smtp-Source: AGHT+IEO2VE95MaGXRr6VmSeAK9U9lNiLgxplCLbWJe649iHowWVgQB/IkCDcUSOog4HOG7PQm9Yjw==
+X-Received: by 2002:a05:6820:41:b0:5a0:4216:c5f0 with SMTP id v1-20020a056820004100b005a04216c5f0mr887748oob.0.1709281573977;
+        Fri, 01 Mar 2024 00:26:13 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:999:a3a0:1070:febd:b4af:e79a? ([2a01:e0a:999:a3a0:1070:febd:b4af:e79a])
+        by smtp.gmail.com with ESMTPSA id r7-20020aa78b87000000b006e13e202914sm2449292pfd.56.2024.03.01.00.26.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Mar 2024 00:26:13 -0800 (PST)
+Message-ID: <9c466c89-3788-4473-a657-1f117cd5e5ab@rivosinc.com>
+Date: Fri, 1 Mar 2024 09:25:56 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
- BJMBX02.spreadtrum.com (10.0.64.8)
-X-MAIL:SHSQR01.spreadtrum.com 4218QCKa055787
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 01/15] RISC-V: Fix the typo in Scountovf CSR name
+To: Atish Patra <atishp@rivosinc.com>, linux-kernel@vger.kernel.org
+Cc: Mark Rutland <mark.rutland@arm.com>, linux-kselftest@vger.kernel.org,
+ Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alexghiti@rivosinc.com>,
+ kvm@vger.kernel.org, Will Deacon <will@kernel.org>,
+ Anup Patel <anup@brainfault.org>, Paul Walmsley <paul.walmsley@sifive.com>,
+ Conor Dooley <conor.dooley@microchip.com>,
+ Paolo Bonzini <pbonzini@redhat.com>, Guo Ren <guoren@kernel.org>,
+ kvm-riscv@lists.infradead.org, Atish Patra <atishp@atishpatra.org>,
+ Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org,
+ Shuah Khan <shuah@kernel.org>, Andrew Jones <ajones@ventanamicro.com>
+References: <20240229010130.1380926-1-atishp@rivosinc.com>
+ <20240229010130.1380926-2-atishp@rivosinc.com>
+Content-Language: en-US
+From: =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
+In-Reply-To: <20240229010130.1380926-2-atishp@rivosinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-f2fs_gc_range may return error, so its caller
-f2fs_allocate_pinning_section should determine whether
-to do retry based on ist return value.
 
-Also just do f2fs_gc_range when f2fs_allocate_new_section
-return -EAGAIN, and check cp error case in f2fs_gc_range.
 
-Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
----
- fs/f2fs/gc.c      |  3 +++
- fs/f2fs/segment.c | 13 ++++++++-----
- 2 files changed, 11 insertions(+), 5 deletions(-)
+On 29/02/2024 02:01, Atish Patra wrote:
+> The counter overflow CSR name is "scountovf" not "sscountovf".
+> 
+> Fix the csr name.
+> 
+> Fixes: 4905ec2fb7e6 ("RISC-V: Add sscofpmf extension support")
+> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> Reviewed-by: Anup Patel <anup@brainfault.org>
+> Signed-off-by: Atish Patra <atishp@rivosinc.com>
+> ---
+>  arch/riscv/include/asm/csr.h         | 2 +-
+>  arch/riscv/include/asm/errata_list.h | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/riscv/include/asm/csr.h b/arch/riscv/include/asm/csr.h
+> index 510014051f5d..603e5a3c61f9 100644
+> --- a/arch/riscv/include/asm/csr.h
+> +++ b/arch/riscv/include/asm/csr.h
+> @@ -281,7 +281,7 @@
+>  #define CSR_HPMCOUNTER30H	0xc9e
+>  #define CSR_HPMCOUNTER31H	0xc9f
+>  
+> -#define CSR_SSCOUNTOVF		0xda0
+> +#define CSR_SCOUNTOVF		0xda0
+>  
+>  #define CSR_SSTATUS		0x100
+>  #define CSR_SIE			0x104
+> diff --git a/arch/riscv/include/asm/errata_list.h b/arch/riscv/include/asm/errata_list.h
+> index ea33288f8a25..cd49eb025ddf 100644
+> --- a/arch/riscv/include/asm/errata_list.h
+> +++ b/arch/riscv/include/asm/errata_list.h
+> @@ -114,7 +114,7 @@ asm volatile(ALTERNATIVE(						\
+>  
+>  #define ALT_SBI_PMU_OVERFLOW(__ovl)					\
+>  asm volatile(ALTERNATIVE(						\
+> -	"csrr %0, " __stringify(CSR_SSCOUNTOVF),			\
+> +	"csrr %0, " __stringify(CSR_SCOUNTOVF),				\
+>  	"csrr %0, " __stringify(THEAD_C9XX_CSR_SCOUNTEROF),		\
+>  		THEAD_VENDOR_ID, ERRATA_THEAD_PMU,			\
+>  		CONFIG_ERRATA_THEAD_PMU)				\
 
-diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
-index e435e1f..c60b747 100644
---- a/fs/f2fs/gc.c
-+++ b/fs/f2fs/gc.c
-@@ -1986,6 +1986,9 @@ int f2fs_gc_range(struct f2fs_sb_info *sbi,
- 	unsigned int segno;
- 	unsigned int gc_secs = dry_run_sections;
- 
-+	if (unlikely(f2fs_cp_error(sbi)))
-+		return -EIO;
-+
- 	for (segno = start_seg; segno <= end_seg; segno += SEGS_PER_SEC(sbi)) {
- 		struct gc_inode_list gc_list = {
- 			.ilist = LIST_HEAD_INIT(gc_list.ilist),
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index 72f6ee3..1bb3019 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -3109,6 +3109,7 @@ static int __allocate_new_segment(struct f2fs_sb_info *sbi, int type,
- {
- 	struct curseg_info *curseg = CURSEG_I(sbi, type);
- 	unsigned int old_segno;
-+	int err = 0;
- 
- 	if (type == CURSEG_COLD_DATA_PINNED && !curseg->inited)
- 		goto allocate;
-@@ -3121,8 +3122,9 @@ static int __allocate_new_segment(struct f2fs_sb_info *sbi, int type,
- 
- allocate:
- 	old_segno = curseg->segno;
--	if (new_curseg(sbi, type, true))
--		return -EAGAIN;
-+	err = new_curseg(sbi, type, true);
-+	if (err)
-+		return err;
- 	stat_inc_seg_type(sbi, curseg);
- 	locate_dirty_segment(sbi, old_segno);
- 	return 0;
-@@ -3151,13 +3153,14 @@ int f2fs_allocate_pinning_section(struct f2fs_sb_info *sbi)
- 	err = f2fs_allocate_new_section(sbi, CURSEG_COLD_DATA_PINNED, false);
- 	f2fs_unlock_op(sbi);
- 
--	if (f2fs_sb_has_blkzoned(sbi) && err && gc_required) {
-+	if (f2fs_sb_has_blkzoned(sbi) && err == -EAGAIN && gc_required) {
- 		f2fs_down_write(&sbi->gc_lock);
--		f2fs_gc_range(sbi, 0, GET_SEGNO(sbi, FDEV(0).end_blk), true, 1);
-+		err = f2fs_gc_range(sbi, 0, GET_SEGNO(sbi, FDEV(0).end_blk), true, 1);
- 		f2fs_up_write(&sbi->gc_lock);
- 
- 		gc_required = false;
--		goto retry;
-+		if (!err)
-+			goto retry;
- 	}
- 
- 	return err;
--- 
-1.9.1
 
+Reviewed-by: Clément Léger <cleger@rivosinc.com>
+
+Thanks,
+
+Clément
 
