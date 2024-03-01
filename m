@@ -1,161 +1,108 @@
-Return-Path: <linux-kernel+bounces-88087-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88088-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB82886DD33
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:37:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DADEE86DD37
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:38:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6AE531F257E6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:37:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6806C289B3A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:38:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 404E069E05;
-	Fri,  1 Mar 2024 08:37:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40DF869DFC;
+	Fri,  1 Mar 2024 08:38:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dBClkucG"
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="uXYrv/7Z"
+Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BA5569D0F;
-	Fri,  1 Mar 2024 08:37:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB56B6997D
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 08:38:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709282248; cv=none; b=iUTF0wjxLMN9HRIPoEY4BkAEt5vx24nzMNTq9l2VfojSgVaeu7Y56ve5kXaCfrcKqcqx3iPvFqIcEIgNr2u8P+eMklWWUcO2G2aUbc1Vn20pq0v5bxBu/6+0W1MKQwvMS/ON5DdiICB0K+631qpGDmNpbbcmkN3PaRjc43CZpZc=
+	t=1709282331; cv=none; b=MjLcTkEzMF0VQ8/jKCopQ5Jn0nBZtIGybYOLoXY7V39Tth7Smszecag1yuql7yF5up0mdZJMLmC4bSwVjk2bhbmVoa4c2Ce5wPghSv92nYbL8Kqx+E9jVylojROk0X4JInv7tZSrCo4DHfQJrICO+gWaRpeAXXUDHgO1TDx/HfY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709282248; c=relaxed/simple;
-	bh=O/xcTjzqimRfgoome/Wsnc5JDospAjX/DhL+CZ4+z7E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ak9+8ZhOSeSyitxu9vAfFnLdwc8jTEn27sC0mLsZ7yLbFKDZsd2b0f+sOWagQwh+PH5tz//D9CkbAq5XJadbmcxJl0L8gGkVPQs33p5zwH/XqbKdL7wNWDts8xynOP4JOKm8wXxRlx62hXuCD8odoK/nuh490BxjJWpIwcbRTtQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dBClkucG; arc=none smtp.client-ip=209.85.216.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-299ea1f1989so1356014a91.0;
-        Fri, 01 Mar 2024 00:37:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709282246; x=1709887046; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1KP1OIsCMvJGez96bNApKJ4GpsDICD3OZeSUcfZwjEc=;
-        b=dBClkucGCNQG6VpUvd8UWVJPW500FjQnkWKP3U7h2qsmwr+Ke/uF98gNHQ2ko/rlsF
-         vY9BwX3ZUBzFHDXrArfA2jXzVCTgC7+TN0jcE06j6nh5d21q40XsnuPKXNZSVbK5bijM
-         MD65zuPubBoI0V5GmyZprrjFoWVgxaYGrmPngxxdv0OU+z6br3GTT6MC8eSvZ00i8q7Y
-         aWf1sVdGQHMZiTUubN9HPTTPnDkIl/emlQaUY3dYzGDM5cxqo9dAaOdRPqvefBheYpEt
-         hpo3LcpqRx6No9YcV56/eUq9OHC0FpFK5kI2lYeL0qe3s2hcisf/VfZh4RON0IuCx9Kq
-         BsRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709282246; x=1709887046;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1KP1OIsCMvJGez96bNApKJ4GpsDICD3OZeSUcfZwjEc=;
-        b=kWr5Oa+OpQMOeTfNQXKqzDKITSLifq/S7Hb11sKJv275KR+YHWNmTCA8Z6Z9seRYmf
-         2Kg1sVxKDoIulgONvVZq8V2ZSlc4J7gtAXLy0kr8cUFzdDdfApSl32wTEEvfHn0dfNd3
-         u6Uibo6wEDRIWBblFF/Oox04NLVhi7zDVnhU/8Nj8Fyh9PiJPD3J53MEQhkDmnIjdU/o
-         N/16rx7GZtWqSJE87OhoTCZQQA7mC3slss8TlIUnhZk+qbZLE5BBuDyH0aABUGMZ/pa+
-         tl62bpZ7f9j7/KZFF7hKNE4XRNfnwjOMdVezJRWy6rqXvlbsBOzKrutg800YJT4iSE/U
-         zH2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXNbfiJzI14onxQ4WOtol0sWTOCzOzVLhOM+lrMycFPcilmcL+dPU3m+j5DVw8VAZ0CEDEU0hqJtcoqFSjPpp9aO/6hzANAbR/Qf6jnEmOI3fbpli8CQ7rYu/jXP1niSj31
-X-Gm-Message-State: AOJu0Yz1QCdGwf9ch/yrb9oms38kqn9FYwCcsZxOyS2Bu1tNkFj9irgd
-	epxgZNXn7Lz7TElC95/ZfI9LISIStpFocVeuGPpLSpgPjWrXP0/O
-X-Google-Smtp-Source: AGHT+IF6CJdU3IVs+5kG8Yi4Ol3M1o4Vi/U3gm2EL4hHhkVGhHKBRvvSuZZMH9oBYmRD/sFnfzUocA==
-X-Received: by 2002:a17:90a:a8f:b0:299:7b37:9221 with SMTP id 15-20020a17090a0a8f00b002997b379221mr924936pjw.12.1709282246357;
-        Fri, 01 Mar 2024 00:37:26 -0800 (PST)
-Received: from [192.168.255.10] ([43.132.141.20])
-        by smtp.gmail.com with ESMTPSA id c13-20020a17090ae10d00b0029a8a599584sm2712200pjz.13.2024.03.01.00.37.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Mar 2024 00:37:25 -0800 (PST)
-Message-ID: <06061a28-88c0-404b-98a6-83cc6cc8c796@gmail.com>
-Date: Fri, 1 Mar 2024 16:37:20 +0800
+	s=arc-20240116; t=1709282331; c=relaxed/simple;
+	bh=vuG8csCkwvbPWQAQ1iQPW5EjQIodYKZO0NB6u/TNuN8=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=LE/7NmzFyzE7w8JIGDAap0IbX2NxHD0p62LzQuIu8mBTAo3Zn7X30zEMTi3EmJe4eZofE4l7A+g13UgAozagDBF8TJc0IlnWeizqzT1b10EfH3xsT9V5V0d10XnCvjfEn5N+ab6XS3URM1P9gWeKeVz7yyH3mPUhrK+OPywxq+A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=uXYrv/7Z; arc=none smtp.client-ip=168.119.38.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=vuG8csCkwvbPWQAQ1iQPW5EjQIodYKZO0NB6u/TNuN8=;
+	t=1709282325; x=1710491925; b=uXYrv/7ZiAiw/TLc8KaMycRFgrsO/fj3X6JqATETgsU8hex
+	TXK27O+AtvAlc6prdsObtGxGfmErbwSxb+thDQGMP4yp9WjuvL0dxHOlqCML1DpHjhnOPiCfs/g1u
+	QmRwyg7kIoE9wQ11v8x3lTj3XjyRfNjO0167wCrrA93iSHx0/8As2BWZeXJHM1SBWJbwPk5xBoPHw
+	p+7yTDNn5uXObgT2u8J9oS339HD4AG6LGDltFofsEzf1L+QOP9JauDcOk0E3Kj23TlyDDCMwF/RT6
+	3Jmve4svC0dgxkCtzlRk1IzgoNvGzU7kqaxhrqbIgnwyPDqWzo+tEdy7Il8VjXTA==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.97)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1rfyPh-0000000EqAR-03E2;
+	Fri, 01 Mar 2024 09:38:41 +0100
+Message-ID: <0f4244ea6866f451f3f8a5b5e2db8be53de1f0c2.camel@sipsolutions.net>
+Subject: Re: [PATCH v2 2/4] devcoredump: Add dev_coredumpm_timeout()
+From: Johannes Berg <johannes@sipsolutions.net>
+To: "Souza, Jose" <jose.souza@intel.com>, "intel-xe@lists.freedesktop.org"
+	 <intel-xe@lists.freedesktop.org>, "linux-kernel@vger.kernel.org"
+	 <linux-kernel@vger.kernel.org>
+Cc: "Vivi, Rodrigo" <rodrigo.vivi@intel.com>, "quic_mojha@quicinc.com"
+	 <quic_mojha@quicinc.com>, "Cavitt, Jonathan" <jonathan.cavitt@intel.com>
+Date: Fri, 01 Mar 2024 09:38:39 +0100
+In-Reply-To: <a27ac0d3bc52c2181852a25641b7020f50a50648.camel@intel.com>
+References: <20240228165709.82089-1-jose.souza@intel.com>
+	 <20240228165709.82089-2-jose.souza@intel.com>
+	 <84e4f0d70c5552dd7fa350c61c28de9637628ee6.camel@sipsolutions.net>
+	 <a27ac0d3bc52c2181852a25641b7020f50a50648.camel@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] KVM: x86/svm/pmu: Set PerfMonV2 global control bits
- correctly
-Content-Language: en-US
-To: Sandipan Das <sandipan.das@amd.com>
-Cc: seanjc@google.com, pbonzini@redhat.com, dapeng1.mi@linux.intel.com,
- mizhang@google.com, jmattson@google.com, ravi.bangoria@amd.com,
- nikunj.dadhania@amd.com, santosh.shukla@amd.com, manali.shukla@amd.com,
- babu.moger@amd.com, kvm list <kvm@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20240301075007.644152-1-sandipan.das@amd.com>
-From: Like Xu <like.xu.linux@gmail.com>
-In-Reply-To: <20240301075007.644152-1-sandipan.das@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-malware-bazaar: not-scanned
 
-On 1/3/2024 3:50 pm, Sandipan Das wrote:
-> With PerfMonV2, a performance monitoring counter will start operating
-> only when both the PERF_CTLx enable bit as well as the corresponding
-> PerfCntrGlobalCtl enable bit are set.
-> 
-> When the PerfMonV2 CPUID feature bit (leaf 0x80000022 EAX bit 0) is set
-> for a guest but the guest kernel does not support PerfMonV2 (such as
-> kernels older than v5.19), the guest counters do not count since the
-> PerfCntrGlobalCtl MSR is initialized to zero and the guest kernel never
-> writes to it.
+On Wed, 2024-02-28 at 17:56 +0000, Souza, Jose wrote:
+>=20
+> In my opinion, the timeout should depend on the type of device driver.
+>=20
+> In the case of server-class Ethernet cards, where corporate users automat=
+e most tasks, five minutes might even be considered excessive.
+>=20
+> For our case, GPUs, users might experience minor glitches and only search=
+ for what happened after finishing their current task (writing an email,
+> ending a gaming match, watching a YouTube video, etc.).
+> If they land on https://drm.pages.freedesktop.org/intel-docs/how-to-file-=
+i915-bugs.html or the future Xe version of that page, following the
+> instructions alone may take inexperienced Linux users more than five minu=
+tes.
 
-If the vcpu has the PerfMonV2 feature, it should not work the way legacy
-PMU does. Users need to use the new driver to operate the new hardware,
-don't they ? One practical approach is that the hypervisor should not set
-the PerfMonV2 bit for this unpatched 'v5.19' guest.
+That's all not wrong, but I don't see why you wouldn't automate this
+even on end user machines? I feel you're boxing the problem in by
+wanting to solve it entirely in the kernel?
 
-> 
-> This is not observed on bare-metal as the default value of the
-> PerfCntrGlobalCtl MSR after a reset is 0x3f (assuming there are six
-> counters) and the counters can still be operated by using the enable
-> bit in the PERF_CTLx MSRs. Replicate the same behaviour in guests for
-> compatibility with older kernels.
-> 
-> Before:
-> 
->    $ perf stat -e cycles:u true
-> 
->     Performance counter stats for 'true':
-> 
->                     0      cycles:u
-> 
->           0.001074773 seconds time elapsed
-> 
->           0.001169000 seconds user
->           0.000000000 seconds sys
-> 
-> After:
-> 
->    $ perf stat -e cycles:u true
-> 
->     Performance counter stats for 'true':
-> 
->               227,850      cycles:u
-> 
->           0.037770758 seconds time elapsed
-> 
->           0.000000000 seconds user
->           0.037886000 seconds sys
-> 
-> Reported-by: Babu Moger <babu.moger@amd.com>
-> Fixes: 4a2771895ca6 ("KVM: x86/svm/pmu: Add AMD PerfMonV2 support")
-> Signed-off-by: Sandipan Das <sandipan.das@amd.com>
-> ---
->   arch/x86/kvm/svm/pmu.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/x86/kvm/svm/pmu.c b/arch/x86/kvm/svm/pmu.c
-> index b6a7ad4d6914..14709c564d6a 100644
-> --- a/arch/x86/kvm/svm/pmu.c
-> +++ b/arch/x86/kvm/svm/pmu.c
-> @@ -205,6 +205,7 @@ static void amd_pmu_refresh(struct kvm_vcpu *vcpu)
->   	if (pmu->version > 1) {
->   		pmu->global_ctrl_mask = ~((1ull << pmu->nr_arch_gp_counters) - 1);
->   		pmu->global_status_mask = pmu->global_ctrl_mask;
-> +		pmu->global_ctrl = ~pmu->global_ctrl_mask;
->   	}
->   
->   	pmu->counter_bitmask[KVM_PMC_GP] = ((u64)1 << 48) - 1;
+> I have set the timeout to one hour in the Xe driver, but this could incre=
+ase if we start receiving user complaints.
+
+At an hour now, people will probably start arguing that "indefinitely"
+is about right? But at that point you're probably back to persisting
+them on disk anyway? Or maybe glitches happen during logout/shutdown ...
+
+Anyway, I don't want to block this because I just don't care enough
+about how you do things, but I think the kernel is the wrong place to
+solve this problem... The intent here was to give some userspace time to
+grab it (and yes for that 5 minutes is already way too long), not the
+users. That's also part of the reason we only hold on to a single
+instance, since I didn't want it to keep consuming more and more memory
+for it if happens repeatedly.
+
+johannes
 
