@@ -1,131 +1,100 @@
-Return-Path: <linux-kernel+bounces-89105-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89108-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F055986EA81
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:43:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C39C486EA8B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:46:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B0D31C253C5
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:43:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A9BE1F2425C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:46:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4E343D560;
-	Fri,  1 Mar 2024 20:43:31 +0000 (UTC)
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [195.130.137.90])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B15513D997;
+	Fri,  1 Mar 2024 20:45:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="QhBpF2Do"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAC897E1
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 20:43:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.137.90
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A53263D992
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 20:45:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709325811; cv=none; b=nwp/ZMhzM60kLVP3GXUNFl3u+JzoRCa07nJH5XXHCNRWxYk14jEeMA070ZTmCDwxHuirra6YeLScMORQBKqzraa/zfCJ45wEYIeAZnPmnvb4xebIjqTc3mI2BMyv0cK0u73ECkjyX5Ld7MgF1DsKjtfXrx1aHR50Fovbgsp1ruQ=
+	t=1709325955; cv=none; b=hW6Y292arIuf1auAdF41g9Pzic/tksTHKZc1kCN6pv3mbH8NZJvvsu2lUuzV9dKRN2TiGwSk5n5gSoYW0zUSuWXPUOw5/Z+es5T70nW3g+gO8MMa2+63437yvmuPBIFPm9ZDCmrQsn7QvaY43HGoy/Xkna35knUZozU4bvqk1TI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709325811; c=relaxed/simple;
-	bh=jBducU6AissFsRYWwrJSlsUVKj30198x189rdgDINZY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=nAjZK6YjkuAE8QTmXn4Ph8ki/4iHhmQbY30H6L+YAw4lDA5S6qheXTQ/nuSH4l+mfRpbnCTcvvQUrIJ5mcsAir1MPO+wjJlPX1oFuLXHMS4VrRYeph+BXa0ZcYU1R16pB5nYgS+1iy2sFYsaby4t78JA4XQUMczJI6oWb36PeuI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.137.90
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:db22:6af9:7d18:6ee8])
-	by albert.telenet-ops.be with bizsmtp
-	id tYjM2B0021TWuYv06YjMa6; Fri, 01 Mar 2024 21:43:21 +0100
-Received: from rox.of.borg ([192.168.97.57])
-	by ramsan.of.borg with esmtp (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1rg9io-0024bO-2H;
-	Fri, 01 Mar 2024 21:43:20 +0100
-Received: from geert by rox.of.borg with local (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1rg9iy-00D2xT-Q1;
-	Fri, 01 Mar 2024 21:43:20 +0100
-From: Geert Uytterhoeven <geert+renesas@glider.be>
-To: Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Will Deacon <will@kernel.org>,
-	Waiman Long <longman@redhat.com>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Arnd Bergmann <arnd@arndb.de>
-Cc: linux-sh@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH/RFC] locking/spinlocks: Make __raw_* lock ops static
-Date: Fri,  1 Mar 2024 21:43:19 +0100
-Message-Id: <c395b02613572131568bc1fd1bc456d20d1a5426.1709325647.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1709325955; c=relaxed/simple;
+	bh=L1mnju6b2hWfk4qgJMRiUjxIH+2I4aVtoC/+dDgCUDQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jodL9JXDMJQDPltP4HiYktohyjtCEtsB9cmPvucGo/Ajkh4myNX13zplKQLROUKoWTw4wgbe9jx5OyJhnt4YReLIeP1vAwgp4SSLYBcXl8aXHcoAcehqItvSBQw2t7NXev0CNBm5DCG9nbHFzXEA2hUILWhioXacmKnhPVLwKbc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=QhBpF2Do; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1dcafff3c50so21985875ad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 12:45:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1709325953; x=1709930753; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=r8hRbWiJCnr6KRmDmcx+k7mhGRkhvPSvpUDzp2pK3kI=;
+        b=QhBpF2DoqIVWqzjnKB0Urx6e8xhkcdvuKCkBUK/iB6JzHaQkbWQBfmti6OcntLsj5Q
+         22KZO+E6zokXeaSzADTynGBeS9IOp4/7HkOTnwrd43V3lQ9+23vumfpg5oB+VrviwomM
+         wFMALhe55PpNIKWFBnCfd+dPiXmIJ2kQgCsIE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709325953; x=1709930753;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=r8hRbWiJCnr6KRmDmcx+k7mhGRkhvPSvpUDzp2pK3kI=;
+        b=GKwxo0TVpN/1uKxcf4TRnMWQrpHEAkKbI7oZ37nta1lm52rGLuaMQKAjDhu9DvbQqy
+         9UFUg6R0IctQI9rnHRbWVXHxg75bAkAGViQ0MOq7ndpHKa6x0q63Gyb2C0zOmgspPNWp
+         mZjDdtJYAFy61d4fpJ25FKWIzPA2kYcyeOutQgd3JOT25eaSFv6+xAk6HlA/bLdwvMgh
+         zjHh/vHZ4tHqaGb+9M7KTarx8w+aE0N77wYwFmXxJXRCKjIPXneLB7hjlPLoZXrb1NCJ
+         PlQivp21IuN7fpVqt/z4YJopnZb2RRElbbPxIQAh5F/Fzf3SnJcC3MvL69so7AyGU3We
+         8RMg==
+X-Forwarded-Encrypted: i=1; AJvYcCWqbOPMbs3n4C6CM+oZUtMn3Dqh9VXiArEC94F6LrLPqiqlAnydCEf/LSqUStKgeFR3xCr+/KeYk0aaAYwZo0odDAQrHT9D7cJ0ZB8R
+X-Gm-Message-State: AOJu0Yycuxo3Z/6gns+IQbeca4QyzDB1WCCA/IUhWJYFYEF9cY09JyaE
+	8OnlpgRSm7PBRQyd8YJS9EzSZr/phY2LelQ+Bag144cvGcIJdntAEJK2T8e35Q==
+X-Google-Smtp-Source: AGHT+IEeHOtGROSfO7InBUOVtUOBB5GkfEa/BvdxAw10MRzeVk4FVzrKuCP1P98bzAscQ3onwNP8kw==
+X-Received: by 2002:a17:902:c146:b0:1d4:cd4d:923b with SMTP id 6-20020a170902c14600b001d4cd4d923bmr2488161plj.54.1709325952968;
+        Fri, 01 Mar 2024 12:45:52 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id n12-20020a170902e54c00b001dca997b3e3sm3892081plf.65.2024.03.01.12.45.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Mar 2024 12:45:52 -0800 (PST)
+Date: Fri, 1 Mar 2024 12:45:52 -0800
+From: Kees Cook <keescook@chromium.org>
+To: David Lechner <dlechner@baylibre.com>
+Cc: Mark Brown <broonie@kernel.org>,
+	Michael Hennerich <michael.hennerich@analog.com>,
+	Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: Re: [PATCH 3/3] spi: axi-spi-engine: use struct_size() macro
+Message-ID: <202403011245.3BDA347@keescook>
+References: <20240301-mainline-axi-spi-engine-small-cleanups-v1-0-241dfd2a79f7@baylibre.com>
+ <20240301-mainline-axi-spi-engine-small-cleanups-v1-3-241dfd2a79f7@baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240301-mainline-axi-spi-engine-small-cleanups-v1-3-241dfd2a79f7@baylibre.com>
 
-sh/sdk7786_defconfig (CONFIG_GENERIC_LOCKBREAK=y and
-CONFIG_DEBUG_LOCK_ALLOC=n):
+On Fri, Mar 01, 2024 at 02:25:20PM -0600, David Lechner wrote:
+> This makes use of the struct_size() macro to calculate the size of the
+> struct axi_spi_engine when allocating it.
+> 
+> Suggested-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Signed-off-by: David Lechner <dlechner@baylibre.com>
 
-kernel/locking/spinlock.c:68:17: warning: no previous prototype for '__raw_spin_lock' [-Wmissing-prototypes]
-kernel/locking/spinlock.c:80:26: warning: no previous prototype for '__raw_spin_lock_irqsave' [-Wmissing-prototypes]
-kernel/locking/spinlock.c:98:17: warning: no previous prototype for '__raw_spin_lock_irq' [-Wmissing-prototypes]
-kernel/locking/spinlock.c:103:17: warning: no previous prototype for '__raw_spin_lock_bh' [-Wmissing-prototypes]
-kernel/locking/spinlock.c:68:17: warning: no previous prototype for '__raw_read_lock' [-Wmissing-prototypes]
-kernel/locking/spinlock.c:80:26: warning: no previous prototype for '__raw_read_lock_irqsave' [-Wmissing-prototypes]
-kernel/locking/spinlock.c:98:17: warning: no previous prototype for '__raw_read_lock_irq' [-Wmissing-prototypes]
-kernel/locking/spinlock.c:103:17: warning: no previous prototype for '__raw_read_lock_bh' [-Wmissing-prototypes]
-kernel/locking/spinlock.c:68:17: warning: no previous prototype for '__raw_write_lock' [-Wmissing-prototypes]
-kernel/locking/spinlock.c:80:26: warning: no previous prototype for '__raw_write_lock_irqsave' [-Wmissing-prototypes]
-kernel/locking/spinlock.c:98:17: warning: no previous prototype for '__raw_write_lock_irq' [-Wmissing-prototypes]
-kernel/locking/spinlock.c:103:17: warning: no previous prototype for '__raw_write_lock_bh' [-Wmissing-prototypes]
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Fix this by making the __raw_* lock ops static.
-
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-Compile-tested only.
-
-Is SH really the only SMP platform where CONFIG_GENERIC_LOCKBREAK=y?
----
- kernel/locking/spinlock.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/locking/spinlock.c b/kernel/locking/spinlock.c
-index 8475a0794f8c5ad2..7009b568e6255d64 100644
---- a/kernel/locking/spinlock.c
-+++ b/kernel/locking/spinlock.c
-@@ -65,7 +65,7 @@ EXPORT_PER_CPU_SYMBOL(__mmiowb_state);
-  * towards that other CPU that it should break the lock ASAP.
-  */
- #define BUILD_LOCK_OPS(op, locktype)					\
--void __lockfunc __raw_##op##_lock(locktype##_t *lock)			\
-+static void __lockfunc __raw_##op##_lock(locktype##_t *lock)		\
- {									\
- 	for (;;) {							\
- 		preempt_disable();					\
-@@ -77,7 +77,7 @@ void __lockfunc __raw_##op##_lock(locktype##_t *lock)			\
- 	}								\
- }									\
- 									\
--unsigned long __lockfunc __raw_##op##_lock_irqsave(locktype##_t *lock)	\
-+static unsigned long __lockfunc __raw_##op##_lock_irqsave(locktype##_t *lock) \
- {									\
- 	unsigned long flags;						\
- 									\
-@@ -95,12 +95,12 @@ unsigned long __lockfunc __raw_##op##_lock_irqsave(locktype##_t *lock)	\
- 	return flags;							\
- }									\
- 									\
--void __lockfunc __raw_##op##_lock_irq(locktype##_t *lock)		\
-+static void __lockfunc __raw_##op##_lock_irq(locktype##_t *lock)	\
- {									\
- 	_raw_##op##_lock_irqsave(lock);					\
- }									\
- 									\
--void __lockfunc __raw_##op##_lock_bh(locktype##_t *lock)		\
-+static void __lockfunc __raw_##op##_lock_bh(locktype##_t *lock)		\
- {									\
- 	unsigned long flags;						\
- 									\
 -- 
-2.34.1
-
+Kees Cook
 
