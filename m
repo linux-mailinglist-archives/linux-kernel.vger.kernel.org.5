@@ -1,175 +1,106 @@
-Return-Path: <linux-kernel+bounces-88613-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88614-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DA6586E426
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:18:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42C7C86E427
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:19:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9EED21F272B1
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:18:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70BBC1C22CDF
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:19:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52BD86E2BD;
-	Fri,  1 Mar 2024 15:18:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EA6970ADF;
+	Fri,  1 Mar 2024 15:18:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="dN3f/U8v"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="DL3VrTm1"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16C6D67E8E
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 15:18:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFCF46BFDE
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 15:18:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709306306; cv=none; b=a/RTxbC3yVFIWydBZ5djodM1L42ERahGDUTm7Jai1MZbE7NURd0QExhKQT2n2pzd/Dcv8bP1NiTVBbVbUb6GrvnhsQ/Llh1wCK/4Qg93cJfxtZDSVFK4+BT3VIgGjarJbOiMI7/fdOLMdGMJWMSA7ly6237yRTbaGXzmg6ugxyU=
+	t=1709306308; cv=none; b=kcYOtHSN5Ke7UtnxlVFnXUFLOIumAa+/a2Bi7nvB6+njnCP+6oMpZDNQj0Mn8EWSIBPFOPXAELxbcKzA4v396KYeUxlqQHa6lEpv7aB8sQnT1kWjL8KRsaO+glb2eizNk99H7UXm68sKuutG/PSUDQEa7uxwCTUuXgTSi5eMpUw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709306306; c=relaxed/simple;
-	bh=jt+JFfSHfHUQOM9ggg4OpOmchKW/BPOrXWMwdjqv1To=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=TvwcNRZLO2g4VOD/o6DKNDfTT1zAsrgEZxyOCTFp37tu0GOoaGMP3hf3xCbZ6nhSEhYiN/alhSDUt7a9eu7qcTHrP4dx7wxtORf4fM0xT0oPByGpZTFaOU45o7Y0PnVADf6b4gvkyKWLyVRD2nn+Fgh0UU3HdOQOOhk3rMtKRAg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=dN3f/U8v; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 421F2ich009667;
-	Fri, 1 Mar 2024 15:18:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=ZKvArzhNe7ZFn1OPm5+2YBGXQFLX2h9iVzOhDC9zsG0=;
- b=dN3f/U8v0R+CKLTf6MoxM6LHi3q9ugmwWs/MbFryYhPiUimSkUxVjfxHl0ID54B9lKHr
- sCn5H+oee8zD4DT228lmiOEk8vxcbwtVktNiJQIBQSi0EamaWkAt8sehLacQFEuHWJlr
- FqVJyHqb3udVYr/QCdJAzhJP4VM/SeGAmnqSLKFjS5/olYYsUQ9twZJ5pRUIgvdl6xIC
- LhDxDlZB/0xa2hpd/uvdLT24F132US9Uwc7t9KmtBEhC29aVfcXMBLooqTsM4ma8xfmB
- PRMDY4ggoWO+B348OsODDQ7Wg+cZcc2VUr7mKd/kQli4YjSXxC/SnJZqmOvnbkB7Zqgp rw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wkhaf8d63-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 01 Mar 2024 15:18:08 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 421F4QtJ016839;
-	Fri, 1 Mar 2024 15:18:07 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wkhaf8d5g-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 01 Mar 2024 15:18:07 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 421E2T6k012348;
-	Fri, 1 Mar 2024 15:18:06 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wfwg2vpw7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 01 Mar 2024 15:18:06 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 421FI0Yt63832476
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 1 Mar 2024 15:18:02 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id BBEB720043;
-	Fri,  1 Mar 2024 15:18:00 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C9EDE20040;
-	Fri,  1 Mar 2024 15:17:56 +0000 (GMT)
-Received: from li-c1fdab4c-355a-11b2-a85c-ef242fe9efb4.ibm.com.com (unknown [9.43.108.184])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Fri,  1 Mar 2024 15:17:56 +0000 (GMT)
-From: Shrikanth Hegde <sshegde@linux.ibm.com>
-To: mingo@kernel.org, peterz@infradead.org, vincent.guittot@linaro.org
-Cc: sshegde@linux.ibm.com, yu.c.chen@intel.com, dietmar.eggemann@arm.com,
-        linux-kernel@vger.kernel.org, nysal@linux.ibm.com,
-        aboorvad@linux.ibm.com, srikar@linux.ibm.com, vschneid@redhat.com,
-        pierre.gondois@arm.com, morten.rasmussen@arm.com, qyousef@layalina.io
-Subject: [PATCH v4 2/2] sched/fair: Use helper function to access rd->overutilized
-Date: Fri,  1 Mar 2024 20:47:25 +0530
-Message-Id: <20240301151725.874604-3-sshegde@linux.ibm.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20240301151725.874604-1-sshegde@linux.ibm.com>
-References: <20240301151725.874604-1-sshegde@linux.ibm.com>
+	s=arc-20240116; t=1709306308; c=relaxed/simple;
+	bh=beAmNvfR879nx/BDX0OEsLcWJ25vfKK/Tq/Cb7bWRYo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=n8VGorCq4sPs918hPj0UBgVouqmJ1tUjHMMpnC7aGTLK/UmvadqUwojjFes70igKk6e9kScn5bVtL/9E5lfWCsHReNzeAvwVgCzHpiKx0cBLztYEvvu6s1Mr7AecqBX06HksKpyoJrK9hOyc/W6iHj2Ie33upfTQ6OE7uPssQSc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=DL3VrTm1; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a293f2280c7so429697066b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 07:18:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1709306305; x=1709911105; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=aos9MqXsF1xOY2jZMEtY/lcIeAPnqSm3ELtqtU4n2jQ=;
+        b=DL3VrTm1O/jb5Rw9dgxVS0bJKjw98/jWX9Dww6PCYkBVY9oMG+M6aCrqPo4rLmb+6+
+         Kvotge3G5INXwl5uG3QIw1aDvrkeKozOuFcciwuiAovK7POQ9sGdYnxeeLobSP/qcVNA
+         VcSP9qM1UNH0jjVNhEFz7ws2IwsMLsaUMu+eTyhoV9s6jLMuPCk/2Zyu2xL3sGxmOTKy
+         f1TcsYbVJAoZat3MqSV17tM5DV/FBgJzCINf6dZE+ehbvOKCdYVU5dZsGGosOSPLagAw
+         qikJkPq3l1UyuzGOhAA1mT4m70AX3cdp1F+osj6z2wP+39gNo81zPHljpIcpwyelvTCR
+         /X/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709306305; x=1709911105;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aos9MqXsF1xOY2jZMEtY/lcIeAPnqSm3ELtqtU4n2jQ=;
+        b=OHUb7oIbNiMm++4WJqstq6HKLHjTPtmakdurXurTHYjwJM9Ob14+XV3hI7f1dS04F/
+         luuHoFS1uesRq+YnkqVeL6uEdA3mJix9piibZgHXqHb5dkGwSl3bAM++laWqEjOSnFfC
+         wZMReczNxHVF7OIIMP0m+FoUems2asajsdxhttSZtb4DrSOcHmHTQh445neBxPhdVXs8
+         c+/u1gzx7q0G4JhL3auiPTAqy6PfUJqhDqRXY1yCKrN+tTAV5lD/LeyV5Eg7XEIVNacU
+         xc6sOx/ACM5qLDl8SouysGjwM8W3EcFROtCFbYSFte/B/FaXajC2zUr42oEs4OZT7FPv
+         9CWw==
+X-Forwarded-Encrypted: i=1; AJvYcCXeuiwk1mDQNWjNSmLdJQAL8FUNWPkHV7ehFNi79VU6rffxmzZ7P3ACr+I9qJzQSeefFnLqBncTnOPai1+rKZ8l/gRTFVdWll4+2/Zg
+X-Gm-Message-State: AOJu0Yyxe+ruaneZgHF6Ov2rUE99FPrWAdCwoCo1XdElVi8r/c+OEdqz
+	/dRIHsm/qCVkKHsDy8OAWAegqvHwLGwMqXP8Kf7qX0lA6LN/hIhUY6sjw/R+BMM=
+X-Google-Smtp-Source: AGHT+IF5CguTytJh67cp9oC8R3rw4kdjmEM51Pfall6sFe8sSNqkIniachACb1r5c5idTKCMPG1aXA==
+X-Received: by 2002:a17:906:4107:b0:a44:378:d3b0 with SMTP id j7-20020a170906410700b00a440378d3b0mr1647858ejk.41.1709306305164;
+        Fri, 01 Mar 2024 07:18:25 -0800 (PST)
+Received: from alley ([176.114.240.50])
+        by smtp.gmail.com with ESMTPSA id n9-20020a170906688900b00a44b975170csm148256ejr.190.2024.03.01.07.18.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Mar 2024 07:18:24 -0800 (PST)
+Date: Fri, 1 Mar 2024 16:18:23 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: John Ogness <john.ogness@linutronix.de>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+	Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>
+Subject: Re: [PATCH printk v2 26/26] lockdep: Mark emergency section in
+ lockdep splats
+Message-ID: <ZeHxv4QW_N4XomjM@alley>
+References: <20240218185726.1994771-1-john.ogness@linutronix.de>
+ <20240218185726.1994771-27-john.ogness@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: mFto1n2-DVLWy95vQsBBr-WooEgaK65G
-X-Proofpoint-GUID: nlWlmMTpAo4Wwm-XrCQnolwgm3u9XPgJ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-01_14,2024-03-01_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 malwarescore=0
- adultscore=0 mlxlogscore=826 lowpriorityscore=0 impostorscore=0
- clxscore=1015 suspectscore=0 mlxscore=0 priorityscore=1501 phishscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2403010127
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240218185726.1994771-27-john.ogness@linutronix.de>
 
-Overutilized field is accessed directly in multiple places.
-So it could use a helper function. That way one might be more
-informed that it needs to be used only in case of EAS.
+On Sun 2024-02-18 20:03:26, John Ogness wrote:
+> Mark an emergency section within print_usage_bug(), where
+> lockdep bugs are printed. In this section, the CPU will not
+> perform console output for the printk() calls. Instead, a
+> flushing of the console output is triggered when exiting
+> the emergency section.
+> 
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
 
-No change in functionality intended.
+The patch looks fine from my POV. Well, I expect that you will send
+another version addressing Waiman's concerns.
 
-Signed-off-by: Shrikanth Hegde <sshegde@linux.ibm.com>
----
- kernel/sched/fair.c | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index a71f8a1506e4..650909a648d0 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6670,6 +6670,15 @@ static inline bool cpu_overutilized(int cpu)
- 	return !util_fits_cpu(cpu_util_cfs(cpu), rq_util_min, rq_util_max, cpu);
- }
-
-+/*
-+ * Ensure that caller can do EAS. overutilized value
-+ * make sense only if EAS is enabled
-+ */
-+static inline int is_rd_overutilized(struct root_domain *rd)
-+{
-+	return READ_ONCE(rd->overutilized);
-+}
-+
- static inline void set_rd_overutilized_status(struct root_domain *rd,
- 					      unsigned int status)
- {
-@@ -6686,13 +6695,14 @@ static inline void check_update_overutilized_status(struct rq *rq)
- 	if (!sched_energy_enabled())
- 		return;
-
--	if (!READ_ONCE(rq->rd->overutilized) && cpu_overutilized(rq->cpu))
-+	if (!is_rd_overutilized(rq->rd) && cpu_overutilized(rq->cpu))
- 		set_rd_overutilized_status(rq->rd, SG_OVERUTILIZED);
- }
- #else
- static inline void check_update_overutilized_status(struct rq *rq) { }
- static inline void set_rd_overutilized_status(struct root_domain *rd,
- 					      unsigned int status) { }
-+static inline int is_rd_overutilized(struct root_domain *rd) { }
- #endif
-
- /* Runqueue only has SCHED_IDLE tasks enqueued */
-@@ -7974,7 +7984,7 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
-
- 	rcu_read_lock();
- 	pd = rcu_dereference(rd->pd);
--	if (!pd || READ_ONCE(rd->overutilized))
-+	if (!pd || is_rd_overutilized(rd))
- 		goto unlock;
-
- 	/*
-@@ -10859,7 +10869,7 @@ static struct sched_group *find_busiest_group(struct lb_env *env)
- 	if (sched_energy_enabled()) {
- 		struct root_domain *rd = env->dst_rq->rd;
-
--		if (rcu_dereference(rd->pd) && !READ_ONCE(rd->overutilized))
-+		if (rcu_dereference(rd->pd) && !is_rd_overutilized(rd))
- 			goto out_balanced;
- 	}
-
---
-2.39.3
-
+Best Regards,
+Petr
 
