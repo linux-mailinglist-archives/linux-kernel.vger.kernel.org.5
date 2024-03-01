@@ -1,114 +1,220 @@
-Return-Path: <linux-kernel+bounces-88696-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88697-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E772C86E582
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:27:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 600B586E585
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:27:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86C15B2526E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:27:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF0E0282879
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:27:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B21BA71B2F;
-	Fri,  1 Mar 2024 16:26:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCB9E72936;
+	Fri,  1 Mar 2024 16:26:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g8HHwUey"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tOSDSIIb"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF4DD70CB6;
-	Fri,  1 Mar 2024 16:26:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DC3B71ED5;
+	Fri,  1 Mar 2024 16:26:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709310394; cv=none; b=aW0EKNvaikv7hmaEeNFwFDoDY0FTrL5KX8Z3rqh5BO/kOR3FYse6ktfcoSsG9i2jkIAj0x9Dh6D1j3PZF+u+mGFueOH1KSgaXKjQLvfL2fD6n7s4M8JRZeXlry6KwpR+WO39529tMB5dvBLK/7XIfavjcAYuFBD4LH2E7JzbPwo=
+	t=1709310398; cv=none; b=BKhxK1ilH8YfaP2UhVQ8jexbpgFxygY3ZLSW+Rj0kT9ErKlbIMlTb5KW6S22eYsdGpK45jRJ3oHYbjhfXHYZvS2hsJQU9a0X2GvbMjSns4blDVFfrPk77tAARlHqaKwVB7ERlTAq57x+jY7V/G0n6/y9GG1XNLwXz1YG6/wNCpA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709310394; c=relaxed/simple;
-	bh=TvXH6saXNfgndMe7jdShDcIe/NSIB7gQ2yk9JpkDGn4=;
+	s=arc-20240116; t=1709310398; c=relaxed/simple;
+	bh=VcBbt1X8/pmwh+TkEynp3quxlUoSQQK1gtHMDoY69T0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Udo85MAu0kPkUPseCr4Rmv5xqRxy/u/3D9beze16/GYCiALQ8fSdKVKm2EyeOIlT0SneMeMjQ+eYVN/I0jIhnfgkDaZfTP6BD1hV1W2wc7A5qQBEbYD7KkLn655EAdVe/iUJS3/3owT6wceCH2++f1u+kdxwWHVxM3ov1HQpKrk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g8HHwUey; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FDB6C433F1;
-	Fri,  1 Mar 2024 16:26:30 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=KtPGjX6pJzTc6jK28WEBpPdNaEkMrkWFgut5KP0gIv9idTPTlwfh8CS+9UjizCdJYptJqXd3J1+7yyRhXP32fw+qH/8FqgRskdxEcedzjcdJdiYrsDsHLjWXKPWMxBpZuKNhwMk8b/+ZwAILiXPof5X/qi0pxWNjBqGdD731IG4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tOSDSIIb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF2D4C433F1;
+	Fri,  1 Mar 2024 16:26:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709310393;
-	bh=TvXH6saXNfgndMe7jdShDcIe/NSIB7gQ2yk9JpkDGn4=;
+	s=k20201202; t=1709310398;
+	bh=VcBbt1X8/pmwh+TkEynp3quxlUoSQQK1gtHMDoY69T0=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=g8HHwUeyo9sVtVc/RAO1ayTmbaD3Z23Oo0ITl1vz9T/FMJwRzvbqazR+e2aFvjBeW
-	 wadUfFc0+uTrOVOIYHYn+F4gXQHT4nBKav4nJYrpzOhfJKEXSijHQbrDHe9ruF3rf5
-	 nPZiCQr9p6vpFqmDLwYVp2xdbLmuqyvGNz+jDfMz5O5q/e7DsNk4FJxEJrdX/fa9px
-	 vj7JamfrK1La7K9tCvG2xx6frkXRcItzx9Wwj1dcdIqod9s5hrYAUli+1RPvduLMIN
-	 dJRIwzbCTAkUlOoqqqlD1w/Kmb4wdEEbA8V7/976bGB9iGev7Lahvd5NfCRh16tvxC
-	 3rckRK2qKInYA==
-Date: Fri, 1 Mar 2024 16:26:28 +0000
-From: Simon Horman <horms@kernel.org>
-To: Alex Elder <elder@linaro.org>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, mka@chromium.org, andersson@kernel.org,
-	quic_cpratapa@quicinc.com, quic_avuyyuru@quicinc.com,
-	quic_jponduru@quicinc.com, quic_subashab@quicinc.com,
-	elder@kernel.org, netdev@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 1/7] net: ipa: change ipa_interrupt_config()
- prototype
-Message-ID: <20240301162628.GF403078@kernel.org>
-References: <20240229205554.86762-1-elder@linaro.org>
- <20240229205554.86762-2-elder@linaro.org>
+	b=tOSDSIIbb5L1CFwO/8HxTyN6v4fsCPbtHUZZAhaNMXhPYtUXoUYIOgdC8E7wwbX5O
+	 PYQvYDXqF4ToTR5df+ut4bLkyZCZob0F6tATywbItCVYGNHqKTvFWBryYG7BqLGukI
+	 EE7GTqdiLlH82IgoYBoA3KxjBVcqkAzQjYqInnY1hacYrmW8CuP2+eyG05W3yrI4RY
+	 NEM29optYiOwjzU7Sxnhr0YuwvZqktbVSe7JvS6k2aa8z2ovrltB98QnCk1u929KA6
+	 UTzTfrCUj+DfcSnnzr4sgP+NWVs1rDO3J21j/evq2lovrLehs3UBr1An0jV10d2kwZ
+	 RUSZXgvt95OKQ==
+Date: Fri, 1 Mar 2024 10:26:35 -0600
+From: Rob Herring <robh@kernel.org>
+To: =?utf-8?B?UGF3ZcWC?= Anikiel <panikiel@google.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, airlied@gmail.com,
+	akpm@linux-foundation.org, conor+dt@kernel.org, daniel@ffwll.ch,
+	dinguyen@kernel.org, hverkuil-cisco@xs4all.nl,
+	krzysztof.kozlowski+dt@linaro.org,
+	maarten.lankhorst@linux.intel.com, mchehab@kernel.org,
+	mripard@kernel.org, tzimmermann@suse.de, devicetree@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+	linux-media@vger.kernel.org, chromeos-krk-upstreaming@google.com,
+	ribalda@chromium.org
+Subject: Re: [PATCH v2 8/9] media: dt-bindings: Add Intel Displayport RX IP
+Message-ID: <20240301162635.GA2261739-robh@kernel.org>
+References: <20240221160215.484151-1-panikiel@google.com>
+ <20240221160215.484151-9-panikiel@google.com>
+ <13aeb2ff-72f4-49d9-b65e-ddc31569a936@linaro.org>
+ <CAM5zL5q0oKoTMR0jSwYVAChCOJ9iKYPRFiU1vH4qDqhHALKz4w@mail.gmail.com>
+ <20240227142911.GB3863852-robh@kernel.org>
+ <CAM5zL5pXu5sbzCHY_BrCJ7eZj-p9n0tCo6CmuTqUpvniTrqWJg@mail.gmail.com>
+ <324f7b6e-c72c-40aa-afe6-779345c2eade@linaro.org>
+ <CAM5zL5oJSHxJK4QWsr2X23g-cN6G54VhGfuwHhMJ9rNu6+gZ=w@mail.gmail.com>
+ <20240228180950.GA392372-robh@kernel.org>
+ <CAM5zL5qen2Zcg3yecH3jXJ3hiLq88p81n9hmUXQ5E0CXV6w61w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240229205554.86762-2-elder@linaro.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAM5zL5qen2Zcg3yecH3jXJ3hiLq88p81n9hmUXQ5E0CXV6w61w@mail.gmail.com>
 
-On Thu, Feb 29, 2024 at 02:55:48PM -0600, Alex Elder wrote:
-> Change the return type of ipa_interrupt_config() to be an error
-> code rather than an IPA interrupt structure pointer, and assign the
-> the pointer within that function.
+On Thu, Feb 29, 2024 at 11:25:41AM +0100, Paweł Anikiel wrote:
+> On Wed, Feb 28, 2024 at 7:10 PM Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Wed, Feb 28, 2024 at 02:09:33PM +0100, Paweł Anikiel wrote:
+> > > On Wed, Feb 28, 2024 at 1:18 PM Krzysztof Kozlowski
+> > > <krzysztof.kozlowski@linaro.org> wrote:
+> > > >
+> > > > On 28/02/2024 12:05, Paweł Anikiel wrote:
+> > > > > On Tue, Feb 27, 2024 at 3:29 PM Rob Herring <robh@kernel.org> wrote:
+> > > > >>
+> > > > >> On Mon, Feb 26, 2024 at 11:59:42AM +0100, Paweł Anikiel wrote:
+> > > > >>> On Mon, Feb 26, 2024 at 10:13 AM Krzysztof Kozlowski
+> > > > >>> <krzysztof.kozlowski@linaro.org> wrote:
+> > > > >>>>
+> > > > >>>> On 21/02/2024 17:02, Paweł Anikiel wrote:
+> > > > >>>>> The Intel Displayport RX IP is a part of the DisplayPort Intel FPGA IP
+> > > > >>>>> Core. It implements a DisplayPort 1.4 receiver capable of HBR3 video
+> > > > >>>>> capture and Multi-Stream Transport. The user guide can be found here:
+> > > > >>>>>
+> > > > >>>>> https://www.intel.com/programmable/technical-pdfs/683273.pdf
+> > > > >>>>>
+> > > > >>>>> Signed-off-by: Paweł Anikiel <panikiel@google.com>
+> > > > >>>>> ---
+> > > > >>>>>  .../devicetree/bindings/media/intel,dprx.yaml | 160 ++++++++++++++++++
+> > > > >>>>>  1 file changed, 160 insertions(+)
+> > > > >>>>>  create mode 100644 Documentation/devicetree/bindings/media/intel,dprx.yaml
+> > > > >>>>>
+> > > > >>>>> diff --git a/Documentation/devicetree/bindings/media/intel,dprx.yaml b/Documentation/devicetree/bindings/media/intel,dprx.yaml
+> > > > >>>>> new file mode 100644
+> > > > >>>>> index 000000000000..31025f2d5dcd
+> > > > >>>>> --- /dev/null
+> > > > >>>>> +++ b/Documentation/devicetree/bindings/media/intel,dprx.yaml
+> > > > >>>>> @@ -0,0 +1,160 @@
+> > > > >>>>> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> > > > >>>>> +%YAML 1.2
+> > > > >>>>> +---
+> > > > >>>>> +$id: http://devicetree.org/schemas/media/intel,dprx.yaml#
+> > > > >>>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > >>>>> +
+> > > > >>>>> +title: Intel DisplayPort RX IP
+> > > > >>>>> +
+> > > > >>>>> +maintainers:
+> > > > >>>>> +  - Paweł Anikiel <panikiel@google.com>
+> > > > >>>>> +
+> > > > >>>>> +description: |
+> > > > >>>>> +  The Intel Displayport RX IP is a part of the DisplayPort Intel FPGA IP
+> > > > >>>>> +  Core. It implements a DisplayPort 1.4 receiver capable of HBR3 video
+> > > > >>>>> +  capture and Multi-Stream Transport.
+> > > > >>>>> +
+> > > > >>>>> +  The IP features a large number of configuration parameters, found at:
+> > > > >>>>> +  https://www.intel.com/content/www/us/en/docs/programmable/683273/23-3-20-0-1/sink-parameters.html
+> > > > >>>>> +
+> > > > >>>>> +  The following parameters have to be enabled:
+> > > > >>>>> +    - Support DisplayPort sink
+> > > > >>>>> +    - Enable GPU control
+> > > > >>>>> +  The following parameters' values have to be set in the devicetree:
+> > > > >>>>> +    - RX maximum link rate
+> > > > >>>>> +    - Maximum lane count
+> > > > >>>>> +    - Support MST
+> > > > >>>>> +    - Max stream count (only if Support MST is enabled)
+> > > > >>>>> +
+> > > > >>>>> +properties:
+> > > > >>>>> +  compatible:
+> > > > >>>>> +    const: intel,dprx-20.0.1
+> > > > >>>>> +
+> > > > >>>>> +  reg:
+> > > > >>>>> +    maxItems: 1
+> > > > >>>>> +
+> > > > >>>>> +  interrupts:
+> > > > >>>>> +    maxItems: 1
+> > > > >>>>> +
+> > > > >>>>> +  intel,max-link-rate:
+> > > > >>>>> +    $ref: /schemas/types.yaml#/definitions/uint32
+> > > > >>>>> +    description: Max link rate configuration parameter
+> > > > >>>>
+> > > > >>>> Please do not duplicate property name in description. It's useless.
+> > > > >>>> Instead explain what is this responsible for.
+> > > > >>>>
+> > > > >>>> Why max-link-rate would differ for the same dprx-20.0.1? And why
+> > > > >>>> standard properties cannot be used?
+> > > > >>>>
+> > > > >>>> Same for all questions below.
+> > > > >>>
+> > > > >>> These four properties are the IP configuration parameters mentioned in
+> > > > >>> the device description. When generating the IP core you can set these
+> > > > >>> parameters, which could make them differ for the same dprx-20.0.1.
+> > > > >>> They are documented in the user guide, for which I also put a link in
+> > > > >>> the description. Is that enough? Or should I also document these
+> > > > >>> parameters here?
+> > > > >>
+> > > > >> Use the standard properties: link-frequencies and data-lanes. Those go
+> > > > >> under the port(s) because they are inheritly per logical link.
+> > > > >
+> > > > > The DP receiver has one input interface (a deserialized DP stream),
+> > > > > and up to four output interfaces (the decoded video streams). The "max
+> > > > > link rate" and "max lane count" parameters only describe the input
+> > > > > interface to the receiver. However, the port(s) I am using here are
+> > > > > for the output streams. They are not affected by those parameters, so
+> > > > > I don't think these properties should go under the output port(s).
+> > > > >
+> > > > > The receiver doesn't have an input port in the DT, because there isn't
+> > > > > any controllable entity on the other side - the deserializer doesn't
+> > > > > have any software interface. Since these standard properties
+> > > > > (link-frequencies and data-lanes) are only defined in
+> > > > > video-interfaces.yaml (which IIUC describes a graph endpoint), I can't
+> > > > > use them directly in the device node.
+> > > >
+> > > > DT describes the hardware, so where does the input come? From something,
+> > > > right? Regardless if you have a driver or not. There is dp-connector
+> > > > binding, if this is physical port.
+> > >
+> > > Yes, it is a physical port. I agree adding a DT node for the physical
+> > > DP input connector would let us add link-frequencies to the input port
+> > > of the receiver.
+> > >
+> > > However, dp-connector seems to be a binding for an output port - it's
+> > > under schemas/display/connector, and DP_PWR can be a power supply only
+> > > for an output port (looking at the dp-pwr-supply property). Also, the
+> > > driver for this binding is a DRM bridge driver (display-connector.c)
+> > > which would not be compatible with a v4l2 (sub)device.
+> >
+> > So then we should add 'dp-input-connector' because they are different.
+> > When we haven't defined connectors, properties of the connector have
+> > been shoved in whatever node is associated with a connector like you
+> > have done. That works for a while, but then becomes unmanageable. DP on
+> > USB-C connectors for example.
+> >
+> > OTOH, maybe your use here is niche enough to not be worth the trouble.
+> > Depends if we see the need for video input connectors in general.
 > 
-> Change ipa_interrupt_deconfig() to take the IPA pointer as argument
-> and have it invalidate the ipa->interrupt pointer.
-> 
-> Signed-off-by: Alex Elder <elder@linaro.org>
-> ---
->  drivers/net/ipa/ipa_interrupt.c | 15 ++++++++++-----
->  drivers/net/ipa/ipa_interrupt.h | 10 +++++-----
->  drivers/net/ipa/ipa_main.c      | 13 ++++---------
->  3 files changed, 19 insertions(+), 19 deletions(-)
-> 
-> diff --git a/drivers/net/ipa/ipa_interrupt.c b/drivers/net/ipa/ipa_interrupt.c
-> index 4d80bf77a5323..a298d922dd871 100644
-> --- a/drivers/net/ipa/ipa_interrupt.c
-> +++ b/drivers/net/ipa/ipa_interrupt.c
-> @@ -236,7 +236,7 @@ void ipa_interrupt_simulate_suspend(struct ipa_interrupt *interrupt)
->  }
->  
->  /* Configure the IPA interrupt framework */
-> -struct ipa_interrupt *ipa_interrupt_config(struct ipa *ipa)
-> +int ipa_interrupt_config(struct ipa *ipa)
+> My use case is a dedicated hardware that runs DP tests of an external
+> DUT. I can't think of another scenario where we'd need an input DP
+> port. IMO this is pretty niche, but I'll leave the decision to you
 
-Hi Alex,
+Your device is niche, but a video capture/in device is not that niche. 
+After all, Smart TVs run Linux. They have video in connectors. Maybe not 
+DP though. It's conceivable someone could make a "Smart Monitor" I 
+suppose.
 
-There are two cases where this function still returns a pointer.
+Rob
 
-Around line 250:
 
-	ret = platform_get_irq_byname(ipa->pdev, "ipa");
-	if (ret <= 0) {
-		dev_err(dev, "DT error %d getting \"ipa\" IRQ property\n",
-			ret);
-		return ERR_PTR(ret ? : -EINVAL);
-	}
-
-And around line 280:
-
-	return interrupt;
-
-This does seem to be resolved in patch 2/7.
-But as it is, this patch breaks bisection.
-
-..
 
