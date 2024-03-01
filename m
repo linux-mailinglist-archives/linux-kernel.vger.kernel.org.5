@@ -1,143 +1,108 @@
-Return-Path: <linux-kernel+bounces-88365-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88364-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3DF286E084
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:37:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2437A86E082
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:37:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9832B1F25094
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:37:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8FD928D244
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:37:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE4886D519;
-	Fri,  1 Mar 2024 11:36:59 +0000 (UTC)
-Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5A716D1BB;
+	Fri,  1 Mar 2024 11:36:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QVzUIz6x"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF16C6EB51
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 11:36:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=222.66.158.135
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4568D6BFC9;
+	Fri,  1 Mar 2024 11:36:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709293019; cv=none; b=djTXL/CBoNDSrtQ2VmGTo2vGRa0ZoX+VMkkkaChUPNFjcZLD5yH7iZHjP0GVKsYTHxBaDFMNnW4peWRO4pwaEW6RPXfLfwDhB8OriQUmuae29yjGz6RSGwE9oej1EpqnOLhnFjDINermPawWVsQX4U8iTfSkd6/uYUGiC/fyRYM=
+	t=1709293010; cv=none; b=PwQmFfHNpWfY90SfWUfmtAKnLASMRXrRn7vYHmNWFB8sJXykbubCdib2CwPHgnPJy1tFkf3c5ommoBhIqbszMvQ+cLXy/rR1OpQ5EIte2Cq3G/EwatGo1TzuIrrMaKcQNsZdTV/zWxpbIK3eRxiTp05V6WgaR3w9mi3S+eXpj3c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709293019; c=relaxed/simple;
-	bh=kTOIpCx85MBExZD7m/gewjcjf04YHT5rYbCmo2npUI4=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=swAeWRZSxMzOt2/+h6twhCqkDA6UMr7OybM8d7ytMjqFVG2HM4POa7ABV+gpHcwpXkJlwu6T8D7QzX/w5EDa/kDw4UttwH5ejs2GZwXdOd1Jh3GOOyURn1TZAp/7edv46vfZJWzQovO9/i6z256oBe4CMPA2cCmCkcLEwJ0uPn0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com; spf=pass smtp.mailfrom=unisoc.com; arc=none smtp.client-ip=222.66.158.135
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
-Received: from dlp.unisoc.com ([10.29.3.86])
-	by SHSQR01.spreadtrum.com with ESMTP id 421BaPmN084487;
-	Fri, 1 Mar 2024 19:36:25 +0800 (+08)
-	(envelope-from Zhiguo.Niu@unisoc.com)
-Received: from SHDLP.spreadtrum.com (bjmbx02.spreadtrum.com [10.0.64.8])
-	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4TmQxw6S0bz2KkZ9v;
-	Fri,  1 Mar 2024 19:35:32 +0800 (CST)
-Received: from bj08434pcu.spreadtrum.com (10.0.73.87) by
- BJMBX02.spreadtrum.com (10.0.64.8) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Fri, 1 Mar 2024 19:36:23 +0800
-From: Zhiguo Niu <zhiguo.niu@unisoc.com>
-To: <jaegeuk@kernel.org>, <chao@kernel.org>
-CC: <linux-f2fs-devel@lists.sourceforge.net>, <linux-kernel@vger.kernel.org>,
-        <niuzhiguo84@gmail.com>, <zhiguo.niu@unisoc.com>, <ke.wang@unisoc.com>,
-        <hongyu.jin@unisoc.com>
-Subject: [PATCH] f2fs: fix to check result of new_curseg in f2fs_allocate_segment_for_resize
-Date: Fri, 1 Mar 2024 19:36:16 +0800
-Message-ID: <1709292976-13118-1-git-send-email-zhiguo.niu@unisoc.com>
-X-Mailer: git-send-email 1.9.1
+	s=arc-20240116; t=1709293010; c=relaxed/simple;
+	bh=VmuLKrIiPvi0d1zugpUUZmB0Q+nwGsD8HuFFE2t/am4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HIdJWOs0rH38VuMIvo7GAUuP5uQN2jWU0ME+KIV9M5qIonUtEIHOHGZHT5Y6XjEugRTc2vw7bSB6PSmJ62yKob3nQJA9FGKP6iBsucRzjbFOG21UZO6dO7RJD3YhIG58ddZ+H5xnrYDnD+qh+I+f9yOSHGyDfOzEHHq08/vEwi4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QVzUIz6x; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709293008; x=1740829008;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=VmuLKrIiPvi0d1zugpUUZmB0Q+nwGsD8HuFFE2t/am4=;
+  b=QVzUIz6xWYgsyl68cfOKEBv0o1zzUu//hfk+PTP2RaJvJn9Ab7v5dV6x
+   hv1uQdDRuKwniprGUCVRMhBYPLJ33K5S4JppTM7gmufLVjnJl008anzKx
+   9QHA8VYxzjp93ydzoPFi4Ax2xtYDrVZxNJkGQrFmZ9lDakOku2tqHutX+
+   ExO6o6BuXSlS4gA9jNQMZyFY7bvlTXZ7SyES1XT3OVHwWtQt316O95u6d
+   gfeCJlgm933PMDgLvKGuZb05MB+/s++7qd5XJ75kO7yzzAJBwelvYo34s
+   d1542xcTP0p7d+LMGs3iYoqIq2kVNh82R3R9TONoPx0cJMKzUTsqmEF3F
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="3688283"
+X-IronPort-AV: E=Sophos;i="6.06,196,1705392000"; 
+   d="scan'208";a="3688283"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 03:36:47 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="937037589"
+X-IronPort-AV: E=Sophos;i="6.06,196,1705392000"; 
+   d="scan'208";a="937037589"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 01 Mar 2024 03:36:44 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+	id 621B93BC; Fri,  1 Mar 2024 13:36:43 +0200 (EET)
+Date: Fri, 1 Mar 2024 13:36:43 +0200
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: "Huang, Kai" <kai.huang@intel.com>
+Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>, 
+	erdemaktas@google.com, Sean Christopherson <seanjc@google.com>, 
+	Sagi Shahar <sagis@google.com>, chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com
+Subject: Re: [PATCH v19 008/130] x86/tdx: Warning with 32bit build
+ shift-count-overflow
+Message-ID: <jvyz3nuz225ry6ss6hs42jyuvrytsnsi2l74cwibtt5sedaimb@v2vilg4mbhws>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <a50918ba3415be4186a91161fe3bbd839153d8b2.1708933498.git.isaku.yamahata@intel.com>
+ <2f6897c0-1b57-45b3-a1f1-9862b0e4c884@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
- BJMBX02.spreadtrum.com (10.0.64.8)
-X-MAIL:SHSQR01.spreadtrum.com 421BaPmN084487
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2f6897c0-1b57-45b3-a1f1-9862b0e4c884@intel.com>
 
-new_curseg may return error if get_new_segment fail, so its result
-should be check in its caller f2fs_allocate_segment_for_resize,
-alos pass this results to free_segment_range.
+On Thu, Feb 29, 2024 at 11:49:13AM +1300, Huang, Kai wrote:
+> 
+> 
+> On 26/02/2024 9:25 pm, isaku.yamahata@intel.com wrote:
+> > From: Isaku Yamahata <isaku.yamahata@intel.com>
+> > 
+> > This patch fixes the following warnings.
+> > 
+> >     In file included from arch/x86/kernel/asm-offsets.c:22:
+> >     arch/x86/include/asm/tdx.h:92:87: warning: shift count >= width of type [-Wshift-count-overflow]
+> >     arch/x86/include/asm/tdx.h:20:21: note: expanded from macro 'TDX_ERROR'
+> >     #define TDX_ERROR                       _BITUL(63)
+> > 
+> >                                             ^~~~~~~~~~
+> > 
 
-Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
----
- fs/f2fs/f2fs.h    | 2 +-
- fs/f2fs/gc.c      | 7 +++++--
- fs/f2fs/segment.c | 9 +++++++--
- 3 files changed, 13 insertions(+), 5 deletions(-)
+I think you trim the warning message. I don't see the actual user of the
+define. Define itself will not generate the warning. You need to actually
+use it outside of preprocessor. I don't understand who would use it in
+32-bit code. Maybe fixing it this way masking other issue.
 
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 4331012..39dda7d 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -3701,7 +3701,7 @@ void f2fs_clear_prefree_segments(struct f2fs_sb_info *sbi,
- void f2fs_init_inmem_curseg(struct f2fs_sb_info *sbi);
- void f2fs_save_inmem_curseg(struct f2fs_sb_info *sbi);
- void f2fs_restore_inmem_curseg(struct f2fs_sb_info *sbi);
--void f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
-+int f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
- 					unsigned int start, unsigned int end);
- int f2fs_allocate_new_section(struct f2fs_sb_info *sbi, int type, bool force);
- int f2fs_allocate_pinning_section(struct f2fs_sb_info *sbi);
-diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
-index c60b747..7a458fa 100644
---- a/fs/f2fs/gc.c
-+++ b/fs/f2fs/gc.c
-@@ -2037,8 +2037,11 @@ static int free_segment_range(struct f2fs_sb_info *sbi,
- 	mutex_unlock(&DIRTY_I(sbi)->seglist_lock);
- 
- 	/* Move out cursegs from the target range */
--	for (type = CURSEG_HOT_DATA; type < NR_CURSEG_PERSIST_TYPE; type++)
--		f2fs_allocate_segment_for_resize(sbi, type, start, end);
-+	for (type = CURSEG_HOT_DATA; type < NR_CURSEG_PERSIST_TYPE; type++) {
-+		err = f2fs_allocate_segment_for_resize(sbi, type, start, end);
-+		if (err)
-+			goto out;
-+	}
- 
- 	/* do GC to move out valid blocks in the range */
- 	err = f2fs_gc_range(sbi, start, end, dry_run, 0);
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index 1bb3019..2a07b9d 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -3071,11 +3071,12 @@ static bool need_new_seg(struct f2fs_sb_info *sbi, int type)
- 	return false;
- }
- 
--void f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
-+int f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
- 					unsigned int start, unsigned int end)
- {
- 	struct curseg_info *curseg = CURSEG_I(sbi, type);
- 	unsigned int segno;
-+	int err = 0;
- 
- 	f2fs_down_read(&SM_I(sbi)->curseg_lock);
- 	mutex_lock(&curseg->curseg_mutex);
-@@ -3089,7 +3090,10 @@ void f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
- 		change_curseg(sbi, type);
- 	else
- 		new_curseg(sbi, type, true);
--
-+	if (curseg->segno == NULL_SEGNO) {
-+		err = -ENOSPC;
-+		goto unlock;
-+	}
- 	stat_inc_seg_type(sbi, curseg);
- 
- 	locate_dirty_segment(sbi, segno);
-@@ -3102,6 +3106,7 @@ void f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
- 
- 	mutex_unlock(&curseg->curseg_mutex);
- 	f2fs_up_read(&SM_I(sbi)->curseg_lock);
-+	return err;
- }
- 
- static int __allocate_new_segment(struct f2fs_sb_info *sbi, int type,
+That said, I don't object the change itself. We just need to understand
+the context more.
+
 -- 
-1.9.1
-
+  Kiryl Shutsemau / Kirill A. Shutemov
 
