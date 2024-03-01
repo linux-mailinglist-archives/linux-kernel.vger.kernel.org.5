@@ -1,197 +1,141 @@
-Return-Path: <linux-kernel+bounces-88342-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88343-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B676386E040
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:29:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 908B086E044
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:29:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5720287EA5
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:29:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 490B22881FF
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:29:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A99C56CBFF;
-	Fri,  1 Mar 2024 11:29:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FF8B6CDBD;
+	Fri,  1 Mar 2024 11:29:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="WneJFLwN"
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZEufbuFz"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B0B74438E
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 11:29:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 563E56BFD4
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 11:29:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709292573; cv=none; b=ETYXOmoQzutl6FahQC8tW42+os+Oe/NLAP8nDHXgKwdQwVoL99aFnfN9wmUON6doGMHfRC5f4qA/AVyVbFfQ0rPsgps0fzgAnw+VnzvmInjtoAipLu7aSrzbwJ/+IMIfn2elES62sHhhY9EcEZ5wPb/zFOD4BgzyMOndE4O2dAE=
+	t=1709292590; cv=none; b=ez7NROlmZRsXA4Yg1q1ULXJD8D6NvSXtF/iPredTBbxJoNdS/irzVofur0Z0Q3iKoYFM/VDgIoWka2VcJtLWGAPp/i6wtcOfhoOgW+vZ72A60Lokmea0ow6bceNwSHgoRrSh715hpFuNnmoFWwWt6qSwvl8fCymlMkhtX4rzY7U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709292573; c=relaxed/simple;
-	bh=JP0454diuQRJWxe3AgLViK7eNSSpoIs2Qcd44phtQ1U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=B/BVNsbzRymOy7LJqwz422YWk5b5ZfBXxVbOCHTnAp3Thqo4OxnBBvVsgQxNA5h6ZRQsY8juto36oytfRQmvHtITLDeG/9Fu06mkZs905sVxS1YPxXm5ORxekB3RtT4yRhKreV2KBiAQEUS9nfcHPDYvjB283mXb8ELzdi+XIQM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=WneJFLwN; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-566e869f631so187016a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 03:29:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1709292569; x=1709897369; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=N6rqbYpfS5pcWnhkyceNm4nCsA9xdZ82hdVcREX/cMw=;
-        b=WneJFLwN6GrhP8pFgBS6R0ZlODnnxQ5/+Fwgw7iE4P73MuAQZJg7fD81SfFJZ7zRuj
-         iQDickLD/WqKwsOXPs7MHdO2/AqOgf7Je0Rg+JNOFlR/Cxg3pa3GA9e93LT7OGgFpbG8
-         QroQbl8YBtUhK+HKlWMuq/VgaxMXi08u/q+btGX7qGytIjKXJIZbR6bkV+lO5lLmLSZB
-         Psfnoa/QS25ow6X5YtQrEGEmO2nxD5VGnsorMPTFcvteMzov9AT5+X6BCBz1LwxDIh95
-         rv30ZkijHSW1rWV7Tnxp8cnL0caZtzrzrxQofUAf++mdp/bCfMdN/UCGTOGIJJ1mOryf
-         EbHA==
+	s=arc-20240116; t=1709292590; c=relaxed/simple;
+	bh=zog0qIVMaTlG1ASknli4b3SB8p1aLaDCqtbud0WxAu0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=d2OzDBnbWNKdYwkj58p0gRZW8RLpO702eDBheVcOmvG45yI+QsbEbBLnS38VUIUwjD9oczltWuZt0rc5h8r92pJnsh/KRHI8Fb981OsMcihA/GAn+dzvv/XaBYxj66j3R7nIHkYqUbDRvm29GSz5fy0WI/7LG+jZzzjhxWILesM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZEufbuFz; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709292588;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qRUqDJ3Iv/k5nE0Cga6hqzTdj9gEhtnN2QTBMasCuKc=;
+	b=ZEufbuFzUmsxRs1JzqLkGCMOKg3YlKE5F/gSri1oNi3kvUN+NOZ5pAjrEz/sSKVBe3MWG7
+	3FSuNLgiEaMdZpSDWLbF9ZpTXw4HpOGyYOyBteAyYl/3t3z77RSK4zZhGxQBRT5YDFHxfs
+	Sh8z8j5CW7ECe1wtktDortp2kmvyRVo=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-649-Y5aj_OwXMPG36iQ_Yn8-Vg-1; Fri, 01 Mar 2024 06:29:45 -0500
+X-MC-Unique: Y5aj_OwXMPG36iQ_Yn8-Vg-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-412aae6022bso9596685e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 03:29:44 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709292569; x=1709897369;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=N6rqbYpfS5pcWnhkyceNm4nCsA9xdZ82hdVcREX/cMw=;
-        b=cyXOl0E72rpdaX3X5Wp7sEAID+vnTG2zleShUJQIw1U4UxzxUqi8UWp+0nYWKJijQX
-         AuIT6kQZvBjM9LNZFnRPr3XhfSoXytA0YA3nf7uBuVJBbst5kXEOp5JK93562LIWUUTD
-         WN28JaOITmK2czb+6dF8ht9kyTphAsPr92hLteM9hdvL2b1KEFqROdrdOME5rKTxuXTw
-         jFpWj8wvwV1M5zlSC++ZfTgPPGEBG0KnBz+CJ6o6cL1lHJI8M35MB1TJTzfM53IaT1G3
-         rY1k1P8Mzv+s6Ra8VfB6R6PV2aDpnM//F08kyproGxp5SrxLTr9EPW4ekX7NSDfjPrEU
-         1Ndw==
-X-Forwarded-Encrypted: i=1; AJvYcCUwwxUpqMRjJ0MrIkSGVo8BAhEOJho864pvnbSiVDdo6aX67qbAGuEPwSqA8s2h64rmlGdqQgkkWAgwINfRkdLNZPutG8Rm9wuTbhAc
-X-Gm-Message-State: AOJu0YzrDRRy0YzQNe0/FVorkfgUIthCBlJIaY8pkCYEg1iQ4swpERJ4
-	x4Xdfp4Zd+ORf0HOxtVdU1UN7gW3enrKLDVfznSQzV2GWv5c+vSqS+v7uq6YIawN427IVgIur4k
-	//1Z6DTOqWE9e4epnUTf44Y2jAofrbYh/8FdTfw==
-X-Google-Smtp-Source: AGHT+IGhWExtL6QtBViwPNAoKlHWs7DOlO2fT48mVk9Foe5Dl0xsN+CFFn8dgQruLadr4n6Yxb7nj2ska+hps6+i1zE=
-X-Received: by 2002:a05:6402:222b:b0:566:6640:10e5 with SMTP id
- cr11-20020a056402222b00b00566664010e5mr938238edb.12.1709292569232; Fri, 01
- Mar 2024 03:29:29 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709292584; x=1709897384;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qRUqDJ3Iv/k5nE0Cga6hqzTdj9gEhtnN2QTBMasCuKc=;
+        b=tS7Eyf+06hg9hhwGo+mJN90ITt9dGawer1LgZsMfrJ2oPxnJqYC5rjuSLyb4CJoVXM
+         iuVJU3BFroSHdkb+rS6g9MK4ZeD46phS2NEn9nhmZ4U5skcL3bwTv8h7a11oIIDJ9XAJ
+         VivYRqgxTVtab0Op8JV8OcMqA/nhsLabAItdWhgGvx1zc0qTHwcXuiseG6f1TbsU+ARK
+         dUACEELPfr47TKwdhOusvbQl0XGRq8kzNXeeBAqEq2joiE6ftOITbedMTJH0/N2yH7GL
+         8L7PHnKNsiLV5NxoJjYtAtmpueK0NC+JRJMfdvLjUz2exdfBGgvqF9oTUewvcEIv3AyD
+         aWnA==
+X-Forwarded-Encrypted: i=1; AJvYcCViS/8f+NM6yVosuc3QclDgCLYfH8p9aIbXEzJTEyRPtAy3YaBXxphVw5hdYrBmg8qgNPD9cHKWAaTxHR5moDMPbe86lejD1Uz0Qe/W
+X-Gm-Message-State: AOJu0YydfiucQESYrz3fKioPOubPws34d6JZhOQAHJhNGparC9MC/ir9
+	aTw/KxuLeLPz7B2ElBwmEsbtpbxzzYny93Y5L2P98ubhzzPYzt1nK7fr9VmB6hDFAMuCnIZH08X
+	yUvH7V3YXdx/iDbz1Ika9qE+8UZ1IV/y38YwMF9IW0X6MAqQHnvsIiSQMa4J1tg==
+X-Received: by 2002:a05:600c:4fc4:b0:412:c8c9:c844 with SMTP id o4-20020a05600c4fc400b00412c8c9c844mr988483wmq.26.1709292584013;
+        Fri, 01 Mar 2024 03:29:44 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEKqlwQ+JstuXu5h4wbg4ZOpZ/dkea6nQ1ibG6iOdPso+qOIY2FCKYMPY6GH4tsyMvb9w+yJg==
+X-Received: by 2002:a05:600c:4fc4:b0:412:c8c9:c844 with SMTP id o4-20020a05600c4fc400b00412c8c9c844mr988453wmq.26.1709292583675;
+        Fri, 01 Mar 2024 03:29:43 -0800 (PST)
+Received: from toolbox ([2001:9e8:89a0:c500:c65:1f3a:8c08:2a1d])
+        by smtp.gmail.com with ESMTPSA id bi19-20020a05600c3d9300b00412ca030252sm1036720wmb.30.2024.03.01.03.29.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Mar 2024 03:29:43 -0800 (PST)
+Date: Fri, 1 Mar 2024 12:29:41 +0100
+From: Sebastian Wick <sebastian.wick@redhat.com>
+To: Maxime Ripard <mripard@kernel.org>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Jonathan Corbet <corbet@lwn.net>, Sandy Huang <hjc@rock-chips.com>,
+	Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Hans Verkuil <hverkuil@xs4all.nl>,
+	Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>,
+	dri-devel@lists.freedesktop.org,
+	linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+	linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev,
+	Dave Stevenson <dave.stevenson@raspberrypi.com>
+Subject: Re: [PATCH v7 21/36] drm/connector: hdmi: Add Broadcast RGB property
+Message-ID: <20240301112941.GE166694@toolbox>
+References: <20240222-kms-hdmi-connector-state-v7-0-8f4af575fce2@kernel.org>
+ <20240222-kms-hdmi-connector-state-v7-21-8f4af575fce2@kernel.org>
+ <20240229194726.GB166694@toolbox>
+ <20240301-light-impressive-grasshopper-adabeb@houat>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240301091455.246686-1-alexghiti@rivosinc.com> <b99f47f9-18d0-4619-aae7-19274197b85e@arm.com>
-In-Reply-To: <b99f47f9-18d0-4619-aae7-19274197b85e@arm.com>
-From: Alexandre Ghiti <alexghiti@rivosinc.com>
-Date: Fri, 1 Mar 2024 12:29:18 +0100
-Message-ID: <CAHVXubiH64beFuB_GHSq5BKCus=O_+bqYTCwWQ+=2Q-F=T=ctQ@mail.gmail.com>
-Subject: Re: [PATCH 0/9] Merge arm64/riscv hugetlbfs contpte support
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
-	Andrew Morton <akpm@linux-foundation.org>, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240301-light-impressive-grasshopper-adabeb@houat>
 
-Hi Ryan,
+On Fri, Mar 01, 2024 at 11:30:56AM +0100, Maxime Ripard wrote:
+> On Thu, Feb 29, 2024 at 08:47:26PM +0100, Sebastian Wick wrote:
+> > > @@ -1708,6 +1731,39 @@ EXPORT_SYMBOL(drm_connector_attach_dp_subconnector_property);
+> > >  /**
+> > >   * DOC: HDMI connector properties
+> > >   *
+> > > + * Broadcast RGB (HDMI specific)
+> > > + *      Indicates the Quantization Range (Full vs Limited) used. The color
+> > > + *      processing pipeline will be adjusted to match the value of the
+> > > + *      property, and the Infoframes will be generated and sent accordingly.
+> > > + *
+> > > + *      This property is only relevant if the HDMI output format is RGB. If
+> > > + *      it's one of the YCbCr variant, it will be ignored and the output will
+> > > + *      use a limited quantization range.
+> > 
+> > Uh, maybe just say that the quantization range is selected automatically
+> > in case a YCbCr output format is in use. I'm not sure every YCbCr
+> > variant requires limited and even if it does, new formats could change
+> > this.
+> 
+> I documented what i915 is doing:
+> https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/i915/display/intel_hdmi.c#L2143
 
-On Fri, Mar 1, 2024 at 11:45=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.com>=
- wrote:
->
-> Hi Alexandre,
->
-> I confess I haven't looked at the patches yet, but this cover letter rais=
-es a
-> few quesions for me. I'll aim to look at the actual patches in due course=
-.
->
-> On 01/03/2024 09:14, Alexandre Ghiti wrote:
-> > This patchset intends to merge the contiguous ptes hugetlbfs implementa=
-tion
-> > of arm64 and riscv.
-> >
-> > Both arm64 and riscv support the use of contiguous ptes to map pages th=
-at
-> > are larger than the default page table size, respectively called contpt=
-e
-> > and svnapot.
-> >
-> > The riscv implementation differs from the arm64's in that the LSBs of t=
-he
-> > pfn of a svnapot pte are used to store the size of the mapping, allowin=
-g
-> > for future sizes to be added (for now only 64KB is supported). That's a=
-n
-> > issue for the core mm code which expects to find the *real* pfn a pte p=
-oints
-> > to. Patch 1 fixes that by always returning svnapot ptes with the real p=
-fn
-> > and restores the size of the mapping when it is written to a page table=
-.
->
-> Yes that makes sense to me. The intention for mTHP (!hugetlb) is to fully
-> encapsulate PTEs beind set_ptes(), ptep_get() and friends, so what's actu=
-ally
-> written to the pgtable is arch-specific and well abstracted.
->
-> >
-> > The following patches are just merges of the 2 different implementation=
-s
-> > that currently exist in arm64 and riscv which are very similar. It pave=
-s
-> > the way to the reuse of the recent contpte THP work by Ryan [1] to avoi=
-d
-> > reimplementing the same in riscv.
->
-> You seem to be talking about both hugetlb (which uses the "huge" pte help=
-ers)
-> and contpte for THP (i.e. mTHP, which uses the regular pte helpers). They=
- are
-> pretty separate in my mind, so not sure why you would be modifying them b=
-oth in
-> the same series?
+Sure, this is one valid strategy for the automatic behavior of YCbCr.
+Drivers could also always send an InfoFrame to ensure full range where
+possible. The point here is that this property shall not affect YCbCr
+output formats!
 
-I don't, this patchset only deals with hugetlb, I just meant that this
-series was just the beginning as I'm working on moving the contpte for
-THP support in the generic code for riscv to use.
+Maybe it's even better to say "driver specific" instead of "automatic".
 
-Sorry my wording was ambiguous :)
+> Maxime
+> 
 
-Thanks,
-
-Alex
-
->
-> Thanks,
-> Ryan
->
-> >
-> > This patchset was tested by running the libhugetlbfs testsuite with 64K=
-B
-> > and 2MB pages on both architectures (on a 4KB base page size arm64 kern=
-el).
-> >
-> > [1] https://lore.kernel.org/linux-arm-kernel/20240215103205.2607016-1-r=
-yan.roberts@arm.com/
-> >
-> > Alexandre Ghiti (9):
-> >   riscv: Restore the pfn in a NAPOT pte when manipulated by core mm cod=
-e
-> >   riscv: Safely remove huge_pte_offset() when manipulating NAPOT ptes
-> >   mm: Use common huge_ptep_get() function for riscv/arm64
-> >   mm: Use common set_huge_pte_at() function for riscv/arm64
-> >   mm: Use common huge_pte_clear() function for riscv/arm64
-> >   mm: Use common huge_ptep_get_and_clear() function for riscv/arm64
-> >   mm: Use common huge_ptep_set_access_flags() function for riscv/arm64
-> >   mm: Use common huge_ptep_set_wrprotect() function for riscv/arm64
-> >   mm: Use common huge_ptep_clear_flush() function for riscv/arm64
-> >
-> >  arch/arm64/Kconfig                  |   1 +
-> >  arch/arm64/include/asm/pgtable.h    |  59 +++++-
-> >  arch/arm64/mm/hugetlbpage.c         | 291 +---------------------------
-> >  arch/riscv/Kconfig                  |   1 +
-> >  arch/riscv/include/asm/hugetlb.h    |   2 +-
-> >  arch/riscv/include/asm/pgtable-64.h |  11 ++
-> >  arch/riscv/include/asm/pgtable.h    | 120 +++++++++++-
-> >  arch/riscv/mm/hugetlbpage.c         | 227 ----------------------
-> >  mm/Kconfig                          |   3 +
-> >  mm/Makefile                         |   1 +
-> >  mm/contpte.c                        | 268 +++++++++++++++++++++++++
-> >  11 files changed, 456 insertions(+), 528 deletions(-)
-> >  create mode 100644 mm/contpte.c
-> >
->
 
