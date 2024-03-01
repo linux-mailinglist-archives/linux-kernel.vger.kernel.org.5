@@ -1,103 +1,114 @@
-Return-Path: <linux-kernel+bounces-88395-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88396-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAC3E86E104
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:24:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B1A686E109
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:27:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7C368B231D0
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:24:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 638681C22C7F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:27:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BE4A6EB42;
-	Fri,  1 Mar 2024 12:24:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7CD36E611;
+	Fri,  1 Mar 2024 12:26:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="txU40ruL"
-Received: from mail-vs1-f54.google.com (mail-vs1-f54.google.com [209.85.217.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=rosalinux.ru header.i=@rosalinux.ru header.b="PdctvGqO"
+Received: from mail.rosalinux.ru (mail.rosalinux.ru [195.19.76.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B9C06D1C1
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 12:24:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B63CA2AEFF
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 12:26:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.19.76.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709295883; cv=none; b=GgvbOvnSFw6dIC7MIf99HBBxQf3Qq7ku2tYStRLp7eVNNcud7bV7O09nFWCPBUQMT8zeJdbB3+l8Mr2A/fQT/Uu0VWqKeyNYO0207Sp8yGcZ96AdSYzLyJwjc1w1c0LTFg9/sMNpE14HmxATZXWl4DfAQa07vuuydL8fwVDr39A=
+	t=1709296018; cv=none; b=HJSPPd7/3ZruXlqETO6KUkX/ZtB4dx9/ohZjQeRTbnVSkylUoqXAOK6zgQEA78AeK3XlUzwLwNPy77u7smqxd03vX30vzNmkThKHzY8d0GEZUPpv1nd5QRxAitsQf10diE+J/PAht7luFG9WPKGZyHfLx7b9M0GYNGI1sPkbxaQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709295883; c=relaxed/simple;
-	bh=k9Rkcgum2pozTxkBzlG+M1fZGCMA8hbLFjLcwISl6cg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=B+hR+EBHp9JryAjI4GNQYmjQ5a4az+lZXkmhvPkPwlegp619LrIWK1FxYkSrV96FQSLSlVPRQ+36VI1PgULZqa2qxaielgUwt5HGmUAVbb/C73R6198AJLh9Dlu+emfF24UqMoC+aACH8n38Sn13CK/LCb5YrAqpgMwy1KRrS+8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=txU40ruL; arc=none smtp.client-ip=209.85.217.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-vs1-f54.google.com with SMTP id ada2fe7eead31-47293de29e9so284948137.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 04:24:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709295881; x=1709900681; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=k9Rkcgum2pozTxkBzlG+M1fZGCMA8hbLFjLcwISl6cg=;
-        b=txU40ruLqnbN4V+jPeqJJwaw1yeqnHFfpD8yUj/fcLRgLIAGGITkYcXFK2QUWmy9TE
-         KF2Zxce3EIA1H8QTF7vlr5SOB+7UOkUjelIjOjPBKgeK7eNl89NLkKsGnE6KRQmQBLjG
-         gnEWSbAfkoI6EMBpb2DtqWwtYyhncyXc8xgkRyarLc4V/6m9ug1U0HIidt6QiOblbaXo
-         S/4Iy3FrELxV16zFj5wiWKJBeY9bqy5+BWobxvcOOFS2mKI+QJ69+XFAa7N7HywjK0GB
-         6tl4caAas6PKfvG1r756iPT4jELjY9h0qPvvucHIoge0AF6VNdpDFc3NRz39RSE4rDDy
-         QZiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709295881; x=1709900681;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=k9Rkcgum2pozTxkBzlG+M1fZGCMA8hbLFjLcwISl6cg=;
-        b=cbC6p4oRmZrrPlkgxo8tj1KuyzjamEm16MwY4PifuTxfA231HYqOGUYmoAXWOjAKmG
-         GoTgKdsog4OSc0XHiqmz9n69vL810Ame4iXyb3SueCDv2t39MhnQ9V1JA51mPbSjVSFO
-         Nxj44sVBMidu7Vy9eAvjHogZQLz4gmL/Q8D+eSKnuW6FYMjCxtSONb1oa0hwQludrkZT
-         S7mZDt9RctSAUYwsN1DNr1hQY2x0vu3nLH98dOyDiz5V8k/zjEvSALMomlimKdBO35qJ
-         u9XevmUOTonvIBo+rxgu5yZW81ESw/npmYId0Vyc1KdVWeVHt6PgFM4He5adj6+68KyO
-         Mh/Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWRY1UHm8hhAH+XhsymeQvaJkKRxL9sDuqPc4GWbMHINVGPoohb2RABnFNQ2zlMEKmpYWo3EoMVBTi/lEuKSbTL2OwprGmDhm4QuNZu
-X-Gm-Message-State: AOJu0YyLWyGAHW7oSUsRC7xoqOUfCH2WHvmDDvG8qPW/YNROW2h9cmS4
-	mVbjsmWS/7uLHFScKaM7Hi7wWNB57WJIBTvFl7RdQOqPB4KBexkoReeAPkOKV848kSWGrCWIaey
-	vIVvJ/02xZGE3W6PYHlJ5OWndWTuqI7Zh75GvVg==
-X-Google-Smtp-Source: AGHT+IEQPGVNTqruAg8A6mHm1+O7pWnzubd3URRuR4eT0PSAL4oFvoy0OF6M+SO6rvj2bK4eHHipjxBtL+4olti6rVQ=
-X-Received: by 2002:a67:e21a:0:b0:472:77b2:f99e with SMTP id
- g26-20020a67e21a000000b0047277b2f99emr1202644vsa.8.1709295881170; Fri, 01 Mar
- 2024 04:24:41 -0800 (PST)
+	s=arc-20240116; t=1709296018; c=relaxed/simple;
+	bh=j5D9U6KjNVFx9zJvU329TCD0lS74yEhf5AvcIdP3EC4=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=YLZw6321WVigM+3Xb8jZbtSmGsG6Kv4k3jTfh544/OrOg6z0PlaMM6+LO+yFXSx5pOfyMqrY7G3r1oVl1qHmWFU5mLVlAgaFw0w4VdfkJk7Pu/nomixV1Fp5AG4rXjJswMAVJxjfF7oF62l/nPqH5qrYtHqDLQLQfV9QxYwvSoU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=rosalinux.ru; spf=pass smtp.mailfrom=rosalinux.ru; dkim=pass (2048-bit key) header.d=rosalinux.ru header.i=@rosalinux.ru header.b=PdctvGqO; arc=none smtp.client-ip=195.19.76.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=rosalinux.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rosalinux.ru
+Received: from localhost (localhost [127.0.0.1])
+	by mail.rosalinux.ru (Postfix) with ESMTP id AE28ECFF46BCC;
+	Fri,  1 Mar 2024 15:26:42 +0300 (MSK)
+Received: from mail.rosalinux.ru ([127.0.0.1])
+	by localhost (mail.rosalinux.ru [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id fqAs-W5z0ecx; Fri,  1 Mar 2024 15:26:42 +0300 (MSK)
+Received: from localhost (localhost [127.0.0.1])
+	by mail.rosalinux.ru (Postfix) with ESMTP id 84DBFCFF46BD3;
+	Fri,  1 Mar 2024 15:26:42 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.rosalinux.ru 84DBFCFF46BD3
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rosalinux.ru;
+	s=1D4BB666-A0F1-11EB-A1A2-F53579C7F503; t=1709296002;
+	bh=GPmQWvjQuc1pVJSK54+GnJ6cGFBHUxKlE2p3TVblCUs=;
+	h=From:To:Date:Message-Id:MIME-Version;
+	b=PdctvGqOjq3p2Zi7u3eZmpT/nGJf2zXfxbj9ZZS/6BvPa9WdbccuaQU/a1buAlzaC
+	 lVQ12ZpwmWjDVedZ0smgilBF8Z9Pe6XTnpIJ6krCG8aId80PRbrOGaVlptqYNZB+Yr
+	 wSAiQLLqn61BPdFa6L2VO57xPNZseHWfXUpCL19ZXoz4/zXVNFK7qBaSHTzKgPkFoy
+	 4wwsxFNmCIXStxhnrXXpp3Vh9fwJDbH6AgIYKG8bDv7Mhw/uP6sQ5KgvDZZJyCZkqW
+	 farm3lc+/N43U0R7OhXA7dtka1vlBlx1I68xZq6QYF8bhRJ69UMWEhvPE3fOR9L9Wv
+	 fmVWP3Fdhrk7w==
+X-Virus-Scanned: amavisd-new at rosalinux.ru
+Received: from mail.rosalinux.ru ([127.0.0.1])
+	by localhost (mail.rosalinux.ru [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id IDqMVs1C3EXX; Fri,  1 Mar 2024 15:26:42 +0300 (MSK)
+Received: from ubuntu.localdomain (unknown [144.206.93.23])
+	by mail.rosalinux.ru (Postfix) with ESMTPSA id 48574CFF46BCC;
+	Fri,  1 Mar 2024 15:26:42 +0300 (MSK)
+From: Aleksandr Burakov <a.burakov@rosalinux.ru>
+To: Dave Airlie <airlied@redhat.com>,
+	Gerd Hoffmann <kraxel@redhat.com>
+Cc: Aleksandr Burakov <a.burakov@rosalinux.ru>,
+	virtualization@lists.linux-foundation.org,
+	spice-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	lvc-project@linuxtesting.org
+Subject: [PATCH v2] drm/qxl: fix NULL dereference in qxl_add_mode
+Date: Fri,  1 Mar 2024 15:26:35 +0300
+Message-Id: <20240301122635.25058-1-a.burakov@rosalinux.ru>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <oprbqmdpjzhjwuqypqfdnirl44drvrhlaiounos44ywdbiustm@myk6llv5chlv>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240229143825.1373550-1-pctammela@mojatatu.com>
-In-Reply-To: <20240229143825.1373550-1-pctammela@mojatatu.com>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Fri, 1 Mar 2024 17:54:30 +0530
-Message-ID: <CA+G9fYtuQfNTr3fgJ5MeYCXqvc1x17TdBRxJ6-aD76109=Pk9g@mail.gmail.com>
-Subject: Re: [PATCH net-next] selftests/tc-testing: require an up to date
- iproute2 for blockcast tests
-To: Pedro Tammela <pctammela@mojatatu.com>
-Cc: netdev@vger.kernel.org, jhs@mojatatu.com, xiyou.wangcong@gmail.com, 
-	jiri@resnulli.us, shuah@kernel.org, pabeni@redhat.com, kuba@kernel.org, 
-	victor@mojatatu.com, linux-kselftest@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, 
-	Linux Kernel Functional Testing <lkft@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Pedro,
+Return value of a function 'drm_cvt_mode' is dereferenced without
+checking for NULL but drm_mode_create() in drm_cvt_mode() may
+return NULL value in case of memory allocation error.
 
-On Thu, 29 Feb 2024 at 20:08, Pedro Tammela <pctammela@mojatatu.com> wrote:
->
-> Add the dependsOn test check for all the mirred blockcast tests.
-> It will prevent the issue reported by LKFT which happens when an older
-> iproute2 is used to run the current tdc.
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-Thank you for the fix patch.
-LKFT tests run on Debian rootfs, Please suggest the packages that are needed
-for tc-testing.
+Fixes: 1b043677d4be ("drm/qxl: add qxl_add_mode helper function")
+Signed-off-by: Aleksandr Burakov <a.burakov@rosalinux.ru>
+---
+v2: case with false value of 'preferred' is now taken into account
+ drivers/gpu/drm/qxl/qxl_display.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
->
-> Tests are skipped if the dependsOn check fails.
+diff --git a/drivers/gpu/drm/qxl/qxl_display.c b/drivers/gpu/drm/qxl/qxl_=
+display.c
+index a152a7c6db21..d6dece7a0ed2 100644
+--- a/drivers/gpu/drm/qxl/qxl_display.c
++++ b/drivers/gpu/drm/qxl/qxl_display.c
+@@ -236,6 +236,9 @@ static int qxl_add_mode(struct drm_connector *connect=
+or,
+ 		return 0;
+=20
+ 	mode =3D drm_cvt_mode(dev, width, height, 60, false, false, false);
++	if (!mode)
++		return 0;
++
+ 	if (preferred)
+ 		mode->type |=3D DRM_MODE_TYPE_PREFERRED;
+ 	mode->hdisplay =3D width;
+--=20
+2.25.1
 
-- Naresh
 
