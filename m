@@ -1,155 +1,139 @@
-Return-Path: <linux-kernel+bounces-89002-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89004-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CE3886E94E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:16:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EE3A86E954
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:16:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 28D571C22425
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:16:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F24571F235C2
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:16:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E024E39AF3;
-	Fri,  1 Mar 2024 19:15:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 128D73A1AA;
+	Fri,  1 Mar 2024 19:16:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="IoN1nBGz"
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="ekdE8C1Y"
+Received: from smtp-190f.mail.infomaniak.ch (smtp-190f.mail.infomaniak.ch [185.125.25.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D6C939FC0
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 19:15:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E55733A1A7
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 19:16:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.25.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709320553; cv=none; b=nSJ3l+HFe65Fs/u118QulUfznM0yurXLe3XO1GbOi0C5aqdmyY5HSnE+OpcKZ8bHkDta4LvpEliqngntBTo1e6rLWMafYL8r0Rvu/46JEX0LN/RnmIPEk8PJIkm1JVP3RBzzFtlnGHnQkjSdu0ErG7IXcyMpgOrkPEVgpmhmzcc=
+	t=1709320588; cv=none; b=M02lk4Lc74hOdfkSVjijUQMxOkA5yPFZQQivy1noRzL8ZhUDdB9aYJ7kAZOM9ovANmbonvGb5wQaYk5dNB2woOVvnTBrnSuBX1zAHs+T+Tn100SMyV0BN7V4nKO7pyNy/Cxe+fwbzYVrEp/U+Dq1Xl1YZ16/ZtSRujFsXXm0t2g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709320553; c=relaxed/simple;
-	bh=4SGVdNCzUzfJSyLUiv7OJm+Q7HZsz7W458Em84AKSBQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=D/T9TLIvUzPLwMvPEBt3eXa84XAj7uIP7ZFwjT+n4tSxqD4CUAlwC0ZhfDRy5qRDUYofNso/cWiyecuJ8x/YIbszsBJf/Rho6DByVnEs8efaV1nbwpgOg1d9rCWg8IJR+Mf5myg5j99FsHsQZRTM3ds17wlLZHrQELAx8XTsN4I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=IoN1nBGz; arc=none smtp.client-ip=209.85.219.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dc74e33fe1bso2485282276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 11:15:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709320550; x=1709925350; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4SGVdNCzUzfJSyLUiv7OJm+Q7HZsz7W458Em84AKSBQ=;
-        b=IoN1nBGzM8kKRJYCn67Uky3jQ8CmRFaRigUyxYupbK3bd0W4Y4Q4oFL2AaP+IftBTB
-         P3AwqIgJVkRvYhQ68XpQbRfgi2jY5r2pKC8bWr7tPV/wVHzJ9UHzPjelEn0UPiephrAt
-         FHB8LMqEifgH9TBgLc7rauryOUwzVVa44WFVLPC2M5Bl+NPRetY/F6Z8iYQrA0o3TYqU
-         BGKMCkNQC5CXy0F2pr45JsQRRVlyBy3vA/410gAlEWoKt3nkPZbyISENxMW0ZEijk5OR
-         OpBxnQMMfIbqnj14uaraEGm7f0XyrEFR14oqKpEzzOY/dd2b6zjwvNi7Iki292HMJNyN
-         7Fgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709320550; x=1709925350;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4SGVdNCzUzfJSyLUiv7OJm+Q7HZsz7W458Em84AKSBQ=;
-        b=Fi1PDSqzK+MxySRAOuibBbu4rSSEYSyiss24+5jpSwCLFett/hPKb18RBcJYQayNvC
-         y6jvSJbgZ2bkXjrmYGDnbJA8nPdn3yrQW0pHEUbXRVA2UB3llZ9RHw0hfKfbi+Sv4s+0
-         jOUie2dLF0qEbGLGD72dSzYoiPyUq9kHInIrO8sjMk5SMKLOMZbDv0K52d4fswkdQMWm
-         14Psbjr81HTL09GcDxcr/yU5WSnBF0zq9D45m2WGgIC7qxBlIjII7N2sHjU9R1yGkvlt
-         x1USIk2JZ4NZqgM2oqXBljsfJ0anCaz0tTv988vS8HjjMvEHHS/xesbpyfsyAUePSz9P
-         c81Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUXGKJWblyOTcFOXeAj5PauVlCvnFWBDrkuVd1Oc09/sDC8TdVjuIF3dR2eBrhwtapV4Vdk2cq33uTaCUYBKSnuygM5qzBPZbZExqde
-X-Gm-Message-State: AOJu0Yxc8soDjDvafwOmyJs/Hbuo5Yjls/dCRe5oO0CLFIRwYPdmOzAj
-	vQeubqLkK+LJJDSHPnPjrs0ArTmxD6TAj3PJnQt6zqSYX8qR85Oey1IlRPp8PtEYNL3N9Z4J3I4
-	D/4EHyGkkFwNoGk1eKCEITyc74sLJj93jDIDn
-X-Google-Smtp-Source: AGHT+IHpoZqSKyU8K72QYJxIxHP1qT5UNeWaLy/IbqZ0RAKIL2jso0DEQzufbvQHjoDbpJ46K4tcQNzrXK7CAMMiHxM=
-X-Received: by 2002:a25:850a:0:b0:dcd:3172:7269 with SMTP id
- w10-20020a25850a000000b00dcd31727269mr2397758ybk.2.1709320550364; Fri, 01 Mar
- 2024 11:15:50 -0800 (PST)
+	s=arc-20240116; t=1709320588; c=relaxed/simple;
+	bh=Q7fU6Ub3q+6YxoCBFaoEp7a/GqkOwDsLuYbxuGhGrJY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kehAcMP1lKuM7LL+DpsX5fxZmnpQixZ+ZfiQVuUILrUs8ix3jnmv2DJ3Tr4WXziMA8Mk6ACd71U4dYWUY11Em1KxAlVR9pKt8XOMvNvlSkzbTc/mTJqZYCmSbFSQeL7tkNFhQyZ71duplmeMhClk47+Dwfvq2KNjuXbsHZmUMZc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=ekdE8C1Y; arc=none smtp.client-ip=185.125.25.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
+Received: from smtp-4-0000.mail.infomaniak.ch (smtp-4-0000.mail.infomaniak.ch [10.7.10.107])
+	by smtp-4-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4Tmd9Y1VK2zXyj;
+	Fri,  1 Mar 2024 20:16:17 +0100 (CET)
+Received: from unknown by smtp-4-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4Tmd9W6JqCzpmw;
+	Fri,  1 Mar 2024 20:16:15 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
+	s=20191114; t=1709320577;
+	bh=Q7fU6Ub3q+6YxoCBFaoEp7a/GqkOwDsLuYbxuGhGrJY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ekdE8C1Ycehc5cU0FFdPBLOQIWYuuwCoAVIcd6blq2ECeRFY83hIegduUPkzETJSJ
+	 1aED213nnnjEoQbHieGvuKeSAmm8UB1bPBZPlrobr+nQOfkOfTvxMUACoi0q1XEtyO
+	 1h134Jafh7/zywAVozq8HQY0K0a+ZnyoDROUVHAo=
+Date: Fri, 1 Mar 2024 20:16:05 +0100
+From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
+To: Kees Cook <keescook@chromium.org>
+Cc: Brendan Higgins <brendanhiggins@google.com>, 
+	David Gow <davidgow@google.com>, Rae Moar <rmoar@google.com>, 
+	Shuah Khan <skhan@linuxfoundation.org>, Alan Maguire <alan.maguire@oracle.com>, 
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	"H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, 
+	James Morris <jamorris@linux.microsoft.com>, Luis Chamberlain <mcgrof@kernel.org>, 
+	"Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>, Marco Pagani <marpagan@redhat.com>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Sean Christopherson <seanjc@google.com>, 
+	Stephen Boyd <sboyd@kernel.org>, Thara Gopinath <tgopinath@microsoft.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Vitaly Kuznetsov <vkuznets@redhat.com>, 
+	Wanpeng Li <wanpengli@tencent.com>, Zahra Tarkhani <ztarkhani@microsoft.com>, kvm@vger.kernel.org, 
+	linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org
+Subject: Re: [PATCH v1 8/8] kunit: Add tests for faults
+Message-ID: <20240301.aekiung2aL7K@digikod.net>
+References: <20240229170409.365386-1-mic@digikod.net>
+ <20240229170409.365386-9-mic@digikod.net>
+ <202402291027.6F0E4994@keescook>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240228032142.396719-1-jhubbard@nvidia.com> <Zd76zrhA4LAwA_WF@krava>
- <856564cf-fba4-4473-bfa9-e9b03115abd1@oracle.com> <983b98db-79c0-4178-b88f-61f39d147cf7@nvidia.com>
- <34157878-c480-44bb-91d6-9024da329998@oracle.com> <f248cf92-038c-480f-b077-f7d56ebc55bc@nvidia.com>
- <ZeHi4qz8HqDSCC4H@krava> <a0ea8c23-96e8-4ad2-8523-6749dc59b462@nvidia.com>
-In-Reply-To: <a0ea8c23-96e8-4ad2-8523-6749dc59b462@nvidia.com>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Fri, 1 Mar 2024 19:15:36 +0000
-Message-ID: <CAJuCfpGMoOTPBJoT=R8GayLg6rfFRppKameeW1w3_V1=YgL6kA@mail.gmail.com>
-Subject: Re: [PATCH] fix linux kernel BTF builds: increase max percpu
- variables by 10x
-To: John Hubbard <jhubbard@nvidia.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Alan Maguire <alan.maguire@oracle.com>, 
-	Arnaldo Carvalho de Melo <acme@redhat.com>, Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org, 
-	LKML <linux-kernel@vger.kernel.org>, dwarves@vger.kernel.org, 
-	Kent Overstreet <kent.overstreet@linux.dev>, Johannes Weiner <hannes@cmpxchg.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <202402291027.6F0E4994@keescook>
+X-Infomaniak-Routing: alpha
 
-On Fri, Mar 1, 2024 at 6:33=E2=80=AFPM John Hubbard <jhubbard@nvidia.com> w=
-rote:
->
-> On 3/1/24 06:14, Jiri Olsa wrote:
-> > On Thu, Feb 29, 2024 at 10:15:23AM -0800, John Hubbard wrote:
-> >>> ...
-> >>> Running
-> >>>
-> >>> bpftool btf dump file vmlinux |grep "] VAR"
-> >>>
-> >>
-> >> $ bpftool btf dump file vmlinux |grep "] VAR" | wc -l
-> >> 4852
-> >>
-> >> $ bpftool btf dump file vmlinux |grep "] VAR" | tail -5
-> >> [136994] VAR '_alloc_tag_cntr.9' type_id=3D703, linkage=3Dstatic
-> >> [137003] VAR '_alloc_tag_cntr.5' type_id=3D703, linkage=3Dstatic
-> >> [137004] VAR '_alloc_tag_cntr.7' type_id=3D703, linkage=3Dstatic
-> >> [137005] VAR '_alloc_tag_cntr.17' type_id=3D703, linkage=3Dstatic
-> >> [137018] VAR '_alloc_tag_cntr.14' type_id=3D703, linkage=3Dstatic
-> >>
-> >>> ...should give us a sense of what's going on. I only see 375 per-cpu
-> >>> variables when I do this so maybe there's something
-> >>> kernel-config-specific that might explain why you have so many more?
-> >>
-> >> Yes, as mentioned earlier, this is specifically due to the .config.
-> >> The .config is a huge distro configuration that has a lot of modules
-> >> enabled.
-> >
-> > could you share your .config? I tried with fedora .config and got 396
-> > per cpu variables, I wonder where this is coming from
-> >
->
-> Attaching it. And based on your results, I think that Suren's Memory
-> allocation profiling patchset v4 [1] may also be required, as that is wha=
-t
-> I was building.
+On Thu, Feb 29, 2024 at 10:28:18AM -0800, Kees Cook wrote:
+> On Thu, Feb 29, 2024 at 06:04:09PM +0100, Mickaël Salaün wrote:
+> > The first test checks NULL pointer dereference and make sure it would
+> > result as a failed test.
+> > 
+> > The second and third tests check that read-only data is indeed read-only
+> > and trying to modify it would result as a failed test.
+> > 
+> > This kunit_x86_fault test suite is marked as skipped when run on a
+> > non-x86 native architecture.  It is then skipped on UML because such
+> > test would result to a kernel panic.
+> > 
+> > Tested with:
+> > ./tools/testing/kunit/kunit.py run --arch x86_64 kunit_x86_fault
+> > 
+> > Cc: Brendan Higgins <brendanhiggins@google.com>
+> > Cc: David Gow <davidgow@google.com>
+> > Cc: Rae Moar <rmoar@google.com>
+> > Cc: Shuah Khan <skhan@linuxfoundation.org>
+> > Signed-off-by: Mickaël Salaün <mic@digikod.net>
+> 
+> If we can add some way to collect WARN/BUG output for examination, I
+> could rewrite most of LKDTM in KUnit! I really like this!
 
-Yes, that will definitely increase the number of required per-cpu
-variables since it adds a per-cpu variable for each kernel allocation
-to track it. I vaguely remember now that Johannes also mentioned
-hitting this limit when he was using our patchset. Allocating
-encoder->percpu.vars dynamically seems to be a great way to fix this
-limitation.
+Thanks!  About the WARN/BUG examination, I guess the easier way would be
+to do in in user space by extending kunit_parser.py.
 
->
-> Cc: Suren and Kent. btw, I the whole reason I went down this path was tha=
-t
-> I recommended your patchset in order to zero in on a memory leak that a
-> colleague is debugging. This patchset provides a new view of allocations
-> and leaks and we have high hopes for it. :)
+> 
+> > ---
+> >  lib/kunit/kunit-test.c | 115 ++++++++++++++++++++++++++++++++++++++++-
+> >  1 file changed, 114 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/lib/kunit/kunit-test.c b/lib/kunit/kunit-test.c
+> > index f7980ef236a3..57d8eff00c66 100644
+> > --- a/lib/kunit/kunit-test.c
+> > +++ b/lib/kunit/kunit-test.c
+> > @@ -10,6 +10,7 @@
+> >  #include <kunit/test-bug.h>
+> >  
+> >  #include <linux/device.h>
+> > +#include <linux/init.h>
+> >  #include <kunit/device.h>
+> >  
+> >  #include "string-stream.h"
+> > @@ -109,6 +110,117 @@ static struct kunit_suite kunit_try_catch_test_suite = {
+> >  	.test_cases = kunit_try_catch_test_cases,
+> >  };
+> >  
+> > +#ifdef CONFIG_X86
+> 
+> Why is this x86 specific?
 
-Thanks for trying it out John and CC'ing us on this thread!
-Suren.
+Because I didn't test on other architecture, and it looks it crashed on
+arm64. :)
 
->
->
-> [1] https://lore.kernel.org/20240221194052.927623-1-surenb@google.com
->
->
-> thanks,
-> --
-> John Hubbard
-> NVIDIA
+I'll test on arm64 and change this condition with !CONFIG_UML.
+
+> 
+> -- 
+> Kees Cook
+> 
 
