@@ -1,102 +1,117 @@
-Return-Path: <linux-kernel+bounces-88582-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88584-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0419D86E3B3
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:47:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C5D686E3BD
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:50:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 336DC1C22C09
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:47:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA0DB1F254FE
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:50:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 929913A8CD;
-	Fri,  1 Mar 2024 14:47:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 412013A1DD;
+	Fri,  1 Mar 2024 14:50:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fEr9Rad7"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="tUADbGwv"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C847AEDB;
-	Fri,  1 Mar 2024 14:47:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFAF63987D;
+	Fri,  1 Mar 2024 14:50:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709304462; cv=none; b=TvHaXmKAL1mZmFhGsf90h03WCMNVEJDGfSALiUGGhgd7Mai+3fCQJORFjCuVUIYO8yZCS+L8QhYzvAiROl943zAjs+VYuNB9UqJ9tWsPJ6FdApFG9MJpb6hTn+DDYxSypTSHKV6D/XARQ6Xt6hPO/fniX4WHwIWXg9bVrYeo+U8=
+	t=1709304604; cv=none; b=iVc/ytKW9p5rTr2wXrEsRBhF5C1KtmWXXHUTvWmPJ/V3IzUxoxYMnym/zNaFFX4TB/bHO4IoMHX2P8T5lHC9j7+fmjhBmDuQJd4ggn1gzanYSrvuQ2XKiq15a2MnklBTFRH0XS68twIyDKkzNT6xzlxIm9ZktzfKsGZ4djrYNhE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709304462; c=relaxed/simple;
-	bh=doXwc+HnpAdZ9CAsr12bsREMrG/H40nyaPLWjZvbd38=;
+	s=arc-20240116; t=1709304604; c=relaxed/simple;
+	bh=PDHQCj4dKUL8VGBu7R8FZ4rplBEM7DCMytyrNrWGZ6E=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SS5Pkzun5spYSY2FBCwOwckvGuxsNNfsDem3pzZYVimk1bb0jzO/MGC591/GSxCaIL25rw/oXSuYyWel1K59SanMZS+RaU55ohxfsr4AZxhFiXK/SBSejWNV5AdTURLcbW6dPi+aHICKKt8irIEVxIDGFIXGEDaVF5/iPqt1lrU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fEr9Rad7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10F06C433F1;
-	Fri,  1 Mar 2024 14:47:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709304462;
-	bh=doXwc+HnpAdZ9CAsr12bsREMrG/H40nyaPLWjZvbd38=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fEr9Rad7yvcM2enzGLz1qYGqnObleMpmze27KBcxkkgN7/EPf03A68TYeGIXPZpjc
-	 +gjUbeOb4tsoRRNxILFbYpOS2lZEuLYDcEuYpJmg/yITGuArNz3D4mF9JewcsP56MS
-	 4cMFwmhBKPs8AKB14PuBEWyBFVTGhCGuXyYf1XTFyWrLus7Ir1xKusSLAcOACuB0vJ
-	 dgmo+r59SQ6ufw5EOvRZynahUgFQI9wVXCPaOCDoNKiXTlAzyQJy7cBUVD3InHzdyw
-	 H/F6IuhXLfSr0IvrqB0EE20uV+J+hmoUkuV9t1H6MJUKEk0e7417SMsniFS2+rQaOE
-	 BUDzqUOGqJQbA==
-Date: Fri, 1 Mar 2024 08:47:38 -0600
-From: Rob Herring <robh@kernel.org>
-To: Frank Li <Frank.li@nxp.com>
-Cc: imx@lists.linux.dev, conor@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, kw@linux.com,
-	linux-kernel@vger.kernel.org, conor+dt@kernel.org,
-	linux-pci@vger.kernel.org, lpieralisi@kernel.org,
-	helgaas@kernel.org, bhelgaas@google.com, devicetree@vger.kernel.org
-Subject: Re: [PATCH v5 1/5] dt-bindings: pci: layerscape-pci: Convert to yaml
- format
-Message-ID: <20240301144738.GA2110767-robh@kernel.org>
-References: <20240228190321.580846-1-Frank.Li@nxp.com>
- <20240228190321.580846-2-Frank.Li@nxp.com>
- <170915420970.759733.12998246565079147606.robh@kernel.org>
- <ZeDCQezI2zj8bWBP@lizhi-Precision-Tower-5810>
+	 Content-Type:Content-Disposition:In-Reply-To; b=hLRvMxKTviw1P/+9mz9E8Bb197crJhihjS53rW1ry+etNeWzIb51quy7bcyfVau2rrkzQlDFih1nM8heNo9WfeXxx5t7S6cKUkiFr6Tj96OwwO5AWGEJHpjSQzgqcOSChU7wk+grGCyj9Chotpr9G3vfh22LaFravvcZBw2g17E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=tUADbGwv; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=yYU2P/XionBukymtyfAivEvDMyJYX93BV07iZlCfOYE=; b=tUADbGwvT+bsqxHHRHjijlFIck
+	/MxOPOG46qCY9h2+BenQw2uzIhrLdYBDgLxjbu8yWYH7flCOABA55iFsEg9N7dxj1gxDw59UDU9r8
+	tpqrWyKZV+yEY4ka3CG07cwSmMkGzDPsTgzkpHKtgWR+Y8lFiTbSGPB0p7OpjA9uwLcjTIUElDlks
+	ja7yEhTbbw+CbXM14OppCextPo810gFu2NaEQ4z/wCi/q2sXlu6fcoA+6HJjhcx78eVS5akivlXgA
+	zxJ8PntBaP2UA2YMn5sWKulvyHNYylCYIl7lcOiwUkvMT+PrbAOxz2jt8n+ke4U0TaQWDMmgriaer
+	3WJOsdqA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:49086)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rg4Cj-0001iq-1A;
+	Fri, 01 Mar 2024 14:49:41 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rg4Cc-0001p9-1m; Fri, 01 Mar 2024 14:49:34 +0000
+Date: Fri, 1 Mar 2024 14:49:33 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: arinc.unal@arinc9.com
+Cc: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>,
+	Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
+	Bartel Eerdekens <bartel.eerdekens@constell8.be>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH net-next v3 1/9] net: dsa: mt7530: remove
+ .mac_port_config for MT7988 and make it optional
+Message-ID: <ZeHq/ZoVqMD9BojD@shell.armlinux.org.uk>
+References: <20240301-for-netnext-mt7530-improvements-3-v3-0-449f4f166454@arinc9.com>
+ <20240301-for-netnext-mt7530-improvements-3-v3-1-449f4f166454@arinc9.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZeDCQezI2zj8bWBP@lizhi-Precision-Tower-5810>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240301-for-netnext-mt7530-improvements-3-v3-1-449f4f166454@arinc9.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Thu, Feb 29, 2024 at 12:43:29PM -0500, Frank Li wrote:
-> On Wed, Feb 28, 2024 at 03:03:31PM -0600, Rob Herring wrote:
-> > 
-> > On Wed, 28 Feb 2024 14:03:17 -0500, Frank Li wrote:
-> > > Split layerscape-pci.txt into two yaml files: fsl,layerscape-pcie-ep.yaml
-> > > and fsl,layerscape-pcie.yaml.
-> > > yaml files contain the same content as the original txt file.
-> > > 
-> > > The subsequent commit will fix DTB_CHECK failure.
-> > > 
-> > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > > ---
-> > >  .../bindings/pci/fsl,layerscape-pcie-ep.yaml  |  89 +++++++++++++
-> > >  .../bindings/pci/fsl,layerscape-pcie.yaml     | 123 ++++++++++++++++++
-> > >  .../bindings/pci/layerscape-pci.txt           |  79 -----------
-> > >  3 files changed, 212 insertions(+), 79 deletions(-)
-> > >  create mode 100644 Documentation/devicetree/bindings/pci/fsl,layerscape-pcie-ep.yaml
-> > >  create mode 100644 Documentation/devicetree/bindings/pci/fsl,layerscape-pcie.yaml
-> > >  delete mode 100644 Documentation/devicetree/bindings/pci/layerscape-pci.txt
-> > > 
-> > 
-> > My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> > on your patch (DT_CHECKER_FLAGS is new in v5.13):
+On Fri, Mar 01, 2024 at 12:42:57PM +0200, Arınç ÜNAL via B4 Relay wrote:
+> From: Arınç ÜNAL <arinc.unal@arinc9.com>
 > 
-> Please omit these errors. Bjorn require create a identical version as
-> old txt file.
+> For the switch on the MT7988 SoC, the mac_port_config member for ID_MT7988
+> in mt753x_table is not needed as the interfaces of all MACs are already
+> handled on mt7988_mac_port_get_caps().
 > 
-> Origial txt will cause DTB_CHECK error. The problem will be fixed at next
-> patches.
+> Therefore, remove the mac_port_config member from ID_MT7988 in
+> mt753x_table. Before calling priv->info->mac_port_config(), if there's no
+> mac_port_config member in mt753x_table, exit mt753x_mac_config()
+> successfully.
+> 
+> Remove calling priv->info->mac_port_config() from the sanity check as the
+> sanity check requires a pointer to a mac_port_config function to be
+> non-NULL. This will fail for MT7988 as mac_port_config won't be a member of
+> its info table.
+> 
+> Co-developed-by: Daniel Golle <daniel@makrotopia.org>
+> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+> Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
 
-Nope. We can't have warnings. Please fix them in the conversion. Call 
-out the changes in the commit message.
+Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 
-Rob
+Thanks!
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
