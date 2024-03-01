@@ -1,136 +1,425 @@
-Return-Path: <linux-kernel+bounces-88927-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88928-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEF8D86E88D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:37:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7DD986E88E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:37:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D99551C21378
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:37:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 788251F24316
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:37:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FA0937153;
-	Fri,  1 Mar 2024 18:37:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6383C38FA5;
+	Fri,  1 Mar 2024 18:37:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="AuhXK4T4";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="YKQQFxEZ"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lK25otiK"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 360DC27446;
-	Fri,  1 Mar 2024 18:37:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36E7325632;
+	Fri,  1 Mar 2024 18:37:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709318243; cv=none; b=dkvNLBJ6b1a/iZF74xCj7vIrwHDomDi95le2+9buFipQsm+9IKWhH+kErLoRy6Elmg73dt5aIEpoB1j1rrSpfaXEbYk+8wpoucSkan3i1Z9pDb5rFLjpCSPxUWJC8aftfjoH12R4E6jxIaudC/dftO3EAwvDFS/llRBJq2YWtRw=
+	t=1709318268; cv=none; b=E3qwhLMeOjfTplBZvLAv5t7Jd99FHpxgoxzm0FkydpOJSf9a5QMlDL9VwqspfgDzU4VDVNt7axKkVAjGViZQkQSE3pzJRBxllNWFsDwINy2DsMHJXc0kjYGIonovNz2VbSOKfs0TP8vQ+nzwKF0GA1HyXQCPvPh3yb+9/DkUO/0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709318243; c=relaxed/simple;
-	bh=tLz2ila8AXbLQK+R/ALei/RIv7nTsOOt25XgvgEz+7k=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=r8/X+l1c6pGCUhLXkBwNlBuE3/Fo801joRLlo5RA25RVBnu4bz4XjEZnGz1DnYv87qyaMJr3EpIMvAEf7MXhS/o3JTVlVXZ7ybKesROgXpGVFwN3Ig/gaZPJXhrhRPKA58l0xD1e42IfArf5/ZPJ3BOhUfyTFTq1kKiU7g3eV8U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=AuhXK4T4; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=YKQQFxEZ; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Fri, 01 Mar 2024 18:37:18 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1709318239;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Jj4sN7cWDxyUWyuDz4KI62wudm769lIrwf7+u+SdHbg=;
-	b=AuhXK4T4F8k9ZH/br6/SEP+g1xVXojbWR8XGLQFdhY7+/y3tCYc7BSFWdmhaIbZxIXpfQA
-	VexTRGm4zOMM3WhYc2fojsCEFmSMBmifnwJnGxA6i4aGgdMSiSU3+mQUxg8h33OMUD7X/g
-	TgKs/4YG1iDz0KUP+mnaaJyFxlGZjnywpG9A61D8bvCww88K6Pp5Vn67869nZHL9wetSd7
-	SI7XJB41A8xTgQXLGoMOePC3xOHoypD3ULElg0oIHWKZW1z0IQ4mKCma4L6Py2UbvWaEbn
-	qTAHyejLC5fAvAPjkseApi9ZFpJEW6zJ1DuNUNNpN4gfyby5rRr+RcGEO0+ihg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1709318239;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Jj4sN7cWDxyUWyuDz4KI62wudm769lIrwf7+u+SdHbg=;
-	b=YKQQFxEZUMqCfHu7Bj9UCi6N6EkOrqNspQi5fTja3UdBcFzVyChPsKEhv8mvlVgBLHHLNx
-	oepeoEX60EBxWBDw==
-From: "tip-bot2 for Jiri Bohac" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/e820: Don't reserve SETUP_RNG_SEED in e820
-Cc: Jiri Bohac <jbohac@suse.cz>, "Borislav Petkov (AMD)" <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>,  <stable@kernel.org>,
- x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <ZbmOjKnARGiaYBd5@dwarf.suse.cz>
-References: <ZbmOjKnARGiaYBd5@dwarf.suse.cz>
+	s=arc-20240116; t=1709318268; c=relaxed/simple;
+	bh=jk/lZR7vZB+ZzB5pgz0ZVyPkflilTjE4gnwvglpUA7E=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=NCrXa1+w+r7sBJTSF9oAtWPBAKCwzLH/dG3WQPm7GwnXXtQgyWpLrrIHczDuA2lau9gIDuKMPUdFiUnc50JdIlJGyTmIp9TPZnQpV2pCogYD8lz0uOlXRWdYjC7V2h9uOsPY8mB88cpycKSqBPN2SpuH9spXQRIPcXWzx45gI+U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lK25otiK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B5EEC433C7;
+	Fri,  1 Mar 2024 18:37:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709318267;
+	bh=jk/lZR7vZB+ZzB5pgz0ZVyPkflilTjE4gnwvglpUA7E=;
+	h=Date:From:To:Cc:Subject:From;
+	b=lK25otiK6t/3wEduRxDrh/tQXMKw/UjqmclGG+rt0EmCNh8gVwMfTALghEoVcj1ep
+	 W5kUmhmqD1VcFSTHyHBSUs5AFVnnxsn7rYPu+hWWHXdJEBLpPrOwBZUQALlaQSBRI3
+	 bpzSG3/ffKlVFIDRSFcFGV8IHJCbeZa+vCUEU7NrdzwECfWK+PkxP8vsQFDNqYBQWW
+	 ewYxG4dCFcX3y/7CgiLG9BBN2y5e6g4alUCIKUhaMmrKptOWH4ta4ZJ7FUAEE1CVRR
+	 UBPe0pOzVKlCJDhIRD48WLePaqt+Jl71cYO19FCrXhKZiAalO1th3GVy9WoIDntP5c
+	 +1OLwwrp5gJrg==
+Date: Fri, 1 Mar 2024 12:37:45 -0600
+From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
+Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>
+Subject: [PATCH][next] RDMA/uverbs: Avoid -Wflex-array-member-not-at-end
+ warnings
+Message-ID: <ZeIgeZ5Sb0IZTOyt@neat>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170931823840.398.408977952832718323.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-The following commit has been merged into the x86/urgent branch of tip:
+-Wflex-array-member-not-at-end is coming in GCC-14, and we are getting
+ready to enable it globally.
 
-Commit-ID:     7fd817c906503b6813ea3b41f5fdf4192449a707
-Gitweb:        https://git.kernel.org/tip/7fd817c906503b6813ea3b41f5fdf4192449a707
-Author:        Jiri Bohac <jbohac@suse.cz>
-AuthorDate:    Wed, 31 Jan 2024 01:04:28 +01:00
-Committer:     Dave Hansen <dave.hansen@linux.intel.com>
-CommitterDate: Fri, 01 Mar 2024 10:27:20 -08:00
+There are currently a couple of objects (`alloc_head` and `bundle`) in
+`struct bundle_priv` that contain a couple of flexible structures:
 
-x86/e820: Don't reserve SETUP_RNG_SEED in e820
+struct bundle_priv {
+        /* Must be first */
+        struct bundle_alloc_head alloc_head;
 
-SETUP_RNG_SEED in setup_data is supplied by kexec and should
-not be reserved in the e820 map.
+	...
 
-Doing so reserves 16 bytes of RAM when booting with kexec.
-(16 bytes because data->len is zeroed by parse_setup_data so only
-sizeof(setup_data) is reserved.)
+        /*
+         * Must be last. bundle ends in a flex array which overlaps
+         * internal_buffer.
+         */
+        struct uverbs_attr_bundle bundle;
+        u64 internal_buffer[32];
+};
 
-When kexec is used repeatedly, each boot adds two entries in the
-kexec-provided e820 map as the 16-byte range splits a larger
-range of usable memory. Eventually all of the 128 available entries
-get used up. The next split will result in losing usable memory
-as the new entries cannot be added to the e820 map.
+So, in order to avoid ending up with a couple of flexible-array members
+in the middle of a struct, we use the `struct_group_tagged()` helper to
+separate the flexible array from the rest of the members in the flexible
+structures:
 
-Fixes: 68b8e9713c8e ("x86/setup: Use rng seeds from setup_data")
-Signed-off-by: Jiri Bohac <jbohac@suse.cz>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: <stable@kernel.org>
-Link: https://lore.kernel.org/r/ZbmOjKnARGiaYBd5@dwarf.suse.cz
+struct uverbs_attr_bundle {
+        struct_group_tagged(uverbs_attr_bundle_hdr, hdr,
+		... the rest of the members
+        );
+        struct uverbs_attr attrs[];
+};
+
+With the change described above, we now declare objects of the type of
+the tagged struct without embedding flexible arrays in the middle of
+another struct:
+
+struct bundle_priv {
+        /* Must be first */
+        struct bundle_alloc_head_hdr alloc_head;
+
+        ...
+
+        struct uverbs_attr_bundle_hdr bundle;
+        u64 internal_buffer[32];
+};
+
+We also use `container_of()` whenever we need to retrieve a pointer
+to the flexible structures.
+
+Notice that the `bundle_size` computed in `uapi_compute_bundle_size()`
+remains the same.
+
+So, with these changes, fix the following warnings:
+
+drivers/infiniband/core/uverbs_ioctl.c:45:34: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
+   45 |         struct bundle_alloc_head alloc_head;
+      |                                  ^~~~~~~~~~
+drivers/infiniband/core/uverbs_ioctl.c:67:35: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
+   67 |         struct uverbs_attr_bundle bundle;
+      |                                   ^~~~~~
+
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- arch/x86/kernel/e820.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/infiniband/core/uverbs_ioctl.c | 78 +++++++++++++++-----------
+ include/rdma/uverbs_ioctl.h            | 14 +++--
+ 2 files changed, 53 insertions(+), 39 deletions(-)
 
-diff --git a/arch/x86/kernel/e820.c b/arch/x86/kernel/e820.c
-index fb8cf95..b66f540 100644
---- a/arch/x86/kernel/e820.c
-+++ b/arch/x86/kernel/e820.c
-@@ -1017,10 +1017,12 @@ void __init e820__reserve_setup_data(void)
- 		e820__range_update(pa_data, sizeof(*data)+data->len, E820_TYPE_RAM, E820_TYPE_RESERVED_KERN);
+diff --git a/drivers/infiniband/core/uverbs_ioctl.c b/drivers/infiniband/core/uverbs_ioctl.c
+index d9799706c58e..f80da6a67e24 100644
+--- a/drivers/infiniband/core/uverbs_ioctl.c
++++ b/drivers/infiniband/core/uverbs_ioctl.c
+@@ -36,13 +36,15 @@
+ #include "uverbs.h"
  
- 		/*
--		 * SETUP_EFI and SETUP_IMA are supplied by kexec and do not need
--		 * to be reserved.
-+		 * SETUP_EFI, SETUP_IMA and SETUP_RNG_SEED are supplied by
-+		 * kexec and do not need to be reserved.
+ struct bundle_alloc_head {
+-	struct bundle_alloc_head *next;
++	struct_group_tagged(bundle_alloc_head_hdr, hdr,
++		struct bundle_alloc_head *next;
++	);
+ 	u8 data[];
+ };
+ 
+ struct bundle_priv {
+ 	/* Must be first */
+-	struct bundle_alloc_head alloc_head;
++	struct bundle_alloc_head_hdr alloc_head;
+ 	struct bundle_alloc_head *allocated_mem;
+ 	size_t internal_avail;
+ 	size_t internal_used;
+@@ -64,7 +66,7 @@ struct bundle_priv {
+ 	 * Must be last. bundle ends in a flex array which overlaps
+ 	 * internal_buffer.
+ 	 */
+-	struct uverbs_attr_bundle bundle;
++	struct uverbs_attr_bundle_hdr bundle;
+ 	u64 internal_buffer[32];
+ };
+ 
+@@ -77,9 +79,10 @@ void uapi_compute_bundle_size(struct uverbs_api_ioctl_method *method_elm,
+ 			      unsigned int num_attrs)
+ {
+ 	struct bundle_priv *pbundle;
++	struct uverbs_attr_bundle *bundle;
+ 	size_t bundle_size =
+ 		offsetof(struct bundle_priv, internal_buffer) +
+-		sizeof(*pbundle->bundle.attrs) * method_elm->key_bitmap_len +
++		sizeof(*bundle->attrs) * method_elm->key_bitmap_len +
+ 		sizeof(*pbundle->uattrs) * num_attrs;
+ 
+ 	method_elm->use_stack = bundle_size <= sizeof(*pbundle);
+@@ -107,7 +110,7 @@ __malloc void *_uverbs_alloc(struct uverbs_attr_bundle *bundle, size_t size,
+ 			     gfp_t flags)
+ {
+ 	struct bundle_priv *pbundle =
+-		container_of(bundle, struct bundle_priv, bundle);
++		container_of(&bundle->hdr, struct bundle_priv, bundle);
+ 	size_t new_used;
+ 	void *res;
+ 
+@@ -149,7 +152,7 @@ static int uverbs_set_output(const struct uverbs_attr_bundle *bundle,
+ 			     const struct uverbs_attr *attr)
+ {
+ 	struct bundle_priv *pbundle =
+-		container_of(bundle, struct bundle_priv, bundle);
++		container_of(&bundle->hdr, struct bundle_priv, bundle);
+ 	u16 flags;
+ 
+ 	flags = pbundle->uattrs[attr->ptr_attr.uattr_idx].flags |
+@@ -166,6 +169,8 @@ static int uverbs_process_idrs_array(struct bundle_priv *pbundle,
+ 				     struct ib_uverbs_attr *uattr,
+ 				     u32 attr_bkey)
+ {
++	struct uverbs_attr_bundle *bundle =
++		container_of(&pbundle->bundle, struct uverbs_attr_bundle, hdr);
+ 	const struct uverbs_attr_spec *spec = &attr_uapi->spec;
+ 	size_t array_len;
+ 	u32 *idr_vals;
+@@ -184,7 +189,7 @@ static int uverbs_process_idrs_array(struct bundle_priv *pbundle,
+ 		return -EINVAL;
+ 
+ 	attr->uobjects =
+-		uverbs_alloc(&pbundle->bundle,
++		uverbs_alloc(bundle,
+ 			     array_size(array_len, sizeof(*attr->uobjects)));
+ 	if (IS_ERR(attr->uobjects))
+ 		return PTR_ERR(attr->uobjects);
+@@ -209,7 +214,7 @@ static int uverbs_process_idrs_array(struct bundle_priv *pbundle,
+ 	for (i = 0; i != array_len; i++) {
+ 		attr->uobjects[i] = uverbs_get_uobject_from_file(
+ 			spec->u2.objs_arr.obj_type, spec->u2.objs_arr.access,
+-			idr_vals[i], &pbundle->bundle);
++			idr_vals[i], bundle);
+ 		if (IS_ERR(attr->uobjects[i])) {
+ 			ret = PTR_ERR(attr->uobjects[i]);
+ 			break;
+@@ -240,7 +245,9 @@ static int uverbs_process_attr(struct bundle_priv *pbundle,
+ 			       struct ib_uverbs_attr *uattr, u32 attr_bkey)
+ {
+ 	const struct uverbs_attr_spec *spec = &attr_uapi->spec;
+-	struct uverbs_attr *e = &pbundle->bundle.attrs[attr_bkey];
++	struct uverbs_attr_bundle *bundle =
++		container_of(&pbundle->bundle, struct uverbs_attr_bundle, hdr);
++	struct uverbs_attr *e = &bundle->attrs[attr_bkey];
+ 	const struct uverbs_attr_spec *val_spec = spec;
+ 	struct uverbs_obj_attr *o_attr;
+ 
+@@ -288,7 +295,7 @@ static int uverbs_process_attr(struct bundle_priv *pbundle,
+ 		if (val_spec->alloc_and_copy && !uverbs_attr_ptr_is_inline(e)) {
+ 			void *p;
+ 
+-			p = uverbs_alloc(&pbundle->bundle, uattr->len);
++			p = uverbs_alloc(bundle, uattr->len);
+ 			if (IS_ERR(p))
+ 				return PTR_ERR(p);
+ 
+@@ -321,7 +328,7 @@ static int uverbs_process_attr(struct bundle_priv *pbundle,
  		 */
--		if (data->type != SETUP_EFI && data->type != SETUP_IMA)
-+		if (data->type != SETUP_EFI &&
-+		    data->type != SETUP_IMA &&
-+		    data->type != SETUP_RNG_SEED)
- 			e820__range_update_kexec(pa_data,
- 						 sizeof(*data) + data->len,
- 						 E820_TYPE_RAM, E820_TYPE_RESERVED_KERN);
+ 		o_attr->uobject = uverbs_get_uobject_from_file(
+ 			spec->u.obj.obj_type, spec->u.obj.access,
+-			uattr->data_s64, &pbundle->bundle);
++			uattr->data_s64, bundle);
+ 		if (IS_ERR(o_attr->uobject))
+ 			return PTR_ERR(o_attr->uobject);
+ 		__set_bit(attr_bkey, pbundle->uobj_finalize);
+@@ -422,6 +429,8 @@ static int ib_uverbs_run_method(struct bundle_priv *pbundle,
+ 				unsigned int num_attrs)
+ {
+ 	int (*handler)(struct uverbs_attr_bundle *attrs);
++	struct uverbs_attr_bundle *bundle =
++		container_of(&pbundle->bundle, struct uverbs_attr_bundle, hdr);
+ 	size_t uattrs_size = array_size(sizeof(*pbundle->uattrs), num_attrs);
+ 	unsigned int destroy_bkey = pbundle->method_elm->destroy_bkey;
+ 	unsigned int i;
+@@ -434,7 +443,7 @@ static int ib_uverbs_run_method(struct bundle_priv *pbundle,
+ 	if (!handler)
+ 		return -EIO;
+ 
+-	pbundle->uattrs = uverbs_alloc(&pbundle->bundle, uattrs_size);
++	pbundle->uattrs = uverbs_alloc(bundle, uattrs_size);
+ 	if (IS_ERR(pbundle->uattrs))
+ 		return PTR_ERR(pbundle->uattrs);
+ 	if (copy_from_user(pbundle->uattrs, pbundle->user_attrs, uattrs_size))
+@@ -453,25 +462,23 @@ static int ib_uverbs_run_method(struct bundle_priv *pbundle,
+ 		return -EINVAL;
+ 
+ 	if (pbundle->method_elm->has_udata)
+-		uverbs_fill_udata(&pbundle->bundle,
+-				  &pbundle->bundle.driver_udata,
++		uverbs_fill_udata(bundle, &pbundle->bundle.driver_udata,
+ 				  UVERBS_ATTR_UHW_IN, UVERBS_ATTR_UHW_OUT);
+ 	else
+ 		pbundle->bundle.driver_udata = (struct ib_udata){};
+ 
+ 	if (destroy_bkey != UVERBS_API_ATTR_BKEY_LEN) {
+-		struct uverbs_obj_attr *destroy_attr =
+-			&pbundle->bundle.attrs[destroy_bkey].obj_attr;
++		struct uverbs_obj_attr *destroy_attr = &bundle->attrs[destroy_bkey].obj_attr;
+ 
+-		ret = uobj_destroy(destroy_attr->uobject, &pbundle->bundle);
++		ret = uobj_destroy(destroy_attr->uobject, bundle);
+ 		if (ret)
+ 			return ret;
+ 		__clear_bit(destroy_bkey, pbundle->uobj_finalize);
+ 
+-		ret = handler(&pbundle->bundle);
++		ret = handler(bundle);
+ 		uobj_put_destroy(destroy_attr->uobject);
+ 	} else {
+-		ret = handler(&pbundle->bundle);
++		ret = handler(bundle);
+ 	}
+ 
+ 	/*
+@@ -481,10 +488,10 @@ static int ib_uverbs_run_method(struct bundle_priv *pbundle,
+ 	 */
+ 	if (!ret && pbundle->method_elm->has_udata) {
+ 		const struct uverbs_attr *attr =
+-			uverbs_attr_get(&pbundle->bundle, UVERBS_ATTR_UHW_OUT);
++			uverbs_attr_get(bundle, UVERBS_ATTR_UHW_OUT);
+ 
+ 		if (!IS_ERR(attr))
+-			ret = uverbs_set_output(&pbundle->bundle, attr);
++			ret = uverbs_set_output(bundle, attr);
+ 	}
+ 
+ 	/*
+@@ -501,6 +508,8 @@ static int ib_uverbs_run_method(struct bundle_priv *pbundle,
+ static void bundle_destroy(struct bundle_priv *pbundle, bool commit)
+ {
+ 	unsigned int key_bitmap_len = pbundle->method_elm->key_bitmap_len;
++	struct uverbs_attr_bundle *bundle =
++		container_of(&pbundle->bundle, struct uverbs_attr_bundle, hdr);
+ 	struct bundle_alloc_head *memblock;
+ 	unsigned int i;
+ 
+@@ -508,20 +517,19 @@ static void bundle_destroy(struct bundle_priv *pbundle, bool commit)
+ 	i = -1;
+ 	while ((i = find_next_bit(pbundle->uobj_finalize, key_bitmap_len,
+ 				  i + 1)) < key_bitmap_len) {
+-		struct uverbs_attr *attr = &pbundle->bundle.attrs[i];
++		struct uverbs_attr *attr = &bundle->attrs[i];
+ 
+ 		uverbs_finalize_object(
+ 			attr->obj_attr.uobject,
+ 			attr->obj_attr.attr_elm->spec.u.obj.access,
+ 			test_bit(i, pbundle->uobj_hw_obj_valid),
+-			commit,
+-			&pbundle->bundle);
++			commit, bundle);
+ 	}
+ 
+ 	i = -1;
+ 	while ((i = find_next_bit(pbundle->spec_finalize, key_bitmap_len,
+ 				  i + 1)) < key_bitmap_len) {
+-		struct uverbs_attr *attr = &pbundle->bundle.attrs[i];
++		struct uverbs_attr *attr = &bundle->attrs[i];
+ 		const struct uverbs_api_attr *attr_uapi;
+ 		void __rcu **slot;
+ 
+@@ -535,7 +543,7 @@ static void bundle_destroy(struct bundle_priv *pbundle, bool commit)
+ 
+ 		if (attr_uapi->spec.type == UVERBS_ATTR_TYPE_IDRS_ARRAY) {
+ 			uverbs_free_idrs_array(attr_uapi, &attr->objs_arr_attr,
+-					       commit, &pbundle->bundle);
++					       commit, bundle);
+ 		}
+ 	}
+ 
+@@ -578,7 +586,8 @@ static int ib_uverbs_cmd_verbs(struct ib_uverbs_file *ufile,
+ 			method_elm->bundle_size -
+ 			offsetof(struct bundle_priv, internal_buffer);
+ 		pbundle->alloc_head.next = NULL;
+-		pbundle->allocated_mem = &pbundle->alloc_head;
++		pbundle->allocated_mem = container_of(&pbundle->alloc_head,
++						struct bundle_alloc_head, hdr);
+ 	} else {
+ 		pbundle = &onstack;
+ 		pbundle->internal_avail = sizeof(pbundle->internal_buffer);
+@@ -596,8 +605,9 @@ static int ib_uverbs_cmd_verbs(struct ib_uverbs_file *ufile,
+ 	pbundle->user_attrs = user_attrs;
+ 
+ 	pbundle->internal_used = ALIGN(pbundle->method_elm->key_bitmap_len *
+-					       sizeof(*pbundle->bundle.attrs),
+-				       sizeof(*pbundle->internal_buffer));
++					       sizeof(*container_of(&pbundle->bundle,
++							struct uverbs_attr_bundle, hdr)->attrs),
++					       sizeof(*pbundle->internal_buffer));
+ 	memset(pbundle->bundle.attr_present, 0,
+ 	       sizeof(pbundle->bundle.attr_present));
+ 	memset(pbundle->uobj_finalize, 0, sizeof(pbundle->uobj_finalize));
+@@ -700,11 +710,13 @@ void uverbs_fill_udata(struct uverbs_attr_bundle *bundle,
+ 		       unsigned int attr_out)
+ {
+ 	struct bundle_priv *pbundle =
+-		container_of(bundle, struct bundle_priv, bundle);
++		container_of(&bundle->hdr, struct bundle_priv, bundle);
++	struct uverbs_attr_bundle *bundle_aux =
++		container_of(&pbundle->bundle, struct uverbs_attr_bundle, hdr);
+ 	const struct uverbs_attr *in =
+-		uverbs_attr_get(&pbundle->bundle, attr_in);
++		uverbs_attr_get(bundle_aux, attr_in);
+ 	const struct uverbs_attr *out =
+-		uverbs_attr_get(&pbundle->bundle, attr_out);
++		uverbs_attr_get(bundle_aux, attr_out);
+ 
+ 	if (!IS_ERR(in)) {
+ 		udata->inlen = in->ptr_attr.len;
+@@ -829,7 +841,7 @@ void uverbs_finalize_uobj_create(const struct uverbs_attr_bundle *bundle,
+ 				 u16 idx)
+ {
+ 	struct bundle_priv *pbundle =
+-		container_of(bundle, struct bundle_priv, bundle);
++		container_of(&bundle->hdr, struct bundle_priv, bundle);
+ 
+ 	__set_bit(uapi_bkey_attr(uapi_key_attr(idx)),
+ 		  pbundle->uobj_hw_obj_valid);
+diff --git a/include/rdma/uverbs_ioctl.h b/include/rdma/uverbs_ioctl.h
+index 06287de69cd2..e6c0de227fad 100644
+--- a/include/rdma/uverbs_ioctl.h
++++ b/include/rdma/uverbs_ioctl.h
+@@ -629,12 +629,14 @@ struct uverbs_attr {
+ };
+ 
+ struct uverbs_attr_bundle {
+-	struct ib_udata driver_udata;
+-	struct ib_udata ucore;
+-	struct ib_uverbs_file *ufile;
+-	struct ib_ucontext *context;
+-	struct ib_uobject *uobject;
+-	DECLARE_BITMAP(attr_present, UVERBS_API_ATTR_BKEY_LEN);
++	struct_group_tagged(uverbs_attr_bundle_hdr, hdr,
++		struct ib_udata driver_udata;
++		struct ib_udata ucore;
++		struct ib_uverbs_file *ufile;
++		struct ib_ucontext *context;
++		struct ib_uobject *uobject;
++		DECLARE_BITMAP(attr_present, UVERBS_API_ATTR_BKEY_LEN);
++	);
+ 	struct uverbs_attr attrs[];
+ };
+ 
+-- 
+2.34.1
+
 
