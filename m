@@ -1,39 +1,73 @@
-Return-Path: <linux-kernel+bounces-88369-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88370-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB73886E08D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:38:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DAE5486E08F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:40:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E06828D59E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:38:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68A2B28D586
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:40:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E29796CDB5;
-	Fri,  1 Mar 2024 11:38:44 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCEA66A8AD
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 11:38:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BE386CDAE;
+	Fri,  1 Mar 2024 11:40:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mz5VWRuw"
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE2CF20315
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 11:40:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709293124; cv=none; b=a0yfrXwryrPn6sjSACOTo9mjuQ47ikgpSEHaSskO0yZvLAdo9jUm1nzQEyHCJtJWOuezVOf3O0kGUahNuUStQHT3JprYAfs9c6jeeb+nNAkssQZl1vjtMM3yLS8js0gnyIgFrDO90eGVi5g0zMpB+muId+eK4xaLvUxvPy7rruM=
+	t=1709293242; cv=none; b=mxmZRhtIWjYak5ueJs6t+08RMD5N4ktFyigiexUSE8/qN+hEl+hFviI0LDomzJzpuBv+jOzUxZVy1kSb0vHib8KIgkWcQtAH7L3F32eKbHYwgNToafwK5UL8rE7Tuw7jmJ5/C1YzlDKW+AVi/zKYViizS0Vji0W75utNSMjm0bg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709293124; c=relaxed/simple;
-	bh=Bho0V3L6EalNqI/VaFRZI239nh8uqJQHHjMpb9j/96I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=N1mSJHmZx0oGOyzdEdUpjPc46LTx2C2qk4yFFDO4TsmnMS1fBiWLZVZJrEE2kknm/t+R/GuNcAt7E6dRHcjwpmoq9FUcF9ga/ES82B0CvtQ2DWdeR4zuh/L5SvA8q1pvC7FI+eZJMojwqZnkuwTwYnODicS7oOa1xjHvyKFFLbk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 714EB1FB;
-	Fri,  1 Mar 2024 03:39:19 -0800 (PST)
-Received: from [10.57.67.78] (unknown [10.57.67.78])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B9F1E3F6C4;
-	Fri,  1 Mar 2024 03:38:39 -0800 (PST)
-Message-ID: <64be2e23-c526-45d3-bb7b-29e31241bbef@arm.com>
-Date: Fri, 1 Mar 2024 11:38:25 +0000
+	s=arc-20240116; t=1709293242; c=relaxed/simple;
+	bh=Qu6ZmDK96GNsbatrkbOH93BBpWFhFEFCALMrdL1eHqU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=ng0muzr6+UK5Xh4sqeIP9QafVoRs9BC+wIl+h3fVCYaJS/XQE143v02ZtURy5K18W996Cohok4nFFphoQOqowiG1LQWtbaPRcguoGHgQ4TIWfFYgXZSo8KspQMM/N40Xk6A1fAvPBrvhEDKSJ294DB0PrgK/uPP9zUzaJe+Ufjc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=mz5VWRuw; arc=none smtp.client-ip=209.85.208.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-565a2c4cc1aso3020158a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 03:40:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709293239; x=1709898039; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=R4DA34/5Kvb1127d2yWJOOqxpTefiacI79ML95b5u5E=;
+        b=mz5VWRuwiEoHExzvrdWPW521V3y/LqZL6r4/H0xzqKD7zYYKUinqvjpBa8I6tNCe1l
+         2OQ5eFweYgdaN5X31yvJQqmqpOZmmw+lyO0qSHdBl31j7jKDSkLnNKMW+nHRRLie764G
+         4QV2ARJEof7yqaVJ9AuYx3fbwFo5bVogAMoNSSB1exYFPZQJB7KRiaDSG3DfHyCCtySd
+         isRWiYXgzSwa7dLBMeclVvOmvecOA8wnEC8AiGftri9bJtBSYVWxkOLDFDgw9hyHgpLr
+         Ql4SBTBdnJDs5Qgn1m3x8Vw+DfTeUHhPd7TU1CD4wWRmKcFswUGVeNe/I4q97Z5ty5Dr
+         ZOZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709293239; x=1709898039;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=R4DA34/5Kvb1127d2yWJOOqxpTefiacI79ML95b5u5E=;
+        b=PKMnHq4A7pX/Z6BH3i09dI4zUkylGmgZJzOxlKy7lPbLxd3Oq//ziquwVi58PDQrZg
+         m3eLu+cp8snxSOU7wyvdb+ae5p2Ia3Qmuub5vS/jYR8crkB+cYLT4Nn5skN8u0y6wzkY
+         nhce9VfSz8C4nBGoYX4fNUJ1uG/hMb5gzHSI+canlUElEF2Q+mCeHDL8Kl4E/teyX9LS
+         gfZ3T0XtAWcHutaqEOw/9dEdQImmotkc3SaPmE8tD4Qthw3Wx4WstaeJZKon2ciIq/+O
+         ZubO/FQgo7OlwwUOGXhYpqkMvV+u0ShWm18FFSHXU+IWVl+vwYMPPYwpHWC+uimXDS+l
+         Decg==
+X-Forwarded-Encrypted: i=1; AJvYcCW94wKgYSJveSYe1+S5uyyRBCF1NodLJChk9fHdDv5YD4XWl7pdOEevQptLpIp8Nfg+CUfO3kDmC6/meJmRIbgFo2EYJmrszWzC+CKW
+X-Gm-Message-State: AOJu0YzwJ33AX0jd5EbzgMf91gjVGBkwA1Wo6x4mqCbcTYBs5NvbENTY
+	BecNzJXJeFs4GKJUoPUTwUOpgO159PyN2IgI2uUI6tSl7JhYXj0XCByTGk+kGI8=
+X-Google-Smtp-Source: AGHT+IGHBRcpk1bAIkNMDcmZk1V9eM3Osu4/pZELwwmSrBOeY8UgCvTPnKefM8atiCfFTZiBIQz15w==
+X-Received: by 2002:a05:6402:1d18:b0:566:4dc1:522c with SMTP id dg24-20020a0564021d1800b005664dc1522cmr1129700edb.15.1709293239065;
+        Fri, 01 Mar 2024 03:40:39 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id el8-20020a056402360800b00566d6e30f1fsm395050edb.31.2024.03.01.03.40.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Mar 2024 03:40:38 -0800 (PST)
+Message-ID: <cfec2fee-ebd8-4865-b307-b64e1bbfa335@linaro.org>
+Date: Fri, 1 Mar 2024 12:40:36 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,167 +75,82 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC] dma-mapping: introduce dma_can_skip_unmap()
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-kernel@vger.kernel.org
-Cc: Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
- Christoph Hellwig <hch@lst.de>, Marek Szyprowski <m.szyprowski@samsung.com>,
- iommu@lists.linux.dev, "Michael S. Tsirkin" <mst@redhat.com>,
- Zelin Deng <zelin.deng@linux.alibaba.com>
-References: <20240301071918.64631-1-xuanzhuo@linux.alibaba.com>
-Content-Language: en-GB
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20240301071918.64631-1-xuanzhuo@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] memory: omap-gpmc: fixup wrongly hierarchy of the
+ sub-devices
+Content-Language: en-US
+To: "Brock.Zheng" <yzheng@techyauld.com>, Roger Quadros <rogerq@kernel.org>,
+ Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <6fftq2zlkpaf7xptyff6ky63cinr76ziyvdbm5jhj2apubr5vf@l4gvbdax3l2e>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <6fftq2zlkpaf7xptyff6ky63cinr76ziyvdbm5jhj2apubr5vf@l4gvbdax3l2e>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On 2024-03-01 7:19 am, Xuan Zhuo wrote:
-> In a typical workflow, we first perform a dma map on an address to
-> obtain a dma address, followed by a dma unmap on that address. Generally,
-> this process works without issues. However, under certain circumstances,
-> we require additional resources to manage these dma addresses. For
-> instance, in layered architectures, we pass the dma address to another
-> module, but retrieving it back from that module can present some
-> challenges. In such cases, we must allocate extra resources to manage
-> these dma addresses.
+On 01/03/2024 00:52, Brock.Zheng wrote:
+> On TI-AM335x，my FPGA under GPMC local-bus can not work on 6.x kernel.
 > 
-> However, considering that many times the dma unmap operation is actually
-> a no-op, if we know in advance that unmap is not necessary, we can save
-> on these extra management overheads. Moreover, we can directly skip the
-> dma unmap operation. This would be advantageous.
+> GPMC <--> FPGA  <--> sub-devices....
 > 
-> This tries to resolve the problem of patchset:
+> I found that the platform sub-devices is in wrongly organized
+> hierarchy.  The grandchildren are now under the GPMC device
+> directly, not under it's father(FPGA).
 > 
->   http://lore.kernel.org/all/20240225032330-mutt-send-email-mst@kernel.org
-> 
-> For a single packet, virtio-net may submit 1-19 dma addresses to virtio
-> core. If the virtio-net maintains the dma addresses will waste too much
-> memory when the unmap is not necessary. If the virtio-net retrieves the
-> dma addresses of the packet from the virtio core, we need to hold the 19
-> dma addresses by one call. And the net drivers maintain the dma is the
-> future. So we hope to check the unmap is necessary or not.
-> 
-> Co-developed-by: Zelin Deng <zelin.deng@linux.alibaba.com>
-> Signed-off-by: Zelin Deng <zelin.deng@linux.alibaba.com>
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> ---
->   drivers/iommu/dma-iommu.c   | 11 +++++++++++
->   include/linux/dma-map-ops.h |  1 +
->   include/linux/dma-mapping.h |  5 +++++
->   kernel/dma/mapping.c        | 23 +++++++++++++++++++++++
->   4 files changed, 40 insertions(+)
-> 
-> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-> index 50ccc4f1ef81..8c661a0e1111 100644
-> --- a/drivers/iommu/dma-iommu.c
-> +++ b/drivers/iommu/dma-iommu.c
-> @@ -1706,6 +1706,16 @@ static size_t iommu_dma_opt_mapping_size(void)
->   	return iova_rcache_range();
->   }
->   
-> +static bool iommu_dma_opt_can_skip_unmap(struct device *dev)
-> +{
-> +	struct iommu_domain *domain = iommu_get_dma_domain(dev);
-> +
-> +	if (domain->type == IOMMU_DOMAIN_IDENTITY)
+> Signed-off-by: Brock.Zheng <yzheng@techyauld.com>
 
-This is nonsense; iommu-dma does not operate on identity domains in the 
-first place.
+The dot '.' does not look like part of the name. Are you sure you
+transliterated/translated your name correctly?
 
-> +		return true;
-> +	else
-> +		return false;
-> +}
-> +
->   static const struct dma_map_ops iommu_dma_ops = {
->   	.flags			= DMA_F_PCI_P2PDMA_SUPPORTED,
->   	.alloc			= iommu_dma_alloc,
-> @@ -1728,6 +1738,7 @@ static const struct dma_map_ops iommu_dma_ops = {
->   	.unmap_resource		= iommu_dma_unmap_resource,
->   	.get_merge_boundary	= iommu_dma_get_merge_boundary,
->   	.opt_mapping_size	= iommu_dma_opt_mapping_size,
-> +	.dma_can_skip_unmap	= iommu_dma_opt_can_skip_unmap,
->   };
->   
->   /*
-> diff --git a/include/linux/dma-map-ops.h b/include/linux/dma-map-ops.h
-> index 4abc60f04209..d508fa90bc06 100644
-> --- a/include/linux/dma-map-ops.h
-> +++ b/include/linux/dma-map-ops.h
-> @@ -83,6 +83,7 @@ struct dma_map_ops {
->   	size_t (*max_mapping_size)(struct device *dev);
->   	size_t (*opt_mapping_size)(void);
->   	unsigned long (*get_merge_boundary)(struct device *dev);
-> +	bool (*dma_can_skip_unmap)(struct device *dev);
->   };
->   
->   #ifdef CONFIG_DMA_OPS
-> diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
-> index 4a658de44ee9..af5d9275f8cc 100644
-> --- a/include/linux/dma-mapping.h
-> +++ b/include/linux/dma-mapping.h
-> @@ -140,6 +140,7 @@ int dma_mmap_attrs(struct device *dev, struct vm_area_struct *vma,
->   		void *cpu_addr, dma_addr_t dma_addr, size_t size,
->   		unsigned long attrs);
->   bool dma_can_mmap(struct device *dev);
-> +bool dma_can_skip_unmap(struct device *dev);
->   bool dma_pci_p2pdma_supported(struct device *dev);
->   int dma_set_mask(struct device *dev, u64 mask);
->   int dma_set_coherent_mask(struct device *dev, u64 mask);
-> @@ -249,6 +250,10 @@ static inline bool dma_can_mmap(struct device *dev)
->   {
->   	return false;
->   }
-> +static inline bool dma_can_skip_unmap(struct device *dev)
-> +{
-> +	return false;
-> +}
->   static inline bool dma_pci_p2pdma_supported(struct device *dev)
->   {
->   	return false;
-> diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
-> index 58db8fd70471..99a81932820b 100644
-> --- a/kernel/dma/mapping.c
-> +++ b/kernel/dma/mapping.c
-> @@ -445,6 +445,29 @@ bool dma_can_mmap(struct device *dev)
->   }
->   EXPORT_SYMBOL_GPL(dma_can_mmap);
->   
-> +/**
-> + * dma_can_skip_unmap - check if unmap can be skipped
-> + * @dev: device to check
-> + *
-> + * Returns %true if @dev supports direct map or dma_can_skip_unmap() return true.
-> + */
-> +bool dma_can_skip_unmap(struct device *dev)
-> +{
-> +	const struct dma_map_ops *ops = get_dma_ops(dev);
-> +
-> +	if (is_swiotlb_force_bounce(dev))
-> +		return false;
-> +
-> +	if (dma_map_direct(dev, ops))
-> +		return true;
+Also, please provide Fixes tag (see submitting patches document).
 
-And this is also broken and nonsensical. What about non-coherent cache 
-maintenance, or regular non-forced SWIOTLB bouncing due to per-mapping 
-address limitations or buffer alignment, or dma-debug?
+Your patch confused my mailer. It looks like HTML, but it seems it is
+not. Maybe because of Content-Disposition: inline? Why do you have it?
 
-Not only is this idea not viable, the entire premise seems flawed - the 
-reasons for virtio needing to use the DMA API at all are highly likely 
-to be the same reasons for it needing to use the DMA API *properly* anyway.
+Best regards,
+Krzysztof
 
-Thanks,
-Robin.
-
-> +
-> +	if (ops->dma_can_skip_unmap)
-> +		return ops->dma_can_skip_unmap(dev);
-> +
-> +	return false;
-> +}
-> +EXPORT_SYMBOL_GPL(dma_can_skip_unmap);
-> +
->   /**
->    * dma_mmap_attrs - map a coherent DMA allocation into user space
->    * @dev: valid struct device pointer, or NULL for ISA and EISA-like devices
 
