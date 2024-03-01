@@ -1,112 +1,155 @@
-Return-Path: <linux-kernel+bounces-88647-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88649-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1E3E86E4C7
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:55:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BFB986E4CF
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:56:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B89D289511
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:55:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B2AC1C22A07
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:56:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28BA170AC7;
-	Fri,  1 Mar 2024 15:55:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3816970CBC;
+	Fri,  1 Mar 2024 15:55:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="EjPUC1JR"
-Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xkXU8XM2"
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07C9E70CD5
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 15:55:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4E5171B45
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 15:55:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709308538; cv=none; b=TtdgseMXoXELpwqQTzUUwLh4RQRo8qziPN40dAGJBwhT1z4MeJ7/MXk+iBZJ3kNIoGwso93xuiW4MTnptjtqLN9WQZJJcW9Xae/Mt2sJwc2mLY4rQ8whhtvlj+FmMleBbn1s7YTqGThMUhuqXjJuvMT+Sb4/v7FSEykqTbCxW8Q=
+	t=1709308548; cv=none; b=Vm25XBJjQ+sPdkm+737sVtJ+yqGjOU+K4Ym9BNwvdwzoMdHNRBCXDDtkorsRTIK7b6BhrCSLSwjz1QPCnkFhncC/oFPuH1B1+C3scPLnWmqpoe3WK4La5q1L+ew+QNSdmagnvqFCHdNKtmV7aG1NLO4UHG+fTnJTaVcA8NKWxjo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709308538; c=relaxed/simple;
-	bh=n9kFjYjRE3qCNfcjmWpT8lMq1zW42Y+rPlcJGtESq30=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=VL9HITt2gpjE3lT5ssuGYUuKxdPyu2D8iCrWGvpY9o0aIdtNuij7TqGGroxvnVYx5poBU5zAkMR0M0PECssx89RmamCTRZz+233SGAEpveEuNYIQ8sObt+Qsouk3jKsnNVMD1WTS1ouVuvsEGTYvRrJbkJmd9wV+WNCKTBEvNCY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=EjPUC1JR; arc=none smtp.client-ip=209.85.166.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-7bf3283c18dso37156339f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 07:55:35 -0800 (PST)
+	s=arc-20240116; t=1709308548; c=relaxed/simple;
+	bh=xU2424lQTKxKZg6MHne9qfkBy5cOcIamXDnnHV78UpA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mbgf+CbP1m2k1EZllRgjfPMOMr+dqknavpSMpWUO8PyzUAd63bMm5oivAwwnMOunmW4C1bEwQmzapixB5/YWGAD7JJ4MLj4SIxjEOLHbQ/bJQ+AmTgFEWXByY6nfRXMgj2PFEQ27lAWiYY3T0seeM5pOFhzS8JwEEMpbhG3VTXA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xkXU8XM2; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-412b83cfac4so16166305e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 07:55:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1709308535; x=1709913335; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cuy/wgcCH07hny5bXY1Sk1fYdO558cghg+HCRH9bbn8=;
-        b=EjPUC1JR7aBHxsdHTNgUQmnE+WUsZT9EEk6jUTzJ0mnuX+Ej6MzA8pusTqaeKHnQVm
-         E0nHEYADLujhM+fViHSCp2I2gMawPi++NWWeEE4+xC7FpdLX3bePZUw1+iJCKp81SMjX
-         iRGhX2zOlCPk2WX8JQz+Paq0FpjffN1ikuKTRkHqxwrsVyD6foWxcL85ajcoQFE95QJb
-         ZxGb15H7VRbz2RYCH/WUIz9q9KGDpbW1ooEz/TP5lPjl13rdfmim4I3uLQzY7oS6Lp2E
-         NwaE86V/1+5yYCxq9KcofHvsg2q1ukFBC1BTAnKCYQsReBfjWUeCdcfAqOmFQGEdS6tM
-         uoKg==
+        d=linaro.org; s=google; t=1709308545; x=1709913345; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=dEf+rbXNQvLvB9iPkH1P+r9uBHTvmiiyJwMOWWoELNo=;
+        b=xkXU8XM2AlxDhUXHrsOonXihIuEhwmsT5WezvjUChW+s1A+sL8Zhn1MO1KqJLS5NJD
+         u4sZ40IaW4+wPfwvPk2hccRo+oYy7OYkTUBPVbikI3qOLGrvOiksdKhrWNuEjcsnVN1P
+         7HvJNGsoMvpHcedZ0GIS8JLUKxdSBYiHbZqOEznrlRtAeTUN0VscVdDVWs9ApTjA9ayr
+         MOSHXS1f93Hfp9sG7FRy1ADa0/K01/GwhEuVtq/ylytNzCDjC9LIDZotA8DLIPqBQlwW
+         JUGtRW1rSafFww+/qVZC6wJAv8GY0Mbp5xczCdcH/qcAbDTTTkUjDl4OXerzes1zqQnW
+         Noqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709308535; x=1709913335;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cuy/wgcCH07hny5bXY1Sk1fYdO558cghg+HCRH9bbn8=;
-        b=dmD7GpIwlhf3O6PXwOYv9jWtTZz0UVRrRhl9W6BEPywnnDooy2jjVz+AAmRi0eD/zw
-         lHI5tYTa4G2ZnqgmQYw53pKSvYqFDjOmF10UB1fOXYqRQ91SRzJBYrthYcQ3gi/aW2pL
-         uHZIvioyWk3NP88DxiL/ejFKBOtnrd14if/I/L67cjcCqYcpCMClxrpQa61RXnmQwuto
-         /EZu6vpJFWBsmy2R8z5jpeG+hNQR+AVmN54XTpGH/NvJjzkPJT19G4yt9OVP/DKYR4iD
-         KWUp0aGruDlNXkmWQN3381GwElubOJ25haE+lVez8GgnwTdFXOfUhr2raXfZ/vTiAmAS
-         kBxg==
-X-Forwarded-Encrypted: i=1; AJvYcCUm7foEJiA6WlthT4E2ctkn3SLVHCk2Z+aRbtS2NprqO43GVzfNpYddqI7GmjLvW/C+hDuGqpYKQIBmaFzhu3q4Te9mhrUIZGe3K/Vl
-X-Gm-Message-State: AOJu0YxSF2irvJOgGJugoAS1p7XU+Esx5bYWEtpSjEwLtugaxrWPhhaB
-	iq+EEOtN2orhHeql0ZCUSX16Xp9yE7g//eDFLy7ODERdGcrGclmgfQ95AJlJ/P4=
-X-Google-Smtp-Source: AGHT+IHUrApy+wOyvA8sED9sBQ8CJ/sYmaferYuZ3MvQVEiKHQQKdFnsIlVgvFZXeuJn78QW/IWMAg==
-X-Received: by 2002:a6b:730c:0:b0:7c8:2c94:90b5 with SMTP id e12-20020a6b730c000000b007c82c9490b5mr357367ioh.0.1709308535226;
-        Fri, 01 Mar 2024 07:55:35 -0800 (PST)
-Received: from [127.0.0.1] ([99.196.129.26])
-        by smtp.gmail.com with ESMTPSA id b4-20020a02c984000000b004745e754b73sm894609jap.176.2024.03.01.07.55.29
+        d=1e100.net; s=20230601; t=1709308545; x=1709913345;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dEf+rbXNQvLvB9iPkH1P+r9uBHTvmiiyJwMOWWoELNo=;
+        b=s/T+wMtI8Pa+rdZpjg7r8cHnWRbvIqUGNwGd0DGxeLq+rh224gZvoAu2BQbSqVb/Dl
+         0JelQ9jNvsZWZ95O5qlsbu6FL63Q4APuMcFWvfJW1DPH3lChwRfCEDGRjRPPCcv561EI
+         iqXXtUvx86ImJtQSISL2yXlRvM+2/1AFhk1JOk7KGkb0Qf3lnDnoHnTfKJzinTvkrIk7
+         qmWmSklsbrgYqW/jT+a71j7nLnEZeQ6llgYhKL21t7tSdhMm449prRXKyhFvC68dT42V
+         sI1sUayKJHSJ/OoXsQ1SW/U42fwqYVWG71IT8hETS6a0pUshyV7AnUhtmVDMPrTpgzya
+         OD6A==
+X-Forwarded-Encrypted: i=1; AJvYcCVE1TCAfQF37XukpbUcuc6CH2Idhng9HJJaMnCzfWQNbBi4NIZ+OkIPQQI78qIXZuo8/qJiTxHWAQunEYVWi1gnpMqMw/rMsthL/SNJ
+X-Gm-Message-State: AOJu0Ywr8kAS26ZBzYKPOOR5OgkBvt5f4mwgakMmAjWGHJ65Gmi40Gbg
+	Sfarj7UAIBluwMlfWdcBQpY+E2FoTprELQjd4FsEPZyIZ2XDXKJkfHX11wWfOFmt51kooAbEQg2
+	F
+X-Google-Smtp-Source: AGHT+IHXfsf1QVNUUheaEgcb1fKDrYSnpwanX1F3NHauzqf3xzyG0GvJEj7Pf7CKoluJk/kSHAeU6Q==
+X-Received: by 2002:a05:600c:1986:b0:412:8fe7:4e06 with SMTP id t6-20020a05600c198600b004128fe74e06mr1813507wmq.38.1709308545005;
+        Fri, 01 Mar 2024 07:55:45 -0800 (PST)
+Received: from ishi ([185.243.57.254])
+        by smtp.gmail.com with ESMTPSA id u21-20020a7bc055000000b004129a1097e7sm8774972wmc.12.2024.03.01.07.55.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 07:55:34 -0800 (PST)
-From: Jens Axboe <axboe@kernel.dk>
-To: Dylan Yudaken <dylany@fb.com>, Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Pavel Begunkov <asml.silence@gmail.com>, Dylan Yudaken <dylany@fb.com>, 
- io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <7f5d7887-f76e-4e68-98c2-894bfedbf292@moroto.mountain>
-References: <7f5d7887-f76e-4e68-98c2-894bfedbf292@moroto.mountain>
-Subject: Re: [PATCH 0/2] io_uring/net: fix bug in io_recvmsg_mshot_prep()
-Message-Id: <170930852923.1084422.13136941777087584791.b4-ty@kernel.dk>
-Date: Fri, 01 Mar 2024 08:55:29 -0700
+        Fri, 01 Mar 2024 07:55:44 -0800 (PST)
+Date: Fri, 1 Mar 2024 10:55:39 -0500
+From: William Breathitt Gray <william.gray@linaro.org>
+To: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Cc: syednwaris@gmail.com, vigneshr@ti.com, jpanis@baylibre.com,
+	alexandre.torgue@foss.st.com, linux-iio@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5] counter: Introduce the COUNTER_COMP_FREQUENCY() macro
+Message-ID: <ZeH6e02zzfAjw-sd@ishi>
+References: <20240301102505.591918-1-fabrice.gasnier@foss.st.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.5-dev-2aabd
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="NVfMO94wBSa46KPR"
+Content-Disposition: inline
+In-Reply-To: <20240301102505.591918-1-fabrice.gasnier@foss.st.com>
 
 
-On Fri, 01 Mar 2024 18:28:40 +0300, Dan Carpenter wrote:
-> The casting is problematic and could introduce an integer underflow
-> issue.
-> 
-> Dan Carpenter (2):
->   io_uring/net: fix overflow check in io_recvmsg_mshot_prep()
->   io_uring/net: remove unnecesary check
-> 
-> [...]
+--NVfMO94wBSa46KPR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Applied, thanks!
+On Fri, Mar 01, 2024 at 11:25:05AM +0100, Fabrice Gasnier wrote:
+> Now that there are two users for the "frequency" extension, introduce a
+> new COUNTER_COMP_FREQUENCY() macro.
+> This extension is intended to be a read-only signal attribute.
+>=20
+> Suggested-by: William Breathitt Gray <william.gray@linaro.org>
+> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+> ---
+> Changes in v5
+> - "frequency" extension is read-only, so there's no need to provide
+>   a write parameter.
+> - patch sent separately from "counter: Add stm32 timer events support" [1]
+> [1] https://lore.kernel.org/lkml/20240227173803.53906-2-fabrice.gasnier@f=
+oss.st.com/
+> ---
+>  include/linux/counter.h | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>=20
+> diff --git a/include/linux/counter.h b/include/linux/counter.h
+> index 702e9108bbb4..0ac36f815b7d 100644
+> --- a/include/linux/counter.h
+> +++ b/include/linux/counter.h
+> @@ -602,6 +602,13 @@ struct counter_array {
+>  #define COUNTER_COMP_FLOOR(_read, _write) \
+>  	COUNTER_COMP_COUNT_U64("floor", _read, _write)
+> =20
+> +#define COUNTER_COMP_FREQUENCY(_read) \
+> +{ \
+> +	.type =3D COUNTER_COMP_U64, \
+> +	.name =3D "frequency", \
+> +	.signal_u64_read =3D (_read), \
+> +}
+> +
+>  #define COUNTER_COMP_POLARITY(_read, _write, _available) \
+>  { \
+>  	.type =3D COUNTER_COMP_SIGNAL_POLARITY, \
+> --=20
+> 2.25.1
 
-[1/2] io_uring/net: fix overflow check in io_recvmsg_mshot_prep()
-      commit: a69d208854948bc8334a01bc17f13a06a5a977d2
-[2/2] io_uring/net: remove unnecessary check
-      commit: 789748af32c4a6f50db401d46e6a89ab28a6e3ac
+Hi Fabrice,
 
-Best regards,
--- 
-Jens Axboe
+Setting the structure members directly works, but why not use
+COUNTER_COMP_SIGNAL_U64("frequency", _read, NULL) instead to keep the
+code more succinct?
 
+William Breathitt Gray
 
+--NVfMO94wBSa46KPR
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQSNN83d4NIlKPjon7a1SFbKvhIjKwUCZeH6ewAKCRC1SFbKvhIj
+K217AP9hJmpnlwQnUsdqaZn6twmR5QyJBT3lfeSMtz4eusnWowEA7uP/8rZ0WZLf
+TDqIuD3w+89Mcs0vrikcijgkauAOigs=
+=Zn8v
+-----END PGP SIGNATURE-----
+
+--NVfMO94wBSa46KPR--
 
