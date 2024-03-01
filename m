@@ -1,226 +1,158 @@
-Return-Path: <linux-kernel+bounces-89157-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89158-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9EAA86EB53
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 22:41:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6251386EB56
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 22:44:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC1F21C217D7
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:41:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6FB751C2140E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:44:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F84758AA7;
-	Fri,  1 Mar 2024 21:41:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47E445823B;
+	Fri,  1 Mar 2024 21:44:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DhEo0lgh"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="Wvw6d+Ef"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF3883FE0;
-	Fri,  1 Mar 2024 21:41:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 230AC25623
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 21:44:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709329279; cv=none; b=HANN4u5+kmDUR28LRJIpfx4vOO8T7kkkxvgq5Hm6X+sKvUqaKLLMS6uXErk0p2R3ypyElgE/GkTEj+Pq7+O2hlx+uRGxaWJ1+8SnALod7qu0mGBQ0cBSIQvHAXqZ8T1IPChVqO+Y2KfJdCvQW0+q94rAcixHmlOnwgimyhqsaKU=
+	t=1709329479; cv=none; b=bw2gmxJJf+51BhtBXIslgcJNxJxhMpva2YB+FxKuTuSQQ+UjVim7oVhx6JesdFGWapdHrthVH+2GGHV1rZHhx0weoJVJYT0uPbT3ndd38nry4JOqftScI7JHpTgVIyVgTWLSchyHyIsIIjNAxIcC4P6/6/idoCbheJSEjW/mLqs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709329279; c=relaxed/simple;
-	bh=OgjKKH7ljS7iYsOXDvhzd5UPbpv3VXAHAlvt6kfyFRQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=criCxQMwGOyUsUD8NVnPVSGsUM45mXFZLhWzwbkdp5Sz92Q271tveCuxktu9IH3qWVsQ+kje7w0e+9dZecFLKFIWL73pd9PI8IJIeDbfXXzYsWPkvmoISjHjQ5zVDnu6NjCv9jUFyPIK6wdoAZbc35D8ZNhI+9jyumUAPbqACmA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DhEo0lgh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3040AC433F1;
-	Fri,  1 Mar 2024 21:41:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709329279;
-	bh=OgjKKH7ljS7iYsOXDvhzd5UPbpv3VXAHAlvt6kfyFRQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=DhEo0lghF6686Aa1BUgUThbu3k7dy0WYOh99ybpM3AnlymRK07eChv05JeJq+2IIe
-	 fTEh1jhe2x1Iksn+/OpGxCAkZalxaDpD08mClghp2uDb0j9QYyi107KPJeiH5dhbJl
-	 UrMN0gf6WSZXzQfEKL01Sx2Xn9tvWCYmvKn3/7g+6kkboV1zcYSEtYDaFgsOPeOA7x
-	 hqMeTD/mMuhfwRByhpbV/8uEM4IlkEgUJswLJFpdINPihzWtGnTBSFDubpGDNHs+z7
-	 D085dXKf3mg3eqIRj37b6ypOZ8Olny+T6pmviajDmYHQB8iCN3rNTHEkxmcms/YVA8
-	 4aSAiG08L//ZA==
-Date: Fri, 1 Mar 2024 15:41:17 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Jian-Hong Pan <jhp@endlessos.org>
-Cc: Johan Hovold <johan@kernel.org>,
-	David Box <david.e.box@linux.intel.com>,
-	Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
-	Mika Westerberg <mika.westerberg@linux.intel.com>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Nirmal Patel <nirmal.patel@linux.intel.com>,
-	Jonathan Derrick <jonathan.derrick@linux.dev>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux@endlessos.org
-Subject: Re: [PATCH v4 3/3] PCI/ASPM: Fix L1.2 parameters when enable link
- state
-Message-ID: <20240301214117.GA408641@bhelgaas>
+	s=arc-20240116; t=1709329479; c=relaxed/simple;
+	bh=2xY5RVyUcdnRzDiqOnWZP2xAM6fMoZ6RnVVMw7ZnaNg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bmSGpet0DcK9A5XIBxS7Ws+CUb9PM9sDW0XhH1hF1TUHbunWJc3b7Xs1JyGfTefCyVZ9NToRnt9Ph4UZ+8QdEwefm1cFwVtMK3iSyfKYue1SBBn7xbmr78fqoW+h3Ff5+HrUbpmQEI75a/9CQteBCYxd4QSMJegRJ0yqGWVAhwI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=Wvw6d+Ef; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from pendragon.ideasonboard.com (89-27-53-110.bb.dnainternet.fi [89.27.53.110])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 9776B673;
+	Fri,  1 Mar 2024 22:44:21 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1709329461;
+	bh=2xY5RVyUcdnRzDiqOnWZP2xAM6fMoZ6RnVVMw7ZnaNg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Wvw6d+Efg4zfPGiPhEdGGpTNTVwkssBWr7Pfr/mjCFp0adU5FNIwJf9ti6hDNGV7k
+	 d6ZonBUAjGiiCSAk84BGvNuOTSsMXQtTz/X5ZB3AG8XaGC47dDxUDMQKxy4bhyOpQP
+	 RT7qkhWoGTpE1wDaryq4bnW4Abc6SbIXm+MvA5vE=
+Date: Fri, 1 Mar 2024 23:44:38 +0200
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To: =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado <nfraprado@collabora.com>
+Cc: Andrzej Hajda <andrzej.hajda@intel.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Robert Foss <rfoss@kernel.org>, Jonas Karlman <jonas@kwiboo.se>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	owen <qwt9588@gmail.com>, Jagan Teki <jagan@amarulasolutions.com>,
+	Marek Vasut <marex@denx.de>,
+	Adrien Grassein <adrien.grassein@gmail.com>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Vinod Koul <vkoul@kernel.org>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	Vinay Simha BN <simhavcs@gmail.com>,
+	Christopher Vollo <chris@renewoutreach.org>,
+	Jessica Zhang <quic_jesszhan@quicinc.com>,
+	Marijn Suijten <marijn.suijten@somainline.org>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>,
+	kernel@collabora.com, dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Subject: Re: [PATCH v2 0/9] drm: Switch from dev_err to dev_err_probe for
+ missing DSI host error path
+Message-ID: <20240301214438.GA11073@pendragon.ideasonboard.com>
+References: <20240229-anx7625-defer-log-no-dsi-host-v2-0-00506941049a@collabora.com>
+ <20240301063431.GM30889@pendragon.ideasonboard.com>
+ <33209063-de58-4d53-a6e0-2d9f74052358@notapiano>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240216062642.247504-3-jhp@endlessos.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <33209063-de58-4d53-a6e0-2d9f74052358@notapiano>
 
-In subject:
-
-  PCI/ASPM: Fix L1.2 parameters before enabling L1.2
-
-On Fri, Feb 16, 2024 at 02:26:44PM +0800, Jian-Hong Pan wrote:
-> Currently, when enable link's L1.2 features with __pci_enable_link_state(),
-> it configs the link directly without ensuring related L1.2 parameters, such
-> as T_POWER_ON, Common_Mode_Restore_Time, and LTR_L1.2_THRESHOLD have been
-> programmed.
+On Fri, Mar 01, 2024 at 11:19:27AM -0500, Nícolas F. R. A. Prado wrote:
+> On Fri, Mar 01, 2024 at 08:34:31AM +0200, Laurent Pinchart wrote:
+> > Hi Nícolas,
+> > 
+> > On Thu, Feb 29, 2024 at 07:12:06PM -0500, Nícolas F. R. A. Prado wrote:
+> > > This series changes every occurence of the following pattern: 
+> > > 
+> > > 	dsi_host = of_find_mipi_dsi_host_by_node(dsi);
+> > > 	if (!dsi_host) {
+> > > 		dev_err(dev, "failed to find dsi host\n");
+> > > 		return -EPROBE_DEFER;
+> > > 	}
+> > > 
+> > > into
+> > > 
+> > > 	dsi_host = of_find_mipi_dsi_host_by_node(dsi);
+> > > 	if (!dsi_host)
+> > > 		return dev_err_probe(dev, -EPROBE_DEFER, "failed to find dsi host\n");
+> > > 
+> > > This registers the defer probe reason (so it can later be printed by the
+> > > driver core or checked on demand through the devices_deferred file in
+> > > debugfs) and prevents errors to be spammed in the kernel log every time
+> > > the driver retries to probe, unnecessarily alerting userspace about
+> > > something that is a normal part of the boot process.
+> > 
+> > The idea is good, but I have a small issue with patches 1/9 to 7/9. They
+> > all patch a function that is called by the probe function. Calling
+> > dev_err_probe() in such functions is error-prone. I had to manually
+> > check when reviewing the patches that those functions were indeed called
+> > at probe time, and not through other code paths, and I also had to check
+> > that no callers were using dev_err_probe() in the error handling path,
+> > as that would have overridden the error message.
+> > 
+> > Would there be a way to move the dev_err_probe() to the top-level ? I
+> > understand it's not always possible or convenient, but if it was doable
+> > in at least some of the drivers, I think it would be better. I'll let
+> > you be the judge.
 > 
-> This leads VMD enabled systems' L1.2 of the link between VMD remapped PCIe
-> Root Port and NVMe gets wrong configs when a caller tries to enabled it.
-
-This is not VMD-specific.
-
-> Here is a failed example on ASUS B1400CEAE with enabled VMD:
+> Hey Laurent, thanks for the review.
 > 
-> 10000:e0:06.0 PCI bridge: Intel Corporation 11th Gen Core Processor PCIe Controller (rev 01) (prog-if 00 [Normal decode])
->     ...
->     Capabilities: [200 v1] L1 PM Substates
->         L1SubCap: PCI-PM_L1.2+ PCI-PM_L1.1+ ASPM_L1.2+ ASPM_L1.1+ L1_PM_Substates+
->         	  PortCommonModeRestoreTime=45us PortTPowerOnTime=50us
->         L1SubCtl1: PCI-PM_L1.2- PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1-
->         	   T_CommonMode=45us LTR1.2_Threshold=101376ns
->         L1SubCtl2: T_PwrOn=50us
+> I get where you're coming from, as I checked those things myself while writing
+> the patch. That said, I don't think moving dev_err_probe() to the top-level is a
+> good move for a few reasons:
+> * Keeping the log message as close to the source of the error makes it more
+>   specific, and consequently, more useful.
+> * The original code already returned -EPROBE_DEFER, implying the function is
+>   expected to be called only from the probe function.
 > 
-> 10000:e1:00.0 Non-Volatile memory controller: Sandisk Corp WD Blue SN550 NVMe SSD (rev 01) (prog-if 02 [NVM Express])
->     ...
->     Capabilities: [900 v1] L1 PM Substates
->         L1SubCap: PCI-PM_L1.2+ PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1- L1_PM_Substates+
->                   PortCommonModeRestoreTime=32us PortTPowerOnTime=10us
->         L1SubCtl1: PCI-PM_L1.2- PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1-
->                    T_CommonMode=0us LTR1.2_Threshold=0ns
->         L1SubCtl2: T_PwrOn=10us
+> With those points in mind, the only way I see to guarantee
+> dev_err_probe(...,-EPROBE_DEFER...) would only be called by probe, and that the
+> reason wouldn't be overriden, would be to move the entire code path of that
+> function that calls into dev_err_probe() up into the probe function. But if we
+> adopt this pattern consistently across the drivers in the tree, I think it would
+> drastically worsen readability and cancel out the benefits.
 > 
-> According to PCI Express Base Specification Revision 6.0, Section 5.5.4,
-> before enable ASPM L1.2 on the PCIe Root Port and the NVMe, they should be
-> programmed with the same LTR1.2_Threshold value. However, they have
-> different values in this case.
-
-"PCIe r6.0, sec 5.5.4"
-s/before enable/before enabling/
-
-> This patch invokes aspm_calc_l12_info() to program the L1.2 parameters
-> properly before enable L1.2 bits of L1 PM Substates Control Register in
-> __pci_enable_link_state(). 
-
-s/This patch invokes/Invoke/
-
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?id=v6.7#n94
-
-> Also, introduces aspm_get_l1ss_cap() shared
-> into aspm_l1ss_init() and __pci_enable_link_state() to get the PCIe
-> devices' L1SS capability for aspm_calc_l12_info().
-
-"Also" is always a good clue that something should be split to a
-separate patch :)
-
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=218394
-> Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
-> ---
-> v2:
-> - Prepare the PCIe LTR parameters before enable L1 Substates
+> IMO the way forward with the API we have, is to make use of warnings and static
+> checkers to catch cases where dev_err_probe() is overriding a defer probe
+> reason, and where it's called outside of the probe function scope.
 > 
-> v3:
-> - Only enable supported features for the L1 Substates part
-> 
-> v4:
-> - Focus on fixing L1.2 parameters, instead of re-initializing whole L1SS
-> 
->  drivers/pci/pcie/aspm.c | 35 ++++++++++++++++++++++++++---------
->  1 file changed, 26 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-> index a39d2ee744cb..42a8c4c194c1 100644
-> --- a/drivers/pci/pcie/aspm.c
-> +++ b/drivers/pci/pcie/aspm.c
-> @@ -588,6 +588,18 @@ static void pcie_aspm_check_latency(struct pci_dev *endpoint)
->  	}
->  }
->  
-> +static u32 aspm_get_l1ss_cap(struct pci_dev *pdev)
-> +{
-> +	u32 l1ss_cap;
-> +
-> +	pci_read_config_dword(pdev, pdev->l1ss + PCI_L1SS_CAP, &l1ss_cap);
-> +
-> +	if (!(l1ss_cap & PCI_L1SS_CAP_L1_PM_SS))
-> +		l1ss_cap = 0;
-> +
-> +	return l1ss_cap;
-> +}
+> So I'm inclined to leave the patches as they are, but am happy to discuss this
+> further or other ideas.
 
-This is nice but should be a separate patch because it just factors
-out existing code, and having it in the same patch obscures the real
-point of *this* patch.
+Thanks for checking and having taken the time to explain your rationale.
+For the whole series,
 
->  /* Calculate L1.2 PM substate timing parameters */
->  static void aspm_calc_l12_info(struct pcie_link_state *link,
->  				u32 parent_l1ss_cap, u32 child_l1ss_cap)
-> @@ -698,15 +710,8 @@ static void aspm_l1ss_init(struct pcie_link_state *link)
->  		return;
->  
->  	/* Setup L1 substate */
-> -	pci_read_config_dword(parent, parent->l1ss + PCI_L1SS_CAP,
-> -			      &parent_l1ss_cap);
-> -	pci_read_config_dword(child, child->l1ss + PCI_L1SS_CAP,
-> -			      &child_l1ss_cap);
-> -
-> -	if (!(parent_l1ss_cap & PCI_L1SS_CAP_L1_PM_SS))
-> -		parent_l1ss_cap = 0;
-> -	if (!(child_l1ss_cap & PCI_L1SS_CAP_L1_PM_SS))
-> -		child_l1ss_cap = 0;
-> +	parent_l1ss_cap = aspm_get_l1ss_cap(parent);
-> +	child_l1ss_cap = aspm_get_l1ss_cap(child);
->  
->  	/*
->  	 * If we don't have LTR for the entire path from the Root Complex
-> @@ -1367,6 +1372,8 @@ EXPORT_SYMBOL(pci_disable_link_state);
->  static int __pci_enable_link_state(struct pci_dev *pdev, int state, bool locked)
->  {
->  	struct pcie_link_state *link = pcie_aspm_get_link(pdev);
-> +	struct pci_dev *child = link->downstream, *parent = link->pdev;
-> +	u32 parent_l1ss_cap, child_l1ss_cap;
->  
->  	if (!link)
->  		return -EINVAL;
-> @@ -1398,6 +1405,16 @@ static int __pci_enable_link_state(struct pci_dev *pdev, int state, bool locked)
->  		link->aspm_default |= ASPM_STATE_L1_1_PCIPM | ASPM_STATE_L1;
->  	if (state & PCIE_LINK_STATE_L1_2_PCIPM)
->  		link->aspm_default |= ASPM_STATE_L1_2_PCIPM | ASPM_STATE_L1;
-> +	/*
-> +	 * Ensure L1.2 paramters: Common_Mode_Restore_Times, T_POWER_ON and
-> +	 * LTR_L1.2_THRESHOLD are programmed properly before enable bits for
-> +	 * L1.2, per PCIe r6.0, sec 5.5.4.
+Reviewed-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
 
-s/paramters/parameters/
+-- 
+Regards,
 
-> +	if (state & link->aspm_capable & ASPM_STATE_L1_2_MASK) {
-> +		parent_l1ss_cap = aspm_get_l1ss_cap(parent);
-> +		child_l1ss_cap = aspm_get_l1ss_cap(child);
-> +		aspm_calc_l12_info(link, parent_l1ss_cap, child_l1ss_cap);
-
-Why doesn't this happen already via normal enumeration?  It looks like
-this path should do it even without this patch:
-
-  pcie_aspm_init_link_state
-    pcie_aspm_cap_init
-      aspm_l1ss_init
-
-> +	}
->  	pcie_config_aspm_link(link, policy_to_aspm_state(link));
->  
->  	link->clkpm_default = (state & PCIE_LINK_STATE_CLKPM) ? 1 : 0;
-> -- 
-> 2.43.2
-> 
+Laurent Pinchart
 
