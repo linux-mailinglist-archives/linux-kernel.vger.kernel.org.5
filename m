@@ -1,157 +1,122 @@
-Return-Path: <linux-kernel+bounces-87912-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87913-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E17186DAFE
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 06:21:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF05086DB00
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 06:21:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D0191F25E21
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 05:21:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40262286654
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 05:21:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D03E50278;
-	Fri,  1 Mar 2024 05:21:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 917E350278;
+	Fri,  1 Mar 2024 05:21:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="Wapk/aCW"
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R0EmdqVA"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C79B3FE3F;
-	Fri,  1 Mar 2024 05:21:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5213947F77;
+	Fri,  1 Mar 2024 05:21:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709270468; cv=none; b=A2/8poOEqJ5kTsI2yDO0RdqrES9eFkIYCXVxIModKLmhJCWBB5gs/gxED4IX1yTl/zqwWp9S2CPig1Dv9DK4Vjh5H+5IwAN/JFaVlriNYM99T9ofrdA/uA3qk7u/PLfECCTnyau60aU4K6WeO2qC73WvdCqHrRNaTP4vSrvskFg=
+	t=1709270503; cv=none; b=tSYPZGqQQ9p44EPHxz/P9rFoQp+Kl/MmYFUrv2UdaZaPLJpEOas4WvKRmsb6bynlAckNZ4X8L9/uOuvfW1RkbLhmViUmgMl4/ykmZ82VM+g4Vr4puUwWam2fjVcff400fdKgVEyXlQwGUuLdlFkGbYgqE/kLIxXKcFtLp6hUlzs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709270468; c=relaxed/simple;
-	bh=hYkXkTirDR6JozbmGZTEpu69g7CUbtqTAq7OcMqZhOc=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=Iocq4dxRhnaoFM7L4PQg7dxU+e/w+RjhzLqVggpcMmhGGtII5aIZqF6kAOvfE7/0G9eeiJlY+PWnjIoeWhZg7eFZts8QAFiou3sR4HFBdu6miCCZzUyvVt+lTAUfLwUdhyvXaNl9v7mYhm2sEppRQS9LZonLSgDIhLW+h33BrFY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=Wapk/aCW; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:References:Reply-To:Cc:To:From:Subject:MIME-Version:Date:
-	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
-	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
-	In-Reply-To:References; bh=TGGFXxkdaHkpLZsjv4M/o7SAoLYzqZm3P9d/C+KSKlg=;
-	t=1709270466; x=1709702466; b=Wapk/aCWBSGkwEKCmS3HWS/GqmYRwlzO0aQLvfxbgyWM6Ga
-	vkWI7f0EsQSJKupe2IXnrnwB0RMsGnYRy/ugpzXxVPZWqOy39fiSopr0GspzDyuWXTWFCaKel918q
-	Laq5Vcxuja0lvkt8mAjp7p8ppur6k3rBd1zRbKXzWSkjElJ7HhSsObbbdhQxqYNFqk4liDGN9yWh8
-	elLt8eikCTDvX5859ptvjwnxuvB41IOx5fuDguuPf42YdGndMX3IHX4yha7fZp9ZE+H51kXs4pk2Y
-	Mzu6Rlk4kTQXrBFGE24qz2PgXw5uj0JuqC++XliOT5cdM5lM97PS0W0ulR8VtcEQ==;
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1rfvKI-0005dh-Vv; Fri, 01 Mar 2024 06:20:55 +0100
-Message-ID: <d2465271-1e4b-4bae-9399-4d49d3938048@leemhuis.info>
-Date: Fri, 1 Mar 2024 06:20:52 +0100
+	s=arc-20240116; t=1709270503; c=relaxed/simple;
+	bh=Qj2tLZtZ2MnXE8HeAJjriLlacuwyb0Ao7gC+Tg1zCBs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=aXay/mxVqiWRAvujGW+RAnfmXY1kOQ4+AaqHNsY4OKoA/SoHblFa8oBOfBlJcxWIGV5FKd6CjvAMEln5xKbXI4zFZw8jlR5vdOmdVx9OBhFbwnBoBn/6x4RxhvAFUADCCJWs8rCc10uRkgvrPqN7eW4KEYDXOPFRTSccqOqeVDs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R0EmdqVA; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a449c5411e1so6017966b.1;
+        Thu, 29 Feb 2024 21:21:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709270501; x=1709875301; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SklaswezKpY2+1y0XS0FlAH9tuUjyIoA0V4YKjlG8BI=;
+        b=R0EmdqVAmCJvccPa0sxuP0vi3JwbPcRHtXcu/AXzzN/o1hvB08+55tkibCSwYYA84t
+         MbgjKRlz5qrfbZLc+siZ0ggOkcF+WoiaLM4u53VTBkMl31u69li5un4v/SLXtpKrKtpG
+         C9CYMb4Sv7Zl6sp1CiWfhw/kZPE6bzZ6kBIhwA/a002qSzWtl7wfsHZfLk0FgSi/jxMO
+         IK280lDMxVD5mhspTp4PhHe8yAR1q/52KpFbuIAaLvn1E7nB2mxBU6jkBka3r/AzyyM8
+         3VLqkgUV5hQm2NFEQFVt1PeSrPwFQ/xGDuzcY2czLBVl88mfe5JwWkar4TCxMxtOjSMP
+         IAIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709270501; x=1709875301;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SklaswezKpY2+1y0XS0FlAH9tuUjyIoA0V4YKjlG8BI=;
+        b=JmwtRnUyOX0tuFCatdj3nelBshwZ7u1D36tBgG3JjtX6s32nMWV6ZL54WleCpqjwhr
+         Fp9XVxwu/o0ILOUzc7sRD/gNg1Tmxa1kHld8yuU7S5a4+142+vwEorAoo+jr8ATtuVgD
+         Ed8pZ9gsEg/3aTsREFBzUAb8W6ihPstgwmUFncJ8PI5wtBVCe/GDRUHnpb4Be3UtLZ22
+         knPygI7Pnnm1o7WG9DbHTCQB/jB7RjyOFe3jCjsjOj3+V/on3xp02xcTyi/DzGj0tyXg
+         xnOYZyMWkgO8Re299Ea8VbK4geAJ8V93ZD52JNuToCeNDtpHL8/mmBBAhfZ0meIEVFQS
+         QL6Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXTCTfYTl0ifG4LbQA2qaf7hGXDAaOyIQZ98LOLo/GxElLy0urrZwwCAtG75GFdAWGrCGEy0vTrTvImv9VSx3DDfgxkpFTvZTzsNqjwtg2NLPt4EejUf5pyQENHbGwVZsW+Qq/v3nC7Fg==
+X-Gm-Message-State: AOJu0YyPqz1RXlaa8FBV+7W8GJCz/nygdPMFlIgW45WdADJZa3fIq8OB
+	pEd1Cl/zGrbNuAOy/NnAEduhHC/9bRdsfT+rY2PRuweL2h9tjV80t0fdmtetm5iPLDANMGe54BG
+	VobSk0NCS7kXN5BktBpLhd8NwjKU=
+X-Google-Smtp-Source: AGHT+IGET3NOaLRRZnH2bw1a3UmEv71dQ2BUqrpAAHnkRq0XM79z2IXN07RFGJg5LqpXTEmuY26raYoc+M7W22Jy3HI=
+X-Received: by 2002:a17:906:f989:b0:a44:27e8:f514 with SMTP id
+ li9-20020a170906f98900b00a4427e8f514mr407888ejb.38.1709270500676; Thu, 29 Feb
+ 2024 21:21:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH regression fix] misc: lis3lv02d_i2c: Fix regulators
- getting en-/dis-abled twice on suspend/resume
-Content-Language: en-US, de-DE
-From: "Linux regression tracking (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-To: Hans de Goede <hdegoede@redhat.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Eric Piel <eric.piel@tremplin-utc.net>,
- linux-kernel@vger.kernel.org, Paul Menzel <pmenzel@molgen.mpg.de>,
- stable@vger.kernel.org, regressions@lists.linux.dev
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>,
- Linux regressions mailing list <regressions@lists.linux.dev>
-References: <20240220190035.53402-1-hdegoede@redhat.com>
- <1d8226cd-df43-4ef6-8425-2db01d513b32@leemhuis.info>
-In-Reply-To: <1d8226cd-df43-4ef6-8425-2db01d513b32@leemhuis.info>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1709270466;28c93d34;
-X-HE-SMSGID: 1rfvKI-0005dh-Vv
+References: <20240229-rk-dts-additions-v3-0-6afe8473a631@gmail.com>
+ <20240229-rk-dts-additions-v3-2-6afe8473a631@gmail.com> <823379825559bb76088c31f44f998dd3@manjaro.org>
+In-Reply-To: <823379825559bb76088c31f44f998dd3@manjaro.org>
+From: Alexey Charkov <alchark@gmail.com>
+Date: Fri, 1 Mar 2024 09:21:30 +0400
+Message-ID: <CABjd4YybaQnKm+VpU_xVrCb=pxQ7oQXPHGZzn_u1w_h3yn7gwg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/5] arm64: dts: rockchip: enable automatic active
+ cooling on Rock 5B
+To: Dragan Simic <dsimic@manjaro.org>
+Cc: Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Heiko Stuebner <heiko@sntech.de>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
+	Viresh Kumar <viresh.kumar@linaro.org>, Chen-Yu Tsai <wens@kernel.org>, devicetree@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 27.02.24 17:25, Linux regression tracking (Thorsten Leemhuis) wrote:
-> On 20.02.24 20:00, Hans de Goede wrote:
->> When not configured for wakeup lis3lv02d_i2c_suspend() will call
->> lis3lv02d_poweroff() even if the device has already been turned off
->> by the runtime-suspend handler and if configured for wakeup and
->> the device is runtime-suspended at this point then it is not turned
->> back on to serve as a wakeup source.
->>
->> [...]
->>
->> Fixes: b1b9f7a49440 ("misc: lis3lv02d_i2c: Add missing setting of the reg_ctrl callback")
->> Reported-by: Paul Menzel <pmenzel@molgen.mpg.de>
->> Closes: https://lore.kernel.org/regressions/5fc6da74-af0a-4aac-b4d5-a000b39a63a5@molgen.mpg.de/
->> Cc: stable@vger.kernel.org
->> Cc: regressions@lists.linux.dev
-> 
-> Paul, did you maybe test this? I suppose Greg had no time to review this
-> yet due to all the CVE stuff and stable tree maintenance; but with a bit
-> of luck a "Tested-by" from your side might motivate him or somebody else
-> to look into this.
+On Fri, Mar 1, 2024 at 1:25=E2=80=AFAM Dragan Simic <dsimic@manjaro.org> wr=
+ote:
+>
+> Hello Alexey,
+>
+> On 2024-02-29 20:26, Alexey Charkov wrote:
+> > This links the PWM fan on Radxa Rock 5B as an active cooling device
+> > managed automatically by the thermal subsystem, with a target SoC
+> > temperature of 65C and a minimum-spin interval from 55C to 65C to
+> > ensure airflow when the system gets warm
+>
+> I'd suggest that you replace "automatic active cooling" with "active
+> cooling" in the patch subject.  I know, it may seem like more of the
+> unnecessary nitpicking, :) but I hope you'll agree that "automatic"
+> is actually redundant there.  It would also make the patch subject
+> a bit shorter.
+>
+> Another option would be to replace "automatic active cooling" with
+> "automatic fan control", which may actually be a better choice.
+> I'd be happy with whichever one you prefer. :)
 
-Hmmm, Greg seems to be pretty busy with other stuff. Hans, is there
-maybe someone we can motivate into reviewing this to make it easier for
-Greg to pick this up and send it to Linus before -rc8/the final?
+Sounds good to me, thanks!
 
-Sure, it's "just" a warning fix, still would have been nice to get this
-into -rc7. But I guess time has already run out on that. :-/
+> Otherwise, please feel free to add:
+>
+> Reviewed-by: Dragan Simic <dsimic@manjaro.org>
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
+Thank you Dragan, much appreciated!
 
->> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
->> ---
->>  drivers/misc/lis3lv02d/lis3lv02d_i2c.c | 21 +++++++++++++--------
->>  1 file changed, 13 insertions(+), 8 deletions(-)
->>
->> diff --git a/drivers/misc/lis3lv02d/lis3lv02d_i2c.c b/drivers/misc/lis3lv02d/lis3lv02d_i2c.c
->> index c6eb27d46cb0..15119584473c 100644
->> --- a/drivers/misc/lis3lv02d/lis3lv02d_i2c.c
->> +++ b/drivers/misc/lis3lv02d/lis3lv02d_i2c.c
->> @@ -198,8 +198,14 @@ static int lis3lv02d_i2c_suspend(struct device *dev)
->>  	struct i2c_client *client = to_i2c_client(dev);
->>  	struct lis3lv02d *lis3 = i2c_get_clientdata(client);
->>  
->> -	if (!lis3->pdata || !lis3->pdata->wakeup_flags)
->> +	/* Turn on for wakeup if turned off by runtime suspend */
->> +	if (lis3->pdata && lis3->pdata->wakeup_flags) {
->> +		if (pm_runtime_suspended(dev))
->> +			lis3lv02d_poweron(lis3);
->> +	/* For non wakeup turn off if not already turned off by runtime suspend */
->> +	} else if (!pm_runtime_suspended(dev))
->>  		lis3lv02d_poweroff(lis3);
->> +
->>  	return 0;
->>  }
->>  
->> @@ -208,13 +214,12 @@ static int lis3lv02d_i2c_resume(struct device *dev)
->>  	struct i2c_client *client = to_i2c_client(dev);
->>  	struct lis3lv02d *lis3 = i2c_get_clientdata(client);
->>  
->> -	/*
->> -	 * pm_runtime documentation says that devices should always
->> -	 * be powered on at resume. Pm_runtime turns them off after system
->> -	 * wide resume is complete.
->> -	 */
->> -	if (!lis3->pdata || !lis3->pdata->wakeup_flags ||
->> -		pm_runtime_suspended(dev))
->> +	/* Turn back off if turned on for wakeup and runtime suspended*/
->> +	if (lis3->pdata && lis3->pdata->wakeup_flags) {
->> +		if (pm_runtime_suspended(dev))
->> +			lis3lv02d_poweroff(lis3);
->> +	/* For non wakeup turn back on if not runtime suspended */
->> +	} else if (!pm_runtime_suspended(dev))
->>  		lis3lv02d_poweron(lis3);
->>  
->>  	return 0;
-> 
-> 
+Best regards,
+Alexey
 
