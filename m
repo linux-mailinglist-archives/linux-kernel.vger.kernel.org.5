@@ -1,81 +1,81 @@
-Return-Path: <linux-kernel+bounces-88557-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88559-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E204F86E366
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:37:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7452C86E36C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:38:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 62152B211BA
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:37:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9093B1C223A2
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:38:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F75720E4;
-	Fri,  1 Mar 2024 14:37:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DF202B9B5;
+	Fri,  1 Mar 2024 14:38:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TV4qXrW6"
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="CLGjGWMU"
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2079.outbound.protection.outlook.com [40.107.100.79])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FE081FA0
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 14:37:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709303864; cv=none; b=PT3lOxe3JeLUXbnNwog8L1BF6OjzmJua+MecYIF7FWikUd9VBPlLx5YY9dz8KlhvlQs0ayhUoAVC07GJUcTZ9pCpfsX5NCCVv9iIvn3f4GCFulQX7uQr4Xu9zpp3uUrJlziMihfPbBDRZ15WY572g4V/PXArLRzbXwpe6y41YzU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709303864; c=relaxed/simple;
-	bh=Tu1IhSm5ytRoCYM2NUIGoUQfc9tPBjeGnKpUrWBIzS4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=eeBm8RKZKPtI4mU/6WHrjpmyBzTwWJ10utvu8nnr2tFSuGoc38GH3sXvbKoZcBD0/CdTmRkubYma98qYmBC9/apDH5RTbgqQfAKX01QSZQ1beX2x5+GvI2LspD1kVzP2FYDHsyG4vcM4TsNk7bsSkrorauw6qeG1g7u4aZHVjFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=TV4qXrW6; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1dbae7b8ff2so6097815ad.3
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 06:37:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709303862; x=1709908662; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=oVtdCDkncAEjYp5VDfB0TkA+iNPQzbJhtZQ9XlyWAes=;
-        b=TV4qXrW63j5bHEgVYRDL5i5MnfUy4QudFtwBnXK5JBFifgyAyzNscdLpFUhh40SdYO
-         QsEqUAU9WT4kPyHqgZMsSrkAIBj/7EUdVcujrgssNMabe9khIAb5TleYStqMC6mMFXY2
-         +ovfR4q1D5pWeZGSTz+e+tExb6CzLLrS+4C0MO6pMMoVDz08WrtMVSYtRLhQ4TI7kQb9
-         EiZk9vv+mss9H61A0HrOp2jf5pg7edESrxqqcPc+48+jq8Gx88Z4kZwJ4AT3n+Y+w23y
-         tts8axSVuIH9A648mO3cZzEZFLRYCG8jqyE2CAiGjIGAerPwkFXCdPdvkcsCRnJP71Gp
-         lBEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709303862; x=1709908662;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oVtdCDkncAEjYp5VDfB0TkA+iNPQzbJhtZQ9XlyWAes=;
-        b=e0O9czIPHQ3Dwhq1AhNdzZoFJARSbMzTWV7gQ3QnezBCfA5GPTflGhXHuoygUxnmza
-         uUWPrXogGmeTcnt1yrkui/6OmPx6PrZJ/z38HB2DW/cvilI7gQHx1cgCkEznnN/Fzv9L
-         q7yV6HdZ6Qo1Xmdxe9cN2jXltOongABXSkLZorc62cSXKqq4fEckc1bQuu2ycty6nEpC
-         IBVbERmimbt0dl77uksTZ4g0w5Z7UEyCTvDa5c2XyWg4vF9kiHfWgi91rdZ2/wMlOoth
-         NKncrrar3+rJ021TdXFXbI7Eb1gcjNIBCbq0xYsPMGmDkFDDgIjYaKS62XAdWaMPr0Oa
-         144Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXYQjn+3pYZxi2I87t38LZ29vVCuzitXp3yz2Uvi0OqCmnZem1WNxnR6HTUpAMlgS+EZ8JPQo2kio+AhZl8HVhssK4kFHSMMrK2FNAu
-X-Gm-Message-State: AOJu0YzMb4LlaCtjYJ4UrURi9B48/OijQgHnvgWvsZWpMgpkzcl74Frx
-	hQgxN1cFYwbdpilKdfRig00MtVShGqxj2GWjnCrFXp/7ZONDoVZoSCDN/QcLHbQ=
-X-Google-Smtp-Source: AGHT+IEc0VYmCsFGtKuNFZxqUlC22U6RVuMYWS58KkWVcBcHQtJsz9h797yn3Q9ko08aW7bsTmOwSQ==
-X-Received: by 2002:a17:902:d3c4:b0:1dc:5d9d:6eb3 with SMTP id w4-20020a170902d3c400b001dc5d9d6eb3mr1641483plb.21.1709303862445;
-        Fri, 01 Mar 2024 06:37:42 -0800 (PST)
-Received: from sumit-X1.. ([223.178.213.98])
-        by smtp.gmail.com with ESMTPSA id c3-20020a170902d90300b001db94bead0asm3497899plz.193.2024.03.01.06.37.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 06:37:42 -0800 (PST)
-From: Sumit Garg <sumit.garg@linaro.org>
-To: op-tee@lists.trustedfirmware.org
-Cc: jens.wiklander@linaro.org,
-	ilias.apalodimas@linaro.org,
-	jerome.forissier@linaro.org,
-	linux-kernel@vger.kernel.org,
-	mikko.rapeli@linaro.org,
-	Sumit Garg <sumit.garg@linaro.org>,
-	stable@vger.kernel.org
-Subject: [PATCH] tee: optee: Fix kernel panic caused by incorrect error handling
-Date: Fri,  1 Mar 2024 20:07:31 +0530
-Message-Id: <20240301143731.3494455-1-sumit.garg@linaro.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7D6A1FBF;
+	Fri,  1 Mar 2024 14:38:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.100.79
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709303888; cv=fail; b=ZGCnuJ4khP0Wz63aRjHJx/hR0RIZr3rqmQaG7w2Vv77HJen270D/j9XxgLe1aUHyNo583jgmYFhRHjTGgJekX9kY4QDvavytSKMVRRJgNyqYwWtchOnd9j2OcNlqNaPce/CKWFScpBbrKFEYFoKQh4oV6Nd5emfr8dSnbgsXMRs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709303888; c=relaxed/simple;
+	bh=+n5bJO1kjUsOGUiL5eTpfiBUT4qd9gYcXgiGB3KH2ow=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=cAd5k9l+fwcS/gRX67EuFtJ1UZ1zan5JU0YWBoXEwWNhlnrO9WwTP0VWIemUEKK+nMcx4NufUN2Fz/kPgNOS4zTHOI9BNt6j+YWo5Bqk2Xy2fyREI1bkodFuG2zt8JUunQiutBLv56/vpjtOiWVR9IlpO8VqUesPp60Zh1ADAmA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=CLGjGWMU; arc=fail smtp.client-ip=40.107.100.79
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=a8KW+6oMLo9HzwUJCmD223Jn21l41QRfQ11SlIsJdJR04oGSefiqvwRLxszOjBhWHAnJWc7f16BNg34l9FyUVjUz77K9GXz6FEBwNEm8LUAJXbkqw9Eh/blum/NMFru3196XJRvV6qvuna0Me6OamwsK/S+vFtj6zbAgFsuUDsO7Cs3ySHgVGZNE/8hdMtNOvF1twQHPzADZwu/vIqpc/V0PL579n1uEUFB0ajceBH9YZky9bhZHjgVRdskzSs8WcVI8N4YRXONoZRds7MzHHUjY+FzrUuCncTBbRaMJMJQ37cBpL+rlA4WRlBAbOl7lMlj3NznioheMIKoL77ihIA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=9x2PIE7wx3EAWYqm4nOiur0KKaknJ1/NoQPoMETQ/w0=;
+ b=G2z0c0/0crdP4WfAsCgVDcltHDV53TN23dJqjUmrLD/A9cX8215napComg8LhSVC9YYW6RNPufv4ieQan5tJuog7pV3L3Vs2n8uGOUq0OIS0ze5xvG4pMksX/2LKUHKlxriHzX3OGk1uTmxe47/EcsXEXWYC0UhLF+tbCtgaIUH9E3+wpwuT1Dv5m7UykkucnPJ6ydqxBzVWO/GQUl/528TaSRO1YOmovfRmelAEtKO5Jx7ugyh/aC3ExJ6LIrFE6Q2l83I4ka0EZM99nts8F0Ft63pIQk1OCHTBg4uJMnGLKWVbC55qKUS4eMQOw+l+aL0gcQGzb/H3CiX9KXnerQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=alien8.de smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9x2PIE7wx3EAWYqm4nOiur0KKaknJ1/NoQPoMETQ/w0=;
+ b=CLGjGWMUlwAB6NrKZc7fcaIk5Xgfw5pDcoWCOdU2caUWxvvviMbHQSzr0ui/EED+fU+mY59HkhiLjRWGABR7tfu+3Mzh6/LZ5i6kbeYj5GKJYzkpshhC/D+2YZnboFow/2gwLUaXnAqlAhk19w0zvRw4uZbjRnuk1hgBzTRLi/w=
+Received: from SN1PR12CA0075.namprd12.prod.outlook.com (2603:10b6:802:20::46)
+ by CY8PR12MB8314.namprd12.prod.outlook.com (2603:10b6:930:7b::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.41; Fri, 1 Mar
+ 2024 14:38:04 +0000
+Received: from SA2PEPF0000150A.namprd04.prod.outlook.com
+ (2603:10b6:802:20:cafe::9a) by SN1PR12CA0075.outlook.office365.com
+ (2603:10b6:802:20::46) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.50 via Frontend
+ Transport; Fri, 1 Mar 2024 14:38:04 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ SA2PEPF0000150A.mail.protection.outlook.com (10.167.242.42) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7362.11 via Frontend Transport; Fri, 1 Mar 2024 14:38:03 +0000
+Received: from quartz-7b1chost.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 1 Mar
+ 2024 08:37:58 -0600
+From: Yazen Ghannam <yazen.ghannam@amd.com>
+To: <bp@alien8.de>, <tony.luck@intel.com>, <linux-edac@vger.kernel.org>
+CC: <linux-kernel@vger.kernel.org>, <avadhut.naik@amd.com>,
+	<john.allen@amd.com>, <muralidhara.mk@amd.com>, <sathyapriya.k@amd.com>,
+	<naveenkrishna.chatradhi@amd.com>, Yazen Ghannam <yazen.ghannam@amd.com>
+Subject: [PATCH v2 0/3] FMPM Debug Updates
+Date: Fri, 1 Mar 2024 08:37:45 -0600
+Message-ID: <20240301143748.854090-1-yazen.ghannam@amd.com>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -84,57 +84,68 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA2PEPF0000150A:EE_|CY8PR12MB8314:EE_
+X-MS-Office365-Filtering-Correlation-Id: 98a3ee3b-ed10-4814-a018-08dc39fd33c8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	rA4fzXDiDmTXiXtRO+J430iARbr/FoYIclqDRt0kGMKAAVhS9E/2Qk/udFDoz1p4KZ12KEOnxT/p5m8iCJJSURPWGEN1i4uEga8ofb4DwYMrt4s5DnSFTTC/SCS2UXyxDuYuoDElwC92vHFs7ozp+WhN3BLdKmckM+XAy3e7fffM9p/TF5j5xVRX7QUEBjD8jxkfFTDZEYu/BD1AY7snheuqUWfCvljPkLqoIUtQEw9cy5Cui/YKLxlPsxkfnCszvGWELws1P+ZyP0UCL46R1u6Gaq2+uT8tkmFrxaviSWy4EfqPRJvP7MNfYUJfkyOwojMoPn+19lMSE5fcmHGXq+Cwmz734twMWg/X3R9wuxPKHND1wUl9UP/GC8AqbWdVKOJ7X13uBcnXUgRHeYTWIa90xQ4eZC1Tv4esU4pGCCN8rMJXiqNpUuYu0Wj7BY0x5iBBJn1D8dQ340SvmFXYbkoR7H5jz5HUG6vzTumeeziwQkpCSWUM0L26TWSJ++aUaDbjUvgTwuu0odnMUED+n3Ut7OCzwfYoT0QzTqWcwajDM8UhkvfBFcIRgxJlhnNvUwWPtsupmtD/4Fu0XDwDJWq26rIZBSJUzeoWhgGe+BQNiRFV+BnnmS2JWRsesGoybyts9iqdmYlp9EeL/ReTtuajwD00fjxovJqMMReitj8OLNZyP/QIJLSgEKxf+KLbK/FIzlVjQPcIqEJquMuJfA==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(82310400014);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Mar 2024 14:38:03.7438
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 98a3ee3b-ed10-4814-a018-08dc39fd33c8
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SA2PEPF0000150A.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB8314
 
-The error path while failing to register devices on the TEE bus has a
-bug leading to kernel panic as follows:
+Hi all,
 
-[   15.398930] Unable to handle kernel paging request at virtual address ffff07ed00626d7c
-[   15.406913] Mem abort info:
-[   15.409722]   ESR = 0x0000000096000005
-[   15.413490]   EC = 0x25: DABT (current EL), IL = 32 bits
-[   15.418814]   SET = 0, FnV = 0
-[   15.421878]   EA = 0, S1PTW = 0
-[   15.425031]   FSC = 0x05: level 1 translation fault
-[   15.429922] Data abort info:
-[   15.432813]   ISV = 0, ISS = 0x00000005, ISS2 = 0x00000000
-[   15.438310]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-[   15.443372]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-[   15.448697] swapper pgtable: 4k pages, 48-bit VAs, pgdp=00000000d9e3e000
-[   15.455413] [ffff07ed00626d7c] pgd=1800000bffdf9003, p4d=1800000bffdf9003, pud=0000000000000000
-[   15.464146] Internal error: Oops: 0000000096000005 [#1] PREEMPT SMP
+This set adds two pieces of debug functionality.
+1) Saving the system physical address of a recorded error.
+2) Printing record entries through a debugfs file.
 
-Commit 7269cba53d90 ("tee: optee: Fix supplicant based device enumeration")
-lead to the introduction of this bug. So fix it appropriately.
+I'd like to include Murali, Naveen, and Sathya as co-developers, since
+this is based on their previous work from here:
+https://lore.kernel.org/r/20231129075034.2159223-4-muralimk@amd.com
 
-Reported-by: Mikko Rapeli <mikko.rapeli@linaro.org>
-Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218542
-Fixes: 7269cba53d90 ("tee: optee: Fix supplicant based device enumeration")
-Cc: stable@vger.kernel.org
-Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
----
- drivers/tee/optee/device.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+v1 Link:
+https://lore.kernel.org/r/20240226152941.2615007-1-yazen.ghannam@amd.com
 
-diff --git a/drivers/tee/optee/device.c b/drivers/tee/optee/device.c
-index 9d2afac96acc..d296c70ddfdc 100644
---- a/drivers/tee/optee/device.c
-+++ b/drivers/tee/optee/device.c
-@@ -90,13 +90,14 @@ static int optee_register_device(const uuid_t *device_uuid, u32 func)
- 	if (rc) {
- 		pr_err("device registration failed, err: %d\n", rc);
- 		put_device(&optee_device->dev);
-+		return rc;
- 	}
- 
- 	if (func == PTA_CMD_GET_DEVICES_SUPP)
- 		device_create_file(&optee_device->dev,
- 				   &dev_attr_need_supplicant);
- 
--	return rc;
-+	return 0;
- }
- 
- static int __optee_enumerate_devices(u32 func)
+v1->v2:
+* Patch 1 replaced with suggested patch from Boris.
+* Patch 2 update variable names and some code flow.
+* Patch 3 rebase on changes from 1 and 2.
+
+Thanks,
+Yazen
+
+Borislav Petkov (AMD) (1):
+  RAS: Export helper to get ras_debugfs_dir
+
+Yazen Ghannam (2):
+  RAS/AMD/FMPM: Save SPA values
+  RAS/AMD/FMPM: Add debugfs interface to print record entries
+
+ drivers/ras/amd/fmpm.c | 199 +++++++++++++++++++++++++++++++++++++++++
+ drivers/ras/cec.c      |  10 ++-
+ drivers/ras/debugfs.c  |   8 +-
+ drivers/ras/debugfs.h  |   2 +-
+ 4 files changed, 215 insertions(+), 4 deletions(-)
+
+
+base-commit: 3513ecaa685c6627a943b1f610421754734301fa
 -- 
 2.34.1
 
