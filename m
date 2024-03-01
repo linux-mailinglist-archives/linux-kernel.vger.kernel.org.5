@@ -1,185 +1,330 @@
-Return-Path: <linux-kernel+bounces-87902-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87903-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3553186DAE0
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 05:53:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD7ED86DAE3
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 05:53:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 58F331C230BE
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 04:53:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 520E21F250FF
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 04:53:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DD295026D;
-	Fri,  1 Mar 2024 04:53:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E421451C5E;
+	Fri,  1 Mar 2024 04:53:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="HAa6+FCg"
-Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2054.outbound.protection.outlook.com [40.107.13.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b="fgvO7kpX"
+Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5918A4EB23;
-	Fri,  1 Mar 2024 04:53:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.13.54
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709268811; cv=fail; b=J4c5I585UGoRi2rVI4ouNDuWPCg/7vpNAsHoVXYwq91aYRGpYGoiVtNg3YqEIibxReV6frxhOna4PfCjgkZp8IiUkwfiJqJfChy5462lySuNfiKfVUyW91leC6Xw+50y1hEQclnudtyqmX4KFwxZiO/eoPAEm9ivlH3xCtpQguc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709268811; c=relaxed/simple;
-	bh=3o7qJ6R2QxMkPGTXqgGJ7JdEjlmSh/VNt4bMxhtkPZU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=p/XPN/De5vcFTXd+5BfZLCGbMXA+UujMqGN9ja/OYON5rSADahghmMJN60PUdb8Nbtg6r8Qjs+K9ZLolxgtfcYTyB/z0aiFzTOmtzZWLqmQ5xLRhAoesa0qli9rurV0K2ftMu0Yfp/+UNdoFX3kX+FRmseaasgGwpCTYVjfnppQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=HAa6+FCg; arc=fail smtp.client-ip=40.107.13.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=K6XrNg1Hh2xcIqpEJ8ZYlH8pesGvGZ0BZx+IMUGH0L2dMG+Syg2pmTslwG2ZytudYAAZO4uVuba/7QJa2zJ1VrgvkjCjLX8bZJ8CQp5KDobBSX5DWEcASa7x1riwkaz3mqP68qkBP1oTaFr/wShckvfD65vdS/FS/a7Uzk2ufyoUDaXFvbCR4nRaTDZ9SjW2xaraREc3yWbu08cP5pCyrpxFoPieAEnLOjZsebLQf3FtirBVvsJDqtFYKd5lF1eZ0eQMeMrBfgOHjPHavuejfEqIE0sN5DMFDksPc7g3Xc+YSIyboZEKrLrURcLmh0MNOCRXwbS9bCIEUo6tYvCQ1Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QJpjGB7F+QJnkOhV9NZyVJSn+A/dw1ThGUXl+/0wAFg=;
- b=KkxnZ7xQxe5O/Z9KdBvbBOmihdm5i6ebHdwUHabG2ag1Qh2Bm09BrCB+gHUVNK3dMaBWLhZdZQJf9KiSxytQrFbo8/n9gnPQ8frH3IJHjfBGBHbjtldMTecFXiY3sQ5IIsZJUqizVBnUqh7p8HSfdp2RW8p9iD/TQCei/hb8FihB7L76rGsHSGrksgnOt/wQ1/5o2NC9vZOxuieeNqxKCQGjVzFoU2ObtC3LS492PnSz3I977cW04m62pren086/XWZALS8vxUCSb8HfFgKGYpxWpZna3gKfEnb4YCdIzFAyIn2biyVGdIrkY0omHRCsYrhBwLHj9A0RH/rT2SmEqg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QJpjGB7F+QJnkOhV9NZyVJSn+A/dw1ThGUXl+/0wAFg=;
- b=HAa6+FCgcNZrXOTrjA5TsnNk0X+1UKg3F0asZxB4wpHF/uVjG+8w6XeCPUxzUAqZxfV6WMW2Cthpl9lr7YmGpfkIU7uT0jhxROBvWomyJ4wxYBErzhCM9pDqKvUBJ/mdeXRR8wTAzLj/IIVoPFB0ZTZxyPaH9G5uVuBn+4R6Kfk=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by DB9PR04MB9554.eurprd04.prod.outlook.com (2603:10a6:10:302::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.41; Fri, 1 Mar
- 2024 04:53:24 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::9af4:87e:d74:94aa]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::9af4:87e:d74:94aa%7]) with mapi id 15.20.7316.035; Fri, 1 Mar 2024
- 04:53:24 +0000
-Date: Thu, 29 Feb 2024 23:53:16 -0500
-From: Frank Li <Frank.li@nxp.com>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc: linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
-	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/4] arm64: dts: imx8qxp add asrc and sai
-Message-ID: <ZeFfPMzef9GoDys/@lizhi-Precision-Tower-5810>
-References: <20240228-asrc_8qxp-v3-0-d4d5935fd3aa@nxp.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240228-asrc_8qxp-v3-0-d4d5935fd3aa@nxp.com>
-X-ClientProxiedBy: SJ0PR03CA0250.namprd03.prod.outlook.com
- (2603:10b6:a03:3a0::15) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BCF350275
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 04:53:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.49
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709268814; cv=none; b=BCC1xTXiNeL6BvQGnf5gUJRRrh3zUEdv1MALT0TBVxQnxw1urRrJFLM9oe3swZIsVbOdt8pgCBNDQH3sTPFFD/TJEqmyNGTaMPdlHMLw7edEJDIVENey0MW41FKCH35v1Tgo3gm8SgnFYNyH4mPaq6ltRkHapEh2PFmmcPOMVQ0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709268814; c=relaxed/simple;
+	bh=8ZH9AyJ+xU1bmbATL4Qv8AX1fQNbVKSedUNCsAKNXLU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WpU50knkYTR8OMDrSjZXrjqyQrQGlCPowZYsbTTKXPxNu4EeMe4NjIOsL6uG/AZ/gnVGVyGkfv2D36l0GsOeOn0F3Y5HsID/PPp9V+He65PHf07tWbSLOt+nQ1VRd/aUnP8WX1x9YhvmJepOLygfkIuq3V00+0kpa5pqCWHYYGU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org; spf=none smtp.mailfrom=brainfault.org; dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b=fgvO7kpX; arc=none smtp.client-ip=209.85.166.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=brainfault.org
+Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-7c78b520bc3so64247439f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 20:53:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1709268811; x=1709873611; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NHf6nfkVPD7L9IoFJ6h/nCUsLd5vKy2G9YCRH63MbH0=;
+        b=fgvO7kpXPUA7WuYawVZ83QLgPqEG28qCQEkrJBvWaMRxq5iDuCw2NmUYJbb0EO5ML1
+         yuazSMrVYd29+J0JPxShoLEK+SaoFiNGA1GI6pK1LfsVt4f7PXKY2IUlqyIMFkqtMMCt
+         R1/spF/p8vfyZzNDcITZ0jMNUOJoZw4ibMXBHoRCHG9SricpWNWICTWuTjSis7w4wN8o
+         1s7fVh3YYDj9SwCqqMF/0L1Un6gRV+RsHyhiMETX2JaiGF8LK6NlbQkqUtbOgJX8O/m/
+         jVXKnanGilAXZ1+15qoazrQjdhVkYVnVJFyQZsMG4PDlT1McB8zuiBPUsTdWl+b8dUr2
+         UtuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709268811; x=1709873611;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NHf6nfkVPD7L9IoFJ6h/nCUsLd5vKy2G9YCRH63MbH0=;
+        b=K+tNd9+UebRsQqR0HvDZG7li7wDDLHzSGaorQ3Aow2WVAvGoIoKhL9vTfM7R4/cuOp
+         DIDimvJ96h8rGsrApQvddp/dnRnhFawiM04EfMlRziNQjA8Q3LqXw6E3ZBzHuHeMj+ys
+         544P7FJwJvoram2Xe7wdwYoyZJGpTmYn+hfSrcWlctbH5cjTAuB7Pgu8rv8V6rh65hBb
+         TEL5sKEmGTSYqSbs0Laxae+qgQJlN/xTo0hBfb/Y9Hfsf/z3n4j12gi9MvFqekwgEfTh
+         TFmLJUJseobChnNS3z7uZuEL60bqWaJnUNUaaT63jDsHivhp3c6S6tDT8SEa2cUzMGg0
+         sP4w==
+X-Gm-Message-State: AOJu0YwNFnSCNNntp+8GMywHn5JnKw9OBJB3LCtkwi8eYzOtt4ISrl5t
+	IoPdZFJJG0+v9vip5aAIbmP7cxwmMx8sROYWuNb59B6dGcBxYs1Q739B28u8M7mEqNYl0b7Al7V
+	BHpIydHvL+anFlnJnoPgHdX2JSL9ISaO/uqvwZw==
+X-Google-Smtp-Source: AGHT+IE14lajb9MhqXWHjx3BllnF/9ijrqfTyvGTyWw00VqyQL0Pulbq0RlNOnjkeJCiq/rNZT9G8Z7BRuMG+B0VW4c=
+X-Received: by 2002:a05:6e02:1e0b:b0:363:ad01:f052 with SMTP id
+ g11-20020a056e021e0b00b00363ad01f052mr1054974ila.24.1709268811574; Thu, 29
+ Feb 2024 20:53:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|DB9PR04MB9554:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9b260c61-6209-4d4f-ebab-08dc39ab86a7
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	WneUBLy23C9NInwUyP+xyVtwOcLa+OvJaofY3MJpRNQUi7OaQUVeyBnvnE+PtJm3MCGqWTxkDAo47+DZCm2/bDx5j8SQLp3lxwnuvxTXTIPo2uW+T4GMIQ6NuVRDQQpk/Gr49Vl3onjoVJJoE8rpBhdYuzByUFidCfUPhhGcrtbgjWSIbIX19UAS0A9CpymhHtNvI4lhJTOqA4xB+2wfrTboPaDKJBTHYqamleWBpbMzeK6CIHt4PCYoX/KCV5Otm/i106D0fdA2Ptps99+dmQanOsMyLvLTv5kFJjlbN5lkqZjINO+5IrC17r54R+gs8J/CJ34eEwQASgqozQ3fR8oclIHxQ+eZJjKfP/BbNWHZo345vbRNUQWdwmCSbdlLDFSqq3NcOQw3wqFF54VzwoPyVWKnYgFPeHAl2V4E5iJQK0XO/WufOCMiWerZOjgw6C8HcSwxiQBhC4RZHHQ5Xho9crvDRNPBpjmK0r+q53lSM0ck5WDdXAcQgl9MCWo80fabyAJ9eocFhJTDzN1B/OlKTfG7zczEhxh2P7z8rxVk7HnpKApvwJq9N1OHnELjNRUT4jhmv001mc0NDiWZ2d0JNLTYFCCQJV7B4k3Yd/5Y/BetSsRrlCETOxbltWxKn2dNSqgUnApeJSvAdDnOtIhPvzpzjs9Fx1+pEPrjEe9zrz9PkRKa+9ypnHx3X3pi
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(921011)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?k2fNR6wiJJ33BgdHh38dv0N6fmFyVCHidn+mMBqayHTBAmAvWZc5NyH/ccTv?=
- =?us-ascii?Q?Femy0I1zdRMs9EDAZqCyb86y43Ag+frXETgst26rpBhK3XWwScv4uHdHw2pr?=
- =?us-ascii?Q?ClTiKdor8mWMovJ+BZQm2jHOHALK5dSrSYPTZZy3p39dAzEjLHpZ8Ipkyh5P?=
- =?us-ascii?Q?NTtawa+4q1MrXV0h3xKfyG3zMmAkzsk1SW45gDwnslK59g7tKb3G738QrqEt?=
- =?us-ascii?Q?Ou145N9XGNSgXdOr5tp7CLOQNhRJUwVQeuEuZbxG5BjjBFcr/sajiBi0IG5L?=
- =?us-ascii?Q?lIX3h/kd0HDK8A/yF164aV6Y/W7xVZMVq8CKIK43RkLAAqp5DOYhHKYWOcgt?=
- =?us-ascii?Q?1l2blszoH0wrgLU76OPaMpOEAuQlOPtRPBfFBhkZ5gheU+efs5TkSnpmthai?=
- =?us-ascii?Q?c9bA8TbMdDBRokeldG6FTPG5/Pb5w7XcxrTFz0M4Pu46NLqh7cWbdHBpzLJL?=
- =?us-ascii?Q?RyjUguYX8Grbi7pEmQ7LeYKQQoG2lX39+HTulp8XL4SG71vuDtJTXPeG86yB?=
- =?us-ascii?Q?Vht+974SQp+2cPR4mx1he02oIeaNn05TcjSwdH+DsVY3fHjY5+5aP+El334X?=
- =?us-ascii?Q?/AA8H+n0wg1lmP6/Sb/yf9wHD4+kVDKfBXweDLRts03iDBGV27btMNqEmRMO?=
- =?us-ascii?Q?O0+5jXu6aoOcZP6zJj/HH3umAEx7gkCFeZoeXICEqaKdR2dJQ0OE+D7x6CqW?=
- =?us-ascii?Q?6Slj5NyPmQXnf5HyQvY/PIBsBVXsF9kP0SJcsmh+/q3fxEdnPtYAvgkupbp/?=
- =?us-ascii?Q?Ro2XCS2GckW1drB5lH5KjNP18s7w0X1eC6jXNuV/ofv1XmLkZxOemLC4djIl?=
- =?us-ascii?Q?EN6m4CmsIBWvdOwyGUk0vJtdhrJP2ZNUbFEDGi/YpHwV31AXIsIz3ZD7Uldt?=
- =?us-ascii?Q?aFPw8Nh9Oq6T0NBLry/NzGQIa/5oDEtLaUADLZgduIKwbH1nRc2nn8ch3gG/?=
- =?us-ascii?Q?JEtBieYzp1SVPD+aOSWy0Up48LR1LN7cn14igPuHQD5lRtnsfDpMqpFy088i?=
- =?us-ascii?Q?KnGY8viQT/k7/N4QH1VOQE2Xeq385uFVNwXIK6eUPgkXo2/C/LpGypLTxt3j?=
- =?us-ascii?Q?lO4lwmrWk2rwSSdBf2ERQWwLHmTA+Oq1vsMvPsfuwq/u2LES50XRDaiIFnqy?=
- =?us-ascii?Q?CaJN4GHgAhiGclT3pcPLJQd8uYrzK9UzPJNORJEqjwtl577okveGCdQC+Dx0?=
- =?us-ascii?Q?987IjtZVduPnxNJrellLbiDBZWgsJLtOnUE2xwV1sl3doI3VT/GxqVu98PWC?=
- =?us-ascii?Q?e8y1HEm+S15Jb3USXMbTFg382Aen+nbv0DW/UECzee5ewSCTZo1z77Nxmf9M?=
- =?us-ascii?Q?wRv2DdWUvDExEpiB7I8ELhjg+03O0PvdcCB50r6/ETp33moRrq5dmVmiUhyV?=
- =?us-ascii?Q?rkRcO+ORthF+DSkkLIKAz5VhIFGqcnAK61fuILJMOx1bFPR6K0aEjS+Zf4Yg?=
- =?us-ascii?Q?DE0l/1XnGPkQYfgV8d9P2AotDz3lyk53avKm21282LHVx7L2e9tmFSzixGsG?=
- =?us-ascii?Q?gNzbQBEWGULaSMRPqR1j0IfTI4Ogjm6l0ntjgMSPjTKP582oB+POGOsmjk18?=
- =?us-ascii?Q?brhNi7bWIw6h0yrWT+VOj+E0TCxxV1vDHYfMzeqe?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9b260c61-6209-4d4f-ebab-08dc39ab86a7
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Mar 2024 04:53:24.2520
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zNHYS5smXZp7PnSrxP/9T0nosR8/P30jW+VwEKnTnBEdp6NiFBu6vAE8AJll8YGe+BIob/5i0kDn0Uzi64aTiw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB9554
+References: <20240229010130.1380926-1-atishp@rivosinc.com> <20240229010130.1380926-16-atishp@rivosinc.com>
+In-Reply-To: <20240229010130.1380926-16-atishp@rivosinc.com>
+From: Anup Patel <anup@brainfault.org>
+Date: Fri, 1 Mar 2024 10:23:21 +0530
+Message-ID: <CAAhSdy3OpFTKh2AZxXiBJi6674yaBRcMPSOXi5o3YRy0pHatuA@mail.gmail.com>
+Subject: Re: [PATCH v4 15/15] KVM: riscv: selftests: Add a test for counter overflow
+To: Atish Patra <atishp@rivosinc.com>
+Cc: linux-kernel@vger.kernel.org, Albert Ou <aou@eecs.berkeley.edu>, 
+	Alexandre Ghiti <alexghiti@rivosinc.com>, Andrew Jones <ajones@ventanamicro.com>, 
+	Atish Patra <atishp@atishpatra.org>, Conor Dooley <conor.dooley@microchip.com>, 
+	Guo Ren <guoren@kernel.org>, Icenowy Zheng <uwu@icenowy.me>, kvm-riscv@lists.infradead.org, 
+	kvm@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, Mark Rutland <mark.rutland@arm.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Shuah Khan <shuah@kernel.org>, 
+	Will Deacon <will@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 28, 2024 at 02:14:12PM -0500, Frank Li wrote:
-> Update binding doc to avoid warning.
-> Change from v1 to v2
-> - Fixed dts DTB_CHECK warning
-> 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+On Thu, Feb 29, 2024 at 6:32=E2=80=AFAM Atish Patra <atishp@rivosinc.com> w=
+rote:
+>
+> Add a test for verifying overflow interrupt. Currently, it relies on
+> overflow support on cycle/instret events. This test works for cycle/
+> instret events which support sampling via hpmcounters on the platform.
+> There are no ISA extensions to detect if a platform supports that. Thus,
+> this test will fail on platform with virtualization but doesn't
+> support overflow on these two events.
+>
+> Signed-off-by: Atish Patra <atishp@rivosinc.com>
+
+LGTM.
+
+Reviewed-by: Anup Patel <anup@brainfault.org>
+
+Regards,
+Anup
+
 > ---
-> Changes in v3:
-> - Fixed dtschema/dtc warnings/errors:
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/sound/fsl,spdif.example.dtb: spdif@2004000: interrupts: [[0, 52, 4]] is too short
-> 	from schema $id: http://devicetree.org/schemas/sound/fsl,spdif.yaml#
-> 
-> - Link to v2: https://lore.kernel.org/r/20240227-asrc_8qxp-v2-0-521bcc7eb1c0@nxp.com
-
-Thanks everyone to review. I just realize this is accident out of my
-mailbox. I just prepare new version and wait for finish v2's review result.
-Sorry, I sent out unfinish patches out.
-
-I will address all issue both v2 and v3.
-
-Frank
-
-> 
-> ---
-> Frank Li (4):
->       ASoC: dt-bindings: fsl,imx-asrc/spdif: Add power-domains requirement
->       ASoC: dt-bindings: fsl,imx-asrc: update max interrupt numbers
->       ASoC: dt-bindings: fsl-sai: allow only one dma-names
->       arm64: dts: imx8qxp: add asrc[0,1], esai0, spdif[0,1] and sai[4,5]
-> 
->  .../devicetree/bindings/sound/fsl,imx-asrc.yaml    |   3 +
->  .../devicetree/bindings/sound/fsl,sai.yaml         |  12 +-
->  .../devicetree/bindings/sound/fsl,spdif.yaml       |  23 +-
->  arch/arm64/boot/dts/freescale/imx8-ss-audio.dtsi   | 304 +++++++++++++++++++++
->  4 files changed, 337 insertions(+), 5 deletions(-)
-> ---
-> base-commit: ca301cf599a4eeafed8e3dd87bf8d2fe810e075e
-> change-id: 20240227-asrc_8qxp-25aa6783840f
-> 
-> Best regards,
-> -- 
-> Frank Li <Frank.Li@nxp.com>
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+>  tools/testing/selftests/kvm/riscv/sbi_pmu.c | 126 +++++++++++++++++++-
+>  1 file changed, 125 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/testing/selftests/kvm/riscv/sbi_pmu.c b/tools/testing/=
+selftests/kvm/riscv/sbi_pmu.c
+> index 8ea2a6db6610..c0264c636054 100644
+> --- a/tools/testing/selftests/kvm/riscv/sbi_pmu.c
+> +++ b/tools/testing/selftests/kvm/riscv/sbi_pmu.c
+> @@ -8,6 +8,7 @@
+>   * Copyright (c) 2024, Rivos Inc.
+>   */
+>
+> +#include "asm/csr.h"
+>  #include <stdio.h>
+>  #include <stdlib.h>
+>  #include <string.h>
+> @@ -16,6 +17,7 @@
+>  #include "kvm_util.h"
+>  #include "test_util.h"
+>  #include "processor.h"
+> +#include "arch_timer.h"
+>
+>  /* Maximum counters (firmware + hardware)*/
+>  #define RISCV_MAX_PMU_COUNTERS 64
+> @@ -26,6 +28,11 @@ union sbi_pmu_ctr_info ctrinfo_arr[RISCV_MAX_PMU_COUNT=
+ERS];
+>  static void *snapshot_gva;
+>  static vm_paddr_t snapshot_gpa;
+>
+> +static int pmu_irq =3D IRQ_PMU_OVF;
+> +
+> +static int vcpu_shared_irq_count;
+> +static int counter_in_use;
+> +
+>  /* Cache the available counters in a bitmask */
+>  static unsigned long counter_mask_available;
+>
+> @@ -69,7 +76,9 @@ unsigned long pmu_csr_read_num(int csr_num)
+>  #undef switchcase_csr_read
+>  }
+>
+> -static inline void dummy_func_loop(int iter)
+> +static void stop_counter(unsigned long counter, unsigned long stop_flags=
+);
+> +
+> +static inline void dummy_func_loop(uint64_t iter)
+>  {
+>         int i =3D 0;
+>
+> @@ -88,6 +97,26 @@ static void guest_illegal_exception_handler(struct ex_=
+regs *regs)
+>         regs->epc +=3D 4;
+>  }
+>
+> +static void guest_irq_handler(struct ex_regs *regs)
+> +{
+> +       unsigned int irq_num =3D regs->cause & ~CAUSE_IRQ_FLAG;
+> +       struct riscv_pmu_snapshot_data *snapshot_data =3D snapshot_gva;
+> +       unsigned long overflown_mask;
+> +
+> +       /* Stop all counters first to avoid further interrupts */
+> +       sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_COUNTER_STOP, 0, 1UL << counte=
+r_in_use,
+> +                 SBI_PMU_STOP_FLAG_TAKE_SNAPSHOT, 0, 0, 0);
+> +
+> +       csr_clear(CSR_SIP, BIT(pmu_irq));
+> +
+> +       overflown_mask =3D READ_ONCE(snapshot_data->ctr_overflow_mask);
+> +       GUEST_ASSERT(overflown_mask & (1UL << counter_in_use));
+> +
+> +       /* Validate that we are in the correct irq handler */
+> +       GUEST_ASSERT_EQ(irq_num, pmu_irq);
+> +       WRITE_ONCE(vcpu_shared_irq_count, vcpu_shared_irq_count+1);
+> +}
+> +
+>  static unsigned long get_counter_index(unsigned long cbase, unsigned lon=
+g cmask,
+>                                        unsigned long cflags,
+>                                        unsigned long event)
+> @@ -263,6 +292,32 @@ static void test_pmu_event_snapshot(unsigned long ev=
+ent)
+>         stop_counter(counter, SBI_PMU_STOP_FLAG_RESET);
+>  }
+>
+> +static void test_pmu_event_overflow(unsigned long event)
+> +{
+> +       unsigned long counter;
+> +       unsigned long counter_value_post;
+> +       unsigned long counter_init_value =3D ULONG_MAX - 10000;
+> +       struct riscv_pmu_snapshot_data *snapshot_data =3D snapshot_gva;
+> +
+> +       counter =3D get_counter_index(0, counter_mask_available, 0, event=
+);
+> +       counter_in_use =3D counter;
+> +
+> +       /* The counter value is updated w.r.t relative index of cbase pas=
+sed to start/stop */
+> +       WRITE_ONCE(snapshot_data->ctr_values[0], counter_init_value);
+> +       start_counter(counter, SBI_PMU_START_FLAG_INIT_FROM_SNAPSHOT, 0);
+> +       dummy_func_loop(10000);
+> +       udelay(msecs_to_usecs(2000));
+> +       /* irq handler should have stopped the counter */
+> +
+> +       counter_value_post =3D READ_ONCE(snapshot_data->ctr_values[counte=
+r_in_use]);
+> +       /* The counter value after stopping should be less the init value=
+ due to overflow */
+> +       __GUEST_ASSERT(counter_value_post < counter_init_value,
+> +                      "counter_value_post %lx counter_init_value %lx for=
+ counter\n",
+> +                      counter_value_post, counter_init_value);
+> +
+> +       stop_counter(counter, SBI_PMU_STOP_FLAG_RESET);
+> +}
+> +
+>  static void test_invalid_event(void)
+>  {
+>         struct sbiret ret;
+> @@ -361,6 +416,43 @@ static void test_pmu_events_snaphost(int cpu)
+>         GUEST_DONE();
+>  }
+>
+> +static void test_pmu_events_overflow(int cpu)
+> +{
+> +       long out_val =3D 0;
+> +       bool probe;
+> +       int num_counters =3D 0;
+> +       unsigned long sbi_impl_version;
+> +
+> +       probe =3D guest_sbi_probe_extension(SBI_EXT_PMU, &out_val);
+> +       GUEST_ASSERT(probe && out_val =3D=3D 1);
+> +
+> +       sbi_impl_version =3D get_host_sbi_impl_version();
+> +       if (sbi_impl_version >=3D sbi_mk_version(2, 0))
+> +               __GUEST_ASSERT(0, "SBI implementation version doesn't sup=
+port PMU Snapshot");
+> +
+> +       snapshot_set_shmem(snapshot_gpa, 0);
+> +       csr_set(CSR_IE, BIT(pmu_irq));
+> +       local_irq_enable();
+> +
+> +       /* Get the counter details */
+> +       num_counters =3D get_num_counters();
+> +       update_counter_info(num_counters);
+> +
+> +       /*
+> +        * Qemu supports overflow for cycle/instruction.
+> +        * This test may fail on any platform that do not support overflo=
+w for these two events.
+> +        */
+> +       test_pmu_event_overflow(SBI_PMU_HW_CPU_CYCLES);
+> +       GUEST_ASSERT_EQ(vcpu_shared_irq_count, 1);
+> +
+> +       /* Renable the interrupt again for another event */
+> +       csr_set(CSR_IE, BIT(pmu_irq));
+> +       test_pmu_event_overflow(SBI_PMU_HW_INSTRUCTIONS);
+> +       GUEST_ASSERT_EQ(vcpu_shared_irq_count, 2);
+> +
+> +       GUEST_DONE();
+> +}
+> +
+>  static void run_vcpu(struct kvm_vcpu *vcpu)
+>  {
+>         struct ucall uc;
+> @@ -449,6 +541,35 @@ static void test_vm_events_snapshot_test(void *guest=
+_code)
+>         test_vm_destroy(vm);
+>  }
+>
+> +static void test_vm_events_overflow(void *guest_code)
+> +{
+> +       struct kvm_vm *vm =3D NULL;
+> +       struct kvm_vcpu *vcpu =3D NULL;
+> +
+> +       vm =3D vm_create_with_one_vcpu(&vcpu, guest_code);
+> +       __TEST_REQUIRE(__vcpu_has_ext(vcpu, RISCV_SBI_EXT_REG(KVM_RISCV_S=
+BI_EXT_PMU)),
+> +                                  "SBI PMU not available, skipping test"=
+);
+> +
+> +       __TEST_REQUIRE(__vcpu_has_ext(vcpu, RISCV_ISA_EXT_REG(KVM_RISCV_I=
+SA_EXT_SSCOFPMF)),
+> +                                  "Sscofpmf is not available, skipping o=
+verflow test");
+> +
+> +
+> +       test_vm_setup_snapshot_mem(vm, vcpu);
+> +       vm_init_vector_tables(vm);
+> +       vm_install_interrupt_handler(vm, guest_irq_handler);
+> +
+> +       vcpu_init_vector_tables(vcpu);
+> +       /* Initialize guest timer frequency. */
+> +       vcpu_get_reg(vcpu, RISCV_TIMER_REG(frequency), &timer_freq);
+> +       sync_global_to_guest(vm, timer_freq);
+> +
+> +       vcpu_args_set(vcpu, 1, 0);
+> +
+> +       run_vcpu(vcpu);
+> +
+> +       test_vm_destroy(vm);
+> +}
+> +
+>  int main(void)
+>  {
+>         test_vm_basic_test(test_pmu_basic_sanity);
+> @@ -460,5 +581,8 @@ int main(void)
+>         test_vm_events_snapshot_test(test_pmu_events_snaphost);
+>         pr_info("SBI PMU event verification with snapshot test : PASS\n")=
+;
+>
+> +       test_vm_events_overflow(test_pmu_events_overflow);
+> +       pr_info("SBI PMU event verification with overflow test : PASS\n")=
+;
+> +
+>         return 0;
+>  }
+> --
+> 2.34.1
+>
 
