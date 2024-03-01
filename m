@@ -1,134 +1,101 @@
-Return-Path: <linux-kernel+bounces-88507-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88509-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0227F86E289
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:44:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06DF386E292
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:45:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC67F28ABC6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:44:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC67E28B498
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:45:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96B9B6EB73;
-	Fri,  1 Mar 2024 13:42:26 +0000 (UTC)
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC54B73184;
+	Fri,  1 Mar 2024 13:42:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="Xa/y+QI5"
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 733ED6EB64;
-	Fri,  1 Mar 2024 13:42:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D985072907
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 13:42:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709300546; cv=none; b=S5GkJkHgb4GZLRrN0gWfOtQK+1S5nZH0UkTpqG/hxVERdbvZrrYhHK6dfXNrRMiNqPmgcbIXHkU5rhy6jgqvANwzzJNvu1uTf3fvFvrJ/a439XmBbR5jJfzQt/oXlWhp5P02DO9hiRKQsZUB4M580VP5RKYVlsqw2RsnRZrfXxg=
+	t=1709300550; cv=none; b=dj2KiJfIwXn6vItch9h9RNM/n/dkXPJmAk3hRyg9rO0ytmS/UhShwkh0kA5fjsM43VSV6EdX8qwvkEJOM22KLBc1YDuQhbXSrj1uCEGWJA4ZDQ5TRYUl1qrl5VgHsWSnOLsRO22moHyHTFkdj96ASysse4bi3mGZmq9PL1tXQX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709300546; c=relaxed/simple;
-	bh=YcuzT144GY5Gzx8E8bB8mn4dTvPZBIq4nVBHbYj/FEQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fy46HnJqApxGbc0400NYo8PatsrCTSVk6FTMp6zLY4WZ8W0jVYkufDDlTOfQJP/PSiEVPVcpQqnRofV3akWoa/HsicdsCp3XBKaUZ/wmZUJvpoQdkqpTYLhtzKmddkaQtPm5F7Js1XwWLZ4uVACSdqrwv7+asHfQkeSY8D7bizU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-33d90dfe73cso1173724f8f.0;
-        Fri, 01 Mar 2024 05:42:24 -0800 (PST)
+	s=arc-20240116; t=1709300550; c=relaxed/simple;
+	bh=uvKCAXMT8sNauk5+VTMaEUp0n/5PMKoLqFnsKI5EKpM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Gsht2vjimFBedHbHOlxewh57oWsj1+r91OPyZqJ5clKLxwCBTEjJDeU9snmlhgzdVoSAhT9QBJkQEzl8uINmD08OpoqrL9iKdZmlGbghJ6b0cYwhOBkbw+zLJglN8jNdFLpIS2qEgfDPj+f6o6XquP8ouzhgWncCFGyCKI6+O6c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=Xa/y+QI5; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a446478b04bso203320466b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 05:42:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google; t=1709300546; x=1709905346; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=uvKCAXMT8sNauk5+VTMaEUp0n/5PMKoLqFnsKI5EKpM=;
+        b=Xa/y+QI5FgV+MlBdZq7FhfCRHkgJUwVA5XNu6hfTkLueDlioJdD5p5xQnpcdrbOdxS
+         LhXk6D5C2G1yKoGH+TgTKRiIz1/Dttso3gqX3a5xTjUrXF1/w/E5WDWcbEn+4MzabFbr
+         HT1q6hOMVkm0iOYmW7kFFH4JtSwohPDdX4M6M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709300543; x=1709905343;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1709300546; x=1709905346;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=meK2UlP/dm3hH3i+lg2G+YANY+IJ/fxWJMq8pj0EJNc=;
-        b=X5oTSm82ftlIosrqcYRnZMnzIDsXqCiTAks3BQH43zQXrcO3KDMiaMJsZmkBVnYjeU
-         Z6YVZMSGPkB25DUq2gQpTN0DGainUpHHyvl86nzb98ZBbDVsBnukZ29aeVfB4c2vW2nY
-         Ju6fYfJMjZtneXOSxgvhaYsOg1nxdaOqLtLb1CYTPKh6bT/MQQyjxBGpXtSDZ6ZUXdkT
-         JL8j4YZW15oGaGGw8svfPZMVkqsnT/gmcQIFQGCIumjLoXO1/JPYfGgWiZzIdrkyAChv
-         d2TTfI2cKDekePyCNBjS9zf4pGakZbEvBUZlQruY4TBUd8UnkyMgISbRj+8nmeSynfyJ
-         pYUA==
-X-Forwarded-Encrypted: i=1; AJvYcCUw2KVGj2EYYchDAsS3a3dN6dSpXy27I2NmlVxNfXAI3v5dhuNfwEBIrSLIRgTIGaPns9U4gW4k+n7+J9jY6oHroWyWdbZnPhgRJE8s
-X-Gm-Message-State: AOJu0Yz6Rw3IHAufX60ivzK3ruONBUzbW057o3ftPYR/OYcBXaAev3Qb
-	1XckXRsFssntrupf4Mjao9DW3+uTGE6CRIzs8aaZd96InRnjo3CV7fr54wch
-X-Google-Smtp-Source: AGHT+IHA2bQQZ2GyP4Xhw2j53/S311aykXnT/ePV7fBI4MRv1/AUAM+Ld26zx3KCPkJ2SEN+x19G+w==
-X-Received: by 2002:adf:cd8b:0:b0:33d:7ec9:f5d0 with SMTP id q11-20020adfcd8b000000b0033d7ec9f5d0mr1980963wrj.2.1709300542465;
-        Fri, 01 Mar 2024 05:42:22 -0800 (PST)
-Received: from localhost (fwdproxy-lla-007.fbsv.net. [2a03:2880:30ff:7::face:b00c])
-        by smtp.gmail.com with ESMTPSA id y10-20020adff14a000000b0033e1be7f3d8sm2148066wro.70.2024.03.01.05.42.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 05:42:22 -0800 (PST)
-From: Breno Leitao <leitao@debian.org>
-To: kuba@kernel.org,
-	davem@davemloft.net,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	daniel@iogearbox.net
-Cc: netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	horms@kernel.org,
-	dsahern@kernel.org
-Subject: [PATCH net-next 1/2] net: nlmon: Remove init and uninit functions
-Date: Fri,  1 Mar 2024 05:42:13 -0800
-Message-ID: <20240301134215.1264416-1-leitao@debian.org>
-X-Mailer: git-send-email 2.43.0
+        bh=uvKCAXMT8sNauk5+VTMaEUp0n/5PMKoLqFnsKI5EKpM=;
+        b=HW1bKRX2AXbhAmszOqFP5o1vfZb3CdpCAsLVBs5SXoUAWQ04+jOatvYlcyEBTR5+DI
+         3uVmqKRr77rVTsw3ZgSdpf6TnDn5Qi4ejtIZ5NixlFOt5CcEIQV0nnxf/x27g2x9uia7
+         nPV4G1JHpE6GE9lkc8em4lr23B5T3+aNfoNBEj9jbDaS76t5MgKD9PagFN3IKPkbP6rv
+         0qsYpLxshFDJnbk77Ext2Ym50GeVthFkbcJ97oiZZcDkHI4Rd5H64KBJbpq6dn3Eb2Vn
+         aNDqexoPC/0r4AFufunDDhvKPJpiyaO2JU4L1oODWBA2IsRkWWhDmYJBSdfP/naCgfWm
+         /tzw==
+X-Forwarded-Encrypted: i=1; AJvYcCUBC2jwBm31DEkYZnNVgIoxaB6tIdO6b7Hjazs6F0MMl2XLWBCYEgOg0pmi7qNEJyAYUiy4u4kcLRofhZgrmNvASyO9M1hnpS7+zKsj
+X-Gm-Message-State: AOJu0YxNyd4T7k6Vmko7lVmORzXtWcewafaCWADRgr4hPmUjYlZLOiXB
+	AuFDBt4r/rjKJ2kazlZ2nN+gex4ZfAwJD3SDyeEk7P/TOKRkyLJgEXIPremonPQ3hOXo/N80S+Z
+	68bzATL9ohYtE07PLmtcnsnWS4jd/k7/QOr/8Ow==
+X-Google-Smtp-Source: AGHT+IFKyHCJjugXaVuo0TxhU2eqFIxuWNNPqdDj2p82dGOLUVGFGenBabw1NVs94YGP7ZFDeiyjxuD5xd7aKXazFdw=
+X-Received: by 2002:a17:906:b347:b0:a43:f170:aa44 with SMTP id
+ cd7-20020a170906b34700b00a43f170aa44mr1504212ejb.47.1709300546044; Fri, 01
+ Mar 2024 05:42:26 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240228144126.2864064-1-houtao@huaweicloud.com> <20240228144126.2864064-2-houtao@huaweicloud.com>
+In-Reply-To: <20240228144126.2864064-2-houtao@huaweicloud.com>
+From: Miklos Szeredi <miklos@szeredi.hu>
+Date: Fri, 1 Mar 2024 14:42:14 +0100
+Message-ID: <CAJfpegtMhkKG-Hk5vQ5gi6bSqwb=eMG9_TzcW7b08AtXBmnQXQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/6] fuse: limit the length of ITER_KVEC dio by max_pages
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: linux-fsdevel@vger.kernel.org, Vivek Goyal <vgoyal@redhat.com>, 
+	Stefan Hajnoczi <stefanha@redhat.com>, Bernd Schubert <bernd.schubert@fastmail.fm>, 
+	"Michael S . Tsirkin" <mst@redhat.com>, Matthew Wilcox <willy@infradead.org>, 
+	Benjamin Coddington <bcodding@redhat.com>, linux-kernel@vger.kernel.org, 
+	virtualization@lists.linux.dev, houtao1@huawei.com
+Content-Type: text/plain; charset="UTF-8"
 
-With commit 34d21de99cea9 ("net: Move {l,t,d}stats allocation to core and
-convert veth & vrf"), stats allocation could be done on net core
-instead of this driver.
+On Wed, 28 Feb 2024 at 15:40, Hou Tao <houtao@huaweicloud.com> wrote:
 
-With this new approach, the driver doesn't have to bother with error
-handling (allocation failure checking, making sure free happens in the
-right spot, etc). This is core responsibility now.
+> So instead of limiting both the values of max_read and max_write in
+> kernel, capping the maximal length of kvec iter IO by using max_pages in
+> fuse_direct_io() just like it does for ubuf/iovec iter IO. Now the max
+> value for max_pages is 256, so on host with 4KB page size, the maximal
+> size passed to kmalloc() in copy_args_to_argbuf() is about 1MB+40B. The
+> allocation of 2MB of physically contiguous memory will still incur
+> significant stress on the memory subsystem, but the warning is fixed.
+> Additionally, the requirement for huge physically contiguous memory will
+> be removed in the following patch.
 
-Remove the allocation in the nlmon driver and leverage the network
-core allocation.
+So the issue will be fixed properly by following patches?
 
-Signed-off-by: Breno Leitao <leitao@debian.org>
----
- drivers/net/nlmon.c | 14 +-------------
- 1 file changed, 1 insertion(+), 13 deletions(-)
+In that case this patch could be omitted, right?
 
-diff --git a/drivers/net/nlmon.c b/drivers/net/nlmon.c
-index 5e19a6839dea..e026bfc83757 100644
---- a/drivers/net/nlmon.c
-+++ b/drivers/net/nlmon.c
-@@ -17,17 +17,6 @@ static netdev_tx_t nlmon_xmit(struct sk_buff *skb, struct net_device *dev)
- 	return NETDEV_TX_OK;
- }
- 
--static int nlmon_dev_init(struct net_device *dev)
--{
--	dev->lstats = netdev_alloc_pcpu_stats(struct pcpu_lstats);
--	return dev->lstats == NULL ? -ENOMEM : 0;
--}
--
--static void nlmon_dev_uninit(struct net_device *dev)
--{
--	free_percpu(dev->lstats);
--}
--
- struct nlmon {
- 	struct netlink_tap nt;
- };
-@@ -72,8 +61,6 @@ static const struct ethtool_ops nlmon_ethtool_ops = {
- };
- 
- static const struct net_device_ops nlmon_ops = {
--	.ndo_init = nlmon_dev_init,
--	.ndo_uninit = nlmon_dev_uninit,
- 	.ndo_open = nlmon_open,
- 	.ndo_stop = nlmon_close,
- 	.ndo_start_xmit = nlmon_xmit,
-@@ -92,6 +79,7 @@ static void nlmon_setup(struct net_device *dev)
- 	dev->features = NETIF_F_SG | NETIF_F_FRAGLIST |
- 			NETIF_F_HIGHDMA | NETIF_F_LLTX;
- 	dev->flags = IFF_NOARP;
-+	dev->pcpu_stat_type = NETDEV_PCPU_STAT_LSTATS;
- 
- 	/* That's rather a softlimit here, which, of course,
- 	 * can be altered. Not a real MTU, but what is to be
--- 
-2.43.0
-
+Thanks,
+Miklos
 
