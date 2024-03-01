@@ -1,145 +1,113 @@
-Return-Path: <linux-kernel+bounces-87856-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87857-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79ACC86DA01
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 04:26:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D33F986DA05
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 04:27:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C7AA1F2382F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 03:26:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 850B01F23938
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 03:27:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF9D540C15;
-	Fri,  1 Mar 2024 03:26:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TaEUhDPx"
-Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78319446A0;
+	Fri,  1 Mar 2024 03:26:49 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B410B2F2C
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 03:26:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 759D041C93;
+	Fri,  1 Mar 2024 03:26:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709263604; cv=none; b=ep57rBl8h7825K/EOqowo+YUPzOCGYrDBJbi+Bz22TJfiSK/fUGhISAbQejFSI46cUo9jiR4BrtSyOPIADk/6WcLFfJ+I50UHfZyd/p2i/7njYzBBojLYnzsh1FLZq6FJFEG4uGNxwZ6iByePtDiAIOg6h8WoSVG5Zym1Xw5C0M=
+	t=1709263609; cv=none; b=i0AwXvK79ugmf6iU4MGCeRVehj3yuSl8cQMt7vdgveUSn4WxkgdM3lzYin6oWDvzL9SnNumC5AyMuRloe7dnpNDiFhjz+t8nTIL7T38oV/oKV2oGNkWIbo7okk5j0tb8+hFj5P6Wv3tiqrsxHmfNddC4vwBirOZZUpcozR6Rh4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709263604; c=relaxed/simple;
-	bh=rbPCodznqhHhUtDUQSimWS+lG3PT01VsV2ENo/lepjk=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=NzI32uYY62FUMa/GhRb20LW0nds/pIjpFNEj2gG/l7CpAD4j0WYUCxYNnAIyDpDLSOJCng+tqvwOxOim3IuXskdmo5OukxwM3jYIWo7o4oYBvJhQY+soVQrE+8G1/qYaogQ0cOs6CRT32gHbLwMDah+yps0PszBzqEIY0lbIkaY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jstultz.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=TaEUhDPx; arc=none smtp.client-ip=209.85.215.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jstultz.bounces.google.com
-Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-5cdfd47de98so1339704a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 19:26:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709263602; x=1709868402; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=FKZzJvKcTnDdeF2Ft5+qWzW9X1Dsw98upGCNkUTIMRw=;
-        b=TaEUhDPxzE7v4gKfnNAHFw2IGBl8DYY3s4C6uxdsk3jpJWZ6t5ZiOIsuYIlJClpOCO
-         tZOEOaQ05LEsli2b24yT3/MRcaChqy+yS4CvlA06cIxTdQ+APQT79bqeaGjAYCeA1TKz
-         kW5PpT3w+yx/QCEyPFBj7Cro/N990Q1cAF5jiLBI6OMg4t4KOxOulyUyK+UmsWcmSILj
-         XU2ZOMIUc/5GvEDazmQxvZvsUgyBDfo1+6lKm6pPX/OVYasvuko1wqiL+X2y2AHv+YB4
-         Bn2tbgqksomb2gisqPuu6htW6LGxUvXyR06wTA5kFoUCRdZlmwRgLmj0fAqEksSisHFy
-         lNMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709263602; x=1709868402;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FKZzJvKcTnDdeF2Ft5+qWzW9X1Dsw98upGCNkUTIMRw=;
-        b=aOWgexTueK1gNh/mCx804Aji35TejbdTEm1TXwEGMBsoTGmB5YjTEBplcfYJj5f5RF
-         X23ut1uwLddmo2EtBxMd/p03IqffKtwSYhp57zAM2TyS1B9yustTs/X831FQvIxFcu+z
-         1HWINyzB/3rM6JKxDo3baYBhCO/Pc8A9cyP7wQ7ITtCSyN6/73qXp8kAeb7bF9sqWq7E
-         IwZw5l1A0PiPC32ioR99K46vEhAnt0i4rYxYhIW9eBC1olii02m5fidIVQ7Z9UaV2X90
-         n/0fSVgDxcFFxnpF+kHVedBESXw19Eh1qTkdlBCIsIrVwNVBiQ7hY8tnOXBVfD0ZflbZ
-         hQdQ==
-X-Gm-Message-State: AOJu0YxnR4F1PrKxMBzmUdetBbt7MyaDkP6m+PX9vNwul+FqTj/VsSZF
-	WMRGuEIGHWlNDJoVcpeXzpyR5VN6DzluN/kesUn8ng0jXEooZI+Ya8/RMnHFaU11rhMyw/ewCWR
-	4WVGxF2mlucJTc+NtY4VLr+UxDopMrIcMqscRC4rZufgIY87SC/Nur/4NWnz0lisK10YHM5sZoK
-	BTzOzNPNkTQFA7bszlF40OmvRpulFr2iLQvWBM7peSOlrd
-X-Google-Smtp-Source: AGHT+IGgWjVeKE7oS2l7K/2ilyqMIe91UkaG9LRFOrrsMfaMlbH+TeeDE55pSqgueUvcZwNUuiWVZX5ukkfa
-X-Received: from jstultz-noogler2.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:600])
- (user=jstultz job=sendgmr) by 2002:a63:6fc4:0:b0:5cf:c149:8dc with SMTP id
- k187-20020a636fc4000000b005cfc14908dcmr684pgc.11.1709263600707; Thu, 29 Feb
- 2024 19:26:40 -0800 (PST)
-Date: Thu, 29 Feb 2024 19:26:24 -0800
+	s=arc-20240116; t=1709263609; c=relaxed/simple;
+	bh=fW9YFLy50+y8EU/W46CfJW7150cPRI8UIXLaa/73BB0=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=jTETChI0qMyy9KWjruMO71GCx06UdEPDzPvM14/4atweN2mHkjlxf1W0NqLJ4+fD5XVOA2EZQpoGlxdcZs3XkuUBT5q9nx/tfXB7a1VQPO2uD6H+rLJL+QOs3bynMuTEoar2dnKILSow7HphT0aRLqD0vQ8m09nQH+OuKDU2eGQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TmD5n336rz4f3jdH;
+	Fri,  1 Mar 2024 11:26:37 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id AE8E11A0838;
+	Fri,  1 Mar 2024 11:26:42 +0800 (CST)
+Received: from [10.174.176.34] (unknown [10.174.176.34])
+	by APP1 (Coremail) with SMTP id cCh0CgBHZQ7wSuFlmyFSFg--.41524S3;
+	Fri, 01 Mar 2024 11:26:42 +0800 (CST)
+Subject: Re: [RFC PATCH v3 07/26] iomap: don't increase i_size if it's not a
+ write operation
+To: Dave Chinner <david@fromorbit.com>
+Cc: Christoph Hellwig <hch@infradead.org>, djwong@kernel.org,
+ linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+ tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
+ ritesh.list@gmail.com, willy@infradead.org, zokeefe@google.com,
+ yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com,
+ wangkefeng.wang@huawei.com
+References: <20240127015825.1608160-1-yi.zhang@huaweicloud.com>
+ <20240127015825.1608160-8-yi.zhang@huaweicloud.com>
+ <ZcsCP4h-ExNOcdD6@infradead.org>
+ <9b0040ef-3d9d-6246-4bdd-82b9a8f55fa2@huaweicloud.com>
+ <Zd+y2VP8HpbkDu41@dread.disaster.area>
+ <45c1607a-805d-e7a2-a5ca-3fd7e507a664@huaweicloud.com>
+ <ZeERAob9Imwh01bG@dread.disaster.area>
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+Message-ID: <0b316c9a-b2d7-af02-854e-31430d4f53cd@huaweicloud.com>
+Date: Fri, 1 Mar 2024 11:26:40 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.rc1.240.g4c46232300-goog
-Message-ID: <20240301032637.2117250-1-jstultz@google.com>
-Subject: [PATCH v2] sched: Add trace_sched_waking() tracepoint to sched_ttwu_pending()
-From: John Stultz <jstultz@google.com>
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: John Stultz <jstultz@google.com>, Ingo Molnar <mingo@redhat.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
-	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
-	Daniel Bristot de Oliveira <bristot@redhat.com>, Phil Auld <pauld@redhat.com>, 
-	Valentin Schneider <vschneid@redhat.com>, kernel-team@android.com, 
-	Zimuzo Ezeozue <zezeozue@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+In-Reply-To: <ZeERAob9Imwh01bG@dread.disaster.area>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:cCh0CgBHZQ7wSuFlmyFSFg--.41524S3
+X-Coremail-Antispam: 1UD129KBjvdXoW7Gw48KF15uw15Jw1rKw1DAwb_yoWxAFgE9F
+	srAr48Kw4DGw47uw42ka1ktrsFgFWUWa12qrW5Xr4vkrZ8JFWDWr13Gr93Z3sakFsakFnI
+	9F9Y9347ZrnIvjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbIxYFVCjjxCrM7AC8VAFwI0_Xr0_Wr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x02
+	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+	07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_
+	WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
+	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+	7IU13rcDUUUUU==
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-Zimuzo reported seeing occasional cases in perfetto traces where
-tasks went from sleeping directly to trace_sched_wakeup()
-without always seeing a trace_sched_waking().
+On 2024/3/1 7:19, Dave Chinner wrote:
+> On Thu, Feb 29, 2024 at 04:59:34PM +0800, Zhang Yi wrote:
+>> Hello, Dave!
+>>
+>> On 2024/2/29 6:25, Dave Chinner wrote:
+>>> On Wed, Feb 28, 2024 at 04:53:32PM +0800, Zhang Yi wrote:
+>>>> On 2024/2/13 13:46, Christoph Hellwig wrote:
+..
+> 
+> The general solution is to have zeroing of speculative prealloc
+> extents beyond EOF simply convert the range to unwritten and then
+> invalidate any cached pages over that range. At this point, we are
+> guaranteed to have zeroes across that range, all without needing to
+> do any IO at all...
+> 
 
-Looking at the code, trace_sched_wakeup() is only called in
-ttwu_do_wakeup()
+Sure, thanks for the explanation, I will try to solve this problem
+for xfs first.
 
-The call paths that get you to ttwu_do_wakeup() are:
-try_to_wake_up() -> ttwu_do_wakeup()
-try_to_wake_up() -> ttwu_runnable() -> ttwu_do_wakeup()
-try_to_wake_up() -> ttwu_queue() -> ttwu_do_activate() -> ttwu_do_wakeup()
-sched_ttwu_pending() -> ttwu_do_activate() -> ttwu_do_wakeup()
-
-where trace_sched_waking() is currently called only in
-try_to_wake_up().
-
-So add a trace_sched_waking() call to sched_ttwu_pending(), so
-we see the same state machine transitions.
-
-With this change, the number of unexpected state transitions in
-perfetto was greatly reduced.
-
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ben Segall <bsegall@google.com>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc: Phil Auld <pauld@redhat.com>
-Cc: Valentin Schneider <vschneid@redhat.com>
-Cc: kernel-team@android.com
-Reviewed-by: Phil Auld <pauld@redhat.com>
-Reported-by: Zimuzo Ezeozue <zezeozue@google.com>
-Signed-off-by: John Stultz <jstultz@google.com>
----
-v2:
-* Minor commit message fix suggested by Phil Auld
----
- kernel/sched/core.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 9116bcc90346..233f06360d6a 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -3894,6 +3894,7 @@ void sched_ttwu_pending(void *arg)
- 		if (WARN_ON_ONCE(task_cpu(p) != cpu_of(rq)))
- 			set_task_cpu(p, cpu_of(rq));
- 
-+		trace_sched_waking(p);
- 		ttwu_do_activate(rq, p, p->sched_remote_wakeup ? WF_MIGRATED : 0, &rf);
- 	}
- 
--- 
-2.44.0.rc1.240.g4c46232300-goog
+Thanks,
+Yi.
 
 
