@@ -1,217 +1,122 @@
-Return-Path: <linux-kernel+bounces-88590-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88591-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3E0386E3CC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:56:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B37986E3D0
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:59:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E491282DA1
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:56:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23DB72831B0
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:59:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E95733A8EF;
-	Fri,  1 Mar 2024 14:56:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26DB53AC0C;
+	Fri,  1 Mar 2024 14:59:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VnZIIJic"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DMHy8/Bc"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BA9E3987C
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 14:56:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A30D5EDB;
+	Fri,  1 Mar 2024 14:59:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709304991; cv=none; b=ST11aBILaeAGSFnV3fz81M1qzqCPO//JHJRT64gYGpcJl7wR95PeQ45smU5qtLr1N6dsqzreCZECsGpZHeOAQUVlrQu5SoPwDBXMin+dnsGZnc1VYoAyp2PhawxmYo0bF2RVfWjWFnmrMxMujMQXnSfkYvjceLyRbX76ujN7x0E=
+	t=1709305153; cv=none; b=QNFYvvfZjCzMnt1ylPNjR+srBTPjkgExj4BPiHhZdv0XBLq5HFdZF/pJT3cYnVV5wxRF+1hyP6mn75duNTaB0TcRSBrBbtn1AXUIZZKGjS9XmdAJXxNgDgFWAWGxyNx4eMUyX7fkA6FWlvoQK1XTPtYaNNVF1wzT3L2gT8KgTgw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709304991; c=relaxed/simple;
-	bh=SrGvlgfbt6XMAt2G6CMldGsswMNVi3x6R/Udm6duIVE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hcc3N9SCt+f0cXuiGMjOtGuC9cXhHs8dYzI+YL4itwE2/ak6bPzj+CNxwHTeAx5wWQbICV2Zw2OJ4bPvjoTUhtL++Nj6t0ADPgGxCXVqKUSI+d0kW+F3g2oNxk3kNHzvStEs6FryfDLtsfZ98BUbLixzWGPiYq5xCXJoWufjwHo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VnZIIJic; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a444205f764so287955766b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 06:56:29 -0800 (PST)
+	s=arc-20240116; t=1709305153; c=relaxed/simple;
+	bh=dMzft81as3iiP62L7QXb8pRBQ9sMEKQ4Xtd88MvJnMM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XFvhfjnAi+S7A1zULZwR2V43vamS2x6Pxoth3boMVgGtltERzh61KmjIIz0shGdyN3QrbMOk5K+T3xJNHaE+k8Gxq2Qt4397vbU927yQrZBwBxF7x305WgZZDtsfyEbRGmIwVyh7unLPObqx/Hjw51+msZVTHaSgsVm5+BdU4TM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DMHy8/Bc; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55a179f5fa1so3586468a12.0;
+        Fri, 01 Mar 2024 06:59:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709304988; x=1709909788; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CJ2N/OiuMCctFBWtfzvxsL/0apDKewkpQb9Icgwpht4=;
-        b=VnZIIJicDfasdbOM/27RRj1fgoUrwTnQgWyj6WmDdzxfoDKpz3O5SmCm4OByLA9Abe
-         KGc6wtsOAOI3cSZ88zwWhcN05kEuTwlWS5minWlzCMLkABAjPTXffvir0embzZrBrxrc
-         t7VNTWxzY52ekXMh7EY51b9SDw5IXhthp8Eg8i9pJVtsuyu20yUAXuePK9w9AQwD2RR2
-         ATMYTGsFZFJS6ZZaiT8ciOtf5XG6UUpxnKTzyzMmQFVgO3f/N2q/VSJ9gIMqTOflWVmL
-         JPlFp1BZpAfAPTy/8fw/4O9dNZQuKt0kX9aJCOSTFcM6BHhc/+mBjTUccG4FhnTsmKHU
-         tNNA==
+        d=gmail.com; s=20230601; t=1709305149; x=1709909949; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=kLyuwERybQOj+h6jmDlpKw7bG2pgzNYOb9yDrzmQoPE=;
+        b=DMHy8/BcUY4FPrTtLmY8OkqKD3NEd0FkO0KFT5bFT/Dger/klyt1aTpAFBQf43Fv56
+         L24XbjhrQii5aKUEKlAuvsBI8/7cRRm0FKxFOQpiPFBUZKNFOwX8gusUL8OUK8mVWAAQ
+         iO/UD1Pb0i1xnNpcwH2fbXuzsfGXtvWLLzoitzeDIZEiad8apOuNX2y6HwDah0+1yaAu
+         zVklQY8ZwNQsgTP/NCAVWlvsEFo48cIUW/H5S2uPCtPID301367K89WGGFy0EV9M9ZHL
+         PFR2Ib+rHEZagdgBYagnXkQqIsZAkT4HSQK/kj674jR9g8AFi0WAcJ3brMrhHtLHaFe5
+         WkrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709304988; x=1709909788;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CJ2N/OiuMCctFBWtfzvxsL/0apDKewkpQb9Icgwpht4=;
-        b=wUeSqAZ9mJVq4hOhsa/mGYprHctijWt+qXOGE9WEWtK5p5SMGrqimfluzlliHrrTbo
-         HmpF1dWaNSoamwf+FeR7upredRl1B2rTLqMczg9q4WS5LAHdCC03ly2VUwAWu0eCx7Z2
-         IPu8JB/LhXbxPF6y7+WJDBuYN5qYLOHEk2avQoJfWNVF7tT1KNfSGpDF+5qPNxFzHD4z
-         3gZOd6knv/hTuW1o+4jDf6RYydKNoS7EFsv3FN24lQzpnA3PvQv4R6R1d6kRVA1C1WAb
-         j0GFTEYc3r/v/khOXqgGgWodsV/2BFzWEvNHJ59PMip2OrL7ms3vbcSsDrV/uyhKTdww
-         LZ1w==
-X-Forwarded-Encrypted: i=1; AJvYcCXaiDjMpjvPR9TdVzJUdaaN/ngOdeRsj38jJ0yoeS5ClpPhrXKc+DyDtaYX9BJW7saMHahzMJYCmNJXzJNmmbXJvyN/5AWMzH2pCTlZ
-X-Gm-Message-State: AOJu0YzMj8n40taS0KANmPDNLQrSu8tuILniSqKX8QXWBh5eQk0OreJD
-	3ptqYYzoEoqzKJ2/YVQSKJYGbUw54dB5Gc4KAZg259Ciqmd06K6LuPU6jOeA2w8=
-X-Google-Smtp-Source: AGHT+IHUQRH5oQpAgO2KsTYVChm3+FZfed4slE4Swu8lfsyjrU+M0j6mxzF+XaPCukzOQVzMYkgxUw==
-X-Received: by 2002:a17:906:fb14:b0:a44:24c6:abe8 with SMTP id lz20-20020a170906fb1400b00a4424c6abe8mr1399825ejb.12.1709304987802;
-        Fri, 01 Mar 2024 06:56:27 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id mp7-20020a1709071b0700b00a440ceb4110sm1783948ejc.183.2024.03.01.06.56.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Mar 2024 06:56:27 -0800 (PST)
-Message-ID: <7198ce13-bccf-4835-aa14-ca45eed1f066@linaro.org>
-Date: Fri, 1 Mar 2024 15:56:25 +0100
+        d=1e100.net; s=20230601; t=1709305149; x=1709909949;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kLyuwERybQOj+h6jmDlpKw7bG2pgzNYOb9yDrzmQoPE=;
+        b=t33bdOkV+JeXAmC0fBB4JPLw2Ti3RS00pyCvOsBiXLnyXeWyGia68fFZt439ujx0Zr
+         itvYxi6oKaJbzZv1c2DUVhkZQf8BK60W+gEG2VK7Uo7FMtRjCNxxK3ADCo7DaPDymArx
+         iacJqMv618Qx871ngNEvE9y+6sPPlNatdTWQ0zKiiJcMmDgd+kpmokv/IyLJzzNRmUKU
+         hqmaIhqJyPpSnSUaaD23LDoB/7t/MYgP4R9S/tDZRGCOXLcuPixNNx22qEU+mXrlBwOD
+         rz5yXsQ89/b5xnsRUEbbMbndf+/Xj3eT48hquraxv64+/YfEdIUUdChrpQfjIupgymx7
+         opAQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXmFeKnVZ1LdSHfKWmZU7Elk99rQhNl3Ed0qXvYoVrDdB7TLsqzUMgjdEtXn5aJY1EIIsMsA26DqaDtkjQmEwAb/a2kbysT+CCgutoN1Crgky/StYfpIj3N1zREVVPz6g8IhqQBnSq8YKoCeLbi1yZMSO9oOQJPbqS1+ucthJZucoThLg88UIe+
+X-Gm-Message-State: AOJu0Yy41N+T3pD1lr++Gx1XNPxTZ8NIKhW45e3+kzfjhM34GP21uY7d
+	um8X5HRtKFbq0dvrxxLDfFZfRLPwD/zlhCSriJuJ+d5RT83/kwNi
+X-Google-Smtp-Source: AGHT+IFT3q4H46273R4HzZYK4jJH/VA5RfAXD3mgU1YfyMmd8So3nExlWrCbwQf+WzSRSEj1yL18ZQ==
+X-Received: by 2002:a05:6402:3584:b0:566:f66d:bd38 with SMTP id y4-20020a056402358400b00566f66dbd38mr57579edc.25.1709305149486;
+        Fri, 01 Mar 2024 06:59:09 -0800 (PST)
+Received: from lola.. ([2a02:810d:7e40:14b0:d371:e319:5dd0:9b35])
+        by smtp.gmail.com with ESMTPSA id m18-20020aa7c492000000b005662d3418dfsm1619076edq.74.2024.03.01.06.59.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Mar 2024 06:59:09 -0800 (PST)
+From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	linux-rtc@vger.kernel.org
+Cc: Eddie Huang <eddie.huang@mediatek.com>,
+	Sean Wang <sean.wang@mediatek.com>,
+	kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] MAINTAINERS: adjust file entry in ARM/Mediatek RTC DRIVER
+Date: Fri,  1 Mar 2024 15:59:07 +0100
+Message-ID: <20240301145907.32732-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 17/21] dt-bindings: crypto: meson: support new SoC's
-Content-Language: en-US
-To: Alexey Romanov <avromanov@salutedevices.com>, neil.armstrong@linaro.org,
- clabbe@baylibre.com, herbert@gondor.apana.org.au, davem@davemloft.net,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- khilman@baylibre.com, jbrunet@baylibre.com,
- martin.blumenstingl@googlemail.com, vadim.fedorenko@linux.dev
-Cc: linux-crypto@vger.kernel.org, linux-amlogic@lists.infradead.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, kernel@salutedevices.com
-References: <20240301132936.621238-1-avromanov@salutedevices.com>
- <20240301132936.621238-18-avromanov@salutedevices.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240301132936.621238-18-avromanov@salutedevices.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 01/03/2024 14:29, Alexey Romanov wrote:
-> Now crypto module available at G12A/G12B/S4/A1/SM1/AXG.
-> 
-> @@ -11,8 +11,16 @@ maintainers:
->  
->  properties:
->    compatible:
-> -    items:
-> -      - const: amlogic,gxl-crypto
-> +    oneOf:
-> +      - items:
-> +          - enum:
-> +              - amlogic,s4-crypto
-> +          - const: amlogic,a1-crypto
-> +      - enum:
-> +          - amlogic,gxl-crypto
-> +          - amlogic,axg-crypto
-> +          - amlogic,g12a-crypto
-> +          - amlogic,a1-crypto
->  
->    reg:
->      maxItems: 1
-> @@ -21,10 +29,14 @@ properties:
->      items:
->        - description: Interrupt for flow 0
->        - description: Interrupt for flow 1
-> +    minItems: 1
->  
->    clocks:
->      maxItems: 1
->  
-> +  power-domains:
-> +    maxItems: 1
-> +
+Commit e8c0498505b0 ("dt-bindings: rtc: convert MT2717 RTC to the
+json-schema") and commit aef3952ec13f ("dt-bindings: rtc: convert MT7622
+RTC to the json-schema") convert rtc-mt{2712,7622}.txt to
+mediatek,mt{2712,7622}-rtc.yaml, but misses to adjust the file entries in
+MAINTAINERS.
 
-Don't break the order. names always follow given entry.
+Hence, ./scripts/get_maintainer.pl --self-test=patterns complains about a
+broken reference.
 
+Repair these file entries in ARM/Mediatek RTC DRIVER.
 
->    clock-names:
->      const: blkmv
->  
-> @@ -32,8 +44,24 @@ required:
->    - compatible
->    - reg
->    - interrupts
-> -  - clocks
-> -  - clock-names
-> +
-> +allOf:
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: amlogic,gxl-crypto
-> +    then:
-> +      required:
-> +        - clocks
-> +        - clock-names
-> +      properties:
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+ MAINTAINERS | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-First properties, then required.
-
-> +        interrupts:
-> +          maxItems: 2
-> +    else:
-> +      properties:
-> +        interrupts:
-> +          maxItems: 1
-
-clocks: false
-clock-names: false
-
-
->  
-
-Best regards,
-Krzysztof
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 1fd658b710eb..76b6c2160a84 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -2377,8 +2377,8 @@ M:	Sean Wang <sean.wang@mediatek.com>
+ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+ L:	linux-mediatek@lists.infradead.org (moderated for non-subscribers)
+ S:	Maintained
+-F:	Documentation/devicetree/bindings/rtc/rtc-mt2712.txt
+-F:	Documentation/devicetree/bindings/rtc/rtc-mt7622.txt
++F:	Documentation/devicetree/bindings/rtc/mediatek,mt2712-rtc.yaml
++F:	Documentation/devicetree/bindings/rtc/mediatek,mt7622-rtc.yaml
+ F:	drivers/rtc/rtc-mt2712.c
+ F:	drivers/rtc/rtc-mt6397.c
+ F:	drivers/rtc/rtc-mt7622.c
+-- 
+2.43.2
 
 
