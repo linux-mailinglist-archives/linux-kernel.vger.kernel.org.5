@@ -1,228 +1,117 @@
-Return-Path: <linux-kernel+bounces-88317-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88312-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DF2D86DFF6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:14:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1941D86DFEC
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:13:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E6728B222A8
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:14:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D7981C20F88
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:13:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 847236F06C;
-	Fri,  1 Mar 2024 11:12:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6209D6D1B5;
+	Fri,  1 Mar 2024 11:11:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jpgMwL0k"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="hYPOTii8"
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B78B6CDA5;
-	Fri,  1 Mar 2024 11:12:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9AAE6BFD4
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 11:11:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.244.123.138
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709291563; cv=none; b=Vx+ZFj/GLaeA9I2cBQZjf0ethJcVAHaIo0lTUzVqm4WfZ8KebB7SjxhFgmsoexK1kBnrFIVhTW7mLj+KJXJWeofM/uy5hSN/SZIPpdrvCslDrTpqARTZ811GevRfgh6uhFUaLI69bqfP4aifWxGQEkH+QGQdOTwElRjeD83i1S4=
+	t=1709291509; cv=none; b=hyZrwYKJPrla9NVEF6mv/lVhExEykSdz3e5rNCG3u5Wr0WJpW2kT1ClyQHuoAHaw7iLR84bQxLaIUEoeeJ5BHcY7ON4Yu/rrSs5tMs/27ndLkOiWoYQjRJgs6SLaHisvUqt2wnW/0os5Mipv7bDkl0Pi0De8hs5hZnlSjGTvhbc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709291563; c=relaxed/simple;
-	bh=ZcXh5FtON65IFFWLi8WCHoxgIUc/5UvzSJLTC0D+gNQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=eCmjdcWnkpHSUwt5Vcg7egCcf9jSW/uwyAuGJeTA18p4XzXCgG6JLQOl2x6ej6BH59pqhQWYQJtzf9tMtH0CUziu0vrM63LlIAaS8iK2p8WC7eeZzphjWTS6DpU7IbfoT2dN62wa6d3o2/9zaNUcA2pt3qkvU72e049isjD6IbM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jpgMwL0k; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-565c6cf4819so5094183a12.1;
-        Fri, 01 Mar 2024 03:12:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709291560; x=1709896360; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TFXpgh2dqrGyE1Rignr5uC/50XLP7JPOWIkkNnxbS/8=;
-        b=jpgMwL0k29ruQU1wmWPgGaVhI+N0FsK8OyXMmbF8ELJFe0V2miHvHPEVNR+F4uq5OA
-         BHtbcQaqdPEDW+NOS8thOur7RvB9wbd42uKsShqo5LbsvI7y4RlULKZTW8/xjAPRuPwn
-         bSKc0nCjFZ7PPujcF7a0RJVtEjniaRQcgTzzyyQLisgVHPBs8DFq7c+p8ulH3dRyOFzu
-         iJoXnAEGJYwiJxRdnG6iXWx88ZYkk/7bysZCVLFdfSNVuUAlvNEGsYGXc0AjmP4jN4HS
-         V+Fv7Jc9/3eG4uRRyk5G5m+M3aCOiJb7kmt6DKfFC1ww4mq1l3w4S2lVgxQPUjrp8h7D
-         KQXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709291560; x=1709896360;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TFXpgh2dqrGyE1Rignr5uC/50XLP7JPOWIkkNnxbS/8=;
-        b=LucRiZ2wiLVp4Vb0iupHP7W7vAkqXDACzFn1I67D/EGxL1KSIEd4XPpW6riVRY29Ua
-         QtUMEvnjWBRiqfhvMUHIDdSv3JPLKPtTqGYkazNFSb0mFkIKCc7Nxiy/2vo0d36I5vU8
-         Xy4eMQyj3Xxxt12mkzK6n0M+2i6SpwkKj/CfjdJujJZmg/M0FC3zuWE5mUSPualYm5cA
-         GmdkGh0aLZwC1E89OtyfMTCqSVKGJwxpIPJwHxER9ZCz3U+KhcyamemlWKN+0yJNIhbm
-         IF7ozSC9rJncoWuE90XBdRrAc97Jic3TDEAs/thNU0C6U1Q9khU2NysUQ/GJn5zsA5u4
-         kVvg==
-X-Forwarded-Encrypted: i=1; AJvYcCXs8M/Mr26a3xxtfQarmAFImBDtiqybcSdQXRm71sdiZ5uGUePeUTX9o7rIeQ76kfougStsSWrxvFigKyVCiriQPqkkYGobp0ZYpT/eSgAFrXomXvXRf+nuDtwwoTIsJJ/9lQU7ZDcaCukyoHLAAHQ3LmidJM8vz+nrtPtpddWOOgSJxQ==
-X-Gm-Message-State: AOJu0YzQybvoVuIIGRUHDywVbgvXgLdgFZK2Qc92bwdlhIDlP6Gq0x/6
-	xv+wAv1vEA44Ng4D5yqYF9WvVgJzDZ5axD8olhK7hqCjwu5re7uV+zK1vPQh
-X-Google-Smtp-Source: AGHT+IFpNSPUOypt4J8usVOyPInHeu7emdsC4RhR6Ja7jYBR8q8w5QCpCguspfiiSDa3D7c6OJ67eA==
-X-Received: by 2002:a17:906:7f0f:b0:a3f:d260:4a72 with SMTP id d15-20020a1709067f0f00b00a3fd2604a72mr1197125ejr.27.1709291559560;
-        Fri, 01 Mar 2024 03:12:39 -0800 (PST)
-Received: from debian.fritz.box ([93.184.186.109])
-        by smtp.gmail.com with ESMTPSA id n18-20020a170906089200b00a43a478e4f0sm1583254eje.180.2024.03.01.03.12.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 03:12:39 -0800 (PST)
-From: Dimitri Fedrau <dima.fedrau@gmail.com>
-To: 
-Cc: Dimitri Fedrau <dima.fedrau@gmail.com>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	linux-pwm@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/3] dt-bindings: pwm: add support for MC33XS2410
-Date: Fri,  1 Mar 2024 12:11:22 +0100
-Message-Id: <20240301111124.29283-2-dima.fedrau@gmail.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240301111124.29283-1-dima.fedrau@gmail.com>
-References: <20240301111124.29283-1-dima.fedrau@gmail.com>
+	s=arc-20240116; t=1709291509; c=relaxed/simple;
+	bh=+ZzBybof3O1nfT2izJvtONi7FpjdVC7vAnBvgujkjoU=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=fggNrkBWxrWvkYQMIfoFxa8VoACXnx4PtGwbIlGVkgwsCG8vSXLvti29rE+6l292zW0yakPFdHQy4Fc4PJ3hvpTeRG8VDGkGZMQxJt3+yio7dauSSx/e2+HeJjQKy5YMNsXCeRqOSe3cqAF6TZFYiFYRR88vX4J96sJT02VHwyA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=hYPOTii8; arc=none smtp.client-ip=60.244.123.138
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: 7a9aec38d7bc11eeb8927bc1f75efef4-20240301
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=+NCPfiqHkGekZ2gLLAx7CBphrzwi9/58aQ7Jf2wXq3o=;
+	b=hYPOTii8jrjdvnUKC+u4n3BPeNXIc7BKOwLM3+9rvmLqlCtc4vH+dw67Le1Vwg3UXKIrF3psRMtJLPjUZxuP/206YkE6wBcHhiMfwxItue7x/Y90QwELJNwMRgt0Kl7b3BuJzfBphf/NVaCYgecZ1+bVIsdCMl1zMLX7jXMYAP8=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:262fd07a-856c-41f7-91a6-15c5b91c726c,IP:0,U
+	RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:-5
+X-CID-META: VersionHash:6f543d0,CLOUDID:f4348084-8d4f-477b-89d2-1e3bdbef96d1,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
+	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 7a9aec38d7bc11eeb8927bc1f75efef4-20240301
+Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw01.mediatek.com
+	(envelope-from <jason-jh.lin@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 1564556827; Fri, 01 Mar 2024 19:11:40 +0800
+Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
+ mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Fri, 1 Mar 2024 19:11:39 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Fri, 1 Mar 2024 19:11:39 +0800
+From: Jason-JH.Lin <jason-jh.lin@mediatek.com>
+To: Jassi Brar <jassisinghbrar@gmail.com>, Chun-Kuang Hu
+	<chunkuang.hu@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>
+CC: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Jason-ch Chen <jason-ch.chen@mediatek.com>, "Jason-JH . Lin"
+	<jason-jh.lin@mediatek.com>, Singo Chang <singo.chang@mediatek.com>, Nancy
+ Lin <nancy.lin@mediatek.com>, Shawn Sung <shawn.sung@mediatek.com>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-mediatek@lists.infradead.org>,
+	<Project_Global_Chrome_Upstream_Group@mediatek.com>
+Subject: [PATCH 1/5] soc: mediatek: mtk-cmdq: Add specific purpose register definitions for GCE
+Date: Fri, 1 Mar 2024 19:11:22 +0800
+Message-ID: <20240301111126.22035-2-jason-jh.lin@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20240301111126.22035-1-jason-jh.lin@mediatek.com>
+References: <20240301111126.22035-1-jason-jh.lin@mediatek.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK: N
 
-Adding documentation for NXPs MC33XS2410 high side switch.
+Add specific purpose register definitions for GCE, so CMDQ users can
+use them as a buffer to store data.
 
-Signed-off-by: Dimitri Fedrau <dima.fedrau@gmail.com>
+Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
+Change-Id: Ie72dd86d6ccfb60761461ad128b02d32adaacbc0
 ---
- .../bindings/pwm/nxp,mc33xs2410.yaml          | 118 ++++++++++++++++++
- 1 file changed, 118 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/pwm/nxp,mc33xs2410.yaml
+ include/linux/soc/mediatek/mtk-cmdq.h | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/pwm/nxp,mc33xs2410.yaml b/Documentation/devicetree/bindings/pwm/nxp,mc33xs2410.yaml
-new file mode 100644
-index 000000000000..1729fe5c3dfb
---- /dev/null
-+++ b/Documentation/devicetree/bindings/pwm/nxp,mc33xs2410.yaml
-@@ -0,0 +1,118 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/pwm/nxp,mc33xs2410.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/include/linux/soc/mediatek/mtk-cmdq.h b/include/linux/soc/mediatek/mtk-cmdq.h
+index 649955d2cf5c..1dae80185f9f 100644
+--- a/include/linux/soc/mediatek/mtk-cmdq.h
++++ b/include/linux/soc/mediatek/mtk-cmdq.h
+@@ -14,6 +14,15 @@
+ #define CMDQ_ADDR_HIGH(addr)	((u32)(((addr) >> 16) & GENMASK(31, 0)))
+ #define CMDQ_ADDR_LOW(addr)	((u16)(addr) | BIT(1))
+ 
++/*
++ * Every cmdq thread has its own SPRs (Specific Purpose Registers),
++ * so there are 4 * N (threads) SPRs in GCE that shares the same indexes below.
++ */
++#define CMDQ_THR_SPR_IDX0	(0)
++#define CMDQ_THR_SPR_IDX1	(1)
++#define CMDQ_THR_SPR_IDX2	(2)
++#define CMDQ_THR_SPR_IDX3	(3)
 +
-+title: High-side switch MC33XS2410
-+
-+maintainers:
-+  - Dimitri Fedrau <dima.fedrau@gmail.com>
-+
-+allOf:
-+  - $ref: pwm.yaml#
-+  - $ref: /schemas/spi/spi-peripheral-props.yaml#
-+
-+properties:
-+  compatible:
-+    const: nxp,mc33xs2410
-+
-+  reg:
-+    maxItems: 1
-+
-+  spi-max-frequency:
-+    maximum: 10000000
-+
-+  spi-cpha: true
-+
-+  spi-cs-setup-delay-ns:
-+    minimum: 100
-+    default: 100
-+
-+  spi-cs-hold-delay-ns:
-+    minimum: 10
-+    default: 10
-+
-+  spi-cs-inactive-delay-ns:
-+    minimum: 300
-+    default: 300
-+
-+  reset-gpios:
-+    description:
-+      GPIO connected to the active low reset pin.
-+    maxItems: 1
-+
-+  "#pwm-cells":
-+    const: 3
-+
-+  pwm-names:
-+    items:
-+      - const: di0
-+      - const: di1
-+      - const: di2
-+      - const: di3
-+
-+  pwms:
-+    description:
-+      Direct inputs(di0-3) are used to directly turn-on or turn-off the
-+      outputs.
-+    maxItems: 4
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    description:
-+      The external clock can be used if the internal clock doesn't meet
-+      timing requirements over temperature and voltage operating range.
-+    maxItems: 1
-+
-+  vdd-supply:
-+    description:
-+      Logic supply voltage
-+
-+  vspi-supply:
-+    description:
-+      Supply voltage for SPI
-+
-+  vpwr-supply:
-+    description:
-+      Power switch supply
-+
-+required:
-+  - compatible
-+  - reg
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    spi {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+       pwm@0 {
-+           compatible = "nxp,mc33xs2410";
-+           reg = <0x0>;
-+           spi-max-frequency = <4000000>;
-+           spi-cpha;
-+           spi-cs-setup-delay-ns = <100>;
-+           spi-cs-hold-delay-ns = <10>;
-+           spi-cs-inactive-delay-ns = <300>;
-+           reset-gpios = <&gpio3 22 GPIO_ACTIVE_LOW>;
-+           #pwm-cells = <3>;
-+           pwm-names = "di0", "di1", "di2", "di3";
-+           pwms = <&pwm0 0 1000000>,
-+                  <&pwm1 0 1000000>,
-+                  <&pwm2 0 1000000>,
-+                  <&pwm3 0 1000000>;
-+           interrupt-parent = <&gpio0>;
-+           interrupts = <31 IRQ_TYPE_LEVEL_LOW>;
-+           clocks = <&clk_ext_fixed>;
-+           vdd-supply = <&reg_3v3>;
-+           vspi-supply = <&reg_3v3>;
-+           vpwr-supply = <&reg_24v0>;
-+       };
-+    };
+ struct cmdq_pkt;
+ 
+ struct cmdq_client_reg {
 -- 
-2.39.2
+2.18.0
 
 
