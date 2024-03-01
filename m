@@ -1,88 +1,138 @@
-Return-Path: <linux-kernel+bounces-89130-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89131-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FC6E86EAE3
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 22:04:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0909E86EAE8
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 22:07:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 55D0B1F22448
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:04:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 996F21F23021
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:07:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FDA456B74;
-	Fri,  1 Mar 2024 21:04:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D716357301;
+	Fri,  1 Mar 2024 21:07:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CauThr/s"
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="LaTSQRSN"
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8438E5677D
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 21:04:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DD2020DCD
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 21:07:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709327065; cv=none; b=srI/qBIjsAaZolp/paFx/84pRU3qrlQoCRsl4Fu9yJ/ZVX7dDBEDRWMedJdghlWx9zRx1/H9nZvZiIySkEZaWsJ49CQND3UxbdeWrUyEA8SfHcwo95jNzM0/z3zenbQ7APlzQ0jIVwhDMCurXqdRk20dtcJ0Yy/tfOLoU+H+m1k=
+	t=1709327251; cv=none; b=P2+pxgkpVfPIoDPeQ/EbQqnxfzH5G+M0h8VToCEViB5U27MON1xMAqUVIpTsWhlVvL2A7aPhB1RztIMThu78JtgkdBtf4oLDwKscJrxZmqh1qWAOJktigTnc1fkxOZ7k4DeNlMFnyZtXLmzmjuiw5y3jGWsj3THyveR3ps98HhQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709327065; c=relaxed/simple;
-	bh=oQVrm4JM1X0wDCMXvmOHv4D9tQl39pOLC72bTquZ9bE=;
-	h=Content-Type:From:Mime-Version:Subject:Date:Message-Id:Cc:To; b=NLeYrgPOLgOnAHl8EYvfsSMxJVTTqq09iXzVFva8btzgBHKaWV998fT5lHoD+PMXwNAnZz0GKaPl9migSXJGdftUTJwVtq6UP+Vd2P+leuQeFmFoGGlLKyq4De3b0nr9YzaGPo3V9riyNd5cutUefqK1LpN3p9D+gOoLwNxU110=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CauThr/s; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1dca8b86ee7so24750745ad.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 13:04:24 -0800 (PST)
+	s=arc-20240116; t=1709327251; c=relaxed/simple;
+	bh=p0ZaZO9UhGkHfWNvzr4gBD+Qoi+U7ycWUel2rLQAKZE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Yl88a5YPJvUOJ5FpZa+o/abso/KAvtHrP4gwKe9glYL09hC9d8WO1FkYX2nfIcTm61eZmLilK41kFdPG5JLKv/fuPREu2mErZGtNk1bzTtBhEmEDr9ElwdQ7PE5O/6X0llhOa472NdXfMQ9hm8iX9OHSekhyHAUINmXtOD7PPpY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com; spf=none smtp.mailfrom=mojatatu.com; dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b=LaTSQRSN; arc=none smtp.client-ip=209.85.128.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mojatatu.com
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-607c5679842so27151547b3.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 13:07:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709327064; x=1709931864; darn=vger.kernel.org;
-        h=to:cc:message-id:date:subject:mime-version:from
-         :content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oQVrm4JM1X0wDCMXvmOHv4D9tQl39pOLC72bTquZ9bE=;
-        b=CauThr/sIXva4Sh6vYkpd0hv1nelkZu1O3CXKpG7g6EQguj28qpWW4VDjEGo55fqJw
-         6kbYp/5C8KU344iz9vyMpiRE7rwPc+TkSWjQDxN7phZkx9gV2iw2oubLuQo21uiZBrwT
-         SRIGj1gAfPNdywp8NQuyE6ZqpASKJQSbMQ2r5NrtNqzCrrVhrZU3/pvsLYhud3xnrCHc
-         f5dCBCBEN5gGnzhckOMwRiiomwzSHMMVwErE17DbGgG4HtB9BB0CcYUaFkW3RiVUgc5e
-         gwb9XncthiL9hkojd+hgv/QUN2uDCgal0aprIvCK1TwEomOuYIkyXeCUoXL2HWw5RtWE
-         FVNw==
+        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1709327247; x=1709932047; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=p0ZaZO9UhGkHfWNvzr4gBD+Qoi+U7ycWUel2rLQAKZE=;
+        b=LaTSQRSNMrujt3/P5JkAGvQDPDqx9KCvYb9SMivdHdq+ERlzxz2RP1MSAZCckpm1x2
+         LC0Deg3mYSppb1Drh5Pk5lhgcK5WslWhKGDxRRuo/J6aI3Jotpa1AqYmDNNfZUcq57c4
+         Ed5h1jIStHgbMm+r6q/xi8/fFq7J7VImn+9AXvG+gtKPMIUgTjbx1slixTXbpykR6SGi
+         0zcjvKOvAxhWbxW2zIR6zmKM3M0+4MfotC0/WmLUBhbb4ivimpTzmz7UxIPMUPt2UyXv
+         lS4c1mRSYIy3t5PAXiCvAMtfL/KFKX0K3pGZBcY6nZAlmqSebkuqYfuAKTa3uJYy+a0F
+         QwFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709327064; x=1709931864;
-        h=to:cc:message-id:date:subject:mime-version:from
-         :content-transfer-encoding:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=oQVrm4JM1X0wDCMXvmOHv4D9tQl39pOLC72bTquZ9bE=;
-        b=qB+siX6r0G4spWSokLQxfWd7RUN+nbQNYZdzZc8kJQC9Dj1UwmAs0UUEUObuOFAbMP
-         N3aaAXDUOC+EeTMVVvlBwCG/Y8rZKb2La2qLRsg3Kw31OEAGAzINklmxWz0AQQzV0Nwa
-         RUu2a+DC9jgzIWA3gNN29RH5TZkUbNWDQgmsHMTAHOSxc3JGS+hoIdQyvax86c73REHp
-         BuFCJ2QOqeJEeKM26KFal0UNqw6EDLTjLaEMxYOPqxXHPpmEt/OT51YKkRltxX8TRaNu
-         rBdKowpTQjWZJn8HZXy4WyhRs5DSYwEfJu8FTyDFAA+s/sleqR1Ueg10yMD2JtqFYLKr
-         icfg==
-X-Forwarded-Encrypted: i=1; AJvYcCWDBetd+8X1Yca8B9nXSlE5V+m3MbvrvRkp0rUxNyrx8v4gPOltTddPb19IJEU2cnrI0ok0gH/cgRbGJ/y799aLC6iEgok8bCis7Tj/
-X-Gm-Message-State: AOJu0YwBRbJEaSRFJXM/Yfh7osRRdDVk1pZ5VEweZjmUjoY2bTGQBYS+
-	rPA1vPvYoJs0dUKY8evlr/4B2XY0b9x6gZr4AXuY0QFO3fBOzK+h
-X-Google-Smtp-Source: AGHT+IF27vILv1vb7bryIBdE28wrASmR/Fbc3vQ0XCORU9LI80+bIrEAUkKKkP4EwLUmjB6GKcHVEw==
-X-Received: by 2002:a17:902:fc44:b0:1db:47bb:65d6 with SMTP id me4-20020a170902fc4400b001db47bb65d6mr3367325plb.58.1709327063392;
-        Fri, 01 Mar 2024 13:04:23 -0800 (PST)
-Received: from smtpclient.apple ([2600:1010:b13d:eccf:a002:a81:f8b0:aa62])
-        by smtp.gmail.com with ESMTPSA id kr16-20020a170903081000b001dcc0e239fesm3906511plb.232.2024.03.01.13.04.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Mar 2024 13:04:23 -0800 (PST)
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-From: Rebecca Stemmler <stemmlersisters@gmail.com>
+        d=1e100.net; s=20230601; t=1709327247; x=1709932047;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=p0ZaZO9UhGkHfWNvzr4gBD+Qoi+U7ycWUel2rLQAKZE=;
+        b=edfLI4g39CcVpHBXmYaDaFrKkTBeO8mhCZKUiGto44TAQ7jFEnL5CxTeYoLeUdF+tx
+         +HPQTkXuv99DyguUZH/59S2hONQjDRrbF4nMJuHrzhh6CBjFBjOEUnszMsHoK0vXV7TL
+         vUVCuzWE0EUzKRMqCkevzd+rxe3PyrJihDqCCrvQHw6nJ6RqSag5/CNBf/QfkR/z25Av
+         +s1fwAv1Bj+ipbG/I2CV1hu6ydRS3Xi2TqumXm3ndUuAfFBk47dByCCS9LJU58/ASPxy
+         xqINfO2Wy9rXZ/Q9REZVpcaQumkY9gLpT8F8769/HvrqDouOdNxtiB/Lv3XvlsJmxznZ
+         UzRg==
+X-Gm-Message-State: AOJu0YwlKIkwKVa8gJg9uDq56HxtAeBlXPoPvUa7ZoLTFeUFFkjXPrYJ
+	b8hWOiUcQCj7J94omf6QZ5BxguRSg5BHo6emdh353r42PEdY3QK2uCtBGnobf7UkrWxIcGjo29F
+	z9wcJ3qsSpiALtWsCpxVOMOR6yIScI5AKiHP4
+X-Google-Smtp-Source: AGHT+IEAMh7WOZ34OSXCbsOza9A1uwFW+6xAUTjxYlyOU/ythJUQ2QlpJchp1sHedtQ31N2sHA+w3VSYPVvUEhjqXjM=
+X-Received: by 2002:a81:c214:0:b0:609:37fe:fb97 with SMTP id
+ z20-20020a81c214000000b0060937fefb97mr2947278ywc.4.1709327247508; Fri, 01 Mar
+ 2024 13:07:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH] x86/asm: Implement local_xchg using CMPXCHG without lock prefix
-Date: Fri, 1 Mar 2024 13:04:10 -0800
-Message-Id: <D56C6FA3-8E7B-4A8D-BA9D-B331B7B0C6E5@gmail.com>
-Cc: bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
- linux-kernel@vger.kernel.org, mingo@redhat.com, tglx@linutronix.de,
- x86@kernel.org
-To: ubizjak@gmail.com
-X-Mailer: iPhone Mail (21E5195e)
+MIME-Version: 1.0
+References: <20240229143432.273b4871@gandalf.local.home> <CAM0EoMkOgTezVLnN7f1GoXTURQ73LmXjHnBjQBSBRPnv58K-VQ@mail.gmail.com>
+ <20240301150153.36e5bf60@gandalf.local.home>
+In-Reply-To: <20240301150153.36e5bf60@gandalf.local.home>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Date: Fri, 1 Mar 2024 16:07:16 -0500
+Message-ID: <CAM0EoMnLJ2W6HY9yNM1AKMVsnbam7VkW4gr+mhk+nywbh-+e1g@mail.gmail.com>
+Subject: Re: [PATCH] tracing/net_sched: Fix tracepoints that save qdisc_dev()
+ as a string
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Cong Wang <xiyou.wangcong@gmail.com>, vaclav.zindulka@tlapnet.cz, 
+	Jiri Pirko <jiri@resnulli.us>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Coco Li <lixiaoyan@google.com>, 
+	David Ahern <dsahern@kernel.org>, Jakub Kicinski <kuba@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Fri, Mar 1, 2024 at 2:59=E2=80=AFPM Steven Rostedt <rostedt@goodmis.org>=
+ wrote:
+>
+> On Fri, 1 Mar 2024 14:24:17 -0500
+> Jamal Hadi Salim <jhs@mojatatu.com> wrote:
+>
+> > > Fixes: a34dac0b90552 ("net_sched: add tracepoints for qdisc_reset() a=
+nd qdisc_destroy()")
+> > > Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> >
+> > Should this be targeting the net tree?
+>
+> I was going to say that I need this for my work, but my work is aimed at
+> the next merge window, but this should go into the kernel now and be mark=
+ed
+> for stable. So yes, it probably should go through the net tree.
+>
+> Do I need to resubmit it?
+>
 
-Sent from my iPhone
+My view is it needs to be merged.
+I note there are some big changes in net and net-next trees right now
+that move the name - probably from 43a71cd66b9c0
+Coco Li and Eric are on your Cc already.
+
+> > Otherwise, LGTM. Just wondering - this worked before because "name"
+> > was the first field?
+>
+> Looks like it. See commit 43a71cd66b9c0 ("net-device: reorganize net_devi=
+ce
+> fast path variables")
+>
+> I wonder if there's anything else that uses a pointer to struct net_devic=
+e
+> thinking it can just be switched to find the name?
+>
+
+From a quick scan i cant find anything obvious.
+
+cheers,
+jamal
+
+> >
+> > Reviewed-by: Jamal Hadi Salim <jhs@mojatatu.com>
+>
+> Thanks,
+>
+> -- Steve
 
