@@ -1,70 +1,154 @@
-Return-Path: <linux-kernel+bounces-88432-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88434-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 214F686E187
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:05:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE05286E18B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:06:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC65328422F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:05:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6E9F3B24550
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:06:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43D4D42AB5;
-	Fri,  1 Mar 2024 13:05:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=8bytes.org header.i=@8bytes.org header.b="PwyaIrZM"
-Received: from mail.8bytes.org (mail.8bytes.org [85.214.250.239])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB75D5F84C
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 13:05:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.250.239
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709298335; cv=none; b=sCG2BVlOwMY0i9B/sMrZqG9OW3se/4GQqZYrO48zjpJmXR9Va/NDTF5OpKycA3TSL/dmaG2bVlFnZGYyiHF5qb7L7EtVu98sjkSviRA2U2Qe7GsJKo5nTd28PonDG+bdQxB98Beld8DKIKmus/CUXYIijS/SzTRfG/gGOtU4NRY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709298335; c=relaxed/simple;
-	bh=h87fasa27cwtoBBQjvXIjHlGyU3m9Dzkdm2Y9DRzkWM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZgetzLLr8hsci70xkmd66iN/DXJZURg+XXQvPJWmio6cxaF7cKPRxLt12yCB0AygNMY0NpZfx5pV69kSNfQrlH0VQ2CcLrHJzbhqR792qrxLSiBrZNv9Hnj3DAWgOcQ/9+MHi1vdEH4QfEG0XyMDKpsBfyKk7s65Y59e2Mfl07M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org; spf=pass smtp.mailfrom=8bytes.org; dkim=pass (2048-bit key) header.d=8bytes.org header.i=@8bytes.org header.b=PwyaIrZM; arc=none smtp.client-ip=85.214.250.239
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=8bytes.org
-Received: from 8bytes.org (p4ffe0c3c.dip0.t-ipconnect.de [79.254.12.60])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D0BB6E5E8;
+	Fri,  1 Mar 2024 13:06:02 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.8bytes.org (Postfix) with ESMTPSA id 9CD761C3319;
-	Fri,  1 Mar 2024 14:05:32 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=8bytes.org;
-	s=default; t=1709298332;
-	bh=h87fasa27cwtoBBQjvXIjHlGyU3m9Dzkdm2Y9DRzkWM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PwyaIrZMvEDiRkn1w3RRVKwKcLH7gVN9YmfA+1JNlxPxgpZTZUY1YPqVIgS74FANV
-	 Hy7wtBA/WK8VBIjymPcAYzMRwU9v7zzF63jZqA/uAkinrHN0orLvI6y1HQWZojtZ86
-	 6g+pBykzn9Kz+t4+kOwJDYSYCtFTj5KXAW2n8TblH1c+ta5UFJndIdiw1sNHhBJUYQ
-	 lDsKyOITVAsQ6VPBT2Dknges2eIg2twE9ec/u9zJar/4oxMoYitY9lOxuMg7xKtE5B
-	 CAMm1fiPUxobr/x4R05ne8ZC+YMxtplxxmxYDOTK1xBgRPdQhL9k6eY+PYOTrFrZS7
-	 JVHEp5kAE2l3Q==
-Date: Fri, 1 Mar 2024 14:05:31 +0100
-From: Joerg Roedel <joro@8bytes.org>
-To: Will Deacon <will@kernel.org>
-Cc: iommu@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, robin.murphy@arm.com,
-	kernel-team@android.com
-Subject: Re: [GIT PULL] iommu/arm-smmu: Updates for 6.9
-Message-ID: <ZeHSm1vSj7sfDeNB@8bytes.org>
-References: <20240229181533.GA16854@willie-the-truck>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B210C6CDA2;
+	Fri,  1 Mar 2024 13:06:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709298361; cv=none; b=qWe9cc7YzAZzRTfSVZ9Q4g6s3ECsG1JlbXlxE3bGlBtbe6JxgprGZzJ1Gd0yWV7jezxs447IcBuBjpi7HIH379YyOJcZhXwB7YKOX0LWWuO0FK08ecUPZcFZt8YcmR4nvVL0B56/IuLhP2QsbIyGtkefoxih+SdwdMhDmzMKH6I=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709298361; c=relaxed/simple;
+	bh=CjDE5ydNR/BncURT9vZlYDlNHu0bNpYjqN4jeVRjGyo=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=rEQEvQUujosVusR+1TDIo2+9vGjtodoE5ABTV2kzBlQ6umH/rsfYxOIf6MWJVRnlG2E4IJllTHIMJXMmHIIWf0onT95ImVAv3ly93KzgrGgeC56x13upcDzQ/Ei3A6cLwA44ikwIU86Pk6GIYIB1D77s7zsJh+h0WwvCgM/MV2g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 264E1C433C7;
+	Fri,  1 Mar 2024 13:05:57 +0000 (UTC)
+From: Huacai Chen <chenhuacai@loongson.cn>
+To: Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Will Deacon <will@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>
+Cc: Huacai Chen <chenhuacai@kernel.org>,
+	Waiman Long <longman@redhat.com>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Guo Ren <guoren@kernel.org>,
+	Rui Wang <wangrui@loongson.cn>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	linux-arch@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Huacai Chen <chenhuacai@loongson.cn>
+Subject: [PATCH 2/2] mmiowb: Hook up mmiowb helpers to mutexes as well as spinlocks
+Date: Fri,  1 Mar 2024 21:05:32 +0800
+Message-ID: <20240301130532.3953167-2-chenhuacai@loongson.cn>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240301130532.3953167-1-chenhuacai@loongson.cn>
+References: <20240301130532.3953167-1-chenhuacai@loongson.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240229181533.GA16854@willie-the-truck>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 29, 2024 at 06:15:33PM +0000, Will Deacon wrote:
->   git://git.kernel.org/pub/scm/linux/kernel/git/will/linux.git tags/arm-smmu-updates
+Commit fb24ea52f78e0d595852e ("drivers: Remove explicit invocations of
+mmiowb()") remove all mmiowb() in drivers, but it says:
 
-Pulled, thanks Will.
+"NOTE: mmiowb() has only ever guaranteed ordering in conjunction with
+spin_unlock(). However, pairing each mmiowb() removal in this patch with
+the corresponding call to spin_unlock() is not at all trivial, so there
+is a small chance that this change may regress any drivers incorrectly
+relying on mmiowb() to order MMIO writes between CPUs using lock-free
+synchronisation."
+
+The mmio in radeon_ring_commit() is protected by a mutex rather than a
+spinlock, but in the mutex fastpath it behaves similar to spinlock. We
+can add mmiowb() calls in the radeon driver but the maintainer says he
+doesn't like such a workaround, and radeon is not the only example of
+mutex protected mmio.
+
+So we extend the mmiowb tracking system from spinlock to mutex, hook up
+mmiowb helpers to mutexes as well as spinlocks.
+
+Without this, we get such an error when run 'glxgears' on weak ordering
+architectures such as LoongArch:
+
+radeon 0000:04:00.0: ring 0 stalled for more than 10324msec
+radeon 0000:04:00.0: ring 3 stalled for more than 10240msec
+radeon 0000:04:00.0: GPU lockup (current fence id 0x000000000001f412 last fence id 0x000000000001f414 on ring 3)
+radeon 0000:04:00.0: GPU lockup (current fence id 0x000000000000f940 last fence id 0x000000000000f941 on ring 0)
+radeon 0000:04:00.0: scheduling IB failed (-35).
+[drm:radeon_gem_va_ioctl [radeon]] *ERROR* Couldn't update BO_VA (-35)
+radeon 0000:04:00.0: scheduling IB failed (-35).
+[drm:radeon_gem_va_ioctl [radeon]] *ERROR* Couldn't update BO_VA (-35)
+radeon 0000:04:00.0: scheduling IB failed (-35).
+[drm:radeon_gem_va_ioctl [radeon]] *ERROR* Couldn't update BO_VA (-35)
+radeon 0000:04:00.0: scheduling IB failed (-35).
+[drm:radeon_gem_va_ioctl [radeon]] *ERROR* Couldn't update BO_VA (-35)
+radeon 0000:04:00.0: scheduling IB failed (-35).
+[drm:radeon_gem_va_ioctl [radeon]] *ERROR* Couldn't update BO_VA (-35)
+radeon 0000:04:00.0: scheduling IB failed (-35).
+[drm:radeon_gem_va_ioctl [radeon]] *ERROR* Couldn't update BO_VA (-35)
+radeon 0000:04:00.0: scheduling IB failed (-35).
+[drm:radeon_gem_va_ioctl [radeon]] *ERROR* Couldn't update BO_VA (-35)
+
+Link: https://lore.kernel.org/dri-devel/29df7e26-d7a8-4f67-b988-44353c4270ac@amd.com/T/#t
+Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+---
+ kernel/locking/mutex.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
+index cbae8c0b89ab..f51d09aec643 100644
+--- a/kernel/locking/mutex.c
++++ b/kernel/locking/mutex.c
+@@ -127,8 +127,10 @@ static inline struct task_struct *__mutex_trylock_common(struct mutex *lock, boo
+ 		}
+ 
+ 		if (atomic_long_try_cmpxchg_acquire(&lock->owner, &owner, task | flags)) {
+-			if (task == curr)
++			if (task == curr) {
++				mmiowb_in_lock();
+ 				return NULL;
++			}
+ 			break;
+ 		}
+ 	}
+@@ -168,8 +170,10 @@ static __always_inline bool __mutex_trylock_fast(struct mutex *lock)
+ 	unsigned long curr = (unsigned long)current;
+ 	unsigned long zero = 0UL;
+ 
+-	if (atomic_long_try_cmpxchg_acquire(&lock->owner, &zero, curr))
++	if (atomic_long_try_cmpxchg_acquire(&lock->owner, &zero, curr)) {
++		mmiowb_in_lock();
+ 		return true;
++	}
+ 
+ 	return false;
+ }
+@@ -178,6 +182,7 @@ static __always_inline bool __mutex_unlock_fast(struct mutex *lock)
+ {
+ 	unsigned long curr = (unsigned long)current;
+ 
++	mmiowb_in_unlock();
+ 	return atomic_long_try_cmpxchg_release(&lock->owner, &curr, 0UL);
+ }
+ #endif
+@@ -918,6 +923,7 @@ static noinline void __sched __mutex_unlock_slowpath(struct mutex *lock, unsigne
+ 	 * Except when HANDOFF, in that case we must not clear the owner field,
+ 	 * but instead set it to the top waiter.
+ 	 */
++	mmiowb_in_unlock();
+ 	owner = atomic_long_read(&lock->owner);
+ 	for (;;) {
+ 		MUTEX_WARN_ON(__owner_task(owner) != current);
+-- 
+2.43.0
+
 
