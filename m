@@ -1,169 +1,239 @@
-Return-Path: <linux-kernel+bounces-88058-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88066-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A970086DCD7
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:17:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 582DC86DCF5
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:22:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D14AB1C23D20
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:17:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C5D3E1F26FB7
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:22:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F071869D31;
-	Fri,  1 Mar 2024 08:17:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AHmii60F"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8DC069D37;
+	Fri,  1 Mar 2024 08:22:26 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3196051C2A;
-	Fri,  1 Mar 2024 08:16:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53BEA69E0A;
+	Fri,  1 Mar 2024 08:22:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709281020; cv=none; b=amrxZsswbORHWHFhDByOABmrrNKXOb8YGX3ulYqROhNeIfQ7d+u4LPzZnRwjGjq+fylw5fSAKl9OoGpndYSd/CbnJyilAYdv517LqJTOtPjFR0jLB4yJo0bTk3xbpbuY4Rj8/fN/lWfqQUzHsDE1WdwZ0/UqM+lrPQjjlMEz/vE=
+	t=1709281346; cv=none; b=tPAneZkb5ybP0AV9N6+/gKaMzY9igl6au9OLlSFJgPb5O5AquzUIBYlwGpUyTPc0y+1O6cRqS/n5YAZhElike7Cc86pkQLMM5gODqfRtgy6mPW6tQfeAfJmEpqMmjAKwE4TKnAj62XZ1eMYNvbA2jaOK1aJKAF8Muo0vGGx0DEc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709281020; c=relaxed/simple;
-	bh=u1iHu4eIaiptVr+p3li5vHjKU06YVZVzQkaU1uqK2qs=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=EyDOeYFhvigqivS00EMpJ+Qm6uEWSUkoUIEIhoYkn8ASxZb5bQbsrnUGWgFE/cCM28aiGtyhmK5PgxLBq3yo9p0mR9RmTr2p36t9kZlhezXfSVCrY2VTAcZO/YLFTLrKYFkveZ9DH9GfYeojNzAxZMMaiDk2FNzD2JQD+TrIefM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AHmii60F; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709281018; x=1740817018;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=u1iHu4eIaiptVr+p3li5vHjKU06YVZVzQkaU1uqK2qs=;
-  b=AHmii60FQmiWdb52l1QN2y1NzzfgF63KjIxaZp1jMVuo0aCpmSyqlUU0
-   g0TRiMwYBKLujr0v9zfj4iB88swssErnDTCeYLNGrNkCfZf4n09ZcEL3s
-   scSyyjYfpeLViVngEINaHusRopBVfSf5Ldn7+kjV5kssZN50Ekwoa8Nbu
-   Z80iC32RiawBnapRBmhKuzNYodChMyUiVTd218dw9P8urQ9SYmGCCIpBO
-   Haw9yAVn7jJnPesKH9mBN2LMwfXeq+UfjmNMuw3TlSiwNl5ii4YouXr4Q
-   Gns7t7/Xjq+T9T/OkgKAmvruxZGAv8syMNlto1BqcqQTy6vxsGfUBNK6R
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="3733834"
-X-IronPort-AV: E=Sophos;i="6.06,195,1705392000"; 
-   d="scan'208";a="3733834"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 00:16:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,195,1705392000"; 
-   d="scan'208";a="8063103"
-Received: from eseresrx-mobl.ger.corp.intel.com (HELO localhost) ([10.252.50.228])
-  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 00:16:53 -0800
-From: Jani Nikula <jani.nikula@linux.intel.com>
-To: Kees Cook <keescook@chromium.org>, Rasmus Villemoes
- <linux@rasmusvillemoes.dk>
-Cc: Kees Cook <keescook@chromium.org>, "Gustavo A . R . Silva"
- <gustavoars@kernel.org>, Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
- David Laight <David.Laight@aculab.com>, Nick Desaulniers
- <ndesaulniers@google.com>, Martin Uecker
- <Martin.Uecker@med.uni-goettingen.de>, Jonathan Corbet <corbet@lwn.net>,
- linux-doc@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>,
- linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] compiler.h: Explain how __is_constexpr() works
-In-Reply-To: <20240301044428.work.411-kees@kernel.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20240301044428.work.411-kees@kernel.org>
-Date: Fri, 01 Mar 2024 10:16:47 +0200
-Message-ID: <87zfvi5pu8.fsf@intel.com>
+	s=arc-20240116; t=1709281346; c=relaxed/simple;
+	bh=h6FtoEcIUz3yIkRmQPdlDZucxbkkGkvHrXaGeCM1nEs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=k0dT4sj6uLgn36zIrqiX/bEyA0ogPU8YeEHhXTOW36d3RYfIcDbkK28lzUZUozySwevOkcwLr88lD8ZuXGQYQmATarPAXQO7f9uBEiYAF7ywkO13wgpWf88TVxuKrXdkQ31zkhtCvMz4j8gr//A3MSqm0muYYQmgawS76vNyXEg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 05f06a440549480886f5d1928f357437-20240301
+X-CID-O-RULE: Release_Ham
+X-CID-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:3aa1627a-5245-4c43-a2b5-b2ef66fe2ba0,IP:10,
+	URL:0,TC:0,Content:-25,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,AC
+	TION:release,TS:-30
+X-CID-INFO: VERSION:1.1.37,REQID:3aa1627a-5245-4c43-a2b5-b2ef66fe2ba0,IP:10,UR
+	L:0,TC:0,Content:-25,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:-30
+X-CID-META: VersionHash:6f543d0,CLOUDID:c9637e84-8d4f-477b-89d2-1e3bdbef96d1,B
+	ulkID:2403011616558IO7NRVB,BulkQuantity:0,Recheck:0,SF:66|38|24|17|19|44|1
+	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC
+	:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-UUID: 05f06a440549480886f5d1928f357437-20240301
+X-User: aichao@kylinos.cn
+Received: from localhost.localdomain [(112.64.161.44)] by mailgw
+	(envelope-from <aichao@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 1055854772; Fri, 01 Mar 2024 16:16:55 +0800
+From: Ai Chao <aichao@kylinos.cn>
+To: hdegoede@redhat.com,
+	ilpo.jarvinen@linux.intel.com,
+	linux-kernel@vger.kernel.org,
+	platform-driver-x86@vger.kernel.org
+Cc: Ai Chao <aichao@kylinos.cn>
+Subject: [PATCH v3] platform/x86: add lenovo generic wmi driver
+Date: Fri,  1 Mar 2024 16:16:48 +0800
+Message-Id: <20240301081648.265907-1-aichao@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-On Thu, 29 Feb 2024, Kees Cook <keescook@chromium.org> wrote:
-> The __is_constexpr() macro is dark magic. Shed some light on it with
-> a comment to explain how and why it works.
+Add lenovo generic wmi driver to support camera button.
 
-Hey, it was a fun little puzzle to figure out using the C standard. Now
-you're ruining it for everyone! ;)
+Signed-off-by: Ai Chao <aichao@kylinos.cn>
+---
 
-The description matches my recollection of how it works. Especially the
-meaning of the first 8 threw me off way back when. And looks like I've
-replied to that effect for v1.
+v2: Adjust GPL v2 to GPL, adjust sprintf to sysfs_emit.
+v3: Remove lenovo_wmi_remove function.
 
-FWIW,
+ drivers/platform/x86/Kconfig      |  10 +++
+ drivers/platform/x86/Makefile     |   1 +
+ drivers/platform/x86/lenovo-wmi.c | 113 ++++++++++++++++++++++++++++++
+ 3 files changed, 124 insertions(+)
+ create mode 100644 drivers/platform/x86/lenovo-wmi.c
 
-Reviewed-by: Jani Nikula <jani.nikula@intel.com>
-
-but I'm sure there are more pedantic reviewers for all the minor
-details.
-
->
-> Acked-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
-> Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> Cc: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-> Cc: Jani Nikula <jani.nikula@linux.intel.com>
-> Cc: David Laight <David.Laight@aculab.com>
-> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> Cc: Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: linux-doc@vger.kernel.org
-> v2: *thread necromancy* rewrite based on feedback to v1
-> v1: https://lore.kernel.org/all/20220131204357.1133674-1-keescook@chromium.org/
-> ---
->  include/linux/compiler.h | 39 +++++++++++++++++++++++++++++++++++++++
->  1 file changed, 39 insertions(+)
->
-> diff --git a/include/linux/compiler.h b/include/linux/compiler.h
-> index bb1339c7057b..38cd9f3c8f6a 100644
-> --- a/include/linux/compiler.h
-> +++ b/include/linux/compiler.h
-> @@ -231,6 +231,45 @@ static inline void *offset_to_ptr(const int *off)
->   * This returns a constant expression while determining if an argument is
->   * a constant expression, most importantly without evaluating the argument.
->   * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
-> + *
-> + * Details:
-> + * - sizeof() return an integer constant expression, and does not evaluate
-> + *   the value of its operand; it only examines the type of its operand.
-> + * - The results of comparing two integer constant expressions is also
-> + *   an integer constant expression.
-> + * - The first literal "8" isn't important. It could be any literal value.
-> + * - The second literal "8" is to avoid warnings about unaligned pointers;
-> + *   this could otherwise just be "1".
-> + * - (long)(x) is used to avoid warnings about 64-bit types on 32-bit
-> + *   architectures.
-> + * - The C Standard defines "null pointer constant", "(void *)0", as
-> + *   distinct from other void pointers.
-> + * - If (x) is an integer constant expression, then the "* 0l" resolves
-> + *   it into an integer constant expression of value 0. Since it is cast to
-> + *   "void *", this makes the second operand a null pointer constant.
-> + * - If (x) is not an integer constant expression, then the second operand
-> + *   resolves to a void pointer (but not a null pointer constant: the value
-> + *   is not an integer constant 0).
-> + * - The conditional operator's third operand, "(int *)8", is an object
-> + *   pointer (to type "int").
-> + * - The behavior (including the return type) of the conditional operator
-> + *   ("operand1 ? operand2 : operand3") depends on the kind of expressions
-> + *   given for the second and third operands. This is the central mechanism
-> + *   of the macro:
-> + *   - When one operand is a null pointer constant (i.e. when x is an integer
-> + *     constant expression) and the other is an object pointer (i.e. our
-> + *     third operand), the conditional operator returns the type of the
-> + *     object pointer operand (i.e. "int *). Here, within the sizeof(), we
-> + *     would then get:
-> + *       sizeof(*((int *)(...))  == sizeof(int)  == 4
-> + *   - When one operand is a void pointer (i.e. when x is not an integer
-> + *     constant expression) and the other is an object pointer (i.e. our
-> + *     third operand), the conditional operator returns a "void *" type.
-> + *     Here, within the sizeof(), we would then get:
-> + *       sizeof(*((void *)(...)) == sizeof(void) == 1
-> + * - The equality comparison to "sizeof(int)" therefore depends on (x):
-> + *     sizeof(int) == sizeof(int)     (x) was a constant expression
-> + *     sizeof(int) != sizeof(void)    (x) was not a constant expression
->   */
->  #define __is_constexpr(x) \
->  	(sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
-
+diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+index bdd302274b9a..fbbb8fb843d7 100644
+--- a/drivers/platform/x86/Kconfig
++++ b/drivers/platform/x86/Kconfig
+@@ -1001,6 +1001,16 @@ config INSPUR_PLATFORM_PROFILE
+ 	To compile this driver as a module, choose M here: the module
+ 	will be called inspur-platform-profile.
+ 
++config LENOVO_WMI
++	tristate "Lenovo Geneirc WMI driver"
++	depends on ACPI_WMI
++	depends on INPUT
++	help
++	This driver provides support for Lenovo WMI driver.
++
++	To compile this driver as a module, choose M here: the module
++	will be called lenovo-wmi.
++
+ source "drivers/platform/x86/x86-android-tablets/Kconfig"
+ 
+ config FW_ATTR_CLASS
+diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
+index 1de432e8861e..d51086552192 100644
+--- a/drivers/platform/x86/Makefile
++++ b/drivers/platform/x86/Makefile
+@@ -66,6 +66,7 @@ obj-$(CONFIG_SENSORS_HDAPS)	+= hdaps.o
+ obj-$(CONFIG_THINKPAD_ACPI)	+= thinkpad_acpi.o
+ obj-$(CONFIG_THINKPAD_LMI)	+= think-lmi.o
+ obj-$(CONFIG_YOGABOOK)		+= lenovo-yogabook.o
++obj-$(CONFIG_LENOVO_WMI)	+= lenovo-wmi.o
+ 
+ # Intel
+ obj-y				+= intel/
+diff --git a/drivers/platform/x86/lenovo-wmi.c b/drivers/platform/x86/lenovo-wmi.c
+new file mode 100644
+index 000000000000..96c2ec9e6441
+--- /dev/null
++++ b/drivers/platform/x86/lenovo-wmi.c
+@@ -0,0 +1,113 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ *  Lenovo Generic WMI Driver
++ *
++ *  Copyright (C) 2024	      Ai Chao <aichao@kylinos.cn>
++ */
++
++#include <linux/acpi.h>
++#include <linux/device.h>
++#include <linux/input.h>
++#include <linux/module.h>
++#include <linux/wmi.h>
++
++#define WMI_LENOVO_CAMERABUTTON_EVENT_GUID "50C76F1F-D8E4-D895-0A3D-62F4EA400013"
++
++static u8 camera_mode;
++
++struct lenovo_wmi_priv {
++	struct input_dev *idev;
++};
++
++static ssize_t camerabutton_show(struct device *dev,
++				 struct device_attribute *attr, char *buf)
++{
++	return sysfs_emit(buf, "%u\n", camera_mode);
++}
++
++DEVICE_ATTR_RO(camerabutton);
++
++static struct attribute *lenovo_wmi_attrs[] = {
++	&dev_attr_camerabutton.attr,
++	NULL,
++};
++
++static const struct attribute_group lenovo_wmi_group = {
++	.attrs = lenovo_wmi_attrs,
++};
++
++const struct attribute_group *lenovo_wmi_groups[] = {
++	&lenovo_wmi_group,
++	NULL,
++};
++
++static void lenovo_wmi_notify(struct wmi_device *wdev, union acpi_object *obj)
++{
++	struct lenovo_wmi_priv *priv = dev_get_drvdata(&wdev->dev);
++
++	if (obj->type == ACPI_TYPE_BUFFER) {
++		camera_mode = obj->buffer.pointer[0];
++		input_report_key(priv->idev, KEY_CAMERA, 1);
++		input_sync(priv->idev);
++		input_report_key(priv->idev, KEY_CAMERA, 0);
++		input_sync(priv->idev);
++	} else {
++		dev_dbg(&wdev->dev, "Bad response type %d\n", obj->type);
++	}
++}
++
++static int lenovo_wmi_input_setup(struct wmi_device *wdev)
++{
++	struct lenovo_wmi_priv *priv = dev_get_drvdata(&wdev->dev);
++
++	priv->idev = devm_input_allocate_device(&wdev->dev);
++	if (!priv->idev)
++		return -ENOMEM;
++
++	priv->idev->name = "Lenovo WMI Camera Button";
++	priv->idev->phys = "wmi/input0";
++	priv->idev->id.bustype = BUS_HOST;
++	priv->idev->dev.parent = &wdev->dev;
++	priv->idev->evbit[0] = BIT_MASK(EV_KEY);
++	priv->idev->keybit[BIT_WORD(KEY_CAMERA)] = BIT_MASK(KEY_CAMERA);
++
++	return input_register_device(priv->idev);
++}
++
++static int lenovo_wmi_probe(struct wmi_device *wdev, const void *context)
++{
++	struct lenovo_wmi_priv *priv;
++	int err;
++
++	priv = devm_kzalloc(&wdev->dev, sizeof(struct lenovo_wmi_priv),
++			    GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	dev_set_drvdata(&wdev->dev, priv);
++
++	err = lenovo_wmi_input_setup(wdev);
++	return err;
++}
++
++static const struct wmi_device_id lenovo_wmi_id_table[] = {
++	{ .guid_string = WMI_LENOVO_CAMERABUTTON_EVENT_GUID },
++	{  }
++};
++
++static struct wmi_driver lenovo_wmi_driver = {
++	.driver = {
++		.name = "lenovo-wmi",
++		.dev_groups = lenovo_wmi_groups,
++	},
++	.id_table = lenovo_wmi_id_table,
++	.probe = lenovo_wmi_probe,
++	.notify = lenovo_wmi_notify,
++};
++
++module_wmi_driver(lenovo_wmi_driver);
++
++MODULE_DEVICE_TABLE(wmi, lenovo_wmi_id_table);
++MODULE_AUTHOR("Ai Chao <aichao@kylinos.cn>");
++MODULE_DESCRIPTION("Lenovo Generic WMI Driver");
++MODULE_LICENSE("GPL");
 -- 
-Jani Nikula, Intel
+2.25.1
+
 
