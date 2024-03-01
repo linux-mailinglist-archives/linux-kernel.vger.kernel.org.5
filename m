@@ -1,243 +1,195 @@
-Return-Path: <linux-kernel+bounces-88702-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88703-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C09A86E593
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:29:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EEE186E595
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:29:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2B512843D2
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:29:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 606391C22462
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:29:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECAD47319F;
-	Fri,  1 Mar 2024 16:28:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FF8C71B40;
+	Fri,  1 Mar 2024 16:28:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="ec///jgn"
-Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02on2058.outbound.protection.outlook.com [40.107.241.58])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GGCDY5j4"
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 092827316E;
-	Fri,  1 Mar 2024 16:28:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.241.58
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709310492; cv=fail; b=HBO/QKZjTRJK7TxbxJNqDRZhsVlcKtnK645dPiX4s4Wkhn5mODUpqCQBsszP45iQ1dib54TaCZf1cSY9mRtNyJT3xRiOniNUGkC69Z4YSKxuVAaD3sV0TO1R62uhbq+TApfg/5GDHmO0dpo9c6eFu6j5dOeMXN9T0dN+hre6C0Q=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709310492; c=relaxed/simple;
-	bh=1maBE3U3xoct5PhsFKMmJ/XaWb8wojZsmOnSEkiyFuM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=TqYZ07LAJeDNHXnaP/qFtBQE/wO4ezqiKNAmWWzkildke5LmASB9jv4N1LsC9cKNRIyr3+aQNjJauPnOUqDAns1sIIU4DbjKywTnOJ0mHa7wQFdXu+YLtw8lNRbNVmSwJfC6zaBG3UWzFZZgjIh/GPdxmczmBGktY1AmONXXbjs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=ec///jgn; arc=fail smtp.client-ip=40.107.241.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IpRLBiQgWwr1aqm+Bg/eXn9Vyq2ah7KKF07c1tgWHGc+gacv1o/63FfhNo2A/2Bs670HAuoZo3RNLhpT94ZYvcAjeQ1oQciNAk43gcnSnwZrjeDh2+xSTAVilmPunpqTMz7dLErdsSMhLnuGDAhC6eZ9gA0vXy8/GSP9/xFoGkb30eB0wldddp//uzkIaQg9pPqFaSbGTm1TlMZ/QaS0MBbWQE+nelCLB8uYrjOTHnKdDLFdPWcdcb1R5UEeW2ORV5tm+rd6w/ySFc9X0wP4OuXwkYIW0f2e1lJOajsmW9BuS6+p07SoV+Hsw2iVERFs+zv1SAW5USP/PYARPlhs6A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=x7TrQARhBTnNN1DpIq0Esgu46coukWarnga6V/Y6/AA=;
- b=fb0iGvGCaI2fPojUyCXHNJcZYGwULpcIUMFq6E6xQsZU5ppXob5empyEK7dV/RzMqyGUjzNto+33GDkzgsmhD2pzswl+ZTF6nw00PUsntS5tQwERr+bfKTrfQxEYbh0gpo0d/obmhjusgQXYH5AlQYO8Un4P7nrTmvBB2EyI6yzJOtQc7K8Nl37rgGJpNG5YtnjXk6kQqBmZ2ZCWrKOwA2J7eNmAfX0hGdonQMTgojhEQtXdQ/V3NMZYtzm/p+QuFmWYnUXXkhK0wxriS7mqRJIzEG+XNDQ//riSwJEHsYx1pwFtc0TVhQNUSkXzevDN6Cb8byIvSOhl/691pPPcYQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=x7TrQARhBTnNN1DpIq0Esgu46coukWarnga6V/Y6/AA=;
- b=ec///jgnRkMWyNYY3CB45JVgHTEZm3RzK5T77qyrV+0BR/eDTqLBpGmuACzUlgYJCGsF5SWiS+BWp9R9IS0ftE55v3M5xEY+IK1cVOBuXtYAOiMozEwdGL06N+ZJNnPcWPCdxfG9ojnHUwbmgGBLIElSimQrB62pHLPfWCwnwmQ=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by DBBPR04MB7865.eurprd04.prod.outlook.com (2603:10a6:10:1e2::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.41; Fri, 1 Mar
- 2024 16:28:08 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::9af4:87e:d74:94aa]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::9af4:87e:d74:94aa%7]) with mapi id 15.20.7316.035; Fri, 1 Mar 2024
- 16:28:08 +0000
-From: Frank Li <Frank.Li@nxp.com>
-To: conor@kernel.org
-Cc: Frank.Li@nxp.com,
-	bhelgaas@google.com,
-	conor+dt@kernel.org,
-	devicetree@vger.kernel.org,
-	helgaas@kernel.org,
-	imx@lists.linux.dev,
-	krzysztof.kozlowski+dt@linaro.org,
-	kw@linux.com,
-	linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org,
-	lpieralisi@kernel.org,
-	robh@kernel.org
-Subject: [PATCH v6 3/3] dt-bindings: pci: layerscape-pci-ep: Add snps,dw-pcie-ep.yaml reference
-Date: Fri,  1 Mar 2024 11:27:41 -0500
-Message-Id: <20240301162741.765524-4-Frank.Li@nxp.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240301162741.765524-1-Frank.Li@nxp.com>
-References: <20240301162741.765524-1-Frank.Li@nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SJ0PR03CA0388.namprd03.prod.outlook.com
- (2603:10b6:a03:3a1::33) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40B9C70CD2;
+	Fri,  1 Mar 2024 16:28:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709310506; cv=none; b=CfpVw2JTwS4iAOD/SidQN7y0FY8yzgdYCeh0099hoW7nmwkhQWunqkhEDtfLH9/6n03xAsiBo3cVvAiMLpSPc9sH5q8yOsk74MQ+jgQ+I9ytrpcPF30TupQUXid+F6TPha/1qTPnj067Jh3WFsdF8quS4UeRuPECTQLLMFeS96Y=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709310506; c=relaxed/simple;
+	bh=Ws3CE83RDoWOapBnTAsK/7Ch82AUX+ZG1fRM9iEK0M4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=c/lxzJApbN4uK7MSLRYFMG86YaILBTtP/EWSB0+1oJhe4bVrYVbfyFu+7foIdDQufFaW/8XP/ppe0NeurmnMhHAZoHJqxAhrhsrT7jky/eblLWthMK0bMJV7pJ/vG4hrQA0xQ+zKMZZrnCeCNA9gSif3FUwg2Z/DomAq+aF4eGE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GGCDY5j4; arc=none smtp.client-ip=209.85.215.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5d3912c9a83so1600307a12.3;
+        Fri, 01 Mar 2024 08:28:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709310504; x=1709915304; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=e9Rq23WfnWNafR3maqVRcpT7cvkxku4IIx2p9eSQTXE=;
+        b=GGCDY5j4QNTfrz/ii5mbCmc2s26GIH0qSRtxEAuSwK4bEe/9uwzC4yJSoe7hXXkTw1
+         sdsoZHt+8vf47pXabWXyE5KlOI4H3kcvrmYrLsMOFmKR5VEQBB8xEKK9ajlvepKOJMj+
+         Q1nf45SsDnraHgDhmnC+wbL9pzqWX5sGvzR148UdCQXOI2Z3qh4vT4qilhRvvwMNr64l
+         YMP4JR+L1SnfTY0XfE8YixB91HECRFFWwTyAESo6XEaBOB0uaZoErQbr1C78mZ2ez4nZ
+         FtvPyLpeCAXPtbjsKWc7KWrneN8LLEPD+zo3ZunyCYt7q3c3p5Czo0AdlvQUcPj0wbSv
+         fMSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709310504; x=1709915304;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=e9Rq23WfnWNafR3maqVRcpT7cvkxku4IIx2p9eSQTXE=;
+        b=RC+Gog9XQydsNAftja8qkz8AX6jtFNxK2vZVC+WnoznVUHxdqW9ovJpT92XsaO71qc
+         9ZAk0y4p1u968m3XbD/cEbaNzdariUCKPRKhA/+EwGqqp64KDbB+n+nrglFXb06TE06Q
+         l72e8Gt4bqoAS8cu+5oHIBRoCRVAnsOXAGYyjg7+wrpl0MXHSQuo8kA9jbgrT+ljR69c
+         UR9tw4gzXnU5lN9o/GTg7PfslkUrT9azdjzwPFyWvcGu5GE+lM4oilscJx2FPE6jLVNy
+         CMkjLpqls6PvGhWlgv6VZAMVPzJOCbNzix2MZnyT3QlZ53mNAJs7UAxGUXQJd0XLYYZl
+         JooA==
+X-Forwarded-Encrypted: i=1; AJvYcCXQ2CZyy6NWNWSkcqmc4OmJ7Ie8/kSDpZo2VkbK9ldxLZlM1AuMSEJYck/+Owspz2pgdBJDaGHKcTpwRo8vBYW0ScctyK519UW9TvzQ9MBH/WQvGsq5gFUi7yaHDR5aYhp7IWaJdmPu3NWOvnrUObj635uMNiaCOgrbETM77Qv5ynGB35ywNUErBnjzlCA=
+X-Gm-Message-State: AOJu0YwNjVIbF+xLB102jnV2lct/zXtjP4qH1CxapCEApYe0wpU2SwCZ
+	0mtKFfFiXMyTjRqLsAXqAj3t3nTRm5E1WrA47u6bKb0ScCn7eN+RyYAESKUKgGRN8Wy/3R1/WtN
+	736TABCcrXSucAE949NXSsJaxzDE=
+X-Google-Smtp-Source: AGHT+IHIcdEZl85tvHDMm7YALVdDjiFF8iaCV0i5AkH8LJ0SxNBqztZtK507hXg8qn7fo9phR04XHEIKKnPGbXWIOis=
+X-Received: by 2002:a05:6a20:438f:b0:1a1:139d:bdec with SMTP id
+ i15-20020a056a20438f00b001a1139dbdecmr2422537pzl.55.1709310504356; Fri, 01
+ Mar 2024 08:28:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|DBBPR04MB7865:EE_
-X-MS-Office365-Filtering-Correlation-Id: ade6e94d-6b65-42ac-9ecc-08dc3a0c9439
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	8OQahmy6f0xZLNp0WwnZIgAQPxKaCae/57fvuK1KppG9OoWfaMx234mOskBMcWH1R/HtileZGiRYt+Qk6EcgyIDY3tE6IDF60SlQK42tsXKpBT4iOLklEYjvxm9SXkc6c5fpswukYzCPuWfII6SKG6wDIKuiFjBgMGZw/sMUBQPkeHxyfIBRAe5nqWuOCZTPmj0UxqTRKULNBGeWzdKPtkegsE7zXVIprUxwId0AcX+MWcYV27Uh75Al8ly30Wuyp8d9RrIbkB/q238Y8pEXbnywL0Jkl9Ku6mySBfUqQwb4hEGj6nR1PjUQSlVAhWdrFFPbzVA9XY4oSlsf1NehKqQVXMY6Afr+llSiU0ey/6qTMMbDt2OvJzs+tYjPOn+IQ4J/CLdhMKRtKPm0bVqYAXNyldg5qT7hdVBj6poxBKCKEOuhz3BiNUJ47FrVytMDX+mtxVsQVRDalxxCPIhej/tbeWcoV7oZkF2r+uacAZ5aF3F6MBr0BCd0vj4xtmrT0J7xiUb3o+NLUACOcRZ36KOf/DT1s/ydz+xE3rfl9JAcCE52eUmd6gqcV03/Ln3qJGfjOssh1aBo92y+bZByu6sFQ33AZRsQzhIhBFm8eSEZQ5po8UxDawIAiUuiS/IxFtWQopJ3ZJ9QmqAdUkSphESX65ZXSjhwyNDvj1XCKFlOknVjBYbrl4mf1MX8NWUmbN5BhEx8M4pfGAEMKCvFqQ==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?vGZKufBq7aT4Sk8Mz0ZvdzM8rzjB0VKspnoocOGlr5B2Zec5YZES4WX5eVxX?=
- =?us-ascii?Q?8cN1jzZV68f1FFQc+BXrGHwhuiAxJvSNKsm3kg8cU0W8jCvxwI93ph3JjVUL?=
- =?us-ascii?Q?rsN9+0YWTO5D+ZRP5T9/ftgZSICuXDyRx/iid3eSTkJw5RRpM2CmZgdx2vz1?=
- =?us-ascii?Q?3kpdFGnsmwidEBhF5vuRBwl5dKvGv8LIwS8Iy54Sc2FFPpZmAbIjsO/MQXiU?=
- =?us-ascii?Q?3Z3OOYf57QTNOfHhZ3SzD4AK9MN4YovuhVwgB8goZi8R9Xzq+T2QqsP1/ec1?=
- =?us-ascii?Q?hjI3Vh3v58ni9d8dj60EhVYMJiTrduBIqE/9eqcP/2e+51FiKkW+CWdwxV9O?=
- =?us-ascii?Q?AbhMsHLL4eF8FmUyN5FFOk5YKkEJ9uH954hq0INeBUX0cgN5hFRbxLIjvw4F?=
- =?us-ascii?Q?5056un41bitbwmzjzzVtoGZQua3nIkm+GMUhFaMQeFHT50RtB2mrb7u2inmv?=
- =?us-ascii?Q?iKim4XnHMPOd6bL9LvKxwEC52aN+DsAVcQD21MxpkZM4S7f5Chj2ZZ/QI4Lk?=
- =?us-ascii?Q?e57kAyaRB90lub52VUzv5kN2V7qzaiPJ8ugiFt5ZrLTVR3Er1dLGIjF1TLJE?=
- =?us-ascii?Q?B0aC838NSf5a+LFKSRXMqwaMvTeOREAHywddwGD4TyD27tT+mPT9nRV4AMFA?=
- =?us-ascii?Q?hDlM3cuvmG5SI4xuBJijoWMJCJFI+PD88YGU46KHi/yvr0LuGJdRpO58h8pt?=
- =?us-ascii?Q?19DdMNBu4lfhv7gVIcMm5HL/FW1E5ZUQgWPDWg9BLD+NROz2lrqupmoGxJOm?=
- =?us-ascii?Q?UC9XjEenUPKR3MSj3WUndVifiRwqdorLP9WM68nN8mS9y7d1BHUWdkNe/1ZL?=
- =?us-ascii?Q?jxunNtuTYa8vMdftcMkcyVjnEw9+swKQXjPs5h4fa2bY1I4PVy8lX8Kwtd+w?=
- =?us-ascii?Q?XTW/qtU6jTGXBdPw+eRR8I9gk+95WrreOSiA6Yh6VtxHucFg7fo5aB4O6Q2P?=
- =?us-ascii?Q?8oc76Zap9sAkwBvppCDYTeY5q08NVzjvDJ8AIR1WA2pOl7ylhu5Q4IE6DKlS?=
- =?us-ascii?Q?5Vn4P14NXpEhM2DwqF8oK5hTzL6VaJn61B6k1gvxoME8iYmqH2i32hfzxJ/K?=
- =?us-ascii?Q?GXVda8ozLqTDuPiUNRvD8NSbe0g9U03WKmAW1xHHb+Uycwyp4xAw+C3hpwGE?=
- =?us-ascii?Q?swE2ryw2gqzxR18p+6dOzWQyvPEDDfRrnEGl6mg4vB8r34RF2G7rfRrVnffh?=
- =?us-ascii?Q?Qmq0YeqQPYDT3fh2WzQuN8MnJGPMgl4+nzuYaX4ygzLdKvca9N25rmhjfoha?=
- =?us-ascii?Q?9N3nCah8LXNH8lwSQZL9LldZTffrEBEARweJDDRAF7K/YO+Nn7N14FIuDr26?=
- =?us-ascii?Q?BDskRA15i5PBAgvBBCHp1BTIhqTrzMM+CpIaNQFosVjLYWZCkoskxnrRe6uN?=
- =?us-ascii?Q?iixt0cCR6ufMEZjuTnxsM1TB5/8xs40kh8qiyT6POvkz1d1ECOzsaNKUajKs?=
- =?us-ascii?Q?GhTJFBGE6MGgk5VNKmd8Yzg3cDQxPT3U6BjVhEsdeG+UxzEb+MYUtgEf7VMn?=
- =?us-ascii?Q?hb7eYy15EoJBcWZQd9gapAdiddrhMBe0PwwQAJB8SX4GfSuCR0g+XHBurafs?=
- =?us-ascii?Q?gcSepFfMt2usFJCuHt5/UvoRLtFh74PQxL6ohqn4?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ade6e94d-6b65-42ac-9ecc-08dc3a0c9439
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Mar 2024 16:28:08.2013
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: onN0ks2d8udeAbINWYhHBk6Gg7WUAdxmuANclNPxKoTRG+1xKx8Of583fIAyFUCqjhygd64pWaPxZYOiaZ0wsw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7865
+References: <20240229155235.263157-1-laura.nao@collabora.com> <20240301152232.122399-1-laura.nao@collabora.com>
+In-Reply-To: <20240301152232.122399-1-laura.nao@collabora.com>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Fri, 1 Mar 2024 17:28:11 +0100
+Message-ID: <CANiq72nMo72ObJaQ=Eki4E6t5dMOnF+xmHE1Z2Tn3=33ooSYGA@mail.gmail.com>
+Subject: Re: [PATCH v5] kselftest: Add basic test for probing the rust sample modules
+To: Laura Nao <laura.nao@collabora.com>
+Cc: a.hindborg@samsung.com, alex.gaynor@gmail.com, aliceryhl@google.com, 
+	benno.lossin@proton.me, bjorn3_gh@protonmail.com, boqun.feng@gmail.com, 
+	gary@garyguo.net, kernel@collabora.com, kernel@valentinobst.de, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	ojeda@kernel.org, rust-for-linux@vger.kernel.org, sergio.collado@gmail.com, 
+	shuah@kernel.org, usama.anjum@collabora.com, wedsonaf@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add snps,dw-pcie-ep.yaml.
+On Fri, Mar 1, 2024 at 4:22=E2=80=AFPM Laura Nao <laura.nao@collabora.com> =
+wrote:
+>
+> Adding --first-time (you meant --first-time, right?) definitely makes
+> sense, thanks for the pointer. I think having the modules being built-in
+> should be treated as a skip, same as when they are not there at all.
 
-Remove context that exist in snps,dw-pcie-ep.yaml.
+Yeah, I meant `--first-time`, sorry.
 
-Add an example for pcie-ep.
+I didn't see other tests using it, so I am not sure if there is a
+reason not to do that (ditto for adding `MODULES` etc. to `config` and
+whether we should fail/skip in certain cases) -- I guess Shuah will
+let us know.
 
-Signed-off-by: Frank Li <Frank.Li@nxp.com>
----
- .../bindings/pci/fsl,layerscape-pcie-ep.yaml  | 54 ++++++++++---------
- 1 file changed, 29 insertions(+), 25 deletions(-)
+> So something like this:
+>
+>  for sample in "${rust_sample_modules[@]}"; do
+> -    if ! /sbin/modprobe -n -q "$sample"; then
+> +    if ! /sbin/modprobe -n -q --first-time "$sample"; then
+>          ktap_skip_all "module $sample is not found in /lib/modules/$(una=
+me -r)"
+>          exit "$KSFT_SKIP"
+>      fi
+>
+> will cover both cases.
 
-diff --git a/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie-ep.yaml b/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie-ep.yaml
-index cf517e4e46a33..07965683beece 100644
---- a/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie-ep.yaml
-+++ b/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie-ep.yaml
-@@ -10,8 +10,7 @@ maintainers:
-   - Frank Li <Frank.Li@nxp.com>
- 
- description:
--  This PCIe RC controller is based on the Synopsys DesignWare PCIe IP
--  and thus inherits all the common properties defined in snps,dw-pcie.yaml.
-+  This PCIe RC controller is based on the Synopsys DesignWare PCIe IP.
- 
-   This controller derives its clocks from the Reset Configuration Word (RCW)
-   which is used to describe the PLL settings at the time of chip-reset.
-@@ -35,31 +34,18 @@ properties:
-       - const: fsl,ls-pcie-ep
- 
-   reg:
--    description: base addresses and lengths of the PCIe controller register blocks.
-+    maxItems: 2
-+
-+  reg-names:
-+    maxItems: 2
- 
-   interrupts:
--    description: A list of interrupt outputs of the controller. Must contain an
--      entry for each entry in the interrupt-names property.
-+    minItems: 1
-+    maxItems: 3
- 
-   interrupt-names:
-     minItems: 1
-     maxItems: 3
--    description: It could include the following entries.
--    items:
--      oneOf:
--        - description:
--            Used for interrupt line which reports AER events when
--            non MSI/MSI-X/INTx mode is used.
--          const: aer
--        - description:
--            Used for interrupt line which reports PME events when
--            non MSI/MSI-X/INTx mode is used.
--          const: pme
--        - description:
--            Used for SoCs(like ls2080a, lx2160a, ls2080a, ls2088a, ls1088a)
--            which has a single interrupt line for miscellaneous controller
--            events(could include AER and PME events).
--          const: intr
- 
-   fsl,pcie-scfg:
-     $ref: /schemas/types.yaml#/definitions/phandle
-@@ -68,10 +54,7 @@ properties:
-       The second entry is the physical PCIe controller index starting from '0'.
-       This is used to get SCFG PEXN registers
- 
--  dma-coherent:
--    description: Indicates that the hardware IP block can ensure the coherency
--      of the data transferred from/to the IP block. This can avoid the software
--      cache flush/invalid actions, and improve the performance significantly
-+  dma-coherent: true
- 
-   big-endian:
-     $ref: /schemas/types.yaml#/definitions/flag
-@@ -85,3 +68,24 @@ required:
-   - reg
-   - interrupt-names
- 
-+allOf:
-+  - $ref: /schemas/pci/snps,dw-pcie-ep.yaml#
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+
-+    soc {
-+      #address-cells = <2>;
-+      #size-cells = <2>;
-+
-+      pcie-ep@3400000 {
-+        compatible = "fsl,ls1028a-pcie-ep", "fsl,ls-pcie-ep";
-+        reg = <0x00 0x03400000 0x0 0x00100000
-+              0x80 0x00000000 0x8 0x00000000>;
-+        reg-names = "dbi", "addr_space";
-+        interrupts = <GIC_SPI 108 IRQ_TYPE_LEVEL_HIGH>; /* PME interrupt */
-+        interrupt-names = "app";
-+      };
-+    };
-+...
--- 
-2.34.1
+What about the other calls to `modprobe`?
 
+> I think it's safe to assume no other module will depend on the sample
+> rust modules, so is there any other reason unloading the modules
+> might fail apart from MODULE_UNLOAD not being enabled? If not, then I
+
+I was thinking more in general terms: that we would like to catch if
+unloading does not work as expected.
+
+Especially since these "simple samples" are, in part, testing that the
+basic infrastructure for Rust modules works. So I would say it is
+important to check whether module unloading failed.
+
+For instance, if something is very broken, a Rust module could in
+principle fail unloading even if `MODULE_UNLOAD=3Dy` and even if C
+modules unload without issue.
+
+> I can't just simply skip all tests like this though:
+>
+>  for sample in "${rust_sample_modules[@]}"; do
+>      if /sbin/modprobe -q "$sample"; then
+> -        /sbin/modprobe -q -r "$sample"
+> +        if ! /sbin/modprobe -q -r "$sample"; then
+> +            ktap_skip_all "Failed to unload module $sample, please enabl=
+e CONFIG_MODULE_UNLOAD"
+> +            exit "$KSFT_SKIP"
+> +        fi
+>          ktap_test_pass "$sample"
+>      else
+>          ktap_test_fail "$sample"
+>
+> as the test plan has already been printed by then.
+> I'll need to rework the script a bit to skip the test upon errors on
+> module removal.
+
+Perhaps Shuah prefers to merge this before and then improve it instead
+-- I don't know. I didn't mean to trigger a rework :)
+
+Especially since it is unclear what is the "pattern" to follow here --
+perhaps this is another case of a wider cleanup for more tests, like
+the ktap helpers I suggested (thanks for implementing those by the
+way!).
+
+> If we need more granularity on the feedback provided to the user (i.e.
+> indication on what particular options are missing), then I guess we
+> could check the current kernel config (/proc/config.gz) and skip the
+> entire test if any required config is missing. However, this adds an
+> extra dependency on CONFIG_IKCONFIG=3Dy and CONFIG_IKCONFIG_PROC=3Dy.
+>
+> Any advice on the best approach here?
+
+I guess this also depends on what tests are supposed to do etc., so
+let's see what Shuah says.
+
+> Kselftest exit codes are predefined
+> (https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/=
+tools/testing/selftests/kselftest.h?h=3Dv6.8-rc6#n74),
+> so if we use `set -e` and source a missing file we end up returning "1"
+> as if the test was run and failed. With this check we're sure to return
+> a value that makes sense in the event the helpers file ever gets moved.
+
+Yeah, definitely. I was thinking here about just failing if something
+does not work as expected, i.e. speaking more generally (that is why I
+also mentioned even other languages).
+
+By "failing" here I didn't mean reporting the test as failing; I see
+it as something in the layer above. That is, if the helpers file is
+ever moved or is not installed for whatever reason, then it is the
+test infrastructure that failed. So I would have expected that "skip"
+is due to a reason related to the test itself rather than something
+unexpected related to the infrastructure, but I guess it may be part
+of the "skip" meaning in kselftests. So it depends on what is supposed
+to mean in kselftests, which I don't know.
+
+> Thanks!
+
+My pleasure!
+
+Cheers,
+Miguel
 
