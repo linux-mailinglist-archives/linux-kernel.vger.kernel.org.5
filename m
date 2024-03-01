@@ -1,117 +1,114 @@
-Return-Path: <linux-kernel+bounces-88414-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88412-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C97586E146
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:46:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9872786E142
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:46:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6503287E53
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:46:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C85111C20B60
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:46:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7609040872;
-	Fri,  1 Mar 2024 12:46:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 702D940864;
+	Fri,  1 Mar 2024 12:46:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kE8kJxhE"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RR5miFg1"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79DF77E1
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 12:46:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4CEC7E1;
+	Fri,  1 Mar 2024 12:46:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709297176; cv=none; b=PMwTDpBIlgAkVxXsZHnkJjlEaybATLzDDtLdW/wUspTIC8xTassg3uKzab6JHAqKkjXOhWNHYTJIBjWAek0a+oGR0MS/ccxIzc7Zb6Ew/nqZNqpoAiwAWonQJ30njxtYRgA5OmIfgIAkJGW2/iUxzmCNtTvLo4P83cPaRRVP8sw=
+	t=1709297164; cv=none; b=O2gzd9A697cKZIwtcSM1rzOqUlCHw2gFqlGGSlw03sqcJze7a2O8sVqxUwNjQn4NaCDIVrcBQb3FhJBvBiwzkxE//Ofqx/mkM0agEzt7Cm9vGwBbPwxdUY9zNDoNKdXOyFu7uhOHW4NpSWdz71GkJ5s0XFjBWrhCK8JC+nDTpzg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709297176; c=relaxed/simple;
-	bh=AZR+noD3l0LO4X6LkzgkiZes2MssLiK0uXwj8oDVL8I=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=AnNr0CyYEqB2pCCIu4W0XqBx8SaFh6gOgFj0bl2QNCrmMeKGMhX+knmqnHs8SpHUK0Hf10cKQd3k3QMg8BVrrJJFVkiL+N+AJQ2gjlSR/Sc19Jp9O+JyHjZv2rabKVrFskR8vqDsJqRIZNVAZkneT7URWd0oAxBFJQtt5GeDIkE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kE8kJxhE; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e5d7f1f15bso28158b3a.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 04:46:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709297174; x=1709901974; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=M2eeFzJsafgYjz1aTeqb4t74nvXWY+dyBVmhOrpXIj0=;
-        b=kE8kJxhE+ghRjEca9RTo6vSMAPqY/+yRygLi7vkCFyhIAD1u5G3Pi1RCpXEbAniXjt
-         /lVnjBUiCTOH/SJwWWBQvkB9tKKk6wgo3ZbjOLQ0dSllE0Y0JgsnU63cmFHN+42bKRuW
-         fyA63kn6bZDFb/iO9sTfr2DqRQC+JbhuYOVobEH5q61u2mmPkyAmxWC3l5A1e3ojDHsP
-         1+8RN+26NoOCt6EIGTF5n1TQW9kyw4uViUdRiaF/QxhlE5jP736kWTxb7YZ8ISahpTkT
-         okwBue04+geXUwnIT/WuiXutklfzDf5Oa8rvJ1qxtmVpNxloXMOI6YKKHUvJb43Mt+Ik
-         3uOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709297174; x=1709901974;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=M2eeFzJsafgYjz1aTeqb4t74nvXWY+dyBVmhOrpXIj0=;
-        b=b4QR8kZdHaATtihtOmsPZ4r8aykmxMCh5JVq5ALJlV6ANyxdpb1Yvma+L31uF3cOcY
-         oBS3swyGUpaTrSM8hGzWLv2Py4Qt8lw/1j8Z7GVRqMZd5ieZFZmlqQ/0glIZO9XDd8nF
-         enSDujrc7avtckXsOw5UoMv0JKduNjzUwvFI4yfp1USEaRC5qwO6Vy0FevMtwz0+nuLN
-         U7orXh8Hjn5/CFsTg0Yo/9l06K27tpEuG3QoIBkLLNLxQtZ/Ne49tEykpCeGvpdsKZ5d
-         PSeLCdOJ+YzuHLfoCrUZf8hGbr5eA0siPftnu0ZJqE22hnM1m4zrBCRjJ10l+9I3wEIi
-         u98Q==
-X-Gm-Message-State: AOJu0Yz4jnn3TSxrcwnv4KHESvy4DelY7AsGXhx1I1g2zjtStJ9mBdNz
-	0A+H3OgiCZmEZTxStpUROBHS5DMVfn11FL2WU5dpoqTCq2UV658omsW3xuVme9Q=
-X-Google-Smtp-Source: AGHT+IFJvVDCGYql4DB6oEsPDW/k9KaYZLbUkBNYVRLbF5p/6BFljMicHj4CXssZ0wjwshqrD4gQsg==
-X-Received: by 2002:a05:6a00:b48:b0:6e5:af58:20ac with SMTP id p8-20020a056a000b4800b006e5af5820acmr1656806pfo.13.1709297174476;
-        Fri, 01 Mar 2024 04:46:14 -0800 (PST)
-Received: from bala-mariner.. ([167.220.238.143])
-        by smtp.gmail.com with ESMTPSA id w7-20020aa79a07000000b006e5ac1b3c13sm1703751pfj.138.2024.03.01.04.46.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 04:46:14 -0800 (PST)
-From: bala <kumaran.4353@gmail.com>
-To: linux-kernel@vger.kernel.org
-Cc: mingo@redhat.com,
-	peterz@infradead.org,
-	Bala <kumaran.4353@gmail.com>
-Subject: [PATCH] Check whether the wakeup task is eligible first
-Date: Fri,  1 Mar 2024 12:45:56 +0000
-Message-Id: <20240301124556.248820-1-kumaran.4353@gmail.com>
-X-Mailer: git-send-email 2.33.8
+	s=arc-20240116; t=1709297164; c=relaxed/simple;
+	bh=Zz0zVoGja3cXhFHWcB5UiPfkBIp0SM7xu2HWnAZ05Vk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=p4KjexykC5RSs+7GPKgZSWefLgR2nfsalC5WUKaNW4nOMzmP02INlIDF4gH/VtE9xxjcDlN++VApEloS//cYshMnFDPYZya5Y7aEq5pNqWcgg0SFY6xc6fFvmziMq5HkpeNdajcddbp/KTx7IPu599v14xqIb/VNyXWnF9RfPP4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RR5miFg1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 169B9C433C7;
+	Fri,  1 Mar 2024 12:46:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709297164;
+	bh=Zz0zVoGja3cXhFHWcB5UiPfkBIp0SM7xu2HWnAZ05Vk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=RR5miFg1MbKC8vvcwq6NzLC782LATfreZUIRbVKNW2lo+QvieyB2UVH6UD3RlJagO
+	 Wcj3ZTvr4/RVH7eHon1cljpL6j1N0qVpaODmJ4q8bgpwKjm7Oza0ws+RqjQnuL0Fks
+	 tSBW3Ii6eBrjxVqg5jh4KKsk6tjttvTIYvIovTLTeIe9Vhwsg6zvFGVYvicxMCkSil
+	 NDKNA6pWwI8NnUZhIcDcEGM/yz5RUdrHSWqgciGLZgm8cIvryUxkKvf9iMsq81YoHc
+	 nMZxaVmQ74iMSji0quwRNAlhO6CARUduWu4+Lnf2Z45lpGJ+fFT0suABp3KH9qXrpL
+	 nuQaLLZDKBgiQ==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rg2HH-0000000016H-1tzj;
+	Fri, 01 Mar 2024 13:46:15 +0100
+Date: Fri, 1 Mar 2024 13:46:15 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Bjorn Helgaas <helgaas@kernel.org>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
+	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 00/12] arm64: dts: qcom: sc8280xp: PCIe fixes and
+ GICv3 ITS enable
+Message-ID: <ZeHOF4p1LlNDiLcy@hovoldconsulting.com>
+References: <20240223152124.20042-1-johan+linaro@kernel.org>
+ <20240228220843.GA309344@bhelgaas>
+ <20240229100853.GA2999@thinkpad>
+ <ZeBbrJhks46XByMD@hovoldconsulting.com>
+ <20240229122416.GD2999@thinkpad>
+ <ZeCCPRVvYCNfMYnd@hovoldconsulting.com>
+ <20240229135407.GE2999@thinkpad>
+ <ZeCktwcEFAfCEVkV@hovoldconsulting.com>
+ <20240301122406.GA2401@thinkpad>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240301122406.GA2401@thinkpad>
 
-From: Bala <kumaran.4353@gmail.com>
+On Fri, Mar 01, 2024 at 05:54:06PM +0530, Manivannan Sadhasivam wrote:
+> On Thu, Feb 29, 2024 at 04:37:27PM +0100, Johan Hovold wrote:
 
-check_prempt_wakeup_fair is checking whether the current task has to be
-preempted by the newly wake-up task. To avoid multiple swaps the logic
-is decided as if the wake-up task is the best task then only preempt the
-current task.
+> > I'm all for digging further into this issue with the help of Qualcomm,
+> > but I don't think that should block this series as that would leave the
+> > link errors that we hit since 6.7 in place and effectively prevent us
+> > from enabling the ITS in 6.9.
+> 
+> Sounds fair. I will report back, perhaps with a fix based on what I get to know.
 
-In CFS time, getting the best task was as simple as piking the left-most
-node. But in EEVDF non-fast path, the entire tree has to be traversed in
-a worst case scenario.
+Sounds good, thanks.
 
-So, IMHO let's first check the newly wake-up task is eligible before
-searching for the best task. At least until the comment becomes
-effective to preempt the curr irrespective of the waking task.
----
- kernel/sched/fair.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> But I think it is better to disable L0s in the SoC dtsi itself. That's not only
+> because there are patches to essentially disable L0s in 2 of the available
+> platforms making use of this Soc, but also you are enabling GIC ITS in the SoC
+> dtsi and that may affect sa8540p which is making use of this dtsi.
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 533547e3c90a..8d810d6a2cb7 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -8334,7 +8334,7 @@ static void check_preempt_wakeup_fair(struct rq *rq, struct task_struct *p, int
- 	/*
- 	 * XXX pick_eevdf(cfs_rq) != se ?
- 	 */
--	if (pick_eevdf(cfs_rq) == pse)
-+	if (entity_eligible(cfs_rq, pse) && (pick_eevdf(cfs_rq) == pse))
- 		goto preempt;
- 
- 	return;
--- 
-2.33.8
+I did not do so on purpose as I'm only disabling L0s on machines where
+I've confirmed the issue. And the assumption for now is that this is a
+machine-level issue.
 
+> The users of that SoC may have not noticed the errors as you did before, but
+> enabling GIC ITS will certainly make the issue visible to them (more likely).
+
+Sure and that would be good to know as that would give us another data
+point which may help determine where the problem lies. Enabling the ITS
+will (hopefully) be done in 6.9 so we'll have a whole cycle to disable
+L0s where needed. I don't think this should be done before then.
+
+Johan
 
