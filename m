@@ -1,110 +1,143 @@
-Return-Path: <linux-kernel+bounces-88671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88673-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E1E786E50F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:13:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 885AE86E514
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:16:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 399A0B23CF9
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:12:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 363251F24CDC
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:16:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEC7170CB1;
-	Fri,  1 Mar 2024 16:12:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8654770CC2;
+	Fri,  1 Mar 2024 16:16:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="NDzNuBrz"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eb5vjprR"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0561870030
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 16:12:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 300F470030;
+	Fri,  1 Mar 2024 16:16:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709309572; cv=none; b=S01lgJ9Y1FFjSZG/VSRGXZKBhJhh2TEKJFXBNyAV5qFs+QqGmNvX26jzJseT8D9fuzpr29ANRudM0tMpgdY3TrWelzlh8VtL7fg5N29+dAqnyjehw+QwPqOAPLF+vfvE/nrdOZ3DW8o1vN2ph4/1TKEyb0D54ENHAVi0LF34ULs=
+	t=1709309783; cv=none; b=qiL7s6pUw1/QP2qiBtZ12epSOcE0xS7IhGJFhBplnfxRShmpwQnkHG+6ntxvOzwx2GCeiuwAcSiPU8tZNxiRE1CEWb1OFN/8SXvqHA0kO8FDOF1a189jbmxKucZTnHCv8LEMySGcGFXsw35yzEurqe0oB3uwNcyXQeaic4sVzzM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709309572; c=relaxed/simple;
-	bh=vDh09+dZ3VBmJF68aeZGfTWrikih0aY1G6yd5Dg8oO4=;
+	s=arc-20240116; t=1709309783; c=relaxed/simple;
+	bh=n5S1ol70AH6Wm/4ovXpBDCp9DIz877B8wVkhQTych20=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GO2JJzzhXTUDg6t0e6NIjXVtNoMh3CO+AutBSKoOmJi21IwcM9aWJAGwQ7HF01d83Fer3xebcPcCIgHZU+8JUrsnrb9axwRdte4jBs+5gcwT2Byl78iI8mJgpf9zu766AnkeuezYBin5rBsus4X6FuAvftYhWF06FqfQJMe/4EQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=NDzNuBrz; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 30A8240E0185;
-	Fri,  1 Mar 2024 16:12:48 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id 7ioUtbWqE6Q9; Fri,  1 Mar 2024 16:12:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1709309566; bh=wJEN0joQiYmuo6Ze0sGnkJl0zJ3wbOy6dvxMTyKWEa8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NDzNuBrz9Xbn608O1fqBcbogJkQGMUN/1nMKmo2AV/Ex8UuybWZMkypFvAXDog1jU
-	 uAVsXlSgi5QtOPycs/jQ6jiI8ocLJa2JXk9OVs0ZpI4qa3J4vqr1ZnTUaARtLDU8xu
-	 NUOFDvKzQk4XHSZx+vCMQjmPlsibe6KURvY85pEeDsG++6hm5XlEYopzqGpmaru0w0
-	 1/c20Tb5JjFPAVGzHQNxTXpKzJqRp48QKbaHRoKPjpwrq7GGHIiAcOmLhaRKUPTSWw
-	 Q3bbZ1WI/My9XEA9lnmppRLh9Tr5sQ9nErecKTyg0+p83RGeT3qRjRiN6H0qjPAiYT
-	 QQkHSP8y4BSWE237neLwfqH2f7Rie55Suy3jl5GnAfF8vY38N2MfW3yhqFSH5P60Iy
-	 JYmujTeGKdCNPhuaCBqZwws8aT6+BU2+GyOpfMW/DuLwJxZKEN9GkW8o/fypRgwa3W
-	 JAP8BNmcaBoKvj8+Rw+PjJjJXNeWF36WflhJ2Pok6CSWeCafmNQmNtPGhcBgPYZqb4
-	 jcxrgn4ivlo4/+8aQG0URuJHfxoMML/trPkgTC3PmGWi20fyek3zaxRLAbFTxaUyD+
-	 yQCGcdivkq1cV9KUsHg+whvwOw4nyqirnLTfVy6sw7BEw80mqIpDdO8b3eD85axZmV
-	 Fw/epio9qqARIYDGnE07LvH8=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1E17940E0028;
-	Fri,  1 Mar 2024 16:12:35 +0000 (UTC)
-Date: Fri, 1 Mar 2024 17:12:34 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Ard Biesheuvel <ardb@kernel.org>
-Cc: Ard Biesheuvel <ardb+git@google.com>, linux-kernel@vger.kernel.org,
-	Kevin Loughlin <kevinloughlin@google.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	Dionna Glaze <dionnaglaze@google.com>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=Bq+fIKYbg+dIkP3XUe60PNBU64HMlOOLIozfxnlBBpv95BA6EqiOHvmU8Gu8tnBkrPp+dc+zpu/losaJULpiEFYqNBJn7Xn6rYQa2nPbWkDtF2mrwYf8qydA2MV10bS5HteM+hrZWWOMexSbf59VA92e/dVcIzZLh30r6p1Bibk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eb5vjprR; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709309782; x=1740845782;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=n5S1ol70AH6Wm/4ovXpBDCp9DIz877B8wVkhQTych20=;
+  b=eb5vjprROUiMqyYd33y2SA5JQGTxR2eo7dA6FSBuvJRZTVa+N5txQlL5
+   VQnDzHlmgWy4GFbVocOQtlqCcce35Bsddi4wYWxHtDCmqfv3ZeZehM3LW
+   XwthZJ7gqCNuYmyjKDNU159ercZ1p0r5DhRA9OKDIF/j0t88kvXztvE4W
+   1LrYUAJheFWklEuuA341hyHloNMUiEQvIHADhKtuG4acK54sC1/EyxsY2
+   jX6EW4vchsWkdQ58QmzgX6+kL2rGNT6UbaNydPeyOMtxPddtDgD38EMny
+   PVKD8Xuy/xJDu/sVqqVaJ0D0ZsgbjdfNaQo4yF8/atezKg+1YlNPV1bBE
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11000"; a="15264465"
+X-IronPort-AV: E=Sophos;i="6.06,196,1705392000"; 
+   d="scan'208";a="15264465"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 08:16:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,196,1705392000"; 
+   d="scan'208";a="12790536"
+Received: from linux.bj.intel.com ([10.238.157.71])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 08:16:18 -0800
+Date: Sat, 2 Mar 2024 00:13:24 +0800
+From: Tao Su <tao1.su@linux.intel.com>
+To: Gerd Hoffmann <kraxel@redhat.com>
+Cc: kvm@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
 	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
 	Dave Hansen <dave.hansen@linux.intel.com>,
-	Andy Lutomirski <luto@kernel.org>, Brian Gerst <brgerst@gmail.com>
-Subject: Re: [PATCH v7 4/9] x86/startup_64: Simplify virtual switch on
- primary boot
-Message-ID: <20240301161234.GCZeH-co78aShifhAN@fat_crate.local>
-References: <20240227151907.387873-11-ardb+git@google.com>
- <20240227151907.387873-15-ardb+git@google.com>
- <20240229103740.GKZeBedEybE0IeOXUG@fat_crate.local>
- <CAMj1kXEwRgbVtnNA2_Ewt0p2azpx=MBnc94fNWVZrzr4aH2EkQ@mail.gmail.com>
+	"maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	"open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] kvm: wire up KVM_CAP_VM_GPA_BITS for x86
+Message-ID: <ZeH+pPO7hhgDNujs@linux.bj.intel.com>
+References: <20240301101410.356007-1-kraxel@redhat.com>
+ <20240301101410.356007-2-kraxel@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMj1kXEwRgbVtnNA2_Ewt0p2azpx=MBnc94fNWVZrzr4aH2EkQ@mail.gmail.com>
+In-Reply-To: <20240301101410.356007-2-kraxel@redhat.com>
 
-On Thu, Feb 29, 2024 at 11:36:01PM +0100, Ard Biesheuvel wrote:
-> Because we enter with a 1:1 mapping, and so we can only switch to
-> another set of page tables that also includes this 1:1 mapping. Once
-> we are running from the kernel mapping, we can drop the 1:1 mapping
-> but we still need it.
+On Fri, Mar 01, 2024 at 11:14:07AM +0100, Gerd Hoffmann wrote:
+> Add new guest_phys_bits field to kvm_caps, return the value to
+> userspace when asked for KVM_CAP_VM_GPA_BITS capability.
 > 
-> What we could do for robustness is reduce this 1:1 mapping to text +
-> rodata, and make it read-only, but I'm not sure it's worth the churn.
+> Initialize guest_phys_bits with boot_cpu_data.x86_phys_bits.
+> Vendor modules (i.e. vmx and svm) can adjust this field in case
+> additional restrictions apply, for example in case EPT has no
+> support for 5-level paging.
+> 
+> Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
+> ---
+>  arch/x86/kvm/x86.h | 2 ++
+>  arch/x86/kvm/x86.c | 5 +++++
+>  2 files changed, 7 insertions(+)
+> 
+> diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
+> index 2f7e19166658..e03aec3527f8 100644
+> --- a/arch/x86/kvm/x86.h
+> +++ b/arch/x86/kvm/x86.h
+> @@ -24,6 +24,8 @@ struct kvm_caps {
+>  	bool has_bus_lock_exit;
+>  	/* notify VM exit supported? */
+>  	bool has_notify_vmexit;
+> +	/* usable guest phys bits */
+> +	u32  guest_phys_bits;
+>  
+>  	u64 supported_mce_cap;
+>  	u64 supported_xcr0;
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 48a61d283406..e270b9b708d1 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -4784,6 +4784,9 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+>  		if (kvm_is_vm_type_supported(KVM_X86_SW_PROTECTED_VM))
+>  			r |= BIT(KVM_X86_SW_PROTECTED_VM);
+>  		break;
+> +	case KVM_CAP_VM_GPA_BITS:
+> +		r = kvm_caps.guest_phys_bits;
+> +		break;
+>  	default:
+>  		break;
+>  	}
+> @@ -9706,6 +9709,8 @@ static int __kvm_x86_vendor_init(struct kvm_x86_init_ops *ops)
+>  	if (boot_cpu_has(X86_FEATURE_ARCH_CAPABILITIES))
+>  		rdmsrl(MSR_IA32_ARCH_CAPABILITIES, host_arch_capabilities);
+>  
+> +	kvm_caps.guest_phys_bits = boot_cpu_data.x86_phys_bits;
 
-Yeah, I was experimenting a bit with some shenanigans with those two
-pagetables yesterday and arrived to a similar conclusion - there's no
-point in trying to unify them.
+When KeyID_bits is non-zero, MAXPHYADDR != boot_cpu_data.x86_phys_bits
+here, you can check in detect_tme().
 
-Thx.
+Thanks,
+Tao
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> +
+>  	r = ops->hardware_setup();
+>  	if (r != 0)
+>  		goto out_mmu_exit;
+> -- 
+> 2.44.0
+> 
+> 
 
