@@ -1,121 +1,168 @@
-Return-Path: <linux-kernel+bounces-88249-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88250-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6C6086DF2D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:26:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F6CD86DF33
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:27:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 770B9B23717
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:26:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 273CB1C20FEA
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:27:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D4FB6BB2A;
-	Fri,  1 Mar 2024 10:26:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 050556BB33;
+	Fri,  1 Mar 2024 10:27:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="zZNq4TqU"
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A7zSQN+y"
+Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com [209.85.222.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD71723BD;
-	Fri,  1 Mar 2024 10:26:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94C3E6BB23;
+	Fri,  1 Mar 2024 10:27:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709288796; cv=none; b=FgnZogja+q0Or+mf6iXAjpvwahHEKF1ixxlGZER75OBsf1J+dO9nOpxDmZRBWEO/9SxmpUdWNsFkBiv3oq9ffhiEhURA3n1Vr90F6fQ7A0wdrJu7FAyR3cZ1aWd29umzO4FtglB0/840KmsiFZSvbfgFv+8GyqS1GtP3PYBYrOk=
+	t=1709288841; cv=none; b=FCivNLoHaT/mxsvic787CgzEMPCPaevY4mHUqTp3M811/d+9pmGAYzIsajsYyaz3CvKEApGcbywlBG1cWziSfI4C3XNSR+AvD72sBAxE+71xV94iMSoZvOsKWFqABpVOcD8xjtM5UTL8dBUEXI3oXz+A0Jyl6k78/pku9uOUUVY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709288796; c=relaxed/simple;
-	bh=jokYsqyurEXFxDPkRxZFI7C9kQPmyFxJWzMmRh4UsNU=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Z6V7dVUPuhIlmhK2WDbuML8ydxfUUFg7B+LMFdRZAFBFAN637JHeRn2vWX5Rj1WYWRScNHKIhZaDh9JkHwErw+DnkB3McNXOcXkub5R6EQZjp2dHktIDPOGEkbBAXco+2UHL5156t34xaEokvJF4awnUxCe0TZZRn4qdGcuwbNY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=zZNq4TqU; arc=none smtp.client-ip=185.132.182.106
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4219345a021497;
-	Fri, 1 Mar 2024 11:26:10 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=selector1; bh=vp6qVxJ
-	487N75yXFKor9ARqDlZLKEE+aQ/uMZChldUI=; b=zZNq4TqUD3suEztwQFse5rO
-	dyMvyXT4S5CPRCUwHnw3aAybLz3LdveJbu0AKfZWtLnXGWmga6A5CVXjExA7zFZ7
-	IIa9bLZahnWkwoFABBsEwmAH3Nm88Z1+b4tq4OABLc+M+fjSjwEmF4xYX6s/gCqj
-	hm9BP/vOs7/xAADaRPBdfOqa6IzguLHLgptQbqg6Vqr8PmgJg/hd3Ho/P1g4suMm
-	lMJQvy1n3troKACRd2vGqEuFspPnICLiSskCJpzmYuz8PbXEt+vmSwjheFST9CXU
-	LmRsOutuRpxsa6Xlbe0W0LQ9/z4do0NQW35d9R1gHnkN55MiPmeqMPQIWg61/rw=
-	=
-Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3whf4bqdtx-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 01 Mar 2024 11:26:10 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 80BE640046;
-	Fri,  1 Mar 2024 11:26:06 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A80AA244B60;
-	Fri,  1 Mar 2024 11:25:31 +0100 (CET)
-Received: from localhost (10.201.22.191) by SHFDAG1NODE2.st.com (10.75.129.70)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 1 Mar
- 2024 11:25:30 +0100
-From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-To: <william.gray@linaro.org>
-CC: <syednwaris@gmail.com>, <vigneshr@ti.com>, <jpanis@baylibre.com>,
-        <alexandre.torgue@foss.st.com>, <fabrice.gasnier@foss.st.com>,
-        <linux-iio@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v5] counter: Introduce the COUNTER_COMP_FREQUENCY() macro
-Date: Fri, 1 Mar 2024 11:25:05 +0100
-Message-ID: <20240301102505.591918-1-fabrice.gasnier@foss.st.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1709288841; c=relaxed/simple;
+	bh=+8R8JBu0KnyCCbyrJSAZ0i3n/0DKjztSJha154VV2Vg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Z8WD6Kl5haMOKUM5+1FUtc0bHwCiHQsSkpeFLdI0CMVp/IkW+N1MlL0FLt3ltIwh/lIu4ZMkJzhTU/5t7ihfPMorqKfja88ngQaVmkUj5sB4y7b9eJO8KDJEeYNnGc3T49eCBQsxCOibAeYHJvlRBm9CYdGnp+qwA4Xd48kn39k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A7zSQN+y; arc=none smtp.client-ip=209.85.222.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f48.google.com with SMTP id a1e0cc1a2514c-7d5bfdd2366so912843241.3;
+        Fri, 01 Mar 2024 02:27:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709288838; x=1709893638; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+8R8JBu0KnyCCbyrJSAZ0i3n/0DKjztSJha154VV2Vg=;
+        b=A7zSQN+ybvAU/+N+uTiMilWWdAl7L+a/TLFpxiceukhPC0gwIS9nvVXSKWf1zDusDR
+         o/k4ov3eEF4WkQTiz41v2Hnx7SbCfZPG5GAhRTpGPlExNxwRx5JN51A4neZDJ9tp3GGI
+         OTL8Bv8UrVClATBCzJnjx4dfpW7TQstsaP7G7oTZBzPMR6x2Yyok6orGKUmOBOd1dMro
+         ra0F+WWF9CLG68s2+1O5Mm/Dzib6fUYMMU5mSKOwjgrZ1wZ48XyKTA/g4FhVjagSvg4O
+         vbZ/3mUrivb45zmqRGu+LBzZiFT3i32JHU8F3CkKYWhpoAvDMDx5UyiCwqu/dQKwU2Xu
+         wepQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709288838; x=1709893638;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+8R8JBu0KnyCCbyrJSAZ0i3n/0DKjztSJha154VV2Vg=;
+        b=eTp4Liy7kx2QZawftlyQ9pRPvMI6jgV2F8EkLy6VqlIUA+6HGmQyiEFqP+oEENok8W
+         vDM7p/oc8SZI9bDg+PFVqSleyEveJii+Zuxgun2txGvHaDNCmwm3R3RU3Z3Z8pf23Ldg
+         J/PksTPditPZ3N50kQR2Riv4iD97ybrAwC8GV7DCXHUk4/5veibNn5/vd7wmz+TKlIcw
+         QBx5NMxQOwOm+IreYzT70KX+VIz/q54WuhUFGF3pPgk9jkQrEPFYLz3/1z/CeoIbd4eM
+         2Thhoh182ObmuUkKOPs9O8S8bgAlCpa5nLoeWHldE/zI40mEVqHL78+9gJ6Gq6abTsJa
+         1rDw==
+X-Forwarded-Encrypted: i=1; AJvYcCX67cZKSw2u7c7j5+Jp6/JCnojP6D3Er2z8udbx0quPzLkU8jLWoIcXRu6yd5NqGCkKH3e/k3XoYA8HrgbAMRQ75eLqrR3AoWdt1TZRkXkh8r5O2qnsCZHzJ7F4+HAB7oyPsvgbc/+GIa4HhUc5EXDwLPPHTPsoln/WzceyfOOHAs5yG1G/f9eG
+X-Gm-Message-State: AOJu0YyWLKk/wbKdu1G1ApDe+QbbFLSfzymOZYSO8YHPErgHyQa6+Tas
+	owK1McKkwzTIMKjDu52j7YZl7sBpnMiXfjQfPptmgrBLg4BcMNPC
+X-Google-Smtp-Source: AGHT+IGA2EhlSIveghf5fPs7eCJWWBEt2uWG2e0AMbakP0YO1TEMJxKEq/LVB0SDs/hMMY9hmOLxYQ==
+X-Received: by 2002:ac5:c923:0:b0:4ca:80c5:7544 with SMTP id u3-20020ac5c923000000b004ca80c57544mr809997vkl.4.1709288838389;
+        Fri, 01 Mar 2024 02:27:18 -0800 (PST)
+Received: from [192.168.0.118] (88-113-27-52.elisa-laajakaista.fi. [88.113.27.52])
+        by smtp.gmail.com with ESMTPSA id b22-20020ac844d6000000b0042ddde7c415sm1586898qto.9.2024.03.01.02.27.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Mar 2024 02:27:18 -0800 (PST)
+Message-ID: <44ae0339-daf1-4bb9-a12d-e3d2e79b889e@gmail.com>
+Date: Fri, 1 Mar 2024 12:27:13 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE2.st.com
- (10.75.129.70)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-01_08,2024-03-01_01,2023-05-22_02
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/3] kci-gitlab: Introducing GitLab-CI Pipeline for Kernel
+ Testing
+Content-Language: en-US
+To: Linus Torvalds <torvalds@linuxfoundation.org>
+Cc: Maxime Ripard <mripard@kernel.org>,
+ Helen Koike <helen.koike@collabora.com>, linuxtv-ci@linuxtv.org,
+ dave.pigott@collabora.com, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-kselftest@vger.kernel.org,
+ gustavo.padovan@collabora.com, pawiecz@collabora.com,
+ tales.aparecida@gmail.com, workflows@vger.kernel.org,
+ kernelci@lists.linux.dev, skhan@linuxfoundation.org,
+ kunit-dev@googlegroups.com, nfraprado@collabora.com, davidgow@google.com,
+ cocci@inria.fr, Julia.Lawall@inria.fr, laura.nao@collabora.com,
+ ricardo.canuelo@collabora.com, kernel@collabora.com,
+ gregkh@linuxfoundation.org
+References: <20240228225527.1052240-1-helen.koike@collabora.com>
+ <20240228225527.1052240-2-helen.koike@collabora.com>
+ <20240229-dancing-laughing-groundhog-d85161@houat>
+ <5d7ed81b-37f9-48e9-ab7e-484b74ca886c@gmail.com>
+ <CAHk-=wixVy3WYvjbt43ZSrCqPDsS76QJQSkXFbbPsAOs1MCSAQ@mail.gmail.com>
+From: Nikolai Kondrashov <spbnick@gmail.com>
+In-Reply-To: <CAHk-=wixVy3WYvjbt43ZSrCqPDsS76QJQSkXFbbPsAOs1MCSAQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Now that there are two users for the "frequency" extension, introduce a
-new COUNTER_COMP_FREQUENCY() macro.
-This extension is intended to be a read-only signal attribute.
+Thanks for stopping by, Linus!
 
-Suggested-by: William Breathitt Gray <william.gray@linaro.org>
-Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
----
-Changes in v5
-- "frequency" extension is read-only, so there's no need to provide
-  a write parameter.
-- patch sent separately from "counter: Add stm32 timer events support" [1]
-[1] https://lore.kernel.org/lkml/20240227173803.53906-2-fabrice.gasnier@foss.st.com/
----
- include/linux/counter.h | 7 +++++++
- 1 file changed, 7 insertions(+)
+On 2/29/24 10:21 PM, Linus Torvalds wrote:
+ > On Thu, 29 Feb 2024 at 01:23, Nikolai Kondrashov <spbnick@gmail.com> wrote:
+ >>
+ >> However, I think a better approach would be *not* to add the .gitlab-ci.yaml
+ >> file in the root of the source tree, but instead change the very same repo
+ >> setting to point to a particular entry YAML, *inside* the repo (somewhere
+ >> under "ci" directory) instead.
+ >
+ > I really don't want some kind of top-level CI for the base kernel project.
+ >
+ > We already have the situation that the drm people have their own ci
+ > model. II'm ok with that, partly because then at least the maintainers
+ > of that subsystem can agree on the rules for that one subsystem.
+ >
+ > I'm not at all interested in having something that people will then
+ > either fight about, or - more likely - ignore, at the top level
+ > because there isn't some global agreement about what the rules are.
+ >
+ > For example, even just running checkpatch is often a stylistic thing,
+ > and not everybody agrees about all the checkpatch warnings.
 
-diff --git a/include/linux/counter.h b/include/linux/counter.h
-index 702e9108bbb4..0ac36f815b7d 100644
---- a/include/linux/counter.h
-+++ b/include/linux/counter.h
-@@ -602,6 +602,13 @@ struct counter_array {
- #define COUNTER_COMP_FLOOR(_read, _write) \
- 	COUNTER_COMP_COUNT_U64("floor", _read, _write)
- 
-+#define COUNTER_COMP_FREQUENCY(_read) \
-+{ \
-+	.type = COUNTER_COMP_U64, \
-+	.name = "frequency", \
-+	.signal_u64_read = (_read), \
-+}
-+
- #define COUNTER_COMP_POLARITY(_read, _write, _available) \
- { \
- 	.type = COUNTER_COMP_SIGNAL_POLARITY, \
--- 
-2.25.1
+I agree, it's hard to imagine even a simple majority agreeing on how GitLab CI
+should be done. Still, we would like to help people, who are interested in
+this kind of thing, to set it up. How about we reframe this contribution as a
+sort of template, or a reference for people to start their setup with,
+assuming that most maintainers would want to tweak it? We would also be glad
+to stand by for questions and help, as people try to use it.
 
+ > I would suggest the CI project be separate from the kernel.
+
+It is possible to have a GitLab CI setup with the YAML files in a separate
+repository. And we can start with that. However, ultimately I think it's
+better to have it in the same repo with the code being tested. This way you
+could submit code changes together with the required tweaks to the CI to keep
+it passing, making development smoother and faster.
+
+With that in mind, and if you agree, where else would you say we could put it?
+Under "scripts"? Or "Documentation"? And where it would be best for the
+various subsystems to put theirs? Or could we have the top-level "ci" dir and
+pile all the different setups there? Or would you like to wait and see how
+adoption goes, and then decide?
+
+ > And having that slack channel that is restricted to particular
+ > companies is just another sign of this whole disease.
+
+Regarding the Slack channel, we're also on #kernelci on libera.chat, and we
+have some people there, but if more people start showing up, we'll be spending
+more time there too.
+
+ > If you want to make a google/microsoft project to do kernel CI, then
+ > more power to you, but don't expect it to be some kind of agreed-upon
+ > kernel project when it's a closed system.
+
+Yes, our Slack is a closed system, unfortunately. However, it's not a part of
+the proposed CI setup *at all*, and it doesn't depend on Slack. We just like
+using it, but we're also fine with IRC.
+
+GitLab is open-core, and no closed-source software is required for the
+proposed setup. There is the public gitlab.com where you can deploy your CI,
+there's also the freedesktop.org instance, and it's possible to set up your
+own (albeit not easily).
+
+Nick
 
