@@ -1,205 +1,323 @@
-Return-Path: <linux-kernel+bounces-87955-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87956-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2085A86DB77
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 07:30:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5950186DB79
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 07:31:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E37F1F227B5
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 06:30:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E8441C214AC
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 06:31:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08FDA604B5;
-	Fri,  1 Mar 2024 06:30:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15494633F4;
+	Fri,  1 Mar 2024 06:31:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zP5w/qsL"
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="AWbAp8k0"
+Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73DA460254
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 06:30:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BB4C63117;
+	Fri,  1 Mar 2024 06:31:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709274651; cv=none; b=DCtuhHtEG404D7XP1pjSro63QrrfczFKBFvHFXKgTiniFHqKCJ2E50fuPUTDs9s7+5AKTQjZ5KDNnQh0+wi5z1PTydYdiBq7hOZHXT36Ge6/TjFU7EJGU81ugTlHBMcCsIiUDldW5zIVXibnRPZloKN1N3faHsGPl8TbHnUxkjs=
+	t=1709274698; cv=none; b=IsFqN6LU/0fKlGLIy8sy9p8Chrao+jiIfKhWC87Z6SqeiK6JC/FaHzYZSbQbpr1wTTEsCYWEKtsflCGA9x/byO0pLdIKXhq9I7UwJp6I6vLOIgqvYVO/P9/DVYx84V6AVxmQUJYA9Ibn/fxc1I/1Xeo9vqkQgnvVEa7rw/PheG8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709274651; c=relaxed/simple;
-	bh=k5V8vWbKOVu5rrnBCKAXa/253TOmV4ruxxbPCrXY1KM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SKdpKZ326Ozy/o41nCa6U0hgD3aktD2F/rPkadX+VbLHx72mVyIApiCn7AUbrLRVNRL2T/LUpwKGbKFpHhJLx01P/VtEQsWeW9PgJu1D3X5EbFu+9N06hW05rHeki03JKRIJUeKuxvMe3bXYJHjvDfjnCdIXSGO5QsZ4FAYQ8A8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zP5w/qsL; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-563f675be29so2352061a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 22:30:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709274647; x=1709879447; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aQcieXKF9GCrmMdAMMXGeMlTjz7NiZHPsZQNigcQEYE=;
-        b=zP5w/qsLRzUI5DlgZmVaPyYDUZ86888MRYxPxiihrKus2xzCTxNalLXFW2jhQo6MSV
-         AAaKpGKSsfr+cT4GmIpY0vkx7El7JRQ/JXgCQNd0dTpeW/ly4S8I9OfUBvXdg9/hMIoo
-         McV4BWFSsNzVgM5fv9eds4ypWcvUMf2ZZ5w4wnDm2NXXvw2BbH/ybYJ6aazkj+VI9kxg
-         faC2V0xxRdpQHmgHSADdL5ooSLEeAZJ6gen7Za91NuWXRjLAc/bZoGxngUJtEniihrNi
-         Re31JCr4ZrEMqmfjd+TuKKhqdySNO7OmE8JNlwLa29BSYcg1Zr6nZVyhtNbkT0rY4mc4
-         RRCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709274647; x=1709879447;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aQcieXKF9GCrmMdAMMXGeMlTjz7NiZHPsZQNigcQEYE=;
-        b=UgLdPm/ojZXv2I1Tc8sa80ItSGJyb6uSc32AAOMe/aDg+fVJHh5CGPgKaEcT0sU2av
-         Zj1pExto16myjthAHyZZE7CagsoxT4/uu6w7BTb7hvts6tuUFfTLmAK1h6PNfElkuxC/
-         KXym/OaT2fl4ZIwQddSWoM07DTyz3EccMccvWlAG0hw8HSW5XUAXaqf81y2yopM0jG5X
-         UERvxPJriBEH/mYuK6SnY/1LygQtyHF7BjVSa3fewefHZhFPz/6ngsDVI0j8BGbDZUHZ
-         mhXnuoI6p6zGr1DX4+QbjNLP0akuwVlGPONyMn/apyzbrRgY6n5ofYiFI3hpd6I/9cTK
-         uJlQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUi+jkE1VQeu0U9RChdIyK/aKj5o18ll9CiyPMsdzqEhuCpQC/GZgpS4yxZWqYEyGwExGUZT8aKAgP2hnOAyBasugGGp3zV/Bg5OITn
-X-Gm-Message-State: AOJu0Yyvm1kA4XXu7/kv2jjbwxwTWIpnLIGOIurrctx+49BOzNxtBQ2V
-	XTmVLlf0VW1uKKrjn9BkmRIuSjnLYnz9fk8QROtEbEc+T9dyw5a0JPn0T946TxY=
-X-Google-Smtp-Source: AGHT+IGSNoAmpYgNPAtqvUYUD4eCOtLsMfV3o/9sM6pyzlMN2Qlq4pj7F3rZftORbzbgCQ7xE0a3KQ==
-X-Received: by 2002:a05:6402:5245:b0:566:dede:1f82 with SMTP id t5-20020a056402524500b00566dede1f82mr116248edd.29.1709274647520;
-        Thu, 29 Feb 2024 22:30:47 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id o20-20020aa7c514000000b005663e9bd8c1sm1258757edq.38.2024.02.29.22.30.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Feb 2024 22:30:46 -0800 (PST)
-Message-ID: <a1861d70-80e2-4f42-b99a-f2b8c8efe042@linaro.org>
-Date: Fri, 1 Mar 2024 07:30:45 +0100
+	s=arc-20240116; t=1709274698; c=relaxed/simple;
+	bh=bN4SkUZnyn6pg6tYCl6Zk2/AZsOaWQekgvczVYbaerA=;
+	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
+	 Message-ID:Content-Type; b=AlMGYpPdfFccRiiuSnWFnUhHvgYTYAFqGy1RIscrY31S8S+k206imlm5mrf/ZSRMgcE669XoGsmbyeouvuvgQV2z11m0IrqsA/8ot7oGmgklhk+WfPeTtDDrICxhNKaRWa9WUeAePlW5XE7J8DtJ33JPbQH1OuoQN34tfbvInUI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=AWbAp8k0; arc=none smtp.client-ip=116.203.91.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/4] ASoC: dt-bindings: fsl,imx-asrc: update max
- interrupt numbers
-Content-Language: en-US
-To: Frank Li <Frank.li@nxp.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, Shengjiu Wang <shengjiu.wang@nxp.com>,
- linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
+	t=1709274694;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=19oA5w8w18TqO556/nPS0fE6RqgBrglWY5neguw7rv0=;
+	b=AWbAp8k0/oAKMHwsquQrculVXUVQt/nBI9yI/n32WQSAve3Kkacd72OGZhTEMIfpQaI3oo
+	rvoORGDg7gm+yVfRi4AhUYV4LijY5pSmuTm0G+NCy1kQ5uV10i1rWD/mINb9inwJhI3t1x
+	Guge50tM8ZESHCS9TBtB8B0WXUeqbmfKYk2FLRqibFxutBhrpaEJxg0t/5LY7osxlZSSjd
+	h40Z+7IQizvgTACWzodMdEdSAj4NvpQTVqzthujohmWH6ehII9vCe34dDbPU/BMuyTYZyT
+	+QA6s8VaOAmXulo8N5praFq5SwmrsvHRjqtokPTX12nCbSmPFN9qDn/1i7OJJA==
+Date: Fri, 01 Mar 2024 07:31:33 +0100
+From: Dragan Simic <dsimic@manjaro.org>
+To: Alexey Charkov <alchark@gmail.com>
+Cc: Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Heiko Stuebner <heiko@sntech.de>, Daniel Lezcano
+ <daniel.lezcano@linaro.org>, Viresh Kumar <viresh.kumar@linaro.org>, Chen-Yu
+ Tsai <wens@kernel.org>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
  linux-kernel@vger.kernel.org
-References: <20240228-asrc_8qxp-v3-0-d4d5935fd3aa@nxp.com>
- <20240228-asrc_8qxp-v3-2-d4d5935fd3aa@nxp.com>
- <3460ecc8-d7d7-4d1c-ad0c-b32efc3b9049@linaro.org>
- <ZeFTqM8o/eozl+MS@lizhi-Precision-Tower-5810>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <ZeFTqM8o/eozl+MS@lizhi-Precision-Tower-5810>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH v3 4/5] arm64: dts: rockchip: Add OPP data for CPU cores
+ on RK3588
+In-Reply-To: <20240229-rk-dts-additions-v3-4-6afe8473a631@gmail.com>
+References: <20240229-rk-dts-additions-v3-0-6afe8473a631@gmail.com>
+ <20240229-rk-dts-additions-v3-4-6afe8473a631@gmail.com>
+Message-ID: <ed2b97a0487455aaef6a6e6144165512@manjaro.org>
+X-Sender: dsimic@manjaro.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
 
-On 01/03/2024 05:03, Frank Li wrote:
-> On Thu, Feb 29, 2024 at 10:44:42AM +0100, Krzysztof Kozlowski wrote:
->> On 28/02/2024 20:14, Frank Li wrote:
->>> fsl,imx8qxp-spdif and fsl,imx8qm-spdif have 2 interrupts. Other platforms
->>> have 1 interrupt.
->>>
->>> Increase max interrupt number to 2 and add restriction for platforms except
->>> i.MX8QXP and i.MX8QM.
->>>
->>> Signed-off-by: Frank Li <Frank.Li@nxp.com>
->>> ---
->>>  .../devicetree/bindings/sound/fsl,spdif.yaml         | 20 +++++++++++++++++++-
->>>  1 file changed, 19 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/Documentation/devicetree/bindings/sound/fsl,spdif.yaml b/Documentation/devicetree/bindings/sound/fsl,spdif.yaml
->>> index 82430f1d5e5a2..785f7997eea82 100644
->>> --- a/Documentation/devicetree/bindings/sound/fsl,spdif.yaml
->>> +++ b/Documentation/devicetree/bindings/sound/fsl,spdif.yaml
->>> @@ -31,7 +31,8 @@ properties:
->>>      maxItems: 1
->>>  
->>>    interrupts:
->>> -    maxItems: 1
->>> +    minItems: 1
->>> +    maxItems: 2
->>>  
->>>    dmas:
->>>      items:
->>> @@ -100,6 +101,23 @@ required:
->>>  
->>>  additionalProperties: false
->>>  
->>> +allOf:
->>> +  - if:
->>> +      properties:
->>> +        compatible:
->>> +          enum:
->>> +            - fsl,imx35-spdif
->>> +            - fsl,vf610-spdif
->>> +            - fsl,imx6sx-spdif
->>> +            - fsl,imx8mq-spdif
->>> +            - fsl,imx8mm-spdif
->>> +            - fsl,imx8mn-spdif
->>> +            - fsl,imx8ulp-spdif
->>> +    then:
->>> +      properties:
->>> +        interrupts:
->>> +          maxItems: 1
->>
->> else:
->> minItems: 2
+On 2024-02-29 20:26, Alexey Charkov wrote:
+> By default the CPUs on RK3588 start up in a conservative performance
+> mode. Add frequency and voltage mappings to the device tree to enable
+> dynamic scaling via cpufreq.
 > 
-> I think needn't 'else' here. Top have set to maxItems is 2. 
+> OPP values are adapted from Radxa's downstream kernel for Rock 5B [1],
+> stripping them down to the minimum frequency and voltage combinations
+> as expected by the generic upstream cpufreq-dt driver, and also 
+> dropping
+> those OPPs that don't differ in voltage but only in frequency (keeping
+> the top frequency OPP in each case).
 
-So explain why one item is correct here.
+Please, let's consider extracting the OPPs into a separate 
+rk3588s-opp.dtsi
+file, as I already explained in detail and proposed in the message 
+linked
+below.  To be fair, it might also be seen as redundant, because the 
+RK3399
+does that because of the need for different OPPs for different RK3399 
+SoC
+variants, but it would make leaving the TSADC disabled 100% safe.
 
+Though, the RK3328 SoC dtsi also leaves the TSADC disabled on the SoC 
+level
+and enables it for each RK3328-based board, so I'm no longer sure do we
+really need a separate rk3588s-opp.dtsi file to be on the 100% safe side
+with the TSADC disabled on the RK3588(s) SoC level.
 
-Best regards,
-Krzysztof
+- 
+https://lore.kernel.org/linux-rockchip/ad00189e1a25ca90128be6c8b3841b77@manjaro.org/
 
+> Note that this patch ignores voltage scaling for the CPU memory
+> interface which the downstream kernel does through a custom cpufreq
+> driver, and which is why the downstream version has two sets of voltage
+> values for each OPP (the second one being meant for the memory
+> interface supply regulator). This is done instead via regulator
+> coupling between CPU and memory interface supplies on affected boards.
+
+I'm still digging through various documents, to find a more clear 
+explanation
+of what those *_MEM_* voltages are exactly for.  I'll reply in more 
+detail in
+the respective patch thread, of course.
+
+> This has been tested on Rock 5B with u-boot 2023.11 compiled from
+> Collabora's integration tree [2] with binary bl31 and appears to be
+> stable both under active cooling and passive cooling (with throttling)
+> 
+> [1] 
+> https://github.com/radxa/kernel/blob/stable-5.10-rock5/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> [2] 
+> https://gitlab.collabora.com/hardware-enablement/rockchip-3588/u-boot
+> 
+> Signed-off-by: Alexey Charkov <alchark@gmail.com>
+> ---
+>  arch/arm64/boot/dts/rockchip/rk3588s.dtsi | 122 
+> ++++++++++++++++++++++++++++++
+>  1 file changed, 122 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> index 9bf197358642..bd39c5c47bfb 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> +++ b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> @@ -97,6 +97,7 @@ cpu_l0: cpu@0 {
+>  			clocks = <&scmi_clk SCMI_CLK_CPUL>;
+>  			assigned-clocks = <&scmi_clk SCMI_CLK_CPUL>;
+>  			assigned-clock-rates = <816000000>;
+> +			operating-points-v2 = <&cluster0_opp_table>;
+>  			cpu-idle-states = <&CPU_SLEEP>;
+>  			i-cache-size = <32768>;
+>  			i-cache-line-size = <64>;
+> @@ -116,6 +117,7 @@ cpu_l1: cpu@100 {
+>  			enable-method = "psci";
+>  			capacity-dmips-mhz = <530>;
+>  			clocks = <&scmi_clk SCMI_CLK_CPUL>;
+> +			operating-points-v2 = <&cluster0_opp_table>;
+>  			cpu-idle-states = <&CPU_SLEEP>;
+>  			i-cache-size = <32768>;
+>  			i-cache-line-size = <64>;
+> @@ -135,6 +137,7 @@ cpu_l2: cpu@200 {
+>  			enable-method = "psci";
+>  			capacity-dmips-mhz = <530>;
+>  			clocks = <&scmi_clk SCMI_CLK_CPUL>;
+> +			operating-points-v2 = <&cluster0_opp_table>;
+>  			cpu-idle-states = <&CPU_SLEEP>;
+>  			i-cache-size = <32768>;
+>  			i-cache-line-size = <64>;
+> @@ -154,6 +157,7 @@ cpu_l3: cpu@300 {
+>  			enable-method = "psci";
+>  			capacity-dmips-mhz = <530>;
+>  			clocks = <&scmi_clk SCMI_CLK_CPUL>;
+> +			operating-points-v2 = <&cluster0_opp_table>;
+>  			cpu-idle-states = <&CPU_SLEEP>;
+>  			i-cache-size = <32768>;
+>  			i-cache-line-size = <64>;
+> @@ -175,6 +179,7 @@ cpu_b0: cpu@400 {
+>  			clocks = <&scmi_clk SCMI_CLK_CPUB01>;
+>  			assigned-clocks = <&scmi_clk SCMI_CLK_CPUB01>;
+>  			assigned-clock-rates = <816000000>;
+> +			operating-points-v2 = <&cluster1_opp_table>;
+>  			cpu-idle-states = <&CPU_SLEEP>;
+>  			i-cache-size = <65536>;
+>  			i-cache-line-size = <64>;
+> @@ -194,6 +199,7 @@ cpu_b1: cpu@500 {
+>  			enable-method = "psci";
+>  			capacity-dmips-mhz = <1024>;
+>  			clocks = <&scmi_clk SCMI_CLK_CPUB01>;
+> +			operating-points-v2 = <&cluster1_opp_table>;
+>  			cpu-idle-states = <&CPU_SLEEP>;
+>  			i-cache-size = <65536>;
+>  			i-cache-line-size = <64>;
+> @@ -215,6 +221,7 @@ cpu_b2: cpu@600 {
+>  			clocks = <&scmi_clk SCMI_CLK_CPUB23>;
+>  			assigned-clocks = <&scmi_clk SCMI_CLK_CPUB23>;
+>  			assigned-clock-rates = <816000000>;
+> +			operating-points-v2 = <&cluster2_opp_table>;
+>  			cpu-idle-states = <&CPU_SLEEP>;
+>  			i-cache-size = <65536>;
+>  			i-cache-line-size = <64>;
+> @@ -234,6 +241,7 @@ cpu_b3: cpu@700 {
+>  			enable-method = "psci";
+>  			capacity-dmips-mhz = <1024>;
+>  			clocks = <&scmi_clk SCMI_CLK_CPUB23>;
+> +			operating-points-v2 = <&cluster2_opp_table>;
+>  			cpu-idle-states = <&CPU_SLEEP>;
+>  			i-cache-size = <65536>;
+>  			i-cache-line-size = <64>;
+> @@ -348,6 +356,120 @@ l3_cache: l3-cache {
+>  		};
+>  	};
+> 
+> +	cluster0_opp_table: opp-table-cluster0 {
+> +		compatible = "operating-points-v2";
+> +		opp-shared;
+> +
+> +		opp-1008000000 {
+> +			opp-hz = /bits/ 64 <1008000000>;
+> +			opp-microvolt = <675000 675000 950000>;
+> +			clock-latency-ns = <40000>;
+> +		};
+> +		opp-1200000000 {
+> +			opp-hz = /bits/ 64 <1200000000>;
+> +			opp-microvolt = <712500 712500 950000>;
+> +			clock-latency-ns = <40000>;
+> +		};
+> +		opp-1416000000 {
+> +			opp-hz = /bits/ 64 <1416000000>;
+> +			opp-microvolt = <762500 762500 950000>;
+> +			clock-latency-ns = <40000>;
+> +			opp-suspend;
+> +		};
+> +		opp-1608000000 {
+> +			opp-hz = /bits/ 64 <1608000000>;
+> +			opp-microvolt = <850000 850000 950000>;
+> +			clock-latency-ns = <40000>;
+> +		};
+> +		opp-1800000000 {
+> +			opp-hz = /bits/ 64 <1800000000>;
+> +			opp-microvolt = <950000 950000 950000>;
+> +			clock-latency-ns = <40000>;
+> +		};
+> +	};
+> +
+> +	cluster1_opp_table: opp-table-cluster1 {
+> +		compatible = "operating-points-v2";
+> +		opp-shared;
+> +
+> +		opp-1200000000 {
+> +			opp-hz = /bits/ 64 <1200000000>;
+> +			opp-microvolt = <675000 675000 1000000>;
+> +			clock-latency-ns = <40000>;
+> +		};
+> +		opp-1416000000 {
+> +			opp-hz = /bits/ 64 <1416000000>;
+> +			opp-microvolt = <725000 725000 1000000>;
+> +			clock-latency-ns = <40000>;
+> +		};
+> +		opp-1608000000 {
+> +			opp-hz = /bits/ 64 <1608000000>;
+> +			opp-microvolt = <762500 762500 1000000>;
+> +			clock-latency-ns = <40000>;
+> +		};
+> +		opp-1800000000 {
+> +			opp-hz = /bits/ 64 <1800000000>;
+> +			opp-microvolt = <850000 850000 1000000>;
+> +			clock-latency-ns = <40000>;
+> +		};
+> +		opp-2016000000 {
+> +			opp-hz = /bits/ 64 <2016000000>;
+> +			opp-microvolt = <925000 925000 1000000>;
+> +			clock-latency-ns = <40000>;
+> +		};
+> +		opp-2208000000 {
+> +			opp-hz = /bits/ 64 <2208000000>;
+> +			opp-microvolt = <987500 987500 1000000>;
+> +			clock-latency-ns = <40000>;
+> +		};
+> +		opp-2400000000 {
+> +			opp-hz = /bits/ 64 <2400000000>;
+> +			opp-microvolt = <1000000 1000000 1000000>;
+> +			clock-latency-ns = <40000>;
+> +		};
+> +	};
+> +
+> +	cluster2_opp_table: opp-table-cluster2 {
+> +		compatible = "operating-points-v2";
+> +		opp-shared;
+> +
+> +		opp-1200000000 {
+> +			opp-hz = /bits/ 64 <1200000000>;
+> +			opp-microvolt = <675000 675000 1000000>;
+> +			clock-latency-ns = <40000>;
+> +		};
+> +		opp-1416000000 {
+> +			opp-hz = /bits/ 64 <1416000000>;
+> +			opp-microvolt = <725000 725000 1000000>;
+> +			clock-latency-ns = <40000>;
+> +		};
+> +		opp-1608000000 {
+> +			opp-hz = /bits/ 64 <1608000000>;
+> +			opp-microvolt = <762500 762500 1000000>;
+> +			clock-latency-ns = <40000>;
+> +		};
+> +		opp-1800000000 {
+> +			opp-hz = /bits/ 64 <1800000000>;
+> +			opp-microvolt = <850000 850000 1000000>;
+> +			clock-latency-ns = <40000>;
+> +		};
+> +		opp-2016000000 {
+> +			opp-hz = /bits/ 64 <2016000000>;
+> +			opp-microvolt = <925000 925000 1000000>;
+> +			clock-latency-ns = <40000>;
+> +		};
+> +		opp-2208000000 {
+> +			opp-hz = /bits/ 64 <2208000000>;
+> +			opp-microvolt = <987500 987500 1000000>;
+> +			clock-latency-ns = <40000>;
+> +		};
+> +		opp-2400000000 {
+> +			opp-hz = /bits/ 64 <2400000000>;
+> +			opp-microvolt = <1000000 1000000 1000000>;
+> +			clock-latency-ns = <40000>;
+> +		};
+> +	};
+> +
+>  	firmware {
+>  		optee: optee {
+>  			compatible = "linaro,optee-tz";
 
