@@ -1,95 +1,193 @@
-Return-Path: <linux-kernel+bounces-87752-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87750-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AF2186D885
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 02:03:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C47A86D883
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 02:02:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6BF3D1C2101C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:03:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C2508B21E23
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:02:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06E3E2B9C0;
-	Fri,  1 Mar 2024 01:03:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B6E32AE90;
+	Fri,  1 Mar 2024 01:02:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="Q0z8rjuy"
-Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BHsQa3yS"
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EEEB2AE91
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 01:03:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E4972B9B9
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 01:02:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709254984; cv=none; b=usggtJC8LYkQmj93ybT64xDE/zegY9h/nirpMdYw3oopM1sh4bf+hDIjN2ytQAWvTEFeYtnL0L5R6/Y7dDqJmUVlPH/f65AlZKH4Ts0EEIur1STMJgbZpTOMRRtx4yZiTlBtyjvnse0REfjMY2j2rF1qQsyFAsmbfnDHEeV7CHo=
+	t=1709254936; cv=none; b=M+t6ZcFHjAg/6XsUKVcTPT6SPMBMRZK4SsZhfqaN1O4RW5NBOrx6Na3lyPK0i1N88Tgr2v35JDOaLAVpgz4O9jJuRpXzUaTHSEJIVlRv3IWcQALVVFFuV4vRTi71kZRMB3MmqJaU/1TDv+Ynf2ZBKWgaCshcutuWSqetRrXH/oE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709254984; c=relaxed/simple;
-	bh=05MZYy4lDluBOriklmJ4PdhytCgIptWMcjTspjOqH2I=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=QkwAQwNDw4ritJ2u1EcEXSpGt7PBAaLoL3Qk33DZM9QZHU8+gN+sN43FNMHCRYkP4I0LSVU9wuMRNgQ2FroVosGV1owVooCg0QRQR9Z6cSOuveyCWUQxqAfSLt0YnZaphgsr2hqxyYOnY42pxuMsTuQrnFsISlbcGbvnsbJ0G+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=fail (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=Q0z8rjuy reason="signature verification failed"; arc=none smtp.client-ip=198.137.202.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
-Received: from [127.0.0.1] ([76.133.66.138])
-	(authenticated bits=0)
-	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 42111jqq3251933
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Thu, 29 Feb 2024 17:01:47 -0800
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 42111jqq3251933
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2024021201; t=1709254907;
-	bh=05MZYy4lDluBOriklmJ4PdhytCgIptWMcjTspjOqH2I=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=Q0z8rjuyYpIgo8y/BO5JvUzXwUsSMj1zmSwiHAPkj4SgseuKS3l4SNUsXOfjC0weF
-	 zKE5Dqi46WDpFtyvnAWq4D8bSkK8zikXejdRLcn/3F9DcUIWKRmjQoDbjqUQnfykE1
-	 763vNAXyjIhGC5u4HVxTx8pfyl3ApcL8Bz5XDHMrRk/0Itx+O2fYsPaNu4iHl+fEfr
-	 hdr0CgqrK+z+ZZou9h+URYHmEZq5830ZGVKwfrEp4PSAeWx+vXR0jLA1fJq0SyZXj+
-	 RScA04ADCRFOlx+YB9EDh2dcw9W6e2V9eUbrAqBcRymnU+P9u+fL5efyD5HNnXmpES
-	 mT3UIc3R3L7bA==
-Date: Thu, 29 Feb 2024 17:01:43 -0800
-From: "H. Peter Anvin" <hpa@zytor.com>
-To: David Laight <David.Laight@ACULAB.COM>,
-        "'Thorsten Blum'" <thorsten.blum@toblux.com>,
-        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>
-CC: "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Wei Liu <wei.liu@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] x86/apic: Use div64_ul() instead of do_div()
-User-Agent: K-9 Mail for Android
-In-Reply-To: <7e46123775e64898bd7c467328125ee0@AcuMS.aculab.com>
-References: <20240227114333.1718-2-thorsten.blum@toblux.com> <7e46123775e64898bd7c467328125ee0@AcuMS.aculab.com>
-Message-ID: <96394DFF-43D7-4877-AA47-FC847FD26184@zytor.com>
+	s=arc-20240116; t=1709254936; c=relaxed/simple;
+	bh=avbb1uT+lCjqlR3Vtb4dKd8TAjjBeVnovcFFYaHg+Kw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ca6UJTNi6kB++8AjdSvrXJlN1c0pBgGIrRa/5lEX9QmrOAn+ULq9PgkUmx+Lhl3YMeHEhfVE1LkcZ1oFeq0ymj4DiJ9cw9IaOwbKI39Qdgw3S9fx7Vk/aQ3vT4ULhXkcdgeJWHl1y12gDfDpdZ6yYYS22zE3D4x03VUHl0qMXq4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=BHsQa3yS; arc=none smtp.client-ip=209.85.160.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-42ec9eb9aefso19321cf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 17:02:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709254933; x=1709859733; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SGi+DBKLmbpkuw51xKZeEFOZatSTb67qGD3fLAFzMHI=;
+        b=BHsQa3ySKVupdcmCfEllblcdn5na7vKShmpnZ6j41xZWlwM7REbTOlPzuKZv6AlxIK
+         x3801S8uXkoJ/a6DKYhTCG4+NMnyR+2dqUul6we4oRJ341Qjm8b29kQ9b1Ol8UYo0/Z2
+         b7vej3T4Hs3X+zKxVJ/GViLG6A2JbB3dx1X6kNwdNrrgeAOCGN25FKuReTNJSyN14NuO
+         bw6pe/D8eeqCMsLomyxu/BHcU9rCS2WiB+rRvskzyiHCfBy5SadVe3sRJxoP0xTL9ZTz
+         yjQGXBKj5NZzREFeXisEUtE+ObbGcvW9+qEOy+VmZISSm14JHBlm/UijpC5nzSw20B5s
+         Pp3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709254933; x=1709859733;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SGi+DBKLmbpkuw51xKZeEFOZatSTb67qGD3fLAFzMHI=;
+        b=l2ASQ4cg4KrDOW98SyJ++3nl+HYT9mLvbDMMtIh8KdS+QgAE+MkH1FG7HkijOvE/jV
+         s/oGDGtHkkSpMPWRnB2ae/3BbHnSB2GkCuawMPNPbh68HAa0CG0vaapQxW24Gvr9+YxT
+         cNsQk4o3M/R4kS6HNgv7y6LUk4LUXQXYRFlzOKVxLoJWIVdgw6Ct1OZ6vWp1I5sdM0Jy
+         mWApHvJrEzwn1WlJSRxGa+2mXPrl2UH6VsQVN8arVcvMgMkRQQfSzsF8bCLNi4mWfD4N
+         zceEaGfXqPV8GvgRfbNIcttLzxNgXUcf9awIdb7O2dkYmYS/TtPtZo0V9MSRbTfuWvRY
+         kdrA==
+X-Forwarded-Encrypted: i=1; AJvYcCWqSNbpJKisXAIPhU6SS13igxOOe4K3ej+AgnJDLbPF45sFy6roA9wlfAUuJD3rVU5WBzHWj4LopbPKJpND+S2zXLLvLh/sgSIbWgqS
+X-Gm-Message-State: AOJu0YxjsVUZ+Gg68aBHT1jxtbRwbedbcEAOqTS/If+k3xGsV0aIw68K
+	IQYd0cemYGAheXloKLLGrpMAr+wjzKBfIQzMGh/D5N/im367Ke2z0NbhTbhR5MeSftlqBufEqYf
+	za95/djJoEbcRJxGkZ0gv+CeT8lu0N/rtG3Lo
+X-Google-Smtp-Source: AGHT+IGRK89OBpbXk7bzbVc4mw4dYz52ilhFfZmJAOg4fNKvO87Hz3ISEC3H2Po9mvjiBxmijdH1rJzihju5eaeea5g=
+X-Received: by 2002:a05:622a:188c:b0:42e:4f31:c488 with SMTP id
+ v12-20020a05622a188c00b0042e4f31c488mr100939qtc.20.1709254933185; Thu, 29 Feb
+ 2024 17:02:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+References: <20240229001806.4158429-1-irogers@google.com> <20240229001806.4158429-2-irogers@google.com>
+ <28bc7ea0-ff3e-48a5-a8b3-20cc52728a5f@linux.intel.com>
+In-Reply-To: <28bc7ea0-ff3e-48a5-a8b3-20cc52728a5f@linux.intel.com>
+From: Ian Rogers <irogers@google.com>
+Date: Thu, 29 Feb 2024 17:02:02 -0800
+Message-ID: <CAP-5=fVQD91HjfhJ+iX_nhMUJX91ZgJ_havGg=Ya+dMZ67C4yQ@mail.gmail.com>
+Subject: Re: [PATCH v1 01/20] perf jevents: Add RAPL metrics for all Intel models
+To: "Liang, Kan" <kan.liang@linux.intel.com>
+Cc: Perry Taylor <perry.taylor@intel.com>, Samantha Alt <samantha.alt@intel.com>, 
+	Caleb Biggers <caleb.biggers@intel.com>, Weilin Wang <weilin.wang@intel.com>, 
+	Edward Baker <edward.baker@intel.com>, Andi Kleen <ak@linux.intel.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, John Garry <john.g.garry@oracle.com>, 
+	Jing Zhang <renyu.zj@linux.alibaba.com>, Thomas Richter <tmricht@linux.ibm.com>, 
+	James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
->>=20
->> Change deltapm to unsigned long and replace do_div() with div64_ul()
->> which doesn't implicitly cast the divisor and doesn't unnecessarily
->> calculate the remainder=2E
+On Thu, Feb 29, 2024 at 12:59=E2=80=AFPM Liang, Kan <kan.liang@linux.intel.=
+com> wrote:
 >
->Eh? they are entirely different beasts=2E
 >
->do_div() does a 64 by 32 divide that gives a 32bit quotient=2E
->div64_ul() does a much more expensive 64 by 64 divide that
->can generate a 64bit quotient=2E
 >
->The remainder is pretty much free in both cases=2E
->If a cpu has a divide instruction it will almost certainly
->put the result in one register and the quotient in another=2E
+> On 2024-02-28 7:17 p.m., Ian Rogers wrote:
+> > Add a 'cpu_power' metric group that computes the power consumption
+> > from RAPL events if they are present.
+> >
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> >  tools/perf/pmu-events/intel_metrics.py | 45 ++++++++++++++++++++++++--
+> >  1 file changed, 42 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/tools/perf/pmu-events/intel_metrics.py b/tools/perf/pmu-ev=
+ents/intel_metrics.py
+> > index 4fbb31c9eccd..5827f555005f 100755
+> > --- a/tools/perf/pmu-events/intel_metrics.py
+> > +++ b/tools/perf/pmu-events/intel_metrics.py
+> > @@ -1,9 +1,10 @@
+> >  #!/usr/bin/env python3
+> >  # SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
+> > -from metric import (JsonEncodeMetric, JsonEncodeMetricGroupDescription=
+s, LoadEvents,
+> > -                    MetricGroup)
+> > +from metric import (d_ratio, has_event, Event, JsonEncodeMetric, JsonE=
+ncodeMetricGroupDescriptions,
+> > +                    LoadEvents, Metric, MetricGroup, Select)
+> >  import argparse
+> >  import json
+> > +import math
+> >  import os
+> >
+> >  parser =3D argparse.ArgumentParser(description=3D"Intel perf json gene=
+rator")
+> > @@ -14,7 +15,45 @@ args =3D parser.parse_args()
+> >  directory =3D f"{os.path.dirname(os.path.realpath(__file__))}/arch/x86=
+/{args.model}/"
+> >  LoadEvents(directory)
+> >
+> > -all_metrics =3D MetricGroup("",[])
+> > +interval_sec =3D Event("duration_time")
+> > +
+> > +def Rapl() -> MetricGroup:
+> > +  """Processor socket power consumption estimate.
+> > +
+> > +  Use events from the running average power limit (RAPL) driver.
+> > +  """
+> > +  # Watts =3D joules/second
+> > +  pkg =3D Event("power/energy\-pkg/")
+> > +  cond_pkg =3D Select(pkg, has_event(pkg), math.nan)
+> > +  cores =3D Event("power/energy\-cores/")
+> > +  cond_cores =3D Select(cores, has_event(cores), math.nan)
+> > +  ram =3D Event("power/energy\-ram/")
+> > +  cond_ram =3D Select(ram, has_event(ram), math.nan)
+> > +  gpu =3D Event("power/energy\-gpu/")
+> > +  cond_gpu =3D Select(gpu, has_event(gpu), math.nan)
+> > +  psys =3D Event("power/energy\-psys/")
+> > +  cond_psys =3D Select(psys, has_event(psys), math.nan)
+> > +  scale =3D 2.3283064365386962890625e-10
+> > +  metrics =3D [
+> > +      Metric("cpu_power_pkg", "",
+> > +             d_ratio(cond_pkg * scale, interval_sec), "Watts"),
+> > +      Metric("cpu_power_cores", "",
+> > +             d_ratio(cond_cores * scale, interval_sec), "Watts"),
+> > +      Metric("cpu_power_ram", "",
+> > +             d_ratio(cond_ram * scale, interval_sec), "Watts"),
+> > +      Metric("cpu_power_gpu", "",
+> > +             d_ratio(cond_gpu * scale, interval_sec), "Watts"),
+> > +      Metric("cpu_power_psys", "",
+> > +             d_ratio(cond_psys * scale, interval_sec), "Watts"),
+> > +  ]
+> > +
+> > +  return MetricGroup("cpu_power", metrics,
+> > +                     description=3D"Processor socket power consumption=
+ estimates")
 >
+> As far as I know, the RAPL counters are to monitor energy consumption
+> across different domains. The scope may not always be a socket. I think
+> the description may brings confusions.
+> Maybe we just call it "RAPL power consumption estimates", or "Running
+> Average Power Limit (RAPL) power consumption estimates".
 
-Not on e=2Eg=2E RISC-V=2E
+Ack. Will fix in v2.
 
+Thanks,
+Ian
 
-
+> Thanks,
+> Kan
+> > +
+> > +
+> > +all_metrics =3D MetricGroup("", [
+> > +    Rapl(),
+> > +])
+> >
+> >  if args.metricgroups:
+> >    print(JsonEncodeMetricGroupDescriptions(all_metrics))
 
