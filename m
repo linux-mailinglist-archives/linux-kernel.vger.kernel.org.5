@@ -1,109 +1,220 @@
-Return-Path: <linux-kernel+bounces-88986-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88988-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 223B286E904
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:03:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E62CC86E90C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:03:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C9F41C25A92
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:03:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97ACD28B9BD
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:03:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 344F13D0BD;
-	Fri,  1 Mar 2024 19:00:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EDED3D982;
+	Fri,  1 Mar 2024 19:00:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pOzLd2kh"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="j/Ek4m9m"
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12olkn2050.outbound.protection.outlook.com [40.92.22.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 462C939AE3;
-	Fri,  1 Mar 2024 19:00:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709319620; cv=none; b=rRX421dCvk8ouUT7ONm5vuQ5nVvt50sVR017btgFztnQzcXooqsNr2rFGjz9gDu9/1emkN5wCUtYGyg8/fl1MVsz0O+07rD0bt7IaLVLO6sEkcOEiW6TfBSfyBd7+wezlzR+Pz0a7PcDj/lUtAq+pPbvKu/7j2xZl8wsd28F0vk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709319620; c=relaxed/simple;
-	bh=CxB7W6l1Tq9Zrm8obA30+CBf87HBfjcY2NxOsDja4tc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Vu4ezvRaMxoNnCPf6sHt/NnWAjtHzqAbwX7OScTb66ZqymeY/UFGmiwEQpZNiCzK5yizlWWggyLM4jR2QoGD/Sqhwn0u94KLu2BVa8/wk89U8f0V+fzFRAj2SguXl31QQlHUEet7C4kfGk9PXQWIkV4gZJEXQbqXhWO4D1fpToE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pOzLd2kh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5540C433F1;
-	Fri,  1 Mar 2024 19:00:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709319619;
-	bh=CxB7W6l1Tq9Zrm8obA30+CBf87HBfjcY2NxOsDja4tc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pOzLd2khb4RM9yVRZBKtLsYAGgslVXJE6WX7uusLNOBVMlWp/y1vL0AyGGMGGPI59
-	 7mdOWXRG2QEB6ScIwCwvk3UMV5Hw3R1Ti69/5V4cG6dq+MiM5W6kBBYCdwldHSQOc8
-	 UBmEm8x3eAFkhucdMQ/yXh3PXBtY21uVlYTtl3IA8RF4YuttFqeGPexqSuJmNXzY6r
-	 Boyj3E93hWzyEJmqqPdZopzPGxAdAIgSPQ3FMVxtZmpe0bJzuL+9XhRGvampdbny/D
-	 7TGVxPidmAJOjzynDBXwd/RddfG4tO9kMY7DH4C8cyANeS22JuQjTjhL7KouXmpwwF
-	 W70yLAG0DXNYA==
-Date: Fri, 1 Mar 2024 13:00:18 -0600
-From: "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
-To: Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc: Christian Brauner <brauner@kernel.org>, Serge Hallyn <serge@hallyn.com>,
-	Paul Moore <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>,
-	James Morris <jmorris@namei.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
-	Stephen Smalley <stephen.smalley.work@gmail.com>,
-	Ondrej Mosnacek <omosnace@redhat.com>,
-	Casey Schaufler <casey@schaufler-ca.com>,
-	Mimi Zohar <zohar@linux.ibm.com>,
-	Roberto Sassu <roberto.sassu@huawei.com>,
-	Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-	Eric Snowberg <eric.snowberg@oracle.com>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Miklos Szeredi <miklos@szeredi.hu>,
-	Amir Goldstein <amir73il@gmail.com>, linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-security-module@vger.kernel.org, audit@vger.kernel.org,
-	selinux@vger.kernel.org, linux-integrity@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-unionfs@vger.kernel.org
-Subject: Re: [PATCH v2 06/25] capability: provide helpers for converting
- between xattrs and vfs_caps
-Message-ID: <ZeIlwkUx5lNBrdS9@do-x1extreme>
-References: <20240221-idmap-fscap-refactor-v2-0-3039364623bd@kernel.org>
- <20240221-idmap-fscap-refactor-v2-6-3039364623bd@kernel.org>
- <7633ab5d5359116a602cdc8f85afd2561047960e.camel@huaweicloud.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45CF43B193;
+	Fri,  1 Mar 2024 19:00:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.22.50
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709319646; cv=fail; b=ZkMajBAS/cTEJhm4miHgR6yWD9e8KRaOyQCUAsRS88ZQ2tUUD82BLcMtFx7q9y5SNPFQT7nifFaRavqi9MwtGlVsw80myPONzbnq/CtizwqGq39MXqR8hSn4yOwxfEXVfaGM/PFcqb1yzG0FfGfA54ofZEx/asX6Nzhvy5DMeLE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709319646; c=relaxed/simple;
+	bh=brfnRUAgHiXAwRf1n2PMXTW9FfCAXZLlUV7xMg4xD0s=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=kAH08Iy57PkJGe1kpNntqVE+08Hp5l8BWooHp7htlkldZ8l09RCxA5oznh56eXhv1A/PWVzTXmNHk/JWKMk+gHlJRJEOTMGIVtOJVejf8C1OvTCqvniBzC+Evm+QyrGLXUjEC31vw/z8e/BylscjMwhJor8k75QlooIDg3T8yQ0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=j/Ek4m9m; arc=fail smtp.client-ip=40.92.22.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aJf8P00KHnKrXEQrjnQ62Isy58l1vhN1BzpoGSNmvDdCsQ8Jqz/wMu3t+hYJRC0uQjvb7vpQeM9DRp+87DifAcKDpdUjff92gIpR4/k/hR4P1cwsAmBrZ+8NnD36cbcl08/ZcorupenDUnAPvSqc9LGx1VTJM5wo7o4k9R8lSCFb3jxW2M2EqYEvP0GDirA6Cg2XDa3dyGxBSNECkE7S+9jMeqmK3LKtvMmFrazWw3BnszR5Lqb6qTjg8p0xu15GRjqgK2ieKgunFmhqrPmj9Yw0Wzc1AvtUJG0NK6mIWlmJUdHyiNlRz2eFA/SgtRxdMAskhgnKWkBnzFzKoJ8vmQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=94R4QCXmyMG5QpkgTYj5o6cY3DYBjErvDwUMi5BTCNE=;
+ b=NNSQgeM4AI3jvRsIZ6Gr2zJzgEuQrnpZmtyAJXBR8agZmZ0tI9wybiaGE4fJQfLMc7VCln4hok5npvBKDUclEVBfFQAhPQ2G8SbJ5V5uNeRHYBIOLtSXsMsMleBiD2aTKkwIL3k5L4u9EVclRgGcGJB+bJgHgV1/vBoy9f4/lZT7JptFLALB83RqnV6AqdvIfx98Aj461SPHbdMHBJZ+/s38oTxWXsn3vo69PQjOSS6ab3AAsSqWdzsTUjg4gDRlpHOpDl/s7iTComDVr3pdjwVT61zuJjObtmZPJGhcS6ncE0SZYH1hCpvZCJD9hoX8/q6Dr79x6kD89vGF4SdaCg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=94R4QCXmyMG5QpkgTYj5o6cY3DYBjErvDwUMi5BTCNE=;
+ b=j/Ek4m9m7PPqKs5IFBKU61iXgdKerTkdkerSyB1iWa0/GSMwKSxEFWdtmoVWsJZrz6QVNpNR9SdDjIS7w2+EPoPPE7wFJmP2FpidLwqZQeV1g8CIKrvMnlUjCgyciFgmxS8REqTHmQTbPVxFsl3M2ENH1rI1qaHc88Lxf2PoMvKnpJBBN4z5hfEIRmu/ILv//u5bgqV0x4oDTiKpAI8/SoOvj477dHfwxGArqFoD8c6JWlS5B1k2McJZVHCbdSz7igKLTcVX7B4GzYElo5iKvWANCRyGkETnUg6UGjyGdMevoqBnPMNcy2hpofJdlR6QZ8e2m2bKC+4t0DMvFQRXBg==
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
+ by CY5PR02MB8941.namprd02.prod.outlook.com (2603:10b6:930:3a::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.34; Fri, 1 Mar
+ 2024 19:00:38 +0000
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::67a9:f3c0:f57b:86dd]) by SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::67a9:f3c0:f57b:86dd%5]) with mapi id 15.20.7339.031; Fri, 1 Mar 2024
+ 19:00:38 +0000
+From: Michael Kelley <mhklinux@outlook.com>
+To: Rick Edgecombe <rick.p.edgecombe@intel.com>, "kys@microsoft.com"
+	<kys@microsoft.com>, "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
+	"wei.liu@kernel.org" <wei.liu@kernel.org>, "decui@microsoft.com"
+	<decui@microsoft.com>, "linux-hyperv@vger.kernel.org"
+	<linux-hyperv@vger.kernel.org>, "gregkh@linuxfoundation.org"
+	<gregkh@linuxfoundation.org>, "davem@davemloft.net" <davem@davemloft.net>,
+	"edumazet@google.com" <edumazet@google.com>, "kuba@kernel.org"
+	<kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+	"linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC: "sathyanarayanan.kuppuswamy@linux.intel.com"
+	<sathyanarayanan.kuppuswamy@linux.intel.com>, "elena.reshetova@intel.com"
+	<elena.reshetova@intel.com>
+Subject: RE: [RFC RFT PATCH 1/4] hv: Leak pages if set_memory_encrypted()
+ fails
+Thread-Topic: [RFC RFT PATCH 1/4] hv: Leak pages if set_memory_encrypted()
+ fails
+Thread-Index: AQHaZTRYDcNuyb66Gkm4wm9TLGb/jbEjO5pg
+Date: Fri, 1 Mar 2024 19:00:38 +0000
+Message-ID:
+ <SN6PR02MB4157B2E6EC690B11AB334522D45E2@SN6PR02MB4157.namprd02.prod.outlook.com>
+References: <20240222021006.2279329-1-rick.p.edgecombe@intel.com>
+ <20240222021006.2279329-2-rick.p.edgecombe@intel.com>
+In-Reply-To: <20240222021006.2279329-2-rick.p.edgecombe@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-tmn: [7CZhr/JyRTqjS4FTIlyPVL5P6KYwgv2c]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|CY5PR02MB8941:EE_
+x-ms-office365-filtering-correlation-id: b60ac30e-baa6-40cb-0ece-08dc3a21e22e
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ Y563gPXPIO9rhpg3Mtq4HkJgvWHZgVtKAHDGYwPj0v1P0ZKE+xytw9LqmLcxAdoryfsaV6gB75drvdH7JXkVqupFWqVuGWo/mbw5vbyyVXU17CCF6Dxv2+vMDvFwwnGqGfxXcu4MVaGkkVfR0GM6QQKITxmG1OfsOwrN2BMtB8d/ZKjxv+IjdqJ5NcLGhBCi1/PshT5A4S3qvsT9ON0ewetV4EPJw9F+XhAL65h/aOco5uSbJywKW5A3izXx9Kk8jeINHLv1m8O+UmosTHML3od0nkhyt8gYgYaQpin0AkyNhQtJJ7ve+nkxZit/0GXE/ACjoQHx996USZGHtI43YI3AdXgwRJ4wmnwhqadNVjIjzq0RgO7fFixwVaShtvubgU/XH+506o5l9+ZMobMUa6PQxeJnED65vfRMoo1xOP8mrENxqisTADp+7LRusLHLxox5UL6Go3stM6+v0HtNvo82GRup8oJlpgPlsi4ffsBuIAxegEsrsdnYvXs43CmWznQfmuAI9ZjfenYbtgP6jK+X45Y1Wh9kL9vmePrhlovhO9RRVfksnq4RhG8bpFb7
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?B8vFaNELlKMwP/JYczfrlaV/jjfIvdfpzZfsWFCQE+HmtgTQ/YBAdXid+yax?=
+ =?us-ascii?Q?spf1HTa15/LW3i8+E5QnSAEK+FHah6U/kevqBn4wBXbuG8hyTgc7oKDF87hF?=
+ =?us-ascii?Q?awsJicLMwRDqsmMvyzWSW2IOkTDvkHjXW6zmWVBy7oua2Ck2VX3XWiBRzBKA?=
+ =?us-ascii?Q?MguSQTqvAWv1zIc7RziShNw3ATBb/zdYy/WzHiEa/nm4xrwX46LcEGZhWBDf?=
+ =?us-ascii?Q?dmzLE433rny+QY9zgpQMG8ZcIJgf7oR0Uw2lA+a5LpJO4kybN2NDZJwYeuCO?=
+ =?us-ascii?Q?P6x5LJEIaGXl7eSXN4IdfwGIOQJwZqrlZAA4q/gKfm1Ox+WCZ7RjSKb9a0XW?=
+ =?us-ascii?Q?EZLOZBOzotk2AEEYukWSI3Oz8i/ER4DOLPgOKji+V1JppNkjrgo7ZIWn6lhl?=
+ =?us-ascii?Q?qbrnY2wHScvi/yuOLRkqwu2/bAOS7rG8GyyZCKi7Rof9Z19fmCl3jfTeZ686?=
+ =?us-ascii?Q?Xq6G6qW0tSZBwVT/TFr+FNm/hqTPqVtOAma3s/OayQ1/rxEX2rLpL6HrOYYQ?=
+ =?us-ascii?Q?xNnCPHznN3/dH3vKGVaMoYvM6fseaaYKrfzLBhQwX25X8fh0Wo62q/mRPGdD?=
+ =?us-ascii?Q?UmSCgHCtzPuD+8IZXeLu9SagGdBShzmebHGAtb6T5f+Cj3YgSpzPWugrOaPU?=
+ =?us-ascii?Q?W0HCFicsb0lvYgKetrXiDfd0VxZpvLtOQMELGGXV/SZB2+BSbs3HLRXn1Vvn?=
+ =?us-ascii?Q?PlP853Bzx4Pi63igVRK6YfrNILYJ2q6mlHi2dO4t2pU0eqeoMRRg1Mxq7fEw?=
+ =?us-ascii?Q?KugWKi9DPKf9xtoOXEd2d6ubjU3CXYyiuQq/A00uJCnXBdBg0l+kNBv9NOTL?=
+ =?us-ascii?Q?teQJFQgANqB/ltSxONZyVlaQdvfjmBCq7HD7be1pTgfyPEJWL+NNtgaQ/T36?=
+ =?us-ascii?Q?kvoYDvBkjvTiGJAmLHhiKdF6XU869AncLEj2mJz8Lys8bvhw8Xv+iPmIKfRA?=
+ =?us-ascii?Q?I2QKV6Zjp8Ik/bH6IEebmxNyRND7GqLMowIvZH1TLWXgKBYHJty/s2AhCAqg?=
+ =?us-ascii?Q?MFrxpDuP34c4LCp7j/tPegkAKcyvXvyPiK8qipOxl/rYHooa15lD8wkE6NQE?=
+ =?us-ascii?Q?hkFkMz9pTfNS1abzIiE7PZX3NLWeh2Id+jtDpvRRNbSbcYrLy68IMrY+AVAf?=
+ =?us-ascii?Q?ozkJ/7YUvU6dWBBvBwYwdLHHlCI0rDxF1UJ33Z2vQqLMpB/Rh0RsP/LKOAQ7?=
+ =?us-ascii?Q?un9KcFYDWxZ5SvMXSn1496jEcLfTh5KglmYwHw=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7633ab5d5359116a602cdc8f85afd2561047960e.camel@huaweicloud.com>
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: b60ac30e-baa6-40cb-0ece-08dc3a21e22e
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Mar 2024 19:00:38.2352
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR02MB8941
 
-On Fri, Mar 01, 2024 at 05:30:55PM +0100, Roberto Sassu wrote:
-> > +/*
-> > + * Inner implementation of vfs_caps_to_xattr() which does not return an
-> > + * error if the rootid does not map into @dest_userns.
-> > + */
-> > +static ssize_t __vfs_caps_to_xattr(struct mnt_idmap *idmap,
-> > +				   struct user_namespace *dest_userns,
-> > +				   const struct vfs_caps *vfs_caps,
-> > +				   void *data, size_t size)
-> > +{
-> > +	struct vfs_ns_cap_data *ns_caps = data;
-> > +	struct vfs_cap_data *caps = (struct vfs_cap_data *)ns_caps;
-> > +	kuid_t rootkuid;
-> > +	uid_t rootid;
-> > +
-> > +	memset(ns_caps, 0, size);
-> 
-> size -> sizeof(*ns_caps) (or an equivalent change)
+From: Rick Edgecombe <rick.p.edgecombe@intel.com> Sent: Wednesday, February=
+ 21, 2024 6:10 PM
+>=20
 
-This is zeroing out the passed buffer, so it should use the size passed
-for the buffer. sizeof(*ns_caps) could potentially be more than the size
-of the buffer.
+Historically, the preferred Subject prefix for changes to connection.c has
+been "Drivers: hv: vmbus:", not just "hv:".  Sometimes that preference
+isn't followed, but most of the time it is.
 
-Maybe it would be clearer if it was memset(data, 0, size)?
+> On TDX it is possible for the untrusted host to cause
 
-> I was zeroing more (the size of the buffer passed to vfs_getxattr()).
-> 
-> Roberto
+I'd argue that this is for CoCo VMs in general, not just TDX.  I don't know
+all the failure modes for SEV-SNP, but the code paths you are changing
+are run in both TDX and SEV-SNP CoCo VMs.
+
+> set_memory_encrypted() or set_memory_decrypted() to fail such that an
+> error is returned and the resulting memory is shared. Callers need to tak=
+e
+> care to handle these errors to avoid returning decrypted (shared) memory =
+to
+> the page allocator, which could lead to functional or security issues.
+>=20
+> Hyperv could free decrypted/shared pages if set_memory_encrypted() fails.
+
+It's not Hyper-V doing the freeing.  Maybe say "VMBus code could
+free ...."
+
+> Leak the pages if this happens.
+>=20
+> Only compile tested.
+>=20
+> Cc: "K. Y. Srinivasan" <kys@microsoft.com>
+> Cc: Haiyang Zhang <haiyangz@microsoft.com>
+> Cc: Wei Liu <wei.liu@kernel.org>
+> Cc: Dexuan Cui <decui@microsoft.com>
+> Cc: linux-hyperv@vger.kernel.org
+> Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
+> ---
+>  drivers/hv/connection.c | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/hv/connection.c b/drivers/hv/connection.c
+> index 3cabeeabb1ca..e39493421bbb 100644
+> --- a/drivers/hv/connection.c
+> +++ b/drivers/hv/connection.c
+> @@ -315,6 +315,7 @@ int vmbus_connect(void)
+>=20
+>  void vmbus_disconnect(void)
+>  {
+> +	int ret;
+>  	/*
+>  	 * First send the unload request to the host.
+>  	 */
+> @@ -337,11 +338,13 @@ void vmbus_disconnect(void)
+>  		vmbus_connection.int_page =3D NULL;
+>  	}
+>=20
+> -	set_memory_encrypted((unsigned long)vmbus_connection.monitor_pages[0], =
+1);
+> -	set_memory_encrypted((unsigned long)vmbus_connection.monitor_pages[1], =
+1);
+> +	ret =3D set_memory_encrypted((unsigned long)vmbus_connection.monitor_pa=
+ges[0], 1);
+> +	ret |=3D set_memory_encrypted((unsigned long)vmbus_connection.monitor_p=
+ages[1], 1);
+>=20
+> -	hv_free_hyperv_page(vmbus_connection.monitor_pages[0]);
+> -	hv_free_hyperv_page(vmbus_connection.monitor_pages[1]);
+> +	if (!ret) {
+> +		hv_free_hyperv_page(vmbus_connection.monitor_pages[0]);
+> +		hv_free_hyperv_page(vmbus_connection.monitor_pages[1]);
+> +	}
+
+Of course, this will leak the memory for both pages if only one of the
+set_memory_encrypted() calls fails, but I'm OK with that.  It doesn't
+seem worth the additional complexity to treat each page separately.
+
+>  	vmbus_connection.monitor_pages[0] =3D NULL;
+>  	vmbus_connection.monitor_pages[1] =3D NULL;
+>  }
+> --
+> 2.34.1
+
 
