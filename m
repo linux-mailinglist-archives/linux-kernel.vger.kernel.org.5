@@ -1,121 +1,194 @@
-Return-Path: <linux-kernel+bounces-88931-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88932-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EAF486E897
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:41:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A28B986E89B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:41:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C5EB1C22C84
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:41:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE1411C22989
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:41:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49BBF39FC9;
-	Fri,  1 Mar 2024 18:40:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E3503A26E;
+	Fri,  1 Mar 2024 18:41:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GcCepP+9"
-Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r2Q7QuqW"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B731224D0;
-	Fri,  1 Mar 2024 18:40:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 472013A1B8;
+	Fri,  1 Mar 2024 18:41:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709318449; cv=none; b=MUgmfJ83cBwlOr1gZPRsjDdlFEpBtZWzH9fiHJjxVpQqJI0/smv7MhNQdY5B3mSnWwC44PkNV8nDr3wlS2PlUPK50f+rq6bKvSZgqbgyCbhLNYEoAnNN5mcA3eepkbj1E542rJiqspyS1lCEHibafxGgxb8I+aR3a0WGImLd8dA=
+	t=1709318461; cv=none; b=K8mz0Oi3O1J86hdtT0evJ6kq8Yda+UMJkAs/ZUg4jrnnjk2hqc1e0RX6RkQCHElLCNuy2rzAT7h/ydz0/ZzNBkSlsnNR4mqmcSNmoSLaEjwyoDfQIv+uEd0w3hlk3D25EZ+Yr8Uq+512w0kLB7Mxv6T7a2gkBLgwiHSUXA/Pqps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709318449; c=relaxed/simple;
-	bh=GhGyYeMcg+ZkjHYxc/VcT9ZUA/XQeHgcdI1Kai7omcM=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=gGW+3e+VQo/OPH7XMDcDjgVlTk6KhKVh3PqhXocY5ftQBCYKNvcS10Hs0j7knuuShZvdVi8htCqPm9hhzibq5ss+1JCTvPzn4jEQI2iWmPXfIB5AvTsYgLVNoTw+2Me5cymi7eoXNZH/u8IXQTYmm4orvVvNXsS0yJbK6trEN5M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GcCepP+9; arc=none smtp.client-ip=209.85.219.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-6905b62ed2aso2585936d6.1;
-        Fri, 01 Mar 2024 10:40:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709318447; x=1709923247; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=D+DSHj2O6nyP38vAO2Q5xeXvc8PasKQXCBn1/ZiY0e0=;
-        b=GcCepP+9w+t03flxOi1THh5uHotgWTDkL6tyh3feBLm88DDbn6PBqm+480sRyT9M1R
-         //AeXkaWpiHCWAOHVREC6hbyiSf58fVnxwAJXNcuQIi4EQbbhf+VWamlCtgrH/gu2HAi
-         61Bc1E8qm0k4HX9TYWPSJdmLIKCAzKlfg1lfa+/ne2J5BukDH+9BktyQc0noT1Q54xSu
-         MDtYV0n0T0PFe/iKysrMvw7vDIjdDbaksYQ4T8xAeQtcEeekIZJpITjsUknI9NQ2x9T9
-         PTRt8Nk6a4DfvNiXhB5ftWV+VMo3N/FjNkATfoYE5MpQyu2327CHdpAVFv4+sV+oXlUB
-         vk1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709318447; x=1709923247;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=D+DSHj2O6nyP38vAO2Q5xeXvc8PasKQXCBn1/ZiY0e0=;
-        b=xLiv0aqxV1ht9d84ONZWxqkOPSgaXoWEZOD06O9n2ocGz/dNl/JtQB0MTXHKiRDSzU
-         gqJGdvzckHFGwFv00gdF0+F/glbcitFgUVNRrSPegvxhF/YuV5pHLWEoGlQSQ9+IBzLK
-         ThKjtDsqQ1FI6J/WxTe4goGN6yC7XHPz/YYXxLQyKKYhyrQgCkro2svXiPDIgrI6lj90
-         3oYp5+ZfkwMUt7ALJ0OhfF86OPaSTjhCYKsB4C6wKiPijZucF8OpMMjX5uFj1oMg2Ows
-         QSWzJAJvhPFIJV9Wjuc52XYVGq3W4XmRx5UIrxs0QR9PWxreRCMhf6DvcCkyIRRCi64D
-         rGuA==
-X-Forwarded-Encrypted: i=1; AJvYcCUIPnU2bWbggIcD4fqSZXr3Av4KRKsgEy9PHqBKKz1XJZMxTJxutFA7mtl9Z8S5TaYDcLElV8ecAk9G+HVXaU407YW6dTutlIKUL7SgH/jM/datYdxq5qPGGdeRZ42Dv04w5rMuPaL/BrkabGJOg0ZzZVt4/ETHUl3k6cQcTvGzsiEiUcbDDxtm6vqfpeeX
-X-Gm-Message-State: AOJu0Yy3ojvGTID5VqY8XU/J4LG9kpNrRC4dHmfkZLMwllJ9mx+INVSV
-	G0IRH48NR9apP91dVMfDMyGdjAAxnXu9m0i1EsBV6gP1vHsXuiBl
-X-Google-Smtp-Source: AGHT+IEHn5c+uVkAgjlwPDH96t0yuU+j7oeVXqnt5aR1eMRI0HHontd/eYJbeRcpsU+nl4/66M8uhg==
-X-Received: by 2002:a0c:ed30:0:b0:68f:4d2d:3f38 with SMTP id u16-20020a0ced30000000b0068f4d2d3f38mr2632279qvq.46.1709318447133;
-        Fri, 01 Mar 2024 10:40:47 -0800 (PST)
-Received: from localhost (56.148.86.34.bc.googleusercontent.com. [34.86.148.56])
-        by smtp.gmail.com with ESMTPSA id qp11-20020a056214598b00b0068fef74fdb3sm2137813qvb.59.2024.03.01.10.40.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 10:40:46 -0800 (PST)
-Date: Fri, 01 Mar 2024 13:40:46 -0500
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>, 
- Yunjian Wang <wangyunjian@huawei.com>
-Cc: mst@redhat.com, 
- willemdebruijn.kernel@gmail.com, 
- jasowang@redhat.com, 
- kuba@kernel.org, 
- bjorn@kernel.org, 
- magnus.karlsson@intel.com, 
- jonathan.lemon@gmail.com, 
- davem@davemloft.net, 
- bpf@vger.kernel.org, 
- netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- kvm@vger.kernel.org, 
- virtualization@lists.linux.dev, 
- xudingke@huawei.com, 
- liwei395@huawei.com
-Message-ID: <65e2212e66769_158220294f@willemb.c.googlers.com.notmuch>
-In-Reply-To: <ZeHiBm/frFvioIIt@boxer>
-References: <1709118356-133960-1-git-send-email-wangyunjian@huawei.com>
- <ZeHiBm/frFvioIIt@boxer>
-Subject: Re: [PATCH net-next v2 3/3] tun: AF_XDP Tx zero-copy support
+	s=arc-20240116; t=1709318461; c=relaxed/simple;
+	bh=Ikr2dasxWHE+lNItweXLpqVfoJa5a0SH5QW2mOtObok=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=jh9XS/DYOMrEhFsbR5flfTktrim36iJJbDuQDrn7K1WlFJ7lzf5xjVt/YbNufEf1nATc4RBMlMXBMl+RmMVm1hy/NQoMpoopriqG8tyNW3LxjaxgrqzRX6Or7YQdPe7yfJzgEi30HXvX7Yz9TPJD47+4X26EqFELaF7/k956WKo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r2Q7QuqW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4AF6C433C7;
+	Fri,  1 Mar 2024 18:40:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709318460;
+	bh=Ikr2dasxWHE+lNItweXLpqVfoJa5a0SH5QW2mOtObok=;
+	h=Date:From:To:Cc:Subject:From;
+	b=r2Q7QuqWR02YX4BwJB96aQVS8C1pgLZiSKZF52iPU96KkxawAS/eKf60dMe8iqlpp
+	 lP9HwlYIXAV7fWehnNcLTi9cfxjGuCNxXRtBQg7Sj00O74QryCsKDTyo3Cemna8cn8
+	 7VDDvZuAV5pSUH7h3AUAW9UwrxnwS5uQ98PScqKFmqDUddsW6c4BE77RE1a01qlUO9
+	 dh801ZgPnZFzcZqmn+GTGogZvPty6zapDZ2h9FtkLPKyWreeZBVdiN73HQSxxEwprO
+	 nUz6817YY4RHzPLDdoDn5JLxVzOp7JePcQ/c95z1MhJrmpY5/2s8YclcCD4iPJ3kTu
+	 HTHaFQbnIGYhA==
+Date: Fri, 1 Mar 2024 12:40:57 -0600
+From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To: Wenjia Zhang <wenjia@linux.ibm.com>, Jan Karcher <jaka@linux.ibm.com>,
+	"D. Wythe" <alibuda@linux.alibaba.com>,
+	Tony Lu <tonylu@linux.alibaba.com>,
+	Wen Gu <guwen@linux.alibaba.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+Cc: linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>
+Subject: [PATCH][next] net/smc: Avoid -Wflex-array-member-not-at-end warnings
+Message-ID: <ZeIhOT44ON5rjPiP@neat>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Maciej Fijalkowski wrote:
-> On Wed, Feb 28, 2024 at 07:05:56PM +0800, Yunjian Wang wrote:
-> > This patch set allows TUN to support the AF_XDP Tx zero-copy feature,
-> > which can significantly reduce CPU utilization for XDP programs.
-> 
-> Why no Rx ZC support though? What will happen if I try rxdrop xdpsock
-> against tun with this patch? You clearly allow for that.
+-Wflex-array-member-not-at-end is coming in GCC-14, and we are getting
+ready to enable it globally.
 
-This is AF_XDP receive zerocopy, right?
+There are currently a couple of objects in `struct smc_clc_msg_proposal_area`
+that contain a couple of flexible structures:
 
-The naming is always confusing with tun, but even though from a tun
-PoV this happens on ndo_start_xmit, it is the AF_XDP equivalent to
-tun_put_user.
+struct smc_clc_msg_proposal_area {
+	...
+	struct smc_clc_v2_extension             pclc_v2_ext;
+	...
+	struct smc_clc_smcd_v2_extension        pclc_smcd_v2_ext;
+	...
+};
 
-So the implementation is more like other device's Rx ZC.
+So, in order to avoid ending up with a couple of flexible-array members
+in the middle of a struct, we use the `struct_group_tagged()` helper to
+separate the flexible array from the rest of the members in the flexible
+structure:
 
-I would have preferred that name, but I think Jason asked for this
-and given tun's weird status, there is something bo said for either.
+struct smc_clc_smcd_v2_extension {
+        struct_group_tagged(smc_clc_smcd_v2_extension_hdr, hdr,
+                            u8 system_eid[SMC_MAX_EID_LEN];
+                            u8 reserved[16];
+        );
+        struct smc_clc_smcd_gid_chid gidchid[];
+};
+
+With the change described above, we now declare objects of the type of
+the tagged struct without embedding flexible arrays in the middle of
+another struct:
+
+struct smc_clc_msg_proposal_area {
+        ...
+        struct smc_clc_v2_extension_hdr		pclc_v2_ext;
+        ...
+        struct smc_clc_smcd_v2_extension_hdr	pclc_smcd_v2_ext;
+        ...
+};
+
+We also use `container_of()` when we need to retrieve a pointer to the
+flexible structures.
+
+So, with these changes, fix the following warnings:
+
+In file included from net/smc/af_smc.c:42:
+net/smc/smc_clc.h:186:49: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
+  186 |         struct smc_clc_v2_extension             pclc_v2_ext;
+      |                                                 ^~~~~~~~~~~
+net/smc/smc_clc.h:188:49: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
+  188 |         struct smc_clc_smcd_v2_extension        pclc_smcd_v2_ext;
+      |                                                 ^~~~~~~~~~~~~~~~
+
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ net/smc/smc_clc.c |  5 +++--
+ net/smc/smc_clc.h | 24 ++++++++++++++----------
+ 2 files changed, 17 insertions(+), 12 deletions(-)
+
+diff --git a/net/smc/smc_clc.c b/net/smc/smc_clc.c
+index e55026c7529c..3094cfa1c458 100644
+--- a/net/smc/smc_clc.c
++++ b/net/smc/smc_clc.c
+@@ -853,8 +853,9 @@ int smc_clc_send_proposal(struct smc_sock *smc, struct smc_init_info *ini)
+ 	pclc_smcd = &pclc->pclc_smcd;
+ 	pclc_prfx = &pclc->pclc_prfx;
+ 	ipv6_prfx = pclc->pclc_prfx_ipv6;
+-	v2_ext = &pclc->pclc_v2_ext;
+-	smcd_v2_ext = &pclc->pclc_smcd_v2_ext;
++	v2_ext = container_of(&pclc->pclc_v2_ext, struct smc_clc_v2_extension, _hdr);
++	smcd_v2_ext = container_of(&pclc->pclc_smcd_v2_ext,
++				   struct smc_clc_smcd_v2_extension, hdr);
+ 	gidchids = pclc->pclc_gidchids;
+ 	trl = &pclc->pclc_trl;
+ 
+diff --git a/net/smc/smc_clc.h b/net/smc/smc_clc.h
+index 7cc7070b9772..5b91a1947078 100644
+--- a/net/smc/smc_clc.h
++++ b/net/smc/smc_clc.h
+@@ -134,12 +134,14 @@ struct smc_clc_smcd_gid_chid {
+ 			 */
+ 
+ struct smc_clc_v2_extension {
+-	struct smc_clnt_opts_area_hdr hdr;
+-	u8 roce[16];		/* RoCEv2 GID */
+-	u8 max_conns;
+-	u8 max_links;
+-	__be16 feature_mask;
+-	u8 reserved[12];
++	struct_group_tagged(smc_clc_v2_extension_hdr, _hdr,
++		struct smc_clnt_opts_area_hdr hdr;
++		u8 roce[16];		/* RoCEv2 GID */
++		u8 max_conns;
++		u8 max_links;
++		__be16 feature_mask;
++		u8 reserved[12];
++	);
+ 	u8 user_eids[][SMC_MAX_EID_LEN];
+ };
+ 
+@@ -159,8 +161,10 @@ struct smc_clc_msg_smcd {	/* SMC-D GID information */
+ };
+ 
+ struct smc_clc_smcd_v2_extension {
+-	u8 system_eid[SMC_MAX_EID_LEN];
+-	u8 reserved[16];
++	struct_group_tagged(smc_clc_smcd_v2_extension_hdr, hdr,
++		u8 system_eid[SMC_MAX_EID_LEN];
++		u8 reserved[16];
++	);
+ 	struct smc_clc_smcd_gid_chid gidchid[];
+ };
+ 
+@@ -183,9 +187,9 @@ struct smc_clc_msg_proposal_area {
+ 	struct smc_clc_msg_smcd			pclc_smcd;
+ 	struct smc_clc_msg_proposal_prefix	pclc_prfx;
+ 	struct smc_clc_ipv6_prefix	pclc_prfx_ipv6[SMC_CLC_MAX_V6_PREFIX];
+-	struct smc_clc_v2_extension		pclc_v2_ext;
++	struct smc_clc_v2_extension_hdr		pclc_v2_ext;
+ 	u8			user_eids[SMC_CLC_MAX_UEID][SMC_MAX_EID_LEN];
+-	struct smc_clc_smcd_v2_extension	pclc_smcd_v2_ext;
++	struct smc_clc_smcd_v2_extension_hdr	pclc_smcd_v2_ext;
+ 	struct smc_clc_smcd_gid_chid
+ 				pclc_gidchids[SMCD_CLC_MAX_V2_GID_ENTRIES];
+ 	struct smc_clc_msg_trail		pclc_trl;
+-- 
+2.34.1
+
 
