@@ -1,150 +1,86 @@
-Return-Path: <linux-kernel+bounces-89054-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89053-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3D8886EA04
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:00:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18BBA86E9FE
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:59:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3C311C246BB
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:00:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE0361F2591A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:59:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 939E83BB3C;
-	Fri,  1 Mar 2024 20:00:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I4dmb6uL"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B10C3BB2F;
+	Fri,  1 Mar 2024 19:59:46 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBADE3B796;
-	Fri,  1 Mar 2024 20:00:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A4AF3C063;
+	Fri,  1 Mar 2024 19:59:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709323243; cv=none; b=SpHHSfkTLUSjaaD+pVOsWVJN80xIX4nv4TxIQvb1Nn3kUbNIKgS5GdvxpK8wWJ/2Qce3q3KmwObOWGk/n6EL8/9NERSsellEZRSgZyMEQo9kSkVeH58LjlV/1DJQPN6vc5iirno5Ry7hxxJA/BsriUtGLwdtyKhUND6ZvPPvKUg=
+	t=1709323186; cv=none; b=uvE4nrAKdclb2ZsoM3i0bHUZ5AMmjERxgrC483jAZ5Ll+nB7kByL7YpUhIq6E1c0W886JrdrfF4sK0kwxGYFIFlmT85Ax+scl9NG2+yvkDmAhwkwPXmvMop2E6OnhZp06Fvwn4OKaBQrR1rEtgLMi8xcsrj+8057wVOk71mOwBM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709323243; c=relaxed/simple;
-	bh=tkPfYz4dqfaAlFLOY/DLcTiVqpMCMMgd9r4KzTAlmo0=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=Ju9urPOwECkGNrCgMaYOWFWj1mxd+GJjatqb5+Z+uQtV7yY/sH//m7qnD+cMIMwp+SvVfpClL6O6R36lJIxpI80t3ZQE+pf/lpFg4salUEC4DyErKw7boBg6j9iFSiy0fRiqT1wL40I0hiSg5/MljNd2UmDshk69Ycm4EiULPhA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I4dmb6uL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 138E7C433F1;
-	Fri,  1 Mar 2024 20:00:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709323243;
-	bh=tkPfYz4dqfaAlFLOY/DLcTiVqpMCMMgd9r4KzTAlmo0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=I4dmb6uL5oZ7jN5mVc1lq2HaCe04G/zhlwTmclLdpOcN8cYliO3vVRcj1ci4De4vh
-	 cnfqZ8PGmi/vMmMGmT5JvOUyQSifd/XWEtQIiu1cK69e1RYXYx0Tc6yQe76T6dCKVF
-	 Mgn8jw/v7wHnIxm0tyC8FihmR6nL9Uc8qkiPCbWNO0gQD4xgjPsMViyWjQ05pgyCgL
-	 J315K5PD4QJ4yTzxaTX7SenZsAdGQxrHIxKIePUCXhuRKsqaV0aujLpco2QvUnT4zt
-	 7JukBPFCqJbOLh4l5vcyfHrgtK0lw00n89MZQUFqQWhH2C7+B0OZ+72VzgOYCeQZY+
-	 C74oyXFyNNoVg==
-Date: Fri, 1 Mar 2024 14:00:41 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Shashank Babu Chinta Venkata <quic_schintav@quicinc.com>
-Cc: agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-	mani@kernel.org, quic_msarkar@quicinc.com,
-	quic_kraravin@quicinc.com,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Serge Semin <fancer.lancer@gmail.com>,
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v1 2/3] PCI: dwc: add equalization settings for gen4
-Message-ID: <20240301200041.GA405674@bhelgaas>
+	s=arc-20240116; t=1709323186; c=relaxed/simple;
+	bh=/cpGRNtcNz+xHHZjD6FZ8xUm92lTGPma31xcu87bynA=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=a/Pf6e71xtEXPZc7m2xpBuP8zS04mieG5KGICx7Zn6fvS4xfe7Px15WqBj+No2yWaJxVRLBE5eM+Cy5lfXsNouk8DPsiiF84MFr010uFJUSM8BI4w8HBN3YxbF7c9I0YAOEMb/FyXQvW1SLEmx7+26iCfrXddr6ApqM46BSzJJ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15D4AC433C7;
+	Fri,  1 Mar 2024 19:59:43 +0000 (UTC)
+Date: Fri, 1 Mar 2024 15:01:53 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Jamal Hadi Salim <jhs@mojatatu.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org, Masami
+ Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Cong Wang <xiyou.wangcong@gmail.com>,
+ vaclav.zindulka@tlapnet.cz, Jiri Pirko <jiri@resnulli.us>, "David S.
+ Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Coco Li
+ <lixiaoyan@google.com>, David Ahern <dsahern@kernel.org>, Jakub Kicinski
+ <kuba@kernel.org>
+Subject: Re: [PATCH] tracing/net_sched: Fix tracepoints that save
+ qdisc_dev() as a string
+Message-ID: <20240301150153.36e5bf60@gandalf.local.home>
+In-Reply-To: <CAM0EoMkOgTezVLnN7f1GoXTURQ73LmXjHnBjQBSBRPnv58K-VQ@mail.gmail.com>
+References: <20240229143432.273b4871@gandalf.local.home>
+	<CAM0EoMkOgTezVLnN7f1GoXTURQ73LmXjHnBjQBSBRPnv58K-VQ@mail.gmail.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240301051220.20917-3-quic_schintav@quicinc.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, Feb 29, 2024 at 09:11:35PM -0800, Shashank Babu Chinta Venkata wrote:
-> GEN3_RELATED_OFFSET is being used as shadow register for generation4 and
-> generation5 data rates based on rate select mask settings on this register.
-> Select relevant mask and equalization settings for generation4 operation.
+On Fri, 1 Mar 2024 14:24:17 -0500
+Jamal Hadi Salim <jhs@mojatatu.com> wrote:
 
-Please capitalize subject lines to match history ("PCI: qcom: Add ...")
+> > Fixes: a34dac0b90552 ("net_sched: add tracepoints for qdisc_reset() and qdisc_destroy()")
+> > Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>  
+> 
+> Should this be targeting the net tree?
 
-s/GEN3_RELATED_OFFSET/GEN3_RELATED_OFF/ (I think?)
+I was going to say that I need this for my work, but my work is aimed at
+the next merge window, but this should go into the kernel now and be marked
+for stable. So yes, it probably should go through the net tree.
 
-I wish these "GEN3_RELATED" things were named with the data rate
-instead of "GEN3".  The PCIe spec defines these things based on the
-data rate (8GT/s, 16GT/s, etc), not the revision of the spec they
-appeared in (gen3/gen4/etc).
+Do I need to resubmit it?
 
-Using "GEN3" means we have to first look up the "gen -> rate" mapping
-before finding the relevant spec info.
+> Otherwise, LGTM. Just wondering - this worked before because "name"
+> was the first field?
 
-Applies to the subject line, commit log, #defines, function names,
-etc.
+Looks like it. See commit 43a71cd66b9c0 ("net-device: reorganize net_device
+fast path variables")
 
-> +void qcom_pcie_cmn_set_gen4_eq_settings(struct dw_pcie *pci)
-> +{
-> +	u32 reg;
-> +
-> +	reg = dw_pcie_readl_dbi(pci, GEN3_RELATED_OFF);
+I wonder if there's anything else that uses a pointer to struct net_device
+thinking it can just be switched to find the name?
 
-Warrants a one-line comment about using "GEN3_..." in a function named
-"..._gen4_..."  (But ideally both would be renamed based on the data
-rate instead.)
+> 
+> Reviewed-by: Jamal Hadi Salim <jhs@mojatatu.com>
 
-> +++ b/drivers/pci/controller/dwc/pcie-qcom-cmn.h
-> @@ -9,10 +9,29 @@
->  #include "../../pci.h"
->  #include "pcie-designware.h"
->  
-> +#define GEN3_EQ_CONTROL_OFF			0x8a8
-> +#define GEN3_EQ_CONTROL_OFF_FB_MODE_MASK        GENMASK(3, 0)
-> +#define GEN3_EQ_CONTROL_OFF_PHASE23_EXIT_MODE   BIT(4)
-> +#define GEN3_EQ_CONTROL_OFF_PSET_REQ_VEC_MASK	GENMASK(23, 8)
-> +#define GEN3_EQ_CONTROL_OFF_FOM_INC_INITIAL_EVAL	BIT(24)
+Thanks,
 
-Are these qcom-specific registers, or should they be added alongside
-GEN3_RELATED_OFF in pcie-designware.h?
-
-> +#define GEN3_EQ_FB_MODE_DIR_CHANGE_OFF          0x8ac
-> +#define GEN3_EQ_FMDC_MAX_PRE_CUSROR_DELTA_VAL   0x5
-> +#define GEN3_EQ_FMDC_MAX_POST_CUSROR_DELTA_VAL  0x5
-> +#define GEN3_EQ_FMDC_N_EVALS_VAL          0xD
-> +#define GEN3_EQ_FMDC_T_MIN_PHASE23_MASK         GENMASK(4, 0)
-> +#define GEN3_EQ_FMDC_N_EVALS_MASK               GENMASK(9, 5)
-> +#define GEN3_EQ_FMDC_MAX_PRE_CUSROR_DELTA_MASK  GENMASK(13, 10)
-> +#define GEN3_EQ_FMDC_MAX_POST_CUSROR_DELTA_MASK	GENMASK(17, 14)
-> +#define GEN3_EQ_FMDC_N_EVALS_SHIFT			5
-> +#define GEN3_EQ_FMDC_MAX_PRE_CUSROR_DELTA_SHIFT		10
-> +#define GEN3_EQ_FMDC_MAX_POST_CUSROR_DELTA_SHIFT	14
-
-> +++ b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-> @@ -438,6 +438,10 @@ static int qcom_pcie_perst_deassert(struct dw_pcie *pci)
->  		goto err_disable_resources;
->  	}
->  
-> +	/* set Gen4 equalization settings */
-
-Pointless comment.
-
-> +	if (pci->link_gen == 4)
-> +		qcom_pcie_cmn_set_gen4_eq_settings(pci);
-
-> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> @@ -263,6 +263,10 @@ static int qcom_pcie_start_link(struct dw_pcie *pci)
->  {
->  	struct qcom_pcie *pcie = to_qcom_pcie(pci);
->  
-> +	/* set Gen4 equalization settings */
-
-Pointless comment.
-
-> +	if (pci->link_gen == 4)
-> +		qcom_pcie_cmn_set_gen4_eq_settings(pci);
+-- Steve
 
