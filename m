@@ -1,104 +1,168 @@
-Return-Path: <linux-kernel+bounces-88125-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88126-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCDE886DDAA
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:53:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98CEC86DDAC
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:54:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 45AEAB298E4
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:53:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B3A161C2098B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:54:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3500D6A003;
-	Fri,  1 Mar 2024 08:53:10 +0000 (UTC)
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED49969E1B;
+	Fri,  1 Mar 2024 08:54:41 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B1D869D2C
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 08:53:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DC4567C74
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 08:54:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709283189; cv=none; b=WmXefpDgv2CFSK2+PVmfmSokIOGiYlpa9WT3U19TpQ+G7aXj0BP+ntzX2Rh3h+sDRWnLGHwKe2oKHL89PiSFvvmGCBKM9RKuX1/ItPTISLtcHA3Z2Uxsw0Isiu9YCT3DJKQpIzNsbIZZh8Rz0Mepo8kAHXAIQUdyukKnAU1oarw=
+	t=1709283281; cv=none; b=qqzDeilk/f8JihyGHvSENkqLF+AuB+t3gxTqAjdBKaB1OBtvChuA6ECWnnq6xi+Tmu0fH6TzO9VxullF/jf8Z6UnLTcOZy4hfxgIpiwKpv49XYh5zE4o1oTjaBjr5VjPLvv2jM4D+c2buboxBQNKTHUgTNMYhJy86busearPfnw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709283189; c=relaxed/simple;
-	bh=43QLsBBiCzYOVCHmNXfxTrv0jH3VC2O63gyl2/uo0xo=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=MUui1I4+jAcD1C+Rv3MmaI20lVTUVsOEDyQEQ/Yc0Bpnv4giRXE1bXhmOHFMVbBzkTWw1fZPyJfsYvP8m3LI+EPehi4HwcjUtYDQFC2q0O6DZtVemN5O0XXnS9quNNpjqac8v19MqaYN3Nj7Tr2y4A3fwbQj5pIaF7OPEcQUS7g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-55-2WFfyO3NO_aFW2k655cEVA-1; Fri, 01 Mar 2024 08:53:04 +0000
-X-MC-Unique: 2WFfyO3NO_aFW2k655cEVA-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 1 Mar
- 2024 08:53:03 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Fri, 1 Mar 2024 08:53:03 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: "'H. Peter Anvin'" <hpa@zytor.com>, 'Thorsten Blum'
-	<thorsten.blum@toblux.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
-	<mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
-	<dave.hansen@linux.intel.com>, "x86@kernel.org" <x86@kernel.org>
-CC: "Peter Zijlstra (Intel)" <peterz@infradead.org>, Wei Liu
-	<wei.liu@kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] x86/apic: Use div64_ul() instead of do_div()
-Thread-Topic: [PATCH] x86/apic: Use div64_ul() instead of do_div()
-Thread-Index: AQHaaXLYiXydWB8fRkmBfBNz3Gms8bEh48oggAAxXYCAAH6fUA==
-Date: Fri, 1 Mar 2024 08:53:03 +0000
-Message-ID: <500833b5660949c8b52b756f1c2acc0e@AcuMS.aculab.com>
-References: <20240227114333.1718-2-thorsten.blum@toblux.com>
- <7e46123775e64898bd7c467328125ee0@AcuMS.aculab.com>
- <96394DFF-43D7-4877-AA47-FC847FD26184@zytor.com>
-In-Reply-To: <96394DFF-43D7-4877-AA47-FC847FD26184@zytor.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	s=arc-20240116; t=1709283281; c=relaxed/simple;
+	bh=9GklKWlOI5QgrQGLQ8AvXUp7vESWScNbx1LmEDu+pdA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=eBdbqWqJ35SWlSCZDC4JY76hRECShUoI4EFtMRv3hJul3qQrVUUjUqttP46m8m5brhT6BEa+1qJRS5lWq6erxtXXSiSe1wF80bKrhTSQRJFnMIiV5tlBeLbO/Ho2Fas5NewYAmgTqnMC5MoKBDU9HyeKwlqpGNLSzmf8T8k7F/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TmMN84HGMz1FKqp;
+	Fri,  1 Mar 2024 16:54:32 +0800 (CST)
+Received: from canpemm500006.china.huawei.com (unknown [7.192.105.130])
+	by mail.maildlp.com (Postfix) with ESMTPS id 3B88F140158;
+	Fri,  1 Mar 2024 16:54:35 +0800 (CST)
+Received: from [10.67.109.61] (10.67.109.61) by canpemm500006.china.huawei.com
+ (7.192.105.130) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Fri, 1 Mar
+ 2024 16:54:34 +0800
+Message-ID: <39397776-c3e3-0004-f32b-fa6a6dfe9417@huawei.com>
+Date: Fri, 1 Mar 2024 16:54:34 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [PATCH -next] sched/fair: Fix task migrated to isolated cpus
+To: Abel Wu <wuyun.abel@bytedance.com>, <mingo@redhat.com>,
+	<peterz@infradead.org>, <juri.lelli@redhat.com>,
+	<vincent.guittot@linaro.org>, <dietmar.eggemann@arm.com>,
+	<rostedt@goodmis.org>, <bsegall@google.com>, <mgorman@suse.de>,
+	<bristot@redhat.com>, <vschneid@redhat.com>, <joshdon@google.com>
+CC: <linux-kernel@vger.kernel.org>
+References: <20240301023109.336707-1-zhengzucheng@huawei.com>
+ <d0977c14-2837-497b-896b-0a2ad20fb3d5@bytedance.com>
+From: zhengzucheng <zhengzucheng@huawei.com>
+In-Reply-To: <d0977c14-2837-497b-896b-0a2ad20fb3d5@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ canpemm500006.china.huawei.com (7.192.105.130)
 
-RnJvbTogSC4gUGV0ZXIgQW52aW4NCj4gU2VudDogMDEgTWFyY2ggMjAyNCAwMTowMg0KPiANCj4g
-Pj4NCj4gPj4gQ2hhbmdlIGRlbHRhcG0gdG8gdW5zaWduZWQgbG9uZyBhbmQgcmVwbGFjZSBkb19k
-aXYoKSB3aXRoIGRpdjY0X3VsKCkNCj4gPj4gd2hpY2ggZG9lc24ndCBpbXBsaWNpdGx5IGNhc3Qg
-dGhlIGRpdmlzb3IgYW5kIGRvZXNuJ3QgdW5uZWNlc3NhcmlseQ0KPiA+PiBjYWxjdWxhdGUgdGhl
-IHJlbWFpbmRlci4NCj4gPg0KPiA+RWg/IHRoZXkgYXJlIGVudGlyZWx5IGRpZmZlcmVudCBiZWFz
-dHMuDQo+ID4NCj4gPmRvX2RpdigpIGRvZXMgYSA2NCBieSAzMiBkaXZpZGUgdGhhdCBnaXZlcyBh
-IDMyYml0IHF1b3RpZW50Lg0KPiA+ZGl2NjRfdWwoKSBkb2VzIGEgbXVjaCBtb3JlIGV4cGVuc2l2
-ZSA2NCBieSA2NCBkaXZpZGUgdGhhdA0KPiA+Y2FuIGdlbmVyYXRlIGEgNjRiaXQgcXVvdGllbnQu
-DQo+ID4NCj4gPlRoZSByZW1haW5kZXIgaXMgcHJldHR5IG11Y2ggZnJlZSBpbiBib3RoIGNhc2Vz
-Lg0KPiA+SWYgYSBjcHUgaGFzIGEgZGl2aWRlIGluc3RydWN0aW9uIGl0IHdpbGwgYWxtb3N0IGNl
-cnRhaW5seQ0KPiA+cHV0IHRoZSByZXN1bHQgaW4gb25lIHJlZ2lzdGVyIGFuZCB0aGUgcXVvdGll
-bnQgaW4gYW5vdGhlci4NCj4gPg0KPiANCj4gTm90IG9uIGUuZy4gUklTQy1WLg0KDQpJZiB0aGUg
-cmVtYWluZGVyIGlzbid0IHVzZWQgdGhlIGNvbXBpbGVyIHNob3VsZCBvcHRpbWlzZQ0KYXdheSBh
-bnkgY29kZSB1c2VkIHRvIGdlbmVyYXRlIGl0Lg0KDQpnY2MgaXMgYWxzbyBnZW5lcmF0aW5nIHJh
-dGhlciBzdWItb3B0aW1hbCBjb2RlLg0KT24geDg2IGl0IG9ubHkgZG9lcyBvbmUgZGl2aWRlIGZv
-ciBjb2RlIHRoYXQgdXNlcyAnYSAvIGInIGFuZA0KJ2EgJSBiJywgYnV0IGZvciByaXNjdiBpdCBk
-b2VzIHNlcGFyYXRlIGRpdmlkZSBhbmQgcmVtYWluZGVyDQppbnN0cnVjdGlvbnMuDQpjbGFuZyBk
-b2VzIGEgbXVsdGlwbHkgYW5kIHN1YnRyYWN0IGZvciB0aGUgcmVtYWluZGVyLg0KDQpDb21wYXJl
-ZCB0byBhbnkgZm9ybSBvZiBkaXZpZGUsIHRoZSBleHRyYSBtdWx0aXBseSBpcyBub2lzZS4NCg0K
-Z2NjIGFsc28gcGVzc2ltaXNlcyBhdHRlbXB0cyB0byBjYWxjdWxhdGUgdGhlIHJlbWFpbmRlcjoN
-Cmh0dHBzOi8vZ29kYm9sdC5vcmcvei9Ub2poMXFjdnMNCg0KQXJlIHRoZSBpbnN0cnVjdGlvbiB3
-ZWlnaHRzIHNldCBjb3JyZWN0bHkgZm9yIGRpdmlkZS9yZW1haW5kZXI/DQpJdCBpcyBhbG1vc3Qg
-YXMgdGhvdWdoIGdjYyB0aGlua3MgcmVtYWluZGVyIGlzIGZhc3QuDQoNCkFjdHVhbGx5IEkgc3Vz
-cGVjdCBldmVuIHRoZSA2NCBieSAzMiBkaXZpZGUgaXMgYSBzb2Z0d2FyZSBsb29wDQpvbiByaXNj
-diAoMzJiaXQpLg0KTm90IGNoZWNrZWQgYnV0IEkgc3VzcGVjdCB0aGUgaW1wbGVtZW50YXRpb25z
-IChlc3AgZnBnYSBvbmVzKSB3b24ndA0KYWxsb3cgMyBpbnB1dHMgdG8gdGhlIEFMVS4NCg0KCURh
-dmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3Vu
-dCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3
-Mzg2IChXYWxlcykNCg==
+Ah yes indeed. I didn't notice that it was fixed，thanks！
 
+在 2024/3/1 11:28, Abel Wu 写道:
+> Hi Zucheng, thanks for the bugfix. But it has already been addressed
+> by the following patches in tip/sched/core:
+>
+> 8aeaffef8c6e ("sched/fair: Take the scheduling domain into account in 
+> select_idle_smt()")
+> 23d04d8c6b8e ("sched/fair: Take the scheduling domain into account in 
+> select_idle_core()")
+>
+> On 3/1/24 10:31 AM, Zheng Zucheng Wrote:
+>> On the wakeup path with hyperthreading, select cpu only looks at
+>> task->cpus_ptr to see if the task can run on the target cpu. If isolcpus
+>> kernel parameter is set, and isolated cpus will be part of mask
+>> task->cpus_ptr, tasks were migrated to our isolated cpus.
+>>
+>> Steps to reproduce on my 32-CPU hyperthreads machine:
+>> 1. with boot parameter: "isolcpus=0,1"
+>>     (thread lists: 0,16 and 1,17)
+>> 2. cgcreate -g cpuset:test
+>>     echo 0-31 > /sys/fs/cgroup/cpuset/test/cpuset.cpus
+>>     echo 0 > /sys/fs/cgroup/cpuset/test/cpuset.mems
+>>     cgexec -g cpuset:test "test_threads"
+>> 3. some threads will be migrated to the isolated cpu0/1.
+>>
+>> Fix it by checking the valid domain mask in select_idle_smt() and
+>> select_idle_core()
+>>
+>> Fixes: 9fe1f127b913 ("sched/fair: Merge select_idle_core/cpu()")
+>> Fixes: 3e6efe87cd5c ("sched/fair: Remove redundant check in 
+>> select_idle_smt()")
+>> Cc: stable@vger.kernel.org # v5.12+
+>> Signed-off-by: Zheng Zucheng <zhengzucheng@huawei.com>
+>> ---
+>>   kernel/sched/fair.c | 12 ++++++------
+>>   1 file changed, 6 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+>> index 533547e3c90a..e6552c77e0f1 100644
+>> --- a/kernel/sched/fair.c
+>> +++ b/kernel/sched/fair.c
+>> @@ -7289,7 +7289,7 @@ static int select_idle_core(struct task_struct 
+>> *p, int core, struct cpumask *cpu
+>>           if (!available_idle_cpu(cpu)) {
+>>               idle = false;
+>>               if (*idle_cpu == -1) {
+>> -                if (sched_idle_cpu(cpu) && cpumask_test_cpu(cpu, 
+>> p->cpus_ptr)) {
+>> +                if (sched_idle_cpu(cpu) && cpumask_test_cpu(cpu, 
+>> cpus)) {
+>>                       *idle_cpu = cpu;
+>>                       break;
+>>                   }
+>> @@ -7297,7 +7297,7 @@ static int select_idle_core(struct task_struct 
+>> *p, int core, struct cpumask *cpu
+>>               }
+>>               break;
+>>           }
+>> -        if (*idle_cpu == -1 && cpumask_test_cpu(cpu, p->cpus_ptr))
+>> +        if (*idle_cpu == -1 && cpumask_test_cpu(cpu, cpus))
+>>               *idle_cpu = cpu;
+>>       }
+>>   @@ -7311,12 +7311,12 @@ static int select_idle_core(struct 
+>> task_struct *p, int core, struct cpumask *cpu
+>>   /*
+>>    * Scan the local SMT mask for idle CPUs.
+>>    */
+>> -static int select_idle_smt(struct task_struct *p, int target)
+>> +static int select_idle_smt(struct task_struct *p, struct 
+>> sched_domain *sd, int target)
+>>   {
+>>       int cpu;
+>>         for_each_cpu_and(cpu, cpu_smt_mask(target), p->cpus_ptr) {
+>> -        if (cpu == target)
+>> +        if (cpu == target || !cpumask_test_cpu(cpu, 
+>> sched_domain_span(sd)))
+>>               continue;
+>>           if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
+>>               return cpu;
+>> @@ -7341,7 +7341,7 @@ static inline int select_idle_core(struct 
+>> task_struct *p, int core, struct cpuma
+>>       return __select_idle_cpu(core, p);
+>>   }
+>>   -static inline int select_idle_smt(struct task_struct *p, int target)
+>> +static inline int select_idle_smt(struct task_struct *p, struct 
+>> sched_domain *sd, int target)
+>>   {
+>>       return -1;
+>>   }
+>> @@ -7591,7 +7591,7 @@ static int select_idle_sibling(struct 
+>> task_struct *p, int prev, int target)
+>>           has_idle_core = test_idle_cores(target);
+>>             if (!has_idle_core && cpus_share_cache(prev, target)) {
+>> -            i = select_idle_smt(p, prev);
+>> +            i = select_idle_smt(p, sd, prev);
+>>               if ((unsigned int)i < nr_cpumask_bits)
+>>                   return i;
+>>           }
+>
+> .
 
