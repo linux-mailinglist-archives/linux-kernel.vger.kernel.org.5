@@ -1,81 +1,63 @@
-Return-Path: <linux-kernel+bounces-88416-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88417-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED8AA86E14D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:47:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A64BA86E14F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:49:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 831821F21AA4
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:47:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B290D1C21599
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:49:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 970526A329;
-	Fri,  1 Mar 2024 12:47:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=8bytes.org header.i=@8bytes.org header.b="17zvLga4"
-Received: from mail.8bytes.org (mail.8bytes.org [85.214.250.239])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED15742AB5;
-	Fri,  1 Mar 2024 12:47:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.250.239
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42F7E40860;
+	Fri,  1 Mar 2024 12:49:34 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16C44381DE;
+	Fri,  1 Mar 2024 12:49:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709297249; cv=none; b=H4qK/FX09nyWMjwFWQnJ0AqaETI2yHeNEnowxlIdDsh5OKfcy6RRyAL9zV+95wro069XxbDvHo42dOKnsHC8FnrSHRVJh8wf8VxBJjcQG2WmOqiwuoF5+oe2LpLATawIKOvRQkFPwDweIWF11cfgqrj8JX5BCyY6JkGuvICUp1Q=
+	t=1709297373; cv=none; b=n1DRtTCCJVtVtmTFtiDIYiG2EqExKgrYQ/ZWaYRhFTlEylHHYqrTeYLwT67ObLznNXz/emebr+Pj/1xVos2ZYQp8enfWT74OfAyZ5QffVTVqGgmTH8t+DgTXqwrUvfpFxV8pKd1wTD0MS1wi+MysEap2MhYRVgOKJdWmPpBz8IY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709297249; c=relaxed/simple;
-	bh=hA0oxwD27gd74f5RciQ0gAwJyLc3AOc6ENazGRzlsA8=;
+	s=arc-20240116; t=1709297373; c=relaxed/simple;
+	bh=NHCHlY1mNSUuowuDTVrXRqOA3e2iVPDG8y3jAmEeIFA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cfoZjahUq3l+yScVLWlGSno08DbXOeYGdDERBlcJ3z1pJEVixW6p3YbuDYKQLy9YWBMucRCacQyQUAJUy/jRI8W/SQVQl5yOWe1FIflkZRiPXKhsQCvqz89JFuI7XYxV4XXKP505uG4YnQ42v57/v1yTVSG9pjOwPVvgyV/iy5Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org; spf=pass smtp.mailfrom=8bytes.org; dkim=pass (2048-bit key) header.d=8bytes.org header.i=@8bytes.org header.b=17zvLga4; arc=none smtp.client-ip=85.214.250.239
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=8bytes.org
-Received: from 8bytes.org (p4ffe0c3c.dip0.t-ipconnect.de [79.254.12.60])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.8bytes.org (Postfix) with ESMTPSA id B32031C2C89;
-	Fri,  1 Mar 2024 13:47:22 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=8bytes.org;
-	s=default; t=1709297243;
-	bh=hA0oxwD27gd74f5RciQ0gAwJyLc3AOc6ENazGRzlsA8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=17zvLga4k0NTgX7vMeySb0BST/85bdOAY7Tbmc6qXLWdcX5iiVdGYAFNMGHwTHhaD
-	 283fe6n+XYrQ/bHfCjsAfEvCK0QPphrx/G0/uJLueU+GPWo0u0fURkWHAClQ45C9uI
-	 uIvO1RmSja0KtwTEwIzL5JJM9GJ/LcAvmkyaz6Qi9DbfkNzr9uSWNtRbOriy+5pRPV
-	 2gQtzJ+O2Br8Ta3rRxwqFFTiug2NvFzLQFRpROnF95KN8tzg5yj5MpDAvgx2Dm/psw
-	 sDfN2jQw/qIHXKrhff0JF5WdLh5syukwy7nwIhemdPGPS4RXoyorYt7ID45BQAFQpD
-	 VrRA+CYGCvnTg==
-Date: Fri, 1 Mar 2024 13:47:21 +0100
-From: Joerg Roedel <joro@8bytes.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>,
-	Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-	Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-	Rob Clark <robdclark@gmail.com>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Alim Akhtar <alim.akhtar@samsung.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Yong Wu <yong.wu@mediatek.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Heiko Stuebner <heiko@sntech.de>, Orson Zhai <orsonzhai@gmail.com>,
-	Baolin Wang <baolin.wang@linux.alibaba.com>,
-	Chunyan Zhang <zhang.lyra@gmail.com>, Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Krishna Reddy <vdumpa@nvidia.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-	linux-mediatek@lists.infradead.org,
-	linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev,
-	linux-tegra@vger.kernel.org, virtualization@lists.linux.dev
-Subject: Re: [PATCH 1/4] iommu: constify pointer to bus_type
-Message-ID: <ZeHOWXuNLhQlSrxM@8bytes.org>
-References: <20240216144027.185959-1-krzysztof.kozlowski@linaro.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=imCEjsy5ncEuOqG0Qfg8V2uK8x6fFjVhwphxR2hGoGEUScasGlSvnYAzsoLltvhuMY276UfhNJDcbP04WdxmpqyT319wOqspW+86QROLzH3QfrhJ5/AdUlQo+NSS/fC261yIovAWpI0tR1+AmOo27JKE3Eg9409GEMuHHHCAn6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 728241FB;
+	Fri,  1 Mar 2024 04:50:08 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.69.134])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6D93D3F6C4;
+	Fri,  1 Mar 2024 04:49:27 -0800 (PST)
+Date: Fri, 1 Mar 2024 12:49:24 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: Suzuki K Poulose <suzuki.poulose@arm.com>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	will@kernel.org, catalin.marinas@arm.com,
+	Mark Brown <broonie@kernel.org>, James Clark <james.clark@arm.com>,
+	Rob Herring <robh@kernel.org>, Marc Zyngier <maz@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	linux-perf-users@vger.kernel.org,
+	Oliver Upton <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>, kvmarm@lists.linux.dev
+Subject: Re: [PATCH V16 2/8] KVM: arm64: Prevent guest accesses into BRBE
+ system registers/instructions
+Message-ID: <ZeHO1OJsq98cdlk3@FVFF77S0Q05N>
+References: <20240125094119.2542332-1-anshuman.khandual@arm.com>
+ <20240125094119.2542332-3-anshuman.khandual@arm.com>
+ <ZdYCUi9YVDNDz7fr@FVFF77S0Q05N>
+ <ab50e67e-3d06-4ba7-a5f8-4684e9ef98a4@arm.com>
+ <Zd2zy0oUk8XvoDJM@FVFF77S0Q05N>
+ <b134c30d-d855-41bb-a260-9f6437b77697@arm.com>
+ <62e64ddd-266c-414e-b66a-8ca94f3c2bbf@arm.com>
+ <ZeB9kHheAGJ__TQU@FVFF77S0Q05N>
+ <3c5238e5-bf2b-4e6c-a81a-e7d7bb0d9fb4@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,9 +66,157 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240216144027.185959-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <3c5238e5-bf2b-4e6c-a81a-e7d7bb0d9fb4@arm.com>
 
-On Fri, Feb 16, 2024 at 03:40:24PM +0100, Krzysztof Kozlowski wrote:
+On Fri, Mar 01, 2024 at 01:16:10PM +0530, Anshuman Khandual wrote:
+> 
+> On 2/29/24 18:20, Mark Rutland wrote:
+> > Hi Suzuki,
+> > 
+> > On Thu, Feb 29, 2024 at 11:45:08AM +0000, Suzuki K Poulose wrote:
+> >> On 27/02/2024 11:13, Anshuman Khandual wrote:
+> >>> On 2/27/24 15:34, Mark Rutland wrote:
+> >>>> On Fri, Feb 23, 2024 at 12:58:48PM +0530, Anshuman Khandual wrote:
+> >>>>> On 2/21/24 19:31, Mark Rutland wrote:
+> >>>>>> On Thu, Jan 25, 2024 at 03:11:13PM +0530, Anshuman Khandual wrote:
+> >>>>>>> Currently BRBE feature is not supported in a guest environment. This hides
+> >>>>>>> BRBE feature availability via masking ID_AA64DFR0_EL1.BRBE field.
+> >>>>>>
+> >>>>>> Does that means that a guest can currently see BRBE advertised in the
+> >>>>>> ID_AA64DFR0_EL1.BRB field, or is that hidden by the regular cpufeature code
+> >>>>>> today?
+> >>>>>
+> >>>>> IIRC it is hidden, but will have to double check. When experimenting for BRBE
+> >>>>> guest support enablement earlier, following changes were need for the feature
+> >>>>> to be visible in ID_AA64DFR0_EL1.
+> >>>>>
+> >>>>> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+> >>>>> index 646591c67e7a..f258568535a8 100644
+> >>>>> --- a/arch/arm64/kernel/cpufeature.c
+> >>>>> +++ b/arch/arm64/kernel/cpufeature.c
+> >>>>> @@ -445,6 +445,7 @@ static const struct arm64_ftr_bits ftr_id_mmfr0[] = {
+> >>>>>   };
+> >>>>>   static const struct arm64_ftr_bits ftr_id_aa64dfr0[] = {
+> >>>>> +       S_ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_EL1_BRBE_SHIFT, 4, ID_AA64DFR0_EL1_BRBE_IMP),
+> >>>>>          S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_EL1_DoubleLock_SHIFT, 4, 0),
+> >>>>>          ARM64_FTR_BITS(FTR_HIDDEN, FTR_NONSTRICT, FTR_LOWER_SAFE, ID_AA64DFR0_EL1_PMSVer_SHIFT, 4, 0),
+> >>>>>          ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_EL1_CTX_CMPs_SHIFT, 4, 0),
+> >>>>>
+> >>>>> Should we add the following entry - explicitly hiding BRBE from the guest
+> >>>>> as a prerequisite patch ?
+> >>
+> >> This has nothing to do with the Guest visibility of the BRBE. This is
+> >> specifically for host "userspace" (via MRS emulation).
+> >>
+> >>>>>
+> >>>>> S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_EL1_BRBE_SHIFT, 4, ID_AA64DFR0_EL1_BRBE_NI)
+> >>>>
+> >>>> Is it visbile currently, or is it hidden currently?
+> >>>>
+> >>>> * If it is visible before this patch, that's a latent bug that we need to go
+> >>>>    fix first, and that'll require more coordination.
+> >>>>
+> >>>> * If it is not visible before this patch, there's no problem in the code, but
+> >>>>    the commit message needs to explicitly mention that's the case as the commit
+> >>>>    message currently implies it is visible by only mentioning hiding it.
+> >>>>
+> >>>> ... so can you please double check as you suggested above? We should be able to
+> >>>> explain why it is or is not visible today.
+> >>>
+> >>> It is currently hidden i.e following code returns 1 in the host
+> >>> but returns 0 inside the guest.
+> >>>
+> >>> aa64dfr0 = read_sysreg_s(SYS_ID_AA64DFR0_EL1);
+> >>> brbe = cpuid_feature_extract_unsigned_field(aa64dfr0, ID_AA64DFR0_EL1_BRBE_SHIFT);
+> >>>
+> >>> Hence - will update the commit message here as suggested.
+> >>
+> >> This is by virtue of the masking we do in the kvm/sysreg.c below.
+> > 
+> > Yep, once this patch is applied.
+> > 
+> > I think we might have some crossed wires here; I'm only really asking for the
+> > commit message (and title) to be updated and clarified.
+> 
+> Understood.
+> 
+> > Ignoring the patchlet above, and just considering the original patch:
+> > 
+> > IIUC before the patch is applied, the ID_AA64DFR0_EL1.BRBE field is zero for
+> > the guest because we don't have an arm64_ftr_bits entry for the
+> > ID_AA64DFR0_EL1.BRBE field, and so init_cpu_ftr_reg() will leave that as zero
+> > in arm64_ftr_reg::sys_val, and hence when read_sanitised_id_aa64dfr0_el1()
+> > calls read_sanitised_ftr_reg(SYS_ID_AA64DFR0_EL1), the BRBE field will be zero.
+> 
+> Makes sense, but should not arm64_ftr_reg::sys_val be explicitly set to '0' via
+> ID_AA64DFR0_EL1_BRBE_NI via adding a S_ARM64_FTR_BITS() into ftr_id_aa64dfr0[] ?
 
-Applied all, thanks.
+I don't understand what you're asking here -- there's no way that a
+arm64_ftr_bits entry can explicitly zero a field.
+
+> OR because it's going to be made visible via S_ARM64_FTR_BITS(FTR_VISIBLE
+> , ...., ID_AA64DFR0_EL1_BRBE_IMP) for enabling it in the guest, this might not be
+> necessary for now. Besides it is also being blocked explicitly now via this patch
+> in read_sanitised_id_aa64dfr0_el1().
+
+We are not going to add a FTR_VISIBLE entry -- as Suzuki already pointed out,
+that means *visible to userspace*.
+
+We currently have no need for an arm64_ftr_bits entry for BRBE. We can add one
+for the sake of documenting our policy for that field, like we do for PMUVer,
+but that's the only reason to do so, and doing that requires that we also mask
+the field within read_sanitised_id_aa64dfr0_el1().
+
+> > So the commit title should be something like:
+> > 
+> >   KVM: arm64: explicitly handle BRBE register accesses as UNDEFINED
+> > 
+> > ... and the message should mention the key points from the above.
+> > 
+> > Suzuki, does that sound right to you?
+> > 
+> > Anshuman, can you go re-write the commit message with that in mind?
+> 
+> Sure, will something like the following be okay ?
+> 
+> KVM: arm64: Explicitly handle BRBE register accesses as UNDEFINED
+> 
+> Although ID_AA64DFR0_EL1.BRBE field is zero for the guest because there is
+> no arm64_ftr_bits[] entry for the ID_AA64DFR0_EL1.BRBE field while getting
+> processed for read_sanitised_ftr_reg(SYS_ID_AA64DFR0_EL1), this masks BRBE
+> feature here to be rather explicit. This will prevent unexpected exposure
+> of BRBE feature to guest when arm64_ftr_bits[] changes for ID_AA64DFR0_EL1.
+> This also makes all guest accesses into BRBE registers, and instructions
+> as undefined access explicitly.
+
+How about:
+
+| KVM: arm64: Explicitly handle BRBE traps as UNDEFINED
+|
+| The Branch Record Buffer Extension (BRBE) adds a number of system registers
+| and instructions which we don't currently intend to expose to guests. Our
+| existing logic handles this safely, but could be improved with some explicit
+| handling of BRBE.
+|
+| The presence of BRBE is currently hidden from guests as the cpufeature code's
+| ftr_id_aa64dfr0[] table doesn't have an entry for the BRBE field, and so this
+| will be zero in the sanitised value of ID_AA64DFR0 exposed to guests via
+| read_sanitised_id_aa64dfr0_el1(). As the ftr_id_aa64dfr0[] table may gain an
+| entry for the BRBE field in future, for robustness we should explicitly mask
+| out the BRBE field in read_sanitised_id_aa64dfr0_el1().
+|
+| The BRBE system registers and instructions are currently trapped by the
+| existing configuration of the fine-grained traps. As the registers and
+| instructions are not described in the sys_reg_descs[] table,
+| emulate_sys_reg() will warn that these are unknown before injecting an
+| UNDEFINED exception into the guest. Well-behaved guests shouldn't try to use
+| the registers or instructions, but badly-behaved guests could, these,
+| resulting in unnecessary warnings. To avoid those warnings, we should
+| explicitly handle the BRBE registers and instructions as UNDEFINED.
+|
+| Address the above by having read_sanitised_id_aa64dfr0_el1() mask out the
+| ID_AA64DFR0.BRBE field, and by adding sys_reg_desc entries for all of the
+| BRBE system registers and instructions, treating these all as UNDEFINED.
+
+Mark.
 
