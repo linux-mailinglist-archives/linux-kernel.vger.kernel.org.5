@@ -1,184 +1,146 @@
-Return-Path: <linux-kernel+bounces-89138-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89139-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 214C586EB0D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 22:20:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDA9F86EB10
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 22:20:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 41FF21C22AE8
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:20:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 777D9B23D19
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:20:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADA515733D;
-	Fri,  1 Mar 2024 21:19:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DD8E3FE0;
+	Fri,  1 Mar 2024 21:20:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="OyDX2ofH"
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="SobCjazG"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06EFB56B98;
-	Fri,  1 Mar 2024 21:19:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11EDA56B8A;
+	Fri,  1 Mar 2024 21:20:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709327980; cv=none; b=am4xO1lBSbxIqKKnlAFQ/zzlKYAj4gMkcHzZ/e7C/8b7Sl7MAxOs6xk6SuUT4YRl/rJhRi9GU9JlRgE8U77p4nw25SUR82t62Dghdy6hD86jLslkwwUVFrLCU4WrsVSOOEWfIHeAn5QP/ZG85AWfHl9B+oPlXuZ3ZGGRkCPzSNE=
+	t=1709328016; cv=none; b=fyEPJ4zD2FIvtJQOokwFP+ozRBk5ERbor0YFuWOTOj7YyUsDjcQ8YEv3EqK30VnYTpslxKDqXDDZH6VaWSOuj59lLhcnNgGg+2U0nu0ih9s9clywd12VEiNSW4aPpxvIrS1lNLjpcwTPboZwe2crUnX0brGoZAomcygwXmEKrS4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709327980; c=relaxed/simple;
-	bh=aQgtIrqPEJ6JLO3fBjYxQofvBaZjEx8JOTDSClljCmI=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=n5SymiAQ7Of9Ktv/E4HMIjHm2RiwhHPJjaQWbs1Lz5FXLv+AIL00Ix6OYCGmCuLfPiJRRaZV76P0E0yDfZ/rFK8/PcbBhSLUHKH4+g+0fPBdnu1VJiz3dB0+ewYvBTjUn8ZY2brFo8ESoXARFTIIubHUxn6rVeAD59NjW0Rb5M4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=OyDX2ofH; arc=none smtp.client-ip=209.85.216.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-29a378040daso1821033a91.1;
-        Fri, 01 Mar 2024 13:19:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709327978; x=1709932778;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Mcu8ifKGnRyTxlpkQj5cfTQBEVQ8gXCBuRO6bQX8bcE=;
-        b=DnTSInPG3Zntgo/HQN14oGgGtpwfehtiKinR08jny4hHTSVadqt08eYfFH0rgVl1BH
-         oC5YuYu+VkZ+BiwYzGzu1wHZgkZtc9k6fVFOuv+4zcYv1PpxRO+r8hXr3hllW9AhdBuA
-         GA/BmopV4+yf0y7WsWOQ1v9rSUotgznDPYpIjrf3nJJsge0+WdszRIiuOFG3GfBRjRDM
-         1J2Y61/ZfIxMU+Aoaqpb4Sbj1IXRA3FJmboZl2Ii1cRPnGVGcuVbYowlfaR1gUoDQvoK
-         b0ubyLyyhgyObJD8hP97dTUJ8JSE8ZWcRwmBvJM5QLqch9fxsD6G8DSrMtBZO/FC6WkQ
-         VZ6A==
-X-Forwarded-Encrypted: i=1; AJvYcCVHX3Zz8SSpqgC/VAbWXosom5KQhZBllnzJgI3toUXJvDtAHGxg9e1IdJNi0IjP/pEXrgyZRJiPlpNPq4P47SZ3nULMOiW0IcQKg3MO
-X-Gm-Message-State: AOJu0YxEsyaV3EynYLNwloST2U0uVhrvbk1+8MKC8qwKIVucN8jwjilj
-	B+b83Eao/HXgCnz8w3FuJVhmLNapEN+kG9iwuB8lj1s5gvEN3vr3dJ4UY5zcUqvubg==
-X-Google-Smtp-Source: AGHT+IHpWqlK6xa7dddlCxL+RPam4ay8EwZ/lTWj7tWxut5hL9zzdL0+M36msIBoy9H+sHL1cx9lew==
-X-Received: by 2002:a17:90a:9ef:b0:29a:eb0f:e356 with SMTP id 102-20020a17090a09ef00b0029aeb0fe356mr2687800pjo.37.1709327978133;
-        Fri, 01 Mar 2024 13:19:38 -0800 (PST)
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id cz13-20020a17090ad44d00b0029ad44cc063sm5772861pjb.35.2024.03.01.13.19.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 13:19:37 -0800 (PST)
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1709327975;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=Mcu8ifKGnRyTxlpkQj5cfTQBEVQ8gXCBuRO6bQX8bcE=;
-	b=OyDX2ofHFYQ+quFTNwXNCM3LjqqJMcL30cZRbwjpxCAnQlyjwDeim5KcIW3vMy8ZmZAqUC
-	jcGI7KgBkItj3yiCqg0GBXsM7N9DeYEhcel9mngj365kusPvpear35cT2Ec61qTJymRso3
-	vx98RYB7GyDWDohWNpqJILrffTlLWjjzsNlPvngOQzHkGL1rd05eca5AMOBdxHxmwuVzhc
-	J4I8jV2crOTsC1GuRjcjQDOuKoOJlqDoF9DTlDi7RJKoheZfWrSbdMgGg686rDsvm07Zlt
-	Jv2fbMoUnn4IVtuvxwZPfIj6dC11zMv2SLKx/HNwrC+xF/QqZzCOZDUGzYwCtw==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Date: Fri, 01 Mar 2024 18:19:28 -0300
-Subject: [PATCH] usb: typec: constify struct class usage
+	s=arc-20240116; t=1709328016; c=relaxed/simple;
+	bh=Fp36LTyYV9kpvNDK+hVtBJ7X8DZcQYNdYOtSiayQAFI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TNNWYK8t9lK8209oonXKBs47nsD9g0nwbvsE0gi7y94JzTfmMvm/maA2rPPzrk3VbJiKmwRShSyIO98Ly8ejqBInIx8lijayPLC4ec5VKXgWzfLiQlhEfitymahexDUld4C8VZ4HSlt94sgEis+wyz1a5y2hDma/SAyQk/3uJkQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=SobCjazG; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 421LHs9n003197;
+	Fri, 1 Mar 2024 21:20:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=+RMLsOnNosJmVE5b3aZfPjID67/Lvajwmqc6g347uww=;
+ b=SobCjazGG0pUI4x3HPRPyh5z9AlBLh3s6MkkBZm0vVwVYI7NPMz0WgW90v6ayP8DqAMa
+ MQOAdZaL5JwVFXzurGEIQU9VlF0DwlvCjymfnR9+0eJn2kSrH07M3ps8HMtNAql1AJHz
+ u5ScJdkaSxnPlyjVksSszF3z8WFTacW3UnULDwXxceUvC6ZCwPJD/Jjp3OO4wLokstST
+ dpwVAzgoKSw1zBEqZgiDZCfOI7aamS+zA7SKE5U8hrwp+y5AmAjjhl/fLniBYjvflcPi
+ 99iMSd8BAACl3XCatV9qr6G5ZyhVZnYRQ3ecxJ8kjp4s3EeXiysfMetwcfUUHLdH93ty gg== 
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wkpt5g1ga-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 01 Mar 2024 21:20:05 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 421K0KM7008142;
+	Fri, 1 Mar 2024 21:20:04 GMT
+Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3wfv9mxxtu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 01 Mar 2024 21:20:04 +0000
+Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
+	by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 421LK1w27078838
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 1 Mar 2024 21:20:04 GMT
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 93F0158055;
+	Fri,  1 Mar 2024 21:20:01 +0000 (GMT)
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 9F4F158063;
+	Fri,  1 Mar 2024 21:20:00 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+	by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Fri,  1 Mar 2024 21:20:00 +0000 (GMT)
+Message-ID: <00bd9f8d-cde7-44a7-ab1a-888d8fd66cd8@linux.ibm.com>
+Date: Fri, 1 Mar 2024 16:20:00 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 09/12] crypto: ecdsa - Rename keylen to bufsize where
+ necessary
+Content-Language: en-US
+To: Jarkko Sakkinen <jarkko@kernel.org>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, herbert@gondor.apana.org.au,
+        davem@davemloft.net
+Cc: linux-kernel@vger.kernel.org, saulo.alessandre@tse.jus.br, lukas@wunner.de
+References: <20240301022007.344948-1-stefanb@linux.ibm.com>
+ <20240301022007.344948-10-stefanb@linux.ibm.com>
+ <CZIPDP0W9TOP.3CCT8QUB0R4L3@suppilovahvero>
+ <90606a3c-1384-407b-8270-dd76dccc700b@linux.ibm.com>
+ <CZIPKTL42F1Z.2U4Q28IIQ159K@suppilovahvero>
+From: Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <CZIPKTL42F1Z.2U4Q28IIQ159K@suppilovahvero>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240301-class_cleanup-usb-v1-1-50309e325095@marliere.net>
-X-B4-Tracking: v=1; b=H4sIAF9G4mUC/x3MMQqAMAxA0atIZgup1cWriEgbowZKlQZFEO9uc
- XzD/w8oZ2GFvnog8yUqeyqwdQW0+bSykbkYGmxadGgNRa86UWSfzsOcGkxLjnjpQkDyULoj8yL
- 3/xzG9/0AMVN2p2MAAAA=
-To: Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
- "Ricardo B. Marliere" <ricardo@marliere.net>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2788; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=aQgtIrqPEJ6JLO3fBjYxQofvBaZjEx8JOTDSClljCmI=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl4kZmGuWhyMxTSm1IalkqtZB3NrPparm+vd5eV
- s1pBNuJOMSJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZeJGZgAKCRDJC4p8Y4ZY
- pmF5EACFP6Zw/Dp+1tijBBgIUCWuBflQ5ZpphUyMcibsTiS4yzDgjxzHIRuC05GpPydJHw4doYi
- 9vQsLB99/CY6lIXKQTeDM+uoJoYufc1xxvf05vFGbBeNGsFd24eVIef/TBFTy9x+4a66R0J3Ddl
- M+cX33V16UkafZSHHy55JjVW7OBMN5fWhLZhN1A1sYfoPAY/aWXq4GmSFYVpN+JmB7l6R/kFzS2
- Jldbgc7gYrZJU7xAb/1Ik9M6KtrBLAD+Gq0XMxI80Yems1p+YQsU7ZJpBofSDOTMG3bGYBkELKk
- Yc2A3B+EswTYypJR7zX2ndjPqO9s+0R1h33eu3c2LxdXSHZsbThHtL54WHTHUsnFfB6qVqB5mJK
- RLOrlvGmtxnrZnqQjacB/923grIaIUKVGAcf8nxBps3WNwfjl42G6YmeXwx+NaU0k22X/wVwkQ7
- 4CckMFCNUrCTyBUY9T1ma90CW/TPE1lvxBNFqj38Df+wEAn0Yi4M7LGAtEcdPJO1idXYNO9Gn+w
- i60apvKo1v++CIyr5X3TBnk5E0vAwdU8AlUI9uLIK6cWJJWa5yTj2V7oP3a7HZP+OA6Ktr0s32y
- snzrByrhksZvAf9Auyz2wms3S+8LzS/3rcf70rrJBlgajR5d+vXW5Rmu99u5RenA5mOyG4Y5Ks8
- +2VrD+e4Kru8+kQ==
-X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
- fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: nXiz26RnlBkFlwg5vbrlGyglIK2iYYA4
+X-Proofpoint-ORIG-GUID: nXiz26RnlBkFlwg5vbrlGyglIK2iYYA4
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-01_22,2024-03-01_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 bulkscore=0
+ lowpriorityscore=0 suspectscore=0 mlxlogscore=999 mlxscore=0 spamscore=0
+ impostorscore=0 malwarescore=0 clxscore=1015 priorityscore=1501
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2403010177
 
-Since commit 43a7206b0963 ("driver core: class: make class_register() take
-a const *"), the driver core allows for struct class to be in read-only
-memory, so move the structures typec_mux_class, retimer_class and
-typec_class to be declared at build time placing them into read-only
-memory, instead of having to be dynamically allocated at boot time.
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
----
- drivers/usb/typec/class.c   | 2 +-
- drivers/usb/typec/class.h   | 6 +++---
- drivers/usb/typec/mux.c     | 2 +-
- drivers/usb/typec/retimer.c | 2 +-
- 4 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
-index caea2b829980..389c7f0b8d93 100644
---- a/drivers/usb/typec/class.c
-+++ b/drivers/usb/typec/class.c
-@@ -21,7 +21,7 @@
- 
- static DEFINE_IDA(typec_index_ida);
- 
--struct class typec_class = {
-+const struct class typec_class = {
- 	.name = "typec",
- };
- 
-diff --git a/drivers/usb/typec/class.h b/drivers/usb/typec/class.h
-index 759b98355eeb..7485cdb9dd20 100644
---- a/drivers/usb/typec/class.h
-+++ b/drivers/usb/typec/class.h
-@@ -93,9 +93,9 @@ extern const struct device_type typec_port_dev_type;
- #define is_typec_plug(dev) ((dev)->type == &typec_plug_dev_type)
- #define is_typec_port(dev) ((dev)->type == &typec_port_dev_type)
- 
--extern struct class typec_mux_class;
--extern struct class retimer_class;
--extern struct class typec_class;
-+extern const struct class typec_mux_class;
-+extern const struct class retimer_class;
-+extern const struct class typec_class;
- 
- #if defined(CONFIG_ACPI)
- int typec_link_ports(struct typec_port *connector);
-diff --git a/drivers/usb/typec/mux.c b/drivers/usb/typec/mux.c
-index 80dd91938d96..49926d6e72c7 100644
---- a/drivers/usb/typec/mux.c
-+++ b/drivers/usb/typec/mux.c
-@@ -469,6 +469,6 @@ void *typec_mux_get_drvdata(struct typec_mux_dev *mux_dev)
- }
- EXPORT_SYMBOL_GPL(typec_mux_get_drvdata);
- 
--struct class typec_mux_class = {
-+const struct class typec_mux_class = {
- 	.name = "typec_mux",
- };
-diff --git a/drivers/usb/typec/retimer.c b/drivers/usb/typec/retimer.c
-index 4a7d1b5c4d86..b519fcf358ca 100644
---- a/drivers/usb/typec/retimer.c
-+++ b/drivers/usb/typec/retimer.c
-@@ -155,6 +155,6 @@ void *typec_retimer_get_drvdata(struct typec_retimer *retimer)
- }
- EXPORT_SYMBOL_GPL(typec_retimer_get_drvdata);
- 
--struct class retimer_class = {
-+const struct class retimer_class = {
- 	.name = "retimer",
- };
+On 3/1/24 15:50, Jarkko Sakkinen wrote:
+> On Fri Mar 1, 2024 at 10:47 PM EET, Stefan Berger wrote:
+>>
+>>
+>> On 3/1/24 15:41, Jarkko Sakkinen wrote:
+>>> On Fri Mar 1, 2024 at 4:20 AM EET, Stefan Berger wrote:
+>>>> In some cases the name keylen does not reflect the purpose of the variable
+>>>> anymore once NIST P521 is used but it is the size of the buffer. There-
+>>>> for, rename keylen to bufsize where appropriate.
+>>>>
+>>>> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+>>>> ---
+>>>>    crypto/ecdsa.c | 12 ++++++------
+>>>>    1 file changed, 6 insertions(+), 6 deletions(-)
+>>>>
+>>>> diff --git a/crypto/ecdsa.c b/crypto/ecdsa.c
+>>>> index 4daefb40c37a..4e847b59622a 100644
+>>>> --- a/crypto/ecdsa.c
+>>>> +++ b/crypto/ecdsa.c
+>>>> @@ -35,8 +35,8 @@ struct ecdsa_signature_ctx {
+>>>>    static int ecdsa_get_signature_rs(u64 *dest, size_t hdrlen, unsigned char tag,
+>>>>    				  const void *value, size_t vlen, unsigned int ndigits)
+>>>>    {
+>>>> -	size_t keylen = ndigits * sizeof(u64);
+>>>> -	ssize_t diff = vlen - keylen;
+>>>> +	size_t bufsize = ndigits * sizeof(u64);
+>>>
+>>> why not just "* 8"? using sizeof here makes this function only unreadable.
+>>
+>> 'unreadable' is a 'strong' word ...
+> 
+> so what is the gain when writing sizeof(u64)?
 
----
-base-commit: a560a5672826fc1e057068bda93b3d4c98d037a2
-change-id: 20240301-class_cleanup-usb-4c3cef5bb0ca
+It matches existing code and a digit is a 'u64'.
 
-Best regards,
--- 
-Ricardo B. Marliere <ricardo@marliere.net>
 
+> 
+> BR, Jarkko
 
