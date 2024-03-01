@@ -1,425 +1,159 @@
-Return-Path: <linux-kernel+bounces-88928-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88929-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7DD986E88E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:37:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D838886E8A4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:45:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 788251F24316
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:37:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 27AEBB2CF98
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:39:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6383C38FA5;
-	Fri,  1 Mar 2024 18:37:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12E6A39AE3;
+	Fri,  1 Mar 2024 18:38:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lK25otiK"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HYBv2a4B"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36E7325632;
-	Fri,  1 Mar 2024 18:37:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB9CC282F1
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 18:38:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709318268; cv=none; b=E3qwhLMeOjfTplBZvLAv5t7Jd99FHpxgoxzm0FkydpOJSf9a5QMlDL9VwqspfgDzU4VDVNt7axKkVAjGViZQkQSE3pzJRBxllNWFsDwINy2DsMHJXc0kjYGIonovNz2VbSOKfs0TP8vQ+nzwKF0GA1HyXQCPvPh3yb+9/DkUO/0=
+	t=1709318332; cv=none; b=rrzm7oFmmfTt0NbVt0uWmC35EOW1zXalmIYo717xRr9K2zyMVBl+5yTXYtHfDt3VW9SNuB9qtgZJueyripOoutk0UVBdSoQqQm63RAayQqNYw5BxbIOkP4ABzKbZdfa7Z18UHnojN45DRJjnlW/ZzekL0kBVRzdWq8eLk1LSi9Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709318268; c=relaxed/simple;
-	bh=jk/lZR7vZB+ZzB5pgz0ZVyPkflilTjE4gnwvglpUA7E=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=NCrXa1+w+r7sBJTSF9oAtWPBAKCwzLH/dG3WQPm7GwnXXtQgyWpLrrIHczDuA2lau9gIDuKMPUdFiUnc50JdIlJGyTmIp9TPZnQpV2pCogYD8lz0uOlXRWdYjC7V2h9uOsPY8mB88cpycKSqBPN2SpuH9spXQRIPcXWzx45gI+U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lK25otiK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B5EEC433C7;
-	Fri,  1 Mar 2024 18:37:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709318267;
-	bh=jk/lZR7vZB+ZzB5pgz0ZVyPkflilTjE4gnwvglpUA7E=;
-	h=Date:From:To:Cc:Subject:From;
-	b=lK25otiK6t/3wEduRxDrh/tQXMKw/UjqmclGG+rt0EmCNh8gVwMfTALghEoVcj1ep
-	 W5kUmhmqD1VcFSTHyHBSUs5AFVnnxsn7rYPu+hWWHXdJEBLpPrOwBZUQALlaQSBRI3
-	 bpzSG3/ffKlVFIDRSFcFGV8IHJCbeZa+vCUEU7NrdzwECfWK+PkxP8vsQFDNqYBQWW
-	 ewYxG4dCFcX3y/7CgiLG9BBN2y5e6g4alUCIKUhaMmrKptOWH4ta4ZJ7FUAEE1CVRR
-	 UBPe0pOzVKlCJDhIRD48WLePaqt+Jl71cYO19FCrXhKZiAalO1th3GVy9WoIDntP5c
-	 +1OLwwrp5gJrg==
-Date: Fri, 1 Mar 2024 12:37:45 -0600
-From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
-Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>
-Subject: [PATCH][next] RDMA/uverbs: Avoid -Wflex-array-member-not-at-end
- warnings
-Message-ID: <ZeIgeZ5Sb0IZTOyt@neat>
+	s=arc-20240116; t=1709318332; c=relaxed/simple;
+	bh=0E/bhPlL7rJaqdOrTpi0IWM63vcpU8XKMrJDM1lBXwY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=aTBnJm++PgAQ9CSbSD3bG9szkz47LISBzJvezo14qXeOUgA7fDytsaSHC2xTx6uk9d1EeKqBurfAL5WTOFQ1BESySfhcwmghqhoy4TqTXsz4DnK5Uj4fKCmwcFRNsPrtxiirUknwR/zzD060J5tdmfxyaRM8TGxN+Od1tUq2/RE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HYBv2a4B; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709318329;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=12w5fpeGc+D7KoB7397WHWHXMtnXg/VkOws4FVveYe4=;
+	b=HYBv2a4BzOvFo2E3KI03dBRuP27ZGyi61MQe9u/+oTrGtW6bAO9+7Me/39G91YpjTySbOK
+	honcyeEYH0SV/WcRj7yqHeBImskgPY1TriHT7hF7ht4VavCuRoiXLbO951PHpcUEvx6mfN
+	hxNrF6bvXMhq7ca7MDeAvS/64Z9YCK8=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-428-5zGoY3GkNvmggT-gYikhCA-1; Fri, 01 Mar 2024 13:38:48 -0500
+X-MC-Unique: 5zGoY3GkNvmggT-gYikhCA-1
+Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-559555e38b0so2769362a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 10:38:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709318327; x=1709923127;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=12w5fpeGc+D7KoB7397WHWHXMtnXg/VkOws4FVveYe4=;
+        b=edrLckxY7+rzfiBLxiTPXgSQ6uDLblkjCyy3JxNRBWpKVXHmpRhVpmscZ9nPotxhA7
+         6Q5iLwxDx/r7OJckj+tAM0NSeMUB8AWNWRtBHerWQ+2tsACYWkLOKzKfsEYEC6Sfe/+v
+         yrRaDFjgdzgvtTDPA01Y3REi0I8TVRHcjIELzu/jwQOoHrSRwdSmmzmz6Hfth9O6y3MH
+         pqUmVn4MDWmRL3awlqyzwNW1V/XE2+8sgV+NZ/V41OqUKjhQrPpviH2JvYFJZwWnwPBG
+         PJPeUUOuVKLdCmeeLudgHSEd1mgwCx1xNpH3WfwOyI2qehrbmreSM5fYJNcrxIBaOsFS
+         umng==
+X-Forwarded-Encrypted: i=1; AJvYcCXfXGxF4nuYcfoEYy3l/HcbmCrbI5o+OUp9Cp36dTLV6EX3Qy23fgyeSIfCunPbRoKpMy64dYJdgOKPQ/EmIHJDy0VLRw9ars3ZIsCZ
+X-Gm-Message-State: AOJu0YzHkXmZ+ncO1tPusz5s7H5FJ/4J89DHqbWvjHTb0r1O+Pa1pvDF
+	xVsLgJjDDld/Jq2D+nDAsRKqcTawAmxTDt0VmNlZIRiD2bCFgx6SH5WPtNs41PfIw748exLQ6AB
+	PHOHF3RRekF8Fate17c/JVh4S31eFSu7xwjXZ6V0moNmXomGYx5bgRDTLr3FBLY9VXI6Z1Q==
+X-Received: by 2002:a50:d5d0:0:b0:566:ab2b:e1ce with SMTP id g16-20020a50d5d0000000b00566ab2be1cemr1857929edj.18.1709318326913;
+        Fri, 01 Mar 2024 10:38:46 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IE1W/qKy2ovilQzJQF173gN2cb9wEOMSiSDAx37JJY7YF7WmuRQitQDacod2tVzBBIrF84mJQ==
+X-Received: by 2002:a50:d5d0:0:b0:566:ab2b:e1ce with SMTP id g16-20020a50d5d0000000b00566ab2be1cemr1857922edj.18.1709318326586;
+        Fri, 01 Mar 2024 10:38:46 -0800 (PST)
+Received: from ?IPV6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.googlemail.com with ESMTPSA id fj10-20020a0564022b8a00b00563f8233ba8sm1794236edb.7.2024.03.01.10.38.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Mar 2024 10:38:45 -0800 (PST)
+Message-ID: <2e1ea7ec-13bd-4582-9052-5de8cb79401d@redhat.com>
+Date: Fri, 1 Mar 2024 19:38:40 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: linux-next: manual merge of the kvm tree with the drm-xe tree
+Content-Language: en-US
+To: Lucas De Marchi <lucas.demarchi@intel.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Oded Gabbay
+ <ogabbay@kernel.org>, =?UTF-8?Q?Thomas_Hellstr=C3=B6m?=
+ <thomas.hellstrom@linux.intel.com>,
+ DRM XE List <intel-xe@lists.freedesktop.org>, KVM <kvm@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux Next Mailing List <linux-next@vger.kernel.org>,
+ Yury Norov <yury.norov@gmail.com>
+References: <20240222145842.1714b195@canb.auug.org.au>
+ <CABgObfaDQMxj9CZBzea+=1fcFQXEemAJoH5Jvc9+tfiC7NAvrQ@mail.gmail.com>
+ <55pdgbv7ltrwnewhxz7ivugowczzomlm6yvco2nxfanxm4ffco@olkrf4wr65so>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Autocrypt: addr=pbonzini@redhat.com; keydata=
+ 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
+In-Reply-To: <55pdgbv7ltrwnewhxz7ivugowczzomlm6yvco2nxfanxm4ffco@olkrf4wr65so>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
--Wflex-array-member-not-at-end is coming in GCC-14, and we are getting
-ready to enable it globally.
+On 3/1/24 19:17, Lucas De Marchi wrote:
+> I'm surprised to see 3c7a8e190bc5 ("uapi: introduce uapi-friendly macros
+> for GENMASK") with no acks from maintainer though.
 
-There are currently a couple of objects (`alloc_head` and `bundle`) in
-`struct bundle_priv` that contain a couple of flexible structures:
+The patch sat on the list for a couple months, then I went ahead and 
+committed it.
 
-struct bundle_priv {
-        /* Must be first */
-        struct bundle_alloc_head alloc_head;
+The changes to include/linux/bits.h are just code movement from kernel 
+to uapi header (plus the uglification of BITS_PER_LONG and 
+BITS_PER_LONG_LONG per uapi rules) so I think that's fine.
 
-	...
+But I'll drop an email to them to ask them if they want MAINTAINERS to 
+include the new file.
 
-        /*
-         * Must be last. bundle ends in a flex array which overlaps
-         * internal_buffer.
-         */
-        struct uverbs_attr_bundle bundle;
-        u64 internal_buffer[32];
-};
+> Btw, aren't you missing some includes in include/uapi/linux/bits.h?
 
-So, in order to avoid ending up with a couple of flexible-array members
-in the middle of a struct, we use the `struct_group_tagged()` helper to
-separate the flexible array from the rest of the members in the flexible
-structures:
+Yeah, uapi/linux/const.h is needed to use the macros in bits.h.  I 
+didn't notice because KVM headers include it anyway and, on the 
+include/linux/ side, include/linux/bits.h gets it via include/linux/const.h.
 
-struct uverbs_attr_bundle {
-        struct_group_tagged(uverbs_attr_bundle_hdr, hdr,
-		... the rest of the members
-        );
-        struct uverbs_attr attrs[];
-};
-
-With the change described above, we now declare objects of the type of
-the tagged struct without embedding flexible arrays in the middle of
-another struct:
-
-struct bundle_priv {
-        /* Must be first */
-        struct bundle_alloc_head_hdr alloc_head;
-
-        ...
-
-        struct uverbs_attr_bundle_hdr bundle;
-        u64 internal_buffer[32];
-};
-
-We also use `container_of()` whenever we need to retrieve a pointer
-to the flexible structures.
-
-Notice that the `bundle_size` computed in `uapi_compute_bundle_size()`
-remains the same.
-
-So, with these changes, fix the following warnings:
-
-drivers/infiniband/core/uverbs_ioctl.c:45:34: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
-   45 |         struct bundle_alloc_head alloc_head;
-      |                                  ^~~~~~~~~~
-drivers/infiniband/core/uverbs_ioctl.c:67:35: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
-   67 |         struct uverbs_attr_bundle bundle;
-      |                                   ^~~~~~
-
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/infiniband/core/uverbs_ioctl.c | 78 +++++++++++++++-----------
- include/rdma/uverbs_ioctl.h            | 14 +++--
- 2 files changed, 53 insertions(+), 39 deletions(-)
-
-diff --git a/drivers/infiniband/core/uverbs_ioctl.c b/drivers/infiniband/core/uverbs_ioctl.c
-index d9799706c58e..f80da6a67e24 100644
---- a/drivers/infiniband/core/uverbs_ioctl.c
-+++ b/drivers/infiniband/core/uverbs_ioctl.c
-@@ -36,13 +36,15 @@
- #include "uverbs.h"
- 
- struct bundle_alloc_head {
--	struct bundle_alloc_head *next;
-+	struct_group_tagged(bundle_alloc_head_hdr, hdr,
-+		struct bundle_alloc_head *next;
-+	);
- 	u8 data[];
- };
- 
- struct bundle_priv {
- 	/* Must be first */
--	struct bundle_alloc_head alloc_head;
-+	struct bundle_alloc_head_hdr alloc_head;
- 	struct bundle_alloc_head *allocated_mem;
- 	size_t internal_avail;
- 	size_t internal_used;
-@@ -64,7 +66,7 @@ struct bundle_priv {
- 	 * Must be last. bundle ends in a flex array which overlaps
- 	 * internal_buffer.
- 	 */
--	struct uverbs_attr_bundle bundle;
-+	struct uverbs_attr_bundle_hdr bundle;
- 	u64 internal_buffer[32];
- };
- 
-@@ -77,9 +79,10 @@ void uapi_compute_bundle_size(struct uverbs_api_ioctl_method *method_elm,
- 			      unsigned int num_attrs)
- {
- 	struct bundle_priv *pbundle;
-+	struct uverbs_attr_bundle *bundle;
- 	size_t bundle_size =
- 		offsetof(struct bundle_priv, internal_buffer) +
--		sizeof(*pbundle->bundle.attrs) * method_elm->key_bitmap_len +
-+		sizeof(*bundle->attrs) * method_elm->key_bitmap_len +
- 		sizeof(*pbundle->uattrs) * num_attrs;
- 
- 	method_elm->use_stack = bundle_size <= sizeof(*pbundle);
-@@ -107,7 +110,7 @@ __malloc void *_uverbs_alloc(struct uverbs_attr_bundle *bundle, size_t size,
- 			     gfp_t flags)
- {
- 	struct bundle_priv *pbundle =
--		container_of(bundle, struct bundle_priv, bundle);
-+		container_of(&bundle->hdr, struct bundle_priv, bundle);
- 	size_t new_used;
- 	void *res;
- 
-@@ -149,7 +152,7 @@ static int uverbs_set_output(const struct uverbs_attr_bundle *bundle,
- 			     const struct uverbs_attr *attr)
- {
- 	struct bundle_priv *pbundle =
--		container_of(bundle, struct bundle_priv, bundle);
-+		container_of(&bundle->hdr, struct bundle_priv, bundle);
- 	u16 flags;
- 
- 	flags = pbundle->uattrs[attr->ptr_attr.uattr_idx].flags |
-@@ -166,6 +169,8 @@ static int uverbs_process_idrs_array(struct bundle_priv *pbundle,
- 				     struct ib_uverbs_attr *uattr,
- 				     u32 attr_bkey)
- {
-+	struct uverbs_attr_bundle *bundle =
-+		container_of(&pbundle->bundle, struct uverbs_attr_bundle, hdr);
- 	const struct uverbs_attr_spec *spec = &attr_uapi->spec;
- 	size_t array_len;
- 	u32 *idr_vals;
-@@ -184,7 +189,7 @@ static int uverbs_process_idrs_array(struct bundle_priv *pbundle,
- 		return -EINVAL;
- 
- 	attr->uobjects =
--		uverbs_alloc(&pbundle->bundle,
-+		uverbs_alloc(bundle,
- 			     array_size(array_len, sizeof(*attr->uobjects)));
- 	if (IS_ERR(attr->uobjects))
- 		return PTR_ERR(attr->uobjects);
-@@ -209,7 +214,7 @@ static int uverbs_process_idrs_array(struct bundle_priv *pbundle,
- 	for (i = 0; i != array_len; i++) {
- 		attr->uobjects[i] = uverbs_get_uobject_from_file(
- 			spec->u2.objs_arr.obj_type, spec->u2.objs_arr.access,
--			idr_vals[i], &pbundle->bundle);
-+			idr_vals[i], bundle);
- 		if (IS_ERR(attr->uobjects[i])) {
- 			ret = PTR_ERR(attr->uobjects[i]);
- 			break;
-@@ -240,7 +245,9 @@ static int uverbs_process_attr(struct bundle_priv *pbundle,
- 			       struct ib_uverbs_attr *uattr, u32 attr_bkey)
- {
- 	const struct uverbs_attr_spec *spec = &attr_uapi->spec;
--	struct uverbs_attr *e = &pbundle->bundle.attrs[attr_bkey];
-+	struct uverbs_attr_bundle *bundle =
-+		container_of(&pbundle->bundle, struct uverbs_attr_bundle, hdr);
-+	struct uverbs_attr *e = &bundle->attrs[attr_bkey];
- 	const struct uverbs_attr_spec *val_spec = spec;
- 	struct uverbs_obj_attr *o_attr;
- 
-@@ -288,7 +295,7 @@ static int uverbs_process_attr(struct bundle_priv *pbundle,
- 		if (val_spec->alloc_and_copy && !uverbs_attr_ptr_is_inline(e)) {
- 			void *p;
- 
--			p = uverbs_alloc(&pbundle->bundle, uattr->len);
-+			p = uverbs_alloc(bundle, uattr->len);
- 			if (IS_ERR(p))
- 				return PTR_ERR(p);
- 
-@@ -321,7 +328,7 @@ static int uverbs_process_attr(struct bundle_priv *pbundle,
- 		 */
- 		o_attr->uobject = uverbs_get_uobject_from_file(
- 			spec->u.obj.obj_type, spec->u.obj.access,
--			uattr->data_s64, &pbundle->bundle);
-+			uattr->data_s64, bundle);
- 		if (IS_ERR(o_attr->uobject))
- 			return PTR_ERR(o_attr->uobject);
- 		__set_bit(attr_bkey, pbundle->uobj_finalize);
-@@ -422,6 +429,8 @@ static int ib_uverbs_run_method(struct bundle_priv *pbundle,
- 				unsigned int num_attrs)
- {
- 	int (*handler)(struct uverbs_attr_bundle *attrs);
-+	struct uverbs_attr_bundle *bundle =
-+		container_of(&pbundle->bundle, struct uverbs_attr_bundle, hdr);
- 	size_t uattrs_size = array_size(sizeof(*pbundle->uattrs), num_attrs);
- 	unsigned int destroy_bkey = pbundle->method_elm->destroy_bkey;
- 	unsigned int i;
-@@ -434,7 +443,7 @@ static int ib_uverbs_run_method(struct bundle_priv *pbundle,
- 	if (!handler)
- 		return -EIO;
- 
--	pbundle->uattrs = uverbs_alloc(&pbundle->bundle, uattrs_size);
-+	pbundle->uattrs = uverbs_alloc(bundle, uattrs_size);
- 	if (IS_ERR(pbundle->uattrs))
- 		return PTR_ERR(pbundle->uattrs);
- 	if (copy_from_user(pbundle->uattrs, pbundle->user_attrs, uattrs_size))
-@@ -453,25 +462,23 @@ static int ib_uverbs_run_method(struct bundle_priv *pbundle,
- 		return -EINVAL;
- 
- 	if (pbundle->method_elm->has_udata)
--		uverbs_fill_udata(&pbundle->bundle,
--				  &pbundle->bundle.driver_udata,
-+		uverbs_fill_udata(bundle, &pbundle->bundle.driver_udata,
- 				  UVERBS_ATTR_UHW_IN, UVERBS_ATTR_UHW_OUT);
- 	else
- 		pbundle->bundle.driver_udata = (struct ib_udata){};
- 
- 	if (destroy_bkey != UVERBS_API_ATTR_BKEY_LEN) {
--		struct uverbs_obj_attr *destroy_attr =
--			&pbundle->bundle.attrs[destroy_bkey].obj_attr;
-+		struct uverbs_obj_attr *destroy_attr = &bundle->attrs[destroy_bkey].obj_attr;
- 
--		ret = uobj_destroy(destroy_attr->uobject, &pbundle->bundle);
-+		ret = uobj_destroy(destroy_attr->uobject, bundle);
- 		if (ret)
- 			return ret;
- 		__clear_bit(destroy_bkey, pbundle->uobj_finalize);
- 
--		ret = handler(&pbundle->bundle);
-+		ret = handler(bundle);
- 		uobj_put_destroy(destroy_attr->uobject);
- 	} else {
--		ret = handler(&pbundle->bundle);
-+		ret = handler(bundle);
- 	}
- 
- 	/*
-@@ -481,10 +488,10 @@ static int ib_uverbs_run_method(struct bundle_priv *pbundle,
- 	 */
- 	if (!ret && pbundle->method_elm->has_udata) {
- 		const struct uverbs_attr *attr =
--			uverbs_attr_get(&pbundle->bundle, UVERBS_ATTR_UHW_OUT);
-+			uverbs_attr_get(bundle, UVERBS_ATTR_UHW_OUT);
- 
- 		if (!IS_ERR(attr))
--			ret = uverbs_set_output(&pbundle->bundle, attr);
-+			ret = uverbs_set_output(bundle, attr);
- 	}
- 
- 	/*
-@@ -501,6 +508,8 @@ static int ib_uverbs_run_method(struct bundle_priv *pbundle,
- static void bundle_destroy(struct bundle_priv *pbundle, bool commit)
- {
- 	unsigned int key_bitmap_len = pbundle->method_elm->key_bitmap_len;
-+	struct uverbs_attr_bundle *bundle =
-+		container_of(&pbundle->bundle, struct uverbs_attr_bundle, hdr);
- 	struct bundle_alloc_head *memblock;
- 	unsigned int i;
- 
-@@ -508,20 +517,19 @@ static void bundle_destroy(struct bundle_priv *pbundle, bool commit)
- 	i = -1;
- 	while ((i = find_next_bit(pbundle->uobj_finalize, key_bitmap_len,
- 				  i + 1)) < key_bitmap_len) {
--		struct uverbs_attr *attr = &pbundle->bundle.attrs[i];
-+		struct uverbs_attr *attr = &bundle->attrs[i];
- 
- 		uverbs_finalize_object(
- 			attr->obj_attr.uobject,
- 			attr->obj_attr.attr_elm->spec.u.obj.access,
- 			test_bit(i, pbundle->uobj_hw_obj_valid),
--			commit,
--			&pbundle->bundle);
-+			commit, bundle);
- 	}
- 
- 	i = -1;
- 	while ((i = find_next_bit(pbundle->spec_finalize, key_bitmap_len,
- 				  i + 1)) < key_bitmap_len) {
--		struct uverbs_attr *attr = &pbundle->bundle.attrs[i];
-+		struct uverbs_attr *attr = &bundle->attrs[i];
- 		const struct uverbs_api_attr *attr_uapi;
- 		void __rcu **slot;
- 
-@@ -535,7 +543,7 @@ static void bundle_destroy(struct bundle_priv *pbundle, bool commit)
- 
- 		if (attr_uapi->spec.type == UVERBS_ATTR_TYPE_IDRS_ARRAY) {
- 			uverbs_free_idrs_array(attr_uapi, &attr->objs_arr_attr,
--					       commit, &pbundle->bundle);
-+					       commit, bundle);
- 		}
- 	}
- 
-@@ -578,7 +586,8 @@ static int ib_uverbs_cmd_verbs(struct ib_uverbs_file *ufile,
- 			method_elm->bundle_size -
- 			offsetof(struct bundle_priv, internal_buffer);
- 		pbundle->alloc_head.next = NULL;
--		pbundle->allocated_mem = &pbundle->alloc_head;
-+		pbundle->allocated_mem = container_of(&pbundle->alloc_head,
-+						struct bundle_alloc_head, hdr);
- 	} else {
- 		pbundle = &onstack;
- 		pbundle->internal_avail = sizeof(pbundle->internal_buffer);
-@@ -596,8 +605,9 @@ static int ib_uverbs_cmd_verbs(struct ib_uverbs_file *ufile,
- 	pbundle->user_attrs = user_attrs;
- 
- 	pbundle->internal_used = ALIGN(pbundle->method_elm->key_bitmap_len *
--					       sizeof(*pbundle->bundle.attrs),
--				       sizeof(*pbundle->internal_buffer));
-+					       sizeof(*container_of(&pbundle->bundle,
-+							struct uverbs_attr_bundle, hdr)->attrs),
-+					       sizeof(*pbundle->internal_buffer));
- 	memset(pbundle->bundle.attr_present, 0,
- 	       sizeof(pbundle->bundle.attr_present));
- 	memset(pbundle->uobj_finalize, 0, sizeof(pbundle->uobj_finalize));
-@@ -700,11 +710,13 @@ void uverbs_fill_udata(struct uverbs_attr_bundle *bundle,
- 		       unsigned int attr_out)
- {
- 	struct bundle_priv *pbundle =
--		container_of(bundle, struct bundle_priv, bundle);
-+		container_of(&bundle->hdr, struct bundle_priv, bundle);
-+	struct uverbs_attr_bundle *bundle_aux =
-+		container_of(&pbundle->bundle, struct uverbs_attr_bundle, hdr);
- 	const struct uverbs_attr *in =
--		uverbs_attr_get(&pbundle->bundle, attr_in);
-+		uverbs_attr_get(bundle_aux, attr_in);
- 	const struct uverbs_attr *out =
--		uverbs_attr_get(&pbundle->bundle, attr_out);
-+		uverbs_attr_get(bundle_aux, attr_out);
- 
- 	if (!IS_ERR(in)) {
- 		udata->inlen = in->ptr_attr.len;
-@@ -829,7 +841,7 @@ void uverbs_finalize_uobj_create(const struct uverbs_attr_bundle *bundle,
- 				 u16 idx)
- {
- 	struct bundle_priv *pbundle =
--		container_of(bundle, struct bundle_priv, bundle);
-+		container_of(&bundle->hdr, struct bundle_priv, bundle);
- 
- 	__set_bit(uapi_bkey_attr(uapi_key_attr(idx)),
- 		  pbundle->uobj_hw_obj_valid);
-diff --git a/include/rdma/uverbs_ioctl.h b/include/rdma/uverbs_ioctl.h
-index 06287de69cd2..e6c0de227fad 100644
---- a/include/rdma/uverbs_ioctl.h
-+++ b/include/rdma/uverbs_ioctl.h
-@@ -629,12 +629,14 @@ struct uverbs_attr {
- };
- 
- struct uverbs_attr_bundle {
--	struct ib_udata driver_udata;
--	struct ib_udata ucore;
--	struct ib_uverbs_file *ufile;
--	struct ib_ucontext *context;
--	struct ib_uobject *uobject;
--	DECLARE_BITMAP(attr_present, UVERBS_API_ATTR_BKEY_LEN);
-+	struct_group_tagged(uverbs_attr_bundle_hdr, hdr,
-+		struct ib_udata driver_udata;
-+		struct ib_udata ucore;
-+		struct ib_uverbs_file *ufile;
-+		struct ib_ucontext *context;
-+		struct ib_uobject *uobject;
-+		DECLARE_BITMAP(attr_present, UVERBS_API_ATTR_BKEY_LEN);
-+	);
- 	struct uverbs_attr attrs[];
- };
- 
--- 
-2.34.1
+Paolo
 
 
