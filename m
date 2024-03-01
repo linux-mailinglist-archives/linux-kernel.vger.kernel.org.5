@@ -1,154 +1,154 @@
-Return-Path: <linux-kernel+bounces-88818-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88819-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CF2C86E720
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:24:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6290286E723
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:24:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D049A2821ED
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:24:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B4541C230CD
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:24:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A1098BFE;
-	Fri,  1 Mar 2024 17:24:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i6z+M4m5"
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ABF28BE3;
+	Fri,  1 Mar 2024 17:24:46 +0000 (UTC)
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FEA55228;
-	Fri,  1 Mar 2024 17:23:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B02315228
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 17:24:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.85.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709313841; cv=none; b=EJdUYQKhJ6NIGM+EdFMVMQHn1mBQiRzAwu+y9XXG/armeD/MUB8c8kZ/zO2ZGv78KSGBu97nbYEow3cOlELq1Upnx2dsiHmImvRNqmIKJrYS6rZgbAhlyGE8TbGxycm8V5K4fvbBM+2ZuUOeRT8IT/YHy1le3C/YCm7OUy8hji8=
+	t=1709313885; cv=none; b=LymygdJtmWgr9JLnY7VrVVeZ2C9QhGj3d9971RZvCc1ireFbUFJW2T7j76DBF5abTZhxBob8B+yLmct3vrhWooMBds8NPknqNweAa0U242QQGNCQ+K7cke79IRbJ/uC4Hr0TTq0rIX9mObLykjGnZDlfcCwImW1xR31XF/m4XdY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709313841; c=relaxed/simple;
-	bh=veI8B19i8DnVTq/s4obgrpoRoZCjKRQ6AAnu47Af2jM=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=YSc775p0Jrbz7c0FrdoE/WkIBNO08wv6xIOP5sP+4uvzUOxlv1+/jJoGoJJPOGjwaYmz+afPBsNMSYyYwYzr7yRSaS2zC/oc2jHrwS2HlnkT+xq9zvssSFEHlwKdp/ef1ja+MOPQWZRSIvyU7TKkOHo1R+UO2vq4bBGQ6HW0VXg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=i6z+M4m5; arc=none smtp.client-ip=209.85.215.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5d4d15ec7c5so2017511a12.1;
-        Fri, 01 Mar 2024 09:23:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709313839; x=1709918639; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RyyU1KTZ+u7IZU/ZLxa5MUX+oMEqsxDrKnYwc61Y+0Q=;
-        b=i6z+M4m5cSR+ppHq/yUnHAD1HIe+gJ2UogR1BQ9tffF2aXnrazIW7uGKQ278dBq6Jg
-         w9iSZw75EoTF3CfnEjzbLq5t6sFq7KnTzitgwTWW7zJrM7NFL8TcOeT2R7/b6N0hXCDX
-         bnpuS13gRqBfCw++y5mkmEiBcB1jYndmT7T+Dkut1FGoENgliKmHZSDbWWC9pknsf4K+
-         HlzAFkueXyZYA4TLKtmWCixGi3BsZpT5+V5njCW3GB+zFd3dXBGvnxYmAc+GubGvEDGF
-         Rx+IzCqeTtt/L7/0uBgiWSqcOfsU8kRj6SW2F4BV2ZTNnAiUL4JqO4WS/N2tktBx0LJA
-         /8iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709313839; x=1709918639;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=RyyU1KTZ+u7IZU/ZLxa5MUX+oMEqsxDrKnYwc61Y+0Q=;
-        b=MAnrRG2+9zUx+ywPGEbM7HBiDsA932WaFo3fH0K/Sdn8YNMl/QGPrfjKsoh25vIIQA
-         3g3qLfaB9eVr5xjN7Z0MEcJDz+GzdgKghE6C8qYD5lizWDBEeo53rgyZsbB9y1H9THSH
-         jGShDiomx/8jyZPW0sdtrySvxmqF3gpo9lWt6Ea7ctM5+ZNB7Ns3p1IFSG+EayHYZLCH
-         viJKI8wLcPBEggP5iXJoSOSsm6ieYT6jXAW2QKHIGVk3rOVPfJJ2gEkCrJMxxPPi0ghY
-         HJL4IsSIP4mZHY0KD9UpXmCHzVWnRd4sLSD0JF7YIWFCWe3MwOVqZNP2e2F/ih/EZUGT
-         JqgA==
-X-Forwarded-Encrypted: i=1; AJvYcCWsS5DiDs/lvgW4c2LPW8HgaR4mzK1tlB4Z37tH7I5BeAuYOpkgLMZ68Xa7w6Bxz8EGxI68+mhHVijaSgoE+kg8ZvjJlo5/KezawURllS6bouR+JIKtGEwRnlvDT2HDiRoxzOb5DZrV0gX6DF33caW1h02rYAlPXR89aTP3wHg30QRs66ePOPqe0gIjK3JzMihw/ES9JcTI+b/r
-X-Gm-Message-State: AOJu0YysFAEdQ7JDNIMmpYMCp5hZBs++rj2eTG8YiGJDr73TWQYYy1qM
-	l5Mg8pIHkMDyUo/0zC9ZfS8utN8Kn2yh9R85XHRfilohHAZqSoRw
-X-Google-Smtp-Source: AGHT+IERqxQxkRkE14VITG6EjQITNnYMzffw4XzcbvyQqW4Wc7ZerAs9c1302bg9Ijqngdcp3rSclw==
-X-Received: by 2002:a05:6a20:4283:b0:1a0:e3c6:18da with SMTP id o3-20020a056a20428300b001a0e3c618damr2372160pzj.27.1709313839390;
-        Fri, 01 Mar 2024 09:23:59 -0800 (PST)
-Received: from localhost ([98.97.43.160])
-        by smtp.gmail.com with ESMTPSA id i37-20020a635865000000b005dc5289c4edsm3219408pgm.64.2024.03.01.09.23.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 09:23:58 -0800 (PST)
-Date: Fri, 01 Mar 2024 09:23:57 -0800
-From: John Fastabend <john.fastabend@gmail.com>
-To: Song Yoong Siang <yoong.siang.song@intel.com>, 
- Jesse Brandeburg <jesse.brandeburg@intel.com>, 
- Tony Nguyen <anthony.l.nguyen@intel.com>, 
- "David S . Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, 
- Richard Cochran <richardcochran@gmail.com>, 
- Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- Jesper Dangaard Brouer <hawk@kernel.org>, 
- John Fastabend <john.fastabend@gmail.com>, 
- Stanislav Fomichev <sdf@google.com>, 
- Vinicius Costa Gomes <vinicius.gomes@intel.com>, 
- Florian Bezdeka <florian.bezdeka@siemens.com>, 
- Andrii Nakryiko <andrii@kernel.org>, 
- Eduard Zingerman <eddyz87@gmail.com>, 
- Mykola Lysenko <mykolal@fb.com>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- KP Singh <kpsingh@kernel.org>, 
- Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, 
- Shuah Khan <shuah@kernel.org>
-Cc: intel-wired-lan@lists.osuosl.org, 
- netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- bpf@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, 
- xdp-hints@xdp-project.net
-Message-ID: <65e20f2d314bd_5dcfe20857@john.notmuch>
-In-Reply-To: <20240301162348.898619-2-yoong.siang.song@intel.com>
-References: <20240301162348.898619-1-yoong.siang.song@intel.com>
- <20240301162348.898619-2-yoong.siang.song@intel.com>
-Subject: RE: [PATCH iwl-next,v2 1/2] selftests/bpf: xdp_hw_metadata reduce
- sleep interval
+	s=arc-20240116; t=1709313885; c=relaxed/simple;
+	bh=h58DFjaPojLEK3fLX4+ixq3XIVk5I8uJifwq7HQg9ig=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=IPkCSVSMePBErOX3jer5HpzKH4ket3RQQ8oATQj20hYNdudNDbmQJ0regcP0fSGHSYEhyJECcxX/lorwCYgDc1FmVb4U/DAgyw1jpENNosfiYS+75/tF2U5quUdV9Bn0WAu9nNvC8oZWyDgh4IBExfs2wqsBpVpvyxnADX6Gs9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.85.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-208-tXp_pUJVPlyy9kGWfCrWjw-1; Fri, 01 Mar 2024 17:24:41 +0000
+X-MC-Unique: tXp_pUJVPlyy9kGWfCrWjw-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 1 Mar
+ 2024 17:24:39 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Fri, 1 Mar 2024 17:24:39 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Charlie Jenkins' <charlie@rivosinc.com>, Christophe Leroy
+	<christophe.leroy@csgroup.eu>
+CC: Guenter Roeck <linux@roeck-us.net>, Palmer Dabbelt <palmer@dabbelt.com>,
+	Andrew Morton <akpm@linux-foundation.org>, Helge Deller <deller@gmx.de>,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Parisc List
+	<linux-parisc@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>, "Geert
+ Uytterhoeven" <geert@linux-m68k.org>, Russell King <linux@armlinux.org.uk>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Palmer Dabbelt
+	<palmer@rivosinc.com>, Linux ARM <linux-arm-kernel@lists.infradead.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: RE: [PATCH v11] lib: checksum: Use aligned accesses for ip_fast_csum
+ and csum_ipv6_magic tests
+Thread-Topic: [PATCH v11] lib: checksum: Use aligned accesses for ip_fast_csum
+ and csum_ipv6_magic tests
+Thread-Index: AQHaa/sz2G6zh0QEYUOonhCQoX0NCrEjHqIg
+Date: Fri, 1 Mar 2024 17:24:39 +0000
+Message-ID: <3e0e2b25ea2d4ab99e78aff04af94b69@AcuMS.aculab.com>
+References: <20240229-fix_sparse_errors_checksum_tests-v11-1-f608d9ec7574@rivosinc.com>
+ <41a5d1e8-6f30-4907-ba63-8a7526e71e04@csgroup.eu> <ZeILu9x+/STqWVy+@ghost>
+In-Reply-To: <ZeILu9x+/STqWVy+@ghost>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Song Yoong Siang wrote:
-> In current ping-pong design, xdp_hw_metadata will wait until the packet
-> transmition completely done, then only start to receive the next packet.
-> 
-> The current sleep interval is 10ms, which is unnecessary large. Typically,
-> a NIC does not need such a long time to transmit a packet. Furthermore,
-> during this 10ms sleep time, the app is unable to receive incoming packets.
-> 
-> Therefore, this commit reduce sleep interval to 10us, so that
-> xdp_hw_metadata able to support periodic packets with shorter interval.
-> 10us * 500 = 5ms should be enough for packet transmission and status
-> retrival.
-> 
-> Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
-> ---
->  tools/testing/selftests/bpf/xdp_hw_metadata.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-> index 878d68db0325..bdf5d8180067 100644
-> --- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
-> +++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-> @@ -480,7 +480,7 @@ static int verify_metadata(struct xsk *rx_xsk, int rxq, int server_fd, clockid_t
->  					for (int j = 0; j < 500; j++) {
->  						if (complete_tx(xsk, clock_id))
->  							break;
-> -						usleep(10*1000);
-> +						usleep(10);
->  					}
->  				}
->  			}
-> -- 
-> 2.34.1
-> 
+From: Charlie Jenkins
+> Sent: 01 March 2024 17:09
+>=20
+> On Fri, Mar 01, 2024 at 07:17:38AM +0000, Christophe Leroy wrote:
+> > +CC netdev ARM Russell
+> >
+> > Le 29/02/2024 =C3=A0 23:46, Charlie Jenkins a =C3=A9crit=C2=A0:
+> > > The test cases for ip_fast_csum and csum_ipv6_magic were not properly
+> > > aligning the IP header, which were causing failures on architectures
+> > > that do not support misaligned accesses like some ARM platforms. To
+> > > solve this, align the data along (14 + NET_IP_ALIGN) bytes which is t=
+he
+> > > standard alignment of an IP header and must be supported by the
+> > > architecture.
+> >
+> > In your description, please provide more details on platforms that have
+> > a problem, what the problem is exactly (Failed calculation, slowliness,
+> > kernel Oops, panic, ....) on each platform.
+> >
+> > And please copy maintainers and lists of platforms your are specificall=
+y
+> > addressing with this change. And as this is network related, netdev lis=
+t
+> > should have been copied as well.
+> >
+> > I still think that your patch is not the good approach, it looks like
+> > you are ignoring all the discussion. Below is a quote of what Geert sai=
+d
+> > and I fully agree with that:
+> >
+> > =09IMHO the tests should validate the expected functionality.  If a tes=
+t
+> > =09fails, either functionality is missing or behaves wrong, or the test
+> > =09is wrong.
+> >
+> > =09What is the point of writing tests for a core functionality like net=
+work
+> > =09checksumming that do not match the expected functionality?
+> >
+> >
+> > So we all agree that there is something to fix, because today's test
+> > does odd-address accesses which is unexpected for those functions, but
+> > 2-byte alignments should be supported hence tested by the test. Limitin=
+g
+> > the test to a 16-bytes alignment deeply reduces the usefullness of the =
+test.
+> >
+>=20
+> Maybe I am lost in the conversations. This isn't limited to 16-bytes
+> alignment? It aligns along 14 + NET_IP_ALIGN. That is 16 on some
+> platforms and 14 on platforms where unaligned accesses are desired.
+> These functions are expected to be called with this offset. Testing with
+> any other alignment is not the expected behavior. These tests are
+> testing the expected functionality.
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+Aligned received frames can have a 4 byte VLAN header (or two) removed.
+So the alignment of the IP header is either 4n or 4n+2.
+If the cpu fault misaligned accesses you really want the alignment
+to be 4n.
+
+You pretty much never want to trap and fixup a misaligned access.
+Especially in the network stack.
+I suspect it is better to do a realignment copy of the entire frame.
+At some point the data will be copied again, although you may want
+a CBU (crystal ball unit) to decide whether to align on an 8n
+or 8n+4 boundary to optimise a later copy.
+
+CPU that support misaligned transfers just make coders sloppy :-)
+
+=09David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
+PT, UK
+Registration No: 1397386 (Wales)
+
 
