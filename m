@@ -1,252 +1,130 @@
-Return-Path: <linux-kernel+bounces-87809-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87810-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 004BA86D94E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 03:00:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A48B086D951
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 03:01:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63DE31F236A6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 02:00:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D3221F23541
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 02:01:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B950838F9B;
-	Fri,  1 Mar 2024 02:00:00 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AEAC38FAD;
+	Fri,  1 Mar 2024 02:01:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="F++7zWSI"
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EC3DFC03;
-	Fri,  1 Mar 2024 01:59:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B961FC03;
+	Fri,  1 Mar 2024 02:01:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.244.123.138
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709258400; cv=none; b=eG4pByBRPcPG+euP0SnPEagOVGXVNvxubMiwZmWv3+rk56DG+TEbnO7ap5dVIT5/v/tHX1NnMzwrtw0/b3kzMD5XqxnoBAN9aDIPCNUEyqGsX0YqCY5r6dvJNyoQKunA8Z+r89CTuBnDxXVGC43uiSiAkpvd6x+aEip1jrFuzAM=
+	t=1709258508; cv=none; b=Wwaa+FteXBNnHI1o520Jm/ZTWwxz3pVse6dlSzg4yQ0upWG84S/gCsKhCCdqf2R7je+lzEJzR0WWJAtnKWuS8wvv3ECIBOxNxN5hdsHv08asixAXPrZ5cSngb5TwHxT7+hrI8XXdJthqYjURZiimd4xIMOcfkW+2FdFVIDEJMIQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709258400; c=relaxed/simple;
-	bh=qAHgni4UkLPw0apvildN88ZpJCb3iXFGkD1LHTOz3QE=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=uKdUjslYYaKOpT3FirqowDrj3t+ViP3dwD9f5qjX2ASGO67UlPnofhhSKMjiZSd2c7+hKDj5PJSC6CT+5NibpcP2fZwor2hi7jCN4nOUZPdUHcQWStFyw5Nk+Uw0rtwUflRtzKj+6ezcTHJ6UKIh5jUx1wYdD7lPT+RsvUDQfas=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TmB9Y3B4pz4f3lWD;
-	Fri,  1 Mar 2024 09:59:45 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id CE5FC1A01A8;
-	Fri,  1 Mar 2024 09:59:52 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP1 (Coremail) with SMTP id cCh0CgDHlxCWNuFlofJLFg--.62870S3;
-	Fri, 01 Mar 2024 09:59:52 +0800 (CST)
-Subject: Re: [PATCH md-6.9 v4 03/11] md/raid1: record nonrot rdevs while
- adding/removing rdevs to conf
-To: Paul Menzel <pmenzel@molgen.mpg.de>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc: xni@redhat.com, paul.e.luse@linux.intel.com, song@kernel.org,
- neilb@suse.com, shli@fb.com, linux-raid@vger.kernel.org,
- linux-kernel@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
- "yukuai (C)" <yukuai3@huawei.com>
-References: <20240229095714.926789-1-yukuai1@huaweicloud.com>
- <20240229095714.926789-4-yukuai1@huaweicloud.com>
- <7b030433-518e-4fe7-976c-3ffb5f7f1a85@molgen.mpg.de>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <a5d762b9-f8c9-d690-6616-028f507ba7f6@huaweicloud.com>
-Date: Fri, 1 Mar 2024 09:59:50 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+	s=arc-20240116; t=1709258508; c=relaxed/simple;
+	bh=qL6ryTGcMgCNWUne3Xb4F08g2n+lnz0zgQg6XVOU8ZY=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=iRk6fuagQYSCAd83Nv9OykEWFtSTMaT8dRNDgN/6xiKEUAWFPxQCFO9ZGkq38ziV2U99MyQT8JT+k7OM48J5OMzeN0Z/BMz4BCr6FgUCI+TRZoR3JmqJq5eBdgMnHze4OcrOh8BatZitF88CzPdCuAtpGo4dKTfBdtSrP3V9HQU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=F++7zWSI; arc=none smtp.client-ip=60.244.123.138
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: 9fa86d68d76f11eeb8927bc1f75efef4-20240301
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=HBS1I/NOgPbbX1oZFpsgk/1CALyAPNq0suP+PJ3XesU=;
+	b=F++7zWSIF/rtO46xP5XMrm5P6hDqrY4yxfJE7EF1ORCuygCyGTeNkWAkKbqbhdvgrqqmjmrfCjJqf415/pPlZJq8QWVf6Z0jbytmK5cwzKKrVFW9XA4Ni39QTAdSas+gpZ8SanxipNyasWGa2TbXIxExH8WNGBlI51egEPv/VMI=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:dead455a-5c7c-44f8-81b6-dcbfbd48f4bf,IP:0,U
+	RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:-5
+X-CID-META: VersionHash:6f543d0,CLOUDID:cde97984-8d4f-477b-89d2-1e3bdbef96d1,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:11|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES
+	:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
+X-UUID: 9fa86d68d76f11eeb8927bc1f75efef4-20240301
+Received: from mtkmbs14n2.mediatek.inc [(172.21.101.76)] by mailgw01.mediatek.com
+	(envelope-from <yunfei.dong@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 176012849; Fri, 01 Mar 2024 10:01:31 +0800
+Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
+ MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Fri, 1 Mar 2024 10:01:29 +0800
+Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
+ mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Fri, 1 Mar 2024 10:01:28 +0800
+From: Yunfei Dong <yunfei.dong@mediatek.com>
+To: =?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?=
+	<nfraprado@collabora.com>, Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+	Hans Verkuil <hverkuil-cisco@xs4all.nl>, AngeloGioacchino Del Regno
+	<angelogioacchino.delregno@collabora.com>, Benjamin Gaignard
+	<benjamin.gaignard@collabora.com>, Nathan Hebert <nhebert@chromium.org>
+CC: Hsin-Yi Wang <hsinyi@chromium.org>, Fritz Koenig <frkoenig@chromium.org>,
+	Daniel Vetter <daniel@ffwll.ch>, Steve Cho <stevecho@chromium.org>, "Yunfei
+ Dong" <yunfei.dong@mediatek.com>, <linux-media@vger.kernel.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
+	<Project_Global_Chrome_Upstream_Group@mediatek.com>
+Subject: [PATCH] media: mediatek: vcodec: support 36bit physical address
+Date: Fri, 1 Mar 2024 10:01:26 +0800
+Message-ID: <20240301020126.11539-1-yunfei.dong@mediatek.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <7b030433-518e-4fe7-976c-3ffb5f7f1a85@molgen.mpg.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgDHlxCWNuFlofJLFg--.62870S3
-X-Coremail-Antispam: 1UD129KBjvJXoW3GFWfuFW7Kr15JF4rtr1rCrg_yoWxtrWrpr
-	4ktFWrJryUCrn5Jr1Utr1UAryrtw1UJa1DJr1xJa4jqr1UJryjqF4UWryjgr1UJr48Jr1U
-	Jr1UJrsrZr1xJF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9F14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-	67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
-	3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
-	sGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+Content-Type: text/plain
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--8.986100-8.000000
+X-TMASE-MatchedRID: MXmpjVMQBvchu4G5/VkGwwPZZctd3P4B7f6JAS2hKPgUtdRZTmEaIb9n
+	SsB9y3SmXfLeWSJ8nKvcFPFR1xoqQh8TzIzimOwPC24oEZ6SpSkj80Za3RRg8Nr8k9p6q6xQ8XR
+	JHb0N4gK2+HtcNQgId7UxHy5DZGDPwaVEpyapekM=
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--8.986100-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP:
+	81F330C20FD882D5E9A3FF4558755189B19F9D12D06F1B64C5360A96E6826FDE2000:8
+X-MTK: N
 
-Hi,
+The physical address is beyond 32bit for mt8188 platform, need
+to change the type from unsigned int to unsigned long in case of
+the high bit missing.
 
-在 2024/03/01 0:37, Paul Menzel 写道:
-> Dear Yu,
-> 
-> 
-> Thank you for your patch.
-> 
-> 
-> Am 29.02.24 um 10:57 schrieb Yu Kuai:
->> From: Yu Kuai <yukuai3@huawei.com>
->>
->> For raid1, each read will iterate all the rdevs from conf and check if
->> any rdev is non-rotational, then choose rdev with minimal IO inflight
->> if so, or rdev with closest distance otherwise.
->>
->> Disk nonrot info can be changed through sysfs entry:
->>
->> /sys/block/[disk_name]/queue/rotational
->>
->> However, consider that this should only be used for testing, and user
->> really shouldn't do this in real life. Record the number of 
->> non-rotational
->> disks in conf, to avoid checking each rdev in IO fast path and simplify
-> 
-> The comma is not needed.
-> 
->> read_balance() a little bit.
-> 
-> Just to make sure, I understood correctly. Changing 
-> `/sys/block/[disk_name]/queue/rotational` will now not be considered 
-> anymore, right?
+Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
+---
+ .../mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c        | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Yes, and I think this will case performance to be worse in real life.
-> 
-> For the summary, maybe you could also say “cache”. Maybe:
-> 
-> Cache attribute rotational while adding/removing rdevs to conf
-> 
->> Co-developed-by: Paul Luse <paul.e.luse@linux.intel.com>
->> Signed-off-by: Paul Luse <paul.e.luse@linux.intel.com>
->> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
->> ---
->>   drivers/md/md.h    |  1 +
->>   drivers/md/raid1.c | 17 ++++++++++-------
->>   drivers/md/raid1.h |  1 +
->>   3 files changed, 12 insertions(+), 7 deletions(-)
->>
->> diff --git a/drivers/md/md.h b/drivers/md/md.h
->> index a49ab04ab707..b2076a165c10 100644
->> --- a/drivers/md/md.h
->> +++ b/drivers/md/md.h
->> @@ -207,6 +207,7 @@ enum flag_bits {
->>                    * check if there is collision between raid1
->>                    * serial bios.
->>                    */
->> +    Nonrot,            /* non-rotational device (SSD) */
->>   };
->>   static inline int is_badblock(struct md_rdev *rdev, sector_t s, int 
->> sectors,
->> diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
->> index 6ec9998f6257..de6ea87d4d24 100644
->> --- a/drivers/md/raid1.c
->> +++ b/drivers/md/raid1.c
->> @@ -599,7 +599,6 @@ static int read_balance(struct r1conf *conf, 
->> struct r1bio *r1_bio, int *max_sect
->>       int sectors;
->>       int best_good_sectors;
->>       int best_disk, best_dist_disk, best_pending_disk;
->> -    int has_nonrot_disk;
->>       int disk;
->>       sector_t best_dist;
->>       unsigned int min_pending;
->> @@ -620,7 +619,6 @@ static int read_balance(struct r1conf *conf, 
->> struct r1bio *r1_bio, int *max_sect
->>       best_pending_disk = -1;
->>       min_pending = UINT_MAX;
->>       best_good_sectors = 0;
->> -    has_nonrot_disk = 0;
->>       choose_next_idle = 0;
->>       clear_bit(R1BIO_FailFast, &r1_bio->state);
->> @@ -637,7 +635,6 @@ static int read_balance(struct r1conf *conf, 
->> struct r1bio *r1_bio, int *max_sect
->>           sector_t first_bad;
->>           int bad_sectors;
->>           unsigned int pending;
->> -        bool nonrot;
->>           rdev = conf->mirrors[disk].rdev;
->>           if (r1_bio->bios[disk] == IO_BLOCKED
->> @@ -703,8 +700,6 @@ static int read_balance(struct r1conf *conf, 
->> struct r1bio *r1_bio, int *max_sect
->>               /* At least two disks to choose from so failfast is OK */
->>               set_bit(R1BIO_FailFast, &r1_bio->state);
->> -        nonrot = bdev_nonrot(rdev->bdev);
->> -        has_nonrot_disk |= nonrot;
->>           pending = atomic_read(&rdev->nr_pending);
->>           dist = abs(this_sector - conf->mirrors[disk].head_position);
->>           if (choose_first) {
->> @@ -731,7 +726,7 @@ static int read_balance(struct r1conf *conf, 
->> struct r1bio *r1_bio, int *max_sect
->>                * small, but not a big deal since when the second disk
->>                * starts IO, the first disk is likely still busy.
->>                */
->> -            if (nonrot && opt_iosize > 0 &&
->> +            if (test_bit(Nonrot, &rdev->flags) && opt_iosize > 0 &&
->>                   mirror->seq_start != MaxSector &&
->>                   mirror->next_seq_sect > opt_iosize &&
->>                   mirror->next_seq_sect - opt_iosize >=
->> @@ -763,7 +758,7 @@ static int read_balance(struct r1conf *conf, 
->> struct r1bio *r1_bio, int *max_sect
->>        * mixed ratation/non-rotational disks depending on workload.
->>        */
->>       if (best_disk == -1) {
->> -        if (has_nonrot_disk || min_pending == 0)
->> +        if (READ_ONCE(conf->nonrot_disks) || min_pending == 0)
->>               best_disk = best_pending_disk;
->>           else
->>               best_disk = best_dist_disk;
->> @@ -1768,6 +1763,11 @@ static bool raid1_add_conf(struct r1conf *conf, 
->> struct md_rdev *rdev, int disk,
->>       if (info->rdev)
->>           return false;
->> +    if (bdev_nonrot(rdev->bdev)) {
->> +        set_bit(Nonrot, &rdev->flags);
->> +        WRITE_ONCE(conf->nonrot_disks, conf->nonrot_disks + 1);
->> +    }
->> +
->>       rdev->raid_disk = disk;
->>       info->head_position = 0;
->>       info->seq_start = MaxSector;
->> @@ -1791,6 +1791,9 @@ static bool raid1_remove_conf(struct r1conf 
->> *conf, int disk)
->>           rdev->mddev->degraded < conf->raid_disks)
->>           return false;
->> +    if (test_and_clear_bit(Nonrot, &rdev->flags))
->> +        WRITE_ONCE(conf->nonrot_disks, conf->nonrot_disks - 1);
->> +
->>       WRITE_ONCE(info->rdev, NULL);
->>       return true;
->>   }
->> diff --git a/drivers/md/raid1.h b/drivers/md/raid1.h
->> index 14d4211a123a..5300cbaa58a4 100644
->> --- a/drivers/md/raid1.h
->> +++ b/drivers/md/raid1.h
->> @@ -71,6 +71,7 @@ struct r1conf {
->>                            * allow for replacements.
->>                            */
->>       int            raid_disks;
->> +    int            nonrot_disks;
->>       spinlock_t        device_lock;
-> 
-> As you meant “fastpath” in the commit message, if I remember correctly, 
-> this does not improve the performance in benchmarks, right?
-
-Yest, this just safe some memory load command, this is to little to
-affect performance benchmarks. Main ideal here is make read_balance()
-cleaner.
-
-Thanks,
-Kuai
-
-> 
-> 
-> Kind regards,
-> 
-> Paul
-> .
-> 
+diff --git a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c
+index cf48d09b78d7..85df3e7c2983 100644
+--- a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c
++++ b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c
+@@ -1074,7 +1074,7 @@ static int vdec_vp9_slice_setup_tile_buffer(struct vdec_vp9_slice_instance *inst
+ 	unsigned int mi_row;
+ 	unsigned int mi_col;
+ 	unsigned int offset;
+-	unsigned int pa;
++	unsigned long pa;
+ 	unsigned int size;
+ 	struct vdec_vp9_slice_tiles *tiles;
+ 	unsigned char *pos;
+@@ -1109,7 +1109,7 @@ static int vdec_vp9_slice_setup_tile_buffer(struct vdec_vp9_slice_instance *inst
+ 	pos = va + offset;
+ 	end = va + bs->size;
+ 	/* truncated */
+-	pa = (unsigned int)bs->dma_addr + offset;
++	pa = (unsigned long)bs->dma_addr + offset;
+ 	tb = instance->tile.va;
+ 	for (i = 0; i < rows; i++) {
+ 		for (j = 0; j < cols; j++) {
+-- 
+2.18.0
 
 
