@@ -1,174 +1,139 @@
-Return-Path: <linux-kernel+bounces-88081-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88082-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E19B86DD1B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:30:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6C3086DD1D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:30:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DFD9A1F21F11
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:30:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D48C1B25999
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:30:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D031569D38;
-	Fri,  1 Mar 2024 08:30:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6268969DE4;
+	Fri,  1 Mar 2024 08:30:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="UQWev8oe"
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XHAwqsJM"
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DC1148CDC
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 08:30:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2C6569E19;
+	Fri,  1 Mar 2024 08:30:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709281824; cv=none; b=o6eyU7BfeYMKK3Bd3KcrhYj3r3Fy+/8f6oU0LnZ0ds1NY7KnIp/ezMTcfx1W6Fuam4F5ReHhdIzhj9ZXW7RluMIeepuZDM6Lm6gz2PGe37LOixLtowQFjBVRH3NTDWn1FJn+grRmlJWB/NSpcW4VV1XJHm17d/ec777LVbhNAqY=
+	t=1709281828; cv=none; b=LKm0zcFYX/mkEVVJ6KOpwl0vtYPqCEIxAWr7Vz8HJ0q6oWMdLC4LIdBuQaU2e1V9aN6sspsfeUPrj/D/+Wl8lWNZXJZlWpBL7b6jBdvQ7/8pKGrjJnWf9pRRln2NQPWDLeXvggceQmXrK6QJwsD8w7pqwIZfmniATYor34ey7W4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709281824; c=relaxed/simple;
-	bh=TfKIBc/iRqHtax+39Bv2LfsB+xrqonMZIkQsFhN5oMo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KR9hLeX30MYIQ+LnmDvlqsSBDUkPIFo5C6DHSNCD7OrGMhelapymRvwLsCbyRHkBRIS3YABjcn0yB45Mb1XwSUMXVH/nMdGCd38Wpa7FXvvQnANSaFYz3JKk0NlzCly9wenirf9ni5IrDubF/ryDkXHpGz/bEMOsfaT+YZC2wVc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=UQWev8oe; arc=none smtp.client-ip=209.85.215.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-5bdbe2de25fso1434941a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 00:30:22 -0800 (PST)
+	s=arc-20240116; t=1709281828; c=relaxed/simple;
+	bh=BBhgeRx4yOLdW6NNuh+M5S/wHVDDwGe+mJfSD+9oj4c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hiXKUBpLb/fI1CNFwv4sqJv5wVeESqoqBqNSVUsc3v8hj43bB1miem/2L/CSv0pgjJeQVYwLHjbAHSuX5GET9/c3R2iuPXyJGuSrKkO5hPo6QoOW0m+4XWeKz/G3267sKOjd5w0M3K1R/KGHW+CxxPlHeEBaZz82u6n3lqv1J10=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XHAwqsJM; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a26fa294e56so342364666b.0;
+        Fri, 01 Mar 2024 00:30:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1709281822; x=1709886622; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nnAe6NaXIcHyl5242tMjeLqLzA8OFKi+GWbu0EaffXk=;
-        b=UQWev8oeoVAV+NxcusqcKFFHRUhD0yjeyvPKpABFc6y1uDamSWgO/cSz7V99k+V8BZ
-         ETh+uycp6s8I8DORwFnj1mZe32kSpXVdxeo9957WmO7bQcnSjiM6QQKlPjiTPmi13JzD
-         ZN7lQz0wgmhihXa8k8sUyOB900ick81eHjTUuYYGsg61uLp9rMjhOGPjbtuKyuRUitHy
-         mkAGH4q0xlYE9qM3xYR/vVRaAzEeRzDKlnOkshZI8p2o5sypGONueGt/WkByyqFHm3p4
-         +3RObTwt892Y2kIcvI+A3xQrMRY5GXCjWd0d7IZUpvcKTfWtNon8lSq4sHCFX8qO1b5z
-         hKaQ==
+        d=gmail.com; s=20230601; t=1709281825; x=1709886625; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qV7g20c61SLdcO3hJdJz8nvxom42Edf9pzms73nygYQ=;
+        b=XHAwqsJMxScnnPgoOLY87hRy722D+DJG9l6B+JENMK/3hVyFFKcLqfHRIXmqgkfu3U
+         KeDYPLB//2O50vFnprOnoNOPxpCbdtTEBqQoOUZUP+4y+umYnYKAbecWZZD5f6e7Hlxx
+         B0HCrCwPvYTxwXNeOWjKaOhwcrbWS//JHA92rxIHFDCHRYsVcMbMB5pO/7g22oOgtlBA
+         EwNJ2/9MdJAYlTDuz/HEu5W0Dyvs3+bmAPrx/LDDgEgZG9/4/TCwqABVrqGNiFPQHZkl
+         zOuiNOs57xm0RqDPAkGb/bt1Hq/AgI+D3U34eji1ycxd23CMJjt5tuyLz3+pFaBYHrbh
+         nWpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709281822; x=1709886622;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nnAe6NaXIcHyl5242tMjeLqLzA8OFKi+GWbu0EaffXk=;
-        b=euV018/c3d3hafO9uhQ5APErOBU199Zd26FiaCPrLZZKxYR4vI/jHovcunjgW8FO04
-         VxTIXVwKC+HtAiq+UwZfneL8GDg97OTfhzcJl9qd5Zc8f+dNr/48WmUbUiGVKdMN+nwT
-         SoBUnoYOX+klu2Fp/XaUAY4WgcIhXRa7sEEh+NsHx+meSny6u2tP8kDXwK6Er5nFHnpy
-         1MfPrqINGA+YlMO4qxHHHFZ4HE/Mqkq9I3hp2y0trxVuRLMKjQRA7vngEZ6XAph6sJ/N
-         FO5FP+/1yE2onNPXqHZlk7TljXb+ikN9dGkWwkmYayXDJSnjGBifzzRKIXTmxTUCXk83
-         xI2g==
-X-Forwarded-Encrypted: i=1; AJvYcCXbS3aJrxvPJegcW8DoATyIyVZrsFmOaZlEbNLygzQH/Zp5ThstOIjCSf/z5qlsNvXzx23r2GGaUSD7LhUtU4nfo6HOFg4R2USszQN3
-X-Gm-Message-State: AOJu0Ywkx2Zl2Ma2FtHunMfF5bk0qlXJrrQzG5NQRMWfLkEj5Dx3qWb/
-	69pPrlt3thtDtIE79MXEcO+PEI0HKCfNVoXbHxnxq8eBeZGRvZg4PBEmxjubdTU=
-X-Google-Smtp-Source: AGHT+IGbzM9wpjNCWQIQ/m5Cf7V33ESVJMMgereQ6xXOsxnTfiohp9ooo/ZBqYT5kcM4ALBYYPtBaQ==
-X-Received: by 2002:a05:6a20:3d02:b0:1a1:19f8:d2a0 with SMTP id y2-20020a056a203d0200b001a119f8d2a0mr999941pzi.27.1709281821800;
-        Fri, 01 Mar 2024 00:30:21 -0800 (PST)
-Received: from [10.84.152.139] ([203.208.167.154])
-        by smtp.gmail.com with ESMTPSA id h8-20020a17090a3d0800b00299be0e00c1sm5238144pjc.33.2024.03.01.00.30.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Mar 2024 00:30:21 -0800 (PST)
-Message-ID: <38a69b11-d6bb-4f0b-8080-7a051ad58206@bytedance.com>
-Date: Fri, 1 Mar 2024 16:30:11 +0800
+        d=1e100.net; s=20230601; t=1709281825; x=1709886625;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qV7g20c61SLdcO3hJdJz8nvxom42Edf9pzms73nygYQ=;
+        b=qi6WFHDME76X11qKkuZ46C8qXoVRF5mGxXgRTm+7dphZ9G7A6GnAgrnrYz9I1mC3eY
+         2fosmnilUl0fGEgMzVZhF/OtXsJnImxKBQ5IjgPnzI45qskKVQDGfG/3Erj3n4cSt9tM
+         53K0ymST1lTTgceSyCyJqkB7JLiWESbhrW2ElxGSX10/u2ViCe+Awb7mVBqDk9IV7EXg
+         8Q+ZW6hAiLwUAYzanqmVv5iWbHBE7mnLh3O5sNy95Yty5AgkL6/p7FRNHnpBbUpSQ+0N
+         4h9CUR3yjGlA0v/8D+dRGn4TgIzXg0Bw4+TX5dpTRRDw3b9NNihp8yc9z+t1dxpUHtAt
+         ZA9g==
+X-Forwarded-Encrypted: i=1; AJvYcCVk+dgaZo0y6hVDG3WIfeTWAhwsNGqOFWpikJQ3h4MS2opm8n3x0PMNufwRaKq2tCgOKrqXmyd4h4muXWq6Hp2Cpy4aSuV4I0OK3d/DfQ1Qs10p1r8R/cc844AUdu0WvxmxXZrLH2EAUw==
+X-Gm-Message-State: AOJu0YzAyZRqF3UZSorF1vSggPNBplJ/SV4kyrDySRXKvslRmK/5X9Jh
+	xcXDonHQMYLeL7YAX3BHq1Lk9+OBPjfqA8eT26UG5MfjTFVTXx4IA5vl6ViQeQG2MPmGZ9GwMmv
+	k0Nm626UtvRsl0JgTUkw00Jj9aUY=
+X-Google-Smtp-Source: AGHT+IE+14OaOL2S1nEWF9pejEJNM+Y86qN34hhKNmuQ+PcOJOR+7Ftc71QqTn1J1VkQogD0UG7NN6abk3ewaAcfTsw=
+X-Received: by 2002:a17:906:5ad0:b0:a43:900a:31c5 with SMTP id
+ x16-20020a1709065ad000b00a43900a31c5mr756052ejs.4.1709281825127; Fri, 01 Mar
+ 2024 00:30:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Re: [PATCH 1/4] sched/eevdf: Fix vruntime adjustment on reweight
-Content-Language: en-US
-To: Tianchen Ding <dtcccc@linux.alibaba.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Valentin Schneider <valentin.schneider@arm.com>,
- Barry Song <21cnbao@gmail.com>, Benjamin Segall <bsegall@google.com>,
- Chen Yu <yu.c.chen@intel.com>, Daniel Jordan <daniel.m.jordan@oracle.com>,
- "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
- Joel Fernandes <joel@joelfernandes.org>,
- K Prateek Nayak <kprateek.nayak@amd.com>, Mike Galbraith <efault@gmx.de>,
- Qais Yousef <qyousef@layalina.io>, Tim Chen <tim.c.chen@linux.intel.com>,
- Yicong Yang <yangyicong@huawei.com>,
- Youssef Esmat <youssefesmat@chromium.org>, linux-kernel@vger.kernel.org
-References: <c2ceff07-e1b4-4dbc-b945-f91a9076375e@linux.alibaba.com>
- <59585184-d13d-46e0-8d68-42838e97a702@bytedance.com>
- <9b58ef1d-0d45-4fbb-b154-abcbb10211c9@linux.alibaba.com>
-From: Abel Wu <wuyun.abel@bytedance.com>
-In-Reply-To: <9b58ef1d-0d45-4fbb-b154-abcbb10211c9@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240229-rk-dts-additions-v3-0-6afe8473a631@gmail.com>
+ <20240229-rk-dts-additions-v3-2-6afe8473a631@gmail.com> <823379825559bb76088c31f44f998dd3@manjaro.org>
+ <CABjd4YybaQnKm+VpU_xVrCb=pxQ7oQXPHGZzn_u1w_h3yn7gwg@mail.gmail.com>
+ <a8ebe39b28a34c3544481a4e43e61d2b@manjaro.org> <b16f1d40549554598a3658679ceba9bf@manjaro.org>
+In-Reply-To: <b16f1d40549554598a3658679ceba9bf@manjaro.org>
+From: Alexey Charkov <alchark@gmail.com>
+Date: Fri, 1 Mar 2024 12:30:14 +0400
+Message-ID: <CABjd4YwAq28C6gKTJKJdZQ_Fw1oEjR475oTS96xEXRj=XQ5_pg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/5] arm64: dts: rockchip: enable automatic active
+ cooling on Rock 5B
+To: Dragan Simic <dsimic@manjaro.org>
+Cc: Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Heiko Stuebner <heiko@sntech.de>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
+	Viresh Kumar <viresh.kumar@linaro.org>, Chen-Yu Tsai <wens@kernel.org>, devicetree@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 3/1/24 2:41 PM, Tianchen Ding Wrote:
-> On 2024/2/29 22:25, Abel Wu wrote:
->> Good catch. And to the best of my knowledge, the answer is YES. The
->> above Equation in the paper, which is Eq. (20), is based on the
->> assumption that:
->>
->>      "once client 3 leaves, the remaining two clients will
->>       proportionally support the eventual loss or gain in the
->>       service time"  -- Page 10
->>
->>      "by updating the virtual time according to Eq. (18,19) we
->>       ensure that the sum over the lags of all active clients
->>       is always zero"  -- Page 11
->>
->> But in Peter's implementation, it is the competitors in the new group
->> that client 3 later joins in who actually support the effect. So when
->> client 3 leaves competition with !0-lag in Linux, the rq's sum(lag_i)
->> is no longer zero.
->>
-> 
-> I've different opinions. According to the comments above avg_vruntime_add(), V
-> is calculated exactly to satisfy sum(lag_i)=0. This is guaranteed by math.
+On Fri, Mar 1, 2024 at 12:25=E2=80=AFPM Dragan Simic <dsimic@manjaro.org> w=
+rote:
+>
+> On 2024-03-01 07:17, Dragan Simic wrote:
+> > On 2024-03-01 06:21, Alexey Charkov wrote:
+> >> On Fri, Mar 1, 2024 at 1:25=E2=80=AFAM Dragan Simic <dsimic@manjaro.or=
+g>
+> >> wrote:
+> >>> On 2024-02-29 20:26, Alexey Charkov wrote:
+> >>> > This links the PWM fan on Radxa Rock 5B as an active cooling device
+> >>> > managed automatically by the thermal subsystem, with a target SoC
+> >>> > temperature of 65C and a minimum-spin interval from 55C to 65C to
+> >>> > ensure airflow when the system gets warm
+> >>>
+> >>> I'd suggest that you replace "automatic active cooling" with "active
+> >>> cooling" in the patch subject.  I know, it may seem like more of the
+> >>> unnecessary nitpicking, :) but I hope you'll agree that "automatic"
+> >>> is actually redundant there.  It would also make the patch subject
+> >>> a bit shorter.
+> >>>
+> >>> Another option would be to replace "automatic active cooling" with
+> >>> "automatic fan control", which may actually be a better choice.
+> >>> I'd be happy with whichever one you prefer. :)
+> >>
+> >> Sounds good to me, thanks!
+> >
+> > I'm glad that you like it. :)
+> >
+> >>> Otherwise, please feel free to add:
+> >>>
+> >>> Reviewed-by: Dragan Simic <dsimic@manjaro.org>
+> >>
+> >> Thank you Dragan, much appreciated!
+> >
+> > Thank you for putting up with my nitpicking. :)
+>
+> Perhaps the following tag would also be deserved for this patch:
+>
+> Helped-by: Dragan Simic <dsimic@manjaro.org>
+>
+> I hope you agree. :)
 
-Yes, you are right. I mixed another fairness issue with this. What I
-was thinking is that considering multiple competition groups (e.g.
-runqueues), the latency bound could be violated, that is someone could
-starve a bit. Say one entity even with positive lag could become less
-competitive if migrated to a higher competitive group.
+Definitely! Thanks again for your feedback and contribution!
 
-Staring at Eq. (20) again, what if we do a fake reweight? I mean let
-the client leave and rejoin at the same time without changing weight?
-IMHO it should have no effects, but according to Eq. (20) the V will
-change to:
-
-	V' = V + lag(j)/(W - w_j) - lag(j)/W != V
-
-Have I missed anything?
-
-> 
-> Actually I print some logs in enqueue_entity() and dequeue_entity() to verify this:
-> 
-> [  293.261236] before dequeue: V=2525278131 W=3072 v=2526243139 w=1024 lag_sum=0
-> [  293.261237] after dequeue: V=2524795627 W=2048 v=2526243139 w=1024 lag_sum=0
-> [  293.262286] before enqueue: V=2525319064 W=2048 v=2526766576 w=1024 lag_sum=0
-> [  293.262287] after enqueue: V=2525801568 W=3072 v=2526766576 w=1024 lag_sum=0
-> 
-> For the first 2 lines, we have 2524795627 = 2525278131 + (2525278131 - 2526243139) * 1024 / 2048.
-> Which is Eq. (18)
-> 
-> For the last 2 lines, we have 2525801568 = 2525319064 - (2525319064 - 2526766576) * 1024 / 3072.
-> Which is Eq. (19)
-> 
-> So whatever client 3 leave or join competition with !0-lag in Linux, V is handled properly.
-> 
->> Good catch again! It smells like a bug. Since this @se is still on_rq,
->> it should be taken into consideration when calculating avg_runtime(),
->> but in fact it isn't because __dequeue_entity() will remove its share.
->>
->> And I seem to spot another bug, although not relate to this problem,
->> that we actually need to call update_curr() unconditionally if curr is
->> available, because we need to commit curr's outstanding runtime to
->> ensure the result of avg_runtime() is up to date.
->>
-> 
-> I've tried to record avg_vruntime before __dequeue_entity() and pass it to
-> reweight_eevdf(). Then the issue is fixed. The V keeps the same during the whole
-> reweight_entity().
-> 
-> I could send these two bugfix patches (one for this bug and one you sugguested
-
-That would be appreciated!
-
-Thanks,
-	Abel
+Best regards,
+Alexey
 
