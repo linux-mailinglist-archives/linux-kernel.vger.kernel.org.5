@@ -1,161 +1,93 @@
-Return-Path: <linux-kernel+bounces-88117-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88118-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2245B86DD81
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:50:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D05886DD84
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:50:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2A0D28AB45
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:50:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 232F01F29919
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:50:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BEFB6A012;
-	Fri,  1 Mar 2024 08:49:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8D0A6A345;
+	Fri,  1 Mar 2024 08:50:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LesMyAuF"
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CnU4eYRn"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DC1F69E10
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 08:49:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E63E85B1E2;
+	Fri,  1 Mar 2024 08:50:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709282984; cv=none; b=kydnrNwzxsWKHhIYj70GxvQulbIxB8bV7M9jTCqNzu71ELEs+JP9J/Zy7Rc5+v7VTo8G7D3IXVlHbfmOEMRmG0AZHnsd5UhjNrkprsJu6oQBZaWKW+xiBFDzilT0gajV45i4sAtLO1A9J0OxWkT9PnTl2r1UUoMGPNghLZv6aoE=
+	t=1709283028; cv=none; b=pPdmcDQnHT+IqJ6Fje3pioX74SxaYFkR4/8FWwr7Xm/GfTRkbULCk4dW2pcWK608kKNljP9IkrPe/nHnpKrq726IXM5DY4bvr75On2IywJvpZKQD3K+g380xtuFeWmIhjYj1Hh8M3j4pcz6nifnZOINMZffqRpkhYaexDYQ7oIk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709282984; c=relaxed/simple;
-	bh=jN3VkU6TTj0itUtfWez0NxgdQx4sHDHdXqBKKHVWAkY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=N8UaZNjuSeoG0RUrQBStlIqA35tOCY2iMZGF94Ap11Sv7IGaT7Fe1jYzH1CRKKt1up0dKCGwYVRdDCA0et0cunaITeOMd8I9mQn9+tciS9+45Ao+MR/33LRDyslaYHUqoAPTiQdm2n7AsB/veyVgXLxMR+3fFXF+HEr2LN4mD1A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LesMyAuF; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a44360a8b9dso230754466b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 00:49:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709282979; x=1709887779; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=NygG+zgVE75okJaCIKi9Z46sh0xdDb3WRJLYh6SeQuE=;
-        b=LesMyAuFQI0xBKJ3OH1aynpgm1JaR8CttEu+uxow1q2nK93dZPbFDHVowVtVAkve3K
-         YZCPdRFjzgKbpPP0aUODUUqL+EofZWlFTWAxflE5Kb6B/1RysvzZETsuJpzalPGg+kgL
-         BP4tPSMHkUI4YpujDWkkTPABosEXuqkyP7pckoSjRfg+MetHk/8s9oXWFYNrIKPkoFgl
-         QhE2Wv8f1hj/PXUo4QloJTLXd+fTkA1m6qKlp7uxkDbPVQOcWal1tWisN4bFZuhwnbj7
-         z3GmkXLgPv7WRDjZYefSGtTL5O/QajIY/PD5DJRLz45PmCYH06oAVFN8vANTOz3Be+LA
-         /L7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709282979; x=1709887779;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NygG+zgVE75okJaCIKi9Z46sh0xdDb3WRJLYh6SeQuE=;
-        b=SfL9SxiE/BmLMsY8MizRES55kvp1LxL8aJfcUMDWwwrqGHmXdiOw0WfX+qOO8EcW1W
-         SpDuNsbs3hlhFhVkkAC4it+UpR7u7rJfUq/PU4+BbV1V0wipRxqvBfUdQ2aE3xOYp8bP
-         37hG0AcQt5aXpCSiQ1VqWxeoPubtZ5hu/lMq4/PPZLStKGmFrWtXrT9sB5OOwlNTSxKr
-         /tXSCb72GQn3sFvYPhYTYLCAJEyWI3sOvK4CaEYGCr7cI32OOaRNzRCiWiAdbpDRIIDj
-         470dNhdR4HHGDy/6UWfEVDOevAjRYYsTVIk3YYTOuvl1r3Gon+0A1UyU6WYIFV4NbNbu
-         DKCQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWtfz6wTCCslXWy13pnKgPSWmdtlJva3yUM5AGoi4ZmLJAZBl2lwCF1Z1sLLqnVdtALf1N0uxQDUYmdHCaC+E+abbAe+K1JMZ9Dwg3K
-X-Gm-Message-State: AOJu0YxqcR0EDHG0hK4fHuCF9OQZTFePwBDNlot95BAgFMVU/KOQmETn
-	j5KIkkaABpyGtNwyzDQ0CJkvsUaSOuRgOsK3EYmZUehaECVJQyUR1C8Rzhkrv3M=
-X-Google-Smtp-Source: AGHT+IHhVoesLGysr23SUpYTmXJ9xUF3CoWngGj/ChhbIYLGPW3SiC8g4fo+Psl+4rrcc+Gw60jnQg==
-X-Received: by 2002:a17:906:685a:b0:a44:5515:3b57 with SMTP id a26-20020a170906685a00b00a4455153b57mr715504ejs.4.1709282979470;
-        Fri, 01 Mar 2024 00:49:39 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id ps7-20020a170906bf4700b00a3e53eb1dcasm1492497ejb.107.2024.03.01.00.49.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Mar 2024 00:49:38 -0800 (PST)
-Message-ID: <0ff97f06-717d-4cd2-8a52-b1838fceed5a@linaro.org>
-Date: Fri, 1 Mar 2024 09:49:37 +0100
+	s=arc-20240116; t=1709283028; c=relaxed/simple;
+	bh=jRwlwLaY8DvhUJ5vZvOY0zwbcM9tnxbvoCb2hzIH5KY=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=byIHur+nT9njkvOlBHzmd9z6qLPhDIqwfksW6N8IXPspmNLJYXBp7Qjk0xXZHQKkuBrB2o8WBu1yAQqXO+j+E3W0Coj7HGycVk2ey4Fc0bB5nQyMiUvYLncoBkRrsBbfM3QqAz22DMGVXHDb5WRRSX+I7QcMZPrhn0sD0DzdfKw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CnU4eYRn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6D5A4C43394;
+	Fri,  1 Mar 2024 08:50:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709283027;
+	bh=jRwlwLaY8DvhUJ5vZvOY0zwbcM9tnxbvoCb2hzIH5KY=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=CnU4eYRnnjuRUQGulZk7J5iCtt/iedtbbzStswrDzf71YwH+ENxLUUeOei91KLT4m
+	 oNtejIgWR9wueOQASwKRr+jJQvvcNgtrkzRJRVnrZQ9t04m9HL8KBA0NXpj0SDhdkn
+	 zifyRkMSYAnDOKJnQ2CUupAkOLYXfB1YXYLKo9zO1jOvDmhd1V77XaTcghyltCPflI
+	 LdmnbNL42vVi46Nfc8ZSwuYseOIAWVF+Kqje3X02EX66DV+GMgTCOCAMhxjuxjZHGZ
+	 1N/sKWPjxkuBpSyVQ+JKslceJ/O1yQ4u4PCGRdoC8/v7SNH7VjPiygQRPmLQrefK+t
+	 s/X7ql0v3JDrQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 565C8C595C4;
+	Fri,  1 Mar 2024 08:50:27 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/2] media: dt-bindings: i2c: use absolute path to
- other schema
-Content-Language: en-US
-To: Alexander Stein <alexander.stein@ew.tq-group.com>,
- Sebastian Reichel <sre@kernel.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Alain Volmat <alain.volmat@foss.st.com>,
- Ricardo Ribalda <ribalda@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>,
- Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
- Michael Riesch <michael.riesch@wolfvision.net>,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: linux-media@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, imx@lists.linux.dev,
- linux-arm-kernel@lists.infradead.org
-References: <20240301084009.3030753-1-alexander.stein@ew.tq-group.com>
- <20240301084009.3030753-2-alexander.stein@ew.tq-group.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240301084009.3030753-2-alexander.stein@ew.tq-group.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] [v2] net: bql: fix building with BQL disabled
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170928302735.20263.761844776141762847.git-patchwork-notify@kernel.org>
+Date: Fri, 01 Mar 2024 08:50:27 +0000
+References: <20240228160732.1662287-1-arnd@kernel.org>
+In-Reply-To: <20240228160732.1662287-1-arnd@kernel.org>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, leitao@debian.org, arnd@arndb.de, s-vadapalli@ti.com,
+ rogerq@kernel.org, grygorii.strashko@ti.com, dan.carpenter@linaro.org,
+ horms@kernel.org, daniel@iogearbox.net, ansuelsmth@gmail.com,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On 01/03/2024 09:40, Alexander Stein wrote:
-> Absolute path to other DT schema is preferred over relative one.
+Hello:
+
+This patch was applied to netdev/net.git (main)
+by David S. Miller <davem@davemloft.net>:
+
+On Wed, 28 Feb 2024 17:06:56 +0100 you wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
-> ---
-> Changes in v3:
-> * Squashed patches 2-5 from v2 into a single one
+> It is now possible to disable BQL, but that causes the cpsw driver to break:
 > 
+> drivers/net/ethernet/ti/am65-cpsw-nuss.c:297:28: error: no member named 'dql' in 'struct netdev_queue'
+>   297 |                    dql_avail(&netif_txq->dql),
+> 
+> [...]
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Here is the summary with links:
+  - [v2] net: bql: fix building with BQL disabled
+    https://git.kernel.org/netdev/net/c/eb2c11b27c58
 
-Best regards,
-Krzysztof
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
