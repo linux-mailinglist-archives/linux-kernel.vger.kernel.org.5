@@ -1,198 +1,141 @@
-Return-Path: <linux-kernel+bounces-88257-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88258-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC57286DF49
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:36:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 12F7386DF4E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:37:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA3131C215F6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:36:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2DDBD1C217C8
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:37:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9FD267E74;
-	Fri,  1 Mar 2024 10:36:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54A306A8DE;
+	Fri,  1 Mar 2024 10:37:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ubjdcUNa";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="cffUrO9L";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ubjdcUNa";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="cffUrO9L"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="glQ0TZE6"
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 577341E4BD;
-	Fri,  1 Mar 2024 10:36:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FF72339B1;
+	Fri,  1 Mar 2024 10:37:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709289408; cv=none; b=f+Ww58qLicSbex9YMQM3Pded1c4Y3aD8tobGW+CkGfYYpF6SfCk/XX4lWj30DE9av98dnh9pQGqV+EAxgHYY+ZZvZiOhh0mdcn7bPDUCl46ucktiuxcBj3+xbtU9BGEPDbAjc7ER7Q1eZXzYu9vo+VTUf4MUOXX2pf4TZXqFU+U=
+	t=1709289438; cv=none; b=MFvli8ksd4cJOOHkURPw8x6bIx+KEJIA5s2hFq4xsX78SvuWG2bAqqantm38W8dONeRHB6I0WGNn9yumkvNJ4D6UAvo+aqp447IAN7e9bHQ/AfPVntIxUFtdDXJx0F4GrFcgUARm1h1TBEROMGLlQ6eoeFUawRYRlNJL0VMvQ38=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709289408; c=relaxed/simple;
-	bh=C4l3an7f5mqxgSVgCMxQ+YelMOT39slYRkY8Ig9AT/w=;
-	h=Date:Message-ID:From:To:Cc:Subject:MIME-Version:Content-Type; b=Xuwzn//ubga18y4OXHhfffKegzc+g9EyXOGF65pxI19zDijwsufQmyWPpbPUNT4uvGgI2YabQlEqvRpYQVj1LiAEl71vK5SJO6UTDonh9zd5NNHiij7mwqUH1lak2SVF0K7SAV0HTccMEBBWNzd2uzYL7wK4Nv1LCOy1vB0Vppo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ubjdcUNa; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=cffUrO9L; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ubjdcUNa; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=cffUrO9L; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 84211336DA;
-	Fri,  1 Mar 2024 10:36:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1709289404; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type;
-	bh=7lP9mv/TOStEwOZNfpSVS2aLQRv5lETQH/OLJx5+RR8=;
-	b=ubjdcUNaPp/Q4bp4oxHQ6WA+ASmiUOD+WpnGDKqhQ+YaM7pvSkmqMULBDX6IizvSKMxdw+
-	4XMKqBjNKQh3mXdXgSYJeEGAD033PqzzWoosLy3crAV7VRAKXto1Zo9d58XpCuJnDNTns2
-	f7BvzPsfqYCg2AKpo+fVxTvobJw8dNg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1709289404;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type;
-	bh=7lP9mv/TOStEwOZNfpSVS2aLQRv5lETQH/OLJx5+RR8=;
-	b=cffUrO9LHUh25hPiWgpp9mce475BgSfXTRB05NI1S6b1+jQSvDDyO9NSJQlsi750+BdX9j
-	q/QwiXRjzdyyRuCA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1709289404; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type;
-	bh=7lP9mv/TOStEwOZNfpSVS2aLQRv5lETQH/OLJx5+RR8=;
-	b=ubjdcUNaPp/Q4bp4oxHQ6WA+ASmiUOD+WpnGDKqhQ+YaM7pvSkmqMULBDX6IizvSKMxdw+
-	4XMKqBjNKQh3mXdXgSYJeEGAD033PqzzWoosLy3crAV7VRAKXto1Zo9d58XpCuJnDNTns2
-	f7BvzPsfqYCg2AKpo+fVxTvobJw8dNg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1709289404;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type;
-	bh=7lP9mv/TOStEwOZNfpSVS2aLQRv5lETQH/OLJx5+RR8=;
-	b=cffUrO9LHUh25hPiWgpp9mce475BgSfXTRB05NI1S6b1+jQSvDDyO9NSJQlsi750+BdX9j
-	q/QwiXRjzdyyRuCA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 53C3413A59;
-	Fri,  1 Mar 2024 10:36:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id E3XqEryv4WXLMAAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Fri, 01 Mar 2024 10:36:44 +0000
-Date: Fri, 01 Mar 2024 11:36:43 +0100
-Message-ID: <87h6hq5jd0.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Linux Sound Mailing List <linux-sound@vger.kernel.org>, Linux Kernel
- Mailing List <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] sound fixes for 6.8-rc7
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	s=arc-20240116; t=1709289438; c=relaxed/simple;
+	bh=kj0GX5JufiTvFSbGnjmfOxouxBSD5J1fiq7Z+9gQtfM=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=SvY0+XcFq/eH923wiX4kn1gkRgb0Qrfgh6ce/sVrSfKGu2iI02XayaWQ3YymruzWcVQQTycPBIL4qOg/Duqxusmdazr1PeJsf86UioIIMYofkB4dknhW7IBoajE1p8H6weyXEfiYYbnSrLhTC+5hqnNYEifn6H/F/6eUv8d5Hfg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=glQ0TZE6; arc=none smtp.client-ip=217.70.183.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 0B01660003;
+	Fri,  1 Mar 2024 10:37:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709289427;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qZXbs8FJ1qVx7PbdKrlgZ1XNtd19xUWerbxWOLhwuM0=;
+	b=glQ0TZE6LDyKscIZPFD/F5LAelaLJlBUHfnT3OffYX0JJcO2E5GvADW4hECiweYiGAqQyi
+	FYSrBk/Eo+deS7wUAQ14J6OWmE/tIScxkmKtJVYYh6fROC26mn+qkvf7pc2lru5N4g4+bZ
+	Y3joigwZSh52q4dD7inLW2TCAPKWllF5lj9pn86gxUvpDsorhSsUr0gLHYEAJevIp64QRn
+	lY5rb611L2WOTFCm5W4bkaQWvsY5S8IGJXICo5JYGFiDk/lDdBOTBt8h/UOogKkO5WXQsh
+	siefTxO9I2nQiRKpv8knknePhM/GmF2HdjwRjQGf7meP2FHLmpq0e0GRSOa0WQ==
+Date: Fri, 1 Mar 2024 11:37:03 +0100
+From: Maxime Chevallier <maxime.chevallier@bootlin.com>
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: Bastien Curutchet <bastien.curutchet@bootlin.com>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+ <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Rob Herring
+ <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>, Richard Cochran
+ <richardcochran@gmail.com>, Heiner Kallweit <hkallweit1@gmail.com>, Russell
+ King <linux@armlinux.org.uk>, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-leds@vger.kernel.org, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, herve.codina@bootlin.com,
+ christophercordahi@nanometrics.ca
+Subject: Re: [PATCH v2 6/6] net: phy: DP83640: Add fiber mode
+ enabling/disabling from device tree
+Message-ID: <20240301113703.102bbad0@device-28.home>
+In-Reply-To: <c6840f8f-7d9c-49e8-b689-2af04605b99c@lunn.ch>
+References: <20240227093945.21525-1-bastien.curutchet@bootlin.com>
+	<20240227093945.21525-7-bastien.curutchet@bootlin.com>
+	<a9c2144a-f26b-4a71-b808-ce3a94f1264d@lunn.ch>
+	<c1b17410-b403-4c3a-9c00-de8f2b2b2fa7@bootlin.com>
+	<c6840f8f-7d9c-49e8-b689-2af04605b99c@lunn.ch>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-2.10 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCPT_COUNT_FIVE(0.00)[5];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 TO_DN_ALL(0.00)[];
-	 MID_CONTAINS_FROM(1.00)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[kernel.org,gmail.com,vger.kernel.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -2.10
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: maxime.chevallier@bootlin.com
 
-Linus,
+Hi Bastien, Andrew,
 
-please pull sound fixes for v6.8-rc7 from:
+On Thu, 29 Feb 2024 16:23:59 +0100
+Andrew Lunn <andrew@lunn.ch> wrote:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-6.8-rc7
+> On Thu, Feb 29, 2024 at 08:31:55AM +0100, Bastien Curutchet wrote:
+> > Hi Andrew,
+> > 
+> > On 2/27/24 17:18, Andrew Lunn wrote:  
+> > > On Tue, Feb 27, 2024 at 10:39:45AM +0100, Bastien Curutchet wrote:  
+> > > > The PHY is able to use copper or fiber. The fiber mode can be enabled or
+> > > > disabled by hardware strap. If hardware strap is incorrect, PHY can't
+> > > > establish link.
+> > > > 
+> > > > Add a DT attribute 'ti,fiber-mode' that can be use to override the
+> > > > hardware strap configuration. If the property is not present, hardware
+> > > > strap configuration is left as is.  
+> > > How have you tested this? Do you have a RDK with it connected to an
+> > > SFP cage?  
+> > 
+> > I did not test fiber mode as my board uses copper.
+> > 
+> > My use case is that I need to explicitly disable the fiber mode because the
+> > strap hardware is
+> > misconfigured and could possibly enable fiber mode from time to time.  
+> 
+> O.K. So lets refocus this is little. Rather than support fibre mode,
+> just support disabling fibre mode. But leave a clear path for somebody
+> to add fibre support sometime in the future.
+> 
+> Looking at the current code, do you think fibre mode actually works
+> today? If you think it cannot actually work today in fibre mode, one
+> option would be to hard code it to copper mode. Leave the
+> configuration between fibre and copper mode to the future when
+> somebody actually implements fibre mode.
 
-The topmost commit is 17c6a0c986fbea2c09010c39ef4b44334f06e390
+Looking at the driver and the datasheet, it's hard to say that the
+fiber mode can't work in the current state. It's configured either
+through straps or an overriding register, and it's enough to get the
+scrambler/descrambler automatically setup according to that single
+strap. 
 
-----------------------------------------------------------------
+So it's hard to say that defaulting to copper won't break anything :(
 
-sound fixes for 6.8-rc7
+OTOH there's no SFP support in this PHY, in terms of register config,
+some aneg modes won't work in 100BaseFX, which the driver doesn't account for,
+So nothing would indicate that the fiber mode was ever used.
 
-The amount of changes wasn't as small as wished, but all reasonably
-small fixes.  There is a PCM core API change, which is for correcting
-the behavior change we took in 6.8.  The rest are device-specific
-fixes for ASoC AMD, Qualcomm, Cirrus codecs, HD-audio quirks & co.
+There's the DP83822 driver that can accept the "ti,fiber-mode"
+property, so adding that would at least be coherent with other DP83xxx
+PHYs but it has the opposite logic we want, so doesn't prevent any
+possible regression for existing fiber users.
 
-----------------------------------------------------------------
+All in all, do you think that defaulting to copper and leaving users an
+option to implement "ti,fiber-mode" is an acceptable risk to take ?
 
-Colin Ian King (1):
-      ASoC: qcom: Fix uninitialized pointer dmactl
-
-Eniac Zhang (1):
-      ALSA: hda/realtek: fix mute/micmute LED For HP mt440
-
-Gergo Koteles (1):
-      ALSA: hda/realtek: tas2781: enable subwoofer volume control
-
-Hans Peter (1):
-      ALSA: hda/realtek: Enable Mute LED on HP 840 G8 (MB 8AB8)
-
-Jaroslav Kysela (1):
-      ALSA: pcm: clarify and fix default msbits value for all formats
-
-Jay Ajit Mate (1):
-      ALSA: hda/realtek: Fix top speaker connection on Dell Inspiron 16 Plus 7630
-
-Jiawei Wang (2):
-      ASoC: amd: yc: add new YC platform variant (0x63) support
-      ASoC: amd: yc: Fix non-functional mic on Lenovo 21J2
-
-Johnny Hsieh (1):
-      ASoC: amd: yc: Add Lenovo ThinkBook 21J0 into DMI quirk table
-
-Kailang Yang (1):
-      ALSA: hda/realtek - ALC285 reduce pop noise from Headphone port
-
-Richard Fitzgerald (2):
-      ASoC: cs35l56: Must clear HALO_STATE before issuing SYSTEM_RESET
-      ASoC: soc-card: Fix missing locking in snd_soc_card_get_kcontrol()
-
-Takashi Iwai (2):
-      ALSA: ump: Fix the discard error code from snd_ump_legacy_open()
-      ALSA: Drop leftover snd-rtctimer stuff from Makefile
-
-Takashi Sakamoto (1):
-      ALSA: firewire-lib: fix to check cycle continuity
-
-Willian Wang (1):
-      ALSA: hda/realtek: Add special fixup for Lenovo 14IRP8
-
----
- include/sound/soc-card.h          |  2 ++
- include/uapi/sound/asound.h       |  4 ++--
- sound/core/Makefile               |  1 -
- sound/core/pcm_native.c           |  5 +++++
- sound/core/ump.c                  |  4 ++--
- sound/firewire/amdtp-stream.c     |  2 +-
- sound/pci/hda/patch_realtek.c     | 34 ++++++++++++++++++++++++++++++++--
- sound/soc/amd/yc/acp6x-mach.c     | 14 ++++++++++++++
- sound/soc/amd/yc/pci-acp6x.c      |  1 +
- sound/soc/codecs/cs35l45.c        |  2 +-
- sound/soc/codecs/cs35l56-shared.c |  1 +
- sound/soc/codecs/cs35l56.c        |  2 +-
- sound/soc/fsl/fsl_xcvr.c          | 12 +++++++++++-
- sound/soc/qcom/lpass-cdc-dma.c    |  2 +-
- sound/soc/soc-card.c              | 24 ++++++++++++++++++++++--
- 15 files changed, 96 insertions(+), 14 deletions(-)
+Maxime
 
 
