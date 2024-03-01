@@ -1,164 +1,129 @@
-Return-Path: <linux-kernel+bounces-88320-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88321-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CCA686DFFE
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:15:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8F0D86E000
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:15:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 286251C20D84
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:15:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 50B361F22BD2
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:15:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77C746CBF4;
-	Fri,  1 Mar 2024 11:14:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D20A23BD;
+	Fri,  1 Mar 2024 11:14:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="ojxr+zuC"
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="euAvnW5x"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A047C6BFC2
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 11:14:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2517E6CDD1
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 11:14:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709291654; cv=none; b=aV9uCHSUs++QH1pX6uxrhdHGsJLd0QaWD6otx5zIGyGewOCfzRZBcRCZ4WL6H/JKE5t4bFyQu1kivCKsb8PIk4ZCJ5SJ3WLlEEAx222VpUhb5mzx2fMT9kAhgfeGg4xMnfte9E/eyuivj+eeiFA1XtQvs7Z019SndiM5Q5E211o=
+	t=1709291661; cv=none; b=JXX/luiQQDbrDaODUMa9IgpaTKo088n5tQSZPDAupBHaohPZgUR3jrSfuCY2ZJCiYuhA3vLzEk636a2Vr3fCKgHNs5zDqRddWC6KJ+vwNNiqvxliqT5hbdTrW1EdlodMqs3r2fXBQ3i90xqCw9liOa7X/6CBqc72AwRRSyz70Lc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709291654; c=relaxed/simple;
-	bh=zkbtf2XhdXqJAJc2oYBIfqC9jUyxnkqSO9tew8V0bg8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=unog0ZAeeeDbhhPGiTZz5y/0RDDzI4MvrxJARCnf/kHVMovCn9fbzaDusq1fpznrappUAoEIZN8hlDV8brGTzrvYGUVZeQvHkTRJ9X+Cp5QxMw7s60efUf95GgxOTiw8klXiJHXXHIkxW/KuQhOE2s+9aosnDwGtV3aIla2M18Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=ojxr+zuC; arc=none smtp.client-ip=209.85.208.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d21cdbc85bso20697941fa.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 03:14:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1709291651; x=1709896451; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jXt56DDN1trQQI8RIOoz0OKV0RNEBNHuWLr8xaraJVQ=;
-        b=ojxr+zuC/PpK426wnS6w13kYyIzL9mBC8UehHmts6Yk/0Z9Qw8Cstg9MvvOL9+Lvte
-         lHCuR63R26xspRTGe2jEJiy4suoIIdhHSPJ/34rjXLIU2tKl/p3+WS4UM8BmvqTPYl55
-         QkhFiLiOJHmYnFv3YKsrLvOLWlD+ds4EBnQ2Cuk+00DpEUVZqpRyN7jZ6H1E85n5Fbr/
-         L38Es5opuNC6cPXWNcxrmRPEWXZ+HB/nH3OLJvm/dto6FeuqSpiCeXqf6tcga/f3R+IV
-         rNETlhe409XcbtV1NkVXIPL5XcqutRt2Tw97zmhL+KI+UiZH5bVzvzd5k/4Rm8ZrHZfz
-         Zdwg==
+	s=arc-20240116; t=1709291661; c=relaxed/simple;
+	bh=BeWbTL/w4ec1nypcZmB3J2mBD806Yjz02fMt5od6LIQ=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:Content-Type; b=D3ZGXCDxR5ujKwmID4I1lQzXR3qkXQE0q4Pv46A5KGMnwOqTteNUxhYNOnu5E5rdzaolepw5Bw22hFNEtIo4A4Ml3w6l0dCbJWiL/OJevoI0DhlYcOAczVScesgUTRy2pbhxt+Rk0cB9sw5gvqhDddmYXhpkcZmLqw2mYGjXrAY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=euAvnW5x; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709291658;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=fEE62HUTb2Km+FBqYhB0pIcbLbRriFu9+pLa43NvRsg=;
+	b=euAvnW5xib1g7OC0k0nJTwzqrybMHi+o5eV8MuFNmjCv6HEuLkRsHjSYfAoFYFzS4HKyik
+	Ld2AGkwPJBWfoMJunn7xCBppxKaVIr8DPSad6HDGTaytR10e5H+oHqRA/e9y9iy4z2xVeK
+	uJDCRhsKScr4E+/AER7Pplmixw2w3Js=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-173-Ljfl5rmePhK2COfMD8K3mw-1; Fri, 01 Mar 2024 06:14:16 -0500
+X-MC-Unique: Ljfl5rmePhK2COfMD8K3mw-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-412bb0a770bso9666465e9.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 03:14:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709291651; x=1709896451;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jXt56DDN1trQQI8RIOoz0OKV0RNEBNHuWLr8xaraJVQ=;
-        b=r7agJDX1A3Q9sizX/eA3qBtUKXpwgdQ2V0/q9D77edHZP6LTJmMzINNDHfifwLSQhy
-         bQHN1Z73QLwkUQo0XAxDC3cXz7fKKpWi0tekFz0rmBLlEgZyOnXaGjlvIVOeKZ/YfzAt
-         Yiy78e+g6Zni+N/FdRqpjnowOzR8dhFbpnmzGK99EQB4sCL+L9/shKNDFSa4Jf55MzHB
-         fnwCO4NMBnl7MNEREBQ6liXoG24hKei2XzL/l3aYZz34qPwQTSOVVlDy0rz79Qm4ubML
-         l+ptTW6TgmippnbxHewaWMI91aVAPUHjaVqU/AaK0DxbPviERqaO9sEWu9hrF2MOmCKx
-         y8Bg==
-X-Gm-Message-State: AOJu0Yy6eg4ZnNEznOlBssyE3fDtpAEZm7c76Qppme4WBYaTfH0Ro3oZ
-	WB3v99nelUEJGj4NL66DgYeZKy+Z1O6jLcoFkVqfrVmqZsroU8z75fWEyekBaMc=
-X-Google-Smtp-Source: AGHT+IEMU3X0u8IVUbmn5Hd0kEbruFTDCYQR+XS7mqKnTdFj2a5iVEk93dn2ijW3fSXhfMFxgwHqFQ==
-X-Received: by 2002:a05:6512:2388:b0:512:be8e:79da with SMTP id c8-20020a056512238800b00512be8e79damr1364981lfv.8.1709291650643;
-        Fri, 01 Mar 2024 03:14:10 -0800 (PST)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id q16-20020a5d6590000000b0033d56aa4f45sm4292371wru.112.2024.03.01.03.14.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 03:14:10 -0800 (PST)
-Date: Fri, 1 Mar 2024 12:14:09 +0100
-From: Andrew Jones <ajones@ventanamicro.com>
-To: Atish Patra <atishp@rivosinc.com>
-Cc: linux-kernel@vger.kernel.org, Anup Patel <anup@brainfault.org>, 
-	Palmer Dabbelt <palmer@rivosinc.com>, Albert Ou <aou@eecs.berkeley.edu>, 
-	Alexandre Ghiti <alexghiti@rivosinc.com>, Atish Patra <atishp@atishpatra.org>, 
-	Conor Dooley <conor.dooley@microchip.com>, Guo Ren <guoren@kernel.org>, Icenowy Zheng <uwu@icenowy.me>, 
-	kvm-riscv@lists.infradead.org, kvm@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, Mark Rutland <mark.rutland@arm.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Shuah Khan <shuah@kernel.org>, Will Deacon <will@kernel.org>
-Subject: Re: [PATCH v4 04/15] RISC-V: Add SBI PMU snapshot definitions
-Message-ID: <20240301-1a1aa2a2c04640c34749cb5f@orel>
-References: <20240229010130.1380926-1-atishp@rivosinc.com>
- <20240229010130.1380926-5-atishp@rivosinc.com>
+        d=1e100.net; s=20230601; t=1709291655; x=1709896455;
+        h=content-transfer-encoding:cc:to:subject:from:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=fEE62HUTb2Km+FBqYhB0pIcbLbRriFu9+pLa43NvRsg=;
+        b=aRhrZEskMpYuvJ9r18h069ClZH3epo492yi3u4WobOmw/H0VfFUOwysGpFyHaLPhKu
+         8izhzAjnkfLsXITQFIu71VLXMP7lKyoWAi3epx9TNDDLjHYrIZk7YpGYkoP7dZ00xN70
+         cBlRmpalYjzipWLfTQrQB6O+Z3HyRSaz3VbUzm5EdmdBpCetWv8chWE8oVpx93q2lB+E
+         Lae41fISykhK2F/sMejicgsBmMMGx/d/8ksOdFumD/Yt1fuiF3iJk+edvDIWs6wQVAXH
+         umzC4+J79dn0h0Z+VGjQaBaPRqfnzp/87Us/RXTWVqF4qOnh8yixHS5WKcj5cjnoHJIP
+         yqLg==
+X-Gm-Message-State: AOJu0YztFtoIIQ3Ktu60ckN3WoMuFmsLjulY/p3eHDatXrmacNgjxD5+
+	vU0PkSZULFTl2Zdlcjr2Mzcqy40Lg7tRG4HUAACPhVt4hay3i/b7qb/GCS/IeOaq4K6aC8nzplo
+	9Fwh2A3Xf7M+680Zl6S4y1po+dAYJtRYEzNO9hrsMUgT2HhEV5qFcla8XsJ1ngX0majMO8sP1OH
+	O/eMdwPysU7RlmRnaSZPNO3i1NME5yMpu/1NT3S59M/171HsXS
+X-Received: by 2002:a05:600c:46cd:b0:412:abe9:b011 with SMTP id q13-20020a05600c46cd00b00412abe9b011mr1239798wmo.25.1709291654884;
+        Fri, 01 Mar 2024 03:14:14 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHX4vhWUpLzjqkUt2iL5RROANZ+KBN2JNGU+nOrrm8U1XZkHM6jXQJ2tnbKyKLklpLbECrcAA==
+X-Received: by 2002:a05:600c:46cd:b0:412:abe9:b011 with SMTP id q13-20020a05600c46cd00b00412abe9b011mr1239766wmo.25.1709291654398;
+        Fri, 01 Mar 2024 03:14:14 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:c:37e0:ced3:55bd:f454:e722? ([2a01:e0a:c:37e0:ced3:55bd:f454:e722])
+        by smtp.gmail.com with ESMTPSA id u17-20020a05600c19d100b00412a31d2e2asm5124244wmq.32.2024.03.01.03.14.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Mar 2024 03:14:13 -0800 (PST)
+Message-ID: <266579a9-fde6-40ff-b13d-fb2312db406c@redhat.com>
+Date: Fri, 1 Mar 2024 12:14:12 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240229010130.1380926-5-atishp@rivosinc.com>
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US, fr
+From: Jocelyn Falempe <jfalempe@redhat.com>
+Subject: [RFC] How to test panic handlers, without crashing the kernel
+To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ John Ogness <john.ogness@linutronix.de>, Daniel Vetter <daniel@ffwll.ch>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+ Josh Poimboeuf <jpoimboe@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>, Lukas Wunner <lukas@wunner.de>,
+ Uros Bizjak <ubizjak@gmail.com>, "Guilherme G. Piccoli"
+ <gpiccoli@igalia.com>, Uros Bizjak <ubizjak@gmail.com>
+Cc: "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+ David Airlie <airlied@redhat.com>, Thomas Zimmermann <tzimmermann@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 28, 2024 at 05:01:19PM -0800, Atish Patra wrote:
-> SBI PMU Snapshot function optimizes the number of traps to
-> higher privilege mode by leveraging a shared memory between the S/VS-mode
-> and the M/HS mode. Add the definitions for that extension and new error
-> codes.
-> 
-> Reviewed-by: Anup Patel <anup@brainfault.org>
-> Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
-> Signed-off-by: Atish Patra <atishp@rivosinc.com>
-> ---
->  arch/riscv/include/asm/sbi.h | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
-> index ef8311dafb91..dfa830f7d54b 100644
-> --- a/arch/riscv/include/asm/sbi.h
-> +++ b/arch/riscv/include/asm/sbi.h
-> @@ -132,6 +132,7 @@ enum sbi_ext_pmu_fid {
->  	SBI_EXT_PMU_COUNTER_STOP,
->  	SBI_EXT_PMU_COUNTER_FW_READ,
->  	SBI_EXT_PMU_COUNTER_FW_READ_HI,
-> +	SBI_EXT_PMU_SNAPSHOT_SET_SHMEM,
->  };
->  
->  union sbi_pmu_ctr_info {
-> @@ -148,6 +149,13 @@ union sbi_pmu_ctr_info {
->  	};
->  };
->  
-> +/* Data structure to contain the pmu snapshot data */
-> +struct riscv_pmu_snapshot_data {
-> +	u64 ctr_overflow_mask;
-> +	u64 ctr_values[64];
-> +	u64 reserved[447];
-> +};
-> +
->  #define RISCV_PMU_RAW_EVENT_MASK GENMASK_ULL(47, 0)
->  #define RISCV_PMU_RAW_EVENT_IDX 0x20000
->  
-> @@ -244,9 +252,11 @@ enum sbi_pmu_ctr_type {
->  
->  /* Flags defined for counter start function */
->  #define SBI_PMU_START_FLAG_SET_INIT_VALUE (1 << 0)
+Hi,
 
-A patch before this which changes all flags to use BIT() instead of shifts
-would be good, since otherwise the new flags are inconsistent.
+While writing a panic handler for drm devices [1], I needed a way to 
+test it without crashing the machine.
+So from debugfs, I called 
+atomic_notifier_call_chain(&panic_notifier_list, ...), but it has the 
+side effect of calling all other panic notifiers registered.
 
-> +#define SBI_PMU_START_FLAG_INIT_FROM_SNAPSHOT BIT(1)
+So Sima suggested to move that to the generic panic code, and test all 
+panic notifiers with a dedicated debugfs interface.
 
-This is named SBI_PMU_START_FLAG_INIT_SNAPSHOT in the spec.
+I can move that code to kernel/, but before doing that, I would like to 
+know if you think that's the right way to test the panic code.
 
->  
->  /* Flags defined for counter stop function */
->  #define SBI_PMU_STOP_FLAG_RESET (1 << 0)
-> +#define SBI_PMU_STOP_FLAG_TAKE_SNAPSHOT BIT(1)
->  
->  enum sbi_ext_dbcn_fid {
->  	SBI_EXT_DBCN_CONSOLE_WRITE = 0,
-> @@ -285,6 +295,7 @@ struct sbi_sta_struct {
->  #define SBI_ERR_ALREADY_AVAILABLE -6
->  #define SBI_ERR_ALREADY_STARTED -7
->  #define SBI_ERR_ALREADY_STOPPED -8
-> +#define SBI_ERR_NO_SHMEM	-9
->  
->  extern unsigned long sbi_spec_version;
->  struct sbiret {
-> -- 
-> 2.34.1
->
 
-Thanks,
-drew
+The second question is how to simulate a panic context in a 
+non-destructive way, so we can test the panic notifiers in CI, without 
+crashing the machine. The worst case for a panic notifier, is when the 
+panic occurs in NMI context, but I don't know how to simulate that. The 
+goal would be to find early if a panic notifier tries to sleep, or do 
+other things that are not allowed in a panic context.
+
+
+Best regards,
+
+-- 
+
+Jocelyn
+
+[1] https://patchwork.freedesktop.org/patch/580183/?series=122244&rev=8
+
 
