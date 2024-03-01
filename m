@@ -1,154 +1,221 @@
-Return-Path: <linux-kernel+bounces-88630-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88631-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB8A386E48B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:39:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF7E486E48D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:40:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9096B287397
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:39:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 697D71F267B2
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:40:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11FB76F50F;
-	Fri,  1 Mar 2024 15:39:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 559127002C;
+	Fri,  1 Mar 2024 15:39:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="H0mewWKV"
-Received: from bee.tesarici.cz (unknown [77.93.223.253])
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="iX589oPb"
+Received: from EUR02-DB5-obe.outbound.protection.outlook.com (mail-db5eur02on2056.outbound.protection.outlook.com [40.107.249.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94E563A8E3
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 15:39:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.93.223.253
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709307579; cv=none; b=JqI0jFwOsd3URErdCf8N+BJL1RqkVqqEXYo2prDetXcoC90tiASdSpkgrauvjW0W9kRRW/u63pU864+C8t6n9MPXT3LCLHn2TzZTK+dnv1UYV/VWSn6YHDvxGJZ8H0n4YPcrUabR3AGHEHZwgcsY4/HyQWdInXpf/HCml/4YmVE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709307579; c=relaxed/simple;
-	bh=MgUqSXoPJkNv53osPWyAYHJspRzP4mbPdaDO/LJU97k=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ursOcbwX5lRHcKFQeRPHIkZAtaRbyCp8uIBxHpi26gndqw2K7GX3y/NleyxpK0HqbJoOCcZRMx/fHWBCmtbvSaf6xGMvs1hLiJXBWUCrc6e+szs3VvDfA3254IUuGscIjOHDqcnmt9UDXdJQhp8Vc/8Wi4wT1gxsI4GMoQ2pO4s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=H0mewWKV; arc=none smtp.client-ip=77.93.223.253
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
-Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by bee.tesarici.cz (Postfix) with ESMTPSA id DE6C11C32B2;
-	Fri,  1 Mar 2024 16:39:28 +0100 (CET)
-Authentication-Results: mail.tesarici.cz; dmarc=fail (p=quarantine dis=none) header.from=tesarici.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tesarici.cz; s=mail;
-	t=1709307569; bh=lhnMMcmJC5RrjEhIqhAv2s0zT/02tZlCTuNpbuEIU4Y=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=H0mewWKV/KjTw4gwzl7j6Xj1MKKMFO0f30vWMbt/+p0uWUvY16DbLVm5h4xi+yECX
-	 4x+7iXVJ7YOlG4e528m8fNRjxJPHGj6a6tviz2KjvQzTYSG0WAF60Igs4Fsj0I1H1Q
-	 82D6vIN7yZzi4bwNWqaYpSz1xqCULqNxnM2efF6n4/rUpRGjtrqrzjWECiwjhV4Y0U
-	 mpn3nXzFZAivEdcEfZpss7cflspaBEaFT4YwzHamve4fInO4pccklB+xS/Kyh213SV
-	 CHAgRwPlURdR6vLYHVq9icVNVAl34flRZDmuL9P7YtGExDCellm/r9s7WaYOkuxY4Y
-	 JUvYmi0pNIHTA==
-Date: Fri, 1 Mar 2024 16:39:27 +0100
-From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Michael Kelley <mhklinux@outlook.com>, Will Deacon <will@kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Petr Tesarik
- <petr.tesarik1@huawei-partners.com>, "kernel-team@android.com"
- <kernel-team@android.com>, "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
- Marek Szyprowski <m.szyprowski@samsung.com>, Robin Murphy
- <robin.murphy@arm.com>, Dexuan Cui <decui@microsoft.com>, Nicolin Chen
- <nicolinc@nvidia.com>
-Subject: Re: [PATCH v5 6/6] swiotlb: Remove pointless stride adjustment for
- allocations >= PAGE_SIZE
-Message-ID: <20240301163927.18358ee2@meshulam.tesarici.cz>
-In-Reply-To: <20240229154756.GA10137@lst.de>
-References: <20240228133930.15400-1-will@kernel.org>
-	<20240228133930.15400-7-will@kernel.org>
-	<SN6PR02MB4157A62353559DA8DB8BC4ADD45F2@SN6PR02MB4157.namprd02.prod.outlook.com>
-	<SN6PR02MB41577D09E97B1D9645369D58D45F2@SN6PR02MB4157.namprd02.prod.outlook.com>
-	<20240229133346.GA7177@lst.de>
-	<SN6PR02MB4157314F142D05E279B7991ED45F2@SN6PR02MB4157.namprd02.prod.outlook.com>
-	<20240229154756.GA10137@lst.de>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-suse-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3822D3A8F8;
+	Fri,  1 Mar 2024 15:39:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.249.56
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709307598; cv=fail; b=hvx7raX8GEAEG/tQ1nRBUJMfkq1G89jj+qqs1+NR47FrcRomJtUcB2+kaJBJgKYJ18RdCZCjY74XeCORdo3WJPpF7uidVbJfp0pz3vkToy/wqoYPPEq/ZCOS1nsk6ZPS+zjXywnzELLdgfHk6OO/ETLQc5K8s24bLx/+R5nEw2I=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709307598; c=relaxed/simple;
+	bh=jCtZaSv9Epn+ahW05Qto6qVVp2uFfMJ1YR/QXOszjXI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=SYqNEDVGqTA5L+MGQ6Tb/BYJKjMH17eva8i0vz9pAq1/E3PFXL4X8fNr9X6K3HpKM43rA1EuJ2+L4m+7vRUp+2gXQCL5rwvlRmuV8BQDVvdho0TFNDaWzf3+mvPfH4YPwHYpllYuzhLEDqEiaRF378QO4/T8NO1tbVlSEzZ2G+0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=iX589oPb; arc=fail smtp.client-ip=40.107.249.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XwJ1xmrbE0Hn8TnMVXjtM2UEGyiYMLY2aTcQQ8OqKOxroNFwfm/Ig7muDkAJ8dcyuPcI4yZd5iLwStilaxj2VLuvA0gb22eU2ysfLbwXLxpkj6G/zrFXI6JzzovLOEmvt6nU9IpBVED7DXTPIc88EqqVbaeQmwU4iWe+cOwuvxvlbjV1VO1XkC8IVLP5cqeCi0JugTX9UJ0uJqr3bCUz3jvD6sEZTD1l4yWBIpjExhvU6i5DGYfdCORvqh1OjSRtSlJ+RmIVZ1emolhDHotVW32NW0xo44tbPXzRT1H1jCZtkaoGkp73fNQyCuaetHnh2rKWX3KCVR4I4jEO54kd+Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=i4wadc/MHs3KN0xNhltzh/PXbuVBhxJwBG1mmUAORtw=;
+ b=gGaWN1DpZWNneH1Rd2jK3Zn6RNKSIYuVbsywlidnb9l/xKNwhtuwPt0JOMFSeWQp9EY8l+qwcubqQDVZvwMzRoJZULgqyY5Dtm6UzIQ/jkhGe/EJxzqLgQolfQbtMG5N3BLX1FwtZJNwFQJseY0UtDWa9tzdn2T0QwlcxPpapSVczAl4rYPRhO070PuXKOgmnLqoGOxVOxUaw/2myvFK18nZ0Im+hnc7bovoL/L6fgW4Iz66yFbOcepmx5ACq5i7QucSY6pO03kR8hZ0heJc4ZfhZgT+JnoptoUnmjir8pPMIhuQlJvuwRb3e26DPTDTsPLkvX6QMH2jD3PgH+Cqsg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=i4wadc/MHs3KN0xNhltzh/PXbuVBhxJwBG1mmUAORtw=;
+ b=iX589oPbzf9n42DNcctc73suISHdrCyQP+/gu359oFq0NXTmn5EQjQLgJFoPdFEvqO4G3/vpGzMdiq3lxoQCOyVok/mWYqTK9+ttDs0mvRGSZyibyuevPE0uIBpqaGJiFpp7AvCt5BBYsV3YymVJfx4pqfLvNw0i63dVXF2AHmg=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by PR3PR04MB7212.eurprd04.prod.outlook.com (2603:10a6:102:8c::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.39; Fri, 1 Mar
+ 2024 15:39:53 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::9af4:87e:d74:94aa]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::9af4:87e:d74:94aa%7]) with mapi id 15.20.7316.035; Fri, 1 Mar 2024
+ 15:39:53 +0000
+Date: Fri, 1 Mar 2024 10:39:43 -0500
+From: Frank Li <Frank.li@nxp.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	Shengjiu Wang <shengjiu.wang@nxp.com>, linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org, imx@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/4] ASoC: dt-bindings: fsl,imx-asrc: update max
+ interrupt numbers
+Message-ID: <ZeH2v9WJsX9sLvXb@lizhi-Precision-Tower-5810>
+References: <20240228-asrc_8qxp-v3-0-d4d5935fd3aa@nxp.com>
+ <20240228-asrc_8qxp-v3-2-d4d5935fd3aa@nxp.com>
+ <3460ecc8-d7d7-4d1c-ad0c-b32efc3b9049@linaro.org>
+ <ZeFTqM8o/eozl+MS@lizhi-Precision-Tower-5810>
+ <a1861d70-80e2-4f42-b99a-f2b8c8efe042@linaro.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a1861d70-80e2-4f42-b99a-f2b8c8efe042@linaro.org>
+X-ClientProxiedBy: SJ2PR07CA0018.namprd07.prod.outlook.com
+ (2603:10b6:a03:505::22) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|PR3PR04MB7212:EE_
+X-MS-Office365-Filtering-Correlation-Id: dd09c7b8-e992-4ac0-256b-08dc3a05d6f4
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	IQoyp9SRmy2VFJmGxUghg29rnhD90LD8LdiUoxRUYVA4AEfHn4VUvjiK8MrAkxsqBzjaPvIQX64sL4rtuaGsdYO/bRwsRCuX34e9Rg+uCbVyl5yszkNnhwaobuKtK9t3UO3n1/FS2VfTnOaT37X/H4y4c5ICiSWgkFKQjAXmDWIwd/k/HyFg2RaM4xfWmfiKNOqog7U2y6AdQWKAq5Ql+FiN6NJs8XUDyXrn0F90xmmi30q1fZapfyiMjM0exGR6vApzJK0I/ptRq0hcptHm5/FTl9RSKpqsWDYoXsGlJdVQHx4mJiw6wxJL4//SR1/aeVjqTWHKYUwjq4yFdBF4KGtsLwV7bl7MhoPHMfo6E6oZfmPHqr8Gczg0DuEAVcbr+g4xmfSwljaWdKgoQAHJrPzj4ZeTAZVDeOz5hPJ+NMxpHbCtHwRM/etPrXEZ4PfC4YD3XbgWf3Bh4w+8fOQnSUvr458wsKWA8PU6lb9+3r5AEOm4K5HWy2oydK38UBJXInAL6Orni48cjORhsa17M03sqvorIzDp3UXnMfM4B7W0vRbSut3ukIxCEsUPRrj4NJv+f2e41PAOvDrqCohWrStX3COo/Ql2OTFpovdVtZ0prqRmFYHz5M6T5EDAvzDbL4DbeTZSrudYS0kt5JUh8SaMejlgSJGzzm2MvbuHe9R8osAg+RunN+rWC3Zvg41bdlzeCw4E4mojrv+7ZShy20WtJ5tD/zWa+C83r2GWWL8=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?4gNfpS4H1yAK92y+WsJyVbF45Kbs0+lAILByy9o009Ecm7Du7naCVjAT9GIh?=
+ =?us-ascii?Q?TzxXRQeIlyAnIC+PZErIQfttAhz24IkybE3T0cYbb7cmlFtjHNFFfYKCnVy3?=
+ =?us-ascii?Q?nKM4Jj0GRlu8KO3XpnvuP9XRxCWouoolQEBXG7sT3vswXSwFiktfSah3/trH?=
+ =?us-ascii?Q?bhX05rJRqUFIyCbPZDh3vdGuYOTWJ5M0NVx2oSoLMkbteOkYz8N9RtlWCktd?=
+ =?us-ascii?Q?dobkfE83i+NB8497CXbvLajQlADVqynVYiqBWEduUWvsLJyszwc9qumzJKv1?=
+ =?us-ascii?Q?cmSYGuwSWHadsv6NbnrRTB7MevMgJGb0D6g7pzPgETH7qgy3IAEFCvWDRh7+?=
+ =?us-ascii?Q?ITHkwmfUWpUKxKiHpXWCvadKTpKqVC5rfs4helldq/28GoBO1O1ja584n1Ui?=
+ =?us-ascii?Q?6KLV6jL1w8SWTlhrEL7zAYl7XWdFcpsE3vDIhTWzIDsg/1KxvRn7Mi6F+Ad9?=
+ =?us-ascii?Q?zMey1SHnPh5ekfFN/fx7bj2l/XZYEE+tNeXndHoTjddc0uiXCOaGYt2LngXh?=
+ =?us-ascii?Q?TU/o9h96WxAngDAtH1JhzKedkIiYZ90JEhxZDWWN+IGxYTnKsup1SqytrkJ0?=
+ =?us-ascii?Q?JtA032/VagLu8clSs2j3rmW9Z7n0CB4SFa68YiDJtcKRnlorlshAm1lpeZaL?=
+ =?us-ascii?Q?qgvv5ILpmr/h7tcfiCsa+ZddYm5sJL57xjdp9Hbebd0Fi1naYrJszjRbvw3m?=
+ =?us-ascii?Q?h3div+yW3YLIZgCOZ1cUoM8EHOX7YiuhznbucknzD1gj61EdnZeeOMm1SHRa?=
+ =?us-ascii?Q?jSTNGXjsNw/rM3xI2QOI7GyxqWMeCy0RMd1Vn2Xpcfi1da5A4n6RvpUDJT3L?=
+ =?us-ascii?Q?Om2jdU7h6qsErGht9V47uH9xdy4xAv9LVy6I+zK33ajWpb4bxyNs9qWC7TZ9?=
+ =?us-ascii?Q?vqng42i0d4PwMX7kCcrE4WLV7L2CLJDzj3Es3Yi6xulThiZEoCvX4EraxMxn?=
+ =?us-ascii?Q?75nKNXVob51+Yi91+SoBu4+B/l4ZWy1DbVKZSAShz/qW+FslFyhn8xsSVcKE?=
+ =?us-ascii?Q?D/sFtQO4JdnWqst8WyjyLTdBEFdoLTQ83q7USr4wSVFTgq2F79O9/jKGVPXT?=
+ =?us-ascii?Q?yIFfjw2adJ9y5I5emRUfSDP6JpeNWOrKaqPcp/gM7B8Qqd0FneCRS9qqyLuN?=
+ =?us-ascii?Q?ri4pOmBCNQhJH5VyexalBIthZ068z/rfuh7s8nLCqCy4pBHCdGPSP2mMWZcm?=
+ =?us-ascii?Q?SF0fOzIYy3SQaE4KAtN/o4NcoA4CMcu3VHy8IPHoX3pXjjb/Xs0TStDoH3h3?=
+ =?us-ascii?Q?Y+bMmANWbqXgC1C7PPokoRMhLRjWtfsq4uDY3DeMCGg3rQpVh4cwaWt1F5xd?=
+ =?us-ascii?Q?RloQCAokcEEU4MpytO/UqIBO+Vo7N69DZSyFYhUgQU0wfQbTyen1DrQ8nErD?=
+ =?us-ascii?Q?JfovRKyAg4PtYlIltzYk2T8cDQPuVMkK41PMsON1qh8OR0+jp7eMFV5Wlm+G?=
+ =?us-ascii?Q?AfQu15w6zTz3NVrB2aPucOE2adw5c/7Jx4U6MdFBjnsGCb5ecF1nHg5TbU/N?=
+ =?us-ascii?Q?qzF43TaRUHwxA4Sf5ySJ08kAM5GL11zHomiPZFS0PYX/WCDZNxoaCFZZErgz?=
+ =?us-ascii?Q?v9yLMgWZxyr4aPaytYA=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dd09c7b8-e992-4ac0-256b-08dc3a05d6f4
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Mar 2024 15:39:53.6378
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vy/3E+PgHtLHaYoi2U1W8osDpJQfb06bLawCEXSq9uTcBb9UsBhPX6zL+jQSPu26eHjxywAc7suOyS+OUy7xRQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3PR04MB7212
 
-On Thu, 29 Feb 2024 16:47:56 +0100
-Christoph Hellwig <hch@lst.de> wrote:
-
-> On Thu, Feb 29, 2024 at 03:44:11PM +0000, Michael Kelley wrote:
-> > Any thoughts on how that historical behavior should apply if
-> > the DMA min_align_mask is non-zero, or the alloc_align_mask
-> > parameter to swiotbl_tbl_map_single() is non-zero? As currently
-> > used, alloc_align_mask is page aligned if the IOMMU granule is  
-> > >= PAGE_SIZE. But a non-zero min_align_mask could mandate  
-> > returning a buffer that is not page aligned. Perhaps do the
-> > historical behavior only if alloc_align_mask and min_align_mask
-> > are both zero?  
+On Fri, Mar 01, 2024 at 07:30:45AM +0100, Krzysztof Kozlowski wrote:
+> On 01/03/2024 05:03, Frank Li wrote:
+> > On Thu, Feb 29, 2024 at 10:44:42AM +0100, Krzysztof Kozlowski wrote:
+> >> On 28/02/2024 20:14, Frank Li wrote:
+> >>> fsl,imx8qxp-spdif and fsl,imx8qm-spdif have 2 interrupts. Other platforms
+> >>> have 1 interrupt.
+> >>>
+> >>> Increase max interrupt number to 2 and add restriction for platforms except
+> >>> i.MX8QXP and i.MX8QM.
+> >>>
+> >>> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> >>> ---
+> >>>  .../devicetree/bindings/sound/fsl,spdif.yaml         | 20 +++++++++++++++++++-
+> >>>  1 file changed, 19 insertions(+), 1 deletion(-)
+> >>>
+> >>> diff --git a/Documentation/devicetree/bindings/sound/fsl,spdif.yaml b/Documentation/devicetree/bindings/sound/fsl,spdif.yaml
+> >>> index 82430f1d5e5a2..785f7997eea82 100644
+> >>> --- a/Documentation/devicetree/bindings/sound/fsl,spdif.yaml
+> >>> +++ b/Documentation/devicetree/bindings/sound/fsl,spdif.yaml
+> >>> @@ -31,7 +31,8 @@ properties:
+> >>>      maxItems: 1
+> >>>  
+> >>>    interrupts:
+> >>> -    maxItems: 1
+> >>> +    minItems: 1
+> >>> +    maxItems: 2
+> >>>  
+> >>>    dmas:
+> >>>      items:
+> >>> @@ -100,6 +101,23 @@ required:
+> >>>  
+> >>>  additionalProperties: false
+> >>>  
+> >>> +allOf:
+> >>> +  - if:
+> >>> +      properties:
+> >>> +        compatible:
+> >>> +          enum:
+> >>> +            - fsl,imx35-spdif
+> >>> +            - fsl,vf610-spdif
+> >>> +            - fsl,imx6sx-spdif
+> >>> +            - fsl,imx8mq-spdif
+> >>> +            - fsl,imx8mm-spdif
+> >>> +            - fsl,imx8mn-spdif
+> >>> +            - fsl,imx8ulp-spdif
+> >>> +    then:
+> >>> +      properties:
+> >>> +        interrupts:
+> >>> +          maxItems: 1
+> >>
+> >> else:
+> >> minItems: 2
+> > 
+> > I think needn't 'else' here. Top have set to maxItems is 2. 
 > 
-> I think the driver setting min_align_mask is a clear indicator
-> that the driver requested a specific alignment and the defaults
-> don't apply.  For swiotbl_tbl_map_single as used by dma-iommu
-> I'd have to tak a closer look at how it is used.
+> So explain why one item is correct here.
 
-I'm not sure it helps in this discussion, but let me dive into a bit
-of ancient history to understand how we ended up here.
+Top interrupt: maxItems: 2. That's means all compatible string (include
+imx8qxp, and imx8qm) required interrrupt number less than 2.
 
-IIRC this behaviour was originally motivated by limitations of PC AT
-hardware. Intel 8237 is a 16-bit DMA controller. To make it somehow
-usable with addresses up to 16MB (yeah, the infamous DMA zone), IBM
-added a page register, but it was on a separate chip and it did not
-increment when the 8237 address rolled over back to zero. Effectively,
-the page register selected a 64K-aligned window of 64K buffers.
-Consequently, DMA buffers could not cross a 64K physical boundary.
+other compatible string (except imx8qxp and imx8qm) already listed in
+'enum', have additional requirement <= 1, which match original requirement.
 
-Thanks to how the buddy allocator works, the 64K-boundary constraint
-was satisfied by allocation size, and drivers took advantage of it when
-allocating device buffers. IMO software bounce buffers simply followed
-the same logic that worked for buffers allocated by the buddy allocator.
+simple said:
 
-OTOH min_align_mask was motivated by NVME which prescribes the value of
-a certain number of low bits in the DMA address (for simplicity assumed
-to be identical with the same bits in the physical address).
+set[all] <=2
+set[fsl,imx35-spdif...] <= 1
 
-The only pre-existing user of alloc_align_mask is x86 IOMMU code, and
-IIUC it is used to guarantee that unaligned transactions do not share
-the IOMMU granule with another device. This whole thing is weird,
-because swiotlb_tbl_map_single() is called like this:
+So it is the same as
 
-                aligned_size = iova_align(iovad, size);
-                phys = swiotlb_tbl_map_single(dev, phys, size, aligned_size,
-                                              iova_mask(iovad), dir, attrs);
+set [all] <= 2
+set [fsl,imx35-spdif..] <=1
+set [qxp, qm] <= 2
 
-Here:
-
-* alloc_size = iova_align(iovad, size)
-* alloc_align_mask = iova_mask(iovad)
-
-Now, iova_align() rounds up its argument to a multiple of iova granule
-and iova_mask() is simply "granule - 1". This works, because granule
-size must be a power of 2, and I assume it must also be >= PAGE_SIZE.
-
-In that case, the alloc_align_mask argument is not even needed if you
-adjust the code to match documentation---the resulting buffer will be
-aligned to a granule boundary by virtue of having a size that is a
-multiple of the granule size.
-
-To sum it up:
-
-1. min_align_mask is by far the most important constraint. Devices will
-   simply stop working if it is not met.
-2. Alignment to the smallest PAGE_SIZE order which is greater than or
-   equal to the requested size has been documented, and some drivers
-   may rely on it.
-3. alloc_align_mask is a misguided fix for a bug in the above.
-
-Correct me if anything of the above is wrong.
-
-HTH
-Petr T
+> 
+> 
+> Best regards,
+> Krzysztof
+> 
 
