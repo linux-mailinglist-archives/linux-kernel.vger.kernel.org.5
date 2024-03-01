@@ -1,192 +1,208 @@
-Return-Path: <linux-kernel+bounces-88871-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88872-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF61886E7CD
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:54:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93A2E86E7D3
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:54:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 44DC91F27B5F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:54:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9EA031C22B62
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:54:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A61512B72;
-	Fri,  1 Mar 2024 17:54:12 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F038516FF5F
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 17:54:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 938551CA98;
+	Fri,  1 Mar 2024 17:54:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OYI2KflC"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B273848E;
+	Fri,  1 Mar 2024 17:54:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709315651; cv=none; b=klbxnRgzYbQrBZQJ25nANcGeNTLUU/lF7U1yDD49oEm5jw6AkzMc0zZJ2shQv1FjPHavu8MMHY8XkUcZzOpa6w1n4aPTeC0TPOYgjBCrSZ2EaICvE3KyJjXWDKqcH9UZx2SJmLIWU+YHm+DjKRKm1DER2fVVYXt2wMnfPaUYFT4=
+	t=1709315678; cv=none; b=q7mHG0uh2wBkH49UFsc0RhSpyp44mNVf+QJeZIFb5kLAFj/TkbDHSe3RnYz2ASqVNA+JJFMQ+wdUM27H5ubmGcvdxsEueSVtx+VPnNfhRSGTV2SbJ/iMM1gGC+Hw8yV+tbhwZdeEft/SLrvMyRQ/EUUtAFVteJIKuhXhpIllwkE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709315651; c=relaxed/simple;
-	bh=dhV8UcMzuIMIEciXJWv9lg+qF4UzGIqBhO24KteMsZA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nP+BIYF9x89dLl8B86g10L5D1kyBG1RG+zI/+kXEjlqbYMVGRZBOKC081sAXFg6dGv92cCXhpMuACOENlJzx6ZyQARxlNHXGKzygLRWVZrV8IM09VfxadOfpXVik+kaEAdhUt3geYGqmrDz2lTsQidaIdc05a9fE8uHdOoCUuQM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 558C0139F;
-	Fri,  1 Mar 2024 09:54:47 -0800 (PST)
-Received: from [10.57.67.78] (unknown [10.57.67.78])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 60F573F6C4;
-	Fri,  1 Mar 2024 09:54:07 -0800 (PST)
-Message-ID: <8869c8b2-29c3-41e4-8f8a-5bcf9c0d22bb@arm.com>
-Date: Fri, 1 Mar 2024 17:54:06 +0000
+	s=arc-20240116; t=1709315678; c=relaxed/simple;
+	bh=aqeIwwGa/fkHnXgNw3wwR4I8Nh8KUDC4YHT40u34iyA=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=E52AdwJUzG3Ym37M2varCH1ZjIe4Q7RKy0WxZ9kXFP10ReERLYns2IowaJKuHkcgbqbPomv/FXPebEpqXilRRzWADW7tS5IkNIWCyVNqmzF5H2xfhemb4zofe9oYv0vxL3J7pwqbbyI/cRpMrBhp0HOsfhlFzSUje+bWak4Pv0E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OYI2KflC; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1dccb2edc6dso22096815ad.3;
+        Fri, 01 Mar 2024 09:54:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709315677; x=1709920477; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nTu8BntRycqg7yt21AHZn8UXSjkjplk0BJ11/qY4XBE=;
+        b=OYI2KflC/BHZoPPAx+AtLH6bp56OD8ve8wV6+O0rPklItMqmbqVgihDSr5jQfbWQ44
+         EZJj4PnEigZ/S46/pvJtxTSzxqlqZ0hmi9UUB4uN2mzdu1U8b4A0A+467MkXymnfqmDv
+         gw7g0JhbGqK+E+wu54Y4XN0WrEr6eFsaK0i8fS1rIhi+IA8EPnD2Ik1/g/jAuRkMewIy
+         itJUlFbCaCznyla60T27UaV6YljTwLi/r9aOYg/FoIZEKcADn9yVndddIf6tnOz6RfAR
+         i2l8brRKjIapJg27/0C/75hcxM0JpytYC67Jb8Org6JgVpztWqgGby7r1iGC4AGfRE1k
+         9tEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709315677; x=1709920477;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=nTu8BntRycqg7yt21AHZn8UXSjkjplk0BJ11/qY4XBE=;
+        b=SmlQzAMB9eraWLDiQzmkj9cCGfwtUlinADdDdbfY8/Jso8hYrNiD5fletVDY74nebl
+         oDAv8BmjPYx67UFNzjv2dkHmB+u3k5s0VSOh57+VOrAoMk/nosbyBupmTYTI0vScubjm
+         Ua/FWr4q5cbPr7sB+GTfymI7NhvKp39APyAlkSi4I1aO30IsByCC+QTyc9b0bvXDJMRp
+         Q6b4JdhgM/9ohcfdQs1bWmRAzN1gLf/IqX4Jiwt4MeoCICYgav2b/j/aX2g7JFGEStud
+         Mdj9hTxT2Y8nsBQWNKGW/R03hsNcHcOvq4hwzpzL3mgxywRWIrMmU2PPZEsC+nWg+GXJ
+         jdnA==
+X-Forwarded-Encrypted: i=1; AJvYcCVHEjst3RAt81fhtSbBWj5GTGAb/KHr7op+n7lcIfaJrG14W0eIvlJyC8ojZabbl0yyi7Xb/l9klnkNe+/edqrt6AFRfh/xTrIisBh6Iii1jVa30+eoHVYiAyQAHliL3SGrJMBTfB7nZ0b2HqENuEYME668Wo8tXN5tbI8aPAUyZrdm51VLGdzun3ZLbU4XwQ0KIkU0lE/CQQW+
+X-Gm-Message-State: AOJu0YwewP5URYAQLD6UHCPJ5Hub0bDL6Y2W/PbrMfXvaDWnatVCvn/1
+	AWWUKZRak34aZIWttyPiR4m9GvhKvL25MWJh6FzYt5he3ku/2mCh
+X-Google-Smtp-Source: AGHT+IE9csmqmhCHH7CB4+0CxfUKKrr/8xABmiG0iw4SYFgI5JFB+8TUoh0+dZcVBRLvK/L83PLtYQ==
+X-Received: by 2002:a17:903:8c6:b0:1dc:d515:79ca with SMTP id lk6-20020a17090308c600b001dcd51579camr2747683plb.5.1709315676554;
+        Fri, 01 Mar 2024 09:54:36 -0800 (PST)
+Received: from localhost ([98.97.43.160])
+        by smtp.gmail.com with ESMTPSA id e8-20020a170902784800b001da001aed18sm3800862pln.54.2024.03.01.09.54.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Mar 2024 09:54:35 -0800 (PST)
+Date: Fri, 01 Mar 2024 09:54:34 -0800
+From: John Fastabend <john.fastabend@gmail.com>
+To: Song Yoong Siang <yoong.siang.song@intel.com>, 
+ Jesse Brandeburg <jesse.brandeburg@intel.com>, 
+ Tony Nguyen <anthony.l.nguyen@intel.com>, 
+ "David S . Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, 
+ Richard Cochran <richardcochran@gmail.com>, 
+ Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ Jesper Dangaard Brouer <hawk@kernel.org>, 
+ John Fastabend <john.fastabend@gmail.com>, 
+ Stanislav Fomichev <sdf@google.com>, 
+ Vinicius Costa Gomes <vinicius.gomes@intel.com>, 
+ Florian Bezdeka <florian.bezdeka@siemens.com>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ Eduard Zingerman <eddyz87@gmail.com>, 
+ Mykola Lysenko <mykolal@fb.com>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ KP Singh <kpsingh@kernel.org>, 
+ Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, 
+ Shuah Khan <shuah@kernel.org>
+Cc: intel-wired-lan@lists.osuosl.org, 
+ netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ bpf@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org, 
+ xdp-hints@xdp-project.net
+Message-ID: <65e2165a89ed0_5dcfe20823@john.notmuch>
+In-Reply-To: <20240301162348.898619-3-yoong.siang.song@intel.com>
+References: <20240301162348.898619-1-yoong.siang.song@intel.com>
+ <20240301162348.898619-3-yoong.siang.song@intel.com>
+Subject: RE: [PATCH iwl-next,v2 2/2] igc: Add Tx hardware timestamp request
+ for AF_XDP zero-copy packet
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 6/6] swiotlb: Remove pointless stride adjustment for
- allocations >= PAGE_SIZE
-Content-Language: en-GB
-To: =?UTF-8?B?UGV0ciBUZXNhxZnDrWs=?= <petr@tesarici.cz>,
- Christoph Hellwig <hch@lst.de>
-Cc: Michael Kelley <mhklinux@outlook.com>, Will Deacon <will@kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Petr Tesarik <petr.tesarik1@huawei-partners.com>,
- "kernel-team@android.com" <kernel-team@android.com>,
- "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
- Marek Szyprowski <m.szyprowski@samsung.com>, Dexuan Cui
- <decui@microsoft.com>, Nicolin Chen <nicolinc@nvidia.com>
-References: <20240228133930.15400-1-will@kernel.org>
- <20240228133930.15400-7-will@kernel.org>
- <SN6PR02MB4157A62353559DA8DB8BC4ADD45F2@SN6PR02MB4157.namprd02.prod.outlook.com>
- <SN6PR02MB41577D09E97B1D9645369D58D45F2@SN6PR02MB4157.namprd02.prod.outlook.com>
- <20240229133346.GA7177@lst.de>
- <SN6PR02MB4157314F142D05E279B7991ED45F2@SN6PR02MB4157.namprd02.prod.outlook.com>
- <20240229154756.GA10137@lst.de>
- <20240301163927.18358ee2@meshulam.tesarici.cz>
- <20240301180853.5ac20b27@meshulam.tesarici.cz>
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20240301180853.5ac20b27@meshulam.tesarici.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-On 2024-03-01 5:08 pm, Petr Tesařík wrote:
-> On Fri, 1 Mar 2024 16:39:27 +0100
-> Petr Tesařík <petr@tesarici.cz> wrote:
+Song Yoong Siang wrote:
+> This patch adds support to per-packet Tx hardware timestamp request to
+> AF_XDP zero-copy packet via XDP Tx metadata framework. Please note that
+> user needs to enable Tx HW timestamp capability via igc_ioctl() with
+> SIOCSHWTSTAMP cmd before sending xsk Tx hardware timestamp request.
 > 
->> On Thu, 29 Feb 2024 16:47:56 +0100
->> Christoph Hellwig <hch@lst.de> wrote:
->>
->>> On Thu, Feb 29, 2024 at 03:44:11PM +0000, Michael Kelley wrote:
->>>> Any thoughts on how that historical behavior should apply if
->>>> the DMA min_align_mask is non-zero, or the alloc_align_mask
->>>> parameter to swiotbl_tbl_map_single() is non-zero? As currently
->>>> used, alloc_align_mask is page aligned if the IOMMU granule is
->>>>> = PAGE_SIZE. But a non-zero min_align_mask could mandate
->>>> returning a buffer that is not page aligned. Perhaps do the
->>>> historical behavior only if alloc_align_mask and min_align_mask
->>>> are both zero?
->>>
->>> I think the driver setting min_align_mask is a clear indicator
->>> that the driver requested a specific alignment and the defaults
->>> don't apply.  For swiotbl_tbl_map_single as used by dma-iommu
->>> I'd have to tak a closer look at how it is used.
->>
->> I'm not sure it helps in this discussion, but let me dive into a bit
->> of ancient history to understand how we ended up here.
->>
->> IIRC this behaviour was originally motivated by limitations of PC AT
->> hardware. Intel 8237 is a 16-bit DMA controller. To make it somehow
->> usable with addresses up to 16MB (yeah, the infamous DMA zone), IBM
->> added a page register, but it was on a separate chip and it did not
->> increment when the 8237 address rolled over back to zero. Effectively,
->> the page register selected a 64K-aligned window of 64K buffers.
->> Consequently, DMA buffers could not cross a 64K physical boundary.
->>
->> Thanks to how the buddy allocator works, the 64K-boundary constraint
->> was satisfied by allocation size, and drivers took advantage of it when
->> allocating device buffers. IMO software bounce buffers simply followed
->> the same logic that worked for buffers allocated by the buddy allocator.
->>
->> OTOH min_align_mask was motivated by NVME which prescribes the value of
->> a certain number of low bits in the DMA address (for simplicity assumed
->> to be identical with the same bits in the physical address).
->>
->> The only pre-existing user of alloc_align_mask is x86 IOMMU code, and
->> IIUC it is used to guarantee that unaligned transactions do not share
->> the IOMMU granule with another device. This whole thing is weird,
->> because swiotlb_tbl_map_single() is called like this:
->>
->>                  aligned_size = iova_align(iovad, size);
->>                  phys = swiotlb_tbl_map_single(dev, phys, size, aligned_size,
->>                                                iova_mask(iovad), dir, attrs);
->>
->> Here:
->>
->> * alloc_size = iova_align(iovad, size)
->> * alloc_align_mask = iova_mask(iovad)
->>
->> Now, iova_align() rounds up its argument to a multiple of iova granule
->> and iova_mask() is simply "granule - 1". This works, because granule
->> size must be a power of 2, and I assume it must also be >= PAGE_SIZE.
->>
->> In that case, the alloc_align_mask argument is not even needed if you
->> adjust the code to match documentation---the resulting buffer will be
->> aligned to a granule boundary by virtue of having a size that is a
->> multiple of the granule size.
->>
->> To sum it up:
->>
->> 1. min_align_mask is by far the most important constraint. Devices will
->>     simply stop working if it is not met.
->> 2. Alignment to the smallest PAGE_SIZE order which is greater than or
->>     equal to the requested size has been documented, and some drivers
->>     may rely on it.
->> 3. alloc_align_mask is a misguided fix for a bug in the above.
->>
->> Correct me if anything of the above is wrong.
+> Same as implementation in RX timestamp XDP hints kfunc metadata, Timer 0
+> (adjustable clock) is used in xsk Tx hardware timestamp. i225/i226 have
+> four sets of timestamping registers. Both *skb and *xsk_tx_buffer pointers
+> are used to indicate whether the timestamping register is already occupied.
 > 
-> I thought about it some more, and I believe I know what should happen
-> if the first two constraints appear to be mutually exclusive.
+> Furthermore, a boolean variable named xsk_pending_ts is used to hold the
+> transmit completion until the tx hardware timestamp is ready. This is
+> because, for i225/i226, the timestamp notification event comes some time
+> after the transmit completion event. The driver will retrigger hardware irq
+> to clean the packet after retrieve the tx hardware timestamp.
 > 
-> First, the alignment based on size does not guarantee that the resulting
-> physical address is aligned. In fact, the lowest IO_TLB_SHIFT bits must
-> be always identical to the original buffer address.
+> Besides, xsk_meta is added into struct igc_tx_timestamp_request as a hook
+> to the metadata location of the transmit packet. When the Tx timestamp
+> interrupt is fired, the interrupt handler will copy the value of Tx hwts
+> into metadata location via xsk_tx_metadata_complete().
 > 
-> Let's take an example request like this:
-> 
->     TLB_SIZE       = 0x00000800
->     min_align_mask = 0x0000ffff
->     orig_addr      = 0x....1234
->     alloc_size     = 0x00002800
-> 
-> Minimum alignment mask requires to keep the 1234 at the end. Allocation
-> size requires a buffer that is aligned to 16K. Of course, there is no
-> 16K-aligned slot with slot_address & 0x7ff == 0x200, but if IO_TLB_SHIFT
-> was 14, it would be slot_address & 0x3fff == 0 (low IO_TLB_SHIFT are
-> masked off). Since the SWIOTLB API does not guarantee any specific
-> value of IO_TLB_SHIFT, callers cannot rely on it. That means 0x1234 is a
-> perfectly valid bounce buffer address for this example.
-> 
-> The caller may rightfully expect that the 16K granule containing the
-> bounce buffer is not shared with any other user. For the above case I
-> suggest to increase the allocation size to 0x4000 already in
-> swiotlb_tbl_map_single() and treat 0x1234 as the offset from the slot
-> address.
+> Co-developed-by: Lai Peter Jun Ann <jun.ann.lai@intel.com>
+> Signed-off-by: Lai Peter Jun Ann <jun.ann.lai@intel.com>
+> Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
+> ---
 
-That doesn't make sense - a caller asks to map some range of kernel 
-addresses and they get back a corresponding range of DMA addresses; they 
-cannot make any reasonable assumptions about DMA addresses *outside* 
-that range. In the example above, the caller has explicitly chosen not 
-to map the range xxx0000-xxx1234; if they expect the device to actually 
-access bytes in the DMA range yyy0000-yyy1234, then they should have 
-mapped the whole range starting from xxx0000 and it is their own error.
+[...]
 
-SWIOTLB does not and cannot provide any memory protection itself, so 
-there is no functional benefit to automatically over-allocating, all it 
-will do is waste slots. iommu-dma *can* provide memory protection 
-between individual mappings via additional layers that SWIOTLB doesn't 
-know about, so in that case it's iommu-dma's responsibility to 
-explicitly manage whatever over-allocation is necessary at the SWIOTLB 
-level to match the IOMMU level.
+>  
+> +static void igc_xsk_request_timestamp(void *_priv)
+> +{
+> +	struct igc_metadata_request *meta_req = _priv;
+> +	struct igc_ring *tx_ring = meta_req->tx_ring;
+> +	struct igc_tx_timestamp_request *tstamp;
+> +	u32 tx_flags = IGC_TX_FLAGS_TSTAMP;
+> +	struct igc_adapter *adapter;
+> +	unsigned long lock_flags;
+> +	bool found = false;
+> +	int i;
+> +
+> +	if (test_bit(IGC_RING_FLAG_TX_HWTSTAMP, &tx_ring->flags)) {
+> +		adapter = netdev_priv(tx_ring->netdev);
+> +
+> +		spin_lock_irqsave(&adapter->ptp_tx_lock, lock_flags);
+> +
+> +		/* Search for available tstamp regs */
+> +		for (i = 0; i < IGC_MAX_TX_TSTAMP_REGS; i++) {
+> +			tstamp = &adapter->tx_tstamp[i];
+> +
+> +			if (tstamp->skb)
+> +				continue;
+> +
+> +			found = true;
+> +			break;
 
-Thanks,
-Robin.
+Not how I would have written this loop construct seems a bit odd
+to default break but it works.
+
+> +		}
+> +
+> +		/* Return if no available tstamp regs */
+> +		if (!found) {
+> +			adapter->tx_hwtstamp_skipped++;
+> +			spin_unlock_irqrestore(&adapter->ptp_tx_lock,
+> +					       lock_flags);
+> +			return;
+> +		}
+
+[...]
+
+>  
+> +static void igc_ptp_free_tx_buffer(struct igc_adapter *adapter,
+> +				   struct igc_tx_timestamp_request *tstamp)
+> +{
+> +	if (tstamp->buffer_type == IGC_TX_BUFFER_TYPE_XSK) {
+> +		/* Release the transmit completion */
+> +		tstamp->xsk_tx_buffer->xsk_pending_ts = false;
+> +		tstamp->xsk_tx_buffer = NULL;
+> +		tstamp->buffer_type = 0;
+> +
+> +		/* Trigger txrx interrupt for transmit completion */
+> +		igc_xsk_wakeup(adapter->netdev, tstamp->xsk_queue_index, 0);
+
+Just curious because I didn't find it. Fairly sure I just need to look more,
+but don't you want to still 'tstamp->skb = NULL' in this path somewhere?
+It looks like triggering the tx interrupt again with buffer_type == 0 wouldn't
+do the null.
+
+I suspect I just missed it.
 
