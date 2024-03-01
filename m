@@ -1,170 +1,122 @@
-Return-Path: <linux-kernel+bounces-88725-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88734-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15DD486E5D9
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:41:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A80086E5ED
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:44:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 95C2A1F220DC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:41:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1EA7280BEC
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:44:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE1B53A292;
-	Fri,  1 Mar 2024 16:38:39 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 921D31FDB
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 16:38:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D60273D96A;
+	Fri,  1 Mar 2024 16:38:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ToFWaj+y"
+Received: from mail-il1-f180.google.com (mail-il1-f180.google.com [209.85.166.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D99F1849C
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 16:38:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709311119; cv=none; b=N5E8j6LkSS9u23/KXOPZ88T6EUJOhTU7WsGBceftB5d46QIeCfCPPOKUdkpwU2xXAC6K0bOjkwDixU6SWBdWVm7e8wiJ1QIEa2qu+bEIiMUhe+osawdb1f3ImSN00wqxAoaLLY+UJ8iz8njtH1fsFQY6cDqVGtUHlmxgNvB8Bcw=
+	t=1709311132; cv=none; b=WXs2TU07b0cwbZVdllhWv/rtkICHdv/SshAWcIx1fegAY8/HO6jnKbCpQhA0oaI0rurtGG5Z6IjAcTrpmKZSvzf9ZR8x1LQMmxFbY9RDsbi9VP/2PzBmE5BDFpfPMSKsE/8CeU8y7BY6GJ714SaMiYwij4LPMBFBmibf3b7wk0Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709311119; c=relaxed/simple;
-	bh=qrrimEnDkMs4q4acxDFMqu61Fpou7nGw9xqMBx1dwyI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WKVPd2VcprvGcz/86pLrFofBtq2VT+ShFlP2Q9MiKaTJJb786zT/aZ7dNOixi8Q/fxsHftt54h0+8ghRmSsV+x0FDZBPVxRyou1MehG50zrMGHnHCFwKWSBYvZAA5tJuUnqvFKQcXKRFFnYudd56bTCpWLOp/0gwg9taw1Qbps4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 228791FB;
-	Fri,  1 Mar 2024 08:39:15 -0800 (PST)
-Received: from [10.57.67.78] (unknown [10.57.67.78])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 316713F73F;
-	Fri,  1 Mar 2024 08:38:35 -0800 (PST)
-Message-ID: <4fbcdd49-cd93-4af8-83e2-f1cef0ea2eeb@arm.com>
-Date: Fri, 1 Mar 2024 16:38:33 +0000
+	s=arc-20240116; t=1709311132; c=relaxed/simple;
+	bh=v3fasrZ049SzsiSU8Wv5RWlUno1kfBoq0xOnRmY2Kzc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=a3egZh2eNMB8O83dD77sRASHAA6GSEYZos0Xm0QNksOfDY7DmPOZNrGHD5+QD8xJJ4Vbv7ql3tXs09RP3jE5LqPesCd/DG0nGz8nZUh8Vl5z36O9/yNyrafxTy0tIt6My0ckDu1/r+dw0i74YJ3rBTZ3JQUdb2G02lqcBJS33aU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ToFWaj+y; arc=none smtp.client-ip=209.85.166.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-il1-f180.google.com with SMTP id e9e14a558f8ab-3650be5157fso172185ab.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 08:38:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709311129; x=1709915929; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SPAqnWxjgworqniOSJ8PsC+uXqBSSqBSNTzJb0e70h4=;
+        b=ToFWaj+yy1xHk0HWU7bAiRlZgJjJ7P5W9nrD2mHEo1Z2vSEf4hFZa2od4BFlXjoJsN
+         9UqnA0lX4krcJq5282hSHI6pBKgPaS7G/PV+FvycvgRTzI2k6k2TEI9GmRemRMD+sKBo
+         Qg5PDM3cnPc/uFuOcHzNxQbA4mtNm6k7Fb1STIJ94hIMQIQr0ESvT/fPwEX6GEIKIZ4w
+         5GWUpmQljBtlHIz4Fm6yiKMy2jfGSFVeOfFQdi0SVC7vqo+CWXx10XRygMcDNRR0Ioz3
+         UJqnv7ewtZegAvtnJ9GO7P4nr5pPZD8U3lP9rm3U93G7rAx9vwpL5UkqpBZOzx0VqFN5
+         wa5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709311129; x=1709915929;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SPAqnWxjgworqniOSJ8PsC+uXqBSSqBSNTzJb0e70h4=;
+        b=DbZ62m3mhyq9/9NsUFhyEiY4lvDmibBl25H8QJsWszuIMMspU/PZhWyaqJi6f1i/Jz
+         gLBLded6475WbMBDOic9ObH+gz6Th4HdxhDyOYo6jbtlT/3bwKdd0Z43suh/sOX11H85
+         S6cewKgaVgVF2Eo/+yJBYprtIBnaEGqZU0AmU4xYz4qKqOMXIvtxyATmlvqDMLtELaXR
+         /UfWliKMDEU7+sqsb4Z0IiczTS9A8n3uUvpVaLcNp0Qo/k6HqGBzb8duAp44Ki8X2eRY
+         txkazbMBda7kSXDzxFK2gas7YmsrvK3SGPP1XapP9cgyFw76c7pe52uJxPq9fOYztsbP
+         IA0A==
+X-Forwarded-Encrypted: i=1; AJvYcCUGtO4MRq9sFBSniNtcI8XbKmshLkPCOUeRPHdRI1gaqb9vrtZYyqtNw5ux235+7W8j/f32lkoUDGAgsFbAEyP6WP5aIlKF8+M1hx9Y
+X-Gm-Message-State: AOJu0YxAfE8Y9tLoEYXR439+vpDjsGMqsyHo0ySAtOu6QjrhAcdBYIi3
+	+62d19t6qXfl3zRiZWFLk2RdUF8hLjKGoz7+HOJkEoztuYF9GHLxirObNW7z1YmiOaZwdANKQ2E
+	1dIV1iYxbjdqdULNMVzM7KV5Vumutk9qXGHoT
+X-Google-Smtp-Source: AGHT+IGzUaWRlQBaB12S4PDv8Qi4wWxiH8WVAoDZQqsKYneLkWDQW4ooAJch4Bg6DQQcBZP9232lw/TkfOFRlBunGp8=
+X-Received: by 2002:a05:6e02:1aaf:b0:363:c5ec:9fe6 with SMTP id
+ l15-20020a056e021aaf00b00363c5ec9fe6mr191804ilv.29.1709311128800; Fri, 01 Mar
+ 2024 08:38:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 6/6] swiotlb: Remove pointless stride adjustment for
- allocations >= PAGE_SIZE
-Content-Language: en-GB
-To: =?UTF-8?B?UGV0ciBUZXNhxZnDrWs=?= <petr@tesarici.cz>,
- Christoph Hellwig <hch@lst.de>
-Cc: Michael Kelley <mhklinux@outlook.com>, Will Deacon <will@kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Petr Tesarik <petr.tesarik1@huawei-partners.com>,
- "kernel-team@android.com" <kernel-team@android.com>,
- "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
- Marek Szyprowski <m.szyprowski@samsung.com>, Dexuan Cui
- <decui@microsoft.com>, Nicolin Chen <nicolinc@nvidia.com>
-References: <20240228133930.15400-1-will@kernel.org>
- <20240228133930.15400-7-will@kernel.org>
- <SN6PR02MB4157A62353559DA8DB8BC4ADD45F2@SN6PR02MB4157.namprd02.prod.outlook.com>
- <SN6PR02MB41577D09E97B1D9645369D58D45F2@SN6PR02MB4157.namprd02.prod.outlook.com>
- <20240229133346.GA7177@lst.de>
- <SN6PR02MB4157314F142D05E279B7991ED45F2@SN6PR02MB4157.namprd02.prod.outlook.com>
- <20240229154756.GA10137@lst.de>
- <20240301163927.18358ee2@meshulam.tesarici.cz>
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20240301163927.18358ee2@meshulam.tesarici.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240301133829.346286-1-james.clark@arm.com>
+In-Reply-To: <20240301133829.346286-1-james.clark@arm.com>
+From: Ian Rogers <irogers@google.com>
+Date: Fri, 1 Mar 2024 08:38:37 -0800
+Message-ID: <CAP-5=fUWL56Hi716DPa6Q_VXQoGh6Ed1WoNfSHow3+9qzSaMbw@mail.gmail.com>
+Subject: Re: [PATCH] perf version: Display availability of OpenCSD support
+To: James Clark <james.clark@arm.com>
+Cc: linux-perf-users@vger.kernel.org, al.grant@arm.com, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024-03-01 3:39 pm, Petr Tesařík wrote:
-> On Thu, 29 Feb 2024 16:47:56 +0100
-> Christoph Hellwig <hch@lst.de> wrote:
-> 
->> On Thu, Feb 29, 2024 at 03:44:11PM +0000, Michael Kelley wrote:
->>> Any thoughts on how that historical behavior should apply if
->>> the DMA min_align_mask is non-zero, or the alloc_align_mask
->>> parameter to swiotbl_tbl_map_single() is non-zero? As currently
->>> used, alloc_align_mask is page aligned if the IOMMU granule is
->>>> = PAGE_SIZE. But a non-zero min_align_mask could mandate
->>> returning a buffer that is not page aligned. Perhaps do the
->>> historical behavior only if alloc_align_mask and min_align_mask
->>> are both zero?
->>
->> I think the driver setting min_align_mask is a clear indicator
->> that the driver requested a specific alignment and the defaults
->> don't apply.  For swiotbl_tbl_map_single as used by dma-iommu
->> I'd have to tak a closer look at how it is used.
-> 
-> I'm not sure it helps in this discussion, but let me dive into a bit
-> of ancient history to understand how we ended up here.
-> 
-> IIRC this behaviour was originally motivated by limitations of PC AT
-> hardware. Intel 8237 is a 16-bit DMA controller. To make it somehow
-> usable with addresses up to 16MB (yeah, the infamous DMA zone), IBM
-> added a page register, but it was on a separate chip and it did not
-> increment when the 8237 address rolled over back to zero. Effectively,
-> the page register selected a 64K-aligned window of 64K buffers.
-> Consequently, DMA buffers could not cross a 64K physical boundary.
-> 
-> Thanks to how the buddy allocator works, the 64K-boundary constraint
-> was satisfied by allocation size, and drivers took advantage of it when
-> allocating device buffers. IMO software bounce buffers simply followed
-> the same logic that worked for buffers allocated by the buddy allocator.
-> 
-> OTOH min_align_mask was motivated by NVME which prescribes the value of
-> a certain number of low bits in the DMA address (for simplicity assumed
-> to be identical with the same bits in the physical address).
-> 
-> The only pre-existing user of alloc_align_mask is x86 IOMMU code, and
-> IIUC it is used to guarantee that unaligned transactions do not share
-> the IOMMU granule with another device. This whole thing is weird,
-> because swiotlb_tbl_map_single() is called like this:
-> 
->                  aligned_size = iova_align(iovad, size);
->                  phys = swiotlb_tbl_map_single(dev, phys, size, aligned_size,
->                                                iova_mask(iovad), dir, attrs);
-> 
-> Here:
-> 
-> * alloc_size = iova_align(iovad, size)
-> * alloc_align_mask = iova_mask(iovad)
-> 
-> Now, iova_align() rounds up its argument to a multiple of iova granule
-> and iova_mask() is simply "granule - 1". This works, because granule
-> size must be a power of 2, and I assume it must also be >= PAGE_SIZE.
+On Fri, Mar 1, 2024 at 5:39=E2=80=AFAM James Clark <james.clark@arm.com> wr=
+ote:
+>
+> This is useful for scripts that work with Perf and ETM trace. Rather
+> than them trying to parse Perf's error output at runtime to see if it
+> was linked or not.
+>
+> Signed-off-by: James Clark <james.clark@arm.com>
 
-Not quite, the granule must *not* be larger than PAGE_SIZE (but can be 
-smaller).
-> In that case, the alloc_align_mask argument is not even needed if you
-> adjust the code to match documentation---the resulting buffer will be
-> aligned to a granule boundary by virtue of having a size that is a
-> multiple of the granule size.
-
-I think we've conflated two different notions of "allocation" here. The 
-page-alignment which Christoph quoted applies for dma_alloc_coherent(), 
-which nowadays *should* only be relevant to SWIOTLB code in the 
-swiotlb_alloc() path for stealing coherent pages out of restricted DMA 
-pools. Historically there was never any official alignment requirement 
-for the DMA addresses returned by dma_map_{page,sg}(), until 
-min_align_mask was introduced.
-
-> To sum it up:
-> 
-> 1. min_align_mask is by far the most important constraint. Devices will
->     simply stop working if it is not met.
-> 2. Alignment to the smallest PAGE_SIZE order which is greater than or
->     equal to the requested size has been documented, and some drivers
->     may rely on it.
-
-Strictly it stopped being necessary since fafadcd16595 when the 
-historical swiotlb_alloc() was removed, but 602d9858f07c implies that 
-indeed the assumption of it for streaming mappings had already set in. 
-Of course NVMe is now using min_align_mask, but I'm not sure if it's 
-worth taking the risk to find out who else should also be.
-
-> 3. alloc_align_mask is a misguided fix for a bug in the above.
-
-No, alloc_align_mask is about describing the explicit requirement rather 
-than relying on any implicit behaviour, and thus being able to do the 
-optimal thing for, say, a 9KB mapping given a 4KB IOVA granule and 64KB 
-PAGE_SIZE.
+Reviewed-by: Ian Rogers <irogers@google.com>
 
 Thanks,
-Robin.
+Ian
 
-> 
-> Correct me if anything of the above is wrong.
-> 
-> HTH
-> Petr T
+> ---
+>  tools/perf/builtin-version.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/tools/perf/builtin-version.c b/tools/perf/builtin-version.c
+> index 1bafe5855ae7..398aa53e9e2e 100644
+> --- a/tools/perf/builtin-version.c
+> +++ b/tools/perf/builtin-version.c
+> @@ -84,6 +84,7 @@ static void library_status(void)
+>         STATUS(HAVE_LIBTRACEEVENT, libtraceevent);
+>         STATUS(HAVE_BPF_SKEL, bpf_skeletons);
+>         STATUS(HAVE_DWARF_UNWIND_SUPPORT, dwarf-unwind-support);
+> +       STATUS(HAVE_CSTRACE_SUPPORT, libopencsd);
+>  }
+>
+>  int cmd_version(int argc, const char **argv)
+> --
+> 2.34.1
+>
 
