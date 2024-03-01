@@ -1,161 +1,127 @@
-Return-Path: <linux-kernel+bounces-88628-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88627-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2F8286E47F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:36:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 958B986E47E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:35:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 47BD4B2432F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:36:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C4F111C2093D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:35:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ED4E70CAE;
-	Fri,  1 Mar 2024 15:35:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29AB27002C;
+	Fri,  1 Mar 2024 15:35:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="mBcJPww9"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="engGmUkK"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EE796BFA0
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 15:35:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5820C1C33;
+	Fri,  1 Mar 2024 15:35:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709307339; cv=none; b=MlWa74QHNy/dT0NhpCMsQusYHLwL+zK3OmT+EqkoHjz5cg8lefBi8n8pWH6ia7xiRntQhG0yOkro/mkqD7zCJweYgz0Pg3pBVbvbe0XvqMTE7rdduohuSBKF7tEEumn1Ea65MVL8ow6NU/rxz3sqqdnVsUjsWKQn/fJHDUMNXEc=
+	t=1709307337; cv=none; b=HYkW9tvIcbqFZFLiKrSZ0z3C1kA26cJPstC3FQKeLhVTLmJziB+JWugXjnNsUoebQ8Pn+D0vdYjCJZV0ffZixSTc6sKsPnbYAIVMGwQzgt7k+H6TM6zSkMhbrIuNwrFgbIjZfVCNK1ltvj4gzIpJ6YQ0e8vvswPkWUwa5PYk4NY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709307339; c=relaxed/simple;
-	bh=9axGj7bssCMt/pTo6jk4CoQ/Dc+4FugBqYlEE0EkPEg=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=AZ9LJeDeHaj7Xhek1qvPSh3a/PLaWPhMKdqmRZPJMal0Jt3gPSnvNW1jJ0ScXx9kkVChFmILSUSuybaTcZUNl0r9AxHHIyF0ZaYRJ7q3L1JuEIsJFprJej9zaJEI2g6jRceIZaXJf4rVTvlSe8fg6EHjf+UGQYG8RuCpMBnqbV4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=mBcJPww9; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 421F6FWW020348;
-	Fri, 1 Mar 2024 15:35:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=DuwfaYUgwN8+v0yPaldvlZPQ08K9YZMF/hqSJTIJZbk=;
- b=mBcJPww9XXYLOrFOzo++Zm8VaOGHlKXZ6mWKauY6NrTgSx/7gjGGXYXijXt56Pp9+I/Z
- rAwjRZ9ypyuctyc2WPru+ziaUF9btLU/MZooSXMyXryv3Ld0cZOY9K556KGAURKMnkqa
- 7ktRyZhn4sPngHuCS7xEE8aD2ByBO9Fdu+HUEuOUgYxm/rnr7XGZPeq8nTqtB28a764U
- LHBamNppE5/p0ipQYdMR2fdkohW/752SY/ZVnJzBBBRrxqzWISYma6QhOkXKNRhSy+2/
- ljy+/i3rEwzPErffLsvGKPYCciYXYOlm2NR90NsyqC/DLnud60VUQZcEbKcrQhiWYFi/ nw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wkh7v13vm-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 01 Mar 2024 15:35:11 +0000
-Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 421FJYxZ029410;
-	Fri, 1 Mar 2024 15:35:11 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wkh7v13ut-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 01 Mar 2024 15:35:10 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 421DqhUG012324;
-	Fri, 1 Mar 2024 15:35:09 GMT
-Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wfwg2vsgm-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 01 Mar 2024 15:35:09 +0000
-Received: from smtpav02.wdc07v.mail.ibm.com (smtpav02.wdc07v.mail.ibm.com [10.39.53.229])
-	by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 421FZ7sx41288010
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 1 Mar 2024 15:35:09 GMT
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 35D6958061;
-	Fri,  1 Mar 2024 15:35:07 +0000 (GMT)
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 448AC58068;
-	Fri,  1 Mar 2024 15:35:04 +0000 (GMT)
-Received: from [9.43.59.36] (unknown [9.43.59.36])
-	by smtpav02.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Fri,  1 Mar 2024 15:35:03 +0000 (GMT)
-Message-ID: <703aad5f-40ce-4b37-bd5d-4a85615085e4@linux.ibm.com>
-Date: Fri, 1 Mar 2024 21:05:02 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/7] sched/balancing: Switch the
- 'DEFINE_SPINLOCK(balancing)' spinlock into an 'atomic_t
- sched_balance_running' flag
-Content-Language: en-US
-To: Ingo Molnar <mingo@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Nicholas Piggin
- <npiggin@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20240301110951.3707367-1-mingo@kernel.org>
- <20240301110951.3707367-2-mingo@kernel.org>
-From: Shrikanth Hegde <sshegde@linux.ibm.com>
-In-Reply-To: <20240301110951.3707367-2-mingo@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: _6QaWMMlsIR-KJ6SQtkoxDX_75FXiC5b
-X-Proofpoint-ORIG-GUID: iI-mhrJtOD3w5KAJ_Q9nCWruUGndZcMw
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1709307337; c=relaxed/simple;
+	bh=M529ZWz6bYFuuGmZpJLVgAUP6VgulNwbi5i3qlbkET4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rX0V9E+/WFlwn3EBFGHWXMkqp5ESxYSW3FJhOGq/4bVNrMADBKSvPVO0hZ+w/oFKf30ZOFVyU1hkaof923DHe/S8VHKs9OrTVdrv87AP3/l2w6lN3RCaIm+310C7LzJpew2ba+QHR241EsYAWXyMP0mkxzBTJxKBry2iwQCUDEo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=engGmUkK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86BCEC433F1;
+	Fri,  1 Mar 2024 15:35:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709307336;
+	bh=M529ZWz6bYFuuGmZpJLVgAUP6VgulNwbi5i3qlbkET4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=engGmUkK3+QyCySd6cnHaoesNC4acJ3alTWL9hkST6hCVPUk6jx/wdlKLPnA4dMRT
+	 OqgQzVn2cxNbgjzrGxAzAM/G0Q2U5mSCnX3cGzzAVKPSaiMbwnp1at/ewtulAVi49k
+	 IOUSLAAoFtHhpXnpOFM32Zwv0bf6pVapLzd+1FoCRLxcWj/btjhW4rkXK++PVGaxDr
+	 QuhaFLQjLZyhXcaeREGlxgBfChASmuIy0TcoVAva9mfGQpPYYVWwaWR+QNYavWPNKJ
+	 7dm7RcciMFp14LYGpnir5lb59cHkkeJV2ctLTiy+VzUVkJoykR1TWNtyzE/IvoGg9H
+	 OTZ4wZV2OigtQ==
+Date: Fri, 1 Mar 2024 09:35:34 -0600
+From: Rob Herring <robh@kernel.org>
+To: =?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	Gregory Clement <gregory.clement@bootlin.com>,
+	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
+	Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH v2 02/11] dt-bindings: hwmon: lm75: use common hwmon
+ schema
+Message-ID: <20240301153534.GA2144041-robh@kernel.org>
+References: <20240229-mbly-i2c-v2-0-b32ed18c098c@bootlin.com>
+ <20240229-mbly-i2c-v2-2-b32ed18c098c@bootlin.com>
+ <6749c8df-c545-4aca-bc18-4dfe9c9f15b0@linaro.org>
+ <d78fd3ca-ed0b-40e5-8f8f-21db152a7402@roeck-us.net>
+ <CZIBCBQ2IB0E.2N3HAVO0P2SHT@bootlin.com>
+ <f802a1e0-cedd-488a-a6fb-df793718d94b@linaro.org>
+ <CZICOX6DR0SA.O876YRG8P03C@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-01_14,2024-03-01_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
- clxscore=1011 malwarescore=0 priorityscore=1501 mlxscore=0 suspectscore=0
- mlxlogscore=707 adultscore=0 phishscore=0 impostorscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2403010129
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CZICOX6DR0SA.O876YRG8P03C@bootlin.com>
 
-
-
-On 3/1/24 4:39 PM, Ingo Molnar wrote:
-> The 'balancing' spinlock added in:
-
-Hi Ingo. 
-
+On Fri, Mar 01, 2024 at 11:44:37AM +0100, Théo Lebrun wrote:
+> Hello,
 > 
->   08c183f31bdb ("[PATCH] sched: add option to serialize load balancing")
->
+> On Fri Mar 1, 2024 at 11:13 AM CET, Krzysztof Kozlowski wrote:
+> > On 01/03/2024 10:41, Théo Lebrun wrote:
+> > > Hello,
+> > > 
+> > > On Fri Mar 1, 2024 at 7:53 AM CET, Guenter Roeck wrote:
+> > >> On 2/29/24 22:37, Krzysztof Kozlowski wrote:
+> > >>> On 29/02/2024 19:10, Théo Lebrun wrote:
+> > >>>> Reference common hwmon schema which has the generic "label" property,
+> > >>>> parsed by Linux hwmon subsystem.
+> > >>>>
+> > >>>
+> > >>> Please do not mix independent patchsets. You create unneeded
+> > >>> dependencies blocking this patch. This patch depends on hwmon work, so
+> > >>> it cannot go through different tree.
+> > > 
+> > > I had to pick between this or dtbs_check failing on my DTS that uses a
+> > > label on temperature-sensor@48.
+> >
+> > I don't see how is that relevant. You can organize your branches as you
+> > wish, e.g. base one b4 branch on another and you will not have any warnings.
+> 
+> That is what I do, I however do not want mips-next to have errors when
+> running dtbs_check. Having dtbs_check return errors is not an issue?
 
- 
-[...]
+That's a good goal, but difficult to achieve as you can see. Given 
+dtbs_check in general has tons of warnings already, we currently don't 
+worry about more warnings in specific branches. We just look at mainline 
+and linux-next. And for that it's still so many, I'm just looking at 
+general trends. It runs daily here[1].
 
->  
->  		need_serialize = sd->flags & SD_SERIALIZE;
->  		if (need_serialize) {
-> -			if (!spin_trylock(&balancing))
-> +			if (atomic_cmpxchg_acquire(&sched_balance_running, 0, 1))
+As we get more platforms trying to stay at zero warnings, then we'll 
+need to revisit this. I imagine that will mean all schemas have to go in 
+1 branch with acks from subsystem maintainers. That's the opposite of 
+what we do now. And then .dts branches will have to merge in the schema 
+branch as needed. There are some checks (make dt_compatible_check) to 
+for drivers vs. the schemas, so we'd have the same issue with 
+intermittent warnings. But the drivers should be more decoupled from the 
+schemas than the dts files.
 
-Thinking from very little I know, I may be completely wrong. 
+Rob
 
-Is it possible that arch_spin_trylock, which would be called from spin_trylock is 
-faster in some architectures? Maybe in contended case? 
-
-For example, in powerpc, queued_spin_trylock, uses more optimal ll/sc style access patterns 
-rather than cmpxchg. 
-https://lore.kernel.org/all/20221126095932.1234527-4-npiggin@gmail.com/
-
-+nick 
-
-
->  				goto out;
->  		}
->  
-> @@ -11729,7 +11742,7 @@ static void rebalance_domains(struct rq *rq, enum cpu_idle_type idle)
->  			interval = get_sd_balance_interval(sd, busy);
->  		}
->  		if (need_serialize)
-> -			spin_unlock(&balancing);
-> +			atomic_set_release(&sched_balance_running, 0);
->  out:
->  		if (time_after(next_balance, sd->last_balance + interval)) {
->  			next_balance = sd->last_balance + interval;
+[1] https://gitlab.com/robherring/linux-dt/-/jobs
 
