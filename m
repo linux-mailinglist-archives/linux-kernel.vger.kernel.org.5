@@ -1,58 +1,58 @@
-Return-Path: <linux-kernel+bounces-88643-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88644-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBE7286E4B8
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:51:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D18186E4B9
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:51:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 174721C20F40
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:51:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9DC001C2279F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:51:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C42870CBC;
-	Fri,  1 Mar 2024 15:51:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9E4170AEA;
+	Fri,  1 Mar 2024 15:51:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FXR6it0p"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NYILHS0z"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DE7470AF5
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 15:51:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1ED570CC4
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 15:51:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709308286; cv=none; b=b3JrqigfA+LxhVZg+smFvJEZr5nqtz3JYO7yBClCyM+zG0Zm+e/6LVFOYMrr5H+hEZRzFW1wSA0ldvkuFV1tpp8k+iOUaGPyN7UrMRnFI2JE9RYe3yr7Pgvfi44AbRPJAasCxmU7+1CCuLqXUVxCkPN/kTXyMbPSxgV2UzJ1b3Y=
+	t=1709308291; cv=none; b=cxzD9aups07VvBj3FfgOoka6b2X8jX7bxEZWzDySamuo97dSlis050L3K0m6ixssXRXBt5rszBDHRHRk0ukBpm0igXoddXtK15CPCb+o5VXSotmW0DpMvH9y7C+lGMoInm0nHDhGTLif4qj7l9MWgBXP7AOwfEjqji2tlzHG2CQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709308286; c=relaxed/simple;
-	bh=PDWDDt4QR97SNsCyWpItSkT/i9E2ArftSSSpich7b2U=;
+	s=arc-20240116; t=1709308291; c=relaxed/simple;
+	bh=fKIRYBDOdjh4bWSu8rF+M1ucRSxQ8Q/A6JLal5oOMx0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mjVAKCOKvGLrBnc9lfjMIgoCcrtoCakWrzXgVvzQLqoW9nv+O72f8bj8Lat2uAbmlEvaCi34XO6cNVnOlpYf1p9/QybBirItWskHg7MxaEcBJ2+QvKhnT0ljhebpYAgsOoVjhC4U4gxOAuP1kJ4xBgWhKr7AFdhVW4RV98N/uAA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FXR6it0p; arc=none smtp.client-ip=192.198.163.17
+	 MIME-Version; b=Y6Tbm7qVzIhesDBZ75LiGTj6i3MTX18wfJRxcR1/AFbUBDEGovXN/sw98kSly54FJ29HsYc6CkvcA6Cl18vrr453Ucehlh4/OZp1WgPXCHHLielnbakskuK76LEQqHSqcjkoRA8OASAY1hJvCRfuy3SYsElnvjcfitAiITWsOn8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NYILHS0z; arc=none smtp.client-ip=192.198.163.17
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709308283; x=1740844283;
+  t=1709308289; x=1740844289;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=PDWDDt4QR97SNsCyWpItSkT/i9E2ArftSSSpich7b2U=;
-  b=FXR6it0pURYaSp7jiGlOYe9xbxLoCa693pfqt8lX0yVsijxUQdwbTYJx
-   +SO2RPqYIjv+GwyhOH0x9CeY9cfMa+aFpysCLsHNhqz7Ro0u++myt12+Y
-   ECZF0P438W4xkKstN24uGY1hS5s2Yt8DuqFcyJ61zApqxH1hSiBbh/aH/
-   k46RPeDmyoX2Sa/VKWJoYwh1xuYZl6Y/4YF/kadJzQQzsv2ViqNKNkkzO
-   GUSK11Ka2Irrh4oCrr6tEaPp1c/yySZxUHTCzIfnGd67nTaakCdN9pfv9
-   IsT14eypfyumterh1sFHcep53z+RBk3RzqyR6XR7zCyMMQP1izRufVLsW
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11000"; a="3700841"
+  bh=fKIRYBDOdjh4bWSu8rF+M1ucRSxQ8Q/A6JLal5oOMx0=;
+  b=NYILHS0zBBV+NAot/AM+Blhi6tDUMuDpwSO+oABVcLG8RajPlLdnkYa/
+   eQLOuDm1/kkW1Df4grif3pdOWGZdeI8w9YMszyy5d7FCPbuWx4L/u+ZRq
+   pn9+ECmHq1nGVSTNpvhSNsv9vgD85Ge8utO5ri02ypUfZpVZeJBhbtmZp
+   Hrispw7kWAwQcaDsYpEgYFEMjqOusPh1Y+hA+0ExuHLnnuR7bcUElVm4+
+   enF9WEyQkD8vlH8DjQJrv5clrgkX34qiBGvBlITOr01GWeSYjBOGTRMFL
+   e2EcIYVpvQywvZV8hcU3LdZyxTNgJxsC1pRzfengAeoMeMf5fFOUSxer2
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11000"; a="3700868"
 X-IronPort-AV: E=Sophos;i="6.06,196,1705392000"; 
-   d="scan'208";a="3700841"
+   d="scan'208";a="3700868"
 Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 07:51:23 -0800
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 07:51:28 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.06,196,1705392000"; 
-   d="scan'208";a="8370205"
+   d="scan'208";a="8370244"
 Received: from linux-pnp-server-09.sh.intel.com ([10.239.176.190])
-  by fmviesa008.fm.intel.com with ESMTP; 01 Mar 2024 07:51:20 -0800
+  by fmviesa008.fm.intel.com with ESMTP; 01 Mar 2024 07:51:26 -0800
 From: rulinhuang <rulin.huang@intel.com>
 To: urezki@gmail.com,
 	bhe@redhat.com
@@ -67,9 +67,9 @@ Cc: akpm@linux-foundation.org,
 	tim.c.chen@intel.com,
 	wangyang.guo@intel.com,
 	zhiguo.zhou@intel.com
-Subject: [PATCH v7 1/2] mm/vmalloc: Moved macros with no functional change happened
-Date: Fri,  1 Mar 2024 10:54:16 -0500
-Message-ID: <20240301155417.1852290-2-rulin.huang@intel.com>
+Subject: [PATCH v7 2/2] mm/vmalloc: Eliminated the lock contention from twice to once
+Date: Fri,  1 Mar 2024 10:54:17 -0500
+Message-ID: <20240301155417.1852290-3-rulin.huang@intel.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240301155417.1852290-1-rulin.huang@intel.com>
 References: <20240301155417.1852290-1-rulin.huang@intel.com>
@@ -81,296 +81,159 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Moved data structures and basic helpers related to per cpu kva allocator
-up too to along with these macros with no functional change happened.
+When allocating a new memory area where the mapping address range is
+known, it is observed that the vmap_node->busy.lock is acquired twice.
 
+The first acquisition occurs in the alloc_vmap_area() function when
+inserting the vm area into the vm mapping red-black tree. The second
+acquisition occurs in the setup_vmalloc_vm() function when updating the
+properties of the vm, such as flags and address, etc.
+
+Combine these two operations together in alloc_vmap_area(), which
+improves scalability when the vmap_node->busy.lock is contended.
+By doing so, the need to acquire the lock twice can also be eliminated
+to once.
+
+With the above change, tested on intel sapphire rapids
+platform(224 vcpu), a 4% performance improvement is
+gained on stress-ng/pthread(https://github.com/ColinIanKing/stress-ng),
+which is the stress test of thread creations.
+
+Co-developed-by: "Chen, Tim C" <tim.c.chen@intel.com>
+Signed-off-by: "Chen, Tim C" <tim.c.chen@intel.com>
+Co-developed-by: "King, Colin" <colin.king@intel.com>
+Signed-off-by: "King, Colin" <colin.king@intel.com>
 Signed-off-by: rulinhuang <rulin.huang@intel.com>
 ---
+V1 -> V2: Avoided the partial initialization issue of vm and
+separated insert_vmap_area() from alloc_vmap_area()
+V2 -> V3: Rebased on 6.8-rc5
+V3 -> V4: Rebased on mm-unstable branch
+V4 -> V5: Canceled the split of alloc_vmap_area()
+and keep insert_vmap_area()
+V5 -> V6: Added bug_on
 V6 -> V7: Adjusted the macros
 ---
- mm/vmalloc.c | 262 +++++++++++++++++++++++++--------------------------
- 1 file changed, 131 insertions(+), 131 deletions(-)
+ mm/vmalloc.c | 52 ++++++++++++++++++++++++----------------------------
+ 1 file changed, 24 insertions(+), 28 deletions(-)
 
 diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index 25a8df497255..fc027a61c12e 100644
+index fc027a61c12e..5b7c9156d8da 100644
 --- a/mm/vmalloc.c
 +++ b/mm/vmalloc.c
-@@ -887,6 +887,137 @@ is_vn_id_valid(unsigned int node_id)
- 	return false;
+@@ -1972,15 +1972,26 @@ node_alloc(unsigned long size, unsigned long align,
+ 	return va;
  }
  
-+/*
-+ * vmap space is limited especially on 32 bit architectures. Ensure there is
-+ * room for at least 16 percpu vmap blocks per CPU.
-+ */
-+/*
-+ * If we had a constant VMALLOC_START and VMALLOC_END, we'd like to be able
-+ * to #define VMALLOC_SPACE		(VMALLOC_END-VMALLOC_START). Guess
-+ * instead (we just need a rough idea)
-+ */
-+#if BITS_PER_LONG == 32
-+#define VMALLOC_SPACE		(128UL*1024*1024)
-+#else
-+#define VMALLOC_SPACE		(128UL*1024*1024*1024)
-+#endif
-+
-+#define VMALLOC_PAGES		(VMALLOC_SPACE / PAGE_SIZE)
-+#define VMAP_MAX_ALLOC		BITS_PER_LONG	/* 256K with 4K pages */
-+#define VMAP_BBMAP_BITS_MAX	1024	/* 4MB with 4K pages */
-+#define VMAP_BBMAP_BITS_MIN	(VMAP_MAX_ALLOC*2)
-+#define VMAP_MIN(x, y)		((x) < (y) ? (x) : (y)) /* can't use min() */
-+#define VMAP_MAX(x, y)		((x) > (y) ? (x) : (y)) /* can't use max() */
-+#define VMAP_BBMAP_BITS		\
-+		VMAP_MIN(VMAP_BBMAP_BITS_MAX,	\
-+		VMAP_MAX(VMAP_BBMAP_BITS_MIN,	\
-+			VMALLOC_PAGES / roundup_pow_of_two(NR_CPUS) / 16))
-+
-+#define VMAP_BLOCK_SIZE		(VMAP_BBMAP_BITS * PAGE_SIZE)
-+
-+/*
-+ * Purge threshold to prevent overeager purging of fragmented blocks for
-+ * regular operations: Purge if vb->free is less than 1/4 of the capacity.
-+ */
-+#define VMAP_PURGE_THRESHOLD	(VMAP_BBMAP_BITS / 4)
-+
-+#define VMAP_RAM		0x1 /* indicates vm_map_ram area*/
-+#define VMAP_BLOCK		0x2 /* mark out the vmap_block sub-type*/
-+#define VMAP_FLAGS_MASK		0x3
-+
-+struct vmap_block_queue {
-+	spinlock_t lock;
-+	struct list_head free;
-+
-+	/*
-+	 * An xarray requires an extra memory dynamically to
-+	 * be allocated. If it is an issue, we can use rb-tree
-+	 * instead.
-+	 */
-+	struct xarray vmap_blocks;
-+};
-+
-+struct vmap_block {
-+	spinlock_t lock;
-+	struct vmap_area *va;
-+	unsigned long free, dirty;
-+	DECLARE_BITMAP(used_map, VMAP_BBMAP_BITS);
-+	unsigned long dirty_min, dirty_max; /*< dirty range */
-+	struct list_head free_list;
-+	struct rcu_head rcu_head;
-+	struct list_head purge;
-+};
-+
-+/* Queue of free and dirty vmap blocks, for allocation and flushing purposes */
-+static DEFINE_PER_CPU(struct vmap_block_queue, vmap_block_queue);
-+
-+/*
-+ * In order to fast access to any "vmap_block" associated with a
-+ * specific address, we use a hash.
-+ *
-+ * A per-cpu vmap_block_queue is used in both ways, to serialize
-+ * an access to free block chains among CPUs(alloc path) and it
-+ * also acts as a vmap_block hash(alloc/free paths). It means we
-+ * overload it, since we already have the per-cpu array which is
-+ * used as a hash table. When used as a hash a 'cpu' passed to
-+ * per_cpu() is not actually a CPU but rather a hash index.
-+ *
-+ * A hash function is addr_to_vb_xa() which hashes any address
-+ * to a specific index(in a hash) it belongs to. This then uses a
-+ * per_cpu() macro to access an array with generated index.
-+ *
-+ * An example:
-+ *
-+ *  CPU_1  CPU_2  CPU_0
-+ *    |      |      |
-+ *    V      V      V
-+ * 0     10     20     30     40     50     60
-+ * |------|------|------|------|------|------|...<vmap address space>
-+ *   CPU0   CPU1   CPU2   CPU0   CPU1   CPU2
-+ *
-+ * - CPU_1 invokes vm_unmap_ram(6), 6 belongs to CPU0 zone, thus
-+ *   it access: CPU0/INDEX0 -> vmap_blocks -> xa_lock;
-+ *
-+ * - CPU_2 invokes vm_unmap_ram(11), 11 belongs to CPU1 zone, thus
-+ *   it access: CPU1/INDEX1 -> vmap_blocks -> xa_lock;
-+ *
-+ * - CPU_0 invokes vm_unmap_ram(20), 20 belongs to CPU2 zone, thus
-+ *   it access: CPU2/INDEX2 -> vmap_blocks -> xa_lock.
-+ *
-+ * This technique almost always avoids lock contention on insert/remove,
-+ * however xarray spinlocks protect against any contention that remains.
-+ */
-+static struct xarray *
-+addr_to_vb_xa(unsigned long addr)
++static inline void setup_vmalloc_vm(struct vm_struct *vm,
++	struct vmap_area *va, unsigned long flags, const void *caller)
 +{
-+	int index = (addr / VMAP_BLOCK_SIZE) % num_possible_cpus();
-+
-+	return &per_cpu(vmap_block_queue, index).vmap_blocks;
++	vm->flags = flags;
++	vm->addr = (void *)va->va_start;
++	vm->size = va->va_end - va->va_start;
++	vm->caller = caller;
++	va->vm = vm;
 +}
 +
-+/*
-+ * We should probably have a fallback mechanism to allocate virtual memory
-+ * out of partially filled vmap blocks. However vmap block sizing should be
-+ * fairly reasonable according to the vmalloc size, so it shouldn't be a
-+ * big problem.
-+ */
-+
-+static unsigned long addr_to_vb_idx(unsigned long addr)
-+{
-+	addr -= VMALLOC_START & ~(VMAP_BLOCK_SIZE-1);
-+	addr /= VMAP_BLOCK_SIZE;
-+	return addr;
-+}
-+
-+static void *vmap_block_vaddr(unsigned long va_start, unsigned long pages_off)
-+{
-+	unsigned long addr;
-+
-+	addr = va_start + (pages_off << PAGE_SHIFT);
-+	BUG_ON(addr_to_vb_idx(addr) != addr_to_vb_idx(va_start));
-+	return (void *)addr;
-+}
-+
- static __always_inline unsigned long
- va_size(struct vmap_area *va)
+ /*
+  * Allocate a region of KVA of the specified size and alignment, within the
+- * vstart and vend.
++ * vstart and vend. If vm is passed in, the two will also be bound.
+  */
+ static struct vmap_area *alloc_vmap_area(unsigned long size,
+ 				unsigned long align,
+ 				unsigned long vstart, unsigned long vend,
+ 				int node, gfp_t gfp_mask,
+-				unsigned long va_flags)
++				unsigned long va_flags, struct vm_struct *vm,
++				unsigned long flags, const void *caller)
  {
-@@ -2327,137 +2458,6 @@ static struct vmap_area *find_unlink_vmap_area(unsigned long addr)
+ 	struct vmap_node *vn;
+ 	struct vmap_area *va;
+@@ -2043,6 +2054,11 @@ static struct vmap_area *alloc_vmap_area(unsigned long size,
+ 	va->vm = NULL;
+ 	va->flags = (va_flags | vn_id);
  
- /*** Per cpu kva allocator ***/
++	if (vm) {
++		BUG_ON(va_flags & VMAP_RAM);
++		setup_vmalloc_vm(vm, va, flags, caller);
++	}
++
+ 	vn = addr_to_node(va->va_start);
  
--/*
-- * vmap space is limited especially on 32 bit architectures. Ensure there is
-- * room for at least 16 percpu vmap blocks per CPU.
-- */
--/*
-- * If we had a constant VMALLOC_START and VMALLOC_END, we'd like to be able
-- * to #define VMALLOC_SPACE		(VMALLOC_END-VMALLOC_START). Guess
-- * instead (we just need a rough idea)
-- */
--#if BITS_PER_LONG == 32
--#define VMALLOC_SPACE		(128UL*1024*1024)
--#else
--#define VMALLOC_SPACE		(128UL*1024*1024*1024)
--#endif
--
--#define VMALLOC_PAGES		(VMALLOC_SPACE / PAGE_SIZE)
--#define VMAP_MAX_ALLOC		BITS_PER_LONG	/* 256K with 4K pages */
--#define VMAP_BBMAP_BITS_MAX	1024	/* 4MB with 4K pages */
--#define VMAP_BBMAP_BITS_MIN	(VMAP_MAX_ALLOC*2)
--#define VMAP_MIN(x, y)		((x) < (y) ? (x) : (y)) /* can't use min() */
--#define VMAP_MAX(x, y)		((x) > (y) ? (x) : (y)) /* can't use max() */
--#define VMAP_BBMAP_BITS		\
--		VMAP_MIN(VMAP_BBMAP_BITS_MAX,	\
--		VMAP_MAX(VMAP_BBMAP_BITS_MIN,	\
--			VMALLOC_PAGES / roundup_pow_of_two(NR_CPUS) / 16))
--
--#define VMAP_BLOCK_SIZE		(VMAP_BBMAP_BITS * PAGE_SIZE)
--
--/*
-- * Purge threshold to prevent overeager purging of fragmented blocks for
-- * regular operations: Purge if vb->free is less than 1/4 of the capacity.
-- */
--#define VMAP_PURGE_THRESHOLD	(VMAP_BBMAP_BITS / 4)
--
--#define VMAP_RAM		0x1 /* indicates vm_map_ram area*/
--#define VMAP_BLOCK		0x2 /* mark out the vmap_block sub-type*/
--#define VMAP_FLAGS_MASK		0x3
--
--struct vmap_block_queue {
--	spinlock_t lock;
--	struct list_head free;
--
--	/*
--	 * An xarray requires an extra memory dynamically to
--	 * be allocated. If it is an issue, we can use rb-tree
--	 * instead.
--	 */
--	struct xarray vmap_blocks;
--};
--
--struct vmap_block {
--	spinlock_t lock;
--	struct vmap_area *va;
--	unsigned long free, dirty;
--	DECLARE_BITMAP(used_map, VMAP_BBMAP_BITS);
--	unsigned long dirty_min, dirty_max; /*< dirty range */
--	struct list_head free_list;
--	struct rcu_head rcu_head;
--	struct list_head purge;
--};
--
--/* Queue of free and dirty vmap blocks, for allocation and flushing purposes */
--static DEFINE_PER_CPU(struct vmap_block_queue, vmap_block_queue);
--
--/*
-- * In order to fast access to any "vmap_block" associated with a
-- * specific address, we use a hash.
-- *
-- * A per-cpu vmap_block_queue is used in both ways, to serialize
-- * an access to free block chains among CPUs(alloc path) and it
-- * also acts as a vmap_block hash(alloc/free paths). It means we
-- * overload it, since we already have the per-cpu array which is
-- * used as a hash table. When used as a hash a 'cpu' passed to
-- * per_cpu() is not actually a CPU but rather a hash index.
-- *
-- * A hash function is addr_to_vb_xa() which hashes any address
-- * to a specific index(in a hash) it belongs to. This then uses a
-- * per_cpu() macro to access an array with generated index.
-- *
-- * An example:
-- *
-- *  CPU_1  CPU_2  CPU_0
-- *    |      |      |
-- *    V      V      V
-- * 0     10     20     30     40     50     60
-- * |------|------|------|------|------|------|...<vmap address space>
-- *   CPU0   CPU1   CPU2   CPU0   CPU1   CPU2
-- *
-- * - CPU_1 invokes vm_unmap_ram(6), 6 belongs to CPU0 zone, thus
-- *   it access: CPU0/INDEX0 -> vmap_blocks -> xa_lock;
-- *
-- * - CPU_2 invokes vm_unmap_ram(11), 11 belongs to CPU1 zone, thus
-- *   it access: CPU1/INDEX1 -> vmap_blocks -> xa_lock;
-- *
-- * - CPU_0 invokes vm_unmap_ram(20), 20 belongs to CPU2 zone, thus
-- *   it access: CPU2/INDEX2 -> vmap_blocks -> xa_lock.
-- *
-- * This technique almost always avoids lock contention on insert/remove,
-- * however xarray spinlocks protect against any contention that remains.
-- */
--static struct xarray *
--addr_to_vb_xa(unsigned long addr)
+ 	spin_lock(&vn->busy.lock);
+@@ -2486,7 +2502,8 @@ static void *new_vmap_block(unsigned int order, gfp_t gfp_mask)
+ 	va = alloc_vmap_area(VMAP_BLOCK_SIZE, VMAP_BLOCK_SIZE,
+ 					VMALLOC_START, VMALLOC_END,
+ 					node, gfp_mask,
+-					VMAP_RAM|VMAP_BLOCK);
++					VMAP_RAM|VMAP_BLOCK, NULL,
++					0, NULL);
+ 	if (IS_ERR(va)) {
+ 		kfree(vb);
+ 		return ERR_CAST(va);
+@@ -2843,7 +2860,8 @@ void *vm_map_ram(struct page **pages, unsigned int count, int node)
+ 		struct vmap_area *va;
+ 		va = alloc_vmap_area(size, PAGE_SIZE,
+ 				VMALLOC_START, VMALLOC_END,
+-				node, GFP_KERNEL, VMAP_RAM);
++				node, GFP_KERNEL, VMAP_RAM,
++				NULL, 0, NULL);
+ 		if (IS_ERR(va))
+ 			return NULL;
+ 
+@@ -2946,26 +2964,6 @@ void __init vm_area_register_early(struct vm_struct *vm, size_t align)
+ 	kasan_populate_early_vm_area_shadow(vm->addr, vm->size);
+ }
+ 
+-static inline void setup_vmalloc_vm_locked(struct vm_struct *vm,
+-	struct vmap_area *va, unsigned long flags, const void *caller)
 -{
--	int index = (addr / VMAP_BLOCK_SIZE) % num_possible_cpus();
--
--	return &per_cpu(vmap_block_queue, index).vmap_blocks;
+-	vm->flags = flags;
+-	vm->addr = (void *)va->va_start;
+-	vm->size = va->va_end - va->va_start;
+-	vm->caller = caller;
+-	va->vm = vm;
 -}
 -
--/*
-- * We should probably have a fallback mechanism to allocate virtual memory
-- * out of partially filled vmap blocks. However vmap block sizing should be
-- * fairly reasonable according to the vmalloc size, so it shouldn't be a
-- * big problem.
-- */
--
--static unsigned long addr_to_vb_idx(unsigned long addr)
+-static void setup_vmalloc_vm(struct vm_struct *vm, struct vmap_area *va,
+-			      unsigned long flags, const void *caller)
 -{
--	addr -= VMALLOC_START & ~(VMAP_BLOCK_SIZE-1);
--	addr /= VMAP_BLOCK_SIZE;
--	return addr;
+-	struct vmap_node *vn = addr_to_node(va->va_start);
+-
+-	spin_lock(&vn->busy.lock);
+-	setup_vmalloc_vm_locked(vm, va, flags, caller);
+-	spin_unlock(&vn->busy.lock);
 -}
 -
--static void *vmap_block_vaddr(unsigned long va_start, unsigned long pages_off)
--{
--	unsigned long addr;
+ static void clear_vm_uninitialized_flag(struct vm_struct *vm)
+ {
+ 	/*
+@@ -3002,14 +3000,12 @@ static struct vm_struct *__get_vm_area_node(unsigned long size,
+ 	if (!(flags & VM_NO_GUARD))
+ 		size += PAGE_SIZE;
+ 
+-	va = alloc_vmap_area(size, align, start, end, node, gfp_mask, 0);
++	va = alloc_vmap_area(size, align, start, end, node, gfp_mask, 0, area, flags, caller);
+ 	if (IS_ERR(va)) {
+ 		kfree(area);
+ 		return NULL;
+ 	}
+ 
+-	setup_vmalloc_vm(area, va, flags, caller);
 -
--	addr = va_start + (pages_off << PAGE_SHIFT);
--	BUG_ON(addr_to_vb_idx(addr) != addr_to_vb_idx(va_start));
--	return (void *)addr;
--}
--
- /**
-  * new_vmap_block - allocates new vmap_block and occupies 2^order pages in this
-  *                  block. Of course pages number can't exceed VMAP_BBMAP_BITS
+ 	/*
+ 	 * Mark pages for non-VM_ALLOC mappings as accessible. Do it now as a
+ 	 * best-effort approach, as they can be mapped outside of vmalloc code.
+@@ -4584,7 +4580,7 @@ struct vm_struct **pcpu_get_vm_areas(const unsigned long *offsets,
+ 
+ 		spin_lock(&vn->busy.lock);
+ 		insert_vmap_area(vas[area], &vn->busy.root, &vn->busy.head);
+-		setup_vmalloc_vm_locked(vms[area], vas[area], VM_ALLOC,
++		setup_vmalloc_vm(vms[area], vas[area], VM_ALLOC,
+ 				 pcpu_get_vm_areas);
+ 		spin_unlock(&vn->busy.lock);
+ 	}
 -- 
 2.43.0
 
