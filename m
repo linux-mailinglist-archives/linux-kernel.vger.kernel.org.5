@@ -1,144 +1,124 @@
-Return-Path: <linux-kernel+bounces-88532-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88533-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E15F86E2FA
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:07:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A739886E2FD
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:08:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3A3ACB22BCC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:07:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D57841C212F5
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:08:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EDC26EEF9;
-	Fri,  1 Mar 2024 14:07:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD7676F065;
+	Fri,  1 Mar 2024 14:08:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PybPpKrr"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="IqosRX5u"
+Received: from mout.web.de (mout.web.de [212.227.15.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68DE5A40;
-	Fri,  1 Mar 2024 14:07:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D08A96D1A4;
+	Fri,  1 Mar 2024 14:08:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709302068; cv=none; b=flTBEOyJi1aQxTshM55Jhplsxvs4sh/lG/dVwjr4Pj7yJqh8GTui5TSjrk7hqWQ2PqDZLVCsrgHdZ1Uf07wN3lGZwb2mGE7dISiGN7UsLnkgNI/xyHAorf6kiaH9wfVNu7gS6ZKsnHn/kjPyvAx/aaHLtYhZXan3XvcSG2P9KPU=
+	t=1709302085; cv=none; b=IyXMf/1M7J0AeOLMwbbX7WRj3YEzUp7fhD0tSslI68PrRGjbFhTD8eD3hBMGaWclIfhnQCbS1FNFe4jK4hzstfyDhwGIAiyQpxnJYIAz9LHZ2FzdDT0zvi8t+B9V4bAVvU88HbNKUyfFXSiwhhLMiT6pb9sYQKBt+xs6efItGVU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709302068; c=relaxed/simple;
-	bh=V/ZkOgK2iZvRSQ++CJWksKmz0CTjhfhLyLii2QbfEkk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EUaV6H/w7rbo4UCDaLsLXy5U1krhxrK9gHO2y1f+HO/YvvPE36GnlY6BF4ecrYIgZHS/2yE+nYhnKIWCXcX0SfKovyCfA4dId5EoI5H/ewBLBNuWKJwajeZ4rLTgo9KpBjzUfPpWi39WOeiZzlsN0jx+15B2GNkHEsO2QWjymgM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PybPpKrr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9129C433F1;
-	Fri,  1 Mar 2024 14:07:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709302067;
-	bh=V/ZkOgK2iZvRSQ++CJWksKmz0CTjhfhLyLii2QbfEkk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PybPpKrrCcZPy18fpDWyIlQodCkmfcS1+/l19GXkZ5jkeKjFQYmQo+krU/Ko9/JMR
-	 Q5w05L8FpAF5VJfBGVnUbE84zUiK1aUyXtABKvHzocb3zZwcljQgcDF4EiigStwNdS
-	 Cww/amyTfu8FpryNgmEuFAxp9V+Ve+9Pjp5pJZJes/fxCcUxAm/zbZZRftNTzPHnvS
-	 Oj7zC2/yU3RziaxBek7jtQdUSaYDu/zGD862eAROgE0dqHsoX1Akz5E9CAaSw9rQYt
-	 Zl/5YHw/4hwcy3X6oEqHDhFHzfekhpO+5KVnojVxnOLAe1eAlOIuRuatjotfKru6DA
-	 65NE8wX3ss10Q==
-Date: Fri, 1 Mar 2024 14:07:39 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Nikolai Kondrashov <spbnick@gmail.com>
-Cc: Linus Torvalds <torvalds@linuxfoundation.org>,
-	Maxime Ripard <mripard@kernel.org>,
-	Helen Koike <helen.koike@collabora.com>, linuxtv-ci@linuxtv.org,
-	dave.pigott@collabora.com, linux-kernel@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, linux-kselftest@vger.kernel.org,
-	gustavo.padovan@collabora.com, pawiecz@collabora.com,
-	tales.aparecida@gmail.com, workflows@vger.kernel.org,
-	kernelci@lists.linux.dev, skhan@linuxfoundation.org,
-	kunit-dev@googlegroups.com, nfraprado@collabora.com,
-	davidgow@google.com, cocci@inria.fr, Julia.Lawall@inria.fr,
-	laura.nao@collabora.com, ricardo.canuelo@collabora.com,
-	kernel@collabora.com, gregkh@linuxfoundation.org
-Subject: Re: [PATCH 1/3] kci-gitlab: Introducing GitLab-CI Pipeline for
- Kernel Testing
-Message-ID: <9183479f-eea8-493e-9a56-9f3f778e3034@sirena.org.uk>
-References: <20240228225527.1052240-1-helen.koike@collabora.com>
- <20240228225527.1052240-2-helen.koike@collabora.com>
- <20240229-dancing-laughing-groundhog-d85161@houat>
- <5d7ed81b-37f9-48e9-ab7e-484b74ca886c@gmail.com>
- <CAHk-=wixVy3WYvjbt43ZSrCqPDsS76QJQSkXFbbPsAOs1MCSAQ@mail.gmail.com>
- <44ae0339-daf1-4bb9-a12d-e3d2e79b889e@gmail.com>
+	s=arc-20240116; t=1709302085; c=relaxed/simple;
+	bh=bCnomT+2ED4Jkxxq+pu6nRP6pi+vAEgaQ1rqoBBay6g=;
+	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=QLY0X4OojeClxVPGfg/E+wCgiARYMQs+TqG5z0T0STbkfhzhB33Yrt8MpIkJ0OAE8t3+Wnj7cNbQZHjcjfqUvXQ3UP2pGDXmiy9iFVQCphv2zkFiDUiCPc0H62V3QpdxYFKcwDMeGKR1jYmaTcU+zAtpZ6JCFtCIVitfYWoCssk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=IqosRX5u; arc=none smtp.client-ip=212.227.15.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1709302072; x=1709906872; i=markus.elfring@web.de;
+	bh=bCnomT+2ED4Jkxxq+pu6nRP6pi+vAEgaQ1rqoBBay6g=;
+	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
+	b=IqosRX5up0YUpcgwldV00Fw7nQDhh3bvWhQ+GfxDrLjI+idbP/2SFIK55bVAEQQu
+	 GinRhCCqSmKUtQFeZaF4QaSpsy1CJzWIB0bvEM7fA91KFkRpMONncM3pAHqdOq3Dr
+	 T/J2ulB4FlRDRUJxaNZCtu1SqDHzyD7ygd0GGTC75Yuk4fTgbniRD9JR2qibmM7eH
+	 tfre5vDgyUqOj3avidDuy6NBb7QZc+wF6G2XmKCBWm2iDIUOyCYyWeJaX8BsU+SDT
+	 RCDCVmsN8wbM8y6jdeEI/Ih2NkHqhOaAzx7fZJHzxJMd/Iceis6Ebgugti0UFZ+py
+	 xiir5cRN/EoT/68dDQ==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.86.95]) by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1N8Voj-1qkMRq3it7-014X8n; Fri, 01
+ Mar 2024 15:07:51 +0100
+Message-ID: <9d0511cd-1fb2-4612-9b21-196a43ad0397@web.de>
+Date: Fri, 1 Mar 2024 15:07:50 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="YhbwdPAihVH/ItCG"
-Content-Disposition: inline
-In-Reply-To: <44ae0339-daf1-4bb9-a12d-e3d2e79b889e@gmail.com>
-X-Cookie: Schizophrenia beats being alone.
+User-Agent: Mozilla Thunderbird
+To: linux-media@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Sakari Ailus <sakari.ailus@linux.intel.com>
+Content-Language: en-GB
+Cc: LKML <linux-kernel@vger.kernel.org>
+From: Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH] media: v4l2-fwnode: Improve exception handling in
+ v4l2_fwnode_connector_add_link()
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:LEUQBvFdHCVfm2kd8AqCv/C4/RsI5ff027Mb70htNk95PRhrmAi
+ S6bqeuQusfUOLnwqELcas6C/4RHZpcoq22ihwSmvU0+PpuZIo8ozvdOF7XJnKqUrmg9pxQd
+ NGLDsz1VDgRF9NiCHcT3ckachFA6P/1t+gATTePTGrBlmmEMrNorRO3yNWaq3QQGiP/LCtz
+ +vDFUm4xbplB6ASaiRspg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:zHaLcXrErqM=;EsjKksCa4tH2THJlPAtiPwkKJLl
+ 8Xfagu/ewpVajhuLFC9xitMc7JQ62+eG2NMDNWY9Tk7r97HzxnbEd13pFYzrDwZcMFBF8Jr01
+ rEXAGhvjPpuMmr/Pux6jGIH0xj1yceiv41H6sdB79uZ0Sb8eWjllDz4bHx9fBeMsbo6hJDTeJ
+ mHb3EvH9Zf2FDEkEzbqN7rFJlv1Wzg1QTcrZiw7zzPLe2nCJWeo8QtFyOfJs6QY69hpWl9ajr
+ dc66RBjTb0roQBPVp6JFwoCzAQZHSVzZ4mALV4WfvboMwoUomDBmIUpqHqt5IRDML+wuOs+hl
+ O4gtBJRVAXH/s8/HvZ1PsZ7BxOI3/3T6JacIE8WsGzQrc7nWDxMhv3q4UrLnSY1274vEEwByB
+ qDcAv8YtRNcgREzW9PfvKjG/diodpJms342NzBbYtYmzGV8aiHepXW8a2nxKuHPapT5gXrfva
+ u+4qSK1qj8eXV278GNfKu4k0aLVgOzec+SyxxckRJgVXhUz0s5J5NABdX1g1ss0P4/bpIc2/b
+ 4T4QsDLJOAGqhLxX3tA7Tnh/YGDDThpGVqqAORR3FEsNoRgH7o2YXq4mrbFwVSyn7jxVbSFqt
+ DNweJ+O9x4S/NsrwOzMhjNRlfn60JodKmYl6RzZJ1Ai7qMVyvNp8PRzAaK1pnt3KcorjEX542
+ ktbdJr5RQ+bUX5hXq+ROLYzeqadUfSN9GV5A9rY0ufdajFfWrt6OOJ0Ro1kCml2dvONEWfL+Q
+ jpIa/QfBY0DKah9NrvWiqwKV0jT8nQuYFFmTnxNyvyctVEdT0s7dkfD1e3GDBU5S5hs/msJTg
+ LkEuGY0/6SC1phYZIqeHLy05gcupVQCKfV3IuRwmxFG0M=
 
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Fri, 1 Mar 2024 15:02:09 +0100
 
---YhbwdPAihVH/ItCG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The kfree() function was called in one case by
+the v4l2_fwnode_connector_add_link() function during error handling
+even if the passed variable contained a null pointer.
+Thus use another label.
 
-On Fri, Mar 01, 2024 at 12:27:13PM +0200, Nikolai Kondrashov wrote:
-> On 2/29/24 10:21 PM, Linus Torvalds wrote:
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+=2D--
+ drivers/media/v4l2-core/v4l2-fwnode.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-> > We already have the situation that the drm people have their own ci
-> > model. II'm ok with that, partly because then at least the maintainers
-> > of that subsystem can agree on the rules for that one subsystem.
+diff --git a/drivers/media/v4l2-core/v4l2-fwnode.c b/drivers/media/v4l2-co=
+re/v4l2-fwnode.c
+index 89c7192148df..dc6daf3a9a51 100644
+=2D-- a/drivers/media/v4l2-core/v4l2-fwnode.c
++++ b/drivers/media/v4l2-core/v4l2-fwnode.c
+@@ -744,7 +744,7 @@ int v4l2_fwnode_connector_add_link(struct fwnode_handl=
+e *fwnode,
+ 	link =3D kzalloc(sizeof(*link), GFP_KERNEL);
+ 	if (!link) {
+ 		err =3D -ENOMEM;
+-		goto err;
++		goto put_fwnode_ep;
+ 	}
 
-> > I'm not at all interested in having something that people will then
-> > either fight about, or - more likely - ignore, at the top level
-> > because there isn't some global agreement about what the rules are.
+ 	err =3D v4l2_fwnode_parse_link(connector_ep, &link->fwnode_link);
+@@ -760,6 +760,7 @@ int v4l2_fwnode_connector_add_link(struct fwnode_handl=
+e *fwnode,
 
-> > For example, even just running checkpatch is often a stylistic thing,
-> > and not everybody agrees about all the checkpatch warnings.
+ err:
+ 	kfree(link);
++put_fwnode_ep:
+ 	fwnode_handle_put(connector_ep);
 
-..
+ 	return err;
+=2D-
+2.44.0
 
-> > I would suggest the CI project be separate from the kernel.
-
-> It is possible to have a GitLab CI setup with the YAML files in a separate
-> repository. And we can start with that. However, ultimately I think it's
-> better to have it in the same repo with the code being tested. This way you
-> could submit code changes together with the required tweaks to the CI to keep
-> it passing, making development smoother and faster.
-
-> With that in mind, and if you agree, where else would you say we could put it?
-> Under "scripts"? Or "Documentation"? And where it would be best for the
-> various subsystems to put theirs? Or could we have the top-level "ci" dir and
-> pile all the different setups there? Or would you like to wait and see how
-> adoption goes, and then decide?
-
-If we were going to put bits of this in tree how about something like
-tools/testing/forges?  I'd hope that things could be shared by multiple
-services, if not we could always have subdirs I guess.  We could put
-glue bits like defining how to run kunit, checkpatch or whatever with
-these systems in there so people can share figuring that bit out.
-Individual trees or CI systems using these forge based systems could
-then reference these files when defining what specific tests they want
-to run when which seems more like where the differences will be.
-
-I'm not super familiar with this stuff, the above is based on it looking
-like there's an OK degree of separation between the "what to run" and
-"how to run" bits.  I might be misreading things, and it's not clear to
-me how often it'll be useful to be able to update things in tree.
-
---YhbwdPAihVH/ItCG
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXh4SoACgkQJNaLcl1U
-h9Bblwf/VTM6YUfyvCiFxlO2Sxm0DvgYcdMKFDVe0Iwu6FKdwHafjgfDIAW/fydL
-Zseb1Kh+uo2pgtj0H6hU5ZNPVzux4lyYsfO7aWhZePjev836VEqMIEeJJp7Xxc+G
-GyrpLnxWa/q+WvHh/dOycgP8JdJTWIoPPP27rSFGsgikoqTVhtJUF2ld6MPJGSbe
-2Gna3Kd/ALF9sms7c/ND6qWhoqLlsjFF7v6SDUuOHfVozPdez72lpAx0WLSdj29D
-9Bm2oGIEPWS1dlyXRXh34AaUeUFqXnr0kK2fgOkadM/ndszTaB3+X3ujZXC2MCUL
-+5OwpbUNLXA9RkS8JN2anvXIQ9uuGg==
-=mh+h
------END PGP SIGNATURE-----
-
---YhbwdPAihVH/ItCG--
 
