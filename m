@@ -1,135 +1,122 @@
-Return-Path: <linux-kernel+bounces-88302-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88305-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 409CC86DFDC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:10:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6972686DFE0
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:11:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70F031C232A2
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:10:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25F48288882
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:11:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA1E66E2A3;
-	Fri,  1 Mar 2024 11:10:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7AC06EF1F;
+	Fri,  1 Mar 2024 11:10:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kRxinnnD"
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="PAZ7hQ7k"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D2DC6CDD6
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 11:10:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 882846EB7B;
+	Fri,  1 Mar 2024 11:10:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709291405; cv=none; b=giVk3tWJ5PJ8dS+8VHsr3BtUkxkGemTcoc8tQt+Or2c19WWngcn6GnAX6Pu4jNZBzLaZkdi0875OzV54bKfiEaJjo0Wm6RPBTH79Y4FL5ibnq+x1ck9ofbI+Y6KUjCvjTdOcv0DxJXyEG9WpHiyouaIt+TRQa6gV1rBC4YdZpAQ=
+	t=1709291411; cv=none; b=k9H+jNqqZ9tPuau+6z+Hpd+vb3ZSw9iwOi15xcblBN+JCThAJbR8uT9iH6LZnZDZ6wm6RJXT0+0MFT/D42uofU54a3s9336lfw6uaOtseBAmjD/vw+Vtjfv85o2BYVvezfCn05iiyJ4h0O+K6Jodg4D3B54kXKxXHqoukx6BQWk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709291405; c=relaxed/simple;
-	bh=LV1fyBSu3ZwpN4ZiEusmgcvF6MxivbLEh1Lghj2THIw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=qDxE7sdY6WbYhxaz9NW/TZzS+1gUA7aVTjzJ8ZwzLM9eVecdNxP5xsUbcSpfTAX3/NAmUYNUJj8gF7py6oxy90hoxGZBV9peWz/JPq20xaF9p50DXZzoJ7tDUCP370q83uWvi1Jh24RYq6tNJtBA0pkVCujRPdfY/OBO7ATuCPI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kRxinnnD; arc=none smtp.client-ip=209.85.167.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-513230201b2so1822699e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 03:10:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709291401; x=1709896201; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AYY5vhGREGmnIQ7NfihjkFOwl5i8Nexdj/rtVbJhxCk=;
-        b=kRxinnnDoTzXlGHqXXGnPJ85UTCRw5YUg1vXk2Skn7hi1SGtRCCY+supBv6ivh9pJZ
-         iLQCPijkLoXdfn9C4mUJONOp7nRDmz+YNDn9IhnvdGDRmlOOBNLCJrnlQLoPsJjGaHe7
-         b+d8/nSgNyjpGq5nGurY1lQPokWx+fDslRVOt1A5zW36CwrZnK0c7hVn/emq6u6q7KAP
-         53CmyTb9SIQpYe/9LhMh1UDtlbudEhtXLIyQr/vR5NvK+ma6dxIheO3YnYUb4Ksb+ZLg
-         QlTED4yi1hUEUPULSmOKWXCo5jgyoLg11TxdWTRLWG6SiTjiLO0oJ/+LP2XAXBXEJS4k
-         dcIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709291401; x=1709896201;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=AYY5vhGREGmnIQ7NfihjkFOwl5i8Nexdj/rtVbJhxCk=;
-        b=MB/PU4mq00KqB1oz+fxuz5SlbFcx/46/Dsak7V4C6o8C11NfME3gGInstu17qfzr0Y
-         SFo9szWXSDY51yDQx0dmXg4r3uZPapsW9i+K29gNS/uTOaDoDuKS7Hr5mnu13tgbi+yn
-         S3IuCz6nfO4HZfnCDf3pW83dvGhaVBTjkSOdu3PsDZlhknSv8M8vcj4CsLPNW40wwru+
-         pUiSgU24EZeibFEUEaQuJRnPSWsXVH0j/uT/3+EaXXC6YC+7Mq5Xy1pOK6RsH4Bs0eCD
-         PTqp6JvPFJL/XijRaf4LjG6vU7QxbUe7k6glOOVlJx3QOlAkKDOLViII6OFSwUoFHrcf
-         nGYw==
-X-Gm-Message-State: AOJu0YzRSzVPpEIJ+SV587HNV/7PqcdXcSfwTYEicUEQF2ho0E3i9XpP
-	B5XtPWYz6XOk3OcpeanEGrWSN8dyC516OGdKQ/lL9l1UXro6dkmnNI1Q4f4FcFg=
-X-Google-Smtp-Source: AGHT+IHx2omjBwV13BMAVRo0qLA80YK8oxD3iBNrU+OgrtEJ+EsjKczxiZhF+ZpPK05I0fb+A4lrAQ==
-X-Received: by 2002:ac2:5b85:0:b0:512:bed5:3d87 with SMTP id o5-20020ac25b85000000b00512bed53d87mr982592lfn.23.1709291401482;
-        Fri, 01 Mar 2024 03:10:01 -0800 (PST)
-Received: from kepler.redhat.com (1F2EF13F.nat.pool.telekom.hu. [31.46.241.63])
-        by smtp.gmail.com with ESMTPSA id b20-20020a05600c4e1400b00412cad66f8fsm490264wmq.44.2024.03.01.03.10.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 03:10:00 -0800 (PST)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-From: Ingo Molnar <mingo@kernel.org>
-To: linux-kernel@vger.kernel.org
-Cc: Peter Zijlstra <peterz@infradead.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Valentin Schneider <vschneid@redhat.com>
-Subject: [PATCH 5/7] sched/balancing: Update run_rebalance_domains() comments
-Date: Fri,  1 Mar 2024 12:09:49 +0100
-Message-Id: <20240301110951.3707367-6-mingo@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240301110951.3707367-1-mingo@kernel.org>
-References: <20240301110951.3707367-1-mingo@kernel.org>
+	s=arc-20240116; t=1709291411; c=relaxed/simple;
+	bh=QRbExAMvXdH77Tuwests8b8zj5ZvrcJ6Ix6vLJ+34M8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=CkdupNdAWLWvt4iNv6BXZ3yzM5IqHzTnYKoD958DvLxKEvd6DEAgBeB9KA9e8z3rQcpi445KESc31hqZYw8nP7thG8mu400W8NM6YQ9y5Xs1AlzkOjQWN1220M1zV701c5egtVdod1fSma3OD0JnvMbGCcWvtXF5jLtT+tuaymk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=PAZ7hQ7k; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 421B9tBL120075;
+	Fri, 1 Mar 2024 05:09:55 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1709291395;
+	bh=WthVMSlBC04LR7tfpauZDWEDm6N7t/Hgl+E1wPR/kR4=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=PAZ7hQ7kUNUaI1reBgkk8AFHWJ4SvLVGUkTqhxIpDJd++wVWfRoOpW24dN1AeFRQN
+	 tfzcx2UJiUy48RQ/17pmLYaG+N7qApykx3i3JVOgFCh4M/KkNiB703kIb2ufU0ZdhA
+	 tP/yRxbZD2DcOBzLZIA2Xb/zeYsY+TlouBKIjB6k=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 421B9txW099588
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Fri, 1 Mar 2024 05:09:55 -0600
+Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 1
+ Mar 2024 05:09:55 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 1 Mar 2024 05:09:55 -0600
+Received: from [172.24.227.88] (uda0500640.dhcp.ti.com [172.24.227.88])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 421B9odN124584;
+	Fri, 1 Mar 2024 05:09:51 -0600
+Message-ID: <03bf515c-9f90-487c-ecfa-90d407dc5d86@ti.com>
+Date: Fri, 1 Mar 2024 16:39:50 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH net RESEND] net: ethernet: ti: am65-cpsw: Add
+ IFF_UNICAST_FLT flag to port device
+Content-Language: en-US
+To: Jakub Kicinski <kuba@kernel.org>,
+        =?UTF-8?B?U2FuanXDoW4gR2FyY8OtYSwgSm9yZ2U=?= <Jorge.SanjuanGarcia@duagon.com>
+CC: "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com"
+	<edumazet@google.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "s-vadapalli@ti.com" <s-vadapalli@ti.com>,
+        "rogerq@kernel.org"
+	<rogerq@kernel.org>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
+        "olteanv@gmail.com"
+	<olteanv@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Ravi
+ Gunasekaran <r-gunasekaran@ti.com>
+References: <20240228111300.2516590-1-jorge.sanjuangarcia@duagon.com>
+ <20240228200516.1166a097@kernel.org>
+From: Ravi Gunasekaran <r-gunasekaran@ti.com>
+In-Reply-To: <20240228200516.1166a097@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-The first sentence of the comment explaining run_rebalance_domains()
-is historic and not true anymore:
 
-    * run_rebalance_domains is triggered when needed from the scheduler tick.
 
-.. contradicted/modified by the second sentence:
+On 2/29/24 9:35 AM, Jakub Kicinski wrote:
+> On Wed, 28 Feb 2024 11:13:23 +0000 Sanjuán García, Jorge wrote:
+>> Since commit 8940e6b669ca ("net: dsa: avoid call to __dev_set_promiscuity()
+>> while rtnl_mutex isn't held") when conecting one of this switch's port
+>> to a DSA switch as the conduit interface, the network interface is set to
+>> promiscuous mode by default and cannot be set to not promiscuous mode again
+>> from userspace. The reason for this is that the cpsw ports net devices
+>> do not have the flag IFF_UNICAST_FLT set in their private flags.
+>>
+>> The cpsw switch should be able to set not promiscuous mode as otherwise
+>> a '1' is written to bit ALE_PORT_MACONLY_CAF which makes ethernet frames
+>> get an additional VLAN tag when entering the port connected to the DSA
+>> switch. Setting the IFF_UNICAST_FLT flag to all ports allows us to have
+>> the conduit interface on the DSA subsystem set as not promiscuous.
+> 
+> It doesn't look like am65-cpsw-nuss supports unicast filtering, 
+> tho, does it? So we're lying about support to work around some 
+> CPSW weirdness (additional VLAN tag thing)?
 
-    * Also triggered for NOHZ idle balancing (with NOHZ_BALANCING_KICK set).
+CPSW driver does not support unicast filtering. 
 
-Avoid that kind of confusion straight away and explain from what
-places sched_balance_softirq() is triggered.
-
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Valentin Schneider <vschneid@redhat.com>
----
- kernel/sched/fair.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 31838b9dcf36..0e13b0016f33 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -12409,8 +12409,13 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
- }
- 
- /*
-- * run_rebalance_domains is triggered when needed from the scheduler tick.
-- * Also triggered for NOHZ idle balancing (with NOHZ_BALANCING_KICK set).
-+ * The run_rebalance_domains() softirq handler is triggered via SCHED_SOFTIRQ
-+ * from two places:
-+ *
-+ *  - the scheduler_tick(),
-+ *
-+ *  - from the SMP cross-call function nohz_csd_func(),
-+ *    used by NOHZ idle balancing (with NOHZ_BALANCING_KICK set).
-  */
- static __latent_entropy void run_rebalance_domains(struct softirq_action *h)
- {
 -- 
-2.40.1
-
+Regards,
+Ravi
 
