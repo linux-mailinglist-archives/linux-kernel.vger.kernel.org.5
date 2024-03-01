@@ -1,204 +1,154 @@
-Return-Path: <linux-kernel+bounces-89174-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89173-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D005F86EB9E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 23:16:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E921786EB9C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 23:16:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8304F282777
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 22:16:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 88BF01F2306D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 22:16:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF02259166;
-	Fri,  1 Mar 2024 22:16:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 721E659163;
+	Fri,  1 Mar 2024 22:16:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GscC6/3X"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fvCLSZkX"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3C0B59158
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 22:16:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B21E859153;
+	Fri,  1 Mar 2024 22:16:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709331396; cv=none; b=C7sWGJabFaP/gVxuldx6SoyBFwrnv1FWZXLCongNcpmuMBKuDafB6FhF09qyczhxOw0M1eUf1bV1cAb8Mu5vh66+t3j5B+XkossPv/fX0nKUcOgdfYnJujkc/pIXsKE+fxiz340/5CNuzLoiT3h+C7Ncoypju/Nvbo0PwP0ChpQ=
+	t=1709331373; cv=none; b=PuqygixIG8mj5qgewvNNqVRH0BigzCIUBsC/+8zhk97dMDgWlC9MoBQ/e2DctPGQQb4+vBJqrbUZflRhR71SX9C4FEPZ6HQBKKdtMx8EEgSFh+w9rDRoPZHYtQbFnvSknz+d08DdhUEmr7/yjQg5LhryzhoLm2CU2/ZspeWAxvo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709331396; c=relaxed/simple;
-	bh=gSS6Fqkxcbd+zL7nBDEwycxjyL3GP+RoZtmbD4ph2F0=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=mxMTkKxndJcHWAMJidDJfK36dfxGDrdATxUEWBgXCSbrS6SfXPYdG0Gk2ljoxWq7LDXE8TpJ2TadCGSHQoIYm95XKNtXDgQPR6rQq6vf3f0hidkBbBWuy5LKg1tGIbZOlHIc1I0zciuvvtXMNKRUlWiUkNKUpEzbCfOg18e6aXo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GscC6/3X; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709331394; x=1740867394;
-  h=date:from:to:cc:subject:message-id;
-  bh=gSS6Fqkxcbd+zL7nBDEwycxjyL3GP+RoZtmbD4ph2F0=;
-  b=GscC6/3XM2JYwESE0zsh2X+7P1B+EsGEzX4vgeoGVyaoGdQigRlfNGqO
-   zGtqhp3BW+DHjfWPj7X5ma7a6WTDqNZHlGvqKcUZUOhuFPDwZpVojpVe5
-   S4xJFSOi1GRCs8bUVhTrA4l8y4JMVbwzomPN8C6PGrqbRKoJyMHVCTlM7
-   Y/qilYeCUTbOswrxxOWNj6A8Qn5F3qlx2FG44TNCaTPNh+2ks3na0K7uF
-   1pDhg1gClSC14qtQF4r4DenTAa9+jB4mktbE7fs32hd785YVCYrpzR23f
-   8e7YkhlHRlxtvWrQOT+rdSUOoYB1TBitnkE3IlAS0v6+ZFVbyeZb6vSu4
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11000"; a="4010431"
-X-IronPort-AV: E=Sophos;i="6.06,197,1705392000"; 
-   d="scan'208";a="4010431"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 14:16:33 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,197,1705392000"; 
-   d="scan'208";a="8392428"
-Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by orviesa009.jf.intel.com with ESMTP; 01 Mar 2024 14:16:32 -0800
-Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rgBB7-000E8T-1z;
-	Fri, 01 Mar 2024 22:16:29 +0000
-Date: Sat, 02 Mar 2024 06:15:29 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:sched/core] BUILD SUCCESS
- 75480e629506c25dffb563221fe0ff6b9db48360
-Message-ID: <202403020626.SDWnFgeN-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1709331373; c=relaxed/simple;
+	bh=LJuIQFukpHI3j0cJHkQpRofhGTNtPQXNa5W8OdNEN1s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qFsT6sscip50f0zaS5Ow802y9osJ+FrNz77aLpPHIdHm5DFoXDcXeMI00lU+T3JlmrLnXIlWOZ19lOPT+sJhRhqLY0rbcy/C52HgrE6qpnUuwD/OGgydaRH0WCnIo+9lY6axmyQKR5/0roVMx7Xg94ilY2DqzfTKOMYAiQ8WFG4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fvCLSZkX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D14F2C433C7;
+	Fri,  1 Mar 2024 22:16:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709331373;
+	bh=LJuIQFukpHI3j0cJHkQpRofhGTNtPQXNa5W8OdNEN1s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fvCLSZkXt1+PGO47H7i+AifOOEsxZKS2EW6eRbXy+jsraAQbc1qGPFDZm7vujNyUj
+	 DfRxLO3w0R/PBlCgs+dud76hc3xY6nlwFSOkkh8m4k+wc2UtpjCPWzHHflK6E395+Z
+	 V1JKczDaugpVP6z5Z/OkzpYa5NZ9E+T03S8zUf949DGCA4A+kykefxDfczr3rxdGJ7
+	 uFzg27GjuXfjxZRLEU3ZeppT+lAtq/V+L1QCbwWtAfGlo2YBpP1u37Hv69MGHiuTya
+	 DHdDh04f7OKAJpIyWNR6N7w1dRSfySuyGYKuElnXy2yDyYV8NqM7ZqLHngDH4CvRjT
+	 R27dpIJDaqLtQ==
+Date: Fri, 1 Mar 2024 15:16:11 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Nicolas Schier <nicolas@fjasle.eu>
+Subject: Re: [PATCH] kbuild: fix inconsistent indentation in top Makefile
+Message-ID: <20240301221611.GB2610495@thelio-3990X>
+References: <20240301112108.1958281-1-masahiroy@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240301112108.1958281-1-masahiroy@kernel.org>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
-branch HEAD: 75480e629506c25dffb563221fe0ff6b9db48360  Merge tag 'v6.8-rc6' into sched/core, to pick up fixes
+On Fri, Mar 01, 2024 at 08:21:07PM +0900, Masahiro Yamada wrote:
+> Commit 3b9ab248bc45 ("kbuild: use 4-space indentation when followed
+> by conditionals") introduced inconsistent indentation because it
+> deliberately touched only the conditional directives to minimize the
+> change set.
+> 
+> This commit reformats some blocks in the top Makefile so they are
+> consistently indented with 4 spaces.
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-elapsed time: 728m
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
 
-configs tested: 116
-configs skipped: 3
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                       aspeed_g5_defconfig   gcc  
-arm                                 defconfig   clang
-arm                        keystone_defconfig   gcc  
-arm                          sp7021_defconfig   gcc  
-arm                       spear13xx_defconfig   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   clang
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240301   clang
-i386         buildonly-randconfig-002-20240301   clang
-i386         buildonly-randconfig-003-20240301   gcc  
-i386         buildonly-randconfig-004-20240301   clang
-i386         buildonly-randconfig-005-20240301   clang
-i386         buildonly-randconfig-006-20240301   clang
-i386                                defconfig   clang
-i386                  randconfig-001-20240301   clang
-i386                  randconfig-002-20240301   clang
-i386                  randconfig-003-20240301   clang
-i386                  randconfig-004-20240301   clang
-i386                  randconfig-005-20240301   gcc  
-i386                  randconfig-006-20240301   gcc  
-i386                  randconfig-011-20240301   gcc  
-i386                  randconfig-012-20240301   clang
-i386                  randconfig-013-20240301   clang
-i386                  randconfig-014-20240301   gcc  
-i386                  randconfig-015-20240301   gcc  
-i386                  randconfig-016-20240301   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                         apollo_defconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                            mac_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                         cobalt_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                      arches_defconfig   gcc  
-powerpc                        cell_defconfig   gcc  
-powerpc                    klondike_defconfig   gcc  
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                          r7785rp_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64                              defconfig   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                           alldefconfig   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                  audio_kc705_defconfig   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> ---
+> 
+>  Makefile | 32 ++++++++++++++++----------------
+>  1 file changed, 16 insertions(+), 16 deletions(-)
+> 
+> diff --git a/Makefile b/Makefile
+> index d84c0fb215fd..859b0f52949e 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -295,51 +295,51 @@ single-build	:=
+>  
+>  ifneq ($(filter $(no-dot-config-targets), $(MAKECMDGOALS)),)
+>      ifeq ($(filter-out $(no-dot-config-targets), $(MAKECMDGOALS)),)
+> -		need-config :=
+> +        need-config :=
+>      endif
+>  endif
+>  
+>  ifneq ($(filter $(no-sync-config-targets), $(MAKECMDGOALS)),)
+>      ifeq ($(filter-out $(no-sync-config-targets), $(MAKECMDGOALS)),)
+> -		may-sync-config :=
+> +        may-sync-config :=
+>      endif
+>  endif
+>  
+>  need-compiler := $(may-sync-config)
+>  
+>  ifneq ($(KBUILD_EXTMOD),)
+> -	may-sync-config :=
+> +    may-sync-config :=
+>  endif
+>  
+>  ifeq ($(KBUILD_EXTMOD),)
+> -        ifneq ($(filter %config,$(MAKECMDGOALS)),)
+> -		config-build := 1
+> -                ifneq ($(words $(MAKECMDGOALS)),1)
+> -			mixed-build := 1
+> -                endif
+> +    ifneq ($(filter %config,$(MAKECMDGOALS)),)
+> +        config-build := 1
+> +        ifneq ($(words $(MAKECMDGOALS)),1)
+> +            mixed-build := 1
+>          endif
+> +    endif
+>  endif
+>  
+>  # We cannot build single targets and the others at the same time
+>  ifneq ($(filter $(single-targets), $(MAKECMDGOALS)),)
+> -	single-build := 1
+> +    single-build := 1
+>      ifneq ($(filter-out $(single-targets), $(MAKECMDGOALS)),)
+> -		mixed-build := 1
+> +        mixed-build := 1
+>      endif
+>  endif
+>  
+>  # For "make -j clean all", "make -j mrproper defconfig all", etc.
+>  ifneq ($(filter $(clean-targets),$(MAKECMDGOALS)),)
+> -        ifneq ($(filter-out $(clean-targets),$(MAKECMDGOALS)),)
+> -		mixed-build := 1
+> -        endif
+> +    ifneq ($(filter-out $(clean-targets),$(MAKECMDGOALS)),)
+> +        mixed-build := 1
+> +    endif
+>  endif
+>  
+>  # install and modules_install need also be processed one by one
+>  ifneq ($(filter install,$(MAKECMDGOALS)),)
+> -        ifneq ($(filter modules_install,$(MAKECMDGOALS)),)
+> -		mixed-build := 1
+> -        endif
+> +    ifneq ($(filter modules_install,$(MAKECMDGOALS)),)
+> +        mixed-build := 1
+> +    endif
+>  endif
+>  
+>  ifdef mixed-build
+> -- 
+> 2.40.1
+> 
 
