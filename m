@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-89036-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89037-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C77CE86E9BF
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:40:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA93D86E9E1
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:43:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78E7E286F4B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:39:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 10359B29379
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:40:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0DF33C08D;
-	Fri,  1 Mar 2024 19:39:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4683D3C697;
+	Fri,  1 Mar 2024 19:39:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cJVK1JXZ"
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PB98IRdM"
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E7F53A8E1;
-	Fri,  1 Mar 2024 19:39:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43C4F3C699;
+	Fri,  1 Mar 2024 19:39:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709321965; cv=none; b=LkLn/wTY5Vdntg/f2hbJXCDNYTlOY6Q95djDTSWod37thAGHDrONUa/FkDhIlW+r8Ck11thrfMJitMDZVOwKkC91ALIT5Aj9tTMoJ/2Mod9fshZsh2wO0TDHJJOcE+4nY1CmUZ7z3yd+J/P1NYgwoYjbTHzIs3R6LuwAEdAaV1A=
+	t=1709321971; cv=none; b=qr4NvaRN363syjyKMRlebR8HyPBKtXLjp1OE75r4jVK8jtTexR48nIVkmysotjaby99kZuc0uezytX/N70cpHlSde8w4yJZjFGMW2E5vlQvVpGm5Xol7yjaIymhRwm/k4i0bTYuTIQSgS/9KiM1obrtmeg6PochGatyDz+Bgy+0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709321965; c=relaxed/simple;
-	bh=u7ate3YnbRh4cS/ZoxbBaCkSYj8kc6vJSZdj383mVgs=;
+	s=arc-20240116; t=1709321971; c=relaxed/simple;
+	bh=Vi7NWkc1TXRnzVWtxToE3qHIrWqGeB926dS5d87nCDg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Qh8LqUrHrel3xde/8gIC4XUFkTW+GKechg43X3Q3GHM27Vkjm9DXen9NSLH5Zg2BEZ3k7iouh5VgamgklsXj8/4M5op8JjOMzxUO9pwrmpyYWCVK9QSv4wSylBAonECd8cZjkT6ktyeG/VxpNkFuWvpJgrs9/NWTRou+D+PPEl4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cJVK1JXZ; arc=none smtp.client-ip=209.85.214.182
+	 MIME-Version; b=NQAxsAmgzrImCfbxhcKq7mIgEqGSMbFB3I4XK8nmsK/HnIwEmrV4toOD/tPiVgr0lE0AzdYUxWS1gmFewRlV4HgifCidmPAOf/aAyCzT2lfHZh7BDISXdCdUm9Zxa+WXS6v0q5eMmyZM0CZWcsnVTfIzLEx+K0gQm2hwxnzN5Hk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PB98IRdM; arc=none smtp.client-ip=209.85.210.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1dc0e5b223eso24311475ad.1;
-        Fri, 01 Mar 2024 11:39:23 -0800 (PST)
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e56da425b5so1950211b3a.0;
+        Fri, 01 Mar 2024 11:39:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709321963; x=1709926763; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1709321969; x=1709926769; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hb4CG876O8rufa4kt9vTuzRMAqAQvWAjs5KW+CbhAMc=;
-        b=cJVK1JXZxDMHmKrHAE3FcMqpRbDLI4OEkMtj0DmwxoXkPSgGN3j4pq96KkFBeo2+tL
-         U/OPYGqz0MLrQV9vXmfk5yeTxNtoUzeRoMBQqCHMyKRpLPbpefHdrWP21Z7JKaD8lJES
-         NwTv+VT66TERN2KbuDVkzhjK/ER7fzunQCLvHANeWsR3IrMaalPRk9znxs9CSnvKsEM6
-         FkVO1F5irQwrjVlna+aJIJGEmKeCrxdp3xh5DRdOZ+d633Q5qXpBGEpAPck3Wgrds9Na
-         PGiaSRQjHic5WGUM/4RZmb0ueRHU6ogPPUBl8N8PLSAgphwzqnlr/lovfaE8xQfm0FKo
-         KnOA==
+        bh=dO4lQ3DX7Qu8zJWJNpEo7HKYrGAn8GSChMZFfiOVl1U=;
+        b=PB98IRdMSadr0X8oqT3VlC4QOcBjKPg/JNJsbPsntoXpHwqAY9yfKh9Dwrp9WVhTgF
+         3d6/zK01TjKto331Z4U20eavh1DgttsX894/c3cZ2BJYpUqUqG5v3BgUmbQpKhk3ThoV
+         apacQpHEnH2feDFpvuNkJswKcW88o1omzRqRVBhCnHjt4jYZpUyOMfaxy4Gu7Kdl9XPZ
+         TYedtM8IA7Sg+UUJ76ogbVQ2g06r3ew34TfPkU6mUUpUBEcL02I6uLYZA7+eFRrXYIyI
+         ZG2wxS5mdk8Da2VoWqqsn0mtuVAY8PHHaPFY2A2leSphu0EI4TkV0a872N9PN1lM3QzE
+         5Cvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709321963; x=1709926763;
+        d=1e100.net; s=20230601; t=1709321969; x=1709926769;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hb4CG876O8rufa4kt9vTuzRMAqAQvWAjs5KW+CbhAMc=;
-        b=NxJEQwsc18YvjRXk6RYaTBZwLjPWCVzXwhSHr4wWGj0ViLiNsnnZAj7oTq1vBJCTWo
-         S68GLCmORLJYGoTAUFnz5Y2vibavy8osCv3k15N0ohDmD08DsokjeCSOb4K+QNfYdXd9
-         LO0YIMCmPkO+o9hy3YPhp7ewZSW3/FPdp2oAd8gIOp58vyGouVb22U3ugOb0x5dYBngL
-         HcObhGXJjYujsNTXw1HbOR7PD4Zy/gH9Cojjah63K7aSvOXukSowprXZyTWDBlrCdjUH
-         MgY2Bt1+X6xuUvKh5mAhTh8jvPGwKznLU3MhJV2UsSyy4S6XC/QE8YxtIO10tss1AAJD
-         km0A==
-X-Forwarded-Encrypted: i=1; AJvYcCXmuD/mBvNmEBQncZyYUdTgqhCeAhwx/dh1OJHpz0+y+ou3djPr7bgo/aRqt1teg+MHkotuNm6rcELaRl8YK9OI80pVv1SeHwdX0ntY7SjmLLyTBWAjn5AFsAxYjlhMZKhFkOxW1yIq4V83BSMTzEgjf1IIJNDpc/YOspKcJ9tfGV0qa9/ouEEzbIE=
-X-Gm-Message-State: AOJu0YzZFozBAca2dtLGZIe7jOp7G3l6TDGuAz96ysCpa2HYc/ko0Oc5
-	o5ehATReleQ23LAiW6lmTsPGYIolU3O2udFUmjOdPbJcDfzWonqN
-X-Google-Smtp-Source: AGHT+IFgEXL5OrEpNcLcirx6onnuU3qA5IyL4Z8we5SXd8dy1goPwzAgll7JmWsxp1BQjtJuaRYtbg==
-X-Received: by 2002:a17:902:ed82:b0:1dc:2f30:e0dc with SMTP id e2-20020a170902ed8200b001dc2f30e0dcmr2171759plj.36.1709321962783;
-        Fri, 01 Mar 2024 11:39:22 -0800 (PST)
+        bh=dO4lQ3DX7Qu8zJWJNpEo7HKYrGAn8GSChMZFfiOVl1U=;
+        b=XNS3/lO7guDKcIY88a2S4Umeq//d5q6cI4tnAVwEDn5q2HuZVU0VRvQWU9fV4aPvoY
+         NW9yhKlDkZzIh42Pa3NKpyA519zwFVPdudfgJTnetAn3lpJgtpcQYjUxDZP3KseLh7rv
+         4FXmA4AcaVq646ZLqiWP5kP8rfOnfIRhEXgJ9igV/unJKM/lnfHNRKsG6TnH0SP7h4hM
+         1CM/4J5hclu9jKQ9In9qtLieLAYmKMgL+5kFoY7rV3M28owa69B57lQYu6FtufCwqEFh
+         83Ny/5nufPJBWYHGoOasOoNxA8VFcsVuOLRhPuuUvi3dL5gEnw39d4FcCirbryFwEliD
+         Y6iA==
+X-Forwarded-Encrypted: i=1; AJvYcCV0Es3jwJPKSlLLgI5NTVHC0A1xcj65pAZwNsxvWYvrC4epj+uuM3E8hzNvBBXSFBEl+XFOg4lZTqBt/+bCtEP89zF9oTfCed2YqPLpNnKOe/WrmEX9wwPFUnZLtdbmclCj4hBcvqX0BmdT3lm8J+aut5Cn78Z605CYhlTXjlz3c1oT8MKQLW15gIU=
+X-Gm-Message-State: AOJu0Yy2YR8H2CWGscI7rkpPbHNBCp8FVBV54tCXlukk6uL/M3iF53TA
+	DFxFGE5l0YSCbdpQzhNaYq/z594qEndVlZho86jMKY0OMH6PZROw
+X-Google-Smtp-Source: AGHT+IGde4M3wivnu/XUvD5PTHizKpooiRXEH/Qb75954pFaiKEAN13Gcv1lY/BXZ4UKV5NuULoYhA==
+X-Received: by 2002:a17:903:41c4:b0:1d9:a2b1:8693 with SMTP id u4-20020a17090341c400b001d9a2b18693mr2982968ple.23.1709321969651;
+        Fri, 01 Mar 2024 11:39:29 -0800 (PST)
 Received: from localhost.localdomain ([113.30.217.222])
-        by smtp.gmail.com with ESMTPSA id u8-20020a170902e5c800b001dca6d1d572sm3837474plf.63.2024.03.01.11.39.19
+        by smtp.gmail.com with ESMTPSA id u8-20020a170902e5c800b001dca6d1d572sm3837474plf.63.2024.03.01.11.39.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 11:39:22 -0800 (PST)
+        Fri, 01 Mar 2024 11:39:29 -0800 (PST)
 From: Anand Moon <linux.amoon@gmail.com>
 To: Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -76,9 +76,9 @@ Cc: Anand Moon <linux.amoon@gmail.com>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-samsung-soc@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v1 3/4] usb: dwc3: exynos: Use devm_regulator_bulk_get_enable() helper function
-Date: Sat,  2 Mar 2024 01:08:10 +0530
-Message-ID: <20240301193831.3346-4-linux.amoon@gmail.com>
+Subject: [PATCH v1 4/4] usb: dwc3: exynos: Switch from CONFIG_PM_SLEEP guards to pm_sleep_ptr()
+Date: Sat,  2 Mar 2024 01:08:11 +0530
+Message-ID: <20240301193831.3346-5-linux.amoon@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240301193831.3346-1-linux.amoon@gmail.com>
 References: <20240301193831.3346-1-linux.amoon@gmail.com>
@@ -90,116 +90,48 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Use devm_regulator_bulk_get_enable() instead of open coded
-'devm_regulator_get(), regulator_enable(), regulator_disable().
+Use the new PM macros for the suspend and resume functions to be
+automatically dropped by the compiler when CONFIG_PM_SLEEP are disabled,
+without having to use #ifdef guards. If CONFIG_PM_SLEEP unused,
+they will simply be discarded by the compiler.
 
 Signed-off-by: Anand Moon <linux.amoon@gmail.com>
 ---
- drivers/usb/dwc3/dwc3-exynos.c | 49 +++-------------------------------
- 1 file changed, 4 insertions(+), 45 deletions(-)
+ drivers/usb/dwc3/dwc3-exynos.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
 diff --git a/drivers/usb/dwc3/dwc3-exynos.c b/drivers/usb/dwc3/dwc3-exynos.c
-index 5d365ca51771..7c77f3c69825 100644
+index 7c77f3c69825..645a4ec0cd92 100644
 --- a/drivers/usb/dwc3/dwc3-exynos.c
 +++ b/drivers/usb/dwc3/dwc3-exynos.c
-@@ -32,9 +32,6 @@ struct dwc3_exynos {
- 	struct clk		*clks[DWC3_EXYNOS_MAX_CLOCKS];
- 	int			num_clks;
- 	int			suspend_clk_idx;
--
--	struct regulator	*vdd33;
--	struct regulator	*vdd10;
+@@ -160,7 +160,6 @@ static const struct of_device_id exynos_dwc3_match[] = {
+ };
+ MODULE_DEVICE_TABLE(of, exynos_dwc3_match);
+ 
+-#ifdef CONFIG_PM_SLEEP
+ static int dwc3_exynos_suspend(struct device *dev)
+ {
+ 	struct dwc3_exynos *exynos = dev_get_drvdata(dev);
+@@ -193,18 +192,13 @@ static const struct dev_pm_ops dwc3_exynos_dev_pm_ops = {
+ 	SET_SYSTEM_SLEEP_PM_OPS(dwc3_exynos_suspend, dwc3_exynos_resume)
  };
  
- static int dwc3_exynos_probe(struct platform_device *pdev)
-@@ -44,6 +41,7 @@ static int dwc3_exynos_probe(struct platform_device *pdev)
- 	struct device_node	*node = dev->of_node;
- 	const struct dwc3_exynos_driverdata *driver_data;
- 	int			i, ret;
-+	static const char * const regulators[] = { "vdd33", "vdd10" };
- 
- 	exynos = devm_kzalloc(dev, sizeof(*exynos), GFP_KERNEL);
- 	if (!exynos)
-@@ -78,27 +76,9 @@ static int dwc3_exynos_probe(struct platform_device *pdev)
- 	if (exynos->suspend_clk_idx >= 0)
- 		clk_prepare_enable(exynos->clks[exynos->suspend_clk_idx]);
- 
--	exynos->vdd33 = devm_regulator_get(dev, "vdd33");
--	if (IS_ERR(exynos->vdd33)) {
--		ret = PTR_ERR(exynos->vdd33);
--		goto vdd33_err;
--	}
--	ret = regulator_enable(exynos->vdd33);
--	if (ret) {
--		dev_err(dev, "Failed to enable VDD33 supply\n");
--		goto vdd33_err;
--	}
+-#define DEV_PM_OPS	(&dwc3_exynos_dev_pm_ops)
+-#else
+-#define DEV_PM_OPS	NULL
+-#endif /* CONFIG_PM_SLEEP */
 -
--	exynos->vdd10 = devm_regulator_get(dev, "vdd10");
--	if (IS_ERR(exynos->vdd10)) {
--		ret = PTR_ERR(exynos->vdd10);
--		goto vdd10_err;
--	}
--	ret = regulator_enable(exynos->vdd10);
--	if (ret) {
--		dev_err(dev, "Failed to enable VDD10 supply\n");
--		goto vdd10_err;
--	}
-+	ret = devm_regulator_bulk_get_enable(dev, ARRAY_SIZE(regulators), regulators);
-+	if (ret)
-+		return dev_err_probe(dev, ret, "Failed to enable regulators\n");
+ static struct platform_driver dwc3_exynos_driver = {
+ 	.probe		= dwc3_exynos_probe,
+ 	.remove_new	= dwc3_exynos_remove,
+ 	.driver		= {
+ 		.name	= "exynos-dwc3",
+ 		.of_match_table = exynos_dwc3_match,
+-		.pm	= DEV_PM_OPS,
++		.pm	= pm_sleep_ptr(&dwc3_exynos_dev_pm_ops),
+ 	},
+ };
  
- 	if (node) {
- 		ret = of_platform_populate(node, NULL, NULL, dev);
-@@ -115,10 +95,6 @@ static int dwc3_exynos_probe(struct platform_device *pdev)
- 	return 0;
- 
- populate_err:
--	regulator_disable(exynos->vdd10);
--vdd10_err:
--	regulator_disable(exynos->vdd33);
--vdd33_err:
- 	for (i = exynos->num_clks - 1; i >= 0; i--)
- 		clk_disable_unprepare(exynos->clks[i]);
- 
-@@ -140,9 +116,6 @@ static void dwc3_exynos_remove(struct platform_device *pdev)
- 
- 	if (exynos->suspend_clk_idx >= 0)
- 		clk_disable_unprepare(exynos->clks[exynos->suspend_clk_idx]);
--
--	regulator_disable(exynos->vdd33);
--	regulator_disable(exynos->vdd10);
- }
- 
- static const struct dwc3_exynos_driverdata exynos5250_drvdata = {
-@@ -196,9 +169,6 @@ static int dwc3_exynos_suspend(struct device *dev)
- 	for (i = exynos->num_clks - 1; i >= 0; i--)
- 		clk_disable_unprepare(exynos->clks[i]);
- 
--	regulator_disable(exynos->vdd33);
--	regulator_disable(exynos->vdd10);
--
- 	return 0;
- }
- 
-@@ -207,17 +177,6 @@ static int dwc3_exynos_resume(struct device *dev)
- 	struct dwc3_exynos *exynos = dev_get_drvdata(dev);
- 	int i, ret;
- 
--	ret = regulator_enable(exynos->vdd33);
--	if (ret) {
--		dev_err(dev, "Failed to enable VDD33 supply\n");
--		return ret;
--	}
--	ret = regulator_enable(exynos->vdd10);
--	if (ret) {
--		dev_err(dev, "Failed to enable VDD10 supply\n");
--		return ret;
--	}
--
- 	for (i = 0; i < exynos->num_clks; i++) {
- 		ret = clk_prepare_enable(exynos->clks[i]);
- 		if (ret) {
 -- 
 2.43.0
 
