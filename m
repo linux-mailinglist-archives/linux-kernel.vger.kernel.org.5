@@ -1,119 +1,116 @@
-Return-Path: <linux-kernel+bounces-88426-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88428-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 861C786E171
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:01:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B68286E17B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:03:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B5EFB1C212CC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:01:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F4D7281DE3
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:03:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66B7B3EA76;
-	Fri,  1 Mar 2024 13:01:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9418F4205A;
+	Fri,  1 Mar 2024 13:03:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JIfJ5ZbX"
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="od9DJPKg"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F81E138C
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 13:01:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CCB03FB88;
+	Fri,  1 Mar 2024 13:03:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709298087; cv=none; b=hKIpeSURoULW0QUJ4vBPQ3AxCwdkBrGUh4DtJ/1q5DUmtYt+k5cRGqt+2dCtJu5syBaCoDPWZJhSDFYkuxUciW3zxJZIQBkuHW8g3srke2q0vLz63mFYwXKZH88uiMps2aXfOSmOJRW34TrnwhFEp8mpULL6mHw21+xLcAvQkNo=
+	t=1709298224; cv=none; b=qoROA6c8jOY8uN7NWIft369vTPd6X173Jbju9WsJXoEam+pxGWo9iRU0onOvHdz13H6xeTDYRB085Wpb9NTRZ6obai3njNWN00WzIODwYbMQTDPC5PZZhj6K9N3ke5SyTSMzCh/0UzxFVFoIpAuA6HRU38HIMEuzurgrRYPt8w0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709298087; c=relaxed/simple;
-	bh=j7zuS8Ij+yXSL/H6z+IvnSI89CpNjyQx4SrLvMxcAMY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=WqvjQAdY4U+oY4axoaabt0s5i7tT4S1O9qFqZR8TC3oi4AxDwEimD3p3kPRHArhw4FGEHkVsQmGQnNHgl7tDijOTxrh/1fOluwikw9ByoS0eltsvi4hDbTircl4jMrQoWDp6rXWd98XPEUpm8kE37hFuPOGZxZEsCEEvdr59WZg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JIfJ5ZbX; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1dcd0431f00so15242865ad.3
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 05:01:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709298084; x=1709902884; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=XOILK422YY1QiwyeOuXV0KdcQ6+z0fm2Teor/xT4k1Q=;
-        b=JIfJ5ZbXfBrUVEJHq7o+LQNAFjZ8qsbqNsYMWewOrsxpw2Z/o+Pd8+XbKxdgYTk8re
-         0tXbdKGYpePyvRhrjyUOHmM2ccD3OpA2vpOQv9hZikCy3d8h8uMMUI0j9Rx99P48jqa7
-         HsgEM3vM2EHH05kPrS5im2XCBquB7xacMFIBTxFg1SCKWTz/QXv34Wuu+qEMvp9zVNm5
-         tQ6yKV24gRbOpE5hnu9pzttsTCToM8Nf3m5qwCSqIetIWoRHGPrwqG9933uAsct8PKrU
-         fM59fzWTpcyoBLJ37Ad9if4jAIvLn75wyFsSzP2vnhw7L7kXp1dKlWmOjPSqSotYeHJ0
-         gRlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709298084; x=1709902884;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XOILK422YY1QiwyeOuXV0KdcQ6+z0fm2Teor/xT4k1Q=;
-        b=OpVi0g8p1M2sjdfWhzHG+i8c58VxOjsIp0uc9GGJXOwjUYhrO7ZU0Pyx2v0pbkq8g3
-         XnKgjfEqr+7/QjZbjvRkgLhrvcqHPcOxXygW8VRZFk43q3wIcuB0Yne7H3GGC45+nyQu
-         Nm9Y8odE3J+jcB6PMwGHrji2Su0WrP6l/p/HOlJMfAExjx+YWRa4146OTwfk49hFOQ+d
-         pZMmdMgP3kR0XLsxvJuA1d4LVvPb56whUklCiNoAlOrunumYniqUWdlXHEZQkRMuCKb1
-         tMZxTGqwacM1QjCDdq09UhixLV8EdyBUlt5B5AQVbxlisU6vFiUHXYMHGi/Fs1R3KUVd
-         G3gQ==
-X-Gm-Message-State: AOJu0YxYjTTlNZHnfqwiXNgxTFcqSqXrihISmigUsC4KnXJlzN9IGS+a
-	NEY2ry8Y3/apdHa5fzRl4JT60TftJHNKesypK78z53xjje7lsDj3ASkoGgFPt9Q=
-X-Google-Smtp-Source: AGHT+IHf01swVRh40WtT1WbTWOnRRuGe4TBje44tP0wyirVqhgmIDWo7oT4BXL/UI0C33TWHE6qOPg==
-X-Received: by 2002:a17:902:d2d2:b0:1db:f6b0:92d with SMTP id n18-20020a170902d2d200b001dbf6b0092dmr1908146plc.6.1709298084353;
-        Fri, 01 Mar 2024 05:01:24 -0800 (PST)
-Received: from bala-mariner.. ([167.220.238.207])
-        by smtp.gmail.com with ESMTPSA id g5-20020a170902c38500b001dc78455383sm3372702plg.223.2024.03.01.05.01.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 05:01:24 -0800 (PST)
-From: Balakumaran Kannan <kumaran.4353@gmail.com>
-To: linux-kernel@vger.kernel.org
-Cc: mingo@redhat.com,
-	peterz@infradead.org,
-	Balakumaran Kannan <kumaran.4353@gmail.com>
-Subject: [PATCH v2] Check whether the wakeup task is eligible first
-Date: Fri,  1 Mar 2024 13:01:00 +0000
-Message-Id: <20240301130100.267727-1-kumaran.4353@gmail.com>
-X-Mailer: git-send-email 2.33.8
+	s=arc-20240116; t=1709298224; c=relaxed/simple;
+	bh=XVWHgOv8IhoO1Wovn6/Qb2yGIBl4zlvLX2d0j1c6F7U=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZnxOr7DxHqIF33k2Yi1Qy8hQY4GECk5tL8NFmtEPwOTA1b607shQrrlEBeBrwETk0LUerTiIYARADJuLO2Ct79p3TSuINvY6rJphMzJi26dZrtBTr5iACQP5XXlXWADsg5Eu7sQAhVDbLaBIdK9hsXD3KNJXATipU8zxBOUx5Pg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=od9DJPKg; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1709298222; x=1740834222;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=XVWHgOv8IhoO1Wovn6/Qb2yGIBl4zlvLX2d0j1c6F7U=;
+  b=od9DJPKgkHf6JgXlsx2hSM72wI9FzzkT92WXTyAt8cLSNVDBH6w79T8m
+   GWONungnzTV1IdMMSjye9XnnVJcDpJa/DE/GFJKATsPzFTNMOt9aT4BVl
+   6Qf+eg5kRtv7V0Pr4NAfMzI3YA4sDxrhzibpery+XQ66QxckPeDUyC9PO
+   hTdNz/lPMf2rd4sgz+HLjeKWHwB6fpBjLCor2iP3ajPynFEA9WlSMx/H/
+   hQiciA6xLU+88mSWDlI6w0S9TAZcOewX7B96AnyZD4U1VGnZpRSvNtOxB
+   AzLSpDusbGD6ltlG4QstNuH4KOzZeAOX4hg+Mj7e3cNSVXD0q7h3g09Yw
+   w==;
+X-CSE-ConnectionGUID: B8GzHJbiTdOd45juRr3szA==
+X-CSE-MsgGUID: v2RSYSlqTES/9dwmI5yorw==
+X-IronPort-AV: E=Sophos;i="6.06,196,1705388400"; 
+   d="asc'?scan'208";a="18677917"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 01 Mar 2024 06:03:40 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 1 Mar 2024 06:03:27 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex03.mchp-main.com (10.10.85.151)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
+ Transport; Fri, 1 Mar 2024 06:03:24 -0700
+Date: Fri, 1 Mar 2024 13:02:41 +0000
+From: Conor Dooley <conor.dooley@microchip.com>
+To: Yangyu Chen <cyy@cyyself.name>
+CC: Palmer Dabbelt <palmer@dabbelt.com>, <alexghiti@rivosinc.com>,
+	<andy.chiu@sifive.com>, Charlie Jenkins <charlie@rivosinc.com>,
+	<guoren@kernel.org>, <jszhang@kernel.org>, <linux-doc@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+	<linux-mm@kvack.org>, <linux-riscv@lists.infradead.org>, Paul Walmsley
+	<paul.walmsley@sifive.com>
+Subject: Re: [PATCH v2 0/3] RISC-V: mm: do not treat hint addr on mmap as the
+ upper bound to search
+Message-ID: <20240301-patient-backpedal-f0e9333d3b8b@wendy>
+References: <mhng-67b02dff-5423-466d-bd90-f3ad3a3ab6a9@palmer-ri-x1c9a>
+ <tencent_BA062F64BB719A8F42F0435BCD3117B73F05@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="TtKYHipymQ1kqmeZ"
+Content-Disposition: inline
+In-Reply-To: <tencent_BA062F64BB719A8F42F0435BCD3117B73F05@qq.com>
 
-check_prempt_wakeup_fair is checking whether the current task has to be
-preempted by the newly wake-up task. To avoid multiple swaps the logic
-is decided as if the wake-up task is the best task then only preempt the
-current task.
+--TtKYHipymQ1kqmeZ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-In CFS time, getting the best task was as simple as piking the left-most
-node. But in EEVDF non-fast path, the entire tree has to be traversed in
-a worst case scenario.
+On Fri, Mar 01, 2024 at 04:54:05AM +0800, Yangyu Chen wrote:
 
-So, IMHO let's first check the newly wake-up task is eligible before
-searching for the best task.
+> Another concern is that if we can't make this decision in time to catch up
+> with v6.9 we don't want some bad things to happen as a large number of sv48
+> machines might appear this year and they may run on the next v6.9 LTS
+> kernel, Shall we change the code in the kernel to use sv48 by default right
+> now?
 
-Signed-off-by: Balakumaran Kannan <kumaran.4353@gmail.com>
----
-Changes in v2:
-  - Fixed the commit message with proper name and Signed-off-by
+Just pointing out that v6.9 is highly unlikely to be the next lts
+kernel, depending on whether or not Linus delays some releases, it'll
+most likely be either v6.11 or v6.12.
 
- kernel/sched/fair.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 533547e3c90a..8d810d6a2cb7 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -8334,7 +8334,7 @@ static void check_preempt_wakeup_fair(struct rq *rq, struct task_struct *p, int
- 	/*
- 	 * XXX pick_eevdf(cfs_rq) != se ?
- 	 */
--	if (pick_eevdf(cfs_rq) == pse)
-+	if (entity_eligible(cfs_rq, pse) && (pick_eevdf(cfs_rq) == pse))
- 		goto preempt;
- 
- 	return;
--- 
-2.33.8
+--TtKYHipymQ1kqmeZ
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZeHR8QAKCRB4tDGHoIJi
+0s8fAQDEhn3LtPgIBbJeywYsW5zoE8XHl7tmIMdJIjMWrFfPygEAiml/BgsyQQtP
++pjfl+cmRe2HDnQTEEwjNwMlo/Sz0QQ=
+=1CU+
+-----END PGP SIGNATURE-----
+
+--TtKYHipymQ1kqmeZ--
 
