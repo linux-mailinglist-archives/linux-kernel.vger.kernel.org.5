@@ -1,107 +1,78 @@
-Return-Path: <linux-kernel+bounces-88664-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88665-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E08386E4FC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:06:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E5EB86E4FE
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:07:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1504E1F22EFB
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:06:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 182F7B20F4E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:07:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B022570CBB;
-	Fri,  1 Mar 2024 16:06:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 987D370CB7;
+	Fri,  1 Mar 2024 16:07:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EIRzC7wM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PSjmfp8H"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB68A47F51;
-	Fri,  1 Mar 2024 16:06:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE3C62B9A2;
+	Fri,  1 Mar 2024 16:07:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709309202; cv=none; b=u63trLF9l3L26R1bHziPyfzvr2LTXpbf2GmX0cN5cNQLIxpY7XhlSciOi4ikdRptXSqQnX/2D1C27ze/oDGRi0zDVB+XehOzitNOXeodeBc7JOxByuH4Yfgw671Esr2X5TlZy43nJAlM2+OqW9O7V1A7Eh5DahErP/vrtivaCys=
+	t=1709309266; cv=none; b=QZpCODaQqWabBTTEVz9bwNKmxNZRocdIlRBO++I2d2quA1hXSpOv7oPtvCHCS9EHssROFcOmnZSIMyEc2AZokHHFhz3bj+0DsLO1UOHyKXyzX5NWxeFh71VWqsc0HVrYWGMuBBlYc0gFjq9ASZSsiV7vuvYHunFUfAw8QI+NuGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709309202; c=relaxed/simple;
-	bh=knyN2wQ07TfXmZro4f/osbfPbiUBGVLB0wDHfSDhvKY=;
+	s=arc-20240116; t=1709309266; c=relaxed/simple;
+	bh=r5ZXzcZeCkOjmfND/rIB79uZUfs9DOwUBsUxs0F34pk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i0aN1JA92rWAOGvsGIZzxL5htS7vBF+HhirQpGv9LDuxWIk+C5pvGF2vuLnX/GcSnUL6QSPz4KvQtk828TSspQwCYlK8jGRoWMJWsL/BrkyeX+oBa203rxSddhcQCZJi5vsNbF7stiSCUp3HBDoGe7p3Pva5/Big5zuTC1sx+e8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EIRzC7wM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76634C433C7;
-	Fri,  1 Mar 2024 16:06:37 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=GY+4dXCGAPuvRwao+TfpIdgbjFO3Mr80wqOpsLYNKR7T553ojhvQtBTq/npyVtSTgYBV4jGeCjBNuvTv/HlA8yxOLQ/p+t5tzB8cEWeO5BPgTI6mZ4ea6GCXdvJPVvupgqhdo2rXhbcn4VcCqBAWl5j/z9uxudJODuUDw2WG9Ro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PSjmfp8H; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA63FC433F1;
+	Fri,  1 Mar 2024 16:07:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709309200;
-	bh=knyN2wQ07TfXmZro4f/osbfPbiUBGVLB0wDHfSDhvKY=;
+	s=k20201202; t=1709309265;
+	bh=r5ZXzcZeCkOjmfND/rIB79uZUfs9DOwUBsUxs0F34pk=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=EIRzC7wMamEOMafiaMqYgiJMEZgEwNvPRIyYOqudsfNKS+sRlJXEjxVnZ0Ua31gO5
-	 f/+jxbOCFmfJXwtmuwNBsjUNl56U2uFlVPKDnX1GppZad70KykYqPFMwdc5aQMd4n9
-	 YYBr7GE1YNdfD1sZPc2uZHc66P2KOnm37wJAPefCIybAYl3fI9g8oNiBfyRXsr591S
-	 BRHRi8mx2OGFA6kAYA2VNj8O4gcrI6Oh+yJ8uLhQ+YJcP783cy5Xl6pt/RaMHbtVea
-	 SnEDC3NyDcvLURrdQ3g3Gbktumu714YWMCew8DIfHXNdJPoj8H1VebtpR25nReX+SM
-	 +BV32Hw+zTGaA==
-Date: Fri, 1 Mar 2024 16:06:35 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Frank Li <Frank.li@nxp.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	Shengjiu Wang <shengjiu.wang@nxp.com>, linux-sound@vger.kernel.org,
-	devicetree@vger.kernel.org, imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/4] ASoC: dt-bindings: fsl-sai: allow only one
- dma-names
-Message-ID: <20240301-ending-resize-9ee4e1998f6c@spud>
-References: <20240227-asrc_8qxp-v2-0-521bcc7eb1c0@nxp.com>
- <20240227-asrc_8qxp-v2-3-521bcc7eb1c0@nxp.com>
- <20240229-husband-penalty-8c1ab0f57f55@spud>
- <ZeDbiLR8vLtVfgGX@lizhi-Precision-Tower-5810>
+	b=PSjmfp8H0pdD32qN+AgFaOhrTjCOYBN+hCoB8PA/YMsW53+LJpfd3sNctK9X4cQbE
+	 KnYMOFAdugGjT4jvwMsHuNMRCdO/RwJ/ApUGlffcc5y9D1mM1Gi8JoSnkfEj1+i/8G
+	 sy7yWvEaNolOeLD/Y+4RZx8aS2Z/HJQ1E9CdMT1t0WvRWOhHHPDGVUHZJJtQRet7/c
+	 HvSGv6JzBHsU2XTHAE8Kv8jjbmI5CV1n+3TSgDi4McsZltepmUPKx5JKTRLhAmxFTh
+	 Ip0c1lZiuo4pDTF816V/S+QoFTr+8JbAwchqBmPmvLfs+/2mecflAeeK4JMbJtbHvn
+	 8aQsfD47hTwUg==
+Date: Fri, 1 Mar 2024 16:07:41 +0000
+From: Simon Horman <horms@kernel.org>
+To: Breno Leitao <leitao@debian.org>
+Cc: kuba@kernel.org, davem@davemloft.net, pabeni@redhat.com,
+	edumazet@google.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, dsahern@kernel.org
+Subject: Re: [PATCH net-next 2/2] net: bareudp: Remove generic
+ .ndo_get_stats64
+Message-ID: <20240301160741.GE403078@kernel.org>
+References: <20240229170425.3895238-1-leitao@debian.org>
+ <20240229170425.3895238-2-leitao@debian.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="JPNJZm8NAkhZORDD"
-Content-Disposition: inline
-In-Reply-To: <ZeDbiLR8vLtVfgGX@lizhi-Precision-Tower-5810>
-
-
---JPNJZm8NAkhZORDD
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240229170425.3895238-2-leitao@debian.org>
 
-On Thu, Feb 29, 2024 at 02:31:20PM -0500, Frank Li wrote:
-> On Thu, Feb 29, 2024 at 06:55:58PM +0000, Conor Dooley wrote:
-> > On Tue, Feb 27, 2024 at 03:54:11PM -0500, Frank Li wrote:
-> > > Some sai only connect one direction. So allow only "rx" or "tx" for
-> > > dma-names.
-> >=20
-> > Which sai? Can you restrict this per compatible please, so that someone
-> > cannot add 2 dmas for ones where only the tx is supported.
->=20
-> SAI is exact the same. Only external connect one dma channel.
+On Thu, Feb 29, 2024 at 09:04:24AM -0800, Breno Leitao wrote:
+> Commit 3e2f544dd8a33 ("net: get stats64 if device if driver is
+> configured") moved the callback to dev_get_tstats64() to net core, so,
+> unless the driver is doing some custom stats collection, it does not
+> need to set .ndo_get_stats64.
+> 
+> Since this driver is now relying in NETDEV_PCPU_STAT_TSTATS, then, it
+> doesn't need to set the dev_get_tstats64() generic .ndo_get_stats64
+> function pointer.
+> 
+> Signed-off-by: Breno Leitao <leitao@debian.org>
 
-Right. The wording made it sound like some SAIs were capable of this and
-some were not, but what you actually mean is that all SAIs can sometimes
-be connected in only one direction.
+Reviewed-by: Simon Horman <horms@kernel.org>
 
---JPNJZm8NAkhZORDD
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZeH9CwAKCRB4tDGHoIJi
-0hweAP9TNn1/yWSr9gMtGNBg3TsNMmm8lgc2S75Z33QQzz3JPgD/VAYtixlWg7Wa
-V6MhQcfPzV1HKMSVqlAcRCNuvXsgQAo=
-=V04g
------END PGP SIGNATURE-----
-
---JPNJZm8NAkhZORDD--
 
