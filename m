@@ -1,232 +1,301 @@
-Return-Path: <linux-kernel+bounces-88157-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88163-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 567C986DDF7
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:16:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33D9886DE10
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:20:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A5721C2030D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:16:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9D28CB25BC7
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:20:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 380136A8A3;
-	Fri,  1 Mar 2024 09:15:32 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A35C6A8BE;
+	Fri,  1 Mar 2024 09:19:47 +0000 (UTC)
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 847796A34F
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 09:15:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D84296A333;
+	Fri,  1 Mar 2024 09:19:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709284531; cv=none; b=W2huq1u3/oL1Y9eiUDtLtYZMU4xIgBbEXeFQIp/SZqkNUXWP129nOS1oX3GBX+DBvg0tAoGWMZxJEh9VX1KmdaaGUJKuTInjCdRLvRa6OK4TAVIa284kf8Ou6pkb42/VnF29CoNLDGrtOR59WU+07bRXm+aL+lxLkID5sL1HjkM=
+	t=1709284786; cv=none; b=L+56X2iSnVQabyAoRxwBTFyWQ/esYS5tQ35CNNzpcIFgEeJqj995BOwMuMcr/4J8fYV/T7kzySWPJkZhZYzExEfs+VrwbXM4YOw/xSppMN8vTRI9zq7NaDwlyujNRCh4TI2Gp2zRInO69vyFXI5HZWzU/fnnGNj697ojJc+z6oY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709284531; c=relaxed/simple;
-	bh=TSdl282jT/XjE0hf1mC2uPpBJjgfnCccVcSjhjs2qsk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qT4QQNK7zUA43ox23/hsJ39aqHg5UiKoKMXKx/9sAjjPTsaTngcRYfTuN8+BakErJs207B65Nb9ZwnfhpJ8TpBe5IkhYVXbGxCAK8kqSLtSBaQ2AL8zuaclaA7cUlOd8whqKVYpYUwzKMFFWTQI9RqS58o7ACG/Lo/L2A16YdzI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rfyzD-0006ij-8O; Fri, 01 Mar 2024 10:15:23 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rfyzB-003khx-PB; Fri, 01 Mar 2024 10:15:21 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rfyzB-00ES8C-2B;
-	Fri, 01 Mar 2024 10:15:21 +0100
-Date: Fri, 1 Mar 2024 10:15:21 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
-Cc: Philipp Zabel <p.zabel@pengutronix.de>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, Biju Das <biju.das.jz@bp.renesas.com>, 
-	Magnus Damm <magnus.damm@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>, 
-	"linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>
-Subject: Re: [PATCH v7 2/4] pwm: Add support for RZ/V2M PWM driver
-Message-ID: <ugotgpnicccowxv4d6wxc57mgznj4vdodvjplfma5mqxojuiyg@p42i56lx2vqr>
-References: <20240212210652.368680-1-fabrizio.castro.jz@renesas.com>
- <20240212210652.368680-3-fabrizio.castro.jz@renesas.com>
- <wwkzprliai3vge53fcveosfkixmri4hoyfjeulbzoezmaayoci@6hor5uwwdag4>
- <TYCPR01MB12093649FED62A25C3504E4D2C25F2@TYCPR01MB12093.jpnprd01.prod.outlook.com>
+	s=arc-20240116; t=1709284786; c=relaxed/simple;
+	bh=V2N7MGSgdyGPxrhJtiTatU21KOYhXXTnYWVquWX1ox4=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=Ow7vgljQCxhMfP/ea2F3Vcq6QJI12CsGFzNUYhR5Sdcf+GgrLllzVvcEj+WIfFZh/XwiP7pCLqGgh3dyN5tM/s1u3wTSJv6PEW3E8gJqFcZHJwj8scluISOfRntH8OYDcGWNXOYEkjaoP4QifFuvCDR7y7SuJJWJtnw2Yxgp/mo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.29])
+	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4TmMb237kbz9xvhF;
+	Fri,  1 Mar 2024 17:03:58 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.47])
+	by mail.maildlp.com (Postfix) with ESMTP id A9A4F140428;
+	Fri,  1 Mar 2024 17:19:33 +0800 (CST)
+Received: from [127.0.0.1] (unknown [10.204.63.22])
+	by APP1 (Coremail) with SMTP id LxC2BwCHfheUneFlFot_Aw--.47301S2;
+	Fri, 01 Mar 2024 10:19:33 +0100 (CET)
+Message-ID: <15a69385b49c4f8626f082bc9b957132388414fb.camel@huaweicloud.com>
+Subject: Re: [PATCH v2 14/25] evm: add support for fscaps security hooks
+From: Roberto Sassu <roberto.sassu@huaweicloud.com>
+To: "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>, Christian Brauner
+ <brauner@kernel.org>, Serge Hallyn <serge@hallyn.com>, Paul Moore
+ <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>, James Morris
+ <jmorris@namei.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara
+ <jack@suse.cz>, Stephen Smalley <stephen.smalley.work@gmail.com>, Ondrej
+ Mosnacek <omosnace@redhat.com>, Casey Schaufler <casey@schaufler-ca.com>,
+ Mimi Zohar <zohar@linux.ibm.com>, Roberto Sassu <roberto.sassu@huawei.com>,
+ Dmitry Kasatkin <dmitry.kasatkin@gmail.com>, Eric Snowberg
+ <eric.snowberg@oracle.com>, "Matthew Wilcox (Oracle)"
+ <willy@infradead.org>, Jonathan Corbet <corbet@lwn.net>, Miklos Szeredi
+ <miklos@szeredi.hu>,  Amir Goldstein <amir73il@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, audit@vger.kernel.org, 
+	selinux@vger.kernel.org, linux-integrity@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-unionfs@vger.kernel.org
+Date: Fri, 01 Mar 2024 10:19:13 +0100
+In-Reply-To: <20240221-idmap-fscap-refactor-v2-14-3039364623bd@kernel.org>
+References: <20240221-idmap-fscap-refactor-v2-0-3039364623bd@kernel.org>
+	 <20240221-idmap-fscap-refactor-v2-14-3039364623bd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="g4pc3vuo4korf24b"
-Content-Disposition: inline
-In-Reply-To: <TYCPR01MB12093649FED62A25C3504E4D2C25F2@TYCPR01MB12093.jpnprd01.prod.outlook.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-CM-TRANSID:LxC2BwCHfheUneFlFot_Aw--.47301S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Wr17Xw4UKFW3tFyUKw18uFg_yoWxXrWxpF
+	W5Ja1Fkw1rJFy3WryFqF4UZa1S9F1fG3yUZa4xW34SyFnxJrWxtFyIkryjyr1fJr48GrnI
+	qFs0vrn5Cw43t3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkmb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
+	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYY7kG6xAYrwCIc40Y0x0E
+	wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JV
+	WxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI
+	42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUguHqUUUUU
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAJBF1jj5bb3QADst
+
+On Wed, 2024-02-21 at 15:24 -0600, Seth Forshee (DigitalOcean) wrote:
+> Support the new fscaps security hooks by converting the vfs_caps to raw
+> xattr data and then handling them the same as other xattrs.
+
+Hi Seth
+
+I started looking at this patch set.
+
+The first question I have is if you are also going to update libcap
+(and also tar, I guess), since both deal with the raw xattr.
+
+From IMA/EVM perspective (Mimi will add on that), I guess it is
+important that files with a signature/HMAC continue to be accessible
+after applying this patch set.
+
+Looking at the code, it seems the case (if I understood correctly,
+vfs_getxattr_alloc() is still allowed).
+
+To be sure that everything works, it would be really nice if you could
+also extend our test suite:
+
+https://github.com/mimizohar/ima-evm-utils/blob/next-testing/tests/portable=
+_signatures.test
+
+and
+
+https://github.com/mimizohar/ima-evm-utils/blob/next-testing/tests/evm_hmac=
+test
 
 
---g4pc3vuo4korf24b
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The first test we would need to extend is check_cp_preserve_xattrs,
+which basically does a cp -a. We would need to set fscaps in the
+origin, copy to the destination, and see if the latter is accessible.
 
-Hello Fabrizio,
+I would also extend:
 
-your MUA introduces strange line breaks. You could do every reader of
-you mails a favour and fix that. I fixed it up for my reply.
+check_tar_extract_xattrs_different_owner
+check_tar_extract_xattrs_same_owner
+check_metadata_change
+check_evm_revalidate
+check_evm_portable_sig_ima_appraisal
+check_evm_portable_sig_ima_measurement_list
 
-On Thu, Feb 29, 2024 at 10:45:01PM +0000, Fabrizio Castro wrote:
-> > From: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-> > Sent: Thursday, February 29, 2024 4:42 PM
-> > To: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
-> > Subject: Re: [PATCH v7 2/4] pwm: Add support for RZ/V2M PWM driver
-> >=20
-> > On Mon, Feb 12, 2024 at 09:06:50PM +0000, Fabrizio Castro wrote:
-> > > +static inline u64 rzv2m_pwm_mul_u64_u64_div_u64_roundup(u64 a, u64 b,
-> > u64 c)
-> > > +{
-> > > +	u64 ab =3D a * b;
-> >=20
-> > a * b might overflow?!
+It should not be too complicated. The purpose would be to exercise your
+code below.
+
+
+Regarding the second test, we would need to extend just check_evm_hmac.
+
+
+Just realized, before extending the tests, it would be necessary to
+modify also evmctl.c, to retrieve fscaps through the new interfaces,
+and to let users provide custom fscaps the HMAC or portable signature
+is calculated on.
+
+
+You can run the tests locally (even with UML linux), or make a PR in
+Github for both linux and ima-evm-utils, and me and Mimi will help to
+run them. For Github, for now please use:
+
+https://github.com/linux-integrity/linux
+https://github.com/mimizohar/ima-evm-utils/
+
+Thanks
+
+Roberto
+
+> Signed-off-by: Seth Forshee (DigitalOcean) <sforshee@kernel.org>
+> ---
+>  include/linux/evm.h               | 39 +++++++++++++++++++++++++
+>  security/integrity/evm/evm_main.c | 60 +++++++++++++++++++++++++++++++++=
+++++++
+>  2 files changed, 99 insertions(+)
 >=20
-> In the context of this driver, this cannot overflow.
-> The 2 formulas the above is needed for are:
-> 1) period =3D (cyc + 1)*(NSEC_PER_SEC * frequency_divisor)/rate
-> 2) duty_cycle =3D (cyc + 1 - low)*(NSEC_PER_SEC * frequency_divisor)/rate
+> diff --git a/include/linux/evm.h b/include/linux/evm.h
+> index 36ec884320d9..aeb9ff52ad22 100644
+> --- a/include/linux/evm.h
+> +++ b/include/linux/evm.h
+> @@ -57,6 +57,20 @@ static inline void evm_inode_post_set_acl(struct dentr=
+y *dentry,
+>  {
+>  	return evm_inode_post_setxattr(dentry, acl_name, NULL, 0);
+>  }
+> +extern int evm_inode_set_fscaps(struct mnt_idmap *idmap,
+> +				struct dentry *dentry,
+> +				const struct vfs_caps *caps, int flags);
+> +static inline int evm_inode_remove_fscaps(struct dentry *dentry)
+> +{
+> +	return evm_inode_set_fscaps(&nop_mnt_idmap, dentry, NULL, XATTR_REPLACE=
+);
+> +}
+> +extern void evm_inode_post_set_fscaps(struct mnt_idmap *idmap,
+> +				      struct dentry *dentry,
+> +				      const struct vfs_caps *caps, int flags);
+> +static inline void evm_inode_post_remove_fscaps(struct dentry *dentry)
+> +{
+> +	return evm_inode_post_set_fscaps(&nop_mnt_idmap, dentry, NULL, 0);
+> +}
+> =20
+>  int evm_inode_init_security(struct inode *inode, struct inode *dir,
+>  			    const struct qstr *qstr, struct xattr *xattrs,
+> @@ -164,6 +178,31 @@ static inline void evm_inode_post_set_acl(struct den=
+try *dentry,
+>  	return;
+>  }
+> =20
+> +static inline int evm_inode_set_fscaps(struct mnt_idmap *idmap,
+> +				       struct dentry *dentry,
+> +				       const struct vfs_caps *caps, int flags)
+> +{
+> +	return 0;
+> +}
+> +
+> +static inline int evm_inode_remove_fscaps(struct dentry *dentry)
+> +{
+> +	return 0;
+> +}
+> +
+> +static inline void evm_inode_post_set_fscaps(struct mnt_idmap *idmap,
+> +					     struct dentry *dentry,
+> +					     const struct vfs_caps *caps,
+> +					     int flags)
+> +{
+> +	return;
+> +}
+> +
+> +static inline void evm_inode_post_remove_fscaps(struct dentry *dentry)
+> +{
+> +	return;
+> +}
+> +
+>  static inline int evm_inode_init_security(struct inode *inode, struct in=
+ode *dir,
+>  					  const struct qstr *qstr,
+>  					  struct xattr *xattrs,
+> diff --git a/security/integrity/evm/evm_main.c b/security/integrity/evm/e=
+vm_main.c
+> index cc7956d7878b..ecf4634a921a 100644
+> --- a/security/integrity/evm/evm_main.c
+> +++ b/security/integrity/evm/evm_main.c
+> @@ -805,6 +805,66 @@ void evm_inode_post_removexattr(struct dentry *dentr=
+y, const char *xattr_name)
+>  	evm_update_evmxattr(dentry, xattr_name, NULL, 0);
+>  }
+> =20
+> +int evm_inode_set_fscaps(struct mnt_idmap *idmap, struct dentry *dentry,
+> +			 const struct vfs_caps *caps, int flags)
+> +{
+> +	struct inode *inode =3D d_inode(dentry);
+> +	struct vfs_ns_cap_data nscaps;
+> +	const void *xattr_data =3D NULL;
+> +	int size =3D 0;
+> +
+> +	/* Policy permits modification of the protected xattrs even though
+> +	 * there's no HMAC key loaded
+> +	 */
+> +	if (evm_initialized & EVM_ALLOW_METADATA_WRITES)
+> +		return 0;
+> +
+> +	if (caps) {
+> +		size =3D vfs_caps_to_xattr(idmap, i_user_ns(inode), caps, &nscaps,
+> +					 sizeof(nscaps));
+> +		if (size < 0)
+> +			return size;
+> +		xattr_data =3D &nscaps;
+> +	}
+> +
+> +	return evm_protect_xattr(idmap, dentry, XATTR_NAME_CAPS, xattr_data, si=
+ze);
+> +}
+> +
+> +void evm_inode_post_set_fscaps(struct mnt_idmap *idmap, struct dentry *d=
+entry,
+> +			       const struct vfs_caps *caps, int flags)
+> +{
+> +	struct inode *inode =3D d_inode(dentry);
+> +	struct vfs_ns_cap_data nscaps;
+> +	const void *xattr_data =3D NULL;
+> +	int size =3D 0;
+> +
+> +	if (!evm_revalidate_status(XATTR_NAME_CAPS))
+> +		return;
+> +
+> +	evm_reset_status(dentry->d_inode);
+> +
+> +	if (!(evm_initialized & EVM_INIT_HMAC))
+> +		return;
+> +
+> +	if (is_unsupported_fs(dentry))
+> +		return;
+> +
+> +	if (caps) {
+> +		size =3D vfs_caps_to_xattr(idmap, i_user_ns(inode), caps, &nscaps,
+> +					 sizeof(nscaps));
+> +		/*
+> +		 * The fscaps here should have been converted to an xattr by
+> +		 * evm_inode_set_fscaps() already, so a failure to convert
+> +		 * here is a bug.
+> +		 */
+> +		if (WARN_ON_ONCE(size < 0))
+> +			return;
+> +		xattr_data =3D &nscaps;
+> +	}
+> +
+> +	evm_update_evmxattr(dentry, XATTR_NAME_CAPS, xattr_data, size);
+> +}
+> +
+>  static int evm_attr_change(struct mnt_idmap *idmap,
+>  			   struct dentry *dentry, struct iattr *attr)
+>  {
 >=20
-> With respect to 1), the dividend overflows when period * rate also
-> overflows (its product is calculated in rzv2m_pwm_config).
-> However, limiting the period to a maximum value of U64_MAX / rate
-> prevents the calculations from overflowing (in both directions, from peri=
-od to cyc, and from cyc to period). v6 introduced max_period for this.
-> The situation for 2) is very similar to 1), with duty_cycle<=3Dperiod,
-> therefore limiting period to a max value (and clamping the duty cycle
-> accordingly) will ensure that the calculation for duty_cycle won't
-> overflow, either.
 
-OK, so it might be right from a technical POV. From a maintainer POV
-this is still bad. Authors for other drivers might copy it, or the driver
-might be changed and there is no indication that the the function relies
-on only be called with certain parameters.
-
-> > > +	u64 d =3D div64_u64(ab, c);
-> > > +	u64 e =3D d * c;
-> > > +
-> > > +	return d + ((ab - e) ? 1 : 0);
-> > > +}
-> > > +
-> > > +static inline u64 rzv2m_pwm_mul_u64_u64_div_u64_rounddown(u64 a, u64=
- b,
-> > u64 c)
-> > > +{
-> > > +	return div64_u64(a * b, c);
-> >=20
-> > ditto. This is the same function as mul_u64_u64_div_u64() isn't it?
->=20
-> Since a * b cannot overflow in the case of this driver, I believe the
-> above to be a better option than mul_u64_u64_div_u64.
-
-Same technical POV vs maintainer POV as above. Plus: Even if
-mul_u64_u64_div_u64 is a tad slower, reusing it has some benefits
-nevertheless.
-=20
-> > > [...]
-> > > +	cyc =3D rzv2m_pwm_read(rzv2m_pwm, RZV2M_PWMCYC);
-> > > +	state->period =3D rzv2m_pwm_mul_u64_u64_div_u64_roundup(cyc + 1,
-> > > +				NSEC_PER_SEC * frequency_divisor,
-> > > +				rzv2m_pwm->rate);
-> > > +
-> > > +	low =3D rzv2m_pwm_read(rzv2m_pwm, RZV2M_PWMLOW);
-> > > +	state->duty_cycle =3D rzv2m_pwm_mul_u64_u64_div_u64_roundup(cyc + 1=
- - low,
-> > > +				NSEC_PER_SEC * frequency_divisor,
-> > > +				rzv2m_pwm->rate);
-> >=20
-> > The register semantic makes me wonder if each period starts with the low
-> > part. In that case the hardware called "normal" what is called inverted
-> > in the pwm framework?!
->=20
-> My understanding is that the PWM framework defines "normal" polarity a
-> signal that starts high (and stays high) for the duration of the duty cyc=
-le,
-> and goes low for the remainder of the period. Conversely, a signal with
-> "inversed" polarity starts low (and stays low) for the duration of the du=
-ty
-> cycle and goes high for the remainder of the period.
-
-Ack.
-
-> This IP _does_ start low, but it _doesn't_ stay low for the duration of t=
-he
-> duty cycle, as it then goes high for the duration of the duty cycle,
-> therefore this IP doesn't perfectly fit either ("normal" or "inverted")
-> definitions.
-> I think you can say that the "normal" signal is _shifted_ in phase for th=
-is
-> IP, rather than being "inverted".
-
-Alternatively (and a better match): What you describe is an inverted
-wave form with duty_cycle =3D period - duty_cycle.
-
-> > > +	return pm_runtime_put(chip->dev);
-> >=20
-> > If you evaluate the return value of pm_runtime_put() maybe check
-> > pm_runtime_get_sync() for symmetry, too?
->=20
-> Or I could just discard it and return 0?
-> I am fine with either, what's your preference?
-
-My preference would be to always check the return value, but given that
-many drivers don't care for that, I agree to accept never checking it.
-So choose one option and do it consistently please.
-=20
-> > > +	if (pwm_cyc && !FIELD_FIT(RZV2M_PWMCYC_PERIOD, pwm_cyc - 1))
-> > > +		pwm_cyc =3D RZV2M_PWMCYC_PERIOD + 1;
-> >=20
-> > I don't understand the relevance of FIELD_FIT(RZV2M_PWMCYC_PERIOD,
-> > pwm_cyc - 1).
->=20
-> CYC is only made of 24 bits, therefore this is to make sure we don't
-> go beyond a 24-bit representation.
-
-I would have understood:
-
-	if (FIELD_FIT(RZV2M_PWMCYC_PERIOD, pwm_cyc + 1))
-		pwm_cyc =3D RZV2M_PWMCYC_PERIOD + 1;
-
-Notice there are three changes compared to your variant:
- - drop pwm_cyc !=3D 0 check
- - drop ! from FIELD_FIT
- - pwm_cyc + 1 instead of pwm_cyc - 1
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---g4pc3vuo4korf24b
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmXhnKgACgkQj4D7WH0S
-/k58tAgArtsUR4cecwJJFnhEcL0IyaKukaU4zwUIQiYuzQfhII61clEX46SIJDLV
-gGdrrifbwdxbnAIGmmQA3HVSCz9+huSkGOCOBjqqUhE8wg2e7bk9xPIIiNOjtKc/
-ltNFC2zJEGp4T4ebfaDqbwaJJIq4rvcyg0/fIGMKD2tegKcpbtJu0fXsCbDlwh9T
-MLKgX5T4PzUyo4b0URHIwFRikdQKeZfgAreEqDyeF0DSZSgIPhUE91chjil81Sdy
-MwqtM64I2YIk9yPSgCSF9hzpUorowxVVif4xPzZtZuHik+2wO5sim2ZvgI7ZUsem
-NMSO5eIHqbiWejza8VkVzmWsytk9Ww==
-=8kxZ
------END PGP SIGNATURE-----
-
---g4pc3vuo4korf24b--
 
