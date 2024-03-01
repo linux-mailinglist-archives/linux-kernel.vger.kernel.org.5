@@ -1,194 +1,197 @@
-Return-Path: <linux-kernel+bounces-88990-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88952-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AA3886E916
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:04:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6BBA86E92E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:06:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE69F285AD3
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:04:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9EE68B2F806
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:52:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8C883F9C7;
-	Fri,  1 Mar 2024 19:01:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30FF23BBF6;
+	Fri,  1 Mar 2024 18:49:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="k7EXJNmF"
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12olkn2085.outbound.protection.outlook.com [40.92.22.85])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wr2U2aC9"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52D3E3B1B7;
-	Fri,  1 Mar 2024 19:01:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.22.85
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709319672; cv=fail; b=TMmRBABvWjveEbUZDAKA/F7S/5dOiUXhTnhKBc5RYZ5eWWJZhNANwQKloIGlpBLUTGYnvMfFg6v2NOZPGrHsAzoNPW3mgAQJ7FYqPd1T8+Yn0gGVTyZJNWzXJLWMcp7etuG+H/UryniRiMe94aMepkWiL3xa5hOuAyAkKCqNDUA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709319672; c=relaxed/simple;
-	bh=mQp56tfCet8RAPbxXf2VBCIjBlim17mHrgfJK+IFyjI=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=eGScZiP/ocIPydhHve+c5c2eCeRMXm6pbPOSZlgu5/T/wSSN/66ALQBtWBtAu/40Z7zFXLfqUVMNMQEnabmt5lDE5DxXqDm6xHa5zHTuFIGM+9kytqUGuBF2K+hPF8pZLBo4gJtOOwGqFc9G9YeI1k3ORqE2Jlb6VJkEg3S9/70=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=k7EXJNmF; arc=fail smtp.client-ip=40.92.22.85
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Wti0TNzuFl+ILGFMsxRAy86zUq1kEhNKWF/Jop+iGhqwEeVF4BIBJSE1T7Q25Eo6AMRM8o18DyzcBHdYgpNDcnn5iqn68FJYD7IbGh0dW6nUMNaBzJ5ffAofdCyvVVlWvZGgYnOCbg9BkBiAv9pdnCa49qk/JozRvJKxumpGWqZRJmz68LCsYO3RAd/GmOTYK0/9Fu5aBslMEyYI5OOM9SnZ0/vPaehEwhZen5o+i68m2ogh3AakIV/S8suRJn2OlzXJA7K7qpn69OquQJ8dm17eG0fKGb1PpjELD6DOpaX7fvo8J8pkl9xcqVx5hzeKBvqdqXoejOMmWnn0t3lDKg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TbRdmz9C2pae8ZZYxJiyr/IvbLLmbrWMjLOJ03HqtpY=;
- b=cZp59LzGB+/fXJW6qGO/MqhMAdTxCChAWzfHv+utRrOh79mV7olfEFKX5/AyPeqzqziwN2kJ77obbFUYIRUhDooOBub06ZE3jrAjC5/q98zKVoaigjyrG9k6LGA96Pb5q+uwP+roedMuFXzrPujstDVAUWQ9NNLnu+cWBQM6i21zoyAWMolz1WoAVAu38Gp9JssixSXaOUnQOck1cvFOl7dGbilFKl72ov3yPfBQXbglACvrUxbcMidjJvRKTTa2c26UtMMNDSQX0sp6d4Rj4fczcA0lxdf7gJgYlV4uk2vJlOKID6rpa/OuGO7KRvSZY0tWqlFHjB/AGR8NWtREPg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TbRdmz9C2pae8ZZYxJiyr/IvbLLmbrWMjLOJ03HqtpY=;
- b=k7EXJNmFYI/uRBDk9WfZkKxYfqxcp0OSyTFxYYaFMTFg84HZ3z0ZQsfXtnymGhO/J+ILT8Ih6AZHrbbOQ3YDSTMX7bOTs7os8Ux1ddfYrQsHpghWvZg8wmq9CwVeoVo7nqsjcay+mwqyuS7btynycYbqnLkEqbKpERsKO/fQyWc9bVuLFv5+/uNxtqBBeahfdKuAk6tk9+qTZ4VSos+C7UZuo4G2JNunNKhcqZcsqnouqZiZz4Y8FmbYumuM2TgtaKlUeJrTmSeyt6sn5/IayOAmOCCf6COK0MMehfge4DR+zVVLXcAjFMyoY9ZZeBlpm/v2PBkhnk1C+q84YsRVqg==
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
- by CY5PR02MB8941.namprd02.prod.outlook.com (2603:10b6:930:3a::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.34; Fri, 1 Mar
- 2024 19:01:08 +0000
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::67a9:f3c0:f57b:86dd]) by SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::67a9:f3c0:f57b:86dd%5]) with mapi id 15.20.7339.031; Fri, 1 Mar 2024
- 19:01:08 +0000
-From: Michael Kelley <mhklinux@outlook.com>
-To: Rick Edgecombe <rick.p.edgecombe@intel.com>, "kys@microsoft.com"
-	<kys@microsoft.com>, "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
-	"wei.liu@kernel.org" <wei.liu@kernel.org>, "decui@microsoft.com"
-	<decui@microsoft.com>, "linux-hyperv@vger.kernel.org"
-	<linux-hyperv@vger.kernel.org>, "gregkh@linuxfoundation.org"
-	<gregkh@linuxfoundation.org>, "davem@davemloft.net" <davem@davemloft.net>,
-	"edumazet@google.com" <edumazet@google.com>, "kuba@kernel.org"
-	<kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-	"linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC: "sathyanarayanan.kuppuswamy@linux.intel.com"
-	<sathyanarayanan.kuppuswamy@linux.intel.com>, "elena.reshetova@intel.com"
-	<elena.reshetova@intel.com>
-Subject: RE: [RFC RFT PATCH 3/4] hv_nstvsc: Don't free decrypted memory
-Thread-Topic: [RFC RFT PATCH 3/4] hv_nstvsc: Don't free decrypted memory
-Thread-Index: AQHaZTRYyLuO6L4H/k6p47hU50Sf0rEjRGOQ
-Date: Fri, 1 Mar 2024 19:01:08 +0000
-Message-ID:
- <SN6PR02MB4157DBE049E6628D0B7CBADBD45E2@SN6PR02MB4157.namprd02.prod.outlook.com>
-References: <20240222021006.2279329-1-rick.p.edgecombe@intel.com>
- <20240222021006.2279329-4-rick.p.edgecombe@intel.com>
-In-Reply-To: <20240222021006.2279329-4-rick.p.edgecombe@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-tmn: [ZpsFFHmXkCDZ/elA+JHltteRw1BuljVg]
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|CY5PR02MB8941:EE_
-x-ms-office365-filtering-correlation-id: 732d9606-8282-41c6-4c33-08dc3a21f46a
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- TPHlY2E/CKhwPqgCiso/aUVmihZF9Cgxb+B5LSeaVZzlqcmKiJUA/9OAOS393SobNjIUJTshD/tfSQPEIZYvtPMjjtougvG3ecI6aqRlsrFTt7RT3Hr4BSsl+ocPYqWtUzlvX9YX9yExR10Q+c4zM3cUxqFmoiR6gp6/BjHMEdryj+QuRF1NlQ85EqxaKyvil0hAxwpw3IDS5zIqWoJ2opKZN2WKmX8wUZVEEWQTUy4HKdGp8AIguS3Z0xIsreQLyaDoAaSkV740dwuycnXWOISvg6LSnij5VrsVG7kEMrHZmV0mq3e0QxAK8G2MBy4bjwpoPzE8LqZd4g4hWkH/t7s8ClD2H9SXNXzEep2fB1fCX0UsGdKDX+ON1XW8zzYuLZvDvQzOyaz84sc81s3oHMHSg/1ul3/K/T+xdwYVOIWgtKk+Z52Bq4dFb0LI5vGk8bkYi5wI9xL2M6CSkHTu6guPpxchFx8YJiFf61bLsIqP2SqFONmthDN9CIZ0++t+hocxiyhazGuRa0V1qAStQvVpLlzy+dYlCNsLlYBLGn4PeWhhPagXJsDuyfACSPPo
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?0k2xh09BIVmzOxsiAeIev2XfkTiZGqywl7pWt1LZx79lSNu6kMQEhOCiT92E?=
- =?us-ascii?Q?HFV1yCgb6RJp+Ffc2u391Nfjl5d1/89HcoW+0bvgJoiryoZr3oWfHXNuV9EV?=
- =?us-ascii?Q?UnIgthiMn9x7P2o+8dyu5kMmzfDS6JNOLnBsLBWywrL/k95AUDEVCJNpaaBG?=
- =?us-ascii?Q?0PRkMShI/l2M8KeeAUpsVq9+p34hPAGTWt5zSkwCn/wbXprYzp8dV2lneF31?=
- =?us-ascii?Q?SfnIpdEBjy4c9OJLf1nVXPqLKtdr3mLzzXwh1bidmRdAErDizVQPx+o4vYk/?=
- =?us-ascii?Q?DECJUsOtK/2rVuQqhxiwAiR8ejbKdFMa4ALvN20fxjP+GHEEhQbeQoiYjDHv?=
- =?us-ascii?Q?x4QEDauP74Hk7qf7xmVfOuRA9sNc3NIlDKw9I1Iiyte8dPSoI2rf6Yw/urR+?=
- =?us-ascii?Q?nARRj45pT7G9BFBVnjjmZtg/TmwwjDxdr/4cwOlmfEekAKw2n3BbIxLk3UFT?=
- =?us-ascii?Q?RElyf1YkW0VLR1DNSIZZ+tM591OYwDpihWtHM52D4fbWXlnmWkVSgKlTHMh1?=
- =?us-ascii?Q?FcB0gVQuUjT2mnwqJzscB2lC3OzthAe62bA8YxIZIa1W4pC37wOdR/eGxWqj?=
- =?us-ascii?Q?uKv9m+FBR7+Ov/vZy9RqO7LBgj587uk1s3suXxj4pg6u4SpgrZvy8tXHdfjf?=
- =?us-ascii?Q?FuAXsWCgv6KjISZ20R0YCo4lqOIR7uKW7g2tXcJQ3jatbMluVZf/AdAJvX3R?=
- =?us-ascii?Q?ruRueq8jiEjZL38K+xqrLoX2B+AZ9gwgAcMPIkslUQ8bXOG4FnmNUyYDKkDP?=
- =?us-ascii?Q?GaMppoWCqaES4u5tGRWHYrnP8caAuNWwIz9VGmlHYpOvatHQEWKPdYwGbUnu?=
- =?us-ascii?Q?B6Hp7vOYvSAFTVOHp695izv25yWx/j5KGYnObVUXQ8ibpYq7V/XIgp2N1Xzk?=
- =?us-ascii?Q?M/ER1mKljh27lebYD3O4X4a24QLyMB3Ea64cEt40hioGZUvsbrCalWWW+4EC?=
- =?us-ascii?Q?OXzcXwxBj/xOs8y+R5wu5LRl5eEa/IevMLK7z3/UtLJSgYVkZdvXjEf3YjRU?=
- =?us-ascii?Q?TNIBJAGtWlxOgpj3sZHt4C4YXCWLJFlx8BVOW4LcSUHGAMFUC0PCCakTm69F?=
- =?us-ascii?Q?vOtLpV6zFvOuZGIAa0ppssFjY/wzIzOK5FlFSgSSsGpcQo5ma1we+lrRIcoO?=
- =?us-ascii?Q?TMGjhaiJNaWQq5a88Thp+6iSYMzNMnQY1czyKqW8ZDG/ZO9GDBkZDeGH/LiN?=
- =?us-ascii?Q?9GSHjLr3bH7Ptjtq+9V+S2982Z+jSTcfWlxXPQ=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D59483BB2E
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 18:49:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709318996; cv=none; b=fdQ6MZ3xc494a6Yf5XC5dNZ+yVBBRL4azUX2r2mX6aZQd3A4LJcm7yAlSvZGvjcrdzKiIWvFc333ZhS8Le1OPj1ZYM0GqD2+/3yGiS7gAKlRZ8v1XfqfC3bhUCMOcDQ6Di7DaIlAXYBu1Kd2egQVbyiVtEs306wzcKvyB4Oo7x8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709318996; c=relaxed/simple;
+	bh=kRC2xm7uMHGebNB7a/TgeH2yuQp/mFiIM0iKAPFJjpE=;
+	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
+	 To:Content-Type; b=JiP4+kRebyVcfu5e3FwzeO/uQ7UC7D+0c0Cm5k1rNPrwPkj1mZOVtgPZ/OIanSg3u0U2HJ3riXEtqeATpnnAS5mXSOGPtQ/m216p54yIZMQWLM/VmIqK4LCZCHLVZB8Dd8VYC4ZoT4d/JcxVPkI4KIB1UYyoicYDnuxhS5VQUq4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wr2U2aC9; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-608ad239f8fso39541667b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 10:49:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709318994; x=1709923794; darn=vger.kernel.org;
+        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/6sZaREfZSp3hmPC0ObvAD1D5+ZR7J7opouN89RfYyQ=;
+        b=wr2U2aC9wuRXZguRjvyPgcxVnlP86sKVJp5IVKfB5oOzHIB8ZjNFpKVkhYnT0ATjZA
+         iZqKDDI35+gbm58/NXI4zGe5yhB+mHc1rciRZ6EwTKcffV5NSY+rtE+pPywbaVb67vJU
+         iXEXF6XSNK9FgOQL8Sy1g5+JaxZ//kXyPJ94GxoATTSDCfOWH9bHjieXYbAcaG1tMFHN
+         x+MsRG07rWRSw60S+vVsXK+A0Wx7O6E2YicqWuqSICR9oh/DRH3sMTmV+lNaPKP0SaSt
+         Fs/vKNq1WsNHJU7zyRE3pp8rn9FAXoKwf3GmWupYzhN2zctv1knEEa6PCIoEEbz3eIA0
+         YDkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709318994; x=1709923794;
+        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/6sZaREfZSp3hmPC0ObvAD1D5+ZR7J7opouN89RfYyQ=;
+        b=o5O4zvx7tFGe+gK7ueT6XcxlUI0I5ZMNV9bMmnHLHWcaDufB/D5ZOOpNMAXK0wYKMr
+         cTAPDMK9Vaaje3PzCzE3VSCm9PcH9uxqSZE7mxXzmrFVatiOxCJppjFOM2BmprR0QaB0
+         JXWy/leIWOOxj7cwvj+tZDi5UyqNDosd6/5YAxJoTEa308YoyZM90WtU4Z7htoq5sjAw
+         dTZ52AlbSWaPlR3U3THtPaikF8c3I9WfmxoI/irGwBwudXUKn7QoiqCE8p8qg4zvMh+8
+         rxwt1jjhV+yO2prRW4zFwDRmI0e9nY+BRiacoSDyJkU2dgFuNdHkQ65uafxvVcmgQf+e
+         mj9g==
+X-Forwarded-Encrypted: i=1; AJvYcCVYmLBg76p5Vh3NJG82w+QCRp3lqytjLTR5eZcpT9GnfNszaudpEwLncDD145/MIcHccqEGTCLdpqABBo4IUwlEn3i5yXiX0DzdXPZm
+X-Gm-Message-State: AOJu0YwbmKTitJzrgWeQY06cz1Jk1mcoKZSjnQzojElM93cmZC6LzXHN
+	IaPihIgbHYzywHlTz/9Je2P7Zdt3ePrMgiA9i/YnfONO1u8QiEB6gTJAvOplrhfSPMVeIS2wyf3
+	KNI7LmQ==
+X-Google-Smtp-Source: AGHT+IF7tSFYfPgzeywyxbiOairM8kbPeJ0Gj4zz01HG1jTS6aRheUlZC7o2t0zsuDKJLa/Z3qLLDeBYZB28
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:af4b:7fc1:b7be:fcb7])
+ (user=irogers job=sendgmr) by 2002:a81:4c05:0:b0:608:d045:6eff with SMTP id
+ z5-20020a814c05000000b00608d0456effmr526031ywa.2.1709318994053; Fri, 01 Mar
+ 2024 10:49:54 -0800 (PST)
+Date: Fri,  1 Mar 2024 10:49:42 -0800
+In-Reply-To: <20240301184942.2660478-1-irogers@google.com>
+Message-Id: <20240301184942.2660478-3-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: 732d9606-8282-41c6-4c33-08dc3a21f46a
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Mar 2024 19:01:08.8190
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR02MB8941
+Mime-Version: 1.0
+References: <20240301184942.2660478-1-irogers@google.com>
+X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
+Subject: [PATCH v2 2/2] perf jevents: Add cycles breakdown metric for arm64/AMD/Intel
+From: Ian Rogers <irogers@google.com>
+To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	John Garry <john.g.garry@oracle.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	Jing Zhang <renyu.zj@linux.alibaba.com>, Thomas Richter <tmricht@linux.ibm.com>, 
+	James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-From: Rick Edgecombe <rick.p.edgecombe@intel.com> Sent: Wednesday, February=
- 21, 2024 6:10 PM
->=20
+Breakdown cycles to user, kernel and guest. Add a common_metrics.py
+file for such metrics.
 
-"Subject:" prefix should be hv_netvsc:
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/pmu-events/amd_metrics.py    |  3 +++
+ tools/perf/pmu-events/arm64_metrics.py  |  2 ++
+ tools/perf/pmu-events/common_metrics.py | 18 ++++++++++++++++++
+ tools/perf/pmu-events/intel_metrics.py  |  2 ++
+ 4 files changed, 25 insertions(+)
+ create mode 100644 tools/perf/pmu-events/common_metrics.py
 
-> On TDX it is possible for the untrusted host to cause
-
-Same comment about TDX vs. CoCo VM.
-
-> set_memory_encrypted() or set_memory_decrypted() to fail such that an
-> error is returned and the resulting memory is shared. Callers need to tak=
-e
-> care to handle these errors to avoid returning decrypted (shared) memory =
-to
-> the page allocator, which could lead to functional or security issues.
->=20
-> hv_nstvsc could free decrypted/shared pages if set_memory_decrypted()
-
-s/hv_nstvsc/hv_netvsc/
-
-> fails. Check the decrypted field in the gpadl before freeing in order to
-> not leak the memory.
->=20
-> Only compile tested.
->=20
-> Cc: "K. Y. Srinivasan" <kys@microsoft.com>
-> Cc: Haiyang Zhang <haiyangz@microsoft.com>
-> Cc: Wei Liu <wei.liu@kernel.org>
-> Cc: Dexuan Cui <decui@microsoft.com>
-> Cc: linux-hyperv@vger.kernel.org
-> Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
-> ---
->  drivers/net/hyperv/netvsc.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/net/hyperv/netvsc.c b/drivers/net/hyperv/netvsc.c
-> index a6fcbda64ecc..2b6ec979a62f 100644
-> --- a/drivers/net/hyperv/netvsc.c
-> +++ b/drivers/net/hyperv/netvsc.c
-> @@ -154,8 +154,11 @@ static void free_netvsc_device(struct rcu_head
-> *head)
->  	int i;
->=20
->  	kfree(nvdev->extension);
-> -	vfree(nvdev->recv_buf);
-> -	vfree(nvdev->send_buf);
-> +
-> +	if (!nvdev->recv_buf_gpadl_handle.decrypted)
-> +		vfree(nvdev->recv_buf);
-> +	if (!nvdev->send_buf_gpadl_handle.decrypted)
-> +		vfree(nvdev->send_buf);
->  	bitmap_free(nvdev->send_section_map);
->=20
->  	for (i =3D 0; i < VRSS_CHANNEL_MAX; i++) {
-> --
-> 2.34.1
+diff --git a/tools/perf/pmu-events/amd_metrics.py b/tools/perf/pmu-events/amd_metrics.py
+index 377ce413d051..5a1f10ecff4d 100755
+--- a/tools/perf/pmu-events/amd_metrics.py
++++ b/tools/perf/pmu-events/amd_metrics.py
+@@ -4,6 +4,7 @@ from metric import (d_ratio, has_event, max, Event, JsonEncodeMetric,
+                     JsonEncodeMetricGroupDescriptions, Literal, LoadEvents,
+                     Metric, MetricGroup, Select)
+ import argparse
++from common_metrics import Cycles
+ import json
+ import math
+ import os
+@@ -572,6 +573,7 @@ def AmdUpc() -> Metric:
+   return Metric("upc", "Micro-ops retired per core cycle (higher is better)",
+                 upc, "uops/cycle")
+ 
++
+ def Idle() -> Metric:
+   cyc = Event("msr/mperf/")
+   tsc = Event("msr/tsc/")
+@@ -628,6 +630,7 @@ all_metrics = MetricGroup("", [
+     AmdHwpf(),
+     AmdSwpf(),
+     AmdUpc(),
++    Cycles(),
+     Idle(),
+     Rapl(),
+     UncoreL3(),
+diff --git a/tools/perf/pmu-events/arm64_metrics.py b/tools/perf/pmu-events/arm64_metrics.py
+index 0dcf5236ea1f..516b3fa08600 100755
+--- a/tools/perf/pmu-events/arm64_metrics.py
++++ b/tools/perf/pmu-events/arm64_metrics.py
+@@ -3,6 +3,7 @@
+ from metric import (d_ratio, Event, JsonEncodeMetric, JsonEncodeMetricGroupDescriptions,
+                     LoadEvents, Metric, MetricGroup)
+ import argparse
++from common_metrics import Cycles
+ import json
+ import os
+ from typing import Optional
+@@ -154,6 +155,7 @@ def Arm64Topdown() -> MetricGroup:
+ 
+ all_metrics = MetricGroup("",[
+     Arm64Topdown(),
++    Cycles(),
+ ])
+ 
+ if args.metricgroups:
+diff --git a/tools/perf/pmu-events/common_metrics.py b/tools/perf/pmu-events/common_metrics.py
+new file mode 100644
+index 000000000000..74c58f9ab020
+--- /dev/null
++++ b/tools/perf/pmu-events/common_metrics.py
+@@ -0,0 +1,18 @@
++# SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
++from metric import (d_ratio, Event, Metric, MetricGroup)
++
++def Cycles() -> MetricGroup:
++  cyc_k = Event("cycles:kHh")
++  cyc_g = Event("cycles:G")
++  cyc_u = Event("cycles:uH")
++  cyc = cyc_k + cyc_g + cyc_u
++
++  return MetricGroup("cycles", [
++      Metric("cycles_total", "Total number of cycles", cyc, "cycles"),
++      Metric("cycles_user", "User cycles as a percentage of all cycles",
++             d_ratio(cyc_u, cyc), "100%"),
++      Metric("cycles_kernel", "Kernel cycles as a percentage of all cycles",
++             d_ratio(cyc_k, cyc), "100%"),
++      Metric("cycles_guest", "Hypervisor guest cycles as a percentage of all cycles",
++             d_ratio(cyc_g, cyc), "100%"),
++  ], description = "cycles breakdown per privilege level (users, kernel, guest)")
+diff --git a/tools/perf/pmu-events/intel_metrics.py b/tools/perf/pmu-events/intel_metrics.py
+index 5775ae8a87b4..1a34e2f7a590 100755
+--- a/tools/perf/pmu-events/intel_metrics.py
++++ b/tools/perf/pmu-events/intel_metrics.py
+@@ -4,6 +4,7 @@ from metric import (d_ratio, has_event, max, CheckPmu, Event, JsonEncodeMetric,
+                     JsonEncodeMetricGroupDescriptions, Literal, LoadEvents,
+                     Metric, MetricConstraint, MetricGroup, MetricRef, Select)
+ import argparse
++from common_metrics import Cycles
+ import json
+ import math
+ import os
+@@ -1012,6 +1013,7 @@ def UncoreUpiBw() -> Optional[MetricGroup]:
+ 
+ 
+ all_metrics = MetricGroup("", [
++    Cycles(),
+     Idle(),
+     Rapl(),
+     Smi(),
+-- 
+2.44.0.278.ge034bb2e1d-goog
 
 
