@@ -1,319 +1,152 @@
-Return-Path: <linux-kernel+bounces-88239-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88240-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0142186DF01
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:10:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B6B486DF09
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:11:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9495628A078
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:10:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CEF03287E29
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:11:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FF7D6A8D3;
-	Fri,  1 Mar 2024 10:10:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97C7A6AF99;
+	Fri,  1 Mar 2024 10:11:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="smmuKgaK"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="nYDINAB7";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="3sPFyrr7"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B732569304;
-	Fri,  1 Mar 2024 10:10:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FFC26A8C8;
+	Fri,  1 Mar 2024 10:11:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709287805; cv=none; b=Mp6hSNp9U74gTy4kM8cJIB3c9BAPIQmOSqjB/0tVw7kWwKb89I7Ctis+/MNofLqT976zu4LbytJMxQKA8CIUl0ZUF0BQ9TS+gdkjKECXlfOHZvfj50ElunzRPucvCooT7au3vbDVArZJq3D/FsvnZ9UgyiC3rXe+kvFNp1Cryfk=
+	t=1709287873; cv=none; b=V3iPyoMt0IQF8Xes4K9g2Cjw8R1tAh11ETc2uRZAziAdlrUrUMTLLSElVyQL8tOHEYYCWYE2HPgQ+SHufCxxIiWCWLZLIiYJVugbzwD1V0CuNm4JwrpzSw/7dpFVqjnfcifKhcNIROEMx1okHbnewq1mqJ6BiqpioEG5yo5NkKo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709287805; c=relaxed/simple;
-	bh=N1mv8Z92ZaP+zYKubbkh4ayy2qX1zvRrKVeuaowIW/A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=n+WQhRcF/CK8cOKpFqnm6mw2HDrpvJLJ7lcleoG/Sc6UMr5awTX9piS3h3bVFdV0v1yYdu52B1+zuQHW/Rm+urh5f9JKU1MlIQOnrCF6OUkwaq6yF93Vbnh1m/PR2tScsn4YouySKVx/siqoiOYHB239PtLZqxC/p8o4eOwkXjQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=smmuKgaK; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1709287757; x=1709892557; i=w_armin@gmx.de;
-	bh=N1mv8Z92ZaP+zYKubbkh4ayy2qX1zvRrKVeuaowIW/A=;
-	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-	b=smmuKgaKwJMzd0AvWD+EdPJQqfExm+BopCNWPc0HleDtriuH9a/RwPelEnwL5MRG
-	 QmdW0YIshYw2GxiIi7ITsvfxG9dZZAh1foKQzZBo6pak8zacL5+9IBZ0BkuRP+2Ft
-	 DLOyzOngqoCNtI8pRqIpoKHszjmn6RC9mToOnM1QboBUXusacCHpmRc82bqPmRIur
-	 2eDsWtWSQT93SZ14Q/O/1rEQjkgyRRl126Z/if4exsjefWLI+Cf4Z6Rt5BHPmpOv8
-	 4PX0M8e4JLl3ZlbU62yW8KGcK2OhOnqJBmFXgwP/1NOaIdbqdn8lWx6EUn2lds7J9
-	 1dr+8ep75dSOHWWmuQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [141.30.226.129] ([141.30.226.129]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1M7b2T-1rnQsi1Haf-0082Ii; Fri, 01
- Mar 2024 11:09:17 +0100
-Message-ID: <44b660c9-600a-4031-80ae-7a7e9465ffa9@gmx.de>
-Date: Fri, 1 Mar 2024 11:09:15 +0100
+	s=arc-20240116; t=1709287873; c=relaxed/simple;
+	bh=AaXOghJwgnSSIXfJ/siTh9ndW4bK6IBmBDYRzswNu4M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=isOfMLawEEXAWk3iC+9rSl0LoI1Sa6fsjUCbzavuY1HFKowEMAzLZ2v2tGuPoD9Wone2kC6ts0gV8PNYTkt/c07h3qAL1crLaiZHi0m8IDnNLz9MHo4vxVGVLB3nAKdwdQ0IOiTY2l5rO8kIZMjRJjvYpKa1gPV05GQgO3AMQ5U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=nYDINAB7; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=3sPFyrr7; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Fri, 1 Mar 2024 11:11:05 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1709287866;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gzBLZ9FAmi2WGxmvniBOMK66MNrKoPH3TdPVDaji3VE=;
+	b=nYDINAB7uMNsDLHc+SlnLLLNS3/cmjCS7k66Q+p48Gc2GZ+ApqFyItFtkiVv8PvxU3CTbo
+	N3EVg57lXAbFAxk9pt/8t3+okN5hra3ajwYuYy330klW/oNYEKj15HuTZb0oiCdxyJ9CtC
+	OvAfwEsLyz36nFtkPhEKtd2iHeMDiIbCCfzgEAehQ9DfSzYeNVdK+gL5oGbbmczzn7m75D
+	qXg5xe2fowXE0J1ln5ht3o6ofE0rlqeTRk6tV7CtDIFQymt+zwoqxkVaoQIckEBZ+Ooc7w
+	SVzc8aK9dmiL73NwlZ8327TJcSOeGloTIh8yhYqZAaW6fnmBF8QPMFlEYt0gXQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1709287866;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gzBLZ9FAmi2WGxmvniBOMK66MNrKoPH3TdPVDaji3VE=;
+	b=3sPFyrr7HpwhuIzpLtCrvcGbvfmc+tmYIz3H2/LaytPD/QBVAmmBZz3qkTjQN+BTiehbkY
+	fFXinX88YK6OvxDQ==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Petr Mladek <pmladek@suse.com>
+Cc: "John B. Wyatt IV" <jwyatt@redhat.com>,
+	John Ogness <john.ogness@linutronix.de>,
+	Clark Williams <williams@redhat.com>, jlelli@redhat.com,
+	Derek Barbosa <debarbos@redhat.com>,
+	"John B. Wyatt IV" <sageofredondo@gmail.com>,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-rt-users <linux-rt-users@vger.kernel.org>
+Subject: Re: NMI Reported with console_blast.sh
+Message-ID: <20240301101105.eUPvRzUv@linutronix.de>
+References: <ZcQjxa4UA6hzXHnU@thinkpad2021>
+ <87v86yc88b.fsf@jogness.linutronix.de>
+ <ZcaQI8l1dcBx2feC@thinkpad2021>
+ <87a5o8j9gp.fsf@jogness.linutronix.de>
+ <ZcqMOKtHsZ9qnxNg@thinkpad2021>
+ <ZdbZz-v_lug9_t6C@thinkpad2021>
+ <ZeBnUCk598gttpds@alley>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] platform/x86: add lenovo generic wmi driver
-To: Ai Chao <aichao@kylinos.cn>, hdegoede@redhat.com,
- ilpo.jarvinen@linux.intel.com, linux-kernel@vger.kernel.org,
- platform-driver-x86@vger.kernel.org
-References: <20240301081648.265907-1-aichao@kylinos.cn>
-Content-Language: en-US
-From: Armin Wolf <W_Armin@gmx.de>
-In-Reply-To: <20240301081648.265907-1-aichao@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:bn+BqY/zBUb+kSrCnYnLdTrmdhM/TPDrbZo/qyc9/z/J1+rDu+p
- iE3unYqYeVv6CxhTS07Kj7ypsnc1E2nRR0iezNxbtSP8FF8y707Cw2FgU4en776KEKSjNTt
- gyevKCXBV74b4rjf3/nOFR1lhcQVsqov3nbeZ6va5XadNO162KelxQ2eVzOFqnmSG+SYDOd
- kU0+Ol8/l6ZlWtT1ZoIiQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:SzchIeA8AHg=;wVgUdIoR+s6r6azD+SUxrhlBWTe
- p+Qa/DaVl9lYftgFcRUbG7mcyHPQdgEdhaHsyVJxfM1OMOWJP9bzf61HQRy/q6HRC0bOMTmf+
- 1dFFp4CktVoF8+k8rTX0A6/Y6NvCbLoqIVJ5Xykk6o5XSRGvjRytpJMihd/lAZhAqYYy5PQQw
- tHD3BLoMp7KhOBJffNsxdb6LCGRXH/L4WjNnjVJ6a2cXkXi2AN2g3N4WmVSdlONXDW2Ic1nnu
- vtGiGu/IYgLBJ/wdAScSmCL1QEPDUGn+nDAuCE6K0laAnig/iN7B6b4SmfM9Le55sTWKXutRf
- SzDEURNjpKUJupnkkQMhKs6U8r9KtiMvYh7JjCkh+CSZ8Nj9MA+LS1Vj/ECGLv0yTJ4FMqunW
- jgFO5UQDeTu31mpidZl+IAu0zDCHAtXQERFMTZL95lc/SaUD6aYV2dkQiGyebIZ74aD7l29rw
- 1UYQn8X9ETviMqLaHjZsyvA32Mw4oeMFF9rn0sSrts/S+sW81G9VzyybIMlVJ+VLsOgURxknZ
- SSoJ+FSIW+g7LZMKS5tcKowYeMsJCHZQWOlO4526QQl+mq7tobBPiDpg1nQpHCObz72k/dT8l
- PQ96AzRvA3rs60b2tYC9vT6pscHtfvz4dengvn0F3nZOy7eRoi7SUzpantfdPeEQZMfG4QsaA
- +BaB7PkTg8I5IXFmWb2naRBtk15yh4AV0dVENZFoZQeUn1cJyM3i+qWPDjNd9JwoDzpqkJWsP
- YSqK65edXfusVxyhaqH1XEY7xt3n51jGEpkG0eTG0ey6fDSVoLA6NXiEQI7TxzQzOhxdB/DW0
- QFJhL3Mf3GWZ1yuKaXVEpApjNvRDY3/KPCLkqE7ZY4V8A=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZeBnUCk598gttpds@alley>
 
-Am 01.03.24 um 09:16 schrieb Ai Chao:
+On 2024-02-29 12:15:28 [+0100], Petr Mladek wrote:
+> > [ T2481] Call Trace:
+> > [ T2477] Kernel panic - not syncing: sysrq triggered crash
+> > [    C0] NMI backtrace for cpu 0
+> 
+> This message seems to be printed by nmi_cpu_backtrace().
+> 
+> I am surprised. I would expect to see the backtrace printed from panic().
+> It calls dump_stack() directly on the panic-CPU. And this panic() should
+> be called from sysrq_handle_crash(). IMHO, it should be (normal)
+> interrupt context.
+> 
+> Is it different on RT?
 
-> Add lenovo generic wmi driver to support camera button.
->
-> Signed-off-by: Ai Chao <aichao@kylinos.cn>
-> ---
->
-> v2: Adjust GPL v2 to GPL, adjust sprintf to sysfs_emit.
-> v3: Remove lenovo_wmi_remove function.
->
->   drivers/platform/x86/Kconfig      |  10 +++
->   drivers/platform/x86/Makefile     |   1 +
->   drivers/platform/x86/lenovo-wmi.c | 113 ++++++++++++++++++++++++++++++
->   3 files changed, 124 insertions(+)
->   create mode 100644 drivers/platform/x86/lenovo-wmi.c
->
-> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-> index bdd302274b9a..fbbb8fb843d7 100644
-> --- a/drivers/platform/x86/Kconfig
-> +++ b/drivers/platform/x86/Kconfig
-> @@ -1001,6 +1001,16 @@ config INSPUR_PLATFORM_PROFILE
->   	To compile this driver as a module, choose M here: the module
->   	will be called inspur-platform-profile.
->
-> +config LENOVO_WMI
-> +	tristate "Lenovo Geneirc WMI driver"
-> +	depends on ACPI_WMI
-> +	depends on INPUT
-> +	help
-> +	This driver provides support for Lenovo WMI driver.
-> +
-> +	To compile this driver as a module, choose M here: the module
-> +	will be called lenovo-wmi.
-> +
+No, it is all okay and the same. panic() was triggered from sysrq which
+is a threaded-IRQ and you don't see this. This triggered an NMI
+backtrace on CPU0 and it shows the NMI stack. After that, the TASK
+stack follows which could show panic() if the backtrace would show
+something. The stack trace for NMI is prefixed with ? so it is a guess
+from something on stack, not an actual unroll.
 
-Hi,
+And this part:
+> >   15:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
+> >   1a:	0f b6 8f c1 00 00 00 	movzbl 0xc1(%rdi),%ecx
+> >   21:	0f b7 57 08          	movzwl 0x8(%rdi),%edx
+> >   25:	d3 e6                	shl    %cl,%esi
+> >   27:	01 f2                	add    %esi,%edx
+> >   29:	ec                   	in     (%dx),%al
+> >   2a:*	0f b6 c0             	movzbl %al,%eax		<-- trapping instruction
+> >   2d:	c3                   	ret
 
-does the WMI driver only handle the camera button? If yes, then please cha=
-nge the
-driver name to something more specific like "lenovo-wmi-camera".
+the error of some kind occurred here at 0x2a. But this instruction is
+innocent, it simply a zeros the upper 24bit of the register eax. So this
+isn't a crash, it is just where the CPUs at the time this was captured.
 
-And please add a more descriptive help text.
+> >  <NMI>
+> >  dump_stack_lvl (lib/dump_stack.c:107) 
+> >  panic (kernel/panic.c:344) 
+> >  nmi_panic (kernel/panic.c:203) 
+> >  watchdog_hardlockup_check (kernel/watchdog.c:180) 
+> >  __perf_event_overflow (kernel/events/core.c:9612 (discriminator 2)) 
+> >  handle_pmi_common (arch/x86/events/intel/core.c:3052 (discriminator 1)) 
+> >  ? set_pte_vaddr_p4d (arch/x86/mm/init_64.c:307 arch/x86/mm/init_64.c:315) 
+> >  ? flush_tlb_one_kernel (./arch/x86/include/asm/paravirt.h:81 arch/x86/mm/tlb.c:1171 arch/x86/mm/tlb.c:1126) 
+> >  ? native_set_fixmap (arch/x86/mm/pgtable.c:679 arch/x86/mm/pgtable.c:688) 
+> >  ? ghes_copy_tofrom_phys (drivers/acpi/apei/ghes.c:330) 
+> >  intel_pmu_handle_irq (./arch/x86/include/asm/msr.h:84 ./arch/x86/include/asm/msr.h:118 arch/x86/events/intel/core.c:2427 arch/x86/events/intel/core.c:3118) 
+> >  perf_event_nmi_handler (arch/x86/events/core.c:1743 arch/x86/events/core.c:1729) 
+> >  ? native_queued_spin_lock_slowpath (./arch/x86/include/asm/vdso/processor.h:13 ./arch/x86/include/asm/vdso/processor.h:18 kernel/locking/qspinlock.c:383) 
+> >  nmi_handle (arch/x86/kernel/nmi.c:150) 
+> >  ? native_queued_spin_lock_slowpath (./arch/x86/include/asm/vdso/processor.h:13 ./arch/x86/include/asm/vdso/processor.h:18 kernel/locking/qspinlock.c:383) 
+> >  default_do_nmi (arch/x86/kernel/nmi.c:351) 
+> >  exc_nmi (arch/x86/kernel/nmi.c:545) 
+> >  end_repeat_nmi (arch/x86/entry/entry_64.S:1394) 
+> 
+> This actually seems to be from perf_event() used by the hardlockup
+> detector. It triggers NMI.
 
->   source "drivers/platform/x86/x86-android-tablets/Kconfig"
->
->   config FW_ATTR_CLASS
-> diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefi=
-le
-> index 1de432e8861e..d51086552192 100644
-> --- a/drivers/platform/x86/Makefile
-> +++ b/drivers/platform/x86/Makefile
-> @@ -66,6 +66,7 @@ obj-$(CONFIG_SENSORS_HDAPS)	+=3D hdaps.o
->   obj-$(CONFIG_THINKPAD_ACPI)	+=3D thinkpad_acpi.o
->   obj-$(CONFIG_THINKPAD_LMI)	+=3D think-lmi.o
->   obj-$(CONFIG_YOGABOOK)		+=3D lenovo-yogabook.o
-> +obj-$(CONFIG_LENOVO_WMI)	+=3D lenovo-wmi.o
->
->   # Intel
->   obj-y				+=3D intel/
-> diff --git a/drivers/platform/x86/lenovo-wmi.c b/drivers/platform/x86/le=
-novo-wmi.c
-> new file mode 100644
-> index 000000000000..96c2ec9e6441
-> --- /dev/null
-> +++ b/drivers/platform/x86/lenovo-wmi.c
-> @@ -0,0 +1,113 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + *  Lenovo Generic WMI Driver
-> + *
+And the stack is properly unrolled and this the third backtrace. The
+second had <NMI> in it as suggesting this is from NMI but also stack
+traces from tasks due to sysrq-t.
+Now this last backtrace seems fine, and it appears that something tried
+to acquire a raw_spinlock_t, it took too long at which point the
+hardware watchdog triggered and all we got was this backtrace. Sadly we
+don't see the other side to get an idea on which lock it stuck.
 
-See note above.
+> Best Regards,
+> Petr
 
-> + *  Copyright (C) 2024	      Ai Chao <aichao@kylinos.cn>
-> + */
-> +
-> +#include <linux/acpi.h>
-> +#include <linux/device.h>
-> +#include <linux/input.h>
-> +#include <linux/module.h>
-> +#include <linux/wmi.h>
-> +
-> +#define WMI_LENOVO_CAMERABUTTON_EVENT_GUID "50C76F1F-D8E4-D895-0A3D-62F=
-4EA400013"
-> +
-> +static u8 camera_mode;
-
-Please avoid unnecessary global state, the WMI driver should be able to be=
- instantiated
-multiple times by the WMI driver core.
-
-Instead move camera_mode into struct lenovo_wmi_priv.
-
-> +
-> +struct lenovo_wmi_priv {
-> +	struct input_dev *idev;
-> +};
-> +
-> +static ssize_t camerabutton_show(struct device *dev,
-> +				 struct device_attribute *attr, char *buf)
-> +{
-> +	return sysfs_emit(buf, "%u\n", camera_mode);
-> +}
-> +
-> +DEVICE_ATTR_RO(camerabutton);
-> +
-> +static struct attribute *lenovo_wmi_attrs[] =3D {
-> +	&dev_attr_camerabutton.attr,
-> +	NULL,
-> +};
-> +
-> +static const struct attribute_group lenovo_wmi_group =3D {
-> +	.attrs =3D lenovo_wmi_attrs,
-> +};
-> +
-> +const struct attribute_group *lenovo_wmi_groups[] =3D {
-> +	&lenovo_wmi_group,
-> +	NULL,
-> +};
-> +
-> +static void lenovo_wmi_notify(struct wmi_device *wdev, union acpi_objec=
-t *obj)
-> +{
-> +	struct lenovo_wmi_priv *priv =3D dev_get_drvdata(&wdev->dev);
-> +
-> +	if (obj->type =3D=3D ACPI_TYPE_BUFFER) {
-> +		camera_mode =3D obj->buffer.pointer[0];
-> +		input_report_key(priv->idev, KEY_CAMERA, 1);
-> +		input_sync(priv->idev);
-> +		input_report_key(priv->idev, KEY_CAMERA, 0);
-> +		input_sync(priv->idev);
-
-Two things:
-
-- you should validate the size of the received ACPI buffer
-- what data does camera_mode contain? Maybe it would make sense to
-export camera_mode over the input subsystem _if_ it contains the current
-state of the camera button (or something similar).
-
-I think of a construct like this (assuming camera_mode contains the curren=
-t state of the button):
-
-input_report_key(priv->idev, KEY_CAMERA, camera_mode =3D=3D CAMERA_BUTTON_=
-PRESSED);
-input_sync(priv->idev);
-
-> +	} else {
-> +		dev_dbg(&wdev->dev, "Bad response type %d\n", obj->type);
-> +	}
-> +}
-> +
-> +static int lenovo_wmi_input_setup(struct wmi_device *wdev)
-> +{
-> +	struct lenovo_wmi_priv *priv =3D dev_get_drvdata(&wdev->dev);
-> +
-> +	priv->idev =3D devm_input_allocate_device(&wdev->dev);
-> +	if (!priv->idev)
-> +		return -ENOMEM;
-> +
-> +	priv->idev->name =3D "Lenovo WMI Camera Button";
-> +	priv->idev->phys =3D "wmi/input0";
-> +	priv->idev->id.bustype =3D BUS_HOST;
-> +	priv->idev->dev.parent =3D &wdev->dev;
-> +	priv->idev->evbit[0] =3D BIT_MASK(EV_KEY);
-> +	priv->idev->keybit[BIT_WORD(KEY_CAMERA)] =3D BIT_MASK(KEY_CAMERA);
-> +
-
-I thing set_bit() could be used here, like the xiaomi-wmi driver does it.
-
-> +	return input_register_device(priv->idev);
-> +}
-> +
-> +static int lenovo_wmi_probe(struct wmi_device *wdev, const void *contex=
-t)
-> +{
-> +	struct lenovo_wmi_priv *priv;
-> +	int err;
-> +
-> +	priv =3D devm_kzalloc(&wdev->dev, sizeof(struct lenovo_wmi_priv),
-> +			    GFP_KERNEL);
-
-Please use sizeof(*priv) instead of sizeof(struct lenovo_wmi_priv).
-
-> +	if (!priv)
-> +		return -ENOMEM;
-> +
-> +	dev_set_drvdata(&wdev->dev, priv);
-> +
-> +	err =3D lenovo_wmi_input_setup(wdev);
-> +	return err;
-
-I think lenovo_wmi_input_setup() is small enough to merge it with lenovo_w=
-mi_probe().
-
-> +}
-> +
-> +static const struct wmi_device_id lenovo_wmi_id_table[] =3D {
-> +	{ .guid_string =3D WMI_LENOVO_CAMERABUTTON_EVENT_GUID },
-> +	{  }
-> +};
-> +
-> +static struct wmi_driver lenovo_wmi_driver =3D {
-> +	.driver =3D {
-> +		.name =3D "lenovo-wmi",
-> +		.dev_groups =3D lenovo_wmi_groups,
-> +	},
-> +	.id_table =3D lenovo_wmi_id_table,
-> +	.probe =3D lenovo_wmi_probe,
-> +	.notify =3D lenovo_wmi_notify,
-> +};
-
-Please set probe_type =3D PROBE_PREFER_ASYNCHRONOUS like the inspur_platfo=
-rm_profile driver.
-
-Also please set the no_singleton flag inside the WMI driver struct after y=
-ou moved
-camera_mode into struct lenovo_wmi_priv, as i wont accept new WMI drivers =
-without
-this flag.
-
-Please note that the no_singleton flag was added very recently and you wil=
-l need to rebase
-your driver onto for-next.
-
-Thanks,
-Armin Wolf
-
-> +
-> +module_wmi_driver(lenovo_wmi_driver);
-> +
-> +MODULE_DEVICE_TABLE(wmi, lenovo_wmi_id_table);
-> +MODULE_AUTHOR("Ai Chao <aichao@kylinos.cn>");
-> +MODULE_DESCRIPTION("Lenovo Generic WMI Driver");
-> +MODULE_LICENSE("GPL");
+Sebastian
 
