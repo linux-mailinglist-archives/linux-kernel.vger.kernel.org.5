@@ -1,161 +1,262 @@
-Return-Path: <linux-kernel+bounces-88444-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88445-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89BF786E1AE
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:16:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64CAF86E1B1
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:16:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6652E1C20B8E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:16:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D12161F220DB
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:16:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C29B26BFD0;
-	Fri,  1 Mar 2024 13:15:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9236C6F085;
+	Fri,  1 Mar 2024 13:15:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="iI8lTj7s"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="yobEm+G1"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BA8667E74
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 13:15:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 853076D1C7;
+	Fri,  1 Mar 2024 13:15:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709298928; cv=none; b=Neml9djaOgAjTfu70N0Se7qi4tQj+Bt2EnofwA5hOTLRArC/4Sm5Doblzo37l6XW5lQVM604x2tBRUKGBuSl72FVWjy8B+0RV6blMHNnOFSxZ6/Ox4iShj9vsVccJXWgyV48ebQi2hW90PGSgMkXdNPgyJE/CFFuzgqIKuS3z6Y=
+	t=1709298933; cv=none; b=gP0FD1VS0P3o1VdyICLutAPsMkiUag5vKsrOUqrgAUSthpSnVxHC5TmSSbkFr1wl6GNU2pBBxtiT5dPB86tECnDrqDUYpRFuq6OTEbXUrcQLEcG21A8Se5bMJMnYQ54+cd8FYR+W8QCwc6b/Dkagt6/fZyFc/0ueu5jGHjL5TKo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709298928; c=relaxed/simple;
-	bh=ppxwsid024kYh+xIImopd5C7MqjcjcriC8usZ9HcFiA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QqU/t15iedfkjizmPE/jG03qp5rWITfZg4ucUTUkdvuxjlFZxLabnBLBflJ+SK3jshb4TQMoUC7J37slO7HRtU0EJbAx/kB8MYxnPGZ3S4vWKXgBB5Cn5dSyQwRXTv8EL96WPJSWAq910DvN8EMy+CR3/w/c7SE2Y2YanPBek6Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=iI8lTj7s; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709298925;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=j6JDdzMRW33EgNy8WVE2rwXJul+k7YILcoZp2XURKLI=;
-	b=iI8lTj7syOyTuYUrra2JC9Ixh25zlm6lpJ5/XDSxvHHZ/6ckDatltHl+o0x+DBKt8i4e14
-	GWgGHG02FIHk3CvRUBtRNIt2Pb3jLghh+3m1ZOV1vVbydisna2iAiG8iA+MKLF1Y12RhUs
-	cSNRD4SkeYAhCd1c/P3E/TVKYPX2EQo=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-128-zDEt7PcTPaSgWk0YyCOCqw-1; Fri, 01 Mar 2024 08:15:23 -0500
-X-MC-Unique: zDEt7PcTPaSgWk0YyCOCqw-1
-Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-512a5c6465bso1589246e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 05:15:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709298922; x=1709903722;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=j6JDdzMRW33EgNy8WVE2rwXJul+k7YILcoZp2XURKLI=;
-        b=igZDPDfy9lA6gb6N56fFTXAv9r+mzuB8Oy63/YUjpWjsDqBDSVPU4o/VD7gZlNr7ua
-         6FO2grsbR283vd3JT2yiKFjAmnON+ccfB+UbPymBox/PpnvyDTWw+yJwKIR59j157mp8
-         31Yd9YgqRnKCi7IJy/Wo/iGXfRDdlD5ZgS/2dkMa/njB2yW5XrA/DxXTvmUyhdVAGtk+
-         wpQHwkxTFoPmG3ZZ1857nrcCIg1Y3l77R1U9mlIwwhHAmyEnJTU9rQ46FwGAevcbri0B
-         ABvNgfbixREhrXtmjBlvwx07YRyqNvqH7Zv/RjvS4EWjWdiyZrxq/yGKgPycHw0sj1Jk
-         PVhQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUt+4Zry9Gm0hzPlxN4imq4TT2EFIEQbPypK2fysg+XWcwOu315HkPo5hlvHXkYa6lmGDVMhFvPPXLPtyW79qd8oPY40iCiQl1qhkzm
-X-Gm-Message-State: AOJu0Yz314+6a+cKzNB9izXFDof9YMizb86FAT2mLU8rI9UFNlPy8Tx/
-	XS0wFlvTbpXjN8iwo6+Gtx+LAYElDb3T26G8M5qYgjtWCZDdDsy9GC1x01KxD8Iw87WNsl4E7XO
-	zBLHbnGXjR8FXXt+3wKhLlLjiEGm0n+pN2kIbgKsdH/mM4NSKYdxp2hyhIi7NmQ==
-X-Received: by 2002:ac2:599b:0:b0:512:f6d3:9998 with SMTP id w27-20020ac2599b000000b00512f6d39998mr1223719lfn.17.1709298922219;
-        Fri, 01 Mar 2024 05:15:22 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFwlzt5HlgK0WAcZyh2ZsOJe95EyGGHjhxje8QxMH4nFVP4Pvs9Hg/dbyzZ0Awcz9X/EGacJg==
-X-Received: by 2002:ac2:599b:0:b0:512:f6d3:9998 with SMTP id w27-20020ac2599b000000b00512f6d39998mr1223689lfn.17.1709298921881;
-        Fri, 01 Mar 2024 05:15:21 -0800 (PST)
-Received: from toolbox ([2001:9e8:89a0:c500:c65:1f3a:8c08:2a1d])
-        by smtp.gmail.com with ESMTPSA id bw1-20020a0560001f8100b0033db0c866f7sm4639850wrb.11.2024.03.01.05.15.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 05:15:21 -0800 (PST)
-Date: Fri, 1 Mar 2024 14:15:19 +0100
-From: Sebastian Wick <sebastian.wick@redhat.com>
-To: Maxime Ripard <mripard@kernel.org>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Jonathan Corbet <corbet@lwn.net>, Sandy Huang <hjc@rock-chips.com>,
-	Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
-	Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Hans Verkuil <hverkuil@xs4all.nl>,
-	Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>,
-	dri-devel@lists.freedesktop.org,
-	linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-	linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev,
-	Dave Stevenson <dave.stevenson@raspberrypi.com>
-Subject: Re: [PATCH v7 21/36] drm/connector: hdmi: Add Broadcast RGB property
-Message-ID: <20240301131519.GA10491@toolbox>
-References: <20240222-kms-hdmi-connector-state-v7-0-8f4af575fce2@kernel.org>
- <20240222-kms-hdmi-connector-state-v7-21-8f4af575fce2@kernel.org>
- <20240229194726.GB166694@toolbox>
- <20240301-light-impressive-grasshopper-adabeb@houat>
- <20240301112941.GE166694@toolbox>
- <20240301-loyal-cornflower-oxpecker-83ed59@houat>
+	s=arc-20240116; t=1709298933; c=relaxed/simple;
+	bh=jFCD2ydHrGro9XnbM8BQ5+gpbO4DPT/CxeUtNKh29Sc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hnQN04HiA4alxHpUvWylA6BLOck2lsFIkVa//DERr1990JhtYZOa1unmO7L8Dzgq8/0pznCCmOOnfj61sLTbCTOuvjsitmBFqfsV/NeIjsXq+/fS2a62e4y58J63JhJKW+d2VN14JlMZz8Abl4/P88/h16TL3kPT4OUoZ+l6hyc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=yobEm+G1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3095C433F1;
+	Fri,  1 Mar 2024 13:15:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1709298933;
+	bh=jFCD2ydHrGro9XnbM8BQ5+gpbO4DPT/CxeUtNKh29Sc=;
+	h=From:To:Cc:Subject:Date:From;
+	b=yobEm+G1XXnCYacSKpTp5cwk0va0j67IHQPsV7IdHJCLHGu02KgMYRl+8uzwsPHg8
+	 ME/SOyE4XQ76v9Q5IXuSSdGryOsZaKrs+gcWHIfGE5KjHiNyNGQD4IPp8JIe0dIgP2
+	 80Qz1Z0/dx03de+gr+pXfzypliljU2Na7OEzH6j0=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: linux-kernel@vger.kernel.org,
+	akpm@linux-foundation.org,
+	torvalds@linux-foundation.org,
+	stable@vger.kernel.org
+Cc: lwn@lwn.net,
+	jslaby@suse.cz,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 4.19.308
+Date: Fri,  1 Mar 2024 14:15:28 +0100
+Message-ID: <2024030128-recharger-bullwhip-fa3f@gregkh>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240301-loyal-cornflower-oxpecker-83ed59@houat>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Mar 01, 2024 at 01:12:02PM +0100, Maxime Ripard wrote:
-> On Fri, Mar 01, 2024 at 12:29:41PM +0100, Sebastian Wick wrote:
-> > On Fri, Mar 01, 2024 at 11:30:56AM +0100, Maxime Ripard wrote:
-> > > On Thu, Feb 29, 2024 at 08:47:26PM +0100, Sebastian Wick wrote:
-> > > > > @@ -1708,6 +1731,39 @@ EXPORT_SYMBOL(drm_connector_attach_dp_subconnector_property);
-> > > > >  /**
-> > > > >   * DOC: HDMI connector properties
-> > > > >   *
-> > > > > + * Broadcast RGB (HDMI specific)
-> > > > > + *      Indicates the Quantization Range (Full vs Limited) used. The color
-> > > > > + *      processing pipeline will be adjusted to match the value of the
-> > > > > + *      property, and the Infoframes will be generated and sent accordingly.
-> > > > > + *
-> > > > > + *      This property is only relevant if the HDMI output format is RGB. If
-> > > > > + *      it's one of the YCbCr variant, it will be ignored and the output will
-> > > > > + *      use a limited quantization range.
-> > > > 
-> > > > Uh, maybe just say that the quantization range is selected automatically
-> > > > in case a YCbCr output format is in use. I'm not sure every YCbCr
-> > > > variant requires limited and even if it does, new formats could change
-> > > > this.
-> > > 
-> > > I documented what i915 is doing:
-> > > https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/i915/display/intel_hdmi.c#L2143
-> > 
-> > Sure, this is one valid strategy for the automatic behavior of YCbCr.
-> > Drivers could also always send an InfoFrame to ensure full range where
-> > possible. The point here is that this property shall not affect YCbCr
-> > output formats!
-> > 
-> > Maybe it's even better to say "driver specific" instead of "automatic".
-> 
-> Honestly, I'm not sure what you want from me here. Ville and you
-> insisted on the previous version to document what i915 is doing and to
-> follow whatever the behaviour was, and that we shouldn't spend time
-> improving the property. Fine, I did that.
-> 
-> But now, you want me to ... improve the property?
+I'm announcing the release of the 4.19.308 kernel.
 
-The property has a clear scope: quantization range for RGB output
-formats. What Intel does with things that are not in scope of the
-property is irrelevant. This isn't improving the property either but
-documenting the scope of the property.
+All users of the 4.19 kernel series must upgrade.
 
-Sorry if this seems arbitrary but these details are so important to get
-right because the interactions between all the different things is
-already majorly broken.
+The updated 4.19.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.19.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-> Maxime
-> 
+thanks,
+
+greg k-h
+
+------------
+
+ Makefile                                          |    2 
+ arch/arm/mach-ep93xx/core.c                       |    1 
+ arch/s390/pci/pci.c                               |    2 
+ drivers/ata/ahci.c                                |    5 
+ drivers/block/virtio_blk.c                        |    7 
+ drivers/dma/sh/shdma.h                            |    2 
+ drivers/firewire/core-card.c                      |   18 
+ drivers/gpu/drm/nouveau/nvkm/subdev/bios/shadow.c |    8 
+ drivers/hwmon/coretemp.c                          |    2 
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c          |    5 
+ drivers/infiniband/hw/hfi1/pio.c                  |    6 
+ drivers/infiniband/hw/hfi1/sdma.c                 |    2 
+ drivers/infiniband/ulp/ipoib/ipoib_verbs.c        |    2 
+ drivers/infiniband/ulp/iser/iser_verbs.c          |    9 
+ drivers/infiniband/ulp/isert/ib_isert.c           |    2 
+ drivers/infiniband/ulp/opa_vnic/opa_vnic_vema.c   |    3 
+ drivers/infiniband/ulp/srp/ib_srp.c               |   10 
+ drivers/infiniband/ulp/srpt/ib_srpt.c             |   52 
+ drivers/md/dm-crypt.c                             |    6 
+ drivers/net/ethernet/stmicro/stmmac/stmmac.h      |    2 
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c |   65 
+ drivers/net/gtp.c                                 |   10 
+ drivers/pci/msi.c                                 |    2 
+ drivers/regulator/pwm-regulator.c                 |    3 
+ drivers/s390/net/qeth_l3_main.c                   |    9 
+ drivers/scsi/Kconfig                              |    2 
+ drivers/soc/renesas/r8a77980-sysc.c               |    3 
+ drivers/target/target_core_device.c               |    5 
+ drivers/target/target_core_transport.c            |    4 
+ drivers/usb/gadget/function/f_ncm.c               |   10 
+ drivers/usb/roles/class.c                         |   12 
+ drivers/video/fbdev/savage/savagefb_driver.c      |    3 
+ drivers/video/fbdev/sis/sis_main.c                |    2 
+ fs/aio.c                                          |    9 
+ fs/ext4/mballoc.c                                 |   13 
+ fs/nilfs2/dat.c                                   |   27 
+ include/linux/fs.h                                |    2 
+ include/rdma/rdma_vt.h                            |    2 
+ kernel/sched/rt.c                                 |   10 
+ kernel/sysctl.c                                   |    5 
+ mm/memcontrol.c                                   |   23 
+ mm/userfaultfd.c                                  |   14 
+ net/ipv6/seg6.c                                   |   20 
+ net/l2tp/l2tp_ip6.c                               |    2 
+ net/mac80211/sta_info.c                           |    2 
+ net/mac80211/tx.c                                 |    2 
+ net/packet/af_packet.c                            |    4 
+ net/sched/Kconfig                                 |   42 
+ net/sched/Makefile                                |    3 
+ net/sched/sch_atm.c                               |  708 --------
+ net/sched/sch_cbq.c                               | 1823 ----------------------
+ net/sched/sch_dsmark.c                            |  519 ------
+ net/wireless/nl80211.c                            |    1 
+ scripts/bpf_helpers_doc.py                        |  157 +
+ virt/kvm/arm/vgic/vgic-its.c                      |    5 
+ 55 files changed, 411 insertions(+), 3258 deletions(-)
+
+Aaro Koskinen (1):
+      net: stmmac: fix notifier registration
+
+Alexandra Winter (1):
+      s390/qeth: Fix potential loss of L3-IP@ in case of network issues
+
+Andrii Nakryiko (2):
+      scripts/bpf: teach bpf_helpers_doc.py to dump BPF helper definitions
+      scripts/bpf: Fix xdp_md forward declaration typo
+
+Arnd Bergmann (2):
+      RDMA/srpt: fix function pointer cast warnings
+      nouveau: fix function cast warnings
+
+Baokun Li (2):
+      ext4: avoid allocating blocks from corrupted group in ext4_mb_try_best_found()
+      ext4: avoid allocating blocks from corrupted group in ext4_mb_find_by_goal()
+
+Bart Van Assche (3):
+      RDMA/srpt: Support specifying the srpt_service_guid parameter
+      RDMA/srpt: Make debug output more detailed
+      fs/aio: Restrict kiocb_set_cancel_fn() to I/O submitted via libaio
+
+Conrad Kostecki (1):
+      ahci: asm1166: correct count of reported ports
+
+Cyril Hrubis (3):
+      sched/rt: Fix sysctl_sched_rr_timeslice intial value
+      sched/rt: sysctl_sched_rr_timeslice show default timeslice after reset
+      sched/rt: Disallow writing invalid values to sched_rt_period_us
+
+Daniel Vacek (1):
+      IB/hfi1: Fix sdma.h tx->num_descs off-by-one error
+
+Dmitry Bogdanov (1):
+      scsi: target: core: Add TMF to tmr_list handling
+
+Felix Fietkau (1):
+      wifi: mac80211: fix race condition on enabling fast-xmit
+
+Fullway Wang (2):
+      fbdev: savage: Error out if pixclock equals zero
+      fbdev: sis: Error out if pixclock equals zero
+
+GONG, Ruiqi (1):
+      memcg: add refcnt for pcpu stock to avoid UAF problem in drain_all_stock()
+
+Geert Uytterhoeven (1):
+      pmdomain: renesas: r8a77980-sysc: CR7 must be always on
+
+Gianmarco Lusvardi (1):
+      bpf, scripts: Correct GPL license name
+
+Greg Kroah-Hartman (2):
+      stmmac: no need to check return value of debugfs_create functions
+      Linux 4.19.308
+
+Jamal Hadi Salim (3):
+      net/sched: Retire CBQ qdisc
+      net/sched: Retire ATM qdisc
+      net/sched: Retire dsmark qdisc
+
+Jason Gunthorpe (2):
+      RDMA/ulp: Use dev_name instead of ibdev->name
+      s390: use the correct count for __iowrite64_copy()
+
+Kalesh AP (1):
+      RDMA/bnxt_re: Return error for SRQ resize
+
+Krishna Kurapati (1):
+      usb: gadget: ncm: Avoid dropping datagrams of properly parsed NTBs
+
+Lokesh Gidra (1):
+      userfaultfd: fix mmap_changing checking in mfill_atomic_hugetlb
+
+Martin Blumenstingl (1):
+      regulator: pwm-regulator: Add validity checks in continuous .get_voltage
+
+Michal Kazior (1):
+      wifi: cfg80211: fix missing interfaces when dumping
+
+Mikulas Patocka (1):
+      dm-crypt: don't modify the data when using authenticated encryption
+
+Nikita Shubin (1):
+      ARM: ep93xx: Add terminator to gpiod_lookup_table
+
+Oliver Upton (2):
+      KVM: arm64: vgic-its: Test for valid IRQ in its_sync_lpi_pending_table()
+      KVM: arm64: vgic-its: Test for valid IRQ in MOVALL handler
+
+Randy Dunlap (1):
+      scsi: jazz_esp: Only build if SCSI core is builtin
+
+Roman Gushchin (1):
+      mm: memcontrol: switch to rcu protection in drain_all_stock()
+
+Ryusuke Konishi (1):
+      nilfs2: replace WARN_ONs for invalid DAT metadata block requests
+
+Takashi Sakamoto (1):
+      firewire: core: send bus reset promptly on gap count error
+
+Tom Parkin (1):
+      l2tp: pass correct message length to ip6_append_data
+
+Vasiliy Kovalev (2):
+      gtp: fix use-after-free and null-ptr-deref in gtp_genl_dump_pdp()
+      ipv6: sr: fix possible use-after-free and null-ptr-deref
+
+Vidya Sagar (1):
+      PCI/MSI: Prevent MSI hardware interrupt number truncation
+
+Vinod Koul (1):
+      dmaengine: shdma: increase size of 'dev_id'
+
+Wolfram Sang (1):
+      packet: move from strlcpy with unused retval to strscpy
+
+Xu Yang (1):
+      usb: roles: don't get/set_role() when usb_role_switch is unregistered
+
+Yi Sun (1):
+      virtio-blk: Ensure no requests in virtqueues before deleting vqs.
+
+Zhang Rui (1):
+      hwmon: (coretemp) Enlarge per package core count limit
+
+Zhipeng Lu (1):
+      IB/hfi1: Fix a memleak in init_credit_return
 
 
