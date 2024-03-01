@@ -1,142 +1,109 @@
-Return-Path: <linux-kernel+bounces-88847-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88849-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1151986E76D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:37:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF6F986E774
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:39:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 239C71C2094A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:37:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EFDAC1C251CB
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:39:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BE322575F;
-	Fri,  1 Mar 2024 17:36:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 363E8C8E1;
+	Fri,  1 Mar 2024 17:39:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eNjJPaaE"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QPyjuNKQ"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0490E8C17;
-	Fri,  1 Mar 2024 17:36:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF5D179C2;
+	Fri,  1 Mar 2024 17:39:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709314584; cv=none; b=ayHEeZFRKSm2Z29uOwDCo887p6tKW/eLOYY4xNHAyZQ63jz64/q7/0t0NdY6WEbW528WXvTgz/nxtQy5LEUO582DxlNJA4oQ/TRi4O5dQr9LioOLiNwk/MXiBxnVxCp2XFOJyYhGaaCDFNeItPL0vrVtTXcXvf5ETofnE01a2Z8=
+	t=1709314747; cv=none; b=AcsWAIph84OM7+YfJsYeoroJkVkNHBNRCVYkA+AXO8cs4g258KY4g0tZrMX99UOusUXLz1+UQRXYnEdI/Mr7MYZBJ+mALNTvTkdHlUsHQjSOfWiO7RHG0JOHGRRVuVzao0Z7EqwKG+3XVrIPcx5xKAcYry15fb2SNGT5sVa28Bs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709314584; c=relaxed/simple;
-	bh=BLPKOOcms3NtQtohwHJmJbLW39B8h2SU5IMAJvs5Bio=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y4jB1R1gN1mCtvPeV3r9XULGyvvv9eRD81vZwFvkLwWdYyvbjwOE7NruLbdgoNGjn5c+ghhZOHpN3KhWjS8BrIeyqIWoDyPJz+VI0CttiqKBfbDP8lQWFEyZNUhVbXU6IxzaWHjZRZZKd8tjaUd53VHWVHuBExH6CNq8pPI4irc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eNjJPaaE; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709314583; x=1740850583;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=BLPKOOcms3NtQtohwHJmJbLW39B8h2SU5IMAJvs5Bio=;
-  b=eNjJPaaEmbg5eU4PYKJXt7RlYuL7t1g+L3qcnQS+9F0xAIrrrsHwEr8I
-   vQ8TQ6/uB11yIz/EXdgKbUfM7y2QojghqM4jbSjPZ4n+DqoMDZ7k+65lm
-   IdSpIVfMPaOpDrIIHG1Co0m76FDjymFtmt26sddYUey1xsOpCP0eWSRh5
-   wgBb+oN9pNuEcpYRF/tc9Hck558u/4KVXMAFpmkxZvebmizfcODDsYbXd
-   WRHs0CKQpPwodKKPd44dsS8hABDQpi7+LtYoZu3ZlVuSChydInifL50ii
-   W3uxM5oQXtnoEAcksl4AKE+gX0ER//JzlSHDCXZOaxJnDXr52LZ+OuwOa
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11000"; a="3724003"
-X-IronPort-AV: E=Sophos;i="6.06,196,1705392000"; 
-   d="scan'208";a="3724003"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 09:36:22 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11000"; a="914021132"
-X-IronPort-AV: E=Sophos;i="6.06,196,1705392000"; 
-   d="scan'208";a="914021132"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 09:36:20 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rg6nx-00000009168-3emF;
-	Fri, 01 Mar 2024 19:36:17 +0200
-Date: Fri, 1 Mar 2024 19:36:17 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-	Markus Elfring <Markus.Elfring@web.de>, linux-media@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] media: i2c: ds90ub960: Delete duplicate source code in
- ub960_parse_dt_rxports()
-Message-ID: <ZeISEYXTaiyA-b4K@smile.fi.intel.com>
-References: <79fa4854-976d-4aad-86ac-c156b0c4937e@web.de>
- <ZeGV_siWFkfqSEgZ@kekkonen.localdomain>
- <db1d7227-f9a4-42fa-89ba-b484e1260e0b@ideasonboard.com>
- <ZeGZsRtH6YLx2FiM@kekkonen.localdomain>
+	s=arc-20240116; t=1709314747; c=relaxed/simple;
+	bh=ebff8M+k/K6Wd1OgQ0pC/rYolW4WIr6/wiuY1cwp9d4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=BZKijp6AsNChoNNLYRiup5qo7Jkva3opOwGLzy6eUPZYkphIWtIdqNVH1Az2HdAyh94zrtLXYgJk+zHIJejuHFJDmGMiIq32SQDYnKqrpLmtQgseQ0sj1ykYeReS1wREYlkIOJkeBvVkel5cFt9+N7mQmtwt7t3Ph9eWgpLNvWk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QPyjuNKQ; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a26fa294e56so450018766b.0;
+        Fri, 01 Mar 2024 09:39:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709314744; x=1709919544; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=arCunWF6dZb0FdspcIOQcAPY/BFPdx5+j+0Wod9wh5s=;
+        b=QPyjuNKQH+MoMTwuIvWsue5SiRNI0Ph67I2vgF7XPGg8KVJIoZ3YJXVbinaaHHnaTu
+         Y/9CNctWTUa1PSoMyJ0E9BtKiLAHYt1CegWzLi9oW5b66jM4O1+KgBNieZVUcp0ZTbFz
+         ju1jDgi8JJFFAMVBndzj5ZmIK+WPDkXG+euK2fAY+X3e+KnepIzptacczZDcYcEPwCla
+         s2bfu0UO/EkVyKXz1fPT6CFN+O2gOuNq8B5jlLWECyaLZXxM9piTfvxF4h9/lZTOCwIb
+         ZPIsyUTs44k46AjJO3jD6sX6xPOsMp3++EPDoPZrfGbT2kAqdbtPhaDVqNlxWP7Fwr/1
+         P/OQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709314744; x=1709919544;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=arCunWF6dZb0FdspcIOQcAPY/BFPdx5+j+0Wod9wh5s=;
+        b=BRY9B7/cp94zlxdbTjMg9ufj9Q6v0vgXadlYPnWQrMZ4n6xEeyDXhCWhhgDGJtHz9a
+         1kkzplQKyaGXT/oXZWhSBbSb0e56NPUipzryog93smxa6nIH34I/cNd7tulViw5OPGsv
+         Ay/LyTx8Q31Hj1F0x+5XgrLcOspuF5XXOmJRLPgoqDHDHHG6MP+kr7/p0QtOWWnGF7Uc
+         b/7hZjp1ywZlMcJ1/NiL3KDqn0Y6DsHup9AU5X05APdzbbnLpSQb7QDF0MVlH12jlOzr
+         3UT4jmelSwmKQpHv3nmJ3ziHqAY7ovPf/qmqrwD95kSd46T/lZukZzE6bdl7c5Fvxp2k
+         U/eA==
+X-Forwarded-Encrypted: i=1; AJvYcCWebNrT61JpsvWZNZKfdrhYNenxkOGmZhjfn6XlzGOuWYflOwAGhR82DtRT6OmeSaRQpB0GGdMkXrfgA9eF07ewu2n21CehgaPbggeu
+X-Gm-Message-State: AOJu0YwdNyAtxM4civVSW/1LeEBWx0mFrhy/oLq47qth9vrsuARfxC/A
+	laBVUIXf3qq/r8hP1KNbjhVmuBdtQVj4bY4jpikwW8AXwT1l9cndFl8B6avo
+X-Google-Smtp-Source: AGHT+IE7AXO3E6G2ne+1f2DYdXoxnjHQYIU25pwZk7+DrB1wXm1nxF4HttFQpm6oGSN3UUV57/slSA==
+X-Received: by 2002:a17:906:b84e:b0:a3e:4d4c:d120 with SMTP id ga14-20020a170906b84e00b00a3e4d4cd120mr1724508ejb.12.1709314744157;
+        Fri, 01 Mar 2024 09:39:04 -0800 (PST)
+Received: from localhost.localdomain (ip-94-112-167-15.bb.vodafone.cz. [94.112.167.15])
+        by smtp.gmail.com with ESMTPSA id re8-20020a170906d8c800b00a43815bf5edsm1864522ejb.133.2024.03.01.09.39.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Mar 2024 09:39:03 -0800 (PST)
+From: Ilya Dryomov <idryomov@gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: ceph-devel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Ceph fix for 6.8-rc7
+Date: Fri,  1 Mar 2024 18:37:09 +0100
+Message-ID: <20240301173710.2004467-1-idryomov@gmail.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZeGZsRtH6YLx2FiM@kekkonen.localdomain>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 
-On Fri, Mar 01, 2024 at 09:02:41AM +0000, Sakari Ailus wrote:
-> On Fri, Mar 01, 2024 at 10:49:19AM +0200, Tomi Valkeinen wrote:
-> > On 01/03/2024 10:46, Sakari Ailus wrote:
-> > > On Fri, Mar 01, 2024 at 08:46:25AM +0100, Markus Elfring wrote:
-> > > > From: Markus Elfring <elfring@users.sourceforge.net>
-> > > > Date: Fri, 1 Mar 2024 08:23:24 +0100
-> > > > 
-> > > > Avoid the specification of a duplicate fwnode_handle_put() call
-> > > > in this function implementation.
-> > > > 
-> > > > Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-> > > > ---
-> > > >   drivers/media/i2c/ds90ub960.c | 5 +----
-> > > >   1 file changed, 1 insertion(+), 4 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/media/i2c/ds90ub960.c b/drivers/media/i2c/ds90ub960.c
-> > > > index ffe5f25f8647..eb708ed7b56e 100644
-> > > > --- a/drivers/media/i2c/ds90ub960.c
-> > > > +++ b/drivers/media/i2c/ds90ub960.c
-> > > > @@ -3486,10 +3486,7 @@ static int ub960_parse_dt_rxports(struct ub960_data *priv)
-> > > >   		}
-> > > >   	}
-> > > > 
-> > > > -	fwnode_handle_put(links_fwnode);
-> > > > -
-> > > > -	return 0;
-> > > > -
-> > > > +	ret = 0;
-> > > 
-> > > I think it'd be nicer to initialise ret as zero, then you can just drop the
-> > > assignment above.
+Hi Linus,
 
-I think tearing apart the assignment and its actual user is not good.
+The following changes since commit d206a76d7d2726f3b096037f2079ce0bd3ba329b:
 
-> > I don't like successful execution entering error paths. That's why there's
-> > the return 0.
-> 
-> It could be called a common cleanup path as what you really want to do here
-> is to put the fwnode handle, independently of whether there was an error.
-> I think the current code is of course fine, too.
-> 
-> Soon you can do
-> 
-> 	struct fwnode_handle *links_fwnode __free(fwnode_handle);
-> 
-> and forget about putting it (but you must need putting it).
+  Linux 6.8-rc6 (2024-02-25 15:46:06 -0800)
 
-Let's wait for the Jonathan's patches to land (v6.9-rc1 I hope) and then
-we may modify drivers if needed.
+are available in the Git repository at:
 
--- 
-With Best Regards,
-Andy Shevchenko
+  https://github.com/ceph/ceph-client.git tags/ceph-for-6.8-rc7
 
+for you to fetch changes up to 51d31149a88b5c5a8d2d33f06df93f6187a25b4c:
 
+  ceph: switch to corrected encoding of max_xattr_size in mdsmap (2024-02-26 19:20:30 +0100)
+
+----------------------------------------------------------------
+A patch to catch up with mdsmap encoding rectification which ended up
+being necessary after all to enable cluster upgrades from problematic
+v18.2.0 and v18.2.1 releases.
+
+----------------------------------------------------------------
+Xiubo Li (1):
+      ceph: switch to corrected encoding of max_xattr_size in mdsmap
+
+ fs/ceph/mdsmap.c | 7 ++++---
+ fs/ceph/mdsmap.h | 6 +++++-
+ 2 files changed, 9 insertions(+), 4 deletions(-)
 
