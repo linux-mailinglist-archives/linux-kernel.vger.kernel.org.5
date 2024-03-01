@@ -1,158 +1,143 @@
-Return-Path: <linux-kernel+bounces-88641-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88645-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AC7C86E4B5
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:51:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B201A86E4BE
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:52:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C4E0E1F238B9
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:51:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4EDEA1F22749
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:52:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 587B87003E;
-	Fri,  1 Mar 2024 15:51:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B23E70AE4;
+	Fri,  1 Mar 2024 15:52:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="bWH1B6ZK"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="F13fjxPB"
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0A0438DC3;
-	Fri,  1 Mar 2024 15:51:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2AA338DC3;
+	Fri,  1 Mar 2024 15:52:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709308268; cv=none; b=JR/wMcVGvfbUxsnls75da7m5k2CV0UCmff+G6/dBWNtcvf6E47g2hcXucefYA997N5OEWYLQHlYwCvvjdzs02wtCWcqOPdzw0Czk6hFbDYGIXtv4iM13ev6Ra+uM31kpiqYsEegcFgGj5u8z9ovGHWYhKMqpr8riA9ekSg6bD9g=
+	t=1709308342; cv=none; b=B4+gEA4LSj3aNZ3/VJoueBF72d1h4cz5TnEoVc98bfvgSW3rDn/tH1672bB8xeCO9jMRvNwc4YZjfvq/luPzRqctSEhJlPqfoIgMjJKAZriVV+WUVYj9xCTe9yoQCzrKf5RNGLrt6OXtsd3oKzdEgJSCnFHYYhbKgcgSnOODuj0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709308268; c=relaxed/simple;
-	bh=1NVr50xCqj8bNUqZUVBbqR/mLlQgrKJ5lyxXHMeB10A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HdKSi1ThRYY5p+ZIUVe4FerADon93OF6cRQIOzi0f4xK7qg/hSofLVaD/idQedceIRlc9FPS4i2kcVXVLj5bra8/Gn43FJMJopMqCdoy2xgT84vWnV7aLonr1nB9oP7W34Acl9S4zIeyrMFE7pUOcoxFjgSJQ3JJiZNoSbxrhI0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=bWH1B6ZK; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 936D040E0028;
-	Fri,  1 Mar 2024 15:50:56 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id hELV_6bbTa8F; Fri,  1 Mar 2024 15:50:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1709308253; bh=R8/DDqIKJ5vY+bniXhs9aL9h96pvuubAf51BT+x/gzo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=bWH1B6ZKCMd/XJa/ZmBEXEErCh9M4Tvae5Z1mnmHVnm43per3TZvMsuYxLEKDS00G
-	 lxdRR6SHTysDFSp3/ExSjA9S/IOVnHrNkmSJ2DV/9ZVT3pjzR45zrbj74d37K1tln3
-	 rl9Q/R8if282SEVeX05FY0cBvNjIGFDnD4JxGhiYJqoOn1oZxV3iVeCbq0drEpCeJH
-	 O8s/w4mEuELAE+zcePWJjD8e1G4OSF1sCXeUHFxLaFkefzOSfJ69aRXK71nq9t+Hcu
-	 tcwLfSOf78nc4Sv+FS7gK/1jhOmFt8xCIj7WefVQLHfRB0b5EJLy4A9a3CgrLFwe5L
-	 5dC5T5S7gnNiiTMp4jQXrcl6FwDJs82ReY32XCp9W1hF5meRU7EA5gQVRdLWqbMAnY
-	 +MibdSepE7LdF+OS6YL4dqXLweQ3oEvObjmfhJsDgcCIQ07c8iCHDkDqmKCKU9e4Bj
-	 sEGTWa9QeKZTgtA8IiNjHTvgLAEvhguJBK3y2oMfANiPQLvbYDRdeS5m/gKOxl5W3h
-	 rAW0jzT8ntoIwpYdTKrefa0b6bqMynE1YgsKTIpVGTAzncrwMJh7iQj3bK9z2TMKR6
-	 FvAUrwQ1ijffEO8He/Ak6/+oyfIyJUOJhbfvpkLF2vpVCEIU+HzrF4PmG8TKrJdroF
-	 0gVxiMfDBMqXe/CBfhv6AMHU=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 60A0440E00B2;
-	Fri,  1 Mar 2024 15:50:44 +0000 (UTC)
-Date: Fri, 1 Mar 2024 16:50:34 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Yazen Ghannam <yazen.ghannam@amd.com>
-Cc: tony.luck@intel.com, linux-edac@vger.kernel.org,
-	linux-kernel@vger.kernel.org, avadhut.naik@amd.com,
-	john.allen@amd.com, muralidhara.mk@amd.com, sathyapriya.k@amd.com,
-	naveenkrishna.chatradhi@amd.com
-Subject: Re: [PATCH v2 2/3] RAS/AMD/FMPM: Save SPA values
-Message-ID: <20240301155034.GAZeH5StN80cO15qq_@fat_crate.local>
-References: <20240301143748.854090-1-yazen.ghannam@amd.com>
- <20240301143748.854090-3-yazen.ghannam@amd.com>
+	s=arc-20240116; t=1709308342; c=relaxed/simple;
+	bh=qEc3vNB2eDPfKsZPhlZr12jl/0AGDXOfDLnzJ+F4vaY=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Subject:Cc:To:From:
+	 References:In-Reply-To; b=hr9oJ9llM5vB6OyGjzGYxu3Iv+/Z6J1BslQqgXyq77hEz+ooCivm5nKpXj75vEwuMhRN+PhR83TfRNtllyqu/JPHvENYY37CBZ87U+41LA2qMY4pE1u/hYHYU3f3UpngrNcUCF6F5e8xjrLYRWlSrG7ZFu0NQXhNhg8LJaBHtBA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=F13fjxPB; arc=none smtp.client-ip=217.70.183.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 6786240005;
+	Fri,  1 Mar 2024 15:52:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709308331;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qEc3vNB2eDPfKsZPhlZr12jl/0AGDXOfDLnzJ+F4vaY=;
+	b=F13fjxPBFlTyjhUBPwi3qtwojQ4GFhwzwLexIq5JI8MevLOu2PZxIQzse+zygsHRLEuTA5
+	RBV3Db+CFCyzIXWCB55Fzb/W0vFj1hhNSN7gC1VeeEgoLDObF+m3ptZ1u6Wu5DwX1t5sC3
+	e4aRBOJTmAeg7i0piHrTf8STU9z/DZpMikTTCr1y8QqQLwVeHXlcTlCZMJHfWJcAejc/gz
+	aY4uCCqcsa2Js+xVsf2NqgRnggFvRmMNQOCJ/LCCrwys1jx1t8k0A8OiKCTcNAA6ZDml70
+	6MulpikfN6JO30Ls5GLyNu2mYdkzbqnnH1m9tyNCi2gqQeoCvP7ZZAvEY22HWw==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240301143748.854090-3-yazen.ghannam@amd.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Fri, 01 Mar 2024 16:52:07 +0100
+Message-Id: <CZIJ8D23O5E1.79MDD3DCHPI8@bootlin.com>
+Subject: Re: [PATCH v2 02/11] dt-bindings: hwmon: lm75: use common hwmon
+ schema
+Cc: "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>, "Guenter Roeck"
+ <linux@roeck-us.net>, "Linus Walleij" <linus.walleij@linaro.org>, "Andi
+ Shyti" <andi.shyti@kernel.org>, "Krzysztof Kozlowski"
+ <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
+ "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-i2c@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <linux-mips@vger.kernel.org>, "Gregory Clement"
+ <gregory.clement@bootlin.com>, "Vladimir Kondratiev"
+ <vladimir.kondratiev@mobileye.com>, "Thomas Petazzoni"
+ <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
+ <tawfik.bayouk@mobileye.com>, "Jean Delvare" <jdelvare@suse.com>,
+ <linux-hwmon@vger.kernel.org>
+To: "Rob Herring" <robh@kernel.org>
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+X-Mailer: aerc 0.15.2
+References: <20240229-mbly-i2c-v2-0-b32ed18c098c@bootlin.com>
+ <20240229-mbly-i2c-v2-2-b32ed18c098c@bootlin.com>
+ <6749c8df-c545-4aca-bc18-4dfe9c9f15b0@linaro.org>
+ <d78fd3ca-ed0b-40e5-8f8f-21db152a7402@roeck-us.net>
+ <CZIBCBQ2IB0E.2N3HAVO0P2SHT@bootlin.com>
+ <f802a1e0-cedd-488a-a6fb-df793718d94b@linaro.org>
+ <CZICOX6DR0SA.O876YRG8P03C@bootlin.com>
+ <20240301153534.GA2144041-robh@kernel.org>
+In-Reply-To: <20240301153534.GA2144041-robh@kernel.org>
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-On Fri, Mar 01, 2024 at 08:37:47AM -0600, Yazen Ghannam wrote:
-> The system physical address (SPA) of an error is not a stable value. It
-> will change depending on the location of the memory: parts can be
-> swapped. And it will change depending on memory topology: NUMA nodes
-> and/or interleaving can be adjusted.
-> 
-> Therefore, the SPA value is not part of the "FRU Memory Poison" record
-> format. And it will not be saved to persistent storage.
-> 
-> However, the SPA values can be helpful during debug and for system
-> admins during run time.
-> 
-> Save the SPA values in a separate structure. This is updated when
-> records are restored and when new errors are saved.
-> 
-> Signed-off-by: Yazen Ghannam <yazen.ghannam@amd.com>
-> ---
-> Link:
-> https://lore.kernel.org/r/20240226152941.2615007-3-yazen.ghannam@amd.com
-> 
-> v1->v2:
-> * Changed variable names to remove "sys_" prefix. (Boris)
-> * Used "spa_" prefix to highlight that these are for SPA values. (Yazen)
-> * Added warning to "index out-of-bound" condition. (Boris)
-> * Reworked save_spa() flow to get a valid array position before saving
->   SPA value (Yazen).
-> 
->  drivers/ras/amd/fmpm.c | 68 ++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 68 insertions(+)
+Hello,
 
-Fixups ontop:
+On Fri Mar 1, 2024 at 4:35 PM CET, Rob Herring wrote:
+> On Fri, Mar 01, 2024 at 11:44:37AM +0100, Th=C3=A9o Lebrun wrote:
+> > Hello,
+> >=20
+> > On Fri Mar 1, 2024 at 11:13 AM CET, Krzysztof Kozlowski wrote:
+> > > On 01/03/2024 10:41, Th=C3=A9o Lebrun wrote:
+> > > > Hello,
+> > > >=20
+> > > > On Fri Mar 1, 2024 at 7:53 AM CET, Guenter Roeck wrote:
+> > > >> On 2/29/24 22:37, Krzysztof Kozlowski wrote:
+> > > >>> On 29/02/2024 19:10, Th=C3=A9o Lebrun wrote:
+> > > >>>> Reference common hwmon schema which has the generic "label" prop=
+erty,
+> > > >>>> parsed by Linux hwmon subsystem.
+> > > >>>>
+> > > >>>
+> > > >>> Please do not mix independent patchsets. You create unneeded
+> > > >>> dependencies blocking this patch. This patch depends on hwmon wor=
+k, so
+> > > >>> it cannot go through different tree.
+> > > >=20
+> > > > I had to pick between this or dtbs_check failing on my DTS that use=
+s a
+> > > > label on temperature-sensor@48.
+> > >
+> > > I don't see how is that relevant. You can organize your branches as y=
+ou
+> > > wish, e.g. base one b4 branch on another and you will not have any wa=
+rnings.
+> >=20
+> > That is what I do, I however do not want mips-next to have errors when
+> > running dtbs_check. Having dtbs_check return errors is not an issue?
+>
+> That's a good goal, but difficult to achieve as you can see. Given=20
+> dtbs_check in general has tons of warnings already, we currently don't=20
+> worry about more warnings in specific branches. We just look at mainline=
+=20
+> and linux-next. And for that it's still so many, I'm just looking at=20
+> general trends. It runs daily here[1].
 
----
+Here's my opportunity to ask a question I've had for a while: do you
+have a way to filter out dtbs that are known to be bad actors (ie have
+many many warnings)? Maybe a list of platforms you talk about below
+that aim at zero warnings?
 
-diff --git a/drivers/ras/amd/fmpm.c b/drivers/ras/amd/fmpm.c
-index a7bb36eb60cb..8c3188488673 100644
---- a/drivers/ras/amd/fmpm.c
-+++ b/drivers/ras/amd/fmpm.c
-@@ -125,7 +125,7 @@ static u64 *spa_entries;
- 		  0x12, 0x0a, 0x44, 0x58)
- 
- /**
-- * DOC: fru_poison_entries (byte)
-+ * DOC: max_nr_entries (byte)
-  * Maximum number of descriptor entries possible for each FRU.
-  *
-  * Values between '1' and '255' are valid.
-@@ -285,10 +285,12 @@ static void save_spa(struct fru_rec *rec, unsigned int entry,
- 	unsigned long spa;
- 
- 	if (entry >= max_nr_entries) {
--		pr_warn_once("entry out-of-bounds\n");
-+		pr_warn_once("FRU descriptor entry %d out-of-bounds (max: %d)\n",
-+			     entry, max_nr_entries);
- 		return;
- 	}
- 
-+	/* spa_nr_entries is always multiple of max_nr_entries */
- 	for (i = 0; i < spa_nr_entries; i += max_nr_entries) {
- 		fru_idx = i / max_nr_entries;
- 		if (fru_records[fru_idx] == rec)
-@@ -296,7 +298,7 @@ static void save_spa(struct fru_rec *rec, unsigned int entry,
- 	}
- 
- 	if (i >= spa_nr_entries) {
--		pr_warn_once("record not found");
-+		pr_warn_once("FRU record %d not found\n", i);
- 		return;
- 	}
- 
--- 
-Regards/Gruss,
-    Boris.
+Another way to ask this: what would be a good default DT_SCHEMA_FILES
+value? Not filtering leads to way too many errors.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Regards,
+
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
+
 
