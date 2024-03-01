@@ -1,94 +1,113 @@
-Return-Path: <linux-kernel+bounces-87924-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87925-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54BE786DB19
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 06:28:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FAB986DB1D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 06:28:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 77DFB1C2266C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 05:28:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C326E1C233A6
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 05:28:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44D5C50A65;
-	Fri,  1 Mar 2024 05:28:13 +0000 (UTC)
-Received: from CHN02-BJS-obe.outbound.protection.partner.outlook.cn (mail-bjschn02on2136.outbound.protection.partner.outlook.cn [139.219.17.136])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B41AE5102D;
+	Fri,  1 Mar 2024 05:28:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cLTtecpW"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D25B756B61;
-	Fri,  1 Mar 2024 05:28:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.17.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AB6F50271;
+	Fri,  1 Mar 2024 05:28:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.13
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709270892; cv=fail; b=S2RhLvqGd2ao3OMBgqXMdSa7tV/6YLQbKviKvtMmACqjm+AZB3+0aYG5PVuMADDlhdrB3apB8QX7g0fBVH0Ji8wmdYDcdzMXJ99Rt27uhUWB0BLjzKsFkXFpgUBHiWDg/3OOBCc+xKF6sijAuO3+1Fb0FWUwBUMZ32HS9miIsws=
+	t=1709270908; cv=fail; b=Anuedwz1I1Bt41C2kkYbla3quwIfQn0RU4R1JMJ7xP+9de5oKj01j+MfIvDDlnS1fOjS55TfjGhBpRbkX02GoD5sGeccimc1tw4QLwxyL0aHL/zEAHInApRw00hXGon/izpcBMqen5QBU8GtP3Frs3t++TY2eiLpbtFML3szFXo=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709270892; c=relaxed/simple;
-	bh=6xXOd7JxqbbmcViap3PwkLQa7aJuMSp/UwnZC3sH/1E=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=A9CzKUYT7p5t9XfMncZMYRjH4w+HMtCTyA7GsNJBy563vmLfCJSRMqmwzxuqBdw9lZ3ny/KzrRerRALUMBdgGAVva4HaCMeRFC/ki4rLT3WY15JaZO89NjUlMjoH/5kqVZI1hMM0NWcnqqpQGQ3yLlGiEbcVxFjttjCm/pgB03o=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.17.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+	s=arc-20240116; t=1709270908; c=relaxed/simple;
+	bh=fgp9EOmpia6wK/QOi8uq1VeEz8wsYiDxA8KZvb3BlxE=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=MHG9copL7PqXtKfTYRi1zV1M71ytj/DBnwUsiBwTNarKBAK/nMh9yTp7N5mCWbI2fmfwgWjIn+wOo3lYiJb1NBCdahQZTS2FK6xWVraM6+Txw+hmWjMVzffiaBdYNSRpDuovzxGe+EBCvVUDg9hOeGBbBuzcyRg+uRDceSW6VtQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cLTtecpW; arc=fail smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709270906; x=1740806906;
+  h=date:from:to:cc:subject:message-id:reply-to:references:
+   in-reply-to:mime-version;
+  bh=fgp9EOmpia6wK/QOi8uq1VeEz8wsYiDxA8KZvb3BlxE=;
+  b=cLTtecpWn4AzfvzTtfY2vjIvFCXiIysEkg+42Fg1KMuCMc3OKnj1KiGF
+   mjSNOp1dmmM9tXwJis6clHpO88fpH2Q+gQIs5z2+KsHIx8SudMT97NQ8V
+   N2DTPWrFjCMG5sgDzoiT84EfDd9PzAbIM40GtqJXQMXj9Sr6bmK0yX71/
+   wWhUB9gnZxflqbf4Tdfbl8WLtukHpm4Bq4AX3ONSjZWKCDzu7zj5goUzW
+   JR8rsnMimAjkna8oVopkmJaVZ53t/Yd9snxVwbz1LhqB9HCj5a4XZReNP
+   DS/Lxs7qLH4wZH2QI+VHYFBm8sB8g4v1IyWGBoZ1tfWU5/yPl9badxLp/
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="14937871"
+X-IronPort-AV: E=Sophos;i="6.06,195,1705392000"; 
+   d="scan'208";a="14937871"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 21:28:24 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,195,1705392000"; 
+   d="scan'208";a="12628460"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmviesa005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 29 Feb 2024 21:28:24 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 29 Feb 2024 21:28:23 -0800
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 29 Feb 2024 21:28:23 -0800
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 29 Feb 2024 21:28:23 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AmQjIBPeeCRmPqtD1rIG3i6pFMEo/3wpvt1O2kAf3upbNNHcJkwiAsDiwGxm8cd9nZp2eXFoW2jEClBxsALYQL1bAKbqWzuHf71RhNzkg9feTJh+q8NBIN9OK2XWBJlpOGqAx6+fX5isimz8sAiTsdqN2qgO2fDV5dib4KT/xCKN5vU8LbujX+BWtVDQsMJXJhABCdyIQ/AJlzx4AWL9uaa3ISvDx/MuoXLbfkSXm47ZgzXWPd3WOsqK9GRr3QX2WblH0/enmOCzICV3SGhSi6X66XPKYlvAysnsqT2r2p3rLpa//aHnZdocBenVoF+x58Nw9yJ3O18n/FX3csIbhQ==
+ b=gi3Ossoo+5fZuaBwMdmi71VObn/1hAfBrDjoetJ9bpE6BSDF2c2ZqSsmHTRySGB3jXseThrv3hmxE+zy8ORuDDCpAOYQty3VR6T2YzqjSDHjTKTQEVAtdcOP4J8hcHZ2t7Pgt8mBhtfBm5IK+e7mYPERWxrEgvAwsyoiyYJZndcPiYzjHnpufSZ3ANAISge5n7s78JhiAeMAwarCBdETmg8Zzk7R5SneQ8ppoqWzM2n/b0a9QxaJ37xkAoi+MbyMQ12phgHc/GALVX8tArmtDV9eo8qLEfxOw+EhclOLq/ZLSm/qzJr203cCNzkzQ+fiTMIPI/qQbbpcS+SF4tRyLg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9cAGB8pvQQOl8NNrP9rtkz4TmlTEoOoJ172+IVwC3LU=;
- b=VPtWX78ylUV26BLMxGmUfPVAlK/o49KDOT0rPECESpHtvwZX2Q6sjKnSX1a/YbXnTDYUEKhhja23XeSlUp68okEwFnxw0tYtV06f20fYN9t40/Yx3UjVf158hiSJIKD3FPn/XEXZFLQQWY2l6hPuziILyluLfe1qbPHjzvjKq3i3R6z8cKgmwDub0XmAGs6G9zTdt6Fssm2OVzPebcMnkdEawOQAbkoRL5HQZ5zHqMxQW+XpZ+9WdmiNZBuqGdwmneD+hdVBEU7IzkNl78UiKWwSEsEwuf8CY1Hjy7/nGbPWx21fdBzkxgsJs718B7NQCZwm25fRFRELymrF4Enrjg==
+ bh=+JC3ibAoXnLDTH/vFGz3T6ye07hoypMZ0o4TYpUDGMY=;
+ b=PuklYSsOQqpTy9QKLo823OUkJNWVpxuYBEgEffFAkE/2cqGLfOJYhY5XFeh+X8cDTKTlUW8atV4kv8KiLadDX4iwgpee/X234cyowCenKOUkeVxPj9+k9hdVV0MNhdaRH1sYNruoWwnXg2AviQiq8CEG4wulpCpFJWXL5QoECSXaSkcFOnmn3madwyrg8BUq/bMAvOWxhhvzo72V85ce4O+Q8qqzvenUneppj8FeF0IERLVVFQxDVE3kUMQvnCFkZEXppERSQP168YFHiJtORsiwN64xrOGXFL1i3Bj6cdhgvEq9ulctVXp5bPc7QerVI8eqIYgw+qvGSjdg64IC2A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=starfivetech.com; dmarc=pass action=none
- header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=starfivetech.com;
-Received: from NT0PR01MB1070.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c510:3::6) by NT0PR01MB1102.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c510:7::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.39; Fri, 1 Mar
- 2024 01:52:45 +0000
-Received: from NT0PR01MB1070.CHNPR01.prod.partner.outlook.cn
- ([fe80::db9a:cc7:56ae:de5a]) by NT0PR01MB1070.CHNPR01.prod.partner.outlook.cn
- ([fe80::db9a:cc7:56ae:de5a%3]) with mapi id 15.20.7316.037; Fri, 1 Mar 2024
- 01:52:45 +0000
-From: Shengyang Chen <shengyang.chen@starfivetech.com>
-To: devicetree@vger.kernel.org,
-	dri-devel@lists.freedesktop.org
-Cc: andrzej.hajda@intel.com,
-	neil.armstrong@linaro.org,
-	rfoss@kernel.org,
-	Laurent.pinchart@ideasonboard.com,
-	jonas@kwiboo.se,
-	jernej.skrabec@gmail.com,
-	maarten.lankhorst@linux.intel.com,
-	mripard@kernel.org,
-	tzimmermann@suse.de,
-	airlied@gmail.com,
-	daniel@ffwll.ch,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	p.zabel@pengutronix.de,
-	aford173@gmail.com,
-	agx@sigxcpu.org,
-	rdunlap@infradead.org,
-	u.kleine-koenig@pengutronix.de,
-	sam@ravnborg.org,
-	steven.price@arm.com,
-	bbrezillon@kernel.org,
-	changhuang.liang@starfivetech.com,
-	keith.zhao@starfivetech.com,
-	shengyang.chen@starfivetech.com,
-	jack.zhu@starfivetech.com,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v4 2/2] drm/bridge: cdns-dsi: Add support for StarFive JH7110 SoC
-Date: Fri,  1 Mar 2024 09:52:22 +0800
-Message-Id: <20240301015222.93114-3-shengyang.chen@starfivetech.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20240301015222.93114-1-shengyang.chen@starfivetech.com>
-References: <20240301015222.93114-1-shengyang.chen@starfivetech.com>
-Content-Type: text/plain
-X-ClientProxiedBy: ZQ0PR01CA0026.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c550:2::13) To NT0PR01MB1070.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c510:3::6)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DS7PR11MB5966.namprd11.prod.outlook.com (2603:10b6:8:71::6) by
+ PH8PR11MB6925.namprd11.prod.outlook.com (2603:10b6:510:227::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7339.25; Fri, 1 Mar 2024 05:28:20 +0000
+Received: from DS7PR11MB5966.namprd11.prod.outlook.com
+ ([fe80::55f1:8d0:2fa1:c7af]) by DS7PR11MB5966.namprd11.prod.outlook.com
+ ([fe80::55f1:8d0:2fa1:c7af%5]) with mapi id 15.20.7362.013; Fri, 1 Mar 2024
+ 05:28:19 +0000
+Date: Fri, 1 Mar 2024 12:58:29 +0800
+From: Yan Zhao <yan.y.zhao@intel.com>
+To: Sagi Shahar <sagis@google.com>
+CC: <linux-kselftest@vger.kernel.org>, Ackerley Tng <ackerleytng@google.com>,
+	Ryan Afranji <afranji@google.com>, Erdem Aktas <erdemaktas@google.com>,
+	"Isaku Yamahata" <isaku.yamahata@intel.com>, Sean Christopherson
+	<seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan
+	<shuah@kernel.org>, "Peter Gonda" <pgonda@google.com>, Haibo Xu
+	<haibo1.xu@intel.com>, Chao Peng <chao.p.peng@linux.intel.com>, Vishal
+ Annapurve <vannapurve@google.com>, Roger Wang <runanwang@google.com>, Vipin
+ Sharma <vipinsh@google.com>, <jmattson@google.com>, <dmatlack@google.com>,
+	<linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>, <linux-mm@kvack.org>
+Subject: Re: [RFC PATCH v5 08/29] KVM: selftests: TDX: Add TDX lifecycle test
+Message-ID: <ZeFgdUdV0fAK2Cq+@yzhao56-desk.sh.intel.com>
+Reply-To: Yan Zhao <yan.y.zhao@intel.com>
+References: <20231212204647.2170650-1-sagis@google.com>
+ <20231212204647.2170650-9-sagis@google.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231212204647.2170650-9-sagis@google.com>
+X-ClientProxiedBy: SI2PR06CA0002.apcprd06.prod.outlook.com
+ (2603:1096:4:186::10) To DS7PR11MB5966.namprd11.prod.outlook.com
+ (2603:10b6:8:71::6)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -96,399 +115,160 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: NT0PR01MB1070:EE_|NT0PR01MB1102:EE_
-X-MS-Office365-Filtering-Correlation-Id: d6dbf976-4d7f-4484-1216-08dc39924a64
+X-MS-TrafficTypeDiagnostic: DS7PR11MB5966:EE_|PH8PR11MB6925:EE_
+X-MS-Office365-Filtering-Correlation-Id: e4f0c6b9-8149-4bfd-da3d-08dc39b06736
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
 X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	wJLevHrIi/UHISWeviWpJIpHRGzSMEdRiXVDKwozLB/j8b/29moETzLtqUbKJYfGG9XsF25vFjlnQ6G98MiwLDUz0GYiBb+79Eb/MIpZzRdQD86MVIVY2Aj8/GD7hUtB5OFyszeJrSMpObPAS0WwQOlassJsSHSWosqEXFrMli07hCBDh5MI00KyAiBJODGvzWvskrVRgVv/VPGXoSU3EAIMX15IP6Asxv2srSWOmE+BvMIJTs8Q3/BbKdn97pfH2jU4NpUOy5/nZist9y+13Yp5qhIuxM4fh96dF+kRKJYuaSTNFn47GL/uVt9gvCU9jv0jtT5+YVZ+gt7wZCqpU8xyqpPoASyhObIOQf7EAdfExBa10DPjUx//HT6yE8INrn6J53Z4iezIu4aaCXdEqCvb/Bu8WkLAhR3rtdI4CmINtczji1UqZ/EtnCebj/7OXEvo5sK4QUT87CSKiIXw3b+Ttoz/58Wsmt/1TELZ1TAmjNKo4s5DVj2ZEVDfHZ18BjkewpyDMzEbHph8bGGmBsl/qITSKopgWBYVpUUpa+RI3AaIiLuSr4ntmyyveVdhS0VjG4+KeegNbFR2HlL5NJ0EGvWQ47syH9S1sg5zqQ2TzAjI0aKX/UdDgy+oZ7ep
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:NT0PR01MB1070.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(41320700004)(38350700005);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: 4oh4jLeg42WjBg+gKLK01ZDUaTI5TQ4xaKTsd8Q0JTZaebIaF6QS97KfxBjJCW623j+S3KpW7SYwNY3OAIOFbZC9TC5g36I5U+HUFYZNv2N5HOEocExp12u7p5jHLU+32V3qItKtTGOnxbVTxQLc7yk3fyHDZJ3WtiBa92S5S3flRbGb18H/VZCuNMFuFnzB5gGtAyH5Ixnz5kUGmj7K8xVqAlMqVP3vXkEjkwciza1BYmDy65+6ZVszuQppriA179ZnfVZGqQSRxAFTVfeyFgFfuLddkAxZ/tPkvJJVlnvshj7PZ9dnSoke3/iOhoweMKc86UjM2ZJzq8kFHMPCxoL6i4YxJDOjVuFcbOXEH9RtGQUFvuxzh3HcvZIpWBv1dcI0tqR0oZiO7TAnGoaDpYKRJEJtOVmc1Y+4/R+FIraB8ztgHbMVyPmJiu2xkn69JnHGmyIPHrnoVOqhYoYXg3KMBJE4rf5CZ7dlSfxIOVp77I9z9kT/CpzedyizOyxbhZ02cEqC1kO71dB8NENj1hsoF85mgQHVE/n4i0gNFO+HxBJOpq7ipIP/k56pX73dOwtxyp9na3Ixfiom9Ewx6w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR11MB5966.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?tSsTxDiRGON9nTe50nuDEGVnhIqDmECR4+cWiBI4nLUtcCDUX7gAoXGY/CKH?=
- =?us-ascii?Q?EfNiFE3eTSIbOgb9biD3kor8SSNKhENhg/HxglbBEz1HuDZLvRZNeN8vpB5R?=
- =?us-ascii?Q?GGNRbA1hTMlQSJ2Tezr5gWDD9hvUl2Fdh4mZ1g76tDDHy8Q7xJsSF5CaVURe?=
- =?us-ascii?Q?h7L9rK+uLW9yX9BLN+d5Sxp5CpQCWo9RsFLNmIlQWiKqcbEaDqEU6MywPcet?=
- =?us-ascii?Q?1g8tMToc2DxmYoLKTSSGO8dlbyhVWnl812cgRN3Shy24+mgNFsYNz7RYw23I?=
- =?us-ascii?Q?4PWCHTvbG6ymduqqYusWAEpepFmkbO9M1QBxXU75Bf73ZDVc5oKXCXLUZvjv?=
- =?us-ascii?Q?WgogNcojI27pHu4/cPZo48TWdTrPcXkQ4df/7MoQHdhcgyQBRBvhJqgNaYX3?=
- =?us-ascii?Q?w+XfbDx/ENAsS2zMpUa6VB5ARZ/QNiGyN6NtEaOsPkUSYNX/Z7nfPfQlN0Rr?=
- =?us-ascii?Q?zrJH+jg7EAsXbpmUQbSE3QQI3RCR3AooAiFP2IzTC8UYIOhzZ+5X33QYgvBm?=
- =?us-ascii?Q?9mxKsvETb4l5rGfTkrs+gn/vDSRqyLysjwgjzf6p0Ep1Z4OrN1g4IP0dVTzG?=
- =?us-ascii?Q?YRTF0Kl6+Nf/OdS4cs0LdmRZnwh/BgL5rjyDfHnR7gGIOQCZ9W3K0VddM48q?=
- =?us-ascii?Q?dmusesMfEhectZtVH1AbtwVJYTc0gqEBAMxtWVx0a+l0uLIlhuGO/tNoTJ2g?=
- =?us-ascii?Q?ln/Tf3TJgxQGef1dWjw91oOCGq/ZZmd3XR2IxGMSLJxQA2yDtgeXjTovGYhF?=
- =?us-ascii?Q?uGugM6qe6PVHQ9KEjzsqJt8Wvp40bBvL91f7R4go7OByoiQlSWKXuvzkLbxp?=
- =?us-ascii?Q?2+0KAQOuYrcG0XO5i2qML9ZSeYIHen++NtTf4r2ukTqWAEgi6n4jq/4/Gvfp?=
- =?us-ascii?Q?/XCPC9fLTL8ndG6C4zMOC5nEb14ObHIs3vtUqH9S+JoqpbKJdkuSO5ySbAYe?=
- =?us-ascii?Q?Ue3ITX48KBBA6qebZJenJT2K5IjJbRdPj/ulfYwztF2qd/LERsOdg7xPGk2c?=
- =?us-ascii?Q?RUp5iWjmLa7rmvQ+IoVDWHEmJHYPQN1LzMdrRRxMQfxO4myRY0B8oS+X94T+?=
- =?us-ascii?Q?6BE3LjEmlX2q6d8fBYmrWcG8nPrqfNXD2ttpUNEVx50oasIMBcHGKSBlFh+f?=
- =?us-ascii?Q?InsqwzRvenye6HzaIpogHCRu+txL+UZIvbgobNxDezLktIvuLnJx13fUSNIc?=
- =?us-ascii?Q?GvberLr+oqs2rNZBlLt5rCWHnkhjYNRc6fkiB+IcQjvfaiH6VpBWYoaN1YU7?=
- =?us-ascii?Q?cjBjTKkxZBF9SJJr4MKUgsI+i/DwdbWF5mrJQHsb/V3UVeVcvkUQxmQhP4Tj?=
- =?us-ascii?Q?4IqGd418xXV6m3JqjkuQEf/lJ0M7BfKy+aBzy8DwJEW2Kd/Sb+7CrAGEwIVn?=
- =?us-ascii?Q?8JEI6bIiMeCsJEeXHhrTPq9RCGEWJXSxAkGJA/a8AE0JQyUUw7/ZmdPg2njs?=
- =?us-ascii?Q?ZeOVkx6NS1oQ4jptDGTB7PtntDLWCdcatEkH6/VA4rLWBHjIhwjCqOPru3nF?=
- =?us-ascii?Q?Uf27BjysaNeya7zImYtV1ErB/PIIYKSSj6UenPP04zXVHwx032bv3NqPEAJv?=
- =?us-ascii?Q?Yu0CHzvp10MtX86wCufTWDoV0Tt1xzRf51cTRRFESY2JEYRX9/eWINTCazOE?=
- =?us-ascii?Q?2HbnlrtyaasBp63pFvnksA4=3D?=
-X-OriginatorOrg: starfivetech.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d6dbf976-4d7f-4484-1216-08dc39924a64
-X-MS-Exchange-CrossTenant-AuthSource: NT0PR01MB1070.CHNPR01.prod.partner.outlook.cn
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?PGVJwyjN77NjhWJbSlWsWYKpdhml03xzBE5PuMhN7ViaKmm5GXzE59EbXKBT?=
+ =?us-ascii?Q?dN/kp7CTXeXIh1nOSAUzYkdjhzgmTaLxDWm/Ao+ma9bHY/pyT/zFN0NFSHV/?=
+ =?us-ascii?Q?Qi5Wu4IKTsBmTJ5w0AzIJqQldwyxobubayYlBA9wK/vn77aCnkvYniIBSL5e?=
+ =?us-ascii?Q?z4bp/gD+YijW7fZ2KnGxujyukS2PQRmKZZtcWEfvK9ZkzKt0IcBQhyv7jRwQ?=
+ =?us-ascii?Q?oFqKcKZ0Bq27bDBwe/MYgnaTGldOjzHJOR/zNV+0o8WFnbqCND2dTG1DaMDz?=
+ =?us-ascii?Q?BGevYVWepov8A2hvEGjchFGV21g87amlYhl0fHKAIX9KNbnRXkhnbtiHs4iI?=
+ =?us-ascii?Q?BDZ8SDGktnEAXd6Hg9hLDFgscaYCXvy2umb5e03rOePSkx+1cn9YZu53dn6d?=
+ =?us-ascii?Q?4GvPGjlJWuUMv8TyDPCCaW1tjkIe+PfEeVr8adf2kzVreoXr2ojTQXXKoRWG?=
+ =?us-ascii?Q?tshsut1ejDV0JtzxaDe6KI7lspWyJSri7Gj1adNh6tDB65cyGErP+DWqp5uy?=
+ =?us-ascii?Q?qvCgu1iWPLYEKjt+AMzaX1tjZ3deeWk8VbszvZBBIJtrbhOd1F5AimbrC3CZ?=
+ =?us-ascii?Q?YU+HTNNVDIgWpg7v8w5NkpyOYH0q4X2jw39UnOWdK6jlGZ2ZHSxNK8gAluMU?=
+ =?us-ascii?Q?Zl36g01QepM3G4hbVy3UnkhKvbRAgx+XkNNuRRNby/r5kWEJO1fFdikS6Niz?=
+ =?us-ascii?Q?gi7GA0666G1xuheGSkFyiiiCJLIogikbnJODT9rT1+vz+8FsB02SJwRuPwAt?=
+ =?us-ascii?Q?amPm0hYK0lNjy47JRbA0QQSOeJidNXoQ4Z/w5xctmoOP4PCRkH68KdZb3GKE?=
+ =?us-ascii?Q?8Cavrt98TEdxZRiQFbVySTFqmWxqLEeZ0WCige0dhPV97bm4zXrr8LVnoiYj?=
+ =?us-ascii?Q?BUyjmqr+XwKKnC1OSNdGF4Wje1Mx2EM7OwB0vZsXUddXLXm939d2pori+PAM?=
+ =?us-ascii?Q?rIMfbK1G+D9dNxv5JVX3UJXaLva7XM8UWF3U8QrNa6XGS2RFbJBbkVFx5gzJ?=
+ =?us-ascii?Q?tx/oWnun3d4LHb0p0d+ffLTxkqPIM9oYknwoqEzVPpnyxnsWgQwrVra2b3vD?=
+ =?us-ascii?Q?UJW0LmgiWlZB5TFJe24L7URTtF6u4iyK072phGqXO2+FvKu8Fz06tgWEQmNb?=
+ =?us-ascii?Q?gEF0+vn2c6wYLRTw6Jp4rwqmVOI3RRGVq+zu7BhvK+YK7OfUTNTAnVhlzf7T?=
+ =?us-ascii?Q?PSFfD/odcZIMQKk9svoQ+MFDTYXattgDA+gMh+tj9Up+aFlHHPvZRBDb3Am4?=
+ =?us-ascii?Q?9/U6tqvPMHGS4uHL1eAyEazq9dMywxaVsYgIhudoNuykuEnkA2rT0qaJyof+?=
+ =?us-ascii?Q?39BLM3SicAlcOrk3cI+T7YnQzT4FlwMB7Z+uSGEJ6TGxuBMnxkK4PnzCj8dW?=
+ =?us-ascii?Q?beDtziv1dXrZl04fzJNUz4wVwhCvIwORmTx6HfbOLlo1JV+mf/obBU8LfEjH?=
+ =?us-ascii?Q?bfTSDc5CbGhJKQbTRz1oM4MBV3knq8V8nSksDvxoOiIC+D0CxX2bt2XG3iW6?=
+ =?us-ascii?Q?YrVwFL5/Wsj4TojEd6rjJ2N4yTaR6arUNICd4g8qlq6EZF4W5TcehjjelhKz?=
+ =?us-ascii?Q?Vu7k3XdVwxyAVIu7GhLE5OWqAAZ4v9kgRSNGxdgJ?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: e4f0c6b9-8149-4bfd-da3d-08dc39b06736
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR11MB5966.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Mar 2024 01:52:45.7645
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Mar 2024 05:28:19.2524
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: s+wu9hQ0SIVd+BqrueLAYizbbqGRhIjWACmzs6OSgN7yTxJ9w8YnZUOlncNt59fIvCrdDjW+jKa1rf3B3hURe+PhgnwcmErlGgPRmudrdd8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: NT0PR01MB1102
+X-MS-Exchange-CrossTenant-UserPrincipalName: qLRNc9s8yk1IUD7qGbisK1TN0I4D4LR54cz9C503dd+I8WCOFTx7qck0HZOqyEadP8ax0Fbha8lVkxlT2Knydw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB6925
+X-OriginatorOrg: intel.com
 
-From: Keith Zhao <keith.zhao@starfivetech.com>
+> diff --git a/tools/testing/selftests/kvm/lib/x86_64/tdx/tdcall.S b/tools/testing/selftests/kvm/lib/x86_64/tdx/tdcall.S
+> new file mode 100644
+> index 000000000000..df9c1ed4bb2d
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/lib/x86_64/tdx/tdcall.S
+> @@ -0,0 +1,90 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/* Adapted from arch/x86/coco/tdx/tdcall.S */
+> +
+> +#define TDX_HYPERCALL_r10 0 /* offsetof(struct tdx_hypercall_args, r10) */
+> +#define TDX_HYPERCALL_r11 8 /* offsetof(struct tdx_hypercall_args, r11) */
+> +#define TDX_HYPERCALL_r12 16 /* offsetof(struct tdx_hypercall_args, r12) */
+> +#define TDX_HYPERCALL_r13 24 /* offsetof(struct tdx_hypercall_args, r13) */
+> +#define TDX_HYPERCALL_r14 32 /* offsetof(struct tdx_hypercall_args, r14) */
+> +#define TDX_HYPERCALL_r15 40 /* offsetof(struct tdx_hypercall_args, r15) */
+> +
+> +/*
+> + * Bitmasks of exposed registers (with VMM).
+> + */
+> +#define TDX_R10 0x400
+> +#define TDX_R11 0x800
+> +#define TDX_R12 0x1000
+> +#define TDX_R13 0x2000
+> +#define TDX_R14 0x4000
+> +#define TDX_R15 0x8000
+> +
+> +#define TDX_HCALL_HAS_OUTPUT 0x1
+> +
+> +/*
+> + * These registers are clobbered to hold arguments for each
+> + * TDVMCALL. They are safe to expose to the VMM.
+> + * Each bit in this mask represents a register ID. Bit field
+> + * details can be found in TDX GHCI specification, section
+> + * titled "TDCALL [TDG.VP.VMCALL] leaf".
+> + */
+> +#define TDVMCALL_EXPOSE_REGS_MASK	( TDX_R10 | TDX_R11 | \
+> +					  TDX_R12 | TDX_R13 | \
+> +					  TDX_R14 | TDX_R15 )
+> +
+> +.code64
+> +.section .text
+> +
+> +.globl __tdx_hypercall
+> +.type __tdx_hypercall, @function
+> +__tdx_hypercall:
+> +	/* Set up stack frame */
+> +	push %rbp
+> +	movq %rsp, %rbp
+> +
+> +	/* Save callee-saved GPRs as mandated by the x86_64 ABI */
+> +	push %r15
+> +	push %r14
+> +	push %r13
+> +	push %r12
+> +
+> +	/* Mangle function call ABI into TDCALL ABI: */
+> +	/* Set TDCALL leaf ID (TDVMCALL (0)) in RAX */
+> +	xor %eax, %eax
+> +
+> +	/* Copy hypercall registers from arg struct: */
+> +	movq TDX_HYPERCALL_r10(%rdi), %r10
+> +	movq TDX_HYPERCALL_r11(%rdi), %r11
+> +	movq TDX_HYPERCALL_r12(%rdi), %r12
+> +	movq TDX_HYPERCALL_r13(%rdi), %r13
+> +	movq TDX_HYPERCALL_r14(%rdi), %r14
+> +	movq TDX_HYPERCALL_r15(%rdi), %r15
+> +
+> +	movl $TDVMCALL_EXPOSE_REGS_MASK, %ecx
+> +
+> +	tdcall
+Looks there's a missing of definition for tdcall, and will produce below
+error:
+lib/x86_64/tdx/tdcall.S:65: Error: no such instruction: `tdcall'
 
-Add display bridge support for dsi on StarFive JH7110 SoC.
+I pulled the code https://github.com/googleprodkernel/linux-cc.git with
+branch tdx-selftests-rfc-v5.
 
-The mainly modification is followed:
-    1.Add extra clock and reset operation for JH7110.
-    2.Add callback for JH7110.
+Fixed by adding a line in tdcall.S in my side.
+#define tdcall          .byte 0x66,0x0f,0x01,0xcc
 
-Signed-off-by: Keith Zhao <keith.zhao@starfivetech.com>
-Signed-off-by: Shengyang Chen <shengyang.chen@starfivetech.com>
----
- drivers/gpu/drm/bridge/cadence/Kconfig        |   7 +
- drivers/gpu/drm/bridge/cadence/Makefile       |   1 +
- .../gpu/drm/bridge/cadence/cdns-dsi-core.c    |  29 +++-
- .../gpu/drm/bridge/cadence/cdns-dsi-core.h    |  19 +++
- .../gpu/drm/bridge/cadence/cdns-dsi-jh7110.c  | 138 ++++++++++++++++++
- .../gpu/drm/bridge/cadence/cdns-dsi-jh7110.h  |  16 ++
- 6 files changed, 209 insertions(+), 1 deletion(-)
- create mode 100644 drivers/gpu/drm/bridge/cadence/cdns-dsi-jh7110.c
- create mode 100644 drivers/gpu/drm/bridge/cadence/cdns-dsi-jh7110.h
+> +
+> +	/* TDVMCALL leaf return code is in R10 */
+> +	movq %r10, %rax
+> +
+> +	/* Copy hypercall result registers to arg struct if needed */
+> +	testq $TDX_HCALL_HAS_OUTPUT, %rsi
+> +	jz .Lout
+> +
+> +	movq %r10, TDX_HYPERCALL_r10(%rdi)
+> +	movq %r11, TDX_HYPERCALL_r11(%rdi)
+> +	movq %r12, TDX_HYPERCALL_r12(%rdi)
+> +	movq %r13, TDX_HYPERCALL_r13(%rdi)
+> +	movq %r14, TDX_HYPERCALL_r14(%rdi)
+> +	movq %r15, TDX_HYPERCALL_r15(%rdi)
+> +.Lout:
+> +	/* Restore callee-saved GPRs as mandated by the x86_64 ABI */
+> +	pop %r12
+> +	pop %r13
+> +	pop %r14
+> +	pop %r15
+> +
+> +	pop %rbp
+> +	ret
+> +
+> +/* Disable executable stack */
 
-diff --git a/drivers/gpu/drm/bridge/cadence/Kconfig b/drivers/gpu/drm/bridge/cadence/Kconfig
-index cced81633ddc..ad9f572f4720 100644
---- a/drivers/gpu/drm/bridge/cadence/Kconfig
-+++ b/drivers/gpu/drm/bridge/cadence/Kconfig
-@@ -19,6 +19,13 @@ config DRM_CDNS_DSI_J721E
- 	help
- 	  Support J721E Cadence DSI wrapper. The wrapper manages
- 	  the routing of the DSS DPI signal to the Cadence DSI.
-+
-+config DRM_CDNS_DSI_JH7110
-+	bool "JH7110 SOC Cadence DSI support"
-+	default n
-+	help
-+	  Cadence DPI to DSI bridge which is embedded in the
-+	  StarFive JH7110 SoC.
- endif
- 
- config DRM_CDNS_MHDP8546
-diff --git a/drivers/gpu/drm/bridge/cadence/Makefile b/drivers/gpu/drm/bridge/cadence/Makefile
-index c95fd5b81d13..87f603a9f4ad 100644
---- a/drivers/gpu/drm/bridge/cadence/Makefile
-+++ b/drivers/gpu/drm/bridge/cadence/Makefile
-@@ -2,6 +2,7 @@
- obj-$(CONFIG_DRM_CDNS_DSI) += cdns-dsi.o
- cdns-dsi-y := cdns-dsi-core.o
- cdns-dsi-$(CONFIG_DRM_CDNS_DSI_J721E) += cdns-dsi-j721e.o
-+cdns-dsi-$(CONFIG_DRM_CDNS_DSI_JH7110) += cdns-dsi-jh7110.o
- obj-$(CONFIG_DRM_CDNS_MHDP8546) += cdns-mhdp8546.o
- cdns-mhdp8546-y := cdns-mhdp8546-core.o cdns-mhdp8546-hdcp.o
- cdns-mhdp8546-$(CONFIG_DRM_CDNS_MHDP8546_J721E) += cdns-mhdp8546-j721e.o
-diff --git a/drivers/gpu/drm/bridge/cadence/cdns-dsi-core.c b/drivers/gpu/drm/bridge/cadence/cdns-dsi-core.c
-index 7457d38622b0..c0c81745e765 100644
---- a/drivers/gpu/drm/bridge/cadence/cdns-dsi-core.c
-+++ b/drivers/gpu/drm/bridge/cadence/cdns-dsi-core.c
-@@ -27,6 +27,10 @@
- #include "cdns-dsi-j721e.h"
- #endif
- 
-+#ifdef CONFIG_DRM_CDNS_DSI_JH7110
-+#include "cdns-dsi-jh7110.h"
-+#endif
-+
- #define IP_CONF				0x0
- #define SP_HS_FIFO_DEPTH(x)		(((x) & GENMASK(30, 26)) >> 26)
- #define SP_LP_FIFO_DEPTH(x)		(((x) & GENMASK(25, 21)) >> 21)
-@@ -552,6 +556,10 @@ static int cdns_dsi_adjust_phy_config(struct cdns_dsi *dsi,
- 	/* data rate was in bytes/sec, convert to bits/sec. */
- 	phy_cfg->hs_clk_rate = dlane_bps * 8;
- 
-+	if (dsi->platform_ops && dsi->platform_ops->mode_fixup)
-+		adj_dsi_htotal = dsi->platform_ops->mode_fixup(dsi, dsi_cfg, phy_cfg,
-+							   dpi_hz, dpi_htotal, dsi_htotal);
-+
- 	dsi_hfp_ext = adj_dsi_htotal - dsi_htotal;
- 	dsi_cfg->hfp += dsi_hfp_ext;
- 	dsi_cfg->htotal = dsi_htotal + dsi_hfp_ext;
-@@ -683,7 +691,7 @@ static void cdns_dsi_bridge_post_disable(struct drm_bridge *bridge)
- 	pm_runtime_put(dsi->base.dev);
- }
- 
--static void cdns_dsi_hs_init(struct cdns_dsi *dsi)
-+void cdns_dsi_hs_init(struct cdns_dsi *dsi)
- {
- 	struct cdns_dsi_output *output = &dsi->output;
- 	u32 status;
-@@ -1026,6 +1034,14 @@ static ssize_t cdns_dsi_transfer(struct mipi_dsi_host *host,
- 
- 	cdns_dsi_init_link(dsi);
- 
-+	/*
-+	 * on JH7110 SoC , when transfer dsi command ,
-+	 * cdns_dsi_hs_init is needed.
-+	 * or the final ret will be error value.
-+	 */
-+	if (dsi->platform_ops && dsi->platform_ops->transfer)
-+		dsi->platform_ops->transfer(dsi);
-+
- 	ret = mipi_dsi_create_packet(&packet, msg);
- 	if (ret)
- 		goto out;
-@@ -1142,6 +1158,9 @@ static int __maybe_unused cdns_dsi_resume(struct device *dev)
- 	clk_prepare_enable(dsi->dsi_p_clk);
- 	clk_prepare_enable(dsi->dsi_sys_clk);
- 
-+	if (dsi->platform_ops && dsi->platform_ops->resume)
-+		dsi->platform_ops->resume(dsi);
-+
- 	return 0;
- }
- 
-@@ -1152,6 +1171,10 @@ static int __maybe_unused cdns_dsi_suspend(struct device *dev)
- 	clk_disable_unprepare(dsi->dsi_sys_clk);
- 	clk_disable_unprepare(dsi->dsi_p_clk);
- 	reset_control_assert(dsi->dsi_p_rst);
-+
-+	if (dsi->platform_ops && dsi->platform_ops->suspend)
-+		dsi->platform_ops->suspend(dsi);
-+
- 	dsi->link_initialized = false;
- 	return 0;
- }
-@@ -1294,6 +1317,10 @@ static const struct of_device_id cdns_dsi_of_match[] = {
- #ifdef CONFIG_DRM_CDNS_DSI_J721E
- 	{ .compatible = "ti,j721e-dsi", .data = &dsi_ti_j721e_ops, },
- #endif
-+#ifdef CONFIG_DRM_CDNS_DSI_JH7110
-+	{ .compatible = "starfive,jh7110-dsi", .data = &dsi_ti_jh7110_ops, },
-+#endif
-+
- 	{ },
- };
- MODULE_DEVICE_TABLE(of, cdns_dsi_of_match);
-diff --git a/drivers/gpu/drm/bridge/cadence/cdns-dsi-core.h b/drivers/gpu/drm/bridge/cadence/cdns-dsi-core.h
-index ca7ea2da635c..fec2d5a9c778 100644
---- a/drivers/gpu/drm/bridge/cadence/cdns-dsi-core.h
-+++ b/drivers/gpu/drm/bridge/cadence/cdns-dsi-core.h
-@@ -53,12 +53,22 @@ struct cdns_dsi;
-  * @deinit: Called in the CDNS DSI remove
-  * @enable: Called at the beginning of CDNS DSI bridge enable
-  * @disable: Called at the end of CDNS DSI bridge disable
-+ * @resume: Called at the resume of CDNS DSI
-+ * @suspend: Called at the suspend of CDNS DSI
-+ * @update: Called at the middle of CDNS DSI bridge enable
-  */
- struct cdns_dsi_platform_ops {
- 	int (*init)(struct cdns_dsi *dsi);
- 	void (*deinit)(struct cdns_dsi *dsi);
- 	void (*enable)(struct cdns_dsi *dsi);
- 	void (*disable)(struct cdns_dsi *dsi);
-+	void (*resume)(struct cdns_dsi *dsi);
-+	void (*suspend)(struct cdns_dsi *dsi);
-+	int (*mode_fixup)(struct cdns_dsi *dsi, struct cdns_dsi_cfg *dsi_cfg,
-+			  struct phy_configure_opts_mipi_dphy *phy_cfg,
-+			  unsigned long dpi_hz, unsigned long dpi_htotal,
-+			  unsigned long dsi_htotal);
-+	void (*transfer)(struct cdns_dsi *dsi);
- };
- 
- struct cdns_dsi {
-@@ -79,6 +89,15 @@ struct cdns_dsi {
- 	bool link_initialized;
- 	bool phy_initialized;
- 	struct phy *dphy;
-+
-+#ifdef CONFIG_DRM_CDNS_DSI_JH7110
-+	int num_rsts;
-+	int num_clks;
-+	struct reset_control_bulk_data *resets;
-+	struct clk_bulk_data *clocks;
-+#endif
- };
- 
-+void cdns_dsi_hs_init(struct cdns_dsi *dsi);
-+
- #endif /* !__CDNS_DSI_H__ */
-diff --git a/drivers/gpu/drm/bridge/cadence/cdns-dsi-jh7110.c b/drivers/gpu/drm/bridge/cadence/cdns-dsi-jh7110.c
-new file mode 100644
-index 000000000000..0bee5a622508
---- /dev/null
-+++ b/drivers/gpu/drm/bridge/cadence/cdns-dsi-jh7110.c
-@@ -0,0 +1,138 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * JH7110 SoC Cadence DSI wrapper
-+ *
-+ * Copyright (C) 2023 StarFive Technology Co., Ltd.
-+ */
-+
-+#include <linux/clk.h>
-+#include <linux/io.h>
-+#include <linux/iopoll.h>
-+#include <linux/reset.h>
-+
-+#include "cdns-dsi-jh7110.h"
-+
-+static const char * const dsi_resets[] = {
-+	"sys",
-+	"dpi",
-+	"txesc",
-+	"txbytehs",
-+};
-+
-+static const char * const dsi_clocks[] = {
-+	"dpi",
-+	"txesc",
-+};
-+
-+static int cdns_dsi_get_clock(struct device *dev, struct cdns_dsi *dsi)
-+{
-+	int i;
-+	int ret;
-+
-+	dsi->num_clks = ARRAY_SIZE(dsi_clocks);
-+
-+	dsi->clocks = devm_kcalloc(dev, dsi->num_clks,
-+				   sizeof(*dsi->clocks), GFP_KERNEL);
-+	if (!dsi->clocks)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < dsi->num_clks; i++)
-+		dsi->clocks[i].id = dsi_clocks[i];
-+
-+	ret = devm_clk_bulk_get_optional(dev, dsi->num_clks,
-+					 dsi->clocks);
-+	if (ret)
-+		return dev_err_probe(dev, ret, "Failed to get clocks\n");
-+
-+	return 0;
-+}
-+
-+static int cdns_dsi_get_reset(struct device *dev, struct cdns_dsi *dsi)
-+{
-+	int i;
-+	int ret;
-+
-+	dsi->num_rsts = ARRAY_SIZE(dsi_resets);
-+
-+	dsi->resets = devm_kcalloc(dev, dsi->num_rsts,
-+				   sizeof(*dsi->resets), GFP_KERNEL);
-+	if (!dsi->resets)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < dsi->num_rsts; i++)
-+		dsi->resets[i].id = dsi_resets[i];
-+
-+	ret = devm_reset_control_bulk_get_exclusive(dev, dsi->num_rsts,
-+						    dsi->resets);
-+	if (ret)
-+		return dev_err_probe(dev, ret, "Failed to get resets\n");
-+
-+	return 0;
-+}
-+
-+static int cdns_dsi_jh7110_init(struct cdns_dsi *dsi)
-+{
-+	int ret;
-+
-+	ret = cdns_dsi_get_clock(dsi->base.dev, dsi);
-+	if (ret)
-+		return ret;
-+
-+	return cdns_dsi_get_reset(dsi->base.dev, dsi);
-+}
-+
-+static void cdns_dsi_jh7110_resume(struct cdns_dsi *dsi)
-+{
-+	int ret;
-+
-+	ret = clk_bulk_prepare_enable(dsi->num_clks, dsi->clocks);
-+	if (ret) {
-+		dev_err(dsi->base.dev, "Failed to enable clocks\n");
-+		return;
-+	}
-+
-+	ret = reset_control_bulk_deassert(dsi->num_rsts - 1, dsi->resets);
-+	if (ret) {
-+		dev_err(dsi->base.dev, "Failed to deassert resets\n");
-+		clk_bulk_disable_unprepare(dsi->num_clks, dsi->clocks);
-+		return;
-+	}
-+}
-+
-+static void cdns_dsi_jh7110_suspend(struct cdns_dsi *dsi)
-+{
-+	reset_control_bulk_assert(dsi->num_rsts, dsi->resets);
-+
-+	clk_bulk_disable_unprepare(dsi->num_clks, dsi->clocks);
-+}
-+
-+static int cdns_dsi_jh7110_mode_fixup(struct cdns_dsi *dsi, struct cdns_dsi_cfg *dsi_cfg,
-+				      struct phy_configure_opts_mipi_dphy *phy_cfg,
-+				      unsigned long dpi_hz, unsigned long dpi_htotal,
-+				      unsigned long dsi_htotal)
-+{
-+	unsigned long long dlane_bps;
-+	unsigned long adj_dsi_htotal;
-+	unsigned int lanes = dsi->output.dev->lanes;
-+
-+	phy_cfg->hs_clk_rate = phy_cfg->hs_clk_rate - (phy_cfg->hs_clk_rate % 10000000);
-+	phy_cfg->hs_clk_rate = roundup(phy_cfg->hs_clk_rate, 100000000);
-+	dlane_bps = phy_cfg->hs_clk_rate * lanes * dpi_htotal / 8;
-+	adj_dsi_htotal = dlane_bps / dpi_hz;
-+
-+	return adj_dsi_htotal;
-+}
-+
-+static void jh7110_cdns_dsi_hs_init(struct cdns_dsi *dsi)
-+{
-+	cdns_dsi_hs_init(dsi);
-+	reset_control_deassert(dsi->resets[3].rstc);
-+}
-+
-+const struct cdns_dsi_platform_ops dsi_ti_jh7110_ops = {
-+	.init = cdns_dsi_jh7110_init,
-+	.resume = cdns_dsi_jh7110_resume,
-+	.suspend = cdns_dsi_jh7110_suspend,
-+	.mode_fixup = cdns_dsi_jh7110_mode_fixup,
-+	.transfer = jh7110_cdns_dsi_hs_init,
-+};
-diff --git a/drivers/gpu/drm/bridge/cadence/cdns-dsi-jh7110.h b/drivers/gpu/drm/bridge/cadence/cdns-dsi-jh7110.h
-new file mode 100644
-index 000000000000..15d6a766b502
---- /dev/null
-+++ b/drivers/gpu/drm/bridge/cadence/cdns-dsi-jh7110.h
-@@ -0,0 +1,16 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * JH7110 Cadence DSI
-+ *
-+ * Copyright (C) 2022-2023 StarFive Technology Co., Ltd.
-+ * Author: keith.zhao <keith.zhao@starfivetech.com>
-+ */
-+
-+#ifndef __CDNS_DSI_JH7110_H__
-+#define __CDNS_DSI_JH7110_H__
-+
-+#include "cdns-dsi-core.h"
-+
-+extern const struct cdns_dsi_platform_ops dsi_ti_jh7110_ops;
-+
-+#endif /* !__CDNS_DSI_JH7110_H__ */
--- 
-2.17.1
 
+ 
 
