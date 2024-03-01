@@ -1,60 +1,75 @@
-Return-Path: <linux-kernel+bounces-87976-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87978-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B3C786DBAF
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 07:52:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A263A86DBB6
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 07:53:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B2FC2853F6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 06:52:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53997288793
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 06:53:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EAF46930E;
-	Fri,  1 Mar 2024 06:52:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C46B36930E;
+	Fri,  1 Mar 2024 06:53:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="n7IoLJHO"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J9S+uVoJ"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56FE167C6B;
-	Fri,  1 Mar 2024 06:52:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2141969940;
+	Fri,  1 Mar 2024 06:53:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709275967; cv=none; b=acBExd7gEsQxkACcal0MrtWyL6LC4mrvf9dsLUtu8ieNHCnM216GqjJZLVkJ9EGZLQEQfQm6Wmz0V03kpG91OSiV/Yh6/mo+tEgPYVkO+Q8nzuRFhI2Tru5vHZLLwpcul7nQ2O6OCwxSWByumkoNgjS42HJP5zfZpU2siT9vZiE=
+	t=1709275994; cv=none; b=b07vbfX1y+BTYRhL/BKH7Ttz9ZF+sFua1ulwxxSzlImBnF/Ix/4IWp/IH2zCCUKeXquwqpKtN2oiMyrMfboUx7brimEE8Ho+KsMvwpOq8Zr1tvcO34jnoFVqBPyR08FpHh54y1O6LN0vc2IbjgdexDghAeFXxKnlPJ43Pgw31yw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709275967; c=relaxed/simple;
-	bh=PZcAanboKcUp2tLccdXfkXE1+xs/N+nzxRhzAH5IS9w=;
+	s=arc-20240116; t=1709275994; c=relaxed/simple;
+	bh=yJ3qnuzsiD+vY7/3h2hLhh57k/nxh0MKDiLyXnJblD4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ULPCcn5oTcl/Soy0anoDQYPrCz1eciRWF1DJ/wzutz3zrzWDYjTjNzXN7dy//ka3aQAGCcZhUp4LSj4HuTTeMnqbbzY/xwVR4LqZgCL+xVlByJm2erYP3eZPy3o+7bvIfdOfR4sWrD9W1QkV2Hp/qa3BcC8azFFPzIqWzsQq5ck=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=n7IoLJHO; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709275965; x=1740811965;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=PZcAanboKcUp2tLccdXfkXE1+xs/N+nzxRhzAH5IS9w=;
-  b=n7IoLJHOmuYkbcUqOPJv1/IeV+2FWXoWGgspUWPgIc/BcmIs7LQWj0G0
-   AQc5EoLx+6YDAK+AF1eVPS1It0tdt/X+SImWi1nDUWYmhYpvOuGadMAEt
-   q61tVdbAkC0OlXX3oqB9NV01J7tIw7bgrEt1u9Fhp9kimM4bL+E2aNyWX
-   j1o5qPzvZNSzE1624r1cRxOTreEsM1CKjEuWjwi/KPgI9DkWh2u8jSh6H
-   9rmPxD3ZEkn7P5C9MT3QvxIhBnnnv+0IK5lJ6XOrK1yS404CE4f4wK+1V
-   7TzjsOR0rX/3UPRF9GJejH4q6EVSi+ewgv8HFJfyOG8kPoUisitTKx3il
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="3957530"
-X-IronPort-AV: E=Sophos;i="6.06,195,1705392000"; 
-   d="scan'208";a="3957530"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 22:52:45 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,195,1705392000"; 
-   d="scan'208";a="8035272"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.125.242.247]) ([10.125.242.247])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 22:52:40 -0800
-Message-ID: <704b58a8-2893-4fdb-8171-395bcd7166a7@linux.intel.com>
-Date: Fri, 1 Mar 2024 14:52:36 +0800
+	 In-Reply-To:Content-Type; b=TtN9AaJgdiD7doexNEm7UahIIxOfm+p/CoFoVfOSsiQFVl8PRcn8SA7t3CVAgCupgJbRkEqxOpkCkwVDZJ2cuXZTeD6ziKdUTBbwzoiVS3bx42AV6M9Fj3+JKPd3LHdAWXGyVZecJf6l6t8kWgC2172AwlV+DDlQhRC3Zh7odu8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J9S+uVoJ; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1dca3951ad9so16464195ad.3;
+        Thu, 29 Feb 2024 22:53:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709275991; x=1709880791; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=wXiG6D5m4V4RhFeANN6ytUCYOxlqAHIxI03T8MEdzXo=;
+        b=J9S+uVoJsX8hXydEC/sV3k2A4dJUhhcbBvaivT+khvwY8sJs5/8uyMrT8lcpQ3pNnD
+         r0f/0aGuh1c76sPIBm5oNw+ooFaSso1z+TyH1oIwfXQ3MT9/ZkpjnakT8vYSHVmtknEq
+         u62CX30cUz8EPd7+S/2QiyTxJHHaQtunKUvZep8K3DWFDCLALJB73f2PPON5yFnGtjm+
+         cvABlz/82jlD1ubp2eZ170jLdDKGDpwMFsZJAKauOv3UM+YxQaDq9SWtpyJO7fCuwW/1
+         Gz4NNscRDg7XYmgiWV8OsFVnI0jqR/T6gfadIFU0Z0FBkEZ358uYjO+JlhD65pKjZvFp
+         phgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709275991; x=1709880791;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wXiG6D5m4V4RhFeANN6ytUCYOxlqAHIxI03T8MEdzXo=;
+        b=LhP6bB1EZK7rmTO3SqcrRt/JVTIQK8ELLujuV69btzF2TAmkNu1ImWB045i6xmFcxh
+         AdpU7JgN9QNTknRsttRvj+g2VkdTqYaE5BvIwdNoJrGScHMJuiQbit1WQ8dw4m8et7D7
+         pnM2ckj9n+77WHB2j85uYxWODG2pQ5z+PTq0qO4b36bAoJsjQfxGGLEx8CCxEF+76Lm2
+         fjoCMryK88C1AQZwiv9Pg1TIcX/9UuUlftpl8fedQWrwCXSRWbT7bWDbyt4oxYCFOAl2
+         IFOsHU16tbKvoT+kB+gNkJQk/yYf97pASg1CkDa901W8Z+GGW+rbAMlqEe+Fnt2rPPBX
+         d1Cw==
+X-Forwarded-Encrypted: i=1; AJvYcCVVg2hiienzkdJX936+HEgWRkcZm8M4A/PNmIRBshX2zb0GzWHzAoYUv51uqyG79Oy/d3TVkk8Tgq5TgSjI+IF9ZLCYsV9tawfmF7S94ZpMiBsdYlSsLN56rOvLga1+idfpPCdbiL3e0k0EvpoHjSROsofBV8bSJyEvpQhm9GcrvnfXY8RGcXCEFFMAIUIC2zrlHXj1dxrhl42qSVAvGC2thzB8pHZeR52pr+mBoICFvor0uGIvoZ7y/WKxaQ==
+X-Gm-Message-State: AOJu0Yygb9CcfAoc2H2LiF89R0mzouiX2SeE99m5qbfK/dcv/zbMbUR8
+	oydoE88x7ki0MTLY7ZKTqGv+F85KA6azWnxX2Yk3jqhANMVuwKgx
+X-Google-Smtp-Source: AGHT+IFpbSIiHEKTPKogLyHISu8ut/C5tr3wmgIj/iizT3dRu4HAqzDP5jIYhOI77adwEhkLqkAdmA==
+X-Received: by 2002:a17:902:a384:b0:1d9:167b:8e6c with SMTP id x4-20020a170902a38400b001d9167b8e6cmr668758pla.46.1709275991299;
+        Thu, 29 Feb 2024 22:53:11 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id u2-20020a17090341c200b001dcb560d7f0sm2646773ple.11.2024.02.29.22.53.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Feb 2024 22:53:10 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <d78fd3ca-ed0b-40e5-8f8f-21db152a7402@roeck-us.net>
+Date: Thu, 29 Feb 2024 22:53:07 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,280 +77,106 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v5 09/29] KVM: selftests: TDX: Add report_fatal_error
- test
-To: Sagi Shahar <sagis@google.com>
-Cc: linux-kselftest@vger.kernel.org, Ackerley Tng <ackerleytng@google.com>,
- Ryan Afranji <afranji@google.com>, Erdem Aktas <erdemaktas@google.com>,
- Isaku Yamahata <isaku.yamahata@intel.com>,
- Sean Christopherson <seanjc@google.com>, Paolo Bonzini
- <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
- Peter Gonda <pgonda@google.com>, Haibo Xu <haibo1.xu@intel.com>,
- Chao Peng <chao.p.peng@linux.intel.com>,
- Vishal Annapurve <vannapurve@google.com>, Roger Wang <runanwang@google.com>,
- Vipin Sharma <vipinsh@google.com>, jmattson@google.com, dmatlack@google.com,
- linux-kernel@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org
-References: <20231212204647.2170650-1-sagis@google.com>
- <20231212204647.2170650-10-sagis@google.com>
-From: Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <20231212204647.2170650-10-sagis@google.com>
+Subject: Re: [PATCH v2 02/11] dt-bindings: hwmon: lm75: use common hwmon
+ schema
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
+ Linus Walleij <linus.walleij@linaro.org>, Andi Shyti
+ <andi.shyti@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mips@vger.kernel.org, Gregory Clement <gregory.clement@bootlin.com>,
+ Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Tawfik Bayouk <tawfik.bayouk@mobileye.com>, Jean Delvare
+ <jdelvare@suse.com>, linux-hwmon@vger.kernel.org
+References: <20240229-mbly-i2c-v2-0-b32ed18c098c@bootlin.com>
+ <20240229-mbly-i2c-v2-2-b32ed18c098c@bootlin.com>
+ <6749c8df-c545-4aca-bc18-4dfe9c9f15b0@linaro.org>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <6749c8df-c545-4aca-bc18-4dfe9c9f15b0@linaro.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+On 2/29/24 22:37, Krzysztof Kozlowski wrote:
+> On 29/02/2024 19:10, Théo Lebrun wrote:
+>> Reference common hwmon schema which has the generic "label" property,
+>> parsed by Linux hwmon subsystem.
+>>
+> 
+> Please do not mix independent patchsets. You create unneeded
+> dependencies blocking this patch. This patch depends on hwmon work, so
+> it cannot go through different tree.
+> 
+> If you insist to combine independent patches, then at least clearly
+> express merging strategy or dependency in patch changelog --- .
+> 
 
+For my part I have to say that I don't know what to do with it.
+Rob's robot reported errors, so I won't apply it, and I don't
+feel comfortable giving it an ack either because of those errors.
 
-On 12/13/2023 4:46 AM, Sagi Shahar wrote:
-> The test checks report_fatal_error functionality.
->
-> Signed-off-by: Sagi Shahar <sagis@google.com>
-> Signed-off-by: Ackerley Tng <ackerleytng@google.com>
-> Signed-off-by: Ryan Afranji <afranji@google.com>
-> ---
->   .../selftests/kvm/include/x86_64/tdx/tdx.h    |  6 ++-
->   .../kvm/include/x86_64/tdx/tdx_util.h         |  1 +
->   .../kvm/include/x86_64/tdx/test_util.h        | 19 ++++++++
->   .../selftests/kvm/lib/x86_64/tdx/tdx.c        | 39 ++++++++++++++++
->   .../selftests/kvm/lib/x86_64/tdx/tdx_util.c   | 12 +++++
->   .../selftests/kvm/lib/x86_64/tdx/test_util.c  | 10 +++++
->   .../selftests/kvm/x86_64/tdx_vm_tests.c       | 45 +++++++++++++++++++
->   7 files changed, 131 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h b/tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h
-> index a7161efe4ee2..1340c1070002 100644
-> --- a/tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h
-> +++ b/tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h
-> @@ -3,10 +3,14 @@
->   #define SELFTEST_TDX_TDX_H
->   
->   #include <stdint.h>
-> +#include "kvm_util_base.h"
->   
-> -#define TDG_VP_VMCALL_INSTRUCTION_IO 30
-> +#define TDG_VP_VMCALL_REPORT_FATAL_ERROR 0x10003
->   
-> +#define TDG_VP_VMCALL_INSTRUCTION_IO 30
-> +void handle_userspace_tdg_vp_vmcall_exit(struct kvm_vcpu *vcpu);
->   uint64_t tdg_vp_vmcall_instruction_io(uint64_t port, uint64_t size,
->   				      uint64_t write, uint64_t *data);
-> +void tdg_vp_vmcall_report_fatal_error(uint64_t error_code, uint64_t data_gpa);
->   
->   #endif // SELFTEST_TDX_TDX_H
-> diff --git a/tools/testing/selftests/kvm/include/x86_64/tdx/tdx_util.h b/tools/testing/selftests/kvm/include/x86_64/tdx/tdx_util.h
-> index 274b245f200b..32dd6b8fda46 100644
-> --- a/tools/testing/selftests/kvm/include/x86_64/tdx/tdx_util.h
-> +++ b/tools/testing/selftests/kvm/include/x86_64/tdx/tdx_util.h
-> @@ -12,5 +12,6 @@ struct kvm_vm *td_create(void);
->   void td_initialize(struct kvm_vm *vm, enum vm_mem_backing_src_type src_type,
->   		   uint64_t attributes);
->   void td_finalize(struct kvm_vm *vm);
-> +void td_vcpu_run(struct kvm_vcpu *vcpu);
->   
->   #endif // SELFTESTS_TDX_KVM_UTIL_H
-> diff --git a/tools/testing/selftests/kvm/include/x86_64/tdx/test_util.h b/tools/testing/selftests/kvm/include/x86_64/tdx/test_util.h
-> index b570b6d978ff..6d69921136bd 100644
-> --- a/tools/testing/selftests/kvm/include/x86_64/tdx/test_util.h
-> +++ b/tools/testing/selftests/kvm/include/x86_64/tdx/test_util.h
-> @@ -49,4 +49,23 @@ bool is_tdx_enabled(void);
->    */
->   void tdx_test_success(void);
->   
-> +/**
-> + * Report an error with @error_code to userspace.
-> + *
-> + * Return value from tdg_vp_vmcall_report_fatal_error is ignored since execution
-> + * is not expected to continue beyond this point.
-> + */
-> +void tdx_test_fatal(uint64_t error_code);
-> +
-> +/**
-> + * Report an error with @error_code to userspace.
-> + *
-> + * @data_gpa may point to an optional shared guest memory holding the error
-> + * string.
-> + *
-> + * Return value from tdg_vp_vmcall_report_fatal_error is ignored since execution
-> + * is not expected to continue beyond this point.
-> + */
-> +void tdx_test_fatal_with_data(uint64_t error_code, uint64_t data_gpa);
-> +
->   #endif // SELFTEST_TDX_TEST_UTIL_H
-> diff --git a/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c b/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c
-> index c2414523487a..b854c3aa34ff 100644
-> --- a/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c
-> +++ b/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c
-> @@ -1,8 +1,31 @@
->   // SPDX-License-Identifier: GPL-2.0-only
->   
-> +#include <string.h>
-> +
->   #include "tdx/tdcall.h"
->   #include "tdx/tdx.h"
->   
-> +void handle_userspace_tdg_vp_vmcall_exit(struct kvm_vcpu *vcpu)
-> +{
-> +	struct kvm_tdx_vmcall *vmcall_info = &vcpu->run->tdx.u.vmcall;
-> +	uint64_t vmcall_subfunction = vmcall_info->subfunction;
-> +
-> +	switch (vmcall_subfunction) {
-> +	case TDG_VP_VMCALL_REPORT_FATAL_ERROR:
-> +		vcpu->run->exit_reason = KVM_EXIT_SYSTEM_EVENT;
-> +		vcpu->run->system_event.ndata = 3;
-> +		vcpu->run->system_event.data[0] =
-> +			TDG_VP_VMCALL_REPORT_FATAL_ERROR;
-> +		vcpu->run->system_event.data[1] = vmcall_info->in_r12;
-> +		vcpu->run->system_event.data[2] = vmcall_info->in_r13;
-> +		vmcall_info->status_code = 0;
-> +		break;
-> +	default:
-> +		TEST_FAIL("TD VMCALL subfunction %lu is unsupported.\n",
-> +			  vmcall_subfunction);
-> +	}
-> +}
-> +
->   uint64_t tdg_vp_vmcall_instruction_io(uint64_t port, uint64_t size,
->   				      uint64_t write, uint64_t *data)
->   {
-> @@ -25,3 +48,19 @@ uint64_t tdg_vp_vmcall_instruction_io(uint64_t port, uint64_t size,
->   
->   	return ret;
->   }
-> +
-> +void tdg_vp_vmcall_report_fatal_error(uint64_t error_code, uint64_t data_gpa)
-> +{
-> +	struct tdx_hypercall_args args;
-> +
-> +	memset(&args, 0, sizeof(struct tdx_hypercall_args));
-> +
-> +	if (data_gpa)
-> +		error_code |= 0x8000000000000000;
-> +
-> +	args.r11 = TDG_VP_VMCALL_REPORT_FATAL_ERROR;
-> +	args.r12 = error_code;
-> +	args.r13 = data_gpa;
-> +
-> +	__tdx_hypercall(&args, 0);
-> +}
-> diff --git a/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx_util.c b/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx_util.c
-> index b302060049d5..d745bb6287c1 100644
-> --- a/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx_util.c
-> +++ b/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx_util.c
-> @@ -10,6 +10,7 @@
->   
->   #include "kvm_util.h"
->   #include "test_util.h"
-> +#include "tdx/tdx.h"
->   #include "tdx/td_boot.h"
->   #include "kvm_util_base.h"
->   #include "processor.h"
-> @@ -519,3 +520,14 @@ void td_finalize(struct kvm_vm *vm)
->   
->   	tdx_td_finalizemr(vm);
->   }
-> +
-> +void td_vcpu_run(struct kvm_vcpu *vcpu)
-> +{
-> +	vcpu_run(vcpu);
-> +
-> +	/* Handle TD VMCALLs that require userspace handling. */
-> +	if (vcpu->run->exit_reason == KVM_EXIT_TDX &&
-> +	    vcpu->run->tdx.type == KVM_EXIT_TDX_VMCALL) {
-> +		handle_userspace_tdg_vp_vmcall_exit(vcpu);
-> +	}
-> +}
-> diff --git a/tools/testing/selftests/kvm/lib/x86_64/tdx/test_util.c b/tools/testing/selftests/kvm/lib/x86_64/tdx/test_util.c
-> index 6905d0ca3877..7f3cd8089cea 100644
-> --- a/tools/testing/selftests/kvm/lib/x86_64/tdx/test_util.c
-> +++ b/tools/testing/selftests/kvm/lib/x86_64/tdx/test_util.c
-> @@ -32,3 +32,13 @@ void tdx_test_success(void)
->   				     TDX_TEST_SUCCESS_SIZE,
->   				     TDG_VP_VMCALL_INSTRUCTION_IO_WRITE, &code);
->   }
-> +
-> +void tdx_test_fatal_with_data(uint64_t error_code, uint64_t data_gpa)
-> +{
-> +	tdg_vp_vmcall_report_fatal_error(error_code, data_gpa);
-> +}
-> +
-> +void tdx_test_fatal(uint64_t error_code)
-> +{
-> +	tdx_test_fatal_with_data(error_code, 0);
-> +}
-> diff --git a/tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c b/tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c
-> index a18d1c9d6026..8638c7bbedaa 100644
-> --- a/tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c
-> +++ b/tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c
-> @@ -2,6 +2,7 @@
->   
->   #include <signal.h>
->   #include "kvm_util_base.h"
-> +#include "tdx/tdx.h"
->   #include "tdx/tdx_util.h"
->   #include "tdx/test_util.h"
->   #include "test_util.h"
-> @@ -30,6 +31,49 @@ void verify_td_lifecycle(void)
->   	printf("\t ... PASSED\n");
->   }
->   
-> +void guest_code_report_fatal_error(void)
-> +{
-> +	uint64_t err;
-> +
-> +	/*
-> +	 * Note: err should follow the GHCI spec definition:
-> +	 * bits 31:0 should be set to 0.
-> +	 * bits 62:32 are used for TD-specific extended error code.
-> +	 * bit 63 is used to mark additional information in shared memory.
-> +	 */
-> +	err = 0x0BAAAAAD00000000;
-> +	if (err)
-> +		tdx_test_fatal(err);
+Guenter
 
-I find tdx_test_fatal() is called a lot and each call site checks the err
-before calling it. Is it simpler to move the check of err inside of
-tdx_test_fatal() so that the callers just call it without check it every 
-time?
-
-
-> +
-> +	tdx_test_success();
-> +}
-> +void verify_report_fatal_error(void)
-> +{
-> +	struct kvm_vm *vm;
-> +	struct kvm_vcpu *vcpu;
-> +
-> +	vm = td_create();
-> +	td_initialize(vm, VM_MEM_SRC_ANONYMOUS, 0);
-> +	vcpu = td_vcpu_add(vm, 0, guest_code_report_fatal_error);
-> +	td_finalize(vm);
-> +
-> +	printf("Verifying report_fatal_error:\n");
-> +
-> +	td_vcpu_run(vcpu);
-> +
-> +	TEST_ASSERT_EQ(vcpu->run->exit_reason, KVM_EXIT_SYSTEM_EVENT);
-> +	TEST_ASSERT_EQ(vcpu->run->system_event.ndata, 3);
-> +	TEST_ASSERT_EQ(vcpu->run->system_event.data[0], TDG_VP_VMCALL_REPORT_FATAL_ERROR);
-> +	TEST_ASSERT_EQ(vcpu->run->system_event.data[1], 0x0BAAAAAD00000000);
-> +	TEST_ASSERT_EQ(vcpu->run->system_event.data[2], 0);
-> +
-> +	vcpu_run(vcpu);
-> +	TDX_TEST_ASSERT_SUCCESS(vcpu);
-> +
-> +	kvm_vm_free(vm);
-> +	printf("\t ... PASSED\n");
-> +}
-> +
->   int main(int argc, char **argv)
->   {
->   	setbuf(stdout, NULL);
-> @@ -40,6 +84,7 @@ int main(int argc, char **argv)
->   	}
->   
->   	run_in_new_process(&verify_td_lifecycle);
-> +	run_in_new_process(&verify_report_fatal_error);
->   
->   	return 0;
->   }
+> 
+>> To: Jean Delvare <jdelvare@suse.com>
+>> To: Guenter Roeck <linux@roeck-us.net>
+>> Cc: linux-hwmon@vger.kernel.org
+>> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+>> ---
+> 
+> 
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> 
+> Best regards,
+> Krzysztof
+> 
 
 
