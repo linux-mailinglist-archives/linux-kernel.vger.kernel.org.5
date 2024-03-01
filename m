@@ -1,100 +1,162 @@
-Return-Path: <linux-kernel+bounces-88461-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88463-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89DD486E1EC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:22:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3816E86E1F1
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:26:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 29DA41F23085
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:22:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CB921B21235
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:26:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75A4D6BFAB;
-	Fri,  1 Mar 2024 13:22:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D1FC6D1D7;
+	Fri,  1 Mar 2024 13:25:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="qd3500ft"
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="B+Q2+3Fy"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63E4810E9;
-	Fri,  1 Mar 2024 13:22:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 445AD69E15
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 13:25:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709299359; cv=none; b=EtYtwRO9ZqYiLMb2qS/Y5dutrkcZ2jnFyGSSATVl6jUUCONxJcfvRDD3DheBhRxVnpe/tasbxHipLhYyEa5GTSEbfCX4RxOCiRfqQCOyuxb7AJdIxOl1IQNklGekJIXrVQOpDakugz7AI56+nf0/DYK6d0wztJ1r0eIPPYjcNzI=
+	t=1709299554; cv=none; b=QhH5mI7B3a5ZJhH1ExB5VgbfydCS42gmC32a9/E8oQNM52mLXGvZFakWp/BYhjh65fXQ3fdOzoKlZMQhyN7gWeovups3tD1p3dib16oswmzGB1IfsMNCjW7fyIFPLoMYtNjI+8575ctmE0kWd/QxOYHzLibUJRtvYTuEg6A1kqw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709299359; c=relaxed/simple;
-	bh=cr2xzVzhBgRlA4qOBy83c8kVVYBBeoVu7rnkvJ5fZzo=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=sN8wL/eJbCsbtBDCMwoEWczIiin0Mvotpayz5EVauUlOR+xhL3KseoFzu9D80EUJT0//9SZgbnxXkbH9V18kPWa+SZhIncCxlIQZgFZXMktdcryCu0kWGiEB3nyiStKh9PB5yzA3QbZdog3Soqb+9E2Z8Y/JNrfgYxWZ9Zxzkfo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=qd3500ft; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:Reply-To:References:Cc:To:From:Subject:MIME-Version:Date:
-	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
-	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
-	In-Reply-To:References; bh=gO2dxyiql6R0pRnjLVBTDL+/qu9DBW5s7IS4Px0iE6A=;
-	t=1709299357; x=1709731357; b=qd3500ftlQtxDys+gdpqs+bx9idBlgirBoRBC8NsiYYFE1a
-	DJxe/b6P5XkFPihvhHP3YWDhEJiXEISpG3TF1vmrhG5/iIvZg5rqFIj3Kx9ma2p2QrkBOwdqjaz2d
-	uYKftZySDMwFJ9q0+D+uwi5zAc0xF0BhbnkhaMz++OwF842SMB4r5thVMsSkH1aKt3d6Ybv/ToKyl
-	8b43AVNgx7+hWWld/01T54w3Z5MZvK51qA6V25emBZ1xzcpji+fOohsWMgXbu4qDeoEpzrm5rN2Vc
-	N4IJyjYLBA9G0nkVbUEQScm+eC6aqEHEXqwD0KMg9qavntP05EMX3klRKT0c1ebA==;
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1rg2qK-0006R6-HH; Fri, 01 Mar 2024 14:22:28 +0100
-Message-ID: <6d282271-25fa-4ed9-9748-df3705f9d5fb@leemhuis.info>
-Date: Fri, 1 Mar 2024 14:22:27 +0100
+	s=arc-20240116; t=1709299554; c=relaxed/simple;
+	bh=JHWldWA6nNHKcTRlr05zV/nwVzVNIlbYVSMFB9iJlos=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=uq59DvWIVT7b/fG/vE5IpTZoiM1qbjDo76u69zXNipWG2TA1nNK+4KJ58qQQ0gBA4Aiozbj/+Y8mOiodTmCXG1tTpuk6fe1fB4Ep3Wof2wqTLuzR9BrGbJdN0YScrCCyn0kKtgrExe6SgdNsNuessdk+w2yfjjXUDo5Hb/ehmvM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=B+Q2+3Fy; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5654ef0c61fso10595a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 05:25:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709299552; x=1709904352; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+1teAiWc1jVGCssi6rgN3jeMMtmC7N9NmiOj97TQSRI=;
+        b=B+Q2+3FyhzzHOF8F2GLt2wkZhMidxgsedxhsBtInm8nvf198JXT1DWUuF0u/356Wxn
+         bHie3f4Uu/XHdrg+Vfa953FWhqx8oTkSxkHOqiW2KnCzAx7R4cD2NPj2TsXquakIjDcE
+         76UQQglv9A6OGSz2uwzZkR8KRPH8tPj4ZZe2hogP5p7bxSCh5+f3aUvhHjuq5MZHp8P7
+         7M2KrYJhNfbtyRCQP89PQJ/FD9VfpkinyagzG8V2v+DAKiZ7P84LOwrPvC5bXiBAILiy
+         Ra0kWb1lgODBF7kJQfvGMA3m9OzYX4TpQbrPd4MRKf2eJIzvsx2D4eOV8BvrxHB8P7Su
+         094A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709299552; x=1709904352;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+1teAiWc1jVGCssi6rgN3jeMMtmC7N9NmiOj97TQSRI=;
+        b=GfQi5gzmYuTpUiEEB4j2+nY/eKOi0/q9wrTuo5tSJSxMDDK84iXVjUYVf4GU0NQ2uZ
+         8pFFBFa4Stkpjx1fsVOWRJLYdtVNTinzRl7CpOVSkLumGRXBSPQE7YfeG+dWo6FnQSMq
+         LTSHTgjlUhREK8NHfGrZsMAZZ5zkfD9fe7i3kEWxOgfKrnoaaRVx/bKlZQ3MchcCsgxW
+         eAhyAfAgtmKeTIrCQO+BMR+JJKn1W6AxyTTrFYAcNZhcjS5AEWItkucMRc7pKMCKdO8P
+         2WpkH0le/0zenY8SCTup50uGTpHroJMKzW5u1OIcYM9BeSZlGNLNPKqxa3LLP819TsBa
+         tDnA==
+X-Forwarded-Encrypted: i=1; AJvYcCUAzYVln4lFjjM0cNj7QwXGBHZb1tgyAXzz91f6Ils5xu37XYACaQiKIfyFnAJXBjYCBkpJrG9etHo2It6R5ld4q2iTrtc9sOcqK2Bf
+X-Gm-Message-State: AOJu0YyvDj/tQyMzXi5bkwm0acvSNhEsToH+a60bj1jbQZw2Qishs+/P
+	BOyb2bdo3xyM5Y2tunFSDNJEST9GyEHhB480R3wKZS81btgzIZFSU8hCEitL7la8f5n5k2l+Yt5
+	jenr50KPvbcmdzLgNG8bhMSkupuLKsNM7gkGf
+X-Google-Smtp-Source: AGHT+IHAr/zt6nB351plwUC26OzlBDCvnjhX4XuWJqRSF9vysrKL8/mndZ7DIMKjrKSevJ2zGGPoqI2B9cbCF0OdxRw=
+X-Received: by 2002:a05:6402:350e:b0:563:f48a:aa03 with SMTP id
+ b14-20020a056402350e00b00563f48aaa03mr141224edd.2.1709299551406; Fri, 01 Mar
+ 2024 05:25:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] docs: new text on bisecting which also covers bug
- validation
-Content-Language: en-US, de-DE
-From: "Linux regression tracking (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-To: Jonathan Corbet <corbet@lwn.net>
-Cc: regressions@lists.linux.dev, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, Bagas Sanjaya <bagasdotme@gmail.com>,
- Nathan Chancellor <nathan@kernel.org>, =?UTF-8?B?UGV0ciBUZXNhxZnDrWs=?=
- <petr@tesarici.cz>, Vegard Nossum <vegard.nossum@oracle.com>,
- Jani Nikula <jani.nikula@linux.intel.com>
-References: <02b084a06de4ad61ac4ecd92b9265d4df4d03d71.1709282441.git.linux@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <02b084a06de4ad61ac4ecd92b9265d4df4d03d71.1709282441.git.linux@leemhuis.info>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1709299357;39e0a914;
-X-HE-SMSGID: 1rg2qK-0006R6-HH
+References: <20240229213018.work.556-kees@kernel.org> <20240229225910.79e224cf@kernel.org>
+ <CANn89iKeJGvhY0K=kLhhR39NVbaizP2UBk0Vk0r_XCe2XMBZHg@mail.gmail.com> <9050bdec-b34a-4133-8ba5-021dfd4b1c75@intel.com>
+In-Reply-To: <9050bdec-b34a-4133-8ba5-021dfd4b1c75@intel.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Fri, 1 Mar 2024 14:25:37 +0100
+Message-ID: <CANn89iLSLPn5PyXNQcA2HO0e5jGYvHKhTh_9_EMmfbTJKZPfbg@mail.gmail.com>
+Subject: Re: [PATCH] netdev: Use flexible array for trailing private bytes
+To: Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc: Jakub Kicinski <kuba@kernel.org>, Kees Cook <keescook@chromium.org>, 
+	"David S. Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>, netdev@vger.kernel.org, 
+	linux-hardening@vger.kernel.org, Simon Horman <horms@kernel.org>, 
+	Jiri Pirko <jiri@resnulli.us>, Daniel Borkmann <daniel@iogearbox.net>, Coco Li <lixiaoyan@google.com>, 
+	Amritha Nambiar <amritha.nambiar@intel.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 01.03.24 09:41, Thorsten Leemhuis wrote:
-> Add a second document on bisecting regressions explaining the whole
-> process from beginning to end -- while also describing how to validate
-> if a problem is still present in mainline.  This "two in one" approach
-> is possible, as checking whenever a bug is in mainline is one of the
-> first steps before performing a bisection anyway and thus needs to be
-> described. Due to this approach the text also works quite nicely in
-> conjunction with Documentation/admin-guide/reporting-issues.rst, as it
-> covers all typical cases where users will need to build a kernel in
-> exactly the same order.
-> [...]
-> diff --git a/Documentation/admin-guide/index.rst b/Documentation/admin-guide/index.rst
-> index ed8a629e59c86a..c53bb6e36291b8 100644
-> --- a/Documentation/admin-guide/index.rst
-> +++ b/Documentation/admin-guide/index.rst
-> @@ -1,4 +1,3 @@
-> -=================================================
+On Fri, Mar 1, 2024 at 1:59=E2=80=AFPM Alexander Lobakin
+<aleksander.lobakin@intel.com> wrote:
+>
+> From: Eric Dumazet <edumazet@google.com>
+> Date: Fri, 1 Mar 2024 09:03:55 +0100
+>
+> > On Fri, Mar 1, 2024 at 7:59=E2=80=AFAM Jakub Kicinski <kuba@kernel.org>=
+ wrote:
+> >>
+> >> On Thu, 29 Feb 2024 13:30:22 -0800 Kees Cook wrote:
+>
+> Re WARN_ONCE() in netdev_priv(): netdev_priv() is VERY hot, I'm not sure
+> we want to add checks there. Maybe under CONFIG_DEBUG_NET?
+>
+> >
+> >>> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> >>> index 118c40258d07..b476809d0bae 100644
+> >>> --- a/include/linux/netdevice.h
+> >>> +++ b/include/linux/netdevice.h
+> >>> @@ -1815,6 +1815,8 @@ enum netdev_stat_type {
+> >>>       NETDEV_PCPU_STAT_DSTATS, /* struct pcpu_dstats */
+> >>>  };
+> >>>
+> >>> +#define      NETDEV_ALIGN            32
+> >>
+> >> Unless someone knows what this is for it should go.
+> >> Align priv to cacheline size.
+> >
+> > +2
+> >
+>
+> Maybe
+>
+> > #define NETDEV_ALIGN    L1_CACHE_BYTES
+>
+> #define NETDEV_ALIGN    max(SMP_CACHE_BYTES, 32)
 
-Just saw that, that line obviously was not meant to be removed. Sorry.
+Why would we care if some arches have a very small SMP_CACHE_BYTES ?
+Bet it !
 
-Jonathan, in case you consider merging this "soon", as suggested
-yesterday by  Vegard, could you please fix this up? Otherwise I'll fix
-this with v3.
+IMO nothing in networking mandates this minimal 32 byte alignment.
 
-Ciao, Thorsten
+>
+> ?
+>
+> (or even max(1 << INTERNODE_CACHE_SHIFT, 32))
+
+I do not think so.
+
+INTERNODE_CACHE_SHIFT is a bit extreme on allyesconfig on x86 :/
+(with CONFIG_X86_VSMP=3Dy)
+
+
+>
+> >
+> > or a general replacement of NETDEV_ALIGN....
+> >
+> >
+>
+> + I'd align both struct net_device AND its private space to
+> %NETDEV_ALIGN and remove this weird PTR_ALIGN. {k,v}malloc ensures
+> natural alignment of allocations for at least a couple years already
+> (IOW if struct net_device is aligned to 64, {k,v}malloc will *always*
+> return a 64-byte aligned address).
+
+I think that with SLAB or SLOB in the past with some DEBUG options
+there was no such guarantee.
+
+But this is probably no longer the case, and heavy DEBUG options these
+days (KASAN, KFENCE...)
+do not expect fast networking anyway.
 
