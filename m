@@ -1,123 +1,138 @@
-Return-Path: <linux-kernel+bounces-88743-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E239586E603
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:47:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDA9E86E659
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:55:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 71DDDB24120
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:47:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E6E128F8B7
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:55:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 376BE1E88A;
-	Fri,  1 Mar 2024 16:40:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E81010953;
+	Fri,  1 Mar 2024 16:47:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b="Rw3Dwuqs"
-Received: from mail-io1-f45.google.com (mail-io1-f45.google.com [209.85.166.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=gimli.ms.mff.cuni.cz header.i=@gimli.ms.mff.cuni.cz header.b="GYTWwKDi"
+Received: from nikam.ms.mff.cuni.cz (nikam.ms.mff.cuni.cz [195.113.20.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF12E225D0
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 16:40:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C24C7EADF;
+	Fri,  1 Mar 2024 16:47:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.113.20.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709311238; cv=none; b=ATjvJWsPVwDMLt4v4cv4KpbmmJ/EIqXqFtThsuSmUmUTUanyTVumyEFztfDOUJMBbrGMCXsTZsQW/z6HgsLNUcdcPNvobi+j+if1tfx/LA+nXN3LHINQzd2o5AX/qY3wiApMF8uapUDpEn/CF80qLao5AaXbns+q92r/6JI8JYI=
+	t=1709311666; cv=none; b=uwJlghJsBeB5eTpezEBc8ofo5fw2XN9t4KmFAChh7r+oG+1XLABCJWnBJNd6IwNQLoFHK95AJJKzaQTJXj6VtiGQ5f+NyjVkqEl0v0VOpovzrpmwTerov4iDTh23tB/6F2NuTL4d+Wg889mH4F06XEt3srMB2atMkd5JbIxOHO0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709311238; c=relaxed/simple;
-	bh=1DFl0ZbNmoHHCDx2NBctdiyCsC0l1eSWBPINNTEml0Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dJ1oqAoa14eq6E4PZc0t7acTnHe9wRkf4BRrhUnmTnUzEq/JRkjxsDBaC8/51KZgVa+Fjom6BT7RfIkpv055lXA1TlTz8uzbVJAsYAm4+6q6mBNDsz2I5gpZv4Je/po52fpIGbrv7mdi3XC484GVpuQmeLZ4cauay9AM26scUXI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org; spf=none smtp.mailfrom=brainfault.org; dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b=Rw3Dwuqs; arc=none smtp.client-ip=209.85.166.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=brainfault.org
-Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-7c82cab0494so7083439f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 08:40:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1709311236; x=1709916036; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0xpVEUPupFJ4mY5Qxb0D2y0+A3GchrSV23FNcC1i+jo=;
-        b=Rw3DwuqsCzOiiHT9eSWMkJ0EoDc2l/s02nmZMNiKrWNT0TvusHRfdWpiAQ83kdmuRx
-         rUHmdSHs/wzp72ezfdcdGhWx8w8MDKJFExTF/BVL9ObWk8mXTOULJ737uoNBfJxUOken
-         AiTV8q3mNkZ1c9K6xH8aKqxzMzX8qXX+PFKtvpMClg/RnXdDgd583FGupCY0obX4Bg/p
-         V1/gvvPIdh0MB7Lg1TsUEDxm8w2it0DaUVIor6lX6mHmUv74yizHzVqA9zdpxgEb03ym
-         qD722WaHHwtLNJs2904i9eyEUjdJhQEGe1oPLVABAAR/bTjjSvUdERHeHKW2Chwm+RVJ
-         dH4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709311236; x=1709916036;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0xpVEUPupFJ4mY5Qxb0D2y0+A3GchrSV23FNcC1i+jo=;
-        b=PeW6vmnhWg+7/HbTYbV0prCGWQ+YIZZe5v8sX+3mG7nOy0K5t7qXwH+yvKqa7o3/x/
-         ZTVTEnfYWGXtlS50CmRUPF8l4j8NbPTgvpnHxJ4zFAK6Ri+Iu1tvjsy5rdUOO1Fo7JjT
-         p6WZkxVJh0WyP2cJHu8a5ScncWNecsDq/zV7CorN1W3g+fPLtdwAnN/PHAifqqjTZWos
-         jnK51c9oXq7ljxRd/OBYXNq9dpwVTC0u5Opm7RFT0CsrAT7Ztow0+bK1Jq8SHEfS6Hwf
-         qQbQAscOTii30aiODHLj3fZGD4umGAFmxeGW6xagHwA5icIs0kVVfKQhFe03xpR/dZ3O
-         tOgQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWi5HCfcTu5PaTk2VN4rmi6g0NRSpnCQgePIN1ophuESzyoiZq676eLQLOQOgL/Ualz4BwQCVVw6KyO9PPfO4wyETwCOAAdtfnFWKtU
-X-Gm-Message-State: AOJu0YyiT+togc+U08TWuzjhhdd0hJEPvjBHqbE3ysTqoRkmzz0EeWC5
-	yT/38HV8QlVQ58HhOZuc3jOEAzaqRFKLap6tB6LOVKnhVQbAposqw9j48CiobxYTjJclCpSmIv+
-	r/ApDvIB2w26qnbh5yGkRP+R4Amca064k2m8RRA==
-X-Google-Smtp-Source: AGHT+IFA/8ZsTPlrzqpqMe1C7sAim+Tu77L5L4EC5Mu3PiP55/jHP04OSuPWwGne0ZjJhx4bUxIrY3D6GoIF2d46Q1U=
-X-Received: by 2002:a92:c24e:0:b0:365:c1fc:dc07 with SMTP id
- k14-20020a92c24e000000b00365c1fcdc07mr2509460ilo.0.1709311235987; Fri, 01 Mar
- 2024 08:40:35 -0800 (PST)
+	s=arc-20240116; t=1709311666; c=relaxed/simple;
+	bh=GNxAIlesOWEc6ADQOe2bdHiQI5xZvX9zwAnqPAkPVmc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=t4ctX0brlgPk7KbsgF1hwsfvDlkkRAhkM6+OFyEHVnbkvFVsvgcV4MRcsL6YdKIR7PM6XI17DkdShy0usuc8dLKkg9TfpvblBHJBvRYSk4h5mGivIeNGM5l8Wp6vbs97HdWFQalmuweU7a/CF8pxCTwWsszf7gRG97Ng5lJS+MQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gimli.ms.mff.cuni.cz; spf=pass smtp.mailfrom=gimli.ms.mff.cuni.cz; dkim=pass (1024-bit key) header.d=gimli.ms.mff.cuni.cz header.i=@gimli.ms.mff.cuni.cz header.b=GYTWwKDi; arc=none smtp.client-ip=195.113.20.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gimli.ms.mff.cuni.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gimli.ms.mff.cuni.cz
+Received: from gimli.ms.mff.cuni.cz (gimli.ms.mff.cuni.cz [195.113.20.176])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by nikam.ms.mff.cuni.cz (Postfix) with ESMTPS id 180A1284253;
+	Fri,  1 Mar 2024 17:47:33 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gimli.ms.mff.cuni.cz;
+	s=gen1; t=1709311653;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=ZKFkvBt1S5xU1bBrsZOUCamFfWJO3BsAN++Q3u8O0uo=;
+	b=GYTWwKDi7F/is8Gnwp64ERodGYRvJqXDWCjBjYgy8iVsQOS2lkmNJw44F2q5Wzb93ifWFK
+	TjSuu8znmBk3UZbFPXwX1V1PmOvLRtn2aYyqhRtx0qtadqFqPRiPBrXm+P6lxdD/w5ct63
+	6eQQFjDe0+nnn/A62zSwcYhdeANpiIU=
+Received: from localhost (internet5.mraknet.com [185.200.108.250])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: karelb)
+	by gimli.ms.mff.cuni.cz (Postfix) with ESMTPSA id EA5234587C6;
+	Fri,  1 Mar 2024 17:47:32 +0100 (CET)
+From: Karel Balej <karelb@gimli.ms.mff.cuni.cz>
+To: Markuss Broks <markuss.broks@gmail.com>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Henrik Rydberg <rydberg@bitmath.org>,
+	linux-input@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: =?UTF-8?q?Duje=20Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
+	~postmarketos/upstreaming@lists.sr.ht,
+	phone-devel@vger.kernel.org,
+	karelb@gimli.ms.mff.cuni.cz
+Subject: [RESEND PATCH v5 0/5] input/touchscreen: imagis: add support for IST3032C
+Date: Fri,  1 Mar 2024 17:40:59 +0100
+Message-ID: <20240301164659.13240-1-karelb@gimli.ms.mff.cuni.cz>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240214123757.305347-1-apatel@ventanamicro.com>
-In-Reply-To: <20240214123757.305347-1-apatel@ventanamicro.com>
-From: Anup Patel <anup@brainfault.org>
-Date: Fri, 1 Mar 2024 22:10:25 +0530
-Message-ID: <CAAhSdy3ObzJHgF0QL9QqKVm37F83HzdF28A5107fm0dLFxoOLQ@mail.gmail.com>
-Subject: Re: [PATCH 0/5] KVM RISC-V report few more ISA extensions through ONE_REG
-To: Anup Patel <apatel@ventanamicro.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Atish Patra <atishp@atishpatra.org>, 
-	Shuah Khan <shuah@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Andrew Jones <ajones@ventanamicro.com>, kvm@vger.kernel.org, 
-	kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 14, 2024 at 6:08=E2=80=AFPM Anup Patel <apatel@ventanamicro.com=
-> wrote:
->
-> This series extends the KVM RISC-V ONE_REG interface to report few more
-> ISA extensions namely: Ztso and Zacas. These extensions are already
-> supported by the HWPROBE interface in Linux-6.8 kernel.
->
-> To test these patches, use KVMTOOL from the riscv_more_exts_round2_v1
-> branch at: https://github.com/avpatel/kvmtool.git
->
-> These patches can also be found in the riscv_kvm_more_exts_round2_v1
-> branch at: https://github.com/avpatel/linux.git
->
-> Anup Patel (5):
->   RISC-V: KVM: Forward SEED CSR access to user space
->   RISC-V: KVM: Allow Ztso extension for Guest/VM
->   KVM: riscv: selftests: Add Ztso extension to get-reg-list test
->   RISC-V: KVM: Allow Zacas extension for Guest/VM
->   KVM: riscv: selftests: Add Zacas extension to get-reg-list test
+From: Karel Balej <balejk@matfyz.cz>
 
-Queued this series for Linux-6.9
+Hello,
 
-Thanks,
-Anup
+this patch series generalizes the Imagis touchscreen driver to support
+other Imagis chips, namely IST3038B and IST3032C.
 
->
->  arch/riscv/include/uapi/asm/kvm.h                |  2 ++
->  arch/riscv/kvm/vcpu_insn.c                       | 13 +++++++++++++
->  arch/riscv/kvm/vcpu_onereg.c                     |  4 ++++
->  tools/testing/selftests/kvm/riscv/get-reg-list.c |  8 ++++++++
->  4 files changed, 27 insertions(+)
->
-> --
-> 2.34.1
->
+The motivation for IST3032C is the samsung,coreprimevelte smartphone
+with which this series has been tested. However, the support for this
+device is not yet in-tree, the effort is happening at [1]. Preliminary
+version of the regulator driver needed to use the touchscreen on this
+phone can be found here [2].
+
+Note that this is a prerequisite for (at least a part of) this series
+[3] which among other things implements support for touch keys for
+Imagis touchscreens that have it.
+
+[1] https://lore.kernel.org/all/20240110-pxa1908-lkml-v8-0-fea768a59474@skole.hr/
+[2] https://lore.kernel.org/all/20240211094609.2223-1-karelb@gimli.ms.mff.cuni.cz/
+[3] https://lore.kernel.org/all/20240120-b4-imagis-keys-v2-0-d7fc16f2e106@skole.hr/
+
+Best regards,
+K. B.
+---
+v5:
+- Rebase to v6.8-rc3.
+- v4: https://lore.kernel.org/all/20240120191940.3631-1-karelb@gimli.ms.mff.cuni.cz/
+v4:
+- Rebase to v6.7.
+- v3: https://lore.kernel.org/all/20231202125948.10345-1-karelb@gimli.ms.mff.cuni.cz/
+- Address feedback and add trailers.
+v3:
+- Rebase to v6.7-rc3.
+- v2: https://lore.kernel.org/all/20231003133440.4696-1-karelb@gimli.ms.mff.cuni.cz/
+v2:
+- Do not rename the driver.
+- Do not hardcode voltage required by the IST3032C.
+- Use Markuss' series which generalizes the driver. Link to the original
+  series: https://lore.kernel.org/all/20220504152406.8730-1-markuss.broks@gmail.com/
+- Separate bindings into separate patch.
+- v1: https://lore.kernel.org/all/20230926173531.18715-1-balejk@matfyz.cz/
+
+Karel Balej (2):
+  dt-bindings: input/touchscreen: imagis: add compatible for IST3032C
+  input/touchscreen: imagis: add support for IST3032C
+
+Markuss Broks (3):
+  input/touchscreen: imagis: Correct the maximum touch area value
+  dt-bindings: input/touchscreen: Add compatible for IST3038B
+  input/touchscreen: imagis: Add support for Imagis IST3038B
+
+ .../input/touchscreen/imagis,ist3038c.yaml    |  2 +
+ drivers/input/touchscreen/imagis.c            | 70 +++++++++++++++----
+ 2 files changed, 60 insertions(+), 12 deletions(-)
+
+-- 
+2.44.0
+
 
