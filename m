@@ -1,134 +1,103 @@
-Return-Path: <linux-kernel+bounces-87716-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87715-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C577486D81E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:04:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D56FB86D81A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:02:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B3431F22F11
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 00:04:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF4491C21003
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 00:02:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 288D9386;
-	Fri,  1 Mar 2024 00:04:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0DD81851;
+	Fri,  1 Mar 2024 00:02:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hkEfifYc"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Sl2K9FRu";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="UcJ+hhU2"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA93F629
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 00:04:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A583F7EC
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 00:02:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709251465; cv=none; b=smDp1DXMVV06HiG1Ps9OpujIoNlUR+89dYrNH/RjJrloVPGCWXFA0x4Ojq+RXPF5h18QrKTxXcdfWgYJC5aI3G9cLZVQvAS6dSnPfPRS7MYW6wRC/Tf0YuMY8JyPZxU3hrvkCBobyUjVk1yIIT/WRuZ+ZXNrMw90tN89g0Bg5OM=
+	t=1709251348; cv=none; b=pXPmtywafu+fYaYFmjdezNjMHcQLJDDkFyUblqi+4/IjEoo+67YPsyVCrsfgXJG+nrrawZa6kIegi/ZhdndHVUcZ52QEttIbz51CPfnOYG90T/C+ts7+C/HzO7dCQLIk43hn+67hcUY07h13DfwIJ5aOZPD+Y/stVHl4YxXJIKA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709251465; c=relaxed/simple;
-	bh=J7Z6MgJrfOTC4po2eFseGMRCFvJG7iHI0IxNmfGXVrE=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=MBeYZuTDYMHSpXh04JMhYkQd+wVF6z7ab4YqedNXTbPIsMY3N05XqtHQ7hSKwJGGKI7I2ej8MeeqkpDcGtq9WyYHMvOZ0e1i4fmUg3gwMxbb+tQ2MCgwsUJHwT98cEB9VkcCaf1Ga/hLxetfMe47pHVyq5cSl3ltD+RDZSDjx6o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hkEfifYc; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709251464; x=1740787464;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=J7Z6MgJrfOTC4po2eFseGMRCFvJG7iHI0IxNmfGXVrE=;
-  b=hkEfifYcs8MlStGwAGXU2y9Fpo4FL2Ao6DMT93qqpzdqCDJV0aaDE6TQ
-   +oEISFwZakduq4nd0myICdsyp3MtlijWOuB1kqJnbd37NPtHW8Zxkxzko
-   Y0otTPwUXggJ0PTLuX9IATMuZc9/qBui8rEJpgEnJN/otpum+5D38XRhD
-   HeTpCgmUNS9+7q5JeJg5eExpBIdTnRHyUzIiRWzg3wpdOZ+2mj1gsEQht
-   vNTvwZi8/UiLLpn78JTvpH7YBd4NG/h+jF0hJ4cVPsv1+Nmw/zASRk+j0
-   EMsLVSOyrGg2ZQ7M9yvGpBLfNrRlOZtDFV2+19jsEVEjr3l5UCBEk/rwJ
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="7590695"
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="7590695"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 16:04:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="7893715"
-Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by fmviesa007.fm.intel.com with ESMTP; 29 Feb 2024 16:04:18 -0800
-Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rfqMQ-000DMx-0E;
-	Fri, 01 Mar 2024 00:03:17 +0000
-Date: Fri, 1 Mar 2024 08:02:15 +0800
-From: kernel test robot <lkp@intel.com>
-To: Brian Gerst <brgerst@gmail.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	x86@kernel.org, Ingo Molnar <mingo@kernel.org>
-Subject: [tip:x86/boot 9/9] arch/x86/include/asm/desc.h:60:16: sparse:
- sparse: incorrect type in initializer (different address spaces)
-Message-ID: <202403010704.oGQZPu0P-lkp@intel.com>
+	s=arc-20240116; t=1709251348; c=relaxed/simple;
+	bh=oUJiaf0TY3gDkbZPcr6f6p1dgQYPYkH6NvKCqsgj1dk=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=cEEO6mjJ+Lfu9J70UPXWaqbvKOAYQFf3KQkGReL2BSvbbTNhNCFOACjYyzECUBI4XnPxcYVW3qhFOzibS7z1VXLh4Gu/dy/lnbvfNYsKs/fK+0gkuoXUkpDcIZsvQzfHU20d625JCv/ONdDlsQIjriXFxQY1JzHjbYL/nDrbAmI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Sl2K9FRu; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=UcJ+hhU2; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1709251343;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SNLxnwnRr0Lnru2BqChvcZ/4Fhlb3GVJp1r6JvXa0JY=;
+	b=Sl2K9FRuLPWlgdM1XhIQXkH4ku/NSnMTZaIVaJ584hSHJ4hov86MiSvUZuCZepIUVR1cAx
+	oIAd19FIiFpZhPHCMUytfz736D85uQuykrl1uiXXBGU+ehS0tIR5i6Og713rtfA4Vb3thb
+	2MYEb04nw1jZ0UZbBMj+WDKy0/TT6nIgqd1FYRfe5qhT95dSEyKVrkioPYQTEJfR70tBMI
+	av5wCrc8Ha2AZQfzPfAXK+btFjrbeNVb8EJFZgZonhyLldweWhvrA/VoI8CpvtXRTzsGmy
+	4w8r/0MEaWbhCmuU0X9wAgisrnK4Ab4CPdYU22KqF6zJkMuwXqFyKqQfCiIE6Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1709251343;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SNLxnwnRr0Lnru2BqChvcZ/4Fhlb3GVJp1r6JvXa0JY=;
+	b=UcJ+hhU2wQDuzErMMuwb1abPj6Fwm77imjQaAgGeflRvwfr7OUJZxk2PWYmAx8HPt83+vl
+	EzRkidiP60XJfEAQ==
+To: Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org
+Cc: peterz@infradead.org, mingo@kernel.org
+Subject: Re: [PATCH 1/2] sched/core: switch struct rq->nr_iowait to a normal
+ int
+In-Reply-To: <f1fc564c-528a-47d0-8b68-d596d6681eb5@kernel.dk>
+References: <20240228192355.290114-1-axboe@kernel.dk>
+ <20240228192355.290114-2-axboe@kernel.dk> <8734tb8b57.ffs@tglx>
+ <c3abe716-3d8f-47dc-9c7d-203b05b25393@kernel.dk> <87wmqn6uaw.ffs@tglx>
+ <edd520ab-b95f-4a60-a35a-2490a6d5057f@kernel.dk> <87sf1b6o9w.ffs@tglx>
+ <f1fc564c-528a-47d0-8b68-d596d6681eb5@kernel.dk>
+Date: Fri, 01 Mar 2024 01:02:22 +0100
+Message-ID: <87jzmm7rap.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/boot
-head:   891f8890a4a3663da7056542757022870b499bc1
-commit: 11e36b0f7c2150a6453872b79555767b43c846d0 [9/9] x86/boot/64: Load the final kernel GDT during early boot directly, remove startup_gdt[]
-config: i386-randconfig-061-20240229 (https://download.01.org/0day-ci/archive/20240301/202403010704.oGQZPu0P-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240301/202403010704.oGQZPu0P-lkp@intel.com/reproduce)
+On Thu, Feb 29 2024 at 15:30, Jens Axboe wrote:
+> On 2/29/24 12:52 PM, Thomas Gleixner wrote:
+>>         return atomic_read(&cpu_rq(cpu)->nr_iowait) & ((1 << 16) - 1);
+>> 
+>> Obviously written with proper inline wrappers and defines, but you get
+>> the idea.
+>
+> I'll play with this a bit, but do we want to switch to an atomic_long_t
+> for this? 2^16 in iowait seems extreme, but it definitely seems possible
+> to overflow it.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403010704.oGQZPu0P-lkp@intel.com/
+Indeed. 32bit has PID_MAX_LIMIT == 0x8000 which obviously fits into 16
+bits, while 64bit lifts that limit and relies on memory exhaustion to
+limit the number of concurrent threads on the machine, but that
+obviously can exceed 16bits.
 
-sparse warnings: (new ones prefixed by >>)
->> arch/x86/events/core.c:2809:24: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got struct desc_struct * @@
-   arch/x86/events/core.c:2809:24: sparse:     expected void const [noderef] __percpu *__vpp_verify
-   arch/x86/events/core.c:2809:24: sparse:     got struct desc_struct *
-   arch/x86/events/core.c: note: in included file (through include/linux/mmzone.h, include/linux/gfp.h, include/linux/mm.h, ...):
-   include/linux/page-flags.h:242:46: sparse: sparse: self-comparison always evaluates to false
---
-   arch/x86/kernel/doublefault_32.c: note: in included file (through include/linux/mmzone.h, include/linux/gfp.h, include/linux/mm.h):
-   include/linux/page-flags.h:242:46: sparse: sparse: self-comparison always evaluates to false
-   arch/x86/kernel/doublefault_32.c: note: in included file (through arch/x86/include/asm/elf.h, include/linux/elf.h, include/linux/module.h, ...):
->> arch/x86/include/asm/desc.h:60:16: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got struct gdt_page * @@
-   arch/x86/include/asm/desc.h:60:16: sparse:     expected void const [noderef] __percpu *__vpp_verify
-   arch/x86/include/asm/desc.h:60:16: sparse:     got struct gdt_page *
-   arch/x86/include/asm/desc.h:54:16: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got struct gdt_page * @@
-   arch/x86/include/asm/desc.h:54:16: sparse:     expected void const [noderef] __percpu *__vpp_verify
-   arch/x86/include/asm/desc.h:54:16: sparse:     got struct gdt_page *
---
-   arch/x86/kernel/process.c:798:33: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got struct cpuinfo_x86 * @@
-   arch/x86/kernel/process.c:798:33: sparse:     expected void const [noderef] __percpu *__vpp_verify
-   arch/x86/kernel/process.c:798:33: sparse:     got struct cpuinfo_x86 *
-   arch/x86/kernel/process.c: note: in included file (through include/linux/mmzone.h, include/linux/gfp.h, include/linux/mm.h):
-   include/linux/page-flags.h:242:46: sparse: sparse: self-comparison always evaluates to false
-   arch/x86/kernel/process.c: note: in included file (through arch/x86/include/asm/elf.h, include/linux/elf.h, include/linux/module.h, ...):
->> arch/x86/include/asm/desc.h:60:16: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got struct gdt_page * @@
-   arch/x86/include/asm/desc.h:60:16: sparse:     expected void const [noderef] __percpu *__vpp_verify
-   arch/x86/include/asm/desc.h:60:16: sparse:     got struct gdt_page *
+Whether more than 2^16 sit in iowait concurrently on a single CPU that's
+a different question and probably more academic. :)
 
-vim +60 arch/x86/include/asm/desc.h
+Though as this will touch all nr_iowait places anyway changing it to
+atomic_long_t in a preparatory patch first makes a lot of sense.
 
-a939098afcfa5f include/asm-x86/desc.h      Glauber Costa  2008-05-28  56  
-69218e47994da6 arch/x86/include/asm/desc.h Thomas Garnier 2017-03-14  57  /* Provide the current original GDT */
-69218e47994da6 arch/x86/include/asm/desc.h Thomas Garnier 2017-03-14  58  static inline struct desc_struct *get_current_gdt_rw(void)
-69218e47994da6 arch/x86/include/asm/desc.h Thomas Garnier 2017-03-14  59  {
-69218e47994da6 arch/x86/include/asm/desc.h Thomas Garnier 2017-03-14 @60  	return this_cpu_ptr(&gdt_page)->gdt;
-69218e47994da6 arch/x86/include/asm/desc.h Thomas Garnier 2017-03-14  61  }
-69218e47994da6 arch/x86/include/asm/desc.h Thomas Garnier 2017-03-14  62  
+Thanks,
 
-:::::: The code at line 60 was first introduced by commit
-:::::: 69218e47994da614e7af600bf06887750ab6657a x86: Remap GDT tables in the fixmap section
+        tglx
 
-:::::: TO: Thomas Garnier <thgarnie@google.com>
-:::::: CC: Ingo Molnar <mingo@kernel.org>
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+
+
 
