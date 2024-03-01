@@ -1,120 +1,119 @@
-Return-Path: <linux-kernel+bounces-88994-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88996-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99D2186E92D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:06:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2785986E939
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:10:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4DDD11F2901A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:06:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 938021F22D16
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:10:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3867D848E;
-	Fri,  1 Mar 2024 19:06:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0787930FA4;
+	Fri,  1 Mar 2024 19:09:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rosalinux.ru header.i=@rosalinux.ru header.b="LpF0qO4U"
-Received: from mail.rosalinux.ru (mail.rosalinux.ru [195.19.76.54])
+	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="dnzKh2OB"
+Received: from smtp-8faa.mail.infomaniak.ch (smtp-8faa.mail.infomaniak.ch [83.166.143.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 596D524B23
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 19:06:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.19.76.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6124F39AF6
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 19:09:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.166.143.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709319979; cv=none; b=JqYCeK0WCERioZ+cei6Bu9nJlu/KNV4mtJYAfrwuu65EOthFuwLEFloCyaeStO34Wr5/eyEfgpkUj/o63bYLYcrjpQ1Kk21kkLSGHyX+oZ0IcVLmGi3kXHz2eUi/9vq6CpFKREaulJX9JyayCMt9DRyow9KTHCTFRWQClgz12do=
+	t=1709320190; cv=none; b=hDu4WM4ny4MsanmU0mhc/9Szd2woVhtUnrOxlF4fv3INpqhbdyv/eoUwFFFOnN+RlOLnVAD1N15PdcB4UqEffh7qbr5RUIp1sG8C1bkdgpDSFI1z5FNlxz0Al6UUsJJkniC8BGlcJIgKJqkbqveCkONSLRUAbAgEkeAjj5C5ZtM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709319979; c=relaxed/simple;
-	bh=fBKQb/U2gC/96fp2K2GWljmoZQn9BibE1AkFqiHeIUI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=IlKDUMo3XMqlOdnIYVLvuX3CH6szzvMsO7pWYUYbFNf7ibBcodjdEonyu7G/p83a+INWnThpaPWm+HVV129Cy0v6CqEGeFOf36v9Dh8TkaXIhUgk0/5lfFAXiIPTqjNTX5B82gdKdJskLy5PCZsCxPc0jB7tFpyl/M8xApE2hc4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=rosalinux.ru; spf=pass smtp.mailfrom=rosalinux.ru; dkim=pass (2048-bit key) header.d=rosalinux.ru header.i=@rosalinux.ru header.b=LpF0qO4U; arc=none smtp.client-ip=195.19.76.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=rosalinux.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rosalinux.ru
-Received: from localhost (localhost [127.0.0.1])
-	by mail.rosalinux.ru (Postfix) with ESMTP id 18082DCE59BB9;
-	Fri,  1 Mar 2024 22:06:09 +0300 (MSK)
-Received: from mail.rosalinux.ru ([127.0.0.1])
-	by localhost (mail.rosalinux.ru [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id 67HJQtmzNR1y; Fri,  1 Mar 2024 22:06:08 +0300 (MSK)
-Received: from localhost (localhost [127.0.0.1])
-	by mail.rosalinux.ru (Postfix) with ESMTP id D9520DCE59BBA;
-	Fri,  1 Mar 2024 22:06:08 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.rosalinux.ru D9520DCE59BBA
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rosalinux.ru;
-	s=1D4BB666-A0F1-11EB-A1A2-F53579C7F503; t=1709319968;
-	bh=kclR9O1Au8wRehRzcfqdqVCqhOZ+OqTDy0X/Usb2D9w=;
-	h=From:To:Date:Message-ID:MIME-Version;
-	b=LpF0qO4UY3zq8WFvfMYTDR419wAIeTTaU+28M4bjF48HF3Fk8cLVDiUVvukA6S3xf
-	 LQV5kmSoorpDoEVfmqbF3di3udKnRg4jYZ1IGQ3AXGiMtk6Rit5sfp6Z3LjbacGNRL
-	 w2v2AClGz6r4CWLWnTyazNB7IGiIU5ajLdpKUcgdyf1XoBA2+oBUOTSvr/Sqg0s2wj
-	 XVpUGrzUB8pYNuzUIt1s10sCFq1tXQnW0qkmRIX4eRQapHb215i5a+lXfW0AufIL5i
-	 RUXTL2+VtxS3tRvt0MJEf4ERbuAqjfuLyjsxHAsTGok1lJ86W88XUQ2OVijDjxIGSS
-	 2PazYN5T3KB3A==
-X-Virus-Scanned: amavisd-new at rosalinux.ru
-Received: from mail.rosalinux.ru ([127.0.0.1])
-	by localhost (mail.rosalinux.ru [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id VQ-MjpTfyj7b; Fri,  1 Mar 2024 22:06:08 +0300 (MSK)
-Received: from localhost.localdomain (unknown [62.217.186.174])
-	by mail.rosalinux.ru (Postfix) with ESMTPSA id A728DDCE59BB9;
-	Fri,  1 Mar 2024 22:06:08 +0300 (MSK)
-From: Mikhail Lobanov <m.lobanov@rosalinux.ru>
-To: Rui Miguel Silva <rmfrfs@gmail.com>
-Cc: Mikhail Lobanov <m.lobanov@rosalinux.ru>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	greybus-dev@lists.linaro.org,
-	linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] greybus: Fix deref of NULL in __gb_lights_flash_brightness_set
-Date: Fri,  1 Mar 2024 14:04:24 -0500
-Message-ID: <20240301190425.120605-1-m.lobanov@rosalinux.ru>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1709320190; c=relaxed/simple;
+	bh=rjofMt5czWAZ/8UdgmbuNLIMUbqVfuBuDdVqP8nEB2w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iaotNkRSQ6e2nWQwckGmljR6L67XP75AAIoQFc3KtvlBrNbd+yb1PqqpdSPlfMEc705nYwTnpSUt6v0xICsVdJ+Ln1Y5R3jFj9w8hQh/ubbKdpRfiB2740kh2sRb4hfA1sksLuYSQyFh7YkQ90VGH0kCN54VT7+w7F5TviBWdh4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=dnzKh2OB; arc=none smtp.client-ip=83.166.143.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
+Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
+	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4Tmd1t6YX5zMyYJT;
+	Fri,  1 Mar 2024 20:09:38 +0100 (CET)
+Received: from unknown by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4Tmd1s45G5zMpnPg;
+	Fri,  1 Mar 2024 20:09:37 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
+	s=20191114; t=1709320178;
+	bh=rjofMt5czWAZ/8UdgmbuNLIMUbqVfuBuDdVqP8nEB2w=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=dnzKh2OBS0YkrIYpEspkpvDAydMZFIZk4Nh0+Gbx0+8Lk3b671LXi4kdNjVmCBsTZ
+	 Rm7K2WbZWudBEHrEPsAMJOJB+6kHAUx0XE/0mQzOmvZ1EZHpPA5fTAcSzByG999MpW
+	 RTwlsi3ZWspSksJZHRaVH8PWKdKF1bQBjNrpiNAw=
+Date: Fri, 1 Mar 2024 20:09:27 +0100
+From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
+To: Kees Cook <keescook@chromium.org>
+Cc: Brendan Higgins <brendanhiggins@google.com>, 
+	David Gow <davidgow@google.com>, Rae Moar <rmoar@google.com>, 
+	Shuah Khan <skhan@linuxfoundation.org>, Alan Maguire <alan.maguire@oracle.com>, 
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	"H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, 
+	James Morris <jamorris@linux.microsoft.com>, Luis Chamberlain <mcgrof@kernel.org>, 
+	"Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>, Marco Pagani <marpagan@redhat.com>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Sean Christopherson <seanjc@google.com>, 
+	Stephen Boyd <sboyd@kernel.org>, Thara Gopinath <tgopinath@microsoft.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Vitaly Kuznetsov <vkuznets@redhat.com>, 
+	Wanpeng Li <wanpengli@tencent.com>, Zahra Tarkhani <ztarkhani@microsoft.com>, kvm@vger.kernel.org, 
+	linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org
+Subject: Re: [PATCH v1 5/8] kunit: Handle test faults
+Message-ID: <20240301.EeyeePa2lien@digikod.net>
+References: <20240229170409.365386-1-mic@digikod.net>
+ <20240229170409.365386-6-mic@digikod.net>
+ <202402291023.071AA58E3@keescook>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <202402291023.071AA58E3@keescook>
+X-Infomaniak-Routing: alpha
 
-Dereference of null pointer in the __gb_lights_flash_brightness_set funct=
-ion.
-Assigning the channel the result of executing the get_channel_from_mode f=
-unction
-without checking for NULL may result in an error.
+On Thu, Feb 29, 2024 at 10:24:19AM -0800, Kees Cook wrote:
+> On Thu, Feb 29, 2024 at 06:04:06PM +0100, Mickaël Salaün wrote:
+> > Previously, when a kernel test thread crashed (e.g. NULL pointer
+> > dereference, general protection fault), the KUnit test hanged for 30
+> > seconds and exited with a timeout error.
+> > 
+> > Fix this issue by waiting on task_struct->vfork_done instead of the
+> > custom kunit_try_catch.try_completion, and track the execution state by
+> > initially setting try_result with -EFAULT and only setting it to 0 if
+> > the test passed.
+> > 
+> > Fix kunit_generic_run_threadfn_adapter() signature by returning 0
+> > instead of calling kthread_complete_and_exit().  Because thread's exit
+> > code is never checked, always set it to 0 to make it clear.
+> > 
+> > Fix the -EINTR error message, which couldn't be reached until now.
+> > 
+> > This is tested with a following patch.
+> > 
+> > Cc: Brendan Higgins <brendanhiggins@google.com>
+> > Cc: David Gow <davidgow@google.com>
+> > Cc: Rae Moar <rmoar@google.com>
+> > Cc: Shuah Khan <skhan@linuxfoundation.org>
+> > Signed-off-by: Mickaël Salaün <mic@digikod.net>
+> 
+> I assume we can start checking for "intentional" faults now?
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+Yes, but adding dedicated exception handling for such faults would
+probably be cleaner.
 
-Fixes: 2870b52bae4c ("greybus: lights: add lights implementation")
-Signed-off-by: Mikhail Lobanov <m.lobanov@rosalinux.ru>
----
- drivers/staging/greybus/light.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+At least we can now easily write tests as I did with the last patch. The
+only potential issue is that the kernel will still print the related
+warning in logs, but I think it's OK for tests (and maybe something we'd
+like to test too by the way).
 
-diff --git a/drivers/staging/greybus/light.c b/drivers/staging/greybus/li=
-ght.c
-index 87d36948c610..929514350947 100644
---- a/drivers/staging/greybus/light.c
-+++ b/drivers/staging/greybus/light.c
-@@ -148,10 +148,15 @@ static int __gb_lights_flash_brightness_set(struct =
-gb_channel *channel)
- 						GB_CHANNEL_MODE_TORCH);
-=20
- 	/* For not flash we need to convert brightness to intensity */
--	intensity =3D channel->intensity_uA.min +
-+
-+	if (channel) {
-+		intensity =3D channel->intensity_uA.min +
- 			(channel->intensity_uA.step * channel->led->brightness);
-=20
--	return __gb_lights_flash_intensity_set(channel, intensity);
-+		return __gb_lights_flash_intensity_set(channel, intensity);
-+	}
-+
-+	return 0;
- }
- #else
- static struct gb_channel *get_channel_from_cdev(struct led_classdev *cde=
-v)
---=20
-2.43.0
-
+> 
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> 
+> -- 
+> Kees Cook
+> 
 
