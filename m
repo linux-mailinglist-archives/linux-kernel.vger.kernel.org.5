@@ -1,192 +1,161 @@
-Return-Path: <linux-kernel+bounces-88659-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88660-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 170C886E4EC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:04:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B99186E4F3
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:05:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6824283E42
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:04:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF6DD1F23DB3
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:05:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6791A70AF5;
-	Fri,  1 Mar 2024 16:04:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7172670CAE;
+	Fri,  1 Mar 2024 16:05:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="UIgSXCo/";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jMkoRH2D";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="UIgSXCo/";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jMkoRH2D"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="eaQFp5bZ"
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE6EF38DC3
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 16:04:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6107338DC3;
+	Fri,  1 Mar 2024 16:05:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709309042; cv=none; b=cYGC2KevkE3i1qZeCkc912wmBrKdDRaxTZPMwRYLFElLg8N3umDuQMuVIsDx0Nno1LaUbKCksK6oRmZg4wHI5C63ovyICqcdSTx4e/9lc6UaSzURNY25+tT4TTWPtcu7Nyy7Iitaj7pcSzXIuQWXvu2NmV+EsdTiS+UuZSEK7zA=
+	t=1709309115; cv=none; b=eL6/Vw27B2wp+mwIK+cbXj+AaVm1HQy8zOQF4xJxl3ZIWtCWMfS6ZQs9yw+8pzMbb/WfepGEyMOWQG4ktyRQ6Byzvf3g7qZVKyV88oJ8UCVoz5VHR2PHbo7lLDkzaS78tFWEqOCghq5kZDjRMIxAA7jNTD/jnuukns1ptvSTQcs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709309042; c=relaxed/simple;
-	bh=HZCnirsXZ9rn1IThWaKHVxVS5cA3jDCKr5aryDmWi2o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kAQxSKPBW/uv4w3eQXKPW/I2ElBCr929Kk3f1gcyElfLIRHEHPJJHV3V7dPvQrZQtxjTODLeu3uwyiX/LGeHPp9x9GiJS2ObJWA4wnHz8J3CQ1ewHBf+FP0SEBckWLM0QeOwHgV4SOTupruWOvs2QbNeJ79+F9TaQjTf48K8gA4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=UIgSXCo/; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=jMkoRH2D; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=UIgSXCo/; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=jMkoRH2D; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id AA267206D7;
-	Fri,  1 Mar 2024 16:03:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1709309038; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1709309115; c=relaxed/simple;
+	bh=GdiD6GetYQ7plMbY7Z0t9eGPdeIDnAI9+mc+CerOGzw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JRy0dqbU5TEspWf1UeVKmVg3nAvYZYuDCR00uZGWZK1DgFcnxh+IgzkNfYVGJMLCCMOhzXqFm//iSl2r6MSFRDqXOqp3oExcY/+8zZYjIMM1SlaVfTUL9Z3KtX0jSHuBLAna3Or4AzSbFgkWFAK1DdlbIPPpy7Tfe4m2zwRHs50=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=eaQFp5bZ; arc=none smtp.client-ip=217.70.183.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 95E3824000A;
+	Fri,  1 Mar 2024 16:05:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709309110;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=WjR6OvQiPcuCw93mAUfU7kJQwKpvjY1JrTdttou/ro4=;
-	b=UIgSXCo/2RInJegpmI12RiPD+Dls2VU4xtaUVNW2fZsRGE3A/qfxp7qD5m5thox+LDrosy
-	8FKwMuk3qW3EPQXHALZ+EjVJSaYXk3ylMnvGc2ROhlWJmgTCMckdq49tYQYEGnF/JOdoLH
-	FvhK3XkSStfgltINgYQ2K/+P0UjHp2U=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1709309038;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WjR6OvQiPcuCw93mAUfU7kJQwKpvjY1JrTdttou/ro4=;
-	b=jMkoRH2DN4FqIMQK3IJs1gDBY4dp8UkaCBaCtSGh7ojUuw3M/rRruKv3lnKVVXXbF5VgyF
-	kwrWH+8HuqeLwBAQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1709309038; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WjR6OvQiPcuCw93mAUfU7kJQwKpvjY1JrTdttou/ro4=;
-	b=UIgSXCo/2RInJegpmI12RiPD+Dls2VU4xtaUVNW2fZsRGE3A/qfxp7qD5m5thox+LDrosy
-	8FKwMuk3qW3EPQXHALZ+EjVJSaYXk3ylMnvGc2ROhlWJmgTCMckdq49tYQYEGnF/JOdoLH
-	FvhK3XkSStfgltINgYQ2K/+P0UjHp2U=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1709309038;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WjR6OvQiPcuCw93mAUfU7kJQwKpvjY1JrTdttou/ro4=;
-	b=jMkoRH2DN4FqIMQK3IJs1gDBY4dp8UkaCBaCtSGh7ojUuw3M/rRruKv3lnKVVXXbF5VgyF
-	kwrWH+8HuqeLwBAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8D94E13A80;
-	Fri,  1 Mar 2024 16:03:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id jgCPIW784WXQCAAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Fri, 01 Mar 2024 16:03:58 +0000
-Message-ID: <6594a42c-0f53-4124-9177-d1c631d9764f@suse.cz>
-Date: Fri, 1 Mar 2024 17:03:58 +0100
+	bh=zelpl9Plgt9LUl8SLGJpDVPo1sGxGYnWY3UETmUttgY=;
+	b=eaQFp5bZScbGwpgadNiS1YbG9levV0au38YUoIL0hxygwV7g6FeLLeW96RsgM2JSK5/y/v
+	IuCyA/Uvy9RhUykUMzyHdX2sgVoaCwGHteXQclYrhITtGzJOMUov52/XHPBOPSkV/GSbCB
+	Wdmx1iozjOr2wkzXLy5PlzSWYmJni6Rr4WFJWzpNtnLXMXlqu0fvj+gm/VmlOVzhDX98Ch
+	8jGtXh86+iVXDMVRzC91FwJrUBqzt/5jEGy3DZEUJ30aOVDoeq7iTj7tefQaFWSuRO8ig4
+	OFRefvZWHEGSzHjLQ8YYJYMjHLCghOIQV8v1JDJ1TW/teic2A7i5MmwAix6yrQ==
+Date: Fri, 1 Mar 2024 17:05:08 +0100
+From: Kamel Bouhara <kamel.bouhara@bootlin.com>
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Henrik Rydberg <rydberg@bitmath.org>, linux-input@vger.kernel.org,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+	Marco Felsch <m.felsch@pengutronix.de>,
+	Jeff LaBundy <jeff@labundy.com>
+Cc: catalin.popescu@leica-geosystems.com, mark.satterthwaite@touchnetix.com,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Gregory Clement <gregory.clement@bootlin.com>,
+	bsp-development.geo@leica-geosystems.com
+Subject: Re: [PATCH v9 0/3] Input: Add TouchNetix axiom touchscreen driver
+Message-ID: <20240301160508.GA190983@tpx1.home>
+References: <20240301103909.167923-1-kamel.bouhara@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mm, slab: remove the corner case of inc_slabs_node()
-Content-Language: en-US
-To: chengming.zhou@linux.dev, cl@linux.com
-Cc: penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
- akpm@linux-foundation.org, roman.gushchin@linux.dev, 42.hyeyoo@gmail.com,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20240222130233.2880176-1-chengming.zhou@linux.dev>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20240222130233.2880176-1-chengming.zhou@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="UIgSXCo/";
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=jMkoRH2D
-X-Spamd-Result: default: False [1.20 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 TO_DN_NONE(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[10];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[kernel.org,google.com,lge.com,linux-foundation.org,linux.dev,gmail.com,kvack.org,vger.kernel.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[];
-	 BAYES_HAM(-0.00)[39.38%]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: 1.20
-X-Rspamd-Queue-Id: AA267206D7
-X-Spam-Level: *
-X-Spam-Flag: NO
-X-Spamd-Bar: +
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240301103909.167923-1-kamel.bouhara@bootlin.com>
+X-GND-Sasl: kamel.bouhara@bootlin.com
 
-On 2/22/24 14:02, chengming.zhou@linux.dev wrote:
-> From: Chengming Zhou <chengming.zhou@linux.dev>
-> 
-> We already have the inc_slabs_node() after kmem_cache_node->node[node]
-> initialized in early_kmem_cache_node_alloc(), this special case of
-> inc_slabs_node() can be removed. Then we don't need to consider the
-> existence of kmem_cache_node in inc_slabs_node() anymore.
-> 
-> Signed-off-by: Chengming Zhou <chengming.zhou@linux.dev>
+Le Fri, Mar 01, 2024 at 11:39:05AM +0100, Kamel Bouhara a écrit :
+> Add a new driver for the TouchNetix's axiom family of touchscreen
+> controller. This driver only support i2c and can be later adapted for
+> SPI and USB support.
+>
+> Kamel Bouhara (3):
+>   dt-bindings: vendor-prefixes: Add TouchNetix AS
+>   dt-bindings: input: Add TouchNetix axiom touchscreen
+>   Input: Add TouchNetix axiom i2c touchscreen driver
+>
+>  .../input/touchscreen/touchnetix,ax54a.yaml   |  62 ++
+>  .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+>  MAINTAINERS                                   |   7 +
+>  drivers/input/touchscreen/Kconfig             |  12 +
+>  drivers/input/touchscreen/Makefile            |   1 +
+>  drivers/input/touchscreen/touchnetix_axiom.c  | 669 ++++++++++++++++++
+>  6 files changed, 753 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/touchnetix,ax54a.yaml
+>  create mode 100644 drivers/input/touchscreen/touchnetix_axiom.c
+>
+> --
+> 2.25.1
+>
 
-Well spotted, thank. Added to slab/for-next.
+Above is the missing changelog:
 
-> ---
->  mm/slub.c | 13 ++-----------
->  1 file changed, 2 insertions(+), 11 deletions(-)
-> 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 284b751b3b64..3f413e5e1415 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -1500,16 +1500,8 @@ static inline void inc_slabs_node(struct kmem_cache *s, int node, int objects)
->  {
->  	struct kmem_cache_node *n = get_node(s, node);
->  
-> -	/*
-> -	 * May be called early in order to allocate a slab for the
-> -	 * kmem_cache_node structure. Solve the chicken-egg
-> -	 * dilemma by deferring the increment of the count during
-> -	 * bootstrap (see early_kmem_cache_node_alloc).
-> -	 */
-> -	if (likely(n)) {
-> -		atomic_long_inc(&n->nr_slabs);
-> -		atomic_long_add(objects, &n->total_objects);
-> -	}
-> +	atomic_long_inc(&n->nr_slabs);
-> +	atomic_long_add(objects, &n->total_objects);
->  }
->  static inline void dec_slabs_node(struct kmem_cache *s, int node, int objects)
->  {
-> @@ -4877,7 +4869,6 @@ static void early_kmem_cache_node_alloc(int node)
->  	slab = new_slab(kmem_cache_node, GFP_NOWAIT, node);
->  
->  	BUG_ON(!slab);
-> -	inc_slabs_node(kmem_cache_node, slab_nid(slab), slab->objects);
->  	if (slab_nid(slab) != node) {
->  		pr_err("SLUB: Unable to allocate memory from node %d\n", node);
->  		pr_err("SLUB: Allocating a useless per node structure in order to be able to continue\n");
+Changes in v2:
+ - Add device tree binding documentation
+ - Move core functions in axiom_i2c as we only care about i2c support now
+ - Use static function when required
+ - Use syntax dev_err_probe()
+ - Add an hardware based reset
 
+Changes in v3:
+ - Remove irq-gpios property in dt-binding
+ - Use a generic node name
+ - Fix issues reported in https://lore.kernel.org/oe-kbuild-all/202310100300.oAC2M62R-lkp@intel.com/
+
+Changes in v4:
+ - Cleanup unused headers and macros
+ - Use standard kernel type
+ - Namespace structures and functions
+ - Use packed struct when possible to avoid bitfield operators
+ - Fix missing break when address is found in axiom_populate_target_address()
+ - Split reads in two steps for the reports, first length then report
+   itself so we only read required bytes
+ - Get poll-interval from devicetree
+ - Add VDDI/VDDA regulators
+ - Add a startup delay of 110 ms required after VDDA/VDDI is applied
+ - Remove axiom_i2c_write() as it is no more used
+
+Changes in v5:
+ - Fix wrong message constructed in axiom_i2c_read
+ - Delay required between i2c reads is >= 250us
+ - Do not split report reading in two phases as we'll
+   have to wait 500us
+ - Use lower-case in properties names
+ - Make regulators properties are required in dt-binding
+ - Fix bug report: https://lore.kernel.org/lkml/202312051457.y3N1q3sZ-lkp@intel.com/
+ - Fix bug report: https://lore.kernel.org/lkml/6f8e3b64-5b21-4a50-8680-063ef7a93bdb@suswa.mountain/
+
+Changes in v6:
+ - Fix missing unevaluatedProperties.in dt-binding
+ - Use __le16 to correctly deal with device endianness
+ - Use standart kernel types s/char/u8/
+ - Use regmap api as driver might support spi later
+ - Use get_unaligned_le16() for the sake of clarity
+ - Use devm_regulator_enable_optional()
+
+Changes in v7:
+ - Remove startup time from dt-binding
+ - Fix usage table not correctly populated
+
+Changes in v8:
+ - Fix missing call to input_report_slot_state()
+ - Fix issue reported in https://lore.kernel.org/oe-kbuild-all/202402020623.8T1Ah513-lkp@intel.com/
+
+Changes in v9:
+ - Fix issue reported in https://lore.kernel.org/oe-kbuild-all/202402201157.BKo97uWl-lkp@intel.com/
+ - Rebase on v6.8-rc2
+
+--
+Kamel Bouhara, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
 
