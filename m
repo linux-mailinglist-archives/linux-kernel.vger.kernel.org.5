@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-87726-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87727-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1753C86D83C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:14:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2AAA886D83D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:14:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9ECAF286A04
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 00:14:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 29AC3B20574
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 00:14:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27FE71FBF;
-	Fri,  1 Mar 2024 00:13:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 913252568;
+	Fri,  1 Mar 2024 00:13:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="M1YLZif1"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="bELh1cTn"
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EF2E6AA2
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 00:13:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B3721364
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 00:13:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709251983; cv=none; b=PjNoqHezDXdCJt5aEEWDnbZzu+bTcJxTAJrtcptndmq2HZZitKR3/Dcsw36zpPOkwBIpnoWcVypCPUnY3+3H39jM/F2SP92OFBb+L2zioasvsS+RFTMQAHlOWmC14ZciTyZXW5NQKpxX4UiZ1zoHNH8H/fPqeC89FYGPsJGc4EY=
+	t=1709251988; cv=none; b=E+HazQQPaMN/SAzZ6isWvX2QdFpk1/CV/UeMtxsCCS+GIV1fW469jsrI3bGecvQa42aFrlnY+Uv/3L7FcrzGyH+v4KsI6uDpO6rp1ni8TBuhqb2P0pkkOXyV7345Bu2Q5lHfsUqtP5qkoIeQotByNONqCH+gCxqZzXk7X/jREvM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709251983; c=relaxed/simple;
-	bh=MYKBxuR+aJph7D9FYI37RGyFCJkN1zgdY0Ybz9nXzqY=;
+	s=arc-20240116; t=1709251988; c=relaxed/simple;
+	bh=plA+/Ds0xvFbb6U3u3M8ilxs/x7ZgpNx1PsraFtKLNM=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=ahWqfKuZiMbQWqWcdOqD3w5Eg3MDMiyD/gnjyBTD1Hl/tfNTea5hGIl4Xs/7VmtRlX2WM4v4tOR+Ea9kfP57NwdegbeI5fUAi/3MUsklLXKq2OSfQd4KhU+7U30dGaJQbjvzMikA0IlxmV6gX86BWxRwEhPzXTOeFuMO1XvLDxM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=M1YLZif1; arc=none smtp.client-ip=46.235.227.194
+	 In-Reply-To:To:Cc; b=pe9B5wD+WmvR1FWp/T9PQKtym8X5wqrcQaM1j+LtqikpxpDBYHCadWNolXTw83ZwXEoEgZql56ICxCU96DGTFh3R+DxJ2psWmvKz270UM6aZwvU5VwOcrKPV7wPtzZrQmJxy5noPP76ZrSgnHaEAN1YedT302oVQQD72fzZ4H84=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=bELh1cTn; arc=none smtp.client-ip=46.235.227.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709251980;
-	bh=MYKBxuR+aJph7D9FYI37RGyFCJkN1zgdY0Ybz9nXzqY=;
+	s=mail; t=1709251985;
+	bh=plA+/Ds0xvFbb6U3u3M8ilxs/x7ZgpNx1PsraFtKLNM=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=M1YLZif1WED+vvuhoA+scIcRTPnw98+XmpYskhv7KfiRTZHliAuL/NFFZwRaikprw
-	 5/kPyPgu+FNAttkzLubD2cCK2Y9EseyttFZrq32z3e+tH4VM4XT1a8lzAl+2JJTiY2
-	 a3MYMdMeHRYcS+hzq0bi5oKBS832zjV9QIzM0svssSolLEF/cgs6mIzRhzPuPcgVXq
-	 3/HWsNnvmiEj4DMlbMpsd7mbO5Cv9QFxBslrY99kO2YhDnq9/EhRKsxC8Cxo5qbeeK
-	 CRlZvaITDZW6gdhNvOyuXjmGggHb+LlsoZzZqLWGkPpyW8/lxG0s3JjW4kM+Vq37a/
-	 mdGKQOqTVEt5A==
+	b=bELh1cTnraZfxf8dHy6VCIwRcfxJwFIbKP+rfx9P36tSUl6jdNOa8bfxW+fFHoI4b
+	 AXNq+sfqg0CLcRG+1hGv5RyiLTZHEVHEazsZCCTKDuRpgY8mAKwnnFVaJzhdjEfQU7
+	 9PQx302JO3t6shSX/7rjg9Y0noLFaMcqw9rFHg+/EU52m22oKJ2viqQMMTt5NrxTIF
+	 7xForobxy/oTLhbLNT6/Aqb6wMU4kupeYJDyNl1sCc/BZqVv6uJVPV67C2fk+jsko0
+	 itosv+yHr3qgdhs2GtRG1BCw39+AU390RBMuRZLP7EM/+r4gIqsAWRhlq1PGovcjnJ
+	 VMl6h2DznZkUQ==
 Received: from [192.168.1.205] (zone.collabora.co.uk [167.235.23.81])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: nfraprado)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 31A22378000E;
-	Fri,  1 Mar 2024 00:12:56 +0000 (UTC)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id DEA4037820EE;
+	Fri,  1 Mar 2024 00:13:00 +0000 (UTC)
 From: =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>
-Date: Thu, 29 Feb 2024 19:12:14 -0500
-Subject: [PATCH v2 8/9] drm/panel: novatek-nt35950: Don't log an error when
+Date: Thu, 29 Feb 2024 19:12:15 -0500
+Subject: [PATCH v2 9/9] drm/panel: truly-nt35597: Don't log an error when
  DSI host can't be found
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -59,7 +59,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240229-anx7625-defer-log-no-dsi-host-v2-8-00506941049a@collabora.com>
+Message-Id: <20240229-anx7625-defer-log-no-dsi-host-v2-9-00506941049a@collabora.com>
 References: <20240229-anx7625-defer-log-no-dsi-host-v2-0-00506941049a@collabora.com>
 In-Reply-To: <20240229-anx7625-defer-log-no-dsi-host-v2-0-00506941049a@collabora.com>
 To: Andrzej Hajda <andrzej.hajda@intel.com>, 
@@ -91,30 +91,29 @@ make use of dev_err_probe() to log the reason. This makes the defer
 probe reason available and avoids alerting userspace about something
 that is not necessarily an error.
 
-Fixes: 623a3531e9cf ("drm/panel: Add driver for Novatek NT35950 DSI DriverIC panels")
 Suggested-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
 ---
- drivers/gpu/drm/panel/panel-novatek-nt35950.c | 6 ++----
+ drivers/gpu/drm/panel/panel-truly-nt35597.c | 6 ++----
  1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-novatek-nt35950.c b/drivers/gpu/drm/panel/panel-novatek-nt35950.c
-index 648ce9201426..028fdac293f7 100644
---- a/drivers/gpu/drm/panel/panel-novatek-nt35950.c
-+++ b/drivers/gpu/drm/panel/panel-novatek-nt35950.c
-@@ -556,10 +556,8 @@ static int nt35950_probe(struct mipi_dsi_device *dsi)
- 		}
- 		dsi_r_host = of_find_mipi_dsi_host_by_node(dsi_r);
- 		of_node_put(dsi_r);
--		if (!dsi_r_host) {
--			dev_err(dev, "Cannot get secondary DSI host\n");
--			return -EPROBE_DEFER;
--		}
-+		if (!dsi_r_host)
-+			return dev_err_probe(dev, -EPROBE_DEFER, "Cannot get secondary DSI host\n");
+diff --git a/drivers/gpu/drm/panel/panel-truly-nt35597.c b/drivers/gpu/drm/panel/panel-truly-nt35597.c
+index b73448cf349d..d447db912a61 100644
+--- a/drivers/gpu/drm/panel/panel-truly-nt35597.c
++++ b/drivers/gpu/drm/panel/panel-truly-nt35597.c
+@@ -550,10 +550,8 @@ static int truly_nt35597_probe(struct mipi_dsi_device *dsi)
  
- 		nt->dsi[1] = mipi_dsi_device_register_full(dsi_r_host, info);
- 		if (!nt->dsi[1]) {
+ 	dsi1_host = of_find_mipi_dsi_host_by_node(dsi1);
+ 	of_node_put(dsi1);
+-	if (!dsi1_host) {
+-		dev_err(dev, "failed to find dsi host\n");
+-		return -EPROBE_DEFER;
+-	}
++	if (!dsi1_host)
++		return dev_err_probe(dev, -EPROBE_DEFER, "failed to find dsi host\n");
+ 
+ 	/* register the second DSI device */
+ 	dsi1_device = mipi_dsi_device_register_full(dsi1_host, &info);
 
 -- 
 2.44.0
