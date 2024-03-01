@@ -1,107 +1,154 @@
-Return-Path: <linux-kernel+bounces-88817-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88818-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECA5286E719
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:23:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CF2C86E720
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:24:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A494286A10
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:23:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D049A2821ED
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:24:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF46C8BE3;
-	Fri,  1 Mar 2024 17:23:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A1098BFE;
+	Fri,  1 Mar 2024 17:24:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="LOsV90QX"
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i6z+M4m5"
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B172EDB
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 17:23:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FEA55228;
+	Fri,  1 Mar 2024 17:23:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709313810; cv=none; b=UFIgAAJBHzbAm9QETxRRhfl3GoWtwjCvBW05rYlPUJ8d0Egs1F4wUuZeHJg7AJDo2I21cUvU7/PBDIOwPbxN5BHlwP5XOEbph/Rm3X/XAgaASSJpaDX9U64dM1a5zSNp+7jo19YQTCYF+ag8xUYx2Z0A9x09zKp7PZJnnnnJxPw=
+	t=1709313841; cv=none; b=EJdUYQKhJ6NIGM+EdFMVMQHn1mBQiRzAwu+y9XXG/armeD/MUB8c8kZ/zO2ZGv78KSGBu97nbYEow3cOlELq1Upnx2dsiHmImvRNqmIKJrYS6rZgbAhlyGE8TbGxycm8V5K4fvbBM+2ZuUOeRT8IT/YHy1le3C/YCm7OUy8hji8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709313810; c=relaxed/simple;
-	bh=ZB41xxYjV5A+nWYJEkfqZuC83VuREIATmp7V3mKC6cY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YaJrCSiUG1CQcoQ3JiWq06KtpkKwy5MZe7wDNhWt9uRgh+GJPB4evfxtKJLeLnBv+pB4zrBs0kThm9sfxb3onl8CPb8x3FVQJKnLW8S1FnHECyeuZ/X8bBy/OuNrcGHT1EhlfJfmUJIvZkou0KBOsEFwTxk8NVvRbKeAU/A7194=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=LOsV90QX; arc=none smtp.client-ip=209.85.128.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-60858cfbc98so1201247b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 09:23:26 -0800 (PST)
+	s=arc-20240116; t=1709313841; c=relaxed/simple;
+	bh=veI8B19i8DnVTq/s4obgrpoRoZCjKRQ6AAnu47Af2jM=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=YSc775p0Jrbz7c0FrdoE/WkIBNO08wv6xIOP5sP+4uvzUOxlv1+/jJoGoJJPOGjwaYmz+afPBsNMSYyYwYzr7yRSaS2zC/oc2jHrwS2HlnkT+xq9zvssSFEHlwKdp/ef1ja+MOPQWZRSIvyU7TKkOHo1R+UO2vq4bBGQ6HW0VXg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=i6z+M4m5; arc=none smtp.client-ip=209.85.215.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5d4d15ec7c5so2017511a12.1;
+        Fri, 01 Mar 2024 09:23:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1709313805; x=1709918605; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GesJ1JUX6AzHnSVJK5O06OdbpXZSjoyV0Rx4Wyc+lJI=;
-        b=LOsV90QXYpin+VPG0pmevGnHUUBTbM+T+45KAW1yzZtty4D3qiQ20d0El2JQbvh3hA
-         qKZVoJhOL6t/pr5sWGNhwoWSY8i2jmx2I2LEmqY8334hemy5P++50GqdptEbSJbeGkT5
-         D2LlufmFSMMy1aHrTczigrjSyNl9+xYX7z3dGesAJkzDf723Zo72G3vOlZB0Ysufsr1k
-         XoC+kd8D5A/XdyA4ffQiFNNKHea68XL+wgyswp+vjID/yfisJwq65reSyEg0MtubB5Cq
-         UX+VXS+dlKEJ+EpHQJVoq7ZWPsuPFDa0D97IYP2OYQRaFSfhiub2v3yhWST6jigtIb6R
-         9vZg==
+        d=gmail.com; s=20230601; t=1709313839; x=1709918639; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RyyU1KTZ+u7IZU/ZLxa5MUX+oMEqsxDrKnYwc61Y+0Q=;
+        b=i6z+M4m5cSR+ppHq/yUnHAD1HIe+gJ2UogR1BQ9tffF2aXnrazIW7uGKQ278dBq6Jg
+         w9iSZw75EoTF3CfnEjzbLq5t6sFq7KnTzitgwTWW7zJrM7NFL8TcOeT2R7/b6N0hXCDX
+         bnpuS13gRqBfCw++y5mkmEiBcB1jYndmT7T+Dkut1FGoENgliKmHZSDbWWC9pknsf4K+
+         HlzAFkueXyZYA4TLKtmWCixGi3BsZpT5+V5njCW3GB+zFd3dXBGvnxYmAc+GubGvEDGF
+         Rx+IzCqeTtt/L7/0uBgiWSqcOfsU8kRj6SW2F4BV2ZTNnAiUL4JqO4WS/N2tktBx0LJA
+         /8iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709313805; x=1709918605;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GesJ1JUX6AzHnSVJK5O06OdbpXZSjoyV0Rx4Wyc+lJI=;
-        b=jBVUiCnBzRqN7gdtnQwUwyNuFWAw84FKtPv1GQ2Ka1m/KAWiwxvJWzF/tQ30WnM/Vv
-         l7xWRi3cyYxbUgApW1ewRLCjL2g/eLO+bTKN3H9SpmQCkt9oDKoyjHpkDunoAUWdZd/P
-         TbQBILljHEYBtnVAFd6NkLgsMiwFVaieL9HQhiDjZeqrC96mUqAND8EHB/PgZQtzMhjK
-         KrADhAuDRZE/ZEyGmwpwEcpZ+9jqZKZnV9c9yiU85AAwlQONPeBiS1LsZecggBnG8QsB
-         18izwNIrr7+a2w101d0iO4r6sxpMZo2QTsG8uNzI+96692HoTFKg+0nZtu/yFEV4X+N1
-         lfbw==
-X-Forwarded-Encrypted: i=1; AJvYcCVNYjDC+omkkTbgpz07QUYCrCLF2oqOwonY1ZY6VD1Vad6iMo7qy6j+XoeGNt/Z0NI1oUsAh89x3z1YDkUd9MTIrNKLK5HNsh25heSQ
-X-Gm-Message-State: AOJu0YwBlyoDkJ8eYb/GERjl6jrWMvR1dt/JJCWiOnbXxIWwSTDgQJp7
-	Kbc33dW++7DEYqPS7DgTNxADRGFfxsMQnBt/V8J7cSq8/m/O9Htlg37G7wk921o=
-X-Google-Smtp-Source: AGHT+IGC0G34ue7Mz6Bxa2+Ac9u3TgFULDTUIHDsYIc8Bej77mS7rq/TVrjQa3q10GvBOOUZsbMEmQ==
-X-Received: by 2002:a0d:e248:0:b0:609:722b:1bec with SMTP id l69-20020a0de248000000b00609722b1becmr2246600ywe.1.1709313805287;
-        Fri, 01 Mar 2024 09:23:25 -0800 (PST)
-Received: from ?IPV6:2600:380:9d78:b2ac:81c:a8a9:d9d1:d5ee? ([2600:380:9d78:b2ac:81c:a8a9:d9d1:d5ee])
-        by smtp.gmail.com with ESMTPSA id x2-20020a81b042000000b0060987e4cdfdsm239325ywk.117.2024.03.01.09.23.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Mar 2024 09:23:24 -0800 (PST)
-Message-ID: <8d04d4e7-5d89-4ec4-8069-2b38ab350741@kernel.dk>
-Date: Fri, 1 Mar 2024 10:23:23 -0700
+        d=1e100.net; s=20230601; t=1709313839; x=1709918639;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=RyyU1KTZ+u7IZU/ZLxa5MUX+oMEqsxDrKnYwc61Y+0Q=;
+        b=MAnrRG2+9zUx+ywPGEbM7HBiDsA932WaFo3fH0K/Sdn8YNMl/QGPrfjKsoh25vIIQA
+         3g3qLfaB9eVr5xjN7Z0MEcJDz+GzdgKghE6C8qYD5lizWDBEeo53rgyZsbB9y1H9THSH
+         jGShDiomx/8jyZPW0sdtrySvxmqF3gpo9lWt6Ea7ctM5+ZNB7Ns3p1IFSG+EayHYZLCH
+         viJKI8wLcPBEggP5iXJoSOSsm6ieYT6jXAW2QKHIGVk3rOVPfJJ2gEkCrJMxxPPi0ghY
+         HJL4IsSIP4mZHY0KD9UpXmCHzVWnRd4sLSD0JF7YIWFCWe3MwOVqZNP2e2F/ih/EZUGT
+         JqgA==
+X-Forwarded-Encrypted: i=1; AJvYcCWsS5DiDs/lvgW4c2LPW8HgaR4mzK1tlB4Z37tH7I5BeAuYOpkgLMZ68Xa7w6Bxz8EGxI68+mhHVijaSgoE+kg8ZvjJlo5/KezawURllS6bouR+JIKtGEwRnlvDT2HDiRoxzOb5DZrV0gX6DF33caW1h02rYAlPXR89aTP3wHg30QRs66ePOPqe0gIjK3JzMihw/ES9JcTI+b/r
+X-Gm-Message-State: AOJu0YysFAEdQ7JDNIMmpYMCp5hZBs++rj2eTG8YiGJDr73TWQYYy1qM
+	l5Mg8pIHkMDyUo/0zC9ZfS8utN8Kn2yh9R85XHRfilohHAZqSoRw
+X-Google-Smtp-Source: AGHT+IERqxQxkRkE14VITG6EjQITNnYMzffw4XzcbvyQqW4Wc7ZerAs9c1302bg9Ijqngdcp3rSclw==
+X-Received: by 2002:a05:6a20:4283:b0:1a0:e3c6:18da with SMTP id o3-20020a056a20428300b001a0e3c618damr2372160pzj.27.1709313839390;
+        Fri, 01 Mar 2024 09:23:59 -0800 (PST)
+Received: from localhost ([98.97.43.160])
+        by smtp.gmail.com with ESMTPSA id i37-20020a635865000000b005dc5289c4edsm3219408pgm.64.2024.03.01.09.23.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Mar 2024 09:23:58 -0800 (PST)
+Date: Fri, 01 Mar 2024 09:23:57 -0800
+From: John Fastabend <john.fastabend@gmail.com>
+To: Song Yoong Siang <yoong.siang.song@intel.com>, 
+ Jesse Brandeburg <jesse.brandeburg@intel.com>, 
+ Tony Nguyen <anthony.l.nguyen@intel.com>, 
+ "David S . Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, 
+ Richard Cochran <richardcochran@gmail.com>, 
+ Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ Jesper Dangaard Brouer <hawk@kernel.org>, 
+ John Fastabend <john.fastabend@gmail.com>, 
+ Stanislav Fomichev <sdf@google.com>, 
+ Vinicius Costa Gomes <vinicius.gomes@intel.com>, 
+ Florian Bezdeka <florian.bezdeka@siemens.com>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ Eduard Zingerman <eddyz87@gmail.com>, 
+ Mykola Lysenko <mykolal@fb.com>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ KP Singh <kpsingh@kernel.org>, 
+ Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, 
+ Shuah Khan <shuah@kernel.org>
+Cc: intel-wired-lan@lists.osuosl.org, 
+ netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ bpf@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org, 
+ xdp-hints@xdp-project.net
+Message-ID: <65e20f2d314bd_5dcfe20857@john.notmuch>
+In-Reply-To: <20240301162348.898619-2-yoong.siang.song@intel.com>
+References: <20240301162348.898619-1-yoong.siang.song@intel.com>
+ <20240301162348.898619-2-yoong.siang.song@intel.com>
+Subject: RE: [PATCH iwl-next,v2 1/2] selftests/bpf: xdp_hw_metadata reduce
+ sleep interval
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] io_uring/net: remove unnecessary check
-Content-Language: en-US
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
- linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <7f5d7887-f76e-4e68-98c2-894bfedbf292@moroto.mountain>
- <3d17a814-2300-4902-8b2c-2a73c0e9bfc4@moroto.mountain>
- <da610465-d1ee-42b2-9f8d-099ed3c39e51@moroto.mountain>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <da610465-d1ee-42b2-9f8d-099ed3c39e51@moroto.mountain>
-Content-Type: text/plain; charset=UTF-8
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: 7bit
 
-On 3/1/24 9:56 AM, Dan Carpenter wrote:
-> On Fri, Mar 01, 2024 at 06:29:52PM +0300, Dan Carpenter wrote:
->> "namelen" is type size_t so it can't be negative.
->>
->> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
->> ---
+Song Yoong Siang wrote:
+> In current ping-pong design, xdp_hw_metadata will wait until the packet
+> transmition completely done, then only start to receive the next packet.
 > 
-> Jens applied Muhammad's patch so this part isn't required any more (and
-> would introduce a bug if it were).
+> The current sleep interval is 10ms, which is unnecessary large. Typically,
+> a NIC does not need such a long time to transmit a packet. Furthermore,
+> during this 10ms sleep time, the app is unable to receive incoming packets.
+> 
+> Therefore, this commit reduce sleep interval to 10us, so that
+> xdp_hw_metadata able to support periodic packets with shorter interval.
+> 10us * 500 = 5ms should be enough for packet transmission and status
+> retrival.
+> 
+> Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
+> ---
+>  tools/testing/selftests/bpf/xdp_hw_metadata.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+> index 878d68db0325..bdf5d8180067 100644
+> --- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
+> +++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+> @@ -480,7 +480,7 @@ static int verify_metadata(struct xsk *rx_xsk, int rxq, int server_fd, clockid_t
+>  					for (int j = 0; j < 500; j++) {
+>  						if (complete_tx(xsk, clock_id))
+>  							break;
+> -						usleep(10*1000);
+> +						usleep(10);
+>  					}
+>  				}
+>  			}
+> -- 
+> 2.34.1
+> 
 
-Yeah good point - thanks, I've dropped it.
-
--- 
-Jens Axboe
-
-
+Acked-by: John Fastabend <john.fastabend@gmail.com>
 
