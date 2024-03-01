@@ -1,120 +1,168 @@
-Return-Path: <linux-kernel+bounces-88025-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88026-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 632A186DC51
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:48:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 757C986DC53
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:48:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DC9628C36A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 07:48:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F10771F226B9
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 07:48:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B655669E0C;
-	Fri,  1 Mar 2024 07:47:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B5E769974;
+	Fri,  1 Mar 2024 07:48:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="EwkVXkq+"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hGO07pqJ"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82D5F69DEE
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 07:47:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8E6D50275;
+	Fri,  1 Mar 2024 07:48:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709279231; cv=none; b=HiE48u0dYx6tWc+O9g/Juk/dgdyO5E8U6YBLsVisVBAiDE1qnueqrBqHOu/suTwlgfvdYzShVa04A+1bnogl4b+WD8EfRFGzYICQ3u1MJXSP2hQplqYbyFG/J6S5PAvNZc4zOvkjAotsXj8bmM5nOEHYu8wVj/fMyLvzYgUgFzg=
+	t=1709279288; cv=none; b=cOGGWy7VXf+Sa4BMwtVlNAYlNr2fm4cQZ546xO05DC8r6cnC7Z/CTvD6tg+ixjZFI1tl4FzCbHWtJ4Uchay+moQ0RVhHK14XOTpQFtOEdSQKJ/s0mssFVbtVQyLgZyJ989GG2lY5IHJR/tQ3XQlH7NSAWMZbh23F/78MuYzhVIY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709279231; c=relaxed/simple;
-	bh=tJ5hV3qK33fMQXhssQ6GzZXnGcMVFTbMlJ9s5yCl8rw=;
-	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Content-Type; b=H4smrZNpuJNMqOkA8RA9xPAG2ZJJ/iZV9nMEsNychiIQ5kU9i8SudC1jcNTKPOPI7/fRVbNr0ZxqzUJt+y2HRzH9Asi6VtjDtdaou8OFbh1HNOVQc9pD4YN0pOrZPS5jPb/L7+SJt/iqgRFqj/bEMhws89hwcA8v/oKUPUXOOpg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=EwkVXkq+; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60948e99cd4so27137117b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 23:47:09 -0800 (PST)
+	s=arc-20240116; t=1709279288; c=relaxed/simple;
+	bh=Pofs6Iq1R1/s2g+DzmAmCcTOqm3WK2u+gBotuVmy8uI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=FoWXB+jPgqEPjzLLEOkaCND4Oa8Wkkfk9dTmnFRmcM49aR2+7tI4vdtQuzVJDq/6XDAjatebedmYmE9PxlJfmzz2KYWs2AUI9G7/OQ584ULz+jfr5wWXSBoq0GnxCSLoX5LO6KU50LZW9Biqqb/GHj9CNkB0sZsVkQXZfaEOQS4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hGO07pqJ; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a28a6cef709so278799766b.1;
+        Thu, 29 Feb 2024 23:48:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709279228; x=1709884028; darn=vger.kernel.org;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6cr3bvTQSOwUcL44V3OWG/EQ3k43z0nNlQO3ZPO+cuQ=;
-        b=EwkVXkq+HbPb74rzNH68QmLtn6Ppye5ynfhaCcxaVindUJY2fnUUTxOl6phR/W9iis
-         DSK1brP5QcrWwtx8RfU9RpOyBarasX8nAOqnHiMBchgWCJxQISUylYpnD5lIrHIm/K6b
-         GdLrOQv4sRYp+EdxLOxb99MEoOXb/7TjaH63l4kJcyz2kXtbKVaAVPQ0mob1zHsfT/Ug
-         hAMTRvHg2UluIa2p+HCZqnJeGst9UFhWVUYe1/bARNHYjI79upfvSeu7OKNSfviHR4CI
-         FbDAJ8poWge5Oc70UzqbtyECHW3kttpR9aBWk+gMpICRN/P9Maa5MmWKH2nZ1Bc6Ob+X
-         ZBuQ==
+        d=gmail.com; s=20230601; t=1709279285; x=1709884085; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=blIn0p2u3QS9iJ7wxkzaIEJOBeHVH2WoSM8ME7du+Nk=;
+        b=hGO07pqJ6weukzqtPRODYokchILfX8JQEygCESdX/MGS/K+iS1oWz8LlCZ1keq0Tah
+         lPVvygFD8meNAxXpa+vY+c9Omx6OtogCYfLVWgfIl7nNhTZ2By91p8CBD0cq4MQ6Sxig
+         cy11q6zf3Zu3retZROXB2k1R96SnPHYZ/4CH3CynjTPaq8SHrVNJhY9wWM0G8rJVhODN
+         f+KodzL4gdiEXQAeEEIfiSkpq39Vq4QmWtsdGKl7iGlRQqzKywIPN6Qx/u9x/NmP3wII
+         3XxbloQEaAKwGYgPASeawlnir1hr3xelZsfBpadD6SAMjttaTB5hazqzZoRslsErmW82
+         OqnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709279228; x=1709884028;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6cr3bvTQSOwUcL44V3OWG/EQ3k43z0nNlQO3ZPO+cuQ=;
-        b=IwdaRLrrej/Urb2NGftbzx5q0X4JUFinby2RfY/xe1E0jPEiV3j7WdTrFilTrQ8oqP
-         bo3IUH97voV2heDhaF9R3p0Q85iSmiILtRoKfhiHWLlCDk1cKLnOFOl79v+jMgLakrvo
-         msLEe8WNBkWs1zM45PdQrT+RmNfrxEeQAIlt1cd05K9s/WvF31V2fTSluuqRqqKyJ4TT
-         QY8AHTqCLLHRygrL7pXM4nETEuZTQxkTbEQbvT8xjLnkxayMQRD/clmhoNwpKtom4g7/
-         /T04OJPKNErOwfTwjL3ZkajPP7eMCpuuWtCwEJ2OyFLog9p6oDZFPqOpy+Q9cRUj29SW
-         /Cjg==
-X-Forwarded-Encrypted: i=1; AJvYcCXMZ9451sWl7mrjnPmLooqP9jM5w8U2vwCpFMOHeWPcMp2i/rio1NIPIPBLEWQxam4cYI5wcMBIBDJWL72/5fezXT9DR60yk5ytJS+H
-X-Gm-Message-State: AOJu0YxaIy2wcoop2aL6nd6vcJRq7Tw5Zyud2I1i6P2C2EQpc4C9XXV/
-	yirzotC1Wx9h9fstloimav46pSGDqx92qWa+L5goh5UH/AZxPk0W8OcjaTQjzXMihs2J+y7RckT
-	FRbKW1Q==
-X-Google-Smtp-Source: AGHT+IGz1E1c7M47HvG6AVrMNEVgIWHJwWURRdJYBFX7yDtVHORL5Dpa11qv+CBdBUGG0mIB6skYqMmLlkT9
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:af4b:7fc1:b7be:fcb7])
- (user=irogers job=sendgmr) by 2002:a05:690c:c92:b0:609:3bd3:31fd with SMTP id
- cm18-20020a05690c0c9200b006093bd331fdmr161226ywb.2.1709279228547; Thu, 29 Feb
- 2024 23:47:08 -0800 (PST)
-Date: Thu, 29 Feb 2024 23:46:39 -0800
-In-Reply-To: <20240301074639.2260708-1-irogers@google.com>
-Message-Id: <20240301074639.2260708-4-irogers@google.com>
+        d=1e100.net; s=20230601; t=1709279285; x=1709884085;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=blIn0p2u3QS9iJ7wxkzaIEJOBeHVH2WoSM8ME7du+Nk=;
+        b=D6goiLuDKyiPiGeozWn/L6t7uubV8VBio2dZbBcuDkDq18S7SiPbU60UHowgK/ul+f
+         So6hp2V5WuZToVAgFpgsOVSlriubViE415RdT9A0jE+nn3ewO/69qWswmOSPMwrqS7h5
+         Fy+gxWO5+AuJWrHB3QLFTZN9rDhDl/3MHliRSZor160xs+YI3ZPZ696kTUxLnrTMiEG2
+         zpwBVVvDR1kGe4pwNFLtHkjTgDp9C0e7sov05IF45H5eclDlMIFZHd96PHVulRlcRtu3
+         65PMaAmlwG+Vflg9q6BNLXaikBdExS/ZNJ/zdrPEcjjOZw/7f0uY9L7SN0BDcPfVQb6e
+         eIGQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUoEoJH02FM5j0nsemadM7c1+yQG3MiI4j7xumL8P/NLVc9RD04OoQx7K68Q0kdgynvZEaCtErnXVlWvr1mnHvuGJqVmZWD9NR8NfBi
+X-Gm-Message-State: AOJu0YxZV03c+/yMKx9rklnucMgMqAByLQ8114yv4DthtTP7qG5MEWHF
+	zKtvBEyYNCaaE+RvF+rsly6MYPrYIMfWvjLU1E6wjXQ5DkMGXsro
+X-Google-Smtp-Source: AGHT+IGjvcG3NiU3BthL7n7m+TBWOhPmabQI29Jtj8gY4+rhklgDETXkIcNQ2rOzg+GWx51/qkCVIQ==
+X-Received: by 2002:a17:906:c49:b0:a3e:e678:556 with SMTP id t9-20020a1709060c4900b00a3ee6780556mr646579ejf.58.1709279284547;
+        Thu, 29 Feb 2024 23:48:04 -0800 (PST)
+Received: from localhost.lan (031011218106.poznan.vectranet.pl. [31.11.218.106])
+        by smtp.gmail.com with ESMTPSA id f26-20020a170906139a00b00a4417c46efbsm1438684ejc.82.2024.02.29.23.48.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Feb 2024 23:48:03 -0800 (PST)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Cc: devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
+Subject: [PATCH] arm64: dts: mediatek: mt2712: fix validation errors
+Date: Fri,  1 Mar 2024 08:47:41 +0100
+Message-Id: <20240301074741.8362-1-zajec5@gmail.com>
+X-Mailer: git-send-email 2.35.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240301074639.2260708-1-irogers@google.com>
-X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Subject: [PATCH v1 4/4] perf test: Read child test 10 times a second rather
- than 1
-From: Ian Rogers <irogers@google.com>
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Christian Brauner <brauner@kernel.org>, James Clark <james.clark@arm.com>, 
-	Kan Liang <kan.liang@linux.intel.com>, Tim Chen <tim.c.chen@linux.intel.com>, 
-	Athira Rajeev <atrajeev@linux.vnet.ibm.com>, Yicong Yang <yangyicong@hisilicon.com>, 
-	Kajol Jain <kjain@linux.ibm.com>, Disha Goel <disgoel@linux.ibm.com>, 
-	K Prateek Nayak <kprateek.nayak@amd.com>, Song Liu <songliubraving@fb.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Make the perf test output smoother by timing out the poll of the child
-process after 100ms rather than 1s.
+From: Rafał Miłecki <rafal@milecki.pl>
 
-Signed-off-by: Ian Rogers <irogers@google.com>
+1. Fixup infracfg clock controller binding
+   It also acts as reset controller so #reset-cells is required.
+2. Use -pins suffix for pinctrl
+
+This fixes:
+arch/arm64/boot/dts/mediatek/mt2712-evb.dtb: syscon@10001000: '#reset-cells' is a required property
+        from schema $id: http://devicetree.org/schemas/arm/mediatek/mediatek,infracfg.yaml#
+arch/arm64/boot/dts/mediatek/mt2712-evb.dtb: pinctrl@1000b000: 'eth_default', 'eth_sleep', 'usb0_iddig', 'usb1_iddig' do not match any of the regexes: 'pinctrl-[0-9]+', 'pins$'
+        from schema $id: http://devicetree.org/schemas/pinctrl/mediatek,mt65xx-pinctrl.yaml#
+
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
 ---
- tools/perf/tests/builtin-test.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/mediatek/mt2712-evb.dts | 8 ++++----
+ arch/arm64/boot/dts/mediatek/mt2712e.dtsi   | 3 ++-
+ 2 files changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
-index e05b370b1e2b..ddb2f4e38ea5 100644
---- a/tools/perf/tests/builtin-test.c
-+++ b/tools/perf/tests/builtin-test.c
-@@ -307,8 +307,8 @@ static int finish_test(struct child_test *child_test, int width)
- 		char buf[512];
- 		ssize_t len;
+diff --git a/arch/arm64/boot/dts/mediatek/mt2712-evb.dts b/arch/arm64/boot/dts/mediatek/mt2712-evb.dts
+index 0c38f7b51763..234e3b23d7a8 100644
+--- a/arch/arm64/boot/dts/mediatek/mt2712-evb.dts
++++ b/arch/arm64/boot/dts/mediatek/mt2712-evb.dts
+@@ -129,7 +129,7 @@ ethernet_phy0: ethernet-phy@5 {
+ };
  
--		/* Poll to avoid excessive spinning, timeout set for 1000ms. */
--		poll(pfds, ARRAY_SIZE(pfds), /*timeout=*/1000);
-+		/* Poll to avoid excessive spinning, timeout set for 100ms. */
-+		poll(pfds, ARRAY_SIZE(pfds), /*timeout=*/100);
- 		if (!err_done && pfds[0].revents) {
- 			errno = 0;
- 			len = read(err, buf, sizeof(buf) - 1);
+ &pio {
+-	eth_default: eth_default {
++	eth_default: eth-default-pins {
+ 		tx_pins {
+ 			pinmux = <MT2712_PIN_71_GBE_TXD3__FUNC_GBE_TXD3>,
+ 				 <MT2712_PIN_72_GBE_TXD2__FUNC_GBE_TXD2>,
+@@ -156,7 +156,7 @@ mdio_pins {
+ 		};
+ 	};
+ 
+-	eth_sleep: eth_sleep {
++	eth_sleep: eth-sleep-pins {
+ 		tx_pins {
+ 			pinmux = <MT2712_PIN_71_GBE_TXD3__FUNC_GPIO71>,
+ 				 <MT2712_PIN_72_GBE_TXD2__FUNC_GPIO72>,
+@@ -182,14 +182,14 @@ mdio_pins {
+ 		};
+ 	};
+ 
+-	usb0_id_pins_float: usb0_iddig {
++	usb0_id_pins_float: usb0-iddig-pins {
+ 		pins_iddig {
+ 			pinmux = <MT2712_PIN_12_IDDIG_P0__FUNC_IDDIG_A>;
+ 			bias-pull-up;
+ 		};
+ 	};
+ 
+-	usb1_id_pins_float: usb1_iddig {
++	usb1_id_pins_float: usb1-iddig-pins {
+ 		pins_iddig {
+ 			pinmux = <MT2712_PIN_14_IDDIG_P1__FUNC_IDDIG_B>;
+ 			bias-pull-up;
+diff --git a/arch/arm64/boot/dts/mediatek/mt2712e.dtsi b/arch/arm64/boot/dts/mediatek/mt2712e.dtsi
+index 6d218caa198c..082672efba0a 100644
+--- a/arch/arm64/boot/dts/mediatek/mt2712e.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt2712e.dtsi
+@@ -249,10 +249,11 @@ topckgen: syscon@10000000 {
+ 		#clock-cells = <1>;
+ 	};
+ 
+-	infracfg: syscon@10001000 {
++	infracfg: clock-controller@10001000 {
+ 		compatible = "mediatek,mt2712-infracfg", "syscon";
+ 		reg = <0 0x10001000 0 0x1000>;
+ 		#clock-cells = <1>;
++		#reset-cells = <1>;
+ 	};
+ 
+ 	pericfg: syscon@10003000 {
 -- 
-2.44.0.278.ge034bb2e1d-goog
+2.35.3
 
 
