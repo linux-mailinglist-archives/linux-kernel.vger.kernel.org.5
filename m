@@ -1,284 +1,139 @@
-Return-Path: <linux-kernel+bounces-88290-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88291-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 701FC86DFBA
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:57:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60B5886DFBE
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:59:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 946D61C223DC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:57:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 015FDB218F2
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:59:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A21266BFCB;
-	Fri,  1 Mar 2024 10:57:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 820046BFC9;
+	Fri,  1 Mar 2024 10:59:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IjJspZR6"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XJpBYCdw"
+Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA3305811C
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 10:57:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40A405811C
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 10:59:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709290644; cv=none; b=RR2pBLoMdywEmXwsOlnnguT5Kb904eHC3MXNLy52x8CK8sHOfns04T4x8KvNOSFSmFtt6ZLPm6hYb7QsHDMcwZ8YDpEO8Gy5TC6H+P5hIvAXpSnRceixfHbBWyAX6HupYFiBxv+pFhJaDisw+hZzQuv0GZg9tort0GKfxczzXtA=
+	t=1709290778; cv=none; b=Eq2lVqGXTf4UVzJ1ksqdp+v8jq/4Q0kgARaWAQAhPjnf4obovczeu/ANFX7QwRtMcU66jGbrD44pgVuprjOpknYGUj3pOd/G38pHar9iDPMmu76kttVD2fWDmecFq6jso2qx51Qmw1ArXvcLOENfukPAgeUbce9HsqTUaf4yi70=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709290644; c=relaxed/simple;
-	bh=rRd8uWwX/b7Jpv8ssx2B4Vqm0Ikga5riTA/kuvfXqt8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=o7e2YAXvUGKXbsIpl+EZ99eydO4AHrKztBo0VYBNJkyQLKPUO1eq9rVXX/sV8s451KdB5W1InKkPiyn6mLx+YYtRqhJym3cX3TjTm5F2vs2w6I94+omSY2eY/DGvFz0vi7eJHPe57LvonRbKHZ3GJ/J1jl8lYW3wFCcRf/+oj/Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IjJspZR6; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709290641;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=dP5AIMOMk0h8z/W7wIEWvlucRYlBl59bb3JXCokMLMI=;
-	b=IjJspZR6oEt46EybH9488vxZqKtU56PaIcbPhPY6TilRJ5tSmNx0bsfiDMt76CxKS8pA4X
-	xjeX8bOpNJfoBuYTtkWF4MxEo4YsN2CVD1PAIMbVoAZPb6uzXjPjUfoZmYLrKPSEyRF4tt
-	nVeH10JSKLia7Nw5Jwf3nd8jxb/yyfg=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-423-LDVm2MBTOcm1QvN267MrIw-1; Fri, 01 Mar 2024 05:57:20 -0500
-X-MC-Unique: LDVm2MBTOcm1QvN267MrIw-1
-Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2d32d9a312eso4298901fa.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 02:57:20 -0800 (PST)
+	s=arc-20240116; t=1709290778; c=relaxed/simple;
+	bh=FwsfBDQ6oo4G7eqOtvRT/Kp2BDuvxZZ0tWNMz1sTY8I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uIkqUJXHiyJHAJAsjbKarSe/ukq4X/vLeCxWU/+5ZCBcheTWOaCezM09rGy9gdFHWphW82YCu+5Rjiu++45M7doNhccQ6jBVase6gCT7Yt/F8P+DDyBlZApdROjxQ18tqSTua6im75V4WwaHUbkzzfWWCC+TfC+hFKlKwgJhEnw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=XJpBYCdw; arc=none smtp.client-ip=209.85.222.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-787ba57afd1so126665085a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 02:59:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709290776; x=1709895576; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=heDjbeIBikVTGhhOlss+48ysC6wtU2DLudUIpsZswWE=;
+        b=XJpBYCdwEGnGiVKisTL7i8Qs8NhjXP0fcm1eWjYKVey23bXWnmzZ/f2955HBNm8B0E
+         I4dWnjFoJOa4Er2K+JyOfmpF7kBsXq75lh0cOZUGXwL2/AiktiBE7qeJ2VEh/YCHMl3i
+         D8ROK4Hac/ZnMTgREdYgVSrx3TVW7tI/jbZbt2Ir01HGLdvR2Sl6f4i1cSkynktXX0uh
+         1U3be8jU44GH63sS+INQjCKCTqfBVavJSHXcyPVEv9Ntg4yZgF3yjvbVdybYkgMi4lEI
+         eYE9ahS9U/0ExB6Y9sxlex+eZ/RndFRjZggF5ggQGRBGQ0bIWgKZAsQ97qG4WQOUpRHQ
+         SipA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709290639; x=1709895439;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1709290776; x=1709895576;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=dP5AIMOMk0h8z/W7wIEWvlucRYlBl59bb3JXCokMLMI=;
-        b=MAS3/LauQIL0ejko1qIJ9C9mCkfBv7QnTtVIaVtLbaDeYi0jhT+M/UGsycfu6pZ64z
-         6Py9/d6sHWIYcTADqaDME3Acp4ig2D5VYDeP+M6kdq0hfEPzj4gHei/JLzkJb+OMeD4t
-         lYelClCXuNoTch+5LKrDrgXOC9KoSf5/v70jL+hVrAlLyt97MZo29uOjidQESGIXJZ5L
-         SAM9WDSPmXmEMiQDCycM0hsHqItuClS6m6/Y7Wz/I95CvT+YWGAZDyPj792P6UzP4gTd
-         H32cM/mDiJE6RzOxy0xy0sM7PcV7XjVlOTGBPtfQaIw8CbXUepOAJH/BGoWT/KkzhjVQ
-         rQdw==
-X-Forwarded-Encrypted: i=1; AJvYcCUIigxENepzvhALIs+kInoNIc7zOzwjAq8og9ElD/lXNC6j7VWt3FwOSqBaQDnUPjDzbkjCObqqKt/TddT1XPtRQr8RKQjVXr6q3eAJ
-X-Gm-Message-State: AOJu0YzG8wzV0HNqaPWphCw/4vojXrgCGWuXw8BFi5F5d7XT425YujLd
-	vNf1F+9dSd9A3K1qxvFYDkmnIKY82fHxJCXqw7qM95EtalBXUTHFCX3vfWzO7gP2IZg0RmwyZtS
-	Ozs0cGzhQZZ+yOW2he6OqAhzXzkrK9zmwQeZeorHYAStIweFeFd7qDbPpDN4DkQ==
-X-Received: by 2002:a05:651c:3c2:b0:2d2:eb57:3ac8 with SMTP id f2-20020a05651c03c200b002d2eb573ac8mr749882ljp.34.1709290638920;
-        Fri, 01 Mar 2024 02:57:18 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEzT0D2jIJHklDubgIiJtWZUt6TSaFZFaFsjIhHJHFwapKmha9BlJFym0nzngluJJehFQUG6Q==
-X-Received: by 2002:a05:651c:3c2:b0:2d2:eb57:3ac8 with SMTP id f2-20020a05651c03c200b002d2eb573ac8mr749868ljp.34.1709290638433;
-        Fri, 01 Mar 2024 02:57:18 -0800 (PST)
-Received: from ?IPV6:2003:cb:c713:3200:77d:8652:169f:b5f7? (p200300cbc7133200077d8652169fb5f7.dip0.t-ipconnect.de. [2003:cb:c713:3200:77d:8652:169f:b5f7])
-        by smtp.gmail.com with ESMTPSA id v12-20020a05600c444c00b00412b9e4af05sm5160814wmn.0.2024.03.01.02.57.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Mar 2024 02:57:17 -0800 (PST)
-Message-ID: <97d53a8b-1b8c-47a7-977f-4fc4977ef236@redhat.com>
-Date: Fri, 1 Mar 2024 11:57:16 +0100
+        bh=heDjbeIBikVTGhhOlss+48ysC6wtU2DLudUIpsZswWE=;
+        b=d1xMCWnuJ3X9GtgUFSgnJLbGEEfb8G35F2jK4obu6rkutj15Axt9Lp8B+5tWIrOoO1
+         4Xd1F3B/1Tl2PCGaSyLqWmpUw6rNg5RDlHxPRg3LNc9mdMUkkY53Of9gMdbD284TUkpN
+         ORZ6PKP9LRl/KHfoEHcDpqBn+CTtck9fHYFRXHz8mM/Hr7F3wVsO+rhx+wyyCmIccfx2
+         KSV89Cspxv/zh5Y6NvMmBEi3t0JszrUQbd2+QL4tIfWBh6tdVWHkJDRVXbnBAOPxVTDq
+         k4NiB2Kqx7HptcllblYcXZ1pSzv4VA0KFOp5fJVntC1vKbyrUBGcPraCRDLlkv8OJdHc
+         3wZA==
+X-Forwarded-Encrypted: i=1; AJvYcCXvKNSQjS2Chd5r0THqUPJg02khf32O8QUpgfwzSqg0c2annxsJMQAgmmOXTAnS0gBssxxc32QcZO4Ha4eo6SVNBdqxjboSfySuff7E
+X-Gm-Message-State: AOJu0YyXCEb+xP93RmrkBcsGV7ZKptX9sRDxQtBB9dG5P2uD4KlxxCG3
+	071olTMx8GadRDE4ZPa7r9K6KaYkhQzNDajimQFgw2L0wkukRGfnm6gtp7b3NVY=
+X-Google-Smtp-Source: AGHT+IHN3RFUf4xIhE9BdFUrbXg7sIULyHbJcthR9TCMfAkix2nb9xh72THwDt/a538zlyKC5tWoUg==
+X-Received: by 2002:a0c:fdec:0:b0:68f:3f98:f695 with SMTP id m12-20020a0cfdec000000b0068f3f98f695mr1269673qvu.39.1709290776130;
+        Fri, 01 Mar 2024 02:59:36 -0800 (PST)
+Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
+        by smtp.gmail.com with ESMTPSA id qm14-20020a056214568e00b0068f92234e2fsm1710852qvb.109.2024.03.01.02.59.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Mar 2024 02:59:35 -0800 (PST)
+Date: Fri, 1 Mar 2024 10:59:31 +0000
+From: Daniel Thompson <daniel.thompson@linaro.org>
+To: Liuye <liu.yeC@h3c.com>
+Cc: "jason.wessel@windriver.com" <jason.wessel@windriver.com>,
+	"dianders@chromium.org" <dianders@chromium.org>,
+	"gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+	"jirislaby@kernel.org" <jirislaby@kernel.org>,
+	"kgdb-bugreport@lists.sourceforge.net" <kgdb-bugreport@lists.sourceforge.net>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>
+Subject: Re: =?utf-8?B?562U5aSN?= =?utf-8?Q?=3A?= [PATCH] kdb: Fix the
+ deadlock issue in KDB debugging.
+Message-ID: <20240301105931.GB5795@aspen.lan>
+References: <20240228025602.3087748-1-liu.yeC@h3c.com>
+ <20240228120516.GA22898@aspen.lan>
+ <8b41d34adaef4ddcacde2dd00d4e3541@h3c.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] vfio/type1: unpin PageReserved page
-Content-Language: en-US
-To: Alex Williamson <alex.williamson@redhat.com>
-Cc: Yisheng Xie <ethan.xys@linux.alibaba.com>, akpm@linux-foundation.org,
- kvm@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20240226160106.24222-1-ethan.xys@linux.alibaba.com>
- <20240226091438.1fc37957.alex.williamson@redhat.com>
- <e10ace3f-78d3-4843-8028-a0e1cd107c15@linux.alibaba.com>
- <20240226103238.75ad4b24.alex.williamson@redhat.com>
- <abb00aef-378c-481a-a885-327a99aa7b09@redhat.com>
- <20240227132556.17e87767.alex.williamson@redhat.com>
- <20240229150406.4d41db01.alex.williamson@redhat.com>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20240229150406.4d41db01.alex.williamson@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8b41d34adaef4ddcacde2dd00d4e3541@h3c.com>
 
-On 29.02.24 23:04, Alex Williamson wrote:
-> On Tue, 27 Feb 2024 13:25:56 -0700
-> Alex Williamson <alex.williamson@redhat.com> wrote:
-> 
->> On Tue, 27 Feb 2024 11:27:08 +0100
->> David Hildenbrand <david@redhat.com> wrote:
->>
->>> On 26.02.24 18:32, Alex Williamson wrote:
->>>> On Tue, 27 Feb 2024 01:14:54 +0800
->>>> Yisheng Xie <ethan.xys@linux.alibaba.com> wrote:
->>>>      
->>>>> 在 2024/2/27 00:14, Alex Williamson 写道:
->>>>>> On Tue, 27 Feb 2024 00:01:06 +0800
->>>>>> Yisheng Xie<ethan.xys@linux.alibaba.com>  wrote:
->>>>>>        
->>>>>>> We meet a warning as following:
->>>>>>>     WARNING: CPU: 99 PID: 1766859 at mm/gup.c:209 try_grab_page.part.0+0xe8/0x1b0
->>>>>>>     CPU: 99 PID: 1766859 Comm: qemu-kvm Kdump: loaded Tainted: GOE  5.10.134-008.2.x86_64 #1
->>>>>>                                                                       ^^^^^^^^
->>>>>>
->>>>>> Does this issue reproduce on mainline?  Thanks,
->>>>>
->>>>> I have check the code of mainline, the logical seems the same as my
->>>>> version.
->>>>>
->>>>> so I think it can reproduce if i understand correctly.
->>>>
->>>> I obviously can't speak to what's in your 5.10.134-008.2 kernel, but I
->>>> do know there's a very similar issue resolved in v6.0 mainline and
->>>> included in v5.10.146 of the stable tree.  Please test.  Thanks,
->>>
->>> This commit, to be precise:
->>>
->>> commit 873aefb376bbc0ed1dd2381ea1d6ec88106fdbd4
->>> Author: Alex Williamson <alex.williamson@redhat.com>
->>> Date:   Mon Aug 29 21:05:40 2022 -0600
->>>
->>>       vfio/type1: Unpin zero pages
->>>       
->>>       There's currently a reference count leak on the zero page.  We increment
->>>       the reference via pin_user_pages_remote(), but the page is later handled
->>>       as an invalid/reserved page, therefore it's not accounted against the
->>>       user and not unpinned by our put_pfn().
->>>       
->>>       Introducing special zero page handling in put_pfn() would resolve the
->>>       leak, but without accounting of the zero page, a single user could
->>>       still create enough mappings to generate a reference count overflow.
->>>       
->>>       The zero page is always resident, so for our purposes there's no reason
->>>       to keep it pinned.  Therefore, add a loop to walk pages returned from
->>>       pin_user_pages_remote() and unpin any zero pages.
->>>
->>>
->>> BUT
->>>
->>> in the meantime, we also have
->>>
->>> commit c8070b78751955e59b42457b974bea4a4fe00187
->>> Author: David Howells <dhowells@redhat.com>
->>> Date:   Fri May 26 22:41:40 2023 +0100
->>>
->>>       mm: Don't pin ZERO_PAGE in pin_user_pages()
->>>       
->>>       Make pin_user_pages*() leave a ZERO_PAGE unpinned if it extracts a pointer
->>>       to it from the page tables and make unpin_user_page*() correspondingly
->>>       ignore a ZERO_PAGE when unpinning.  We don't want to risk overrunning a
->>>       zero page's refcount as we're only allowed ~2 million pins on it -
->>>       something that userspace can conceivably trigger.
->>>       
->>>       Add a pair of functions to test whether a page or a folio is a ZERO_PAGE.
->>>
->>>
->>> So the unpin_user_page_* won't do anything with the shared zeropage.
->>>
->>> (likely, we could revert 873aefb376bbc0ed1dd2381ea1d6ec88106fdbd4)
->>
->>
->> Yes, according to the commit log it seems like the unpin is now just
->> wasted work since v6.5.  Thanks!
-> 
-> I dusted off an old unit test for mapping the zeropage through vfio and
-> started working on posting a revert for 873aefb376bb but I actually
-> found that this appears to be resolved even before c8070b787519.  I
-> bisected it to:
-> 
-> commit 84209e87c6963f928194a890399e24e8ad299db1
-> Author: David Hildenbrand <david@redhat.com>
-> Date:   Wed Nov 16 11:26:48 2022 +0100
-> 
->      mm/gup: reliable R/O long-term pinning in COW mappings
->      
->      We already support reliable R/O pinning of anonymous memory.
->      However, assume we end up pinning (R/O long-term) a pagecache page
->      or the shared zeropage inside a writable private ("COW") mapping.
->      The next write access will trigger a write-fault and replace the
->      pinned page by an exclusive anonymous page in the process page
->      tables to break COW: the pinned page no longer corresponds to the
->      page mapped into the process' page table.
->      Now that FAULT_FLAG_UNSHARE can break COW on anything mapped into a
->      COW mapping, let's properly break COW first before R/O long-term
->      pinning something that's not an exclusive anon page inside a COW
->      mapping. FAULT_FLAG_UNSHARE will break COW and map an exclusive
->      anon page instead that can get pinned safely.
->      
->      With this change, we can stop using FOLL_FORCE|FOLL_WRITE for
->      reliable R/O long-term pinning in COW mappings.
-> 
-> [...]
-> 
->      Note 3: For users that use FOLL_LONGTERM right now without
->      FOLL_WRITE, such as VFIO, we'd now no longer pin the shared
->      zeropage. Instead, we'd populate exclusive anon pages that we can
->      pin. There was a concern that this could affect the memlock limit
->      of existing setups.
-> 
->      For example, a VM running with VFIO could run into the memlock
->      limit and fail to run. However, we essentially had the same
->      behavior already in commit 17839856fd58 ("gup: document and work
->      around "COW can break either way" issue") which got merged into
->      some enterprise distros, and there were not any such complaints. So
->      most probably, we're fine.
-> 
+On Fri, Mar 01, 2024 at 03:30:25AM +0000, Liuye wrote:
+> >On Wed, Feb 28, 2024 at 10:56:02AM +0800, LiuYe wrote:
+> >> master cpu : After executing the go command, a deadlock occurs.
+> >> slave cpu: may be performing thread migration, acquiring the
+> >> running queue lock of master CPU.  Then it was interrupted by kdb
+> >> NMI and entered the nmi_handler process.  (nmi_handle->
+> >> kgdb_nmicallback-> kgdb_cpu_enter while(1){ touch wathcdog}.)
+> >
+> >I think this description is a little short and doesn't clearly
+> >explain the cause. How about:
+> >
+> >Currently, if kgdboc includes 'kdb', then kgdboc will attempt to use
+> >schedule_work() to provoke a keyboard reset when transitioning out of
+> >the debugger and back to normal operation. This can cause deadlock
+> >because schedule_work() is not NMI-safe.
+> >
+> >The stack trace below shows an example of the problem. In this case
+> >the master cpu is not running from NMI but it has parked the slace
+> >CPUs using an NMI and the parked CPUs is holding spinlocks needed by
+> >schedule_work().
+>
+> Due to the brevity of the description, there may be some
+> misunderstanding, so a detailed description is provided as follows:
 
-Oh, I almost forgot about that one :)
+So, there is a small mistake in the example description I provided.
+After double checking the code it should start slightly differently:
+  "Currently, if CONFIG_KDB_KEYBOARD is enabled, then kgdboc will
+  attempt to use schedule_work() ...".
 
-Indeed, 84209e87c696 was v6.2 and c8070b787519 was v6.5.
+However other than that I think it is correct.
 
-.. and c8070b787519 was primarily concerned about !FOLL_LONGTERM usage, 
-so that makes sense that they would still run into zeropages.
+The important bit of feedback here is that the patch description should
+commence with a description of the bug rather than a description of the
+symptom. In this case the bug is kgdboc calls a function that is not
+safe to call from this calling context.
 
-For vfio, 84209e87c696 did the trick.
+It is really useful to describe the symptom as part of the patch
+description. However if we focus on the symptom without additional
+code review then we can end up with the wrong fix. That is what
+happened here. It is unsafe to call schedule_work() and checking
+the runqueue locks is insufficient to make it safe because we are
+still calling a function from an inappropriate calling context..
 
--- 
-Cheers,
 
-David / dhildenb
-
+Daniel.
 
