@@ -1,214 +1,130 @@
-Return-Path: <linux-kernel+bounces-87819-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87820-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9401E86D96C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 03:12:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66CE486D970
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 03:13:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B7B7A1C22AB7
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 02:12:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A290286C2B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 02:13:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4440E3A1DD;
-	Fri,  1 Mar 2024 02:12:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="fz/2mDkx"
-Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB36D3A8D0;
+	Fri,  1 Mar 2024 02:13:41 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D948D3A1D3
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 02:12:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D903B2AF0D;
+	Fri,  1 Mar 2024 02:13:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709259163; cv=none; b=nsLNWN0PwDnCE7mGfQ7LPmfhrjiqTUjVb4VmKx63B+m8Hgj8fgEpQn8x4Lk3nqmF/dG758ykwLT0g10VW6vIB+UPv5MfKlSi3aG0mbl0cQAhXmiPLPItV+Dh+0kWwPCOSXyoz8soWYQocqKv1Mdh98M8fo07JOhyE8Gg/Pk45VI=
+	t=1709259221; cv=none; b=q+y9ccWTEWCyQtdx80k8ss7310sKU3NVfw1mLfrRou0LQcVCHBRELwGh3hkqmF95sbhJilJzwreHpBX7F7UmX5uvl2lxksJpuiu2uOJ0DtwRULDifIVifuPKr2TawwIxLCuNld1l9SpZnHXh5rrySqmmx4/eETLflgEQl6KqpiU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709259163; c=relaxed/simple;
-	bh=F6imE7VUqeNvS8GH4g1TUlNBqlHzfcl/SlrXlpPHr9U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LZdmIAWmL9ZuPHLld1W0G09f6JCWUcEUIfOVAOk3G9+bc66IszXM7880ERQXrwbJZWeqMBrRHtxJKzeeb7ODMnCwCccfk1xmEI0bBUJ06hMjjfLCi+TQ3NjiTrRAbkJgre/LKVnRpuOE4SVKmR+9HBDG8zBygljaGKxWVm8UX7M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=fz/2mDkx; arc=none smtp.client-ip=209.85.210.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-6e49833ccdfso705884a34.2
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 18:12:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1709259160; x=1709863960; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=r3SFfjWGyTSE99qrr0Tnrw16LTdrZNolz0yFIJjwrxw=;
-        b=fz/2mDkxrEjsACUhJUDXyiR0+ya5ChyDRVIuaEzya47QaDAYi0AF9ClW7zi9Z5vYRQ
-         c4EcRgDaYDOJGpLRhqheizNNw7YG6Q8QH0bLFxMFr0PA/Efax1UCd7ZZwSwCXjRs0CT0
-         WJLmmHekSVEyptN6dVS6ZXAXFDQfGc4bYv+HAPoIeLvfRLtUuJBa9FxrpqJJYglxssKr
-         sPs8Bzhe8kqYW8r9LcznlWlkcplLdtDndFHNYru56RNG2AXX5sgYu+sxFw1lIF3EliB7
-         QwpJWpzgw99hKbdtQlxBAYI+O27XG8sHmhGCjTiSgk7TyiONpYiUVfh9wgKBozqdUcga
-         XDTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709259160; x=1709863960;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=r3SFfjWGyTSE99qrr0Tnrw16LTdrZNolz0yFIJjwrxw=;
-        b=Jp5hKS4veVy8P8YW7SXOpfDI+vow+vQgvtPmJRc4bUATUB73Q0qXV1ve4V4H7OUvUa
-         Pk4ujgKmacZSFmPFY2l0clDZTv0Ng9zm1muQl5w3Cp3ah2E2OHtTGMb55kdwGBQnEEGA
-         sjN4Pj0wueswIDXMAidmlsjn6MkIqE1xWFmliuhUr6bz29zxv/TxFFYpLNrPw/M/73SC
-         HsS4zMQAzrwLUJUI/XdNoFVL1SzIOnuzsASJsl1DxdCcT2xuA5w2Si09se0pVQMEq0/Y
-         OHIW9QuTmmHUmeCVOYplq+q0fCOU1GCDVRv9gO7yt52eoBSOmSgOTmCJpwvnOuehBtdt
-         jKew==
-X-Forwarded-Encrypted: i=1; AJvYcCWvxYhPs6DdDReqh/U7Ypyrq+Hx6l3HeeGTKHR9qAXjJwcdM8SxFYksjT3D6bpr1/25K8IU7qFZ2FWdvXeSK9GcIHpwNIFaN/yT50eI
-X-Gm-Message-State: AOJu0YyE28rDyHytYBwiY30OcoQU6bkYWM+xu19dlugzwM6JpImLLZpk
-	MIO1U+9CZGvSXvTJ6N2svvB1ptPlFge1eYGzkY04UCmqpZ3ShMrKakBilO+JwAeYW6LiVkwK+m4
-	fT//gBP2sa6A3ViaXmyOuaubcOWJrz7ZHBBZJ8g==
-X-Google-Smtp-Source: AGHT+IHo//tiM479EyQm3qLlzScCeQGdZKUojNRzyefzcHNqYrNX/D/mumQN7bmlRV1/paZVkvfk9qXQoBjLMcEk9aI=
-X-Received: by 2002:a05:6870:2b19:b0:220:abe0:8efb with SMTP id
- ld25-20020a0568702b1900b00220abe08efbmr375688oab.13.1709259159890; Thu, 29
- Feb 2024 18:12:39 -0800 (PST)
+	s=arc-20240116; t=1709259221; c=relaxed/simple;
+	bh=NPD/17SvfvonoQ1qrXhKNqN7Pwo5QKQggEW33QEBWeY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=qfD0dyWxVn+SPVk1ebxteC5GsrBUqwysHXMd3MbH7JtV27pGD7vOfgnbfcVJbknQb3aZQIe2v2/9yebX/GJxLYKpZIYhVcJu4mcFInp8eyOBjPxbeO3mYXmS744bksf/iHp0yJDEMlEzImmECECN/PhmCkI7oKJCXiTLf15qZjA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TmBQn5z23z1h142;
+	Fri,  1 Mar 2024 10:11:13 +0800 (CST)
+Received: from kwepemm600017.china.huawei.com (unknown [7.193.23.234])
+	by mail.maildlp.com (Postfix) with ESMTPS id 15F1D1A016B;
+	Fri,  1 Mar 2024 10:13:30 +0800 (CST)
+Received: from [10.174.179.234] (10.174.179.234) by
+ kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 1 Mar 2024 10:13:28 +0800
+Message-ID: <8d49ad72-4d51-27b9-1c0e-0948942f8027@huawei.com>
+Date: Fri, 1 Mar 2024 10:13:28 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240229232211.161961-1-samuel.holland@sifive.com> <20240229232211.161961-7-samuel.holland@sifive.com>
-In-Reply-To: <20240229232211.161961-7-samuel.holland@sifive.com>
-From: yunhui cui <cuiyunhui@bytedance.com>
-Date: Fri, 1 Mar 2024 10:12:28 +0800
-Message-ID: <CAEEQ3wnCAqPjXEnSXc9Vce-kWETmbUpyzBdXi_2K+h+NZt4SqQ@mail.gmail.com>
-Subject: Re: [External] [PATCH v5 06/13] riscv: mm: Combine the SMP and UP TLB
- flush code
-To: Samuel Holland <samuel.holland@sifive.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	Alexandre Ghiti <alexghiti@rivosinc.com>, Jisheng Zhang <jszhang@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Subject: Re: [bug report] dead loop in generic_perform_write() //Re: [PATCH v7
+ 07/12] iov_iter: Convert iterate*() to inline funcs
+To: Linus Torvalds <torvalds@linux-foundation.org>, Al Viro <viro@kernel.org>
+CC: David Howells <dhowells@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+	Christoph Hellwig <hch@lst.de>, Christian Brauner <christian@brauner.io>,
+	David Laight <David.Laight@aculab.com>, Matthew Wilcox <willy@infradead.org>,
+	Jeff Layton <jlayton@kernel.org>, <linux-fsdevel@vger.kernel.org>,
+	<linux-block@vger.kernel.org>, <linux-mm@kvack.org>,
+	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Kefeng Wang
+	<wangkefeng.wang@huawei.com>
+References: <20230925120309.1731676-1-dhowells@redhat.com>
+ <20230925120309.1731676-8-dhowells@redhat.com>
+ <4e80924d-9c85-f13a-722a-6a5d2b1c225a@huawei.com>
+ <CAHk-=whG+4ag+QLU9RJn_y47f1DBaK6b0qYq_6_eLkO=J=Mkmw@mail.gmail.com>
+ <CAHk-=wjSjuDrS9gc191PTEDDow7vHy6Kd3DKDaG+KVH0NQ3v=w@mail.gmail.com>
+ <e985429e-5fc4-a175-0564-5bb4ca8f662c@huawei.com>
+ <CAHk-=wh06M-1c9h7wZzZ=1KqooAmazy_qESh2oCcv7vg-sY6NQ@mail.gmail.com>
+From: Tong Tiangen <tongtiangen@huawei.com>
+In-Reply-To: <CAHk-=wh06M-1c9h7wZzZ=1KqooAmazy_qESh2oCcv7vg-sY6NQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm600017.china.huawei.com (7.193.23.234)
 
-Hi Samuel,
 
-On Fri, Mar 1, 2024 at 7:22=E2=80=AFAM Samuel Holland <samuel.holland@sifiv=
-e.com> wrote:
->
-> In SMP configurations, all TLB flushing narrower than flush_tlb_all()
-> goes through __flush_tlb_range(). Do the same in UP configurations.
->
-> This allows UP configurations to take advantage of recent improvements
-> to the code in tlbflush.c, such as support for huge pages and flushing
-> multiple-page ranges.
->
-> Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
-> ---
->
-> (no changes since v4)
->
-> Changes in v4:
->  - Merge the two copies of __flush_tlb_range() and rely on the compiler
->    to optimize out the broadcast path (both clang and gcc do this)
->  - Merge the two copies of flush_tlb_all() and rely on constant folding
->
-> Changes in v2:
->  - Move the SMP/UP merge earlier in the series to avoid build issues
->  - Make a copy of __flush_tlb_range() instead of adding ifdefs inside
->  - local_flush_tlb_all() is the only function used on !MMU (smpboot.c)
->
->  arch/riscv/Kconfig                |  2 +-
->  arch/riscv/include/asm/tlbflush.h | 30 +++---------------------------
->  arch/riscv/mm/Makefile            |  5 +----
->  3 files changed, 5 insertions(+), 32 deletions(-)
->
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index 0bfcfec67ed5..de9b6f2279ff 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -60,7 +60,7 @@ config RISCV
->         select ARCH_USE_MEMTEST
->         select ARCH_USE_QUEUED_RWLOCKS
->         select ARCH_USES_CFI_TRAPS if CFI_CLANG
-> -       select ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH if SMP && MMU
-> +       select ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH if MMU
->         select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT if MMU
->         select ARCH_WANT_FRAME_POINTERS
->         select ARCH_WANT_GENERAL_HUGETLB if !RISCV_ISA_SVNAPOT
-> diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm/t=
-lbflush.h
-> index 928f096dca21..4f86424b1ba5 100644
-> --- a/arch/riscv/include/asm/tlbflush.h
-> +++ b/arch/riscv/include/asm/tlbflush.h
-> @@ -27,12 +27,7 @@ static inline void local_flush_tlb_page(unsigned long =
-addr)
->  {
->         ALT_FLUSH_TLB_PAGE(__asm__ __volatile__ ("sfence.vma %0" : : "r" =
-(addr) : "memory"));
->  }
-> -#else /* CONFIG_MMU */
-> -#define local_flush_tlb_all()                  do { } while (0)
-> -#define local_flush_tlb_page(addr)             do { } while (0)
-> -#endif /* CONFIG_MMU */
->
-> -#if defined(CONFIG_SMP) && defined(CONFIG_MMU)
->  void flush_tlb_all(void);
->  void flush_tlb_mm(struct mm_struct *mm);
->  void flush_tlb_mm_range(struct mm_struct *mm, unsigned long start,
-> @@ -54,27 +49,8 @@ void arch_tlbbatch_add_pending(struct arch_tlbflush_un=
-map_batch *batch,
->                                unsigned long uaddr);
->  void arch_flush_tlb_batched_pending(struct mm_struct *mm);
->  void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch);
-> -
-> -#else /* CONFIG_SMP && CONFIG_MMU */
-> -
-> -#define flush_tlb_all() local_flush_tlb_all()
-> -#define flush_tlb_page(vma, addr) local_flush_tlb_page(addr)
-> -
-> -static inline void flush_tlb_range(struct vm_area_struct *vma,
-> -               unsigned long start, unsigned long end)
-> -{
-> -       local_flush_tlb_all();
-> -}
-> -
-> -/* Flush a range of kernel pages */
-> -static inline void flush_tlb_kernel_range(unsigned long start,
-> -       unsigned long end)
-> -{
-> -       local_flush_tlb_all();
-> -}
-> -
-> -#define flush_tlb_mm(mm) flush_tlb_all()
-> -#define flush_tlb_mm_range(mm, start, end, page_size) flush_tlb_all()
-> -#endif /* !CONFIG_SMP || !CONFIG_MMU */
-> +#else /* CONFIG_MMU */
-> +#define local_flush_tlb_all()                  do { } while (0)
-> +#endif /* CONFIG_MMU */
->
->  #endif /* _ASM_RISCV_TLBFLUSH_H */
-> diff --git a/arch/riscv/mm/Makefile b/arch/riscv/mm/Makefile
-> index 2c869f8026a8..cbe4d775ef56 100644
-> --- a/arch/riscv/mm/Makefile
-> +++ b/arch/riscv/mm/Makefile
-> @@ -13,14 +13,11 @@ endif
->  KCOV_INSTRUMENT_init.o :=3D n
->
->  obj-y +=3D init.o
-> -obj-$(CONFIG_MMU) +=3D extable.o fault.o pageattr.o pgtable.o
-> +obj-$(CONFIG_MMU) +=3D extable.o fault.o pageattr.o pgtable.o tlbflush.o
->  obj-y +=3D cacheflush.o
->  obj-y +=3D context.o
->  obj-y +=3D pmem.o
->
-> -ifeq ($(CONFIG_MMU),y)
-> -obj-$(CONFIG_SMP) +=3D tlbflush.o
-> -endif
->  obj-$(CONFIG_HUGETLB_PAGE) +=3D hugetlbpage.o
->  obj-$(CONFIG_PTDUMP_CORE) +=3D ptdump.o
->  obj-$(CONFIG_KASAN)   +=3D kasan_init.o
-> --
-> 2.43.1
->
 
-git am the patch failed. Was it a patch based on the top commit of linux-ne=
-xt ?
+在 2024/3/1 1:32, Linus Torvalds 写道:
+> On Thu, 29 Feb 2024 at 00:13, Tong Tiangen <tongtiangen@huawei.com> wrote:
+>>
+>> See the logic before this patch, always success (((void)(K),0)) is
+>> returned for three types: ITER_BVEC, ITER_KVEC and ITER_XARRAY.
+> 
+> No, look closer.
+> 
+> Yes, the iterate_and_advance() macro does that "((void)(K),0)" to make
+> the compiler generate better code for those cases (because then the
+> compiler can see that the return value is a compile-time zero), but
+> notice how _copy_mc_to_iter() didn't use that macro back then. It used
+> the unvarnished __iterate_and_advance() exactly so that the MC copy
+> case would *not* get that "always return zero" behavior.
+> 
+> That goes back to (in a different form) at least commit 1b4fb5ffd79b
+> ("iov_iter: teach iterate_{bvec,xarray}() about possible short
+> copies").
+> 
+> But hardly anybody ever tests this machine-check special case code, so
+> who knows when it broke again.
+> 
+> I'm just looking at the source code, and with all the macro games it's
+> *really* hard to follow, so I may well be missing something.
+> 
+>> Maybe we're all gonna fix it back? as follows：
+> 
+> No. We could do it for the kvec and xarray case, just to get better
+> code generation again (not that I looked at it, so who knows), but the
+> one case that actually uses memcpy_from_iter_mc() needs to react to a
+> short write.
+> 
+> One option might be to make a failed memcpy_from_iter_mc() set another
+> flag in the iter, and then make fault_in_iov_iter_readable() test that
+> flag and return 'len' if that flag is set.
+> 
+> Something like that (wild handwaving) should get the right error handling.
+> 
+> The simpler alternative is maybe something like the attached.
+> COMPLETELY UNTESTED. Maybe I've confused myself with all the different
+> indiraction mazes in the iov_iter code.
+> 
+>                       Linus
+
+Hi Linus:
+
+The method in the attachment i have tested before is feasible and can
+solve this deadloop problem. I also have some confusion about the
+iov_iter code. Let's take a look at manitainer's comments to see whether
+there are more comprehensive considerations.
 
 Thanks,
-Yunhui
+Tong.
 
