@@ -1,58 +1,58 @@
-Return-Path: <linux-kernel+bounces-88050-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88051-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F3D086DCB3
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:08:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB8C186DCB4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:08:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B2B341C23342
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:08:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B7361F26514
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:08:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63C2969DF4;
-	Fri,  1 Mar 2024 08:07:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A1BE69E04;
+	Fri,  1 Mar 2024 08:08:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gCD97T0U"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eauSVewi"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8BA369DEE
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 08:07:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EC3F69E03
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 08:07:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709280474; cv=none; b=dFpzXGWtyP5vL3P/zHkeNjS12lKD755SwVfBws+9X418mUowAnUvBG0QTC2pGUUhehH5/lr0XkouXo3r56q8dmMxOy35LTyjdCg6Oq74iKZ8Ieci2/Eu1O1BSnBPh6dSK80STuM3inGZHeEJvTdjQQbQb3WAzRkYZ9C8Fb+9xQw=
+	t=1709280479; cv=none; b=ilofXo76dDOrf7Q7cReSJE81UWoY0AqA6KTREedP9390DRu6XJCUC67/7WsHDQuEvB3vCnAigAoLDUUhKCTQtlKSl97WkwH2hePC73rS2ID57QTY9fgThxlo3XVun9yL3QbQphLWgk/d+h6ZTDE2IxAy4rcvLVR8MNhTGMgMy7I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709280474; c=relaxed/simple;
-	bh=PxCAiYtKq4ZC4tYUczYhbIaMCCBZWQXFEkXEtyJKYro=;
+	s=arc-20240116; t=1709280479; c=relaxed/simple;
+	bh=/cVxTPK8YMoBH+k7owpPAvLO8OBKEisXNbpy2Gi5tXs=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=V1PtZrmRS74shJ5IUf5mLUioe5zVaeU3Wx/eD9v5cxTOO2wvdzifkvf4tB7OJ7lQoctM5RVo6dBgYgGuF0AG/4l6oZQTBUf8Iz/ds7UPiQ1sKSUkrJp46gZKpgH4ApgBn5rzJXkZv0pS7YS9Lp1FTWC7jKnUEO/JIBpQ890R7mc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gCD97T0U; arc=none smtp.client-ip=198.175.65.12
+	 MIME-Version; b=KoF1CLz9yG9TkX63uvWlG8awDNXXACKPpP8wSnbC62btpXFzyLdeKZCkL0VBKwzd7XZbRJ9ytvnVgqNUaEAbJHk738jUzAHvokFPVGkfXy4KGdgCaxyUMB36D/498Wqv5Vo+iudEgtFfefhd+T1/SXKrjM/Bj3iU2e4RRxA9940=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eauSVewi; arc=none smtp.client-ip=198.175.65.12
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709280473; x=1740816473;
+  t=1709280478; x=1740816478;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=PxCAiYtKq4ZC4tYUczYhbIaMCCBZWQXFEkXEtyJKYro=;
-  b=gCD97T0Uai1+S0PcxCC3n0eI5HfG8Xs6od3XipksVwijiLmZEWHyAmBt
-   1OQbX38oi6pGoqRhb++7gXZ41xRTqA55S17kaOYs5Di3h6ghmNhhgaU12
-   MXYkq7C2pAqRyRFhnSNzTMzBqMoPpw1AdKIc2Ha3/kRPw/Nby4QqTgLMt
-   /oO50vJo9o9IIAHHCH7tBtRK8jT1HNjAmBJNx6lTlMjMMEardM28lgvbw
-   JO18OTPTIFfwcCPQY9GIPaE4jKbSW9XFV+RQs2QSUl5SqYUJATgsQ/ewY
-   5Enna+9qIPQXx+faI/EoaqpMjVKOVeUbI/6vbNMMzJWKudR58jPoFDrs8
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="15240417"
+  bh=/cVxTPK8YMoBH+k7owpPAvLO8OBKEisXNbpy2Gi5tXs=;
+  b=eauSVewi23opmyVnh7gJL1Jq27r6WB7PpKnu+2xGJduAfTYjM82P7jgo
+   IGfF1/Uy8lOTUb46dMNiq5ELOT5d3dWMcqLrMBtWbpPuuhEnAg4Udnas3
+   nGvRdhNiD7xfj9phHRgFdQLweDHPCiNAn0LW78AQtR6ezrjKLQAeeuH/z
+   3a3mZxsfuRc+C+9feWKELdJR97MUgNt3BuHTHilu8MT/HY0tFxmwrMmRq
+   G30mcgkExt8NI3E5q8YjhjfrphfbDlbtEW1F5xCC9meP9JEZbcQi+C69e
+   am8y9zRB0lUmTg73SdMvQ63ktydxdq2E31DyPtjQnZfugVsBZ1fyWrP3V
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="15240430"
 X-IronPort-AV: E=Sophos;i="6.06,195,1705392000"; 
-   d="scan'208";a="15240417"
+   d="scan'208";a="15240430"
 Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 00:07:53 -0800
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 00:07:58 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.06,195,1705392000"; 
-   d="scan'208";a="8187494"
+   d="scan'208";a="8187527"
 Received: from unknown (HELO ply01-vm-store.amr.corp.intel.com) ([10.238.153.201])
-  by orviesa009.jf.intel.com with ESMTP; 01 Mar 2024 00:07:48 -0800
+  by orviesa009.jf.intel.com with ESMTP; 01 Mar 2024 00:07:52 -0800
 From: Ethan Zhao <haifeng.zhao@linux.intel.com>
 To: baolu.lu@linux.intel.com,
 	bhelgaas@google.com,
@@ -66,11 +66,10 @@ Cc: kevin.tian@intel.com,
 	dan.carpenter@linaro.org,
 	iommu@lists.linux.dev,
 	linux-kernel@vger.kernel.org,
-	Ethan Zhao <haifeng.zhao@linux.intel.com>,
-	Haorong Ye <yehaorong@bytedance.com>
-Subject: [PATCH v14 2/3] iommu/vt-d: don't issue ATS Invalidation request when device is disconnected
-Date: Fri,  1 Mar 2024 03:07:26 -0500
-Message-Id: <20240301080727.3529832-3-haifeng.zhao@linux.intel.com>
+	Ethan Zhao <haifeng.zhao@linux.intel.com>
+Subject: [PATCH v14 3/3] iommu/vt-d: improve ITE fault handling if target device isn't present
+Date: Fri,  1 Mar 2024 03:07:27 -0500
+Message-Id: <20240301080727.3529832-4-haifeng.zhao@linux.intel.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20240301080727.3529832-1-haifeng.zhao@linux.intel.com>
 References: <20240301080727.3529832-1-haifeng.zhao@linux.intel.com>
@@ -82,192 +81,72 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-For those endpoint devices connect to system via hotplug capable ports,
-users could request a hot reset to the device by flapping device's link
-through setting the slot's link control register, as pciehp_ist() DLLSC
-interrupt sequence response, pciehp will unload the device driver and
-then power it off. thus cause an IOMMU device-TLB invalidation (Intel
-VT-d spec, or ATS Invalidation in PCIe spec r6.1) request for non-existence
-target device to be sent and deadly loop to retry that request after ITE
-fault triggered in interrupt context.
+Because surprise removal could happen anytime, e.g. user could request safe
+removal to EP(endpoint device) via sysfs and brings its link down to do
+surprise removal cocurrently. such aggressive cases would cause ATS
+invalidation request issued to non-existence target device, then deadly
+loop to retry that request after ITE fault triggered in interrupt context.
+this patch aims to optimize the ITE handling by checking the target device
+presence state to avoid retrying the timeout request blindly, thus avoid
+hard lockup or system hang.
 
-That would cause following continuous hard lockup warning and system hang
+Devices TLB should only be invalidated when devices are in the 
+iommu->device_rbtree (probed, not released) and present.
 
-[ 4211.433662] pcieport 0000:17:01.0: pciehp: Slot(108): Link Down
-[ 4211.433664] pcieport 0000:17:01.0: pciehp: Slot(108): Card not present
-[ 4223.822591] NMI watchdog: Watchdog detected hard LOCKUP on cpu 144
-[ 4223.822622] CPU: 144 PID: 1422 Comm: irq/57-pciehp Kdump: loaded Tainted: G S
-         OE    kernel version xxxx
-[ 4223.822623] Hardware name: vendorname xxxx 666-106,
-BIOS 01.01.02.03.01 05/15/2023
-[ 4223.822623] RIP: 0010:qi_submit_sync+0x2c0/0x490
-[ 4223.822624] Code: 48 be 00 00 00 00 00 08 00 00 49 85 74 24 20 0f 95 c1 48 8b
- 57 10 83 c1 04 83 3c 1a 03 0f 84 a2 01 00 00 49 8b 04 24 8b 70 34 <40> f6 c6 1
-0 74 17 49 8b 04 24 8b 80 80 00 00 00 89 c2 d3 fa 41 39
-[ 4223.822624] RSP: 0018:ffffc4f074f0bbb8 EFLAGS: 00000093
-[ 4223.822625] RAX: ffffc4f040059000 RBX: 0000000000000014 RCX: 0000000000000005
-[ 4223.822625] RDX: ffff9f3841315800 RSI: 0000000000000000 RDI: ffff9f38401a8340
-[ 4223.822625] RBP: ffff9f38401a8340 R08: ffffc4f074f0bc00 R09: 0000000000000000
-[ 4223.822626] R10: 0000000000000010 R11: 0000000000000018 R12: ffff9f384005e200
-[ 4223.822626] R13: 0000000000000004 R14: 0000000000000046 R15: 0000000000000004
-[ 4223.822626] FS:  0000000000000000(0000) GS:ffffa237ae400000(0000)
-knlGS:0000000000000000
-[ 4223.822627] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 4223.822627] CR2: 00007ffe86515d80 CR3: 000002fd3000a001 CR4: 0000000000770ee0
-[ 4223.822627] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[ 4223.822628] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7: 0000000000000400
-[ 4223.822628] PKRU: 55555554
-[ 4223.822628] Call Trace:
-[ 4223.822628]  qi_flush_dev_iotlb+0xb1/0xd0
-[ 4223.822628]  __dmar_remove_one_dev_info+0x224/0x250
-[ 4223.822629]  dmar_remove_one_dev_info+0x3e/0x50
-[ 4223.822629]  intel_iommu_release_device+0x1f/0x30
-[ 4223.822629]  iommu_release_device+0x33/0x60
-[ 4223.822629]  iommu_bus_notifier+0x7f/0x90
-[ 4223.822630]  blocking_notifier_call_chain+0x60/0x90
-[ 4223.822630]  device_del+0x2e5/0x420
-[ 4223.822630]  pci_remove_bus_device+0x70/0x110
-[ 4223.822630]  pciehp_unconfigure_device+0x7c/0x130
-[ 4223.822631]  pciehp_disable_slot+0x6b/0x100
-[ 4223.822631]  pciehp_handle_presence_or_link_change+0xd8/0x320
-[ 4223.822631]  pciehp_ist+0x176/0x180
-[ 4223.822631]  ? irq_finalize_oneshot.part.50+0x110/0x110
-[ 4223.822632]  irq_thread_fn+0x19/0x50
-[ 4223.822632]  irq_thread+0x104/0x190
-[ 4223.822632]  ? irq_forced_thread_fn+0x90/0x90
-[ 4223.822632]  ? irq_thread_check_affinity+0xe0/0xe0
-[ 4223.822633]  kthread+0x114/0x130
-[ 4223.822633]  ? __kthread_cancel_work+0x40/0x40
-[ 4223.822633]  ret_from_fork+0x1f/0x30
-[ 4223.822633] Kernel panic - not syncing: Hard LOCKUP
-[ 4223.822634] CPU: 144 PID: 1422 Comm: irq/57-pciehp Kdump: loaded Tainted: G S
-         OE     kernel version xxxx
-[ 4223.822634] Hardware name: vendorname xxxx 666-106,
-BIOS 01.01.02.03.01 05/15/2023
-[ 4223.822634] Call Trace:
-[ 4223.822634]  <NMI>
-[ 4223.822635]  dump_stack+0x6d/0x88
-[ 4223.822635]  panic+0x101/0x2d0
-[ 4223.822635]  ? ret_from_fork+0x11/0x30
-[ 4223.822635]  nmi_panic.cold.14+0xc/0xc
-[ 4223.822636]  watchdog_overflow_callback.cold.8+0x6d/0x81
-[ 4223.822636]  __perf_event_overflow+0x4f/0xf0
-[ 4223.822636]  handle_pmi_common+0x1ef/0x290
-[ 4223.822636]  ? __set_pte_vaddr+0x28/0x40
-[ 4223.822637]  ? flush_tlb_one_kernel+0xa/0x20
-[ 4223.822637]  ? __native_set_fixmap+0x24/0x30
-[ 4223.822637]  ? ghes_copy_tofrom_phys+0x70/0x100
-[ 4223.822637]  ? __ghes_peek_estatus.isra.16+0x49/0xa0
-[ 4223.822637]  intel_pmu_handle_irq+0xba/0x2b0
-[ 4223.822638]  perf_event_nmi_handler+0x24/0x40
-[ 4223.822638]  nmi_handle+0x4d/0xf0
-[ 4223.822638]  default_do_nmi+0x49/0x100
-[ 4223.822638]  exc_nmi+0x134/0x180
-[ 4223.822639]  end_repeat_nmi+0x16/0x67
-[ 4223.822639] RIP: 0010:qi_submit_sync+0x2c0/0x490
-[ 4223.822639] Code: 48 be 00 00 00 00 00 08 00 00 49 85 74 24 20 0f 95 c1 48 8b
- 57 10 83 c1 04 83 3c 1a 03 0f 84 a2 01 00 00 49 8b 04 24 8b 70 34 <40> f6 c6 10
- 74 17 49 8b 04 24 8b 80 80 00 00 00 89 c2 d3 fa 41 39
-[ 4223.822640] RSP: 0018:ffffc4f074f0bbb8 EFLAGS: 00000093
-[ 4223.822640] RAX: ffffc4f040059000 RBX: 0000000000000014 RCX: 0000000000000005
-[ 4223.822640] RDX: ffff9f3841315800 RSI: 0000000000000000 RDI: ffff9f38401a8340
-[ 4223.822641] RBP: ffff9f38401a8340 R08: ffffc4f074f0bc00 R09: 0000000000000000
-[ 4223.822641] R10: 0000000000000010 R11: 0000000000000018 R12: ffff9f384005e200
-[ 4223.822641] R13: 0000000000000004 R14: 0000000000000046 R15: 0000000000000004
-[ 4223.822641]  ? qi_submit_sync+0x2c0/0x490
-[ 4223.822642]  ? qi_submit_sync+0x2c0/0x490
-[ 4223.822642]  </NMI>
-[ 4223.822642]  qi_flush_dev_iotlb+0xb1/0xd0
-[ 4223.822642]  __dmar_remove_one_dev_info+0x224/0x250
-[ 4223.822643]  dmar_remove_one_dev_info+0x3e/0x50
-[ 4223.822643]  intel_iommu_release_device+0x1f/0x30
-[ 4223.822643]  iommu_release_device+0x33/0x60
-[ 4223.822643]  iommu_bus_notifier+0x7f/0x90
-[ 4223.822644]  blocking_notifier_call_chain+0x60/0x90
-[ 4223.822644]  device_del+0x2e5/0x420
-[ 4223.822644]  pci_remove_bus_device+0x70/0x110
-[ 4223.822644]  pciehp_unconfigure_device+0x7c/0x130
-[ 4223.822644]  pciehp_disable_slot+0x6b/0x100
-[ 4223.822645]  pciehp_handle_presence_or_link_change+0xd8/0x320
-[ 4223.822645]  pciehp_ist+0x176/0x180
-[ 4223.822645]  ? irq_finalize_oneshot.part.50+0x110/0x110
-[ 4223.822645]  irq_thread_fn+0x19/0x50
-[ 4223.822646]  irq_thread+0x104/0x190
-[ 4223.822646]  ? irq_forced_thread_fn+0x90/0x90
-[ 4223.822646]  ? irq_thread_check_affinity+0xe0/0xe0
-[ 4223.822646]  kthread+0x114/0x130
-[ 4223.822647]  ? __kthread_cancel_work+0x40/0x40
-[ 4223.822647]  ret_from_fork+0x1f/0x30
-[ 4223.822647] Kernel Offset: 0x6400000 from 0xffffffff81000000 (relocation
-range: 0xffffffff80000000-0xffffffffbfffffff)
-
-Such issue could be triggered by all kinds of regular surprise removal
-hotplug operation. like:
-
-1. pull EP(endpoint device) out directly.
-2. turn off EP's power.
-3. bring the link down.
-etc.
-
-this patch aims to work for regular safe removal and surprise removal
-unplug. these hot unplug handling process could be optimized for fix the
-ATS Invalidation hang issue by calling pci_dev_is_disconnected() in
-function devtlb_invalidation_with_pasid() to check target device state to
-avoid sending meaningless ATS Invalidation request to iommu when device is
-gone. (see IMPLEMENTATION NOTE in PCIe spec r6.1 section 10.3.1)
-
-For safe removal, device wouldn't be removed until the whole software
-handling process is done, it wouldn't trigger the hard lock up issue
-caused by too long ATS Invalidation timeout wait. In safe removal path,
-device state isn't set to pci_channel_io_perm_failure in
-pciehp_unconfigure_device() by checking 'presence' parameter, calling
-pci_dev_is_disconnected() in devtlb_invalidation_with_pasid() will return
-false there, wouldn't break the function.
-
-For surprise removal, device state is set to pci_channel_io_perm_failure in
-pciehp_unconfigure_device(), means device is already gone (disconnected)
-call pci_dev_is_disconnected() in devtlb_invalidation_with_pasid() will
-return true to break the function not to send ATS Invalidation request to
-the disconnected device blindly, thus avoid to trigger further ITE fault,
-and ITE fault will block all invalidation request to be handled.
-furthermore retry the timeout request could trigger hard lockup.
-
-safe removal (present) & surprise removal (not present)
-
-pciehp_ist()
-   pciehp_handle_presence_or_link_change()
-     pciehp_disable_slot()
-       remove_board()
-         pciehp_unconfigure_device(presence) {
-           if (!presence)
-                pci_walk_bus(parent, pci_dev_set_disconnected, NULL);
-           }
-
-this patch works for regular safe removal and surprise removal of ATS
-capable endpoint on PCIe switch downstream ports.
-
-Fixes: 6f7db75e1c46 ("iommu/vt-d: Add second level page table interface")
+Fixes: 6ba6c3a4cacf ("VT-d: add device IOTLB invalidation support")
 Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
-Tested-by: Haorong Ye <yehaorong@bytedance.com>
 Signed-off-by: Ethan Zhao <haifeng.zhao@linux.intel.com>
 ---
- drivers/iommu/intel/pasid.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/iommu/intel/dmar.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
-index 108158e2b907..746c7abe2237 100644
---- a/drivers/iommu/intel/pasid.c
-+++ b/drivers/iommu/intel/pasid.c
-@@ -214,6 +214,9 @@ devtlb_invalidation_with_pasid(struct intel_iommu *iommu,
- 	if (!info || !info->ats_enabled)
- 		return;
+diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
+index d14797aabb7a..fa1ac111a6e2 100644
+--- a/drivers/iommu/intel/dmar.c
++++ b/drivers/iommu/intel/dmar.c
+@@ -1273,6 +1273,8 @@ static int qi_check_fault(struct intel_iommu *iommu, int index, int wait_index)
+ {
+ 	u32 fault;
+ 	int head, tail;
++	u64 iqe_err, ite_sid;
++	struct device *dev = NULL;
+ 	struct q_inval *qi = iommu->qi;
+ 	int shift = qi_shift(iommu);
  
-+	if (pci_dev_is_disconnected(to_pci_dev(dev)))
-+		return;
+@@ -1317,6 +1319,13 @@ static int qi_check_fault(struct intel_iommu *iommu, int index, int wait_index)
+ 		tail = readl(iommu->reg + DMAR_IQT_REG);
+ 		tail = ((tail >> shift) - 1 + QI_LENGTH) % QI_LENGTH;
+ 
++		/*
++		 * SID field is valid only when the ITE field is Set in FSTS_REG
++		 * see Intel VT-d spec r4.1, section 11.4.9.9
++		 */
++		iqe_err = dmar_readq(iommu->reg + DMAR_IQER_REG);
++		ite_sid = DMAR_IQER_REG_ITESID(iqe_err);
 +
- 	sid = info->bus << 8 | info->devfn;
- 	qdep = info->ats_qdep;
- 	pfsid = info->pfsid;
+ 		writel(DMA_FSTS_ITE, iommu->reg + DMAR_FSTS_REG);
+ 		pr_info("Invalidation Time-out Error (ITE) cleared\n");
+ 
+@@ -1326,6 +1335,19 @@ static int qi_check_fault(struct intel_iommu *iommu, int index, int wait_index)
+ 			head = (head - 2 + QI_LENGTH) % QI_LENGTH;
+ 		} while (head != tail);
+ 
++		/*
++		 * If device was released or isn't present, no need to retry
++		 * the ATS invalidate request anymore.
++		 *
++		 * 0 value of ite_sid means old VT-d device, no ite_sid value.
++		 * see Intel VT-d spec r4.1, section 11.4.9.9
++		 */
++		if (ite_sid) {
++			dev = device_rbtree_find(iommu, ite_sid);
++			if (!dev || !dev_is_pci(dev) ||
++				!pci_device_is_present(to_pci_dev(dev)))
++				return -ETIMEDOUT;
++		}
+ 		if (qi->desc_status[wait_index] == QI_ABORT)
+ 			return -EAGAIN;
+ 	}
 -- 
 2.31.1
 
