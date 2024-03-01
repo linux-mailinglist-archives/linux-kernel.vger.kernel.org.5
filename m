@@ -1,231 +1,156 @@
-Return-Path: <linux-kernel+bounces-88677-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88678-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AC3086E523
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:19:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7581386E526
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:19:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1FEE11F25CA9
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:19:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 16AD11F25B28
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:19:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 696706F523;
-	Fri,  1 Mar 2024 16:19:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E53EC70CB6;
+	Fri,  1 Mar 2024 16:19:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kHkDJQYH"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="pCICPBF/"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3D4A38DC0
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 16:19:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 885136F523
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 16:19:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709309960; cv=none; b=BRHRDdn4IriDGDTm6zfxkQNyrsn2GsfGg4c6dmLoO/lVWPjaR3Yre7k1S67Giu2siAMWAOpyz71ZYzWiHR/qnRRDOP1L6i+i2HWjJN+rAoOJJv6RAmM8nqLHW9puOPVkhTY+Nbue0AHZDqoZ/BzP/luQzXpqod0AIBEWy81u5wI=
+	t=1709309981; cv=none; b=B0LkDI2jtqnzWOa8oZJRoG78CC7AV5xmJYTA7fK/tBbxsV0jpprZWgGSnmzMBDsZCc9NY1p+N+bh/TDUkydZSSRXZA64vSzDVQyZpmJnwm7WD3yxpKsqgVwASRzBaS3UZ/rUR+6PkzTEvA86NHNLXuNe11GQDGnAR+G4aca18wk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709309960; c=relaxed/simple;
-	bh=1dgY+t2fEQvAKMTCrnnEQ30zjIpVGDBTXL0zOb3bx6E=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=nT0fumaWbk+qUSxlUHxH+7G3OjHX3p4n9/2ak24lH0noBZ36zebK8JOTAo/SweYGIa6PF2Mb5cA8rJLwtdMa9MzwVFVubLvTsOLhYlj8q3CpLLSFoUlLrc39HSz43TuA2KpOZeAxUSXqS/xrk4Ckq6i2hJk7G+JcWkMLHxdWHO8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kHkDJQYH; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709309956; x=1740845956;
-  h=date:from:to:cc:subject:message-id;
-  bh=1dgY+t2fEQvAKMTCrnnEQ30zjIpVGDBTXL0zOb3bx6E=;
-  b=kHkDJQYHi4nOgHKxzNH5tAgdW+PEO6LeSQk8ywmlMf+gWQ9Uv4peQRR/
-   MrAVVe33JvzTOnQs7ouRZ1HqrCBvrb9kqn0UsQnUgWI/9jsslVnF6yJw+
-   RvK2XpfW1DHN0GySCTL+rp5F5g/5HeofKAVGNAO7z/Cq9Cm/hW04VESou
-   gQGGfchrgqGcT0WaVV+MY7To4FJ07B60JVdNai846v4+g/VqrPlyYO6W4
-   vUNh1WU7DOrGjOqlfzPSyi1CcqExy4CdB1QOyH7nEufNJiNXdJMEu1b8k
-   dun283GqHsdPEmqIN7Kijeg9uieaq1Qs2bJBnQ8/2kUQjZ6vF6dDauw/d
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11000"; a="14494791"
-X-IronPort-AV: E=Sophos;i="6.06,196,1705392000"; 
-   d="scan'208";a="14494791"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 08:19:15 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,196,1705392000"; 
-   d="scan'208";a="45775606"
-Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by orviesa001.jf.intel.com with ESMTP; 01 Mar 2024 08:19:14 -0800
-Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rg5bL-000DwQ-1r;
-	Fri, 01 Mar 2024 16:19:11 +0000
-Date: Sat, 02 Mar 2024 00:17:20 +0800
-From: kernel test robot <lkp@intel.com>
-To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars:testing/WFAMNAE-next20240229-smc_clc] BUILD
- SUCCESS 0a93dd98351466329286809d6d136b04d09ddf64
-Message-ID: <202403020017.ephuG9iu-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1709309981; c=relaxed/simple;
+	bh=kqHrLNm7gDmwTCEs36YV2jdsUTVUUwpuDbx4vMGSjBY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UsuApNnGPmyXQVZabGyisSq/z21MtO7HYsP7pk6iXaOSt+yAwTBtIgSV3oEgZbB6TOYi1uYJm0AvCTp8LVZkUkogcg5Vo7UICnjb6vbgbLTujwicI5ENkO55Grx1utg01B9xeDTgAJX9hnAjpS7Naq/L5tqkl+77Mf2bM5DlI8w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=pCICPBF/; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709309975;
+	bh=kqHrLNm7gDmwTCEs36YV2jdsUTVUUwpuDbx4vMGSjBY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=pCICPBF/U+f0qA9JBho7Cn4BcnOMh7J9a6GJRnJM70+TKdPZJvA+UQgKeB/ZN7x5r
+	 iuKY1AdEjmvtKAMlNcFQ7QOMltgsxDhIh+uNNp0MsMSCe5mNno0MKtJhrFzwP4VJvg
+	 mqDaI9sG7ThZOwLhWmRg6kzQC8I+7bm3rZ/Ww9kvEAwB5oRscDHmaj7RccIYmIZam1
+	 gOfryn3fu76cTmnnZxaDzvexSd7t5P7agslSTbFJ7GaUErw0Hjlamht4WGtUqEy93e
+	 Dfl7EoZvCoYTwUrDnc9c7XENiKzBQi1fvTeqFGY+aEifREVWG9GO2pIVxmdE5RfKzF
+	 7RKGyUXyfoKiA==
+Received: from notapiano (zone.collabora.co.uk [167.235.23.81])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: nfraprado)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 9CC7F37813F2;
+	Fri,  1 Mar 2024 16:19:29 +0000 (UTC)
+Date: Fri, 1 Mar 2024 11:19:27 -0500
+From: =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado <nfraprado@collabora.com>
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: Andrzej Hajda <andrzej.hajda@intel.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Robert Foss <rfoss@kernel.org>, Jonas Karlman <jonas@kwiboo.se>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	owen <qwt9588@gmail.com>, Jagan Teki <jagan@amarulasolutions.com>,
+	Marek Vasut <marex@denx.de>,
+	Adrien Grassein <adrien.grassein@gmail.com>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Vinod Koul <vkoul@kernel.org>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	Vinay Simha BN <simhavcs@gmail.com>,
+	Christopher Vollo <chris@renewoutreach.org>,
+	Jessica Zhang <quic_jesszhan@quicinc.com>,
+	Marijn Suijten <marijn.suijten@somainline.org>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>,
+	kernel@collabora.com, dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Subject: Re: [PATCH v2 0/9] drm: Switch from dev_err to dev_err_probe for
+ missing DSI host error path
+Message-ID: <33209063-de58-4d53-a6e0-2d9f74052358@notapiano>
+References: <20240229-anx7625-defer-log-no-dsi-host-v2-0-00506941049a@collabora.com>
+ <20240301063431.GM30889@pendragon.ideasonboard.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240301063431.GM30889@pendragon.ideasonboard.com>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/WFAMNAE-next20240229-smc_clc
-branch HEAD: 0a93dd98351466329286809d6d136b04d09ddf64  net/smc: Avoid -Wflex-array-member-not-at-end warnings
+On Fri, Mar 01, 2024 at 08:34:31AM +0200, Laurent Pinchart wrote:
+> Hi Nícolas,
+> 
+> On Thu, Feb 29, 2024 at 07:12:06PM -0500, Nícolas F. R. A. Prado wrote:
+> > This series changes every occurence of the following pattern: 
+> > 
+> > 	dsi_host = of_find_mipi_dsi_host_by_node(dsi);
+> > 	if (!dsi_host) {
+> > 		dev_err(dev, "failed to find dsi host\n");
+> > 		return -EPROBE_DEFER;
+> > 	}
+> > 
+> > into
+> > 
+> > 	dsi_host = of_find_mipi_dsi_host_by_node(dsi);
+> > 	if (!dsi_host)
+> > 		return dev_err_probe(dev, -EPROBE_DEFER, "failed to find dsi host\n");
+> > 
+> > This registers the defer probe reason (so it can later be printed by the
+> > driver core or checked on demand through the devices_deferred file in
+> > debugfs) and prevents errors to be spammed in the kernel log every time
+> > the driver retries to probe, unnecessarily alerting userspace about
+> > something that is a normal part of the boot process.
+> 
+> The idea is good, but I have a small issue with patches 1/9 to 7/9. They
+> all patch a function that is called by the probe function. Calling
+> dev_err_probe() in such functions is error-prone. I had to manually
+> check when reviewing the patches that those functions were indeed called
+> at probe time, and not through other code paths, and I also had to check
+> that no callers were using dev_err_probe() in the error handling path,
+> as that would have overridden the error message.
+> 
+> Would there be a way to move the dev_err_probe() to the top-level ? I
+> understand it's not always possible or convenient, but if it was doable
+> in at least some of the drivers, I think it would be better. I'll let
+> you be the judge.
 
-elapsed time: 727m
+Hey Laurent, thanks for the review.
 
-configs tested: 143
-configs skipped: 3
+I get where you're coming from, as I checked those things myself while writing
+the patch. That said, I don't think moving dev_err_probe() to the top-level is a
+good move for a few reasons:
+* Keeping the log message as close to the source of the error makes it more
+  specific, and consequently, more useful.
+* The original code already returned -EPROBE_DEFER, implying the function is
+  expected to be called only from the probe function.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+With those points in mind, the only way I see to guarantee
+dev_err_probe(...,-EPROBE_DEFER...) would only be called by probe, and that the
+reason wouldn't be overriden, would be to move the entire code path of that
+function that calls into dev_err_probe() up into the probe function. But if we
+adopt this pattern consistently across the drivers in the tree, I think it would
+drastically worsen readability and cancel out the benefits.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240301   gcc  
-arc                   randconfig-002-20240301   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                                 defconfig   clang
-arm                   randconfig-001-20240301   gcc  
-arm                   randconfig-002-20240301   clang
-arm                   randconfig-003-20240301   gcc  
-arm                   randconfig-004-20240301   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240301   gcc  
-arm64                 randconfig-002-20240301   clang
-arm64                 randconfig-003-20240301   gcc  
-arm64                 randconfig-004-20240301   clang
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240301   gcc  
-csky                  randconfig-002-20240301   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20240301   clang
-hexagon               randconfig-002-20240301   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240301   clang
-i386         buildonly-randconfig-002-20240301   clang
-i386         buildonly-randconfig-003-20240301   gcc  
-i386         buildonly-randconfig-004-20240301   clang
-i386         buildonly-randconfig-005-20240301   clang
-i386         buildonly-randconfig-006-20240301   clang
-i386                                defconfig   clang
-i386                  randconfig-001-20240301   clang
-i386                  randconfig-002-20240301   clang
-i386                  randconfig-003-20240301   clang
-i386                  randconfig-004-20240301   clang
-i386                  randconfig-005-20240301   gcc  
-i386                  randconfig-006-20240301   gcc  
-i386                  randconfig-011-20240301   gcc  
-i386                  randconfig-012-20240301   clang
-i386                  randconfig-013-20240301   clang
-i386                  randconfig-014-20240301   gcc  
-i386                  randconfig-015-20240301   gcc  
-i386                  randconfig-016-20240301   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240301   gcc  
-loongarch             randconfig-002-20240301   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240301   gcc  
-nios2                 randconfig-002-20240301   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240301   gcc  
-parisc                randconfig-002-20240301   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc               randconfig-001-20240301   gcc  
-powerpc               randconfig-002-20240301   gcc  
-powerpc               randconfig-003-20240301   clang
-powerpc64             randconfig-001-20240301   clang
-powerpc64             randconfig-002-20240301   gcc  
-powerpc64             randconfig-003-20240301   gcc  
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-riscv                 randconfig-001-20240301   gcc  
-riscv                 randconfig-002-20240301   clang
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-s390                  randconfig-001-20240301   clang
-s390                  randconfig-002-20240301   clang
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                    randconfig-001-20240301   gcc  
-sh                    randconfig-002-20240301   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20240301   clang
-x86_64       buildonly-randconfig-002-20240301   gcc  
-x86_64       buildonly-randconfig-003-20240301   clang
-x86_64       buildonly-randconfig-004-20240301   gcc  
-x86_64       buildonly-randconfig-005-20240301   clang
-x86_64       buildonly-randconfig-006-20240301   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20240301   gcc  
-x86_64                randconfig-002-20240301   clang
-x86_64                randconfig-003-20240301   clang
-x86_64                randconfig-004-20240301   clang
-x86_64                          rhel-8.3-rust   clang
-xtensa                            allnoconfig   gcc  
+IMO the way forward with the API we have, is to make use of warnings and static
+checkers to catch cases where dev_err_probe() is overriding a defer probe
+reason, and where it's called outside of the probe function scope.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+So I'm inclined to leave the patches as they are, but am happy to discuss this
+further or other ideas.
+
+Thanks,
+Nícolas
 
