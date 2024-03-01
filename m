@@ -1,143 +1,90 @@
-Return-Path: <linux-kernel+bounces-88673-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88672-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 885AE86E514
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:16:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD16286E510
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:14:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 363251F24CDC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:16:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04F611C2125C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:14:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8654770CC2;
-	Fri,  1 Mar 2024 16:16:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6636670CBB;
+	Fri,  1 Mar 2024 16:14:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eb5vjprR"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TEOzgbzV"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 300F470030;
-	Fri,  1 Mar 2024 16:16:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6B64368;
+	Fri,  1 Mar 2024 16:14:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709309783; cv=none; b=qiL7s6pUw1/QP2qiBtZ12epSOcE0xS7IhGJFhBplnfxRShmpwQnkHG+6ntxvOzwx2GCeiuwAcSiPU8tZNxiRE1CEWb1OFN/8SXvqHA0kO8FDOF1a189jbmxKucZTnHCv8LEMySGcGFXsw35yzEurqe0oB3uwNcyXQeaic4sVzzM=
+	t=1709309650; cv=none; b=HbIbgNg+wuRrLkIm2n4tQLTFbMTihHcWi9Mtywm9XypdyGxL4MNYOJzGFQH3erqTsNPP7brA8AvzDj5/BgBeqgUx3cfmbDamyFG92LVB1yPvkjCe+lHGVa4y9MqaxYV0obhU/qRnUZ19WWfKqZHPo6hhlQ5rocYzhGvmR4BleP0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709309783; c=relaxed/simple;
-	bh=n5S1ol70AH6Wm/4ovXpBDCp9DIz877B8wVkhQTych20=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Bq+fIKYbg+dIkP3XUe60PNBU64HMlOOLIozfxnlBBpv95BA6EqiOHvmU8Gu8tnBkrPp+dc+zpu/losaJULpiEFYqNBJn7Xn6rYQa2nPbWkDtF2mrwYf8qydA2MV10bS5HteM+hrZWWOMexSbf59VA92e/dVcIzZLh30r6p1Bibk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eb5vjprR; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709309782; x=1740845782;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=n5S1ol70AH6Wm/4ovXpBDCp9DIz877B8wVkhQTych20=;
-  b=eb5vjprROUiMqyYd33y2SA5JQGTxR2eo7dA6FSBuvJRZTVa+N5txQlL5
-   VQnDzHlmgWy4GFbVocOQtlqCcce35Bsddi4wYWxHtDCmqfv3ZeZehM3LW
-   XwthZJ7gqCNuYmyjKDNU159ercZ1p0r5DhRA9OKDIF/j0t88kvXztvE4W
-   1LrYUAJheFWklEuuA341hyHloNMUiEQvIHADhKtuG4acK54sC1/EyxsY2
-   jX6EW4vchsWkdQ58QmzgX6+kL2rGNT6UbaNydPeyOMtxPddtDgD38EMny
-   PVKD8Xuy/xJDu/sVqqVaJ0D0ZsgbjdfNaQo4yF8/atezKg+1YlNPV1bBE
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11000"; a="15264465"
-X-IronPort-AV: E=Sophos;i="6.06,196,1705392000"; 
-   d="scan'208";a="15264465"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 08:16:21 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,196,1705392000"; 
-   d="scan'208";a="12790536"
-Received: from linux.bj.intel.com ([10.238.157.71])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 08:16:18 -0800
-Date: Sat, 2 Mar 2024 00:13:24 +0800
-From: Tao Su <tao1.su@linux.intel.com>
-To: Gerd Hoffmann <kraxel@redhat.com>
-Cc: kvm@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	"open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/3] kvm: wire up KVM_CAP_VM_GPA_BITS for x86
-Message-ID: <ZeH+pPO7hhgDNujs@linux.bj.intel.com>
-References: <20240301101410.356007-1-kraxel@redhat.com>
- <20240301101410.356007-2-kraxel@redhat.com>
+	s=arc-20240116; t=1709309650; c=relaxed/simple;
+	bh=BikzDK1QW0K2bWi7muKUljDgu1skoyyFPZELijkX52k=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Dirbx7EbcL3vTgfHH/Zk8+hpKhEs1Oe2UVoOz8ozw6Bue1IXRVWi2CQKNoWaysrLitsI/XHY3riv3GAMIBKe6SnluU8eCWtPDyYahqi0KEesfr3JGFMGifu9ifTdLzZaS1jksOr0ju9lq1ArcKd6wWr33bvyrAQJD4N5mqNGSsk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TEOzgbzV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B3EEC433C7;
+	Fri,  1 Mar 2024 16:14:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709309650;
+	bh=BikzDK1QW0K2bWi7muKUljDgu1skoyyFPZELijkX52k=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=TEOzgbzVFsLomQFvAfuSVAfDEuhsD4VvQdASJ6LjNj10+td2wi0MCxU4FIP3pi0V7
+	 a1TdcPajbG1NfAVladYc6nqtbsgm3GdUE8uSqAUN76NLm1P3oOASJQ4NOcT87a7FzR
+	 a6Zk/13yRchQIQ8WyZpiIKujV3KCDpKc44CQgFzPorDsheHjwjGq4M6uDjEkuMLGuv
+	 x8Fkbl1iqCWIZsmUnn511pkATzZudzJ7jsOqi3iuhNBT6HV6r2eTimTDV9+4RhQZxM
+	 PZjiakJ1gh/Tjya4WNczaoQIZ7roUSxYyfZEpOHv4dc8uTxI0L6Y5Azs4Tgl0QTplD
+	 MbhZGTNc1pykA==
+From: Conor Dooley <conor@kernel.org>
+To: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Emil Renner Berthing <kernel@esmil.dk>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Changhuang Liang <changhuang.liang@starfivetech.com>
+Cc: conor@kernel.org,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Jack Zhu <jack.zhu@starfivetech.com>,
+	linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	devicetree@vger.kernel.org
+Subject: Re: [v3] riscv: dts: starfive: jh7110: Add camera subsystem nodes
+Date: Fri,  1 Mar 2024 16:14:00 +0000
+Message-ID: <20240301-wildfire-glue-983d58132599@spud>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240219032741.18387-1-changhuang.liang@starfivetech.com>
+References: <20240219032741.18387-1-changhuang.liang@starfivetech.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240301101410.356007-2-kraxel@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=355; i=conor.dooley@microchip.com; h=from:subject:message-id; bh=caay3mRU/JhC/YsFIkNMgzQjqWb0CeveGJRpWt2VyHA=; b=owGbwMvMwCFWscWwfUFT0iXG02pJDKkP/x03ZRMI+/XnQ7JJfsT3mQumPClRPfv3XWH47x9vh TuVZ3D96ShlYRDjYJAVU2RJvN3XIrX+j8sO5563MHNYmUCGMHBxCsBENixl+CuzbQHLC3uW2w1f 791QF1ryMNCNP8f9iIV7BsvOAh/9kr2MDH3cs4Rz1yz8W+G18e7FDdkWKlNPz9ixe+2WSf3P8rc cZWYHAA==
+X-Developer-Key: i=conor.dooley@microchip.com; a=openpgp; fpr=F9ECA03CF54F12CD01F1655722E2C55B37CF380C
+Content-Transfer-Encoding: 8bit
 
-On Fri, Mar 01, 2024 at 11:14:07AM +0100, Gerd Hoffmann wrote:
-> Add new guest_phys_bits field to kvm_caps, return the value to
-> userspace when asked for KVM_CAP_VM_GPA_BITS capability.
-> 
-> Initialize guest_phys_bits with boot_cpu_data.x86_phys_bits.
-> Vendor modules (i.e. vmx and svm) can adjust this field in case
-> additional restrictions apply, for example in case EPT has no
-> support for 5-level paging.
-> 
-> Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
-> ---
->  arch/x86/kvm/x86.h | 2 ++
->  arch/x86/kvm/x86.c | 5 +++++
->  2 files changed, 7 insertions(+)
-> 
-> diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
-> index 2f7e19166658..e03aec3527f8 100644
-> --- a/arch/x86/kvm/x86.h
-> +++ b/arch/x86/kvm/x86.h
-> @@ -24,6 +24,8 @@ struct kvm_caps {
->  	bool has_bus_lock_exit;
->  	/* notify VM exit supported? */
->  	bool has_notify_vmexit;
-> +	/* usable guest phys bits */
-> +	u32  guest_phys_bits;
->  
->  	u64 supported_mce_cap;
->  	u64 supported_xcr0;
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 48a61d283406..e270b9b708d1 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -4784,6 +4784,9 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
->  		if (kvm_is_vm_type_supported(KVM_X86_SW_PROTECTED_VM))
->  			r |= BIT(KVM_X86_SW_PROTECTED_VM);
->  		break;
-> +	case KVM_CAP_VM_GPA_BITS:
-> +		r = kvm_caps.guest_phys_bits;
-> +		break;
->  	default:
->  		break;
->  	}
-> @@ -9706,6 +9709,8 @@ static int __kvm_x86_vendor_init(struct kvm_x86_init_ops *ops)
->  	if (boot_cpu_has(X86_FEATURE_ARCH_CAPABILITIES))
->  		rdmsrl(MSR_IA32_ARCH_CAPABILITIES, host_arch_capabilities);
->  
-> +	kvm_caps.guest_phys_bits = boot_cpu_data.x86_phys_bits;
+From: Conor Dooley <conor.dooley@microchip.com>
 
-When KeyID_bits is non-zero, MAXPHYADDR != boot_cpu_data.x86_phys_bits
-here, you can check in detect_tme().
+On Sun, 18 Feb 2024 19:27:41 -0800, Changhuang Liang wrote:
+> Add camera subsystem nodes for the StarFive JH7110 SoC. They contain the
+> dphy-rx, csi2rx, camss nodes.
+> 
+> 
+
+Applied to riscv-dt-for-next, thanks!
+
+[1/1] riscv: dts: starfive: jh7110: Add camera subsystem nodes
+      https://git.kernel.org/conor/c/28ecaaa5af19
 
 Thanks,
-Tao
-
-> +
->  	r = ops->hardware_setup();
->  	if (r != 0)
->  		goto out_mmu_exit;
-> -- 
-> 2.44.0
-> 
-> 
+Conor.
 
