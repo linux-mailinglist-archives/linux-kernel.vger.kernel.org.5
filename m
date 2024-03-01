@@ -1,41 +1,42 @@
-Return-Path: <linux-kernel+bounces-87770-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EEE686D8CE
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 02:32:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1BF786D8D1
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 02:33:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9EB961F21180
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:32:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A154B22E16
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:33:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6035A2E415;
-	Fri,  1 Mar 2024 01:32:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7868F2E842;
+	Fri,  1 Mar 2024 01:33:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="hrvI8Dbu"
-Received: from m16.mail.126.com (m16.mail.126.com [220.197.31.6])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87F521FAB;
-	Fri,  1 Mar 2024 01:32:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.6
+	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="F0L2SzkO"
+Received: from m16.mail.126.com (m16.mail.126.com [117.135.210.8])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EF3D2B9C1;
+	Fri,  1 Mar 2024 01:32:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709256762; cv=none; b=qe9wT1ca9sQMZeWm7rqw8Y+baAdIvLSc1vTnaN8ww5RrpxF4MCXxrZ/WSx+lwfDZicvTx8S6+IF+2Xx7Rq36OITPJEc/kCIyvatOFKCyO30HTqeIlM/3S80ilAL5k402h1Dpt47O6Iymo8xdKAPIosQ54KDVh0S6G83cvSHBQDI=
+	t=1709256779; cv=none; b=JlH9RtgaeI/A7LJ8xc0XkHWJ+OPRXU1AhoNC6/FWASKTqKTX4cAe39Ofkp0Vbg7FsHgXzilTOWj2hw5YLJ4ZCQgsGkYaH1c1id6VBQa/pbaIGzAPkY/hqc5Zz3MZaZHm7JIMwEv9t/heCtbKcmV0Xews/dg734hq1m5jcKM7tj0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709256762; c=relaxed/simple;
-	bh=GyRBvP61UMuuuBeLEcQrFy65aVcca1wzEIpd1Z2HEFs=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=iCDXnAhxdBG4XqorT+Ryo7oeQ0pnvLC1LMohczq+daAWF+OMGl8p8NThD5RV6C5b/VqeY6v8iUEFA/5QnpQQaotppHH52hfolaIbV7l9FYXk2vxhNOkL8Ns70abhsYwh8mwUrYMzKI0S0yortvFHOcbI2zcn0bou+fVSqpr/VDo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com; spf=pass smtp.mailfrom=126.com; dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b=hrvI8Dbu; arc=none smtp.client-ip=220.197.31.6
+	s=arc-20240116; t=1709256779; c=relaxed/simple;
+	bh=tuGC5wyFcsYrlqp5HtH5FDj3u0VQ99pcTwEH86G7J5E=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ulW+wTAiRcKCSAvOUV7u47CETETWtT/wpL+aqB/HlrA3Oq8UZ4Gge5h2frPgbD5BKPKjEojHZy0lAmFiF71Y+D3/Z05xgDK1577ZrEyREDfXyLDm97f0OsxCfW1TOCYQ7xSYv1oiqPWggg2EJ/3Cc97Ukfg57lcWYLMymnWLdTA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com; spf=pass smtp.mailfrom=126.com; dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b=F0L2SzkO; arc=none smtp.client-ip=117.135.210.8
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=126.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
 	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version:
-	Content-Type; bh=qf2m+LPOD0vmhyuQBBDWfZHEVymQ5ijq0f+jKDwcQDU=;
-	b=hrvI8DbuyCix2nbhCBYQpKKHsowsFFNOi2edmuZdk8jwaPvyt+wkU/1gtWNYkE
-	imqiOM2k/1XlZngN2nKCnbd5PhsGotutp/0xLS9fLVo/bwEGmWWlH/cukBms8Ybt
-	eobjnqRrugLUeIxioz5PsmnQQ6UlU7i1cR6pNinBIB+uE=
+	Content-Type; bh=yUP3Fg8UEbX0/ycHA5FJkvcoXBqMXasQLvzZECI1t5M=;
+	b=F0L2SzkOb3RAVKgrBWl58jW4HIf8CoFr2ofNFMAogRGxSJut4OmQXfbjWxFBWt
+	A9Z6aRA1RUVah3RZFeWPoxEpjolGM/hsfI7ftNwa1XgEGQwH0GyEVXdhbgTgQhNo
+	eSTu4uMVAqOfSu0O/7ArOfYMkmT//QNCJCe11Dtl2Eq7c=
 Received: from localhost.localdomain (unknown [116.128.244.171])
-	by gzga-smtp-mta-g1-0 (Coremail) with SMTP id _____wDn7+APMOFlZSfbBA--.18054S4;
-	Fri, 01 Mar 2024 09:32:24 +0800 (CST)
+	by gzga-smtp-mta-g1-0 (Coremail) with SMTP id _____wDn7+APMOFlZSfbBA--.18054S5;
+	Fri, 01 Mar 2024 09:32:37 +0800 (CST)
 From: Genjian <zhanggenjian@126.com>
 To: stable@vger.kernel.org
 Cc: axboe@kernel.dk,
@@ -43,11 +44,14 @@ Cc: axboe@kernel.dk,
 	linux-block@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	zhanggenjian123@gmail.com,
-	Genjian Zhang <zhanggenjian@kylinos.cn>
-Subject: [PATCH 4.19.y 0/9] Fix the UAF issue caused by the loop driver
-Date: Fri,  1 Mar 2024 09:30:19 +0800
-Message-Id: <20240301013028.2293831-1-zhanggenjian@126.com>
+	Genjian Zhang <zhanggenjian@kylinos.cn>,
+	k2ci <kernel-bot@kylinos.cn>
+Subject: [PATCH 4.19.y 1/9] Revert "loop: Check for overflow while configuring loop"
+Date: Fri,  1 Mar 2024 09:30:20 +0800
+Message-Id: <20240301013028.2293831-2-zhanggenjian@126.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240301013028.2293831-1-zhanggenjian@126.com>
+References: <20240301013028.2293831-1-zhanggenjian@126.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,20 +60,21 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wDn7+APMOFlZSfbBA--.18054S4
-X-Coremail-Antispam: 1Uf129KBjvJXoWxtF1kKrW8WF18Gw47Zr1rCrg_yoW3GFyxpF
-	1SgrWfCw48GrykG3yUCr48tr13Ja1DA3WUtFZ3Cw13ZF1UWw1aqa4UJrW0gFy3Cry5AFy2
-	yF1rGr4rKr1DJw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07U65l8UUUUU=
-X-CM-SenderInfo: x2kd0wxjhqyxldq6ij2wof0z/1tbi5gmUfmVLY1IyHwAAs3
+X-CM-TRANSID:_____wDn7+APMOFlZSfbBA--.18054S5
+X-Coremail-Antispam: 1Uf129KBjvJXoW3Jw1UGw45uw4rGr47tF43KFg_yoW3XrW5pF
+	1S9FWxCw48KrykWw4UCr48tr17Aa1DC3WjyFZakw13ZF17Ww1aqa4UJrW0gr9xCryUAFy2
+	yFn5Jr4rtr1DJw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07U_l1PUUUUU=
+X-CM-SenderInfo: x2kd0wxjhqyxldq6ij2wof0z/1tbiyBWUfmWWf0mb9AAAsd
 
 From: Genjian Zhang <zhanggenjian@kylinos.cn>
 
-Hello!
+This reverts commit 2035c770bfdbcc82bd52e05871a7c82db9529e0f.
 
-We found that 2035c770bfdb ("loop: Check for overflow while configuring loop") lost a unlock loop_ctl_mutex in loop_get_status(...).
-which caused syzbot to report a UAF issue. However, the upstream patch does not have this issue.
-So, we revert this patch and directly apply the unmodified upstream patch.
+This patch lost a unlock loop_ctl_mutex in loop_get_status(...),
+which caused syzbot to report a UAF issue.The upstream patch does not
+have this issue. Therefore, we revert this patch and directly apply
+the upstream patch later on.
 
 Risk use-after-free as reported by syzbot：
 
@@ -188,31 +193,28 @@ Risk use-after-free as reported by syzbot：
 [  174.466333] ==================================================================
 [  174.466338] Disabling lock debugging due to kernel taint
 
-Best regards
-Genjian
+Reported-by: k2ci <kernel-bot@kylinos.cn>
+Signed-off-by: Genjian Zhang <zhanggenjian@kylinos.cn>
+---
+ drivers/block/loop.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-Genjian Zhang (1):
-  Revert "loop: Check for overflow while configuring loop"
-
-Holger Hoffstätte (1):
-  loop: properly observe rotational flag of underlying device
-
-Martijn Coenen (5):
-  loop: Call loop_config_discard() only after new config is applied
-  loop: Remove sector_t truncation checks
-  loop: Factor out setting loop device size
-  loop: Refactor loop_set_status() size calculation
-  loop: Factor out configuring loop from status
-
-Siddh Raman Pant (1):
-  loop: Check for overflow while configuring loop
-
-Zhong Jinghua (1):
-  loop: loop_set_status_from_info() check before assignment
-
- drivers/block/loop.c | 204 ++++++++++++++++++++++++++-----------------
- 1 file changed, 123 insertions(+), 81 deletions(-)
-
+diff --git a/drivers/block/loop.c b/drivers/block/loop.c
+index 2e6c3f658894..52481f1f8d01 100644
+--- a/drivers/block/loop.c
++++ b/drivers/block/loop.c
+@@ -1351,11 +1351,6 @@ loop_get_status(struct loop_device *lo, struct loop_info64 *info)
+ 	info->lo_number = lo->lo_number;
+ 	info->lo_offset = lo->lo_offset;
+ 	info->lo_sizelimit = lo->lo_sizelimit;
+-
+-	/* loff_t vars have been assigned __u64 */
+-	if (lo->lo_offset < 0 || lo->lo_sizelimit < 0)
+-		return -EOVERFLOW;
+-
+ 	info->lo_flags = lo->lo_flags;
+ 	memcpy(info->lo_file_name, lo->lo_file_name, LO_NAME_SIZE);
+ 	memcpy(info->lo_crypt_name, lo->lo_crypt_name, LO_NAME_SIZE);
 -- 
 2.25.1
 
