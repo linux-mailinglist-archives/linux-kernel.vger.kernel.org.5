@@ -1,114 +1,155 @@
-Return-Path: <linux-kernel+bounces-88412-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88415-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9872786E142
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:46:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8243186E148
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:47:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C85111C20B60
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:46:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2211D1F21757
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:47:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 702D940864;
-	Fri,  1 Mar 2024 12:46:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RR5miFg1"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B12E140859;
+	Fri,  1 Mar 2024 12:47:25 +0000 (UTC)
+Received: from hi1smtp01.de.adit-jv.com (smtp1.de.adit-jv.com [93.241.18.167])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4CEC7E1;
-	Fri,  1 Mar 2024 12:46:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B970E7E1;
+	Fri,  1 Mar 2024 12:47:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.241.18.167
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709297164; cv=none; b=O2gzd9A697cKZIwtcSM1rzOqUlCHw2gFqlGGSlw03sqcJze7a2O8sVqxUwNjQn4NaCDIVrcBQb3FhJBvBiwzkxE//Ofqx/mkM0agEzt7Cm9vGwBbPwxdUY9zNDoNKdXOyFu7uhOHW4NpSWdz71GkJ5s0XFjBWrhCK8JC+nDTpzg=
+	t=1709297245; cv=none; b=cbwJZklosJBHmaQGSu3gsL0VS+khS7+bzzn9yCGtA9R0ZPdRrQOkW8GU/7pTDS6I3WH9hJkrYXNNpO53dhJkParSnBRTNeJhpZWYaz6RvSOayVGu+0ZYrncAnLfndJl2JfQpFHzoppQylpthUz6j3nS8nZ6o7Rz6qiUTDbsom+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709297164; c=relaxed/simple;
-	bh=Zz0zVoGja3cXhFHWcB5UiPfkBIp0SM7xu2HWnAZ05Vk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=p4KjexykC5RSs+7GPKgZSWefLgR2nfsalC5WUKaNW4nOMzmP02INlIDF4gH/VtE9xxjcDlN++VApEloS//cYshMnFDPYZya5Y7aEq5pNqWcgg0SFY6xc6fFvmziMq5HkpeNdajcddbp/KTx7IPu599v14xqIb/VNyXWnF9RfPP4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RR5miFg1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 169B9C433C7;
-	Fri,  1 Mar 2024 12:46:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709297164;
-	bh=Zz0zVoGja3cXhFHWcB5UiPfkBIp0SM7xu2HWnAZ05Vk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RR5miFg1MbKC8vvcwq6NzLC782LATfreZUIRbVKNW2lo+QvieyB2UVH6UD3RlJagO
-	 Wcj3ZTvr4/RVH7eHon1cljpL6j1N0qVpaODmJ4q8bgpwKjm7Oza0ws+RqjQnuL0Fks
-	 tSBW3Ii6eBrjxVqg5jh4KKsk6tjttvTIYvIovTLTeIe9Vhwsg6zvFGVYvicxMCkSil
-	 NDKNA6pWwI8NnUZhIcDcEGM/yz5RUdrHSWqgciGLZgm8cIvryUxkKvf9iMsq81YoHc
-	 nMZxaVmQ74iMSji0quwRNAlhO6CARUduWu4+Lnf2Z45lpGJ+fFT0suABp3KH9qXrpL
-	 nuQaLLZDKBgiQ==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rg2HH-0000000016H-1tzj;
-	Fri, 01 Mar 2024 13:46:15 +0100
-Date: Fri, 1 Mar 2024 13:46:15 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Bjorn Helgaas <helgaas@kernel.org>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 00/12] arm64: dts: qcom: sc8280xp: PCIe fixes and
- GICv3 ITS enable
-Message-ID: <ZeHOF4p1LlNDiLcy@hovoldconsulting.com>
-References: <20240223152124.20042-1-johan+linaro@kernel.org>
- <20240228220843.GA309344@bhelgaas>
- <20240229100853.GA2999@thinkpad>
- <ZeBbrJhks46XByMD@hovoldconsulting.com>
- <20240229122416.GD2999@thinkpad>
- <ZeCCPRVvYCNfMYnd@hovoldconsulting.com>
- <20240229135407.GE2999@thinkpad>
- <ZeCktwcEFAfCEVkV@hovoldconsulting.com>
- <20240301122406.GA2401@thinkpad>
+	s=arc-20240116; t=1709297245; c=relaxed/simple;
+	bh=xmtt/dJqJpEhHTRjQVG1J/CP+alT6/cJsmAw7/JRl/I=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=GRrjH4TKJWAk9P02JU/KVhrA97W0losTQzHHYSrvpTESltrjomCYX8vz1NiEQ+mX143gI8r2J/LNaPdtBuk47l2XVFty2lCifMiILFo9X7C6HlFTfJ5eTS85BW5Qk62w1g2coWvWrgPZdifxocGHj/IqKbPTdGnTGLmAnm36etk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=de.adit-jv.com; spf=pass smtp.mailfrom=de.adit-jv.com; arc=none smtp.client-ip=93.241.18.167
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=de.adit-jv.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=de.adit-jv.com
+Received: from hi2exch02.adit-jv.com (hi2exch02.adit-jv.com [10.72.92.28])
+	by hi1smtp01.de.adit-jv.com (Postfix) with ESMTP id 7AE30520252;
+	Fri,  1 Mar 2024 13:47:16 +0100 (CET)
+Received: from vmlxhi-118.adit-jv.com (10.72.93.77) by hi2exch02.adit-jv.com
+ (10.72.92.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Fri, 1 Mar
+ 2024 13:47:16 +0100
+From: Hardik Gajjar <hgajjar@de.adit-jv.com>
+To: <gregkh@linuxfoundation.org>, <michael@allwinnertech.com>,
+	<quic_linyyuan@quicinc.com>, <quic_ugoswami@quicinc.com>,
+	<brauner@kernel.org>, <sfr@canb.auug.org.au>, <quic_kriskura@quicinc.com>,
+	<axboe@kernel.dk>, <jlayton@kernel.org>
+CC: <hgajjar@de.adit-jv.com>, <hardik.gajjar@bosch.com>,
+	<eugeniu.rosca@bosch.com>, <linux-usb@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH] usb: gadget: f_fs: Add the missing get_alt callback
+Date: Fri, 1 Mar 2024 13:47:08 +0100
+Message-ID: <20240301124708.120394-1-hgajjar@de.adit-jv.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240301122406.GA2401@thinkpad>
+Content-Type: text/plain
+X-ClientProxiedBy: hi2exch02.adit-jv.com (10.72.92.28) To
+ hi2exch02.adit-jv.com (10.72.92.28)
 
-On Fri, Mar 01, 2024 at 05:54:06PM +0530, Manivannan Sadhasivam wrote:
-> On Thu, Feb 29, 2024 at 04:37:27PM +0100, Johan Hovold wrote:
+The Apple CarLife iAP gadget has a descriptor in userspace with two
+alternate settings. The host sends the set_alt request to configure
+alt_setting 0 or 1, and this is verified by the subsequent get_alt
+request.
 
-> > I'm all for digging further into this issue with the help of Qualcomm,
-> > but I don't think that should block this series as that would leave the
-> > link errors that we hit since 6.7 in place and effectively prevent us
-> > from enabling the ITS in 6.9.
-> 
-> Sounds fair. I will report back, perhaps with a fix based on what I get to know.
+This patch implements and sets the get_alt callback. Without the
+get_alt callback, composite.c abruptly concludes the
+USB_REQ_GET/SET_INTERFACE request, assuming only one alt setting
+for the endpoint.
 
-Sounds good, thanks.
+unlike the uvc and ncm, f_fs gadget is fully implemented in userspace,
+and driver just reset the eps and generate the event. so no additional
+adaptaion associated with this change is not required in set_alt callback
 
-> But I think it is better to disable L0s in the SoC dtsi itself. That's not only
-> because there are patches to essentially disable L0s in 2 of the available
-> platforms making use of this Soc, but also you are enabling GIC ITS in the SoC
-> dtsi and that may affect sa8540p which is making use of this dtsi.
+Signed-off-by: Hardik Gajjar <hgajjar@de.adit-jv.com>
+---
+ drivers/usb/gadget/function/f_fs.c | 20 +++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
 
-I did not do so on purpose as I'm only disabling L0s on machines where
-I've confirmed the issue. And the assumption for now is that this is a
-machine-level issue.
+diff --git a/drivers/usb/gadget/function/f_fs.c b/drivers/usb/gadget/function/f_fs.c
+index 6bff6cb93789..a3e8cf7963e7 100644
+--- a/drivers/usb/gadget/function/f_fs.c
++++ b/drivers/usb/gadget/function/f_fs.c
+@@ -42,6 +42,7 @@
+ #include "configfs.h"
+ 
+ #define FUNCTIONFS_MAGIC	0xa647361 /* Chosen by a honest dice roll ;) */
++#define MAX_ALT_SETTINGS	2		  /* Allow up to 2 alt settings to be set. */
+ 
+ /* Reference counter handling */
+ static void ffs_data_get(struct ffs_data *ffs);
+@@ -75,6 +76,7 @@ struct ffs_function {
+ 	short				*interfaces_nums;
+ 
+ 	struct usb_function		function;
++	int				cur_alt[MAX_CONFIG_INTERFACES];
+ };
+ 
+ 
+@@ -98,6 +100,7 @@ static int __must_check ffs_func_eps_enable(struct ffs_function *func);
+ static int ffs_func_bind(struct usb_configuration *,
+ 			 struct usb_function *);
+ static int ffs_func_set_alt(struct usb_function *, unsigned, unsigned);
++static int ffs_func_get_alt(struct usb_function *f, unsigned int intf);
+ static void ffs_func_disable(struct usb_function *);
+ static int ffs_func_setup(struct usb_function *,
+ 			  const struct usb_ctrlrequest *);
+@@ -3231,6 +3234,15 @@ static void ffs_reset_work(struct work_struct *work)
+ 	ffs_data_reset(ffs);
+ }
+ 
++static int ffs_func_get_alt(struct usb_function *f,
++			    unsigned int interface)
++{
++	struct ffs_function *func = ffs_func_from_usb(f);
++	int intf = ffs_func_revmap_intf(func, interface);
++
++	return (intf < 0) ? intf : func->cur_alt[interface];
++}
++
+ static int ffs_func_set_alt(struct usb_function *f,
+ 			    unsigned interface, unsigned alt)
+ {
+@@ -3238,6 +3250,9 @@ static int ffs_func_set_alt(struct usb_function *f,
+ 	struct ffs_data *ffs = func->ffs;
+ 	int ret = 0, intf;
+ 
++	if (alt > MAX_ALT_SETTINGS)
++		return -EINVAL;
++
+ 	if (alt != (unsigned)-1) {
+ 		intf = ffs_func_revmap_intf(func, interface);
+ 		if (intf < 0)
+@@ -3265,8 +3280,10 @@ static int ffs_func_set_alt(struct usb_function *f,
+ 
+ 	ffs->func = func;
+ 	ret = ffs_func_eps_enable(func);
+-	if (ret >= 0)
++	if (ret >= 0) {
+ 		ffs_event_add(ffs, FUNCTIONFS_ENABLE);
++		func->cur_alt[interface] = alt;
++	}
+ 	return ret;
+ }
+ 
+@@ -3573,6 +3590,7 @@ static struct usb_function *ffs_alloc(struct usb_function_instance *fi)
+ 	func->function.bind    = ffs_func_bind;
+ 	func->function.unbind  = ffs_func_unbind;
+ 	func->function.set_alt = ffs_func_set_alt;
++	func->function.get_alt = ffs_func_get_alt;
+ 	func->function.disable = ffs_func_disable;
+ 	func->function.setup   = ffs_func_setup;
+ 	func->function.req_match = ffs_func_req_match;
+-- 
+2.17.1
 
-> The users of that SoC may have not noticed the errors as you did before, but
-> enabling GIC ITS will certainly make the issue visible to them (more likely).
-
-Sure and that would be good to know as that would give us another data
-point which may help determine where the problem lies. Enabling the ITS
-will (hopefully) be done in 6.9 so we'll have a whole cycle to disable
-L0s where needed. I don't think this should be done before then.
-
-Johan
 
