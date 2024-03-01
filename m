@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-88943-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88944-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0758386E8D2
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:55:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08D4E86E8B3
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:49:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0DB80B2E082
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:49:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B051D287AB2
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:49:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EBD239FDA;
-	Fri,  1 Mar 2024 18:48:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6C2C3C49B;
+	Fri,  1 Mar 2024 18:48:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Evknf8o/"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wQWq69kw"
 Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E86E43BB33
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 18:48:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82C9E3C097
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 18:48:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709318882; cv=none; b=ug/IvV4Bbw7sFS5/qMPm6pL/OMIyrSf9FUuOKhRAdGSH3dsR/rCa79DKZ+05EXSQC3fprpJvstOc+zpKV3FpnQ8jw4gARY/mq8ZgNmk/75d2H/VIDgLDAgE4pQ+5Foz459yVaOqh+Cgy7oYZ0cKC9XV3HxUT5atSKe1DLz7gv+E=
+	t=1709318885; cv=none; b=VOfQt1YzKYYPIOZgIIKEVFjMHReJKlGdxBJbXZh4oQKr8iNqNKuwr1RDVAgahtFQDmURDTBChc02K/ILixav8yvsX5/CNluZ+xsCVGijuIiNEYqrPSB4trOwZXbIau7Cb5IhBnoGb65qeYCY45N+O21Ch629TS0WGtIi3Gm38XQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709318882; c=relaxed/simple;
-	bh=5rPQbQbgB4a9rwpPs3GZO8lIicUTIgfjGCJZshFzKwg=;
+	s=arc-20240116; t=1709318885; c=relaxed/simple;
+	bh=Ttu1a53AKHn6jERMdPOWyCk47DSzrYVS6BszAMd1Sa0=;
 	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Content-Type; b=LUXP6cjrZ2a4RCHFqT9QZ7gAuplYw7RBj4fW/aWZ44MZL0efseP/f24ujmwjrDsWLRUHNTa/4Fp896AeYoETFE3G2xH1MtUD1fju6vgHW1XQdOu8ubpNqCphc2/+3sW9D7koPtAZXjPkoKaf44fEabflCZMCVAFz42Vo3MrAXwc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Evknf8o/; arc=none smtp.client-ip=209.85.219.202
+	 To:Content-Type; b=QumkMjTJJBC0BHoFW12StUI4TDoQ/NdXKBE0zImk2+PPCV/G+RPESqh6t7XoHngpywkCOWaMsdHQ2RziOcyK8FIknHzQGiz1UUeO6FXICjE4pPT/R/l/ETdTGd4G/AIJL+G7/y2DiLeASRsPk2YoTBBRx4qTG3jZUxdy9rKzRYE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wQWq69kw; arc=none smtp.client-ip=209.85.219.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dcc58cddb50so4185367276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 10:48:00 -0800 (PST)
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dcbfe1a42a4so4654337276.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 10:48:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709318880; x=1709923680; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1709318882; x=1709923682; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=VbbMwVexzgBT1fsV6th5WqgIzFECec7b7GQZlOqA780=;
-        b=Evknf8o/nqyk2JNM7kr8uuxwOFw4tsN3TnEF97Pj2+ODXPRwmBoLjZamMZMiHf3PYH
-         NjRFBk3MX6vxd4leLLxZbPtOeK3IirKAMrabqjyW5o4ModALpsKeVZgn185X8MGoLLtF
-         skXqSdFkccJba7WT8hB1miExbblFcdsveUSex3ELF5Kk5668f+0j7P8oHsnrwInBpPDa
-         LpCr7HL7adFf+D/Bqd+YsBdBySpsShHXVUkdM4Zyy49ZE0DejcL8+1/EYekTxZiK56C1
-         X5Q5dd59py0hE7z3Vck84w5Y3te8Mhp4Fxw4mpux+oyDF/A7Rxv+aB3RTq9anvNnb/+H
-         msQw==
+        bh=3qpQTOjMlbYqRHWOkfWf3rXeImb6hJen/IuHxVmpGuM=;
+        b=wQWq69kwH3Rxc5XR4IZg6z7sSYSQ+gwrT9+lWcLDFtaT3J0HFpU5lOzMQiRyOGrNWr
+         SijFzn+D5oWQOnr/MzG2YI6/vJ5H9zuKV0/8Ktxbpc7bCznfq53NydHiQbdcJgOkgvHC
+         Bk1pDH7aqDRvrGNFt7pnC17sTbxbQ684n4NSQ4E1ZjpK4e36Z2Q/MyEDgB0L2UlsIU1a
+         PnY6hAl00clcfh0D1J65ckUo5VaIeamURn6IkdZPy4DD6LZOIUm9PjXHtW7YzYPYNyCl
+         TfI600VoxtXz2UlSYsTfNrqed9rB1nAYIYpN4vU+sZn/EVUrffNu2yLY6mX8HBeraMpT
+         P16A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709318880; x=1709923680;
+        d=1e100.net; s=20230601; t=1709318882; x=1709923682;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VbbMwVexzgBT1fsV6th5WqgIzFECec7b7GQZlOqA780=;
-        b=Hmxd4/AjmlM3dliTMCdslY7Y2VZXDMuxhNBSLjpWyUqfhUbk1hWHX54RhFDLLaE3J9
-         wnuP/eeytOL/qcDQucpeIm+ZiFekVMqAMN3So3viYQywRqUotBsTLimwGop1MZanm1SH
-         QFXW78dWpALdIZI3Kgx+W+hJ0AhnzhkryVMHHddih36RnWpOGzo3lVi//RFrGFvQUI0i
-         MJoj5uFsUrrH1Me+qFEuJXBlIHOfFcKku+PZ/PKxBIYUmQaVvyn2at/tqQiicfgNLgyt
-         mFnfImASuG52RbCyAJsx2nzqfHT/ZOEnHizAK4Qcy6+BMGL/zKj+CD56vg7rVGDfKSLi
-         aWhQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWTYbbIC+xu6W4uU/APWAZQjnMEro+vWgAhtGGaYt9qKQpKijL6ffH1pbKP+KfcdFnPtuKUg3KgfUq9fMUI6I1hzyn4MIeRjbSoHPqr
-X-Gm-Message-State: AOJu0Yz0UTOIhmCIjdabcb8/3Gj6qsU/pRHiaAGTSSKyf8l0h7RMDOp1
-	aq9LVNRKqMjEjFuKqFBrjV6deA8H6Aqq9pMuAYAG1PN0DhrmBYWVRb0dOmrpxKEUqwrm+35JpE+
-	oTUdunQ==
-X-Google-Smtp-Source: AGHT+IE5nxV/pgGxXp00PVwm6AlU+TV6KffKjboinyt9/660ehCiQ+tNob0FZh6YQwufQKBXF7YVUK/ZqTWG
+        bh=3qpQTOjMlbYqRHWOkfWf3rXeImb6hJen/IuHxVmpGuM=;
+        b=kvmaSN9a136mWxiPBHTrLERu8KL+USugcHR5xWb/qu079w1MHp62zKKcea9Hve1ErR
+         QmdEt4ERteDBB+4c+Xe8tKgAP786QsZzB8/aNsp1uegYgfeZgdth4yhRZFtuyp7xOGhb
+         MjlJQVC6Y+bPa36SGrCPP2YvnujnyGA6Ws9hKXLyuQ64gLcIjrVxBLYKT1zKnvTQx5UD
+         Lf0+MamG+mbCeRwC8IVYebaNGBLKPRh7DBFkwyQhTtuLIqfwSAG+jHmQudINRCL414Yn
+         OZ8HPYYUinDWudNpIELe4ZO8doXjg55LDLJwgOqTTiclyVHhO0owDN0VJVgaesOtcoHc
+         y9nQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUb9AJ9NPqkZiUgtsMP5Xk4qfOh5cXqeWx1T6fhHrikMvECNZaLdJ0L9RzHoU1euFwMesFbjuCHUgd9Bfnlp78p8WGnicl+A9BoqtFg
+X-Gm-Message-State: AOJu0YyucXpylPu/3cLp3HH5WL26Vl8lN46WbDFSEg4He83xDKBXIz4X
+	Cuz9Qc6jYUqmRRvP7SdCThmtznYwxl6tndIRJd4vS029FGMx53YGPECJ3xwpq0KxdEZnPt0Qapy
+	eW1/dWQ==
+X-Google-Smtp-Source: AGHT+IHyhUpYurt4vD+rrB/joKVLTsWMuBKF3q9/HAOBpTvjJTE86OHEg3O7FWiNyP92JukvKjLFOJ2CMZAZ
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:af4b:7fc1:b7be:fcb7])
- (user=irogers job=sendgmr) by 2002:a25:dbc9:0:b0:dc6:dfc6:4207 with SMTP id
- g192-20020a25dbc9000000b00dc6dfc64207mr528160ybf.10.1709318880106; Fri, 01
- Mar 2024 10:48:00 -0800 (PST)
-Date: Fri,  1 Mar 2024 10:47:31 -0800
+ (user=irogers job=sendgmr) by 2002:a05:6902:f0b:b0:dc9:5ef8:2b2d with SMTP id
+ et11-20020a0569020f0b00b00dc95ef82b2dmr530873ybb.4.1709318882598; Fri, 01 Mar
+ 2024 10:48:02 -0800 (PST)
+Date: Fri,  1 Mar 2024 10:47:32 -0800
 In-Reply-To: <20240301184737.2660108-1-irogers@google.com>
-Message-Id: <20240301184737.2660108-7-irogers@google.com>
+Message-Id: <20240301184737.2660108-8-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,8 +74,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240301184737.2660108-1-irogers@google.com>
 X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Subject: [PATCH v2 06/12] perf jevents: Add hardware prefetch (hwpf) metric
- group for AMD
+Subject: [PATCH v2 07/12] perf jevents: Add itlb metric group for AMD
 From: Ian Rogers <irogers@google.com>
 To: Sandipan Das <sandipan.das@amd.com>, Ravi Bangoria <ravi.bangoria@amd.com>, 
 	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
@@ -89,93 +88,79 @@ To: Sandipan Das <sandipan.das@amd.com>, Ravi Bangoria <ravi.bangoria@amd.com>,
 	linux-perf-users@vger.kernel.org, Stephane Eranian <eranian@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Add metrics that give the utility of hardware prefetches on zen2, zen3
-and zen4.
+Add metrics that give an overview and details of the l1 itlb (zen1,
+zen2, zen3) and l2 itlb (all zens).
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/pmu-events/amd_metrics.py | 61 ++++++++++++++++++++++++++++
- 1 file changed, 61 insertions(+)
+ tools/perf/pmu-events/amd_metrics.py | 47 ++++++++++++++++++++++++++++
+ 1 file changed, 47 insertions(+)
 
 diff --git a/tools/perf/pmu-events/amd_metrics.py b/tools/perf/pmu-events/amd_metrics.py
-index 52451bcb4bbf..dda904998269 100755
+index dda904998269..82aab39c2a50 100755
 --- a/tools/perf/pmu-events/amd_metrics.py
 +++ b/tools/perf/pmu-events/amd_metrics.py
-@@ -125,6 +125,66 @@ def AmdBr():
+@@ -125,6 +125,52 @@ def AmdBr():
                       description="breakdown of retired branch instructions")
  
  
-+def AmdHwpf():
-+  """Returns a MetricGroup representing AMD hardware prefetch metrics."""
-+  if zen_model <= 1:
-+      return None
++def AmdItlb():
++  l2h = Event("bp_l1_tlb_miss_l2_tlb_hit", "bp_l1_tlb_miss_l2_hit")
++  l2m = Event("l2_itlb_misses")
++  l2r = l2h + l2m
 +
-+  hwp_ld = Event("ls_dispatch.ld_dispatch")
-+  hwp_l2 = Event("ls_hw_pf_dc_fills.local_l2",
-+                 "ls_hw_pf_dc_fills.lcl_l2",
-+                 "ls_hw_pf_dc_fill.ls_mabresp_lcl_l2")
-+  hwp_lc = Event("ls_hw_pf_dc_fills.local_ccx",
-+                 "ls_hw_pf_dc_fills.int_cache",
-+                 "ls_hw_pf_dc_fill.ls_mabresp_lcl_cache")
-+  hwp_lm = Event("ls_hw_pf_dc_fills.dram_io_near",
-+                 "ls_hw_pf_dc_fills.mem_io_local",
-+                 "ls_hw_pf_dc_fill.ls_mabresp_lcl_dram")
-+  hwp_rc = Event("ls_hw_pf_dc_fills.far_cache",
-+                 "ls_hw_pf_dc_fills.ext_cache_remote",
-+                 "ls_hw_pf_dc_fill.ls_mabresp_rmt_cache")
-+  hwp_rm = Event("ls_hw_pf_dc_fills.dram_io_far",
-+                 "ls_hw_pf_dc_fills.mem_io_remote",
-+                 "ls_hw_pf_dc_fill.ls_mabresp_rmt_dram")
++  itlb_l1_mg = None
++  l1m = l2r
++  if zen_model <= 3:
++    l1r = Event("ic_fw32")
++    l1h = max(l1r - l1m, 0)
++    itlb_l1_mg = MetricGroup("itlb_l1", [
++        Metric("itlb_l1_hits",
++               "L1 ITLB hits as a perecentage of L1 ITLB accesses.",
++               d_ratio(l1h, l1h + l1m), "100%"),
++        Metric("itlb_l1_miss",
++               "L1 ITLB misses as a perecentage of L1 ITLB accesses.",
++               d_ratio(l1m, l1h + l1m), "100%"),
++        Metric("itlb_l1_reqs",
++               "The number of 32B fetch windows transferred from IC pipe to DE "
++               "instruction decoder per second.", d_ratio(l1r, interval_sec),
++               "windows/sec"),
++    ])
 +
-+  loc_pf = hwp_l2 + hwp_lc + hwp_lm
-+  rem_pf = hwp_rc + hwp_rm
-+  all_pf = loc_pf + rem_pf
-+
-+  r1 = d_ratio(ins, all_pf)
-+  r2 = d_ratio(hwp_ld, all_pf)
-+  r3 = d_ratio(all_pf, interval_sec)
-+
-+  overview = MetricGroup("hwpf_overview", [
-+      Metric("hwpf_ov_insn_bt_hwpf", "Insn between HWPF", r1, "insns"),
-+      Metric("hwpf_ov_loads_bt_hwpf", "Loads between HWPF", r2, "loads"),
-+      Metric("hwpf_ov_rate", "HWPF per second", r3, "hwpf/s"),
-+  ])
-+  r1 = d_ratio(hwp_l2, all_pf)
-+  r2 = d_ratio(hwp_lc, all_pf)
-+  r3 = d_ratio(hwp_lm, all_pf)
-+  data_src_local = MetricGroup("hwpf_data_src_local", [
-+      Metric("hwpf_data_src_local_l2", "Data source local l2", r1, "100%"),
-+      Metric("hwpf_data_src_local_ccx_l3_loc_ccx",
-+             "Data source local ccx l3 loc ccx", r2, "100%"),
-+      Metric("hwpf_data_src_local_memory_or_io",
-+             "Data source local memory or IO", r3, "100%"),
-+  ])
-+
-+  r1 = d_ratio(hwp_rc, all_pf)
-+  r2 = d_ratio(hwp_rm, all_pf)
-+  data_src_remote = MetricGroup("hwpf_data_src_remote", [
-+      Metric("hwpf_data_src_remote_cache", "Data source remote cache", r1,
-+             "100%"),
-+      Metric("hwpf_data_src_remote_memory_or_io",
-+             "Data source remote memory or IO", r2, "100%"),
-+  ])
-+
-+  data_src = MetricGroup("hwpf_data_src", [data_src_local, data_src_remote])
-+  return MetricGroup("hwpf", [overview, data_src],
-+                     description="Hardware prefetch breakdown (CCX L3 = L3 of current thread, Loc CCX = CCX cache on some socket)")
++  return MetricGroup("itlb", [
++      MetricGroup("itlb_ov", [
++          Metric("itlb_ov_insn_bt_l1_miss",
++                 "Number of instructions between l1 misses", d_ratio(
++                     ins, l1m), "insns"),
++          Metric("itlb_ov_insn_bt_l2_miss",
++                 "Number of instructions between l2 misses", d_ratio(
++                     ins, l2m), "insns"),
++      ]),
++      itlb_l1_mg,
++      MetricGroup("itlb_l2", [
++          Metric("itlb_l2_hits",
++                 "L2 ITLB hits as a percentage of all L2 ITLB accesses.",
++                 d_ratio(l2h, l2r), "100%"),
++          Metric("itlb_l2_miss",
++                 "L2 ITLB misses as a percentage of all L2 ITLB accesses.",
++                 d_ratio(l2m, l2r), "100%"),
++          Metric("itlb_l2_reqs", "ITLB accesses per second.",
++                 d_ratio(l2r, interval_sec), "accesses/sec"),
++      ]),
++  ], description="Instruction TLB breakdown")
 +
 +
- def AmdSwpf() -> Optional[MetricGroup]:
-   """Returns a MetricGroup representing AMD software prefetch metrics."""
+ def AmdHwpf():
+   """Returns a MetricGroup representing AMD hardware prefetch metrics."""
    if zen_model <= 1:
-@@ -256,6 +316,7 @@ def Rapl() -> MetricGroup:
+@@ -316,6 +362,7 @@ def Rapl() -> MetricGroup:
  
  all_metrics = MetricGroup("", [
      AmdBr(),
-+    AmdHwpf(),
++    AmdItlb(),
+     AmdHwpf(),
      AmdSwpf(),
      AmdUpc(),
-     Idle(),
 -- 
 2.44.0.278.ge034bb2e1d-goog
 
