@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-87868-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87865-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9FDB86DA2B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 04:36:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D9B0586DA28
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 04:36:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4972BB2366D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 03:36:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4291B23671
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 03:36:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C829D50278;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89E494F5EA;
 	Fri,  1 Mar 2024 03:36:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m+lksXxN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RPAnhxU6"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC50945BED;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0A254596C;
 	Fri,  1 Mar 2024 03:36:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709264160; cv=none; b=JFYpzM2OGfDgy4aJYvkGg/Aw8xoNK2TXZ8r+OB/+K18gRCsCam1WdJgdRtdn6kH2tV4lxuoSNA2dIqze3TLelgYgGosRYFJAoDtLdwnqIMeMF/LuqVKNd9iHdKG+A/F3ARBvefvgt8lfiOVu8C1TapD0529FeiGBHZbTjdQsWi0=
+	t=1709264160; cv=none; b=gAc6RGhwXRXmLjB/hh9FdTBWKdsDfuC1t2TFfO7eRnMNMpxg9cKFliJ4xaUTlBK47/LaJ67oyK+e/gQPFAK9rL820LEZ3M8/z5vNqY/2e1zyi9yD0JaIy4ZgDPgX2KhQY5sNs527WiugX028qQzvNBJNQTonklimluTJh0U9CXA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1709264160; c=relaxed/simple;
-	bh=3nX8fP3l7Bt65toEN0CdGwFHFH0sX3inF2oQP8On+7k=;
+	bh=7PtIg95ncCvxMHh4b5Xw5GAtbDAZ3d89g3e/YJ0Tj88=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=NGzhnzeLsGlT6x4Wx8n2yyyWYF8t5rJ1xUd6vEDxVZuZaRjBjDu6EWWQG9+y9ReYC1FQxu6esgnV6W6ntTKnLN0DPKJRuAYx7yPa1oC85QHxOlpdW5g9kCTlJrGLlND7RfDyHXxAaEHcPQ3y6B8IiKYFVFz4l5cO/ubz9pZtmcg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m+lksXxN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 75AF5C433F1;
+	 In-Reply-To:To:Cc; b=LIAq/89dKHEvb9yjFNUOfOlYQ7tDoL4QQ7Nj2hW0nMumP2wCvj6ysiFgNLEzvdAbfN+WBgXlYoq6L3Z+YM8xP8ZrHrXOehoG7vB7GSRK9mTOPF1jYTfLEiSVqF7kSW+KdY8KvL9sWP6zkOnDRDdywJgQ4KOIL3v+0bx733uRoow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RPAnhxU6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 86580C43390;
 	Fri,  1 Mar 2024 03:36:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1709264160;
-	bh=3nX8fP3l7Bt65toEN0CdGwFHFH0sX3inF2oQP8On+7k=;
+	bh=7PtIg95ncCvxMHh4b5Xw5GAtbDAZ3d89g3e/YJ0Tj88=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=m+lksXxN6SijIxyDP3yafWLJNN7bL4/C46w9dsuThrrni4HVSYDz8E3i9VV4r0wm4
-	 RjyVxGuwL/dfBKT0k0ChvsU5lhHxtGt4bBy9jFK0FATBSSyLt0t2YhOqLkJJGvKAha
-	 VSTz9g1hlPnG+BDQGmHuEzoyRsQdx5whYTwdL+tEgYOehCE2DkjIwY/pmPNAeFcl3Y
-	 1k86l6HQAfWg3kdsq3aZGaF7gEkznYcJ2luKHRgOK589h+1bU6gIRzDWWzl3ql/pfJ
-	 E/gxYuG0vIlx7I+Op2TNlgY4w8/wyNZqSg0KHZZ8Kfb3sI7hGkYr9OSOYaoDLwUZYt
-	 qmMP7Yc3JZ1xQ==
+	b=RPAnhxU6yR03wfaviKp8EQdwG/NOhrTu1a9mxGtCb/wxNGRmn3OiZn3fGDDDt6n11
+	 63BFzgNIn1joFTgy2s+b3iExiBu2HBwyKCtsTOA3Ct0h8DENGkwINM/wxyJhNwRBgb
+	 feucdy3LizQFmbyi0KqPMXJmvSN/+3YrtnRefJ0IbI/jeo2T+c/TgqEWh7stedwqRd
+	 C3Oq7GU47WYWAtzmmtenAxZJYJOe9wjZG6vDQ8pRi2NDCB537d3zQRfl+gCcPtnZSm
+	 XGhWYeJnM+XavxWb9FPr77Otso2m/eU2O9NxCi2je2ZEFbHKI+tQXyPPnUx017/VHk
+	 VUR7Va1bqgvJA==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 575D9C48BF6;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6382EC54E55;
 	Fri,  1 Mar 2024 03:36:00 +0000 (UTC)
 From: Yang Xiwen via B4 Relay <devnull+forbidden405.outlook.com@kernel.org>
-Date: Fri, 01 Mar 2024 11:35:54 +0800
-Subject: [PATCH net-next v7 1/9] dt-bindings: net: hisilicon-femac-mdio:
- convert to YAML
+Date: Fri, 01 Mar 2024 11:35:55 +0800
+Subject: [PATCH net-next v7 2/9] dt-bindings: net:
+ hisilicon,hisi-femac-mdio: remove clocks
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,7 +55,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240301-net-v7-1-45823597d4d4@outlook.com>
+Message-Id: <20240301-net-v7-2-45823597d4d4@outlook.com>
 References: <20240301-net-v7-0-45823597d4d4@outlook.com>
 In-Reply-To: <20240301-net-v7-0-45823597d4d4@outlook.com>
 To: Yisen Zhuang <yisen.zhuang@huawei.com>, 
@@ -71,11 +71,11 @@ Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
  devicetree@vger.kernel.org, Yang Xiwen <forbidden405@outlook.com>, 
  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1709264157; l=2517;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1709264157; l=1118;
  i=forbidden405@outlook.com; s=20240228; h=from:subject:message-id;
- bh=stv+a/mRLJaLswc2WeXjirfjJSRDl5txIs38K87wIhs=;
- b=FSSDoUw7qTiMnbv/EdqbqRTYRUhz6picYpt4lEqaGN+PwrbvZYLlemdngCVNQBNH56fN1WTiD
- qPqMu0/FHzVCmqpEQRr+UXS8ukzfu1RCBzNIbv/7nDY+LQARfr/vHys
+ bh=zFRj07D287wM/dCKue4SsEqnuuC7qPQ9ydZbNJ2lxsQ=;
+ b=OK4PrSktWk34tayOmh4vUrfwolvI7Ts8AYHGoH4VDtzyzhZWw4IIHtDdka2r0vPXCQyWy5K6q
+ qfOu7YmPwwdAUlCYpi6yp52xMRStatRk056d6SAvft7zvN2t8qAT6l7
 X-Developer-Key: i=forbidden405@outlook.com; a=ed25519;
  pk=KAWv6ZzFsT54MGllOczJgFiWB+DuayEmyn24iiVVThU=
 X-Endpoint-Received:
@@ -85,94 +85,41 @@ Reply-To: <forbidden405@outlook.com>
 
 From: Yang Xiwen <forbidden405@outlook.com>
 
-convert the old text binding to modern YAML based binding. No semantic
-change.
+This integrated MDIO bus does not have a dedicated clock. Remove it. The
+old binding is wrong.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
 ---
- .../bindings/net/hisilicon,hisi-femac-mdio.yaml    | 44 ++++++++++++++++++++++
- .../bindings/net/hisilicon-femac-mdio.txt          | 22 -----------
- 2 files changed, 44 insertions(+), 22 deletions(-)
+ Documentation/devicetree/bindings/net/hisilicon,hisi-femac-mdio.yaml | 5 -----
+ 1 file changed, 5 deletions(-)
 
 diff --git a/Documentation/devicetree/bindings/net/hisilicon,hisi-femac-mdio.yaml b/Documentation/devicetree/bindings/net/hisilicon,hisi-femac-mdio.yaml
-new file mode 100644
-index 000000000000..36def9d5eecd
---- /dev/null
+index 36def9d5eecd..dea1bcc27381 100644
+--- a/Documentation/devicetree/bindings/net/hisilicon,hisi-femac-mdio.yaml
 +++ b/Documentation/devicetree/bindings/net/hisilicon,hisi-femac-mdio.yaml
-@@ -0,0 +1,44 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/hisilicon,hisi-femac-mdio.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: HiSilicon FEMAC MDIO bus
-+
-+maintainers:
-+  - Yang Xiwen <forbidden405@formail.com>
-+
-+allOf:
-+  - $ref: mdio.yaml#
-+
-+properties:
-+  compatible:
-+    const: hisilicon,hisi-femac-mdio
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    mdio@10091100 {
-+        compatible = "hisilicon,hisi-femac-mdio";
-+        reg = <0x10091100 0x20>;
-+        clocks = <&clk_mdio>;
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        phy@1 {
-+            reg = <1>;
-+        };
-+    };
-diff --git a/Documentation/devicetree/bindings/net/hisilicon-femac-mdio.txt b/Documentation/devicetree/bindings/net/hisilicon-femac-mdio.txt
-deleted file mode 100644
-index 23a39a309d17..000000000000
---- a/Documentation/devicetree/bindings/net/hisilicon-femac-mdio.txt
-+++ /dev/null
-@@ -1,22 +0,0 @@
--Hisilicon Fast Ethernet MDIO Controller interface
+@@ -19,13 +19,9 @@ properties:
+   reg:
+     maxItems: 1
+ 
+-  clocks:
+-    maxItems: 1
 -
--Required properties:
--- compatible: should be "hisilicon,hisi-femac-mdio".
--- reg: address and length of the register set for the device.
--- clocks: A phandle to the reference clock for this device.
--
--- PHY subnode: inherits from phy binding [1]
--[1] Documentation/devicetree/bindings/net/phy.txt
--
--Example:
--mdio: mdio@10091100 {
--	compatible = "hisilicon,hisi-femac-mdio";
--	reg = <0x10091100 0x10>;
--	clocks = <&crg HI3516CV300_MDIO_CLK>;
--	#address-cells = <1>;
--	#size-cells = <0>;
--
--	phy0: phy@1 {
--		reg = <1>;
--	};
--};
+ required:
+   - compatible
+   - reg
+-  - clocks
+ 
+ unevaluatedProperties: false
+ 
+@@ -34,7 +30,6 @@ examples:
+     mdio@10091100 {
+         compatible = "hisilicon,hisi-femac-mdio";
+         reg = <0x10091100 0x20>;
+-        clocks = <&clk_mdio>;
+         #address-cells = <1>;
+         #size-cells = <0>;
+ 
 
 -- 
 2.43.0
