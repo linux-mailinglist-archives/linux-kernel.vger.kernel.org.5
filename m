@@ -1,164 +1,174 @@
-Return-Path: <linux-kernel+bounces-88354-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88355-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D639B86E065
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:32:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BADFB86E068
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:33:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 496E71F209AE
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:32:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71BC128B4A2
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:33:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CA4470CAF;
-	Fri,  1 Mar 2024 11:30:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFEE16BFDB;
+	Fri,  1 Mar 2024 11:33:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZYKV9D0h"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="tHhkWxji";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="11jtywQ/"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CA9C6F523
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 11:30:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C4314438E
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 11:33:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709292635; cv=none; b=jpu2yMaTsGhxqDPF8pNmQ+ZcvHKNGRE1NnQ6BcDSwEQKp+qF9b4rph7Uk6x6/l9AVFLUhsHXj+PMLXxyavlIWsdsFIwJ8aY2IwYjSAFjCOsK6RZ4zbcRI/RK/PR9fsTZuHjFO99dqPB5voFFiiu11ApLAOq5YBEe4lWGlLz+YQQ=
+	t=1709292818; cv=none; b=WG03bUO8eN7r32xRcmFsY1ZpYsDstPhlbZTgp7Zr9whdCpPgBn9irUoZoHmn/yWv/rEMSCM0zyAk9tAe9sQJgFuS+T4toMO7ANdqr8Hbtkg8C0lKksrbz0uISMiltwUN8e61vwXqoUC/btX7Bjbq01RK4k6eqc7VCifonsyNFWY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709292635; c=relaxed/simple;
-	bh=DqC1146Gw+gtEXd1U6evjshsYPG+7+z9wKN5tAwt5no=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sSNZgLjeM6HicHVZTT26crHfrKHDBnzSYdvm00J7UhA+UrdLAadtQhZ6ruYDVKVBsh8g2m6a/GKhJyQjKX35GHvXyiEACdeb113Q1spu5X/LmwT6ZrRhmJ+s3OIp3DrcAdgwg9F/zU8Z4HPwkfCE6fzfDxaz31902s6fo21ViRo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZYKV9D0h; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709292633;
+	s=arc-20240116; t=1709292818; c=relaxed/simple;
+	bh=FQMGv7PmATC7VR1MwAuQvuUYpMVWZ8wkTcljl9/Xkqc=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=A9VMfYjpv74Z1/Mu3g1PsmnsBnGkbzeftGwQjjmN37F5VVw3Nucg2ogxItEPQ8furu1wuqM+t2iOrkDR6sJvl2szBOGBXJ5PgHXlgE2j4xlLDAj0nJBNh3CDvjfNRIJ3hX7I6B0IHd3wPlhbKfFjleFBTjPR9thq7SOYcztNWsE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=tHhkWxji; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=11jtywQ/; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1709292814;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=wFTRxYvZ76dhFqAdPDH/a2zkO7llSf+/xEzdCoge4iY=;
-	b=ZYKV9D0hvVvacwx8yiJs+UW+XgeQ5ae1YFfaOl+yD+doMUTyju39GTB7OrCbMebSgTU8yQ
-	UO1XjeKM5FI/nheGuk2DuVJ+yid/6aQ6YmtLuCC005RTmXi3HNb6ljcmMUFHmPJLFqAHE5
-	xL9O6t2vRpISMt3y711MYsTiOxwMRv0=
-Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
- [209.85.161.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-354-qJXskIQsMqWSlqIKA682ag-1; Fri, 01 Mar 2024 06:30:32 -0500
-X-MC-Unique: qJXskIQsMqWSlqIKA682ag-1
-Received: by mail-oo1-f72.google.com with SMTP id 006d021491bc7-5a10aecb064so3640eaf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 03:30:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709292631; x=1709897431;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wFTRxYvZ76dhFqAdPDH/a2zkO7llSf+/xEzdCoge4iY=;
-        b=SEOCqit+sTdjxDod1Ga+r1iu4ZrZvLbptKgBsmGE1bHcDLDENwfIuX5hspZ0GjXax7
-         di8i+dDLP32YgXEq25wNjupMe9eFxDvC3H8uyN3C7HRhyzCzYAdOCMnpYnm8DaJeEn2F
-         WXI+UqQtlmLTWhObTv6CNJu0CPFYfskoUdXR4fxEKIycgglNCd8rmcxxCYXWDeTcY5Da
-         WEvvWk4HnuIsY0l9FuIkBT3WTVr6MyY65AlP+yIFpQwDxNR7QgfeO/61904oLt69hG9K
-         Pv56NVawbh4tylYo4PqphIA3hwaIu4uG075ClX+vovwPJmuJcwR1U6jHmiCnm9mH62b0
-         Cw8A==
-X-Forwarded-Encrypted: i=1; AJvYcCWyMP8HYFRx4Rxw632mBCGCbiE8qGBjZf23SnIZlHvMWuYXToJQ0/awlITE8PDaBDH6tszVuSxOzgIOjWupWFQ92VU9tPsB+3SOp98Q
-X-Gm-Message-State: AOJu0YytOidQdsMcCQ1Yf1L/akzUbXAnWBe58MkRVgjYJNNUlh8IVYSt
-	CKK+6NTGb7rKjsdhHV+6Oal9M7cvpstHiE8G/Ug3yaLaxJ8E8T318HMH2P96NIU6urB7ZWetAXs
-	FD5vj9ZDYNg8MgcB3vPEJlSAhTBvMj1wKPMlg8oD2FlPIC1aeNDdA3L4AL76rVbukXpnVQw==
-X-Received: by 2002:a05:6358:5923:b0:178:9f1d:65e4 with SMTP id g35-20020a056358592300b001789f1d65e4mr1147489rwf.3.1709292631170;
-        Fri, 01 Mar 2024 03:30:31 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IE/dYBpHA/2LZIcNaPDDpZ49F70JHds10e81JbU90eBR8pmO8IjXPGhx9tXuvUpPM6IQ4Mw1Q==
-X-Received: by 2002:a05:6358:5923:b0:178:9f1d:65e4 with SMTP id g35-20020a056358592300b001789f1d65e4mr1147459rwf.3.1709292630853;
-        Fri, 01 Mar 2024 03:30:30 -0800 (PST)
-Received: from pstanner-thinkpadt14sgen1.remote.csb (nat-pool-muc-t.redhat.com. [149.14.88.26])
-        by smtp.gmail.com with ESMTPSA id b1-20020ac86781000000b0042eb46d15bbsm1596239qtp.88.2024.03.01.03.30.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 03:30:30 -0800 (PST)
-From: Philipp Stanner <pstanner@redhat.com>
-To: Hans de Goede <hdegoede@redhat.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Sam Ravnborg <sam@ravnborg.org>,
-	dakr@redhat.com
-Cc: dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org,
-	Philipp Stanner <pstanner@redhat.com>,
-	stable@kernel.vger.org
-Subject: [PATCH v4 10/10] drm/vboxvideo: fix mapping leaks
-Date: Fri,  1 Mar 2024 12:29:58 +0100
-Message-ID: <20240301112959.21947-11-pstanner@redhat.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240301112959.21947-1-pstanner@redhat.com>
-References: <20240301112959.21947-1-pstanner@redhat.com>
+	bh=KaJW+PGzJMPU08LMdd6ra/36/s+8KlMVMHUHupu24Eg=;
+	b=tHhkWxjiL3c61ImcYSTznqHlgWNCQnTKobQr4ISvWMHLSdKyqIGYptR9XmejVhx+mO4clg
+	BsUEj1z/J/2pt5d2b3c/qj1a50ycqlnXcNtoYAzOKw/RvITpPZZwz8Loips0sNQU/8vJOD
+	SzpOOQEdUMW2tgDuvQxGpd01+43FphTnHPQR2LsOaFyuMiaL0kDUVv0plu9Ep0mFnNeAta
+	Eh7rVfhNipqbkuSSCnVZwgaAVM42iFWvWzV4QE5Y2t9jK6TLI8Vm9RDaTelyO5ymjMsatX
+	PpO0QK1FNbkrWlZEB0bLnwIM/5UI9gFms2MxG9h6QxEtN4dm7dC/FxGoMw85kw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1709292814;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KaJW+PGzJMPU08LMdd6ra/36/s+8KlMVMHUHupu24Eg=;
+	b=11jtywQ/wCzJUZQ+4YoHyF3vDjw1g6gaP3O+1SjMhUUl1Zp5GVwZUPFSophNsbooZx9I3E
+	dw+zegdZptEPzpDA==
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: x86@kernel.org, Steven Rostedt <rostedt@goodmis.org>, "Paul E. McKenney"
+ <paulmck@kernel.org>
+Subject: Re: [patch 6/6] x86/idle: Select idle routine only once
+In-Reply-To: <87h6hq74j0.ffs@tglx>
+References: <20240229141407.283316443@linutronix.de>
+ <20240229142248.582321500@linutronix.de> <87h6hq74j0.ffs@tglx>
+Date: Fri, 01 Mar 2024 12:33:33 +0100
+Message-ID: <87edcu6vaq.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-When the PCI devres API was introduced to this driver, it was wrongly
-assumed that initializing the device with pcim_enable_device() instead
-of pci_enable_device() will make all PCI functions managed.
+On Fri, Mar 01 2024 at 09:14, Thomas Gleixner wrote:
+> On Thu, Feb 29 2024 at 15:23, Thomas Gleixner wrote:
+>>  
+>> -	if (x86_idle_set())
+>> -		return;
+>> -
+>
+> Bah. With XEN=n this results in a defined but not used warning.
+> Updated version below.
 
-This is wrong and was caused by the quite confusing PCI devres API in
-which some, but not all, functions become managed that way.
+I'm a moron. xen_set_default_idle() is invoked very early on, so
+select_idle_routine() has to keep the check. Sigh.
 
-The function pci_iomap_range() is never managed.
+Fixed it and added an comment to that effect.
 
-Replace pci_iomap_range() with the actually managed function
-pcim_iomap_range().
-
-CC: <stable@kernel.vger.org> # v5.10+
-Fixes: 8558de401b5f ("drm/vboxvideo: use managed pci functions")
-Signed-off-by: Philipp Stanner <pstanner@redhat.com>
 ---
- drivers/gpu/drm/vboxvideo/vbox_main.c | 20 +++++++++-----------
- 1 file changed, 9 insertions(+), 11 deletions(-)
+Subject: x86/idle: Select idle routine only once
+From: Thomas Gleixner <tglx@linutronix.de>
+Date: Wed, 28 Feb 2024 23:20:32 +0100
 
-diff --git a/drivers/gpu/drm/vboxvideo/vbox_main.c b/drivers/gpu/drm/vboxvideo/vbox_main.c
-index 42c2d8a99509..d4ade9325401 100644
---- a/drivers/gpu/drm/vboxvideo/vbox_main.c
-+++ b/drivers/gpu/drm/vboxvideo/vbox_main.c
-@@ -42,12 +42,11 @@ static int vbox_accel_init(struct vbox_private *vbox)
- 	/* Take a command buffer for each screen from the end of usable VRAM. */
- 	vbox->available_vram_size -= vbox->num_crtcs * VBVA_MIN_BUFFER_SIZE;
- 
--	vbox->vbva_buffers = pci_iomap_range(pdev, 0,
--					     vbox->available_vram_size,
--					     vbox->num_crtcs *
--					     VBVA_MIN_BUFFER_SIZE);
--	if (!vbox->vbva_buffers)
--		return -ENOMEM;
-+	vbox->vbva_buffers = pcim_iomap_range(
-+			pdev, 0, vbox->available_vram_size,
-+			vbox->num_crtcs * VBVA_MIN_BUFFER_SIZE);
-+	if (IS_ERR(vbox->vbva_buffers))
-+		return PTR_ERR(vbox->vbva_buffers);
- 
- 	for (i = 0; i < vbox->num_crtcs; ++i) {
- 		vbva_setup_buffer_context(&vbox->vbva_info[i],
-@@ -116,11 +115,10 @@ int vbox_hw_init(struct vbox_private *vbox)
- 	DRM_INFO("VRAM %08x\n", vbox->full_vram_size);
- 
- 	/* Map guest-heap at end of vram */
--	vbox->guest_heap =
--	    pci_iomap_range(pdev, 0, GUEST_HEAP_OFFSET(vbox),
--			    GUEST_HEAP_SIZE);
--	if (!vbox->guest_heap)
--		return -ENOMEM;
-+	vbox->guest_heap = pcim_iomap_range(pdev, 0,
-+			GUEST_HEAP_OFFSET(vbox), GUEST_HEAP_SIZE);
-+	if (IS_ERR(vbox->guest_heap))
-+		return PTR_ERR(vbox->guest_heap);
- 
- 	/* Create guest-heap mem-pool use 2^4 = 16 byte chunks */
- 	vbox->guest_pool = devm_gen_pool_create(vbox->ddev.dev, 4, -1,
--- 
-2.43.0
+The idle routine selection is done on every CPU bringup operation and has a
+guard in place which is effective after the first invocation, which is a
+pointless exercise.
 
+Invoke it once on the boot CPU and mark the related functions __init.
+The guard check has to stay as xen_set_default_idle() runs early.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+V1b: Keep the x86_idle_set() check so XEN keeps working
+V1a: Move x86_idle_set() into the only usage site (0day)
+---
+ arch/x86/include/asm/processor.h |    2 +-
+ arch/x86/kernel/cpu/common.c     |    4 ++--
+ arch/x86/kernel/process.c        |    8 +++++---
+ 3 files changed, 8 insertions(+), 6 deletions(-)
+
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -555,7 +555,7 @@ static inline void load_sp0(unsigned lon
+ 
+ unsigned long __get_wchan(struct task_struct *p);
+ 
+-extern void select_idle_routine(const struct cpuinfo_x86 *c);
++extern void select_idle_routine(void);
+ extern void amd_e400_c1e_apic_setup(void);
+ 
+ extern unsigned long		boot_option_idle_override;
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -1938,8 +1938,6 @@ static void identify_cpu(struct cpuinfo_
+ 	/* Init Machine Check Exception if available. */
+ 	mcheck_cpu_init(c);
+ 
+-	select_idle_routine(c);
+-
+ #ifdef CONFIG_NUMA
+ 	numa_add_cpu(smp_processor_id());
+ #endif
+@@ -2343,6 +2341,8 @@ void __init arch_cpu_finalize_init(void)
+ {
+ 	identify_boot_cpu();
+ 
++	select_idle_routine();
++
+ 	/*
+ 	 * identify_boot_cpu() initialized SMT support information, let the
+ 	 * core code know.
+--- a/arch/x86/kernel/process.c
++++ b/arch/x86/kernel/process.c
+@@ -853,8 +853,9 @@ void __noreturn stop_this_cpu(void *dumm
+  * Do not prefer MWAIT if MONITOR instruction has a bug or idle=nomwait
+  * is passed to kernel commandline parameter.
+  */
+-static bool prefer_mwait_c1_over_halt(const struct cpuinfo_x86 *c)
++static __init bool prefer_mwait_c1_over_halt(void)
+ {
++	const struct cpuinfo_x86 *c = &boot_cpu_data;
+ 	u32 eax, ebx, ecx, edx;
+ 
+ 	/* If override is enforced on the command line, fall back to HALT. */
+@@ -908,7 +909,7 @@ static __cpuidle void mwait_idle(void)
+ 	__current_clr_polling();
+ }
+ 
+-void select_idle_routine(const struct cpuinfo_x86 *c)
++void __init select_idle_routine(void)
+ {
+ 	if (boot_option_idle_override == IDLE_POLL) {
+ 		if (IS_ENABLED(CONFIG_SMP) && smp_num_siblings > 1)
+@@ -916,10 +917,11 @@ void select_idle_routine(const struct cp
+ 		return;
+ 	}
+ 
++	/* Required to guard against xen_set_default_idle() */
+ 	if (x86_idle_set())
+ 		return;
+ 
+-	if (prefer_mwait_c1_over_halt(c)) {
++	if (prefer_mwait_c1_over_halt()) {
+ 		pr_info("using mwait in idle threads\n");
+ 		static_call_update(x86_idle, mwait_idle);
+ 	} else if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST)) {
 
