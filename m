@@ -1,186 +1,137 @@
-Return-Path: <linux-kernel+bounces-87713-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87714-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 033D186D814
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:00:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC99A86D817
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:02:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E6E31F22D7E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 00:00:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A551E284BDB
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 00:02:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D684D13C9EE;
-	Thu, 29 Feb 2024 23:59:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63DA41FDB;
+	Fri,  1 Mar 2024 00:01:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=elbertmai.com header.i=@elbertmai.com header.b="U3sIgO3l";
-	dkim=pass (2048-bit key) header.d=purelymail.com header.i=@purelymail.com header.b="bn/qr6Eb"
-Received: from sendmail.purelymail.com (sendmail.purelymail.com [34.202.193.197])
+	dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b="TDvZPeRh"
+Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B648344374
-	for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 23:59:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=34.202.193.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 837FE365;
+	Fri,  1 Mar 2024 00:01:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.29.241.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709251192; cv=none; b=JvAtlPOTXHQAPTGXRtkfv3eCk6gR4Jn+HJG1/9G1sV/Y2mdJzH/nz20m7hgpOT8hfWVkBY+thBOJEfgMcn5Bihf94BhtqSbG0mSpRsFoU7qcevFst/i21I8F9gljxFcHn8bKcVobvk5VqJS1o+oZyZ4Mlu28OyLHV17UyOcDkWo=
+	t=1709251315; cv=none; b=WflXAJ2v3oHcMMotQjKWAh9ozlZzbi8KV9aeIAUTmZ5ZovpEMA/mBHm0kGkm+hYZssD+t/OEW18cXxpnV5spphaJElpTuOR/iiTtqIRg1UDOfrhjgDhvuTXtYHKLrOASA3EyTOJfZWf9YjhhlMYizV0+8gArw8nhSzsjEVw8YPA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709251192; c=relaxed/simple;
-	bh=OOOCsGxQH/wxU/CG8sZCXZFdEfx3IZ9cD1UMgPqoejI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=tAAaQg8HeDgODtPOdfp5MczQfPV/RQaw23Knajne7Zag6k9AKiTMHvFnjyix4REbbEsOuKBrTRUdSVFh+U33KimOerWVchiQL7+ab9KaeHXeqeFbstssIIVKU5S9xnRm9uR+rrTj4cAgqSJzLw4ucUv0EwoqJbKb474ZIPguaKU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=elbertmai.com; spf=pass smtp.mailfrom=elbertmai.com; dkim=pass (2048-bit key) header.d=elbertmai.com header.i=@elbertmai.com header.b=U3sIgO3l; dkim=pass (2048-bit key) header.d=purelymail.com header.i=@purelymail.com header.b=bn/qr6Eb; arc=none smtp.client-ip=34.202.193.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=elbertmai.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=elbertmai.com
-Authentication-Results: purelymail.com; auth=pass
-DKIM-Signature: a=rsa-sha256; b=U3sIgO3lqTzN/z5hQyfzPw4s9+yl5E1EGxOdfTty0MSKjQ6d2FjCTouDqFDDUUqCWMQ+PPy2rhcDKy5qh9UYD6Vyaexsi/qN0O7Y35bNgfwziQRG7N/O5l1v9/86CqRr7TuqbaZzDwKxK00iGx8A+6oOCGBHD38x+swMLVUorvZPMDjYczSm+rKgiiS4h4TpqXo49czACtt0LflITl6DbSVMsr8KoY1N+iWQ9Us3Isjrz4hcewT4JK0mmDffSxiSsiLLxCDWEPKgYBVsjzmWW7IqVdCFdAzm01uY22rY3v4TATqs0YngMTxgYfmNgM34ryX+gQbKEx8Y0jPuosercw==; s=purelymail1; d=elbertmai.com; v=1; bh=OOOCsGxQH/wxU/CG8sZCXZFdEfx3IZ9cD1UMgPqoejI=; h=Received:From:To:Subject;
-DKIM-Signature: a=rsa-sha256; b=bn/qr6Ebpw63GwRPkSkgkHh2wf3tAJtJY7NPyPSTPM/OqoLUHRV1xuiuHvJOKgD/MjNX+dnMYO+vnNb3nvcZycNjSW0dODcVl/3yQdphUcpwhyB14hS7Omxul4L/IxlnXkbilCpFF6JxTyk8uArA2kxxYn29qR82d+a/EhJmx3aOnRq5c+cCHQ45L0BG9BNCZJxbtTAeBd9tKqsN4c5QKyprAkWPYiWcEhTm84pk7FvcPGDg/jPvFsMq6VK8LZN8R7AzjYe/b8n4pgiPhJR6bEiKMzPoUbNByMhOeq4Dt3Njb/TlNqhHuiGJ7KY90ocFvPEWzUPBOFv1NEhiLYZzhQ==; s=purelymail1; d=purelymail.com; v=1; bh=OOOCsGxQH/wxU/CG8sZCXZFdEfx3IZ9cD1UMgPqoejI=; h=Feedback-ID:Received:From:To:Subject;
-Feedback-ID: 5995:1482:null:purelymail
-X-Pm-Original-To: linux-kernel@vger.kernel.org
-Received: by smtp.purelymail.com (Purelymail SMTP) with ESMTPSA id -265359410;
-          (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
-          Thu, 29 Feb 2024 23:59:22 +0000 (UTC)
-From: Elbert Mai <code@elbertmai.com>
-To: gregkh@linuxfoundation.org,
-	linux-kernel@vger.kernel.org,
-	linux-usb@vger.kernel.org
-Cc: Elbert Mai <code@elbertmai.com>
-Subject: [PATCH] usb: Export BOS descriptor to sysfs
-Date: Thu, 29 Feb 2024 15:59:05 -0800
-Message-Id: <20240229235905.569705-1-code@elbertmai.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1709251315; c=relaxed/simple;
+	bh=t0X7t7GGFniRIOEqYfK4TYBaU7eXwThHc9/pKtKp17w=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=JnQrwfxGJwTp4Pv5vAp6oFP505Lgjanu4Fb0/YkR77CXHtbOFkwlS+w3n28hUUGspaizJUlKUhuc4eqA/Yz0rt7f2ft5P4YMQL2puskOqtMslwq9fpqY2Axhkpvu81sfFrixkiXmDI1e9TOoWvL+Tb85B0ntvztJ+z72pXea82E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au; spf=pass smtp.mailfrom=codeconstruct.com.au; dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b=TDvZPeRh; arc=none smtp.client-ip=203.29.241.158
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeconstruct.com.au
+Received: from [192.168.68.112] (ppp14-2-70-176.adl-apt-pir-bras31.tpg.internode.on.net [14.2.70.176])
+	by mail.codeconstruct.com.au (Postfix) with ESMTPSA id 21BD22012A;
+	Fri,  1 Mar 2024 08:01:50 +0800 (AWST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=codeconstruct.com.au; s=2022a; t=1709251311;
+	bh=wLcneC51g0yvr2rzTMvDPFpjn3ptVrIuHETKFxaBzdQ=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=TDvZPeRhAQ/ae5/L624GhlPAeR3buY0n8UuSKpHSUNxzU+Oc12emprmoIoHsRaIeu
+	 MkFUPSISftOmnJv+B1ew/H3oAvCgSoxsCgcJue/SizLC6PMC2ElnRb9Fgj0dA9ZkhC
+	 yX/NfH5gtdMsaYAm595hUfiJwfeHC1hhAvVe4tLejzqS9SomPFYy10/gf+87knqox/
+	 f44qFlLO3i4WKXEBykHfikAVUP1Y47xSuKxn8PweCj16eENDn7HPq8PP1GaJ1RaCys
+	 sFUMhiZzA4J5CRayMyuEEpSzBYR49shqXw8LpD2HA15kz59xs/Ru87jSSCi0bScftq
+	 kCtM4H64KHGSw==
+Message-ID: <cc13d3f4fc7f117d0f29cf18a085066fd4b560cc.camel@codeconstruct.com.au>
+Subject: Re: [PATCH v5 2/2] ARM: dts: aspeed: x4tf: Add dts for asus x4tf
+ project
+From: Andrew Jeffery <andrew@codeconstruct.com.au>
+To: Kelly Hung <ppighouse@gmail.com>, robh+dt@kernel.org
+Cc: krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, joel@jms.id.au, 
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org, 
+	openbmc@lists.ozlabs.org, kelly_hung@asus.com, Allenyy_Hsu@asus.com
+Date: Fri, 01 Mar 2024 10:31:47 +1030
+In-Reply-To: <20240229111123.1932504-2-Kelly_Hung@asus.com>
+References: <20240229111123.1932504-1-Kelly_Hung@asus.com>
+	 <20240229111123.1932504-2-Kelly_Hung@asus.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-MIME-Autoconverted: from 8bit to quoted-printable by Purelymail
-Content-Type: text/plain; charset=UTF-8
 
-Motivation
-----------
+On Thu, 2024-02-29 at 19:11 +0800, Kelly Hung wrote:
+> Base on aspeed-g6.dtsi and can boot into BMC console.
+>=20
+> Signed-off-by: Kelly Hung <Kelly_Hung@asus.com>
+>=20
+> ---
+> V4 -> V5: None
+> V3 -> V4: None
+> V2 -> V3:
+> - fmc lable change to bmc.
+> - use 64M partition layout.
+> - rename spi1 label to bios.
+> - remove bios partition section.
+> V1 -> V2:
+> - do schema check and remove all warings.
+> - remove all unnecessary sections.
+> ---
+>  arch/arm/boot/dts/aspeed/Makefile             |   1 +
+>  .../boot/dts/aspeed/aspeed-bmc-asus-x4tf.dts  | 581 ++++++++++++++++++
+>  2 files changed, 582 insertions(+)
+>  create mode 100644 arch/arm/boot/dts/aspeed/aspeed-bmc-asus-x4tf.dts
+>=20
+> diff --git a/arch/arm/boot/dts/aspeed/Makefile b/arch/arm/boot/dts/aspeed=
+/Makefile
+> index d3ac20e31..32c41f3d9 100644
+> --- a/arch/arm/boot/dts/aspeed/Makefile
+> +++ b/arch/arm/boot/dts/aspeed/Makefile
+> @@ -10,6 +10,7 @@ dtb-$(CONFIG_ARCH_ASPEED) +=3D \
+>  	aspeed-bmc-arm-stardragon4800-rep2.dtb \
+>  	aspeed-bmc-asrock-e3c246d4i.dtb \
+>  	aspeed-bmc-asrock-romed8hm3.dtb \
+> +	aspeed-bmc-asus-x4tf.dtb \
+>  	aspeed-bmc-bytedance-g220a.dtb \
+>  	aspeed-bmc-delta-ahe50dc.dtb \
+>  	aspeed-bmc-facebook-bletchley.dtb \
+> diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-asus-x4tf.dts b/arch/arm=
+/boot/dts/aspeed/aspeed-bmc-asus-x4tf.dts
+> new file mode 100644
+> index 000000000..64f4ed07c
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-asus-x4tf.dts
+> @@ -0,0 +1,581 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +// Copyright 2024 ASUS Corp.
+> +
+> +/dts-v1/;
+> +
+> +#include "aspeed-g6.dtsi"
+> +#include "aspeed-g6-pinctrl.dtsi"
 
-The kernel already retrieves and caches the binary device object store
-(BOS) descriptor from USB devices it enumerates. Export this descriptor to
-userspace via sysfs, so users do not need to open the USB device with the
-correct permissions and requesting the descriptor themselves.
+aspeed-g6.dtsi already includes aspeed-g6-pinctrl.dtsi, so the include
+here is unnecessary.
 
-A BOS descriptor contains a set of device capability descriptors. One that
-is of interest to users is the platform descriptor. This contains a 128-bit
-UUID and arbitrary data. The descriptor allows parties outside of USB-IF to
-add additional metadata about a device in a standards-compliant manner.
+Other than that the patch looks okay to me. There are bunch of issues
+exposed by `make CHECK_DTBS=3Dy aspeed/aspeed-bmc-asus-x4tf.dtb`, however
+they're almost all generic issues with aspeed-g6.dtsi or deficient
+binding definitions for the Aspeed controllers. I've put together a
+patch stack to clean them up and am working to upstream them.
 
-Notable examples include the WebUSB and Microsoft OS 2.0 descriptors. Of
-course, there could be more. By exporting the entire BOS descriptor we can
-handle these and all future device capabilities. In addition, tools like
-udev can match rules on device capabilities in the BOS without requiring
-additional I/O with the USB device.
+So for now:
 
-Implementation
---------------
+Reviewed-by: Andrew Jeffery <andrew@codeconstruct.com.au>
 
-Add bos_descriptor file to sysfs. This is a binary file and it works the
-same way as the existing descriptors file. The file exists even if a device
-does not have a BOS descriptor (the file will be empty in this case). This
-allows users to detect if the kernel supports reading the BOS via sysfs and
-fall back to direct USB I/O if needed.
+I'll put v5 in a tree for Joel to pick up if he doesn't have any
+concerns. I'll drop the redundant include when applying the patch
+there.
 
-Signed-off-by: Elbert Mai <code@elbertmai.com>
----
- Documentation/ABI/testing/sysfs-bus-usb |  9 +++++++
- drivers/usb/core/sysfs.c                | 35 ++++++++++++++++++++++++-
- 2 files changed, 43 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/ABI/testing/sysfs-bus-usb b/Documentation/ABI/te=
-sting/sysfs-bus-usb
-index 614d216dff1d..bfffaa752a13 100644
---- a/Documentation/ABI/testing/sysfs-bus-usb
-+++ b/Documentation/ABI/testing/sysfs-bus-usb
-@@ -293,3 +293,12 @@ Description:
- =09=09USB 3.2 adds Dual-lane support, 2 rx and 2 tx -lanes over Type-C.
- =09=09Inter-Chip SSIC devices support asymmetric lanes up to 4 lanes per
- =09=09direction. Devices before USB 3.2 are single lane (tx_lanes =3D 1)
-+
-+What:=09=09/sys/bus/usb/devices/.../bos_descriptor
-+Date:=09=09March 2024
-+Contact:=09Elbert Mai <code@elbertmai.com>
-+Description:
-+=09=09Binary file containing the cached binary device object store (BOS)
-+=09=09descriptor of the device. This file is empty if the BOS descriptor
-+=09=09is not present. The kernel will not request a BOS descriptor from
-+=09=09the device if its bcdUSB value is less than 0x0201.
-diff --git a/drivers/usb/core/sysfs.c b/drivers/usb/core/sysfs.c
-index a2ca38e25e0c..208d2f8cde2d 100644
---- a/drivers/usb/core/sysfs.c
-+++ b/drivers/usb/core/sysfs.c
-@@ -901,7 +901,7 @@ read_descriptors(struct file *filp, struct kobject *kob=
-j,
- =09=09=09srclen =3D sizeof(struct usb_device_descriptor);
- =09=09} else {
- =09=09=09src =3D udev->rawdescriptors[cfgno];
--=09=09=09srclen =3D __le16_to_cpu(udev->config[cfgno].desc.
-+=09=09=09srclen =3D le16_to_cpu(udev->config[cfgno].desc.
- =09=09=09=09=09wTotalLength);
- =09=09}
- =09=09if (off < srclen) {
-@@ -923,6 +923,34 @@ static struct bin_attribute dev_bin_attr_descriptors =
-=3D {
- =09.size =3D 18 + 65535,=09/* dev descr + max-size raw descriptor */
- };
-=20
-+static ssize_t
-+read_bos_descriptor(struct file *filp, struct kobject *kobj,
-+=09=09struct bin_attribute *attr,
-+=09=09char *buf, loff_t off, size_t count)
-+{
-+=09struct device *dev =3D kobj_to_dev(kobj);
-+=09struct usb_device *udev =3D to_usb_device(dev);
-+=09struct usb_host_bos *bos =3D udev->bos;
-+=09struct usb_bos_descriptor *desc;
-+=09size_t desclen, n =3D 0;
-+
-+=09if (bos) {
-+=09=09desc =3D bos->desc;
-+=09=09desclen =3D le16_to_cpu(desc->wTotalLength);
-+=09=09if (off < desclen) {
-+=09=09=09n =3D min(count, desclen - (size_t) off);
-+=09=09=09memcpy(buf, (void *) desc + off, n);
-+=09=09}
-+=09}
-+=09return n;
-+}
-+
-+static struct bin_attribute dev_bin_attr_bos_descriptor =3D {
-+=09.attr =3D {.name =3D "bos_descriptor", .mode =3D 0444},
-+=09.read =3D read_bos_descriptor,
-+=09.size =3D 65535,=09/* max-size BOS descriptor */
-+};
-+
- /*
-  * Show & store the current value of authorized_default
-  */
-@@ -1042,6 +1070,10 @@ int usb_create_sysfs_dev_files(struct usb_device *ud=
-ev)
- =09if (retval)
- =09=09goto error;
-=20
-+=09retval =3D device_create_bin_file(dev, &dev_bin_attr_bos_descriptor);
-+=09if (retval)
-+=09=09goto error;
-+
- =09retval =3D add_persist_attributes(dev);
- =09if (retval)
- =09=09goto error;
-@@ -1071,6 +1103,7 @@ void usb_remove_sysfs_dev_files(struct usb_device *ud=
-ev)
-=20
- =09remove_power_attributes(dev);
- =09remove_persist_attributes(dev);
-+=09device_remove_bin_file(dev, &dev_bin_attr_bos_descriptor);
- =09device_remove_bin_file(dev, &dev_bin_attr_descriptors);
- }
-=20
---=20
-2.34.1
-
+Andrew
 
