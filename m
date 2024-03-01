@@ -1,135 +1,86 @@
-Return-Path: <linux-kernel+bounces-89168-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89169-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 546DD86EB87
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 22:57:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F17FB86EB88
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 22:58:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E0C451F215B5
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:57:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9282D1F21385
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:58:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11BB659141;
-	Fri,  1 Mar 2024 21:57:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="olnLWCFv";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="5UmcwJId"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F8A859141;
+	Fri,  1 Mar 2024 21:58:53 +0000 (UTC)
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEB8A54273
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 21:57:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9665C54273
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 21:58:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709330265; cv=none; b=t4Ho8HNuYcz7FMB10FIGYxNZQyW6dhQna0pDnZt5ASR2HzYNnOYJAXHtn2Mi4927bvXLDZ7dzBW1TeJIBuzDWwfhKa1kj1TB2xTrl/I7gvNLQDKhTYjRa7dqhlEO2Uc+V15OlYziU8J23W9UVkaRerR6KwdmQGXCUfnQploXWuk=
+	t=1709330332; cv=none; b=lAmeBQKFWZw7L/zOT0N+wVjG42Y9MzUgRCKQykmWHX3V3YiyFLwcdYrDMl03GNd6Yz1nABGdroC2vy7JFD0sLwbagazx3ruAfbhM2npXeAf1yhdBKbBYm9geNpBMo5g2PzhBJG5j8KUaCQ0hB2MkniNQCFX8xOdVq7EuDiG1mf8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709330265; c=relaxed/simple;
-	bh=wLs58LjYHqDtAtU9huTE5yAnHjoEs4loshkLDz0+nwc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=i6ir7DSLv+QpvRrijxkAtUFtNEqkVFJ1ILnbdZXV1I1r0R63dhbq9HejY/duiOLJFSq/M5WgAYqGdWDtGLQVjrH+iiLM3Hr2RNnCnJjRtAUh6+f9wNjOmXvjJmN6t0FR9vS9iIjRHyS/tYN6ujxO6sf4U6Jnb+lWxQv/iT/pE4Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=olnLWCFv; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=5UmcwJId; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1709330262;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=z2ElRbJ+yWzkzMZNxWMo/TKFEfePY+AGrVnb1CXRPlQ=;
-	b=olnLWCFvicqLHdfJxhLQ07B5CNKb/MXpfPRhZLaotxh9U+Q8/ZHGu+AfVXXg3wMIRqQZz0
-	Q3OzsI2COBvCWupb7L9BFTqN6ecBsOckSXbqvanEnMNRfHYJEoUfa8ZwpXSOjz+EllNYOH
-	JBRQEKfw+l55WoZviYsGkrEtzYOnxScVb68K/3Gv45rXHCfU7Cj0z+Uk2MJlMiKBj7idsH
-	3EWRd7uF/lGn4AInIP161Q19jSUYiDnhoe/xlVrxYnfmVU19VO4dNQLzsTRH9IRQ6PndQU
-	MFdBwH0gHg20yUoCocYSiqWapWQIF9bNwuUDXgme3hzm6HP5jEgh183ARiN65A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1709330262;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=z2ElRbJ+yWzkzMZNxWMo/TKFEfePY+AGrVnb1CXRPlQ=;
-	b=5UmcwJIdsxDbKZwwJ1DucFoymc/eCb6Y5p1FQZMI7zSKlp/9BOFONi5Bobu0Vap9bP8DjT
-	YII6qGcgivUjpFAA==
-To: kernel test robot <lkp@intel.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org, Arjan van
- de Ven <arjan@linux.intel.com>, x86@kernel.org
-Subject: Re: arch/x86/include/asm/processor.h:698:16: sparse: sparse:
- incorrect type in initializer (different address spaces)
-In-Reply-To: <202403020457.RCJoQ3ts-lkp@intel.com>
-References: <202403020457.RCJoQ3ts-lkp@intel.com>
-Date: Fri, 01 Mar 2024 22:57:41 +0100
-Message-ID: <87edctwr6y.ffs@tglx>
+	s=arc-20240116; t=1709330332; c=relaxed/simple;
+	bh=qCBfkczFyAktNdJLsCmJAf1+pslthg3Q8FHNiNZ0JHY=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=LHnANpVQ7rmtxcaiP79xtzJY8ULSAjzhRazOUfVntoTLrygFu7hKlPcaXzMgIbHjvrcFQXGMZEn/8tfe6DEJkOsV/d0DK4m4XHS6r++dJYqf5kvhbsdERTCVP28iBc3Hgn+1i3m+pFGTn551f3FdG+lbwfDfnHprk6kW0O2kA0Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-187-ANi1P3KDNg-TLvPDunxNkw-1; Fri, 01 Mar 2024 21:58:45 +0000
+X-MC-Unique: ANi1P3KDNg-TLvPDunxNkw-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 1 Mar
+ 2024 21:58:43 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Fri, 1 Mar 2024 21:58:43 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Chris Li' <chrisl@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>, Yosry Ahmed
+	<yosryahmed@google.com>, Nhat Pham <nphamcs@gmail.com>, Johannes Weiner
+	<hannes@cmpxchg.org>, "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Chengming Zhou <zhouchengming@bytedance.com>, Barry Song
+	<v-songbaohua@oppo.com>
+Subject: RE: [PATCH v2] zswap: replace RB tree with xarray
+Thread-Topic: [PATCH v2] zswap: replace RB tree with xarray
+Thread-Index: AQHaauvOjxzLEbVhBE68Iy55RbwJdrEjcLVw
+Date: Fri, 1 Mar 2024 21:58:43 +0000
+Message-ID: <26e77602326d4e169a9484314cac2465@AcuMS.aculab.com>
+References: <20240229-zswap-xarray-v2-1-e50284dfcdb1@kernel.org>
+In-Reply-To: <20240229-zswap-xarray-v2-1-e50284dfcdb1@kernel.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 
-On Sat, Mar 02 2024 at 04:12, kernel test robot wrote:
-> FYI, the error/warning was bisected to this commit, please ignore it
-> if it's irrelevant.
+RnJvbTogQ2hyaXMgTGkNCj4gU2VudDogMjkgRmVicnVhcnkgMjAyNCAwODo0Ng0KPiANCj4gVmVy
+eSBkZWVwIFJCIHRyZWUgcmVxdWlyZXMgcmViYWxhbmNlIGF0IHRpbWVzLiBUaGF0DQo+IGNvbnRy
+aWJ1dGVzIHRvIHRoZSB6c3dhcCBmYXVsdCBsYXRlbmNpZXMuIFhhcnJheSBkb2VzIG5vdA0KPiBu
+ZWVkIHRvIHBlcmZvcm0gdHJlZSByZWJhbGFuY2UuIFJlcGxhY2luZyBSQiB0cmVlIHRvIHhhcnJh
+eQ0KPiBjYW4gaGF2ZSBzb21lIHNtYWxsIHBlcmZvcm1hbmNlIGdhaW4uDQo+IA0KPiBPbmUgc21h
+bGwgZGlmZmVyZW5jZSBpcyB0aGF0IHhhcnJheSBpbnNlcnQgbWlnaHQgZmFpbCB3aXRoDQo+IEVO
+T01FTSwgd2hpbGUgUkIgdHJlZSBpbnNlcnQgZG9lcyBub3QgYWxsb2NhdGUgYWRkaXRpb25hbA0K
+PiBtZW1vcnkuDQoNCldoYXQgaXMgdGhlIGRpZmZlcmVuY2UgaW4ga2VybmVsIG1lbW9yeSB1c2U/
+DQpJSVJDIHNvbWVvbmUgcG9pbnRlZCBvdXQgKGluIHRoZSByb3NlYnVzaCB0aHJlYWQpIHRoYXQg
+eGFycmF5DQp1c2VzIGEgbG90IG9mIGtlcm5lbCBtZW1vcnkgaWYgdGhlIGl0ZW1zIGFyZSByYW5k
+b21seSBkaXN0cmlidXRlZC4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtl
+c2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBV
+Sw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
-I have no idea to which previous thread you are replying to because your
-mail lacks any references.
-
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   87adedeba51a822533649b143232418b9e26d08b
-> commit: 6e29032340b60f7aa7475c8234b17273e4424007 x86/cpu: Move cpu_l[l2]c_id into topology info
-> date:   5 months ago
-> config: i386-randconfig-062-20240301 (https://download.01.org/0day-ci/archive/20240302/202403020457.RCJoQ3ts-lkp@intel.com/config)
-> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240302/202403020457.RCJoQ3ts-lkp@intel.com/reproduce)
->
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202403020457.RCJoQ3ts-lkp@intel.com/
->
-> sparse warnings: (new ones prefixed by >>)
->
-> vim +698 arch/x86/include/asm/processor.h
->
->    695	
->    696	static inline u16 per_cpu_llc_id(unsigned int cpu)
->    697	{
->  > 698		return per_cpu(cpu_info.topo.llc_id, cpu);
->    699	}
->    700	
-
-This is bogus and I looked at another related bogosity today:
-
-  https://lore.kernel.org/all/202403010704.oGQZPu0P-lkp@intel.com
-
-which has similar complaints.
-
-So I went and downloaded the config and followed the reproduction
-instructions except for one detail.
-
-The only difference is the sparse version:
-
-    1) I had the regular debian variant installed.
-
-       Version:  0.6.4 (Debian: 0.6.4-3)
-
-    2) I updated my sparse clone and rebuilt
-
-       Version:  v0.6.4-66-g0196afe16a50
-
-Neither one of them exposed the problem, but you are using:
-
-       sparse version: v0.6.4-66-g0196afe1-dirty
-
-which is obviously based on the latest upstream tree, but seems to have
-some extra muck on top which I don't know what it is.
-
-Does this reproduce with an unpatched upstream sparse for you?
-
-If so then I'm really curious why it does not reproduce here.
-
-Thanks,
-
-        tglx
 
