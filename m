@@ -1,112 +1,96 @@
-Return-Path: <linux-kernel+bounces-88602-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88603-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F28E86E40A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:07:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 794F486E40B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:07:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 616C81C22428
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:07:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30E5D285CDE
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:07:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB07F6A8C1;
-	Fri,  1 Mar 2024 15:06:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D78C43AD8;
+	Fri,  1 Mar 2024 15:07:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GJS1yyVt"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DD543987B;
-	Fri,  1 Mar 2024 15:06:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	dkim=pass (2048-bit key) header.d=8bytes.org header.i=@8bytes.org header.b="deeXjQUm"
+Received: from mail.8bytes.org (mail.8bytes.org [85.214.250.239])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 045E63987B
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 15:07:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.250.239
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709305616; cv=none; b=jZlAZoeKBqOtLwS7HwYdi/j3VF7Zh05J7Roz/qRu+aJDNG9x1VjfAoveZtRzrC/8FGeGS8QvagAQiA9yPV01oorwjdL12w0CT9ViurZbrn2qdney7wnM3dW8VcuM01WjNVp6sFuUK0tCPiXFkoF/oSf3qDCFwgVC7MFDDWGyawE=
+	t=1709305646; cv=none; b=JkeUbm89H4KhTovP72lbqszhb8WOcekd/+cu4GJj9pzABYquk+R/uQcSVewYo6XamT8slUQhDDuGtdUWfL9R6T0+h8g34wW67XlZebU3WSWF0eRtWU8FXPx7e7T6OdBKCfNWmDmQhxfaNsq6Ue0O3K+zfogrZn3XmAhgyD/9xwg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709305616; c=relaxed/simple;
-	bh=klUhEQf+5iLq5itvvFsd/lwIyvrv5Jo42w7y/66wJTE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=deL0wUW9IAUW6II5xwnSxYftEf4AbAbLbeejihdcPtxdOMqPL5DTQRzA+tKq3dbm/G5V/Dln4iDvp1A6dEjeSUm3Gs29oScQjOf6IAOwiEgMebh+sZhvWFXg5UIAd90BqVILBgAbyBy6nt55TCH6m+hppjiDx0X4jrgi+WtKKWc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GJS1yyVt; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709305615; x=1740841615;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=klUhEQf+5iLq5itvvFsd/lwIyvrv5Jo42w7y/66wJTE=;
-  b=GJS1yyVtCuZjQOntjEmzmoBQRtwG8TSYApn9cRqAEm8xIdsV+Ec9K1C7
-   ngm+aKpIfkTFw4r5+QekX1yqOkOEX4Xut+Mt6fBU8XaWJqkFqQ/AxaEgS
-   2GvX198Fo9ShLT8N+nlr6ouP1Qfw1p75ewgzzvWeHPOS/3Q6CdUgg760T
-   aTLDENhsrtBmhhdyNbwItLxUdSbvldxahfMXHTtebBNpY7KpKcnFFFNIR
-   aeT/WDxkchMSB0j2ZgMRrj8xzqVJoIJ5TxcHh7snaKzdkYVljyTLkCuwe
-   wO+dpegsBoKftJT3ihE+fSC0bp5LExqtw3xF5K9+1DdMLY968gCkGeTOy
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11000"; a="7659659"
-X-IronPort-AV: E=Sophos;i="6.06,196,1705392000"; 
-   d="scan'208";a="7659659"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 07:06:54 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,196,1705392000"; 
-   d="scan'208";a="8279225"
-Received: from ybaron-mobl.ger.corp.intel.com (HELO localhost) ([10.94.249.66])
-  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 07:06:51 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To: "Maciej W . Rozycki" <macro@orcam.me.uk>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: [PATCH 1/1] PCI: Use the correct bit in Link Training not active check
-Date: Fri,  1 Mar 2024 17:06:41 +0200
-Message-Id: <20240301150641.4037-1-ilpo.jarvinen@linux.intel.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1709305646; c=relaxed/simple;
+	bh=CL83DanGD/AEOLUdlbiy1Wyke3nJGd0ty89cOTE7sPM=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=ir5ke0i/imHVPyhZMc3wPT+xVfdSuu0+179iXOURhCUBOPMBLZXXoZUgB6h+D7xSX9viDjBN8VidoG74UucGeg7ZT2uzHnmuET+xkBf7/gcB8JcFqvC5HenlQ4FdVhqpM8pXWjMN0wY1Pklp6edTGrag8CF2YrPIlAqiwYTsmPg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org; spf=pass smtp.mailfrom=8bytes.org; dkim=pass (2048-bit key) header.d=8bytes.org header.i=@8bytes.org header.b=deeXjQUm; arc=none smtp.client-ip=85.214.250.239
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=8bytes.org
+Received: from 8bytes.org (p4ffe0c3c.dip0.t-ipconnect.de [79.254.12.60])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.8bytes.org (Postfix) with ESMTPSA id 5E1F41C3C63;
+	Fri,  1 Mar 2024 16:07:18 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=8bytes.org;
+	s=default; t=1709305638;
+	bh=CL83DanGD/AEOLUdlbiy1Wyke3nJGd0ty89cOTE7sPM=;
+	h=Date:From:To:Cc:Subject:From;
+	b=deeXjQUmW1NHChIgsoRdjT6Uqy8m+SLiX5bHGgumYGWz+QxN7ahmr8Rclup1THrfX
+	 L8ZbFnu0ySlQwG1X/B+RvinSvfEENB9Mapup4tawzxCrfz6G+H4qiIaIgeh3gi8T5y
+	 M5AxuqWDIA+V726leT/bRyltOX6YmogYi9MdMI5JLDBIByfn5zPMTwaNh/pd5wASta
+	 LtRZGr4kaq7qm1ffsTdTkQ0QZoNNDmrnUy5oqi1fQxXr0B7yxfjD+CwF5nXWP9FPla
+	 4vxiyUfmFY+WNrXX+rVzT3gEAojZmPrSZM2tTaxIcootdkFliq1/OHzL/1FhsvIIjG
+	 mMXK3I0DLupcA==
+Date: Fri, 1 Mar 2024 16:07:17 +0100
+From: Joerg Roedel <joro@8bytes.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+	iommu@lists.linux.dev
+Subject: [git pull] IOMMU Fix for Linux v6.8-rc6
+Message-ID: <ZeHvJSZR_XoebLF8@8bytes.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Besides Link Training bit, pcie_retrain_link() can also be asked to
-wait for Data Link Layer Link Active bit (PCIe r6.1 sec 7.5.3.8) using
-'use_lt' parameter since the merge commit 1abb47390350 ("Merge branch
-'pci/enumeration'").
+Hi Linus,
 
-pcie_retrain_link() first tries to ensure Link Training is not
-currently active (see Implementation Note in PCIe r6.1 sec 7.5.3.7)
-which must always check Link Training bit regardless of 'use_lt'.
-Correct the pcie_wait_for_link_status() parameters to only wait for
-the correct bit to ensure there is no ongoing Link Training.
+Another fix on-top of last weeks fixes, sorry for the inconveniences.
 
-Since waiting for Data Link Layer Link Active bit is only used for the
-Target Speed quirk, this only impacts the case when the quirk attempts
-to restore speed to higher than 2.5 GT/s (The link is Up at that point
-so pcie_retrain_link() will fail).
+The following changes since commit d206a76d7d2726f3b096037f2079ce0bd3ba329b:
 
-Fixes: 1abb47390350 ("Merge branch 'pci/enumeration'")
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
----
- drivers/pci/pci.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+  Linux 6.8-rc6 (2024-02-25 15:46:06 -0800)
 
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index d8f11a078924..251a0c66c8cb 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -5016,7 +5016,7 @@ int pcie_retrain_link(struct pci_dev *pdev, bool use_lt)
- 	 * avoid LTSSM race as recommended in Implementation Note at the
- 	 * end of PCIe r6.0.1 sec 7.5.3.7.
- 	 */
--	rc = pcie_wait_for_link_status(pdev, use_lt, !use_lt);
-+	rc = pcie_wait_for_link_status(pdev, true, false);
- 	if (rc)
- 		return rc;
- 
--- 
-2.39.2
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git tags/iommu-fix-v6.8-rc6
+
+for you to fetch changes up to 6384c56c99d98c84afea5b9ec7029a6e153ae431:
+
+  iommu/sva: Fix SVA handle sharing in multi device case (2024-03-01 13:53:58 +0100)
+
+----------------------------------------------------------------
+IOMMU fix for Linux v6.8-rc6:
+
+	- Fix SVA handle sharing in multi device case
+
+----------------------------------------------------------------
+Zhangfei Gao (1):
+      iommu/sva: Fix SVA handle sharing in multi device case
+
+ drivers/iommu/iommu-sva.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+Please pull.
+
+Thanks,
+
+	Joerg
 
