@@ -1,140 +1,133 @@
-Return-Path: <linux-kernel+bounces-89142-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89143-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15CC886EB18
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 22:24:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7F1A86EB1A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 22:26:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ADB4A284DF5
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:24:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D4BF31C22E20
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:26:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1236F57892;
-	Fri,  1 Mar 2024 21:24:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 571D158113;
+	Fri,  1 Mar 2024 21:26:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="ddf9XgjT"
-Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G5wHWG/6"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C332057872
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 21:24:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9847356B8A;
+	Fri,  1 Mar 2024 21:26:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709328250; cv=none; b=LAhMFpW+p5nDwhXjvTP4Un9NcZRUFPF0gEhxhytrzWlGr8QNzsN9PyKT9tBSDWujJ0LCsYOj6a44muh2fXY+wsO1ns7775I0XyJeR/M15w1uoFDGC+9A7++cQxfgEtY4Er3S9ZC1va5R1NdcXAikqyOkvSRMVWqHxTm1eZM9hoY=
+	t=1709328376; cv=none; b=pCcu9n83g9sA8Zh7t9E3xPiDq2kqquzJQ7e1Er8eZBGdvWXCWy2YRF0dfNYK1uWRHUnrue5CcACd8PBCUwPkBDPMoofQ2GUjDJg3vq1tw+g95H5qwVOfI0on76c2cExJpgtCZ6EhcepK8lDwYQ9ofJG9ASzTbYq0uUir8vK3YgY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709328250; c=relaxed/simple;
-	bh=HPEx7q9YeqPD8Fs26Mm2XVZAJVX8dLxSFoyKT+0rhQs=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=QBklFPHY+A4m782c00023rlNDME5NaLTIjbNAj3zoBs6Qb9FIHGjdrdCwgn+mWbRyEXLW9jhRqoEbk3O/LxP5AoLXGBEr7wBLquqYvb4pLRkdM7Q0vz1NvI+JeIkeOX1bdhUnR4bCCOO5lugeKGNYbjPa7MUGrIT4OxKhgazy3E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=ddf9XgjT; arc=none smtp.client-ip=209.85.167.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-3bb9d54575cso1736101b6e.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 13:24:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709328248; x=1709933048;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fp0fkz4lNEmpnn/7oL43O7kf2DDQQSr2VJ+P1LkrmLA=;
-        b=AyIlCjdv8CXO4rBEXtgUEIqfxo9zWrOZEEglxugzmbdgvbMJ5a9TBjn5famTva0ao0
-         PsaMulWrrU2LhEEYcfZVcuV/DTcQzYeWh1v/Abscs1kTLF5efypoLH23l8k3am8ncrGs
-         9vot+AxpX1nGPG1K/7i8SAMyS8VFs10U+7IGASrdU+YY/wecbpK37v1gggjtQbJ2pDB0
-         fVVqsAusPfZEu/P74onho8+putSY1gBTXVDmZozaZeur3TN+d/lh6e1oPYcHUv3FSmGz
-         bdIOYzwxi0iAyuu6OT/771nFfhN1+r7kq9CCnahcu90Ef68lux1nZCD2f1NsiabVj/mV
-         a46g==
-X-Forwarded-Encrypted: i=1; AJvYcCWTgSkj8MGFRryCrA6unxEoSEg15rHUbYONKcvz3csBElqi2ffDw6f+rABQ/zOT13WPDBodOMX7sxxyjCFEPWzhVOXblAOppYhwsuT7
-X-Gm-Message-State: AOJu0YznjvqWoYh0/SlVrdiiJ8EaCdR/uEXr0PhIpAJhYtuyju+P+wiW
-	Yr3Is909HygcnYbh5pzMrr39OS0dFgDjNle8wQ0/dtcgT/wJnFWt
-X-Google-Smtp-Source: AGHT+IHMLcEFsGXrsEV8hHzEvoTbVKOBW7WQxQCgzKXVcKSwflcW1ovfYW7ITo/cNU3FL6G3nAUZZw==
-X-Received: by 2002:aca:1e14:0:b0:3c1:d5f8:7495 with SMTP id m20-20020aca1e14000000b003c1d5f87495mr2100068oic.8.1709328247910;
-        Fri, 01 Mar 2024 13:24:07 -0800 (PST)
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id m1-20020a635801000000b005dc120fa3b2sm3082951pgb.18.2024.03.01.13.24.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 13:24:07 -0800 (PST)
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1709328246;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=fp0fkz4lNEmpnn/7oL43O7kf2DDQQSr2VJ+P1LkrmLA=;
-	b=ddf9XgjTRm0aI6jiBSBCB7DQ1tvQYIj/CW8X4HaPXm68mq0GeD8D4Se30Gs24cgQb6T8g2
-	C3VdtYt9yfC+k82dvCQw2EJf1TJTOYrHATkgld8q/zXfif5f8045PahCgT40zYfcLqHsc4
-	Ex0wfmmD1/ob1QGn9mNbV5rg4Ke/9f5hWgRi8qnpvSDfIED5FIuwi5sCfCOnl6RHkvDufC
-	ofsym8qG3FHlEZNCLyzuqPT+MeR29WWwc1URq8wUVyAIf+mcczh3Yo4F5zWHZzUeHTglXQ
-	nsXATwkvj9IoEhm2eC2MiG6nDBKJEnVtfJkUDLYlxXOpN2ifU9K7QyvPY6hCug==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Date: Fri, 01 Mar 2024 18:24:05 -0300
-Subject: [PATCH] staging: fieldbus: make fieldbus_class constant
+	s=arc-20240116; t=1709328376; c=relaxed/simple;
+	bh=ZGfR2lf/9g8jp3nNVbb6uJipnnVk66kZABtn0lTE3+k=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=NqiL/4FHpghNOeRk+yPaKiKYA7S9yNeIJu1PHkUgzIs2jyafkY0wGZrLJ3Kq7O8vIt7XwMaCt3cPE8Tft6T25fGMCLiDLS4tWSvJ+xyj/MTYsFGxWttJn/6+HrUNBx5y5bOXtvzQzVjaBIPg1D6CMwbgTQOupLDfErnKUIgbVCw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G5wHWG/6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2095EC433F1;
+	Fri,  1 Mar 2024 21:26:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709328376;
+	bh=ZGfR2lf/9g8jp3nNVbb6uJipnnVk66kZABtn0lTE3+k=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=G5wHWG/68wnkT+Um/N/TS1FLL+VyJ+PLZjlwgwZbQdpYAxbZQ5vlZp5P2stx5wGQ7
+	 FzlZb7a355Oo/C/Huex/uAjw2ZLzjRBnri75/reSyucLJ01Z3bjGdgCh30pn72Jq31
+	 030n2wfCXsw8wfv2BolfbBnF9+ZcfPE02mvBt8xhW+MyMoTtjyypuc8I5Oz3Nj4ppU
+	 b+xu/4d82vnpRGlwEnS6VI3HMqMeVcosy6fBP3j49tWCiAQ73bjHaj+Had2GjxKLQ2
+	 Z22E9N+9RyjIDiXcd8XTNbQyujXwjWMP5ETcJjKNMbvFGnNCDttC6PI3SPYym9msdq
+	 BCXaRL9xL4wmw==
+Date: Fri, 1 Mar 2024 15:26:14 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Jian-Hong Pan <jhp@endlessos.org>
+Cc: Johan Hovold <johan@kernel.org>,
+	David Box <david.e.box@linux.intel.com>,
+	Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	Mika Westerberg <mika.westerberg@linux.intel.com>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Nirmal Patel <nirmal.patel@linux.intel.com>,
+	Jonathan Derrick <jonathan.derrick@linux.dev>,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux@endlessos.org
+Subject: Re: [PATCH v4 2/3] PCI/ASPM: Add notes about enabling PCI-PM L1SS to
+ pci_enable_link_state(_locked)
+Message-ID: <20240301212614.GA408494@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240301-class_cleanup-staging-v1-1-34db2a5b0eb0@marliere.net>
-X-B4-Tracking: v=1; b=H4sIAHRH4mUC/x3MQQqAIBBA0avErBPMAqGrRMRoow2EhVMRRHdPW
- r7F/w8IZSaBvnog08XCWypo6gr8gimS4rkYjDadbnWj/Ioik18J07krOTByiso650KwBq13UNo
- 9U+D7/w7j+35E6EBEZwAAAA==
-To: Sven Van Asbroeck <TheSven73@gmail.com>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org, 
- "Ricardo B. Marliere" <ricardo@marliere.net>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1267; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=HPEx7q9YeqPD8Fs26Mm2XVZAJVX8dLxSFoyKT+0rhQs=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl4kd1M2/TUzwwsygSCeViq+l9scKnwpgWEsF4z
- CLO6jB1xWCJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZeJHdQAKCRDJC4p8Y4ZY
- poXdD/4rXO99mzM+kxKDpe/b20gB2llrr3wMpzcIR3wySpVddytK4PuA4CvAVNET6GFB9RU3kRu
- 9YN4YCixluImgDKzAqWTSjTYOMwkxUPT9v8ZyT9WH+FUBpduJ6OhOlsJKShNYtNa/kQ+xOcp4y0
- 0awTVmq2kM4EsWTh0Uol0XfMHKwR4xYvvy77KmKDayfEkn1a6eEX9x4Y5UF+u0RhO9nARLVh1EH
- so+qm8Axxq4YepWI/UXUKVFvfWbQMMInmuros2tF50llu+K9nypdxfyL+zEM34hPof5eBKbGx08
- klfBlAqUJE6G/lGA+/6jVoVfV28TlDIlwwyjHT+MXplQcT71L0dHKzXy4qF4UX83s49VVNKTwcC
- A0FL640sjro7fNgLWdehKGF9dXkLmUGaRI+V9VzkZ1Yd/Vhv5ChqGoefeE6lQT8Brrqlv4nfh89
- 0DTetcEnDpSZQeFEmzIagB6in/TavHuIqxOu1hAphwYy1H1ak+186vQCKNI6+Bp2mmPmhtlH9wE
- n+7ujZKkpRIkZPBcfVE5f56N88p4wwcr72EfTVmLMVYD6z7ss7MWc2C8w9cO7Yw3VtNOuNx7DkU
- mv5eGR8QqlOjJBYKiOh0mO3V06RLm5+wr3ioOAX/95f5j1a6qSiSf9OyJXSSl0PzylcbP9xXAPb
- ZDBvPcbOviATQxQ==
-X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
- fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240216062559.247479-3-jhp@endlessos.org>
 
-Since commit 43a7206b0963 ("driver core: class: make class_register() take
-a const *"), the driver core allows for struct class to be in read-only
-memory, so move the fieldbus_class structure to be declared at build time
-placing it into read-only memory, instead of having to be dynamically
-allocated at boot time.
+In subject:
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
----
- drivers/staging/fieldbus/dev_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+  PCI/ASPM: Document D0 requirement when enabling PCI-PM L1 PM Substates
 
-diff --git a/drivers/staging/fieldbus/dev_core.c b/drivers/staging/fieldbus/dev_core.c
-index 370a229443a1..0053ebd91442 100644
---- a/drivers/staging/fieldbus/dev_core.c
-+++ b/drivers/staging/fieldbus/dev_core.c
-@@ -152,7 +152,7 @@ static const struct attribute_group fieldbus_group = {
- };
- __ATTRIBUTE_GROUPS(fieldbus);
- 
--static struct class fieldbus_class = {
-+static const struct class fieldbus_class = {
- 	.name =		"fieldbus_dev",
- 	.dev_groups =	fieldbus_groups,
- };
+On Fri, Feb 16, 2024 at 02:26:01PM +0800, Jian-Hong Pan wrote:
+> According to PCI Express Base Specification Revision 6.0, Section 5.5.4:
+> "If setting either or both of the enable bits for PCI-PM L1 PM Substates,
+> both ports must be configured as described in this section while in D0."
 
----
-base-commit: 455c5e12a3b7d08c2ab47b7dd54944901c69cdcd
-change-id: 20240301-class_cleanup-staging-7bbbff72a7cb
+"PCIe r6.0, sec 5.5.4" is enough.
 
-Best regards,
--- 
-Ricardo B. Marliere <ricardo@marliere.net>
+> Add notes into pci_enable_link_state(_locked) for kernel-doc.
 
+  Add note about D0 requirement in pci_enable_link_state() kernel-doc.
+
+> Hope these
+> notify callers ensuring the devices in D0, if PCI-PM L1 PM Substates are
+> going to be enabled.
+
+Skip this part.
+
+> Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
+
+With above updates,
+
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+
+> ---
+> v3:
+> - Fix as readable comments
+> 
+> v4:
+> - The same
+> 
+>  drivers/pci/pcie/aspm.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+> index 7f1d674ff171..a39d2ee744cb 100644
+> --- a/drivers/pci/pcie/aspm.c
+> +++ b/drivers/pci/pcie/aspm.c
+> @@ -1416,6 +1416,9 @@ static int __pci_enable_link_state(struct pci_dev *pdev, int state, bool locked)
+>   * touch the LNKCTL register. Also note that this does not enable states
+>   * disabled by pci_disable_link_state(). Return 0 or a negative errno.
+>   *
+> + * Note: Ensure devices are in D0 before enabling PCI-PM L1 PM Substates, per
+> + * PCIe r6.0, sec 5.5.4.
+> + *
+>   * @pdev: PCI device
+>   * @state: Mask of ASPM link states to enable
+>   */
+> @@ -1432,6 +1435,9 @@ EXPORT_SYMBOL(pci_enable_link_state);
+>   * can't touch the LNKCTL register. Also note that this does not enable states
+>   * disabled by pci_disable_link_state(). Return 0 or a negative errno.
+>   *
+> + * Note: Ensure devices are in D0 before enabling PCI-PM L1 PM Substates, per
+> + * PCIe r6.0, sec 5.5.4.
+> + *
+>   * @pdev: PCI device
+>   * @state: Mask of ASPM link states to enable
+>   *
+> -- 
+> 2.43.2
+> 
 
