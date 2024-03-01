@@ -1,195 +1,132 @@
-Return-Path: <linux-kernel+bounces-88460-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88462-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C98986E1E9
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:20:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30FC286E1ED
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:24:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D66551F213DD
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:20:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 52CCC1C22D0D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:24:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ED636CDD6;
-	Fri,  1 Mar 2024 13:19:42 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9F5C6A8B2;
+	Fri,  1 Mar 2024 13:24:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=med.uni-goettingen.de header.i=@med.uni-goettingen.de header.b="Ps5nlape"
+Received: from mail1.med.uni-goettingen.de (mail1.med.uni-goettingen.de [134.76.103.230])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39D2B10E9;
-	Fri,  1 Mar 2024 13:19:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40D9769E1C
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 13:24:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.76.103.230
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709299181; cv=none; b=OHECKY5GnCyV0HhrMy5LP5HBioaIVeZh5xYb7K2qWWyW7sPuPblxGzV/5mqb12b6smUScCgbAVZdnUseQ1LRTzP1NcKzMqSROW0EMxH1TawXGZ758T97sFGr5ly2F1bZahSQ/lUop0ZB5pknOSj9CdI76jGulV7XATSYJoLLlpI=
+	t=1709299449; cv=none; b=ClFTvPSJItqtCHXiFHkoluYr2h/HyDBQgoFOrX8MVS6Cojw0e7UY2WdZVnVrLiYSAoUI9Mi4+6+Sz1o6dfNptk3AYHKaeultDPJCVvkro+BiLb7oPrmi6eM1m8XquCv2nd1iI3xtkaLn9Bqfm5yAukCdcPAhdRL00VJzY6njoRM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709299181; c=relaxed/simple;
-	bh=HGAOZ9rzwRj4KaggpswQDdIDQnkCzfQ+ozJfEoUzsGo=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=K+CUGb3kbwNzlMx06J5JGKOfS3RKUBjVDdCVgk9j0ngx/v5Ydsoe7PrTprpznE0l3McPgwgJbEVOC7tGgyP6QmV5pLgdVmU6xa4wBi79pvQU54H1MTrCKsS0nbwp5seN4B41+wugdEk4fDrg4grgtCmhNlD30tM1Q3ewOmxZvJM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TmT8S1fYbz6JB7j;
-	Fri,  1 Mar 2024 21:14:48 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 482BB140B73;
-	Fri,  1 Mar 2024 21:19:33 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Fri, 1 Mar
- 2024 13:19:32 +0000
-Date: Fri, 1 Mar 2024 13:19:31 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Tony Luck <tony.luck@intel.com>
-CC: Dan Williams <dan.j.williams@intel.com>, Shiju Jose
-	<shiju.jose@huawei.com>, "linux-cxl@vger.kernel.org"
-	<linux-cxl@vger.kernel.org>, "linux-acpi@vger.kernel.org"
-	<linux-acpi@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"dave@stgolabs.net" <dave@stgolabs.net>, "dave.jiang@intel.com"
-	<dave.jiang@intel.com>, "alison.schofield@intel.com"
-	<alison.schofield@intel.com>, "vishal.l.verma@intel.com"
-	<vishal.l.verma@intel.com>, "ira.weiny@intel.com" <ira.weiny@intel.com>,
-	"linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"david@redhat.com" <david@redhat.com>, "Vilas.Sridharan@amd.com"
-	<Vilas.Sridharan@amd.com>, "leo.duran@amd.com" <leo.duran@amd.com>,
-	"Yazen.Ghannam@amd.com" <Yazen.Ghannam@amd.com>, "rientjes@google.com"
-	<rientjes@google.com>, "jiaqiyan@google.com" <jiaqiyan@google.com>,
-	"Jon.Grimm@amd.com" <Jon.Grimm@amd.com>, "dave.hansen@linux.intel.com"
-	<dave.hansen@linux.intel.com>, "rafael@kernel.org" <rafael@kernel.org>,
-	"lenb@kernel.org" <lenb@kernel.org>, "naoya.horiguchi@nec.com"
-	<naoya.horiguchi@nec.com>, "james.morse@arm.com" <james.morse@arm.com>,
-	"jthoughton@google.com" <jthoughton@google.com>, "somasundaram.a@hpe.com"
-	<somasundaram.a@hpe.com>, "erdemaktas@google.com" <erdemaktas@google.com>,
-	"pgonda@google.com" <pgonda@google.com>, "duenwen@google.com"
-	<duenwen@google.com>, "mike.malvestuto@intel.com"
-	<mike.malvestuto@intel.com>, "gthelen@google.com" <gthelen@google.com>,
-	"wschwartz@amperecomputing.com" <wschwartz@amperecomputing.com>,
-	"dferguson@amperecomputing.com" <dferguson@amperecomputing.com>, tanxiaofei
-	<tanxiaofei@huawei.com>, "Zengtao (B)" <prime.zeng@hisilicon.com>,
-	"kangkang.shen@futurewei.com" <kangkang.shen@futurewei.com>, wanghuiqiang
-	<wanghuiqiang@huawei.com>, Linuxarm <linuxarm@huawei.com>, John Groves
-	<John@Groves.net>
-Subject: Re: [RFC PATCH v6 00/12] cxl: Add support for CXL feature commands,
- CXL device patrol scrub control and DDR5 ECS control features
-Message-ID: <20240301131931.000070c7@Huawei.com>
-In-Reply-To: <ZeDsESXK5pMeialz@agluck-desk3>
-References: <20240215111455.1462-1-shiju.jose@huawei.com>
-	<65d6936952764_1138c7294e@dwillia2-xfh.jf.intel.com.notmuch>
-	<54c55412e9374e4e9cacf8410a5a98cb@huawei.com>
-	<65d8f5201f8cc_2509b29467@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-	<20240226102944.000070a3@Huawei.com>
-	<ZeDsESXK5pMeialz@agluck-desk3>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1709299449; c=relaxed/simple;
+	bh=mxWKJ8RTRnGA7eFG1tywu8YEdQFGZoDBTHm7fjuKdTU=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=fxPmZEFhT+LWIBYfY94tKN8aH0lPRXnv+XVuYfL4YHMg7dNx4SdHG26mkIoW/jz1hHjOXwjYbrmyXjbo8ib5LzVfy1AWulj3FbEoBT7+CeHmw0jO3D7y5mqAzpq9ium8V56t+5/SHafVczN/bVALz6AtFLOeLIHse5yMIK3pWmU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=med.uni-goettingen.de; spf=pass smtp.mailfrom=med.uni-goettingen.de; dkim=pass (2048-bit key) header.d=med.uni-goettingen.de header.i=@med.uni-goettingen.de header.b=Ps5nlape; arc=none smtp.client-ip=134.76.103.230
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=med.uni-goettingen.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=med.uni-goettingen.de
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=med.uni-goettingen.de; s=Mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:
+	From:Sender:Reply-To:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=mxWKJ8RTRnGA7eFG1tywu8YEdQFGZoDBTHm7fjuKdTU=; b=Ps5nlapeyCdeYTvUj3ICVS2vg5
+	zdj8/b9anNyLt1UWZtGaovWMpHtFfgdPmNCqJqRUXKhG57Rb768EViLErecZeeXSJieDlSKZfVejD
+	UZ6LUzCG5kmlo9ymfCYFTD2CHIFlJpPkW65Ols9p6b/SdLM59hzWfIxpmudRwSp25oS8U2cqZxf55
+	MW/qxwmm9iMIIfGChqZCZsRMIapEdVadnTPb8Y6cvYipCrRD7nWJJTObvU7lDZUtBeGK0uqEIOzY0
+	4tKRJqVJErlvoKVrNlpnlgCtLPkwhmT3t6OseyPy2JwzR6vBoldAejnT5pyNbd21rDTBHGUvjJwbL
+	MYyjszAw==;
+Received: from umg-exc-01.ads.local.med.uni-goettingen.de ([10.76.100.74]:29415)
+	by mail1.med.uni-goettingen.de with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96)
+	(envelope-from <Martin.Uecker@med.uni-goettingen.de>)
+	id 1rg2pg-00032L-0c;
+	Fri, 01 Mar 2024 14:21:48 +0100
+Received: from umg-exc-01.ads.local.med.uni-goettingen.de (10.76.100.74) by
+ umg-exc-01.ads.local.med.uni-goettingen.de (10.76.100.74) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 1 Mar 2024 14:21:45 +0100
+Received: from umg-exc-01.ads.local.med.uni-goettingen.de
+ ([fe80::2886:b6b:10e3:deea]) by umg-exc-01.ads.local.med.uni-goettingen.de
+ ([fe80::2886:b6b:10e3:deea%6]) with mapi id 15.01.2507.035; Fri, 1 Mar 2024
+ 14:21:45 +0100
+From: "Uecker, Martin" <Martin.Uecker@med.uni-goettingen.de>
+To: "keescook@chromium.org" <keescook@chromium.org>,
+	"linux@rasmusvillemoes.dk" <linux@rasmusvillemoes.dk>,
+	"David.Laight@ACULAB.COM" <David.Laight@ACULAB.COM>
+CC: "corbet@lwn.net" <corbet@lwn.net>, "miguel.ojeda.sandonis@gmail.com"
+	<miguel.ojeda.sandonis@gmail.com>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-doc@vger.kernel.org"
+	<linux-doc@vger.kernel.org>, "gustavoars@kernel.org" <gustavoars@kernel.org>,
+	"ndesaulniers@google.com" <ndesaulniers@google.com>,
+	"jani.nikula@linux.intel.com" <jani.nikula@linux.intel.com>,
+	"ojeda@kernel.org" <ojeda@kernel.org>, "linux-hardening@vger.kernel.org"
+	<linux-hardening@vger.kernel.org>
+Subject: Re: [+externe Mail+] RE: [PATCH] compiler.h: Explain how
+ __is_constexpr() works
+Thread-Topic: [+externe Mail+] RE: [PATCH] compiler.h: Explain how
+ __is_constexpr() works
+Thread-Index: AQHaa7zea2tnGf5kn0G3mh48EMfk27EizpQA
+Date: Fri, 1 Mar 2024 13:21:45 +0000
+Message-ID: <22c9c4cc27b13b2fb6f3cd9fa6f827f56f30770b.camel@med.uni-goettingen.de>
+References: <20240301044428.work.411-kees@kernel.org>
+	 <af0eff12e6bc41039614add550406c11@AcuMS.aculab.com>
+In-Reply-To: <af0eff12e6bc41039614add550406c11@AcuMS.aculab.com>
+Accept-Language: de-DE, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <935E7E0ABD95954982DB4A23C34DA0E8@med.uni-goettingen.de>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml500004.china.huawei.com (7.191.163.9) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Thu, 29 Feb 2024 12:41:53 -0800
-Tony Luck <tony.luck@intel.com> wrote:
-
-> > Obviously can't talk about who was involved in this feature
-> > in it's definition, but I have strong confidence it will get implemented
-> > for reasons I can point at on a public list. 
-> > a) There will be scrubbing on devices.
-> > b) It will need control (evidence for this is the BIOS controls mentioned below
-> >    for equivalent main memory).
-> > c) Hotplug means that control must be done by OS driver (or via very fiddly
-> >    pre hotplug hacks that I think we can all agree should not be necessary
-> >    and aren't even an option on all platforms)
-> > d) No one likes custom solutions.
-> > This isn't a fancy feature with a high level of complexity which helps.  
-
-Hi Tony,
-> 
-> But how will users know what are appropriate scrubbing
-> parameters for these devices?
-> 
-> Car analogy: Fuel injection systems on internal combustion engines
-> have tweakable controls. But no auto manufacturer wires them up to
-> a user accessible dashboad control.
-
-Good analogy - I believe performance tuning 3rd parties will change
-them for you. So the controls are used - be it not by every user.
-
-> 
-> Back to computers:
-> 
-> I'd expect the OEMs that produce memory devices to set appropriate
-> scrubbing rates based on their internal knowledge of the components
-> used in construction.
-
-Absolutely agree that they will set a default / baseline value,
-but reality is that 'everyone' (for the first few OEMs I googled)
-exposes tuning controls in their shipping BIOS menus to configure
-this because there are users who want to change it.  I'd expect
-them to clamp the minimum scrub frequency to something that avoids
-them getting hardware returned on mass for reliability and the
-maximum at whatever ensures the perf is good enough that they sell
-hardware in the first place.  I'd also expect a bios menu to
-allow cloud hosts etc to turn off exposing RAS2 or similar.
-
-> 
-> What is the use case where some user would need to override these
-> parameters and scrub and a faster/slower rate than that set by the
-> manufacturer?
-
-Its a performance vs reliability trade off.  If your larger scale
-architecture (many servers) requires a few nodes to be super stable you
-will pay pretty much any cost to keep them running. If a single node
-failure makes little or no difference, you'll happily crank this down
-(same with refresh) in order to save some power / get a small
-performance lift.  Or if you care about latency tails, more than
-reliability you'll turn this off.
-
-For comedy value, some BIOS guides point out that leaving scrub on may
-affect performance benchmarking. Obviously not a good data point, but
-a hint at the sort of market that cares.  Same market that buy cheaper
-RAM knowing they are going to have more system crashes.
-
-There is probably a description gap. That might be a paperwork
-question as part of system specification.
-What is relationship between scrub rate and error rate under particular
-styles of workload (because you get a free scrub whenever you access
-the memory)?  The RAM dimms themselves could in theory provide inputs
-but the workload dependence makes this hard. Probably fallback on a
-a test and tune loop over very long runs.  Single bit error rates
-used to detect when getting below a level people are happy with for
-instance.
-
-With the fancier units that can be supported, you can play more reliable
-memory games by scanning subsets of the memory more frequently.
-
-Though it was about a kernel daemon doing scrub, Jiaqi's RFC document here
-https://lore.kernel.org/all/20221103155029.2451105-1-jiaqiyan@google.com/
-provided justification for on demand scrub - some interesting stuff in the
-bit on hardware patrol scrubbing.  I see you commented on the thread
-and complexity of hardware solutions.
-
-- Cheap memory makes this all more important.
-- Need for configuration of how fast and when depending on system state.
-- Lack of flexibility of what is scanned (RAS2 provides some by association
-  with NUMA node + option to request particular ranges, CXL provides per
-  end point controls).
-
-There are some gaps on hardware scrubbers, but offloading this problem
-definitely attractive.
-
-So my understanding is there is demand to tune this but it won't be exposed
-on every system.
-
-Jonathan
-
- 
-> 
-> -Tony
-
+DQpCVFcgbXkgbWFpbiBlbWFpbCBhZGRlc3MgaXMgbm93OiB1ZWNrZXJAdHVncmF6LmF0DQoNCk15
+IHN1Z2dlc3Rpb24gd291bGQgYWxzbyB0byBsaW1pdCBleHBsYW5hdGlvbi4gTm9ib2R5IHNob3Vs
+ZA0Kd3JpdGUgc3VjaCBjb2RlIGFuZCBpZiB5b3UgbmVlZCB0bywgeW91IGNhbiBmaW5kIGV4cGxh
+bmF0aW9ucw0KYWxsIG92ZXIgdGhlIGludGVybmV0Lg0KDQpGaW5hbGx5LCBJIHN0aWxsIHRoaW5r
+IHRoZSBtb3RpdmF0aW9uIGZvciB0aGlzIG1hY3JvIChyZW1vdmluZw0KVkxBcykgaXMgbWlzZ3Vp
+ZGVkIGlmIHNlY3VyaXR5IGlzIHRoZSBnb2FsIGJlY2F1c2UgVkxBcyBwcm92aWRlDQpwcmVjaXNl
+IGJvdW5kcyBhbmQgbGFyZ2VyIHdvcnN0LWNhc2UgZml4ZWQtc2l6ZSBhcnJheXMgZG8gbm90LiAg
+wqANCg0KSXQgd291bGQgYmUgYmV0dGVyIHRvIHVzZSB0aGUgY29tcGlsZXIgb3B0aW9ucyB0aGF0
+IGRldGVjdA0KcG9zc2libHkgdXNlIG9mIFZMQXMgb2YgdW5ib3VuZGVkIHNpemUgYW5kIGlmIHRo
+ZXJlIGEgcHJvYmxlbXMNCndpdGggdGhpcywgaW1wcm92ZSB0aGlzIG9uIHRoZSBjb21waWxlciBz
+aWRlLg0KDQpNYXJ0aW4NCg0KDQpBbSBGcmVpdGFnLCBkZW0gMDEuMDMuMjAyNCB1bSAwOTozMiAr
+MDAwMCBzY2hyaWViIERhdmlkIExhaWdodDoNCj4gRnJvbTogS2VlcyBDb29rDQo+ID4gU2VudDog
+MDEgTWFyY2ggMjAyNCAwNDo0NQ0KPiA+IFRvOiBSYXNtdXMgVmlsbGVtb2VzIDxsaW51eEByYXNt
+dXN2aWxsZW1vZXMuZGs+DQo+ID4gDQo+ID4gVGhlIF9faXNfY29uc3RleHByKCkgbWFjcm8gaXMg
+ZGFyayBtYWdpYy4gU2hlZCBzb21lIGxpZ2h0IG9uIGl0IHdpdGgNCj4gPiBhIGNvbW1lbnQgdG8g
+ZXhwbGFpbiBob3cgYW5kIHdoeSBpdCB3b3Jrcy4NCj4gDQo+IEFsbCB0aGUgOHMgZG9uJ3QgaGVs
+cC4uLg0KPiANCj4gSSBkb24ndCB0aGluayB5b3UgbmVlZCB0aGF0IG11Y2ggZXhwbGFuYXRpb24u
+DQo+IA0KPiBQZXJoYXBzIGp1c3Qgc2F5aW5nIHRoYXQgdGhlIHR5cGUgb2YgPzogZGVwZW5kcyBv
+biB0aGUgdHlwZXMNCj4gb2YgdGhlIHZhbHVlcyBhbmQgaXMgaW5kZXBlbmRlbnQgb2YgdGhlIGNv
+bmRpdGlvbi4NCj4gVGhlIHR5cGUgb2YgKDAgPyAodm9pZCAqKXAgOiAoZm9vICopcSkgaXMgbm9y
+bWFsbHkgJ3ZvaWQgKicNCj4gKHNvIHRoYXQgYm90aCB2YWx1ZXMgY2FuIGJlIGFzc2lnbmVkIHRv
+IGl0KS4NCj4gQnV0IGlmICdwJyBpcyAnYW4gaW50ZWdlciBjb25zdGFudCBleHByZXNzaW9uIHdp
+dGggdmFsdWUgMCcNCj4gdGhlbiAodm9pZCAqKXAgaXMgTlVMTCBhbmQgdGhlIHR5cGUgaXMgJ2Zv
+byAqJy4NCj4gDQo+IFRoZSB0eXBlIGNhbiB0aGVuIGJlIGNoZWNrZWQgdG8gZmluZCBvdXQgaXQg
+J3AnIGlzIGNvbnN0YW50IDAuDQo+IEEgbm9uLXplcm8gY29uc3RhbnQgJ3AnIGNhbiBiZSBtdWx0
+aXBsZXMgYnkgMC4NCj4gDQo+IEkgbmVlZCB0byByZXBsYWNlIHRoZSBkZWZpbml0aW9uIHdpdGgg
+KHRoZSBtb3JlIHBvcnRhYmxlKToNCj4gI2RlZmluZSBfX2lmX2NvbnN0ZXhwcihjb25kLCBpZl9j
+b25zdCwgaWZfbm90X2NvbnN0KSBcDQo+IAlfR2VuZXJpYygwID8gKHZvaWQgKikoKGxvbmcpKGNv
+bmQpICogMCkgOiAoY2hhciAqKTAsIFwNCj4gCQljaGFyICo6IChpZl9jb25zdCksIFwNCj4gCQl2
+b2lkICo6IChpZl9ub3RfY29uc3QpKQ0KPiB3aGljaCBpcyBhcmd1YWJseSBsZXNzIGNyeXB0aWMu
+DQo+IA0KPiAjZGVmaW5lIF9faXNfY29uc3RleHByKGNvbmQpIF9faWZfY29uc3RleHByKGNvbmQs
+IDEsIDApDQo+IA0KPiBTbyB0aGF0IEkgY2FuIHdyaXRlOg0KPiAjZGVmaW5lIGlzX25vbl9uZWdf
+Y29uc3QoeCkgKF9faWZfY29uc3RleHByKHgsIHggLCAtMSkgPj0gMCkNCj4gYW5kIGF2b2lkIHRo
+ZSBjb21waWxlciBibGVhdGluZyBhYm91dCBzb21lIGNvbXBhcmlzb25zDQo+IGluIHVucmVhY2hh
+YmxlIGNvZGUuDQo+IA0KPiAJRGF2aWQNCj4gDQo+IC0NCj4gUmVnaXN0ZXJlZCBBZGRyZXNzIExh
+a2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQs
+IFVLDQo+IFJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo+IA0KDQo=
 
