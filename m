@@ -1,179 +1,128 @@
-Return-Path: <linux-kernel+bounces-88834-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88835-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0735186E753
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:33:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23FAE86E756
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:33:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9858728DADD
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:33:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B6BB11F2A3D4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:33:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B834125CB;
-	Fri,  1 Mar 2024 17:30:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A18EB22097;
+	Fri,  1 Mar 2024 17:30:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="Eyz3nZP0"
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="d6DDV6/E"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9854CF9D7
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 17:30:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C20A22618
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 17:30:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709314229; cv=none; b=BpRz51CHY6bVNl1YDcbYv4Q7C8ickF90gyTeM3aTDitQ1COEBagCGNu2n+M9a+lj4H1iggZHpNIrZ8fXTtPa3ubu06CkwQ9BsG66MdZOg+hmFg4jFcFaYl/f670vEEkLjOBSGvGpqjwKrD0iWm6Fmnjaowh0lB/P6WWgE45K5LE=
+	t=1709314243; cv=none; b=K/fGnGxVfcZCRhBIIUgfQk8/2ghiPQMeuKi2qV60fnTcfJkR1iqtI/vR5+nA8AvQwACSQdTIrUFXC+UNtA7wr5mAPahch4tYfxlqPGCXWWeESD7V1z7ryGfzjWOUXgXA0Gun4WahMN2+bTrcqnyUmQ/o0X62vjUsNTl8EpjFXS8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709314229; c=relaxed/simple;
-	bh=ORpLEw2Dml0htr9PDhqhLA57rxjohRb0o0PDLtuEWfY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HMcUb05KHjeyE63M7jjwOmUuxbGWrdodQkP1WT35/dHOXsvd3gVz1HOc/zAKP1D9TLDaAjLxYTV3EX1a+Nc4eHuk1DnyIiOU2v7ytfnNjd18e82nq4cmYv1uf7V/MbvPh259J7gj7DMBQ/HinNNSVi+4Y6ztEJQGarjZ/6DjHI0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=Eyz3nZP0; arc=none smtp.client-ip=209.85.210.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6e56a5b2812so1583701b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 09:30:27 -0800 (PST)
+	s=arc-20240116; t=1709314243; c=relaxed/simple;
+	bh=ylK+D7JueGqF19SPnHZNe+5mxcvVGQNvmcj6EMAxZD4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=I6lNvRDxXtSmxYhoKebE+wyOejIb/6c4+8JS5Xk977UgvRJH1wybNaEk9gRnkSWDN8eA/9DkIAn5Qa2jvw0pFHTv7Yg7PmyD/UijjQPF1bDt1+7HEsG1+TmLZPAicdLyElxy44y1StkQarwwusC3OdzCV1mbzpng8t6SuJKWqGU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=d6DDV6/E; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-565b434f90aso3717889a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 09:30:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1709314227; x=1709919027; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=UD7pU/mT2bb+4Cmi3ewKbhC8HoIrfKGME5sdau3RcUE=;
-        b=Eyz3nZP0pDzuhv8XC6W75sE9+itGb007xOeLROAHa6yHadSReb+nSqTmz2aFDZIuCN
-         Uxots+68N+njP5SHKm53AgA9x9MBHm8CuUpvWiTEQoqR7usWUAVEv1rfP5itRq/9YX4F
-         JZkuzUfVk67G7mkf8905cEgB/D+ZKiDrmuKVuchF7E+z9L/9I8lBHe2uL4obfhy4hKw6
-         FccR1voMndOZDXVJMqbRuhF9/Wpyj1sRfYI3G58zM2Ld8BadiSZWyRnhr5tWr0ovamSq
-         VJNoBcRR/BHameAAHn9VjsGmQi4IBS1Wppc2PSYi8tOe4MHXYtREf8/BQv8ZS1Dm8t9m
-         /6Mg==
+        d=cloudflare.com; s=google09082023; t=1709314240; x=1709919040; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Im9Umr2T85hMOmj0bpnRxcaABawqPpPhu4ZR7NKNsVY=;
+        b=d6DDV6/Eiarm0bJq1DNTlh7R5wtoJ1ISKdiLl35Ys/jOwOfcieS/bmafgVOQVrkXeY
+         ESnDnJkis662XNZsXul5BOhCtq55yO9ZIiVPwAB2TuZVEYRZm/SIxvqDJA6V9M9iJQZl
+         9T+b9NmKN2s6RgXn4cDFSevOL2kfTYkO4/z+ceLX8eEzOlWcfDb9UICjw6K+kjB/i3Eh
+         E+tW80Zd9ALMirEfyGDsOdlREIDyG4cV484rrH/5CT64fkpaKiq4ZEsgLt2K84pI7WjT
+         GPOKDPvrhcN7rlmx7VPKSPm/UFdw4pEyJHc8EtNQeYnh+GiWdg8VU9bNhU8/zxZUWvSs
+         q7/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709314227; x=1709919027;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UD7pU/mT2bb+4Cmi3ewKbhC8HoIrfKGME5sdau3RcUE=;
-        b=WHE1tcI47lbCX4gmITScXpwxkYiE4eqoBd7YknE4CVxtD6v53VOGhvm6GA3SZbmFvu
-         NMaUidI0nNqSZSQ+DrRy/5ZxvTSehbu5exijznSId6U3+0J+9dbryhodvNbJbXW1mUEh
-         gVUuivz5ysJpALU95QL1fLhhmzQozPNA7pHvNYwMS6lH3wZikP8vjdlJXKkrMHJfSWc9
-         155i+2LHJ++66j78Qqk0XO7hc9q4Oa+WrbO3IGPaBqJm8QJmMhsKxV1rpypMVhD3JOsj
-         l661y8Q8KAqSx+gxKq3VIx2lwmtbeaukPP8EvhL5WqATQvardddR1yt5LNs/MflVgZpQ
-         MFBg==
-X-Forwarded-Encrypted: i=1; AJvYcCX6YQQ5JLSrt05gQrAYr3m4uRXi4lK5hQju6rag8RxsPe/G3RtxGgseT3HEYHurFGvCQ4igp4QgY7Mjq+Mp/4TLTkK5E8izlFbw14zM
-X-Gm-Message-State: AOJu0Yx62r+HpXIVuH9HVRNazEEeZKKSij52X5edmbbyaI6CDDtilTGV
-	reoM6LMyQsnL+PubjjHogf/BoX6dv2CYAkxj6cFF9NxjpD8+obvbYwZXoW4Hkck=
-X-Google-Smtp-Source: AGHT+IHRAjmqQhV6njtbvelkZP08z5IbrdiljIAzhjSqP9o/OiaKYeQb6dzbZYimmaJlB0BUs7qVOQ==
-X-Received: by 2002:a05:6a00:8611:b0:6e5:db1b:27cd with SMTP id hg17-20020a056a00861100b006e5db1b27cdmr524539pfb.6.1709314225954;
-        Fri, 01 Mar 2024 09:30:25 -0800 (PST)
-Received: from ghost ([2601:647:5700:6860:2a1e:5647:311:1139])
-        by smtp.gmail.com with ESMTPSA id g24-20020a62e318000000b006e571bef670sm3214689pfh.70.2024.03.01.09.30.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 09:30:25 -0800 (PST)
-Date: Fri, 1 Mar 2024 09:30:23 -0800
-From: Charlie Jenkins <charlie@rivosinc.com>
-To: David Laight <David.Laight@aculab.com>
-Cc: Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Helge Deller <deller@gmx.de>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Parisc List <linux-parisc@vger.kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Russell King <linux@armlinux.org.uk>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Palmer Dabbelt <palmer@rivosinc.com>,
-	Linux ARM <linux-arm-kernel@lists.infradead.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH v11] lib: checksum: Use aligned accesses for ip_fast_csum
- and csum_ipv6_magic tests
-Message-ID: <ZeIQr3JWoly4JraV@ghost>
-References: <20240229-fix_sparse_errors_checksum_tests-v11-1-f608d9ec7574@rivosinc.com>
- <41a5d1e8-6f30-4907-ba63-8a7526e71e04@csgroup.eu>
- <ZeILu9x+/STqWVy+@ghost>
- <3e0e2b25ea2d4ab99e78aff04af94b69@AcuMS.aculab.com>
+        d=1e100.net; s=20230601; t=1709314240; x=1709919040;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Im9Umr2T85hMOmj0bpnRxcaABawqPpPhu4ZR7NKNsVY=;
+        b=tBdZWoVgbt2Xsb0DwQLxOvSVZ8P63wYm5UgK4mPjbHYdUWWuLo961qbTWZhCN1FApv
+         BBaxLDHIEtAC08xtK0XrnsRiMvNboveksFE203oBc+F0Xqc3fOpltTKSlvgfTlxyiQ34
+         KkzoHe9M1+Yp1PvycKFnk2o0X/kUevEphom//jNOajimc2UM6apLAsmJomqp0zQTrTqC
+         YA8KRFYCHsJcDPdY3XYjyVv6UVpx7KIP1RPKUX+QsyA/2BKltPU3GUNYDIzXZze1r8Ea
+         efg1dKKUtGH47VB3Rg+XWfMfJOqSvVPbvV0twvW89esgMG+17n0C7GPdbfJzq0I3gNv3
+         aoSA==
+X-Forwarded-Encrypted: i=1; AJvYcCXg3CfLxDVQo7k4cNjmz7KasZ9oYznXORgEItWKfMIakTcgg0kj2xZSAgxAy23hTrhm51XMx0hgzrrTNQI2KUUGvmYxXxWBcsStVbPU
+X-Gm-Message-State: AOJu0Yzk/R0+sMbbXfDoJSZxKFQ4nUoJuItn74Jm0InYr2WEblCXeyzc
+	eHNGKHgndLjGFlT46zCDndwHc3MqoODzdP5MLxRZ21ae7677bQlik0nD7kXvuC/FO8iuZVhiwF3
+	JNzd9hPo2A9aCYgQkvWyQ/fyccg03u/8mjvK67Q==
+X-Google-Smtp-Source: AGHT+IGYLJyhVjmMRjbUCITVxHrHFq3SYd6tnAK4qRR5cHKptQ5mXdPAN6On8sZlA3S5Bv7Ldr+4yWiPY5SAqyrDMao=
+X-Received: by 2002:a05:6402:35cc:b0:566:f851:f53b with SMTP id
+ z12-20020a05640235cc00b00566f851f53bmr334043edc.35.1709314240646; Fri, 01 Mar
+ 2024 09:30:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3e0e2b25ea2d4ab99e78aff04af94b69@AcuMS.aculab.com>
+References: <ZeFPz4D121TgvCje@debian.debian> <CAO3-PboqKqjqrAScqzu6aB8d+fOq97_Wuz8b7d5uoMKT-+-WvQ@mail.gmail.com>
+ <CANn89iLCv0f3vBYt8W+_ZDuNeOY1jDLDBfMbOj7Hzi8s0xQCZA@mail.gmail.com>
+In-Reply-To: <CANn89iLCv0f3vBYt8W+_ZDuNeOY1jDLDBfMbOj7Hzi8s0xQCZA@mail.gmail.com>
+From: Yan Zhai <yan@cloudflare.com>
+Date: Fri, 1 Mar 2024 11:30:29 -0600
+Message-ID: <CAO3-PboZwTiSmVxVFFfAm94o+LgK=rnm1vbJvMhzSGep+RYzaQ@mail.gmail.com>
+Subject: Re: [PATCH v2] net: raise RCU qs after each threaded NAPI poll
+To: Eric Dumazet <edumazet@google.com>
+Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Jiri Pirko <jiri@resnulli.us>, 
+	Simon Horman <horms@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Lorenzo Bianconi <lorenzo@kernel.org>, Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>, 
+	Alexander Duyck <alexanderduyck@fb.com>, Hannes Frederic Sowa <hannes@stressinduktion.org>, 
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org, bpf@vger.kernel.org, 
+	kernel-team@cloudflare.com, Joel Fernandes <joel@joelfernandes.org>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, mark.rutland@arm.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 01, 2024 at 05:24:39PM +0000, David Laight wrote:
-> From: Charlie Jenkins
-> > Sent: 01 March 2024 17:09
-> > 
-> > On Fri, Mar 01, 2024 at 07:17:38AM +0000, Christophe Leroy wrote:
-> > > +CC netdev ARM Russell
-> > >
-> > > Le 29/02/2024 à 23:46, Charlie Jenkins a écrit :
-> > > > The test cases for ip_fast_csum and csum_ipv6_magic were not properly
-> > > > aligning the IP header, which were causing failures on architectures
-> > > > that do not support misaligned accesses like some ARM platforms. To
-> > > > solve this, align the data along (14 + NET_IP_ALIGN) bytes which is the
-> > > > standard alignment of an IP header and must be supported by the
-> > > > architecture.
-> > >
-> > > In your description, please provide more details on platforms that have
-> > > a problem, what the problem is exactly (Failed calculation, slowliness,
-> > > kernel Oops, panic, ....) on each platform.
-> > >
-> > > And please copy maintainers and lists of platforms your are specifically
-> > > addressing with this change. And as this is network related, netdev list
-> > > should have been copied as well.
-> > >
-> > > I still think that your patch is not the good approach, it looks like
-> > > you are ignoring all the discussion. Below is a quote of what Geert said
-> > > and I fully agree with that:
-> > >
-> > > 	IMHO the tests should validate the expected functionality.  If a test
-> > > 	fails, either functionality is missing or behaves wrong, or the test
-> > > 	is wrong.
-> > >
-> > > 	What is the point of writing tests for a core functionality like network
-> > > 	checksumming that do not match the expected functionality?
-> > >
-> > >
-> > > So we all agree that there is something to fix, because today's test
-> > > does odd-address accesses which is unexpected for those functions, but
-> > > 2-byte alignments should be supported hence tested by the test. Limiting
-> > > the test to a 16-bytes alignment deeply reduces the usefullness of the test.
-> > >
-> > 
-> > Maybe I am lost in the conversations. This isn't limited to 16-bytes
-> > alignment? It aligns along 14 + NET_IP_ALIGN. That is 16 on some
-> > platforms and 14 on platforms where unaligned accesses are desired.
-> > These functions are expected to be called with this offset. Testing with
-> > any other alignment is not the expected behavior. These tests are
-> > testing the expected functionality.
-> 
-> Aligned received frames can have a 4 byte VLAN header (or two) removed.
-> So the alignment of the IP header is either 4n or 4n+2.
-> If the cpu fault misaligned accesses you really want the alignment
-> to be 4n.
-> 
-> You pretty much never want to trap and fixup a misaligned access.
-> Especially in the network stack.
-> I suspect it is better to do a realignment copy of the entire frame.
-> At some point the data will be copied again, although you may want
-> a CBU (crystal ball unit) to decide whether to align on an 8n
-> or 8n+4 boundary to optimise a later copy.
-> 
-> CPU that support misaligned transfers just make coders sloppy :-)
-> 
-> 	David
-> 
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
-> 
+Hi Eric,
 
-Can you elaborate on how exactly you suggest the tests to be changed to
-accomidate what you are saying here? I don't understand how what I have
-proposed doesn't represent the use case of these functions.
+On Fri, Mar 1, 2024 at 2:30=E2=80=AFAM Eric Dumazet <edumazet@google.com> w=
+rote:
+>
+> I could not see the reason for 1sec (HZ) delays.
+>
+> Would calling rcu_softirq_qs() every ~10ms instead be a serious issue ?
+>
+The trouble scenarios are often when we need to detach an ad-hoc BPF
+tracing program, or restart a monitoring service. It is fine as long
+as they do not block for 10+ seconds or even completely stall under
+heavy traffic. Raising a QS every few ms or HZ both work in such
+cases.
 
-- Charlie
+> In anycase, if this all about rcu_tasks, I would prefer using a macro
+> defined in kernel/rcu/tasks.h
+> instead of having a hidden constant in a networking core function.
 
+Paul E. McKenney was suggesting either current form or
+
+         local_bh_enable();
+         if (!IS_ENABLED(CONFIG_PREEMPT_RT))
+                 rcu_softirq_qs_enable(local_bh_enable());
+         else
+                 local_bh_enable();
+
+With an interval it might have to be
+"rcu_softirq_qs_enable(local_bh_enable(), &next_qs);" to avoid an
+unnecessary extern/static var. Will it make more sense to you?
+
+thanks
+
+>
+> Thanks.
 
