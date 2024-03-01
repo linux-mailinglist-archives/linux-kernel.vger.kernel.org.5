@@ -1,194 +1,124 @@
-Return-Path: <linux-kernel+bounces-88932-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88934-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A28B986E89B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:41:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C889786E8AA
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:46:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE1411C22989
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:41:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E108DB2E15B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:42:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E3503A26E;
-	Fri,  1 Mar 2024 18:41:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F59039AF4;
+	Fri,  1 Mar 2024 18:42:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r2Q7QuqW"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="HtYBqy9v"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 472013A1B8;
-	Fri,  1 Mar 2024 18:41:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3D5638DE0
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 18:42:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709318461; cv=none; b=K8mz0Oi3O1J86hdtT0evJ6kq8Yda+UMJkAs/ZUg4jrnnjk2hqc1e0RX6RkQCHElLCNuy2rzAT7h/ydz0/ZzNBkSlsnNR4mqmcSNmoSLaEjwyoDfQIv+uEd0w3hlk3D25EZ+Yr8Uq+512w0kLB7Mxv6T7a2gkBLgwiHSUXA/Pqps=
+	t=1709318538; cv=none; b=IZgzjUKEOdNPa5IhHEmJM9Q5nQQMe/jvX19ASNSiiEAX5inw19mUg22s24ah5ycgDlOVgY6YnPwHx6zdZEIE5tOLA4yMaOXwne/MVRFkej1WBxyAoYBOYx3bpeueKjKJZ+jiFAN4LrTfVaYcCU6fakBfLDGbK6nXeZNagLuONjo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709318461; c=relaxed/simple;
-	bh=Ikr2dasxWHE+lNItweXLpqVfoJa5a0SH5QW2mOtObok=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=jh9XS/DYOMrEhFsbR5flfTktrim36iJJbDuQDrn7K1WlFJ7lzf5xjVt/YbNufEf1nATc4RBMlMXBMl+RmMVm1hy/NQoMpoopriqG8tyNW3LxjaxgrqzRX6Or7YQdPe7yfJzgEi30HXvX7Yz9TPJD47+4X26EqFELaF7/k956WKo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r2Q7QuqW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4AF6C433C7;
-	Fri,  1 Mar 2024 18:40:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709318460;
-	bh=Ikr2dasxWHE+lNItweXLpqVfoJa5a0SH5QW2mOtObok=;
-	h=Date:From:To:Cc:Subject:From;
-	b=r2Q7QuqWR02YX4BwJB96aQVS8C1pgLZiSKZF52iPU96KkxawAS/eKf60dMe8iqlpp
-	 lP9HwlYIXAV7fWehnNcLTi9cfxjGuCNxXRtBQg7Sj00O74QryCsKDTyo3Cemna8cn8
-	 7VDDvZuAV5pSUH7h3AUAW9UwrxnwS5uQ98PScqKFmqDUddsW6c4BE77RE1a01qlUO9
-	 dh801ZgPnZFzcZqmn+GTGogZvPty6zapDZ2h9FtkLPKyWreeZBVdiN73HQSxxEwprO
-	 nUz6817YY4RHzPLDdoDn5JLxVzOp7JePcQ/c95z1MhJrmpY5/2s8YclcCD4iPJ3kTu
-	 HTHaFQbnIGYhA==
-Date: Fri, 1 Mar 2024 12:40:57 -0600
-From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To: Wenjia Zhang <wenjia@linux.ibm.com>, Jan Karcher <jaka@linux.ibm.com>,
-	"D. Wythe" <alibuda@linux.alibaba.com>,
-	Tony Lu <tonylu@linux.alibaba.com>,
-	Wen Gu <guwen@linux.alibaba.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-Cc: linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>
-Subject: [PATCH][next] net/smc: Avoid -Wflex-array-member-not-at-end warnings
-Message-ID: <ZeIhOT44ON5rjPiP@neat>
+	s=arc-20240116; t=1709318538; c=relaxed/simple;
+	bh=/UsB2x4B9Ti3fzOOEOC+JT9j6s1HDa+lM3xisIz14Es=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RjunDvYYnUlrXwV0QxRF3c0FiE0qVghUetGNoj9FV2/s8pjTjP9bE3zsbu/BZKkPi9sBkfXrsmcS/KVw0hrNIAcs28CMOIKiK5Ds/sln9wGOvoguMU4AwdX9lZyVfdlMK64/xIY/lTfxGzUrObGEznnYCuO5mPh/C/rnolHUtS4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=HtYBqy9v; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id A40B840E00B2;
+	Fri,  1 Mar 2024 18:42:13 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id hQ6gEvs1O20f; Fri,  1 Mar 2024 18:42:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1709318529; bh=1ktczzyemgTKLB5e7bMrvFgJP3VRuViesWBbpoFxVKE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=HtYBqy9vJ8hxvGACE+eZnhpbsflLSYi6+ozsG4TEhHZZvf2wpM6W6CFdvHj7lN4aB
+	 98LWCmC4i6pjMPBDArpgVwpg7Tq/dGJxtfzurrjEzgBmzYx/SDocLWjfoj78g0ynkp
+	 1HRGeX1ceo4JYYp5jl8fLsAhe/SWLU9X24ExkvyKpNZ6nBCt6o6XdxEIfC7HGW1F+C
+	 deiUWUzW04+S5DxzOJh6LOixicd8XycCap0ZaVRnYHw7quwJsTuaxBOWnbR7CGLYXW
+	 C9TamDD2VXCf1aiXyVjEJtognYtFFtOKF2qxGJ4/OA8LG3cvdV4FaakUdAVs3oxfd8
+	 joabtEyOALQI/+ATedIsD5iCJflsZgeGJuNmYSQ0kPDYpNfx9o54emL/28CR1K7dbW
+	 zwRxxgKtFqqGkj38azFyXx3v85BL/45mCLVd2i/V8T4GW9m2LwQlZfa0dW6IlaE4os
+	 wAHo89WcZP3HBJ0YFHpFMlCars6nk2ycJlPZaviQ+7i/5k8IBud5Avp82tKFleIlGO
+	 MiOA3kfuZTpNdUwa7K+BE8Qdvun2lEQ0gcwIMyPCgyd1diJTDJoTDzCOPvpGTrwvcA
+	 lKQPgGJFJyJK0r4pwx06nHE5fpteVUxnQOivn3ZgKDqla4Hapy0l/OBvFZzaReksG7
+	 e6uEocpFyvZAX2xJ9pzCQtSs=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 92E1240E016C;
+	Fri,  1 Mar 2024 18:42:04 +0000 (UTC)
+Date: Fri, 1 Mar 2024 19:41:57 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+	Steven Rostedt <rostedt@goodmis.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>
+Subject: Re: [patch 0/6] x86/idle: Cure RCU violations and cleanups
+Message-ID: <20240301184157.GEZeIhda2_UDfoWnwF@fat_crate.local>
+References: <20240229141407.283316443@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+In-Reply-To: <20240229141407.283316443@linutronix.de>
 
--Wflex-array-member-not-at-end is coming in GCC-14, and we are getting
-ready to enable it globally.
+On Thu, Feb 29, 2024 at 03:23:35PM +0100, Thomas Gleixner wrote:
+> Boris reported that a RCU related warning triggers in the tracer code on
+> AMD machines which are affected by Erratum 400. On those CPUs the local
+> APIC timer stops in the C1E halt state. This is handled by a special idle
+> function which invokes tick_broadcast_enter()/exit() around HALT.  These
+> functions can end up in lockdep or tracing which use RCU protected data,
+> but the core code already set RCU to idle which means that the RCU
+> protection is not longer given.
+> 
+> This series fixes this by handling the tick broadcast conditionally in the
+> core idle function. While working on it I noticed a few bogosities in the
+> related code and cleaned that up on top.
+> 
+> The series is also available from git:
+> 
+>    git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git x86/core
+> 
+> Thanks,
+> 
+> 	tglx
+> ---
+>  arch/x86/Kconfig                 |    1 
+>  arch/x86/include/asm/processor.h |    2 
+>  arch/x86/kernel/cpu/common.c     |    4 -
+>  arch/x86/kernel/process.c        |   89 +++++++++++----------------------------
+>  include/linux/cpu.h              |    2 
+>  include/linux/tick.h             |    3 +
+>  kernel/sched/idle.c              |   21 +++++++++
+>  kernel/time/Kconfig              |    5 ++
+>  8 files changed, 62 insertions(+), 65 deletions(-)
 
-There are currently a couple of objects in `struct smc_clc_msg_proposal_area`
-that contain a couple of flexible structures:
+I refreshed my local branch with all your fixed patches and it still
+works.
 
-struct smc_clc_msg_proposal_area {
-	...
-	struct smc_clc_v2_extension             pclc_v2_ext;
-	...
-	struct smc_clc_smcd_v2_extension        pclc_smcd_v2_ext;
-	...
-};
+Tested-by: Borislav Petkov (AMD) <bp@alien8.de>
 
-So, in order to avoid ending up with a couple of flexible-array members
-in the middle of a struct, we use the `struct_group_tagged()` helper to
-separate the flexible array from the rest of the members in the flexible
-structure:
+Thx.
 
-struct smc_clc_smcd_v2_extension {
-        struct_group_tagged(smc_clc_smcd_v2_extension_hdr, hdr,
-                            u8 system_eid[SMC_MAX_EID_LEN];
-                            u8 reserved[16];
-        );
-        struct smc_clc_smcd_gid_chid gidchid[];
-};
-
-With the change described above, we now declare objects of the type of
-the tagged struct without embedding flexible arrays in the middle of
-another struct:
-
-struct smc_clc_msg_proposal_area {
-        ...
-        struct smc_clc_v2_extension_hdr		pclc_v2_ext;
-        ...
-        struct smc_clc_smcd_v2_extension_hdr	pclc_smcd_v2_ext;
-        ...
-};
-
-We also use `container_of()` when we need to retrieve a pointer to the
-flexible structures.
-
-So, with these changes, fix the following warnings:
-
-In file included from net/smc/af_smc.c:42:
-net/smc/smc_clc.h:186:49: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
-  186 |         struct smc_clc_v2_extension             pclc_v2_ext;
-      |                                                 ^~~~~~~~~~~
-net/smc/smc_clc.h:188:49: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
-  188 |         struct smc_clc_smcd_v2_extension        pclc_smcd_v2_ext;
-      |                                                 ^~~~~~~~~~~~~~~~
-
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- net/smc/smc_clc.c |  5 +++--
- net/smc/smc_clc.h | 24 ++++++++++++++----------
- 2 files changed, 17 insertions(+), 12 deletions(-)
-
-diff --git a/net/smc/smc_clc.c b/net/smc/smc_clc.c
-index e55026c7529c..3094cfa1c458 100644
---- a/net/smc/smc_clc.c
-+++ b/net/smc/smc_clc.c
-@@ -853,8 +853,9 @@ int smc_clc_send_proposal(struct smc_sock *smc, struct smc_init_info *ini)
- 	pclc_smcd = &pclc->pclc_smcd;
- 	pclc_prfx = &pclc->pclc_prfx;
- 	ipv6_prfx = pclc->pclc_prfx_ipv6;
--	v2_ext = &pclc->pclc_v2_ext;
--	smcd_v2_ext = &pclc->pclc_smcd_v2_ext;
-+	v2_ext = container_of(&pclc->pclc_v2_ext, struct smc_clc_v2_extension, _hdr);
-+	smcd_v2_ext = container_of(&pclc->pclc_smcd_v2_ext,
-+				   struct smc_clc_smcd_v2_extension, hdr);
- 	gidchids = pclc->pclc_gidchids;
- 	trl = &pclc->pclc_trl;
- 
-diff --git a/net/smc/smc_clc.h b/net/smc/smc_clc.h
-index 7cc7070b9772..5b91a1947078 100644
---- a/net/smc/smc_clc.h
-+++ b/net/smc/smc_clc.h
-@@ -134,12 +134,14 @@ struct smc_clc_smcd_gid_chid {
- 			 */
- 
- struct smc_clc_v2_extension {
--	struct smc_clnt_opts_area_hdr hdr;
--	u8 roce[16];		/* RoCEv2 GID */
--	u8 max_conns;
--	u8 max_links;
--	__be16 feature_mask;
--	u8 reserved[12];
-+	struct_group_tagged(smc_clc_v2_extension_hdr, _hdr,
-+		struct smc_clnt_opts_area_hdr hdr;
-+		u8 roce[16];		/* RoCEv2 GID */
-+		u8 max_conns;
-+		u8 max_links;
-+		__be16 feature_mask;
-+		u8 reserved[12];
-+	);
- 	u8 user_eids[][SMC_MAX_EID_LEN];
- };
- 
-@@ -159,8 +161,10 @@ struct smc_clc_msg_smcd {	/* SMC-D GID information */
- };
- 
- struct smc_clc_smcd_v2_extension {
--	u8 system_eid[SMC_MAX_EID_LEN];
--	u8 reserved[16];
-+	struct_group_tagged(smc_clc_smcd_v2_extension_hdr, hdr,
-+		u8 system_eid[SMC_MAX_EID_LEN];
-+		u8 reserved[16];
-+	);
- 	struct smc_clc_smcd_gid_chid gidchid[];
- };
- 
-@@ -183,9 +187,9 @@ struct smc_clc_msg_proposal_area {
- 	struct smc_clc_msg_smcd			pclc_smcd;
- 	struct smc_clc_msg_proposal_prefix	pclc_prfx;
- 	struct smc_clc_ipv6_prefix	pclc_prfx_ipv6[SMC_CLC_MAX_V6_PREFIX];
--	struct smc_clc_v2_extension		pclc_v2_ext;
-+	struct smc_clc_v2_extension_hdr		pclc_v2_ext;
- 	u8			user_eids[SMC_CLC_MAX_UEID][SMC_MAX_EID_LEN];
--	struct smc_clc_smcd_v2_extension	pclc_smcd_v2_ext;
-+	struct smc_clc_smcd_v2_extension_hdr	pclc_smcd_v2_ext;
- 	struct smc_clc_smcd_gid_chid
- 				pclc_gidchids[SMCD_CLC_MAX_V2_GID_ENTRIES];
- 	struct smc_clc_msg_trail		pclc_trl;
 -- 
-2.34.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
 
