@@ -1,159 +1,412 @@
-Return-Path: <linux-kernel+bounces-88929-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88930-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D838886E8A4
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:45:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72EC486E894
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:39:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 27AEBB2CF98
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:39:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87E9F1C22A5B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:39:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12E6A39AE3;
-	Fri,  1 Mar 2024 18:38:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HYBv2a4B"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C321D38F99;
+	Fri,  1 Mar 2024 18:39:25 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB9CC282F1
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 18:38:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA2E52AD1C
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 18:39:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709318332; cv=none; b=rrzm7oFmmfTt0NbVt0uWmC35EOW1zXalmIYo717xRr9K2zyMVBl+5yTXYtHfDt3VW9SNuB9qtgZJueyripOoutk0UVBdSoQqQm63RAayQqNYw5BxbIOkP4ABzKbZdfa7Z18UHnojN45DRJjnlW/ZzekL0kBVRzdWq8eLk1LSi9Q=
+	t=1709318365; cv=none; b=GL+6luh5Zvlpy17Eigp2dgjQZ4IuUVrlV/ZUzCKo4o3suIp338IB6F/B2m+vH9HD9KJyFVJhe/a7sYeC1o1IccFsKW7/OttX2Vxuc1AV+lPKiHwLoEUtpvkmFw1ZZO/CxGRuIpUop6VEXkBu8iZduPZBqlYeaAyWYk5ZSWnsdCs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709318332; c=relaxed/simple;
-	bh=0E/bhPlL7rJaqdOrTpi0IWM63vcpU8XKMrJDM1lBXwY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aTBnJm++PgAQ9CSbSD3bG9szkz47LISBzJvezo14qXeOUgA7fDytsaSHC2xTx6uk9d1EeKqBurfAL5WTOFQ1BESySfhcwmghqhoy4TqTXsz4DnK5Uj4fKCmwcFRNsPrtxiirUknwR/zzD060J5tdmfxyaRM8TGxN+Od1tUq2/RE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HYBv2a4B; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709318329;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=12w5fpeGc+D7KoB7397WHWHXMtnXg/VkOws4FVveYe4=;
-	b=HYBv2a4BzOvFo2E3KI03dBRuP27ZGyi61MQe9u/+oTrGtW6bAO9+7Me/39G91YpjTySbOK
-	honcyeEYH0SV/WcRj7yqHeBImskgPY1TriHT7hF7ht4VavCuRoiXLbO951PHpcUEvx6mfN
-	hxNrF6bvXMhq7ca7MDeAvS/64Z9YCK8=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-428-5zGoY3GkNvmggT-gYikhCA-1; Fri, 01 Mar 2024 13:38:48 -0500
-X-MC-Unique: 5zGoY3GkNvmggT-gYikhCA-1
-Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-559555e38b0so2769362a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 10:38:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709318327; x=1709923127;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=12w5fpeGc+D7KoB7397WHWHXMtnXg/VkOws4FVveYe4=;
-        b=edrLckxY7+rzfiBLxiTPXgSQ6uDLblkjCyy3JxNRBWpKVXHmpRhVpmscZ9nPotxhA7
-         6Q5iLwxDx/r7OJckj+tAM0NSeMUB8AWNWRtBHerWQ+2tsACYWkLOKzKfsEYEC6Sfe/+v
-         yrRaDFjgdzgvtTDPA01Y3REi0I8TVRHcjIELzu/jwQOoHrSRwdSmmzmz6Hfth9O6y3MH
-         pqUmVn4MDWmRL3awlqyzwNW1V/XE2+8sgV+NZ/V41OqUKjhQrPpviH2JvYFJZwWnwPBG
-         PJPeUUOuVKLdCmeeLudgHSEd1mgwCx1xNpH3WfwOyI2qehrbmreSM5fYJNcrxIBaOsFS
-         umng==
-X-Forwarded-Encrypted: i=1; AJvYcCXfXGxF4nuYcfoEYy3l/HcbmCrbI5o+OUp9Cp36dTLV6EX3Qy23fgyeSIfCunPbRoKpMy64dYJdgOKPQ/EmIHJDy0VLRw9ars3ZIsCZ
-X-Gm-Message-State: AOJu0YzHkXmZ+ncO1tPusz5s7H5FJ/4J89DHqbWvjHTb0r1O+Pa1pvDF
-	xVsLgJjDDld/Jq2D+nDAsRKqcTawAmxTDt0VmNlZIRiD2bCFgx6SH5WPtNs41PfIw748exLQ6AB
-	PHOHF3RRekF8Fate17c/JVh4S31eFSu7xwjXZ6V0moNmXomGYx5bgRDTLr3FBLY9VXI6Z1Q==
-X-Received: by 2002:a50:d5d0:0:b0:566:ab2b:e1ce with SMTP id g16-20020a50d5d0000000b00566ab2be1cemr1857929edj.18.1709318326913;
-        Fri, 01 Mar 2024 10:38:46 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IE1W/qKy2ovilQzJQF173gN2cb9wEOMSiSDAx37JJY7YF7WmuRQitQDacod2tVzBBIrF84mJQ==
-X-Received: by 2002:a50:d5d0:0:b0:566:ab2b:e1ce with SMTP id g16-20020a50d5d0000000b00566ab2be1cemr1857922edj.18.1709318326586;
-        Fri, 01 Mar 2024 10:38:46 -0800 (PST)
-Received: from ?IPV6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.googlemail.com with ESMTPSA id fj10-20020a0564022b8a00b00563f8233ba8sm1794236edb.7.2024.03.01.10.38.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Mar 2024 10:38:45 -0800 (PST)
-Message-ID: <2e1ea7ec-13bd-4582-9052-5de8cb79401d@redhat.com>
-Date: Fri, 1 Mar 2024 19:38:40 +0100
+	s=arc-20240116; t=1709318365; c=relaxed/simple;
+	bh=GU6lA2nzJYY9HvqDqtP25BcdwxKHs1g+gkhdeyPZN8U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dZO0Nyi4Nh7kytGO4BaDgTr7rwHdJdQdW0m2xcMRFbBG4u9NBgA7b83BYI4SqEmg0fE0/PcDbUz8jeiKZ4LTgMW0v9hLPWH2tO5Mmw92dzJNUmXr6PzpKIoLjLqBA3kzNQ7z6iq4G09ywJtxi2+5QvjFqeHnsAuoR9LqBJALX+s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mgr@pengutronix.de>)
+	id 1rg7mj-0004aH-Pl; Fri, 01 Mar 2024 19:39:05 +0100
+Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <mgr@pengutronix.de>)
+	id 1rg7mf-003pdp-0u; Fri, 01 Mar 2024 19:39:01 +0100
+Received: from mgr by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <mgr@pengutronix.de>)
+	id 1rg7me-00FAeD-31;
+	Fri, 01 Mar 2024 19:39:00 +0100
+Date: Fri, 1 Mar 2024 19:39:00 +0100
+From: Michael Grzeschik <mgr@pengutronix.de>
+To: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+Cc: Eric Van Hensbergen <ericvh@kernel.org>,
+	Latchesar Ionkov <lucho@ionkov.net>,
+	Dominique Martinet <asmadeus@codewreck.org>,
+	Christian Schoenebeck <linux_oss@crudebyte.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	v9fs@lists.linux.dev, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+	kernel@pengutronix.de
+Subject: Re: [PATCH v2 4/4] tools: usb: p9_fwd: add usb gadget packet
+ forwarder script
+Message-ID: <ZeIgxGn34RHdy4qS@pengutronix.de>
+References: <20240116-ml-topic-u9p-v2-0-b46cbf592962@pengutronix.de>
+ <20240116-ml-topic-u9p-v2-4-b46cbf592962@pengutronix.de>
+ <0d2fc837-a7b4-4d6f-9359-f2b64fe16f92@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: linux-next: manual merge of the kvm tree with the drm-xe tree
-Content-Language: en-US
-To: Lucas De Marchi <lucas.demarchi@intel.com>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Oded Gabbay
- <ogabbay@kernel.org>, =?UTF-8?Q?Thomas_Hellstr=C3=B6m?=
- <thomas.hellstrom@linux.intel.com>,
- DRM XE List <intel-xe@lists.freedesktop.org>, KVM <kvm@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Linux Next Mailing List <linux-next@vger.kernel.org>,
- Yury Norov <yury.norov@gmail.com>
-References: <20240222145842.1714b195@canb.auug.org.au>
- <CABgObfaDQMxj9CZBzea+=1fcFQXEemAJoH5Jvc9+tfiC7NAvrQ@mail.gmail.com>
- <55pdgbv7ltrwnewhxz7ivugowczzomlm6yvco2nxfanxm4ffco@olkrf4wr65so>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Autocrypt: addr=pbonzini@redhat.com; keydata=
- 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
-In-Reply-To: <55pdgbv7ltrwnewhxz7ivugowczzomlm6yvco2nxfanxm4ffco@olkrf4wr65so>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="IRMdcDxqLjOcUVPK"
+Content-Disposition: inline
+In-Reply-To: <0d2fc837-a7b4-4d6f-9359-f2b64fe16f92@collabora.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mgr@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On 3/1/24 19:17, Lucas De Marchi wrote:
-> I'm surprised to see 3c7a8e190bc5 ("uapi: introduce uapi-friendly macros
-> for GENMASK") with no acks from maintainer though.
 
-The patch sat on the list for a couple months, then I went ahead and 
-committed it.
+--IRMdcDxqLjOcUVPK
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The changes to include/linux/bits.h are just code movement from kernel 
-to uapi header (plus the uglification of BITS_PER_LONG and 
-BITS_PER_LONG_LONG per uapi rules) so I think that's fine.
+On Fri, Mar 01, 2024 at 03:26:24PM +0100, Andrzej Pietrasiewicz wrote:
+>Hi Michael,
+>
+>W dniu 2.02.2024 o=A001:05, Michael Grzeschik pisze:
+>>This patch is adding an small python tool to forward 9pfs requests
+>>from the USB gadget to an existing 9pfs TCP server. Since currently all
+>>9pfs servers lack support for the usb transport this tool is an useful
+>>helper to get started.
+>>
+>>Refer the Documentation section "USBG Example" in
+>>Documentation/filesystems/9p.rst on how to use it.
+>>
+>>Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+>>
+>>---
+>>v1 -> v2:
+>>   - added usbg 9pfs detailed instructions to 9p.rst doc
+>>---
+>>  Documentation/filesystems/9p.rst |  32 +++++++
+>>  tools/usb/p9_fwd.py              | 194 ++++++++++++++++++++++++++++++++=
++++++++
+>>  2 files changed, 226 insertions(+)
+>>
+>>diff --git a/Documentation/filesystems/9p.rst b/Documentation/filesystems=
+/9p.rst
+>>index 64439068a8fc5..264265c72ba67 100644
+>>--- a/Documentation/filesystems/9p.rst
+>>+++ b/Documentation/filesystems/9p.rst
+>>@@ -67,6 +67,38 @@ To mount a 9p FS on a USB Host accessible via the gadg=
+et as root filesystem::
+>>  where mount_tag is the tag associated by the usb gadget transport. The
+>>  pattern is usb9pfs0, usb9pfs1, ...
+>>+USBG Example
+>>+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>>+
+>>+The USB host exports a filesystem, while the gadget on the USB device
+>>+side makes it mountable.
+>>+
+>>+Diod (9pfs server) and the forwarder are on the development host, where
+>>+the root filesystem is actually stored. The gadget is initialized during
+>>+boot (or later) on the embedded board. Then the forwarder will find it
+>>+on the USB bus and start forwarding requests.
+>>+
+>>+In this case the 9p requests come from the device and are handled by the
+>>+host. The reason is that USB device ports are normally not available on
+>>+PCs, so a connection in the other direction would not work.
+>>+
+>>+When using the usbg transport, for now there is no native usb host
+>>+service capable to handle the requests from the gadget driver. For
+>>+this we have to use the extra python tool p9_fwd.py from tools/usb.
+>>+
+>>+Just start the 9pfs capable network server like diod/nfs-ganesha e.g.:
+>>+
+>>+	$ diod -f -n -d 0 -S -l 0.0.0.0:9999 -e $PWD
+>>+
+>>+Then start the python transport:
+>>+
+>>+	$ python $kernel_dir/tools/usb/p9_fwd.py -p 9999
+>>+
+>>+After that the gadget driver can be used as described above.
+>
+>Hmm... The "described above" portion refers to <mount_tag>. How do I get my
+><mount_tag> if I run diod combined with p9_fwd.py?
 
-But I'll drop an email to them to ask them if they want MAINTAINERS to 
-include the new file.
+The mount_tag is decribing the instance of the usb gadget. So, when you
+are describing only one gadget this will always be usb9pfs0.
 
-> Btw, aren't you missing some includes in include/uapi/linux/bits.h?
+The tools diod and p9_fwd.py don't need any mount_tag information.
 
-Yeah, uapi/linux/const.h is needed to use the macros in bits.h.  I 
-didn't notice because KVM headers include it anyway and, on the 
-include/linux/ side, include/linux/bits.h gets it via include/linux/const.h.
+9PFS can be sometimes a bit confusing, in regards of what shall be
+mounted where. The filesystem path that should be shared by 9pfs
+is always represented with the "aname" property.
 
-Paolo
+Regards,
+Michael
 
+>>+
+>>+One use-case is to use it as an alternative to NFS root booting during
+>>+the development of embedded Linux devices.
+>>+
+>>  Options
+>>  =3D=3D=3D=3D=3D=3D=3D
+>>diff --git a/tools/usb/p9_fwd.py b/tools/usb/p9_fwd.py
+>>new file mode 100755
+>>index 0000000000000..95208df11abef
+>>--- /dev/null
+>>+++ b/tools/usb/p9_fwd.py
+>>@@ -0,0 +1,194 @@
+>>+#!/usr/bin/env python3
+>>+# SPDX-License-Identifier: GPL-2.0
+>>+
+>>+import argparse
+>>+import errno
+>>+import logging
+>>+import socket
+>>+import struct
+>>+import sys
+>>+import time
+>>+
+>>+import usb.core
+>>+import usb.util
+>>+
+>>+
+>>+class Forwarder:
+>>+    HEXDUMP_FILTER =3D (
+>>+        "".join(chr(x).isprintable() and chr(x) or "." for x in range(12=
+8)) + "." * 128
+>>+    )
+>>+
+>>+    @staticmethod
+>>+    def _log_hexdump(data):
+>>+        if not logging.root.isEnabledFor(logging.TRACE):
+>>+            return
+>>+        L =3D 16
+>>+        for c in range(0, len(data), L):
+>>+            chars =3D data[c : c + L]
+>>+            dump =3D " ".join(f"{x:02x}" for x in chars)
+>>+            printable =3D "".join(HEXDUMP_FILTER[x] for x in chars)
+>>+            line =3D f"{c:08x}  {dump:{L*3}s} |{printable:{L}s}|"
+>>+            logging.root.log(logging.TRACE, "%s", line)
+>>+
+>>+    def __init__(self, server):
+>>+        self.stats =3D {
+>>+            "c2s packets": 0,
+>>+            "c2s bytes": 0,
+>>+            "s2c packets": 0,
+>>+            "s2c bytes": 0,
+>>+        }
+>>+        self.stats_logged =3D time.monotonic()
+>>+
+>>+        dev =3D usb.core.find(idVendor=3D0x1D6B, idProduct=3D0x0109)
+>>+        if dev is None:
+>>+            raise ValueError("Device not found")
+>>+
+>>+        logging.info(f"found device: {dev.bus}/{dev.address}")
+>>+
+>>+        # dev.set_configuration() is not necessary since g_multi has onl=
+y one
+>>+        usb9pfs =3D None
+>>+        # g_multi adds 9pfs as last interface
+>>+        cfg =3D dev.get_active_configuration()
+>>+        for intf in cfg:
+>>+            # we have to detach the usb-storage driver from multi gadget=
+ since
+>>+            # stall option could be set, which will lead to spontaneous =
+port
+>>+            # resets and our transfers will run dead
+>>+            if intf.bInterfaceClass =3D=3D 0x08:
+>>+                if dev.is_kernel_driver_active(intf.bInterfaceNumber):
+>>+                    dev.detach_kernel_driver(intf.bInterfaceNumber)
+>>+
+>>+            if (
+>>+                intf.bInterfaceClass =3D=3D 0xFF
+>>+                and intf.bInterfaceSubClass =3D=3D 0xFF
+>>+                and intf.bInterfaceProtocol =3D=3D 0x09
+>>+            ):
+>>+                usb9pfs =3D intf
+>>+        if usb9pfs is None:
+>>+            raise ValueError("Interface not found")
+>>+
+>>+        logging.info(f"claiming interface:\n{usb9pfs}")
+>>+        usb.util.claim_interface(dev, usb9pfs.bInterfaceNumber)
+>>+        ep_out =3D usb.util.find_descriptor(
+>>+            usb9pfs,
+>>+            custom_match=3Dlambda e: usb.util.endpoint_direction(e.bEndp=
+ointAddress)
+>>+            =3D=3D usb.util.ENDPOINT_OUT,
+>>+        )
+>>+        assert ep_out is not None
+>>+        ep_in =3D usb.util.find_descriptor(
+>>+            usb9pfs,
+>>+            custom_match=3Dlambda e: usb.util.endpoint_direction(e.bEndp=
+ointAddress)
+>>+            =3D=3D usb.util.ENDPOINT_IN,
+>>+        )
+>>+        assert ep_in is not None
+>>+        logging.info(f"interface claimed")
+>>+
+>>+        self.ep_out =3D ep_out
+>>+        self.ep_in =3D ep_in
+>>+        self.dev =3D dev
+>>+
+>>+        # create and connect socket
+>>+        self.s =3D socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+>>+        self.s.connect(server)
+>>+
+>>+        logging.info(f"connected to server")
+>>+
+>>+    def c2s(self):
+>>+        """forward a request from the USB client to the TCP server"""
+>>+        data =3D None
+>>+        while data is None:
+>>+            try:
+>>+                logging.log(logging.TRACE, "c2s: reading")
+>>+                data =3D self.ep_in.read(self.ep_in.wMaxPacketSize)
+>>+            except usb.core.USBTimeoutError:
+>>+                logging.log(logging.TRACE, "c2s: reading timed out")
+>>+                continue
+>>+            except usb.core.USBError as e:
+>>+                if e.errno =3D=3D errno.EIO:
+>>+                    logging.debug("c2s: reading failed with %s, retrying=
+", repr(e))
+>>+                    time.sleep(0.5)
+>>+                    continue
+>>+                else:
+>>+                    logging.error("c2s: reading failed with %s, aborting=
+", repr(e))
+>>+                    raise
+>>+        size =3D struct.unpack("<I", data[:4])[0]
+>>+        while len(data) < size:
+>>+            data +=3D self.ep_in.read(size - len(data))
+>>+        logging.log(logging.TRACE, "c2s: writing")
+>>+        self._log_hexdump(data)
+>>+        self.s.send(data)
+>>+        logging.debug("c2s: forwarded %i bytes", size)
+>>+        self.stats["c2s packets"] +=3D 1
+>>+        self.stats["c2s bytes"] +=3D size
+>>+
+>>+    def s2c(self):
+>>+        """forward a response from the TCP server to the USB client"""
+>>+        logging.log(logging.TRACE, "s2c: reading")
+>>+        data =3D self.s.recv(4)
+>>+        size =3D struct.unpack("<I", data[:4])[0]
+>>+        while len(data) < size:
+>>+            data +=3D self.s.recv(size - len(data))
+>>+        logging.log(logging.TRACE, "s2c: writing")
+>>+        self._log_hexdump(data)
+>>+        while data:
+>>+            written =3D self.ep_out.write(data)
+>>+            assert written > 0
+>>+            data =3D data[written:]
+>>+        if size % self.ep_out.wMaxPacketSize =3D=3D 0:
+>>+            logging.log(logging.TRACE, "sending zero length packet")
+>>+            self.ep_out.write(b"")
+>>+        logging.debug("s2c: forwarded %i bytes", size)
+>>+        self.stats["s2c packets"] +=3D 1
+>>+        self.stats["s2c bytes"] +=3D size
+>>+
+>>+    def log_stats(self):
+>>+        logging.info("statistics:")
+>>+        for k, v in self.stats.items():
+>>+            logging.info(f"  {k+':':14s} {v}")
+>>+
+>>+    def log_stats_interval(self, interval=3D5):
+>>+        if (time.monotonic() - self.stats_logged) < interval:
+>>+            return
+>>+
+>>+        self.log_stats()
+>>+        self.stats_logged =3D time.monotonic()
+>>+
+>>+
+>>+def main():
+>>+    parser =3D argparse.ArgumentParser(
+>>+        description=3D"Forward 9PFS requests from USB to TCP",
+>>+    )
+>>+
+>>+    parser.add_argument(
+>>+        "-s", "--server", type=3Dstr, default=3D"127.0.0.1", help=3D"ser=
+ver hostname"
+>>+    )
+>>+    parser.add_argument("-p", "--port", type=3Dint, default=3D564, help=
+=3D"server port")
+>>+    parser.add_argument("-v", "--verbose", action=3D"count", default=3D0)
+>>+
+>>+    args =3D parser.parse_args()
+>>+
+>>+    logging.TRACE =3D logging.DEBUG - 5
+>>+    logging.addLevelName(logging.TRACE, "TRACE")
+>>+
+>>+    if args.verbose >=3D 2:
+>>+        level =3D logging.TRACE
+>>+    elif args.verbose:
+>>+        level =3D logging.DEBUG
+>>+    else:
+>>+        level =3D logging.INFO
+>>+    logging.basicConfig(
+>>+        level=3Dlevel, format=3D"%(asctime)-15s %(levelname)-8s %(messag=
+e)s"
+>>+    )
+>>+
+>>+    f =3D Forwarder(server=3D(args.server, args.port))
+>>+
+>>+    try:
+>>+        while True:
+>>+            f.c2s()
+>>+            f.s2c()
+>>+            f.log_stats_interval()
+>>+    finally:
+>>+        f.log_stats()
+>>+
+>>+
+>>+if __name__ =3D=3D "__main__":
+>>+    main()
+>>
+>
+>
+
+--=20
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+
+--IRMdcDxqLjOcUVPK
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEElXvEUs6VPX6mDPT8C+njFXoeLGQFAmXiIL8ACgkQC+njFXoe
+LGRC4hAAjm/5XF6e7oT7EzDpOeuW1EedWRXJz+sCGoR9dlptBsoPSXH0D4JCLg5a
+/AJDWQmT3kW+WiaK8dtEDFXkAm6iBqRj1FfTD7DZoyOIQAEqpn+3KDETcjjngl79
+rgEPvkict3KO8hTkrtY5nLI7W6nkUnQ3VhAKt1glIi+yh36QY4dYbvtpdjYkeu5A
+pQCfJK3yiyYlPeofShKFKCaHIUs7KZoN36UyiuRAGVCJNcjghmlSSZC96el5uGVM
+xjihMrZSO9pjduMULSTfTZfsNx2kUaNJxpGsFD8OMlQwJzQohD5p+xToHqS8l7gB
+QfHtEy4maB+qLbgkF8ZXXOC0+CcfuNlbYuTzeyGcQVeJ1iB0fSsnQ1+elT6azUGd
+Ac1OVL5Ay85zmFkUluz1R+H/2o+kU56aF/7aLQ3ygkZ4FiSyqRWtvl/OOoc8koVX
+3kMzTz+4kLGP+U1ai/T7okQVAw7tM4F+3BW88FdegngSvqGkXmGUaEDPiIOBdz4H
+pFoXOlKMtSz+bsA+mdHPOA+rgznXP+IHOuCUFjdO4Wy3RUmK+xiIWXvpRcha0dsg
+pBoDzM7DLWZwy+i/O20kxCVEmr3LkppSNCUP20F46EGUVggvC2QQvwycrgrsO+Bj
+sUzGxe08KqCap3/W4iVBcRp+Og6xCbDQNv+JpcD/0EQeXbj+UtY=
+=Auy1
+-----END PGP SIGNATURE-----
+
+--IRMdcDxqLjOcUVPK--
 
