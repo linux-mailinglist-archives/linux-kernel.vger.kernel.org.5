@@ -1,177 +1,132 @@
-Return-Path: <linux-kernel+bounces-89075-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89077-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38A0186EA3B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:22:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E430A86EA3F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:25:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5B22286CDE
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:22:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 003751C22446
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:25:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D8903C694;
-	Fri,  1 Mar 2024 20:21:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 474483C47A;
+	Fri,  1 Mar 2024 20:25:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="CbfiC+OU"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10olkn2040.outbound.protection.outlook.com [40.92.41.40])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cry3iSVZ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 929F04C9C;
-	Fri,  1 Mar 2024 20:21:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.41.40
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709324511; cv=fail; b=Sw0a3ABgrnK1rUSgjimD54dB5/5ak5xkmZtJzMqLJEbNWhfTochvZRSubKQ0MDVviOIWHpFfL/kABkQd/wkoP2wm0fznLzpw93RqtUATPWzvIXyDTbzOLVDHNPOu5660DOxbxY0WuCVid8IIqkAlLRhKQiNvD+JfIZz3CHEGQCQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709324511; c=relaxed/simple;
-	bh=J9+7Xhl/XOZGZxFzIx9EW5GyYxFqE+JLHp980sfdLtw=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=RojbHFg2VFzfdpRCDlxRSdBE8XQPHNyQMp8nP+OBk6PpkS5toiF0TJmhLkmbtj19djRCYvseb1YsiShVlzFwnFbJhgnzB5Da2KaWr8nFjAkYIsJI6zC0QVus+qNIK/tXWLEJvHXfC9rN8XvljIkfag7Q9rNAtQQlcymo8ecrNic=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=CbfiC+OU; arc=fail smtp.client-ip=40.92.41.40
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VBbEpYHQ1dBiqpSu6QCii5iObXZja4PDnp1xqIniYrluw2e5xBCHJYxw7YLFq1MRRrZ1UtKZnXX6hFfx0tNHoNf6Jb70pXIo/oRvjwcIxhMKFlc4GM8uvG+gQPO2sbVfXYBL1b6YB3b50h6dQpiBR2qVejFY74jPVuQrmIkaXcVCqYYNKKXT9EDtC4Rj/veQ+AX9UHL1a7MHQruX/N4JmmI/FukkJ/48kcstH5k3oZoEm66NrSLmSZb9C4C5xCYZfMQdWv3X1hH8bSCiWam0HeeWF5o28tS0UmOniTaVMPJG5I76vpWuKuJsP+M8CmlMQBHh7PbP25JFny7G2qb9wg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=J9+7Xhl/XOZGZxFzIx9EW5GyYxFqE+JLHp980sfdLtw=;
- b=GveDsG3CwJHIpR2bpiCreVHezvFXhcjNm8A+wT06r7ip0FGYP8ldcfN4LhsOz6RvAC8Rp+RIFehw9ssdyg7LgASgV7MFUlGwD3w8niAF6rvXGUBYrRNJkNZuf1O+S24XibeW62/okdW30Q3so/SFswlQJyTsKVJQcW8JEtFJ9KPDfBRRmsy16j+ft5SoIWjMstvJu2HoiUKOOtcOVktP8RhlPYQJdVEFx+fhRhJHzWOeZ6ykFCGYiMHmtGiCtmj/K1ay28w4qCOSHniPqxKKzLIJ7w1Zk8JJJNuh8F0qgZ1LrAJz8u+V8ktiFVAdTI7wcsHOLBZO1pXGQ6LyT6qg2w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=J9+7Xhl/XOZGZxFzIx9EW5GyYxFqE+JLHp980sfdLtw=;
- b=CbfiC+OU1iPJZ0J0wDrvJza6acd5kEbA5Q+PPVpZYhtLpERiDmOExs7cfGjzU/L2CYD8koQ0OkYaDFGGAoHqDU9advxPgyaKL13D7u2jbhTX0SfVlgiDGSWlO7NrAP6Sj6/imVnD3N6FiaCAppE4w5qog286ynaNC7EOjcZGTNtKdWHj8f6YROHshe74DN5CVhdN/NwzIf7uBUsCy6Rcsa0sYwaRYL+t1a2KQwVHNiin6DXbusjaeDEpOTm7Tt0TB+KwUmZAT4GdePLuHPvPFLrp+wjUoCTaBCQ8g2dylrcTjaqTmvA3AKgWvjevfV1GJNEA8rkZqALgiQaMZQdDWw==
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
- by BL3PR02MB8939.namprd02.prod.outlook.com (2603:10b6:208:3b7::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.34; Fri, 1 Mar
- 2024 20:21:46 +0000
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::67a9:f3c0:f57b:86dd]) by SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::67a9:f3c0:f57b:86dd%5]) with mapi id 15.20.7339.031; Fri, 1 Mar 2024
- 20:21:46 +0000
-From: Michael Kelley <mhklinux@outlook.com>
-To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-	"linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
-	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-	"davem@davemloft.net" <davem@davemloft.net>, "haiyangz@microsoft.com"
-	<haiyangz@microsoft.com>, "kirill.shutemov@linux.intel.com"
-	<kirill.shutemov@linux.intel.com>, "pabeni@redhat.com" <pabeni@redhat.com>,
-	"edumazet@google.com" <edumazet@google.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "kys@microsoft.com" <kys@microsoft.com>,
-	"Cui, Dexuan" <decui@microsoft.com>, "kuba@kernel.org" <kuba@kernel.org>,
-	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-	"wei.liu@kernel.org" <wei.liu@kernel.org>, "gregkh@linuxfoundation.org"
-	<gregkh@linuxfoundation.org>, "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>
-CC: "sathyanarayanan.kuppuswamy@linux.intel.com"
-	<sathyanarayanan.kuppuswamy@linux.intel.com>, "Reshetova, Elena"
-	<elena.reshetova@intel.com>
-Subject: RE: [RFC RFT PATCH 1/4] hv: Leak pages if set_memory_encrypted()
- fails
-Thread-Topic: [RFC RFT PATCH 1/4] hv: Leak pages if set_memory_encrypted()
- fails
-Thread-Index: AQHaZTRYDcNuyb66Gkm4wm9TLGb/jbEjO5pggAATDICAAA9AYA==
-Date: Fri, 1 Mar 2024 20:21:45 +0000
-Message-ID:
- <SN6PR02MB415731A89ACAB7479B059D73D45E2@SN6PR02MB4157.namprd02.prod.outlook.com>
-References: <20240222021006.2279329-1-rick.p.edgecombe@intel.com>
-	 <20240222021006.2279329-2-rick.p.edgecombe@intel.com>
-	 <SN6PR02MB4157B2E6EC690B11AB334522D45E2@SN6PR02MB4157.namprd02.prod.outlook.com>
- <78da25c9160612bc60bb1b421a0226e4368db51a.camel@intel.com>
-In-Reply-To: <78da25c9160612bc60bb1b421a0226e4368db51a.camel@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-tmn: [JF6ensI3+dOrwhy2mEWXni9xhhb/4mm9]
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|BL3PR02MB8939:EE_
-x-ms-office365-filtering-correlation-id: 8fb07cc5-866f-4062-ae5f-08dc3a2d3768
-x-ms-exchange-slblob-mailprops:
- WaIXnCbdHrOFvOYWG/XGVp/4EGIZryPzIwMwSH0IwNb5vanyil/X70SzLXFaZW0AWtMLxjawPBmjVQbnI3q6PCoMxAGTzO/dtY+BftzrVvHjf1p9c8bW/36/H7xjdAarzpwaM20jwkpi8xRWXjaVRWr45Yucqhsp4+mAI1omElgnqQCHJ6MxGyPhiuFYlhy+jhODpNCvwHZR15jg5kgY+XyKpGV1dEX8kLHKJgAvIk+/XHeWJEO51IXljH5WREvEgVbWz5S86KbE8HlwbUAmebP5RMbtA5J/WsWfnc2EpuzMzn9uIYg4PbbFLg/935id0go5vwExouAitaSy2BUOSh18PhvN67LNQpS2lLGYwwhAbhQZAugaOn3MqiWBrK6lZCB24pl3KE4VZJGTyTWPusO6CO/MYmEHtwYIwe37e+N1K4qYMPHCHtFVRzuFKmdL2YCzWkFywb54hig8m5cO4hsMPTnkvlAIp6RU6XVB4kKFTqBW6qBBcPWtURhF07fMOf0OQmFqJKHHC3rhrjraLEhCKoLS9Bt3hCl8y0qFPphSHVwMyPngTFUHhy7bUEzJlmH6dbeoZEmkDwrPa2cv6RuEWUyAL2dMUj5QqWnisb0/WqJPh3nG4qlspG4Yr89isZBQAVjqfgW+oQPJl2tQE3d35VpNlOiExv/gsZdwXriU2G3WOxdkU2hacTBNAZ2qW06zb2gGRFcNNJd323yBkH/5YlGVo7dzdlZpL0TzN1ccRqc3f99OvcKC3QNkUp+1EAML1aerpxI=
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- NeU0VpcCTNvd1kweMNVviXH6tnF+uZEtktmTG6Mvc4iYKjSlBdWKbe+94Nn7tbe7wqOkD9NjHz0iB5lckjdeiIaKOgzZLkEar3U1k80KV/vmeJNb1e3ssHbhC4DjKzlCbFgJKdjcBoEreNSz9m0j1bffyYj8vxmNlaBBcHiG+AEC7PIlchZ3rRYqB2HKcK0BVI72pTmsjyVDoHZlULkyXpH06wNZh5gcXs2ilGRlZPiiSD3SdcIxKI4EIGlP9oHQpb/w8+3gxz67YQXqDRi1JDq23xWJ0/NoiQHx6+BqpITA4PnhfMQS/HIxnCVvB+pREuA3FPVwQ/WgCVdT5MCbYJUWqPsFBsL61W8fldsPWnWDQzknDrEEq0uMeJttUbBDFPgJY2bop/Ffr22qWdMiqDQSy0GOk+cuqeBU5w/AvTZPdAOOfrJUhW0Y2bbrGxL1T/5+ZQsViXKXvabfuWeDkzNhpPeym54O/a7AaYAe1tg7EFEO/gn1MVW+cgICS/+c0PDWB3g7eei/ia8INwUYzEycaT3/Pt02hXCafFOyQcFPYtPAdH16AiuJMOafJFag
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?TzFBY3QrTlZNSjgzSUMxQ1RqampNS1h3Y0Y3dzBzdnU2bEhGTHk0SmdyQzBs?=
- =?utf-8?B?Z3NiYU82NnZ6cGJ5UjR2d1FwT2lPNkJqODM3YjJpcEUwdVl0OHdxNy9ZaFJO?=
- =?utf-8?B?VnZOTENjYnZzWmVWSzNsOUh2aVZGamhnTjhXRlhpRFQ4Vlg4RWY1MFdBQ1FH?=
- =?utf-8?B?TERKemd1dCtNSStkMS9SN1lVRnI3TDZyL3cvOG83R0xvTDlKemRTMm16WkZF?=
- =?utf-8?B?b2l2b0lkRUNkcmYwZlNVTnJjOHp4MWM4bDViUmNidkRTTUJYSWlZZnFnSW9m?=
- =?utf-8?B?d2hycURtZEJRejZTVk5RNFFzTFd6TGRBa0JWMU9LOG1QRkh6eVgxUXBSVzJQ?=
- =?utf-8?B?RDA1Z0RkSjdhMmlVZFIvRWdoK2JkR3h3MERTVVcvS0l5aXphQTVTdmhyVytL?=
- =?utf-8?B?bm5VTDFFS1ZsRWhTMmJlVkpLYldKdFgvVWlOWGFjWUV1Tml4c1BBb1M5ci96?=
- =?utf-8?B?VStsbzUvaUs3WFZoVTdLMW5OaExkQjVyWkpPZ1ZTQ2xaNndNSFVFSyt3M1dL?=
- =?utf-8?B?cFdBNk05MWZPWTVxWXpia2l2SlZ4RDZSTkJ1dTZmeGFMS3ZXSnl5VGxtVU5a?=
- =?utf-8?B?TWxpOUFldVlESnFLeWI1TVJFdnFhM2xLZGJ3L3ptOWFLelZpZjZIUlplcGt4?=
- =?utf-8?B?YUh1TWFQeVFXanc0MzNsTG84Zlk1VXdrRHpMSUJDVnJ4ZThPU3BZaDhPUWEw?=
- =?utf-8?B?b0FOK0FraXVuZU9QSEhycUZMQVN4c05LNjQwcHAvU29qRTdWK1Q2b25KVXZ5?=
- =?utf-8?B?YTJEUGZGcW5GdkVEMC9VZkF6UllyZHhBR25meDVVNGNFQWFyYW1XdUdqQ0hY?=
- =?utf-8?B?dENVeVpzb3lCRFZoeVdKUTR0cFFDclNQT0UwaVBldDQ3QWtpRFhxZldFTURr?=
- =?utf-8?B?c0JTWWhwWWoyZkRNM044ZVNuQUVOWExxSzRaYnBubmkvb2Y1WHI3Y0d2d3lB?=
- =?utf-8?B?SHdLMDNlZXJadEU5bTJYbEJjaTBiNXNrdDNIY21WSUQ1RWcyY3R6c2kweTkv?=
- =?utf-8?B?N0VQeXFSblNvV0NGbkpXK3BxaTRLL1A2UHhPd0JZMjhXOFIyMVI1dUFDdy9D?=
- =?utf-8?B?ZEF3bHZ6MHJuaG04ZG1tZzBYdFpGY25kcG5abVJTNnluQ2FjSGlTTmxtZWcv?=
- =?utf-8?B?SU5MaUdrd2NSai9UaEJ4bDAwS09xcEFXM0tzeWphNDlJWHZNVk1NUW92WXky?=
- =?utf-8?B?ckdMTUk0eGduOUYrb1VKYkYwT2lLWHhvaFc4UWpUVFhwMVpmd2E3Y3k3N2NN?=
- =?utf-8?B?eHlIU211azRyZVhtTUJBUWVXQnNBWjZZVWlCY1JOcVBWR2JyVWV3T25sUUpV?=
- =?utf-8?B?bnN4U2diTm9ldnVnbERtUDZxTG91aDVCQkJPYm9qeUYySHlLT1drTDFkOVNK?=
- =?utf-8?B?VFhIM0xabjFXLzBodG84Zk5ON0FHRmk5M0NVWW5kMVlQbFFIdWVPaTdPT01Y?=
- =?utf-8?B?elRSL2tzMFphM1FOanJHNk1penNOLy9OUWtrbWtlcDEwLzFOK2lwMUhHcHQr?=
- =?utf-8?B?RlhSSkExMkdGcmIxTURMK01PYkowRFdqRWQxaVR5Y25uK0dzdHIvK0pzUWNV?=
- =?utf-8?B?R2VIYTRWcjFYRkMrVXZJWE92M01PU29Yb2FsdHE5MXAwQVJ5b05tUVcxUUJF?=
- =?utf-8?B?Z2JwVW5kM3pkTVRSY1lQS2pKRXhBeGc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88C13182B9;
+	Fri,  1 Mar 2024 20:25:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709324711; cv=none; b=p6HVQkPKuOODCpnVYawsH2G/VPPSNSUL5JdD1/pg0ZrbzIupcvZvMKNDLagiRbxKoCFSWrWH63KUq4oswgPqsM3ARznpUHlmSxTis/17CXEyArwi6mA6yWZYL7K5youWDycHSGfh+l9ZAm+ig2kF5g1WP8Bq5l1oK/6WHEZGpto=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709324711; c=relaxed/simple;
+	bh=NbJWYIXhuWsSLKTuuf57NsT0HeUXNYUm+t2wP6ldURc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pXQ/qfetiuXkjeDpnnA2bfSe+gUg5kP76AtDKj+DaFQFar28s/DbyYzneSglhMdZx81gCaBNuC+K48vNoTs82OmEP/T3KI9E02S38siZnJ+fVkS49WgfY7b77URpnAKmb/aSZ2OLID9FPVyN8D+wNgjcfZQeSn6XhmCnE1ciE6o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cry3iSVZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 996BDC433F1;
+	Fri,  1 Mar 2024 20:25:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709324710;
+	bh=NbJWYIXhuWsSLKTuuf57NsT0HeUXNYUm+t2wP6ldURc=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=Cry3iSVZDK2HW9ERSNepVknZ0sfy0csOD8tA92/cMob9VuXSTQym6E6adCN8us2MG
+	 BpozCW6Tz9Wg89v2c8H0mQXbfMB/eYwE/Nzl8+Aa2jPhWJJSw9n/imZA3B+t02a4ML
+	 SdTyQ4eFMwyr9nHcLXAb99LeI0IDAA9eYjSP9AJOeXf2tVAby/Fkh7IVRZYEEYksgd
+	 CYzUSEcj8wD5donYnvRkX9dlwDklnG0U8Cqg4/eQ6oqf2iXYFwIqP7XD2asfiBbKrZ
+	 EvmkTP0FZ0//KQT68oFlDETuBfKNM+acU2HVKtgygyKC6QHMFCm5je/KNb6y+teiLv
+	 ES4L3cPkZ4NFw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 3F74ACE140C; Fri,  1 Mar 2024 12:25:10 -0800 (PST)
+Date: Fri, 1 Mar 2024 12:25:10 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Ankur Arora <ankur.a.arora@oracle.com>,
+	Thomas Gleixner <tglx@linutronix.de>, kernel-team@meta.com
+Subject: Re: [PATCH RFC ftrace] Chose RCU Tasks based on TASKS_RCU rather
+ than PREEMPTION
+Message-ID: <2835d5ea-0396-49f6-88fb-be49cb998cc5@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <f6507b10-5bb5-4407-bd4d-c547193a5a28@paulmck-laptop>
+ <20240228152236.7a4c9eec@gandalf.local.home>
+ <b5acdc28-0441-49ca-9e8d-50d6ac40c395@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8fb07cc5-866f-4062-ae5f-08dc3a2d3768
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Mar 2024 20:21:45.6847
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR02MB8939
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b5acdc28-0441-49ca-9e8d-50d6ac40c395@paulmck-laptop>
 
-RnJvbTogRWRnZWNvbWJlLCBSaWNrIFAgPHJpY2sucC5lZGdlY29tYmVAaW50ZWwuY29tPiBTZW50
-OiBGcmlkYXksIE1hcmNoIDEsIDIwMjQgMTE6MTMgQU0NCj4gPg0KPiA+ID4gT24gVERYIGl0IGlz
-IHBvc3NpYmxlIGZvciB0aGUgdW50cnVzdGVkIGhvc3QgdG8gY2F1c2UNCj4gPg0KPiA+IEknZCBh
-cmd1ZSB0aGF0IHRoaXMgaXMgZm9yIENvQ28gVk1zIGluIGdlbmVyYWwsIG5vdCBqdXN0IFREWC7C
-oCBJIGRvbid0IGtub3cNCj4gPiBhbGwgdGhlIGZhaWx1cmUgbW9kZXMgZm9yIFNFVi1TTlAsIGJ1
-dCB0aGUgY29kZSBwYXRocyB5b3UgYXJlIGNoYW5naW5nDQo+ID4gYXJlIHJ1biBpbiBib3RoIFRE
-WCBhbmQgU0VWLVNOUCBDb0NvIFZNcy4NCj4gDQo+IE9uIFNFVi1TTlAgdGhlIGhvc3QgY2FuIGNh
-dXNlIHRoZSBjYWxsIHRvIGZhaWwgdG9vIHdhcyBteQ0KPiB1bmRlcnN0YW5kaW5nLiBCdXQgaW4g
-TGludXgsIHRoYXQgc2lkZSBwYW5pY3MgYW5kIG5ldmVyIGdldHMgdG8gdGhlDQo+IHBvaW50IG9m
-IGJlaW5nIGFibGUgdG8gZnJlZSB0aGUgc2hhcmVkIG1lbW9yeS4gU28gaXQncyBub3QgVERYDQo+
-IGFyY2hpdGVjdHVyZSBzcGVjaWZpYywgaXQncyBqdXN0IGhvdyBMaW51eCBoYW5kbGVzIGl0IG9u
-IHRoZSBkaWZmZXJlbnQNCj4gc2lkcy4gRm9yIFREWCB0aGUgc3VnZ2VzdGlvbiB3YXMgdG8gYXZv
-aWQgcGFuaWNpbmcgYmVjYXVzZSBpdCBpcw0KPiBwb3NzaWJsZSB0byBoYW5kbGUgaW4gU1csIGFz
-IExpbnV4IHVzdWFsbHkgdHJpZXMgaXQncyBiZXN0IHRvIGRvLg0KPiANCg0KVGhlIEh5cGVyLVYg
-Y2FzZSBjYW4gYWN0dWFsbHkgYmUgYSB0aGlyZCBwYXRoIHdoZW4gYSBwYXJhdmlzb3INCmlzIGJl
-aW5nIHVzZWQuICBJbiB0aGF0IGNhc2UsIGZvciBib3RoIFREWCBhbmQgU0VWLVNOUCwgdGhlDQpo
-eXBlcnZpc29yIGNhbGxiYWNrcyBpbiBfX3NldF9tZW1vcnlfZW5jX3BndGFibGUoKSBnbw0KdG8g
-SHlwZXItViBzcGVjaWZpYyBmdW5jdGlvbnMgdGhhdCB0YWxrIHRvIHRoZSBwYXJhdmlzb3IuIFRo
-b3NlDQpjYWxsYmFja3MgbmV2ZXIgcGFuaWMuIEFmdGVyIGEgZmFpbHVyZSwgZWl0aGVyIGF0IHRo
-ZSBwYXJhdmlzb3INCmxldmVsIG9yIGluIHRoZSBwYXJhdmlzb3IgdGFsa2luZyB0byB0aGUgaHlw
-ZXJ2aXNvci9WTU0sIHRoZQ0KZGVjcnlwdGVkL2VuY3J5cHRlZCBzdGF0ZSBvZiB0aGUgbWVtb3J5
-IGlzbid0IGtub3duLiAgU28NCmxlYWtpbmcgdGhlIG1lbW9yeSBpcyBzdGlsbCB0aGUgcmlnaHQg
-dGhpbmcgdG8gZG8sIGFuZCB5b3VyDQpwYXRjaCBzZXQgaXMgZ29vZC4gQnV0IGluIHRoZSBIeXBl
-ci1WIHdpdGggcGFyYXZpc29yIGNhc2UsDQp0aGUgbGVha2luZyBpcyBhcHBsaWNhYmxlIG1vcmUg
-YnJvYWRseSB0aGFuIGp1c3QgVERYLg0KDQpUaGUgdGV4dCBpbiB0aGUgY29tbWl0IG1lc3NhZ2Ug
-aXNuJ3Qgc29tZXRoaW5nIHRoYXQgSSdsbA0KZ28gdG8gdGhlIG1hdCBvdmVyLiAgQnV0IEkgd2Fu
-dGVkIHRvIG9mZmVyIHRoZSBzbGlnaHRseSBicm9hZGVyDQpwZXJzcGVjdGl2ZS4gDQoNCk1pY2hh
-ZWwNCg0KDQo=
+On Wed, Feb 28, 2024 at 01:16:04PM -0800, Paul E. McKenney wrote:
+> On Wed, Feb 28, 2024 at 03:22:36PM -0500, Steven Rostedt wrote:
+> > On Wed, 28 Feb 2024 11:38:29 -0800
+> > "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> > 
+> > > The advent of CONFIG_PREEMPT_AUTO, AKA lazy preemption, will mean that
+> > > even kernels built with CONFIG_PREEMPT_NONE or CONFIG_PREEMPT_VOLUNTARY
+> > > might see the occasional preemption, and that this preemption just might
+> > > happen within a trampoline.
+> > > 
+> > > Therefore, update ftrace_shutdown() to invoke synchronize_rcu_tasks()
+> > > based on CONFIG_TASKS_RCU instead of CONFIG_PREEMPTION.
+> > > 
+> > > Only build tested.
+> > > 
+> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > Cc: Steven Rostedt <rostedt@goodmis.org>
+> > > Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> > > Cc: Mark Rutland <mark.rutland@arm.com>
+> > > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > > Cc: Ankur Arora <ankur.a.arora@oracle.com>
+> > > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > > Cc: <linux-trace-kernel@vger.kernel.org>
+> > > 
+> > > diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+> > > index 2da4eaa2777d6..c9e6c69cf3446 100644
+> > > --- a/kernel/trace/ftrace.c
+> > > +++ b/kernel/trace/ftrace.c
+> > > @@ -3156,7 +3156,7 @@ int ftrace_shutdown(struct ftrace_ops *ops, int command)
+> > >  		 * synchronize_rcu_tasks() will wait for those tasks to
+> > >  		 * execute and either schedule voluntarily or enter user space.
+> > >  		 */
+> > > -		if (IS_ENABLED(CONFIG_PREEMPTION))
+> > > +		if (IS_ENABLED(CONFIG_TASKS_RCU))
+> > >  			synchronize_rcu_tasks();
+> > 
+> > What happens if CONFIG_TASKS_RCU is not enabled? Does
+> > synchronize_rcu_tasks() do anything? Or is it just a synchronize_rcu()?
+> 
+> It is just a synchronize_rcu().
+> 
+> > If that's the case, perhaps just remove the if statement and make it:
+> > 
+> > 	synchronize_rcu_tasks();
+> > 
+> > Not sure an extra synchronize_rcu() will hurt (especially after doing a
+> > synchronize_rcu_tasks_rude() just before hand!
+> 
+> That would work for me.  If there are no objections, I will make this
+> change.
+
+But I did check the latency of synchronize_rcu_tasks_rude() (about 100ms)
+and synchronize_rcu() (about 20ms).  This is on a 80-hardware-thread
+x86 system that is being flooded with calls to one or the other of
+these two functions, but is otherwise idle.  So adding that unnecessary
+synchronize_rcu() adds about 20% to that synchronization delay.
+
+Which might still be OK, but...  In the immortal words of MS-DOS,
+"Are you sure?".  ;-)
+
+							Thanx, Paul
 
