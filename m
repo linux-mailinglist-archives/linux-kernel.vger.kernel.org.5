@@ -1,150 +1,199 @@
-Return-Path: <linux-kernel+bounces-89107-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89099-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3667286EA89
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:44:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DF1286EA6C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:40:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B796F28F425
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:44:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 189481C2286A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:40:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88AD03D572;
-	Fri,  1 Mar 2024 20:44:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C55D3C492;
+	Fri,  1 Mar 2024 20:40:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="qoOjG5/j"
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hscPwgTO"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F76F3D55D
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 20:44:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F40FEC132;
+	Fri,  1 Mar 2024 20:40:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709325842; cv=none; b=XH3MHdRhwA7Wru4SJUlHJb2e4M7li3YFDxBXv34t3ZRUUQkbRVT4AhWcFhKihP9sv0ABQJVHofuLdHig+c7osf/JuXHym0R/MYi7aL3D/62DczazEQwKKp94p4rFn60140mj1Xp5gwa7gp2UtTerRl4LQmgmFRbQ2uL1m+HRMBo=
+	t=1709325619; cv=none; b=bVOz/KMtcBXdSJS8oNlbuXeID/IvCCId0Hh/cyZJ7JZLVFaRBpe4H54sykKmSCs5jBs8yQslIa6MtWlrkqM05cl9U1Mw5fK/8yMm9UQTkOBBzoTNjTwwvDNvR+U/tQWZzhJkW99Q0L16rGlch1qk6jVpQD89Krf7sYZoAJkQzR4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709325842; c=relaxed/simple;
-	bh=sUfNkHPoo9V2T9fMcmHeyl/JS8OZvn4x9zPyEVooEi4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AC2s00hCMjq5A10hEF3hJIgLo5e8WzglGOb2AXV8MRCa/7UsdAuN2XNH3LdUrnj5yJnltN6Nn4nfelSGjWQjMpeTR12XL7OQC4mzFLkI9QI9q7EuN3EtBHm1iYW8oyskIOjbzxSw3nr4B7cxk4G3FKcaWXlwrwq32BAZumQ8Tzw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=qoOjG5/j; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a44b0b2c7cdso110098966b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 12:44:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1709325839; x=1709930639; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5HnyW+esM+BKf2jxrZdh8XqknpO03iR3YuY63S1e4b0=;
-        b=qoOjG5/jfIB30hsbW5XXzj7dxMkd6wE2MshnIu/K7hTMNtDee0cTrGenGNb9WLMsDE
-         oQbMpfQw+GL0pjZ5djoTnvh+7ahmJd5BF+I0G8tyuqnotkHflQDGo5YZkdeGNYmzPImG
-         oZbSHnSGB64yNeYxh0IzJekIu/AScKoFzeCLSq/alRQIbhXFrUyXXu+64VLuxVfm8GWQ
-         Vsd7BV5CpksDQUQrqhJ6vmLr1YkB/+mZhMO+wdtR9iOA4H08P73dVvSBMFTH8WYy2MoP
-         WQnKZm2uSJpXilHJR0G8k92DElJTGNfDjOjdEor5K1Ywb1fUo2YS6D5FY1VZg9WvZbc0
-         YcdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709325839; x=1709930639;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5HnyW+esM+BKf2jxrZdh8XqknpO03iR3YuY63S1e4b0=;
-        b=bch13A8SORMY00UjG9T9SW1Rfbzpcx3qWDMKq3fW048zksQ7R4Gol/dvlGMTVdvLzT
-         PVGua5Zi2B6Ay19NTwDjiHyvdERqWkvBzIo1q28qW2ksX+Sj+0quFfOXHDhQbhVISK5l
-         +97H6dgjY4JF4uKuhSLk4cUd74BdWHI/P88RxaFG1dcBujFbg14Wxh9vtJavEaLtKWDN
-         c1s1lgFCqsGH/5w7eNmkcOeqbWOh1tSzomEi+7z7YKWWOyGXSiyTDVqIlXqFl0TGNdYg
-         SiM0T6yHVOSA13vsJa+QbzW8NY/hmbVVpTCTO+uTLbnyFSXZe2oIeZftXIrgybNHXALW
-         0jnw==
-X-Forwarded-Encrypted: i=1; AJvYcCVOAG/j2i0I0ZTiOom59ER6/a2KouruRcAeoo3t/fCNcfX4FJBo5LmN6jcqCUfvMmS+QID4wTBrVYUJ8vmxzmSxMAuqzYYBivQK9wnI
-X-Gm-Message-State: AOJu0YxwM7YAS7nEHeexoSWXG7tCnkH4aLjzOMBKPGzdZplh0ChnDnRs
-	2McwAFg53KELatdQDdDacsX9R74Y7rwP3KxAleQoAiaO6BjV8GExKypmtWY0G/8=
-X-Google-Smtp-Source: AGHT+IE7p2FuGWmCkIvX2UxIH/G/OwPt64X3vwqabXyM+0Gf/SqpN76b9W+UCjYPRBkAVsroaNq2GQ==
-X-Received: by 2002:a17:906:ae4e:b0:a41:30be:4a82 with SMTP id lf14-20020a170906ae4e00b00a4130be4a82mr2127487ejb.61.1709325839106;
-        Fri, 01 Mar 2024 12:43:59 -0800 (PST)
-Received: from fedora.fritz.box (aftr-82-135-80-35.dynamic.mnet-online.de. [82.135.80.35])
-        by smtp.gmail.com with ESMTPSA id cm29-20020a170906f59d00b00a3ce60b003asm2065880ejd.176.2024.03.01.12.43.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 12:43:58 -0800 (PST)
-From: Thorsten Blum <thorsten.blum@toblux.com>
-To: thorsten.blum@toblux.com
-Cc: David.Laight@ACULAB.COM,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com,
-	hpa@zytor.com,
-	linux-kernel@vger.kernel.org,
-	mingo@redhat.com,
-	peterz@infradead.org,
-	tglx@linutronix.de,
-	wei.liu@kernel.org,
-	x86@kernel.org
-Subject: [PATCH v2] x86/apic: Use u32 instead of unsigned long
-Date: Fri,  1 Mar 2024 21:39:03 +0100
-Message-ID: <20240301203901.150465-3-thorsten.blum@toblux.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <8ECEC999-A742-488F-99B2-A076EF9CA2B2@toblux.com>
-References: <8ECEC999-A742-488F-99B2-A076EF9CA2B2@toblux.com>
+	s=arc-20240116; t=1709325619; c=relaxed/simple;
+	bh=ZwhwYeZHjwCE+vDRa8E+VJ06lF+5Z0Wtom9hTPOPs8M=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=Wamq6H8UYhky78iDOLTJwrc4JLT3zP6SR2PlwzTLMWS47VdHM6fouujT3c1Jn6g2URdrjWKAJf0cYMxn5Tud9Ob5si7y3numYMpI/upFaRfxg/qR38xHoSz5W8Ui0JDOKQX9Esj3dxHVGfnHesM7zqFzAzUDU9ejtaBcQAXLplg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hscPwgTO; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709325619; x=1740861619;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=ZwhwYeZHjwCE+vDRa8E+VJ06lF+5Z0Wtom9hTPOPs8M=;
+  b=hscPwgTOcCkqnNF0Z4n5cAm4OhXl2w0iVRENYarPm4cWNu8b4+kMAfog
+   +RMVmVH9OX+yRaiPAjKjkE7+UjyxMTrou+Vi+Vj7vLa6ectjRGDbNjXYI
+   CiYpHZaQH2tveb9IPiDo5Az00Gu9Ui1tuWOf8pZ7aQV80n6c+1OOc5MIz
+   wDjXNSX0dmY8fOC3dC8+SKA6te9CACC5HqH9osdzh9Vpr4tXqQw2FOMDI
+   x2XLkijVunz8CG/k6w9LqonkOv5+rSsh8K7bfIVlfB9XVH7Rw9e4JrS9n
+   iz8pKwURewsy1gbjPD6vDEh3441w0F5DGsfUdZ7V8lQCu9p+9yhzVYduO
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11000"; a="4000389"
+X-IronPort-AV: E=Sophos;i="6.06,197,1705392000"; 
+   d="scan'208";a="4000389"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 12:40:18 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,197,1705392000"; 
+   d="scan'208";a="8243052"
+Received: from sj-4150-psse-sw-opae-dev2.sj.intel.com ([10.233.115.162])
+  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 12:40:17 -0800
+Date: Fri, 1 Mar 2024 12:39:24 -0800 (PST)
+From: matthew.gerlach@linux.intel.com
+X-X-Sender: mgerlach@sj-4150-psse-sw-opae-dev2
+To: Xu Yilun <yilun.xu@linux.intel.com>
+cc: hao.wu@intel.com, trix@redhat.com, mdf@kernel.org, yilun.xu@intel.com, 
+    linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] fpga: dfl: afu: support Rev 2 of DFL Port feature
+In-Reply-To: <ZdYhUK5yFFlhVV62@yilunxu-OptiPlex-7050>
+Message-ID: <alpine.DEB.2.22.394.2403011142350.240045@sj-4150-psse-sw-opae-dev2>
+References: <20240125233715.861883-1-matthew.gerlach@linux.intel.com> <ZbjHl8ptQG5FdHvC@yilunxu-OptiPlex-7050> <alpine.DEB.2.22.394.2401300948590.112016@sj-4150-psse-sw-opae-dev2> <Zbnd8W1ciTKeoKc4@yilunxu-OptiPlex-7050> <alpine.DEB.2.22.394.2401311610020.112016@sj-4150-psse-sw-opae-dev2>
+ <ZcBIjcFJjGKf0qcO@yilunxu-OptiPlex-7050> <alpine.DEB.2.22.394.2402051600190.122158@sj-4150-psse-sw-opae-dev2> <ZdF4JvYQQL8irnbW@yilunxu-OptiPlex-7050> <alpine.DEB.2.22.394.2402201658400.191484@sj-4150-psse-sw-opae-dev2>
+ <ZdYhUK5yFFlhVV62@yilunxu-OptiPlex-7050>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 
-Use u32 to fix Coccinelle/coccicheck warnings reported by do_div.cocci.
 
-Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
----
-Changes in v2:
-- Revert changing do_div() to div64_ul() after feedback from David Laight
-- Use u32 instead of unsigned long to fix Coccinelle warnings
-- Update patch title and description
----
- arch/x86/kernel/apic/apic.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
-index 4667bc4b00ab..184e1843620d 100644
---- a/arch/x86/kernel/apic/apic.c
-+++ b/arch/x86/kernel/apic/apic.c
-@@ -664,7 +664,7 @@ void lapic_update_tsc_freq(void)
- static __initdata int lapic_cal_loops = -1;
- static __initdata long lapic_cal_t1, lapic_cal_t2;
- static __initdata unsigned long long lapic_cal_tsc1, lapic_cal_tsc2;
--static __initdata unsigned long lapic_cal_pm1, lapic_cal_pm2;
-+static __initdata u32 lapic_cal_pm1, lapic_cal_pm2;
- static __initdata unsigned long lapic_cal_j1, lapic_cal_j2;
- 
- /*
-@@ -674,7 +674,7 @@ static void __init lapic_cal_handler(struct clock_event_device *dev)
- {
- 	unsigned long long tsc = 0;
- 	long tapic = apic_read(APIC_TMCCT);
--	unsigned long pm = acpi_pm_read_early();
-+	u32 pm = acpi_pm_read_early();
- 
- 	if (boot_cpu_has(X86_FEATURE_TSC))
- 		tsc = rdtsc();
-@@ -699,7 +699,7 @@ static void __init lapic_cal_handler(struct clock_event_device *dev)
- }
- 
- static int __init
--calibrate_by_pmtimer(long deltapm, long *delta, long *deltatsc)
-+calibrate_by_pmtimer(u32 deltapm, long *delta, long *deltatsc)
- {
- 	const long pm_100ms = PMTMR_TICKS_PER_SEC / 10;
- 	const long pm_thresh = pm_100ms / 100;
-@@ -710,7 +710,7 @@ calibrate_by_pmtimer(long deltapm, long *delta, long *deltatsc)
- 	return -1;
- #endif
- 
--	apic_printk(APIC_VERBOSE, "... PM-Timer delta = %ld\n", deltapm);
-+	apic_printk(APIC_VERBOSE, "... PM-Timer delta = %u\n", deltapm);
- 
- 	/* Check, if the PM timer is available */
- 	if (!deltapm)
--- 
-2.44.0
+[snip]
 
+>>
+>> Hi Yilun,
+>>
+>> I think this conversation has gotten a little off track. This patch only
+>> changes the port reset behavior at driver initialization for revision 2 of
+>> the port IP. The behavior and the requirements of port reset during run time
+>> have not changed. The existing implementation requires the user performing
+>> the port reset to ensure appropriate SW was quiesced. This patch does not
+>> change this requirement.
+>
+> You are actually adding support to the new devices behavior defined by
+> revision 2.  Previously the user requires the management PF driver to do port
+> reset, and this only affects some logic in the PF itself and the impact could
+> be handled inside the driver.  The current PF driver doesn't actually do anything
+> because it (or any kernel component) never touches the disabled logic, and the
+> user accessing of the mmapped but disabled logic won't cause system issues.
+
+I'm wondering about the use case when Virtual Functions (VFs) 
+are enabled with the current driver. If partial reconfiguration of the port 
+occurs, which includes a reset, what happens to the user software attached 
+to the VFs when the hardware has changed out from under it? While the 
+current port implementation won't cause PCIe errors when the logic is 
+disable, something has to notify the user software that the hardware 
+changed. I think the user space software would be typically notified of 
+the change by the orchestration software performing the partial 
+reconfiguration. I think the use case of VFs with the original port 
+implementation is logically equivalent to the new port implementation with 
+multiple PFs/VFs.
+
+>
+> But the new management PF does port reset and affect other PFs, and may
+> cause disorder in other drivers. so you need extra code to support the
+> behavior.
+
+I think the real problem is that the new port is not doing as good of a 
+job preventing PCIe errors during port reset as the previous version.
+
+Matthew
+>
+> This patch does make some progress, as you said, "With revision 2,the
+> initial state of the logic inside the port is guaranteed to be valid, and
+> a port reset is not required during driver initialization".  But it
+> should not be the only patch to enable the new port reset behavior.
+>
+>>
+>>>
+>>>>
+>>>>>
+>>>>>> image. I don't think the driver performing the port_reset() can know all the
+>>>>>
+>>>>> Other PF drivers should know their own components. They should be aware
+>>>>> that their devices are being reset.
+>>>>
+>>>> The other PF drivers depend on the actual FPGA image being run.
+>>>>
+>>>>>
+>>>>>> components to be able to provide any meaningful management.
+>>>>>
+>>>>> If the reset provider and reset consumer are not in the same driver,
+>>>>> they should interact with each other. IIRC, some reset controller class
+>>>>> works for this purpose.
+>>>>
+>>>> The other PFs in many cases can present as standard devices with existing
+>>>> drivers like virtio-net or virtio-blk. It does not seem desireable to have
+>>>> to change existing drivers for a particular FPGA implementation
+>>>
+>>> If you have to use a specific method for reset, it is not a standard virtio
+>>> pci device, and you have to make some change.
+>>
+>> From the perspective of the PCI PF/VF implementing the virtio or other
+>> standard device, the pci endpoint is completely compliant to the standard,
+>> and no driver changes should be required. As mentioned above, this patch
+>> does nothing to change any of this behavior. Consider a port reset that is
+>> part of a partial configuration flow. The virtio endpoint can become
+>> something completely different with a completely different driver. This
+>
+> Then how could the virtio driver stop and remove itself to avoid crashing the
+> kernel, and how could the new driver be probed.  If the answer is still
+> userspace responsible for everything, that's not good to me.
+>
+> Thanks,
+> Yilun
+>
+>> patch does not affect this flow either.
+>>
+>> Thanks,
+>> Matthew
+>>
+>>>
+>>> Thanks,
+>>> Yilun
+>>>
+>>>>
+>>>> Thanks,
+>>>> Matthew
+>>>>>
+>>>>> Thanks,
+>>>>> Yilun
+>>>>>
+>>>>>>
+>>>>>> Thanks,
+>>>>>> Matthew
+>>>>>>
+>>>>>>>
+>>>>>>> Thanks,
+>>>>>>> Yilun
+>>>>>>>
+>>>>>>>>
+>>>>>>>> Do you want me to update the commit message with this information?
+>>>>>>>>
+>>>>>>>> Thanks,
+>>>>>>>> Matthew
+>>>>>>>
+>>>>>>>
+>>>>>
+>>>>>
+>>>
+>
 
