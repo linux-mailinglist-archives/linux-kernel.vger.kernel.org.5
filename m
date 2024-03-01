@@ -1,76 +1,118 @@
-Return-Path: <linux-kernel+bounces-87760-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87765-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2494686D8A1
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 02:18:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 351C486D8AE
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 02:20:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8A0A1F22E5C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:18:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C30821F22F4E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:20:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ACF62BAE7;
-	Fri,  1 Mar 2024 01:18:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A921837170;
+	Fri,  1 Mar 2024 01:20:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bZFknf+J"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73B13C13F;
-	Fri,  1 Mar 2024 01:18:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="RYoHruyp"
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.2])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EBD736118
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 01:20:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.2
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709255918; cv=none; b=SmJ9ntktFnUAkWUnu5h0O/oCVbYeWkbNTZh/53347SZt4W28/Mi0zK5eJvTCzWAKUgcqNRfSeBAgkhvipKlUDgbd1tSYBWrsrV1KQ/H5N9NntitdoNMtKPZ/Sh+47OiJArD1uwDgar+SSV3Yx8KHIO2H3MqI1mfASSURgTKvsPc=
+	t=1709256026; cv=none; b=hf+RRND9G9LQeLQqC/kuhyeQsVIwnGTNCG202+m/qHUKKx+BP4ZyMyG0ivIUL7rBn+pjAndWZ8UsRLirSOZaW2xBilDUVCLcxa50V+izhSTNoASSpUnf8txtFYqiBOTw1XWv+fabvXYFOnsQ5BDsF4frT0/xh4kgzoC0yICvfog=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709255918; c=relaxed/simple;
-	bh=0iBUDhtwMEo0O+9wKFS0kyakW3dZ/E2QyQ7ooDjFpbQ=;
-	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
-	 Subject:From:Cc:To:Date; b=FR8kmak5oDAJFHTsLoWU500zwaqqHucF/Mv2X1D0ZnHrUfrj2EylTk+DsuQdE4t+fkocE1HFouzUE7fRq0NJ/Ds9EeV3dBG0vQ7eL3jtHWEqCbyflyMe/WchbhnbAjt1e1fhrTUkMSgEVt0IO1Cc3A2eROXQLw6TMPF4ZmYq8XA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bZFknf+J; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD364C433C7;
-	Fri,  1 Mar 2024 01:18:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709255918;
-	bh=0iBUDhtwMEo0O+9wKFS0kyakW3dZ/E2QyQ7ooDjFpbQ=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=bZFknf+Jwz6jkBWfYmf5Y2+bv/GeQtEAa6NMjAZnXxyLfSA86IvebXkW4rkaXzfhL
-	 jFf/MF8Y+Z9hUQF9lAxGWJ57prDwDkKh0qbjo6LkDaKGaShN94nnJKPYjhWz15dR7R
-	 t8LooijnGardfbe60wK/AifGeY9VEu+Dkz4JntFxkxFTQcbZ68OwWN9WLvqoc/2IkD
-	 sivJLzyiP6ERsEBmFVPjKEadvvZg2UPXQ/8biFmQtdlgegpwQ9KKtFLBvsrKe2ccl7
-	 2p+1zSFZtcEV/400eN4C2jPbifGPLuFickJVcj06HM/fTchysHGoPt/JP/auTB6esA
-	 IJysrQ9qmbGcg==
-Message-ID: <ca14c4f5f4be95e0b9b347ff03b668aa.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1709256026; c=relaxed/simple;
+	bh=0Qce3EgeLPkKjkHYKQFnccarXSgWI3VcDD+V67lSULE=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=EsjJYYuyhaWPCtFKeqDid28R/+zUn50r+pAJXas9oU0Ocke1mJuELiz4KfxIdNNzGD/Bbok30/xoFN9F07Eo+gkK35Z6JP7cB7cFoFeaxcFjBMOLg7msa8FsTQuHMK8uPM60JKGQVAU+NTXJUnNEFIqAkJoutwiQA7OYA6tzH70=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=RYoHruyp; arc=none smtp.client-ip=220.197.31.2
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=8eX63
+	ggw/SlvICRxbqzBzag4pSVNVLQSaMXoM3yRais=; b=RYoHruypxU2y8XMLNwpfe
+	x82VogKFQ52DfiQ8DY2anUkdfP78KsUwqx73O6sGczzQ/Fv6zuv7XIb/I7zRBMWr
+	3RuR6RY72Rui/vcvrkeVGlzukpUiym0GYEK3F/12VWsbUbMelVwosdMOT+mSrhx+
+	p/I57hKRFvYLYNlvy88co0=
+Received: from localhost.localdomain (unknown [111.48.58.12])
+	by gzga-smtp-mta-g1-4 (Coremail) with SMTP id _____wCHb57yLOFlXN+REw--.49146S2;
+	Fri, 01 Mar 2024 09:18:43 +0800 (CST)
+From: songxiebing <soxiebing@163.com>
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org,
+	songxiebing@kylinos.cn,
+	soxiebing@163.com,
+	tiwai@suse.com
+Subject: [PATCH v2] ALSA: hda: optimize the probe codec process
+Date: Fri,  1 Mar 2024 09:18:41 +0800
+Message-Id: <20240301011841.7247-1-soxiebing@163.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <878r35huf0.wl-tiwai@suse.de>
+References: <878r35huf0.wl-tiwai@suse.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20240229-freq-table-terminator-v1-4-074334f0905c@gmail.com>
-References: <20240229-freq-table-terminator-v1-0-074334f0905c@gmail.com> <20240229-freq-table-terminator-v1-4-074334f0905c@gmail.com>
-Subject: Re: [PATCH 4/7] clk: qcom: gcc-ipq9574: fix terminating of frequency table arrays
-From: Stephen Boyd <sboyd@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, Gabor Juhos <j4g8y7@gmail.com>
-To: Anusha Rao <quic_anusha@quicinc.com>, Bjorn Andersson <andersson@kernel.org>, Bryan O'Donoghue <bryan.odonoghue@linaro.org>, Devi Priya <quic_devipriy@quicinc.com>, Gabor Juhos <j4g8y7@gmail.com>, Georgi Djakov <gdjakov@mm-sol.com>, Gokul Sriram Palanisamy <quic_gokulsri@quicinc.com>, Konrad Dybcio <konrad.dybcio@linaro.org>, Michael Turquette <mturquette@baylibre.com>, Sricharan Ramabadhran <quic_srichara@quicinc.com>, Varadarajan Narayanan <quic_varada@quicinc.com>
-Date: Thu, 29 Feb 2024 17:18:35 -0800
-User-Agent: alot/0.10
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wCHb57yLOFlXN+REw--.49146S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7Wry7tFW5Kw43KFW5Cr1DGFg_yoW8KF18p3
+	W7Cr1fGayxtF4akFs7Gw43Ka4xWa4vqan8Jw1Yyw13Zwn7Kr1fXr9YyrW8AFW8ur4I9r1Y
+	vw4UK3WkX3s8CaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0piwIDrUUUUU=
+X-CM-SenderInfo: 5vr0xvpelqwqqrwthudrp/1tbiJxaUw2XAkqqxxgAAsM
 
-Quoting Gabor Juhos (2024-02-29 10:07:49)
-> The frequency table arrays are supposed to be terminated with an
-> empty element. Add such entry to the end of the arrays where it
-> is missing in order to avoid possible out-of-bound access when
-> the table is traversed by functions like qcom_find_freq() or
-> qcom_find_freq_floor().
->=20
-> Only compile tested.
->=20
-> Fixes: d75b82cff488 ("clk: qcom: Add Global Clock Controller driver for I=
-PQ9574")
-> Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
-> ---
+From: songxiebing <songxiebing@kylinos.cn>
 
-Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+In azx_probe_codecs function, when bus->codec_mask is becomes to 0(no codecs),
+execute azx_init_chip, bus->codec_mask will be initialized to a value again,
+this causes snd_hda_codec_new function to run, the process is as follows:
+-->snd_hda_codec_new
+-->snd_hda_codec_device_init
+-->snd_hdac_device_init---snd_hdac_read_parm(...AC_PAR_VENDOR_ID) 2s
+		       ---snd_hdac_read_parm(...AC_PAR_VENDOR_ID) 2s
+		       ---snd_hdac_read_parm(...AC_PAR_SUBSYSTEM_ID) 2s
+		       ---snd_hdac_read_parm(...AC_PAR_REV_ID) 2s
+		       ---snd_hdac_read_parm(...AC_PAR_NODE_COUNT) 2s
+when no codecs, read communication is error, each command will be polled for
+2 second, a total of 10s, it is easy to some problem.
+like this:
+  2 [   14.833404][ 6] [  T164] hda 0006:00: Codec #0 probe error; disabling it...
+  3 [   14.844178][ 6] [  T164] hda 0006:00: codec_mask = 0x1
+  4 [   14.880532][ 6] [  T164] hda 0006:00: too slow response, last cmd=0x0f0000
+  5 [   15.891988][ 6] [  T164] hda 0006:00: too slow response, last cmd=0x0f0000
+  6 [   16.978090][ 6] [  T164] hda 0006:00: too slow response, last cmd=0x0f0001
+  7 [   18.140895][ 6] [  T164] hda 0006:00: too slow response, last cmd=0x0f0002
+  8 [   19.135516][ 6] [  T164] hda 0006:00: too slow response, last cmd=0x0f0004
+ 10 [   19.900086][ 6] [  T164] hda 0006:00: no codecs initialized
+ 11 [   45.573398][ 2] [    C2] watchdog: BUG: soft lockup - CPU#2 stuck for 22s! [kworker/2:0:25]
+
+Here, when bus->codec_mask is 0, use a direct break to avoid execute snd_hda_codec_new function.
+
+Signed-off-by: songxiebing <songxiebing@kylinos.cn>
+---
+Changes in v2: fix some non-ASCII comma letters.
+---
+ sound/pci/hda/hda_controller.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
+index e5c53ad..e1ece0a 100644
+--- a/sound/pci/hda/hda_controller.c
++++ b/sound/pci/hda/hda_controller.c
+@@ -1474,6 +1474,9 @@ int azx_probe_codecs(struct azx *chip, unsigned int max_slots)
+ 				dev_warn(chip->card->dev,
+ 					 "Codec #%d probe error; disabling it...\n", c);
+ 				bus->codec_mask &= ~(1 << c);
++				/* no codecs */
++				if (bus->codec_mask == 0)
++					break;
+ 				/* More badly, accessing to a non-existing
+ 				 * codec often screws up the controller chip,
+ 				 * and disturbs the further communications.
+-- 
+2.7.4
+
 
