@@ -1,113 +1,109 @@
-Return-Path: <linux-kernel+bounces-88508-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88510-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 279F186E28B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:44:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2E5686E2A2
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:45:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8720FB221A1
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:44:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72A57B236A0
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:45:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A6B67293F;
-	Fri,  1 Mar 2024 13:42:28 +0000 (UTC)
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3BCD6E2AA;
+	Fri,  1 Mar 2024 13:43:40 +0000 (UTC)
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 400296EB6A;
-	Fri,  1 Mar 2024 13:42:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6938A6D1D8
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 13:43:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709300547; cv=none; b=sVMyC8EFXpLan7KxbWLF5qOd1H04xl8PPV2iARBwBL0Qp4DeMt2RkIHhYAQqiMCvDqKz5paH1IHfzz7M0yIV7CW/9iyqDvuK36gZoTyHENwQm9WwKr7bIBEm60Mn5ynx34blMMcZVVhuVmhZQLN9EObybH2WyNPsHmXd/5uXzBw=
+	t=1709300620; cv=none; b=fo7l0Q52bYntQU+CTuL33+0g1XfHwAtTs5GNDFx2paAoWbuAlMJIMYSPe1/Qq5/No+8Bg1Vix+r5VWVeJWtK/I5e92FyQ2wB7wEeZBSzZimUOERJxagFs0vFYDDUef6h1f8F+lakx2XA2xeoWqP0Ait7L8RUazxyv4QFYHlLUb0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709300547; c=relaxed/simple;
-	bh=WPXkIQwvRLQBSZhlUEDaUobW7M6LNr8BRk9mM4f2BSs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qkaMxve4bheHau4yGT12nRw1gdRmNr2pwgShD/NfolngE47miP1h0Rf1m9sqoo323oPzgsJp01fQ52CDpCoF61EMMxLA+vN+9A2AvN7r+R0Vc86lHpn8zMACDFqvC/dNXf2UM5hsN2vTINZ4t6MIGYWXX4IYDPzxLv7zRWdp+ZU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-33e12916565so1025153f8f.1;
-        Fri, 01 Mar 2024 05:42:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709300544; x=1709905344;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9taPaBKehcb4ahcbhUFAwNa2TaUPUJg1amPsCfHtP5k=;
-        b=MpIX4non/LMKiLaU66ydg4JilGV7bm5WE+ADT/H1K04Gz+8iuireYOihZvQoiC9iv0
-         GxaedYG210leRlAm1KBqdw+k7lsqasyBH/gCOW/2MoyhzlvtRpP3eJyx2VwEsXLDSLDC
-         6y1vRu3IMJ1Q8PPHYrg+58D/oooADk5wYImQqUKctB/PDaJv7WYW/STp+ILnf2HNPu7h
-         X+katRJL6j8VmSnZ/4ogmbbOcDb5C/7u9daYKxWzzS5ffQZ++V7DSkFYRmygcd36nlvw
-         NFCK1v6Gs0skSejy81LAvfegJoTK+wt7fHZgZmfIiJY8rtqM8spAWauHIwvqlNKpTZBk
-         cyzg==
-X-Forwarded-Encrypted: i=1; AJvYcCVo4gpZEPypHW7kyGSl43SSgxMWecYYXGKASXlEA7MW9MAWSzNRBq5nefyG5CONqfoeAwp/Uqf4JZzZBWa/2GnmmLuwWJlS4N5hA4xw
-X-Gm-Message-State: AOJu0YyHS3RnB+dsQkK0t6VNqiKydWdonchVM5sS7obMgzpwhqCx58Ch
-	AKpWDpxBzUsq/E3FXi70R3Rg3KZFJCL5QfXss0ZY5HloeeNc60iK
-X-Google-Smtp-Source: AGHT+IHzIiy9v4vwPr6VmiqOFz7HYvjY/fmfmHEVTMCH9mgfJsbTDkShaFD2LVCoDT3cBw9Td0uqPA==
-X-Received: by 2002:a5d:4152:0:b0:33d:d793:a20f with SMTP id c18-20020a5d4152000000b0033dd793a20fmr2027753wrq.27.1709300544344;
-        Fri, 01 Mar 2024 05:42:24 -0800 (PST)
-Received: from localhost (fwdproxy-lla-003.fbsv.net. [2a03:2880:30ff:3::face:b00c])
-        by smtp.gmail.com with ESMTPSA id v6-20020a5d59c6000000b0033d926bf7b5sm4772895wry.76.2024.03.01.05.42.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 05:42:23 -0800 (PST)
-From: Breno Leitao <leitao@debian.org>
-To: kuba@kernel.org,
-	davem@davemloft.net,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	daniel@iogearbox.net
-Cc: netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	horms@kernel.org,
-	dsahern@kernel.org
-Subject: [PATCH net-next 2/2] net: nlmon: Simplify nlmon_get_stats64
-Date: Fri,  1 Mar 2024 05:42:14 -0800
-Message-ID: <20240301134215.1264416-2-leitao@debian.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240301134215.1264416-1-leitao@debian.org>
-References: <20240301134215.1264416-1-leitao@debian.org>
+	s=arc-20240116; t=1709300620; c=relaxed/simple;
+	bh=Ma1KpOvHWUcqpTf0DyGC6ylpZU3RI52UAcVgAc0a4FI=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=jNDziUPvqPqKVe3wJh9ncGquLqhGNJUV3S6+jP+D8iaha8oRhP/tsEMdueN1UdKu9QesxJdYDJY7YUwXFPUSDny0BELt5ChYKv0UF+/XQhtPlJhiFWiI7e3/aXT1UoKXyvUBD+yfus5w5gS9Krh/TwkDdC/gBqR37mF11TCEOHY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-17-bbzuvQ2FPi6D0WR-XddUGw-1; Fri, 01 Mar 2024 13:43:31 +0000
+X-MC-Unique: bbzuvQ2FPi6D0WR-XddUGw-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 1 Mar
+ 2024 13:43:23 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Fri, 1 Mar 2024 13:43:23 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: "'Uecker, Martin'" <Martin.Uecker@med.uni-goettingen.de>,
+	"keescook@chromium.org" <keescook@chromium.org>, "linux@rasmusvillemoes.dk"
+	<linux@rasmusvillemoes.dk>
+CC: "corbet@lwn.net" <corbet@lwn.net>, "miguel.ojeda.sandonis@gmail.com"
+	<miguel.ojeda.sandonis@gmail.com>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-doc@vger.kernel.org"
+	<linux-doc@vger.kernel.org>, "gustavoars@kernel.org" <gustavoars@kernel.org>,
+	"ndesaulniers@google.com" <ndesaulniers@google.com>,
+	"jani.nikula@linux.intel.com" <jani.nikula@linux.intel.com>,
+	"ojeda@kernel.org" <ojeda@kernel.org>, "linux-hardening@vger.kernel.org"
+	<linux-hardening@vger.kernel.org>
+Subject: RE: [+externe Mail+] RE: [PATCH] compiler.h: Explain how
+ __is_constexpr() works
+Thread-Topic: [+externe Mail+] RE: [PATCH] compiler.h: Explain how
+ __is_constexpr() works
+Thread-Index: AQHaa5MvghvgXFQBskOAdfSAj6aDybEilNaggABK04CAAAHC0A==
+Date: Fri, 1 Mar 2024 13:43:23 +0000
+Message-ID: <9c4518eae05c4758afe08c6b90678e92@AcuMS.aculab.com>
+References: <20240301044428.work.411-kees@kernel.org>
+	 <af0eff12e6bc41039614add550406c11@AcuMS.aculab.com>
+ <22c9c4cc27b13b2fb6f3cd9fa6f827f56f30770b.camel@med.uni-goettingen.de>
+In-Reply-To: <22c9c4cc27b13b2fb6f3cd9fa6f827f56f30770b.camel@med.uni-goettingen.de>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 
-Do not set rtnl_link_stats64 fields to zero, since they are zeroed
-before ops->ndo_get_stats64 is called in core dev_get_stats() function.
-
-Also, simplify the data collection by removing the temporary variable.
-
-Signed-off-by: Breno Leitao <leitao@debian.org>
----
- drivers/net/nlmon.c | 10 +---------
- 1 file changed, 1 insertion(+), 9 deletions(-)
-
-diff --git a/drivers/net/nlmon.c b/drivers/net/nlmon.c
-index e026bfc83757..e5a0987a263e 100644
---- a/drivers/net/nlmon.c
-+++ b/drivers/net/nlmon.c
-@@ -40,15 +40,7 @@ static int nlmon_close(struct net_device *dev)
- static void
- nlmon_get_stats64(struct net_device *dev, struct rtnl_link_stats64 *stats)
- {
--	u64 packets, bytes;
--
--	dev_lstats_read(dev, &packets, &bytes);
--
--	stats->rx_packets = packets;
--	stats->tx_packets = 0;
--
--	stats->rx_bytes = bytes;
--	stats->tx_bytes = 0;
-+	dev_lstats_read(dev, &stats->rx_packets, &stats->rx_bytes);
- }
- 
- static u32 always_on(struct net_device *dev)
--- 
-2.43.0
+RnJvbTogVWVja2VyLCBNYXJ0aW4NCj4gU2VudDogMDEgTWFyY2ggMjAyNCAxMzoyMg0KPiANCj4g
+TXkgc3VnZ2VzdGlvbiB3b3VsZCBhbHNvIHRvIGxpbWl0IGV4cGxhbmF0aW9uLiBOb2JvZHkgc2hv
+dWxkDQo+IHdyaXRlIHN1Y2ggY29kZSBhbmQgaWYgeW91IG5lZWQgdG8sIHlvdSBjYW4gZmluZCBl
+eHBsYW5hdGlvbnMNCj4gYWxsIG92ZXIgdGhlIGludGVybmV0Lg0KPiANCj4gRmluYWxseSwgSSBz
+dGlsbCB0aGluayB0aGUgbW90aXZhdGlvbiBmb3IgdGhpcyBtYWNybyAocmVtb3ZpbmcNCj4gVkxB
+cykgaXMgbWlzZ3VpZGVkIGlmIHNlY3VyaXR5IGlzIHRoZSBnb2FsIGJlY2F1c2UgVkxBcyBwcm92
+aWRlDQo+IHByZWNpc2UgYm91bmRzIGFuZCBsYXJnZXIgd29yc3QtY2FzZSBmaXhlZC1zaXplIGFy
+cmF5cyBkbyBub3QuDQo+IA0KPiBJdCB3b3VsZCBiZSBiZXR0ZXIgdG8gdXNlIHRoZSBjb21waWxl
+ciBvcHRpb25zIHRoYXQgZGV0ZWN0DQo+IHBvc3NpYmx5IHVzZSBvZiBWTEFzIG9mIHVuYm91bmRl
+ZCBzaXplIGFuZCBpZiB0aGVyZSBhIHByb2JsZW1zDQo+IHdpdGggdGhpcywgaW1wcm92ZSB0aGlz
+IG9uIHRoZSBjb21waWxlciBzaWRlLg0KDQpJbiBrZXJuZWwgY29kZSAod2l0aCBsaW1pdGVkIHN0
+YWNrKSB0aGVyZSBoYXMgdG8gYmUgZW5vdWdoIHJvb20NCmZvciB0aGUgbGFyZ2VzdCBwb3NzaWJs
+ZSAnVkxBJyBzbyB5b3UgbWlnaHQgYXMgd2VsbCBhbGxvY2F0ZSBvbmUuDQoNCkFsbG93aW5nIFZM
+QSBhbHNvIG1ha2VzIGl0IHByZXR0eSBtdWNoIGltcG9zc2libGUgdG8gZG8gYW55DQpraW5kIG9m
+IHN0YXRpYyBzdGFjayB1c2UgYW5hbHlzaXMuDQpUaGUgZmluZSBJQlQgdGFncyBjYW4gYmUgdXNl
+ZCBpZGVudGlmeSB2YWxpZCBpbmRpcmVjdCBjYWxscw0Kd2hpY2ggcHJldHR5IG11Y2ggb25seSBs
+ZWF2ZXMgcmVjdXJzaW9uIHN0b3BwaW5nIGZ1bGwgc3RhdGljDQpzdGFjayBhbmFseXNpcyAtIGFu
+ZCB0aGF0IGNvdWxkIGJlIGJhbm5lZCBleGNlcHQgZm9yIGEgZmV3DQpsaW1pdGVkIGNhc2VzIHdo
+ZXJlIDEgbGV2ZWwgY291bGQgYmUgcGVybWl0dGQuDQoNCmlzX2NvbnN0ZXhwcigpIGhhcyBvdGhl
+ciB1c2VzIC0gdGhlcmUgYXJlIHBsYWNlcyB3aGVyZQ0KX19idWlsdGluX2NvbnN0YW50X3AoKSBp
+c24ndCBzdHJvbmcgZW5vdWdoLg0KUGFydGljdWxhcmx5IGlmIHlvdSBuZWVkIHRvIHVzZSBidWls
+dGluX2Nob29zZV9leHByKCkNCm9yIF9HZW5lcmljKCkgdG8gZ2V0IHNlbGVjdCBhIHR5cGUuDQoN
+CkZvciBpbnN0YW5jZSwgaWYgeW91IGNhbiBhIGNvbnN0YW50IHZhbHVlIGJldHdlZW4gMCBhbmQg
+TUFYSU5UDQppdCBpcyBzYWZlIHRvIGNhc3QgdG8vZnJvbSB1bnNpZ25lZCBpbiBvcmRlciBjaGFu
+Z2UgYW55DQppbXBsaWNpdCBpbnRlZ2VyIHByb21vdGlvbiBjYXN0IHRoYXQgbWF5IGJlIGdyaWVm
+IHNvbWUuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1s
+ZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJh
+dGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
 
 
