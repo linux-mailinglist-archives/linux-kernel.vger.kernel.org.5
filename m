@@ -1,200 +1,778 @@
-Return-Path: <linux-kernel+bounces-87995-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87996-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E1CC86DBE7
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:15:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E8E6E86DBEC
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:15:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B2A2B1C209BA
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 07:15:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 19AF41C22ABD
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 07:15:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1EF169946;
-	Fri,  1 Mar 2024 07:15:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6980767E88;
+	Fri,  1 Mar 2024 07:15:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="l+ysFoTA"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="Jb45biUo"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCEEE8464
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12D2E67E6E
 	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 07:15:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.7
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709277306; cv=fail; b=myMJRBsSGYwEih1kNhP6n+RGotLhT8l/XQBmnGMzt7bf+V1Tl8x0vbInDYtr7tYRZ41OF/Qh8plYj9bwiXpjwiesHneGVg0uqUSRu0C8oUnHOKF8CYKlnEjLR56tjaBcDvfVVHTOzG5kPfTxLKcTSWRtlZhgu5yTY6gBcmnsXnA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709277306; c=relaxed/simple;
-	bh=vF+AM3Sov1DdepVG3cB2ERHEqkcPWiLaB0YnLSUni8k=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=dB4R1K0n98sKJQ1bmm0ceOYuCZe2/BqKroaHzjGJXp2ctBp8J19mBOo4Mq1X9KmIXqnWYozpJ/cc42jvRT2UDA1XpVkJjxIBMieLnwKp9O79CNX/FuU+CkA1rGJQA6dQJrfcguTsZagayCFgqKibnUiN8cR58CNnK9HhTGcb3x8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=l+ysFoTA; arc=fail smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709277305; x=1740813305;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=vF+AM3Sov1DdepVG3cB2ERHEqkcPWiLaB0YnLSUni8k=;
-  b=l+ysFoTAXfIWG8ADwLR6oTFotl7ozvnTSW7g97lhqL1QmwPjpw5YeX8f
-   dcH8iK597efgldiQm22n2EQCFz1Uu7VLxR9nj9efcU5IkKuDUdoDgUN1K
-   vr6KDUWoHNsWo7FgAY/DrUv9FTN2awOhXI51p8j0h4tQuOaC5OwDY1ClL
-   rNdZzoC6wOEeaAjAYHQBllP+Dt/lpkQvxycnVXZB7Da/2s+wSzB7RvXw3
-   zNdi0jFIz62no72pG9MJwJUg9mIgWnsrwGxAOvtR2c8AsGB7PE0nEIw/1
-   syJvYQYN7VHkCBAyh4LySec286aITrnfgDb07zfUswzp4wOLYjQ+k/vjW
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="29227741"
-X-IronPort-AV: E=Sophos;i="6.06,195,1705392000"; 
-   d="scan'208";a="29227741"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 23:15:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,195,1705392000"; 
-   d="scan'208";a="8243034"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmviesa008.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 29 Feb 2024 23:15:03 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 29 Feb 2024 23:15:02 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 29 Feb 2024 23:15:02 -0800
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 29 Feb 2024 23:15:02 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 29 Feb 2024 23:15:02 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PfsWTJAzmBpZb5Ztxvd+e+QxLVy+rGQiO+0ypQHk3nnrcktLObcDFb1mtIOqeCZNtDv5kD51u4omAxdoTcWlnzmOCfE0RHIBicfWpK34lp9YUjofsv5Bn4hz4DLh8e6Nv2m+oHCq/LshsSrrwHxoTFz2W3f2m3/ijONtAjJ840rcpgvoLVLCHIWNbIhcQndcoCbivicZ468iCgQfOVyp19UwKIk9VTBigQL7r/4Lqrdb7wa7Ympo97mQz1GbZWWZeSQCDjjLtpLSIYuHp/xSPDJR/Pyq2Obsp1K7txdC1NwqIw8Njx69skOD1H40QM3oAsjOrK5u+B+4UcVnlm0qFQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4KVmWZyAVOHjn55FYIZjPqiC+PCZmc43Rg4JhYgJhTY=;
- b=Q7xoF/2Kl+Lgmxl8wLInFAo5LnIyFvNoN1Hc6NzGa67jryL16dlupHfN6Zp8w3fBDEDsB4MclLgKTsgig9KusbRAf36lA0p+3bpl8yXoYcWZ03VN8Qh0zbFvp3crDcjLtr4kTSkasXXQ+jnRrRUntltFb8oP1CfLAbRKyjIAs05/HFeybDMP1tneDw17oAoe+kX7xu3NFqzLhl5xGQr7YOOKRl7NCss9JAqklRN49ovkl4ZiW8SAyEsfr4vOhVfyltqp9xXdGIO/x+vCKNnhasAn1QCS3XWUYRi+l0+6xuNmWyjysx8/ALMDvEtzyn298J2wdVNfEi2QA+Fw/S3W/g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH7PR11MB6005.namprd11.prod.outlook.com (2603:10b6:510:1e0::19)
- by PH0PR11MB7421.namprd11.prod.outlook.com (2603:10b6:510:281::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.25; Fri, 1 Mar
- 2024 07:14:55 +0000
-Received: from PH7PR11MB6005.namprd11.prod.outlook.com
- ([fe80::8c8a:c38c:aaf7:da30]) by PH7PR11MB6005.namprd11.prod.outlook.com
- ([fe80::8c8a:c38c:aaf7:da30%4]) with mapi id 15.20.7339.024; Fri, 1 Mar 2024
- 07:14:55 +0000
-Date: Fri, 1 Mar 2024 15:14:46 +0800
-From: Chen Yu <yu.c.chen@intel.com>
-To: Abel Wu <wuyun.abel@bytedance.com>
-CC: Breno Leitao <leitao@debian.org>, <peterz@infradead.org>, <bp@alien8.de>,
-	<tglx@linutronix.de>, <linux-kernel@vger.kernel.org>, Oliver Sang
-	<oliver.sang@intel.com>
-Subject: Re: general protection fault, probably for non-canonical address in
- pick_next_task_fair()
-Message-ID: <ZeGAZg/JXifpX7bp@chenyu5-mobl2>
-References: <ZeCo7STWxq+oyN2U@gmail.com>
- <123ebd58-9ca1-4a12-bdb7-c35d0c48c93c@bytedance.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <123ebd58-9ca1-4a12-bdb7-c35d0c48c93c@bytedance.com>
-X-ClientProxiedBy: SI1PR02CA0014.apcprd02.prod.outlook.com
- (2603:1096:4:1f7::9) To PH7PR11MB6005.namprd11.prod.outlook.com
- (2603:10b6:510:1e0::19)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709277307; cv=none; b=kctS+xzWnZMD8wndfbx9s8mL01olk36adPHUtXvKS+dV3rST2HyCuTWM2h9F9VTECdQPDYPBpJWbPozdQHtKXnQNT0jXjfAGcPbzZjhpVVVbc3jUB9u7JxOJjD42/r1bAc06PvlASkstXkJ+2i+LyH5NA5/qfvA9YR7Yoa/LCXU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709277307; c=relaxed/simple;
+	bh=kFMmcvmahGTWiZRu7lOKGESoz9vyYhLG5b3+/efQB+w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sSR90AeI2IQOaovl6TS9hc92FZzQoOI2ZYc36nRfIcve4Kr7/OCSzbKJruZNwg3hz01XpH5adrUQYdmCgiau91stRDwE+1LZkBBHX/c/Jjrcy1Gc7JVzZHRyXuunupFrZvmK+hn5g8rSRnL4o1Hsd3UGuyn852D9WJzLW/N6v/E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Jb45biUo; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-565223fd7d9so3663a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 23:15:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709277303; x=1709882103; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=5wzTIsbG2VpOfCTf09iEv380AMp2tfSXrzvjLcFrar8=;
+        b=Jb45biUo4uP8DOR4tKALGKkiMOEN5574CVT1/QjFHsaNhpjAR36MEuky1g0lb/V4Q8
+         Z4QE69DBGPWwCeNH1W4EljWHndlR28zX7p8F0iwKOBGNh8D6J3hfwWgD3S0aHMceyk83
+         ii3YKq//SSkH6HfjUU2Mrpe42yJwph3rb5Va06aLxUGbGxZvrHWkekjSgVDS/Sqa5yR1
+         W+NUIKZmKc17eSzsUHo1XcEzpqE/hPLZandAfmWsyNeuhr0dxgOe3z+jv+BaWgo2uiAV
+         duRbwS6QvnCQkhfx061KLijkfRUWZmKhe6yoz+VQ3gxSPCjh4KoGCmfob5bGnGFB+SLB
+         EGFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709277303; x=1709882103;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5wzTIsbG2VpOfCTf09iEv380AMp2tfSXrzvjLcFrar8=;
+        b=LxJCjBFENPzmqhM8pgAAcBqwzfMUpVtRpHUMnWoVNJcKth6SF+MrCQEw3wgVPX8GK4
+         /STMbXpSmMaBH7UV0RgcSmL6mX8FzGWwLPOxhpqbnY0Tg2pAv46R7LCaesRqRxWdxhXJ
+         99U+aZaHbpA0ivyCZIKtodvk1Q4BKKfLCbIiwxf+jLbKVxYWt2Ga//SM9kZTQUcjXf0R
+         /6IKGV3qpclHuetEpchdp+HT7jOD3GqJjVf1zF0SUYRlDWTsL4dzG0+SMjoC2qhmV+Jw
+         VuFrpyxcLF/Wube+qkrNL2bSebnXZfE+Rhx48M3m9zRapElNi90JwMIl7y3lhOoWN6vw
+         tGOA==
+X-Forwarded-Encrypted: i=1; AJvYcCX0F7ohKmkz2QDQbkmtKt9Ab1/u9Z0S+2Mse/2WLfhSfSaJg32GSmta1axlfSUhIydYf6H5wvx0Ueak+6FpeCh9EWSjIOt3H2bUA9Ug
+X-Gm-Message-State: AOJu0Yx2IC4bin/bp3kBTPtwWimLkUs2YeK6e5SqIZyjp6lxOVhCR3oS
+	ZcLi8V6Vn4OU4xk7DHr3410gTmmehiIgyI20ZFE9kiOmnSkFFdP89veseBSUpDPR2E49snQGh9k
+	1YWm66WlsJhM7uAKz8GS5hjdJrkhFmgalU7H9
+X-Google-Smtp-Source: AGHT+IHOG4rPLpAEc0vIpHY37ANfxO6LPEz9QKFzdS0SX0EdjoGz8r3Of/tsLF0emViQPuPOFlb5hjqDNo1tCjOQXPU=
+X-Received: by 2002:a05:6402:350e:b0:563:f48a:aa03 with SMTP id
+ b14-20020a056402350e00b00563f48aaa03mr111499edd.2.1709277303243; Thu, 29 Feb
+ 2024 23:15:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR11MB6005:EE_|PH0PR11MB7421:EE_
-X-MS-Office365-Filtering-Correlation-Id: e402966e-1c48-45cc-44b9-08dc39bf4b96
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fL2ZysViz2RE28lc4eDy5xXgp89GH7O6crhN0LyED6WRt9Rk/8FIN3/twXqLyje2Ls8tv8tk3Kp6nKvd6Rw2cj713KW+9M3GDtlsgzahqx1Ch+WgtGspY4AkTY0Ph0XyIh5QCmQFgadA0KxF61d0Z0rPzLz4gZer7mr/0uMoXneDjDv2mTwEoGYK9unX/JGxyaH0dHutxz7ODyrzWo00pgVd/Lw6kB1msc2oSbsmzpRNeVkbUnTUudlIrO099YIrExI2E4U5YYqfhd8ik3MMhDOwKzC7jbeIfH+t559rPDG2QeQTHZZwduQMt41AJD0Wzp/GU2a9mXUGlnw4+ucvZgx/KvEk2hR52wg1TNTQSo5Do6RZ8bdbBtp9c0R+6N85AqhaJn6MFnmLV1f48k5dCAmlJ24EzOqFLvXgmYg26BIj+gnCxtb5hnUq9MDHhajXrKB8+DKjfXmofzbDOM0W19R4cWy8HBqp2gnoZoBMdg2JbNZ7svVhB3PWanIQEKPuFSlFYP3hGXsP3Vi1Pq6UD/YcEKdZBrkgkS/uJ6XrYFNjLPeNRLKNXfZU3+5ob9mNdEyTEGQ22Tq5RKavjT+tkSvElfmBJ4ePHgUB0c8qbMr7cFLu9b7gLkGqjycxWQacAG7zeZ8zIUc0es3l9if9Fw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB6005.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?pWF0o7yxA/zwHSASQybqdsQwjoWeDNjCLR/ikMY1tew3diPpAFcLPZY/VU1L?=
- =?us-ascii?Q?t9JOzUS0XmnyYjZFb6G3eyo2B7H9sJaYGaicHc4n3yvkfAq3U9Pm9hKg9j8P?=
- =?us-ascii?Q?2ufqxlccFmTXkXQt9vQdjGSqeLCl9wkjz9GBNvu4dd0ltaRei2GWx1JB7IqA?=
- =?us-ascii?Q?tuaI8vJV67g2/GvTpdxwdsX8rP18AN/nCbx7+znnZ2XepvjAn7wbgPbeJrQ9?=
- =?us-ascii?Q?QrNCR7P92oGbO3V//lQ0ghNpef9ZPrm8MbFgCtNjxbwbrVQk2qWb5TJ6ixgV?=
- =?us-ascii?Q?dhe9VHHYJQtZqdgS5imURd7WMnl7o2i425iunCHa6Qrcip137XcOSoivVDbv?=
- =?us-ascii?Q?mcghhVoZ2t5sJc4zH8QWgBpmcv89M0W7m2jlyegRNoUMTmZazUkvEZobYXlV?=
- =?us-ascii?Q?zCEnNzEkbrFVMJMjTza7KOQwhSfNJuA9c+fsSoKxoMY++OevitffIvsxLGkF?=
- =?us-ascii?Q?0V6z+BdUa6sKJwIkDs/GYO0mbAI/J7VUzl07ngAMwgrKZ7HIN0xUhwIoeJbM?=
- =?us-ascii?Q?FPhgC6IQY+NXUEkaMB1s2PgaMzXnl/D80JMvKDdDDy6tL/HZzapt4d8IRinr?=
- =?us-ascii?Q?dwEDgZV6BlzcU5w6on67bP8EleTTO9VfWpxRCS8Nn98Yo1Y2bPPJHNaXdjJn?=
- =?us-ascii?Q?V/mzLwjky/rvWOH7O465YqrnG9JUSKEQ8x4R28IlaoKXHCmfiewA6lAJ0lyh?=
- =?us-ascii?Q?8lUC3ujYHTcv+aimFdFprEbN3D8vUL9+1vF7SRoH+PANOj5YZZRwgsfN9bVD?=
- =?us-ascii?Q?N3NsU1s+DPQZp4lt+t+qAtZsC+zIAmjIIEs2PlmwxSYWPz6b3wOH8VKxTGDc?=
- =?us-ascii?Q?ubR14TBH98yI/V71R7L5RyAqA8F5wlZ2tl88j7xQoHMbam92aGbZCrsgxJ/j?=
- =?us-ascii?Q?PyTaYqt7UkIDPTao2BnYMMlC8SqfZ7oMccMvQW8BP4vSU/6NPy4Y2/Kq0Bnf?=
- =?us-ascii?Q?DsLjs5W6m18M1gPrNrqiEzvO3yzsmpK1aeih/Cewucv0XDwNF9jnJoOGVXyI?=
- =?us-ascii?Q?MfqT00HVC5jU5CPubVcBzUZIV2sf6JXCgDaMBHBC7DOM0ZSaPdiSwNRNNPqo?=
- =?us-ascii?Q?a4EOLLK6iJ+w4hWfzbIbXlPnxdAZJwBrcNXLl2k21Jr2HadvnT/ahFmz1Vn/?=
- =?us-ascii?Q?9lXfiZJzGd7UgYGOusaYoU9moQmKdWhEjuM1Q+1hPWP5pDEfc+a2tIupwpwa?=
- =?us-ascii?Q?aTCnaJ8qOhmTN7dEDT4R2UkZYUO8W8N4RMRJCLThqrFvbiYASEZZUYvAjHHg?=
- =?us-ascii?Q?JInb9bDb6GpSLqxtQA4+chcEincSONRsft7Z/HwTXqztg92w8+GE0ecl9anE?=
- =?us-ascii?Q?to5IYydqcD+Vd1sf2/QP8m0xvOCRVAl4cKaQEpRpIYbNUqVTDhKeEU2qUP2M?=
- =?us-ascii?Q?8gbB0RfdyxvwD/Qs7KFfZEa20GXJG/lQBIDR6AVNB7j5SLrneLs+48IF43ge?=
- =?us-ascii?Q?phMPGKbnhmgV0gYNnCJC8k8vQV5xiqkHpct0gTPpa9hbdM1E6sDHCiBoT+Yi?=
- =?us-ascii?Q?knVTPGJ8L1KKV1fhD8N3Hx4ifwn22TNyTyc/QqwXbkE68IkwLxRoKiFiXxpg?=
- =?us-ascii?Q?7M8sq62cKWEbGHe8nRuV8PgRnykvvsCgAKNTI6Vj?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: e402966e-1c48-45cc-44b9-08dc39bf4b96
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB6005.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Mar 2024 07:14:55.1055
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: R7k3Bvmcx8G24VFipAfeSsidMwggYfK2JcX7Hf9FLVlMPENXGADgcxie+tBVRybZX5Tp1cWoHHiASTvC3p68YA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB7421
-X-OriginatorOrg: intel.com
+References: <20240229170409.365386-1-mic@digikod.net> <20240229170409.365386-2-mic@digikod.net>
+In-Reply-To: <20240229170409.365386-2-mic@digikod.net>
+From: David Gow <davidgow@google.com>
+Date: Fri, 1 Mar 2024 15:14:49 +0800
+Message-ID: <CABVgOSmRPJO2eAOSgFXC2WxnXyJ-zZ=MUd2dQMLqFcUsNARQJQ@mail.gmail.com>
+Subject: Re: [PATCH v1 1/8] kunit: Run tests when the kernel is fully setup
+To: =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
+Cc: Brendan Higgins <brendanhiggins@google.com>, Kees Cook <keescook@chromium.org>, 
+	Rae Moar <rmoar@google.com>, Shuah Khan <skhan@linuxfoundation.org>, 
+	Alan Maguire <alan.maguire@oracle.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, 
+	Ingo Molnar <mingo@redhat.com>, James Morris <jamorris@linux.microsoft.com>, 
+	Luis Chamberlain <mcgrof@kernel.org>, 
+	"Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>, Marco Pagani <marpagan@redhat.com>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Sean Christopherson <seanjc@google.com>, Stephen Boyd <sboyd@kernel.org>, 
+	Thara Gopinath <tgopinath@microsoft.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	Vitaly Kuznetsov <vkuznets@redhat.com>, Wanpeng Li <wanpengli@tencent.com>, 
+	Zahra Tarkhani <ztarkhani@microsoft.com>, kvm@vger.kernel.org, 
+	linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	linux-um@lists.infradead.org, x86@kernel.org
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="0000000000008379240612942257"
 
-On 2024-03-01 at 11:47:05 +0800, Abel Wu wrote:
-> (+ Chen Yu, Oliver Sang)
-> 
-> On 2/29/24 11:55 PM, Breno Leitao Wrote:
-> > I've been running some stress test using stress-ng with a kernel with some
-> > debug options enabled, such as KASAN and friends (See the config below).
-> > 
-> > I saw it in rc4 and the decode instructions are a bit off (as it is here
-> > also - search for mavabs in dmesg below and you will find something as `(bad)`,
-> > so I though it was a machine issue. But now I see it again, and I am sharing
-> > for awareness.
-> > 
-> > This is happening in upstream kernel against the following commit
-> > d206a76d7d2726 ("Linux 6.8-rc6")
-> > 
-> > This is the exercpt that shows before the crash:
-> > 
-> > 	general protection fault, probably for non-canonical address 0xdffffc0000000014: 0000 [#1] PREEMPT SMP DEBUG_PAGEALLOC KASAN
-> > 	KASAN: null-ptr-deref in range [0x00000000000000a0-0x00000000000000a7]
-> > 
-> > This is the stack that is getting it
-> > 
-> > 	? __die_body (arch/x86/kernel/dumpstack.c:421)
-> > 	? die_addr (arch/x86/kernel/dumpstack.c:460)
-> > 	? exc_general_protection (arch/x86/kernel/traps.c:? arch/x86/kernel/traps.c:643)
-> > 	? asm_exc_general_protection (arch/x86/include/asm/idtentry.h:564)
-> > 	? pick_next_task_fair (kernel/sched/sched.h:1453 kernel/sched/fair.c:8435)
+--0000000000008379240612942257
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Seems to be the same reason pick_eevdf returns NULL.. it panic here..
-cfs_rq = group_cfs_rq(se);
+On Fri, 1 Mar 2024 at 01:04, Micka=C3=ABl Sala=C3=BCn <mic@digikod.net> wro=
+te:
+ >
+> Run all the KUnit tests just before the first userspace code is
+> launched.  This makes it it possible to write new tests that check the
+> kernel in its final state i.e., with all async __init code called,
+> memory and RCU properly set up, and sysctl boot arguments evaluated.
 
-I remember lkp has regular stress-ng test for regression test, but
-not detect this yet.
+KUnit has explicit support for running tests which call __init code
+(or are themselves marked __init), so I'm not keen to move _all_ tests
+here.
 
-thanks,
-Chenyu
+That being said, I'm okay with running all of the other tests (ones
+not explicitly marked init) after __init.
+>
+> The initial motivation is to run hardening tests (e.g. memory
+> protection, Heki's CR-pinning), which require such security protection
+> to be fully setup (e.g. memory marked as read-only).
+>
+> Because the suite set could refer to init data, initialize the suite set
+> with late_initcall(), before kunit_run_all_tests(), if KUnit is built-in
+> and enabled at boot time.  To make it more consistent and easier to
+> manage, whatever filters are used or not, always copy test suite entries
+> and free them after all tests are run.
+
+The goal is to allow init data only for suites explicitly marked as
+such, so we should be able to split that along these lines.
+
+And yeah, the filter code is pretty convoluted when it comes to when
+they're allocated, and it does do things like check how the suite set
+was allocated. So we do need to make any changes carefully.
+
+As Kees suggested, I'd like to see any cleanup here as a separate patch.
+
+>
+> Because of the prepare_namespace() call, we need to have a valid root
+> filesystem.  To make it simple, let's use tmpfs with an empty root.
+> Teach kunit_kernel.py:LinuxSourceTreeOperations*() about the related
+> kernel boot argument, and add this filesystem to the kunit.py's kernel
+> build requirements.
+
+I think this is a big enough change we'll need to handle it very
+carefully: there are a few places where the fact that KUnit doesn't
+require a root filesystem is documented, and possibly some other
+(non-kunit.py) runners which rely on this.
+
+I don't think that's necessarily a blocker, but we'll definitely want
+to document it well, and make sure users are aware before this lands.
+
+>
+> Remove __init and __refdata markers from iov_iter, bitfield, checksum,
+> and the example KUnit tests.  Without this change, the kernel tries to
+> execute NX-protected pages (because the pages are deallocated).
+
+We still want to support these, but we should make sure the suites are
+declared with kunit_init_test_suite().
+
+>
+> Tested with:
+> ./tools/testing/kunit/kunit.py run --alltests
+> ./tools/testing/kunit/kunit.py run --alltests --arch x86_64
+
+FYI: This breaks arm64:
+/tools/testing/kunit/kunit.py run --raw_output --arch arm64
+--cross_compile=3Daarch64-linux-gnu-
+
+Unable to handle kernel paging request at virtual address ffffffff02016f88
+..
+Call trace:
+ kfree+0x30/0x184
+ kunit_run_all_tests+0x88/0x154
+ kernel_init+0x6c/0x1e0
+ ret_from_fork+0x10/0x20
+Code: b25f7be1 aa0003f4 d34cfe73 8b131833 (f9400661)
+---[ end trace 0000000000000000 ]---
+Kernel panic - not syncing: Attempted to kill init! exitcode=3D0x0000000b
+
+
+>
+> Cc: Alan Maguire <alan.maguire@oracle.com>
+> Cc: Brendan Higgins <brendanhiggins@google.com>
+> Cc: David Gow <davidgow@google.com>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Luis Chamberlain <mcgrof@kernel.org>
+> Cc: Marco Pagani <marpagan@redhat.com>
+> Cc: Rae Moar <rmoar@google.com>
+> Cc: Shuah Khan <skhan@linuxfoundation.org>
+> Cc: Stephen Boyd <sboyd@kernel.org>
+> Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
+> ---
+>  init/main.c                         |  4 +-
+>  lib/bitfield_kunit.c                |  8 +--
+>  lib/checksum_kunit.c                |  2 +-
+>  lib/kunit/executor.c                | 81 +++++++++++++++++++++--------
+>  lib/kunit/kunit-example-test.c      |  6 +--
+>  lib/kunit_iov_iter.c                | 52 +++++++++---------
+>  tools/testing/kunit/kunit_kernel.py |  6 ++-
+>  7 files changed, 96 insertions(+), 63 deletions(-)
+>
+> diff --git a/init/main.c b/init/main.c
+> index e24b0780fdff..b39d74727aad 100644
+> --- a/init/main.c
+> +++ b/init/main.c
+> @@ -1463,6 +1463,8 @@ static int __ref kernel_init(void *unused)
+>
+>         do_sysctl_args();
+>
+> +       kunit_run_all_tests();
+> +
+>         if (ramdisk_execute_command) {
+>                 ret =3D run_init_process(ramdisk_execute_command);
+>                 if (!ret)
+> @@ -1550,8 +1552,6 @@ static noinline void __init kernel_init_freeable(vo=
+id)
+>
+>         do_basic_setup();
+>
+> -       kunit_run_all_tests();
+> -
+>         wait_for_initramfs();
+>         console_on_rootfs();
+>
+> diff --git a/lib/bitfield_kunit.c b/lib/bitfield_kunit.c
+> index 1473d8b4bf0f..71e9f2e96496 100644
+> --- a/lib/bitfield_kunit.c
+> +++ b/lib/bitfield_kunit.c
+> @@ -57,7 +57,7 @@
+>                 CHECK_ENC_GET_BE(tp, v, field, res);                    \
+>         } while (0)
+>
+> -static void __init test_bitfields_constants(struct kunit *context)
+> +static void test_bitfields_constants(struct kunit *context)
+>  {
+>         /*
+>          * NOTE
+> @@ -100,7 +100,7 @@ static void __init test_bitfields_constants(struct ku=
+nit *context)
+>                                 tp##_encode_bits(v, mask) !=3D v << __ffs=
+64(mask));\
+>         } while (0)
+>
+> -static void __init test_bitfields_variables(struct kunit *context)
+> +static void test_bitfields_variables(struct kunit *context)
+>  {
+>         CHECK(u8, 0x0f);
+>         CHECK(u8, 0xf0);
+> @@ -126,7 +126,7 @@ static void __init test_bitfields_variables(struct ku=
+nit *context)
+>  }
+>
+>  #ifdef TEST_BITFIELD_COMPILE
+> -static void __init test_bitfields_compile(struct kunit *context)
+> +static void test_bitfields_compile(struct kunit *context)
+>  {
+>         /* these should fail compilation */
+>         CHECK_ENC_GET(16, 16, 0x0f00, 0x1000);
+> @@ -137,7 +137,7 @@ static void __init test_bitfields_compile(struct kuni=
+t *context)
+>  }
+>  #endif
+>
+> -static struct kunit_case __refdata bitfields_test_cases[] =3D {
+> +static struct kunit_case bitfields_test_cases[] =3D {
+>         KUNIT_CASE(test_bitfields_constants),
+>         KUNIT_CASE(test_bitfields_variables),
+>         {}
+> diff --git a/lib/checksum_kunit.c b/lib/checksum_kunit.c
+> index 225bb7701460..41aaed3a4963 100644
+> --- a/lib/checksum_kunit.c
+> +++ b/lib/checksum_kunit.c
+> @@ -620,7 +620,7 @@ static void test_csum_ipv6_magic(struct kunit *test)
+>  #endif /* !CONFIG_NET */
+>  }
+>
+> -static struct kunit_case __refdata checksum_test_cases[] =3D {
+> +static struct kunit_case checksum_test_cases[] =3D {
+>         KUNIT_CASE(test_csum_fixed_random_inputs),
+>         KUNIT_CASE(test_csum_all_carry_inputs),
+>         KUNIT_CASE(test_csum_no_carry_inputs),
+> diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
+> index 689fff2b2b10..ff3e66ffa739 100644
+> --- a/lib/kunit/executor.c
+> +++ b/lib/kunit/executor.c
+> @@ -15,6 +15,8 @@ extern struct kunit_suite * const __kunit_suites_end[];
+>  extern struct kunit_suite * const __kunit_init_suites_start[];
+>  extern struct kunit_suite * const __kunit_init_suites_end[];
+>
+> +static struct kunit_suite_set final_suite_set =3D {};
+> +
+>  static char *action_param;
+>
+>  module_param_named(action, action_param, charp, 0400);
+> @@ -233,6 +235,21 @@ kunit_filter_suites(const struct kunit_suite_set *su=
+ite_set,
+>                 if (!filtered_suite)
+>                         continue;
+>
+> +               if (filtered_suite =3D=3D suite_set->start[i]) {
+> +                       /*
+> +                        * To make memory allocation consistent whatever
+> +                        * filters are used or not, and to keep
+> +                        * kunit_free_suite_set() simple, always copy sta=
+tic
+> +                        * data.
+> +                        */
+> +                       filtered_suite =3D kmemdup(filtered_suite, sizeof=
+(*filtered_suite),
+> +                                       GFP_KERNEL);
+> +                       if (!filtered_suite) {
+> +                               *err =3D -ENOMEM;
+> +                               goto free_parsed_filters;
+> +                       }
+> +               }
+> +
+>                 *copy++ =3D filtered_suite;
+>         }
+>         filtered.start =3D copy_start;
+> @@ -348,7 +365,7 @@ static void kunit_handle_shutdown(void)
+>
+>  }
+>
+> -int kunit_run_all_tests(void)
+> +static int kunit_init_suites(void)
+>  {
+>         struct kunit_suite_set suite_set =3D {NULL, NULL};
+>         struct kunit_suite_set filtered_suite_set =3D {NULL, NULL};
+> @@ -361,6 +378,9 @@ int kunit_run_all_tests(void)
+>         size_t init_num_suites =3D init_suite_set.end - init_suite_set.st=
+art;
+>         int err =3D 0;
+>
+> +       if (!kunit_enabled())
+> +               return 0;
+> +
+>         if (init_num_suites > 0) {
+>                 suite_set =3D kunit_merge_suite_sets(init_suite_set, norm=
+al_suite_set);
+>                 if (!suite_set.start)
+> @@ -368,41 +388,56 @@ int kunit_run_all_tests(void)
+>         } else
+>                 suite_set =3D normal_suite_set;
+>
+> -       if (!kunit_enabled()) {
+> -               pr_info("kunit: disabled\n");
+> +       filtered_suite_set =3D kunit_filter_suites(&suite_set, filter_glo=
+b_param,
+> +                       filter_param, filter_action_param, &err);
+> +
+> +       /* Free original suite set before using filtered suite set */
+> +       if (init_num_suites > 0)
+> +               kfree(suite_set.start);
+> +       suite_set =3D filtered_suite_set;
+> +
+> +       if (err) {
+> +               pr_err("kunit executor: error filtering suites: %d\n", er=
+r);
+>                 goto free_out;
+>         }
+>
+> -       if (filter_glob_param || filter_param) {
+> -               filtered_suite_set =3D kunit_filter_suites(&suite_set, fi=
+lter_glob_param,
+> -                               filter_param, filter_action_param, &err);
+> +       final_suite_set =3D suite_set;
+> +       return 0;
+>
+> -               /* Free original suite set before using filtered suite se=
+t */
+> -               if (init_num_suites > 0)
+> -                       kfree(suite_set.start);
+> -               suite_set =3D filtered_suite_set;
+> +free_out:
+> +       kunit_free_suite_set(suite_set);
+>
+> -               if (err) {
+> -                       pr_err("kunit executor: error filtering suites: %=
+d\n", err);
+> -                       goto free_out;
+> -               }
+> +out:
+> +       kunit_handle_shutdown();
+> +       return err;
+> +}
+> +
+> +late_initcall(kunit_init_suites);
+> +
+> +int kunit_run_all_tests(void)
+> +{
+> +       int err =3D 0;
+> +
+> +       if (!kunit_enabled()) {
+> +               pr_info("kunit: disabled\n");
+> +               goto out;
+>         }
+>
+> +       if (!final_suite_set.start)
+> +               goto out;
+> +
+>         if (!action_param)
+> -               kunit_exec_run_tests(&suite_set, true);
+> +               kunit_exec_run_tests(&final_suite_set, true);
+>         else if (strcmp(action_param, "list") =3D=3D 0)
+> -               kunit_exec_list_tests(&suite_set, false);
+> +               kunit_exec_list_tests(&final_suite_set, false);
+>         else if (strcmp(action_param, "list_attr") =3D=3D 0)
+> -               kunit_exec_list_tests(&suite_set, true);
+> +               kunit_exec_list_tests(&final_suite_set, true);
+>         else
+>                 pr_err("kunit executor: unknown action '%s'\n", action_pa=
+ram);
+>
+> -free_out:
+> -       if (filter_glob_param || filter_param)
+> -               kunit_free_suite_set(suite_set);
+> -       else if (init_num_suites > 0)
+> -               /* Don't use kunit_free_suite_set because suites aren't i=
+ndividually allocated */
+> -               kfree(suite_set.start);
+> +       kunit_free_suite_set(final_suite_set);
+> +       final_suite_set.start =3D NULL;
+> +       final_suite_set.end =3D NULL;
+>
+>  out:
+>         kunit_handle_shutdown();
+> diff --git a/lib/kunit/kunit-example-test.c b/lib/kunit/kunit-example-tes=
+t.c
+> index 798924f7cc86..248949eb3b16 100644
+> --- a/lib/kunit/kunit-example-test.c
+> +++ b/lib/kunit/kunit-example-test.c
+> @@ -337,7 +337,7 @@ static struct kunit_suite example_test_suite =3D {
+>   */
+>  kunit_test_suites(&example_test_suite);
+>
+> -static int __init init_add(int x, int y)
+> +static int init_add(int x, int y)
+
+The whole point of this function (and the example_init_test) is that
+they're marked __init, as proof we can test code which is in the init
+section.
+
+So, either we leave this alone, or we remove it entirely. There's no
+point just removing __init.
+
+>  {
+>         return (x + y);
+>  }
+> @@ -345,7 +345,7 @@ static int __init init_add(int x, int y)
+>  /*
+>   * This test should always pass. Can be used to test init suites.
+>   */
+> -static void __init example_init_test(struct kunit *test)
+> +static void example_init_test(struct kunit *test)
+
+As above.
+
+>  {
+>         KUNIT_EXPECT_EQ(test, init_add(1, 1), 2);
+>  }
+> @@ -354,7 +354,7 @@ static void __init example_init_test(struct kunit *te=
+st)
+>   * The kunit_case struct cannot be marked as __initdata as this will be
+>   * used in debugfs to retrieve results after test has run
+>   */
+> -static struct kunit_case __refdata example_init_test_cases[] =3D {
+> +static struct kunit_case example_init_test_cases[] =3D {
+>         KUNIT_CASE(example_init_test),
+>         {}
+>  };
+
+As above.
+
+> diff --git a/lib/kunit_iov_iter.c b/lib/kunit_iov_iter.c
+> index 859b67c4d697..a77991a9bffb 100644
+> --- a/lib/kunit_iov_iter.c
+> +++ b/lib/kunit_iov_iter.c
+> @@ -44,9 +44,8 @@ static void iov_kunit_unmap(void *data)
+>         vunmap(data);
+>  }
+>
+> -static void *__init iov_kunit_create_buffer(struct kunit *test,
+> -                                           struct page ***ppages,
+> -                                           size_t npages)
+> +static void *iov_kunit_create_buffer(struct kunit *test, struct page ***=
+ppages,
+> +                                    size_t npages)
+>  {
+>         struct page **pages;
+>         unsigned long got;
+> @@ -69,11 +68,10 @@ static void *__init iov_kunit_create_buffer(struct ku=
+nit *test,
+>         return buffer;
+>  }
+>
+> -static void __init iov_kunit_load_kvec(struct kunit *test,
+> -                                      struct iov_iter *iter, int dir,
+> -                                      struct kvec *kvec, unsigned int kv=
+max,
+> -                                      void *buffer, size_t bufsize,
+> -                                      const struct kvec_test_range *pr)
+> +static void iov_kunit_load_kvec(struct kunit *test, struct iov_iter *ite=
+r,
+> +                               int dir, struct kvec *kvec, unsigned int =
+kvmax,
+> +                               void *buffer, size_t bufsize,
+> +                               const struct kvec_test_range *pr)
+>  {
+>         size_t size =3D 0;
+>         int i;
+> @@ -95,7 +93,7 @@ static void __init iov_kunit_load_kvec(struct kunit *te=
+st,
+>  /*
+>   * Test copying to a ITER_KVEC-type iterator.
+>   */
+> -static void __init iov_kunit_copy_to_kvec(struct kunit *test)
+> +static void iov_kunit_copy_to_kvec(struct kunit *test)
+>  {
+>         const struct kvec_test_range *pr;
+>         struct iov_iter iter;
+> @@ -145,7 +143,7 @@ static void __init iov_kunit_copy_to_kvec(struct kuni=
+t *test)
+>  /*
+>   * Test copying from a ITER_KVEC-type iterator.
+>   */
+> -static void __init iov_kunit_copy_from_kvec(struct kunit *test)
+> +static void iov_kunit_copy_from_kvec(struct kunit *test)
+>  {
+>         const struct kvec_test_range *pr;
+>         struct iov_iter iter;
+> @@ -213,12 +211,11 @@ static const struct bvec_test_range bvec_test_range=
+s[] =3D {
+>         { -1, -1, -1 }
+>  };
+>
+> -static void __init iov_kunit_load_bvec(struct kunit *test,
+> -                                      struct iov_iter *iter, int dir,
+> -                                      struct bio_vec *bvec, unsigned int=
+ bvmax,
+> -                                      struct page **pages, size_t npages=
+,
+> -                                      size_t bufsize,
+> -                                      const struct bvec_test_range *pr)
+> +static void iov_kunit_load_bvec(struct kunit *test, struct iov_iter *ite=
+r,
+> +                               int dir, struct bio_vec *bvec,
+> +                               unsigned int bvmax, struct page **pages,
+> +                               size_t npages, size_t bufsize,
+> +                               const struct bvec_test_range *pr)
+>  {
+>         struct page *can_merge =3D NULL, *page;
+>         size_t size =3D 0;
+> @@ -254,7 +251,7 @@ static void __init iov_kunit_load_bvec(struct kunit *=
+test,
+>  /*
+>   * Test copying to a ITER_BVEC-type iterator.
+>   */
+> -static void __init iov_kunit_copy_to_bvec(struct kunit *test)
+> +static void iov_kunit_copy_to_bvec(struct kunit *test)
+>  {
+>         const struct bvec_test_range *pr;
+>         struct iov_iter iter;
+> @@ -308,7 +305,7 @@ static void __init iov_kunit_copy_to_bvec(struct kuni=
+t *test)
+>  /*
+>   * Test copying from a ITER_BVEC-type iterator.
+>   */
+> -static void __init iov_kunit_copy_from_bvec(struct kunit *test)
+> +static void iov_kunit_copy_from_bvec(struct kunit *test)
+>  {
+>         const struct bvec_test_range *pr;
+>         struct iov_iter iter;
+> @@ -370,10 +367,9 @@ static void iov_kunit_destroy_xarray(void *data)
+>         kfree(xarray);
+>  }
+>
+> -static void __init iov_kunit_load_xarray(struct kunit *test,
+> -                                        struct iov_iter *iter, int dir,
+> -                                        struct xarray *xarray,
+> -                                        struct page **pages, size_t npag=
+es)
+> +static void iov_kunit_load_xarray(struct kunit *test, struct iov_iter *i=
+ter,
+> +                                 int dir, struct xarray *xarray,
+> +                                 struct page **pages, size_t npages)
+>  {
+>         size_t size =3D 0;
+>         int i;
+> @@ -401,7 +397,7 @@ static struct xarray *iov_kunit_create_xarray(struct =
+kunit *test)
+>  /*
+>   * Test copying to a ITER_XARRAY-type iterator.
+>   */
+> -static void __init iov_kunit_copy_to_xarray(struct kunit *test)
+> +static void iov_kunit_copy_to_xarray(struct kunit *test)
+>  {
+>         const struct kvec_test_range *pr;
+>         struct iov_iter iter;
+> @@ -459,7 +455,7 @@ static void __init iov_kunit_copy_to_xarray(struct ku=
+nit *test)
+>  /*
+>   * Test copying from a ITER_XARRAY-type iterator.
+>   */
+> -static void __init iov_kunit_copy_from_xarray(struct kunit *test)
+> +static void iov_kunit_copy_from_xarray(struct kunit *test)
+>  {
+>         const struct kvec_test_range *pr;
+>         struct iov_iter iter;
+> @@ -522,7 +518,7 @@ static void __init iov_kunit_copy_from_xarray(struct =
+kunit *test)
+>  /*
+>   * Test the extraction of ITER_KVEC-type iterators.
+>   */
+> -static void __init iov_kunit_extract_pages_kvec(struct kunit *test)
+> +static void iov_kunit_extract_pages_kvec(struct kunit *test)
+>  {
+>         const struct kvec_test_range *pr;
+>         struct iov_iter iter;
+> @@ -602,7 +598,7 @@ static void __init iov_kunit_extract_pages_kvec(struc=
+t kunit *test)
+>  /*
+>   * Test the extraction of ITER_BVEC-type iterators.
+>   */
+> -static void __init iov_kunit_extract_pages_bvec(struct kunit *test)
+> +static void iov_kunit_extract_pages_bvec(struct kunit *test)
+>  {
+>         const struct bvec_test_range *pr;
+>         struct iov_iter iter;
+> @@ -680,7 +676,7 @@ static void __init iov_kunit_extract_pages_bvec(struc=
+t kunit *test)
+>  /*
+>   * Test the extraction of ITER_XARRAY-type iterators.
+>   */
+> -static void __init iov_kunit_extract_pages_xarray(struct kunit *test)
+> +static void iov_kunit_extract_pages_xarray(struct kunit *test)
+>  {
+>         const struct kvec_test_range *pr;
+>         struct iov_iter iter;
+> @@ -756,7 +752,7 @@ static void __init iov_kunit_extract_pages_xarray(str=
+uct kunit *test)
+>         KUNIT_SUCCEED();
+>  }
+>
+> -static struct kunit_case __refdata iov_kunit_cases[] =3D {
+> +static struct kunit_case iov_kunit_cases[] =3D {
+>         KUNIT_CASE(iov_kunit_copy_to_kvec),
+>         KUNIT_CASE(iov_kunit_copy_from_kvec),
+>         KUNIT_CASE(iov_kunit_copy_to_bvec),
+> diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/ku=
+nit_kernel.py
+> index 0b6488efed47..e1980ea58118 100644
+> --- a/tools/testing/kunit/kunit_kernel.py
+> +++ b/tools/testing/kunit/kunit_kernel.py
+> @@ -104,12 +104,13 @@ class LinuxSourceTreeOperationsQemu(LinuxSourceTree=
+Operations):
+>                 self._kconfig =3D qemu_arch_params.kconfig
+>                 self._qemu_arch =3D qemu_arch_params.qemu_arch
+>                 self._kernel_path =3D qemu_arch_params.kernel_path
+> -               self._kernel_command_line =3D qemu_arch_params.kernel_com=
+mand_line + ' kunit_shutdown=3Dreboot'
+> +               self._kernel_command_line =3D qemu_arch_params.kernel_com=
+mand_line + ' kunit_shutdown=3Dreboot rootfstype=3Dtmpfs'
+>                 self._extra_qemu_params =3D qemu_arch_params.extra_qemu_p=
+arams
+>                 self._serial =3D qemu_arch_params.serial
+>
+>         def make_arch_config(self, base_kunitconfig: kunit_config.Kconfig=
+) -> kunit_config.Kconfig:
+>                 kconfig =3D kunit_config.parse_from_string(self._kconfig)
+> +               kconfig.add_entry('TMPFS', 'y')
+
+Can we add these to config files rather than add them here?
+
+
+>                 kconfig.merge_in_entries(base_kunitconfig)
+>                 return kconfig
+>
+> @@ -139,13 +140,14 @@ class LinuxSourceTreeOperationsUml(LinuxSourceTreeO=
+perations):
+>
+>         def make_arch_config(self, base_kunitconfig: kunit_config.Kconfig=
+) -> kunit_config.Kconfig:
+>                 kconfig =3D kunit_config.parse_file(UML_KCONFIG_PATH)
+> +               kconfig.add_entry('TMPFS', 'y')
+>                 kconfig.merge_in_entries(base_kunitconfig)
+>                 return kconfig
+>
+>         def start(self, params: List[str], build_dir: str) -> subprocess.=
+Popen:
+>                 """Runs the Linux UML binary. Must be named 'linux'."""
+>                 linux_bin =3D os.path.join(build_dir, 'linux')
+> -               params.extend(['mem=3D1G', 'console=3Dtty', 'kunit_shutdo=
+wn=3Dhalt'])
+> +               params.extend(['mem=3D1G', 'console=3Dtty', 'kunit_shutdo=
+wn=3Dhalt', 'rootfstype=3Dtmpfs'])
+>                 return subprocess.Popen([linux_bin] + params,
+>                                            stdin=3Dsubprocess.PIPE,
+>                                            stdout=3Dsubprocess.PIPE,
+> --
+> 2.44.0
+>
+
+--0000000000008379240612942257
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIIPqgYJKoZIhvcNAQcCoIIPmzCCD5cCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+gg0EMIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
+IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
+dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
+6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
+c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
+I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
+AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
+BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
+CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
+AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
+MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
+My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
+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
+7xDrOPfX3COqq162RFg/MFcGA1UdIARQME4wCQYHZ4EMAQUBATBBBgkrBgEEAaAyASgwNDAyBggr
+BgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wDAYDVR0TAQH/
+BAIwADCBmgYIKwYBBQUHAQEEgY0wgYowPgYIKwYBBQUHMAGGMmh0dHA6Ly9vY3NwLmdsb2JhbHNp
+Z24uY29tL2NhL2dzYXRsYXNyM3NtaW1lY2EyMDIwMEgGCCsGAQUFBzAChjxodHRwOi8vc2VjdXJl
+Lmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcnQwHwYDVR0jBBgw
+FoAUfMwKaNei6x4schvRzV2Vb4378mMwRgYDVR0fBD8wPTA7oDmgN4Y1aHR0cDovL2NybC5nbG9i
+YWxzaWduLmNvbS9jYS9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcmwwDQYJKoZIhvcNAQELBQADggEB
+AK0lDd6/eSh3qHmXaw1YUfIFy07B25BEcTvWgOdla99gF1O7sOsdYaTz/DFkZI5ghjgaPJCovgla
+mRMfNcxZCfoBtsB7mAS6iOYjuwFOZxi9cv6jhfiON6b89QWdMaPeDddg/F2Q0bxZ9Z2ZEBxyT34G
+wlDp+1p6RAqlDpHifQJW16h5jWIIwYisvm5QyfxQEVc+XH1lt+taSzCfiBT0ZLgjB9Sg+zAo8ys6
+5PHxFaT2a5Td/fj5yJ5hRSrqy/nj/hjT14w3/ZdX5uWg+cus6VjiiR/5qGSZRjHt8JoApD6t6/tg
+ITv8ZEy6ByumbU23nkHTMOzzQSxczHkT+0q10/MxggJqMIICZgIBATBoMFQxCzAJBgNVBAYTAkJF
+MRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFzIFIz
+IFNNSU1FIENBIDIwMjACEAHS+TgZvH/tCq5FcDC0n9IwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZI
+hvcNAQkEMSIEIASJ+m9zwGY3bBpD8CXJMWHo/Cohm+dcDcc3nC/ml1p1MBgGCSqGSIb3DQEJAzEL
+BgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MDMwMTA3MTUwM1owaQYJKoZIhvcNAQkPMVww
+WjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkq
+hkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCRHMqW
+U6spu56AD5w4J+l3ZM56Trc2Z+dnzt0PpUC8U5kYAYKC96dqAzerPoVDQTagPWq5I+lRbCsSn00F
+Th+vjydg72B5qNeF7gv1g24QxcaaOoL8YWwQwYRwsoebc9gZ0gPHuGdXFIGKLEC55cVyyTswR2wz
+aKlCVGtuvztUYru5pppfoO/wYJFBPqGYRXhhvkQB2aQt6LxuTBoGU2fzUoRSKQmCCvRwokStzXt3
+sUMCY4TM2+raXVxY2nOXsHg3yK8IY3XBU6GlddP2e9hJ8DhTeTr3ygyXHjJxEs5EoAQ3Lnz2M3jS
+dg/80cAEUddb8U27dhXzVMxViEszMR7M
+--0000000000008379240612942257--
 
