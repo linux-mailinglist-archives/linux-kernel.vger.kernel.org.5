@@ -1,304 +1,122 @@
-Return-Path: <linux-kernel+bounces-88377-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88378-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7C3886E0BB
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:53:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2147186E0C1
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:56:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E79A01C2274F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:53:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9B78CB2204A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:56:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0F7A6D1B0;
-	Fri,  1 Mar 2024 11:53:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 834946D1C7;
+	Fri,  1 Mar 2024 11:55:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="0GjbimLT"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="eIFn0f9H"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E676120315
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 11:53:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BB876D1AF
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 11:55:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709294020; cv=none; b=V7DGTBUitoJl8pPaR5Z5Dl23McVdHzo3Nvp2mzP8dd6KYixPq2b6qbd0nGCpiak+on0RpGLWJ2rjvEeMs+ooos5lhJHQ6pV6u8z0i/sXEDjtjaFJLPRRVRiIP9Re9ZZIC1vRaL6qFjNsyRToIi9E25EazIjcFOwNk/QCipANDnI=
+	t=1709294153; cv=none; b=BhnJGsK6VMDc0zK/RwX+ZCtjsiiYQz7F/jV/38QHwJyuwbo+y0/HzEdNtLJ8msbCvQ9oGoWQkItLATwcleLsNaGbkCxoGsLlx/id7KQDTRZQErEVlmJR1ACPGmVa+7ZULtBvgALhJuz4NFvYyhYn4KhGCh8HidbXwwg56mFVosg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709294020; c=relaxed/simple;
-	bh=YGZRh0bKcxFHGTj3E5dUozhFR4re8DBslvJLFXS2cWE=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dCtdcc31lVU71J+7b+2lc44Z3MhOUqDVeLWs2iMu5SJjSuDJ87KLXSU7LFAQvbAiCmR2dcW3OgutTBFfoFJotzbO1Y2I+1GfkL6af8zoOiO+CVY5sjdd/ipyiKTM8BIBymWeTEvMZGuavrl87xYFFN3H3IWlVAbCLM+G4qFwxcs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=0GjbimLT; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709294016;
-	bh=YGZRh0bKcxFHGTj3E5dUozhFR4re8DBslvJLFXS2cWE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=0GjbimLTrUE6ObJ9MaK+mkDWwoSFdVETlM6hmgNoLczGp7+GUKyALKc3Bs95ExN2K
-	 T1wOmpL9m1rcRX7GoEb4FWbsZ25I0K2180jJc2RtOTgOTTaNnLeQdoFPn2kMoHgk14
-	 wPvRJmIVgWKCU9rIb8UZyEY2B9jjEhxVXaw/pgNSDOSwrb2xy36TjY25sXLV9wAHbC
-	 DDHZLQZEYAZ2A4GTzzz34nOy///N375hYBv6xAfdpoCCUWUTocc9KfUzGoI4b2K1HC
-	 1Zj2JlY3sJJ5jY5xOBwg1nYatB1qy74xZ5EfJawoJP55LEznRm3wFypwOXZyF8YdwO
-	 Mkcjjpgx6vL8w==
-Received: from eldfell (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pq)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id E90B43780EC6;
-	Fri,  1 Mar 2024 11:53:35 +0000 (UTC)
-Date: Fri, 1 Mar 2024 13:53:27 +0200
-From: Pekka Paalanen <pekka.paalanen@collabora.com>
-To: Arthur Grillo <arthurgrillo@riseup.net>
-Cc: Louis Chauvet <louis.chauvet@bootlin.com>, Rodrigo Siqueira
- <rodrigosiqueiramelo@gmail.com>, Melissa Wen <melissa.srw@gmail.com>,
- =?UTF-8?B?TWHDrXJh?= Canal <mairacanal@riseup.net>, Haneen Mohammed
- <hamohammed.sa@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Maarten
- Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
- <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie
- <airlied@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
- thomas.petazzoni@bootlin.com
-Subject: Re: [PATCH v2 6/9] drm/vkms: Add YUV support
-Message-ID: <20240301135327.22efe0dd.pekka.paalanen@collabora.com>
-In-Reply-To: <5a45e133-d554-4252-a223-dadced383443@riseup.net>
-References: <20240223-yuv-v2-0-aa6be2827bb7@bootlin.com>
-	<20240223-yuv-v2-6-aa6be2827bb7@bootlin.com>
-	<20240226141916.1627bbbd.pekka.paalanen@collabora.com>
-	<Zd35c_CJbhY46TjQ@localhost.localdomain>
-	<b23da076-0bfb-48b2-9386-383a6dec1868@riseup.net>
-	<8fc07f0f-f14d-4878-9884-2bc4b4c6f426@riseup.net>
-	<20240229141238.51891cad.pekka.paalanen@collabora.com>
-	<5a45e133-d554-4252-a223-dadced383443@riseup.net>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1709294153; c=relaxed/simple;
+	bh=9IBd4IHdnmgZMr9MhB2rgqeToI13RNjtnipSgmttHIg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=utptrseRaYzkr/xrh5bieOorikGCBzQ3eLhdbi1LjsxmNrsFcgUNsCfoRrNWD1n/76h9G0BqQfn2/37dNmgn3zzutRyeW2yykkgDXLeZZ8qhU9k8boLzDON7joIWMKnLVp4CoKmiOsAqhjQ6D7uXkFnW66B+dfa99q1ihYGONm8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=eIFn0f9H; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-5131f3fc695so2099536e87.1
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 03:55:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709294150; x=1709898950; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=PH9FTG8r38kw/2KGPIjmzvSzyg9hKHZV3106W9dU8K0=;
+        b=eIFn0f9HdsKAjpJMPIO8Ee42E6ZkP04W4IggB97tcnZ1GKtBpqH1bSNQsr5wMT9bTO
+         Y5t1ZdOwX56MmioM0UkWz/tUcL1rsbK8SarBRfQrrS/28usVFnviwKOljazO1XTM6kjM
+         TnpMEVxWO3Z/BXWxCE5fWePDE56pzPBNtoyeZWgnO4T8tiehbXKXuZy/ArP5qjch4BVy
+         nXbRFBO2jtL6Q77I3QOl8CrjPD47KgjJzgqNFCn7NYsfNbCl2kVfp/BxsJw4bEWEBXZg
+         /hTouSIb6r6qTGdVVwEIjxhCnfTvp+hMperYaqykRoM2p/ZulvIIjZdOp9Xqsf/wv+ki
+         M3UA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709294150; x=1709898950;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PH9FTG8r38kw/2KGPIjmzvSzyg9hKHZV3106W9dU8K0=;
+        b=GyPu3WZxKsxXNXe1Xy10zlUk1HpeBCfuWomMMR3TZiK5k313GD4c14YRf6v+xYWczc
+         Z/pN46k0jsm+9Y5NWS67+NtWtHdTiEGPSQ3pvCblQU+5g0sjRQ2JzPa/Gp4LS0/MFTdA
+         Xu/0COjCWs4UXKq2qVMPYSRgRIyt516LukK2zeaSNLtbG6GgFOrgibcNW3kI4Djy8Gp9
+         hzScOXFM9SquY5Z3GGqA7/qPvlk7a9ShcZ5YAzmezcj5SpegQqjTZ4MPPqBbhhb4QaOi
+         g4yr13Hes/yHID4pKo3+7dV5O1/KOXPIxhFLzwdjVZQtVnmBUeGlu9QQodIZB/6xyNfD
+         CAMA==
+X-Forwarded-Encrypted: i=1; AJvYcCUF48ZQbQqDTsG7WsUrVwCY4sAkqilfn48CmvmTQ60SH3Idpmp9nQ74FwiTczMsayBEPP2s+50+f5osK35GMxLt7kECSTYViwufg/bt
+X-Gm-Message-State: AOJu0Yzw5p8AOgKRllWdGSG8ekLuHisgO5lXIjgJbDsHXzG9aYE2nGGQ
+	4JcSJuQejKkjX+ZF3+cQM6YUXegVYnBh01m7MRN95ckxr0iHRqBhvDjTuwNfq8Y=
+X-Google-Smtp-Source: AGHT+IGe/5toR7aR9KlswPXRC7C3s6xaBbWIf2MKbXyVEOxjns4ZoEJA1I/mWf8hmVsKPNGdq0dHlQ==
+X-Received: by 2002:ac2:4c13:0:b0:513:24b8:a7b1 with SMTP id t19-20020ac24c13000000b0051324b8a7b1mr1236878lfq.47.1709294150170;
+        Fri, 01 Mar 2024 03:55:50 -0800 (PST)
+Received: from ta2.c.googlers.com.com (110.121.148.146.bc.googleusercontent.com. [146.148.121.110])
+        by smtp.gmail.com with ESMTPSA id i10-20020adff30a000000b0033b6e26f0f9sm4367674wro.42.2024.03.01.03.55.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Mar 2024 03:55:49 -0800 (PST)
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+To: andi.shyti@kernel.org,
+	broonie@kernel.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org
+Cc: linux-spi@vger.kernel.org,
+	linux-samsung-soc@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	andre.draszik@linaro.org,
+	peter.griffin@linaro.org,
+	semen.protsenko@linaro.org,
+	willmcvicker@google.com,
+	kernel-team@android.com,
+	Tudor Ambarus <tudor.ambarus@linaro.org>
+Subject: [PATCH] spi: dt-bindings: samsung: make dma properties not required
+Date: Fri,  1 Mar 2024 11:55:46 +0000
+Message-ID: <20240301115546.2266676-1-tudor.ambarus@linaro.org>
+X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/TYmDnefL1VGq17Xl+XSGL7s";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 
---Sig_/TYmDnefL1VGq17Xl+XSGL7s
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Since the addition of the driver in 2009, the driver selects between DMA
+and polling mode depending on the transfer length - DMA mode for
+transfers bigger than the FIFO depth, polling mode otherwise. All
+versions of the IP support polling mode, make the dma properties not
+required.
 
-On Thu, 29 Feb 2024 14:57:06 -0300
-Arthur Grillo <arthurgrillo@riseup.net> wrote:
+Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+---
+ Documentation/devicetree/bindings/spi/samsung,spi.yaml | 2 --
+ 1 file changed, 2 deletions(-)
 
-> On 29/02/24 09:12, Pekka Paalanen wrote:
-> > On Wed, 28 Feb 2024 22:52:09 -0300
-> > Arthur Grillo <arthurgrillo@riseup.net> wrote:
-> >  =20
-> >> On 27/02/24 17:01, Arthur Grillo wrote: =20
-> >>>
-> >>>
-> >>> On 27/02/24 12:02, Louis Chauvet wrote:   =20
-> >>>> Hi Pekka,
-> >>>>
-> >>>> For all the comment related to the conversion part, maybe Arthur hav=
-e an=20
-> >>>> opinion on it, I took his patch as a "black box" (I did not want to=
-=20
-> >>>> break (and debug) it).
-> >>>>
-> >>>> Le 26/02/24 - 14:19, Pekka Paalanen a =C3=A9crit :   =20
-> >>>>> On Fri, 23 Feb 2024 12:37:26 +0100
-> >>>>> Louis Chauvet <louis.chauvet@bootlin.com> wrote:
-> >>>>>   =20
-> >>>>>> From: Arthur Grillo <arthurgrillo@riseup.net>
-> >>>>>>
-> >>>>>> Add support to the YUV formats bellow:
-> >>>>>>
-> >>>>>> - NV12
-> >>>>>> - NV16
-> >>>>>> - NV24
-> >>>>>> - NV21
-> >>>>>> - NV61
-> >>>>>> - NV42
-> >>>>>> - YUV420
-> >>>>>> - YUV422
-> >>>>>> - YUV444
-> >>>>>> - YVU420
-> >>>>>> - YVU422
-> >>>>>> - YVU444
-> >>>>>>
-> >>>>>> The conversion matrices of each encoding and range were obtained by
-> >>>>>> rounding the values of the original conversion matrices multiplied=
- by
-> >>>>>> 2^8. This is done to avoid the use of fixed point operations.
-> >>>>>>
-> >>>>>> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
-> >>>>>> [Louis Chauvet: Adapted Arthur's work and implemented the read_lin=
-e_t
-> >>>>>> callbacks for yuv formats]
-> >>>>>> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
-> >>>>>> ---
-> >>>>>>  drivers/gpu/drm/vkms/vkms_composer.c |   2 +-
-> >>>>>>  drivers/gpu/drm/vkms/vkms_drv.h      |   6 +-
-> >>>>>>  drivers/gpu/drm/vkms/vkms_formats.c  | 289 ++++++++++++++++++++++=
-+++++++++++--
-> >>>>>>  drivers/gpu/drm/vkms/vkms_formats.h  |   4 +
-> >>>>>>  drivers/gpu/drm/vkms/vkms_plane.c    |  14 +-
-> >>>>>>  5 files changed, 295 insertions(+), 20 deletions(-)
+diff --git a/Documentation/devicetree/bindings/spi/samsung,spi.yaml b/Documentation/devicetree/bindings/spi/samsung,spi.yaml
+index 2f0a0835ecfb..f681372da81f 100644
+--- a/Documentation/devicetree/bindings/spi/samsung,spi.yaml
++++ b/Documentation/devicetree/bindings/spi/samsung,spi.yaml
+@@ -76,8 +76,6 @@ required:
+   - compatible
+   - clocks
+   - clock-names
+-  - dmas
+-  - dma-names
+   - interrupts
+   - reg
+ 
+-- 
+2.44.0.278.ge034bb2e1d-goog
 
-..
-
-> >> diff --git a/drivers/gpu/drm/vkms/tests/vkms_format_test.c b/drivers/g=
-pu/drm/vkms/tests/vkms_format_test.c
-> >> index f66584549827..4cee3c2d8d84 100644
-> >> --- a/drivers/gpu/drm/vkms/tests/vkms_format_test.c
-> >> +++ b/drivers/gpu/drm/vkms/tests/vkms_format_test.c
-> >> @@ -59,7 +59,7 @@ static struct yuv_u8_to_argb_u16_case yuv_u8_to_argb=
-_u16_cases[] =3D {
-> >>  			{"white", {0xff, 0x80, 0x80}, {0x0000, 0xffff, 0xffff, 0xffff}},
-> >>  			{"gray",  {0x80, 0x80, 0x80}, {0x0000, 0x8000, 0x8000, 0x8000}},
-> >>  			{"black", {0x00, 0x80, 0x80}, {0x0000, 0x0000, 0x0000, 0x0000}},
-> >> -			{"red",   {0x35, 0x63, 0xff}, {0x0000, 0xffff, 0x0000, 0x0000}},
-> >> +			{"red",   {0x36, 0x63, 0xff}, {0x0000, 0xffff, 0x0000, 0x0000}},
-> >>  			{"green", {0xb6, 0x1e, 0x0c}, {0x0000, 0x0000, 0xffff, 0x0000}},
-> >>  			{"blue",  {0x12, 0xff, 0x74}, {0x0000, 0x0000, 0x0000, 0xffff}},
-> >>  		},
-> >> diff --git a/drivers/gpu/drm/vkms/vkms_formats.c b/drivers/gpu/drm/vkm=
-s/vkms_formats.c
-> >> index e06bbd7c0a67..043f23dbf80d 100644
-> >> --- a/drivers/gpu/drm/vkms/vkms_formats.c
-> >> +++ b/drivers/gpu/drm/vkms/vkms_formats.c
-> >> @@ -121,10 +121,12 @@ static void RGB565_to_argb_u16(u8 **src_pixels, =
-struct pixel_argb_u16 *out_pixel
-> >>  	out_pixel->b =3D drm_fixp2int_round(drm_fixp_mul(fp_b, fp_rb_ratio));
-> >>  }
-> >> =20
-> >> -static void ycbcr2rgb(const s16 m[3][3], u8 y, u8 cb, u8 cr, u8 y_off=
-set, u8 *r, u8 *g, u8 *b)
-> >> +#define BIT_DEPTH 32
-> >> +
-> >> +static void ycbcr2rgb(const s64 m[3][3], u8 y, u8 cb, u8 cr, u8 y_off=
-set, u8 *r, u8 *g, u8 *b)
-> >>  {
-> >> -	s32 y_16, cb_16, cr_16;
-> >> -	s32 r_16, g_16, b_16;
-> >> +	s64 y_16, cb_16, cr_16;
-> >> +	s64 r_16, g_16, b_16;
-> >> =20
-> >>  	y_16 =3D  y - y_offset;
-> >>  	cb_16 =3D cb - 128;
-> >> @@ -134,9 +136,18 @@ static void ycbcr2rgb(const s16 m[3][3], u8 y, u8=
- cb, u8 cr, u8 y_offset, u8 *r,
-> >>  	g_16 =3D m[1][0] * y_16 + m[1][1] * cb_16 + m[1][2] * cr_16;
-> >>  	b_16 =3D m[2][0] * y_16 + m[2][1] * cb_16 + m[2][2] * cr_16;
-> >> =20
-> >> -	*r =3D clamp(r_16, 0, 0xffff) >> 8;
-> >> -	*g =3D clamp(g_16, 0, 0xffff) >> 8;
-> >> -	*b =3D clamp(b_16, 0, 0xffff) >> 8;
-> >> +	// rounding the values
-> >> +	r_16 =3D r_16 + (1LL << (BIT_DEPTH - 4));
-> >> +	g_16 =3D g_16 + (1LL << (BIT_DEPTH - 4));
-> >> +	b_16 =3D b_16 + (1LL << (BIT_DEPTH - 4));
-> >> +
-> >> +	r_16 =3D clamp(r_16, 0, (1LL << (BIT_DEPTH + 8)) - 1);
-> >> +	g_16 =3D clamp(g_16, 0, (1LL << (BIT_DEPTH + 8)) - 1);
-> >> +	b_16 =3D clamp(b_16, 0, (1LL << (BIT_DEPTH + 8)) - 1); =20
-> >=20
-> > Where do the BIT_DEPTH - 4 and BIT_DEPTH + 8 come from? =20
->=20
-> Basically, the numbers are in this form in hex:
->=20
-> 0xsspppppppp
->=20
-> In the end, we only want the 's' bits.
->=20
-> The matrix multiplication is not giving us perfect results, making some
-> of KUnit test not pass, This is because the values end up a little bit
-> off. KUnit expects 0xfe, but this functions is returning 0xfd.
->=20
-> I noticed that before shifting the values to get the 's' bytes the
-> values were a lot close to what is expected, something like:
->=20
-> 0xfdfe287312
->     ^
-> So the rounding part adds 1 to this marked 'f' to round a bit the values
-> (drm_fixed.h does something similar on drm_fixp2int_round).
-> Like that:
->=20
->    0xfdfe287312
-> +  0x0010000000
->    ------------
->    0xfe0e287312
->=20
-> That's why the BIT_DEPTH - 4.
-
-I have a hard time deciphering this. There is some sort of strange
-combination of UNORM and fixed-point going on here, where you process
-the range 0.0 - 255.0 including 32-bit fraction. All variables being
-named "_16" does not help, I've no idea what that refers to.
-
-Usually when you have unsigned pixel format type, it's UNORM, that is
-an unsigned integer representation that maps to [0.0, 1.0]. When
-converting UNORM properly to e.g. fixed-point, you don't have to
-consider the UNORM bit depth when computing in fixed-point.
-
-There is a catch: since 0xff maps to 1.0, the divisor is 0xff, and not
-a bit shift by 8. This must be taken into account when converting
-between different depths of UNORM, or between UNORM and fixed-point.
-Converting between different depths of fixed-point does not have this
-problem.
-
-If you want to proper rounding, meaning that 0.5 rounds up to 1.0 and
-0.4999 rounds down to 0.0 when rounding to integers, you have to add
-0.5 before truncating.
-
-So in this case you need to add 0x0100_0000 / 2 =3D 0x0080_0000, not
-0x0010_0000.
-
-I don't understand what drm_fixp2int_round() is even doing. The offset
-is not 0.5, it's 0.0000076.
-
-> After that, the values need to be clamped to not get wrong results when
-> shifting this s64 and casting it to u8. We clamp it to the minimum
-> allowed value: 0, and to the maximum allowed value, which in this case
-> is all the (BIT_DEPTH + 8) bits set to 1, The '+ 8' is to account for
-> the size of the 's' bits.
-
-Ok. You could also shift with >> BIT_DEPTH first, and then clamp to 0,
-255.
-
-
-Thanks,
-pq
-
-> After writing this, I think that maybe it would be good to add this
-> explanation as a comment on the code.
->=20
-> >  =20
-> >> +
-> >> +	*r =3D r_16 >> BIT_DEPTH;
-> >> +	*g =3D g_16 >> BIT_DEPTH;
-> >> +	*b =3D b_16 >> BIT_DEPTH;
-> >>  } =20
-
---Sig_/TYmDnefL1VGq17Xl+XSGL7s
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmXhwbcACgkQI1/ltBGq
-qqfZ7g/7BHqsw5Opqc38QlT5EIkXLQwAE4Eb8Qz/IrYYudbXNrRC56YbNnybka8F
-lZ/LGog21Q94WL4RUL1bqn4w8LAKmBdt0fz1GCisIXkxaZWs3FYIsL6HTw6jnbBA
-0rySHBx5rx531jd22slJ4QuclfAK1+FDAaRENEtalrzzgby2tzoaCBT9gQA0n0UQ
-q1pmNIHCLchiXuBjXKdGtaCQBoKZAL/htH82T4Df8hqn2gHCZdmQROz7NIOdibyx
-04XsG2dv4E6ZlPohlmFxE9yVistWFgvwGx0+92JNTwPb1XA5hix74GhTgHKP6nae
-OztE3kzJ6NNiVvIfLY7OpMVEatDOHPPu0F+jeLf4TZ0Peo0qV1HXLb2y2AOfXqWf
-SwgKF9hu9//Pflx7kKO48kzZUAur8GrnvKKOuUIhG64kMFh9k1dSVwVo7wzLzSzT
-02FS6sgB2Kfg4TIoFQY9U4FogR5KQKclCp4e3Tz0ISv6mkcAAmSjEc/d3lo1QuPm
-7C3TLRBz6LRaznSVM8tEuIUf6IVOv/Qrxrxe3eA+TN+WT9TFe9Yl+1WWVweG7pbp
-j1uWyZXMOrEl8OHxghgTWO283h2d6fW4Aapw7Z65R7oP7MkafkLmq09H+JjGLEpF
-DYZhsRett0X4elOxDxHip6c3fa6z1K7Bk2HDop9FMDaRvpmwm18=
-=QcSD
------END PGP SIGNATURE-----
-
---Sig_/TYmDnefL1VGq17Xl+XSGL7s--
 
