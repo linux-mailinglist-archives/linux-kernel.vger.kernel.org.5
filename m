@@ -1,405 +1,178 @@
-Return-Path: <linux-kernel+bounces-88822-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88824-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF81C86E72C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:27:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0223B86E732
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:29:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 382B8288E11
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:27:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 23ECF1C233B8
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:29:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 892A28BFE;
-	Fri,  1 Mar 2024 17:27:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3A5AE543;
+	Fri,  1 Mar 2024 17:29:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OWAF8pBu"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="h1g0P1wb"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B9F72900;
-	Fri,  1 Mar 2024 17:27:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C08DF5224;
+	Fri,  1 Mar 2024 17:29:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709314022; cv=none; b=WF13Ov5ovdfAacvEhjh0XePxUszOC9rqMDutJU9v0QENIQwke/rpnIM/fVtaXA1XWa+eJaO+oeRaGljo2D8yI+cj4uTQpJwapw26OtjurmlktXlswyB4BjraLAzqMVmJhRjxh06rX8XTkcBWj3okmzno2VijQ8njsV7H+Mlvjf8=
+	t=1709314184; cv=none; b=MXXkpeVC7Owe2dl1oJKC8JVa/nOfe2MjMZtw0mDXAOaT03QDBkvb0moUcp520dEE9my+1YFadqm4hlDVy/4Ax6rtNmNJRYFAFRk+AOj5/p5JB+PUNbs+CnxlcD25kmtfPhFBRYdFdNEE0bRXAmZwvDJfw8F7Ah0I92KldZqCrkM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709314022; c=relaxed/simple;
-	bh=YogIhGDbuAhFHlQeObalXFcZiiNQi2MV9J4WEdFmGf0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BPlEUiYZBIPgevMIKmfJmbQ1d/yuwQ7Xkf/il8zJXC8JAcv9g6pPd2CBalbx+UZ6OwGskbjV12wrXqFHacBNRSk0i6F/JqHbYM9CcnYYynXtRMrySK9ZOzERjSEiOzzPUsfuSuhzga/hQUCMaQzIaWboGUmvLtXklyaJ4QJyF6Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OWAF8pBu; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+	s=arc-20240116; t=1709314184; c=relaxed/simple;
+	bh=jMSg6LZKcjlzCjpvuqsCAcGkMT3EOrB6qDi5+Dp/aC0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=neRMURhA10UIqn1FFt4CbuwJEnqRGF2O6sGPgCo3VYecpjsPZYusltBOEt7gM1TBaWj1LUcpe69sMl5zGqaI1wprOYU44froAcE7Mxsf9bXe+5F3OBg7Dpx3f3FFIw/xE+v0jIpSnu137lW36QK3XAVGkUxN2inZGLk3p1DZyTg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=h1g0P1wb; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709314020; x=1740850020;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=YogIhGDbuAhFHlQeObalXFcZiiNQi2MV9J4WEdFmGf0=;
-  b=OWAF8pBu8LorewQwGDJIhyEY5dUY68A8B/HPIai0gBi365xJjAKli+JG
-   qLju2Om/vUm92J7QWpnKOPv1D6GYiNY4yb/5dVFduuoCxPQyH7ZHYnSDq
-   kvre81ehwcwG+xuODekQMCAYMDOD0yZDkE9i1Gm9bS5M29VRzbeKs+QL7
-   7DVkICnYJ9njfIQiqKl0jTxY7InhLt70o3DoDOKIZn28HXC6i67RYmf0V
-   LeSp9vVx+mzQsWZcn2vDpQayGHsC/+UgZN02lX3YhoiQ177gwxVWNxtCZ
-   Rcvvk3TL4ov140MLL3Q9eWkZCPBGc/B4v2tdFhifhPNRQvPJ2Vc/XRcez
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11000"; a="15273367"
+  t=1709314182; x=1740850182;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=jMSg6LZKcjlzCjpvuqsCAcGkMT3EOrB6qDi5+Dp/aC0=;
+  b=h1g0P1wbN/MU66A6yVKbwxbwu+VdE15/tkxQaKB87UXnn0Aqjju+VXtO
+   Wn0LAJZnvhLEGH8H1jjxHWT2gHd4HSpQXPhbQ2IIso3V7glDpS2yu/ph7
+   AhkySJbpXP3k1dnd0JzVzNwW1KUxi1TK6O4tnpni2cZvmcmBERHMd/Mg6
+   QfRTI9eS6mgSF2J/h+YfMX7qEPuneOlvSBg2Qj6i0b3uUPJqCf/4U5ZDR
+   6cDibiqxGrelRACoRp7l/HTZUjq3KV7V411XR+SYn8oYqjB8tx7DeLeMJ
+   l72gHWJkLiN5QHqhsQo96grnbrzDKnsh73INdyq/agvv2hQGpP0+52cEu
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11000"; a="6812372"
 X-IronPort-AV: E=Sophos;i="6.06,196,1705392000"; 
-   d="scan'208";a="15273367"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 09:26:59 -0800
+   d="scan'208";a="6812372"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 09:29:22 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.06,196,1705392000"; 
-   d="scan'208";a="12958512"
-Received: from linux.intel.com ([10.54.29.200])
-  by orviesa005.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 09:26:59 -0800
-Received: from [10.209.156.90] (kliang2-mobl1.ccr.corp.intel.com [10.209.156.90])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by linux.intel.com (Postfix) with ESMTPS id 86B54580DA4;
-	Fri,  1 Mar 2024 09:26:56 -0800 (PST)
-Message-ID: <f9248ff6-6138-46b6-9cb7-a40442882195@linux.intel.com>
-Date: Fri, 1 Mar 2024 12:26:55 -0500
+   d="scan'208";a="12946510"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 09:29:22 -0800
+From: isaku.yamahata@intel.com
+To: kvm@vger.kernel.org
+Cc: isaku.yamahata@intel.com,
+	isaku.yamahata@gmail.com,
+	linux-kernel@vger.kernel.org,
+	Sean Christopherson <seanjc@google.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Michael Roth <michael.roth@amd.com>,
+	David Matlack <dmatlack@google.com>,
+	Federico Parola <federico.parola@polito.it>
+Subject: [RFC PATCH 0/8] KVM: Prepopulate guest memory API
+Date: Fri,  1 Mar 2024 09:28:42 -0800
+Message-Id: <cover.1709288671.git.isaku.yamahata@intel.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 04/20] perf jevents: Add tsx metric group for Intel
- models
-Content-Language: en-US
-To: Ian Rogers <irogers@google.com>
-Cc: Perry Taylor <perry.taylor@intel.com>,
- Samantha Alt <samantha.alt@intel.com>,
- Caleb Biggers <caleb.biggers@intel.com>, Weilin Wang
- <weilin.wang@intel.com>, Edward Baker <edward.baker@intel.com>,
- Andi Kleen <ak@linux.intel.com>, Peter Zijlstra <peterz@infradead.org>,
- Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>,
- John Garry <john.g.garry@oracle.com>, Jing Zhang
- <renyu.zj@linux.alibaba.com>, Thomas Richter <tmricht@linux.ibm.com>,
- James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org,
- linux-perf-users@vger.kernel.org, Stephane Eranian <eranian@google.com>
-References: <20240229001806.4158429-1-irogers@google.com>
- <20240229001806.4158429-5-irogers@google.com>
- <7aa2d2a2-b8f9-478f-9699-7b717d38a8ab@linux.intel.com>
- <CAP-5=fWSidi1zjwn8Zr93dAQvRBtngKrkVwDxorTMmVSVc9FWg@mail.gmail.com>
- <e1e04f03-5d99-466d-a2d1-ce7fb15e8b8e@linux.intel.com>
- <CAP-5=fVBPT9itsyruLeChu=90xnvuxT7PSBtBkWi5LiDNAm2iw@mail.gmail.com>
-From: "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <CAP-5=fVBPT9itsyruLeChu=90xnvuxT7PSBtBkWi5LiDNAm2iw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
+From: Isaku Yamahata <isaku.yamahata@intel.com>
 
+The objective of this RFC patch series is to develop a uAPI aimed at
+(pre)populating guest memory for various use cases and underlying VM
+technologies.
 
-On 2024-03-01 11:37 a.m., Ian Rogers wrote:
-> On Fri, Mar 1, 2024 at 6:52 AM Liang, Kan <kan.liang@linux.intel.com> wrote:
->>
->>
->>
->> On 2024-02-29 8:01 p.m., Ian Rogers wrote:
->>> On Thu, Feb 29, 2024 at 1:15 PM Liang, Kan <kan.liang@linux.intel.com> wrote:
->>>>
->>>>
->>>>
->>>> On 2024-02-28 7:17 p.m., Ian Rogers wrote:
->>>>> Allow duplicated metric to be dropped from json files.
->>>>>
->>>>> Signed-off-by: Ian Rogers <irogers@google.com>
->>>>> ---
->>>>>  tools/perf/pmu-events/intel_metrics.py | 51 ++++++++++++++++++++++++++
->>>>>  1 file changed, 51 insertions(+)
->>>>>
->>>>> diff --git a/tools/perf/pmu-events/intel_metrics.py b/tools/perf/pmu-events/intel_metrics.py
->>>>> index 20c25d142f24..1096accea2aa 100755
->>>>> --- a/tools/perf/pmu-events/intel_metrics.py
->>>>> +++ b/tools/perf/pmu-events/intel_metrics.py
->>>>> @@ -7,6 +7,7 @@ import argparse
->>>>>  import json
->>>>>  import math
->>>>>  import os
->>>>> +from typing import Optional
->>>>>
->>>>>  parser = argparse.ArgumentParser(description="Intel perf json generator")
->>>>>  parser.add_argument("-metricgroups", help="Generate metricgroups data", action='store_true')
->>>>> @@ -77,10 +78,60 @@ def Smi() -> MetricGroup:
->>>>>      ])
->>>>>
->>>>>
->>>>> +def Tsx() -> Optional[MetricGroup]:
->>>>> +    if args.model not in [
->>>>> +        'alderlake',
->>>>> +        'cascadelakex',
->>>>> +        'icelake',
->>>>> +        'icelakex',
->>>>> +        'rocketlake',
->>>>> +        'sapphirerapids',
->>>>> +        'skylake',
->>>>> +        'skylakex',
->>>>> +        'tigerlake',> +    ]:
->>>>
->>>> Can we get ride of the model list? Otherwise, we have to keep updating
->>>> the list.
->>>
->>> Do we expect the list to update? :-)
->>
->> Yes, at least for the meteorlake and graniterapids. They should be the
->> same as alderlake and sapphirerapids. I'm not sure about the future
->> platforms.
->>
->> Maybe we can have a if args.model in list here to include all the
->> non-hybrid models which doesn't support TSX. I think the list should not
->> be changed shortly.
->>
->>> The issue is the events are in
->>> sysfs and not the json. If we added the tsx events to json then this
->>> list wouldn't be necessary, but it also would mean the events would be
->>> present in "perf list" even when TSX is disabled.
->>
->> I think there may an alternative way, to check the RTM events, e.g.,
->> RTM_RETIRED.START event. We only need to generate the metrics for the
->> platform which supports the RTM_RETIRED.START event.
->>
->>
->>>
->>>>> +        return None
->>>>> +> +    pmu = "cpu_core" if args.model == "alderlake" else "cpu"
->>>>
->>>> Is it possible to change the check to the existence of the "cpu" PMU
->>>> here? has_pmu("cpu") ? "cpu" : "cpu_core"
->>>
->>> The "Unit" on "cpu" events in json always just blank. On hybrid it is
->>> either "cpu_core" or "cpu_atom", so I can make this something like:
->>>
->>> pmu = "cpu_core" if metrics.HasPmu("cpu_core") else "cpu"
->>>
->>> which would be a build time test.
->>
->> Yes, I think using the "Unit" is good enough.
->>
->>>
->>>
->>>>> +    cycles = Event('cycles')
->>>>> +    cycles_in_tx = Event(f'{pmu}/cycles\-t/')
->>>>> +    transaction_start = Event(f'{pmu}/tx\-start/')
->>>>> +    cycles_in_tx_cp = Event(f'{pmu}/cycles\-ct/')
->>>>> +    metrics = [
->>>>> +        Metric('tsx_transactional_cycles',
->>>>> +                      'Percentage of cycles within a transaction region.',
->>>>> +                      Select(cycles_in_tx / cycles, has_event(cycles_in_tx), 0),
->>>>> +                      '100%'),
->>>>> +        Metric('tsx_aborted_cycles', 'Percentage of cycles in aborted transactions.',
->>>>> +                      Select(max(cycles_in_tx - cycles_in_tx_cp, 0) / cycles,
->>>>> +                                    has_event(cycles_in_tx),
->>>>> +                                    0),
->>>>> +                      '100%'),
->>>>> +        Metric('tsx_cycles_per_transaction',
->>>>> +                      'Number of cycles within a transaction divided by the number of transactions.',
->>>>> +                      Select(cycles_in_tx / transaction_start,
->>>>> +                                    has_event(cycles_in_tx),
->>>>> +                                    0),
->>>>> +                      "cycles / transaction"),
->>>>> +    ]
->>>>> +    if args.model != 'sapphirerapids':
->>>>
->>>> Add the "tsx_cycles_per_elision" metric only if
->>>> has_event(f'{pmu}/el\-start/')?
->>>
->>> It's a sysfs event, so this wouldn't work :-(
->>
->> The below is the definition of el-start in the kernel.
->> EVENT_ATTR_STR(el-start,        el_start,       "event=0xc8,umask=0x1");
->>
->> The corresponding event in the event list should be HLE_RETIRED.START
->>       "EventCode": "0xC8",
->>       "UMask": "0x01",
->>       "EventName": "HLE_RETIRED.START",
->>
->> I think we may check the HLE_RETIRED.START instead. If the
->> HLE_RETIRED.START doesn't exist, I don't see a reason why the
->> tsx_cycles_per_elision should be supported.
->>
->> Again, in the virtualization world, it's possible that the
->> HLE_RETIRED.START exists in the event list but el_start isn't available
->> in the sysfs. I think it has to be specially handle in the test as well.
-> 
-> So we keep the has_event test on the sysfs event to handle the
-> virtualization and disabled case. We use  HLE_RETIRED.START to detect
-> whether the model supports TSX.
+- Pre-populate guest memory to mitigate excessive KVM page faults during guest
+  boot [1], a need not limited to any specific technology.
 
-Yes. I think the JSON event always keeps the latest status of an event.
-If an event is deprecated someday, I don't think there is a reason to
-keep any metrics including the event. So we should use it to check
-whether to generate a metrics.
+- Pre-populating guest memory (including encryption and measurement) for
+  confidential guests [2].  SEV-SNP, TDX, and SW-PROTECTED VM.  Potentially
+  other technologies and pKVM.
 
-The sysfs event tells if the current kernel support the event. It should
-be used to check whether a metrics should be used/enabled.
+The patches are organized as follows.
+- 1: documentation on uAPI KVM_MAP_MEMORY.
+- 2: archtechture-independent implementation part.
+- 3-4: refactoring of x86 KVM MMU as preparation.
+- 5: x86 Helper function to map guest page.
+- 6: x86 KVM arch implementation.
+- 7: Add x86-ops necessary for TDX and SEV-SNP.
+- 8: selftest for validation.
 
-> Should the event be the sysfs or json
-> version? i.e.
-> 
->         "MetricExpr": "(cycles\\-t / el\\-start if
-> has_event(el\\-start) else 0)",
-> 
-> or
-> 
->         "MetricExpr": "(cycles\\-t / HLE_RETIRED.START if
-> has_event(el\\-start) else 0)",
-> 
-> I think I favor the former for some consistency with the has_event.
->
+Discussion point:
 
-Agree, the former looks good to me too.
+uAPI design:
+- access flags
+  Access flags are needed for the guest memory population.  We have options for
+  their exposure to uAPI.
+  - option 1. Introduce access flags, possibly with the addition of a private
+              access flag.
+  - option 2. Omit access flags from UAPI.
+    Allow the kernel to deduce the necessary flag based on the memory slot and
+    its memory attributes.
 
+- SEV-SNP and byte vs. page size
+  The SEV correspondence is SEV_LAUNCH_UPDATE_DATA.  Which dictates memory
+  regions to be in 16-byte alignment, not page size.  Should we define struct
+  kvm_memory_mapping in bytes rather than page size?
 
-> Using HLE_RETIRED.START means the set of TSX models goes from:
->         'alderlake',
->         'cascadelakex',
->         'icelake',
->         'icelakex',
->         'rocketlake',
->         'sapphirerapids',
->         'skylake',
->         'skylakex',
->         'tigerlake',
-> 
-> To:
->    broadwell
->    broadwellde
->    broadwellx
->    cascadelakex
->    haswell
->    haswellx
->    icelake
->    rocketlake
->    skylake
->    skylakex
-> 
-> Using RTM_RETIRED.START it goes to:
->    broadwell
->    broadwellde
->    broadwellx
->    cascadelakex
->    emeraldrapids
->    graniterapids
->    haswell
->    haswellx
->    icelake
->    icelakex
->    rocketlake
->    sapphirerapids
->    skylake
->    skylakex
->    tigerlake
-> 
-> So I'm not sure it is working equivalently to what we have today,
-> which may be good or bad. Here is what I think the code should look
-> like:
+  struct kvm_sev_launch_update_data {
+        __u64 uaddr;
+        __u32 len;
+  };
 
-Yes, there should be some changes. But I think the changes should be good.
+- TDX and measurement
+  The TDX correspondence is TDH.MEM.PAGE.ADD and TDH.MR.EXTEND.  TDH.MEM.EXTEND
+  extends its measurement by the page contents.
+  Option 1. Add an additional flag like KVM_MEMORY_MAPPING_FLAG_EXTEND to issue
+            TDH.MEM.EXTEND
+  Option 2. Don't handle extend. Let TDX vendor specific API
+            KVM_EMMORY_ENCRYPT_OP to handle it with the subcommand like
+            KVM_TDX_EXTEND_MEMORY.
 
-For icelakex, the HLE_RETIRED.START has been deprecated. I don't see a
-reason why should perf keep the tsx_cycles_per_elision metric.
+- TDX and struct kvm_memory_mapping:source
+  While the current patch series doesn't utilize
+  kvm_memory_mapping::source member.  TDX needs it to specify the source of
+  memory contents.
 
-For alderlake, TSX is deprecated. The perf should drop the related
-metrics as well.
-https://edc.intel.com/content/www/us/en/design/ipla/software-development-platforms/client/platforms/alder-lake-desktop/12th-generation-intel-core-processors-datasheet-volume-1-of-2/001/deprecated-technologies/
+Implementation:
+- x86 KVM MMU
+  In x86 KVM MMU, I chose to use kvm_mmu_do_page_fault().  It's not confined to
+  KVM TDP MMU.  We can restrict it to KVM TDP MMU and introduce an optimized
+  version.
 
-> 
-> def Tsx() -> Optional[MetricGroup]:
->   pmu = "cpu_core" if CheckPmu("cpu_core") else "cpu"
->   cycles = Event('cycles')
->   cycles_in_tx = Event(f'{pmu}/cycles\-t/')
->   cycles_in_tx_cp = Event(f'{pmu}/cycles\-ct/')
->   try:
->     # Test if the tsx event is present in the json, prefer the
->     # sysfs version so that we can detect its presence at runtime.
->     transaction_start = Event("RTM_RETIRED.START")
->     transaction_start = Event(f'{pmu}/tx\-start/')
->   except:
->     return None
-> 
->   elision_start = None
->   try:
->     # Elision start isn't supported by all models, but we'll not
->     # generate the tsx_cycles_per_elision metric in that
->     # case. Again, prefer the sysfs encoding of the event.
->     elision_start = Event("HLE_RETIRED.START")
->     elision_start = Event(f'{pmu}/el\-start/')
->   except:
->     pass
-> 
->   return MetricGroup('transaction', [
->       Metric('tsx_transactional_cycles',
->              'Percentage of cycles within a transaction region.',
->              Select(cycles_in_tx / cycles, has_event(cycles_in_tx), 0),
->              '100%'),
->       Metric('tsx_aborted_cycles', 'Percentage of cycles in aborted
-> transactions.',
->              Select(max(cycles_in_tx - cycles_in_tx_cp, 0) / cycles,
->                     has_event(cycles_in_tx),
->                     0),
->              '100%'),
->       Metric('tsx_cycles_per_transaction',
->              'Number of cycles within a transaction divided by the
-> number of transactions.',
->              Select(cycles_in_tx / transaction_start,
->                     has_event(cycles_in_tx),
->                     0),
->              "cycles / transaction"),
->       Metric('tsx_cycles_per_elision',
->              'Number of cycles within a transaction divided by the
-> number of elisions.',
->              Select(cycles_in_tx / elision_start,
->                     has_event(elision_start),
->                     0),
->              "cycles / elision") if elision_start else None,
->   ], description="Breakdown of transactional memory statistics")
-> 
-> Wdyt?
-
-Looks good to me.
+[1] https://lore.kernel.org/all/65262e67-7885-971a-896d-ad9c0a760907@polito.it/
+[2] https://lore.kernel.org/all/6a4c029af70d41b63bcee3d6a1f0c2377f6eb4bd.1690322424.git.isaku.yamahata@intel.com
 
 Thanks,
-Kan
-> 
-> Thanks,
-> Ian
-> 
->> Thanks,
->> Kan
->>
->>>
->>> Thanks,
->>> Ian
->>>
->>>> Thanks,
->>>> Kan
->>>>
->>>>> +        elision_start = Event(f'{pmu}/el\-start/')
->>>>> +        metrics += [
->>>>> +            Metric('tsx_cycles_per_elision',
->>>>> +                          'Number of cycles within a transaction divided by the number of elisions.',
->>>>> +                          Select(cycles_in_tx / elision_start,
->>>>> +                                        has_event(elision_start),
->>>>> +                                        0),
->>>>> +                          "cycles / elision"),
->>>>> +        ]
->>>>> +    return MetricGroup('transaction', metrics)
->>>>> +
->>>>> +
->>>>>  all_metrics = MetricGroup("", [
->>>>>      Idle(),
->>>>>      Rapl(),
->>>>>      Smi(),
->>>>> +    Tsx(),
->>>>>  ])
->>>>>
->>>>>  if args.metricgroups:
->>>
+
+Isaku Yamahata (8):
+  KVM: Document KVM_MAP_MEMORY ioctl
+  KVM: Add KVM_MAP_MEMORY vcpu ioctl to pre-populate guest memory
+  KVM: x86/mmu: Introduce initialier macro for struct kvm_page_fault
+  KVM: x86/mmu: Factor out kvm_mmu_do_page_fault()
+  KVM: x86/mmu: Introduce kvm_mmu_map_page() for prepopulating guest
+    memory
+  KVM: x86: Implement kvm_arch_{, pre_}vcpu_map_memory()
+  KVM: x86: Add hooks in kvm_arch_vcpu_map_memory()
+  KVM: selftests: x86: Add test for KVM_MAP_MEMORY
+
+ Documentation/virt/kvm/api.rst                |  36 +++++
+ arch/x86/include/asm/kvm-x86-ops.h            |   2 +
+ arch/x86/include/asm/kvm_host.h               |   6 +
+ arch/x86/kvm/mmu.h                            |   3 +
+ arch/x86/kvm/mmu/mmu.c                        |  30 ++++
+ arch/x86/kvm/mmu/mmu_internal.h               |  70 +++++----
+ arch/x86/kvm/x86.c                            |  83 +++++++++++
+ include/linux/kvm_host.h                      |   4 +
+ include/uapi/linux/kvm.h                      |  15 ++
+ tools/include/uapi/linux/kvm.h                |  14 ++
+ tools/testing/selftests/kvm/Makefile          |   1 +
+ .../selftests/kvm/x86_64/map_memory_test.c    | 136 ++++++++++++++++++
+ virt/kvm/kvm_main.c                           |  74 ++++++++++
+ 13 files changed, 448 insertions(+), 26 deletions(-)
+ create mode 100644 tools/testing/selftests/kvm/x86_64/map_memory_test.c
+
+
+base-commit: 6a108bdc49138bcaa4f995ed87681ab9c65122ad
+-- 
+2.25.1
+
 
