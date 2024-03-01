@@ -1,171 +1,139 @@
-Return-Path: <linux-kernel+bounces-87812-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87813-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FE7F86D956
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 03:04:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 404F086D957
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 03:04:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C6091F22AFC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 02:04:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77012286E54
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 02:04:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8B9238F9D;
-	Fri,  1 Mar 2024 02:03:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GOVRdKUp"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D11B38F9B;
+	Fri,  1 Mar 2024 02:04:13 +0000 (UTC)
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E4302B9A8;
-	Fri,  1 Mar 2024 02:03:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 826B839AC9;
+	Fri,  1 Mar 2024 02:04:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709258638; cv=none; b=c3RRvqpri+OWH/Qe0+9SSGLo36FJw4OlRSK+aUa1hAt+tGDuzJLFWmKVXQRnz/dpPmNRIQQGak8Uq9Toh9T7PUU+fkBQaj+XbehtT3m7/R1ZRWGF6qP8gx2oOG0xCkAXG33kIN/3Dj/uKuh+YC7xs8rx5xDO0GkLgWOw7rItiFc=
+	t=1709258652; cv=none; b=POK981BhqEnF49C5nPkpio4gg7wH/Tukd+uyl19SYuGkkD92RB9rzvOtxaq+FnLq7PQcbuxsprY0lJ7OJkhPEgS+N6G/5iMFCZ+k+P5yCfzrDoUoocZTIU1xenWoxHnvrXaWFDtt4oEq3IjYvfH4NFU/rnwMfVUbufgD3/Zppe0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709258638; c=relaxed/simple;
-	bh=D0UYIJU+Wae4fIkSE6J7PCAdA+0TfZGkj99JFM0PZIw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=r01j5HiNOEHVSZ4JiZ2I1WsyTXUFx5xfUETg8OhPUQKvd+Djf3Qk+FuGZ/gqkS9QUzrpkmklbEX2cy3qa7PiPI8Ha5VExjj4wNrmdGETnGZkHydNwPvgzv8RdQP4ell/rxnTBcmQjplvcxYHLXr4JDKz5SYyIshPPjBEbjidgj0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GOVRdKUp; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709258637; x=1740794637;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=D0UYIJU+Wae4fIkSE6J7PCAdA+0TfZGkj99JFM0PZIw=;
-  b=GOVRdKUpiFM4i5eZDjEj5RekeGPW6XH/s739W0XwKz0Jfjddx1jNHfgp
-   Cxyo4arTkF0UE9FYb3NTmNJVp+oD0M22h+svx2N3AUBW0MxZDk384qTD4
-   tYcmxJMTy6nvDSx/XVe8vhA/LvdZg2Q5bKuWl/aAeC5Ydp1vzrH/EBFR/
-   jB52DLT9lZDabw5xau5Ph/Ha7lyc5RnvXMA2K+bxPDCbgCybg7SsaI1I3
-   aWLK2l3I8wCx1gXZC/3JK1j0WwtOHHX2QDmi8vd2HhLYwnRr7lNdMyjMT
-   sCrPmi4qhyF1elxgv9im33q81CnVGORjym3Wa7Tm8SIlpXSAIWOMV3T/V
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="14925480"
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="14925480"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 18:03:56 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="12579781"
-Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.124.229.115]) ([10.124.229.115])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 18:03:51 -0800
-Message-ID: <5a137fa9-c18d-44e1-b486-1256b677c678@linux.intel.com>
-Date: Fri, 1 Mar 2024 10:03:49 +0800
+	s=arc-20240116; t=1709258652; c=relaxed/simple;
+	bh=/d9AG0yAYaKw80HGazSSs3yzEkw5b6BjdLgT2pIrXDE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=n5T/UkpjDIbnIy2zyOeBV+oLPgpKaNEib783aSDcmepOqjmuDkw6WCqiIjSFaHyo2/Jr63zko3DpoiOiZD2UR6qnZnTV97OkottCs3fnBOcY0thnq6lhVwTpykGPxXEHhhzSVcrMantY2TJ0dbeMo/fkJzPFz8B28k8ixAUKtrA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-29a6dcfdd30so1253187a91.0;
+        Thu, 29 Feb 2024 18:04:11 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709258651; x=1709863451;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=suOSlNRm11HwW5KZFh7zQNpV0hqocGQ1PpQrvLWCrew=;
+        b=jxw8oA0c/53Uimm81rXTM8UYOL5UZIXWXgPhDnKa1HYxVI+7JjToInBZBCx6Ib5DPr
+         +GKKUMV486IiAW4t5/5+LV21KeBppoaoFTgIFLf1mEtQQY8e8Elr6x6769MGlbvjpz7+
+         pjyesWodil2nY+x6kHmd2zkTsXcNEyWLqdm4dxPJKenu1F8y3E4pV8PNScRCT1s9fenh
+         ZtZhCbQEllWnpa9JRLmYLMMa4CwNuV7mldxIiyVK/UBRIHNWjEk08UJBPhsaiYSxboBz
+         2DisNgaT6rzMR36RacE1E4va4Smp2y/GRGsoch5/bdZBnIlp94znKXJBIhgzV/GWma3V
+         e3jw==
+X-Forwarded-Encrypted: i=1; AJvYcCWzH7rf+OxAuYTY9hQMgDIDiTz2v4J+R/qbi+9ITLdGEiT8vLoo0E4OehrLKqYJGwTA+gpjRWLD45JbJ134B/Q7jd9WKylf7wBL0ciedQIT+APimNPlC1Qb0wXwweLUXVxYdi/2iy/NBKUAI0BhKQ==
+X-Gm-Message-State: AOJu0YyMsKBrSyc0rbmjw1Cm2rUyNczuLs2yhAywAswsQV/0OnCzG4+Y
+	y9j3VbAd9CsqGwARgnzPlGLvytZK+2yKTx+BWoTAaQtuac/oYjQxc8T5JqOF/HhVsHbCNBhYlcm
+	RTTMzsnBwCQQOgCOOoMMUKhprYjY=
+X-Google-Smtp-Source: AGHT+IGpkrbJcWmIpOQ994xbrP0TgrArhB16iqTpTpOaTB7y93OuV1723dzmhSta1S643y/4jxhRWmp4u+0btWfB/9Q=
+X-Received: by 2002:a17:90a:d184:b0:29b:1e0a:10c8 with SMTP id
+ fu4-20020a17090ad18400b0029b1e0a10c8mr396759pjb.4.1709258650888; Thu, 29 Feb
+ 2024 18:04:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v13 1/3] PCI: make pci_dev_is_disconnected() helper public
- for other drivers
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Baolu Lu <baolu.lu@linux.intel.com>, bhelgaas@google.com,
- robin.murphy@arm.com, jgg@ziepe.ca, kevin.tian@intel.com,
- dwmw2@infradead.org, will@kernel.org, lukas@wunner.de, yi.l.liu@intel.com,
- dan.carpenter@linaro.org, iommu@lists.linux.dev,
- linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
- Haorong Ye <yehaorong@bytedance.com>
-References: <20240229223302.GA363505@bhelgaas>
-From: Ethan Zhao <haifeng.zhao@linux.intel.com>
-In-Reply-To: <20240229223302.GA363505@bhelgaas>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240229062048.558799-1-irogers@google.com>
+In-Reply-To: <20240229062048.558799-1-irogers@google.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Thu, 29 Feb 2024 18:04:00 -0800
+Message-ID: <CAM9d7cjCn-GFtjejw+DtK_Y6kNRGLQTAZNn6zarQfNDjvWHUXw@mail.gmail.com>
+Subject: Re: [PATCH v1] perf map: Fix map reference count issues
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 3/1/2024 6:33 AM, Bjorn Helgaas wrote:
-> On Thu, Feb 29, 2024 at 09:58:43AM +0800, Ethan Zhao wrote:
->> On 2/27/2024 7:05 AM, Bjorn Helgaas wrote:
->>> On Thu, Feb 22, 2024 at 08:54:54PM +0800, Baolu Lu wrote:
->>>> On 2024/2/22 17:02, Ethan Zhao wrote:
->>>>> Make pci_dev_is_disconnected() public so that it can be called from
->>>>> Intel VT-d driver to quickly fix/workaround the surprise removal
->>>>> unplug hang issue for those ATS capable devices on PCIe switch downstream
->>>>> hotplug capable ports.
->>>>>
->>>>> Beside pci_device_is_present() function, this one has no config space
->>>>> space access, so is light enough to optimize the normal pure surprise
->>>>> removal and safe removal flow.
->>>>>
->>>>> Tested-by: Haorong Ye<yehaorong@bytedance.com>
->>>>> Signed-off-by: Ethan Zhao<haifeng.zhao@linux.intel.com>
->>>>> ---
->>>>>     drivers/pci/pci.h   | 5 -----
->>>>>     include/linux/pci.h | 5 +++++
->>>>>     2 files changed, 5 insertions(+), 5 deletions(-)
->>>> Hi PCI subsystem maintainers,
->>>>
->>>> The iommu drivers (including, but not limited to, the Intel VT-d driver)
->>>> require a helper to check the physical presence of a PCI device in two
->>>> scenarios:
->>>>
->>>> - During the iommu_release_device() path: This ensures the device is
->>>>     physically present before sending device TLB invalidation to device.
->>> This wording is fundamentally wrong.  Testing
->>> pci_dev_is_disconnected() can never ensure the device will still be
->>> present by the time a TLB invalidation is sent.
->> The logic of testing pci_dev_is_disconnected() in patch [2/3] works
->> in the opposite:
->>
->> 1. if pci_dev_is_disconnected() return true, means the device is in
->>     the process of surprise removal handling, adapter already been
->>     removed from the slot.
->>
->> 2. for removed device, no need to send ATS invalidation request to it.
->>     removed device lost power, its devTLB wouldn't be valid anymore.
->>
->> 3. if pci_dev_is_disconnected() return false, the device is *likely*
->>     to be removed at any momoment after this function called.
->>     such case will be treated in the iommu ITE fault handling, not to
->>     retry the timeout request if device isn't present (patch [3/3]).
->>
->>> The device may be removed after the pci_dev_is_disconnected() test and
->>> before a TLB invalidate is sent.
->> even in the process while TLB is invalidating.
->>
->>> This is why I hesitate to expose pci_dev_is_disconnected() (and
->>> pci_device_is_present(), which we already export) outside
->>> drivers/pci/.  They both lead to terrible mistakes like relying on the
->>> false assumption that the result will remain valid after the functions
->>> return, without any recognition that we MUST be able to deal with the
->>> cases where that assumption is broken.
->> Yup, your concern is worthy ,but isn't happening within this patchset.
-> OK, I acked the patch.
-
-Great !
-
+On Wed, Feb 28, 2024 at 10:21=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
+ote:
 >
-> I guess my complaint is really with pci_device_is_present() because
-> that's even harder to use correctly.
+> The find will get the map, ensure puts are done on all paths.
 >
-> pci_device_is_present():
->    slow (may do config access to device)
->    true  => device *was* present in the recent past, may not be now
->    false => device is not accessible
+> Signed-off-by: Ian Rogers <irogers@google.com>
 
-so the 'false' result is reliable for post-calling code, then give up
-more attempt of the same request. the usage in patch[3/3]
-
->
-> pci_dev_is_disconnected():
->    fast (doesn't touch device)
->    true  => device is not accessible
-
-also we are relying on the 'true' result returned, used in  patch[2/3].
-
->    false => basically means nothing
->
-> I guess they're both hard ;)
-
-seems I didn't mess them up. :)
+Acked-by: Namhyung Kim <namhyung@kernel.org>
 
 Thanks,
-Ethan
+Namhyung
 
+
+> ---
+>  tools/perf/util/maps.c        | 14 +++++++-------
+>  tools/perf/util/probe-event.c |  4 +---
+>  2 files changed, 8 insertions(+), 10 deletions(-)
 >
-> Bjorn
+> diff --git a/tools/perf/util/maps.c b/tools/perf/util/maps.c
+> index 53aea6d2ef93..ce13145a9f8e 100644
+> --- a/tools/perf/util/maps.c
+> +++ b/tools/perf/util/maps.c
+> @@ -611,14 +611,14 @@ struct symbol *maps__find_symbol(struct maps *maps,=
+ u64 addr, struct map **mapp)
+>         struct symbol *result =3D NULL;
+>
+>         /* Ensure map is loaded before using map->map_ip */
+> -       if (map !=3D NULL && map__load(map) >=3D 0) {
+> -               if (mapp)
+> -                       *mapp =3D map;
+> -
+> +       if (map !=3D NULL && map__load(map) >=3D 0)
+>                 result =3D map__find_symbol(map, map__map_ip(map, addr));
+> -               if (!mapp)
+> -                       map__put(map);
+> -       }
+> +
+> +       if (mapp)
+> +               *mapp =3D map;
+> +       else
+> +               map__put(map);
+> +
+>         return result;
+>  }
+>
+> diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.=
+c
+> index be71abe8b9b0..2a0ad9ecf0a2 100644
+> --- a/tools/perf/util/probe-event.c
+> +++ b/tools/perf/util/probe-event.c
+> @@ -2274,9 +2274,7 @@ static int find_perf_probe_point_from_map(struct pr=
+obe_trace_point *tp,
+>         ret =3D pp->function ? 0 : -ENOMEM;
+>
+>  out:
+> -       if (map && !is_kprobe) {
+> -               map__put(map);
+> -       }
+> +       map__put(map);
+>
+>         return ret;
+>  }
+> --
+> 2.44.0.278.ge034bb2e1d-goog
+>
 
