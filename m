@@ -1,222 +1,198 @@
-Return-Path: <linux-kernel+bounces-88417-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88418-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A64BA86E14F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:49:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3110886E152
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:51:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B290D1C21599
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:49:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 81034B22B71
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:51:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42F7E40860;
-	Fri,  1 Mar 2024 12:49:34 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16C44381DE;
-	Fri,  1 Mar 2024 12:49:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 447A640859;
+	Fri,  1 Mar 2024 12:51:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QD43T5sS"
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9534384;
+	Fri,  1 Mar 2024 12:51:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709297373; cv=none; b=n1DRtTCCJVtVtmTFtiDIYiG2EqExKgrYQ/ZWaYRhFTlEylHHYqrTeYLwT67ObLznNXz/emebr+Pj/1xVos2ZYQp8enfWT74OfAyZ5QffVTVqGgmTH8t+DgTXqwrUvfpFxV8pKd1wTD0MS1wi+MysEap2MhYRVgOKJdWmPpBz8IY=
+	t=1709297462; cv=none; b=jVPZRPnfYC7TH/jeY6glQoxOpPSwRDSQwbuNFxVNDPBwUzsOVN+EQlJ1FISZwZmsKUibOrXGPe8WLO8GllJURi9ZCl0sqFKxVF9n3J7RB2Fjsgrhajov916z25T3jg/nHFBcAST15ssVHE88rv3rVLdCEfoehuQ2D3ya/jfvsjY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709297373; c=relaxed/simple;
-	bh=NHCHlY1mNSUuowuDTVrXRqOA3e2iVPDG8y3jAmEeIFA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=imCEjsy5ncEuOqG0Qfg8V2uK8x6fFjVhwphxR2hGoGEUScasGlSvnYAzsoLltvhuMY276UfhNJDcbP04WdxmpqyT319wOqspW+86QROLzH3QfrhJ5/AdUlQo+NSS/fC261yIovAWpI0tR1+AmOo27JKE3Eg9409GEMuHHHCAn6s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 728241FB;
-	Fri,  1 Mar 2024 04:50:08 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.69.134])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6D93D3F6C4;
-	Fri,  1 Mar 2024 04:49:27 -0800 (PST)
-Date: Fri, 1 Mar 2024 12:49:24 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: Anshuman Khandual <anshuman.khandual@arm.com>
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	will@kernel.org, catalin.marinas@arm.com,
-	Mark Brown <broonie@kernel.org>, James Clark <james.clark@arm.com>,
-	Rob Herring <robh@kernel.org>, Marc Zyngier <maz@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	linux-perf-users@vger.kernel.org,
-	Oliver Upton <oliver.upton@linux.dev>,
-	James Morse <james.morse@arm.com>, kvmarm@lists.linux.dev
-Subject: Re: [PATCH V16 2/8] KVM: arm64: Prevent guest accesses into BRBE
- system registers/instructions
-Message-ID: <ZeHO1OJsq98cdlk3@FVFF77S0Q05N>
-References: <20240125094119.2542332-1-anshuman.khandual@arm.com>
- <20240125094119.2542332-3-anshuman.khandual@arm.com>
- <ZdYCUi9YVDNDz7fr@FVFF77S0Q05N>
- <ab50e67e-3d06-4ba7-a5f8-4684e9ef98a4@arm.com>
- <Zd2zy0oUk8XvoDJM@FVFF77S0Q05N>
- <b134c30d-d855-41bb-a260-9f6437b77697@arm.com>
- <62e64ddd-266c-414e-b66a-8ca94f3c2bbf@arm.com>
- <ZeB9kHheAGJ__TQU@FVFF77S0Q05N>
- <3c5238e5-bf2b-4e6c-a81a-e7d7bb0d9fb4@arm.com>
+	s=arc-20240116; t=1709297462; c=relaxed/simple;
+	bh=VT5DENfcjK5kbV+MqzU5qzIwn6hsKvuBbB+SHtYB5J0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XaIEycf57KZm2EREIjwahDnLFfvheR4/B17tnrSdOyGokYmAEoh76nObJ26GNdVnaon/VLmxkb3a4UqusjtbMh9nVIfCSn9poV2FFUkrhw66er92haUeBC7i9pmAJVtl65iDUE5zAI14IiYRVcM15ysPITUAyHuNyNtZfsZJjV0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QD43T5sS; arc=none smtp.client-ip=209.85.208.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d2991e8c12so20505531fa.0;
+        Fri, 01 Mar 2024 04:51:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709297459; x=1709902259; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zY1b3d2Tl1giP5yVHQEYhQx4eA8VNmtdQMtJe0Gl634=;
+        b=QD43T5sSZzNamQL4QDQRVV/BjIeHwZ+75qAkrj/vBA2u00KckYzBLjiOr3HYd29x3r
+         bq9GxGBVlnEtlwI94IetXtuiB7GU9oGaUbDEC+AZkIzMQFQIKDkLnLIZZjYEP8olX9Sz
+         JickUeucm3+4WZwVkseH2G4zKrSf7SeMutJ1O+r1Idlj/EFChKDRU3PLEeEEiZuOWFIS
+         4CAgz6ApQ+vQkTHE7i7vbd+jzRhGhQHI5yL9rRWJ4+dTcOZBBiXZWkylwBMHJtN28Q6/
+         rw2cML1joVnnfYvLSS1/frUAnqNTBdIJvisjB5vsd3UM2gHNxzIpXWDm5Q04O91oMSON
+         qw4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709297459; x=1709902259;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zY1b3d2Tl1giP5yVHQEYhQx4eA8VNmtdQMtJe0Gl634=;
+        b=PL/K9mcse7NDWQiq+ws9MW2jrTmB+nLhx4EB+pKXVYnC0DOqJGfiYQ8mr1BOSXGEoE
+         4s+UD/fkq/G7HbyNd7iFhuIJoVjquKVeRohiDrGjlk83CgRDtudxy6DytqFtTQ6gPtJM
+         p4R1+1hB3cgvtxqwMrCrKGYVwIlHhshqlgCbig+BODgwmPzNrNJJ7km5BVsttQtyyZwI
+         4XaRH3KKu1YjDfVIxGCtcaHYSiCUjf1aG1v9Noe1/gqlfxKncT92VonvfhB8EruATUCo
+         eXKoIxPMZ2G7mb24qH90qOCkWAbVqIJxV9TMq66dHiiPCsTEMxcnhxt9nxUly39rfw7n
+         Oz9A==
+X-Forwarded-Encrypted: i=1; AJvYcCXJhCXx4Xr3XPiIkNuyi0lApXERjYlDyes5PeEKEOHRSR0ZraFdEZPSS5EOWzLCedSnuLLyffRXknHUiTmUp75YLk3ILblTEOehVSOOY4Pm/1Q=
+X-Gm-Message-State: AOJu0YzllUD4varDUi9gfgFDIHS6nNu25Jssa2Boz9A6uNidGNiMUbl5
+	G+GCMQXWWNPg6hlF/nFrTz2NKWHoZDs0KLzNTM5VD/uz5rkD2Ii9H7TdaCIH680SodLsF/Kih3V
+	x7FdVkivgu4OIo7YUQ4V4Fhsb87Y=
+X-Google-Smtp-Source: AGHT+IF/okBHsdWykvOzA9eQeCMVyiM6SOfIo5iiI2kr/Lp3p/82mLUnGCMM40kQ8VNQAoRqmHKFVpGvJ1+1OLQ6xbQ=
+X-Received: by 2002:a05:651c:113:b0:2d2:28a3:eb38 with SMTP id
+ a19-20020a05651c011300b002d228a3eb38mr1937940ljb.8.1709297458632; Fri, 01 Mar
+ 2024 04:50:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3c5238e5-bf2b-4e6c-a81a-e7d7bb0d9fb4@arm.com>
+References: <20240124103859.611372-1-ubizjak@gmail.com> <170929679278.398.4143931058196373559.tip-bot2@tip-bot2>
+ <CAMj1kXGc5_AM2AkE+h8EcvYjAGHqeDWRyVRYUGfBjeubeUmJ6Q@mail.gmail.com>
+In-Reply-To: <CAMj1kXGc5_AM2AkE+h8EcvYjAGHqeDWRyVRYUGfBjeubeUmJ6Q@mail.gmail.com>
+From: Uros Bizjak <ubizjak@gmail.com>
+Date: Fri, 1 Mar 2024 13:50:47 +0100
+Message-ID: <CAFULd4a1sv7LZyT4CMCCsCxi+F9Rm0qAmSV-s=1re_1h71SB7g@mail.gmail.com>
+Subject: Re: [tip: x86/boot] x86/boot: Use 32-bit XOR to clear registers
+To: Ard Biesheuvel <ardb@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org, 
+	Ingo Molnar <mingo@kernel.org>, Andy Lutomirski <luto@kernel.org>, Brian Gerst <brgerst@gmail.com>, 
+	Denys Vlasenko <dvlasenk@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, 
+	Linus Torvalds <torvalds@linux-foundation.org>, Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 01, 2024 at 01:16:10PM +0530, Anshuman Khandual wrote:
-> 
-> On 2/29/24 18:20, Mark Rutland wrote:
-> > Hi Suzuki,
-> > 
-> > On Thu, Feb 29, 2024 at 11:45:08AM +0000, Suzuki K Poulose wrote:
-> >> On 27/02/2024 11:13, Anshuman Khandual wrote:
-> >>> On 2/27/24 15:34, Mark Rutland wrote:
-> >>>> On Fri, Feb 23, 2024 at 12:58:48PM +0530, Anshuman Khandual wrote:
-> >>>>> On 2/21/24 19:31, Mark Rutland wrote:
-> >>>>>> On Thu, Jan 25, 2024 at 03:11:13PM +0530, Anshuman Khandual wrote:
-> >>>>>>> Currently BRBE feature is not supported in a guest environment. This hides
-> >>>>>>> BRBE feature availability via masking ID_AA64DFR0_EL1.BRBE field.
-> >>>>>>
-> >>>>>> Does that means that a guest can currently see BRBE advertised in the
-> >>>>>> ID_AA64DFR0_EL1.BRB field, or is that hidden by the regular cpufeature code
-> >>>>>> today?
-> >>>>>
-> >>>>> IIRC it is hidden, but will have to double check. When experimenting for BRBE
-> >>>>> guest support enablement earlier, following changes were need for the feature
-> >>>>> to be visible in ID_AA64DFR0_EL1.
-> >>>>>
-> >>>>> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> >>>>> index 646591c67e7a..f258568535a8 100644
-> >>>>> --- a/arch/arm64/kernel/cpufeature.c
-> >>>>> +++ b/arch/arm64/kernel/cpufeature.c
-> >>>>> @@ -445,6 +445,7 @@ static const struct arm64_ftr_bits ftr_id_mmfr0[] = {
-> >>>>>   };
-> >>>>>   static const struct arm64_ftr_bits ftr_id_aa64dfr0[] = {
-> >>>>> +       S_ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_EL1_BRBE_SHIFT, 4, ID_AA64DFR0_EL1_BRBE_IMP),
-> >>>>>          S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_EL1_DoubleLock_SHIFT, 4, 0),
-> >>>>>          ARM64_FTR_BITS(FTR_HIDDEN, FTR_NONSTRICT, FTR_LOWER_SAFE, ID_AA64DFR0_EL1_PMSVer_SHIFT, 4, 0),
-> >>>>>          ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_EL1_CTX_CMPs_SHIFT, 4, 0),
-> >>>>>
-> >>>>> Should we add the following entry - explicitly hiding BRBE from the guest
-> >>>>> as a prerequisite patch ?
-> >>
-> >> This has nothing to do with the Guest visibility of the BRBE. This is
-> >> specifically for host "userspace" (via MRS emulation).
-> >>
-> >>>>>
-> >>>>> S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_EL1_BRBE_SHIFT, 4, ID_AA64DFR0_EL1_BRBE_NI)
-> >>>>
-> >>>> Is it visbile currently, or is it hidden currently?
-> >>>>
-> >>>> * If it is visible before this patch, that's a latent bug that we need to go
-> >>>>    fix first, and that'll require more coordination.
-> >>>>
-> >>>> * If it is not visible before this patch, there's no problem in the code, but
-> >>>>    the commit message needs to explicitly mention that's the case as the commit
-> >>>>    message currently implies it is visible by only mentioning hiding it.
-> >>>>
-> >>>> ... so can you please double check as you suggested above? We should be able to
-> >>>> explain why it is or is not visible today.
-> >>>
-> >>> It is currently hidden i.e following code returns 1 in the host
-> >>> but returns 0 inside the guest.
-> >>>
-> >>> aa64dfr0 = read_sysreg_s(SYS_ID_AA64DFR0_EL1);
-> >>> brbe = cpuid_feature_extract_unsigned_field(aa64dfr0, ID_AA64DFR0_EL1_BRBE_SHIFT);
-> >>>
-> >>> Hence - will update the commit message here as suggested.
-> >>
-> >> This is by virtue of the masking we do in the kvm/sysreg.c below.
-> > 
-> > Yep, once this patch is applied.
-> > 
-> > I think we might have some crossed wires here; I'm only really asking for the
-> > commit message (and title) to be updated and clarified.
-> 
-> Understood.
-> 
-> > Ignoring the patchlet above, and just considering the original patch:
-> > 
-> > IIUC before the patch is applied, the ID_AA64DFR0_EL1.BRBE field is zero for
-> > the guest because we don't have an arm64_ftr_bits entry for the
-> > ID_AA64DFR0_EL1.BRBE field, and so init_cpu_ftr_reg() will leave that as zero
-> > in arm64_ftr_reg::sys_val, and hence when read_sanitised_id_aa64dfr0_el1()
-> > calls read_sanitised_ftr_reg(SYS_ID_AA64DFR0_EL1), the BRBE field will be zero.
-> 
-> Makes sense, but should not arm64_ftr_reg::sys_val be explicitly set to '0' via
-> ID_AA64DFR0_EL1_BRBE_NI via adding a S_ARM64_FTR_BITS() into ftr_id_aa64dfr0[] ?
+On Fri, Mar 1, 2024 at 1:45=E2=80=AFPM Ard Biesheuvel <ardb@kernel.org> wro=
+te:
+>
+> On Fri, 1 Mar 2024 at 13:39, tip-bot2 for Uros Bizjak
+> <tip-bot2@linutronix.de> wrote:
+> >
+> > The following commit has been merged into the x86/boot branch of tip:
+> >
+> > Commit-ID:     721f791ce1cddfa5f2bf524ac14741bfa0f72697
+> > Gitweb:        https://git.kernel.org/tip/721f791ce1cddfa5f2bf524ac1474=
+1bfa0f72697
+> > Author:        Uros Bizjak <ubizjak@gmail.com>
+> > AuthorDate:    Wed, 24 Jan 2024 11:38:59 +01:00
+> > Committer:     Ingo Molnar <mingo@kernel.org>
+> > CommitterDate: Fri, 01 Mar 2024 12:47:37 +01:00
+> >
+> > x86/boot: Use 32-bit XOR to clear registers
+> >
+> > x86_64 zero extends 32-bit operations, so for 64-bit operands,
+> > XORL r32,r32 is functionally equal to XORQ r64,r64, but avoids
+> > a REX prefix byte when legacy registers are used.
+> >
+>
+> ... and so this change is pointless churn when not using legacy
+> registers, right?
 
-I don't understand what you're asking here -- there's no way that a
-arm64_ftr_bits entry can explicitly zero a field.
+Although there is no code size change with REX registers, it would
+look weird to use XORQ with REX registers and XORL with legacy regs.
+Please see arch/x86/kvm/{vmx,svm}/vmenter.S where this approach is
+also used.
 
-> OR because it's going to be made visible via S_ARM64_FTR_BITS(FTR_VISIBLE
-> , ...., ID_AA64DFR0_EL1_BRBE_IMP) for enabling it in the guest, this might not be
-> necessary for now. Besides it is also being blocked explicitly now via this patch
-> in read_sanitised_id_aa64dfr0_el1().
+Uros.
 
-We are not going to add a FTR_VISIBLE entry -- as Suzuki already pointed out,
-that means *visible to userspace*.
-
-We currently have no need for an arm64_ftr_bits entry for BRBE. We can add one
-for the sake of documenting our policy for that field, like we do for PMUVer,
-but that's the only reason to do so, and doing that requires that we also mask
-the field within read_sanitised_id_aa64dfr0_el1().
-
-> > So the commit title should be something like:
-> > 
-> >   KVM: arm64: explicitly handle BRBE register accesses as UNDEFINED
-> > 
-> > ... and the message should mention the key points from the above.
-> > 
-> > Suzuki, does that sound right to you?
-> > 
-> > Anshuman, can you go re-write the commit message with that in mind?
-> 
-> Sure, will something like the following be okay ?
-> 
-> KVM: arm64: Explicitly handle BRBE register accesses as UNDEFINED
-> 
-> Although ID_AA64DFR0_EL1.BRBE field is zero for the guest because there is
-> no arm64_ftr_bits[] entry for the ID_AA64DFR0_EL1.BRBE field while getting
-> processed for read_sanitised_ftr_reg(SYS_ID_AA64DFR0_EL1), this masks BRBE
-> feature here to be rather explicit. This will prevent unexpected exposure
-> of BRBE feature to guest when arm64_ftr_bits[] changes for ID_AA64DFR0_EL1.
-> This also makes all guest accesses into BRBE registers, and instructions
-> as undefined access explicitly.
-
-How about:
-
-| KVM: arm64: Explicitly handle BRBE traps as UNDEFINED
-|
-| The Branch Record Buffer Extension (BRBE) adds a number of system registers
-| and instructions which we don't currently intend to expose to guests. Our
-| existing logic handles this safely, but could be improved with some explicit
-| handling of BRBE.
-|
-| The presence of BRBE is currently hidden from guests as the cpufeature code's
-| ftr_id_aa64dfr0[] table doesn't have an entry for the BRBE field, and so this
-| will be zero in the sanitised value of ID_AA64DFR0 exposed to guests via
-| read_sanitised_id_aa64dfr0_el1(). As the ftr_id_aa64dfr0[] table may gain an
-| entry for the BRBE field in future, for robustness we should explicitly mask
-| out the BRBE field in read_sanitised_id_aa64dfr0_el1().
-|
-| The BRBE system registers and instructions are currently trapped by the
-| existing configuration of the fine-grained traps. As the registers and
-| instructions are not described in the sys_reg_descs[] table,
-| emulate_sys_reg() will warn that these are unknown before injecting an
-| UNDEFINED exception into the guest. Well-behaved guests shouldn't try to use
-| the registers or instructions, but badly-behaved guests could, these,
-| resulting in unnecessary warnings. To avoid those warnings, we should
-| explicitly handle the BRBE registers and instructions as UNDEFINED.
-|
-| Address the above by having read_sanitised_id_aa64dfr0_el1() mask out the
-| ID_AA64DFR0.BRBE field, and by adding sys_reg_desc entries for all of the
-| BRBE system registers and instructions, treating these all as UNDEFINED.
-
-Mark.
+> > Slightly smaller code generated, no change in functionality.
+> >
+> > Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+> > Signed-off-by: Ingo Molnar <mingo@kernel.org>
+> > Cc: Andy Lutomirski <luto@kernel.org>
+> > Cc: Brian Gerst <brgerst@gmail.com>
+> > Cc: Denys Vlasenko <dvlasenk@redhat.com>
+> > Cc: H. Peter Anvin <hpa@zytor.com>
+> > Cc: Linus Torvalds <torvalds@linux-foundation.org>
+> > Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+> > Cc: Ard Biesheuvel <ardb@kernel.org>
+> > Link: https://lore.kernel.org/r/20240124103859.611372-1-ubizjak@gmail.c=
+om
+> > ---
+> >  arch/x86/kernel/head_64.S         | 6 +++---
+> >  arch/x86/kernel/sev_verify_cbit.S | 2 +-
+> >  2 files changed, 4 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
+> > index d295bf6..86136a7 100644
+> > --- a/arch/x86/kernel/head_64.S
+> > +++ b/arch/x86/kernel/head_64.S
+> > @@ -169,7 +169,7 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM=
+_L_GLOBAL)
+> >         ANNOTATE_NOENDBR
+> >
+> >         /* Clear %R15 which holds the boot_params pointer on the boot C=
+PU */
+> > -       xorq    %r15, %r15
+> > +       xorl    %r15d, %r15d
+> >
+>
+>    0: 4d 31 ff              xor    %r15,%r15
+>    3: 45 31 ff              xor    %r15d,%r15d
+>
+>
+> >         /*
+> >          * Retrieve the modifier (SME encryption mask if SME is active)=
+ to be
+> > @@ -178,7 +178,7 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM=
+_L_GLOBAL)
+> >  #ifdef CONFIG_AMD_MEM_ENCRYPT
+> >         movq    sme_me_mask, %rax
+> >  #else
+> > -       xorq    %rax, %rax
+> > +       xorl    %eax, %eax
+> >  #endif
+> >
+>
+> This conflicts with my RIP-relative boot cleanup series.
+>
+> >         /* Form the CR3 value being sure to include the CR3 modifier */
+> > @@ -295,7 +295,7 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM=
+_L_GLOBAL)
+> >
+> >  .Llookup_AP:
+> >         /* EAX contains the APIC ID of the current CPU */
+> > -       xorq    %rcx, %rcx
+> > +       xorl    %ecx, %ecx
+> >         leaq    cpuid_to_apicid(%rip), %rbx
+> >
+> >  .Lfind_cpunr:
+> > diff --git a/arch/x86/kernel/sev_verify_cbit.S b/arch/x86/kernel/sev_ve=
+rify_cbit.S
+> > index 3355e27..1ab65f6 100644
+> > --- a/arch/x86/kernel/sev_verify_cbit.S
+> > +++ b/arch/x86/kernel/sev_verify_cbit.S
+> > @@ -77,7 +77,7 @@ SYM_FUNC_START(sev_verify_cbit)
+> >          * The check failed, prevent any forward progress to prevent RO=
+P
+> >          * attacks, invalidate the stack and go into a hlt loop.
+> >          */
+> > -       xorq    %rsp, %rsp
+> > +       xorl    %esp, %esp
+> >         subq    $0x1000, %rsp
+> >  2:     hlt
+> >         jmp 2b
 
