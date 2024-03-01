@@ -1,160 +1,156 @@
-Return-Path: <linux-kernel+bounces-88609-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88611-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D10CF86E419
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:13:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BA09886E424
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:18:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73157285E72
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:13:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58895286183
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:18:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9719E6E2BD;
-	Fri,  1 Mar 2024 15:13:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E36906CDCD;
+	Fri,  1 Mar 2024 15:18:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="cFr943yl"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="jQUc7LyP"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 368F11C33;
-	Fri,  1 Mar 2024 15:13:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 825BD3A8F8
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 15:18:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709306028; cv=none; b=LUlP7HmGxd0uwIqs0mdYHfkInLEIDlhOUKnwzmseCCw9w1qsSCjmV4jj35RzTGwxzy5vdzxTNUJ92XW5osNnlAjNyO9X7ePoShRxyBa+bMj2FTrEH/pQ1DCrStAvBwUJaoLb9JvzC7a3+iCOQfXYrRcTRFmjiVCVYrs/jUJFu7c=
+	t=1709306294; cv=none; b=bnU07r5PHQdxkiotor/ye4KsRz28/nWNQkU3wjUKePsSRrABaS0bR5Q9XNRxzVTcbM71Vl5xaaoO3A+iFwfVuVSnpKaSkAPKlIN4OR2X5IVJR1okfULd4eTg2JT1/9v4q16YcECl6JK13IVX7OVxUz3M9FY/I9kOvKBmap/+Jtw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709306028; c=relaxed/simple;
-	bh=4rZ9IbsP+jzXlyf93oCqikrl4goIvycpLqfPlaupifE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=inMTS4ubitbJCqb9QNCPn8aypX80f36JWaWgU7aRylFQUoaidhlwCLr6YozTjRj1RfBXRzAu/EuFu+k8qP5xkk0EZBmcQkXEM2HjHNdi9mWY+d3fZdyBtWy8GCUdxWJHD/X13Tyxbeixdg3vjnBKOH02hIfqK7evkxOcuSztyIo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=cFr943yl; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709306025;
-	bh=4rZ9IbsP+jzXlyf93oCqikrl4goIvycpLqfPlaupifE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cFr943yljX1l29kjUPcrBU5FIpLB198EJMjLvS/ryE6Ezqbx+OR9RUYD7cFXVaTsy
-	 eKe5Undn9T2NKbYG4IyGD5kPHTNaJx+DjzDYPcJZzmYYyi2SrK0b9xPkU41enEk5Jz
-	 Qtezyhl+v/PPqcKZez9sNs/GCjZ4QW6qhH4t5OUZxQgTilW00/9uUsa73MIgfAD3jB
-	 HGgsE+kt8PlKqC9YeYh1QUJvSJAo0b3vzP/ZYmL+VStaMcL9NqZPkWFjhusC7w/BCJ
-	 uyPf/p9mYObaazGC1OdSdU2vo6N1qn+sNFYUMqRG+HWtBTZfqYbHqaWbIBHZD0LaGI
-	 imZWsQW0Jag9w==
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: sebastianfricke)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 1253437803EE;
-	Fri,  1 Mar 2024 15:13:45 +0000 (UTC)
-Date: Fri, 1 Mar 2024 16:13:44 +0100
-From: Sebastian Fricke <sebastian.fricke@collabora.com>
-To: Irui Wang <irui.wang@mediatek.com>
-Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Tiffany Lin <tiffany.lin@mediatek.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	angelogioacchino.delregno@collabora.com,
-	nicolas.dufresne@collabora.com,
-	Yunfei Dong <yunfei.dong@mediatek.com>,
-	Longfei Wang <longfei.wang@mediatek.com>,
-	Maoguang Meng <maoguang.meng@mediatek.com>,
-	Project_Global_Chrome_Upstream_Group@mediatek.com,
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH v2] media: mediatek: vcodec: Handle VP9 superframe
- bitstream with 8 sub-frames
-Message-ID: <20240301151344.o7khwhbasnncw2cc@basti-XPS-13-9310>
-References: <20240229030249.3404-1-irui.wang@mediatek.com>
+	s=arc-20240116; t=1709306294; c=relaxed/simple;
+	bh=cb8XTZXLhtdief3sGmEOEiurGom3N0GO6VlK248uSz4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=PUjbOgvQlbjarDgNfCTuf7CHecfsIoEwZfRwh7E5yAHtgXDtBqaqQOuIf9EH+/CzcVgAeD0ZBxiagwYqi5SLmTor2q2AGH2tZTIS14HLe9m2GQzzViCvF0ww3SO+5xdNah21OFpE2I2KMYeYYoyL1rLdCbyw/oKGLj4d9Uft/QY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=jQUc7LyP; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 421Ew7ot004373;
+	Fri, 1 Mar 2024 15:17:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=QRwgG5p9LXiYkhUTkDn+4GU4EqsUgxuh3E+OD24BUIM=;
+ b=jQUc7LyPUzrd97cgbu/R/URb0WPOe4X7QqDGyFYBwl2TC2YIi0EEAvpW2qZyF4s2ypDV
+ pVxwI3Z+5MxKo2BE6WEAK6fvMor8PilDTi/3/3oTvJhkRyAS09+8O56dRTt82Cn+3cag
+ m572+qtliOyq5Uls7GpXZPcRSsgNIZ1X8Rgv9EU3pBr7J0JkeC6ZLqngE1SO3X0qDGg4
+ bHcUi0umGAYAu3W0eHSzXR0u5f78LIdFjDChK0SaIjNr+pZWlTdrnCUrzUYgJYN7Rd9u
+ iVw4jbS242gjHTN+T7BUD7fiwfYVuLk33ODOaXLprYbZkky6XHqxjCZ3yjffU2KPC9uy 7Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wkh88gfew-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 01 Mar 2024 15:17:57 +0000
+Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 421FBdM3021497;
+	Fri, 1 Mar 2024 15:17:56 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wkh88gfed-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 01 Mar 2024 15:17:56 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 421DoCIh021792;
+	Fri, 1 Mar 2024 15:17:55 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3wfu60nak7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 01 Mar 2024 15:17:55 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 421FHngt14418426
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 1 Mar 2024 15:17:51 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id A4C6020040;
+	Fri,  1 Mar 2024 15:17:49 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 61A9F20043;
+	Fri,  1 Mar 2024 15:17:46 +0000 (GMT)
+Received: from li-c1fdab4c-355a-11b2-a85c-ef242fe9efb4.ibm.com.com (unknown [9.43.108.184])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Fri,  1 Mar 2024 15:17:46 +0000 (GMT)
+From: Shrikanth Hegde <sshegde@linux.ibm.com>
+To: mingo@kernel.org, peterz@infradead.org, vincent.guittot@linaro.org
+Cc: sshegde@linux.ibm.com, yu.c.chen@intel.com, dietmar.eggemann@arm.com,
+        linux-kernel@vger.kernel.org, nysal@linux.ibm.com,
+        aboorvad@linux.ibm.com, srikar@linux.ibm.com, vschneid@redhat.com,
+        pierre.gondois@arm.com, morten.rasmussen@arm.com, qyousef@layalina.io
+Subject: [PATCH v4 0/2] sched/fair: Limit access to overutilized
+Date: Fri,  1 Mar 2024 20:47:23 +0530
+Message-Id: <20240301151725.874604-1-sshegde@linux.ibm.com>
+X-Mailer: git-send-email 2.39.3
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Jlku7Lk7abe4i4wh_cX5vKBmyxAXHFcb
+X-Proofpoint-ORIG-GUID: Md9zT3R3xfmmZ-B6tcN3RUFShZnTDDqs
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20240229030249.3404-1-irui.wang@mediatek.com>
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-01_14,2024-03-01_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 phishscore=0 lowpriorityscore=0 malwarescore=0 mlxscore=0
+ impostorscore=0 mlxlogscore=999 clxscore=1015 spamscore=0 suspectscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2403010127
 
-Hey Irui,
+When running a ISV workload on a large system (240 Cores, SMT8), it was
+observed from perf profile that newidle_balance and enqueue_task_fair
+were consuming more cycles. Perf annotate showed that most of the time
+was spent on accessing overutilized field of root domain.
 
-On 29.02.2024 11:02, Irui Wang wrote:
->The VP9 bitstream has 8 sub-frames into one superframe, the superframe
->index validate failed when reach 8, modify the index checking so that the
->last sub-frame can be decoded normally with stateful vp9 decoder.
+Aboorva was able to simulate similar perf profile by making some
+changes to stress-ng --wait. Both newidle_balance and enqueue_task_fair
+consume close to 5-7%. Perf annotate shows that most of the cycles are spent
+in accessing rd,rd->overutilized field.
 
-I find this commit message a bit confusing, you say that you couldn't
-index the last superframe, but then you say that you modify the index
-checking so that you can access the last sub-frame.
+Overutilized was added for EAS(Energy aware scheduler) to decide whether
+to do load balance or not. Simultaneous access to overutilized by
+multiple CPUs lead cache invalidations due to true sharing. Updating
+overutilized is not required for non-EAS platforms. Since overutilized and
+overload are part of the same cacheline, there is false sharing as well.
 
-I would reword this section, here is my suggestion:
+Patch 1/2 is the main patch. It helps in reducing the above said issue.
+Both the functions don't show up in the profile. With patch comparison is in
+changelog. With the patch stated problem in the ISV workload also got
+solved and throughput has improved.
+Patch 2/2 is only code refactoring to use the helper function instead of
+direct access of the field
 
-The VP9 bitstream uses superframes, which each contain 8 sub-frames,
-enable accessing the last superframe by increasing the range of the
-index validation as the maximum number of superframes is 8 and not 7.
+Detailed perf annotate can be found in cover letter of v1.
 
-The rest looks good as already mentioned by Nicolas.
+v4 -> v3:
+- corrected a mistake where EAS check was missed.
+v3 -> v2:
+- Pierre and Dietmar suggested we could add one more EAS check before
+calling cpu_overutilized. That makes sense since that value is not used
+anyway in Non-EAS case.
+- Refactored the code as dietmar suggested to avoid additional call to
+sched_energy_enabled().
+- Minor edits to change log.
+v2 -> v1:
+Chen Yu pointed out minor issue in code. Corrected that code and updated
+the changelog.
 
-Greetings,
-Sebastian
+v1: https://lore.kernel.org/lkml/20240223150707.410417-1-sshegde@linux.ibm.com/
+v2: https://lore.kernel.org/lkml/20240228071621.602596-1-sshegde@linux.ibm.com/
+v3: https://lore.kernel.org/lkml/20240229104010.747411-1-sshegde@linux.ibm.com/
 
->
->Signed-off-by: Irui Wang <irui.wang@mediatek.com>
->---
->changed with v1:
-> - add a new define 'VP9_MAX_SUPER_FRAMES_NUM' for superframes.
->---
-> .../mediatek/vcodec/decoder/vdec/vdec_vp9_if.c        | 11 ++++++-----
-> 1 file changed, 6 insertions(+), 5 deletions(-)
->
->diff --git a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_if.c b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_if.c
->index 55355fa70090..039082f600c8 100644
->--- a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_if.c
->+++ b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_if.c
->@@ -16,6 +16,7 @@
-> #include "../vdec_drv_base.h"
-> #include "../vdec_vpu_if.h"
->
->+#define VP9_MAX_SUPER_FRAMES_NUM 8
-> #define VP9_SUPER_FRAME_BS_SZ 64
-> #define MAX_VP9_DPB_SIZE	9
->
->@@ -133,11 +134,11 @@ struct vp9_sf_ref_fb {
->  */
-> struct vdec_vp9_vsi {
-> 	unsigned char sf_bs_buf[VP9_SUPER_FRAME_BS_SZ];
->-	struct vp9_sf_ref_fb sf_ref_fb[VP9_MAX_FRM_BUF_NUM-1];
->+	struct vp9_sf_ref_fb sf_ref_fb[VP9_MAX_SUPER_FRAMES_NUM];
-> 	int sf_next_ref_fb_idx;
-> 	unsigned int sf_frm_cnt;
->-	unsigned int sf_frm_offset[VP9_MAX_FRM_BUF_NUM-1];
->-	unsigned int sf_frm_sz[VP9_MAX_FRM_BUF_NUM-1];
->+	unsigned int sf_frm_offset[VP9_MAX_SUPER_FRAMES_NUM];
->+	unsigned int sf_frm_sz[VP9_MAX_SUPER_FRAMES_NUM];
-> 	unsigned int sf_frm_idx;
-> 	unsigned int sf_init;
-> 	struct vdec_fb fb;
->@@ -526,7 +527,7 @@ static void vp9_swap_frm_bufs(struct vdec_vp9_inst *inst)
-> 	/* if this super frame and it is not last sub-frame, get next fb for
-> 	 * sub-frame decode
-> 	 */
->-	if (vsi->sf_frm_cnt > 0 && vsi->sf_frm_idx != vsi->sf_frm_cnt - 1)
->+	if (vsi->sf_frm_cnt > 0 && vsi->sf_frm_idx != vsi->sf_frm_cnt)
-> 		vsi->sf_next_ref_fb_idx = vp9_get_sf_ref_fb(inst);
-> }
->
->@@ -735,7 +736,7 @@ static void get_free_fb(struct vdec_vp9_inst *inst, struct vdec_fb **out_fb)
->
-> static int validate_vsi_array_indexes(struct vdec_vp9_inst *inst,
-> 		struct vdec_vp9_vsi *vsi) {
->-	if (vsi->sf_frm_idx >= VP9_MAX_FRM_BUF_NUM - 1) {
->+	if (vsi->sf_frm_idx > VP9_MAX_SUPER_FRAMES_NUM) {
-> 		mtk_vdec_err(inst->ctx, "Invalid vsi->sf_frm_idx=%u.", vsi->sf_frm_idx);
-> 		return -EIO;
-> 	}
->-- 
->2.18.0
->
->
+Shrikanth Hegde (2):
+  sched/fair: Add EAS checks before updating overutilized
+  sched/fair: Use helper function to access rd->overutilized
+
+ kernel/sched/fair.c | 63 ++++++++++++++++++++++++++++++---------------
+ 1 file changed, 42 insertions(+), 21 deletions(-)
+
+--
+2.39.3
+
 
