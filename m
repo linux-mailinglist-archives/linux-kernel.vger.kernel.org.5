@@ -1,206 +1,164 @@
-Return-Path: <linux-kernel+bounces-87745-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87746-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7A1F86D870
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:41:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D175686D876
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:48:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB5621C210F4
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 00:41:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 093C3B22819
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 00:48:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84982C2C1;
-	Fri,  1 Mar 2024 00:41:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACFB1C2C7;
+	Fri,  1 Mar 2024 00:48:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="hvCzkK1A"
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2084.outbound.protection.outlook.com [40.107.7.84])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="aop4EUGo"
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9987AC12A;
-	Fri,  1 Mar 2024 00:41:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.7.84
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709253695; cv=fail; b=qQGZ/aEcbda2ShDgWFXbEvgJkO2tRuAOv3q6BvHEAk184yzX70nH58CovujZKBW8NdFlNfd8wsoNpJJtwDx86/K3JBAf1IGXC2k8iJjLFiWiQwwJr16ZVi1MVqOhLrTs90NUOBiAqDVyGxYW/P6Qzn3RsbspqLYWBb84qMhECbc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709253695; c=relaxed/simple;
-	bh=4jpp2BlOTziBn6d0opJxIC9ulZdcfUciduLduIymFVE=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=LXE+ZqcP3AHJeMXKmNf1dfUTw7fopXGOtMOKLhSPTR6K17Gn0dg7ejyxnvyvDUF9oJBB8hwFyZggHISZCFvNgjOeWHCf+VKMegwGn8y6OLdjGj9W8gwX4b/vXQzuPNArdpyMw6W2JzyUBYCZVcJpAAZs5/YjEUSPebDFGKuS5GU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=hvCzkK1A; arc=fail smtp.client-ip=40.107.7.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gSiMmiN/ghY9IQh7Po8H+N47o+ezVFGeR2dkylE67dI74/dJOIukoIFVYEvtGjGY052HMZEvdRdbg9yENPn5qZD3NwffRgEQpLboBRKx07P3OJr86dfrrxwWJaIXF6dIMmTanCD/6EOUDGuG2BlFESgcNbluhJ2k8DuP2mbGK50K4KoC7jqNavptoea/aNlrnSNwMzeAZpzYN8Alq/C7OSWYPZ4B+cgGl8Q5/53QF0XpKAfDVPHhJ2m4dtGmO68WHHxJo3LXP08QMwPh/5oYLu1GOm1a57STYq7USfls8ky8Q+wdu1IAwt8tCCZKb6kyaKyMRekDs3zYxsU6QAEz8Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4jpp2BlOTziBn6d0opJxIC9ulZdcfUciduLduIymFVE=;
- b=JN8PDm+OM0Jq3dpTLCzOZIynJbZ/qiLNoIcTuD0qiNMqaTyrDIP0SexHNTKXX9s1ZXNKoREgsnskl+Tv+mvFyg4yp83My0GRWvAhKvCHwIGSJ/7US3P9qRX5OaIRPIFvchI6Ht8htma9OTs+aLTOpj+Urah0233JjFu1HrfDaBZbl7Rg9png8tc5LOzM5f4s0oLBzR5gPUDsGPxwX/JxRJKUNYmrq0yjzalDfUnSBsuHEyou+N5KKNMZQAqWWwJONihNAwm3vQWsxO8+cyN/ZCF42mh4/dko/gB3tN5Fr1QqyxRdCzlZzVGWnqAUVJ083VgRYuVnyObYhMyuJrN7gA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4jpp2BlOTziBn6d0opJxIC9ulZdcfUciduLduIymFVE=;
- b=hvCzkK1AAMw5VG7TLT7i7zOPs9IAayPoen0VifExZmr0KfpweA5+Jj+W4nsM00Qib+a5zwOBvl3B7Y6pgwIuj9jkfURM1kr1ZJGgmuqJ93NPVWPMdc12rlG/i0MIMQ0FYnHlE93G5ci2fSgZ0kik2dMIUgoLXbKNCCLeAcmTZS8=
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
- by AS8PR04MB8117.eurprd04.prod.outlook.com (2603:10a6:20b:3fc::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.39; Fri, 1 Mar
- 2024 00:41:29 +0000
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::1232:ed97:118f:72fd]) by DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::1232:ed97:118f:72fd%4]) with mapi id 15.20.7316.034; Fri, 1 Mar 2024
- 00:41:29 +0000
-From: Peng Fan <peng.fan@nxp.com>
-To: Sudeep Holla <sudeep.holla@arm.com>
-CC: Cristian Marussi <cristian.marussi@arm.com>, "Peng Fan (OSS)"
-	<peng.fan@oss.nxp.com>, "robh@kernel.org" <robh@kernel.org>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"conor+dt@kernel.org" <conor+dt@kernel.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "devicetree@vger.kernel.org"
-	<devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] dt-bindings: firmware: arm,scmi: support system power
- protocol
-Thread-Topic: [PATCH] dt-bindings: firmware: arm,scmi: support system power
- protocol
-Thread-Index: AQHaaLLyfnmFjzyGqEimlBHwa2+g1LEcnfcAgAAaQQCAAKcG0IAD/moAgACytyA=
-Date: Fri, 1 Mar 2024 00:41:29 +0000
-Message-ID:
- <DU0PR04MB9417C06FD66182C705238662885E2@DU0PR04MB9417.eurprd04.prod.outlook.com>
-References: <20240226130243.3820915-1-peng.fan@oss.nxp.com>
- <ZdyR_MWeqOWga8iQ@pluto> <ZdyoAsYGXK9GjHVx@pluto>
- <DU0PR04MB941710FB1400D0A17F99B6ED88592@DU0PR04MB9417.eurprd04.prod.outlook.com>
- <ZeCNyLxQOIazc07h@bogus>
-In-Reply-To: <ZeCNyLxQOIazc07h@bogus>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DU0PR04MB9417:EE_|AS8PR04MB8117:EE_
-x-ms-office365-filtering-correlation-id: 03d4d220-11fc-4d47-624c-08dc39885599
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- Q9a8au0LE6+WOR+Q/NnYw1jY7w+mTs2ggWmORu2vbCjymrikB0iKHI7d2vSe0kaiK10IMjczl1xsg2l2HTtXIKeGM490TTNk3gOeMKzYG1PjH5iCrddwQmvKBOfUZykevWcJiUkCyWu5xEaaHoCVe6Xwsuc49a50kBlYqd/i8r6Gwf76TB8v0FLLmhIt34ZYbPVSWbcfiEYAGq3kLaDZOKRKb6dWQ7rk6QK16w5EXoSN4i4mbXm0eENJzO0tDNRKVmuxO1+UkCe14ZvQMtuLGuVzwsuHHHSNQJlBq5BYmy2Jfuai/tVH24MVm0xkXxDZSRm+lHT2isoOmimh7QZqtszpFe6VGcyywiBEscQRXNHvwOT3GEceEDmTm8s2j8XQesKVtf6+74FH3tzJaiVIyfGyteb4/6Th4rYMwGvdGckgErNxoLU4YgTejWytk0I2Nwe+H7/opvcHIBMrLXsg1hSkvkpLtsD0uehzEJDuICudFss1nDLudzCMRfmNRkEm1K9/VGtfvo5Qv818D9493A4X+q71lby/tqt3DOOHmxG8/grPAztNLVv3bycic0eawzOS27U7pogsyV+/PZb5hOYx+dPSer4N41RdvCGDsdJ8HgZZbIwk00FNStvVRGFJ1ZoCqqbxLimGt25XLQr2ZZ9TYxnU9VBPtTydH7vRSd8+XmU5xA+IFychvhDbPowtFh8L4LyteHxf1OJyk6/Z3bOjOkNtdsqy9IJSZr57SOI=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?MCKrCOWFOUuZf2jI4bmPxmLv2P/mBsEsTbW8v2+PIECi0VGZZA5ukI8Yj6vm?=
- =?us-ascii?Q?wq4TTevIT4MDFCfctH7802G1hbSYraKTce4DW/p2t4pkKXVVKnfUA/geGVGg?=
- =?us-ascii?Q?GH7YgqyVzltkSz8qnUSr7b5luveUt0QYFDYXCaN/kiqyFZr3kAzOvpe56HS0?=
- =?us-ascii?Q?1rI/NE7ebS18qBzH+M6lkUeyW+krf235juZB+aHUI8uupSo9DPUod/XUkVTw?=
- =?us-ascii?Q?Pl7sEw7lxlSFFhCb23oKMpYS8zPtoj/0BBK85Nsz+s5kFYnwvgC8AxL8c6ja?=
- =?us-ascii?Q?PTTHZDGqRriV3P1Z5XqHqsWzEmsfIjL6ElCyFd0MWp7T5927EKrhtGFU7TWi?=
- =?us-ascii?Q?UP0JkN5tEUNOrSKB7KUBWMBMMwG0TCq4gLPw8E89xqOoSCwFxFZ9C1QDxhRE?=
- =?us-ascii?Q?t0yoPR8vJyGV/c+EyjRceRt07thhzK8gRJgkcwhtNwqBlR7febHF0B+Haj6n?=
- =?us-ascii?Q?1x4pizn3GjYGa8nAamEtZeSIwjuveBNjd4pFeDzmqcdKWOpnKr5epo9mk0xk?=
- =?us-ascii?Q?f0v/gAARk4PiiZVmfinZM4jrReZo8tl93/wbjxXlQ/j8B6TaDZio3Jveo/eu?=
- =?us-ascii?Q?k3IOZEQRSRO2ms+XUY+2WGI+WAjUpKngh7ruhPJskizafYgEPXH42I8SJiPO?=
- =?us-ascii?Q?PKzmMMurt/dV+7xzIq+z4EQkw+BRqzy8FaAJN/NRCjYO+TTI5KxM0i/YoXiJ?=
- =?us-ascii?Q?kk8CqaGfCQBIavjGq3HXOylXXM4wgfzkwRH3DW7uMpGqbT/VpNKJBgFZQ22C?=
- =?us-ascii?Q?AKi7Gv1ztkRcKvDewV3b+mlAUJxSlNHgBAYZQZG7wl1KAEvwalm/eI4x0hcx?=
- =?us-ascii?Q?o10DdlhrOgWPp7CvL+2eJQF9hO/+F9ULtK06pbb+U2IYXFZbHRHe9oHphOth?=
- =?us-ascii?Q?XnZ/HjNKf1B1oUt3kEACnSgi6FgfJutRvDLEHTrhOKhuxaJcFOBOhla7nhfe?=
- =?us-ascii?Q?vWWP+lSIPaTEejGB3aZQ5xyXeTvafw61i5/Z5Sc2zU2WTtF2SrQNkunFrQ7T?=
- =?us-ascii?Q?b6+6c6OX/+pOMcAZ7adwy7nnX/KcG3hy2UFW3COGeHNSBnPEAxExO8W32QGM?=
- =?us-ascii?Q?B/QHcLA1hpjRs7hU625zMmmvq4r6iNDroGP2xnH4vEY3bL65vButAAz6fLXD?=
- =?us-ascii?Q?2k2JXsyOJz8kUJs/rCj2ResPtioDGhyWbo03+GVuVGZ2HpiIi7vqp7UPVlAQ?=
- =?us-ascii?Q?pGX5aHXb3sK7gD/+WHV48uXCJ0CmTDFZRUh7UNjCVrXtNQyhAByyivaJS/Bu?=
- =?us-ascii?Q?0bYAjOUsVJUxJ8wlMdddHkg7Mzv+AAkU4haFFXgHUckmu+iysqToKJs7fF56?=
- =?us-ascii?Q?092Wk2vlpVar40B0fjwZ0RbWpBes9/Wcqf4j0HQuHGBF1KFjqfQ46CbmihCG?=
- =?us-ascii?Q?IREyRYseg0Z73j0NssmGedz2DhAe75tX/fxda4KqdeX0LXfbQ0jLmXSqIbXd?=
- =?us-ascii?Q?NS1h+QzcTpzcBva/2Zg9dj5kysKEVLqmrA0grtaz7NiqIHPruawslGJnKXSe?=
- =?us-ascii?Q?UZHtT5VzsVmmai3Ia5JbfLB/Rhjc1qo4m8lrwMiraa8N67i3CQhZPSRHTg9l?=
- =?us-ascii?Q?QNdRs95ESrcA9DVyg+o=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98054C134
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 00:48:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709254111; cv=none; b=ph0Se2n7TV0QHD3uZQ1LfleEYEly6LY6/PMu6sL+vR643GAFqhSYUPbiiFnwqWJNoZOi4BBcgGEp/PCW87N7TaYczI7u8iKTDqqoiiU51OAIpLXXhqBi8s0hG8Tw2+uLFJYbVkmDJ0dmUa+6oreue9VB2DvZ6YXXz8NAya7g+iA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709254111; c=relaxed/simple;
+	bh=SBRUs1L7SWjgoe78TnGDqNJlwRB1w1wl2d4Ujn1Z/hE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=U299qmvOKkKc3Q7tbvig2t0qGaHHIauYcoufgk4sTSxy8CWzKLPW+uFVMNZ3aisQZr76qj0YdxvuGLncboquZezpy8faU6kleGEx27DnSrS99LOX5rd+p4WIAe2DLzCU558W5rYy6ETKDlJjtchJpsMTELR1md8h0t7lbBs5QYM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=aop4EUGo; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1dbe7e51f91so27665ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 16:48:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709254109; x=1709858909; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QO8hdlL58lho+cQ23ggVJcM5manEQk2nVKwT7YU6wv4=;
+        b=aop4EUGoBUup4rblaRolTFgeXEYQVcPBzJX8dtP81PRWpwn87EgWdgNPU6hYRYniiF
+         lfSc40LfT/1FjqgpAwURskBL6/TXv1OLo4YAWu915HX+B9g5kHOfHKOAOhkY9l2UsSex
+         ppejEXlp/Pk/ZyirEjG84iaxaVZgYqsmtUtRV4O7MqsLxbqY7klMlrbiKSqL1hsbu8FD
+         MiGUx9mwDmSq02YeTmlq1GUkZUuLLoBGjX+0CeTo+MOogyQG7lY/eSpL/26pvZ4SlgzL
+         KsbLUthQQZtp56j10INHUHEQrQ4M3OCymlLR3hDqE6CVDIJs1q3yAD7Tbs6QAmghAoNc
+         o2XQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709254109; x=1709858909;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QO8hdlL58lho+cQ23ggVJcM5manEQk2nVKwT7YU6wv4=;
+        b=ikmdfy8chH7ph0wo5/WyhDc9ayp1Y3+wqIwToLMGdiDuDf2tMd/isEIDUuPq5w2s9r
+         pqKh4eJMJS9I23G8QYIqNth1sRED0aTp/Od1LI23AY1sNUEoyE8+KyVpibj9m/18F7dJ
+         Jt/yj3QaWiTX2cmV537dXRaij4Fswo6ZgkbpSvU6lncl49SAHcDkLDAYdr4kfr6Bxumy
+         IdN8oUljYd4iNKBe5fFiM74hYeE8GHxUrx6GrtnvO/IhbpKyxWBED6pchx5fMGj/7pXO
+         YtXGO+3oUdyNKyynumFQbFBuiI4LlFSA8L+B716okN3a7CjKnIdNLiH9adhsQ2lCEYCU
+         6VEw==
+X-Forwarded-Encrypted: i=1; AJvYcCVz/Zti2+UgHcpGkQ7d3WivRpv7UqpLQCw5pkBHJSRE6Ue2FenTXlXFYFmn85iw1+AkBKyPh3wXzSAVMA4QT4PiQCixAioCePHc+iwa
+X-Gm-Message-State: AOJu0Yy/2NmWJYGhWVbS1qIyPMOHqJjO6wj5cCF+OTTTEv0TfO6MrkRG
+	b5vpIVb44UD5pdBW9NGXZgdohxNhfpVTRQDCWy/dG6WHJPTMyMFpQvPyfTvfa4c2Q+Td7nJlTpX
+	ybOSU+5unQuIEe7P5oIewjTffkY5hZyQYAxXq
+X-Google-Smtp-Source: AGHT+IFFxmOc6k9DBxoJkuk5vhJt6IT+2D7y4mJDPfThzu5EGp+7Q6h6dIcUN8jbDoO6uDvJHzfh91pSkyjFtw56Ilw=
+X-Received: by 2002:a17:903:244b:b0:1db:e78f:4ce9 with SMTP id
+ l11-20020a170903244b00b001dbe78f4ce9mr83835pls.24.1709254108425; Thu, 29 Feb
+ 2024 16:48:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 03d4d220-11fc-4d47-624c-08dc39885599
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Mar 2024 00:41:29.4077
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: tU2EGMqm9TNG4Lmt6I7RGwLz/ddVSVcLbShv4UAzEVIqIJo+/IWDTYV7cOL73BYdiNFL0ybcaWWewnONam8AOQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8117
+References: <20240229001806.4158429-1-irogers@google.com> <20240229001806.4158429-14-irogers@google.com>
+ <b1ec1953-2df8-4987-a7d0-4758835b5392@linux.intel.com>
+In-Reply-To: <b1ec1953-2df8-4987-a7d0-4758835b5392@linux.intel.com>
+From: Ian Rogers <irogers@google.com>
+Date: Thu, 29 Feb 2024 16:48:17 -0800
+Message-ID: <CAP-5=fWHQthKat7SZx6P8CeMpjfsgYgp8=+nxvHBMmMVZF9_vw@mail.gmail.com>
+Subject: Re: [PATCH v1 13/20] perf jevents: Add cycles breakdown metric for Intel
+To: "Liang, Kan" <kan.liang@linux.intel.com>
+Cc: Perry Taylor <perry.taylor@intel.com>, Samantha Alt <samantha.alt@intel.com>, 
+	Caleb Biggers <caleb.biggers@intel.com>, Weilin Wang <weilin.wang@intel.com>, 
+	Edward Baker <edward.baker@intel.com>, Andi Kleen <ak@linux.intel.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, John Garry <john.g.garry@oracle.com>, 
+	Jing Zhang <renyu.zj@linux.alibaba.com>, Thomas Richter <tmricht@linux.ibm.com>, 
+	James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> Subject: Re: [PATCH] dt-bindings: firmware: arm,scmi: support system powe=
-r
-> protocol
->=20
-> On Tue, Feb 27, 2024 at 01:01:41AM +0000, Peng Fan wrote:
-> > > Subject: Re: [PATCH] dt-bindings: firmware: arm,scmi: support system
-> > > power protocol
-> > >
-> > > On Mon, Feb 26, 2024 at 01:28:31PM +0000, Cristian Marussi wrote:
-> > > > On Mon, Feb 26, 2024 at 09:02:43PM +0800, Peng Fan (OSS) wrote:
-> > > > > From: Peng Fan <peng.fan@nxp.com>
-> > > > >
-> > > > > Add SCMI System Power Protocol bindings, and the protocol id is 0=
-x12.
-> > > > >
-> > > > Hi,
-> > > >
-> > > > yes this is something I spotted in the past it was missing and I
-> > > > posted a similar patch but I was told that a protocol node without
-> > > > any specific additional properties is already being described by
-> > > > the general protocol node described above.
+On Thu, Feb 29, 2024 at 1:30=E2=80=AFPM Liang, Kan <kan.liang@linux.intel.c=
+om> wrote:
+>
+>
+>
+> On 2024-02-28 7:17 p.m., Ian Rogers wrote:
+> > Breakdown cycles to user, kernel and guest.
 > >
-> > Without this patch, there is dtbs_check warning.
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> >  tools/perf/pmu-events/intel_metrics.py | 18 ++++++++++++++++++
+> >  1 file changed, 18 insertions(+)
 > >
-> > scmi: 'protocol@12' does not match any of the regexes: 'pinctrl-[0-9]+'
-> > from schema $id:
-> > https://eur01.safelinks.protection.outlook.com/?url=3Dhttp%3A%2F%2Fdevi=
-c
+> > diff --git a/tools/perf/pmu-events/intel_metrics.py b/tools/perf/pmu-ev=
+ents/intel_metrics.py
+> > index dae44d296861..fef40969a4b8 100755
+> > --- a/tools/perf/pmu-events/intel_metrics.py
+> > +++ b/tools/perf/pmu-events/intel_metrics.py
+> > @@ -26,6 +26,23 @@ core_cycles =3D Event("CPU_CLK_UNHALTED.THREAD_P_ANY=
+",
+> >  smt_cycles =3D Select(core_cycles / 2, Literal("#smt_on"), core_cycles=
+)
 > >
-> etree.org%2Fschemas%2Ffirmware%2Farm%2Cscmi.yaml%23&data=3D05%7C0
-> 2%7Cpen
 > >
-> g.fan%40nxp.com%7Ccac77deb5f6a4b20460a08dc392ead40%7C686ea1d3b
-> c2b4c6fa
+> > +def Cycles() -> MetricGroup:
+> > +  cyc_k =3D Event("cycles:kHh")
+> > +  cyc_g =3D Event("cycles:G")
+> > +  cyc_u =3D Event("cycles:uH")
+> > +  cyc =3D cyc_k + cyc_g + cyc_u
+> > +
+> > +  return MetricGroup("cycles", [
+> > +      Metric("cycles_total", "Total number of cycles", cyc, "cycles"),
+> > +      Metric("cycles_user", "User cycles as a percentage of all cycles=
+",
+> > +             d_ratio(cyc_u, cyc), "100%"),
+> > +      Metric("cycles_kernel", "Kernel cycles as a percentage of all cy=
+cles",
+> > +             d_ratio(cyc_k, cyc), "100%"),
+> > +      Metric("cycles_guest", "Hypervisor guest cycles as a percentage =
+of all cycles",
+> > +             d_ratio(cyc_g, cyc), "100%"),
+> > +  ], description =3D "cycles breakdown per privilege level (users, ker=
+nel, guest)")
+> > +
+> > +
+> >  def Idle() -> Metric:
+> >    cyc =3D Event("msr/mperf/")
+> >    tsc =3D Event("msr/tsc/")
+> > @@ -770,6 +787,7 @@ def IntelLdSt() -> Optional[MetricGroup]:
 > >
-> 92cd99c5c301635%7C0%7C0%7C638448119832543335%7CUnknown%7CT
-> WFpbGZsb3d8e
 > >
-> yJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D
-> %7C0%
-> >
-> 7C%7C%7C&sdata=3D6MldIOUQ4hxn%2BRffwJJJ3jxXXtHCSxLUOa4JMWB0htU%
-> 3D&reserv
-> > ed=3D0
-> >
->=20
-> Why are you adding protocol@12 to the device tree ? Does it have a
-> dedicated channel ? If not, you shouldn't need to add it.
+> >  all_metrics =3D MetricGroup("", [
+> > +    Cycles(),
+>
+> The metric group seem exactly the same on AMD and ARM. Maybe we can have
+> tools/perf/pmu-events/common_metrics.py for all the common metrics.
 
-No dedicated channel.
-The idea is we have multile Agent, the M7 agent may ask to shutdown Linux
-Agent. So the linux agent need use protocol@12 to do the action.
+Agreed. I think we can drop cycles in the three sets and then once
+then do the common_metrics.py as a follow up.
 
-For now, we have not finish implementing this in linux side, just add
-the node in dts.
+Thanks,
+Ian
 
-Regards,
-Peng.
->=20
-> --
-> Regards,
-> Sudeep
+> Thanks,
+> Kan
+>
+> >      Idle(),
+> >      Rapl(),
+> >      Smi(),
 
