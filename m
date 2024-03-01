@@ -1,120 +1,159 @@
-Return-Path: <linux-kernel+bounces-88109-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88110-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A020286DD6D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:47:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFD4886DD6E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:47:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D400282A1A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:47:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C978287F33
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:47:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44A1C6A01C;
-	Fri,  1 Mar 2024 08:47:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB62A6A33E;
+	Fri,  1 Mar 2024 08:47:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VDJTUczH"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="DtMW0puY"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5BC21D6BD;
-	Fri,  1 Mar 2024 08:47:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 563586A023
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 08:47:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709282822; cv=none; b=bqHPNbzyIXpCQK18A+265GdHepKZ7hLudibT6242ruvZ9tHES4iphWGPtauzlubohd2i1/bMs8pirikMa9gOiPKpc0gC9SqIlKps77bj/rzPzgBxHgyAGyOwphTJ9ZYXmXfNFP1tdt1MXSQl38JJWx48gTvyH6P+qgWIRKpi2I0=
+	t=1709282830; cv=none; b=Qhw/QCXzO8GfO2SEkbMlJ01+222RSe+lcFPJ+9ZAyh+Ml3sbs7C0kG/s47T+9nKD/1f90+Ryj917UMAW/6ZtgASJ3B64EOxrZ2aJMzHSeB72JN7fncYdQWiic6UVlVZq2ySrRgep49W+Aur0NG82K0IefeRKYHLCF7F+sFu07Jc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709282822; c=relaxed/simple;
-	bh=mBL8PGXV/JmsDTo9f1jc418xkycUcDbyqjWYl05TJoY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lH8U7fp0C5Om56taIIfkiF/8trQ1Fu/rPeOY6tpMN6o5Mhiacd73Wwctoph1w0rPn2EaVY3ZXhrxQflpSl/HczA4vsSMITkfpJVba3MC589DlGhoPMD1Y/vzdmFjZqp1BrVPO1iOKufjZiaKPCZvzyvfEB++84RL5wH+0nBzanY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VDJTUczH; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709282821; x=1740818821;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=mBL8PGXV/JmsDTo9f1jc418xkycUcDbyqjWYl05TJoY=;
-  b=VDJTUczHd55h2tHmNZgRBOhNbCXfL50NcYIDYz0LtN7gGKk5ob6d98qY
-   ASn2o++ia8fAkZo77Z+AZ6uRkza7pf4dDU4d7pNLx2rcplQ88WQGnyuC9
-   s1Uca1t6yG2HmWfDepd1b5FoMLBIUzaaJFY5karCg8XxbJB2KpSd3exCK
-   0HgY+8JslXdnn2fyaoO7ZBVz34wI5csbT3TICdlp4rUSPSaknlzO1o1ZK
-   2/A+nQQDkXCKiifOxx5IjVfQ6l9VzIILHoN7xTfw6O2K2a3b8+Wi5Ly41
-   9Glc3d0n4yB8EixCjYMBurgTQ50fH4m8UzFGVWMcTZaNIGPidXs2nh4YI
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="6760270"
-X-IronPort-AV: E=Sophos;i="6.06,195,1705392000"; 
-   d="scan'208";a="6760270"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 00:47:00 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,195,1705392000"; 
-   d="scan'208";a="12814752"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 00:46:58 -0800
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-	by kekkonen.fi.intel.com (Postfix) with SMTP id C8A0911F811;
-	Fri,  1 Mar 2024 10:46:54 +0200 (EET)
-Date: Fri, 1 Mar 2024 08:46:54 +0000
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
-To: Markus Elfring <Markus.Elfring@web.de>
-Cc: linux-media@vger.kernel.org, kernel-janitors@vger.kernel.org,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-	LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] media: i2c: ds90ub960: Delete duplicate source code in
- ub960_parse_dt_rxports()
-Message-ID: <ZeGV_siWFkfqSEgZ@kekkonen.localdomain>
-References: <79fa4854-976d-4aad-86ac-c156b0c4937e@web.de>
+	s=arc-20240116; t=1709282830; c=relaxed/simple;
+	bh=5MxkYGIx2DdVeJ4zAV3mxPPY60bkLJwsDM9R11jSvKU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=nbpzT6Wkafbpwiqxs+X//CmgXQZK1Dnsko9dXL8A+zT0tHCzxV8rJ+NVYUdzu014GMH5bWnYhYZaYcUqJiPtd0daNalZbwK12GWEUs1cpOngIY4t3EHgFDKw/LQNFMmZ6ihqrBP1LtYajB/uDs7TwhmigdmtL9/4xvQaH+21iq4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=DtMW0puY; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709282826;
+	bh=5MxkYGIx2DdVeJ4zAV3mxPPY60bkLJwsDM9R11jSvKU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=DtMW0puYArAtKYfVDkcFg4Yb57s2iOxXvnrkqbgfb5A1BsQPQyVnpOqAzOU0/SbPl
+	 0QlQ6sWsaP7Y8IMz65A2UsaGWaOuauKCl36wV2S4EDF9hjIrxE99hCT9ofSZoI+Fp0
+	 dxEPMbTPpa0/DWM517QrTgn5Xc3NYvW3gh+p1iQIDj/8gI9PXVaqcyG606cQDCMtSC
+	 0p0nkti0Osax5MnZzd7fGQBLZGyjirdK2VKczA5aPu8/6VSYxXtta64QGvwQYVWJhT
+	 yN+NS/s+OxmTMPBAqw0ugQHjntr9ACCS/YSTC9gxYId3/gAGNQ4z5oN79rwc4UbSiv
+	 ijX6U2on/S4sw==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id BBE7537814A4;
+	Fri,  1 Mar 2024 08:47:04 +0000 (UTC)
+Message-ID: <dbe8b3c3-e7ce-4b28-bd5c-47e180fdf275@collabora.com>
+Date: Fri, 1 Mar 2024 09:47:04 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <79fa4854-976d-4aad-86ac-c156b0c4937e@web.de>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/9] drm: Switch from dev_err to dev_err_probe for
+ missing DSI host error path
+Content-Language: en-US
+To: =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>,
+ Andrzej Hajda <andrzej.hajda@intel.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>,
+ Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+ Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ owen <qwt9588@gmail.com>, Jagan Teki <jagan@amarulasolutions.com>,
+ Marek Vasut <marex@denx.de>, Adrien Grassein <adrien.grassein@gmail.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Sam Ravnborg <sam@ravnborg.org>, Bjorn Andersson <andersson@kernel.org>,
+ Vinod Koul <vkoul@kernel.org>, Dmitry Baryshkov
+ <dmitry.baryshkov@linaro.org>, Vinay Simha BN <simhavcs@gmail.com>,
+ Christopher Vollo <chris@renewoutreach.org>,
+ Jessica Zhang <quic_jesszhan@quicinc.com>,
+ Marijn Suijten <marijn.suijten@somainline.org>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+Cc: kernel@collabora.com, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org
+References: <20240229-anx7625-defer-log-no-dsi-host-v2-0-00506941049a@collabora.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20240229-anx7625-defer-log-no-dsi-host-v2-0-00506941049a@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hi Markus,
+Il 01/03/24 01:12, Nícolas F. R. A. Prado ha scritto:
+> This series changes every occurence of the following pattern:
+> 
+> 	dsi_host = of_find_mipi_dsi_host_by_node(dsi);
+> 	if (!dsi_host) {
+> 		dev_err(dev, "failed to find dsi host\n");
+> 		return -EPROBE_DEFER;
+> 	}
+> 
+> into
+> 
+> 	dsi_host = of_find_mipi_dsi_host_by_node(dsi);
+> 	if (!dsi_host)
+> 		return dev_err_probe(dev, -EPROBE_DEFER, "failed to find dsi host\n");
+> 
+> This registers the defer probe reason (so it can later be printed by the
+> driver core or checked on demand through the devices_deferred file in
+> debugfs) and prevents errors to be spammed in the kernel log every time
+> the driver retries to probe, unnecessarily alerting userspace about
+> something that is a normal part of the boot process.
+> 
+> I have omitted a Fixes: tag in the last patch, for the truly-nt35597
+> panel, because it predates the dev_err_probe() helper.
+> 
+> Changes in v2:
+> - Added patches 2 onwards to fix all occurences of this pattern instead
+>    of just for the anx7625 driver
+> - Link to v1: https://lore.kernel.org/r/20240226-anx7625-defer-log-no-dsi-host-v1-1-242b1af31884@collabora.com
+> 
 
-On Fri, Mar 01, 2024 at 08:46:25AM +0100, Markus Elfring wrote:
-> From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Fri, 1 Mar 2024 08:23:24 +0100
-> 
-> Avoid the specification of a duplicate fwnode_handle_put() call
-> in this function implementation.
-> 
-> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+Apart from patch [8/9], where you're going over 100 cols, this series looks good.
+
+After fixing that, on v3, please feel free to add my....
+
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+
+..to all of the patches in this series (and the one that you'll fix as well).
+
+Cheers!
+Angelo
+
 > ---
->  drivers/media/i2c/ds90ub960.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
+> Nícolas F. R. A. Prado (9):
+>        drm/bridge: anx7625: Don't log an error when DSI host can't be found
+>        drm/bridge: icn6211: Don't log an error when DSI host can't be found
+>        drm/bridge: lt8912b: Don't log an error when DSI host can't be found
+>        drm/bridge: lt9611: Don't log an error when DSI host can't be found
+>        drm/bridge: lt9611uxc: Don't log an error when DSI host can't be found
+>        drm/bridge: tc358775: Don't log an error when DSI host can't be found
+>        drm/bridge: dpc3433: Don't log an error when DSI host can't be found
+>        drm/panel: novatek-nt35950: Don't log an error when DSI host can't be found
+>        drm/panel: truly-nt35597: Don't log an error when DSI host can't be found
 > 
-> diff --git a/drivers/media/i2c/ds90ub960.c b/drivers/media/i2c/ds90ub960.c
-> index ffe5f25f8647..eb708ed7b56e 100644
-> --- a/drivers/media/i2c/ds90ub960.c
-> +++ b/drivers/media/i2c/ds90ub960.c
-> @@ -3486,10 +3486,7 @@ static int ub960_parse_dt_rxports(struct ub960_data *priv)
->  		}
->  	}
+>   drivers/gpu/drm/bridge/analogix/anx7625.c     |  6 ++----
+>   drivers/gpu/drm/bridge/chipone-icn6211.c      |  6 ++----
+>   drivers/gpu/drm/bridge/lontium-lt8912b.c      |  6 ++----
+>   drivers/gpu/drm/bridge/lontium-lt9611.c       |  6 ++----
+>   drivers/gpu/drm/bridge/lontium-lt9611uxc.c    |  6 ++----
+>   drivers/gpu/drm/bridge/tc358775.c             |  6 ++----
+>   drivers/gpu/drm/bridge/ti-dlpc3433.c          | 17 +++++++++--------
+>   drivers/gpu/drm/panel/panel-novatek-nt35950.c |  6 ++----
+>   drivers/gpu/drm/panel/panel-truly-nt35597.c   |  6 ++----
+>   9 files changed, 25 insertions(+), 40 deletions(-)
+> ---
+> base-commit: 2ae0a045e6814c8c1d676d6153c605a65746aa29
+> change-id: 20240226-anx7625-defer-log-no-dsi-host-c3f9ccbcb287
 > 
-> -	fwnode_handle_put(links_fwnode);
-> -
-> -	return 0;
-> -
-> +	ret = 0;
+> Best regards,
 
-I think it'd be nicer to initialise ret as zero, then you can just drop the
-assignment above.
 
->  err_put_links:
->  	fwnode_handle_put(links_fwnode);
-> 
 
--- 
-Regards,
-
-Sakari Ailus
 
