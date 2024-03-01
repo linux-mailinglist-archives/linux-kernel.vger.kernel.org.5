@@ -1,159 +1,142 @@
-Return-Path: <linux-kernel+bounces-88372-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88373-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98D6086E092
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:42:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3711286E098
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:46:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC4141C2263C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:42:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6189C1C22720
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:46:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A46846CDC7;
-	Fri,  1 Mar 2024 11:42:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qk6wSSDT"
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F67D6D1BD;
+	Fri,  1 Mar 2024 11:46:00 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EFA86A8B9
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 11:42:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E1FF20315;
+	Fri,  1 Mar 2024 11:45:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709293337; cv=none; b=hFmFXsE4o9jFbHZEHWnOPnD0bBBQnIeHFElIGdIAE943yJw9Pi+SHZAcgsWk0RgiQFJW/XkjtFt/GxRHbAhC0E6CtXVeNtNEPDVUHHXvMOAPzrL48cIvaaf4smlu9LTc3pOVjhy6oZqJdpcATdui0tP7bWk2DfLPr6+V4TpsK80=
+	t=1709293559; cv=none; b=rbTQTgUwOhBNvo0Chqe9TUA8svX0a3TbAJ4m3MBOOwtSDhY+Ae5++MoZLKcQLcIb8fhhYwEl5AVRqguS2casJAR1sSXJpUjvA9aPGrSodOxgKJpEeBmLjfkCHZUn4SnkACXjc6oHpooityF4GOcs/E5PNFrPcBE9YDD3+pO3my0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709293337; c=relaxed/simple;
-	bh=Fk/8aINaEQM0bfD2/7nSa9F+mk4kiLQBYgSxPkYq//M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Kh9T3D8BBQmvE4oCYcUwcYf3bmEEf8rXyYJjSLY5VSRyifXSoTFjMkveVLWCNWeJu4U0yHA+HTekK5gtRvTEBH6X/9Yja4VO5StiuHBoDRjTmHJ/cVokKmrGQ49mL58vUWusbsGAhYMCMptbriBpskzsXp0m4Av3hohAJKDC84Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qk6wSSDT; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-33d90dfe73cso1091149f8f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 03:42:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709293334; x=1709898134; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Fk/8aINaEQM0bfD2/7nSa9F+mk4kiLQBYgSxPkYq//M=;
-        b=qk6wSSDTM3phyzBs4hWbCQznm++AVIJKqcfktXeJ28JmPNWpG/uyXfAzVwB92Vhyr5
-         Zp83hmhdcnPgzBr6uv999LAuMLpU3i/+PV3iALnO+EX6MAtZedrgUyFa44b/aj+fVyqU
-         U7Ca+7LV3lp4BZB86T1U5W9RvNTj1r2m94KAqmrXAA8YRKUn8mQBkIcalafQ3GV49cYw
-         t/vz+tRi8yOFXTpzWHl+tP+odj5LkEVm7Feyvtdg3KGkH68IHJmWV4cLTXZbJghQqQhF
-         dwZwzQOblCv1mD/sv7CVUgtXnPl2jrzQTY9+DAzs8T2p3boftb/3sg5rozYlexp88Gir
-         mAGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709293334; x=1709898134;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Fk/8aINaEQM0bfD2/7nSa9F+mk4kiLQBYgSxPkYq//M=;
-        b=bJPL6Vxgeuml41lHOVzwqE5SQ0u1nUyz+ZgPCMlB7aZFJ3HAceFvpMGsyKozqipr83
-         K5qmE/br6SUwtevdizhSmEyjIX0grpKDZwSQkKeKhzkBXERZJewGihhE4NJq9Bj75+t5
-         bzrJfDUaS1E9B5ZBlUsvpu1Fs5pQitEOrP/ZGU4vFp2rk8enV1UTZthfVRpIIyHSW2zy
-         G5NZ8Dxbl1TEQpOUyYq4wuVEwZlHYi2b++DbiCPM3Pq6gmI+ho10JhpnYV984N5StWXm
-         LOwpIfl7+nw5ZSLXczxCnEXad82tAz1Ph38spQmcpVjnn48/Q6LANnpn0zlgCUmMGzm5
-         6bgA==
-X-Forwarded-Encrypted: i=1; AJvYcCWrQoRk0AOmeRsu/BhTukL22ogl6TCRtbEa0EU7tGxvPjI6+EZH6nuKDOkFa01OzDHvyDuBT8jECryA14vGuP1hydbNi258LUbtfttI
-X-Gm-Message-State: AOJu0YxULG5EYR9xwjURB3ogo14R5p2ohcpFE7v0ty7fFlRDFTLzh964
-	aQIElg0MwaeqIXukUpFIWxk9O+tIBpFqzRITq3HjxSlOf37q3bNHIo05yPooldo=
-X-Google-Smtp-Source: AGHT+IE2uhCi8X432pGEBh56x9XSYEEUgvIsPSx1jQ7q/Eb2CMyGNmb0dbM/AJCZjWPg0rwg3OKN4g==
-X-Received: by 2002:adf:ca89:0:b0:33d:754c:8daf with SMTP id r9-20020adfca89000000b0033d754c8dafmr1515020wrh.10.1709293334266;
-        Fri, 01 Mar 2024 03:42:14 -0800 (PST)
-Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
-        by smtp.gmail.com with ESMTPSA id q1-20020adfab01000000b0033ce727e728sm4341417wrc.94.2024.03.01.03.42.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 03:42:13 -0800 (PST)
-Date: Fri, 1 Mar 2024 11:42:11 +0000
-From: Daniel Thompson <daniel.thompson@linaro.org>
-To: Doug Anderson <dianders@chromium.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-	Marc Zyngier <maz@kernel.org>,
-	Misono Tomohiro <misono.tomohiro@fujitsu.com>,
-	Chen-Yu Tsai <wens@csie.org>, Stephen Boyd <swboyd@chromium.org>,
-	Sumit Garg <sumit.garg@linaro.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	"Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Kees Cook <keescook@chromium.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Tony Luck <tony.luck@intel.com>,
-	Valentin Schneider <vschneid@redhat.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: smp: smp_send_stop() and crash_smp_send_stop()
- should try non-NMI first
-Message-ID: <20240301114211.GC5795@aspen.lan>
-References: <20231207170251.1.Id4817adef610302554b8aa42b090d57270dc119c@changeid>
- <CAD=FV=WtJCkdSY=HYDmBjn3hc4TYT7j0bMxGCV-=B3o3bm-kpQ@mail.gmail.com>
- <CAD=FV=XMkrWmA1D6UjdTs8oZiXxKc1xiUoRqtNqAE-7GoPk8mA@mail.gmail.com>
- <20240228131104.GB22898@aspen.lan>
- <CAD=FV=VYV_EMFXS0vvMZLGSRZcGwit6=DMdgSW349bVAu_7a1Q@mail.gmail.com>
+	s=arc-20240116; t=1709293559; c=relaxed/simple;
+	bh=7euRu9gC1qZwJ0nCZHbyU4FyH2aqHWlDJQgi7OX/OZw=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=qvTtws3jJwIrnkmONS0/Y9E9ekLMl70iOhjF7HtYjVhCavohUXlSsRivPWrSrnxTji1/PINW8ewoxjN4e/hmywDd6QJ9j17G/daz9XGIottzWxBz1pOEaMlmUhmDjquEVMDfmu3mLVyK9K/Aev7rCsqOamARon8/fd38TtkpmmA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TmR7D5q2Bz2Bf5g;
+	Fri,  1 Mar 2024 19:43:36 +0800 (CST)
+Received: from kwepemd100001.china.huawei.com (unknown [7.221.188.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 95F5514011A;
+	Fri,  1 Mar 2024 19:45:53 +0800 (CST)
+Received: from kwepemd100012.china.huawei.com (7.221.188.214) by
+ kwepemd100001.china.huawei.com (7.221.188.240) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Fri, 1 Mar 2024 19:45:53 +0800
+Received: from dggpemm500008.china.huawei.com (7.185.36.136) by
+ kwepemd100012.china.huawei.com (7.221.188.214) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Fri, 1 Mar 2024 19:45:52 +0800
+Received: from dggpemm500008.china.huawei.com ([7.185.36.136]) by
+ dggpemm500008.china.huawei.com ([7.185.36.136]) with mapi id 15.01.2507.035;
+ Fri, 1 Mar 2024 19:45:52 +0800
+From: wangyunjian <wangyunjian@huawei.com>
+To: Paolo Abeni <pabeni@redhat.com>, "mst@redhat.com" <mst@redhat.com>,
+	"willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>,
+	"jasowang@redhat.com" <jasowang@redhat.com>, "kuba@kernel.org"
+	<kuba@kernel.org>, "bjorn@kernel.org" <bjorn@kernel.org>,
+	"magnus.karlsson@intel.com" <magnus.karlsson@intel.com>,
+	"maciej.fijalkowski@intel.com" <maciej.fijalkowski@intel.com>,
+	"jonathan.lemon@gmail.com" <jonathan.lemon@gmail.com>, "davem@davemloft.net"
+	<davem@davemloft.net>
+CC: "bpf@vger.kernel.org" <bpf@vger.kernel.org>, "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"virtualization@lists.linux.dev" <virtualization@lists.linux.dev>, xudingke
+	<xudingke@huawei.com>, "liwei (DT)" <liwei395@huawei.com>
+Subject: RE: [PATCH net-next v2 3/3] tun: AF_XDP Tx zero-copy support
+Thread-Topic: [PATCH net-next v2 3/3] tun: AF_XDP Tx zero-copy support
+Thread-Index: AQHaajYcNkJKJoTBfEqyMPzDlwSi+bEgpeYAgAIJPRA=
+Date: Fri, 1 Mar 2024 11:45:52 +0000
+Message-ID: <223aeca6435342ec8a4d57c959c23303@huawei.com>
+References: <1709118356-133960-1-git-send-email-wangyunjian@huawei.com>
+ <7d478cb842e28094f4d6102e593e3de25ab27dfe.camel@redhat.com>
+In-Reply-To: <7d478cb842e28094f4d6102e593e3de25ab27dfe.camel@redhat.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAD=FV=VYV_EMFXS0vvMZLGSRZcGwit6=DMdgSW349bVAu_7a1Q@mail.gmail.com>
 
-On Thu, Feb 29, 2024 at 10:34:26AM -0800, Doug Anderson wrote:
-> Hi,
->
-> On Wed, Feb 28, 2024 at 5:11 AM Daniel Thompson
-> <daniel.thompson@linaro.org> wrote:
-> >
-> > > I'm still hoping to get some sort of feedback here. If people think
-> > > this is a terrible idea then I'll shut up now and leave well enough
-> > > alone, but it would be nice to actively decide and get the patch out
-> > > of limbo.
-> >
-> > I've read patch through a couple of times and was generally convinced by
-> > the "do what x86 does" argument.
-> >
-> > However until now I've always held my council since I wasn't familiar
-> > with these code paths and I figured it was OK for me to have no opinion
-> > because the first line of the description says that kgdb/kdb is 100% not
-> > involved in causing the problem ;-) .
-> >
-> > However today I also took a look at the HAVE_NMI architectures and there
-> > is no consensus between them about how to implement this: PowerPC uses
-> > NMI and most of the others use IRQ only, s390 special cases for the
-> > panic code path and acts differently compared to a normal SMP shutdown.
-> >
-> > <snip>
-> >
-> > However, if we talking ourselves into copying x86 then perhaps we should
-> > more accurately copy x86! Assuming I read the x86 code correctly then
-> > crash_smp_send_stop() will (mostly) go staight to NMI rather
-> > than trialling an IRQ first! That is not what is currently implemented
-> > in the patch for arm64.
->
-> Sure, I'm happy to change the patch to work that way, though I might
-> wait to get some confirmation from a maintainer that they think this
-> idea is worth pursuing before spending more time on it.
-
-100%. Don't respin on my account.
-
-> I don't think it would be hard to have the "crash stop" code jump
-> straight to NMI if that's what people want. Matching x86 here seems
-> reasonable, though I'd also say that my gut still says that even for
-> crash stop we should try to stop things cleanly before jumping to NMI.
-> I guess I could imagine that the code we're kexec-ing to generate the
-> core file might be more likely to find the hardware in a funny state
-> if we stopped CPUs w/ NMI vs IRQ.
-
-In terms of the "right thing to do" for kdump then reviewing the s390
-might be a good idea. Unfortunately it's a bit different to the other
-arches and I can't offer a 95% answer about what that arch does.
-
-
-Daniel.
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBQYW9sbyBBYmVuaSBbbWFpbHRv
+OnBhYmVuaUByZWRoYXQuY29tXQ0KPiBTZW50OiBUaHVyc2RheSwgRmVicnVhcnkgMjksIDIwMjQg
+NzoxMyBQTQ0KPiBUbzogd2FuZ3l1bmppYW4gPHdhbmd5dW5qaWFuQGh1YXdlaS5jb20+OyBtc3RA
+cmVkaGF0LmNvbTsNCj4gd2lsbGVtZGVicnVpam4ua2VybmVsQGdtYWlsLmNvbTsgamFzb3dhbmdA
+cmVkaGF0LmNvbTsga3ViYUBrZXJuZWwub3JnOw0KPiBiam9ybkBrZXJuZWwub3JnOyBtYWdudXMu
+a2FybHNzb25AaW50ZWwuY29tOyBtYWNpZWouZmlqYWxrb3dza2lAaW50ZWwuY29tOw0KPiBqb25h
+dGhhbi5sZW1vbkBnbWFpbC5jb207IGRhdmVtQGRhdmVtbG9mdC5uZXQNCj4gQ2M6IGJwZkB2Z2Vy
+Lmtlcm5lbC5vcmc7IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmc7DQo+IGxpbnV4LWtlcm5lbEB2Z2Vy
+Lmtlcm5lbC5vcmc7IGt2bUB2Z2VyLmtlcm5lbC5vcmc7DQo+IHZpcnR1YWxpemF0aW9uQGxpc3Rz
+LmxpbnV4LmRldjsgeHVkaW5na2UgPHh1ZGluZ2tlQGh1YXdlaS5jb20+OyBsaXdlaSAoRFQpDQo+
+IDxsaXdlaTM5NUBodWF3ZWkuY29tPg0KPiBTdWJqZWN0OiBSZTogW1BBVENIIG5ldC1uZXh0IHYy
+IDMvM10gdHVuOiBBRl9YRFAgVHggemVyby1jb3B5IHN1cHBvcnQNCj4gDQo+IE9uIFdlZCwgMjAy
+NC0wMi0yOCBhdCAxOTowNSArMDgwMCwgWXVuamlhbiBXYW5nIHdyb3RlOg0KPiA+IEBAIC0yNjYx
+LDYgKzI3NzYsNTQgQEAgc3RhdGljIGludCB0dW5fcHRyX3BlZWtfbGVuKHZvaWQgKnB0cikNCj4g
+PiAgCX0NCj4gPiAgfQ0KPiA+DQo+ID4gK3N0YXRpYyB2b2lkIHR1bl9wZWVrX3hzayhzdHJ1Y3Qg
+dHVuX2ZpbGUgKnRmaWxlKSB7DQo+ID4gKwlzdHJ1Y3QgeHNrX2J1ZmZfcG9vbCAqcG9vbDsNCj4g
+PiArCXUzMiBpLCBiYXRjaCwgYnVkZ2V0Ow0KPiA+ICsJdm9pZCAqZnJhbWU7DQo+ID4gKw0KPiA+
+ICsJaWYgKCFwdHJfcmluZ19lbXB0eSgmdGZpbGUtPnR4X3JpbmcpKQ0KPiA+ICsJCXJldHVybjsN
+Cj4gPiArDQo+ID4gKwlzcGluX2xvY2soJnRmaWxlLT5wb29sX2xvY2spOw0KPiA+ICsJcG9vbCA9
+IHRmaWxlLT54c2tfcG9vbDsNCj4gPiArCWlmICghcG9vbCkgew0KPiA+ICsJCXNwaW5fdW5sb2Nr
+KCZ0ZmlsZS0+cG9vbF9sb2NrKTsNCj4gPiArCQlyZXR1cm47DQo+ID4gKwl9DQo+ID4gKw0KPiA+
+ICsJaWYgKHRmaWxlLT5uYl9kZXNjcykgew0KPiA+ICsJCXhza190eF9jb21wbGV0ZWQocG9vbCwg
+dGZpbGUtPm5iX2Rlc2NzKTsNCj4gPiArCQlpZiAoeHNrX3VzZXNfbmVlZF93YWtldXAocG9vbCkp
+DQo+ID4gKwkJCXhza19zZXRfdHhfbmVlZF93YWtldXAocG9vbCk7DQo+ID4gKwl9DQo+ID4gKw0K
+PiA+ICsJc3Bpbl9sb2NrKCZ0ZmlsZS0+dHhfcmluZy5wcm9kdWNlcl9sb2NrKTsNCj4gPiArCWJ1
+ZGdldCA9IG1pbl90KHUzMiwgdGZpbGUtPnR4X3Jpbmcuc2l6ZSwgVFVOX1hEUF9CQVRDSCk7DQo+
+ID4gKw0KPiA+ICsJYmF0Y2ggPSB4c2tfdHhfcGVla19yZWxlYXNlX2Rlc2NfYmF0Y2gocG9vbCwg
+YnVkZ2V0KTsNCj4gPiArCWlmICghYmF0Y2gpIHsNCj4gDQo+IFRoaXMgYnJhbmNoIGxvb2tzIGxp
+a2UgYW4gdW5uZWVkZWQgIm9wdGltaXphdGlvbiIuIFRoZSBnZW5lcmljIGxvb3AgYmVsb3cNCj4g
+c2hvdWxkIGhhdmUgdGhlIHNhbWUgZWZmZWN0IHdpdGggbm8gbWVhc3VyYWJsZSBwZXJmIGRlbHRh
+IC0gYW5kIHNtYWxsZXIgY29kZS4NCj4gSnVzdCByZW1vdmUgdGhpcy4NCj4gDQo+ID4gKwkJdGZp
+bGUtPm5iX2Rlc2NzID0gMDsNCj4gPiArCQlzcGluX3VubG9jaygmdGZpbGUtPnR4X3JpbmcucHJv
+ZHVjZXJfbG9jayk7DQo+ID4gKwkJc3Bpbl91bmxvY2soJnRmaWxlLT5wb29sX2xvY2spOw0KPiA+
+ICsJCXJldHVybjsNCj4gPiArCX0NCj4gPiArDQo+ID4gKwl0ZmlsZS0+bmJfZGVzY3MgPSBiYXRj
+aDsNCj4gPiArCWZvciAoaSA9IDA7IGkgPCBiYXRjaDsgaSsrKSB7DQo+ID4gKwkJLyogRW5jb2Rl
+IHRoZSBYRFAgREVTQyBmbGFnIGludG8gbG93ZXN0IGJpdCBmb3IgY29uc3VtZXIgdG8gZGlmZmVy
+DQo+ID4gKwkJICogWERQIGRlc2MgZnJvbSBYRFAgYnVmZmVyIGFuZCBza19idWZmLg0KPiA+ICsJ
+CSAqLw0KPiA+ICsJCWZyYW1lID0gdHVuX3hkcF9kZXNjX3RvX3B0cigmcG9vbC0+dHhfZGVzY3Nb
+aV0pOw0KPiA+ICsJCS8qIFRoZSBidWRnZXQgbXVzdCBiZSBsZXNzIHRoYW4gb3IgZXF1YWwgdG8g
+dHhfcmluZy5zaXplLA0KPiA+ICsJCSAqIHNvIGVucXVldWluZyB3aWxsIG5vdCBmYWlsLg0KPiA+
+ICsJCSAqLw0KPiA+ICsJCV9fcHRyX3JpbmdfcHJvZHVjZSgmdGZpbGUtPnR4X3JpbmcsIGZyYW1l
+KTsNCj4gPiArCX0NCj4gPiArCXNwaW5fdW5sb2NrKCZ0ZmlsZS0+dHhfcmluZy5wcm9kdWNlcl9s
+b2NrKTsNCj4gPiArCXNwaW5fdW5sb2NrKCZ0ZmlsZS0+cG9vbF9sb2NrKTsNCj4gDQo+IE1vcmUg
+cmVsYXRlZCB0byB0aGUgZ2VuZXJhbCBkZXNpZ246IGl0IGxvb2tzIHdyb25nLiBXaGF0IGlmDQo+
+IGdldF9yeF9idWZzKCkgd2lsbCBmYWlsIChFTk9CVUYpIGFmdGVyIHN1Y2Nlc3NmdWwgcGVla2lu
+Zz8gV2l0aCBubyBtb3JlDQo+IGluY29taW5nIHBhY2tldHMsIGxhdGVyIHBlZWsgd2lsbCByZXR1
+cm4gMCBhbmQgaXQgbG9va3MgbGlrZSB0aGF0IHRoZQ0KPiBoYWxmLXByb2Nlc3NlZCBwYWNrZXRz
+IHdpbGwgc3RheSBpbiB0aGUgcmluZyBmb3JldmVyPz8/DQo+IA0KPiBJIHRoaW5rIHRoZSAncmlu
+ZyBwcm9kdWNlJyBwYXJ0IHNob3VsZCBiZSBtb3ZlZCBpbnRvIHR1bl9kb19yZWFkKCkuDQoNCkN1
+cnJlbnRseSwgdGhlIHZob3N0LW5ldCBvYnRhaW5zIGEgYmF0Y2ggZGVzY3JpcHRvcnMvc2tfYnVm
+ZnMgZnJvbSB0aGUNCnB0cl9yaW5nIGFuZCBlbnF1ZXVlIHRoZSBiYXRjaCBkZXNjcmlwdG9ycy9z
+a19idWZmcyB0byB0aGUgdmlydHF1ZXVlJ3F1ZXVlLA0KYW5kIHRoZW4gY29uc3VtZXMgdGhlIGRl
+c2NyaXB0b3JzL3NrX2J1ZmZzIGZyb20gdGhlIHZpcnRxdWV1ZSdxdWV1ZSBpbg0Kc2VxdWVuY2Uu
+IEFzIGEgcmVzdWx0LCBUVU4gZG9lcyBub3Qga25vdyB3aGV0aGVyIHRoZSBiYXRjaCBkZXNjcmlw
+dG9ycyBoYXZlDQpiZWVuIHVzZWQgdXAsIGFuZCB0aHVzIGRvZXMgbm90IGtub3cgd2hlbiB0byBy
+ZXR1cm4gdGhlIGJhdGNoIGRlc2NyaXB0b3JzLg0KDQpTbywgSSB0aGluayBpdCdzIHJlYXNvbmFi
+bGUgdGhhdCB3aGVuIHZob3N0LW5ldCBjaGVja3MgcHRyX3JpbmcgaXMgZW1wdHksDQppdCBjYWxs
+cyBwZWVrX2xlbiB0byBnZXQgbmV3IHhzaydzIGRlc2NzIGFuZCByZXR1cm4gdGhlIGRlc2NyaXB0
+b3JzLg0KDQpUaGFua3MNCj4gDQo+IENoZWVycywNCj4gDQo+IFBhb2xvDQoNCg==
 
