@@ -1,148 +1,130 @@
-Return-Path: <linux-kernel+bounces-88279-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88280-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FC3F86DF8F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:46:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00C6586DF90
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:46:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1DCD283DEE
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:46:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A230F287AAB
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:46:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E5AE6BFD4;
-	Fri,  1 Mar 2024 10:44:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="isAJPYxi"
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B7526A352;
-	Fri,  1 Mar 2024 10:44:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66CA96CDB7;
+	Fri,  1 Mar 2024 10:45:37 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 345886BFDD
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 10:45:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709289882; cv=none; b=uO0NLROmmpC3SctYWMR4MgtjAAuaTf2AR2yqvzkV6Ts+9XBqBh63txW+fdqlQeBbbNEdWDxlhxfrFC3zIByXyhMxrQQFuSvmg2mmq7asFWTP33AWds6d3bnAA4MAefa7Qga+iOPSJO3wHTwIQArl36nktKj1pB6aJfuFNZ13R8c=
+	t=1709289936; cv=none; b=F3mNmi9zL5fJkiZga3D4PtFnPB2mS7z/Y6rXroG21GolXkCJcDYTcfuMMg8GXBPN0O8753sBJP/hwGPBLfLIc6JdZWspm3OR8dRjMDbSywBh9+Y8x+KyiY9Z0IVuKm3Cq3YT01mFqrj3+Cc3AZ/0cRK5EA0H2037S6IQre0B8pE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709289882; c=relaxed/simple;
-	bh=M60DamTk+REH8J6SvrzI6jskDDkauIzqreNeeM+j2TI=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Subject:Cc:To:From:
-	 References:In-Reply-To; b=I3OLVW5M8oxJ5U4pL2ftcSHManAfT2OF8z6D8Q/qrcdP4DaGdgmy76db/3gYNDjpvOF4rTf4I+wrZiYLqK0TiO+EP9zgjqZepVMAGVxjRYH6aUdfHAaSMWSfnHCw3GwNYpiIJnKPnQbyKT3gMR2AmTTZOH9/OMIFA9A3PY4H7vw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=isAJPYxi; arc=none smtp.client-ip=217.70.183.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 5981360006;
-	Fri,  1 Mar 2024 10:44:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709289878;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=M60DamTk+REH8J6SvrzI6jskDDkauIzqreNeeM+j2TI=;
-	b=isAJPYxi2GQpNJRl0t1C8hv/6w84b2gIIcunVelFVD1+C7mfM17zyo9k9/BZNodzOV0qGg
-	00wgxj8fvPMtzHVihsXGXGiUI22E7DmSH7oXpoH6edAcbK1eYIwPWg283AZd6NAVeB2l2A
-	+PoXuw1veDy9+wSiggnJg46DZ9clJF5nxj3Ky+7PWRqexrVWevozcY2NK+Q5mH8U/AnvEN
-	lhRJdESM0HwBsvjCyJvp/DU/Uff7N44QBSPhK6RJBwgp8vsa2IFfWUr5ZYc+kfvHRBqO/e
-	MKb5LzbWbdX3QJ64m02rl57Rw3jVbBXchV4Ks13cKCoBgTicwUkFb2E5pcVsEg==
+	s=arc-20240116; t=1709289936; c=relaxed/simple;
+	bh=5lvb/vRt2LO7ejrakonBysU24XtvxyoAwDsSHY5s5c0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=n/NPnrIUvvPt04EP3IPHAl19HS+OGyRdRJCkNRBXWFpGG2TubRc+bsR9OSM/l7suc3rl6+KoPKIgAkSoIWGfpJk5BMosba11uoiclvcBlfuzIMoyc7KVP5gi0P4AuQsZZWz4xrp5/7o7s1Pi1btwTvPtDRniB3JvKbeoaINRpcY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7C3E211FB;
+	Fri,  1 Mar 2024 02:46:11 -0800 (PST)
+Received: from [10.57.68.58] (unknown [10.57.68.58])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 191AD3F762;
+	Fri,  1 Mar 2024 02:45:30 -0800 (PST)
+Message-ID: <b99f47f9-18d0-4619-aae7-19274197b85e@arm.com>
+Date: Fri, 1 Mar 2024 10:45:28 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/9] Merge arm64/riscv hugetlbfs contpte support
+Content-Language: en-GB
+To: Alexandre Ghiti <alexghiti@rivosinc.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>, Paul Walmsley
+ <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Albert Ou <aou@eecs.berkeley.edu>, Andrew Morton
+ <akpm@linux-foundation.org>, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+ linux-mm@kvack.org
+References: <20240301091455.246686-1-alexghiti@rivosinc.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20240301091455.246686-1-alexghiti@rivosinc.com>
 Content-Type: text/plain; charset=UTF-8
-Date: Fri, 01 Mar 2024 11:44:37 +0100
-Message-Id: <CZICOX6DR0SA.O876YRG8P03C@bootlin.com>
-Subject: Re: [PATCH v2 02/11] dt-bindings: hwmon: lm75: use common hwmon
- schema
-Cc: <linux-arm-kernel@lists.infradead.org>, <linux-i2c@vger.kernel.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <linux-mips@vger.kernel.org>, "Gregory Clement"
- <gregory.clement@bootlin.com>, "Vladimir Kondratiev"
- <vladimir.kondratiev@mobileye.com>, "Thomas Petazzoni"
- <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
- <tawfik.bayouk@mobileye.com>, "Jean Delvare" <jdelvare@suse.com>,
- <linux-hwmon@vger.kernel.org>
-To: "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>, "Guenter Roeck"
- <linux@roeck-us.net>, "Linus Walleij" <linus.walleij@linaro.org>, "Andi
- Shyti" <andi.shyti@kernel.org>, "Rob Herring" <robh+dt@kernel.org>,
- "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley"
- <conor+dt@kernel.org>, "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-X-Mailer: aerc 0.15.2
-References: <20240229-mbly-i2c-v2-0-b32ed18c098c@bootlin.com>
- <20240229-mbly-i2c-v2-2-b32ed18c098c@bootlin.com>
- <6749c8df-c545-4aca-bc18-4dfe9c9f15b0@linaro.org>
- <d78fd3ca-ed0b-40e5-8f8f-21db152a7402@roeck-us.net>
- <CZIBCBQ2IB0E.2N3HAVO0P2SHT@bootlin.com>
- <f802a1e0-cedd-488a-a6fb-df793718d94b@linaro.org>
-In-Reply-To: <f802a1e0-cedd-488a-a6fb-df793718d94b@linaro.org>
-X-GND-Sasl: theo.lebrun@bootlin.com
+Content-Transfer-Encoding: 7bit
 
-Hello,
+Hi Alexandre,
 
-On Fri Mar 1, 2024 at 11:13 AM CET, Krzysztof Kozlowski wrote:
-> On 01/03/2024 10:41, Th=C3=A9o Lebrun wrote:
-> > Hello,
-> >=20
-> > On Fri Mar 1, 2024 at 7:53 AM CET, Guenter Roeck wrote:
-> >> On 2/29/24 22:37, Krzysztof Kozlowski wrote:
-> >>> On 29/02/2024 19:10, Th=C3=A9o Lebrun wrote:
-> >>>> Reference common hwmon schema which has the generic "label" property=
-,
-> >>>> parsed by Linux hwmon subsystem.
-> >>>>
-> >>>
-> >>> Please do not mix independent patchsets. You create unneeded
-> >>> dependencies blocking this patch. This patch depends on hwmon work, s=
-o
-> >>> it cannot go through different tree.
-> >=20
-> > I had to pick between this or dtbs_check failing on my DTS that uses a
-> > label on temperature-sensor@48.
->
-> I don't see how is that relevant. You can organize your branches as you
-> wish, e.g. base one b4 branch on another and you will not have any warnin=
-gs.
+I confess I haven't looked at the patches yet, but this cover letter raises a
+few quesions for me. I'll aim to look at the actual patches in due course.
 
-That is what I do, I however do not want mips-next to have errors when
-running dtbs_check. Having dtbs_check return errors is not an issue?
+On 01/03/2024 09:14, Alexandre Ghiti wrote:
+> This patchset intends to merge the contiguous ptes hugetlbfs implementation
+> of arm64 and riscv.
+> 
+> Both arm64 and riscv support the use of contiguous ptes to map pages that
+> are larger than the default page table size, respectively called contpte
+> and svnapot.
+> 
+> The riscv implementation differs from the arm64's in that the LSBs of the
+> pfn of a svnapot pte are used to store the size of the mapping, allowing
+> for future sizes to be added (for now only 64KB is supported). That's an
+> issue for the core mm code which expects to find the *real* pfn a pte points
+> to. Patch 1 fixes that by always returning svnapot ptes with the real pfn
+> and restores the size of the mapping when it is written to a page table.
 
-> >>> If you insist to combine independent patches, then at least clearly
-> >>> express merging strategy or dependency in patch changelog --- .
-> >=20
-> > I do not know how such indirect conflicts are usually resolved. Hwmon
-> > can take it but MIPS might want to also take it to have valid DTS.
-> >=20
-> > Any advice?
->
-> I don't see any conflict.
+Yes that makes sense to me. The intention for mTHP (!hugetlb) is to fully
+encapsulate PTEs beind set_ptes(), ptep_get() and friends, so what's actually
+written to the pgtable is arch-specific and well abstracted.
 
-I shouldn't have called that a conflict, more like a dependency.
+> 
+> The following patches are just merges of the 2 different implementations
+> that currently exist in arm64 and riscv which are very similar. It paves
+> the way to the reuse of the recent contpte THP work by Ryan [1] to avoid
+> reimplementing the same in riscv.
 
-> >> For my part I have to say that I don't know what to do with it.
-> >> Rob's robot reported errors, so I won't apply it, and I don't
-> >> feel comfortable giving it an ack either because of those errors.
-> >=20
-> > Can reproduce the error when patch "dt-bindings: hwmon: add common
-> > properties" is not applied. Cannot reproduce when patch is applied.
-> > Commit d590900b62f0 on hwmon-next. Cannot reproduce with hwmon-next as
-> > parent.
->
-> Yeah, but we see the error reported and it means something is missing.
+You seem to be talking about both hugetlb (which uses the "huge" pte helpers)
+and contpte for THP (i.e. mTHP, which uses the regular pte helpers). They are
+pretty separate in my mind, so not sure why you would be modifying them both in
+the same series?
 
-Yes, this series depends on "dt-bindings: hwmon: add common properties"
-which the bot doesn't know it needs to apply.
+Thanks,
+Ryan
 
-Should I submit this patch independently and have my DTS be broken wrt
-dtbs_check?
-
-Have a nice day,
-
---
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+> 
+> This patchset was tested by running the libhugetlbfs testsuite with 64KB
+> and 2MB pages on both architectures (on a 4KB base page size arm64 kernel).
+> 
+> [1] https://lore.kernel.org/linux-arm-kernel/20240215103205.2607016-1-ryan.roberts@arm.com/
+> 
+> Alexandre Ghiti (9):
+>   riscv: Restore the pfn in a NAPOT pte when manipulated by core mm code
+>   riscv: Safely remove huge_pte_offset() when manipulating NAPOT ptes
+>   mm: Use common huge_ptep_get() function for riscv/arm64
+>   mm: Use common set_huge_pte_at() function for riscv/arm64
+>   mm: Use common huge_pte_clear() function for riscv/arm64
+>   mm: Use common huge_ptep_get_and_clear() function for riscv/arm64
+>   mm: Use common huge_ptep_set_access_flags() function for riscv/arm64
+>   mm: Use common huge_ptep_set_wrprotect() function for riscv/arm64
+>   mm: Use common huge_ptep_clear_flush() function for riscv/arm64
+> 
+>  arch/arm64/Kconfig                  |   1 +
+>  arch/arm64/include/asm/pgtable.h    |  59 +++++-
+>  arch/arm64/mm/hugetlbpage.c         | 291 +---------------------------
+>  arch/riscv/Kconfig                  |   1 +
+>  arch/riscv/include/asm/hugetlb.h    |   2 +-
+>  arch/riscv/include/asm/pgtable-64.h |  11 ++
+>  arch/riscv/include/asm/pgtable.h    | 120 +++++++++++-
+>  arch/riscv/mm/hugetlbpage.c         | 227 ----------------------
+>  mm/Kconfig                          |   3 +
+>  mm/Makefile                         |   1 +
+>  mm/contpte.c                        | 268 +++++++++++++++++++++++++
+>  11 files changed, 456 insertions(+), 528 deletions(-)
+>  create mode 100644 mm/contpte.c
+> 
 
 
