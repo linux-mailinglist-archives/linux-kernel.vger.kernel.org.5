@@ -1,150 +1,140 @@
-Return-Path: <linux-kernel+bounces-88212-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88213-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB9E286DEB6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:59:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C33986DEB8
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:01:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C1AA1F21C8D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:59:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC4031F21A19
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:01:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C40756A8CE;
-	Fri,  1 Mar 2024 09:59:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Qfh/gl+5"
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2082D6A8CE;
+	Fri,  1 Mar 2024 10:01:17 +0000 (UTC)
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48C7469D09;
-	Fri,  1 Mar 2024 09:59:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A45A1E4BD
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 10:01:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709287164; cv=none; b=gHDudZUbQx04sXLzfD5DoKqC7pVHZuqeIIWm4Ni/H6B16DF3xt1ihUp+S7RBoSoXTJm4RgzFV9ID/jz9h6SGzk7t2Q2qppgZiAJ7EPWgbtOVWe0ghusKcNeqqFLLlmUuWzXLHD1kV29Vy+6bGxnge0E35N6v5BPecajzuN9Ya8k=
+	t=1709287276; cv=none; b=QiMk07dYiJEd0icfPiJ65OqJASoILyKs+FXx36FS6YBV1+Dygd7PesnOBKLGRAry6CVwpuWKlrIDFg6O7/1nkQFl3pKoZZxGEaJLDgreBMA6K3yEJKbTalbZT5NRr8mJG9t73/FE/CvS/RHTZv6bHDmzl6AGltH7rQkbVw2CGsM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709287164; c=relaxed/simple;
-	bh=DM9FrFMvYTmMuDMxk7ODvfya/c8UKO1eBc5L44gAAcQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=elk6y90/M3souQa3MaRJ4MG/Pq5PcfUwX6Vvn+UlosyKweHXXzMVbop7NVBofhMMpKHe91W0Ic+Mmka0Z5R6QOSjtvHSF8jHht6qi2u97X0VdFpl81xnKacDmEjaXczzFOZDPhxJUdRan86vKeb7zXgvEbPZF0nVEI5+b0yFbXk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Qfh/gl+5; arc=none smtp.client-ip=217.70.183.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C5422C0009;
-	Fri,  1 Mar 2024 09:59:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709287159;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DM9FrFMvYTmMuDMxk7ODvfya/c8UKO1eBc5L44gAAcQ=;
-	b=Qfh/gl+5SPMgENwA3uyhB/TdKCc0EczKLO34Vn64FnY78fcdfc0V3ZPnC0EFbOALpYOBzc
-	pSb7TFngnh5DOJNJp5HbbrKkg5+xEUlwJWkQ1cg0BBiFneK708IXy+xtjXqT/8yZvtAlQj
-	WirqEY0t0+O8iMj8wtWlj4VS1sljbNLGYMbm56xpL+WTtQdZqeTvod8XYuX5dgI+EVOQtY
-	WZtM4EV229cxddFzneY8CW/eY2WgNPrq5/K7gAvJqxVgAqy1HHvv8lqDSwP/mJJQhStOs7
-	ugjgdVxsEy1EkKjDAHjBn6/P0bFhlTGT9UAn482HmJCDlwbx7HTR+dSvH1caDg==
-Date: Fri, 1 Mar 2024 10:59:17 +0100
-From: Luca Ceresoli <luca.ceresoli@bootlin.com>
-To: Rob Herring <robh+dt@kernel.org>
-Cc: Saravana Kannan <saravanak@google.com>, Frank Rowand
- <frowand.list@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Xu Yang <xu.yang_2@nxp.com>, kernel-team@android.com,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, =?UTF-8?Q?Herv?=
- =?UTF-8?Q?=C3=A9?= Codina <herve.codina@bootlin.com>, Geert Uytterhoeven
- <geert@linux-m68k.org>
-Subject: Re: [REGRESSION] Re: [PATCH v2 2/3] of: property: Improve finding
- the supplier of a remote-endpoint property
-Message-ID: <20240301105917.746e626b@booty>
-In-Reply-To: <CAL_JsqLxDozqONeN818qYg9QxQVte-9Cv_GuAz7SQ1FsscwuVw@mail.gmail.com>
-References: <20240207011803.2637531-1-saravanak@google.com>
-	<20240207011803.2637531-3-saravanak@google.com>
-	<20240223171849.10f9901d@booty>
-	<CAGETcx99hhfOaEn1CH1OLDGp_pnrVeJ2nWb3X5=0j8tij4NR9w@mail.gmail.com>
-	<20240226125226.705efef3@booty>
-	<CAL_JsqLMY94KmiEUcOYT4p1HdHENffOFgRJ+Tv6RDH7ewVbyig@mail.gmail.com>
-	<CAGETcx_6UEpOJteQ0Gmfb=NgU+9MZumtmyLbn++C=uj7nOon=g@mail.gmail.com>
-	<CAL_Jsq+edTZ3yC0Xxojo5bR3aCwAMFERjuqVFaU8sFmj=nAB8w@mail.gmail.com>
-	<20240229103423.1244de38@booty>
-	<CAL_JsqLxDozqONeN818qYg9QxQVte-9Cv_GuAz7SQ1FsscwuVw@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1709287276; c=relaxed/simple;
+	bh=6mAd+E7jEFzGhcEWC7no6EMaTPorIbMs6sgr/QAqZXM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=JLDDwh/PXPXZPu9Ulm2cMW1O1jFT6mBuQW7nBEP0G5FMqAfGXyn0B+iPD9p9SlnXgLHrQOniV8GYyLklr433MfszMpHZWH1EYg3NdaInPxxdN5V7/GN3N9AEK4nrV/L1If4K+Ra/bLJKRm576Z3YViKoMrvxH+6cONnrTeN0CCg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4TmNrK3VJ1z1vvmn;
+	Fri,  1 Mar 2024 18:00:33 +0800 (CST)
+Received: from dggpemm100001.china.huawei.com (unknown [7.185.36.93])
+	by mail.maildlp.com (Postfix) with ESMTPS id 86637140158;
+	Fri,  1 Mar 2024 18:01:11 +0800 (CST)
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 1 Mar 2024 18:01:11 +0800
+Message-ID: <a262ed14-b2a4-4a15-91b5-9c88979a8338@huawei.com>
+Date: Fri, 1 Mar 2024 18:01:10 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: luca.ceresoli@bootlin.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [Linux Kernel Bug] UBSAN: shift-out-of-bounds in
+ fault_around_bytes_set
+Content-Language: en-US
+To: Sam Sun <samsun1006219@gmail.com>, <linux-kernel@vger.kernel.org>,
+	<linux-mm@kvack.org>, <akpm@linux-foundation.org>
+CC: <syzkaller@googlegroups.com>
+References: <CAEkJfYOvjjoTWMs6ozxF0P4_U050i8_YmvmhWO7YmhLmOBQWWw@mail.gmail.com>
+From: Kefeng Wang <wangkefeng.wang@huawei.com>
+In-Reply-To: <CAEkJfYOvjjoTWMs6ozxF0P4_U050i8_YmvmhWO7YmhLmOBQWWw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm100001.china.huawei.com (7.185.36.93)
 
-Hello Rob,
 
-On Thu, 29 Feb 2024 16:10:38 -0600
-Rob Herring <robh+dt@kernel.org> wrote:
-[...]
-> > > > > It's just this one of the 3 patches that needs reverting? =20
-> >
-> > Just this patch. I reverted only this and the issue disappeared.
-> > =20
-> > > > I sent a fix. With the fix, it's just exposing a bug elsewhere. =20
-> >
-> > Exactly, this patch has two issues and only the easy one has a fix [0]
-> > currently as far as I know.
-> > =20
-> > > You say apply the fix. Luca says revert. I say I wish I made this 6.9
-> > > material. Which is it?
-> > >
-> > > If the overlay applying depends on out of tree code (likely as there
-> > > are limited ways to apply an overlay in mainline), then I don't really
-> > > care if there is still a regression. =20
-> >
-> > Obviously, to load and unload the overlays I'm using code not yet
-> > in mainline. It is using of_overlay_fdt_apply() and of_overlay_remove()
-> > via a driver underdevelopment that is similar to the one Herv=C3=A9 and
-> > Lizhi Hou are working on [1][2].
-> >
-> > I see the point that "we are not breaking existing use cases as no code
-> > is (un)loading overlays except unittest", sure.
-> >
-> > As I see it, we have a feature in the kernel that is not used, but it
-> > will be, eventually: there are use cases, development is progressing and
-> > patches are being sent actively. My opinion is that we should not
-> > put additional known obstacles that will make it even harder than it
-> > already is. =20
->=20
-> Well, I don't care to do extra work of applying things and then have
-> to turn right around fix or revert them. It happens enough as-is with
-> just mainline. And no one wants to step up and fix the problems with
-> overlays, but are fine just carrying their out of tree patches. What's
-> one more. This is the 2nd case of overlay problems with out of tree
-> users *today*! Some days I'm tempted to just remove overlay support
-> altogether given the only way to apply them is unittest.
 
-Thanks for taking time to understand the situation.
+On 2024/3/1 15:42, Sam Sun wrote:
+> Dear developers and maintainers,
+> 
+> We found a shift-out-of-bounds bug in mm/memory.c. Kernel commit is b401b621758.
+> Kernel config and C repro are attached to this email.
+> UBSAN report is listed below.
+> ```
+> UBSAN: shift-out-of-bounds in /home/sy/linux-original/include/linux/log2.h:67:13
+> shift exponent 4294967295 is too large for 64-bit type 'long unsigned int'
+> CPU: 0 PID: 8091 Comm: syz-executor371 Not tainted 6.7.0-rc7 #1
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
+> Call Trace:
+>   <TASK>
+>   __dump_stack lib/dump_stack.c:88 [inline]
+>   dump_stack_lvl+0x136/0x150 lib/dump_stack.c:106
+>   ubsan_epilogue lib/ubsan.c:217 [inline]
+>   __ubsan_handle_shift_out_of_bounds+0x24b/0x430 lib/ubsan.c:387
+>   __rounddown_pow_of_two include/linux/log2.h:67 [inline]
+>   fault_around_bytes_set.cold+0x19/0x1e mm/memory.c:4527
+>   simple_attr_write_xsigned.constprop.0.isra.0+0x1ed/0x2d0 fs/libfs.c:1301
+>   debugfs_attr_write_xsigned fs/debugfs/file.c:485 [inline]
+>   debugfs_attr_write+0x74/0xa0 fs/debugfs/file.c:493
+>   vfs_write+0x2a9/0xd80 fs/read_write.c:582
+>   ksys_write+0x122/0x250 fs/read_write.c:637
+>   do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+>   do_syscall_64+0x40/0x110 arch/x86/entry/common.c:83
+>   entry_SYSCALL_64_after_hwframe+0x63/0x6b
+> RIP: 0033:0x7fa30d5d7fcd
+> Code: 28 c3 e8 46 1e 00 00 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
+> 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+> 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007ffc8b7ee1b8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+> RAX: ffffffffffffffda RBX: 00007ffc8b7ee3b8 RCX: 00007fa30d5d7fcd
+> RDX: 0000000000000002 RSI: 0000000020000040 RDI: 0000000000000003
+> RBP: 0000000000000001 R08: 0000000000000000 R09: 00007ffc8b7ee3b8
+> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+> R13: 00007ffc8b7ee3a8 R14: 00007fa30d655530 R15: 0000000000000001
+>   </TASK>
+> ================================================================================
+> ```
+> In function simple_attr_write_xsigned, a user controlled string "buf"
+> is copied and
+> turned to long type by function "kstrtoll". If buf is "0", val passed
+> to function
+> fault_around_bytes_set is 0, which would trigger shift-out-of-bound bug.
 
-Just to clarify my position: together with Herv=C3=A9 we are not just
-carrying out of tree code, we are actively developing code that uses
-overlay load/unload at runtime and we will send it to mainline as soon
-as it is ready.
+Look like commit 53d36a56d8c4 ("mm: prefer fault_around_pages to 
+fault_around_bytes") introduces the issue, please try the following change,
 
-As part of this process, Herv=C3=A9 has already sent patches to fix various
-problems that happen when overlays are loaded and especially unloaded:
-https://lore.kernel.org/all/20240229105204.720717-1-herve.codina@bootlin.co=
-m/
-https://lore.kernel.org/all/20240227113426.253232-1-herve.codina@bootlin.co=
-m/
-https://lore.kernel.org/all/20240220133950.138452-1-herve.codina@bootlin.co=
-m/
-https://lore.kernel.org/all/20240220111044.133776-1-herve.codina@bootlin.co=
-m/
+diff --git a/mm/memory.c b/mm/memory.c
+index abd4f33d62c9..e17669d4f72f 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -4776,7 +4776,8 @@ static int fault_around_bytes_set(void *data, u64 val)
+          * The minimum value is 1 page, however this results in no 
+fault-around
+          * at all. See should_fault_around().
+          */
+-       fault_around_pages = max(rounddown_pow_of_two(val) >> 
+PAGE_SHIFT, 1UL);
++       val = max(val, PAGE_SIZE);
++       fault_around_pages = rounddown_pow_of_two(val) >> PAGE_SHIFT;
 
-Best regards,
-Luca
+         return 0;
+  }
 
---=20
-Luca Ceresoli, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+
+
+> 
+> If you have any questions, please contact us.
+> Reported by Yue Sun <samsun1006219@gmail.com>
+> 
+> Best Regards,
+> Yue
 
