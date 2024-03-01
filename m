@@ -1,39 +1,39 @@
-Return-Path: <linux-kernel+bounces-88368-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88369-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADD0A86E08C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:38:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB73886E08D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 12:38:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4DA48B24BDA
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:38:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E06828D59E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:38:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E25BE6CDB5;
-	Fri,  1 Mar 2024 11:38:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E29796CDB5;
+	Fri,  1 Mar 2024 11:38:44 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEAD56CBFF
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 11:38:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCEA66A8AD
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 11:38:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709293092; cv=none; b=DffNSCMk1Zowst5rem5XYuKiA3lJ7lsg1hMX4uD58sp01i/g7GyZU/YRojCum8NOGTnQKGu6RpkYqUAH4+QdRVWeeoCeuAimawZ03zv+Z7YjktWvGZTHc5MllU+EbaJL5CtAehB83yrFG4Nck8Et5EBkpVA+T0sqnQHHJADQsRw=
+	t=1709293124; cv=none; b=a0yfrXwryrPn6sjSACOTo9mjuQ47ikgpSEHaSskO0yZvLAdo9jUm1nzQEyHCJtJWOuezVOf3O0kGUahNuUStQHT3JprYAfs9c6jeeb+nNAkssQZl1vjtMM3yLS8js0gnyIgFrDO90eGVi5g0zMpB+muId+eK4xaLvUxvPy7rruM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709293092; c=relaxed/simple;
-	bh=8Mh+7Gx+pfddFjQR6dxgS5KxLswGiv4WqL4pay4eE4M=;
+	s=arc-20240116; t=1709293124; c=relaxed/simple;
+	bh=Bho0V3L6EalNqI/VaFRZI239nh8uqJQHHjMpb9j/96I=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rs8xpywG7Nugaejjgkdn6qs89/mltoHhxbxWAGGcQcpKuqpw3ptV6yzBLheI55SPAge0vS8U3o77Za9MkmNO4SHBDdnoBI3jCAeGSlFucgpf6VDtvTFaPbRnluroxl0Tb5lB8Ghu/XV6S63fKW/ADgINQcparTX3STAj3GCHhz0=
+	 In-Reply-To:Content-Type; b=N1mSJHmZx0oGOyzdEdUpjPc46LTx2C2qk4yFFDO4TsmnMS1fBiWLZVZJrEE2kknm/t+R/GuNcAt7E6dRHcjwpmoq9FUcF9ga/ES82B0CvtQ2DWdeR4zuh/L5SvA8q1pvC7FI+eZJMojwqZnkuwTwYnODicS7oOa1xjHvyKFFLbk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2DD371FB;
-	Fri,  1 Mar 2024 03:38:47 -0800 (PST)
-Received: from [10.57.68.58] (unknown [10.57.68.58])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E30923F6C4;
-	Fri,  1 Mar 2024 03:38:06 -0800 (PST)
-Message-ID: <63b9dc1c-7bf6-4de7-8d23-cf54e3408207@arm.com>
-Date: Fri, 1 Mar 2024 11:38:05 +0000
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 714EB1FB;
+	Fri,  1 Mar 2024 03:39:19 -0800 (PST)
+Received: from [10.57.67.78] (unknown [10.57.67.78])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B9F1E3F6C4;
+	Fri,  1 Mar 2024 03:38:39 -0800 (PST)
+Message-ID: <64be2e23-c526-45d3-bb7b-29e31241bbef@arm.com>
+Date: Fri, 1 Mar 2024 11:38:25 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,112 +41,167 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/9] Merge arm64/riscv hugetlbfs contpte support
+Subject: Re: [RFC] dma-mapping: introduce dma_can_skip_unmap()
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-kernel@vger.kernel.org
+Cc: Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+ Christoph Hellwig <hch@lst.de>, Marek Szyprowski <m.szyprowski@samsung.com>,
+ iommu@lists.linux.dev, "Michael S. Tsirkin" <mst@redhat.com>,
+ Zelin Deng <zelin.deng@linux.alibaba.com>
+References: <20240301071918.64631-1-xuanzhuo@linux.alibaba.com>
 Content-Language: en-GB
-To: Alexandre Ghiti <alexghiti@rivosinc.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, Paul Walmsley
- <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>, Andrew Morton
- <akpm@linux-foundation.org>, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
- linux-mm@kvack.org
-References: <20240301091455.246686-1-alexghiti@rivosinc.com>
- <b99f47f9-18d0-4619-aae7-19274197b85e@arm.com>
- <CAHVXubiH64beFuB_GHSq5BKCus=O_+bqYTCwWQ+=2Q-F=T=ctQ@mail.gmail.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CAHVXubiH64beFuB_GHSq5BKCus=O_+bqYTCwWQ+=2Q-F=T=ctQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+From: Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <20240301071918.64631-1-xuanzhuo@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 01/03/2024 11:29, Alexandre Ghiti wrote:
-> Hi Ryan,
+On 2024-03-01 7:19 am, Xuan Zhuo wrote:
+> In a typical workflow, we first perform a dma map on an address to
+> obtain a dma address, followed by a dma unmap on that address. Generally,
+> this process works without issues. However, under certain circumstances,
+> we require additional resources to manage these dma addresses. For
+> instance, in layered architectures, we pass the dma address to another
+> module, but retrieving it back from that module can present some
+> challenges. In such cases, we must allocate extra resources to manage
+> these dma addresses.
 > 
-> On Fri, Mar 1, 2024 at 11:45 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>
->> Hi Alexandre,
->>
->> I confess I haven't looked at the patches yet, but this cover letter raises a
->> few quesions for me. I'll aim to look at the actual patches in due course.
->>
->> On 01/03/2024 09:14, Alexandre Ghiti wrote:
->>> This patchset intends to merge the contiguous ptes hugetlbfs implementation
->>> of arm64 and riscv.
->>>
->>> Both arm64 and riscv support the use of contiguous ptes to map pages that
->>> are larger than the default page table size, respectively called contpte
->>> and svnapot.
->>>
->>> The riscv implementation differs from the arm64's in that the LSBs of the
->>> pfn of a svnapot pte are used to store the size of the mapping, allowing
->>> for future sizes to be added (for now only 64KB is supported). That's an
->>> issue for the core mm code which expects to find the *real* pfn a pte points
->>> to. Patch 1 fixes that by always returning svnapot ptes with the real pfn
->>> and restores the size of the mapping when it is written to a page table.
->>
->> Yes that makes sense to me. The intention for mTHP (!hugetlb) is to fully
->> encapsulate PTEs beind set_ptes(), ptep_get() and friends, so what's actually
->> written to the pgtable is arch-specific and well abstracted.
->>
->>>
->>> The following patches are just merges of the 2 different implementations
->>> that currently exist in arm64 and riscv which are very similar. It paves
->>> the way to the reuse of the recent contpte THP work by Ryan [1] to avoid
->>> reimplementing the same in riscv.
->>
->> You seem to be talking about both hugetlb (which uses the "huge" pte helpers)
->> and contpte for THP (i.e. mTHP, which uses the regular pte helpers). They are
->> pretty separate in my mind, so not sure why you would be modifying them both in
->> the same series?
+> However, considering that many times the dma unmap operation is actually
+> a no-op, if we know in advance that unmap is not necessary, we can save
+> on these extra management overheads. Moreover, we can directly skip the
+> dma unmap operation. This would be advantageous.
 > 
-> I don't, this patchset only deals with hugetlb, I just meant that this
-> series was just the beginning as I'm working on moving the contpte for
-> THP support in the generic code for riscv to use.
+> This tries to resolve the problem of patchset:
+> 
+>   http://lore.kernel.org/all/20240225032330-mutt-send-email-mst@kernel.org
+> 
+> For a single packet, virtio-net may submit 1-19 dma addresses to virtio
+> core. If the virtio-net maintains the dma addresses will waste too much
+> memory when the unmap is not necessary. If the virtio-net retrieves the
+> dma addresses of the packet from the virtio core, we need to hold the 19
+> dma addresses by one call. And the net drivers maintain the dma is the
+> future. So we hope to check the unmap is necessary or not.
+> 
+> Co-developed-by: Zelin Deng <zelin.deng@linux.alibaba.com>
+> Signed-off-by: Zelin Deng <zelin.deng@linux.alibaba.com>
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> ---
+>   drivers/iommu/dma-iommu.c   | 11 +++++++++++
+>   include/linux/dma-map-ops.h |  1 +
+>   include/linux/dma-mapping.h |  5 +++++
+>   kernel/dma/mapping.c        | 23 +++++++++++++++++++++++
+>   4 files changed, 40 insertions(+)
+> 
+> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+> index 50ccc4f1ef81..8c661a0e1111 100644
+> --- a/drivers/iommu/dma-iommu.c
+> +++ b/drivers/iommu/dma-iommu.c
+> @@ -1706,6 +1706,16 @@ static size_t iommu_dma_opt_mapping_size(void)
+>   	return iova_rcache_range();
+>   }
+>   
+> +static bool iommu_dma_opt_can_skip_unmap(struct device *dev)
+> +{
+> +	struct iommu_domain *domain = iommu_get_dma_domain(dev);
+> +
+> +	if (domain->type == IOMMU_DOMAIN_IDENTITY)
 
-Ahh got it! Thanks for the explanation.
+This is nonsense; iommu-dma does not operate on identity domains in the 
+first place.
 
-> 
-> Sorry my wording was ambiguous :)
-> 
-> Thanks,
-> 
-> Alex
-> 
->>
->> Thanks,
->> Ryan
->>
->>>
->>> This patchset was tested by running the libhugetlbfs testsuite with 64KB
->>> and 2MB pages on both architectures (on a 4KB base page size arm64 kernel).
->>>
->>> [1] https://lore.kernel.org/linux-arm-kernel/20240215103205.2607016-1-ryan.roberts@arm.com/
->>>
->>> Alexandre Ghiti (9):
->>>   riscv: Restore the pfn in a NAPOT pte when manipulated by core mm code
->>>   riscv: Safely remove huge_pte_offset() when manipulating NAPOT ptes
->>>   mm: Use common huge_ptep_get() function for riscv/arm64
->>>   mm: Use common set_huge_pte_at() function for riscv/arm64
->>>   mm: Use common huge_pte_clear() function for riscv/arm64
->>>   mm: Use common huge_ptep_get_and_clear() function for riscv/arm64
->>>   mm: Use common huge_ptep_set_access_flags() function for riscv/arm64
->>>   mm: Use common huge_ptep_set_wrprotect() function for riscv/arm64
->>>   mm: Use common huge_ptep_clear_flush() function for riscv/arm64
->>>
->>>  arch/arm64/Kconfig                  |   1 +
->>>  arch/arm64/include/asm/pgtable.h    |  59 +++++-
->>>  arch/arm64/mm/hugetlbpage.c         | 291 +---------------------------
->>>  arch/riscv/Kconfig                  |   1 +
->>>  arch/riscv/include/asm/hugetlb.h    |   2 +-
->>>  arch/riscv/include/asm/pgtable-64.h |  11 ++
->>>  arch/riscv/include/asm/pgtable.h    | 120 +++++++++++-
->>>  arch/riscv/mm/hugetlbpage.c         | 227 ----------------------
->>>  mm/Kconfig                          |   3 +
->>>  mm/Makefile                         |   1 +
->>>  mm/contpte.c                        | 268 +++++++++++++++++++++++++
->>>  11 files changed, 456 insertions(+), 528 deletions(-)
->>>  create mode 100644 mm/contpte.c
->>>
->>
+> +		return true;
+> +	else
+> +		return false;
+> +}
+> +
+>   static const struct dma_map_ops iommu_dma_ops = {
+>   	.flags			= DMA_F_PCI_P2PDMA_SUPPORTED,
+>   	.alloc			= iommu_dma_alloc,
+> @@ -1728,6 +1738,7 @@ static const struct dma_map_ops iommu_dma_ops = {
+>   	.unmap_resource		= iommu_dma_unmap_resource,
+>   	.get_merge_boundary	= iommu_dma_get_merge_boundary,
+>   	.opt_mapping_size	= iommu_dma_opt_mapping_size,
+> +	.dma_can_skip_unmap	= iommu_dma_opt_can_skip_unmap,
+>   };
+>   
+>   /*
+> diff --git a/include/linux/dma-map-ops.h b/include/linux/dma-map-ops.h
+> index 4abc60f04209..d508fa90bc06 100644
+> --- a/include/linux/dma-map-ops.h
+> +++ b/include/linux/dma-map-ops.h
+> @@ -83,6 +83,7 @@ struct dma_map_ops {
+>   	size_t (*max_mapping_size)(struct device *dev);
+>   	size_t (*opt_mapping_size)(void);
+>   	unsigned long (*get_merge_boundary)(struct device *dev);
+> +	bool (*dma_can_skip_unmap)(struct device *dev);
+>   };
+>   
+>   #ifdef CONFIG_DMA_OPS
+> diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
+> index 4a658de44ee9..af5d9275f8cc 100644
+> --- a/include/linux/dma-mapping.h
+> +++ b/include/linux/dma-mapping.h
+> @@ -140,6 +140,7 @@ int dma_mmap_attrs(struct device *dev, struct vm_area_struct *vma,
+>   		void *cpu_addr, dma_addr_t dma_addr, size_t size,
+>   		unsigned long attrs);
+>   bool dma_can_mmap(struct device *dev);
+> +bool dma_can_skip_unmap(struct device *dev);
+>   bool dma_pci_p2pdma_supported(struct device *dev);
+>   int dma_set_mask(struct device *dev, u64 mask);
+>   int dma_set_coherent_mask(struct device *dev, u64 mask);
+> @@ -249,6 +250,10 @@ static inline bool dma_can_mmap(struct device *dev)
+>   {
+>   	return false;
+>   }
+> +static inline bool dma_can_skip_unmap(struct device *dev)
+> +{
+> +	return false;
+> +}
+>   static inline bool dma_pci_p2pdma_supported(struct device *dev)
+>   {
+>   	return false;
+> diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
+> index 58db8fd70471..99a81932820b 100644
+> --- a/kernel/dma/mapping.c
+> +++ b/kernel/dma/mapping.c
+> @@ -445,6 +445,29 @@ bool dma_can_mmap(struct device *dev)
+>   }
+>   EXPORT_SYMBOL_GPL(dma_can_mmap);
+>   
+> +/**
+> + * dma_can_skip_unmap - check if unmap can be skipped
+> + * @dev: device to check
+> + *
+> + * Returns %true if @dev supports direct map or dma_can_skip_unmap() return true.
+> + */
+> +bool dma_can_skip_unmap(struct device *dev)
+> +{
+> +	const struct dma_map_ops *ops = get_dma_ops(dev);
+> +
+> +	if (is_swiotlb_force_bounce(dev))
+> +		return false;
+> +
+> +	if (dma_map_direct(dev, ops))
+> +		return true;
 
+And this is also broken and nonsensical. What about non-coherent cache 
+maintenance, or regular non-forced SWIOTLB bouncing due to per-mapping 
+address limitations or buffer alignment, or dma-debug?
+
+Not only is this idea not viable, the entire premise seems flawed - the 
+reasons for virtio needing to use the DMA API at all are highly likely 
+to be the same reasons for it needing to use the DMA API *properly* anyway.
+
+Thanks,
+Robin.
+
+> +
+> +	if (ops->dma_can_skip_unmap)
+> +		return ops->dma_can_skip_unmap(dev);
+> +
+> +	return false;
+> +}
+> +EXPORT_SYMBOL_GPL(dma_can_skip_unmap);
+> +
+>   /**
+>    * dma_mmap_attrs - map a coherent DMA allocation into user space
+>    * @dev: valid struct device pointer, or NULL for ISA and EISA-like devices
 
