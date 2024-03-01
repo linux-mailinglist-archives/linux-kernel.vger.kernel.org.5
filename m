@@ -1,162 +1,159 @@
-Return-Path: <linux-kernel+bounces-88463-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88464-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3816E86E1F1
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:26:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CB7886E1F6
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:28:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CB921B21235
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:26:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17738285EF6
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:28:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D1FC6D1D7;
-	Fri,  1 Mar 2024 13:25:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAAAA6D1C7;
+	Fri,  1 Mar 2024 13:28:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="B+Q2+3Fy"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WTZv/v1f"
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 445AD69E15
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 13:25:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DE5E15A8;
+	Fri,  1 Mar 2024 13:28:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709299554; cv=none; b=QhH5mI7B3a5ZJhH1ExB5VgbfydCS42gmC32a9/E8oQNM52mLXGvZFakWp/BYhjh65fXQ3fdOzoKlZMQhyN7gWeovups3tD1p3dib16oswmzGB1IfsMNCjW7fyIFPLoMYtNjI+8575ctmE0kWd/QxOYHzLibUJRtvYTuEg6A1kqw=
+	t=1709299700; cv=none; b=eEBACfnhFDeJd3P/UtP1YyzlB/U9c4TZ5ctTG7hD870RXI55C5C2MVWqgRN6DIfUGcIfUV9TmcU1fXmwdLFCjbXTSoMc185OvwTp6yPHJPg3FM45c9TjxgTmB9IZD/v+DyKVAfYISm3gQdVyQSbsTD0hWTYGepPBklNuEpz7L8U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709299554; c=relaxed/simple;
-	bh=JHWldWA6nNHKcTRlr05zV/nwVzVNIlbYVSMFB9iJlos=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uq59DvWIVT7b/fG/vE5IpTZoiM1qbjDo76u69zXNipWG2TA1nNK+4KJ58qQQ0gBA4Aiozbj/+Y8mOiodTmCXG1tTpuk6fe1fB4Ep3Wof2wqTLuzR9BrGbJdN0YScrCCyn0kKtgrExe6SgdNsNuessdk+w2yfjjXUDo5Hb/ehmvM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=B+Q2+3Fy; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5654ef0c61fso10595a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 05:25:53 -0800 (PST)
+	s=arc-20240116; t=1709299700; c=relaxed/simple;
+	bh=Ne7dH1YsRKndqImN7qVo3FJxjqh3u3bK01mCPanSgos=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qusMSA1T/k5D7iXbu+/lHNWk32Z+BdHEObQo3/wuShnwJ95NdKVY+79OJYe6MdmhJxUIeommB7y73VtZEwLTTrilNPV+CrPRTkJdyxsXZkITM5pbxx2jR6qrI5tTwBXgfNfCnSl8kDxzFr3LJlD8BsjVvkaD5h7JroKKVDeIqt8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WTZv/v1f; arc=none smtp.client-ip=209.85.208.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d228a132acso25195531fa.0;
+        Fri, 01 Mar 2024 05:28:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709299552; x=1709904352; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+1teAiWc1jVGCssi6rgN3jeMMtmC7N9NmiOj97TQSRI=;
-        b=B+Q2+3FyhzzHOF8F2GLt2wkZhMidxgsedxhsBtInm8nvf198JXT1DWUuF0u/356Wxn
-         bHie3f4Uu/XHdrg+Vfa953FWhqx8oTkSxkHOqiW2KnCzAx7R4cD2NPj2TsXquakIjDcE
-         76UQQglv9A6OGSz2uwzZkR8KRPH8tPj4ZZe2hogP5p7bxSCh5+f3aUvhHjuq5MZHp8P7
-         7M2KrYJhNfbtyRCQP89PQJ/FD9VfpkinyagzG8V2v+DAKiZ7P84LOwrPvC5bXiBAILiy
-         Ra0kWb1lgODBF7kJQfvGMA3m9OzYX4TpQbrPd4MRKf2eJIzvsx2D4eOV8BvrxHB8P7Su
-         094A==
+        d=gmail.com; s=20230601; t=1709299696; x=1709904496; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5l7YTgHQJ4uu8ywnkoccEqji+CWQ03nsYaLhWI1QXxI=;
+        b=WTZv/v1fdZF0p1uXzmMoWQPhWYoPWZYwZzILIbpZQWpzU+8+P3QeoQ3Mn0tsTSgfQc
+         b8CWzBh6H3+zG/ACQvRKF5VBv6ukdsApv7kZW4stHFKCMO6NibB9wgk6DRs2ZzmMszof
+         fKSjDO5vxE/xCvacLgJu88PJLOcCvdWGv9qQlDV10UrgHEt8MP0HncFnGXDmEBGLPMCw
+         aGH/09yYBYPha/ui4vDlJ4991GY6Lp+ZVaqex0K1/M+0+rLvzIQtuRdmAjjIu5/5lXLK
+         BN+TZy2yFOezvWkRVjh9kjsFF4ybT0/Up2lgArc7Uz20pEUZmyEt/CmQLBMQ1g8Aj9XT
+         qdHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709299552; x=1709904352;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+1teAiWc1jVGCssi6rgN3jeMMtmC7N9NmiOj97TQSRI=;
-        b=GfQi5gzmYuTpUiEEB4j2+nY/eKOi0/q9wrTuo5tSJSxMDDK84iXVjUYVf4GU0NQ2uZ
-         8pFFBFa4Stkpjx1fsVOWRJLYdtVNTinzRl7CpOVSkLumGRXBSPQE7YfeG+dWo6FnQSMq
-         LTSHTgjlUhREK8NHfGrZsMAZZ5zkfD9fe7i3kEWxOgfKrnoaaRVx/bKlZQ3MchcCsgxW
-         eAhyAfAgtmKeTIrCQO+BMR+JJKn1W6AxyTTrFYAcNZhcjS5AEWItkucMRc7pKMCKdO8P
-         2WpkH0le/0zenY8SCTup50uGTpHroJMKzW5u1OIcYM9BeSZlGNLNPKqxa3LLP819TsBa
-         tDnA==
-X-Forwarded-Encrypted: i=1; AJvYcCUAzYVln4lFjjM0cNj7QwXGBHZb1tgyAXzz91f6Ils5xu37XYACaQiKIfyFnAJXBjYCBkpJrG9etHo2It6R5ld4q2iTrtc9sOcqK2Bf
-X-Gm-Message-State: AOJu0YyvDj/tQyMzXi5bkwm0acvSNhEsToH+a60bj1jbQZw2Qishs+/P
-	BOyb2bdo3xyM5Y2tunFSDNJEST9GyEHhB480R3wKZS81btgzIZFSU8hCEitL7la8f5n5k2l+Yt5
-	jenr50KPvbcmdzLgNG8bhMSkupuLKsNM7gkGf
-X-Google-Smtp-Source: AGHT+IHAr/zt6nB351plwUC26OzlBDCvnjhX4XuWJqRSF9vysrKL8/mndZ7DIMKjrKSevJ2zGGPoqI2B9cbCF0OdxRw=
-X-Received: by 2002:a05:6402:350e:b0:563:f48a:aa03 with SMTP id
- b14-20020a056402350e00b00563f48aaa03mr141224edd.2.1709299551406; Fri, 01 Mar
- 2024 05:25:51 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709299696; x=1709904496;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5l7YTgHQJ4uu8ywnkoccEqji+CWQ03nsYaLhWI1QXxI=;
+        b=De2c9lVT2jCcja/NmdU2lV7A6uxU7sPNMn2PDw2FrNRWN/otL5WroqPbQ2UGU4ssqY
+         /9TvXmxZjvaE/VGUCxzUXspb+J7eN1W7q7cw29o2Wa5oEBtWYVerQO/QcZ8XEmdxrcKW
+         7Unff3UOvfYP03vkIeTcucsrilw6dY5xYleaBcPdWWtZzc2q3cNdrMP/kSFWGnGpwN+w
+         eqVg3qG/VejAlpEsRYfYfjDSAi9tYHIt+dn4Ruk5aqVqKqpBFCJ92XZLeM3f4A242Oci
+         uM5kR5HZGs7MjSjDUbdFBdW8rMrt5vJPHanoQ0NgJbwWlhhGyH2TWYQJuB84PiRpK/xz
+         7iwg==
+X-Forwarded-Encrypted: i=1; AJvYcCV/jg3wL2asCgy10OoH/DjKltdU0TD7SsiBSozvpxL7bo1r1WfKWTujCazJgCQsa2mVw9v+ss7Tq2rmaBTomfzZh92UZiFbL8eBVJZ5Cef4Ugupv9S/Q0p22jPPcAKaYmTkB6KQ
+X-Gm-Message-State: AOJu0YxM+Pl9JXVyArmn1eLZqo6zkHuv9tss2Am8K2GJPzUhM7RAfdFP
+	EwJqN7j33Z1w2Erxk7xg6LFEgID0gBZ4hBrnfjwA4ltccwExcpRD
+X-Google-Smtp-Source: AGHT+IHAEBq2eERb1YzHcNf/A5asZKhYcTLxJdEqg8fO6iB0nq2rpd2QfL9efFx0rYhM6arWjvOKVA==
+X-Received: by 2002:a2e:a368:0:b0:2d2:a3ae:b339 with SMTP id i8-20020a2ea368000000b002d2a3aeb339mr1177503ljn.48.1709299695979;
+        Fri, 01 Mar 2024 05:28:15 -0800 (PST)
+Received: from localhost.localdomain (80-108-76-242.cable.dynamic.surfer.at. [80.108.76.242])
+        by smtp.gmail.com with ESMTPSA id f8-20020a7bc8c8000000b004104bc8d841sm8317526wml.13.2024.03.01.05.28.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Mar 2024 05:28:15 -0800 (PST)
+From: Christian Gmeiner <christian.gmeiner@gmail.com>
+To: tomeu@tomeuvizoso.net,
+	Lucas Stach <l.stach@pengutronix.de>,
+	Russell King <linux+etnaviv@armlinux.org.uk>,
+	Christian Gmeiner <christian.gmeiner@gmail.com>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>
+Cc: Christian Gmeiner <cgmeiner@igalia.com>,
+	stable@vger.kernel.org,
+	etnaviv@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] drm/etnaviv: Restore some id values
+Date: Fri,  1 Mar 2024 14:28:11 +0100
+Message-ID: <20240301132812.15463-1-christian.gmeiner@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240229213018.work.556-kees@kernel.org> <20240229225910.79e224cf@kernel.org>
- <CANn89iKeJGvhY0K=kLhhR39NVbaizP2UBk0Vk0r_XCe2XMBZHg@mail.gmail.com> <9050bdec-b34a-4133-8ba5-021dfd4b1c75@intel.com>
-In-Reply-To: <9050bdec-b34a-4133-8ba5-021dfd4b1c75@intel.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Fri, 1 Mar 2024 14:25:37 +0100
-Message-ID: <CANn89iLSLPn5PyXNQcA2HO0e5jGYvHKhTh_9_EMmfbTJKZPfbg@mail.gmail.com>
-Subject: Re: [PATCH] netdev: Use flexible array for trailing private bytes
-To: Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc: Jakub Kicinski <kuba@kernel.org>, Kees Cook <keescook@chromium.org>, 
-	"David S. Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>, 
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>, netdev@vger.kernel.org, 
-	linux-hardening@vger.kernel.org, Simon Horman <horms@kernel.org>, 
-	Jiri Pirko <jiri@resnulli.us>, Daniel Borkmann <daniel@iogearbox.net>, Coco Li <lixiaoyan@google.com>, 
-	Amritha Nambiar <amritha.nambiar@intel.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Mar 1, 2024 at 1:59=E2=80=AFPM Alexander Lobakin
-<aleksander.lobakin@intel.com> wrote:
->
-> From: Eric Dumazet <edumazet@google.com>
-> Date: Fri, 1 Mar 2024 09:03:55 +0100
->
-> > On Fri, Mar 1, 2024 at 7:59=E2=80=AFAM Jakub Kicinski <kuba@kernel.org>=
- wrote:
-> >>
-> >> On Thu, 29 Feb 2024 13:30:22 -0800 Kees Cook wrote:
->
-> Re WARN_ONCE() in netdev_priv(): netdev_priv() is VERY hot, I'm not sure
-> we want to add checks there. Maybe under CONFIG_DEBUG_NET?
->
-> >
-> >>> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> >>> index 118c40258d07..b476809d0bae 100644
-> >>> --- a/include/linux/netdevice.h
-> >>> +++ b/include/linux/netdevice.h
-> >>> @@ -1815,6 +1815,8 @@ enum netdev_stat_type {
-> >>>       NETDEV_PCPU_STAT_DSTATS, /* struct pcpu_dstats */
-> >>>  };
-> >>>
-> >>> +#define      NETDEV_ALIGN            32
-> >>
-> >> Unless someone knows what this is for it should go.
-> >> Align priv to cacheline size.
-> >
-> > +2
-> >
->
-> Maybe
->
-> > #define NETDEV_ALIGN    L1_CACHE_BYTES
->
-> #define NETDEV_ALIGN    max(SMP_CACHE_BYTES, 32)
+From: Christian Gmeiner <cgmeiner@igalia.com>
 
-Why would we care if some arches have a very small SMP_CACHE_BYTES ?
-Bet it !
+The hwdb selection logic as a feature that allows it to mark some fields
+as 'don't care'. If we match with such a field we memcpy(..)
+the current etnaviv_chip_identity into ident.
 
-IMO nothing in networking mandates this minimal 32 byte alignment.
+This step can overwrite some id values read from the GPU with the
+'don't care' value.
 
->
-> ?
->
-> (or even max(1 << INTERNODE_CACHE_SHIFT, 32))
+Fix this issue by restoring the affected values after the memcpy(..).
 
-I do not think so.
+As this is crucial for user space to know when this feature works as
+expected increment the minor version too.
 
-INTERNODE_CACHE_SHIFT is a bit extreme on allyesconfig on x86 :/
-(with CONFIG_X86_VSMP=3Dy)
+Fixes: 4078a1186dd3 ("drm/etnaviv: update hwdb selection logic")
+Cc: stable@vger.kernel.org
+Signed-off-by: Christian Gmeiner <cgmeiner@igalia.com>
+---
 
+V1 -> V2: Fixed patch subject line and removed not needed if clauses.
 
->
-> >
-> > or a general replacement of NETDEV_ALIGN....
-> >
-> >
->
-> + I'd align both struct net_device AND its private space to
-> %NETDEV_ALIGN and remove this weird PTR_ALIGN. {k,v}malloc ensures
-> natural alignment of allocations for at least a couple years already
-> (IOW if struct net_device is aligned to 64, {k,v}malloc will *always*
-> return a 64-byte aligned address).
+ drivers/gpu/drm/etnaviv/etnaviv_drv.c  | 2 +-
+ drivers/gpu/drm/etnaviv/etnaviv_hwdb.c | 9 +++++++++
+ 2 files changed, 10 insertions(+), 1 deletion(-)
 
-I think that with SLAB or SLOB in the past with some DEBUG options
-there was no such guarantee.
+diff --git a/drivers/gpu/drm/etnaviv/etnaviv_drv.c b/drivers/gpu/drm/etnaviv/etnaviv_drv.c
+index 6228ce603248..9a2965741dab 100644
+--- a/drivers/gpu/drm/etnaviv/etnaviv_drv.c
++++ b/drivers/gpu/drm/etnaviv/etnaviv_drv.c
+@@ -494,7 +494,7 @@ static const struct drm_driver etnaviv_drm_driver = {
+ 	.desc               = "etnaviv DRM",
+ 	.date               = "20151214",
+ 	.major              = 1,
+-	.minor              = 3,
++	.minor              = 4,
+ };
+ 
+ /*
+diff --git a/drivers/gpu/drm/etnaviv/etnaviv_hwdb.c b/drivers/gpu/drm/etnaviv/etnaviv_hwdb.c
+index 67201242438b..8665f2658d51 100644
+--- a/drivers/gpu/drm/etnaviv/etnaviv_hwdb.c
++++ b/drivers/gpu/drm/etnaviv/etnaviv_hwdb.c
+@@ -265,6 +265,9 @@ static const struct etnaviv_chip_identity etnaviv_chip_identities[] = {
+ bool etnaviv_fill_identity_from_hwdb(struct etnaviv_gpu *gpu)
+ {
+ 	struct etnaviv_chip_identity *ident = &gpu->identity;
++	const u32 product_id = ident->product_id;
++	const u32 customer_id = ident->customer_id;
++	const u32 eco_id = ident->eco_id;
+ 	int i;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(etnaviv_chip_identities); i++) {
+@@ -278,6 +281,12 @@ bool etnaviv_fill_identity_from_hwdb(struct etnaviv_gpu *gpu)
+ 			 etnaviv_chip_identities[i].eco_id == ~0U)) {
+ 			memcpy(ident, &etnaviv_chip_identities[i],
+ 			       sizeof(*ident));
++
++			/* Restore some id values as ~0U aka 'don't care' might been used. */
++			ident->product_id = product_id;
++			ident->customer_id = customer_id;
++			ident->eco_id = eco_id;
++
+ 			return true;
+ 		}
+ 	}
+-- 
+2.44.0
 
-But this is probably no longer the case, and heavy DEBUG options these
-days (KASAN, KFENCE...)
-do not expect fast networking anyway.
 
