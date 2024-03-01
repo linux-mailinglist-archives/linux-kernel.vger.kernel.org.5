@@ -1,62 +1,64 @@
-Return-Path: <linux-kernel+bounces-88093-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88094-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A588586DD46
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:41:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C67BD86DD4A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:41:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5FE122899FE
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:41:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 329CB1F2719C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:41:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94B0F6A029;
-	Fri,  1 Mar 2024 08:40:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D75D169E0D;
+	Fri,  1 Mar 2024 08:40:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="I1gbJAfo";
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b="MJxkvT+a"
+	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="UZS52V5G";
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b="VF4EUw2d"
 Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 066BB6BB36;
-	Fri,  1 Mar 2024 08:40:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 183E26A32A;
+	Fri,  1 Mar 2024 08:40:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709282444; cv=none; b=EX1lCqYrkPKLGrAVK2n3ZsRl2uL1+MJ6TD2M8MH7m+mpMAO1nUZ/Y55t3Dxff8bdV6aBDpoMzABK/L8rwC7uc5lSz70b47+4mG1gHTypjCcQTVK9ADnsM3yx/ThUpjFMWJIFDFluO+JLK+hlXLmPgBkywrVe7BOHd+cEiaquPSQ=
+	t=1709282449; cv=none; b=bA4k1Fa9kolQ+F/8rfpnFNa2uLcenyL7lrgow3MqmGCqpnfM31pDSXjZ/c7J+htmu2hmsKYMrJ2xuMo2dYdnvxQsWDKghkP4yW6SX3lgQzIqInUINohfmCLiEqisiCKSy4r6BQvsP7O20C0EvlALbl2u0MTeEmI3XB6e68qyLTQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709282444; c=relaxed/simple;
-	bh=K63pbKLdAUYOWop/HtJ/eFv3uzmNlEmQ+U68PXHrgco=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=VetclD9bgwrVY6yH+FaPRaPuBYvg75wBbk2DSAp6mvzuQbjJ0OwoWRO1II3bishfkTGR+EolssxzfKuW7hi+rFsZB/4cqXyBodNX2JQcNcvKXzl7gPEzoTsjpUNiw19r32ZYyM21PlJwwmqPI+rMMICjNlwyC22Bh7IXhAKxL10=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=I1gbJAfo; dkim=fail (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b=MJxkvT+a reason="key not found in DNS"; arc=none smtp.client-ip=93.104.207.81
+	s=arc-20240116; t=1709282449; c=relaxed/simple;
+	bh=5krobUKFPQVFM6DCDoevYZXMR+ogvs911v6NfUuohVg=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=ouDxkK349EinYevjDza1jHiA/zNiJBgVsdkRXQ4171GxTHdhZt+z17xIm5O6+glrBuwcgpp3+5d96f7jlE8ZstlzhrG3RHkIHvIppLvii+jIcZzqpvwd9o+Zndf7x7VJ3gaOSF2tMEV/4skqgEyIerCaahHS0d6qA045WBMAbdg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=UZS52V5G; dkim=fail (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b=VF4EUw2d reason="key not found in DNS"; arc=none smtp.client-ip=93.104.207.81
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1709282439; x=1740818439;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Lx7L1yeDQfLG89Mz94ToNu0CzTt1dUUrZHxQtg+EH88=;
-  b=I1gbJAfoUJdotmtBeK4sT6GIa3DgGK2MMBeZD4dSMagGGXyjBmpW1Toa
-   gVwABgKxQRHDBEN+zuH06A4nis3HcYYVglWGEYY2AwM1dS+heEk6B2dZ2
-   ZNb6ExnOKi/IIbpwZQzqIBN4Ncpwi6RlcBoz7omHxXZHT5lDsfasem+Vo
-   alm7dEw8xNlgIMkIgIYewwj6lB7jnHZPOEJf0mByTfxnPFJ2aAHnhjYus
-   DmZli74wVf9SOVvy7tz3zD4ImkU4cKAh7iSXQVCHvi2rWMrC5c5VIPqtN
-   M74hZLcCwhms0ViYV7iSoQPRnWg1f/+iavZoV2ClpWW8IsrsLnI/jwWT7
+  t=1709282446; x=1740818446;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=roDEc9/Haw8V4ko75VQ2V+i9NSA1sqHboyikroeqvpU=;
+  b=UZS52V5Ga+2XK8KXSrOXZ8LTHGYX9t0/gM0JqrE27IKrjzMghuXD8Dnm
+   Ocp6pLtOA4SLIrpDuomu7pwT05P7kC4KQK13joceA7E0mDiyxjroLsdPv
+   NEyrY6GDDpvy7e9iApyE10pAuWVlgTc8PhwqYRGUzMI9gZzlsffdxC+vi
+   QkptpGGORoGIauTP3imtEexKDKgYGbybVgeU9Ci0LBakW1258SoWXjDg5
+   hZA9QXY8eNrqOPmn1+/fBnvBuzmSTbafhFE+919SVvKT1KgkDteh6SWrY
+   pQtrmQgJ8XErFR3IKzsT24kCc7+b3NtTqu0oi//UzDaAajqRKEoOss9wz
    A==;
 X-IronPort-AV: E=Sophos;i="6.06,195,1705359600"; 
-   d="scan'208";a="35680479"
+   d="scan'208";a="35680482"
 Received: from vmailcow01.tq-net.de ([10.150.86.48])
-  by mx1.tq-group.com with ESMTP; 01 Mar 2024 09:40:36 +0100
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 61003173639;
-	Fri,  1 Mar 2024 09:40:18 +0100 (CET)
+  by mx1.tq-group.com with ESMTP; 01 Mar 2024 09:40:42 +0100
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 2AB55172297;
+	Fri,  1 Mar 2024 09:40:37 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ew.tq-group.com;
-	s=dkim; t=1709282432; h=from:subject:date:message-id:to:cc:mime-version:
-	 content-transfer-encoding; bh=Lx7L1yeDQfLG89Mz94ToNu0CzTt1dUUrZHxQtg+EH88=;
-	b=MJxkvT+au9F5IKIzgwBJN2leQ1QuowHlrAJwinv9p/8a9Is+HEhBQT95ACJD+lowO6PEFd
-	zqta59lnUKdt7xgbzLTqEgBK9laV+tzEPgIPLVlmU8BHHSaXGZ9m1jEnHSIQL0BwAEWCYr
-	jStUATwWSghi+gZrqU5oKKohkuAwQkbem1plX19W9UH52k+FW7UnnQ2Cev6tmcRHsqMGDL
-	A1TQZkhGJ1No5nDrjTqGp43ZsBcbPNAxYeKdXeVgJfPCOCHh0nwL6oRmc9D5VMucYlQc2v
-	jflPoDtDMODF+RVicD5ce520XAdn6xEzPKOqodULfu74Xmk/jlV39UvTHV+UQA==
+	s=dkim; t=1709282437; h=from:subject:date:message-id:to:cc:mime-version:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=roDEc9/Haw8V4ko75VQ2V+i9NSA1sqHboyikroeqvpU=;
+	b=VF4EUw2dWOvr9Az8Mz6MvLM1QNZJPS4oX42yBYbsCY+DuNqooHtriFos2IqGagQkAb9es8
+	Y5Daiq4Qrz7y4znauxYqGWeZ+oqHKPXx4h3CIVPI0FQ2j8LCQdoxQcJWIKyoQAZZ7cHmge
+	DZnFYBxnjv1YsJAwzxRZNgTJBhD0O96GzUSHtVerUQnI5bMMIM7MF5gluzToL8yYK1IfJM
+	AAYcf/QWDysRtdy9hbfZfvx7012YR7H2S/X3X1T+5hc19pVGp3jhH0kVLz7HYsqBq+SnFW
+	SXxAMGje8zBpKAqGGJ1YUtOUQp2slkWaccKUV9kcI7HmeXMK7YjSJepxAV8f4w==
 From: Alexander Stein <alexander.stein@ew.tq-group.com>
 To: Sebastian Reichel <sre@kernel.org>,
 	Mauro Carvalho Chehab <mchehab@kernel.org>,
@@ -77,13 +79,13 @@ Cc: Alexander Stein <alexander.stein@ew.tq-group.com>,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v3 1/2] media: dt-bindings: sony,imx290: Allow props from video-interface-devices
-Date: Fri,  1 Mar 2024 09:40:07 +0100
-Message-Id: <20240301084009.3030753-1-alexander.stein@ew.tq-group.com>
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v3 2/2] media: dt-bindings: i2c: use absolute path to other schema
+Date: Fri,  1 Mar 2024 09:40:08 +0100
+Message-Id: <20240301084009.3030753-2-alexander.stein@ew.tq-group.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240301084009.3030753-1-alexander.stein@ew.tq-group.com>
+References: <20240301084009.3030753-1-alexander.stein@ew.tq-group.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -93,44 +95,71 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Last-TLS-Session-Version: TLSv1.3
 
-Allow properties from video-interface-devices. This aligns the bindings
-to sony,imx415.yaml. Changes inspired by commit e2e73ed46c395 ("media:
-dt-bindings: sony,imx415: Allow props from video-interface-devices")
+Absolute path to other DT schema is preferred over relative one.
 
 Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
 Changes in v3:
-* Collected R-b & A-b
+* Squashed patches 2-5 from v2 into a single one
 
- Documentation/devicetree/bindings/media/i2c/sony,imx290.yaml | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ .../devicetree/bindings/media/i2c/galaxycore,gc0308.yaml        | 2 +-
+ .../devicetree/bindings/media/i2c/galaxycore,gc2145.yaml        | 2 +-
+ Documentation/devicetree/bindings/media/i2c/sony,imx214.yaml    | 2 +-
+ Documentation/devicetree/bindings/media/i2c/sony,imx415.yaml    | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/media/i2c/sony,imx290.yaml b/Documentation/devicetree/bindings/media/i2c/sony,imx290.yaml
-index a531badc16c98..bf05ca48601ab 100644
---- a/Documentation/devicetree/bindings/media/i2c/sony,imx290.yaml
-+++ b/Documentation/devicetree/bindings/media/i2c/sony,imx290.yaml
-@@ -23,6 +23,9 @@ description: |-
-   is treated the same as this as it was the original compatible string.
-   imx290llr is the mono version of the sensor.
+diff --git a/Documentation/devicetree/bindings/media/i2c/galaxycore,gc0308.yaml b/Documentation/devicetree/bindings/media/i2c/galaxycore,gc0308.yaml
+index f81e7daed67b6..2bf1a81feaf47 100644
+--- a/Documentation/devicetree/bindings/media/i2c/galaxycore,gc0308.yaml
++++ b/Documentation/devicetree/bindings/media/i2c/galaxycore,gc0308.yaml
+@@ -15,7 +15,7 @@ description: |
+   They include an ISP capable of auto exposure and auto white balance.
  
-+allOf:
+ allOf:
+-  - $ref: ../video-interface-devices.yaml#
 +  - $ref: /schemas/media/video-interface-devices.yaml#
-+
+ 
  properties:
    compatible:
-     oneOf:
-@@ -101,7 +104,7 @@ required:
-   - vdddo-supply
-   - port
+diff --git a/Documentation/devicetree/bindings/media/i2c/galaxycore,gc2145.yaml b/Documentation/devicetree/bindings/media/i2c/galaxycore,gc2145.yaml
+index 1726ecca4c77e..9eac588de0bc2 100644
+--- a/Documentation/devicetree/bindings/media/i2c/galaxycore,gc2145.yaml
++++ b/Documentation/devicetree/bindings/media/i2c/galaxycore,gc2145.yaml
+@@ -19,7 +19,7 @@ description:
+   either through a parallel interface or through MIPI CSI-2.
  
--additionalProperties: false
-+unevaluatedProperties: false
+ allOf:
+-  - $ref: ../video-interface-devices.yaml#
++  - $ref: /schemas/media/video-interface-devices.yaml#
  
- examples:
-   - |
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/media/i2c/sony,imx214.yaml b/Documentation/devicetree/bindings/media/i2c/sony,imx214.yaml
+index 60903da84e1f3..0162eec8ca993 100644
+--- a/Documentation/devicetree/bindings/media/i2c/sony,imx214.yaml
++++ b/Documentation/devicetree/bindings/media/i2c/sony,imx214.yaml
+@@ -16,7 +16,7 @@ description: |
+   maximum throughput of 1.2Gbps/lane.
+ 
+ allOf:
+-  - $ref: ../video-interface-devices.yaml#
++  - $ref: /schemas/media/video-interface-devices.yaml#
+ 
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/media/i2c/sony,imx415.yaml b/Documentation/devicetree/bindings/media/i2c/sony,imx415.yaml
+index 9a00dab2e8a3f..34962c5c70065 100644
+--- a/Documentation/devicetree/bindings/media/i2c/sony,imx415.yaml
++++ b/Documentation/devicetree/bindings/media/i2c/sony,imx415.yaml
+@@ -18,7 +18,7 @@ description: |-
+   available via CSI-2 serial data output (two or four lanes).
+ 
+ allOf:
+-  - $ref: ../video-interface-devices.yaml#
++  - $ref: /schemas/media/video-interface-devices.yaml#
+ 
+ properties:
+   compatible:
 -- 
 2.34.1
 
