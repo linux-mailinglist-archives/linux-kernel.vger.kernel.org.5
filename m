@@ -1,62 +1,60 @@
-Return-Path: <linux-kernel+bounces-88705-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88707-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0160786E59B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:31:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D901F86E5A3
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:32:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 118641F2276B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:31:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A2242866EF
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:32:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70045259B;
-	Fri,  1 Mar 2024 16:31:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="OBrnq3u/"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D94816FF35
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 16:31:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 529402900;
+	Fri,  1 Mar 2024 16:31:56 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E47A73C29
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 16:31:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709310686; cv=none; b=MHyr+rkxNehNedOlGdH7wUJH5mhYDQv2SLdmzbjmhGMKBQVFpwZSSGDM0F4KyzsVlkeTc+WrzNJFzkBNr6U9QggIDpo+J8FXNCc8VunSeX0D14GyJHqFMtOnGoBdx/2fnWJdnt+QEMYlSRjbYEDhMqA4gEPfmM2lBx6Jx9pvltI=
+	t=1709310715; cv=none; b=Q5WDm9FP0T5YUdSczLUyefETSzSqPN3k0LSO1mfOXn6KpcU1Jsz6teMfqw0TI8wrTspFjsZsIVFTU+yYCSf+F0ltTPRlINV8kmChrg3SvEt5EhPcpRA0L8mMjnEYJhQNXHccgk5WR5wcBWwYSWebfSFnnfbV3dUbBPORoDM37aw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709310686; c=relaxed/simple;
-	bh=SNYuXbTmJzupC2gIrsJ34h63wKcNA1rrd1mPUAsfBgw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=d0PkZ2mvHhJgsBwArEMqhJ9+yHX4VHPboDhlizdJ5uUVMXI8lw0uQ+9Xn8ZQ/ZQlf+B5MySLYfCoQw2xV3Q1+i3ssyB/gri1oenZNDBWG+2adeyU2p/IVxDfJ69E4owX+7oXxlXWcWL8L9lrmJddRq0SifLO3BR74YXKkIkoY/U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=OBrnq3u/; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=6HJyOrbro+KIiOc29k/CBAdcOESXYJoi3ToEEVFHbH0=; b=OBrnq3u/cUL6/p4MbminaXQJJH
-	hPB9OC8nhsdBHQ0QIXcNQI8cLTXM08WxWJ+J3ivMYXdMKbffQNw9H05JryZ52YtXt+R95cZGYWA7d
-	QcsR2RIhRvVPU/Fp2oDBBh/12JAd5O6Kw9Da0AaW1oTw/LYBJqruiOmUUMzmKIuiwv2h2GkR0oDII
-	dnoj3dVCaoekKBCPFfWzAIEUnT5ob965mz/MKdPOa9IMOakdeMMesg75xa68bp+/DEbpVvBtvTyj/
-	oTEKrd0dH4i0/JbIQFNoUdVtJiojXPF/ov3wF2wMx46w/lN03olbKzXzBzkgINITohOpSSiObggI0
-	lYE6DL6A==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rg5my-0000000BMdT-1XZS;
-	Fri, 01 Mar 2024 16:31:12 +0000
-Date: Fri, 1 Mar 2024 16:31:12 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: David Hildenbrand <david@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Huang Ying <ying.huang@intel.com>, Gao Xiang <xiang@kernel.org>,
-	Yu Zhao <yuzhao@google.com>, Yang Shi <shy828301@gmail.com>,
-	Michal Hocko <mhocko@suse.com>,
-	Kefeng Wang <wangkefeng.wang@huawei.com>,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org
+	s=arc-20240116; t=1709310715; c=relaxed/simple;
+	bh=2ZACxdM5kk8NSxImonYUYaGDIsIOS1YI2zUB3VwNYs0=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=K9PfddRK4uTzAtH+9Q5pV3vEk1Wa8VpGA4bOP7cnAJgOKJBQpU4SqHNtshN2YuP8c0/KnwmjiZLEaSb+krH+hEz23pOOen1BYDk/RZctNdTgho8BCT1Yo/Xk1aJHcHUn6AS6De8QCO8kvzl/ofpCnPwiYLVVtH1KciBZXg1MwbE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5B4D11FB;
+	Fri,  1 Mar 2024 08:32:31 -0800 (PST)
+Received: from [10.57.68.58] (unknown [10.57.68.58])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2E66B3F73F;
+	Fri,  1 Mar 2024 08:31:50 -0800 (PST)
+Message-ID: <f4453904-6e6a-4b81-bce3-8926cdfaddfc@arm.com>
+Date: Fri, 1 Mar 2024 16:31:49 +0000
+Precedence: bulk
+X-Mailing-List: linux-kernel@vger.kernel.org
+List-Id: <linux-kernel.vger.kernel.org>
+List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
+List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v3 1/4] mm: swap: Remove CLUSTER_FLAG_HUGE from
  swap_cluster_info:flags
-Message-ID: <ZeIC0Bn7N0JlP4TY@casper.infradead.org>
-References: <d108bd79-086b-4564-838b-d41afa055137@redhat.com>
+Content-Language: en-GB
+From: Ryan Roberts <ryan.roberts@arm.com>
+To: David Hildenbrand <david@redhat.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>, Huang Ying <ying.huang@intel.com>,
+ Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
+ Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20231025144546.577640-1-ryan.roberts@arm.com>
+ <20231025144546.577640-2-ryan.roberts@arm.com>
+ <d108bd79-086b-4564-838b-d41afa055137@redhat.com>
  <6541e29b-f25a-48b8-a553-fd8febe85e5a@redhat.com>
  <ee760679-7e3c-4a35-ad53-ca98b598ead5@arm.com>
  <ba9101ae-a618-4afc-9515-a61f25376390@arm.com>
@@ -66,17 +64,109 @@ References: <d108bd79-086b-4564-838b-d41afa055137@redhat.com>
  <4a73b16e-9317-477a-ac23-8033004b0637@arm.com>
  <1195531c-d985-47e2-b7a2-8895fbb49129@redhat.com>
  <5ebac77a-5c61-481f-8ac1-03bc4f4e2b1d@arm.com>
-Precedence: bulk
-X-Mailing-List: linux-kernel@vger.kernel.org
-List-Id: <linux-kernel.vger.kernel.org>
-List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 In-Reply-To: <5ebac77a-5c61-481f-8ac1-03bc4f4e2b1d@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, Mar 01, 2024 at 04:27:32PM +0000, Ryan Roberts wrote:
+On 01/03/2024 16:27, Ryan Roberts wrote:
+> On 28/02/2024 15:12, David Hildenbrand wrote:
+>> On 28.02.24 15:57, Ryan Roberts wrote:
+>>> On 28/02/2024 12:12, David Hildenbrand wrote:
+>>>>>> How relevant is it? Relevant enough that someone decided to put that
+>>>>>> optimization in? I don't know :)
+>>>>>
+>>>>> I'll have one last go at convincing you: Huang Ying (original author) commented
+>>>>> "I believe this should be OK.  Better to compare the performance too." at [1].
+>>>>> That implies to me that perhaps the optimization wasn't in response to a
+>>>>> specific problem after all. Do you have any thoughts, Huang?
+>>>>
+>>>> Might make sense to include that in the patch description!
+>>>>
+>>>>> OK so if we really do need to keep this optimization, here are some ideas:
+>>>>>
+>>>>> Fundamentally, we would like to be able to figure out the size of the swap slot
+>>>>> from the swap entry. Today swap supports 2 sizes; PAGE_SIZE and PMD_SIZE. For
+>>>>> PMD_SIZE, it always uses a full cluster, so can easily add a flag to the
+>>>>> cluster
+>>>>> to mark it as PMD_SIZE.
+>>>>>
+>>>>> Going forwards, we want to support all sizes (power-of-2). Most of the time, a
+>>>>> cluster will contain only one size of THPs, but this is not the case when a THP
+>>>>> in the swapcache gets split or when an order-0 slot gets stolen. We expect
+>>>>> these
+>>>>> cases to be rare.
+>>>>>
+>>>>> 1) Keep the size of the smallest swap entry in the cluster header. Most of the
+>>>>> time it will be the full size of the swap entry, but sometimes it will cover
+>>>>> only a portion. In the latter case you may see a false negative for
+>>>>> swap_page_trans_huge_swapped() meaning we take the slow path, but that is rare.
+>>>>> There is one wrinkle: currently the HUGE flag is cleared in
+>>>>> put_swap_folio(). We
+>>>>> wouldn't want to do the equivalent in the new scheme (i.e. set the whole
+>>>>> cluster
+>>>>> to order-0). I think that is safe, but haven't completely convinced myself yet.
+>>>>>
+>>>>> 2) allocate 4 bits per (small) swap slot to hold the order. This will give
+>>>>> precise information and is conceptually simpler to understand, but will cost
+>>>>> more memory (half as much as the initial swap_map[] again).
+>>>>>
+>>>>> I still prefer to avoid this at all if we can (and would like to hear Huang's
+>>>>> thoughts). But if its a choice between 1 and 2, I prefer 1 - I'll do some
+>>>>> prototyping.
+>>>>
+>>>> Taking a step back: what about we simply batch unmapping of swap entries?
+>>>>
+>>>> That is, if we're unmapping a PTE range, we'll collect swap entries (under PT
+>>>> lock) that reference consecutive swap offsets in the same swap file.
+>>>
+>>> Yes in principle, but there are 4 places where free_swap_and_cache() is called,
+>>> and only 2 of those are really amenable to batching (zap_pte_range() and
+>>> madvise_free_pte_range()). So the other two users will still take the "slow"
+>>> path. Maybe those 2 callsites are the only ones that really matter? I can
+>>> certainly have a stab at this approach.
+>>
+>> We can ignore the s390x one. That s390x code should only apply to KVM guest
+>> memory where ordinary THP are not even supported. (and nobody uses mTHP there yet).
+>>
+>> Long story short: the VM can hint that some memory pages are now unused and the
+>> hypervisor can reclaim them. That's what that callback does (zap guest-provided
+>> guest memory). No need to worry about any batching for now.
+>>
+>> Then, there is the shmem one in shmem_free_swap(). I really don't know how shmem
+>> handles THP+swapout.
+>>
+>> But looking at shmem_writepage(), we split any large folios before moving them
+>> to the swapcache, so likely we don't care at all, because THP don't apply.
+>>
+>>>
+>>>>
+>>>> There, we can then first decrement all the swap counts, and then try minimizing
+>>>> how often we actually have to try reclaiming swap space (lookup folio, see it's
+>>>> a large folio that we cannot reclaim or could reclaim, ...).
+>>>>
+>>>> Might need some fine-tuning in swap code to "advance" to the next entry to try
+>>>> freeing up, but we certainly can do better than what we would do right now.
+>>>
+>>> I'm not sure I've understood this. Isn't advancing just a matter of:
+>>>
+>>> entry = swp_entry(swp_type(entry), swp_offset(entry) + 1);
+>>
+>> I was talking about the advancing swapslot processing after decrementing the
+>> swapcounts.
+>>
+>> Assume you decremented 512 swapcounts and some of them went to 0. AFAIU, you'd
+>> have to start with the first swapslot that has now a swapcount=0 one and try to
+>> reclaim swap.
+>>
+>> Assume you get a small folio, then you'll have to proceed with the next swap
+>> slot and try to reclaim swap.
+>>
+>> Assume you get a large folio, then you can skip more swapslots (depending on
+>> offset into the folio etc).
+>>
+>> If you get what I mean. :)
+>>
+> 
 > I've implemented the batching as David suggested, and I'm pretty confident it's
 > correct. The only problem is that during testing I can't provoke the code to
 > take the path. I've been pouring through the code but struggling to figure out
@@ -112,16 +202,14 @@ On Fri, Mar 01, 2024 at 04:27:32PM +0000, Ryan Roberts wrote:
 > function to be called for every PTE, but count is always 0 after
 > __swap_entry_free() so __try_to_reclaim_swap() is never called. I've tried for
 > order-0 as well as PTE- and PMD-mapped 2M THP.
-
-I think you have to page it back in again, then it will have an entry in
-the swap cache.  Maybe.  I know little about anon memory ;-)
-
-If that doesn't work, perhaps use tmpfs, and use some memory pressure to
-force that to swap?
-
+> 
 > I'm guessing the swapcache was already reclaimed as part of MADV_PAGEOUT? I'm
 > using a block ram device as my backing store - I think this does synchronous IO
 > so perhaps if I have a real block device with async IO I might have more luck?
+
+Ahh I just switched to SSD as swap device and now its getting called. I guess
+that's the reason. Sorry for the noise.
+
 > Just a guess...
 > 
 > Or perhaps this code path is a corner case? In which case, perhaps its not worth
@@ -130,4 +218,5 @@ force that to swap?
 > Thanks,
 > Ryan
 > 
+
 
