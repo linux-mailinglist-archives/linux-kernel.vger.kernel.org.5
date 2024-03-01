@@ -1,116 +1,120 @@
-Return-Path: <linux-kernel+bounces-88245-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88247-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD0BF86DF16
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:16:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 957AC86DF22
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:21:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B7C101C20E75
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:16:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46E9E288841
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:21:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64ADA6BB20;
-	Fri,  1 Mar 2024 10:16:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CBC26BB2D;
+	Fri,  1 Mar 2024 10:20:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="Q5LiiEHx"
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="gQL08X9N"
+Received: from mout.web.de (mout.web.de [212.227.15.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04F0F482C1;
-	Fri,  1 Mar 2024 10:16:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.152.168
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E44CE6A8B2;
+	Fri,  1 Mar 2024 10:20:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709288173; cv=none; b=QLAn7cB2hohuwyxZosWSI/7AgY9qssBIFFJymBy9I22QCDeVQX4RE0+S/uJxisgFUajBxWUxRgklhLCmYe5Eq9JFNTs8cO+LEzr0BwX7GexqH0J+iPmnAxvyR3Gev/jKEORKl8/dvBgVe667X0MMTcHz6TpnGt+ujCStrTEnZ2g=
+	t=1709288450; cv=none; b=E+ZF9hn+escPVv4flC2D1ey/OlxB5U4WxN8c4/jsOSjLCyG2CisOswIUfw/YtyLBPxrWjTCZ8So5dG2GHzxhhO0pbanddAZBwML8vFoWQbrrSvCKAf0J+kzDDtOeLFdpN63JR4W7MoUtOddDK+1wn1SMRO44YqqxSl8gmFIodls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709288173; c=relaxed/simple;
-	bh=6Agnyi8DLedM+Z6EYzVyW6OwLNrz92tvZUbDuL+GHwY=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=aNrqw6YzmeWTKVzMfFPcE2txHPlkmM4QAgIoSBXySkPmx1Yl1/0NU02E2Wbndczi/GQ6uVuR8GT0m4QWKquMng/kanNZpZa5Yb0covBErupLNmwn4BCTEIEqyjyjMtEzxg0zEYCH4z9uME0IYh1zbI7IH4PRPwbzvKpLMpM42To=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=Q5LiiEHx; arc=none smtp.client-ip=67.231.152.168
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4214rwHV014460;
-	Fri, 1 Mar 2024 04:15:51 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=PODMain02222019; bh=f
-	UoFHpE8arqzQuv1VUMK76N/vXq5gSpbs+hWP4zYhQQ=; b=Q5LiiEHxNLjWedBUt
-	xofHsz+eNIxlDIF5SLa6x/sHtAuk/V8gVLGjT3gqkOO69LntWMvTMRveCY1n6Fcr
-	/PdThwBDaiASORSwq14rFXQbqikcSe2o4aQmj6wrKD7jldjBhO62UQMTBD7J63/w
-	efyfKn5qyqKoYun2lEw0FyxIiqQzLzK5ptTKD7FuFFRkrp9/MrNtCDsDyW1yeoBs
-	rlXwTq2k8B0NQwfWGtifNb6GZlJ+102cqvF7u4dTUwujGvl+t5ZyVu1LjLRiE9Ad
-	pyd74W7N8VpNr1gIaNtC0m4dwwPXw/ZzMz2Y8d71zOXyoeGq5Sa1dJpXCupuyvOP
-	TkWCw==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3wje8h23cc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 01 Mar 2024 04:15:50 -0600 (CST)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 1 Mar
- 2024 10:15:49 +0000
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.40 via Frontend Transport; Fri, 1 Mar 2024 10:15:49 +0000
-Received: from ediswws03.ad.cirrus.com (ediswws03.ad.cirrus.com [198.90.208.11])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id EA6B4820241;
-	Fri,  1 Mar 2024 10:15:48 +0000 (UTC)
-From: Maciej Strozek <mstrozek@opensource.cirrus.com>
-To: Lee Jones <lee@kernel.org>
-CC: <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
-        <linux-kernel@vger.kernel.org>, <linux-sound@vger.kernel.org>,
-        Maciej Strozek
-	<mstrozek@opensource.cirrus.com>
-Subject: [PATCH] mfd: cs42l43: Fix wrong GPIO_FN_SEL and SPI_CLK_CONFIG1 defaults
-Date: Fri, 1 Mar 2024 10:15:47 +0000
-Message-ID: <20240301101547.2136948-1-mstrozek@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
+	s=arc-20240116; t=1709288450; c=relaxed/simple;
+	bh=XnJJ/DuVyMNtN8i32SvT66PU+gRXPYlBC+UZSbXhbd8=;
+	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=g8QMmfTmeZGwv6/kBj7UZa5EBXvvvAkyaSz7vLMgzUUBBkkNmNdPxg70Kny/wl7lHy0gqCH4IuU/LhXa4geSb9aTHF/8b+RLHvUOn4eOgLB9e8xma9YwwGDXhl/EaduGhq5GgWXso5gqd1sMhQWo6CC7kvNyEGRKPTv3XSGHEiY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=gQL08X9N; arc=none smtp.client-ip=212.227.15.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1709288428; x=1709893228; i=markus.elfring@web.de;
+	bh=XnJJ/DuVyMNtN8i32SvT66PU+gRXPYlBC+UZSbXhbd8=;
+	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
+	b=gQL08X9NVZrlig7gp98I8sAQQ+ORwftbgdpTa1m8Uptvcy8tht4oBE7lY/vsfF3l
+	 AyPwgJwKIQchKpfjLjokAaobUq6c5651QfcvPPLS+6IEDxW9F+Jnn1T6fVAGerb3o
+	 IMniBYazjqp5lBQynA/Upo+/jMgY8ahE8EwirFFoIzbKBNr0fPho6TPqfati8Zo2V
+	 BuRfmX/FVPCqzR3qwMyofANOPRZFb039RGSB4RrR28R4t8/EUC4kwERp+wS2yB1ya
+	 Wcxt88zWTJ13moiQrP9vnzCpXxkgTd8WC5cajxncjK1eyOOhIwrmsSuRRbWtNU7Pt
+	 y6ut0OkOGzBZrA0VmA==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.86.95]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MWzD3-1rLy0T11Qn-00XR2t; Fri, 01
+ Mar 2024 11:20:28 +0100
+Message-ID: <0f98e7de-4351-481f-86be-e573805c82f6@web.de>
+Date: Fri, 1 Mar 2024 11:20:26 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: _DQfhOcg-vxb4Zl5wF253C9eCruaktL5
-X-Proofpoint-GUID: _DQfhOcg-vxb4Zl5wF253C9eCruaktL5
-X-Proofpoint-Spam-Reason: safe
+User-Agent: Mozilla Thunderbird
+To: linux-media@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ Eugen Hristev <eugen.hristev@collabora.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>
+Content-Language: en-GB
+Cc: LKML <linux-kernel@vger.kernel.org>
+From: Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH] media: microchip-csi2dc: Move a fwnode_handle_put() call into
+ an if branch in csi2dc_of_parse()
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:3zOeZeLgrJuL3S2I4zME9Gi1I6z1I7OFnDgqu8b0tQcvJuw/wfq
+ KywAjCJ/m3Z2Uk3RmerBE6XUwv8gt+hgHvajIa4YPSTe7eaLDrk4D7VsWyTgPXKe/8BD4xs
+ lIReWa03QBnUHUwmNxkmO8nBscbmkm/Ok2v17CdcqwyLBdXJKzg4lXGwGq/Xu0xP63ofgLx
+ eJVYeOTDAg6Occ8M0iCBA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:JrS5DAV2alI=;swQcZg+CJenRsuPdDlrFOqKYLWe
+ IQwCC05aq9G3hpsqYg1nFlYiiWJdc327P0ltpu7CVeNMyBYP6wMEuqlyjot/z48qKJ7MRzw1W
+ BjWo+4GGfwv59c7HlehR09jT0L5vmqv9dmIQVYIO5CjJa4zSOehu4c0FimLE9jAUFfPsbmJ1d
+ SmfyTR8Ugpz57jm8hz9RXnN2/u8Xw3B4VCQIjREyP2RF8Xoi9NVLH8Mtp67jiUZNdt4NRV6jS
+ sKLhsbXT+2e/oRsfsgf6R6d/47CjOY0oRmzKBXr+57t+XLYTlkTOq6Bdc3BFuhivPXN+sdHTA
+ CmYnZn2vePUlSjAkWlnoJZhEEGb/RoV1JUPUfc5dPrYFYpNY1Y0KzCyHaSmYLC+uavyciMIDk
+ vib/7NLq16AtuhPEGXgRZmNdpRbKl5xLaIuIFeSx/v7Wzm3jBnU1tXt/J4hrkhvo0WJYDl179
+ LVvPh5jSSlxqfkNO383iVI9+7ivNvoewsf8/muQnrVxx99jMr7+oKiPoHmPSIWUY8RM0oR1WJ
+ MUVNlxxnQVFcu/KWEv63IXdhZsuqmeANAdmvJd20R7ORTcQNVpryYA0a+MHOncLaNemdJBEAH
+ VzpK8ZoIjVaWrWvuMfJjZDv6gYzmmfUxM7nfb0+PV1t1XXd9yHslBfVHQs+DJuTz3iLzV+D8c
+ 2QNpPR/HDxfH9Aeb7h3n4t/s4UKejBSohBENS23CeP37ONMYmUCwi6fofhFZxY6ovkBJzUojq
+ 13wgf6mxRHlYX7YdY1n8zdFSOj7Mgi42eM3BLNJxJEvYipT7EWqQrxCoINlBTkAE8Q+s5zicj
+ VflXJolFyYv2rjf7xVTMs+TvO6KOTUTpzSDc655JLUHf8=
 
-Two regs have wrong values in existing fields, change them to match
-the datasheet.
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Fri, 1 Mar 2024 11:11:44 +0100
 
-Fixes: ace6d1448138 ("mfd: cs42l43: Add support for cs42l43 core driver")
+Move a fwnode_handle_put() call into an if branch of this function
+so that the control flow looks a bit safer directly.
 
-Signed-off-by: Maciej Strozek <mstrozek@opensource.cirrus.com>
----
- drivers/mfd/cs42l43.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+=2D--
+ drivers/media/platform/microchip/microchip-csi2dc.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mfd/cs42l43.c b/drivers/mfd/cs42l43.c
-index 73c88ee6a866..1cea3f8f467d 100644
---- a/drivers/mfd/cs42l43.c
-+++ b/drivers/mfd/cs42l43.c
-@@ -84,7 +84,7 @@ const struct reg_default cs42l43_reg_default[CS42L43_N_DEFAULTS] = {
- 	{ CS42L43_DRV_CTRL_5,				0x136C00C0 },
- 	{ CS42L43_GPIO_CTRL1,				0x00000707 },
- 	{ CS42L43_GPIO_CTRL2,				0x00000000 },
--	{ CS42L43_GPIO_FN_SEL,				0x00000000 },
-+	{ CS42L43_GPIO_FN_SEL,				0x00000004 },
- 	{ CS42L43_MCLK_SRC_SEL,				0x00000000 },
- 	{ CS42L43_SAMPLE_RATE1,				0x00000003 },
- 	{ CS42L43_SAMPLE_RATE2,				0x00000003 },
-@@ -217,7 +217,7 @@ const struct reg_default cs42l43_reg_default[CS42L43_N_DEFAULTS] = {
- 	{ CS42L43_CTRL_REG,				0x00000006 },
- 	{ CS42L43_FDIV_FRAC,				0x40000000 },
- 	{ CS42L43_CAL_RATIO,				0x00000080 },
--	{ CS42L43_SPI_CLK_CONFIG1,			0x00000000 },
-+	{ CS42L43_SPI_CLK_CONFIG1,			0x00000001 },
- 	{ CS42L43_SPI_CONFIG1,				0x00000000 },
- 	{ CS42L43_SPI_CONFIG2,				0x00000000 },
- 	{ CS42L43_SPI_CONFIG3,				0x00000001 },
---
-2.30.2
+diff --git a/drivers/media/platform/microchip/microchip-csi2dc.c b/drivers=
+/media/platform/microchip/microchip-csi2dc.c
+index fee73260bb1e..ed800a3bb268 100644
+=2D-- a/drivers/media/platform/microchip/microchip-csi2dc.c
++++ b/drivers/media/platform/microchip/microchip-csi2dc.c
+@@ -595,12 +595,11 @@ static int csi2dc_of_parse(struct csi2dc_device *csi=
+2dc,
+
+ 	output_fwnode =3D fwnode_graph_get_next_endpoint
+ 				(of_fwnode_handle(of_node), input_fwnode);
+-
+-	if (output_fwnode)
++	if (output_fwnode) {
+ 		ret =3D v4l2_fwnode_endpoint_parse(output_fwnode,
+ 						 &output_endpoint);
+-
+-	fwnode_handle_put(output_fwnode);
++		fwnode_handle_put(output_fwnode);
++	}
+
+ 	if (!output_fwnode || ret) {
+ 		dev_info(csi2dc->dev,
+=2D-
+2.44.0
 
 
