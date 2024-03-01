@@ -1,232 +1,212 @@
-Return-Path: <linux-kernel+bounces-88616-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88617-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FDF686E43B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:22:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 749DA86E43D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:23:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C0941F24137
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:22:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 035871F233F1
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:23:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B30A36EB4F;
-	Fri,  1 Mar 2024 15:22:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 226A06EB69;
+	Fri,  1 Mar 2024 15:23:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="y1btmd2a"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AzDfJPgx"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 395571E502;
-	Fri,  1 Mar 2024 15:22:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7D9F1E502;
+	Fri,  1 Mar 2024 15:23:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709306550; cv=none; b=R2vGUF47I16tb8cv5Pm0NK3X7Lad7vXzE+d+RuzqMTjvfYY83M7ET8b4hCa1F+ohUzaByBoOJZpETq8VrF0bTSmBxtzM9n4n8gwyRHMQuQzADhxXdf3S7aEz6RFsIl+X4MpTW+eITSQdZmDu9xRw+m1ARU+wyFKHbtp5HQ/oNZw=
+	t=1709306587; cv=none; b=NqihhBPZnTvOKK7rFyTFqoPhQQC3OmizAw3i84+RdvitY4pNNvH4eeWx+4DwWwhVzrfMFfp/e8+PA2BHU36D1eFbVV9M6e/fNycwmZNKTgoplI7dmwWOkk8wryGyAQzeHuXcTYzSQ1LgxbUee1rwiaTEwITKUc0A4c0X//Lydao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709306550; c=relaxed/simple;
-	bh=wnwKt9wPgK3JATv1lV5i2+Gg9oBAg15ZKKFjS7rbUWA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=daobuPpRbxfJfkxbXPkYAefGYk9rkuqRCaV6oEjfwyMoBtmGh8xVSoY6MkTEhBn8G6uXkPzrZYstZfBKb7OMJOBJDKlWFFF4EYVi/1js3AxF7PBgNUroTywhq80fk7HoTFHyzCVEePhCq+/ELvW1usc/+fK+bQ2yrFcCMp7apnQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=y1btmd2a; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709306547;
-	bh=wnwKt9wPgK3JATv1lV5i2+Gg9oBAg15ZKKFjS7rbUWA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=y1btmd2aUaCfzPAJG098Knd7qcOr7hfpEK765wIAhATaKq2LFTVdXH0QAsEZNHGHM
-	 60XTExsX/aEzU98s/ZlAqEBSUm1Lz1Bx70QjxOAitLxIO5pXiu3Ym255ByGhZenqWk
-	 FmGMBhpH0nQTCPtfYN08TRJjnb11wYAHCn3Q+G7GEnNnStWsz2ftzMxaOBkxMA2BFC
-	 K27aN2jVvxD5lxYIv0BFC+f7okK0WJtMQK3NJQ68PNoHKjwSn+Pqi3WutK2xiryhXP
-	 d8CN7kRSv6DLzHzgG+hn6K0ENxLI6C/BBDfefKIO2DP5/T+7lxn631zNZrmtMDGeaE
-	 GdGYrpZ6mR75g==
-Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: laura.nao)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 46CE5378105A;
-	Fri,  1 Mar 2024 15:22:26 +0000 (UTC)
-From: Laura Nao <laura.nao@collabora.com>
-To: laura.nao@collabora.com
-Cc: a.hindborg@samsung.com,
-	alex.gaynor@gmail.com,
-	aliceryhl@google.com,
-	benno.lossin@proton.me,
-	bjorn3_gh@protonmail.com,
-	boqun.feng@gmail.com,
-	gary@garyguo.net,
-	kernel@collabora.com,
-	kernel@valentinobst.de,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	ojeda@kernel.org,
-	rust-for-linux@vger.kernel.org,
-	sergio.collado@gmail.com,
-	shuah@kernel.org,
-	usama.anjum@collabora.com,
-	wedsonaf@gmail.com
-Subject: Re: [PATCH v5] kselftest: Add basic test for probing the rust sample modules
-Date: Fri,  1 Mar 2024 16:22:32 +0100
-Message-Id: <20240301152232.122399-1-laura.nao@collabora.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20240229155235.263157-1-laura.nao@collabora.com>
-References: <20240229155235.263157-1-laura.nao@collabora.com>
+	s=arc-20240116; t=1709306587; c=relaxed/simple;
+	bh=ykhuC16a76yujuSJcnRYVP2DAtHkeVZK76VXBYnaUCM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Z2u27mBnbF8atyqhg1YVl/TbgGYg4m6Ee+Goc4kMdC53JfgEnApZDmym+TsEtpzDj5X47+Po2Hjw0F/quT78eQ1MCwwWeodwpwyD4XFYesOa+tW3dpphxLNI4Q2kjmN3hin69Wigunc/VouNlTt2KDFKrWqvWCIbOaTCmiJNvjg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AzDfJPgx; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5654f700705so3444012a12.1;
+        Fri, 01 Mar 2024 07:23:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709306584; x=1709911384; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PGYGLhQjLfLZEOyb1D9gwK3Rj1wkJrl/wQOZICqbfXA=;
+        b=AzDfJPgxZ/4BmwfFcxxAqboy6KTHo2bczWT+LNrrBlG0F4pFvpxIwds2dciU1OJvhQ
+         ZY4ooWv3xIuyotjSDD0VPaBDs/VeeRCzLnOx+aKn5Tnax1aY6taXevtvFJ4R81hxt2hY
+         SIkXU5BzCH4wMsyUq574na+VrXj21s2vPygAHJNOhgyTO5h4V3gA4+/bamHombHxqWt/
+         07ju7eXAcEv/wDhxg98XnerzfeIrNIvEoXJbjLcPLfIMV1SeXv8oqhuSsw9jp0USqshk
+         l/yC10QxH0YroTXUW93kjy15smJVOXXUDd2vSPFVvBeG9btpU4AZOaBdNILvQPq3SDns
+         bDCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709306584; x=1709911384;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PGYGLhQjLfLZEOyb1D9gwK3Rj1wkJrl/wQOZICqbfXA=;
+        b=H9QM0AsbOGEyGDB/8YZ+6weeAFV3wmrUxMIddCDtk0qv8LRDlZlJgrY3JA79ICuDct
+         4zj+Sf2PNqgPQ991sLJXTKeFR5o8HaX0+sC2qxMjX6N6mDbyXhzbpHTH2CBdIiJNYkkd
+         p19nwbTfQoyYgka4GXtfFYNfWkh2I5JNP9crNKynWuF+uxMff2GEeSrtV3dcHjbCfd50
+         WGkAMC6ZdtcC7O/QBO9+aKD2UMplNZmX+di/H00huOuump3FW+RpzMYdIc3dQayHv/Nm
+         NY2OKK8PoDTQGTYlKtlWv0ICYqjUcHv0jsf8Pg7tot8cQx2qKMwehoVFpTbgH9RB9Y1Z
+         i6mw==
+X-Forwarded-Encrypted: i=1; AJvYcCVk8YJFUEBqDxY5TA7eQH5Senv/BlRjUnATcLEUW7unn3mgyfTqksEpbUb/P+cdkpPNF2l5M11i+0sLTh0ccvoNUREc0cUBZ/0PT3l0
+X-Gm-Message-State: AOJu0YzL2jJ/D15RApWkZFoIBBhFiGr+5HuHswrqNKlPhNK1Dq0aFY7Z
+	411c8loT9eW8VRor0CdDusFCRAMs2BVLGc6uvOvKllbvZTRAzXMZXrIGdLPvHSwvtIcZNwDjTaP
+	3EDQcX0xWTg/nGT6ZL6cgSZ0TXDY=
+X-Google-Smtp-Source: AGHT+IHr7VOi3yAOcZydge4+g5vfQ3rGPgeEq42SLoi5c87OORqbVObUEpabG425dNBSs8TGAVVGXeJtNkY5HuAwxOo=
+X-Received: by 2002:a17:906:130a:b0:a44:2278:7a62 with SMTP id
+ w10-20020a170906130a00b00a4422787a62mr1729019ejb.41.1709306583678; Fri, 01
+ Mar 2024 07:23:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <CAEkJfYPz+xZvczwEnsv1eGsNmv8rtLmyw5WV_rDz_Zui0cNd4Q@mail.gmail.com>
+ <CANn89iJt1Ke=chUSd7JSNSdCEN4ghjivg2j902Wqa5pSQdrdeQ@mail.gmail.com>
+In-Reply-To: <CANn89iJt1Ke=chUSd7JSNSdCEN4ghjivg2j902Wqa5pSQdrdeQ@mail.gmail.com>
+From: Sam Sun <samsun1006219@gmail.com>
+Date: Fri, 1 Mar 2024 23:22:52 +0800
+Message-ID: <CAEkJfYM9PZ7Py6aeHOf5YgD8KiczthM5_opEOXDjp2rE=3ry+Q@mail.gmail.com>
+Subject: Re: [Kernel bug] KASAN: slab-out-of-bounds Read in in4_pton
+To: Eric Dumazet <edumazet@google.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, j.vosburgh@gmail.com, 
+	andy@greyhouse.net, davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com, 
+	syzkaller@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Miguel,
-
-On 2/29/24 17:44, Miguel Ojeda wrote:
-> On Thu, Feb 29, 2024 at 4:53 PM Laura Nao <laura.nao@collabora.com> wrote:
->>
->> Add new basic kselftest that checks if the available rust sample modules
->> can be added and removed correctly.
->>
->> Signed-off-by: Laura Nao <laura.nao@collabora.com>
->> Reviewed-by: Sergio Gonzalez Collado <sergio.collado@gmail.com>
->> Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-> 
-> Thanks for this Laura!
-> 
-> Replying here to what you wrote in v4:
-> 
->> At first, I hadn't planned for the kselftest to skip entirely if only
->> one of the two sample modules was missing. However, considering that
->> this kselftest is designed to test all available sample modules, and
->> given that both are enabled with the provided configuration file, I
->> believe it's more logical to verify the presence of both modules before
->> running the test. If either of them is missing, then we exit the test
->> with a skip code. This also covers the case where rust is not available.
-> 
-> I guess it depends on what is the expected behavior in kselftests in
-> general and whether the user is expected to have merged the provided
-> `config` or not.
-> 
-
-It's my understanding (and please correct if I'm wrong) that when a 
-kselftest is shipped with a config file, that config file should be 
-treated as a requirement for the test and the user is expected to use it
-(running make kselftest-merge). I agree the script shouldn't blow up if
-the user doesn't though, so it still makes sense to gracefully skip the
-test when the requirements are not met.
-
-> Also, what about modules being built-in / `--first-run` in `modprobe`?
-> `modprobe` by default may return successfully even if no module was
-> loaded (or even present, if it was builtin). In that case, is a
-> kselftest script supposed to succeed, skip or fail? I would say at the
-> least it should be "skip" (like it is done in the case where the
-> module is not found), and I wouldn't mind "fail" either (i.e. running
-> `modprobe` with `--first-run`).
+On Fri, Mar 1, 2024 at 4:18=E2=80=AFPM Eric Dumazet <edumazet@google.com> w=
+rote:
 >
-
-This makes me realize that I should probably put these in the config
-too:
-
-CONFIG_MODULES=y
-CONFIG_MODULE_UNLOAD=y
-
-Adding --first-time (you meant --first-time, right?) definitely makes
-sense, thanks for the pointer. I think having the modules being built-in
-should be treated as a skip, same as when they are not there at all.
-
-So something like this:
-
- for sample in "${rust_sample_modules[@]}"; do
--    if ! /sbin/modprobe -n -q "$sample"; then
-+    if ! /sbin/modprobe -n -q --first-time "$sample"; then
-         ktap_skip_all "module $sample is not found in /lib/modules/$(uname -r)"
-         exit "$KSFT_SKIP"
-     fi
-
-will cover both cases.
- 
-> In addition, what about module removal failures? Are they ignored on
-> purpose, e.g. because the kernel might not be configured with module
-> unloading? If it is possible to check whether `MODULE_UNLOAD` is
-> supported in the current config, it would be nice to check the removal
-> also worked. And if it is not supported, skipping the removal entirely.
-> 
-
-I think it's safe to assume no other module will depend on the sample
-rust modules, so is there any other reason unloading the modules 
-might fail apart from MODULE_UNLOAD not being enabled? If not, then I
-think we should just check if the removal worked and continue/skip the
-test accordingly.
-
-I can't just simply skip all tests like this though:
-
- for sample in "${rust_sample_modules[@]}"; do
-     if /sbin/modprobe -q "$sample"; then
--        /sbin/modprobe -q -r "$sample"
-+        if ! /sbin/modprobe -q -r "$sample"; then
-+            ktap_skip_all "Failed to unload module $sample, please enable CONFIG_MODULE_UNLOAD"
-+            exit "$KSFT_SKIP"
-+        fi
-         ktap_test_pass "$sample"
-     else
-         ktap_test_fail "$sample"
-
-as the test plan has already been printed by then.
-I'll need to rework the script a bit to skip the test upon errors on 
-module removal.
-
-> Finally, what about the case where `RUST` isn't enabled? I think Shuah
-> mentioned it in a previous version.
-> 
-
-When rust is not enabled, no sample module is enabled either so the test
-would still catch this in the first `if ! /sbin/modprobe -n -q --first-time
-"$sample"` block and exit with the skip code.
-
-If we need more granularity on the feedback provided to the user (i.e.
-indication on what particular options are missing), then I guess we 
-could check the current kernel config (/proc/config.gz) and skip the
-entire test if any required config is missing. However, this adds an 
-extra dependency on CONFIG_IKCONFIG=y and CONFIG_IKCONFIG_PROC=y.
-
-Any advice on the best approach here?
-
->> +KTAP_HELPERS="${DIR}/../kselftest/ktap_helpers.sh"
->> +if [ -e "$KTAP_HELPERS" ]; then
->> +    source "$KTAP_HELPERS"
->> +else
->> +    echo "$KTAP_HELPERS file not found [SKIP]"
->> +    exit 4
->> +fi
-> 
-> I am not sure I understand this. In which situation could this happen?
-> The helpers should always be there, no? I tested this with `make
-> -C...../selftests install TARGETS=rust INSTALL_PATH=...` and it seems
-> to work in that case too.
-> 
-> To be clear, I agree with Shuah that we should test that everything is
-> working as expected. In fact, I would prefer to run with `-e` or, much
-> better, use something else than bash :) But if something should never
-> happen, should it be a skip? Shouldn't we just fail because the test
-> infrastructure is somehow missing?
+> On Fri, Mar 1, 2024 at 3:41=E2=80=AFAM Sam Sun <samsun1006219@gmail.com> =
+wrote:
+> >
+> > Dear developers and maintainers,
+> >
+> > We found a bug through our modified Syzkaller. Kernel version is b401b6=
+21758,
+> > Linux 6.8-rc5. The C reproducer and kernel config are attached.
+> >
+> > KASAN report is listed below
+> >
+> > ```
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > BUG: KASAN: slab-out-of-bounds in strlen+0x7d/0xa0 lib/string.c:418
+> > Read of size 1 at addr ffff8881119c4781 by task syz-executor665/8107
+> >
+> > CPU: 1 PID: 8107 Comm: syz-executor665 Not tainted 6.7.0-rc7 #1
+> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04=
+/01/2014
+> > Call Trace:
+> >  <TASK>
+> >  __dump_stack lib/dump_stack.c:88 [inline]
+> >  dump_stack_lvl+0xd9/0x150 lib/dump_stack.c:106
+> >  print_address_description mm/kasan/report.c:364 [inline]
+> >  print_report+0xc1/0x5e0 mm/kasan/report.c:475
+> >  kasan_report+0xbe/0xf0 mm/kasan/report.c:588
+> >  strlen+0x7d/0xa0 lib/string.c:418
+> >  __fortify_strlen include/linux/fortify-string.h:210 [inline]
+> >  in4_pton+0xa3/0x3f0 net/core/utils.c:130
+> >  bond_option_arp_ip_targets_set+0xc2/0x910 drivers/net/bonding/bond_opt=
+ions.c:1201
+> >  __bond_opt_set+0x2a4/0x1030 drivers/net/bonding/bond_options.c:767
+> >  __bond_opt_set_notify+0x48/0x150 drivers/net/bonding/bond_options.c:79=
+2
+> >  bond_opt_tryset_rtnl+0xda/0x160 drivers/net/bonding/bond_options.c:817
+> >  bonding_sysfs_store_option+0xa1/0x120 drivers/net/bonding/bond_sysfs.c=
+:156
+> >  dev_attr_store+0x54/0x80 drivers/base/core.c:2366
+> >  sysfs_kf_write+0x114/0x170 fs/sysfs/file.c:136
+> >  kernfs_fop_write_iter+0x337/0x500 fs/kernfs/file.c:334
+> >  call_write_iter include/linux/fs.h:2020 [inline]
+> >  new_sync_write fs/read_write.c:491 [inline]
+> >  vfs_write+0x96a/0xd80 fs/read_write.c:584
+> >  ksys_write+0x122/0x250 fs/read_write.c:637
+> >  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+> >  do_syscall_64+0x40/0x110 arch/x86/entry/common.c:83
+> >  entry_SYSCALL_64_after_hwframe+0x63/0x6b
+> > RIP: 0033:0x7f797835cfcd
+> > Code: 28 c3 e8 46 1e 00 00 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48 89=
+ f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 =
+ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+> > RSP: 002b:00007ffff464ffb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+> > RAX: ffffffffffffffda RBX: 00007ffff46501b8 RCX: 00007f797835cfcd
+> > RDX: 00000000000000f5 RSI: 0000000020000140 RDI: 0000000000000003
+> > RBP: 0000000000000001 R08: 0000000000000000 R09: 00007ffff46501b8
+> > R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+> > R13: 00007ffff46501a8 R14: 00007f79783da530 R15: 0000000000000001
+> >  </TASK>
+> >
+> > All
 >
+>
+> >
+> > We analyzed the cause of this bug. In the function "bond_option_arp_ip_=
+targets_set" in
+> > drivers/net/bonding/bond_options.c, newval->string can be controlled by=
+ users. If string
+> >
+> > is empty, newval->string+1 points to the address after newval->string, =
+causing potential
+> >
+> > info leak.
+> >
+> > One possible fix is to check before calling in4_pton, whether strnlen(n=
+ewval->string) > 1.
+> >
+> > If you have any questions or require more information, please feel
+> > free to contact us.
+> >
+> > Reported by Yue Sun <samsun1006219@gmail.com>
+> >
+>
+> Thanks for the report and analysis.
+>
+> Are you willing to provide a patch ?
+>
+> You would get more credits than a "Reported-by:" tag :)
+>
+> Thanks
 
-Kselftest exit codes are predefined
-(https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/testing/selftests/kselftest.h?h=v6.8-rc6#n74),
-so if we use `set -e` and source a missing file we end up returning "1"
-as if the test was run and failed. With this check we're sure to return
-a value that makes sense in the event the helpers file ever gets moved.
- 
-> Orthogonally, if we want the test, shouldn't this just test the
-> `source` command directly rather than a proxy (file existing)?
-> 
+Dear Eric,
 
-Sure, checking the return value for source also makes sense.
+Thanks for letting me provide a patch! One possible patch
+is listed below.
 
-Thanks!
+diff --git a/drivers/net/bonding/bond_options.c
+b/drivers/net/bonding/bond_options.c
+index f3f27f0bd2a6..a6d01055f455 100644
+--- a/drivers/net/bonding/bond_options.c
++++ b/drivers/net/bonding/bond_options.c
+@@ -1198,7 +1198,7 @@ static int bond_option_arp_ip_targets_set(struct
+bonding *bond,
+     __be32 target;
 
-Best,
-Laura
+     if (newval->string) {
+-        if (!in4_pton(newval->string+1, -1, (u8 *)&target, -1, NULL)) {
++        if (!strlen(newval->string) || !in4_pton(newval->string+1,
+-1, (u8 *)&target, -1, NULL)) {
+             netdev_err(bond->dev, "invalid ARP target %pI4 specified\n",
+                    &target);
+             return ret;
+
+This patch was tested on kernel commit b401b621758,
+tag Linux 6.8-rc5 against the C repro listed in previous
+email.
+
+If you have any questions, please contact us.
+
+Best Regards,
+Yue
 
