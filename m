@@ -1,158 +1,187 @@
-Return-Path: <linux-kernel+bounces-89158-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89160-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6251386EB56
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 22:44:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08D3286EB5C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 22:46:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6FB751C2140E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:44:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2ACE11C214E5
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:46:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47E445823B;
-	Fri,  1 Mar 2024 21:44:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 497C458AC4;
+	Fri,  1 Mar 2024 21:45:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="Wvw6d+Ef"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="l3PEYOr7"
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2074.outbound.protection.outlook.com [40.107.8.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 230AC25623
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 21:44:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709329479; cv=none; b=bw2gmxJJf+51BhtBXIslgcJNxJxhMpva2YB+FxKuTuSQQ+UjVim7oVhx6JesdFGWapdHrthVH+2GGHV1rZHhx0weoJVJYT0uPbT3ndd38nry4JOqftScI7JHpTgVIyVgTWLSchyHyIsIIjNAxIcC4P6/6/idoCbheJSEjW/mLqs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709329479; c=relaxed/simple;
-	bh=2xY5RVyUcdnRzDiqOnWZP2xAM6fMoZ6RnVVMw7ZnaNg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bmSGpet0DcK9A5XIBxS7Ws+CUb9PM9sDW0XhH1hF1TUHbunWJc3b7Xs1JyGfTefCyVZ9NToRnt9Ph4UZ+8QdEwefm1cFwVtMK3iSyfKYue1SBBn7xbmr78fqoW+h3Ff5+HrUbpmQEI75a/9CQteBCYxd4QSMJegRJ0yqGWVAhwI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=Wvw6d+Ef; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (89-27-53-110.bb.dnainternet.fi [89.27.53.110])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 9776B673;
-	Fri,  1 Mar 2024 22:44:21 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1709329461;
-	bh=2xY5RVyUcdnRzDiqOnWZP2xAM6fMoZ6RnVVMw7ZnaNg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Wvw6d+Efg4zfPGiPhEdGGpTNTVwkssBWr7Pfr/mjCFp0adU5FNIwJf9ti6hDNGV7k
-	 d6ZonBUAjGiiCSAk84BGvNuOTSsMXQtTz/X5ZB3AG8XaGC47dDxUDMQKxy4bhyOpQP
-	 RT7qkhWoGTpE1wDaryq4bnW4Abc6SbIXm+MvA5vE=
-Date: Fri, 1 Mar 2024 23:44:38 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado <nfraprado@collabora.com>
-Cc: Andrzej Hajda <andrzej.hajda@intel.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Robert Foss <rfoss@kernel.org>, Jonas Karlman <jonas@kwiboo.se>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	owen <qwt9588@gmail.com>, Jagan Teki <jagan@amarulasolutions.com>,
-	Marek Vasut <marex@denx.de>,
-	Adrien Grassein <adrien.grassein@gmail.com>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Sam Ravnborg <sam@ravnborg.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Vinod Koul <vkoul@kernel.org>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Vinay Simha BN <simhavcs@gmail.com>,
-	Christopher Vollo <chris@renewoutreach.org>,
-	Jessica Zhang <quic_jesszhan@quicinc.com>,
-	Marijn Suijten <marijn.suijten@somainline.org>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>,
-	kernel@collabora.com, dri-devel@lists.freedesktop.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C4A757322;
+	Fri,  1 Mar 2024 21:45:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.8.74
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709329558; cv=fail; b=hpU/qH5FGywnUouhfbJvFDbZw/U9AA4hlT3fzRxcMyYemKvwss4aI3FY7JeECvnGoUqAafjQaiQJ4Hu6J5O+ewSc+2knI9EOSbUNhpub0DKb/Mt1uYZUbopW9yI1wiyl/VCzH9rvFY9AppuJPrhgWdK9+3LJfBwGgJXJakX1QVk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709329558; c=relaxed/simple;
+	bh=9EgtrPrxGLs2HMh8bIhlgb2McwbviHT24n46A0XbOcc=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=EmtrZ6MDurpexSwZYBHmYK2LtvcCaJWcVmTxX3ZzDFXoSWsk6Stlh3h6W4LpQlxIJdJ0Rh83nro3PFFderr0PyynDT/hn2NtnCTLctL1UbCDKQJLZS9SUcPDnK8h42Yfrrb4LH9OicHL4JO2jXlj2Xics+9veJKG895vKmJcaX4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=l3PEYOr7; arc=fail smtp.client-ip=40.107.8.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JqZxld3nF0UhawYn+pS/cEi+Dq3U9JTV3YV2woPLrO03zoncmZkByZ7gXWivsGluzp7RbErK97vraf499jL2+vSQ/rILgn2fKdwBjLsT5ljqUKDuoC9piilB4PG3MQO7mJfB91FtZjMOJDoiWoTj1YSJroQMAVvXTOXNAgD8BTqFOBJ+kq09wIWGJpXNv3G/itJZaJzF5I0Huh7jCMUTY0N0X44lRjdgbzzq+rZWgjf+PmPeXEDYC4IEOFlFoxlK8ZuCWK+Mg/t09aJG6/7OfRtbyrkQzUdCvcX30mJid1fGY9FMdZIDFWx4BlDlR2A/hpZn1B5UfjDWcOZCnxTMWg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=L0rmUiI3M2k33tiHD+U99zQ7w/wTje3oSyYWUXSRa2c=;
+ b=WYUoF19dpKwGLzaDvMSrZ9WHham42TLn9vPemZhajX1RWH4/06pMpBJs4Lq2J4zg/EN2QFek+NEiNpctNGYqYGJdVw4HnANTe0uXQ2EgTHrDjRVh0j8T70fiZEuS/9Nod8mZJ6H7NiGYXh/oVPmjwfxrELvgma9SNSTbMYmALpO+ZhLG7L2iJ7cM2kIfNZlGKgsQ+VTqfr5LjmfUITs5xrkkgh5fs/64f1iQDbowcOmEmXr5/VGJ2EXddEUlkVvcvABrHO0d3vGerjbH4P3d1VqP6CtiE4nXFU6bKpFYTHk6c0J0limjs/Kx/15h+1FPLlpfrDBQ2/wLGwekgNTfIQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=L0rmUiI3M2k33tiHD+U99zQ7w/wTje3oSyYWUXSRa2c=;
+ b=l3PEYOr7bXxCmNqLCgIfWX/E+TrzVjlRsOhPMIRPpYY6jeI19JBfTOKPQN6D3zuR1O9hxpShffQRdxaSxIZLA5muGDSF20m2pb8DF+F9uSih3FlTfct4Da428OFre/ZjVnUuqqDecq4sz1xyhGHcJL2LhzcIv/siQEmoBmEDaG4=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by VI1PR04MB6911.eurprd04.prod.outlook.com (2603:10a6:803:12e::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.32; Fri, 1 Mar
+ 2024 21:45:53 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::9af4:87e:d74:94aa]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::9af4:87e:d74:94aa%7]) with mapi id 15.20.7316.035; Fri, 1 Mar 2024
+ 21:45:53 +0000
+From: Frank Li <Frank.Li@nxp.com>
+To: krzysztof.kozlowski@linaro.org
+Cc: Frank.Li@nxp.com,
+	conor+dt@kernel.org,
+	devicetree@vger.kernel.org,
+	dmaengine@vger.kernel.org,
+	imx@lists.linux.dev,
+	krzysztof.kozlowski+dt@linaro.org,
 	linux-kernel@vger.kernel.org,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Subject: Re: [PATCH v2 0/9] drm: Switch from dev_err to dev_err_probe for
- missing DSI host error path
-Message-ID: <20240301214438.GA11073@pendragon.ideasonboard.com>
-References: <20240229-anx7625-defer-log-no-dsi-host-v2-0-00506941049a@collabora.com>
- <20240301063431.GM30889@pendragon.ideasonboard.com>
- <33209063-de58-4d53-a6e0-2d9f74052358@notapiano>
+	peng.fan@nxp.com,
+	robh@kernel.org,
+	vkoul@kernel.org
+Subject: [PATCH v2 1/2] dt-bindings: dma: fsl-edma: remove 'clocks' from required
+Date: Fri,  1 Mar 2024 16:45:35 -0500
+Message-Id: <20240301214536.958869-1-Frank.Li@nxp.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BY3PR03CA0006.namprd03.prod.outlook.com
+ (2603:10b6:a03:39a::11) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <33209063-de58-4d53-a6e0-2d9f74052358@notapiano>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|VI1PR04MB6911:EE_
+X-MS-Office365-Filtering-Correlation-Id: 480e968d-eed5-48b6-e64d-08dc3a38f7a9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	g89f5dqj/VCJsBpoAJo5iz3jvBHVcA5SGIEWryjIYcPpIk9k9DV8OCsol4i64/RKQA9QI3a9KEURWKGlH5vwAEb/EIKfQ5Lnbc5EiJBL8boT/ynzoFdh9pZyf+0wiyN3qGTOSv7j4tQkRFqgU3k3Z/r1/PCJr4LLzzvESXsxdD+mLUz6hP85XM+bthnGK5nMSmOLHbkSmGtAbv3e4bz9XPXrNwZw333GivYUtd/aXvOznMS62cTHopETriQCFqVRs4KCxZLp2tgSBE844zP4l8PQShJPAWKFnUb1I1Fgtghv3dy/IzCAcW6Aoh7fyTTLB0E5aHj1MocmLMFc/lYbqqRQClCTrkiSuM4Z6/oCIMhlUjcLm/VL9SvU3jlxI5NvJ9XjH7DbEHnPJR5meXMT7++Rpl7k5CF0e3qOECE6q0sfPq/ubQfvQ9FWp0JDB78njmfr8mDm/tx6KDQe06KnlOpGxlbTJy5nfoRIBRVyjGc+/SmIM8VWi8r1ZyXsxczNS9JKbBjqV47M0aLJ4XQqYY/eMDY0qrZJExfBT0f+NCmWAyJsoXXk6CcJ4ukAWExYetRZ2igW9GqVDCJcfN8g5phxWNndTDSvt/37nBV1sjPYjkfbIdtMG1I0S355CseZrr6fIXirltmQJJ+x+cRSu81FRAPzt7g1/gzddKAes2fJXiVeoiOGvU+Xu7taelD8TBFrbEUK4KP7FHT+7Zba2nOurIgb8ULIoUiHXUId24s=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?uayJ9wYbuKXBCK/QV7QUIoi9sYC+jRLaz+H/lOjxozSHmaJHBuOR/8c16dkx?=
+ =?us-ascii?Q?kyhtKvZ5m8wzySWcfhaGtOdb+ce5KfbUOxnRTK4S/3JTBGiU7F4dB1BASarE?=
+ =?us-ascii?Q?LLI4HaF2qyMZQgCQoXHsUYmE9kPwBjMsUrKm9IdEJIenOsu+yOd8STnCi6YN?=
+ =?us-ascii?Q?qQBdaDcWiJgnyp6nG3spS+HkrOvhmSZBmhpp466w93N5TPg4ocKyom8Ie5em?=
+ =?us-ascii?Q?OYYnDjIeaUOk4H9YnixVqWIbUn/8YsJUo7U6Jka1/poqgwBxBFXYD6UeLHxg?=
+ =?us-ascii?Q?Tio1kJB9vMsauidqYNVVIzjisHOzS1G6yk6BQ05xUzyEVCGrIseIzhPPz43u?=
+ =?us-ascii?Q?Hpiur/TQJGKTzbJlh3izeX1gU0gUp6CN6cVW3iYUbU7GRK3DP2+xKmkD53gT?=
+ =?us-ascii?Q?/59yJehJvn097XI4tkAC8mjyBUZ50Sl25+nYvBfg0VHJMfmCohWm+yOdpEI4?=
+ =?us-ascii?Q?BMqVzrk3TWbiFAUWdTgoVbBNM5BmDgt8LWL7mGqCRJVOQCr1ODkCY5fVTjmQ?=
+ =?us-ascii?Q?UaZsVRFLo8Nz0A2lPnMgAouBC4gaaIw+CsxrSBIi+Z3qU6koZEA5jxwp2Fey?=
+ =?us-ascii?Q?k8THZl0/QAQKKKWBBxhL/aOfjb7Pq/VkBBCzvP3hNjBti53I7yo7fLV16nfG?=
+ =?us-ascii?Q?SF+dL3EA9Wd/5+p5yje7NNiAKOWA8d2CEmwXd8bzFmB2qzm/X1K0mhP976E0?=
+ =?us-ascii?Q?R+b85diBU5QshH/iwqa2tDnASAgavQeAvlTHbBXxOzyxHuzJ/k66AeZMLt3U?=
+ =?us-ascii?Q?R3bfglZCjKYOqfNwe+3hjuztNzLN0i/LLGmGZEFCbxjaldvz4g6w3mqaGsbJ?=
+ =?us-ascii?Q?1kUkdWinSMbr87tfSdKxV1yhCMnWcTp/BBsIw1yijpFRBLqUjwh5LopGiKAS?=
+ =?us-ascii?Q?DfDo8edv9ULWUHNxjLWP5gt9meK0Q8mhuhHP/STUSHgy5G8s3g1rYwvDunCB?=
+ =?us-ascii?Q?opcsiIcRfR4Iw6Qi+4SrkEsf28Ut22i9Rmp9IMnJFlfWpOrhptL3DbO4Im9H?=
+ =?us-ascii?Q?8vvWeKB+v35jnjkGf+4RmlmztAEhROeNTHcIXOLaFE2LrT9CIlwLz0eMfAJW?=
+ =?us-ascii?Q?Mm/hEAoA0UYyhkQWixmzkRZS8SblXxQ4G6zKUd61ZMrMDYy0aAcsJqAI8/YT?=
+ =?us-ascii?Q?aUSnD2PY4IW2Wz4Iok9tkS/Vb/Uh6oZy1LOpguWDL4eT508+InbPSFh90FWp?=
+ =?us-ascii?Q?roW/H2k3GaqHUsCEmlr+/7TQem0mlAbsibSCRTxf3VhH4XHpFbigMDR43a0E?=
+ =?us-ascii?Q?0+C5a6hY1bIYBlrhIDK3sp24jwN3R/xxrIHE8Y+6jnqsto8Ddd7EClei9klm?=
+ =?us-ascii?Q?rBI3eHt6GTLzbKYNQqEHiWv/NilrY+lbrxDqM69QOp3/LI6WbN1Bj9B0uk+A?=
+ =?us-ascii?Q?Xs9VNtnrNYt+qKS40hXC3Bwh0CL6q/vJgAvF5JZwAxT1dcHxbMni8lnEtsMb?=
+ =?us-ascii?Q?rKptj0fKh1S0tDjNeER2hohjjAQ3c81su59VUcdSPAJccQVKOBk54Lp6C5nw?=
+ =?us-ascii?Q?GpzIlq+ph2rsWU9CVx/LTpMtC+XoVWC/bp0rv4nWjUIYW8NWOwltAoI75DqT?=
+ =?us-ascii?Q?BMztKr51GhoWbHxxgRQ=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 480e968d-eed5-48b6-e64d-08dc3a38f7a9
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Mar 2024 21:45:53.0263
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: a7Egz+mx4AiQtP2sOrayTHZ4O1WXV/smJpFtxBjUG07n74O9Vk9Ok2cU0K9S7y7o+7q0yuqGn4mSX0dU1TdlcQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6911
 
-On Fri, Mar 01, 2024 at 11:19:27AM -0500, Nícolas F. R. A. Prado wrote:
-> On Fri, Mar 01, 2024 at 08:34:31AM +0200, Laurent Pinchart wrote:
-> > Hi Nícolas,
-> > 
-> > On Thu, Feb 29, 2024 at 07:12:06PM -0500, Nícolas F. R. A. Prado wrote:
-> > > This series changes every occurence of the following pattern: 
-> > > 
-> > > 	dsi_host = of_find_mipi_dsi_host_by_node(dsi);
-> > > 	if (!dsi_host) {
-> > > 		dev_err(dev, "failed to find dsi host\n");
-> > > 		return -EPROBE_DEFER;
-> > > 	}
-> > > 
-> > > into
-> > > 
-> > > 	dsi_host = of_find_mipi_dsi_host_by_node(dsi);
-> > > 	if (!dsi_host)
-> > > 		return dev_err_probe(dev, -EPROBE_DEFER, "failed to find dsi host\n");
-> > > 
-> > > This registers the defer probe reason (so it can later be printed by the
-> > > driver core or checked on demand through the devices_deferred file in
-> > > debugfs) and prevents errors to be spammed in the kernel log every time
-> > > the driver retries to probe, unnecessarily alerting userspace about
-> > > something that is a normal part of the boot process.
-> > 
-> > The idea is good, but I have a small issue with patches 1/9 to 7/9. They
-> > all patch a function that is called by the probe function. Calling
-> > dev_err_probe() in such functions is error-prone. I had to manually
-> > check when reviewing the patches that those functions were indeed called
-> > at probe time, and not through other code paths, and I also had to check
-> > that no callers were using dev_err_probe() in the error handling path,
-> > as that would have overridden the error message.
-> > 
-> > Would there be a way to move the dev_err_probe() to the top-level ? I
-> > understand it's not always possible or convenient, but if it was doable
-> > in at least some of the drivers, I think it would be better. I'll let
-> > you be the judge.
-> 
-> Hey Laurent, thanks for the review.
-> 
-> I get where you're coming from, as I checked those things myself while writing
-> the patch. That said, I don't think moving dev_err_probe() to the top-level is a
-> good move for a few reasons:
-> * Keeping the log message as close to the source of the error makes it more
->   specific, and consequently, more useful.
-> * The original code already returned -EPROBE_DEFER, implying the function is
->   expected to be called only from the probe function.
-> 
-> With those points in mind, the only way I see to guarantee
-> dev_err_probe(...,-EPROBE_DEFER...) would only be called by probe, and that the
-> reason wouldn't be overriden, would be to move the entire code path of that
-> function that calls into dev_err_probe() up into the probe function. But if we
-> adopt this pattern consistently across the drivers in the tree, I think it would
-> drastically worsen readability and cancel out the benefits.
-> 
-> IMO the way forward with the API we have, is to make use of warnings and static
-> checkers to catch cases where dev_err_probe() is overriding a defer probe
-> reason, and where it's called outside of the probe function scope.
-> 
-> So I'm inclined to leave the patches as they are, but am happy to discuss this
-> further or other ideas.
+fsl,imx8qm-adma and fsl,imx8qm-edma don't require 'clocks'. Remove it from
+required and add 'if' block for other compatible string to keep the same
+restrictions.
 
-Thanks for checking and having taken the time to explain your rationale.
-For the whole series,
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Frank Li <Frank.Li@nxp.com>
+---
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+Notes:
+    Change from v1 to v2
+    - add Krzysztof's ACK.
 
+ .../devicetree/bindings/dma/fsl,edma.yaml        | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/dma/fsl,edma.yaml b/Documentation/devicetree/bindings/dma/fsl,edma.yaml
+index aa51d278cb67b..cf0aa8e6b9ec3 100644
+--- a/Documentation/devicetree/bindings/dma/fsl,edma.yaml
++++ b/Documentation/devicetree/bindings/dma/fsl,edma.yaml
+@@ -70,7 +70,6 @@ required:
+   - compatible
+   - reg
+   - interrupts
+-  - clocks
+   - dma-channels
+ 
+ allOf:
+@@ -151,6 +150,21 @@ allOf:
+         dma-channels:
+           const: 32
+ 
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - fsl,vf610-edma
++              - fsl,imx7ulp-edma
++              - fsl,imx93-edma3
++              - fsl,imx93-edma4
++              - fsl,imx95-edma5
++              - fsl,ls1028a-edma
++    then:
++      required:
++        - clocks
++
+ unevaluatedProperties: false
+ 
+ examples:
 -- 
-Regards,
+2.34.1
 
-Laurent Pinchart
 
