@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-88513-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88514-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5D2886E2B6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:47:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E57286E2B9
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:47:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E1F628C72B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:47:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D6547B22F48
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:47:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA9E56F517;
-	Fri,  1 Mar 2024 13:46:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C049570033;
+	Fri,  1 Mar 2024 13:47:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lIRWvoZI"
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g6mXlCCM"
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D11F6F506;
-	Fri,  1 Mar 2024 13:46:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BBA16F535;
+	Fri,  1 Mar 2024 13:47:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709300818; cv=none; b=Ufm8EvC7sUC9DZYREl1rvVrqQiOhtKMJq0a1ISM0EJXlUUy7sXu2hMHMO9QuHpyVZDPtI50Ppl4u62vRmhJR9HWpPxIJGx7Qih51ADrZLx+22FPy6qqvyr7zqNy4q+Ap6lZ84sa5fd6/Uxucin1POKzQeOIjiD1rHkUr7KIcTrA=
+	t=1709300824; cv=none; b=CVXvTHF7sb9kDeuHr0ZDUVdlmtaFrTWl79kV5gMHklZ8Q/jmCeKMJZzP1HmUfSAuCHxSOC72Vqg4Gev0v2a1GJ/sS1iFPViOfc7cqq90Zg0hnaitAxt/rj85Q6dVPkETbu7d3qqXJE+5W/mA/YeOT8tgZXCqfWjnumI/MXkcU4g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709300818; c=relaxed/simple;
-	bh=g9uDef4vVL6k6nFEC5av3vPwaQXbIVgn1scOl2YNKpQ=;
+	s=arc-20240116; t=1709300824; c=relaxed/simple;
+	bh=vOW0UB9ncHeY6Hu9BHeSk0oc30qDNRInvrcsREBGnFs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jUR8rLZZ9rxl1d19z4ObIOrDBqGc4CloQOk5AQ0fK/e36qLZzmepUl+vAMpcmvvuZNPw6zGBHB2kMAjKJ1itcozeWWHtkO5+oP3Sz1CtNACDSih9duS2wFE5pOCY8RsUa4lK1ywKJnmsVJdy9GktmzNN39J54wapkWEdKzTZioI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lIRWvoZI; arc=none smtp.client-ip=209.85.208.46
+	 MIME-Version; b=nR+8lJtLwnNWSxumTxXxaRUrp3671lwUtsqUIf0vvH6Wn+9G3y5fV4ou1P6LCcb4nsHL9WJHzDrpn4mAsjlkBNbInyG1RFta7bmIS40scJySVPztLDVCzXm+gjytDPTpQj08i2l3n4+6gfNB+9K37O82wn0qg9abHr41nXOlswM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g6mXlCCM; arc=none smtp.client-ip=209.85.208.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5640fef9fa6so2936150a12.0;
-        Fri, 01 Mar 2024 05:46:56 -0800 (PST)
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-56648955ac5so2987710a12.3;
+        Fri, 01 Mar 2024 05:47:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709300815; x=1709905615; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1709300821; x=1709905621; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Qv07MvdmzdWImM+lzkVs9nrKyyN8RT3mxKng/XcK/HY=;
-        b=lIRWvoZIiR/VxwHoe+nl7qWe84tjQKi4WMRbHCyTEJKjlR2US25lV7yGVR6W/aulNa
-         jD3qH0r8aNvhLq4r8pRY7tS0AW9vI/MWmxT92bzOawexTRmp72UIxkYsMySaLQ/Ite3P
-         yfwRn2WKCAnpkTXMkTsOLrpqTKsqukU/+wJQxRG/YgOxKgdIVAUaO35W6VIwXFOPIgiE
-         hEGq1aDW9ioHjYNddDNW1EHrUqQy7b/r6xpudRwdFc/2V//pfdTv6pOYbXamQvB7+UqX
-         fG/SkowulRAeRk1DFywEl6de4YL0sYlh6lhKL2PRSNVeUx6WFn24YBOv74rJ7YATsH/n
-         nD0g==
+        bh=QDm5k9rOGj0cj/KUk66W2xhuESI746YZPYTqLDHnmNc=;
+        b=g6mXlCCMT0ypylCZNy3m3eHnuxWE9Q71CzA2RfMAWWu4wMANKGbHTFcY0JUtgH3d0M
+         7+e5irAnmYaqh2+Co8RleIEDh65IEx4l/BwAIu5SMAgQJft6TJmp3Cygqb6ZKbmsGDH2
+         ZXYcF+XDCgHy0wAOqtz77UtDVbt71uJFoGlEpSO//inhMG35CDOOdYUEwPWNC4b1mjq5
+         0XLHMe+vE4hQV0F1Lu/RlYrzQFOTPB7nmv3mXQ8gVvjIiGEYAn8Z9myC2XaJyI5Fdd4j
+         gQWFLTxVuBY69p0/CatNMzkfgn47G3t9UB9boy9gepdJg7LBVpL0JWQf9Y8K762ou7ev
+         tdmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709300815; x=1709905615;
+        d=1e100.net; s=20230601; t=1709300821; x=1709905621;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Qv07MvdmzdWImM+lzkVs9nrKyyN8RT3mxKng/XcK/HY=;
-        b=dEBX3n7rn363uxlSKBc2UjPw8VTyjottvlN6lDswbNdrDzY0AtZzqiO4Okx4ySu7fM
-         HHkcnFFjtsChUWecr29pVYaWuHidPcqvxyz2PzOeDoA0FPux7YufBqWfThMRco6S2VI7
-         HlL9PQagJ2j+QY4X+BLDF40fjTv7KV6jdboB5UfIPLmOpHB/eE+Vy/NGFNZtL9youChC
-         ubSiE6g7ZVVnLVEuviEEb4CEel372WvBw5d3aDqwnnFdpVMdmKn3TZ75WJNQEjBygqpl
-         xZoAa7C2AHtFAE3aGauJvbfIdWyxXW6LhInEoarIqDaEycqtt4WQBGQV79geeHQX8pbR
-         MjCg==
-X-Forwarded-Encrypted: i=1; AJvYcCVMNeft6dkxcUZq89Vr5YqztQtOA1JwUWC7HIv0hosMhSIwrRpL+JS8nAopQjl1jvqoKVE7MK4EVBSBjAF5aKyhbrzWHHFBIfeqVFJDjw6vu2XyN4rjGmdg8JUQGs8zj/tpOzzRmWLztIWxJOthAkH4DSw6+VWRKKD8TfadGJg/P+vX
-X-Gm-Message-State: AOJu0YxV5/UnoFP5b1+1cF7/Uzuf14orWro/sMgrK8m/g7MnOhUJzoKG
-	AjrFBvGsa/+ELJL0RaB9EC4VboTpCJDvVgMiOm5D16/PtgK5GVjq
-X-Google-Smtp-Source: AGHT+IHCvM2X9fjICLt7870wldgQLiFxsPnygAKRDst4ldsRl4n46dNl2RH7KiE4VeuMdmjRKuHecw==
-X-Received: by 2002:a50:cac7:0:b0:564:ded0:6072 with SMTP id f7-20020a50cac7000000b00564ded06072mr1322911edi.1.1709300815510;
-        Fri, 01 Mar 2024 05:46:55 -0800 (PST)
+        bh=QDm5k9rOGj0cj/KUk66W2xhuESI746YZPYTqLDHnmNc=;
+        b=hQEdDL63MecmxgZT936FSf4Lx3gOdrEPIP72mjFkC52djMAYsWwkr0dgvcv6yhyb3M
+         gc8M4YgLVweWqxDZdNn1aIHqyfn3mfIacYKZfsV0MsRONMuQo4k0DvP24bgguAu3voWg
+         gafE2WDVPicEt6rYxFg7JP1CPc6wZsRtJGGWRBYUBnuaWHKte/kkpP2P4+MnYAp6hr15
+         xMmAe9bZJQYJSKRpMU+0BozB40P/vZYnuqOKR+vEWf3CUXJJVYp/44W0rv3FKYkyxI6n
+         T8H5r6feHDZoYfoUaq/abTDeBchvnkbwBWTs+24/02SHoglmzumgYvGmYSmA8GWI7YKl
+         X8Dg==
+X-Forwarded-Encrypted: i=1; AJvYcCUn623tJ0OOA7msP7YR2JBtlwODqMXNKNtjFn4bmpFN5sgfXTueBpEjJCl6vgZ0M6cFesu2dw1fR+y+QDEixbKLj67UBsvadNE6MsVbazgQJgSDv6G7i+WeUiesYvt3aWL48KfOM4QcWaGYj3MagMlQHB3eCAMbiAqODpNysD2EwWFm
+X-Gm-Message-State: AOJu0Yx+knNEsu+iAFOUplPCknz3h9cnesLp271Y+LnWNkVr6jAk3Yyn
+	/l6BtwXEK2IeGHknXnquuTTSyQl4dnpNdn/NzMzXeEfiBuy4S7u0Alo8y7HKJD4=
+X-Google-Smtp-Source: AGHT+IHpGK8EdKBk4bALZ/3wCj3KPRWoqvuxFz9QwQe5xWxU3WyGvVi8cVQ5EReSVPw5LqYyjjR7hw==
+X-Received: by 2002:a05:6402:5c3:b0:565:7edf:41b0 with SMTP id n3-20020a05640205c300b005657edf41b0mr1356102edx.6.1709300820610;
+        Fri, 01 Mar 2024 05:47:00 -0800 (PST)
 Received: from lola.. ([2a02:810d:7e40:14b0:d371:e319:5dd0:9b35])
-        by smtp.gmail.com with ESMTPSA id fj10-20020a0564022b8a00b00563f8233ba8sm1584107edb.7.2024.03.01.05.46.55
+        by smtp.gmail.com with ESMTPSA id fj10-20020a0564022b8a00b00563f8233ba8sm1584107edb.7.2024.03.01.05.46.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 05:46:55 -0800 (PST)
+        Fri, 01 Mar 2024 05:47:00 -0800 (PST)
 From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 To: Jonathan Corbet <corbet@lwn.net>,
 	workflows@vger.kernel.org,
@@ -73,9 +73,9 @@ To: Jonathan Corbet <corbet@lwn.net>,
 Cc: kernel-janitors@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH 2/3] docs: submitting-patches: move split_changes before describe_change
-Date: Fri,  1 Mar 2024 14:46:36 +0100
-Message-ID: <20240301134637.27880-3-lukas.bulwahn@gmail.com>
+Subject: [PATCH 3/3] docs: submitting-patches: move backtraces to patch description
+Date: Fri,  1 Mar 2024 14:46:37 +0100
+Message-ID: <20240301134637.27880-4-lukas.bulwahn@gmail.com>
 X-Mailer: git-send-email 2.43.2
 In-Reply-To: <20240301134637.27880-1-lukas.bulwahn@gmail.com>
 References: <20240301134637.27880-1-lukas.bulwahn@gmail.com>
@@ -91,103 +91,93 @@ The top-level structure should basically be along the temporal order of
 things: Prepare a patch, Post a patch, Respond to review, Send reworked
 patches, Be patient before resending.
 
-Start bringing submitting-patches into this clear temporal flow.
-Move 'Separate your changes' before 'Describe your changes'.
+For that, content from the canonical patch format needs to dissolve into
+the pieces along the temporal order.
 
-Note that this is also the order in 5.Posting. The same content is there
-covered in Patch preparation and Patch formatting.
+Move the subsection on backtraces in the canonical patch format into the
+'describe your change' section.
+
+As we would like to keep backtraces as a subsection (maintainer-tip.rst
+refers to it), let us add another subsection in the 'describe your
+change' section and turn the title into imperative form.
 
 Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- Documentation/process/submitting-patches.rst | 68 ++++++++++----------
- 1 file changed, 34 insertions(+), 34 deletions(-)
+ Documentation/process/submitting-patches.rst | 47 +++++++++++---------
+ 1 file changed, 25 insertions(+), 22 deletions(-)
 
 diff --git a/Documentation/process/submitting-patches.rst b/Documentation/process/submitting-patches.rst
-index 2ec0c0d7d68f..37925cacc5cc 100644
+index 37925cacc5cc..584bcd8638ea 100644
 --- a/Documentation/process/submitting-patches.rst
 +++ b/Documentation/process/submitting-patches.rst
-@@ -40,6 +40,40 @@ patches prepared against those trees.  See the **T:** entry for the subsystem
- in the MAINTAINERS file to find that tree, or simply ask the maintainer if
- the tree is not listed there.
+@@ -130,6 +130,9 @@ instead of "[This patch] makes xyzzy do frotz" or "[I] changed xyzzy
+ to do frotz", as if you are giving orders to the codebase to change
+ its behaviour.
  
-+.. _split_changes:
++Refer to URLs and commits in common style
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 +
-+Separate your changes
-+---------------------
-+
-+Separate each **logical change** into a separate patch.
-+
-+For example, if your changes include both bug fixes and performance
-+enhancements for a single driver, separate those changes into two
-+or more patches.  If your changes include an API update, and a new
-+driver which uses that new API, separate those into two patches.
-+
-+On the other hand, if you make a single change to numerous files,
-+group those changes into a single patch.  Thus a single logical change
-+is contained within a single patch.
-+
-+The point to remember is that each patch should make an easily understood
-+change that can be verified by reviewers.  Each patch should be justifiable
-+on its own merits.
-+
-+If one patch depends on another patch in order for a change to be
-+complete, that is OK.  Simply note **"this patch depends on patch X"**
-+in your patch description.
-+
-+When dividing your change into a series of patches, take special care to
-+ensure that the kernel builds and runs properly after each patch in the
-+series.  Developers using ``git bisect`` to track down a problem can end up
-+splitting your patch series at any point; they will not thank you if you
-+introduce bugs in the middle.
-+
-+If you cannot condense your patch set into a smaller set of patches,
-+then only post say 15 or so at a time and wait for review and integration.
-+
-+
- .. _describe_changes:
- 
- Describe your changes
-@@ -163,40 +197,6 @@ An example call::
+ If you want to refer to a specific commit, don't just refer to the
+ SHA-1 ID of the commit. Please also include the oneline summary of
+ the commit, to make it easier for reviewers to know what it is about.
+@@ -197,6 +200,28 @@ An example call::
  	$ git log -1 --pretty=fixes 54a4f0239f2e
  	Fixes: 54a4f0239f2e ("KVM: MMU: make kvm_mmu_zap_page() return the number of pages it actually freed")
  
--.. _split_changes:
--
--Separate your changes
-----------------------
--
--Separate each **logical change** into a separate patch.
--
--For example, if your changes include both bug fixes and performance
--enhancements for a single driver, separate those changes into two
--or more patches.  If your changes include an API update, and a new
--driver which uses that new API, separate those into two patches.
--
--On the other hand, if you make a single change to numerous files,
--group those changes into a single patch.  Thus a single logical change
--is contained within a single patch.
--
--The point to remember is that each patch should make an easily understood
--change that can be verified by reviewers.  Each patch should be justifiable
--on its own merits.
--
--If one patch depends on another patch in order for a change to be
--complete, that is OK.  Simply note **"this patch depends on patch X"**
--in your patch description.
--
--When dividing your change into a series of patches, take special care to
--ensure that the kernel builds and runs properly after each patch in the
--series.  Developers using ``git bisect`` to track down a problem can end up
--splitting your patch series at any point; they will not thank you if you
--introduce bugs in the middle.
--
--If you cannot condense your patch set into a smaller set of patches,
--then only post say 15 or so at a time and wait for review and integration.
--
--
++.. _backtraces:
++
++Distill backtraces
++~~~~~~~~~~~~~~~~~~
++
++Backtraces help document the call chain leading to a problem. However,
++not all backtraces are helpful. For example, early boot call chains are
++unique and obvious. Copying the full dmesg output verbatim, however,
++adds distracting information like timestamps, module lists, register and
++stack dumps.
++
++Therefore, the most useful backtraces should distill the relevant
++information from the dump, which makes it easier to focus on the real
++issue. Here is an example of a well-trimmed backtrace::
++
++  unchecked MSR access error: WRMSR to 0xd51 (tried to write 0x0000000000000064)
++  at rIP: 0xffffffffae059994 (native_write_msr+0x4/0x20)
++  Call Trace:
++  mba_wrmsr
++  update_domains
++  rdtgroup_mkdir
++
  
  Style-check your changes
  ------------------------
+@@ -742,28 +767,6 @@ patch::
+ See more details on the proper patch format in the following
+ references.
+ 
+-.. _backtraces:
+-
+-Backtraces in commit messages
+-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-
+-Backtraces help document the call chain leading to a problem. However,
+-not all backtraces are helpful. For example, early boot call chains are
+-unique and obvious. Copying the full dmesg output verbatim, however,
+-adds distracting information like timestamps, module lists, register and
+-stack dumps.
+-
+-Therefore, the most useful backtraces should distill the relevant
+-information from the dump, which makes it easier to focus on the real
+-issue. Here is an example of a well-trimmed backtrace::
+-
+-  unchecked MSR access error: WRMSR to 0xd51 (tried to write 0x0000000000000064)
+-  at rIP: 0xffffffffae059994 (native_write_msr+0x4/0x20)
+-  Call Trace:
+-  mba_wrmsr
+-  update_domains
+-  rdtgroup_mkdir
+-
+ .. _explicit_in_reply_to:
+ 
+ Explicit In-Reply-To headers
 -- 
 2.43.2
 
