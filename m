@@ -1,241 +1,192 @@
-Return-Path: <linux-kernel+bounces-89033-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89034-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA85786E9B5
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:38:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35D5386E9C3
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:41:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E7C71F254D1
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:38:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 53144B265E6
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 19:39:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 435DC3BBCF;
-	Fri,  1 Mar 2024 19:37:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A19D93B798;
+	Fri,  1 Mar 2024 19:39:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Wrh1aiWz"
-Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T7CNgKJF"
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94DED3B789
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 19:37:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73FDA5C9A;
+	Fri,  1 Mar 2024 19:39:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709321871; cv=none; b=QBQYFCTC6QhJmvMzS+/zAaUTNa0J+5354RX3mH2WTxJ0v297aR4gpQD2s35GzelgTVz5SE1LOn0Qf8PgAOuLNMq1qKC7SJXazaaSHmNbMNw/3DBxtaS9tN+vDlwhUgroSYupdCmqr64lk+QGNkNNSvVifE9y93RYy9VxHPPpg9Y=
+	t=1709321950; cv=none; b=ET9cywhHf69uYIstrHlvPT26iJew/3AjLz4u4r6HAt2bI0vFRR/qUMgAbpnHqffPUnWSxtXvFmWe4jw7FSLx62AuMhk476MSEg7Pa9LZbtHT3iCV0EjMPOS7ngt7jL/kco611Mi8nx8vwM9+0Td2BNpFwQ0aR2wA7bxiMScm2NY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709321871; c=relaxed/simple;
-	bh=jKrG6QS9qQWHcoFkHR26CKL4wC+kkLGosTa//iiHXm0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JqM1HExfjJbl7jcJqw8OcKal+qHXybib7fon6afFWexwRuwrUjHFhsZpggr2K5JaIfh8LdZiX36wXC+nUWKpsJswsaIKErOb9XVcuKGOku7nKg2cjE/mPrHBH2RAx2qrocFXDWbJPfJI9spUJQxCY1Jp9VQplpoBrJW1n0iLyU8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Wrh1aiWz; arc=none smtp.client-ip=209.85.219.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-6903ffc4bc6so9166806d6.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 11:37:49 -0800 (PST)
+	s=arc-20240116; t=1709321950; c=relaxed/simple;
+	bh=qzEiaIwCgvzo/jlLWGnfGMZS52j/5NljTf80U9c7pCY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=E52k/cfCoBnrmsVtVtIlI9+hZ/D/5c7lcydW1suk7TjFOY4hUCoXh3NKzkjFWOieNABEKYr4xvpEAuRZHevXOkO6Fjta862xwXz77z8JlxHyw7OxwMk6A4WVN+r7t6jeEqCgT35IP7wHn+Xc0QQnKd1mm1UkyQPj0Jk31b6jZjo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T7CNgKJF; arc=none smtp.client-ip=209.85.215.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5e152c757a5so1759878a12.2;
+        Fri, 01 Mar 2024 11:39:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709321868; x=1709926668; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1709321949; x=1709926749; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CGkeNRdG2FczCV6rPVYPMJDiNjYVnLlJt0xSA7ew594=;
-        b=Wrh1aiWzy0flhM6unY8+oMzHUQ04G9/VlLWcsMviZ3NU5wt6562z/v/4A75Yn7VROV
-         TVfp884V/7ulafkLTry+NCweIHozpM+9iwS6yT5gHj5A4/9TjfIWx/w89i+bxY2rXr7y
-         ijEydEEXSHZ5Jzy2+qw+Akf2Roelz3R2Gu4Tw=
+        bh=+XmK1KXUIgEldgLQ9Dj7dEfcJRP25Vkl9HU6FEdalXs=;
+        b=T7CNgKJF2ndd3WxavdWd7ssw71sUi6Epaif2SUi5oCPNTOetOran91fWM8AxZK8lO4
+         rbHtdNJN2PrU66X71FSjvYtz+lReLt0TUU42SeW2X9dbBhDeGMtGj95P0EZuu6sBTczW
+         ThEkw7rUHfkROQBjTxDEcpA45+S3PjDg1PSN04N7SkriuwGYevMaTWcitzN6Kz6+SWdo
+         xqk6XSkU7cO9K9EKnqxszHB9V/yYOIH/l5AaD68Zs8oVZrbZB4QoUTGFMXd4ZALw3avI
+         GnKZiFNtNGlwO9yZSu08VKWudThqmP1SuKlB+qT6DDscXjsD3IEq0lKK1QXKoHvW84Wk
+         +Ztg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709321868; x=1709926668;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1709321949; x=1709926749;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CGkeNRdG2FczCV6rPVYPMJDiNjYVnLlJt0xSA7ew594=;
-        b=u5bNIi3zv0AE+nLp1wr8t8b3XfqoLLdi+J3z65tBSC1i7Buo2YOVc/0q3fkuEKP8bH
-         sjt7BSIlR1rsn4hJUfEkQiHQpae51K1exPbWHj2pZcTZZXl7XpZHjP1AKgMUcW+tAo+J
-         8rK9suDZvra70e3jNtbWVSWft8mixaPutXmMkkVH87XFtZbEjqzSx9lmldqAOuLmpvfw
-         mqxvACMCtwGi2oyuXuUS7y6H5Q0y0TGay4ocPDBVrTqSCoaC5SxV/GiYD0OEFpWag6xI
-         W+3rOWaYsTA2B842OHIpXA0oLUKNgbz0bJuzPHs5HY+Cem4PSY87d1wiyuvLQkWFv8Q5
-         +iHQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUxDvVfYAc0ZH2N5q8XetUNWulqeDMzDaljXguKenhrwPol3D5jg5CN2TIwLj+XyO8QZgV51gZ6h9ONNSu6nJ1s2LtLk/Y+LXKLiole
-X-Gm-Message-State: AOJu0Yw1bvGce8Q0RQ1HMmqT4POIcXHs83dPg996K1F9mzwTa5OC18Mw
-	wGXa9LmVh3T5VPCMgrxdXy2d9uEhJlQ3v8gj8RLWLUFJ73AqQJzEBU8gIlD2I2F4Iu2GdVo35MP
-	PsudBT42MFJJ/XsuF+f29rA65LPRoNiNVNf07
-X-Google-Smtp-Source: AGHT+IHi1hjTt1ARy97BXMT6VU6Qb4Dz7SjLHKe0bYzv6iRPppZu6eRnfb1sb9m2IyWlA5swq9IJNVUtpDsf8IdzdwM=
-X-Received: by 2002:a0c:fa8e:0:b0:68f:4645:8cad with SMTP id
- o14-20020a0cfa8e000000b0068f46458cadmr2723328qvn.57.1709321868606; Fri, 01
- Mar 2024 11:37:48 -0800 (PST)
+        bh=+XmK1KXUIgEldgLQ9Dj7dEfcJRP25Vkl9HU6FEdalXs=;
+        b=vEJyUfIPQcL8L5ClHUBjgfYsQJXMnFVbQag1x59FO8R2i5SOd1zQAjowG2yDkwkXwW
+         GGrPLMqDP/NvMgDOUU1s/Xem2ZnS/T5xZvwFirDRPdiaEPHyylkfLGxbwrf7H/3raVfm
+         CenJxI2WA3/fITHaRJP+qOqSSRYtZMb+OFV3odFbEGkR01u/2Nan/PMCRrhyuz2IInJV
+         bWeZu1oP5ITNKeTRjOoMOAXa4DG0kv809g5ucJ7F13a0u+/mn/AkiOiBET23yoDsjFQT
+         1LoWL1l9gmj57PfQ7QiBkgbXWOt5u8ubEa1LKPS++iqTYp+5eEn4RA5LdVDGj8YykTE3
+         VASQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXqHHTGvPXCqV90pIk5nB5GUk2YA0IjAmN70dE62RcESiFvhhJyQCLah7TRulevD24GchW9srVPEC2ylg/uuW/ElM5752I0nPFiJYRAz+Ci/mo/HSoLw4EmzKJucEXJT+5/xKreB4QHIEYTJQd6UdZOGDET9+BPr0mk1nQ6qVEKGBQpK85k0vsD5kc=
+X-Gm-Message-State: AOJu0YzVC/cU3oCS0wJfBav/wz9w2pDdz2NIrc9kVAafaqyZR75TiiS1
+	9yaL+IZYf6GRoJF4cyiYZGYnSqDLg6yecFd+/c5OMRbjy/NoZGn6
+X-Google-Smtp-Source: AGHT+IFe/jusPETkAIAJswHE+vTyxv3T1WsrpeHoubCmcfJB1aHT1VfWeAn2Cx/qrh1L+SPHWwbrkg==
+X-Received: by 2002:a17:902:fe82:b0:1db:8fd9:ba0d with SMTP id x2-20020a170902fe8200b001db8fd9ba0dmr2177685plm.23.1709321948602;
+        Fri, 01 Mar 2024 11:39:08 -0800 (PST)
+Received: from localhost.localdomain ([113.30.217.222])
+        by smtp.gmail.com with ESMTPSA id u8-20020a170902e5c800b001dca6d1d572sm3837474plf.63.2024.03.01.11.39.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Mar 2024 11:39:08 -0800 (PST)
+From: Anand Moon <linux.amoon@gmail.com>
+To: Alan Stern <stern@rowland.harvard.edu>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Alim Akhtar <alim.akhtar@samsung.com>
+Cc: Anand Moon <linux.amoon@gmail.com>,
+	linux-usb@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v1 1/4] usb: ehci-exynos: Use devm_clk_get_enabled() helpers
+Date: Sat,  2 Mar 2024 01:08:08 +0530
+Message-ID: <20240301193831.3346-2-linux.amoon@gmail.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240301193831.3346-1-linux.amoon@gmail.com>
+References: <20240301193831.3346-1-linux.amoon@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240229232625.3944115-1-jthies@google.com> <20240229232625.3944115-4-jthies@google.com>
-In-Reply-To: <20240229232625.3944115-4-jthies@google.com>
-From: Prashant Malani <pmalani@chromium.org>
-Date: Fri, 1 Mar 2024 11:37:37 -0800
-Message-ID: <CACeCKaeSdAwS5NJd0UtwZKvfvWMJmrJAg73e8SB+ToM5exOVUg@mail.gmail.com>
-Subject: Re: [PATCH v3 3/4] usb: typec: ucsi: Register SOP/SOP' Discover
- Identity Responses
-To: Jameson Thies <jthies@google.com>
-Cc: heikki.krogerus@linux.intel.com, linux-usb@vger.kernel.org, 
-	bleung@google.com, abhishekpandit@chromium.org, andersson@kernel.org, 
-	dmitry.baryshkov@linaro.org, fabrice.gasnier@foss.st.com, 
-	gregkh@linuxfoundation.org, hdegoede@redhat.com, neil.armstrong@linaro.org, 
-	rajaram.regupathy@intel.com, saranya.gopal@intel.com, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 29, 2024 at 3:28=E2=80=AFPM Jameson Thies <jthies@google.com> w=
-rote:
-> diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucsi.=
-c
-> index 7c84687b5d1a3..4088422b33c74 100644
-> --- a/drivers/usb/typec/ucsi/ucsi.c
-> +++ b/drivers/usb/typec/ucsi/ucsi.c
-> @@ -646,6 +646,121 @@ static int ucsi_get_src_pdos(struct ucsi_connector =
-*con)
->         return ret;
->  }
->
-> +static int ucsi_read_identity(struct ucsi_connector *con, u8 recipient,
-> +                             struct usb_pd_identity *id)
-> +{
-> +       struct ucsi *ucsi =3D con->ucsi;
-> +       struct ucsi_pd_message_disc_id resp =3D {};
-> +       u64 command;
-> +       int ret;
-> +
-> +       if (ucsi->version < UCSI_VERSION_2_0) {
-> +               /*
-> +                * Before UCSI v2.0, MESSAGE_IN is 16 bytes which cannot =
-fit
-> +                * the 28 byte identity response including the VDM header=
-.
-> +                * First request the VDM header, ID Header VDO, Cert Stat=
- VDO
-> +                * and Product VDO.
-> +                */
-> +               command =3D UCSI_COMMAND(UCSI_GET_PD_MESSAGE) |
-> +                   UCSI_CONNECTOR_NUMBER(con->num);
-> +               command |=3D UCSI_GET_PD_MESSAGE_RECIPIENT(recipient);
-> +               command |=3D UCSI_GET_PD_MESSAGE_OFFSET(0);
-> +               command |=3D UCSI_GET_PD_MESSAGE_BYTES(0x10);
-> +               command |=3D UCSI_GET_PD_MESSAGE_TYPE(
-> +                   UCSI_GET_PD_MESSAGE_TYPE_IDENTITY);
-> +
-> +               ret =3D ucsi_send_command(ucsi, command, &resp, 0x10);
-> +               if (ret < 0) {
-> +                       dev_err(ucsi->dev,
-> +                               "UCSI_GET_PD_MESSAGE v1.2 failed first re=
-quest (%d)\n",
-> +                               ret);
-> +                       return ret;
-> +               }
-> +
-> +               /* Then request Product Type VDO1 through Product Type VD=
-O3. */
-> +               command =3D UCSI_COMMAND(UCSI_GET_PD_MESSAGE) |
-> +                   UCSI_CONNECTOR_NUMBER(con->num);
-> +               command |=3D UCSI_GET_PD_MESSAGE_RECIPIENT(recipient);
-> +               command |=3D UCSI_GET_PD_MESSAGE_OFFSET(0x10);
-> +               command |=3D UCSI_GET_PD_MESSAGE_BYTES(0xc);
-> +               command |=3D UCSI_GET_PD_MESSAGE_TYPE(
-> +                   UCSI_GET_PD_MESSAGE_TYPE_IDENTITY);
-> +
-> +               ret =3D ucsi_send_command(ucsi, command, &resp.vdo[0], 0x=
-c);
-> +               if (ret < 0) {
-> +                       dev_err(ucsi->dev,
-> +                               "UCSI_GET_PD_MESSAGE v1.2 failed second r=
-equest (%d)\n",
-> +                               ret);
-> +                       return ret;
-> +               }
-> +       } else {
-> +               /*
-> +                * In UCSI v2.0 and after, MESSAGE_IN is large enough to =
-request
-> +                * the large enough to request the full Discover Identity
-> +                * response at once.
-> +                */
-> +               command =3D UCSI_COMMAND(UCSI_GET_PD_MESSAGE) |
-> +                   UCSI_CONNECTOR_NUMBER(con->num);
-> +               command |=3D UCSI_GET_PD_MESSAGE_RECIPIENT(recipient);
-> +               /* VDM Header + 6 VDOs (0x1c bytes) without an offset */
-> +               command |=3D UCSI_GET_PD_MESSAGE_OFFSET(0);
-> +               command |=3D UCSI_GET_PD_MESSAGE_BYTES(0x1c);
-> +               command |=3D UCSI_GET_PD_MESSAGE_TYPE(
-> +                   UCSI_GET_PD_MESSAGE_TYPE_IDENTITY);
-> +
-> +               ret =3D ucsi_send_command(ucsi, command, &resp, sizeof(re=
-sp));
-> +               if (ret < 0) {
-> +                       dev_err(ucsi->dev, "UCSI_GET_PD_MESSAGE failed (%=
-d)\n",
-> +                               ret);
-> +                       return ret;
-> +               }
-> +       }
-> +
-> +       id->id_header =3D resp.id_header;
-> +       id->cert_stat =3D resp.cert_stat;
-> +       id->product =3D resp.product;
-> +       id->vdo[0] =3D resp.vdo[0];
-> +       id->vdo[1] =3D resp.vdo[1];
-> +       id->vdo[2] =3D resp.vdo[2];
-> +       return 0;
-> +}
+The devm_clk_get_enabled() helpers:
+    - call devm_clk_get()
+    - call clk_prepare_enable() and register what is needed in order to
+     call clk_disable_unprepare() when needed, as a managed resource.
 
-There is some repetition here, both with the "if" block and the
-UCSI command itself. You can factor out the command setup code into a separ=
-ate
-function (it can take offset and size as arguments). Then, factor out
-common parts in the "if" block. For example:
+This simplifies the code and avoids the calls to clk_disable_unprepare().
 
-int ucsi_pd_message_get_identity(struct *ucsi, u8 offset, u8 size, u8 recip=
-ient,
-                                                              void *data) {
-        u64 command =3D UCSI_COMMAND(UCSI_GET_PD_MESSAGE) |
-UCSI_CONNECTOR_NUMBER(ucsi->con->num) |
-                      UCSI_GET_PD_MESSAGE_RECIPIENT(recipient) |
-                      UCSI_GET_PD_MESSAGE_OFFSET(offset) |
-UCSI_GET_PD_MESSAGE_BYTES(size) |
+While at it, use dev_err_probe consistently, and use its return value
+to return the error code.
 
-UCSI_GET_PD_MESSAGE_TYPE(UCSI_GET_PD_MESSAGE_TYPE_IDENTITY);
+Signed-off-by: Anand Moon <linux.amoon@gmail.com>
+---
+ drivers/usb/host/ehci-exynos.c | 30 +++++-------------------------
+ 1 file changed, 5 insertions(+), 25 deletions(-)
 
-        return ucsi_send_command(ucsi, command, data, size);
-}
+diff --git a/drivers/usb/host/ehci-exynos.c b/drivers/usb/host/ehci-exynos.c
+index f644b131cc0b..05aa3d9c2a3b 100644
+--- a/drivers/usb/host/ehci-exynos.c
++++ b/drivers/usb/host/ehci-exynos.c
+@@ -159,19 +159,12 @@ static int exynos_ehci_probe(struct platform_device *pdev)
+ 
+ 	err = exynos_ehci_get_phy(&pdev->dev, exynos_ehci);
+ 	if (err)
+-		goto fail_clk;
+-
+-	exynos_ehci->clk = devm_clk_get(&pdev->dev, "usbhost");
+-
+-	if (IS_ERR(exynos_ehci->clk)) {
+-		dev_err(&pdev->dev, "Failed to get usbhost clock\n");
+-		err = PTR_ERR(exynos_ehci->clk);
+-		goto fail_clk;
+-	}
++		goto fail_io;
+ 
+-	err = clk_prepare_enable(exynos_ehci->clk);
+-	if (err)
+-		goto fail_clk;
++	exynos_ehci->clk = devm_clk_get_enabled(&pdev->dev, "usbhost");
++	if (IS_ERR(exynos_ehci->clk))
++		return dev_err_probe(&pdev->dev, PTR_ERR(exynos_ehci->clk),
++				  "Failed to get usbhost clock\n");
+ 
+ 	hcd->regs = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
+ 	if (IS_ERR(hcd->regs)) {
+@@ -223,8 +216,6 @@ static int exynos_ehci_probe(struct platform_device *pdev)
+ 	exynos_ehci_phy_disable(&pdev->dev);
+ 	pdev->dev.of_node = exynos_ehci->of_node;
+ fail_io:
+-	clk_disable_unprepare(exynos_ehci->clk);
+-fail_clk:
+ 	usb_put_hcd(hcd);
+ 	return err;
+ }
+@@ -240,8 +231,6 @@ static void exynos_ehci_remove(struct platform_device *pdev)
+ 
+ 	exynos_ehci_phy_disable(&pdev->dev);
+ 
+-	clk_disable_unprepare(exynos_ehci->clk);
+-
+ 	usb_put_hcd(hcd);
+ }
+ 
+@@ -249,7 +238,6 @@ static void exynos_ehci_remove(struct platform_device *pdev)
+ static int exynos_ehci_suspend(struct device *dev)
+ {
+ 	struct usb_hcd *hcd = dev_get_drvdata(dev);
+-	struct exynos_ehci_hcd *exynos_ehci = to_exynos_ehci(hcd);
+ 
+ 	bool do_wakeup = device_may_wakeup(dev);
+ 	int rc;
+@@ -260,25 +248,17 @@ static int exynos_ehci_suspend(struct device *dev)
+ 
+ 	exynos_ehci_phy_disable(dev);
+ 
+-	clk_disable_unprepare(exynos_ehci->clk);
+-
+ 	return rc;
+ }
+ 
+ static int exynos_ehci_resume(struct device *dev)
+ {
+ 	struct usb_hcd *hcd = dev_get_drvdata(dev);
+-	struct exynos_ehci_hcd *exynos_ehci = to_exynos_ehci(hcd);
+ 	int ret;
+ 
+-	ret = clk_prepare_enable(exynos_ehci->clk);
+-	if (ret)
+-		return ret;
+-
+ 	ret = exynos_ehci_phy_enable(dev);
+ 	if (ret) {
+ 		dev_err(dev, "Failed to enable USB phy\n");
+-		clk_disable_unprepare(exynos_ehci->clk);
+ 		return ret;
+ 	}
+ 
+-- 
+2.43.0
 
-Then in the ucsi_read_identity() :
-        u8 offset =3D 0;
-        u8 size;
-
-        /*
-         * In UCSI v2.0 and after, MESSAGE_IN is large enough to request
-         * the large enough to request the full Discover Identity
-         * response at once.
-         */
-        if (ucsi->version >=3D UCSI_VERSION_2_0) {
-                size =3D 0x1c;
-        else
-                size =3D 0x10;
-
-        ret =3D ucsi_pd_message_get_identity(ucsi, offset, size, &resp);
-        if (ret < 0) {
-                /* Handle error */
-        }
-
-        /* Request Product Type VDO1 through Product Type VDO3. */
-        if (ucsi->version < UCSI_VERSION_2_0) {
-                offset =3D 0x10;
-                size =3D 0xC;
-                ret =3D ucsi_pd_message_get_identity(ucsi, offset, size,
-&resp.vdo[0]);
-                if (ret < 0) {
-                /* Handle error */
-                }
-        }
-
-BR,
-
--Prashant
 
