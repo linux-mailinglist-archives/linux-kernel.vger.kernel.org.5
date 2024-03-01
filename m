@@ -1,174 +1,154 @@
-Return-Path: <linux-kernel+bounces-88607-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88608-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D34C586E416
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:13:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5271D86E417
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:13:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B12B285CE0
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:13:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B2A27B21875
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:13:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 919D26A8C1;
-	Fri,  1 Mar 2024 15:13:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69E1A6BFDE;
+	Fri,  1 Mar 2024 15:13:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="wMaD8Kc7"
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Soh8tyeI"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A2373FB88
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 15:13:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 593DE67E8E
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 15:13:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709305991; cv=none; b=cI/k5yc8o5L4ECD+18wZE4k2ZZ+EzUE7+hTUTJaTdqXVv+gDER7UMJhyEQPA9ztGZQHNmU+lmHqnyh9lJynM3LHu3bRhb7ljs8zqLHop2ysB5/Z2fmj7P+gApygVCKVUvI0C+1kMvC0L8/+iaMRjFCIbbuDI5Pli83mbzHk9jgs=
+	t=1709306013; cv=none; b=dlDXiNibhJjf1g/jDSZwzSS3otsidNzoUjhQh0GnuEIb8RXAgK7pA9UCSPytFZ3NqlWohk6hD2hRfr9oS213iyn98d8EB/qMRey91wJ4rxvWSIIZEBFww173JczTqIqfyVC6Y+rca7tGgJlLlhEqSBbrYocZVM9ljmw7ZeqY1/k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709305991; c=relaxed/simple;
-	bh=pryREyFPVxQez0Vhm3NxebtIsITZi3W7CjRb1vVOLks=;
-	h=Date:Subject:CC:From:To:Message-ID; b=nqRF2dSxbvJRJbMjSHYbIrs5hKPMpuvH5iVVskHBY4fH5w3BYmhkxI8yJsBxBTGj+UTZkLxAmcqN8L5RDyGhd2IQWK0jRe5CfZvQaeHzxRYcQGC6l1YWmtLaaBVIOk6rB1gUlbbatHV2VDelHvji7+GwqBEuQ5vZy6skksD3dTM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=wMaD8Kc7; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e5ce1de109so344266b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 07:13:08 -0800 (PST)
+	s=arc-20240116; t=1709306013; c=relaxed/simple;
+	bh=PebnkUuVTIKrTfkdeZeFzM4Bp/iInDLtHpeJBmzIpLc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KYU2MRmT+UdZd3I/2T0QA7jjpMlPfuhixk9r3WCazhjSdZHYIE0ckdU0nzcBBSSbHI5fgZ1qERFaZfUjYw9n8fzBQbimqrXFqlf9RYChMMtfZLUILevfVrUxNJmYZQn8WXRH9ZgMcSyH3MYSFLjoWtgCbzsEToXsEd62rk8I670=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Soh8tyeI; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a44665605f3so212050066b.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 07:13:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1709305988; x=1709910788; darn=vger.kernel.org;
-        h=message-id:to:from:cc:subject:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jMVK9+p+tkA+fohUNY71dFJvaJ/Hs/TdoD21E/6FbxQ=;
-        b=wMaD8Kc7RVp4Jhj/6x8gzbCpwXKx+PF7nZTmwFmvDrKwRhOMTH5NWDYFei9q+7pFXx
-         dwU/A9ug+QYfEEFPH4N/idtgRYJGPM6B8au0tpO7VriYteqJ8gI4arJZ+22ymRKfOYpY
-         PEXhltgOOjU9VMsBug7HSxgAGFcyVzESQmqc+PPRkFQsdAhCtL0ebxWpM+Hm0oJW+h1Q
-         CUqBw/RJGRfRLMvvLRGf2O3DMZXItcS+rdynbsb7QvklIyBooKjo3evoQLyRb4B1lPjj
-         P2PcCHuZkZ0Wm6E/cHV6/luVOHFoA88cJOSmp+ZLxDB0r6ZCSBQgiOliK3AmApgpM4Oh
-         EMeQ==
+        d=suse.com; s=google; t=1709306009; x=1709910809; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=HDkjb/3ycOtyX9DruBw4yM0aFf/SrD3+DOAhw0JNHrc=;
+        b=Soh8tyeI0D7FXPUk4acDygDR8rdIBeb6zQgZTzYXsTP7oHd5AEwkoA4fWYOUQgUdfe
+         RvVvvfnsYMZyj06Z7dVxBLTznRdBjoNXbuwLuiF0gsdmX/6p/aBaZmluF+UkXFT2p8Sy
+         5Vjmv/wbIwUnlKFXmibUeHY3f6i+oJvVIPZfFQ2j5LOiR9PUlJM/xI6ILnZg+OZ699dv
+         ZUQsX1x7f0dvbua260VRBrkS5tDYm1fEzSe87ahz8ZpyTJg0QajpIKYeKg/FH4yZuN4/
+         lCo9LjBN4t8VP3DGZARGtdNM5LLB6vgNvNnObjyaE70RCqUYRwWnbxsIwi7xTnYGPU66
+         CfaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709305988; x=1709910788;
-        h=message-id:to:from:cc:subject:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jMVK9+p+tkA+fohUNY71dFJvaJ/Hs/TdoD21E/6FbxQ=;
-        b=iQK5cc/EGQrq+tyVuZyP3JRtAJ4uH0D13TRsvnyLZ8MdeOh9NChWoJsEIHtRllb4Ou
-         egzyLVBY/liqpQANAzoz2QmGMbCSLKpJwHqzS5/wE2W20alWFlv1xNAwzIRHN9YEGFgf
-         2JfATZdmha44me82qwiCTW8/wwMSQ5CHiNNjjH58BMr1TGKm99yY9zsKY4QJ8HLRBMvT
-         ijWJca+ZiEhfA8eieUq5PD+i/ZlvhX4bx9Mz4IbAiJKDvbo1V2u+PTCpM2XdDOcVAkDg
-         ng61rGgqcbeu9oSvGR9LIaKi/c8tc7bjz8IjzF1epR2fCe1eo9xYiAEbeXfcVr98CZ6y
-         CthA==
-X-Forwarded-Encrypted: i=1; AJvYcCUfK/M/cvkqtuRRCG0hGMPnHxww/cReUQUAAbjoinIXh8wxZw15HwJN/MWstN2SG5kGEiBw1uVcZ7/8ZmwTGxF8NZfjAv25Q8cE0EnN
-X-Gm-Message-State: AOJu0Yx1r3EQtkV65ptLTHOA1AuBveR3adVM2Zh06J5nRhYmR3uo2m/T
-	d00lXw4tXITBpvIH26OkR0Dzc4Y8KrN/VJIrmE/Vx2l6joWpyzzQZvv7kf6Nmndx/EOSiqqdn7n
-	p
-X-Google-Smtp-Source: AGHT+IGGb89ySbuv4ZT1f5mSZidSaCgG1DqN2pG1O4LijsieItM5uUQOPBJf9JXkYUi8mjuawf81Lw==
-X-Received: by 2002:a05:6a21:189:b0:19e:cf1a:5369 with SMTP id le9-20020a056a21018900b0019ecf1a5369mr2333877pzb.24.1709305988298;
-        Fri, 01 Mar 2024 07:13:08 -0800 (PST)
-Received: from localhost ([192.184.165.199])
-        by smtp.gmail.com with ESMTPSA id ff11-20020a056a002f4b00b006e57b37a932sm3084044pfb.9.2024.03.01.07.13.07
+        d=1e100.net; s=20230601; t=1709306009; x=1709910809;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HDkjb/3ycOtyX9DruBw4yM0aFf/SrD3+DOAhw0JNHrc=;
+        b=gJ3G7Li0bY83XOmI/Yp478sLuSisqpTnDz3Fwi0hdvznWc7zFtlynlAj/zdI+Uta5j
+         RDpHJJWutXtA5ylgi2DzrH8JRpMzohpQg70BSAfH84gW841ZBTu1sH3xkpA1gCj0DGCl
+         toNafnoejIzV8XriPFM0Gdr3LEBaYqOIgoDJlr4PVh15D1KuVPl0SLU8VcGxKC+hvEim
+         +bT84YOrRQLtlq/K/DhFt1VxJaFxC5XxajxrZCFfzVGPi6lTJ/HQUQ3p0aDKhtPnwmcp
+         TiHToEH6VGr0Kr9oztV8C9vQ/nFv7zcuzZSlUiJ8ov9p4ABwVPn5xQ0T1Ek2VZRcCoVw
+         cE5A==
+X-Forwarded-Encrypted: i=1; AJvYcCXEc+8iCLDTk4c0bkYrKZFrdPMQ1U1DeoYr62RJRlkErMwyuUuhQjR/IMqUDvlL/C2OI69Lktl/IzYBVSyPDFJ8B3aSH5HfBGeh6GCB
+X-Gm-Message-State: AOJu0YzFG/XZtzx/FpczkhQJoZXYOe2phSZSPLdbqykdaPz6NFxHngWY
+	oB+2y+ElN0p07Obg3pP5esF7Ma7+FP3oK5+iKtgkPxcdTCKK3jK+EIg4nF6hNWk=
+X-Google-Smtp-Source: AGHT+IFTY55Wj25m0rpyyfxtHm3gpdleYksn/7veTld3RUy8XLWRBDSXZuFQrny/q9cL7tsHEE6O/g==
+X-Received: by 2002:a17:906:6ac7:b0:a44:9aea:779f with SMTP id q7-20020a1709066ac700b00a449aea779fmr1132507ejs.44.1709306009182;
+        Fri, 01 Mar 2024 07:13:29 -0800 (PST)
+Received: from alley ([176.114.240.50])
+        by smtp.gmail.com with ESMTPSA id le6-20020a170906ae0600b00a449b4f4aefsm488987ejb.178.2024.03.01.07.13.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 07:13:07 -0800 (PST)
-Date: Fri, 01 Mar 2024 07:13:07 -0800 (PST)
-X-Google-Original-Date: Fri, 01 Mar 2024 07:12:59 PST (-0800)
-Subject: [GIT PULL] RISC-V Fixes for 6.8-rc7
-CC:         linux-riscv@lists.infradead.org,        linux-kernel@vger.kernel.org
-From: Palmer Dabbelt <palmer@rivosinc.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Message-ID: <mhng-17aa05c6-25a6-481d-ab1e-cd01d8b4da43@palmer-ri-x1c9>
+        Fri, 01 Mar 2024 07:13:28 -0800 (PST)
+Date: Fri, 1 Mar 2024 16:13:27 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: John Ogness <john.ogness@linutronix.de>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org
+Subject: Re: [PATCH printk v2 25/26] rcu: Mark emergency section in rcu stalls
+Message-ID: <ZeHwl63uXDZ9ZBtt@alley>
+References: <20240218185726.1994771-1-john.ogness@linutronix.de>
+ <20240218185726.1994771-26-john.ogness@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240218185726.1994771-26-john.ogness@linutronix.de>
 
-The following changes since commit 3951f6add519a8e954bf78691a412f65b24f4715:
+On Sun 2024-02-18 20:03:25, John Ogness wrote:
+> Mark an emergency section within print_other_cpu_stall(), where
+> RCU stall information is printed. In this section, the CPU will
+> not perform console output for the printk() calls. Instead, a
+> flushing of the console output is triggered when exiting the
+> emergency section.
+>
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
 
-  riscv: Fix arch_tlbbatch_flush() by clearing the batch cpumask (2024-02-07 10:19:37 -0800)
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-are available in the Git repository at:
+I was just curious about one thing. But it seems to work well.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-6.8-rc7
+print_other_cpu_stall() print backtraces on other CPUs via NMI.
+The other CPUs would not see the emergency context. They would
+call defer_console_output() because they are in NMI. As a result:
 
-for you to fetch changes up to a11dd49dcb9376776193e15641f84fcc1e5980c9:
+  + Legacy consoles might be flushed on other CPUs even before
+    nbcon_cpu_emergency_exit() gets called.
 
-  riscv: Sparse-Memory/vmemmap out-of-bounds fix (2024-02-29 12:24:31 -0800)
+  + nbcon consoles might still be flushed by the printk kthread
+    until all messages get flushed directly by nbcon_cpu_emergency_exit()
 
-----------------------------------------------------------------
-RISC-V Fixes for 6.8-rc7
+As I wrote. The behavior is corrent. It was just not obvious to me.
 
-* A fix for detecting ".option arch" support on not-yet-released LLVM
-  builds.
-* A fix for a missing TLB flush when modifying non-leaf PTEs.
-* A handufl of fixes for T-Head custom extensions.
-* A fix for systems with the legacy PMU, that manifests as a crash on
-  kernels built without SBI PMU support.
-* A fix for systems that clear *envcfg on suspend, which manifests as
-  cbo.zero trapping after resume.
-* A pair of fixes for Svnapot systems, including removing Svnapot
-  support for huge vmalloc/vmap regions.
 
-----------------------------------------------------------------
-Alexandre Ghiti (3):
-      riscv: Fix build error if !CONFIG_ARCH_ENABLE_HUGEPAGE_MIGRATION
-      Revert "riscv: mm: support Svnapot in huge vmap"
-      riscv: Fix pte_leaf_size() for NAPOT
+> --- a/kernel/rcu/tree_stall.h
+> +++ b/kernel/rcu/tree_stall.h
+> @@ -9,6 +9,7 @@
+>  
+>  #include <linux/kvm_para.h>
+>  #include <linux/rcu_notifier.h>
+> +#include <linux/console.h>
+>  
+>  //////////////////////////////////////////////////////////////////////////////
+>  //
+> @@ -604,6 +605,8 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
+>  	if (rcu_stall_is_suppressed())
+>  		return;
+>  
+> +	nbcon_cpu_emergency_enter();
+> +
+>  	/*
+>  	 * OK, time to rat on our buddy...
+>  	 * See Documentation/RCU/stallwarn.rst for info on how to debug
+> @@ -658,6 +661,8 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
+>  	panic_on_rcu_stall();
+>  
+>  	rcu_force_quiescent_state();  /* Kick them all. */
+> +
+> +	nbcon_cpu_emergency_exit();
+>  }
+>  
+>  static void print_cpu_stall(unsigned long gps)
 
-Conor Dooley (1):
-      RISC-V: Ignore V from the riscv,isa DT property on older T-Head CPUs
-
-Dimitris Vlachos (1):
-      riscv: Sparse-Memory/vmemmap out-of-bounds fix
-
-Fei Wu (1):
-      perf: RISCV: Fix panic on pmu overflow handler
-
-Jisheng Zhang (1):
-      riscv: tlb: fix __p*d_free_tlb()
-
-Nathan Chancellor (2):
-      kbuild: Add -Wa,--fatal-warnings to as-instr invocation
-      RISC-V: Drop invalid test from CONFIG_AS_HAS_OPTION_ARCH
-
-Palmer Dabbelt (5):
-      Merge patch series "RISC-V: Fix CONFIG_AS_HAS_OPTION_ARCH with tip of tree LLVM"
-      Merge commit '8246601a7d391ce8207408149d65732f28af81a1' into fixes
-      Merge patch series "drivers: perf: fix crash with the legacy riscv driver"
-      Merge patch series "riscv: cbo.zero fixes"
-      Merge patch series "NAPOT Fixes"
-
-Samuel Holland (4):
-      MAINTAINERS: Update SiFive driver maintainers
-      riscv: Fix enabling cbo.zero when running in M-mode
-      riscv: Add a custom ISA extension for the [ms]envcfg CSR
-      riscv: Save/restore envcfg CSR during CPU suspend
-
-Vadim Shakirov (2):
-      drivers: perf: added capabilities for legacy PMU
-      drivers: perf: ctr_get_width function for legacy is not defined
-
-Yangyu Chen (1):
-      riscv: mm: fix NOCACHE_THEAD does not set bit[61] correctly
-
-Zong Li (1):
-      riscv: add CALLER_ADDRx support
-
- MAINTAINERS                         | 29 +++---------------
- arch/riscv/Kconfig                  |  1 -
- arch/riscv/include/asm/csr.h        |  2 ++
- arch/riscv/include/asm/ftrace.h     |  5 +++
- arch/riscv/include/asm/hugetlb.h    |  2 ++
- arch/riscv/include/asm/hwcap.h      |  2 ++
- arch/riscv/include/asm/pgalloc.h    | 20 ++++++++++--
- arch/riscv/include/asm/pgtable-64.h |  2 +-
- arch/riscv/include/asm/pgtable.h    |  6 +++-
- arch/riscv/include/asm/suspend.h    |  1 +
- arch/riscv/include/asm/vmalloc.h    | 61 +------------------------------------
- arch/riscv/kernel/Makefile          |  2 ++
- arch/riscv/kernel/cpufeature.c      | 31 +++++++++++++++++--
- arch/riscv/kernel/return_address.c  | 48 +++++++++++++++++++++++++++++
- arch/riscv/kernel/suspend.c         |  4 +++
- arch/riscv/mm/hugetlbpage.c         |  2 ++
- drivers/perf/riscv_pmu.c            | 18 +++--------
- drivers/perf/riscv_pmu_legacy.c     | 10 +++++-
- drivers/perf/riscv_pmu_sbi.c        |  8 ++---
- scripts/Kconfig.include             |  2 +-
- scripts/Makefile.compiler           |  2 +-
- 21 files changed, 145 insertions(+), 113 deletions(-)
- create mode 100644 arch/riscv/kernel/return_address.c
+Best Regards,
+Petr
 
