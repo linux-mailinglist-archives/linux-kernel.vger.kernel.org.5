@@ -1,90 +1,86 @@
-Return-Path: <linux-kernel+bounces-88500-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88504-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34F1186E26E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:42:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2167486E27C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:43:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D058C28481E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:42:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBF381F221EE
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:43:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8262C6D50A;
-	Fri,  1 Mar 2024 13:42:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5CD16F50A;
+	Fri,  1 Mar 2024 13:42:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="U7Y2Xi+1"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Z4InROop"
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2758A381DE
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 13:41:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFDC56F510
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 13:42:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709300520; cv=none; b=kqYXVIpoU72S42SwKwKPa2/GgE1j1u1FrUZShE3XlzD283HxwzLms3B4rYaiZhwnBeopZBNh+olIzamVC/iua/J6oDpg2KlidBYwdI9D8o8YhokHh1sj4ji1DimByVGla0ZUxO4ZRlbdkrCmvB/rfxiCtlQaWzg330sFhfe6PVk=
+	t=1709300528; cv=none; b=DGzZZ+tFgBJuA+pXZmnHmGGR4KDtGeSZhmUg361Ykd1OtTVrV6uiuCp2WyC2+BclxXTyTXpJq3izvAtgjwWe8Mxy62mJghg3+3oD8eVM/zDPG5UcjSK0mwG3xICXzz8yOOzzZBxGYE4sfCXeVtMftGeDx+7bbLHMabqlVsYAwkc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709300520; c=relaxed/simple;
-	bh=2vk9V19VUlgEPl/3Idd/ZI+pMX1LOMB9aDys6AIl9Ao=;
+	s=arc-20240116; t=1709300528; c=relaxed/simple;
+	bh=fOoQnUhhAc6liUjXqMNkl7SNhfdn9BzELDOo6neJx2Y=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GnKf65K+eoeOc+3+0w2jLR4FtyfDXDQPhT3c5h2ie0CvFZ7FqeaZxyded2Ufepvav41HQmlHOCkrbWQEPsjzMo838+Y8PozmjSmQ+eWc7rUzW/6pZ9oO81YAT0X6KGC8DLsqMnesXNlPjy5W3P+uT8yD/APToq5YRheyAQco1yg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=U7Y2Xi+1; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709300518;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IV5GI9ggtOV7YL4yWU+pWO5696jTgiyXslpZgRz6IkE=;
-	b=U7Y2Xi+1/tq9+/n3uOSZkq9WWox8vOwnpgfR3JQF9oo1YtH8FArI7wO2QKUKZUhfP3xljQ
-	tDCcZ2ZuoiYpH35gw/dXGqQAKC67V9ltQmSV5P+aMmKr1J96DH70ATfdq7bv6PFVthyyI5
-	7Bo4+RVczpvd8wWuvL3dxxH32Ao90FM=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-66-Y_dIfbA-OuKv5jE3xYEGpg-1; Fri, 01 Mar 2024 08:41:57 -0500
-X-MC-Unique: Y_dIfbA-OuKv5jE3xYEGpg-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a44170156daso160288366b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 05:41:56 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=jH3Yk3HlDwHQ9AoW2pYGojKwhgOGOTGXBAd+eWOJYo23wYcbJLSBH2OzEwEYyB682xfRx6SMHJdaQj9lrETQE0EzyM4tawWcaAWPoeh0rxyCDnTD45thVC0cG5GZ3YVAMa9lvTLyRIrhECNt9c11MsiR/LirBqzdtXjfMJZDtNI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Z4InROop; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-412c83a8259so4730955e9.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 05:42:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709300525; x=1709905325; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=lQGlreTAyn3APLCjXtSXcpGzC35vL6EiYGDd6miAJ80=;
+        b=Z4InROopDzhU7Apc0/GT+twrfz2OulyPPQXnzzfb0kgRRFWyh1Nu1pGX2E10Yy9ATI
+         BRWWgVklkfb6Kp8znCMLf7mpqPMG/LLtr/Z4K+ojpNrfquJJ5EftIXMy6EfzhOtPnzU7
+         lYF2XfxN4bZ44a/9OUWAilq1tn+8cyulV2NCegqDC7dmSU6+zT4vSaps0FFwRrwwiS2d
+         ofGpV6GYolLnEZjDwk+Eqw9gaLiw+PqtB8Kv3W5Ss6zV+lnjNrX7fq80T5f/K0/e9sLk
+         EsfuZAWXxSAEPkZF7kxghi/K20JaieGvB8o9Shzok9HXKBVzZACb+nswAOlOMKsjkpTP
+         GiiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709300515; x=1709905315;
+        d=1e100.net; s=20230601; t=1709300525; x=1709905325;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IV5GI9ggtOV7YL4yWU+pWO5696jTgiyXslpZgRz6IkE=;
-        b=U3oeWP5rqZ5OSTbkEgl8GKyoMk1DyEVb8vjsjyIT+sHgtoJ1jHCbnflHJRxbLEywOd
-         pydiiTAoDDi8RujCGxC/SNHJf4cpN6V84aLG/iln4nNhLv0xm0LYpcWq1DrlCeukZO56
-         189rcknFxwz8tg4qxi8PdKslGt8BVWOcLbyAAGojf4SGqDz5qV6+4N1fWVHA9WfHBDbO
-         D2saVGO7PJHrW9Jr+YpM0/6R/5ozxjmRduD1wqNKR6iizREDe7NWauRFZANZlkOH9KEd
-         rtWdJ9zLnoRbysvbf2lJHD25vLYX9BdXtSJ9tdNMkjMlftC3zCcwh2pUp1JvzdG0gTKC
-         K47Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVjqJkQDQTYLuzmBqmV9VUpDtAbUibMYbeICXwhTkfwvN2eVp9iI02fLbwE2A8yAcI6eronRpKBs5V7L/rFdax3/MbWQuWN9o6FLNZj
-X-Gm-Message-State: AOJu0YwAUspIBWnDnqEiI6Iq0VRL3Pu7/+SKchn/xAnd8wcqrGtlvJ3s
-	mPkOy+WUk9/6/QY5hCYBlVuZpvG/yUSg5mJrUepEL/WYDRqnEFdk6YDsf6IyeQUhQpKwyl5teqs
-	caNr0FUn+4IykWwYxR2Nh49cDFZf+OwMl4rikWyxq2T0VuqJldmlRG1UbaGONQtA3o0gjTA==
-X-Received: by 2002:a17:906:b214:b0:a3f:9629:d305 with SMTP id p20-20020a170906b21400b00a3f9629d305mr1372880ejz.28.1709300515431;
-        Fri, 01 Mar 2024 05:41:55 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGLbgF6qBOfPODlpr/w/K+nFzei0cb6QwGv163EHqSi9QSh8ayVYUSqzu7zpVrOH7v0/7CwUQ==
-X-Received: by 2002:a17:906:b214:b0:a3f:9629:d305 with SMTP id p20-20020a170906b21400b00a3f9629d305mr1372862ejz.28.1709300514951;
-        Fri, 01 Mar 2024 05:41:54 -0800 (PST)
-Received: from redhat.com ([2.52.158.48])
-        by smtp.gmail.com with ESMTPSA id vk1-20020a170907cbc100b00a445c16d902sm1267866ejc.96.2024.03.01.05.41.52
+        bh=lQGlreTAyn3APLCjXtSXcpGzC35vL6EiYGDd6miAJ80=;
+        b=cm5iXfvfMEQ8hSRD9N4DEANNwRKX/8D4mMlwc/1AnmGCObpeBrOgl3EPIudeuT6pR3
+         SmdUS/2HUhAFpavf0wtoUGNBjsNsWhRTE+cWE6oqd5Fb1ll0WAq50IRyoU7Qc8Y4JuqP
+         XUxdACPUQY1mO7XXsb1XwBZAeLn7O2UwMYIMjCKgX73AUUSCCgVMuJV85lU+36Hzmzqj
+         L94fJayqDDdcwOOSVDa/67VwcMD1jEG/yoDTMQp34jBtEBe8CcD8DgIlkzMrEDOhoKHp
+         L6B8uXdQDbmPdqHDQqhqTv5sqhruvOBip0oebHZdjocXSQhwN34YkyjJZNqdfHWOUAb4
+         koFg==
+X-Forwarded-Encrypted: i=1; AJvYcCU8h87dHmgKjWLSqOLd38QvQRzeZ7Dn882L2coMQNuLONss8kQmBJrOKMdYzuv5MaaT4rvx5QjsUaNzwguit9Ee5SP1IjcK9DeyyB5N
+X-Gm-Message-State: AOJu0YwRcuWVX6MKWRqo4/cP/j+ndmfl8fbvLQz/c4SM/6F+v/RncxmU
+	iPQRbchLYA7szf8bp0+eYNeEIbUwdlEYdWpPge/9WiefNe/qAAIeVGJ8IW8sne9bxU8O4wsf9Zw
+	C
+X-Google-Smtp-Source: AGHT+IH48oxAyLV5Vg3GSB9oA4Go2//qltAa2mr/bRjgpNO14ZrIKBf+t0wA6J1OaFB3e71GBnGabw==
+X-Received: by 2002:a05:600c:4fc4:b0:412:c8c9:c844 with SMTP id o4-20020a05600c4fc400b00412c8c9c844mr1287765wmq.26.1709300525246;
+        Fri, 01 Mar 2024 05:42:05 -0800 (PST)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id x4-20020a05600c21c400b00412afd8425esm8364247wmj.24.2024.03.01.05.42.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 05:41:54 -0800 (PST)
-Date: Fri, 1 Mar 2024 08:41:50 -0500
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Robin Murphy <robin.murphy@arm.com>
-Cc: Xuan Zhuo <xuanzhuo@linux.alibaba.com>, linux-kernel@vger.kernel.org,
-	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-	Christoph Hellwig <hch@lst.de>,
-	Marek Szyprowski <m.szyprowski@samsung.com>, iommu@lists.linux.dev,
-	Zelin Deng <zelin.deng@linux.alibaba.com>
-Subject: Re: [RFC] dma-mapping: introduce dma_can_skip_unmap()
-Message-ID: <20240301082703-mutt-send-email-mst@kernel.org>
-References: <20240301071918.64631-1-xuanzhuo@linux.alibaba.com>
- <64be2e23-c526-45d3-bb7b-29e31241bbef@arm.com>
- <20240301064632-mutt-send-email-mst@kernel.org>
- <a00f0b55-0681-4e9c-b75e-e7e3d4110471@arm.com>
+        Fri, 01 Mar 2024 05:42:04 -0800 (PST)
+Date: Fri, 1 Mar 2024 16:42:01 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc: Markus Elfring <Markus.Elfring@web.de>,
+	linux-renesas-soc@vger.kernel.org, linux-media@vger.kernel.org,
+	kernel-janitors@vger.kernel.org,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Niklas =?iso-8859-1?Q?S=F6derlund?= <niklas.soderlund@ragnatech.se>,
+	LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] media: rcar-csi2: Use common error handling code in
+ rcsi2_parse_dt()
+Message-ID: <260d82b6-e7fc-40c3-b414-50a883709fd7@moroto.mountain>
+References: <8b4203dc-bc0a-4c00-8862-e2d0ed6e346b@web.de>
+ <CAMuHMdWwegdks3eEviEsBJE3AvUVKbZqHduYdhuwz=8xTMDs5g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -93,73 +89,53 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a00f0b55-0681-4e9c-b75e-e7e3d4110471@arm.com>
+In-Reply-To: <CAMuHMdWwegdks3eEviEsBJE3AvUVKbZqHduYdhuwz=8xTMDs5g@mail.gmail.com>
 
-On Fri, Mar 01, 2024 at 12:42:39PM +0000, Robin Murphy wrote:
-> On 2024-03-01 11:50 am, Michael S. Tsirkin wrote:
-> > On Fri, Mar 01, 2024 at 11:38:25AM +0000, Robin Murphy wrote:
-> > > Not only is this idea not viable, the entire premise seems flawed - the
-> > > reasons for virtio needing to use the DMA API at all are highly likely to be
-> > > the same reasons for it needing to use the DMA API *properly* anyway.
-> > 
-> > The idea has nothing to do with virtio per se
-> 
-> Sure, I can see that, but if virtio is presented as the justification for
-> doing this then it's the justification I'm going to look at first. And the
-> fact is that it *does* seem to have particular significance, since having up
-> to 19 DMA addresses involved in a single transfer is very much an outlier
-> compared to typical hardware drivers.
+Sakari Ailus pointed out in another thread that we could use __free()
+instead.  Something like this:
 
-That's a valid comment. Xuan Zhuo do other drivers do this too,
-could you check pls?
-
-> Furthermore the fact that DMA API
-> support was retrofitted to the established virtio design means I would
-> always expect it to run up against more challenges than a hardware driver
-> designed around the expectation that DMA buffers have DMA addresses.
-
-
-It seems virtio can't drive any DMA changes then it's forever tainted?
-Seems unfair - we retrofitted it years ago, enough refactoring happened
-since then.
-
-
-> > - we are likely not the
-> > only driver that wastes a lot of memory (hot in cache, too) keeping DMA
-> > addresses around for the sole purpose of calling DMA unmap.  On a bunch
-> > of systems unmap is always a nop and we could save some memory if there
-> > was a way to find out. What is proposed is an API extension allowing
-> > that for anyone - not just virtio.
-> 
-> And the point I'm making is that that "always" is a big assumption, and in
-> fact for the situations where it is robustly true we already have the
-> DEFINE_DMA_UNMAP_{ADDR,LEN} mechanism.
-> I'd consider it rare for DMA
-> addresses to be stored in isolation, as opposed to being part of some kind
-> of buffer descriptor (or indeed struct scatterlist, for an obvious example)
-> that a driver or subsystem still has to keep track of anyway, so in general
-> I believe the scope for saving decidedly small amounts of memory at runtime
-> is also considerably less than you might be imagining.
-> 
-> Thanks,
-> Robin.
-
-
-Yes. DEFINE_DMA_UNMAP_ exits but that's only compile time.
-And I think the fact we have that mechanism is a hint that
-enough configurations could benefit from a runtime
-mechanism, too.
-
-E.g. since you mentioned scatterlist, it has a bunch of ifdefs
-in place.
-
-Of course
-- finding more examples would be benefitial to help maintainers
-  do the cost/benefit analysis
-- a robust implementation is needed
-
-
--- 
-MST
+diff --git a/drivers/media/platform/renesas/rcar-csi2.c b/drivers/media/platform/renesas/rcar-csi2.c
+index 582d5e35db0e..c569df6057b7 100644
+--- a/drivers/media/platform/renesas/rcar-csi2.c
++++ b/drivers/media/platform/renesas/rcar-csi2.c
+@@ -1372,8 +1372,8 @@ static int rcsi2_parse_v4l2(struct rcar_csi2 *priv,
+ static int rcsi2_parse_dt(struct rcar_csi2 *priv)
+ {
+ 	struct v4l2_async_connection *asc;
+-	struct fwnode_handle *fwnode;
+-	struct fwnode_handle *ep;
++	struct fwnode_handle *fwnode __free(fwnode_handle) = NULL;
++	struct fwnode_handle *ep __free(fwnode_handle);
+ 	struct v4l2_fwnode_endpoint v4l2_ep = {
+ 		.bus_type = V4L2_MBUS_UNKNOWN,
+ 	};
+@@ -1388,18 +1388,14 @@ static int rcsi2_parse_dt(struct rcar_csi2 *priv)
+ 	ret = v4l2_fwnode_endpoint_parse(ep, &v4l2_ep);
+ 	if (ret) {
+ 		dev_err(priv->dev, "Could not parse v4l2 endpoint\n");
+-		fwnode_handle_put(ep);
+ 		return -EINVAL;
+ 	}
+ 
+ 	ret = rcsi2_parse_v4l2(priv, &v4l2_ep);
+-	if (ret) {
+-		fwnode_handle_put(ep);
++	if (ret)
+ 		return ret;
+-	}
+ 
+ 	fwnode = fwnode_graph_get_remote_endpoint(ep);
+-	fwnode_handle_put(ep);
+ 
+ 	dev_dbg(priv->dev, "Found '%pOF'\n", to_of_node(fwnode));
+ 
+@@ -1408,7 +1404,6 @@ static int rcsi2_parse_dt(struct rcar_csi2 *priv)
+ 
+ 	asc = v4l2_async_nf_add_fwnode(&priv->notifier, fwnode,
+ 				       struct v4l2_async_connection);
+-	fwnode_handle_put(fwnode);
+ 	if (IS_ERR(asc))
+ 		return PTR_ERR(asc);
+ 
 
 
