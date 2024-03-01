@@ -1,146 +1,166 @@
-Return-Path: <linux-kernel+bounces-89139-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89140-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDA9F86EB10
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 22:20:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8BDB86EB13
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 22:21:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 777D9B23D19
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:20:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 23D5A1C22B7D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:21:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DD8E3FE0;
-	Fri,  1 Mar 2024 21:20:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C68705733F;
+	Fri,  1 Mar 2024 21:21:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="SobCjazG"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NohjE9Q3"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11EDA56B8A;
-	Fri,  1 Mar 2024 21:20:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 177F33A1D1;
+	Fri,  1 Mar 2024 21:21:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709328016; cv=none; b=fyEPJ4zD2FIvtJQOokwFP+ozRBk5ERbor0YFuWOTOj7YyUsDjcQ8YEv3EqK30VnYTpslxKDqXDDZH6VaWSOuj59lLhcnNgGg+2U0nu0ih9s9clywd12VEiNSW4aPpxvIrS1lNLjpcwTPboZwe2crUnX0brGoZAomcygwXmEKrS4=
+	t=1709328071; cv=none; b=oxTgWKIlH94Yckz0V+NRQTVFuG8J8InK//97omaV2Bu+MXic0PZOeqDD4ZldZwReFbY1mrNS5V7Tq/dGnVqQ5fwTYdgXmLTYdi4ueUm/kvt9gI35m6ltBUMCUzWjEMROJSmXLNBYKefeeKXbFJ/CA5wPGV+cRQQ3kk2AONtCviA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709328016; c=relaxed/simple;
-	bh=Fp36LTyYV9kpvNDK+hVtBJ7X8DZcQYNdYOtSiayQAFI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TNNWYK8t9lK8209oonXKBs47nsD9g0nwbvsE0gi7y94JzTfmMvm/maA2rPPzrk3VbJiKmwRShSyIO98Ly8ejqBInIx8lijayPLC4ec5VKXgWzfLiQlhEfitymahexDUld4C8VZ4HSlt94sgEis+wyz1a5y2hDma/SAyQk/3uJkQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=SobCjazG; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 421LHs9n003197;
-	Fri, 1 Mar 2024 21:20:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=+RMLsOnNosJmVE5b3aZfPjID67/Lvajwmqc6g347uww=;
- b=SobCjazGG0pUI4x3HPRPyh5z9AlBLh3s6MkkBZm0vVwVYI7NPMz0WgW90v6ayP8DqAMa
- MQOAdZaL5JwVFXzurGEIQU9VlF0DwlvCjymfnR9+0eJn2kSrH07M3ps8HMtNAql1AJHz
- u5ScJdkaSxnPlyjVksSszF3z8WFTacW3UnULDwXxceUvC6ZCwPJD/Jjp3OO4wLokstST
- dpwVAzgoKSw1zBEqZgiDZCfOI7aamS+zA7SKE5U8hrwp+y5AmAjjhl/fLniBYjvflcPi
- 99iMSd8BAACl3XCatV9qr6G5ZyhVZnYRQ3ecxJ8kjp4s3EeXiysfMetwcfUUHLdH93ty gg== 
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wkpt5g1ga-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 01 Mar 2024 21:20:05 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 421K0KM7008142;
-	Fri, 1 Mar 2024 21:20:04 GMT
-Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3wfv9mxxtu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 01 Mar 2024 21:20:04 +0000
-Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
-	by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 421LK1w27078838
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 1 Mar 2024 21:20:04 GMT
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 93F0158055;
-	Fri,  1 Mar 2024 21:20:01 +0000 (GMT)
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 9F4F158063;
-	Fri,  1 Mar 2024 21:20:00 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-	by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Fri,  1 Mar 2024 21:20:00 +0000 (GMT)
-Message-ID: <00bd9f8d-cde7-44a7-ab1a-888d8fd66cd8@linux.ibm.com>
-Date: Fri, 1 Mar 2024 16:20:00 -0500
+	s=arc-20240116; t=1709328071; c=relaxed/simple;
+	bh=7sWNY+BwPBuNHKndKJkDxUbx4tHA6bF9AZxlwis92Ic=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=lhtSovIbScBxbkFv27nsHXosV8ZYUFJW16f1MWTEA/r/VJKn8giuRAlL4NEWKDyiMPo8v8nCfA8GEc5X45605CzNf309Q0uIFZHExr9NSl0ohVf/UcSkJg6pzm4aV2xRcVbyyf9PIFGlyCK95yIIcA1OFO0E26cwLXCP+yVDIdM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NohjE9Q3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3ABD9C433F1;
+	Fri,  1 Mar 2024 21:21:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709328070;
+	bh=7sWNY+BwPBuNHKndKJkDxUbx4tHA6bF9AZxlwis92Ic=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=NohjE9Q3iYbnnUibWl2H2l8i4HT/9bECgFm97bgAc+1/Gn2f3r9IUu7shyj75qz7d
+	 RnyQQHwhLTer45kvXT8d0c3ywQZ+9CBUAQlZXoMqh7iSTAh2Y6MLe/QBBfbFmAyTmZ
+	 uQYdwhnUQoE9Gq26szs8saKenjiCf09hahH3aRkUG/KSsJiWYU0kNYmTDuooslzrhL
+	 QXUrCQeIj/W2kydjIOhs22/hSKMTS6zsSnmiGFQhAxHIU2ehLLKpnYRlXSU+Yd1uf8
+	 t7QeqkQBSJc88kCWke2sYIyrrBU2R4ricesYkRViluYAFYgdJKxTRwKLBnXa2RZ/vp
+	 UiJQJ0i6AWwZg==
+Date: Fri, 1 Mar 2024 15:21:08 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Jian-Hong Pan <jhp@endlessos.org>
+Cc: Johan Hovold <johan@kernel.org>,
+	David Box <david.e.box@linux.intel.com>,
+	Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	Mika Westerberg <mika.westerberg@linux.intel.com>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Nirmal Patel <nirmal.patel@linux.intel.com>,
+	Jonathan Derrick <jonathan.derrick@linux.dev>,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux@endlessos.org
+Subject: Re: [PATCH v4 1/3] PCI: vmd: Enable PCI PM's L1 substates of
+ remapped PCIe Root Port and NVMe
+Message-ID: <20240301212108.GA407707@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 09/12] crypto: ecdsa - Rename keylen to bufsize where
- necessary
-Content-Language: en-US
-To: Jarkko Sakkinen <jarkko@kernel.org>, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, herbert@gondor.apana.org.au,
-        davem@davemloft.net
-Cc: linux-kernel@vger.kernel.org, saulo.alessandre@tse.jus.br, lukas@wunner.de
-References: <20240301022007.344948-1-stefanb@linux.ibm.com>
- <20240301022007.344948-10-stefanb@linux.ibm.com>
- <CZIPDP0W9TOP.3CCT8QUB0R4L3@suppilovahvero>
- <90606a3c-1384-407b-8270-dd76dccc700b@linux.ibm.com>
- <CZIPKTL42F1Z.2U4Q28IIQ159K@suppilovahvero>
-From: Stefan Berger <stefanb@linux.ibm.com>
-In-Reply-To: <CZIPKTL42F1Z.2U4Q28IIQ159K@suppilovahvero>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: nXiz26RnlBkFlwg5vbrlGyglIK2iYYA4
-X-Proofpoint-ORIG-GUID: nXiz26RnlBkFlwg5vbrlGyglIK2iYYA4
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-01_22,2024-03-01_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 bulkscore=0
- lowpriorityscore=0 suspectscore=0 mlxlogscore=999 mlxscore=0 spamscore=0
- impostorscore=0 malwarescore=0 clxscore=1015 priorityscore=1501
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2403010177
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240216062412.247052-3-jhp@endlessos.org>
 
+On Fri, Feb 16, 2024 at 02:24:14PM +0800, Jian-Hong Pan wrote:
+> The remapped PCIe Root Port and NVMe have PCI PM L1 substates capability,
+> but they are disabled originally.
 
+AFAIK there's nothing specific to NVMe here, so I think the subject
+and commit log should be more generic.
 
-On 3/1/24 15:50, Jarkko Sakkinen wrote:
-> On Fri Mar 1, 2024 at 10:47 PM EET, Stefan Berger wrote:
->>
->>
->> On 3/1/24 15:41, Jarkko Sakkinen wrote:
->>> On Fri Mar 1, 2024 at 4:20 AM EET, Stefan Berger wrote:
->>>> In some cases the name keylen does not reflect the purpose of the variable
->>>> anymore once NIST P521 is used but it is the size of the buffer. There-
->>>> for, rename keylen to bufsize where appropriate.
->>>>
->>>> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
->>>> ---
->>>>    crypto/ecdsa.c | 12 ++++++------
->>>>    1 file changed, 6 insertions(+), 6 deletions(-)
->>>>
->>>> diff --git a/crypto/ecdsa.c b/crypto/ecdsa.c
->>>> index 4daefb40c37a..4e847b59622a 100644
->>>> --- a/crypto/ecdsa.c
->>>> +++ b/crypto/ecdsa.c
->>>> @@ -35,8 +35,8 @@ struct ecdsa_signature_ctx {
->>>>    static int ecdsa_get_signature_rs(u64 *dest, size_t hdrlen, unsigned char tag,
->>>>    				  const void *value, size_t vlen, unsigned int ndigits)
->>>>    {
->>>> -	size_t keylen = ndigits * sizeof(u64);
->>>> -	ssize_t diff = vlen - keylen;
->>>> +	size_t bufsize = ndigits * sizeof(u64);
->>>
->>> why not just "* 8"? using sizeof here makes this function only unreadable.
->>
->> 'unreadable' is a 'strong' word ...
+I think the important piece of this is to make sure the device is in
+D0 before configuring L1 substates, so that should be the primary
+motivation.  And "D0" should be part of the subject line, because
+vmd_pm_enable_quirk() already *has* code to enable all ASPM states; it
+just doesn't work correctly.
+
+> Here is a failed example on ASUS B1400CEAE:
 > 
-> so what is the gain when writing sizeof(u64)?
-
-It matches existing code and a digit is a 'u64'.
-
-
+> Capabilities: [900 v1] L1 PM Substates
+>         L1SubCap: PCI-PM_L1.2+ PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1- L1_PM_Substates+
+>                   PortCommonModeRestoreTime=32us PortTPowerOnTime=10us
+>         L1SubCtl1: PCI-PM_L1.2- PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1-
+>                    T_CommonMode=0us LTR1.2_Threshold=0ns
+>         L1SubCtl2: T_PwrOn=10us
 > 
-> BR, Jarkko
+> Power on all of the VMD remapped PCI devices before enable PCI-PM L1 PM
+> Substates by following PCI Express Base Specification Revision 6.0, section
+> 5.5.4.
+
+"PCIe r6.0, sec 5.5.4", as you have in the comment, is enough.
+
+If you send future patches with a [0/n] cover letter and the patches
+as responses to the cover letter, "b4" will be able to grab them all
+easily:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/5.Posting.rst?id=v6.7#n349
+
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=218394
+> Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
+> ---
+> v2:
+> - Power on the VMD remapped devices with pci_set_power_state_locked()
+> - Prepare the PCIe LTR parameters before enable L1 Substates
+> - Add note into the comments of both pci_enable_link_state() and
+>   pci_enable_link_state_locked() for kernel-doc.
+> - The original patch set can be split as individual patches.
+> 
+> v3:
+> - Re-send for the missed version information.
+> - Split drivers/pci/pcie/aspm.c modification into following patches.
+> - Fix the comment for enasuring the PCI devices in D0.
+> 
+> v4:
+> - The same
+> 
+>  drivers/pci/controller/vmd.c | 13 +++++++++----
+>  1 file changed, 9 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/vmd.c b/drivers/pci/controller/vmd.c
+> index 87b7856f375a..6aca3f77724c 100644
+> --- a/drivers/pci/controller/vmd.c
+> +++ b/drivers/pci/controller/vmd.c
+> @@ -751,11 +751,9 @@ static int vmd_pm_enable_quirk(struct pci_dev *pdev, void *userdata)
+>  	if (!(features & VMD_FEAT_BIOS_PM_QUIRK))
+>  		return 0;
+>  
+> -	pci_enable_link_state_locked(pdev, PCIE_LINK_STATE_ALL);
+> -
+>  	pos = pci_find_ext_capability(pdev, PCI_EXT_CAP_ID_LTR);
+>  	if (!pos)
+> -		return 0;
+> +		goto out_enable_link_state;
+>  
+>  	/*
+>  	 * Skip if the max snoop LTR is non-zero, indicating BIOS has set it
+> @@ -763,7 +761,7 @@ static int vmd_pm_enable_quirk(struct pci_dev *pdev, void *userdata)
+>  	 */
+>  	pci_read_config_dword(pdev, pos + PCI_LTR_MAX_SNOOP_LAT, &ltr_reg);
+>  	if (!!(ltr_reg & (PCI_LTR_VALUE_MASK | PCI_LTR_SCALE_MASK)))
+> -		return 0;
+> +		goto out_enable_link_state;
+>  
+>  	/*
+>  	 * Set the default values to the maximum required by the platform to
+> @@ -775,6 +773,13 @@ static int vmd_pm_enable_quirk(struct pci_dev *pdev, void *userdata)
+>  	pci_write_config_dword(pdev, pos + PCI_LTR_MAX_SNOOP_LAT, ltr_reg);
+>  	pci_info(pdev, "VMD: Default LTR value set by driver\n");
+>  
+> +out_enable_link_state:
+> +	/*
+> +	 * Ensure devices are in D0 before enabling PCI-PM L1 PM Substates, per
+> +	 * PCIe r6.0, sec 5.5.4.
+> +	 */
+> +	pci_set_power_state_locked(pdev, PCI_D0);
+> +	pci_enable_link_state_locked(pdev, PCIE_LINK_STATE_ALL);
+>  	return 0;
+>  }
+>  
+> -- 
+> 2.43.2
+> 
 
