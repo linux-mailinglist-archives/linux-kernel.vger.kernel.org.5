@@ -1,92 +1,68 @@
-Return-Path: <linux-kernel+bounces-89226-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89227-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20E5986ECF6
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 00:34:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 636D386ECF7
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 00:39:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AFD112831A2
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 23:34:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2D09BB24BEF
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 23:39:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B165D5EE97;
-	Fri,  1 Mar 2024 23:33:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8673D5EE91;
+	Fri,  1 Mar 2024 23:39:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="pWhTjipz"
-Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="F8JiJ+3F"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 524435EE8F
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 23:33:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 272A91DDFF
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 23:39:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709336038; cv=none; b=nINtwFtKinq1794XCNJupQNv31R0g6v/BMrre96Ia4pBf6M+QsB1NyRRs/1eTA92ArvL7pzRhpGQkSZfN/3QgmFROiUbzIyxaxwxIlCqLVro1tq2rI4iXqAlQ+LPfTJkVwnRRi8dCrOpWyP8iqnplqk+Wgi1S+cpTIQuQDww2IQ=
+	t=1709336351; cv=none; b=EiWbYu1gte/m0TCFZ3xVrOs5VvnytZQIyquMiRh+0LABuSWK+GZVB088u12rQZH/olyGpGoJqh16MKqA/yksp2uldOTDIaOw0QJz/mGJpSbOtB9+G2XUg/fQICDsVVJnUyWCFz49aot82PT60oFktrfELmgxtjlN8+ATMs26QEw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709336038; c=relaxed/simple;
-	bh=9ko6RFqUjrBXAVmwG8bBIF/XzRTNQIzqqVxM4hdGHTw=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=q/KNbXJCS5na1cTI3SQIRBi+7v+sGiULKnVFvB05jBwwR0LdV5Z7ZLDuHCq2bUfv3WKsyms3tGsSo9qB5zafTQEY9/uv1XqDyLkKi26lZnR4ilgD6vYuK39EeKBbIGAjYb9+lARoGUKcO3HVJwRlzsxz9soQK7TVdmCGxBi1n0E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=pWhTjipz; arc=none smtp.client-ip=209.85.166.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
-Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7c81e087882so42537939f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 15:33:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1709336036; x=1709940836; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=vs9jOV2wHjO0L90PYhH0rLhwCoykJcsupCw1nSbLUFU=;
-        b=pWhTjipzFoWOvhe6dr4blyoln8xuiTP/Y4IIJ8Yy6Z2pPUYAG+BOFQR2KPqVwd+bJ+
-         Wj6GF8dKbcNkxjp6IliZdBPUBTvIlDxoutkldrGAtTC5auM8W/M1BiFwIBUO0XUz0/Fr
-         pvzu4YfPFK5WvciNVPk5mPo+5wODJRQQxdAik=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709336036; x=1709940836;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vs9jOV2wHjO0L90PYhH0rLhwCoykJcsupCw1nSbLUFU=;
-        b=V4rRDQqEksiKMdpCtdArYbECZ4xIapEwuEyDdxhFedokS9tVFs7Ofw9ioHpto1F+84
-         qnlkNds6g40dMzGLKP/8PVcjBqjM+st6J6plNhPL/lAXvxC51QkYttbt8qbjFJGM4jA/
-         xcyNRyztWruguaZ1fTn2pbI4xT755xLXpRo95TLkXKNwF7CzjXWxZ776VyCOXqYDDkIG
-         Or3iHBHYO6hrQpFzddMZ1UoVOoR+gFAFzLVfqPX+HhE4kDMBjMiOXgKRLTen7ISoKOMr
-         W/TRiIxN/c7c3lZJg8dYrcB41zQEZr/GOL0+mtYANGjE74qb/4c8tbN7V54niKCpv5pa
-         6w7w==
-X-Forwarded-Encrypted: i=1; AJvYcCU5PXsVzxo/8xfbQmLSlnBBCuu/gGAkfy2HmwDN0xuJScifj8MuzpzX01iaevjqM9jS3v2qzOvkc5XXhyT6uDV2yYg5GPse28pVtESa
-X-Gm-Message-State: AOJu0YyX6SxZXy8+hx38hZ78nWn2Xbynj3GyAGaNhwVCh6lxvEZy8jSa
-	oG1uV1erX0HMypCXzl/9w2CFcfSNbgXbzir/z0Yuqm0WrejQNZf+2CNoFPf8g74=
-X-Google-Smtp-Source: AGHT+IFtZffyiQu2T3rPBJ+IXhjJLNO7avqnppjR7kYb1XNvOIzf+PEZs/3FOOmbtq5K8NoK2LcG2Q==
-X-Received: by 2002:a05:6e02:1b83:b0:365:88b:3fc2 with SMTP id h3-20020a056e021b8300b00365088b3fc2mr2154224ili.4.1709336036317;
-        Fri, 01 Mar 2024 15:33:56 -0800 (PST)
-Received: from localhost ([91.196.69.76])
-        by smtp.gmail.com with ESMTPSA id a26-20020a056638005a00b00474d1d7b244sm401925jap.93.2024.03.01.15.33.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 15:33:55 -0800 (PST)
-Message-ID: <65e265e3.050a0220.7044b.19ad@mx.google.com>
-X-Google-Original-Message-ID: <20240301233352.GA1005526@JoelBox.>
-Date: Fri, 1 Mar 2024 18:33:52 -0500
-From: Joel Fernandes <joel@joelfernandes.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ankur Arora <ankur.a.arora@oracle.com>, linux-kernel@vger.kernel.org,
-	tglx@linutronix.de, peterz@infradead.org,
-	torvalds@linux-foundation.org, paulmck@kernel.org,
-	akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-	dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-	juri.lelli@redhat.com, vincent.guittot@linaro.org,
-	willy@infradead.org, mgorman@suse.de, jpoimboe@kernel.org,
-	mark.rutland@arm.com, jgross@suse.com, andrew.cooper3@citrix.com,
-	bristot@kernel.org, mathieu.desnoyers@efficios.com,
-	geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
-	anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
-	krypton@ulrich-teichert.org, David.Laight@aculab.com,
-	richard@nod.at, mjguzik@gmail.com, jon.grimm@amd.com,
-	bharata@amd.com, raghavendra.kt@amd.com, boris.ostrovsky@oracle.com,
-	konrad.wilk@oracle.com, Masami Hiramatsu <mhiramat@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH 29/30] Documentation: tracing: add TIF_NEED_RESCHED_LAZY
-References: <20240213055554.1802415-1-ankur.a.arora@oracle.com>
- <20240213055554.1802415-30-ankur.a.arora@oracle.com>
- <20240221164334.6f8c69e8@gandalf.local.home>
+	s=arc-20240116; t=1709336351; c=relaxed/simple;
+	bh=Xpwvyla5lFNXJfYIBFpVAkRNrmDnzHSbXe+jg6R+9Dk=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=MaddvwGjeBLt5t2tTRLPqP/ozNRuqB17qVVN8CpylbhU3BVgohPYQD+eC580Un0lqq+M5tEO9npguiCFd7jtQOj/Qq3lFXyWrwr4ZTek0YxXsf2W38Op/FE1/lfmtrsNw+xy+Qe8vEGc/B8Yofm84x9Hg4E02/ITS0ZCRoeqsyM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=F8JiJ+3F; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709336350; x=1740872350;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=Xpwvyla5lFNXJfYIBFpVAkRNrmDnzHSbXe+jg6R+9Dk=;
+  b=F8JiJ+3FxpsKSpPzZ1uEnGjbsdHs8U6xsoGBsorYTbHSZobgnPO/qn7B
+   99kYMR0nRfU5WhqtzaiENE0YZ6ENn/Wj41GqFEdi1BnVjm2Q7jYxHcLH3
+   JRRbGRuvFkugfHADOadqs8ht5Ck+kmt8WZe2QVMeTxau9Ky6op15Qcfcr
+   nKro7dGW3h7e0oXfiqm8mVyuTOcnkRIPIo5MpIly1nE+NHQfdN7mqmo+L
+   92XAzzexAW0Rlu/eYqdzEYHDWFtN3I0SsSBChqASh7H6nkxBCU0lOoDI6
+   IvCuyv8C8oX3ePjClebsZl9EOa5XYMcNJBx0bfq493kCoPsHVZmPcsakB
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11000"; a="26359079"
+X-IronPort-AV: E=Sophos;i="6.06,197,1705392000"; 
+   d="scan'208";a="26359079"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 15:39:09 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,197,1705392000"; 
+   d="scan'208";a="39359054"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by fmviesa001.fm.intel.com with ESMTP; 01 Mar 2024 15:39:08 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rgCT4-000EB1-0G;
+	Fri, 01 Mar 2024 23:39:06 +0000
+Date: Sat, 2 Mar 2024 07:38:31 +0800
+From: kernel test robot <lkp@intel.com>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: arch/x86/kernel/cpu/debugfs.c:11:33: sparse: sparse: incorrect type
+ in initializer (different address spaces)
+Message-ID: <202403020747.CxX5V2dB-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -95,63 +71,53 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240221164334.6f8c69e8@gandalf.local.home>
 
-On Wed, Feb 21, 2024 at 04:43:34PM -0500, Steven Rostedt wrote:
-> On Mon, 12 Feb 2024 21:55:53 -0800
-> Ankur Arora <ankur.a.arora@oracle.com> wrote:
-> 
-> > Document various combinations of resched flags.
-> > 
-> > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> > Cc: Jonathan Corbet <corbet@lwn.net>
-> > Originally-by: Thomas Gleixner <tglx@linutronix.de>
-> > Link: https://lore.kernel.org/lkml/87jzshhexi.ffs@tglx/
-> > Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
-> > ---
-> >  Documentation/trace/ftrace.rst | 6 +++++-
-> >  1 file changed, 5 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/Documentation/trace/ftrace.rst b/Documentation/trace/ftrace.rst
-> > index 7e7b8ec17934..7f20c0bae009 100644
-> > --- a/Documentation/trace/ftrace.rst
-> > +++ b/Documentation/trace/ftrace.rst
-> > @@ -1036,8 +1036,12 @@ explains which is which.
-> >  		be printed here.
-> >  
-> >    need-resched:
-> > -	- 'N' both TIF_NEED_RESCHED and PREEMPT_NEED_RESCHED is set,
-> > +	- 'B' all three, TIF_NEED_RESCHED, TIF_NEED_RESCHED_LAZY and PREEMPT_NEED_RESCHED are set,
-> > +	- 'N' both TIF_NEED_RESCHED and PREEMPT_NEED_RESCHED are set,
-> > +	- 'L' both TIF_NEED_RESCHED_LAZY and PREEMPT_NEED_RESCHED are set,
-> > +	- 'b' both TIF_NEED_RESCHED and TIF_NEED_RESCHED_LAZY are set,
-> >  	- 'n' only TIF_NEED_RESCHED is set,
-> > +	- 'l' only TIF_NEED_RESCHED_LAZY is set,
-> >  	- 'p' only PREEMPT_NEED_RESCHED is set,
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   d17468c6f1f49e6259698f6401b8d7a5b90eac68
+commit: 48525fd1ea1cfa059a580e77b10ea8790914efa2 x86/cpu: Provide debug interface
+date:   5 months ago
+config: x86_64-randconfig-121-20240301 (https://download.01.org/0day-ci/archive/20240302/202403020747.CxX5V2dB-lkp@intel.com/config)
+compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240302/202403020747.CxX5V2dB-lkp@intel.com/reproduce)
 
-One thing I was curious about in current code, under which situation will
-"only PREEMPT_NEED_RESCHED is set" case happen? All the code paths I see set
-the PREEMPT_NEED_RESCHED when then TIF has already been set. That kind of
-makes sense, why enter the scheduler on preempt_enable() unless there was a
-reason to, and TIF should have recorded that reason.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403020747.CxX5V2dB-lkp@intel.com/
 
-So in other words, if 'p' above cannot happen, then it could be removed as a
-potential need-resched stat. If it can happen, I'd love to learn in which
-case?
-
-Also considering all users of set_tsk_need_resched() also call the
-set_preempt_need_resched() shortly after, should we add a helper to squash
-the 2 calls and simplify callers?
-
-There are some "special cases" where only TIF flag need be set (such as setting
-rescheduling from an interrupt or when rescheduling a remote CPU). For those,
-they can directly call the set_tsk_need_resched() like they do now.
-
-thanks,
-
- - Joel
+sparse warnings: (new ones prefixed by >>)
 
 
+vim +11 arch/x86/kernel/cpu/debugfs.c
 
+     7	
+     8	static int cpu_debug_show(struct seq_file *m, void *p)
+     9	{
+    10		unsigned long cpu = (unsigned long)m->private;
+  > 11		struct cpuinfo_x86 *c = per_cpu_ptr(&cpu_info, cpu);
+    12	
+    13		seq_printf(m, "online:              %d\n", cpu_online(cpu));
+    14		if (!c->initialized)
+    15			return 0;
+    16	
+    17		seq_printf(m, "initial_apicid:      %x\n", c->topo.initial_apicid);
+    18		seq_printf(m, "apicid:              %x\n", c->topo.apicid);
+    19		seq_printf(m, "pkg_id:              %u\n", c->topo.pkg_id);
+    20		seq_printf(m, "die_id:              %u\n", c->topo.die_id);
+    21		seq_printf(m, "cu_id:               %u\n", c->topo.cu_id);
+    22		seq_printf(m, "core_id:             %u\n", c->topo.core_id);
+    23		seq_printf(m, "logical_pkg_id:      %u\n", c->topo.logical_pkg_id);
+    24		seq_printf(m, "logical_die_id:      %u\n", c->topo.logical_die_id);
+    25		seq_printf(m, "llc_id:              %u\n", c->topo.llc_id);
+    26		seq_printf(m, "l2c_id:              %u\n", c->topo.l2c_id);
+    27		seq_printf(m, "max_cores:           %u\n", c->x86_max_cores);
+    28		seq_printf(m, "max_die_per_pkg:     %u\n", __max_die_per_package);
+    29		seq_printf(m, "smp_num_siblings:    %u\n", smp_num_siblings);
+    30		return 0;
+    31	}
+    32	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
