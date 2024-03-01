@@ -1,185 +1,146 @@
-Return-Path: <linux-kernel+bounces-88838-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88841-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4C8286E764
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:35:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E175286E761
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:35:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DE9CCB29A5C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:34:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 058121C21F9D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:35:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 842CAF9F6;
-	Fri,  1 Mar 2024 17:33:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E43A1282EE;
+	Fri,  1 Mar 2024 17:33:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ohI/dcuw"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="UTWarH1+"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7C9E46B3;
-	Fri,  1 Mar 2024 17:33:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 137F525740
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 17:33:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709314409; cv=none; b=GW9ZuZj8ktvG0s6/LUkeKHADvn8/Y7/mPwLAVEC5XJZdVMeZQMmrtlNshmrRm5wpeElNNVSRKdHDZVkZmwbpFY7pFQi9QknhQEX467htk0p0gzG9IlraZurUHxBqRh3ABgLBzV/cvKN6d0XPxkaWZy1HOASMYsW2qfuG7a0cTyA=
+	t=1709314430; cv=none; b=td649d//Ke/jdf2owEWs3TmD08I0efQOtYAY6v0PFcdqHYxUdLIiWfLEwlH9kah/+cXTYd0HKR4wFSQoYJHg50tH/ig6WaXjjvuP1QF2JbhRXw+kEns/MS356/+gY+gUSPfByge2Y0K+9vDJqslLwJeOlur1JuekW14e8XFFk7k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709314409; c=relaxed/simple;
-	bh=IYsBs/BhF0iz0VJZYgI9tkngj+zz1RnNDtdkOfgCrfU=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=lsgUVe844TUH0cxP9Z0EuIEeWsCW9uHL1K3F/nfM0jBXbS3rqXH9gvpwvLiRTLPQgzub94LzzTP6EqmgAhWSy1vi5L+nBm8qPzyOXq0zkRxvMLQMW9bVMAUnyknxCh8tBGGb4Aua/wqNsH+peHSZovvhp/ZSM/TnoEdQ2GDGSUk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ohI/dcuw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 29683C433F1;
-	Fri,  1 Mar 2024 17:33:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709314409;
-	bh=IYsBs/BhF0iz0VJZYgI9tkngj+zz1RnNDtdkOfgCrfU=;
-	h=From:Date:Subject:To:Cc:Reply-To:From;
-	b=ohI/dcuwZZ8j8UU5LDwFfoF/l4sfTNfbRCxGn7UllwL66Rc8ZJtrL6bo8W/19jDfH
-	 jBRh2AufqQjOAqYdkOzXQfxvERgNTD/xn4/V9jJOSl/RS+rBIKmf71lq2WhBC13UBK
-	 r9UmnijYyGhfZ1V+2kK7ZOkYLumV0oUZYcTxhQWR1VpVNBtTMJ36ZX0QwJyttkbJHk
-	 rPjczjYzmX9h9XC07rEyqzaHjEjMosZ1IYhh8N7mMDy6WyHm6SVIJ2pe4pLvKhQgLH
-	 pnXqN3oLIsMUk/8blYwAbAfUZ/eaVYjNkVS75oLjmwe9i/OO/s166VVLK7j1ys76L6
-	 3UvFDUYeqatyQ==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1460AC5475B;
-	Fri,  1 Mar 2024 17:33:29 +0000 (UTC)
-From:
- Mathys-Gasnier via B4 Relay <devnull+mathys35.gasnier.gmail.com@kernel.org>
-Date: Fri, 01 Mar 2024 18:33:23 +0100
-Subject: [PATCH v5] rust: locks: Add `get_mut` method to `Lock`
+	s=arc-20240116; t=1709314430; c=relaxed/simple;
+	bh=uPcrWwZo51EZo9dE7TOvBkTfx+6v7yhA6bRe7BwSO+0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ie+9955uS/AJusdvTEJzAj55ZBbnIhNkBwqOUcNlC8VAWSBtKuXpt7kVrjPnwa78QdwjsBZ5+jAmqEF57HRYhAZmYdSPtnd5tw65JiP12KASAT+rqzTR6O63AlLT8L7UzpalHXVKU1DK2W/chhoSJEhHu1yGZ0PSDR4KtwSe+6o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=UTWarH1+; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 8C2CE40E0028;
+	Fri,  1 Mar 2024 17:33:45 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 6E5IhuBVq3GX; Fri,  1 Mar 2024 17:33:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1709314422; bh=0spoTuQNwBK1qcqroj+kYN6zrHCgNmlEdBFjW5XSE+g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=UTWarH1+F3ypn+rMp1530yxS1poDgUq7Tm+/oBGi10vSklLnOV2oFwFu8NOTM6hb2
+	 fpK2bKMZQulEvRVEa76LHm6gBBOA0GKvQwkvKWCcgG3rMpyDkOthba8QORvMTCohXv
+	 3dN69w5idhdZO+1Y6QNlaaTAvld37Z6y4uYoJNEgAfihGhOHngn77ImkmwpJQAxThr
+	 oqDOwC0lPcDEURVvf1i5zTEAAxzRdkdNCJOURujATuEvFtaoDSgHYUmzSWeB4rX0mQ
+	 y4Bo+RJQErHw0jFfqRb3rae0DL9/qHQ91dR9kPwwE76q2WHiaiuaVNMNqaNF4yyGv6
+	 38T0NrMM7arGfxy+Gw7JPDXocgCaJjiA5WDS1h/8/YGYBhx0dkAxjM+9tzyyt8CdQM
+	 neHAbJGRZkEYnrg2EYa80PASfZ68GSWzY3+mNWD27ymllMhVTiSc0MwPYeqUzLtYwt
+	 4fw3RvtPsJ0q9EAoiBeoIMKtrzbCv9sVRntQjZblnR3q5g5TDZk1ZKD5OOsEsoNdff
+	 AXzwLLP6j0ruDGspiv8pK7bLW/fo2dJQIw4pFDGZYw6Aj2bDa9hKMVjm1Vy6BUqZ8o
+	 qnr9ka87yXK/eblWXUxPFoOct7tgzbqHLb91gzDcthlypxvsp8YmRxxHnfw4RoGLcR
+	 K8uB8p6UV5/RsEbxg2AEoAk8=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B1E1340E0196;
+	Fri,  1 Mar 2024 17:33:31 +0000 (UTC)
+Date: Fri, 1 Mar 2024 18:33:23 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Ard Biesheuvel <ardb@kernel.org>
+Cc: Ard Biesheuvel <ardb+git@google.com>, linux-kernel@vger.kernel.org,
+	Kevin Loughlin <kevinloughlin@google.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Dionna Glaze <dionnaglaze@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Andy Lutomirski <luto@kernel.org>, Brian Gerst <brgerst@gmail.com>
+Subject: Re: [PATCH v7 2/9] x86/startup_64: Defer assignment of 5-level
+ paging global variables
+Message-ID: <20240301173323.GDZeIRY_BVBqpudkEo@fat_crate.local>
+References: <20240227151907.387873-11-ardb+git@google.com>
+ <20240227151907.387873-13-ardb+git@google.com>
+ <20240228205540.GIZd-dzFYIBbtfIAo3@fat_crate.local>
+ <CAMj1kXGhZU+FE2gE262Q8_vZEFHicsRtVPzXT-dhhCvBuiMjUA@mail.gmail.com>
+ <20240301160921.GBZeH9sZhp73xX40ze@fat_crate.local>
+ <CAMj1kXFJwEUExy7+Snh3QHVn-ATj0C+sYje22Qmc+y=cCtAV7g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240301-rust-locks-get-mut-v5-1-c5131dbbd3c4@gmail.com>
-X-B4-Tracking: v=1; b=H4sIAGIR4mUC/23NQQ6CMBCF4auYrq3pTItFV97DuCjTARsFTItEY
- 7i7VTfEsPxfMt+8ROIYOIn96iUijyGFvstRrFeCzq5rWAafW6BCowBKGe9pkNeeLkk2PMj2Pkg
- yqCyCAm+dyIe3yHV4fNHjKfc5pKGPz++PET7rj0O1W+JGkCCJdQE1ac/GHprWheuG+lZ8uBFnB
- OAigZkoiLw2hJVV1T+hZwQuEzoTXpduW5vKs/b/hJkT20XCZAKNq+rCWmVdOSemaXoDEqxKv30
- BAAA=
-To: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
- Wedson Almeida Filho <wedsonaf@gmail.com>, 
- Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
- =?utf-8?q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
- Benno Lossin <benno.lossin@proton.me>, 
- Andreas Hindborg <a.hindborg@samsung.com>, 
- Alice Ryhl <aliceryhl@google.com>
-Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Martin Rodriguez Reboredo <yakoyoku@gmail.com>, 
- Mathys-Gasnier <mathys35.gasnier@gmail.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1709314408; l=3361;
- i=mathys35.gasnier@gmail.com; s=20240118; h=from:subject:message-id;
- bh=YgqZEuEg7qPEU8LNGXge52fKNIIVVzwOHPlT4tjNiao=;
- b=L+sGaDcR7Vjd5mjM+tfqElKX2By5PtqYuLSS2MnvAbyQwx6h3pfgD5m/D0VbWzmKEhmdgVaU8
- gTFLD+1PsWVCUM/0nezEu0MMtJPvv60XtMhOs7USiOCY7eJd7RPfLpx
-X-Developer-Key: i=mathys35.gasnier@gmail.com; a=ed25519;
- pk=C5tqKAA3Ua7li5s3a+q2aDelT2j98/yjGg2nEVGArXE=
-X-Endpoint-Received:
- by B4 Relay for mathys35.gasnier@gmail.com/20240118 with auth_id=129
-X-Original-From: Mathys-Gasnier <mathys35.gasnier@gmail.com>
-Reply-To: <mathys35.gasnier@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXFJwEUExy7+Snh3QHVn-ATj0C+sYje22Qmc+y=cCtAV7g@mail.gmail.com>
 
-From: Mathys-Gasnier <mathys35.gasnier@gmail.com>
+On Fri, Mar 01, 2024 at 06:09:53PM +0100, Ard Biesheuvel wrote:
+> On Fri, 1 Mar 2024 at 17:09, Borislav Petkov <bp@alien8.de> wrote:
+> >
+> > On Fri, Mar 01, 2024 at 11:01:33AM +0100, Ard Biesheuvel wrote:
+> > > The scenario that I have not managed to test is entering from EFI with
+> > > 5 levels of paging enabled, and switching back to 4 levels (which
+> > > should work regardless of CONFIG_X86_5LEVEL). However, no firmware in
+> > > existence actually supports that today, and I am pretty sure that this
+> > > code has never been tested under those conditions to begin with. (OVMF
+> > > patches are under review atm to allow 5-level paging to be enabled in
+> > > the firmware)
+> >
+> > Aha.
+> >
+> 
+> I've built a debug OVMF image using the latest version of the series,
+> and put it at [0]
+> 
+> Run like this
+> 
+> qemu-system-x86_64 -M q35 \
+>   -cpu qemu64,+la57 -smp 4 \
+>   -bios OVMF-5level.fd \
+>   -kernel arch/x86/boot/bzImage \
+>   -append console=ttyS0\ earlyprintk=ttyS0 \
+>   -vga none -nographic -m 1g \
+>   -initrd <initrd.img>
+> 
+> and you will get loads of DEBUG output from the firmware first, and
+> then boot into Linux. (initrd can be omitted)
+> 
+> Right before entering, it will print
+> 
+> CpuDxe: 5-Level Paging = 1
+> 
+> which confirms that the firmware is running with 5 levels of paging.
+> 
+> I've confirmed that this boots happily with this series applied,
+> including when using 'no5lvl' on the command line, or when disabling
+> CONFIG_X86_5LEVEL [confirmed by inspecting
+> /sys/kernel/debug/page_tables/kernel].
+> 
+> 
+> [0] http://files.workofard.com/OVMF-5level.fd.gz
 
-Having a mutable reference guarantees that no other threads have
-access to the lock, so we can take advantage of that to grant callers
-access to the protected data without the cost of acquiring and
-releasing the locks. Since the lifetime of the data is tied to the
-mutable reference, the borrow checker guarantees that the usage is safe.
+Nice, that might come in handy for other testing too.
 
-Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-Reviewed-by: Alice Ryhl <aliceryhl@google.com>
-Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
-Signed-off-by: Mathys-Gasnier <mathys35.gasnier@gmail.com>
----
-Changes in v5:
-- Adding example
-- Link to v4: https://lore.kernel.org/r/20240226-rust-locks-get-mut-v4-1-24abf57707a8@gmail.com
+Thx.
 
-Changes in v4:
-- Improved documentation
-- Link to v3: https://lore.kernel.org/r/20240222-rust-locks-get-mut-v3-1-d38a6f4bde3d@gmail.com
-
-Changes in v3:
-- Changing the function to take a `Pin<&mut self>` instead of a `&mut self`
-- Removed reviewed-by's since big changes were made. Please take another
-  look.
-- Link to v2: https://lore.kernel.org/r/20240212-rust-locks-get-mut-v2-1-5ccd34c2b70b@gmail.com
-
-Changes in v2:
-- Improved doc comment. 
-- Link to v1: https://lore.kernel.org/r/20240209-rust-locks-get-mut-v1-1-ce351fc3de47@gmail.com
----
- rust/kernel/sync/lock.rs | 38 +++++++++++++++++++++++++++++++++++++-
- 1 file changed, 37 insertions(+), 1 deletion(-)
-
-diff --git a/rust/kernel/sync/lock.rs b/rust/kernel/sync/lock.rs
-index f12a684bc957..345ca7be9d9f 100644
---- a/rust/kernel/sync/lock.rs
-+++ b/rust/kernel/sync/lock.rs
-@@ -7,7 +7,11 @@
- 
- use super::LockClassKey;
- use crate::{bindings, init::PinInit, pin_init, str::CStr, types::Opaque, types::ScopeGuard};
--use core::{cell::UnsafeCell, marker::PhantomData, marker::PhantomPinned};
-+use core::{
-+    cell::UnsafeCell,
-+    marker::{PhantomData, PhantomPinned},
-+    pin::Pin,
-+};
- use macros::pin_data;
- 
- pub mod mutex;
-@@ -121,6 +125,38 @@ pub fn lock(&self) -> Guard<'_, T, B> {
-         // SAFETY: The lock was just acquired.
-         unsafe { Guard::new(self, state) }
-     }
-+
-+    /// Gets the data contained in the lock.
-+    ///
-+    /// Having a mutable reference to the lock guarantees that no other threads have access to the
-+    /// lock. And because `data` is not structurally pinned, it is safe to get a mutable reference
-+    /// to the lock content.
-+    ///
-+    /// # Example
-+    ///
-+    /// Using `get_mut` with a mutex.
-+    ///
-+    /// ```
-+    /// use kernel::sync::Mutex;
-+    ///
-+    /// struct Example {
-+    ///     a: u32,
-+    ///     b: u32,
-+    /// }
-+    ///
-+    /// fn example(m: Pin<&mut Mutex<Example>>) {
-+    ///     // Calling from Mutex to avoid conflict with Pin::get_mut().
-+    ///     let mut data = Mutex::get_mut(m);
-+    ///     data.a += 10;
-+    ///     data.b += 20;
-+    /// }
-+    /// ```
-+    pub fn get_mut(self: Pin<&mut Self>) -> &mut T {
-+        // SAFETY: The lock will only be used to get a reference to the data, therefore self won't
-+        // get moved.
-+        let lock = unsafe { self.get_unchecked_mut() };
-+        lock.data.get_mut()
-+    }
- }
- 
- /// A lock guard.
-
----
-base-commit: 711cbfc717650532624ca9f56fbaf191bed56e67
-change-id: 20240118-rust-locks-get-mut-c42072101d7a
-
-Best regards,
 -- 
-Mathys-Gasnier <mathys35.gasnier@gmail.com>
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
 
