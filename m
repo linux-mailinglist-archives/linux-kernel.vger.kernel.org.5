@@ -1,121 +1,115 @@
-Return-Path: <linux-kernel+bounces-87990-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87991-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 284C686DBD9
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:05:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5857986DBDB
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:08:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7BCF0B2594A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 07:05:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A6AD7B25EA4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 07:08:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0F8669318;
-	Fri,  1 Mar 2024 07:05:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CFF069316;
+	Fri,  1 Mar 2024 07:08:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="UEVPgFTO"
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2047.outbound.protection.outlook.com [40.107.220.47])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Rl+16JRd"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C3546930E;
-	Fri,  1 Mar 2024 07:05:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DA4752F7A
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 07:07:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.7
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709276734; cv=fail; b=CXG4b9as9QesRL3XL/8y3R6ELyoWO2U5KMzr74VBjekJF+jprZ/81PCGszcxxfq4UaQQZHAGECdh3VPIWeWPzN4pArwlyfitoTHGoGKmLUcrmqegssL6b9yPTBJ13hlLCmQWHynt4zmLt8ZUrSuOHaYt23Jo5Bs1QRY5Cyf7g2Q=
+	t=1709276879; cv=fail; b=KLGOcOKFzwR+PxQfrDUAb3Z4y+QWfQy7waMtVzqutPuVGvYFIVvRJkhLceb29n2pUnbQbBSuvFp1JsYKZnDPi3xGMHcLT32HrmcN/7NZLY9aZQKLTUFasDmqmD6bSaFfmElVoYiIsq29Tse9Pj5381k9B7w1k+CnlNVS6Fh/HHU=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709276734; c=relaxed/simple;
-	bh=Ry2NEkF3WusUhTNZ1gX/fmNTHHOR1xCBOR9Qw5qe7Pg=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=Bx+/w6WQoFw/uewBg/6b+mbY6roNjXhsUXWJCOdsEW5UddzI9cFry3CthonV4isgBOtn7ddeer2HaC9//dxISsOp/qNREW/dtpbIjLnNeOzvQ+DxXg7oCGCtSntt0uhC62sWV/paCuINXmu9ox3PYrBFFnLnNgpKkj6MAwFgEiE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=UEVPgFTO; arc=fail smtp.client-ip=40.107.220.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+	s=arc-20240116; t=1709276879; c=relaxed/simple;
+	bh=U1MGe4JtOWKmqfRiz5lk267mADnMWLoIq2l6KJBL7sg=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=rlSHYmJGO7DUN9W08xRMq7/6Zy4hIFPlqEliP7WI7U1O8n/7zLba9qohVORBNWseRJzzYPlBUcMOb+yDXgfmYSNj0j6FpkmU/6pjr3vTomdTkLIqJ1/KOQZlNUoaoeRfOtgd4xK9omeqqz5JdPT0LhEAZhkxLDrwzxqZay8LCSk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Rl+16JRd; arc=fail smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709276877; x=1740812877;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=U1MGe4JtOWKmqfRiz5lk267mADnMWLoIq2l6KJBL7sg=;
+  b=Rl+16JRdRrrfVqIY2AJkPCEcJ5CaW98f1s0BtAWt4iHCfRuGeFEsya82
+   0rnqkhtOpRcUa8uFaRQvN4R/cqWVHqNbcWn/RFRUSxBM8ukjlhXSwlEXu
+   47oPPMY2alFPxHhXtNhUQlYyrBhk17glCN9BceEho/bFzoDgrXJmjI8ls
+   T92+qIzQyU6pf03SeOdOPW1xqZKlQyemVY/v3hpaYUE+TMOgODqN0zZA5
+   cAumY5gjSQ4mr8m+JY/BbE7xstUU90R7Xaa5JZ1v2hLzyPycVHxy7bQRq
+   xymawlJqYX0JdaAKsKAbl7hWnuEGIMHBH1LwkNnHv6UN3WnOrfIfgsWhg
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="29226836"
+X-IronPort-AV: E=Sophos;i="6.06,195,1705392000"; 
+   d="scan'208";a="29226836"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 23:07:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,195,1705392000"; 
+   d="scan'208";a="12649824"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmviesa005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 29 Feb 2024 23:07:56 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 29 Feb 2024 23:07:55 -0800
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 29 Feb 2024 23:07:54 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 29 Feb 2024 23:07:54 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 29 Feb 2024 23:07:54 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PZZD5j3HeHSu9ImbJFH9PZ50aY2z3FnjMi0zzDh1yLK0H26TqYFkp5dFyMYvm8TMgTOy/yPmunTnGGIMohHpwI8UZ2O+G3OYMCmm0iZQko+zPiOkmIGULsxZ/9ea+pIZA81rwa7Nu4VdYqngLYdVYDp2S2Qnsg3hvU+UbBLyH2Z9gUmehTfouhUCzr6D4aiwLG8Rh4pvfIolMAMMUfMTFZVQEdAxjFmRMjGlCjznW1yvr/LBeq3ttXMFmt0ehMykY0Q2hB4NdKtAQPl9fEz+rW6+g7kNovAaIAR72Nr8HHcgIuggbz4q8yrC3vtttKOMKCuyDCYZo4YSyYbFalmCCQ==
+ b=nu4LKOUIJIiw4M7JJ0783IpRILHuX+vuwJJrzysYpPNVvnazu/9/SYItD6UK4lELs5ZiVKRr2gle7B26Ct9kBDg4RuMDqfr2e9EXwn+aOIjEU5nOs0RSDZaF7pY3tPL7oVC8suUk9yS0GnU865COiUnPyZIAsnHpYVGJkQaquXXwI6A+JaYa3Vrt+8mvPqPjhragsUCKbouVQ41kZaP6Q9nov2C2F9oMNafvsMjbQR451F/Guww/JshxFdtODeYEstGCeD44rSYCnFmDIcujH08iCxkAROVSZYqA4Igem4E/2mVZARk42c/JmoE+OPN9fI0W1eDf7TtsnNpMBYnuqA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=T7dFgBS5eYVEUsUtquDtfF0MMSn3YzjGOCsV2+4yYck=;
- b=WCJNApgMw+c1otlugCg9e5Erc/uUUlESi+VzYUfd3DW36SaMdyiwjdRoBpAwT9rqPk8CiaDPnPw+0Q7yZrhKPX1uRgnNcPR+ObXplbof6jz/yGX0qfqTvRwHyP1/O0LIQ1HRykESsM07TpcLt9nQ6EPoUTytI5c1FIYCtzcph+LQfbpHPlvAYd+z2dyaIr+FWl0QoPV5e8uzTy9KJ97gkG5AbaarV3HnhQq6JS5guHKgNuWjO/YNcrQuU1Pj7l6Dw0FsJ1Fjgmgx3XbRDa2XpxedD9us7+nBAMRRoPH/cXaUoJUZ1vW5nxiM0/xZ3pJDitU1JV26+t2ruZXrSHx7qQ==
+ bh=bhkqRCloRS90C8z6jgh0VNolkv5XXiZd9FFadyVknfU=;
+ b=lTAcwGL/YQ2B0dO6PJKWtp51mZYC4nj5iWf89UnzA9khAklszjqLkX8B1L9bAbT0nicc6EzYs8bsr56/1EIpzV4eu/otRvt8/DdrMDGACQxNmzv8hiZu7NzIdlJ8erfp/uHCsBKnevbsK2K1qOKIYdhtCD+qBMcss3JJsJL8BP1tf70kq7aKy4cdiYVfZ4XL3ro0+PW7r0Cr55ogNkI2dr4gxQ9p4BurWGyn1D3vy47coU8BqEP3fOSkTL1YF/Qot5Y5y5nbdlN7Uk6rNhsdo6m53wuZ3PNo8CesRlT37OUinO+9TBwTMfnVwQvOv1DzgxPMKifkeitSNTYGEtgDvw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=T7dFgBS5eYVEUsUtquDtfF0MMSn3YzjGOCsV2+4yYck=;
- b=UEVPgFTOqiWOotDGhFf5o5HekPJxQ4dM7T+K7mkXxcoEqxdmh0i6V/yK8nZ3fsSJ4zJPtSxh0zzbfZ/6MMjKxr+XC5erU/HNhUIgOecf00CC3QPhUOxuuaz1lGfrqC7gmC73fv2cbaxLHJ7isRv0oWXamLWR1RAAkieEvIe/NSQ=
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from SJ2PR12MB8109.namprd12.prod.outlook.com (2603:10b6:a03:4f5::8)
- by CYXPR12MB9443.namprd12.prod.outlook.com (2603:10b6:930:db::9) with
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB6020.namprd11.prod.outlook.com (2603:10b6:8:61::19) by
+ SJ0PR11MB5022.namprd11.prod.outlook.com (2603:10b6:a03:2d7::17) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.41; Fri, 1 Mar
- 2024 07:05:30 +0000
-Received: from SJ2PR12MB8109.namprd12.prod.outlook.com
- ([fe80::6622:ec76:9367:3907]) by SJ2PR12MB8109.namprd12.prod.outlook.com
- ([fe80::6622:ec76:9367:3907%2]) with mapi id 15.20.7316.046; Fri, 1 Mar 2024
- 07:05:30 +0000
-Message-ID: <d9b6d49e-9485-4733-a2d6-615bcc8f6ef3@amd.com>
-Date: Fri, 1 Mar 2024 08:05:17 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] clk: zynq: Prevent null pointer dereference caused by
- kmalloc failure
-Content-Language: en-US
-To: Duoming Zhou <duoming@zju.edu.cn>, linux-kernel@vger.kernel.org
-Cc: linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
- mturquette@baylibre.com, sboyd@kernel.org
-References: <20240301070336.13700-1-duoming@zju.edu.cn>
-From: Michal Simek <michal.simek@amd.com>
-Autocrypt: addr=michal.simek@amd.com; keydata=
- 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
- 3i3l5DA=
-In-Reply-To: <20240301070336.13700-1-duoming@zju.edu.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: VI1P191CA0009.EURP191.PROD.OUTLOOK.COM
- (2603:10a6:800:1ba::13) To SN7PR12MB8101.namprd12.prod.outlook.com
- (2603:10b6:806:321::7)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.12; Fri, 1 Mar
+ 2024 07:07:52 +0000
+Received: from DM4PR11MB6020.namprd11.prod.outlook.com
+ ([fe80::7ab1:eed9:f084:6889]) by DM4PR11MB6020.namprd11.prod.outlook.com
+ ([fe80::7ab1:eed9:f084:6889%4]) with mapi id 15.20.7339.024; Fri, 1 Mar 2024
+ 07:07:51 +0000
+Date: Fri, 1 Mar 2024 15:07:37 +0800
+From: Chen Yu <yu.c.chen@intel.com>
+To: Abel Wu <wuyun.abel@bytedance.com>
+CC: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>, Juri Lelli
+	<juri.lelli@redhat.com>, Tim Chen <tim.c.chen@intel.com>, Tiwei Bie
+	<tiwei.btw@antgroup.com>, Honglei Wang <wanghonglei@didichuxing.com>, "Aaron
+ Lu" <aaron.lu@intel.com>, Chen Yu <yu.chen.surf@gmail.com>,
+	<linux-kernel@vger.kernel.org>, kernel test robot <oliver.sang@intel.com>
+Subject: Re: [RFC PATCH] sched/eevdf: Return leftmost entity in pick_eevdf()
+ if no eligible entity is found
+Message-ID: <ZeF+uc/jMohokNRb@chenyu5-mobl2>
+References: <20240226082349.302363-1-yu.c.chen@intel.com>
+ <758ebf4e-ee84-414b-99ec-182537bcc168@bytedance.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <758ebf4e-ee84-414b-99ec-182537bcc168@bytedance.com>
+X-ClientProxiedBy: SI2PR02CA0035.apcprd02.prod.outlook.com
+ (2603:1096:4:195::22) To DM4PR11MB6020.namprd11.prod.outlook.com
+ (2603:10b6:8:61::19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -123,111 +117,169 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR12MB8109:EE_|CYXPR12MB9443:EE_
-X-MS-Office365-Filtering-Correlation-Id: 04c39d84-ee2e-4fb1-f21c-08dc39bdfa87
+X-MS-TrafficTypeDiagnostic: DM4PR11MB6020:EE_|SJ0PR11MB5022:EE_
+X-MS-Office365-Filtering-Correlation-Id: bd52ada4-6722-4b2d-f7fc-08dc39be4f52
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	2SDrfKgkqwF91DPRbpJ3Z7sV8gllXHFs4nJTdFTRNODTwFj8RvuzPRFfN3jYvZPN9XejnQjBNtMidE/fqmcSikIznMRTflL7mMNeB/SydGw9bOY1NjKAPz0RuZDWl2T7dsPgel2vU/4DQHCbNua31VuMJ77bkeaC+zkYucJXXaOxyttDgf2KR/M3ZkBapcM8gytsq43iVt2F66+91uJZ66uWo2rZN+2KopQws9jFWq+uTKRzF/gFAoqHGIaXrecz+zO4FrWUZnFGLKLOY32qjBlr7/t5SWyWR/O24T2TqZNQlT+tSyAupWqfUb59XLQ9g1j59URIHaGaE0xG2bOFlCqujbgENfaZFAefilWs2b9R784KglP4VkDWhCZ0M0pTQXXuAqHczfPMKBqc5eSFiolwuCeAvIyC7suUEGP01wq6wVWJunjABBIVvUQquHZHzFlGXUF596OOWCX7nBK6rf3lAZhvKXwIFFXAqoWriMXefsWYe6PAvalIUCf01pLAhiXClIjhqOrETz2NLkK2T0cW0A/heuzLHLuu1iJl2akYdgsV3DQ+BCkEf4RlX1+k+R4HFLsrHcBY9AHcAPlBDXzgq2QLMuhzi0t2KY5pDsVH6hPCuVXn6ZfthwJwxVDzMS0iuBWUim5qY6RJn4uKDA==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR12MB8109.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: pwzgNEhTgTW3LRyv+Puc8OYJnm3HXFO1yz6U+31xczGbQG6RxSRiUwgm3Kxa38aeywk2t02j2DoofUgmUlDQnYrdFNeZVWqGma2+qVgFPJZY7MR2PErLEZJJlZ2IuEBU1lMT0rt8VN2QnEuusBNzgjqrMkY8XxSS4DhW7jKr5oydYj9pVsbxTedj5/HvnpZzvSp4TGyEwdcM8kV+Z/reNP85d2i5UQbE7Xl/ExGAAeaftS5x8vSDGwt+LJoQ040ZjNlnt9rkhtbtbz4l+WI5g5iDNHUv6r8ucsSfxVAizQuMj1SecoeJrc35OBw3344Zq3/dYy23UwgE3ocJIDmYRHNl0QxNmUTmeesZlhkJ6CgEplVZ/WjROA0tES3sBkDEj3H6Vkto/8lB4oV37xajQU5ZgQyta3XXc2G5+fGUEBRZ5/iTtlEeAi6r+xKSJReYv95TCwStyJWDl5LjuzasAkKWxKeNuCIFXoL0OtIcxb+wRCt0PhbqOvlpFs9Guuq8xfuuPf8ZuqxC+XeTG1W6XkFj6I9v+UaZawx+7ZfQGWKQTD+FgQ2+SP1VnpAWTCZ4SZwO3fL06J5IEkoFhPCJtqMDiKSpy1T9CR+FPwSYJvckOh5Kde63tW6i58DCmqA2xKownlLdoT1iCvOIhMJdtw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6020.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?cWNoWExia1ZxTVMvSE9uTjQ2WkJhZnhJVUVHaU1kZkFPMjd4eXp0Zk1kZ3ho?=
- =?utf-8?B?N1EvVHZOUDh2alhpbzJmNkNmUGJaR1dmZEFEaEVyT3o4VjIrR0J3RWV6dnc2?=
- =?utf-8?B?Mlh1OGltb29ONk5uUHd0L0twT2NZVElOb05lSkJ2NVR3SWpKeEdZNk5qM3hV?=
- =?utf-8?B?S3BFM2Z2OFU2OTA4ZVRNRFYvUkYyQ3Z4YWFhalZPVXU3TE1wNVo4ZXlJSHo3?=
- =?utf-8?B?Ujk5RHRXRkFGdDRpVTN4SE1YWDRaTU5nVzBmdnZsby9pODVLV1NtblNMUU1L?=
- =?utf-8?B?cnpha093NW5iNDBub05JbnloMG11ZWlrQjBwcE5pWU1Ka3lla2dKTFAwMHRH?=
- =?utf-8?B?MGh2cE1yOWRKOXRkOVNsOVY4cmVXb0VFNDBqTDVzajhKQjRDbEtUV1JScnBz?=
- =?utf-8?B?YlVxWXp2ZW1PZ3VEQTlmWjBac0hwek5TWUdSZ0NIWVQzTjJyMEd4dFcyZE0w?=
- =?utf-8?B?aXhITlVmYkFKMXBMNWhVb0E2RGdPdEVJREVoMzJXdUNLdTVyVFRKb2o3UCtF?=
- =?utf-8?B?OGJIVHVxZEJ3Z1AxZGNNZ1FuTFI0YmNQWU5EMzlDMTYwK0M0bkk0WGJsZEZS?=
- =?utf-8?B?bU41Y0JheFFvcDh2aGErSGFkVjc1aUZySzFqOFBxblJlMTBKMFVjV3B1Q3Bh?=
- =?utf-8?B?OXRYUmRwRVRiTi96ampxQWl0aUVNby8yTElMQ2VGSXZqNUlsMHloUjlqdGVD?=
- =?utf-8?B?aFVEUlNqNGEza0hRMUh0MTBsbmhUVmxKZ1NvZjJZNy9jWDBhaFJVbm9NM2JI?=
- =?utf-8?B?RXJnSXFhc1FtbTNubEFBT25oQ24wNlBCbnFLSGdJZnRUTU5wUDQzN3kzMDVp?=
- =?utf-8?B?ZUZNcldnVU5uQjZWUVNYQmJqMC8wUURxajF4WDdmcDZWWjE5Nm8rODkyaHZk?=
- =?utf-8?B?RjJ5eHJjSS9vQjUxeGdZQWdCdGcyTEZXalNxbWUyUTdSSFFQTjMxYXF2eXlC?=
- =?utf-8?B?cUpxZkZKT05RZ0hGUjRPUTlZUUxoeSt0YnlNL3J2dnZFSTVLRlV3aHNDWjBL?=
- =?utf-8?B?TURnTlBQcENaK05MdUVMY29yVzRWL2RBUThmVzc0TUJqSkt1Y21JS0JhQlRR?=
- =?utf-8?B?TlN6SEc3QWFBYmcvWkRPUTRzMnMwZFVGMVdkd1d1Wk1adnFkYnlpMDNxMDRu?=
- =?utf-8?B?Nm42NnFaUktVVnpxM2FQZDVuM0FzQk1EQTUzWnVwOVNQZ0d3QUhpRlZGUDNX?=
- =?utf-8?B?a1VkUjFvaEFQaWhEYTdxSTAyYTBXS2FTNlZxa1JpYzdNODlxUUM2bk41UHQ5?=
- =?utf-8?B?Vkp3VElaMlp0QWNJNVFVTkp4UVlxWE5RNjUxa3d5K2c1NWRzcEJXeWkxSDZa?=
- =?utf-8?B?aUFNeVA5RHBQOUtnWEc5SzhlcW5Wblh2STQzcnJCek9YVTZyZW1oZFpuVit4?=
- =?utf-8?B?WDR6K0J5bkFIS3V0cnIxZGlWdHVCME5aaTVFSUVSWGRDZGVoZ3ZQc3BLd21a?=
- =?utf-8?B?VDc1WWVVNytmeXZSSFdaeXJ1ZGZ4djdOUUs0YUpXa0FwenhuVmdTM2U3U0Jq?=
- =?utf-8?B?WjVaTXJ4M1MxMFZNRmZmMlBXVjluRUJiVy95bWNwL0ZuUXIvaWRxaWllS3dx?=
- =?utf-8?B?cEI5a0RDV2I4VmkzUXBiTVhTWml5QnllTFZ6bFdTMStBOW9LVGFPTlNNa2Vh?=
- =?utf-8?B?U3prbUs2THFlY095Y2dwTmYwRzRlNmdlZVl6YUpvcGNmcGI3VkZXam1vekVC?=
- =?utf-8?B?NVJLOW5qeEFTYm5oWFZ6dWVmaVB4MGFBUkdoMVZTazY2N3kwWEVRMG5mMSt4?=
- =?utf-8?B?U0JRbXRaUEFaYnhwRzJOTGhETDBka2dlaFJNZGtUMW9rU3dKQjJIR3NqajFi?=
- =?utf-8?B?MFF2WUlLYlF1TlozUG1pMXRHSFdXMFc4L0hOMFhicWgwWWFJT0EzMmU2akho?=
- =?utf-8?B?ZHdybmwvcktJTzhnaUREOTE1Yy8wUGNVQzNldkE2UjNPcHR4VEdiOEZNbnJE?=
- =?utf-8?B?aERRZDNaODRFQ3lCUzBpUVIwMHVNVnJoWWsrK0pGZTFQeVVKUS90Z0JqUE9B?=
- =?utf-8?B?elVzOEphQmc3ODI5Z2lOYnBScENCR0F1Q01Cb244dmpHT3JMSVlyeEswaUl2?=
- =?utf-8?B?SEpjNHlIUFh5anVmdlh5NUo2d2NJS1A4UkJVMHhvSUVqWlN0T2RxMmNOZWls?=
- =?utf-8?Q?T0ZU6UTw44V/bWtFTFr1RrLRA?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 04c39d84-ee2e-4fb1-f21c-08dc39bdfa87
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB8101.namprd12.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?jojD7NY0feEtMDY7iPsokPMSqIuKANgSS5FPL4UoJBG85q0F4xSCS0uJW+1x?=
+ =?us-ascii?Q?LSMeAsTgwvBvTMdLB5wZwJ86yVEJa5NYvzutEoCtNwtgdDVMAvkbZ16BvFmN?=
+ =?us-ascii?Q?ipUKRUI8reXwceO/LOHD/kYJaNeRGGYrgYpqHTD0Z2h0Nvw7G/DfH66/H73u?=
+ =?us-ascii?Q?MNCWA9n5rFftmRjh9KKBLa98rcVddYdePdjDYhX82+Uldj70xBlLXysHmyY/?=
+ =?us-ascii?Q?Z6oGCgZvwqKd0NaUCe5BfKGBkIoNPCMhqF/CJb9a/e0sh/ViXnIsaMbUnkqu?=
+ =?us-ascii?Q?KdGfFFtcQrrBofRFlFM5paFKuL6i9GC+1iSTlJiGAvXB/0YIMYLI0PBoEKiV?=
+ =?us-ascii?Q?mH97QIcGx3nIkc4OGF1Cx0TZD9TwrAQAWM+nOez/mP8HZSb3z33AzsA758KE?=
+ =?us-ascii?Q?8lb4EIeR58kl9mchkKjmnc0EUMyVVvHDwly07Tw01JCLrl+qvKq+b+bXTa2E?=
+ =?us-ascii?Q?4q9RiQSOazq9aT3sMuttWGeDAaIq7qpmm12oQT2L5lL+4UrJUwxIr4XC7IXQ?=
+ =?us-ascii?Q?7Vql1d33KTeZAGcULxJjbUYwT0J/NCE37F4YAQ5D+u4rC9yYJ45xqYGUOsyO?=
+ =?us-ascii?Q?OW7ltoJulSV7BCQIxCQz2Y+/xAdTQeGJp95RvPu4Km5mRu2vqghenIomGnjD?=
+ =?us-ascii?Q?5rdZjax8oyWvF0Disd51BJo4TTra2VdOkyMEoKd38H300Tz5k2ghxkaIpaBK?=
+ =?us-ascii?Q?c+wULVsBQJmpH8ULWLjInJemuMUe5mqGaMX0e7exE6Rcr6Y2KAMKo1bhyBnh?=
+ =?us-ascii?Q?s8/wRT6WrMVr8YDSHPB1c9oqhKlxNca1/1KFCbVvxhIOG/ceoTtkbnnXIUUs?=
+ =?us-ascii?Q?wQR3pQDxz1lYxRRDnetuwKINAsPrcZ/RA1aNcfrptLzBR2vnd1hc1zbZUl3u?=
+ =?us-ascii?Q?STmGjmjeuudq72ezReBUeTIOYKd+gp341KgI3vre5cHgfE0+5pO4o/YVxUKB?=
+ =?us-ascii?Q?JzpZtkssEzHdKUFQlx6p917k4QEs/ChScen2oWDU0LnrXLYWS7KZxqy3w88t?=
+ =?us-ascii?Q?g+dGw4ZDSpLfhhw487iJYxv+08qRx4oxMekOKQ2/6naPPWKYQOts3VDXqHK4?=
+ =?us-ascii?Q?4l+HPahG+4qnLGxuAymVcHMseeL1Ui03iM880Gk+Vw3i1MQpS7Gp3M/SNvZR?=
+ =?us-ascii?Q?FMAd1tPj+JpoaonVC1BHFsvNSDy0/jI5RSx63KLT43ckbSF7b+SrENUk7agf?=
+ =?us-ascii?Q?y9opPEYZdfB3O/a2e7IynuDQgfQrzqrgqiAn85A5MNsEtXXOEdNCDXfRr/7b?=
+ =?us-ascii?Q?wwfzEzO0hF3irFeVrlb5RSjkKYOG8PKn3Rdhxgz6edP1/Pkaa0pDu6ihzz8b?=
+ =?us-ascii?Q?TclE3z+UhqzLuagQnnm6izBNBAUsZdHJa8ihyIcaUsgAk0taUDSAke+jlP5I?=
+ =?us-ascii?Q?kQjorkD6Qglj3vpQddKkM8AuASEtQIKkbCXI2UzZL0vN9dIqxFJTvbrHKfUV?=
+ =?us-ascii?Q?ugOh3uG/Ktw2q+EbaSebjajpBsD15L/sOsl6Nkg2Xi7jiLfABWobQo9TU7PO?=
+ =?us-ascii?Q?uzHOOzduyL4oeL7Vz1jJ8GgPxutwrCLGxTXBSHWo9BftzXmo1Psv4BQDNthD?=
+ =?us-ascii?Q?yVN65MnAp7+fODAVKuNOpAWPtcROQ/xAL/tYdKlL?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: bd52ada4-6722-4b2d-f7fc-08dc39be4f52
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6020.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Mar 2024 07:05:30.6745
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Mar 2024 07:07:51.8063
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pWiYt28opzz2pEGz5sNLbJCIDeT3li8WCD9djJe9853TfueXqP6IxnLCntbhFFRD
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYXPR12MB9443
+X-MS-Exchange-CrossTenant-UserPrincipalName: PJ9glBhtZsrrh/otrtk3Uwk8Imf/r/Xv7mQ691xYZ2tC9AWspWa/7Eco62itABe5f4G5mTngdEXH6aVZiH/MAw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5022
+X-OriginatorOrg: intel.com
 
-
-
-On 3/1/24 08:03, Duoming Zhou wrote:
-> The kmalloc() in zynq_clk_setup() will return null if the
-> physical memory has run out. As a result, if we use snprintf()
-> to write data to the null address, the null pointer dereference
-> bug will happen.
+On 2024-02-29 at 17:00:18 +0800, Abel Wu wrote:
+> Hi Chen, thanks for detailed analysis.
 > 
-> This patch uses a stack variable to replace the kmalloc().
-> 
-> Fixes: 0ee52b157b8e ("clk: zynq: Add clock controller driver")
-> Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
-> ---
-> Changes in v3:
->    - Put stack variable in the head of the function and remove variable tmp.
-> 
->   drivers/clk/zynq/clkc.c | 7 ++-----
->   1 file changed, 2 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/clk/zynq/clkc.c b/drivers/clk/zynq/clkc.c
-> index 7bdeaff2bfd..45479653c3b 100644
-> --- a/drivers/clk/zynq/clkc.c
-> +++ b/drivers/clk/zynq/clkc.c
-> @@ -215,7 +215,7 @@ static void __init zynq_clk_setup(struct device_node *np)
->   	int i;
->   	u32 tmp;
->   	int ret;
-> -	char *clk_name;
-> +	char clk_name[16];
->   	unsigned int fclk_enable = 0;
->   	const char *clk_output_name[clk_max];
->   	const char *cpu_parents[4];
-> @@ -426,12 +426,10 @@ static void __init zynq_clk_setup(struct device_node *np)
->   			"gem1_emio_mux", CLK_SET_RATE_PARENT,
->   			SLCR_GEM1_CLK_CTRL, 0, 0, &gem1clk_lock);
->   
-> -	tmp = strlen("mio_clk_00x");
-> -	clk_name = kmalloc(tmp, GFP_KERNEL);
->   	for (i = 0; i < NUM_MIO_PINS; i++) {
->   		int idx;
->   
-> -		snprintf(clk_name, tmp, "mio_clk_%2.2d", i);
-> +		snprintf(clk_name, 16, "mio_clk_%2.2d", i);
+> The title of this patch sounds a little weird to me, since any
+> non-empty cfs_rq should have at least one eligible entity.
 
-I would prefer to use macro/define if that values has to match and have connection.
+My understanding is that, current + cfs_rq's tree has at least one
+eligible entity, as the current running entity is not on the tree.
+In vruntime_eligible() check, we consider all the entities on the
+tree, plus the current running one. So, it could be possible that
+all the entities on the tree are not eligible, while the current is
+eligible, no?
 
-Thanks,
-Michal
+> Besides, choosing the leftmost entity which could be non-eligible can be
+> sub-optimal, anyway this is only a workaround..
+>
+
+Yes, it is a workaround to show the possible scenario to bring NULL exception,
+and it was not root caused yet.
+ 
+> On 2/26/24 4:23 PM, Chen Yu Wrote:
+> > There is occasional report from lkp that the kernel hits the NULL pointer
+> > exception:
+> > 
+> > [  512.079810][ T8305] BUG: kernel NULL pointer dereference, address: 0000002c
+> > [  512.080897][ T8305] #PF: supervisor read access in kernel mode
+> > [  512.081636][ T8305] #PF: error_code(0x0000) - not-present page
+> > [  512.082337][ T8305] *pde = 00000000
+> > [  512.082829][ T8305] Oops: 0000 [#1] PREEMPT SMP
+> > [  512.083407][ T8305] CPU: 1 PID: 8305 Comm: watchdog Tainted: G        W
+> > [  512.086203][ T8305] EIP: set_next_entity (fair.c:?)
+> > 
+> > This is caused by NULL candidate returned by pick_eevdf() as Abel analyzed.
+> > After
+> > commit 2227a957e1d5 ("sched/eevdf: Sort the rbtree by virtual deadline")
+> > the NULL candidate would trigger the NULL pointer exception. While before
+> > this commit, there would be warning.
+> > 
+> > This NULL entity issue was always there before above commit. With debug
+> > patch to print the cfs_rq and all the entities in the tree, we have the
+> > information when the issue was reproduced:
+> > 
+> > [  514.461242][ T8390] cfs_rq avg_vruntime:386638640128 avg_load:2048 min_vruntime:763383370431
+> > [  514.535935][ T8390] current on_rq se 0xc5851400, deadline:18435852013562231446
+> > 			min_vruntime:18437121115753667698 vruntime:18435852013561943404, load:629
+> > [  514.536772][ T8390] Traverse rb-tree from left to right
+> > [  514.537138][ T8390]  se 0xec1234e0 deadline:763384870431 min_vruntime:763383370431 vruntime:763383370431 non-eligible
+> > [  514.537835][ T8390]  se 0xec4fcf20 deadline:763762447228 min_vruntime:763760947228 vruntime:763760947228 non-eligible
+> > [  514.538539][ T8390] Traverse rb-tree from topdown
+> > [  514.538877][ T8390]  middle se 0xec1234e0 deadline:763384870431 min_vruntime:763383370431 vruntime:763383370431 non-eligible
+> > [  514.539605][ T8390]  middle se 0xec4fcf20 deadline:763762447228 min_vruntime:763760947228 vruntime:763760947228 non-eligible
+> > [  514.540340][ T8390] Found best:0x0
+> > [  514.540613][ T8390] BUG: kernel NULL pointer dereference, address: 00000074
+> > 
+> > We can see that non of the entities in the tree are eligible, neither is
+> > the current entity on this cfs_rq. As a result, curr is set to NULL:
+> > if (curr && (!curr->on_rq || !entity_eligible(cfs_rq, curr)))
+> > 	curr = NULL;
+> > 
+> > and the best is set to NULL, which caused the problem:
+> > if (!best || (curr && entity_before(curr, best)))
+> > 	best = curr;
+> > 
+> > The cause is that, the curr is eligible, but vruntime_eligible()
+> > returns false. And the false negative is due to the following
+> > code in vruntime_eligible():
+> > 
+> > return avg >= (s64)(vruntime - cfs_rq->min_vruntime) * load;
+> > 
+> > According to the log, vruntime is 18435852013561943404, the
+> > cfs_rq->min_vruntime is 763383370431, the load is 629 + 2048 = 2677,
+> > thus:
+> > s64 delta = (s64)(18435852013561943404 - 763383370431) = -10892823530978643
+> >      delta * 2677 = 7733399554989275921
+> > that is to say, the multiply result overflow the s64, which turns the
+> > negative value into a positive value, thus eligible check fails.
+> 
+> Indeed.
+> 
+> > 
+> > So where is this insane huge vruntime 18435852013561943404 coming from?
+> > My guess is that, it is because the initial value of cfs_rq->min_vruntime
+> > is set to (unsigned long)(-(1LL << 20)). If the task(watchdog in this case)
+> > seldom scheduled in, its vruntime might not move forward too much and
+> > remain its original value by previous place_entity().
+> 
+> So why not just initialize to 0? The (unsigned long)(-(1LL << 20))
+> thing is dangerous as it can easily blow up lots of calculations in
+> lag, key, avg_vruntime and so on.
+> 
+
+Usually the min variable is initialized to a very large value, so later
+the real min can overwrite it easily. The 1LL << 20 was introduced decade ago
+in 67e9fb2a39a1, and I don't know why it is this value.
+
+
+> Say during this pre-life, which is about 1ms for 1024-weight entity,
+> there is only one entity running in this cfs_rq. Now another entity
+> with funny lag joins in, being placed somewhere at 0+ vruntime, so
+> cfs_rq->min_vruntime needs to be adjusted accordingly which leads to
+> the breakage of cfs_rq->curr's key as you showed above.
+>
+
+Yes, this is possible. 
+
+> > 
+> > The proper fix should deal with the overflow of entity_key() * load, but
+> > I don't have much clue on that, so propose this conservative method to
+> > restore the previous behavior before the mentioned commit.
+> 
+> Inspired by Xuewen's proposal, will it work if limit the key?
+>
+
+Yes we can, let me think about some debug code to demonstrate the scenario
+you described above.
+
+thanks,
+Chenyu 
 
