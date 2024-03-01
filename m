@@ -1,123 +1,174 @@
-Return-Path: <linux-kernel+bounces-88189-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88191-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA4C686DE54
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:32:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A64186DE5B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:36:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61974284296
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:32:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07EDD1F281C6
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:36:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 808576A8A5;
-	Fri,  1 Mar 2024 09:32:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="fZoVZco/"
-Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B3416A8B1;
+	Fri,  1 Mar 2024 09:35:51 +0000 (UTC)
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 872EF69DEA;
-	Fri,  1 Mar 2024 09:32:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61F816A354;
+	Fri,  1 Mar 2024 09:35:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709285568; cv=none; b=JjTNNM/pEEv/TrEIp4bHWCdGR+5edy5yimyLNW2jwDtYMlr8Qd7kctu9gSLG1EVlBXRVQnfKnHokcirD5vK2MuSjviCG804pnt+4elLsR3MVrxiEN+nvpY2DrK+aH7t2d8QzSKzGzVTf2DknV9RicVSQO3T/lP6B+Akx52Vxcoc=
+	t=1709285751; cv=none; b=BuS8B0cG0d77O0EOBDtcaNqFoaZ1hdjHnVEObLHEFnuQESxVS72/e8QihArcDQ92ILADlIj5qxdKn1Rxdzi0VCy+YA1f6wVwydqx7xhlIXQxg/IVDyvHcI9sFCEWz9URiaNCFKxfdJNVdJWTyKbWqGoTVdAqOHX+1Fgn7W+tUIg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709285568; c=relaxed/simple;
-	bh=DC2Cad3KEwAqbvBLXkQCORcnJPwGKb3sLm5mgUrejMk=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=pbzsnCNUyL5i1MQ+drx38giPSFYjPkqY5kNzltsxu+08MchvnXx4745umWSpJso9rtLAHkReX+Gu9cuHb5ydyis+yKKaWdONsuNDvhXpy9W+HLXQvXr7bKSc3jn/AQMweM8q9iBjvqNRm8yQhZFo2yk/C5pHbzPEBwxcIEBX2qg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=fZoVZco/; arc=none smtp.client-ip=116.203.91.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
+	s=arc-20240116; t=1709285751; c=relaxed/simple;
+	bh=8bNhQxbcCbIomd4dt6eew7xOLqapH0ekcPWsALbORUA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HCyJesxh9n05Ov6rKtkRTa9Yq8T6jGR/jAOfYOcKiIXDlHF2BIx42W9ORpqDtSynPCspYqlDVfyhFEj/hnI9MxkM71GfBpbEd1ovNpWXpLpioe9jdOm2srgQXFF0HVWUkAS0wqBeTRJvtjLEoUux3lGjYTku21Z00EOcFEPKU1E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-412bfacd146so8595005e9.0;
+        Fri, 01 Mar 2024 01:35:49 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709285748; x=1709890548;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1gjhUQtfjcW3P/Ik/3eAaSYAXs9I9SaEMNpWMrhksnk=;
+        b=V3wlWE9A9SjUqw0U9Dy/QqJm1wzspZv+ebCUApw2ayNwUmvlP/YEkQbfcHXdngSMai
+         nnxfkOvkghXCW5jdq59Yd5Urv7wCMVbdsOt2SLaya8NDVdjNXVSa7xV7Pzfo/STVV4vI
+         ONgweYrd0ggtsCe9JOkX8XWDEHmn11tfhlgUIhTBzfHeuNlRx/KdzL1GNpTFVIO4k/T0
+         9T5yCCNlSEPbwNZqZziyHclu/CgLB6I1rNEj5KoLJAa8rRZ/z892KM2ZvhHWcv9al+X9
+         MoEblBnW2fgezQ88tIBRq8z7gc0zckhDJUqLi5LuuDXi2pj6ah4FyLveOULL4Y2sK3UG
+         fklg==
+X-Forwarded-Encrypted: i=1; AJvYcCWxPjUkIo49xcvq2/2gYPzMFmG8NE1s5ReW+7EVc/IRDicjYaVxnHKFjqu9RvgA7DPR23SAkdd8NHVD+VrbuIDmY9BkJ8DXFJOaXj+DaKC88oYw/wsM+vrgpH47PKP1WKbwoLN3BmL6gwj/h+QYGy2jZm0TB0MXUODWibJdJUAo
+X-Gm-Message-State: AOJu0Yw2ejJZf3VYwmNTGlCXInLsX8aAuQTIyFoODWKXn3X9VA/osxM7
+	a4AjzlScfiXUnSX6xtCqdpHaRPqqzqG3NA8LQS83YnBV8/eGUQvGydQCtXIn
+X-Google-Smtp-Source: AGHT+IHJDI/TzDartf8NY/ZhFuVhtyIPZkGhPS1hZ/O9GtvpENuTyWbmh0D26/bAjBhR+zHpTBrJoA==
+X-Received: by 2002:a05:600c:154f:b0:412:bca4:6a00 with SMTP id f15-20020a05600c154f00b00412bca46a00mr1546337wmg.18.1709285747492;
+        Fri, 01 Mar 2024 01:35:47 -0800 (PST)
+Received: from gmail.com (fwdproxy-lla-006.fbsv.net. [2a03:2880:30ff:6::face:b00c])
+        by smtp.gmail.com with ESMTPSA id 1-20020a05600c024100b0040fddaf9ff4sm7830123wmj.40.2024.03.01.01.35.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Mar 2024 01:35:47 -0800 (PST)
+Date: Fri, 1 Mar 2024 01:35:44 -0800
+From: Breno Leitao <leitao@debian.org>
+To: Matthew Wood <thepacketgeek@gmail.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>, netdev@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v2] net: netconsole: Add continuation line
+ prefix to userdata messages
+Message-ID: <ZeGhcN/C7h1KWcTO@gmail.com>
+References: <20240229183602.321747-1-thepacketgeek@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
-	t=1709285564;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xWnCAqlRky59uzjgS2pvvw8UDh0s4NIkuKC9sP6iSjQ=;
-	b=fZoVZco/LUMLOlBuONfLUCRLh+wagOo3Ww6wG7ahhpmduuxyVjk/j2fYLtIT1XAhZ/U9BM
-	9+lw44/haRw7Dqzn7MWn7C/KPCbTq0rPOjdXN+S9B3LbxTVMtochpLyxjKUS9cFIDkaUvI
-	FUvhkZpgD1UhcavQoSbJon8jUFYmVscsqWZXAqgi25iSnf87TB0ncW89L4BigG3MFsvzDA
-	mXFNOSBNJbAuakQCMrB0sKM9tzOd5jDV/Wpm4IA7amOtF4T2xH4lvdbEPEjn4ykjoUoYDS
-	e1Z2vwOY3R55GgvhU7WROc2N5hBd4X2Uf7XDty6+LQO7vePZq/qBgszUDuh4RQ==
-Date: Fri, 01 Mar 2024 10:32:43 +0100
-From: Dragan Simic <dsimic@manjaro.org>
-To: Alexey Charkov <alchark@gmail.com>
-Cc: Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Heiko Stuebner <heiko@sntech.de>, Daniel Lezcano
- <daniel.lezcano@linaro.org>, Viresh Kumar <viresh.kumar@linaro.org>, Chen-Yu
- Tsai <wens@kernel.org>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/5] arm64: dts: rockchip: enable automatic active
- cooling on Rock 5B
-In-Reply-To: <CABjd4YwAq28C6gKTJKJdZQ_Fw1oEjR475oTS96xEXRj=XQ5_pg@mail.gmail.com>
-References: <20240229-rk-dts-additions-v3-0-6afe8473a631@gmail.com>
- <20240229-rk-dts-additions-v3-2-6afe8473a631@gmail.com>
- <823379825559bb76088c31f44f998dd3@manjaro.org>
- <CABjd4YybaQnKm+VpU_xVrCb=pxQ7oQXPHGZzn_u1w_h3yn7gwg@mail.gmail.com>
- <a8ebe39b28a34c3544481a4e43e61d2b@manjaro.org>
- <b16f1d40549554598a3658679ceba9bf@manjaro.org>
- <CABjd4YwAq28C6gKTJKJdZQ_Fw1oEjR475oTS96xEXRj=XQ5_pg@mail.gmail.com>
-Message-ID: <45f5c18094d9e2f8861c5d9ff37ad124@manjaro.org>
-X-Sender: dsimic@manjaro.org
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240229183602.321747-1-thepacketgeek@gmail.com>
 
-On 2024-03-01 09:30, Alexey Charkov wrote:
-> On Fri, Mar 1, 2024 at 12:25 PM Dragan Simic <dsimic@manjaro.org> 
-> wrote:
->> On 2024-03-01 07:17, Dragan Simic wrote:
->> > On 2024-03-01 06:21, Alexey Charkov wrote:
->> >> On Fri, Mar 1, 2024 at 1:25 AM Dragan Simic <dsimic@manjaro.org>
->> >> wrote:
->> >>> On 2024-02-29 20:26, Alexey Charkov wrote:
->> >>> > This links the PWM fan on Radxa Rock 5B as an active cooling device
->> >>> > managed automatically by the thermal subsystem, with a target SoC
->> >>> > temperature of 65C and a minimum-spin interval from 55C to 65C to
->> >>> > ensure airflow when the system gets warm
->> >>>
->> >>> I'd suggest that you replace "automatic active cooling" with "active
->> >>> cooling" in the patch subject.  I know, it may seem like more of the
->> >>> unnecessary nitpicking, :) but I hope you'll agree that "automatic"
->> >>> is actually redundant there.  It would also make the patch subject
->> >>> a bit shorter.
->> >>>
->> >>> Another option would be to replace "automatic active cooling" with
->> >>> "automatic fan control", which may actually be a better choice.
->> >>> I'd be happy with whichever one you prefer. :)
->> >>
->> >> Sounds good to me, thanks!
->> >
->> > I'm glad that you like it. :)
->> >
->> >>> Otherwise, please feel free to add:
->> >>>
->> >>> Reviewed-by: Dragan Simic <dsimic@manjaro.org>
->> >>
->> >> Thank you Dragan, much appreciated!
->> >
->> > Thank you for putting up with my nitpicking. :)
->> 
->> Perhaps the following tag would also be deserved for this patch:
->> 
->> Helped-by: Dragan Simic <dsimic@manjaro.org>
->> 
->> I hope you agree. :)
+On Thu, Feb 29, 2024 at 10:36:01AM -0800, Matthew Wood wrote:
+> Add a space (' ') prefix to every userdata line to match docs for
+> dev-kmsg. To account for this extra character in each userdata entry,
+> reduce userdata entry names (directory name) from 54 characters to 53.
 > 
-> Definitely! Thanks again for your feedback and contribution!
+> According to the dev-kmsg docs, a space is used for subsequent lines to
+> mark them as continuation lines.
+> 
+> > A line starting with ' ', is a continuation line, adding
+> > key/value pairs to the log message, which provide the machine
+> > readable context of the message, for reliable processing in
+> > userspace.
+> 
+> Testing for this patch::
+> 
+>  cd /sys/kernel/config/netconsole && mkdir cmdline0
+>  cd cmdline0
+>  mkdir userdata/test && echo "hello" > userdata/test/value
+>  mkdir userdata/test2 && echo "hello2" > userdata/test2/value
+>  echo "message" > /dev/kmsg
+> 
+> Outputs::
+> 
+>  6.8.0-rc5-virtme,12,493,231373579,-;message
+>   test=hello
+>   test2=hello2
+> 
+> And I confirmed all testing works as expected from the original patchset
+> 
+> v1 -> v2:
+> - Calculate 53 byte user data name from: entry length - formatting chars - value length
+> - Update docs to reflect 53 byte limit for user data name (director)
 
-I'm glad to help. :)
+I think the changelog needs to come after the --- below, but I will
+defer that to the maintainers.
+
+> Fixes: df03f830d099 ("net: netconsole: cache userdata formatted string in netconsole_target")
+> Signed-off-by: Matthew Wood <thepacketgeek@gmail.com>
+> ---
+>  Documentation/networking/netconsole.rst | 8 ++++----
+>  drivers/net/netconsole.c                | 8 +++++---
+>  2 files changed, 9 insertions(+), 7 deletions(-)
+> 
+> diff --git a/Documentation/networking/netconsole.rst b/Documentation/networking/netconsole.rst
+> index b28c525e5d1e..d55c2a22ec7a 100644
+> --- a/Documentation/networking/netconsole.rst
+> +++ b/Documentation/networking/netconsole.rst
+> @@ -180,7 +180,7 @@ Custom user data can be appended to the end of messages with netconsole
+>  dynamic configuration enabled. User data entries can be modified without
+>  changing the "enabled" attribute of a target.
+>  
+> -Directories (keys) under `userdata` are limited to 54 character length, and
+> +Directories (keys) under `userdata` are limited to 53 character length, and
+>  data in `userdata/<key>/value` are limited to 200 bytes::
+>  
+>   cd /sys/kernel/config/netconsole && mkdir cmdline0
+> @@ -197,8 +197,8 @@ Messages will now include this additional user data::
+>  Sends::
+>  
+>   12,607,22085407756,-;This is a message
+> - foo=bar
+> - qux=baz
+> +  foo=bar
+> +  qux=baz
+>  
+>  Preview the userdata that will be appended with::
+>  
+> @@ -218,7 +218,7 @@ The `qux` key is omitted since it has no value::
+>  
+>   echo "This is a message" > /dev/kmsg
+>   12,607,22085407756,-;This is a message
+> - foo=bar
+> +  foo=bar
+>  
+>  Delete `userdata` entries with `rmdir`::
+>  
+> diff --git a/drivers/net/netconsole.c b/drivers/net/netconsole.c
+> index 0de108a1c0c8..46e447ea41b8 100644
+> --- a/drivers/net/netconsole.c
+> +++ b/drivers/net/netconsole.c
+> @@ -43,9 +43,11 @@ MODULE_DESCRIPTION("Console driver for network interfaces");
+>  MODULE_LICENSE("GPL");
+>  
+>  #define MAX_PARAM_LENGTH	256
+> -#define MAX_USERDATA_NAME_LENGTH	54
+> -#define MAX_USERDATA_VALUE_LENGTH	200
+>  #define MAX_USERDATA_ENTRY_LENGTH	256
+> +#define MAX_USERDATA_VALUE_LENGTH	200
+> +#define MAX_USERDATA_NAME_LENGTH	MAX_USERDATA_ENTRY_LENGTH - \
+> +					MAX_USERDATA_VALUE_LENGTH - \
+> +					3 /* ' ' '=' '\n' characters */
+
+This is not beautiful even for my standards. I think something like the
+code below makes more sense, even if checkpatch is not happy.
+
+/* The number three below comes from ' ' + '=' + '\n' characters */
+#define MAX_USERDATA_NAME_LENGTH 	MAX_USERDATA_ENTRY_LENGTH - MAX_USERDATA_VALUE_LENGTH - 3 
 
