@@ -1,194 +1,89 @@
-Return-Path: <linux-kernel+bounces-87741-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87740-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 267E286D863
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:37:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BD2B386D862
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:36:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F3FC11C20E9D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 00:37:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ECA401C20BAA
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 00:36:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F14245C81;
-	Fri,  1 Mar 2024 00:37:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58FCC33C8;
+	Fri,  1 Mar 2024 00:36:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YR/nP0ye"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HMob+8Vk"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78CE7538B
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 00:37:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C72D2568
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 00:36:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709253450; cv=none; b=lIdq3Uffe4XGII5VNMNfx96b4yzMKOFKvfUJHpRWZO7uD0N704lQP43O6Gz555bZkHHB/sdt4Vsuu3KEJ1C1q7mUrSEtONfbf5tQgEoDZKNHhdM2C/AdntmScZxGI3M4xK7dOyjAEwOnv5AWLiJLG40cIDdqsPf4RtBp1V7WIvE=
+	t=1709253391; cv=none; b=ajtDRn7KHI6rUO2l1PZWfiqPl8F/xJQ7XPvqbeb3IQAscWlUCW0XOEq15jSIpTmQkrsL4OXupB5uCcJYgOrnqTbG1w2f/ZB3HZR9ULDcH1vOQVmNmAz9HatazVFAqT/Do3C3wGRMBiu6kHX9lcQniHpb89JfNNWz0junHW/WbKk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709253450; c=relaxed/simple;
-	bh=XRKjEm6PKQ9R1SbEeJLraW4dFbXuNtXD/2iSi0Qg4a4=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=t8VgBrTcx8XkuBbSicMvLvU7/EU08770FPXCdNjGi1h9ZyvvIQ+ihzXLM9ARn8lmvbPs+Nf7H5iJv8uwvzZAOvFtcaC/ujkpHuwQE1xlfLS1sm6e/CvK8EYc3MiEtrv3H/uhw17S0r038UdZRQTbstIsRM7iuT8EiWoiCqG/jL8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YR/nP0ye; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709253448; x=1740789448;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=XRKjEm6PKQ9R1SbEeJLraW4dFbXuNtXD/2iSi0Qg4a4=;
-  b=YR/nP0yeQLrhOoj+UqfmOkEPLSAI7GWZ0E94zdvqIDb2XqcWzboaYG77
-   Nj0vHa4xd0urWzKXBWnoI7zk0Xps8fKZO9fbuIlJoyp0/wU5aLMjI58lx
-   UM1X1mfNOD7Ge7wSSYKlbXZxWTIRAeubxb02apyTG1TYMv+w56WDVtKq5
-   8DIlkHo/WU+QcuVRId1Tdu/r/xbSC5m3hNi49ZRo43LnLtXeLSGE8BbUb
-   CDd7H5nJFfYJgcjoEBbY1NJ/lYw0tuMSF42IzGWNuLO0+fCSkW+WVM+rN
-   5G9uHpo+kCHMJ480L0PLrHhRW/hEEZFWom9J6Fqj6dYrtENHKwLGjkU9s
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="3944688"
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="3944688"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 16:37:27 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="7933575"
-Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by fmviesa009.fm.intel.com with ESMTP; 29 Feb 2024 16:37:26 -0800
-Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rfqtn-000DOP-1t;
-	Fri, 01 Mar 2024 00:37:18 +0000
-Date: Fri, 1 Mar 2024 08:35:47 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: fs/bcachefs/quota.c:130:15: warning: arithmetic between different
- enumeration types ('enum quota_types' and 'enum quota_counters')
-Message-ID: <202403010825.qnve2eAU-lkp@intel.com>
+	s=arc-20240116; t=1709253391; c=relaxed/simple;
+	bh=ShGRxPqNPfcifghubLV8w8xhZEaB9Yp77oxbIJa45kI=;
+	h=Date:From:To:Cc:Subject:Message-Id:Mime-Version:Content-Type; b=WKLphBhIj+bj4CuJ9gFRKNP1YXPmKF+9ZcANd+orjAQ/kjBYiayFcpziw5z5MJaFlbiOsm/VN1UyEG5/w2jSqBtX6+E5+JfTnCBpCcMMBbydaz5Uw/vVA9TfaJZlsCAjQ8i4aqIqSV6MytDQ+esfmLggMdmNG8m7b69LiokDEr8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HMob+8Vk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4DADC433C7;
+	Fri,  1 Mar 2024 00:36:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709253391;
+	bh=ShGRxPqNPfcifghubLV8w8xhZEaB9Yp77oxbIJa45kI=;
+	h=Date:From:To:Cc:Subject:From;
+	b=HMob+8Vkr389G28JaRGTdFJhWRB+Nd1cavSwugTLsTpgfA+KFlhbg2cv2ItyGIrWC
+	 r/ccUut0MevVfnMbF+UL+iFCMLcHvS7kWEzVx0uXHqQ0wXjUCs8sqs4pUg+qG7hX27
+	 +Vifnwkb/Mx2eS5Ljr1ctY2mSrg1TqfgTvs2fcLNKD6pXhZwQUBI1KDaJhQJ1QVypj
+	 ZpH4CPvTY1QjLSk/6LxrLlnjvH67tZixK5O1EQipq5YGzgCgMFAXEw8obo8MyS0Suo
+	 LXoaDwAPd0LWoNzUvGbe3UrQ0u+d3yecCN0J7TEnA/Lq3EP0KUgwXSQjiJeXh+wx27
+	 4UbsjeB1E5EQA==
+Date: Fri, 1 Mar 2024 09:36:27 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Masami Hiramatsu (Google) <mhiramat@kernel.org>, Steven Rostedt
+ <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+ linux-kernel@vger.kernel.org
+Subject: [GIT PULL] probes: Fixes for v6.8-rc5
+Message-Id: <20240301093627.14516d10f02a5ba9116e9702@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   87adedeba51a822533649b143232418b9e26d08b
-commit: 1c6fdbd8f2465ddfb73a01ec620cbf3d14044e1a bcachefs: Initial commit
-date:   4 months ago
-config: hexagon-randconfig-001-20240229 (https://download.01.org/0day-ci/archive/20240301/202403010825.qnve2eAU-lkp@intel.com/config)
-compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project edd4aee4dd9b5b98b2576a6f783e4086173d902a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240301/202403010825.qnve2eAU-lkp@intel.com/reproduce)
+Hi Linus,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403010825.qnve2eAU-lkp@intel.com/
+Probes fixes for v6.8-rc5:
 
-All warnings (new ones prefixed by >>):
-
-   In file included from fs/bcachefs/quota.c:2:
-   In file included from fs/bcachefs/bcachefs.h:184:
-   In file included from include/linux/bio.h:10:
-   In file included from include/linux/blk_types.h:10:
-   In file included from include/linux/bvec.h:10:
-   In file included from include/linux/highmem.h:10:
-   In file included from include/linux/mm.h:2168:
-   include/linux/vmstat.h:522:36: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
-     522 |         return node_stat_name(NR_LRU_BASE + lru) + 3; // skip "nr_"
-         |                               ~~~~~~~~~~~ ^ ~~~
-   In file included from fs/bcachefs/quota.c:2:
-   In file included from fs/bcachefs/bcachefs.h:184:
-   In file included from include/linux/bio.h:10:
-   In file included from include/linux/blk_types.h:10:
-   In file included from include/linux/bvec.h:10:
-   In file included from include/linux/highmem.h:12:
-   In file included from include/linux/hardirq.h:11:
-   In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/hexagon/include/asm/io.h:337:
-   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     547 |         val = __raw_readb(PCI_IOBASE + addr);
-         |                           ~~~~~~~~~~ ^
-   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     560 |         val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
-         |                                                         ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded from macro '__le16_to_cpu'
-      37 | #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
-         |                                                   ^
-   In file included from fs/bcachefs/quota.c:2:
-   In file included from fs/bcachefs/bcachefs.h:184:
-   In file included from include/linux/bio.h:10:
-   In file included from include/linux/blk_types.h:10:
-   In file included from include/linux/bvec.h:10:
-   In file included from include/linux/highmem.h:12:
-   In file included from include/linux/hardirq.h:11:
-   In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/hexagon/include/asm/io.h:337:
-   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     573 |         val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
-         |                                                         ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded from macro '__le32_to_cpu'
-      35 | #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
-         |                                                   ^
-   In file included from fs/bcachefs/quota.c:2:
-   In file included from fs/bcachefs/bcachefs.h:184:
-   In file included from include/linux/bio.h:10:
-   In file included from include/linux/blk_types.h:10:
-   In file included from include/linux/bvec.h:10:
-   In file included from include/linux/highmem.h:12:
-   In file included from include/linux/hardirq.h:11:
-   In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/hexagon/include/asm/io.h:337:
-   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     584 |         __raw_writeb(value, PCI_IOBASE + addr);
-         |                             ~~~~~~~~~~ ^
-   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     594 |         __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
-         |                                                       ~~~~~~~~~~ ^
-   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     604 |         __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
-         |                                                       ~~~~~~~~~~ ^
-   fs/bcachefs/quota.c:25:24: warning: variable 'dq' set but not used [-Wunused-but-set-variable]
-      25 |         struct bkey_s_c_quota dq;
-         |                               ^
->> fs/bcachefs/quota.c:130:15: warning: arithmetic between different enumeration types ('enum quota_types' and 'enum quota_counters') [-Wenum-enum-conversion]
-     130 |         }               m[QTYP_NR * Q_COUNTERS];
-         |                           ~~~~~~~ ^ ~~~~~~~~~~
-   fs/bcachefs/quota.c:612:28: warning: variable 'q' set but not used [-Wunused-but-set-variable]
-     612 |         struct bch_memquota_type *q;
-         |                                   ^
-   fs/bcachefs/quota.c:765:8: error: call to undeclared function 'COUNT_ARGS'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-     765 |         ret = bch2_btree_insert_at(c, NULL, NULL, NULL, 0,
-         |               ^
-   fs/bcachefs/btree_update.h:72:10: note: expanded from macro 'bch2_btree_insert_at'
-      72 |                 .nr             = COUNT_ARGS(__VA_ARGS__),              \
-         |                                   ^
-   10 warnings and 1 error generated.
+  - fprobe: Fix to allocate entry_data_size buffer for each rethook
+    instance. This fixes a buffer overrun bug (which leads a kernel
+    crash) when fprobe user uses its entry_data in the entry_handler.
 
 
-vim +130 fs/bcachefs/quota.c
+Please pull the latest probes-fixes-v6.8-rc5 tree, which can be found at:
 
-   124	
-   125	struct quota_msgs {
-   126		u8		nr;
-   127		struct {
-   128			u8	qtype;
-   129			u8	msg;
- > 130		}		m[QTYP_NR * Q_COUNTERS];
-   131	};
-   132	
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
+probes-fixes-v6.8-rc5
+
+Tag SHA1: 771e808cce33b2bac31d03006ec542ca6fc2585d
+Head SHA1: 6572786006fa96ad2c35bb31757f1f861298093b
+
+
+Masami Hiramatsu (Google) (1):
+      fprobe: Fix to allocate entry_data_size buffer with rethook instances
+
+----
+ kernel/trace/fprobe.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
+
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
