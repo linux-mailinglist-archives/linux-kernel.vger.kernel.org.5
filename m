@@ -1,94 +1,133 @@
-Return-Path: <linux-kernel+bounces-88534-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88535-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 075EA86E303
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:09:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBBF786E308
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:10:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ACC271F23008
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:09:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8EDCE282EF6
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:10:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1A9A6EF1D;
-	Fri,  1 Mar 2024 14:09:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7D246EEFB;
+	Fri,  1 Mar 2024 14:09:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="QGz6NdFg"
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="lM8WOcga"
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 469BC386;
-	Fri,  1 Mar 2024 14:09:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09A4D6EB79;
+	Fri,  1 Mar 2024 14:09:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709302175; cv=none; b=gzcfjZaVru3Lc4weCdj+B3mUwMnXvZmMD/QIYZBkUjHNyldTSkko1/Txsy4ap8Jt6R3cr8Egz1Y6i7jkf/E9GzvaCcnq385W8LU8hLqTUmw75ev9zTxDxmWzKm/vu2AYyfbUOc8GWRBTrzcrV9eGrkr/6JKRwH3mZIAN8Ix19nA=
+	t=1709302199; cv=none; b=Bnr+UEKrpR+zxXLtrTwVnvOHztgPC91VTycKlvI0Z647OM3EQE0aO85tLkok+WoSrPeY9u+CO0lhavSV1QgFy46KaValqC4gN+6MsglXfylqJA3zVXh0WaKjC+DleYkESf5uTUH8NQj4bPvBfophCVq6/wheNXWYRUJs75UwNRc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709302175; c=relaxed/simple;
-	bh=RaYNpGmrVadiHjqa16S0TTjuebrAS0T3s84R9QGXsZo=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=U8TGNWD9U9JFyxQMNYLpUCk91BaiRCvbTT8qEc781HODSC9yiGM7WltVAjnzl4Ts2Bwaq0YQPl6GIR7NhJlwVWmTSLN1s3+OmpJnZEYFL6qSDEjL1Jr3m4T3+ClyKu0DWl/eLLxGf+0MsgWFKSQFS/dHYhKJbt1wra6Cw9fFFb8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=QGz6NdFg; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=M4txhvSoqzm+pQ0oJBM9dOgmsCgm4a9Qa3DtNoGHbl8=; b=QGz6NdFgYOJt6tyCh20RZL3OL5
-	sEMIMP92ICXLgsQuF8pGcqbqEzKIjWJ0azwGAV2iTdJ9p5l85rBSdMYDxPtZlWMKZUXxJjxTF5qKL
-	AJq0wBUBp5Fge74uA6laM8P+8u/yyUQFF2IRntQKDhCmXyoBbpKxOmaQNdloYfvX2Iit3eBhpZsd2
-	Bhal+N9Z6PBwfMSkH3JFm+rw2n3fAA93Wq3TOWCDFWj/6pBGbCB6p/ndn9m0cZCinZooiLYYwvXN3
-	EOgwkKsfUiVLoG/DjjtPpPkIREYdR0kqntuF6gTJXhUf219agrMAZd1nGtEUQ7m4bvlPPGrYs6Tqw
-	jSADs/FA==;
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1rg3Zb-000B7a-Ru; Fri, 01 Mar 2024 15:09:15 +0100
-Received: from [178.197.248.31] (helo=linux.home)
-	by sslproxy01.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1rg3Zb-0009dA-36;
-	Fri, 01 Mar 2024 15:09:15 +0100
-Subject: Re: [PATCH net-next 1/2] net: nlmon: Remove init and uninit functions
-To: Breno Leitao <leitao@debian.org>, kuba@kernel.org, davem@davemloft.net,
- pabeni@redhat.com, edumazet@google.com
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, horms@kernel.org,
- dsahern@kernel.org
-References: <20240301134215.1264416-1-leitao@debian.org>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <79d68292-6491-4664-3de2-b8ea6c21e515@iogearbox.net>
-Date: Fri, 1 Mar 2024 15:09:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	s=arc-20240116; t=1709302199; c=relaxed/simple;
+	bh=8SNJXFocJybYWAAETOVv1TEYZIaxUQ2TZ7T/99SzvUM=;
+	h=Mime-Version:Content-Type:Date:Message-Id:From:Subject:Cc:To:
+	 References:In-Reply-To; b=srbN0GoqR3vjHiwd0qlYeYq1QyOaa+cIbnLw5DOe9lwqF788cGrnWnRMiy7neEkw/f06SqsZqfO8Yp5JCvC1h6/vLLSyY+xOnJtTz7I/SlBw/qn1qE9LfGKmJLyVDfUeKiIjXA7Tsi5mqeurSeNl8jBBjln1gd7YGZPt+mrCNlo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=lM8WOcga; arc=none smtp.client-ip=217.70.183.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id D87D22000E;
+	Fri,  1 Mar 2024 14:09:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709302192;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8SNJXFocJybYWAAETOVv1TEYZIaxUQ2TZ7T/99SzvUM=;
+	b=lM8WOcgal/GAYSfmKYiFd2PrZduh0Lidq2w93U4R1WOTMwx/ACXg69RwP2dvQzAZTxAJl6
+	Zs66mf73xi1zf52UoZjbjgVdcvDR4eoKiUP0LLqhlJ0JBTD+32HlN0d6wpTJJR/gLbBS25
+	DiKMiQYvPJdsDD4+FMQv7Lgw/GS3mGL4tqUZ9IuyKnRToydRSFcooe9I/+jLR0F9tAcDBk
+	efI9Yh3S7GoL/2YisW39jiAPrD7NLU9TO54NyC+qq2vlc7IwyGlnD32y54WAlHGyVhbobT
+	y59JAMOCS5ZkmdDuV26TmP0tuft5/+QEFB/sEQTG+se6yxzqUPv1MyaUlFtIWQ==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <20240301134215.1264416-1-leitao@debian.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27201/Fri Mar  1 10:25:20 2024)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Fri, 01 Mar 2024 15:09:50 +0100
+Message-Id: <CZIH21XQPA24.17TEKSPWLL7KR@bootlin.com>
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Subject: Re: [PATCH v2 02/11] dt-bindings: hwmon: lm75: use common hwmon
+ schema
+Cc: <linux-arm-kernel@lists.infradead.org>, <linux-i2c@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <linux-mips@vger.kernel.org>, "Gregory Clement"
+ <gregory.clement@bootlin.com>, "Vladimir Kondratiev"
+ <vladimir.kondratiev@mobileye.com>, "Thomas Petazzoni"
+ <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
+ <tawfik.bayouk@mobileye.com>, "Jean Delvare" <jdelvare@suse.com>,
+ <linux-hwmon@vger.kernel.org>
+To: "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>, "Guenter Roeck"
+ <linux@roeck-us.net>, "Linus Walleij" <linus.walleij@linaro.org>, "Andi
+ Shyti" <andi.shyti@kernel.org>, "Rob Herring" <robh+dt@kernel.org>,
+ "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley"
+ <conor+dt@kernel.org>, "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
+X-Mailer: aerc 0.15.2
+References: <20240229-mbly-i2c-v2-0-b32ed18c098c@bootlin.com>
+ <20240229-mbly-i2c-v2-2-b32ed18c098c@bootlin.com>
+ <6749c8df-c545-4aca-bc18-4dfe9c9f15b0@linaro.org>
+ <d78fd3ca-ed0b-40e5-8f8f-21db152a7402@roeck-us.net>
+ <CZIBCBQ2IB0E.2N3HAVO0P2SHT@bootlin.com>
+ <f802a1e0-cedd-488a-a6fb-df793718d94b@linaro.org>
+ <CZICOX6DR0SA.O876YRG8P03C@bootlin.com>
+ <d0826186-ac2a-4229-abd2-1be33fc177d6@linaro.org>
+In-Reply-To: <d0826186-ac2a-4229-abd2-1be33fc177d6@linaro.org>
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-On 3/1/24 2:42 PM, Breno Leitao wrote:
-> With commit 34d21de99cea9 ("net: Move {l,t,d}stats allocation to core and
-> convert veth & vrf"), stats allocation could be done on net core
-> instead of this driver.
-> 
-> With this new approach, the driver doesn't have to bother with error
-> handling (allocation failure checking, making sure free happens in the
-> right spot, etc). This is core responsibility now.
-> 
-> Remove the allocation in the nlmon driver and leverage the network
-> core allocation.
-> 
-> Signed-off-by: Breno Leitao <leitao@debian.org>
+Hello,
 
-Acked-by: Daniel Borkmann <daniel@iogearbox.net>
+On Fri Mar 1, 2024 at 12:35 PM CET, Krzysztof Kozlowski wrote:
+> On 01/03/2024 11:44, Th=C3=A9o Lebrun wrote:
+> > On Fri Mar 1, 2024 at 11:13 AM CET, Krzysztof Kozlowski wrote:
+> >> On 01/03/2024 10:41, Th=C3=A9o Lebrun wrote:
+> >>> On Fri Mar 1, 2024 at 7:53 AM CET, Guenter Roeck wrote:
+> >>>> On 2/29/24 22:37, Krzysztof Kozlowski wrote:
+> >>>>> On 29/02/2024 19:10, Th=C3=A9o Lebrun wrote:
+> >>>>>> Reference common hwmon schema which has the generic "label" proper=
+ty,
+> >>>>>> parsed by Linux hwmon subsystem.
+> >>>>>
+> >>>>> Please do not mix independent patchsets. You create unneeded
+> >>>>> dependencies blocking this patch. This patch depends on hwmon work,=
+ so
+> >>>>> it cannot go through different tree.
+> >>>
+> >>> I had to pick between this or dtbs_check failing on my DTS that uses =
+a
+> >>> label on temperature-sensor@48.
+> >>
+> >> I don't see how is that relevant. You can organize your branches as yo=
+u
+> >> wish, e.g. base one b4 branch on another and you will not have any war=
+nings.
+> >=20
+> > That is what I do, I however do not want mips-next to have errors when
+> > running dtbs_check. Having dtbs_check return errors is not an issue?
+>
+> You should ask your maintainer, but I don't understand how this is
+> achievable anyway. Subsystem bindings *should not* go via MIPS-next, so
+> how are you going to solve this?
+
+I thought it'd go in hwmon-next and be picked up by mips-next as well.
+It's clear now that the right approach is to send the lm75.yaml patch
+alone.
+
+I'll wait some more before sending a new revision that drops this
+lm75.yaml patch.
+
+Have a nice day,
+
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
+
 
