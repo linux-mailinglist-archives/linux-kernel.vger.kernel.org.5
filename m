@@ -1,136 +1,297 @@
-Return-Path: <linux-kernel+bounces-87927-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87928-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A51386DB25
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 06:30:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD5CC86DB29
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 06:31:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3982A1F22B31
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 05:30:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D1D981C20F67
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 05:31:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A11450271;
-	Fri,  1 Mar 2024 05:30:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4EB551037;
+	Fri,  1 Mar 2024 05:31:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="J9eA7fjU"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="ll+regE5"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2F3C50A8F;
-	Fri,  1 Mar 2024 05:30:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1776026ADB;
+	Fri,  1 Mar 2024 05:31:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709271010; cv=none; b=mRPFpVpe4o4ikiEHX2eVlLGxFXAa02Mr8VdSxUL5l8fJYNugo15XZiIpxlhHXQJGLkDFDtORQhiB6d/DzrCxK2a6GYmLPpQqJxaNsI3PZINqhRpbcTm6gKbC2E1UIz5iWHPWun8C1gkmcPWwOE/0eNg5ulM1YMmiR3sySuJLBwg=
+	t=1709271101; cv=none; b=tpMyQnD/MT82xuKXsTdUhkwg7g2WTWrovK1bA4h0AI86f6apkrWsCVAg4iZceTalrIigFSLJ2Ahxr4mXP1nwv0FZYWBubi1RUJVSiKRwO1G8mkVpKWLJt9SsdngT2DUouB1I6MsC0zVWqXCuj5TcDVd2WtzSMSW6zD+Vmc2HYwI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709271010; c=relaxed/simple;
-	bh=yUOV0dq5JKRNnbJJINmDoCKpgeqYWZeaU6kZotwZpuI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YVAVOxXLtZuJ7cHB/8MIZLJQn5UEfgQXcBLkkrCGS3zDw6DT4DhvCs3TD4u1KMD5omJL1IPtnwB1Nzu6rtzIN24LQ2oHwpfK/1GIYn92/S3hnFv14rEbD0u7+4flkuftRF8gSA/b4hwUgHyPjJDqeH/fLJDYBIyX/Al8hzfKMNo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=J9eA7fjU; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709271008; x=1740807008;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=yUOV0dq5JKRNnbJJINmDoCKpgeqYWZeaU6kZotwZpuI=;
-  b=J9eA7fjUYA+c3ntZewCi1fqt6XP8GYwFvasrMeLOZQb7SczLHZ0bRlKe
-   OkEon2YrujW8xG7BBwGRBlVzl0X5bSEFV5S3MPyMLpuMVriuLSI/YvSMA
-   yuqI7lPimlJGI53WmIAgCpUZKMh4rxVmQ6tcEqmZ0X+vCbPRZ3uJIPjdW
-   7/R0RMowK0T+7VMkhWwqaPAcVc3Rc7Bs0h7KpbjkgSVqZMFyC0wq0HSqg
-   XaGiJDvtgX62D7PSmVi3WMnR70MdvZ6sbrIyUUJTKIT/kB+UXQyg9RaXS
-   lAokeDbdVF53IC0q59BvpPB8Wp3PWU6Dookpuc4m9XEA0N+j2XL331rWG
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="15226247"
-X-IronPort-AV: E=Sophos;i="6.06,195,1705392000"; 
-   d="scan'208";a="15226247"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 21:30:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,195,1705392000"; 
-   d="scan'208";a="12766605"
-Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by orviesa003.jf.intel.com with ESMTP; 29 Feb 2024 21:29:59 -0800
-Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rfvT2-000DZ8-2R;
-	Fri, 01 Mar 2024 05:29:56 +0000
-Date: Fri, 1 Mar 2024 13:29:40 +0800
-From: kernel test robot <lkp@intel.com>
-To: =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
-	Brendan Higgins <brendanhiggins@google.com>,
-	David Gow <davidgow@google.com>, Kees Cook <keescook@chromium.org>,
-	Rae Moar <rmoar@google.com>, Shuah Khan <skhan@linuxfoundation.org>
-Cc: oe-kbuild-all@lists.linux.dev,
-	=?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-	James Morris <jamorris@linux.microsoft.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	"Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>,
-	Marco Pagani <marpagan@redhat.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Sean Christopherson <seanjc@google.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Thara Gopinath <tgopinath@microsoft.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Wanpeng Li <wanpengli@tencent.com>,
-	Zahra Tarkhani <ztarkhani@microsoft.com>, kvm@vger.kernel.org,
-	linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org,
-	linux-um@lists.infradead.org, x86@kernel.org
-Subject: Re: [PATCH v1 1/8] kunit: Run tests when the kernel is fully setup
-Message-ID: <202403011330.telj6BqQ-lkp@intel.com>
-References: <20240229170409.365386-2-mic@digikod.net>
+	s=arc-20240116; t=1709271101; c=relaxed/simple;
+	bh=Y/WXlWdTXXfNiXf5ygoSZ1f7zGTgMIxmvMfEgQaCags=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=DZjNn0bnY+nc/6DNjHUBMvSJmz6NlGck2NHVZ0h0y+GOMr0JZCvnX+pqYGGIhDkRZ9IAVEW1Uu+h+K4CuiXlRPOj8w6oc/zXw4wwrbhYR1IqFcykgqSEvy9wBTocspq29gB4pU0tTOAZaWMfItch+ep70MdC/tsbOTduJYV5mMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=ll+regE5; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4215KSKs005706;
+	Fri, 1 Mar 2024 05:31:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=yB1VJm2hOJUD0UuBaAKGnWCuyafuiIJJntQs+g3WvVA=; b=ll
+	+regE5MxXb+iv9UOSg3SrtQd2JZGeWRK+cTGmL9SL6EjTVU76By2vm21vHGatjFz
+	KfwWKbl8C3Qy8pkt7N4eXh1ZrOqiaZ0dzn27Z4i5JzNMOwNl6y56UnXNkysg1jfL
+	pmKg4sgFKCwYo2iT4FOda3fTFBfq/g8/gRt2zba2C+ewmN/xWN7kKEek8+rbMEnT
+	9Dwgk5gsTlTPhlAvAH8LPSNFMVuXQwvVVsXEXj8z3xYFScXE4otwhl2Mw8acRbVs
+	uXLl8pcmuziNvSrNgSs7IQW1KgHMRlgnImF6fDSbSRDJ2qhJYHYsDQQAfXT/B6B5
+	IOav246T/RQkO47bTWwQ==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wk5brrec5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 01 Mar 2024 05:31:27 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4215VQD5008730
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 1 Mar 2024 05:31:26 GMT
+Received: from [10.131.33.37] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 29 Feb
+ 2024 21:31:22 -0800
+Message-ID: <08018d07-79cf-cebd-aba5-214afbc5001d@quicinc.com>
+Date: Fri, 1 Mar 2024 11:01:19 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH V3 2/2] cpufreq: scmi: Register for limit change
+ notifications
+Content-Language: en-US
+To: Lukasz Luba <lukasz.luba@arm.com>,
+        Cristian Marussi
+	<cristian.marussi@arm.com>
+CC: <sudeep.holla@arm.com>, <linux-arm-kernel@lists.infradead.org>,
+        <pierre.gondois@arm.com>, <dietmar.eggemann@arm.com>,
+        <morten.rasmussen@arm.com>, <viresh.kumar@linaro.org>,
+        <rafael@kernel.org>, <linux-pm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_mdtipton@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>
+References: <20240227181632.659133-1-quic_sibis@quicinc.com>
+ <20240227181632.659133-3-quic_sibis@quicinc.com>
+ <f8bfc666-c216-44d5-a63b-99f04ff3b8ef@arm.com>
+ <2608b2d8-f3b0-b4f5-f8e4-1f2242043ded@quicinc.com>
+ <64c6a1bc-92f2-4f44-ab10-cbd2473746f3@arm.com>
+ <18c249b2-ce8c-435b-8d65-a1770a1f294e@arm.com> <ZeBqW04f8V4dHphn@pluto>
+ <7c82b316-89d9-470d-b46d-f86e81e2add3@arm.com> <ZeB0iCr9GpfUiOEg@pluto>
+ <66ca73cc-8bdd-453a-951c-5e0166340edd@arm.com>
+From: Sibi Sankar <quic_sibis@quicinc.com>
+In-Reply-To: <66ca73cc-8bdd-453a-951c-5e0166340edd@arm.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240229170409.365386-2-mic@digikod.net>
-
-Hi Micka�l,
-
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on d206a76d7d2726f3b096037f2079ce0bd3ba329b]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Micka-l-Sala-n/kunit-Run-tests-when-the-kernel-is-fully-setup/20240301-011020
-base:   d206a76d7d2726f3b096037f2079ce0bd3ba329b
-patch link:    https://lore.kernel.org/r/20240229170409.365386-2-mic%40digikod.net
-patch subject: [PATCH v1 1/8] kunit: Run tests when the kernel is fully setup
-config: arc-allmodconfig (https://download.01.org/0day-ci/archive/20240301/202403011330.telj6BqQ-lkp@intel.com/config)
-compiler: arceb-elf-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240301/202403011330.telj6BqQ-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403011330.telj6BqQ-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> lib/kunit/executor.c:18:31: warning: 'final_suite_set' defined but not used [-Wunused-variable]
-      18 | static struct kunit_suite_set final_suite_set = {};
-         |                               ^~~~~~~~~~~~~~~
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: JTiHW5wWJNNYXA4P757PcCEeffN7Jshm
+X-Proofpoint-ORIG-GUID: JTiHW5wWJNNYXA4P757PcCEeffN7Jshm
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-01_02,2024-02-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ mlxlogscore=999 malwarescore=0 suspectscore=0 priorityscore=1501
+ bulkscore=0 clxscore=1015 spamscore=0 mlxscore=0 impostorscore=0
+ adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403010043
 
 
-vim +/final_suite_set +18 lib/kunit/executor.c
 
-    17	
-  > 18	static struct kunit_suite_set final_suite_set = {};
-    19	
+On 2/29/24 19:45, Lukasz Luba wrote:
+> 
+> 
+> On 2/29/24 12:11, Cristian Marussi wrote:
+>> On Thu, Feb 29, 2024 at 11:45:41AM +0000, Lukasz Luba wrote:
+>>>
+>>>
+>>> On 2/29/24 11:28, Cristian Marussi wrote:
+>>>> On Thu, Feb 29, 2024 at 10:22:39AM +0000, Lukasz Luba wrote:
+>>>>>
+>>>>>
+>>>>> On 2/29/24 09:59, Lukasz Luba wrote:
+>>>>>>
+>>>>>>
+>>>>>> On 2/28/24 17:00, Sibi Sankar wrote:
+>>>>>>>
+>>>>>>>
+>>>>>>> On 2/28/24 18:54, Lukasz Luba wrote:
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> On 2/27/24 18:16, Sibi Sankar wrote:
+>>>>>>>>> Register for limit change notifications if supported and use
+>>>>>>>>> the throttled
+>>>>>>>>> frequency from the notification to apply HW pressure.
+>>>>>>>
+>>>>>>> Lukasz,
+>>>>>>>
+>>>>>>> Thanks for taking time to review the series!
+>>>>>>>
+>>>>>>>>>
+>>>>>>>>> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
+>>>>>>>>> ---
+>>>>>>>>>
+>>>>>>>>> v3:
+>>>>>>>>> * Sanitize range_max received from the notifier. [Pierre]
+>>>>>>>>> * Update commit message.
+>>>>>>>>>
+>>>>>>>>> ï¿½ drivers/cpufreq/scmi-cpufreq.c | 29 
+>>>>>>>>> ++++++++++++++++++++++++++++-
+>>>>>>>>> ï¿½ 1 file changed, 28 insertions(+), 1 deletion(-)
+>>>>>>>>>
+>>>>>>>>> diff --git a/drivers/cpufreq/scmi-cpufreq.c
+>>>>>>>>> b/drivers/cpufreq/scmi-cpufreq.c
+>>>>>>>>> index 76a0ddbd9d24..78b87b72962d 100644
+>>>>>>>>> --- a/drivers/cpufreq/scmi-cpufreq.c
+>>>>>>>>> +++ b/drivers/cpufreq/scmi-cpufreq.c
+>>>>>>>>> @@ -25,9 +25,13 @@ struct scmi_data {
+>>>>>>>>> ï¿½ï¿½ï¿½ï¿½ï¿½ int domain_id;
+>>>>>>>>> ï¿½ï¿½ï¿½ï¿½ï¿½ int nr_opp;
+>>>>>>>>> ï¿½ï¿½ï¿½ï¿½ï¿½ struct device *cpu_dev;
+>>>>>>>>> +ï¿½ï¿½ï¿½ struct cpufreq_policy *policy;
+>>>>>>>>> ï¿½ï¿½ï¿½ï¿½ï¿½ cpumask_var_t opp_shared_cpus;
+>>>>>>>>> +ï¿½ï¿½ï¿½ struct notifier_block limit_notify_nb;
+>>>>>>>>> ï¿½ };
+>>>>>>>>> +const struct scmi_handle *handle;
+>>>>>>
+>>>>>> I've missed this bit here.
+>>>>>
+>>>>> So for this change we actually have to ask Cristian or Sudeep
+>>>>> because I'm not sure if we have only one 'handle' instance
+>>>>> for all cpufreq devices.
+>>>>>
+>>>>> If we have different 'handle' we cannot move it to the
+>>>>> global single pointer.
+>>>>>
+>>>>> Sudeep, Cristian what do you think?
+>>>>
+>>>> I was just replying noticing this :D .... since SCMI drivers can be
+>>>> probed multiple times IF you defined multiple scmi top nodes in your DT
+>>>> containing the same protocol nodes, they receive a distinct 
+>>>> sdev/handle/ph
+>>>> for each probe...so any attempt to globalize these wont work...BUT...
+>>>>
+>>>> ...this is a bit of a weird setup BUT it is not against the spec and 
+>>>> it can
+>>>> be used to parallelize more the SCMI accesses to disjont set of 
+>>>> resources
+>>>> within the same protocol (a long story here...) AND this type of 
+>>>> setup is
+>>>> something that it is already used by some other colleagues of Sibi 
+>>>> working
+>>>> on a different line of products (AFAIK)...
+>>>>
+>>>> So, for these reasons, usually, all the other SCMI drivers have 
+>>>> per-instance
+>>>> non-global references to handle/sdev/ph....
+>>>>
+>>>> ...having said that, thought, looking at the structure of CPUFReq
+>>>> drivers, I am not sure that they can stand such a similar setup
+>>>> where multiple instances of this same driver are probed
+>>>>
+>>>> .... indeed the existent *ph refs above is already global....so it 
+>>>> wont already
+>>>> work anyway in case of multiple instances now...
+>>>>
+>>>> ...and if I look at how CPUFreq expects the signature of 
+>>>> scmi_cpufreq_get_rate()
+>>>> to be annd how it is implemented now using the global *ph reference, 
+>>>> it is
+>>>> clearly already not working cleanly on a multi-instance setup...
+>>>>
+>>>> ...now...I can imagine how to (maybe) fix the above removing the 
+>>>> globals and
+>>>> fixing this, BUT the question, more generally, is CPUFreq supposed 
+>>>> to work at all in
+>>>> this multi-probed mode of operation ?
+>>>> Does it even make sense to be able to support this in CPUFREQ ?
+>>>>
+>>>> (as an example in cpufreq,c there is static global cpufreq_driver
+>>>>    pointing to the arch-specific configured driver BUT that also holds
+>>>>    some .driver_data AND that cleraly wont be instance specific if you
+>>>>    probe multiple times and register with CPUFreq multiple times...)
+>>>>
+>>>>    More questions than answers here :D
+>>>>
+>>>
+>>> Thanks Cristian for instant response. Yes, indeed now we have more
+>>> questions :) (which is good). But that's good description of the
+>>> situation.
+>>>
+>>> So lets consider a few option what we could do now:
+>>> 1. Let Sibi add another global state the 'handle' but add
+>>>     a BUG_ON() or WARN_ON() in the probe path if the next
+>>>     'handle' instance is different than already set in global.
+>>>     This would simply mean that we don't support (yet)
+>>>     such configuration in a platform. As you said, we
+>>>     already have the *ph global, so maybe such platforms
+>>>     with multiple instances for this particular cpufreq and
+>>>     performance protocol don't exist yet.
+>>
+>> Yes this is the quickst way (and a WARN_ON() is better I'd say) but there
+>> are similar issues of "unicity" currently already with another vendor 
+>> SCMI
+>> drivers and custom protocol currently under review, so I was thinking to
+>> add a new common mechanism in SCMI to handle this ... not thought about
+>> this really in depth and I want to chat with Sudeep about this...
+>>
+>>> 2. Ask Sibi to wait with this change, till we refactor the
+>>>     exiting driver such that it could support easily those
+>>>     multiple instances. Then pick up this patch set.
+>>>     Although, we would also like to have those notifications from our
+>>>     Juno SCP reference FW, so the feature is useful.
+>>> 3. Ask Sibi to refactor his patch to somehow get the 'handle'
+>>>     in different way, using exiting code and not introduce this global.
+>>>
+>>
+>>> IHMO we could do this in steps: 1. and then 2. When
+>>> we create some mock platform to test this refactoring we can
+>>> start cleaning it.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+I should be able to volunteer a platform to test against when
+we have things ready.
+
+>>>
+>>
+>> Both of these options really beg an answer to my original previous q
+>> question...if we somehow enable this multi-probe support in the
+>> scmi-cpufreq.c driver by avoiding glbals refs, does this work at all in
+>> the context of CPUFreq ?
+> 
+> I don't know yet.
+> 
+>>
+>> ...or it is just that CPUFreq cannot handle such a configuration (and
+>> maybe dont want to) and so the only solution here is just 1. at first and
+>> then a common refined mechanism (as mentioned above) to ensure this 
+>> "unicity"
+>> of the probes for some drivers ?
+> 
+> This sounds reasonable.
+> 
+>>
+>> I'm not familiar enough to grasp if this "multi-probed" mode of 
+>> operation is
+>> allowed/supported by CPUFreq and, more important, if it makes any sense
+>> at all to be a supported mode...
+>>
+> 
+> OK, let me check some stuff in the code and think for a while on that.
+> Thanks Cristian!
+> 
+> Sibi, please give me a few days. In the meantime you can continue
+> on the 'boost' patch set probably.
+
+sure, thanks. I've plenty things to send out so no hurry ;)
+
+-Sibi
+
 
