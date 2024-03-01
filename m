@@ -1,328 +1,116 @@
-Return-Path: <linux-kernel+bounces-88738-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88713-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F54786E5F8
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:45:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 22AD686E5BD
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:38:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70C261C21830
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:45:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3DA411C21920
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:38:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB8458832;
-	Fri,  1 Mar 2024 16:38:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EDB84428;
+	Fri,  1 Mar 2024 16:38:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FdZyy0IP"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Sc0nKhFK"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F21BB3F9FE
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 16:38:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 017571FDB
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 16:38:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709311137; cv=none; b=qxE+tZgAZDvZvRMv2pDeSB6a+5S46VWFDmjg7o+DEgxg5jskz5BUurkL9Yok5TEsyQR8NgEVqUr1TaZzQpdIBvkSKUoT4gyLEcoi2Nr8/c9F5xOELKL61IPbfjeBp5/BfWNMFDGf46Wg5Sl9V5ix6pWpHmXGB1DUS0QGiuBrVtA=
+	t=1709311085; cv=none; b=SmK6Weq2IbzJ6s237pLeWvk/Z9UgWaBZj6aDOhxXDoVbo6TKMuIp7DXZCmqfEJPcutQA10y0+02NpGiI0M2EwvB64WmXxiySWVwlPuNC68M2Wq8R6c2hhJpt+5ax0VMrWNMJFFhDLxERpEYTmSZufqxnJMYTdctoJLQW6aPpc+M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709311137; c=relaxed/simple;
-	bh=+YU+DFYa36t0XHlc/+xgZbyWimKd8RtBolX8Ff61bVs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Bol6RFNQARlvms//RKHyGJvEZvS0yFJNc47znZts9bm+sFnI+ZN79NpiWgTpfnMPa1pkxjkIJM8YXix5v3vaRimK8QcH8T4HMn95sLsCScqTU9wz1v0JS+cRv2IIKvULHJPJtkO6ymbZczq62gcLPyP+TZqIQI23d0SOBeO1Fcg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FdZyy0IP; arc=none smtp.client-ip=170.10.133.124
+	s=arc-20240116; t=1709311085; c=relaxed/simple;
+	bh=aS1+wesxMC3304+Y6xIr3I7pfuQIDNnZAXBMf1sELWQ=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=AfqjpGuYDcWV3NvRmajdcrkl4k9LIkfD9sH0JbgHCjUaT/nXGkfWswubrv8a4tjO9xDFyM/9tLpBfOolh9cQUYggkp2b4RKLAkqJ+zKvpL47RAfX7f6701eptGGPwjs3SFxD7yBlq5e3IC+Fx1SsmtOApJzNYD75h/h5MDeFVJM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Sc0nKhFK; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709311134;
+	s=mimecast20190719; t=1709311082;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=x5jC1ywkJjQJ57JX0r0EDUWxh8r1trMoZVBFATzsPLw=;
-	b=FdZyy0IPOFI+yiuXe/awHUUyPUPqhZCiTcDEQ1RIjrzZJlvyTfn2WUNZwVOUdrjy+e9Y8p
-	USA0yB2gKBmqHPaOiV0pFdxfcS7GTCuHGvDdxrp9KcZdpUy5L7JQKKHOr7xno+sWAnnt69
-	C5khDBt9Du4WyRqGaRgT7P1SY7Br4sg=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-84-euEP_X5FMhuoGbaRsSFVyA-1; Fri, 01 Mar 2024 11:38:50 -0500
-X-MC-Unique: euEP_X5FMhuoGbaRsSFVyA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+	 to:to:cc:mime-version:mime-version:content-type:content-type;
+	bh=w5kX5tNV5k9mZgn3zO6nEfb0LWgxJCKy7vnkIWzw2ws=;
+	b=Sc0nKhFKLFEITh+wyuUA+/I+FSO7GoPuPvq4y+YHOwF2h12rl+2sWiB2D6yGh84OlkG1tl
+	8yFrcMZHC3jtE6lb146ojl4KFmID9NivQ1YA/tDCe/btHg3hmEyuKrtoQkNYrPjqNhNnwA
+	3Cvy7/2EiBzX8TK+9lN0OJjPrSpSv8U=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-689-fdQLSedOMiKO2bl8bYyBpw-1; Fri,
+ 01 Mar 2024 11:37:56 -0500
+X-MC-Unique: fdQLSedOMiKO2bl8bYyBpw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1E418108C060;
-	Fri,  1 Mar 2024 16:38:50 +0000 (UTC)
-Received: from warthog.procyon.org.com (unknown [10.42.28.114])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id F181A1807;
-	Fri,  1 Mar 2024 16:38:48 +0000 (UTC)
-From: David Howells <dhowells@redhat.com>
-To: netdev@vger.kernel.org
-Cc: David Howells <dhowells@redhat.com>,
-	Marc Dionne <marc.dionne@auristor.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	linux-afs@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 21/21] rxrpc: Extract useful fields from a received ACK to skb priv data
-Date: Fri,  1 Mar 2024 16:37:53 +0000
-Message-ID: <20240301163807.385573-22-dhowells@redhat.com>
-In-Reply-To: <20240301163807.385573-1-dhowells@redhat.com>
-References: <20240301163807.385573-1-dhowells@redhat.com>
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2E3793830094;
+	Fri,  1 Mar 2024 16:37:55 +0000 (UTC)
+Received: from localhost (unknown [10.22.9.150])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 5A24D2015B7D;
+	Fri,  1 Mar 2024 16:37:54 +0000 (UTC)
+Date: Fri, 1 Mar 2024 13:37:53 -0300
+From: "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>
+To: LKML <linux-kernel@vger.kernel.org>,
+	linux-rt-users <linux-rt-users@vger.kernel.org>,
+	stable-rt <stable-rt@vger.kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Carsten Emde <C.Emde@osadl.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Daniel Wagner <daniel.wagner@suse.com>,
+	Tom Zanussi <tom.zanussi@linux.intel.com>,
+	Clark Williams <williams@redhat.com>,
+	Mark Gross <markgross@kernel.org>, Pavel Machek <pavel@denx.de>,
+	Jeff Brady <jeffreyjbrady@gmail.com>,
+	Luis Goncalves <lgoncalv@redhat.com>
+Subject: [ANNOUNCE] 5.10.210-rt102
+Message-ID: <ZeIEYRctrbzCHDZh@uudg.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-Extract useful fields from a received ACK packet into the skb private data
-early on in the process of parsing incoming packets.  This makes the ACK
-fields available even before we've matched the ACK up to a call and will
-allow us to deal with path MTU discovery probe responses even after the
-relevant call has been completed.
+Hello RT-list!
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Marc Dionne <marc.dionne@auristor.com>
-cc: "David S. Miller" <davem@davemloft.net>
-cc: Eric Dumazet <edumazet@google.com>
-cc: Jakub Kicinski <kuba@kernel.org>
-cc: Paolo Abeni <pabeni@redhat.com>
-cc: linux-afs@lists.infradead.org
-cc: netdev@vger.kernel.org
----
- net/rxrpc/ar-internal.h |  7 +++--
- net/rxrpc/call_event.c  |  4 +--
- net/rxrpc/input.c       | 61 ++++++++++++++++++-----------------------
- net/rxrpc/io_thread.c   | 11 ++++++++
- 4 files changed, 45 insertions(+), 38 deletions(-)
+I'm pleased to announce the 5.10.210-rt102 stable release.
 
-diff --git a/net/rxrpc/ar-internal.h b/net/rxrpc/ar-internal.h
-index 21ecac22b51d..08c0a32db8c7 100644
---- a/net/rxrpc/ar-internal.h
-+++ b/net/rxrpc/ar-internal.h
-@@ -198,8 +198,8 @@ struct rxrpc_host_header {
-  * - max 48 bytes (struct sk_buff::cb)
-  */
- struct rxrpc_skb_priv {
--	struct rxrpc_connection *conn;	/* Connection referred to (poke packet) */
- 	union {
-+		struct rxrpc_connection *conn;	/* Connection referred to (poke packet) */
- 		struct {
- 			u16		offset;		/* Offset of data */
- 			u16		len;		/* Length of data */
-@@ -208,9 +208,12 @@ struct rxrpc_skb_priv {
- 		};
- 		struct {
- 			rxrpc_seq_t	first_ack;	/* First packet in acks table */
-+			rxrpc_seq_t	prev_ack;	/* Highest seq seen */
-+			rxrpc_serial_t	acked_serial;	/* Packet in response to (or 0) */
-+			u8		reason;		/* Reason for ack */
- 			u8		nr_acks;	/* Number of acks+nacks */
- 			u8		nr_nacks;	/* Number of nacks */
--		};
-+		} ack;
- 	};
- 	struct rxrpc_host_header hdr;	/* RxRPC packet header from this packet */
- };
-diff --git a/net/rxrpc/call_event.c b/net/rxrpc/call_event.c
-index 6c5e3054209b..7bbb68504766 100644
---- a/net/rxrpc/call_event.c
-+++ b/net/rxrpc/call_event.c
-@@ -93,12 +93,12 @@ void rxrpc_resend(struct rxrpc_call *call, struct sk_buff *ack_skb)
- 		sp = rxrpc_skb(ack_skb);
- 		ack = (void *)ack_skb->data + sizeof(struct rxrpc_wire_header);
- 
--		for (i = 0; i < sp->nr_acks; i++) {
-+		for (i = 0; i < sp->ack.nr_acks; i++) {
- 			rxrpc_seq_t seq;
- 
- 			if (ack->acks[i] & 1)
- 				continue;
--			seq = sp->first_ack + i;
-+			seq = sp->ack.first_ack + i;
- 			if (after(txb->seq, transmitted))
- 				break;
- 			if (after(txb->seq, seq))
-diff --git a/net/rxrpc/input.c b/net/rxrpc/input.c
-index 09cce1d5d605..3dedb8c0618c 100644
---- a/net/rxrpc/input.c
-+++ b/net/rxrpc/input.c
-@@ -710,20 +710,19 @@ static rxrpc_seq_t rxrpc_input_check_prev_ack(struct rxrpc_call *call,
- 					      rxrpc_seq_t seq)
- {
- 	struct sk_buff *skb = call->cong_last_nack;
--	struct rxrpc_ackpacket ack;
- 	struct rxrpc_skb_priv *sp = rxrpc_skb(skb);
- 	unsigned int i, new_acks = 0, retained_nacks = 0;
--	rxrpc_seq_t old_seq = sp->first_ack;
--	u8 *acks = skb->data + sizeof(struct rxrpc_wire_header) + sizeof(ack);
-+	rxrpc_seq_t old_seq = sp->ack.first_ack;
-+	u8 *acks = skb->data + sizeof(struct rxrpc_wire_header) + sizeof(struct rxrpc_ackpacket);
- 
--	if (after_eq(seq, old_seq + sp->nr_acks)) {
--		summary->nr_new_acks += sp->nr_nacks;
--		summary->nr_new_acks += seq - (old_seq + sp->nr_acks);
-+	if (after_eq(seq, old_seq + sp->ack.nr_acks)) {
-+		summary->nr_new_acks += sp->ack.nr_nacks;
-+		summary->nr_new_acks += seq - (old_seq + sp->ack.nr_acks);
- 		summary->nr_retained_nacks = 0;
- 	} else if (seq == old_seq) {
--		summary->nr_retained_nacks = sp->nr_nacks;
-+		summary->nr_retained_nacks = sp->ack.nr_nacks;
- 	} else {
--		for (i = 0; i < sp->nr_acks; i++) {
-+		for (i = 0; i < sp->ack.nr_acks; i++) {
- 			if (acks[i] == RXRPC_ACK_TYPE_NACK) {
- 				if (before(old_seq + i, seq))
- 					new_acks++;
-@@ -736,7 +735,7 @@ static rxrpc_seq_t rxrpc_input_check_prev_ack(struct rxrpc_call *call,
- 		summary->nr_retained_nacks = retained_nacks;
- 	}
- 
--	return old_seq + sp->nr_acks;
-+	return old_seq + sp->ack.nr_acks;
- }
- 
- /*
-@@ -756,10 +755,10 @@ static void rxrpc_input_soft_acks(struct rxrpc_call *call,
- {
- 	struct rxrpc_skb_priv *sp = rxrpc_skb(skb);
- 	unsigned int i, old_nacks = 0;
--	rxrpc_seq_t lowest_nak = seq + sp->nr_acks;
-+	rxrpc_seq_t lowest_nak = seq + sp->ack.nr_acks;
- 	u8 *acks = skb->data + sizeof(struct rxrpc_wire_header) + sizeof(struct rxrpc_ackpacket);
- 
--	for (i = 0; i < sp->nr_acks; i++) {
-+	for (i = 0; i < sp->ack.nr_acks; i++) {
- 		if (acks[i] == RXRPC_ACK_TYPE_ACK) {
- 			summary->nr_acks++;
- 			if (after_eq(seq, since))
-@@ -771,7 +770,7 @@ static void rxrpc_input_soft_acks(struct rxrpc_call *call,
- 				old_nacks++;
- 			} else {
- 				summary->nr_new_nacks++;
--				sp->nr_nacks++;
-+				sp->ack.nr_nacks++;
- 			}
- 
- 			if (before(seq, lowest_nak))
-@@ -832,7 +831,6 @@ static bool rxrpc_is_ack_valid(struct rxrpc_call *call,
- static void rxrpc_input_ack(struct rxrpc_call *call, struct sk_buff *skb)
- {
- 	struct rxrpc_ack_summary summary = { 0 };
--	struct rxrpc_ackpacket ack;
- 	struct rxrpc_skb_priv *sp = rxrpc_skb(skb);
- 	struct rxrpc_acktrailer trailer;
- 	rxrpc_serial_t ack_serial, acked_serial;
-@@ -841,29 +839,24 @@ static void rxrpc_input_ack(struct rxrpc_call *call, struct sk_buff *skb)
- 
- 	_enter("");
- 
--	offset = sizeof(struct rxrpc_wire_header);
--	if (skb_copy_bits(skb, offset, &ack, sizeof(ack)) < 0)
--		return rxrpc_proto_abort(call, 0, rxrpc_badmsg_short_ack);
--	offset += sizeof(ack);
--
--	ack_serial = sp->hdr.serial;
--	acked_serial = ntohl(ack.serial);
--	first_soft_ack = ntohl(ack.firstPacket);
--	prev_pkt = ntohl(ack.previousPacket);
--	hard_ack = first_soft_ack - 1;
--	nr_acks = ack.nAcks;
--	sp->first_ack = first_soft_ack;
--	sp->nr_acks = nr_acks;
--	summary.ack_reason = (ack.reason < RXRPC_ACK__INVALID ?
--			      ack.reason : RXRPC_ACK__INVALID);
-+	offset = sizeof(struct rxrpc_wire_header) + sizeof(struct rxrpc_ackpacket);
-+
-+	ack_serial	= sp->hdr.serial;
-+	acked_serial	= sp->ack.acked_serial;
-+	first_soft_ack	= sp->ack.first_ack;
-+	prev_pkt	= sp->ack.prev_ack;
-+	nr_acks		= sp->ack.nr_acks;
-+	hard_ack	= first_soft_ack - 1;
-+	summary.ack_reason = (sp->ack.reason < RXRPC_ACK__INVALID ?
-+			      sp->ack.reason : RXRPC_ACK__INVALID);
- 
- 	trace_rxrpc_rx_ack(call, ack_serial, acked_serial,
- 			   first_soft_ack, prev_pkt,
- 			   summary.ack_reason, nr_acks);
--	rxrpc_inc_stat(call->rxnet, stat_rx_acks[ack.reason]);
-+	rxrpc_inc_stat(call->rxnet, stat_rx_acks[summary.ack_reason]);
- 
- 	if (acked_serial != 0) {
--		switch (ack.reason) {
-+		switch (summary.ack_reason) {
- 		case RXRPC_ACK_PING_RESPONSE:
- 			rxrpc_complete_rtt_probe(call, skb->tstamp, acked_serial, ack_serial,
- 						 rxrpc_rtt_rx_ping_response);
-@@ -883,7 +876,7 @@ static void rxrpc_input_ack(struct rxrpc_call *call, struct sk_buff *skb)
- 	 * indicates that the client address changed due to NAT.  The server
- 	 * lost the call because it switched to a different peer.
- 	 */
--	if (unlikely(ack.reason == RXRPC_ACK_EXCEEDS_WINDOW) &&
-+	if (unlikely(summary.ack_reason == RXRPC_ACK_EXCEEDS_WINDOW) &&
- 	    first_soft_ack == 1 &&
- 	    prev_pkt == 0 &&
- 	    rxrpc_is_client_call(call)) {
-@@ -896,7 +889,7 @@ static void rxrpc_input_ack(struct rxrpc_call *call, struct sk_buff *skb)
- 	 * indicate a change of address.  However, we can retransmit the call
- 	 * if we still have it buffered to the beginning.
- 	 */
--	if (unlikely(ack.reason == RXRPC_ACK_OUT_OF_SEQUENCE) &&
-+	if (unlikely(summary.ack_reason == RXRPC_ACK_OUT_OF_SEQUENCE) &&
- 	    first_soft_ack == 1 &&
- 	    prev_pkt == 0 &&
- 	    call->acks_hard_ack == 0 &&
-@@ -937,7 +930,7 @@ static void rxrpc_input_ack(struct rxrpc_call *call, struct sk_buff *skb)
- 	call->acks_first_seq = first_soft_ack;
- 	call->acks_prev_seq = prev_pkt;
- 
--	switch (ack.reason) {
-+	switch (summary.ack_reason) {
- 	case RXRPC_ACK_PING:
- 		break;
- 	default:
-@@ -994,7 +987,7 @@ static void rxrpc_input_ack(struct rxrpc_call *call, struct sk_buff *skb)
- 	rxrpc_congestion_management(call, skb, &summary, acked_serial);
- 
- send_response:
--	if (ack.reason == RXRPC_ACK_PING)
-+	if (summary.ack_reason == RXRPC_ACK_PING)
- 		rxrpc_send_ACK(call, RXRPC_ACK_PING_RESPONSE, ack_serial,
- 			       rxrpc_propose_ack_respond_to_ping);
- 	else if (sp->hdr.flags & RXRPC_REQUEST_ACK)
-diff --git a/net/rxrpc/io_thread.c b/net/rxrpc/io_thread.c
-index 4a3a08a0e2cd..0300baa9afcd 100644
---- a/net/rxrpc/io_thread.c
-+++ b/net/rxrpc/io_thread.c
-@@ -124,6 +124,7 @@ static bool rxrpc_extract_header(struct rxrpc_skb_priv *sp,
- 				 struct sk_buff *skb)
- {
- 	struct rxrpc_wire_header whdr;
-+	struct rxrpc_ackpacket ack;
- 
- 	/* dig out the RxRPC connection details */
- 	if (skb_copy_bits(skb, 0, &whdr, sizeof(whdr)) < 0)
-@@ -141,6 +142,16 @@ static bool rxrpc_extract_header(struct rxrpc_skb_priv *sp,
- 	sp->hdr.securityIndex	= whdr.securityIndex;
- 	sp->hdr._rsvd		= ntohs(whdr._rsvd);
- 	sp->hdr.serviceId	= ntohs(whdr.serviceId);
-+
-+	if (sp->hdr.type == RXRPC_PACKET_TYPE_ACK) {
-+		if (skb_copy_bits(skb, sizeof(whdr), &ack, sizeof(ack)) < 0)
-+			return rxrpc_bad_message(skb, rxrpc_badmsg_short_ack);
-+		sp->ack.first_ack	= ntohl(ack.firstPacket);
-+		sp->ack.prev_ack	= ntohl(ack.previousPacket);
-+		sp->ack.acked_serial	= ntohl(ack.serial);
-+		sp->ack.reason		= ack.reason;
-+		sp->ack.nr_acks		= ack.nAcks;
-+	}
- 	return true;
- }
- 
+This release is just an update to the new stable 5.10.210 version and no
+RT-specific changes have been performed.
+
+You can get this release via the git tree at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+
+  branch: v5.10-rt
+  Head SHA1: 2e4f63341da86cf080b22925a8f4f8cb746b8e25
+
+Or to build 5.10.210-rt102 directly, the following patches should be applied:
+
+  https://www.kernel.org/pub/linux/kernel/v5.x/linux-5.10.tar.xz
+
+  https://www.kernel.org/pub/linux/kernel/v5.x/patch-5.10.210.xz
+
+  https://www.kernel.org/pub/linux/kernel/projects/rt/5.10/older/patch-5.10.210-rt102.patch.xz
+
+Signing key fingerprint:
+
+  9354 0649 9972 8D31 D464  D140 F394 A423 F8E6 7C26
+
+All keys used for the above files and repositories can be found on the
+following git repository:
+
+   git://git.kernel.org/pub/scm/docs/kernel/pgpkeys.git
+
+Enjoy!
+Luis
 
 
