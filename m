@@ -1,175 +1,200 @@
-Return-Path: <linux-kernel+bounces-88002-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88003-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50FB786DBFF
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:18:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E2B986DC01
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:19:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9682B26589
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 07:18:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3338928B76F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 07:19:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE55E6930F;
-	Fri,  1 Mar 2024 07:18:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C76E69949;
+	Fri,  1 Mar 2024 07:19:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="QbgeyEDU"
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="pfP7CLvZ"
+Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1793169940;
-	Fri,  1 Mar 2024 07:18:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D02146931B
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 07:19:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.112
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709277488; cv=none; b=EEr+WAF3pQc2hAePFvk1AiBPWgsquEO+63DRT4JWvga37+7MqvNxZw7O2OA6XLs1aaeGLsbu1Cci/2XIzdVbOLBogyKPedVhmsPl3ZJboNFGWJqNFKfURLEaHwK0gC7Wp5Qyzlgo3koi1IuPsZZshRWnKpvsNunmCCAYlfy8lAQ=
+	t=1709277571; cv=none; b=ePFxwAdORl5GmCgNoGkYyKitZyVwhbIyz5WA4u9ycZ5hqiVV2LtgK2ceJ9apma9G2RfYPLi8H7p8BHVSdTQxTb4/nWI3OThxLS7zjnvG+2qJjjc0+J4pKUkiERvKuL1PyMX2nWxckPguhADklG1mYlavuXmfTA6gQ91mWUKePMU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709277488; c=relaxed/simple;
-	bh=GbVSxdxOcXrMNMtwoCnXVKLHEXl3QoXDvb9SPjJL/Go=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rXJsRijSqsBAbf05quOwh4OHdSe/tmJ0Y4y0CQR2YeizkxWg96flcETtcwNmvpYzfgmPJttqmgusHEWU9RS2D6t4fByJiJSk2C2awQNcrzydYCkccmWDAUrxUZvo1toorTXpkXgBdaKxT199xHIjxtOpOfNK4a02VP72WM7yG4U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=QbgeyEDU; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 1C9E21C0006;
-	Fri,  1 Mar 2024 07:17:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-	t=1709277478;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lrWsSClDpsgyGzHOaL8tpqRTFE2Qs26x3Fav87hKIS4=;
-	b=QbgeyEDUeUMQOAPAbUNPlZUfudRBI8YM9TORjlY7M2cJeot2oDtllAcd0MjXUEnr5ZIZX1
-	p7KyYE+yeIDFTQ8yQPM/ufRM8qE/cq+c2eNJ85dh0mpaStnBthX56nTPnApoRI0AihsDkF
-	2/9EUpOLnnYTX/kKXISnEy6CzgF93YcJS+IzWLbfHW3wbZdVCVMkFOY9DGnPRrcWHktCq+
-	pnHg5rPZD9FjXi0nAkhUqTYBfKx3j0DXH1Rhl+1pCFfYQkJSE8jq3RrkdY+VYmv+1rcD3M
-	zlFgosSPF0xqqFX/CJ9MPl/p7Oqr645ldbp9SG2lOxBi/QZUBeIm20G6rHL0zA==
-Message-ID: <ac5feb1c-602d-4562-9aed-d949670dd0f0@arinc9.com>
-Date: Fri, 1 Mar 2024 09:17:52 +0200
+	s=arc-20240116; t=1709277571; c=relaxed/simple;
+	bh=8uclGvYnwgBo+pRR0QCV8T4jAbEr7kN0Zz+U0UsWlqU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=khsT6cMB2HtDWwlAQK11TwWMEw/iCiZPT0v+2CKqm6c4i8k7vaX2kmqJCycnodvTAkys4Gk29w646KNvGUh7pLJyjHDsGs1A6p84+RGN1qziLNT+eVaEANAYgtKgaCw1506uYMjUiNlJCzVRnt/Ac7o1CD7lvHiTOftN7z7gwao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=pfP7CLvZ; arc=none smtp.client-ip=115.124.30.112
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1709277559; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=lKxH1wti4AEphZSbDiXy/K+c1q2VHgxihXjjl65ACMw=;
+	b=pfP7CLvZjHbfv1T/HVBLRe6tsFlZ12vm7Po/YKcmvNO01gOZe+ruJOGmOqfUI0lkgB9aUZVhz6oy8n0FDmRLNDLsx23Jmt/4f6MvGmfrB92/jqLRsqYvdZzyN1aYYYJQy4+kef1U69hlB8AapBDn1loetzd/WqkI4TcgUwEiF3g=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0W1ZHnHc_1709277558;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W1ZHnHc_1709277558)
+          by smtp.aliyun-inc.com;
+          Fri, 01 Mar 2024 15:19:19 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: linux-kernel@vger.kernel.org
+Cc: Robin Murphy <robin.murphy@arm.com>,
+	Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>,
+	Christoph Hellwig <hch@lst.de>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	iommu@lists.linux.dev,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Zelin Deng <zelin.deng@linux.alibaba.com>
+Subject: [RFC] dma-mapping: introduce dma_can_skip_unmap()
+Date: Fri,  1 Mar 2024 15:19:18 +0800
+Message-Id: <20240301071918.64631-1-xuanzhuo@linux.alibaba.com>
+X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2 8/8] net: dsa: mt7530: simplify link
- operations and force link down on all ports
-To: Jakub Kicinski <kuba@kernel.org>,
- =?UTF-8?B?QXLEsW7DpyDDnE5BTCB2aWEgQjQgUmVsYXk=?=
- <devnull+arinc.unal.arinc9.com@kernel.org>
-Cc: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>,
- Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
- Florian Fainelli <f.fainelli@gmail.com>, Vladimir Oltean
- <olteanv@gmail.com>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Russell King <linux@armlinux.org.uk>, mithat.guner@xeront.com,
- erkin.bozoglu@xeront.com, Bartel Eerdekens <bartel.eerdekens@constell8.be>,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-References: <20240216-for-netnext-mt7530-improvements-3-v2-0-094cae3ff23b@arinc9.com>
- <20240216-for-netnext-mt7530-improvements-3-v2-8-094cae3ff23b@arinc9.com>
- <20240228174932.2500653d@kernel.org>
-Content-Language: en-US
-From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-In-Reply-To: <20240228174932.2500653d@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+X-Git-Hash: d1edb4657402
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: arinc.unal@arinc9.com
 
-Thanks for looking over this patch series Jakub!
+In a typical workflow, we first perform a dma map on an address to
+obtain a dma address, followed by a dma unmap on that address. Generally,
+this process works without issues. However, under certain circumstances,
+we require additional resources to manage these dma addresses. For
+instance, in layered architectures, we pass the dma address to another
+module, but retrieving it back from that module can present some
+challenges. In such cases, we must allocate extra resources to manage
+these dma addresses.
 
-On 29/02/2024 03:49, Jakub Kicinski wrote:
-> On Fri, 16 Feb 2024 14:05:36 +0300 Arınç ÜNAL via B4 Relay wrote:
->> From: Arınç ÜNAL <arinc.unal@arinc9.com>
->>
->> Currently, the link operations for switch MACs are scattered across
->> port_enable, port_disable, phylink_mac_config, phylink_mac_link_up, and
->> phylink_mac_link_down.
->>
->> port_enable and port_disable clears the link settings. Move that to
->> mt7530_setup() and mt7531_setup_common() which set up the switches. This
->> way, the link settings are cleared on all ports at setup, and then only
->> once with phylink_mac_link_down() when a link goes down.
->>
->> Enable force mode at setup to apply the force part of the link settings.
->> This ensures that only active ports will have their link up.
-> 
-> I don't know phylink so some basic questions..
-> 
-> What's "mode" in this case?
+However, considering that many times the dma unmap operation is actually
+a no-op, if we know in advance that unmap is not necessary, we can save
+on these extra management overheads. Moreover, we can directly skip the
+dma unmap operation. This would be advantageous.
 
-The mode here represents whether we will configure properties of the link
-manually (force mode), or by polling the PHY. The driver is supposed to
-configure the properties so we enable force mode on the port MAC registers.
+This tries to resolve the problem of patchset:
 
-MT7530 has a single bit for this, PMCR_FORCE_MODE. MT7531 has multiple
-bits, MT7531_FORCE_MODE, each of them enabling the force mode for a certain
-property of the link.
+ http://lore.kernel.org/all/20240225032330-mutt-send-email-mst@kernel.org
 
-> 
->> Now that the bit for setting the port on force mode is done on
->> mt7530_setup() and mt7531_setup_common(), get rid of PMCR_FORCE_MODE_ID()
->> which helped determine which bit to use for the switch model.
-> 
-> MT7531_FORCE_MODE also includes MT7531_FORCE_LNK, doesn't that mean
-> the link will be up?
+For a single packet, virtio-net may submit 1-19 dma addresses to virtio
+core. If the virtio-net maintains the dma addresses will waste too much
+memory when the unmap is not necessary. If the virtio-net retrieves the
+dma addresses of the packet from the virtio core, we need to hold the 19
+dma addresses by one call. And the net drivers maintain the dma is the
+future. So we hope to check the unmap is necessary or not.
 
-No, that one enables force mode for the link status property. The bit for
-setting the link status is PMCR_FORCE_LNK.
+Co-developed-by: Zelin Deng <zelin.deng@linux.alibaba.com>
+Signed-off-by: Zelin Deng <zelin.deng@linux.alibaba.com>
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+---
+ drivers/iommu/dma-iommu.c   | 11 +++++++++++
+ include/linux/dma-map-ops.h |  1 +
+ include/linux/dma-mapping.h |  5 +++++
+ kernel/dma/mapping.c        | 23 +++++++++++++++++++++++
+ 4 files changed, 40 insertions(+)
 
-I know the current naming of the bits is confusing. I have patch for this
-on my next patch series to improve it.
+diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+index 50ccc4f1ef81..8c661a0e1111 100644
+--- a/drivers/iommu/dma-iommu.c
++++ b/drivers/iommu/dma-iommu.c
+@@ -1706,6 +1706,16 @@ static size_t iommu_dma_opt_mapping_size(void)
+ 	return iova_rcache_range();
+ }
+ 
++static bool iommu_dma_opt_can_skip_unmap(struct device *dev)
++{
++	struct iommu_domain *domain = iommu_get_dma_domain(dev);
++
++	if (domain->type == IOMMU_DOMAIN_IDENTITY)
++		return true;
++	else
++		return false;
++}
++
+ static const struct dma_map_ops iommu_dma_ops = {
+ 	.flags			= DMA_F_PCI_P2PDMA_SUPPORTED,
+ 	.alloc			= iommu_dma_alloc,
+@@ -1728,6 +1738,7 @@ static const struct dma_map_ops iommu_dma_ops = {
+ 	.unmap_resource		= iommu_dma_unmap_resource,
+ 	.get_merge_boundary	= iommu_dma_get_merge_boundary,
+ 	.opt_mapping_size	= iommu_dma_opt_mapping_size,
++	.dma_can_skip_unmap	= iommu_dma_opt_can_skip_unmap,
+ };
+ 
+ /*
+diff --git a/include/linux/dma-map-ops.h b/include/linux/dma-map-ops.h
+index 4abc60f04209..d508fa90bc06 100644
+--- a/include/linux/dma-map-ops.h
++++ b/include/linux/dma-map-ops.h
+@@ -83,6 +83,7 @@ struct dma_map_ops {
+ 	size_t (*max_mapping_size)(struct device *dev);
+ 	size_t (*opt_mapping_size)(void);
+ 	unsigned long (*get_merge_boundary)(struct device *dev);
++	bool (*dma_can_skip_unmap)(struct device *dev);
+ };
+ 
+ #ifdef CONFIG_DMA_OPS
+diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
+index 4a658de44ee9..af5d9275f8cc 100644
+--- a/include/linux/dma-mapping.h
++++ b/include/linux/dma-mapping.h
+@@ -140,6 +140,7 @@ int dma_mmap_attrs(struct device *dev, struct vm_area_struct *vma,
+ 		void *cpu_addr, dma_addr_t dma_addr, size_t size,
+ 		unsigned long attrs);
+ bool dma_can_mmap(struct device *dev);
++bool dma_can_skip_unmap(struct device *dev);
+ bool dma_pci_p2pdma_supported(struct device *dev);
+ int dma_set_mask(struct device *dev, u64 mask);
+ int dma_set_coherent_mask(struct device *dev, u64 mask);
+@@ -249,6 +250,10 @@ static inline bool dma_can_mmap(struct device *dev)
+ {
+ 	return false;
+ }
++static inline bool dma_can_skip_unmap(struct device *dev)
++{
++	return false;
++}
+ static inline bool dma_pci_p2pdma_supported(struct device *dev)
+ {
+ 	return false;
+diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
+index 58db8fd70471..99a81932820b 100644
+--- a/kernel/dma/mapping.c
++++ b/kernel/dma/mapping.c
+@@ -445,6 +445,29 @@ bool dma_can_mmap(struct device *dev)
+ }
+ EXPORT_SYMBOL_GPL(dma_can_mmap);
+ 
++/**
++ * dma_can_skip_unmap - check if unmap can be skipped
++ * @dev: device to check
++ *
++ * Returns %true if @dev supports direct map or dma_can_skip_unmap() return true.
++ */
++bool dma_can_skip_unmap(struct device *dev)
++{
++	const struct dma_map_ops *ops = get_dma_ops(dev);
++
++	if (is_swiotlb_force_bounce(dev))
++		return false;
++
++	if (dma_map_direct(dev, ops))
++		return true;
++
++	if (ops->dma_can_skip_unmap)
++		return ops->dma_can_skip_unmap(dev);
++
++	return false;
++}
++EXPORT_SYMBOL_GPL(dma_can_skip_unmap);
++
+ /**
+  * dma_mmap_attrs - map a coherent DMA allocation into user space
+  * @dev: valid struct device pointer, or NULL for ISA and EISA-like devices
+-- 
+2.32.0.3.g01195cf9f
 
-> 
->> The "MT7621 Giga Switch Programming Guide v0.3", "MT7531 Reference Manual
->> for Development Board v1.0", and "MT7988A Wi-Fi 7 Generation Router
->> Platform: Datasheet (Open Version) v0.1" documents show that these bits are
->> enabled at reset:
->>
->> PMCR_IFG_XMIT(1) (not part of PMCR_LINK_SETTINGS_MASK)
->> PMCR_MAC_MODE (not part of PMCR_LINK_SETTINGS_MASK)
->> PMCR_TX_EN
->> PMCR_RX_EN
->> PMCR_BACKOFF_EN (not part of PMCR_LINK_SETTINGS_MASK)
->> PMCR_BACKPR_EN (not part of PMCR_LINK_SETTINGS_MASK)
->> PMCR_TX_FC_EN
->> PMCR_RX_FC_EN
->>
->> These bits also don't exist on the MT7530_PMCR_P(6) register of the switch
->> on the MT7988 SoC:
->>
->> PMCR_IFG_XMIT()
->> PMCR_MAC_MODE
->> PMCR_BACKOFF_EN
->> PMCR_BACKPR_EN
->>
->> Remove the setting of the bits not part of PMCR_LINK_SETTINGS_MASK on
->> phylink_mac_config as they're already set.
-> 
-> This should be a separate change.
-
-Sure, will do.
-
-> 
->> Suggested-by: Vladimir Oltean <olteanv@gmail.com>
->> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
-> 
->> @@ -2257,6 +2255,12 @@ mt7530_setup(struct dsa_switch *ds)
->>   	mt7530_mib_reset(ds);
->>   
->>   	for (i = 0; i < MT7530_NUM_PORTS; i++) {
->> +		/* Clear link settings and enable force mode to force link down
-> 
-> "Clear link settings to force link down" makes sense.
-> Since I don't know what the mode is, the "and enable force mode"
-> sounds possibly out of place. If you're only combining this
-> for the convenience of RMW, keep the reasoning separate.
-
-No. Force mode must be enabled so that we can manually set the link state.
-Then, clearing the link settings achieves setting the link status to down.
-
-Arınç
 
