@@ -1,169 +1,151 @@
-Return-Path: <linux-kernel+bounces-87800-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87802-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F347186D933
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 02:51:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F07186D936
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 02:52:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9BF5285A9A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:51:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ACDC51F25C62
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:52:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61DE838DFA;
-	Fri,  1 Mar 2024 01:51:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1121B36137;
+	Fri,  1 Mar 2024 01:51:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ip3sHbMI"
-Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="huy8Z9ze"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E85A6364BC
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 01:51:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E22B13399B
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 01:51:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709257883; cv=none; b=MEyS9nGlaXqLoIy0x+CxVHSpu0YCHpaal6nFQwOOo8yHwECWOvgc2aiIdu5HvCKFbkXC9bp8JXh7rLs+SSCf96X3hmXb3I/nyqY91QHUqvJRkQl8i5xQ0Ti5y34beBRr5lCDQZOA/hNNX2g7h+OGsJ3AbzL0/J7Gn9Q5vp8+504=
+	t=1709257900; cv=none; b=EzKuZ/jCu+QHVapQJ3vkNDWkQs0rlP6UAumsf/ft3mla+nQCH/9onvqOve8Kt2PSIaUGk4tsw+L18TCzgx70TDOTMDWArsKf2xV2upXlcwW2M0qBoJeylrA+2190j/J+27MqC6ftB+gbVSY+4vMCIWUB0hxSV4hZ4KVqVcgG3RA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709257883; c=relaxed/simple;
-	bh=ynSp4BOfTgMg4ogCAHRZ6Dvo2D19rcIObO4Ct27E17o=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=IYld7wOxegjnEr9lUfYgm8eb1b6ZUr52liDzsPehZ7O2uu1TUeklH4m4ErD1pqEChuk/uxu6PRNNWLEcCMGgUt6Zd2i9sjXGeUx90QGG377cEF9AzZ1qSch47BkmvzovJmbWY551JMLl3EJ9HTdvh9uOWT+D1Drtf1iXC8+RkvI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ip3sHbMI; arc=none smtp.client-ip=209.85.160.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-204235d0913so928926fac.1
-        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 17:51:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709257881; x=1709862681; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jiCxGhizFNRcTB4tNXp2x/NDTlkj4gUJN/57L1mqhmQ=;
-        b=ip3sHbMIeDpLc+d7dIDNdl/wjOF6EJevj8yb8S5qkEDlbgJTpvzANadccJvdqAAHvO
-         0tHBJ3v4M0ap6FxpNPRC7yhEY0zvX4ZeoLWdvnDUc2JcQVgnTc5xGEk1JFoGxnVhiCH3
-         uHftbM+ng70tOuRNx1czxCs7nq2TSWw21goVD0jkawQS00TpQiaYYR3S1toCy/lRwe0S
-         5IdC37gY6GOvx2OvIyhlUtZhBmgofvMqfXJUAzjvoInMsFz63R4PH6OpsrwaJg88dmRq
-         m1BrDlgmo7N3MRB0m+RmMhwv5rLHPYSvtcBb2VFnOB+4J6sGLkswIvw10SAGxeFHhAYK
-         Dl1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709257881; x=1709862681;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jiCxGhizFNRcTB4tNXp2x/NDTlkj4gUJN/57L1mqhmQ=;
-        b=MZ9NroaECZWz6ieHQqvgU2fC58ZejveZmUEbvdYT2Q0wK7qyM209HPhA6qoPos3cJm
-         4qfoxfmMDSWsxwXJvk2yZJ9BeS1YrUJk4zaNgKBLQu/hqhiICAiokKvyLYnFsWgpE9PV
-         4k+AFwxRQhEYHWPdnr1Cm7TAzf3eWiz+8k7eX6u45kjwj+RLd1dMFYTvagLa2TORJ0C6
-         UFZIn+MRgKTNCkQ3NDJmeXLYAUzqRPEoAbaRDSoRzPSslccJL/hGExHSdqzKv38easoc
-         0J1uxfVVriJ5LaS3k6UEBZ9/zEOOgDmcvwCVCHWn8g1JxEvbvAenorh8OPiAJvWLL07b
-         pc1Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVjhlA7IDB0PaSeK808seoGkwY/uZSvoldks3yL/pCjwIYCQ9RvGzGXAafZuXSg6XNs1NKd6zrGMOext69+vlSPP/3pZqzzgwUz8Z8I
-X-Gm-Message-State: AOJu0YxlMbejcP+pXgSP3DBV9lrc5C6IEjPe7PONuDqBwBb6s65CWles
-	v0YLvRm/a9plXK4Ky3rE2Ow2sDADpLtJWYUFc6LOAkKpLoQ+R6U8nEYf6s/hOAo=
-X-Google-Smtp-Source: AGHT+IGW/xHch8VdSjPLbyRX6s/pcxfNLRl0cQAlv9++DNTkn4NVmJyqUvzA/3mFGDn1HZks1resxA==
-X-Received: by 2002:a05:6870:b001:b0:21e:e9bd:afa9 with SMTP id y1-20020a056870b00100b0021ee9bdafa9mr296486oae.21.1709257881008;
-        Thu, 29 Feb 2024 17:51:21 -0800 (PST)
-Received: from localhost ([136.62.192.75])
-        by smtp.gmail.com with ESMTPSA id wo6-20020a056871a98600b0021fe6bbf8c2sm767017oab.31.2024.02.29.17.51.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 17:51:20 -0800 (PST)
-From: Sam Protsenko <semen.protsenko@linaro.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>,
-	Chanwoo Choi <cw00.choi@samsung.com>,
-	Alim Akhtar <alim.akhtar@samsung.com>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Tomasz Figa <tomasz.figa@gmail.com>,
-	linux-samsung-soc@vger.kernel.org,
-	linux-clk@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v4 3/3] arm64: dts: exynos: Add CPU clocks for Exynos850
-Date: Thu, 29 Feb 2024 19:51:18 -0600
-Message-Id: <20240301015118.30072-3-semen.protsenko@linaro.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240301015118.30072-1-semen.protsenko@linaro.org>
-References: <20240301015118.30072-1-semen.protsenko@linaro.org>
+	s=arc-20240116; t=1709257900; c=relaxed/simple;
+	bh=hFW6W71DX+J8HilFF8PSecokRa8ihHk28CG7/DMhH3w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Rlk7qNydeM7oaT3K9hsYcAfVPSWqiCqDAQ6C/PrHTG5enk/ACpNQ2ag4dnrwoMB3dCKJkSa+IXorYA8HDeCSNZOyH439nX8XjGj0J0q7PHy+c9BaqMxgELfYWQjaEo4AgHKcCYkv6ey/jwQPyMzQAwm2FwioJcsukQ6GIXUp7cU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=huy8Z9ze; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709257899; x=1740793899;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=hFW6W71DX+J8HilFF8PSecokRa8ihHk28CG7/DMhH3w=;
+  b=huy8Z9zeni11Ubf1UrQuvHqcE6RMqIDLA9Eo5JHFnnyW+MBdtOcbu/fR
+   4E9t+cWSDOtr4H73mKy6Tp8yRF6Zo1In/2+Dwo/WuztrgWm3KeDe6v1E4
+   tiCiO7Mqe/C21Rq5k5lzhRfEAUlHrLFUx5GTXBKyUl2/vDfkIAtKMcGcR
+   xYJUI+4LI969/QWks1nr7W19M8vv97We6DzKIcys5ixOIf4DFnnmJVNe7
+   WRBVItpXogiCbq18jrwN0RhMkCLqt7BSbqw4gORY4iNfa3WoI6tuC/i5I
+   E2Auhh6YgaE89cghmhSslLBasiVxer0zGQvuFc5CFW00/FzNAKO6hC1Be
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="15211690"
+X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
+   d="scan'208";a="15211690"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 17:51:38 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
+   d="scan'208";a="45581615"
+Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.124.229.115]) ([10.124.229.115])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 17:51:35 -0800
+Message-ID: <86db24b9-5461-4b6b-8858-a7ca2966c957@linux.intel.com>
+Date: Fri, 1 Mar 2024 09:51:34 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] iommu/vt-d: improve ITE fault handling if device was
+ released
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: baolu.lu@linux.intel.com, bhelgaas@google.com, robin.murphy@arm.com,
+ jgg@ziepe.ca, kevin.tian@intel.com, dwmw2@infradead.org, will@kernel.org,
+ lukas@wunner.de, yi.l.liu@intel.com, dan.carpenter@linaro.org,
+ iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20240229210726.GA363458@bhelgaas>
+From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+In-Reply-To: <20240229210726.GA363458@bhelgaas>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Define CPU cluster 0 and CPU cluster 1 CMUs, which generate CPU clocks,
-and add corresponding CPU clocks to CPU nodes.
 
-Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
----
-Changes in v4:
-  - none
+On 3/1/2024 5:07 AM, Bjorn Helgaas wrote:
+> On Wed, Feb 28, 2024 at 11:07:24PM -0500, Ethan Zhao wrote:
+>> Break the loop to blindly retry the timeout ATS invalidation request
+>> after ITE fault hit if device was released or isn't present anymore.
+>>
+>> This is part of the followup of prior proposed patchset
+>>
+>> https://do-db2.lkml.org/lkml/2024/2/22/350
+> Use lore URL, please.
 
-Changes in v3:
-  - none
+Sure !
 
-Changes in v2:
-  - Added "for Exynos850" part to the commit title
-
- arch/arm64/boot/dts/exynos/exynos850.dtsi | 26 +++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/exynos/exynos850.dtsi b/arch/arm64/boot/dts/exynos/exynos850.dtsi
-index 2ba67c3d0681..0706c8534ceb 100644
---- a/arch/arm64/boot/dts/exynos/exynos850.dtsi
-+++ b/arch/arm64/boot/dts/exynos/exynos850.dtsi
-@@ -93,6 +93,8 @@ cpu0: cpu@0 {
- 			compatible = "arm,cortex-a55";
- 			reg = <0x0>;
- 			enable-method = "psci";
-+			clocks = <&cmu_cpucl0 CLK_CLUSTER0_SCLK>;
-+			clock-names = "cluster0_clk";
- 		};
- 		cpu1: cpu@1 {
- 			device_type = "cpu";
-@@ -117,6 +119,8 @@ cpu4: cpu@100 {
- 			compatible = "arm,cortex-a55";
- 			reg = <0x100>;
- 			enable-method = "psci";
-+			clocks = <&cmu_cpucl1 CLK_CLUSTER1_SCLK>;
-+			clock-names = "cluster1_clk";
- 		};
- 		cpu5: cpu@101 {
- 			device_type = "cpu";
-@@ -254,6 +258,28 @@ cmu_peri: clock-controller@10030000 {
- 				      "dout_peri_uart", "dout_peri_ip";
- 		};
- 
-+		cmu_cpucl1: clock-controller@10800000 {
-+			compatible = "samsung,exynos850-cmu-cpucl1";
-+			reg = <0x10800000 0x8000>;
-+			#clock-cells = <1>;
-+
-+			clocks = <&oscclk>, <&cmu_top CLK_DOUT_CPUCL1_SWITCH>,
-+				 <&cmu_top CLK_DOUT_CPUCL1_DBG>;
-+			clock-names = "oscclk", "dout_cpucl1_switch",
-+				      "dout_cpucl1_dbg";
-+		};
-+
-+		cmu_cpucl0: clock-controller@10900000 {
-+			compatible = "samsung,exynos850-cmu-cpucl0";
-+			reg = <0x10900000 0x8000>;
-+			#clock-cells = <1>;
-+
-+			clocks = <&oscclk>, <&cmu_top CLK_DOUT_CPUCL0_SWITCH>,
-+				 <&cmu_top CLK_DOUT_CPUCL0_DBG>;
-+			clock-names = "oscclk", "dout_cpucl0_switch",
-+				      "dout_cpucl0_dbg";
-+		};
-+
- 		cmu_g3d: clock-controller@11400000 {
- 			compatible = "samsung,exynos850-cmu-g3d";
- 			reg = <0x11400000 0x8000>;
--- 
-2.39.2
-
+>
+>> Fixes: 6ba6c3a4cacf ("VT-d: add device IOTLB invalidation support")
+>> Signed-off-by: Ethan Zhao <haifeng.zhao@linux.intel.com>
+>> ---
+>>   drivers/iommu/intel/dmar.c | 25 +++++++++++++++++++++++++
+>>   1 file changed, 25 insertions(+)
+>>
+>> diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
+>> index d14797aabb7a..d01d68205557 100644
+>> --- a/drivers/iommu/intel/dmar.c
+>> +++ b/drivers/iommu/intel/dmar.c
+>> @@ -1273,6 +1273,9 @@ static int qi_check_fault(struct intel_iommu *iommu, int index, int wait_index)
+>>   {
+>>   	u32 fault;
+>>   	int head, tail;
+>> +	u64 iqe_err, ite_sid;
+>> +	struct device *dev = NULL;
+>> +	struct pci_dev *pdev = NULL;
+>>   	struct q_inval *qi = iommu->qi;
+>>   	int shift = qi_shift(iommu);
+>>   
+>> @@ -1317,6 +1320,13 @@ static int qi_check_fault(struct intel_iommu *iommu, int index, int wait_index)
+>>   		tail = readl(iommu->reg + DMAR_IQT_REG);
+>>   		tail = ((tail >> shift) - 1 + QI_LENGTH) % QI_LENGTH;
+>>   
+>> +		/*
+>> +		 * SID field is valid only when the ITE field is Set in FSTS_REG
+>> +		 * see Intel VT-d spec r4.1, section 11.4.9.9
+>> +		 */
+>> +		iqe_err = dmar_readq(iommu->reg + DMAR_IQER_REG);
+>> +		ite_sid = DMAR_IQER_REG_ITESID(iqe_err);
+>> +
+>>   		writel(DMA_FSTS_ITE, iommu->reg + DMAR_FSTS_REG);
+>>   		pr_info("Invalidation Time-out Error (ITE) cleared\n");
+>>   
+>> @@ -1326,6 +1336,21 @@ static int qi_check_fault(struct intel_iommu *iommu, int index, int wait_index)
+>>   			head = (head - 2 + QI_LENGTH) % QI_LENGTH;
+>>   		} while (head != tail);
+>>   
+>> +		/*
+>> +		 * If got ITE, we need to check if the sid of ITE is one of the
+>> +		 * current valid ATS invalidation target devices, if no, or the
+>> +		 * target device isn't presnet, don't try this request anymore.
+>> +		 * 0 value of ite_sid means old VT-d device, no ite_sid value.
+>> +		 */
+>> +		if (ite_sid) {
+>> +			dev = device_rbtree_find(iommu, ite_sid);
+>> +			if (!dev || !dev_is_pci(dev))
+>> +				return -ETIMEDOUT;
+>> +			pdev = to_pci_dev(dev);
+>> +			if (!pci_device_is_present(pdev) &&
+>> +				ite_sid == pci_dev_id(pci_physfn(pdev)))
+>> +				return -ETIMEDOUT;
+>> +		}
+>>   		if (qi->desc_status[wait_index] == QI_ABORT)
+>>   			return -EAGAIN;
+>>   	}
+>> -- 
+>> 2.31.1
+>>
 
