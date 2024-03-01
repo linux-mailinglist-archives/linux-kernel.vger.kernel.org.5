@@ -1,86 +1,97 @@
-Return-Path: <linux-kernel+bounces-89169-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89170-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F17FB86EB88
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 22:58:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F59786EB8E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 23:00:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9282D1F21385
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:58:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48B69283E6D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 22:00:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F8A859141;
-	Fri,  1 Mar 2024 21:58:53 +0000 (UTC)
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4533159154;
+	Fri,  1 Mar 2024 21:59:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pKUnQHHN"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9665C54273
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 21:58:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 855745820A;
+	Fri,  1 Mar 2024 21:59:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709330332; cv=none; b=lAmeBQKFWZw7L/zOT0N+wVjG42Y9MzUgRCKQykmWHX3V3YiyFLwcdYrDMl03GNd6Yz1nABGdroC2vy7JFD0sLwbagazx3ruAfbhM2npXeAf1yhdBKbBYm9geNpBMo5g2PzhBJG5j8KUaCQ0hB2MkniNQCFX8xOdVq7EuDiG1mf8=
+	t=1709330394; cv=none; b=FvXJkuz9pAlNP9obsHMwDDeA3InUivny6xYsgyH0mBb9lCcRnhJ/BuWRmJu6/mf/ByTsBDgSc4bLn4WQRQL7E6GIClM614CZ2Kkb7LIm7xVN7HlzSEfdf1iDbsEFHU4tZS1Bqey4qLn74UAkkpLB21v15bKfKqc1DACa4HFIZEc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709330332; c=relaxed/simple;
-	bh=qCBfkczFyAktNdJLsCmJAf1+pslthg3Q8FHNiNZ0JHY=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=LHnANpVQ7rmtxcaiP79xtzJY8ULSAjzhRazOUfVntoTLrygFu7hKlPcaXzMgIbHjvrcFQXGMZEn/8tfe6DEJkOsV/d0DK4m4XHS6r++dJYqf5kvhbsdERTCVP28iBc3Hgn+1i3m+pFGTn551f3FdG+lbwfDfnHprk6kW0O2kA0Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-187-ANi1P3KDNg-TLvPDunxNkw-1; Fri, 01 Mar 2024 21:58:45 +0000
-X-MC-Unique: ANi1P3KDNg-TLvPDunxNkw-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 1 Mar
- 2024 21:58:43 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Fri, 1 Mar 2024 21:58:43 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Chris Li' <chrisl@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>, Yosry Ahmed
-	<yosryahmed@google.com>, Nhat Pham <nphamcs@gmail.com>, Johannes Weiner
-	<hannes@cmpxchg.org>, "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Chengming Zhou <zhouchengming@bytedance.com>, Barry Song
-	<v-songbaohua@oppo.com>
-Subject: RE: [PATCH v2] zswap: replace RB tree with xarray
-Thread-Topic: [PATCH v2] zswap: replace RB tree with xarray
-Thread-Index: AQHaauvOjxzLEbVhBE68Iy55RbwJdrEjcLVw
-Date: Fri, 1 Mar 2024 21:58:43 +0000
-Message-ID: <26e77602326d4e169a9484314cac2465@AcuMS.aculab.com>
-References: <20240229-zswap-xarray-v2-1-e50284dfcdb1@kernel.org>
-In-Reply-To: <20240229-zswap-xarray-v2-1-e50284dfcdb1@kernel.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	s=arc-20240116; t=1709330394; c=relaxed/simple;
+	bh=Y2V62U5aslFtaRiD42vFs0nmxm2nJEvRBspXxCzXT3I=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=dlgVNkns9ca2uh+9gCEggyLzB/w1j3thbrkUoKUrxVs/kO/sX0IcbRApmtmlfUsZPg/QgAHutX4uWLffYNCzwkt3Fd4iRfTChHIIOgQJWRiVMFy01bVeYFhIIO5fzqZo2dM6nSVxRLE8a5bRRAarC0aVOzlwbeOZBZ1QPAed4gk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pKUnQHHN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEB4AC433F1;
+	Fri,  1 Mar 2024 21:59:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709330394;
+	bh=Y2V62U5aslFtaRiD42vFs0nmxm2nJEvRBspXxCzXT3I=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=pKUnQHHN9bTho5glIL8VG0JIXfFWmHBwUDKPbK3vBWPyceGuQHYPfqSOEnNkDTxH9
+	 VR075lFs8iOjitI1bYVd2MxDIdGKUfxldPF+G3URRXqrzJ97UI4IP4+f9Al8vnAFsf
+	 j3swxn23xx5XDhuvwbkcHCBbK+5xHXnb8ZOXx7Vmy6vZzsVFX+2rovHQ2lczfvmNYe
+	 cdw4dA548xXO7ixsXwuYhoVFc2vXdz7gvWVL2tNjWaMsvaAlIpoMvbTJXLzTo0MswZ
+	 YJ7Uk/g8XI/QcNowgyXjRNhnDIN4Tw9IOrQ2oAfqt0ooc5vezwoqPtqa+Vq4U5UGBI
+	 8E8amy1Q3FjGw==
+Date: Fri, 1 Mar 2024 15:59:52 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Alexander Stein <alexander.stein@ew.tq-group.com>
+Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Jonathan Corbet <corbet@lwn.net>, linux-pci@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] Documentation: PCI: pci-endpoint: Fix EPF ops list
+Message-ID: <20240301215952.GA409704@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240301105950.3067029-1-alexander.stein@ew.tq-group.com>
 
-RnJvbTogQ2hyaXMgTGkNCj4gU2VudDogMjkgRmVicnVhcnkgMjAyNCAwODo0Ng0KPiANCj4gVmVy
-eSBkZWVwIFJCIHRyZWUgcmVxdWlyZXMgcmViYWxhbmNlIGF0IHRpbWVzLiBUaGF0DQo+IGNvbnRy
-aWJ1dGVzIHRvIHRoZSB6c3dhcCBmYXVsdCBsYXRlbmNpZXMuIFhhcnJheSBkb2VzIG5vdA0KPiBu
-ZWVkIHRvIHBlcmZvcm0gdHJlZSByZWJhbGFuY2UuIFJlcGxhY2luZyBSQiB0cmVlIHRvIHhhcnJh
-eQ0KPiBjYW4gaGF2ZSBzb21lIHNtYWxsIHBlcmZvcm1hbmNlIGdhaW4uDQo+IA0KPiBPbmUgc21h
-bGwgZGlmZmVyZW5jZSBpcyB0aGF0IHhhcnJheSBpbnNlcnQgbWlnaHQgZmFpbCB3aXRoDQo+IEVO
-T01FTSwgd2hpbGUgUkIgdHJlZSBpbnNlcnQgZG9lcyBub3QgYWxsb2NhdGUgYWRkaXRpb25hbA0K
-PiBtZW1vcnkuDQoNCldoYXQgaXMgdGhlIGRpZmZlcmVuY2UgaW4ga2VybmVsIG1lbW9yeSB1c2U/
-DQpJSVJDIHNvbWVvbmUgcG9pbnRlZCBvdXQgKGluIHRoZSByb3NlYnVzaCB0aHJlYWQpIHRoYXQg
-eGFycmF5DQp1c2VzIGEgbG90IG9mIGtlcm5lbCBtZW1vcnkgaWYgdGhlIGl0ZW1zIGFyZSByYW5k
-b21seSBkaXN0cmlidXRlZC4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtl
-c2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBV
-Sw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+On Fri, Mar 01, 2024 at 11:59:50AM +0100, Alexander Stein wrote:
+> With commit 5779dd0a7dbd7 ("PCI: endpoint: Use notification chain
+> mechanism to notify EPC events to EPF") the linkup callback has been
+> removed and replaced by EPC event notifications.
+> With commit 256ae475201b1 ("PCI: endpoint: Add pci_epf_ops to expose
+> function-specific attrs") a new (optional) add_cfs callback was added.
+> Update documentation accordingly.
 
+Add blank lines between paragraphs or rewrap if you intend a single
+paragraph.
+
+> Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
+> ---
+>  Documentation/PCI/endpoint/pci-endpoint.rst | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/PCI/endpoint/pci-endpoint.rst b/Documentation/PCI/endpoint/pci-endpoint.rst
+> index 4f5622a655557..3961ff4e5bebf 100644
+> --- a/Documentation/PCI/endpoint/pci-endpoint.rst
+> +++ b/Documentation/PCI/endpoint/pci-endpoint.rst
+> @@ -172,8 +172,7 @@ by the PCI endpoint function driver.
+>  	 * bind: ops to perform when a EPC device has been bound to EPF device
+>  	 * unbind: ops to perform when a binding has been lost between a EPC
+>  	   device and EPF device
+> -	 * linkup: ops to perform when the EPC device has established a
+> -	   connection with a host system
+> +	 * add_cfs: optional ops to create function specific config attributes
+>  
+>    The PCI Function driver can then register the PCI EPF driver by using
+>    pci_epf_register_driver().
+> -- 
+> 2.34.1
+> 
 
