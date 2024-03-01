@@ -1,191 +1,210 @@
-Return-Path: <linux-kernel+bounces-88638-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88637-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4752086E4AD
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:48:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 778CC86E4A9
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:48:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 68EDF1C21CC3
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:48:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 153F6282416
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:48:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FA7770CDA;
-	Fri,  1 Mar 2024 15:47:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0908870CC3;
+	Fri,  1 Mar 2024 15:47:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="gnZwGnhu"
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ZUYjZh2B";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Njz2vMVw";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ZUYjZh2B";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Njz2vMVw"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCC456EF1F;
-	Fri,  1 Mar 2024 15:47:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8571241A92;
+	Fri,  1 Mar 2024 15:47:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709308064; cv=none; b=qUbe0nE1n+sVpRrFgABydTMgtDUzpXJVqxjEeyTKtMrT7oSfH2yEXwUHFD0K8Mk5kzRMD0QxF4QbrLm6A6y1jEHGmUQJmTdsCUBZloiovxVRHXemT+ggQUMak4qZxTkmKfe1BM7PT9QEf/F/I572tE2SBS8vDVUxUzrGlIYNAmQ=
+	t=1709308063; cv=none; b=V0MPvh6ZjLTluoNvyIh/bk7NqysHSzGzffjAmIOFe5ajhnUlrHebbbWLl4ZiBWUdShVNJcvnNS0T0/hIgWFfQ/TVF1g1piwq5432xf6iizRaabdh13862IBcquRJTrNEiMLn9AaNWVJvH+/Voh/8IbKVdfkwJQbw42Qd6UV60L0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709308064; c=relaxed/simple;
-	bh=/lpcu1cwKToP1YTl3Vb9NOZDrttRJdM4V2OIwh/bNeU=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Subject:Cc:To:From:
-	 References:In-Reply-To; b=keZvwJL6Q/t51SQg4uQwu+uibwAaFqnC3GZdC45RJ6OvdrgYZxxQiJdApzbgbq5pHkkQzhRnqpRTtsrnkO9ikknkdisNLPyhXwVG683nlgSlh88M3NZe4YCzdcKVTGe0aMEvGxAVHS3OFifcR9AOai+VKq2VsTGoPbW/tiWAwTY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=gnZwGnhu; arc=none smtp.client-ip=217.70.183.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id BDC736000D;
-	Fri,  1 Mar 2024 15:47:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709308055;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1709308063; c=relaxed/simple;
+	bh=UbKKEL1rphpwXYNJhxPqYWQmsVIuTy1Je/zhOiQE+rg=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=XgqNCvHhIBSDlOhDt71LbtBiUiYlgTGUqMdpslAatpe200XsutdNORtWsTjBMkYVeCbmdG2zPh8uj9coeUvK5QXRWUIAwLJMfKvcZqmMI7NP9oKM1egoJxoJcCsbr5rgUGKk5so1UE1jBnIN0lHWuzFHVovq/Q0U13qt851OLQ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ZUYjZh2B; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Njz2vMVw; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ZUYjZh2B; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Njz2vMVw; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 1AA6333C1D;
+	Fri,  1 Mar 2024 15:47:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1709308059; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=uE39Tdusc2iOYu8yciRGo5J13AkSfvwvY5k+yQjJTiM=;
-	b=gnZwGnhuFM4BkMTf3c2iQy2zn50vixMSBMJd1pZ/Uj585gJ7pwh7Rj/65XsyYXnpMcTQHD
-	urBkPI0KQ73Hber0gd+u09Ddbmb0+a+todMeqWvN4hzfA04RUhlZ5vHV/ajeY7MO7Ob52o
-	OgcyZbXgdDgVOuzBVzyjReeWYF0viu1xoCD9M7u6Z5H1gnweu9zhfCCCbC/WG1dGnJ66M+
-	uIV698Tbs/E0E2rlyjFlfqzzzA2O4hEg5xyY1bky16X2ad7VFBVXvNhaKiNor8AQaJDzpV
-	kWc6TZWTcHnksWEwM5rsFy45QORQxBFeYpwzqXBzjo/7E8Y9nW4yRMHIO0Gc5Q==
+	bh=52/83A0/AWTduQELOCqefhOgT0I/R+gHx6/VTGttMF0=;
+	b=ZUYjZh2BNJSW5AkzZ3ZlouuZvUyfyvNHSf76o50yzJGSqAgYF7/jAqx0HgvRnOtkGurRqy
+	Cj/eKp67j8S4yh++P4XCMAzf8yyxUkhYZrWfnG6i9e21vJRufqmD9qLH5pcp2/vxuoUTNx
+	Y2fDfdTErUhz8BhkDvgOaJqif3ZbX2U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1709308059;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=52/83A0/AWTduQELOCqefhOgT0I/R+gHx6/VTGttMF0=;
+	b=Njz2vMVwxy+5Ywh8aIY6fbVt941PiO8oEpQSFaXtp5Ano/7yQ/49L3FMQ/U3v8gLtL+8ZL
+	jheXYJCjYGR271AA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1709308059; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=52/83A0/AWTduQELOCqefhOgT0I/R+gHx6/VTGttMF0=;
+	b=ZUYjZh2BNJSW5AkzZ3ZlouuZvUyfyvNHSf76o50yzJGSqAgYF7/jAqx0HgvRnOtkGurRqy
+	Cj/eKp67j8S4yh++P4XCMAzf8yyxUkhYZrWfnG6i9e21vJRufqmD9qLH5pcp2/vxuoUTNx
+	Y2fDfdTErUhz8BhkDvgOaJqif3ZbX2U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1709308059;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=52/83A0/AWTduQELOCqefhOgT0I/R+gHx6/VTGttMF0=;
+	b=Njz2vMVwxy+5Ywh8aIY6fbVt941PiO8oEpQSFaXtp5Ano/7yQ/49L3FMQ/U3v8gLtL+8ZL
+	jheXYJCjYGR271AA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 504D513A80;
+	Fri,  1 Mar 2024 15:47:38 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id kmlFEJr44WUbBAAAD6G6ig
+	(envelope-from <lhenriques@suse.de>); Fri, 01 Mar 2024 15:47:38 +0000
+Received: from localhost (brahms.olymp [local])
+	by brahms.olymp (OpenSMTPD) with ESMTPA id f956f462;
+	Fri, 1 Mar 2024 15:47:37 +0000 (UTC)
+From: Luis Henriques <lhenriques@suse.de>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Theodore Ts'o <tytso@mit.edu>,  Andreas Dilger
+ <adilger.kernel@dilger.ca>,  Alexander Viro <viro@zeniv.linux.org.uk>,
+  Jan Kara <jack@suse.cz>,  Miklos Szeredi <miklos@szeredi.hu>,  Amir
+ Goldstein <amir73il@gmail.com>,  linux-ext4@vger.kernel.org,
+  linux-fsdevel@vger.kernel.org,  linux-unionfs@vger.kernel.org,
+  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] ext4: fix mount parameters check for empty values
+In-Reply-To: <20240301-spalten-impfschutz-4118b8fcf5b3@brauner> (Christian
+	Brauner's message of "Fri, 1 Mar 2024 14:36:55 +0100")
+References: <20240229163011.16248-1-lhenriques@suse.de>
+	<20240229163011.16248-3-lhenriques@suse.de>
+	<20240301-spalten-impfschutz-4118b8fcf5b3@brauner>
+Date: Fri, 01 Mar 2024 15:47:37 +0000
+Message-ID: <87edcu9co6.fsf@suse.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Fri, 01 Mar 2024 16:47:34 +0100
-Message-Id: <CZIJ4VQULK8C.QA1KAO3BTVR0@bootlin.com>
-Subject: Re: [PATCH v2 01/11] dt-bindings: i2c: nomadik: add
- mobileye,eyeq5-i2c bindings and example
-Cc: "Linus Walleij" <linus.walleij@linaro.org>, "Andi Shyti"
- <andi.shyti@kernel.org>, "Krzysztof Kozlowski"
- <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
- "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
- <linux-arm-kernel@lists.infradead.org>, <linux-i2c@vger.kernel.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <linux-mips@vger.kernel.org>, "Gregory Clement"
- <gregory.clement@bootlin.com>, "Vladimir Kondratiev"
- <vladimir.kondratiev@mobileye.com>, "Thomas Petazzoni"
- <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
- <tawfik.bayouk@mobileye.com>
-To: "Rob Herring" <robh@kernel.org>
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-X-Mailer: aerc 0.15.2
-References: <20240229-mbly-i2c-v2-0-b32ed18c098c@bootlin.com>
- <20240229-mbly-i2c-v2-1-b32ed18c098c@bootlin.com>
- <20240301151146.GA2114576-robh@kernel.org>
-In-Reply-To: <20240301151146.GA2114576-robh@kernel.org>
-X-GND-Sasl: theo.lebrun@bootlin.com
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=ZUYjZh2B;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=Njz2vMVw
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-6.51 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DWL_DNSWL_MED(-2.00)[suse.de:dkim];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[4];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[11];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_LAST(0.00)[];
+	 FREEMAIL_CC(0.00)[mit.edu,dilger.ca,zeniv.linux.org.uk,suse.cz,szeredi.hu,gmail.com,vger.kernel.org];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Score: -6.51
+X-Rspamd-Queue-Id: 1AA6333C1D
+X-Spam-Flag: NO
 
-Hello,
+Christian Brauner <brauner@kernel.org> writes:
 
-On Fri Mar 1, 2024 at 4:11 PM CET, Rob Herring wrote:
-> On Thu, Feb 29, 2024 at 07:10:49PM +0100, Th=C3=A9o Lebrun wrote:
-> > Add EyeQ5 bindings to the existing Nomadik I2C dt-bindings. Add the
-> > EyeQ5-specific property behind a conditional. Add an example for this
-> > compatible.
-> >=20
-> > Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
-> > ---
-> >  .../devicetree/bindings/i2c/st,nomadik-i2c.yaml    | 48 ++++++++++++++=
-++++++--
-> >  1 file changed, 44 insertions(+), 4 deletions(-)
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/i2c/st,nomadik-i2c.yaml =
-b/Documentation/devicetree/bindings/i2c/st,nomadik-i2c.yaml
-> > index 16024415a4a7..2d9d5b276762 100644
-> > --- a/Documentation/devicetree/bindings/i2c/st,nomadik-i2c.yaml
-> > +++ b/Documentation/devicetree/bindings/i2c/st,nomadik-i2c.yaml
-> > @@ -14,9 +14,6 @@ description: The Nomadik I2C host controller began it=
-s life in the ST
-> >  maintainers:
-> >    - Linus Walleij <linus.walleij@linaro.org>
-> > =20
-> > -allOf:
-> > -  - $ref: /schemas/i2c/i2c-controller.yaml#
-> > -
-> >  # Need a custom select here or 'arm,primecell' will match on lots of n=
-odes
-> >  select:
-> >    properties:
-> > @@ -24,6 +21,7 @@ select:
-> >        contains:
-> >          enum:
-> >            - st,nomadik-i2c
-> > +          - mobileye,eyeq5-i2c
-> >    required:
-> >      - compatible
-> > =20
-> > @@ -39,6 +37,10 @@ properties:
-> >            - const: stericsson,db8500-i2c
-> >            - const: st,nomadik-i2c
-> >            - const: arm,primecell
-> > +      # The variant found on Mobileye EyeQ5
+> On Thu, Feb 29, 2024 at 04:30:09PM +0000, Luis Henriques wrote:
+>> Now that parameters that have the flag 'fs_param_can_be_empty' set and
+>> their value is NULL are handled as 'flag' type, we need to properly check
+>> for empty (NULL) values.
+>>=20
+>> Signed-off-by: Luis Henriques <lhenriques@suse.de>
+>> ---
+>>  fs/ext4/super.c | 4 ++--
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>=20
+>> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+>> index 0f931d0c227d..44ba2212dfb3 100644
+>> --- a/fs/ext4/super.c
+>> +++ b/fs/ext4/super.c
+>> @@ -2183,12 +2183,12 @@ static int ext4_parse_param(struct fs_context *f=
+c, struct fs_parameter *param)
+>>  	switch (token) {
+>>  #ifdef CONFIG_QUOTA
+>>  	case Opt_usrjquota:
+>> -		if (!*param->string)
+>> +		if (!param->string)
+>>  			return unnote_qf_name(fc, USRQUOTA);
 >
-> Kind of obvious from the compatible string, but maybe you are keeping=20
-> the existing style...
-
-I indeed kept the existing style.
-Ping me if you want this removed!
-
-> > +      - items:
-> > +          - const: mobileye,eyeq5-i2c
-> > +          - const: arm,primecell
-> > =20
-> >    reg:
-> >      maxItems: 1
-> > @@ -55,7 +57,7 @@ properties:
-> >        - items:
-> >            - const: mclk
-> >            - const: apb_pclk
-> > -      # Clock name in DB8500
-> > +      # Clock name in DB8500 or EyeQ5
-> >        - items:
-> >            - const: i2cclk
-> >            - const: apb_pclk
-> > @@ -70,6 +72,16 @@ properties:
-> >      minimum: 1
-> >      maximum: 400000
-> > =20
-> > +  mobileye,olb:
-> > +    $ref: /schemas/types.yaml#/definitions/phandle-array
-> > +    items:
-> > +      - items:
-> > +          - description: Phandle to OLB system controller node.
-> > +          - description: Platform-wide controller ID (integer starting=
- from zero).
+> I fail to understand how that can happen. Currently both of these
+> options are parsed as strings via:
 >
-> Rather than a made up ID, just store the shift value you ultimately=20
-> need.
+> #define fsparam_string_empty(NAME, OPT) \
+>         __fsparam(fs_param_is_string, NAME, OPT, fs_param_can_be_empty, N=
+ULL)
+>
+>
+> So if someone sets fsconfig(..., FSCONFIG_SET_STRING, "usrquota", NULL, .=
+.)
+> we give an immediate
+>
+>         case FSCONFIG_SET_STRING:
+>                 if (!_key || !_value || aux) return -EINVAL;
+>
+> from fsconfig() so we know that param->string cannot be NULL. If that
+> were the case we'd NULL deref in fs_param_is_string():
+>
+> int fs_param_is_string(struct p_log *log, const struct fs_parameter_spec =
+*p,
+>                        struct fs_parameter *param, struct fs_parse_result=
+ *result)
+> {
+>         if (param->type !=3D fs_value_is_string ||
+>             (!*param->string && !(p->flags & fs_param_can_be_empty)))
+>
+> So you're check above seems wrong. If I'm mistaken, please explain, how
+> this can happen in detail.
 
-Issue with storing the shift value is that you also need to know what
-value to put in that field. It's an enum mapping the I2C speed which
-isn't found in DT.
+I hope my reply to the previous patch helps clarifying this issue (which
+is quite confusing, and I'm probably  the confused one!).  To summarize,
+fsconfig() will (or can) get this parameter as a flag, not as string.
 
-> These properties are fragile because they break if anything that's not=20
-> defined in DT changes whether that's register offset, bit offset,=20
-> bitfield size or values. Or also if there are additional fields to=20
-> access.
-
-My take is that it is better to have it all either in DT or in driver.
-Having a mix of both is a mess when debugging. If something breaks it
-is a driver bug; such bugs get fixed in driver code. That way DT
-doesn't know about it and doesn't have to be changed.
-
-Putting shifts in DT is an abstraction that ends up being unhelpful. You
-split hardware knowledge half in DT (register offset and/or mask), half
-in driver (value to put in the field). We'd rather have it all in
-driver code.
-
-Next hardware revision will be more complex with potentially fields
-split across registers. A shift value wouldn't cut it. A new
-compatible + made up ID allows accomodating for that. That way we have
-homogeneity across compatibles.
-
-Have a nice day,
-
---
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
-
+Cheers,
+--=20
+Lu=C3=ADs
 
