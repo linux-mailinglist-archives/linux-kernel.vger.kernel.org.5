@@ -1,29 +1,30 @@
-Return-Path: <linux-kernel+bounces-88495-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88496-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 323FB86E265
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:40:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A121A86E267
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 14:40:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB2A81F23BC4
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:40:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19B7D282131
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 13:40:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD3F56E5E3;
-	Fri,  1 Mar 2024 13:39:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 860DA6EF0D;
+	Fri,  1 Mar 2024 13:39:50 +0000 (UTC)
 Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E32886EEF7;
-	Fri,  1 Mar 2024 13:39:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 856F56D50A;
+	Fri,  1 Mar 2024 13:39:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709300385; cv=none; b=ABLNJlQ3k0oAkV0ALG88dficE0pvxnLGUNWsbSYIhkjxXK0oaT64mTBCRGaUqPviLg29IOQaUD7Q9w/Ch5Qlxvm+JFWuNQx8mKGCOb4fCFkPKkTLwNTwWWZ6441CsaOk8Hk8rSEReUZfUfwZm4IG5MRNb8o5YTvHQTPljPe8l9s=
+	t=1709300390; cv=none; b=Ib+H7qM0NQI/+EU9+s/2zYeAbqlnclfpcH6lQ7MHBOae9U/fuT9aB3/itOiA7EdB+/+qnsyBXJoIhUWDNlwm3qLJExeMtUnIrHW9HWBD0cBxU3mWxg9AYx/IR+mkYB8KWwtirxWhtOKejOewUOViu6Gpkqvm1I7yWuxZhil+CKc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709300385; c=relaxed/simple;
-	bh=E0+vbiUDxoe17ISOEKr8wcAHJ3zgj4S9zufaCp1mH30=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Q64+B5CoATWDJvv0UrpBEUzWppqLZJyIaoEE9ROzCyKwQTSQPEJZ0ey6qT3t7BW88dQpQHJ9nYykXWoXi+ynqsVA0lb+9rpdQXdVnbypBfP5FZRb5HJTZm34bAbJ69SpGOpSBcBIS0yhsTrvyVeQUaULT1aiYSoqtxxcCcn+yfU=
+	s=arc-20240116; t=1709300390; c=relaxed/simple;
+	bh=Sh9E/gkk6zKcCqGFDs3nWgIrwzR1EwNjJIGq/iqvfnU=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=e7IoCqJNyw1opBQeTtT80w6yLo6ydA7uFyDud9TzXy2VfnSleYoJ09mqP0eOT73ajE642Lr7bTtaJqsffelY9TfO5ms4GHB677R9DLhppAcS6o4N8vTmkmOE05ziY5cRSb8KStgZOQtnBUInA3zScYOkp5H1XIg9645ZYUlVFmM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
@@ -37,10 +38,12 @@ CC: Roman Smirnov <r.smirnov@omp.ru>, Johan Hedberg <johan.hedberg@gmail.com>,
 	Luiz Augusto von Dentz <luiz.dentz@gmail.com>, Sergey Shtylyov
 	<s.shtylyov@omp.ru>, <linux-bluetooth@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>
-Subject: [PATCH v2 0/2] Bluetooth: mgmt: remove useless NULL checks
-Date: Fri, 1 Mar 2024 13:39:14 +0000
-Message-ID: <20240301133916.1268403-1-r.smirnov@omp.ru>
+Subject: [PATCH v2 1/2] Bluetooth: mgmt: remove NULL check in mgmt_set_connectable_complete()
+Date: Fri, 1 Mar 2024 13:39:15 +0000
+Message-ID: <20240301133916.1268403-2-r.smirnov@omp.ru>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240301133916.1268403-1-r.smirnov@omp.ru>
+References: <20240301133916.1268403-1-r.smirnov@omp.ru>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,24 +82,32 @@ X-KSE-Attachment-Filter-Triggered-Rules: Clean
 X-KSE-Attachment-Filter-Triggered-Filters: Clean
 X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
-Svace reports NULL check after dereference in
-mgmt_set_connectable_complete() and add_ext_adv_params_complete().
-The following patches remove these checks.
-
-The second version has a more compact subjects compared to the
-first version.
+Remove the cmd pointer NULL check in mgmt_set_connectable_complete()
+because it occurs earlier in set_connectable(). This check is also
+unnecessary because the pointer is dereferenced just before it.
 
 Found by Linux Verification Center (linuxtesting.org) with Svace.
 
-Roman Smirnov (2):
-  Bluetooth: mgmt: remove useless NULL checks in
-    mgmt_set_connectable_complete()
-  Bluetooth: mgmt: remove useless NULL checks in
-    add_ext_adv_params_complete()
+Signed-off-by: Roman Smirnov <r.smirnov@omp.ru>
+Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+---
+ net/bluetooth/mgmt.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
- net/bluetooth/mgmt.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
+diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
+index bb72ff6eb22f..cd8c4e094c55 100644
+--- a/net/bluetooth/mgmt.c
++++ b/net/bluetooth/mgmt.c
+@@ -1702,8 +1702,7 @@ static void mgmt_set_connectable_complete(struct hci_dev *hdev, void *data,
+ 	new_settings(hdev, cmd->sk);
+ 
+ done:
+-	if (cmd)
+-		mgmt_pending_remove(cmd);
++	mgmt_pending_remove(cmd);
+ 
+ 	hci_dev_unlock(hdev);
+ }
 -- 
 2.34.1
 
