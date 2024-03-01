@@ -1,137 +1,88 @@
-Return-Path: <linux-kernel+bounces-89100-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89101-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F44A86EA6F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:41:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B4AC86EA71
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:41:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC6101C253A2
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:41:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B7671C25447
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:41:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9A333C694;
-	Fri,  1 Mar 2024 20:41:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F+nWVMWU"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 064593D547;
+	Fri,  1 Mar 2024 20:41:40 +0000 (UTC)
+Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8428C132;
-	Fri,  1 Mar 2024 20:41:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F31763CF7C;
+	Fri,  1 Mar 2024 20:41:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709325676; cv=none; b=mk63uGzspqhC6mDA83ZrizPJcJcNNMWBlUqZ9MAqkCFBv2q6Ri0YYWpjjje6Tp6dFRmM9IN7ws5DCY8npNsrQI94llPIcN1WjGAYyKlRiO9eEWjiJmXFSrjWicwcYIKaCAztLEI06WriwpYLDQ0f/lKK2I99G4eu0SkKJTE1OaM=
+	t=1709325699; cv=none; b=Bp+ZDhiioaS49xChyaC+yLh5xnOCDzI83KAvYXbuXVvPKnp/0fsOatQgMeg3BAattCJkMpvq+6kiKaRt9TwqEZV2N+x1cboWRtqCGQcNuBBn+VHsMj3BWM2A2s6PWB//YAFCS3jyQJBSNyMg7wD5ICyfVixDThlgtnF4+krkDck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709325676; c=relaxed/simple;
-	bh=HIQuNupU1f1nFwHvmn1AN6nyk6XK6SOEQ937XFc1vpw=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=hSnX+hpTEeWLzbTDu/L8XQE76Mzgt/tBzQvIL8G7+bqBAwxPeOl8rnXxgXSddkoNTi5B9X6l5R4lduN/1ltZn5TNOKQEn8Z2ukWQLyvq/YoTRqlfbWb5h46bz9b5HgWVsE1vnwRKFQ2ORcy7t0IgFRTR/QEypKCqd+MZeN3vbJM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F+nWVMWU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFE26C433C7;
-	Fri,  1 Mar 2024 20:41:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709325675;
-	bh=HIQuNupU1f1nFwHvmn1AN6nyk6XK6SOEQ937XFc1vpw=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=F+nWVMWULrL7L81dd09yiXj3EMkHxwfJuq6l5EwUyDtKEYpl3wZzLnlv7vjTV55ll
-	 qEHMMvnoS2J3Ia7mNTtRsl7gOpBHG/j2j+9U13LReIRy/Jg9nu8c3k7sp6xkhLgFc3
-	 Hz2LzW/oV5UaixAn9B93Z9nOQzs8U76mdEugZBpAduEPBzQghiTDXdTaCNCKDkoPUT
-	 3UcnFfEBuEnLp4rqKRfnYVPf10JfQVanxIr4iSODrdxr3FMD0I7ujm/k68UvdQMQj1
-	 13/vtU66WvbXasn/sAWLmM0Zkgs3rR7xMumJnl1wzH3YD3JjzJ8ZxYn3P3QVZuNYri
-	 Y5JtnWSHh2xsQ==
+	s=arc-20240116; t=1709325699; c=relaxed/simple;
+	bh=cfUFUNDFLKj6pTLAvi8PLB+KfVR9xMknj8C7OD/5rtY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KPBGT5UU8VhkRQecvX/U6Z2sqhtlNGYFICVb5RTpLAaGxv7XpZd39OR810//9uoLT2STP3Dhsw1lujsCSJvVSgugi9cmX7qEfAQ/PkZGmnY/Gnrqh0vJcwXp1BcPPSWFYGsWyTvKAVtPFtCoZ21RuQYI2MM0NC3JRx9uZPeZARw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-5a10f19d4a0so36417eaf.0;
+        Fri, 01 Mar 2024 12:41:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709325697; x=1709930497;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cfUFUNDFLKj6pTLAvi8PLB+KfVR9xMknj8C7OD/5rtY=;
+        b=CXZj5e3BL5IjMDd16BYuwgzOquGkc5j3/hEYXMjU8UVCqdN2BgSnI5jAKOxjGn0aXd
+         bbHYH9tNUQakmLxfvlZDMnYA7nHXIYiDiYHpNEZQaz6xJ37yQetTUBjhmmabfZcFNT/R
+         0q7693yxPvGiip0Ctayufr+h8Ar/GQEgQN9gb0N1qadJqZEDXAdR45QPW8I4R18FxNNm
+         blQKrGZZCXahxHTuMYgHK7we1ZfkAyT5Xd7vcCE81jvJoGZMjg648JfBGrG9n+gSZHRx
+         wf56BJ1v6E2U+LAH6Fwp1z4DfaVRR+umG49Nz74xVHCeXD0MDWcmGd7T25YXViVawedf
+         FFSA==
+X-Forwarded-Encrypted: i=1; AJvYcCUVb0Yks+gtGIFju//LH3/jFAt1sAHlzP9edXRoq2G+0x3NfVFkTs/KxSd3ekgSg6qA5mx9fXcOKr/1rEL4zX3Ir+qWFRNABfDR5L8bieJ+1ixqvzbaZ/Du4DgJDm+hoN2M3x3wWlU=
+X-Gm-Message-State: AOJu0Yyuytc57ZfOZygikU0ycXDRnU2uiTe/wecX4fCcJ9slPtGxx+UK
+	yYmCDRSmMcawO5uKlOInV37l/itphPLiCeJQZ/3oc5Oz2XajzwoFWdHgUrqJn8EDlvUJZ4xQPIJ
+	ocVs6qIHowDTkj1p8DScl6CHUmrc=
+X-Google-Smtp-Source: AGHT+IHhGXCmW/U10NQlHOn/42JTQG4z0M4mbLYQYhuN7kdIqltd7/jAa2xyselcJB3OX438AoakO3jq5tkhTNwsG+I=
+X-Received: by 2002:a05:6870:8dc9:b0:21f:9eaa:3f1 with SMTP id
+ lq9-20020a0568708dc900b0021f9eaa03f1mr2927772oab.5.1709325697043; Fri, 01 Mar
+ 2024 12:41:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
+MIME-Version: 1.0
+References: <20240301081802.114308-1-yang.lee@linux.alibaba.com> <df67c46b-26a3-44da-8404-1bf445cb6efb@infradead.org>
+In-Reply-To: <df67c46b-26a3-44da-8404-1bf445cb6efb@infradead.org>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Fri, 1 Mar 2024 21:41:25 +0100
+Message-ID: <CAJZ5v0hXjoukVi-Ft71wDfPttAbutX8iomKuzmr21cpKx444BA@mail.gmail.com>
+Subject: Re: [PATCH -next] powercap: dtpm: Fix kernel-doc for
+ dtpm_create_hierarchy function
+To: Randy Dunlap <rdunlap@infradead.org>, Yang Li <yang.lee@linux.alibaba.com>
+Cc: daniel.lezcano@kernel.org, linux-pm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Fri, 01 Mar 2024 22:41:11 +0200
-Message-Id: <CZIPDP0W9TOP.3CCT8QUB0R4L3@suppilovahvero>
-Cc: <linux-kernel@vger.kernel.org>, <saulo.alessandre@tse.jus.br>,
- <lukas@wunner.de>
-Subject: Re: [PATCH v4 09/12] crypto: ecdsa - Rename keylen to bufsize where
- necessary
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Stefan Berger" <stefanb@linux.ibm.com>, <keyrings@vger.kernel.org>,
- <linux-crypto@vger.kernel.org>, <herbert@gondor.apana.org.au>,
- <davem@davemloft.net>
-X-Mailer: aerc 0.15.2
-References: <20240301022007.344948-1-stefanb@linux.ibm.com>
- <20240301022007.344948-10-stefanb@linux.ibm.com>
-In-Reply-To: <20240301022007.344948-10-stefanb@linux.ibm.com>
 
-On Fri Mar 1, 2024 at 4:20 AM EET, Stefan Berger wrote:
-> In some cases the name keylen does not reflect the purpose of the variabl=
-e
-> anymore once NIST P521 is used but it is the size of the buffer. There-
-> for, rename keylen to bufsize where appropriate.
+On Fri, Mar 1, 2024 at 8:24=E2=80=AFPM Randy Dunlap <rdunlap@infradead.org>=
+ wrote:
 >
-> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> ---
->  crypto/ecdsa.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
 >
-> diff --git a/crypto/ecdsa.c b/crypto/ecdsa.c
-> index 4daefb40c37a..4e847b59622a 100644
-> --- a/crypto/ecdsa.c
-> +++ b/crypto/ecdsa.c
-> @@ -35,8 +35,8 @@ struct ecdsa_signature_ctx {
->  static int ecdsa_get_signature_rs(u64 *dest, size_t hdrlen, unsigned cha=
-r tag,
->  				  const void *value, size_t vlen, unsigned int ndigits)
->  {
-> -	size_t keylen =3D ndigits * sizeof(u64);
-> -	ssize_t diff =3D vlen - keylen;
-> +	size_t bufsize =3D ndigits * sizeof(u64);
+>
+> On 3/1/24 00:18, Yang Li wrote:
+> > The existing comment block above the dtpm_create_hierarchy function
+> > does not conform to the kernel-doc standard. This patch fixes the
+> > documentation to match the expected kernel-doc format, which includes
+> > a structured documentation header with param and return value.
+> >
+> > Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+>
+> Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
 
-why not just "* 8"? using sizeof here makes this function only unreadable.
-
-
-> +	ssize_t diff =3D vlen - bufsize;
->  	const char *d =3D value;
->  	u8 rs[ECC_MAX_BYTES];
-> =20
-> @@ -58,7 +58,7 @@ static int ecdsa_get_signature_rs(u64 *dest, size_t hdr=
-len, unsigned char tag,
->  		if (diff)
->  			return -EINVAL;
->  	}
-> -	if (-diff >=3D keylen)
-> +	if (-diff >=3D bufsize)
->  		return -EINVAL;
-> =20
->  	if (diff) {
-> @@ -138,7 +138,7 @@ static int ecdsa_verify(struct akcipher_request *req)
->  {
->  	struct crypto_akcipher *tfm =3D crypto_akcipher_reqtfm(req);
->  	struct ecc_ctx *ctx =3D akcipher_tfm_ctx(tfm);
-> -	size_t keylen =3D ctx->curve->g.ndigits * sizeof(u64);
-> +	size_t bufsize =3D ctx->curve->g.ndigits * sizeof(u64);
->  	struct ecdsa_signature_ctx sig_ctx =3D {
->  		.curve =3D ctx->curve,
->  	};
-> @@ -165,14 +165,14 @@ static int ecdsa_verify(struct akcipher_request *re=
-q)
->  		goto error;
-> =20
->  	/* if the hash is shorter then we will add leading zeros to fit to ndig=
-its */
-> -	diff =3D keylen - req->dst_len;
-> +	diff =3D bufsize - req->dst_len;
->  	if (diff >=3D 0) {
->  		if (diff)
->  			memset(rawhash, 0, diff);
->  		memcpy(&rawhash[diff], buffer + req->src_len, req->dst_len);
->  	} else if (diff < 0) {
->  		/* given hash is longer, we take the left-most bytes */
-> -		memcpy(&rawhash, buffer + req->src_len, keylen);
-> +		memcpy(&rawhash, buffer + req->src_len, bufsize);
->  	}
-> =20
->  	ecc_swap_digits((u64 *)rawhash, hash, ctx->curve->g.ndigits);
-
-BR, Jarkko
+Applied, thanks!
 
